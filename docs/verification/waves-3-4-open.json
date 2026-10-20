@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 180,
+  "remainingFlags": 179,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "fin": 3,
+    "fin": 2,
     "game": 18,
     "psych": 17,
     "soc": 16,
@@ -227,20 +227,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "fin-5.15",
-      "file": "content/fin/ch05-c.js",
-      "name": "Do Stock Prices Move Too Much?",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Excess_volatility",
-        "url": "https://www.jstor.org/stable/1802789"
       }
     },
     {
@@ -3595,7 +3581,8 @@
       "fin-5.7",
       "micro-9.20",
       "fin-5.10",
-      "micro-10.22"
+      "micro-10.22",
+      "fin-5.15"
     ]
   },
   "additionalFollowups": [
@@ -7792,6 +7779,18 @@
       "status": "resolved",
       "report": "docs/verification/micro-cournot-followup.md",
       "note": "Independent reading of complete original French V/VII/VIII sections and actual1838 formula/plate images; unique global quadratic replies/equilibria, triangle projection/invariance and exact duopoly contraction assessed;4math+4native groups and final full mobile/marker screenshots pass. General demand and price-floor games are distinguished."
+    },
+    {
+      "id": "fin-5.15",
+      "status": "resolved",
+      "report": "docs/verification/fin-shiller-followup.md",
+      "note": "Independent original introduction/I/V/VI/Appendix and Table2/image reading; author construction notes and actual XLSheaders/1824rows/456annualscalars checked; six math plus eight native viewport/theme/item groups and final screenshots pass. Correct predividend timing, population-vs-finite scope, explicit continuation, exact stationary Gaussian ratio and all400histogram samples are reconciled; unflagged5.6 corrected without queueclosure credit."
+    },
+    {
+      "id": "fin-5.6",
+      "status": "resolved",
+      "report": "docs/verification/fin-shiller-followup.md",
+      "note": "Additional unflagged consistency correction: exact conditional-L\u00b2 variance identity separated from later finite proxy/sample SDs; original timing and distinct trend exponents, explicit continuation sensitivity, actual PV/projection dependencies. Included in six mathematical/eight native groups and original1824-row/456annualscalar data comparison. No original queueclosure credit."
     }
   ]
 }

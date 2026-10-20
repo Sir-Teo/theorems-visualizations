@@ -8,6 +8,8 @@
 // 5.11 independently reads Blanchard–Watson's authored 1982 chapter, pp.295–300; original-page formulas inspected.
 // Its explicit summability/finite-annuity illustration and checks are documented in the dedicated bubble follow-up.
 // Real data: Shiller's annual series (ch05.shared.js), the daily and monthly market and industry returns (French library). Models and reconstructions are labelled as such.
+import { shillerStats, shillerHistorical, shillerBenchmark, shillerHistogram } from './source-audit-shiller.js';
+import { D_SHILLER } from './ch05.shared.js';
 import { clamp, pct, fx, sg, data, daily, shiller, shillerDetrended, exPost, meanOf, sdOf, acf, normPdf, normCdf, pricePath, rng, mean, sdev, IND_NAMES } from './ch05.shared.js';
 import { bubbleScenario, sampledBubbleReturn } from './source-audit-bubbles.js';
 import { LAB_PRESETS, labFundamental, labSession, labDeviation, labMean } from './source-audit-laboratory.js';
@@ -321,54 +323,52 @@ The review's 1970 assessment supports weak and semi-strong efficiency in the stu
     },
     // ------------------------------------------------------------------ 5.15
     {
-      num: '5.15',
-      kind: 'Paper',
-      name: 'Do Stock Prices Move Too Much?',
-      paper: { authors: 'Robert J. Shiller', year: 1981, title: 'Do Stock Prices Move Too Much to be Justified by Subsequent Changes in Dividends?', venue: 'American Economic Review 71 (3): 421–436', url: 'https://www.jstor.org/stable/1802789' },
+      num: '5.15', kind: 'Paper', name: 'Do Stock Prices Move Too Much?',
+      paper: { authors: 'Robert J. Shiller', year: 1981, title: 'Do Stock Prices Move Too Much to be Justified by Subsequent Changes in Dividends?', venue: 'American Economic Review 71 (3): 421–436', url: 'https://ms.mcmaster.ca/~grasselli/Shiller81.pdf' },
       introduces: ['fin-5.6'],
-      statement: String.raw`Shiller compares two series for the Standard & Poor's Composite Stock Price Index (annual, 1871–1979, in real terms and detrended for growth): the price $p_t$, and the **ex-post rational price** $p_t^*$, the present value of the dividends that were actually paid afterwards, discounted at a constant rate (with a terminal value). If $p_t$ is the optimal forecast of $p_t^*$, then $p_t^*-p_t$ is a forecast error uncorrelated with $p_t$, which implies the **variance bound** $\operatorname{var}(p_t)\le\operatorname{var}(p_t^*)$, equivalently $\sigma(p)\le\sigma(p^*)$. In the data $p^*$ is a smooth, slowly varying curve, while $p$ fluctuates widely around it, so the bound fails by a large margin: stock prices "move too much" to be justified by subsequent changes in dividends. LeRoy and Porter (1981) reached the same conclusion with a different test. Subsequent critics (Flavin 1983, Marsh and Merton 1986, Kleidon 1986) pointed out that the bound is distorted when dividends are non-stationary or highly persistent and the sample is short.
+      statement: String.raw`Shiller's 1981 paper examines a **constant-real-discount present-value model**, rather than every meaning of market efficiency. With a square-integrable infinite discounted dividend value $p_t^*$ and $p_t=E[p_t^*\mid\mathcal F_t]$, forecast orthogonality gives $\operatorname{Var}(p_t)\le\operatorname{Var}(p_t^*)$ (fin-5.6).
 
-Scope: the original series, discount rate and terminal-value choices are Shiller's; the panel here uses his later, extended online data, so the numbers differ from the paper.`,
-      idea: String.raw`The test is a variance decomposition of a forecast and its target (fin-5.6). Smooth dividends make $p^*$ smooth because $p^*$ is a long discounted average of them; if the price fluctuates far more, it must respond to something other than expected dividends. The paper opened the "excess volatility" literature and, with Shiller's later work, fed the case for behavioural explanations (fads, over-reaction); the critics' point, that the sample variances of persistent series are biased and the bound requires stationary series, led to improved tests that still rejected in many specifications, and to the view that time-varying discount rates also matter (Campbell and Shiller's present-value decompositions). The paper figures in Shiller's 2013 Nobel citation.`,
-      caption: String.raw`**Left**: Shiller's Figure 1 reconstructed from his online annual data: the real S&P price (detrended, blue) and the ex-post rational price (green); choose the **sample** (1871–1979 as in the paper, or to 2022), the **discount rate** and the **terminal value** and compare the standard deviations. **Right**: the critics' point. We simulate a *perfectly rational* market with the same size of dividends, where $p_t$ is exactly the expected present value of dividends with persistence $\rho$, and apply Shiller's procedure to 109 years of simulated data; the histogram shows the ratio $\sigma(p)/\sigma(p^*)$ over 400 simulations, with the real data's ratio as the gold line. For persistence near 0.95 the bound already fails in a large share of rational markets, but the real ratio is far out in the tail. (Real data: Shiller's later series; simulation: a model.)`,
-      deps: ['fin-1.11', 'fin-5.14', 'fin-5.6'],
-      refs: [],
-      tags: ['variance bounds', 'excess volatility', 'present value'],
-      credit: 'Robert J. Shiller, 1981',
-      scope: String.raw`The bound assumes stationary series, a constant discount rate and a given terminal value; the reconstruction uses extended data, not the paper's 1871–1979 series.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Excess_volatility', url: 'https://www.jstor.org/stable/1802789' },
+His original Data Set 1 uses January S&P Composite prices, calendar-year dividends and wholesale-price deflation for 1871–1979. After fitting an exponential price trend, Table 2 reports a detrended discount rate .0480 and sample standard deviations 50.12 for price and 8.968 for the finite dividend proxy. Those are the paper's reported statistics, not numbers reconstructed below. The paper also examines terminal assumptions, discount-rate variation and uncertainty about unobserved dividends.
+
+The panels use **later annual-mean/CPI data** and a separate authored Gaussian benchmark. A population variance identity and a time-series sample ratio answer different questions; detrending and a finite continuation proxy do not automatically make a valid statistical test.`,
+      idea: String.raw`For the benchmark let $d_t=\mu+x_t$ be known at the beginning of period $t$, paid at its end, with stationary Gaussian $x_t=\rho x_{t-1}+\eta_t$, $0\le\rho<1$. Its variance is $s^2$ and $\operatorname{Var}(\eta_t)=s^2(1-\rho^2)$. Conditioning the infinite discounted sum gives
+$$p_t=\frac{\mu}{r}+\frac{x_t}{1+r-\rho}.$$
+The **population** standard-deviation ratio is exactly
+$$\frac{\sigma(p)}{\sigma(p^*)}=\sqrt{\frac{(1+r)^2-1}{(1+r)^2-\rho^2}}\le1.$$
+This is a linear signed-cash-flow process: Gaussian dividends and prices can be negative. It is not an equilibrium model of limited-liability stocks.
+
+For each finite path the proxy ends at $q_{n-1}=K$, summing dividends only through $d_{n-2}$. With $K=p_{n-1}$ the conditional tower identity still gives $p_t=E_tq_t$; a sample-mean $K$ need not have that property. Even the exact continuation choice does not impose an ordering on demeaned sample variances along every single realized path.`,
+      caption: String.raw`**Left:** the same later-data transformation and finite continuation choices as fin-5.6; this is not a reproduction of Figure 1. The rate and terminal rule affect both panels.
+
+**Right:** all 400 authored sample price/proxy ratios, with the same number of observations as the selected historical window. The Gaussian dividend mean and standard deviation match the transformed later data; persistence is a chosen parameter. The axis includes every simulated ratio and the historical ratio, without a folded overflow bin. The gold guide is only a descriptive comparison; no formal p-value or universal tail claim is supplied. **New samples** refreshes all 400 paths.`,
+      deps: ['fin-5.6', 'fin-1.5', 'prob-4.1.15'], see: ['fin-5.14'],
+      refs: ['Shiller (1981), original paper pp.421–436, especially §§I,V–VI and Appendix A', 'Shiller online monthly data and construction notes; annual means 1871–2022'],
+      tags: ['variance bounds', 'excess volatility', 'present value'], credit: 'Robert J. Shiller, 1981',
+      scope: String.raw`Original historical claims are attributed to the actual 1981 paper. Later annual averages use CPI, different observation timing and a local finite proxy; they do not reproduce the original January/WPI series. The authored Gaussian process is stationary by initialization and satisfies the stated conditional-PV model. Its finite sample frequencies depend on the selected persistence, terminal rule and seed; they neither validate the historical model nor reproduce a published criticism or empirical significance test.`,
+      verify: false,
+      links: { source: 'https://ms.mcmaster.ca/~grasselli/Shiller81.pdf', data: 'https://shillerdata.com/' },
       viz(v) {
-        const smp = v.select('sample', [{ value: 109, label: '1871–1979' }, { value: 152, label: '1871–2022' }], 109);
-        const r = v.slider('discount rate $r$ (detrended)', 0.02, 0.12, 0.05, { step: 0.0025, fmt: (x) => pct(x, 2) });
-        const term = v.select('terminal value of $p^*$', [{ value: 'mean', label: 'mean of the price' }, { value: 'last', label: 'last price' }], 'mean');
-        const rho = v.slider('dividend persistence $\\rho$ (rational market)', 0, 0.99, 0.9, { step: 0.01 });
-        let seed = 6; v.button('Resimulate', () => { seed++; });
-        const A = v.stage({ x: [1871, 1980], y: [0, 200], axes: 'box', gutter: true, height: 340, weight: 1.3, minWidth: 300, xlabel: 'year', ylabel: 'real price, detrended', title: 'Shiller’s Figure 1, reconstructed' });
-        const B = v.stage({ x: [0, 3], y: [0, 0.35], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 270, xlabel: 'σ(p) / σ(p*)', ylabel: 'share of simulations', title: 'a perfectly rational market, same number of years' });
-        let st = {};
-        v.render(() => {
-          const S = shillerDetrended(smp.value), T = S.T, mp = meanOf(S.p);
-          const ps = exPost(S.d, r.value, term.value === 'mean' ? mp : S.p[T - 1]);
-          const sp = sdOf(S.p), sps = sdOf(ps), ratio = sp / sps;
-          A.setView([1871, S.year[T - 1] + 1], [0, Math.max(...S.p, ...ps) * 1.1]);
-          A.path(S.year.map((y, i) => [y, S.p[i]]), { color: 'accent', width: 2.2 }); A.path(S.year.map((y, i) => [y, ps[i]]), { color: 'green', width: 2.8 });
-          A.text('p', 1960, S.p[89], { dx: 6, dy: -10, size: 13, color: 'accent', weight: 700 }); A.text('p*', 1960, ps[89], { dx: 6, dy: 14, size: 13, color: 'green', weight: 700 });
-          // Monte Carlo: rational market, AR(1) dividends around the sample mean with the sample sd
-          const R = rng(seed * 1009 + 3), M = 400, Tn = smp.value, mu = meanOf(S.d), sdd = sdOf(S.d), e = sdd * Math.sqrt(1 - rho.value ** 2), rs = []; let bad = 0;
-          for (let m = 0; m < M; m++) {
-            const dd = []; let x = sdd * R.normal(); for (let t = 0; t < Tn; t++) { dd.push(mu + x); x = rho.value * x + e * R.normal(); }
-            const p = dd.map((q) => mu / r.value + (q - mu) / (1 + r.value - rho.value)), pstar = exPost(dd, r.value, meanOf(p));
-            const q = sdOf(p) / sdOf(pstar); rs.push(q); if (q > 1) bad++;
-          }
-          const xm = Math.max(3, ratio + 0.4), nb = 40, w = xm / nb, cnt = new Array(nb).fill(0); for (const q of rs) { const k = Math.min(nb - 1, Math.floor(q / w)); cnt[k]++; }
-          B.setView([0, xm], [0, Math.max(0.2, Math.max(...cnt) / M * 1.15)]);
-          cnt.forEach((c, k) => B.rect(k * w + 0.01, 0, (k + 1) * w - 0.01, c / M, { fill: k * w >= 1 ? 'red' : 'accent', fillAlpha: 0.45, color: k * w >= 1 ? 'red' : 'accent', width: 0.6 }));
-          B.vline(1, { color: 'ink', dash: true }); B.text('bound violated →', 1.05, 0.33, { size: 11, color: 'red', weight: 700 });
-          B.vline(ratio, { color: 'gold', width: 3 }); B.text('real data', ratio, 0.3, { dx: -6, size: 11.5, color: 'gold', align: 'right', weight: 700 });
-          st = { sp, sps, ratio, bad: bad / M, mrs: meanOf(rs), tail: rs.filter((q) => q >= ratio).length / M };
+        const sample=v.select('annual-mean sample',[{value:109,label:'1871–1979'},{value:152,label:'1871–2022'}],109);
+        const rate=v.slider('detrended discount rate $r$',.02,.12,.05,{step:.0025,fmt:x=>pct(x,2)});
+        const term=v.select('continuation proxy $K$',[{value:'mean',label:'sample mean price'},{value:'last',label:'last observed price'}],'mean');
+        const rho=v.slider('authored dividend persistence $\\rho$',0,.99,.9,{step:.01});
+        let seed=6;v.button('New samples',()=>{seed++;});
+        const A=v.stage({x:[1867,1983],y:[0,100],axes:'box',gutter:true,height:340,weight:1.3,minWidth:300,xlabel:'observation year',ylabel:'CPI-deflated level / fitted growth',title:'later-data illustration, not original Figure 1'});
+        const B=v.stage({x:[-.1,4],y:[-.01,.5],axes:'box',gutter:true,height:340,minWidth:270,xlabel:'sample SD(price) / SD(finite proxy)',ylabel:'share of 400 samples per bin',title:'authored stationary Gaussian benchmark'});
+        v.legend([['accent','transformed price / simulated ratios'],['green','finite dividend proxy'],['red','sample ratio 1'],['gold','later-data sample ratio']]);
+        let st,cacheKey='',normals=[];
+        v.render(()=>{
+          const h=shillerHistorical(D_SHILLER,sample.value,rate.value,term.value),key=seed+'|'+sample.value;
+          if(key!==cacheKey){const R=rng(seed*1009+3);normals=Array.from({length:400*sample.value},()=>R.normal());cacheKey=key;}
+          let i=0;const moments=shillerStats(h.d),model=shillerBenchmark({count:sample.value,rate:rate.value,persistence:rho.value,mean:moments.mean,sd:moments.sd,terminalRule:term.value,normal:()=>normals[i++]}),hist=shillerHistogram(model.ratios,h.ratio);
+          A.setView([h.year[0]-4,h.year.at(-1)+4],[0,Math.max(...h.p,...h.proxy)*1.12]);
+          A.path(h.year.map((y,j)=>[y,h.p[j]]),{color:'accent',width:2.2});A.path(h.year.map((y,j)=>[y,h.proxy[j]]),{color:'green',width:2.6});
+          const top=Math.max(...hist.counts)/400;B.setView([-.04*hist.upper,1.04*hist.upper],[-.04*top,1.18*top]);
+          hist.counts.forEach((n,j)=>{if(n)B.rect((j+.08)*hist.width,0,(j+.92)*hist.width,n/400,{fill:'accent',fillAlpha:.5,stroke:false});});
+          B.vline(1,{color:'red',width:1.6,dash:[4,4]});B.vline(h.ratio,{color:'gold',width:2.2});
+          st={h,model,hist,seed,rate:rate.value,persistence:rho.value,terminalRule:term.value,count:sample.value};
         });
-        v.readout(() => `Real data (${smp.value === 109 ? '1871–1979' : '1871–2022'}, $r=${pct(r.value, 2)}$): $\\sigma(p)=${v.fix(st.sp, 1)}$, $\\sigma(p^*)=${v.fix(st.sps, 1)}$, ratio **${v.fix(st.ratio, 2)}**; Shiller's bound needs a ratio of at most 1.\nPerfectly rational market with dividend persistence ${v.fix(rho.value, 2)}: the bound appears violated in **${pct(st.bad, 0)}** of 400 simulated samples (average ratio ${v.fix(st.mrs, 2)}); a ratio as large as the real one occurred in **${pct(st.tail, 1)}** of them. The real dividends' own persistence (lag-1 autocorrelation about 0.9) makes the bound less reliable than it looks, but does not by itself account for a ratio this large.`);
+        v.readout(()=>{const{h,model:m,hist}=st;return `Later-data sample SD(price) ${v.fix(h.price.sd,4)}, SD(proxy) ${v.fix(h.target.sd,4)}, ratio **${v.fix(h.ratio,4)}**. Authored benchmark: exact population SD ratio **${v.fix(m.population.ratio,6)}** (at most 1). All **${hist.counts.reduce((a,b)=>a+b,0)}/400** finite ratios are counted; range ${v.fix(m.min,4)}–${v.fix(m.max,4)}, mean ${v.fix(m.meanRatio,4)}. ${m.aboveOne}/400 exceed 1; ${hist.aboveObserved}/400 are at least the later-data ratio. These are finite model counts, not historical significance levels. Across ${400*st.count} signed cash flows/prices, ${m.negativeDividends} dividends and ${m.negativePrices} prices are negative. ${st.terminalRule==='last'?'Simulation K is the final model forecast price, an exact conditional continuation at that date.':'Simulation K is the sample mean price, an estimated terminal proxy without an exact conditional-PV identity.'} The final observation’s dividend is absorbed into K. The 400 samples are not the original paper’s data or a replication of a named later study.`;});
       },
     },
   ],

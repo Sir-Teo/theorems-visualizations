@@ -5,6 +5,8 @@
 // Froot & Dabora, JFE 53(2):189–216 (1999); Mandelbrot, J. Business 36(4):394–419 (1963); Engle, Econometrica 50(4):987–1007 (1982); Bollerslev, J. Econometrics 31(3):307–327 (1986);
 // 5.10: Garber (1989), Temin & Voth (2004), and Moran et al. (2021 preprint version, opening §III); copying rule authored. No direct Kirman1993 reading is claimed.
 // Real data: Shiller's annual series and the daily market in ch05.shared.js; monthly industry returns (French library) via ch04.shared.js. Simulations are labelled.
+import { shillerStats, shillerHistorical, shillerBenchmark, shillerHistogram } from './source-audit-shiller.js';
+import { D_SHILLER } from './ch05.shared.js';
 import { speculationHistorical, speculationHistory, speculationStationary, monthOrdinal } from './source-audit-speculation.js';
 import { arbitrageGap, arbitrageOutcome, arbitrageSample } from './source-audit-arbitrage.js';
 import { clamp, pct, fx, sg, data, daily, shiller, shillerDetrended, exPost, meanOf, sdOf, acf, normPdf, normCdf, kurtosis, simGarch, rng, monthLabel } from './ch05.shared.js';
@@ -15,51 +17,42 @@ export default {
   items: [
     // ------------------------------------------------------------------ 5.6
     {
-      num: '5.6',
-      kind: 'Phenomenon',
-      name: 'Excess volatility (Shiller)',
-      statement: String.raw`If a stock price is the expected present value of the dividends that follow, $p_t=\mathrm E_t[p_t^*]$ with the **ex-post rational price**
-$$p_t^*=\sum_{k\ge 0}\frac{d_{t+k}}{(1+r)^{k+1}},$$
-then $p_t^*=p_t+u_t$ where the forecast error $u_t$ is uncorrelated with $p_t$, so
-$$\operatorname{var}(p_t^*)=\operatorname{var}(p_t)+\operatorname{var}(u_t)\ \ge\ \operatorname{var}(p_t).$$
-**The observation:** in U.S. data the real S&P price index varies far more than the (detrended) $p^*$ built from the dividends that actually followed, whatever discount rate in a plausible range is used: $\operatorname{sd}(p)>\operatorname{sd}(p^*)$, violating the bound. Prices seem to move too much to be justified by news about dividends.
+      num: '5.6', kind: 'Phenomenon', name: 'Excess volatility (Shiller)',
+      statement: String.raw`A constant-discount present-value model supposes
+$$p_t=E[p_t^*\mid\mathcal F_t],$$
+$$p_t^*=\sum_{k=0}^{\infty}\frac{d_{t+k}}{(1+r)^{k+1}},\qquad r>0.$$
+Here $d_t$ is paid at the end of period $t$, $p_t$ is a beginning-period value, and the infinite discounted sum must exist in $L^2$. Conditional expectation (prob-4.1.15) makes the forecast error orthogonal to the forecast, giving the **population** identity
+$$\operatorname{Var}(p_t^*)=\operatorname{Var}(p_t)+E[(p_t^*-p_t)^2].$$
+Shiller (1981) found that his U.S. sample price variability greatly exceeded that of a dividend-based proxy. This is evidence about a specified valuation model and its statistical assumptions. The identity does not require the sample standard deviations of one realized path, or of a finite-terminal proxy, to satisfy the same inequality.`,
+      idea: String.raw`The error has conditional mean zero, so its covariance with the $\mathcal F_t$-measurable price is zero. A finite proxy instead needs an assumed continuation value. With $n$ observations this illustration defines
+$$q_{n-1}=K,\qquad q_t=\frac{d_t+q_{t+1}}{1+r}\quad(t<n-1).$$
+Only dividends through the penultimate observation enter separately; the last observation's dividend and everything later are represented by $K$. A change $\Delta K$ changes $q_t$ by $(1+r)^{-(n-1-t)}\Delta K$. The sample comparison depends on this terminal assumption, the discount rate and the transformation of the data.`,
+      caption: String.raw`**Left:** a later-data illustration using annual averages of Shiller's monthly price, dividend-rate and CPI series. Choose the end year, detrended discount rate and continuation proxy. These are not the original paper's January-price/WPI observations.
 
-Scope: a statement about a constant discount rate and stationary (detrended) series; whether the violation measures irrationality, time-varying discount rates or small-sample and non-stationarity problems is still debated (see fin-5.15).`,
-      idea: String.raw`The bound is a variance decomposition: a forecast cannot be more variable than the quantity it forecasts, because forecast and error are orthogonal. $p^*$ is smooth because dividends are smooth and a discounted sum of many of them averages out their fluctuations; the price is not. The calculation needs a terminal value for $p^*$ at the end of the sample and detrending to make both series stationary (a long-run growth trend is divided out); the conclusion survives different choices. Shiller read the gap as evidence that prices respond to something other than dividend news (fads, changing risk premia); later work (fin-5.15) examines how robust the test is.`,
-      caption: String.raw`**Left**: the real S&P composite index (blue, detrended) and the ex-post rational price $p^*$ (green, the discounted dividends that actually followed) for 1871–2022; the price swings through crashes and booms while $p^*$ is a smooth curve. Drag the **discount rate** and choose the **terminal value**: $p^*$ moves up and down but never becomes as variable as the price. **Right**: the standard deviation of $p^*$ against the discount rate, with the price's own standard deviation as the line it should stay above. (Real data: Shiller's annual series; discount rates are after removing the growth trend.)`,
-      deps: ['fin-5.1', 'fin-1.11'],
-      refs: ['BKM ch. 12'],
-      tags: ['excess volatility', 'present value', 'variance bounds'],
-      credit: 'Shiller, 1981; LeRoy & Porter, 1981',
-      scope: String.raw`Annual U.S. data, constant discount rate, stationarity after removing an exponential trend; the conclusion is contested for non-stationary dividends and with time-varying discount rates.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Excess_volatility' },
+**Right:** sample standard deviations, with divisor $n$, across the offered discount rates. The gold point is the selected proxy statistic; the blue guide is the price statistic. Every rate and endpoint remains visible. A sample ratio above 1 is descriptive and is not, by itself, a population-theorem violation or an efficiency test.`,
+      deps: ['fin-1.5', 'prob-4.1.15'], see: ['fin-5.1', 'fin-5.15'],
+      refs: ['Shiller (1981), §§I,V–VI and Appendix A', 'Shiller online monthly data and construction notes; annual means 1871–2022'],
+      tags: ['excess volatility', 'present value', 'variance bounds'], credit: 'Robert J. Shiller, 1981',
+      scope: String.raw`The theorem assumes a square-integrable infinite present value and its exact conditional forecast; it is not a universal claim about raw prices or arbitrary sample variances. Historical curves use later annual means, CPI deflation to 2022 units and an authored finite terminal proxy. A fitted growth trend is a transformation, not proof of stationarity. The selected rate is held constant; time-varying required returns, unknown future cash flows and sampling uncertainty limit any empirical interpretation.`,
+      links: { source: 'https://ms.mcmaster.ca/~grasselli/Shiller81.pdf', data: 'https://shillerdata.com/' },
       viz(v) {
-        const sh = shiller();
-        const rate = v.slider('discount rate $r$ (detrended)', 0.02, 0.12, 0.05, { step: 0.0025, fmt: (x) => pct(x, 2) });
-        const term = v.select('terminal value of $p^*$', [{ value: 'mean', label: 'mean of the price' }, { value: 'last', label: 'last price' }], 'mean');
-        const end = v.select('sample', [{ value: '1979', label: '1871–1979' }, { value: '2022', label: '1871–2022' }], '2022');
-        const A = v.stage({ x: [1871, 2023], y: [0, 100], axes: 'box', gutter: true, height: 340, weight: 1.5, minWidth: 320, xlabel: 'year', ylabel: 'real price, detrended', title: 'the price and the discounted dividends that followed' });
-        const B = v.stage({ x: [0.02, 0.12], y: [0, 120], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'discount rate r', ylabel: 'standard deviation', xticks: [[0.02, '2%'], [0.04, '4%'], [0.06, '6%'], [0.08, '8%'], [0.1, '10%'], [0.12, '12%']], title: 'sd(p*) against the bound sd(p)' });
-        let ratio = 0, sdp = 0, sds = 0, req = null;
-        const calc = (S, r) => { const mp = meanOf(S.p), ps = exPost(S.d, r, term.value === 'mean' ? mp : S.p[S.T - 1]); return { ps, sd: sdOf(ps) }; };
-        v.render(() => {
-          const S = shillerDetrended(end.value === '1979' ? 109 : 152), mp = meanOf(S.p);
-          const { ps, sd } = calc(S, rate.value); sdp = sdOf(S.p); sds = sd; ratio = sds / sdp;
-          const hi = Math.max(...S.p, ...ps) * 1.08; A.setView([1871, S.year[S.T - 1] + 1], [0, hi]);
-          A.path(S.year.map((y, i) => [y, S.p[i]]), { color: 'accent', width: 2.2 });
-          A.path(S.year.map((y, i) => [y, ps[i]]), { color: 'green', width: 2.6 });
-          A.text('real S&P price p', S.year[S.T - 1] - 28, S.p[S.T - 1], { dx: 0, dy: -14, size: 11.5, color: 'accent', weight: 700, align: 'center' });
-          A.text('p* (ex-post rational)', 1925, ps[54], { dy: 22, size: 11.5, color: 'green', weight: 700 });
-          const xs = [], ys = []; for (let r = 0.02; r <= 0.1201; r += 0.0025) { xs.push(r); ys.push(calc(S, r).sd); }
-          B.setView([0.02, 0.12], [0, Math.max(sdp, ...ys) * 1.15]);
-          B.path(xs.map((x, i) => [x, ys[i]]), { color: 'green', width: 2.6 });
-          B.hline(sdp, { color: 'accent', width: 2.2 }); B.text('sd(p): the price', 0.12, sdp, { dx: -6, dy: -9, align: 'right', size: 11.5, color: 'accent', weight: 700 });
-          B.text('sd(p*)', 0.1, ys[ys.length - 4], { dy: 16, size: 11.5, color: 'green', weight: 700 });
-          B.dot(rate.value, sds, { r: 7, color: 'gold' });
-          req = null; for (let i = 0; i < xs.length; i++) if (ys[i] >= sdp) { req = xs[i]; break; }
-          B.vband(0.04, 0.08, { color: 'orange', alpha: 0.08 }); B.text('plausible range', 0.06, sdp * 0.08, { size: 10.5, color: 'orange', align: 'center' });
+        const rate=v.slider('detrended discount rate $r$',.02,.12,.05,{step:.0025,fmt:x=>pct(x,2)});
+        const term=v.select('continuation proxy $K$',[{value:'mean',label:'sample mean price'},{value:'last',label:'last observed price'}],'mean');
+        const sample=v.select('annual-mean sample',[{value:109,label:'1871–1979'},{value:152,label:'1871–2022'}],152);
+        const A=v.stage({x:[1867,2026],y:[0,100],axes:'box',gutter:true,height:340,weight:1.4,minWidth:300,xlabel:'observation year',ylabel:'CPI-deflated level / fitted growth',title:'later annual means and a finite dividend proxy'});
+        const B=v.stage({x:[.016,.124],y:[0,100],axes:'box',gutter:true,height:340,minWidth:270,xlabel:'detrended discount rate r',ylabel:'sample standard deviation (divisor n)',xticks:[[.02,'2%'],[.04,'4%'],[.06,'6%'],[.08,'8%'],[.1,'10%'],[.12,'12%']],title:'sample SDs across discount rates'});
+        v.legend([['accent','transformed price / price sample SD'],['green','finite proxy / proxy sample SD'],['gold','selected proxy sample SD']]);
+        let st;
+        v.render(()=>{
+          const h=shillerHistorical(D_SHILLER,sample.value,rate.value,term.value),rates=Array.from({length:41},(_,i)=>.02+i*.0025);
+          const curve=rates.map(r=>[r,shillerHistorical(D_SHILLER,sample.value,r,term.value).target.sd]);
+          const top=Math.max(...h.p,...h.proxy);A.setView([h.year[0]-4,h.year.at(-1)+4],[0,top*1.12]);
+          A.path(h.year.map((y,i)=>[y,h.p[i]]),{color:'accent',width:2.2});A.path(h.year.map((y,i)=>[y,h.proxy[i]]),{color:'green',width:2.6});
+          B.setView([.016,.124],[0,Math.max(h.price.sd,...curve.map(q=>q[1]))*1.16]);
+          B.hline(h.price.sd,{color:'accent',width:2.1});B.path(curve,{color:'green',width:2.5});B.dot(rate.value,h.target.sd,{color:'gold',r:6});
+          st={h,curve,rate:rate.value,terminalRule:term.value,count:sample.value};
         });
-        v.readout(() => `With $r=${pct(rate.value, 2)}$: $\\mathrm{sd}(p)=${v.fix(sdp, 1)}$, $\\mathrm{sd}(p^*)=${v.fix(sds, 1)}$, ratio ${v.fix(ratio, 2)}; the rational-price bound needs $\\mathrm{sd}(p)\\le\\mathrm{sd}(p^*)$${ratio < 1 ? ', which fails: the price is ' + v.fix(1 / ratio, 1) + ' times as variable as it may be' : ''}.\n${req ? `Only a discount rate of about ${pct(req, 1)} or lower would make $p^*$ as variable as $p$ here, well below the average dividend yield of ${pct(meanOf(shillerDetrended(152).d) / meanOf(shillerDetrended(152).p), 1)}.` : 'No discount rate in the plotted range makes $p^*$ as variable as the price.'}\nDetrending by the fitted real growth of the price (${pct(shillerDetrended(end.value === '1979' ? 109 : 152).g, 2)} a year).`);
+        v.readout(()=>{const h=st.h;return `Later annual means, ${h.year[0]}–${h.year.at(-1)}: sample SD(price) ${v.fix(h.price.sd,4)}, SD(proxy) ${v.fix(h.target.sd,4)}, price/proxy ratio **${v.fix(h.ratio,4)}**. These are sample statistics, not the population variances in the theorem. Fitted real-price growth ${pct(h.annualGrowth,3)} per year; price is divided by exp(g t), the end-period dividend rate by exp(g(t+1)). Continuation K = ${v.fix(h.terminal,4)}; its weight at the first observation is ${v.fix(h.initialTerminalWeight,6)}. The final year's dividend is absorbed into K, not counted separately. Annual averages impose an illustrative timing alignment; they are not exact beginning-year prices or calendar-year cash payouts.`;});
       },
     },
     // ------------------------------------------------------------------ 5.7
