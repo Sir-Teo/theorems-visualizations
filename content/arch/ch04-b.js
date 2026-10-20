@@ -1,12 +1,10 @@
+import pantheonItem from './source-audit-pantheon-item.js';
 import poleniEvent from './source-audit-poleni-item.js';
 // Architecture & Structural Form — Chapter 4: Vaults and domes (items 4.6–4.11; 4.1–4.5 are in ch04.js)
 //
 // Sources checked (Oct 2026):
 //   Audited Poleni4.6: actual1748BookI §§76–89,TableAA,plateE; source facts distinguished from authored fixed-station illustration.
-//   Pantheon: Wikipedia "Pantheon, Rome" (read in Oct 2026): interior diameter 43.3 m = height to the oculus; oculus about 9 m across;
-//     dome thickness about 6.4 m at the base and 1.2 m at the oculus; aggregate from travertine and tufa/terracotta at the base to tufa and
-//     pumice at the top; five rings of 28 coffers; dedicated about 126 (Hadrian), construction possibly begun about 114. The stepped rings on the
-//     haunch, the density values and the coffer void fraction used below are illustrative, labelled as such.
+//   Audited Pantheon4.7: official owner and actualMark/Hutchinson1986pp24–34; authored spherical weight reduction, no real-building certificate.
 //   Brunelleschi: Wikipedia "Florence Cathedral" (read in Oct 2026): competition 19 Aug 1418; dome begun 1420, finished 1436 (cathedral consecrated
 //     25 Mar 1436), lantern 1446–1461; span about 44 m; double shell of brick; herringbone brickwork; four stone-and-iron chains plus a wooden chain.
 //     The "quinto acuto" profile (arcs of radius 4/5 of the span) is the usual description in the literature; it is not on the Wikipedia page
@@ -29,73 +27,7 @@ export default {
     // ───────────────────────────────────────────────────────────────────────────────────── 4.6
     poleniEvent,
     // ───────────────────────────────────────────────────────────────────────────────────── 4.7
-    {
-      num: '4.7',
-      kind: 'Concept',
-      name: 'The Pantheon: step rings, coffers and graded concrete',
-      statement: String.raw`The dome of the Pantheon in Rome (interior diameter about 43.3 m, equal to its height to the oculus) is a mass-concrete hemisphere, unreinforced, whose builders managed its weight in three ways: the thickness grows from about 1.2 m at the oculus to about 6.4 m at the base, with stepped rings on the outside of the haunch that add weight where it presses the springing inward and upward; the concrete is made with lighter and lighter aggregate with height, from travertine and tufa low down to tufa and pumice near the top; and sunken coffers in the inside surface remove material where it is least needed. Together they lighten the upper dome and keep the lower dome heavy, which reduces the hoop tension that a uniform shell would develop (arch-4.4).`,
-      idea: String.raw`The membrane forces of arch-4.3 depend on the weight of the cap above each parallel circle, and the hoop force at a given level is the difference between the weight carried by the meridians and the weight sitting on that level itself. Weight placed *high* on the dome (a heavy crown) raises the meridional thrust and therefore the hoop tension below; weight placed *low* (the step rings) loads the haunch directly and presses the parallels together. So lightening the top and loading the bottom both move the hoop force toward compression. The thick base is also its own buttress, so the thrust line stays inside the wall (arch-3.9). The oculus does the converse job: it removes the heaviest part of a closed crown.`,
-      caption: String.raw`The left panel is the dome in section (a schematic reconstruction from the published thicknesses; the step rings are schematic and their number is not claimed). Pick the **concrete** (as built: heavy low, light high; uniform heavy; uniform light), vary the density at the top and the coffer void fraction, and switch the stepped extrados on or off (the jumps in the stepped curve are where the thickness jumps: membrane theory cannot smooth them, a real shell would bend there). The right panel is the hoop force $N_\theta$ from the membrane theory with the true variable weight; the dashed curve is the same dome made of uniform heavy concrete with no coffers. The densities and the coffer fraction are illustrative, not measured.`,
-      deps: ['arch-4.4'],
-      see: ['arch-4.3', 'arch-3.9'],
-      tags: ['pantheon', 'roman concrete', 'dome'],
-      refs: ['Salvadori'],
-      scope: String.raw`Membrane model on the inner sphere of radius 21.65 m with the weight of the thick shell reduced to the inner surface (weight per inner area $\rho g\,[(a+t)^3-a^3]/(3a^2)$); the real dome has bending near the base and meridional cracks that this model ignores. The thickness law, the aggregate zones and the coffer zone (25°–75° from the crown) are schematic.`,
-      credit: 'built under the emperor Hadrian, dedicated about 126 CE (construction possibly begun about 114 CE)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pantheon,_Rome' },
-      viz(v) {
-        const a = 21.65, G = 9.81, phi0 = 12;
-        const mix = v.select('concrete', [{ value: 'graded', label: 'as built (graded)' }, { value: 'dense', label: 'uniform heavy' }, { value: 'light', label: 'uniform light' }], 'graded');
-        const rtop = v.slider('density near the oculus (t/m³)', 1.0, 2.0, 1.4, { step: 0.05 });
-        const rbase = v.slider('density at the base (t/m³)', 1.8, 2.5, 2.2, { step: 0.05 });
-        const coff = v.slider('coffer void fraction', 0, 0.35, 0.2, { step: 0.01 });
-        const steps = v.toggle('stepped rings on the extrados', false);
-        const A = v.stage({ x: [-31, 31], y: [-1, 30], equal: true, axes: false, height: 340, weight: 1.05, minWidth: 300, title: 'section of the dome (schematic)' });
-        const B = v.stage({ x: [10, 90], y: [-650, 650], axes: 'box', gutter: true, xlabel: 'angle from the crown, φ (°)', ylabel: 'hoop force N_θ (kN/m)', height: 340, weight: 1.15, minWidth: 320 });
-        let data = null;
-        const thick = (phi, st) => { const f = clamp((phi - 30) / 60, 0, 1), g = st ? Math.ceil(f * 6) / 6 : f; return 1.2 + 5.2 * g ** 1.0; };
-        const rho = (phi, kind, rt, rb) => (kind === 'dense' ? rb : kind === 'light' ? rt : rt + (rb - rt) * clamp((phi - 15) / 70, 0, 1));
-        const dome = (kind, cf, st) => {
-          const P = profile({ type: 'sphere', R: a, phi0, phi1: 90, n: 300 });
-          const wfn = (q) => { const phi = deg(q.psi), t = thick(phi, st), r = rho(phi, kind, rtop.value, rbase.value), vf = phi > 25 && phi < 75 ? 1 - cf : 1; return r * G * vf * ((a + t) ** 3 - a ** 3) / (3 * a * a); };
-          const m = membrane(P, wfn);
-          const mass = (P.reduce((s, q, i) => (i ? s + 0.5 * (wfn(q) * q.r + wfn(P[i - 1]) * P[i - 1].r) * 2 * Math.PI * (q.s - P[i - 1].s) : s), 0)) / G;
-          return { P, m, mass, wfn };
-        };
-        v.render(() => {
-          const d = data = { cur: dome(mix.value, coff.value, steps.value), ref: dome('dense', 0, steps.value) };
-          const P = d.cur.P;
-          for (let i = 1; i < P.length; i++) {
-            const p0 = P[i - 1], p1 = P[i], phi = deg((p0.psi + p1.psi) / 2), t0 = thick(deg(p0.psi), steps.value), t1 = thick(deg(p1.psi), steps.value);
-            const r = rho(phi, mix.value, rtop.value, rbase.value), al = 0.12 + 0.45 * ((r - 1.0) / 1.5);
-            const o = (p, t) => [p.r * (1 + t / a), (p.z + 0 ) * (1 + t / a)];
-            const z0 = 0;
-            for (const sg of [-1, 1]) A.poly([[sg * p0.r, p0.z + z0], [sg * p1.r, p1.z + z0], [sg * o(p1, t1)[0], o(p1, t1)[1]], [sg * o(p0, t0)[0], o(p0, t0)[1]]], { fill: 'muted', fillAlpha: clamp(al, 0.1, 0.7), stroke: false });
-          }
-          // inner and outer outlines; coffers as faint inner marks
-          for (const sg of [-1, 1]) {
-            A.path(P.map((q) => [sg * q.r, q.z]), { color: 'ink', width: 1.6 });
-            A.path(P.map((q) => { const t = thick(deg(q.psi), steps.value); return [sg * q.r * (1 + t / a), q.z * (1 + t / a)]; }), { color: 'ink', width: 1.6 });
-          }
-          if (coff.value > 0) for (let k = 0; k < 5; k++) { const ph = (25 + 10 * k + 5) * D2R; for (const sg of [-1, 1]) A.dot(sg * a * Math.sin(ph) * 0.97, a * Math.cos(ph) * 0.97, { r: 3 + 8 * coff.value, color: 'ink', hollow: true }); }
-          A.line(-30, 0, 30, 0, { color: 'faint', dash: [3, 4], width: 1 });
-          A.text('oculus', 0, a + 1, { size: 12, color: 'muted', align: 'center' });
-          // plot
-          const pts = (o) => o.P.map((q, i) => [deg(q.psi), o.m.Ntheta[i]]).filter((p) => p[0] >= 10);
-          B.hline(0, { color: 'faint', width: 1 });
-          B.path(pts(d.ref), { color: 'muted', width: 1.6, dash: [4, 4], alpha: 0.9 });
-          B.path(pts(d.cur), { color: 'red', width: 2.8 });
-          const z = hoopZero(P, d.cur.m.Ntheta); if (z !== null && deg(z) > 10) B.dot(deg(z), 0, { r: 5, color: 'green' });
-          v.legend([['red', 'this dome'], ['muted', 'uniform heavy, no coffers', { dash: true }], ['green', 'sign change']]);
-        });
-        v.readout(() => {
-          const { cur, ref } = data, tmax = (o) => Math.max(...o.m.Ntheta.map((x, i) => (deg(o.P[i].psi) >= 12 ? x : -1e9)));
-          const tc = Math.max(0, tmax(cur)), tr = Math.max(0, tmax(ref)), z = hoopZero(cur.P, cur.m.Ntheta);
-          return `Model dome mass: ${f2(cur.mass / 1000, 0)} kt (uniform heavy, no coffers: ${f2(ref.mass / 1000, 0)} kt, so ${f2(100 * (1 - cur.mass / ref.mass), 0)}% lighter; masses of this model are not checked against any survey). Peak membrane hoop tension at the base: **${f2(tc, 0)} kN/m** (${f2(tc / thick(90, steps.value), 0)} kPa on the section) against ${f2(tr, 0)} kN/m for the uniform heavy dome. Hoop force changes sign at ${z !== null && deg(z) > 12 ? `$\\varphi=${f2(deg(z), 1)}^\\circ$` : 'no angle (compression above the base band)'}. These are membrane estimates under invented densities, not a structural assessment of the Pantheon.`;
-        });
-      },
-    },
+    pantheonItem,
 
     // ───────────────────────────────────────────────────────────────────────────────────── 4.8
     {
