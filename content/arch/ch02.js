@@ -285,7 +285,7 @@ $$y(x) = \frac{4d}{L^2}\,x\,(L - x)$$
       kind: 'Proposition',
       name: 'Parabola versus catenary',
       statement: String.raw`A uniform chain hanging under its own weight takes the **catenary** $y = a\cosh(x/a)$, with $a = H/w$ (horizontal tension over weight per unit *length of chain*); a cable carrying a load uniform per unit *horizontal distance* takes the **parabola**. For the same span $L$ and sag $d$ the two curves are not equal, but they agree to first order in the sag ratio $d/L$: expanding $\cosh$ gives
-$$a\cosh\frac{x}{a} - a = \frac{x^2}{2a} + \frac{x^4}{24a^3} + \dots,$$
+$$\begin{aligned}&a\cosh\frac{x}{a} - a =\\&\quad\frac{x^2}{2a} + \frac{x^4}{24a^3} + \dots,\end{aligned}$$
 so the difference, relative to the sag, grows like $(d/L)^2$. At the sag ratios of suspension bridges ($d/L \approx 1/10$) it is a fraction of a percent of the sag; for a deep chain it is large. A cable carrying both kinds of load, $H y'' = w_{\text{deck}} + w_{\text{cable}}\sqrt{1 + y'^2}$, hangs between the two.`,
       idea: String.raw`For the chain the load on a piece of length $ds$ is $w\,ds = w\sqrt{1+y'^2}\,dx$, so $H y'' = w\sqrt{1+y'^2}$, whose solution is the hyperbolic cosine (mech-5.11). For the deck the $\sqrt{1+y'^2}$ is replaced by 1 and the solution is a parabola (2.2). Where the cable is nearly flat the square root is nearly 1, which is why the two coincide for shallow sags and part company when the ends get steep. Galileo compared the hanging chain with a parabola in 1638; Jungius showed they differ (published 1669), and Leibniz, Huygens and Johann Bernoulli found the catenary in 1691. Turned upside down, the catenary is the funicular of an arch carrying only its own weight (arch-3.1).
 
