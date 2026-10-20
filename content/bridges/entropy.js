@@ -15,7 +15,7 @@ export default {
     { id: 'thermo-5.17', note: String.raw`Landauer links the two accounts: resetting an unbiased unknown bit in the stated thermal model dissipates at least $kT\ln 2$ of heat. The bound is approached by a quasistatic protocol; a finite-time reset can cost more.` },
     { id: 'thermo-6.7', note: String.raw`Turned around, entropy becomes a rule of inference: assume nothing beyond what you know. Maximizing entropy at fixed mean energy gives the Boltzmann distribution.` },
     { id: 'info-2.1', note: String.raw`The relative entropy $D(p\|q)$ measures the cost of believing $q$ when the truth is $p$; it is never negative.` },
-    { id: 'info-3.14', note: String.raw`In a Markov chain the divergence to the stationary distribution can only shrink: the second law, recast for any random process.` },
+    { id: 'info-3.14', note: String.raw`Applying the same Markov transition rule to two distributions cannot increase their relative entropy. Taking one distribution to be stationary makes divergence to equilibrium nonincreasing; ordinary entropy need not rise.` },
     { id: 'deep-1.9', note: String.raw`A classifier trained with cross-entropy loss is minimizing a divergence from the data: the same quantity, now steering gradient descent.` },
   ],
 };
