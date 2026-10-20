@@ -28,3 +28,28 @@ For a capacity of **32768 indices**, the fixed CPU and GPU buffers are each **13
 Fixed capacity can remove the preliminary pass that counts a required maximum scratch size; it does not remove per-tile membership/box scans, filtered-index packing, uploads, state changes or synchronization. The current single reusable mask means tiles must finish independently; avoiding repeated per-tile scans would need another separately accounted representation. Updating an in-flight fixed buffer can stall or incur driver staging; no-orphan policy does not prove zero physical copies or acceptable CPU/GPU time.
 
 Evidence: `/tmp/atlas-new-map-protocol-peer/evidence/model.json`. This peer has not yet received the separately assigned immutable fixed-chunk assessment and therefore does **not** certify its unseen report or any renderer candidate. No implementation or performance acceptance follows from these read-only models.
+
+## Exact fixed-chunk assessment and closing recommendation
+
+I subsequently archived and read exact report commit **`48e79c1b0ea81ec21707ed685858e80d86ae6350`**, then its report-only lifetime clarification **`086fff19ecf21e54cbc3fb3e315c5d996df70b34`**. Archives are `/tmp/atlas-new-map-chunk-peer/archive` and `/tmp/atlas-new-map-chunk-peer/clarified`. Both boundaries modify report prose only; no renderer, index binding, shader, census helper or raw count input changes. Original scene-edge source bytes match the earlier assessed archive.
+
+**Endorse the clarified read-only fixed-chunk protocol as conditionally feasible.** Its explicit 32768-Uint32 capacity, fixed 131072-byte CPU and GPU stores, exact used-count final prefix, original first-point identity, once-clear MAX mask and single final style/tile color composite agree with the independent model and actual shader. No shader `gl_InstanceID` dependence or cross-instance mutable state defeats the partition argument. An empty final prefix must not upload/draw, and a full successful zero-retained scan may skip only the proven transparent style/tile operation; unsupported or interrupted scans do not prove emptiness. Stale R8 contents must never be sampled as an empty result.
+
+This removes the need to pre-count a maximum scratch size or allocate an original-full-group scratch buffer. It does not remove per-tile stream scans, bounds checks, packing, uploads, synchronization, active-model coordinate metadata or its construction/transfer peaks. It does not justify orphaning, hidden rings, all-tile/history lists, extra original CPU memberships, evicting required original geometry or increasing the logical cap. The new report correctly prioritizes original resource growth: optional x/y and scratch owners must be dropped **before** a later original reserve could evict prewarmed tiers, not merely checked once when scratch is first created. Fixed capacity alone does not settle metadata replacement/coexistence or physical staging/GC ownership.
+
+Independent recomputation from the immutable raw census confirms its arithmetic without a new browser run:
+
+| Frame | Original style/tile passes | Nonempty retained tiles | Coverage chunk draws at 32768 | Original logical owners + active x/y + fixed pair |
+| --- | ---: | ---: | ---: | ---: |
+| normal none | 18 | 10 | 10 | 59106264 |
+| normal selection | 3 | 3 | 3 | 59185028 |
+| oversized none | 117 | 70 | 70 | 62467668 |
+| oversized selection | 13 | 13 | 15 | 62648732 |
+
+The two selected oversized tiles needing a second chunk contain **38523 and 50271** retained instances. These are conditional operation/storage counts, not measured draw duration or allocation/fit acceptance. Logical headroom remains conditional on all additional owners, bookkeeping and transients fitting; the budget still does not bound physical driver/process memory.
+
+One ambiguity in the initial report was identified during this independent peer: it listed stale owner/frame identity among failures followed by current-tile old-buffer replay. The clarification resolves this explicitly. **Current-tile clear/full-original replay requires the complete matching original-frame snapshot and original group/model/buffer to remain live.** If any generation/control/model/group/coverage/view state expired, or previous composited tiles belong to another frame, abort the partial frame and restart a complete original frame from its normal clear with a new validated snapshot, or use the complete Canvas fallback. A usable context does not make an expired buffer valid. No color overlay may repair already composited pixels by drawing a complete style/frame again without the complete original restart.
+
+The independent utility additionally tests an explicit stale-tail cross-style counterexample, releases optional owners before actual original allocator growth without evicting prewarm, and distinguishes live current-tile replay from expired-owner complete fallback. The complete model suite passes against the clarified immutable archive, output `/tmp/atlas-new-map-chunk-peer/evidence/clarified-model.json`. No browser, renderer binding, timing or FPS job was run for these report reviews.
+
+**Closing recommendation:** the exact membership report `a83371d` and fixed-chunk assessment `48e79c1` with clarification `086fff1` are sound bounded feasibility evidence. The peer's clarification finding is resolved. A future implementation still requires a separately authorized exact stream/state/resource implementation and independent native same-scene pixel/lifecycle acceptance. These read-only reports do not establish a production optimization, physical 64MB ceiling or faster frames. CIRC and all prior immutable producer/peer boundaries are untouched.
