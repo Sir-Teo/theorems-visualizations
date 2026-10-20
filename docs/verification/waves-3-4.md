@@ -1041,3 +1041,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### ASTRO and DIST combined acceptance
 
 [ASTRO](astro-crossfield-prerequisite-peer.md)21genuineinputs leaves4short; [DIST](dist-independent-peer.md)25genuineinputs bringswritten26, with independently verifiedcap/mean/runtime/proof corrections and2defaultbehaviorregressions. Live343/20/17,28furthercollectionsmeetpublishedtarget/sourcequeue5. Aftercheckpoint69710ca; no mapperformanceclaim.
+
+### CG combined acceptance
+
+[Independent CG peer](cg-crossfield-prerequisite-peer.md) accepts20genuineinputs, fullrawrows and bounded LP/SoS/equivalentlayout qualifications. Reaches25written; live323/19/16,29furthercollectionsmeetpublishedtarget/sourcequeue5. Integratedfullcheckpointfollows; map60fpsopen.

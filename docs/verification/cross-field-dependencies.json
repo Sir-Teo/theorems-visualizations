@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 20,
-  "wholeSyllabusBelowTarget": 17,
+  "publishedBelowTarget": 19,
+  "wholeSyllabusBelowTarget": 16,
   "entries": [
     {
       "collection": "stat",
@@ -2369,12 +2369,19 @@
       "collection": "cg",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 5,
-      "writtenToKnown": 8,
-      "wholeSyllabus": 24,
-      "publishedShortfall": 20,
+      "writtenToWritten": 25,
+      "writtenToKnown": 28,
+      "wholeSyllabus": 44,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "cg-1.9",
+          "prerequisite": "pma-4.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "cg-1.2",
           "prerequisite": "rca-2.23",
@@ -2390,6 +2397,20 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "cg-1.3",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.4",
+          "prerequisite": "pma-10.45",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cg-1.5",
           "prerequisite": "top-10.1",
           "prerequisiteField": "math",
@@ -2397,11 +2418,53 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "cg-1.6",
+          "prerequisite": "ladr-3.65",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.9",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.10",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.10",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.11",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cg-2.12",
           "prerequisite": "top-10.9",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-2.12",
+          "prerequisite": "comb-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "cg-2.1",
@@ -2418,6 +2481,48 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "cg-2.3",
+          "prerequisite": "ladr-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.4",
+          "prerequisite": "pma-2.36",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.6",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.9",
+          "prerequisite": "ladr-6.17",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.1",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.3",
+          "prerequisite": "comb-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cg-3.5",
           "prerequisite": "top-10.1",
           "prerequisiteField": "math",
@@ -2425,8 +2530,43 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "cg-3.5",
+          "prerequisite": "graph-1.5.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.5",
+          "prerequisite": "graph-1.5.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cg-4.2",
           "prerequisite": "fa-3.24",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.2",
+          "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.4",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.5",
+          "prerequisite": "pma-4.16",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -18283,7 +18423,8 @@
       "c578ef8229f03739ccfa0dddccb5bda09f9929cd",
       "0026d445591cb294549063f7e85e7afdd6d003c5",
       "d28855802e3b9e69fca532ed0669d886c1547bba",
-      "e3c25b3511ef4d9de191b0e464084675820d0681"
+      "e3c25b3511ef4d9de191b0e464084675820d0681",
+      "36559492c902de1863658395b742a4adb663eb86"
     ],
     "excludedUnacceptedEdges": [
       {
