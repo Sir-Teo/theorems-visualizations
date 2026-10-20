@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "started": "2026-10-20",
+  "status": "active",
+  "objective": "Clear verification backlog, satisfy wave gates, then author Wave 5. Prioritize speed and quality.",
+  "baseCommit": "dad83c6",
+  "originalCheckout": "/Users/teodev/Developer/theorems-visualizations",
+  "policy": {
+    "originalCheckout": "Preserve pre-existing uncommitted drafts; do not edit original checkout.",
+    "integration": "Coordinator alone integrates commits, edits global ledgers and updates MASTER_PLAN.",
+    "acceptance": "Primary source comparison, independent calculations where applicable, native input and agent screenshot checks; retain all unsupported material claims as flags. Independent peer review before acceptance.",
+    "outputs": "Unique server ports or ephemeral listeners and worker-specific temporary evidence directories. Performance measurements run without competing browser jobs.",
+    "wave5": "Prepared only until verification gates pass; do not relabel pending work as complete."
+  },
+  "coordinator": {
+    "worktree": "/Users/teodev/.codex/worktrees/atlas-coordinator/theorems-visualizations",
+    "branch": "codex/atlas-coordinator",
+    "owns": [
+      "MASTER_PLAN.md",
+      "docs/verification/waves-3-4*",
+      "docs/verification/coordination.json",
+      "shared runtime and integration inventories"
+    ],
+    "current": [
+      "Reconcile backlog and wave gates",
+      "Review historical primary-source blockers in logic and numerical linear algebra"
+    ]
+  },
+  "workers": [
+    {
+      "agent": "worker_one",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-one/theorems-visualizations",
+      "branch": "codex/atlas-worker-one",
+      "collection": "music",
+      "owns": [
+        "content/music/**",
+        "collection-specific audit docs and tests"
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready"
+    },
+    {
+      "agent": "worker_two",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-two/theorems-visualizations",
+      "branch": "codex/atlas-worker-two",
+      "collection": "psych",
+      "owns": [
+        "content/psych/**",
+        "collection-specific audit docs and tests"
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready"
+    },
+    {
+      "agent": "worker_three",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-three/theorems-visualizations",
+      "branch": "codex/atlas-worker-three",
+      "collection": "soc",
+      "owns": [
+        "content/soc/**",
+        "collection-specific audit docs and tests"
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready"
+    }
+  ],
+  "acceptedBatches": [],
+  "remainingAtStart": {
+    "sourceReviews": 139,
+    "flagshipAccepted": 2,
+    "flagshipTarget": 100,
+    "crossFieldBelow25": 53,
+    "crossFieldTotal": 64,
+    "crossFieldShortfall": 855,
+    "fullMap60fps": "open",
+    "wave5": "prepared-not-started"
+  }
+}
