@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 35,
+  "remainingFlags": 34,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "arch": 6,
-    "ling": 3,
+    "ling": 2,
     "bighist": 15
   },
   "queue": [
@@ -322,21 +322,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Menzerath%27s_law"
-      }
-    },
-    {
-      "id": "ling-4.12",
-      "file": "content/ling/ch04-c.js",
-      "name": "Stylometry and authorship attribution",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Jurafsky & Martin ch. 4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/The_Federalist_Papers#Authorship"
       }
     },
     {
@@ -1381,7 +1366,8 @@
       "arch-3.13",
       "ling-3.10",
       "ling-4.13",
-      "bighist-3.8"
+      "bighist-3.8",
+      "ling-4.12"
     ]
   },
   "additionalFollowups": [
@@ -6445,6 +6431,11 @@
       "id": "arch-3.9",
       "status": "resolved",
       "note": "2026-10-20: Coordinator independently accepted13fafb8+a9fd590 after actual conditional sources, independent30vertex/dual math and fresh exactDOM/rawstate/nativepixels; docs/verification/arch-buttress-pier-followup.md."
+    },
+    {
+      "id": "ling-4.12",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent actual-source, recount, mathematical and fresh native review; docs/verification/ling-stylometry-peer.md."
     }
   ]
 }

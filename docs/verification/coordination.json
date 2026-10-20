@@ -20,7 +20,7 @@
       "docs/verification/waves-3-4*",
       "docs/verification/coordination.json",
       "shared runtime and integration inventories",
-      "Only music8.9\u20138.13 objects, isolated setclass files and corresponding syllabus rows",
+      "Only music8.9–8.13 objects, isolated setclass files and corresponding syllabus rows",
       "collection audit lanes: game and qchem",
       "content/bighist/** and collection-specific audit helpers/tests/reports"
     ],
@@ -328,7 +328,7 @@
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
@@ -950,6 +950,19 @@
         "b9f1e44",
         "3f23921"
       ]
+    },
+    {
+      "ids": [
+        "ling-4.12"
+      ],
+      "peer": "coordinator independent actual-source, recount, mathematical and fresh native review",
+      "reports": [
+        "docs/verification/ling-stylometry-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "60af20f"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -962,7 +975,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 35,
+  "currentPendingSourceReviews": 34,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",
@@ -1003,7 +1016,7 @@
     "limitations": [
       "Exact immutable accepted snapshot excludes ongoing BIGHIST3.8, ART Newton/Goethe, ARCH3.9/3.7 and LING Zipf drafts.",
       "The first unbuilt scratch attempt was stopped after missing generated data/atlas.css was identified; the final built-snapshot run passes all1930tests.",
-      "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
+      "Current source and explicit §7.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },
   "openStateFindings": [
