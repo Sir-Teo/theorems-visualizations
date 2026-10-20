@@ -20,7 +20,7 @@
       "docs/verification/waves-3-4*",
       "docs/verification/coordination.json",
       "shared runtime and integration inventories",
-      "content/music/ch08-b.js and only music8.9\u20138.13 syllabus rows",
+      "Only music8.9–8.13 objects, isolated setclass files and corresponding syllabus rows",
       "collection audit lanes: game and qchem"
     ],
     "current": [
@@ -36,7 +36,7 @@
       "branch": "codex/atlas-worker-one",
       "collection": "music",
       "owns": [
-        "content/music/** except coordinator music8.9\u20138.13 objects and their isolated setclass files",
+        "content/music/** except coordinator music8.9–8.13 objects and their isolated setclass files",
         "Only owned syllabus rows, collection-specific source reports and tests"
       ],
       "status": "working",
@@ -322,7 +322,7 @@
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
@@ -372,7 +372,10 @@
       "reports": [
         "music-adaptive-bp-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "7a6bc2e"
+      ]
     }
   ],
   "remainingAtStart": {
