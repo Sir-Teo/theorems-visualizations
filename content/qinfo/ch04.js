@@ -42,7 +42,7 @@ export default {
       kind: 'Theorem',
       name: 'Reversible computation with Toffoli gates',
       statement: String.raw`The **Toffoli gate** $\mathrm{CCX}:(a,b,c)\mapsto(a,b,c\oplus ab)$ is a permutation of the eight 3-bit strings, hence a unitary on three qubits. Together with ancillas fixed to $0$ or $1$ it computes NAND (set $c=1$) and fan-out (with $b=1$, $c=0$), so every Boolean function $f:\{0,1\}^n\to\{0,1\}^m$ is computed by a reversible circuit
-$$(x,\,0^m,\,0^k)\;\longmapsto\;(x,\,f(x),\,g(x)),$$
+$$\begin{gathered}(x,\,0^m,\,0^k)\\\;\longmapsto\;(x,\,f(x),\,g(x)),\end{gathered}$$
 where $g(x)$ is "garbage" left on the $k$ work bits. Copying $f(x)$ onto fresh bits and then running the circuit backwards (**compute–copy–uncompute**) returns $g(x)$ to $0$: $(x,0^m,0^k,0^m)\mapsto(x,0^m,0^k,f(x))$. A circuit of size $s$ becomes one of size $2s+m$, so reversibility costs only a constant factor.`,
       idea: String.raw`A gate that is a bijection on bit strings can be undone, so no information is erased. The Toffoli gate is a controlled-controlled-NOT: when both controls are 1 it flips the target, which is exactly an AND added into the target, and AND plus constants gives NAND, which is universal for classical logic (circ-4.9). The garbage $g(x)$ is the only obstacle to zero net erasure, and Bennett's trick removes it: after the answer is copied (CNOT is reversible, and the copy is the only thing that must survive), the first half is inverted gate by gate. By Landauer's principle (thermo-5.17) erasing one bit costs at least $k_BT\ln 2$; the clean circuit erases none, so that bound does not force any dissipation.
 

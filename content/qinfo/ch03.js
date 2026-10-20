@@ -22,7 +22,7 @@ export default {
       kind: 'Definition',
       name: 'Quantum circuit model',
       statement: String.raw`A **quantum circuit** on $n$ qubits is a time-ordered list of gates, each a unitary acting on one or two of the qubits, applied to the input $|0\rangle^{\otimes n}$ and usually ended by measurements in the computational basis. The state after the first $k$ gates is
-$$|\psi_k\rangle=U_k\cdots U_2U_1|0\ldots0\rangle\in\mathbb C^{2^n},$$
+$$\begin{gathered}|\psi_k\rangle=U_k\cdots U_2U_1|0\ldots0\rangle\\\in\mathbb C^{2^n},\end{gathered}$$
 where each $U_j$ is a one- or two-qubit gate tensored with identities on the other wires. A measurement of all wires then returns the bit string $x$ with probability $|\langle x|\psi_k\rangle|^2$ (the Born rule). The circuit's *size* is the number of gates and its *depth* the number of layers of gates that can run in parallel.`,
       idea: String.raw`A wire is a qubit and a box is a unitary, so the diagram is just a product of matrices written in time order: reading it left to right you multiply on the left each time. Gates on disjoint wires commute, which is why they can be drawn in one column. A state of $n$ qubits needs $2^n$ complex amplitudes (qm-14.1), so a classical simulation tracks exponentially many numbers; this is the sense in which the picture is expensive to simulate but cheap to run on hardware. Measurement collapses the state according to the projection postulate (qm-5.7).
 
@@ -256,7 +256,7 @@ The exponential factors use the finite-family independence definition prob-2.1.1
       name: 'BB84 quantum key distribution',
       statement: String.raw`Alice sends Bob $N$ qubits; qubit $i$ is $|0\rangle,|1\rangle$ or $|+\rangle,|-\rangle$ according to a random value bit $a_i$ and a random basis bit (rectilinear $+$ or diagonal $\times$). Bob measures each in an independently random basis. Over a public authenticated channel they announce the *bases* (not the values) and keep the positions where the bases agree, about $N/2$ of them (the **sifted key**); for those, in the absence of noise and eavesdropping, Bob's bit equals Alice's. They then publicly compare a random sample of $k$ sifted bits.
 
-An eavesdropper who intercepts a fraction $q$ of the qubits, measures each in a random basis and resends the result, causes an error in a sifted bit with probability $q/4$, so a sample of $k$ bits reveals her with probability $1-(1-q/4)^k$.`,
+An eavesdropper who independently intercepts each qubit with probability $q$, measures each in a random basis and resends the result, causes an error in a sifted bit with probability $q/4$, so a sample of $k$ bits reveals her with probability $1-(1-q/4)^k$.`,
       idea: String.raw`The four states form two bases that are *mutually unbiased*: a state of one basis measured in the other gives a fair coin (qinfo-1.5, qm-5.7). Eve does not know the basis, guesses it right half the time (no disturbance) and wrong half the time, in which case the resent state is random in the true basis and Bob, if he uses the true basis, errs half the time. So she disturbs a sifted bit with probability $\tfrac12\cdot\tfrac12=\tfrac14$. She cannot do better by copying, since that would violate no-cloning (qm-14.14); any information she gains costs a disturbance, which the comparison detects.
 
 For the intercept-resend sampling formula, interception is independently attempted with probability q on each signal, and the preparation, basis choices and shot outcomes are independent across positions. The sampled error events are then independent with probability $q/4$ per sifted bit. By prob-2.1.1a their complements intersect with probability $(1-q/4)^k$, giving the displayed detection probability. A fixed number of intercepted positions with sampling without replacement would require a different finite-population formula.`,
@@ -264,7 +264,7 @@ For the intercept-resend sampling formula, interception is independently attempt
       deps: ['qinfo-1.5', 'qm-14.14', 'prob-2.1.1a'],
       refs: ['Nielsen–Chuang §12.6.3'],
       tags: ['key distribution', 'cryptography', 'no-cloning'],
-      scope: String.raw`Ideal single-qubit source, lossless channel, perfect detectors, intercept–resend attack only; real systems add error correction, privacy amplification and decoy states, and the secret key is shorter than the sifted key.`,
+      scope: String.raw`Ideal single-qubit source, lossless channel, perfect detectors, independent per-signal intercept–resend attack only; real systems add error correction, privacy amplification and decoy states, and the secret key is shorter than the sifted key.`,
       credit: 'C. H. Bennett and G. Brassard, “Quantum cryptography: public key distribution and coin tossing”, Proc. IEEE Int. Conf. on Computers, Systems and Signal Processing, Bangalore, 175–179 (1984)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/BB84', arxiv: 'https://arxiv.org/abs/2003.06557' },
       viz(v) {
@@ -402,7 +402,7 @@ which equals $2\sqrt2$ for the undisturbed pair. If $S\le2$ the data are explain
       kind: 'Method',
       name: 'Entanglement distillation',
       statement: String.raw`Let two parties share many copies of a Werner state $\rho_F=F|\Phi^+\rangle\langle\Phi^+|+\tfrac{1-F}3(I-|\Phi^+\rangle\langle\Phi^+|)$ of fidelity $F>\tfrac12$ (such a state is entangled exactly when $F>\tfrac12$). In one round of the **recurrence protocol** they take two pairs, apply a CNOT on both sides (Alice's pair-1 qubit controls her pair-2 qubit, and likewise for Bob), measure the pair-2 qubits in the computational basis and keep pair 1 only when their results agree. With $g=\tfrac{1-F}3$ the kept pair is, after a random local twirl, again a Werner state, with
-$$F'=\frac{F^2+g^2}{F^2+2Fg+5g^2},\qquad p_{\rm succ}=F^2+2Fg+5g^2 .$$
+$$\begin{gathered}F'=\frac{F^2+g^2}{F^2+2Fg+5g^2},\qquad\\p_{\rm succ}=F^2+2Fg+5g^2 .\end{gathered}$$
 For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tfrac12$ it does not help.`,
       idea: String.raw`Local operations and classical communication cannot create entanglement, but they can concentrate it. The bilateral CNOT compares the two pairs' *parity* errors; the error bits that survive agreement are rarer than before, since two errors must coincide to go unnoticed ($F^2$ versus the single-error terms). Weighing the four Bell components $F,g,g,g$ gives the map above; its fixed points are $F=\tfrac14,\tfrac12,1$, with $\tfrac12$ unstable (the PPT threshold, qinfo-2.5). The cost is that two pairs make at most one, with probability $p_{\rm succ}<1$.
 

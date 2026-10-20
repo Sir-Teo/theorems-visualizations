@@ -133,7 +133,7 @@ export default {
       kind: 'Phenomenon',
       name: 'Phase kickback',
       statement: String.raw`Let $U$ be a unitary with eigenvector $U|u\rangle=e^{i\varphi}|u\rangle$. For the controlled gate $\Lambda(U)=|0\rangle\langle0|\otimes I+|1\rangle\langle1|\otimes U$,
-$$\Lambda(U)\bigl(|c\rangle\otimes|u\rangle\bigr)=\bigl(\Lambda_\varphi|c\rangle\bigr)\otimes|u\rangle,\qquad \Lambda_\varphi=\mathrm{diag}(1,e^{i\varphi}),$$
+$$\begin{gathered}\Lambda(U)\bigl(|c\rangle\otimes|u\rangle\bigr)\\=\bigl(\Lambda_\varphi|c\rangle\bigr)\otimes|u\rangle,\qquad\\\Lambda_\varphi=\mathrm{diag}(1,e^{i\varphi}),\end{gathered}$$
 so the **target is unchanged and the eigenphase appears on the control**: for the control $|+\rangle$ the Bloch vector turns about $Z$ by $\varphi$. For a pure target $|\psi\rangle$ and control $|+\rangle$, the control coherence is $z=\langle\psi|U|\psi\rangle$. Entanglement occurs exactly when $|z|<1$; a target superposition across different eigenvalues has this property, but equal eigenphases or a single occupied eigenspace do not. In particular CNOT with target $|-\rangle$ acts on the control as $Z$.`,
       idea: String.raw`This is the linearity of the controlled gate on a product with an eigenvector: the branch where the control is $|1\rangle$ picks up the scalar $e^{i\varphi}$ and the branch $|0\rangle$ does not, and a scalar on one branch is a relative phase between the branches of the *control* even though it was produced by acting on the target. The phase is invisible to a measurement of the target alone but is read out by interfering the control (a Hadamard, qinfo-1.3). Phase estimation and related algorithms exploit this effect.
 
@@ -177,7 +177,7 @@ The equality case in Cauchy-Schwarz ladr-6.14 explains the pure-target boundary.
       kind: 'Definition',
       name: 'Quantum oracles',
       statement: String.raw`A Boolean function $f:\{0,1\}^n\to\{0,1\}$ is given to a quantum algorithm as an **oracle**: the unitary
-$$O_f|x\rangle|y\rangle=|x\rangle|y\oplus f(x)\rangle\qquad(x\in\{0,1\}^n,\ y\in\{0,1\}),$$
+$$\begin{gathered}O_f|x\rangle|y\rangle=|x\rangle|y\oplus f(x)\rangle\\\qquad(x\in\{0,1\}^n,\ y\in\{0,1\}),\end{gathered}$$
 a permutation of the $2^{n+1}$ basis states (so it is unitary and its own inverse). Feeding the target $|-\rangle=(|0\rangle-|1\rangle)/\sqrt2$ turns the bit oracle into a **phase oracle**:
 $$O_f|x\rangle|-\rangle=(-1)^{f(x)}|x\rangle|-\rangle .$$
 One call applied to a superposition $\sum_x\alpha_x|x\rangle$ produces $\sum_x\alpha_x|x\rangle|y\oplus f(x)\rangle$ coherently. A measurement does not reveal all values of $f$ from this one query. Query complexity counts calls to $O_f$; the gate cost of building $O_f$ from $f$'s circuit (qinfo-4.1) is a separate matter.`,
@@ -237,9 +237,11 @@ For every Boolean f, applying the bit oracle twice restores y because XOR with t
       kind: 'Algorithm',
       name: 'Hamiltonian simulation by Trotterization',
       statement: String.raw`Let $H=\sum_{j=1}^m H_j$ be a finite-dimensional Hermitian Hamiltonian, $t\ge0$, and integer $r\ge1$; use the operator norm and $\hbar=1$. Then
-$$\left\|e^{-iHt}-\left(e^{-iH_1t/r}\cdots e^{-iH_mt/r}\right)^r\right\|\le\frac{t^2}{2r}\sum_{j<k}\|[H_j,H_k]\|.$$
+Write $P_1(\tau)=e^{-iH_1\tau}\cdots e^{-iH_m\tau}$. Then
+$$\begin{gathered}\left\|e^{-iHt}-P_1(t/r)^r\right\|\\\le\frac{t^2}{2r}\sum_{j<k}\|[H_j,H_k]\|.\end{gathered}$$
 For two terms $H=A+B$, the symmetric step $S_2(\tau)=e^{-iA\tau/2}e^{-iB\tau}e^{-iA\tau/2}$ satisfies
-$$\|S_2(t/r)^r-e^{-iHt}\|\le\frac{t^3}{r^2}\left(\frac{\|[B,[B,A]]\|}{12}+\frac{\|[A,[A,B]]\|}{24}\right).$$
+Writing $C_B=\|[B,[B,A]]\|$ and $C_A=\|[A,[A,B]]\|$, this bound is
+$$\begin{gathered}\|S_2(t/r)^r-e^{-iHt}\|\\\le\frac{t^3}{r^2}\left(\frac{C_B}{12}+\frac{C_A}{24}\right).\end{gathered}$$
 These bounds hold for every normalized input state. For a polynomial number of bounded-norm, constant-locality terms whose exponentials are efficiently implementable, they give a polynomial gate cost in $n,t,1/\varepsilon$; locality alone without bounds on coefficients and input description is not enough.`,
       idea: String.raw`Variation of parameters expresses the difference between a two-term product step and exact evolution as a double integral of unitary conjugates of $[A,B]$. Unitary invariance of the norm bounds it by $\tau^2\|[A,B]\|/2$, with no discarded BCH tail. Telescoping $r$ unitary steps gives $r$ times the one-step bound; induction over the terms gives the displayed sum. For the symmetric step the first-order defect cancels and a triple integral gives the two nested-commutator coefficients above. The BCH series explains the local orders heuristically, while the integral argument supplies a global bound.
 
