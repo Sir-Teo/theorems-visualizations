@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 21,
+  "remainingFlags": 20,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -18,7 +18,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "arch": 2,
+    "arch": 1,
     "bighist": 12
   },
   "queue": [
@@ -150,21 +150,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
-      }
-    },
-    {
-      "id": "arch-4.9",
-      "file": "content/arch/ch04-b.js",
-      "name": "Pendentives: a dome on a square",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Salvadori"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Pendentive"
       }
     },
     {
@@ -1176,7 +1161,8 @@
       "geol-4.10",
       "arch-4.7",
       "arch-4.8",
-      "bighist-3.7"
+      "bighist-3.7",
+      "arch-4.9"
     ]
   },
   "additionalFollowups": [
@@ -6300,6 +6286,11 @@
       "id": "bighist-3.7",
       "status": "resolved",
       "note": "2026-10-20: worker three independently read actual source versions and pixels, verified corrected primary URL, regenerated 80-digit reference, checked independent RK4/Simpson identities, fresh 320px native themes and own output pixels without remaining findings; docs/verification/bighist-cambrian-peer.md."
+    },
+    {
+      "id": "arch-4.9",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently read original French text and scans, checked analytic surface/plan geometry and independent polar quadrature, regenerated 80-digit reference, fresh 320px native/projection/camera matrices and own source/output pixels without findings; docs/verification/arch-pendentives-peer.md."
     }
   ]
 }

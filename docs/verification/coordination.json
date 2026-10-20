@@ -1138,6 +1138,20 @@
         "5dc9da6",
         "4c558b8"
       ]
+    },
+    {
+      "ids": [
+        "arch-4.9"
+      ],
+      "peer": "worker three independently read original French text and scans, checked analytic surface/plan geometry and independent polar quadrature, regenerated 80-digit reference, fresh 320px native/projection/camera matrices and own source/output pixels without findings",
+      "reports": [
+        "docs/verification/arch-pendentives-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "22ac03ad84002487648c94e90bd59c64ef4710bf",
+        "0b0636a"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1150,7 +1164,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 21,
+  "currentPendingSourceReviews": 20,
   "latestCheckpoint": {
     "acceptedContentCommit": "5c65e26",
     "report": "docs/verification/checkpoint-5c65e26.md",
