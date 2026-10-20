@@ -12,6 +12,8 @@ import {
   hurwitz, lesmis, deg as degOf,
 } from './ch04.shared.js';
 
+import { attachmentRng, finiteAttachmentShift, growAttachmentMixture, growNonlinearTree, attachmentCounts, attachmentSurvival, attachmentStationary, approximateAttachmentTail, attachmentLogView } from './source-audit-attachment.js';
+
 const SIGN = (x) => (x < 0 ? '−' : '');
 
 export default {
@@ -157,48 +159,43 @@ Lognormal fit on the same tail: $\mu=${v.fix(ln.mu, 2)}$, $\sigma=${v.fix(ln.sig
     {
       num: '4.9',
       kind: 'Model',
-      name: 'Preferential attachment (Price, Barabási–Albert)',
-      statement: String.raw`**Growth with preferential attachment** builds a network one vertex at a time. Each newcomer brings $m$ links, and each link goes to an existing vertex $i$ with probability proportional to its current degree $k_i$ (the "rich get richer", "cumulative advantage", or "Matthew effect").
-
-The idea has an old pedigree: Yule (1925) for species and genera, Simon (1955) for word frequencies and city sizes, de Solla Price (1965, 1976) for citations to papers, Barabási and Albert (1999) for the Web and other networks. It produces a **heavy-tailed degree distribution** with hubs, and the oldest vertices are the biggest.
-
-Attachment probability must be **linear** in degree for a power law: with probability $\propto k^{\gamma}$ for $\gamma<1$ the tail is a stretched exponential, and for $\gamma>1$ a single hub ends up linked to almost everyone.`,
-      idea: String.raw`Two ingredients, both necessary: *growth* (older vertices have had more time to collect links) and *preference* (a vertex with many links is more likely to gain another). Writing $k_i(t)$ for the degree, linear preference gives $\mathrm d k/\mathrm dt=k/2t$ per link, so $k_i(t)\propto (t/t_i)^{1/2}$: degree is a power of age. Nonlinear attachment $\propto k^\gamma$ changes the feedback: if $\gamma<1$ the advantage saturates; if $\gamma>1$ it compounds, and the first vertex to get ahead keeps its lead (a "gel" phase).`,
-      caption: String.raw`A model: a tree ($m=1$) grows to 20 000 vertices with attachment $\propto k^{\gamma}$. **Left**: the degree survival function on log–log axes against the linear case $\gamma=1$ (dashed). **Right**: the degrees of the first 40 vertices in order of arrival: with $\gamma=1$ old vertices are big but not enormous; for $\gamma>1$ the very first ones swallow the network. Slide $\gamma$ from 0 to 2.`,
-      scope: String.raw`The exponent-3 tail is for the linear model with $m$ links per newcomer and unlimited growth; real citation, web and collaboration networks add ageing, fitness, deletion and other effects (and 4.11 discusses how often the power law is really supported).`,
-      deps: ['soc-4.7', 'stoch-12.10'],
-      refs: ['E&K §18.3', 'Newman ch. 13'],
+      name: 'Preferential attachment and nonlinear kernels',
+      statement: String.raw`In this growing-tree model, start with two vertices joined by one edge. Each new vertex adds one edge to an earlier vertex $i$, chosen with probability $\Pi_i=k_i^\gamma/\sum_j k_j^\gamma$, using degrees before the new edge. The graph remains a tree: at $N$ vertices it has $N-1$ edges and degree sum $2(N-1)$. Linear attachment, $\gamma=1$, favors vertices that already have many links. In the large-network stationary limit its degree probabilities are $P(k)=4/[k(k+1)(k+2)]$ and $P(K\ge k)=2/[k(k+1)]$, not exact finite-sample frequencies.`,
+      idea: String.raw`For this homogeneous kernel family, Krapivsky, Redner and Leyvraz derive a geometric degree law at $\gamma=0$, stretched-exponential asymptotic tails for $0<\gamma<1$, the exponent-3 law at $\gamma=1$, and a dominant hub for $\gamma>1$ in the growing-network limit. Near 1 the finite distributions can be hard to distinguish. More general **asymptotically linear** kernels can have different power-law exponents, so exact proportionality to $k$ is not universally necessary. The continuum age equation $\mathrm dk/\mathrm dt\approx k/(2t)$ gives $k_i(t)\approx(t/t_i)^{1/2}$ for a new degree-1 vertex; it is an approximation, not a rule that the oldest vertex must win every realization.`,
+      caption: String.raw`An authored seeded simulation, not observed social-network data. Left: the complete empirical degree survival function for the chosen kernel, the same-size linear-kernel realization, and the limiting linear formula evaluated over the displayed degree range. Right: actual degrees of the first 40 vertices; the first two are equally old seed vertices. Change the kernel or network size and use **New tree** to inspect another realization. A finite plot or a large hub does not certify an asymptotic tail law.`,
+      scope: String.raw`One undirected edge per newcomer; no parallel edges, deletion, fitness or explicit aging. The initial edge and endpoint timing are declared simulation conventions. The displayed nonlinear results concern the homogeneous family $k^\gamma$ and its large-network analysis, not all possible growth mechanisms or real networks. The reference degree law is stationary and infinite-size, while every plotted frequency is computed from the actual finite tree.`,
+      deps: ['soc-4.7'],
+      refs: ['Barabási & Albert, Emergence of Scaling in Random Networks (Science 1999), model and continuum argument, p. 511', 'Krapivsky, Redner & Leyvraz, Connectivity of Growing Random Networks, arXiv:cond-mat/0005139v2 (2000), Eqs. 1–8 and 13–17'],
+      credit: 'Model and analysis: Barabási & Albert, 1999; Krapivsky, Redner & Leyvraz, 2000; finite simulation conventions stated here',
+      links: { original: 'https://barabasi.com/media/Emergence-Barabasi-1999_gN74Tws.pdf', analysis: 'https://arxiv.org/abs/cond-mat/0005139v2' },
       tags: ['preferential attachment', 'growth', 'networks'],
-      credit: 'Yule, 1925; Simon, 1955; de Solla Price, 1965 and 1976; Barabási & Albert, 1999',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Preferential_attachment' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const gS = v.slider('kernel exponent $\\gamma$', 0, 2, 1, { step: 0.05 });
-        const n = 20000;
-        const DS = v.stage({ x: [1, 2e4], y: [1 / n / 1.5, 1.2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'degree $k$', ylabel: '$P(\\mathrm{degree}\\ge k)$', title: 'survival function of the degree', minWidth: 300, weight: 1.1 });
-        const AS = v.stage({ x: [0, 41], y: [0, 100], axes: 'box', gutter: true, height: 340, xlabel: 'order of arrival', ylabel: 'degree', title: 'the first 40 vertices', minWidth: 280, weight: 1 });
-        const cache = {};
-        const run = (g) => { const key = g.toFixed(2); return (cache[key] ??= nonlinearPA(n, g, rng32(5 + Math.round(g * 20)))); };
-        const surv = (deg) => { const c = new Map(); for (const k of deg) c.set(k, (c.get(k) || 0) + 1); const ks = [...c.keys()].sort((a, b) => a - b); let acc = deg.length; return ks.map((k) => { const p = [k, acc / deg.length]; acc -= c.get(k); return p; }); };
-        let st = null;
+        const gamma = v.slider('kernel exponent $\\gamma$', 0, 2, 1, { step: .05 });
+        const size = v.select('vertices', [{ value: 1000, label: '1,000' }, { value: 5000, label: '5,000' }, { value: 20000, label: '20,000' }], 20000);
+        let seed = 17, cache = new Map();
+        const run = (g, n) => { const key = `${seed}|${g}|${n}`; if (!cache.has(key)) { if (cache.size >= 8) cache.delete(cache.keys().next().value); cache.set(key, growNonlinearTree(n, g, attachmentRng(seed))); } return cache.get(key); };
+        v.button('New tree', () => { seed = (seed + 1) % 1000000; cache.clear(); });
+        v.shareState('tree seed', { get: () => seed, validate: x => Number.isInteger(x) && x >= 0 && x < 1000000, set: x => { seed = x; cache.clear(); } });
+        const DS = v.stage({ x: [.7, 100], y: [.0001, 1.5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'degree k', ylabel: 'P(K ≥ k)', title: 'Finite survival and a limiting reference', minWidth: 300, weight: 1.1 });
+        const AS = v.stage({ x: [0, 41], y: [-1, 100], axes: 'box', gutter: true, height: 340, xlabel: 'vertex index (two seeds first)', ylabel: 'degree', title: 'Degrees of the first 40 vertices', minWidth: 280, weight: 1 });
+        let st;
         v.render(() => {
-          const g = gS.value, d = run(g), d1 = run(1), S = surv(d), S1 = surv(d1);
-          DS.path(S1, { color: 'ink', width: 1.6, dash: [6, 4] });
-          DS.dots(S, { r: 3, color: 'accent' });
-          DS.fn((k) => 2 / (k * (k + 1)), { color: 'green', width: 1.2, dash: [2, 3], domain: [1, 2e4] });
-          let mx = 0, imax = 0; for (let i = 0; i < n; i++) if (d[i] > mx) { mx = d[i]; imax = i; }
-          const first = Array.from(d.slice(0, 40));
-          AS.setView([0, 41], [0, Math.max(10, ...first) * 1.15]);
-          first.forEach((k, i) => AS.rect(i + 0.6, 0, i + 1.4, k, { fill: i === imax ? 'gold' : 'accent', fillAlpha: 0.7, stroke: false }));
-          // fitted slope of the tail on log–log axes from the survival function between degree 4 and the 1/200 quantile
-          const t = S.filter(([k, p]) => k >= 4 && p * n >= 10); const ls = t.length > 4 ? (() => { const xs = t.map((p) => Math.log(p[0])), ys = t.map((p) => Math.log(p[1])); const m1 = xs.reduce((a, b) => a + b) / xs.length, m2 = ys.reduce((a, b) => a + b) / ys.length; let sxy = 0, sxx = 0; xs.forEach((x, i) => { sxy += (x - m1) * (ys[i] - m2); sxx += (x - m1) ** 2; }); return sxy / sxx; })() : NaN;
-          st = { g, mx, imax, share: mx / (2 * (n - 1)), slope: ls };
+          const n = +size.value, g = gamma.value, graph = run(g, n), linear = run(1, n), S = attachmentSurvival(graph.degrees), L = attachmentSurvival(linear.degrees);
+          const K = Math.max(S.at(-1)[0], L.at(-1)[0]), theory = Array.from({ length: K }, (_, i) => [i + 1, 2 / ((i + 1) * (i + 2))]);
+          const ymin = Math.min(1 / n, theory.at(-1)[1]);
+          DS.setView(attachmentLogView(1, K), attachmentLogView(ymin, 1));
+          DS.path(L, { color: 'ink', width: 1.6, dash: [6, 4] }); DS.path(theory, { color: 'green', width: 1.5, dash: [2, 3] }); DS.dots(S, { color: 'accent', r: 3 });
+          const first = Array.from(graph.degrees.slice(0, 40)); let maximum = 0, winner = 0, degreeSum = 0;
+          graph.degrees.forEach((k, i) => { degreeSum += k; if (k > maximum) { maximum = k; winner = i; } });
+          AS.setView([0, 41], [-Math.max(...first) * .04, Math.max(...first) * 1.15]);
+          first.forEach((k, i) => AS.rect(i + .65, 0, i + 1.35, k, { fill: i === winner ? 'gold' : 'accent', fillAlpha: .7, stroke: false }));
+          st = { g, n, seed, graph, linear, S, L, theory, first, maximum, winner, degreeSum };
         });
-        v.legend([['accent', 'chosen kernel', { dot: true }], ['ink', 'linear kernel $\\gamma=1$', { dash: true }], ['green', 'exact linear law, $P(\\ge k)=2/(k(k+1))$', { dash: true }]]);
+        v.legend([['accent', 'chosen finite tree', { dot: true }], ['ink', 'finite linear tree', { dash: true }], ['green', 'limiting linear survival', { dash: true }]]);
         v.readout(() => {
-          if (!st) return '';
-          const { g, mx, imax, share, slope } = st;
-          return String.raw`$\gamma=${v.fix(g, 2)}$ · largest degree **${mx}** held by vertex number ${imax + 1} of ${n.toLocaleString('en-US')} · it touches **${v.fix(100 * share, 1)}%** of all edge ends · tail slope of the survival function (degrees ≥ 4) ${isFinite(slope) ? v.fix(slope, 2) : '—'} (linear model: $-2$, i.e. exponent 3)`;
+          const { g, n, seed, graph, maximum, winner, degreeSum } = st;
+          return String.raw`$\gamma=${v.fix(g, 2)}$, realization seed ${seed}: **${n.toLocaleString('en-US')} vertices**, ${graph.edges.toLocaleString('en-US')} edges; degree sum **${degreeSum.toLocaleString('en-US')} = 2(N-1)**. Largest degree **${maximum}**, vertex index ${winner + 1}: ${v.fix(100 * maximum / (n - 1), 2)}% of other vertices are its neighbors, and ${v.fix(100 * maximum / degreeSum, 2)}% of edge ends belong to it. This is one finite realization; its largest hub need not be the oldest vertex. The green line is an infinite-size stationary reference, not an exact sample fit or a statistical power-law verdict.`;
         });
       },
     },
@@ -207,43 +204,49 @@ Attachment probability must be **linear** in degree for a power law: with probab
       num: '4.10',
       kind: 'Theorem',
       name: 'Preferential attachment gives degree exponent 3',
-      statement: String.raw`In the growth model where each newcomer adds $m$ links and attaches to vertex $i$ with probability proportional to $k_i+a$ (here $a>-m$ is an "initial attractiveness"; $a=0$ is pure degree-proportional attachment), the stationary degree distribution of the rate equation is
-$$P(m)=\frac1{1+\beta(m+a)},\qquad P(k)=P(k-1)\,\frac{\beta\,(k-1+a)}{1+\beta\,(k+a)}\quad(k>m),\qquad \beta=\frac{m}{2m+a},$$
-whose tail is the power law
-$$P(k)\sim k^{-\gamma},\qquad \gamma=3+\frac am .$$
-For $a=0$: $P(k)=\dfrac{2m(m+1)}{k(k+1)(k+2)}\sim 2m^2k^{-3}$, **exponent exactly 3, independent of $m$**. Mixing in uniform attachment (probability $p$ for a uniformly random target) is the same as $a=2mp/(1-p)$, giving $\gamma=3+2p/(1-p)$, larger than 3: random attachment thins the hubs.`,
-      idea: String.raw`Let $N_k(t)$ be the number of vertices of degree $k$ at time $t$. A degree-$k$ vertex gains a link in one step with probability $m(k+a)/\big((2m+a)t\big)$, since the total weight is $\sum_i(k_i+a)=(2m+a)t$. Balancing the flow into and out of the class $k$ at stationarity, $N_k=t\,P(k)$ gives $P(k)=\beta[(k-1+a)P(k-1)-(k+a)P(k)]$, which is the recursion above (the class $k=m$ is only fed by newcomers). The ratio $P(k)/P(k-1)\approx1-(3+a/m)/k$ makes $P(k)$ decay like $k^{-(3+a/m)}$. This is the argument that Dorogovtsev–Mendes–Samukhin and Krapivsky–Redner–Leyvraz gave in 2000; Bollobás, Riordan, Spencer and Tusnády proved the exact law rigorously for a precise version of the model.`,
-      caption: String.raw`Networks of $10^3$, $10^4$, $10^5$ vertices are grown with the chosen $m$ and a fraction $p$ of uniformly random attachments. Dots: the simulated degree distribution (log-binned). Green curve: the recursion above, with no fitted parameter. Dashed: the asymptotic power law $k^{-\gamma}$. The tail exponent estimate (maximum likelihood on the discrete tail) tends to the prediction as the network grows; raise $p$ and the tail steepens.`,
-      scope: String.raw`Rate-equation (mean-field) result for the model with *independent* choices of the $m$ targets; the simulation chooses $m$ distinct targets, a small difference for $m\ge2$. The exponent 3 is a property of this model; real networks measured with exponents between 2 and 3 need extra mechanisms.`,
+      statement: String.raw`For the stationary rate equation of affine attachment $k+a$, with integer $m\ge1$, $a>-m$ and integer $k\ge m$, put $\beta=m/(2m+a)$. Its probability law obeys $P(m)=[1+\beta(m+a)]^{-1}$ and
+$$P(k)=P(k-1)\frac{\beta(k-1+a)}{1+\beta(k+a)}\quad(k>m).$$
+Its tail exponent is $\eta=3+a/m$. In particular, when $a=0$,
+$$P(k)=\frac{2m(m+1)}{k(k+1)(k+2)}\sim 2m(m+1)k^{-3}.$$
+The coefficient is $2m(m+1)$ for fixed $m$; $2m^2$ is the different continuum approximation. These are stationary large-network laws, not exact degree counts at a finite growth step.`,
+      idea: String.raw`The rate balance is $P(k)+\beta(k+a)P(k)-\beta(k-1+a)P(k-1)=\mathbf1_{k=m}$. The ratio of successive probabilities is $1-(3+a/m)/k+O(k^{-2})$, giving the exponent. In the finite simulation below, the seed is a clique of $m+1$ vertices. With $N$ old vertices its degree sum is $D_N=2mN-m(m+1)$. Each newcomer makes $m$ independent endpoint choices with replacement, all using this pre-arrival graph; degrees update after all choices. A target is uniform with probability $p$, otherwise degree-weighted. For $p<1$ this is exactly affine with $a_N=pD_N/[(1-p)N]$, tending to $a_\infty=2mp/(1-p)$. The limiting stationary equation therefore has exponent $3+a_\infty/m$; the finite process is not exactly one constant-shift process. For $p=1$ targets are purely uniform: the separate stationary law is geometric, $P(k)=(m+1)^{-1}[m/(m+1)]^{k-m}$.`,
+      caption: String.raw`Blue dots are the actual finite degree frequencies $n_k/N$, without binning or discarded vertices. Green is the limiting stationary recurrence evaluated at every displayed integer degree. The dashed line is only a reference slope with the predicted exponent, anchored to the recurrence at a declared degree; it is not a fitted curve or an asserted asymptotic amplitude. At $p=1$ that power-law guide is absent and the green law is geometric. **New network** changes the seeded realization. Adjust the diagnostic threshold to inspect small or empty tails. Parallel edges are retained and counted, so a vertex's degree counts incidences rather than distinct neighbors.`,
+      scope: String.raw`The theorem concerns the declared stationary rate equation. Finite simulation: a clique seed, $m$ frozen-probability draws with replacement per newcomer, then all updates; no self-loops after the seed and parallel links allowed. Dorogovtsev–Mendes–Samukhin's actual v1 preprint uses directed incoming degree $q$ and attractiveness $A^{(0)}+q$. The stationary correspondence is $q=k-m$, $A^{(0)}=m+a_\infty$, hence their $2+A^{(0)}/m=3+a_\infty/m$; our seed differs and its finite correction is displayed. The half-integer tail estimate is Clauset–Shalizi–Newman Eq. 3.7's approximation, not the exact discrete zeta MLE or a goodness-of-fit test. A finite sample and this diagnostic do not prove a power law or guarantee that estimated exponents move monotonically toward the limiting value.`,
       deps: ['soc-4.9'],
-      refs: ['E&K §18.7', 'Newman ch. 13'],
+      refs: ['Dorogovtsev, Mendes & Samukhin, Structure of Growing Networks: Exact Solution of the Barabási–Albert’s Model, arXiv:cond-mat/0004434v1 (2000), Eqs. 1–13', 'Clauset, Shalizi & Newman, Power-law distributions in empirical data (2009 author version), §3.1, Eqs. 3.3–3.7'],
+      credit: 'Stationary analysis: Dorogovtsev, Mendes & Samukhin, actual 2000 v1 preprint; finite mixture and seed conventions stated here',
+      links: { source: 'https://arxiv.org/abs/cond-mat/0004434v1', estimator: 'https://snap.stanford.edu/class/cs224w-readings/clauset09powerlaw.pdf' },
       tags: ['preferential attachment', 'power laws', 'rate equation'],
-      credit: 'Barabási & Albert, 1999 (simulation, continuum argument); Dorogovtsev–Mendes–Samukhin and Krapivsky–Redner–Leyvraz, 2000 (rate equation); Bollobás et al., 2001 (proof)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const mS = v.slider('links per newcomer $m$', 1, 6, 3, { int: true, step: 1 });
-        const pS = v.slider('share of random attachments $p$', 0, 0.8, 0, { step: 0.05 });
-        const nS = v.select('network size', [{ value: 3, label: '$10^3$' }, { value: 4, label: '$10^4$' }, { value: 5, label: '$10^5$' }], 5);
-        const DS = v.stage({ x: [1, 2000], y: [1e-9, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 360, xlabel: 'degree $k$', ylabel: '$P(k)$', title: 'degree distribution', minWidth: 320, weight: 1.4 });
-        const cache = {};
-        const grow = (m, p, e) => { const key = `${m}|${p.toFixed(2)}|${e}`; return (cache[key] ??= baMix(Math.pow(10, e), m, p, rng32(m * 100 + e * 7 + Math.round(p * 100))).deg); };
-        let st = null;
+        const mS = v.slider('links per newcomer $m$', 1, 6, 3, { int: true });
+        const pS = v.slider('uniform-target probability $p$', 0, 1, 0, { step: .05 });
+        const kS = v.slider('diagnostic threshold $k_{\\min}$', 6, 2000, 12, { int: true, log: true });
+        const size = v.select('network size', [{ value: 1000, label: '1,000' }, { value: 10000, label: '10,000' }, { value: 100000, label: '100,000' }], 10000);
+        let seed = 23, cache = new Map();
+        const run = (n, m, p) => { const key = `${seed}|${n}|${m}|${p}`; if (!cache.has(key)) { if (cache.size >= 6) cache.delete(cache.keys().next().value); cache.set(key, growAttachmentMixture(n, m, p, attachmentRng(seed))); } return cache.get(key); };
+        v.button('New network', () => { seed = (seed + 1) % 1000000; cache.clear(); });
+        v.shareState('mixture seed', { get: () => seed, validate: x => Number.isInteger(x) && x >= 0 && x < 1000000, set: x => { seed = x; cache.clear(); } });
+        const DS = v.stage({ x: [.7, 100], y: [.00001, 1], xlog: true, ylog: true, axes: 'box', gutter: true, full: true, height: 360, xlabel: 'degree k (incidences)', ylabel: 'probability P(k)', title: 'Finite frequencies and a stationary law' });
+        let st;
         v.render(() => {
-          const m = mS.value, p = pS.value, e = +nS.value, deg = grow(m, p, e), a = p >= 1 ? 1e9 : 2 * m * p / (1 - p), gam = 3 + a / m, N = deg.length;
-          const kmaxR = 2000, P = rateEq(m, a, kmaxR);
-          DS.fn((k) => Math.pow(k, -gam) * (P[Math.min(kmaxR, Math.max(m, Math.round(300)))] * Math.pow(300, gam)), { color: 'ink', width: 1.4, dash: [6, 4], domain: [Math.max(m, 5), kmaxR] });
-          DS.path(Array.from({ length: kmaxR - m + 1 }, (_, i) => [m + i, P[m + i]]), { color: 'green', width: 2.2 });
-          const pts = logBin(deg, m, 1.35); DS.dots(pts, { r: 4, color: 'accent' });
-          const kmin = Math.max(10, Math.round(4 * (m + a))), fit = hillDisc(deg, kmin);
-          const kmax = Math.max(...deg);
-          st = { m, p, a, gam, fit, kmin, N, kmax };
+          const n = +size.value, m = mS.value, p = pS.value, graph = run(n, m, p), counts = attachmentCounts(graph.degrees), maximum = counts.at(-1)[0], theory = attachmentStationary(m, p, maximum);
+          const points = counts.map(([k, count]) => [k, count / n]), curve = Array.from({ length: maximum - m + 1 }, (_, i) => [m + i, theory.P[m + i]]), anchor = Math.min(maximum, 2 * m);
+          const guideFloor = Math.min(1 / n, curve.at(-1)[1]) / 10, logSpan = p < 1 ? Math.max(0, Math.min(Math.log(maximum / anchor), (Math.log(theory.P[anchor]) - Math.log(guideFloor)) / theory.gamma)) : 0;
+          const guide = logSpan > 1e-12 ? Array.from({ length: 101 }, (_, i) => { const logRatio = logSpan * i / 100; return [anchor * Math.exp(logRatio), Math.exp(Math.log(theory.P[anchor]) - theory.gamma * logRatio)]; }) : [];
+          const ymin = Math.min(1 / n, curve.at(-1)[1], guide.length ? guide.at(-1)[1] : 1);
+          DS.setView(attachmentLogView(m, maximum), attachmentLogView(ymin, 1));
+          DS.path(curve, { color: 'green', width: 2.2 }); if (guide.length > 1) DS.path(guide, { color: 'ink', width: 1.5, dash: [6, 4] }); DS.dots(points, { color: 'accent', r: 3.5 });
+          const shift = finiteAttachmentShift(n, m, p), tail = approximateAttachmentTail(graph.degrees, kS.value);
+          let degreeSum = 0; graph.degrees.forEach(k => degreeSum += k);
+          st = { n, m, p, seed, graph, counts, points, curve, guide, anchor, maximum, theory, shift, tail, degreeSum };
         });
-        v.legend([['accent', 'simulation (log-binned)', { dot: true }], ['green', 'rate equation, no free parameter'], ['ink', '$k^{-\\gamma}$ asymptote', { dash: true }]]);
+        v.legend([['accent', 'finite degree frequencies', { dot: true }], ['green', 'limiting stationary law'], ['ink', 'exponent guide (p < 1 only)', { dash: true }]]);
         v.readout(() => {
-          if (!st) return '';
-          const { m, p, a, gam, fit, kmin, N, kmax } = st;
-          return String.raw`$m=${m}$, $p=${v.fix(p, 2)}$ → $a=\frac{2mp}{1-p}=${v.fix(a, 2)}$, predicted exponent $\gamma=3+a/m=$ **${v.fix(gam, 2)}** · maximum-likelihood tail estimate for $k\ge${kmin}$ (${fit.n} vertices): **${v.fix(fit.gamma, 2)}** · $N=${N.toLocaleString('en-US')}$ vertices, largest degree ${kmax} (theory: about $m\sqrt N=${Math.round(m * Math.sqrt(N))}$ for $p=0$)`;
+          const { n, m, p, seed, graph, maximum, theory, shift, tail, anchor, guide, degreeSum } = st;
+          const law = p === 1 ? '**Pure uniform endpoint**: a geometric stationary law, with no finite affine shift or power-law exponent.' : String.raw`Next-arrival finite shift $a_N=${v.fix(shift.a, 4)}$; limiting $a_\infty=${v.fix(theory.a, 4)}$, $\eta=${v.fix(theory.gamma, 4)}$. ${guide.length ? `Slope guide: k=${anchor} to ${v.fix(guide.at(-1)[0], 2)}.` : 'The slope guide has no resolvable span here.'}`;
+          const diagnostic = tail.n ? String.raw`Half-integer approximation at or above $k_{\min}=${tail.kmin}$: **${v.fix(tail.estimate, 3)}**, ${tail.n} observations${tail.sufficient ? '' : ' (below the authored 50-observation support warning)'}.` : String.raw`No observations at or above $k_{\min}=${tail.kmin}$: the tail estimate is **undefined**, not zero.`;
+          return String.raw`$N=${n.toLocaleString('en-US')}$, $m=${m}$, $p=${v.fix(p, 2)}$, seed ${seed}: **${graph.edges.toLocaleString('en-US')} edges**, degree sum **${degreeSum.toLocaleString('en-US')}**, ${graph.repeated.toLocaleString('en-US')} extra parallel edges; largest degree ${maximum}. ${law} Limiting probability beyond displayed $k=${maximum}$: $${v.sci(theory.tail, 2)}$. ${diagnostic} The threshold is reader-selected. Degrees in one growing graph are dependent; no independent-sample confidence calibration or power-law fit verdict is asserted.`;
         });
       },
     },

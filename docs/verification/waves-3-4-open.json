@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 160,
+  "remainingFlags": 158,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -24,7 +24,7 @@
     "robot": 1,
     "game": 11,
     "psych": 14,
-    "soc": 16,
+    "soc": 14,
     "polsci": 11,
     "music": 23,
     "art": 11,
@@ -699,38 +699,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Power_law"
-      }
-    },
-    {
-      "id": "soc-4.9",
-      "file": "content/soc/ch04-b.js",
-      "name": "Preferential attachment (Price, Barab\u00e1si\u2013Albert)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "E&K \u00a718.3",
-        "Newman ch. 13"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Preferential_attachment"
-      }
-    },
-    {
-      "id": "soc-4.10",
-      "file": "content/soc/ch04-b.js",
-      "name": "Preferential attachment gives degree exponent 3",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "E&K \u00a718.7",
-        "Newman ch. 13"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model"
       }
     },
     {
@@ -3303,7 +3271,9 @@
       "game-4.5",
       "phil-3.7",
       "psych-3.9",
-      "game-3.11"
+      "game-3.11",
+      "soc-4.9",
+      "soc-4.10"
     ]
   },
   "additionalFollowups": [
@@ -7626,6 +7596,18 @@
       "status": "resolved",
       "report": "docs/verification/game-neumann-followup.md",
       "note": "Actual1928 \u00a7\u00a7II\u2013III proof/source checked; exact endpoint/intersection envelopes replace sampled extrema and epsilon floor, complete tied optimal sets and strict sparse-safe edit/replay schemas pass4 independent math and4 native groups."
+    },
+    {
+      "id": "soc-4.9",
+      "status": "resolved",
+      "report": "docs/verification/soc-attachment-followup.md",
+      "note": "Actual BA1999/KRLv2 source and finite nonlinear tree checked; arbitrary oldest-wins/strict-linearity necessity claims corrected, full seeded endpoint records and limiting references pass independent math/native checks."
+    },
+    {
+      "id": "soc-4.10",
+      "status": "resolved",
+      "report": "docs/verification/soc-attachment-followup.md",
+      "note": "Actual DMSv1/CSN\u00a73.1 source checked; correct2m(m+1) stationary coefficient, declared frozen with-replacement multigraph/finite affine correction and pure-uniform law; inclusive approximate tail diagnostic has no iid confidence claim."
     }
   ]
 }
