@@ -934,6 +934,22 @@
       "commits": [
         "9ac40db"
       ]
+    },
+    {
+      "ids": [
+        "arch-3.9"
+      ],
+      "peer": "Coordinator independently accepted13fafb8+a9fd590 after actual conditional sources, independent30vertex/dual math and fresh exactDOM/rawstate/nativepixels",
+      "reports": [
+        "docs/verification/arch-buttress-pier-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "13fafb8",
+        "a9fd590",
+        "b9f1e44",
+        "3f23921"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1004,6 +1020,15 @@
       ],
       "peer": "coordinator exactd58dcc0 fresh source/model/native review and control-only discrepancy regressions",
       "report": "docs/verification/tech-longitude-followup.md"
+    },
+    {
+      "id": "arch-3.9-saved-precision",
+      "status": "closed",
+      "candidate": "13fafb8",
+      "correction": "a9fd590",
+      "finding": "Valid raw17digit restoration left actual range DOM rounded while model retained extra digits; near-equality hid disagreement.",
+      "verification": "Fresh directDOM equality, valid15digit replay, both rawcounterexample rejection/exactdefault rollback and320light/dark native/source/output review pass.",
+      "report": "docs/verification/arch-buttress-pier-followup.md"
     }
   ]
 }

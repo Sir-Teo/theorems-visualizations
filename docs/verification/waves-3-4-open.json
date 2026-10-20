@@ -6440,6 +6440,11 @@
       "id": "bighist-3.8",
       "status": "resolved",
       "note": "2026-10-20: Worker three independently accepted exact9ac40db after original metric/lag sources, independent80digit/random/RK4 and fresh native/pixel review; docs/verification/bighist-extinction-followup.md."
+    },
+    {
+      "id": "arch-3.9",
+      "status": "resolved",
+      "note": "2026-10-20: Coordinator independently accepted13fafb8+a9fd590 after actual conditional sources, independent30vertex/dual math and fresh exactDOM/rawstate/nativepixels; docs/verification/arch-buttress-pier-followup.md."
     }
   ]
 }
