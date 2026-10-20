@@ -1,4 +1,5 @@
 // Political Science & Social Choice — Chapter 4: Spatial models and the median voter
+import {strictSpatialHandle,spatialPoint} from './source-audit-spatial-state.js';
 import {yolkConcept} from './source-audit-yolk.js';
 import {chaosTheorem} from './source-audit-chaos.js';
 import {plottModel,PLOTT_BASE} from './source-audit-plott.js';
@@ -396,7 +397,7 @@ When q is not any ideal point, a generic line through it splits the odd electora
       deps:['polsci-4.2'],see:['polsci-4.6','polsci-4.7'],refs:['Plott (1967), AER57:787–806, pp.788–791, unrestricted local conditions and one-maximum qualification; Euclidean specialization derived here'],tags:['spatial voting','majority-rule equilibrium'],credit:'Original local symmetry analysis: Charles R.Plott,1967; exact Euclidean half-plane comparison authored here.',links:{source:'https://authors.library.caltech.edu/records/rzmbm-kft47'},verify:false,
       viz(v){
         const S=v.stage({x:[-2.6,2.6],y:[-2.6,2.6],axes:false,equal:true,height:360,title:'all ideals and status quo q'}),Z=v.stage({x:[-.5,.5],y:[-.5,.5],axes:false,equal:true,height:360,title:'local winset and an actual winning proposal'});
-        const snap=(x,y)=>[x,y].map(t=>Math.round(Math.max(-2,Math.min(2,t))*8)/8),n=v.select('voters',[3,5,7].map(value=>({value,label:String(value)})),5,{onChange:()=>reset('symmetric')}),H=PLOTT_BASE.map((p,i)=>S.handle(...p,{color:'accent',r:5,constrain:snap})),Q=S.handle(0,0,{color:'gold',r:7,constrain:snap});
+        const snap=(x,y)=>[x,y].map(t=>Math.round(Math.max(-2,Math.min(2,t))*8)/8),n=v.select('voters',[3,5,7].map(value=>({value,label:String(value)})),5,{onChange:()=>reset('symmetric')}),H=PLOTT_BASE.map((p,i)=>S.handle(...p,{color:'accent',r:5,constrain:snap})),Q=S.handle(0,0,{color:'gold',r:7,constrain:snap});H.forEach((h,i)=>strictSpatialHandle(h,p=>spatialPoint(p,2),`ideal${i+1}`));strictSpatialHandle(Q,p=>spatialPoint(p,2),'status quo');
         function reset(mode){PLOTT_BASE.forEach((p,i)=>H[i].set(...p));Q.set(0,0);if(mode==='broken')H[2].set(-1.5,-.25);if(mode==='coincident')for(let i=0;i<=(n.value-1)/2;i++)H[i].set(0,0);}
         v.button('Symmetric preset',()=>reset('symmetric'));v.button('Break first pair',()=>reset('broken'));v.button('Coincident majority',()=>reset('coincident'));let info;
         v.render(()=>{H.forEach((h,i)=>h.visible=i<n.value);const p=plottModel(H.slice(0,n.value).map(h=>[h.x,h.y]),[Q.x,Q.y]),dy=p.test.witness?p.test.witness.map((x,i)=>x-p.q[i]):[.25,.25],zoom=Math.max(.1,1.5*Math.max(...dy.map(Math.abs))+.03),color=v.ramp(.45,'orange'),wins=(x,y)=>p.V.filter(a=>(a[0]-x)**2+(a[1]-y)**2<(a[0]-p.q[0])**2+(a[1]-p.q[1])**2).length>p.test.limit;
