@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 79,
+  "remainingFlags": 78,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "art": 9,
     "arch": 9,
     "ling": 10,
-    "tech": 11,
+    "tech": 10,
     "bighist": 18
   },
   "queue": [
@@ -769,23 +769,6 @@
       "refs": [],
       "links": {
         "doi": "https://doi.org/10.1002/j.1538-7305.1951.tb01366.x"
-      }
-    },
-    {
-      "id": "tech-4.11",
-      "file": "content/tech/ch04-b.js",
-      "name": "Sternpost rudder and lateen sail",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mokyr ch. 3",
-        "Needham, Science and Civilisation in China 4.3, Johnstone & McGrail (1988), as cited by Wikipedia “Rudder”",
-        "Whitewright (2009–2012), Casson (1995), as cited by Wikipedia “Lateen”"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Lateen"
       }
     },
     {
@@ -2021,7 +2004,8 @@
       "tech-4.8",
       "tech-4.9",
       "music-8.14",
-      "music-8.15"
+      "music-8.15",
+      "tech-4.11"
     ]
   },
   "additionalFollowups": [
@@ -6855,6 +6839,11 @@
       "id": "polsci-4.7",
       "status": "resolved",
       "note": "2026-10-20: coordinator independent source/math/native and raw-state review; docs/verification/polsci-yolk-followup.md."
+    },
+    {
+      "id": "tech-4.11",
+      "status": "resolved",
+      "note": "2026-10-20: worker one independent exact-commit primary-source/math/native review; docs/verification/tech-sailing-followup.md."
     }
   ]
 }

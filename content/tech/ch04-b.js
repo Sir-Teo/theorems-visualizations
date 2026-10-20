@@ -105,7 +105,7 @@ At elapsed fraction $\tau$, remaining head is $H(1-\tau)^2$ and transferred volu
 
     // ------------------------------------------------------------------ 4.11
     {
-      num:'4.11',kind:'Invention',name:'Sternpost rudder and lateen sail',verify:true,
+      num:'4.11',kind:'Invention',name:'Sternpost rudder and lateen sail',verify:false,
       credit:'Historical mechanisms documented by Royal Museums Greenwich and examined by Whitewright; force comparison authored here',
       statement:String.raw`A sternpost rudder is a blade hinged at the stern and turned from above. Royal Museums Greenwich's component model SLR2362 depicts the rudder, sternpost, hinges and tiller position as separate parts; its maker and date are unknown. A lateen rig carries a triangular sail on an inclined yard. Sail shape alone does not establish how a whole vessel performs.
 

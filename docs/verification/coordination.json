@@ -526,6 +526,16 @@
         "c22c869",
         "1323d4c"
       ]
+    },
+    {
+      "ids": [
+        "tech-4.11"
+      ],
+      "peer": "worker one independent exact-commit primary-source/math/native review",
+      "reports": [
+        "docs/verification/tech-sailing-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -538,7 +548,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 79,
+  "currentPendingSourceReviews": 78,
   "latestCheckpoint": {
     "acceptedContentCommit": "04ab914",
     "pendingSourceReviews": 85,
