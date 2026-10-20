@@ -13,14 +13,13 @@
 //   3.8 Raup & Sepkoski, Science 215: 1501 (1982); Barnosky et al., Nature 471: 51 (2011) for the commonly quoted species-loss
 //     estimates (86, 75, 96, 80, 76%: recalled, not re-checked; other sources give different values and metrics); Kirchner &
 //     Weil, Nature 404: 177 (2000) (recovery lag of the order of 10 Myr). The recovery curve is a logistic model.
-//   3.9 Hildebrand et al., Geology 19: 867 (1991); Renne et al., Science 339: 684 (2013) (boundary 66.038 +- 0.049 Ma, impact and
-//     boundary within 32 kyr); Morgan et al., Science 354: 878 (2016); Collins, Melosh & Marcus, Meteorit. Planet. Sci. 40: 817
-//     (2005) (crater scaling constants recalled, flagged); Alvarez et al. (1980): enhancement 30, 160, 20 times at the three sites.
-//   3.10 Alvarez, Alvarez, Asaro & Michel, Science 208: 1095 (1980), doi 10.1126/science.208.4448.1095. Abstract numbers only
-//     (enhancements 30, 160 and 20, diameter 10 +- 4 km from four estimates, about 60 times the impactor mass thrown up). The
-//     concentration profile is a labelled schematic, because the paper's table could not be fetched.
+//   3.9/3.10 Actual original Alvarez1980, Collins2005 and Renne2013 source equations/tables checked.
+//     Sources, finite model/state limits and evidence: docs/verification/bighist-impact-followup.md.
+//     Flags remain pending independent exact-commit acceptance.
+
 
 import { clamp, tridiag } from './ch03.shared.js';
+import {impactEvent,impactPaper} from './impact-items.js';
 
 // ── 3.6 helpers: Budyko–Sellers energy balance model on x = sin(latitude) in [0, 1] (one hemisphere) ──────────────────────
 const EB = { n: 24, D: 0.649, A: 203.3, B: 2.09, Q0: 340.25, C: 10 };
@@ -68,17 +67,6 @@ const BIG5 = [
   { name: 'End-Cretaceous', t: 66, f: 0.76, col: 'pink' },
 ];
 const logit = (p) => Math.log(p / (1 - p));
-
-// ── 3.9 helpers: impact scaling (Collins, Melosh & Marcus 2005, SI units) ─────────────────────────────────────────────────
-const G_EARTH = 9.81;
-function crater(Lkm, vkms, thetaDeg, rhoI, rhoT = 2500) {
-  const L = Lkm * 1e3, vi = vkms * 1e3, s = Math.sin((thetaDeg * Math.PI) / 180);
-  const Dtc = 1.161 * (rhoI / rhoT) ** (1 / 3) * L ** 0.78 * vi ** 0.44 * G_EARTH ** (-0.22) * s ** (1 / 3); // m
-  const Dfin = Dtc > 2560 ? (1.17 * Dtc ** 1.13) / 3200 ** 0.13 : 1.25 * Dtc;
-  return { Dtc: Dtc / 1e3, D: Dfin / 1e3 };
-}
-const impactorMass = (Lkm, rho) => (Math.PI / 6) * (Lkm * 1e3) ** 3 * rho; // kg
-const MT = 4.184e15, EARTH_AREA = 5.1e14;
 
 export default {
   collection: 'bighist',
@@ -250,96 +238,7 @@ The causes differ: glaciation and sea-level fall (Ordovician), anoxia (Devonian)
         });
       },
     },
-    // ───────────────────────────────────────────────────────────────────────────────────── 3.9
-    {
-      num: '3.9',
-      kind: 'Event',
-      name: 'The end-Cretaceous impact',
-      statement: String.raw`About $66$ million years ago an asteroid several kilometres across struck the Yucatán peninsula at Chicxulub, Mexico, making a crater of roughly $180$–$200$ km diameter. Its fall coincides, to within the dating error (about $30{,}000$ years in the best radiometric work), with the Cretaceous–Palaeogene boundary and the extinction of the non-avian dinosaurs, ammonites and about three quarters of species. The boundary clay carries an iridium anomaly, shocked quartz, spherules and soot found worldwide, and the crater itself was recognised and drilled (Hildebrand and others, 1991; drilling of its peak ring in 2016).
-
-The impact was not the only stress of the time (the Deccan Traps erupted around the same epoch), but it is the best-supported trigger of the mass extinction at the boundary.`,
-      idea: String.raw`The kinetic energy of an impactor of diameter $L$, density $\rho$ and speed $v$ is $E=\tfrac12\cdot\tfrac{\pi}{6}\rho L^3v^2$: a $10$ km body at $20$ km/s carries about $3\times10^{23}$ J, roughly $10^{8}$ megatons of TNT. Laboratory-calibrated scaling laws give the size of the crater from the impactor's size, speed, angle and density (Collins, Melosh and Marcus, 2005): the transient crater is $D_{tc}\propto L^{0.78}v^{0.44}g^{-0.22}$, and craters above a few kilometres slump into a wider complex crater. Inverting the scaling for the observed $\sim$180 km crater gives an impactor of roughly 12–20 km for plausible speeds and angles, somewhat above the $10\pm4$ km that Alvarez and colleagues had inferred in 1980 from iridium alone (3.10); published estimates of the impactor lie in the range of about 10–15 km. The consequences, in the order they are inferred: blast and tsunamis, a thermal pulse from re-entering ejecta, and then dust, sulfate aerosols and soot cutting light for months to years.`,
-      caption: String.raw`Impactor diameter against final crater diameter on log axes, for the speed, angle and density you set. The green band marks the Chicxulub crater (about 180–200 km); the orange band is Alvarez's 1980 estimate for the diameter, $10\pm4$ km. Drag the handle along the curve to choose the impactor, and see the energy and the diameter needed to match the crater. Left: the iridium enhancements found at three boundary sites.`,
-      deps: ['bighist-3.8', 'bighist-1.3'],
-      see: ['bighist-3.10'],
-      refs: ['Christian'],
-      credit: 'Alvarez et al., 1980 (hypothesis); Hildebrand et al., 1991 (crater)',
-      tags: ['impact', 'extinction'],
-      scope: String.raw`Crater scaling is calibrated to impacts up to a few hundred kilometres and carries factor-of-two uncertainty; the impactor's speed, angle and density are not measured.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Chicxulub_crater' },
-      verify: true,
-      viz(v) {
-        const vS = v.slider('impact speed (km/s)', 12, 35, 20, { step: 0.5 });
-        const aS = v.slider('angle from horizontal (°)', 15, 90, 45, { step: 1 });
-        const rS = v.slider('impactor density (kg/m³)', 1500, 3500, 2700, { step: 50 });
-        const A = v.stage({ x: [0.3, 3.6], y: [1, 1000], ylog: true, axes: 'box', gutter: true, height: 300, xticks: [[1, 'Gubbio'], [2, 'Stevns Klint'], [3, 'Woodside Ck']], ylabel: 'iridium (× background)', title: 'iridium at the boundary (Alvarez et al. 1980)' });
-        const B = v.stage({ x: [1, 30], y: [3, 500], xlog: true, ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'impactor diameter L (km)', ylabel: 'final crater diameter (km)', title: 'crater scaling (Collins–Melosh–Marcus)' });
-        const h = B.handle(11, 100, { color: 'accent', r: 7, label: 'impactor' });
-        h.onDrag = () => { h.x = clamp(h.x, 1, 30); };
-        const need = () => { let lo = 1, hi = 60; for (let i = 0; i < 50; i++) { const m = Math.sqrt(lo * hi); if (crater(m, vS.value, aS.value, rS.value).D < 180) lo = m; else hi = m; } return lo; };
-        v.render(() => {
-          [[1, 30], [2, 160], [3, 20]].forEach(([x, y]) => A.rect(x - 0.3, 1, x + 0.3, y, { fill: 'accent', fillAlpha: 0.4, color: 'accent', width: 1.2 }));
-          [[1, 30], [2, 160], [3, 20]].forEach(([x, y]) => A.text(`${y}×`, x, y * 1.35, { size: 11.5, color: 'ink', align: 'center' }));
-          A.hline(1, { color: 'muted', width: 1, dash: [3, 3] });
-          const pts = []; for (let i = 0; i <= 80; i++) { const L = 10 ** (Math.log10(1) + (Math.log10(30) * i) / 80); pts.push([L, crater(L, vS.value, aS.value, rS.value).D]); }
-          B.hband(180, 200, { color: 'green', alpha: 0.25 }); B.text('Chicxulub ≈ 180–200 km', 1.2, 230, { size: 10.5, color: 'green', align: 'left' });
-          B.vband(6, 14, { color: 'orange', alpha: 0.16, edges: false }); B.text('Alvarez 1980: 10 ± 4 km', 6.2, 4.3, { size: 10.5, color: 'orange', align: 'left' });
-          B.path(pts, { color: 'accent', width: 2.4 });
-          h.set(h.x, crater(h.x, vS.value, aS.value, rS.value).D);
-          const Ln = need(); B.dot(Ln, crater(Ln, vS.value, aS.value, rS.value).D, { r: 5, hollow: true, color: 'green' });
-        });
-        v.readout(() => {
-          const L = h.x, m = impactorMass(L, rS.value), E = 0.5 * m * (vS.value * 1e3) ** 2, c = crater(L, vS.value, aS.value, rS.value);
-          return `Impactor ${v.fix(L, 1)} km: mass ${m.toExponential(1)} kg, energy **${E.toExponential(1)} J = ${(E / MT).toExponential(1)} Mt TNT** (${(E / (6.3e13)).toExponential(1)} Hiroshima bombs), transient crater ${v.fix(c.Dtc, 0)} km, final crater **${v.fix(c.D, 0)} km**.\nA 180 km crater needs ${v.fix(need(), 1)} km at these settings. Boundary age 66.04 Ma, within 32 kyr of the impact (Renne et al. 2013).`;
-        });
-      },
-    },
-    // ───────────────────────────────────────────────────────────────────────────────────── 3.10
-    {
-      num: '3.10',
-      kind: 'Paper',
-      name: 'Extraterrestrial Cause for the K–T Extinction',
-      paper: { authors: 'Luis W. Alvarez, Walter Alvarez, Frank Asaro and Helen V. Michel', year: 1980, title: 'Extraterrestrial Cause for the Cretaceous-Tertiary Extinction', venue: 'Science 208 (4448): 1095–1108', doi: '10.1126/science.208.4448.1095' },
-      introduces: ['bighist-3.9'],
-      statement: String.raw`Alvarez and colleagues measured iridium, an element that is rare in the Earth's crust but common in meteorites, across the Cretaceous–Tertiary boundary in marine limestones at Gubbio (Italy), Stevns Klint (Denmark) and Woodside Creek (New Zealand). Each had a thin boundary clay, and each showed a sharp iridium enhancement over the background in the surrounding rock: about **30 times** at Gubbio, **160 times** in Denmark and **20 times** in New Zealand. They argued that the iridium came from outside the Earth, and from an impact rather than a nearby supernova (no plutonium-244 signature), and they estimated the object's diameter as about $10\pm4$ km from four independent lines. An impact would throw up about 60 times the impactor's mass as dust, darkening the planet, stopping photosynthesis and collapsing food chains.
-
-**Scope.** The paper's claim was an extraterrestrial cause; the crater was found a decade later, and the relative roles of the impact and of volcanism are still discussed.`,
-      idea: String.raw`In 1977 Walter Alvarez, a geologist, was studying the boundary clay at Gubbio; his father Luis, a physicist, suggested measuring a quantity that scales with the time the clay took to deposit. Iridium, which falls to Earth at a steady rate in cosmic dust, served as a clock, and they expected it to show that the clay was laid down slowly. Instead the iridium was far too high to be a slow rain of cosmic dust, so they proposed a single large impact. Before the paper, extinctions were attributed to climate, sea level or slow causes; the paper introduced the *impact hypothesis* (3.9), the use of iridium as a boundary marker, and the mass-extinction-by-dust-darkening scenario.`,
-      caption: String.raw`Left: a concentration profile through the boundary clay for a site you choose, as a multiple of the local background. The peak heights (30, 160, 20) are the paper's; the thickness and tails are a schematic, since the paper's table is not reproduced here. Right: the impactor diameter sets the mass, the 60-fold dust load and what that dust would be as a uniform layer over the whole Earth; the orange band is the paper's $10\pm4$ km.`,
-      deps: ['bighist-3.8'],
-      see: ['bighist-3.9'],
-      refs: [],
-      credit: 'L. W. Alvarez, W. Alvarez, F. Asaro & H. V. Michel, 1980',
-      tags: ['impact', 'extinction', 'iridium'],
-      scope: String.raw`Iridium enhancement is evidence of an extraterrestrial component; the dust-darkening mechanism is a scenario that later work refined (soot, sulfate aerosols).`,
-      links: { doi: 'https://doi.org/10.1126/science.208.4448.1095', wikipedia: 'https://en.wikipedia.org/wiki/Alvarez_hypothesis' },
-      verify: true,
-      viz(v) {
-        const site = v.select('site', [{ value: '30', label: 'Gubbio, Italy' }, { value: '160', label: 'Stevns Klint, Denmark' }, { value: '20', label: 'Woodside Creek, N.Z.' }], '30');
-        const LS = v.slider('impactor diameter (km)', 2, 20, 10, { step: 0.5 });
-        const rhoS = v.slider('dust layer bulk density (kg/m³)', 1000, 2700, 2000, { step: 50 });
-        const A = v.stage({ x: [-6, 6], y: [0.7, 300], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'height above the boundary clay (cm, schematic)', ylabel: 'iridium / background', title: 'iridium through the boundary (schematic profile)' });
-        const B = v.stage({ x: [2, 20], y: [0.1, 1000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'impactor diameter (km)', ylabel: 'dust thickness if spread over Earth (mm)', title: 'the 60-fold dust load' });
-        const h = B.handle(10, 1, { color: 'accent', r: 7 });
-        const thick = (L) => (60 * impactorMass(L, 3000)) / (rhoS.value * EARTH_AREA) * 1000; // mm
-        h.onDrag = () => { LS.set(clamp(h.x, 2, 20)); };
-        v.render(() => {
-          const F = Number(site.value);
-          const pts = []; for (let i = 0; i <= 200; i++) { const z = -6 + (12 * i) / 200; const bump = (F - 1) * (Math.exp(-((z / 0.5) ** 2)) + 0.35 * Math.exp(-((z / 2.5) ** 2)) * (z > 0 ? 1 : 0.25)); pts.push([z, 1 + bump]); }
-          A.vband(-0.5, 0.5, { color: 'orange', alpha: 0.18, edges: false }); A.text('boundary clay', 0, 0.85, { size: 10.5, color: 'orange', align: 'center' });
-          A.hline(1, { color: 'muted', width: 1, dash: [3, 3] });
-          A.path(pts, { color: 'accent', width: 2.6 });
-          A.dot(0, F, { r: 5, color: 'gold', label: `${F}×`, labelPos: 'ne' });
-          const T = []; for (let i = 0; i <= 60; i++) { const L = 2 * 10 ** ((Math.log10(10) * i) / 60); T.push([L, thick(L)]); }
-          B.vband(6, 14, { color: 'orange', alpha: 0.18, edges: false }); B.text('paper: 10 ± 4 km', 6.2, 0.2, { size: 10.5, color: 'orange', align: 'left' });
-          B.path(T, { color: 'accent', width: 2.4 });
-          h.set(LS.value, thick(LS.value));
-        });
-        v.readout(() => {
-          const L = LS.value, m = impactorMass(L, 3000), E = 0.5 * m * (20e3) ** 2;
-          return `${v.fix(L, 1)} km body of density 3000 kg/m³: mass ${m.toExponential(1)} kg; 60 × that mass of dust is ${(60 * m).toExponential(1)} kg, a uniform layer **${thick(L) >= 10 ? v.fix(thick(L), 0) : v.fix(thick(L), 1)} mm** thick over the whole Earth (the boundary clay is about a centimetre, since not all of it is carried worldwide).\nEnergy at 20 km/s ≈ ${E.toExponential(1)} J. Peak enhancement at ${site.value === '30' ? 'Gubbio' : site.value === '160' ? 'Stevns Klint' : 'Woodside Creek'}: ${site.value}× (the paper); schematic shape.`;
-        });
-      },
-    },
+    impactEvent,
+    impactPaper,
   ],
 };
