@@ -1,5 +1,5 @@
 {
-  "status": "isolated producer correctness; independent current-data peer and performance pending",
+  "status": "rejected for production after one controlled current-inventory timing run; production unchanged",
   "finalCodeCommit": "93f033a044609e4fe411a9456ae9b2a96333429a",
   "fullMatrixBeforeResizeAmendment": {
     "complete": true,
@@ -78,5 +78,20 @@
       "raw": "/tmp/atlas-map-canvas-compositor-resize-fidelity-dark/correctness.json",
       "rawSHA256": "62dc8340a09cb61491000e82d3a83070bec95e87da6eb8a6c62b92c308665d02"
     }
+  },
+  "controlledTiming": {
+    "raw": "docs/verification/map-canvas-compositor-timing-normal-dpr2-light.json",
+    "rawSHA256": "795622d9eb3a3a896e7a2547d46ff7e1f7f741b393be3f43acea89bf03db609d",
+    "nodes": 13574,
+    "edges": 23218,
+    "overviewFPS": {
+      "original": 48.74390700290855,
+      "compositor": 50.36807438511868
+    },
+    "detailFPS": {
+      "original": 44.01557473827861,
+      "compositor": 29.017857142857146
+    },
+    "additionalTimingRuns": 0
   }
 }

@@ -1,6 +1,6 @@
 # Connected Canvas compositor prototype — 20 October 2026
 
-This is an **isolated test-only producer candidate**, final code `93f033a044609e4fe411a9456ae9b2a96333429a`. No production graph, shared runtime, content, global inventory or gate is changed. No FPS measurement has been run. Independent review against the coordinator's newer full inventory and an explicitly coordinated quiet timing window remain required. The existing full-map 60 fps gate stays open.
+**Rejected for production after controlled timing.** This isolated test-only prototype's final code is `93f033a044609e4fe411a9456ae9b2a96333429a`. The single authorized current-inventory comparison below measured detail zoom at29.018fps versus44.016fps for the unchanged original. No production graph, shared runtime, content, global inventory or gate is changed. The existing full-map60fps gate stays open; no expanded timing campaign is warranted for this version.
 
 ## Bounded implementation
 
@@ -36,7 +36,7 @@ The first rounded-translation experiment failed the dark fractional-pan mean bou
 
 Run the explicit model suite and full native/resize scripts, with `MAP_COMPOSITOR_ROOT` pointing to a built immutable current-coordinator archive and `MAP_COMPOSITOR_OUTPUT` pointing to a unique evidence directory. The fixture freezes source/helper/data bytes and records their hashes; it accepts actual loaded inventories rather than a stale hardcoded edge count. The producer's older23149-edge freeze is correctness evidence for that snapshot, not the current coordinator's performance gate.
 
-`scripts/audit-map-canvas-compositor-comparison.mjs` is a prepared **syntax-checked, unexecuted** critical-zoom protocol. Only after the coordinator receives all six worker quiet acknowledgements and holds its own heavy jobs:
+`scripts/audit-map-canvas-compositor-comparison.mjs` was prepared as a syntax-checked critical-zoom protocol and was subsequently executed once in the controlled window recorded below. Only after the coordinator receives all six worker quiet acknowledgements and holds its own heavy jobs:
 
 ```
 MAP_COMPOSITOR_ROOT=/absolute/current-coordinator-archive node scripts/audit-map-canvas-compositor-comparison.mjs /tmp/compositor-zoom-light-dpr2.json --quiet-window-attested --regime=1440x1000@2 --theme=light --frames=24
@@ -46,7 +46,7 @@ This uses full Chrome/Metal, original then prototype pages with identical frozen
 
 If those two normal critical zoom modes show no clear improvement, reject this hypothesis without a larger performance campaign. If promising, repeat with60frames and both themes/DPR1/2, then oversized DPR2. A full gate attempt must additionally extend the unchanged ten-mode production transition protocol to focus/fit/hover/selected-hover and all four pan modes, retaining the new DOM-resource and actual-inventory accounting. The prepared critical-zoom script does not implement those other modes and cannot by itself close the full gate. The older transition CLI's hardcoded historical edge count and Canvas-only cache accounting must be updated before using it for this candidate.
 
-No timing artifact exists yet. Independent acceptance and current-inventory checks precede any production integration decision.
+The following controlled artifact records the only timing run. Its failure rules out production integration of this version.
 
 ## Controlled current-inventory timing — reject for production
 
