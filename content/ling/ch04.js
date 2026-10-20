@@ -179,7 +179,7 @@ Let $I_j$ indicate an innovation at token $j$. The first token is new, while eve
       name: 'Heaps’ law of vocabulary growth',
       credit: 'Gustav Herdan, 1960; Harold S. Heaps, 1978 (Information Retrieval: Computational and Theoretical Aspects) — often called the Herdan–Heaps law',
       statement: String.raw`If $V(N)$ is the number of distinct words among the first $N$ words of a text, then
-$$V(N)\;\approx\;K\,N^{\beta},\qquad 0<\beta<1,$$
+$$\begin{gathered}V(N)\;\approx\;K\,N^{\beta},\\0<\beta<1,\end{gathered}$$
 typically $\beta\approx 0.4$–$0.7$ for natural-language texts and $K$ of order 10–100: the vocabulary never stops growing, but each new stretch of text brings fewer new words.`,
       idea: String.raw`New words are rarer the more text has been seen: the chance that the next word is new equals the proportion of the text's probability carried by words not yet met, which shrinks as common words are used up but never reaches zero because of the long Zipf tail. If frequencies follow a Zipf law with exponent $s>1$ then a sampling argument gives $\beta\approx 1/s$, a link between 4.1 and 4.4; with $s$ near 1, as in real text, the relation is only a rough guide and $\beta$ is estimated directly.
 

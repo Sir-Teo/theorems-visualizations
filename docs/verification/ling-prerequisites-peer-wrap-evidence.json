@@ -1,0 +1,2229 @@
+{
+  "reason": "Independent peer actual253px inner-padding overflow4.4; stronger production range gate",
+  "native320": {
+    "browser": "153.0.8010.12",
+    "rows": [
+      {
+        "num": "1.1",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "A speech sound is produced by a source and shaped by a filter. The source is either the quasi-periodic puffs of air let through by the vibrating vocal folds (voicing), turbulent noise at a narrowing (whisper, aspiration, frication), or both. The filter is the air in the vocal tract from the larynx to the lips (and the nose, when the velum is lowered), whose resonances, the formants, depend on its shape; the radiated sound is the flow at the lips, differentiated by radiation into the open air. If the tract is treated as a linear, time-invariant system over stretches of a few tens of milliseconds, the output spectrum is the product P(f)=S(f)\u2009T(f)\u2009R(f),LP(f)=LS(f)+LT(f)+LR(f)(decibels),\\begin{aligned}P(f)&=S(f)\\,T(f)\\,R(f),\\\\L_P(f)&=L_S(f)+L_T(f)\\\\&\\quad+L_R(f)\\quad\\text{(decibels),}\\end{aligned}P(f)LP\u200b(f)\u200b=S(f)T(f)R(f),=LS\u200b(f)+LT\u200b(f)+LR\u200b(f)(decibels),\u200b of the source spectrum SSS (lines at the harmonics kf0k f_0kf0\u200b of the voice, falling about 12 dB per octave, or a flat noise continuum), the tract's transfer function TTT (peaks at the formants) and the radiation characteristic RRR (rising about 6 dB per octave). The larynx and the articulators work independently: the vocal folds set pitch and voice quality, the tongue, lips and jaw set the formants.Holds when Holds when the vocal tract can be treated as a linear, time-invariant filter (sound pressures far below the steady airflow, shapes changing slowly compared with the period) and the source is unaffected by the tract. It is only approximate when the two interact: high voices whose f0f_0f0\u200b approaches F1, rapid articulatory movements, and nasal coupling, which adds antiresonances.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Because the tract filters linearly, convolution in time becomes multiplication in frequency, so each harmonic of the source is simply scaled by the gain of the filter at its frequency. A periodic source has a line spectrum (its Fourier series), so voiced speech is a picket fence of harmonics whose heights trace the filter's resonance curve, while a noise source gives a continuous spectrum with the same peaks. The idea goes back to Johannes M\u00fcller's experiments with excised larynges in the 1830s; Chiba and Kajiyama (1941) computed the tract's resonances, and Gunnar Fant's Acoustic Theory of Speech Production (1960) made source \u00d7 filter the standard model; the formant model of timbre is music-4.10.The harmonic-by-harmonic step uses the LTI eigenfunction calculation (sig 3.9): for an absolutely integrable impulse response hhh, inserting ei\u03c9te^{i\\omega t}ei\u03c9t in the convolution integral gives ei\u03c9t\u222bh(\u03c4)e\u2212i\u03c9\u03c4\u2009d\u03c4e^{i\\omega t}\\int h(\\tau)e^{-i\\omega\\tau}\\,d\\tauei\u03c9t\u222bh(\u03c4)e\u2212i\u03c9\u03c4d\u03c4. Thus each harmonic retains its frequency and acquires the transfer factor at that frequency. Apply this integral calculation to the tract response when that hypothesis holds over a fixed-shape window. Ideal radiation differentiation is a separate operation: ddtei\u03c9t=i\u03c9ei\u03c9t\\frac{d}{dt}e^{i\\omega t}=i\\omega e^{i\\omega t}dtd\u200bei\u03c9t=i\u03c9ei\u03c9t, rather than an absolutely integrable impulse response. Neither step asserts exact linearity or independence of the source and tract in actual speech.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Drag the F1, F2, F3 handles on the middle panel to reshape the filter, or pick a preset. The left panel is the source, the right one the output: every harmonic of the output is the source harmonic raised by the filter's gain at that frequency, and the readout checks this against the spectrum of the waveform actually synthesized (time domain, then FFT). Change the pitch: the harmonics slide, the envelope stays. Switch the source to whisper: the harmonics vanish but the formant peaks (and the vowel) remain. Source alone plays the buzz before the tract shapes it. (The lip radiation is folded into the source here.)",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Holds when the vocal tract can be treated as a linear, time-invariant filter (sound pressures far below the steady airflow, shapes changing slowly compared with the period) and the source is unaffected by the tract. It is only approximate when the two interact: high voices whose f0f_0f0\u200b approaches F1, rapid articulatory movements, and nasal coupling, which adds antiresonances."
+      },
+      {
+        "num": "1.8",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Model the vocal tract as a uniform tube of length LLL (about 17 cm for an adult man, 14.5 cm for a woman), closed at the glottis, where the folds are nearly shut, and open at the lips. Plane sound waves in it resonate when the tube holds an odd number of quarter wavelengths, i.e. at Fn=(2n\u22121)\u2009c4L,n=1,2,3,\u2026\\begin{gathered}F_n=\\frac{(2n-1)\\,c}{4L},\\\\n=1,2,3,\\ldots\\end{gathered}Fn\u200b=4L(2n\u22121)c\u200b,n=1,2,3,\u2026\u200b With c\u2248350c\\approx350c\u2248350 m/s in warm humid air and L=17.5L=17.5L=17.5 cm this gives 500, 1500, 2500 Hz: the formants of the neutral vowel schwa [\u0259]. Narrowing the tube changes the resonances in a predictable way: a constriction near a maximum of the volume velocity of a mode (a pressure node) lowers that formant, while one near a pressure maximum raises it. A tube open at both ends would instead resonate at n\u2009c/2Ln\\,c/2Lnc/2L.Holds when Holds for plane-wave propagation, i.e. below roughly 4\u20135 kHz where the tube's width is small compared with the wavelength, ignoring losses (which broaden the peaks), the yielding walls and the nasal side branch. A real tract is curved and non-uniform; the uniform tube describes only the neutral vowel, and other vowels are perturbations of it.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "At a closed end the air cannot move (volume velocity zero, pressure maximal); at an open end the pressure is atmospheric (pressure zero). The standing waves that fit these conditions have a quarter, three quarters, five quarters \u2026 of a wavelength in the tube, as for a stopped organ pipe (music-3.3). For non-uniform shapes the tube is cut into short sections and the transfer matrices of the sections are multiplied; resonances are the frequencies where the volume velocity at the glottis vanishes for unit flow at the lips. Perturbation theory explains the direction of the shifts: narrowing a section increases the kinetic (inertial) energy stored where the air moves fast and decreases the potential (compressional) energy where the pressure swings, so the sign of (kinetic \u2212 potential) energy density, the sensitivity function, tells whether that formant falls or rises (ling-1.7).For the stated lossless uniform tube, a harmonic pressure amplitude satisfies P\u2032\u2032+(\u03c9/c)2P=0P''+(\\omega/c)^2P=0P\u2032\u2032+(\u03c9/c)2P=0. The constant-coefficient solution theorem (ode 3.13) gives the complete pair cos\u2061(\u03c9x/c)\\cos(\\omega x/c)cos(\u03c9x/c) and sin\u2061(\u03c9x/c)\\sin(\\omega x/c)sin(\u03c9x/c) for \u03c9>0\\omega>0\u03c9>0. The closed-glottis condition is P\u2032(0)=0P'(0)=0P\u2032(0)=0, leaving only the cosine, while the open-lip condition P(L)=0P(L)=0P(L)=0 requires \u03c9L/c=(2n\u22121)\u03c0/2\\omega L/c=(2n-1)\\pi/2\u03c9L/c=(2n\u22121)\u03c0/2. Converting angular frequency to hertz yields the displayed odd-quarter-wave formula. This boundary calculation is for pressure, not the opposite node convention for volume velocity.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Slide the tube length, then drag the gold handle to squeeze the tube anywhere (up and down sets the area). The middle panel shows the standing wave of the chosen formant, pressure (red) and volume velocity (blue), with the sensitivity shaded: blue where narrowing lowers this formant, red where it raises it. The right panel is the tube's response with its computed resonances (solid) against the uniform-tube values (2n\u22121)c/4L(2n-1)c/4L(2n\u22121)c/4L (dashed). Squeeze near the lips (rounding) and every formant drops; squeeze near the glottis and they rise. Switch the glottis end to open to break the quarter-wave pattern.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Holds for plane-wave propagation, i.e. below roughly 4\u20135 kHz where the tube's width is small compared with the wavelength, ignoring losses (which broaden the peaks), the yielding walls and the nasal side branch. A real tract is curved and non-uniform; the uniform tube describes only the neutral vowel, and other vowels are perturbations of it."
+      },
+      {
+        "num": "1.10",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "The same vowel spoken by different people has very different formant frequencies: children's formants are up to 40\u201350 % higher than men's because their vocal tracts are shorter, and women's lie in between. In raw hertz the vowel categories of a population therefore overlap heavily (a child's [\u028a] can have the formants of a man's [\u028c]), yet listeners identify vowels across speakers almost effortlessly. They do so by normalising: judging each vowel relative to the speaker's own vowel space. Computational normalisations that rescale each speaker's formants, for example the log-mean method (Nearey), which subtracts the speaker's mean log formant, or Lobanov's z-scores, which standardise each formant by the speaker's mean and standard deviation, make the categories of different speakers line up and greatly reduce the overlap.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "To a first approximation a shorter vocal tract multiplies all formants by the same factor (resonances scale as 1/L1/L1/L, ling-1.8), so on a logarithmic scale a speaker's whole vowel space is shifted rigidly. Subtracting the speaker's mean log formant undoes that shift (Nearey 1978); Lobanov's (1971) z-scores also undo differences in the spread of the space. Listeners appear to use similar information, both from the other vowels they have heard from the speaker (extrinsic normalisation) and from cues within the vowel such as f0f_0f0\u200b and F3 (intrinsic). The data here are simulated: each speaker's vowels are drawn around Peterson and Barney's group means (ling-1.9), scaled by a random vocal-tract factor and given random token-to-token variation.The logarithm law (pma 8.6) supplies the cancellation in log-mean normalisation. If all positive formant measurements FiF_iFi\u200b are multiplied by one speaker factor a>0a>0a>0, then log\u2061(aFi)=log\u2061a+log\u2061Fi\\log(aF_i)=\\log a+\\log F_ilog(aFi\u200b)=loga+logFi\u200b and their mean log shifts by the same log\u2061a\\log aloga. Subtraction therefore leaves every centred log coordinate unchanged. This exact invariance belongs to the common-multiplier model; unequal formant scaling, different vowel sampling and biological differences are not removed by that identity.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Each symbol is one vowel token of one simulated speaker (8 men, 8 women, 8 children); ellipses enclose about 80 % of each vowel category. Switch the normalisation: in raw hertz the ellipses sprawl and overlap, after log-mean or Lobanov normalisation they shrink and separate. The readout scores each method by classifying every token with the category centres learned from the other speakers (nearest centre, leave one speaker out). Highlight a group to see its own vowel space; New speakers draws another population.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": null
+      },
+      {
+        "num": "1.13",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "When listeners hear a continuum of synthetic syllables whose voice onset time increases in equal steps from [ba] to [pa], they do not hear a gradual change: identification stays near 100 % /b/ up to a boundary (about 25 ms VOT for English labials), then switches to /p/ within one or two steps. Discrimination follows the labels: two stimuli 20 ms apart are told apart well when they straddle the boundary and barely above chance when both fall in the same category, although the acoustic difference is the same. Perception of this kind, where discrimination is predicted by identification, is called categorical perception. It is strong for stop consonants and much weaker for vowels, and it is shaped by the listener's language: the boundary sits where the language's categories need it.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "If listeners could only compare category labels, the probability of answering an ABX trial correctly (is X the same as A or as B?) would be 12+12(pA\u2212pB)2\\tfrac12+\\tfrac12(p_A-p_B)^221\u200b+21\u200b(pA\u200b\u2212pB\u200b)2, where pA,pBp_A, p_BpA\u200b,pB\u200b are the probabilities of labelling A and B as /p/: discrimination is then at chance within a category and peaks at the boundary. Liberman, Harris, Hoffman and Griffith (1957) found that real discrimination of stop continua nearly matches this prediction. Later work showed it is not purely categorical (listeners do hear some within-category differences, given sensitive tasks), and that chinchillas and infants show similar VOT boundaries, so part of the effect is auditory; but the boundary's location is tuned by experience with a language (ling-1.5).The label-only ABX prediction assumes fresh independent Bernoulli labels for A, B and X, with probabilities pA,pBp_A,p_BpA\u200b,pB\u200b of the /p/ label, and balanced choices of whether X repeats A or B. When A and B receive the same label, the decision is a random tie; otherwise it matches X's label. Factoring products of these bounded independent label indicators (prob 2.1.13) and summing the eight label outcomes gives 12+12(pA\u2212pB)2\\tfrac12+\\tfrac12(p_A-p_B)^221\u200b+21\u200b(pA\u200b\u2212pB\u200b)2. Independence and the tie rule are premises of this prediction, not measured properties of a listener, so the formula is not a universal discrimination law.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The eight stimuli (top) are [ba]\u2013[pa] syllables synthesized with VOT from 0 to 70 ms; click one to hear it. Then test yourself: Random step plays a hidden stimulus and you answer /b/ or /p/; ABX trial plays three stimuli and you say whether the third matched the first or the second. Your identification points (gold) and ABX scores (green bars) accumulate beside the curves of a model English listener (boundary 25 ms) and the discrimination it predicts. Only the pairs that straddle the boundary should be easy.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": null
+      },
+      {
+        "num": "1.14",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "The dispersion theory of vowel systems (Liljencrants and Lindblom, 1972) proposes that languages choose vowels that are as far apart as possible in auditory space, so that they are easy to tell apart. Model each vowel as a point in the space of possible vowels, measured by its first two formants on an auditory (Bark) scale, and choose nnn points that minimise the total \"energy\" E=\u2211i<j1/dij2E=\\sum_{i<j}1/d_{ij}^2E=\u2211i<j\u200b1/dij2\u200b, where dijd_{ij}dij\u200b is the auditory distance between vowels iii and jjj. The optima for small nnn reproduce the patterns of the commonest inventories of the world's languages: three vowels go to the corners [i a u], and five spread into two front, one low and two back vowels, the pattern of the most frequent system [i e a o u]. For larger nnn the simple model predicts too many high vowels (central [\u0268]-like vowels) compared with real languages, which add mid vowels instead, such as the common seven-vowel [i e \u025b a \u0254 o u].Holds when A model of which vowel qualities languages prefer, valid statistically across languages rather than for any one language; it ignores length, nasality, rounding as a separate dimension, and the role of focal (stable) vowels, and it overpredicts high vowels for systems of more than about seven.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The repulsive energy pushes points apart like charges confined to a region, so they first occupy the corners of the vowel space and then spread along its edge: the edge is longest along the front\u2013back dimension at the top (high vowels have the widest F2 range), so the optimum fills the periphery and avoids the centre. The space itself is the triangle-like region reachable by the vocal tract, here the hull of the measured cardinal vowels (ling-1.9). Weighting F2 less (because higher formants are perceived less sharply) shrinks the top edge and improves the predictions for larger systems, an observation that led to refinements such as Schwartz and colleagues' dispersion\u2013focalisation theory (1997).The ideal energy minimisation has an existence argument distinct from finding it numerically. For n\u22652n\\ge2n\u22652 points in a compact auditory region containing nnn distinct feasible points, choose one collision-free configuration with finite energy E0E_0E0\u200b. In its energy sublevel, every pair has distance at least E0\u22121/2E_0^{-1/2}E0\u22121/2\u200b, so that sublevel is compact and avoids collisions. The energy is continuous there; the extreme-value theorem (pma 4.16) gives a minimum, also global since every lower-energy configuration lies in this sublevel. This proves existence in the declared model, not that a numerical search certifies the global minimum or that real languages optimise this objective.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The shaded region is the space of possible vowels (outline of the cardinal vowels, on Bark scales: F2 leftward, F1 downward). Choose the number of vowels and watch them repel each other to the configuration of least energy; each settles next to the nearest cardinal vowel symbol, named in the readout. Drag any vowel to disturb the system and see the others rearrange; Shake starts again from new random positions (the energy has local minima, so the best of ten starts is animated). Raise the F2 weight to 1 to see the model add extra high vowels, its best-known failure; lower it and mid vowels appear instead.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when A model of which vowel qualities languages prefer, valid statistically across languages rather than for any one language; it ignores length, nasality, rounding as a separate dimension, and the role of focal (stable) vowels, and it overpredicts high vowels for systems of more than about seven."
+      },
+      {
+        "num": "2.3",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Phonemes are not atoms but bundles of binary distinctive features such as [\u00b1voice][\\pm\\text{voice}][\u00b1voice], [\u00b1nasal][\\pm\\text{nasal}][\u00b1nasal] and [\u00b1continuant][\\pm\\text{continuant}][\u00b1continuant]: each feature names one articulatory or acoustic property, and a segment is a column of +++ and \u2212-\u2212 values (or 000, \"not applicable\"). A small number of features (a few dozen at most) suffices to tell apart the phonemes of any language, and phonological patterns are stated over features rather than over lists of sounds.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Each feature carves the inventory into two halves, so nnn binary features can distinguish up to 2n2^n2n segments; real inventories are far sparser than that because features are correlated (every nasal is voiced and sonorant). The reason to prefer features to symbols is that sounds sharing a feature behave alike in rules (2.4, 2.5): the set of sounds that trigger a rule is then a conjunction of feature values, a simple object, rather than an arbitrary list. The feature set used here is a simplified teaching system of 17 features: stridency, laterality and tenseness are handled coarsely, and [bk] is left unspecified (0) for schwa.The binary capacity count uses the product rule (comb 1.1): for nnn freely specifiable features with two values each, choosing one value at each coordinate gives exactly 2n2^n2n distinct bundles. An actual inventory occupies only some bundles because its features need not vary independently. The widget's value 000 means unspecified or inapplicable; it is not silently counted as one of the two signs in that binary bound.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Left: set each feature to +++, \u2212-\u2212 or any (click a box). Right: the symbols that match every condition light up. Click a symbol on the chart to load its full feature column, then relax a feature to see which sounds join it; the presets set up classes you will meet in 2.4. Notice how few features it takes to isolate a single sound.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": null
+      },
+      {
+        "num": "2.4",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "A set of segments is a natural class if some bundle of feature values picks out exactly its members and nothing else. Phonological rules overwhelmingly apply to, or are triggered by, natural classes, and the smaller the bundle needed, the more natural (and more frequent) the class. A set like {p,s,\u03b7,a}\\{p, s, \\eta, \\mathrm{a}\\}{p,s,\u03b7,a} that no bundle singles out is unnatural: any bundle covering all of its members also covers extra segments.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The segments matching a feature value form a set; a bundle selects the intersection of such sets. So natural classes are exactly the intersections of feature-value sets (2.3), a tiny family compared with all 2392^{39}239 subsets of the 39 symbols on the chart. To test a given set, intersect the feature values it shares: that intersection is the most specific bundle containing the whole set, and the set is natural exactly when this bundle selects nothing else. The tool then searches for the shortest bundle with the same extension.Make one predicate for each specified feature value, true of a segment exactly when that segment carries that value. Conjunction has the truth-table semantics of logic 2.3, so a bundle holds exactly when every selected predicate holds; its extension is therefore the intersection of their extensions. A 000 entry is not automatically the negation of a positive feature value. This is a finite interpretation on the displayed inventory, and it licenses the intersection test without treating arbitrary subsets as single natural classes.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Click symbols to build a set (gold). The readout finds the smallest feature bundle that defines it, or shows the smallest natural class that contains it \u2014 the extra members it drags in are marked red. Try the preset plural -s triggers (p t k f \u03b8): it is natural, defined by the three values [+cons \u2212voi \u2212strid], which is why one rule suffices in 2.5. Then add /s/ or /\u0251/ and watch it stop being natural.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": null
+      },
+      {
+        "num": "2.6",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "When a grammar has several rules, the order in which they apply can change the output. Rule XXX feeds rule YYY when applying XXX first creates new sites where YYY can apply, and bleeds it when applying XXX first destroys sites where YYY would apply. If the attested forms need XXX before YYY in the first case or YYY before XXX in the second, the order is extrinsic and must be part of the grammar. The reverse orders, in which a rule would have fed or bled another but applies too late, are called counterfeeding and counterbleeding.Holds when Raising applies to the diphthong /a\u026a/ as a unit before a voiceless consonant, as in Canadian English; the g-deletion analysis is the classical /ng/ analysis of English [\u014b].",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Rules rewrite strings, so the output of one rule is the input of the next. Each rule's environment is a feature pattern (2.5), and an earlier rule can create that pattern (nasal assimilation produces the [\u014b] that g-deletion needs) or erase it (flapping turns a voiceless /t/, which raising needs to see, into a voiced tap). Because the rules are not independent, the data decide the order: of the k!k!k! possible orders only those whose derivations match the attested pronunciations are admissible, and the tool counts the sites each order creates or destroys to show which relation you get.With kkk distinct rules, an ordering uses each rule once. The permutation count (comb 1.5) gives k(k\u22121)\u22ef1=k!k(k-1)\\cdots1=k!k(k\u22121)\u22ef1=k! possible sequences, because the next position has one fewer unused rule. Testing those sequences against the forms then selects the admissible orders. Different orders may produce identical outputs, so the factorial counts rule sequences, not distinct surface grammars or meanings.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Choose a pair of rules and an order. The derivation table applies the first rule, then the second, to every underlying form and compares the result with the attested surface form; wrong rows turn red. The readout counts, over all forms, how many application sites the second rule has before and after the first one applies: more sites means feeding, fewer means bleeding. Flip the order and see the opposite relation (counterbleeding or counterfeeding) and which order the data want.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Raising applies to the diphthong /a\u026a/ as a unit before a voiceless consonant, as in Canadian English; the g-deletion analysis is the classical /ng/ analysis of English [\u014b]."
+      },
+      {
+        "num": "4.2",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let a \u201cmonkey\u201d type independently at each step a space with probability \u03c3\\sigma\u03c3 or one of MMM letters, each with probability (1\u2212\u03c3)/M(1-\\sigma)/M(1\u2212\u03c3)/M. Cut the stream at spaces into \u201cwords\u201d. Then the word of rank rrr has frequency f(r)\u2005\u200a\u221d\u2005\u200ar\u2212\u03b1,f(r)\\;\\propto\\;r^{-\\alpha},f(r)\u221dr\u2212\u03b1, \u03b1=1\u2212ln\u2061(1\u2212\u03c3)ln\u2061M,\\alpha=1-\\frac{\\ln(1-\\sigma)}{\\ln M},\u03b1=1\u2212lnMln(1\u2212\u03c3)\u200b, with \u03b1\u22481\\alpha\\approx1\u03b1\u22481 for small \u03c3\\sigma\u03c3, up to a staircase: all M\u2113M^{\\ell}M\u2113 words of length \u2113\\ell\u2113 have the same probability \u03c31\u2212\u03c3(1\u2212\u03c3M)\u2113\\tfrac{\\sigma}{1-\\sigma}\\bigl(\\tfrac{1-\\sigma}{M}\\bigr)^{\\ell}1\u2212\u03c3\u03c3\u200b(M1\u2212\u03c3\u200b)\u2113.Holds when A null model: it explains the shape of the rank\u2013frequency plot, not why real languages have word-frequency distributions with particular words in particular places. Real texts are not stationary random streams.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Shorter words are exponentially more probable, but there are exponentially more long words. A word of length \u2113\\ell\u2113 has rank about M\u2113M^{\\ell}M\u2113 and probability about ((1\u2212\u03c3)/M)\u2113((1-\\sigma)/M)^{\\ell}((1\u2212\u03c3)/M)\u2113, so eliminating \u2113\\ell\u2113 gives f\u221dr\u2212\u03b1f\\propto r^{-\\alpha}f\u221dr\u2212\u03b1 with the exponent above. The plot is a staircase with a step at each word length, and the steps average out into a line. The lesson is a warning: a straight line on a rank\u2013frequency plot is weak evidence for any particular theory of language, because a process with no meaning at all produces one; what differs is the detail (the real distribution has no exact plateaus and obeys other constraints).For M\u22652M\\ge2M\u22652 letters and 0<\u03c3<10<\\sigma<10<\u03c3<1, independence makes the probability of a fixed \u2113\\ell\u2113-letter string followed by space the product \u03c3[(1\u2212\u03c3)/M]\u2113\\sigma[(1-\\sigma)/M]^\\ell\u03c3[(1\u2212\u03c3)/M]\u2113 (prob 2.1.13). Conditioning on a nonempty word divides by 1\u2212\u03c31-\\sigma1\u2212\u03c3, giving the displayed word probability. Separately, the product rule (comb 1.1) counts M\u2113M^\\ellM\u2113 different strings of that length, and the sum rule accumulates their rank blocks over lengths. These are distinct steps: equal within-length probabilities create plateaus, while the exponentially growing block counts produce the power-law envelope, rather than an exact smooth equality at every rank.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Drag the alphabet size MMM and the space probability \u03c3\\sigma\u03c3 and press Resample. The orange stairs are the exact expected frequencies by word length; the dots are a simulated 150 000-character typing session. Switch on the real text to compare shapes (relative frequencies on both).",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when A null model: it explains the shape of the rank\u2013frequency plot, not why real languages have word-frequency distributions with particular words in particular places. Real texts are not stationary random streams."
+      },
+      {
+        "num": "4.3",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Build a text one word at a time. With probability \u03b1\\alpha\u03b1 the next word is brand new; with probability 1\u2212\u03b11-\\alpha1\u2212\u03b1 it repeats a word drawn uniformly from the earlier running text, so each word is chosen in proportion to how often it has already occurred. Then the number of distinct words grows linearly, V(N)\u2248\u03b1NV(N)\\approx\\alpha NV(N)\u2248\u03b1N, and the word of rank rrr has frequency f(r)\u2005\u200a\u221d\u2005\u200ar\u2212(1\u2212\u03b1),f(r)\\;\\propto\\;r^{-(1-\\alpha)},f(r)\u221dr\u2212(1\u2212\u03b1), a Zipf curve whose exponent is 1\u2212\u03b11-\\alpha1\u2212\u03b1, approaching 1 when new words are rare.Holds when Idealised growth model with no grammar. Real vocabularies grow sublinearly and real word choice depends on context and topic.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Preferential attachment: a word that has been used often is likely to be used again, and since a copied word is drawn from the tokens, its chance is proportional to its current count. Balancing the rate at which words climb to count kkk against the rate at which they leave it yields a stationary distribution of counts with tail k\u2212(1+1/(1\u2212\u03b1))k^{-(1+1/(1-\\alpha))}k\u2212(1+1/(1\u2212\u03b1)), which is the rank\u2013frequency exponent 1\u2212\u03b11-\\alpha1\u2212\u03b1 in disguise. The process also makes a prediction that fails for real text: vocabulary grows linearly, not sublinearly (compare Heaps' law, 4.4), so it is a model of the shape of the frequency curve and not of text as a whole.Let IjI_jIj\u200b indicate an innovation at token jjj. The first token is new, while every subsequent innovation has probability \u03b1\\alpha\u03b1 in this model. Since VN=1+\u2211j=2NIjV_N=1+\\sum_{j=2}^N I_jVN\u200b=1+\u2211j=2N\u200bIj\u200b, linearity of expectation (prob 1.6.1) gives the exact identity EVN=1+\u03b1(N\u22121)E V_N=1+\\alpha(N-1)EVN\u200b=1+\u03b1(N\u22121) without any assumption about dependence between different indicators. The statement's \u03b1N\\alpha N\u03b1N is its large-NNN form; this calculation does not establish the separate rank-frequency tail approximation or describe topic-dependent real text.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Slide \u03b1\\alpha\u03b1 (the chance of coining a new word) and the text length. Left: the simulated rank\u2013frequency plot against the predicted slope. Right: vocabulary size against position, which is a straight line of slope \u03b1\\alpha\u03b1.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Idealised growth model with no grammar. Real vocabularies grow sublinearly and real word choice depends on context and topic."
+      },
+      {
+        "num": "4.4",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "If V(N)V(N)V(N) is the number of distinct words among the first NNN words of a text, then V(N)\u2005\u200a\u2248\u2005\u200aK\u2009N\u03b2,0<\u03b2<1,\\begin{gathered}V(N)\\;\\approx\\;K\\,N^{\\beta},\\\\0<\\beta<1,\\end{gathered}V(N)\u2248KN\u03b2,0<\u03b2<1,\u200b typically \u03b2\u22480.4\\beta\\approx 0.4\u03b2\u22480.4\u20130.70.70.7 for natural-language texts and KKK of order 10\u2013100: the vocabulary never stops growing, but each new stretch of text brings fewer new words.Holds when A single homogeneous text; very short texts, or texts that change topic or language, bend the curve. The exponent depends on the language and on how words are counted (word forms versus lemmas).",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "New words are rarer the more text has been seen: the chance that the next word is new equals the proportion of the text's probability carried by words not yet met, which shrinks as common words are used up but never reaches zero because of the long Zipf tail. If frequencies follow a Zipf law with exponent s>1s>1s>1 then a sampling argument gives \u03b2\u22481/s\\beta\\approx 1/s\u03b2\u22481/s, a link between 4.1 and 4.4; with sss near 1, as in real text, the relation is only a rough guide and \u03b2\\beta\u03b2 is estimated directly.In a finite fixed-vocabulary sampling model, write the observed vocabulary as the sum of indicators that each type has appeared. Linearity of expectation (prob 1.6.1) gives EVN=\u2211j[1\u2212(1\u2212pj)N]E V_N=\\sum_j[1-(1-p_j)^N]EVN\u200b=\u2211j\u200b[1\u2212(1\u2212pj\u200b)N] for independent tokens with type probabilities pjp_jpj\u200b. Thus common types saturate early and progressively rarer types contribute later, making the expected increments decrease. This is an explicit sampling calculation underlying the explanation, not a proof of a universal Heaps exponent: a finite vocabulary ultimately saturates, and correlated or changing text need not follow this model.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Choose a text (or paste one) and watch V(N)V(N)V(N) on log\u2013log axes. The green line is the fit to everything beyond the minimum NNN you choose; the dashed line is the ceiling V=NV=NV=N (every word new). Switch on \u201cshuffle words\u201d: topic clustering is destroyed and the curve changes slightly, but remains a power law.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when A single homogeneous text; very short texts, or texts that change topic or language, bend the curve. The exponent depends on the language and on how words are counted (word forms versus lemmas)."
+      },
+      {
+        "num": "4.5",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "More frequent words tend to be shorter: across the word types of a language, length (in letters, phonemes or syllables) and frequency are negatively correlated, \u03c1Spearman(length,frequency)<0\\rho_{\\text{Spearman}}(\\text{length},\\text{frequency})<0\u03c1Spearman\u200b(length,frequency)<0. Zipf explained it by a principle of least effort: a speaker saves effort by giving short forms to words used often.Holds when Holds as a statistical tendency in all languages studied; it is weaker among very rare words. Length is measured here in letters, a proxy for time or effort.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Think of word forms as a code for meanings. If every word cost the same, nothing would be saved; with costs growing with length, an efficient code (as in Huffman or Morse coding) gives its shortest codewords to its most probable messages. Words like the, of, I are short, and long words (unforgettable) are rare; clippings such as phone from telephone are the historical mechanism. The correlation is far from perfect: rare short words (ox, awl) and frequent long ones exist.The coding argument uses a safe exchange (algo 10.3). Hold a finite set of distinct codewords and their positive length costs fixed. If pi>pjp_i>p_jpi\u200b>pj\u200b but \u2113i>\u2113j\\ell_i>\\ell_j\u2113i\u200b>\u2113j\u200b, swapping their meanings preserves every codeword and any prefix-free property, while changing expected cost by \u2212(pi\u2212pj)(\u2113i\u2212\u2113j)<0-(p_i-p_j)(\\ell_i-\\ell_j)<0\u2212(pi\u200b\u2212pj\u200b)(\u2113i\u200b\u2212\u2113j\u200b)<0. Repeating removes such inversions. This explains why a cost-minimising assignment pairs larger probabilities with shorter forms under these assumptions; it neither derives actual lexicons nor proves that every observed frequency-length correlation has this cause.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Left: every word type as a dot (rank on the log axis, length in letters); the green curve is the mean length in rank bins. Right: mean length by frequency class. Raise the minimum count to ignore the many words that occur once, and switch on \u201cpermute lengths\u201d to see what no relation looks like.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Holds as a statistical tendency in all languages studied; it is weaker among very rare words. Length is measured here in letters, a proxy for time or effort."
+      },
+      {
+        "num": "4.6",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Menzerath's observation relates larger linguistic constructs to smaller constituents on average. Altmann1980 explicitly treats it as a statistical hypothesis with possible nonmonotone relationships. His Eq.3 is y\u2032/y=b/x\u2212c; its positive solution is y=A\u00b7x^b\u00b7exp(\u2212cx), with A>0. The slope is negative exactly where b/x\u2212c<0; fixed signs b<0,c\u22650 are sufficient but are not necessary or universal source conditions.The original Indonesian example has b<0,c<0, while the English example has b>0,c>0. The model therefore must not silently constrain either coefficient or force every fitted curve to decrease.Holds when Actual Altmann1980 pp.1\u201310 supports the formulation, limitations and three transcribed datasets. Table2 concerns13444 Indonesian morphemes; Table3 labels English types using Roberts1965 data described as15465010 words; Table4 concerns488 Bachka-German words with3961 repetitions. These are not equivalent populations. The dialect table increases from239.91 to240.92ms between one and two syllables; the printed English fitted row also initially rises. No forced monotonic smoothing is used. The original raw data/recordings and earlier Menzerath/Roberts works were not independently re-audited. Published predictions are rounded, so they need not equal a new fit of rounded means. Proxy tokens use the declared alphabet and normalization of4.13. Vowel groups with a few English silent-ending rules estimate syllable count; this is an authored, unvalidated heuristic, not a language-general syllabifier. Groups1\u20137 require at least5 types/tokens; larger estimated counts are omitted. Letters per estimated syllable are not sound duration or phonemes, and cross-text differences do not establish language-wide properties. Count mode applies only to proxies; hidden saved modes remain valid and preserved.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Taking logs gives ln y=ln A+b\u00b7ln x\u2212c\u00b7x. The display fits this linear model to the group means, with equal weight per observed group, using centered normal equations. The power and exponential special cases constrain c=0 or b=0 respectively. A low in-sample log loss is not a mechanism or a universal-law test. Altmann's p.5 says a connection with least effort or compensation is suspected, rather than established.The two mathematical steps are separate. On x>0x>0x>0 with y>0y>0y>0, separation of variables (ode 1.3) integrates y\u2032/y=b/x\u2212cy'/y=b/x-cy\u2032/y=b/x\u2212c to log\u2061y=log\u2061A+blog\u2061x\u2212cx\\log y=\\log A+b\\log x-cxlogy=logA+blogx\u2212cx, with A>0A>0A>0. For the equal-group log fit, the observed vector (log\u2061yi)(\\log y_i)(logyi\u200b) is approximated in the span of the three columns 111, log\u2061xi\\log x_ilogxi\u200b, and \u2212xi-x_i\u2212xi\u200b. Orthogonal projection minimises squared Euclidean distance to that span (ladr 6.61), giving the normal equations used here. Unique coefficients additionally require full column rank, which the helper checks; neither an exact model solution nor a least-squares optimum establishes a universal linguistic mechanism.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The first three choices transcribe the original observed means and optional printed predictions from Tables2\u20134. Their units and populations differ. Green is our refit to the rounded observed means, not the original author's unrounded computation. The four bundled-text choices retain the exploratory orthographic proxy and type/token count modes. Bars there are population SD within each proxy group, not standard errors; the original tables provide no such SD bars.Right: x times the observed mean constituent size, with an authored comparison that holds the first group's mean constant. The comparison line is arithmetic, not a no-compression counterfactual or evidence that speakers compress longer words. All plotted points, curves, SD bars and the whole comparison line are included in the bounds.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Actual Altmann1980 pp.1\u201310 supports the formulation, limitations and three transcribed datasets. Table2 concerns13444 Indonesian morphemes; Table3 labels English types using Roberts1965 data described as15465010 words; Table4 concerns488 Bachka-German words with3961 repetitions. These are not equivalent populations. The dialect table increases from239.91 to240.92ms between one and two syllables; the printed English fitted row also initially rises. No forced monotonic smoothing is used. The original raw data/recordings and earlier Menzerath/Roberts works were not independently re-audited. Published predictions are rounded, so they need not equal a new fit of rounded means. Proxy tokens use the declared alphabet and normalization of4.13. Vowel groups with a few English silent-ending rules estimate syllable count; this is an authored, unvalidated heuristic, not a language-general syllabifier. Groups1\u20137 require at least5 types/tokens; larger estimated counts are omitted. Letters per estimated syllable are not sound duration or phonemes, and cross-text differences do not establish language-wide properties. Count mode applies only to proxies; hidden saved modes remain valid and preserved."
+      },
+      {
+        "num": "4.8",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Shannon's guessing procedure encodes each next text symbol by the number of guesses needed to identify it. Given the same deterministic guess rule and preceding text, that encoding can be reversed. For an ideal predictor, the next-symbol probabilities in each context are ranked from largest to smallest. Pooling these ranks gives a nonincreasing distribution q. His Eq.17 bounds the conditional entropy F of that specified context source: L=\u2211i=127i(qi\u2212qi+1)log\u20612i,L=\\sum_{i=1}^{27}i(q_i-q_{i+1})\\log_2i,L=i=1\u221127\u200bi(qi\u200b\u2212qi+1\u200b)log2\u200bi, U=\u2212\u2211i=127qilog\u20612qi.U=-\\sum_{i=1}^{27}q_i\\log_2q_i.U=\u2212i=1\u221127\u200bqi\u200blog2\u200bqi\u200b. Then L\u2264F\u2264UL\\le F\\le UL\u2264F\u2264U, with q28=0q_{28}=0q28\u200b=0. A finite-context lower bound on F is not automatically a lower bound on the infinite-context entropy rate H. Arbitrary empirical guess frequencies do not satisfy the ideal lower-bound premise.Holds when The alphabet is lowercase a\u2013z plus space; punctuation and nonletters collapse to a single space. The finite joint source samples a next-symbol position uniformly from positions3 onward in the normalized embedded Alice text. Every context length uses these same positions, so the context refinements are nested. Its probabilities are known by construction; it is a corpus-derived finite source, not a certified natural-language entropy rate. Practice uses text also in that corpus and is not a held-out experiment. Your guesses may be nonideal and dependent; their finite histogram gives no guaranteed lower bound on F or H.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "For a known finite source, sort each context's conditional probabilities and average by context frequency. The lower expression is the average entropy of uniform distributions on the first i ranks, with weights i(q_i\u2212q_{i+1}); the upper expression is the marginal entropy of the rank code. Here both expressions are compared with the directly computed conditional entropy. The practice game records your guesses separately. It reports an observed histogram, never labels that histogram a rigorous entropy bound.For each known finite context hhh, sort its conditional symbol probabilities pi(h)p_i^{(h)}pi(h)\u200b and set p28(h)=0p_{28}^{(h)}=0p28(h)\u200b=0. The weights i(pi(h)\u2212pi+1(h))i(p_i^{(h)}-p_{i+1}^{(h)})i(pi(h)\u200b\u2212pi+1(h)\u200b) express that sorted distribution as a mixture of uniforms on the first iii ranks. Entropy concavity (info 2.9), applied within each context and then averaged, yields the lower expression using the marginal rank probabilities qiq_iqi\u200b. The rank is a bijective relabelling of symbols when hhh is known, so its conditional entropy equals FFF. Conditioning reduces entropy on average (info 2.7), giving F\u2264H(rank)=UF\\le H(\\text{rank})=UF\u2264H(rank)=U. The two inequalities require different steps; neither makes a nonideal empirical guessing histogram a certified bound.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Practice on five consecutive 100-symbol windows from Alice: choose a symbol and press Guess, using the displayed text so far. A wrong symbol is marked as tried; a correct guess advances the saved cursor and records its guess number. Seeking/repeating letters is allowed and the histogram pools all practice. The other panel ranks true empirical context probabilities of the complete embedded Alice text; choose 0\u20133 preceding symbols and compare its exact finite F with both bounds.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when The alphabet is lowercase a\u2013z plus space; punctuation and nonletters collapse to a single space. The finite joint source samples a next-symbol position uniformly from positions3 onward in the normalized embedded Alice text. Every context length uses these same positions, so the context refinements are nested. Its probabilities are known by construction; it is a corpus-derived finite source, not a certified natural-language entropy rate. Practice uses text also in that corpus and is not a held-out experiment. Your guesses may be nonideal and dependent; their finite histogram gives no guaranteed lower bound on F or H."
+      },
+      {
+        "num": "4.9",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "An n-gram model approximates the next word's distribution using at most n\u22121 preceding words. Estimate a continuation from its count divided by the total observed continuations of that context. Add-\u03bb smoothing gives P(w\u2223h)=[c(h,w)+\u03bb]/[\u2211xc(h,x)+\u03bbV]P(w\\mid h)=[c(h,w)+\\lambda]/[\\sum_xc(h,x)+\\lambda V]P(w\u2223h)=[c(h,w)+\u03bb]/[\u2211x\u200bc(h,x)+\u03bbV], a normalized distribution even for an unseen context. Without smoothing, a test continuation with zero support makes sequence probability zero and perplexity infinite. Perplexity is 2\u22121T\u2211tlog\u20612P(wt\u2223ht)2^{-\\frac1T\\sum_t\\log_2P(w_t\\mid h_t)}2\u2212T1\u200b\u2211t\u200blog2\u200bP(wt\u200b\u2223ht\u200b).Holds when Finite continuous token streams across sentence boundaries; ASCII letters and internal apostrophes, lowercased, with curly apostrophes normalized. Training singletons and all test out-of-vocabulary words map to <unk>, which is always in the vocabulary. Early test positions use only the available history. Each context denominator is its outgoing count, excluding a terminal occurrence with no continuation. No sentence-boundary symbols or tuned practical smoothing are claimed. Alice is the repository's embedded Project Gutenberg11 text; the mini corpus is authored. Own text is limited to 10,000 characters with an explicit error.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "More context can capture local word order but can also leave too little evidence. Interpolation mixes distributions from several context lengths; it differs from choosing a shorter order only when a longer one is missing. Neither higher order nor interpolation guarantees better test perplexity. Compare models on the same test tokens and vocabulary. Here interpolation uses an authored fixed weighting, including a positive uniform component; its weights are not fitted on the test data.Choose a test-token position uniformly and let its context/next-word pair be the outcome. Within each observed context, cross-entropy (info 2.4) averages \u2212log\u20612q(w\u2223h)-\\log_2 q(w\\mid h)\u2212log2\u200bq(w\u2223h) under the empirical next-word distribution; averaging these conditional losses by the empirical context frequencies is exactly the displayed mean token log loss. Its exponential is perplexity. Any observed continuation with q=0q=0q=0 makes this loss and perplexity infinite. This finite test-set identity assumes neither independent test tokens nor convergence to a natural-language entropy rate, and it gives no guarantee that a higher-order model improves prediction.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Choose the embedded Alice text, a small authored corpus, or your own text. Train on the first 85% of word tokens and evaluate every remaining token, with the test history initially empty. Select order and smoothing to highlight a point; both complete curves use the same train/test split. The generated 36-token sample uses exactly the selected probability distribution, including the explicit unknown token. Generate advances the saved seed.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Finite continuous token streams across sentence boundaries; ASCII letters and internal apostrophes, lowercased, with curly apostrophes normalized. Training singletons and all test out-of-vocabulary words map to <unk>, which is always in the vocabulary. Early test positions use only the available history. Each context denominator is its outgoing count, excluding a terminal occurrence with no continuation. No sentence-boundary symbols or tuned practical smoothing are claimed. Alice is the repository's embedded Project Gutenberg11 text; the mini corpus is authored. Own text is limited to 10,000 characters with an explicit error."
+      },
+      {
+        "num": "4.10",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Uniform information density (UID) proposes that speakers tend to avoid peaks and troughs of information per unit, within grammatical and processing constraints. Levy and Jaeger study optional relative-clause that in spontaneous American English, as in \u201cHow big is the family (that) you cook for?\u201d Their2006 study uses 3,452 eligible relative clauses from Switchboard; less predictable clause onsets are associated with more overt marking after control variables. This is evidence in one production setting, not a universal rule that adding a word improves a sentence.Holds when The source is a spoken relative-clause study, not a complement-clause or written-corpus replication. The widget is an authored ideal cue model, not fitted corpus data or a reproduction of its regressions. It treats \u201cthat\u201d as revealing the clause without a separate production-choice surprisal, and assumes the same lexical probability with or without the cue, in the spirit of the source's pseudo-English comparison (\u00a74, footnote 4). Other words have fixed illustrative surprisals. The quadratic objective and per-word cost are declared assumptions; real durations, ambiguity, speaker goals and correlated cues are outside this illustration.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Their Eq. 2 splits a relative-clause onset's surprisal into structural and lexical terms. In the authored idealization here, let c be the probability of the relative clause and q the conditional probability of its first word. Without a marker, \u201cyou\u201d carries \u2212log\u2082(cq) bits. Treating \u201cthat\u201d as a perfect cue moves \u2212log\u2082c bits to the marker and leaves \u2212log\u2082q for \u201cyou\u201d, preserving the combined surprisal. If processing cost is squared surprisal, splitting saves 2(\u2212log\u20612c)(\u2212log\u20612q)2(-\\log_2c)(-\\log_2q)2(\u2212log2\u200bc)(\u2212log2\u200bq); an extra-word cost can outweigh that saving.For the authored ideal cue model, 0<c,q\u226410<c,q\\le10<c,q\u22641 makes the logarithm product law (pma 8.6) applicable: \u2212log\u20612(cq)=\u2212log\u20612c\u2212log\u20612q-\\log_2(cq)=-\\log_2 c-\\log_2 q\u2212log2\u200b(cq)=\u2212log2\u200bc\u2212log2\u200bq. Thus marking redistributes a fixed combined surprisal between the two units. The quadratic-cost saving then follows by expanding (a+b)2\u2212a2\u2212b2=2ab(a+b)^2-a^2-b^2=2ab(a+b)2\u2212a2\u2212b2=2ab for a=\u2212log\u20612ca=-\\log_2ca=\u2212log2\u200bc, b=\u2212log\u20612qb=-\\log_2qb=\u2212log2\u200bq. This is the declared cue/cost calculation, not a proof of the empirical UID hypothesis or of a production benefit once extra-word costs are included.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Change c, q and the authored extra-word cost. The first two panels show the complete toy word-surprisal sequences; word indices are expanded in the readout. The final panel compares the quadratic-load saving from splitting with the extra-word cost. The selected dot and exact crossing use the same formula. Population variance is also reported, but it compares sequences of different lengths and is not the decision rule.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when The source is a spoken relative-clause study, not a complement-clause or written-corpus replication. The widget is an authored ideal cue model, not fitted corpus data or a reproduction of its regressions. It treats \u201cthat\u201d as revealing the clause without a separate production-choice surprisal, and assumes the same lexical probability with or without the cue, in the spirit of the source's pseudo-English comparison (\u00a74, footnote 4). Other words have fixed illustrative surprisals. The quadratic objective and per-word cost are declared assumptions; real durations, ambiguity, speaker goals and correlated cues are outside this illustration."
+      },
+      {
+        "num": "4.12",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Word-use patterns can supply evidence about authorship. Mosteller and Wallace's1963 article distinguishes relatively stable function-word rates from topic-sensitive words. It compares classical discrimination with Bayesian count models and supports Madison for the twelve disputed Federalist essays49\u201358,62,63. Its adjusted evidence is weakest for55 (about80:1), followed by56 (about800:1); these are conditional historical-model judgments, not universal error guarantees.For this separate plug-in Poisson illustration, counts c_w in N words contribute c_w\u00b7ln(\u03c1\u1d39_w/\u03c1\u1d34_w)\u2212N(\u03c1\u1d39_w\u2212\u03c1\u1d34_w). Summing gives a log-likelihood contrast: positive favors Madison, negative Hamilton, and zero is a tie, under this model.Holds when The85-essay teaching corpus has188133 running tokens after headings, salutation, signature and following notes are removed. Tokens are lowercase ASCII letter runs with internal apostrophes, with curly apostrophes normalized. Stored original counts for all85\u00d716 markers and all essay lengths were independently reproduced from official PG1404. The historical study partition has51 Hamilton,14 Madison,5 Jay,3 joint and12 formerly disputed essays; the ? code identifies that historical task, not a claim that current Gutenberg bylines are unknown. In that partition, joint/Jay/disputed essays never train the two candidates. This is not the article's own count table, 48-Hamilton/50-Madison mixed-material sample, selected marker sets, editions or uncertainty-adjusted Bayesian analysis. Its newspaper discussion identifies43 known Hamilton and14 known Madison among77 essays; the later eight Hamilton essays are included here. The16 words are a declared teaching choice. Leave-one-out over65 essays refits rates but does not repeat feature selection or provide independent validation of that word choice. Rates are neither unconsciousness measurements nor guaranteed independent of topic; authorship inference is limited to the closed two-candidate model.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The formula follows by subtracting the two Poisson log probabilities: the factorial and N^c factors cancel. We use the authored positive rate estimate (count+0.5)/(training words+1), fixed in advance, and equal candidate prior odds. Function-word counts are treated as conditionally independent for this score even though real words correlate. It ignores rate uncertainty and changing style. The original article tests Poisson departures, uses negative-binomial models for additional variation, separates screening/calibration material, and warns against reading extreme odds literally.The displayed score starts from the Poisson probability mass function (prob 1.6.13). For N>0N>0N>0 and a positive candidate rate \u03c1w\\rho_w\u03c1w\u200b, the model probability of count cwc_wcw\u200b is e\u2212N\u03c1w(N\u03c1w)cw/cw!e^{-N\\rho_w}(N\\rho_w)^{c_w}/c_w!e\u2212N\u03c1w\u200b(N\u03c1w\u200b)cw\u200b/cw\u200b!. Subtracting candidate log probabilities cancels cw!c_w!cw\u200b! and NcwN^{c_w}Ncw\u200b and gives the stated per-word contrast. The assumed conditional independence then permits summing these contrasts. This verifies the plug-in likelihood formula; it does not validate independence, resolve rate uncertainty, reproduce the historical article's full Bayesian model or calibrate extreme odds.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Left: all85 essays from the checked Gutenberg text, with exact per1000-word rates for two markers. The gold ring identifies the selected essay. Right: the twelve disputed essays' scores using one marker, three markers, or the declared16-word set. The complete bars remain visible; they are score contrasts, not calibrated probabilities. Select an essay to inspect each word's contribution below. Known Hamilton/Madison selections reuse their training data in that selected score; only the separate leave-one-out result excludes its own essay.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when The85-essay teaching corpus has188133 running tokens after headings, salutation, signature and following notes are removed. Tokens are lowercase ASCII letter runs with internal apostrophes, with curly apostrophes normalized. Stored original counts for all85\u00d716 markers and all essay lengths were independently reproduced from official PG1404. The historical study partition has51 Hamilton,14 Madison,5 Jay,3 joint and12 formerly disputed essays; the ? code identifies that historical task, not a claim that current Gutenberg bylines are unknown. In that partition, joint/Jay/disputed essays never train the two candidates. This is not the article's own count table, 48-Hamilton/50-Madison mixed-material sample, selected marker sets, editions or uncertainty-adjusted Bayesian analysis. Its newspaper discussion identifies43 known Hamilton and14 known Madison among77 essays; the later eight Hamilton essays are included here. The16 words are a declared teaching choice. Leave-one-out over65 essays refits rates but does not repeat feature selection or provide independent validation of that word choice. Rates are neither unconsciousness measurements nor guaranteed independent of topic; authorship inference is limited to the closed two-candidate model."
+      },
+      {
+        "num": "1.1",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "A speech sound is produced by a source and shaped by a filter. The source is either the quasi-periodic puffs of air let through by the vibrating vocal folds (voicing), turbulent noise at a narrowing (whisper, aspiration, frication), or both. The filter is the air in the vocal tract from the larynx to the lips (and the nose, when the velum is lowered), whose resonances, the formants, depend on its shape; the radiated sound is the flow at the lips, differentiated by radiation into the open air. If the tract is treated as a linear, time-invariant system over stretches of a few tens of milliseconds, the output spectrum is the product P(f)=S(f)\u2009T(f)\u2009R(f),LP(f)=LS(f)+LT(f)+LR(f)(decibels),\\begin{aligned}P(f)&=S(f)\\,T(f)\\,R(f),\\\\L_P(f)&=L_S(f)+L_T(f)\\\\&\\quad+L_R(f)\\quad\\text{(decibels),}\\end{aligned}P(f)LP\u200b(f)\u200b=S(f)T(f)R(f),=LS\u200b(f)+LT\u200b(f)+LR\u200b(f)(decibels),\u200b of the source spectrum SSS (lines at the harmonics kf0k f_0kf0\u200b of the voice, falling about 12 dB per octave, or a flat noise continuum), the tract's transfer function TTT (peaks at the formants) and the radiation characteristic RRR (rising about 6 dB per octave). The larynx and the articulators work independently: the vocal folds set pitch and voice quality, the tongue, lips and jaw set the formants.Holds when Holds when the vocal tract can be treated as a linear, time-invariant filter (sound pressures far below the steady airflow, shapes changing slowly compared with the period) and the source is unaffected by the tract. It is only approximate when the two interact: high voices whose f0f_0f0\u200b approaches F1, rapid articulatory movements, and nasal coupling, which adds antiresonances.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Because the tract filters linearly, convolution in time becomes multiplication in frequency, so each harmonic of the source is simply scaled by the gain of the filter at its frequency. A periodic source has a line spectrum (its Fourier series), so voiced speech is a picket fence of harmonics whose heights trace the filter's resonance curve, while a noise source gives a continuous spectrum with the same peaks. The idea goes back to Johannes M\u00fcller's experiments with excised larynges in the 1830s; Chiba and Kajiyama (1941) computed the tract's resonances, and Gunnar Fant's Acoustic Theory of Speech Production (1960) made source \u00d7 filter the standard model; the formant model of timbre is music-4.10.The harmonic-by-harmonic step uses the LTI eigenfunction calculation (sig 3.9): for an absolutely integrable impulse response hhh, inserting ei\u03c9te^{i\\omega t}ei\u03c9t in the convolution integral gives ei\u03c9t\u222bh(\u03c4)e\u2212i\u03c9\u03c4\u2009d\u03c4e^{i\\omega t}\\int h(\\tau)e^{-i\\omega\\tau}\\,d\\tauei\u03c9t\u222bh(\u03c4)e\u2212i\u03c9\u03c4d\u03c4. Thus each harmonic retains its frequency and acquires the transfer factor at that frequency. Apply this integral calculation to the tract response when that hypothesis holds over a fixed-shape window. Ideal radiation differentiation is a separate operation: ddtei\u03c9t=i\u03c9ei\u03c9t\\frac{d}{dt}e^{i\\omega t}=i\\omega e^{i\\omega t}dtd\u200bei\u03c9t=i\u03c9ei\u03c9t, rather than an absolutely integrable impulse response. Neither step asserts exact linearity or independence of the source and tract in actual speech.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Drag the F1, F2, F3 handles on the middle panel to reshape the filter, or pick a preset. The left panel is the source, the right one the output: every harmonic of the output is the source harmonic raised by the filter's gain at that frequency, and the readout checks this against the spectrum of the waveform actually synthesized (time domain, then FFT). Change the pitch: the harmonics slide, the envelope stays. Switch the source to whisper: the harmonics vanish but the formant peaks (and the vowel) remain. Source alone plays the buzz before the tract shapes it. (The lip radiation is folded into the source here.)",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Holds when the vocal tract can be treated as a linear, time-invariant filter (sound pressures far below the steady airflow, shapes changing slowly compared with the period) and the source is unaffected by the tract. It is only approximate when the two interact: high voices whose f0f_0f0\u200b approaches F1, rapid articulatory movements, and nasal coupling, which adds antiresonances."
+      },
+      {
+        "num": "1.8",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Model the vocal tract as a uniform tube of length LLL (about 17 cm for an adult man, 14.5 cm for a woman), closed at the glottis, where the folds are nearly shut, and open at the lips. Plane sound waves in it resonate when the tube holds an odd number of quarter wavelengths, i.e. at Fn=(2n\u22121)\u2009c4L,n=1,2,3,\u2026\\begin{gathered}F_n=\\frac{(2n-1)\\,c}{4L},\\\\n=1,2,3,\\ldots\\end{gathered}Fn\u200b=4L(2n\u22121)c\u200b,n=1,2,3,\u2026\u200b With c\u2248350c\\approx350c\u2248350 m/s in warm humid air and L=17.5L=17.5L=17.5 cm this gives 500, 1500, 2500 Hz: the formants of the neutral vowel schwa [\u0259]. Narrowing the tube changes the resonances in a predictable way: a constriction near a maximum of the volume velocity of a mode (a pressure node) lowers that formant, while one near a pressure maximum raises it. A tube open at both ends would instead resonate at n\u2009c/2Ln\\,c/2Lnc/2L.Holds when Holds for plane-wave propagation, i.e. below roughly 4\u20135 kHz where the tube's width is small compared with the wavelength, ignoring losses (which broaden the peaks), the yielding walls and the nasal side branch. A real tract is curved and non-uniform; the uniform tube describes only the neutral vowel, and other vowels are perturbations of it.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "At a closed end the air cannot move (volume velocity zero, pressure maximal); at an open end the pressure is atmospheric (pressure zero). The standing waves that fit these conditions have a quarter, three quarters, five quarters \u2026 of a wavelength in the tube, as for a stopped organ pipe (music-3.3). For non-uniform shapes the tube is cut into short sections and the transfer matrices of the sections are multiplied; resonances are the frequencies where the volume velocity at the glottis vanishes for unit flow at the lips. Perturbation theory explains the direction of the shifts: narrowing a section increases the kinetic (inertial) energy stored where the air moves fast and decreases the potential (compressional) energy where the pressure swings, so the sign of (kinetic \u2212 potential) energy density, the sensitivity function, tells whether that formant falls or rises (ling-1.7).For the stated lossless uniform tube, a harmonic pressure amplitude satisfies P\u2032\u2032+(\u03c9/c)2P=0P''+(\\omega/c)^2P=0P\u2032\u2032+(\u03c9/c)2P=0. The constant-coefficient solution theorem (ode 3.13) gives the complete pair cos\u2061(\u03c9x/c)\\cos(\\omega x/c)cos(\u03c9x/c) and sin\u2061(\u03c9x/c)\\sin(\\omega x/c)sin(\u03c9x/c) for \u03c9>0\\omega>0\u03c9>0. The closed-glottis condition is P\u2032(0)=0P'(0)=0P\u2032(0)=0, leaving only the cosine, while the open-lip condition P(L)=0P(L)=0P(L)=0 requires \u03c9L/c=(2n\u22121)\u03c0/2\\omega L/c=(2n-1)\\pi/2\u03c9L/c=(2n\u22121)\u03c0/2. Converting angular frequency to hertz yields the displayed odd-quarter-wave formula. This boundary calculation is for pressure, not the opposite node convention for volume velocity.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Slide the tube length, then drag the gold handle to squeeze the tube anywhere (up and down sets the area). The middle panel shows the standing wave of the chosen formant, pressure (red) and volume velocity (blue), with the sensitivity shaded: blue where narrowing lowers this formant, red where it raises it. The right panel is the tube's response with its computed resonances (solid) against the uniform-tube values (2n\u22121)c/4L(2n-1)c/4L(2n\u22121)c/4L (dashed). Squeeze near the lips (rounding) and every formant drops; squeeze near the glottis and they rise. Switch the glottis end to open to break the quarter-wave pattern.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Holds for plane-wave propagation, i.e. below roughly 4\u20135 kHz where the tube's width is small compared with the wavelength, ignoring losses (which broaden the peaks), the yielding walls and the nasal side branch. A real tract is curved and non-uniform; the uniform tube describes only the neutral vowel, and other vowels are perturbations of it."
+      },
+      {
+        "num": "1.10",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "The same vowel spoken by different people has very different formant frequencies: children's formants are up to 40\u201350 % higher than men's because their vocal tracts are shorter, and women's lie in between. In raw hertz the vowel categories of a population therefore overlap heavily (a child's [\u028a] can have the formants of a man's [\u028c]), yet listeners identify vowels across speakers almost effortlessly. They do so by normalising: judging each vowel relative to the speaker's own vowel space. Computational normalisations that rescale each speaker's formants, for example the log-mean method (Nearey), which subtracts the speaker's mean log formant, or Lobanov's z-scores, which standardise each formant by the speaker's mean and standard deviation, make the categories of different speakers line up and greatly reduce the overlap.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "To a first approximation a shorter vocal tract multiplies all formants by the same factor (resonances scale as 1/L1/L1/L, ling-1.8), so on a logarithmic scale a speaker's whole vowel space is shifted rigidly. Subtracting the speaker's mean log formant undoes that shift (Nearey 1978); Lobanov's (1971) z-scores also undo differences in the spread of the space. Listeners appear to use similar information, both from the other vowels they have heard from the speaker (extrinsic normalisation) and from cues within the vowel such as f0f_0f0\u200b and F3 (intrinsic). The data here are simulated: each speaker's vowels are drawn around Peterson and Barney's group means (ling-1.9), scaled by a random vocal-tract factor and given random token-to-token variation.The logarithm law (pma 8.6) supplies the cancellation in log-mean normalisation. If all positive formant measurements FiF_iFi\u200b are multiplied by one speaker factor a>0a>0a>0, then log\u2061(aFi)=log\u2061a+log\u2061Fi\\log(aF_i)=\\log a+\\log F_ilog(aFi\u200b)=loga+logFi\u200b and their mean log shifts by the same log\u2061a\\log aloga. Subtraction therefore leaves every centred log coordinate unchanged. This exact invariance belongs to the common-multiplier model; unequal formant scaling, different vowel sampling and biological differences are not removed by that identity.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Each symbol is one vowel token of one simulated speaker (8 men, 8 women, 8 children); ellipses enclose about 80 % of each vowel category. Switch the normalisation: in raw hertz the ellipses sprawl and overlap, after log-mean or Lobanov normalisation they shrink and separate. The readout scores each method by classifying every token with the category centres learned from the other speakers (nearest centre, leave one speaker out). Highlight a group to see its own vowel space; New speakers draws another population.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": null
+      },
+      {
+        "num": "1.13",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "When listeners hear a continuum of synthetic syllables whose voice onset time increases in equal steps from [ba] to [pa], they do not hear a gradual change: identification stays near 100 % /b/ up to a boundary (about 25 ms VOT for English labials), then switches to /p/ within one or two steps. Discrimination follows the labels: two stimuli 20 ms apart are told apart well when they straddle the boundary and barely above chance when both fall in the same category, although the acoustic difference is the same. Perception of this kind, where discrimination is predicted by identification, is called categorical perception. It is strong for stop consonants and much weaker for vowels, and it is shaped by the listener's language: the boundary sits where the language's categories need it.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "If listeners could only compare category labels, the probability of answering an ABX trial correctly (is X the same as A or as B?) would be 12+12(pA\u2212pB)2\\tfrac12+\\tfrac12(p_A-p_B)^221\u200b+21\u200b(pA\u200b\u2212pB\u200b)2, where pA,pBp_A, p_BpA\u200b,pB\u200b are the probabilities of labelling A and B as /p/: discrimination is then at chance within a category and peaks at the boundary. Liberman, Harris, Hoffman and Griffith (1957) found that real discrimination of stop continua nearly matches this prediction. Later work showed it is not purely categorical (listeners do hear some within-category differences, given sensitive tasks), and that chinchillas and infants show similar VOT boundaries, so part of the effect is auditory; but the boundary's location is tuned by experience with a language (ling-1.5).The label-only ABX prediction assumes fresh independent Bernoulli labels for A, B and X, with probabilities pA,pBp_A,p_BpA\u200b,pB\u200b of the /p/ label, and balanced choices of whether X repeats A or B. When A and B receive the same label, the decision is a random tie; otherwise it matches X's label. Factoring products of these bounded independent label indicators (prob 2.1.13) and summing the eight label outcomes gives 12+12(pA\u2212pB)2\\tfrac12+\\tfrac12(p_A-p_B)^221\u200b+21\u200b(pA\u200b\u2212pB\u200b)2. Independence and the tie rule are premises of this prediction, not measured properties of a listener, so the formula is not a universal discrimination law.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The eight stimuli (top) are [ba]\u2013[pa] syllables synthesized with VOT from 0 to 70 ms; click one to hear it. Then test yourself: Random step plays a hidden stimulus and you answer /b/ or /p/; ABX trial plays three stimuli and you say whether the third matched the first or the second. Your identification points (gold) and ABX scores (green bars) accumulate beside the curves of a model English listener (boundary 25 ms) and the discrimination it predicts. Only the pairs that straddle the boundary should be easy.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": null
+      },
+      {
+        "num": "1.14",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "The dispersion theory of vowel systems (Liljencrants and Lindblom, 1972) proposes that languages choose vowels that are as far apart as possible in auditory space, so that they are easy to tell apart. Model each vowel as a point in the space of possible vowels, measured by its first two formants on an auditory (Bark) scale, and choose nnn points that minimise the total \"energy\" E=\u2211i<j1/dij2E=\\sum_{i<j}1/d_{ij}^2E=\u2211i<j\u200b1/dij2\u200b, where dijd_{ij}dij\u200b is the auditory distance between vowels iii and jjj. The optima for small nnn reproduce the patterns of the commonest inventories of the world's languages: three vowels go to the corners [i a u], and five spread into two front, one low and two back vowels, the pattern of the most frequent system [i e a o u]. For larger nnn the simple model predicts too many high vowels (central [\u0268]-like vowels) compared with real languages, which add mid vowels instead, such as the common seven-vowel [i e \u025b a \u0254 o u].Holds when A model of which vowel qualities languages prefer, valid statistically across languages rather than for any one language; it ignores length, nasality, rounding as a separate dimension, and the role of focal (stable) vowels, and it overpredicts high vowels for systems of more than about seven.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The repulsive energy pushes points apart like charges confined to a region, so they first occupy the corners of the vowel space and then spread along its edge: the edge is longest along the front\u2013back dimension at the top (high vowels have the widest F2 range), so the optimum fills the periphery and avoids the centre. The space itself is the triangle-like region reachable by the vocal tract, here the hull of the measured cardinal vowels (ling-1.9). Weighting F2 less (because higher formants are perceived less sharply) shrinks the top edge and improves the predictions for larger systems, an observation that led to refinements such as Schwartz and colleagues' dispersion\u2013focalisation theory (1997).The ideal energy minimisation has an existence argument distinct from finding it numerically. For n\u22652n\\ge2n\u22652 points in a compact auditory region containing nnn distinct feasible points, choose one collision-free configuration with finite energy E0E_0E0\u200b. In its energy sublevel, every pair has distance at least E0\u22121/2E_0^{-1/2}E0\u22121/2\u200b, so that sublevel is compact and avoids collisions. The energy is continuous there; the extreme-value theorem (pma 4.16) gives a minimum, also global since every lower-energy configuration lies in this sublevel. This proves existence in the declared model, not that a numerical search certifies the global minimum or that real languages optimise this objective.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The shaded region is the space of possible vowels (outline of the cardinal vowels, on Bark scales: F2 leftward, F1 downward). Choose the number of vowels and watch them repel each other to the configuration of least energy; each settles next to the nearest cardinal vowel symbol, named in the readout. Drag any vowel to disturb the system and see the others rearrange; Shake starts again from new random positions (the energy has local minima, so the best of ten starts is animated). Raise the F2 weight to 1 to see the model add extra high vowels, its best-known failure; lower it and mid vowels appear instead.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when A model of which vowel qualities languages prefer, valid statistically across languages rather than for any one language; it ignores length, nasality, rounding as a separate dimension, and the role of focal (stable) vowels, and it overpredicts high vowels for systems of more than about seven."
+      },
+      {
+        "num": "2.3",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Phonemes are not atoms but bundles of binary distinctive features such as [\u00b1voice][\\pm\\text{voice}][\u00b1voice], [\u00b1nasal][\\pm\\text{nasal}][\u00b1nasal] and [\u00b1continuant][\\pm\\text{continuant}][\u00b1continuant]: each feature names one articulatory or acoustic property, and a segment is a column of +++ and \u2212-\u2212 values (or 000, \"not applicable\"). A small number of features (a few dozen at most) suffices to tell apart the phonemes of any language, and phonological patterns are stated over features rather than over lists of sounds.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Each feature carves the inventory into two halves, so nnn binary features can distinguish up to 2n2^n2n segments; real inventories are far sparser than that because features are correlated (every nasal is voiced and sonorant). The reason to prefer features to symbols is that sounds sharing a feature behave alike in rules (2.4, 2.5): the set of sounds that trigger a rule is then a conjunction of feature values, a simple object, rather than an arbitrary list. The feature set used here is a simplified teaching system of 17 features: stridency, laterality and tenseness are handled coarsely, and [bk] is left unspecified (0) for schwa.The binary capacity count uses the product rule (comb 1.1): for nnn freely specifiable features with two values each, choosing one value at each coordinate gives exactly 2n2^n2n distinct bundles. An actual inventory occupies only some bundles because its features need not vary independently. The widget's value 000 means unspecified or inapplicable; it is not silently counted as one of the two signs in that binary bound.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Left: set each feature to +++, \u2212-\u2212 or any (click a box). Right: the symbols that match every condition light up. Click a symbol on the chart to load its full feature column, then relax a feature to see which sounds join it; the presets set up classes you will meet in 2.4. Notice how few features it takes to isolate a single sound.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": null
+      },
+      {
+        "num": "2.4",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "A set of segments is a natural class if some bundle of feature values picks out exactly its members and nothing else. Phonological rules overwhelmingly apply to, or are triggered by, natural classes, and the smaller the bundle needed, the more natural (and more frequent) the class. A set like {p,s,\u03b7,a}\\{p, s, \\eta, \\mathrm{a}\\}{p,s,\u03b7,a} that no bundle singles out is unnatural: any bundle covering all of its members also covers extra segments.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The segments matching a feature value form a set; a bundle selects the intersection of such sets. So natural classes are exactly the intersections of feature-value sets (2.3), a tiny family compared with all 2392^{39}239 subsets of the 39 symbols on the chart. To test a given set, intersect the feature values it shares: that intersection is the most specific bundle containing the whole set, and the set is natural exactly when this bundle selects nothing else. The tool then searches for the shortest bundle with the same extension.Make one predicate for each specified feature value, true of a segment exactly when that segment carries that value. Conjunction has the truth-table semantics of logic 2.3, so a bundle holds exactly when every selected predicate holds; its extension is therefore the intersection of their extensions. A 000 entry is not automatically the negation of a positive feature value. This is a finite interpretation on the displayed inventory, and it licenses the intersection test without treating arbitrary subsets as single natural classes.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Click symbols to build a set (gold). The readout finds the smallest feature bundle that defines it, or shows the smallest natural class that contains it \u2014 the extra members it drags in are marked red. Try the preset plural -s triggers (p t k f \u03b8): it is natural, defined by the three values [+cons \u2212voi \u2212strid], which is why one rule suffices in 2.5. Then add /s/ or /\u0251/ and watch it stop being natural.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": null
+      },
+      {
+        "num": "2.6",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "When a grammar has several rules, the order in which they apply can change the output. Rule XXX feeds rule YYY when applying XXX first creates new sites where YYY can apply, and bleeds it when applying XXX first destroys sites where YYY would apply. If the attested forms need XXX before YYY in the first case or YYY before XXX in the second, the order is extrinsic and must be part of the grammar. The reverse orders, in which a rule would have fed or bled another but applies too late, are called counterfeeding and counterbleeding.Holds when Raising applies to the diphthong /a\u026a/ as a unit before a voiceless consonant, as in Canadian English; the g-deletion analysis is the classical /ng/ analysis of English [\u014b].",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Rules rewrite strings, so the output of one rule is the input of the next. Each rule's environment is a feature pattern (2.5), and an earlier rule can create that pattern (nasal assimilation produces the [\u014b] that g-deletion needs) or erase it (flapping turns a voiceless /t/, which raising needs to see, into a voiced tap). Because the rules are not independent, the data decide the order: of the k!k!k! possible orders only those whose derivations match the attested pronunciations are admissible, and the tool counts the sites each order creates or destroys to show which relation you get.With kkk distinct rules, an ordering uses each rule once. The permutation count (comb 1.5) gives k(k\u22121)\u22ef1=k!k(k-1)\\cdots1=k!k(k\u22121)\u22ef1=k! possible sequences, because the next position has one fewer unused rule. Testing those sequences against the forms then selects the admissible orders. Different orders may produce identical outputs, so the factorial counts rule sequences, not distinct surface grammars or meanings.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Choose a pair of rules and an order. The derivation table applies the first rule, then the second, to every underlying form and compares the result with the attested surface form; wrong rows turn red. The readout counts, over all forms, how many application sites the second rule has before and after the first one applies: more sites means feeding, fewer means bleeding. Flip the order and see the opposite relation (counterbleeding or counterfeeding) and which order the data want.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Raising applies to the diphthong /a\u026a/ as a unit before a voiceless consonant, as in Canadian English; the g-deletion analysis is the classical /ng/ analysis of English [\u014b]."
+      },
+      {
+        "num": "4.2",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let a \u201cmonkey\u201d type independently at each step a space with probability \u03c3\\sigma\u03c3 or one of MMM letters, each with probability (1\u2212\u03c3)/M(1-\\sigma)/M(1\u2212\u03c3)/M. Cut the stream at spaces into \u201cwords\u201d. Then the word of rank rrr has frequency f(r)\u2005\u200a\u221d\u2005\u200ar\u2212\u03b1,f(r)\\;\\propto\\;r^{-\\alpha},f(r)\u221dr\u2212\u03b1, \u03b1=1\u2212ln\u2061(1\u2212\u03c3)ln\u2061M,\\alpha=1-\\frac{\\ln(1-\\sigma)}{\\ln M},\u03b1=1\u2212lnMln(1\u2212\u03c3)\u200b, with \u03b1\u22481\\alpha\\approx1\u03b1\u22481 for small \u03c3\\sigma\u03c3, up to a staircase: all M\u2113M^{\\ell}M\u2113 words of length \u2113\\ell\u2113 have the same probability \u03c31\u2212\u03c3(1\u2212\u03c3M)\u2113\\tfrac{\\sigma}{1-\\sigma}\\bigl(\\tfrac{1-\\sigma}{M}\\bigr)^{\\ell}1\u2212\u03c3\u03c3\u200b(M1\u2212\u03c3\u200b)\u2113.Holds when A null model: it explains the shape of the rank\u2013frequency plot, not why real languages have word-frequency distributions with particular words in particular places. Real texts are not stationary random streams.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Shorter words are exponentially more probable, but there are exponentially more long words. A word of length \u2113\\ell\u2113 has rank about M\u2113M^{\\ell}M\u2113 and probability about ((1\u2212\u03c3)/M)\u2113((1-\\sigma)/M)^{\\ell}((1\u2212\u03c3)/M)\u2113, so eliminating \u2113\\ell\u2113 gives f\u221dr\u2212\u03b1f\\propto r^{-\\alpha}f\u221dr\u2212\u03b1 with the exponent above. The plot is a staircase with a step at each word length, and the steps average out into a line. The lesson is a warning: a straight line on a rank\u2013frequency plot is weak evidence for any particular theory of language, because a process with no meaning at all produces one; what differs is the detail (the real distribution has no exact plateaus and obeys other constraints).For M\u22652M\\ge2M\u22652 letters and 0<\u03c3<10<\\sigma<10<\u03c3<1, independence makes the probability of a fixed \u2113\\ell\u2113-letter string followed by space the product \u03c3[(1\u2212\u03c3)/M]\u2113\\sigma[(1-\\sigma)/M]^\\ell\u03c3[(1\u2212\u03c3)/M]\u2113 (prob 2.1.13). Conditioning on a nonempty word divides by 1\u2212\u03c31-\\sigma1\u2212\u03c3, giving the displayed word probability. Separately, the product rule (comb 1.1) counts M\u2113M^\\ellM\u2113 different strings of that length, and the sum rule accumulates their rank blocks over lengths. These are distinct steps: equal within-length probabilities create plateaus, while the exponentially growing block counts produce the power-law envelope, rather than an exact smooth equality at every rank.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Drag the alphabet size MMM and the space probability \u03c3\\sigma\u03c3 and press Resample. The orange stairs are the exact expected frequencies by word length; the dots are a simulated 150 000-character typing session. Switch on the real text to compare shapes (relative frequencies on both).",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when A null model: it explains the shape of the rank\u2013frequency plot, not why real languages have word-frequency distributions with particular words in particular places. Real texts are not stationary random streams."
+      },
+      {
+        "num": "4.3",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Build a text one word at a time. With probability \u03b1\\alpha\u03b1 the next word is brand new; with probability 1\u2212\u03b11-\\alpha1\u2212\u03b1 it repeats a word drawn uniformly from the earlier running text, so each word is chosen in proportion to how often it has already occurred. Then the number of distinct words grows linearly, V(N)\u2248\u03b1NV(N)\\approx\\alpha NV(N)\u2248\u03b1N, and the word of rank rrr has frequency f(r)\u2005\u200a\u221d\u2005\u200ar\u2212(1\u2212\u03b1),f(r)\\;\\propto\\;r^{-(1-\\alpha)},f(r)\u221dr\u2212(1\u2212\u03b1), a Zipf curve whose exponent is 1\u2212\u03b11-\\alpha1\u2212\u03b1, approaching 1 when new words are rare.Holds when Idealised growth model with no grammar. Real vocabularies grow sublinearly and real word choice depends on context and topic.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Preferential attachment: a word that has been used often is likely to be used again, and since a copied word is drawn from the tokens, its chance is proportional to its current count. Balancing the rate at which words climb to count kkk against the rate at which they leave it yields a stationary distribution of counts with tail k\u2212(1+1/(1\u2212\u03b1))k^{-(1+1/(1-\\alpha))}k\u2212(1+1/(1\u2212\u03b1)), which is the rank\u2013frequency exponent 1\u2212\u03b11-\\alpha1\u2212\u03b1 in disguise. The process also makes a prediction that fails for real text: vocabulary grows linearly, not sublinearly (compare Heaps' law, 4.4), so it is a model of the shape of the frequency curve and not of text as a whole.Let IjI_jIj\u200b indicate an innovation at token jjj. The first token is new, while every subsequent innovation has probability \u03b1\\alpha\u03b1 in this model. Since VN=1+\u2211j=2NIjV_N=1+\\sum_{j=2}^N I_jVN\u200b=1+\u2211j=2N\u200bIj\u200b, linearity of expectation (prob 1.6.1) gives the exact identity EVN=1+\u03b1(N\u22121)E V_N=1+\\alpha(N-1)EVN\u200b=1+\u03b1(N\u22121) without any assumption about dependence between different indicators. The statement's \u03b1N\\alpha N\u03b1N is its large-NNN form; this calculation does not establish the separate rank-frequency tail approximation or describe topic-dependent real text.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Slide \u03b1\\alpha\u03b1 (the chance of coining a new word) and the text length. Left: the simulated rank\u2013frequency plot against the predicted slope. Right: vocabulary size against position, which is a straight line of slope \u03b1\\alpha\u03b1.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Idealised growth model with no grammar. Real vocabularies grow sublinearly and real word choice depends on context and topic."
+      },
+      {
+        "num": "4.4",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "If V(N)V(N)V(N) is the number of distinct words among the first NNN words of a text, then V(N)\u2005\u200a\u2248\u2005\u200aK\u2009N\u03b2,0<\u03b2<1,\\begin{gathered}V(N)\\;\\approx\\;K\\,N^{\\beta},\\\\0<\\beta<1,\\end{gathered}V(N)\u2248KN\u03b2,0<\u03b2<1,\u200b typically \u03b2\u22480.4\\beta\\approx 0.4\u03b2\u22480.4\u20130.70.70.7 for natural-language texts and KKK of order 10\u2013100: the vocabulary never stops growing, but each new stretch of text brings fewer new words.Holds when A single homogeneous text; very short texts, or texts that change topic or language, bend the curve. The exponent depends on the language and on how words are counted (word forms versus lemmas).",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "New words are rarer the more text has been seen: the chance that the next word is new equals the proportion of the text's probability carried by words not yet met, which shrinks as common words are used up but never reaches zero because of the long Zipf tail. If frequencies follow a Zipf law with exponent s>1s>1s>1 then a sampling argument gives \u03b2\u22481/s\\beta\\approx 1/s\u03b2\u22481/s, a link between 4.1 and 4.4; with sss near 1, as in real text, the relation is only a rough guide and \u03b2\\beta\u03b2 is estimated directly.In a finite fixed-vocabulary sampling model, write the observed vocabulary as the sum of indicators that each type has appeared. Linearity of expectation (prob 1.6.1) gives EVN=\u2211j[1\u2212(1\u2212pj)N]E V_N=\\sum_j[1-(1-p_j)^N]EVN\u200b=\u2211j\u200b[1\u2212(1\u2212pj\u200b)N] for independent tokens with type probabilities pjp_jpj\u200b. Thus common types saturate early and progressively rarer types contribute later, making the expected increments decrease. This is an explicit sampling calculation underlying the explanation, not a proof of a universal Heaps exponent: a finite vocabulary ultimately saturates, and correlated or changing text need not follow this model.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Choose a text (or paste one) and watch V(N)V(N)V(N) on log\u2013log axes. The green line is the fit to everything beyond the minimum NNN you choose; the dashed line is the ceiling V=NV=NV=N (every word new). Switch on \u201cshuffle words\u201d: topic clustering is destroyed and the curve changes slightly, but remains a power law.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when A single homogeneous text; very short texts, or texts that change topic or language, bend the curve. The exponent depends on the language and on how words are counted (word forms versus lemmas)."
+      },
+      {
+        "num": "4.5",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "More frequent words tend to be shorter: across the word types of a language, length (in letters, phonemes or syllables) and frequency are negatively correlated, \u03c1Spearman(length,frequency)<0\\rho_{\\text{Spearman}}(\\text{length},\\text{frequency})<0\u03c1Spearman\u200b(length,frequency)<0. Zipf explained it by a principle of least effort: a speaker saves effort by giving short forms to words used often.Holds when Holds as a statistical tendency in all languages studied; it is weaker among very rare words. Length is measured here in letters, a proxy for time or effort.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Think of word forms as a code for meanings. If every word cost the same, nothing would be saved; with costs growing with length, an efficient code (as in Huffman or Morse coding) gives its shortest codewords to its most probable messages. Words like the, of, I are short, and long words (unforgettable) are rare; clippings such as phone from telephone are the historical mechanism. The correlation is far from perfect: rare short words (ox, awl) and frequent long ones exist.The coding argument uses a safe exchange (algo 10.3). Hold a finite set of distinct codewords and their positive length costs fixed. If pi>pjp_i>p_jpi\u200b>pj\u200b but \u2113i>\u2113j\\ell_i>\\ell_j\u2113i\u200b>\u2113j\u200b, swapping their meanings preserves every codeword and any prefix-free property, while changing expected cost by \u2212(pi\u2212pj)(\u2113i\u2212\u2113j)<0-(p_i-p_j)(\\ell_i-\\ell_j)<0\u2212(pi\u200b\u2212pj\u200b)(\u2113i\u200b\u2212\u2113j\u200b)<0. Repeating removes such inversions. This explains why a cost-minimising assignment pairs larger probabilities with shorter forms under these assumptions; it neither derives actual lexicons nor proves that every observed frequency-length correlation has this cause.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Left: every word type as a dot (rank on the log axis, length in letters); the green curve is the mean length in rank bins. Right: mean length by frequency class. Raise the minimum count to ignore the many words that occur once, and switch on \u201cpermute lengths\u201d to see what no relation looks like.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Holds as a statistical tendency in all languages studied; it is weaker among very rare words. Length is measured here in letters, a proxy for time or effort."
+      },
+      {
+        "num": "4.6",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Menzerath's observation relates larger linguistic constructs to smaller constituents on average. Altmann1980 explicitly treats it as a statistical hypothesis with possible nonmonotone relationships. His Eq.3 is y\u2032/y=b/x\u2212c; its positive solution is y=A\u00b7x^b\u00b7exp(\u2212cx), with A>0. The slope is negative exactly where b/x\u2212c<0; fixed signs b<0,c\u22650 are sufficient but are not necessary or universal source conditions.The original Indonesian example has b<0,c<0, while the English example has b>0,c>0. The model therefore must not silently constrain either coefficient or force every fitted curve to decrease.Holds when Actual Altmann1980 pp.1\u201310 supports the formulation, limitations and three transcribed datasets. Table2 concerns13444 Indonesian morphemes; Table3 labels English types using Roberts1965 data described as15465010 words; Table4 concerns488 Bachka-German words with3961 repetitions. These are not equivalent populations. The dialect table increases from239.91 to240.92ms between one and two syllables; the printed English fitted row also initially rises. No forced monotonic smoothing is used. The original raw data/recordings and earlier Menzerath/Roberts works were not independently re-audited. Published predictions are rounded, so they need not equal a new fit of rounded means. Proxy tokens use the declared alphabet and normalization of4.13. Vowel groups with a few English silent-ending rules estimate syllable count; this is an authored, unvalidated heuristic, not a language-general syllabifier. Groups1\u20137 require at least5 types/tokens; larger estimated counts are omitted. Letters per estimated syllable are not sound duration or phonemes, and cross-text differences do not establish language-wide properties. Count mode applies only to proxies; hidden saved modes remain valid and preserved.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Taking logs gives ln y=ln A+b\u00b7ln x\u2212c\u00b7x. The display fits this linear model to the group means, with equal weight per observed group, using centered normal equations. The power and exponential special cases constrain c=0 or b=0 respectively. A low in-sample log loss is not a mechanism or a universal-law test. Altmann's p.5 says a connection with least effort or compensation is suspected, rather than established.The two mathematical steps are separate. On x>0x>0x>0 with y>0y>0y>0, separation of variables (ode 1.3) integrates y\u2032/y=b/x\u2212cy'/y=b/x-cy\u2032/y=b/x\u2212c to log\u2061y=log\u2061A+blog\u2061x\u2212cx\\log y=\\log A+b\\log x-cxlogy=logA+blogx\u2212cx, with A>0A>0A>0. For the equal-group log fit, the observed vector (log\u2061yi)(\\log y_i)(logyi\u200b) is approximated in the span of the three columns 111, log\u2061xi\\log x_ilogxi\u200b, and \u2212xi-x_i\u2212xi\u200b. Orthogonal projection minimises squared Euclidean distance to that span (ladr 6.61), giving the normal equations used here. Unique coefficients additionally require full column rank, which the helper checks; neither an exact model solution nor a least-squares optimum establishes a universal linguistic mechanism.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The first three choices transcribe the original observed means and optional printed predictions from Tables2\u20134. Their units and populations differ. Green is our refit to the rounded observed means, not the original author's unrounded computation. The four bundled-text choices retain the exploratory orthographic proxy and type/token count modes. Bars there are population SD within each proxy group, not standard errors; the original tables provide no such SD bars.Right: x times the observed mean constituent size, with an authored comparison that holds the first group's mean constant. The comparison line is arithmetic, not a no-compression counterfactual or evidence that speakers compress longer words. All plotted points, curves, SD bars and the whole comparison line are included in the bounds.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Actual Altmann1980 pp.1\u201310 supports the formulation, limitations and three transcribed datasets. Table2 concerns13444 Indonesian morphemes; Table3 labels English types using Roberts1965 data described as15465010 words; Table4 concerns488 Bachka-German words with3961 repetitions. These are not equivalent populations. The dialect table increases from239.91 to240.92ms between one and two syllables; the printed English fitted row also initially rises. No forced monotonic smoothing is used. The original raw data/recordings and earlier Menzerath/Roberts works were not independently re-audited. Published predictions are rounded, so they need not equal a new fit of rounded means. Proxy tokens use the declared alphabet and normalization of4.13. Vowel groups with a few English silent-ending rules estimate syllable count; this is an authored, unvalidated heuristic, not a language-general syllabifier. Groups1\u20137 require at least5 types/tokens; larger estimated counts are omitted. Letters per estimated syllable are not sound duration or phonemes, and cross-text differences do not establish language-wide properties. Count mode applies only to proxies; hidden saved modes remain valid and preserved."
+      },
+      {
+        "num": "4.8",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Shannon's guessing procedure encodes each next text symbol by the number of guesses needed to identify it. Given the same deterministic guess rule and preceding text, that encoding can be reversed. For an ideal predictor, the next-symbol probabilities in each context are ranked from largest to smallest. Pooling these ranks gives a nonincreasing distribution q. His Eq.17 bounds the conditional entropy F of that specified context source: L=\u2211i=127i(qi\u2212qi+1)log\u20612i,L=\\sum_{i=1}^{27}i(q_i-q_{i+1})\\log_2i,L=i=1\u221127\u200bi(qi\u200b\u2212qi+1\u200b)log2\u200bi, U=\u2212\u2211i=127qilog\u20612qi.U=-\\sum_{i=1}^{27}q_i\\log_2q_i.U=\u2212i=1\u221127\u200bqi\u200blog2\u200bqi\u200b. Then L\u2264F\u2264UL\\le F\\le UL\u2264F\u2264U, with q28=0q_{28}=0q28\u200b=0. A finite-context lower bound on F is not automatically a lower bound on the infinite-context entropy rate H. Arbitrary empirical guess frequencies do not satisfy the ideal lower-bound premise.Holds when The alphabet is lowercase a\u2013z plus space; punctuation and nonletters collapse to a single space. The finite joint source samples a next-symbol position uniformly from positions3 onward in the normalized embedded Alice text. Every context length uses these same positions, so the context refinements are nested. Its probabilities are known by construction; it is a corpus-derived finite source, not a certified natural-language entropy rate. Practice uses text also in that corpus and is not a held-out experiment. Your guesses may be nonideal and dependent; their finite histogram gives no guaranteed lower bound on F or H.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "For a known finite source, sort each context's conditional probabilities and average by context frequency. The lower expression is the average entropy of uniform distributions on the first i ranks, with weights i(q_i\u2212q_{i+1}); the upper expression is the marginal entropy of the rank code. Here both expressions are compared with the directly computed conditional entropy. The practice game records your guesses separately. It reports an observed histogram, never labels that histogram a rigorous entropy bound.For each known finite context hhh, sort its conditional symbol probabilities pi(h)p_i^{(h)}pi(h)\u200b and set p28(h)=0p_{28}^{(h)}=0p28(h)\u200b=0. The weights i(pi(h)\u2212pi+1(h))i(p_i^{(h)}-p_{i+1}^{(h)})i(pi(h)\u200b\u2212pi+1(h)\u200b) express that sorted distribution as a mixture of uniforms on the first iii ranks. Entropy concavity (info 2.9), applied within each context and then averaged, yields the lower expression using the marginal rank probabilities qiq_iqi\u200b. The rank is a bijective relabelling of symbols when hhh is known, so its conditional entropy equals FFF. Conditioning reduces entropy on average (info 2.7), giving F\u2264H(rank)=UF\\le H(\\text{rank})=UF\u2264H(rank)=U. The two inequalities require different steps; neither makes a nonideal empirical guessing histogram a certified bound.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Practice on five consecutive 100-symbol windows from Alice: choose a symbol and press Guess, using the displayed text so far. A wrong symbol is marked as tried; a correct guess advances the saved cursor and records its guess number. Seeking/repeating letters is allowed and the histogram pools all practice. The other panel ranks true empirical context probabilities of the complete embedded Alice text; choose 0\u20133 preceding symbols and compare its exact finite F with both bounds.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when The alphabet is lowercase a\u2013z plus space; punctuation and nonletters collapse to a single space. The finite joint source samples a next-symbol position uniformly from positions3 onward in the normalized embedded Alice text. Every context length uses these same positions, so the context refinements are nested. Its probabilities are known by construction; it is a corpus-derived finite source, not a certified natural-language entropy rate. Practice uses text also in that corpus and is not a held-out experiment. Your guesses may be nonideal and dependent; their finite histogram gives no guaranteed lower bound on F or H."
+      },
+      {
+        "num": "4.9",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "An n-gram model approximates the next word's distribution using at most n\u22121 preceding words. Estimate a continuation from its count divided by the total observed continuations of that context. Add-\u03bb smoothing gives P(w\u2223h)=[c(h,w)+\u03bb]/[\u2211xc(h,x)+\u03bbV]P(w\\mid h)=[c(h,w)+\\lambda]/[\\sum_xc(h,x)+\\lambda V]P(w\u2223h)=[c(h,w)+\u03bb]/[\u2211x\u200bc(h,x)+\u03bbV], a normalized distribution even for an unseen context. Without smoothing, a test continuation with zero support makes sequence probability zero and perplexity infinite. Perplexity is 2\u22121T\u2211tlog\u20612P(wt\u2223ht)2^{-\\frac1T\\sum_t\\log_2P(w_t\\mid h_t)}2\u2212T1\u200b\u2211t\u200blog2\u200bP(wt\u200b\u2223ht\u200b).Holds when Finite continuous token streams across sentence boundaries; ASCII letters and internal apostrophes, lowercased, with curly apostrophes normalized. Training singletons and all test out-of-vocabulary words map to <unk>, which is always in the vocabulary. Early test positions use only the available history. Each context denominator is its outgoing count, excluding a terminal occurrence with no continuation. No sentence-boundary symbols or tuned practical smoothing are claimed. Alice is the repository's embedded Project Gutenberg11 text; the mini corpus is authored. Own text is limited to 10,000 characters with an explicit error.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "More context can capture local word order but can also leave too little evidence. Interpolation mixes distributions from several context lengths; it differs from choosing a shorter order only when a longer one is missing. Neither higher order nor interpolation guarantees better test perplexity. Compare models on the same test tokens and vocabulary. Here interpolation uses an authored fixed weighting, including a positive uniform component; its weights are not fitted on the test data.Choose a test-token position uniformly and let its context/next-word pair be the outcome. Within each observed context, cross-entropy (info 2.4) averages \u2212log\u20612q(w\u2223h)-\\log_2 q(w\\mid h)\u2212log2\u200bq(w\u2223h) under the empirical next-word distribution; averaging these conditional losses by the empirical context frequencies is exactly the displayed mean token log loss. Its exponential is perplexity. Any observed continuation with q=0q=0q=0 makes this loss and perplexity infinite. This finite test-set identity assumes neither independent test tokens nor convergence to a natural-language entropy rate, and it gives no guarantee that a higher-order model improves prediction.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Choose the embedded Alice text, a small authored corpus, or your own text. Train on the first 85% of word tokens and evaluate every remaining token, with the test history initially empty. Select order and smoothing to highlight a point; both complete curves use the same train/test split. The generated 36-token sample uses exactly the selected probability distribution, including the explicit unknown token. Generate advances the saved seed.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Finite continuous token streams across sentence boundaries; ASCII letters and internal apostrophes, lowercased, with curly apostrophes normalized. Training singletons and all test out-of-vocabulary words map to <unk>, which is always in the vocabulary. Early test positions use only the available history. Each context denominator is its outgoing count, excluding a terminal occurrence with no continuation. No sentence-boundary symbols or tuned practical smoothing are claimed. Alice is the repository's embedded Project Gutenberg11 text; the mini corpus is authored. Own text is limited to 10,000 characters with an explicit error."
+      },
+      {
+        "num": "4.10",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Uniform information density (UID) proposes that speakers tend to avoid peaks and troughs of information per unit, within grammatical and processing constraints. Levy and Jaeger study optional relative-clause that in spontaneous American English, as in \u201cHow big is the family (that) you cook for?\u201d Their2006 study uses 3,452 eligible relative clauses from Switchboard; less predictable clause onsets are associated with more overt marking after control variables. This is evidence in one production setting, not a universal rule that adding a word improves a sentence.Holds when The source is a spoken relative-clause study, not a complement-clause or written-corpus replication. The widget is an authored ideal cue model, not fitted corpus data or a reproduction of its regressions. It treats \u201cthat\u201d as revealing the clause without a separate production-choice surprisal, and assumes the same lexical probability with or without the cue, in the spirit of the source's pseudo-English comparison (\u00a74, footnote 4). Other words have fixed illustrative surprisals. The quadratic objective and per-word cost are declared assumptions; real durations, ambiguity, speaker goals and correlated cues are outside this illustration.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Their Eq. 2 splits a relative-clause onset's surprisal into structural and lexical terms. In the authored idealization here, let c be the probability of the relative clause and q the conditional probability of its first word. Without a marker, \u201cyou\u201d carries \u2212log\u2082(cq) bits. Treating \u201cthat\u201d as a perfect cue moves \u2212log\u2082c bits to the marker and leaves \u2212log\u2082q for \u201cyou\u201d, preserving the combined surprisal. If processing cost is squared surprisal, splitting saves 2(\u2212log\u20612c)(\u2212log\u20612q)2(-\\log_2c)(-\\log_2q)2(\u2212log2\u200bc)(\u2212log2\u200bq); an extra-word cost can outweigh that saving.For the authored ideal cue model, 0<c,q\u226410<c,q\\le10<c,q\u22641 makes the logarithm product law (pma 8.6) applicable: \u2212log\u20612(cq)=\u2212log\u20612c\u2212log\u20612q-\\log_2(cq)=-\\log_2 c-\\log_2 q\u2212log2\u200b(cq)=\u2212log2\u200bc\u2212log2\u200bq. Thus marking redistributes a fixed combined surprisal between the two units. The quadratic-cost saving then follows by expanding (a+b)2\u2212a2\u2212b2=2ab(a+b)^2-a^2-b^2=2ab(a+b)2\u2212a2\u2212b2=2ab for a=\u2212log\u20612ca=-\\log_2ca=\u2212log2\u200bc, b=\u2212log\u20612qb=-\\log_2qb=\u2212log2\u200bq. This is the declared cue/cost calculation, not a proof of the empirical UID hypothesis or of a production benefit once extra-word costs are included.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Change c, q and the authored extra-word cost. The first two panels show the complete toy word-surprisal sequences; word indices are expanded in the readout. The final panel compares the quadratic-load saving from splitting with the extra-word cost. The selected dot and exact crossing use the same formula. Population variance is also reported, but it compares sequences of different lengths and is not the decision rule.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when The source is a spoken relative-clause study, not a complement-clause or written-corpus replication. The widget is an authored ideal cue model, not fitted corpus data or a reproduction of its regressions. It treats \u201cthat\u201d as revealing the clause without a separate production-choice surprisal, and assumes the same lexical probability with or without the cue, in the spirit of the source's pseudo-English comparison (\u00a74, footnote 4). Other words have fixed illustrative surprisals. The quadratic objective and per-word cost are declared assumptions; real durations, ambiguity, speaker goals and correlated cues are outside this illustration."
+      },
+      {
+        "num": "4.12",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "contentWidth": 253,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Word-use patterns can supply evidence about authorship. Mosteller and Wallace's1963 article distinguishes relatively stable function-word rates from topic-sensitive words. It compares classical discrimination with Bayesian count models and supports Madison for the twelve disputed Federalist essays49\u201358,62,63. Its adjusted evidence is weakest for55 (about80:1), followed by56 (about800:1); these are conditional historical-model judgments, not universal error guarantees.For this separate plug-in Poisson illustration, counts c_w in N words contribute c_w\u00b7ln(\u03c1\u1d39_w/\u03c1\u1d34_w)\u2212N(\u03c1\u1d39_w\u2212\u03c1\u1d34_w). Summing gives a log-likelihood contrast: positive favors Madison, negative Hamilton, and zero is a tie, under this model.Holds when The85-essay teaching corpus has188133 running tokens after headings, salutation, signature and following notes are removed. Tokens are lowercase ASCII letter runs with internal apostrophes, with curly apostrophes normalized. Stored original counts for all85\u00d716 markers and all essay lengths were independently reproduced from official PG1404. The historical study partition has51 Hamilton,14 Madison,5 Jay,3 joint and12 formerly disputed essays; the ? code identifies that historical task, not a claim that current Gutenberg bylines are unknown. In that partition, joint/Jay/disputed essays never train the two candidates. This is not the article's own count table, 48-Hamilton/50-Madison mixed-material sample, selected marker sets, editions or uncertainty-adjusted Bayesian analysis. Its newspaper discussion identifies43 known Hamilton and14 known Madison among77 essays; the later eight Hamilton essays are included here. The16 words are a declared teaching choice. Leave-one-out over65 essays refits rates but does not repeat feature selection or provide independent validation of that word choice. Rates are neither unconsciousness measurements nor guaranteed independent of topic; authorship inference is limited to the closed two-candidate model.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "contentWidth": 288,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The formula follows by subtracting the two Poisson log probabilities: the factorial and N^c factors cancel. We use the authored positive rate estimate (count+0.5)/(training words+1), fixed in advance, and equal candidate prior odds. Function-word counts are treated as conditionally independent for this score even though real words correlate. It ignores rate uncertainty and changing style. The original article tests Poisson departures, uses negative-binomial models for additional variation, separates screening/calibration material, and warns against reading extreme odds literally.The displayed score starts from the Poisson probability mass function (prob 1.6.13). For N>0N>0N>0 and a positive candidate rate \u03c1w\\rho_w\u03c1w\u200b, the model probability of count cwc_wcw\u200b is e\u2212N\u03c1w(N\u03c1w)cw/cw!e^{-N\\rho_w}(N\\rho_w)^{c_w}/c_w!e\u2212N\u03c1w\u200b(N\u03c1w\u200b)cw\u200b/cw\u200b!. Subtracting candidate log probabilities cancels cw!c_w!cw\u200b! and NcwN^{c_w}Ncw\u200b and gives the stated per-word contrast. The assumed conditional independence then permits summing these contrasts. This verifies the plug-in likelihood formula; it does not validate independence, resolve rate uncertainty, reproduce the historical article's full Bayesian model or calibrate extreme odds.",
+            "overflow": []
+          },
+          {
+            "selector": "#caption",
+            "contentWidth": 280,
+            "rangeOverflow": [],
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Left: all85 essays from the checked Gutenberg text, with exact per1000-word rates for two markers. The gold ring identifies the selected essay. Right: the twelve disputed essays' scores using one marker, three markers, or the declared16-word set. The complete bars remain visible; they are score contrasts, not calibrated probabilities. Select an essay to inspect each word's contribution below. Known Hamilton/Madison selections reuse their training data in that selected score; only the separate leave-one-out result excludes its own essay.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when The85-essay teaching corpus has188133 running tokens after headings, salutation, signature and following notes are removed. Tokens are lowercase ASCII letter runs with internal apostrophes, with curly apostrophes normalized. Stored original counts for all85\u00d716 markers and all essay lengths were independently reproduced from official PG1404. The historical study partition has51 Hamilton,14 Madison,5 Jay,3 joint and12 formerly disputed essays; the ? code identifies that historical task, not a claim that current Gutenberg bylines are unknown. In that partition, joint/Jay/disputed essays never train the two candidates. This is not the article's own count table, 48-Hamilton/50-Madison mixed-material sample, selected marker sets, editions or uncertainty-adjusted Bayesian analysis. Its newspaper discussion identifies43 known Hamilton and14 known Madison among77 essays; the later eight Hamilton essays are included here. The16 words are a declared teaching choice. Leave-one-out over65 essays refits rates but does not repeat feature selection or provide independent validation of that word choice. Rates are neither unconsciousness measurements nor guaranteed independent of topic; authorship inference is limited to the closed two-candidate model."
+      }
+    ],
+    "errors": []
+  },
+  "text253Subset": {
+    "browser": "153.0.8010.12",
+    "rows": [
+      {
+        "num": "4.4",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 1,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 1,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "If V(N)V(N)V(N) is the number of distinct words among the first NNN words of a text, then V(N)\u2005\u200a\u2248\u2005\u200aK\u2009N\u03b2,0<\u03b2<1,\\begin{gathered}V(N)\\;\\approx\\;K\\,N^{\\beta},\\\\0<\\beta<1,\\end{gathered}V(N)\u2248KN\u03b2,0<\u03b2<1,\u200b typically \u03b2\u22480.4\\beta\\approx 0.4\u03b2\u22480.4\u20130.70.70.7 for natural-language texts and KKK of order 10\u2013100: the vocabulary never stops growing, but each new stretch of text brings fewer new words.A single homogeneous text; very short texts, or texts that change topic or language, bend the curve. The exponent depends on the language and on how words are counted (word forms versus lemmas).",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "New words are rarer the more text has been seen: the chance that the next word is new equals the proportion of the text's probability carried by words not yet met, which shrinks as common words are used up but never reaches zero because of the long Zipf tail. If frequencies follow a Zipf law with exponent s>1s>1s>1 then a sampling argument gives \u03b2\u22481/s\\beta\\approx 1/s\u03b2\u22481/s, a link between 4.1 and 4.4; with sss near 1, as in real text, the relation is only a rough guide and \u03b2\\beta\u03b2 is estimated directly.In a finite fixed-vocabulary sampling model, write the observed vocabulary as the sum of indicators that each type has appeared. Linearity of expectation (prob 1.6.1) gives EVN=\u2211j[1\u2212(1\u2212pj)N]E V_N=\\sum_j[1-(1-p_j)^N]EVN\u200b=\u2211j\u200b[1\u2212(1\u2212pj\u200b)N] for independent tokens with type probabilities pjp_jpj\u200b. Thus common types saturate early and progressively rarer types contribute later, making the expected increments decrease. This is an explicit sampling calculation underlying the explanation, not a proof of a universal Heaps exponent: a finite vocabulary ultimately saturates, and correlated or changing text need not follow this model.",
+          "overflow": []
+        },
+        "caption": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Choose a text (or paste one) and watch V(N)V(N)V(N) on log\u2013log axes. The green line is the fit to everything beyond the minimum NNN you choose; the dashed line is the ceiling V=NV=NV=N (every word new). Switch on \u201cshuffle words\u201d: topic clustering is destroyed and the curve changes slightly, but remains a power law.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "4.4",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 1,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 1,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "If V(N)V(N)V(N) is the number of distinct words among the first NNN words of a text, then V(N)\u2005\u200a\u2248\u2005\u200aK\u2009N\u03b2,0<\u03b2<1,\\begin{gathered}V(N)\\;\\approx\\;K\\,N^{\\beta},\\\\0<\\beta<1,\\end{gathered}V(N)\u2248KN\u03b2,0<\u03b2<1,\u200b typically \u03b2\u22480.4\\beta\\approx 0.4\u03b2\u22480.4\u20130.70.70.7 for natural-language texts and KKK of order 10\u2013100: the vocabulary never stops growing, but each new stretch of text brings fewer new words.A single homogeneous text; very short texts, or texts that change topic or language, bend the curve. The exponent depends on the language and on how words are counted (word forms versus lemmas).",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "New words are rarer the more text has been seen: the chance that the next word is new equals the proportion of the text's probability carried by words not yet met, which shrinks as common words are used up but never reaches zero because of the long Zipf tail. If frequencies follow a Zipf law with exponent s>1s>1s>1 then a sampling argument gives \u03b2\u22481/s\\beta\\approx 1/s\u03b2\u22481/s, a link between 4.1 and 4.4; with sss near 1, as in real text, the relation is only a rough guide and \u03b2\\beta\u03b2 is estimated directly.In a finite fixed-vocabulary sampling model, write the observed vocabulary as the sum of indicators that each type has appeared. Linearity of expectation (prob 1.6.1) gives EVN=\u2211j[1\u2212(1\u2212pj)N]E V_N=\\sum_j[1-(1-p_j)^N]EVN\u200b=\u2211j\u200b[1\u2212(1\u2212pj\u200b)N] for independent tokens with type probabilities pjp_jpj\u200b. Thus common types saturate early and progressively rarer types contribute later, making the expected increments decrease. This is an explicit sampling calculation underlying the explanation, not a proof of a universal Heaps exponent: a finite vocabulary ultimately saturates, and correlated or changing text need not follow this model.",
+          "overflow": []
+        },
+        "caption": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Choose a text (or paste one) and watch V(N)V(N)V(N) on log\u2013log axes. The green line is the fit to everything beyond the minimum NNN you choose; the dashed line is the ceiling V=NV=NV=N (every word new). Switch on \u201cshuffle words\u201d: topic clustering is destroyed and the curve changes slightly, but remains a power law.",
+          "overflow": []
+        }
+      }
+    ],
+    "errors": []
+  },
+  "preservation": "{\"pass\":true,\"objects\":52,\"functions\":52,\"syllabusRows\":136,\"completeJSModules\":25,\"newEdges\":20,\"changedConsumers\":17,\"fullRawLists\":52}\n",
+  "strict": "6684 items (+6890 planned) in 450 chapters, 85 collections \u2014 0 error(s), 0 warning(s)\nwrote data/index.json (2221 KB), data/home.json (112719 bytes gzip), data/planned.json (555 KB), data/col/*.json, data/atlas.css\n",
+  "unchangedProductionPNGCount": 96,
+  "personalNewFields": 12,
+  "files": [
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.3-light-caption.png",
+      "bytes": 21664,
+      "sha256": "49edc2bde4071e30e26e3d8a1db8b28448465e1ba2c58f78cf77cc401abac63b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.2-light-proof.png",
+      "bytes": 107569,
+      "sha256": "47d0917d40b4b5d9722c5d61d11271d49581df032ab16b3b06cb22b35aca3799"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.6-light-statement-scope.png",
+      "bytes": 149746,
+      "sha256": "804285a6fd5be054e4d5efbd53feccf98e39151132e34efec2bb821488ac2b67"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.4-dark-statement-scope.png",
+      "bytes": 39457,
+      "sha256": "4c8dca8edadb0f2f27433959a3e899dbe4b03d69bf6a87b98bd6aa850913d2fc"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.10-dark-proof.png",
+      "bytes": 109320,
+      "sha256": "7c0ca471706b78c27adda4d8ce82be8f11fdc76f67e2b74e19774a89d27286c2"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.1-dark-caption.png",
+      "bytes": 41982,
+      "sha256": "be5167351cae4366359d497100f5951c0982aa9c376a7a36b6762689661af499"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.13-dark-caption.png",
+      "bytes": 37769,
+      "sha256": "c585247f63e4b6e65dc9e354101e054249c81050a9c9a05e69f1e273b3a14e7b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.6-light-caption.png",
+      "bytes": 33069,
+      "sha256": "31633ad24dc7780ec2657fa45abd7a27047eff9648f8de490acf917cdc0030c9"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.3-light-proof.png",
+      "bytes": 87519,
+      "sha256": "79f852f991a7afc107de076661ef4290e277821b19dc882461bef2532dcb04e6"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.6-dark-proof.png",
+      "bytes": 79321,
+      "sha256": "1888ec34d9655e767d9cb1840b6fa7c6bb417c7f448f6caa63301a728840d7c8"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.2-light-caption.png",
+      "bytes": 22192,
+      "sha256": "1644acbda819b11e1e24dcf8ee4293edd439fc65864dbd1833afcd73a18e2855"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.10-dark-proof.png",
+      "bytes": 89996,
+      "sha256": "782bc9ffe637a70d6a52c0d09d885d41f85e3eaa2ad97960dd93eec1f1cf2e92"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.10-light-statement-scope.png",
+      "bytes": 101168,
+      "sha256": "7427adc0d36e45ac9eb89e37e5039620012febc111ae7bf1709a4d753abfea0e"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.9-dark-statement-scope.png",
+      "bytes": 94288,
+      "sha256": "597e03cc05853829797a97c712c95c7d5771cf2a4ee9ae6b8c7aee46607d4979"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.6-light-caption.png",
+      "bytes": 54700,
+      "sha256": "747f1d9672fbe46e582f2544e5f73b7752366dbedb5ab142f2bd295961ca370d"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.4-dark-caption.png",
+      "bytes": 22846,
+      "sha256": "595f3cdeb6eb1b48085dd3b5eb1187665f4cab4a69c57ba0c6590d8e9c088a27"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.4-light-proof.png",
+      "bytes": 85354,
+      "sha256": "84c08a86f827f960acd563059f34a87048e338a6ad7b42349307420e59f3a8cd"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.1-light-statement-scope.png",
+      "bytes": 126945,
+      "sha256": "9dcc3288d2cd8f945e794a2d03d4197b7a388997d6b906c1d0578faf4e782775"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.9-light-statement-scope.png",
+      "bytes": 95406,
+      "sha256": "29f813b27362ccdd47c9c2632055cc5f2c225a3c289648f9addca20d1a63d342"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.3-light-caption.png",
+      "bytes": 15731,
+      "sha256": "e55d5425c94a82d9ffe1fdaf2a8398bb25ce342ba76fd7767c0f05ad41bf295c"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.5-dark-statement-scope.png",
+      "bytes": 46136,
+      "sha256": "5ef58043593d994941f50af11f1f34f14e98af8b1603555a558042c78bfec2a7"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.5-light-proof.png",
+      "bytes": 94114,
+      "sha256": "96d6baa48909ea9469e8f97c892c98f829b739f4468da3b66d069c79ea7db77b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.13-dark-proof.png",
+      "bytes": 115359,
+      "sha256": "dc6d3eb4a6bf47ba7356ab2bc4e5c074c78888e6d03fd032f81c19835aa91836"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.4-light-statement-scope.png",
+      "bytes": 46970,
+      "sha256": "87dfc4bfe3b83290be1ae60c79ba4965c77c49de811cbee7857e7c9a0e6e736e"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.10-light-statement-scope.png",
+      "bytes": 76739,
+      "sha256": "53b3654ccd8605da5bd22e69e8349f92b2e788372cd2226f56096925202e12c7"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.8-dark-statement-scope.png",
+      "bytes": 115905,
+      "sha256": "62086acdd57176a94b296daf4019ac0626795e0437bda461ea53a7195c927ad5"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.5-light-caption.png",
+      "bytes": 20842,
+      "sha256": "dd943f58d2d947bf58786f87f9cab968ebf57b73c0f4afdc073d4c95f99e081b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.13-light-proof.png",
+      "bytes": 115008,
+      "sha256": "e1eac12b2743ed7e782d3ac30bd826ab8e04a64a4a0f4c9e926a7a2d8315cc2a"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.4-dark-statement-scope.png",
+      "bytes": 46664,
+      "sha256": "af42d8028c80c879509dc233a336c756b97857ce8a9bb2420b88c0fb6ad09a84"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.14-dark-proof.png",
+      "bytes": 120055,
+      "sha256": "33758cf3ebce008d50a18d3f020411081a42d5259ccdb3892f5d8e57f5672280"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.4-light-caption.png",
+      "bytes": 28361,
+      "sha256": "803cb04e3114a05b8b3e91116e0e17686c1a15bf250770fff940a0f87466b3eb"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.4-light-proof.png",
+      "bytes": 92898,
+      "sha256": "95aac093877f25608aa21f9a3c67a3bba5773d52847a4665a804da8d5a042deb"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.1-light-caption.png",
+      "bytes": 43073,
+      "sha256": "af4d4af10cf16fce6df8f3bebed9a5995019eebf2fae565583db82dfe673e6ae"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.12-light-statement-scope.png",
+      "bytes": 165939,
+      "sha256": "dd7300cc62158d9563aedc1e7ba097439902079eeca4d7acb6f801b1e93682a4"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.4-dark-caption.png",
+      "bytes": 27810,
+      "sha256": "dea7e1aea86bc70a79b2c882c8889e6ec5b5422dca1cc5b1a5ee28ae249a2e9a"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.12-light-proof.png",
+      "bytes": 100581,
+      "sha256": "8617294574caae6c3fae93cc2a6e2cc00bb919885b019722d54427d6573e557e"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.5-dark-caption.png",
+      "bytes": 20082,
+      "sha256": "b94f9492211107350f33436dfb4253c9c47932ee663a1c14e9d30a0bdc5d68a3"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.3-light-proof.png",
+      "bytes": 97536,
+      "sha256": "30c8122e292c13e56c5e4b6853b18f3b4447358b1188a9ccbb9cc9a4489da862"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.4-light-caption.png",
+      "bytes": 24089,
+      "sha256": "a85dc271efe6d1199219f6b20c02b2d4025eea9a4eccafada2d29f3301d0a31f"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.12-dark-proof.png",
+      "bytes": 101392,
+      "sha256": "f0569b681613421e4ceb221e91df6a1806c7354af0d8b66eb32e6592848ab86e"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.10-dark-statement-scope.png",
+      "bytes": 99705,
+      "sha256": "d05da0e1de9253fe80200178f4ec554311ed9718dcf49eac229685bfbb31f4c0"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.4-dark-proof.png",
+      "bytes": 86499,
+      "sha256": "e14a24ad3c1327910aa91b0741fd9be9ab2053b269fa40326b368d02313a2609"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.14-dark-statement-scope.png",
+      "bytes": 106357,
+      "sha256": "734c5f059a0ac40a0f573bff6dc7b4c439f41aac844d42aaefd118c5b2d12456"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.14-light-proof.png",
+      "bytes": 118764,
+      "sha256": "68eb2e472b751c5e7684a8d717acbd4a044e906cd4eeefb026cc270ba813cf17"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.12-dark-caption.png",
+      "bytes": 37961,
+      "sha256": "602090b76d02846cb0048cd22969e8044f823c40262af4ad614f187263d15646"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.3-light-statement-scope.png",
+      "bytes": 54912,
+      "sha256": "8d01582fb657e4b4f4a7b94d3d5970f91cff3973b8ce9a2e964f68c6c14580f5"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.10-dark-statement-scope.png",
+      "bytes": 77197,
+      "sha256": "31f655e9414722dc832fcdf34e80acf65597044d0bd58c0a29806eecc15c3d2b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.3-dark-proof.png",
+      "bytes": 88952,
+      "sha256": "68e9db31378b5c33529d3bb9ba6c5d077de0f9c51859fc8707e96d15c15cf505"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.2-light-statement-scope.png",
+      "bytes": 55819,
+      "sha256": "42e5e1576f155b1a4a78bae7caa9db1d0d1ac4a71a2cf68892b987075495782e"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.2-dark-statement-scope.png",
+      "bytes": 55159,
+      "sha256": "f88eaa3e4bbcc2f31312481725d20d711f19d31799fe48105cdae0190c936bff"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.9-light-proof.png",
+      "bytes": 96751,
+      "sha256": "d42b385e907c738cb3687365dd9d340de904c3d96d88304ed61f38e6352370a2"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.12-light-caption.png",
+      "bytes": 38477,
+      "sha256": "9ced7ec5eb62a566dc1cbf6d12f1888eba06f9ec77e0b7d96a553154e14a878b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.2-dark-caption.png",
+      "bytes": 21722,
+      "sha256": "ac9b26f85f67118837257eb9d3b224c441a38f39ccd88aa2a39c1efcc7d72322"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.6-dark-statement-scope.png",
+      "bytes": 147475,
+      "sha256": "3dfb117286b03fe2b88c1ab1a435a3ffc1b7c44fb160a5d74e7845779097d9cc"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.8-light-caption.png",
+      "bytes": 34305,
+      "sha256": "a359eec5f5f436a275c15b23371c34a685ffb48d4d03e9631016e5b347699512"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.6-light-proof.png",
+      "bytes": 91726,
+      "sha256": "2b5f4d7b6f32f96473fbe6cc7c67b419a1c893a7a859f20b63f684badc4dc0c6"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.9-dark-caption.png",
+      "bytes": 31375,
+      "sha256": "04f89cfd3edbbcf27438d70cb54ee20cde3d18dac95eea755c4a51c597b94fb3"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.8-dark-proof.png",
+      "bytes": 106763,
+      "sha256": "866bcccd43796db6b9495d56283792ab1a908ad48010590f7fde52a768e3ee22"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.8-dark-caption.png",
+      "bytes": 44330,
+      "sha256": "f569d546493fa7966214b2b49e0200f9857b71a8dddd9b6524988569da05f506"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.3-light-statement-scope.png",
+      "bytes": 41693,
+      "sha256": "4ad84a46192fb2bce7f7f61d0bc9c74f8c9d514185ab91678dd3613f891693de"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.13-light-caption.png",
+      "bytes": 38505,
+      "sha256": "2fc9c6bf6ea55b53fa3d81dd2e2dd2eeadf0fcb70232d6d2c6c0c40a79632a61"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.4-light-statement-scope.png",
+      "bytes": 39298,
+      "sha256": "aa72f6b3951f2d0d3a00d90ef57d3283cfb366dff2aa20bab720b88c7384603a"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.9-dark-proof.png",
+      "bytes": 97710,
+      "sha256": "b9b0d854c42d93e8a8d574c006bc9ed4c9f08695f6e4ba35d6660ab38fbd1337"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.8-light-caption.png",
+      "bytes": 45350,
+      "sha256": "9ebebd09f739ac1830c0bd24cd77884f5c9c01e1e983b99666b971071659beac"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.10-light-proof.png",
+      "bytes": 89497,
+      "sha256": "56a264ad271687423a446f7a7d83769f02fe7f0a867ff28a03f78b998de5e969"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.9-light-caption.png",
+      "bytes": 32378,
+      "sha256": "e38fe5f7e55100d7feb1cc39df5f9e010cae57275dd9936b5fbe8e12ae1aa914"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.3-dark-statement-scope.png",
+      "bytes": 41764,
+      "sha256": "67b0ed4e338b8c37b1350e0cb67d23ae021cbc7a4217648d34df43405caa8820"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.12-dark-statement-scope.png",
+      "bytes": 163872,
+      "sha256": "b8de92e280b3aee8b21e5f23d29bad97b820187eee651cec8a651bc83c88b74b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.6-dark-caption.png",
+      "bytes": 53501,
+      "sha256": "4314598a552ca732d1c31c32ed4145beeb2d962ad6f03664063494936597f9bf"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.3-dark-caption.png",
+      "bytes": 20947,
+      "sha256": "f2017837e1e718c48c6efb2c14dc59ebe47d510a8eaca69cc7eac9d67a8beb81"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.1-light-proof.png",
+      "bytes": 117888,
+      "sha256": "2cd4406b93f4205e717689b20cc74759a823fc417c1330963484b1a8ec373aa0"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.5-light-statement-scope.png",
+      "bytes": 46533,
+      "sha256": "4ab31d85a5d7becb76cbf865275286cf76094f9cefed0e04c70b1f8ee96f501b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.8-dark-statement-scope.png",
+      "bytes": 92243,
+      "sha256": "1d6ebb5af52fc847aa57226f18af99c7b70ebff289fec47af3a0e4ddeb45edc0"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.6-dark-proof.png",
+      "bytes": 92135,
+      "sha256": "faf9ada4a654ee200448aa5e87502c85ab9cbce50498ebf64883fbf52fb3ece6"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.1-dark-statement-scope.png",
+      "bytes": 126444,
+      "sha256": "1138354dfb251c7e8e58c00dc89692a12ce7bf46dd461da1392349f5ef448d3a"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.14-light-statement-scope.png",
+      "bytes": 106624,
+      "sha256": "6cc5ba5e3d7f1d99f8edaa342e18e6a888b20a1c064aa78cfbe3782c6195770e"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.10-light-caption.png",
+      "bytes": 36536,
+      "sha256": "e57342fcad9e924ed392c995ea093c1a2aa28b66a3328bf50478d6217cd86d75"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.10-dark-caption.png",
+      "bytes": 35906,
+      "sha256": "f89168508fde9c5d37152577a7cb5f6a30eed0ced3e728d5744eb4ca24602242"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.6-dark-caption.png",
+      "bytes": 31738,
+      "sha256": "e54f8958f9d86efadde04f6f2df4f09996b8c21066beddf0ca3df05b65101e3b"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.3-dark-caption.png",
+      "bytes": 15542,
+      "sha256": "b9187e9715e657599088c91ea9af181735cef817c743ee687bbd7217c55f6dea"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.4-dark-proof.png",
+      "bytes": 93612,
+      "sha256": "a2e187323727cd121b7785cd35fed48f7d8d45783082294efb2b62e74eeadba6"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.13-dark-statement-scope.png",
+      "bytes": 74437,
+      "sha256": "6d5f7989cd0d279d4ee442a219a2555bb12bdcece47c0e601fa5e06075148d31"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.10-light-caption.png",
+      "bytes": 30930,
+      "sha256": "b96145b0b89615f0b59611c822c21293427eed9e51ef0b99fea37c4291257234"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.8-light-statement-scope.png",
+      "bytes": 117686,
+      "sha256": "6aed7b8b0bac614cf13ce2748158bc86341e33821787470892b6210d8f1a4070"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.8-dark-caption.png",
+      "bytes": 33455,
+      "sha256": "a0f3788369d2cd8ae547b59792c70e144995e22eaba817cf9d66369d3974fccb"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.6-dark-statement-scope.png",
+      "bytes": 62353,
+      "sha256": "ebd021cbb0a899f25d3761f855b681f15d5c06ec491518863bdf92a4f9f21c5a"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.1-dark-proof.png",
+      "bytes": 118816,
+      "sha256": "d7d997957772f82ab5f28f9c91fdcfe4f1dd1d639e74684061810be1db53e1c2"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.3-dark-proof.png",
+      "bytes": 98037,
+      "sha256": "bc4c8d17ed8f2d5e1bdf80ccd099cb0f4636f572fdf30af3a6d651989b30b527"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.8-light-statement-scope.png",
+      "bytes": 93241,
+      "sha256": "92968a666900bef5d717bcb61e9b613c6b2f0d794bd1cfd65a167336562cc9e8"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.2-dark-proof.png",
+      "bytes": 108232,
+      "sha256": "93e0ad69ee02ec1e660e03c9b790eb6790aa4ce57a41cbf25139e95305211539"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.6-light-statement-scope.png",
+      "bytes": 62588,
+      "sha256": "d8d19e2792f8adeb3bc6f83b63c15b8d99114661a01d16dbfec4a2b5366c8294"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/text.json",
+      "bytes": 143247,
+      "sha256": "0bbd2aaf57b17b4bcd4afcfb0968b23b2b45ac8b3901480f8a593556c68f0340"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-2.6-light-proof.png",
+      "bytes": 78808,
+      "sha256": "719aaf7a12c00f3e2b25e6b3af081d5c128b30f2c1c8dddc6471a4d6ec858ac5"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.10-dark-caption.png",
+      "bytes": 30260,
+      "sha256": "ea736263c29d5466db95cad8d589039ceeafda109d57ff581011e25bb5384236"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.10-light-proof.png",
+      "bytes": 108163,
+      "sha256": "a5bb7aae66c798ecf274f27256a8126ce0b14ee1ce253c7496387a9c94f0a138"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.3-dark-statement-scope.png",
+      "bytes": 54559,
+      "sha256": "94a988856b0abcaf2004f3d2eb0e80dbceec746f134f929b484b8fc653c2df24"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.8-dark-proof.png",
+      "bytes": 125542,
+      "sha256": "d5bdd505ddcdb0426335f9d7f24102b590500ef391bed25fc31e2f500560fff5"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.8-light-proof.png",
+      "bytes": 106128,
+      "sha256": "3e2e1200220f4d16db1b765f010474c1b89fb54d1a496d6754e544bedb82a54f"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-4.5-dark-proof.png",
+      "bytes": 94785,
+      "sha256": "9d3d69df3d90352d3f5726ecd91f98a9806303e6a12e561e39c4e3cb0ec5ff8d"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.14-light-caption.png",
+      "bytes": 42375,
+      "sha256": "b98d08372bce7f8b0e9402fb7adfd7b83e67a66093245cc6f524f0333f7ef64c"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.14-dark-caption.png",
+      "bytes": 41589,
+      "sha256": "1b292844bd61ae85b6540af11d36077c6fd35f8719f01702c7dbe0b3224dfc9a"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.8-light-proof.png",
+      "bytes": 124559,
+      "sha256": "f9e1d35e6a6b2af7dcb31bd2b7cf2a520214878fbc46ff4a404ce50bbff7aa41"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap/ling-1.13-light-statement-scope.png",
+      "bytes": 74158,
+      "sha256": "64e0ecee798aacb8fd532719335915e8d55a4952803f9fc0612666a9125c2fda"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/text253-peer-wrap/ling-4.4-dark-caption.png",
+      "bytes": 21698,
+      "sha256": "34c02591df7cd1367b198487a3fa1231574db1ef016004b5aedf65152be3d42f"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/text253-peer-wrap/ling-4.4-light-statement-scope.png",
+      "bytes": 44310,
+      "sha256": "0f8e7af838ceeaf7fa5d7d67cabdebb8ca07e83da968521674c9a8937d6172a9"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/text253-peer-wrap/ling-4.4-dark-statement-scope.png",
+      "bytes": 44425,
+      "sha256": "166b26b5b25f7ba92dab783618a5aa67a709c2f0ecccd6b1d78472d263b37258"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/text253-peer-wrap/ling-4.4-light-proof.png",
+      "bytes": 96838,
+      "sha256": "29582f48f893f92906c7bf85f747de4150dcdeec6b57ee3cb633152586f08b68"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/text253-peer-wrap/ling-4.4-light-caption.png",
+      "bytes": 22223,
+      "sha256": "6f3eb19ca6ea268b40f243d4b260526849cf32706a94948e1d81a82e520757dc"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/text253-peer-wrap/ling-4.4-dark-proof.png",
+      "bytes": 97075,
+      "sha256": "6e10ef6140834e55931fe7d615fac978e13043f21ec67c4e109cdcf108b87843"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/text253-peer-wrap/text.json",
+      "bytes": 6301,
+      "sha256": "21e7524e9fd9d12e6e3e66224e93f5fa7f2a24997022b3d6cda2fa5065ac6ad9"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/native-peer-wrap.log",
+      "bytes": 37,
+      "sha256": "fae7ebe004c717f841a7de8661fe17a452b824dc077406e079a74137aece2642"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/text253-peer-wrap.log",
+      "bytes": 36,
+      "sha256": "c74ea17101b365746a032ed483e35d3386d7261a6563b9379f2b99f3a47c62d8"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/preservation-peer-wrap.log",
+      "bytes": 138,
+      "sha256": "eca7b399ced6e5ecdf598d9691836588510004c41d4fad3ea2382faff9f9c736"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/build-peer-wrap.log",
+      "bytes": 217,
+      "sha256": "4e3f4cf14465fd0fbac1bd30c1659ec5242830495a9b5663294171321e21e7e7"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/personal/4.4-dark-peer-wrap.png",
+      "bytes": 392774,
+      "sha256": "1a35d73f3a776bfb4ad3c5056375a37bae9fc7012573c300e6f88c5b50f1f32d"
+    },
+    {
+      "path": "/tmp/atlas-ling-prerequisites/personal/4.4-light-peer-wrap.png",
+      "bytes": 395856,
+      "sha256": "91ec62a8dcec38ad7262b27b13b1e0d47819802e68a29b171ff894e680b0be63"
+    }
+  ]
+}

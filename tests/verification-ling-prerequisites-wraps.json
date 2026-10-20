@@ -10,5 +10,9 @@
   [
     "$$f(r)\\;\\propto\\;r^{-\\alpha},\\qquad \\alpha=1-\\frac{\\ln(1-\\sigma)}{\\ln M}\\;\\approx\\;1\\ (\\text{for}\\ \\sigma\\ \\text{small}),$$",
     "$$f(r)\\;\\propto\\;r^{-\\alpha},$$\n$$\\alpha=1-\\frac{\\ln(1-\\sigma)}{\\ln M},$$\nwith $\\alpha\\approx1$ for small $\\sigma$,"
+  ],
+  [
+    "$$V(N)\\;\\approx\\;K\\,N^{\\beta},\\qquad 0<\\beta<1,$$",
+    "$$\\begin{gathered}V(N)\\;\\approx\\;K\\,N^{\\beta},\\\\0<\\beta<1,\\end{gathered}$$"
   ]
 ]
