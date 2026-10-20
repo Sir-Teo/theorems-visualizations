@@ -173,7 +173,7 @@ A major third follows four consecutive steps of the chain and reduces by two oct
       refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §§5.3–5.4, pp.155–158; closing-cut and third identities derived here'],tags:['tuning','wolf'],
       credit:'Pythagorean tuning exposition: Dave Benson, 2008 Web version; movable finite cut, exact arithmetic and synthesis authored here.',
       scope:String.raw`A mathematical twelve-note model, without a claim about a traditional placement, historical priority, howling or measured key quality. C is fixed at the authored C4 = 261.6256-Hz anchor for every cut; each pair starts at its note in the octave above C4 and ascends by its actual fifth ratio. Exact integer ratios determine the construction; decimal cents and frequencies are numerical display values. Audio is uncalibrated mono 44,100-Hz synthesis, eight sub-Nyquist harmonics with amplitudes $1/h$, pre-output peak bound 0.12 and 10-ms end ramps. The runtime master gain/limiter and device affect output. No listening judgement is certified.`,
-      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
       viz(v){
         const edgeName=x=>{const a=wolfModel(x);return `${a.wolf.from}–${a.wolf.to}`;};
         const cut=v.slider('closing edge',0,11,11,{int:true,fmt:edgeName}),selected=v.slider('selected edge',0,11,11,{int:true,fmt:edgeName});

@@ -67,7 +67,31 @@
       "peerReview": "Assigned by coordinator after a committed batch is ready"
     }
   ],
-  "acceptedBatches": [],
+  "acceptedBatches": [
+    {
+      "commits": [
+        "8a4b950",
+        "572b203"
+      ],
+      "ids": [
+        "music-7.4",
+        "music-7.9"
+      ],
+      "peer": "worker_three exact-commit source/math/native review",
+      "status": "accepted"
+    },
+    {
+      "commits": [
+        "a281b6d"
+      ],
+      "ids": [
+        "soc-4.5",
+        "soc-4.6"
+      ],
+      "peer": "worker_two exact-commit source/math/native review",
+      "status": "accepted"
+    }
+  ],
   "remainingAtStart": {
     "sourceReviews": 139,
     "flagshipAccepted": 2,
@@ -77,5 +101,6 @@
     "crossFieldShortfall": 855,
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
-  }
+  },
+  "currentPendingSourceReviews": 135
 }

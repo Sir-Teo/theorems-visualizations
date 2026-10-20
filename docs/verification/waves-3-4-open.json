@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-19",
+  "date": "2026-10-20",
   "status": "in-progress",
   "scope": {
     "from": "d397552",
@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 139,
+  "remainingFlags": 135,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -24,9 +24,9 @@
     "robot": 1,
     "game": 7,
     "psych": 10,
-    "soc": 12,
+    "soc": 10,
     "polsci": 9,
-    "music": 20,
+    "music": 18,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -37,7 +37,7 @@
     {
       "id": "logic-4.12",
       "file": "content/logic/ch04-b.js",
-      "name": "Vollst\u00e4ndigkeit der Axiome des logischen Funktionenkalk\u00fcls",
+      "name": "Vollständigkeit der Axiome des logischen Funktionenkalküls",
       "field": "math",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -66,7 +66,7 @@
       "explicitUncertainty": [
         {
           "field": "scope",
-          "text": "The table drawn here is the one printed in the German abstract of the paper (Zeitschrift f\u00fcr Chemie 12, 405\u2013406, 1869), as transcribed and translated by Carmen Giunta; I did not see the Russian original, so whether the Russian paper's table is identical in every number is not checked. Atomic weights are his 1869 values (hydrogen = 1), several of them wrong (for instance uranium as 116) and some marked \"?\" by him. The three \"gaps\" are interpolations by me, not Mendeleev's calculation; his own 1871 predictions were more detailed (masses 44, 68 and 72 for eka-boron, eka-aluminium and eka-silicon)."
+          "text": "The table drawn here is the one printed in the German abstract of the paper (Zeitschrift für Chemie 12, 405–406, 1869), as transcribed and translated by Carmen Giunta; I did not see the Russian original, so whether the Russian paper's table is identical in every number is not checked. Atomic weights are his 1869 values (hydrogen = 1), several of them wrong (for instance uranium as 116) and some marked \"?\" by him. The three \"gaps\" are interpolations by me, not Mendeleev's calculation; his own 1871 predictions were more detailed (masses 44, 68 and 72 for eka-boron, eka-aluminium and eka-silicon)."
         }
       ],
       "refs": [],
@@ -85,7 +85,7 @@
       "explicitUncertainty": [
         {
           "field": "scope",
-          "text": "This is a reconstruction in the Frenkel\u2013Kontorova model (harmonic chain on a sinusoidal substrate), which dates from 1938 and is not Taylor's own interatomic-force model or data; I could not read the original text, so the description of the paper's content comes from secondary sources and is hedged accordingly. The kink threshold is found numerically (relaxation and bisection); the model shows the qualitative claim only, that a dislocation moves at a force exponentially smaller than the rigid-slip value, not Taylor's numbers."
+          "text": "This is a reconstruction in the Frenkel–Kontorova model (harmonic chain on a sinusoidal substrate), which dates from 1938 and is not Taylor's own interatomic-force model or data; I could not read the original text, so the description of the paper's content comes from secondary sources and is hedged accordingly. The kink threshold is found numerically (relaxation and bisection); the model shows the qualitative claim only, that a dislocation moves at a force exponentially smaller than the rigid-slip value, not Taylor's numbers."
         }
       ],
       "refs": [],
@@ -114,11 +114,11 @@
       "explicitUncertainty": [
         {
           "field": "scope",
-          "text": "The abstract, Table 2 and paragraph 39 of the publisher's current full text print conflicting coefficients; this picture identifies exactly the abstract version it uses, rather than silently reconciling the recommended fit. Nominally dry peridotite experiments have compositional and interlaboratory uncertainty. Chosen constants: $\\Gamma=15$ K/GPa, $L/c_p=500$ K, $\\Delta T_m=700$ K, mantle/crust densities 3300/2900 kg/m\u00b3, $g=9.8$ m/s\u00b2. The displayed equivalent melt column $\\int F\\,dP/(\\rho_c g)$ is the inventory implied by these chosen assumptions, not observed oceanic crust, and does not simulate fractional extraction, active focusing or freezing."
+          "text": "The abstract, Table 2 and paragraph 39 of the publisher's current full text print conflicting coefficients; this picture identifies exactly the abstract version it uses, rather than silently reconciling the recommended fit. Nominally dry peridotite experiments have compositional and interlaboratory uncertainty. Chosen constants: $\\Gamma=15$ K/GPa, $L/c_p=500$ K, $\\Delta T_m=700$ K, mantle/crust densities 3300/2900 kg/m³, $g=9.8$ m/s². The displayed equivalent melt column $\\int F\\,dP/(\\rho_c g)$ is the inventory implied by these chosen assumptions, not observed oceanic crust, and does not simulate fractional extraction, active focusing or freezing."
         }
       ],
       "refs": [
-        "Hirschmann (2000), abstract and complete \u00a7\u00a73\u20134,6.4\u20137: polynomial provenance, uncertainty and composition effects",
+        "Hirschmann (2000), abstract and complete §§3–4,6.4–7: polynomial provenance, uncertainty and composition effects",
         "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2000GC000070"
       ],
       "links": {
@@ -128,7 +128,7 @@
     {
       "id": "mathbio-3.14",
       "file": "content/mathbio/ch03-c.js",
-      "name": "Kolmogorov\u2019s theorem for predator\u2013prey systems",
+      "name": "Kolmogorov’s theorem for predator–prey systems",
       "field": "bio",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -172,12 +172,12 @@
       "explicitUncertainty": [
         {
           "field": "statement",
-          "text": "Hounsfield described a scanner in which a narrow X-ray beam and detector traverse a slice of the head, take a row of transmission readings, then rotate by a small step and repeat; a computer reconstructs the absorption in a matrix of small elements from the whole set of readings and displays it as a picture, together with numerical values relative to water. Because the readings are digitised and used quantitatively, the system distinguishes tissues whose X-ray absorption differs by only about a per cent \u2014 grey and white matter, blood clot, cerebrospinal fluid \u2014 which a radiograph, where the shadow of bone and of the depth superimpose, cannot show. (Parameters of the first scanner \u2014 about $80\\times80$ picture elements and of the order of $160$ readings at each of $180$ one-degree steps \u2014 are as commonly reported and are marked unverified.)"
+          "text": "Hounsfield described a scanner in which a narrow X-ray beam and detector traverse a slice of the head, take a row of transmission readings, then rotate by a small step and repeat; a computer reconstructs the absorption in a matrix of small elements from the whole set of readings and displays it as a picture, together with numerical values relative to water. Because the readings are digitised and used quantitatively, the system distinguishes tissues whose X-ray absorption differs by only about a per cent — grey and white matter, blood clot, cerebrospinal fluid — which a radiograph, where the shadow of bone and of the depth superimpose, cannot show. (Parameters of the first scanner — about $80\\times80$ picture elements and of the order of $160$ readings at each of $180$ one-degree steps — are as commonly reported and are marked unverified.)"
         }
       ],
       "refs": [
-        "Hounsfield (1973), BJR46:1016\u20131022, official abstract",
-        "Hounsfield Nobel lecture (1979), pp.569\u2013578"
+        "Hounsfield (1973), BJR46:1016–1022, official abstract",
+        "Hounsfield Nobel lecture (1979), pp.569–578"
       ],
       "links": {
         "nobel": "https://www.nobelprize.org/prizes/medicine/1979/hounsfield/lecture/"
@@ -235,7 +235,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "MSZ \u00a74.14"
+        "MSZ §4.14"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Blotto_game"
@@ -244,13 +244,13 @@
     {
       "id": "game-3.10",
       "file": "content/game/ch03-b.js",
-      "name": "Blackwell\u2019s approachability theorem",
+      "name": "Blackwell’s approachability theorem",
       "field": "econ",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "MSZ \u00a714.5"
+        "MSZ §14.5"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Approachability_(game_theory)"
@@ -265,7 +265,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Osborne \u00a77.2"
+        "Osborne §7.2"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Chain_store_paradox"
@@ -280,7 +280,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "MSZ \u00a73.4"
+        "MSZ §3.4"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Strategy-stealing_argument"
@@ -289,7 +289,7 @@
     {
       "id": "game-4.12",
       "file": "content/game/ch04-c.js",
-      "name": "Nim and the Sprague\u2013Grundy theorem",
+      "name": "Nim and the Sprague–Grundy theorem",
       "field": "econ",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -310,7 +310,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "MSZ \u00a73.4"
+        "MSZ §3.4"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Hales%E2%80%93Jewett_theorem"
@@ -371,7 +371,7 @@
       "explicitUncertainty": [
         {
           "field": "credit",
-          "text": "Ludimar Hermann, 1870; Baumgartner, 1960 (centre\u2013surround account, unconfirmed); Geier, Bern\u00e1th, Hud\u00e1k & S\u00e9ra, 2008, Perception 37: 651\u2013665 (straightness)"
+          "text": "Ludimar Hermann, 1870; Baumgartner, 1960 (centre–surround account, unconfirmed); Geier, Bernáth, Hudák & Séra, 2008, Perception 37: 651–665 (straightness)"
         }
       ],
       "refs": [
@@ -385,14 +385,14 @@
     {
       "id": "psych-4.10",
       "file": "content/psych/ch04-b.js",
-      "name": "White\u2019s illusion: contrast against lateral inhibition",
+      "name": "White’s illusion: contrast against lateral inhibition",
       "field": "social",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
       "explicitUncertainty": [
         {
           "field": "credit",
-          "text": "Michael White, 1979, Perception 8: 413\u2013416; multiscale account: Blakeslee & McCourt, 1999, Vision Res. 39: 4361\u20134377 (volume and pages unconfirmed)"
+          "text": "Michael White, 1979, Perception 8: 413–416; multiscale account: Blakeslee & McCourt, 1999, Vision Res. 39: 4361–4377 (volume and pages unconfirmed)"
         }
       ],
       "refs": [
@@ -405,7 +405,7 @@
     {
       "id": "psych-4.11",
       "file": "content/psych/ch04-c.js",
-      "name": "Craik\u2013O\u2019Brien\u2013Cornsweet illusion",
+      "name": "Craik–O’Brien–Cornsweet illusion",
       "field": "social",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -427,7 +427,7 @@
       "explicitUncertainty": [
         {
           "field": "credit",
-          "text": "Gilchrist, Kossyfidis, Bonato, Agostini, Cataliotti, Li, Spehar, Annan & Economou, 1999, \u201cAn anchoring theory of lightness perception\u201d, Psychol. Rev. 106 (volume and pages unconfirmed)"
+          "text": "Gilchrist, Kossyfidis, Bonato, Agostini, Cataliotti, Li, Spehar, Annan & Economou, 1999, “An anchoring theory of lightness perception”, Psychol. Rev. 106 (volume and pages unconfirmed)"
         }
       ],
       "refs": [
@@ -462,7 +462,7 @@
       "explicitUncertainty": [
         {
           "field": "credit",
-          "text": "Ignaz Paul Vital Troxler, 1804 (unconfirmed); stabilised images: Ditchburn & Ginsborg 1952 and Riggs, Ratliff, Cornsweet & Cornsweet, 1953, J. Opt. Soc. Am. 43: 495\u2013501"
+          "text": "Ignaz Paul Vital Troxler, 1804 (unconfirmed); stabilised images: Ditchburn & Ginsborg 1952 and Riggs, Ratliff, Cornsweet & Cornsweet, 1953, J. Opt. Soc. Am. 43: 495–501"
         }
       ],
       "refs": [
@@ -501,8 +501,8 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "E&K \u00a712.2",
-        "E&K \u00a712.3"
+        "E&K §12.2",
+        "E&K §12.3"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Exchange_network_theory"
@@ -517,7 +517,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "E&K \u00a718.2",
+        "E&K §18.2",
         "Newman ch. 10"
       ],
       "links": {
@@ -549,7 +549,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "E&K \u00a718.4"
+        "E&K §18.4"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Experimental_Study_of_Inequality_and_Unpredictability_in_an_Artificial_Cultural_Market",
@@ -559,7 +559,7 @@
     {
       "id": "soc-4.13",
       "file": "content/soc/ch04-c.js",
-      "name": "Gibrat\u2019s proportional growth and city-size laws",
+      "name": "Gibrat’s proportional growth and city-size laws",
       "field": "social",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -596,7 +596,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "E&K \u00a718.5"
+        "E&K §18.5"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Long_tail"
@@ -611,7 +611,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "E&K \u00a713.4"
+        "E&K §13.4"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Bow-tie_structure"
@@ -626,51 +626,11 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "E&K \u00a720.4"
+        "E&K §20.4"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Six_degrees_of_separation",
         "arxiv": "https://arxiv.org/abs/1111.4503"
-      }
-    },
-    {
-      "id": "soc-4.5",
-      "file": "content/soc/ch04.js",
-      "name": "Watts\u2013Strogatz small-world model",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "Stated for $n\\gg k\\gg\\ln n\\gg1$ (the limits in the original paper). The curves use $n=300$, $k=6$, a much smaller ring than the paper's 1000 vertices with $k=10$, so the collapse sits at somewhat larger $p$. The shortcut variant is due to Newman and Watts (1999, from memory)."
-        }
-      ],
-      "refs": [
-        "E&K \u00a720.2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Watts%E2%80%93Strogatz_model"
-      }
-    },
-    {
-      "id": "soc-4.6",
-      "file": "content/soc/ch04.js",
-      "name": "Kleinberg\u2019s navigability theorem",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "Statement as given in course notes for the $n\\times n$ lattice with one long-range contact per node; the lower bounds in terms of the side length are quoted from those notes and were not checked against Kleinberg's paper. The simulated lattice is a torus with Manhattan distance, for sizes up to 512\u00d7512; the optimum at finite size is below 2, and the theorem is asymptotic."
-        }
-      ],
-      "refs": [
-        "E&K \u00a720.3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Small-world_routing"
       }
     },
     {
@@ -696,7 +656,7 @@
       "explicitUncertainty": [
         {
           "field": "statement",
-          "text": "Downs treats political parties as vote-maximizing firms and voters as rational consumers of policy located on a left\u2013right scale. In the model that bears his name, with voters distributed along the scale and each voting for the nearest party, two parties competing for votes move toward each other, and when the distribution of voters is single-peaked they converge on the position of the median voter. Downs also points out the limits of this result: when the electorate is bimodal, or when voters too far from both parties abstain, the parties can remain apart, and with three or more parties their positions need not settle. (This statement follows the standard account of the Downsian model; I could not check the article's own wording, so the paper-specific claims should be read with that caveat.)"
+          "text": "Downs treats political parties as vote-maximizing firms and voters as rational consumers of policy located on a left–right scale. In the model that bears his name, with voters distributed along the scale and each voting for the nearest party, two parties competing for votes move toward each other, and when the distribution of voters is single-peaked they converge on the position of the median voter. Downs also points out the limits of this result: when the electorate is bimodal, or when voters too far from both parties abstain, the parties can remain apart, and with three or more parties their positions need not settle. (This statement follows the standard account of the Downsian model; I could not check the article's own wording, so the paper-specific claims should be read with that caveat.)"
         }
       ],
       "refs": [],
@@ -707,14 +667,14 @@
     {
       "id": "polsci-4.5",
       "file": "content/polsci/ch04.js",
-      "name": "Plott\u2019s symmetry condition",
+      "name": "Plott’s symmetry condition",
       "field": "social",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
         "Shepsle: spatial model",
-        "Plott (1967), American Economic Review 57: 787\u2013806"
+        "Plott (1967), American Economic Review 57: 787–806"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Median_voter_theorem"
@@ -723,14 +683,14 @@
     {
       "id": "polsci-5.6",
       "file": "content/polsci/ch05-b.js",
-      "name": "Unanimous juries convict innocents (Feddersen\u2013Pesendorfer)",
+      "name": "Unanimous juries convict innocents (Feddersen–Pesendorfer)",
       "field": "social",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
         "Shepsle: group decisions",
-        "Feddersen and Pesendorfer (1998), American Political Science Review 92: 23\u201335"
+        "Feddersen and Pesendorfer (1998), American Political Science Review 92: 23–35"
       ],
       "links": {
         "doi": "https://doi.org/10.2307/2585926"
@@ -766,21 +726,21 @@
     {
       "id": "polsci-5.9",
       "file": "content/polsci/ch05-b.js",
-      "name": "The swing voter\u2019s curse",
+      "name": "The swing voter’s curse",
       "field": "social",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
         "Shepsle: voting and turnout",
-        "Feddersen and Pesendorfer (1996), American Economic Review 86: 408\u2013424"
+        "Feddersen and Pesendorfer (1996), American Economic Review 86: 408–424"
       ],
       "links": {}
     },
     {
       "id": "polsci-5.10",
       "file": "content/polsci/ch05-b.js",
-      "name": "Essai sur l\u2019application de l\u2019analyse \u00e0 la probabilit\u00e9\u2026",
+      "name": "Essai sur l’application de l’analyse à la probabilité…",
       "field": "social",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -800,7 +760,7 @@
       "explicitUncertainty": [],
       "refs": [
         "Shepsle: voting and turnout",
-        "Gelman, Silver and Edlin (2012), Economic Inquiry 50: 321\u2013326"
+        "Gelman, Silver and Edlin (2012), Economic Inquiry 50: 321–326"
       ],
       "links": {
         "doi": "https://doi.org/10.1086/257897"
@@ -819,22 +779,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Well_temperament"
-      }
-    },
-    {
-      "id": "music-7.9",
-      "file": "content/music/ch07-b.js",
-      "name": "Twelve-tone equal temperament",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 5",
-        "Loy I ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Equal_temperament"
       }
     },
     {
@@ -915,7 +859,7 @@
     {
       "id": "music-7.17",
       "file": "content/music/ch07-c.js",
-      "name": "The Bohlen\u2013Pierce scale",
+      "name": "The Bohlen–Pierce scale",
       "field": "arts",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -988,7 +932,7 @@
       "explicitUncertainty": [
         {
           "field": "credit",
-          "text": "Observed by Milton Babbitt and proved by David Lewin (note in the Journal of Music Theory, c. 1959\u201360); other early proofs by Ralph Fox, Kassler (1961), Regener (1974) and Wilcox (1983). Attribution details taken from secondary sources and not checked against the originals."
+          "text": "Observed by Milton Babbitt and proved by David Lewin (note in the Journal of Music Theory, c. 1959–60); other early proofs by Ralph Fox, Kassler (1961), Regener (1974) and Wilcox (1983). Attribution details taken from secondary sources and not checked against the originals."
         }
       ],
       "refs": [
@@ -1023,7 +967,7 @@
       "explicitUncertainty": [
         {
           "field": "credit",
-          "text": "Fourier analysis of pitch-class sets: David Lewin (interval function, from 1959), Ian Quinn (\"General equal-tempered harmony\", 2006\u201307), Emmanuel Amiot (e.g. \"David Lewin and maximally even sets\", 2007; Music Through Fourier Space, 2016); attributions from secondary sources, not checked against the originals"
+          "text": "Fourier analysis of pitch-class sets: David Lewin (interval function, from 1959), Ian Quinn (\"General equal-tempered harmony\", 2006–07), Emmanuel Amiot (e.g. \"David Lewin and maximally even sets\", 2007; Music Through Fourier Space, 2016); attributions from secondary sources, not checked against the originals"
         }
       ],
       "refs": [
@@ -1086,7 +1030,7 @@
     {
       "id": "music-8.5",
       "file": "content/music/ch08.js",
-      "name": "Myhill\u2019s property: two sizes per generic interval",
+      "name": "Myhill’s property: two sizes per generic interval",
       "field": "arts",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -1123,7 +1067,7 @@
       "explicitUncertainty": [
         {
           "field": "scope",
-          "text": "The arc proportions are the numbers printed in the Opticks text as I read it from a public-domain transcription (Project Gutenberg), not checked against the 1704 print. The wavelength attached to each colour name in the modern comparison (660, 607, 577, 532, 482, 452, 420 nm) is a conventional mid-band choice, not Newton\u2019s."
+          "text": "The arc proportions are the numbers printed in the Opticks text as I read it from a public-domain transcription (Project Gutenberg), not checked against the 1704 print. The wavelength attached to each colour name in the modern comparison (660, 607, 577, 532, 482, 452, 420 nm) is a conventional mid-band choice, not Newton’s."
         }
       ],
       "refs": [],
@@ -1167,7 +1111,7 @@
     {
       "id": "art-4.13",
       "file": "content/art/ch04-b.js",
-      "name": "Luminance, V(\u03bb) and the Purkinje shift",
+      "name": "Luminance, V(λ) and the Purkinje shift",
       "field": "arts",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -1202,7 +1146,7 @@
       "explicitUncertainty": [
         {
           "field": "scope",
-          "text": "The slit positions are my conversion of the positions printed in Maxwell\u2019s paper (the scale divisions and Fraunhofer\u2019s units in his Table II, where I read red 2328, green 1914 and blue 1717, with the green close to the line E, from an OCR transcription): multiplying by $2.707\\times10^{-7}$ mm, the Paris inch scaled unit of Fraunhofer, gives about 630, 518 and 465 nm, but I have not verified the unit or the conversion. The calculation uses the CIE 1931 fit and an equal-energy white (Maxwell matched sky or white paper); his own data are not reproduced."
+          "text": "The slit positions are my conversion of the positions printed in Maxwell’s paper (the scale divisions and Fraunhofer’s units in his Table II, where I read red 2328, green 1914 and blue 1717, with the green close to the line E, from an OCR transcription): multiplying by $2.707\\times10^{-7}$ mm, the Paris inch scaled unit of Fraunhofer, gives about 630, 518 and 465 nm, but I have not verified the unit or the conversion. The calculation uses the CIE 1931 fit and an equal-energy white (Maxwell matched sky or white paper); his own data are not reproduced."
         }
       ],
       "refs": [],
@@ -1288,7 +1232,7 @@
       "explicitUncertainty": [
         {
           "field": "scope",
-          "text": "Reconstruction of the argument for a semicircular arch with radial joints, self-weight 22 kN/m\u00b3 and one point load; the paper's own examples (cathedral section, vault, flying buttress) and numbers are not used. The attribution of the individual results to this paper rather than to the later arch literature is as stated in secondary sources (the paper itself was not read)."
+          "text": "Reconstruction of the argument for a semicircular arch with radial joints, self-weight 22 kN/m³ and one point load; the paper's own examples (cathedral section, vault, flying buttress) and numbers are not used. The attribution of the individual results to this paper rather than to the later arch literature is as stated in secondary sources (the paper itself was not read)."
         }
       ],
       "refs": [],
@@ -1312,7 +1256,7 @@
     {
       "id": "arch-4.6",
       "file": "content/arch/ch04-b.js",
-      "name": "Poleni\u2019s hanging-chain analysis of St Peter\u2019s (1748)",
+      "name": "Poleni’s hanging-chain analysis of St Peter’s (1748)",
       "field": "arts",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -1343,7 +1287,7 @@
     {
       "id": "arch-4.8",
       "file": "content/arch/ch04-b.js",
-      "name": "Brunelleschi\u2019s dome in Florence",
+      "name": "Brunelleschi’s dome in Florence",
       "field": "arts",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -1380,7 +1324,7 @@
       "explicitUncertainty": [
         {
           "field": "caption",
-          "text": "Choose a language (or click a dot on the right) to read the clause morpheme by morpheme: roots blue, affixes teal, with their glosses. The plot gives each clause's morphemes per word and the average number of grammatical features per affix, and shades nothing: the labels mark where the textbook classes sit. The four clauses are rough counterparts of \u201cI can\u2019t hear (very) well\u201d and are **not** word-for-word translations. My own segmentation, checked against reference grammars only for Turkish ability/negation, Mandarin potential complements and the Inuktitut example (Wikipedia's *Inuit grammar*); Latin is from memory, and conventions for counting (is *q\u012bngchu* one morpheme? is *-junga* one or two?) change the numbers a little."
+          "text": "Choose a language (or click a dot on the right) to read the clause morpheme by morpheme: roots blue, affixes teal, with their glosses. The plot gives each clause's morphemes per word and the average number of grammatical features per affix, and shades nothing: the labels mark where the textbook classes sit. The four clauses are rough counterparts of “I can’t hear (very) well” and are **not** word-for-word translations. My own segmentation, checked against reference grammars only for Turkish ability/negation, Mandarin potential complements and the Inuktitut example (Wikipedia's *Inuit grammar*); Latin is from memory, and conventions for counting (is *qīngchu* one morpheme? is *-junga* one or two?) change the numbers a little."
         }
       ],
       "refs": [
@@ -1411,7 +1355,7 @@
       "explicitUncertainty": [
         {
           "field": "caption",
-          "text": "Choose a language and a stem: the copied part is shown in orange with an arrow from the stem, and the result appears with its meaning. In *free play* type any stem and choose the rule (full, first CV, first CVC) to see how the same stem looks under each pattern. The bars give the typological counts of the WALS chapter. Examples: Indonesian *buku-buku*, *anak-anak* and *mata-mata* \u201cspy\u201d and the Tagalog forms *susulat*, *kakain*, *babasa*, *iinom* were checked against teaching sources; *rumah-rumah*, *jalan-jalan* and *bibili* are from memory. The copying here is orthographic, a simplification of the sound-level rule."
+          "text": "Choose a language and a stem: the copied part is shown in orange with an arrow from the stem, and the result appears with its meaning. In *free play* type any stem and choose the rule (full, first CV, first CVC) to see how the same stem looks under each pattern. The bars give the typological counts of the WALS chapter. Examples: Indonesian *buku-buku*, *anak-anak* and *mata-mata* “spy” and the Tagalog forms *susulat*, *kakain*, *babasa*, *iinom* were checked against teaching sources; *rumah-rumah*, *jalan-jalan* and *bibili* are from memory. The copying here is orthographic, a simplification of the sound-level rule."
         }
       ],
       "refs": [
@@ -1435,7 +1379,7 @@
     {
       "id": "ling-4.6",
       "file": "content/ling/ch04-b.js",
-      "name": "Menzerath\u2019s law",
+      "name": "Menzerath’s law",
       "field": "humanities",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -1528,7 +1472,7 @@
       "explicitUncertainty": [],
       "refs": [
         "Mokyr ch. 3",
-        "Needham, Science and Civilisation in China 4.2 and Lewis (1997), as cited by Wikipedia \u201cTrip hammer\u201d"
+        "Needham, Science and Civilisation in China 4.2 and Lewis (1997), as cited by Wikipedia “Trip hammer”"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Trip_hammer"
@@ -1544,14 +1488,14 @@
       "explicitUncertainty": [
         {
           "field": "statement",
-          "text": "The **heavy plough** has a vertical **coulter** to cut the sod, a **share** to cut it from below and a **mouldboard** to turn it over, so it opens a deep furrow in wet, heavy soils where the older scratch plough (the ard) only scored the surface. It needs a strong team. The **horse collar** is a padded, stiff ring resting on a horse's shoulders, so that the horse pulls with its chest and shoulders and not against its windpipe.\n\nThe historical claim associated with Lynn White Jr. (*Medieval Technology and Social Change*, 1962) is that these inventions, together with the horseshoe, let medieval Europe plough the heavy northern soils and raised agricultural output, and that the collar multiplied a horse's useful pull. How much of this survives is disputed. The idea that the older throat-and-girth harness choked the horse goes back to Lefebvre des No\u00ebttes (1931), and a test attributed to him is quoted as limiting two horses to about 1100 lb against about 1\u00bd tons for one horse in a collar (as cited by Needham). Reconstructions by Spruytte (published 1977 and 1983), working with M. Littauer, found that ancient harnesses, correctly fitted, let a horse pull nearly as much; on that view the collar's real gain was a lower point of attachment, which suited ploughing. The modest effect of the collar is also argued by Weller. I could not check the original measurements, so the two views below are presented as claims, not data.\n\nWhat the picture does compute is statics. The trace from the harness to the plough's clevis is a straight line; the pull along it has a horizontal part that the soil resists and a vertical part that depends on how high the horse's attachment is above the clevis. The numbers for soil resistance and the pull of an animal are illustrative round figures."
+          "text": "The **heavy plough** has a vertical **coulter** to cut the sod, a **share** to cut it from below and a **mouldboard** to turn it over, so it opens a deep furrow in wet, heavy soils where the older scratch plough (the ard) only scored the surface. It needs a strong team. The **horse collar** is a padded, stiff ring resting on a horse's shoulders, so that the horse pulls with its chest and shoulders and not against its windpipe.\n\nThe historical claim associated with Lynn White Jr. (*Medieval Technology and Social Change*, 1962) is that these inventions, together with the horseshoe, let medieval Europe plough the heavy northern soils and raised agricultural output, and that the collar multiplied a horse's useful pull. How much of this survives is disputed. The idea that the older throat-and-girth harness choked the horse goes back to Lefebvre des Noëttes (1931), and a test attributed to him is quoted as limiting two horses to about 1100 lb against about 1½ tons for one horse in a collar (as cited by Needham). Reconstructions by Spruytte (published 1977 and 1983), working with M. Littauer, found that ancient harnesses, correctly fitted, let a horse pull nearly as much; on that view the collar's real gain was a lower point of attachment, which suited ploughing. The modest effect of the collar is also argued by Weller. I could not check the original measurements, so the two views below are presented as claims, not data.\n\nWhat the picture does compute is statics. The trace from the harness to the plough's clevis is a straight line; the pull along it has a horizontal part that the soil resists and a vertical part that depends on how high the horse's attachment is above the clevis. The numbers for soil resistance and the pull of an animal are illustrative round figures."
         }
       ],
       "refs": [
         "Mokyr ch. 3",
         "White, Medieval Technology and Social Change (Oxford: Clarendon, 1962)",
         "Spruytte, Early Harness Systems (London: Allen, 1983)",
-        "Weller, Roman Traction Systems (online), and Needham (1986) as cited by Wikipedia \u201cHorse collar\u201d"
+        "Weller, Roman Traction Systems (online), and Needham (1986) as cited by Wikipedia “Horse collar”"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Horse_collar"
@@ -1568,7 +1512,7 @@
       "refs": [
         "Mokyr ch. 3",
         "White, Medieval Technology and Social Change (1962)",
-        "Bachrach 1970 and Bullough 1970, as cited by Wikipedia \u201cStirrup\u201d"
+        "Bachrach 1970 and Bullough 1970, as cited by Wikipedia “Stirrup”"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Stirrup"
@@ -1589,7 +1533,7 @@
       ],
       "refs": [
         "Mokyr ch. 3",
-        "Needham, Science and Civilisation in China 4.3 (as cited by Wikipedia \u201cLock (water navigation)\u201d)"
+        "Needham, Science and Civilisation in China 4.3 (as cited by Wikipedia “Lock (water navigation)”)"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Lock_(water_navigation)"
@@ -1605,8 +1549,8 @@
       "explicitUncertainty": [],
       "refs": [
         "Mokyr ch. 3",
-        "Needham, Science and Civilisation in China 4.3, Johnstone & McGrail (1988), as cited by Wikipedia \u201cRudder\u201d",
-        "Whitewright (2009\u20132012), Casson (1995), as cited by Wikipedia \u201cLateen\u201d"
+        "Needham, Science and Civilisation in China 4.3, Johnstone & McGrail (1988), as cited by Wikipedia “Rudder”",
+        "Whitewright (2009–2012), Casson (1995), as cited by Wikipedia “Lateen”"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Lateen"
@@ -1622,11 +1566,11 @@
       "explicitUncertainty": [
         {
           "field": "statement",
-          "text": "Smeaton's paper, read to the Royal Society in 1759 (he received the Society's Copley Medal for it), reports two series of experiments on working models. In the first he measured water wheels (the results are replayed in 4.5): at the same water and the same fall the overshot wheel does about twice the work of the undershot wheel, and each does best turning slowly. In the second part he tested windmill sails. Because natural wind is too uncertain, he carried the sails round a large circle on an arm, pulling it by hand and regulating the speed with a pendulum, so that the sails met an \"artificial wind\" of known speed (according to the OCR text, sails of 21 inches radius at a centre speed of 6 ft/s). He measured the load the sails could raise and their turns for different angles of weather (the angle between the sail and the plane of rotation), and concluded that sails set at 55\u00b0 to the axis were not the best for work and that the angle should vary along the sail, larger near the axis than at the tip. For a sail divided in six parts from the axis outward he gave angles of weather of 18\u00b0, 19\u00b0, 18\u00b0, 16\u00b0, 12\u00bd\u00b0 and 7\u00b0 (the OCR layout of the last two is garbled), and he found that concave sails and a wider leading edge did better still.\n\nHe also drew general rules from the windmill tests: the speed of the sails at maximum load is nearly proportional to the wind speed; the load at maximum is nearly, a little less than, proportional to the square of the wind speed; and the work done is nearly, a little less than, proportional to the cube of the wind speed.\n\nWhat the paper changed: it gave a measured, not argued, answer to a question that engineers had been settling by opinion, and its method (vary one parameter on a model, find the maximum, scale up by stated rules) became a template. I read the paper's text only in an OCR transcription, so every figure quoted here is unverified against the printed page."
+          "text": "Smeaton's paper, read to the Royal Society in 1759 (he received the Society's Copley Medal for it), reports two series of experiments on working models. In the first he measured water wheels (the results are replayed in 4.5): at the same water and the same fall the overshot wheel does about twice the work of the undershot wheel, and each does best turning slowly. In the second part he tested windmill sails. Because natural wind is too uncertain, he carried the sails round a large circle on an arm, pulling it by hand and regulating the speed with a pendulum, so that the sails met an \"artificial wind\" of known speed (according to the OCR text, sails of 21 inches radius at a centre speed of 6 ft/s). He measured the load the sails could raise and their turns for different angles of weather (the angle between the sail and the plane of rotation), and concluded that sails set at 55° to the axis were not the best for work and that the angle should vary along the sail, larger near the axis than at the tip. For a sail divided in six parts from the axis outward he gave angles of weather of 18°, 19°, 18°, 16°, 12½° and 7° (the OCR layout of the last two is garbled), and he found that concave sails and a wider leading edge did better still.\n\nHe also drew general rules from the windmill tests: the speed of the sails at maximum load is nearly proportional to the wind speed; the load at maximum is nearly, a little less than, proportional to the square of the wind speed; and the work done is nearly, a little less than, proportional to the cube of the wind speed.\n\nWhat the paper changed: it gave a measured, not argued, answer to a question that engineers had been settling by opinion, and its method (vary one parameter on a model, find the maximum, scale up by stated rules) became a template. I read the paper's text only in an OCR transcription, so every figure quoted here is unverified against the printed page."
         }
       ],
       "refs": [
-        "Smeaton 1759, Phil. Trans. 51:100\u2013174, doi 10.1098/rstl.1759.0019 (Crossref record; text read as OCR at jimclifford.ca)",
+        "Smeaton 1759, Phil. Trans. 51:100–174, doi 10.1098/rstl.1759.0019 (Crossref record; text read as OCR at jimclifford.ca)",
         "Smeaton 1776, Phil. Trans. 66"
       ],
       "links": {
@@ -1682,7 +1626,7 @@
         "Vitruvius, De architectura 8.6 (fall of the channel; the venter)",
         "Frontinus, De aquaeductu (97 CE)",
         "Wikipedia \"Pont du Gard\" (34 cm/km, 17 m)",
-        "Wikipedia \"Lead\" (tensile strength 12\u201317 MPa)"
+        "Wikipedia \"Lead\" (tensile strength 12–17 MPa)"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Roman_aqueduct"
@@ -1697,9 +1641,9 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Usher, \u201cWater wheels and windmills\u201d",
+        "Usher, “Water wheels and windmills”",
         "Mokyr ch. 3",
-        "Lewis, Millstone and Hammer (1997), as cited by Wikipedia \u201cWatermill\u201d"
+        "Lewis, Millstone and Hammer (1997), as cited by Wikipedia “Watermill”"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Watermill"
@@ -1708,7 +1652,7 @@
     {
       "id": "tech-4.5",
       "file": "content/tech/ch04.js",
-      "name": "Smeaton\u2019s water-wheel experiments",
+      "name": "Smeaton’s water-wheel experiments",
       "field": "humanities",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -1720,8 +1664,8 @@
       ],
       "refs": [
         "Mokyr ch. 5",
-        "Smeaton 1759, Phil. Trans. 51:100\u2013174 (doi 10.1098/rstl.1759.0019), Tables I and II (OCR transcription at jimclifford.ca)",
-        "Smeaton 1776, Phil. Trans. 66 (one-half versus one-third of the water\u2019s speed)"
+        "Smeaton 1759, Phil. Trans. 51:100–174 (doi 10.1098/rstl.1759.0019), Tables I and II (OCR transcription at jimclifford.ca)",
+        "Smeaton 1776, Phil. Trans. 66 (one-half versus one-third of the water’s speed)"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/John_Smeaton"
@@ -1736,9 +1680,9 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Usher, \u201cWater wheels and windmills\u201d",
+        "Usher, “Water wheels and windmills”",
         "Mokyr ch. 3",
-        "Wikipedia \u201cWindmill\u201d (Persian panemone, Weedley 1185) and \u201cBetz\u2019s law\u201d (Lanchester 1915, Betz 1919, Zhukovsky 1920)"
+        "Wikipedia “Windmill” (Persian panemone, Weedley 1185) and “Betz’s law” (Lanchester 1915, Betz 1919, Zhukovsky 1920)"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Windmill"
@@ -1753,8 +1697,8 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Usher, \u201cThe development of clocks and watches\u201d",
-        "Lloyd, \u201cThe anchor escapement: William Clement or Robert Hooke?\u201d (1952), as cited by the British Museum catalogue"
+        "Usher, “The development of clocks and watches”",
+        "Lloyd, “The anchor escapement: William Clement or Robert Hooke?” (1952), as cited by the British Museum catalogue"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Anchor_escapement"
@@ -1769,7 +1713,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Usher, \u201cThe development of clocks and watches\u201d",
+        "Usher, “The development of clocks and watches”",
         "Cardwell"
       ],
       "links": {
@@ -1795,7 +1739,7 @@
     {
       "id": "tech-5.10",
       "file": "content/tech/ch05-b.js",
-      "name": "Harrison\u2019s marine chronometer",
+      "name": "Harrison’s marine chronometer",
       "field": "humanities",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -1839,7 +1783,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Usher, \u201cWater clocks and mechanical clocks\u201d",
+        "Usher, “Water clocks and mechanical clocks”",
         "Cardwell"
       ],
       "links": {
@@ -1857,7 +1801,7 @@
       "refs": [
         "Mokyr ch. 3",
         "Evans, The History and Practice of Ancient Astronomy",
-        "Savage-Smith, Islamicate Celestial Globes (as cited by Wikipedia \u201cAstrolabe\u201d)"
+        "Savage-Smith, Islamicate Celestial Globes (as cited by Wikipedia “Astrolabe”)"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Astrolabe"
@@ -1873,7 +1817,7 @@
       "explicitUncertainty": [],
       "refs": [
         "Mokyr ch. 3",
-        "Needham, Science and Civilisation in China 4.1, as cited by Wikipedia \u201cCompass\u201d"
+        "Needham, Science and Civilisation in China 4.1, as cited by Wikipedia “Compass”"
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Compass"
@@ -1888,7 +1832,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Usher, \u201cWater clocks and mechanical clocks\u201d",
+        "Usher, “Water clocks and mechanical clocks”",
         "Cardwell"
       ],
       "links": {
@@ -1904,7 +1848,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Usher, \u201cThe development of clocks and watches\u201d",
+        "Usher, “The development of clocks and watches”",
         "Cardwell"
       ],
       "links": {
@@ -1920,7 +1864,7 @@
       "status": "source-review-pending",
       "explicitUncertainty": [],
       "refs": [
-        "Usher, \u201cThe development of clocks and watches\u201d",
+        "Usher, “The development of clocks and watches”",
         "Mokyr ch. 4",
         "Huygens, Horologium Oscillatorium (1673)"
       ],
@@ -1992,7 +1936,7 @@
     {
       "id": "bighist-3.10",
       "file": "content/bighist/ch03-b.js",
-      "name": "Extraterrestrial Cause for the K\u2013T Extinction",
+      "name": "Extraterrestrial Cause for the K–T Extinction",
       "field": "humanities",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -2006,7 +1950,7 @@
     {
       "id": "bighist-3.1",
       "file": "content/bighist/ch03.js",
-      "name": "The Miller\u2013Urey experiment",
+      "name": "The Miller–Urey experiment",
       "field": "humanities",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -2213,7 +2157,7 @@
     {
       "id": "psych-4.7",
       "file": "content/psych/ch04-b.js",
-      "name": "Lateral inhibition (Hartline\u2013Ratliff)",
+      "name": "Lateral inhibition (Hartline–Ratliff)",
       "field": "social",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -2225,23 +2169,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Lateral_inhibition"
-      }
-    },
-    {
-      "id": "music-7.4",
-      "file": "content/music/ch07.js",
-      "name": "The wolf fifth",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        "False equal-size-only closure claim and reversed excess/shortfall accounting; readout gives comma ratio as the wolf ratio. Exact/rounded cents, historical claims, full chain/audio/input/replay require audit."
-      ],
-      "refs": [
-        "Benson ch. 5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Wolf_interval"
       }
     },
     {
@@ -2285,7 +2212,6 @@
       "art-3.12",
       "art-3.13",
       "psych-4.7",
-      "music-7.4",
       "psych-4.4",
       "art-3.2"
     ],
@@ -2990,7 +2916,10 @@
       "music-7.5",
       "music-7.7",
       "psych-4.6",
-      "psych-4.8"
+      "psych-4.8",
+      "music-7.9",
+      "soc-4.5",
+      "soc-4.6"
     ]
   },
   "additionalFollowups": [
@@ -3002,7 +2931,7 @@
     {
       "id": "cm-2.5",
       "status": "resolved",
-      "note": "Hall entries checked against Ashcroft\u2013Mermin Table 1.4; measurement regime corrected."
+      "note": "Hall entries checked against Ashcroft–Mermin Table 1.4; measurement regime corrected."
     },
     {
       "id": "cm-2.6",
@@ -3017,23 +2946,23 @@
     {
       "id": "stoch-2.6",
       "status": "resolved",
-      "note": "Layout matched named teaching example; chute corrected to 48\u219226."
+      "note": "Layout matched named teaching example; chute corrected to 48→26."
     },
     {
       "id": "macro-4.8",
       "status": "resolved",
-      "note": "Original MRW Tables I\u2013II rechecked, sample/alpha readout corrected; all 85 modern country inputs independently matched to official PWT 10.0, including sample and OECD mask. All four regressions agree with source-derived NumPy least squares. Signed fit bars, country extents and control endpoints tested. See pwt-10.0.json and scripts/verify-pwt.py."
+      "note": "Original MRW Tables I–II rechecked, sample/alpha readout corrected; all 85 modern country inputs independently matched to official PWT 10.0, including sample and OECD mask. All four regressions agree with source-derived NumPy least squares. Signed fit bars, country extents and control endpoints tested. See pwt-10.0.json and scripts/verify-pwt.py."
     },
     {
       "id": "macro-3.9",
       "status": "resolved",
-      "note": "Solow original pp. 312\u2013316 checked; PWT source tables regenerated, unequal interval weights and signed stack bounds corrected.",
+      "note": "Solow original pp. 312–316 checked; PWT source tables regenerated, unequal interval weights and signed stack bounds corrected.",
       "report": "docs/verification/macro-growth-followup.md"
     },
     {
       "id": "macro-3.11",
       "status": "resolved",
-      "note": "Lucas original pp. 92\u201393 checked; citation year, nonzero investment flows, modern comparison scope and slider range corrected.",
+      "note": "Lucas original pp. 92–93 checked; citation year, nonzero investment flows, modern comparison scope and slider range corrected.",
       "report": "docs/verification/macro-growth-followup.md"
     },
     {
@@ -3153,7 +3082,7 @@
     {
       "id": "pde-3.11",
       "status": "resolved",
-      "note": "Checked Yan Theorem 4.16 and the original Suzuki\u2013Watson formulation; removed unsupported priority narrative, corrected quadrature and bounds; exact caloric and noncaloric tests pass.",
+      "note": "Checked Yan Theorem 4.16 and the original Suzuki–Watson formulation; removed unsupported priority narrative, corrected quadrature and bounds; exact caloric and noncaloric tests pass.",
       "report": "docs/verification/pde-heat-followup.md"
     },
     {
@@ -3969,73 +3898,73 @@
     {
       "id": "stoch-3.12",
       "status": "resolved",
-      "note": "Original Watson/P\u00f3lya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
+      "note": "Original Watson/Pólya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
       "report": "docs/verification/stochastic-processes-followup.md"
     },
     {
       "id": "stoch-3.13",
       "status": "resolved",
-      "note": "Original Watson/P\u00f3lya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
+      "note": "Original Watson/Pólya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
       "report": "docs/verification/stochastic-processes-followup.md"
     },
     {
       "id": "stoch-4.10",
       "status": "resolved",
-      "note": "Original Watson/P\u00f3lya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
+      "note": "Original Watson/Pólya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
       "report": "docs/verification/stochastic-processes-followup.md"
     },
     {
       "id": "stoch-4.14",
       "status": "resolved",
-      "note": "Original Watson/P\u00f3lya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
+      "note": "Original Watson/Pólya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
       "report": "docs/verification/stochastic-processes-followup.md"
     },
     {
       "id": "stoch-4.16",
       "status": "resolved",
-      "note": "Original Watson/P\u00f3lya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
+      "note": "Original Watson/Pólya/Kolmogorov/Ehrenfest sources and author tree proof checked; corrected deterministic extinction, censored families, integer CDFs, tiny tree edges and period-two relaxation claims. Six tests/90-digit references and sixteen light/dark groups pass.",
       "report": "docs/verification/stochastic-processes-followup.md"
     },
     {
       "id": "graph-5.2.4",
       "status": "resolved",
-      "note": "Corrected Brooks block reduction, probability-bound plots, Haj\u00f3s subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
+      "note": "Corrected Brooks block reduction, probability-bound plots, Hajós subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
       "report": "docs/verification/graph-brooks-edge-followup.md"
     },
     {
       "id": "graph-5.2.5",
       "status": "resolved",
-      "note": "Corrected Brooks block reduction, probability-bound plots, Haj\u00f3s subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
+      "note": "Corrected Brooks block reduction, probability-bound plots, Hajós subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
       "report": "docs/verification/graph-brooks-edge-followup.md"
     },
     {
       "id": "graph-5.2.5a",
       "status": "resolved",
-      "note": "Corrected Brooks block reduction, probability-bound plots, Haj\u00f3s subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
+      "note": "Corrected Brooks block reduction, probability-bound plots, Hajós subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
       "report": "docs/verification/graph-brooks-edge-followup.md"
     },
     {
       "id": "graph-5.2.6",
       "status": "resolved",
-      "note": "Corrected Brooks block reduction, probability-bound plots, Haj\u00f3s subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
+      "note": "Corrected Brooks block reduction, probability-bound plots, Hajós subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
       "report": "docs/verification/graph-brooks-edge-followup.md"
     },
     {
       "id": "graph-5.3.1",
       "status": "resolved",
-      "note": "Corrected Brooks block reduction, probability-bound plots, Haj\u00f3s subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
+      "note": "Corrected Brooks block reduction, probability-bound plots, Hajós subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
       "report": "docs/verification/graph-brooks-edge-followup.md"
     },
     {
       "id": "graph-5.3.2",
       "status": "resolved",
-      "note": "Corrected Brooks block reduction, probability-bound plots, Haj\u00f3s subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
+      "note": "Corrected Brooks block reduction, probability-bound plots, Hajós subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
       "report": "docs/verification/graph-brooks-edge-followup.md"
     },
     {
       "id": "graph-5.3.3",
       "status": "resolved",
-      "note": "Corrected Brooks block reduction, probability-bound plots, Haj\u00f3s subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
+      "note": "Corrected Brooks block reduction, probability-bound plots, Hajós subgraph theorem, edge-color algorithm versus optimum and sharp factorization scope. Seven independent tests and fourteen light/dark groups pass.",
       "report": "docs/verification/graph-brooks-edge-followup.md"
     },
     {
@@ -4149,19 +4078,19 @@
     {
       "id": "comb-4.3",
       "status": "resolved",
-      "note": "Checked exact primary Binet/Pr\u00fcfer/Zeckendorf proofs, corrected ratio/uniqueness bounds, full degree-law support and actual final sample. Six independent tests and six light/dark groups pass.",
+      "note": "Checked exact primary Binet/Prüfer/Zeckendorf proofs, corrected ratio/uniqueness bounds, full degree-law support and actual final sample. Six independent tests and six light/dark groups pass.",
       "report": "docs/verification/combinatorics-sources-followup.md"
     },
     {
       "id": "comb-4.15",
       "status": "resolved",
-      "note": "Checked exact primary Binet/Pr\u00fcfer/Zeckendorf proofs, corrected ratio/uniqueness bounds, full degree-law support and actual final sample. Six independent tests and six light/dark groups pass.",
+      "note": "Checked exact primary Binet/Prüfer/Zeckendorf proofs, corrected ratio/uniqueness bounds, full degree-law support and actual final sample. Six independent tests and six light/dark groups pass.",
       "report": "docs/verification/combinatorics-sources-followup.md"
     },
     {
       "id": "comb-4.17",
       "status": "resolved",
-      "note": "Checked exact primary Binet/Pr\u00fcfer/Zeckendorf proofs, corrected ratio/uniqueness bounds, full degree-law support and actual final sample. Six independent tests and six light/dark groups pass.",
+      "note": "Checked exact primary Binet/Prüfer/Zeckendorf proofs, corrected ratio/uniqueness bounds, full degree-law support and actual final sample. Six independent tests and six light/dark groups pass.",
       "report": "docs/verification/combinatorics-sources-followup.md"
     },
     {
@@ -4227,31 +4156,31 @@
     {
       "id": "logic-4.2",
       "status": "resolved",
-      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. G\u00f6del4.12 remains flagged.",
+      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. Gödel4.12 remains flagged.",
       "report": "docs/verification/logic-sources-followup.md"
     },
     {
       "id": "logic-4.8",
       "status": "resolved",
-      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. G\u00f6del4.12 remains flagged.",
+      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. Gödel4.12 remains flagged.",
       "report": "docs/verification/logic-sources-followup.md"
     },
     {
       "id": "logic-4.10",
       "status": "resolved",
-      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. G\u00f6del4.12 remains flagged.",
+      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. Gödel4.12 remains flagged.",
       "report": "docs/verification/logic-sources-followup.md"
     },
     {
       "id": "logic-5.2",
       "status": "resolved",
-      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. G\u00f6del4.12 remains flagged.",
+      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. Gödel4.12 remains flagged.",
       "report": "docs/verification/logic-sources-followup.md"
     },
     {
       "id": "logic-5.4",
       "status": "resolved",
-      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. G\u00f6del4.12 remains flagged.",
+      "note": "Read precise Enderton second-edition proofs plus Prest elementary-diagram and Cameron author arguments; corrected finite evidence, LS retention, SAT/binder handling and categoricity countermodels. Eleven independent math tests and14 light/dark input groups pass. Gödel4.12 remains flagged.",
       "report": "docs/verification/logic-sources-followup.md"
     },
     {
@@ -4293,43 +4222,43 @@
     {
       "id": "num-4.11",
       "status": "resolved",
-      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Pad\u00e9 author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Pad\u00e9 defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
+      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Padé author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Padé defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
       "report": "docs/verification/numerical-orthogonal-rational-followup.md"
     },
     {
       "id": "num-4.13",
       "status": "resolved",
-      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Pad\u00e9 author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Pad\u00e9 defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
+      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Padé author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Padé defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
       "report": "docs/verification/numerical-orthogonal-rational-followup.md"
     },
     {
       "id": "num-4.14",
       "status": "resolved",
-      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Pad\u00e9 author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Pad\u00e9 defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
+      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Padé author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Padé defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
       "report": "docs/verification/numerical-orthogonal-rational-followup.md"
     },
     {
       "id": "num-4.15",
       "status": "resolved",
-      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Pad\u00e9 author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Pad\u00e9 defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
+      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Padé author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Padé defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
       "report": "docs/verification/numerical-orthogonal-rational-followup.md"
     },
     {
       "id": "num-4.16",
       "status": "resolved",
-      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Pad\u00e9 author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Pad\u00e9 defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
+      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Padé author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Padé defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
       "report": "docs/verification/numerical-orthogonal-rational-followup.md"
     },
     {
       "id": "num-4.17",
       "status": "resolved",
-      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Pad\u00e9 author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Pad\u00e9 defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
+      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Padé author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Padé defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
       "report": "docs/verification/numerical-orthogonal-rational-followup.md"
     },
     {
       "id": "num-4.18",
       "status": "resolved",
-      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Pad\u00e9 author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Pad\u00e9 defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
+      "note": "Verified executable ATAP primary chapters, original Newman paper, CF and robust Padé author papers. Corrected recurrence/root indices, rational error extrema/endpoints, normalized Padé defects, doublet heuristic scope and Wynn breakdowns. Nine independent math tests,100-digit references and16 light/dark input groups pass.",
       "report": "docs/verification/numerical-orthogonal-rational-followup.md"
     },
     {
@@ -4443,7 +4372,7 @@
     {
       "id": "info-3.10",
       "status": "resolved",
-      "note": "Full Neyman\u2013Pearson and Stein proofs read; randomized tests, all fixed error bounds, valid likelihood converse and log-domain masses;4 math and2 light/dark groups pass.",
+      "note": "Full Neyman–Pearson and Stein proofs read; randomized tests, all fixed error bounds, valid likelihood converse and log-domain masses;4 math and2 light/dark groups pass.",
       "report": "docs/verification/info-stein-followup.md"
     },
     {
@@ -4575,31 +4504,31 @@
     {
       "id": "algo-11.19",
       "status": "resolved",
-      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee\u2013Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
+      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee–Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
       "report": "docs/verification/algo-lp-sources-followup.md"
     },
     {
       "id": "algo-11.22",
       "status": "resolved",
-      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee\u2013Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
+      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee–Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
       "report": "docs/verification/algo-lp-sources-followup.md"
     },
     {
       "id": "algo-11.23",
       "status": "resolved",
-      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee\u2013Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
+      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee–Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
       "report": "docs/verification/algo-lp-sources-followup.md"
     },
     {
       "id": "algo-11.24",
       "status": "resolved",
-      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee\u2013Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
+      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee–Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
       "report": "docs/verification/algo-lp-sources-followup.md"
     },
     {
       "id": "algo-11.25",
       "status": "resolved",
-      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee\u2013Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
+      "note": "Full original LP/flow proofs checked; corrected Farkas argument, precise Klee–Minty Gray path, barrier gradient and stable ellipsoids, exact TU minors, original planar chain-flow method and simplex termination statuses. Thirteen math and twelve light/dark groups pass.",
       "report": "docs/verification/algo-lp-sources-followup.md"
     },
     {
@@ -4683,43 +4612,43 @@
     {
       "id": "cplx-4.3",
       "status": "resolved",
-      "note": "Read original Lupanov/Karp\u2013Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
+      "note": "Read original Lupanov/Karp–Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
       "report": "docs/verification/cplx-circuits-followup.md"
     },
     {
       "id": "cplx-4.6",
       "status": "resolved",
-      "note": "Read original Lupanov/Karp\u2013Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
+      "note": "Read original Lupanov/Karp–Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
       "report": "docs/verification/cplx-circuits-followup.md"
     },
     {
       "id": "cplx-4.8",
       "status": "resolved",
-      "note": "Read original Lupanov/Karp\u2013Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
+      "note": "Read original Lupanov/Karp–Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
       "report": "docs/verification/cplx-circuits-followup.md"
     },
     {
       "id": "cplx-4.9",
       "status": "resolved",
-      "note": "Read original Lupanov/Karp\u2013Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
+      "note": "Read original Lupanov/Karp–Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
       "report": "docs/verification/cplx-circuits-followup.md"
     },
     {
       "id": "cplx-4.10",
       "status": "resolved",
-      "note": "Read original Lupanov/Karp\u2013Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
+      "note": "Read original Lupanov/Karp–Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
       "report": "docs/verification/cplx-circuits-followup.md"
     },
     {
       "id": "cplx-4.11",
       "status": "resolved",
-      "note": "Read original Lupanov/Karp\u2013Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
+      "note": "Read original Lupanov/Karp–Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
       "report": "docs/verification/cplx-circuits-followup.md"
     },
     {
       "id": "cplx-4.13",
       "status": "resolved",
-      "note": "Read original Lupanov/Karp\u2013Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
+      "note": "Read original Lupanov/Karp–Lipton/Cook/Borodin/prefix sources; corrected block proof and actual gate basis/counts, unary advice, witness/EXP proofs, uniformity, carry depth and branch-path space accounting. Fifteen math and fourteen light/dark groups pass.",
       "report": "docs/verification/cplx-circuits-followup.md"
     },
     {
@@ -4749,61 +4678,61 @@
     {
       "id": "toc-3.8",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-3.10",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-3.15",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-4.1",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-4.4",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-4.5",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-4.6",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-4.8",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-4.12",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
       "id": "toc-4.13",
       "status": "resolved",
-      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, B\u00fcchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
+      "note": "Compared full original Kleene/Brzozowski and author proofs; corrected language-equation solution count, full finite automata equivalence/minimality, threshold-net timing, Büchi acceptance and product witnesses. Ten independent math groups and twenty light/dark interaction groups pass.",
       "report": "docs/verification/toc-automata-followup.md"
     },
     {
@@ -5115,31 +5044,31 @@
     {
       "id": "rel-1.3",
       "status": "resolved",
-      "note": "Verified full original Einstein mass note, Compton original and Frisch\u2013Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
+      "note": "Verified full original Einstein mass note, Compton original and Frisch–Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
       "report": "docs/verification/rel-source-audit-followup.md"
     },
     {
       "id": "rel-1.5",
       "status": "resolved",
-      "note": "Verified full original Einstein mass note, Compton original and Frisch\u2013Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
+      "note": "Verified full original Einstein mass note, Compton original and Frisch–Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
       "report": "docs/verification/rel-source-audit-followup.md"
     },
     {
       "id": "rel-1.12",
       "status": "resolved",
-      "note": "Verified full original Einstein mass note, Compton original and Frisch\u2013Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
+      "note": "Verified full original Einstein mass note, Compton original and Frisch–Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
       "report": "docs/verification/rel-source-audit-followup.md"
     },
     {
       "id": "rel-4.16",
       "status": "resolved",
-      "note": "Verified full original Einstein mass note, Compton original and Frisch\u2013Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
+      "note": "Verified full original Einstein mass note, Compton original and Frisch–Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
       "report": "docs/verification/rel-source-audit-followup.md"
     },
     {
       "id": "rel-4.17",
       "status": "resolved",
-      "note": "Verified full original Einstein mass note, Compton original and Frisch\u2013Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
+      "note": "Verified full original Einstein mass note, Compton original and Frisch–Smith scan with evaluated constants; corrected propagation/synchronization scope, mean-rate ratio, two-frame kinetic-energy derivation and factor1000 Compton unit error. Five independent mathematical groups and ten real light/dark interaction groups pass.",
       "report": "docs/verification/rel-source-audit-followup.md"
     },
     {
@@ -5596,19 +5525,19 @@
       "id": "mat-3.1",
       "status": "resolved",
       "report": "docs/verification/mat-elastic-slip-followup.md",
-      "note": "Verified full Joos\u2013Duesbery original and complete relevant KIT/Lubliner/Bower author treatments. Corrected sampled-interface PN maximum/exponent, actual48bcc choices, geometric friction scope and invalid/locked honeycomb shapes. Six independent mathematical and six actual light/dark input groups pass."
+      "note": "Verified full Joos–Duesbery original and complete relevant KIT/Lubliner/Bower author treatments. Corrected sampled-interface PN maximum/exponent, actual48bcc choices, geometric friction scope and invalid/locked honeycomb shapes. Six independent mathematical and six actual light/dark input groups pass."
     },
     {
       "id": "mat-3.4",
       "status": "resolved",
       "report": "docs/verification/mat-elastic-slip-followup.md",
-      "note": "Verified full Joos\u2013Duesbery original and complete relevant KIT/Lubliner/Bower author treatments. Corrected sampled-interface PN maximum/exponent, actual48bcc choices, geometric friction scope and invalid/locked honeycomb shapes. Six independent mathematical and six actual light/dark input groups pass."
+      "note": "Verified full Joos–Duesbery original and complete relevant KIT/Lubliner/Bower author treatments. Corrected sampled-interface PN maximum/exponent, actual48bcc choices, geometric friction scope and invalid/locked honeycomb shapes. Six independent mathematical and six actual light/dark input groups pass."
     },
     {
       "id": "mat-4.2",
       "status": "resolved",
       "report": "docs/verification/mat-elastic-slip-followup.md",
-      "note": "Verified full Joos\u2013Duesbery original and complete relevant KIT/Lubliner/Bower author treatments. Corrected sampled-interface PN maximum/exponent, actual48bcc choices, geometric friction scope and invalid/locked honeycomb shapes. Six independent mathematical and six actual light/dark input groups pass."
+      "note": "Verified full Joos–Duesbery original and complete relevant KIT/Lubliner/Bower author treatments. Corrected sampled-interface PN maximum/exponent, actual48bcc choices, geometric friction scope and invalid/locked honeycomb shapes. Six independent mathematical and six actual light/dark input groups pass."
     },
     {
       "id": "kin-4.1",
@@ -5692,13 +5621,13 @@
       "id": "mat-3.11",
       "status": "resolved",
       "report": "docs/verification/mat-dislocation-microstructure-followup.md",
-      "note": "Verified complete relevant original Christian\u2013Mahajan treatment, author partial/elastic derivations and full original Shehadeh article. Corrected cropped twin rows, nonuniversal mirror/shuffle claims, hcp geometric zero, partial interaction/registry scope, equilibrium button and full41.474nm widths. Five independent mathematical and four actual light/dark groups pass."
+      "note": "Verified complete relevant original Christian–Mahajan treatment, author partial/elastic derivations and full original Shehadeh article. Corrected cropped twin rows, nonuniversal mirror/shuffle claims, hcp geometric zero, partial interaction/registry scope, equilibrium button and full41.474nm widths. Five independent mathematical and four actual light/dark groups pass."
     },
     {
       "id": "mat-3.12",
       "status": "resolved",
       "report": "docs/verification/mat-dislocation-microstructure-followup.md",
-      "note": "Verified complete relevant original Christian\u2013Mahajan treatment, author partial/elastic derivations and full original Shehadeh article. Corrected cropped twin rows, nonuniversal mirror/shuffle claims, hcp geometric zero, partial interaction/registry scope, equilibrium button and full41.474nm widths. Five independent mathematical and four actual light/dark groups pass."
+      "note": "Verified complete relevant original Christian–Mahajan treatment, author partial/elastic derivations and full original Shehadeh article. Corrected cropped twin rows, nonuniversal mirror/shuffle claims, hcp geometric zero, partial interaction/registry scope, equilibrium button and full41.474nm widths. Five independent mathematical and four actual light/dark groups pass."
     },
     {
       "id": "kin-3.4",
@@ -5992,13 +5921,13 @@
       "id": "climate-3.9",
       "status": "resolved",
       "report": "docs/verification/climate-source-audit-inference-followup.md",
-      "note": "Read complete relevant official AR6 inference/polar assessments and full original Rantanen2022 main article. Corrected positive-branch normalized likelihoods/quantiles, GLS, full-operator stability and actual zero diffusion/fractional Arctic areas; dated1979\u20132021 trend scope explicit. Five independent math and four native theme groups pass."
+      "note": "Read complete relevant official AR6 inference/polar assessments and full original Rantanen2022 main article. Corrected positive-branch normalized likelihoods/quantiles, GLS, full-operator stability and actual zero diffusion/fractional Arctic areas; dated1979–2021 trend scope explicit. Five independent math and four native theme groups pass."
     },
     {
       "id": "climate-4.7",
       "status": "resolved",
       "report": "docs/verification/climate-source-audit-inference-followup.md",
-      "note": "Read complete relevant official AR6 inference/polar assessments and full original Rantanen2022 main article. Corrected positive-branch normalized likelihoods/quantiles, GLS, full-operator stability and actual zero diffusion/fractional Arctic areas; dated1979\u20132021 trend scope explicit. Five independent math and four native theme groups pass."
+      "note": "Read complete relevant official AR6 inference/polar assessments and full original Rantanen2022 main article. Corrected positive-branch normalized likelihoods/quantiles, GLS, full-operator stability and actual zero diffusion/fractional Arctic areas; dated1979–2021 trend scope explicit. Five independent math and four native theme groups pass."
     },
     {
       "id": "popgen-4.2",
@@ -6484,19 +6413,19 @@
       "id": "imaging-3.4",
       "status": "resolved",
       "report": "docs/verification/imaging-radon-followup.md",
-      "note": "Complete relevant Kak\u2013Slaney and Kuchment\u2013Quinto proofs; corrected compact-support limited-angle uniqueness, Fourier conjugacy and finite sampling/filter claims. Eight independent math groups and six native theme groups pass; root reran math and inspected final figures. Added actual Fubini prerequisite without removing Fourier dependency."
+      "note": "Complete relevant Kak–Slaney and Kuchment–Quinto proofs; corrected compact-support limited-angle uniqueness, Fourier conjugacy and finite sampling/filter claims. Eight independent math groups and six native theme groups pass; root reran math and inspected final figures. Added actual Fubini prerequisite without removing Fourier dependency."
     },
     {
       "id": "imaging-3.5",
       "status": "resolved",
       "report": "docs/verification/imaging-radon-followup.md",
-      "note": "Complete relevant Kak\u2013Slaney and Kuchment\u2013Quinto proofs; corrected compact-support limited-angle uniqueness, Fourier conjugacy and finite sampling/filter claims. Eight independent math groups and six native theme groups pass; root reran math and inspected final figures. Added actual Fubini prerequisite without removing Fourier dependency."
+      "note": "Complete relevant Kak–Slaney and Kuchment–Quinto proofs; corrected compact-support limited-angle uniqueness, Fourier conjugacy and finite sampling/filter claims. Eight independent math groups and six native theme groups pass; root reran math and inspected final figures. Added actual Fubini prerequisite without removing Fourier dependency."
     },
     {
       "id": "imaging-3.7",
       "status": "resolved",
       "report": "docs/verification/imaging-radon-followup.md",
-      "note": "Complete relevant Kak\u2013Slaney and Kuchment\u2013Quinto proofs; corrected compact-support limited-angle uniqueness, Fourier conjugacy and finite sampling/filter claims. Eight independent math groups and six native theme groups pass; root reran math and inspected final figures. Added actual Fubini prerequisite without removing Fourier dependency."
+      "note": "Complete relevant Kak–Slaney and Kuchment–Quinto proofs; corrected compact-support limited-angle uniqueness, Fourier conjugacy and finite sampling/filter claims. Eight independent math groups and six native theme groups pass; root reran math and inspected final figures. Added actual Fubini prerequisite without removing Fourier dependency."
     },
     {
       "id": "circ-4.5",
@@ -6514,25 +6443,25 @@
       "id": "epi-3.13",
       "status": "resolved",
       "report": "docs/verification/epi-source-audit-followup.md",
-      "note": "Original Cornfield, Snow, Semmelweis translation and Doll\u2013Hill source sections/tables plus all578 Snow digital records checked. Corrected sample table, risk domain, declining fit, chlorine chronology,1848cell and cohort period/unit/classifications. Nine independent math and eight full native theme groups plus two adjacent renders pass; root reran math and inspected final screenshots. Adjacent4.15status preserved."
+      "note": "Original Cornfield, Snow, Semmelweis translation and Doll–Hill source sections/tables plus all578 Snow digital records checked. Corrected sample table, risk domain, declining fit, chlorine chronology,1848cell and cohort period/unit/classifications. Nine independent math and eight full native theme groups plus two adjacent renders pass; root reran math and inspected final screenshots. Adjacent4.15status preserved."
     },
     {
       "id": "epi-4.4",
       "status": "resolved",
       "report": "docs/verification/epi-source-audit-followup.md",
-      "note": "Original Cornfield, Snow, Semmelweis translation and Doll\u2013Hill source sections/tables plus all578 Snow digital records checked. Corrected sample table, risk domain, declining fit, chlorine chronology,1848cell and cohort period/unit/classifications. Nine independent math and eight full native theme groups plus two adjacent renders pass; root reran math and inspected final screenshots. Adjacent4.15status preserved."
+      "note": "Original Cornfield, Snow, Semmelweis translation and Doll–Hill source sections/tables plus all578 Snow digital records checked. Corrected sample table, risk domain, declining fit, chlorine chronology,1848cell and cohort period/unit/classifications. Nine independent math and eight full native theme groups plus two adjacent renders pass; root reran math and inspected final screenshots. Adjacent4.15status preserved."
     },
     {
       "id": "epi-4.5",
       "status": "resolved",
       "report": "docs/verification/epi-source-audit-followup.md",
-      "note": "Original Cornfield, Snow, Semmelweis translation and Doll\u2013Hill source sections/tables plus all578 Snow digital records checked. Corrected sample table, risk domain, declining fit, chlorine chronology,1848cell and cohort period/unit/classifications. Nine independent math and eight full native theme groups plus two adjacent renders pass; root reran math and inspected final screenshots. Adjacent4.15status preserved."
+      "note": "Original Cornfield, Snow, Semmelweis translation and Doll–Hill source sections/tables plus all578 Snow digital records checked. Corrected sample table, risk domain, declining fit, chlorine chronology,1848cell and cohort period/unit/classifications. Nine independent math and eight full native theme groups plus two adjacent renders pass; root reran math and inspected final screenshots. Adjacent4.15status preserved."
     },
     {
       "id": "epi-4.12",
       "status": "resolved",
       "report": "docs/verification/epi-source-audit-followup.md",
-      "note": "Original Cornfield, Snow, Semmelweis translation and Doll\u2013Hill source sections/tables plus all578 Snow digital records checked. Corrected sample table, risk domain, declining fit, chlorine chronology,1848cell and cohort period/unit/classifications. Nine independent math and eight full native theme groups plus two adjacent renders pass; root reran math and inspected final screenshots. Adjacent4.15status preserved."
+      "note": "Original Cornfield, Snow, Semmelweis translation and Doll–Hill source sections/tables plus all578 Snow digital records checked. Corrected sample table, risk domain, declining fit, chlorine chronology,1848cell and cohort period/unit/classifications. Nine independent math and eight full native theme groups plus two adjacent renders pass; root reran math and inspected final screenshots. Adjacent4.15status preserved."
     },
     {
       "id": "circ-4.18",
@@ -6550,13 +6479,13 @@
       "id": "imaging-3.11",
       "status": "resolved",
       "report": "docs/verification/imaging-algebraic-followup.md",
-      "note": "Complete relevant Kak\u2013Slaney chapter and original Censor\u2013Eggermont\u2013Gordon1983 read; exact pixel geometry and full ART/normalized-SIRT proofs distinguish weighted limits, inconsistent phases and rank-deficient recovery. Nine independent math and four native theme groups pass; root reran math and inspected final figures."
+      "note": "Complete relevant Kak–Slaney chapter and original Censor–Eggermont–Gordon1983 read; exact pixel geometry and full ART/normalized-SIRT proofs distinguish weighted limits, inconsistent phases and rank-deficient recovery. Nine independent math and four native theme groups pass; root reran math and inspected final figures."
     },
     {
       "id": "imaging-3.12",
       "status": "resolved",
       "report": "docs/verification/imaging-algebraic-followup.md",
-      "note": "Complete relevant Kak\u2013Slaney chapter and original Censor\u2013Eggermont\u2013Gordon1983 read; exact pixel geometry and full ART/normalized-SIRT proofs distinguish weighted limits, inconsistent phases and rank-deficient recovery. Nine independent math and four native theme groups pass; root reran math and inspected final figures."
+      "note": "Complete relevant Kak–Slaney chapter and original Censor–Eggermont–Gordon1983 read; exact pixel geometry and full ART/normalized-SIRT proofs distinguish weighted limits, inconsistent phases and rank-deficient recovery. Nine independent math and four native theme groups pass; root reran math and inspected final figures."
     },
     {
       "id": "physio-4.2",
@@ -6586,13 +6515,13 @@
       "id": "circ-4.14",
       "status": "resolved",
       "report": "docs/verification/circ-source-audit-junctions-followup.md",
-      "note": "Complete original Bardeen\u2013Brattain letter and relevant Shockley1949 derivations read; loaded operating-domain/gain and finite-base width/density conventions corrected. Six independent math and four native theme groups pass; root reran math and inspected final figures."
+      "note": "Complete original Bardeen–Brattain letter and relevant Shockley1949 derivations read; loaded operating-domain/gain and finite-base width/density conventions corrected. Six independent math and four native theme groups pass; root reran math and inspected final figures."
     },
     {
       "id": "circ-4.15",
       "status": "resolved",
       "report": "docs/verification/circ-source-audit-junctions-followup.md",
-      "note": "Complete original Bardeen\u2013Brattain letter and relevant Shockley1949 derivations read; loaded operating-domain/gain and finite-base width/density conventions corrected. Six independent math and four native theme groups pass; root reran math and inspected final figures."
+      "note": "Complete original Bardeen–Brattain letter and relevant Shockley1949 derivations read; loaded operating-domain/gain and finite-base width/density conventions corrected. Six independent math and four native theme groups pass; root reran math and inspected final figures."
     },
     {
       "id": "circ-4.16",
@@ -6808,7 +6737,7 @@
       "id": "pharm-3.7",
       "status": "resolved",
       "report": "docs/verification/pharm-firstpass-followup.md",
-      "note": "Complete Jusko\u2013Li2021 authored mathematical analysis read; corrected all-extraction oral AUC cancellation and exact gut/central tail. Root independently reran3math and2native theme groups after shared-log endpoint fix, reviewed helpers/claims and final high-capacity dark screenshot."
+      "note": "Complete Jusko–Li2021 authored mathematical analysis read; corrected all-extraction oral AUC cancellation and exact gut/central tail. Root independently reran3math and2native theme groups after shared-log endpoint fix, reviewed helpers/claims and final high-capacity dark screenshot."
     },
     {
       "id": "pharm-4.5",
@@ -6820,19 +6749,19 @@
       "id": "energy-3.4",
       "status": "resolved",
       "report": "docs/verification/energy-density-followup.md",
-      "note": "AFDC LHV, DOE hydrogen/fission references, NIST masses and named manufacturer specifications read; explicit model densities/burnup/boundaries. Root independently reran4calculation groups and4native viewport/theme groups (all16corners\u00d72outputmodes), reviewed conversion/helper/rendering code and narrow dark screenshot."
+      "note": "AFDC LHV, DOE hydrogen/fission references, NIST masses and named manufacturer specifications read; explicit model densities/burnup/boundaries. Root independently reran4calculation groups and4native viewport/theme groups (all16corners×2outputmodes), reviewed conversion/helper/rendering code and narrow dark screenshot."
     },
     {
       "id": "pharm-3.4",
       "status": "resolved",
       "report": "docs/verification/pharm-redistribution-followup.md",
-      "note": "Complete Mark1957 original dog study, tables and limits read. Removed unsupported human-waking/fitted-parameter claims; corrected full120-minute trace, exact double-bolus jump, cumulative-dose mass accounting and all downward crossings. Root independently reran3matrix-exponential/conservation groups and2native theme groups (all16toggle configurations\u00d7boththresholdends), reviewed helper/rendering code and final two-crossing light screenshot."
+      "note": "Complete Mark1957 original dog study, tables and limits read. Removed unsupported human-waking/fitted-parameter claims; corrected full120-minute trace, exact double-bolus jump, cumulative-dose mass accounting and all downward crossings. Root independently reran3matrix-exponential/conservation groups and2native theme groups (all16toggle configurations×boththresholdends), reviewed helper/rendering code and final two-crossing light screenshot."
     },
     {
       "id": "pharm-4.6",
       "status": "resolved",
       "report": "docs/verification/pharm-renal-followup.md",
-      "note": "Original Cockcroft\u2013Gault1976 complete text/scanned equation and limitations read. Removed hidden CrCl/fraction floors, exposed impairment cap and corrected periodic profiles. Root independently reran3math and2native theme groups, reviewed helper/content diff and inspected minimum-clearance dark screenshot."
+      "note": "Original Cockcroft–Gault1976 complete text/scanned equation and limitations read. Removed hidden CrCl/fraction floors, exposed impairment cap and corrected periodic profiles. Root independently reran3math and2native theme groups, reviewed helper/content diff and inspected minimum-clearance dark screenshot."
     },
     {
       "id": "pharm-4.9",
@@ -6844,19 +6773,19 @@
       "id": "solid-3.9",
       "status": "resolved",
       "report": "docs/verification/solid-cylinder-followup.md",
-      "note": "Complete Bower4.1.7\u20139 derivation/constraints and UWA named-Lam\u00e9 derivation read; no original date claimed. Corrected inconsistent Airy proof via compatible displacement derivation, axial constraint, full signed range and exact hoop average. Root3math+4native viewport/theme groups passed; independent second agent reran3math, checked sources/force/limits and inspected final narrow/wide screenshots without substantive findings."
+      "note": "Complete Bower4.1.7–9 derivation/constraints and UWA named-Lamé derivation read; no original date claimed. Corrected inconsistent Airy proof via compatible displacement derivation, axial constraint, full signed range and exact hoop average. Root3math+4native viewport/theme groups passed; independent second agent reran3math, checked sources/force/limits and inspected final narrow/wide screenshots without substantive findings."
     },
     {
       "id": "energy-3.9",
       "status": "resolved",
       "report": "docs/verification/energy-decay-followup.md",
-      "note": "Complete original Untermyer\u2013Weills1952 AECD3454 report read, including Eq2, corrections and appendices; declared historical natural-U limits. Exact heat integral and sensible-then-latent water balance replace unsupported fit/reference dots and false horizon-exhaustion label. Root independently reran5math groups and4final native viewport/theme groups after radius margins/local assets, reviewed helper/rendering and final narrow dark screenshot."
+      "note": "Complete original Untermyer–Weills1952 AECD3454 report read, including Eq2, corrections and appendices; declared historical natural-U limits. Exact heat integral and sensible-then-latent water balance replace unsupported fit/reference dots and false horizon-exhaustion label. Root independently reran5math groups and4final native viewport/theme groups after radius margins/local assets, reviewed helper/rendering and final narrow dark screenshot."
     },
     {
       "id": "solid-4.10",
       "status": "resolved",
       "report": "docs/verification/solid-collapse-followup.md",
-      "note": "Complete authored Bower6.3.1\u20133/5 arguments read; associated-flow/positive-work assumptions explicit, supporting-hyperplane argument derived using read opt2.8. Root3math+4finalnative groups pass; independent agent reread source/proof, reran3math and inspected wide-bound/equality screenshots without substantive finding. Adaptive upper range, downward mechanism and equality action correct; unsupported priority claims removed."
+      "note": "Complete authored Bower6.3.1–3/5 arguments read; associated-flow/positive-work assumptions explicit, supporting-hyperplane argument derived using read opt2.8. Root3math+4finalnative groups pass; independent agent reread source/proof, reran3math and inspected wide-bound/equality screenshots without substantive finding. Adaptive upper range, downward mechanism and equality action correct; unsupported priority claims removed."
     },
     {
       "id": "solid-4.3",
@@ -6940,7 +6869,7 @@
       "id": "energy-4.1",
       "status": "resolved",
       "report": "docs/verification/energy-solar-spectrum-followup.md",
-      "note": "Full original IAU B3/Kopp\u2013Lean reading; parent independently reran3math/4native groups and inspected source tables/measurement pages plus representative final layouts; analytic fractions, nominal/2008 distinction, full reference curve and separated absorption labels."
+      "note": "Full original IAU B3/Kopp–Lean reading; parent independently reran3math/4native groups and inspected source tables/measurement pages plus representative final layouts; analytic fractions, nominal/2008 distinction, full reference curve and separated absorption labels."
     },
     {
       "id": "aero-4.5",
@@ -6970,25 +6899,25 @@
       "id": "micro-10.13",
       "status": "resolved",
       "report": "docs/verification/micro-oligopoly-followup.md",
-      "note": "Read MIT14.12 Chapter9 \u00a79.5 and independently derived constrained Stackelberg branches; exact follower-exit corner replaces invalid interior output. Parent6 mathematical groups and12 native theme/viewport groups pass, with full profit/reaction bounds and screenshots inspected."
+      "note": "Read MIT14.12 Chapter9 §9.5 and independently derived constrained Stackelberg branches; exact follower-exit corner replaces invalid interior output. Parent6 mathematical groups and12 native theme/viewport groups pass, with full profit/reaction bounds and screenshots inspected."
     },
     {
       "id": "micro-10.14",
       "status": "resolved",
       "report": "docs/verification/micro-oligopoly-followup.md",
-      "note": "Read MIT14.12 Chapter7 \u00a7\u00a77.2\u20137.2.1; continuous-price undercut supremum is distinguished from illustrative finite cuts. Parent6 mathematical groups and12 native groups pass, including below-cost losses, jump limits, path endpoints and screenshots."
+      "note": "Read MIT14.12 Chapter7 §§7.2–7.2.1; continuous-price undercut supremum is distinguished from illustrative finite cuts. Parent6 mathematical groups and12 native groups pass, including below-cost losses, jump limits, path endpoints and screenshots."
     },
     {
       "id": "micro-10.15",
       "status": "resolved",
       "report": "docs/verification/micro-oligopoly-followup.md",
-      "note": "Read Yildiz Example5.5 and Levitan\u2013Shubik1970 complete SectionsI\u2013II; independently derived differentiated and efficient-rationing capacity regimes. Parent6 mathematical groups and12 native groups pass, including exact capacity boundaries, full deviation payoffs and screenshots; no mixed-strategy/source-full-paper claim."
+      "note": "Read Yildiz Example5.5 and Levitan–Shubik1970 complete SectionsI–II; independently derived differentiated and efficient-rationing capacity regimes. Parent6 mathematical groups and12 native groups pass, including exact capacity boundaries, full deviation payoffs and screenshots; no mixed-strategy/source-full-paper claim."
     },
     {
       "id": "energy-4.5",
       "status": "resolved",
       "report": "docs/verification/energy-radiative-followup.md",
-      "note": "Complete Shockley\u2013Queisser1961, Herrmann\u2013W\u00fcrfel2005 author proof and R\u00fchle2016 read; full Bose emission replaces invalid high-concentration approximation, with separate AM1.5G references. Parent4 independent mathematical and8 native groups pass, including true concentration endpoints,105 budget samples,I\u2013V/MPP bounds and inspected screenshots."
+      "note": "Complete Shockley–Queisser1961, Herrmann–Würfel2005 author proof and Rühle2016 read; full Bose emission replaces invalid high-concentration approximation, with separate AM1.5G references. Parent4 independent mathematical and8 native groups pass, including true concentration endpoints,105 budget samples,I–V/MPP bounds and inspected screenshots."
     },
     {
       "id": "energy-4.6",
@@ -7030,7 +6959,7 @@
       "id": "micro-10.4",
       "status": "resolved",
       "report": "docs/verification/micro-monopoly-welfare-followup.md",
-      "note": "Read Gruber\u2019s complete welfare/perfect-discrimination sections; parent reviewed full stated sources and corrected finite efficient-crossing/differentiability hypotheses. Exact isoelastic roots and complete near-zero benefits replace the clipped bracket/integral. Five independent math groups, eight native groups, four final hypothesis layouts, static checks and screenshots pass."
+      "note": "Read Gruber’s complete welfare/perfect-discrimination sections; parent reviewed full stated sources and corrected finite efficient-crossing/differentiability hypotheses. Exact isoelastic roots and complete near-zero benefits replace the clipped bracket/integral. Five independent math groups, eight native groups, four final hypothesis layouts, static checks and screenshots pass."
     },
     {
       "id": "micro-10.5",
@@ -7042,7 +6971,7 @@
       "id": "behav-5.8",
       "status": "resolved",
       "report": "docs/verification/behav-deadlines-followup.md",
-      "note": "Read the complete publisher retraction and published replication\u2019s intro/methods/performance/discussion; replace stale empirical syllabus with the explicitly assumed finite task-cost model. Root and a separate agent independently pass three exhaustive mathematical and four final native groups, including hover-circle and label clearance, static checks and screenshot inspection."
+      "note": "Read the complete publisher retraction and published replication’s intro/methods/performance/discussion; replace stale empirical syllabus with the explicitly assumed finite task-cost model. Root and a separate agent independently pass three exhaustive mathematical and four final native groups, including hover-circle and label clearance, static checks and screenshot inspection."
     },
     {
       "id": "fin-4.7",
@@ -7054,67 +6983,67 @@
       "id": "fin-4.11",
       "status": "resolved",
       "report": "docs/verification/fin-factor-premium-followup.md",
-      "note": "Read original Mehra\u2013Prescott historical/model sections, Mehra lognormal derivation and Benartzi\u2013Thaler original value/weighting/bootstrap pages. Correct arithmetic/log units, actual uncapped risk aversion, positive finite consumption-claim condition and separate Gaussian teaching model. Parent independently passes five math/eight final native groups, source/geometry/TeX/screens, and adds the genuinely used normal-law/MGF prerequisites."
+      "note": "Read original Mehra–Prescott historical/model sections, Mehra lognormal derivation and Benartzi–Thaler original value/weighting/bootstrap pages. Correct arithmetic/log units, actual uncapped risk aversion, positive finite consumption-claim condition and separate Gaussian teaching model. Parent independently passes five math/eight final native groups, source/geometry/TeX/screens, and adds the genuinely used normal-law/MGF prerequisites."
     },
     {
       "id": "behav-5.3",
       "status": "resolved",
       "report": "docs/verification/behav-discounting-followup.md",
-      "note": "Parent independently read the complete Thaler article transcription and relevant Loewenstein\u2013Prelec original sections; checked coherent questionnaire forms, rate conventions, benchmark scope and exact model derivations; independently passed five math and eight native groups, scoped static checks and representative wide/narrow light/dark screenshots."
+      "note": "Parent independently read the complete Thaler article transcription and relevant Loewenstein–Prelec original sections; checked coherent questionnaire forms, rate conventions, benchmark scope and exact model derivations; independently passed five math and eight native groups, scoped static checks and representative wide/narrow light/dark screenshots."
     },
     {
       "id": "behav-5.9",
       "status": "resolved",
       "report": "docs/verification/behav-discounting-followup.md",
-      "note": "Parent independently read the complete Thaler article transcription and relevant Loewenstein\u2013Prelec original sections; checked coherent questionnaire forms, rate conventions, benchmark scope and exact model derivations; independently passed five math and eight native groups, scoped static checks and representative wide/narrow light/dark screenshots."
+      "note": "Parent independently read the complete Thaler article transcription and relevant Loewenstein–Prelec original sections; checked coherent questionnaire forms, rate conventions, benchmark scope and exact model derivations; independently passed five math and eight native groups, scoped static checks and representative wide/narrow light/dark screenshots."
     },
     {
       "id": "micro-10.6",
       "status": "resolved",
       "report": "docs/verification/micro-screening-followup.md",
-      "note": "Additional previously unflagged neighboring-item audit; no original queue closure or flag-count change. Parent independently checked Maskin\u2013Riley finite-type sections and both MIT derivations, global concave profit bound and four IR/IC slacks; passed four math, eight native and scoped static groups and inspected final wide/narrow light/dark screenshots. Corrects reversed distortion/utility inequalities, exclusion, weak-choice conventions and bounded menu geometry."
+      "note": "Additional previously unflagged neighboring-item audit; no original queue closure or flag-count change. Parent independently checked Maskin–Riley finite-type sections and both MIT derivations, global concave profit bound and four IR/IC slacks; passed four math, eight native and scoped static groups and inspected final wide/narrow light/dark screenshots. Corrects reversed distortion/utility inequalities, exclusion, weak-choice conventions and bounded menu geometry."
     },
     {
       "id": "fin-5.11",
       "status": "resolved",
       "report": "docs/verification/fin-bubbles-followup.md",
-      "note": "Root checked authored Blanchard\u2013Watson original pricing/transversality sections and sufficient dividend hypotheses; five independent math and eight native groups/static/screens pass. A separate agent independently read original sections/formulas, verified tower/tail proof and finite terminal/Monte Carlo distinctions, independently passed five math and eight native groups and inspected final narrow/wide theme screenshots. Neighboring four item bodies unchanged."
+      "note": "Root checked authored Blanchard–Watson original pricing/transversality sections and sufficient dividend hypotheses; five independent math and eight native groups/static/screens pass. A separate agent independently read original sections/formulas, verified tower/tail proof and finite terminal/Monte Carlo distinctions, independently passed five math and eight native groups and inspected final narrow/wide theme screenshots. Neighboring four item bodies unchanged."
     },
     {
       "id": "micro-9.6",
       "status": "resolved",
       "report": "docs/verification/micro-exchange-followup.md",
-      "note": "Parent independently read Condie complete7.2 five-step proof, original Arrow\u2013Debreu1.3\u20131.5 and formula images, derived both CD/bliss accounting and complete nonconvex demand branches; five math/eight final native/scoped static groups and final wide/narrow theme screenshots pass. CD boundary preference distinction added on parent review; exact global nonexistence proof retained rather than inferred from finite root search."
+      "note": "Parent independently read Condie complete7.2 five-step proof, original Arrow–Debreu1.3–1.5 and formula images, derived both CD/bliss accounting and complete nonconvex demand branches; five math/eight final native/scoped static groups and final wide/narrow theme screenshots pass. CD boundary preference distinction added on parent review; exact global nonexistence proof retained rather than inferred from finite root search."
     },
     {
       "id": "micro-9.7",
       "status": "resolved",
       "report": "docs/verification/micro-exchange-followup.md",
-      "note": "Parent independently read Condie complete7.2 five-step proof, original Arrow\u2013Debreu1.3\u20131.5 and formula images, derived both CD/bliss accounting and complete nonconvex demand branches; five math/eight final native/scoped static groups and final wide/narrow theme screenshots pass. CD boundary preference distinction added on parent review; exact global nonexistence proof retained rather than inferred from finite root search."
+      "note": "Parent independently read Condie complete7.2 five-step proof, original Arrow–Debreu1.3–1.5 and formula images, derived both CD/bliss accounting and complete nonconvex demand branches; five math/eight final native/scoped static groups and final wide/narrow theme screenshots pass. CD boundary preference distinction added on parent review; exact global nonexistence proof retained rather than inferred from finite root search."
     },
     {
       "id": "behav-4.6",
       "status": "resolved",
       "report": "docs/verification/behav-bracketing-followup.md",
-      "note": "Parent independently read complete Samuelson original, Thaler3.1/fn7 and RLR171\u2013181 actual page images; four math/eight final native groups/scopedstatic and final wide/narrow theme screenshots pass. Corrects nonmonotone bundle acceptance, wealth-range premise, dollar units and exact transaction WTP/fullcomponent ranges. LLN is a genuine input; myopic-loss-aversion context moved to see."
+      "note": "Parent independently read complete Samuelson original, Thaler3.1/fn7 and RLR171–181 actual page images; four math/eight final native groups/scopedstatic and final wide/narrow theme screenshots pass. Corrects nonmonotone bundle acceptance, wealth-range premise, dollar units and exact transaction WTP/fullcomponent ranges. LLN is a genuine input; myopic-loss-aversion context moved to see."
     },
     {
       "id": "behav-4.7",
       "status": "resolved",
       "report": "docs/verification/behav-bracketing-followup.md",
-      "note": "Parent independently read complete Samuelson original, Thaler3.1/fn7 and RLR171\u2013181 actual page images; four math/eight final native groups/scopedstatic and final wide/narrow theme screenshots pass. Corrects nonmonotone bundle acceptance, wealth-range premise, dollar units and exact transaction WTP/fullcomponent ranges. LLN is a genuine input; myopic-loss-aversion context moved to see."
+      "note": "Parent independently read complete Samuelson original, Thaler3.1/fn7 and RLR171–181 actual page images; four math/eight final native groups/scopedstatic and final wide/narrow theme screenshots pass. Corrects nonmonotone bundle acceptance, wealth-range premise, dollar units and exact transaction WTP/fullcomponent ranges. LLN is a genuine input; myopic-loss-aversion context moved to see."
     },
     {
       "id": "fin-5.1",
       "status": "resolved",
       "report": "docs/verification/fin-efficiency-followup.md",
-      "note": "Actual Fama theory pp383\u2013388/summary413\u2013416 and formula images read; separate reviewer confirmed benchmark versus tautology and resolved charge/scope findings; 6 math, all23477source values/calendar, 8 final native and static checks pass with final screenshots inspected."
+      "note": "Actual Fama theory pp383–388/summary413–416 and formula images read; separate reviewer confirmed benchmark versus tautology and resolved charge/scope findings; 6 math, all23477source values/calendar, 8 final native and static checks pass with final screenshots inspected."
     },
     {
       "id": "fin-5.13",
       "status": "resolved",
       "report": "docs/verification/fin-bachelier-followup.md",
-      "note": "Parent independently read original Numdam pp31\u201343,45\u201351,70\u201375/formula images38/51/75 and actual heat prerequisite; 5math/4native/static pass and final highvol/tinytail screenshots inspected; stable full-tail call, all4000terminals, correct units and barrier hypotheses verified."
+      "note": "Parent independently read original Numdam pp31–43,45–51,70–75/formula images38/51/75 and actual heat prerequisite; 5math/4native/static pass and final highvol/tinytail screenshots inspected; stable full-tail call, all4000terminals, correct units and barrier hypotheses verified."
     },
     {
       "id": "fin-5.14",
@@ -7126,31 +7055,31 @@
       "id": "micro-9.4",
       "status": "resolved",
       "report": "docs/verification/micro-core-fringe-followup.md",
-      "note": "Actual Debreu\u2013Scarf definition and competitive proof pp235\u2013240 read, actual238/239images inspected;6math/8native/static independent reruns pass, including falsecore, exact roots/singletons and unresolvedtinygains; finalscreens inspected and non-targetbodies bytechecked."
+      "note": "Actual Debreu–Scarf definition and competitive proof pp235–240 read, actual238/239images inspected;6math/8native/static independent reruns pass, including falsecore, exact roots/singletons and unresolvedtinygains; finalscreens inspected and non-targetbodies bytechecked."
     },
     {
       "id": "micro-10.20",
       "status": "resolved",
       "report": "docs/verification/micro-core-fringe-followup.md",
-      "note": "Church\u2013Ware complete static\u00a74.2pp124\u2013129 and actualfigure127read; independent6math/8native/static pass acrossall665091control settings, exactexit/KKT and completeprofit/fringecurves; finalscreens and neighboringbodies checked."
+      "note": "Church–Ware complete static§4.2pp124–129 and actualfigure127read; independent6math/8native/static pass acrossall665091control settings, exactexit/KKT and completeprofit/fringecurves; finalscreens and neighboringbodies checked."
     },
     {
       "id": "fin-5.12",
       "status": "resolved",
       "report": "docs/verification/fin-laboratory-followup.md",
-      "note": "Actual Smith\u2013Suchanek\u2013Williams1988 scoped original and TableI design4 checked by root and independent agent; four mathematical groups including all335421controls and four final native theme/viewport groups pass independently. Authored presets, finite40-path means/SE, expected-dividend staircase and separate imposed terminal marker are correctly scoped; no historical experience calibration is claimed."
+      "note": "Actual Smith–Suchanek–Williams1988 scoped original and TableI design4 checked by root and independent agent; four mathematical groups including all335421controls and four final native theme/viewport groups pass independently. Authored presets, finite40-path means/SE, expected-dividend staircase and separate imposed terminal marker are correctly scoped; no historical experience calibration is claimed."
     },
     {
       "id": "micro-9.21",
       "status": "resolved",
       "report": "docs/verification/micro-arrow-debreu-followup.md",
-      "note": "Actual Arrow\u2013Debreu1954 introduction and completeTheoremI \u00a7\u00a71\u20133 independently read, including original proof formula images. Exact convex equilibrium and exhaustive nonconvex production-branch certificates replace finite-grid verdicts; root6math and4native theme/viewport groups pass independently with full41-step histories, true tie choices, positive-price divisions and inspected screenshots."
+      "note": "Actual Arrow–Debreu1954 introduction and completeTheoremI §§1–3 independently read, including original proof formula images. Exact convex equilibrium and exhaustive nonconvex production-branch certificates replace finite-grid verdicts; root6math and4native theme/viewport groups pass independently with full41-step histories, true tie choices, positive-price divisions and inspected screenshots."
     },
     {
       "id": "micro-9.1",
       "status": "resolved",
       "report": "docs/verification/micro-efficiency-followup.md",
-      "note": "Narrow foundation prose/readout correction: weak preference is distinct from strict improvement, smooth/convex hypotheses scoped to pictured Cobb\u2013Douglas tastes; sampled lens and2% near-band no longer certify efficiency. Drawing/controls preserved; historical metadata not newly certified. Root4math+12native groups pass; additional unflagged followup, no pending count change."
+      "note": "Narrow foundation prose/readout correction: weak preference is distinct from strict improvement, smooth/convex hypotheses scoped to pictured Cobb–Douglas tastes; sampled lens and2% near-band no longer certify efficiency. Drawing/controls preserved; historical metadata not newly certified. Root4math+12native groups pass; additional unflagged followup, no pending count change."
     },
     {
       "id": "micro-9.2",
@@ -7168,13 +7097,13 @@
       "id": "fin-5.7",
       "status": "resolved",
       "report": "docs/verification/fin-arbitrage-followup.md",
-      "note": "Root and independent agent read actual ShleiferVishny1997 intro/complete \u00a7\u00a7I\u2013II and conclusion, inspected original41/46formulas and reran4math+4final native groups. Separate authored daily Gaussian spread refuses invalid initial margins, retains true observed overshoot/negative exit wealth and cash freeze, and shows finite400-path statistics on separate full-range axes. No certain-convergence or original-equilibrium-replication claim remains."
+      "note": "Root and independent agent read actual ShleiferVishny1997 intro/complete §§I–II and conclusion, inspected original41/46formulas and reran4math+4final native groups. Separate authored daily Gaussian spread refuses invalid initial margins, retains true observed overshoot/negative exit wealth and cash freeze, and shows finite400-path statistics on separate full-range axes. No certain-convergence or original-equilibrium-replication claim remains."
     },
     {
       "id": "micro-9.20",
       "status": "resolved",
       "report": "docs/verification/micro-walras-followup.md",
-      "note": "Actual1874original Lessons9and21\u201323 independently read with title/50/124/131images. Authored simultaneous ODE separated from historical successive-price process; exact rational clearing and global positive-invariant/active-index Dini contraction independently assessed. Root4math+4native groups and separate75digit24-reference generator pass; complete histories/arrows/bars and final screenshots checked."
+      "note": "Actual1874original Lessons9and21–23 independently read with title/50/124/131images. Authored simultaneous ODE separated from historical successive-price process; exact rational clearing and global positive-invariant/active-index Dini contraction independently assessed. Root4math+4native groups and separate75digit24-reference generator pass; complete histories/arrows/bars and final screenshots checked."
     },
     {
       "id": "fin-5.10",
@@ -7198,7 +7127,7 @@
       "id": "fin-5.6",
       "status": "resolved",
       "report": "docs/verification/fin-shiller-followup.md",
-      "note": "Additional unflagged consistency correction: exact conditional-L\u00b2 variance identity separated from later finite proxy/sample SDs; original timing and distinct trend exponents, explicit continuation sensitivity, actual PV/projection dependencies. Included in six mathematical/eight native groups and original1824-row/456annualscalar data comparison. No original queueclosure credit."
+      "note": "Additional unflagged consistency correction: exact conditional-L² variance identity separated from later finite proxy/sample SDs; original timing and distinct trend exponents, explicit continuation sensitivity, actual PV/projection dependencies. Included in six mathematical/eight native groups and original1824-row/456annualscalar data comparison. No original queueclosure credit."
     },
     {
       "id": "demo-4.3",
@@ -7258,7 +7187,7 @@
       "id": "phil-4.8",
       "status": "resolved",
       "report": "docs/verification/phil-surprise-followup.md",
-      "note": "Actual Chow\u00a7\u00a71\u20134 read with formula images; exact finite-world conditioning/support proof independently derived; four math/four native groups and final narrow/undefined-state images pass; no general paradox-resolution claim."
+      "note": "Actual Chow§§1–4 read with formula images; exact finite-world conditioning/support proof independently derived; four math/four native groups and final narrow/undefined-state images pass; no general paradox-resolution claim."
     },
     {
       "id": "psych-3.10",
@@ -7270,7 +7199,7 @@
       "id": "phil-4.1",
       "status": "resolved",
       "report": "docs/verification/phil-liar-followup.md",
-      "note": "Actual Kripke and P\u0159enosil passages/images read independently; exact pair equations distinguish object negation, external reporting and conditional self-enrichment. Four math and four final native groups plus static checks pass; no full-language or general-collapse claim."
+      "note": "Actual Kripke and Přenosil passages/images read independently; exact pair equations distinguish object negation, external reporting and conditional self-enrichment. Four math and four final native groups plus static checks pass; no full-language or general-collapse claim."
     },
     {
       "id": "game-4.1",
@@ -7312,7 +7241,7 @@
       "id": "game-3.11",
       "status": "resolved",
       "report": "docs/verification/game-neumann-followup.md",
-      "note": "Actual1928 \u00a7\u00a7II\u2013III proof/source checked; exact endpoint/intersection envelopes replace sampled extrema and epsilon floor, complete tied optimal sets and strict sparse-safe edit/replay schemas pass4 independent math and4 native groups."
+      "note": "Actual1928 §§II–III proof/source checked; exact endpoint/intersection envelopes replace sampled extrema and epsilon floor, complete tied optimal sets and strict sparse-safe edit/replay schemas pass4 independent math and4 native groups."
     },
     {
       "id": "soc-4.9",
@@ -7324,13 +7253,13 @@
       "id": "soc-4.10",
       "status": "resolved",
       "report": "docs/verification/soc-attachment-followup.md",
-      "note": "Actual DMSv1/CSN\u00a73.1 source checked; correct2m(m+1) stationary coefficient, declared frozen with-replacement multigraph/finite affine correction and pure-uniform law; inclusive approximate tail diagnostic has no iid confidence claim."
+      "note": "Actual DMSv1/CSN§3.1 source checked; correct2m(m+1) stationary coefficient, declared frozen with-replacement multigraph/finite affine correction and pure-uniform law; inclusive approximate tail diagnostic has no iid confidence claim."
     },
     {
       "id": "psych-4.1",
       "status": "resolved",
       "report": "docs/verification/psych-retina-adaptation-followup.md",
-      "note": "Actual Curcio1990 source and original author XLS28 temporal composite records/N verified; rod-free1000/mm\u00b2 contour, full zero-capable curves and exact rounded900\u00b5m\u00b2 authored patch counts replace unsupported response/acuity claims."
+      "note": "Actual Curcio1990 source and original author XLS28 temporal composite records/N verified; rod-free1000/mm² contour, full zero-capable curves and exact rounded900µm² authored patch counts replace unsupported response/acuity claims."
     },
     {
       "id": "psych-4.2",
@@ -7342,37 +7271,37 @@
       "id": "polsci-5.4",
       "status": "resolved",
       "report": "docs/verification/polsci-jury-followup.md",
-      "note": "Actual Easley\u2013Kleinberg \u00a723.7 read; finite binomial proof/monotonicity and variance bound, stable rare error, all endpoints, odd-size replay rejection and 320px formula repairs independently accepted."
+      "note": "Actual Easley–Kleinberg §23.7 read; finite binomial proof/monotonicity and variance bound, stable rare error, all endpoints, odd-size replay rejection and 320px formula repairs independently accepted."
     },
     {
       "id": "polsci-5.5",
       "status": "resolved",
       "report": "docs/verification/polsci-jury-followup.md",
-      "note": "Explicit authored common-leader model; independent finite mixtures, rho\u00b2 correlation, exact critical middle limit, all manual/analytic controls and complete saved-state/native checks independently accepted."
+      "note": "Explicit authored common-leader model; independent finite mixtures, rho² correlation, exact critical middle limit, all manual/analytic controls and complete saved-state/native checks independently accepted."
     },
     {
       "id": "game-4.6",
       "status": "resolved",
       "report": "docs/verification/game-centipede-ultimatum-followup.md",
-      "note": "Actual McKelvey\u2013Palfrey1991 working-paper version and prerequisites read; full owned-node plans and fixed terminal leaf, unique every-node SPE, all finite level pairs and real grid/navigation/replay independently accepted."
+      "note": "Actual McKelvey–Palfrey1991 working-paper version and prerequisites read; full owned-node plans and fixed terminal leaf, unique every-node SPE, all finite level pairs and real grid/navigation/replay independently accepted."
     },
     {
       "id": "game-4.7",
       "status": "resolved",
       "report": "docs/verification/game-centipede-ultimatum-followup.md",
-      "note": "Actual original G\u00fcth rules and Fehr\u2013Schmidt Eq2/Proposition1/footnote8 read; two discrete pure-money SPE, exact uniform threshold probabilities/all profit ties, declared inequity slice and all control/replay cases independently accepted."
+      "note": "Actual original Güth rules and Fehr–Schmidt Eq2/Proposition1/footnote8 read; two discrete pure-money SPE, exact uniform threshold probabilities/all profit ties, declared inequity slice and all control/replay cases independently accepted."
     },
     {
       "id": "music-7.1",
       "status": "resolved",
       "report": "docs/verification/music-pythagorean-followup.md",
-      "note": "Actual Benson2008 Web \u00a7\u00a75.2\u20135.4 and formula tables read; exact note/fifth counts, root-relative rational table and complete closing octave/gaps, declared authored sine playback and real sample/gain/stop/replay independently accepted."
+      "note": "Actual Benson2008 Web §§5.2–5.4 and formula tables read; exact note/fifth counts, root-relative rational table and complete closing octave/gaps, declared authored sine playback and real sample/gain/stop/replay independently accepted."
     },
     {
       "id": "music-7.2",
       "status": "resolved",
       "report": "docs/verification/music-pythagorean-followup.md",
-      "note": "Actual Benson Lemma6.2.1 and prerequisites read; full authored forward-density proof separated from finite prefixes, exact BigInt record/equality decisions and ET zeros, all1\u2013400 integer prefixes/control/replay/geometry independently accepted."
+      "note": "Actual Benson Lemma6.2.1 and prerequisites read; full authored forward-density proof separated from finite prefixes, exact BigInt record/equality decisions and ET zeros, all1–400 integer prefixes/control/replay/geometry independently accepted."
     },
     {
       "id": "arch-4.1",
@@ -7448,9 +7377,9 @@
     },
     {
       "id": "music-7.4",
-      "status": "source-review-pending",
+      "status": "resolved",
       "report": "docs/verification/music-wolf-fifth-open.md",
-      "note": "Root confirmed closure/excess and comma-versus-wolf algebra defects in the actual current item; newly flagged for a complete source/model/audio/native audit."
+      "note": "2026-10-20: independently reviewed exact worker commit, primary sources, model math and native light/dark inputs/screenshots; see music-wolf-equal-followup.md."
     },
     {
       "id": "psych-4.4",
@@ -7492,13 +7421,28 @@
       "id": "psych-4.6",
       "status": "resolved",
       "report": "docs/verification/psych-centresurround-followup.md",
-      "note": "Actual Kuffler/Meister\u2013Berry physiology distinguished from authored whole-plane normalizedGaussian model; exact radial masses/ON-OFF endpoint optimum and uniform baseline. Root sevenmath/full12native/static plus70digit counterreview and exact neighbor guards pass."
+      "note": "Actual Kuffler/Meister–Berry physiology distinguished from authored whole-plane normalizedGaussian model; exact radial masses/ON-OFF endpoint optimum and uniform baseline. Root sevenmath/full12native/static plus70digit counterreview and exact neighbor guards pass."
     },
     {
       "id": "psych-4.8",
       "status": "resolved",
       "report": "docs/verification/psych-centresurround-followup.md",
       "note": "Actual Kingdom single-filter limits; complete whole-line ramp/step formulas, analytical response envelope and centered tiny-input probe/raster fix. Root sevenmath/12native/static and independent absolute-only highprecision checks pass; no relative-tail/perception certificate."
+    },
+    {
+      "id": "music-7.9",
+      "status": "resolved",
+      "note": "2026-10-20: independently reviewed exact worker commit, primary sources, model math and native light/dark inputs/screenshots; see music-wolf-equal-followup.md."
+    },
+    {
+      "id": "soc-4.5",
+      "status": "resolved",
+      "note": "2026-10-20: independently reviewed exact worker commit, primary sources, model math and native light/dark inputs/screenshots; see soc-smallworld-followup.md."
+    },
+    {
+      "id": "soc-4.6",
+      "status": "resolved",
+      "note": "2026-10-20: independently reviewed exact worker commit, primary sources, model math and native light/dark inputs/screenshots; see soc-smallworld-followup.md."
     }
   ]
 }

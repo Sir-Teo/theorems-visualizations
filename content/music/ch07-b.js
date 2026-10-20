@@ -126,7 +126,7 @@ The major triad uses the pure ratios $4{:}5{:}6$ (7.5); the minor comparison use
       refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §5.14, pp.190–192; §§5.5 and 5.7; ideal-string formula §3.2, pp.89–91'],tags:['equal temperament'],
       credit:'Mathematical tuning exposition: Dave Benson, 2008 Web version; reference collection, ideal-string diagram and synthesis authored here.',
       scope:String.raw`An ideal ratio and string model, without a claim about historical priority, a rule-of-eighteen recipe, a real instrument’s fret compensation or measured consonance. The 650-mm scale is an authored distance example. Audio uses C4 = 261.6256 Hz, mono 44,100-Hz synthesis and exactly eight harmonics per voice with amplitudes $1/h$, averaged across voices and divided by $\sum_{h=1}^8 1/h$. The pre-output peak is bounded by 0.12, with 10-ms end ramps; every played harmonic is below Nyquist. The runtime master gain/limiter and device affect output. Exact rational coincidences and numerical frequency differences do not certify perceived beats or roughness.`,
-      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
       viz(v){
         const reference=v.select('fret reference',WE_REFERENCES.map(r=>({value:r.id,label:r.name})), 'M3');
         const chord=v.select('played chord',[{value:'major',label:'major triad 4:5:6'},{value:'minor',label:'minor triad 10:12:15'},{value:'harmonic7',label:'harmonic seventh 4:5:6:7'}],'major');
