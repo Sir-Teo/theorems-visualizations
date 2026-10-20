@@ -1,3 +1,4 @@
+import { discretePool } from './source-audit-pooling-inhibition.js';
 // Psychology & Perception — Chapter 4: Early vision (items 4.1–4.5; 4.6–4.10 are in ch04-b.js, 4.11–4.14 in ch04-c.js)
 import { logTicks, grey, clamp01, smooth01, coneDensity, rodDensity, BLIND } from './ch04.shared.js';
 import { CIE_PHOTOPIC, CIE_SCOTOPIC, spectralPair, summationCuts } from './source-audit-spectral-summation.js';
@@ -86,64 +87,33 @@ The bars show A and B's normalized weighted products in each condition, starting
     },
     // ------------------------------------------------------------------ 4.4
     {
-      num: '4.4',
-      kind: 'Concept',
-      name: 'Convergence trades acuity for sensitivity',
-      statement: String.raw`Many receptors feed one ganglion cell, and the ratio differs across the retina: in the central fovea one cone drives (through bipolar cells) about one ganglion cell, while in the periphery hundreds of rods converge on one. Pooling $g$ receptors that have independent noise raises the signal-to-noise ratio of a faint, extended stimulus by $\sqrt g$, so convergence raises **sensitivity**; but the pooled cell cannot tell which receptor was hit, so the finest grating it can resolve has period about $2g$ receptor spacings. Sensitivity thus rises and acuity falls as $g$ grows, and the best pool for detecting a spot is one about as large as the spot.`,
-      idea: String.raw`The sum of $g$ receptor signals each carrying signal $s$ and independent noise of standard deviation $\sigma$ has signal $gs$ and noise $\sigma\sqrt g$, so the ratio is $\sqrt g\,s/\sigma$, for as long as the whole pool lies inside the stimulus; if the spot covers only $k<g$ of the receptors, the signal is $ks$ while the noise still grows as $\sqrt g$, which is why detection peaks at $g\approx k$. Averaging over the pool is a box-shaped blur, whose frequency response $|\operatorname{sinc}(\pi f g)|$ cuts the contrast of fine gratings, and sampling at one value per pool aliases anything finer than $1/(2g)$ cycles per receptor.`,
-      caption: String.raw`A row of 48 receptors (top, **blue**) is wired into groups of $g$ (the **orange** brackets), each giving one output (bottom). Choose *grating* or *dim spot*. Raise the **pool size** $g$: the grating's modulation at the ganglion level collapses once its frequency passes the sampling limit (the **green** line in the middle panel), while the dim spot's detectability $d'$ (right panel) climbs as $\sqrt g$ up to the spot's size and then falls. A model with independent, Gaussian receptor noise and a flat pool; real pooling is weighted and noise is partly shared.`,
-      deps: ['psych-4.1'],
-      refs: ['Goldstein ch. 3'],
-      tags: ['convergence', 'acuity', 'sensitivity'],
-      scope: String.raw`Holds for independent noise and uniform pooling over the stimulus; shared noise (for example from the photon statistics of the stimulus itself) is not reduced by pooling in the same way.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Retinal_ganglion_cell' },
-      verify: true,
-      viz(v) {
-        const mode = v.select('Stimulus', [{ value: 'grat', label: 'grating' }, { value: 'spot', label: 'dim spot' }], 'grat');
-        const gs = v.select('Pool size $g$', ['1', '2', '3', '4', '6', '8', '12'], '4');
-        const fq = v.slider('grating frequency (cycles/receptor)', 0.02, 0.5, 0.11, { step: 0.005 });
-        const sg = v.slider('spot signal per receptor ($s/\\sigma$)', 0.1, 1.5, 0.45, { step: 0.01 });
-        const N = 48, KS = 6;
-        const rw = v.stage({ x: [0, N], y: [-3.4, 3.2], axes: false, height: 290, weight: 1.5, minWidth: 340, title: 'receptors (top) and ganglion cells (bottom)' });
-        const tf = v.stage({ x: [0, 0.5], y: [0, 1.15], axes: 'box', gutter: true, height: 290, weight: 0.9, minWidth: 250, xlabel: 'grating frequency (cycles per receptor)', ylabel: 'modulation at the ganglion', title: 'what pooling does to a grating' });
-        const dp = v.stage({ x: [0, 7], y: [0, 4], axes: 'box', gutter: true, height: 290, weight: 0.9, minWidth: 250, xlabel: 'pool size g', ylabel: 'detectability d′', title: 'detecting a 6-receptor spot', xticks: [[0.5, '1'], [1.5, '2'], [2.5, '3'], [3.5, '4'], [4.5, '6'], [5.5, '8'], [6.5, '12']] });
-        const G = [1, 2, 3, 4, 6, 8, 12];
-        const sinc = (x) => (Math.abs(x) < 1e-9 ? 1 : Math.sin(x) / x);
-        const gOf = () => +gs.value;
-        v.legend([['accent', 'receptors', { area: true }], ['orange', 'ganglion outputs', { area: true }], ['green', 'sampling limit 1/(2g)', { dash: true }]]);
-        let info = null;
-        v.render(() => {
-          const g = gOf(), f = fq.value, R = v.rng(3);
-          const noise = Array.from({ length: N }, () => R.normal() * 0.12);
-          const x0 = 20, inSpot = (i) => i >= x0 && i < x0 + KS;
-          const stim = (i) => (mode.value === 'grat' ? 0.5 + 0.5 * Math.cos(2 * Math.PI * f * (i + 0.5)) : inSpot(i) ? Math.min(1, sg.value * 0.7) : 0);
-          const vals = Array.from({ length: N }, (_, i) => stim(i) + (mode.value === 'spot' ? noise[i] * 1.2 : 0));
-          for (let i = 0; i < N; i++) rw.rect(i + 0.06, 0.5, i + 0.94, 0.5 + 2.4 * Math.max(0, vals[i]), { fill: 'accent', fillAlpha: 0.7, stroke: false });
-          rw.line(0, 0.5, N, 0.5, { color: 'muted', width: 1 });
-          const out = [];
-          for (let a = 0; a < N; a += g) {
-            const b = Math.min(N, a + g); let m = 0; for (let i = a; i < b; i++) m += vals[i]; m /= b - a; out.push([a, b, m]);
-            rw.line(a + 0.15, 3.05, b - 0.15, 3.05, { color: 'orange', width: 3 });
-            rw.rect(a + 0.06, -0.5, b - 0.06, -0.5 - 2.4 * Math.max(0, m), { fill: 'orange', fillAlpha: 0.75, stroke: false });
-          }
-          rw.line(0, -0.5, N, -0.5, { color: 'muted', width: 1 });
-          if (mode.value === 'spot') rw.text('spot', x0 + KS / 2, 0.85 + 2.4 * 0.0, { align: 'center', color: 'muted', size: 11.5, dy: 0, dx: 0 });
-          // transfer
-          tf.fn((x) => Math.abs(sinc(Math.PI * x * g)), { domain: [0.001, 0.5], color: 'ink', width: 2.4 });
-          tf.vline(0.5 / g, { color: 'green', dash: [5, 4], width: 1.6 });
-          tf.dot(f, Math.abs(sinc(Math.PI * f * g)), { r: 6, color: 'gold' });
-          tf.vline(f, { color: 'gold', alpha: 0.5, width: 1 });
-          tf.text('1/(2g)', 0.5 / g, 1.08, { dx: 4, align: 'left', color: 'green', size: 11.5, weight: 600 });
-          // d'
-          G.forEach((gg, i) => {
-            const dd = gg <= KS ? Math.sqrt(gg) * sg.value : (KS * sg.value) / Math.sqrt(gg);
-            dp.rect(i + 0.12, 0, i + 0.88, dd, { fill: gg === g ? 'orange' : 'muted', fillAlpha: gg === g ? 0.8 : 0.35, stroke: false });
-          });
-          dp.hline(1, { color: 'faint', dash: [4, 3] });
-          const dd = g <= KS ? Math.sqrt(g) * sg.value : (KS * sg.value) / Math.sqrt(g);
-          info = { g, f, mod: Math.abs(sinc(Math.PI * f * g)), dd, lim: 0.5 / g };
-        });
-        v.readout(() => info ? `$g=${info.g}$: sampling limit ${v.fix(info.lim, 3)} cycles/receptor${info.f > info.lim ? ' (**the grating is above it: aliased or lost**)' : ''} · modulation kept at $f=${v.fix(info.f, 3)}$: ${v.fix(100 * info.mod, 0)}% · detectability of a 6-receptor spot $d'=\\sqrt g\\,s/\\sigma$ = ${v.fix(info.dd, 2)} (best at $g\\approx6$, $d'=${v.fix(Math.sqrt(6) * sg.value, 2)}$)` : '');
+      num:'4.4',kind:'Model',name:'Finite pooling: sensitivity and spatial sampling',
+      statement:String.raw`Pooling can improve the signal-to-noise ratio of an extended stimulus under specific noise assumptions, while discarding spatial information. Here a pool sums $g$ point receptors with independent, zero-mean noise of common finite variance $\sigma^2$. If a spot covers $k$ of its receptors, each carrying signal $s$, the sum has signal $ks$ and noise standard deviation $\sigma\sqrt g$:
+$$\mathrm{SNR}=\frac{ks}{\sigma\sqrt g}.$$
+The familiar $\sqrt g\,s/\sigma$ requires $k=g$. A finite spot's best pool also depends on its alignment with the group boundaries; no universal optimal pool size follows.
+
+Spatial averaging and sampling are distinct operations. This illustration averages **discrete** receptor values, then keeps one value per group. Its aperture gain is not the continuous box-filter sinc, and an aperture gain alone does not determine the phase-dependent samples.`,
+      idea:String.raw`Variance of the sum is $g\sigma^2$ because the covariance cross terms vanish (prob2.2.1). Dividing both signal and noise by $g$ gives the same SNR for the average. Correlated noise changes this calculation.
+
+For equally spaced receptor values, the complex aperture response is
+$$H_g(f)=\frac1g\sum_{j=0}^{g-1}e^{-2\pi i f j}.$$
+At $f=0$ its gain is 1; for $g=1$ it is 1 at every frequency. Away from removable endpoints,
+$$|H_g(f)|=\left|\frac{\sin(\pi fg)}{g\sin(\pi f)}\right|.$$
+This follows by summing a finite geometric series. Actual group means retain both phase and group location. Subsequent samples are spaced $g$ receptor units, with Nyquist frequency $1/(2g)$; the averaging filter is not an ideal anti-aliasing filter. Even at Nyquist, phase matters: a cosine can be sampled only at its zero crossings. The green line marks that sampling boundary, not a sudden loss of aperture gain or a perceptual threshold.`,
+      caption:String.raw`The authored row has **48 point receptors**, at half-integer positions, partitioned into equal groups. Blue bars are expected receptor values and orange bars are their exact group means. No noisy realization is drawn. Choose a grating or a finite spot; the handle moves the spot position, and its width can be zero. A spot can extend outside the row: only the receptor centres actually inside its half-open interval contribute.
+
+The middle plot shows the finite aperture's magnitude and the selected grating frequency, independently of its phase. The right plot always compares the **best single-pool spot SNR** at each group size, using the current spot position/width and authored $s/\sigma$; green marks retain all tied best sizes. Changing the grating mode does not turn these spot comparisons into grating detection predictions.`,
+      deps:['prob-2.2.1'],see:['psych-4.1','psych-4.5'],refs:['MIT 6.02 course notes (2012), Chapter 12 §§12.1.1–12.2.2, moving-average Examples 1/4'],tags:['pooling','discrete sampling','signal-to-noise'],
+      credit:'MIT 6.02 (2012), Chapter 12, technical exposition of discrete moving averages; finite receptor/noise illustration authored here',
+      scope:String.raw`This authored point-sampling model does not estimate retinal convergence ratios, visual acuity, clinical sensitivity or an anatomical pool from a psychophysical critical area. Receptor spacing, flat groups, spot amplitudes and independent unit-noise variance are assumptions. Noise need not be Gaussian for the variance/SNR calculation. Expected signals are displayed without clipping a random realization. Frequencies are cycles per receptor spacing; phase is in cycles. A finite displayed row is not a proof that an unknown signal can be reconstructed. Positive sub-ULP spot widths can contain a point even when plotted endpoints coincide; the readout retains the width. Floating SNR values can underflow.`,
+      links:{source:'https://ocw.mit.edu/courses/6-02-introduction-to-eecs-ii-digital-communication-systems-fall-2012/43ab3e7240ebab8bbdcde3a8601abdac_MIT6_02F12_chap12.pdf'},verify:true,
+      viz(v){
+        const fmt=x=>x.toFixed(9),mode=v.select('stimulus',[{value:'grat',label:'grating'},{value:'spot',label:'spot'}],'grat'),group=v.select('pool size g',['1','2','3','4','6','8','12'],'4'),f=v.slider('grating frequency',0,.5,.11,{step:'any',decimals:6,fmt}),phase=v.slider('grating phase (cycles)',0,1,0,{step:'any',decimals:6,fmt}),signal=v.slider('spot s / σ',0,1.5,.45,{step:'any',decimals:6,fmt}),position=v.slider('spot position',0,48,23,{step:'any',decimals:6,fmt}),width=v.slider('spot width',0,12,6,{step:'any',decimals:6,fmt});
+        const A=v.stage({x:[-4,52],y:[-1.6,2.2],axes:false,height:300,minWidth:260,title:'expected inputs and discrete pool means'}),B=v.stage({x:[-.035,.535],y:[-.13,1.18],height:300,minWidth:260,axes:'box',gutter:true,xlabel:'cycles per receptor spacing',ylabel:'finite aperture gain',xticks:[0,.25,.5],yticks:[0,.5,1],title:'averaging before sampling'}),C=v.stage({x:[-.4,7.4],y:[-.3,5.8],height:300,minWidth:260,axes:'box',gutter:true,xlabel:'group size g',ylabel:'best single-pool spot SNR',xticks:[[.5,'1'],[1.5,'2'],[2.5,'3'],[3.5,'4'],[4.5,'6'],[5.5,'8'],[6.5,'12']],yticks:[0,2,4],title:'finite spot, current alignment'});
+        const h=A.handle(23,1.65,{r:8,color:'gold',constrain:x=>[v.M.clamp(x,0,48),1.65],onDrag:h=>position.set(h.x)});let info;
+        v.legend([['accent','expected receptor values',{area:true}],['orange','group means / selected size',{area:true}],['green','sampling Nyquist',{dash:true}],['green','all best spot sizes',{dot:true}]]);
+        v.render(()=>{const p=discretePool(+group.value,f.value,phase.value,signal.value,position.value,width.value,mode.value);for(let i=0;i<48;i++)A.rect(i+.08,.25,i+.92,.25+.6*p.input[i],{fill:'accent',fillAlpha:.65,stroke:false});for(const z of p.groups){A.line(z.a+.08,-.1,z.b-.08,-.1,{color:'orange',width:2});A.rect(z.a+.08,-.25,z.b-.08,-.25-.6*z.mean,{fill:'orange',fillAlpha:.65,stroke:false});}A.line(0,.25,48,.25,{color:'muted',width:1});A.line(0,-.25,48,-.25,{color:'muted',width:1});A.text('inputs',24,1.35,{align:'center',size:11,color:'ink'});A.text('group means',24,-1.4,{align:'center',size:11,color:'ink'});h.set(p.position,1.65);B.path(p.curve,{color:'ink',width:2.4});B.line(p.nyquist,0,p.nyquist,1.05,{color:'green',dash:[4,4],width:1});B.dot(p.f,p.gain,{r:6,color:'gold'});for(const[z,i]of p.scores.map((z,i)=>[z,i]))C.rect(i+.18,0,i+.82,z.snr,{fill:z.g===p.g?'orange':'muted',fillAlpha:.65,stroke:false});for(const z of p.best){const i=p.scores.indexOf(z);C.dot(i+.5,z.snr,{r:4,color:'green'});}info=p;});
+        v.readout(()=>{if(!info)return'';const p=info,sci=x=>x.toExponential(7);return `g=${p.g}; finite aperture gain ${sci(p.gain)} at f=${p.f.toPrecision(10)}, phase=${p.phase.toPrecision(10)} cycles. Post-pooling Nyquist ${sci(p.nyquist)}; folded frequency ${sci(p.aliasFrequency)}. These do not by themselves establish visibility or reconstruction.\nSpot centre ${p.position.toPrecision(17)}, width ${p.width.toExponential(16)}, s/σ=${p.signal.toExponential(16)}; rounded endpoint coordinates ${p.a.toPrecision(10)}, ${p.b.toPrecision(10)}. ${p.covered} of48 receptor centres covered. Selected-size best spot SNR ${sci(p.selected)}; best compared sizes ${p.best.map(z=>z.g).join(', ')} with SNR ${sci(p.bestValue)}. Expected means; independent unit-noise model.`;});
       },
     },
     // ------------------------------------------------------------------ 4.5

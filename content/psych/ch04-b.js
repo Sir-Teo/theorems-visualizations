@@ -1,3 +1,4 @@
+import { inhibitionRow } from './source-audit-pooling-inhibition.js';
 // Psychology & Perception — Chapter 4: Early vision (items 4.6–4.10)
 import { centreSurround, fieldWeight, machFilter, rampInput } from './source-audit-centresurround.js';
 import { logTicks, grey, clamp01, blur1, dog1, blur2, smooth01 } from './ch04.shared.js';
@@ -35,68 +36,32 @@ The other panel always shows the response to a **centred disk**, including radiu
     },
     // ------------------------------------------------------------------ 4.7
     {
-      num: '4.7',
-      kind: 'Principle',
-      name: 'Lateral inhibition (Hartline–Ratliff)',
-      statement: String.raw`Neighbouring receptors inhibit one another, and the inhibition is stronger the closer they are and the more active the inhibiting receptor is. In the eye of the horseshoe crab *Limulus*, where the units can be recorded individually, the steady firing rate $r_p$ of unit $p$ obeys $$r_p=e_p-\sum_{q\ne p}k_{pq}\,\max(r_q-r_q^0,0),$$ where $e_p$ is the excitation from the light on $p$ itself, $k_{pq}$ the inhibitory coupling from $q$ to $p$ (falling with distance) and $r_q^0$ a threshold below which $q$ does not inhibit. Illuminating the neighbours therefore reduces the response of $p$ by an amount that adds up linearly over the neighbours, and the system as a whole responds more to differences in illumination than to its level.`,
-      idea: String.raw`The inhibition acts on the *outputs* of the neighbours, which themselves are inhibited, so the equation is a coupled set that must be solved together; above threshold it is linear, $(I+K)\,\mathbf r=\mathbf e-K\mathbf r^0$, and a single matrix solve gives all responses. Hartline and Ratliff measured the couplings by illuminating pairs of units and found the linear sum with a threshold fitted the data. The steady state is not the one-step result $\mathbf e-K\mathbf e$: recurrent inhibition softens the effect, because a strongly inhibited neighbour inhibits less in return.`,
-      caption: String.raw`Top: the light on a row of 25 receptors (a **single** lit cell, a **patch** of width $w$, or an **edge**; drag the **gold** handle to move it). Bottom: the steady firing rate from the Hartline–Ratliff equations. The **grey** outline is each unit's response if there were no inhibition. Raise the *strength* and *spread*: a cell in the lit region is driven less when its neighbours are also lit, the units beside a lit patch are suppressed, and at an edge the response overshoots on the bright side and undershoots on the dark side. *Recurrent* solves the equations to a steady state; *one pass* subtracts the neighbours' uninhibited responses. Couplings here are a model (exponential fall-off with distance), not Hartline and Ratliff's measured values.`,
-      deps: ['psych-4.6'],
-      refs: ['Goldstein ch. 3'],
-      tags: ['lateral inhibition', 'Limulus', 'contrast'],
-      credit: 'H. K. Hartline & F. Ratliff, 1957, J. Gen. Physiol. 40: 357–376 (Limulus eye); Hartline shared the 1967 Nobel Prize in Physiology or Medicine',
-      scope: String.raw`Holds in the steady state for a model that is linear above a threshold, in the lateral eye of *Limulus*; the same architecture is found in the retinas of vertebrates, where it is only qualitatively similar (and acts through horizontal and amacrine cells).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Lateral_inhibition' },
-      verify: true,
-      viz(v) {
-        const M = v.M, N = 25;
-        const pat = v.select('Light', [{ value: 'one', label: 'single cell' }, { value: 'patch', label: 'patch' }, { value: 'edge', label: 'edge' }], 'edge');
-        const kk = v.slider('inhibition strength', 0, 0.5, 0.18, { step: 0.005 });
-        const lam = v.slider('spread (receptors)', 0.5, 5, 2, { step: 0.1 });
-        const wd = v.slider('patch width $w$', 1, 12, 5, { int: true });
-        const mode = v.select('Steady state', [{ value: 'rec', label: 'recurrent (solved)' }, { value: 'one', label: 'one pass' }], 'rec');
-        const e0 = 0.35, thr = 0.1;
-        const inp = v.stage({ x: [0, N], y: [0, 1.4], axes: false, height: 200, weight: 1.4, minWidth: 340, title: 'light on the receptors' });
-        const out = v.stage({ x: [0, N], y: [-0.2, 1.25], axes: false, height: 240, weight: 1.4, minWidth: 340, title: 'steady response' });
-        const hd = inp.handle(12.5, 1.2, { color: 'gold', r: 8, label: 'move', labelPos: 'n', constrain: (x) => [Math.min(N - 1, Math.max(1, Math.round(x - 0.5) + 0.5)), 1.2] });
-        const Kmat = (k, l) => Array.from({ length: N }, (_, p) => Array.from({ length: N }, (_, q) => (p === q ? 0 : k * Math.exp(-(Math.abs(p - q) - 1) / l) * (Math.abs(p - q) <= 8 ? 1 : 0))));
-        const solve = (e, K, rec) => {
-          if (!rec) return e.map((x, p) => x - K[p].reduce((a, kq, q) => a + kq * Math.max(e[q] - thr, 0), 0));
-          let r = e.slice();
-          for (let it = 0; it < 200; it++) { const nr = e.map((x, p) => x - K[p].reduce((a, kq, q) => a + kq * Math.max(r[q] - thr, 0), 0)); const d = nr.reduce((a, x, i) => a + Math.abs(x - r[i]), 0); r = r.map((x, i) => 0.5 * x + 0.5 * nr[i]); if (d < 1e-9) break; }
-          return r;
-        };
-        v.legend([['accent', 'response with inhibition', { area: true }], ['muted', 'response with none', { dash: true }]]);
-        let info = null;
-        v.render(() => {
-          const c = Math.round(hd.x - 0.5), w = wd.value, rec = mode.value === 'rec';
-          const e = Array.from({ length: N }, (_, i) => {
-            if (pat.value === 'one') return i === c ? 1 : e0;
-            if (pat.value === 'patch') return i >= c - Math.floor(w / 2) && i < c - Math.floor(w / 2) + w ? 1 : e0;
-            return i >= c ? 1 : e0;
-          });
-          const K = Kmat(kk.value, lam.value), r = solve(e, K, rec), r0 = solve(Array(N).fill(e0), K, rec);
-          for (let i = 0; i < N; i++) {
-            inp.rect(i + 0.08, 0, i + 0.92, e[i], { fill: 'gold', fillAlpha: 0.55, stroke: false });
-            out.rect(i + 0.08, 0, i + 0.92, Math.max(r[i], -0.2), { fill: r[i] >= 0 ? 'accent' : 'red', fillAlpha: 0.75, stroke: false });
-            out.line(i + 0.04, e[i], i + 0.96, e[i], { color: 'muted', width: 1.4, dash: [3, 3] });
-          }
-          out.hline(0, { color: 'faint' });
-          // numbers
-          let pk = -1, dp = 1e9; for (let i = 0; i < N; i++) { if (pat.value === 'edge') { if (i >= c) pk = Math.max(pk, r[i]); else dp = Math.min(dp, r[i]); } }
-          info = { r, r0, c, e, pk, dp };
-        });
-        v.readout(() => {
-          if (!info) return '';
-          const { r, r0, c, e } = info;
-          if (pat.value === 'edge') {
-            const hi = r[Math.min(N - 1, Math.round((c + N) / 2))], lo = r[Math.max(0, Math.round(c / 2))], pkv = info.pk, dpv = info.dp;
-            return `Away from the edge (the ends of a short row are less inhibited) the lit side settles at ${v.fix(hi, 3)} and the dark side at ${v.fix(lo, 3)} (uninhibited 1 and ${e0}); at the edge the bright side peaks at **${v.fix(pkv, 3)}** (+${v.fix(100 * (pkv - hi) / Math.max(hi, 1e-9), 0)}%) and the dark side dips to **${v.fix(dpv, 3)}** (${v.fix(100 * (dpv - lo) / Math.max(lo, 1e-9), 0)}%).`;
-          }
-          const cc = Math.min(N - 1, Math.max(0, c));
-          const nb = Math.min(N - 1, cc + (pat.value === 'patch' ? Math.ceil(wd.value / 2) + 1 : 2));
-          return `Lit unit ${cc + 1}: responds **${v.fix(r[cc], 3)}** (it would give 1 with no inhibition) · the unlit unit ${nb + 1} beside the light is pushed from ${v.fix(r0[nb], 3)} (when the whole row is at the background level) down to **${v.fix(r[nb], 3)}**.`;
-        });
+      num:'4.7',kind:'Model',name:'Recurrent lateral inhibition with nonnegative rates',
+      statement:String.raw`Hartline and Ratliff's 1957 experiments measured steady inhibitory interactions in the lateral eye of *Limulus*. Their pair equations reduce a receptor's response according to a neighbour's **resulting activity**, with an emitting threshold. Negative inhibition is excluded, and excessive inhibition silences a receiver instead of producing a negative firing rate.
+
+The finite illustration has zero diagonal in $K$. Define $u_j=\max(r_j-t,0)$, then use the explicitly authored rule
+$$r_p=\max(0,e_p-(Ku)_p).$$
+Its symmetric weights, common threshold $t=0.1$, excitation levels and distance kernel are chosen for explanation, not fitted experimental values. We restrict their maximum row sum to $q\le0.9$, which guarantees a unique fixed point for this family. The signed centre–surround filter in 4.6 is a different, feedforward model.`,
+      idea:String.raw`Write the displayed map as $F$. Rectification is 1-Lipschitz, so nonnegative weights with row sums at most $q<1$ give
+$$\|F(r)-F(s)\|_\infty\le q\|r-s\|_\infty.$$
+For excitation in $[0,1]$, the map takes the complete box $[0,1]^{25}$ into itself. The contraction principle gives existence, uniqueness and convergence of iteration. In exact arithmetic a computed candidate satisfies
+$$\|r-r^*\|_\infty\le\frac{\|r-F(r)\|_\infty}{1-q}.$$
+The readout evaluates a floating residual and corresponding **error estimate**; it is not a rigorous interval certificate.
+
+If every unit is above the emitting threshold and unsilenced, expanding the equations gives $(I+K)r=e+Kt$. Otherwise the active constraints matter. For the independent numerical check, $u=\max(r-t,0)$ solves a nonnegative quadratic program with positive-definite matrix $I+K$. The threshold's nonnegativity is needed for that equivalence. One pass applies $F$ once to uninhibited excitation; its residual can be nonzero and it is not labeled a solved steady state.`,
+      caption:String.raw`Move a single stimulated receptor, a finite patch, or an edge along the **25-unit row**. Blue input bars use authored excitation 1 in the stimulated region and 0.35 elsewhere. Orange output bars show the selected calculation; the grey marks show uninhibited excitation. The gold handle and integer position control refer to the same receptor. Patches extending beyond an end are truncated explicitly.
+
+Strength $q$ bounds the total incoming coupling. Raw weights decay exponentially with integer distance, stop after eight neighbours on each side, and use one global normalization factor so symmetry is preserved. The ends have fewer neighbours. Compare the solved recurrent response with one pass; neither calculation is presented as a human brightness measurement or a universal edge-enhancement law.`,
+      deps:['pma-9.23'],see:['psych-4.6'],refs:['Hartline and Ratliff (1957), methods357–359, threshold/pair evidence363–366, disinhibition368–372, equations/restrictions372–375 and summary375–376'],tags:['lateral inhibition','Limulus','fixed point'],
+      credit:'H. K. Hartline and Floyd Ratliff (1957), Journal of General Physiology40:357–376, DOI10.1085/jgp.40.3.357; finite symmetric network authored here',
+      scope:String.raw`The original measurements concern maintained responses under controlled prolonged illumination in an excised Limulus preparation; early transient/adaptation changes were excluded. Couplings and thresholds need not be symmetric across the original pairs. The source distinguishes isolated single pairs from a fitted small-group illustration. This model adds a symmetric, globally normalized finite distance kernel and fixed relative excitation units. Its uniqueness guarantee follows from the imposed contraction domain; it is not a theorem about every biological network. Floating residual estimates include ordinary roundoff, with no outward-rounded enclosure. No original1958 spatial-summation experiment, universal vertebrate mechanism, Nobel-priority claim or psychophysical fit is asserted.`,
+      links:{source:'https://doi.org/10.1085/jgp.40.3.357'},verify:true,
+      viz(v){
+        const fmt=x=>x.toFixed(9),pattern=v.select('stimulated region',[{value:'one',label:'single unit'},{value:'patch',label:'patch'},{value:'edge',label:'edge'}],'edge'),mode=v.select('calculation',[{value:'rec',label:'recurrent fixed point'},{value:'one',label:'one pass'}],'rec'),q=v.slider('strength q',0,.9,.4,{step:'any',decimals:6,fmt}),spread=v.slider('spread (unit spacings)',.5,5,2,{step:'any',decimals:6,fmt}),width=v.slider('patch width',1,12,5,{int:true}),position=v.slider('stimulus unit index',0,24,12,{int:true});
+        const opts={x:[-2,27],y:[-.14,1.52],height:280,minWidth:260,axes:'box',gutter:true,xlabel:'unit index + ½',ylabel:'authored relative rate',xticks:[0,12,24],yticks:[0,.5,1]},A=v.stage({...opts,title:'excitation before inhibition'}),B=v.stage({...opts,title:'nonnegative model response'});const h=A.handle(12.5,1.28,{r:8,color:'gold',constrain:x=>[v.M.clamp(Math.round(x-.5),0,24)+.5,1.28],onDrag:h=>position.set(Math.round(h.x-.5))});let info;
+        v.legend([['accent','excitation',{area:true}],['orange','selected response',{area:true}],['muted','uninhibited excitation',{dash:true}]]);
+        v.render(()=>{const p=inhibitionRow(q.value,spread.value,width.value,position.value,pattern.value,mode.value);for(let i=0;i<25;i++){A.rect(i+.1,0,i+.9,p.e[i],{fill:'accent',fillAlpha:.65,stroke:false});B.rect(i+.1,0,i+.9,p.r[i],{fill:'orange',fillAlpha:.7,stroke:false});B.line(i+.06,p.e[i],i+.94,p.e[i],{color:'muted',dash:[3,3],width:1});}h.set(p.position+.5,1.28);info=p;});
+        v.readout(()=>{if(!info)return'';const p=info,sci=x=>x.toExponential(7);return `Selected ${p.mode==='rec'?'recurrent fixed point':'one pass'}; stimulated units ${p.lit} of25, selected index ${p.position}. Input range[${Math.min(...p.e)}, ${Math.max(...p.e)}]; output range[${sci(Math.min(...p.r))}, ${sci(Math.max(...p.r))}].\nComputed maximum row sum ${p.rowBound.toPrecision(10)}; residual ‖r−F(r)‖∞=${sci(p.residual)}. Floating residual/(1−row sum) error estimate ${sci(p.errorEstimate)}, ${p.iterations} ${p.mode==='rec'?'iterations':'pass'}. Roundoff is not enclosed. ${p.mode==='one'?'One pass is a comparison and need not solve the recurrent equations.':'The model is solved to the stated floating residual criterion.'}`;});
       },
     },
     // ------------------------------------------------------------------ 4.8
