@@ -1,0 +1,30 @@
+# ML: eleven direct probability proof inputs
+
+20 October2026. Accepted ML baseline is exact `13f726acd45392b7c6976938798a09399421cf90`, prepared read-only by `63ff134ba29180b07eb95f39dd977073d9c3e7af`. This worker’s older ML tree was first aligned byte-for-byte with that accepted snapshot in **local-only `b924349`**; do not integrate that alignment commit into a coordinator already holding accepted ML. The new candidate is its later successor. Accepted14 mathematical prerequisites, atom-safe rectangle witness construction, coordinate-atom quantiles, zero-range Hoeffding and equivalent narrow wraps remain intact.
+
+The actual fields are ML=`stats`, PROB=`math`; these are crossfield links. Eight strong steps plus all three independently justified reserves add **11 edges across8 consumers**, changing **14/14/19 →25/25/30**. These are candidate counts requiring a separate independent immutable peer, with no global ledger or source closure.
+
+I read the complete actual consumer statements, scopes and proof ideas and the actual written PROB target statements/proofs (2.1.10,2.1.11,2.1.13,4.1.13,1.6.4,2.2.14). Each new paragraph appends a distinct consumed step rather than duplicating the accepted RCA/PMA/COMB argument.
+
+| Consumer | New target(s) | Actual input and qualification |
+| --- | --- | --- |
+|1.1a|prob-2.1.13,prob-2.1.10|In the explicit ideal rat model, independent fair presence indicators across cues/meals give one cue’s product-survival probability2^-n. Functions of disjoint cue columns give independent survivor indicators, hence the binomial premise already used by the accepted integral calculation. Actual getRats loops separate draws per cue/meal and chooses among survivors. A deterministic seeded PRNG illustrates this ideal model; no genuine RNG independence or fit to animal cognition is claimed.|
+|2.1e|prob-2.1.11|Rectangle-event factorization identifies the sample joint law with the product law on the product sigma-field. Abstract measurable domains use the same generating-rectangle uniqueness argument; matching marginals alone is insufficient.|
+|2.3|prob-2.1.10,prob-2.1.13|For fixed measurable h chosen before sampling, independent sample-coordinate sigma-fields give independent correctness indicators, then their product expectation gives zero empirical-error probability. The sample-selected ERM h is handled by the finite union, not falsely treated as fixed. Exponential comparison remains the separate PMA input.|
+|3.1|prob-2.1.13|Fixed pre-sample atom-safe witness-strip miss indicators give exact product survival `(1−p_strip)^m`; mass at least epsilon/4 bounds it above. Boundary atoms need not have exactly epsilon/4 mass. Quantile construction, union and logarithmic inversion remain separate.|
+|3.2b|prob-4.1.13|Tower for the bounded error indicator equates its expectation to the expected conditional error under a chosen measurable conditional version. Existing RCA monotonicity compares the Bayes envelope. Null points do not supply uniquely data-defined conditional probabilities.|
+|4.1|prob-2.2.14|Existing fixed-h LLN remark is made precise for one measurable integrable loss, with finite first moment and no required variance. Truncation/tail-control proof does not supply uniform convergence, sample-selected h control or distribution-free finite-sample rates for arbitrary unbounded loss.|
+|4.5|prob-2.1.13,prob-1.6.4|Positive bounded exponential factors have a product expectation; Markov with threshold exp(sm epsilon) yields the upper tail, optimized at s=4epsilon/r². Apply positive s separately to −X for the lower tail. Existing Taylor log-MGF bound and constant range case preserved.|
+|4.6|prob-2.1.10|Fixed measurable losses inherit independent coordinate sigma-fields and identical laws before Hoeffding. Abstract Z uses the sigma-field proof, not an unstated real-domain identification. Finite union supplies uniformity; logarithms only invert the final bound.|
+
+All25 existing written-item dependency lists already matched their syllabus rows at the accepted baseline. The8 touched rows retain their complete old lists and append exactly the same new targets as their items. No unrelated probability union-bound, indicator integral or singleton-mass edge is added. All declared reserve assumptions have actual consumers/runtime support; none is added merely to reach25.
+
+## Base preservation, mathematics and retained narrow failure
+
+`node tests/verification-ml-probability-preservation.mjs /tmp/atlas-ml-probability/before <candidate-root>`: **25 full objects/25 visualization functions**, every helper/collection byte, all raw source/review flags and all **367 full syllabus rows** pass; only append-only idea/dependency fields change. Snapshot guards are explicit-only, outside the default math test glob.
+
+`node --test tests/verification-ml-probability.test.mjs`: **8/8 pass**. Independent finite witnesses exhaust cue matrices/binomial survival, abstract finite product-law rectangles, fixed-h correctness survival versus sample-selected counterexample, atom-heavy fixed witness survival, Bayes tower/envelope/excess/null-version invariance, Bernoulli exponential products/Markov/optimized tails/zero range, general bounded-loss independence/finite union, and analytic Pareto3/2 truncation conditions for finite mean with infinite variance. These are meaningful finite/proof-step checks, not replacements for general theorem proofs.
+
+Strict build **6684/6890/450/85,0/0**; home112701gzip. ML static **25/0/0**. Read-only exported inventory gives **25/25/30**; no global inventory write.
+
+Initial actual full253px text probe16light/dark states preserves an inherited **4.1 statement display overflow** in both themes; all other changed statements/scopes/proofs fit. Runtime/TeX/blank checks pass. The raw failure and PNGs remain under `/tmp/atlas-ml-probability/text253`. An equivalent display-only wrap will be a separate successor. Final own-pixel/native acceptance and independent peer remain pending that successor. No shared runtime, map change, source closure or benchmark.
