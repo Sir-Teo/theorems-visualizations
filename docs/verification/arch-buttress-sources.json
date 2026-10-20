@@ -1,0 +1,54 @@
+{
+  "purpose": "Source evidence for arch3.10/3.12/3.13; downloaded original/reprint source material, no product raster assets",
+  "sources": [
+    {
+      "file": "/tmp/atlas-worker-two/arch-sources/santiago-church.pdf",
+      "url": "https://idus.us.es/bitstreams/93a47da2-09bf-43f0-990e-c76918d8248e/download",
+      "sha256": "e0a7308e5ee948da883b2a6311aa1a3cbe729153b361cb8002c2f31c58dd82ab",
+      "bytes": 5880911,
+      "checked": "Complete 14-page original article; \u00a7\u00a74\u20135 pp6\u20139 and Figs6\u20138 checked against actual rendered pages7\u20139."
+    },
+    {
+      "file": "/tmp/atlas-worker-two/arch-sources/huerta-2006.pdf",
+      "url": "https://oa.upm.es/701/1/Huerta_Art_001.pdf",
+      "sha256": "51ac770e38acdf1c5dd2d1a9b46d29f820c85e8b1f28cf52f89aeff4bb42b5e8",
+      "bytes": 947307,
+      "checked": "Complete pp23\u201328; Fig3 and construction p24, non-proportional rules pp25\u201328; actual p24 and p28 pixels inspected."
+    },
+    {
+      "file": "/tmp/atlas-worker-two/arch-sources/derand-1743-chapters1-10.pdf",
+      "url": "https://www.e-rara.ch/download/pdf/1754908.pdf",
+      "sha256": "9a75dd46df1e88708932764e7ebf8727d98463bbee4f8542690ee1248a4404e6",
+      "bytes": 13541643,
+      "checked": "Actual later 1743 edition, Part I chapter VI printed p10=PDF13, plate1=PDF4; contextual pp1\u201312 checked; no claim to have read 1643 original."
+    },
+    {
+      "file": "/tmp/atlas-worker-two/arch-sources/derand-1743-page3.jpg",
+      "url": "https://www.e-rara.ch/download/webcache/2000/1422011",
+      "sha256": "c0d22470e6a3c0d30cf050aed4073ff24f4b07b72c77489426ceada2a9aa0c1f",
+      "bytes": 582490,
+      "checked": "Actual plate1, especially N\u2013Q; not printed page3 despite local filename."
+    },
+    {
+      "file": "/tmp/atlas-worker-two/arch-sources/hooke-1676.pdf",
+      "url": "https://www.e-rara.ch/download/pdf/731052.pdf",
+      "sha256": "e2ad1fbea76a8ec2a49734adb66584d52a5261482538d71c03616a28d8f86309",
+      "bytes": 8660104,
+      "checked": "Original printed p31=PDF39; original announcement/cipher read in actual pixels."
+    },
+    {
+      "file": "/tmp/atlas-worker-two/arch-sources/hooke-1705-xx.jpg",
+      "url": "https://www.e-rara.ch/download/webcache/2000/25413341",
+      "sha256": "e91f91593685b65457b8832347160cacfc5b7b31619e2ca210d7b5b1122f4077",
+      "bytes": 758157,
+      "checked": "Waller Life of Hooke printed pxx, contextual introduction to the ciphers."
+    },
+    {
+      "file": "/tmp/atlas-worker-two/arch-sources/hooke-1705-xxi.jpg",
+      "url": "https://www.e-rara.ch/download/webcache/2000/25413342",
+      "sha256": "a56c6629f09bde9c5679cff830b3945c88740efdc085fa425c67a4adabe0cf9b",
+      "bytes": 772457,
+      "checked": "Waller printed pxxi, arch cipher and deciphered Latin checked in actual pixels."
+    }
+  ]
+}
