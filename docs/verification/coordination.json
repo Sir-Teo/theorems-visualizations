@@ -1168,6 +1168,20 @@
         "95ca6fa",
         "0d648a8"
       ]
+    },
+    {
+      "ids": [
+        "bighist-4.1"
+      ],
+      "peer": "worker one independently read original source tables and author reply plus official museum bodies, regenerated 80-digit reference and independent 100-digit allometry, fresh narrow native and real pointer-drag replays, own source/output pixels without findings",
+      "reports": [
+        "docs/verification/bighist-hominin-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "d09be99ca46377f6fd8b7fd80c2471d7634fd7a3",
+        "e7334e2"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1180,7 +1194,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 19,
+  "currentPendingSourceReviews": 18,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",
