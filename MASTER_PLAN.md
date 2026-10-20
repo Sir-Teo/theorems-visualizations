@@ -58,8 +58,11 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    preserve the original rendering and improve several transitions, while the full60fps gate
    remains open. The [controlled hardware run](docs/verification/map-hardware-followup.md)
    confirms normal zoom at about48–51fps and slower oversized motion; normal pan, focus
-   and hover are near60fps. The edge-only WebGL prototype regressed performance and
-   remains isolated. Follow §4.4 by measuring a persistent WebGL scene renderer.
+   and hover are near60fps. Both the edge-only and persistent WebGL prototypes
+   regressed matched performance and remain isolated. The [persistent-scene audit](docs/verification/map-scene-parent-check.md)
+   preserves the failed 12-case diagnostic and independent correctness checks.
+   Profile the expensive passes and test bounded reuse of completed edge layers
+   before reconsidering production integration; the full 60 fps gate stays open.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
 The completed checkpoint through `2c2145f` passes **1,453 tests**, including all six UI tests, and a **53-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,805 bytes gzipped. The subset adds the Bachelier, efficiency-benchmark, exchange-core and dominant-firm routes and does not replace the earlier broader route audit. The tracked behavior source queue is clear; 186 total source reviews remain. See [checkpoint evidence](docs/verification/checkpoint-2c2145f.md).
