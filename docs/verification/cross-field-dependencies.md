@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **35 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 665 edges. Even
-including planned items and planned prerequisites, **25 collections remain below 25**.
+Of 64 non-math collections, **34 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 649 edges. Even
+including planned items and planned prerequisites, **24 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -213,3 +213,8 @@ The [independent GEOL review](geol-independent-peer-2026-10-20.md) accepts fifte
 ## Accepted INFO inputs and entropy bridge
 
 The [independent INFO review](info-independent-peer-2026-10-20.md) accepts sixteen used edges across fifteen consumers:9/9/12→25/25/28. Its Markov pair-chain argument proves only the named finite-chain special case, with explicit stationary/irreducible conditions. Complete57object/function/flag preservation, exact full syllabus lists, independent pair-state mathematics and thirty narrow theme outputs pass. The same peer accepts the coordinator's entropy bridge qualification, including both actual built cards. Shortfall665,35/64 below25published,25whole syllabi below25. No source flag closes.
+
+
+## Accepted chemical-kinetics inputs
+
+The [independent KIN peer](kin-crossfield-prerequisite-peer.md) accepts sixteen actual inputs across sixteen consumers:9/10/23→25/26/39. All49objects/functions/flags/helpers, every full item/syllabus dependency list, independent mathematics and32narrow theme outputs pass. The3.4syllabus alias now names the already consumed written harmonic-oscillator proof; this adds no edge beyond the sixteen counted inputs. No bridge is touched. Accepted shortfall649,34/64below25published,24whole syllabi below25.

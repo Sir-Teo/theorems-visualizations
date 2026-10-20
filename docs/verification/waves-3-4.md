@@ -969,3 +969,6 @@ Exact [6981ce3 checkpoint](checkpoint-6981ce3.md) passes2,140default tests inclu
 
 
 INFO's sixteen inputs and the bounded entropy bridge note are [independently accepted](info-independent-peer-2026-10-20.md). Current accepted shortfall665,35/64published collections below25,25whole syllabi below25; sourcequeue remains5. INFO/peer files are later than the2140-test snapshot; the included entropy note has now received independent acceptance.
+
+
+KIN's sixteen inputs and alias-only3.4metadata correction are [independently accepted](kin-crossfield-prerequisite-peer.md), with all49 full item/syllabus lists synchronized. Live shortfall649,34/64published collections below25,24whole syllabi below25. Sourcequeue5 unchanged. This batch is later than6981ce3.

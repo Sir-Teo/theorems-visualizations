@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Isolated complete existing-raster DOM-promotion correctness candidate",
+      "current": "Preserve rejected complete-raster candidate; read-only per-tile index feasibility",
       "owns": [
-        "Isolated helper/model/native/report files only; no production or timing"
+        "Isolated rejected experiment artifacts; read-only GPU feasibility report"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +52,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "Independent KIN prerequisite peer; PHYSIO boundary preserved",
+      "current": "BIOINF genuine prerequisite production; KIN peer complete",
       "owns": [
-        "Unique KIN peer files only"
+        "BIOINF written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -1981,15 +1981,31 @@
       "report": "docs/verification/info-independent-peer-2026-10-20.md",
       "sourceClosure": "None; functions/source flags preserved.",
       "bridgeReview": "Entropy3.14 common-kernel/stationary-reference note independently accepted with actual narrow-theme cards."
+    },
+    {
+      "collection": "kin",
+      "commits": [
+        "ba5f1b2f51dd9828cb457f2f266ee508d0550599",
+        "10c9b97cbe0a6bf13602c034749ca900a3bc6e86"
+      ],
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "arch_source",
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "report": "docs/verification/kin-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; source flags/functions/helpers preserved.",
+      "bridgeReview": "No changed consumer IDs are bridge steps.",
+      "syllabusCorrection": "3.4qchem1.8alias canonicalized to existingwrittenqm4.4; no extraedge."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 665,
-    "publishedBelow25": 35,
+    "publishedShortfall": 649,
+    "publishedBelow25": 34,
     "collections": 64,
-    "wholeSyllabusBelow25": 25,
+    "wholeSyllabusBelow25": 24,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Thirteen further collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING, WAVES, AERO, DEMO, GEOL and INFO. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Fourteen further collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING, WAVES, AERO, DEMO, GEOL, INFO and KIN. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
