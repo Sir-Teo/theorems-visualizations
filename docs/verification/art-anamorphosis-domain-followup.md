@@ -1,0 +1,7 @@
+# ART 2.1 finite forward intersections
+
+A separate closing text boundary qualifies the exact-view equivalence by finite forward ray intersections. The statement and scope now distinguish a parallel ray from an intersection behind the eye. The caption carries the same limitation beside the actual visualization, so endpoint captures do not promise an undistorted complete skull at every offered grazing setting. The central differential scale remains correct; no projection or control changes.
+
+The actual authored skull has minimum intended horizontal coordinate a=−.7200000000000001 after its fixed scale. At the offered8degree angle and default eye distanceL=4, the denominator Lsin(phi)+acos(phi) is−.156300605653669, giving a negative ray parameter. At a=−Ltan(phi)=−.5621633388095658 the intersection is parallel/unbounded. Positive-denominator rays still have the intended finite forward intersection; at the default24degree angle the complete authored horizontal extent is forward. The explicit witness imports the actual skull geometry and independently derives these signs.
+
+The28-file literal guard allows only three complete text fields (statement, scope and the matching visible caption). Every numerical projection, input domain, control, readout, canvas label, trajectory, helper, dependency and source flag is byte-identical. Fresh actual endpoint field/caption/control pixels await the coordinator’s browser/heavy-work release. No algorithm correction or source closure is proposed; independent closing review remains required.

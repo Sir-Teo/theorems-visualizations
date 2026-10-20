@@ -1,0 +1,26 @@
+{
+  "baseline": "408536daef969f3b542f36e5f163cd217032b567",
+  "fields": [
+    {
+      "file": "content/art/ch02.js",
+      "num": "2.1",
+      "field": "statement",
+      "before": "Choose an eye point $E$ and a canvas plane $\\Pi$. To paint an object so that it looks undistorted from $E$, imagine it drawn normally on a picture plane $\\Pi'$ perpendicular to the central line of sight from $E$ and through its intersection with $\\Pi$, and then **project it from $E$ onto $\\Pi$**: each point $P$ of the intended picture is painted where the line $EP$ crosses the canvas.\n\nSeen from $E$, the painted canvas and the intended picture send the eye the same rays, so they look identical. Seen from anywhere else, the painting is a smear: if the line of sight meets the canvas at the angle $\\varphi$, the central local scale along the tilt is $1/\\sin\\varphi$, which is large for a grazing point of view. This is a differential scale at that central intersection; a finite image undergoes a projective warp with position-dependent scale.",
+      "after": "Choose an eye point $E$ and a canvas plane $\\Pi$. To paint an object so that it looks undistorted from $E$, imagine it drawn normally on a picture plane $\\Pi'$ perpendicular to the central line of sight from $E$ and through its intersection with $\\Pi$, and then **project it from $E$ onto $\\Pi$**: each point $P$ of the intended picture is painted where the line $EP$ crosses the canvas.\n\nRequire every intended ray from $E$ to have a finite forward intersection with the canvas. For those rays, the painted canvas and intended picture send the eye the same directions, so they look identical from $E$. A ray parallel to the canvas has no finite intersection, and an intersection behind the eye cannot supply that intended view. Seen from anywhere else, the painting is a smear: if the line of sight meets the canvas at the angle $\\varphi$, the central local scale along the tilt is $1/\\sin\\varphi$, which is large for a grazing point of view. This is a differential scale at that central intersection; a finite image undergoes a projective warp with position-dependent scale."
+    },
+    {
+      "file": "content/art/ch02.js",
+      "num": "2.1",
+      "field": "scope",
+      "before": "Exact for a flat canvas and a single fixed eye; both eyes, and a viewer who knows the trick, soften the effect in practice.",
+      "after": "Exact for a flat canvas, a single fixed eye, and intended rays with finite forward canvas intersections. Extreme offered grazing settings can violate that ray condition and lose part of the intended picture; the projection is exact only on the remaining valid rays. The stated central local scale does not assert a complete finite picture at those settings. Two eyes and a viewer who knows the trick soften the illusion in practice."
+    },
+    {
+      "file": "content/art/ch02.js",
+      "num": "2.1",
+      "field": "caption",
+      "before": "The gold eye is the painter's point, set by the angle and distance sliders; the blue handle in the plan is the viewer. With the viewer on the gold point the retina (right) holds an undistorted skull, even though the canvas (middle) shows a long smear. Drag the viewer away, or press “in front”, and the skull collapses into the smear again.",
+      "after": "The gold eye is the painter's point, set by the angle and distance sliders; the blue handle in the plan is the viewer. When every intended ray has a finite forward canvas intersection, putting the viewer on the gold point gives the undistorted intended skull on the right. Very grazing settings may lose part of the picture through parallel rays or intersections behind the eye; the canvas label is only the central local scale. Drag the viewer away, or press “in front”, and the skull collapses into the smear again."
+    }
+  ]
+}
