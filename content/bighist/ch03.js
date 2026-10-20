@@ -3,10 +3,7 @@
 // Sources checked (Oct 2026):
 //   3.1 Actual Miller1953 report, Johnson2008 fullmain+SOM/TableS1 and NASA CP2276 printed50 audited; see private source report.
 //   3.2 Dated primary claims and bounded original-abstract access; authored ordinal sensitivity matrix. See private audit report.
-//   3.3 Woese & Fox, PNAS 74: 5088 (1977); Woese, Kandler & Wheelis, PNAS 87: 4576 (1990); Moody et al., Nature Ecol. Evol. 8:
-//     1654 (2024) (LUCA about 4.2 Ga; I could not confirm the published interval, so only the central value is used); earlier
-//     clock estimates 3.5–3.8 Ga as summarised in press coverage of that paper; Wilde et al., Nature 409: 175 (2001) (Jack
-//     Hills zircon 4.4 Ga); Walter, Buick & Dunlop, Nature 284: 443 (1980) (Dresser stromatolites, about 3.5 Ga).
+//   3.3 Actual1977/1990 originals and2024dated methods/Fig1 audited; posterior/soft-calibration limits explicit.
 //   3.4 Farquhar, Bao & Thiemens, Science 289: 756 (2000); Bekker et al., Nature 427: 117 (2004); Philippot et al., Nat. Commun.
 //     9: 2245 (2018) (pO2 < 1e-5 PAL before about 2.45 Ga, MIF-S disappearing 2.45–2.31 Ga); Lyons, Reinhard & Planavsky,
 //     Nature 506: 307 (2014). Post-GOE oxygen bands are drawn broad and flagged: published estimates span orders of magnitude.
@@ -20,6 +17,7 @@
 import { clamp } from './ch03.shared.js';
 import millerEvent from './source-audit-miller.js';
 import originsHypothesis from './source-audit-origins.js';
+import lucaEvent from './source-audit-luca.js';
 
 export default {
   collection: 'bighist',
@@ -32,68 +30,7 @@ export default {
     // ───────────────────────────────────────────────────────────────────────────────────── 3.2
     originsHypothesis,
     // ───────────────────────────────────────────────────────────────────────────────────── 3.3
-    {
-      num: '3.3',
-      kind: 'Event',
-      name: 'LUCA and the tree of life',
-      statement: String.raw`All known life shares one genetic code, ribosomes and a core of universal genes, which implies a **last universal common ancestor** (LUCA): a population from which the bacterial and archaeal lineages diverged. Sequence comparison (Woese and Fox, 1977) split living things into Bacteria, Archaea and Eukarya; in the “three-domain” tree Archaea and Eukarya are sister groups, while many recent trees place eukaryotes *inside* the Archaea (a two-domain tree) with their mitochondria coming from a bacterium (3.5).
-
-Molecular-clock dating puts LUCA very early. One 2024 analysis, calibrating duplicated genes with fossils and geochemistry, gives about **4.2 billion years ago**; earlier estimates were 3.5–3.8 billion years. LUCA was not the first life, only the most recent ancestor of everything alive now, and it need not have been a single organism.`,
-      idea: String.raw`Two groups of living species share a common ancestor if their sequences differ by more than chance, and if substitutions accumulate at a roughly known rate $r$ per site per unit time, the age of the split is about $t = d/(2r)$ for a distance $d$. The rate is not constant, so clocks need fossil or geochemical calibration points on the tree; for LUCA there are no fossils on either side, and the only hard limits are the age of the Earth and the oldest accepted traces of life. Gene duplications that predate LUCA let the same calibrations be used twice, which narrows the estimate. The deep branching order is the harder problem: horizontal gene transfer blurs the signal, and which archaeon gave rise to eukaryotes (for example the Asgard group, Spang et al. 2015) is still being resolved.`,
-      caption: String.raw`The tree runs from the oldest time on the left to today. Drag the **LUCA** handle or use the buttons to choose a date; switch between the three-domain and two-domain trees. The dashed lines in the tree are schematic and undated; only the labelled constraints at the bottom are measured ages. The readout checks the date against them.`,
-      deps: ['bighist-3.2', 'popgen-3.9'],
-      see: ['bighist-3.5'],
-      refs: ['Christian'],
-      credit: 'Woese & Fox, 1977 (domains); Moody et al., 2024 (LUCA ≈ 4.2 Ga)',
-      tags: ['tree of life', 'molecular clock'],
-      scope: String.raw`The date is a model result with wide uncertainty; the shape of the deep tree and the root are still debated.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Last_universal_common_ancestor', doi: 'https://doi.org/10.1038/s41559-024-02461-1' },
-      verify: true,
-      viz(v) {
-        const topo = v.select('tree', [{ value: '3', label: 'three domains' }, { value: '2', label: 'two domains' }], '3');
-        const unc = v.slider('± uncertainty (Ga)', 0, 0.6, 0.2, { step: 0.01 });
-        const A = v.stage({ x: [-4.8, 0.45], y: [-0.6, 3.5], axes: false, height: 330, full: true, title: 'the tree of life (schematic branching, one dated node)' });
-        const h = A.handle(-4.2, 1.75, { color: 'accent', label: 'LUCA', constrain: { x: [-4.5, -3.3], y: [1.75, 1.75] } });
-        v.button('Moody et al. 2024: 4.2 Ga', () => h.set(-4.2, 1.75));
-        v.button('earlier clock estimates: 3.65 Ga', () => h.set(-3.65, 1.75));
-        const marks = [[-4.404, 'oldest zircon 4.40 Ga', 'teal'], [-4.5, 'Moon-forming impact ≈ 4.5 Ga', 'muted'], [-3.48, 'Dresser stromatolites ≈ 3.5 Ga', 'green'], [-2.4, 'Great Oxidation ≈ 2.4 Ga', 'orange']];
-        v.render(() => {
-          const T = -h.x, x0 = -T, three = topo.value === '3';
-          for (const g of [-4, -3, -2, -1, 0]) { A.vline(g, { color: 'grid', width: 1 }); A.text(g === 0 ? 'today' : `${-g} Ga`, g, -0.1, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' }); }
-          A.hband(1.75 - 0.0001, 1.75 + 0.0001, { color: 'faint', alpha: 0 });
-          // uncertainty bar on LUCA
-          if (unc.value > 0) { A.line(x0 - unc.value, 1.75, x0 + unc.value, 1.75, { color: 'accent', width: 6, alpha: 0.3 }); }
-          // bacteria on top, archaea middle, eukarya bottom
-          A.path([[x0, 1.75], [x0, 2.9], [0, 2.9]], { color: 'blue', width: 2.6 });
-          const n1 = three ? x0 + 0.22 * T : x0, y1 = three ? 1.0 : 1.75;
-          if (three) {
-            A.path([[x0, 1.75], [x0, 1.0], [n1, 1.0]], { color: 'purple', width: 2.6 });
-            A.path([[n1, 1.0], [n1, 1.5], [0, 1.5]], { color: 'red', width: 2.6 });
-            A.path([[n1, 1.0], [n1, 0.4], [0, 0.4]], { color: 'green', width: 2.6 });
-            A.dot(n1, 1.0, { r: 4, hollow: true, color: 'muted' });
-            A.text('Archaea–Eukarya split, undated', n1 + 0.08, 1.0, { size: 10, color: 'muted', align: 'left', baseline: 'middle', dx: 4 });
-          } else {
-            A.path([[x0, 1.75], [x0, 1.4], [0, 1.4]], { color: 'red', width: 2.6 });
-            const nE = -0.45 * T; // eukaryotes branch from within archaea, schematic
-            A.path([[nE, 1.4], [nE, 0.4], [0, 0.4]], { color: 'green', width: 2.6 });
-            A.dot(nE, 1.4, { r: 4, hollow: true, color: 'muted' });
-            A.text('eukaryotes arise inside Archaea, undated', nE + 0.1, 1.0, { size: 10, color: 'muted', align: 'left', baseline: 'middle' });
-          }
-          // mitochondrion
-          const xm = -2.0; A.arrow(xm, 2.88, xm, 0.45, { color: 'orange', width: 1.4, dash: [4, 3] });
-          A.text('mitochondrion from a bacterium (3.5), undated', xm + 0.06, 2.4, { size: 10, color: 'orange', align: 'left', baseline: 'middle' });
-          A.text('Bacteria', 0.0, 2.9, { size: 11.5, color: 'blue', align: 'right', baseline: 'bottom', dy: -4 });
-          A.text('Archaea', 0.0, three ? 1.5 : 1.4, { size: 11.5, color: 'red', align: 'right', baseline: 'bottom', dy: -4 });
-          A.text('Eukarya', 0.0, 0.4, { size: 11.5, color: 'green', align: 'right', baseline: 'bottom', dy: -4 });
-          // measured constraints
-          marks.forEach(([t, lab, col], k) => { A.line(t, -0.02, t, 3.3, { color: col, width: 1, dash: [3, 4], alpha: 0.7 }); A.text(lab, t + 0.03, 3.4 - 0.2 * k, { size: 10, color: col, align: 'left', baseline: 'middle' }); });
-        });
-        v.readout(() => {
-          const T = -h.x, u = unc.value, ok = T > 3.48 && T < 4.5;
-          return `LUCA at **${v.fix(T, 2)} Ga** (± ${v.fix(u, 2)}): ${v.fix((4.54 - T) * 1000, 0)} Myr after the Earth formed (4.54 Ga), ${v.fix((T - 3.48) * 1000, 0)} Myr before the Dresser stromatolites.\n${ok ? 'Consistent with the fossil limits: life is older than its oldest accepted traces.' : 'Outside the limits.'} The date is a model result; the tree’s branching order is schematic.`;
-        });
-      },
-    },
+    lucaEvent,
     // ───────────────────────────────────────────────────────────────────────────────────── 3.4
     {
       num: '3.4',
