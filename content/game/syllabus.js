@@ -122,8 +122,8 @@ export default {
           pic: 'In a repeated game with vector payoffs, the average payoff is steered toward a convex target set by always playing to separate it from its closest point; the trajectory is drawn entering the set.' },
         { num: '3.11', kind: 'Paper', name: 'Zur Theorie der Gesellschaftsspiele',
           paper: { authors: 'J. v. Neumann', year: 1928, title: 'Zur Theorie der Gesellschaftsspiele', venue: 'Mathematische Annalen 100: 295–320', doi: '10.1007/BF01448847' },
-          introduces: ['game-3.3'], deps: ['game-3.2'], refs: [],
-          pic: 'Play any two-person zero-sum matrix game, matching pennies or a 3 × 3 game you edit: in pure strategies the maxmin and minmax values differ, but once both players may randomize, the lower envelope of one player’s guaranteed payoffs meets the upper envelope of the other’s at a single value, the saddle point von Neumann proved always exists.' },
+          introduces: ['game-3.3'], deps: ['game-3.2', 'game-2.1'], refs: ['von Neumann (1928), §§I–III, especially pp. 305–311; §§IV–V for coalition discussion'],
+          pic: 'Edit a 2 × 2 zero-sum matrix and compare the lower and upper security envelopes using their exact endpoint/intersection candidates; complete optimal probability intervals include pure saddles and flat ties, with replayable matrix edits and probability handles.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

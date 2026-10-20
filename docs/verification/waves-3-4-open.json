@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 161,
+  "remainingFlags": 160,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 12,
+    "game": 11,
     "psych": 14,
     "soc": 16,
     "polsci": 11,
@@ -254,19 +254,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Approachability_(game_theory)"
-      }
-    },
-    {
-      "id": "game-3.11",
-      "file": "content/game/ch03-b.js",
-      "name": "Zur Theorie der Gesellschaftsspiele",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Minimax_theorem"
       }
     },
     {
@@ -3315,7 +3302,8 @@
       "game-4.4",
       "game-4.5",
       "phil-3.7",
-      "psych-3.9"
+      "psych-3.9",
+      "game-3.11"
     ]
   },
   "additionalFollowups": [
@@ -7632,6 +7620,12 @@
       "status": "resolved",
       "report": "docs/verification/psych-loudness-followup.md",
       "note": "Actual Moore author account, Kryter reference definition and dated NBS RMS/SPL source checked; exact nominal versus rounded exponents, coupled model domain and complete digital ratios verified independently. Three math/four native/static and targeted actual-analyser checks pass; no calibrated SPL or perceived doubling claim."
+    },
+    {
+      "id": "game-3.11",
+      "status": "resolved",
+      "report": "docs/verification/game-neumann-followup.md",
+      "note": "Actual1928 \u00a7\u00a7II\u2013III proof/source checked; exact endpoint/intersection envelopes replace sampled extrema and epsilon floor, complete tied optimal sets and strict sparse-safe edit/replay schemas pass4 independent math and4 native groups."
     }
   ]
 }

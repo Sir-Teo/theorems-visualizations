@@ -4,6 +4,7 @@ import {
   solveZS, zsPure, guarantee, ceiling, ZS, copyM, matWindow, matCell, drawMat,
 } from './ch03.shared.js';
 import { FICTITIOUS_GAMES, fictitiousPlay, fictitiousBounds, lpGameCertificate } from './minimax-audit.js';
+import { ENVELOPE_GAMES, validEnvelopeMatrix, twoByTwoEnvelopes } from './minimax-envelope-audit.js';
 
 const clamp = (t, a, b) => Math.min(b, Math.max(a, t));
 const tx = (a) => String(Math.round(a * 1000) / 1000).replace('-', '\\!-');
@@ -296,49 +297,58 @@ The strategy is explicit: at time $t$, with $c_t$ the point of $S$ nearest to $\
       paper: { authors: 'J. v. Neumann', year: 1928, title: 'Zur Theorie der Gesellschaftsspiele', venue: 'Mathematische Annalen 100: 295–320', doi: '10.1007/BF01448847' },
       introduces: ['game-3.3'],
       credit: 'John von Neumann, 1928',
-      statement: String.raw`Von Neumann proved that **every finite two-person zero-sum game has a value in mixed strategies**: for any real matrix $A$ the quantities $\max_x\min_y x^{\mathsf T}Ay$ and $\min_y\max_x x^{\mathsf T}Ay$ over probability vectors are equal (game-3.3). In pure strategies the two security levels of a game can differ, which is the paper's starting point, so a player who must commit to one move is at the mercy of an opponent who guesses it; the cure is to randomise, and the theorem says that with the right mixture the game becomes "determined": neither player gains from knowing the other's *probabilities*. The paper works with the *Gesellschaftsspiel* (parlour game) as a mathematical object, defining strategies, the normal form and the value, and treats zero-sum games of two persons in full; the case of more players it left to later work.`,
-      idea: String.raw`Before 1928 mixed strategies had been used for particular games (Borel's papers from 1921 treated games with few strategies and left the general case open), but nobody had shown that the minimax value exists in general. Von Neumann supplied a proof that was heavy for its day (a topological argument with a function of the strategies, as far as the secondary literature describes it) and, with it, the principle that a rational player's best protection against an opponent who sees through her is *calculated randomness*. Simpler proofs came from Ville (1938) by convexity and from the theorem of the alternative used in von Neumann and Morgenstern's 1944 book; linear programming (game-3.4) later gave algorithms. The paper is also the origin of the matrix and the extensive formulation of games used throughout the rest of this collection (game-3.2 is the pure-strategy shadow of its main result).`,
-      caption: String.raw`A $2\times2$ game you edit: click a cell and move the gold slider (Matching Pennies and a skew game are presets). Right: the row player's guarantee $g(p)=\min_j(p\,a_{1j}+(1-p)\,a_{2j})$ (blue) and the column player's ceiling $h(q)=\max_i(a_{i1}q+a_{i2}(1-q))$ (orange) over their mixing probabilities (the horizontal axis is $p$ for the blue curve, $q$ for the orange one). In pure strategies the best end points $\max(g(0),g(1))$ and $\min(h(0),h(1))$ differ, but the peak of the blue curve and the trough of the orange curve sit at one height, the value $v$: von Neumann's theorem. Drag the handles to read off guarantees, then click presets and edit entries: the two heights agree for every matrix.`,
-      deps: ['game-3.2'],
-      refs: [],
+      statement: String.raw`For a finite two-person zero-sum game with nonempty action sets and real payoff matrix $A$, von Neumann proves equality of the two mixed security levels:
+$$\begin{aligned}\max_{x\in\Delta_m}\min_{y\in\Delta_n}x^{\mathsf T}Ay&=v,\\\min_{y\in\Delta_n}\max_{x\in\Delta_m}x^{\mathsf T}Ay&=v.\end{aligned}$$
+Here $x,y$ are independent probability vectors (game-2.1), the row player maximizes and the column player minimizes expected payoff. Both optimal mixtures exist. A player using an optimal mixture secures the value even when the opponent knows its probabilities; the sampled action is not revealed before the opponent chooses. Pure security levels can differ (game-3.2), but can also coincide at a pure saddle.
+
+The paper's two-player minimax theorem is in §§II–III. §I gives a finite contingent-plan reduction to normal form, including chance through expected payoffs. §§IV–V separately discuss three-player coalitions and higher player counts; these are not the displayed two-player theorem.`,
+      idea: String.raw`In §III, von Neumann extends the bilinear payoff to continuous functions with convex upper level sets in the maximizing variables and convex lower level sets in the minimizing variables, his condition (K). Partial optimization preserves these properties. He then interchanges one maximum and one minimum using interval best-reply sets, semicontinuity and an interval fixed-point argument, and reorders the full sequence of optimization operators.
+
+The modern $2\times2$ illustration has a shorter calculation: $g$ is the lower envelope of two affine lines and $h$ the upper envelope of two affine lines. Between a line intersection and the domain endpoints, each envelope is affine. Its extremum therefore occurs at an endpoint or intersection, with a whole interval of optima possible when a segment is flat. Evaluating these candidates handles pure saddles and ties as well as interior mixtures. The numerical difference shown measures floating-point agreement of these calculations; the general equality is the theorem.`,
+      caption: String.raw`Choose a starting game, click any matrix cell and edit its integer payoff from $-9$ to $9$. Blue is $g(p)=\min_j[p\,a_{1j}+(1-p)\,a_{2j}]$, the row player's guarantee; orange is $h(q)=\max_i[a_{i1}q+a_{i2}(1-q)]$, the column player's ceiling. The common horizontal axis represents $p$ for blue and $q$ for orange. Drag either point or use its probability slider, including when points coincide. The modern calculation evaluates endpoints and line intersections, and reports the complete optimal probability intervals. The constant-game preset shows that neither optimal mixtures nor the location of an extremum need be unique.`,
+      deps: ['game-3.2', 'game-2.1'],
+      refs: ['von Neumann (1928), §§I–III, especially pp. 305–311; §§IV–V for coalition discussion'],
       tags: ['minimax', 'history', 'mixed strategy'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Minimax_theorem' },
-      verify: true,
+      links: { source: 'https://home.uni-leipzig.de/socialcooperationresearch/wp-content/uploads/2020/05/Neumann_Zur_Theorie_der_Gesellschaftsspiele_Mathematische_Annalen_1928_Vol_100__1_295-320.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Minimax_theorem' },
+      verify: false,
       viz(v) {
-        const keys = ['pennies', 'skew', 'saddle2', 'dom'];
-        const PRE = { pennies: { label: 'Matching Pennies', A: [[1, -1], [-1, 1]] }, skew: { label: 'skew game', A: [[2, -3], [-1, 4]] }, saddle2: { label: 'saddle point', A: [[3, 2], [1, 0]] }, dom: { label: 'column 2 dominated', A: [[4, 6], [-2, 5]] } };
-        let A = copyM(PRE.pennies.A), sel = [0, 0];
+        let key = 'pennies', A = copyM(ENVELOPE_GAMES.pennies.A), sel = [0, 0], hp, hq;
         const M = v.stage({ x: [-1.5, 3.9], y: [-1.7, 2.7], equal: true, axes: false, height: 340, weight: 0.9, title: 'a zero-sum game (payoffs to the row player)' });
-        const S = v.stage({ x: [0, 1], y: [-4, 4], axes: 'box', gutter: true, height: 340, weight: 1.2, xlabel: 'mixing probability (p for blue, q for orange)', ylabel: 'payoff to the row player', title: 'both players’ security levels, as functions of the mixture' });
+        const S = v.stage({ x: [-.1, 1.1], y: [-4, 4], axes: 'box', gutter: true, height: 340, weight: 1.2, xlabel: 'p (blue) or q (orange)', ylabel: 'row payoff', xticks: [[0, '0'], [.25, '¼'], [.5, '½'], [.75, '¾'], [1, '1']], title: 'security levels of the two mixtures' });
         const ed = v.slider('gold entry', -9, 9, 1, { int: true, onChange: (x) => { A[sel[0]][sel[1]] = x; } });
-        v.select('game', keys.map((k) => ({ value: k, label: PRE[k].label })), 'pennies', { onChange: (k) => { A = copyM(PRE[k].A); sel = [0, 0]; ed.set(A[0][0]); } });
+        const game = v.select('game', Object.entries(ENVELOPE_GAMES).map(([value, g]) => ({ value, label: g.label })), key, { onChange: (k) => { key = k; A = copyM(ENVELOPE_GAMES[k].A); sel = [0, 0]; ed.set(A[0][0]); } });
         M.onClick((x, y) => { const c = matCell(x, y, 2, 2); if (c) { sel = c; ed.set(A[c[0]][c[1]]); v.invalidate(); } });
-        const hp = S.handle(0.5, 0, { color: 'blue', r: 9, constrain: (x) => [clamp(x, 0, 1), 0] });
-        const hq = S.handle(0.5, 0, { color: 'orange', r: 9, constrain: (x) => [clamp(x, 0, 1), 0] });
+        const pc = v.slider('row probability $p$', 0, 1, .3, { step: .01, onChange: x => hp?.set(x, 0) });
+        const qc = v.slider('column probability $q$', 0, 1, .7, { step: .01, onChange: x => hq?.set(x, 0) });
+        hp = S.handle(.3, 0, { color: 'blue', r: 9, constrain: (x) => [clamp(x, 0, 1), 0], onDrag: h => pc.set(h.x) });
+        hq = S.handle(.7, 0, { color: 'orange', r: 9, constrain: (x) => [clamp(x, 0, 1), 0], onDrag: h => qc.set(h.x) });
+        v.shareState('edited 1928 illustration', {
+          get: () => ({ base: key, A: copyM(A), cell: sel.slice() }),
+          validate: d => !!d && typeof d.base === 'string' && Object.hasOwn(ENVELOPE_GAMES, d.base) && validEnvelopeMatrix(d.A) && Array.isArray(d.cell) && d.cell.length === 2 && [0, 1].every(i => d.cell[i] === 0 || d.cell[i] === 1),
+          set: d => { key = d.base; game.set(key); A = copyM(d.A); sel = d.cell.slice(); ed.set(A[sel[0]][sel[1]]); },
+        });
+        v.legend([{ color: 'blue', label: 'row guarantee $g(p)$' }, { color: 'orange', label: 'column ceiling $h(q)$' }, { color: 'green', label: 'mixed value' }]);
         let info = null;
         v.render(() => {
-          const P = zsPure(A), sol = solveZS(A);
+          const P = zsPure(A), sol = twoByTwoEnvelopes(A);
           const w = matWindow(2, 2); M.setView(w.x, w.y);
           drawMat(M, A, { rowMin: P.rowMin, colMax: P.colMax, sel, rowMinHi: (i) => P.rowMin[i] === P.maxmin, colMaxHi: (j) => P.colMax[j] === P.minmax, mark: (i, j) => (P.saddles.some(([a, b]) => a === i && b === j) ? 'green' : null) });
-          const R = Math.max(2, Math.ceil(Math.max(...A.flat().map(Math.abs))) + 1);
-          S.setView([0, 1], [-R, R]);
-          const g = (p) => Math.min(p * A[0][0] + (1 - p) * A[1][0], p * A[0][1] + (1 - p) * A[1][1]);
-          const h = (q) => Math.max(q * A[0][0] + (1 - q) * A[0][1], q * A[1][0] + (1 - q) * A[1][1]);
-          S.fn(g, { domain: [0, 1], color: 'blue', width: 3.5 }); S.fn(h, { domain: [0, 1], color: 'orange', width: 3.5 });
-          S.hline(sol.v, { color: 'green', dash: true, width: 2 });
-          S.dot(sol.x[0], sol.v, { r: 7, color: 'blue', hollow: true }); S.dot(sol.y[0], sol.v, { r: 7, color: 'orange', hollow: true });
+          const R = Math.max(2, Math.ceil(Math.max(...A.flat().map(Math.abs))) + 2);
+          S.setView([-.1, 1.1], [-R, R]);
+          const g = sol.guarantee, h = sol.ceiling;
+          S.path(sol.rowCurve, { color: 'blue', width: 3.5 }); S.path(sol.columnCurve, { color: 'orange', width: 3.5 });
+          S.hline(sol.value, { color: 'green', dash: true, width: 2 });
+          for (const [range, y, color] of [[sol.pOptimal, sol.lower, 'blue'], [sol.qOptimal, sol.upper, 'orange']]) if (range[0] < range[1]) S.line(range[0], y, range[1], y, { color, width: 7, alpha: .4 });
+          S.dot(sol.p, g(sol.p), { r: 7, color: 'blue', hollow: true }); S.dot(sol.q, h(sol.q), { r: 7, color: 'orange', hollow: true });
           const p = hp.x, q = hq.x; hp.set(p, g(p)); hq.set(q, h(q));
           // pure end points
           S.dot(0, g(0), { r: 4, color: 'blue' }); S.dot(1, g(1), { r: 4, color: 'blue' }); S.dot(0, h(0), { r: 4, color: 'orange' }); S.dot(1, h(1), { r: 4, color: 'orange' });
-          const gm = Math.max(g(0), g(1)), hm = Math.min(h(0), h(1));
-          // best of g on a fine grid, and worst of h
-          let G = -Infinity, H = Infinity; for (let k = 0; k <= 2000; k++) { G = Math.max(G, g(k / 2000)); H = Math.min(H, h(k / 2000)); }
-          info = { p, q, gp: g(p), hq: h(q), gm, hm, G, H, v: sol.v, P };
+          info = { A: copyM(A), sel: sel.slice(), p, q, gp: g(p), hq: h(q), sol, P };
         });
         v.readout(() => {
           if (!info) return '';
-          const { p, q, gp, hq: hh, gm, hm, G, H, P } = info;
-          return `pure strategies: $\\underline v=${tx(P.maxmin)}$ (blue end points), $\\overline v=${tx(P.minmax)}$ (orange end points)${P.maxmin < P.minmax ? ' — they differ' : ' — a saddle point'}\nmixed: $\\max_p g(p)=${v.fix(G, 4)}$ and $\\min_q h(q)=${v.fix(H, 4)}$ agree (difference $${v.sci(Math.abs(G - H) + 1e-16, 1)}$); your handles: $g(${v.fix(p, 2)})=${tx(gp)}$, $h(${v.fix(q, 2)})=${tx(hh)}$\nThe 1928 theorem asserts $\\max_p g=\\min_q h$ for every finite matrix; here it is checked on a grid for the game shown.`;
+          const { p, q, gp, hq: hh, sol, P } = info, interval = r => r[0] === r[1] ? `\\{${v.fix(r[0], 6)}\\}` : `[${v.fix(r[0], 6)}, ${v.fix(r[1], 6)}]`, diff = sol.difference === 0 ? '0' : v.sci(sol.difference, 2);
+          return `Pure security levels: $\\underline v=${tx(P.maxmin)}$, $\\overline v=${tx(P.minmax)}$${P.maxmin < P.minmax ? ' — a positive pure gap' : ' — a pure saddle exists'}.\nAnalytic candidates: $\\max g\\approx${v.fix(sol.lower, 6)}$, $\\min h\\approx${v.fix(sol.upper, 6)}$. Floating-point difference $${diff}$ (${sol.difference <= sol.tolerance ? 'within' : 'outside'} tolerance $${v.sci(sol.tolerance, 1)}$).\nOptimal probability sets (decimal approximations): $p\\in${interval(sol.pOptimal)}$, $q\\in${interval(sol.qOptimal)}$. Your points: $g(${v.fix(p, 3)})=${v.fix(gp, 6)}$, $h(${v.fix(q, 3)})=${v.fix(hh, 6)}$.`;
         });
       },
     },
