@@ -1,3 +1,4 @@
+import { blindMask, maskBackground, imageIndex } from './source-audit-patterns.js';
 import { cornsweet, anchors, fading } from './source-audit-lightness.js';
 // Psychology & Perception — Chapter 4: Early vision (items 4.11–4.14)
 import { grey, clamp01, logistic, smooth01, logTicks, BLIND } from './ch04.shared.js';
@@ -56,51 +57,26 @@ Full local weighting removes the illumination multiplier within each framework, 
     },
     // ------------------------------------------------------------------ 4.13
     {
-      num: '4.13',
-      kind: 'Phenomenon',
-      name: 'The blind spot and perceptual filling-in',
-      statement: String.raw`Each eye has a region, the **optic disc**, where the optic nerve leaves the retina and there are no photoreceptors. It lies about $15^\circ$ toward the nose from the fovea, so in the visual field it is about $12$–$15^\circ$ to the temporal side of fixation, roughly $5^\circ$ wide and $7^\circ$ high. A small object falling entirely inside it cannot be seen, yet we do not see a hole: the region is **filled in** with the surrounding colour, texture or line, so that a line crossing it looks continuous. Seeing with the hole filled is done by the brain, not by the eye.`,
-      idea: String.raw`The retinal image has no information at the disc, and the other eye usually covers it. The visual system infers the content of a missing area from its surroundings (a continuation of edges, textures and colour, as for natural images), so what is "seen" there is a guess based on the neighbouring surface. Because filling-in uses the surround, objects larger than the disc are only partly erased and a small object lying across the disc's edge appears as a crescent. Mariotte first described the blind spot in 1668.`,
-      caption: String.raw`**Top:** the visual field of your right eye (cover the left, fix your gaze on the red cross) with the blind spot outlined. Drag the **gold** dot into the outlined ellipse and change its size, or switch the eye. **Bottom:** what the model says you perceive: the region of the blind spot is filled with the surround's pattern, and the dot (if any of it is visible) is cut off at the edge of the hole. To try it for real, put the page at arm's length, cover the left eye, look at the cross and slide your head closer or farther until the dot vanishes. The size and position of the ellipse are typical textbook values and vary between people; you can calibrate them from the point where the dot vanishes.`,
-      deps: ['psych-4.1'],
-      refs: ['Goldstein ch. 2'],
-      tags: ['blind spot', 'filling-in', 'optic disc'],
-      credit: 'Edme Mariotte, 1668 (blind spot); Ramachandran & Gregory, 1991, Nature 350: 699–702 (filling-in of artificial scotomas)',
-      scope: String.raw`The size and position vary between people and with the measurement method (horizontal diameter estimates range from about 3° to 7°); the pattern completion depends on the pattern: smooth lines and textures fill well, while complex or large patterns may not.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Blind_spot_(vision)' },
-      verify: true,
-      viz(v) {
-        const eye = v.select('Eye', [{ value: 'R', label: 'right eye' }, { value: 'L', label: 'left eye' }], 'R');
-        const pat = v.select('Surround', [{ value: 'plain', label: 'plain' }, { value: 'stripes', label: 'stripes' }, { value: 'line', label: 'line' }, { value: 'color', label: 'colour' }], 'stripes');
-        const rd = v.slider('dot radius (degrees)', 0.4, 6, 1.5, { step: 0.05 });
-        const FX = [-12, 30], FY = [-16, 16];
-        const top = v.stage({ x: FX, y: FY, equal: true, axes: false, height: 290, weight: 1.4, minWidth: 340, title: 'the screen' });
-        const bot = v.stage({ x: FX, y: FY, equal: true, axes: false, height: 290, weight: 1.4, minWidth: 340, title: 'what you perceive (model)' });
-        const hd = top.handle(15.5, -1.5, { color: 'gold', r: 7, label: 'dot', labelPos: 'n' });
-        const bx = () => (eye.value === 'R' ? BLIND.x : -BLIND.x);
-        const bg = (x, y, p) => {
-          if (p === 'plain') return [205, 205, 195];
-          if (p === 'stripes') return Math.floor((x + 100) / 1.6) % 2 === 0 ? [215, 215, 205] : [90, 100, 130];
-          if (p === 'line') return Math.abs(y - BLIND.y) < 0.45 ? [30, 30, 40] : [215, 215, 205];
-          return [60 + 20 * Math.sin(x / 6), 150 + 40 * Math.sin(y / 5), 90 + 20 * Math.cos(x / 9)];
-        };
-        const inHole = (x, y) => ((x - bx()) / BLIND.rx) ** 2 + ((y - BLIND.y) / BLIND.ry) ** 2 <= 1;
-        let info = null;
-        v.render(() => {
-          const p = pat.value, r = rd.value, dx = hd.x, dy = hd.y;
-          const isDot = (x, y) => (x - dx) ** 2 + (y - dy) ** 2 <= r * r;
-          top.raster((x, y) => [...(isDot(x, y) ? [20, 20, 20] : bg(x, y, p)), 1], { res: 3, key: `T${p}|${dx.toFixed(2)}|${dy.toFixed(2)}|${r}|${eye.value}` });
-          bot.raster((x, y) => [...(inHole(x, y) ? bg(x, y, p) : isDot(x, y) ? [20, 20, 20] : bg(x, y, p)), 1], { res: 3, key: `B${p}|${dx.toFixed(2)}|${dy.toFixed(2)}|${r}|${eye.value}` });
-          const bxv = bx();
-          top.curve((t) => [bxv + BLIND.rx * Math.cos(t), BLIND.y + BLIND.ry * Math.sin(t)], 0, 2 * Math.PI, { color: 'red', width: 2, dash: [5, 4] });
-          const cross = (s) => { s.line(-1, 0, 1, 0, { color: 'red', width: 2.5 }); s.line(0, -1, 0, 1, { color: 'red', width: 2.5 }); };
-          cross(top); cross(bot);
-          top.text(eye.value === 'R' ? 'cover the left eye, fix the red cross' : 'cover the right eye, fix the red cross', 9, 14, { align: 'center', size: 11.5, color: 'ink', plate: true });
-          let inside = 0, tot = 0;
-          for (let a = -r; a <= r; a += r / 12) for (let b = -r; b <= r; b += r / 12) if (a * a + b * b <= r * r) { tot++; if (inHole(dx + a, dy + b)) inside++; }
-          info = { f: inside / tot, ecc: Math.hypot(dx, dy) };
-        });
-        v.readout(() => info ? `Dot at ${v.fix(info.ecc, 1)}° from fixation · **${v.fix(100 * info.f, 0)}%** of it lies inside the blind spot${info.f > 0.999 ? ' — **invisible**; the hole is filled with the surround' : info.f > 0 ? ' — partly visible (the dot is larger than the hole, or straddles its edge)' : ''}` : '');
+      num:'4.13',kind:'Phenomenon',name:'The blind spot and perceptual filling-in',
+      statement:String.raw`The optic disc, where the optic nerve leaves the eye, has no photoreceptors. Its corresponding blind spot lies on the temporal side of each eye's visual field: right of fixation for the right eye, left for the left eye. Monocular viewing normally does not reveal a blank hole, and suitable surrounding patterns can appear continuous across it.
+
+The absence of local retinal input does not by itself settle the neural mechanism of that appearance. Awater and colleagues (2005) tested passive cortical remapping and found no supporting remapping in the early visual areas they measured. Chen and colleagues (2017) measured individual blind-spot boundaries and showed perceptual rivalry between competing filled-in patterns. A unique literal background-copy mechanism is not established by these results.`,
+      idea:String.raw`This is an **authored geometric mask**, not a neural simulation. The ellipse is centered15.5 model units to the temporal side and1.5 below fixation, with semiaxes2.75 and3.75. Switching eyes mirrors the ellipse and dot across fixation. Define $\xi=(x-b_x)/2.75$ and $\eta=(y+1.5)/3.75$. A point is masked when
+$$\xi^2+\eta^2\le1.$$
+The top image contains a dark dot; the bottom replaces masked dot cells with the specified background. Background color, stripe continuation and line continuation are prescribed by the author rather than inferred from visual evidence.
+
+A240×144 lattice with cell spacing0.25 defines both drawings. The readout counts dot cell centers and those also inside the ellipse. Screen rasterization samples that lattice at display resolution. These exact finite counts are not circle-overlap area, percentage of an observer's target lost, or a declaration that a real target is invisible.`,
+      caption:String.raw`Choose the modeled eye and background. Move the gold handle or the temporal-position and vertical-position sliders; both control the same dot. Temporal distance is positive toward the modeled eye's blind spot, so changing eye mirrors the whole construction. Both mirrored masks and complete dot extents remain visible. The bottom panel is explicitly the output of this replacement rule.
+
+The red cross is a fixation reference. The model units are not calibrated visual angles, and the drawn ellipse is not a measurement of your own eye. The cited experiments measured individual boundaries under controlled viewing conditions; a fixed on-screen ellipse cannot replace that procedure.`,
+      deps:['psych-4.1'],refs:['Awater, Kerlin, Evans and Tong (2005), introduction, methods, results and discussion','Chen, Maus, Whitney and Denison (2017), blind-spot measurement, results/Figure4 and filling-in rivalry'],tags:['blind spot','filling-in','optic disc'],
+      credit:'Awater et al. (2005), J. Neurophysiol.94:3314–3324; Chen et al. (2017), Journal of Vision17(1):8, DOI10.1167/17.1.8; finite geometric illustration authored here',
+      scope:String.raw`Ellipse dimensions, circular dot, sampling lattice, gray/color values and background replacement are authored. The coordinates are model units, not measured degrees. Individual blind-spot shape, boundary estimates and appearance depend on the observer and method. Natural blind spots, artificial scotomas and cortical mechanisms are not treated as interchangeable. No unread Mariotte1668 priority claim, calibration promise, exact continuous area fraction or universal filling-in prediction is made.`,
+      links:{source:'https://pmc.ncbi.nlm.nih.gov/articles/PMC1401501/',experiment:'https://pmc.ncbi.nlm.nih.gov/articles/PMC5256469/'},verify:true,
+      viz(v){
+        const eye=v.select('modeled eye',[{value:'R',label:'right eye'},{value:'L',label:'left eye'}],'R'),pattern=v.select('specified background',[{value:'plain',label:'plain'},{value:'stripes',label:'stripes'},{value:'line',label:'line'},{value:'color',label:'colour'}],'stripes'),x=v.slider('temporal dot position',0,22,15.5,{step:'any',decimals:6}),y=v.slider('vertical dot position',-9,9,-1.5,{step:'any',decimals:6}),radius=v.slider('dot radius (model units)',.4,6,1.5,{step:'any',decimals:6}),opts={x:[-30,30],y:[-18,18],equal:true,axes:false,height:300,minWidth:260},A=v.stage({...opts,title:'authored input and mask outline'}),B=v.stage({...opts,title:'geometric replacement output'}),h=A.handle(15.5,-1.5,{color:'gold',r:6,constrain:(xx,yy)=>[(eye.value==='R'?1:-1)*v.M.clamp((eye.value==='R'?1:-1)*xx,0,22),v.M.clamp(yy,-9,9)],onDrag:h=>{x.set((eye.value==='R'?1:-1)*h.x);y.set(h.y);}});let info,last,key;
+        v.render(()=>{const k=JSON.stringify([eye.value,pattern.value,x.value,y.value,radius.value]);if(k!==key){last=blindMask(eye.value,pattern.value,x.value,y.value,radius.value);key=k;}const p=last;h.set(p.x,p.y);for(const[S,replacement]of[[A,false],[B,true]]){S.raster((xx,yy)=>{if(xx<-30||xx>30||yy<-18||yy>18)return null;const i=imageIndex(xx+30,yy+18,p.nx,p.ny,p.spacing),dot=p.input[i]&&!(replacement&&p.erased[i]);return[...(dot?[20,20,20]:maskBackground(-30+(i%p.nx+.5)*p.spacing,-18+(Math.floor(i/p.nx)+.5)*p.spacing,p.pattern,p.eye)),1];},{res:2,key:(replacement?'B':'A')+key});S.line(-1,0,1,0,{color:'red',width:2});S.line(0,-1,0,1,{color:'red',width:2});}A.path(p.ellipse,{color:'red',dash:[4,4],width:1.5});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `${p.eye==='R'?'Right':'Left'}-eye geometric mask; dot center(${v.fix(p.x,6)}, ${v.fix(p.y,6)}), radius ${v.fix(p.radius,6)} model units. ${p.dotSamples} dot cell centers; ${p.maskedSamples} replaced inside the ellipse; ${p.remainingSamples} retain the dark dot. Finite cell counts, not an area fraction or a prediction of your visibility.`;});
       },
     },
     // ------------------------------------------------------------------ 4.14
