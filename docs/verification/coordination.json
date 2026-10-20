@@ -24,7 +24,7 @@
       "Accepted prerequisite shortfall112;8/64 published collections and4 whole syllabi below target;40 further collections meet25 written inputs. Source queue5 unchanged.",
       "Latest immutable checkpoint10 on573ea1b passes2199 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Private atlas guard passes bounded tiny155/source readiness. First independently reset full-map attempt stopped on unexpected original transfer draw before alternate opened; all raw/history evidence preserved, no timing. Callback provenance under read-only review.",
+      "Private source/tiny fixed-quiescence successor passes independent review; full-map original-only attempt still stops on late normal400 Newsreader loading during transfer. Callback provenance captured; all raw/history retained, alternate/timing unrun.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -333,7 +333,7 @@
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
@@ -1440,7 +1440,7 @@
     {
       "id": "algo-5.18-upper-bound-and-retry",
       "status": "closed",
-      "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
+      "finding": "Concrete modp hashfamily need not attain displayed expectation2n\u22121; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
       "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap.",
       "commits": [
         "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
@@ -1454,7 +1454,7 @@
       "id": "imaging-2.9-singular-energies-and-log-dose",
       "status": "closed",
       "owner": "ctrl_prereqs",
-      "finding": "Energydomains overlap40–80:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
+      "finding": "Energydomains overlap40\u201380:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
       "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent.",
       "candidate": "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
       "peer": "arch_source",
@@ -2332,7 +2332,7 @@
       "producer": "arch_source",
       "peer": "ctrl_prereqs",
       "report": "docs/verification/astro-crossfield-prerequisite-peer.md",
-      "followup": "Twenty-one genuine mathinputs. Ωsign/strictJordanthreshold, orbitalperiod units, retainedquadraticAMD, radiation-adjustedcircularreference andfiveorders prose corrected;12equivalentwraps andoneexistingrowbackfill. Full48objects/functions/flags/helpers/rawlists,5995independentchecks andfresh88fullfieldpixels pass;4shortfall remains.",
+      "followup": "Twenty-one genuine mathinputs. \u03a9sign/strictJordanthreshold, orbitalperiod units, retainedquadraticAMD, radiation-adjustedcircularreference andfiveorders prose corrected;12equivalentwraps andoneexistingrowbackfill. Full48objects/functions/flags/helpers/rawlists,5995independentchecks andfresh88fullfieldpixels pass;4shortfall remains.",
       "sourceClosure": "None; original source flags preserved.",
       "bridgeReview": "No affected bridge steps."
     },
@@ -2642,7 +2642,7 @@
       "owns": [
         "content/ling/**",
         "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
-        "Only BIGHIST3.1–3.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
+        "Only BIGHIST3.1\u20133.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
@@ -2787,6 +2787,19 @@
       "postCaptureEvents": 259,
       "transportPieces": 495,
       "limitation": "One unexpected draw plus85 request/upload/returns and2clears retained. Direct-Canvas numeric bound passes but cannot override failed history. No alternate, matrix, lifecycle, production or timing acceptance. All holds released."
+    },
+    {
+      "candidate": "cc2ee1d56a0d29b51dbe9a17a0e85dc5136d6b1f",
+      "status": "stopped-original-only-despite-fixed-quiet",
+      "report": "docs/verification/map-paired-quiescent-state-stopped.md",
+      "evidence": "/tmp/atlas-root-paired-quiescent-state",
+      "method": "One newly reviewed protocol case, six worker browser/heavy holds; fixed quiet48\u219248 passed but late Newsreader normal400 loadingdone caused original callbacks/clear/coalesced draw during raw transfer. Alternate never opened.",
+      "traceEvents": 7493,
+      "postCaptureEvents": 259,
+      "postCaptureCallbacks": 8,
+      "mainSHA256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+      "transportPieces": 498,
+      "limitation": "Main saved bytes stable and direct-Canvas numeric bound passes; strict post-history gate fails. No alternate/matrix/lifecycle/production/timing acceptance. All holds released."
     }
   ],
   "accountingSafeguards": [
@@ -2834,6 +2847,13 @@
       "status": "accepted-bounded-tiny-and-source-readiness",
       "report": "docs/verification/map-paired-tiny-independent-peer.md",
       "scope": "Symmetric guarded atlas, genuine reset preserving original owners, actual GPU initialization/upload-content observation, bounded state-preserving reads and partial-failure persistence pass independent tiny155 witnesses. Final source readiness includes exact inherited resource/dimension and original stability gates. No full-map or alternate-binding acceptance."
+    },
+    {
+      "candidate": "fcc8a8d3839d788185a51b5fec15b4ebbb3cea47",
+      "peer": "b320de933db580fa3aefbe81ee35a3cb038032b9",
+      "status": "accepted-bounded-fixed-preparation-source-and-tiny",
+      "report": "docs/verification/map-quiescence-independent-peer.md",
+      "scope": "Actual callback wrappers preserve calls/order; fixed actual-face load/drain/quiet has no retry; resource histories classify original/optional before reserve with independently accumulated original peaks and raw global caps. Source/models/fresh tiny pass; no full-map or timing acceptance."
     }
   ]
 }

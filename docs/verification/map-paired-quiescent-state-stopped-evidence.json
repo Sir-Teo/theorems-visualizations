@@ -1,0 +1,123 @@
+{
+  "testedCommit": "cc2ee1d56a0d29b51dbe9a17a0e85dc5136d6b1f",
+  "audit": [
+    {
+      "status": "stopped-unaccepted",
+      "variant": "original-only",
+      "actualFrames": 12,
+      "mainRawBytes": 514129920,
+      "mainSHA256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+      "mainOrdinalsByteIdentical": true,
+      "transportPieces": 498,
+      "transportBytes": 520407140,
+      "traceEvents": 7493,
+      "resetAt": 4904,
+      "postCaptureEvents": 259,
+      "postCaptureTypes": {
+        "atlas-clear": 2,
+        "draw-begin": 1,
+        "request-begin": 85,
+        "atlas-upload": 85,
+        "request-end": 85,
+        "draw-end": 1
+      },
+      "directCanvas": {
+        "width": 7680,
+        "height": 4184,
+        "mean": 0.4882011249867219,
+        "changed": 0.0020204076043658383,
+        "mask": "none; all RGB channels of full map-page screenshots"
+      },
+      "alternateOpened": false,
+      "physicalMemoryCapClaim": false
+    },
+    {
+      "fixedPreparationPassed": true,
+      "quietStart": 48,
+      "quietEnd": 48,
+      "postCallbackKinds": [
+        "font-event",
+        "font-event",
+        "graph-fonts",
+        "map-draw-request",
+        "scene-onFonts",
+        "map-draw-request",
+        "map-RAF-entry",
+        "scene-draw-entry"
+      ],
+      "lateLoadedFace": {
+        "family": "Newsreader",
+        "style": "normal",
+        "weight": "400",
+        "stretch": "normal",
+        "status": "loaded"
+      },
+      "logicalLedgerEvents": 447,
+      "independentOriginalPeak": 54599720,
+      "decision": "stopped-original-only; no alternate or timing acceptance"
+    }
+  ],
+  "evidenceRoot": "/tmp/atlas-root-paired-quiescent-state",
+  "files": [
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/prepared.json",
+      "bytes": 7329,
+      "sha256": "faf20cc13245ba5b66a5d647c51400b73ab2ceb0515ca0c9c4d0ca210487bcbb"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/failure.json",
+      "bytes": 14604098,
+      "sha256": "d3fa57d2ce721031c3b3e92a677dcba97c0f89dd786453d1e52457aa17a6d9fc"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/pending.json",
+      "bytes": 14603867,
+      "sha256": "306bf8aaf5ca3a7df9c04429d0a5b0ea85d3bf69a73db1cdb8d841a4d2468c2a"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/original/metadata.json",
+      "bytes": 6277220,
+      "sha256": "bd829749f86c6990af78f5bc3e59a27a34d7092a91c63ae74ec743ffa862838a"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/original/post-capture-events.json",
+      "bytes": 131857,
+      "sha256": "748bb6a7283864cb585ea886f27de926cb3913e7af6234eb99f240b758746aaa"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/original/post-capture-callbacks.json",
+      "bytes": 2598,
+      "sha256": "df8a6dfe7d87cbe37d0f90c224f75f9494511ea64f62aadf33761855b7fbf188"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/original/direct-difference.json",
+      "bytes": 168,
+      "sha256": "636fedcc3debb4a6bb0109dc854652f0a1f4a8432da6559d4e9840d2d4fd1579"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state.log",
+      "bytes": 383,
+      "sha256": "52d443db9e3b532cf9e1e1e50a32c95b3429e74ee47d0472c191b8cf5fd00947"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state-audit.jsonl",
+      "bytes": 1112,
+      "sha256": "a729440862a7ad4e8181406b8bee84a17c8da1c87d1710ef076a9877a41b4c5a"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/original/history-A1-comparison.json",
+      "bytes": 378,
+      "sha256": "b1b6feec17068432b27c185aa397b1f2aef257b36d95971cd644fe5636022261"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/original/history-A2-comparison.json",
+      "bytes": 378,
+      "sha256": "b1b6feec17068432b27c185aa397b1f2aef257b36d95971cd644fe5636022261"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-quiescent-state/original/history-A3-comparison.json",
+      "bytes": 378,
+      "sha256": "b1b6feec17068432b27c185aa397b1f2aef257b36d95971cd644fe5636022261"
+    }
+  ]
+}
