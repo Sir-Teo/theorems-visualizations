@@ -1,6 +1,6 @@
 # ODE reciprocal-integrability independent peer
 
-The mathematical one-literal correction in exact `8a753f675c8816904a31bb1b55de185068c0e2f2` is independently accepted. **The inherited statement layout remains open**, so this report does not claim a complete native text gate or authorize source closure.
+The mathematical one-literal correction in exact `8a753f675c8816904a31bb1b55de185068c0e2f2` and equivalent-wrap successor `4326c18b833e8498c557842573e2a67613c06e7a` are independently accepted. The initial statement-layout blocker is preserved below as historical evidence and closed by the final addendum. No source closure is implied.
 
 Independent parent/final immutable archives are `/tmp/atlas-ctrl-ode-integrability-peer/{baseline,final}`. Every ODE source file is byte-identical except exactly: `when $1/h$ is not integrable there (1.15)` → `when $1/h$ has a finite one-sided integral there (1.15)`. Whole-object reconstruction additionally passes all **66 objects / 66 functions**, flags, dependency lists, helper/metadata files and the entire raw syllabus. No other source change or runtime audit is part of this correction.
 
@@ -13,3 +13,13 @@ Fresh final strict build passes **0 errors / 0 warnings**, home **113,152 bytes 
 Evidence: `guard-math.log`, `build.log`, `static.log`, `native.log`, `pixels/{bounds,issues}.json` and all six PNGs under `/tmp/atlas-ctrl-ode-integrability-peer`. The native utility intentionally asserts the full text gate and exits nonzero for the two inherited statement-overflow cases; proof overflow and TeX error arrays are empty. No unchanged visualization/control histories are audited, as requested. All browser/server jobs are closed.
 
 Peer-only reproducible utilities: `verification-ode-integrability-independent-peer.mjs <parent archive> <candidate archive>` and `ODE_INTEGRABILITY_PEER_OUTPUT=<own pixels> node tests/verification-ode-integrability-independent-peer-native.mjs <candidate archive>`. No global files or source flags are changed.
+
+## Closing equivalent-wrap peer
+
+**Combined accepted**: the exact 8a753f67 correction plus coordinator equivalent-wrap successor `4326c18b`. This addendum closes the inherited layout issue recorded above; its earlier failing evidence remains intact.
+
+Independent final archive: `/tmp/atlas-ctrl-ode-integrability-peer/wrapped`. The successor changes only the long display into five gathered rows. `verification-ode-integrability-wrap-peer.mjs` compares every ODE source file and all66 complete objects/functions against the 8a753f67 archive, allowing only the exact statement-substring manifest. Every ordered non-layout mathematical/prose token is identical; all other flags, helper/metadata bytes, dependency lists and raw syllabus remain exact. The earlier271 waiting/integral checks still apply unchanged.
+
+Fresh strict build/static again pass0errors/0warnings. Fresh actual built320px light/dark statement, proof and controlled253px proof captures all pass text-Range/display/container bounds and TeX checks: **six complete fields**, all personally inspected. Both halves of the integral equivalence are now visible in the actual statement, and the corrected one-sided-integral sentence remains visible at both proof widths. The native utility now exits successfully with an empty issues array. No unchanged runtime/control audit was added. Browser/server jobs are closed.
+
+Closing evidence under the same own directory: `wrap-guard.log`, `wrap-build.log`, `wrap-static.log`, `wrap-native.log`, `wrap-pixels/{bounds,issues}.json` and all six PNGs. Acceptance is confined to the literal mathematical correction and equivalent statement layout; no source flag closure or new prerequisite credit is implied.
