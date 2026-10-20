@@ -1,5 +1,5 @@
 // Check the master-plan connection quota without manufacturing prerequisites to fill it.
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadAll, ROOT } from './lib.mjs';
@@ -30,8 +30,31 @@ export function crossFieldInventory(atlas, target = 25) {
     wholeSyllabusBelowTarget: entries.filter(e => e.wholeSyllabus < target).length, entries };
 }
 
+// Accepted accounting must not silently adopt a frozen candidate or erase its record.
+export function acceptedCrossFieldInventory(atlas, acceptance, target = 25) {
+  const all = new Map([...atlas.items, ...atlas.planned].map(item => [item.id, item]));
+  const excluded = new Map();
+  for (const edge of acceptance?.excludedUnacceptedEdges || []) {
+    const item = all.get(edge.item), key = `${edge.item}>${edge.prerequisite}`;
+    if (!item?.deps?.includes(edge.prerequisite) || !all.has(edge.prerequisite)) throw new Error(`Stale or unknown accepted-inventory exclusion: ${key}`);
+    if (excluded.has(key)) throw new Error(`Duplicate accepted-inventory exclusion: ${key}`);
+    excluded.set(key, true);
+  }
+  const filter = item => ({ ...item, deps: item.deps?.filter(id => !excluded.has(`${item.id}>${id}`)) });
+  const report = crossFieldInventory({ ...atlas, items: atlas.items.map(filter), planned: atlas.planned.map(filter) }, target);
+  if (acceptance) report.acceptance = structuredClone(acceptance);
+  return report;
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const report = crossFieldInventory(await loadAll());
-  await writeFile(join(ROOT, 'docs/verification/cross-field-dependencies.json'), JSON.stringify(report, null, 2) + '\n');
-  console.log(`${report.publishedBelowTarget}/${report.collections} non-math collections below ${report.target} published cross-field edges; ${report.wholeSyllabusBelowTarget} remain below target even including planned chapters. No dependencies changed.`);
+  const atlas = await loadAll();
+  if (process.argv.includes('--raw')) {
+    console.log(JSON.stringify(crossFieldInventory(atlas), null, 2));
+  } else {
+    const path = join(ROOT, 'docs/verification/cross-field-dependencies.json');
+    const previous = JSON.parse(await readFile(path, 'utf8'));
+    const report = acceptedCrossFieldInventory(atlas, previous.acceptance);
+    await writeFile(path, JSON.stringify(report, null, 2) + '\n');
+    console.log(`${report.publishedBelowTarget}/${report.collections} non-math collections below ${report.target} published cross-field edges; ${report.wholeSyllabusBelowTarget} remain below target even including planned chapters. Acceptance metadata and explicit exclusions preserved; no dependencies changed.`);
+  }
 }

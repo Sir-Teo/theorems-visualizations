@@ -14,7 +14,7 @@ same-field links between collections do not count. Missing IDs are reported sepa
 This distinction prevents an unwritten prerequisite from being presented as currently
 available to a reader.
 
-`node scripts/audit-cross-field-deps.mjs` generates a raw code inventory, which includes unaccepted candidate edges. Apply the documented accepted-edge exclusion before replacing this central accepted inventory. Run
+`node scripts/audit-cross-field-deps.mjs` regenerates this inventory while preserving acceptance metadata and explicitly recorded exclusions. Stale, unknown or duplicate exclusions fail instead of silently changing the ledger. `--raw` emits the full code inventory to stdout without writing this file. Neither mode independently accepts prerequisite arguments. Run
 `node --test tests/cross-field-deps.test.mjs` for its counting regression. The test
 covers duplicate edges, planned availability, same-field collections and missing IDs.
 
