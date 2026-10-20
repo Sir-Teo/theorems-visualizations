@@ -579,6 +579,16 @@
         "docs/verification/tech-clockdrives-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "polsci-5.9"
+      ],
+      "peer": "coordinator independent original/author-correction/math/native review and saved-state repair",
+      "reports": [
+        "docs/verification/polsci-swing-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -591,7 +601,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 71,
+  "currentPendingSourceReviews": 70,
   "latestCheckpoint": {
     "acceptedContentCommit": "04ab914",
     "pendingSourceReviews": 85,

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 71,
+  "remainingFlags": 70,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "game": 2,
-    "polsci": 3,
+    "polsci": 2,
     "music": 2,
     "art": 9,
     "arch": 9,
@@ -245,20 +245,6 @@
       "refs": [
         "Shepsle: group decisions",
         "Page and Shapiro (1992), The Rational Public"
-      ],
-      "links": {}
-    },
-    {
-      "id": "polsci-5.9",
-      "file": "content/polsci/ch05-b.js",
-      "name": "The swing voter’s curse",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Shepsle: voting and turnout",
-        "Feddersen and Pesendorfer (1996), American Economic Review 86: 408–424"
       ],
       "links": {}
     },
@@ -1903,7 +1889,8 @@
       "music-8.6",
       "tech-5.4",
       "tech-5.5",
-      "tech-5.7"
+      "tech-5.7",
+      "polsci-5.9"
     ]
   },
   "additionalFollowups": [
@@ -6777,6 +6764,11 @@
       "id": "tech-5.7",
       "status": "resolved",
       "note": "2026-10-20: coordinator independent actual-source/math/native review; docs/verification/tech-clockdrives-followup.md."
+    },
+    {
+      "id": "polsci-5.9",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent original/author-correction/math/native review and saved-state repair; docs/verification/polsci-swing-followup.md."
     }
   ]
 }
