@@ -17407,6 +17407,101 @@
         "item": "bighist-3.5",
         "prerequisite": "pma-8.6",
         "reason": "Frozen service-restricted candidate; not accepted. No source peer retry."
+      },
+      {
+        "item": "qinfo-2.1",
+        "prerequisite": "ladr-3.4",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-2.2",
+        "prerequisite": "ladr-7.53",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-2.3",
+        "prerequisite": "ladr-7.31",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-2.5",
+        "prerequisite": "ladr-7.38",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-2.6",
+        "prerequisite": "prob-1.6.1",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-4.7",
+        "prerequisite": "ladr-6.14",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-4.8",
+        "prerequisite": "ladr-7.53",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-4.9",
+        "prerequisite": "ladr-7.87",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-3.1",
+        "prerequisite": "ladr-9.74",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-3.2",
+        "prerequisite": "ladr-6.25",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-3.4",
+        "prerequisite": "prob-2.1.1a",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-3.5",
+        "prerequisite": "prob-2.1.1a",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-3.7",
+        "prerequisite": "prob-2.1.1a",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-4.1",
+        "prerequisite": "alg-1.15",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-1.1",
+        "prerequisite": "prob-2.4.1",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-1.3",
+        "prerequisite": "ladr-7.53",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-1.4",
+        "prerequisite": "ladr-9.58",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-1.5",
+        "prerequisite": "ladr-7.31",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
+      },
+      {
+        "item": "qinfo-1.6",
+        "prerequisite": "ladr-7.38",
+        "reason": "Pending independent combined peer including grammar successor b78affd; candidate integrated for concrete review, not accepted."
       }
     ]
   }
