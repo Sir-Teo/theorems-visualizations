@@ -339,7 +339,7 @@ The cancellation can be written with the oriented-area identity vcalc 1.3. Put O
       name: 'Desargues’ theorem',
       credit: 'Girard Desargues (published by Abraham Bosse, 1648)',
       statement: String.raw`If two triangles $ABC$ and $A'B'C'$ are **in perspective from a point**, that is, the lines $AA'$, $BB'$, $CC'$ pass through one point $O$, then they are **in perspective from a line**: the three points
-$$P=AB\cap A'B',\qquad Q=BC\cap B'C',\qquad R=CA\cap C'A'$$
+$$\begin{gathered}P=AB\cap A'B',\\  Q=BC\cap B'C',\\  R=CA\cap C'A'\end{gathered}$$
 lie on one line. (If two corresponding sides are parallel, their meeting point is at infinity and the line through the other two points is parallel to them.) The converse also holds.`,
       idea: String.raw`If the triangles lie in different planes the proof is one sentence: the planes of $ABC$ and $A'B'C'$ meet in a line, and each pair of corresponding sides lies in one plane through $O$, so the two sides meet at a point of both triangle planes, that is, on their common line (right panel). A plane configuration is a central projection of such a spatial one (art-1.2), and projection keeps lines and their intersections, so the three points stay collinear. Desargues’ work on perspective was published in 1648 by his pupil Abraham Bosse; the theorem became one of the foundations of projective geometry, alongside the cross-ratio (art-1.12).
 

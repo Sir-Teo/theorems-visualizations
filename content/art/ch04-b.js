@@ -94,7 +94,7 @@ export default {
       name: 'Planckian locus and correlated colour temperature',
       credit: 'MacAdam, 1937 (the (u,v) scale); Robertson, 1968 (isotherms); McCamy, 1992 (approximation)',
       statement: String.raw`The chromaticities of black bodies at temperatures from about 1000 K to infinity trace a smooth curve in the chromaticity diagram, the **Planckian locus**, running from deep red through orange and white to blue. For a light whose chromaticity is near it, the **correlated colour temperature** (CCT) is the temperature of the black body whose chromaticity is closest, measured in the CIE 1960 $(u,v)$ plane, where
-$$u=\frac{4x}{-2x+12y+3},\qquad v=\frac{6y}{-2x+12y+3},$$
+$$\begin{gathered}u=\frac{4x}{-2x+12y+3},\\  v=\frac{6y}{-2x+12y+3},\end{gathered}$$
 and the lines of constant CCT (isotherms) are the normals to the locus. The signed distance $\Delta_{uv}$ from the locus says how far the light is from a true black body.`,
       idea: String.raw`The black-body spectrum depends on one parameter, $T$ (art-3.10), so its chromaticities form a curve (art-4.7); a general white light is described by two numbers, and CCT is the projection onto that curve. The projection is done in $(u,v)$ because that plane is more perceptually uniform than $(x,y)$ (a rough forerunner of art-5.5): the nearest point there defines CCT in that coordinate metric, rather than proving a universal perceptual match. McCamy’s cubic in $n=(x-0.3320)/(y-0.1858)$ is a quick empirical approximation of the same number near daylight.
 

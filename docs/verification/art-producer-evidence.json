@@ -1,0 +1,82 @@
+{
+  "status": "producer verified; independent direct-use peer required",
+  "acceptedArtSourceBaseline": "d4f67e50",
+  "immutableParents": [
+    "03d24499ebb31470c602c1f0d1eaa85ae0155942",
+    "5439dff1a066157c47dd97767647cbdbf4e0887a",
+    "9fe4579f3f76ae42415dbfcf98c4f7f7d264d0f1",
+    "408536daef969f3b542f36e5f163cd217032b567",
+    "d86c205f29fb6d0c0891ffe045b11c704a71c272",
+    "b94b256d26dba409a0cd3329261851a877359306"
+  ],
+  "counts": {
+    "before": [
+      7,
+      12,
+      28
+    ],
+    "candidateAfter": [
+      25,
+      30,
+      46
+    ],
+    "newWrittenMathEdges": 18,
+    "newInputConsumers": 17,
+    "allWrittenConsumersRead": 55,
+    "candidateTouchedConsumersRendered": 19
+  },
+  "preservation": {
+    "files": 28,
+    "objects": 55,
+    "functions": 55,
+    "rawWrittenLists": 55,
+    "syllabusRows": 139,
+    "newEdges": 18,
+    "consumers": 17,
+    "qualifiedFields": 11,
+    "finiteForwardDomainFields": 3,
+    "cameraCaptionFields": 1,
+    "equivalentWraps": 6,
+    "canvasLabelLiterals": 1,
+    "pinholeLabelLiterals": 3,
+    "everyOtherObjectFunctionHelperFlag": "byte-identical"
+  },
+  "mathAssertions": 8210,
+  "qualificationAssertions": 464,
+  "existingTests": 32,
+  "native": {
+    "cases": 38,
+    "fields": 160,
+    "viewport": 320,
+    "actualProductionMathWidth": 253,
+    "personallyInspectedCompleteMainStatementScopes": 38,
+    "personallyInspectedCompleteMainProofs": 38,
+    "personallyInspectedChangedCaptions": 8,
+    "realAnamorphosisCases": 6,
+    "personallyInspectedAnamorphosisVizCaptionReadoutPictures": 18,
+    "realPinholeCases": 6,
+    "personallyInspectedPinholeVizReadoutPictures": 12
+  },
+  "sourceFlags": "unchanged",
+  "algorithmUpdates": "none; exactly four visible label literals in two viz functions",
+  "alternatePaths": "five documented distinct-step cases for independent assessment; no automatic graph reduction or unconditional acceptance",
+  "artifacts": {
+    "/tmp/atlas-new-imaging-source/art/baseline-shas.json": "8223a77521842ae2f5fdc72f70eda4b3a23fbaf52c5c4f5605abab0829419a45",
+    "/tmp/atlas-new-imaging-source/art/final-combined.json": "e959554a323c2c47dc2df66c046b5d322e1d01a783546021e38caad6aec69c6f",
+    "/tmp/atlas-new-imaging-source/art/final-math.json": "039c464be72cf6af919ce66dcae6b187ea2a7bd7b3c99cb89b35157bd97d4a5b",
+    "/tmp/atlas-new-imaging-source/art/qualifications.json": "6583f515e5e375edb7724eee33216cda035b127044506169746050089e2e1b5a",
+    "/tmp/atlas-new-imaging-source/art/anamorphosis-domain.json": "ff2b74b20a23b4867fd8b7bb7d702f20d5312d73b43a34fb3fa09149c86343f6",
+    "/tmp/atlas-new-imaging-source/art/anamorphosis-label.json": "0fea38204109d30dd89aacb8088b7f0d7dfd4a5d755db5e849137c92e5a000b0",
+    "/tmp/atlas-new-imaging-source/art/pinhole-label.json": "9519e6aaf580ee58da4e2e6330f65db21222c93a423ce393966dcfb2cf927307",
+    "/tmp/atlas-new-imaging-source/art/wrap.json": "5bbab3dd5c8bcc4e728b0bb02472ab990239f71eedf3fa756a1612b6becdcb99",
+    "/tmp/atlas-new-imaging-source/art/final-existing.log": "aefb235a41db60c5ff94c6463a17144ef81191e20d3fcf188897bde41c45b60e",
+    "/tmp/atlas-new-imaging-source/art/final-build.log": "c448ab642d6ff01ed7150d27fd71f25e3415e2cd9cb5ff9031c7709cbc90560a",
+    "/tmp/atlas-new-imaging-source/art/final-static.log": "baf080a184c192e5389f2f2be74143abc9e21efc9ea54fea002cac20154ecf47",
+    "/tmp/atlas-new-imaging-source/art/native-final-v2/native.json": "7f43adb02c1eab4e054cfa4e199fc2c7f93a54124b85bbd6c8cb72280f7961da",
+    "/tmp/atlas-new-imaging-source/art/anamorphosis-native-v2/native.json": "486c29aae298a0e713204243a059ff29c5dbb02c24e02775a591a39414fef7bc",
+    "/tmp/atlas-new-imaging-source/art/pinhole-native/native.json": "e53d8a401e125735a968451bc5468de2b3c951ea20d18b07a60a3643bf7b8d3a",
+    "/tmp/atlas-new-imaging-source/art/attempts.md": "d9b4b36df17b359d7f53a6c5e122552eeb06b65678bcf8576cf9abe3c6de4fc6"
+  },
+  "browsersAndServers": "closed",
+  "sourceClosure": false
+}

@@ -329,7 +329,7 @@ The stationary-angle step uses pma 5.8 at an interior differentiable extremum. F
       name: 'Subtractive mixing: filters multiply spectra',
       credit: 'The Beer–Lambert law of absorption (Bouguer, Lambert and Beer)',
       statement: String.raw`A filter with transmittance $T(\lambda)$ passes the fraction $T(\lambda)$ of the light at each wavelength. Light that goes through a stack of filters has the spectrum
-$$S_{\text{out}}(\lambda)=S_{\text{in}}(\lambda)\,T_1(\lambda)\,T_2(\lambda)\cdots T_m(\lambda),$$
+$$\begin{gathered}S_{\text{out}}(\lambda)=\\ S_{\text{in}}(\lambda)\,T_1(\lambda)\,T_2(\lambda)\cdots T_m(\lambda),\end{gathered}$$
 the **product** of the transmittances, in whatever order the filters are stacked. For an absorbing medium of thickness (or density) $d$ the transmittance is $T^{\,d}$, so doubling the layer squares it. A product of numbers at most 1 never exceeds any of its factors: filtering only removes light, and a pair of filters that overlap in no wavelength passes none.`,
       idea: String.raw`Each wavelength is attenuated independently of the others, and attenuations compose by multiplication since a layer removes a fixed fraction of what reaches it (the Beer–Lambert law). That is why the subtractive primaries are the colours that remove one third of the spectrum each: cyan removes red, magenta removes green, yellow removes blue, so that any pair leaves one third (cyan × yellow leaves green) and all three leave almost nothing. The additive primaries (red, green, blue filters) are poor subtractive primaries because each removes two thirds of the spectrum, and a pair of them already kills everything.
 
