@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **47 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 807 edges. Even
+Of 64 non-math collections, **46 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 796 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -157,3 +157,8 @@ Independently accepted BIGHIST4.5 explicitly uses the actual written prob1.2.4 e
 Exact `e57c6a5` adds eight independently reviewed genuine uses across seven written arguments: multivariable chain rule, matrix composition, symmetric spectral modes, variance, isometries, Pythagoras and norm homogeneity. DEEP now has25published/33known/55whole-syllabus edges. The touched stability bridge note is separately reviewed at `35c129f`. No source flag closes;5.12label and logarithmic-thumb findings remain separately tracked. See [independent review](deep-crossfield-prerequisites-peer.md).
 
 Current accepted global shortfall807,47/64collections below25published,28whole syllabi below25. The explicit frozen BIGHIST3.5candidate edge is excluded from this accepted inventory. Counts remain separate from prerequisite justification.
+
+
+## Thermodynamics reaches the published prerequisite target
+
+Exact `3fea5ed` adds11independently reviewed derivational uses across10written items: FTC, chain rule, interior extrema, variance, independence, Gaussian integral and Stirling expansion. THERMO now has25published/27known/38whole-syllabus edges. Independent peer read all8actual targets, all10consumers and own20fresh narrow theme outputs. No touched consumer is a bridge step; all visualization functions and sourceflags remain unchanged. See [peer](thermo-prerequisites-independent-peer-2026-10-20.md). Current accepted shortfall796,46/64below25published,28whole syllabi below25, frozenBIGHISTedge excluded. The snapshot-only fullobject guard is explicit-only; enduring defaulttests retain the3independent mathematical groups.

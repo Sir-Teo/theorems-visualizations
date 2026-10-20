@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 47,
+  "publishedBelowTarget": 46,
   "wholeSyllabusBelowTarget": 28,
   "entries": [
     {
@@ -2879,12 +2879,33 @@
       "collection": "thermo",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 14,
-      "writtenToKnown": 16,
-      "wholeSyllabus": 27,
-      "publishedShortfall": 11,
+      "writtenToWritten": 25,
+      "writtenToKnown": 27,
+      "wholeSyllabus": 38,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "thermo-1.16",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "thermo-2.11",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "thermo-3.11",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "thermo-3.12",
           "prerequisite": "pma-9.41",
@@ -2921,11 +2942,25 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "thermo-3.5",
+          "prerequisite": "pma-9.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "thermo-3.7",
           "prerequisite": "pde-8.11",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "thermo-4.10",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "thermo-5.11",
@@ -2977,6 +3012,41 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "thermo-6.15",
+          "prerequisite": "pma-8.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "thermo-6.16",
+          "prerequisite": "pma-8.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "thermo-6.16",
+          "prerequisite": "pma-8.22",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "thermo-6.3",
+          "prerequisite": "prob-1.6.9a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "thermo-6.4",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "thermo-6.6",
           "prerequisite": "info-1.2",
           "prerequisiteField": "cs",
@@ -2996,6 +3066,13 @@
           "prerequisiteField": "cs",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "thermo-6.8",
+          "prerequisite": "prob-2.1.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "thermo-7.4",
@@ -14987,7 +15064,10 @@
   ],
   "acceptance": {
     "date": "2026-10-20",
-    "reviewedDeepCandidate": "e57c6a5758904c1f08f79c437a2be87a69924471",
+    "reviewedCandidates": [
+      "e57c6a5758904c1f08f79c437a2be87a69924471",
+      "3fea5ed16b2c7bc2a08bdccb353a4add425fe817"
+    ],
     "excludedUnacceptedEdges": [
       {
         "item": "bighist-3.5",

@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent THERMO exact3fea5ed prerequisite peer; map low-copy report recorded",
+      "current": "Isolated connected-Canvas composition prototype correctness; no FPS while others work",
       "owns": [
-        "LOGIC4.12 unique peer report/tests only"
+        "Unique map-canvas-compositor test-only helper/tests/report; no production graph/global edits"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +52,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "ARCH original audit candidate with dedicated exactdecimal boundary repair",
+      "current": "SOC genuine prerequisite production",
       "owns": [
-        "ARCH3.14 item/private helper/matching row/tests/reports"
+        "SOC items/matching syllabus rows/unique tests/reports"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -1636,15 +1636,39 @@
       "publishedBefore": 17,
       "publishedAfter": 25,
       "sourceClosure": "None; separate5.12label/runtime followups stay open."
+    },
+    {
+      "commit": "3fea5ed16b2c7bc2a08bdccb353a4add425fe817",
+      "collection": "thermo",
+      "items": [
+        "thermo-1.16",
+        "thermo-2.11",
+        "thermo-3.5",
+        "thermo-3.11",
+        "thermo-4.10",
+        "thermo-6.3",
+        "thermo-6.4",
+        "thermo-6.8",
+        "thermo-6.15",
+        "thermo-6.16"
+      ],
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "logic_peer",
+      "report": "docs/verification/thermo-prerequisites-independent-peer-2026-10-20.md",
+      "publishedBefore": 14,
+      "publishedAfter": 25,
+      "bridgeReview": "No changed consumer IDs occur in existing bridge walks; independently checked.",
+      "sourceClosure": "None."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 807,
-    "publishedBelow25": 47,
+    "publishedShortfall": 796,
+    "publishedBelow25": 46,
     "collections": 64,
     "wholeSyllabusBelow25": 28,
     "date": "2026-10-20",
-    "acceptedSnapshot": "DEEP exacte57c6a5 independently accepted, bridge35c129f separately endorsed; frozenBIGHIST3.5edge explicitly excluded."
+    "acceptedSnapshot": "DEEP+THERMO genuine prerequisites independently accepted; frozenBIGHIST3.5edge excluded."
   },
   "previousSessionWorkers": [
     {
