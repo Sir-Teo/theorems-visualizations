@@ -1,3 +1,4 @@
+import{foliot,fusee}from'./source-audit-clockdrives.js';
 import { waterClock } from './source-audit-water.js';
 // History of Technology — Chapter 5: Time and navigation (items 5.1–5.6; 5.7–5.11 are in ch05-b.js)
 import { yearStage, drawYears, D2R, clamp, ellipK, pendulumRatio, lossPerDay, bangPeriod, bangAngle, OBLIQ, sunLon, eclDec, eclRA, altitude, dayName, hhmm } from './ch05.shared.js';
@@ -38,12 +39,6 @@ function needleTable(w0, zeta, th0, T = 10, dt = 0.01) {
   }
   return { at: (t) => { const x = clamp(t / dt, 0, n - 1e-9), i = Math.floor(x); return out[i] + (out[i + 1] - out[i]) * (x - i); }, dt, n };
 }
-
-// ---------------------------------------------------------------- 5.5 helpers: spring and fusee
-const M_EMPTY = 0.4; // linear-spring torque when run down, relative to the full-wound torque (illustrative)
-const mLin = (u) => M_EMPTY + (1 - M_EMPTY) * u;           // the ideal spring the fusee is cut for (u = fraction still wound)
-const mReal = (u, g) => mLin(u) * (1 + g * Math.sin(Math.PI * u) * 0.6); // an actual spring that departs from the ideal by a bulge of strength g
-const fuseeR = (u) => mLin(1) / mLin(u);                   // radius that makes M(u) r(u) constant for the ideal spring; 1 at full wind
 
 export default {
   collection: 'tech',
@@ -197,105 +192,49 @@ Scope of the picture: the declination map is a **model**: a centred dipole whose
 
     // ------------------------------------------------------------------ 5.4
     {
-      num: '5.4',
-      kind: 'Invention',
-      name: 'Mechanical clock with verge-and-foliot escapement',
-      credit: 'Anonymous, probably in northern Italy or England, late 13th century: the earliest tower clocks are recorded from about 1283–1300 (Dunstable, Westminster, Canterbury) and the first clear drawing of an escapement is in the Dondi manuscript (1364); the Salisbury Cathedral clock (about 1386) is an early surviving example whose original escapement is uncertain',
-      verify: true,
-      statement: String.raw`A **verge-and-foliot clock** is driven by a falling weight that turns a toothed *crown wheel*. A vertical rod (the *verge*) carries two *pallets* at right angles; each tooth in turn pushes a pallet and is then released as the other pallet comes into the wheel. The verge carries a horizontal bar, the *foliot*, with adjustable weights at its ends. The wheel can advance only a tooth at a time, each time the foliot swings, so the falling weight is converted into a regular count of swings: the first mechanical **escapement**.
+      num:'5.4',kind:'Invention',name:'Mechanical clock with verge-and-foliot escapement',verify:true,
+      credit:'Historical mechanism and stationary model examined by Hoyng and Nieuwenhuizen; illustration uses declared parameters',
+      statement:String.raw`A verge-and-foliot escapement couples a driven crown wheel to two pallets on a vertical verge. The foliot is a bar with movable weights; changing their position changes its inertia. The pallets alternately arrest and release the wheel. Hoyng and Nieuwenhuizen analyse a model in which torque reverses when the verge crosses fixed pallet angles, with friction proportional to angular velocity.
 
-What the sources support: mechanical clocks without dials, striking the hours, are recorded from the end of the 13th century; the form of their escapement is not given in the early texts, and the verge and foliot is the form known from the 14th century on. The oldest drawings of it are in the Dondi manuscript (1364). The rate of such a clock is not set by a restoring force but by the **drive** and the **inertia** of the foliot.
+The source model is a driven, dissipative stationary oscillation. Torque is not a conservative restoring force that always points toward the centre. Its period and overshoot depend on drive, friction, inertia and the switching angle. No earliest inventor, medieval accuracy figure or reconstruction of a particular surviving clock is certified here.`,
+      idea:String.raw`With inertia I, drive magnitude τ and viscous coefficient β, write $a=\beta/I$, $\mu=\tau/I$. Between switches, $\ddot\phi+a\dot\phi=\pm\mu$. At $\phi=+\phi_0$ on the outward crossing the torque changes to $-\tau$, then at $-\phi_0$ it changes back. The foliot overshoots each switch before turning.
 
-Scope of the picture: a constant-torque model ($I\ddot\theta=-\tau\,\mathrm{sgn}\,\theta$, no friction, no recoil, instant pallet exchange), in relative units; it shows how the rate depends on the drive and on the weights, not the real wheel geometry.`,
-      idea: String.raw`With nothing to pull the foliot back, its motion is set by the drive: the crown wheel's push accelerates the foliot at $\tau/I$ toward the middle of its swing, and the other pallet then pushes the other way and brings it to rest at the far side. A quarter swing through the angle $A$ takes $\sqrt{2AI/\tau}$, so the period is $T=4\sqrt{2AI/\tau}$. Moving the weights outward raises $I=I_0+2mx^2$ and slows the clock, which is how it was regulated. But $T\propto\tau^{-1/2}$: a 10% change in the driving torque (a dirty train, a longer rope) changes the rate by about 5%, an hour a day. This is the defect that a restoring force removes (5.6, 5.8), and why the weight of a verge clock had to be adjusted by hand.`,
-      caption: String.raw`Left: the foliot from above (weights gold) over the crown wheel with 13 teeth; right: the swing angle against time. Slide the **weights** outward to slow the clock, and change the **drive**: unlike a pendulum, the clock's rate responds to the driving force. The readout turns this into minutes per day.`,
-      deps: ['tech-2.9', 'tech-5.1'],
-      see: ['tech-5.6', 'tech-5.8', 'mech-4.2'],
-      refs: ['Usher, “Water clocks and mechanical clocks”', 'Cardwell'],
-      tags: ['medieval', 'timekeeping', 'mechanism'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Verge_escapement' },
-      viz(v) {
-        const A = v.stage({ x: [-1.6, 1.6], y: [-1.5, 1.5], equal: true, axes: false, height: 320, weight: 1, minWidth: 300, title: 'foliot and crown wheel, from above' });
-        const B = v.stage({ x: [0, 8], y: [-60, 60], axes: 'box', gutter: true, height: 320, weight: 1.1, minWidth: 320, xlabel: 'time (s)', ylabel: 'foliot angle (°)', title: 'the swing' });
-        const xS = v.slider('weight position $x$ (relative)', 0.3, 1.2, 0.8, { step: 0.01 });
-        const tauS = v.slider('driving torque (relative)', 1, 6, 3, { step: 0.05 });
-        const aS = v.slider('swing $A$ (°)', 20, 60, 45, { step: 1 });
-        const I0 = 0.6, mW = 1;
-        const NT = 13;
-        v.animate((t) => {
-          const A0 = aS.value * D2R, I = I0 + 2 * mW * xS.value ** 2, T = bangPeriod(A0, I, tauS.value), th = bangAngle(t, A0, T);
-          // wheel: one tooth per full period
-          const wheel = -(t / T) * (360 / NT) * D2R;
-          A.circle(0, -0.2, 0.9, { color: 'muted', width: 1.2, alpha: 0.6 });
-          for (let i = 0; i < NT; i++) { const a = wheel + (i * 2 * Math.PI) / NT; A.poly([[0.8 * Math.cos(a), -0.2 + 0.8 * Math.sin(a)], [1.0 * Math.cos(a + 0.12), -0.2 + 1.0 * Math.sin(a + 0.12)], [0.8 * Math.cos(a + 0.28), -0.2 + 0.8 * Math.sin(a + 0.28)]], { fill: 'muted', fillAlpha: 0.35, color: 'muted', width: 1 }); }
-          A.text('crown wheel (13 teeth)', 0, -1.38, { size: 10.5, color: 'muted', align: 'center' });
-          // foliot bar and weights (top view)
-          const c = Math.cos(th), s = Math.sin(th), L = 1.3, xw = xS.value;
-          A.line(-L * c, -L * s + 0.5, L * c, L * s + 0.5, { color: 'ink', width: 4.5 });
-          for (const sg of [-1, 1]) A.rect(sg * xw * c - 0.09, sg * xw * s + 0.5 - 0.09, sg * xw * c + 0.09, sg * xw * s + 0.5 + 0.09, { fill: 'gold', fillAlpha: 0.8, color: 'orange', width: 1.5 });
-          A.dot(0, 0.5, { r: 5, color: 'ink' }); A.text('verge', 0.12, 0.5 - 0.12, { size: 10.5, color: 'muted', align: 'left', baseline: 'top' });
-          // swing plot
-          const pts = []; for (let i = 0; i <= 400; i++) { const x = (i / 400) * 8; pts.push([x, bangAngle(x, A0, T) / D2R]); }
-          B.hline(0, { color: 'muted', width: 1 }); B.path(pts, { color: 'accent', width: 2.2 }); B.vline(t % 8, { color: 'gold', width: 1.2, dash: [4, 3] });
-          B.dot(t % 8, th / D2R, { r: 6, color: 'gold' });
-        }, { period: 8, still: 0.6 });
-        v.readout(() => {
-          const A0 = aS.value * D2R, I = I0 + 2 * mW * xS.value ** 2, tau = tauS.value, T = bangPeriod(A0, I, tau);
-          const up = (Math.sqrt(1.1) - 1) * 1440, wUp = (Math.sqrt(bangPeriod(A0, I0 + 2 * mW * (xS.value * 1.1) ** 2, tau) / T) - 1);
-          return `$T=4\\sqrt{2AI/\\tau}=${v.fix(T, 2)}$ s with $I=${v.fix(I, 2)}$; one beat (a pallet exchange) every ${v.fix(T / 2, 2)} s\n**+10% driving torque makes the clock gain ${v.fix(up, 0)} min per day** ($T\\propto\\tau^{-1/2}$); moving the weights 10% outward slows it by ${v.fix(100 * (bangPeriod(A0, I0 + 2 * mW * (xS.value * 1.1) ** 2, tau) / T - 1), 1)}%. (Model in relative units; real beats are of order a second.)`;
-        });
+For a stationary cycle set $x=\mu/(a^2\phi_0)$. The unique $0<\lambda<1$ satisfies $\operatorname{atanh}\lambda-\lambda=1/x$. Then
+Put $h=\lambda-\log(1+\lambda)$. Then
+$$P=\frac4a(\lambda+1/x),$$
+$$\phi_{\max}=\phi_0(1+xh).$$
+The first half-cycle is
+$$\begin{aligned}\phi(t)&=\phi_0+\frac\mu{a^2}f(at),\\ f(z)&=(1+\lambda)(1-e^{-z})-z.\end{aligned}$$
+The next is its sign-reversed copy. Velocity is continuous at switches. Drive work per cycle is $4\tau\phi_0$, balanced by viscous dissipation. Weak and strong drive give different period scalings; a universal $\tau^{-1/2}$ law does not follow from this model.`,
+      caption:String.raw`Move through one stationary cycle with phase. The left panel shows the actual model foliot angle and weight positions from above; dashed rays mark the switching angles. It omits wheel-to-pallet contact geometry. The full angle curve includes both exact turning points and switches. Change torque, friction and weight position to compare period and overshoot.`,
+      deps:['tech-2.9','mech-4.7'],see:['tech-5.5','tech-5.6','tech-5.8'],refs:['Hoyng and Nieuwenhuizen, Dynamics of the verge and foliot clock escapement, arXiv:1604.06681v2; full text, §II and Appendix A, pp.3–9'],tags:['timekeeping','mechanism'],
+      scope:String.raw`Stationary symmetric motion under constant torque between fixed switching angles and linear viscous friction. Authored relative parameters use I=0.6+2xw² for two unit weights. No transient startup, impact, Coulomb friction, tooth profile, real-clock calibration or guaranteed accuracy.`,
+      links:{source:'https://arxiv.org/abs/1604.06681'},
+      viz(v){const position=v.slider('weight position (relative)',.3,1.2,.8,{step:'any',decimals:6}),tau=v.slider('drive torque (relative)',1,6,3,{step:'any',decimals:6}),friction=v.slider('viscous coefficient (relative)',.5,2,1,{step:'any',decimals:6}),threshold=v.slider('pallet switching angle (°)',5,30,15,{step:'any',decimals:6}),phase=v.slider('phase, fraction of stationary cycle',0,1,.1,{step:'any',decimals:6}),A=v.stage({x:[-1.6,1.6],y:[-1.6,1.6],equal:true,axes:false,height:320,minWidth:260,title:'foliot from above; contact geometry omitted'}),B=v.stage({x:[-.05,1.05],y:[-70,70],axes:'box',gutter:true,height:320,minWidth:260,xlabel:'fraction of stationary cycle',ylabel:'angle (°)',title:'stationary swing and overshoot'});let info;
+        v.legend([['accent','model angle'],['muted','fixed switching angles'],['gold','selected phase / movable weights']]);
+        v.render(()=>{const p=foliot(position.value,tau.value,friction.value,threshold.value,phase.value),c=Math.cos(p.selected.angle),s=Math.sin(p.selected.angle);for(const sg of[-1,1]){const a=sg*p.threshold;A.line(0,0,1.45*Math.cos(a),1.45*Math.sin(a),{color:'muted',dash:[4,3],width:1});}A.line(-1.3*c,-1.3*s,1.3*c,1.3*s,{color:'ink',width:4});for(const sg of[-1,1])A.rect(sg*p.position*c-.09,sg*p.position*s-.09,sg*p.position*c+.09,sg*p.position*s+.09,{fill:'gold',color:'orange',width:1.4});A.dot(0,0,{color:'ink',r:4,ring:false});A.text(`drive ${p.selected.torque>0?'+':'−'}τ`,0,-1.42,{align:'center',size:12,color:'ink'});const y=p.amplitude*180/Math.PI*1.22;B.setView([-.05,1.05],[-y,y]);B.line(0,p.thresholdDegrees,1,p.thresholdDegrees,{color:'muted',width:1,dash:[4,3]});B.line(0,-p.thresholdDegrees,1,-p.thresholdDegrees,{color:'muted',width:1,dash:[4,3]});B.path(p.curve,{color:'accent',width:2.4});B.dot(p.phase,p.selected.angle*180/Math.PI,{color:'gold',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Stationary period ${v.fix(p.period,9)} relative time units; I=${v.fix(p.I,9)}, switch ±${v.fix(p.thresholdDegrees,6)}°, actual amplitude ±${v.fix(p.amplitude*180/Math.PI,9)}°.\nAt selected phase: angle ${v.fix(p.selected.angle*180/Math.PI,9)}°, angular speed ${v.fix(p.selected.velocity,9)} rad per time unit. Drive work per cycle ${v.fix(p.cycleWork,9)} relative energy units.\nA 10% stronger drive gives ${v.fix(p.gainMinutes,6)} model minutes gained per reference day when calibrated at the current period. Moving both weights 10% outward changes the period by ${v.fix(100*(p.outwardPeriod/p.period-1),6)}%. These are model comparisons, not measured clock accuracy.`;});
       },
     },
 
     // ------------------------------------------------------------------ 5.5
     {
-      num: '5.5',
-      kind: 'Invention',
-      name: 'The mainspring and fusee',
-      credit: 'The spring-driven clock appears in the early 15th century; the oldest surviving fusee clock is a table clock made for Philip the Good of Burgundy, dated by its decoration to about 1430–1435 (a fusee also appears in a crossbow in a manuscript of 1405 and in drawings of Brunelleschi and Leonardo); the common attribution of the fusee to Jacob Zech of Prague (about 1525) is wrong',
-      verify: true,
-      statement: String.raw`A **mainspring** is a coiled strip of steel, wound with a key, which stores energy and releases it as a torque on the clock train, so a clock no longer needs a falling weight and can be made small enough for a table or a pocket. But a spring's torque falls as it unwinds. The **fusee** is a cone, grooved for a chain wound from the barrel that holds the spring: when the spring is fully wound the chain pulls on the small end, and as it runs down the chain moves to larger radii. The torque delivered to the train, spring torque times fusee radius, is then nearly constant.
+      num:'5.5',kind:'Invention',name:'The mainspring and fusee',verify:true,
+      credit:'Spring-driven historical clocks documented by Germanisches Nationalmuseum; normalized torque comparison authored here',
+      statement:String.raw`A mainspring stores energy in a coiled metal strip and releases torque as it unwinds. A fusee is a tapered, grooved pulley connected to the spring barrel by a line or chain. A smaller working radius at full wind and a larger one as the spring weakens can compensate its changing torque.
 
-What the sources support: spring-driven clocks are known from the early 15th century; the fusee was already in use by about 1430, in the Burgundian clock; the date comes from the decoration on the clock and not from a document. The fusee is not a clockmaker's invention but turns up first in the windlass of a crossbow.
+Germanisches Nationalmuseum dates its Burgundy clock HG9771 to about 1435 using heraldry and style and identifies it as spring-driven. Its direct study of the so-called Henlein watch describes spring barrel, chain and fusee, while explaining that this object combines parts of different ages and cannot establish the claimed 1510 authorship. Neither object dates the invention of the exact profile below; no crossbow priority or named fusee inventor is certified.`,
+      idea:String.raw`Let u be the fraction run down. The authored spring law is $M_0(u)=1-0.6u$, perturbed to $M(u)=M_0(u)[1+0.6g\sin(\pi u)]$. If barrel radius is Rb and the active pulley radius is r, line tension is $M/R_b$ and delivered torque is $D=Mr/R_b$.
 
-Scope of the picture: the spring torque is a model (a linear fall from the full-wound value to 40% of it, plus an adjustable departure); real springs are less simple and are fitted with a stop-work so that only the flat middle part of their range is used.`,
-      idea: String.raw`If the chain pulls with force $F=M/R_b$ (the spring torque $M$ over the barrel radius $R_b$) and the fusee radius at that point is $r$, the train sees the torque $Fr=(M/R_b)\,r$. For this to be constant, $r$ must vary as $1/M$: the profile is a hyperbola in the spring's run-down, flat where the spring is weak. A fusee cut for one spring is right for that spring only: if the real spring bulges away from the ideal, the delivered torque still varies. And since a verge clock's rate varies as the square root of the torque (5.4), a spring that loses a third of its torque as it runs down would slow a verge clock by about 18%, more than four hours a day, without a fusee.`,
-      caption: String.raw`Left: the fusee profile (radius against turns still wound) with the chain's contact point (gold) at the **wind state** you choose. Right: spring torque (orange), fusee radius (grey), and the torque delivered to the clock train (green). Switch the **fusee** off, then on; make the spring depart from the ideal with **departure** and watch the green curve stop being flat.`,
-      deps: ['tech-5.4', 'mech-4.1'],
-      see: ['tech-5.8', 'mech-4.2'],
-      refs: ['Usher, “The development of clocks and watches”', 'Cardwell'],
-      tags: ['early-modern', 'timekeeping', 'mechanism'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Fusee_(horology)' },
-      viz(v) {
-        const P = v.stage({ x: [-1.3, 1.3], y: [0, 1], axes: false, height: 320, weight: 0.8, minWidth: 260, title: 'the fusee cone and its chain' });
-        const Q = v.stage({ x: [0, 1], y: [0, 1.6], axes: 'box', gutter: true, height: 320, weight: 1.2, minWidth: 320, xlabel: 'run-down (0 = fully wound, 1 = run down)', ylabel: 'torque (relative)', title: 'torque against run-down' });
-        const uS = v.slider('run-down', 0, 1, 0.3, { step: 0.005 });
-        const gS = v.slider('spring departs from the ideal (bulge)', -0.5, 0.5, 0.25, { step: 0.01 });
-        const fS = v.toggle('fusee', true);
-        v.render(() => {
-          const wound = 1 - uS.value; // fraction still wound
-          // cone profile: radius against position along the axis (y); full wind at the top (small end)
-              const rad = (w) => (fS.value ? 0.32 * fuseeR(w) : 0.32 * fuseeR(0.5));
-          const left = [], right = [];
-          for (let i = 0; i <= 100; i++) { const w = 1 - i / 100, y = 0.92 - 0.82 * (i / 100); left.push([-rad(w), y]); right.push([rad(w), y]); }
-          P.poly([...left, ...right.reverse()], { fill: 'muted', fillAlpha: 0.25, color: 'ink', width: 2 });
-          for (let k = 0; k <= 12; k++) { const w = 1 - k / 12, y = 0.92 - 0.82 * (k / 12); P.line(-rad(w), y, rad(w), y, { color: 'muted', width: 1, alpha: 0.6 }); }
-          const yNow = 0.92 - 0.82 * (1 - wound), rNow = rad(wound);
-          P.line(rNow, yNow, 1.2, yNow, { color: 'orange', width: 2.4 }); P.dot(rNow, yNow, { r: 6, color: 'gold' });
-          P.text('chain to the spring barrel', 1.2, yNow + 0.05, { size: 10.5, color: 'muted', align: 'right' });
-          P.text(fS.value ? `fusee radius ${v.fix(rNow / 0.32, 2)} (× the small end)` : 'plain drum: constant radius', 0, 0.02, { size: 10.5, color: 'ink', align: 'center', baseline: 'bottom' });
-          // torque curves
-          const Mc = [], Rc = [], Dc = [];
-          for (let i = 0; i <= 100; i++) { const x = i / 100, w = 1 - x, M = mReal(w, gS.value), r = fS.value ? fuseeR(w) : fuseeR(0.5); Mc.push([x, M]); Rc.push([x, r * 0.4]); Dc.push([x, (M * r) / (fS.value ? 1 : fuseeR(0.5))]); }
-          Q.path(Mc, { color: 'orange', width: 2.2 }); Q.path(Rc, { color: 'muted', width: 1.8, dash: [5, 3] }); Q.path(Dc, { color: 'green', width: 3 });
-          Q.vline(uS.value, { color: 'gold', width: 1.2, dash: [4, 3] });
-        });
-        v.legend([['orange', 'spring torque'], ['muted', 'fusee radius (scaled by 0.4)', { dash: [5, 3] }], ['green', 'torque delivered to the train']]);
-        v.readout(() => {
-          const arr = []; for (let i = 0; i <= 100; i++) { const w = 1 - i / 100; arr.push((mReal(w, gS.value) * (fS.value ? fuseeR(w) : fuseeR(0.5))) / (fS.value ? 1 : fuseeR(0.5))); }
-          const hi = Math.max(...arr), lo = Math.min(...arr), spread = (hi - lo) / ((hi + lo) / 2), rate = (Math.sqrt(hi / lo) - 1) * 1440;
-          return `torque to the train varies by **${v.fix(100 * spread, 0)}%** from fully wound to run down (spring alone: ${v.fix(100 * (1 - M_EMPTY), 0)}% fall)\nfor a verge clock ($T\\propto\\tau^{-1/2}$, 5.4) that is a rate difference of about **${v.fix(rate, 0)} min/day** between the start and the end of a winding; the fusee's profile $r\\propto1/M$ is cut for an ideal linear spring`;
-        });
+Normalize both modes with the same Rb and full-wind radius, taking both as 1. The compensating radius is $r=1/M_0$; the plain drum has constant radius 1. An ideal spring, g=0, therefore gives D=1 throughout with the fusee and D=M0 with the drum. A departure gives $D=1+0.6g\sin(\pi u)$ with the fusee. Switching modes does not change the torque normalization.`,
+      caption:String.raw`Choose run-down, departure and fusee or plain drum. The profile is a schematic mapping of run-down to vertical position; the gold point and chain segment use the actual selected radius. The graph shows all 501 samples of normalized spring torque, working radius and delivered torque. Every curve and readout uses the same normalization.`,
+      deps:['tech-2.9','mech-4.1'],see:['tech-5.4','tech-5.8'],refs:['Germanisches Nationalmuseum, Burgundy clock HG9771, owner record, circa1435','Thomas Eser, Die älteste Taschenuhr der Welt? Der Henlein-Uhrenstreit (GNM 2014), actual sample pp.6–7 and26–29; object composition and spring/barrel/chain/fusee'],tags:['timekeeping','mechanism'],
+      scope:String.raw`Authored positive spring-torque family, ideal inextensible line, fixed barrel radius and frictionless quasistatic transmission. Vertical profile coordinate is run-down state, not elapsed time, manufacturing pitch or a solved chain-wrap geometry. The curves are not measurements of either historical object and do not calibrate a clock's rate.`,
+      links:{source:'https://www.gnm.de/objekte/standuhr-herzog-philipps-des-guten-von-burgund/',study:'https://www.gnm.de/fileadmin/editorCMS/publikation/pdf/publikation147_pdf1.pdf'},
+      viz(v){const run=v.slider('fraction run down',0,1,.3,{step:'any',decimals:6}),departure=v.slider('spring departure g',-.5,.5,.25,{step:'any',decimals:6}),enabled=v.toggle('compensating fusee',true),A=v.stage({x:[-1.35,1.35],y:[-.12,1.12],axes:false,height:320,minWidth:260,title:'schematic radius profile and selected contact'}),B=v.stage({x:[-.05,1.05],y:[-.15,2.8],axes:'box',gutter:true,height:320,minWidth:260,xlabel:'fraction run down',ylabel:'normalized quantity',title:'common normalization in both modes'});let info;
+        v.legend([['orange','spring torque'],['muted','radius / full-wind radius'],['green','delivered torque'],['gold','selected state']]);
+        v.render(()=>{const p=fusee(run.value,departure.value,enabled.value),right=p.profile,left=right.map(([r,y])=>[-r,y]);A.poly([...left,...right.slice().reverse()],{fill:'muted',fillAlpha:.2,color:'ink',width:1.5});const y=.92-.82*p.runDown,r=.32*p.selected.radius;A.line(r,y,1.2,y,{color:'orange',width:2});A.dot(r,y,{color:'gold',r:4,ring:false});B.path(p.spring,{color:'orange',width:2});B.path(p.radius,{color:'muted',width:1.5,dash:[4,3]});B.path(p.delivered,{color:'green',width:2.6});for(const[k,col]of[['spring','orange'],['radius','muted'],['delivered','gold']])B.dot(p.runDown,p.selected[k],{color:col,r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `${p.enabled?'Compensating fusee':'Plain drum'}, run-down ${v.fix(p.runDown,9)}: normalized spring torque ${v.fix(p.selected.spring,9)}, working radius ${v.fix(p.selected.radius,9)}, delivered torque ${v.fix(p.selected.delivered,9)}.\nDelivered torque range among 501 states: ${v.fix(p.low,9)}…${v.fix(p.high,9)}. Both modes use the same full-wind reference; no rate or historical performance is inferred.`;});
       },
     },
 

@@ -1,3 +1,4 @@
+import{anchor}from'./source-audit-clockdrives.js';
 // History of Technology — Chapter 5: Time and navigation (items 5.7–5.11; 5.1–5.6 are in ch05.js)
 import { D2R, clamp, pendulumRatio, lossPerDay, bangPeriod, bangAngle, springPeriodRatio, sunLon, eclDec, dayName, fmtSec } from './ch05.shared.js';
 
@@ -9,61 +10,24 @@ export default {
   items: [
     // ------------------------------------------------------------------ 5.7
     {
-      num: '5.7',
-      kind: 'Invention',
-      name: 'The anchor escapement',
-      credit: 'Disputed: William Clement (London, turret clock for King\'s College, Cambridge, 1671) is the traditional attribution; Joseph Knibb supplied an anchor-escapement turret clock for Wadham College, Oxford in 1670; Robert Hooke\'s claim rests on a statement of William Derham (1696) and has no documentary support',
-      verify: true,
-      statement: String.raw`The **anchor escapement** replaced the crown wheel of the verge by an ordinary toothed escape wheel in the plane of the pendulum and an *anchor*, a rocker with two pallets, fixed to the pendulum's suspension. Each swing releases one tooth; the tooth then pushes on a pallet and so on the pendulum, and the wheel is held until the pendulum returns. Because the pallets need turn only a few degrees, the pendulum swings through a small arc, of the order of $4^\circ$–$6^\circ$, instead of the tens of degrees that the verge required, and so can be long and slow: a seconds pendulum, about a metre, in a long case.
+      num:'5.7',kind:'Invention',name:'The anchor escapement',verify:true,
+      credit:'Historical example documented by The Metropolitan Museum of Art; circular-error comparison and rocker schematic authored here',
+      statement:String.raw`An anchor escapement alternately locks and releases escape-wheel teeth through two pallets on a rocking anchor coupled to a pendulum. It permits a small pendulum swing. In a recoil anchor the wheel can move slightly backward during part of the cycle; this interaction can itself disturb the oscillator.
 
-What the sources support: anchor-escapement clocks with long pendulums appear in England soon after 1670; the traditional credit goes to William Clement (a clock of 1671), but Joseph Knibb's Oxford turret clock of 1670 pre-dates it, and Robert Hooke has been credited on the word of William Derham in 1696, but no document shows that Hooke designed the escapement. The picture below shows the effect, not the priority. The escapement has *recoil*: the wheel is pushed back a little each swing, which is a defect that the dead-beat escapement of George Graham (about 1715) removed.
-
-Scope of the picture: the swing is the exact pendulum (elliptic-integral) period; the assumed "verge-era" arc is a typical large one chosen for comparison, not a measured value for any clock.`,
-      idea: String.raw`At amplitude $\theta_0$ the period of a pendulum is longer than the small-swing value by the factor $\tfrac2\pi K(\sin^2\tfrac{\theta_0}{2})\approx1+\theta_0^2/16$ (5.6), so a clock regulated at one amplitude gains or loses when the amplitude drifts as the oil thickens or the drive changes. The change in rate per unit change of amplitude is $d\ln T/d\theta_0\approx\theta_0/8$: proportional to the swing. Cutting the swing by a factor of 8 cuts the sensitivity by 8 and the circular error by 64. The anchor does not remove the circular error; it makes it small enough that an unequal drive hardly matters, and that is what allowed ordinary clocks to reach a few seconds per week.`,
-      caption: String.raw`Left: the anchor rocks with the pendulum and the escape wheel advances one tooth per swing (tick, tock). Right: seconds lost per day against amplitude (log scale). Set the **anchor swing** and the **large swing** of an assumed verge-era pendulum, and compare how much each rate moves when the amplitude changes by 10%.`,
-      deps: ['tech-5.6'],
-      see: ['tech-5.4', 'mech-4.4'],
-      refs: ['Usher, “The development of clocks and watches”', 'Lloyd, “The anchor escapement: William Clement or Robert Hooke?” (1952), as cited by the British Museum catalogue'],
-      tags: ['early-modern', 'timekeeping', 'escapement'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Anchor_escapement' },
-      viz(v) {
-        const A = v.stage({ x: [-1.7, 1.7], y: [-1.35, 2.3], equal: true, axes: false, height: 360, weight: 1, minWidth: 300, title: 'anchor and escape wheel (30 teeth)' });
-        const B = v.stage({ x: [0, 60], y: [0.5, 5000], ylog: true, axes: 'box', gutter: true, height: 360, weight: 1.1, minWidth: 320, xlabel: 'amplitude (°)', ylabel: 'seconds lost per day', title: 'rate against amplitude' });
-        const aS = v.slider('anchor swing $\\theta_0$ (°)', 1, 12, 5, { step: 0.25 });
-        const bS = v.slider('large (verge-era) swing (°)', 10, 60, 40, { step: 1 });
-        const N = 30, PIV = [0, 1.55], W0 = Math.PI;
-        v.animate((t) => {
-          const th0 = aS.value * D2R, th = th0 * Math.cos(W0 * t) , k = 3.2; // anchor rotates k times the displayed pendulum angle so the motion is visible
-          const steps = 2 * (t) ; const f = steps - Math.floor(steps), step = Math.floor(steps) + clamp(f / 0.25, 0, 1) * clamp(f / 0.25, 0, 1) * (3 - 2 * clamp(f / 0.25, 0, 1));
-          const wheel = -step * (360 / N / 2) * D2R;
-          A.circle(0, 0, 0.8, { color: 'muted', width: 1, alpha: 0.5 });
-          for (let i = 0; i < N; i++) { const a = wheel + (i * 2 * Math.PI) / N + Math.PI / 2; A.poly([[0.8 * Math.cos(a), 0.8 * Math.sin(a)], [1.0 * Math.cos(a - 0.04), 1.0 * Math.sin(a - 0.04)], [0.8 * Math.cos(a - 0.21), 0.8 * Math.sin(a - 0.21)]], { fill: 'muted', fillAlpha: 0.35, color: 'muted', width: 0.9 }); }
-          // anchor: arms from the pivot to two pallets
-          const phi = k * th, rot = (p) => { const dx = p[0] - PIV[0], dy = p[1] - PIV[1]; return [PIV[0] + dx * Math.cos(phi) - dy * Math.sin(phi), PIV[1] + dx * Math.sin(phi) + dy * Math.cos(phi)]; };
-          const PL = [-0.55, 0.78], PR = [0.55, 0.78], pl = rot(PL), pr = rot(PR), mid = rot([0, 1.0]);
-          A.path([pl, rot([-0.3, 0.98]), mid, rot([0.3, 0.98]), pr], { color: 'accent', width: 5 });
-          A.line(PIV[0], PIV[1], mid[0], mid[1], { color: 'accent', width: 3 });
-          A.dot(pl[0], pl[1], { r: 5, color: 'orange' }); A.dot(pr[0], pr[1], { r: 5, color: 'orange' });
-          A.dot(PIV[0], PIV[1], { r: 5, color: 'ink' });
-          // pendulum rod continuing from the pivot, drawn at the true angle scaled for visibility
-          const rod = [PIV[0] + 0.0 + 0.02, PIV[1]], tip = [PIV[0] + 0.8 * Math.sin(phi), PIV[1] + 0.8 * Math.cos(phi)];
-          A.line(PIV[0], PIV[1], tip[0], tip[1], { color: 'ink', width: 2.2, alpha: 0.9 });
-          A.dot(tip[0], tip[1], { r: 5, color: 'gold' });
-          A.text('rod to the pendulum', 0.75, 2.25, { size: 10.5, color: 'muted', align: 'center' });
-          A.text('swing exaggerated 3×', 0, -1.25, { size: 10.5, color: 'muted', align: 'center' });
-          // rate curve
-          const pts = []; for (let x = 0.5; x <= 60; x += 0.5) pts.push([x, Math.max(0.5, lossPerDay(pendulumRatio(x * D2R)))]);
-          B.path(pts, { color: 'orange', width: 2.4 });
-          const xa = aS.value, xb = bS.value;
-          B.vband(Math.max(0, xa * 0.9), xa * 1.1, { color: 'green', alpha: 0.2 }); B.vband(xb * 0.9, xb * 1.1, { color: 'red', alpha: 0.15 });
-          B.dot(xa, Math.max(0.5, lossPerDay(pendulumRatio(xa * D2R))), { r: 6, color: 'green', label: 'anchor', labelPos: 'se' });
-          B.dot(xb, lossPerDay(pendulumRatio(xb * D2R)), { r: 6, color: 'red', label: 'large arc', labelPos: 'nw' });
-        }, { period: 2, still: 0.3 });
-        v.legend([['green', 'anchor swing ±10%', { area: true }], ['red', 'large swing ±10%', { area: true }]]);
-        v.readout(() => {
-          const xa = aS.value, xb = bS.value, f = (x) => lossPerDay(pendulumRatio(x * D2R)), da = f(xa * 1.1) - f(xa * 0.9), db = f(xb * 1.1) - f(xb * 0.9);
-          return `anchor at ${v.fix(xa, 1)}°: loses **${v.fix(f(xa), 1)} s/day**; a ±10% change of amplitude moves the rate by ${v.fix(da, 1)} s/day\nlarge swing ${v.fix(xb, 0)}°: loses **${v.fix(f(xb), 0)} s/day** (${v.fix(f(xb) / 60, 1)} min); the same ±10% moves it by ${v.fix(db, 0)} s/day, ${v.fix(db / da, 0)} times as much\nseconds pendulum: $L=g/\\pi^2=0.994$ m; the small arc is what makes it fit in a case`;
-        });
+The Metropolitan Museum's Knibb longcase clock 1974.28.92, catalogued circa 1680–85, has a weight-driven movement, anchor escapement and long pendulum. Its curatorial study describes the advantage of a small arc together with remaining escapement, friction, temperature and pressure effects, and identifies replacement parts. The object illustrates the mechanism; it does not settle the disputed inventor or certify a universal weekly accuracy.`,
+      idea:String.raw`For an ideal simple pendulum released at amplitude θ0, energy conservation gives
+Put $m=\sin^2(\theta_0/2)$. Then
+$$T/T_0=\frac2\pi K(m),\quad T_0=2\pi\sqrt{L/g},$$
+$$K(m)=\int_0^{\pi/2}\frac{du}{\sqrt{1-m\sin^2u}}.$$
+A clock calibrated at T0 loses $86400(1-T_0/T)$ seconds per reference day. This is circular error against the small-amplitude calibration, not an actual clock's measured daily error. The exact integral is evaluated by the arithmetic-geometric mean. For small θ0, $T/T_0=1+\theta_0^2/16+\cdots$, so smaller arcs reduce the sensitivity to amplitude. Finite ±10% changes below are computed from the full integral rather than extrapolating this approximation.`,
+      caption:String.raw`Select small and large amplitudes to compare exact ideal circular error and the error range from a ±10% amplitude change. The full positive curve is plotted on a logarithmic scale without flooring small values. Phase rocks an enlarged anchor schematic; this drawing does not solve tooth contact, recoil or an exact free-pendulum trajectory.`,
+      deps:['tech-5.6','mech-4.4'],see:['tech-5.4'],refs:['Metropolitan Museum of Art, Knibb longcase clock 1974.28.92, actual curatorial movement/condition account and object record'],tags:['timekeeping','escapement'],
+      scope:String.raw`Ideal pendulum period and authored amplitude comparison. The schematic rocker has threefold angular enlargement, independent illustrative tooth positions and no contact dynamics. No drive law, escapement-induced rate error, friction compensation or historical accuracy is inferred from the pendulum integral.`,
+      links:{source:'https://www.metmuseum.org/art/collection/search/205601'},
+      viz(v){const small=v.slider('small swing amplitude (°)',1,12,5,{step:'any',decimals:6}),large=v.slider('large swing amplitude (°)',10,60,40,{step:'any',decimals:6}),phase=v.slider('schematic rocking phase',0,1,.15,{step:'any',decimals:6}),A=v.stage({x:[-1.7,1.7],y:[-1.4,2.7],equal:true,axes:false,height:340,minWidth:260,title:'enlarged rocker schematic; no contact solver'}),B=v.stage({x:[-3,70],y:[.05,7000],ylog:true,axes:'box',gutter:true,height:340,minWidth:260,xlabel:'amplitude (°)',ylabel:'ideal circular error (s/day)',title:'exact period comparison'});let info;
+        v.legend([['green','small swing and ±10% range'],['red','large swing and ±10% range'],['orange','full ideal circular-error curve']]);
+        v.render(()=>{const p=anchor(small.value,large.value,phase.value);A.circle(0,0,.8,{color:'muted',width:1});for(let i=0;i<30;i++){const a=i*2*Math.PI/30;A.poly([[.8*Math.cos(a),.8*Math.sin(a)],[Math.cos(a-.04),Math.sin(a-.04)],[.8*Math.cos(a-.21),.8*Math.sin(a-.21)]],{fill:'muted',fillAlpha:.25,color:'muted',width:.8});}A.path(p.rocker,{color:'accent',width:4});A.line(...p.pivot,...p.rocker[2],{color:'accent',width:2});A.line(...p.pivot,...p.tip,{color:'ink',width:2});A.dot(...p.pivot,{color:'ink',r:4,ring:false});A.dot(...p.tip,{color:'gold',r:4,ring:false});A.text('rocking angle enlarged 3×',0,-1.22,{align:'center',size:10.5,color:'muted'});B.setView([-3,70],[.05,p.top]);for(const[b,col]of p.bands.map((b,i)=>[b,i?'red':'green']))B.vband(b.left,b.right,{color:col,alpha:.12});B.path(p.curve,{color:'orange',width:2});p.selected.forEach((q,i)=>B.dot(...q,{color:i?'red':'green',r:4,ring:false}));info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return p.selected.map(([a,e],i)=>`${i?'Large':'Small'} amplitude ${v.fix(a,6)}°: ideal circular error ${v.fix(e,9)} s/day; ±10% amplitude range ${v.fix(p.bands[i].low,9)}…${v.fix(p.bands[i].high,9)} s/day.`).join('\n')+`\nThe finite error-range ratio is ${v.fix((p.bands[1].high-p.bands[1].low)/(p.bands[0].high-p.bands[0].low),9)}. Rocker geometry is schematic; these numbers omit escapement disturbances.`;});
       },
     },
 
