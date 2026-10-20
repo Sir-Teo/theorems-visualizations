@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 152,
+  "remainingFlags": 150,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -26,7 +26,7 @@
     "psych": 12,
     "soc": 14,
     "polsci": 9,
-    "music": 23,
+    "music": 21,
     "art": 11,
     "arch": 11,
     "ling": 10,
@@ -1087,37 +1087,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Bohlen%E2%80%93Pierce_scale"
-      }
-    },
-    {
-      "id": "music-7.1",
-      "file": "content/music/ch07.js",
-      "name": "Pythagorean tuning",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 5",
-        "Loy I ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Pythagorean_tuning"
-      }
-    },
-    {
-      "id": "music-7.2",
-      "file": "content/music/ch07.js",
-      "name": "Fifths and octaves never meet",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Pythagorean_comma"
       }
     },
     {
@@ -3180,7 +3149,9 @@
       "polsci-5.4",
       "polsci-5.5",
       "game-4.6",
-      "game-4.7"
+      "game-4.7",
+      "music-7.1",
+      "music-7.2"
     ]
   },
   "additionalFollowups": [
@@ -7551,6 +7522,18 @@
       "status": "resolved",
       "report": "docs/verification/game-centipede-ultimatum-followup.md",
       "note": "Actual original G\u00fcth rules and Fehr\u2013Schmidt Eq2/Proposition1/footnote8 read; two discrete pure-money SPE, exact uniform threshold probabilities/all profit ties, declared inequity slice and all control/replay cases independently accepted."
+    },
+    {
+      "id": "music-7.1",
+      "status": "resolved",
+      "report": "docs/verification/music-pythagorean-followup.md",
+      "note": "Actual Benson2008 Web \u00a7\u00a75.2\u20135.4 and formula tables read; exact note/fifth counts, root-relative rational table and complete closing octave/gaps, declared authored sine playback and real sample/gain/stop/replay independently accepted."
+    },
+    {
+      "id": "music-7.2",
+      "status": "resolved",
+      "report": "docs/verification/music-pythagorean-followup.md",
+      "note": "Actual Benson Lemma6.2.1 and prerequisites read; full authored forward-density proof separated from finite prefixes, exact BigInt record/equality decisions and ET zeros, all1\u2013400 integer prefixes/control/replay/geometry independently accepted."
     }
   ]
 }
