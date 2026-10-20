@@ -283,6 +283,22 @@
         "tech-water-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "soc-4.16",
+        "soc-4.15",
+        "soc-4.13",
+        "soc-4.14"
+      ],
+      "peer": "coordinator independently read original Broder definitions and region table, exhaustively checked 4165 directed graphs and ran fresh native narrow light/dark cases",
+      "reports": [
+        "soc-bowtie-followup.md",
+        "soc-catalogue-followup.md",
+        "soc-configuration-followup.md",
+        "soc-growth-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -295,7 +311,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 109,
+  "currentPendingSourceReviews": 105,
   "latestCheckpoint": {
     "acceptedContentCommit": "c9b5466",
     "pendingSourceReviews": 114,

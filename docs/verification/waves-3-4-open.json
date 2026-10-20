@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 109,
+  "remainingFlags": 105,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "game": 5,
-    "soc": 5,
+    "soc": 1,
     "polsci": 9,
     "music": 13,
     "art": 9,
@@ -294,67 +294,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Exchange_network_theory"
-      }
-    },
-    {
-      "id": "soc-4.13",
-      "file": "content/soc/ch04-c.js",
-      "name": "Gibrat’s proportional growth and city-size laws",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Newman ch. 10"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Zipf%27s_law#City_sizes",
-        "doi": "https://doi.org/10.1162/003355399556133"
-      }
-    },
-    {
-      "id": "soc-4.14",
-      "file": "content/soc/ch04-c.js",
-      "name": "The configuration model",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Newman ch. 12"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Configuration_model"
-      }
-    },
-    {
-      "id": "soc-4.15",
-      "file": "content/soc/ch04-c.js",
-      "name": "The long tail",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "E&K §18.5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Long_tail"
-      }
-    },
-    {
-      "id": "soc-4.16",
-      "file": "content/soc/ch04-c.js",
-      "name": "The bow-tie structure of the Web",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "E&K §13.4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Bow-tie_structure"
       }
     },
     {
@@ -2503,7 +2442,11 @@
       "soc-4.12",
       "tech-4.2",
       "tech-4.3",
-      "tech-5.1"
+      "tech-5.1",
+      "soc-4.16",
+      "soc-4.15",
+      "soc-4.13",
+      "soc-4.14"
     ]
   },
   "additionalFollowups": [
@@ -7157,6 +7100,26 @@
       "id": "tech-5.1",
       "status": "resolved",
       "note": "2026-10-20: worker_three independently accepted exact 7aa8cf2 clock sources, analytic clock inverse and native input/state/bounds; tech-water-followup.md."
+    },
+    {
+      "id": "soc-4.16",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently read original Broder definitions and region table, exhaustively checked 4165 directed graphs and ran fresh native narrow light/dark cases; soc-bowtie-followup.md."
+    },
+    {
+      "id": "soc-4.15",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently read original 2003 estimates and table pixels, checked discrete sums and fresh native narrow light/dark cases; soc-catalogue-followup.md."
+    },
+    {
+      "id": "soc-4.13",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently read original Gabaix normalization and Propositions 1/4, checked projected walks and fresh native narrow light/dark cases; soc-growth-followup.md."
+    },
+    {
+      "id": "soc-4.14",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently read NSW and Feld originals including formula pixels, checked 75 extra incidence cases and fresh native narrow light/dark cases; soc-configuration-followup.md."
     }
   ]
 }
