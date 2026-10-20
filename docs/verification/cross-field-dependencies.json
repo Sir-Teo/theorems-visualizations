@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 45,
+  "publishedBelowTarget": 44,
   "wholeSyllabusBelowTarget": 28,
   "entries": [
     {
@@ -9708,15 +9708,22 @@
       "collection": "energy",
       "field": "eng",
       "target": 25,
-      "writtenToWritten": 14,
-      "writtenToKnown": 17,
-      "wholeSyllabus": 35,
-      "publishedShortfall": 11,
+      "writtenToWritten": 25,
+      "writtenToKnown": 28,
+      "wholeSyllabus": 46,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
           "item": "energy-1.10",
           "prerequisite": "ode-1.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "energy-1.10",
+          "prerequisite": "pma-5.8",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -9757,6 +9764,20 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "energy-2.7",
+          "prerequisite": "pma-5.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "energy-2.8",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "energy-2.9",
           "prerequisite": "pchem-3.11",
           "prerequisiteField": "chem",
@@ -9764,8 +9785,36 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "energy-2.9",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "energy-2.12",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "energy-3.7",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "energy-3.8",
           "prerequisite": "ode-3.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "energy-3.8",
+          "prerequisite": "ode-3.2",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -9799,6 +9848,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "energy-4.7",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "energy-4.11",
           "prerequisite": "mat-9.8",
           "prerequisiteField": "chem",
@@ -9827,9 +9883,30 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "energy-4.2",
+          "prerequisite": "vcalc-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "energy-4.3",
           "prerequisite": "cm-4.7",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "energy-4.4",
+          "prerequisite": "pma-4.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "energy-4.4",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -15151,7 +15228,8 @@
     "reviewedCandidates": [
       "e57c6a5758904c1f08f79c437a2be87a69924471",
       "3fea5ed16b2c7bc2a08bdccb353a4add425fe817",
-      "cdc478caa16e6cfa24c329659e10287973468fd7"
+      "cdc478caa16e6cfa24c329659e10287973468fd7",
+      "cabd1be31cd9690a623545dffe6ad88865ad2f1e"
     ],
     "excludedUnacceptedEdges": [
       {

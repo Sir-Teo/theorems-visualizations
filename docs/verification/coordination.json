@@ -42,7 +42,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "ENERGY prerequisite immutable peer pre-reading; producer hash forthcoming",
+      "current": "Independent ALGO prerequisite peer prereading; exacthashforthcoming",
       "owns": [
         "Unique ENERGY peer report/tests, no content/global changes"
       ],
@@ -72,9 +72,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent exactARCH6587367+b33b4e0original/math/native peer",
+      "current": "IMAGING genuine prerequisite production;3.18passwordboundary unchanged",
       "owns": [
-        "Unique ARCH peer report/tests only"
+        "IMAGING writtenitems/matchingrows/unique tests/reports; no3.18sourceclosure"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -1337,6 +1337,21 @@
         "d2ca3bab4e07ea4f23064cc7b04098ccd4e8a5dc",
         "842051e3b4528cedde166d65d2bff304324babc9"
       ]
+    },
+    {
+      "ids": [
+        "arch-3.14"
+      ],
+      "peer": "thermo_prereqs independently read43actual original pages and verified exactb33b4e0 source/math/native/ownpixels including decimal boundary correction",
+      "reports": [
+        "docs/verification/arch-heyman-independent-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "65873678fcf45f17a5b3e309f7aa51ef6230eeb3",
+        "b33b4e0434eb28a6425010fc8a6dc3e2f8e43b40",
+        "30ac2c447381a34d348d747d8ff19fd35bc68630"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1349,7 +1364,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 6,
+  "currentPendingSourceReviews": 5,
   "latestCheckpoint": {
     "testedContentCommit": "5a8b79422b0492bd8c7188a55e1d8efc704434c8",
     "acceptedContentCommit": "5a8b794",
@@ -1413,6 +1428,12 @@
       "finding": "Coordinateclipping plot has eta*c*sqrt2 bound but inherited legend/readout still eta*c.",
       "owner": "oldworker_three immutable delivery only; successor does not edit oldtree",
       "sourceClosure": "None; no commit yet as of lastread ofcodex/atlas-crossfield-psych e57c6a5."
+    },
+    {
+      "id": "algo-5.18-upper-bound-and-retry",
+      "status": "recorded-awaiting-dedicated-repair",
+      "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
+      "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap."
     }
   ],
   "stateFollowups": [
@@ -1702,15 +1723,39 @@
       "publishedBefore": 13,
       "publishedAfter": 25,
       "sourceClosure": "None; bounded prerequisite/bridge prose only."
+    },
+    {
+      "commit": "cabd1be31cd9690a623545dffe6ad88865ad2f1e",
+      "collection": "energy",
+      "items": [
+        "energy-1.10",
+        "energy-2.7",
+        "energy-2.8",
+        "energy-2.9",
+        "energy-2.12",
+        "energy-3.7",
+        "energy-3.8",
+        "energy-4.2",
+        "energy-4.4",
+        "energy-4.7"
+      ],
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "deep_peer",
+      "report": "docs/verification/energy-crossfield-prerequisites-peer.md",
+      "publishedBefore": 14,
+      "publishedAfter": 25,
+      "sourceClosure": "None; unchangedsourceflags.",
+      "bridgeReview": "NoenergyIDs are currentbridge steps; independently checked."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 784,
-    "publishedBelow25": 45,
+    "publishedShortfall": 773,
+    "publishedBelow25": 44,
     "collections": 64,
     "wholeSyllabusBelow25": 28,
     "date": "2026-10-20",
-    "acceptedSnapshot": "DEEP+THERMO+CTRL genuine prerequisites independently accepted; frozenBIGHIST3.5edge excluded."
+    "acceptedSnapshot": "DEEP+THERMO+CTRL+ENERGY genuine prerequisites independently accepted; frozenBIGHIST3.5edge excluded."
   },
   "previousSessionWorkers": [
     {

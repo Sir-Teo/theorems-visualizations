@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **45 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 784 edges. Even
+Of 64 non-math collections, **44 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 773 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -167,3 +167,8 @@ Exact `3fea5ed` adds11independently reviewed derivational uses across10written i
 ## Control theory reaches the published prerequisite target
 
 Exact `cdc478c` adds12independently reviewed derivational inputs across11written items, bringing CTRL13→25published,22→34known and37→49whole-syllabus. The quotient/chain/determinant/coordinate/Lyapunov/extremum/Lipschitz arguments personally match actual written targets; full50object/function/flag guards, independent766families/7848cascade timepoints,22fresh narrow outputs and4touched feedback/stability cards pass. See [peer](ctrl-crossfield-prerequisites-peer.md). Current accepted shortfall784,45/64below25published,28whole syllabi below25; frozenBIGHISTedge excluded. No source review closes.
+
+
+## Energy reaches the published prerequisite target
+
+Exact `cabd1be` adds11independently reviewed mathematical uses across10written arguments (extrema, MVT, work/exergy integrals, Taylor bounds, matrix evolution and vector projection), bringing ENERGY14→25published,17→28known,35→46whole. All45objects/functions/flags and fullsyllabusguarded;839independent cases,20fresh narrow theme proof outputs, strict/static pass. Noexistingbridge contains anenergy step. See [peer](energy-crossfield-prerequisites-peer.md). Current accepted shortfall773,44/64below25published,28whole below25. No sourceclosure; frozenBIGHISTedge excluded.

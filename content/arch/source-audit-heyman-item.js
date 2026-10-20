@@ -1,5 +1,5 @@
 import{heymanJoint}from'./source-audit-heyman.js';
-export default{num:'3.14',kind:'Paper',name:'The Stone Skeleton',verify:true,
+export default{num:'3.14',kind:'Paper',name:'The Stone Skeleton',verify:false,
  paper:{authors:'Jacques Heyman',year:1966,title:'The stone skeleton',venue:'International Journal of Solids and Structures 2 (2): 249–279',doi:'10.1016/0020-7683(66)90018-7'},
  introduces:['arch-3.4','arch-3.5'],deps:['arch-3.2','solid-4.10'],refs:[],credit:'J. Heyman, 1966',tags:['heyman','limit analysis','history'],
  statement:String.raw`Heyman applies masonry limit analysis to Gothic construction. His ideal material carries no tension, has effectively unlimited compressive strength at the working stresses, and cannot slide. For fixed geometry and given static loads, finding a compressive thrust system in equilibrium and wholly contained in the masonry is sufficient for stability in this idealization. It need not be the actual thrust system. A collapse claim additionally needs a compatible mechanism with enough hinges; touching an edge at one section does not establish collapse. The paper develops these ideas for arches, flying buttresses, domes and vaults.`,
