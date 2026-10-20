@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 81,
+  "remainingFlags": 79,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "game": 3,
     "polsci": 4,
-    "music": 6,
+    "music": 4,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -304,46 +304,6 @@
       "refs": [],
       "links": {
         "archive": "https://archive.org/details/essaisurlapplica00cond"
-      }
-    },
-    {
-      "id": "music-8.14",
-      "file": "content/music/ch08-b.js",
-      "name": "The Fourier transform of a pitch-class set",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "credit",
-          "text": "Fourier analysis of pitch-class sets: David Lewin (interval function, from 1959), Ian Quinn (\"General equal-tempered harmony\", 2006–07), Emmanuel Amiot (e.g. \"David Lewin and maximally even sets\", 2007; Music Through Fourier Space, 2016); attributions from secondary sources, not checked against the originals"
-        }
-      ],
-      "refs": [
-        "Tymoczko, A Geometry of Music"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Discrete_Fourier_transform"
-      }
-    },
-    {
-      "id": "music-8.15",
-      "file": "content/music/ch08-c.js",
-      "name": "Interval content from Fourier magnitudes",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "credit",
-          "text": "The interval function is David Lewin's (1959 onward); its relation to Fourier magnitudes is developed by Ian Quinn and Emmanuel Amiot (2000s); attributions from secondary sources, not checked against the originals"
-        }
-      ],
-      "refs": [
-        "Tymoczko, A Geometry of Music"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Autocorrelation#Wiener%E2%80%93Khinchin_theorem"
       }
     },
     {
@@ -2059,7 +2019,9 @@
       "game-3.10",
       "tech-4.1",
       "tech-4.8",
-      "tech-4.9"
+      "tech-4.9",
+      "music-8.14",
+      "music-8.15"
     ]
   },
   "additionalFollowups": [
@@ -6873,6 +6835,16 @@
       "id": "tech-4.9",
       "status": "resolved",
       "note": "2026-10-20: worker one independent exact-commit source/math/native review; coordinator metadata review; docs/verification/tech-loads-followup.md."
+    },
+    {
+      "id": "music-8.14",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent exact-commit source/math/audio/native review; docs/verification/music-fourier-followup.md."
+    },
+    {
+      "id": "music-8.15",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent exact-commit source/math/audio/native review; docs/verification/music-fourier-followup.md."
     }
   ]
 }

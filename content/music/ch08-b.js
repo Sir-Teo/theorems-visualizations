@@ -62,7 +62,7 @@ export default {
     ...setClassItems,
     // ------------------------------------------------------------------ 8.14
     {
-      num:'8.14',kind:'Method',name:'The Fourier transform of a pitch-class set',verify:true,
+      num:'8.14',kind:'Method',name:'The Fourier transform of a pitch-class set',verify:false,
       statement:String.raw`For a set $S\subseteq\Z/12$, define
 $$f_k(S)=\sum_{j\in S}e^{-2\pi i jk/12}.$$
 Here $f_0=|S|$ and $f_{12-k}=\overline{f_k}$. Thus $k=1,\ldots,6$ list the nonzero-frequency magnitudes up to conjugacy; they summarize the set but do not determine it, because they discard phase. Transposition by $n$ multiplies $f_k$ by $e^{-2\pi ink/12}$; inversion $j\mapsto-j$ conjugates it. Both preserve every magnitude.
@@ -71,7 +71,7 @@ The length $|f_k|$ measures alignment of the notes' unit phasors at bin $k$. For
       caption:String.raw`Choose a preset or click the clock to edit the displayed set; editing correctly accounts for the active transposition and inversion. Change the Fourier bin, transposition or inversion. Green ticks are exact maxima for this cardinality; the chain uses the same mapped notes and keeps their original order. Empty/full sets and saved custom sets are supported. Play the displayed, transformed set with the declared synthetic spectrum.`,
       deps:['music-8.1','music-8.4','pma-8.10'],see:['music-8.15','music-8.4'],
       refs:['Amiot 2007, Gammes bien réparties et transformée de Fourier discrète, §§1.2–1.4 and 2.2, pp. 99–108'],tags:['fourier','evenness'],
-      credit:'Emmanuel Amiot, 2007, source treatment; finite exact enumeration authored',
+      credit:'Emmanuel Amiot, source treatment; finite exact enumeration authored',
       scope:String.raw`This widget works in the twelve-element pitch-class circle. Exact squared magnitudes and inverse interval counts use the field $\Q(\sqrt3)$; phasor coordinates, square roots and audio frequencies use floating-point evaluation. The finite exhaustive check does not prove a statement for every cyclic group. A large bin describes phasor alignment, not a unique musical category or a listener preference; magnitudes alone can coincide for different sets. Audio uses C4=261.6256 Hz, eight harmonics with relative amplitudes $1/h$, mono 44,100-Hz synthesis, 10-ms ramps and a pre-output bound 0.12.`,
       links:{source:'https://journals.openedition.org/msh/pdf/4272'},
       viz(v){

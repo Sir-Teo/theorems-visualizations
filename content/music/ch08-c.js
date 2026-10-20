@@ -16,7 +16,7 @@ export default {
   items: [
     // ------------------------------------------------------------------ 8.15
     {
-      num:'8.15',kind:'Theorem',name:'Interval content from Fourier magnitudes',verify:true,
+      num:'8.15',kind:'Theorem',name:'Interval content from Fourier magnitudes',verify:false,
       statement:String.raw`For $S\subseteq\Z/12$, let $I_S(d)$ count ordered pairs $(a,b)\in S^2$ with $b-a\equiv d$. For its Fourier coefficients $f_k$ from 8.14, put $\omega=e^{-2\pi i/12}$. Then
 $$|f_k|^2=\sum_{d=0}^{11}I_S(d)\omega^{kd},$$
 $$I_S(d)=\frac1{12}\sum_{k=0}^{11}|f_k|^2\omega^{-kd}.$$
@@ -28,7 +28,7 @@ for every difference $d$, including zero.`,
       caption:String.raw`Choose a set, edit the clock and compare with its complement, a moved copy or a Z-mate of the same cardinality. Purple rings reconstruct the full interval function using exact squared coefficients. The power plot includes bin 0 so that unequal complement sizes remain visible. If no Z-mate exists, the comparison is explicitly absent. Play A then B; an empty event is silence.`,
       deps:['music-8.14','music-8.12','pma-8.16'],see:['music-8.13','music-8.11'],
       refs:['Amiot 2007, §§1.2–1.3, pp. 99–101, Theorems2–4 and convolution proof'],tags:['fourier','interval vector'],
-      credit:'Amiot, 2007, source exposition of the interval-content identity and hexachord condition',
+      credit:'Amiot, source exposition of the interval-content identity and hexachord condition',
       scope:String.raw`The transform identities hold for finite cyclic groups; this implementation explicitly computes all twelve differences/bins in $\Z/12$. Exact squared coefficients lie in $\Q(\sqrt3)$, and the inverse is evaluated there to integral counts; the readout also reports the independent floating-point inverse error. A Z-mate is a same-cardinality set with the same interval vector outside A's transposition/inversion class; when several exist the smallest integer bitmask is chosen. The finite search covers all 4,096 sets. No historical priority or perceptual sameness follows from an interval vector. Audio is the declared C4/H8 signal of 8.14, with 0.6-second events and 0.1-second silence between them.`,
       links:{source:'https://journals.openedition.org/msh/pdf/4272'},
       viz(v){
