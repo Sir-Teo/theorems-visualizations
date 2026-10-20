@@ -1,11 +1,8 @@
 // Big History & Quantitative History — Chapter 4, part b: items 4.5–4.8
 //
 // Sources checked (Oct 2026); Crossref was used for bibliographic details.
-//   4.5 Green et al., Science 328: 710 (2010) (Neanderthal ancestry of non-Africans, 1–4%); Reich et al., Nature 468: 1053 (2010)
-//     (Denisova); Fu et al., Nature 514: 445 (2014) (Ust'-Ishim: Neanderthal segments longer than in present people, gene flow
-//     7–13 kyr before he lived, i.e. 50–60 ka; earlier estimates 37–86 ka; all confirmed by search). The Denisovan share and the
-//     generation time of 29 years are recalled, not re-checked. The painting is the standard continuous-time (Markov) model of
-//     admixture-segment lengths with mean 1/(T(1-f)) Morgans; it is a model, not a map of any genome.
+//   4.5 Actual Green2010ancestry-estimation/limitations, Reich2010Melanesian analysis,
+//     Fu2014dating/admixture/Fig5–6 read; authored stationary-window law and censoring explicit.
 //   4.6 Ambrose, J. Hum. Evol. 34: 623 (1998) and Rampino & Self, Nature 359: 50 (1992) (Crossref-checked); Storey et al., PNAS 109:
 //     18684 (2012) (Crossref-checked; date of about 74 ka rounded, the value 73.88 ka was not confirmed); Lane et al., PNAS 110:
 //     8025 (2013) and Yost et al., J. Hum. Evol. (2018) (Lake Malawi ash: no volcanic winter; only the titles/gist were confirmed
@@ -17,8 +14,9 @@
 //     Science 287: 2250 (2000) (moa, within about a century of settlement); Clarkson 2017 and Bennett 2021 as in 4.3. All bars are
 //     rounded, indicative windows (several recalled, not re-checked) and not the output of one dataset.
 
-import { clamp, paintSegments } from './ch04.shared.js';
+import { clamp } from './ch04.shared.js';
 import learningItem from './learning-item.js';
+import admixtureItem from './admixture-item.js';
 
 // ── 4.8 data: arrival window, extinction window, climate window (or null); ages in ka before present ─────────
 const REG = [
@@ -37,90 +35,7 @@ export default {
   chapter: 4,
   items: [
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-    {
-      num: '4.5',
-      kind: 'Event',
-      name: 'Neanderthal and Denisovan admixture',
-      statement: String.raw`Modern humans met and had children with Neanderthals and Denisovans. Present-day people outside Africa carry roughly $1$–$2\%$ Neanderthal DNA (Green et al., 2010), and some peoples of Oceania also carry several percent of Denisovan ancestry. These archaic segments entered a small number of generations ago, and every generation since has cut them by recombination: if the gene flow happened $T$ generations ago and a fraction $f$ of the genome is archaic, the archaic segments along a chromosome have lengths that are approximately exponential with mean
-$$\bar\ell \approx \frac{1}{T(1-f)}\ \text{Morgans},$$
-so the length of the segments dates the admixture. The $45\,000$-year-old Ust'-Ishim genome has far longer Neanderthal segments than anyone alive and put the gene flow $7\,000$–$13\,000$ years before his time, that is about $50\,000$–$60\,000$ years ago (Fu et al., 2014).
-
-**Scope.** One pulse of admixture and neutral segments; in reality there were several episodes, selection removed many archaic segments, and the uncertainty of the date includes the generation time and the recombination map.`,
-      idea: String.raw`Each generation, a chromosome inherited from a mixed parent is a patchwork cut at an average rate of one crossover per Morgan. After $T$ generations the cuts form a Poisson process of rate $T$ per Morgan, and the two ancestries alternate along the chromosome as a two-state Markov chain whose leaving rates are $T(1-f)$ (out of an archaic segment) and $Tf$ (out of a human one). The mean archaic length is the reciprocal of the first rate. Reading that backwards, the observed mean length gives $\hat T = 1/\bigl(\bar\ell(1-f)\bigr)$. Detection thresholds cut away short segments; because the exponential is memoryless, subtracting the threshold from the mean repairs the estimate (the picture does this).`,
-      caption: String.raw`Each bar is a stretch of one chromosome copy in a window of the chosen width; red is Neanderthal-derived (and orange Denisovan, if you add it). Pick a preset (an ancient Siberian genome, whose segments are long, or a present-day genome, whose segments are short) or set the date and fraction. The histogram shows all segment lengths from 200 copies against the exponential law; the readout recovers the date from the lengths and converts to years (29 years per generation).`,
-      deps: ['bighist-4.3'],
-      see: ['bighist-4.4'],
-      refs: ['Christian'],
-      credit: 'Green et al., 2010 (Neanderthal genome); Reich et al., 2010 (Denisovans); Fu et al., 2014 (dating by segment length)',
-      tags: ['admixture', 'ancient DNA', 'recombination'],
-      scope: String.raw`Single-pulse model with neutral segments and a fixed generation time of 29 years.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Neanderthal_genetics', doi: 'https://doi.org/10.1038/nature13810' },
-      verify: true,
-      viz(v) {
-        const P = { 'Ust’-Ishim (long segments)': [330, 2.3], 'present-day (short segments)': [1800, 2.0] };
-        let Ts, fs;
-        const pre = v.select('preset', Object.keys(P), 'present-day (short segments)', { onChange: (k) => { Ts.set(P[k][0]); fs.set(P[k][1]); } });
-        Ts = v.slider('Neanderthal gene flow: generations ago $T$', 20, 4000, 1800, { step: 1, log: true });
-        fs = v.slider('Neanderthal fraction $f$ (%)', 0.2, 8, 2, { step: 0.1 });
-        const W = v.slider('window (cM)', 2, 40, 10, { step: 1 });
-        const thr = v.slider('detection threshold (cM)', 0, 0.3, 0.05, { step: 0.01 });
-        const den = v.toggle('add Denisovan ancestry', false);
-        const T2 = v.slider('Denisovan gene flow: generations ago', 100, 4000, 1500, { step: 1, log: true });
-        const f2 = v.slider('Denisovan fraction (%)', 0.5, 8, 3, { step: 0.1 });
-        const A = v.stage({ x: [0, 1], y: [0, 15], axes: false, height: 320, weight: 1.35, title: 'ancestry along a stretch of chromosome' });
-        const B = v.stage({ x: [0, 3], y: [0, 1], axes: 'box', gutter: true, height: 320, weight: 1, xlabel: 'segment length (cM)', ylabel: 'density', title: 'Neanderthal segment lengths' });
-        let cache = null, key = '';
-        const NROW = 200;
-        const run = () => {
-          const k = `${Ts.value}|${fs.value}|${W.value}|${den.value}|${T2.value}|${f2.value}`;
-          if (k === key) return cache;
-          key = k;
-          const r = v.rng(11);
-          const rows = [], lens = [];
-          for (let i = 0; i < NROW; i++) {
-            const n = paintSegments(r, W.value / 100, Ts.value, fs.value / 100);
-            const d = den.value ? paintSegments(r, W.value / 100, T2.value, f2.value / 100) : [];
-            rows.push({ n, d });
-            for (const [a, b] of n) if (a > 0 && b < W.value / 100) lens.push((b - a) * 100); // exclude segments cut by the window edge
-          }
-          cache = { rows, lens }; return cache;
-        };
-        v.render(() => {
-          const { rows, lens } = run();
-          const NS = 16;
-          for (let i = 0; i < NS; i++) {
-            const y = 14.4 - i * 0.9;
-            A.rect(0, y - 0.28, 1, y + 0.28, { fill: 'muted', fillAlpha: 0.2, stroke: false });
-            for (const [a, b] of rows[i].n) A.rect(a / (W.value / 100), y - 0.34, Math.max(b / (W.value / 100), a / (W.value / 100) + 0.0015), y + 0.34, { fill: 'red', fillAlpha: 0.9, stroke: false });
-            for (const [a, b] of rows[i].d) A.rect(a / (W.value / 100), y - 0.34, Math.max(b / (W.value / 100), a / (W.value / 100) + 0.0015), y + 0.34, { fill: 'orange', fillAlpha: 0.9, stroke: false });
-          }
-          A.text(`0`, 0, -0.1, { size: 10, color: 'muted', align: 'left', baseline: 'top' });
-          A.text(`${W.value} cM`, 1, -0.1, { size: 10, color: 'muted', align: 'right', baseline: 'top' });
-          const mean = 100 / (Ts.value * (1 - fs.value / 100));
-          const xm = Math.max(3 * mean, 0.5);
-          B.setView([0, xm], [0, 1]);
-          const kept = lens.filter((l) => l >= thr.value);
-          if (kept.length > 3) {
-            const h = v.M.histogram(kept, { bins: 30, range: [0, xm] });
-            const dens = h.density, mx = Math.max(...dens, 1 / mean);
-            B.setView([0, xm], [0, mx * 1.15]);
-            B.hist(kept, { bins: 30, range: [0, xm], density: true, color: 'red', fillAlpha: 0.3 });
-          }
-          const lam = 1 / mean;
-          B.fn((x) => (x >= thr.value ? lam * Math.exp(-lam * (x - thr.value)) : 0), { color: 'accent', width: 2.4, domain: [0, xm] });
-          B.vband(0, thr.value, { color: 'faint', alpha: 0.2, edges: false });
-          v.legend([['red', 'Neanderthal-derived'], ['orange', 'Denisovan-derived'], ['accent', 'exponential law (mean $1/(T(1-f))$)']]);
-        });
-        v.readout(() => {
-          const { lens } = run();
-          const kept = lens.filter((l) => l >= thr.value);
-          if (kept.length < 3) return 'Too few segments in this window: widen it or lower the threshold.';
-          const mu = kept.reduce((s, l) => s + l, 0) / kept.length - thr.value;
-          const That = 100 / (mu * (1 - fs.value / 100));
-          return `${kept.length} segments kept; mean length **${v.fix(mu + thr.value, 3)} cM** (above the threshold ${v.fix(mu, 3)} cM). Estimated $\\hat T = 1/(\\bar\\ell(1-f)) = ${v.fix(That, 0)}$ generations (true ${v.fix(Ts.value, 0)}) ≈ **${v.fix((That * 29) / 1000, 1)} kyr** before the person lived.\nLiterature: the Ust’-Ishim genome (45 ka) puts the gene flow 7–13 kyr before him, about 50–60 ka; earlier estimates ranged 37–86 ka. The presets are illustrations, not fits.`;
-        });
-      },
-    },
+    admixtureItem,
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     {
       num: '4.6',
