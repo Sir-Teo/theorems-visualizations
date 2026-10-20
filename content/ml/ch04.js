@@ -23,7 +23,7 @@ export default {
       kind: 'Definition',
       name: 'ε-representative sample',
       statement: String.raw`Fix a domain $Z$, a hypothesis class $\mathcal H$, a loss $\ell:\mathcal H\times Z\to\mathbb R_+$ and a distribution $\mathcal D$ over $Z$. A training set $S$ is called **$\varepsilon$-representative** (with respect to $Z,\mathcal H,\ell,\mathcal D$) if the empirical risk of *every* hypothesis is within $\varepsilon$ of its true risk:
-$$\forall h\in\mathcal H:\qquad |L_S(h)-L_{\mathcal D}(h)|\le\varepsilon .$$
+$$\begin{gathered}\forall h\in\mathcal H:\\\bigl|L_S(h)-L_{\mathcal D}(h)\bigr|\le\varepsilon .\end{gathered}$$
 The requirement is simultaneous, over the whole class, and holds for one fixed sample.`,
       idea: String.raw`For a single fixed $h$ the law of large numbers already says $L_S(h)\approx L_{\mathcal D}(h)$. The trouble with ERM is that it looks at the *minimum* of $L_S$ over a class, and the hypothesis at which the minimum occurs is chosen *after* seeing $S$, so the estimate there can be optimistically wrong (ml-2.1c). Representativeness is the condition that removes this selection effect: when the whole empirical curve $h\mapsto L_S(h)$ lies in an $\varepsilon$-tube around the true curve, no choice of $h$ made from $S$ can be fooled by more than $\varepsilon$. Whether samples are representative with high probability is the subject of ml-4.3.
 
