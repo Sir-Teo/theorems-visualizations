@@ -1,0 +1,325 @@
+{
+  "mapping": [
+    {
+      "num": "1.9",
+      "file": "ch01-b.js",
+      "added": [
+        "ladr-5.55"
+      ],
+      "expectedDeps": [
+        "popgen-1.5",
+        "ladr-5.55"
+      ],
+      "idea": "The recursion is linear with matrix $\\begin{pmatrix}0&1\\\\ \\tfrac12&\\tfrac12\\end{pmatrix}$, whose eigenvalues are $1$ (eigenvector $q_m = q_f$: the equilibria) and $-\\tfrac12$ (the difference between the sexes). The eigenvalue $1$ is the conservation law $2q_f'+q_m' = (q_f+q_m)+q_f$; the eigenvalue $-\\tfrac12$ makes the gap change sign and halve each generation, because sons copy their mothers\u2019 frequency of one generation ago. At an autosomal locus both sexes draw from the same pooled gamete frequency (1.5), so the gap closes in a single generation.\n\nThe eigenbasis criterion ladr-5.55 applies because the two displayed eigenvalues have independent eigenvectors spanning this two-dimensional state space. In those coordinates, applying the generation matrix t times multiplies the two components by $1^t$ and $(-1/2)^t$. This separates the conserved weighted mean from the alternating, decaying difference; the conclusion is for the fixed linear inheritance recursion, without added selection or sampling."
+    },
+    {
+      "num": "1.10",
+      "file": "ch01-b.js",
+      "added": [
+        "prob-2.2.1",
+        "prob-1.6.1",
+        "ladr-6.14"
+      ],
+      "expectedDeps": [
+        "popgen-1.5",
+        "popgen-1.8",
+        "prob-2.2.1",
+        "prob-1.6.1",
+        "ladr-6.14"
+      ],
+      "idea": "Two independent draws are the same allele with probability $\\sum p_i^2$, so $H$ is the chance they differ; it is a concave function of the frequencies, maximised at the centre of the simplex where the level sets $\\sum p_i^2 = c$ are circles around the centre. In a sample, $E[\\hat p_i^2] = p_i^2 + p_i(1-p_i)/2n$ because $\\hat p_i$ has sampling variance $p_i(1-p_i)/2n$; summing gives $E[1-\\sum\\hat p_i^2] = H(1-\\tfrac1{2n})$ \u2014 sampling noise makes the sample look less diverse than the population \u2014 and multiplying by $2n/(2n-1)$ removes the bias.\n\nFor a sample modeled as independent gene-copy draws, each allele's count is a sum of bounded indicators. Variance addition prob-2.2.1 gives $\\operatorname{var}(\\hat p_i)=p_i(1-p_i)/(2n)$, although the different allele counts are not mutually independent. Using $E\\hat p_i^2=(E\\hat p_i)^2+\\operatorname{var}(\\hat p_i)$ and expectation linearity prob-1.6.1 then yields the stated bias correction. The correction requires more than one sampled copy and this sampling model; related samples need not have the same variance.\n\nThe displayed diversity bound also uses Cauchy\u2013Schwarz ladr-6.14 on the real vectors $(p_1,\\ldots,p_k)$ and $(1,\\ldots,1)$: since the frequencies sum to one, $1\\le k\\sum_i p_i^2$. Thus $H\\le1-1/k$, with equality exactly at uniform frequencies by the equality condition. This applies to a finite probability vector; it is the upper bound already stated above."
+    },
+    {
+      "num": "1.16",
+      "file": "ch01-b.js",
+      "added": [
+        "prob-1.6.2"
+      ],
+      "expectedDeps": [
+        "popgen-1.5",
+        "popgen-1.10",
+        "prob-1.6.2"
+      ],
+      "idea": "Heterozygosity $2p(1-p)$ is a concave function of $p$, so the average of its values lies below its value at the average (Jensen): $\\sum w_i\\,2p_iq_i = 2\\bar p\\bar q - 2\\sigma^2$, from $\\sum w_ip_i^2 = \\bar p^2 + \\sigma^2$. Geometrically, the subpopulations are points on the Hardy\u2013Weinberg parabola and the pooled sample is their centre of mass, which lies inside the curve. Fusing the subpopulations into one randomly mating unit restores $2\\bar p\\bar q$ in one generation (1.5).\n\nApply Jensen's inequality prob-1.6.2 to the convex function $-2p(1-p)$ under the finite distribution of subpopulation weights. Reversing the sign gives the heterozygosity deficit inequality. Expanding the quadratic supplies the stronger exact deficit $2\\sigma^2$ already displayed; equality holds when every positive-weight subpopulation has the same frequency. This is a mixing calculation, not evidence of inbreeding within each subpopulation."
+    },
+    {
+      "num": "1.2",
+      "file": "ch01.js",
+      "added": [
+        "prob-2.1.1a"
+      ],
+      "expectedDeps": [
+        "popgen-1.1",
+        "prob-2.1.1a"
+      ],
+      "idea": "Meiosis halves the chromosome set: homologous chromosomes pair and are pulled to opposite poles, so each gamete carries one homologue, and with a fair meiosis either one equally often. Fertilisation then unites two independently formed gametes, so the offspring genotype is the sum of two independent fair coin flips \u2014 the four cells of the Punnett square are equally likely. Counting offspring is multinomial sampling, and the law of large numbers drives the observed shares to $\\tfrac14, \\tfrac12, \\tfrac14$; a meiotic-drive allele that grabs more than half the gametes breaks the coin and shifts the ratios, which a $\\chi^2$ test then detects.\n\nThe product rule prob-2.1.1a supplies the Punnett-square calculation under the stated independent-gamete assumption: two fair transmissions give each ordered pair probability $1/4$. Combining the two heterozygous orders gives $1/2$. This probability calculation assumes fair transmission and the equal viability stated above; it does not establish those biological assumptions."
+    },
+    {
+      "num": "1.3",
+      "file": "ch01.js",
+      "added": [
+        "prob-2.1.1a"
+      ],
+      "expectedDeps": [
+        "popgen-1.2",
+        "prob-2.1.1a"
+      ],
+      "idea": "Each pair of homologous chromosomes orients on the metaphase plate independently of the other pairs, so which $R$-allele and which $Y$-allele end up in the same gamete is two independent fair coin flips: gamete frequencies are products, $\\tfrac12\\cdot\\tfrac12$. With dominance, $P(R\\_)=\\tfrac34$ and $P(Y\\_)=\\tfrac34$ independently, which multiplies out to $\\tfrac9{16},\\tfrac3{16},\\tfrac3{16},\\tfrac1{16}$. Genes close together on one chromosome travel together unless a crossover separates them, so recombinant gametes are rarer than $\\tfrac14$ and the Punnett square becomes lopsided \u2014 the observation that led to linkage maps.\n\nIndependence in prob-2.1.1a is used across the two unlinked loci: multiplying their single-locus probabilities gives the four gamete classes and the dominant phenotype ratios. Joint independence is a model input, not something implied by the marginal 1:1 ratios alone. Linked transmission or segregation distortion changes that input and invalidates the product calculation."
+    },
+    {
+      "num": "2.9",
+      "file": "ch02-b.js",
+      "added": [
+        "prob-2.1.1a"
+      ],
+      "expectedDeps": [
+        "popgen-2.7",
+        "prob-2.1.1a"
+      ],
+      "idea": "Heterozygosity is dominated by the common alleles, which survive a bottleneck of any size, and it falls by the single-generation sampling factor of 2.3 repeated $d$ times. Allelic richness counts every allele equally, and rare ones are numerous but have small frequency: an allele of frequency $f$ is absent from a sample of $2n$ copies with probability $(1-f)^{2n}\\approx e^{-2nf}$, so most of the rare alleles disappear even when $n$ is large enough to keep most of the heterozygosity. This is why recovered populations look genetically depauperate in rare variants even when their present size is large (Mayr\u2019s founder principle).\n\nFor an allele at fixed source frequency f, independent sampling of $2n$ copies uses prob-2.1.1a to make its absence probability $(1-f)^{2n}$. This is the per-allele absence event; absence events for different alleles in the same fixed-size sample need not be independent. Repeated generations change frequencies and introduce further dependence, so this product is not a universal multi-generation extinction law."
+    },
+    {
+      "num": "2.1",
+      "file": "ch02.js",
+      "added": [
+        "prob-2.2.1"
+      ],
+      "expectedDeps": [
+        "popgen-1.1",
+        "popgen-1.4",
+        "prob-2.2.1"
+      ],
+      "idea": "Each of the $2N$ copies in the next generation picks its parent copy uniformly and independently, so the number of descendants of the $A$ copies is a binomial count. That single sampling step is the whole model: no force pushes $p$ in any direction (the conditional mean is $p_t$), but the sampling noise has variance $p(1-p)/2N$ and, because it vanishes only at $0$ and $1$, it keeps shaking $p$ until the chain falls into one of those two absorbing states. The noise is large exactly when $N$ is small.\n\nConditional on the current frequency, the next-generation count is the sum of $2N$ independent Bernoulli indicators in this model. Each has finite variance $p(1-p)$, so prob-2.2.1 adds their variances; division by $(2N)^2$ gives $p(1-p)/(2N)$ for frequency. Independence is within the conditional sampling step, not between successive generations. This moment calculation alone does not prove eventual absorption."
+    },
+    {
+      "num": "2.3",
+      "file": "ch02.js",
+      "added": [
+        "prob-1.6.1"
+      ],
+      "expectedDeps": [
+        "popgen-2.1",
+        "popgen-1.10",
+        "prob-1.6.1"
+      ],
+      "idea": "Write $\\mathbb E[p_{t+1}(1-p_{t+1})]=\\mathbb E[p_{t+1}]-\\mathbb E[p_{t+1}^2]$. The binomial second moment is $\\mathbb E[p_{t+1}^2\\mid p_t]=p_t^2+p_t(1-p_t)/2N$, so the conditional expectation of $p(1-p)$ is $p_t(1-p_t)(1-1/2N)$: each generation a fraction $1/2N$ of the remaining variation is lost, because two newly drawn copies have probability $1/2N$ of descending from the same parent copy. Iterating gives the geometric decay; the Hardy\u2013Weinberg heterozygosity (1.10) is the quantity being eroded.\n\nFor each fixed current frequency, linearity of expectation prob-1.6.1 splits the conditional mean of $p_{t+1}(1-p_{t+1})$ into its first moment minus its second moment. Substituting the binomial moments gives the one-generation factor; averaging that conditional identity and iterating gives the expected trajectory. No claim that every realized trajectory decreases geometrically follows from this mean identity."
+    },
+    {
+      "num": "3.2",
+      "file": "ch03.js",
+      "added": [
+        "pma-6.21"
+      ],
+      "expectedDeps": [
+        "popgen-2.11",
+        "popgen-3.1",
+        "pma-6.21"
+      ],
+      "idea": "The forward Kolmogorov equation of the diffusion (2.11) has drift $v-(u+v)p$ from mutation (3.1) and variance $p(1-p)/2N$ from drift. At stationarity the probability flux vanishes, which leaves a first-order equation for $\\phi$ whose solution is $p^{4Nv-1}(1-p)^{4Nu-1}$. The exponents compare the supply of mutants with the pull of drift: each allele arrives at rate $\\sim 2Nv$ new copies per generation, and a drift-driven excursion to loss takes about $2N$ generations, so when fewer than one new mutant per $4N$ generations arrives, populations spend most of their time near one boundary.\n\nOn a closed subinterval strictly inside $0<p<1$, the zero-flux equation gives a continuous logarithmic-density derivative. The fundamental theorem pma-6.21 integrates it to $(4Nv-1)\\log p+(4Nu-1)\\log(1-p)$ plus a constant. Exponentiating gives the displayed beta shape. Positive mutation rates make the endpoint powers integrable, allowing normalization; the interior integration alone does not justify diffusion accuracy at arbitrary mutation rates."
+    },
+    {
+      "num": "3.6",
+      "file": "ch03.js",
+      "added": [
+        "prob-1.6.1"
+      ],
+      "expectedDeps": [
+        "popgen-3.1",
+        "prob-1.6.1"
+      ],
+      "idea": "Because no site mutates twice, a mutation on a branch of the sample\u2019s genealogy is inherited by exactly the leaves below it; two mutations on different branches therefore never produce all four combinations of states (the four-gamete test). The genealogy\u2019s total branch length $L_{\\rm tot}$ is a sum of independent exponential waiting times \u2014 $k$ lineages for a time of mean $2/(k(k-1))$ in units of $2N$ generations \u2014 so $\\mathbb E L_{\\rm tot}=2a_n$, and mutations fall on it at rate $\\theta/2$. The picture uses the coalescent only as an exact sampler of neutral genealogies.\n\nFor a finite sample, total genealogical branch length is $\\sum_{k=2}^n kT_k$. Expectation linearity prob-1.6.1 gives $E L_{\\rm tot}=\\sum_{k=2}^n k E T_k=2\\sum_{j=1}^{n-1}1/j$ from the stated waiting-time means. Independence of those times is not needed for this sum-of-means step. The separate mutation-on-branches model then supplies the rate factor; this calculation does not add recombination or recurrent mutation."
+    },
+    {
+      "num": "4.12",
+      "file": "ch04-c.js",
+      "added": [
+        "prob-2.4.1"
+      ],
+      "expectedDeps": [
+        "popgen-4.2",
+        "rca-3.3",
+        "prob-2.4.1"
+      ],
+      "idea": "The exact log-odds identity is $\\operatorname{logit}x_t=\\operatorname{logit}x_0+\\sum_{u<t}\\ln W_u$. Apply the strong law to the **integrable logarithms**, not to the raw fitnesses, to obtain the stated rate even when $m=0$. Jensen compares a fluctuating lineage with a constant lineage at the same arithmetic mean; variance alone does not order arbitrary fitness distributions. For uniformly small relative fluctuations around $A$, a second-order expansion gives $\\ln G\\approx\\ln A-\\operatorname{Var}(W)/(2A^2)$.\n\nApply the strong law prob-2.4.1 to $X_t=\\log W_t$: the stated independent identical environments and finite $E|\\log W|$ meet its hypotheses. Dividing the exact log-odds sum by t removes the fixed initial term and gives the almost-sure growth rate. No integrability of W itself is needed for this limit; finite arithmetic mean is required only for the separate Jensen comparison. A zero limiting log rate supplies no directional fixation conclusion."
+    },
+    {
+      "num": "4.2",
+      "file": "ch04.js",
+      "added": [
+        "pma-8.6"
+      ],
+      "expectedDeps": [
+        "popgen-4.1",
+        "mathbio-1.4",
+        "pma-8.6"
+      ],
+      "idea": "Selection multiplies the odds by $1+s$ each generation. Taking logarithms gives the exact slope $\\ln(1+s)$. Interpolating this exact solution continuously gives $\\dot p=\\ln(1+s)p(1-p)$; replacing the rate by $s$ is a weak-selection approximation. Between two interior target frequencies the exact interpolated time is $[\\operatorname{logit}(p_1)-\\operatorname{logit}(p_0)]/\\ln(1+s)$, and the first discrete generation crossing a target is obtained by rounding up when the direction allows it.\n\nFor an interior frequency and positive constant relative fitness, the odds are positive. The logarithm product identity pma-8.6 turns their generation-by-generation multiplication into addition of $\\log(1+s)$. Thus the slope is exact for this recurrence; replacing that logarithm by s is a separate weak-selection approximation, and a boundary frequency has no finite log-odds."
+    },
+    {
+      "num": "4.4",
+      "file": "ch04.js",
+      "added": [
+        "pma-5.3"
+      ],
+      "expectedDeps": [
+        "popgen-4.3",
+        "pma-5.3"
+      ],
+      "idea": "Differentiation gives $d\\bar w/dp=2(w_A-w_a)$, so the identity follows directly from $\\Delta p=p(1-p)(w_A-w_a)/\\bar w$. It specifies the direction of a discrete step. By itself that sign does not rule out overshooting a peak; monotonic mean fitness is the additional one-locus result of 4.5. For constant fitnesses the frequency map has this gradient form; frequency-dependent allele fitnesses generally add derivative terms that invalidate it.\n\nThe sum and product derivative rules pma-5.3 differentiate the quadratic mean fitness with the genotype viabilities held constant and $q=1-p$. Collecting terms gives $d\\bar w/dp=2(w_A-w_a)$; positive mean fitness permits its substitution into the frequency-change ratio. This identity fixes the step's direction but does not by itself rule out a discrete step overshooting a fitness maximum."
+    },
+    {
+      "num": "4.5",
+      "file": "ch04.js",
+      "added": [
+        "prob-1.6.2",
+        "info-2.2"
+      ],
+      "expectedDeps": [
+        "popgen-4.4",
+        "prob-1.6.2",
+        "info-2.2"
+      ],
+      "idea": "A direct proof uses $a_{ij}=w_{ij}p_ip_j/\\bar w$, whose sum is one. Jensen's logarithm inequality gives $$\\begin{gathered}\n\\ln\\frac{\\bar w(\\mathbf p')}{\\bar w(\\mathbf p)}\\\\\n\\ge\\sum_{ij}a_{ij}\\ln\\frac{w_iw_j}{\\bar w^2}\\\\\n=2\\sum_i p_i'\\ln\\frac{p_i'}{p_i}\\\\\n=2D_{\\rm KL}(\\mathbf p'\\Vert\\mathbf p)\\ge0.\n\\end{gathered}$$ Terms with zero weight are omitted. Relative entropy vanishes only if $\\mathbf p'=\\mathbf p$, proving strictness. This is the quadratic special case of the Baum\u2013Eagon transformation. Compactness and continuity then put all trajectory accumulation points in the fixed-point set.\n\nThe finite weights $a_{ij}$ in the proof sum to one, so Jensen prob-1.6.2, applied to the convex negative logarithm, supplies the log-ratio bound on the positive-weight support. The resulting natural-log relative entropy is $\\log 2$ times the bit divergence in info-2.2; that theorem makes it nonnegative and zero exactly when the new and old frequency vectors coincide. Zero weights are omitted, and absent alleles remain absent. These support and normalization conditions are needed for the strictness claim."
+    }
+  ],
+  "corrections": [
+    {
+      "num": "1.10",
+      "old": [
+        "popgen-1.5"
+      ],
+      "expectedBaseline": [
+        "popgen-1.5",
+        "popgen-1.8"
+      ]
+    },
+    {
+      "num": "1.12",
+      "old": [
+        "popgen-1.5"
+      ],
+      "expectedBaseline": [
+        "popgen-1.2",
+        "popgen-1.5"
+      ]
+    },
+    {
+      "num": "1.13",
+      "old": [
+        "popgen-1.12"
+      ],
+      "expectedBaseline": [
+        "popgen-1.12",
+        "popgen-1.10"
+      ]
+    },
+    {
+      "num": "1.14",
+      "old": [
+        "popgen-1.13"
+      ],
+      "expectedBaseline": [
+        "popgen-1.13",
+        "popgen-1.11"
+      ]
+    },
+    {
+      "num": "1.15",
+      "old": [
+        "popgen-1.12"
+      ],
+      "expectedBaseline": [
+        "popgen-1.12",
+        "popgen-1.5"
+      ]
+    },
+    {
+      "num": "1.4",
+      "old": [
+        "popgen-1.2"
+      ],
+      "expectedBaseline": [
+        "popgen-1.2",
+        "prob-2.1.1a"
+      ]
+    },
+    {
+      "num": "1.7",
+      "old": [
+        "popgen-1.5"
+      ],
+      "expectedBaseline": [
+        "popgen-1.5",
+        "stat-6.14",
+        "stat-3.5"
+      ]
+    },
+    {
+      "num": "1.8",
+      "old": [
+        "popgen-1.5"
+      ],
+      "expectedBaseline": [
+        "popgen-1.5",
+        "comb-1.12"
+      ]
+    },
+    {
+      "num": "2.11",
+      "old": [
+        "popgen-2.1"
+      ],
+      "expectedBaseline": [
+        "popgen-2.1",
+        "stoch-10.4"
+      ]
+    },
+    {
+      "num": "2.1",
+      "old": [
+        "popgen-1.1"
+      ],
+      "expectedBaseline": [
+        "popgen-1.1",
+        "popgen-1.4"
+      ]
+    },
+    {
+      "num": "3.5",
+      "old": [
+        "popgen-3.4"
+      ],
+      "expectedBaseline": [
+        "popgen-3.4",
+        "popgen-2.1"
+      ]
+    },
+    {
+      "num": "4.15",
+      "old": [
+        "mathbio-1.2"
+      ],
+      "expectedBaseline": [
+        "mathbio-1.2",
+        "popgen-4.1"
+      ]
+    }
+  ],
+  "ideaWrap": {
+    "num": "4.5",
+    "old": "$$\\ln\\frac{\\bar w(\\mathbf p')}{\\bar w(\\mathbf p)}\\ge\\sum_{ij}a_{ij}\\ln\\frac{w_iw_j}{\\bar w^2}=2\\sum_i p_i'\\ln\\frac{p_i'}{p_i}=2D_{\\rm KL}(\\mathbf p'\\Vert\\mathbf p)\\ge0.$$",
+    "new": "$$\\begin{gathered}\n\\ln\\frac{\\bar w(\\mathbf p')}{\\bar w(\\mathbf p)}\\\\\n\\ge\\sum_{ij}a_{ij}\\ln\\frac{w_iw_j}{\\bar w^2}\\\\\n=2\\sum_i p_i'\\ln\\frac{p_i'}{p_i}\\\\\n=2D_{\\rm KL}(\\mathbf p'\\Vert\\mathbf p)\\ge0.\n\\end{gathered}$$"
+  },
+  "removed": {
+    "num": "2.4",
+    "old": [
+      "popgen-2.2",
+      "prob-4.4.1",
+      "stoch-2.4"
+    ],
+    "new": [
+      "popgen-2.2",
+      "prob-4.4.1"
+    ]
+  }
+}
