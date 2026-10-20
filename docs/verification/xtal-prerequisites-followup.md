@@ -1,6 +1,6 @@
 # XTAL genuine cross-field prerequisite boundary
 
-Producer candidate; independent acceptance is required. No source flags are closed. The actual collection metadata is authoritative: Crystallography has FIELD `chem` (not physics). All 24 additions in this batch point to written mathematics items, so every addition is genuinely across FIELD. Counts become 25 written / 27 known / 43 whole, from 1 / 3 / 19; no quota credit comes from same-field chemistry links.
+Producer candidate; independent acceptance is required. No source flags are closed. The actual collection metadata is authoritative: Crystallography has FIELD `chem` (not physics). The 24 additions point to 23 written mathematics inputs and one written earth-field input (3.9 → geog-5.2), so every addition is genuinely across FIELD. Counts become 25 written / 27 known / 43 whole, from 1 / 3 / 19; no quota credit comes from same-field chemistry links.
 
 Before editing, the complete `content/xtal` diff against coordinator `13f726a` was empty. The exact local baseline is recorded in `tests/xtal-prerequisites-manifest.json`; the baseline content copy is `/tmp/atlas-new-imaging-source/xtal/base`. The manifest records every added edge, full before/after raw dependency list and explanatory paragraph for all nineteen consumers. No inherited raw-list discrepancy required repair: all34 item/syllabus lists match exactly.
 
