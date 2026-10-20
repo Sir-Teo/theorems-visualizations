@@ -1,3 +1,4 @@
+import {shannonGuessConcept} from './source-audit-shannon.js';
 import {ngramModel,uidHypothesis} from './source-audit-language-models.js';
 // Linguistics & Language — Chapter 4, part b: items 4.6–4.10
 import { corpus, TEXTS, TEST_TEXT, TEXT_LABELS, syllables, toSyms, letterModel, guessOrder, guessDistribution, shannonBounds, letterEntropies, SYMS, tokenize, wordModel, perplexity, generateWords } from './ch04.shared.js';
@@ -137,70 +138,8 @@ which reduces to a power law $y=a\,x^{b}$ when $c=0$.`,
         });
       },
     },
-    // ───────────────────────────────────────────────────────────────────────── 4.8
-    {
-      num: '4.8',
-      kind: 'Concept',
-      name: 'The entropy of English (Shannon’s guessing game)',
-      credit: 'Claude E. Shannon, 1951 (Bell System Technical Journal 30, 50–64)',
-      statement: String.raw`Treat English as a stream of 27 symbols (the letters and the space). The **entropy** $H$ of this source is the average number of bits needed per symbol by the best possible code, and it equals the average uncertainty about the next symbol given the entire past. Shannon estimated $H$ by having people predict a text one letter at a time: if $q_i$ is the relative frequency of being right on the $i$-th guess, then
-$$\sum_{i}i\,(q_i-q_{i+1})\log_2 i\;\le\;H\;\le\;-\sum_i q_i\log_2 q_i,$$
-and the more context the guesser has, the smaller both bounds become. With long context he found about 0.6 to 1.3 bits per letter, so English is more than 70% redundant compared with 4.75 bits for 27 equiprobable symbols.`,
-      idea: String.raw`A perfect guesser with the same knowledge as the language itself would be right first time as often as the language allows; the list of guesses it makes is a re-encoding of the text from which the text can be recovered, so the entropy of the guess numbers bounds the entropy of the text from above. The lower bound comes from imagining each guess-number distribution as a mixture of flat distributions over the first $i$ guesses (each with entropy $\log_2 i$). More context, from letter frequencies to digrams to words and meaning, means more first-guess hits. Reader's estimates from a few dozen guesses are noisy; Shannon used 100 passages per context length.`,
-      caption: String.raw`Play: click the letters to guess the next letter of a hidden sentence (cells show how many guesses each letter took). Press “New passage” for more data. Next to your guesses, a letter model that has read two novels (with 0 to 3 letters of context, chosen above) plays the same game over a held-out Frankenstein passage of about 4 000 letters; its guess-number bars and bounds appear alongside.`,
-      scope: String.raw`The bounds are statistical: they hold in the limit for a guesser who uses the true conditional probabilities, and with few samples (or an imperfect guesser) are only estimates. The machine here is a plain n-gram letter model, far weaker than a human with a dictionary.`,
-      deps: ['ling-4.7', 'info-1.2'],
-      refs: ['Jurafsky & Martin ch. 3'],
-      tags: ['entropy', 'redundancy'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Entropy_(information_theory)#Entropy_as_information_content' },
-      viz(v) {
-        const kSel = v.select('Model context', [{ value: '0', label: '0 letters' }, { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' }], '3');
-        const SENT = sentencesOf(TEST_TEXT); let pi = 0; const rng = v.rng(4); let order = rng.shuffle([...Array(SENT.length).keys()]);
-        let P = [], pos = 0, g = 1, tried = new Set(); const hist = []; const all = new Array(27).fill(0);
-        function load() { P = Array.from(toSyms(SENT[order[pi % order.length]])); pos = 0; g = 1; tried = new Set(); hist.length = 0; }
-        load();
-        v.button('New passage', () => { pi++; load(); });
-        v.button('Reset my statistics', () => { all.fill(0); load(); });
-        const s = v.stage({ x: [0, 22], y: [2.7, 11], axes: false, height: 420, full: true });
-        const s2 = v.stage({ x: [0, 11], y: [0, 0.6], axes: 'box', gutter: true, xlabel: 'guess number i', ylabel: 'q_i (share of letters right on guess i)', height: 300 });
-        const W = 22, KX = 6.5;
-        s.onClick((x, y) => {
-          if (pos >= P.length) return; const r = 5 - Math.floor(y), c = Math.floor(x - KX); if (r < 0 || r > 2 || c < 0 || c > 8) return;
-          const idx = r * 9 + c; if (idx > 26 || tried.has(idx)) return;
-          if (idx === P[pos]) { hist.push(g); all[Math.min(26, g - 1)]++; pos++; g = 1; tried = new Set(); } else { tried.add(idx); g++; }
-        });
-        v.render(() => {
-          for (let j = 0; j < P.length; j++) {
-            const row = Math.floor(j / W), col = j % W, x = col + 0.5, y = 10.5 - row; const done = j < pos;
-            const gc = done ? hist[j] : 0; const colr = gc === 1 ? 'green' : gc <= 3 ? 'gold' : 'red';
-            s.rect(x - 0.45, y - 0.42, x + 0.45, y + 0.42, { fill: done ? colr : 'panel', fillAlpha: done ? 0.28 : 0.05, color: j === pos ? 'accent' : done ? colr : 'faint', width: j === pos ? 3 : 1, radius: 5 });
-            if (done) { s.text(P[j] === 26 ? '␣' : SYMS[P[j]].toUpperCase(), x, y + 0.08, { size: 16, color: 'ink', align: 'center', baseline: 'middle' }); s.text(String(gc), x + 0.28, y - 0.3, { size: 9.5, color: 'muted', align: 'right', baseline: 'middle' }); }
-          }
-          for (let idx = 0; idx < 27; idx++) {
-            const r = Math.floor(idx / 9), c = idx % 9, x = KX + c + 0.5, y = 5.5 - r; const bad = tried.has(idx);
-            s.rect(x - 0.44, y - 0.42, x + 0.44, y + 0.42, { fill: bad ? 'red' : 'accent', fillAlpha: bad ? 0.2 : 0.12, color: bad ? 'red' : 'accent', width: 1.2, radius: 6 });
-            s.text(idx === 26 ? 'space' : SYMS[idx].toUpperCase(), x, y, { size: idx === 26 ? 11 : 16, color: bad ? 'faint' : 'ink', align: 'center', baseline: 'middle' });
-          }
-          s.text(pos >= P.length ? 'Passage complete. Press “New passage”.' : `Guess the next letter (guess no. ${g}). The passage has no punctuation or capitals.`, 0.2, 7.0, { size: 13, color: 'muted', align: 'left', baseline: 'middle' });
-          // distribution panel
-          const tot = all.reduce((a, b) => a + b, 0); const k = +kSel.value; const mq = modelQ(k);
-          s2.setView([0, 11], [0, 0.65]);
-          for (let i = 0; i < 10; i++) {
-            const x = i + 1; s2.rect(x - 0.42, 0, x, mq[i], { fill: 'accent', fillAlpha: 0.5, color: 'accent' });
-            const rq = tot ? all[i] / tot : 0; s2.rect(x, 0, x + 0.42, rq, { fill: 'orange', fillAlpha: 0.5, color: 'orange' });
-            s2.text(String(x), x, -0.0, { size: 10, color: 'muted', align: 'center', baseline: 'top', dy: 14 });
-          }
-        });
-        v.legend([['accent', 'letter model', { area: true }], ['orange', 'you', { area: true }]]);
-        v.readout(() => {
-          const tot = all.reduce((a, b) => a + b, 0), k = +kSel.value, mq = modelQ(k), mb = shannonBounds(mq);
-          const Fn = letterEntropies(trainSyms());
-          let me = '';
-          if (tot >= 5) { const q = all.map((x) => x / tot), b = shannonBounds(q), avg = all.reduce((a, x, i) => a + x * (i + 1), 0) / tot; me = `You: ${tot} letters, ${v.fix(avg, 2)} guesses per letter on average, first-guess hits ${v.fix(100 * q[0], 0)}%. Bounds ${v.fix(b.lower, 2)} ≤ H ≤ ${v.fix(b.upper, 2)} bits per letter (very noisy with this few letters).`; } else me = `You: ${tot} letters so far (play at least a few sentences).`;
-          return me + `\nLetter model, ${k} letter${k === 1 ? '' : 's'} of context, on a held-out text: first-guess hits ${v.fix(100 * mq[0], 0)}%, bounds ${v.fix(mb.lower, 2)} ≤ H ≤ ${v.fix(mb.upper, 2)} bits per letter.\nFor comparison, uniform 27 symbols give 4.75 bits; letter frequencies alone ${v.fix(Fn[0], 2)}, digrams ${v.fix(Fn[1], 2)} (estimates from the training novels; Shannon’s published 27-letter values are 4.76, 4.03, 3.32 and 3.1).`;
-        });
-      },
-    },
+    // Source-audited ideal finite-source bounds and saved practice game.
+    shannonGuessConcept,
     // Source-audited finite language models and UID illustration.
     ngramModel,
     uidHypothesis,

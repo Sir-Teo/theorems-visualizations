@@ -1,3 +1,4 @@
+import {shannonPaper} from './source-audit-shannon.js';
 // Linguistics & Language — Chapter 4, part c: items 4.11–4.14
 import { corpus, TEXT_OPTS, TEXT_LABELS, MINE_DEFAULT, FED, FED_WORDS, logRanks, fitLogLog, toSyms, letterModel, guessDistribution, shannonBounds, TEXTS, TEST_TEXT } from './ch04.shared.js';
 
@@ -177,55 +178,6 @@ $c_w$ being the count of $w$ in a text of $N$ words and $\rho^{\,\cdot}_w$ the c
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.14
-    {
-      num: '4.14',
-      kind: 'Paper',
-      name: 'Prediction and Entropy of Printed English',
-      paper: {
-        authors: 'C. E. Shannon', year: 1951, title: 'Prediction and Entropy of Printed English',
-        venue: 'Bell System Technical Journal 30 (1): 50–64', doi: '10.1002/j.1538-7305.1951.tb01366.x',
-      },
-      introduces: ['ling-4.8', 'info-11.9'],
-      credit: 'Claude E. Shannon, 1951',
-      statement: String.raw`Shannon showed how to estimate the entropy of English from human prediction. His series of $N$-gram entropies for a 27-symbol alphabet fell from $F_0=4.76$ bits (all symbols equally likely) through $F_1=4.03$ (letter frequencies), $F_2=3.32$ (digrams) to $F_3=3.1$, and from guessing experiments he derived upper and lower bounds on the entropy per letter that shrink as the number of preceding letters increases, reaching about $1.3$ and $0.6$ bits at 100 letters. English text is therefore more than 70% redundant. The paper also gives the bounds themselves: $\sum_i i(q_i-q_{i+1})\log_2 i\le H\le-\sum_i q_i\log_2q_i$ for the distribution $q_i$ of guess numbers.`,
-      idea: String.raw`Previously one could compute $F_N$ only from tables of $N$-gram frequencies, which stop being measurable beyond a few letters. Shannon's insight was that a human who has read English knows far longer-range structure, and that a guessing procedure turns this implicit knowledge into data: the number of guesses needed per letter is a reduced text that is a lossless re-encoding, so its entropy bounds the entropy of the text. The paper thereby introduced the idea of measuring the predictability of language as the guesser's uncertainty, the ancestor of the cross-entropy and perplexity used to score language models (4.9). The bounds were derived for an ideal predictor and applied to a single subject's data, so are estimates.`,
-      caption: String.raw`Left: Shannon's published bounds on entropy per letter (27 symbols) against the number $N$ of letters of context (his table, N = 1…15 and 100), with his $F_N$ values as open circles. Right: his decomposition on our letter model: the distribution of guess numbers $q_i$ is a stack of flat rectangles, each of width $i$ and height $q_i-q_{i+1}$, and each contributes entropy $\log_2 i$; slide the model's context to see the bounds close in.`,
-      scope: String.raw`The bound values come from the paper's table, read from a scanned copy, and several entries of the interior columns could not be cross-checked against a second source (the endpoints, 0.6 and 1.3 bits at 100 letters, agree with the usual citations). Later estimates are higher: Cover and King (1978) used a gambling version of the game and reported about 1.3 bits per letter. The machine in the right panel is an $n$-gram letter model with at most three letters of context, trained on two novels.`,
-      deps: ['info-1.2', 'ling-4.9'],
-      refs: [],
-      tags: ['entropy of English', 'redundancy'],
-      verify: true,
-      links: { doi: 'https://doi.org/10.1002/j.1538-7305.1951.tb01366.x' },
-      viz(v) {
-        const kS = v.slider('letters of context $k$', 0, 3, 3, { int: true });
-        const s1 = v.stage({ x: [0, 18], y: [0, 5], axes: 'box', gutter: true, xlabel: 'letters of context + 1 (N)', ylabel: 'bits per letter', height: 360, title: 'Shannon’s bounds (27 symbols)', xticks: [...Array(15).keys()].map((i) => [i + 1, String(i + 1)]).concat([[17, '100']]) });
-        const s2 = v.stage({ x: [0, 14], y: [0, 0.6], axes: 'box', gutter: true, xlabel: 'guess number i', ylabel: 'q_i, split into rectangles', height: 360, title: 'Decomposition of the guess distribution' });
-        let info = {};
-        const memo = {}; const q = (k) => memo[k] || (memo[k] = guessDistribution(letterModel(toSyms(TEXTS.alice + ' ' + TEXTS.pride), 3), toSyms(TEST_TEXT), k));
-        v.render(() => {
-          const X = (n) => (n === 100 ? 17 : n);
-          const up = SH_NS.map((n, i) => [X(n), SH_UP[i]]), lo = SH_NS.map((n, i) => [X(n), SH_LO[i]]);
-          s1.poly([...up.slice(0, 15), ...lo.slice(0, 15).reverse()], { fill: 'green', fillAlpha: 0.15, stroke: false });
-          s1.path(up.slice(0, 15), { color: 'red', width: 2 }); s1.path(lo.slice(0, 15), { color: 'green', width: 2 });
-          s1.line(15, SH_UP[14], 17, SH_UP[15], { color: 'red', width: 1.5, dash: true }); s1.line(15, SH_LO[14], 17, SH_LO[15], { color: 'green', width: 1.5, dash: true });
-          s1.dots(up, { r: 4, color: 'red' }); s1.dots(lo, { r: 4, color: 'green' });
-          SH_F27.slice(1).forEach((f, i) => s1.dot(i + 1, f, { r: 6, hollow: true, color: 'gold' }));
-          s1.hline(4.75, { color: 'muted', dash: true }); s1.text('log₂ 27 = 4.75', 17.6, 4.78, { size: 11, color: 'muted', align: 'right', baseline: 'bottom' });
-          s1.text('upper bound', 9, 2.55, { size: 12, color: 'red', align: 'left' }); s1.text('lower bound', 9, 0.55, { size: 12, color: 'green', align: 'left' });
-          // decomposition on our model
-          const k = kS.value, Q = q(k), b = shannonBounds(Q), n = 13;
-          s2.setView([0, n + 1], [0, Math.max(0.2, Q[0] * 1.15)]);
-          for (let j = 0; j < n; j++) {
-            let y0 = 0;
-            for (let i = 27; i >= j + 1; i--) { const d = Q[i - 1] - (Q[i] || 0); if (d <= 0) continue; s2.rect(j + 0.55, y0, j + 1.45, y0 + d, { fill: v.ramp(Math.min(1, Math.log2(i) / 4.8), 'accent', 'orange'), fillAlpha: 0.85, color: 'panel', width: 0.5 }); y0 += d; }
-            s2.text(String(j + 1), j + 1, 0, { size: 10, color: 'muted', align: 'center', baseline: 'top', dy: 14 });
-          }
-          s2.text('colour = i (large i = darker)', n + 0.7, Q[0] * 1.08, { size: 11, color: 'muted', align: 'right' });
-          info = { b, k, Q };
-        });
-        v.legend([['red', 'Shannon: upper bound'], ['green', 'Shannon: lower bound'], ['gold', 'F_N (N-gram entropy)', { dot: true }]]);
-        v.readout(() => `Shannon’s table at 100 letters of context: 0.6 ≤ H ≤ 1.3 bits per letter (the interior values come from a scan; see scope). Cover and King’s 1978 gambling estimate was about 1.3.\nOur letter model with ${info.k} letter${info.k === 1 ? '' : 's'} of context: first-guess hits ${v.fix(100 * info.Q[0], 0)}%, ${v.fix(info.b.lower, 2)} ≤ H ≤ ${v.fix(info.b.upper, 2)} bits per letter: the same two formulas applied to its guesses on a held-out passage.`);
-      },
-    },
+    shannonPaper,
   ],
 };
