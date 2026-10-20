@@ -146,7 +146,7 @@ Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla
       refs: ['Kundu §5.3', 'Acheson ch. 5'],
       credit: 'Hermann von Helmholtz, 1858 (vortex lines move with the fluid; strength of a tube is fixed)',
       tags: ['vorticity', 'stretching', 'turbulence'],
-      scope: String.raw`Incompressible, inviscid (viscous diffusion of vorticity is neglected here). The straining flow is an exact steady Euler flow with uniform vorticity along the axis, so the picture is a solution, not a sketch.`,
+      scope: String.raw`Incompressible, inviscid (viscous diffusion of vorticity is neglected here). The straining flow is an exact time-dependent Euler flow with uniform vorticity along the axis, so the picture is a solution, not a sketch.`,
       viz(v) {
         const R0 = 0.6, L0 = 1.6, w0 = 2, T = 6;
         const es = v.slider('axial strain rate $\\varepsilon$ (1/s)', -0.3, 0.3, 0.25, { step: 0.01 });
