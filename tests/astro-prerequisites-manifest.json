@@ -127,9 +127,57 @@
       "paragraph": "The logarithm identities in pma-8.6 turn the positive-variable Kepler relation into $2\\log T=3\\log a-\\log[G(M+m)/(4\\pi^2)]$. Hence a fixed total mass gives the stated slope three halves. Likewise the angular-size relation makes the inferred mass proportional to the cube of the adopted distance. This logarithmic straightening does not remove the total-mass or distance assumptions."
     }
   ],
-  "fixes": {},
+  "fixes": {
+    "2.2": {
+      "idea": [
+        [
+          "$L_1, L_2, L_3$ are saddles and $L_4, L_5$ maxima",
+          "in the orbital plane $L_1, L_2, L_3$ are saddles and $L_4, L_5$ minima"
+        ]
+      ]
+    },
+    "2.3": {
+      "statement": [
+        [
+          "The triangular Lagrange points $L_4$, $L_5$ of the circular restricted problem are linearly stable if and only if",
+          "For positive mass parameter $0<\\mu\\le1/2$, the triangular Lagrange points $L_4$, $L_5$ of the circular restricted problem have bounded linear perturbations if and only if"
+        ]
+      ],
+      "idea": [
+        [
+          "At $L_4$ the effective potential $\\Omega$ is a maximum (mech 9.12), so without rotation it would be unstable.",
+          "At $L_4$ the effective potential energy $-\\Omega$ has a planar maximum (mech 9.12), so without the Coriolis term the linearized motion would be unstable."
+        ],
+        [
+          "are real and negative exactly when the discriminant is positive; at $\\mu_R$ the two frequencies collide and split off the imaginary axis.",
+          "are distinct negative real values when the discriminant is positive in the stated positive-mass range. At $\\mu_R$ the repeated imaginary roots have nontrivial Jordan blocks, so generic linear perturbations are not bounded; above it the frequencies split off the imaginary axis."
+        ]
+      ]
+    },
+    "2.4": {
+      "statement": [
+        [
+          "libration period $\\approx 2\\pi/\\sqrt{27\\mu/4}$ orbits",
+          "libration period $\\approx 1/\\sqrt{27\\mu/4}$ orbital periods"
+        ]
+      ]
+    },
+    "2.7": {
+      "statement": [
+        [
+          "the total angular-momentum deficit $\\sum_j m_j\\sqrt{a_j}\\,(1 - \\sqrt{1-e_j^2})$ is conserved",
+          "the eccentricity-sector quadratic angular-momentum deficit $\\tfrac12\\sum_j m_j\\sqrt{a_j}\\,e_j^2$ is conserved within the retained linear theory"
+        ]
+      ]
+    }
+  },
   "wraps": {},
-  "extraNative": [],
+  "extraNative": [
+    {
+      "num": "2.2",
+      "file": "ch02.js"
+    }
+  ],
   "rowBackfills": {
     "4.12": "astro-1.3"
   }
