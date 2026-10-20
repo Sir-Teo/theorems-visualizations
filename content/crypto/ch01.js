@@ -207,9 +207,11 @@ export default {
       kind: 'Model',
       name: 'Shift cipher and exhaustive key search',
       statement: String.raw`The **shift cipher** on the alphabet $\mathbb Z_{26}$ encrypts a letter $x$ under the key $k\in\{0,\dots,25\}$ as $\mathsf{Enc}_k(x) = x + k \bmod 26$ and decrypts as $x - k \bmod 26$, letter by letter (for $k=3$ this is Caesar’s cipher). Since $|\mathcal K| = 26$, an attacker who knows only that the plaintext is English can try all 26 keys and keep the decryption that reads as English: **exhaustive key search**. Keys are tried in at most $26$ steps, so the cipher offers no security.`,
-      idea: String.raw`Correctness is just $(x+k)-k\equiv x$. The attack uses redundancy: of the 26 candidate decryptions only one is a sentence, because English letter frequencies are far from uniform — the true plaintext scores best against the English letter model (here: the lowest cross-entropy, measured with the letter counts of a 3.5-trillion-letter corpus). Very short ciphertexts can have two readable decryptions, which is the idea behind unicity distance (item 1.10).`,
+      idea: String.raw`Correctness is just $(x+k)-k\equiv x$. The attack uses redundancy: of the 26 candidate decryptions only one is a sentence, because English letter frequencies are far from uniform — the true plaintext scores best against the English letter model (here: the lowest cross-entropy, measured with the letter counts of a 3.5-trillion-letter corpus). Very short ciphertexts can have two readable decryptions, which is the idea behind unicity distance (item 1.10).
+
+The residue-class arithmetic in nt-2.1 makes the shift and its inverse well defined: replacing a letter representative by a congruent integer does not change its encrypted class. Addition by k followed by addition by -k gives the original class modulo 26. This proves correctness of the letter map; it supplies no security against the exhaustive search described here.`,
       caption: String.raw`Type a message and turn the wheel (slider, or drag the inner ring). The table lists all 26 decryptions of the ciphertext with their English-likeness score; click a row to try that key. Tick *Paste a ciphertext* to attack a ciphertext whose key you do not know.`,
-      deps: ['crypto-1.1'],
+      deps: ['crypto-1.1', 'nt-2.1'],
       tags: ['shift cipher', 'brute force'],
       refs: ['Katz–Lindell §1.3'],
       credit: 'Julius Caesar, 1st century BCE (as reported by Suetonius, Life of Julius Caesar 56.6)',
@@ -291,9 +293,11 @@ export default {
       kind: 'Principle',
       name: 'Sufficient key-space principle',
       statement: String.raw`Any secure encryption scheme must have a key space large enough to rule out exhaustive search: an attacker who tries every key, at the fastest rate any adversary could reach, must still need an unaffordable amount of time. With $b$-bit keys a search finds the key after about $2^{b-1}$ trials on average, so at $R$ guesses per second it needs $2^{b-1}/R$ seconds. The principle is a *necessary* condition only: a huge key space does not by itself make a scheme secure (see the monoalphabetic substitution cipher, item 1.5).`,
-      idea: String.raw`Brute force works against every cipher, whatever its design, so the key space is a lower bound on the attacker’s work. The cost is linear in $2^b$, hence exponential in the key length: every added bit doubles the attacker’s time while costing the defender almost nothing, which is why designers pick keys with enough margin ($\ge 128$ bits today) to survive faster hardware, parallel machines and decades of progress.`,
+      idea: String.raw`Brute force works against every cipher, whatever its design, so the key space is a lower bound on the attacker’s work. The cost is linear in $2^b$, hence exponential in the key length: every added bit doubles the attacker’s time while costing the defender almost nothing, which is why designers pick keys with enough margin ($\ge 128$ bits today) to survive faster hardware, parallel machines and decades of progress.
+
+For $N$ equally likely keys in a fixed search order, write the number of trials as the sum of the indicators that trial $j$ is reached. Linearity of expectation prob-1.6.1 gives the sum of $(N-j+1)/N$ for $j=1,\ldots,N$, namely $(N+1)/2$. With $N=2^b$ this is the displayed approximate half-keyspace work; dividing by a fixed trial rate converts trials to time. No independence of those indicators is needed.`,
       caption: String.raw`Each straight line is the average search time against $b$-bit keys for one attacker speed. Drag the point along the gold line (or the slider) to choose $b$, and change the attacker’s speed. The purple point is a real data point: the 56-bit DES key found by EFF’s Deep Crack in 1998.`,
-      deps: ['crypto-1.3'],
+      deps: ['crypto-1.3', 'prob-1.6.1'],
       tags: ['key space', 'brute force'],
       refs: ['Katz–Lindell §1.3'],
       scope: String.raw`average time for a uniformly random key and an attacker who can test $R$ keys per second; the speeds shown are illustrative, except Deep Crack (EFF: over $9\times10^{10}$ keys per second, 1998).`,
@@ -337,9 +341,11 @@ export default {
       kind: 'Model',
       name: 'Monoalphabetic substitution cipher',
       statement: String.raw`A **monoalphabetic substitution cipher** has as key a permutation $\pi$ of the alphabet and replaces every plaintext letter $x$ by $\pi(x)$, always the same one. There are $26! \approx 4.03\times 10^{26}$ keys ($\approx 88.4$ bits), far beyond exhaustive search, yet the cipher is insecure: because each letter is renamed consistently, the multiset of letter counts of the ciphertext is exactly that of the plaintext, only moved to other letters. Shift ($26$ keys) and affine ($12\cdot 26 = 312$ keys) ciphers are special cases.`,
-      idea: String.raw`A large key space is necessary (item 1.4) but not sufficient. The cipher leaks the *shape* of the plaintext distribution: the sorted letter frequencies of the ciphertext coincide with those of the plaintext, and so does the index of coincidence $\sum_i n_i(n_i-1)/N(N-1)$. Since English has a very uneven, well-measured shape, the permutation can be read off from the data (item 1.6); the cipher hides *which* letter is frequent, not *that* some letters are.`,
+      idea: String.raw`A large key space is necessary (item 1.4) but not sufficient. The cipher leaks the *shape* of the plaintext distribution: the sorted letter frequencies of the ciphertext coincide with those of the plaintext, and so does the index of coincidence $\sum_i n_i(n_i-1)/N(N-1)$. Since English has a very uneven, well-measured shape, the permutation can be read off from the data (item 1.6); the cipher hides *which* letter is frequent, not *that* some letters are.
+
+The permutation count comb-1.5 gives the key-space size: assign the image of the first alphabet letter in 26 ways, the second in 25 remaining ways, and continue down to one. Thus there are $26!$ full substitutions. This counts bijections rather than arbitrary 26-to-26 functions; the latter would include maps that lose information and cannot decrypt. The count does not remove the frequency invariant exploited here.`,
       caption: String.raw`Choose the key family and press **New key**. The two bar charts are the plaintext and ciphertext letter counts: the same bars, moved by the key (lines trace the six tallest). The right panel sorts both by size: the curves coincide exactly, whatever the key. Edit the text freely.`,
-      deps: ['crypto-1.4'],
+      deps: ['crypto-1.4', 'comb-1.5'],
       tags: ['substitution', 'frequencies'],
       refs: ['Katz–Lindell §1.3'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Substitution_cipher' },
@@ -415,9 +421,11 @@ export default {
       kind: 'Method',
       name: 'Frequency analysis',
       statement: String.raw`**Frequency analysis** breaks a monoalphabetic substitution cipher using the statistics of the plaintext language. Count the ciphertext letters; the most frequent ones stand for the most frequent English letters ($\mathrm{E},\mathrm{T},\mathrm{A},\mathrm{O},\mathrm{I},\mathrm{N},\dots$); refine the guess with pairs of letters (digrams such as TH, HE, IN, ER) and with the words that start to appear, until the whole permutation is determined. It succeeds when the ciphertext is long enough that the counts are close to the language’s true frequencies.`,
-      idea: String.raw`The cipher renames letters but keeps every statistic of the text (item 1.5), so counts alone give a first, partly wrong assignment, and each correct letter makes its neighbours’ identity predictable through digram statistics. Scoring a candidate key by the log-likelihood of the decryption under a bigram model of English (here estimated from billions of letters) turns the hand method into hill-climbing: swap two letters of the key, keep the swap if the text becomes more English.`,
+      idea: String.raw`The cipher renames letters but keeps every statistic of the text (item 1.5), so counts alone give a first, partly wrong assignment, and each correct letter makes its neighbours’ identity predictable through digram statistics. Scoring a candidate key by the log-likelihood of the decryption under a bigram model of English (here estimated from billions of letters) turns the hand method into hill-climbing: swap two letters of the key, keep the swap if the text becomes more English.
+
+The positive-product logarithm identity pma-8.6 converts a bigram-model likelihood into a sum of transition log-probabilities, together with the initial-letter term. Maximizing that sum is equivalent to maximizing the likelihood, since log is increasing. A zero transition probability instead gives zero likelihood and cannot be treated as a finite log term. This algebra explains the scoring rule; it does not prove that hill-climbing finds the best substitution or that the language model is exact.`,
       caption: String.raw`Bars: ciphertext letters by frequency, with the English letter for that rank underneath. Click a ciphertext letter, then click the plaintext letter you think it stands for; the text below fills in. **Rank match** assigns by frequency alone, **Hill-climb** runs the bigram search. Paste any substitution ciphertext into the field.`,
-      deps: ['crypto-1.5'],
+      deps: ['crypto-1.5', 'pma-8.6'],
       tags: ['cryptanalysis', 'frequencies'],
       refs: ['Katz–Lindell §1.3'],
       credit: 'Al-Kindi, 9th century (A Manuscript on Deciphering Cryptographic Messages)',

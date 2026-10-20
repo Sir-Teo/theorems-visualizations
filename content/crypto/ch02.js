@@ -35,9 +35,11 @@ export default {
       kind: 'Definition',
       name: 'Perfect secrecy',
       statement: String.raw`An encryption scheme $(\mathsf{Gen},\mathsf{Enc},\mathsf{Dec})$ with message space $\mathcal M$ is **perfectly secret** if, for every probability distribution on $\mathcal M$, every message $m\in\mathcal M$ and every ciphertext $c$ with $\Pr[C=c]>0$, $$\Pr[M=m\mid C=c]=\Pr[M=m].$$ Here the key $K$ is drawn by $\mathsf{Gen}$ independently of $M$, and $C=\mathsf{Enc}_K(M)$. Equivalently, the distribution of $C$ does not depend on which message was encrypted: $\Pr[\mathsf{Enc}_K(m)=c]=\Pr[\mathsf{Enc}_K(m')=c]$ for all $m,m',c$. The adversary is unbounded in computing power; the definition is information-theoretic.`,
-      idea: String.raw`Seeing $c$ is a piece of evidence, and Bayes’ rule updates the prior on $M$ by the likelihood $\Pr[C=c\mid M=m]$. The posterior equals the prior exactly when that likelihood is the same for every $m$, which is the second formulation, and which does not mention the prior at all — so perfect secrecy holds for *all* priors or for none. A scheme leaks as soon as some message makes some ciphertext more likely than another message does.`,
+      idea: String.raw`Seeing $c$ is a piece of evidence, and Bayes’ rule updates the prior on $M$ by the likelihood $\Pr[C=c\mid M=m]$. The posterior equals the prior exactly when that likelihood is the same for every $m$, which is the second formulation, and which does not mention the prior at all — so perfect secrecy holds for *all* priors or for none. A scheme leaks as soon as some message makes some ciphertext more likely than another message does.
+
+Apply the conditional-density ratio in stat-2.1 with counting measure on the finite message and ciphertext spaces. For a positive-probability ciphertext c, the posterior mass at m is the prior mass times its ciphertext likelihood, divided by the marginal mass at c. If all message likelihoods agree, this ratio is the prior for every prior law. Conversely, a uniform full-support prior makes posterior-equals-prior force all those likelihoods to agree. Conditioning on an impossible ciphertext is excluded.`,
       caption: String.raw`Drag the four bars of the prior (the message distribution Eve believes in) and pick a cipher on $\mathbb Z_4$: $c=m+k \bmod 4$. Each group on the right is one ciphertext; blue bars are the posterior, the gold ticks the prior. For the uniform key the two always agree; restrict the key space or bias the key and watch the posteriors move away from the ticks.`,
-      deps: ['crypto-1.1'],
+      deps: ['crypto-1.1', 'stat-2.1'],
       tags: ['perfect secrecy', 'bayes'],
       refs: ['Katz–Lindell §2.1', 'Boneh–Shoup ch. 2'],
       credit: 'Claude Shannon, 1949',
@@ -93,9 +95,11 @@ export default {
       kind: 'Theorem',
       name: 'Perfect indistinguishability is equivalent',
       statement: String.raw`For an encryption scheme $\Pi$ with message space $\mathcal M$, the following are equivalent. (i) $\Pi$ is perfectly secret. (ii) For every adversary $\mathcal A$ — an arbitrary, unbounded procedure that picks two messages $m_0,m_1$, receives $c=\mathsf{Enc}_K(m_b)$ for a uniformly random bit $b$ and a fresh key $K$, and outputs a guess $b'$ — we have $\Pr[b'=b]=\tfrac12$. For a scheme that is not perfectly secret, the best adversary wins with probability $\tfrac12+\tfrac12\,\Delta(C_{m_0},C_{m_1})$, where $\Delta$ is the statistical distance of the two ciphertext distributions.`,
-      idea: String.raw`The game success is $\tfrac12\Pr[\mathcal A(C_{m_0})=0]+\tfrac12\Pr[\mathcal A(C_{m_1})=1]=\tfrac12+\tfrac12\bigl(\Pr[\mathcal A(C_{m_1})=1]-\Pr[\mathcal A(C_{m_0})=1]\bigr)$, so it is $\tfrac12$ for every $\mathcal A$ exactly when every test accepts both ciphertext distributions equally often, i.e. when the distributions coincide (the second form of 2.1). Conversely if $\Pr[C_{m_0}=c]\neq\Pr[C_{m_1}=c]$ for some $c$, the adversary that guesses the likelier message for each $c$ wins more than half the time.`,
+      idea: String.raw`The game success is $\tfrac12\Pr[\mathcal A(C_{m_0})=0]+\tfrac12\Pr[\mathcal A(C_{m_1})=1]=\tfrac12+\tfrac12\bigl(\Pr[\mathcal A(C_{m_1})=1]-\Pr[\mathcal A(C_{m_0})=1]\bigr)$, so it is $\tfrac12$ for every $\mathcal A$ exactly when every test accepts both ciphertext distributions equally often, i.e. when the distributions coincide (the second form of 2.1). Conversely if $\Pr[C_{m_0}=c]\neq\Pr[C_{m_1}=c]$ for some $c$, the adversary that guesses the likelier message for each $c$ wins more than half the time.
+
+For a fixed test, its win indicator is the sum of the disjoint indicators for b=0 with output0 and b=1 with output1. Linearity prob-1.6.1 and the fair challenge bit give the two half-weighted terms in the proof. Subtracting one half leaves half the signed acceptance-probability gap. The optimal test then selects ciphertexts with the appropriate likelihood surplus; linearity itself does not assume the test and ciphertext are independent.`,
       caption: String.raw`Choose the two messages Eve submits and the key distribution (each key bit is 1 with probability $p$; $p=\tfrac12$ is the one-time pad). The right panel shows the two ciphertext distributions; Eve’s best rule guesses $m_0$ where the blue bar is taller. The left panel plays 2000 games and shows the running success rate against the exact value $\tfrac12+\tfrac12\Delta$ and the $\pm3\sigma$ band of a coin flip. Press *Resample* for new games.`,
-      deps: ['crypto-2.1'],
+      deps: ['crypto-2.1', 'prob-1.6.1'],
       tags: ['indistinguishability', 'security game'],
       refs: ['Katz–Lindell §2.1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ciphertext_indistinguishability' },
@@ -157,9 +161,11 @@ export default {
       kind: 'Theorem',
       name: 'The one-time pad is perfectly secret',
       statement: String.raw`Let $\ell\ge1$ and let $\mathsf{Gen}$ output a uniformly random key $k\in\{0,1\}^\ell$, $\mathsf{Enc}_k(m)=m\oplus k$ and $\mathsf{Dec}_k(c)=c\oplus k$ on messages $m\in\{0,1\}^\ell$. Then the scheme is correct and perfectly secret: for every $m$ and $c$, $\Pr[\mathsf{Enc}_K(m)=c]=2^{-\ell}$. The same holds for $\mathbb Z_{26}^\ell$ with letter-wise addition mod $26$ (the Vernam–Vigenère pad). The key must be used for **one** message only, and every message has the length $\ell$ of the key.`,
-      idea: String.raw`Fix $m$ and $c$. The equation $m\oplus k=c$ has exactly one solution $k=m\oplus c$, since XOR with $m$ is a bijection of $\{0,1\}^\ell$. A uniform key hits that solution with probability $2^{-\ell}$, independent of $m$, so all messages give the same ciphertext distribution, which is the likelihood form of 2.1 and (via 2.2) the indistinguishability form.`,
+      idea: String.raw`Fix $m$ and $c$. The equation $m\oplus k=c$ has exactly one solution $k=m\oplus c$, since XOR with $m$ is a bijection of $\{0,1\}^\ell$. A uniform key hits that solution with probability $2^{-\ell}$, independent of $m$, so all messages give the same ciphertext distribution, which is the likelihood form of 2.1 and (via 2.2) the indistinguishability form.
+
+For fixed m the map k↦$m\oplus k$ is its own inverse, so alg-1.20 makes it a bijection of the finite bit-string space. Every target ciphertext therefore has exactly one key preimage. A uniform key gives that preimage the same mass $2^{-\ell}$ for every m and c. The bijection is the reason for the uniform ciphertext law; an arbitrary deterministic map of a uniform key need not preserve uniformity.`,
       caption: String.raw`Pick a ciphertext $c$ and click the message you wish had been sent: there is **always** a key that turns $c$ into it, and exactly one. Every cell of the table (or every row, in the 3-bit view) is one message, coloured by its unique key. Restricting the key space makes cells go grey: those messages could no longer have produced $c$.`,
-      deps: ['crypto-2.1'],
+      deps: ['crypto-2.1', 'alg-1.20'],
       tags: ['one-time pad', 'xor'],
       refs: ['Katz–Lindell §2.2'],
       credit: 'G. Vernam, 1917–1919 (cipher invented 1917; patent filed 1918); Shannon 1949 (proof)',
@@ -246,9 +252,11 @@ export default {
       kind: 'Theorem',
       name: 'Perfect secrecy requires as many keys as messages',
       statement: String.raw`If an encryption scheme with message space $\mathcal M$ and key space $\mathcal K$ is perfectly secret, then $|\mathcal K|\ge|\mathcal M|$. More precisely, if $|\mathcal K|<|\mathcal M|$ then for every ciphertext $c$ that can occur there is a message $m$ with $\Pr[M=m\mid C=c]=0$ even though $\Pr[M=m]>0$ (for the uniform prior on $\mathcal M$).`,
-      idea: String.raw`Fix any ciphertext $c$ that occurs. Decrypting it under each key gives the set $\{\mathsf{Dec}_k(c):k\in\mathcal K\}$, which has at most $|\mathcal K|$ elements. If $|\mathcal K|<|\mathcal M|$ some message $m$ is missing from that set, so no key sends $m$ to $c$; but with the uniform prior $m$ had probability $1/|\mathcal M|>0$, and its posterior is $0$. Correctness (decryption is a function of $k$ and $c$) is what limits the set.`,
+      idea: String.raw`Fix any ciphertext $c$ that occurs. Decrypting it under each key gives the set $\{\mathsf{Dec}_k(c):k\in\mathcal K\}$, which has at most $|\mathcal K|$ elements. If $|\mathcal K|<|\mathcal M|$ some message $m$ is missing from that set, so no key sends $m$ to $c$; but with the uniform prior $m$ had probability $1/|\mathcal M|>0$, and its posterior is $0$. Correctness (decryption is a function of $k$ and $c$) is what limits the set.
+
+The pigeonhole argument comb-1.2 applies to the attempted assignment of all messages to the keys that decrypt a fixed occurring ciphertext. Each key can supply at most one message because decryption is a function. If there are fewer keys than messages, some message cannot be assigned any key. Its positive uniform-prior mass becomes zero after that ciphertext, contradicting perfect secrecy. The reasoning counts possible preimages, not an attacker’s computational effort.`,
       caption: String.raw`Choose the number of keys and a ciphertext $c$. Each key sends $c$ back to exactly one message, drawn as a line from the key to the message; messages that no line reaches (red) are ruled out. As soon as $|\mathcal K|<8$ at least one message is impossible. Switch the cipher to random permutations — it makes no difference.`,
-      deps: ['crypto-2.3'],
+      deps: ['crypto-2.3', 'comb-1.2'],
       tags: ['key length', 'counting'],
       refs: ['Katz–Lindell §2.3'],
       credit: 'Claude Shannon, 1949',
@@ -300,9 +308,11 @@ export default {
       kind: 'Theorem',
       name: 'Shannon’s characterization of perfect secrecy',
       statement: String.raw`Let $\Pi$ be an encryption scheme with $|\mathcal M|=|\mathcal K|=|\mathcal C|$. Then $\Pi$ is perfectly secret if and only if (a) every key $k\in\mathcal K$ is chosen with probability $1/|\mathcal K|$ by $\mathsf{Gen}$, and (b) for every $m\in\mathcal M$ and $c\in\mathcal C$ there is exactly one key $k$ with $\mathsf{Enc}_k(m)=c$. In table form: the matrix $T_{k,m}=\mathsf{Enc}_k(m)$ (rows keys, columns messages) is a Latin square — every ciphertext occurs exactly once in each row (correctness) and once in each column (b) — and the keys are uniform.`,
-      idea: String.raw`If (a) and (b) hold then $\Pr[\mathsf{Enc}_K(m)=c]=\Pr[K=k_{m,c}]=1/|\mathcal K|$ for every $m,c$, which is perfect secrecy. Conversely, perfect secrecy forces $\Pr[\mathsf{Enc}_K(m)=c]$ to be the same for all $m$; since 2.4’s counting argument shows every $c$ must be reachable from every $m$, and the three sets have equal size, each $(m,c)$ is reached by exactly one key, and then the common probability $1/|\mathcal K|$ must be that key’s probability.`,
+      idea: String.raw`If (a) and (b) hold then $\Pr[\mathsf{Enc}_K(m)=c]=\Pr[K=k_{m,c}]=1/|\mathcal K|$ for every $m,c$, which is perfect secrecy. Conversely, perfect secrecy forces $\Pr[\mathsf{Enc}_K(m)=c]$ to be the same for all $m$; since 2.4’s counting argument shows every $c$ must be reachable from every $m$, and the three sets have equal size, each $(m,c)$ is reached by exactly one key, and then the common probability $1/|\mathcal K|$ must be that key’s probability.
+
+The equality case of the counting argument uses comb-1.2: a fixed occurring ciphertext must decrypt, across the N keys, to all N messages. No message can be omitted or repeated, since then N key positions could not cover N distinct messages. Thus each message/ciphertext pair has exactly one key. Correctness also makes each fixed-key message row injective, hence bijective between two N-element sets. Perfect secrecy equates the resulting key masses, forcing the uniform law.`,
       caption: String.raw`Left: the encryption table, one row per key and one column per message, each entry a ciphertext (colour = symbol). Click a cell to change its entry. Right: the resulting ciphertext distribution $\Pr[C=c\mid M=m]$ for each message; perfect secrecy means its rows are identical. Break the Latin property (a repeated symbol in a column) or bias the keys, and the rows separate.`,
-      deps: ['crypto-2.4'],
+      deps: ['crypto-2.4', 'comb-1.2'],
       tags: ['latin square', 'characterization'],
       refs: ['Katz–Lindell §2.4'],
       credit: 'Claude Shannon, 1949',
@@ -461,9 +471,11 @@ export default {
       kind: 'Definition',
       name: 'Statistical distance',
       statement: String.raw`For two probability distributions $P,Q$ on a finite set $\Omega$, the **statistical (total variation) distance** is $$\Delta(P,Q)=\max_{S\subseteq\Omega}\bigl|P(S)-Q(S)\bigr|=\tfrac12\sum_{\omega\in\Omega}|P(\omega)-Q(\omega)|.$$ It lies in $[0,1]$, equals $0$ iff $P=Q$ and $1$ iff the supports are disjoint. For any test (distinguisher) $D:\Omega\to\{0,1\}$ the advantage $|\Pr_P[D=1]-\Pr_Q[D=1]|$ is at most $\Delta(P,Q)$, with equality for $D=\mathbf 1_S$, $S=\{\omega:P(\omega)>Q(\omega)\}$.`,
-      idea: String.raw`Let $S^\ast=\{P>Q\}$. Because both sums equal one, the total surplus of $P$ over $Q$ on $S^\ast$ equals the total deficit elsewhere, so $\sum|P-Q|=2\,(P(S^\ast)-Q(S^\ast))$, which gives the half-sum formula. Any other set $S$ gains by including points of $S^\ast$ and loses by including points outside it, so $S^\ast$ is optimal. Perfect secrecy (2.1, 2.2) says $\Delta(C_{m},C_{m'})=0$ for all messages.`,
+      idea: String.raw`Let $S^\ast=\{P>Q\}$. Because both sums equal one, the total surplus of $P$ over $Q$ on $S^\ast$ equals the total deficit elsewhere, so $\sum|P-Q|=2\,(P(S^\ast)-Q(S^\ast))$, which gives the half-sum formula. Any other set $S$ gains by including points of $S^\ast$ and loses by including points outside it, so $S^\ast$ is optimal. Perfect secrecy (2.1, 2.2) says $\Delta(C_{m},C_{m'})=0$ for all messages.
+
+The finite-space additivity in prob-1.1.1a identifies the probability of a test’s accepting set with the sum of its point masses. Apply it separately to P and Q: their signed mass differences sum to zero, so positive surplus and negative deficit have equal total magnitude. Selecting exactly the positive-surplus atoms maximizes the difference and gives half the absolute-mass sum. This uses normalized probability laws; arbitrary unnormalized masses need not have that balance.`,
       caption: String.raw`Drag the bar tops of $P$ (blue) and $Q$ (orange) — they are renormalised to total mass $1$ — or choose a preset. Click bins in the top panel to build your own distinguisher $S$ (gold band). Below, the signed difference $P-Q$: the green area (where $P>Q$) equals the red area, and either equals $\Delta$. No choice of $S$ beats the optimal one.`,
-      deps: ['crypto-2.1'],
+      deps: ['crypto-2.1', 'prob-1.1.1a'],
       tags: ['total variation', 'distinguisher'],
       refs: ['Boneh–Shoup ch. 2'],
       viz(v) {
@@ -514,9 +526,11 @@ export default {
       kind: 'Concept',
       name: 'Secret splitting by XOR',
       statement: String.raw`To share a secret $s\in\{0,1\}^\ell$ among $n$ parties, choose shares $s_1,\dots,s_{n-1}$ independently and uniformly at random and set $s_n=s\oplus s_1\oplus\cdots\oplus s_{n-1}$. All $n$ shares together give back $s=s_1\oplus\cdots\oplus s_n$. Any set of at most $n-1$ shares is uniformly distributed on $(\{0,1\}^\ell)^{n-1}$, independent of $s$: it carries no information about the secret, in the perfect-secrecy sense. (An $n$-out-of-$n$ scheme; see threshold schemes for $t$-out-of-$n$.)`,
-      idea: String.raw`Missing share $s_j$ is itself $s\oplus(\text{XOR of the others})$. Whatever the other shares are, $s_j$ is a one-time-pad encryption of $s$ under the uniform key $\bigoplus_{i\neq j}s_i$; by 2.3 its distribution is the same for every secret, and the other $n-2$ shares are uniform and independent of everything. So any $n-1$ shares have the same law for every $s$.`,
+      idea: String.raw`Missing share $s_j$ is itself $s\oplus(\text{XOR of the others})$. Whatever the other shares are, $s_j$ is a one-time-pad encryption of $s$ under the uniform key $\bigoplus_{i\neq j}s_i$; by 2.3 its distribution is the same for every secret, and the other $n-2$ shares are uniform and independent of everything. So any $n-1$ shares have the same law for every $s$.
+
+By the independent-product law prob-2.1.11 the $n-1$ initially sampled shares give every input tuple the same probability. Fix any $n-1$ observed share positions and their values. If the determined last share is unobserved, the input tuple is fixed directly; otherwise the XOR constraint uniquely fixes the one omitted initial share. Thus each observed tuple has exactly one input preimage, with the same mass for every secret. Smaller observed subsets are marginals of this uniform product law.`,
       caption: String.raw`Type a secret and choose $n$. Click shares to “collect” them; the XOR of the collected ones is shown bottom right. With all $n$ the secret appears; with one share missing — whichever it is — the result is fresh noise, and the agreement with the secret stays near 50% (the readout gives the z-score). *Reshare* draws new random shares for the same secret.`,
-      deps: ['crypto-2.3'],
+      deps: ['crypto-2.3', 'prob-2.1.11'],
       tags: ['secret sharing', 'xor'],
       refs: ['Katz–Lindell §15.3'],
       viz(v) {
