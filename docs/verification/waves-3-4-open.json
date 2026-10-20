@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 17,
+  "remainingFlags": 16,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -19,7 +19,7 @@
     "energy": 1,
     "robot": 1,
     "arch": 1,
-    "bighist": 9
+    "bighist": 8
   },
   "queue": [
     {
@@ -262,22 +262,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Quaternary_extinction_event",
         "doi": "https://doi.org/10.1126/science.1060264"
-      }
-    },
-    {
-      "id": "bighist-4.2",
-      "file": "content/bighist/ch04.js",
-      "name": "Glacial cycles and Milankovitch forcing",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Milankovitch_cycles",
-        "doi": "https://doi.org/10.1126/science.194.4270.1121"
       }
     },
     {
@@ -1117,7 +1101,8 @@
       "arch-4.9",
       "bighist-3.1",
       "bighist-4.1",
-      "bighist-3.2"
+      "bighist-3.2",
+      "bighist-4.2"
     ]
   },
   "additionalFollowups": [
@@ -6261,6 +6246,11 @@
       "id": "bighist-3.2",
       "status": "resolved",
       "note": "2026-10-20: Worker two independently read bounded actual originals/author bodies and pixels, regenerated683 exact fixtures, added3125 integer-vector and coefficientwise dominance checks, and passed fresh320both-theme native/source-output pixel review after glyph follow-up; docs/verification/bighist-origins-peer.md."
+    },
+    {
+      "id": "bighist-4.2",
+      "status": "resolved",
+      "note": "2026-10-20: Worker one independently read actual Hays1976/Imbrie1980 bodies and pixels, regenerated80digit reference, checked648 independent insolation integrals/340DFT bins/three2048-step recurrences, and passed fresh320both themes plus nine real pointer drags and own pixels; docs/verification/bighist-orbits-peer.md."
     }
   ]
 }

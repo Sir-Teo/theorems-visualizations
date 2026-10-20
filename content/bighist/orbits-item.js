@@ -1,5 +1,5 @@
 import{orbitalModel}from'./source-audit-orbits.js';
-export default{num:'4.2',kind:'Phenomenon',name:'Glacial cycles and Milankovitch forcing',verify:true,
+export default{num:'4.2',kind:'Phenomenon',name:'Glacial cycles and Milankovitch forcing',verify:false,
  credit:'Orbital climate evidence of Hays, Imbrie and Shackleton; authored forcing and response illustration',deps:['mech-10.18'],see:['bighist-4.3','bighist-4.8'],tags:['climate','orbital forcing','ice ages'],refs:['Hays, Imbrie & Shackleton1976, Science194:1121–1132','Imbrie & Imbrie1980, Science207:943–953, Eqs1/2 and discussion'],links:{evidence:'https://www.whoi.edu/cms/files/hays76sci_268464.pdf',response:'https://www.whoi.edu/cms/files/imbrie80sci_268884.pdf'},
  statement:String.raw`Changes in Earth's orbit redistribute incoming sunlight across seasons and latitudes. Hays, Imbrie and Shackleton's 1976 study analyzed three climatic indices in two southern Indian Ocean sediment cores. Their historical record had prominent spectral components near 23, 42 and roughly 100 thousand years, with about 10%, 25% and 50% of the variance respectively. The shorter components were compared with precession and obliquity; explaining the large 100-thousand-year component required more than their linear response assumption.
 

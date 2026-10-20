@@ -1196,6 +1196,19 @@
         "97b9fe0b6c285b1ed6660c048eac5c1ee228c550",
         "62ae619e72eb8533136af985026bf39cb3348d35"
       ]
+    },
+    {
+      "ids": [
+        "bighist-4.2"
+      ],
+      "peer": "Worker one independently read actual Hays1976/Imbrie1980 bodies and pixels, regenerated80digit reference, checked648 independent insolation integrals/340DFT bins/three2048-step recurrences, and passed fresh320both themes plus nine real pointer drags and own pixels",
+      "reports": [
+        "docs/verification/bighist-orbits-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "dc39238f60ebe2dd62f8d126cb835f86b13c9477"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1208,7 +1221,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 17,
+  "currentPendingSourceReviews": 16,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",
