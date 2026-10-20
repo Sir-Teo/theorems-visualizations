@@ -400,9 +400,11 @@ independent of the amount of heat added. Efficiency therefore rises with the com
       statement: String.raw`The Diesel cycle differs from the Otto cycle in how heat is added: air alone is compressed (ratio $r$), fuel is injected and burns at **constant pressure** until the volume has grown by the cut-off ratio $r_c=V_3/V_2$, and the cycle then continues with adiabatic expansion and constant-volume heat rejection. For a perfect gas
 $$\eta_{\rm Diesel} = 1 - \frac{1}{r^{\gamma-1}}\;\frac{r_c^{\gamma}-1}{\gamma\,(r_c-1)}.$$
 At the same compression ratio and heat input this is lower than the Otto efficiency $1-r^{1-\gamma}$ (the bracket exceeds 1), but because only air is compressed there is no knock and the diesel can use $r\approx 15$–$20$; at equal **peak pressure** the diesel cycle is the more efficient one.`,
-      idea: String.raw`Adding heat while the piston is already moving down means part of the heat is taken in at a lower mean temperature than in the Otto cycle at the same compression ratio, so for equal $r$ the Otto cycle wins; the factor $(r_c^\gamma-1)/[\gamma(r_c-1)]\ge1$ measures the loss. The practical advantage is not thermodynamic ingenuity but a different constraint: a spark-ignition engine is limited by knock of the premixed charge, a compression-ignition engine by peak pressure of the structure, and under a peak-pressure limit the diesel can compress more and add heat later.`,
+      idea: String.raw`Adding heat while the piston is already moving down means part of the heat is taken in at a lower mean temperature than in the Otto cycle at the same compression ratio, so for equal $r$ the Otto cycle wins; the factor $(r_c^\gamma-1)/[\gamma(r_c-1)]\ge1$ measures the loss. The practical advantage is not thermodynamic ingenuity but a different constraint: a spark-ignition engine is limited by knock of the premixed charge, a compression-ignition engine by peak pressure of the structure, and under a peak-pressure limit the diesel can compress more and add heat later.
+
+The mean value theorem (pma-5.10), applied to $x^\gamma$ on $[1,r_c]$ with $r_c>1$ and $\gamma>1$, gives $(r_c^\gamma-1)/(\gamma(r_c-1))=\xi^{\gamma-1}>1$ for some $1<\xi<r_c$. This proves the stated efficiency comparison at the same compression ratio; as $r_c$ tends to one the factor tends to one. It does not compare engines constrained to different compression ratios.`,
       caption: String.raw`Choose what is held equal: the compression ratio (Otto wins), the **peak pressure** (Diesel wins) or each engine at its own realistic compression ratio. Both loops carry the same heat per kilogram of air, drawn on the same $p$–$V$ axes; the readout computes each efficiency from the loop area and compares it with the formulas.`,
-      deps: ['energy-2.6'],
+      deps: ['energy-2.6', 'pma-5.10'],
       refs: ['Tester ch. 17'],
       tags: ['internal combustion', 'power cycle'],
       credit: 'Rudolf Diesel, 1892–97',
@@ -444,9 +446,11 @@ At the same compression ratio and heat input this is lower than the Otto efficie
       statement: String.raw`Consider an engine that is internally reversible but exchanges heat with its reservoirs through finite thermal conductances (heat flow $=K\times$ temperature difference, the same $K$ on both sides). The working fluid is then at temperatures $T_h' < T_h$ and $T_c' > T_c$, and Carnot's efficiency applies only between those. The power output as a function of efficiency vanishes both at $\eta=0$ and at the Carnot value, so it has a maximum, at
 $$\eta_{CA} = 1-\sqrt{T_c/T_h},$$
 which is the efficiency at maximum power and depends only on the two reservoir temperatures.`,
-      idea: String.raw`A reversible engine takes infinitely long per cycle, so its power is zero: to deliver power the fluid temperatures must differ from the reservoirs. Put $x = T_c'/T_h' = 1-\eta$ and use reversibility $Q_h/T_h' = Q_c/T_c'$ with $Q_h = K(T_h-T_h')$ and $Q_c = K(T_c'-T_c)$: the fluid temperatures follow, and the power $P = Q_h - Q_c = K\,(xT_h - T_c)(1-x)/(2x)$. Setting $dP/dx=0$ gives $x^2 = T_c/T_h$. Curzon and Ahlborn compared the result with real plants.`,
+      idea: String.raw`A reversible engine takes infinitely long per cycle, so its power is zero: to deliver power the fluid temperatures must differ from the reservoirs. Put $x = T_c'/T_h' = 1-\eta$ and use reversibility $Q_h/T_h' = Q_c/T_c'$ with $Q_h = K(T_h-T_h')$ and $Q_c = K(T_c'-T_c)$: the fluid temperatures follow, and the power $P = Q_h - Q_c = K\,(xT_h - T_c)(1-x)/(2x)$. Setting $dP/dx=0$ gives $x^2 = T_c/T_h$. Curzon and Ahlborn compared the result with real plants.
+
+For $0<T_c<T_h$ and $K>0$, the feasible interval is $T_c/T_h\le x\le1$. Its power is positive inside and zero at both ends. At an interior maximum the zero-derivative theorem (pma-5.8) therefore applies: $P'(x)=K(T_c/x^2-T_h)/2$. This derivative changes from positive to negative at $x=\sqrt{T_c/T_h}$, establishing the maximum rather than merely a stationary point.`,
       caption: String.raw`Left: the power as a function of efficiency; drag the gold point and see the power fall to zero at the Carnot value on one side and at zero efficiency on the other. Middle: the temperatures the fluid actually works between — the bigger the power, the bigger the drops across the heat exchangers. Right: the real plants of Curzon and Ahlborn's table sit near the $\eta_{CA}$ value, not near the Carnot value.`,
-      deps: ['energy-2.2'],
+      deps: ['energy-2.2', 'pma-5.8'],
       refs: ['Tester ch. 3'],
       tags: ['finite-time thermodynamics', 'maximum power'],
       credit: 'Curzon & Ahlborn, 1975 (earlier: Chambadal 1957, Novikov 1957)',
@@ -498,9 +502,11 @@ $$X_Q = Q\left(1-\frac{T_0}{T}\right),$$
 and for a stream of fluid of mass $m$ and specific heat $c$ cooled from $T$ to $T_0$
 $$X = m c\left[(T-T_0) - T_0\ln\frac{T}{T_0}\right].$$
 Work and electricity are pure exergy; heat at ambient temperature carries none.`,
-      idea: String.raw`The best that can be done with heat at $T$ is to run a reversible (Carnot) engine between $T$ and the environment, which returns the fraction $1-T_0/T$ as work; for a stream whose temperature falls as it gives up heat the Carnot factor is averaged over the cooling, which is why a hot stream is worth less than the same heat from a constant-temperature source. Exergy accounting makes the second law quantitative: **where** an energy conversion is wasteful is where exergy is destroyed, even when no energy is lost.`,
+      idea: String.raw`The best that can be done with heat at $T$ is to run a reversible (Carnot) engine between $T$ and the environment, which returns the fraction $1-T_0/T$ as work; for a stream whose temperature falls as it gives up heat the Carnot factor is averaged over the cooling, which is why a hot stream is worth less than the same heat from a constant-temperature source. Exergy accounting makes the second law quantitative: **where** an energy conversion is wasteful is where exergy is destroyed, even when no energy is lost.
+
+For constant specific heat $c$ and $T\ge T_0>0$, sum the reversible work from each cooling increment: $X=mc\int_{T_0}^{T}(1-T_0/\theta)\,d\theta$. The fundamental theorem of calculus (pma-6.21), using the primitive $\theta-T_0\ln\theta$, gives the stream formula. The constant-temperature Carnot fraction cannot be applied to all that stream's heat at its initial temperature.`,
       caption: String.raw`The bars show one kilowatt-hour of energy in six forms: pale for its energy, solid for its exergy. Change the environment temperature $T_0$ and the way the heat is supplied (constant-temperature source or a cooling stream) and watch low-temperature heat lose nearly all its worth. Right: the exergy fraction as a function of temperature; drag the gold handle.`,
-      deps: ['energy-2.2', 'pchem-3.11'],
+      deps: ['energy-2.2', 'pchem-3.11', 'pma-6.21'],
       refs: ['Tester ch. 3'],
       tags: ['exergy', 'second law'],
       scope: String.raw`Thermal exergy only: chemical exergy of fuels (close to their heating values) and pressure exergy are not shown. Temperatures in kelvin in the formulas; the environment is taken as an infinite reservoir at $T_0$.`,
@@ -637,9 +643,11 @@ which grows as the temperature lift $T_h-T_c$ shrinks. Real machines reach a fra
       statement: String.raw`The Stirling cycle encloses a fixed mass of gas and has four processes: isothermal expansion at $T_h$ (heat $Q=nRT_h\ln r$ in, work out), constant-volume cooling to $T_c$, isothermal compression at $T_c$, and constant-volume heating back to $T_h$. A **regenerator** stores the heat given up in the cooling stage and returns it in the heating stage. With regenerator effectiveness $\varepsilon$ the heat that must be supplied externally is $nRT_h\ln r + (1-\varepsilon)\,nc_v(T_h-T_c)$ and the efficiency is
 $$\eta = \frac{nR\,(T_h-T_c)\ln r}{nRT_h\ln r + (1-\varepsilon)\,n c_v (T_h-T_c)},$$
 which equals the Carnot value $1-T_c/T_h$ when $\varepsilon=1$.`,
-      idea: String.raw`Without a regenerator the constant-volume stages need heat from the reservoirs at the wrong temperatures, wasting efficiency; the regenerator (a porous matrix the gas flows through) takes the heat of the cooling stroke and hands it back, so only the two isothermal heat exchanges remain with the reservoirs, and those are exactly a Carnot engine's. The enclosed area of the loop on the $p$–$V$ diagram is the net work, $nR(T_h-T_c)\ln r$, whatever the regenerator does.`,
+      idea: String.raw`Without a regenerator the constant-volume stages need heat from the reservoirs at the wrong temperatures, wasting efficiency; the regenerator (a porous matrix the gas flows through) takes the heat of the cooling stroke and hands it back, so only the two isothermal heat exchanges remain with the reservoirs, and those are exactly a Carnot engine's. The enclosed area of the loop on the $p$–$V$ diagram is the net work, $nR(T_h-T_c)\ln r$, whatever the regenerator does.
+
+On an isotherm $p=nRT/V$, so the fundamental theorem of calculus (pma-6.21) evaluates $\int_{V_{\min}}^{V_{\max}}p\,dV=nRT\ln r$, since $V_{\min}>0$. Subtracting the cold compression work from the hot expansion work yields $nR(T_h-T_c)\ln r$; the constant-volume legs do no mechanical work. Regeneration changes external heat demand, not this enclosed work.`,
       caption: String.raw`Left: the loop in the $p$–$V$ plane with a gold marker you can move round with the *phase* slider; middle: the same cycle on a $T$–$S$ diagram, whose enclosed area is again the work; right: the efficiency against regenerator effectiveness, which meets the Carnot line only at $\varepsilon=1$. Change the gas and the compression ratio to see that they do not change the perfect-regenerator result.`,
-      deps: ['energy-2.2'],
+      deps: ['energy-2.2', 'pma-6.21'],
       refs: ['Tester ch. 3'],
       tags: ['stirling engine', 'regenerator'],
       credit: 'Robert Stirling, 1816',
