@@ -1,0 +1,8 @@
+{
+  "baseline": "387edec7f20e5ff549eac153a9f9d3539286d2f7",
+  "file": "content/pharm/ch04.js",
+  "num": "4.2",
+  "field": "viz",
+  "before": "(about 3.3 half-lives).",
+  "after": "(at ${v.fix((info.n90 - 1) * ratio.value, 2)} half-lives after the first dose)."
+}

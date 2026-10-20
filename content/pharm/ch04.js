@@ -99,7 +99,7 @@ The superposition argument is the linear-solution property in ode 3.1 applied be
           info = { peak: sum, R, r, n, n90, sumDirect: (1 - r ** n) / (1 - r) };
         });
         v.legend([['accent', 'peak after dose $n$'], ['orange', 'trough before dose n'], ['green', 'steady-state limit', { dash: true }]]);
-        v.readout(() => `$r=2^{-\\tau/t_{1/2}}=${v.fix(info.r, 4)}$; sum of ${info.n} terms $=${v.fix(info.peak, 4)}$ vs closed form $(1-r^{${info.n}})/(1-r)=${v.fix(info.sumDirect, 4)}$; limit $R=1/(1-r)=${v.fix(info.R, 4)}$. Within 10 % of steady state after ${info.n90} dose${info.n90 === 1 ? '' : 's'} (about 3.3 half-lives).`);
+        v.readout(() => `$r=2^{-\\tau/t_{1/2}}=${v.fix(info.r, 4)}$; sum of ${info.n} terms $=${v.fix(info.peak, 4)}$ vs closed form $(1-r^{${info.n}})/(1-r)=${v.fix(info.sumDirect, 4)}$; limit $R=1/(1-r)=${v.fix(info.R, 4)}$. Within 10 % of steady state after ${info.n90} dose${info.n90 === 1 ? '' : 's'} (at ${v.fix((info.n90 - 1) * ratio.value, 2)} half-lives after the first dose).`);
       },
     },
     // ------------------------------------------------------------------ 4.3
