@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 163,
+  "remainingFlags": 162,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -30,7 +30,6 @@
     "art": 11,
     "arch": 11,
     "ling": 10,
-    "phil": 1,
     "tech": 23,
     "bighist": 18
   },
@@ -1963,19 +1962,6 @@
       }
     },
     {
-      "id": "phil-3.7",
-      "file": "content/phil/ch03.js",
-      "name": "Hysteresis in categorisation",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "SEP \u201cVagueness\u201d"
-      ],
-      "links": {}
-    },
-    {
       "id": "tech-4.7",
       "file": "content/tech/ch04-b.js",
       "name": "The cam and the trip hammer",
@@ -3347,7 +3333,8 @@
       "game-4.1",
       "game-4.2",
       "game-4.4",
-      "game-4.5"
+      "game-4.5",
+      "phil-3.7"
     ]
   },
   "additionalFollowups": [
@@ -7652,6 +7639,12 @@
       "status": "resolved",
       "report": "docs/verification/game-finite-tree-followup.md",
       "note": "Actual finite-tree definitions, one-deviation proof, existence/uniqueness construction and attribution notes checked independently. Complete plans, coherent ties and all-subgame whole-plan deviations verified by seven math and twenty native groups; original tree inventory, saved state and full bounds retained."
+    },
+    {
+      "id": "phil-3.7",
+      "status": "resolved",
+      "report": "docs/verification/phil-hysteresis-followup.md",
+      "note": "Actual Case1995 source equations/context/results and ODE stability prerequisite checked; independent cubic/fold/critical/trapping derivations, four math and four native groups/static checks pass. Authored finite sweeps distinguish static bistability, monostable lag, late and absent category switches; no empirical calibration claim."
     }
   ]
 }

@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **163 flags**. The difference from the initial count reflects the review: 3 previously unflagged uncertainties remain newly marked, and 673 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **162 flags**. The difference from the initial count reflects the review: 3 previously unflagged uncertainties remain newly marked, and 674 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **163 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **162 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -798,3 +798,7 @@ Resolved game-4.1/4.2/4.4/4.5 after actual textbook/proof comparison and indepen
 ## Combined checkpoint through 00b1ea9
 
 The exact accepted snapshot passes **1,543 tests**, all six UI groups, strict build (6,684 written + 6,890 planned; 450 chapters / 85 collections), full static (6,621 items) and an **80-route changed-page sweep**, all with zero errors/warnings where applicable. Its source queue reconciles **163 pending = 833 initial + 3 added − 673 original resolved** across 2,260 scoped items. Seven original flags close since the preceding checkpoint through four independently reviewed source batches (20 mathematical and 32 native groups). The separate font-completion fix has three browser regressions. The published cross-field shortfall is 862, with 53/64 non-math collections and 28 complete syllabi below target. Full-map 60 fps and 100-flagship source/proof curation remain open. See [exact snapshot and evidence](checkpoint-00b1ea9.md). Ongoing drafts are excluded; Wave 5 remains prepared and unstarted.
+
+## Categorisation hysteresis follow-up
+
+Resolved phil-3.7, the final queued philosophy item, after actual Case1995 source/formula comparison and independent root cubic/stability/trapping derivations, four mathematical groups, four native groups, static checks and final narrow-page/panel inspection. Exact static equilibria and folds remain distinct from finite-speed lag and carried-state returns; critical, late-switch and no-switch cases are explicit. Only the actual written ODE stability input is a prerequisite; sorites is related context. See [source and verification evidence](phil-hysteresis-followup.md). **162 source reviews remain**.

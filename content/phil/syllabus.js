@@ -105,8 +105,8 @@ export default {
           pic: 'Assign “heap” a truth degree that rises smoothly with grains: each tolerance step is nearly true, and the chained conclusion’s degree is computed as it decays.' },
         { num: '3.6', kind: 'Concept', name: 'Non-transitive indiscriminability', deps: ['phil-3.1', 'psych-1.9'], refs: ['SEP “Vagueness”'],
           pic: 'Adjacent colour patches in a long gradient look identical pairwise, yet the first and last are clearly different: a just-noticeable-difference threshold is set with a slider.' },
-        { num: '3.7', kind: 'Phenomenon', name: 'Hysteresis in categorisation', deps: ['phil-3.1'], refs: ['SEP “Vagueness”'],
-          pic: 'Morph a blue patch into green step by step and back: subjects switch labels later than on the way in, so the boundary depends on the direction of travel.' },
+        { num: '3.7', kind: 'Phenomenon', name: 'Hysteresis in categorisation', deps: ['ode-1.8'], see: ['phil-3.1'], refs: ['Case, Tuller, Ding & Kelso, Evaluation of a dynamical model of speech perception (1995), pp. 977–984, Eqs. 1–3'],
+          pic: 'Compare exact equilibrium branches and folds with an authored finite-time outward/return cycle. Prepare either endpoint, step or reset the carried state, and remove bistability while retaining finite-speed lag; these are model curves, not speech observations.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
