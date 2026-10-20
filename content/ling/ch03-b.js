@@ -1,5 +1,6 @@
 // Linguistics & Language — Chapter 3: Morphology: the structure of words (items 3.6–3.10)
 import { MORPH_COLOR } from './ch03.shared.js';
+import {rootTemplateConcept,reduplicationConcept} from './source-audit-morphology.js';
 
 // ---------- 3.6: one clause in four languages (my own analysis of each word, see the caption) ----------
 // morphemes: [surface, gloss, 'r' root | 'a' affix, number of grammatical features an affix carries]
@@ -31,48 +32,6 @@ function runModel(rand, kind, N, par, checks) {
 }
 const makeChecks = (N) => { const a = []; for (let k = 0; ; k++) { const n = Math.round(20 * 2 ** (k / 4)); if (n > N) break; if (!a.length || n > a[a.length - 1]) a.push(n); } return a; };
 
-// ---------- 3.8 ----------
-const PATS = [
-  { n: 'C₁aC₂aC₃a', pre: '', skel: 'CVCVCV', mel: ['a'], role: 'he …ed (past, 3rd masc. sing.)' },
-  { n: 'C₁āC₂iC₃', pre: '', skel: 'CVVCVC', mel: ['a', 'i'], role: 'one who …s (active participle)' },
-  { n: 'C₁iC₂āC₃', pre: '', skel: 'CVCVVC', mel: ['i', 'a'], role: 'a noun' },
-  { n: 'maC₁C₂ūC₃', pre: 'ma', skel: 'CCVVC', mel: ['u'], role: 'what is …ed (passive participle)' },
-  { n: 'maC₁C₂aC₃a', pre: 'ma', skel: 'CCVCV', mel: ['a'], role: 'a place of …ing' },
-  { n: 'C₁uC₂uC₃', pre: '', skel: 'CVCVC', mel: ['u'], role: 'a plural' },
-  { n: 'C₁aC₂C₃', pre: '', skel: 'CVCC', mel: ['a'], role: 'a noun' },
-];
-const ROOTS = {
-  ktb: { c: ['k', 't', 'b'], name: 'k-t-b “write”', att: { 0: ['kataba', 'he wrote'], 1: ['kātib', 'writer'], 2: ['kitāb', 'book'], 3: ['maktūb', 'written; a letter'], 4: ['maktaba', 'library'], 5: ['kutub', 'books'] } },
-  drs: { c: ['d', 'r', 's'], name: 'd-r-s “study”', att: { 0: ['darasa', 'he studied'], 1: ['dāris', 'studying (participle)'], 4: ['madrasa', 'school'], 6: ['dars', 'lesson'] } },
-};
-const LONG = { a: 'ā', i: 'ī', u: 'ū' };
-function buildWord(root, p) {
-  const slots = []; let ci = 0, gi = -1, prevV = false; const groups = [];
-  for (const ch of p.skel) {
-    if (ch === 'C') { slots.push({ t: 'C', sym: root[ci], ri: ci }); ci++; prevV = false; }
-    else { if (!prevV) { gi++; groups.push([]); } prevV = true; groups[gi].push(slots.length); slots.push({ t: 'V', g: gi }); }
-  }
-  const mel = groups.map((_, g) => p.mel[Math.min(g, p.mel.length - 1)]);
-  slots.forEach((s) => { if (s.t === 'V') s.sym = mel[s.g]; });
-  let word = p.pre;
-  for (let i = 0; i < slots.length; i++) {
-    const s = slots[i];
-    if (s.t === 'V') { if (groups[s.g][0] !== i) continue; word += groups[s.g].length > 1 ? LONG[s.sym] : s.sym; } else word += s.sym;
-  }
-  return { slots, groups, mel, word };
-}
-
-// ---------- 3.9 ----------
-const REDUP = {
-  id: { name: 'Indonesian: full reduplication', rule: 'full', stems: [['buku', 'book', 'buku-buku', 'books (plural or variety)'], ['anak', 'child', 'anak-anak', 'children'], ['rumah', 'house', 'rumah-rumah', 'houses'], ['mata', 'eye', 'mata-mata', 'spy (meaning shifts)'], ['jalan', 'road, walk', 'jalan-jalan', 'to stroll']], sure: 'Plural/variety use of buku-buku and anak-anak and mata-mata “spy” were checked against teaching sources; rumah-rumah and jalan-jalan are from memory.' },
-  tl: { name: 'Tagalog: partial reduplication', rule: 'CV', stems: [['sulat', 'write', 'susulat', 'will write'], ['kain', 'eat', 'kakain', 'will eat'], ['basa', 'read', 'babasa', 'will read'], ['bili', 'buy', 'bibili', 'will buy'], ['inom', 'drink', 'iinom', 'will drink']], sure: 'sulat, kain, basa and inom are confirmed from teaching sources (the contemplative aspect); bili is from memory.' },
-  free: { name: 'Free play', rule: 'CV', stems: [['tapa', '', '', '']], sure: '' },
-};
-const cvOf = (stem, rule) => {
-  if (rule === 'full') return stem;
-  const m = stem.match(rule === 'CVC' ? /^[^aeiou]*[aeiou][^aeiou]?/ : /^[^aeiou]*[aeiou]/);
-  return m ? m[0] : stem;
-};
 const IRR_SRC = 'be:was:23970367,do:did:7781726,have:had:7279963,get:got:5363833,go:went:4972372,know:knew:4468046,come:came:3132857,think:thought:2662244,see:saw:2476595,say:said:2424483,take:took:1950902,tell:told:1865223,let:let:1750195,make:made:1739103,give:gave:1216087,mean:meant:1099659,find:found:1017117,leave:left:1009069,feel:felt:717293,win:won:708396,hear:heard:671019,keep:kept:653607,put:put:617889,meet:met:492805,run:ran:451634,bring:brought:448029,understand:understood:407458,lose:lost:386837,hold:held:355042,drink:drank:321677,break:broke:314493,speak:spoke:307905,pay:paid:297857,bite:bit:297805,eat:ate:297443,forget:forgot:294686,shoot:shot:294171,sit:sat:290849,send:sent:281467,sleep:slept:251559,fight:fought:250357,stand:stood:249940,write:wrote:233344,buy:bought:231067,become:became:223810,fall:fell:215116,deal:dealt:209554,hit:hit:209048,hurt:hurt:207314,read:read:200216,drive:drove:194606,set:set:191328,shut:shut:186359,catch:caught:184451,cut:cut:178669,wear:wore:162429,build:built:156611,hang:hung:155753,throw:threw:153793,sell:sold:149646,begin:began:149291,spend:spent:143408,sing:sang:141962,hide:hid:140111,steal:stole:133877,grow:grew:126557,lead:led:122701,blow:blew:120713,fly:flew:118370,wake:woke:108853,teach:taught:105080,ride:rode:103885,choose:chose:90816,rise:rose:74012,draw:drew:69213,lay:laid:66638,tear:tore:61661,feed:fed:60309,quit:quit:57416,cost:cost:54561,strike:struck:54529,dig:dug:47073,shake:shook:45784,swim:swam:37524,spread:spread:33647,split:split:31370,seek:sought:29713,shine:shone:26762,cast:cast:23987,swing:swung:22779,sink:sank:22256,spin:spun:20370,bind:bound:19799,bend:bent:18730,lend:lent:17089,sweep:swept:14563,slide:slid:14531,creep:crept:12875,burst:burst:11950,weep:wept:8543,shrink:shrank:8121';
 const REG_SRC = 'die:422718,want:2574969,look:1999272,need:1250687,talk:990094,love:988365,call:984393,work:974943,try:775878,help:766833,wait:763684,happen:739643,stop:671969,ask:643692,kill:639929,use:598633,live:566731,start:507753,believe:454507,show:446409,move:440445,listen:426176,stay:425967,miss:416580,remember:384948,play:380480,turn:379636,care:374052,change:320653,open:315455,worry:313002,watch:303191,hope:287486,seem:276144,laugh:267918,guess:266009,close:247611,walk:245535,marry:244382,check:239287,excuse:229690,plan:213468,save:212881,order:200933,pick:193300,answer:179803,wish:171670,follow:170247,rest:168541,trust:163840,pull:149625,pass:142147,dance:140526,drop:138743,cry:136914,wonder:135879,clean:116211,land:115465,kiss:103683,allow:97481,join:93026,count:92290,lock:90259,mark:89045,fix:88791,share:83543,push:82746,visit:82129,reach:78259,shop:77573,jump:74908,cook:70275,smile:64319,fill:63770,add:43128';
 
@@ -183,128 +142,8 @@ export default {
         v.readout(() => `After N = ${last.N}: productive affix ${last.Vo} words, P = **${v.fix(last.Po, 3)}** (new-word rate over the last stretch ${v.fix(last.ro, 3)}); closed list ${last.Vc} words, P = **${v.fix(last.Pc, 3)}** (rate ${v.fix(last.rc, 3)}).`);
       },
     },
-    {
-      num: '3.8',
-      kind: 'Concept',
-      name: 'Roots and templates: nonconcatenative morphology',
-      credit: 'McCarthy, 1981 (autosegmental analysis of root-and-pattern morphology)',
-      statement: String.raw`In **nonconcatenative** morphology a word is not built by stringing affixes onto a root. In Arabic and other Semitic languages a **root** of consonants (usually three) carries a core meaning (*k-t-b*, “writing”) and is interleaved with a **pattern**: a template of consonant and vowel slots plus a vowel melody (and sometimes prefixes). One root combined with different patterns gives a family of related words: *katab-a* “he wrote”, *kātib* “writer”, *kitāb* “book”, *maktūb* “written”, *maktab-a* “library”, *kutub* “books”.`,
-      idea: String.raw`McCarthy's analysis puts the pieces on separate **tiers**: the consonantal root, the CV skeleton and the vowel melody. Association lines link root consonants to C slots and melody vowels to V slots, left to right, and a vowel that has slots left over **spreads** to them (the single *a* of *kataba*). A long vowel is one vowel linked to two V slots. Roots and patterns are both morphemes and neither is a contiguous string, which is why the concatenative cut of 3.1 does not apply to them.`,
-      caption: String.raw`Pick a root (or type three consonants) and a pattern, on the right, and watch the three tiers link up: root consonants (blue) to C slots, vowels (green) to V slots, the prefix *ma-* (orange) outside the template. The list gives the word each pattern builds from this root and flags the ones that are real words (checked against Wiktionary for *kātib*, *kutub*, *maktūb*, *darasa*, *dāris*, *dars*; *kitāb*, *maktaba*, *madrasa* from standard usage) and the ones that are only possible forms. Transliteration follows common usage with macrons for long vowels.`,
-      deps: ['ling-3.1'],
-      refs: ['Fromkin et al. ch. 2'],
-      tags: ['root and pattern', 'Arabic'],
-      verify: true,
-      scope: String.raw`Modern Standard Arabic, simplified: the form classes (binyanim) of verbs, vowel deletion, assimilation and the plural system are far richer than the seven patterns shown. A pattern is a tendency of meaning, not a guarantee.`,
-      viz(v) {
-        const rootSel = v.select('Root', [{ value: 'ktb', label: 'k-t-b “write”' }, { value: 'drs', label: 'd-r-s “study”' }], 'ktb', { onChange: (r) => inp.set(r) });
-        const inp = v.input('or type a root', 'ktb', { width: 110, placeholder: 'three consonants' });
-        let pi = 0;
-        const s = v.stage({ x: [0, 12], y: [0, 7], axes: false, height: 360, weight: 1.35, minWidth: 340, title: 'tiers' });
-        const sl = v.stage({ x: [0, 10], y: [0, 7], axes: false, height: 360, weight: 1, minWidth: 280, title: 'one root, many words (click one)' });
-        sl.onClick((x, y) => { const k = Math.round((6.2 - y) / 0.85); if (k >= 0 && k < PATS.length) pi = k; });
-        let cur = null;
-        const rootOf = () => { const t = inp.value.toLowerCase().replace(/[^a-zʕʔšḥṣṭḍẓġḵ]/g, ''); return t.length === 3 ? t.split('') : null; };
-        v.render(() => {
-          const rc = rootOf();
-          const known = ROOTS[rc ? rc.join('') : ''];
-          if (!rc) { s.text('type three consonants, e.g. ktb', 6, 3.5, { size: 15, color: 'muted', align: 'center' }); cur = null; return; }
-          PATS.forEach((p, k) => {
-            const w = buildWord(rc, p), a = known && known.att[k], y = 6.2 - k * 0.85;
-            sl.rect(0.2, y - 0.36, 9.8, y + 0.36, { fill: k === pi ? 'gold' : null, fillAlpha: 0.22, color: k === pi ? 'gold' : 'grid', width: k === pi ? 2 : 1, radius: 6 });
-            sl.text(p.n, 0.45, y, { size: 12, color: 'muted', align: 'left', baseline: 'middle' });
-            sl.text(w.word, 3.1, y, { size: 17, color: a ? 'ink' : 'faint', align: 'left', baseline: 'middle' });
-            sl.text(a ? `“${a[1]}”` : known ? 'possible form' : '', 5.5, y, { size: 11.5, color: a ? 'green' : 'faint', align: 'left', baseline: 'middle' });
-          });
-          const p = PATS[pi], B = buildWord(rc, p);
-          const n = B.slots.length + (p.pre ? 1 : 0), x0 = 3.3, dx = Math.min(1.5, 8.3 / n);
-          const xs = (i) => x0 + (i + (p.pre ? 1 : 0)) * dx + dx / 2, YR = 5.0, YS = 3.2, YM = 1.4;
-          s.text('root', 0.2, YR, { size: 13, color: 'accent', align: 'left', baseline: 'middle' });
-          s.text('skeleton', 0.2, YS, { size: 13, color: 'muted', align: 'left', baseline: 'middle' });
-          s.text('vowels', 0.2, YM, { size: 13, color: 'green', align: 'left', baseline: 'middle' });
-          if (p.pre) { s.rect(x0 + 0.1, YS - 0.4, x0 + dx - 0.1, YS + 0.4, { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 1.8, radius: 6 }); s.text(p.pre, x0 + dx / 2, YS, { size: 17, color: 'ink', align: 'center', baseline: 'middle' }); s.text('prefix', x0 + dx / 2, YS - 0.65, { size: 10.5, color: 'orange', align: 'center' }); }
-          const cx = [], cs = B.slots.map((q, i) => (q.t === 'C' ? i : -1)).filter((i) => i >= 0);
-          B.slots.forEach((q, i) => {
-            const x = xs(i); s.rect(x - dx * 0.4, YS - 0.4, x + dx * 0.4, YS + 0.4, { fill: q.t === 'C' ? 'accent' : 'green', fillAlpha: 0.14, color: q.t === 'C' ? 'accent' : 'green', width: 1.5, radius: 6 });
-            s.text(q.t, x, YS, { size: 15, color: 'muted', align: 'center', baseline: 'middle' });
-          });
-          cs.forEach((i, k) => {
-            const xr = x0 + (p.pre ? dx : 0) + (k + 0.5) * ((n - (p.pre ? 1 : 0)) * dx / 3);
-            s.rect(xr - 0.4, YR - 0.4, xr + 0.4, YR + 0.4, { fill: 'accent', fillAlpha: 0.3, color: 'accent', width: 1.8, radius: 6 });
-            s.text(rc[k], xr, YR, { size: 19, color: 'ink', align: 'center', baseline: 'middle' });
-            s.line(xr, YR - 0.4, xs(i), YS + 0.4, { color: 'accent', width: 1.8 });
-          });
-          B.groups.forEach((g, gi) => {
-            const xm = (xs(g[0]) + xs(g[g.length - 1])) / 2;
-            s.rect(xm - 0.4, YM - 0.4, xm + 0.4, YM + 0.4, { fill: 'green', fillAlpha: 0.3, color: 'green', width: 1.8, radius: 6 });
-            s.text(B.mel[gi], xm, YM, { size: 19, color: 'ink', align: 'center', baseline: 'middle' });
-            g.forEach((i) => s.line(xm, YM + 0.4, xs(i), YS - 0.4, { color: 'green', width: 1.8 }));
-          });
-          s.text(B.word, 9.9, 6.3, { size: 32, color: 'ink', align: 'right', baseline: 'middle' });
-          s.text(p.role, 9.9, 5.8, { size: 11, color: 'muted', align: 'right', baseline: 'top' });
-          cur = { rc, B, p, a: known && known.att[pi], known };
-        });
-        v.readout(() => {
-          if (!cur) return 'Type three consonants for the root.';
-          const { rc, B, p, a, known } = cur, nAtt = known ? Object.keys(known.att).length : 0;
-          return `**${rc.join('-')}** + **${p.n}** → **${B.word}**${a ? `, “${a[1]}”` : known ? ' (a possible form, not in my checked list)' : ''}.\n${known ? `${nAtt} of the ${PATS.length} patterns give attested words for this root in my list.` : 'For roots outside the list the forms are only what the template predicts.'}`;
-        });
-      },
-    },
-    {
-      num: '3.9',
-      kind: 'Concept',
-      name: 'Reduplication',
-      credit: 'Typological counts: Rubino, WALS chapter 27',
-      statement: String.raw`**Reduplication** builds a word or form by copying part or all of the base. In **full** reduplication the whole stem is repeated (Indonesian *buku* “book” → *buku-buku* “books”); in **partial** reduplication only a piece is copied, such as the first consonant and vowel (Tagalog *sulat* “write” → *susulat* “will write”). The copy is a morpheme without fixed sounds: it takes its form from the base. Meanings include plurality, repetition, intensity, diminution and, in Tagalog, aspect. In the WALS sample of 368 languages (Rubino), 278 have both productive full and partial reduplication, 35 only full reduplication, and 55 no productive reduplication.`,
-      idea: String.raw`Reduplication is a morphological operation on the base's sounds, so it needs a stem and a rule of copying such as "copy the initial CV and prefix it". Its form can be stated as a template, as in 3.8, with the base supplying the segments. The meanings are often iconic (more form for more meaning: many, repeated, intense) and the same device appears in unrelated families, which is why it is one of the most widespread morphological processes.`,
-      caption: String.raw`Choose a language and a stem: the copied part is shown in orange with an arrow from the stem, and the result appears with its meaning. In *free play* type any stem and choose the rule (full, first CV, first CVC) to see how the same stem looks under each pattern. The bars give the typological counts of the WALS chapter. Examples: Indonesian *buku-buku*, *anak-anak* and *mata-mata* “spy” and the Tagalog forms *susulat*, *kakain*, *babasa*, *iinom* were checked against teaching sources; *rumah-rumah*, *jalan-jalan* and *bibili* are from memory. The copying here is orthographic, a simplification of the sound-level rule.`,
-      deps: ['ling-3.1'],
-      refs: ['Fromkin et al. ch. 2'],
-      tags: ['reduplication', 'typology'],
-      verify: true,
-      scope: String.raw`Orthographic copying, not phonological: Tagalog vowel-initial roots copy the glottal stop plus vowel, and many languages restrict the copy by syllable weight. Indonesian reduplication is not always plural (*anak-anak* can also be an age group, *mata-mata* is “spy”).`,
-      viz(v) {
-        const lang = v.select('Language', Object.entries(REDUP).map(([k, L]) => ({ value: k, label: L.name })), 'id');
-        const stemTl = v.select('Stem', REDUP.tl.stems.map((x) => ({ value: x[0], label: x[0] })), 'sulat');
-        const stemId = v.select('Stem', REDUP.id.stems.map((x) => ({ value: x[0], label: x[0] })), 'buku');
-        const inp = v.input('stem', 'tapa', { width: 130 });
-        const ruleSel = v.select('Rule', [{ value: 'full', label: 'full' }, { value: 'CV', label: 'first CV' }, { value: 'CVC', label: 'first CVC' }], 'CV');
-        const s = v.stage({ x: [0, 12], y: [0, 6], axes: false, height: 300, weight: 1.4, minWidth: 340, title: 'copy' });
-        const sb = v.stage({ x: [0, 4], y: [0, 300], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 260, xlabel: '', ylabel: 'languages (of 368)', xticks: [[0.7, 'full + partial'], [2, 'full only'], [3.3, 'none']], title: 'reduplication in WALS ch. 27' });
-        let cur = null;
-        v.render(() => {
-          const L = REDUP[lang.value];
-          const stemSel = lang.value === 'id' ? stemId : stemTl;
-          stemTl.el.hidden = lang.value !== 'tl'; stemId.el.hidden = lang.value !== 'id'; inp.el.hidden = lang.value !== 'free'; ruleSel.el.hidden = lang.value !== 'free';
-          let stem, rule, gloss = '', meaning = '', cat = null;
-          if (lang.value === 'free') { stem = inp.value.toLowerCase().replace(/[^a-z]/g, '') || 'tapa'; rule = ruleSel.value; }
-          else {
-            const row = L.stems.find((x) => x[0] === stemSel.value) || L.stems[0]; stem = row[0]; rule = L.rule; gloss = row[1]; meaning = row[3]; cat = row;
-          }
-          const copy = cvOf(stem, rule), out = rule === 'full' ? `${stem}-${copy}` : `${copy}${stem}`;
-          const wd = (t) => Math.max(1.3, 0.55 * t.length + 0.5);
-          const xS = 6.4 - wd(stem) / 2 - (rule === 'full' ? 0 : 0), yT = 4.7, yO = 2.2;
-          s.rect(xS, yT - 0.5, xS + wd(stem), yT + 0.5, { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 2, radius: 8 });
-          s.text(stem, xS + wd(stem) / 2, yT, { size: 20, color: 'ink', align: 'center', baseline: 'middle' }); s.text('stem' + (gloss ? ` “${gloss}”` : ''), xS + wd(stem) / 2, yT + 0.65, { size: 11.5, color: 'muted', align: 'center' });
-          const total = wd(stem) + wd(copy) + 0.2, xO = 6 - total / 2;
-          const first = rule === 'full' ? stem : copy, second = rule === 'full' ? copy : stem;
-          const a = { t: first, c: rule === 'full' ? 'accent' : 'orange' }, b = { t: second, c: rule === 'full' ? 'orange' : 'accent' };
-          s.rect(xO, yO - 0.5, xO + wd(a.t), yO + 0.5, { fill: a.c, fillAlpha: 0.25, color: a.c, width: 2, radius: 8 });
-          s.text(a.t, xO + wd(a.t) / 2, yO, { size: 20, color: 'ink', align: 'center', baseline: 'middle' });
-          s.rect(xO + wd(a.t) + 0.2, yO - 0.5, xO + total, yO + 0.5, { fill: b.c, fillAlpha: 0.25, color: b.c, width: 2, radius: 8 });
-          s.text(b.t, xO + wd(a.t) + 0.2 + wd(b.t) / 2, yO, { size: 20, color: 'ink', align: 'center', baseline: 'middle' });
-          const xc = rule === 'full' ? xO + wd(a.t) + 0.2 + wd(b.t) / 2 : xO + wd(a.t) / 2;
-          s.arrow(xS + wd(stem) / 2, yT - 0.55, xc, yO + 0.55, { color: 'orange', width: 2 });
-          s.text('copy', (xS + wd(stem) / 2 + xc) / 2 + 0.3, 3.45, { size: 12, color: 'orange', align: 'left' });
-          s.text(out, 6, 0.85, { size: 24, color: 'ink', align: 'center', baseline: 'middle' });
-          if (meaning) s.text(`“${meaning}”`, 6, 0.2, { size: 12.5, color: 'muted', align: 'center', baseline: 'bottom' });
-          [[278, 'accent'], [35, 'orange'], [55, 'muted']].forEach(([n, c], i) => { const x = 0.7 + i * 1.3; sb.rect(x - 0.45, 0, x + 0.45, n, { fill: c, fillAlpha: 0.35, color: c, width: 1.8 }); sb.text(String(n), x, n + 12, { size: 12.5, color: 'ink', align: 'center' }); });
-          cur = { stem, copy, out, rule, meaning, cat, L };
-        });
-        v.readout(() => `**${cur.stem}** → **${cur.out}**: the ${cur.rule === 'full' ? 'whole stem' : cur.rule === 'CV' ? 'first consonant + vowel' : 'first consonant + vowel + consonant'} (**${cur.copy}**) is copied${cur.meaning ? `; the form means “${cur.meaning}”` : ''}.${cur.L.sure ? `\n${cur.L.sure}` : ''}`);
-      },
-    },
+    rootTemplateConcept,
+    reduplicationConcept,
     {
       num: '3.10',
       kind: 'Phenomenon',
