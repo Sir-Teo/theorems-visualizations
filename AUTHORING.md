@@ -448,6 +448,7 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 - Stages have a minimum height of about 200 px, so thin strips come out tall. `equal: true` with a gutter widens the window beyond the requested range — drop `equal` where exact counting matters.
 - Check complete strokes, hollow-marker rings, handle hover halos and label backing plates at narrow widths. A glyph fitting inside the stage does not establish that its plate leaves neighboring labels visible. Wait for fonts and split long displayed equations when necessary.
 - Verify statements and ideas on the actual strict-built page at 320px in both themes. Check each KaTeX display’s inner scroll width as well as its container, after fonts load. A fixed-width harness can pass while a narrower production card clips the same equation; use equivalent line breaks at that actual width.
+- Include the complete scope block in that check. Rich text does not parse Markdown links or raw HTML: put short source labels/pages in prose and exact external URLs in the item’s `links` map, which the detail page renders as clickable links. A literal long URL can overflow even when every equation fits.
 
 **Controls and state**
 - `v.readout(fn)` must be registered **once**, outside `v.render`; calling it inside the render loops forever. Set a variable in render and read it in the readout.
