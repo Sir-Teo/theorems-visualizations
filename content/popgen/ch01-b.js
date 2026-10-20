@@ -575,7 +575,7 @@ so with complete assortment ($\alpha = 1$) the heterozygote frequency halves eve
       kind: 'Phenomenon',
       name: 'Wahlund effect',
       statement: String.raw`Let a population consist of $k$ subpopulations with weights $w_i$ and allele frequencies $p_i$, each in Hardy–Weinberg proportions. A sample pooled across them has allele frequency $\bar p = \sum w_ip_i$ but genotype frequencies
-$$P = \bar p^2 + \sigma^2, \qquad H = 2\bar p\bar q - 2\sigma^2, \qquad Q = \bar q^2 + \sigma^2,$$
+$$\begin{gathered}P = \bar p^2 + \sigma^2, \qquad\\ H = 2\bar p\bar q - 2\sigma^2, \qquad\\ Q = \bar q^2 + \sigma^2,\end{gathered}$$
 where $\sigma^2 = \sum w_i(p_i-\bar p)^2$ is the variance of allele frequency among subpopulations. The pooled sample therefore shows a heterozygote deficit of exactly twice that variance, as if inbred with $F_{ST} = \sigma^2/\bar p\bar q$, although no subpopulation departs from Hardy–Weinberg.`,
       idea: String.raw`Heterozygosity $2p(1-p)$ is a concave function of $p$, so the average of its values lies below its value at the average (Jensen): $\sum w_i\,2p_iq_i = 2\bar p\bar q - 2\sigma^2$, from $\sum w_ip_i^2 = \bar p^2 + \sigma^2$. Geometrically, the subpopulations are points on the Hardy–Weinberg parabola and the pooled sample is their centre of mass, which lies inside the curve. Fusing the subpopulations into one randomly mating unit restores $2\bar p\bar q$ in one generation (1.5).
 

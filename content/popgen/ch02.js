@@ -15,7 +15,7 @@ export default {
       kind: 'Model',
       name: 'Wright–Fisher model',
       statement: String.raw`Take a diploid population of constant size $N$ with non-overlapping generations, random mating, and no selection, mutation or migration. Equivalently, regard each generation as a pool of $2N$ gene copies. Let $X_t$ be the number of copies of allele $A$ in generation $t$ and $p_t = X_t/2N$ its frequency. The next generation is formed by drawing $2N$ copies independently, with replacement, from the current pool:
-$$X_{t+1}\mid X_t = k \;\sim\; \mathrm{Binomial}\!\left(2N,\ \tfrac{k}{2N}\right).$$
+$$\begin{gathered}X_{t+1}\mid X_t = k \\ \;\sim\; \mathrm{Binomial}\!\left(2N,\ \tfrac{k}{2N}\right).\end{gathered}$$
 So $\mathbb E[p_{t+1}\mid p_t]=p_t$ and $\operatorname{Var}(p_{t+1}\mid p_t)=p_t(1-p_t)/2N$. The states $0$ and $2N$ are absorbing: once an allele is lost or fixed, it stays so, and with probability one every run is absorbed.`,
       idea: String.raw`Each of the $2N$ copies in the next generation picks its parent copy uniformly and independently, so the number of descendants of the $A$ copies is a binomial count. That single sampling step is the whole model: no force pushes $p$ in any direction (the conditional mean is $p_t$), but the sampling noise has variance $p(1-p)/2N$ and, because it vanishes only at $0$ and $1$, it keeps shaking $p$ until the chain falls into one of those two absorbing states. The noise is large exactly when $N$ is small.
 
@@ -136,7 +136,7 @@ Conditional on the current frequency, the next-generation count is the sum of $2
       kind: 'Theorem',
       name: 'Heterozygosity decays as (1 − 1/2N)ᵗ',
       statement: String.raw`In the neutral Wright–Fisher model with $N$ diploid individuals, let $H_t = 2p_t(1-p_t)$ be the heterozygosity expected under random mating. Then
-$$\mathbb E[H_{t+1}\mid p_t]=\Bigl(1-\frac1{2N}\Bigr)H_t,\qquad\text{so}\qquad \mathbb E[H_t]=H_0\Bigl(1-\frac1{2N}\Bigr)^{t}\approx H_0\,e^{-t/2N}.$$
+$$\begin{gathered}\mathbb E[H_{t+1}\mid p_t]=\\\Bigl(1-\frac1{2N}\Bigr)H_t,\qquad\\\text{so}\qquad\\ \mathbb E[H_t]=\\H_0\Bigl(1-\frac1{2N}\Bigr)^{t}\\\approx H_0\,e^{-t/2N}.\end{gathered}$$
 Equivalently, the probability that two gene copies drawn in generation $t$ are identical by descent obeys $F_{t+1}=\tfrac1{2N}+\bigl(1-\tfrac1{2N}\bigr)F_t$.`,
       idea: String.raw`Write $\mathbb E[p_{t+1}(1-p_{t+1})]=\mathbb E[p_{t+1}]-\mathbb E[p_{t+1}^2]$. The binomial second moment is $\mathbb E[p_{t+1}^2\mid p_t]=p_t^2+p_t(1-p_t)/2N$, so the conditional expectation of $p(1-p)$ is $p_t(1-p_t)(1-1/2N)$: each generation a fraction $1/2N$ of the remaining variation is lost, because two newly drawn copies have probability $1/2N$ of descending from the same parent copy. Iterating gives the geometric decay; the Hardy–Weinberg heterozygosity (1.10) is the quantity being eroded.
 

@@ -64,7 +64,7 @@ Whatever the start, $p_t\to p^*$ geometrically, with time scale $1/(\mu+\nu)$ ge
       kind: 'Theorem',
       name: 'Wright’s stationary distribution under mutation and drift',
       statement: String.raw`In the diffusion approximation for a population of $N$ diploid individuals, let allele $A$ mutate to $a$ at rate $u$ and $a$ to $A$ at rate $v$ per generation, with no selection. The frequency $p$ of $A$ has a stationary density that is a Beta distribution,
-$$\phi(p)\;\propto\;p^{\,4Nv-1}(1-p)^{\,4Nu-1},\qquad \mathbb E[p]=\frac{v}{u+v},\qquad \operatorname{Var}(p)=\frac{\mathbb E[p](1-\mathbb E[p])}{4N(u+v)+1}.$$
+$$\begin{gathered}\phi(p)\;\propto\;\\p^{\,4Nv-1}(1-p)^{\,4Nu-1},\qquad\\ \mathbb E[p]=\frac{v}{u+v},\qquad\\ \operatorname{Var}(p)=\\\frac{\mathbb E[p](1-\mathbb E[p])}{4N(u+v)+1}.\end{gathered}$$
 It is U-shaped, piling up near $0$ and $1$, when both $4Nu<1$ and $4Nv<1$, and hump-shaped, concentrated near the mean, when both exceed $1$.`,
       idea: String.raw`The forward Kolmogorov equation of the diffusion (2.11) has drift $v-(u+v)p$ from mutation (3.1) and variance $p(1-p)/2N$ from drift. At stationarity the probability flux vanishes, which leaves a first-order equation for $\phi$ whose solution is $p^{4Nv-1}(1-p)^{4Nu-1}$. The exponents compare the supply of mutants with the pull of drift: each allele arrives at rate $\sim 2Nv$ new copies per generation, and a drift-driven excursion to loss takes about $2N$ generations, so when fewer than one new mutant per $4N$ generations arrives, populations spend most of their time near one boundary.
 
