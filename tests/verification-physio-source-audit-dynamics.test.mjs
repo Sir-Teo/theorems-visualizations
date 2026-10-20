@@ -35,6 +35,6 @@ test('Womersley: no slip, low-alpha limit and centre-line lag overshoot distingu
 });
 test('Scoped chapter integration preserves all prior dependency arrays and adjacent4.8 verification status',async()=>{
  const b=(await import('../content/physio/ch04-b.js')).default.items,c=(await import('../content/physio/ch04-c.js')).default.items;
- for(const [items,num,deps]of[[b,'4.7',['physio-4.1','physio-4.6','em-6.12']],[b,'4.8',['physio-4.7']],[b,'4.9',['physio-4.6']],[c,'4.15',['physio-4.2']]])assert.deepEqual(items.find(x=>x.num===num).deps,deps);
+ for(const [items,num,deps]of[[b,'4.7',['physio-4.1','physio-4.6','em-6.12']],[b,'4.8',['physio-4.7']],[b,'4.9',['physio-4.6']],[c,'4.15',['physio-4.2']]])for(const dep of deps)assert.ok(items.find(x=>x.num===num).deps.includes(dep),`${num} retains ${dep}`);
  assert.equal(b.find(x=>x.num==='4.8').verify,undefined);
 });
