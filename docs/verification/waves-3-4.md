@@ -1017,3 +1017,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### QINFO combined acceptance
 
 [QINFO independent peer](qinfo-crossfield-prerequisite-peer.md) accepts19genuineinputs and bounded correctness/layout/grammar changes throughb78affd. Collectionreaches25written; live429/22/18,26furthercollectionsmeetpublishedtarget, sourcequeue5. Earlier pendingexclusionsremovedonlyafterclosingpeer; frozenBIGHIST unchanged. Fullcheckpoint follows.
+
+### Integrated checkpoint69710ca
+
+[Immutable checkpoint](checkpoint-69710ca.md) passes2,167default tests/all6UI, strict/static0errors/0warnings, home113,085gzipbytes. IncludesacceptedREL/CM/CLIMATE/QINFO; prerequisite429/22/18/source5. Later chunkprototypefailedexactimagegate and remainsoutsideproduction; no FPS claim. Wave5 unstarted.
