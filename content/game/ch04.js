@@ -125,7 +125,7 @@ A **pure strategy** is a complete plan: one action at every node assigned to tha
       refs: ['Zermelo (1913), Proceedings of the Fifth ICM, vol. II, pp.501–504', 'Bonanno (2024), §3.5, Theorem 3.5.2, pp.92–93'],
       tags: ['determinacy', 'chess', 'combinatorial game'],
       links: { source: 'https://www.mathunion.org/fileadmin/ICM/Proceedings/ICM1912.2/ICM1912.2.ocr.pdf#page=503', textbook: 'https://faculty.econ.ucdavis.edu/faculty/bonanno/PDF/GT_book.pdf#page=92', wikipedia: 'https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)' },
-      verify: true,
+      verify: false,
       viz(v) {
         const GAMES = DETERMINACY_GAMES, cache = {};
         const setup = key => cache[key] || (cache[key] = solveLineGame(GAMES[key]));

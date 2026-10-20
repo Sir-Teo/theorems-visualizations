@@ -90,6 +90,20 @@
       ],
       "peer": "worker_two exact-commit source/math/native review",
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "music-7.10",
+        "music-7.8",
+        "game-4.3"
+      ],
+      "peer": "worker_three exact-commit source/proof/math and full native review",
+      "reports": [
+        "game-determinacy-followup.md",
+        "music-continued-followup.md",
+        "music-well-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -102,5 +116,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 135
+  "currentPendingSourceReviews": 132
 }

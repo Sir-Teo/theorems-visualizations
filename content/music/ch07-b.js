@@ -67,7 +67,7 @@ The named recipes are Benson's transcriptions, rather than newly authenticated r
       refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §5.13, pp.181–187; named recipes are his technical transcriptions'],tags:['temperament','keys'],
       credit:'Named recipes as transcribed by Dave Benson; bounded redistribution, comparisons and synthesis authored here.',
       scope:String.raw`A finite mathematical comparison of explicitly specified recipes, with no claim about historical dates, priority, a composer's preferred tuning or universal key character. The drag bounds are authored constraints, not a definition of well temperament. Exact logarithmic formulas specify closure; binary64 evaluation leaves the displayed residual, which is reported rather than asserted to be zero. The C4 anchor is 261.6256 Hz; each cadence root lies in its C4–C5 octave and the other voices ascend from it. Audio is the same authored 44,100-Hz H8 signal as 7.4/7.9, with amplitudes 1/h, pre-output bound 0.12, 10-ms ramps and zero-sample gaps. Output gain/limiter and device are separate; frequency errors do not measure perceived quality.`,
-      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
       viz(v){
         let d=wellRecipe('werckmeister');
         const pre=v.select('recipe',[...Object.entries(WELL_RECIPES).map(([value,label])=>({value,label})),{value:'custom',label:'custom'}],'werckmeister',{onChange:k=>{if(k!=='custom'){d=wellRecipe(k);hs.forEach((h,j)=>h.set(j,d[j]));}}});
@@ -139,7 +139,7 @@ Write $\varepsilon_j=q_j\alpha-p_j$. The complete-quotient formula shows that co
       tags:['continued fractions','approximation'],
       credit:'Mathematical exposition: Dave Benson and Ben Lynn; finite example and determinant-basis proof written here.',
       scope:String.raw`The theorem is exact for irrational $\alpha$; it is not a historical priority claim or a claim that a good fifth alone optimizes a musical scale. The displayed example uses binary64 logarithms for a bounded set of denominators. Independent rational log-series enclosures certify its listed partial quotients, nearest numerators, error signs and finite minima. Decimal readouts are rounded. Minimizing $|\alpha-p/q|$ is a different criterion and may also select intermediate fractions.`,
-      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf',bounds:'https://crypto.stanford.edu/pbc/notes/contfrac/converge.html'},verify:true,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf',bounds:'https://crypto.stanford.edu/pbc/notes/contfrac/converge.html'},verify:false,
       viz(v){
         const K=v.slider('convergent index k',1,7,4,{int:true});
         const A=v.stage({x:[.5,1000],y:[-.56,.56],xlog:true,axes:'box',gutter:true,full:true,height:350,minWidth:240,xlabel:'denominator q',ylabel:'qα − nearest integer',xticks:[1,2,5,12,41,100,306,665],title:'all denominators through 665; selected and next convergents'});

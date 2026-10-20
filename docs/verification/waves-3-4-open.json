@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 135,
+  "remainingFlags": 132,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,11 +22,11 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 7,
+    "game": 6,
     "psych": 10,
     "soc": 10,
     "polsci": 9,
-    "music": 18,
+    "music": 16,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -314,21 +314,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Hales%E2%80%93Jewett_theorem"
-      }
-    },
-    {
-      "id": "game-4.3",
-      "file": "content/game/ch04.js",
-      "name": "Zermelo: chess is determined",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ ch. 1"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)"
       }
     },
     {
@@ -764,36 +749,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1086/257897"
-      }
-    },
-    {
-      "id": "music-7.8",
-      "file": "content/music/ch07-b.js",
-      "name": "Well temperaments",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Well_temperament"
-      }
-    },
-    {
-      "id": "music-7.10",
-      "file": "content/music/ch07-b.js",
-      "name": "Continued fractions give best approximations",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 6"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Continued_fraction"
       }
     },
     {
@@ -2919,7 +2874,10 @@
       "psych-4.8",
       "music-7.9",
       "soc-4.5",
-      "soc-4.6"
+      "soc-4.6",
+      "music-7.10",
+      "music-7.8",
+      "game-4.3"
     ]
   },
   "additionalFollowups": [
@@ -7443,6 +7401,21 @@
       "id": "soc-4.6",
       "status": "resolved",
       "note": "2026-10-20: independently reviewed exact worker commit, primary sources, model math and native light/dark inputs/screenshots; see soc-smallworld-followup.md."
+    },
+    {
+      "id": "music-7.10",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three exact-commit source/proof/math and full native review; music-continued-followup.md."
+    },
+    {
+      "id": "music-7.8",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three exact-commit source/math and full native review; music-well-followup.md."
+    },
+    {
+      "id": "game-4.3",
+      "status": "resolved",
+      "note": "2026-10-20: worker_two exact-commit original-source/proof/math and full native review; game-determinacy-followup.md."
     }
   ]
 }
