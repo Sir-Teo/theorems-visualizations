@@ -138,6 +138,17 @@
         "music-edo-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "soc-3.1",
+        "soc-4.4"
+      ],
+      "peer": "coordinator original Freeman definitions, NetworkX source, independent Floyd/path-count math and fresh narrow native review",
+      "reports": [
+        "soc-centrality-online-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -150,5 +161,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 127
+  "currentPendingSourceReviews": 125
 }

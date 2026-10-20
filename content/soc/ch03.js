@@ -61,7 +61,7 @@ The measures need not agree: the most connected person, the person nearest to ev
       tags: ['centrality', 'networks'],
       credit: 'Three centrality definitions compared by Linton C. Freeman, 1978/79; NetworkX 3.7 example graphs.',
       links: { source:'https://www.cin.ufpe.br/~rbcp/taia/Freeman1979-centrality.pdf',graph:'https://networkx.org/documentation/stable/reference/generated/networkx.generators.small.krackhardt_kite_graph.html' },
-      verify: true,
+      verify: false,
       viz(v) {
         const s = v.stage({ x: [-1.4, 1.4], y: [-1.15, 1.15], axes: false, equal: true, height: 400 });
         const sb = v.stage({ x: [-0.5, 3.2], y: [-0.2, 8.2], axes: false, height: 400, weight: 0.8, minWidth: 240, title: 'Eight highest scores' });

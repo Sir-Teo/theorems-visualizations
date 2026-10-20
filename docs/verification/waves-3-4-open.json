@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 127,
+  "remainingFlags": 125,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -24,7 +24,7 @@
     "robot": 1,
     "game": 6,
     "psych": 6,
-    "soc": 10,
+    "soc": 8,
     "polsci": 9,
     "music": 15,
     "art": 9,
@@ -428,26 +428,6 @@
       }
     },
     {
-      "id": "soc-3.1",
-      "file": "content/soc/ch03.js",
-      "name": "Degree, closeness and betweenness centrality",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "Defined for connected undirected graphs; on a graph with several components closeness must be redefined (here: scaled by the share of nodes reachable). The kite graph is a ten-person example with the edge list of networkx's \\`krackhardt_kite_graph\\`; its attribution to Krackhardt (1990) is from memory and was not checked against the paper."
-        }
-      ],
-      "refs": [
-        "Newman ch. 7"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Centrality"
-      }
-    },
-    {
       "id": "soc-3.7",
       "file": "content/soc/ch03.js",
       "name": "Power from position in exchange networks",
@@ -570,22 +550,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Bow-tie_structure"
-      }
-    },
-    {
-      "id": "soc-4.4",
-      "file": "content/soc/ch04.js",
-      "name": "Six degrees in online networks",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "E&K §20.4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Six_degrees_of_separation",
-        "arxiv": "https://arxiv.org/abs/1111.4503"
       }
     },
     {
@@ -2799,7 +2763,9 @@
       "game-4.3",
       "psych-3.3",
       "psych-3.4",
-      "music-7.12"
+      "music-7.12",
+      "soc-3.1",
+      "soc-4.4"
     ]
   },
   "additionalFollowups": [
@@ -7363,6 +7329,16 @@
       "id": "music-7.12",
       "status": "resolved",
       "note": "2026-10-20: worker_three exact-commit source/math, certified rational-log generator and two fresh narrow native groups; music-edo-followup.md."
+    },
+    {
+      "id": "soc-3.1",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator original Freeman definitions, NetworkX source, independent Floyd/path-count math and fresh narrow native review; soc-centrality-online-followup.md."
+    },
+    {
+      "id": "soc-4.4",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator original2011 papers, official2016 announcement, counting math and fresh narrow native review; soc-centrality-online-followup.md."
     }
   ]
 }
