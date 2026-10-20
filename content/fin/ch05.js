@@ -7,97 +7,83 @@
 // Real data: the daily market series (Kenneth R. French's Data Library) in ch05.shared.js. Everything labelled "stylised" or "model" is a simulation, not data.
 import { clamp, pct, fx, sg, daily, acf, normCdf, normPdf, pricePath, rng } from './ch05.shared.js';
 
-const YR = (i) => 1963.5 + i * (63.17 / 15897);
+import { dailyCalendar } from './source-audit-daily-calendar.js';
+import { signRule, wealthPath, newsLevel } from './source-audit-efficiency.js';
 
 export default {
   collection: 'fin',
   chapter: 5,
   title: 'Efficient markets, volatility and bubbles',
-  summary: String.raw`If prices already reflect available information, price changes should be unpredictable and active managers should not beat the market after costs — the efficient-market hypothesis. Much evidence supports a weak version, but prices are more volatile than fundamentals warrant, arbitrage is limited, and returns have fat tails and clustered volatility. History and laboratory experiments both show bubbles forming even when fundamental values are known.`,
+  summary: String.raw`Market efficiency is stated relative to information and a model of required returns: predictable raw returns can still compensate for risk. Tests distinguish that benchmark from abnormal returns, while examining price adjustment, manager performance, volatility and bubbles. Historical data and authored simulations make different kinds of evidence.`,
   items: [
     // ------------------------------------------------------------------ 5.1
     {
       num: '5.1',
       kind: 'Hypothesis',
       name: 'The efficient-market hypothesis',
-      statement: String.raw`A market is **efficient with respect to an information set** $\Phi_t$ if prices "fully reflect" $\Phi_t$: no strategy that uses only $\Phi_t$ earns an expected return above what its risk warrants, after costs. Equivalently, the return surprise
-$$Z_{t+1}=r_{t+1}-\mathrm E\big[r_{t+1}\mid\Phi_t\big]$$
-is a **fair game**, $\mathrm E[Z_{t+1}\mid\Phi_t]=0$. Three nested sets give three forms. **Weak:** $\Phi_t$ is the history of past prices and volumes (so technical analysis cannot pay). **Semi-strong:** all public information (filings, news, forecasts). **Strong:** all information, including what insiders know. Each form implies the one before it.
+      statement: String.raw`A market is **efficient with respect to an information set** $\Phi_t$ when prices fully reflect that information. To give this claim testable content in an expected-return model, specify an integrable, $\Phi_t$-measurable equilibrium return benchmark $b_t$ from a model of risk, and test the **joint restriction**
+$$\mathrm E[r_{t+1}-b_t\mid\Phi_t]=0.$$
+For a bounded $\Phi_t$-measurable position $h_t$, taking out what is known gives $\mathrm E[h_t(r_{t+1}-b_t)\mid\Phi_t]=0$; subtracting nonnegative trading costs cannot create a positive expected abnormal gain. **Weak:** past prices and volumes. **Semi-strong:** all public information. **Strong:** all information, including private information. With the same benchmark and admissible rules, efficiency for a larger information set implies it for a smaller one.
 
-Scope: the weak-form pictures use a value-weighted index, whose daily returns are not exactly tradable (stale prices). The hypothesis is untestable on its own, because "warrants" needs a model of expected return (the *joint-hypothesis problem*): an apparent profit may mean inefficiency or a wrong model of risk.`,
-      idea: String.raw`If a rule using $\Phi_t$ could earn an expected excess return, traders would pile into it, and their buying and selling would move today's price until the profit vanished; competition among informed traders therefore pushes the price to its information-consistent value (the present value of fin-1.5 computed with *all* $\Phi_t$). The consequence is that price changes follow no pattern that $\Phi_t$ could predict. Testing means choosing $\Phi_t$, a risk model and a rule, and asking whether the rule's profit, net of trading costs, differs from zero; each form is tested by a different kind of evidence (return autocorrelation, event studies, insider and fund performance).`,
-      caption: String.raw`**Left**: the three nested information sets; choose a form. **Weak** (real data): a rule that goes long or short the whole U.S. market according to the sign of yesterday's return, on 15 897 actual trading days 1963–2026. Look at the **sample**: in 1963–1989 the rule earns large paper profits (daily index returns were then positively autocorrelated, largely because many stocks in the index traded infrequently, so the index lagged), in 1990–2026 it loses money, before and after the **trading cost**. **Semi-strong / strong** (model): news about a firm arrives at time 0. Move **your entry time**: after the announcement you only have public information, before it you need inside information (strong form). Raise the **share already in the price** or shorten the **adjustment time** and the profit disappears. (News panel: stylised model, not data.)`,
-      deps: ['fin-1.5'],
-      refs: ['BKM ch. 11'],
+The identity $\mathrm E[r-\mathrm E(r\mid\Phi)\mid\Phi]=0$ holds for every integrable return; it is not by itself a test of efficiency. The economic restriction comes from a separately specified benchmark. Predictable raw returns may be compensation for risk. Independent, identically distributed returns are a stronger assumption.`,
+      idea: String.raw`Fama's expected-return formulation makes a benchmark model unavoidable: an apparent abnormal return may reflect information omitted from prices, a wrong model of risk, or a sampling fluctuation. The conditional-expectation rule prob-4.1.14 proves the trading-system implication once the joint restriction is assumed. Competition motivates the hypothesis, but it does not prove that every raw price or return change is unpredictable. Costs, implementable information and the chosen risk model all matter in an empirical test.`,
+      caption: String.raw`Choose one of three nested information sets. **Weak** uses 15,897 real daily market-return observations, July 1963–August 2026, with their actual observation dates. The paper rule holds yesterday's sign (zero counts as long); it starts flat, applies a charge to opening, each signal change and closing. This is an approximate signal-change cost model: daily leverage resets and their rebalancing trades are uncharged. The earliest return supplies a lag, so the full sample has 15,896 rule days. Compare gross buy-and-hold with gross and net rule wealth. These are unadjusted hypothetical index returns. **Semi-strong / strong** uses an authored news-level model: public entry starts at time zero; the private-information case permits earlier entry. The remaining normalized news change is not a holding-period return or a risk-adjusted profit.`,
+      deps: ['fin-1.5', 'prob-4.1.14'],
+      refs: ['Fama (1970), §§I–II, pp.383–388'],
       tags: ['market efficiency', 'information', 'fair game'],
-      credit: 'Fama, 1970 (building on Samuelson, 1965, and Fama, 1965)',
-      scope: String.raw`A hypothesis about prices, not a law: it is stated relative to an information set, a cost structure and a model of risk, and each form can fail separately.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Efficient-market_hypothesis' },
+      credit: 'Eugene F. Fama, 1970',
+      scope: String.raw`An expected-return formulation of a hypothesis, conditional on a risk model, information and admissible trading rules. The index rule assumes executable index closes, frictionless short exposure before the stated cost, and no cash interest, borrowing fee or risk adjustment. Daily target exposures are reset; the signal-change charge omits turnover needed to rebalance a continuing short position, so it is not an all-in self-financing implementation cost. Historical index closes can be stale; descriptive sample returns cannot establish an implementable profit or prove/reject efficiency. The news panel is a chosen deterministic level response with full eventual adjustment, not event-study data.`,
+      verify: false,
+      links: { doi: 'https://doi.org/10.1111/j.1540-6261.1970.tb00518.x', source: 'https://people.hec.edu/rosu/wp-content/uploads/sites/43/2023/09/Fama-Efficient-capital-markets-1970.pdf' },
       viz(v) {
-        const D = daily(), r = D.r, n = D.n;
+        const D = daily(), calendar = dailyCalendar();
         const form = v.select('information set', [{ value: 'weak', label: 'weak' }, { value: 'semi', label: 'semi-strong' }, { value: 'strong', label: 'strong' }], 'weak');
         const samp = v.select('sample', [{ value: 'b', label: '1990–2026' }, { value: 'a', label: '1963–1989' }, { value: 'all', label: '1963–2026' }], 'b');
-        const cost = v.slider('trading cost (bp per unit traded)', 0, 10, 2, { step: 0.25 });
-        const leak = v.slider('share of the news already in the price', 0, 1, 0.2, { step: 0.01, fmt: (x) => pct(x, 0) });
-        const tau = v.slider('adjustment time after the announcement (min)', 0.2, 60, 5, { log: true, sig: 2 });
-        const ent = v.slider('your entry time (minutes from announcement)', -30, 30, 2, { step: 0.5 });
-        const C = v.stage({ x: [-1.7, 1.7], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 0.9, minWidth: 250, title: 'nested information sets' });
-        const W = v.stage({ x: [1963, 2027], y: [0, 3], axes: 'box', gutter: true, height: 330, weight: 1.3, minWidth: 300, xlabel: 'year', ylabel: 'log₁₀ of $1 invested', title: 'weak form: a rule on yesterday’s sign (real daily data)' });
-        const E = v.stage({ x: [-30, 30], y: [-0.1, 1.15], axes: 'box', gutter: true, height: 330, weight: 1.3, minWidth: 300, xlabel: 'minutes from the announcement', ylabel: 'price, as a share of the full news effect', title: 'the price around an announcement (model)' });
-        const isWeak = () => form.value === 'weak';
-        let cache = null, ck = '';
-        // gross and net daily returns of the rule “sign of yesterday’s return”
-        const rule = () => {
-          const key = samp.value + '|' + cost.value; if (ck === key) return cache;
-          const i0 = samp.value === 'b' ? D.yearStart[27] : 2, i1 = samp.value === 'a' ? D.yearStart[27] : n;
-          const g = [], nt = [], bh = []; let pos = Math.sign(r[i0 - 2]) || 1;
-          for (let i = i0; i < i1; i++) { const s = Math.sign(r[i - 1]) || 1, u = Math.abs(s - pos); pos = s; const x = s * r[i]; g.push(x); nt.push(x - cost.value * 1e-4 * u); bh.push(r[i]); }
-          ck = key; cache = { g, nt, bh, i0 }; return cache;
-        };
-        const path = (x, i0) => { const o = []; let w = 0; for (let k = 0; k < x.length; k++) { w += Math.log10(1 + x[k]); if (k % 8 === 0 || k === x.length - 1) o.push([YR(i0 + k), w]); } return o; };
-        const mean = (a) => a.reduce((s, x) => s + x, 0) / a.length;
-        const sd = (a) => { const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1)); };
-        const car = (t) => { const L = leak.value; if (t < 0) return L * (t + 30) / 30; return L + (1 - L) * (1 - Math.exp(-t / tau.value)); };
-        let prof = 0, eff = 0;
+        const cost = v.slider('charge (bp per signal-unit change, open/close included)', 0, 10, 2, { step: 0.25 });
+        const leak = v.slider('pre-announcement news-level share', 0, 1, 0.2, { step: 0.01, fmt: (x) => pct(x, 0) });
+        const tau = v.slider('adjustment time (minutes, authored model)', 0.2, 60, 5, { log: true, sig: 2 });
+        const ent = v.slider('entry time (minutes from announcement)', -30, 30, 2, { step: 0.5 });
+        const C = v.stage({ x: [-1.7, 1.7], y: [-1.4, 1.4], equal: true, axes: false, height: 330, weight: 0.9, minWidth: 250, title: 'nested information sets' });
+        const W = v.stage({ x: [1963, 2027], y: [0, 3], axes: 'box', gutter: true, height: 330, weight: 1.3, minWidth: 300, xlabel: 'actual calendar year', ylabel: 'log₁₀ wealth (initial wealth = 1)', title: 'lagged-sign paper rule (real daily index data)' });
+        const E = v.stage({ x: [-34, 34], y: [-0.12, 1.2], axes: 'box', gutter: true, height: 330, weight: 1.3, minWidth: 300, xlabel: 'minutes from announcement', ylabel: 'normalized news level', title: 'authored response, eventual level = 1' });
+        let cache, key, st = {};
+        const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
+        const date = x => String(x).replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
         v.render(() => {
-          const weak = isWeak();
+          const weak = form.value === 'weak';
           samp.el.hidden = cost.el.hidden = !weak; leak.el.hidden = tau.el.hidden = ent.el.hidden = weak;
           W.el.style.display = weak ? '' : 'none'; E.el.style.display = weak ? 'none' : '';
-          // circles
-          const cols = ['red', 'orange', 'green'], names = ['strong', 'semi', 'weak'], rs = [1.15, 0.8, 0.42];
-          const sel = form.value === 'strong' ? 0 : form.value === 'semi' ? 1 : 2;
+          const cols = ['red', 'orange', 'green'], rs = [1.15, 0.8, 0.42], sel = form.value === 'strong' ? 0 : form.value === 'semi' ? 1 : 2;
           for (let k = 0; k < 3; k++) { const on = k >= sel; C.circle(0, 0, rs[k], { fill: on ? cols[k] : 'grid', fillAlpha: on ? 0.28 : 0.1, color: on ? cols[k] : 'faint', width: k === sel ? 3 : 1.5 }); }
-          C.text('past prices', 0, 0.06, { size: 11.5, color: 'ink', weight: 700 }); C.text('and volumes', 0, -0.12, { size: 11.5, color: 'ink', weight: 700 });
-          C.text('public information', 0, 0.62, { size: 11.5, color: 'ink', weight: 700 }); C.text('(filings, news, forecasts)', 0, 0.5, { size: 10, color: 'muted' });
-          C.text('all information', 0, 1.05, { size: 11.5, color: 'ink', weight: 700 }); C.text('(including insiders’)', 0, 0.93, { size: 10, color: 'muted' });
-          C.corner({ weak: 'weak form: prices already reflect past prices', semi: 'semi-strong: … and all public information', strong: 'strong: … and private information' }[form.value], 'bl', { color: cols[sel], weight: 700, size: 12 });
+          C.text('past prices', 0, 0.06, { align: 'center', size: 11, color: 'ink', weight: 700 }); C.text('and volumes', 0, -0.12, { align: 'center', size: 11, color: 'ink', weight: 700 });
+          C.text('public information', 0, 0.58, { align: 'center', size: 11, color: 'ink', weight: 700 });
+          C.text('all information', 0, 1.02, { align: 'center', size: 11, color: 'ink', weight: 700 });
+          C.text(`${form.value === 'semi' ? 'semi-strong' : form.value} form`, 0, -1.3, { align: 'center', color: cols[sel], weight: 700, size: 12 });
           if (weak) {
-            const R = rule(), a = path(R.bh, R.i0), b = path(R.g, R.i0), c = path(R.nt, R.i0);
-            const lo = Math.min(0, ...[a, b, c].map((p) => Math.min(...p.map((q) => q[1])))), hi = Math.max(...[a, b, c].map((p) => Math.max(...p.map((q) => q[1])))) + 0.1;
-            W.setView([a[0][0] - 0.5, a[a.length - 1][0] + 0.5], [lo, hi]);
-            W.path(a, { color: 'muted', width: 2 }); W.path(b, { color: 'green', width: 2 }); W.path(c, { color: 'red', width: 2.4 });
-            W.text('buy and hold', a[a.length - 1][0], a[a.length - 1][1], { dx: -6, dy: -9, align: 'right', size: 11, color: 'muted', weight: 700 });
-            W.text('rule, before costs', b[b.length - 1][0], b[b.length - 1][1], { dx: -6, dy: -9, align: 'right', size: 11, color: 'green', weight: 700 });
-            W.text('rule, after costs', c[c.length - 1][0], c[c.length - 1][1], { dx: -6, dy: 12, align: 'right', size: 11, color: 'red', weight: 700 });
-            eff = { g: mean(R.g) * 252, nt: mean(R.nt) * 252, tg: mean(R.g) / (sd(R.g) / Math.sqrt(R.g.length)), tn: mean(R.nt) / (sd(R.nt) / Math.sqrt(R.nt.length)), bh: mean(R.bh) * 252, ac: acf(Float64Array.from(R.bh), 1) };
+            const k = `${samp.value}|${cost.value}`;
+            if (key !== k) {
+              const start = samp.value === 'b' ? D.yearStart[27] : 1, end = samp.value === 'a' ? D.yearStart[27] : D.n;
+              const R = signRule(D.r, start, end, cost.value);
+              cache = { ...R, paths: [R.hold, R.gross, R.net].map(a => wealthPath(a, start, calendar.years)) }; key = k;
+            }
+            const a = cache, ys = a.paths.flatMap(p => p.map(q => q[1])), lo = Math.min(0, ...ys), hi = Math.max(0, ...ys), pad = Math.max(0.15, (hi - lo) * 0.1);
+            W.setView([a.paths[0][0][0] - 0.5, a.paths[0].at(-1)[0] + 0.5], [lo - pad, hi + pad]);
+            a.paths.forEach((p, i) => W.path(p, { color: ['muted', 'green', 'red'][i], width: i === 2 ? 2.4 : 2 }));
+            v.legend([['muted', 'buy-and-hold, gross'], ['green', 'sign rule, gross'], ['red', 'sign rule, after signal-change charge']]);
+            st = { ...a, grossMean: mean(a.gross), netMean: mean(a.net), holdMean: mean(a.hold), ac: acf(Float64Array.from(a.hold), 1) };
           } else {
-            const e0 = form.value === 'semi' ? Math.max(0, ent.value) : ent.value;
             if (form.value === 'semi' && ent.value < 0) ent.set(0);
-            const pts = []; for (let t = -30; t <= 30; t += 0.25) pts.push([t, car(t)]);
+            const entry = ent.value, level = newsLevel(entry, leak.value, tau.value), at30 = newsLevel(30, leak.value, tau.value);
             E.vline(0, { color: 'faint', dash: true }); E.hline(1, { color: 'faint', dash: true });
-            E.text('announcement', 0, 1.1, { size: 11, color: 'muted', align: 'center' });
-            E.vband(-30, 0, { color: 'red', alpha: 0.05 }); E.vband(0, 30, { color: 'green', alpha: 0.05 });
-            E.text('inside information needed', -15, 0.97, { size: 11, color: 'red', align: 'center' }); E.text('public information', 15, 0.5, { size: 11, color: 'green', align: 'center' });
-            E.path(pts, { color: 'accent', width: 2.6 });
-            const pe = car(e0); prof = 1 - pe;
-            E.rect(e0, pe, 30, 1, { fill: 'gold', fillAlpha: 0.3, stroke: false });
-            E.dot(e0, pe, { r: 7, color: 'gold' }); E.text('you buy here', e0, pe, { dx: 8, dy: 16, align: e0 > 15 ? 'right' : 'left', size: 11.5, color: 'gold', weight: 700 });
+            E.path(v.M.linspace(-30, 30, 241).map(t => [t, newsLevel(t, leak.value, tau.value)]), { color: 'accent', width: 2.6 });
+            E.dot(entry, level, { r: 6, color: 'gold' });
+            v.legend([['accent', 'assumed news level'], ['gold', 'entry level'], ['faint', 'eventual level = 1']]);
+            st = { entry, level, at30, remaining: 1 - level, visibleChange: at30 - level };
           }
         });
-        v.readout(() => (isWeak()
-          ? `Daily rule “long after an up-day, short after a down-day” (market only, cash earns nothing): **${sg(100 * eff.g, 1)}%** a year before costs ($t=${v.fix(eff.tg, 1)}$), **${sg(100 * eff.nt, 1)}%** after ${v.fix(cost.value, 2)} bp per unit traded ($t=${v.fix(eff.tn, 1)}$); buy-and-hold ${sg(100 * eff.bh, 1)}% a year. Daily lag-1 autocorrelation in this sample: ${fx(eff.ac, 3)}. ${eff.ac > 0.1 ? 'Paper profits only: the early autocorrelation is largely an artefact of stale prices in the index, so these trades could not have been executed at the quoted closes.' : 'No profitable weak-form rule here.'}`
-          : `Profit available to someone who buys at ${v.fix(clamp(ent.value, form.value === 'semi' ? 0 : -30, 30), 1)} min: **${pct(prof, 0)}** of the full news effect.\n${form.value === 'semi' ? 'Public information only: efficiency (semi-strong) means this is about 0 for any entry time you can actually achieve, i.e. a very short adjustment time.' : 'With inside information you can buy before the announcement: strong-form efficiency would require the price to have moved already (share in the price near 100%).'}`));
+        v.readout(() => form.value === 'weak'
+          ? `${date(calendar.dates[st.start])} through ${date(calendar.dates[st.end - 1])}: ${st.gross.length.toLocaleString('en-US')} rule days, ${st.turnover.toLocaleString('en-US')} signal units charged including opening/closing; daily rebalancing trades are uncharged. Annualized arithmetic daily means (×252): gross rule ${sg(100 * st.grossMean * 252, 2)}%, rule after approximate charge ${sg(100 * st.netMean * 252, 2)}%, gross buy-and-hold ${sg(100 * st.holdMean * 252, 2)}%. These are descriptive, unadjusted sample means, not compound growth rates or significance tests.\nLag-1 autocorrelation of this sample's raw daily index returns: ${fx(st.ac, 3)}. Assumed executable closes and short positions omit financing, borrowing and stale-price effects; no efficiency verdict follows.`
+          : `Entry at ${v.fix(st.entry, 1)} min; assumed level ${v.fix(st.level, 4)}. Remaining asymptotic news-level change: ${pct(st.remaining, 2)} of the full effect. Change from entry to +30 min: ${pct(st.visibleChange, 2)} of the full effect. Eventual adjustment can extend beyond the plotted window.\n${form.value === 'semi' ? 'Entry is constrained to public-announcement time or later.' : 'Earlier entry assumes knowledge of the eventual news; it is an assigned private-information scenario.'} These normalized level differences are not returns or evidence about real market efficiency.`);
       },
     },
     // ------------------------------------------------------------------ 5.2

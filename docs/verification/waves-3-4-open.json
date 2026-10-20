@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 191,
+  "remainingFlags": 188,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "micro": 5,
-    "fin": 9,
+    "fin": 6,
     "game": 18,
     "psych": 17,
     "soc": 16,
@@ -350,34 +350,6 @@
       }
     },
     {
-      "id": "fin-5.13",
-      "file": "content/fin/ch05-c.js",
-      "name": "Th\u00e9orie de la sp\u00e9culation",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Louis_Bachelier",
-        "doi": "https://doi.org/10.24033/asens.476"
-      }
-    },
-    {
-      "id": "fin-5.14",
-      "file": "content/fin/ch05-c.js",
-      "name": "Efficient Capital Markets",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Efficient-market_hypothesis",
-        "doi": "https://doi.org/10.1111/j.1540-6261.1970.tb00518.x"
-      }
-    },
-    {
       "id": "fin-5.15",
       "file": "content/fin/ch05-c.js",
       "name": "Do Stock Prices Move Too Much?",
@@ -389,21 +361,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Excess_volatility",
         "url": "https://www.jstor.org/stable/1802789"
-      }
-    },
-    {
-      "id": "fin-5.1",
-      "file": "content/fin/ch05.js",
-      "name": "The efficient-market hypothesis",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "BKM ch. 11"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Efficient-market_hypothesis"
       }
     },
     {
@@ -3747,7 +3704,10 @@
       "micro-9.6",
       "micro-9.7",
       "behav-4.6",
-      "behav-4.7"
+      "behav-4.7",
+      "fin-5.1",
+      "fin-5.13",
+      "fin-5.14"
     ]
   },
   "additionalFollowups": [
@@ -7860,6 +7820,24 @@
       "status": "resolved",
       "report": "docs/verification/behav-bracketing-followup.md",
       "note": "Parent independently read complete Samuelson original, Thaler3.1/fn7 and RLR171\u2013181 actual page images; four math/eight final native groups/scopedstatic and final wide/narrow theme screenshots pass. Corrects nonmonotone bundle acceptance, wealth-range premise, dollar units and exact transaction WTP/fullcomponent ranges. LLN is a genuine input; myopic-loss-aversion context moved to see."
+    },
+    {
+      "id": "fin-5.1",
+      "status": "resolved",
+      "report": "docs/verification/fin-efficiency-followup.md",
+      "note": "Actual Fama theory pp383\u2013388/summary413\u2013416 and formula images read; separate reviewer confirmed benchmark versus tautology and resolved charge/scope findings; 6 math, all23477source values/calendar, 8 final native and static checks pass with final screenshots inspected."
+    },
+    {
+      "id": "fin-5.13",
+      "status": "resolved",
+      "report": "docs/verification/fin-bachelier-followup.md",
+      "note": "Parent independently read original Numdam pp31\u201343,45\u201351,70\u201375/formula images38/51/75 and actual heat prerequisite; 5math/4native/static pass and final highvol/tinytail screenshots inspected; stable full-tail call, all4000terminals, correct units and barrier hypotheses verified."
+    },
+    {
+      "id": "fin-5.14",
+      "status": "resolved",
+      "report": "docs/verification/fin-efficiency-followup.md",
+      "note": "Original Fama theory/conclusions and independent agent source/model review agree;6math/8native/static plus all23477source values and calendar checks pass. Exact separate risk benchmark, weighted event model and complete known-noise fund z sample replace misleading efficiency claims."
     }
   ]
 }
