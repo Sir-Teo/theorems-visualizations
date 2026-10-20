@@ -1,0 +1,65 @@
+{
+  "disposition": "accept combined content batch; no source closure",
+  "chain": [
+    "cc46d6226931f35919b86cd95609cfb2b521a153",
+    "b82fdceef873aafb947cc89515a67a414419fb89",
+    "668f1d751b9121423555a5a12b43fe71a8cd25e7",
+    "794b8b44a20ebf829aa97cc84581ae270a7a134a"
+  ],
+  "objects": 49,
+  "functions": 49,
+  "writtenRawLists": 49,
+  "totalSyllabusRows": 116,
+  "edges": 22,
+  "consumers": 18,
+  "counts": {
+    "before": [
+      3,
+      3,
+      8
+    ],
+    "after": [
+      25,
+      25,
+      30
+    ]
+  },
+  "ownMathAssertions": 6203,
+  "existingTests": 49,
+  "native": {
+    "immutable": "668f1d751b9121423555a5a12b43fe71a8cd25e7",
+    "cases": 36,
+    "images": 144,
+    "ownMainProofsInspected": 36,
+    "ownStatementsScopesInspected": 36,
+    "overflows": 0,
+    "roundingTolerancePx": 1,
+    "actualDisplayContentPx": 253
+  },
+  "closing": {
+    "immutable": "794b8b44a20ebf829aa97cc84581ae270a7a134a",
+    "readoutStatesPerTheme": 5,
+    "ownReadoutsInspected": 10,
+    "ownChangedCaptionsInspected": 2,
+    "ownInvalidVizInspected": 2,
+    "algorithmsUnchanged": true,
+    "invalidClaimsWithdrawn": true,
+    "positiveRatesRecover": true
+  },
+  "hashes": {
+    "ecol-source.json": "1e4f146153c01318689d5ce6d3541fbfb9f8491fddcd5fba876222e871d66eca",
+    "ecol-combined.json": "932b1bf2c9de151a1a0e8211da482fceb95d98ea2ca79795db43f39119002ebf",
+    "ecol-final-math.json": "77fe13456362973ab7c866d5fd690743cf442e8cd9e4321b4771c4fd62d79977",
+    "ecol-native/native.json": "f7631934851b8ab371a48db20af9b70a2c7f49c4e3a1996b3245152855f33ac0",
+    "ecol-controls/controls.json": "3a6e0e93649956a724716fc93ba4943bf3ea6664c8a544f8017cd5886782ca96",
+    "ecol-bridges.json": "bb5403414aec03bc86a38577442acde08dd46d7c5b3db87e92cb99998ad45537",
+    "ecol-existing.log": "d63a53403e4991e302d65781becc7427c04f89cbd1a27e871bf95a37a3079c57",
+    "ecol-final-build.log": "3ba2c4e486fc2f2fdff782ac84b7c3a80b4eca805261c60e25fd889e79c8ecec",
+    "ecol-final-static.log": "9ff087f1818f20c217b997cf4fb0b8b701c9759deda041c23c8279e5e04cbdc8",
+    "ecol-closing-guard.json": "3a999d1b4e0d897ad05d8cc875b377941d2fc298dc31631af327b584be821467",
+    "ecol-closing-math.json": "77fe13456362973ab7c866d5fd690743cf442e8cd9e4321b4771c4fd62d79977",
+    "ecol-closing-controls/controls.json": "318ae23ac269a2b00893a0fcedc1bd14c85829324f77065b6d78f65962263a34",
+    "ecol-closing-build.log": "ed00fb1228fbc99e5ecb06911a46cdd89a20fba67e99c8c49e5c021afb89d118",
+    "ecol-closing-static.log": "9ff087f1818f20c217b997cf4fb0b8b701c9759deda041c23c8279e5e04cbdc8"
+  }
+}
