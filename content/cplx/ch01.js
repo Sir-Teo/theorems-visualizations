@@ -150,7 +150,10 @@ So, for example, $\mathrm{DTIME}(n)\subsetneq\mathrm{DTIME}(n^2)\subsetneq\mathr
       kind: 'Theorem',
       name: 'Space hierarchy theorem',
       statement: String.raw`Let $s$ be space-constructible and $s'(n)=o(s(n))$. Then
-$$\mathrm{DSPACE}(s'(n))\subsetneq\mathrm{DSPACE}(s(n)).$$
+
+$$\begin{gathered}\mathrm{DSPACE}(s'(n))\\
+\subsetneq\mathrm{DSPACE}(s(n)).\end{gathered}$$
+
 There is no logarithmic factor here (unlike time): a universal machine simulates any other with only a constant-factor blow-up in space. For example $\mathrm{DSPACE}(n)\subsetneq\mathrm{DSPACE}(n^2)$, and $\mathrm{DSPACE}(\log n)\subsetneq\mathrm{DSPACE}(\log^2 n)$ for $s(n)=\log^2 n$ (here the $o$ is taken with care for tiny bounds).`,
       idea: String.raw`The diagonalizer $D$ first *marks off* $s(n)$ cells (that is what space-constructibility buys) and then simulates $M_x$ on $x$ inside them. A machine that tries to leave the fence is stopped and answered arbitrarily. A machine that loops would make $D$ loop too, so $D$ also counts steps: for a fixed machine with $k$ work tapes, a length-$n$ read-only input and at most $s$ cells per work tape, there are at most $|Q|(n+2)(s+1)^k|\Gamma|^{ks}$ configurations (state, input-head position, work-head positions and tape symbols), so if it runs longer it repeats one and never halts, and $D$ may stop it and say what it likes. The logarithm of this count is $O(s+\log n)=O(s)$ for the constructible bounds $s\ge\log n$, so the step counter fits in the space budget. Otherwise $D$ answers the opposite of $M_x$. Any machine using $s'=o(s)$ cells fits inside the fence for long inputs, so $D$ differs from it.
 

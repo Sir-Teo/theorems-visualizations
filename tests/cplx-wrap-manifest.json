@@ -1,0 +1,23 @@
+{
+  "1.3": {
+    "file": "ch01.js",
+    "statement": {
+      "before": "Let $s$ be space-constructible and $s'(n)=o(s(n))$. Then\n$$\\mathrm{DSPACE}(s'(n))\\subsetneq\\mathrm{DSPACE}(s(n)).$$\nThere is no logarithmic factor here (unlike time): a universal machine simulates any other with only a constant-factor blow-up in space. For example $\\mathrm{DSPACE}(n)\\subsetneq\\mathrm{DSPACE}(n^2)$, and $\\mathrm{DSPACE}(\\log n)\\subsetneq\\mathrm{DSPACE}(\\log^2 n)$ for $s(n)=\\log^2 n$ (here the $o$ is taken with care for tiny bounds).",
+      "after": "Let $s$ be space-constructible and $s'(n)=o(s(n))$. Then\n\n$$\\begin{gathered}\\mathrm{DSPACE}(s'(n))\\\\\n\\subsetneq\\mathrm{DSPACE}(s(n)).\\end{gathered}$$\n\nThere is no logarithmic factor here (unlike time): a universal machine simulates any other with only a constant-factor blow-up in space. For example $\\mathrm{DSPACE}(n)\\subsetneq\\mathrm{DSPACE}(n^2)$, and $\\mathrm{DSPACE}(\\log n)\\subsetneq\\mathrm{DSPACE}(\\log^2 n)$ for $s(n)=\\log^2 n$ (here the $o$ is taken with care for tiny bounds)."
+    }
+  },
+  "1.11": {
+    "file": "ch01-b.js",
+    "statement": {
+      "before": "There are oracles $A$ and $B$ such that\n$$\\mathrm P^{A}=\\mathrm{NP}^{A}\\qquad\\text{and}\\qquad \\mathrm P^{B}\\neq\\mathrm{NP}^{B}.$$\nTake $A$ to be any $\\mathrm{PSPACE}$-complete language (e.g. TQBF); then $\\mathrm P^A=\\mathrm{NP}^A=\\mathrm{PSPACE}$. Take $B$ built by diagonalization so that $L_B=\\{1^n:\\ B\\cap\\{0,1\\}^n\\ne\\emptyset\\}$ is in $\\mathrm{NP}^B$ but not in $\\mathrm P^B$. Consequently a proof of $\\mathrm P=\\mathrm{NP}$ or of $\\mathrm P\\ne\\mathrm{NP}$ cannot be *relativizing*, i.e. cannot be one that holds verbatim for every oracle \u2014 which rules out plain simulation-and-diagonalization arguments.",
+      "after": "There are oracles $A$ and $B$ such that\n\n$$\\begin{gathered}\\mathrm P^{A}=\\mathrm{NP}^{A}\\\\\n\\text{and}\\quad \\mathrm P^{B}\\neq\\mathrm{NP}^{B}.\\end{gathered}$$\n\nTake $A$ to be any $\\mathrm{PSPACE}$-complete language (e.g. TQBF); then $\\mathrm P^A=\\mathrm{NP}^A=\\mathrm{PSPACE}$. Take $B$ built by diagonalization so that $L_B=\\{1^n:\\ B\\cap\\{0,1\\}^n\\ne\\emptyset\\}$ is in $\\mathrm{NP}^B$ but not in $\\mathrm P^B$. Consequently a proof of $\\mathrm P=\\mathrm{NP}$ or of $\\mathrm P\\ne\\mathrm{NP}$ cannot be *relativizing*, i.e. cannot be one that holds verbatim for every oracle \u2014 which rules out plain simulation-and-diagonalization arguments."
+    }
+  },
+  "4.6": {
+    "file": "ch04.js",
+    "statement": {
+      "before": "Let $\\mathrm{HALT}_1=\\{1^n : \\text{the } n\\text{-th Turing machine halts on the empty input}\\}$ be the unary halting language. It is undecidable, yet $\\mathrm{HALT}_1\\in\\mathrm{P/poly}$: the advice for length $n$ is the single bit $a_n=1$ iff $1^n\\in\\mathrm{HALT}_1$, and the machine first rejects strings containing 0, then outputs $a_n$ on $1^n$. More generally every unary language lies in P/poly (the advice is again one bit per length), so P/poly is uncountable and contains languages outside every class of decidable languages.",
+      "after": "Let $\\mathrm{HALT}_1$ be the unary language consisting of $1^n$ exactly when the $n$-th Turing machine halts on the empty input. It is undecidable, yet $\\mathrm{HALT}_1\\in\\mathrm{P/poly}$: the advice for length $n$ is the single bit $a_n=1$ iff $1^n\\in\\mathrm{HALT}_1$, and the machine first rejects strings containing 0, then outputs $a_n$ on $1^n$. More generally every unary language lies in P/poly (the advice is again one bit per length), so P/poly is uncountable and contains languages outside every class of decidable languages."
+    }
+  }
+}
