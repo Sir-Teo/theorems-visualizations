@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall 217; 13/64 published collections and 11 whole syllabi below target; 35 further collections meet 25 written inputs. Source queue 5 unchanged.",
+      "Accepted prerequisite shortfall191;11/64 published collections and9 whole syllabi below target;37 further collections meet25written inputs. Source queue5 unchanged.",
       "Latest immutable checkpoint9 on7b90a07 passes2195 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private atlas guard passes independent tiny/native155 tests and exact original-only history stability; symmetric reset/upload-content matched original/chunk oracle is being prepared, with no run or timing acceptance.",
@@ -53,7 +53,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "CRYPTO combined independent native/pixel peer including closing work/prior corrections",
+      "current": "NEURO genuine prerequisite producer after accepted ASTRO followup",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -63,7 +63,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "SYSBIO bounded correctness/equivalent-wrap final native producer",
+      "current": "SYSBIO noisy-modality closing correction, then GAME genuine prerequisite producer; ECOL peer accepted",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -73,7 +73,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "ECOL bounded scope/capped-dot label final native producer",
+      "current": "SYSBIO independent combined peer with pending noisy-modality closing successor; ECOL final accepted",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -2468,15 +2468,52 @@
       "sourceClosure": "None; all flags preserved.",
       "bridgeReview": "No affected bridge IDs.",
       "followup": "Two direct rank-nullity/product-rule inputs reach25/26/48. Nonnegative accelerometer magnitude versus unchanged signed oscillator/readout explicitly distinguished in statement/idea/caption, zero case retained. Full57objects/functions/helpers/flags/156rows and all rawlists,35,240 independent witnesses, strict/static and30 personally inspected full native/caption/real-signed-input fields pass. Root explicit peer and four default regression groups pass; private baseline alignment excluded."
+    },
+    {
+      "collection": "ecol",
+      "commits": [
+        "cc46d6226931f35919b86cd95609cfb2b521a153",
+        "b82fdceef873aafb947cc89515a67a414419fb89",
+        "668f1d751b9121423555a5a12b43fe71a8cd25e7",
+        "794b8b44a20ebf829aa97cc84581ae270a7a134a",
+        "a88f994cca720945a13786992b21bcbda2f679da"
+      ],
+      "publishedBefore": 3,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "imaging_source",
+      "report": "docs/verification/ecol-independent-peer.md",
+      "followup": "22 genuine inputs/18 consumers,25/25/30. Fifteen bounded stochastic/critical/seed-bank/Jensen text qualifications, five equivalent wraps, capped observed-hit labels and explicit invalid-rate guard/caption. Numerical algorithms/plots unchanged. Full49objects/functions/flags/helpers/116rows,6203 independent math checks plus49existing, strict/static and complete narrow native/caption/valid-invalid-capped controls/personal pixels pass. Root prerequisite/composed/closing and math rechecks pass.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "No affected bridge references."
+    },
+    {
+      "collection": "astro",
+      "commits": [
+        "f83bdc7c5980f85332c6db0f9da6e0daf6f68390",
+        "7e344dc48489c4dfccbc9a9cbec6b99e8446545a",
+        "d85a30d71782fd55ff3235ad84873515d05ba6cd",
+        "d2e3155e"
+      ],
+      "publishedBefore": 21,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "coordinator-root",
+      "report": "docs/verification/astro-four-inputs-root-peer.md",
+      "followup": "Four direct harmonic-average/connected-image/Taylor/disjoint-event inputs reach25/25/25. Collision-free existence/unequal-mass planar list and one equivalent nodal-rate wrap qualified. Root exact48objects/functions/flags/helpers/128rows,487 independent math witnesses, fresh strict/static and8actualmobile/16production+16controlled253px complete fields/personal images pass. Integrated preservation recheck passes.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "No affected bridge references."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 217,
-    "publishedBelow25": 13,
+    "publishedShortfall": 191,
+    "publishedBelow25": 11,
     "collections": 64,
-    "wholeSyllabusBelow25": 11,
+    "wholeSyllabusBelow25": 9,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Thirty-five further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Thirty-seven further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

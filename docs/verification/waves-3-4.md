@@ -1077,3 +1077,7 @@ Independent [CRYPTO](crypto-crossfield-prerequisite-peer.md), [CAUSAL](causal-cr
 ### REL final two inputs
 
 [Independent REL followup](rel-two-inputs-independent-peer.md) reaches25published with full preservation and signed/magnitude qualification. Root explicit peer and four default regressions pass; live217/13/11,35further collections meet target. This follows checkpoint7b90a07; sourcequeue5 unchanged.
+
+### ECOL and ASTRO completion
+
+[Independent ECOL](ecol-independent-peer.md)22inputs and [root-independent ASTRO](astro-four-inputs-root-peer.md)4inputs each reach25published, with bounded scopes/labels/domain and equivalent-layout corrections. Root integrated preservation/composition/math rechecks pass. Live191/11/9,37further collections meet target; sourcequeue5 unchanged. These follow checkpoint7b90a07.

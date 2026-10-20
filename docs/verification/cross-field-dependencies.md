@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **13 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 217 edges. Even
-including planned items and planned prerequisites, **11 collections remain below 25**.
+Of 64 non-math collections, **11 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 191 edges. Even
+including planned items and planned prerequisites, **9 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -308,3 +308,7 @@ Independent [CRYPTO](crypto-crossfield-prerequisite-peer.md), [CAUSAL](causal-cr
 ## REL final two-input acceptance
 
 [Independent REL followup](rel-two-inputs-independent-peer.md) accepts the direct rank-nullity and product-rule steps, reaching25/26/48. The existing signed acceleration illustration is explicitly distinguished from nonnegative magnitude, preserving its functions. Full preservation, actual signed controls/full narrow fields, independent math and root integrated rechecks pass. Current accepted gate217/13/11.
+
+## ECOL and ASTRO completion
+
+Independent [ECOL](ecol-independent-peer.md) and [ASTRO](astro-four-inputs-root-peer.md) peers accept22 and4 additional direct inputs, reaching25published each. Both also cross the whole-syllabus target. Bounded scope/domain/capped-label qualifications and equivalent wraps, full source preservation, independent math and complete narrow native fields pass. Current accepted gate191/11/9; source flags unchanged.

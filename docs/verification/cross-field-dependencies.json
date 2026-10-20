@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 13,
-  "wholeSyllabusBelowTarget": 11,
+  "publishedBelowTarget": 11,
+  "wholeSyllabusBelowTarget": 9,
   "entries": [
     {
       "collection": "stat",
@@ -5599,12 +5599,19 @@
       "collection": "astro",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 21,
-      "writtenToKnown": 21,
-      "wholeSyllabus": 21,
-      "publishedShortfall": 4,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 25,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "astro-1.7",
+          "prerequisite": "pma-8.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "astro-1.1",
           "prerequisite": "pma-5.11",
@@ -5648,6 +5655,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "astro-2.2",
+          "prerequisite": "pma-4.22",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "astro-2.3",
           "prerequisite": "ode-3.5",
           "prerequisiteField": "math",
@@ -5656,6 +5670,13 @@
         },
         {
           "item": "astro-2.4",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-2.5",
           "prerequisite": "pma-5.15",
           "prerequisiteField": "math",
           "itemWritten": true,
@@ -5713,6 +5734,13 @@
         {
           "item": "astro-4.7",
           "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-4.8",
+          "prerequisite": "prob-1.1.1a",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -9941,16 +9969,51 @@
       "collection": "ecol",
       "field": "bio",
       "target": 25,
-      "writtenToWritten": 3,
-      "writtenToKnown": 3,
-      "wholeSyllabus": 8,
-      "publishedShortfall": 22,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 30,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "ecol-1.4",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-1.4",
+          "prerequisite": "opt-1.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-1.6",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "ecol-1.7",
           "prerequisite": "kin-2.1",
           "prerequisiteField": "chem",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-2.9",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-2.10",
+          "prerequisite": "prob-1.6.13",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -9962,8 +10025,127 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "ecol-2.11",
+          "prerequisite": "prob-2.4.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-2.12",
+          "prerequisite": "stoch-2.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-2.13",
+          "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-2.1",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-2.2",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-2.4",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "ecol-2.5",
           "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-3.2",
+          "prerequisite": "ode-1.7",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-3.4",
+          "prerequisite": "ode-1.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-3.6",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-3.7",
+          "prerequisite": "prob-5.5.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-4.7",
+          "prerequisite": "ladr-7.62",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-4.7",
+          "prerequisite": "ladr-3.84",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-4.10",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-4.10",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-4.12",
+          "prerequisite": "ode-3.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-4.4",
+          "prerequisite": "ladr-9.50",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ecol-4.4",
+          "prerequisite": "ode-3.8",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -19172,7 +19354,9 @@
       "4ba8813bf271ef95e28d5ffd11a1479996d4c635",
       "99650b2050ca81b4a28c3a70f1cbe671bd6030a1",
       "761e7b53c333ec45496c3631394646dd11f9841e",
-      "e4bf3e16de02c4f91eca693fe426b908bde0ca29"
+      "e4bf3e16de02c4f91eca693fe426b908bde0ca29",
+      "cc46d6226931f35919b86cd95609cfb2b521a153",
+      "f83bdc7c5980f85332c6db0f9da6e0daf6f68390"
     ],
     "excludedUnacceptedEdges": [
       {
