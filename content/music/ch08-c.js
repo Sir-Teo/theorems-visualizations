@@ -281,7 +281,7 @@ has p as its first row. Every row and column is a permutation: fixing i translat
     },
     // ------------------------------------------------------------------ 8.21
     {
-      num:'8.21',kind:'Concept',name:'Change ringing and permutations',verify:true,
+      num:'8.21',kind:'Concept',name:'Change ringing and permutations',verify:false,
       statement:String.raw`A row orders the bells1,…,n, with the treble1 normally highest. An **adjacent change** fixes some places and swaps the others in disjoint neighbouring pairs; it excludes the identity change. Explicit place notation lists fixed places:14 on four bells swaps2 and3, while x swaps all adjacent pairs on an even stage. A static method specifies a finite sequence of changes, and its **plain course** repeats the whole sequence until the starting row returns at a lead boundary. Returning to rounds partway through a lead does not end the course.
 
 There are $n!$ possible rows. Plain hunt gives8,10,12 changes on4,5,6 bells. The Central Council lists Plain Bob Minimus as x14x14x14x12: its three8-change leads produce all24 four-bell rows once before the closing rounds. The closing row is excluded when counting truth. Modern CCCBR truth permits complete repeated extents plus distinct additional rows, at the effective stage after permanently fixed places are removed.`,

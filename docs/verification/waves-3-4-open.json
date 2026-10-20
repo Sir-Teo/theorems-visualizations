@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 69,
+  "remainingFlags": 68,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,6 @@
     "robot": 1,
     "game": 2,
     "polsci": 2,
-    "music": 1,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -259,21 +258,6 @@
       "refs": [],
       "links": {
         "archive": "https://archive.org/details/essaisurlapplica00cond"
-      }
-    },
-    {
-      "id": "music-8.21",
-      "file": "content/music/ch08-c.js",
-      "name": "Change ringing and permutations",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Change_ringing"
       }
     },
     {
@@ -1876,7 +1860,8 @@
       "tech-5.5",
       "tech-5.7",
       "polsci-5.9",
-      "music-8.16"
+      "music-8.16",
+      "music-8.21"
     ]
   },
   "additionalFollowups": [
@@ -6760,6 +6745,11 @@
       "id": "music-8.16",
       "status": "resolved",
       "note": "2026-10-20: coordinator independent source/math/audio/native review; docs/verification/music-rows-followup.md."
+    },
+    {
+      "id": "music-8.21",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit primary-source, independent whole-course/truth, native input/audio and pixel review; docs/verification/music-ringing-followup.md."
     }
   ]
 }
