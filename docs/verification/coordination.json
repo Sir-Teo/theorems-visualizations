@@ -1304,14 +1304,14 @@
   },
   "currentPendingSourceReviews": 10,
   "latestCheckpoint": {
-    "acceptedContentCommit": "61ced0c",
-    "report": "docs/verification/checkpoint-61ced0c.md",
-    "defaultTests": 2011,
+    "acceptedContentCommit": "e31b9dc",
+    "report": "docs/verification/checkpoint-e31b9dc.md",
+    "defaultTests": 2053,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 106.800800125,
+    "testDurationSeconds": 111.485789583,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1322,11 +1322,11 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112701,
-    "pendingSourceReviews": 19,
-    "acceptedTeamEntries": 132,
-    "publishedCrossFieldShortfall": 844,
-    "publishedCollectionsBelowTarget": 53,
+    "homeGzipBytes": 112710,
+    "pendingSourceReviews": 10,
+    "acceptedTeamEntries": 141,
+    "publishedCrossFieldShortfall": 833,
+    "publishedCollectionsBelowTarget": 51,
     "nonMathCollections": 64,
     "wholeSyllabusBelowTarget": 28,
     "wave5Status": "prepared-unstarted",
@@ -1336,13 +1336,14 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-coordinator/checkpoint10-tests.log",
-      "/tmp/atlas-coordinator/checkpoint10-build.log",
-      "/tmp/atlas-coordinator/checkpoint10-static.log"
+      "/tmp/atlas-coordinator/checkpoint11-tests.log",
+      "/tmp/atlas-coordinator/checkpoint11-build.log",
+      "/tmp/atlas-coordinator/checkpoint11-static.log",
+      "/tmp/atlas-coordinator/checkpoint11-queue-recheck.log"
     ],
     "limitations": [
-      "Exact immutable accepted snapshot61ced0c includes Florence, Cambrian URL fix, pendentives and corrected Miller; ongoing collective-learning/other production excluded.",
-      "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
+      "Exact immutable accepted snapshote31b9dc includes nine independently accepted source entries after61ced0c plus psychology/political-science prerequisite reconciliation and separate rational aggregation correction.",
+      "Current source/prerequisite/full-map gates remain open; passing tests do not certify unread bodies or active drafts."
     ]
   },
   "openStateFindings": [],
