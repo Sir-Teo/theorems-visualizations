@@ -1,0 +1,136 @@
+{
+  "mapping": [
+    {
+      "num": "2.7",
+      "file": "ch02-b.js",
+      "target": "ode-3.5",
+      "paragraph": "Write the linear secular equations in complex coordinates $z_j=k_j+ih_j$, so $\\dot z=iAz$. The eigenvector-solution theorem ode-3.5 turns a complete eigenbasis of the secular matrix into modes $z(t)=\\sum_i c_i v_i e^{ig_it}$. Taking real and imaginary parts gives the displayed cosine and sine sums. The canonical normal-mode reduction supplies that basis in this model; eigenvalues alone would not justify this expansion for an arbitrary defective matrix."
+    },
+    {
+      "num": "2.8",
+      "file": "ch02-b.js",
+      "target": "pma-5.15",
+      "paragraph": "Near a stable resonant angle, Taylor theorem pma-5.15 gives $\\sin(\\varphi-\\varphi_0)=(\\varphi-\\varphi_0)+O((\\varphi-\\varphi_0)^3)$. Thus the small-libration period is set by the inverse square root of the restoring coefficient. The energy difference from the bottom to the pendulum separatrix scales as that coefficient, so the momentum width scales as its square root. These are local pendulum scalings, not a uniform approximation at vanishing eccentricity or through the separatrix."
+    },
+    {
+      "num": "2.12",
+      "file": "ch02-b.js",
+      "target": "pma-8.6",
+      "paragraph": "In the stated repeated-renormalization measurement, let each positive stretch factor be s_j over a fixed time step. The logarithm product identity pma-8.6 turns the cumulative factor into the sum of $\\log s_j$; dividing that sum by elapsed time gives the finite-time exponential growth estimate. Renormalization keeps the test displacement in a local regime. A finite positive estimate is not a proof of long-term instability or of the quoted collision fraction."
+    },
+    {
+      "num": "2.1",
+      "file": "ch02.js",
+      "target": "pma-9.15",
+      "paragraph": "The multivariable chain rule pma-9.15 justifies differentiating the potential along a smooth collision-free trajectory: $d\\Omega/dt=\\nabla\\Omega\\cdot\\dot{\\mathbf r}$. Dotting the rotating-frame equation with velocity gives the same derivative for half the squared speed, because a cross product is perpendicular to that velocity. Their difference is therefore constant. Circular primaries make this potential time independent; the argument does not survive an added explicit time derivative."
+    },
+    {
+      "num": "2.3",
+      "file": "ch02.js",
+      "target": "ode-3.5",
+      "paragraph": "The modal statement uses ode-3.5 on the first-order four-dimensional linearization. Strictly below the positive-mass Routh threshold, the two distinct nonzero imaginary frequency pairs give a complete eigenvector basis, so every linear perturbation is a bounded sum of oscillatory modes. Above it, a mode with positive real exponent grows. A repeated imaginary root at the threshold does not by itself guarantee bounded motion: diagonalizability must also be checked. This is linear stability, not a general nonlinear-stability theorem."
+    },
+    {
+      "num": "2.4",
+      "file": "ch02.js",
+      "target": "pma-5.15",
+      "paragraph": "Taylor theorem pma-5.15 supplies the local expansions used in the co-orbital model. Kepler mean motion changes as $n(a+\\delta a)=n(a)[1-3\\delta a/(2a)+O((\\delta a/a)^2)]$, giving the stated longitude drift. Expanding the smooth effective potential about either triangular minimum yields a positive quadratic restoring term and small-amplitude libration. This expansion applies away from the singular conjunction and does not describe an arbitrarily close encounter."
+    },
+    {
+      "num": "4.7",
+      "file": "ch04-b.js",
+      "target": "ode-1.4",
+      "paragraph": "The integrating-factor theorem ode-1.4 solves the transfer equation in optical-depth coordinates. Multiplication by $e^\\tau$ makes the derivative of $e^\\tau I$ equal to $e^\\tau B$; for a constant source B and incident intensity I_0 this gives $I(\\tau)=I_0e^{-\\tau}+B(1-e^{-\\tau})$. The two terms are therefore a boundary contribution and emitted replacement light, under the homogeneous no-scattering assumptions, not two independent fitted spectral laws."
+    },
+    {
+      "num": "4.9",
+      "file": "ch04-b.js",
+      "target": "pma-5.11",
+      "paragraph": "At fixed positive electron pressure in the displayed ground-state model, the logarithmic derivative of the Saha ratio is $d\\log R/dT=5/(2T)+\\chi/(k_BT^2)>0$. The derivative-sign proof pma-5.11 therefore makes R strictly increasing, and so is the fraction $R/(1+R)$. Lowering the imposed pressure multiplies R upward and moves any fixed ionization-fraction threshold to lower temperature. Allowing electron pressure to vary with ionization changes this argument."
+    },
+    {
+      "num": "4.12",
+      "file": "ch04-b.js",
+      "target": "ladr-6.61",
+      "paragraph": "The displayed synthetic straight-line fit is a least-squares projection, using ladr-6.61. In the Euclidean space of selected log-luminosities, project onto the span of the constant vector and the selected log-masses. Orthogonality of the residual to both columns gives the intercept and slope formulas used by the fit; uniqueness of both coefficients needs nonconstant log-masses. This geometric minimization does not validate independent-error assumptions, a physical global power law, or the quoted observational calibration outside its domains."
+    },
+    {
+      "num": "3.1",
+      "file": "ch03.js",
+      "target": "pma-8.7",
+      "paragraph": "The unit-circle representation of sine and cosine in pma-8.7 adds the two semidiurnal components as complex amplitudes. Their combined amplitude is the modulus of $1+ke^{2i\\psi}$, whose square is $1+k^2+2k\\cos2\\psi$. This gives the spring/neap ratio by substituting aligned and opposite phases. The result belongs to the linear equilibrium-tide superposition, not a prediction of a particular ocean basin response."
+    },
+    {
+      "num": "3.2",
+      "file": "ch03.js",
+      "target": "ode-1.3",
+      "paragraph": "The separated-equation method ode-1.3 applies to the positive orbital radius: write $\\dot a=C a^{-11/2}$ with C fixed by the constant-lag model. Integrating gives $a^{13/2}=a_0^{13/2}+(13/2)Ct$ while the model assumptions hold. The positive-radius restriction permits division by the power of a; no extrapolation through the planet or through a change of dissipation law follows from this solution."
+    },
+    {
+      "num": "3.4",
+      "file": "ch03.js",
+      "target": "pma-8.10",
+      "paragraph": "The Fourier coefficient in the averaged torque is selected by the orthogonality in pma-8.10. Expand the periodic orbital factor in integer harmonics of mean anomaly. Near $2\\dot\\theta=pn$, averaging its product with the spin phase over an orbital cycle retains the matching p-th coefficient, while nonmatching integer harmonics have zero mean. This explains the resonance selection rule; whether the retained coefficient vanishes and whether capture occurs remain separate dynamical questions."
+    },
+    {
+      "num": "3.7",
+      "file": "ch03.js",
+      "target": "pma-5.15",
+      "paragraph": "The leading eccentricity estimate uses Taylor theorem pma-5.15 on the inverse-cube tidal amplitude. If $r=a(1+\\eta)$ with small eta, then $(a/r)^3=1-3\\eta+O(\\eta^2)$. The time-dependent part is therefore first order in e, and its quadratic dissipation is leading order $e^2$. This establishes the power counting, not the numerical coefficient or an all-eccentricity heating law."
+    },
+    {
+      "num": "3.8",
+      "file": "ch03.js",
+      "target": "pma-5.15",
+      "paragraph": "Taylor theorem pma-5.15 gives the small-eccentricity limit of the stated homogeneous Maclaurin figure relation: $\\Omega^2/(\\pi G\\rho)=(8/15)e^2+O(e^4)$, while the geometric flattening is $f=1-\\sqrt{1-e^2}=e^2/2+O(e^4)$. Since $q=3\\Omega^2/(4\\pi G\\rho)$ to this order, eliminating e yields $f=5q/4+O(q^2)$. This derives the uniform-fluid first-order coefficient, not the separate Darwin-Radau approximation for a centrally condensed body."
+    },
+    {
+      "num": "3.9",
+      "file": "ch03.js",
+      "target": "pma-6.22",
+      "paragraph": "The escape flux weights outward velocities by their normal component, rather than using the unweighted speed-tail probability. Angular integration of an isotropic Maxwellian leaves a radial integral proportional to $\\int_{\\sqrt\\lambda}^{\\infty}u^3e^{-u^2}\\,du$. With $s=u^2$, integration by parts pma-6.22 gives $\\tfrac12(1+\\lambda)e^{-\\lambda}$, with the upper endpoint vanishing. This is the origin of the displayed prefactor under the static collisionless assumptions."
+    },
+    {
+      "num": "3.10",
+      "file": "ch03.js",
+      "target": "ode-1.3",
+      "paragraph": "For the circular-orbit approximation, separation of variables ode-1.3 integrates $\\dot r=-C/r$ on $r>0$, with $C=2\\beta GM/c$ fixed. It yields $r^2=r_0^2-2Ct$, hence the stated formal endpoint time. This is a solution only until that positive-radius branch ends; a real solar surface or a failure of the circular approximation can terminate the model earlier."
+    },
+    {
+      "num": "4.1",
+      "file": "ch04.js",
+      "target": "pma-5.15",
+      "paragraph": "Taylor theorem pma-5.15 explains the stated uncertainty propagation. Expanding the reciprocal at a positive parallax p gives $1/(p+\\Delta p)=1/p-\\Delta p/p^2+O((\\Delta p)^2)$ on a neighborhood bounded away from zero. Thus the fractional linearized distance error has scale $\\sigma_p/p$. This local expansion does not justify reciprocal estimates near zero parallax or assign a distance to a negative noisy measurement."
+    },
+    {
+      "num": "4.3",
+      "file": "ch04.js",
+      "target": "pma-8.6",
+      "paragraph": "The product and inverse logarithm rules pma-8.6 apply to positive flux and distance. Taking a logarithm turns the inverse-square flux ratio into minus twice a log-distance ratio, and the magnitude coefficient then gives the factor five in the distance modulus. Exponentiating inverts the relation. Extinction adds its separately specified magnitude term rather than being canceled by the logarithm."
+    },
+    {
+      "num": "4.5",
+      "file": "ch04.js",
+      "target": "pma-8.6",
+      "paragraph": "Using the positive-power definition and logarithm identities pma-8.6, the temperature-radius luminosity equation becomes an affine equation in log coordinates. Holding R fixed gives slope four in log luminosity versus log effective temperature, while changing R shifts the intercept by twice its logarithm. This coordinate change uses the effective-temperature definition and supplies no independent atmosphere or radius measurement."
+    },
+    {
+      "num": "1.1",
+      "file": "ch01.js",
+      "target": "pma-5.11",
+      "paragraph": "The inversion of Kepler equation uses the derivative-sign argument pma-5.11. For a bound ellipse with $0\\le e<1$, the derivative of $E-e\\sin E$ is $1-e\\cos E\\ge1-e>0$. Thus the mean anomaly determines one eccentric anomaly per chosen revolution, rather than a choice among several roots. The orientation singularities listed in the statement still require separate angle conventions."
+    },
+    {
+      "num": "1.3",
+      "file": "ch01.js",
+      "target": "pma-8.6",
+      "paragraph": "The logarithm identities in pma-8.6 turn the positive-variable Kepler relation into $2\\log T=3\\log a-\\log[G(M+m)/(4\\pi^2)]$. Hence a fixed total mass gives the stated slope three halves. Likewise the angular-size relation makes the inferred mass proportional to the cube of the adopted distance. This logarithmic straightening does not remove the total-mass or distance assumptions."
+    }
+  ],
+  "fixes": {},
+  "wraps": {},
+  "extraNative": [],
+  "rowBackfills": {
+    "4.12": "astro-1.3"
+  }
+}
