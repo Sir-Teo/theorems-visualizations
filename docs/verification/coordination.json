@@ -25,7 +25,7 @@
     ],
     "current": [
       "Integrate independently reviewed batches and reconcile all wave gates",
-      "Peer-review committed music7.16/7.17",
+      "Repair/re-review Blackwell saved-state findings; peer-review new political-science consequences and music Fourier batch",
       "Continue game and difficult original-source audits"
     ]
   },
@@ -42,7 +42,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Repair newly discovered6.4/6.5 minima claims, then continue queued8.14/8.15 and remaining music items; retain flags for independent peer acceptance."
+      "current": "Finish queued music8.14/8.15, peer-review technology loads fe252d9, then remaining music8.5/8.6/8.16/8.21."
     },
     {
       "agent": "worker_two",
@@ -59,7 +59,7 @@
       "completedCollections": [
         "psych"
       ],
-      "current": "Audit17 remaining technology entries, beginning4.6/4.7/4.10, in coherent original-source groups."
+      "current": "Peer-review Blackwell state repair7d9262c; technology4.1/4.8/4.9 candidate fe252d9 awaits worker-one peer; then4.11 and ten clock/navigation entries."
     },
     {
       "agent": "worker_three",
@@ -73,7 +73,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Audit nine remaining political-science entries, beginning shared Downs sources4.13/5.1/5.7; peer review committed worker candidates as assigned.",
+      "current": "Newly found4.6 consequence candidate d79a689 awaits coordinator peer; audit4.7 consequences, then four queued jury/aggregation items5.6/5.8/5.9/5.10.",
       "completedCollections": [
         "soc"
       ]
@@ -387,7 +387,10 @@
       "reports": [
         "docs/verification/tech-mechanisms-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "6a51d2e99e43484b02e487482d3e7ed0549a920e"
+      ]
     },
     {
       "ids": [
@@ -398,7 +401,10 @@
       "reports": [
         "docs/verification/music-roughness-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "4a240c9eaecb7907217f7eb3a090016d5fa3f8bc"
+      ]
     },
     {
       "ids": [
@@ -410,7 +416,10 @@
       "reports": [
         "docs/verification/polsci-downs-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "6aa6bbcb960efb943b961a58b427b1090759a4f8"
+      ]
     },
     {
       "ids": [
@@ -420,7 +429,10 @@
       "reports": [
         "docs/verification/game-hypercube-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "2bf0ae7"
+      ]
     },
     {
       "ids": [
@@ -431,7 +443,10 @@
       "reports": [
         "docs/verification/music-induced-paper-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "90d674e391075d1848cd0ad49b3229f120fd658c"
+      ]
     },
     {
       "ids": [
@@ -441,7 +456,10 @@
       "reports": [
         "docs/verification/polsci-plott-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "e9de0e4"
+      ]
     },
     {
       "ids": [
@@ -451,7 +469,10 @@
       "reports": [
         "docs/verification/polsci-black-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "e7059d884439976550b252ab51ff10a602971a4b"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -466,18 +487,19 @@
   },
   "currentPendingSourceReviews": 85,
   "latestCheckpoint": {
-    "acceptedContentCommit": "214d86c",
-    "pendingSourceReviews": 96,
-    "defaultTests": 1735,
+    "acceptedContentCommit": "04ab914",
+    "pendingSourceReviews": 85,
+    "defaultTests": 1775,
     "strictBuild": "0 errors/0 warnings",
     "fullStaticItems": 6621,
     "fullStatic": "0 errors/0 warnings",
-    "homeGzipBytes": 112757,
+    "homeGzipBytes": 112755,
     "crossFieldShortfall": 847,
     "publishedCollectionsBelow25": 53,
     "wholeSyllabiBelow25": 28,
     "flagshipCuration": "2/100, alongside-wave work",
     "fullMap60fps": "open",
-    "wave5": "prepared-not-started"
+    "wave5": "prepared-not-started",
+    "limitation": "Blackwell3.10 remains source-flagged; saved-state repair7d9262c is after this immutable full checkpoint and requires targeted independent acceptance."
   }
 }
