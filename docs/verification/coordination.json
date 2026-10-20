@@ -32,7 +32,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Isolated fixed-chunk alternate-index prototype; no timing",
+      "current": "Rejected chunkprototype acf697e preserved; awaiting independentfailureaudit before furtherassignment",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,7 +42,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent isolated index-prototype review preparation",
+      "current": "Read-only independent failureaudit acf697e; PL preparation paused",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -2364,6 +2364,15 @@
       "loadedEdges": 23364,
       "method": "Frozen68aa4e2 actual-upload conservative enclosure/counts and storage, four states; independent source/membership/corner recount.",
       "limitation": "No alternate indices submitted, no pixel/performance/production fit claim. Oversized retained CPU membership and selected full-capacity scratch exceed64MB. Exact regenerated membership and bounded scratch remain separate feasibility work."
+    },
+    {
+      "candidate": "acf697eda8a235710428df17c14e431d3183d655",
+      "status": "rejected-at-first-exact-same-scene-image-failure",
+      "report": "docs/verification/map-chunked-indices-followup.md",
+      "loadedNodes": 13574,
+      "loadedEdges": 23364,
+      "method": "Correctness only:8tinyGL,6normal smoke,33lightmatrix states. State33 fractionalpan3840x2092map/DPR2 exactGPU31327channels/max121 difference; no timing.",
+      "limitation": "Original compared GPU/reference arrays and diff not saved; actualPNG thirdredraw and directPNG Canvas are not the failedoracle. Dark/lifecycle/faultmatrix unrun; oversizedDPR2unselected0optimizedtiles.64Mlogicalcurrent62471764/peak63895600pass does not acceptpixels/performance/physicalmemory."
     }
   ],
   "accountingSafeguards": [

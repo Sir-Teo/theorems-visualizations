@@ -1021,3 +1021,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### Integrated checkpoint69710ca
 
 [Immutable checkpoint](checkpoint-69710ca.md) passes2,167default tests/all6UI, strict/static0errors/0warnings, home113,085gzipbytes. IncludesacceptedREL/CM/CLIMATE/QINFO; prerequisite429/22/18/source5. Later chunkprototypefailedexactimagegate and remainsoutsideproduction; no FPS claim. Wave5 unstarted.
+
+### Isolated chunked-index prototype rejected
+
+[Immutablefailedcandidateacf697e](map-chunked-indices-followup.md) stopsatfirstexactsame-sceneGPUimagefailure in lightoversizedDPR2fractionalpan:31,327changedRGBAchannels,max121. Logicalcurrent62,471,764/peak63,895,600bytespass; no timing. ActualPNGisthirdredraw; originalcomparedGPUreference/diffnotsaved, limitingdiagnosis. Dark/lifecycleunrun, productionunchanged. Independentfailureauditpending.

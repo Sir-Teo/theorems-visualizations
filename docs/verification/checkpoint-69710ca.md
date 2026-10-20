@@ -1,6 +1,6 @@
 # Integrated checkpoint through69710ca
 
-Exact immutable snapshot `69710ca` (full hash in `/tmp/atlas-continuation/checkpoint7-commit.txt`), archived at `/tmp/atlas-continuation/checkpoint7`, passes **2,167 default tests**, including all six UI groups. Concurrency2; zero failures, cancellations or skips;133.117745042seconds. Strict build ran first:6,684written/6,890planned items,450chapters,85collections, zero errors/warnings, home JSON113,085bytes gzip. Full static check:6,621items, zero errors/warnings.
+Exact immutable snapshot `69710ca31b8c056e321f282b8e3aa76b575f1dac`, archived at `/tmp/atlas-continuation/checkpoint7`, passes **2,167 default tests**, including all six UI groups. Concurrency2; zero failures, cancellations or skips;133.117745042seconds. Strict build ran first:6,684written/6,890planned items,450chapters,85collections, zero errors/warnings, home JSON113,085bytes gzip. Full static check:6,621items, zero errors/warnings.
 
 Source ledger:2,260scoped items, **5 =833initial +1added −829original resolved**,146independently accepted entries. Accepted prerequisite shortfall429,22/64collections below25published,18whole syllabi below25. Twenty-six further collections now meet25written cross-field inputs; bounded REL23 and CM16 remain belowtarget. Frozen BIGHIST3.5candidate/edge remains unaccepted and explicitly excluded. Default testing does not replace its rejected source peer.
 

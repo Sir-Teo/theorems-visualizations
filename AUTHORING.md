@@ -449,6 +449,7 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 - Check complete strokes, hollow-marker rings, handle hover halos and label backing plates at narrow widths. A glyph fitting inside the stage does not establish that its plate leaves neighboring labels visible. Wait for fonts and split long displayed equations when necessary.
 - Verify statements and ideas on the actual strict-built page at 320px in both themes. Check each KaTeX display’s inner scroll width as well as its container, after fonts load. A fixed-width harness can pass while a narrower production card clips the same equation; use equivalent line breaks at that actual width.
 - Include the complete scope block in that check. Rich text does not parse Markdown links or raw HTML: put short source labels/pages in prose and exact external URLs in the item’s `links` map, which the detail page renders as clickable links. A literal long URL can overflow even when every equation fits.
+- For pixel-comparison failures, persist the exact compared candidate and reference pixels plus a difference image before asserting or closing the browser. Record the actual view/control/moving state. A later redraw screenshot or a reference from a different renderer cannot locate the failed oracle’s differences.
 
 **Controls and state**
 - `v.readout(fn)` must be registered **once**, outside `v.render`; calling it inside the render loops forever. Set a variable in render and read it in the readout.
