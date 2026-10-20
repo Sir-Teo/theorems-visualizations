@@ -80,10 +80,12 @@ export default {
     {
       num: '2.3', kind: 'Theorem', name: 'Radon’s theorem',
       statement: String.raw`Any set of $d+2$ points in $\R^d$ can be split into two disjoint groups whose convex hulls intersect. In the plane: any four points $p_1,\dots,p_4$ admit a partition $\{1,2,3,4\}=I\sqcup J$ with $\operatorname{conv}\{p_i:i\in I\}\cap\operatorname{conv}\{p_j:j\in J\}\neq\emptyset$; a common point is called a **Radon point**. Three points (only $d+1$) can fail to admit such a partition.`,
-      idea: String.raw`The $d+2$ vectors $(p_i,1)\in\R^{d+1}$ must be linearly dependent: $\sum\lambda_ip_i=0$ and $\sum\lambda_i=0$ with $\lambda\neq0$ (a null vector of a $(d+1)\times(d+2)$ matrix). Put $I=\{\lambda_i>0\}$, $J=\{\lambda_i<0\}$ and $\Lambda=\sum_{i\in I}\lambda_i=\sum_{j\in J}|\lambda_j|>0$. Then $\sum_{I}\frac{\lambda_i}{\Lambda}p_i=\sum_J\frac{|\lambda_j|}{\Lambda}p_j$ is a convex combination on both sides, hence a point of both hulls (convex combinations are the hull, 2.1). With only $d+1$ affinely independent points no non-trivial dependence exists.`,
+      idea: String.raw`The $d+2$ vectors $(p_i,1)\in\R^{d+1}$ must be linearly dependent: $\sum\lambda_ip_i=0$ and $\sum\lambda_i=0$ with $\lambda\neq0$ (a null vector of a $(d+1)\times(d+2)$ matrix). Put $I=\{\lambda_i>0\}$, $J=\{\lambda_i<0\}$ and $\Lambda=\sum_{i\in I}\lambda_i=\sum_{j\in J}|\lambda_j|>0$. Then $\sum_{I}\frac{\lambda_i}{\Lambda}p_i=\sum_J\frac{|\lambda_j|}{\Lambda}p_j$ is a convex combination on both sides, hence a point of both hulls (convex combinations are the hull, 2.1). With only $d+1$ affinely independent points no non-trivial dependence exists.
+
+The nonzero coefficient vector comes from LADR 3.26: the augmented coordinate matrix has $d+1$ equations but $d+2$ unknown coefficients, so its homogeneous system has a nonzero solution. The last row forces their sum to zero, hence there must be both positive and negative coefficients. Normalizing each sign class by the same positive total gives the two convex combinations above; indices with zero coefficient can be assigned to either class without changing the common point.`,
       caption: String.raw`Drag the points. The blue and red groups come from the signs of the affine dependence $\lambda$; their hulls (point, segment or triangle) always share the gold Radon point. Four points in convex position pair up as two crossing diagonals; if one point is inside the triangle of the other three it forms a group alone. With 5 or 6 points the dependence is one of several, so one of many partitions is shown. With 3 points there is nothing to find.`,
       credit: 'J. Radon, 1921',
-      deps: ['cg-2.1'], refs: ['de Berg ch. 11'], tags: ['convexity', 'radon'],
+      deps: ['cg-2.1', 'ladr-3.26'], refs: ['de Berg ch. 11'], tags: ['convexity', 'radon'],
       viz(v) {
         const s = gstage(v, { height: 360 });
         const M = v.M;
@@ -127,10 +129,12 @@ export default {
     {
       num: '2.4', kind: 'Theorem', name: 'Helly’s theorem',
       statement: String.raw`Let $C_1,\dots,C_m$ be convex sets in $\R^d$, $m\ge d+1$ (finitely many, or compact if infinitely many). If every $d+1$ of them have a common point, then all of them have a common point. In the plane ($d=2$) pairs do not suffice, but every **three** sets meeting does. The convexity hypothesis cannot be dropped.`,
-      idea: String.raw`Induct on $m$, the case $m=d+1$ being trivial. For $m\ge d+2$ the induction hypothesis gives, for each $i$, a point $x_i$ lying in all sets except possibly $C_i$. The $m\ge d+2$ points $x_i$ have a Radon partition (2.3), $\{1..m\}=I\sqcup J$ with a point $x\in\operatorname{conv}\{x_i\}_I\cap\operatorname{conv}\{x_j\}_J$. Each $x_i$ with $i\in I$ lies in every $C_j$, $j\in J$, so by convexity $x$ lies in every $C_j$, $j\in J$; symmetrically $x\in C_i$ for $i\in I$. Hence $x\in\bigcap C_k$.`,
+      idea: String.raw`Induct on $m$, the case $m=d+1$ being trivial. For $m\ge d+2$ the induction hypothesis gives, for each $i$, a point $x_i$ lying in all sets except possibly $C_i$. The $m\ge d+2$ points $x_i$ have a Radon partition (2.3), $\{1..m\}=I\sqcup J$ with a point $x\in\operatorname{conv}\{x_i\}_I\cap\operatorname{conv}\{x_j\}_J$. Each $x_i$ with $i\in I$ lies in every $C_j$, $j\in J$, so by convexity $x$ lies in every $C_j$, $j\in J$; symmetrically $x\in C_i$ for $i\in I$. Hence $x\in\bigcap C_k$.
+
+The induction proves the finite-family theorem. For the stated infinite compact-family version, apply that finite theorem to every finite subfamily (smaller subfamilies can be enlarged to $d+1$ members). They therefore have the finite intersection property. PMA 2.36 then gives a common point of the entire family of compact sets. Compactness is the extra step here: the finite induction alone does not prove the infinite conclusion.`,
       caption: String.raw`**Convex blobs**: drag the six ellipses (and shrink them with the size slider); the green region is their common intersection. As long as every triple meets, a green region exists; once a single triple stops meeting, the readout names it and the intersection is gone. **Non-convex**: set $C_i$ is the union of the three discs around the points $v_j$, $j\neq i$. Every three of the four sets share a disc, yet no point lies in all four — drag the points or grow the radius until the discs overlap and convexity (hypothesis) is replaced by accident. Sampled on a grid of cell $0.09$.`,
       credit: 'E. Helly, 1913 (published 1923)',
-      deps: ['cg-2.3'], refs: ['de Berg ch. 11'], tags: ['convexity', 'helly'],
+      deps: ['cg-2.3', 'pma-2.36'], refs: ['de Berg ch. 11'], tags: ['convexity', 'helly'],
       viz(v) {
         const s = gstage(v, { height: 360 });
         const fam = v.select('family', [{ value: 'convex', label: 'convex blobs' }, { value: 'union', label: 'non-convex (unions)' }], 'convex', { onChange: () => sync() });
