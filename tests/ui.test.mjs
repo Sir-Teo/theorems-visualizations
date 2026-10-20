@@ -92,9 +92,18 @@ test('treemap fields and chapters can be opened with the keyboard', async () => 
     await page.locator('#tm-crumbs').filter({ hasText: 'Mathematics' }).waitFor();
     const chapter = page.locator('.tm-col[aria-label^="Principles of Mathematical Analysis:"] .tm-ch').first();
     await chapter.focus();
+    const chapterLabel = await chapter.getAttribute('aria-label');
+    const oldChapter = await chapter.elementHandle();
     await page.setViewportSize({ width: 1050, height: 900 });
-    await page.waitForTimeout(250); // ResizeObserver redraw must preserve keyboard focus.
-    assert.ok(await chapter.evaluate(el => document.activeElement === el));
+    await page.waitForFunction(el => !el.isConnected, oldChapter);
+    // Resolve focus atomically: a second redraw can replace a locator's element
+    // between resolution and evaluate while correctly preserving the same chapter.
+    await page.waitForFunction(label => {
+      const host = document.querySelector('#treemap'), current = document.activeElement;
+      return Math.abs(host.querySelector('svg').getBoundingClientRect().width - host.clientWidth) < 1 &&
+        current?.isConnected && current.matches('.tm-ch') && current.getAttribute('aria-label') === label;
+    }, chapterLabel);
+    await oldChapter.dispose();
     await page.keyboard.press('Enter');
     await page.waitForURL((url) => /^#\/c\/pma\/\d+$/.test(url.hash));
     await page.locator('.ch-graph-card').waitFor();
