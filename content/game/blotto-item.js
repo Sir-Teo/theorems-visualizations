@@ -1,7 +1,7 @@
 import {blottoGame,blottoSelection,blottoPoint,blottoNearest,blottoPointValid} from './blotto-audit.js';
 export default {
  num:'3.9',kind:'Model',name:'Colonel Blotto',verify:true,
- credit:'Discrete allocation rule compared with Sergiu Hart’s author-hosted2008 paper; finite three-field proofs and illustration authored here',
+ credit:'Discrete allocation rule compared with Sergiu Hart’s author-hosted discrete-allocation paper; finite three-field proofs and illustration authored here',
  statement:String.raw`Two players secretly and simultaneously allocate the same integer budget N over three labelled battlefields. An allocation x has nonnegative integer coordinates summing to N. The displayed payoff is half the number of fields won minus half the number lost:
 $$a(x,y)=\frac12\sum_{k=1}^3\operatorname{sign}(x_k-y_k).$$
 Equivalently it counts wins plus half-ties and subtracts3/2. Hart's discrete Colonel Blotto rule averages the signs over K fields; at K=3 this illustration multiplies that expected payoff by3/2, preserving optimal strategies. It does not use the majority-of-fields payoff or the distinct General Lotto game.
