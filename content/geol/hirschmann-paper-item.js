@@ -12,7 +12,7 @@ export default {
       credit: 'Solidus polynomial version in Hirschmann (2000) abstract; chosen illustrative melting closure',
       scope: String.raw`The complete original publisher PDF was recovered; its abstract, Table 2 and §6.4 paragraph 39 themselves print conflicting coefficients, matching the current HTML. This picture uses exactly the abstract version, not a reconciled recommended fit. Table 2 instead prints $(-5.1404654,132.899012,1120.66061)$ and paragraph 39 $(-5.904,139.44,1108.08)$ for $(a,b,c)$ in $aP^2+bP+c$. The author's intended numerical fit remains unresolved. Nominally dry peridotite experiments have compositional and interlaboratory uncertainty. Chosen constants: $\Gamma=15$ K/GPa, $L/c_p=500$ K, $\Delta T_m=700$ K, mantle/crust densities 3300/2900 kg/m³, $g=9.8$ m/s². The displayed equivalent melt column $\int F\,dP/(\rho_c g)$ is the inventory implied by these chosen assumptions, not observed oceanic crust, and does not simulate fractional extraction, active focusing or freezing. Solidus pressure is restricted to the original 0–10 GPa experimental range; all displayed paths remain within it. The chosen linear adiabat and melting closure do not reproduce an original isentropic calculation or the nonlinear changes in productivity from evolving mineral modes/composition. Controls use 5°C temperature ticks and whole-kilometer lid depths; unsupported raw saved ticks reject before constraints.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Decompression_melting' },
-      verify: true,
+      verify: false,
       viz(v) {
         const Tp = v.slider('potential temperature $T_p$ (°C)', 1200, 1650, 1350, { step: 5 });
         const lid = v.slider('lithospheric lid thickness (km)', 0, 100, 0, { step: 1 });

@@ -8,11 +8,10 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 25,
+  "remainingFlags": 24,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
-    "geol": 1,
     "mathbio": 1,
     "pharm": 1,
     "imaging": 1,
@@ -33,27 +32,6 @@
       "explicitUncertainty": [],
       "refs": [],
       "links": {}
-    },
-    {
-      "id": "geol-4.10",
-      "file": "content/geol/ch04-b.js",
-      "name": "Decompression melting",
-      "field": "earth",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "The abstract, Table 2 and paragraph 39 of the publisher's current full text print conflicting coefficients; this picture identifies exactly the abstract version it uses, rather than silently reconciling the recommended fit. Nominally dry peridotite experiments have compositional and interlaboratory uncertainty. Chosen constants: $\\Gamma=15$ K/GPa, $L/c_p=500$ K, $\\Delta T_m=700$ K, mantle/crust densities 3300/2900 kg/m³, $g=9.8$ m/s². The displayed equivalent melt column $\\int F\\,dP/(\\rho_c g)$ is the inventory implied by these chosen assumptions, not observed oceanic crust, and does not simulate fractional extraction, active focusing or freezing."
-        }
-      ],
-      "refs": [
-        "Hirschmann (2000), abstract and complete §§3–4,6.4–7: polynomial provenance, uncertainty and composition effects",
-        "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2000GC000070"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Decompression_melting"
-      }
     },
     {
       "id": "mathbio-3.14",
@@ -1239,7 +1217,8 @@
       "mat-3.13",
       "geol-3.15",
       "ling-3.6",
-      "bighist-3.6"
+      "bighist-3.6",
+      "geol-4.10"
     ]
   },
   "additionalFollowups": [
@@ -4413,9 +4392,9 @@
     },
     {
       "id": "geol-4.10",
-      "status": "source-review-pending",
+      "status": "resolved",
       "report": "docs/verification/geol-source-audit-melting-followup.md",
-      "note": "Supported abstract-version polynomial/numerical correction with four independent math and two native theme groups; original rendered coefficient-table authority remains unresolved, uncertainty and flag retained."
+      "note": "2026-10-20: coordinator independently verified actual original coefficient conflict, exact abstract-version model, independent mathematics and fresh native/output evidence; docs/verification/geol-hirschmann-peer.md."
     },
     {
       "id": "geol-3.2",

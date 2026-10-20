@@ -1083,6 +1083,19 @@
       "commits": [
         "9a1c859"
       ]
+    },
+    {
+      "ids": [
+        "geol-4.10"
+      ],
+      "peer": "coordinator independently verified actual original coefficient conflict, exact abstract-version model, independent mathematics and fresh native/output evidence",
+      "reports": [
+        "docs/verification/geol-hirschmann-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2797d24"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1095,7 +1108,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 25,
+  "currentPendingSourceReviews": 24,
   "latestCheckpoint": {
     "acceptedContentCommit": "428f1af",
     "report": "docs/verification/checkpoint-428f1af.md",
@@ -1174,6 +1187,15 @@
       "finding": "Some15significant-digit tiny values in native0..12/0..1.2 ranges serialize with fewer significant digits, escaping the current15digit-only raw guard.",
       "verification": "Independent actual native counterexamples; six math/static3/0/0 and six fresh320 native groups with exactDOM/tiny raw rollback/canonical replay and own pixels pass.",
       "report": "docs/verification/art-optics-native-roundtrip-followup.md"
+    }
+  ],
+  "acceptedSourceLimitations": [
+    {
+      "id": "geol-4.10",
+      "status": "explicitly scoped; unresolved intended author coefficient",
+      "evidence": "Actual complete original abstract/Table2/paragraph39 independently confirm three incompatible printed versions.",
+      "acceptedClaim": "The illustration uses exactly the identified abstract coefficients with a declared authored closure; no reconciled recommended fit is claimed.",
+      "report": "docs/verification/geol-hirschmann-peer.md"
     }
   ]
 }
