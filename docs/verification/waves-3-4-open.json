@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 86,
+  "remainingFlags": 85,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "game": 4,
-    "polsci": 5,
+    "polsci": 4,
     "music": 6,
     "art": 9,
     "arch": 9,
@@ -262,19 +262,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Strategy-stealing_argument"
-      }
-    },
-    {
-      "id": "polsci-4.12",
-      "file": "content/polsci/ch04-b.js",
-      "name": "On the Rationale of Group Decision-making",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "doi": "https://doi.org/10.1086/256633"
       }
     },
     {
@@ -2140,7 +2127,8 @@
       "polsci-5.1",
       "polsci-5.7",
       "game-4.13",
-      "polsci-4.5"
+      "polsci-4.5",
+      "polsci-4.12"
     ]
   },
   "additionalFollowups": [
@@ -6929,6 +6917,11 @@
       "id": "polsci-4.5",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently accepted exact e9de0e4; docs/verification/polsci-plott-followup.md."
+    },
+    {
+      "id": "polsci-4.12",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently accepted exact e7059d8; docs/verification/polsci-black-followup.md."
     }
   ]
 }
