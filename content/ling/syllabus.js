@@ -127,8 +127,8 @@ export default {
           pic: 'Inspect saved root/pattern associations: shared vowel nodes spread to slots, fixed affixes remain separate, and source-checked stems are distinguished from generated strings.' },
         { num: '3.9', kind: 'Concept', name: 'Reduplication', deps: ['ling-3.1'], refs: ['Rubino WALS27; Schachter & Otanes1972; Fettes2024; Sato2009; official EYD V and Microsoft Filipino guide'],
           pic: 'Compare checked Indonesian/Tagalog spelling examples and strict authored CV/CVC/full copying, with exact saved inputs, fixed affixes, source meanings and WALS sample counts.' },
-        { num: '3.10', kind: 'Phenomenon', name: 'Irregular forms and blocking', deps: ['ling-3.7'], refs: ['Fromkin et al. ch. 2'],
-          pic: 'Irregular past tenses sorted by frequency: irregulars cluster among the most frequent verbs, and an existing form like went blocks the regular *goed.' },
+        { num: '3.10', kind: 'Phenomenon', name: 'Irregular forms and blocking', deps: ['ling-3.7'], refs: ['Aronoff1976 pp.43–45; Lieberman et al.2007 original study and attached CELEX table'],
+          pic: 'Inspect all177 retained Old English irregular lemmas by source count and historical code, compare scoped square-root scaling, and toggle an authored go/went or glorious/glory lookup.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

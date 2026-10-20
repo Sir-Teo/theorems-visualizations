@@ -1,6 +1,7 @@
 // Linguistics & Language — Chapter 3: Morphology: the structure of words (items 3.6–3.10)
 import { MORPH_COLOR } from './ch03.shared.js';
 import {rootTemplateConcept,reduplicationConcept} from './source-audit-morphology.js';
+import irregularConcept from './source-audit-irregular.js';
 
 // ---------- 3.6: one clause in four languages (my own analysis of each word, see the caption) ----------
 // morphemes: [surface, gloss, 'r' root | 'a' affix, number of grammatical features an affix carries]
@@ -31,16 +32,6 @@ function runModel(rand, kind, N, par, checks) {
   return out;
 }
 const makeChecks = (N) => { const a = []; for (let k = 0; ; k++) { const n = Math.round(20 * 2 ** (k / 4)); if (n > N) break; if (!a.length || n > a[a.length - 1]) a.push(n); } return a; };
-
-const IRR_SRC = 'be:was:23970367,do:did:7781726,have:had:7279963,get:got:5363833,go:went:4972372,know:knew:4468046,come:came:3132857,think:thought:2662244,see:saw:2476595,say:said:2424483,take:took:1950902,tell:told:1865223,let:let:1750195,make:made:1739103,give:gave:1216087,mean:meant:1099659,find:found:1017117,leave:left:1009069,feel:felt:717293,win:won:708396,hear:heard:671019,keep:kept:653607,put:put:617889,meet:met:492805,run:ran:451634,bring:brought:448029,understand:understood:407458,lose:lost:386837,hold:held:355042,drink:drank:321677,break:broke:314493,speak:spoke:307905,pay:paid:297857,bite:bit:297805,eat:ate:297443,forget:forgot:294686,shoot:shot:294171,sit:sat:290849,send:sent:281467,sleep:slept:251559,fight:fought:250357,stand:stood:249940,write:wrote:233344,buy:bought:231067,become:became:223810,fall:fell:215116,deal:dealt:209554,hit:hit:209048,hurt:hurt:207314,read:read:200216,drive:drove:194606,set:set:191328,shut:shut:186359,catch:caught:184451,cut:cut:178669,wear:wore:162429,build:built:156611,hang:hung:155753,throw:threw:153793,sell:sold:149646,begin:began:149291,spend:spent:143408,sing:sang:141962,hide:hid:140111,steal:stole:133877,grow:grew:126557,lead:led:122701,blow:blew:120713,fly:flew:118370,wake:woke:108853,teach:taught:105080,ride:rode:103885,choose:chose:90816,rise:rose:74012,draw:drew:69213,lay:laid:66638,tear:tore:61661,feed:fed:60309,quit:quit:57416,cost:cost:54561,strike:struck:54529,dig:dug:47073,shake:shook:45784,swim:swam:37524,spread:spread:33647,split:split:31370,seek:sought:29713,shine:shone:26762,cast:cast:23987,swing:swung:22779,sink:sank:22256,spin:spun:20370,bind:bound:19799,bend:bent:18730,lend:lent:17089,sweep:swept:14563,slide:slid:14531,creep:crept:12875,burst:burst:11950,weep:wept:8543,shrink:shrank:8121';
-const REG_SRC = 'die:422718,want:2574969,look:1999272,need:1250687,talk:990094,love:988365,call:984393,work:974943,try:775878,help:766833,wait:763684,happen:739643,stop:671969,ask:643692,kill:639929,use:598633,live:566731,start:507753,believe:454507,show:446409,move:440445,listen:426176,stay:425967,miss:416580,remember:384948,play:380480,turn:379636,care:374052,change:320653,open:315455,worry:313002,watch:303191,hope:287486,seem:276144,laugh:267918,guess:266009,close:247611,walk:245535,marry:244382,check:239287,excuse:229690,plan:213468,save:212881,order:200933,pick:193300,answer:179803,wish:171670,follow:170247,rest:168541,trust:163840,pull:149625,pass:142147,dance:140526,drop:138743,cry:136914,wonder:135879,clean:116211,land:115465,kiss:103683,allow:97481,join:93026,count:92290,lock:90259,mark:89045,fix:88791,share:83543,push:82746,visit:82129,reach:78259,shop:77573,jump:74908,cook:70275,smile:64319,fill:63770,add:43128';
-
-// ---------- 3.10: verb counts from a published frequency list (see the caption) ----------
-const IRR = IRR_SRC.split(',').map((x) => { const [w, past, f] = x.split(':'); return { w, past, f: +f, irr: true }; });
-const REG = REG_SRC.split(',').map((x) => { const [w, f] = x.split(':'); return { w, past: w + (w.endsWith('e') ? 'd' : 'ed'), f: +f, irr: false }; });
-const ALLV = [...IRR, ...REG].sort((a, b) => b.f - a.f); ALLV.forEach((d, i) => { d.rank = i + 1; });
-const DISP = ALLV.filter((d) => d.f >= 150000);
-const HALF = ['be', 'go', 'think', 'give', 'break', 'fight', 'sleep', 'dig', 'weep', 'shrink'];
 
 export default {
   collection: 'ling',
@@ -144,40 +135,6 @@ export default {
     },
     rootTemplateConcept,
     reduplicationConcept,
-    {
-      num: '3.10',
-      kind: 'Phenomenon',
-      name: 'Irregular forms and blocking',
-      credit: 'Blocking: Aronoff, 1976; frequency law: Lieberman et al., 2007',
-      statement: String.raw`English has a regular way of making the past tense (add *-ed*) and a few hundred verbs that use a stored irregular form instead (*go* → *went*). Two regularities govern the irregulars. **Blocking**: if a word has a listed form for a grammatical slot, it pre-empts the regular rule for that slot, which is why *went* blocks the regular form (*goed*, not English) and *glory* blocks *gloriosity*. **Frequency**: irregular forms survive among the most frequent verbs, since only frequently heard forms are learned reliably, and rarer irregulars tend to be regularised over the centuries. Lieberman et al. (2007) found that the half-life of an irregular verb grows with the square root of its frequency, so a verb used 100 times less often is regularised about 10 times faster.`,
-      idea: String.raw`A speaker stores the past forms she has heard often enough and applies the rule to anything else (3.5, 3.7). Retrieval of a stored form is faster than the rule when the form is strong, and a strong enough form blocks the rule; a rare irregular is stored weakly and gets overtaken by the regular output. The verbs that remain irregular are therefore the ones that are strong in memory, which are the frequent ones. Children's *goed* (10.5) is the same competition seen early, when the stored form is not yet strong.`,
-      caption: String.raw`Left: the English verbs of my list that occur at least 150 000 times in the word list, ordered by frequency (rank on the horizontal axis), irregular verbs in red and common regular verbs in blue (below that frequency my list of regular verbs is far from complete, so the tail is not drawn, and ambiguous words such as *like*, *please* and *thank* were left out); drag the slider to take the $N$ most frequent and read the share of irregulars (the head of the list is dominated by them; the tail of my list is not trustworthy). Right: relative regularisation time (the square root of the frequency, relative to *shrink*) for ten irregulars. Pick a verb and toggle the stored past form on and off to see blocking: with the form, *go* gives *went*; without it, the regular rule yields the non-English *goed*. **Data**: counts are summed over the verb's base, *-s*, *-ing* and past forms in the OpenSubtitles 2018 English word list (FrequencyWords by H. Hermit Dave, CC BY-SA 4.0), so they include noun uses (*work*, *set*) and I assembled the list of regular verbs by hand, so read the shares as approximate and the trend as the point.`,
-      deps: ['ling-3.7'],
-      refs: ['Fromkin et al. ch. 2'],
-      tags: ['irregular verbs', 'blocking', 'frequency'],
-      verify: true,
-      scope: String.raw`The square-root law is an empirical fit by Lieberman et al. for 177 Old English irregular verbs (I quote it from the paper's summary and press reports; 145 remained irregular in Middle English and 98 still are, reported secondhand); the relative values drawn here apply it to counts from a different corpus (subtitles) and are only a scaling illustration.`,
-      viz(v) {
-        const N = v.slider('the N most frequent verbs', 5, DISP.length, 30, { int: true });
-        const pick = v.select('Verb', HALF.map((w) => ({ value: w, label: w })), 'go');
-        const stored = v.toggle('stored past form', true);
-        const s = v.stage({ x: [1, DISP.length + 1], y: [5, 7.5], xlog: true, axes: 'box', gutter: true, height: 340, weight: 1.2, minWidth: 320, xlabel: 'frequency rank among these verbs', ylabel: 'occurrences (log₁₀)', yticks: [[5, '10⁵'], [6, '10⁶'], [7, '10⁷']], title: 'which verbs are irregular?' });
-        const sb = v.stage({ x: [0, HALF.length], y: [0, 60], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 300, xlabel: '', ylabel: 'time to regularise, relative to shrink', title: 'rarer irregulars regularise sooner (model)', xticks: HALF.map((w, i) => [i + 0.5, w]) });
-        v.legend([['red', 'irregular'], ['accent', 'regular']]);
-        const fmin = ALLV.find((d) => d.w === 'shrink').f;
-        v.render(() => {
-          const n = N.value;
-          s.rect(1, 5, n + 0.5, 7.5, { fill: 'gold', fillAlpha: 0.1, color: 'gold', width: 1 }); s.vline(n + 0.5, { color: 'gold', width: 2 });
-          for (const d of DISP) { const y = Math.log10(d.f), sel = d.w === pick.value; s.dot(d.rank, y, { r: sel ? 6.5 : 4, color: d.irr ? 'red' : 'accent', fill: d.irr ? 'red' : 'accent', ...(sel ? { label: d.w, labelPos: 'ne' } : {}) }); }
-          HALF.forEach((w, i) => { const d = ALLV.find((q) => q.w === w), r = Math.sqrt(d.f / fmin), sel = w === pick.value; sb.rect(i + 0.12, 0, i + 0.88, r, { fill: sel ? 'gold' : 'red', fillAlpha: sel ? 0.5 : 0.28, color: sel ? 'gold' : 'red', width: 1.6 }); sb.text(r >= 10 ? String(Math.round(r)) : v.fix(r, 1), i + 0.5, r + 3, { size: 11, color: 'ink', align: 'center' }); });
-        });
-        v.readout(() => {
-          const n = N.value, top = DISP.slice(0, n), ir = top.filter((d) => d.irr).length;
-          const d = ALLV.find((q) => q.w === pick.value), r = Math.sqrt(d.f / fmin);
-          const form = stored.value ? `${d.w} + past → **${d.past}** (the stored form blocks the rule)` : `${d.w} + past → **${d.w}${d.w.endsWith('e') ? 'd' : 'ed'}** (no stored form, so the regular rule applies; not English)`;
-          return `Among the ${n} most frequent verbs in this list, **${ir}** (${Math.round((100 * ir) / n)}%) are irregular (an upper estimate: regular verbs missing from my list would lower it); in the first ten it is ${DISP.slice(0, 10).filter((d) => d.irr).length} of 10.\n${form}. Occurrences of ${d.w}: ${d.f.toLocaleString('en')}; a square-root law puts its regularisation time at about **${v.fix(r, 0)}×** that of *shrink*.`;
-        });
-      },
-    },
+    irregularConcept,
   ],
 };
