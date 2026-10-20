@@ -1,3 +1,4 @@
+import pendentivesItem from './source-audit-pendentives-item.js';
 import florenceItem from './source-audit-florence-item.js';
 import pantheonItem from './source-audit-pantheon-item.js';
 import poleniEvent from './source-audit-poleni-item.js';
@@ -7,8 +8,7 @@ import poleniEvent from './source-audit-poleni-item.js';
 //   Audited Poleni4.6: actual1748BookI §§76–89,TableAA,plateE; source facts distinguished from authored fixed-station illustration.
 //   Audited Pantheon4.7: official owner and actualMark/Hutchinson1986pp24–34; authored spherical weight reduction, no real-building certificate.
 //   Audited Florence4.8: official owner construction description; authored complete circular-shell equilibrium and isolated-block friction, no building certificate.
-//   Pendentives: geometry computed here; Hagia Sophia's dome on pendentives, built 532–537 under Justinian by Anthemius of Tralles and Isidore of
-//     Miletus (rebuilt after a collapse in 558), main dome about 31 m across (flagged verify).
+//   Audited Pendentives4.9: actualViollet-le-Duc Pendentif entry/Fig2; analytic ideal geometry and areas, no historical priority or force certificate.
 //   Thrust network analysis: P. Block and J. Ochsendorf, "Thrust network analysis: A new methodology for three-dimensional equilibrium",
 //     J. Int. Assoc. Shell and Spatial Structures 48 (3): 167–173 (2007), as cited in the SIGGRAPH history database; and P. Block, Thrust Network
 //     Analysis: Exploring Three-dimensional Equilibrium, PhD thesis, MIT (2009), https://dspace.mit.edu/handle/1721.1/49539. No DOI was found for the 2007 paper.
@@ -30,75 +30,7 @@ export default {
     // ───────────────────────────────────────────────────────────────────────────────────── 4.8
     florenceItem,
     // ───────────────────────────────────────────────────────────────────────────────────── 4.9
-    {
-      num: '4.9',
-      kind: 'Concept',
-      name: 'Pendentives: a dome on a square',
-      statement: String.raw`A circular dome cannot sit directly on four arches over a square, because the circle and the square do not match. **Pendentives** solve this: take a sphere through the four corners of the square, cut it by the four vertical planes through the sides of the square (these cut four semicircular arches), and keep the four spherical triangles that remain between the arches below the horizontal circle that touches the arches' crowns. For a square of side $2a$ the sphere has radius $\sqrt2\,a$, the four cuts are semicircles of radius $a$, and the circle at height $a$ has radius $a$, so a dome can be built on it. The four pendentives carry the dome's weight to the four corner piers and give a continuous ring on which any dome can be set.`,
-      idea: String.raw`The geometry is exact: at height $z$ the sphere $x^2+y^2+z^2=2a^2$ has horizontal radius $\sqrt{2a^2-z^2}$, which equals $a$ at $z=a$, where the vertical planes $x=\pm a$ and $y=\pm a$ are tangent to it; below that level the sphere is cut by those planes in the arches $z=\sqrt{a^2-y^2}$. The load path is the one of arch-4.1: a dome's weight comes down on a ring, the ring is carried by the arches through the pendentives, and everything reaches the four corner piers. The ring at the pendentives' top is in compression (arch-4.10). The sphere through the corners is the smallest one that can serve, so the pendentive dome above it is a shell of the same sphere (a sail vault) or, as in Hagia Sophia, a different, shallower dome set on the ring.`,
-      caption: String.raw`Drag the picture to rotate. **Dome** chooses a dome on the same sphere (a "sail" vault) or a separate shallow dome of chosen rise on the ring. Move the **ring height** to see why it has to be at the arch crowns: lower, and the circle at that level pokes out through the arches (red) because the vertical planes cut the sphere away; higher, and a band of sphere is added below the dome. The plan shows the share of the square taken by the four pendentives.`,
-      deps: ['arch-4.3'],
-      see: ['arch-4.10', 'arch-4.1'],
-      tags: ['pendentive', 'byzantine', 'geometry'],
-      refs: ['Salvadori'],
-      credit: 'developed in Roman and Byzantine architecture; the great dome of Hagia Sophia (532–537, Anthemius of Tralles and Isidore of Miletus) is the famous example',
-      scope: String.raw`Geometry of the spherical pendentive on a square plan, with the four arches semicircular. Real pendentives are built with courses of masonry and are not exactly spherical, and the main dome of Hagia Sophia has a diameter of about 31 m, a figure not used in the picture.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pendentive' },
-      viz(v) {
-        const type = v.select('dome', [{ value: 'sail', label: 'same sphere (sail)' }, { value: 'sep', label: 'separate shallow dome' }], 'sail');
-        const z0 = v.slider('ring height z / a (1 = arch crowns)', 0.6, 1.4, 1, { step: 0.01 });
-        const rise = v.slider('rise of the separate dome / a', 0.2, 1.2, 0.35, { step: 0.01 });
-        const S3 = v.stage({ x: [-1.9, 1.9], y: [-1.5, 1.9], equal: true, axes: false, height: 370, weight: 1.15, minWidth: 300, title: 'a dome on a square' });
-        const sc = v.scene3(S3, { yaw: -0.6, pitch: 0.38, axes: false });
-        const PL = v.stage({ x: [-1.4, 1.4], y: [-1.4, 1.4], equal: true, axes: false, height: 370, weight: 0.8, minWidth: 240, title: 'plan' });
-        let info = {};
-        v.render(() => {
-          const G = 40, sep = type.value === 'sep', Z0 = sep ? 1 : z0.value, Rs = Math.SQRT2;
-          const zs = (x, y) => Math.sqrt(Math.max(0, 2 - x * x - y * y));
-          const P = (x, y, z) => [x * 0.95, y * 0.95, (z - 0.5) * 0.95];
-          sc.begin();
-          sc.poly([P(-1, -1, -0.0), P(1, -1, 0), P(1, 1, 0), P(-1, 1, 0)], { fill: 'muted', fillAlpha: 0.06, color: 'faint', width: 1 });
-          let areaP = 0, areaC = 0;
-          for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
-            const x0 = -1 + (2 * i) / G, x1 = x0 + 2 / G, y0 = -1 + (2 * j) / G, y1 = y0 + 2 / G, xc = (x0 + x1) / 2, yc = (y0 + y1) / 2, rc = Math.hypot(xc, yc), zc = zs(xc, yc);
-            const gx = xc / zc, gy = yc / zc, dA = (4 / (G * G)) * Math.sqrt(1 + gx * gx + gy * gy);
-            const inCircle = rc < 1, pend = !inCircle, band = !sep && zc > 1 && zc < Z0 && inCircle;
-            if (inCircle && sep) continue;
-            const below = zc <= Z0 + 1e-9, col = pend || band ? 'orange' : 'accent';
-            if (pend) areaP += dA; else areaC += dA;
-            if (!sep && !pend && !below && !band) { /* dome above the ring */ }
-            sc.poly([P(x0, y0, zs(x0, y0)), P(x1, y0, zs(x1, y0)), P(x1, y1, zs(x1, y1)), P(x0, y1, zs(x0, y1))], { fill: !sep && below && !pend && zc <= Z0 ? 'orange' : col, fillAlpha: 0.2 + 0.1 * ((i + j) % 2), edge: false });
-          }
-          if (sep) {
-            const h = rise.value, Rc = (1 + h * h) / (2 * h), n = 12;
-            for (let i = 0; i < 40; i++) for (let j = 0; j < n; j++) {
-              const a0 = (2 * Math.PI * j) / n, a1 = (2 * Math.PI * (j + 1)) / n, r0 = (i / 40) ** 0.9, r1 = ((i + 1) / 40) ** 0.9;
-              const zz = (r) => 1 + Math.sqrt(Math.max(0, Rc * Rc - r * r)) - (Rc - h);
-              sc.poly([P(r0 * Math.cos(a0), r0 * Math.sin(a0), zz(r0)), P(r1 * Math.cos(a0), r1 * Math.sin(a0), zz(r1)), P(r1 * Math.cos(a1), r1 * Math.sin(a1), zz(r1)), P(r0 * Math.cos(a1), r0 * Math.sin(a1), zz(r0))], { fill: 'accent', fillAlpha: 0.2 + 0.1 * ((i + j) % 2), edge: false });
-            }
-          }
-          // arches
-          for (const [fx, sx] of [[1, 1], [1, -1], [0, 1], [0, -1]]) sc.path(Array.from({ length: 31 }, (_, k) => { const s = -1 + (2 * k) / 30, zz = Math.sqrt(Math.max(0, 1 - s * s)); return fx ? P(sx, s, zz) : P(s, sx, zz); }), { color: 'ink', width: 2.2 });
-          for (const x of [-1, 1]) for (const y of [-1, 1]) sc.line(P(x, y, 0), P(x, y, -0.9), { color: 'ink', width: 3.2 }, 1);
-          // ring
-          const r0 = Math.sqrt(Math.max(0, 2 - Z0 * Z0)), ringR = sep ? 1 : r0;
-          const pts = Array.from({ length: 121 }, (_, k) => { const a = (2 * Math.PI * k) / 120; return [ringR * Math.cos(a), ringR * Math.sin(a)]; });
-          let out = 0;
-          for (let k = 0; k < 120; k++) { const a = pts[k], b = pts[k + 1], bad = Math.max(Math.abs(a[0]), Math.abs(a[1])) > 1.0005; if (bad) out++; sc.line(P(a[0], a[1], sep ? 1 : Z0), P(b[0], b[1], sep ? 1 : Z0), { color: bad ? 'red' : 'green', width: bad ? 3 : 2.4, top: true }, 1); }
-          sc.flush();
-          // plan
-          PL.rect(-1, -1, 1, 1, { color: 'ink', width: 1.4, fill: 'orange', fillAlpha: 0.2 });
-          PL.circle(0, 0, ringR, { color: out ? 'red' : 'green', fill: 'accent', fillAlpha: 0.2, width: 2 });
-          PL.circle(0, 0, 1, { color: 'muted', width: 1, dash: [3, 3] });
-          for (const x of [-1, 1]) for (const y of [-1, 1]) PL.rect(x - 0.07, y - 0.07, x + 0.07, y + 0.07, { fill: 'ink', fillAlpha: 0.8, color: 'ink' });
-          PL.text('pendentive', 0.85, 0.85, { size: 11, color: 'orange', align: 'center' });
-          info = { out, areaP, areaC, ringR, Z0, sep };
-          v.legend([['orange', 'pendentives'], ['accent', 'dome'], ['green', 'ring (supported)'], ['red', 'ring outside the arches']]);
-        });
-        v.readout(() => `Square of side $2a$, sphere radius $\\sqrt2\\,a=1.414\\,a$; arches are semicircles of radius $a$. In plan the four pendentives cover $(4-\\pi)/4=${f2((4 - Math.PI) / 4, 3)}\\,a^2$ each, ${f2(100 * (1 - Math.PI / 4), 1)}% of the square. Ring: radius ${f2(info.ringR, 3)}$a$ at height ${f2(info.sep ? 1 : info.Z0, 2)}$a$ — ${info.out ? '**it leaves the square**: the arches cut it, so no dome can rest on it' : 'inside the square, resting on the arch crowns'}. Surface area of the four pendentives ${f2(info.areaP, 2)}$a^2$ against ${f2(info.areaC, 2)}$a^2$ for the cap of the same sphere.`);
-      },
-    },
+    pendentivesItem,
     // ───────────────────────────────────────────────────────────────────────────────────── 4.10
     {
       num: '4.10',

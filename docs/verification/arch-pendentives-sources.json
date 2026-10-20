@@ -1,0 +1,47 @@
+{
+  "source": "Viollet-le-Duc, Dictionnaire raisonn\u00e9, tome7,1864, Pendentif, printed110\u2013114",
+  "readScope": "Complete actual French entry read and all five original page pixels inspected; original Fig2p112. UCR English text was background only; original French scan controls. Only ideal spherical definition/construction are used, not historical priority or structural assertions.",
+  "transcription": "https://fr.wikisource.org/wiki/Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle/Pendentif",
+  "files": [
+    {
+      "file": "viollet-t7-p110.jpg",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu/page113-1280px-Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu.jpg",
+      "bytes": 563647,
+      "sha256": "8f8e348b82123aba8eeed6ed9dcd85520a35ac31aac20ed3d46d2df269829242",
+      "printedPage": 110,
+      "scanPage": 113
+    },
+    {
+      "file": "viollet-t7-p111.jpg",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu/page114-1280px-Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu.jpg",
+      "bytes": 344463,
+      "sha256": "a1577612282806d690c885890d8d5a4c72b30b2f2076fec3e6bb58b542d1d8ba",
+      "printedPage": 111,
+      "scanPage": 114
+    },
+    {
+      "file": "viollet-t7-p112.jpg",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu/page115-1280px-Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu.jpg",
+      "bytes": 366323,
+      "sha256": "feef681a2cd2da0f3ccb5ba0536df5672d8af6f2761329c1d7dd688b8985ea36",
+      "printedPage": 112,
+      "scanPage": 115
+    },
+    {
+      "file": "viollet-t7-p113.jpg",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu/page116-1280px-Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu.jpg",
+      "bytes": 196202,
+      "sha256": "d749e642e7d8d5b2eb754a19c53dbbd4414bd2093afe02670d6ff65adfebf0d0",
+      "printedPage": 113,
+      "scanPage": 116
+    },
+    {
+      "file": "viollet-t7-p114.jpg",
+      "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu/page117-1280px-Viollet-le-Duc_-_Dictionnaire_raisonn%C3%A9_de_l%E2%80%99architecture_fran%C3%A7aise_du_XIe_au_XVIe_si%C3%A8cle%2C_1854-1868%2C_tome_7.djvu.jpg",
+      "bytes": 468127,
+      "sha256": "163e40fac3b89bfe2d8172e8c7285208ecf3c0e3d4adc4c4150677bcad443be2",
+      "printedPage": 114,
+      "scanPage": 117
+    }
+  ]
+}
