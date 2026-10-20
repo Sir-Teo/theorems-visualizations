@@ -1,5 +1,6 @@
 // Psychology & Perception — Chapter 4: Early vision (items 4.1–4.5; 4.6–4.10 are in ch04-b.js, 4.11–4.14 in ch04-c.js)
 import { logTicks, grey, clamp01, smooth01, coneDensity, rodDensity, BLIND } from './ch04.shared.js';
+import { CIE_PHOTOPIC, CIE_SCOTOPIC, spectralPair, summationCuts } from './source-audit-spectral-summation.js';
 import { RETINA_TEMPORAL, retinaX, retinaY, retinaNearest, retinaView, darkAdaptation } from './source-audit-retina.js';
 
 export default {
@@ -60,60 +61,27 @@ Thus $R-C$ strictly decreases there. It is positive at $t_0$ and negative at 40 
     },
     // ------------------------------------------------------------------ 4.3
     {
-      num: '4.3',
-      kind: 'Phenomenon',
-      name: 'The Purkinje shift',
-      statement: String.raw`Two coloured surfaces that look equally bright in daylight do not stay equally bright as the light fades. Because the rods' spectral sensitivity peaks at a shorter wavelength (about 507 nm) than the cones' (about 555 nm), red and orange surfaces lose brightness faster than blue and green ones: in dim light the red looks nearly black while the blue still looks light. The change from photopic to scotopic vision thus shifts the peak of the brightness-versus-wavelength curve toward the blue end of the spectrum.`,
-      idea: String.raw`The brightness of a surface is roughly the integral of its reflected spectrum against the sensitivity curve of the receptors in use: $B=\int R(\lambda)\,E\,S(\lambda)\,d\lambda$. Replace the cone curve $V(\lambda)$ by the rod curve $V'(\lambda)$ (which is nearly zero beyond 640 nm) and a long-wavelength surface contributes almost nothing. In the mesopic range the effective curve is a blend whose weights slide from cones to rods as the light dims, so the shift is gradual.`,
-      caption: String.raw`**Left:** relative spectral sensitivity of the cones ($V$, blue) and of the rods ($V'$, purple), with the blend you are seeing with (black). The faint red and blue areas are the reflectance spectra of the two flowers. **Right:** the two flowers as they look at the chosen light level; they were scaled to be equally bright in daylight. Drag the **light level** down through the mesopic range and watch the peak slide from 555 toward 507 nm while the red flower goes dark first. The curves are smooth analytic stand-ins that reproduce the two peak wavelengths and the long-wavelength tails (they are not the tabulated CIE functions), and the red and blue reflectances are invented.`,
-      deps: ['psych-4.1'],
-      refs: ['Goldstein ch. 2'],
-      tags: ['spectral sensitivity', 'rods and cones', 'brightness'],
-      credit: 'Jan Evangelista Purkyně, 1825 (unconfirmed)',
-      scope: String.raw`Photopic and scotopic standard observers (CIE) are averages; the transition levels used here (rods dominating below about 0.01 cd/m², cones above about 3 cd/m²) are conventional round numbers. Rods are absent from the fovea, so the shift is a peripheral effect for small, centrally fixated objects.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Purkinje_effect' },
-      verify: true,
-      viz(v) {
-        const lv = v.slider('light level, $\\log_{10}$ luminance (cd/m²)', -4.5, 2, -1, { step: 0.05 });
-        const sp = v.stage({ x: [400, 700], y: [0, 1.12], axes: 'box', gutter: true, height: 300, weight: 1.2, minWidth: 320, xlabel: 'wavelength (nm)', ylabel: 'relative sensitivity', title: 'spectral sensitivity', xticks: [400, 450, 500, 550, 600, 650, 700] });
-        const fl = v.stage({ x: [0, 10], y: [0, 6], equal: true, axes: false, height: 300, weight: 0.8, minWidth: 240, title: 'two flowers' });
-        const ag = (l, p, a, b) => Math.exp(-0.5 * ((l - p) / (l < p ? a : b)) ** 2);
-        const Vp = (l) => 0.821 * ag(l, 568.8, 46.9, 40.5) + 0.286 * ag(l, 530.9, 16.3, 31.1); // multi-lobe fit to the CIE 1931 y-bar (Wyman, Sloan & Shirley 2013, from memory)
-        const VpMax = 1.0 * Math.max(...Array.from({ length: 301 }, (_, i) => Vp(400 + i)));
-        const V = (l) => Vp(l) / VpMax;
-        const Vs = (l) => ag(l, 507, 40, 37);
-        const red = (l) => 0.9 / (1 + Math.exp(-(l - 600) / 12)), blue = (l) => 0.8 * Math.exp(-0.5 * ((l - 450) / 28) ** 2) + 0.08;
-        const wr = (L) => 1 - smooth01((L + 2) / 2.5);
-        const integ = (R, S) => { let a = 0; for (let l = 400; l <= 700; l += 5) a += R(l) * S(l); return a; };
-        const kBlue = integ(red, V) / integ(blue, V); // equal in daylight
-        const mix = (l, w) => (1 - w) * V(l) + w * Vs(l);
-        let st = null;
-        v.legend([['accent', 'cones  V(λ)'], ['purple', 'rods  V′(λ)'], ['ink', 'what you see with'], ['red', 'red flower', { area: true }], ['blue', 'blue flower', { area: true }]]);
-        v.render(() => {
-          const L = lv.value, w = wr(L);
-          sp.fn((l) => red(l) * 0.55, { domain: [400, 700], color: 'red', fill: true, fillAlpha: 0.1, width: 1, alpha: 0.5 });
-          sp.fn((l) => blue(l) * 0.55 * kBlue, { domain: [400, 700], color: 'blue', fill: true, fillAlpha: 0.1, width: 1, alpha: 0.5 });
-          sp.fn(V, { domain: [400, 700], color: 'accent', width: 1.8, alpha: 0.6 });
-          sp.fn(Vs, { domain: [400, 700], color: 'purple', width: 1.8, alpha: 0.6 });
-          const eff = (l) => mix(l, w);
-          let pk = 400, pm = 0, mx = 0;
-          for (let l = 400; l <= 700; l += 1) { const e = eff(l); if (e > pm) { pm = e; pk = l; } }
-          sp.fn((l) => eff(l) / pm, { domain: [400, 700], color: 'ink', width: 3 });
-          sp.vline(pk, { color: 'gold', dash: [4, 3], width: 1.5 });
-          sp.text(`peak ${pk} nm`, pk, 1.06, { dx: pk > 560 ? -6 : 6, align: pk > 560 ? 'right' : 'left', color: 'gold', weight: 700, size: 12.5 });
-          const Br = integ(red, (l) => mix(l, w)), Bb = kBlue * integ(blue, (l) => mix(l, w));
-          const k = Math.max(Br, Bb), br = Br / k, bb = Bb / k;
-          const shade = (rgb, b) => rgb.map((c) => Math.round(c * Math.pow(b, 0.6)));
-          const flower = (cx, rgb, b, name) => {
-            for (let i = 0; i < 6; i++) { const a = (i * Math.PI) / 3; fl.circle(cx + 1.15 * Math.cos(a), 3.1 + 1.15 * Math.sin(a), 0.95, { fill: shade(rgb, b), fillAlpha: 1, stroke: false }); }
-            fl.circle(cx, 3.1, 0.7, { fill: shade([230, 200, 70], Math.max(b, 0.3)), fillAlpha: 1, stroke: false });
-            fl.text(name + ' ' + v.fix(b, 2), cx, 0.9, { align: 'center', size: 12.5, color: 'ink', weight: 600 });
-          };
-          fl.rect(0, 0, 10, 6, { fill: [20, 24, 20], fillAlpha: 1, stroke: false });
-          flower(2.7, [215, 40, 40], br, 'red'); flower(7.3, [50, 80, 220], bb, 'blue');
-          st = { pk, w, br, bb, ratio: Br / Bb };
-        });
-        v.readout(() => st ? `Rod weight ${v.fix(st.w, 2)} · effective peak **${st.pk} nm** (≈555 nm in daylight, 507 nm in the dark) · brightness red : blue = ${v.fix(st.ratio, 3)} (1 by construction in daylight)` : '');
+      num:'4.3',kind:'Phenomenon',name:'The Purkinje shift',
+      statement:String.raw`The **Purkinje phenomenon** is a relative reduction in the brightness of long-wavelength lights compared with short-wavelength lights when illumination is reduced from photopic toward mesopic or scotopic conditions, while their relative spectra remain fixed. The spectral luminous-efficiency maximum shifts toward shorter wavelengths.
+
+The CIE photopic function $V(\lambda)$ and scotopic function $V'(\lambda)$ describe standardized whole-observer photometric responses under different conditions. They are not the absorption spectra of individual cone and rod pigments. In the published 1-nm tables, $V$ has its maximum at 555 nm; $V'$ has equal tabulated maxima at 506, 507 and 508 nm.`,
+      idea:String.raw`Consider an **authored ideal monochromatic pair**, A and B, with wavelengths in the tables' common 380–780-nm support. Choose radiant powers $P_A=1$ and $P_B=V(\lambda_A)/V(\lambda_B)$. Their photopic weighted products are equal. Under the scotopic weighting, their ratio becomes
+$$R=\frac{P_A V'(\lambda_A)}{P_B V'(\lambda_B)}=\frac{V'(\lambda_A)/V(\lambda_A)}{V'(\lambda_B)/V(\lambda_B)}.$$
+Common attenuation cancels from each within-condition ratio. Each pair of bars is normalized separately to sum to one. This calculation compares spectral weightings; it does not predict an absolute brightness change between adaptation conditions.`,
+      caption:String.raw`The curves retain **all published samples**: photopic 360–830 nm and scotopic 380–780 nm. Lines join adjacent 1-nm samples. Move either wavelength slider or its lower handle; handles snap to integer wavelengths. Filled markers identify A; larger hollow markers identify B, including coincident wavelengths.
+
+The bars show A and B's normalized weighted products in each condition, starting with equal photopic products. Colors identify diagram elements, not the appearance of monochromatic lights on this screen. There is no calibrated mesopic blend, simulated flower, luminance threshold or visibility test.`,
+      deps:['psych-4.1'],refs:['CIE S 017:2020 e-ILV 17-22-036 and 17-21-035','CIE (2019), photopic and scotopic spectral luminous-efficiency datasets'],tags:['spectral sensitivity','rods and cones','photometry'],
+      credit:'CIE (2019) tabulated luminous-efficiency functions, DOI 10.25039/CIE.DS.dktna2s3 and 10.25039/CIE.DS.gr6w4b5g; data CC BY-SA 4.0',
+      scope:String.raw`The weighting functions depend on the stated photometric conditions, including adaptation and field size/position; they are not universal brightness functions for every stimulus or observer. Rods principally mediate scotopic vision, cones photopic vision. The authored pair uses radiant-power weighting, not equal photon counts. Separately normalized shares discard absolute luminous-efficacy constants and adaptation gains. The actual scotopic CSV spans 380–780 nm despite an inconsistent range in its metadata abstract; no missing tail is filled in. No original Purkyně publication or historical priority is claimed.`,
+      links:{source:'https://cie.co.at/eilvterm/17-22-036',photopic:'https://www.cie.co.at/datatable/cie-spectral-luminous-efficiency-photopic-vision',scotopic:'https://www.cie.co.at/datatable/cie-spectral-luminous-efficiency-scotopic-vision',license:'https://creativecommons.org/licenses/by-sa/4.0/'},verify: false,
+      viz(v){
+        const a=v.slider('wavelength A (nm)',380,780,450,{int:true}),b=v.slider('wavelength B (nm)',380,780,650,{int:true});
+        const A=v.stage({x:[350,840],y:[-.5,1.15],height:340,minWidth:260,axes:'box',gutter:true,xlabel:'wavelength (nm)',ylabel:'relative luminous efficiency',xticks:[400,500,600,700,800],yticks:[0,.5,1],title:'published CIE observer functions'}),B=v.stage({x:[-.65,3.65],y:[-.16,1.16],height:340,minWidth:260,axes:'box',gutter:true,xlabel:'separate within-condition normalization',ylabel:'share of weighted pair',xticks:[[0,'A'],[1,'B'],[2,'A'],[3,'B']],yticks:[0,.5,1],title:'authored photopically balanced pair'});
+        const ha=A.handle(450,-.12,{r:7,color:'gold',constrain:x=>[Math.round(v.M.clamp(x,380,780)),-.12],onDrag:h=>a.set(h.x)}),hb=A.handle(650,-.32,{r:7,color:'orange',constrain:x=>[Math.round(v.M.clamp(x,380,780)),-.32],onDrag:h=>b.set(h.x)});let info;
+        v.legend([['accent','photopic V'],['purple','scotopic V′'],['gold','pair A',{dot:true}],['orange','pair B',{dot:true}]]);
+        v.render(()=>{const p=spectralPair(a.value,b.value);A.path(CIE_PHOTOPIC,{color:'accent',width:2});A.path(CIE_SCOTOPIC,{color:'purple',width:2});for(const[x,y,color]of[[p.a,p.va,'accent'],[p.a,p.sa,'purple']])A.dot(x,y,{r:4,color});for(const[x,y,color]of[[p.b,p.vb,'accent'],[p.b,p.sb,'purple']])A.dot(x,y,{r:7,color,hollow:true});ha.set(p.a,-.12);hb.set(p.b,-.32);for(const[i,h]of[...p.photopic,...p.scotopic].entries())B.rect(i-.28,0,i+.28,h,{fill:i%2?'orange':'gold',fillAlpha:.65,stroke:false});B.text('photopic',.5,-.09,{align:'center',size:11,color:'ink'});B.text('scotopic',2.5,-.09,{align:'center',size:11,color:'ink'});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info,f=x=>x.toExponential(6);return `A ${p.a} nm: V=${f(p.va)}, V′=${f(p.sa)}. B ${p.b} nm: V=${f(p.vb)}, V′=${f(p.sb)}.\nAuthored radiant powers A=1, B=${f(p.powerB)}. Photopic shares A=0.5, B=0.5. Scotopic shares A=${f(p.scotopic[0])}, B=${f(p.scotopic[1])}; scotopic A/B=${f(p.ratio)}. Separately normalized products, not screen appearance or absolute cross-condition brightness.`;});
       },
     },
     // ------------------------------------------------------------------ 4.4
@@ -179,45 +147,32 @@ Thus $R-C$ strictly decreases there. It is positive at $t_0$ and negative at 40 
     },
     // ------------------------------------------------------------------ 4.5
     {
-      num: '4.5',
-      kind: 'Law',
-      name: 'Ricco’s and Bloch’s laws of summation',
-      statement: String.raw`For a brief flash seen at threshold, the visual system adds light over space and time completely, up to a limit. **Ricco's law:** for a test spot smaller than a critical area $A_c$, the threshold intensity $I$ is inversely proportional to the area, $I\cdot A=\text{const}$, so only the total flux matters. **Bloch's law:** for a flash shorter than a critical duration $t_c$, $I\cdot t=\text{const}$, so only the total energy matters. Beyond $A_c$ or $t_c$ the summation is only partial: the threshold falls more slowly than $1/A$ or $1/t$, and on log–log axes the line of slope $-1$ bends toward a shallower slope.`,
-      idea: String.raw`If a pool of receptors (4.4) sums linearly and the detection rule is a fixed total signal, then the spot threshold is set by the flux falling on the pool. Once the spot is bigger than the pool, extra light lands outside it and cannot help, so the threshold flux grows with area. The same argument holds in time for the integration time of the photoreceptors. The critical area is therefore a footprint of the pooling (small in the fovea, large in the dark-adapted periphery) and the critical duration is the receptors' integration time.`,
-      caption: String.raw`Log–log plots of threshold intensity against stimulus area (left) and duration (right). The **solid** curve is the threshold intensity, the **dashed** curve the threshold energy $I\cdot A$ (or $I\cdot t$), which is flat exactly where the law holds. Drag the **gold** handles to move the critical size, or choose a preset: the foveal cones sum over a small area and briefly, the dark-adapted periphery over a large area and for longer. The slider sets the slope beyond the critical value (partial summation). Presets are **typical orders of magnitude** for illustration (about 6 arcmin and 50 ms for the cones, about 1° and 100 ms for the rods), not measurements.`,
-      deps: ['psych-4.4'],
-      refs: ['Goldstein ch. 3'],
-      tags: ['spatial summation', 'temporal summation', 'threshold'],
-      credit: 'Ricco, 1877 (spatial); A.-M. Bloch, 1885 (temporal) — dates unconfirmed',
-      scope: String.raw`Complete summation holds for near-threshold flashes on a dark background; the critical area and duration both depend on the retinal location, the background level and the state of adaptation (they get larger in the dark), and the transition between the two regimes is gradual, not the sharp corner drawn here.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ricco%27s_law' },
-      verify: true,
-      viz(v) {
-        const pre = v.select('Preset', [{ value: 'fov', label: 'fovea (cones)' }, { value: 'per', label: 'periphery, dark-adapted (rods)' }], 'fov');
-        const beta = v.slider('slope beyond the critical size', 0, 0.9, 0.3, { step: 0.01 });
-        const PR = { fov: [Math.log10(28), Math.log10(50)], per: [Math.log10(2800), Math.log10(100)] };
-        const sa = v.stage({ x: [0, 4.2], y: [-5, 2], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 290, xlabel: 'area of the spot (arcmin²)', ylabel: 'log threshold', title: 'Ricco: area', xticks: logTicks(0, 4.2, { mult: [1] }), yticks: [-4, -3, -2, -1, 0, 1] });
-        const st = v.stage({ x: [0.8, 3.2], y: [-5, 2], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 290, xlabel: 'flash duration (ms)', ylabel: 'log threshold', title: 'Bloch: duration', xticks: logTicks(0.8, 3.2, { mult: [1, 3] }), yticks: [-4, -3, -2, -1, 0, 1] });
-        const th = (a, ac, b) => 0.5 - Math.min(a, ac) - b * Math.max(0, a - ac);
-        function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
-        const ha = sa.handle(PR.fov[0], 0, { color: 'gold', r: 8, label: 'A_c', labelPos: 'n', constrain: (x) => { const c = clamp(x, 0.3, 3.9); return [c, th(c, c, 0)]; } });
-        const ht = st.handle(PR.fov[1], 0, { color: 'gold', r: 8, label: 't_c', labelPos: 'n', constrain: (x) => { const c = clamp(x, 1.1, 3.0); return [c, th(c, c, 0)]; } });
-        let last = pre.value;
-        v.legend([['ink', 'threshold intensity'], ['accent', 'threshold energy (I·A or I·t)', { dash: true }]]);
-        let info = null;
-        v.render(() => {
-          if (pre.value !== last) { last = pre.value; ha.set(PR[last][0], 0); ht.set(PR[last][1], 0); }
-          const ac = ha.x, tc = ht.x, b = beta.value;
-          sa.fn((a) => th(a, ac, b), { domain: [0, 4.2], color: 'ink', width: 3 });
-          sa.fn((a) => th(a, ac, b) + a, { domain: [0, 4.2], color: 'accent', width: 2, dash: [5, 4] });
-          st.fn((t) => th(t, tc, b), { domain: [0.8, 3.2], color: 'ink', width: 3 });
-          st.fn((t) => th(t, tc, b) + t - 3, { domain: [0.8, 3.2], color: 'accent', width: 2, dash: [5, 4] });
-          ha.set(ac, th(ac, ac, b)); ht.set(tc, th(tc, tc, b));
-          sa.text('slope −1', ac / 2, th(ac / 2, ac, b), { dx: 8, dy: -14, align: 'left', color: 'muted', size: 12 });
-          st.text('slope −1', 0.8 + (tc - 0.8) / 2, th(0.8 + (tc - 0.8) / 2, tc, b), { dx: 8, dy: -14, align: 'left', color: 'muted', size: 12 });
-          info = { Ac: Math.pow(10, ac), tc: Math.pow(10, tc) };
-        });
-        v.readout(() => info ? `Critical area ≈ ${v.fmt(info.Ac, 3)} arcmin² (a disc of diameter ${v.fix(2 * Math.sqrt(info.Ac / Math.PI) / 60, 2)}°) · critical duration ≈ ${v.fmt(info.tc, 3)} ms · below them the threshold energy is **constant** (the dashed lines are flat); beyond them it rises on the log–log plot with slope ${v.fix(1 - beta.value, 2)}` : '');
+      num:'4.5',kind:'Law',name:'Ricco’s and Bloch’s laws of summation',
+      statement:String.raw`At a **specified detection criterion and fixed other conditions**, complete spatial summation means threshold intensity varies approximately as $I_{\rm th}A=C_A$ over a limited area range (Ricco's law). Complete temporal summation means $I_{\rm th}t=C_t$ over a limited duration range (commonly called Bloch's law). The corresponding log–log slopes are −1.
+
+Critical areas and durations depend on the experiment, including background, retinal location, spectrum and the other stimulus dimension. Barlow's 1958 measurements show that the spatial and temporal limits also depend on one another. These laws do not assert that every flash is completely summed, or that all spatial and temporal effects factor into one universal formula.`,
+      idea:String.raw`These **two separate authored cuts** use $x=A$ or $x=t$, each with its own critical value $x_c$. They illustrate the reciprocity algebra, not a fit to Barlow's measurements:
+Write $r=x/x_c$ and $H=I_{\rm th}(x)/I_{\rm th}(x_c)$. The chosen rule is
+$$H=\begin{cases}r^{-1},&r\le1,\\r^{-\beta},&r>1.\end{cases}$$
+The offered exponent is $0\le\beta\le0.9$.
+Thus the dimensionless product $H(x)(x/x_c)$ is 1 below the cut and $(x/x_c)^{1-\beta}$ above it. The threshold's slopes are −1 and $-\beta$; the product's slopes are 0 and $1-\beta$. For $\beta=0$ the post-critical threshold is flat; for $0<\beta<1$ summation there is partial. The corner is an authored idealization.
+
+A fixed-total-signal pooling model can motivate reciprocity under additional assumptions. Psychophysical critical limits alone do not identify one anatomical pool or a receptor integration time; Barlow explicitly warns against that inference.`,
+      caption:String.raw`Both axes display logarithmic coordinates. The solid curves show $\log_{10}H$ and the dashed curves $\log_{10}[H(x)(x/x_c)]$. Tick labels on the horizontal axes give ordinary area or duration. Gold handles move the authored critical values, where both curves equal zero. The controls set logarithmic critical coordinates; the readout gives physical units. No foveal/rod presets or measured observer curves are supplied.
+
+Area is angular area in arcmin² and duration is in ms. Intensity times angular area is not labeled energy. The displayed products are dimensionless; a physical flux or energy conversion would require a specified radiometric quantity, solid angle, aperture and/or duration.`,
+      deps:['psych-1.1'],see:['psych-4.4'],refs:['Barlow (1958), methods, Figures 1–3 and discussion/summary, pp. 337–350','Kalloniatis and Luu (2007), Webvision: Temporal Resolution, §1'],tags:['spatial summation','temporal summation','threshold'],
+      credit:'Horace B. Barlow (1958), Journal of Physiology 141:337–350, DOI 10.1113/jphysiol.1958.sp005978; Kalloniatis and Luu (2007), technical exposition of the Bloch name',
+      scope:String.raw`Barlow studied two observers with a blue-green filtered stimulus (energy peak 497 nm), a peripheral field centered 6°30′ from the fovea, a 2-mm artificial pupil and an approximately 80%-seen adjustment criterion. Reported intensities were expressed as 507-nm-equivalent quanta per second per square degree. Figures 2–3 use one observer's curves. These conditions differ from the generic 50% operational example in 1.1. Barlow calls temporal reciprocity the Bunsen–Roscoe law; the Bloch name here follows the identified Webvision exposition. No original Ricco/Bloch publication or priority claim is made. Authored areas, durations, exponents and sharp cuts are not experimental estimates, a clinical test or a joint prediction of both cuts.`,
+      links:{source:'https://pmc.ncbi.nlm.nih.gov/articles/PMC1358805/',exposition:'https://www.webvision.pitt.edu/book/part-viii-psychophysics-of-vision/temporal-resolution/'},verify: false,
+      viz(v){
+        const ca=v.slider('area cut (log₁₀)',.3,3.9,1.5,{step:'any',decimals:6,fmt:x=>x.toFixed(9)}),ct=v.slider('duration cut (log₁₀)',.3,3,1.7,{step:'any',decimals:6,fmt:x=>x.toFixed(9)}),beta=v.slider('post-critical β',0,.9,.3,{step:'any',decimals:6,fmt:x=>x.toFixed(9)});
+        const opts={y:[-4.4,4.5],height:340,minWidth:260,axes:'box',gutter:true,ylabel:'log₁₀ normalized threshold / product',yticks:[-4,-2,0,2,4]};
+        const A=v.stage({...opts,x:[-.3,4.5],xlabel:'angular area (arcmin²; log spacing)',xticks:[[0,'1'],[1,'10'],[2,'100'],[3,'1k'],[4,'10k']],title:'authored spatial cut'}),B=v.stage({...opts,x:[-.3,3.5],xlabel:'duration (ms; log spacing)',xticks:[[0,'1'],[1,'10'],[2,'100'],[3,'1k']],title:'authored temporal cut'});
+        const ha=A.handle(1.5,0,{r:8,color:'gold',constrain:x=>[v.M.clamp(x,.3,3.9),0],onDrag:h=>ca.set(h.x)}),ht=B.handle(1.7,0,{r:8,color:'gold',constrain:x=>[v.M.clamp(x,.3,3),0],onDrag:h=>ct.set(h.x)});let info;
+        v.legend([['ink','normalized threshold H'],['accent','dimensionless product H·(x/x_c)',{dash:true}]]);
+        v.render(()=>{const p=summationCuts(ca.value,ct.value,beta.value);for(const[s,q]of[[A,p.area],[B,p.time]]){s.path(q.threshold,{color:'ink',width:3});s.path(q.product,{color:'accent',width:2,dash:[5,4]});}ha.set(p.area.c,0);ht.set(p.time.c,0);info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Authored critical area ${p.area.critical.toPrecision(9)} arcmin²; critical duration ${p.time.critical.toPrecision(9)} ms. β=${p.beta.toFixed(9)}. Threshold log slopes −1 then −β; dimensionless-product slopes 0 then 1−β=${(1-p.beta).toFixed(9)}.\nSpatial H at 1 and 10^4.2 arcmin²: ${p.area.first.toExponential(6)}, ${p.area.last.toExponential(6)}; final normalized product ${p.area.lastProduct.toExponential(6)}. Temporal H at 1 and 10^3.2 ms: ${p.time.first.toExponential(6)}, ${p.time.last.toExponential(6)}; final normalized product ${p.time.lastProduct.toExponential(6)}. Separate authored cuts, not measured thresholds or a universal joint summation law.`;});
       },
     },
   ],

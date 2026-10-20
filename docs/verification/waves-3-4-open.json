@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 147,
+  "remainingFlags": 145,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 9,
-    "psych": 12,
+    "psych": 10,
     "soc": 14,
     "polsci": 9,
     "music": 21,
@@ -541,46 +541,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Troxler%27s_fading"
-      }
-    },
-    {
-      "id": "psych-4.3",
-      "file": "content/psych/ch04.js",
-      "name": "The Purkinje shift",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "credit",
-          "text": "Jan Evangelista Purkyn\u011b, 1825 (unconfirmed)"
-        }
-      ],
-      "refs": [
-        "Goldstein ch. 2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Purkinje_effect"
-      }
-    },
-    {
-      "id": "psych-4.5",
-      "file": "content/psych/ch04.js",
-      "name": "Ricco\u2019s and Bloch\u2019s laws of summation",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "credit",
-          "text": "Ricco, 1877 (spatial); A.-M. Bloch, 1885 (temporal) \u2014 dates unconfirmed"
-        }
-      ],
-      "refs": [
-        "Goldstein ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Ricco%27s_law"
       }
     },
     {
@@ -3113,7 +3073,9 @@
       "arch-4.1",
       "arch-4.2",
       "art-4.1",
-      "art-4.2"
+      "art-4.2",
+      "psych-4.3",
+      "psych-4.5"
     ]
   },
   "additionalFollowups": [
@@ -7526,6 +7488,18 @@
       "status": "source-review-pending",
       "report": "docs/verification/art-metamerism-open.md",
       "note": "Newly identified unsupported perception thresholds and admissible-reflectance/kernel interpretation; exact model/native/source follow-up remains open. Actual Wyman/CIE sources prepared, no acceptance claimed."
+    },
+    {
+      "id": "psych-4.3",
+      "status": "resolved",
+      "report": "docs/verification/psych-spectral-summation-followup.md",
+      "note": "Actual CIE2019 full872-row tables/metadata and CIES017definitions; all160801 pair identities, exact originalCSVvalidation, full12native domains/replay/geometry/static pass; no invented mesopic or screenbrightness calibration."
+    },
+    {
+      "id": "psych-4.5",
+      "status": "resolved",
+      "report": "docs/verification/psych-spectral-summation-followup.md",
+      "note": "Complete actual Barlow1958 scans/text and bounded Webvision naming source; two explicitly authored conditional reciprocity cuts, independently derived slopes/products; fourmathgroups including10360triples,12fullnative including interior drags/exactreplay/invalidstate and static/scope pass."
     }
   ]
 }
