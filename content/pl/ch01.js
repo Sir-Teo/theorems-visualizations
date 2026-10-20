@@ -343,9 +343,11 @@ export default {
     {
       num: '1.2', kind: 'Method', name: 'Structural induction on terms',
       statement: String.raw`Let $P$ be a property of terms of an inductively defined language (here $t ::= \mathtt{true}\mid\mathtt{false}\mid 0\mid\mathtt{succ}\,t\mid\mathtt{pred}\,t\mid\mathtt{iszero}\,t\mid\mathtt{if}\,t\,\mathtt{then}\,t\,\mathtt{else}\,t$). If $P$ holds for every constant, and $P(t)$ follows from $P$ of the immediate subterms of $t$ for each constructor, then $P(t)$ holds for every term $t$. Equivalently, if $P$ holds of all terms of size less than $n$ it holds of all terms of size $n$ (induction on size), or on depth.`,
-      idea: String.raw`Every term is finite and built from constants by finitely many constructor applications, so a minimal counterexample would be a term whose proper subterms all satisfy $P$ — and the step case forbids that. In practice one proves one equation or inequality per constructor, using the induction hypothesis for the children only. The classic first example (Lemma 3.3.3 in Pierce) is that a term contains no more distinct constants than it has nodes.`,
+      idea: String.raw`Every term is finite and built from constants by finitely many constructor applications, so a minimal counterexample would be a term whose proper subterms all satisfy $P$ — and the step case forbids that. In practice one proves one equation or inequality per constructor, using the induction hypothesis for the children only. The classic first example (Lemma 3.3.3 in Pierce) is that a term contains no more distinct constants than it has nodes.
+
+The least-closed-set argument of LOGIC 2.2 transfers to this finite term grammar: include the three constants, close under each unary constructor, and add a separate closure case for the ternary $\mathtt{if}$. The terms satisfying $P$ then form a constructor-closed set containing the constants, so they contain every term. This is an adaptation of formula induction to the stated syntax, not an induction principle for arbitrary reduction relations.`,
       caption: String.raw`Type a term, pick a property and step through the proof: nodes are visited children-first, each case uses only its children’s induction hypotheses (green = already proved). The two true properties go through; the two false ones show *where* an induction breaks — a failing step case or a failing base case — and the exhaustive check at the bottom finds the smallest counterexample.`,
-      deps: ['pl-1.1'], refs: ['Pierce §3.3', 'Pierce §2.4'], tags: ['induction', 'proof'],
+      deps: ['pl-1.1', 'logic-2.2'], refs: ['Pierce §3.3', 'Pierce §2.4'], tags: ['induction', 'proof'],
       credit: 'Burstall, 1969 (named structural induction)',
       viz(v) {
         let ro = ""; v.readout(() => ro);
