@@ -492,12 +492,110 @@
       "collection": "ml",
       "field": "stats",
       "target": 25,
-      "writtenToWritten": 0,
-      "writtenToKnown": 0,
-      "wholeSyllabus": 5,
-      "publishedShortfall": 25,
+      "writtenToWritten": 14,
+      "writtenToKnown": 14,
+      "wholeSyllabus": 19,
+      "publishedShortfall": 11,
       "unknown": [],
       "edges": [
+        {
+          "item": "ml-1.1a",
+          "prerequisite": "comb-1.7",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-1.1a",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-2.1a",
+          "prerequisite": "rca-1.24",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-2.1c",
+          "prerequisite": "rca-2.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-2.2",
+          "prerequisite": "rca-1.25",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-2.2",
+          "prerequisite": "rca-1.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-2.3",
+          "prerequisite": "pma-5.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-3.1",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-3.2a",
+          "prerequisite": "rca-1.27",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-3.2b",
+          "prerequisite": "rca-1.24",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-3.4",
+          "prerequisite": "rca-1.24",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-4.5",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-4.6",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-4.6a",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "ml-14.1",
           "prerequisite": "opt-7.4",
@@ -17859,7 +17957,8 @@
       "0cf13c462023a444e2beadc2178b2ef52125c4e0",
       "cd06f043a644670bfe7bc15559990ac00abf839b",
       "3d543ac662e32eff55b6f357fbe24dfadae9e100",
-      "c578ef8229f03739ccfa0dddccb5bda09f9929cd"
+      "c578ef8229f03739ccfa0dddccb5bda09f9929cd",
+      "0026d445591cb294549063f7e85e7afdd6d003c5"
     ],
     "excludedUnacceptedEdges": [
       {

@@ -52,7 +52,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "ASTRO genuine prerequisite production after accepted CM peer",
+      "current": "Independent CG combined prerequisite/wrap/LP peer",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -82,7 +82,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "ML genuine prerequisite production after accepted QINFO peer",
+      "current": "Independent ASTRO peer closing literal orders/radiation corrections",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -2276,10 +2276,29 @@
       "sourceClosure": "None; all46functions/flags/helpers preserved.",
       "bridgeReview": "No affected bridge steps.",
       "followup": "Nine genuine mathematical logic inputs across8consumers with finite-syntax/fixed-background Curry qualifications. One existingpl2.8rowbackfill noquota. Full115rows and46objects/rawlists,2475independentmathfixtures andfreshcomplete253px/narrowtheme pictures pass;16written shortfall remains."
+    },
+    {
+      "collection": "ml",
+      "commits": [
+        "0026d445591cb294549063f7e85e7afdd6d003c5",
+        "42bc1dae9c318ccf97fd21e6f70f03e07c495c1d",
+        "a8ac4a0d9fec9b2b0d9868d5ba4891bca4f59f00",
+        "2e4291a7a21774038b41b2cef5efd6ba2f42c272",
+        "80a0c234c3296bff35e7439cfa3e4d8491131238"
+      ],
+      "publishedBefore": 0,
+      "publishedAfter": 14,
+      "status": "accepted-bounded-below-target",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/ml-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all25functions/flags/helpers/rawlists preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Fourteen genuine mathfield inputs across12consumers. Atom-safe target-restricted fixedquantile proof inclboundary/empty-positive cases; coordinate atoms qualified, Hoeffding nondegenerate/constant range cases, seven equivalentwraps. Own32877independentchecks andfreshcomplete253px/narrowtheme pictures pass;11written shortfall remains."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 402,
+    "publishedShortfall": 388,
     "publishedBelow25": 21,
     "collections": 64,
     "wholeSyllabusBelow25": 18,

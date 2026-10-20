@@ -1033,3 +1033,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### PL bounded acceptance
 
 [Independent PL peer](pl-prerequisites-independent-peer.md) accepts9genuineinputs, leaving16publishedshortfall. Live402/21/18/sourcequeue5. No sourceclosure; later thancheckpoint69710ca.
+
+### ML bounded acceptance
+
+[Independent ML peer](ml-crossfield-prerequisite-peer.md) accepts14genuineinputs with atom-safe/constant-case proof and equivalentlayout qualifications. ML14remains11short; live388/21/18/sourcequeue5. Later thancheckpoint69710ca.
