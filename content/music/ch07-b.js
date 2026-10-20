@@ -1,4 +1,5 @@
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (part b: items 7.7–7.12)
+import { equalModel, equalAudio, WE_REFERENCES } from './source-audit-wolf-equal.js';
 import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, NOTE, sc, fold, circ, ring, cents, seqCents, chordCents, nearPairs, tuneFromFifths, CHAIN, chainSemi, ivl, triadC, triadAbs, cfExpand, convs, edoApprox } from './ch07.shared.js';
 import { meantoneModel, meantoneAudio, JM_ET_ALPHA } from './source-audit-just-meantone.js';
 
@@ -111,48 +112,37 @@ Our chain is E♭–B♭–F–C–G–D–A–E–B–F♯–C♯–G♯, with 
     },
     // ------------------------------------------------------------------ 7.9
     {
-      num: '7.9',
-      kind: 'Invention',
-      name: 'Twelve-tone equal temperament',
-      statement: String.raw`**Twelve-tone equal temperament** (12-TET) divides the octave into twelve equal steps, each of frequency ratio $2^{1/12}\approx1.05946$ (100 cents), so that all keys sound alike and every interval is the same size wherever it starts. Compared with the just intervals, the fifth ($700$ ¢) is 1.96 ¢ narrow of $3/2$, the major third ($400$ ¢) is 13.7 ¢ wide of $5/4$, the minor third ($300$ ¢) is 15.6 ¢ narrow of $6/5$, and the harmonic seventh (1000 ¢) is 31.2 ¢ wide of $7/4$. Frets of a lute or guitar are placed at lengths $L\,2^{-n/12}$; the "rule of eighteen", cutting off a $1/18$ of the remaining length at each fret, is a good practical approximation.`,
-      idea: String.raw`Making all semitones equal means each is the twelfth root of 2, so twelve of them make exactly the octave and the circle of fifths closes: seven semitones, $2^{7/12}=1.498307$, stand in for the pure fifth, the whole Pythagorean comma being shared out as $23.46/12=1.955$ ¢ per fifth (7.7 with $\alpha=1/11$). The thirds and sixths pay for it: four fifths up give 400 ¢ rather than the pure 386.3 ¢. A pure third differs from the equal-tempered one by 13.7 ¢, and the partials that would coincide in a just triad now beat, the 5th harmonic of the root against the 4th of the third at about 10 Hz.`,
-      caption: String.raw`Top: a string of unit length with the twelve frets of equal temperament (blue) and, for the interval you pick, the position of the just fret (green): the gap is the tuning error, in cents and in millimetres on a 650 mm scale. Bottom: the error of every equal-tempered interval from its just ratio. Play the chord in equal temperament, in just intonation, or alternating, and read off the beats of the nearly coincident partials.`,
-      deps: ['music-7.3', 'music-1.6'],
-      see: ['music-7.11', 'music-7.5', 'music-7.7'],
-      refs: ['Benson ch. 5', 'Loy I ch. 3'],
-      tags: ['equal temperament'],
-      credit: 'Zhu Zaiyu, 1584 (exact calculation); Simon Stevin, c. 1605 (independently, published 1884)',
-      scope: String.raw`Mathematical definition; the claim of historical priority for Zhu Zaiyu is from standard secondary sources (his computation in the Complete Compendium of Music and Pitch, 1584). Stevin's treatise was published only in 1884. Musicians have used slightly unequal tunings for most of the history of keyboards: equal temperament became standard for pianos only in the 19th century.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Equal_temperament' },
-      verify: true,
-      viz(v) {
-        const IV = [[16, 15, 1, 'minor second'], [9, 8, 2, 'major second'], [6, 5, 3, 'minor third'], [5, 4, 4, 'major third'], [4, 3, 5, 'fourth'], [45, 32, 6, 'tritone'], [3, 2, 7, 'fifth'], [8, 5, 8, 'minor sixth'], [5, 3, 9, 'major sixth'], [9, 5, 10, 'minor seventh'], [15, 8, 11, 'major seventh']];
-        const sel = v.select('interval', IV.map((x, i) => ({ value: i, label: x[3] })), 3);
-        const chordSel = v.select('chord', [{ value: 'maj', label: 'major triad' }, { value: 'min', label: 'minor triad' }, { value: 'dom', label: 'dominant 7th (4:5:6:7)' }], 'maj');
-        const fr = v.stage({ x: [-0.02, 0.53], y: [0, 1], height: 210, axes: false, full: true, title: 'the fretboard: distance from the nut, as a fraction of the string (the first octave)' });
-        const eb = v.stage({ x: [0.4, 11.6], y: [-34, 34], axes: 'box', gutter: true, height: 300, full: true, xticks: IV.map((x) => [x[2], x[3].replace('minor ', 'm').replace('major ', 'M').replace('second', '2').replace('third', '3').replace('sixth', '6').replace('seventh', '7')]), yticks: [-30, -15, 0, 15, 30].map((y) => [y, String(y)]), ylabel: '12-TET − just (¢)', title: 'equal-tempered intervals against their just ratios' });
-        const snd = v.sound();
-        const CH = { maj: { et: [0, 400, 700], jt: [0, M3J, FIFTH] }, min: { et: [0, 300, 700], jt: [0, cents(6 / 5), FIFTH] }, dom: { et: [0, 400, 700, 1000], jt: [0, M3J, FIFTH, cents(7 / 4)] } };
-        const play = (m) => { const c = CH[chordSel.value]; snd.stop(); snd.samples(seqCents(m === 'et' ? [c.et] : m === 'jt' ? [c.jt] : [c.jt, c.et, c.jt, c.et], C4, m === 'alt' ? 1.3 : 2.4, 0.12), SR, { gain: 0.9 }); };
-        v.soundButton('play: equal', () => play('et')); v.soundButton('play: just', () => play('jt')); v.soundButton('alternate: just, equal', () => play('alt'));
-        v.render(() => {
-          const [p, q, n, nm] = IV[sel.value], pos = (x) => 1 - 1 / x;
-          fr.line(0, 0.5, 0.53, 0.5, { color: 'faint', width: 3 });
-          for (let k = 0; k <= 12; k++) { const x = 1 - 2 ** (-k / 12); fr.line(x, 0.36, x, 0.64, { color: k === n ? 'accent' : 'muted', width: k === n ? 3 : 1.2 }); fr.text(String(k), x, 0.3, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); }
-          const xj = pos(p / q), xe = 1 - 2 ** (-n / 12);
-          fr.line(xj, 0.5, xj, 0.9, { color: 'green', width: 2.4 }); fr.dot(xj, 0.9, { r: 5, color: 'green' });
-          fr.line(xe, 0.5, xe, 0.76, { color: 'accent', width: 2.4 }); fr.dot(xe, 0.76, { r: 5, color: 'accent' });
-          fr.text(`just ${p}/${q}`, xj, 0.9, { size: 11.5, color: 'green', align: xj > xe ? 'left' : 'right', dx: xj > xe ? 8 : -8, weight: 700 });
-          fr.text(`12-TET fret ${n}`, xe, 0.76, { size: 11.5, color: 'accent', align: xj > xe ? 'right' : 'left', dx: xj > xe ? -8 : 8, weight: 700 });
-          fr.text('nut', 0, 0.68, { size: 10, color: 'muted', align: 'left' }); fr.text('octave: half the string', 0.5, 0.68, { size: 10, color: 'muted', align: 'right' });
-          eb.hline(0, { color: 'green', width: 1.6 });
-          IV.forEach(([pp, qq, nn], i) => { const e = nn * 100 - cents(pp / qq), c = i === sel.value ? 'gold' : e > 0 ? 'orange' : 'accent'; eb.rect(nn - 0.32, 0, nn + 0.32, e, { fill: c, fillAlpha: 0.55, color: c }); eb.text(sc(v, e, 1), nn, e, { size: 10.5, align: 'center', baseline: e >= 0 ? 'bottom' : 'top', dy: e >= 0 ? -3 : 3, plate: true }); });
+      num:'7.9',kind:'Invention',name:'Twelve-tone equal temperament',
+      statement:String.raw`Twelve-tone equal temperament (12-TET) divides an octave into twelve equal frequency ratios. An interval of $n$ semitones has ratio $2^{n/12}$ and size $100n$ cents (1.6). Multiplying every frequency by one positive factor preserves these interval ratios; this statement does not assert identical timbre or perceived quality in every key.
+
+The fifth has ratio $2^{7/12}$, approximately 1.498307077. Each of twelve equal fifths is narrower than $3/2$ by exactly one twelfth of the Pythagorean comma in cents. This equals approximately 1.955001 cents. It is close to one eleventh of the syntonic comma, but is not exactly that fraction.`,
+      idea:String.raw`Twelve semitone steps multiply to 2. Twelve seven-semitone fifths therefore multiply to $2^7$, closing after seven octaves. Their cents deficit from twelve pure fifths is precisely the comma (7.3). A non-octave interval $2^{n/12}$ with $0<n<12$ is irrational: if a reduced rational $p/q$ had twelfth power $2^n$, unique factorization would force $q=1$ and $12$ to divide $n$.
+
+For the ideal fixed string of 2.4, $f_1=(2L)^{-1}\sqrt{T/\mu}$. Holding tension $T$ and mass per length $\mu$ fixed, the remaining vibrating length at semitone $n$ is $L2^{-n/12}$. Distance from the nut is instead $L(1-2^{-n/12})$.
+
+The major triad uses the pure ratios $4{:}5{:}6$ (7.5); the minor comparison uses $10{:}12{:}15$. The harmonic-seventh comparison is $4{:}5{:}6{:}7$, including $7/4$. Benson distinguishes it from a related dominant-seventh construction using $16/9$. For the declared harmonic synthesis (6.2), partials coincide exactly when $h f_i=k f_j$. Integer arithmetic identifies these pairs in the rational chords; the readout then evaluates the corresponding 12-TET frequency separations numerically.`,
+      caption:String.raw`The reference control changes the fret comparison and highlighted table row. Its rational intervals are declared comparison choices, not a unique chromatic just scale; $9/5$ and $7/4$ are separate seventh references. The top diagram includes all thirteen positions $n=0,\ldots,12$, from nut to octave. Blue and green mark the selected equal and rational nut distances. The table gives every reference’s cents and signed 12-TET error. The separate chord control changes playback; it does not follow the fret-reference selection.`,
+      deps:['music-7.3','music-1.6','music-2.4','music-7.5','music-6.2'],see:['music-7.11','music-7.7'],
+      refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §5.14, pp.190–192; §§5.5 and 5.7; ideal-string formula §3.2, pp.89–91'],tags:['equal temperament'],
+      credit:'Mathematical tuning exposition: Dave Benson, 2008 Web version; reference collection, ideal-string diagram and synthesis authored here.',
+      scope:String.raw`An ideal ratio and string model, without a claim about historical priority, a rule-of-eighteen recipe, a real instrument’s fret compensation or measured consonance. The 650-mm scale is an authored distance example. Audio uses C4 = 261.6256 Hz, mono 44,100-Hz synthesis and exactly eight harmonics per voice with amplitudes $1/h$, averaged across voices and divided by $\sum_{h=1}^8 1/h$. The pre-output peak is bounded by 0.12, with 10-ms end ramps; every played harmonic is below Nyquist. The runtime master gain/limiter and device affect output. Exact rational coincidences and numerical frequency differences do not certify perceived beats or roughness.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      viz(v){
+        const reference=v.select('fret reference',WE_REFERENCES.map(r=>({value:r.id,label:r.name})), 'M3');
+        const chord=v.select('played chord',[{value:'major',label:'major triad 4:5:6'},{value:'minor',label:'minor triad 10:12:15'},{value:'harmonic7',label:'harmonic seventh 4:5:6:7'}],'major');
+        const A=v.stage({x:[-.03,.54],y:[-.05,1.1],axes:false,full:true,height:245,minWidth:240,title:'ideal string: distance from nut / original length'});
+        const B=v.stage({x:[-.15,4.9],y:[-.7,12.5],axes:false,full:true,height:440,minWidth:240,title:'declared rational references and 12-TET errors'});
+        let info;const play=action=>sd=>{const a=equalAudio(reference.value,chord.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play rational chord',play('just'));v.soundButton('Play equal-tempered chord',play('equal'));v.soundButton('Alternate rational / equal',play('alternate'));v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{
+          const a=equalModel(reference.value,chord.value);info=a;const r=a.row;
+          A.text(`rational ${r.exact}: x/L=${v.fix(r.justPosition,6)}`,.005,.94,{size:11,align:'left',baseline:'middle',color:'green',weight:600});A.text(`12-TET n=${r.n}: x/L=${v.fix(r.etPosition,6)}`,.005,.78,{size:11,align:'left',baseline:'middle',color:'accent',weight:600});
+          A.line(0,.2,.5,.2,{color:'muted',width:2});a.frets.forEach(f=>A.line(f.position,.14,f.position,.34,{color:f.n===r.n?'accent':'faint',width:f.n===r.n?2.4:1.2}));A.line(r.etPosition,.2,r.etPosition,.59,{color:'accent',width:2.4});A.dot(r.etPosition,.59,{r:5,ring:false,color:'accent'});A.line(r.justPosition,.2,r.justPosition,.43,{color:'green',width:2.4});A.dot(r.justPosition,.43,{r:5,ring:false,color:'green'});A.text('nut: n=0',0,.045,{size:10,align:'left',baseline:'middle',color:'muted'});A.text('octave: n=12',.5,.045,{size:10,align:'right',baseline:'middle',color:'muted'});
+          ['ref','ratio','ref (¢)','ET−ref (¢)'].forEach((t,i)=>B.text(t,[.28,1.5,2.9,4.2][i],11.9,{size:10.5,align:'center',baseline:'middle',weight:700}));
+          a.rows.forEach((r,j)=>{const y=11-j,col=r.id===a.reference?'gold':r.error<0?'accent':'orange';B.text(r.id,.28,y,{size:11,align:'center',baseline:'middle',color:col,weight:r.id===a.reference?700:400});B.text(r.exact,1.5,y,{size:10.5,align:'center',baseline:'middle'});B.text(v.fix(r.cents,3),2.9,y,{size:10.5,align:'center',baseline:'middle'});B.text(`${r.error<0?'−':'+'}${v.fix(Math.abs(r.error),3)}`,4.2,y,{size:10.5,align:'center',baseline:'middle',color:col});});
         });
-        v.readout(() => {
-          const [p, q, n, nm] = IV[sel.value], e = n * 100 - cents(p / q), c = CH[chordSel.value], f = c.et.map((x) => C4 * 2 ** (x / 1200)), g = c.jt.map((x) => C4 * 2 ** (x / 1200));
-          const slow = nearPairs(f, 8, 12).filter((x) => x.d > 0.05).slice(0, 3), co = nearPairs(g, 8, 0.05).length;
-          return `${nm}: 12-TET ${n * 100} ¢, just ${p}/${q} = ${v.fix(cents(p / q), 2)} ¢, error ${sc(v, e, 2)} ¢ (the just fret is ${v.fix(Math.abs(1 - 2 ** (-n / 12) - (1 - q / p)) * 650, 1)} mm from the equal one on a 650 mm string) · fret ratio ${v.fix(2 ** (1 / 12), 5)} (rule of 18: ${v.fix(18 / 17, 5)}) · the equal chord's near-coincident partials beat at ${slow.map((x) => `${v.fix(x.d, 1)} Hz`).join(', ') || '—'}; the just chord has ${co} exactly coinciding pairs`;
-        });
+        v.legend([['accent','equal-tempered nut distance / negative error'],['green','selected rational nut distance'],['gold','selected reference row'],['orange','positive error']]);
+        v.readout(()=>{const a=info,r=a.row;return `${r.name}: rational ${r.exact} = ${v.fix(r.cents,6)} cents; 12-TET ${r.etCents} cents; signed error ${r.error<0?'−':'+'}${v.fix(Math.abs(r.error),6)} cents. Nut distances on the authored 650-mm string: rational ${v.fix(650*r.justPosition,6)} mm, equal ${v.fix(650*r.etPosition,6)} mm; separation ${v.fix(r.distanceMm,6)} mm. Actual played rational frequencies ${a.just.map(x=>v.fix(x,6)).join(', ')} Hz; equal ${a.equal.map(x=>v.fix(x,6)).join(', ')} Hz. Exact rational coincidences among played H1–H8: ${a.coincidences.length}. Corresponding numerical equal-tempered separations (voice:partial pairs): ${a.coincidences.map(p=>`${p.i+1}:${p.h}/${p.j+1}:${p.k} = ${v.fix(p.equalSeparation,6)} Hz`).join('; ')}. These are frequency differences, not measured roughness or a perceived-beat certificate.`;});
       },
     },
     // ------------------------------------------------------------------ 7.10

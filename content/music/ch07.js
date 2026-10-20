@@ -1,4 +1,5 @@
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (items 7.1–7.6)
+import { wolfModel, wolfPoint, wolfEdgeHit, wolfAudio } from './source-audit-wolf-equal.js';
 import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, M3P, NOTE, sc, fold, circ, ring, cents, gcd, seqCents, chordCents, nearPairs, tuneChain, chainSemi, CHAIN } from './ch07.shared.js';
 import { jiModel, jiAudio } from './source-audit-just-meantone.js';
 
@@ -157,56 +158,40 @@ For density, this authored argument completes the finite near-miss step. Given i
     },
     // ------------------------------------------------------------------ 7.4
     {
-      num: '7.4',
-      kind: 'Concept',
-      name: 'The wolf fifth',
-      statement: String.raw`A keyboard with twelve notes per octave tuned in Pythagorean fashion can have eleven pure fifths in a chain, but then the twelfth fifth, which closes the circle, is smaller than pure by the whole Pythagorean comma: $701.955-23.46=678.5$ ¢ (ratio $262144/177147$). This out-of-tune interval is the **wolf fifth** (it "howls"). Where it sits is a choice of the tuner: it lies between the two ends of the chain, traditionally between G♯ and E♭. The major thirds that straddle the wolf come out nearly pure ($384.4$ ¢, 2 ¢ flat of 5/4) while all the others are the wide Pythagorean thirds of 407.8 ¢.`,
-      idea: String.raw`The twelve fifths of the circle sum to seven octaves only if each is $700$ ¢. With eleven fifths pure the sum of the twelve falls short of 8400 ¢ by exactly the comma (7.3), and the shortfall must go somewhere: one fifth absorbs it all. A major third is four fifths up less two octaves; if the wolf is one of the four, the third loses one comma, $407.8-23.5=384.4$ ¢, which is why the wolf's neighbours were the useful thirds. Moving the wolf to another position changes which keys are usable, never the existence of the wolf (7.2).`,
-      caption: String.raw`The circle of fifths with the wolf (red) between the two notes chosen by the slider; all other fifths are pure (green). Click a fifth to hear it, or play all twelve in turn around the circle. Below, the twelve major thirds from each note: all are the wide Pythagorean third except the four that contain the wolf (red line: the pure third 5/4). Move the wolf and watch the good thirds move with it.`,
-      deps: ['music-7.3'],
-      see: ['music-7.7', 'music-7.14', 'music-7.8'],
-      refs: ['Benson ch. 5'],
-      tags: ['tuning', 'wolf'],
-      scope: String.raw`Pythagorean tuning with a 12-note chain; the cents are exact. The traditional placement G♯–E♭ keeps the commonly used keys (up to three sharps or flats) free of the wolf; in practice the wolf was also moved to suit a piece. The anchor of the tuning (here the note opposite the wolf) is set to its equal-tempered pitch.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Wolf_interval' },
-      verify: true,
-      viz(v) {
-        const WOLF = FIFTH - PCOMMA;
-        const w = v.slider('the wolf is the fifth starting on…', 0, 11, 11, { int: true, fmt: (x) => `${CH[x]}–${CH[(x + 1) % 12]}` });
-        const s = v.stage({ x: [-1.5, 1.5], y: [-1.42, 1.42], equal: true, axes: false, height: 380, title: 'the circle of fifths' });
-        const b = v.stage({ x: [-0.6, 11.6], y: [376, 412], axes: 'box', gutter: true, height: 300, xlabel: 'major third built on …', ylabel: 'cents', xticks: [], yticks: [[380, '380'], [386.3, '386.3'], [390, '390'], [400, '400'], [407.8, '407.8']], title: 'the twelve major thirds' });
-        const snd = v.sound();
-        const fifths = () => CH.map((_, i) => (i === w.value ? WOLF : FIFTH));
-        const tune = () => tuneChain(fifths(), w.value, (w.value + 7) % 12, chainSemi((w.value + 7) % 12) * 100);
-        const ang = (j) => ((j - 3) * 30 * Math.PI) / 180;
-        const pt = (j, R = 1) => [R * Math.sin(ang(j)), R * Math.cos(ang(j))];
-        const play = (j) => { const P = tune(), p = P[chainSemi(j)], base = p > 600 ? p - 1200 : p, size = j === w.value ? WOLF : FIFTH; snd.stop(); snd.samples(chordCents([base, base + size], C4, 1.6), SR, { gain: 0.9 }); };
-        s.onClick((x, y) => { const a = Math.atan2(x, y); let best = 0, bd = 9; for (let j = 0; j < 12; j++) { const m = ang(j) + Math.PI / 12; let d = Math.abs(Math.atan2(Math.sin(a - m), Math.cos(a - m))); if (d < bd) { bd = d; best = j; } } play(best); });
-        v.soundButton('play the twelve fifths in turn', (sd) => { const P = tune(), f = fifths(); const ch = []; for (let k = 0; k < 12; k++) { const j = (w.value + 1 + k) % 12, p = P[chainSemi(j)], base = p > 600 ? p - 1200 : p; ch.push([base, base + f[j]]); } sd.samples(seqCents(ch, C4, 0.9, 0.08), SR, { gain: 0.9 }); });
-        v.soundButton('play the wolf', () => play(w.value));
-        v.render(() => {
-          const P = tune(), f = fifths();
-          for (let j = 0; j < 12; j++) {
-            const a = pt(j), c = pt((j + 1) % 12), wolf = j === w.value;
-            s.line(a[0], a[1], c[0], c[1], { color: wolf ? 'red' : 'green', width: wolf ? 4 : 2.2, alpha: wolf ? 0.95 : 0.75 });
-            const m = pt(j + 0.5, 0.78); s.text(v.fix(f[j], 1), m[0], m[1], { size: 10.5, color: wolf ? 'red' : 'muted', align: 'center', baseline: 'middle', plate: true, weight: wolf ? 700 : 400 });
-          }
-          for (let j = 0; j < 12; j++) { const p = pt(j); s.dot(p[0], p[1], { r: 6, color: 'accent' }); const q = pt(j, 1.17); s.text(CH[j], q[0], q[1], { size: 12.5, align: 'center', baseline: 'middle', weight: 600 }); }
-          { const q = pt(w.value + 0.5, 1.32); s.text('wolf', q[0], q[1], { size: 11, color: 'red', align: 'center', baseline: 'middle', weight: 700 }); }
-          for (let r = 0; r < 12; r++) {
-            const t = fold(P[(r + 4) % 12] - P[r] + 0), col = Math.abs(t - M3J) < 4 ? 'green' : t < 400 ? 'red' : 'accent';
-            b.rect(r - 0.38, 376, r + 0.38, t, { fill: col, fillAlpha: 0.55, color: col });
-            b.text(NOTE[r], r, 377.5, { size: 11, align: 'center', baseline: 'bottom', plate: true });
-            b.text(v.fix(t, 1), r, t, { size: 10.5, align: 'center', baseline: 'bottom', dy: -3, color: 'muted' });
-          }
-          b.hline(M3J, { color: 'red', dash: [5, 4] });
+      num:'7.4',kind:'Concept',name:'The wolf fifth',
+      statement:String.raw`In a specified twelve-note Pythagorean cut, eleven fifths have the pure ratio $3/2$. The closing fifth must then have ratio
+$$W=\frac{2^7}{(3/2)^{11}}$$
+$$=\frac{262144}{177147}.$$
+Its size is approximately 678.494990 cents. The ratio between a pure fifth and this closing fifth is the Pythagorean comma $531441/524288$ (7.3), approximately 23.460010 cents. This closing interval is called the wolf fifth in this model.
+
+Eight major thirds have ratio $81/64$; the four crossing the cut have ratio $8192/6561$. Their signed errors from the pure $5/4$ are approximately $+21.506290$ and $-1.953721$ cents, respectively.`,
+      idea:String.raw`Twelve pure fifths exceed seven octaves: $(3/2)^{12}/2^7=531441/524288>1$. Replacing one pure fifth by $W$ removes exactly that excess, and the product of all twelve becomes $2^7$. A sum of 8400 cents alone does not force twelve equal fifths; if they are also required to be equal, each is 700 cents.
+
+A major third follows four consecutive steps of the chain and reduces by two octaves. Without the cut its ratio is $(3/2)^4/4=81/64$. Crossing the cut divides this ratio by the comma, giving $8192/6561$. Exactly four of the twelve starting positions cross a specified edge. These algebraic identities give interval sizes, without deciding which keys are musically usable.`,
+      caption:String.raw`Choose the closing edge and the selected fifth independently. The circle shows the twelve chain positions, with the closing fifth red and the selected edge marked gold; their equally spaced positions are a diagram of chain order, not frequency distances. Click near a visible edge to select and play that pair. The complete table gives every major third, its exact ratio, cents and signed error from $5/4$. The cycle button plays twelve separately registered pairs, starting after the cut and ending on the closing pair.`,
+      deps:['music-7.3'],see:['music-7.7','music-7.14','music-7.8'],
+      refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §§5.3–5.4, pp.155–158; closing-cut and third identities derived here'],tags:['tuning','wolf'],
+      credit:'Pythagorean tuning exposition: Dave Benson, 2008 Web version; movable finite cut, exact arithmetic and synthesis authored here.',
+      scope:String.raw`A mathematical twelve-note model, without a claim about a traditional placement, historical priority, howling or measured key quality. C is fixed at the authored C4 = 261.6256-Hz anchor for every cut; each pair starts at its note in the octave above C4 and ascends by its actual fifth ratio. Exact integer ratios determine the construction; decimal cents and frequencies are numerical display values. Audio is uncalibrated mono 44,100-Hz synthesis, eight sub-Nyquist harmonics with amplitudes $1/h$, pre-output peak bound 0.12 and 10-ms end ramps. The runtime master gain/limiter and device affect output. No listening judgement is certified.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      viz(v){
+        const edgeName=x=>{const a=wolfModel(x);return `${a.wolf.from}–${a.wolf.to}`;};
+        const cut=v.slider('closing edge',0,11,11,{int:true,fmt:edgeName}),selected=v.slider('selected edge',0,11,11,{int:true,fmt:edgeName});
+        const A=v.stage({x:[-1.5,1.5],y:[-1.45,1.45],equal:true,axes:false,height:380,minWidth:240,title:'chain order; gold marks the selected fifth'});
+        const B=v.stage({x:[-.15,4.9],y:[-.7,12.5],axes:false,full:true,height:440,minWidth:240,title:'all twelve major thirds; signed error from 5/4'});
+        let info;const play=(action,sd=v.sound())=>{const a=wolfAudio(cut.value,selected.value,action);sd.stop();sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play selected fifth',sd=>play('edge',sd));v.soundButton('Play closing fifth',sd=>play('wolf',sd));v.soundButton('Play twelve separate pairs',sd=>play('cycle',sd));v.button('Stop audio',()=>v.sound().stop());
+        A.onClick((x,y)=>{const j=wolfEdgeHit(x,y);if(j!==null){selected.set(j);play('edge');}});
+        v.render(()=>{
+          const a=wolfModel(cut.value,selected.value);info=a;
+          a.fifths.forEach(f=>{const p=wolfPoint(f.j),q=wolfPoint((f.j+1)%12);A.line(...p,...q,{color:f.wolf?'red':'green',width:f.wolf?4:2.2});if(f.selected)A.dot((p[0]+q[0])/2,(p[1]+q[1])/2,{r:5,ring:false,color:'gold'});});
+          a.nodes.forEach(n=>{const p=n.point;A.dot(...p,{r:5,ring:false,color:'accent'});A.text(n.name,1.2*p[0],1.2*p[1],{size:12,align:'center',baseline:'middle',weight:600});});
+          A.text('selected fifth',0,.18,{size:11,align:'center',baseline:'middle',color:'muted'});A.text(`${a.chosen.from}–${a.chosen.to}`,0,-.02,{size:14,align:'center',baseline:'middle',color:'gold',weight:700});A.text(a.chosen.exact,0,-.22,{size:12,align:'center',baseline:'middle',color:'gold'});
+          ['note','exact ratio','cents','error (¢)'].forEach((t,i)=>B.text(t,[.28,1.5,2.9,4.2][i],11.9,{size:10.5,align:'center',baseline:'middle',weight:700}));
+          a.thirds.forEach((t,j)=>{const y=11-j,col=t.crosses?'purple':'orange';B.text(t.name,.28,y,{size:12,align:'center',baseline:'middle',weight:600});B.text(t.exact,1.5,y,{size:10.5,align:'center',baseline:'middle',color:col});B.text(v.fix(t.cents,3),2.9,y,{size:10.5,align:'center',baseline:'middle'});B.text(`${t.error<0?'−':'+'}${v.fix(Math.abs(t.error),3)}`,4.2,y,{size:10.5,align:'center',baseline:'middle',color:col});});
         });
-        v.legend([['green', 'pure fifth 3:2 (701.96 ¢)'], ['red', 'wolf fifth (678.5 ¢)']]);
-        v.readout(() => {
-          const P = tune(), nt = (j) => CH[j];
-          const bad = []; for (let r = 0; r < 12; r++) { const t = fold(P[(r + 4) % 12] - P[r]); if (t < 400) bad.push(NOTE[r]); }
-          return `wolf: ${nt(w.value)}–${nt((w.value + 1) % 12)} = ${v.fix(WOLF, 2)} ¢ = $3^{12}/2^{19}$ narrower than pure by ${v.fix(PCOMMA, 2)} ¢ · eleven fifths pure; sum of the twelve = ${v.fix(11 * FIFTH + WOLF, 2)} ¢ = 7 octaves · the narrow thirds of ${v.fix(M3P - PCOMMA, 1)} ¢ start on ${bad.join(', ')}; the other eight are ${v.fix(M3P, 1)} ¢`;
-        });
+        v.legend([['green','pure fifth 3/2'],['red','closing fifth 262144/177147'],['gold','selected edge'],['purple','third crosses the cut'],['orange','third avoids the cut']]);
+        v.readout(()=>{const a=info;return `Closing ${a.wolf.from}–${a.wolf.to}: ${a.wolf.exact}, ${v.fix(a.wolf.cents,6)} cents. Pure/closing ratio ${a.comma.exact}; difference ${v.fix(a.comma.cents,6)} cents. Eleven pure fifths and this closing fifth total seven octaves. Selected ${a.chosen.from}–${a.chosen.to}: ${a.chosen.exact}, ${v.fix(a.chosen.cents,6)} cents; actual pair ${a.chosen.frequencies.map(f=>v.fix(f,6)).join(', ')} Hz. Four crossed thirds: ${a.thirds.filter(t=>t.crosses).map(t=>t.name).join(', ')}. C4 remains fixed when the cut moves.`;});
       },
     },
     // ------------------------------------------------------------------ 7.5
