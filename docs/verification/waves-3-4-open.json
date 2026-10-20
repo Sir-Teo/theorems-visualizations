@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 11,
+  "remainingFlags": 10,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -18,7 +18,7 @@
     "circ": 1,
     "robot": 1,
     "arch": 1,
-    "bighist": 4
+    "bighist": 3
   },
   "queue": [
     {
@@ -150,22 +150,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Endosymbiont",
         "doi": "https://doi.org/10.1016/0022-5193(67)90079-3"
-      }
-    },
-    {
-      "id": "bighist-4.5",
-      "file": "content/bighist/ch04-b.js",
-      "name": "Neanderthal and Denisovan admixture",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Neanderthal_genetics",
-        "doi": "https://doi.org/10.1038/nature13810"
       }
     },
     {
@@ -1028,7 +1012,8 @@
       "bighist-4.7",
       "bighist-3.3",
       "bighist-3.4",
-      "bighist-4.3"
+      "bighist-4.3",
+      "bighist-4.5"
     ]
   },
   "additionalFollowups": [
@@ -6197,6 +6182,11 @@
       "id": "bighist-4.3",
       "status": "resolved",
       "note": "2026-10-20: Worker three independently read seven actual primary/official bodies and sourcepixels, checked ashminima/context/fossil/calibrated/modelled/activity distinctions and actual2026version, regenerated80digit36pair reference plus15independentarcintegrals, and passed fresh320both-theme native/realmap-rowclicks/directDOM/raw14rollbacks/exactreplay/ownpixels; docs/verification/bighist-dispersal-peer.md."
+    },
+    {
+      "id": "bighist-4.5",
+      "status": "resolved",
+      "note": "2026-10-20: Worker two independently read actualGreen/Reich/Fu original bodies and pixels, derived stationary finite-window count law and censored exit likelihood, regenerated70digit200window/6profile positive-quadrature reference, checked256tail-positive summaries and passed fresh320both-theme full256native/7actualdrags/40raw/directDOM/reference-independent rawedit/replay/ownpixels; docs/verification/bighist-admixture-peer.md."
     }
   ]
 }

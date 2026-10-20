@@ -25,9 +25,9 @@
       "content/bighist/** and collection-specific audit helpers/tests/reports"
     ],
     "current": [
-      "Serially integrate independently reviewed candidates and reconcile source/wave gates",
-      "BIGHIST4.5/4.6/4.8 original-source/model/state audits;4.7accepted with exact allocation correction",
-      "Full immutable checkpoints; source versions/access limits remain explicit"
+      "Serial integration and full immutable checkpoints",
+      "BIGHIST4.6Toba actual-source/analytic coalescence audit; BIGHIST3.5source-reading follow-up remains queued",
+      "BIGHIST4.5accepted; assigning4.8to worker_two in existing isolated worktree"
     ]
   },
   "workers": [
@@ -1276,6 +1276,20 @@
       "commits": [
         "2502b2e4bdb1cfaa1bc2e80668bc52a4c008e5f2"
       ]
+    },
+    {
+      "ids": [
+        "bighist-4.5"
+      ],
+      "peer": "Worker two independently read actualGreen/Reich/Fu original bodies and pixels, derived stationary finite-window count law and censored exit likelihood, regenerated70digit200window/6profile positive-quadrature reference, checked256tail-positive summaries and passed fresh320both-theme full256native/7actualdrags/40raw/directDOM/reference-independent rawedit/replay/ownpixels",
+      "reports": [
+        "docs/verification/bighist-admixture-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "f15221b317203fb8a401207b106df7e0108ac8a1",
+        "4676d49"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1288,7 +1302,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 11,
+  "currentPendingSourceReviews": 10,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",
@@ -1425,11 +1439,11 @@
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 834,
+    "publishedShortfall": 833,
     "publishedBelow25": 51,
     "collections": 64,
     "wholeSyllabusBelow25": 28,
     "date": "2026-10-20",
-    "acceptedSnapshot": "4620575; excludes ongoing BIGHIST4.5draft"
+    "acceptedSnapshot": "Current independently accepted4.5prerequisite included"
   }
 }

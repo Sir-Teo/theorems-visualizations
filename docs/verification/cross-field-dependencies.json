@@ -14458,10 +14458,10 @@
       "collection": "bighist",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 18,
-      "writtenToKnown": 24,
-      "wholeSyllabus": 47,
-      "publishedShortfall": 7,
+      "writtenToWritten": 19,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 48,
+      "publishedShortfall": 6,
       "unknown": [],
       "edges": [
         {
@@ -14566,6 +14566,13 @@
           "item": "bighist-3.3",
           "prerequisite": "popgen-3.9",
           "prerequisiteField": "bio",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-4.5",
+          "prerequisite": "prob-1.2.4",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },

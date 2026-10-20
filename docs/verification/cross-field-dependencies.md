@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **51 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 834 edges. Even
+written ideas in a different field**. Their combined shortfall is 833 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -145,3 +145,8 @@ Three actual existing computations now name their written inputs: psych2.10→pr
 ## Political science reaches the published prerequisite target
 
 Six independently reviewed existing arguments now identify their actual written inputs: dot-product norm expansion, directed BFS, cross-product triangle area, positive beta integral, exp/log derivative limits and the variance-bound weak law. Political science has25published/34whole-syllabus edges; current global shortfall834,51/64collections below25published and28whole syllabi below25. Source flags remain separate. The independently reviewed5.8runtime follow-up corrects six rational half-tie allocations while preserving continuous offgrid evaluation; it closes the recorded runtime finding, without counting another original-source review. See [edge acceptance](polsci-crossfield-prerequisites-peer.md) and [rounding acceptance](polsci-aggregation-rounding-peer.md). Inventory is regenerated from immutable4620575, excluding the ongoing BIGHIST4.5draft prerequisite; a guard caught the draft-inclusive833shortfall before updating any current summary.
+
+
+## Finite-window ancestry waiting times
+
+Independently accepted BIGHIST4.5 explicitly uses the actual written prob1.2.4 exponential density/mean/memorylessness argument for stationary Markov lengths and delayed-entry censoring. Chapter/syllabus match; the finite-window expected-count law is independently derived rather than treating selected complete lengths as iid exponentials. The current accepted global shortfall is833,51/64collections below25published and28whole syllabi below25. See [source/model acceptance](bighist-admixture-peer.md).

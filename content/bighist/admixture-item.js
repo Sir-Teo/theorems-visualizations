@@ -1,6 +1,6 @@
 import{admixtureModel,admixtureTick,ADMIXTURE_DOMAINS}from'./source-audit-admixture.js';
 export default{
- num:'4.5',kind:'Event',name:'Neanderthal and Denisovan admixture',verify:true,
+ num:'4.5',kind:'Event',name:'Neanderthal and Denisovan admixture',verify:false,
  statement:String.raw`Ancient-genome comparisons support interbreeding among human populations. Green and colleagues' 2010 analysis estimated 1–4% Neanderthal ancestry in the sampled non-African genomes under its demographic assumptions. Reich and colleagues' 2010 study estimated 4–6% Denisovan ancestry in the sampled Melanesian genomes. These are dated source estimates, not fixed percentages for every person or all present populations.
 
 Fu and colleagues' 2014 Ust'-Ishim study reported longer Neanderthal-derived segments than in its present-day comparison genomes. Its covariance analysis estimated gene flow 232–430 generations before that individual lived. With a single-event assumption and 29 years per generation, the authors placed the main contribution roughly 50–60 thousand years before present; longer fragments could indicate later contributions. The reported calibrated bone-age interval is 46,880–43,210 cal BP at 95.4%. The toy below does not reproduce that analysis.`,
