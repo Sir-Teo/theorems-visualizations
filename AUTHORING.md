@@ -477,6 +477,7 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 
 **Content discipline**
 - The syllabus decides which items exist, their numbers, kinds and deps. If your brief and the syllabus disagree, build the syllabus.
+- After changing prerequisites, parse each changed item and its syllabus row and compare their complete expected dependency lists, including multiline rows. Removing newly added IDs and comparing the remainder cannot detect an omitted addition. Preserve immutable object/function snapshots as explicit review utilities rather than lasting default tests.
 - A chapter's `chNN.shared.js` may import its own chapter's helpers; other chapters of the same collection may re-export from it (`export * from './ch01.shared.js'` works); never import across collections — copy.
 - Say in the item what is illustrative, what is from memory, and what is a secondary source. Recompute printed numbers (the Pearson, Rabin and Patriot items each found real slips that way).
 - A numerical coordinate distance or a display proxy does not establish a perceptual threshold. State the observer, conditions and source for a perception claim; keep authored model calculations distinct from measured brightness, visibility or structural safety.
