@@ -21,9 +21,8 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Six actual workers started in separate managed worktrees from4b959d6",
-      "No acceptance claims before independent peer",
-      "IMAGING new PDF requires password; route stopped",
+      "POPGEN, TOC and GEOG accepted; live prerequisite492/24/19",
+      "Immutable full checkpoint6 on a4a5103 running; no timing",
       "BIGHIST3.5 frozen service restriction persists; no retry or edge acceptance"
     ]
   },
@@ -32,9 +31,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Read-only exact membership re-enumeration and bounded scratch feasibility",
+      "current": "Read-only fixed-capacity MAX-mask chunk protocol",
       "owns": [
-        "Unique read-only map feasibility report; no renderer binding or timing"
+        "Unique chunk feasibility report; no binding or timing yet"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -42,9 +41,9 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "CIRC two-row metadata followup complete; mesh peer complete",
+      "current": "Independent membership peer complete; fixed-chunk report peer pending",
       "owns": [
-        "CIRC two-row/report followup; unique completed mesh peer evidence"
+        "Immutable map protocol peer and explicit independent models"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +51,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "POPGEN equivalent statement-wrap followup; TOC peer next",
+      "current": "QINFO genuine prerequisite production",
       "owns": [
-        "Seven POPGEN statement fields and unique explicit evidence; then unique TOC peer files"
+        "QINFO content and bounded correctness/metadata successors"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -62,9 +61,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "GEOG bounded correctness successor and POPGEN wrap peer; REL preparation",
+      "current": "REL genuine prerequisites and bounded dimension/limit/wrap successors",
       "owns": [
-        "GEOG exact finding fixes; unique POPGEN peer files; REL source preparation"
+        "REL producer only; GEOG and POPGEN peers complete"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -72,9 +71,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "CLIMATE genuine prerequisite production; CIRC peer complete",
+      "current": "CLIMATE equivalent statement wraps after prerequisite boundary",
       "owns": [
-        "CLIMATE written items/matching rows/unique reports/tests"
+        "CLIMATE producer and separate exact equivalent wraps"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +81,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent GEOG peer including sphere/reflection metadata findings; TOC preserved",
+      "current": "CM genuine prerequisite production",
       "owns": [
-        "Unique GEOG peer files only"
+        "CM producer; GEOG independent peer complete"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -2300,6 +2299,15 @@
       "status": "accepted-tooling-only",
       "report": "docs/verification/cross-field-accounting-independent-peer.md",
       "scope": "Default CLI preserves explicit exclusions/metadata, fails before writing on stale/unknown/duplicate exclusions; raw stdout never writes. No candidate argument or source content accepted."
+    }
+  ],
+  "mapProtocolReviews": [
+    {
+      "candidate": "a83371d68fe9b62c8c1c2b6919029906e69708e8",
+      "peer": "8da9bf09c7d7f7cf54a89a299054447c9ebc2351",
+      "status": "accepted-read-only-membership-protocol",
+      "report": "docs/verification/map-group-protocol-independent-peer.md",
+      "scope": "Exact saved-coverage ordered membership, borrowed lifetimes, no-eviction reservation, single-composite fallback and bounded MAX chunk models. Separate fixed-chunk report and actual alternate binding/pixels/resources/performance remain pending."
     }
   ]
 }
