@@ -323,7 +323,11 @@ An equation of order $k$, $x^{(k)} = F(t,x,\dot x,\dots,x^{(k-1)})$, is equivale
       name: 'Separation of variables',
       credit: 'Leibniz and Johann Bernoulli, 1691–1694',
       statement: String.raw`Consider $\dot x = g(t)\,h(x)$ with $g$ continuous on an interval $I$ and $h$ continuous on an interval $J$. Every zero $x^*$ of $h$ gives a constant solution $x\equiv x^*$. On a subinterval where $h\neq0$, let $G$ be an antiderivative of $g$ and $H$ an antiderivative of $1/h$. Then the solution with $x(t_0) = x_0$ (where $h(x_0)\ne0$) is given implicitly by
-$$H(x(t)) - H(x_0) = G(t) - G(t_0),\qquad\text{i.e.}\qquad \int_{x_0}^{x(t)}\frac{d\xi}{h(\xi)} = \int_{t_0}^{t} g(s)\,ds,$$
+$$\begin{gathered}H(x(t)) - H(x_0)\\
+= G(t) - G(t_0),\\
+\text{i.e.}\\
+\int_{x_0}^{x(t)}\frac{d\xi}{h(\xi)}\\
+= \int_{t_0}^{t} g(s)\,ds,\end{gathered}$$
 as long as $x(t)$ stays in the interval where $h\ne0$; since $H$ is strictly monotone there, this determines $x(t) = H^{-1}(H(x_0) + G(t) - G(t_0))$. The solution curves are the level sets of $H(x) - G(t)$.`,
       idea: String.raw`If $x$ is a solution and $h(x(t))\ne 0$, then $\frac{d}{dt}H(x(t)) = \dot x/h(x) = g(t)$, so $H(x(t)) - G(t)$ has zero derivative and is constant — the fundamental theorem of calculus (pma-6.21) does the rest. The formal rule “$dx/h(x) = g\,dt$, integrate both sides” is this computation. Dividing by $h$ loses the constant solutions at the zeros of $h$; they must be added back by hand. Uniqueness can fail at those zeros when $1/h$ has a finite one-sided integral there (1.15), but when $\int d\xi/h$ diverges at $x^*$ no other solution can reach $x^*$ in finite time.`,
       caption: String.raw`Drag the initial point. The faint curves are level sets of $H(x) - G(t)$; the gold dots are an RK4 solution, and they run exactly along a level set. Slide $t_1$: the two lower panels shade $\int_{t_0}^{t_1} g$ and $\int_{x_0}^{x(t_1)} d\xi/h$, which are always equal. Red dashed lines are the constant solutions that division by $h$ throws away.`,
