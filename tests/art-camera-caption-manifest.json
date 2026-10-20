@@ -1,0 +1,12 @@
+{
+  "baseline": "d86c205f29fb6d0c0891ffe045b11c704a71c272",
+  "fields": [
+    {
+      "file": "content/art/ch02-b.js",
+      "num": "2.8",
+      "field": "caption",
+      "before": "The synthetic “painting” of the chandelier is generated either by tracing a lens image (small hand error, optionally patched together from slightly different lens positions) or by constructing it by eye. Open circles are the painted points; blue dots show the best single projection; thin lines are the misfit, magnified. The histogram collects 200 paintings of each kind: painters differ in skill, so the histograms have width: when the assumed unaided accuracy is close to the tracer's, they overlap and the misfit of one painting says little about its method.",
+      "after": "The synthetic “painting” of the chandelier is generated either by tracing a lens image (small hand error, optionally patched together from slightly different lens positions) or by constructing it by eye. Open circles are the painted points; blue dots show the single camera fitted by homogeneous DLT; thin lines are the misfit, magnified. The histogram collects 200 paintings of each kind: painters differ in skill, so the histograms have width: when the assumed unaided accuracy is close to the tracer's, they overlap and the misfit of one painting says little about its method."
+    }
+  ]
+}
