@@ -1,0 +1,391 @@
+{
+  "train": 22746,
+  "test": 4015,
+  "V": 1350,
+  "rows": [
+    {
+      "n": 1,
+      "mode": "add",
+      "lambda_": 0.001,
+      "bits": 30871.503645125427,
+      "perplexity": 206.36321299693026,
+      "unsupported": 0
+    },
+    {
+      "n": 1,
+      "mode": "interp",
+      "lambda_": 0.001,
+      "bits": 30932.224282185492,
+      "perplexity": 208.537850161498,
+      "unsupported": 0
+    },
+    {
+      "n": 1,
+      "mode": "mle",
+      "lambda_": 0.001,
+      "bits": 30871.451017103343,
+      "perplexity": 206.3613380573905,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "add",
+      "lambda_": 0.001,
+      "bits": 32452.69360479434,
+      "perplexity": 271.1340825096572,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "interp",
+      "lambda_": 0.001,
+      "bits": 27431.059784373014,
+      "perplexity": 113.94109806308224,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "mle",
+      "lambda_": 0.001,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 1299
+    },
+    {
+      "n": 3,
+      "mode": "add",
+      "lambda_": 0.001,
+      "bits": 38622.90225250891,
+      "perplexity": 786.6902366155236,
+      "unsupported": 0
+    },
+    {
+      "n": 3,
+      "mode": "interp",
+      "lambda_": 0.001,
+      "bits": 28015.816286456953,
+      "perplexity": 126.04432633001942,
+      "unsupported": 0
+    },
+    {
+      "n": 3,
+      "mode": "mle",
+      "lambda_": 0.001,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 3015
+    },
+    {
+      "n": 4,
+      "mode": "add",
+      "lambda_": 0.001,
+      "bits": 40786.313888280594,
+      "perplexity": 1142.9005496501677,
+      "unsupported": 0
+    },
+    {
+      "n": 4,
+      "mode": "interp",
+      "lambda_": 0.001,
+      "bits": 28506.329662173066,
+      "perplexity": 137.18296900304367,
+      "unsupported": 0
+    },
+    {
+      "n": 4,
+      "mode": "mle",
+      "lambda_": 0.001,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 3772
+    },
+    {
+      "n": 1,
+      "mode": "add",
+      "lambda_": 0.05,
+      "bits": 30874.15462093657,
+      "perplexity": 206.45767939177404,
+      "unsupported": 0
+    },
+    {
+      "n": 1,
+      "mode": "interp",
+      "lambda_": 0.05,
+      "bits": 30932.224282185492,
+      "perplexity": 208.537850161498,
+      "unsupported": 0
+    },
+    {
+      "n": 1,
+      "mode": "mle",
+      "lambda_": 0.05,
+      "bits": 30871.451017103343,
+      "perplexity": 206.3613380573905,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "add",
+      "lambda_": 0.05,
+      "bits": 29585.8170146067,
+      "perplexity": 165.28605193869674,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "interp",
+      "lambda_": 0.05,
+      "bits": 27431.059784373014,
+      "perplexity": 113.94109806308224,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "mle",
+      "lambda_": 0.05,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 1299
+    },
+    {
+      "n": 3,
+      "mode": "add",
+      "lambda_": 0.05,
+      "bits": 37076.07316662599,
+      "perplexity": 602.321243125323,
+      "unsupported": 0
+    },
+    {
+      "n": 3,
+      "mode": "interp",
+      "lambda_": 0.05,
+      "bits": 28015.816286456953,
+      "perplexity": 126.04432633001942,
+      "unsupported": 0
+    },
+    {
+      "n": 3,
+      "mode": "mle",
+      "lambda_": 0.05,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 3015
+    },
+    {
+      "n": 4,
+      "mode": "add",
+      "lambda_": 0.05,
+      "bits": 40634.8956777701,
+      "perplexity": 1113.4113873144368,
+      "unsupported": 0
+    },
+    {
+      "n": 4,
+      "mode": "interp",
+      "lambda_": 0.05,
+      "bits": 28506.329662173066,
+      "perplexity": 137.18296900304367,
+      "unsupported": 0
+    },
+    {
+      "n": 4,
+      "mode": "mle",
+      "lambda_": 0.05,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 3772
+    },
+    {
+      "n": 1,
+      "mode": "add",
+      "lambda_": 0.333,
+      "bits": 30891.94771065351,
+      "perplexity": 207.09284872642314,
+      "unsupported": 0
+    },
+    {
+      "n": 1,
+      "mode": "interp",
+      "lambda_": 0.333,
+      "bits": 30932.224282185492,
+      "perplexity": 208.537850161498,
+      "unsupported": 0
+    },
+    {
+      "n": 1,
+      "mode": "mle",
+      "lambda_": 0.333,
+      "bits": 30871.451017103343,
+      "perplexity": 206.3613380573905,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "add",
+      "lambda_": 0.333,
+      "bits": 31775.719753753212,
+      "perplexity": 241.22765405031242,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "interp",
+      "lambda_": 0.333,
+      "bits": 27431.059784373014,
+      "perplexity": 113.94109806308224,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "mle",
+      "lambda_": 0.333,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 1299
+    },
+    {
+      "n": 3,
+      "mode": "add",
+      "lambda_": 0.333,
+      "bits": 38864.45125054532,
+      "perplexity": 820.189527103379,
+      "unsupported": 0
+    },
+    {
+      "n": 3,
+      "mode": "interp",
+      "lambda_": 0.333,
+      "bits": 28015.816286456953,
+      "perplexity": 126.04432633001942,
+      "unsupported": 0
+    },
+    {
+      "n": 3,
+      "mode": "mle",
+      "lambda_": 0.333,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 3015
+    },
+    {
+      "n": 4,
+      "mode": "add",
+      "lambda_": 0.333,
+      "bits": 41168.74287799551,
+      "perplexity": 1220.9041406735753,
+      "unsupported": 0
+    },
+    {
+      "n": 4,
+      "mode": "interp",
+      "lambda_": 0.333,
+      "bits": 28506.329662173066,
+      "perplexity": 137.18296900304367,
+      "unsupported": 0
+    },
+    {
+      "n": 4,
+      "mode": "mle",
+      "lambda_": 0.333,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 3772
+    },
+    {
+      "n": 1,
+      "mode": "add",
+      "lambda_": 1,
+      "bits": 30946.29282437454,
+      "perplexity": 209.04495927016276,
+      "unsupported": 0
+    },
+    {
+      "n": 1,
+      "mode": "interp",
+      "lambda_": 1,
+      "bits": 30932.224282185492,
+      "perplexity": 208.537850161498,
+      "unsupported": 0
+    },
+    {
+      "n": 1,
+      "mode": "mle",
+      "lambda_": 1,
+      "bits": 30871.451017103343,
+      "perplexity": 206.3613380573905,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "add",
+      "lambda_": 1,
+      "bits": 33995.10060110464,
+      "perplexity": 353.85728506673337,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "interp",
+      "lambda_": 1,
+      "bits": 27431.059784373014,
+      "perplexity": 113.94109806308224,
+      "unsupported": 0
+    },
+    {
+      "n": 2,
+      "mode": "mle",
+      "lambda_": 1,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 1299
+    },
+    {
+      "n": 3,
+      "mode": "add",
+      "lambda_": 1,
+      "bits": 39962.44728884208,
+      "perplexity": 991.374950590842,
+      "unsupported": 0
+    },
+    {
+      "n": 3,
+      "mode": "interp",
+      "lambda_": 1,
+      "bits": 28015.816286456953,
+      "perplexity": 126.04432633001942,
+      "unsupported": 0
+    },
+    {
+      "n": 3,
+      "mode": "mle",
+      "lambda_": 1,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 3015
+    },
+    {
+      "n": 4,
+      "mode": "add",
+      "lambda_": 1,
+      "bits": 41428.22529827318,
+      "perplexity": 1276.8403783389965,
+      "unsupported": 0
+    },
+    {
+      "n": 4,
+      "mode": "interp",
+      "lambda_": 1,
+      "bits": 28506.329662173066,
+      "perplexity": 137.18296900304367,
+      "unsupported": 0
+    },
+    {
+      "n": 4,
+      "mode": "mle",
+      "lambda_": 1,
+      "bits": null,
+      "perplexity": null,
+      "unsupported": 3772
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {ngramModel,uidHypothesis} from './source-audit-language-models.js';
 // Linguistics & Language — Chapter 4, part b: items 4.6–4.10
 import { corpus, TEXTS, TEST_TEXT, TEXT_LABELS, syllables, toSyms, letterModel, guessOrder, guessDistribution, shannonBounds, letterEntropies, SYMS, tokenize, wordModel, perplexity, generateWords } from './ch04.shared.js';
 
@@ -200,101 +201,8 @@ and the more context the guesser has, the smaller both bounds become. With long 
         });
       },
     },
-    // ───────────────────────────────────────────────────────────────────────── 4.9
-    {
-      num: '4.9',
-      kind: 'Model',
-      name: 'N-gram language models',
-      credit: 'Markov chains of letters and words as models of text: Andrey Markov, 1913; word n-gram generation by Claude Shannon, 1948; smoothing methods developed from the 1980s (e.g. Jelinek–Mercer interpolation)',
-      statement: String.raw`An **$n$-gram language model** predicts each word from the previous $n-1$ words:
-$$P(w_1\dots w_T)\;\approx\;\prod_{t}P(w_t\mid w_{t-n+1},\dots,w_{t-1}),$$
-with the conditional probabilities estimated from counts, $\hat P(w\mid h)=c(h\,w)/c(h)$. Samples from the model grow more fluent as $n$ rises, but the number of possible contexts grows exponentially, so most test $n$-grams are unseen: without smoothing the model assigns them probability 0 (infinite perplexity), and with crude smoothing the held-out perplexity first falls and then rises with $n$. **Perplexity** $2^{H}$, with $H$ the average negative $\log_2$ probability per held-out word, is the effective branching factor.`,
-      idea: String.raw`The model is a Markov chain on words. Going from unigram to bigram uses real local structure (*of the* is common, *the of* is not) and perplexity drops sharply. At trigrams and beyond the counts get so sparse that a corpus of 20 000 words has seen few contexts twice: add-$\lambda$ smoothing gives all unseen continuations the same share, wasting probability. Interpolating the orders (back off to shorter contexts when the longer one is empty) keeps the benefit and lets perplexity go on improving, which is how practical models were built before neural ones.`,
-      caption: String.raw`Train on the first 85% of *Alice in Wonderland*, test on the rest. The plot shows held-out perplexity against order $n$ for add-$\lambda$ smoothing (red) and interpolation (green). Choose the order and press “Generate” to read a sample from that model (text below), and move $\lambda$ to see how crude smoothing hurts higher orders.`,
-      scope: String.raw`A tiny single-book corpus (about 23 000 training words), chosen to show the sparsity effect clearly; with billions of words higher orders keep helping. Words seen once in training are merged into one unknown token.`,
-      deps: ['ling-4.8'],
-      refs: ['Jurafsky & Martin ch. 3'],
-      tags: ['language model', 'perplexity'],
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/N-gram' },
-      viz(v) {
-        const toks = corpus('alice').tokens; const cut = Math.floor(toks.length * 0.85);
-        const M = wordModel(toks.slice(0, cut), 4); const test = toks.slice(cut);
-        const nSel = v.select('Order $n$', [{ value: '1', label: 'unigram' }, { value: '2', label: 'bigram' }, { value: '3', label: 'trigram' }, { value: '4', label: '4-gram' }], '3');
-        const mode = v.select('Smoothing', [{ value: 'add', label: 'add-λ' }, { value: 'interp', label: 'interpolated' }], 'add');
-        const lam = v.slider('$\\lambda$', 0.001, 1, 0.05, { log: true, sig: 2 });
-        let seed = 1; v.button('Generate', () => { seed++; }); let sample = '';
-        const s = v.stage({ x: [0.5, 4.5], y: [10, 5000], ylog: true, axes: 'box', gutter: true, xlabel: 'model order n', ylabel: 'held-out perplexity', height: 340, xticks: [[1, '1'], [2, '2'], [3, '3'], [4, '4']] });
-        let info = {}; const memo = {};
-        const ppx = (n, m, l) => { const k = n + m + l; return memo[k] || (memo[k] = perplexity(M, test, n, m, l)); };
-        v.render(() => {
-          const l = lam.value; const A = [1, 2, 3, 4].map((n) => [n, ppx(n, 'add', l)]), B = [1, 2, 3, 4].map((n) => [n, ppx(n, 'interp', 0)]);
-          s.setView([0.5, 4.5], [30, Math.max(2000, ...A.map((a) => a[1])) * 1.3]);
-          s.path(A, { color: 'red', width: 2.5 }); s.dots(A, { r: 4.5, color: 'red' });
-          s.path(B, { color: 'green', width: 2.5 }); s.dots(B, { r: 4.5, color: 'green' });
-          const n = +nSel.value; const cur = (mode.value === 'add' ? A : B)[n - 1];
-          s.dot(cur[0], cur[1], { r: 10, hollow: true, color: 'ink' });
-          const r = v.rng(seed * 31 + n); sample = generateWords(M, n, 45, r).join(' ');
-          info = { n, cur: cur[1], A, B };
-        });
-        v.legend([['red', 'add-λ smoothing'], ['green', 'interpolated']]);
-        v.readout(() => `Order ${info.n}, ${mode.value === 'add' ? 'add-λ' : 'interpolated'}: held-out perplexity ${Math.round(info.cur)} over ${test.length} test words (vocabulary ${M.V}; a uniform guess would give ${M.V}).\nSample: “${sample} …”`);
-      },
-    },
-    // ───────────────────────────────────────────────────────────────────────── 4.10
-    {
-      num: '4.10',
-      kind: 'Hypothesis',
-      name: 'Uniform information density',
-      credit: 'Roger Levy & T. Florian Jaeger, 2006/2007 (Advances in Neural Information Processing Systems 19, 849–856); developed in Jaeger, 2010 (Cognitive Psychology 61)',
-      statement: String.raw`**Uniform information density (UID):** within the bounds of grammar, speakers prefer utterances that spread information evenly over the signal, keeping the **surprisal** $-\log_2 P(w_t\mid\text{context})$ of successive words close to a roughly constant level and avoiding sharp peaks. Where the speaker has a choice between a reduced and a longer form, the longer form is predicted to be used when the upcoming material would otherwise be unusually surprising, as with the optional *that* in *My boss confirmed (that) we were mistaken*, which is mentioned more often when a clause was not expected after the verb.`,
-      idea: String.raw`Surprisal measures how much information a word carries given what came before; a channel of limited capacity is used best if the load is steady. An optional word costs time but, placed just before an unexpected stretch, it announces the structure and splits the information of the clause onset across two words. Levy and Jaeger tested this on corpora of spoken and written English and found that *that*-mention rises as the complement clause becomes less predictable, even controlling for other factors. Here, a deliberately simplified toy model (not corpus data) shows the arithmetic behind the idea.`,
-      caption: String.raw`The sentence is *My boss confirmed (that) we were completely mistaken.* Surprisals of the six other content and function words are fixed illustrative values; what you control is the toy model's probability $c$ that this verb takes a clause at all and $\theta$, the chance a clause comes with *that*. Left and middle bars: per-word surprisal without and with *that*; right: the variance of surprisal against $c$ for both versions. Where the omitted version has the larger variance, UID predicts *that*.`,
-      scope: String.raw`A hypothesis about production, supported by corpus studies but contested in detail (other factors, such as the verb and the length of the subject, matter too). The numbers in the picture are a toy illustration, not measurements.`,
-      deps: ['ling-4.9'],
-      refs: ['Jurafsky & Martin ch. 3'],
-      tags: ['surprisal', 'syntactic reduction'],
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Uniform_information_density_hypothesis' },
-      viz(v) {
-        const cS = v.slider('$c$ = P(verb takes a clause)', 0.02, 0.98, 0.15, { step: 0.01 });
-        const thS = v.slider('$\\theta$ = P(that | clause)', 0.1, 0.9, 0.4, { step: 0.01 });
-        const q = 0.06; const WORDS = ['My', 'boss', 'confirmed', 'that', 'we', 'were', 'completely', 'mistaken'];
-        const FIX = { My: 4.5, boss: 7, confirmed: 6.5, were: 2.2, completely: 6, mistaken: 4.5 };
-        const surp = (c, th, withThat) => WORDS.filter((w) => withThat || w !== 'that').map((w) => {
-          if (w === 'that') return -Math.log2(c * th);
-          if (w === 'we') return withThat ? -Math.log2(q) : -Math.log2(c * (1 - th) * q);
-          return FIX[w];
-        });
-        const vari = (a) => { const m = a.reduce((x, y) => x + y, 0) / a.length; return a.reduce((x, y) => x + (y - m) ** 2, 0) / a.length; };
-        const sA = v.stage({ x: [0, 8], y: [0, 14], axes: 'box', gutter: true, ylabel: 'surprisal (bits)', height: 300, title: 'Without “that”', xticks: ['My', 'boss', 'confirmed', 'we', 'were', 'completely', 'mistaken'].map((w, i) => [i + 0.5, w]) });
-        const sB = v.stage({ x: [0, 8], y: [0, 14], axes: 'box', gutter: true, ylabel: 'surprisal (bits)', height: 300, title: 'With “that”', xticks: ['My', 'boss', 'confirmed', 'that', 'we', 'were', 'completely', 'mistaken'].map((w, i) => [i + 0.5, w]) });
-        const sC = v.stage({ x: [0, 1], y: [0, 12], axes: 'box', gutter: true, xlabel: 'c', ylabel: 'variance of surprisal', height: 300, title: 'Which is smoother?' });
-        let info = {};
-        const bars = (st, arr, words, col) => {
-          const m = arr.reduce((a, b) => a + b, 0) / arr.length;
-          arr.forEach((b, i) => { const x = i + 0.5, hi = b === Math.max(...arr); st.rect(x - 0.36, 0, x + 0.36, b, { fill: words[i] === 'that' ? 'gold' : col, fillAlpha: 0.4, color: words[i] === 'that' ? 'gold' : col, width: hi ? 2.5 : 1 });
-            st.text(b.toFixed(1), x, b, { size: 10, color: 'muted', align: 'center', baseline: 'bottom', dy: -2 }); });
-          st.line(0, m, arr.length, m, { color: 'muted', dash: true, width: 1.5 });
-        };
-        v.render(() => {
-          const c = cS.value, th = thS.value; const a = surp(c, th, false), b = surp(c, th, true);
-          const wa = WORDS.filter((w) => w !== 'that');
-          const ymax = Math.max(14, ...a, ...b) * 1.05; sA.setView([0, 8], [0, ymax]); sB.setView([0, 8], [0, ymax]);
-          bars(sA, a, wa, 'accent'); bars(sB, b, WORDS, 'accent');
-          const diff = (cc) => vari(surp(cc, th, false)) - vari(surp(cc, th, true));
-          const xs = []; for (let i = 0; i <= 100; i++) xs.push(0.02 + (0.96 * i) / 100);
-          const va = xs.map((x) => [x, vari(surp(x, th, false))]), vb = xs.map((x) => [x, vari(surp(x, th, true))]);
-          sC.setView([0, 1], [0, Math.max(...va.map((p) => p[1]), ...vb.map((p) => p[1])) * 1.1]);
-          sC.path(va, { color: 'red', width: 2.5 }); sC.path(vb, { color: 'green', width: 2.5 });
-          sC.vline(c, { color: 'ink', dash: true });
-          let cross = null; for (let i = 1; i < xs.length; i++) if (Math.sign(diff(xs[i - 1])) !== Math.sign(diff(xs[i]))) { cross = xs[i]; break; }
-          if (cross) { sC.vline(cross, { color: 'orange', width: 1.5 }); sC.text('switch', cross + 0.01, 0.3, { size: 11, color: 'orange', align: 'left' }); }
-          info = { va: vari(a), vb: vari(b), pa: Math.max(...a), pb: Math.max(...b), cross };
-        });
-        v.legend([['red', 'variance without that'], ['green', 'variance with that'], ['gold', '“that”', { area: true }]]);
-        v.readout(() => `Peak surprisal: ${v.fix(info.pa, 1)} bits without “that”, ${v.fix(info.pb, 1)} with. Variance: ${v.fix(info.va, 2)} versus ${v.fix(info.vb, 2)}: UID favours **${info.va > info.vb ? 'including “that”' : 'omitting “that”'}** here.${info.cross ? ` The preference switches at $c\\approx${v.fix(info.cross, 2)}$.` : ''}`);
-      },
-    },
+    // Source-audited finite language models and UID illustration.
+    ngramModel,
+    uidHypothesis,
   ],
 };
