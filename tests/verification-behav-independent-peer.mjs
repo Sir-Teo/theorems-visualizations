@@ -1,0 +1,17 @@
+// Explicit independent immutable preservation audit. Later authorized content edits require a new review.
+import assert from'node:assert/strict';import fs from'node:fs';import{pathToFileURL}from'node:url';
+const [base,root]=process.argv.slice(2);assert.ok(base&&root,'usage: node tests/verification-behav-independent-peer.mjs BASE_ARCHIVE FINAL_ARCHIVE');
+export const edges={'1.1':['prob-2.2.16'],'1.3':['prob-1.6.1'],'1.5':['pma-5.5'],'1.6':['prob-1.6.1'],'1.7':['pma-6.21'],'1.9':['pma-6.22'],'1.14':['pma-4.16'],'3.8':['prob-1.1.1'],'3.9':['prob-2.2.1'],'3.10':['prob-2.1.9','prob-2.3.12'],'4.2':['opt-3.4'],'4.6':['prob-2.2.1'],'5.3':['pma-6.21']};
+const encode=x=>JSON.stringify(x,(_,v)=>typeof v==='function'?v.toString():v),canon=s=>s.replace(/\\begin\{aligned\}|\\end\{aligned\}|\\\\|&|\\qquad|\\quad|\s/g,''),wrapStatements=new Set(['1.1','1.6','5.3']);let count=0,functions=0,mapping=[];
+for(const file of fs.readdirSync(`${base}/content/behav`)){
+ const bp=`${base}/content/behav/${file}`,rp=`${root}/content/behav/${file}`;if(!/^ch\d+(-\w+)?\.js$/.test(file)){if(file!=='syllabus.js')assert.equal(fs.readFileSync(bp,'utf8'),fs.readFileSync(rp,'utf8'),file);continue;}
+ const b=(await import(pathToFileURL(bp))).default,r=(await import(pathToFileURL(rp))).default;assert.equal(b.items.length,r.items.length);for(let i=0;i<b.items.length;i++){let old={...b.items[i]},now={...r.items[i]},num=old.num;count++;functions+=Object.values(old).filter(v=>typeof v==='function').length;
+ if(edges[num]){assert.deepEqual(now.deps,[...old.deps,...edges[num]],num+' item dependency list');if(num==='5.3')assert.ok(canon(now.idea).startsWith(canon(old.idea)));else assert.ok(now.idea.startsWith(old.idea+' '));delete old.idea;delete now.idea;delete old.deps;delete now.deps;mapping.push({num,file});}
+ if(wrapStatements.has(num)){assert.equal(canon(now.statement),canon(old.statement),num+' equivalent statement');delete now.statement;delete old.statement;}assert.equal(encode(now),encode(old),num+' complete object/function/flags');
+ }
+ const mask=s=>s.replace(/(?:idea|statement):\s*String\.raw`[^`]*`/g,'TEXTMASK').replace(/deps:\s*\[[^\]]*\]/g,'DEPMASK');assert.equal(mask(fs.readFileSync(bp,'utf8')),mask(fs.readFileSync(rp,'utf8')),file+' module source outside fields');
+}
+const b=(await import(pathToFileURL(`${base}/content/behav/syllabus.js`))).default,r=(await import(pathToFileURL(`${root}/content/behav/syllabus.js`))).default;
+const rows=x=>Array.isArray(x)?x.flatMap(rows):x&&typeof x==='object'?[...(x.num?[x]:[]),...Object.values(x).flatMap(rows)]:[];for(const[num,added]of Object.entries(edges)){const before=rows(b).find(x=>x.num===num),after=rows(r).find(x=>x.num===num);assert.deepEqual(after.deps,[...before.deps,...added],num+' exact expected syllabus list');}
+const restore=x=>Array.isArray(x)?x.map(restore):x&&typeof x==='object'?Object.fromEntries(Object.entries(x).map(([k,v])=>[k,k==='deps'&&edges[x.num]?v.filter(id=>!edges[x.num].includes(id)):restore(v)])):x;assert.equal(encode(restore(r)),encode(b),'all other syllabus fields');
+assert.equal(count,67);assert.equal(mapping.length,13);assert.equal(Object.values(edges).flat().length,14);console.log(JSON.stringify({objects:count,functions,changedItems:mapping,addedEdges:14,statementWraps:3,ideaWraps:1,sourceFlags:'preserved',helpers:'byte-identical',syllabus:'all 13 full expected lists; all other data unchanged'}));
