@@ -10,16 +10,16 @@
 //     2019), Cloudina about 550-543 Ma (Grotzinger et al., 1995), first trilobites about 521 Ma, Chengjiang about 518 Ma, Burgess
 //     Shale about 508 Ma, Mistaken Point about 574 Ma (all checked only to the stated rounding). Trigger windows are broad
 //     literature ranges (Marshall, Annu. Rev. Earth Planet. Sci. 34: 355, 2006) and drawn as such.
-//   3.8 Raup & Sepkoski, Science 215: 1501 (1982); Barnosky et al., Nature 471: 51 (2011) for the commonly quoted species-loss
-//     estimates (86, 75, 96, 80, 76%: recalled, not re-checked; other sources give different values and metrics); Kirchner &
-//     Weil, Nature 404: 177 (2000) (recovery lag of the order of 10 Myr). The recovery curve is a logistic model.
+//   3.8 Actual Raup1982 original, Barnosky2011 Table1 and Kirchner2000 primary/relevant supplement read.
+//     See docs/verification/bighist-extinction-followup.md; candidate remains flagged pending peer review.
 //   3.9/3.10 Actual original Alvarez1980, Collins2005 and Renne2013 source equations/tables checked.
 //     Sources, finite model/state limits and evidence: docs/verification/bighist-impact-followup.md.
-//     Flags remain pending independent exact-commit acceptance.
+//     Both impact entries independently accepted; source/model scope remains explicit.
 
 
 import { clamp, tridiag } from './ch03.shared.js';
 import {impactEvent,impactPaper} from './impact-items.js';
+import extinctionItem from './extinction-item.js';
 
 // ── 3.6 helpers: Budyko–Sellers energy balance model on x = sin(latitude) in [0, 1] (one hemisphere) ──────────────────────
 const EB = { n: 24, D: 0.649, A: 203.3, B: 2.09, Q0: 340.25, C: 10 };
@@ -57,16 +57,6 @@ function ebSweeps(L) {
   for (let i = 0; i < CO2_SWEEP.length; i++) { T = ebRelax(T, L, CO2_SWEEP[i], 40); up.push([CO2_SWEEP[i], iceEdge(T)]); }
   return { down, up };
 }
-
-// ── 3.8 helpers: logistic diversity with kill pulses ─────────────────────────────────────────────────────────────────────
-const BIG5 = [
-  { name: 'End-Ordovician', t: 445, f: 0.86, col: 'purple' },
-  { name: 'Late Devonian', t: 372, f: 0.75, col: 'teal' },
-  { name: 'End-Permian', t: 252, f: 0.96, col: 'red' },
-  { name: 'End-Triassic', t: 201, f: 0.8, col: 'orange' },
-  { name: 'End-Cretaceous', t: 66, f: 0.76, col: 'pink' },
-];
-const logit = (p) => Math.log(p / (1 - p));
 
 export default {
   collection: 'bighist',
@@ -179,65 +169,7 @@ Proposed triggers, which are not exclusive: a rise in oxygen, the evolution of p
         });
       },
     },
-    // ───────────────────────────────────────────────────────────────────────────────────── 3.8
-    {
-      num: '3.8',
-      kind: 'Phenomenon',
-      name: 'Mass extinctions and recoveries',
-      statement: String.raw`Raup and Sepkoski (1982) showed that extinction rates in the marine fossil record are not smooth: five episodes in the Phanerozoic stand out as the **Big Five** mass extinctions, at the ends of the Ordovician ($\approx 445$ Ma), Devonian ($\approx 372$ Ma), Permian ($\approx 252$ Ma), Triassic ($\approx 201$ Ma) and Cretaceous ($\approx 66$ Ma). Commonly quoted losses of *species* are roughly $86\%$, $75\%$, $96\%$, $80\%$ and $76\%$ respectively; estimates for genera are lower and vary between studies and methods. After each, diversity recovered, over several million years to tens of millions.
-
-The causes differ: glaciation and sea-level fall (Ordovician), anoxia (Devonian), the Siberian Traps volcanism and its consequences (Permian, the largest), the Central Atlantic Magmatic Province (Triassic), and an asteroid impact with Deccan volcanism (Cretaceous, 3.9).`,
-      idea: String.raw`If a clade of $N$ taxa grows logistically, $\dot N = rN(1-N/K)$, and a catastrophe removes a fraction $f$ of it, the time to regain $90\%$ of the old level is $\tfrac{1}{r}\,[\operatorname{logit}(0.9)-\operatorname{logit}((1-f)N_0)]$: it rises only logarithmically with the severity, so the worst event, with $96\%$ lost, needs about twice the time of one with $75\%$ lost. Recoveries in the fossil record are slower than a free exponential would allow (Kirchner and Weil, 2000, found delays of the order of 10 Myr), which suggests that rebuilding ecosystems, not just numbers, is the limit.`,
-      caption: String.raw`A deliberately simple model: one stock of taxa with constant capacity, hit by five kills at the real dates. Drag the dip under each event to change the fraction lost, and change the growth rate $r$. The model reproduces the saw-tooth but not the long-term rise of real diversity (the capacity is held fixed). The kill fractions start at the commonly quoted species losses (sources vary).`,
-      deps: ['bighist-3.7'],
-      see: ['bighist-3.9'],
-      refs: ['Christian'],
-      credit: 'Raup & Sepkoski, 1982',
-      tags: ['extinction', 'diversity'],
-      scope: String.raw`Quoted losses depend on the taxonomic level, the data set and the method; the dates are rounded.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Extinction_event' },
-      verify: true,
-      viz(v) {
-        const rS = v.slider('regrowth rate r (per Myr)', 0.1, 2, 0.5, { step: 0.01 });
-        const s = v.stage({ x: [-541, 0], y: [0, 1.08], axes: 'box', gutter: true, height: 340, full: true, xlabel: 'time (Ma ago, negative)', ylabel: 'diversity / capacity', title: 'logistic diversity with five kills (model)' });
-        const f = BIG5.map((e) => e.f);
-        const sim = (r, out) => {
-          // returns pre-event levels, post-event levels and recovery times; fills a path if out given
-          let N = 0.04, t = -541; const pre = [], post = [], rec = [];
-          const grow = (N0, dtM) => 1 / (1 + (1 / N0 - 1) * Math.exp(-r * dtM));
-          BIG5.forEach((e, i) => {
-            const te = -e.t;
-            if (out) for (let k = 1; k <= 24; k++) out.push([t + ((te - t) * k) / 24, grow(N, ((te - t) * k) / 24)]);
-            N = grow(N, te - t); t = te; pre.push(N);
-            if (out) out.push([te, N]);
-            N *= 1 - f[i]; post.push(N); if (out) out.push([te, N]);
-            rec.push((logit(0.9 * pre[i]) - logit(N)) / r);
-          });
-          if (out) for (let k = 1; k <= 24; k++) out.push([t + (-t * k) / 24, grow(N, (-t * k) / 24)]);
-          return { pre, post, rec };
-        };
-        const hs = BIG5.map((e, i) => {
-          const h = s.handle(-e.t, 0.1, { color: e.col, r: 7, constrain: 'y' });
-          h.onDrag = () => { const { pre } = sim(rS.value); f[i] = clamp(1 - h.y / pre[i], 0.05, 0.995); v.invalidate(); };
-          return h;
-        });
-        v.render(() => {
-          const r = rS.value, path = [], { pre, post, rec } = sim(r, path);
-          s.hline(1, { color: 'faint', width: 1, dash: [3, 3] });
-          s.path(path, { color: 'accent', width: 2.6 });
-          BIG5.forEach((e, i) => {
-            s.vline(-e.t, { color: e.col, width: 1, dash: [3, 4], alpha: 0.6 });
-            hs[i].set(-e.t, post[i]);
-            s.text(`${e.name}`, -e.t + 4, 1.04, { size: 10.5, color: e.col, align: 'left' });
-            s.text(`−${v.fix(100 * f[i], 0)}%`, -e.t + 4, Math.max(0.03, post[i] - 0.05), { size: 10.5, color: e.col, align: 'left' });
-          });
-        });
-        v.readout(() => {
-          const { rec } = sim(rS.value);
-          return BIG5.map((e, i) => `${e.name} (${e.t} Ma): ${v.fix(100 * f[i], 0)}% lost, back to 90% in ${v.fix(rec[i], 1)} Myr`).join('\n') + '\nObserved recoveries are slower than free regrowth: lags of ~10 Myr (Kirchner & Weil 2000).';
-        });
-      },
-    },
+    extinctionItem,
     impactEvent,
     impactPaper,
   ],
