@@ -28,3 +28,7 @@ Boards, goal strokes, cells/polygons, W/Llabels, selected-cell markers, all35tab
 - Personally inspected actual own320dark6×8Chomp full output and4×4Hex full output, plus the earlier narrow default corner/table view. The complete table, selected game state, four winning opening cells and distinct terminal/explorer semantics remain readable and contained. Images `/tmp/atlas-coordinator/game-stealing/`.
 
 Only the source URL changed after the final native matrix to select the actually obtained mirror. No executable behavior changed. Source flag remains pending independent peer review.
+
+## Independent peer acceptance
+
+WorkerOne accepted exacta99dc23 after actual original-source/pixel review, a separately authored Python row-cut/absolute-score union-find oracle (11,320Chomp ideals,5,546legal smallHex states,66,064full boards), six math groups, two fresh320native groups and59additional malformed snapshots per theme including simultaneous terminal hidden histories. No actionable findings. Full independent report: `docs/verification/game-stealing-peer.md`.

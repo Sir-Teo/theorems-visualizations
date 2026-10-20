@@ -1,6 +1,6 @@
 import{chompPosition,chompOpeningTable,hexPosition,stealingStateValid}from'./stealing-audit.js';
 export default{
- num:'4.11',kind:'Theorem',name:'Strategy stealing: the first player wins Hex and Chomp',verify:true,
+ num:'4.11',kind:'Theorem',name:'Strategy stealing: the first player wins Hex and Chomp',verify:false,
  credit:'Gale’s published Chomp and Hex accounts; finite game solvers and illustrations authored here',
  statement:String.raw`On a finite rectangular Chomp board with more than one square, the first player can force the opponent to take the poisoned bottom-left square. A bite removes the chosen square and everything northeast of it. The 1×1 board is a loss for the first player and is excluded.
 

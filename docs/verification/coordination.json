@@ -777,6 +777,19 @@
       "commits": [
         "67c246d"
       ]
+    },
+    {
+      "ids": [
+        "game-4.11"
+      ],
+      "peer": "worker_one exact-commit original-source/pixels, separate finite-state oracle, fresh native/input/replay and output-pixel review",
+      "reports": [
+        "docs/verification/game-stealing-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "a99dc23"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -789,7 +802,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 53,
+  "currentPendingSourceReviews": 52,
   "latestCheckpoint": {
     "acceptedContentCommit": "a99dc23",
     "report": "docs/verification/checkpoint-a99dc23.md",

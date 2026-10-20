@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 53,
+  "remainingFlags": 52,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,6 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 1,
     "art": 6,
     "arch": 9,
     "ling": 8,
@@ -199,21 +198,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "game-4.11",
-      "file": "content/game/ch04-c.js",
-      "name": "Strategy stealing: the first player wins Hex and Chomp",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ §3.4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Strategy-stealing_argument"
       }
     },
     {
@@ -1641,7 +1625,8 @@
       "art-4.16",
       "tech-5.11",
       "tech-5.2",
-      "tech-5.3"
+      "tech-5.3",
+      "game-4.11"
     ]
   },
   "additionalFollowups": [
@@ -6605,6 +6590,11 @@
       "id": "tech-5.3",
       "status": "resolved",
       "note": "2026-10-20: coordinator exact-commit complete owner-source/pixels, independent geometry/ODE, fresh native-state and output-pixel review; docs/verification/tech-skycompass-followup.md."
+    },
+    {
+      "id": "game-4.11",
+      "status": "resolved",
+      "note": "2026-10-20: worker_one exact-commit original-source/pixels, separate finite-state oracle, fresh native/input/replay and output-pixel review; docs/verification/game-stealing-followup.md."
     }
   ]
 }
