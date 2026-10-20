@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 24,
+  "remainingFlags": 23,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -18,7 +18,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "arch": 4,
+    "arch": 3,
     "bighist": 13
   },
   "queue": [
@@ -150,21 +150,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
-      }
-    },
-    {
-      "id": "arch-4.7",
-      "file": "content/arch/ch04-b.js",
-      "name": "The Pantheon: step rings, coffers and graded concrete",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Salvadori"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Pantheon,_Rome"
       }
     },
     {
@@ -1218,7 +1203,8 @@
       "geol-3.15",
       "ling-3.6",
       "bighist-3.6",
-      "geol-4.10"
+      "geol-4.10",
+      "arch-4.7"
     ]
   },
   "additionalFollowups": [
@@ -6327,6 +6313,11 @@
       "id": "bighist-3.6",
       "status": "resolved",
       "note": "2026-10-20: worker two independently checked actual sources,80digit dense-LU and72extra profile/flux cases plus fresh native/output evidence; docs/verification/bighist-snowball-peer.md."
+    },
+    {
+      "id": "arch-4.7",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently inspected actual primary source pages, regenerated the 80-digit reference, checked independent shell equilibrium, both fresh 320px native themes and own source/output pixels without findings; docs/verification/arch-pantheon-peer.md."
     }
   ]
 }
