@@ -116,14 +116,14 @@ export default {
     {
       n: 4,
       title: 'Human origins',
-      summary: String.raw`Bipedal hominins were present in Africa several million years ago, before the later marked enlargement of the brain. Ice ages paced by Earth’s orbital cycles shaped the environments our ancestors lived in. Modern humans spread out of Africa in the last hundred thousand years, losing genetic diversity at each step and interbreeding with Neanderthals and Denisovans on the way. Collective learning — the ability to share and accumulate knowledge — is Christian’s candidate for what made humans different.`,
+      summary: String.raw`Bipedal hominins were present in Africa several million years ago, before the later marked enlargement of the brain. Ice ages paced by Earth’s orbital cycles shaped the environments our ancestors lived in. Dated African and non-African finds document parts of a complex dispersal history; a find records a particular presence rather than a whole population’s first arrival. Collective learning — the ability to share and accumulate knowledge — is Christian’s candidate for what made humans different.`,
       items: [
         { num: '4.1', kind: 'Event', name: 'Hominin evolution: bipedalism and brain growth', deps: ['bighist-3.9'], refs: ['Aiello & Wheeler1995, Tables1/4 and p208'],
           pic: 'Compare bounded bipedalism context and four literal historical braincase summaries, then distinguish a reported basal budget from explicit volume-to-mass/allometric accounting without a causal regression.' },
         { num: '4.2', kind: 'Phenomenon', name: 'Glacial cycles and Milankovitch forcing', deps: ['mech-10.18'], refs: ['Hays et al.1976; Imbrie & Imbrie1980'],
           pic: 'Distinguish historical sediment-core evidence from an authored harmonic orbit, daily solstice insolation, exact held-forcing asymmetric response and honest finite power spectra.' },
-        { num: '4.3', kind: 'Event', name: 'Out of Africa', deps: ['bighist-4.1', 'popgen-3.9'], refs: ['Christian'],
-          pic: 'Animate the dispersal of modern humans on a map with dated sites: Arabia, Australia by about 50,000 years ago, the Americas by at least 15,000 years ago.' },
+        { num: '4.3', kind: 'Event', name: 'Out of Africa', deps: ['bighist-4.1', 'popgen-3.9'], refs: ['Six bounded fossil/archaeological source cases'],
+          pic: 'Select six source-backed locations and compare their distinctly interpreted context, ash, specimen, modelled-onset and activity ages; approximate spherical distances do not reconstruct migrations.' },
         { num: '4.4', kind: 'Model', name: 'The serial founder effect', deps: ['bighist-4.3', 'popgen-2.1', 'popgen-2.3', 'popgen-2.9'], refs: ['Ramachandran et al. 2005, Fig. 4 and bottleneck-only discussion'],
           pic: 'Twenty seeded biallelic founder chains, their finite mean and the conditional geometric expectation; compare first-chain frequency bins without calling them the human microsatellite data.' },
         { num: '4.5', kind: 'Event', name: 'Neanderthal and Denisovan admixture', deps: ['bighist-4.3', 'prob-1.2.4'], refs: ['Green2010', 'Reich2010', 'Fu2014'],
