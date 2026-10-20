@@ -4,9 +4,7 @@
 //   3.1 Actual Miller1953 report, Johnson2008 fullmain+SOM/TableS1 and NASA CP2276 printed50 audited; see private source report.
 //   3.2 Dated primary claims and bounded original-abstract access; authored ordinal sensitivity matrix. See private audit report.
 //   3.3 Actual1977/1990 originals and2024dated methods/Fig1 audited; posterior/soft-calibration limits explicit.
-//   3.4 Farquhar, Bao & Thiemens, Science 289: 756 (2000); Bekker et al., Nature 427: 117 (2004); Philippot et al., Nat. Commun.
-//     9: 2245 (2018) (pO2 < 1e-5 PAL before about 2.45 Ga, MIF-S disappearing 2.45–2.31 Ga); Lyons, Reinhard & Planavsky,
-//     Nature 506: 307 (2014). Post-GOE oxygen bands are drawn broad and flagged: published estimates span orders of magnitude.
+//   3.4 Actual2000original,2004authorabstract,2018regional MIF persistence and2014review source/sink sections audited; private report retains access/proxy/model limits.
 //   3.5 Margulis (Sagan), J. Theor. Biol. 14: 255 (1967); Mereschkowsky, Biol. Centralbl. 25: 593 (1905); Martin & Muller, Nature
 //     392: 37 (1998); Lang et al., Nature 387: 493 (1997) (Reclinomonas mtDNA 69,034 bp, 97 genes); Andersson et al., Nature 396:
 //     133 (1998) (Rickettsia prowazekii about 1.1 Mb, 834 protein genes; not re-checked online); Nierman et al., PNAS 98: 4136
@@ -18,6 +16,7 @@ import { clamp } from './ch03.shared.js';
 import millerEvent from './source-audit-miller.js';
 import originsHypothesis from './source-audit-origins.js';
 import lucaEvent from './source-audit-luca.js';
+import goeEvent from './source-audit-goe.js';
 
 export default {
   collection: 'bighist',
@@ -32,56 +31,7 @@ export default {
     // ───────────────────────────────────────────────────────────────────────────────────── 3.3
     lucaEvent,
     // ───────────────────────────────────────────────────────────────────────────────────── 3.4
-    {
-      num: '3.4',
-      kind: 'Event',
-      name: 'The Great Oxidation Event',
-      statement: String.raw`For roughly the first two billion years the atmosphere held almost no free oxygen. Between about $2.45$ and $2.3$ billion years ago it rose from below $10^{-5}$ of today's level to a persistent, if still low, amount. The clearest signs are the disappearance of mass-independent sulfur-isotope fractionation (which needs an oxygen-poor atmosphere) from sedimentary rocks, followed by oxidised palaeosols and red beds; the great banded iron formations, which need dissolved iron in an anoxic ocean, peak before and fade after. A second rise followed in the Neoproterozoic, about $0.8$–$0.54$ billion years ago.
-
-**Cause.** The source of the oxygen is oxygenic photosynthesis by cyanobacteria, which probably began before the event; the event is when the oxygen *sources* began to exceed the *sinks* (reduced volcanic gases, dissolved iron, buried carbon).`,
-      idea: String.raw`Oxygen released by photosynthesis is consumed as long as there are reduced gases and minerals to oxidise. Treat the atmosphere as a box with a net source $S$ (organic carbon burial), a sink from volcanic and metamorphic reductants $R$ that works at full strength once there is even a trace of oxygen, and a weaker sink $k\,x$ proportional to the amount $x$. Then oxygen stays near zero while $S<R$ and rises to about $(S-R)/k$ once $S$ passes $R$: a slow drift in the balance gives a sudden change in the level. Why the balance changed is still argued (less reducing volcanic gas, hydrogen escape, more burial, nickel starvation of methanogens), and the model does not choose between them.`,
-      caption: String.raw`Left: the broad bands that geochemists draw for atmospheric oxygen (percent of the present level, log scale; the Proterozoic range is wide because estimates differ by orders of magnitude). Right, a toy box model, not a reconstruction: choose the net source before and after the transition and its date, and the steady oxygen level follows with a jump when the source passes the reductant supply. Compare its jump with the 2.45–2.31 Ga window in which the sulfur signal vanishes.`,
-      deps: ['bighist-3.3'],
-      see: ['bighist-3.6', 'bighist-3.7'],
-      refs: ['Christian'],
-      credit: 'Farquhar, Bao & Thiemens, 2000 (sulfur isotopes); Bekker et al., 2004',
-      tags: ['oxygen', 'atmosphere', 'deep time'],
-      scope: String.raw`The box model is a toy with one reservoir and one transition; it illustrates a threshold, not the history of any real flux.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Great_Oxidation_Event', doi: 'https://doi.org/10.1126/science.289.5480.756' },
-      verify: true,
-      viz(v) {
-        const S0 = v.slider('net source before / reductant supply', 0.2, 0.98, 0.4, { step: 0.01 });
-        const S1 = v.slider('net source after / reductant supply', 0.3, 2.5, 1.4, { step: 0.01 });
-        const tC = v.slider('date of the transition (Ga ago)', 1.8, 3.4, 2.4, { step: 0.01 });
-        const kS = v.slider('weak sink k', 0.3, 3, 1, { step: 0.01 });
-        const A = v.stage({ x: [-4, 0], y: [1e-8, 300], ylog: true, axes: 'box', gutter: true, height: 320, xlabel: 'time (Ga ago, negative)', ylabel: 'O₂ (% of present level)', title: 'oxygen bands drawn by geochemists (coarse)' });
-        const B = v.stage({ x: [-4, 0], y: [1e-8, 300], ylog: true, axes: 'box', gutter: true, height: 320, xlabel: 'time (Ga ago, negative)', ylabel: 'toy model O₂ (% of present)', title: 'toy box model: a threshold' });
-        const steady = (S, k) => { let lo = -12, hi = 3; const f = (x) => S - x / (x + 1e-5) - k * x; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (f(10 ** m) > 0) lo = m; else hi = m; } return 10 ** ((lo + hi) / 2); };
-        const sOf = (t, a, b, tc) => { const u = clamp((tc - -t) / 0.5 + 0.5, 0, 1); return a + (b - a) * u * u * (3 - 2 * u); };
-        v.render(() => {
-          A.rect(-4, 1e-8, -2.45, 1e-3, { fill: 'purple', fillAlpha: 0.22, color: 'purple', width: 1 });
-          A.text('below 10⁻⁵ of present', -3.95, 6e-6, { size: 10.5, color: 'purple', align: 'left' });
-          A.rect(-2.3, 1e-2, -0.8, 10, { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 1 });
-          A.text('Proterozoic: wide range', -2.25, 3e-3, { size: 10.5, color: 'accent', align: 'left' });
-          A.rect(-0.54, 10, 0, 150, { fill: 'green', fillAlpha: 0.2, color: 'green', width: 1 });
-          A.vband(-2.45, -2.31, { color: 'orange', alpha: 0.2, edges: false });
-          A.text('sulfur signal vanishes 2.45–2.31 Ga', -2.4, 150, { size: 10.5, color: 'orange', align: 'left' });
-          A.vband(-0.8, -0.54, { color: 'teal', alpha: 0.18, edges: false });
-          A.text('Neoproterozoic rise', -0.82, 3e-7, { size: 10.5, color: 'teal', align: 'right' });
-          // toy
-          const pts = []; for (let i = 0; i <= 160; i++) { const t = -4 + (4 * i) / 160; pts.push([t, 100 * steady(sOf(t, S0.value, S1.value, tC.value), kS.value)]); }
-          B.path(pts, { color: 'accent', width: 2.6 });
-          B.vline(-tC.value, { color: 'orange', width: 1.5, dash: [4, 3] });
-          B.text('transition', -tC.value + 0.05, 2e-7, { size: 10.5, color: 'orange', align: 'left' });
-          B.hline(1e-3, { color: 'purple', width: 1, dash: [3, 3] });
-          B.text('10⁻⁵ of present', -3.95, 3e-4, { size: 10.5, color: 'purple', align: 'left' });
-        });
-        v.readout(() => {
-          const lo = 100 * steady(S0.value, kS.value), hi = 100 * steady(S1.value, kS.value);
-          return `Toy model: before the transition O₂ ≈ **${lo.toExponential(1)}%** of present; after, **${hi < 0.01 ? hi.toExponential(1) : v.fix(hi, 2)}%**${S1.value <= 1 ? ' (the source never passes the reductant supply, so no oxidation event)' : ` — a jump of ×${(hi / lo).toExponential(1)}`}.\nReal record: MIF-S gone by 2.31 Ga; pO₂ < 10⁻⁵ before about 2.45 Ga (Philippot et al. 2018).`;
-        });
-      },
-    },
+    goeEvent,
     // ───────────────────────────────────────────────────────────────────────────────────── 3.5
     {
       num: '3.5',
