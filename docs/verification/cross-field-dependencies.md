@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **22 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 429 edges. Even
+Of 64 non-math collections, **21 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 411 edges. Even
 including planned items and planned prerequisites, **18 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -272,3 +272,7 @@ The [combined CIRC peer](circ-prerequisites-independent-peer.md) accepts sevente
 ## QINFO combined acceptance
 
 [QINFO independent peer](qinfo-crossfield-prerequisite-peer.md) accepts nineteen genuine inputs,6/6/23→25/25/42, including bounded correctness/layout and the final grammar successorb78affd. All32objects/functions/flags/helpers/fullrawlists,16,530independent checks and fresh320both-theme fullfields pass. Closingpeer verifies every4.9TeXspanidentical after literalgrammarpolish; earlier frozenproducer guard certifies its own earlier boundary only. PendingQINFO exclusions are removed only now; frozenBIGHIST exclusion is unchanged. Live429shortfall,22/64below25published,18whole syllabi below25. No source closure; later than2167-test checkpoint.
+
+## SOLID combined acceptance
+
+[SOLID independent peer](solid-independent-peer-followup.md) accepts eighteen genuine different-field inputs across fourteen consumers,7/8/27→25/26/45. All47functions/flags/helpers/fullrawlists preserved. Ideal-impact scope/stiffness and pureAiry no-body-force qualifications plus nine equivalent statement wraps close findings. Independent3,677mathassertions and28own fresh320cases/112pictures pass. Live411shortfall,21/64below25published,18whole syllabi below25. No sourceclosure; aftercheckpoint69710ca.

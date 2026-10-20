@@ -1025,3 +1025,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### Isolated chunked-index prototype rejected
 
 [Immutablefailedcandidateacf697e](map-chunked-indices-followup.md) stopsatfirstexactsame-sceneGPUimagefailure in lightoversizedDPR2fractionalpan:31,327changedRGBAchannels,max121. Logicalcurrent62,471,764/peak63,895,600bytespass; no timing. ActualPNGisthirdredraw; originalcomparedGPUreference/diffnotsaved, limitingdiagnosis. Dark/lifecycleunrun, productionunchanged. Independentfailureauditpending.
+
+### SOLID combined acceptance
+
+[Independent SOLID peer](solid-independent-peer-followup.md) accepts18genuineinputs and bounded impact/Airy/narrow-layout corrections; reaches25written. Live411/21/18,27furthercollectionsmeetpublishedtarget/sourcequeue5. Aftercheckpoint69710ca; no mapperformanceacceptance.

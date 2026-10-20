@@ -72,7 +72,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "DIST genuine prerequisite production after accepted REL peer",
+      "current": "MAT genuine prerequisite production after accepted SOLID peer",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -2241,15 +2241,34 @@
       "sourceClosure": "None; all32objects/functions/flags/helpers preserved.",
       "bridgeReview": "No affected bridge steps.",
       "followup": "Nineteen genuine inputs; bounded Helstrom success/error, POVM/rank, Bell-pair distinction, spectral/square-root reference and independent-interception qualifications. Eight narrow statement layouts including exact4.9notation expansion, followed by grammar-only root successor. Independent16530checks+ownfreshpixels/closingallTeXidentity. Earlier producerfrozenguard certifies ec78676 only; peer closingliteralguard certifiesb78affd."
+    },
+    {
+      "collection": "solid",
+      "commits": [
+        "3d543ac662e32eff55b6f357fbe24dfadae9e100",
+        "fa9287217a4e296ef9223a659951d7be66da1c85",
+        "f427d996c5bfa684210a108dd203803024e12554",
+        "f04b3adae5b5328bbf805d6897ecd510d13c8693",
+        "d5abdb8f2da35322fb16626412badcd2d2a5a0ec"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/solid-independent-peer-followup.md",
+      "sourceClosure": "None; all47functions/flags/helpers/rawlists preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Eighteen genuine different-field math/physics inputs across14consumers. Ideal massless-spring impact scope/stiffness corrected, pureAiry restrictedto no bodyforce, nine equivalentstatementwraps. Independent3677mathassertions and28fresh320both-theme cases/112pictures pass."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 429,
-    "publishedBelow25": 22,
+    "publishedShortfall": 411,
+    "publishedBelow25": 21,
     "collections": 64,
     "wholeSyllabusBelow25": 18,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Twenty-six further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Twenty-seven further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
