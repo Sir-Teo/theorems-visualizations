@@ -20,7 +20,7 @@ test('basis reduction can return to its empty first frame and continue through t
       assert.match(await page.locator('.steps-count').innerText(), new RegExp(`step ${n} / 7`));
       assert.equal(await page.locator('.viz-error').count(), 0);
     }
-    assert.match(await page.locator('.steps-note').innerText(), /it is a basis/);
+    assert.match(await page.locator('.steps-note').innerText(), /basis candidate for the input span/);
     assert.deepEqual(await page.evaluate(() => window.__vizErrors || []), []);
   } finally { await browser.close(); await new Promise(r => server.close(r)); }
 });

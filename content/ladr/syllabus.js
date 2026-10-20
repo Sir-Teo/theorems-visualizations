@@ -76,7 +76,7 @@ export default {
         { num: '2.28', kind: 'Theorem', name: 'Criterion for basis', deps: ['ladr-2.26'], tags: ['bases'],
           pic: 'Drag a list of vectors and a target v in ℝ²; all coefficient solutions are drawn — exactly one precisely when the list is a basis, none or infinitely many otherwise.' },
         { num: '2.30', kind: 'Theorem', name: 'Every spanning list contains a basis', deps: ['ladr-2.19', 'ladr-2.26'], tags: ['bases'],
-          pic: 'Start from five vectors spanning ℝ²; the sifting procedure scans left to right and greys out each vector already in the span of the earlier ones, leaving a basis.' },
+          pic: 'Sift five editable vectors through every proof step, including plane, line and all-zero examples; distinguish the input span from ℝ², show complete combination paths and disclose numerical rank tolerance.' },
         { num: '2.31', kind: 'Corollary', name: 'Basis of finite-dimensional vector space', deps: ['ladr-2.30', 'ladr-2.9'], tags: ['bases'],
           pic: 'A messy spanning list of ℝ³ is reduced to a basis with one click, showing that every finite-dimensional space has one.' },
         { num: '2.32', kind: 'Theorem', name: 'Every linearly independent list extends to a basis', deps: ['ladr-2.30', 'ladr-2.9'], tags: ['bases'],

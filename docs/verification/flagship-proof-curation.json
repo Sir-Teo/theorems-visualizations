@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "target": 100,
+  "status": "in-progress",
+  "limitation": "Only the accepted records have received this scoped source/proof/all-frame review. The separate 102-item control inventory is not counted as curated proofs.",
+  "accepted": [
+    {
+      "id": "ladr-2.30",
+      "file": "content/ladr/ch02-b.js",
+      "selectionReason": "Foundational finite basis extraction connects spanning, independence and constructive proof; editable plane/line/zero cases expose the hypotheses.",
+      "contentSHA256": "1a0ced3e35e12730732dc1a07654cf0112d7490b58aa1983c5871758d4a9a7dd",
+      "moduleSupportSHA256": "de09d2aac4a22cc4ba7cead64c659562365bd8b9f0cac060b629ef1dd02b0775",
+      "supportFiles": {
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e"
+      },
+      "source": {
+        "author": "Sheldon Axler",
+        "title": "Linear Algebra Done Right",
+        "edition": "4th",
+        "revision": "16 August 2026",
+        "url": "https://linear.axler.net/LADR4e.pdf",
+        "pages": [
+          40,
+          41
+        ],
+        "sha256": "1207d90a1310e79dea2ec3068f853e20b8306928eda122ae13fdfab50f41ea08"
+      },
+      "prerequisitesRead": [
+        "ladr-2.19",
+        "ladr-2.26"
+      ],
+      "checks": {
+        "mathGroups": 3,
+        "nativeGroups": 4,
+        "allFrames": true,
+        "framesPerSetting": 7,
+        "widths": [
+          1440,
+          320
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ],
+        "settings": "plane, line and zero presets; twenty actual handle drags per native group"
+      },
+      "tests": [
+        "tests/verification-flagship-basis.test.mjs",
+        "tests/verification-flagship-basis.mjs",
+        "tests/proof-stepper.test.mjs"
+      ],
+      "report": "docs/verification/flagship-basis-followup.md"
+    }
+  ]
+}

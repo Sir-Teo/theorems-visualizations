@@ -65,8 +65,8 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    A [bounded retained-edge experiment](docs/verification/map-retained-parent-check.md) passes independent
    picture/resource/lifecycle checks but regresses all twelve controlled matched cases and remains isolated.
    Continue renderer work from these measured constraints; the full 60 fps gate stays open.
-   Finish source/proof curation for 100 flagship steppers; the existing 102 first/next/last
-   control checks establish interaction coverage, not that curation gate.
+   Continue source/proof curation for 100 flagship steppers: [the first accepted result](docs/verification/flagship-basis-followup.md)
+   is recorded separately from the 102-player control inventory. The curation gate remains open.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
 The completed checkpoint through `00b1ea9` passes **1,543 tests**, including all six UI tests, and an **80-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,805 bytes gzipped. Its exact accepted snapshot excludes ongoing drafts and reconciles 163 pending and 673 original source flags resolved. Since the previous checkpoint, seven original flags close through independently checked surprise-exam, classical-scaling, strengthened-liar and finite-game batches. A separate font-completion runtime fix has three new browser regressions. The cross-field shortfall is 862; 53 of 64 non-math collections and 28 complete syllabi remain below target. The full-map 60 fps and 100-flagship source/proof-curation gates remain open. See [checkpoint evidence](docs/verification/checkpoint-00b1ea9.md).
@@ -584,6 +584,9 @@ These are features only an atlas can have, and the main reason to build one.
    the frontier of what to learn next.
 3. **Proof steppers** for ~100 flagship results: `v.steps` drives the viz through the proof idea
    (cover with balls → extract a finite subcover → take the minimum radius).
+   Source/proof/all-frame curation has begun: [1/100 accepted](docs/verification/flagship-proof-curation.json),
+   independently of the historical 102-player control audit. [Basis extraction](docs/verification/flagship-basis-followup.md)
+   now handles plane/line/zero input and exact state replay with explicit numerical limits.
 4. **Shareable states and embeds**: control and handle state encoded in the URL
    (`#/t/mech-5.3?s=…`), plus `?embed=1` for course pages and slides.
    **Implemented (2026-10-19):** runtime controls, native2D handles, Stage3D camera,

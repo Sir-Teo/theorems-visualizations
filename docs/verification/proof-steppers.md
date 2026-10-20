@@ -24,3 +24,9 @@ establish that all 102 are the master plan's curated flagship proofs, that every
 proof is mathematically valid, or that every frame has received a visual/source
 audit. Those claims need their own evidence. The original 291 steps-kit calls
 across algorithms, models and other item kinds are not counted as 291 proofs.
+
+## Source and proof curation
+
+The separate [curation registry](flagship-proof-curation.json) starts at **1/100** accepted results. Its first entry, [basis extraction](flagship-basis-followup.md), has actual source/proof/prerequisite reading, exhaustive finite reference checks and all-frame native geometry/replay checks. It corrects false two-survivor and R² claims for degenerate input, plus stale proof frames after state replay. The older 102-player control inventory remains separate.
+
+Run `node scripts/verify-flagship-curation.mjs` to check evidence links and the hashes of curated item/support code. This only detects stale records; it does not perform another proof audit or curate the other 99 results.
