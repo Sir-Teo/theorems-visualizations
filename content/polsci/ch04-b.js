@@ -1,4 +1,5 @@
 // Political Science & Social Choice — Chapter 4 (part b): items 4.8-4.13
+import {downsSpatial} from './source-audit-downs-items.js';
 import { CC, sum, range, clamp, txt, rr, chip, Phi, phi, PhiInv, median, mean, pct, dist2, votesFor, mixGrid, binX, gridMedian, gridMean, LINE, cdfOf, votes2, tallyBins } from './ch04.shared.js';
 
 const LET = 'ABCDEFGHIJ';
@@ -350,94 +351,8 @@ By the median voter theorem (polsci-4.2), the tax rate chosen by majority vote i
       },
     },
 
-    // ───────────────────────────────────────────────────────────── 4.13
-    {
-      num: '4.13',
-      kind: 'Paper',
-      name: 'An Economic Theory of Political Action in a Democracy',
-      paper: { authors: 'Anthony Downs', year: 1957, title: 'An Economic Theory of Political Action in a Democracy', venue: 'Journal of Political Economy 65 (2): 135–150', doi: '10.1086/257897' },
-      introduces: ['polsci-4.3'],
-      statement: String.raw`Downs treats political parties as vote-maximizing firms and voters as rational consumers of policy located on a left–right scale. In the model that bears his name, with voters distributed along the scale and each voting for the nearest party, two parties competing for votes move toward each other, and when the distribution of voters is single-peaked they converge on the position of the median voter. Downs also points out the limits of this result: when the electorate is bimodal, or when voters too far from both parties abstain, the parties can remain apart, and with three or more parties their positions need not settle. (This statement follows the standard account of the Downsian model; I could not check the article's own wording, so the paper-specific claims should be read with that caveat.)`,
-      idea: String.raw`The paper builds on Hotelling's analysis of two sellers on a line (1929; micro-10.17, geog-9.3) and carries it from market to polity, with parties in place of firms and a vote in place of a sale, and with Black's one-dimensional analysis of committees (polsci-4.12) as the formal backbone: the median voter's position is the equilibrium. It introduced the idea that the *shape* of the distribution of voters, not only its centre, decides how parties behave, and that rationality may lead voters to stay home (polsci-5.1). The convergence prediction, polsci-4.3, has been criticized and refined ever since (polsci-4.4).`,
-      caption: String.raw`**Top:** voters along the left–right scale. Choose one of four distributions (single-peaked and symmetric, skewed, two-humped, and two-humped with abstention by voters more than $d$ from every party), then drag parties $A$ and $B$ (and add $C$) to see their vote shares. **Bottom:** the game itself. Each point of the plane is a pair of positions $(x_A, x_B)$, coloured by $A$'s margin over $B$; the blue and orange curves are each party's best response to the other, and **green dots** are the pure equilibria, where the curves cross. Drag the gold point in the plane or the parties above; they are the same pair. With a single-peaked electorate the only equilibrium is at the median; with the two-humped electorate and abstention the equilibria move apart.`,
-      deps: ['polsci-4.12', 'micro-10.17'],
-      see: ['polsci-4.3', 'polsci-4.4'],
-      refs: [],
-      tags: ['paper', 'party competition', 'median voter'],
-      credit: 'Anthony Downs, 1957',
-      scope: String.raw`Standard Hotelling–Downs model: one dimension, full information, parties maximizing votes and free to move anywhere. The four distributions are my reconstruction of the cases usually discussed, not figures taken from the paper; equilibria are found on a grid of positions with spacing $0.1$.`,
-      verify: true,
-      links: { doi: 'https://doi.org/10.1086/257897' },
-      viz(v) {
-        const N = 201, Y0 = -0.1, GS = 0.1;
-        const D = v.stage({ x: [0, 10], y: [-0.2, 1.25], axes: 'box', gutter: true, height: 270, full: true, yticks: [], xlabel: 'left–right position', ylabel: 'voters', title: 'the electorate and the parties' });
-        const P = v.stage({ x: [0, 10], y: [0, 10], axes: 'box', gutter: true, height: 380, minWidth: 360, equal: true, xlabel: 'position of A', ylabel: 'position of B', title: 'the game: A’s margin over B, best responses and equilibria' });
-        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 260, title: 'vote shares' });
-        const PRE = {
-          uni: { label: 'single-peaked', comps: [[1, 5, 1.6]], d: 10.5 },
-          skew: { label: 'skewed', comps: [[0.6, 3.5, 1.1], [0.4, 6.6, 2.1]], d: 10.5 },
-          bi: { label: 'two-humped', comps: [[0.5, 2.8, 1.1], [0.5, 7.2, 1.1]], d: 10.5 },
-          bia: { label: 'two-humped, abstention', comps: [[0.5, 2.8, 1.1], [0.5, 7.2, 1.1]], d: 2.2 },
-        };
-        const dist = v.select('electorate', Object.entries(PRE).map(([value, p]) => ({ value, label: p.label })), 'uni', { onChange: () => { dth.set(PRE[dist.value].d); } });
-        const dth = v.slider('alienation threshold $d$', 0.8, 10.5, 10.5, { step: 0.1, fmt: (x) => (x >= 10.4 ? '∞ (all vote)' : v.fix(x, 1)) });
-        const third = v.toggle('add a third party C', false, { onChange: () => { HC.visible = third.value; } });
-        const PCOL = ['blue', 'orange', 'teal'], NM = ['A', 'B', 'C'];
-        const HA = D.handle(3.5, Y0, { color: 'blue', r: 9, constrain: 'x', label: 'A', labelPos: 'n' });
-        const HB = D.handle(6.5, Y0, { color: 'orange', r: 9, constrain: 'x', label: 'B', labelPos: 'n' });
-        const HC = D.handle(5, Y0, { color: 'teal', r: 9, constrain: 'x', label: 'C', labelPos: 'n' });
-        HC.visible = false;
-        const G = P.handle(3.5, 6.5, { color: 'gold', r: 8, constrain: { x: [0, 10], y: [0, 10] } });
-        HA.onDrag = () => G.set(HA.x, HB.x); HB.onDrag = () => G.set(HA.x, HB.x);
-        G.onDrag = () => { HA.set(G.x, Y0); HB.set(G.y, Y0); };
-        let cache = { key: '', eq: [], BRA: [], BRB: [], F: null };
-        const weights = () => mixGrid(N, PRE[dist.value].comps);
-        function solve(w, d) {
-          const F = cdfOf(w), cand = range(Math.round(10 / GS) + 1).map((i) => i * GS);
-          const BRA = [], BRB = [];
-          const bestA = (xb) => { let b = -1, arg = []; for (const z of cand) { const val = votes2(F, z, xb, d)[0]; if (val > b + 1e-9) { b = val; arg = [z]; } else if (val > b - 1e-9) arg.push(z); } return { b, arg }; };
-          const bestB = (xa) => { let b = -1, arg = []; for (const z of cand) { const val = votes2(F, xa, z, d)[1]; if (val > b + 1e-9) { b = val; arg = [z]; } else if (val > b - 1e-9) arg.push(z); } return { b, arg }; };
-          const ba = cand.map(bestA), bb = cand.map(bestB), eq = [];
-          cand.forEach((xa, i) => cand.forEach((xb, j) => { if (votes2(F, xa, xb, d)[0] >= ba[j].b - 1e-7 && votes2(F, xa, xb, d)[1] >= bb[i].b - 1e-7) eq.push([xa, xb]); }));
-          return { F, cand, ba, bb, eq };
-        }
-        let info = null;
-        v.render(() => {
-          const w = weights(), d = dth.value, key = dist.value + '|' + d.toFixed(2);
-          if (cache.key !== key) cache = { key, ...solve(w, d) };
-          const { F, cand, ba, bb, eq } = cache, mx = Math.max(...w);
-          const act = third.value ? [0, 1, 2] : [0, 1], Hs = [HA, HB, HC], Ps = act.map((j) => Hs[j].x), tl = tallyBins(Ps, w, d);
-          for (let i = 0; i < N; i++) {
-            const x0 = (i * 10) / N, g = tl.who[i];
-            D.rect(x0, 0, x0 + 10 / N, w[i] / mx, { fill: g < 0 ? 'gray' : PCOL[act[g]], fillAlpha: g < 0 ? 0.28 : 0.5, stroke: false });
-          }
-          D.fn((x) => w[clamp(Math.floor((x / 10) * N), 0, N - 1)] / mx, { color: 'ink', width: 1.4, n: 300 });
-          const med = gridMedian(w); D.vline(med, { color: 'green', width: 2 }); D.text('median', med, 1.17, { color: 'green', size: 11.5, weight: 700 });
-          // the plane
-          P.heat((xa, xb) => { const [a, b] = votes2(F, xa, xb, d); return a - b; }, { range: [-1, 1], cmap: 'theme-diverging', neg: 'orange', pos: 'blue', res: 4, key: `h${key}` });
-          P.line(0, 0, 10, 10, { color: 'faint', dash: true, alpha: 0.7 });
-          P.path(cand.map((xb, j) => [ba[j].arg.reduce((p, q) => (Math.abs(q - xb) < Math.abs(p - xb) ? q : p)), xb]), { color: 'blue', width: 2 });
-          P.path(cand.map((xa, i) => [xa, bb[i].arg.reduce((p, q) => (Math.abs(q - xa) < Math.abs(p - xa) ? q : p))]), { color: 'orange', width: 2 });
-          eq.forEach(([a, b]) => P.dot(a, b, { r: 6, color: 'green' }));
-          P.vline(med, { color: 'green', alpha: 0.35, dash: true }); P.hline(med, { color: 'green', alpha: 0.35, dash: true });
-          // shares panel
-          const c = R.ctx, W = R.width, H = R.height, bw = Math.min(46, W / 6);
-          const items = [...act.map((j, k) => [NM[j], tl.vt[k], PCOL[j]]), ['abstain', tl.ab, 'gray']];
-          items.forEach(([nm, val, col], k) => {
-            const X = 30 + (k + 0.5) * ((W - 40) / items.length), h = val * (H - 100);
-            rr(c, X - bw / 2, H - 40 - h, bw, Math.max(2, h), 5); c.fillStyle = v.color(col, 0.6); c.fill();
-            txt(v, c, pct(val, 1), X, H - 48 - h, { size: 12, weight: 700 }); txt(v, c, nm, X, H - 22, { size: 12, weight: 700, color: col });
-          });
-          info = { Ps, tl, med, eq, act };
-        });
-        v.legend([['blue', 'A’s best response'], ['orange', 'B’s best response'], ['green', 'pure equilibria', { dot: true }], ['gold', 'current positions', { dot: true }]]);
-        v.readout(() => {
-          const { Ps, tl, med, eq, act } = info, g = (x) => v.fix(x, 2);
-          const eqs = eq.length ? eq.slice(0, 4).map(([a, b]) => `(${g(a)}, ${g(b)})`).join(', ') + (eq.length > 4 ? ` and ${eq.length - 4} more` : '') : 'none';
-          const near = Math.abs(Ps[0] - med) < 0.15 && Math.abs(Ps[1] - med) < 0.15;
-          return `Median voter at ${g(med)}. Positions ${act.map((j, k) => `${NM[j]} = ${g(Ps[k])}`).join(', ')}; shares ${act.map((j, k) => `${NM[j]} ${pct(tl.vt[k], 1)}`).join(', ')}, abstaining ${pct(tl.ab, 1)}. Pure equilibria of the two-party game: **${eqs}**. ${eq.length === 1 && Math.abs(eq[0][0] - med) < 0.16 && Math.abs(eq[0][1] - med) < 0.16 ? 'Downs’s convergence: the only equilibrium puts both parties at the median.' : eq.length && !eq.some(([a, b]) => Math.abs(a - med) < 0.16 && Math.abs(b - med) < 0.16) ? 'No equilibrium at the median: the parties stay apart.' : ''}${near ? ' (Your positions are at the median.)' : ''}`;
-        });
-      },
-    },
+    // Source-audited finite comparison 4.13
+    downsSpatial,
+
   ],
 };

@@ -1,4 +1,5 @@
 // Political Science & Social Choice — Chapter 5 (part b): items 5.6-5.10
+import {downsIgnorance} from './source-audit-downs-items.js';
 import { sum, range, clamp, mean, pct, Phi, phi, lgam, binomPmf, binomTail, majProb, tieProb, logspace } from './ch05.shared.js';
 
 /**
@@ -121,56 +122,8 @@ Under the **unanimity rule** ($k=n$) being pivotal means that all other jurors v
       },
     },
 
-    // ───────────────────────────────────────────────────────────── 5.7
-    {
-      num: '5.7',
-      kind: 'Concept',
-      name: 'Rational ignorance',
-      statement: String.raw`A voter is **rationally ignorant** when it costs her more to learn about the choice than the information is worth to her. Suppose that a vote cast with information level $s\ge0$ picks the better candidate with probability $a(s)$, that information costs $c$ per unit, and that her vote is decisive with probability $p$ and the stake is $B$. If the gain from voting for the better rather than the worse candidate is $pB\,(2a(s)-1)$ and $2a(s)-1 = 1-e^{-s}$, then the net value of information level $s$ is $V(s)=pB(1-e^{-s})-cs$, maximized at
-$$s^*=\max\bigl\{0,\ \ln (pB/c)\bigr\}.$$
-Because $p$ is small in a large electorate (polsci-5.3), $s^*=0$ for all $n$ beyond a finite size: an optimal voter learns nothing.`,
-      idea: String.raw`The marginal value of an extra unit of information is $pBe^{-s}$ and its marginal cost is $c$, so the voter stops learning when the two meet. Since the benefit of information operates only through the chance $p$ of casting the decisive vote, the same smallness that explains low turnout (polsci-5.1) also explains why those who do vote may know little: ignorance, like abstention, is the rational response to a tiny $p$. The concept is behind Downs's view that voters rely on cheap cues such as party labels, and it motivates the question of whether an electorate of ill-informed voters can nevertheless decide well (polsci-5.8).`,
-      caption: String.raw`Left: the net value $V(s)=pB(1-e^{-s})-cs$ of acquiring information level $s$ for the electorate size you choose; the dot is the optimum $s^*$. Right (log scale in $n$): the optimal information level $s^*$ and the accuracy $a(s^*)$ that goes with it, against $n$. Choose the dead-heat tie probability $\sqrt{2/\pi n}$ or the smoother $1/(n+1)$ that arises when the lean is uncertain, and change the stake and the cost.`,
-      deps: ['polsci-5.1'],
-      see: ['polsci-5.8', 'polsci-5.9'],
-      refs: ['Shepsle: voting and turnout'],
-      tags: ['information', 'turnout'],
-      credit: 'Anthony Downs, 1957',
-      scope: String.raw`The exponential information technology, $2a(s)-1=1-e^{-s}$, and the linear cost are assumptions chosen to make the optimum explicit, not estimates from data; the qualitative conclusion (optimal information falls with $\ln p$) holds for any concave benefit and convex cost. The voter is assumed to vote regardless (for example from duty, polsci-5.2), so only the information choice is modelled.`,
-      verify: true,
-      links: {},
-      viz(v) {
-        const L = v.stage({ x: [0, 8], y: [-1, 1], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'information level $s$', ylabel: 'net value $V(s)$', title: 'what information is worth' });
-        const R = v.stage({ x: [10, 1e9], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'number of voters $n$', ylabel: 'accuracy $a(s^*)$', title: 'optimal ignorance' });
-        const B = v.slider('stake $B$', 100, 1e6, 5000, { log: true, sig: 2 });
-        const c = v.slider('cost per unit $c$', 0.01, 100, 1, { log: true, sig: 2 });
-        const nS = v.slider('electorate size $n$', 10, 1e9, 1e4, { log: true, sig: 2 });
-        const mode = v.select('decisive probability', [{ value: 'tie', label: 'dead heat $\\sqrt{2/\\pi n}$' }, { value: 'unc', label: 'uncertain lean $1/(n+1)$' }], 'tie');
-        const pOf = (n) => (mode.value === 'tie' ? Math.sqrt(2 / (Math.PI * n)) : 1 / (n + 1));
-        const sStar = (n) => Math.max(0, Math.log((pOf(n) * B.value) / c.value));
-        const acc = (s) => 1 - 0.5 * Math.exp(-s);
-        let info = {};
-        v.render(() => {
-          const n = nS.value, p = pOf(n), b = B.value, cc = c.value, ss = sStar(n);
-          const V = (s) => p * b * (1 - Math.exp(-s)) - cc * s;
-          const top = Math.max(Math.abs(V(0)), V(ss), p * b, cc * 2, 1e-9);
-          L.setView([0, 8], [-cc * 8 < -top * 3 ? -top * 3 : -cc * 8, top * 1.3]);
-          L.hline(0, { color: 'faint' });
-          L.fn(V, { color: 'accent', width: 2.4, domain: [0, 8] });
-          L.dot(ss, V(ss), { r: 7, color: 'green', label: 's*', labelPos: 'ne' });
-          const ns = logspace(10, 1e9, 140);
-          R.path(ns.map((x) => [x, acc(sStar(x))]), { color: 'accent', width: 2.4 });
-          R.hline(0.5, { color: 'faint', dash: true });
-          R.vline(n, { color: 'gold', dash: true, width: 1.6 });
-          R.dot(n, acc(ss), { r: 6, color: 'green' });
-          const nz = mode.value === 'tie' ? (2 * b * b) / (Math.PI * cc * cc) : b / cc - 1;
-          if (nz > 10 && nz < 1e9) { R.vline(nz, { color: 'red', dash: true, alpha: 0.7 }); R.text('s* = 0 beyond', nz, 0.25, { color: 'red', size: 11.5, align: 'right' }); }
-          info = { p, ss, nz, a: acc(ss) };
-        });
-        v.legend([['accent', 'value / accuracy'], ['green', 'optimum', { dot: true }], ['red', 'size where learning stops', { dash: true }]]);
-        v.readout(() => `$p=${v.sci(info.p, 3)}$, so $pB=${v.sci(info.p * B.value, 3)}$ against $c=${v.fmt(c.value, 3)}$: optimal information $s^*=\\mathbf{${v.fix(info.ss, 2)}}$, giving accuracy $a(s^*)=${v.fix(info.a, 3)}$ (pure guessing is $0.5$). Beyond $n\\approx ${v.sci(info.nz, 3)}$ the optimal voter learns nothing.`);
-      },
-    },
+    // Source-audited finite comparison 5.7
+    downsIgnorance,
 
     // ───────────────────────────────────────────────────────────── 5.8
     {

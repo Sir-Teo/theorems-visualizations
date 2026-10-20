@@ -1,11 +1,7 @@
 // Political Science & Social Choice — Chapter 5: Turnout, information and juries (items 5.1-5.5; the rest are in ch05-b.js)
+import {downsVoting} from './source-audit-downs-items.js';
 import { assertJurySliderTick, assertOddJurySize, juryProbability, juryMass, juryLowerBound, juryLeader, juryNumber } from './source-audit-jury.js';
 import { sum, range, clamp, mean, pct, Phi, phi, lgam, binomPmf, binomTail, majProb, tieProb, hoeffding, logspace } from './ch05.shared.js';
-
-/** Tie probability for a given electorate size and expected support q (cached by rounding). */
-const pDec = (n, q) => tieProb(n, q);
-/** Number of voters needed before p*B drops below c for a dead-heat electorate: p ~ sqrt(2/(pi n)). */
-const nStar = (B, c) => (2 * B * B) / (Math.PI * c * c);
 
 export default {
   collection: 'polsci',
@@ -13,51 +9,8 @@ export default {
   title: 'Turnout, information and juries',
   summary: String.raw`A single vote almost never decides a large election, so a purely instrumental voter, who votes only to change the result, should stay home: this is the paradox of voting. The calculus of voting repairs the prediction by adding a taste for voting itself, and the probability of a decisive vote turns out to be an exact binomial calculation, with a very different size depending on what the voter knows about the electorate. Voting also aggregates information. For independent voters with the same fixed better-than-chance competence, Condorcet’s jury theorem sends majority accuracy toward one as odd jury size grows; a shared-leader model shows how dependence can obstruct this conclusion, and strategic jurors who vote as though they were pivotal can make a unanimous jury convict more innocent defendants as it grows. The last items look at who bothers to learn anything (rational ignorance), why noisy electorates can still be wise (the miracle of aggregation), and why an uninformed voter may do best to abstain (the swing voter's curse). The chapter ends with Condorcet's own essay of 1785.`,
   items: [
-    // ───────────────────────────────────────────────────────────── 5.1
-    {
-      num: '5.1',
-      kind: 'Paradox',
-      name: 'The paradox of voting (Downs)',
-      statement: String.raw`Suppose a citizen votes only to change who wins. If the benefit to her of her preferred side winning is $B$, the cost of voting is $c$, and the probability that her single vote is decisive is $p$, then voting is worth it exactly when
-$$pB > c.$$
-In a large electorate $p$ is tiny: for $n$ voters who are split evenly, the probability of an exact tie is about $\sqrt{2/(\pi n)}$, and if the electorate leans even slightly to one side it is far smaller still. So $pB$ falls below any fixed cost $c$ once $n$ exceeds about $2B^2/(\pi c^2)$ (for a dead heat), and the model predicts that almost nobody votes. Millions do. That mismatch between the instrumental model and observed turnout is the **paradox of voting**.`,
-      idea: String.raw`The argument is arithmetic on three numbers. The benefit $B$ is bounded by what is at stake, the cost $c$ of registering, informing oneself and going to the polls is positive, and the probability of being pivotal shrinks like $1/\sqrt n$ at best (polsci-5.3 computes it exactly). Expected-utility reasoning (behav-1.3) says to compare the expected gain $pB$ with $c$, so for large $n$ the comparison always fails. The paradox is not that rational voters would abstain, but that the model which makes voting a rational investment in the outcome cannot account for turnout; the standard repair adds a term for the satisfaction of voting itself (polsci-5.2).`,
-      caption: String.raw`Both axes are logarithmic. The blue curve is the expected benefit $pB$ of voting in a dead-heat electorate as the number of voters $n$ grows; the red line is the cost $c$. The orange curve gives the same quantity when the electorate is expected to lean by a few tenths of a percent to one side, which kills $p$ much faster. The green line marks the size $2B^2/(\pi c^2)$ beyond which a dead-heat voter's expected gain is below the cost. Move the stake, the cost and the electorate size and read $p$ off the readout.`,
-      deps: ['behav-1.3'],
-      see: ['polsci-5.2', 'polsci-5.3', 'polsci-5.7'],
-      refs: ['Shepsle: voting and turnout', 'Gelman, Silver and Edlin (2012), Economic Inquiry 50: 321–326'],
-      tags: ['turnout', 'pivotal voter'],
-      credit: 'Anthony Downs, 1957',
-      scope: String.raw`The decisive probability is that of an exact tie among $n$ voters who vote independently, with the same chance $q$ for each of two candidates. Real elections are decided through many districts and recounts, and a voter does not know $q$ precisely (polsci-5.3), but even Gelman, Silver and Edlin's estimate for an average U.S. voter in the 2008 presidential election, about 1 chance in 60 million of being decisive, leaves $pB$ very small. The stake and cost values are illustrative and not data.`,
-      verify: true,
-      links: { doi: 'https://doi.org/10.1086/257897' },
-      viz(v) {
-        const s = v.stage({ x: [100, 1e9], y: [1e-6, 1e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 360, full: true, xlabel: 'number of voters $n$', ylabel: 'expected benefit $pB$ (dollars)' });
-        const B = v.slider('stake $B$ (dollars)', 100, 1e6, 5000, { log: true, sig: 2 });
-        const c = v.slider('cost $c$ (dollars)', 1, 1000, 10, { log: true, sig: 2 });
-        const lean = v.slider('expected lean of the electorate (percentage points)', 0, 2, 0.3, { step: 0.05 });
-        const nS = v.slider('electorate size $n$', 100, 1e9, 1e6, { log: true, sig: 2 });
-        v.render(() => {
-          const b = B.value, cc = c.value, q = 0.5 + lean.value / 100, n = Math.round(nS.value / 2) * 2;
-          s.fn((x) => b * Math.sqrt(2 / (Math.PI * x)), { color: 'accent', width: 2.4, n: 220 });
-          if (lean.value > 0) s.fn((x) => b * pDec(Math.round(x / 2) * 2, q), { color: 'orange', width: 2.2, n: 220 });
-          s.hline(cc, { color: 'red', width: 2 });
-          const ns = nStar(b, cc);
-          if (ns > 100 && ns < 1e9) { s.vline(ns, { color: 'green', width: 1.6, dash: true }); s.text('n* = 2B²/(πc²)', ns, 3e4, { color: 'green', size: 11.5, align: 'center' }); }
-          s.vline(n, { color: 'gold', width: 1.6, dash: true });
-          const p0 = Math.sqrt(2 / (Math.PI * n));
-          s.dot(n, b * p0, { r: 6, color: 'accent' });
-          const p1 = pDec(n, q);
-          if (lean.value > 0 && p1 > 0) s.dot(n, b * p1, { r: 6, color: 'orange' });
-        });
-        v.legend([['accent', 'dead heat: $B\\sqrt{2/\\pi n}$'], ['orange', 'leaning electorate'], ['red', 'cost $c$'], ['green', 'breakeven size', { dash: true }]]);
-        v.readout(() => {
-          const b = B.value, cc = c.value, q = 0.5 + lean.value / 100, n = Math.round(nS.value / 2) * 2;
-          const p0 = Math.sqrt(2 / (Math.PI * n)), p1 = pDec(n, q);
-          return `At $n=${v.sci(n, 2)}$ the chance of a tie in a dead heat is $p=${v.sci(p0, 3)}$, so $pB=${v.sci(b * p0, 3)}$ dollars against a cost of $${v.fmt(cc, 3)}$: voting ${b * p0 > cc ? '**pays**' : '**does not pay**'}.\nWith a lean of ${v.fix(lean.value, 2)} points, $p=${p1 > 0 ? v.sci(p1, 3) : '0'}$ and $pB=${v.sci(b * p1, 3)}$. The dead-heat breakeven is $n^*\\approx ${v.sci(nStar(b, cc), 3)}$.`;
-        });
-      },
-    },
+    // Source-audited finite comparison 5.1
+    downsVoting,
 
     // ───────────────────────────────────────────────────────────── 5.2
     {
