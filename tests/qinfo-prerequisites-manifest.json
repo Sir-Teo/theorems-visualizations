@@ -1,0 +1,120 @@
+{
+  "mapping": [
+    {
+      "num": "2.1",
+      "file": "ch02.js",
+      "target": "ladr-3.4",
+      "paragraph": "The linear map lemma ladr-3.4 says that prescribing images of a basis determines one unique linear operator. Applying it to the four computational basis vectors extends the classical CNOT permutation to superpositions without reading or measuring the control. Thus the displayed entangled output follows by linearity on the two occupied basis vectors; replacing a superposition by a random classical branch would be a different map."
+    },
+    {
+      "num": "2.2",
+      "file": "ch02.js",
+      "target": "ladr-7.53",
+      "paragraph": "By ladr-7.53, a unitary maps an orthonormal basis to an orthonormal basis and its inverse is its adjoint. The preparation circuit therefore produces four orthonormal Bell vectors, and the adjoint circuit sends them back to their distinct computational labels. This is the precise reason the joint measurement identifies all four. It does not prohibit distinguishing a chosen pair by local measurements followed by classical comparison."
+    },
+    {
+      "num": "2.3",
+      "file": "ch02.js",
+      "target": "ladr-7.31",
+      "paragraph": "The finite-dimensional density operator is self-adjoint and hence normal, so ladr-7.31 supplies the orthonormal eigenbasis used in the construction. Positivity and trace one give nonnegative eigenvalues summing to one. Their square roots are the eigenvalues of the positive square root from ladr-7.39; these coefficients normalize the displayed purification. Orthogonality of the reference vectors then removes precisely the off-diagonal terms under partial trace."
+    },
+    {
+      "num": "2.5",
+      "file": "ch02.js",
+      "target": "ladr-7.38",
+      "paragraph": "Use ladr-7.38 on the finite-dimensional positive factors: each has an orthonormal eigenbasis with nonnegative eigenvalues. Complex conjugating the eigenvectors shows that transpose keeps those eigenvalues nonnegative, and tensor products of the eigenbases give nonnegative eigenvalue products. Finally every nonnegative weighted sum has nonnegative quadratic form. This proves PPT necessity for separable states in every dimension; it does not prove the separate low-dimensional converse."
+    },
+    {
+      "num": "2.6",
+      "file": "ch02.js",
+      "target": "prob-1.6.1",
+      "paragraph": "Condition on the shared random seed, chosen independently of the referee inputs. Each seed fixes a deterministic response table with uniform-input win rate at most three quarters. Monotonicity and linearity of expectation in prob-1.6.1 keep its average at most three quarters as well. Thus shared randomness cannot improve the classical optimum; no assumption of independence between the players responses is made."
+    },
+    {
+      "num": "4.7",
+      "file": "ch04-b.js",
+      "target": "ladr-6.14",
+      "paragraph": "The equality case in Cauchy-Schwarz ladr-6.14 explains the pure-target boundary. Both $|\\psi\\rangle$ and $U|\\psi\\rangle$ have norm one, so $|z|\\le1$, with equality exactly when they are scalar multiples: the target occupies one eigenspace. The equal-control branch state has reduced purity $(1+|z|^2)/2$, hence is entangled exactly when $|z|<1$. Equal eigenphases give equality even when several eigenvectors are occupied."
+    },
+    {
+      "num": "4.8",
+      "file": "ch04-b.js",
+      "target": "ladr-7.53",
+      "paragraph": "For every Boolean f, applying the bit oracle twice restores y because XOR with the same bit cancels. It therefore permutes the entire computational basis bijectively, whatever collisions f itself has. The orthonormal-basis characterization ladr-7.53 makes its linear extension unitary. Reversibility belongs to the enlarged map retaining x, not to f alone; no assumption that f is injective is needed."
+    },
+    {
+      "num": "4.9",
+      "file": "ch04-b.js",
+      "target": "ladr-7.87",
+      "paragraph": "The operator-norm triangle inequality ladr-7.87 is the step that turns local integral defects into the global bound. The difference between r product steps and r exact steps is a telescoping sum of r terms, each a one-step defect multiplied on both sides by unitaries. Those factors preserve operator norm, so the sum has norm at most r times the one-step bound. This uses finite-dimensional Hermitian generators and exact unitary factors; it does not discard a formal series tail."
+    },
+    {
+      "num": "3.1",
+      "file": "ch03.js",
+      "target": "ladr-9.74",
+      "paragraph": "The tensor-basis result ladr-9.74 gives a basis of the composite space by taking all products of the two basis vectors on each wire. Iterating it yields one basis vector for each of the $2^n$ binary strings, so a generic pure state needs that many complex coordinates. This is the state-vector storage claim used here, not a lower bound for every possible classical simulation of special circuits."
+    },
+    {
+      "num": "3.2",
+      "file": "ch03.js",
+      "target": "ladr-6.25",
+      "paragraph": "The dimension step uses ladr-6.25: orthonormal message vectors are linearly independent, so a two-dimensional qubit space cannot contain four of them. The shared pair instead supplies a four-dimensional space and four orthogonal Bell messages. The stronger stated half-success bound for four equiprobable qubit messages also follows directly: each density matrix is bounded by I, so summing $\\operatorname{tr}(E_m\\rho_m)/4$ over any four-outcome POVM is at most $\\operatorname{tr}I/4=1/2$."
+    },
+    {
+      "num": "3.4",
+      "file": "ch03.js",
+      "target": "prob-2.1.1a",
+      "paragraph": "The exponential factors use the finite-family independence definition prob-2.1.1a. For this specified measure-and-resend attack, independent note preparations and separate independent basis guesses make the per-position acceptance events independent. Their intersection therefore has probability $(3/4)^n$ for one output note or $(5/8)^n$ for both outputs together. This multiplication does not prove the separately quoted optimal bound against arbitrary joint forging strategies."
+    },
+    {
+      "num": "3.5",
+      "file": "ch03.js",
+      "target": "prob-2.1.1a",
+      "paragraph": "For the intercept-resend sampling formula, interception is independently attempted with probability q on each signal, and the preparation, basis choices and shot outcomes are independent across positions. The sampled error events are then independent with probability $q/4$ per sifted bit. By prob-2.1.1a their complements intersect with probability $(1-q/4)^k$, giving the displayed detection probability. A fixed number of intercepted positions with sampling without replacement would require a different finite-population formula."
+    },
+    {
+      "num": "3.7",
+      "file": "ch03.js",
+      "target": "prob-2.1.1a",
+      "paragraph": "The recurrence assumes two independently prepared copies. By prob-2.1.1a their Bell-component labels have product probabilities, such as $F^2$, Fg and $g^2$. Summing the weights of the accepted parity cases gives the stated success probability; dividing the accepted correct-component weight by that sum gives the new fidelity. Correlated pairs need not obey this map, and neither this product rule nor the finite display proves a positive asymptotic yield."
+    },
+    {
+      "num": "4.1",
+      "file": "ch04.js",
+      "target": "alg-1.15",
+      "paragraph": "Each Toffoli or copying gate is a bijection of the full classical basis. By alg-1.15 their composition remains a bijection, so reversing the order and inverting each gate undoes the computed work. After copying the output into a separate register, uncomputation acts on the original input/work registers and leaves that output register intact. Copying here is basis-bit fan-out, not cloning an arbitrary unknown quantum state."
+    },
+    {
+      "num": "1.1",
+      "file": "ch01.js",
+      "target": "prob-2.4.1",
+      "paragraph": "For repeated independent preparations and measurements, let $X_j$ indicate outcome 1. These indicators are identically distributed, independent and integrable, with mean $p=|\\beta|^2$. The strong law prob-2.4.1 therefore gives almost-sure convergence of their average to p. This proves the stated frequency limit; the preceding two-standard-deviation scale is a finite-shot heuristic, not a conclusion of that law or a guaranteed confidence interval."
+    },
+    {
+      "num": "1.3",
+      "file": "ch01.js",
+      "target": "ladr-7.53",
+      "paragraph": "The unitary characterization ladr-7.53 identifies the adjoint with the inverse and the images of an orthonormal basis with another orthonormal basis. Here $H^\\dagger=H$ and $H^2=I$, so the preimages of the computational outcomes are exactly the X-basis vectors. The Born probabilities after H are therefore the X-basis probabilities of the original state, for every normalized input."
+    },
+    {
+      "num": "1.4",
+      "file": "ch01.js",
+      "target": "ladr-9.58",
+      "paragraph": "The determinant result ladr-9.58 supplies the first phase-removal step: unitarity gives $|\\det U|=1$, so choose a real phase alpha with $e^{2i\\alpha}=\\det U$. Then $V=e^{-i\\alpha}U$ is still unitary and has determinant one, justifying the displayed SU(2) form before extracting the Euler angles. At a zero entry its phase is arbitrary; the remaining angle combination can be chosen to match the nonzero entry."
+    },
+    {
+      "num": "1.5",
+      "file": "ch01-b.js",
+      "target": "ladr-7.31",
+      "paragraph": "Apply the complex spectral theorem ladr-7.31 to the Hermitian difference $\\Delta=\\rho_0-\\rho_1$. In its orthonormal eigenbasis, $\\operatorname{tr}(E_0\\Delta)$ is the sum of each eigenvalue times the corresponding diagonal entry of $E_0$. Since $0\\le E_0\\le I$, those entries lie in [0,1]; including every positive eigenspace and excluding every negative one maximizes the sum. This proves the optimal two-outcome measurement for the stated equal priors, not for arbitrary prior weights."
+    },
+    {
+      "num": "1.6",
+      "file": "ch01-b.js",
+      "target": "ladr-7.38",
+      "paragraph": "The positivity characterization ladr-7.38 turns the POVM constraint into an eigenvalue test. For nonnegative alpha, the two conclusive effects are positive rank-one multiples. The remaining effect is Hermitian with the displayed eigenvalues, so both are nonnegative exactly when $\\alpha\\le1/(1+c)$. At that endpoint each candidate has conclusive probability $\\alpha(1-c^2)=1-c$; the zero overlap case gives an ordinary projective measurement."
+    }
+  ],
+  "fixes": {},
+  "wraps": {}
+}
