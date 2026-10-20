@@ -1,27 +1,7 @@
 // Political Science & Social Choice — Chapter 5 (part b): items 5.6-5.10
+import {juryTheorem} from './source-audit-strategic-jury.js';
 import {downsIgnorance} from './source-audit-downs-items.js';
 import { sum, range, clamp, mean, pct, Phi, phi, lgam, binomPmf, binomTail, majProb, tieProb, logspace } from './ch05.shared.js';
-
-/**
- * Symmetric equilibrium of the jury game of Feddersen and Pesendorfer (1998), in the version used here: n jurors, state guilty
- * with prior pi, each juror's signal points to the true state with probability q, a defendant is convicted when at least k jurors
- * vote to convict, and a juror wants to convict iff her posterior of guilt (given a pivotal vote) is at least z. A juror with a
- * guilty signal votes to convict; a juror with an innocent signal votes to convict with probability rho (found by bisection).
- */
-function jury(n, k, q, pi, z) {
-  const Pk = (a) => binomPmf(n - 1, k - 1, a);
-  const post = (rho) => {
-    const aG = q + (1 - q) * rho, aI = 1 - q + q * rho;
-    const g = pi * (1 - q) * Pk(aG), i = (1 - pi) * q * Pk(aI);
-    return g + i > 0 ? g / (g + i) : 0.5;
-  };
-  const g = (r) => post(r) - z;
-  let rho;
-  if (g(0) <= 0) rho = 0; else if (g(1) >= 0) rho = 1;
-  else { let lo = 0, hi = 1; for (let t = 0; t < 60; t++) { const m = (lo + hi) / 2; if (g(m) > 0) lo = m; else hi = m; } rho = (lo + hi) / 2; }
-  const aG = q + (1 - q) * rho, aI = 1 - q + q * rho;
-  return { rho, ci: binomTail(n, k, aI), ag: 1 - binomTail(n, k, aG) };
-}
 
 /** Distribution of D = (votes for A) - (votes for B) from independent voters: voters = [[pA, pB], ...] plus a fixed shift. Returns { off, p }. */
 function diffDist(voters, shift = 0) {
@@ -69,58 +49,8 @@ export default {
   collection: 'polsci',
   chapter: 5,
   items: [
-    // ───────────────────────────────────────────────────────────── 5.6
-    {
-      num: '5.6',
-      kind: 'Theorem',
-      name: 'Unanimous juries convict innocents (Feddersen–Pesendorfer)',
-      statement: String.raw`Model a jury as follows. The defendant is guilty with prior probability $\pi$ or innocent. Each of $n$ jurors receives a private signal that points to the true state with probability $q>\tfrac12$. The defendant is convicted if at least $k$ jurors vote to convict. Each juror prefers conviction exactly when her posterior probability of guilt is at least a threshold $z$, and she votes *strategically*: she conditions on the event that her vote is pivotal. In a symmetric equilibrium a juror with a guilty signal votes to convict, and a juror with an innocent signal votes to convict with a probability $\rho_n$.
-
-Under the **unanimity rule** ($k=n$) being pivotal means that all other jurors vote to convict, which is strong evidence of guilt; the equilibrium therefore has $\rho_n>0$ (jurors vote against their own innocent signal), and the probability of convicting an innocent defendant need not fall as $n$ grows: it can increase with $n$, and the probability of acquitting a guilty one is also large. Under simple majority rule both error probabilities are much lower and tend to zero.`,
-      idea: String.raw`A juror's vote matters only if it is pivotal, and what pivotal means depends on the rule. Under unanimity, her vote is decisive only when all the other jurors vote to convict, and she should update on that: with many jurors, an innocent signal of her own is outweighed by the others' unanimity, so she overrides it, and the conviction probability that follows from sincere voting (which falls exponentially, since all $n$ signals would have to point to guilt) is replaced by a much larger one. Under majority rule, she is pivotal when the others are split almost evenly, and the evidence that carries is weak, so she votes her signal and Condorcet's logic (polsci-5.4) applies. The comparison is therefore not between sincere and strategic voters but between the rules once strategic behaviour is taken into account.`,
-      caption: String.raw`Left: the probability of convicting an innocent defendant against the jury size $n$ in the symmetric equilibrium, under unanimity (red) and simple majority (blue), with sincere voting under unanimity for comparison (dashed). Right: the probability of acquitting a guilty defendant. Move the signal accuracy $q$, the prior $\pi$ and the threshold $z$ (the default is a juror who weighs the two errors equally). The readout gives the equilibrium probability $\rho_n$ that a juror votes to convict against her innocent signal.`,
-      deps: ['polsci-5.4'],
-      see: ['polsci-5.9', 'polsci-3.7'],
-      refs: ['Shepsle: group decisions', 'Feddersen and Pesendorfer (1998), American Political Science Review 92: 23–35'],
-      tags: ['jury', 'strategic voting', 'unanimity'],
-      credit: 'Timothy Feddersen and Wolfgang Pesendorfer, 1998',
-      scope: String.raw`This is my reconstruction of the symmetric mixed-strategy equilibrium of the model, solved numerically from the pivotality condition (juror indifference between voting guilty and not guilty after an innocent signal), not a table taken from the paper. It assumes symmetric strategies; for other parameters there may be other equilibria, and the curves shown are the one found by bisection. A 2026 correction in the *American Political Science Review* (doi 10.1017/S0003055426101762) says that the published proof of the paper's Proposition 2 is flawed and gives a direct proof of that proposition; I did not check which statement of the paper it concerns, so the exact limit statements are the paper's to confirm.`,
-      verify: true,
-      links: { doi: 'https://doi.org/10.2307/2585926' },
-      viz(v) {
-        const A = v.stage({ x: [1, 45], y: [0, 0.5], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'jury size $n$', ylabel: 'P(convict innocent)', title: 'convicting the innocent' });
-        const Bp = v.stage({ x: [1, 45], y: [0, 0.8], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'jury size $n$', ylabel: 'P(acquit guilty)', title: 'acquitting the guilty' });
-        const qS = v.slider('signal accuracy $q$', 0.55, 0.95, 0.7, { step: 0.01 });
-        const piS = v.slider('prior of guilt $\\pi$', 0.2, 0.8, 0.5, { step: 0.01 });
-        const zS = v.slider('threshold $z$', 0.2, 0.8, 0.5, { step: 0.01 });
-        const nS = v.slider('jury size $n$', 1, 45, 12, { int: true });
-        const cache = new Map();
-        const run = () => {
-          const key = [qS.value, piS.value, zS.value].map((x) => x.toFixed(3)).join('|');
-          if (!cache.has(key)) {
-            if (cache.size > 30) cache.clear();
-            const ns = range(23).map((i) => 2 * i + 1);
-            cache.set(key, ns.map((n) => ({ n, u: jury(n, n, qS.value, piS.value, zS.value), m: jury(n, (n + 1) / 2, qS.value, piS.value, zS.value), sinc: { ci: binomTail(n, n, 1 - qS.value), ag: 1 - binomTail(n, n, qS.value) } })));
-          }
-          return cache.get(key);
-        };
-        let info = {};
-        v.render(() => {
-          const R = run();
-          A.path(R.map((r) => [r.n, r.u.ci]), { color: 'red', width: 2.4 });
-          A.path(R.map((r) => [r.n, r.m.ci]), { color: 'accent', width: 2.4 });
-          A.path(R.map((r) => [r.n, r.sinc.ci]), { color: 'muted', width: 1.6, dash: true });
-          Bp.path(R.map((r) => [r.n, r.u.ag]), { color: 'red', width: 2.4 });
-          Bp.path(R.map((r) => [r.n, r.m.ag]), { color: 'accent', width: 2.4 });
-          Bp.path(R.map((r) => [r.n, r.sinc.ag]), { color: 'muted', width: 1.6, dash: true });
-          A.vline(nS.value, { color: 'gold', dash: true, width: 1.6 }); Bp.vline(nS.value, { color: 'gold', dash: true, width: 1.6 });
-          const n = nS.value, mm = n % 2 ? n : n + 1;
-          info = { n, u: jury(n, n, qS.value, piS.value, zS.value), m: jury(mm, (mm + 1) / 2, qS.value, piS.value, zS.value), mm };
-        });
-        v.legend([['red', 'unanimity, strategic'], ['accent', 'majority, strategic'], ['muted', 'unanimity, sincere', { dash: true }]]);
-        v.readout(() => `At $n=${info.n}$ under unanimity jurors with an innocent signal vote to convict with probability **$\\rho_n=${v.fix(info.u.rho, 3)}$**; the chance of convicting an innocent defendant is ${v.fix(info.u.ci, 3)} and of acquitting a guilty one ${v.fix(info.u.ag, 3)}. Under majority rule (jury of ${info.mm}): ${v.fix(info.m.ci, 3)} and ${v.fix(info.m.ag, 3)}.`);
-      },
-    },
+    // Source-audited jury branches 5.6
+    juryTheorem,
 
     // Source-audited finite comparison 5.7
     downsIgnorance,
