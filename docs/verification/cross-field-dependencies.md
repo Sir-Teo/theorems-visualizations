@@ -5,7 +5,7 @@ MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **53 have fewer than 25 published prerequisite edges to
 written ideas in a different field**. Their combined shortfall is 866 edges. Even
-including planned items and planned prerequisites, **27 collections remain below 25**.
+including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -99,3 +99,6 @@ The gate remains open.
 Four newly audited finance connections bring finance to25published cross-field edges. Finance5.7 applies the finite-variance weak law `prob-2.2.3` to independent authored daily exit outcomes;5.10 derives the finite copying chain's invariant law using actual detailed-balance item `prob-5.5.2a`;5.6 and5.15 explicitly use conditional-L² projection `prob-4.1.15` for the population variance identity. Root read the actual prerequisite bodies and independently checked the arguments, source scope and native models. Related historical/model topics remain related links. See [daily exits](fin-arbitrage-followup.md), [copying chain](fin-speculation-followup.md) and [conditional forecasts](fin-shiller-followup.md).
 
 The checkpoint throughc211d3a has published shortfall866,53of64non-math collections below25published edges, and27below25acrosscomplete syllabi. This remains an open gate; valid arguments, rather than count alone, justify these links.
+
+
+Accepted snapshot24abff6 (2026-10-19): finance has29published cross-field edges, psychology16 and demography12. Four genuine normal/variance/weak-law links in finance and one finite-probability link in psychology were added through source/proof review. The unused stable-population dependency in reproduction4.3 was removed; demography’s complete syllabus therefore falls from25to24. Combined published shortfall stays866 and the quota gate remains open. This inventory excludes ongoing drafts.

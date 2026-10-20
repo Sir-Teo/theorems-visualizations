@@ -5,7 +5,7 @@
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
   "publishedBelowTarget": 53,
-  "wholeSyllabusBelowTarget": 27,
+  "wholeSyllabusBelowTarget": 28,
   "entries": [
     {
       "collection": "stat",
@@ -10893,9 +10893,9 @@
       "collection": "fin",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 25,
-      "writtenToKnown": 29,
-      "wholeSyllabus": 40,
+      "writtenToWritten": 29,
+      "writtenToKnown": 33,
+      "wholeSyllabus": 44,
       "publishedShortfall": 0,
       "unknown": [],
       "edges": [
@@ -11094,6 +11094,34 @@
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "fin-5.4",
+          "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-5.4",
+          "prerequisite": "prob-1.2.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-5.5",
+          "prerequisite": "prob-1.2.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-5.5",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "fin-9.13",
@@ -11468,10 +11496,10 @@
       "collection": "psych",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 15,
-      "writtenToKnown": 19,
-      "wholeSyllabus": 41,
-      "publishedShortfall": 10,
+      "writtenToWritten": 16,
+      "writtenToKnown": 20,
+      "wholeSyllabus": 42,
+      "publishedShortfall": 9,
       "unknown": [],
       "edges": [
         {
@@ -11569,6 +11597,13 @@
           "item": "psych-2.6",
           "prerequisite": "stat-6.5",
           "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "psych-3.8",
+          "prerequisite": "prob-1.1.1a",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -12225,10 +12260,10 @@
       "collection": "demo",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 13,
-      "writtenToKnown": 14,
-      "wholeSyllabus": 25,
-      "publishedShortfall": 12,
+      "writtenToWritten": 12,
+      "writtenToKnown": 13,
+      "wholeSyllabus": 24,
+      "publishedShortfall": 13,
       "unknown": [],
       "edges": [
         {
@@ -12314,13 +12349,6 @@
           "prerequisiteField": "bio",
           "itemWritten": true,
           "prerequisiteWritten": false
-        },
-        {
-          "item": "demo-4.3",
-          "prerequisite": "mathbio-4.5",
-          "prerequisiteField": "bio",
-          "itemWritten": true,
-          "prerequisiteWritten": true
         },
         {
           "item": "demo-4.5",

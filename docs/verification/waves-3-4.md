@@ -773,3 +773,8 @@ Phil4.7 is resolved against the precisely identified1903 corrected transcription
 ## Finite positive choice-axiom follow-up
 
 Psych3.8 is resolved against Luce’s actual2008 author exposition. Finite nonempty universe/all-nonempty-menu positivity now correctly permits singleton probability1 and supports scale-only weight identification. An explicitly authored copy rule supplies the IIA counterexample, holding other offers fixed; one pair comparison cannot certify the entire family. Five independent math groups,four native viewport/theme groups and final full mobile/empty/singleton/clone image checks pass, with all54nested comparisons and175event triples. The genuine finite-probability prerequisite replaces an unused Thurstone dependency. See [Luce evidence](psych-luce-followup.md). **170 source reviews remain**.
+
+
+## Combined accepted checkpoint through24abff6
+
+The exact committed snapshot passes1520default tests (including6UI), strict6684written+6890planned build, full6621visualization static check and73valid changed routes, all0errors/warnings. The source ledger independently reconciles170pending/666originalresolved. Since c211d3a,nine flags close with30root mathematical and36native groups, plus original-source comparisons and final image inspection. Cross-field shortfall stays866;53of64published collections and28complete syllabi remain below target. Home JSON112809bytesgzip passes; full-map60fps and flagshipproof curation remain open. See [checkpoint evidence](checkpoint-24abff6.md).
