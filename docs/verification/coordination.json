@@ -42,7 +42,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Independently peer-review political-science5.8/5.10 exact commits, then clear10 queued LING reviews in exclusive batches.",
+      "current": "Political-science5.8/5.10 independently accepted; clear10 queued LING reviews in exclusive batches.",
       "completedCollections": [
         "music"
       ]
@@ -76,10 +76,10 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Political-science5.8/5.10 await worker_one independent peer; continue9 queued ART reviews in exclusive batches.",
+      "current": "Political-science queue independently accepted and clear; continue9 queued ART reviews, starting colorimetry4.5/4.14/4.16.",
       "completedCollections": [
         "soc",
-        "polsci candidate production (acceptance pending5.8/5.10)"
+        "polsci"
       ]
     }
   ],
@@ -658,7 +658,8 @@
       ],
       "status": "accepted",
       "commits": [
-        "f1e656d"
+        "ee16fa1",
+        "71e3f45"
       ]
     }
   ],
