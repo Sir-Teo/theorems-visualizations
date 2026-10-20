@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 185,
+  "remainingFlags": 184,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "micro": 3,
+    "micro": 2,
     "fin": 5,
     "game": 18,
     "psych": 17,
@@ -241,19 +241,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/T%C3%A2tonnement"
-      }
-    },
-    {
-      "id": "micro-9.21",
-      "file": "content/micro/ch09-d.js",
-      "name": "Existence of an Equilibrium for a Competitive Economy",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Arrow%E2%80%93Debreu_model"
       }
     },
     {
@@ -3660,7 +3647,8 @@
       "fin-5.14",
       "micro-9.4",
       "micro-10.20",
-      "fin-5.12"
+      "fin-5.12",
+      "micro-9.21"
     ]
   },
   "additionalFollowups": [
@@ -7809,6 +7797,12 @@
       "status": "resolved",
       "report": "docs/verification/fin-laboratory-followup.md",
       "note": "Actual Smith\u2013Suchanek\u2013Williams1988 scoped original and TableI design4 checked by root and independent agent; four mathematical groups including all335421controls and four final native theme/viewport groups pass independently. Authored presets, finite40-path means/SE, expected-dividend staircase and separate imposed terminal marker are correctly scoped; no historical experience calibration is claimed."
+    },
+    {
+      "id": "micro-9.21",
+      "status": "resolved",
+      "report": "docs/verification/micro-arrow-debreu-followup.md",
+      "note": "Actual Arrow\u2013Debreu1954 introduction and completeTheoremI \u00a7\u00a71\u20133 independently read, including original proof formula images. Exact convex equilibrium and exhaustive nonconvex production-branch certificates replace finite-grid verdicts; root6math and4native theme/viewport groups pass independently with full41-step histories, true tie choices, positive-price divisions and inspected screenshots."
     }
   ]
 }

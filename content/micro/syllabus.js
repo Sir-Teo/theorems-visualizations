@@ -404,8 +404,8 @@ export default {
           pic: 'An exchange economy of several goods run as Walras’s market: the crier calls out prices, traders report their excess demands, and prices rise where demand exceeds supply and fall where it falls short (tâtonnement) until every market clears; a running total shows the value of excess demands summing to zero at every price vector, so the last market clears by itself (Walras’ law).' },
         { num: '9.21', kind: 'Paper', name: 'Existence of an Equilibrium for a Competitive Economy',
           paper: { authors: 'Kenneth J. Arrow and Gerard Debreu', year: 1954, title: 'Existence of an Equilibrium for a Competitive Economy', venue: 'Econometrica 22 (3): 265–290', doi: '10.2307/1907353' },
-          introduces: ['micro-9.7'], deps: ['micro-9.20', 'micro-9.5', 'micro-4.6', 'game-2.4'], refs: [],
-          pic: 'Prices live on a simplex: the excess-demand field of a small economy (three consumers and a convex production set you edit) is drawn over it, and the map that raises the prices of goods in excess demand is iterated until it rests at a fixed point, which always exists; bend preferences or technology into non-convex shapes, which the theorem rules out, and watch the equilibrium disappear.' },
+          introduces: ['micro-9.7'], deps: ['micro-9.6', 'micro-9.5', 'micro-4.6', 'game-2.4'], see: ['micro-9.7', 'micro-9.20'], refs: ['Arrow and Debreu (1954), §§1–3'],
+          pic: 'An authored three-good production economy shows an exact convex equilibrium and an increasing-returns example whose two possible production branches both fail profit maximization at their clearing prices. Drag strictly positive starting prices and select iteration 0–40 to inspect the full, uncut adjustment history; exact existence certificates remain separate from iteration behavior.' },
       ],
     },
     {

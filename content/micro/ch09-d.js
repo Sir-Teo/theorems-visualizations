@@ -1,4 +1,5 @@
 // Microeconomics — Chapter 9: General equilibrium and welfare (items 9.17–9.21; 9.1–9.6 in ch09.js, 9.7–9.11 in ch09-b.js, 9.12–9.16 in ch09-c.js)
+import { adMarket, adConvexEquilibrium, adNonconvexCertificate, adPriceMap, adProjectStart, adTrajectory } from './source-audit-arrow-debreu.js';
 import { clamp, GUIDE, bisect, argmax, plateText, bar, W1, W2, pref, market, boxStage, drawBox, drawA, drawB, drawLens, priceLineBox, improvements, f2 } from './ch09.shared.js';
 
 const cd = (a) => pref('cd', { a });
@@ -262,77 +263,69 @@ export default {
       num: '9.21', kind: 'Paper', name: 'Existence of an Equilibrium for a Competitive Economy',
       paper: { authors: 'Kenneth J. Arrow and Gerard Debreu', year: 1954, title: 'Existence of an Equilibrium for a Competitive Economy', venue: 'Econometrica 22 (3): 265–290', doi: '10.2307/1907353' },
       introduces: ['micro-9.7'],
-      credit: 'K. J. Arrow & G. Debreu, 1954 (independently: L. McKenzie, 1954)',
-      verify: true,
-      statement: String.raw`Arrow and Debreu (1954) proved that a competitive equilibrium exists in a general model with many goods, consumers with convex preferences and **producers with convex production sets**: there are prices $p^* \ge 0$ at which every consumer maximises utility on his or her budget set (income includes shares in the producers' profits), every producer maximises profit over a convex set of feasible input-output plans, and every market clears (free goods allowed). The proof reduces the economy to an **abstract economy** (a game with constrained strategies, in which the "auctioneer" chooses prices to raise the price of goods in excess demand) and applies Kakutani's fixed-point theorem. Lionel McKenzie proved a similar theorem independently in the same year. Convexity of preferences and of the production sets is essential: with increasing returns or a fixed cost no equilibrium need exist.`,
-      idea: String.raw`Before the paper, existence was argued by counting equations (Walras) or proved only in special models (Wald, 1936). Arrow and Debreu saw that the equilibrium conditions say that a certain correspondence from a set of price-and-choice vectors into itself has a fixed point, and that Kakutani's theorem (the set-valued version of Brouwer's, game-2.4) supplies one as soon as the choice sets are convex and the best-response correspondences are convex-valued and upper-hemicontinuous, which convexity assumptions guarantee. The price player gets the payoff $p\cdot z$ (raise prices of goods in excess demand), so a fixed point has $z \le 0$ and, with Walras' law (9.6), $z = 0$ for goods with positive price. The picture below is not the paper's argument but the textbook version of the same idea: a continuous map of the price simplex into itself whose fixed points are equilibria.`,
-      caption: String.raw`A **model reconstruction**, not a table from the paper: three goods, three Cobb–Douglas consumers and one firm turning good 1 into good 2. The triangle is the **price simplex** ($p_1 + p_2 + p_3 = 1$; the corners are the pure-good prices); brightness shows how far each price vector is from resting under the price-raising map $p \mapsto (p + \lambda z^+)/(1 + \lambda\sum z^+)$, arrows show where it moves, and the **green dot** is the fixed point, an equilibrium. **Drag the start** and watch the iteration run in. Switch the firm to **increasing returns** (non-convex technology): its supply jumps, no price is at rest, the iteration chatters and the readout reports the smallest displacement found.`,
-      deps: ['micro-9.20', 'micro-9.5', 'micro-4.6', 'game-2.4'],
-      see: ['micro-9.7'],
-      refs: [], tags: ['general equilibrium', 'existence', 'history'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Arrow%E2%80%93Debreu_model' },
+      credit: 'K. J. Arrow and G. Debreu, 1954',
+      verify: false,
+      statement: String.raw`**Theorem I** gives sufficient conditions for competitive equilibrium with finitely many commodities, consumers and firms. Each production set $Y_j$ is closed, convex and contains $0$; aggregate production $Y=\sum_jY_j$ satisfies $Y\cap\R_+^\ell=\{0\}$ (no output without input) and $Y\cap(-Y)=\{0\}$ (irreversibility). Each consumption set $X_i$ is closed, convex and bounded below. Utility is continuous, nonsatiated and **semistrictly quasiconcave**: mixing a better bundle with a worse one strictly improves on the worse bundle. Each endowment $\omega_i$ strictly exceeds some feasible bundle in every coordinate; profit shares $\theta_{ij}\ge0$ sum to $1$ for each firm. Then there are prices $p^*\ge0$, $\sum_gp_g^*=1$, utility-maximizing affordable consumptions and profit-maximizing production plans with
+$$z^*\le0,\qquad p^*\cdot z^*=0.$$
+Thus every positive-price market clears; a zero-price good may remain in surplus. These are sufficient hypotheses, not necessary conditions for every economy.`,
+      idea: String.raw`The original proof adds a **market participant** who maximizes $p\cdot z$ over the price simplex. Consumers choose within budgets that include their shares of firm profits, so this is an **abstract economy** whose feasible actions depend on other participants' choices. The production assumptions and lower bounds on consumption make resource-feasible choices bounded. The authors truncate to a compact cube, verify the abstract-economy lemma (including continuity of budget sets), then use convexity to extend the resulting optimum beyond the cube. Budget exhaustion gives $p\cdot z=0$; the market participant can put all price weight on any good, forcing each $z_g\le0$ (§§2–3). The paper does not investigate uniqueness or stability.
+
+The authored illustration has utilities $u_i(x)=\prod_g x_g^{\alpha_{ig}}$, with the following budget shares and endowments (rows denote consumers),
+$$\alpha=\begin{pmatrix}.5&.3&.2\\.2&.5&.3\\.3&.2&.5\end{pmatrix},$$
+$$\omega=\begin{pmatrix}3&.5&1\\.5&2.5&1\\1&.5&3\end{pmatrix},\qquad\theta=(.5,.2,.3).$$
+For decreasing returns the feasible set is the **whole hypograph** $Y=\{(-L,y,0):0\le L\le1000,\ 0\le y\le k\sqrt L\}$, a closed convex set. The positive root $u$ of $1159ku^2+2230u-1450k=0$ gives equilibrium input $L=u^2$; it stays below $0.711$ throughout the control range. For increasing returns, replace $\sqrt L$ by $L^{1.6}$ and the input cap by $3$. Profit maximization then permits only $L=0$ or $L=3$, both at a tie. Let $F=k3^{1.6}$ and $r=p_1/p_2$. Market clearing conditional on these choices requires respectively $r=1115/1450$ or $r=(1115+409F)/427$. At the first price capacity profit is positive; at the second it is negative, so neither choice is optimal. This exhausts the true production branches, including the tie. Boundary prices cannot rescue equilibrium: each strictly endowed consumer has positive wealth and no finite optimum when a desired good is free.`,
+      caption: String.raw`**Authored production economy.** The green ring marks the analytically certified convex equilibrium. Under increasing returns, the two red rings mark market-clearing candidates conditional on $L=0$ or $L=3$; each fails the firm's profit test. The orange ring marks a profit-tie price, where both true firm choices leave a nonzero market gap. Drag the gold **start**, or use a preset, then choose **iteration 0–40**. The complete displacement history stays visible, with the selected iteration highlighted. Brightness and arrows describe $T_\lambda(p)=(p+\lambda z^+)/(1+\lambda\sum_gz_g^+)$ at strictly positive prices; the thin uncolored boundary strip is excluded from numerical evaluation. The iteration illustrates price adjustment; the existence and nonexistence conclusions come from the model’s exact calculations.`,
+      scope: String.raw`The original result shown is Theorem I (§§1–3, pp. 265–279). The illustration has positive prices, strictly positive endowments, $k\in[1,3]$ and $\lambda\in[.02,.3]$. The starting handle has $p_g\ge.02$; later iterates remain positive but can be much smaller. No convergence claim follows from a finite path.`,
+      deps: ['micro-9.6', 'micro-9.5', 'micro-4.6', 'game-2.4'],
+      see: ['micro-9.7', 'micro-9.20'],
+      refs: ['Arrow and Debreu (1954), §§1–3'], tags: ['general equilibrium', 'existence', 'history'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Arrow%E2%80%93Debreu_model', paper: 'https://web.stanford.edu/class/msande311/arrow-debreu.pdf' },
       viz(v) {
         const tech = v.select('the firm’s technology', [{ value: 'cvx', label: 'convex (decreasing returns)' }, { value: 'inc', label: 'non-convex (increasing returns)' }], 'cvx');
-        const kS = v.slider('productivity $k$ of the firm', 1, 3, 1.5, { step: 0.05 });
-        const lS = v.slider('step size $\\lambda$ of the price map', 0.02, 0.3, 0.06, { step: 0.01 });
-        const R3 = Math.sqrt(3) / 2;
-        const s = v.stage({ x: [-0.12, 1.12], y: [-0.1, 0.98], equal: true, axes: false, height: 440, title: 'the price simplex and the price-raising map', weight: 1.3 });
-        const G = v.stage({ x: [0, 40], y: [0, 0.6], axes: 'box', gutter: true, height: 440, xlabel: 'iteration', ylabel: 'displacement ‖T(p) − p‖', title: 'does the iteration come to rest?', weight: 0.8, minWidth: 250 });
-        v.legend([['accent', 'iterates of the map'], ['green', 'fixed point = equilibrium', { dot: true }], ['gold', 'starting prices'], ['red', 'no rest point', { dot: true }]]);
-        const toXY = (p) => [p[1] + 0.5 * p[2], R3 * p[2]];
-        const toP = (x, y) => { const p3 = y / R3, p2 = x - 0.5 * p3; return [1 - p2 - p3, p2, p3]; };
-        const clampP = (p) => { let q = p.map((c) => Math.max(c, 0.02)); const sum = q[0] + q[1] + q[2]; return q.map((c) => c / sum); };
-        const H = s.handle(...toXY([0.6, 0.15, 0.25]), { color: 'gold', r: 9, label: 'p(0)', labelPos: 'ne', constrain: (x, y) => toXY(clampP(toP(x, y))) });
-        const firmOf = () => {
-          const k = kS.value, a = tech.value === 'cvx' ? 0.5 : 1.6, Lmax = tech.value === 'cvx' ? 1e3 : 3;
-          return (p) => {
-            const profL = (Lc) => p[1] * k * Lc ** a - p[0] * Lc;
-            const Lc = a < 1 ? Math.min(Lmax, ((a * k * p[1]) / p[0]) ** (1 / (1 - a))) : (profL(Lmax) > 0 ? Lmax : 0);
-            return { y: [-Lc, k * Lc ** a, 0], pi: profL(Lc), L: Lc };
-          };
-        };
-        const mapT = (z, p, l) => { const zp = z.map((c) => Math.max(0, c)), S = zp[0] + zp[1] + zp[2]; return p.map((c, i) => (c + l * zp[i]) / (1 + l * S)); };
-        const disp = (F, p, l) => { const q = mapT(excess(p, F), p, l); return Math.hypot(q[0] - p[0], q[1] - p[1], q[2] - p[2]); };
-        let cache = { key: '', rest: null };
-        const rest = (F, l) => {
-          const key = `${tech.value}|${kS.value}|${l}`; if (cache.key === key) return cache.rest;
-          let best = { d: Infinity, p: null }; const N = 60;
-          for (let i = 1; i < N; i++) for (let j = 1; j < N - i; j++) { const p = [i / N, j / N, 1 - i / N - j / N], d = disp(F, p, 1); if (d < best.d) best = { d, p }; }
-          let p = best.p, d = disp(F, p, 1), h = 0.02;
-          for (let it = 0; it < 500; it++) { let moved = false; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]]) { const q = [p[0] + dx * h, p[1] + dy * h, 1 - (p[0] + dx * h) - (p[1] + dy * h)]; if (q.some((c) => c <= 1e-3)) continue; const w = disp(F, q, 1); if (w < d) { d = w; p = q; moved = true; } } if (!moved) h *= 0.6; }
-          return (cache = { key, rest: { p, d } }).rest;
-        };
-        let this_state = { found: true, rp: { d: 0, p: [1 / 3, 1 / 3, 1 / 3] }, last: [1 / 3, 1 / 3, 1 / 3], dLast: 0, Lq: 0, steps: 0 };
-        v.animate((t) => {
-          const F = firmOf(), l = lS.value, steps = Math.min(40, Math.floor(t * 3.4));
-          const rp = rest(F, l);
-          // brightness: displacement of the map from each price vector
-          const key = `${tech.value}|${kS.value}|${l}`;
-          s.raster((x, y) => { const p = toP(x, y); if (p[0] < 0 || p[1] < 0 || p[2] < 0) return null; const d = disp(F, p, 1), c = v.ramp(0.9 * Math.exp(-d / 0.12), 'accent', 'panel'); return [c[0], c[1], c[2], 255]; }, { key: `simplex|${key}`, res: 3 });
-          s.path([[0, 0], [1, 0], [0.5, R3]], { close: true, color: 'ink', width: 2 });
-          s.text('good 1', 0, 0, { dy: 16, size: 12, weight: 700, color: 'ink', align: 'center' }); s.text('good 2', 1, 0, { dy: 16, size: 12, weight: 700, color: 'ink', align: 'center' }); s.text('good 3', 0.5, R3, { dy: -14, size: 12, weight: 700, color: 'ink', align: 'center' });
-          for (let a = 0; a <= 9; a++) for (let b = 0; b + a <= 9; b++) {
-            const p = clampP([(a + 0.5) / 10.5, (b + 0.5) / 10.5, 1 - (a + 0.5) / 10.5 - (b + 0.5) / 10.5]), q = mapT(excess(p, F), p, 1), xy = toXY(p), xy2 = toXY(q);
-            arrowPx(s, xy[0], xy[1], xy2[0] - xy[0], xy2[1] - xy[1], 11, { color: 'muted', width: 1.2, alpha: 0.7 });
+        const kS = v.slider('productivity $k$', 1, 3, 1.5, { step: .05 });
+        const lS = v.slider('step size $\\lambda$', .02, .3, .06, { step: .01 });
+        const nS = v.slider('selected iteration', 0, 40, 40, { step: 1 });
+        const R3 = Math.sqrt(3) / 2, toXY = p => [p[1] + .5 * p[2], R3 * p[2]];
+        const toP = (x, y) => { const p3 = y / R3, p2 = x - .5 * p3; return [1 - p2 - p3, p2, p3]; };
+        const s = v.stage({ x: [-.22, 1.22], y: [-.2, 1.1], equal: true, axes: false, height: 440, title: 'prices and exact equilibrium certificates', weight: 1.2 });
+        const G = v.stage({ x: [-3, 43], y: [-.08, 1.5], axes: 'box', gutter: true, height: 440, xlabel: 'iteration', ylabel: 'displacement ‖T(p) − p‖', title: 'the complete 40-step path', weight: 1, minWidth: 270 });
+        const H = s.handle(...toXY([.6, .15, .25]), { color: 'gold', r: 9, constrain: (x, y) => toXY(adProjectStart(toP(x, y))) });
+        const setStart = p => { H.set(...toXY(p)); nS.set(0); };
+        v.button('start at the convex equilibrium', () => { tech.set('cvx'); setStart(adConvexEquilibrium(kS.value).p); });
+        v.button('start at the firm’s tie price', () => { tech.set('inc'); setStart(adNonconvexCertificate(kS.value).tiePrice); });
+        v.button('L=0 clearing candidate', () => { tech.set('inc'); setStart(adNonconvexCertificate(kS.value).branches[0].p); });
+        v.button('L=3 clearing candidate', () => { tech.set('inc'); setStart(adNonconvexCertificate(kS.value).branches[1].p); });
+        v.legend([['accent', 'selected path'], ['green', 'certified equilibrium', { dot: true }], ['gold', 'starting prices'], ['red', 'clearing candidate fails profit test', { dot: true }], ['orange', 'firm profit-tie price', { dot: true }]]);
+        let info = {};
+        v.render(() => {
+          const k = kS.value, lambda = lS.value, kind = tech.value, n = nS.value, start = toP(H.x, H.y);
+          const trajectory = adTrajectory(k, kind, start, lambda), current = trajectory.markets[n], equilibrium = adConvexEquilibrium(k), certificate = adNonconvexCertificate(k);
+          s.raster((x, y) => { const p = toP(x, y); if (p.some(c => c < .005)) return null; const market = adMarket(k, kind, p), q = adPriceMap(p, market.z, lambda), d = Math.hypot(...q.map((c, g) => c - p[g])); const c = v.ramp(.9 * Math.exp(-d / .2), 'accent', 'panel'); return [...c, 255]; }, { key: `ad-simplex|${kind}|${k}|${lambda}`, res: 4 });
+          s.path([[0, 0], [1, 0], [.5, R3]], { close: true, color: 'ink', width: 2 });
+          s.text('p1=1', 0, 0, { dy: 22, align: 'center', size: 12, weight: 700 }); s.text('p2=1', 1, 0, { dy: 22, align: 'center', size: 12, weight: 700 }); s.text('p3=1', .5, R3, { dy: -22, align: 'center', size: 12, weight: 700 });
+          for (let a = 0; a <= 8; a++) for (let b = 0; a + b <= 8; b++) {
+            const p = adProjectStart([(a + .5) / 9.5, (b + .5) / 9.5, 1 - (a + b + 1) / 9.5]), q = adPriceMap(p, adMarket(k, kind, p).z, lambda), xy = toXY(p), end = toXY(q);
+            arrowPx(s, ...xy, end[0] - xy[0], end[1] - xy[1], 9, { color: 'muted', width: 1.1, alpha: .65 });
           }
-          // iterates
-          let p = clampP(toP(H.x, H.y)); const path = [p], ds = [disp(F, p, l)];
-          for (let i = 0; i < 40; i++) { p = mapT(excess(p, F), p, l); path.push(p); ds.push(disp(F, p, l)); }
-          s.path(path.slice(0, steps + 1).map(toXY), { color: 'accent', width: 2.4 });
-          path.slice(0, steps + 1).forEach((q, i) => { const xy = toXY(q); s.dot(xy[0], xy[1], { r: i === steps ? 6 : 3, color: 'accent' }); });
-          const found = rp.d < 2e-3, xr = toXY(rp.p);
-          s.dot(xr[0], xr[1], { r: 8, color: found ? 'green' : 'red', hollow: !found });
-          if (!found) plateText(s, 'no rest point', xr[0], xr[1], { dy: 20, color: 'red', align: 'center' });
-          s.dot(H.x, H.y, { r: 6, color: 'gold' });
-          // displacement over iterations
-          G.fn(() => 0, { domain: [0, 40], color: 'muted', width: 1 });
-          G.path(ds.map((d, i) => [i, Math.min(d, 0.59)]), { color: 'accent', width: 2.4 });
-          G.dot(steps, Math.min(ds[steps], 0.59), { r: 6, color: 'accent' });
-          this_state = { found, rp, F, steps, last: path[steps], dLast: ds[steps], Lq: F(path[steps]).L, fp: path };
-        }, { period: 14, still: 13 });
+          s.path(trajectory.path.map(toXY), { color: 'muted', width: 1.3, alpha: .45 });
+          s.path(trajectory.path.slice(0, n + 1).map(toXY), { color: 'accent', width: 2.4 });
+          trajectory.path.slice(0, n + 1).forEach((p, i) => s.dot(...toXY(p), { r: i === n ? 6 : 2.5, color: 'accent' }));
+          const ring = (p, color, label) => { const xy = toXY(p), near = Math.hypot(s.X(xy[0]) - s.X(H.x), s.Y(xy[1]) - s.Y(H.y)) < 22; s.dot(...xy, { r: near ? 18 : 8, hollow: true, color, width: 2 }); if (label) s.text(label, ...xy, { dy: -27, align: 'center', size: 12, weight: 700, color }); };
+          if (kind === 'cvx') ring(equilibrium.p, 'green', 'equilibrium');
+          else { certificate.branches.forEach(b => ring(b.p, 'red', `L=${b.L}`)); ring(certificate.tiePrice, 'orange'); }
+          s.text('start', H.x, H.y, { dx: 20, dy: 4, align: 'left', size: 12, weight: 700, color: 'gold' });
+          G.hline(0, { color: 'muted', width: 1 });
+          G.path(trajectory.displacements.map((d, i) => [i, d]), { color: 'muted', width: 1.5, alpha: .5 });
+          G.path(trajectory.displacements.slice(0, n + 1).map((d, i) => [i, d]), { color: 'accent', width: 2.5 });
+          G.dot(n, trajectory.displacements[n], { r: 6, color: 'accent' });
+          info = { k, lambda, kind, n, start, ...trajectory, current, equilibrium, certificate };
+        });
+        const number = x => ((Math.abs(x) !== 0 && Math.abs(x) < .0001) || Math.abs(x) >= 10000) ? x.toExponential(3).replace(/e([+-]?\d+)/, String.raw`\times10^{$1}`) : f2(x, 4);
         v.readout(() => {
-          const { found, rp, last, dLast, Lq, steps } = this_state;
-          return `Iteration ${steps}: prices $(${f2(last[0], 3)}, ${f2(last[1], 3)}, ${f2(last[2], 3)})$, displacement $\\lVert T(p) - p\\rVert = ${f2(dLast, 4)}$, the firm uses ${f2(Lq, 2)} units of good 1. ${found ? `**A fixed point exists**: $p^* = (${rp.p.map((c) => f2(c, 3)).join(', ')})$, displacement ${rp.d < 1e-9 ? 'below 1e-9' : rp.d.toExponential(1)} (zero up to the search tolerance), so excess demand is zero there.` : `**No price vector is at rest**: the smallest displacement found anywhere on the simplex is ${f2(rp.d, 3)}. With increasing returns the firm's supply jumps from zero to its capacity as prices cross a threshold, so excess demand is discontinuous and Brouwer's and Kakutani's theorems no longer apply.`}`;
+          const { k, lambda, kind, n, current: c, displacements, equilibrium: e, certificate: cert } = info;
+          const prices = c.p.map((p, g) => `$p_${g + 1}=${number(p)}$`).join(', '), error = Math.max(...c.z.map(Math.abs));
+          const result = kind === 'cvx' ? `**Exact convex equilibrium:** $L^*=${f2(e.L, 6)}$, with maximum market residual $${number(Math.max(...e.z.map(Math.abs)))}$. The green ring comes from the analytic root; a finite iteration may remain far away.` : `**No equilibrium in this authored increasing-returns family.** At the $L=0$ clearing candidate, capacity would earn ${f2(cert.branches[0].capacityGain, 4)}; at the $L=3$ clearing candidate, capacity would earn ${f2(cert.branches[1].capacityGain, 4)} and shutting down earns zero. Both true choices at the orange tie price leave nonzero excess demand.`;
+          return `Iteration **${n}** of 40: ${prices}. Displacement $${number(displacements[n])}$; maximum absolute excess demand $${number(error)}$; firm input $L=${number(c.L)}$${c.firm.tie ? ' (the tie has two maximizing choices; this path selects zero input)' : ''}. Step $\\lambda=${f2(lambda, 2)}$, productivity $k=${f2(k, 2)}$.\n\n${result}`;
         });
       },
     },
