@@ -16,7 +16,7 @@ The later calculation uses isotropic elasticity away from the core and particula
       introduces: ['mat-3.2', 'mat-3.8'],
       credit: 'G. I. Taylor, 1934; the finite harmonic-chain energy and numerical protocol are an authored modern illustration.',
       scope: String.raw`The complete original 26-page Part I was recovered from an archived Royal Society publisher PDF and read, including the qualifications around its atomic and elastic models. It does not give this 40-site harmonic-chain energy: its prescribed-row cosine picture neglects a row's internal mutual action, while its later collective calculation uses idealized arrays and a travel-distance assumption. No priority comparison with unread Orowan or Polanyi originals is asserted. The widget's chain has 40 labelled sites and 39 bonds spanning 38 substrate periods, fixed endpoints, no hard-core exclusion, harmonic springs and unit periodic barrier. A 20000-iteration zero-force reference is computed separately, with its residual reported. The forced protocol starts afresh from that reference for each input setting. Numerical stationarity does not prove minimum stability, uniqueness, infinite-chain depinning or an exponential threshold law. Widget controls use hundredths for stiffness, thousandths for normalized force and multiples of 100 for the base budget; unsupported saved ticks reject before constraints. The continuous mathematical model is unchanged.`,
-      verify: true,
+      verify: false,
       viz(v) {
         let cache=null,cacheK=null;
         const K = v.slider('spring stiffness $K$', .25, 8, 1.5, {step:.01,decimals:2});

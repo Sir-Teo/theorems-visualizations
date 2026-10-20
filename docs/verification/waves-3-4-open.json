@@ -8,11 +8,10 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 29,
+  "remainingFlags": 28,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
-    "mat": 1,
     "geol": 2,
     "mathbio": 1,
     "pharm": 1,
@@ -33,22 +32,6 @@
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
       "explicitUncertainty": [],
-      "refs": [],
-      "links": {}
-    },
-    {
-      "id": "mat-3.13",
-      "file": "content/mat/ch03-c.js",
-      "name": "The mechanism of plastic deformation of crystals",
-      "field": "chem",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "This is a reconstruction in the Frenkel–Kontorova model (harmonic chain on a sinusoidal substrate), which dates from 1938 and is not Taylor's own interatomic-force model or data; I could not read the original text, so the description of the paper's content comes from secondary sources and is hedged accordingly. The kink threshold is found numerically (relaxation and bisection); the model shows the qualitative claim only, that a dislocation moves at a force exponentially smaller than the rigid-slip value, not Taylor's numbers."
-        }
-      ],
       "refs": [],
       "links": {}
     },
@@ -1300,7 +1283,8 @@
       "arch-3.7",
       "ling-4.6",
       "bighist-4.4",
-      "arch-4.6"
+      "arch-4.6",
+      "mat-3.13"
     ]
   },
   "additionalFollowups": [
@@ -4234,9 +4218,9 @@
     },
     {
       "id": "mat-3.13",
-      "status": "source-review-pending",
+      "status": "resolved",
       "report": "docs/verification/mat-taylor-pending-followup.md",
-      "note": "Supported finite-chain residual/descent correction with five independent math and two native theme groups; full Taylor1934 original remains inaccessible, flag retained."
+      "note": "2026-10-20: coordinator independently compared actual Taylor1934, source equations/finite-chain mathematics and fresh native/output evidence; docs/verification/mat-taylor-original-peer.md."
     },
     {
       "id": "qchem-3.13",

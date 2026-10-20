@@ -1029,6 +1029,19 @@
       "commits": [
         "987ea53"
       ]
+    },
+    {
+      "ids": [
+        "mat-3.13"
+      ],
+      "peer": "coordinator independently compared actual Taylor1934, source equations/finite-chain mathematics and fresh native/output evidence",
+      "reports": [
+        "docs/verification/mat-taylor-original-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "3c5ac7e"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1041,7 +1054,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 29,
+  "currentPendingSourceReviews": 28,
   "latestCheckpoint": {
     "acceptedContentCommit": "428f1af",
     "report": "docs/verification/checkpoint-428f1af.md",
