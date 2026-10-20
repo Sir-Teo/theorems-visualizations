@@ -981,3 +981,6 @@ GEO's fifteen inputs and separate inheritedcurlsign correction are [independentl
 
 
 [BEHAV](behav-independent-peer.md) and corrected [EPI](epi-prerequisites-independent-peer.md) prerequisites are independently accepted. Eighteen further collections meet target; current shortfall590,30/64below25published,23whole syllabi below25. Exact functions/source flags preserved; wraps, raw-row repairs and non-informative censoring qualification reviewed before acceptance. Sourcequeue5 unchanged. Next immutable full checkpoint is preparing.
+
+
+Exact [68aa4e2checkpoint](checkpoint-68aa4e2.md) passes2,152default tests, all6UIgroups, strict/fullstatic0errors/0warnings, home113,033bytes gzip. It includes all accepted batches through correctedEPI/BEHAV, with accepted prerequisite590/30/23 and source5=833+1−829. Later inventory-tool/mesh-diagnostic/BIOINF files remain outside its scope.
