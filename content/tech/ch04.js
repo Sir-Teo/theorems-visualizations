@@ -53,7 +53,7 @@ $$u=a+(1-a)b.$$
 Thus 0≤u≤1: carbonation acts on the remaining unconverted fraction. In the submerged comparison b is set to zero as a model assumption; dissolved carbon dioxide is not asserted to be physically absent.`,
       caption:String.raw`Choose environment, age and the authored ash:lime ratio. Each 60 cm strip has 60 equal cells, shaded by its computed lime-conversion proxy. The readout and curve use exactly the same cell average. The age plot includes the whole offered range, from 0.005 to 2000 years. Select submerged conditions and set ash to zero to remove this model's hydraulic contribution. Green conversion is not measured strength, a fitted reaction rate or a durability forecast.`,
       deps:['tech-1.7'],see:['mat-2.8','tech-4.1'],refs:['Vitruvius, De architecturaII.5.1,II.6.1 and V.12.2; Morgan translation 1914','Jackson et al. (2013), Am. Mineral. 98:1669–1687, materials/mineralogy and thermal-model discussion','Seymour et al. (2023), Sci. Adv. 9:eadd1602, ancient sample analysis and modern crack-healing tests'],tags:['ancient','materials','chemistry'],
-      credit:'Roman practice described by Vitruvius; modern studies: Jackson et al. (2013) and Seymour et al. (2023)',
+      credit:'Roman practice described by Vitruvius; modern studies by Jackson and Seymour and colleagues',
       scope:String.raw`Rates, effective capacity ratio 2.5, moisture factors, logistic front, two-face geometry and 60-cell discretization are authored, with years/metres only for scale. This is not a mass-balanced chemical speciation model, a fitted carbonation PDE or a replay of either modern study. Phase chemistry and concentrations are not inferred from the green shading. The Roman recipes distinguish sand from volcanic powder; the plotted ratio is not a recommended historical or modern mix.`,
       links:{source:'https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Vitruvius/2*.html',marine:'https://open.metu.edu.tr/bitstream/handle/11511/39621/index.pdf',experiment:'https://doi.org/10.1126/sciadv.add1602'},
       viz(v){
@@ -137,7 +137,7 @@ Small residuals can reflect rounding. Larger discrepancies remain visible rather
     // ------------------------------------------------------------------ 4.6
     {
       num:'4.6',kind:'Invention',name:'The windmill',verify:false,
-      credit:'Post-mill mechanism documented by the National Trust; ideal actuator-disc comparison following Jonkman 2003',
+      credit:'Post-mill mechanism documented by the National Trust; ideal actuator-disc comparison following Jonkman',
       statement:String.raw`A windmill uses moving air to drive a shaft. In a post mill, the body turns about a large upright post so its sails can face the wind. The National Trust's record of Pitstone describes this post and the miller's tail pole; it explicitly leaves the construction date unknown. This example does not establish an earliest European or Persian invention date.
 
 The power through an area $A$ in uniform free-stream wind $U$ is $\tfrac12\rho AU^3$. An ideal aligned actuator disc has a particular maximum extraction fraction $16/27$. Its assumptions matter: steady uniform incompressible inviscid flow, uniform disc loading, equal ambient pressure far upstream/downstream, and no wake rotation. This is a result for that ideal model, not an unconditional ceiling for every machine, flow or installation.`,

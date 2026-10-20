@@ -46,7 +46,7 @@ export default {
     // ------------------------------------------------------------------ 4.7
     {
       num:'4.7',kind:'Invention',name:'The cam and the trip hammer',verify:false,
-      credit:'Cam-driven stamps described in Agricola 1556, Book VIII; isolated guided-stroke comparison authored here',
+      credit:'Cam-driven stamps described in Agricola, Book VIII; isolated guided-stroke comparison authored here',
       statement:String.raw`A cam raises a follower as a shaft turns. Releasing a raised head lets gravity produce an impact. A trip hammer uses a pivoted beam; a stamp instead slides in guides. Agricola's De re metallica, Book VIII, describes iron-shod stamps, tappets and two cams per stamp on a water-driven shaft. The 1912 translation and woodcut show this mechanism.
 
 The illustration studies one ideal **guided vertical stamp stroke**. It does not simulate a pivoted helve, a repeating steady state, the next cam's collision or a specific historical machine. A prescribed lift can require a retaining force at high speed; this constraint is exposed rather than assuming a one-sided cam can pull its follower downward.`,
