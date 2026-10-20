@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 150,
+  "remainingFlags": 148,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -28,7 +28,7 @@
     "polsci": 9,
     "music": 21,
     "art": 11,
-    "arch": 11,
+    "arch": 9,
     "ling": 10,
     "tech": 23,
     "bighist": 18
@@ -1589,36 +1589,6 @@
       }
     },
     {
-      "id": "arch-4.1",
-      "file": "content/arch/ch04.js",
-      "name": "Barrel and groin vaults",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Heyman"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Groin_vault"
-      }
-    },
-    {
-      "id": "arch-4.2",
-      "file": "content/arch/ch04.js",
-      "name": "Rib vaults and the Gothic skeleton",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Heyman"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Rib_vault"
-      }
-    },
-    {
       "id": "ling-3.6",
       "file": "content/ling/ch03-b.js",
       "name": "Morphological typology",
@@ -3151,7 +3121,9 @@
       "game-4.6",
       "game-4.7",
       "music-7.1",
-      "music-7.2"
+      "music-7.2",
+      "arch-4.1",
+      "arch-4.2"
     ]
   },
   "additionalFollowups": [
@@ -7534,6 +7506,18 @@
       "status": "resolved",
       "report": "docs/verification/music-pythagorean-followup.md",
       "note": "Actual Benson Lemma6.2.1 and prerequisites read; full authored forward-density proof separated from finite prefixes, exact BigInt record/equality decisions and ET zeros, all1\u2013400 integer prefixes/control/replay/geometry independently accepted."
+    },
+    {
+      "id": "arch-4.1",
+      "status": "resolved",
+      "report": "docs/verification/arch-vault-followup.md",
+      "note": "Actual Block/Huerta sources and prerequisites; corrected max-surface geometry, exact areal weights and explicitly conditional vertical-load allocation; seven math groups, eight full native and eight state combinations plus static pass; exact neighbor guards."
+    },
+    {
+      "id": "arch-4.2",
+      "status": "resolved",
+      "report": "docs/verification/arch-vault-followup.md",
+      "note": "Actual source discussion; 24-block own weights and integrated web loads, one prescribed plane thrust candidate; independent7826-state/195650-joint checks and continuous-depth nonsingularity bounds; root full native/state/static pass with no3D or collapse inference."
     }
   ]
 }
