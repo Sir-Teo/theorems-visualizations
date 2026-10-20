@@ -90,7 +90,7 @@ export default {
       title: 'Network theorems',
       summary: String.raw`Linearity pays off in a handful of theorems that let us reason about circuits without solving them in full. Superposition splits the effect of many sources into a sum, and Thévenin and Norton compress an entire linear network into one source and one resistor as seen from a pair of terminals. Maximum power transfer, reciprocity and Tellegen's remarkable theorem — which depends only on the graph, not on the elements — complete the toolkit, together with dependent sources and two-ports.`,
       items: [
-        { num: '3.1', kind: 'Theorem', name: 'Superposition', deps: ['circ-2.5', 'ladr-3.63'], refs: ['Agarwal–Lang §3.5'],
+        { num: '3.1', kind: 'Theorem', name: 'Superposition', deps: ['circ-2.5', 'circ-2.9', 'ladr-3.63'], refs: ['Agarwal–Lang §3.5'],
           pic: 'Switch sources on one at a time in a three-source circuit: the partial responses at a chosen node are stacked as bars and their sum matches the full solution; add a diode and the bars stop adding up.' },
         { num: '3.2', kind: 'Theorem', name: 'Thévenin’s theorem', deps: ['circ-3.1'], refs: ['Agarwal–Lang §3.6', 'Horowitz–Hill §1.2'],
           pic: 'Put a box around any part of a circuit: the i–v line seen at its terminals is measured by sweeping a test load, and the equivalent V_Th and R_Th are read from its intercept and slope.' },
@@ -102,7 +102,7 @@ export default {
           pic: 'Sweep the load resistance across a Thévenin source: delivered power peaks exactly at R_L = R_Th while efficiency there is only 50%, both curves drawn on the same axis.' },
         { num: '3.6', kind: 'Theorem', name: 'Tellegen’s theorem', deps: ['circ-2.1', 'circ-2.2', 'circ-2.7', 'ladr-7.1'], refs: ['Agarwal–Lang ch. 3'],
           pic: 'Take branch voltages from one circuit and branch currents from a completely different circuit with the same graph: the sum of their products is zero every time the elements are randomized.' },
-        { num: '3.7', kind: 'Theorem', name: 'Reciprocity theorem', deps: ['circ-3.6', 'ladr-7.5'], refs: ['Agarwal–Lang ch. 3'],
+        { num: '3.7', kind: 'Theorem', name: 'Reciprocity theorem', deps: ['circ-3.6', 'circ-2.8', 'ladr-7.5'], refs: ['Agarwal–Lang ch. 3'],
           pic: 'Drive a resistive network at port A and measure the current at port B, then swap source and meter: the readings agree to machine precision until a dependent source breaks the symmetry.' },
         { num: '3.8', kind: 'Definition', name: 'Dependent (controlled) sources', deps: ['circ-1.6'], refs: ['Agarwal–Lang §2.6'],
           pic: 'Wire a voltage-controlled current source and turn up its gain: the output current follows the control voltage elsewhere in the circuit, making amplification possible in a linear model.' },
