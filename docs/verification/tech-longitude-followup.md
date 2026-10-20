@@ -51,3 +51,11 @@ Final native matrix: **all12groups pass**, both items1450/430/320×light/dark, `
 Personally inspected final320dark5.10 negative-trajectories full page,1450light5.9 zero-crossing full page,320light5.9 actual map panel and430light5.10 seed-replay error panel. All curves and markers remain visible, negative excursions are fully contained, controls/readout are legible and the theoretical mean is visually distinct. Evidence `/tmp/atlas-worker-two/tech-longitude/`. Original Act and H4 source pixels were inspected separately above.
 
 Exact guards confirm all5.7/5.8/5.11chapter bodies and all unowned syllabus rows are byte-preserved. `git diff --check` passes. Both candidate flags remain true pending independent acceptance.
+
+## Independent-review state follow-up
+
+The coordinator independently reproduced a missing case in735e0f: change only the valid saved longitude slider from−35 to−34, leaving its saved handle/agreement values unchanged. Runtime handle restoration invokes `onDrag` even though the pointer is not dragging, so the old callback silently overwrote the restored slider before the agreement adapter checked it. The old invalid cases caught malformed handles but missed this valid slider-only discrepancy.
+
+The instance-local ship callback now updates coordinate controls **only during actual dragging** (`ship.dragging`). Restoration leaves restored controls intact until the custom agreement check accepts/rejects the complete state. No runtime change or source/math model change. Added explicit valid longitude-only(−34) and latitude-only(39) invalid snapshots; all agreeing off-grid full states and actual drags still replay exactly.
+
+Fresh **7math groups**, static2items(5.9/4.8)0/0, and **all6longitude native groups**1450/430/320×light/dark pass at this repair. Logs `tech-longitude-state-repair-{math,native}.log`, `tech-coordinate-state-static.log` under `/tmp/atlas-worker-two/`. The full unchanged5.10matrix above remains applicable. Inspected the newly generated320light full longitude output. Flag remains true pending independent confirmation of the repaired exact commit.
