@@ -1,13 +1,6 @@
+import { waterClock } from './source-audit-water.js';
 // History of Technology — Chapter 5: Time and navigation (items 5.1–5.6; 5.7–5.11 are in ch05-b.js)
 import { yearStage, drawYears, D2R, clamp, ellipK, pendulumRatio, lossPerDay, bangPeriod, bangAngle, OBLIQ, sunLon, eclDec, eclRA, altitude, dayName, hhmm } from './ch05.shared.js';
-
-// ---------------------------------------------------------------- 5.1 helpers: draining vessels
-// A vessel whose radius at head h is R(h) = 0.5 h^p (h in units of the starting head). Torricelli: outflow ∝ sqrt(h), so
-// dt ∝ A(h) dh / sqrt(h) and the elapsed fraction of the run is tau(h) = (I(1) − I(h)) / (I(1) − I(h1)) with I(h) = h^(2p+1/2) / (2p+1/2).
-const H1 = 0.15; // the clock is read between a full head of 1 and a final head of 0.15 of it
-const clI = (h, p) => h ** (2 * p + 0.5) / (2 * p + 0.5);
-const clTau = (h, p) => (clI(1, p) - clI(h, p)) / (clI(1, p) - clI(H1, p));
-const clHead = (tau, p) => ((2 * p + 0.5) * (clI(1, p) - tau * (clI(1, p) - clI(H1, p)))) ** (1 / (2 * p + 0.5));
 
 // ---------------------------------------------------------------- 5.2 helpers: stereographic plate and rete
 const STARS = [ // name, right ascension (hours), declination (degrees); J2000 values rounded to about 0.1°
@@ -60,75 +53,29 @@ export default {
   items: [
     // ------------------------------------------------------------------ 5.1
     {
-      num: '5.1',
-      kind: 'Invention',
-      name: 'The water clock (clepsydra)',
-      credit: 'Oldest surviving example: the alabaster outflow clepsydra from Karnak, in the reign of Amenhotep III (14th century BCE); a tomb inscription of the official Amenemhet (16th century BCE) is the oldest record of one; Ctesibius of Alexandria (3rd century BCE) is credited with the constant-head overflow',
-      verify: true,
-      statement: String.raw`A **water clock** (clepsydra) measures time by the amount of water that has left (outflow type) or entered (inflow type) a vessel through a small hole. In an outflow clepsydra the time is read from the falling level against marks on the wall. The flow through the hole speeds up with the head of water above it (Torricelli's law, fluid-2.10, $v=\sqrt{2gh}$), so in a straight-sided vessel the level falls fast at first and slowly at the end, and equal marks do not mean equal hours.
+      num:'5.1',kind:'Invention',name:'The water clock (clepsydra)',verify:true,
+      statement:String.raw`A water clock indicates elapsed time through controlled water transfer. The Karnak outflow vessel, JE 37525, is catalogued to Amenhotep III by its present museum. Its interior has twelve monthly columns of hour marks. These seasonal hours should not be confused with twelve equal modern hours.
 
-What the sources support: the oldest surviving water clock is the outflow vessel from Karnak, with sloping sides and twelve columns of marks, one for each month, in the reign of Amenhotep III (about 1400 BCE); a tomb inscription of the 16th century BCE records an earlier inventor. Egyptian bowls with flaring sides were an approximate remedy for the changing speed. The remedy that works is to keep the head constant: Ctesibius' arrangement (3rd century BCE; Vitruvius and Hero are our sources, his own writings are lost) feeds the outflow vessel from a larger one through an overflow, and the time is read from the steadily rising float in a receiving vessel.
+Vitruvius IX.8 describes Ctesibius' water-clock mechanism, including a regulated opening, a rising float and toothed motion transmission. That text is historical evidence for the mechanism it describes, not a derivation of Torricelli's law or proof that the exact constant-head overflow pictured here was his original invention. The two ideal hydraulic comparisons below are authored.`,
+      idea:String.raw`Assume quasi-steady ideal outflow through a small fixed hole and a vessel cross-section $A(h)\propto h^{2p}$. Torricelli flow is proportional to $\sqrt h$, so elapsed time is proportional to the integral of $h^{2p-1/2}$. Put $n=2p+1/2$ and final head $h_1=0.15$. For normalized elapsed time $\tau$,
+$$h(\tau)=[1-\tau(1-h_1^n)]^{1/n}.$$
+The equally spaced level scale reads the fraction $(1-h)/(1-h_1)$. At $p=1/4$, $n=1$ and this equals $\tau$ exactly in the ideal model. A cylinder $p=0$ and cone $p=1$ differ. Every vessel's complete specified run is normalized to 12 equal illustrative hours; this is not the Karnak calibration.
 
-Scope of the picture: ideal Torricelli outflow through a small sharp hole, no viscosity, no temperature effect (real clocks are also sensitive to the bore of the hole and to temperature, which changes the viscosity of water); the vessel is a body of revolution $r=0.5\,h^{p}$ and the clock is read between full and 15% of the head.`,
-      idea: String.raw`Outflow through a hole of area $a$ is $a\sqrt{2gh}$, and the level falls at $dh/dt=-a\sqrt{2gh}/A(h)$ where $A(h)$ is the surface area. Separating variables, the time to go from head $h_0$ to $h$ is $\int A(s)\,ds/(a\sqrt{2gs})$. For a cylinder $A$ is constant and $h(t)$ is a parabola: the level drops quickly at the start. The level drops at a constant rate exactly when $A(h)\propto\sqrt h$, i.e. a vessel whose radius grows as $h^{1/4}$, a trumpet shape narrower at the bottom. With a constant head the speed does not change at all and the receiving vessel fills at a steady rate.`,
-      caption: String.raw`Left: the vessel (blue water, orifice at the bottom). The green ticks on the right wall are where the true hours fall; the orange ticks on the left wall are equally spaced, as a scale cut in a cylinder would be. Set the **profile exponent** $p$ ($p=0$ cylinder, $p=1$ cone) and the time; right: how far the equally marked scale is wrong, in minutes of a 12-hour run. Find the exponent that makes the error vanish, then switch on the constant head.`,
-      deps: ['fluid-2.10'],
-      see: ['tech-4.9', 'tech-5.4'],
-      refs: ['Usher, “Water clocks and mechanical clocks”', 'Cardwell'],
-      tags: ['ancient', 'timekeeping', 'fluid'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Water_clock' },
-      viz(v) {
-        const A = v.stage({ x: [-0.9, 0.9], y: [-0.15, 1.15], equal: true, axes: false, height: 340, weight: 1, minWidth: 300, title: 'the vessel' });
-        const B = v.stage({ x: [0, 12], y: [-120, 120], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 320, xlabel: 'true time (hours)', ylabel: 'error of a linear scale (min)', title: 'reading error' });
-        const pS = v.slider('profile exponent $p$ ($r\\propto h^p$)', 0, 1, 0, { step: 0.01 });
-        const tS = v.slider('time elapsed (h)', 0, 12, 4, { step: 0.05 });
-        const cH = v.toggle('constant head (Ctesibius)', false);
-        const R = (h, p) => 0.5 * h ** p;
-        v.render(() => {
-          const p = pS.value, tau = tS.value / 12, ch = cH.value;
-          // vessel outline
-          const left = [], right = [], N = 60;
-          for (let i = 0; i <= N; i++) { const h = i / N; left.push([-R(h, p) * 1.0, h]); right.push([R(h, p), h]); }
-          const hNow = ch ? 1 : clHead(tau, p);
-          const water = [];
-          for (let i = 0; i <= N; i++) { const h = (i / N) * hNow; water.push([R(h, p), h]); }
-          for (let i = N; i >= 0; i--) { const h = (i / N) * hNow; water.push([-R(h, p), h]); }
-          A.poly(water, { fill: 'accent', fillAlpha: 0.28, stroke: false });
-          A.path(left, { color: 'ink', width: 2.4 }); A.path(right, { color: 'ink', width: 2.4 });
-          A.dot(0, 0, { r: 3.5, color: 'ink' });
-          if (hNow > 0.02) A.line(0, 0, 0, -0.12, { color: 'accent', width: 2 + 2 * Math.sqrt(hNow) });
-          A.text('orifice', 0.12, -0.1, { size: 10.5, color: 'muted', align: 'left' });
-          // marks: equally spaced scale (orange, left) and true hours (green, right)
-          for (let k = 0; k <= 12; k++) {
-            const hLin = 1 - (k / 12) * (1 - H1), hTrue = clHead(k / 12, p);
-            A.line(-R(hLin, p) - 0.05, hLin, -R(hLin, p), hLin, { color: 'orange', width: k % 3 === 0 ? 2.2 : 1.2 });
-            if (!ch) A.line(R(hTrue, p), hTrue, R(hTrue, p) + 0.05, hTrue, { color: 'green', width: k % 3 === 0 ? 2.2 : 1.2 });
-            if (k % 3 === 0) { A.text(`${k}`, -R(hLin, p) - 0.09, hLin, { size: 10, color: 'orange', align: 'right', baseline: 'middle' }); if (!ch) A.text(`${k}`, R(hTrue, p) + 0.09, hTrue, { size: 10, color: 'green', align: 'left', baseline: 'middle' }); }
-          }
-          A.line(-0.88, hNow, 0.88, hNow, { color: 'gold', width: 1.4, dash: [4, 3] });
-          if (ch) A.text('supply with overflow keeps this head fixed;\nthe time is read from a float in the receiver', 0, 1.1, { size: 10.5, color: 'muted', align: 'center' });
-          // error curve
-          B.hline(0, { color: 'muted', width: 1 });
-          if (ch) { B.text('constant head: the receiving float rises linearly, zero error', 6, 6, { size: 11, color: 'green', align: 'center' }); B.line(0, 0, 12, 0, { color: 'green', width: 3 }); }
-          else {
-            const pts = [];
-            for (let i = 0; i <= 120; i++) { const t = i / 120, h = clHead(t, p), r = (1 - h) / (1 - H1); pts.push([12 * t, (r - t) * 720]); }
-            B.path(pts, { color: 'orange', width: 2.6 });
-            const hh = clHead(tau, p), r = (1 - hh) / (1 - H1);
-            B.dot(tS.value, (r - tau) * 720, { r: 6, color: 'gold' });
-          }
-        });
-        v.legend([['orange', 'equally spaced scale on the wall'], ['green', 'true hours'], ['gold', 'now', { dot: true }]]);
-        v.readout(() => {
-          const p = pS.value;
-          if (cH.value) return `constant head: outflow $\\sqrt{2gh_0}$ never changes, so equal volumes mean equal times\nthe linear scale is exact (the cost is a supply vessel and an overflow)`;
-          const dh = (t0, t1) => clHead(t0, p) - clHead(t1, p), first = dh(0, 1 / 12), last = dh(11 / 12, 1);
-          let worst = 0, tw = 0; for (let i = 0; i <= 240; i++) { const t = i / 240, e = ((1 - clHead(t, p)) / (1 - H1) - t) * 720; if (Math.abs(e) > Math.abs(worst)) { worst = e; tw = t * 12; } }
-          return `level drop in the first hour : in the last hour = **${v.fix(first / last, 2)} : 1**; the equal-marked scale is out by up to **${v.fix(Math.abs(worst), 0)} min** (at ${v.fix(tw, 1)} h)\n$p=${v.fix(p, 2)}$; the error vanishes at $p=1/4$ (area $\\propto\\sqrt h$): ${Math.abs(p - 0.25) < 0.02 ? '**you are there**' : 'drag toward it'}`;
-        });
+In the separate constant-head comparison, an adequate supply and overflow keep the source head fixed. A **constant-area receiving tank**, not the source's level scale, then rises linearly with time. Changing the profile exponent cannot change that receiver's linear readout.`,
+      caption:String.raw`Select elapsed time and vessel-profile exponent. In outflow mode, orange ticks are equally spaced levels and green ticks correspond to equal model times. The gold line marks the actual level. The error plot contains every sampled error and the selected state, using a complete dynamic range. The readout identifies the largest absolute error among 241 equally spaced times rather than asserting an exact global maximum.
+
+Toggle the constant-head comparison to see a supply vessel kept full by overflow and a separate rectangular receiver with a rising gold float. In this mode the receiver level, rather than the full source, indicates elapsed time and the error is zero by the stated assumptions.`,
+      deps:['fluid-2.10'],see:['tech-5.4'],refs:['NMEC, Clepsydra, JE 37525, Amenhotep III; Ancient Egyptian Astronomy database WCO 1, identification/interior markings','Vitruvius, De architecturaIX.8.4–7, regulated opening, float and gear transmission; Morgan 1914/Gwilt 1826 translations'],tags:['ancient','timekeeping','fluid'],
+      credit:'Karnak outflow vessel, Amenhotep III; Ctesibius mechanism described by Vitruvius IX.8; normalized hydraulic comparisons authored here',
+      scope:String.raw`The exponent family, head cutoff, 12-hour normalization, ideal orifice law, supply/overflow and constant-area receiver are authored. Viscosity, hole wear, temperature, leakage, float loading and seasonal-hour calibration are excluded. The illustration is not a dimensional reconstruction or performance test of JE 37525.`,
+      links:{source:'https://nmec.gov.eg/collections/temp-name-4/',catalogue:'https://aea.mcmaster.ca/index.php/en/database/water-clocks/wco-1-amenhotep-iii-karnak',text:'https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Vitruvius/9*.html'},
+      viz(v){
+        const exponent=v.slider('authored profile exponent p',0,1,0,{step:'any',decimals:6}),time=v.slider('elapsed model time (h)',0,12,4,{step:'any',decimals:6}),constant=v.toggle('constant-head comparison',false),A=v.stage({x:[-1.7,1.7],y:[-.25,1.3],axes:false,height:330,minWidth:260,title:'outflow vessel or source + receiver'}),B=v.stage({x:[-.6,12.6],y:[-150,150],axes:'box',gutter:true,height:330,minWidth:260,xlabel:'model time (h)',ylabel:'linear-scale error (min)',title:'complete sampled error curve'});let info;
+        v.legend([['orange','equal level marks'],['green','equal model times'],['gold','current level / receiver',{dot:true}]]);
+        v.render(()=>{const p=waterClock(exponent.value,time.value,constant.value);B.setView([-.6,12.6],p.range);if(p.constant){A.rect(-1.35,.1,-.45,1.08,{color:'ink',width:1.5});A.rect(-1.35,.1,-.45,1,{fill:'accent',fillAlpha:.3,stroke:false});A.path([[-1.6,1.2],[-.9,1.2],[-.9,1.05]],{color:'accent',width:2});A.path([[-.45,1],[-.2,1],[-.2,.8],[.35,.8]],{color:'accent',width:2});A.rect(.35,.1,1.35,1.08,{color:'ink',width:1.5});const y=.1+.8*p.tau;A.rect(.35,.1,1.35,y,{fill:'accent',fillAlpha:.3,stroke:false});A.line(.4,y,1.3,y,{color:'gold',width:2});A.text('source',-.9,-.08,{align:'center',size:11,color:'ink'});A.text('receiver',.85,-.08,{align:'center',size:11,color:'ink'});}else{const R=h=>.5*h**p.p,left=[],right=[],water=[];for(let i=0;i<=80;i++){const h=i/80;left.push([-R(h),h]);right.push([R(h),h]);const z=h*p.head;water.push([R(z),z]);}for(let i=80;i>=0;i--){const z=i/80*p.head;water.push([-R(z),z]);}A.poly(water,{fill:'accent',fillAlpha:.3,stroke:false});A.path(left,{color:'ink',width:2});A.path(right,{color:'ink',width:2});for(const k of p.ticks){A.line(-R(k.equal)-.08,k.equal,-R(k.equal),k.equal,{color:'orange',width:1.4});A.line(R(k.true),k.true,R(k.true)+.08,k.true,{color:'green',width:1.4});if(k.hour%3===0){A.text(String(k.hour),-R(k.equal)-.13,k.equal,{align:'right',baseline:'middle',size:10,color:'orange'});A.text(String(k.hour),R(k.true)+.13,k.true,{align:'left',baseline:'middle',size:10,color:'green'});}}A.line(-.75,p.head,.75,p.head,{color:'gold',width:1.5});A.line(0,0,0,-.16,{color:'accent',width:2});}B.path(p.curve,{color:p.constant?'green':'orange',width:2.2});B.dot(p.hours,p.error,{color:'gold',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `${p.constant?'Constant-head receiver':'Outflow level scale'} at ${v.fix(p.hours,9)} h: ${p.constant?'receiver fraction':'source head'} ${v.fix(p.constant?p.tau:p.head,9)}; indicated ${v.fix(p.linearHours,9)} h, signed error ${v.fix(p.error,9)} min. Largest |error| among 241 model times ${v.fix(Math.abs(p.worst[1]),9)} min at ${v.fix(p.worst[0],6)} h. ${p.constant?'An adequate constant-head supply and constant-area receiver are assumed.':`p=${v.fix(p.p,9)}; exact ideal equal-level case p=0.25; first/last-hour drop ratio ${v.fix(p.firstDrop/p.lastDrop,9)}.`}`;});
       },
     },
-
     // ------------------------------------------------------------------ 5.2
     {
       num: '5.2',

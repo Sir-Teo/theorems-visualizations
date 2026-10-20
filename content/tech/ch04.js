@@ -1,3 +1,4 @@
+import { mortar, aqueduct } from './source-audit-water.js';
 // History of Technology — Chapter 4: Building, water and power before steam (items 4.1–4.6; 4.7–4.12 are in ch04-b.js)
 import { yearStage, drawYears, lump, RHO, G, undershotP, overshotP, breastP, plate, windCp, BETZ, archGeometry, archFeasible, thrustAt } from './ch04.shared.js';
 
@@ -18,14 +19,6 @@ function minThickness(alpha) {
 /** Harmonic number H_n. */
 const harm = (n) => { let s = 0; for (let i = 1; i <= n; i++) s += 1 / i; return s; };
 
-// ---------------------------------------------------------------- 4.3 helpers: a fixed hilly route from spring to city
-const SPRING = 300, CITY_MIN = 268, ROUTE_KM = 30;
-function terrainAt(x, valleyDepth) {
-  const bump = (q) => 11 * Math.sin(0.8 * q) + 7 * Math.sin(0.31 * q + 2);
-  const base = SPRING - 1.25 * x + bump(x) - bump(0) - ((bump(ROUTE_KM) - bump(0)) * x) / ROUTE_KM;
-  const valley = valleyDepth * Math.exp(-(((x - 16) / 2.2) ** 2));
-  return base - valley;
-}
 
 export default {
   collection: 'tech',
@@ -130,154 +123,52 @@ A free-standing stack of blocks has no such freedom. A block can overhang its su
 
     // ------------------------------------------------------------------ 4.2
     {
-      num: '4.2',
-      kind: 'Invention',
-      name: 'Roman concrete (pozzolana)',
-      credit: 'Roman builders in central Italy, 2nd century BCE onward; described by Vitruvius, c. 25 BCE',
-      verify: true,
-      statement: String.raw`**Roman concrete** (*opus caementicium*) was made of lime, a volcanic ash called **pozzolana** (from the beds at Pozzuoli on the Bay of Naples, and similar ashes near Rome), water and fist-sized pieces of rock or brick, laid in layers. Mixed with lime and water, the ash makes a mortar that is **hydraulic**: it sets and hardens even under water, where an ordinary lime mortar never does. Vitruvius (*De architectura*, c. 25 BCE) recommends pozzolana for harbour work and for walls, giving the proportions of lime to pozzolana as 1 : 2 for work in water and 1 : 3 for buildings (the figures as quoted in the secondary literature; the passages are in books 2 and 5).
+      num:'4.2',kind:'Invention',name:'Roman concrete (pozzolana)',verify:true,
+      statement:String.raw`Roman builders combined lime, volcanic material, water and coarse stone into concrete. Vitruvius II.6 describes material from the Bay of Naples that binds underwater. His proportions must be read in context: **II.5 gives three parts pit sand to one lime**, or two parts river/sea sand to one lime. **V.12 gives two parts volcanic powder to one lime for harbour work**. These are not one universal 3:1 pozzolana recipe.
 
-Two modern studies of the material are worth knowing. Jackson and colleagues (2013) found that concrete from a Roman harbour mole at Baiae contains aluminous tobermorite, a rare crystalline calcium silicate hydrate that forms in seawater's reaction with the ash. Seymour and colleagues (2023) proposed that small white lime clasts, long seen as signs of poor mixing, come from mixing in quicklime ("hot mixing") and that they let the concrete heal cracks when water seeps in. The second is a proposed mechanism, supported by laboratory samples, not a settled one.
+Jackson and colleagues (2013) examined ancient marine concrete from Baianus Sinus and identified C-A-S-H binder and Al-tobermorite in relict lime clasts. Seymour and colleagues (2023) studied Privernum architectural mortar, proposed quicklime hot mixing as the origin of characteristic lime clasts, and tested crack healing in modern analogues. Their modern samples support a mechanism; they are not measurements of every ancient structure's behavior.`,
+      idea:String.raw`Ordinary air-lime carbonation consumes carbon dioxide: $\mathrm{Ca(OH)_2+CO_2\to CaCO_3+H_2O}$. Pozzolanic reactions with reactive silica/alumina and lime can form cementitious hydrates in the presence of water. Reaction rates, phase assemblages and transport depend on the actual materials and environment; a simple front is not a universal carbonation law.
 
-The picture below is a **model**, not data: it shows why the two mortars behave differently, with illustrative rate constants chosen for the picture and not measured on Roman samples.`,
-      idea: String.raw`Plain lime mortar, $\mathrm{Ca(OH)_2}$, hardens by taking up carbon dioxide from the air and turning back into limestone, $\mathrm{Ca(OH)_2 + CO_2 \to CaCO_3 + H_2O}$. The carbon dioxide has to diffuse in through the pores, so the hardened front advances like $\sqrt{t}$ (the diffusion length of mat-2.8), which is slow in a thick wall and stops entirely when the pores are full of water.
-
-Ash with reactive silica and alumina does a different reaction. In water it dissolves slowly and combines with the lime to form calcium silicate (and aluminate) hydrates, which are the same binding compounds as in modern cement. That reaction does not need air: it goes on wherever water and lime meet, throughout the volume, and it eventually consumes the free lime if there is enough ash. Too little ash leaves lime that only an air front can harden; too much leaves unreacted ash as filler.`,
-      caption: String.raw`Choose the **environment** and the **age** (logarithmic, from days to 2000 years) and the **ash : lime** ratio by volume. Two 60 cm wall sections with the same environment on both faces (left plain lime mortar, right your mix): the green shading is the share of the lime that has turned into a binder at each depth. Below is the average share against age for plain lime mortar and your mix. Put the block under **seawater**: lime mortar never hardens; the ash mix does. Take the ash to zero and watch the hydraulic set disappear.`,
-      deps: ['tech-1.7', 'mat-2.8'],
-      see: ['tech-4.1', 'tech-4.3'],
-      refs: ['Mokyr ch. 2', 'Vitruvius, De architectura 2.6 and 5.12 (proportions as quoted by Wikipedia "Roman concrete")', 'Jackson et al. 2013, Am. Mineral. 98:1669 (doi 10.2138/am.2013.4484)', 'Seymour et al. 2023, Sci. Adv. 9:eadd1602 (doi 10.1126/sciadv.add1602)'],
-      tags: ['ancient', 'materials', 'chemistry'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Roman_concrete' },
-      viz(v) {
-        const A = v.stage({ x: [0, 1.4], y: [0, 0.9], equal: true, axes: false, height: 250, weight: 1, minWidth: 320, title: 'two 60 cm wall sections at the chosen age' });
-        const Bst = v.stage({ x: [-2.5, 3.5], y: [0, 1], axes: 'box', gutter: true, height: 260, weight: 1.2, minWidth: 340, xlabel: 'age (years, logarithmic)', ylabel: 'binder converted', title: 'how much of the lime has become a binder' });
-        const env = v.select('environment', [{ value: 'dry', label: 'dry air' }, { value: 'damp', label: 'damp wall' }, { value: 'sea', label: 'under seawater' }], 'sea');
-        const age = v.slider('age (years)', 0.005, 2000, 0.5, { log: true, sig: 2 });
-        const ratio = v.slider('ash : lime (by volume)', 0, 5, 2, { step: 0.1 });
-        // illustrative constants
-        const KC = 0.02, TAU0 = 0.3, RSTAR = 2.5, WALL = 0.6; // carbonation depth m/√yr; pozzolanic time constant yr; ash:lime ratio that consumes all the lime; wall thickness m
-        const moist = (e) => ({ dry: 0.12, damp: 1, sea: 1 })[e];
-        const carbDepth = (e, t) => ({ dry: 1, damp: 0.35, sea: 0 })[e] * KC * Math.sqrt(t);
-        const pozz = (e, t, r) => Math.min(1, r / RSTAR) * (1 - Math.exp(-t * moist(e) / TAU0));
-        const conv = (e, t, r, x) => { // x = depth below the nearest face (m)
-          const xp = pozz(e, t, r), freeLime = 1 - Math.min(1, r / RSTAR);
-          const d = carbDepth(e, t), front = d > 0 ? 1 / (1 + Math.exp((x - d) / Math.max(0.004, 0.08 * d))) : 0;
-          return clamp(xp + freeLime * front, 0, 1);
-        };
-        const avg = (e, t, r) => { let s = 0; const m = 30; for (let i = 0; i < m; i++) s += conv(e, t, r, (Math.min(i + 0.5, m - i - 0.5) / m) * WALL); return s / m; };
-        const agg = (() => { const rng = v.rng(4), out = []; for (let k = 0; k < 11; k++) out.push([rng.uniform(0.06, 0.54), rng.uniform(0.1, 0.7), rng.uniform(0.03, 0.055), k + 3]); return out; })();
-        v.render(() => {
-          const e = env.value, t = age.value, r = ratio.value;
-          [[0, 0, 'plain lime mortar'], [0.8, r, `lime + ash ${v.fix(r, 1)} : 1`]].forEach(([ox, rr, lab]) => {
-            const nx = 60;
-            for (let i = 0; i < nx; i++) {
-              const x0 = (i / nx) * WALL, xm = x0 + WALL / nx / 2, depth = Math.min(xm, WALL - xm);
-              A.rect(ox + x0, 0.05, ox + x0 + WALL / nx, 0.75, { fill: 'green', fillAlpha: 0.06 + 0.7 * conv(e, t, rr, depth), stroke: false });
-            }
-            for (const [cx, cy, rad, sd] of agg) A.poly(lump(ox + cx, cy + 0.05, rad, sd, 8, 0.3), { fill: 'muted', fillAlpha: 0.5, color: 'muted', width: 0.8 });
-            A.rect(ox, 0.05, ox + WALL, 0.75, { stroke: true, fill: false, color: 'muted', width: 1.2 });
-            A.text(lab, ox + WALL / 2, 0.83, { size: 11.5, color: 'ink', align: 'center', weight: 600 });
-            A.text(`${v.fix(100 * avg(e, t, rr), 0)}% converted`, ox + WALL / 2, 0.4, { size: 13, color: 'ink', align: 'center', weight: 700, plate: true });
-          });
-          if (e === 'sea') A.corner('seawater on both faces of each wall', 'bl', { color: 'accent', weight: 600 });
-          // curves
-          const lx = (y) => Math.pow(10, y);
-          Bst.fn((x) => avg(e, lx(x), 0), { color: 'red', width: 2.2 });
-          Bst.fn((x) => avg(e, lx(x), r), { color: 'green', width: 2.6 });
-          Bst.vline(Math.log10(t), { color: 'gold', width: 1.6, dash: [4, 3] });
-          Bst.dot(Math.log10(t), avg(e, t, r), { r: 5, color: 'green' });
-          Bst.dot(Math.log10(t), avg(e, t, 0), { r: 5, color: 'red' });
-          Bst.setTicks([[-2, '4 days'], [-1, '5 weeks'], [0, '1 yr'], [1, '10 yr'], [2, '100 yr'], [3, '1000 yr']], null);
-        });
-        v.legend([['red', 'plain lime mortar'], ['green', 'lime with ash (chosen ratio)'], ['gold', 'chosen age', { dash: [4, 3] }]]);
-        v.readout(() => {
-          const e = env.value, t = age.value, r = ratio.value;
-          return `age ${v.fmt(t, 3)} yr, ash : lime = ${v.fix(r, 1)} → ${v.fix(100 * avg(e, t, r), 0)}% of the binder converted (plain lime ${v.fix(100 * avg(e, t, 0), 0)}%); carbonation front at ${v.fix(100 * carbDepth(e, t), 1)} cm (illustrative constant $0.02\\,\\mathrm{m}/\\sqrt{\\mathrm{yr}}$ in dry air)\nin this model ash : lime $\\ge ${RSTAR}$ uses up all the free lime. Vitruvius, as quoted, gives 2 : 1 (water) and 3 : 1 (walls). All constants are for the picture.`;
-        });
+This authored illustration assigns a hydraulic fraction $a=c(1-e^{-mt/0.3})$, where $c=\min(1,r/2.5)$, the ratio r is an illustrative capacity control, and m is a chosen moisture factor. A logistic carbonation proxy b has nominal depth $d=0.02s\sqrt t$ metres. Combine them as
+$$u=a+(1-a)b.$$
+Thus 0≤u≤1: carbonation acts on the remaining unconverted fraction. In the submerged comparison b is set to zero as a model assumption; dissolved carbon dioxide is not asserted to be physically absent.`,
+      caption:String.raw`Choose environment, age and the authored ash:lime ratio. Each 60 cm strip has 60 equal cells, shaded by its computed lime-conversion proxy. The readout and curve use exactly the same cell average. The age plot includes the whole offered range, from 0.005 to 2000 years. Select submerged conditions and set ash to zero to remove this model's hydraulic contribution. Green conversion is not measured strength, a fitted reaction rate or a durability forecast.`,
+      deps:['tech-1.7'],see:['mat-2.8','tech-4.1'],refs:['Vitruvius, De architecturaII.5.1,II.6.1 and V.12.2; Morgan translation 1914','Jackson et al. (2013), Am. Mineral. 98:1669–1687, materials/mineralogy and thermal-model discussion','Seymour et al. (2023), Sci. Adv. 9:eadd1602, ancient sample analysis and modern crack-healing tests'],tags:['ancient','materials','chemistry'],
+      credit:'Roman practice described by Vitruvius; modern studies: Jackson et al. (2013) and Seymour et al. (2023)',
+      scope:String.raw`Rates, effective capacity ratio 2.5, moisture factors, logistic front, two-face geometry and 60-cell discretization are authored, with years/metres only for scale. This is not a mass-balanced chemical speciation model, a fitted carbonation PDE or a replay of either modern study. Phase chemistry and concentrations are not inferred from the green shading. The Roman recipes distinguish sand from volcanic powder; the plotted ratio is not a recommended historical or modern mix.`,
+      links:{source:'https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Vitruvius/2*.html',marine:'https://open.metu.edu.tr/bitstream/handle/11511/39621/index.pdf',experiment:'https://doi.org/10.1126/sciadv.add1602'},
+      viz(v){
+        const env=v.select('environment',[{value:'dry',label:'dry air'},{value:'damp',label:'damp wall'},{value:'sea',label:'submerged comparison'}],'sea'),age=v.slider('model age (years)',.005,2000,.5,{log:true,sig:6,decimals:6}),ratio=v.slider('authored ash : lime ratio',0,5,2,{step:'any',decimals:6}),A=v.stage({x:[-.12,1.52],y:[-.12,1.1],axes:false,height:260,minWidth:260,title:'60 equal cells per wall section'}),B=v.stage({x:[-2.5,3.5],y:[-.15,1.15],axes:'box',gutter:true,height:300,minWidth:260,xlabel:'log₁₀ model age in years',ylabel:'mean conversion proxy',title:'same finite-cell mean at every age'});let info;
+        v.legend([['orange','plain lime proxy'],['green','lime + ash proxy'],['gold','selected age',{dot:true}]]);
+        v.render(()=>{const p=mortar(env.value,age.value,ratio.value);for(const[ox,arr,label]of[[0,p.plain,'plain'],[.8,p.mixed,'with ash']]){for(let i=0;i<60;i++)A.rect(ox+i*.01,.08,ox+(i+1)*.01,.78,{fill:'green',fillAlpha:.06+.7*arr[i],stroke:false});A.rect(ox,.08,ox+.6,.78,{color:'muted',width:1});A.text(label,ox+.3,.91,{align:'center',size:11,color:'ink'});}for(let i=0;i<2;i++)B.path(p.curves[i],{color:i?'green':'orange',width:2.3});B.dot(Math.log10(p.age),p.meanPlain,{color:'orange',r:4,ring:false});B.dot(Math.log10(p.age),p.meanMixed,{color:'gold',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Model age ${p.age.toPrecision(9)} yr; ratio ${v.fix(p.ratio,6)}. The 60-cell means are plain ${v.fix(p.meanPlain,9)}, with ash ${v.fix(p.meanMixed,9)}. Hydraulic proxy ${v.fix(p.hydraulic,9)}; nominal carbonation depth ${v.fix(p.front,9)} m. These are authored conversion proxies, not strength or source measurements.`;});
       },
     },
-
     // ------------------------------------------------------------------ 4.3
     {
-      num: '4.3',
-      kind: 'Invention',
-      name: 'Aqueducts and the inverted siphon',
-      credit: 'Roman aqueducts from the late 4th century BCE; pressure pipes (inverted siphons) already in Hellenistic Pergamon, 2nd century BCE',
-      verify: true,
-      statement: String.raw`An **aqueduct** carries water from a spring to a city by gravity alone, in a channel with a small, steady downward slope. The terrain between the two is never so obliging, so the channel is dug into hills (tunnels and cuttings) and carried over valleys on **arcades**, tall rows of arches (4.1). Where the valley is too deep for an arcade, builders could use an **inverted siphon**: the channel empties into a header tank, water runs down into a pipe along the slope, across the valley floor (the *venter* in Vitruvius's account), and up the far side to an outlet tank. The outlet must be lower than the inlet; water in a pipe cannot rise above its source.
+      num:'4.3',kind:'Invention',name:'Aqueducts and the inverted siphon',verify:true,
+      statement:String.raw`A gravity aqueduct can combine open channels, tunnels, arcades and a closed pressure pipe crossing a valley. An **inverted siphon** descends and rises while its outlet reservoir remains below its inlet reservoir; it does not lift water above its energy source. Vitruvius VIII.6 describes channels, lead or earthenware pipes, and the valley's lower run, the venter.
 
-Documented figures, for orientation: the Nîmes aqueduct that crosses the Pont du Gard falls about 17 m in roughly 50 km (an average of 34 cm per km, 1 in 3000), and only a few centimetres across the bridge itself. Vitruvius (8.6) prescribes a fall of at least half a foot in a hundred feet (1 in 200) for the channel, a much steeper figure than the best-built lines actually used. Frontinus, the water commissioner of Rome from 97 CE, wrote a report on nine aqueducts of the city. The Hellenistic line to Pergamon (the Madradağ line, built in the Attalid period) crossed valleys under pressure; sources differ on whether its pressure sections were lead or terracotta, and the literature says that the route is not known exactly enough to fix the pressure.
+VIII.6.1 differs across the translations consulted: Gwilt 1826 gives half a foot per hundred feet (5 m/km), whereas Morgan 1914 prints a quarter of an inch per hundred feet (about0.208 m/km). Neither rendering establishes a measured universal gradient of Roman aqueducts. The terrain, levels, 30 km route and pipe comparison below are authored; no Nîmes/Pergamon dimensions, uncertain pipe-material attribution or lead-strength measurement is reproduced.`,
+      idea:String.raw`The open-channel profile is $z(x)=300-\gamma x$, with $x$ in kilometres and $\gamma$ in metres per kilometre. The city reference is 268 m, so endpoint height is sufficient exactly when $300-30\gamma\ge268$. This height test alone says nothing about channel discharge or construction feasibility.
 
-The picture is a **model**: the terrain is made up, and the friction loss uses a smooth-pipe friction factor.`,
-      idea: String.raw`In an open channel the water surface follows the channel: it can only flow if the channel keeps falling, and too steep a fall wears out the lining while too shallow a fall leaves no flow. Over 30 km, a gradient $g$ costs $30g$ metres of height, which must not exceed the height difference between spring and city.
+For the comparison pipe, choose one finite polyline and include its vertical tank connections in length $L$. The reservoir drop is $\Delta z=7\gamma$. An explicitly ideal long-pipe Darcy model uses constant $f=0.02$, diameter $D$ and $n$ identical parallel pipes. Its capacity speed is
+$$v=\sqrt{2g\Delta zD/(fL)},$$
+and total capacity is $n\pi D^2v/4$. Compare the requested flow's friction loss with $\Delta z$; an excessive request does not force the outlet hundreds of metres below its design level. The hydraulic grade drops linearly with cumulative pipe length, giving gauge pressure head $H-z$. A thin-wall nominal stress is $p r_m/t=p/(t/r_m)$, using mean radius $r_m$; the wall control is restricted to $t/r_m\le0.1$.`,
+      caption:String.raw`Choose arcade or pressure-pipe crossing, gradient and valley depth. The upper panel contains the entire terrain, channel, tanks and pipe. Orange sections are sampled tunnel/cutting classifications, blue are the remaining channel; a height readout counts the finite route intervals. For the pipe, green is the hydraulic grade at the model's computed capacity, red the specified route. The other panel shows its complete pressure-head profile even when the arcade is selected, as a clearly hypothetical pipe comparison.
 
-In a closed pipe full of water the pressure at the lowest point is the hydrostatic one, $p=\rho g h$ (fluid-2.2), where $h$ is the drop from the inlet tank. The pipe wall carries it as a hoop tension $\sigma = p r / t$ (solid-3.8), and flowing water loses head to friction, $h_f = f\,\tfrac{L}{D}\,\tfrac{v^2}{2g}$, which the outlet must be set lower to pay. A deep valley therefore needs a thick, strong pipe, or several pipes side by side to cut the speed in each, and the outlet tank must sit below the inlet by the friction head.`,
-      caption: String.raw`The route runs from a spring (left) to a city basin (right) over made-up terrain with a valley in the middle. Set the **gradient** of the channel: it follows a straight line down from the spring; where the ground is higher, it tunnels (orange), where lower, it rides on an arcade (grey). Cross the valley by **arcade** or by **siphon** (red pipe). Steepen the gradient and the arcades shrink, but the water arrives too low for the city; flatten it and the arcades grow. For the siphon, set the flow, the pipe diameter and number, and the wall thickness, and read the pressure, the hoop stress against the strength of lead and the friction head that the outlet must pay.`,
-      deps: ['tech-4.1', 'tech-4.2', 'fluid-2.2'],
-      see: ['solid-3.8', 'tech-4.10'],
-      refs: ['Mokyr ch. 2', 'Vitruvius, De architectura 8.6 (fall of the channel; the venter)', 'Frontinus, De aquaeductu (97 CE)', 'Wikipedia "Pont du Gard" (34 cm/km, 17 m)', 'Wikipedia "Lead" (tensile strength 12–17 MPa)'],
-      tags: ['ancient', 'hydraulics', 'civil engineering'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Roman_aqueduct' },
-      viz(v) {
-        const A = v.stage({ x: [0, ROUTE_KM], y: [200, 330], axes: 'box', gutter: true, height: 340, full: true, xlabel: 'distance from the spring (km)', ylabel: 'height (m)', title: 'route from spring to city' });
-        const grad = v.slider('channel gradient (m per km)', 0.1, 2, 0.8, { step: 0.01 });
-        const cross = v.select('valley crossing', [{ value: 'arcade', label: 'arcade' }, { value: 'siphon', label: 'inverted siphon' }], 'arcade');
-        const vdepth = v.slider('valley depth (m)', 20, 110, 60, { step: 1 });
-        const flow = v.slider('flow (litres/s)', 20, 600, 100, { step: 5 });
-        const dia = v.slider('pipe bore (cm)', 10, 40, 30, { step: 1 });
-        const npipe = v.slider('pipes in parallel', 1, 9, 4, { int: true });
-        const wall = v.slider('lead wall (mm)', 5, 60, 25, { step: 1 });
-        const X1 = 12.5, X2 = 19.5;
-        let info = {};
-        v.render(() => {
-          const g = grad.value, D = vdepth.value, siphon = cross.value === 'siphon';
-          [flow, dia, npipe, wall].forEach((c) => { c.el.hidden = !siphon; });
-          const T = (x) => terrainAt(x, D);
-          A.fn(T, { color: 'muted', width: 1.6, fill: 'muted', fillAlpha: 0.14, base: 200, n: 400 });
-          // siphon figures
-          const dm = dia.value / 100, r = dm / 2, np = npipe.value, tmm = wall.value / 1000;
-          const vel = (flow.value / 1000 / np) / (Math.PI * dm * dm / 4);
-          const zIn = SPRING - g * X1;
-          let Lp = 0; for (let x = X1; x < X2; x += 0.05) Lp += Math.hypot(0.05 * 1000, T(x + 0.05) - T(x));
-          const hf = 0.02 * (Lp / dm) * vel * vel / (2 * G);
-          let zBot = Infinity; for (let x = X1; x <= X2; x += 0.05) zBot = Math.min(zBot, T(x));
-          const head = zIn - zBot, p = RHO * G * head, hoop = p * r / tmm;
-          const zOutSiph = zIn - Math.max(hf, g * (X2 - X1));
-          const chan = (x) => (siphon && x > X2 ? zOutSiph - g * (x - X2) : SPRING - g * x);
-          let tunnel = 0, arcMax = 0, arcLen = 0;
-          const step = 0.1;
-          for (let x = 0; x < ROUTE_KM; x += step) {
-            const xm = x + step / 2, zc = chan(xm), zt = T(xm);
-            if (siphon && xm >= X1 && xm <= X2) continue;
-            if (zt > zc + 0.3) { tunnel += step; A.line(x, zc, x + step, chan(x + step), { color: 'orange', width: 4, alpha: 0.9 }); }
-            else if (zt < zc - 0.3) { arcMax = Math.max(arcMax, zc - zt); arcLen += step; A.line(x, zc, x + step, chan(x + step), { color: 'accent', width: 3 }); if (Math.round(x / step) % 4 === 0) A.line(x, zc, x, T(x), { color: 'muted', width: 1.2, alpha: 0.7 }); }
-            else A.line(x, zc, x + step, chan(x + step), { color: 'accent', width: 3 });
-          }
-          if (siphon) {
-            const pts = []; for (let x = X1; x <= X2 + 1e-9; x += 0.1) pts.push([x, T(x) + 1.5]);
-            A.path(pts, { color: 'red', width: 3.2 });
-            A.line(X1, zIn, X1, zIn + 6, { color: 'red', width: 2 }); A.line(X2, zOutSiph, X2, zOutSiph + 6, { color: 'red', width: 2 });
-            A.line(X1, zIn, X2, zOutSiph, { color: 'red', width: 1.3, dash: [5, 3] });
-            A.text('hydraulic grade line', (X1 + X2) / 2, (zIn + zOutSiph) / 2 + 6, { size: 10.5, color: 'red', align: 'center', plate: true });
-          }
-          const arrive = chan(ROUTE_KM);
-          A.dot(0, SPRING, { r: 5, color: 'green', label: 'spring', labelPos: 'ne' });
-          A.dot(ROUTE_KM, CITY_MIN, { r: 5, color: 'gold', label: 'city basin', labelPos: 'sw' });
-          A.hline(CITY_MIN, { color: 'gold', width: 1, dash: [4, 3] });
-          A.dot(ROUTE_KM, arrive, { r: 5, color: arrive >= CITY_MIN ? 'green' : 'red', hollow: true });
-          info = { arrive, tunnel, arcMax, arcLen, hf, head, p, hoop, vel, Lp, siphon, ok: arrive >= CITY_MIN, g };
-        });
-        v.legend([['accent', 'open channel'], ['orange', 'tunnel or cutting'], ['muted', 'arcade piers'], ['red', 'siphon pipe']]);
-        v.readout(() => {
-          const i = info;
-          const base = `gradient ${v.fix(i.g, 2)} m/km (Nîmes: 0.34; Vitruvius: 5): the water reaches the city at ${v.fix(i.arrive, 1)} m, ${i.ok ? `**${v.fix(i.arrive - CITY_MIN, 1)} m above** the basin: works` : `**${v.fix(CITY_MIN - i.arrive, 1)} m below** the basin: it never arrives`} · tunnels ${v.fix(i.tunnel, 1)} km · arcades ${v.fix(i.arcLen, 1)} km, up to ${v.fix(i.arcMax, 0)} m high`;
-          if (!i.siphon) return base;
-          return `${base}\nsiphon: ${v.fix(i.Lp / 1000, 1)} km of pipe, drop ${v.fix(i.head, 0)} m, static pressure ${v.fix(i.p / 1e5, 1)} bar, speed ${v.fix(i.vel, 2)} m/s per pipe, friction head ${v.fix(i.hf, 1)} m (illustrative friction factor 0.02) · hoop stress ${v.fix(i.hoop / 1e6, 1)} MPa against 12–17 MPa for pure lead: ${i.hoop > 12e6 ? '**bursts**' : i.hoop > 6e6 ? '**marginal**' : 'holds'}`;
-        });
+Flow demand, bore, parallel pipes and wall ratio change the comparison. Capacity and adequate arrival height are reported separately. The readout gives nominal stress without calling a pipe “safe,” “holds” or “bursts.”`,
+      deps:['fluid-2.2'],see:['fluid-2.9','solid-3.8','tech-4.1','tech-4.2'],refs:['Vitruvius, De architecturaVIII.6.1–9, channel fall, lead pipes and venter; Morgan 1914 and Gwilt 1826 translations','MIT 1.060 Engineering Mechanics II, spring 2006, Lecture 16 pp1–2, Darcy–Weisbach pressure drop'],tags:['ancient','hydraulics','civil engineering'],
+      credit:'Pressure-channel construction described by Vitruvius VIII.6; finite hydraulic comparison authored here',
+      scope:String.raw`This ideal finite polyline model assumes steady full-pipe flow, identical parallel pipes, a constant Darcy factor and negligible velocity-head corrections and entrance/exit losses. It excludes leakage, transients, sediment, cavitation, pipe joints, creep and material failure. The pressure profile and thin-wall nominal stress do not validate a lead pipe or a real aqueduct. Terrain sampling and route-classification counts are finite approximations. The fixed tank elevations and entire plotted family remain explicit at every demand setting.`,
+      links:{source:'https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Vitruvius/8*.html',translation:'https://www.chenarch.com/images/arch-texts/0000-Vitruvius-50BC-Ten-Books-of-Architecture.pdf',hydraulics:'https://ocw.mit.edu/courses/1-060-engineering-mechanics-ii-spring-2006/3a800660e36bf54f7920afabc2cdd229_lecture16.pdf'},
+      viz(v){
+        const gradient=v.slider('channel gradient (m/km)',.1,2,.8,{step:'any',decimals:6}),depth=v.slider('valley depth (m)',20,110,60,{step:'any',decimals:6}),demand=v.slider('requested total flow (L/s)',20,600,100,{step:'any',decimals:6}),diameter=v.slider('pipe bore (m)',.1,.4,.3,{step:'any',decimals:6}),pipes=v.slider('parallel pipes',1,9,4,{int:true}),wall=v.slider('thin-wall ratio t/rₘ',.01,.1,.05,{step:'any',decimals:6}),mode=v.select('valley crossing',[{value:'arcade',label:'arcade'},{value:'siphon',label:'inverted siphon'}],'arcade'),A=v.stage({x:[-1.5,31.5],y:[150,340],axes:'box',gutter:true,height:320,minWidth:260,xlabel:'route distance (km)',ylabel:'elevation (m)',title:'entire authored route'}),B=v.stage({x:[12,20],y:[-10,100],axes:'box',gutter:true,height:280,minWidth:260,xlabel:'valley distance (km)',ylabel:'gauge pressure head (m)',title:'pipe comparison at computed capacity'});let info;
+        v.legend([['muted','terrain'],['accent','channel'],['orange','tunnel / cutting'],['red','specified pipe'],['green','capacity hydraulic grade']]);
+        v.render(()=>{const p=aqueduct(gradient.value,depth.value,demand.value,diameter.value,pipes.value,wall.value,mode.value);A.setView([-1.5,31.5],p.y);B.setView([12,20],p.pressureY);A.path(p.terrain,{color:'muted',width:1.4});for(const s of p.segments)A.path(s.points,{color:s.kind==='tunnel'?'orange':'accent',width:2.2});if(p.mode==='siphon'){A.path(p.pipe,{color:'red',width:2});A.path(p.grade,{color:'green',width:1.6,dash:[4,3]});A.dot(12.5,p.headIn,{color:'green',r:3,ring:false});A.dot(19.5,p.headOut,{color:'green',r:3,ring:false});}A.dot(0,300,{color:'green',r:4,ring:false});A.dot(30,268,{color:'gold',r:4,ring:false});A.dot(30,p.arrival,{color:p.cityHighEnough?'green':'red',r:4,hollow:true});B.path(p.pressure,{color:'red',width:2.2});B.line(12.5,0,19.5,0,{color:'muted',dash:[4,3]});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Selected ${p.mode}; arrival height ${v.fix(p.arrival,9)} m versus 268 m: ${p.cityHighEnough?'height sufficient':'height insufficient'} (separate from discharge). Sampled tunnel/cutting ${v.fix(p.tunnel,3)} km, arcade ${v.fix(p.arcade,3)} km; maximum sampled arcade height ${v.fix(p.maxArcade,6)} m.\nPipe comparison: specified length ${v.fix(p.length,6)} m; available drop ${v.fix(p.available,9)} m; capacity ${v.fix(p.capacity,9)} L/s at ${v.fix(p.speed,9)} m/s. Requested ${v.fix(p.demand,6)} L/s needs ${v.fix(p.requestedLoss,6)} m friction head: ${p.demandSupported?'within ideal capacity':'exceeds ideal capacity'}. Gauge pressure-head range[${v.fix(p.minPressureHead,6)}, ${v.fix(p.maxPressureHead,6)}]m; nominal thin-wall peak stress ${v.fix(p.nominalStress/1e6,6)} MPa at t/rₘ=${v.fix(p.wallRatio,6)}. No material-failure prediction.`;});
       },
     },
-
     // ------------------------------------------------------------------ 4.4
     {
       num: '4.4',
