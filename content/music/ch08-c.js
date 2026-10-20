@@ -1,3 +1,7 @@
+import { FF_PRESETS, ffMaskValid, ffMod, fourierModel, intervalModel, fourierAudio, ffValue } from './source-audit-fourier.js';
+const FF_OPTIONS=[['diat','diatonic'],['pent','pentatonic'],['whole','whole-tone'],['oct','octatonic'],['aug','augmented'],['dim','diminished'],['hex','hexachord'],['z4','Z tetrachord'],['cluster','chromatic cluster'],['single','singleton'],['empty','empty'],['full','all twelve'],['free','custom']].map(([value,label])=>({value,label}));
+const ffPoint=(p,r=1)=>[r*Math.sin(2*Math.PI*p/12),r*Math.cos(2*Math.PI*p/12)],ffHit=(x,y)=>ffMod(Math.round(12*Math.atan2(x,y)/(2*Math.PI))),ffPair=([a,b])=>b===0?String(a):`${a}${b<0?' − ':' + '}${Math.abs(b)}√3`;
+function ffClock(stage,mask,other=null){stage.circle(0,0,1,{color:'grid',width:1.2});for(let p=0;p<12;p++){stage.line(...ffPoint(p,.95),...ffPoint(p,1.03),{color:'muted',width:1});stage.text(String(p),...ffPoint(p,1.25),{align:'center',baseline:'middle',size:11,color:'muted'});}for(const[m,r,color,rad]of[[mask,1,'accent',6],[other,.77,'red',4.5]]){if(m===null)continue;const pcs=Array.from({length:12},(_,j)=>j).filter(j=>m&(1<<j)),points=pcs.map(p=>ffPoint(p,r));if(points.length>1)stage.path([...points,points[0]],{color,width:1.3,alpha:.65});points.forEach(p=>stage.dot(...p,{color,r:rad}));}}
 // Music Theory & Acoustics — Chapter 8 (part c): items 8.15–8.21, Fourier and interval content, rows, notation, keys, change ringing
 import { SR, C4, NOTE, mod, norm, Tn, In, key, setStr, braceStr, ic, clk, pcAt, drawClock, polyOf, dotsOf, CLOCK_STAGE, seqCents, PRESETS, complement, icv, vecStr, classes, fromMask, fcoef, fmag, ifun, droneScale, LETTERS, LET_PC, accStr, stepMidi, stepName, spell, midiFreq, drawStaff, noteHead, teStr } from './ch08.shared.js';
 
@@ -12,62 +16,30 @@ export default {
   items: [
     // ------------------------------------------------------------------ 8.15
     {
-      num: '8.15',
-      kind: 'Theorem',
-      name: 'Interval content from Fourier magnitudes',
-      statement: String.raw`For $S\subseteq\Z/12$ let $\mathrm{IF}_S(d)=\#\{(a,b)\in S^2: b-a\equiv d\}$ (the **interval function**, an autocorrelation) and $f_k(S)=\sum_{j\in S}e^{-2\pi ijk/12}$. Then
-$$|f_k(S)|^2=\sum_{d=0}^{11}\mathrm{IF}_S(d)\,e^{-2\pi ikd/12},\qquad \mathrm{IF}_S(d)=\frac1{12}\sum_{k=0}^{11}|f_k(S)|^2\,e^{2\pi ikd/12}.$$
-So the interval content (the interval vector, since $\mathrm{IF}_S(d)$ equals the entry $v_{\operatorname{ic}(d)}$ for $d\ne0,6$ and $2v_6$ for $d=6$) and the Fourier magnitudes determine each other. Consequently two sets have the same interval vector exactly when $|f_k|$ agrees for all $k$: this holds for $S$ and its complement ($f_k(S^c)=-f_k(S)$ for $k\ne0$), which is the hexachord theorem, and for every Z-related pair.`,
-      idea: String.raw`Multiplying $f_k$ by its conjugate gives $\sum_{a,b\in S}e^{-2\pi ik(b-a)/12}$, a sum over all ordered pairs grouped by their difference, which is the first formula; the second is its inverse transform (compare Parseval, 8.16 in Rudin: $\sum|f_k|^2=12|S|$). Complement: $f_k(\Z/12)=0$ for $k\ne0$, so $f_k(S^c)=-f_k(S)$ and the magnitudes agree for $k\ge1$; only $|f_0|^2=|S|^2$ versus $(12-|S|)^2$ differ, and their difference spread over the 12 differences, $\frac{(12-k)^2-k^2}{12}=12-2k$ for $k=|S|$, is the shift of 8.12.`,
-      caption: String.raw`Choose a set and what to compare it with. Top right: the interval function of the set (blue) and of the comparison (red), with purple rings showing the interval function rebuilt from the squared Fourier magnitudes below. Bottom: $|f_k|^2$ for both. Complements share all magnitudes for $k\ge1$; a Z-mate shares everything; the transposed or inverted copy shares everything too.`,
-      deps: ['music-8.14', 'music-8.12', 'pma-8.16'],
-      see: ['music-8.13', 'music-8.11'],
-      refs: ['Tymoczko, A Geometry of Music'],
-      tags: ['fourier', 'interval vector'],
-      credit: 'The interval function is David Lewin\'s (1959 onward); its relation to Fourier magnitudes is developed by Ian Quinn and Emmanuel Amiot (2000s); attributions from secondary sources, not checked against the originals',
-      scope: String.raw`Finite sets on the 12-element circle; the identity is a convolution theorem for $\Z/12$ and holds for any finite cyclic group. The bridge to "same vector $\Rightarrow$ same magnitudes" uses that $\mathrm{IF}_S$ (including $\mathrm{IF}_S(0)=|S|$) is determined by the vector and the size.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Autocorrelation#Wiener%E2%80%93Khinchin_theorem' },
-      verify: true,
-      viz(v) {
-        let S = PRESETS.diatonic.slice();
-        const pre = v.select('set A', [...preOpts, { value: 'free', label: 'free' }], 'diat', { onChange: (x) => { if (preSets[x]) S = preSets[x][1].slice(); } });
-        const rel = v.select('compare with', [{ value: 'comp', label: 'complement' }, { value: 'ti', label: 'moved copy (T/I)' }, { value: 'z', label: 'Z-mate' }], 'comp');
-        const tn = v.slider('copy: transpose by', 0, 11, 4, { int: true });
-        const inv = v.toggle('copy: invert', true);
-        const s = v.stage({ ...CLOCK_STAGE, height: 340, title: 'set A (blue) and B (red); click to edit A' });
-        const ib = v.stage({ x: [-0.7, 11.7], y: [0, 8], axes: 'box', gutter: true, height: 340, xlabel: 'difference $d$', ylabel: 'IF(d)', xticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], title: 'interval function and its rebuild' });
-        const fb = v.stage({ x: [-0.7, 6.7], y: [0, 10], axes: 'box', gutter: true, full: true, height: 230, xlabel: 'k', ylabel: '$|f_k|^2$', title: 'squared Fourier magnitudes' });
-        s.onClick((x, y) => { if (Math.hypot(x, y) < 0.3) return; const k = pcAt(x, y); S = S.includes(k) ? S.filter((q) => q !== k) : norm([...S, k]); pre.value = 'free'; v.invalidate(); });
-        const zmate = (A) => { const { ti, tiOf } = classes(), V = key(icv(A)), ma = A.reduce((m, x) => m | (1 << x), 0), my = tiOf[ma]; for (let c = 0; c < ti.length; c++) { if (c === my) continue; const B = fromMask(ti[c][0]); if (B.length === A.length && key(icv(B)) === V) return B; } return null; };
-        const other = () => { if (rel.value === 'comp') return complement(S); if (rel.value === 'ti') return inv.value ? In(S, tn.value) : Tn(S, tn.value); return zmate(S); };
-        v.soundButton('play A, then B', (sd) => { const B = other(); if (S.length && B && B.length) sd.samples(seqCents([S.map((k) => k * 100), B.map((k) => k * 100)], C4, 1.6, 0.2), SR, { gain: 0.9 }); });
-        const sq = (X, k) => fmag(X, k) ** 2;
-        v.render(() => {
-          const B = other() || S, ok = !!other();
-          drawClock(s, { names: true });
-          polyOf(s, S, 1, { color: 'accent' }); dotsOf(s, S, 1, { color: 'accent', r: 8 });
-          if (ok) { polyOf(s, B, 0.8, { color: 'red' }); dotsOf(s, B, 0.8, { color: 'red', r: 6 }); }
-          if (!ok) s.text('no Z-mate: A is alone in its vector class', 0, 0, { size: 13, color: 'muted', align: 'center', baseline: 'middle', plate: true });
-          const FA = ifun(S), FB = ifun(B), top = Math.max(2, ...FA, ...FB) + 1;
-          ib.setView([-0.7, 11.7], [0, top]);
-          for (let d = 0; d < 12; d++) {
-            ib.rect(d - 0.38, 0, d, FA[d], { fill: 'accent', fillAlpha: 0.75, stroke: false }); if (ok) ib.rect(d, 0, d + 0.38, FB[d], { fill: 'red', fillAlpha: 0.75, stroke: false });
-            let rec = 0; for (let k = 0; k < 12; k++) rec += sq(S, k) * Math.cos((2 * Math.PI * k * d) / 12); rec /= 12;
-            ib.dot(d - 0.19, rec, { r: 5, color: 'purple', hollow: true });
-          }
-          const mx = Math.max(S.length ** 2, B.length ** 2, ...[1, 2, 3, 4, 5, 6].map((k) => Math.max(sq(S, k), sq(B, k)))) * 1.1 + 0.5;
-          fb.setView([-0.7, 6.7], [0, mx]);
-          for (let k = 0; k <= 6; k++) { fb.rect(k - 0.38, 0, k, sq(S, k), { fill: 'accent', fillAlpha: 0.75, stroke: false }); if (ok) fb.rect(k, 0, k + 0.38, sq(B, k), { fill: 'red', fillAlpha: 0.75, stroke: false }); }
-        });
-        v.legend([['accent', 'A'], ['red', 'B'], ['purple', 'IF of A rebuilt from $|f_k|^2$', { dot: true }]]);
-        v.readout(() => {
-          const B = other();
-          if (!B) return `A = $${braceStr(S)}$ has no Z-mate (no other class shares its interval vector).`;
-          const dm = Math.max(...[1, 2, 3, 4, 5, 6].map((k) => Math.abs(sq(S, k) - sq(B, k)))), FA = ifun(S), FB = ifun(B);
-          const di = Math.max(...FA.slice(1).map((x, i) => Math.abs(x - FB[i + 1])));
-          let err = 0; for (let d = 0; d < 12; d++) { let rec = 0; for (let k = 0; k < 12; k++) rec += sq(S, k) * Math.cos((2 * Math.PI * k * d) / 12); err = Math.max(err, Math.abs(rec / 12 - FA[d])); }
-          return `$|A|=${S.length}$, $|B|=${B.length}$ · largest difference of $|f_k|^2$ for $k=1..6$: ${v.fix(dm, 6)} · largest difference of IF for $d\\ne0$: ${di}${di > 0 && dm < 1e-9 ? ` (it equals $|12-2|A||=${Math.abs(12 - 2 * S.length)}$: only $|f_0|$ differs)` : ''} · interval vectors ${key(icv(S)) === key(icv(B)) ? 'equal' : 'differ'} · rebuild error ${v.fix(err, 10)}.`;
-        });
+      num:'8.15',kind:'Theorem',name:'Interval content from Fourier magnitudes',verify:true,
+      statement:String.raw`For $S\subseteq\Z/12$, let $I_S(d)$ count ordered pairs $(a,b)\in S^2$ with $b-a\equiv d$. For its Fourier coefficients $f_k$ from 8.14, put $\omega=e^{-2\pi i/12}$. Then
+$$|f_k|^2=\sum_{d=0}^{11}I_S(d)\omega^{kd},$$
+$$I_S(d)=\frac1{12}\sum_{k=0}^{11}|f_k|^2\omega^{-kd}.$$
+Therefore the full interval function and all squared Fourier magnitudes determine each other. For two sets of the same cardinality, equality of their six-entry interval vectors is equivalent to equality of all Fourier magnitudes. The cardinality condition matters: the empty set and a singleton both have zero interval vector, but their Fourier magnitudes differ.
+Every complement satisfies $f_k(S^c)=-f_k(S)$ for $k\ne0$, so the nonzero-frequency magnitudes agree. The full interval functions agree for complementary hexachords, where both sets have six notes. For arbitrary size $m=|S|$,
+$$I_{S^c}(d)=I_S(d)+12-2m$$
+for every difference $d$, including zero.`,
+      idea:String.raw`Multiply a Fourier coefficient by its conjugate and group the resulting terms by the ordered-pair difference. Character orthogonality gives the inverse formula. The zero difference records cardinality: $I_S(0)=|S|$. For differences 1…5 and 7…11 the counts equal the corresponding interval-vector entries; difference 6 counts each tritone pair twice. Complementation preserves nonzero bins while changing $f_0$ from $m$ to $12-m$; the resulting constant inverse-transform shift explains exactly when equal interval content follows.`,
+      caption:String.raw`Choose a set, edit the clock and compare with its complement, a moved copy or a Z-mate of the same cardinality. Purple rings reconstruct the full interval function using exact squared coefficients. The power plot includes bin 0 so that unequal complement sizes remain visible. If no Z-mate exists, the comparison is explicitly absent. Play A then B; an empty event is silence.`,
+      deps:['music-8.14','music-8.12','pma-8.16'],see:['music-8.13','music-8.11'],
+      refs:['Amiot 2007, §§1.2–1.3, pp. 99–101, Theorems2–4 and convolution proof'],tags:['fourier','interval vector'],
+      credit:'Amiot, 2007, source exposition of the interval-content identity and hexachord condition',
+      scope:String.raw`The transform identities hold for finite cyclic groups; this implementation explicitly computes all twelve differences/bins in $\Z/12$. Exact squared coefficients lie in $\Q(\sqrt3)$, and the inverse is evaluated there to integral counts; the readout also reports the independent floating-point inverse error. A Z-mate is a same-cardinality set with the same interval vector outside A's transposition/inversion class; when several exist the smallest integer bitmask is chosen. The finite search covers all 4,096 sets. No historical priority or perceptual sameness follows from an interval vector. Audio is the declared C4/H8 signal of 8.14, with 0.6-second events and 0.1-second silence between them.`,
+      links:{source:'https://journals.openedition.org/msh/pdf/4272'},
+      viz(v){
+        let mask=FF_PRESETS.diat,info;const pre=v.select('set A',FF_OPTIONS,'diat',{onChange:name=>{if(name!=='free')mask=FF_PRESETS[name];}}),relation=v.select('compare with',[{value:'complement',label:'complement'},{value:'moved',label:'moved copy'},{value:'z',label:'Z-mate'}],'complement'),tn=v.slider('copy transposition',0,11,4,{int:true,step:1}),inv=v.toggle('copy inversion',true);
+        v.shareState('Interval Fourier edited pitch-class mask',{get:()=>mask,validate:ffMaskValid,set:data=>{mask=data;}});
+        const clock=v.stage({x:[-1.6,1.6],y:[-1.6,1.6],equal:true,height:320,full:true,title:'A outside; B inside; click to edit A'}),counts=v.stage({x:[-.8,11.8],y:[-.8,9],axes:'box',gutter:true,full:true,height:310,xticks:[0,2,4,6,8,10],xlabel:'ordered difference d',ylabel:'interval count',title:'full interval functions and exact reconstruction'}),powers=v.stage({x:[-.8,6.8],y:[-1,60],axes:'box',gutter:true,full:true,height:280,xticks:[0,1,2,3,4,5,6],xlabel:'Fourier bin k (including 0)',ylabel:'squared magnitude',title:'bin zero records the cardinality difference'});
+        const model=()=>intervalModel(mask,relation.value,tn.value,inv.value);clock.onClick((x,y)=>{if(Math.hypot(x,y)<.3)return;mask^=1<<ffHit(x,y);pre.value='free';v.invalidate();});
+        const play=v.soundButton('play A then B',snd=>{const a=model();if(!a.B)return;const b=fourierAudio([a.A.mask,a.B.mask]);snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;tn.el.hidden=inv.el.hidden=a.relation!=='moved';play.disabled=!a.B;ffClock(clock,a.A.mask,a.B?.mask??null);if(!a.B){clock.text('No Z-mate',0,.1,{align:'center',baseline:'middle',size:12,color:'muted'});clock.text('for this set',0,-.15,{align:'center',baseline:'middle',size:11,color:'muted'});}const top=Math.max(2,...a.A.IF,...(a.B?.IF??[]))+2;counts.setView([-.8,11.8],[-.08*top,top]);for(let d=0;d<12;d++){counts.rect(d-.34,0,d,a.A.IF[d],{fill:'accent',fillAlpha:.75,stroke:false});if(a.B)counts.rect(d,0,d+.34,a.B.IF[d],{fill:'red',fillAlpha:.65,stroke:false});counts.dot(d-.17,a.A.rebuilt[d],{color:'purple',r:4,hollow:true});}const high=Math.max(1,...a.A.powers.slice(0,7).map(ffValue),...(a.B?.powers.slice(0,7).map(ffValue)??[]));powers.setView([-.8,6.8],[-.04*high,1.15*high]);for(let k=0;k<=6;k++){powers.rect(k-.34,0,k,ffValue(a.A.powers[k]),{fill:'accent',fillAlpha:.75,stroke:false});if(a.B)powers.rect(k,0,k+.34,ffValue(a.B.powers[k]),{fill:'red',fillAlpha:.65,stroke:false});}});
+        v.legend([['accent','A'],['red','B when present'],['purple','exact inverse-transform counts',{dot:true}]]);
+        v.readout(()=>{const a=info;return `A: ${a.A.m} notes {${a.A.pcs.join(', ')}}; interval vector [${a.A.iv.join(', ')}].\n${a.B?`B: ${a.B.m} notes {${a.B.pcs.join(', ')}}; interval vector [${a.B.iv.join(', ')}]. Full squared magnitudes equal: ${a.fullPowersEqual?'yes':'no'}; interval vectors equal: ${a.vectorEqual?'yes':'no'}; largest nonzero-bin power difference ${v.fix(a.nonzeroDifference,8)}.`:'No same-cardinality Z-mate outside this T/I class; B and its audio are absent.'}\n${a.relation==='complement'?`Exact difference I(B)−I(A) is ${a.shift} for every d=0…11. Equal full interval content occurs exactly at size 6.`:''}\nExact reconstruction agrees at all 12 differences. Floating inverse error ${a.A.inverseError.toExponential(2)}; bin 0 powers ${ffPair(a.A.powers[0])}${a.B?` versus ${ffPair(a.B.powers[0])}`:''}.`;});
       },
     },
     // ------------------------------------------------------------------ 8.16

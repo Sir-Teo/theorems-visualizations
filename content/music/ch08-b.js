@@ -1,3 +1,7 @@
+import { FF_PRESETS, ffMaskValid, ffMod, fourierModel, intervalModel, fourierAudio, ffValue } from './source-audit-fourier.js';
+const FF_OPTIONS=[['diat','diatonic'],['pent','pentatonic'],['whole','whole-tone'],['oct','octatonic'],['aug','augmented'],['dim','diminished'],['hex','hexachord'],['z4','Z tetrachord'],['cluster','chromatic cluster'],['single','singleton'],['empty','empty'],['full','all twelve'],['free','custom']].map(([value,label])=>({value,label}));
+const ffPoint=(p,r=1)=>[r*Math.sin(2*Math.PI*p/12),r*Math.cos(2*Math.PI*p/12)],ffHit=(x,y)=>ffMod(Math.round(12*Math.atan2(x,y)/(2*Math.PI))),ffPair=([a,b])=>b===0?String(a):`${a}${b<0?' − ':' + '}${Math.abs(b)}√3`;
+function ffClock(stage,mask,other=null){stage.circle(0,0,1,{color:'grid',width:1.2});for(let p=0;p<12;p++){stage.line(...ffPoint(p,.95),...ffPoint(p,1.03),{color:'muted',width:1});stage.text(String(p),...ffPoint(p,1.25),{align:'center',baseline:'middle',size:11,color:'muted'});}for(const[m,r,color,rad]of[[mask,1,'accent',6],[other,.77,'red',4.5]]){if(m===null)continue;const pcs=Array.from({length:12},(_,j)=>j).filter(j=>m&(1<<j)),points=pcs.map(p=>ffPoint(p,r));if(points.length>1)stage.path([...points,points[0]],{color,width:1.3,alpha:.65});points.forEach(p=>stage.dot(...p,{color,r:rad}));}}
 import setClassItems from './setclass-items.js';
 // Music Theory & Acoustics — Chapter 8 (part b): items 8.8–8.14, symmetry, set classes, interval vectors, Fourier
 import { SR, C4, NOTE, mod, norm, Tn, In, key, setStr, braceStr, ic, clk, pcAt, drawClock, polyOf, dotsOf, CLOCK_STAGE, seqCents, PRESETS, orbit, complement, icv, vecStr, normalOrder, primeForm, toPrime, forteName, classes, fixCounts, popc, fromMask, maskOf, fcoef, fmag, ifun, mini, maxFourier, zPairs, applyOp, opName } from './ch08.shared.js';
@@ -58,57 +62,27 @@ export default {
     ...setClassItems,
     // ------------------------------------------------------------------ 8.14
     {
-      num: '8.14',
-      kind: 'Method',
-      name: 'The Fourier transform of a pitch-class set',
-      statement: String.raw`The discrete Fourier transform of a set $S\subseteq\Z/12$ is $f_k(S)=\sum_{j\in S}e^{-2\pi i jk/12}$, $k=0,\dots,11$, with $f_0=|S|$ and $f_{12-k}=\overline{f_k}$, so only $|f_1|,\dots,|f_6|$ matter. Transposing $S$ by $n$ multiplies $f_k$ by $e^{-2\pi ink/12}$, so $|f_k|$ is unchanged; inversion conjugates $f_k$, so $|f_k|$ is again unchanged. Large $|f_k|$ means the set clusters into $k$ clumps around the circle: $|f_1|$ for chromatic clusters, $|f_6|$ for the whole-tone scale, $|f_3|$ for augmented triads, $|f_4|$ for diminished sevenths and the octatonic scale, $|f_5|$ for diatonic and pentatonic sets. For $d$ from 2 to 10 the maximally even $d$-note set (8.4) has the largest possible value of $|f_{\min(d,12-d)}|$ among all $d$-note sets (verified here by brute force).`,
-      idea: String.raw`This is the Fourier transform on the finite group $\Z/12$ (the characters $j\mapsto e^{-2\pi ijk/12}$ are an orthogonal system, as in Rudin's orthonormal systems, pma-8.10). Each note contributes a unit vector at angle $-2\pi jk/12$, and $f_k$ is their vector sum, which is long when the notes bunch together at that $k$-fold symmetry: when all notes are at the same angle modulo $2\pi/k$ the vectors line up. The translation property is the shift theorem, and the picture checks that evenness (8.4) shows up as the largest attainable $|f_d|$ (Amiot proved this in general).`,
-      caption: String.raw`Click the clock to edit the set (or pick a preset). The bar chart shows $|f_1|,\dots,|f_6|$ with a tick at the largest value any set of the same size can reach; the third panel adds the unit vectors for the chosen $k$ tip to tail, ending at $f_k$. Slide the transposition: the phasor chain rotates, but the lengths do not change.`,
-      deps: ['music-8.1', 'music-8.4', 'pma-8.10'],
-      see: ['music-8.15', 'music-8.4'],
-      refs: ['Tymoczko, A Geometry of Music'],
-      tags: ['fourier', 'evenness'],
-      credit: 'Fourier analysis of pitch-class sets: David Lewin (interval function, from 1959), Ian Quinn ("General equal-tempered harmony", 2006–07), Emmanuel Amiot (e.g. "David Lewin and maximally even sets", 2007; Music Through Fourier Space, 2016); attributions from secondary sources, not checked against the originals',
-      scope: String.raw`The set-theoretic statements are exact for $\Z/12$; the interpretation of each $k$ (chromatic, tritone, augmented, diminished, diatonic, whole-tone) is a convention of this literature. The "largest possible" tick is a brute-force maximum over all subsets of that size.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Discrete_Fourier_transform' },
-      verify: true,
-      viz(v) {
-        let S = PRESETS.diatonic.slice();
-        const pre = v.select('preset', [...preOpts, { value: 'free', label: 'free' }], 'diat', { onChange: (x) => { if (PRE[x]) S = PRE[x][1].slice(); } });
-        const kk = v.select('phasor chain for $k$', [1, 2, 3, 4, 5, 6].map((k) => ({ value: k, label: String(k) })), 5);
-        const tn = v.slider('transpose by', 0, 11, 0, { int: true });
-        const inv = v.toggle('invert', false);
-        const s = v.stage({ ...CLOCK_STAGE, height: 340, title: 'the set (click to edit)' });
-        const bs = v.stage({ x: [0.3, 6.7], y: [0, 6], axes: 'box', gutter: true, height: 340, xlabel: 'k', ylabel: '$|f_k|$', xticks: [[1, '1 chrom.'], [2, '2 tritone'], [3, '3 aug.'], [4, '4 dim.'], [5, '5 diat.'], [6, '6 whole']], title: 'Fourier magnitudes' });
-        const ph = v.stage({ x: [-4, 4], y: [-4, 4], equal: true, axes: true, height: 340, title: 'the sum of unit vectors for chosen $k$' });
-        s.onClick((x, y) => { if (Math.hypot(x, y) < 0.3) return; const k = pcAt(x, y); S = S.includes(k) ? S.filter((q) => q !== k) : norm([...S, k]); pre.value = 'free'; v.invalidate(); });
-        const LAB = ['chromatic', 'tritone', 'augmented', 'diminished', 'diatonic', 'whole-tone'];
-        v.soundButton('play the set', (sd) => { if (S.length) sd.samples(seqCents([S.map((k) => k * 100)], C4, 2, 0), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const T = inv.value ? In(S, tn.value) : Tn(S, tn.value), mf = maxFourier()[S.length] || [], k = kk.value;
-          drawClock(s, { names: true });
-          polyOf(s, T, 1, { color: 'accent' }); dotsOf(s, T, 1, { color: 'accent', r: 8 });
-          if (S.length && (tn.value || inv.value)) dotsOf(s, S, 1.15, { color: 'faint', r: 4 });
-          const top = Math.max(2, ...mf.slice(1)) + 0.5; bs.setView([0.3, 6.7], [0, top]);
-          for (let j = 1; j <= 6; j++) {
-            const m = fmag(T, j); bs.rect(j - 0.34, 0, j + 0.34, m, { fill: j === k ? 'orange' : 'accent', fillAlpha: 0.75, stroke: false });
-            bs.text(v.fix(m, 2), j, m + top * 0.03, { size: 11, color: 'ink', align: 'center', weight: 600 });
-            if (mf[j]) bs.line(j - 0.42, mf[j], j + 0.42, mf[j], { color: 'green', width: 2.5 });
-          }
-          const els = norm(T), chain = [[0, 0]]; els.forEach((j) => { const a = (-2 * Math.PI * j * k) / 12, q = chain[chain.length - 1]; chain.push([q[0] + Math.cos(a), q[1] + Math.sin(a)]); });
-          const ext = Math.max(2, ...chain.map((q) => Math.hypot(q[0], q[1]))) * 1.15; ph.setView([-ext, ext], [-ext, ext]);
-          ph.circle(0, 0, 1, { color: 'faint', dash: [3, 4] });
-          let x = 0, y = 0;
-          for (let i = 1; i < chain.length; i++) { ph.arrow(chain[i - 1][0], chain[i - 1][1], chain[i][0], chain[i][1], { color: 'accent', width: 2, alpha: 0.8 }); x = chain[i][0]; y = chain[i][1]; }
-          ph.arrow(0, 0, x, y, { color: 'orange', width: 3 }); ph.dot(x, y, { r: 6, color: 'orange' });
-          ph.text(`f${k}`, x, y, { size: 13, color: 'orange', dx: 8, dy: -8, weight: 700 });
-        });
-        v.legend([['accent', 'one unit vector per note'], ['orange', 'their sum $f_k$'], ['green', 'largest $|f_k|$ any set of this size has']]);
-        v.readout(() => {
-          const T = inv.value ? In(S, tn.value) : Tn(S, tn.value), mg = [1, 2, 3, 4, 5, 6].map((j) => fmag(T, j)), mg0 = [1, 2, 3, 4, 5, 6].map((j) => fmag(S, j));
-          const best = mg.indexOf(Math.max(...mg)) + 1, same = mg.every((x, i) => Math.abs(x - mg0[i]) < 1e-9);
-          return `$|S|=${S.length}$ · $|f_1|\\dots|f_6|=${mg.map((x) => v.fix(x, 3)).join(',\\ ')}$ · largest at $k=${best}$ (${LAB[best - 1]}) · magnitudes of the moved copy ${same ? 'equal' : 'differ from'} those of the original (invariance under $T_n$, $I$) · $\\sum_k|f_k|^2$ over $k=0..11$ equals $12|S|=${12 * S.length}$ (Parseval): ${v.fix(S.length ** 2 + 2 * mg.slice(0, 5).reduce((a, x) => a + x * x, 0) + mg[5] * mg[5], 3)}.`;
-        });
+      num:'8.14',kind:'Method',name:'The Fourier transform of a pitch-class set',verify:true,
+      statement:String.raw`For a set $S\subseteq\Z/12$, define
+$$f_k(S)=\sum_{j\in S}e^{-2\pi i jk/12}.$$
+Here $f_0=|S|$ and $f_{12-k}=\overline{f_k}$. Thus $k=1,\ldots,6$ list the nonzero-frequency magnitudes up to conjugacy; they summarize the set but do not determine it, because they discard phase. Transposition by $n$ multiplies $f_k$ by $e^{-2\pi ink/12}$; inversion $j\mapsto-j$ conjugates it. Both preserve every magnitude.
+The length $|f_k|$ measures alignment of the notes' unit phasors at bin $k$. For cardinality $d=2,\ldots,10$ in this twelve-point universe, maximizing bin $k=\min(d,12-d)$ characterizes the maximally even sets. The widget verifies this finite claim over all 4,096 subsets using exact squared magnitudes.`,
+      idea:String.raw`Each note contributes a unit vector; transposition rotates every one through the same angle, while inversion reflects them. Keep the base-note order fixed in the tip-to-tail chain so that this transformation is visible even when notes wrap past pitch class zero. For twelve classes, each squared magnitude is exactly $a+b\sqrt3$ with integer $a,b$, so every maximum and tie can be compared without floating-point tolerances. The maximally even comparison uses all generic cyclic intervals, not merely the adjacent gaps.`,
+      caption:String.raw`Choose a preset or click the clock to edit the displayed set; editing correctly accounts for the active transposition and inversion. Change the Fourier bin, transposition or inversion. Green ticks are exact maxima for this cardinality; the chain uses the same mapped notes and keeps their original order. Empty/full sets and saved custom sets are supported. Play the displayed, transformed set with the declared synthetic spectrum.`,
+      deps:['music-8.1','music-8.4','pma-8.10'],see:['music-8.15','music-8.4'],
+      refs:['Amiot 2007, Gammes bien réparties et transformée de Fourier discrète, §§1.2–1.4 and 2.2, pp. 99–108'],tags:['fourier','evenness'],
+      credit:'Emmanuel Amiot, 2007, source treatment; finite exact enumeration authored',
+      scope:String.raw`This widget works in the twelve-element pitch-class circle. Exact squared magnitudes and inverse interval counts use the field $\Q(\sqrt3)$; phasor coordinates, square roots and audio frequencies use floating-point evaluation. The finite exhaustive check does not prove a statement for every cyclic group. A large bin describes phasor alignment, not a unique musical category or a listener preference; magnitudes alone can coincide for different sets. Audio uses C4=261.6256 Hz, eight harmonics with relative amplitudes $1/h$, mono 44,100-Hz synthesis, 10-ms ramps and a pre-output bound 0.12.`,
+      links:{source:'https://journals.openedition.org/msh/pdf/4272'},
+      viz(v){
+        let mask=FF_PRESETS.diat,info;const pre=v.select('preset',FF_OPTIONS,'diat',{onChange:name=>{if(name!=='free')mask=FF_PRESETS[name];}}),bin=v.slider('Fourier bin k',1,6,5,{int:true,step:1}),tn=v.slider('transpose by',0,11,0,{int:true,step:1}),inv=v.toggle('invert',false);
+        v.shareState('Fourier edited pitch-class mask',{get:()=>mask,validate:ffMaskValid,set:data=>{mask=data;}});
+        const clock=v.stage({x:[-1.6,1.6],y:[-1.6,1.6],equal:true,height:320,full:true,title:'displayed set: click a pitch class'}),bars=v.stage({x:[.35,6.65],y:[-.3,8],axes:'box',gutter:true,full:true,height:290,xticks:[1,2,3,4,5,6],xlabel:'Fourier bin k',ylabel:'magnitude',title:'six magnitudes and exact attainable maxima'}),phasor=v.stage({x:[-3,3],y:[-3,3],equal:true,axes:'box',gutter:true,full:true,height:320,xlabel:'real part',ylabel:'imaginary part',title:'one vector per mapped base note'});
+        const model=()=>fourierModel(mask,bin.value,tn.value,inv.value);clock.onClick((x,y)=>{if(Math.hypot(x,y)<.3)return;const p=ffHit(x,y),base=ffMod(inv.value?tn.value-p:p-tn.value);mask^=1<<base;pre.value='free';v.invalidate();});
+        const play=v.soundButton('play displayed set',snd=>{const a=model();if(!a.A.m)return;const b=fourierAudio([a.T.mask]);snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;play.disabled=a.A.m===0;ffClock(clock,a.T.mask);const top=Math.max(1.25,...a.maxMags.slice(1));bars.setView([.35,6.65],[-.12*top,1.28*top]);for(let k=1;k<=6;k++){bars.rect(k-.29,0,k+.29,a.T.mags[k],{fill:k===a.k?'orange':'accent',fillAlpha:.75,stroke:false});bars.line(k-.4,a.maxMags[k],k+.4,a.maxMags[k],{color:'green',width:2});bars.text(v.fix(a.T.mags[k],2),k,a.T.mags[k]+.07*top,{size:10,color:'ink',align:'center'});}phasor.setView([-a.extent,a.extent],[-a.extent,a.extent]);phasor.circle(0,0,1,{color:'grid',dash:[3,4]});for(let j=1;j<a.chain.length;j++)phasor.arrow(...a.chain[j-1],...a.chain[j],{color:'accent',width:1.8,head:7});phasor.arrow(0,0,...a.T.F[a.k],{color:'orange',width:2.6,head:8});phasor.dot(...a.T.F[a.k],{color:'orange',r:5});});
+        v.legend([['accent','one phasor per note'],['orange','chosen bin and vector sum'],['green','maximum among all sets of this size']]);
+        v.readout(()=>{const a=info,p=a.T.F[a.k];return `Cardinality ${a.A.m}; displayed pitch classes {${a.T.pcs.join(', ')}}. Magnitudes k=1…6: ${a.T.mags.slice(1,7).map(x=>v.fix(x,5)).join(', ')}.\nChosen sum: (${v.fix(p[0],6)}, ${v.fix(p[1],6)}); exact squared magnitude ${ffPair(a.T.powers[a.k])}. Exact Parseval sum ${ffPair(a.T.parseval)} =12×${a.A.m}.\n${a.metric===null?'The maximally even comparison here covers cardinalities 2…10.':`Maximally even by all generic intervals: ${a.even?'yes':'no'}; bin ${a.metric} reaches its maximum: ${a.attains?'yes':'no'}; exactly ${a.maxCount} sets of this size attain it.`} Phase is retained in the complex sum; it is absent from the six magnitude bars.`;});
       },
     },
   ],
