@@ -176,7 +176,7 @@ The record lists here are exhaustive finite searches, not a proof that twelve no
       refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §6.2, pp.204–208; nearest-step and finite-record comparisons derived here'],tags:['equal temperament','continued fractions'],
       credit:'Tuning and continued-fraction exposition: Dave Benson; bounded record enumeration and synthesis authored here.',
       scope:String.raw`An exact nearest-integer formula and a finite numerical comparison, not a historical account of the choice of 12 notes. Independent rational log-series bounds certify every nearest step and strict record decision through 700. The visual control stops at 120; its displayed decimals use binary64 evaluation. Audio uses C4=261.6256Hz and the declared H8/44,100-Hz signal of 7.4/7.9; measured audibility is not inferred from the cents error.`,
-      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
       viz(v){
         const target=v.select('target',[{value:'fifth',label:'fifth 3/2'},{value:'major',label:'major third 5/4'},{value:'seventh',label:'harmonic seventh 7/4'}],'fifth'),N=v.slider('notes per octave n',3,120,12,{int:true});
         const A=v.stage({x:[-3,126],y:[.0001,400],ylog:true,axes:'box',gutter:true,full:true,height:350,minWidth:240,xlabel:'notes per octave n',ylabel:'absolute error (cents)',xticks:[3,12,31,53,80,120],title:'all 118 nearest-step errors; strict cents records in orange'});
@@ -202,7 +202,7 @@ If a step count $k$ is coprime to $n$, multiplication by $k$ permutes the residu
       refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §§6.4–6.5, pp.217–221; tables and meantone comparison'],tags:['equal temperament','meantone'],
       credit:'Technical comparison: Dave Benson; finite diagrams, step calculations and synthesis authored here.',
       scope:String.raw`Exact equal-division definitions with rounded binary64 evaluations and explicit pure-ratio references. Benson's actual 19/31 tables and meantone comparison are used; no Salinas, Woolhouse, Huygens, Rossi or Fokker priority/date claim is certified. Non-octave rational intervals are approximated, not reproduced exactly. The orange chain has exactly n authored consecutive generator exponents centered around 0; its displayed maximum is over that finite set. Audio uses the C4=261.6256-Hz, mono 44,100-Hz H8 contract of 7.4/7.9, with fixed normalization, 0.12 peak bound, 10-ms ramps and 0.1-s exact gaps. Ratios and errors do not measure consonance.`,
-      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
       viz(v){
         const N=v.select('division',[12,19,31].map(value=>({value,label:`${value}-TET`})),31),COL={12:'muted',19:'accent',31:'orange'},ids=Object.keys(EDO_TARGETS);
         const A=v.stage({x:[-24,43],y:[-.65,4.65],axes:'box',gutter:true,full:true,height:330,minWidth:240,xlabel:'signed error from pure (cents)',yticks:ids.map((id,j)=>[4-j,`${EDO_TARGETS[id][0]}/${EDO_TARGETS[id][1]}`]),title:'all five interval errors in 12-, 19- and 31-TET'});

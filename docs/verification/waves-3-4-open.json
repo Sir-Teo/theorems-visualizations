@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 128,
+  "remainingFlags": 127,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -26,7 +26,7 @@
     "psych": 6,
     "soc": 10,
     "polsci": 9,
-    "music": 16,
+    "music": 15,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -719,21 +719,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1086/257897"
-      }
-    },
-    {
-      "id": "music-7.12",
-      "file": "content/music/ch07-b.js",
-      "name": "19- and 31-tone equal temperament",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 6"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/31_equal_temperament"
       }
     },
     {
@@ -2813,7 +2798,8 @@
       "music-7.8",
       "game-4.3",
       "psych-3.3",
-      "psych-3.4"
+      "psych-3.4",
+      "music-7.12"
     ]
   },
   "additionalFollowups": [
@@ -7367,6 +7353,16 @@
       "id": "psych-3.4",
       "status": "resolved",
       "note": "2026-10-20: worker_one exact-commit primary-source/proof/math and six narrow native groups; psych-scaling-followup.md."
+    },
+    {
+      "id": "music-7.11",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three exact-commit source/math, certified rational-log generator and two fresh narrow native groups; music-edo-followup.md."
+    },
+    {
+      "id": "music-7.12",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three exact-commit source/math, certified rational-log generator and two fresh narrow native groups; music-edo-followup.md."
     }
   ]
 }

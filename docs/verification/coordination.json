@@ -127,6 +127,17 @@
         "psych-scaling-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "music-7.11",
+        "music-7.12"
+      ],
+      "peer": "worker_three exact-commit source/math, certified rational-log generator and two fresh narrow native groups",
+      "reports": [
+        "music-edo-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -139,5 +150,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 128
+  "currentPendingSourceReviews": 127
 }
