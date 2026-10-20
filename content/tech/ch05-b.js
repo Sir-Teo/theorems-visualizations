@@ -1,3 +1,4 @@
+import{balance}from'./source-audit-huygens.js';
 import{anchor}from'./source-audit-clockdrives.js';
 // History of Technology — Chapter 5: Time and navigation (items 5.7–5.11; 5.1–5.6 are in ch05.js)
 import { D2R, clamp, pendulumRatio, lossPerDay, bangPeriod, bangAngle, springPeriodRatio, sunLon, eclDec, dayName, fmtSec } from './ch05.shared.js';
@@ -33,54 +34,26 @@ A clock calibrated at T0 loses $86400(1-T_0/T)$ seconds per reference day. This 
 
     // ------------------------------------------------------------------ 5.8
     {
-      num: '5.8',
-      kind: 'Invention',
-      name: 'The balance spring',
-      credit: 'Christiaan Huygens (spiral spring watch, announced in the Journal des Sçavans, February 1675) and Robert Hooke (claimed since 1658–1660s; a spring-regulated watch was shown in 1675); Isaac Thuret made watches for Huygens; the priority dispute was not settled in England',
-      verify: true,
-      statement: String.raw`A **balance spring** (hairspring) is a fine spiral spring attached to the arbor of a watch's balance wheel. It gives the wheel a restoring torque $-\kappa\theta$ proportional to the angle, so the balance becomes a harmonic oscillator of period $T=2\pi\sqrt{I/\kappa}$ (mech-4.2) set by the wheel's moment of inertia $I$ and the spring's stiffness $\kappa$ and, for a linear spring, independent of the amplitude and of the drive. Before it, a watch balance had only the push of the mainspring (5.5) and ran with the same weakness as the foliot (5.4): its rate followed the force.
+      num:'5.8',kind:'Invention',name:'The balance spring',verify:true,
+      credit:'Historical mechanism documented by The Metropolitan Museum of Art; ideal linear and hardening-spring comparisons authored here',
+      statement:String.raw`A balance spring connects a rotating watch balance to a fixed support and supplies restoring torque. In the ideal linear model that torque is−κθ, giving an amplitude-independent period. A real spring's torque can depart from this law.
 
-What the sources support: Huygens announced a watch regulated by a spiral spring in the *Journal des Sçavans* in February 1675 and had the Royal Society told of it in March. Hooke objected that he had described the idea (and in his Hooke's-law anagram of 1676, the principle of the spring) earlier; he had probably thought of a spring-regulated balance by about 1658 but historians differ on whether he made a watch with a flat spiral. Other claims (Thuret, de Hautefeuille) were also made.
-
-Scope of the picture: the "unsprung balance" is the constant-torque model of 5.4; the sprung balance has torque $-\kappa(\theta+\varepsilon\theta^3)$, where $\varepsilon=0$ is the ideal spring and $\varepsilon>0$ a spring that stiffens at large angles, which is how the departure from isochronism is shown. Real watch balances run at 270°–310° and are regulated for this by the shape of the spring's end curves.`,
-      idea: String.raw`With a linear restoring torque the equation of motion $I\ddot\theta=-\kappa\theta$ has the period $2\pi\sqrt{I/\kappa}$ whatever the amplitude, because a larger swing is fast in proportion: a large swing is exactly compensated by a larger torque. So the drive of the mainspring only needs to keep the amplitude up, and does not set the rate. For a stiffening spring ($\varepsilon>0$) the period shortens as the amplitude grows, by $T/T_0\approx1-\tfrac38\varepsilon\theta_0^2$, which is why watches were regulated for isochronism. Without a spring, $T=4\sqrt{2AI/\tau}$ rises with $\sqrt A$ and falls with $\sqrt\tau$.`,
-      caption: String.raw`Left: two balance wheels in slow motion, an unsprung one (driven) and one with a spiral spring. Right: period against amplitude. Move the **amplitude** and the **stiffening** $\varepsilon$ of the spring; the unsprung balance's period creeps with $\sqrt A$ while the ideal spring's is a horizontal line. The readout gives the daily rate change for a 10% change in amplitude.`,
-      deps: ['tech-5.5', 'mech-4.2', 'tech-5.4'],
-      see: ['tech-5.6', 'mech-4.1'],
-      refs: ['Usher, “The development of clocks and watches”', 'Cardwell'],
-      tags: ['early-modern', 'timekeeping', 'oscillator'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Balance_spring' },
-      viz(v) {
-        const A = v.stage({ x: [-2.5, 2.5], y: [-1.4, 1.5], equal: true, axes: false, height: 300, weight: 1.1, minWidth: 340, title: 'two balances (slow motion, 1/8 speed)' });
-        const B = v.stage({ x: [30, 330], y: [0.3, 1.5], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 320, xlabel: 'amplitude (°)', ylabel: 'period / period at 270°', title: 'isochronism' });
-        const aS = v.slider('amplitude (°)', 40, 330, 270, { step: 1 });
-        const eS = v.slider('spring stiffening $\\varepsilon$', 0, 0.12, 0, { step: 0.002 });
-        const T0 = 0.4, I = 1, A270 = 270 * D2R, TAU = (32 * A270 * I) / (T0 * T0); // drive chosen so that both balances beat at 5 Hz at 270°
-        const Tsp = (a) => T0 * springPeriodRatio(a * D2R, eS.value) / springPeriodRatio(A270, eS.value);
-        const Tun = (a) => bangPeriod(a * D2R, I, TAU);
-        const spiral = (cx, cy, rot, ang) => { const pts = []; const n = 90; for (let i = 0; i <= n; i++) { const s = i / n, r = 0.12 + 0.55 * s, ph = 2 * Math.PI * 4.5 * s + rot + ang * (1 - s) ; pts.push([cx + r * Math.cos(ph), cy + r * Math.sin(ph)]); } return pts; };
-        v.animate((t) => {
-          const a = aS.value * D2R, ts = t / 8; // slow motion
-          const thU = bangAngle(ts, a, Tun(aS.value)), thS = a * Math.cos((2 * Math.PI * ts) / Tsp(aS.value));
-          for (const [cx, th, spring] of [[-1.3, thU, false], [1.3, thS, true]]) {
-            A.circle(cx, 0, 0.95, { color: 'ink', width: 3 });
-            for (const k of [0, 1, 2]) { const q = th + (k * 2 * Math.PI) / 3 + 0.5; A.line(cx, 0, cx + 0.95 * Math.cos(q), 0.95 * Math.sin(q), { color: 'muted', width: 2 }); }
-            A.dot(cx + 0.95 * Math.cos(th + 0.5), 0.95 * Math.sin(th + 0.5), { r: 5, color: 'gold' });
-            A.dot(cx, 0, { r: 4, color: 'ink' });
-            if (spring) A.path(spiral(cx, 0, 0, 0 - th * 1.0), { color: 'green', width: 1.6 });
-          }
-          A.text('balance only', -1.3, -1.3, { size: 11, color: 'muted', align: 'center' }); A.text('with balance spring', 1.3, -1.3, { size: 11, color: 'muted', align: 'center' });
-          // plot
-          const pu = [], ps = []; for (let x = 30; x <= 330; x += 5) { pu.push([x, Tun(x) / T0]); ps.push([x, Tsp(x) / T0]); }
-          B.hline(1, { color: 'muted', width: 1, dash: [3, 4] });
-          B.path(pu, { color: 'red', width: 2.2 }); B.path(ps, { color: 'green', width: 2.6 });
-          B.dot(aS.value, Tun(aS.value) / T0, { r: 6, color: 'red' }); B.dot(aS.value, Tsp(aS.value) / T0, { r: 6, color: 'green' });
-        }, { period: 6, still: 0.7 });
-        v.legend([['red', 'unsprung (driven) balance'], ['green', 'sprung balance']]);
-        v.readout(() => {
-          const a = aS.value, a2 = a * 1.1, du = (Tun(a2) / Tun(a) - 1), ds = (Tsp(a2) / Tsp(a) - 1);
-          return `period at ${v.fix(a, 0)}°: unsprung ${v.fix(1000 * Tun(a), 0)} ms, sprung ${v.fix(1000 * Tsp(a), 0)} ms\na 10% larger swing changes the **unsprung** period by ${v.fix(100 * du, 2)}% (loses **${v.fix(1440 * (1 - 1 / (1 + du)), 0)} min/day**) and the **sprung** one by ${v.fix(100 * ds, 3)}% (loses **${v.fix(86400 * (1 - 1 / (1 + ds)), 0)} s/day**); $\\varepsilon=${v.fix(eS.value, 3)}$ ($\\varepsilon=0$ is isochronous)`;
-        });
+The Metropolitan Museum's Van Ceulen watch 17.190.1417, catalogued circa 1676–80, has a three-arm balance, hair spring, verge escapement and a seven-turn fusee with chain. The owner's detailed movement and condition account identifies these components. The watch is historical evidence for the mechanism; the ideal laws below are not measurements of this object. No original-inventor or patent dispute is certified here.`,
+      idea:String.raw`For unit inertia a linear spring satisfies $\ddot\theta=-\kappa\theta$ and has period $2\pi/\sqrt\kappa$. The authored hardening law is
+$$\ddot\theta=-\kappa(\theta+\varepsilon\theta^3).$$
+Its conserved energy is $\dot\theta^2/2+\kappa(\theta^2/2+\varepsilon\theta^4/4)$. At release amplitude A in radians, set
+$$m=\frac{\varepsilon A^2}{2(1+\varepsilon A^2)}.$$
+Then the exact period is
+$$T=\frac{4K(m)}{\sqrt{\kappa(1+\varepsilon A^2)}}.$$
+The nonlinear trajectory is evaluated from the same energy-conserving elliptic solution; it is not a sine wave assigned a different period. For each ε, choose κ so this nonlinear oscillator has period 0.4 s at 270°. The ideal comparison also has period 0.4 s. This is an explicit reference calibration, not fixed material stiffness as ε changes.`,
+      caption:String.raw`Compare an ideal linear spring with the declared hardening spring at the same selected amplitude and elapsed time. Both are released from rest. The graph includes every integer amplitude 30…363°, covering the selected amplitude plus its 10% comparison. Each wheel follows its own exact trajectory. The spiral lines symbolize the connection and do not predict coil shape or stress.`,
+      deps:['mech-4.2','mech-4.1'],see:['tech-5.5','tech-5.6'],refs:['Metropolitan Museum of Art, Van Ceulen watch 17.190.1417, actual owner/curatorial movement and condition account; circa 1676–80'],tags:['timekeeping','oscillator','spring'],
+      scope:String.raw`Unforced oscillators, unit inertia, ideal linear law and authored positive quartic potential. ε 0…0.12 is a chosen coefficient, not a measured historic spring. κ is recalibrated to the stated 270° reference for each ε. No air drag, escapement impulse, coil contact, temperature or real-watch rate forecast. No unsprung real balance or verge escapement is represented by the linear comparison.`,
+      links:{source:'https://www.metmuseum.org/art/collection/search/194011'},
+      viz(v){const amplitude=v.slider('release amplitude (°)',40,330,270,{step:'any',decimals:6}),epsilon=v.slider('hardening coefficient ε',0,.12,0,{step:'any',decimals:6}),time=v.slider('elapsed time (s)',0,2,.07,{step:'any',decimals:6}),A=v.stage({x:[-2.6,2.6],y:[-1.5,1.5],equal:true,axes:false,height:320,minWidth:260,title:'exact linear and nonlinear balance trajectories'}),B=v.stage({x:[15,378],y:[.2,2.8],axes:'box',gutter:true,height:320,minWidth:260,xlabel:'release amplitude (°)',ylabel:'period / 0.4 s',title:'same 270° reference calibration'});let info;
+        const spiral=(cx,angle)=>Array.from({length:181},(_,j)=>{const s=j/180,r=.12+.55*s,a=9*Math.PI*s+(1-s)*angle;return[cx+r*Math.cos(a),r*Math.sin(a)];});v.legend([['green','ideal linear spring'],['orange','authored hardening spring'],['gold','selected amplitude']]);
+        v.render(()=>{const p=balance(amplitude.value,epsilon.value,time.value);for(const[cx,theta,color]of[[-1.3,p.idealAngle,'green'],[1.3,p.angle,'orange']]){A.circle(cx,0,.95,{color,width:2});for(let k=0;k<3;k++){const a=theta+2*Math.PI*k/3;A.line(cx,0,cx+.95*Math.cos(a),.95*Math.sin(a),{color:'muted',width:1.5});}const q=spiral(cx,theta);A.path(q,{color,width:1.3});A.line(cx,0,...q[0],{color,width:1.3});A.dot(cx,0,{color:'ink',r:3,ring:false});A.dot(cx+.95*Math.cos(theta),.95*Math.sin(theta),{color:'gold',r:4,ring:false});A.text(cx<0?'linear':'hardening',cx,-1.25,{align:'center',size:11,color});}const ys=p.curve.map(q=>q[1]),lo=Math.min(.8,...ys)*.85,hi=Math.max(1.1,...ys)*1.15;B.setView([15,378],[lo,hi]);B.line(30,1,363,1,{color:'green',width:2});B.path(p.curve,{color:'orange',width:2});B.dot(p.amplitude,p.period/p.Tref,{color:'gold',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `At amplitude ${v.fix(p.amplitude,9)}°: linear period 0.4 s; hardening period ${v.fix(p.period,12)} s. The nonlinear stiffness is κ=${v.fix(p.kappa,9)} for the stated 270° calibration.\nAt ${v.fix(p.time,9)} s: linear angle ${v.fix(p.idealAngle*180/Math.PI,9)}°, hardening angle ${v.fix(p.angle*180/Math.PI,9)}°. Conserved hardening energy ${v.fix(p.energy,9)} relative units.\nA 10% larger release amplitude changes the hardening period to ${v.fix(p.largerPeriod,12)} s, giving ${v.fix(p.rateSeconds,9)} seconds gained per reference day if calibrated at the selected period. The ideal linear period is unchanged. These are authored model values, not measured watch accuracy.`;});
       },
     },
 

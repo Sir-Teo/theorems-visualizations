@@ -1,3 +1,4 @@
+import{pendulumScene}from'./source-audit-huygens.js';
 import{foliot,fusee}from'./source-audit-clockdrives.js';
 import { waterClock } from './source-audit-water.js';
 // History of Technology — Chapter 5: Time and navigation (items 5.1–5.6; 5.7–5.11 are in ch05-b.js)
@@ -240,67 +241,26 @@ Normalize both modes with the same Rb and full-wind radius, taking both as 1. Th
 
     // ------------------------------------------------------------------ 5.6
     {
-      num: '5.6',
-      kind: 'Invention',
-      name: 'The pendulum clock (Huygens)',
-      credit: 'Christiaan Huygens, 1656 (model made in the last days of December 1656), built by Salomon Coster in The Hague; patent granted by the States General on 16 June 1657; Horologium (1658); the cycloidal cheeks and the theory in Horologium Oscillatorium (1673)',
-      verify: true,
-      statement: String.raw`A **pendulum clock** regulates a clock train with a swinging pendulum instead of a foliot. The pendulum has a natural period set by its length, $T_0=2\pi\sqrt{L/g}$ (mech-4.4), which does not depend on the driving force; the escapement only gives it a small push each swing to make up its losses and passes on the beats to the train. The drive can change by many percent without changing the rate to first order, which is the great advantage over the verge and foliot (5.4).
+      num:'5.6',kind:'Invention',name:'The pendulum clock (Huygens)',verify:true,
+      credit:'Christiaan Huygens; cycloidal suspension described in Horologium Oscillatorium; ideal comparisons authored here',
+      statement:String.raw`Huygens's Horologium Oscillatorium describes a clock whose escapement sustains a pendulum and whose curved suspension plates make the bob follow a cycloid. The 1673 original distinguishes the unequal periods of circular swings from the equal descent times on an inverted cycloid. Part II Proposition XXV proves the equal-time property; Part III Propositions V–VI establish the equal cycloid produced by unwinding a string from a cycloidal cheek.
 
-What the sources support: Huygens made the first pendulum clock at the very end of 1656, patented it in 1657 and published it in 1658. Galileo had proposed a pendulum regulator in his last years and a clock based on it is attributed to his son Vincenzo, but that did not lead to a working clock. The commonly quoted claim that error fell from about 15 minutes to about 15 seconds a day is a loose secondary figure; sources differ on the accuracy of the first clocks.
+The illustration isolates these ideal paths. It does not reproduce an early clock's measured accuracy, a patent or an earliest-priority claim. The energy control changes the bob's release energy, rather than simulating a driven escapement. Real clocks also have suspension, drag, temperature and escapement effects.`,
+      idea:String.raw`A point bob on a massless one-metre suspension in uniform gravity g has circular potential $gL(1-\cos\theta)$ per unit mass. With release amplitude θ0 its exact period is $T=T_0(2/\pi)K(m)$, where $m=\sin^2(\theta_0/2)$ and $T_0=2\pi\sqrt{L/g}$. The whole circular trajectory below solves the nonlinear pendulum equation.
 
-The weakness the picture shows: a pendulum is isochronous only for small swings. At amplitude $\theta_0$ the period is $T=T_0\cdot\tfrac2\pi K(\sin^2\tfrac{\theta_0}{2})$ (the *circular error*), and Huygens' answer in 1673 was to hang the bob between **cycloidal cheeks**, so that the bob moves on a cycloid, which is exactly isochronous (mech-5.8).`,
-      idea: String.raw`The restoring torque $-mgL\sin\theta$ makes the period depend on amplitude as $T/T_0=1+\theta_0^2/16+\dots$, a loss of $86400\,(1-T_0/T)$ s/day. A path where the restoring force along the path is exactly proportional to the arc length gives exact isochronism; Huygens proved that this path is the cycloid (mech-5.8) and that the evolute of a cycloid is an equal cycloid, so the string, wrapping on cheeks of that shape, lets the bob run on the cycloid with a pendulum of length $L=4a$. Because the drive now changes only the amplitude, and the amplitude barely changes the rate, the clock is far steadier than a verge clock; with a small arc (5.7) the circular error is small even without cheeks.`,
-      caption: String.raw`Left: the pendulum swings. Switch the **cycloidal cheeks** on and the string wraps on them. Right: seconds lost per day against amplitude, circular (orange) and cycloidal (green). Set the **amplitude**, then change the **drive**: more driving energy gives a larger swing ($E\propto\theta_0^2$), and the readout compares the resulting rate change with the foliot clock's.`,
-      deps: ['tech-5.4', 'mech-4.4', 'mech-5.8'],
-      see: ['tech-5.7', 'tech-5.8'],
-      refs: ['Usher, “The development of clocks and watches”', 'Mokyr ch. 4', 'Huygens, Horologium Oscillatorium (1673)'],
-      tags: ['early-modern', 'timekeeping', 'pendulum'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pendulum_clock' },
-      viz(v) {
-        const A = v.stage({ x: [-0.75, 0.75], y: [-1.12, 0.3], equal: true, axes: false, height: 340, weight: 0.9, minWidth: 280, title: 'pendulum (L = 1 m)' });
-        const B = v.stage({ x: [0, 60], y: [0, 2400], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 320, xlabel: 'amplitude $\\theta_0$ (°)', ylabel: 'seconds lost per day', title: 'circular error' });
-        const aS = v.slider('amplitude $\\theta_0$ (°)', 1, 60, 20, { step: 0.5 });
-        const dS = v.slider('change in driving energy (%)', -30, 30, 0, { step: 1 });
-        const cS = v.toggle('cycloidal cheeks', false);
-        const W0 = Math.PI; // rad/s for L = g/pi² ≈ 0.994 m
-        let S = null;
-        const th0eff = () => aS.value * Math.sqrt(Math.max(0.05, 1 + dS.value / 100));
-        v.animate((t) => {
-          const th0 = Math.min(th0eff(), 85) * D2R, cheeks = cS.value;
-          let th;
-          if (cheeks) th = Math.asin(Math.sin(th0) * Math.sin(W0 * t)); else {
-            if (!S || S.th0 !== th0) S = { th0, sim: v.sim(() => ({ th: th0, w: 0 }), (st, dt) => { st.w += -W0 * W0 * Math.sin(st.th) * dt; st.th += st.w * dt; return st; }, { dt: 0.001 }), th0 };
-            S.sim.advance(t); th = S.sim.state.th;
-          }
-          const L = 1; let bx, by;
-          const a = L / 4;
-          if (cheeks) {
-            const u = 2 * th; bx = a * (u + Math.sin(u)); by = -a * (3 + Math.cos(u));
-            const cu = []; const cv = []; const um = Math.min(Math.PI, 2 * th0);
-            for (let i = -60; i <= 60; i++) { const w = (i / 60) * Math.PI; const px = a * (w + Math.sin(w)), py = -a * (3 + Math.cos(w)), rho = 4 * a * Math.cos(w / 2); const nx = -Math.sin(w) / (2 * Math.cos(w / 2) + 1e-12), ny = (1 + Math.cos(w)) / (2 * Math.cos(w / 2) + 1e-12); if (Math.abs(w) < 3.0) cu.push([px + rho * nx, py + rho * ny]); }
-            A.path(cu, { color: 'orange', width: 3 });
-            const cx = (() => { const w = u, rho = 4 * a * Math.cos(w / 2), nx = -Math.sin(w) / (2 * Math.cos(w / 2)), ny = (1 + Math.cos(w)) / (2 * Math.cos(w / 2)); return [bx + rho * nx, by + rho * ny]; })();
-            A.line(cx[0], cx[1], bx, by, { color: 'ink', width: 1.8 });
-            const arc = []; for (let i = 0; i <= 30; i++) { const w = (Math.sign(u) * Math.abs(u) * i) / 30; const rho = 4 * a * Math.cos(w / 2), nx = -Math.sin(w) / (2 * Math.cos(w / 2)), ny = (1 + Math.cos(w)) / (2 * Math.cos(w / 2)); arc.push([a * (w + Math.sin(w)) + rho * nx, -a * (3 + Math.cos(w)) + rho * ny]); }
-            A.line(0, 0, cx[0], cx[1], { color: 'ink', width: 1.8 });
-          } else { bx = L * Math.sin(th); by = -L * Math.cos(th); A.line(0, 0, bx, by, { color: 'ink', width: 1.8 }); }
-          A.circle(bx, by, 0.045, { fill: 'accent', fillAlpha: 0.7, color: 'accent', width: 2 });
-          A.dot(0, 0, { r: 4, color: 'ink' });
-          A.line(-0.7, 0, 0.7, 0, { color: 'muted', width: 2 });
-          A.line(0, 0, 0, -1.05, { color: 'faint', width: 1, dash: [3, 4] });
-          // curves
-          const circ = [], cyc = []; for (let x = 0.5; x <= 60; x += 0.5) circ.push([x, lossPerDay(pendulumRatio(x * D2R))]);
-          B.path(circ, { color: 'orange', width: 2.4 }); B.line(0, 0, 60, 0, { color: 'green', width: 3 });
-          const x0 = aS.value, x1 = th0eff();
-          B.dot(x1, cheeks ? 0 : lossPerDay(pendulumRatio(x1 * D2R)), { r: 6, color: 'gold' });
-        }, { period: 4, still: 0.37 });
-        v.legend([['orange', 'circular pendulum'], ['green', 'cycloidal cheeks'], ['gold', 'now', { dot: true }]]);
-        v.readout(() => {
-          const x0 = aS.value, x1 = th0eff(), cheeks = cS.value;
-          const l0 = cheeks ? 0 : lossPerDay(pendulumRatio(x0 * D2R)), l1 = cheeks ? 0 : lossPerDay(pendulumRatio(x1 * D2R));
-          return `amplitude ${v.fix(x1, 1)}° (drive ${dS.value >= 0 ? '+' : ''}${v.fix(dS.value, 0)}%): period ratio $T/T_0=${v.fix(cheeks ? 1 : pendulumRatio(x1 * D2R), 5)}$, losing **${v.fix(l1, 1)} s/day**\nthe drive change moves the rate by **${v.fix(l1 - l0, 1)} s/day**; a verge-and-foliot clock with the same drive change would move by about ${v.fix((Math.sqrt(1 + dS.value / 100) - 1) * 86400, 0)} s/day (5.4, model). $T_0=2\\pi\\sqrt{L/g}$ gives $L=0.994$ m for a 2 s period`;
-        });
+For the cycloid put a=L/4. In the diagram's coordinates,
+$$\begin{aligned}x&=a(u+\sin u),\\y&=-a(3+\cos u).\end{aligned}$$
+Arc length from the bottom is $s=L\sin(u/2)$ and height above it is $s^2/(2L)$. Thus $\ddot s=-(g/L)s$ exactly and the period is T0 at every permitted release energy. The active cheek point is
+$$\begin{aligned}E_x&=a(u-\sin u),\\E_y&=a(\cos u-1).\end{aligned}$$
+The free string has length $L\cos(u/2)$; its wrapped arc has length $L[1-\cos(u/2)]$. The drawn arc and free segment therefore add to L. Both modes start from rest at the same chosen energy.`,
+      caption:String.raw`Choose base circular amplitude, a release-energy change and actual elapsed time. Switch circular or cycloidal suspension. Orange cheeks, the wrapped string arc, free segment and bob use the exact cycloid geometry; the muted path shows the complete permitted curve. The rate panel retains the full circular-error curve and the selected effective amplitude. Its zero green line is the ideal cycloid's amplitude independence.`,
+      deps:['mech-4.4','mech-5.8'],see:['tech-5.4','tech-5.7','tech-5.8'],refs:['Huygens, Horologium Oscillatorium (1673), original ETH Rar 4649: Part I construction, Part II Proposition XXV pp.57–58; Part III Propositions V–VII pp.66–68','Ian Bruce, annotated translation with Latin text, Part I pp.4–10, Part IIb pp.44–46, Part III pp.66–68'],tags:['pendulum','timekeeping','cycloid'],
+      scope:String.raw`Unforced ideal motion after release, point bob, massless inextensible suspension, frictionless cheek contact and g=9.80665m/s². L= 1 m, so T0 is about 2.006 s. Release energy changes by−30…+30% from a base 1…50° circular amplitude; the resulting effective angle remains below 60°, keeping the free cycloidal string positive and both ideal constraints taut. The curves do not measure historical clock performance.`,
+      links:{source:'https://doi.org/10.3931/e-rara-11164',translation:'https://kirkmcd.princeton.edu/17centurymaths/contents/huygenscontents.html'},
+      viz(v){const base=v.slider('base circular amplitude (°)',1,50,20,{step:'any',decimals:6}),change=v.slider('release energy change (%)',-30,30,0,{step:'any',decimals:6}),time=v.slider('elapsed time (s)',0,6,.37,{step:'any',decimals:6}),cyc=v.toggle('cycloidal suspension',false),A=v.stage({x:[-1.2,1.2],y:[-1.2,.2],equal:true,axes:false,height:330,minWidth:260,title:'actual ideal suspension geometry; L = 1 m'}),B=v.stage({x:[-3,63],y:[-400,6800],axes:'box',gutter:true,height:330,minWidth:260,xlabel:'effective circular amplitude (°)',ylabel:'ideal error against T₀ (s/day)',title:'full circular error and selected energy'});let info;
+        v.legend([['orange','circular error / cycloidal cheeks'],['green','ideal cycloid error'],['ink','actual string'],['accent','bob / selected error']]);
+        v.render(()=>{const p=pendulumScene(base.value,change.value,time.value,cyc.value);A.path(p.trace,{color:'muted',width:1,dash:[3,3]});if(p.cycloidal){for(const q of p.cheeks)A.path(q,{color:'orange',width:2.5});A.path(p.wrapped,{color:'ink',width:3});A.line(...p.contact,...p.bob,{color:'ink',width:2});}else A.line(0,0,...p.bob,{color:'ink',width:2});A.circle(...p.bob,.045,{color:'accent',fill:'accent',fillAlpha:.7,width:1.5});A.dot(0,0,{color:'ink',r:4,ring:false});A.line(-.8,0,.8,0,{color:'muted',width:1.5});B.path(p.curve,{color:'orange',width:2.3});B.line(0,0,60,0,{color:'green',width:2});B.dot(p.angle,p.loss,{color:'accent',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `${p.cycloidal?'Cycloidal':'Circular'} suspension at ${v.fix(p.time,9)} s. Effective circular release amplitude ${v.fix(p.angle,9)}°; release energy ${v.fix(p.energy,9)} J/kg. Period ${v.fix(p.period,9)} s, T/T₀=${v.fix(p.ratio,12)}.\nIdeal error against the infinitesimal-amplitude calibration ${v.fix(p.loss,9)} s per reference day; change from base release energy ${v.fix(p.loss-p.referenceLoss,9)} s/day. This is not an observed clock error.\n${p.cycloidal?`Wrapped string ${v.fix(p.wrappedLength,9)} m + free string ${v.fix(p.freeLength,9)} m = 1 m; bob arc coordinate ${v.fix(p.s,9)} m.`:`Circular bob angle ${v.fix(p.theta*180/Math.PI,9)}°, angular speed ${v.fix(p.thetaDot,9)} rad/s.`}`;});
       },
     },
   ],
