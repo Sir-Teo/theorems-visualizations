@@ -8,3 +8,8 @@ test('two real Canvas backings jointly respect the pixel/edge cap without resolu
  assert.equal(compositorAllocation(1440,932,2).pad,224);assert.equal(compositorAllocation(1440,932,2).pixels,15_790_080);assert.equal(compositorAllocation(3840,2092,2),null);
  for(const tuple of[[0,100,2],[100,-1,2],[100,100,NaN],[Infinity,100,2]])assert.equal(compositorAllocation(...tuple),null);
 });
+
+import{readFile}from'node:fs/promises';import{mapCanvasCompositorPrototype}from'../scripts/lib/map-canvas-compositor-prototype.mjs';
+test('prototype keeps the full original painter and fallback draw method byte-for-byte',async()=>{
+ const source=await readFile(new URL('../assets/js/graph.js',import.meta.url),'utf8'),rewritten=mapCanvasCompositorPrototype(source),a=source.indexOf('  _draw() {'),b=source.indexOf('  _paint({ layer',a),original=source.slice(a,b).replace('  _draw() {','  _drawOriginal() {').trim(),start=rewritten.indexOf('  _drawOriginal() {'),end=rewritten.indexOf('  _paintCompositorPart',start);assert.equal(rewritten.slice(start,end).trim(),original);const endPaint=source.indexOf('\n}\n\n// ------------------------------------------------------------ treemap',b);assert.ok(rewritten.includes(source.slice(b,endPaint)));
+});

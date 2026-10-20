@@ -5,6 +5,7 @@ export async function compositorFixture(){
  const add=async(path,url)=>{const b=await readFile(url);files.set(path,b);hashes[path]=createHash('sha256').update(b).digest('hex');};
  for(const path of['data/index.json','data/planned.json','assets/js/graph.js'])await add(path,new URL(path,root));
  for(const name of['runtime','prototype','fixture'])await add(`scripts/lib/map-canvas-compositor-${name}.mjs`,new URL(`./map-canvas-compositor-${name}.mjs`,import.meta.url));
+ await add('tests/map-canvas-compositor-native.mjs',new URL('../../tests/map-canvas-compositor-native.mjs',import.meta.url));
  const source=mapCanvasCompositorPrototype(files.get('assets/js/graph.js').toString());
  return{root,hashes,async route(page){for(const[path,body]of files)await page.route('**/'+path,r=>r.fulfill({body:path==='assets/js/graph.js'?source:body,contentType:path.endsWith('.json')?'application/json':'application/javascript'}));}};
 }

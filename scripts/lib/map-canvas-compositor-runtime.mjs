@@ -39,7 +39,8 @@ export class CanvasMapCompositor{
    m.ctx=underlay.getContext('2d');m._paintCompositorPart('underlay');this.stats.underlayPaints++;
    Object.assign(m,saved);m._paintCompositorPart('labels');this.stats.labelPaints++;
   }catch(error){Object.assign(m,saved);this.stats.error=error.message;return this.fallback('paint exception');}finally{Object.assign(m,saved);}
-  const cache=this.cache,scale=m.k/cache.k,x=Math.round((m.tx-cache.tx*scale)*m.dpr)/m.dpr-cache.pad*scale,y=Math.round((m.ty-cache.ty*scale)*m.dpr)/m.dpr-cache.pad*scale;
+  // Preserve the exact affine translation: extra physical-pixel rounding failed the dark fractional-pan image bound.
+  const cache=this.cache,scale=m.k/cache.k,x=m.tx-cache.tx*scale-cache.pad*scale,y=m.ty-cache.ty*scale-cache.pad*scale;
   geometry.style.transform=`translate(${x}px,${y}px) scale(${scale})`;this.stats.transformWrites++;this.stats.pixels=underlay.width*underlay.height+geometry.width*geometry.height;this.stats.peakPixels=Math.max(this.stats.peakPixels,this.stats.pixels);this.stats.reason=null;
   if(this.stats.pixels>COMPOSITOR_PIXEL_CAP)throw Error('Compositor pixel budget exceeded');return true;
  }
