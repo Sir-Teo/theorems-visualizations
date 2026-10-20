@@ -194,6 +194,16 @@
         "psych-patterns-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "qchem-3.13"
+      ],
+      "peer": "worker_two exact-commit complete Russian primary reprint and German-abstract comparison, source hashes, three math groups and fresh narrow light/dark native checks",
+      "reports": [
+        "qchem-source-audit-mendeleev-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -206,5 +216,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 117
+  "currentPendingSourceReviews": 116
 }

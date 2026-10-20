@@ -8,12 +8,11 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 117,
+  "remainingFlags": 116,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
     "nla": 1,
-    "qchem": 1,
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
@@ -54,25 +53,6 @@
       "explicitUncertainty": [],
       "refs": [],
       "links": {}
-    },
-    {
-      "id": "qchem-3.13",
-      "file": "content/qchem/ch03-b.js",
-      "name": "Properties and atomic weights of the elements",
-      "field": "chem",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "The table drawn here is the one printed in the German abstract of the paper (Zeitschrift für Chemie 12, 405–406, 1869), as transcribed and translated by Carmen Giunta; I did not see the Russian original, so whether the Russian paper's table is identical in every number is not checked. Atomic weights are his 1869 values (hydrogen = 1), several of them wrong (for instance uranium as 116) and some marked \"?\" by him. The three \"gaps\" are interpolations by me, not Mendeleev's calculation; his own 1871 predictions were more detailed (masses 44, 68 and 72 for eka-boron, eka-aluminium and eka-silicon)."
-        }
-      ],
-      "refs": [],
-      "links": {
-        "giunta": "https://web.lemoyne.edu/GIUNTA/EA/MENDELEEVann.HTML",
-        "wikipedia": "https://en.wikipedia.org/wiki/Mendeleev%27s_predicted_elements"
-      }
     },
     {
       "id": "mat-3.13",
@@ -2631,7 +2611,8 @@
       "psych-4.14",
       "psych-4.9",
       "psych-4.10",
-      "psych-4.13"
+      "psych-4.13",
+      "qchem-3.13"
     ]
   },
   "additionalFollowups": [
@@ -5571,9 +5552,9 @@
     },
     {
       "id": "qchem-3.13",
-      "status": "source-review-pending",
+      "status": "resolved",
       "report": "docs/verification/qchem-source-audit-mendeleev-followup.md",
-      "note": "Supported complete German abstract transcription/reflow correction with three independent math and two native theme groups; full pinned Russian original remains inaccessible, flag retained."
+      "note": "2026-10-20: worker_two exact-commit complete Russian primary reprint and German-abstract comparison, source hashes, three math groups and fresh narrow light/dark native checks; qchem-source-audit-mendeleev-followup.md."
     },
     {
       "id": "geog-5.7",

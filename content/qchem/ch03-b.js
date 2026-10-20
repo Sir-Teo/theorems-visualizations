@@ -283,7 +283,7 @@ the energy cost of giving an electron to the atom and the gain from taking one, 
       deps: ['qchem-3.9'],
       refs: ['Mendeleev,1926 Menshutkin-edited reprint of the complete1869 article, pp.4–20, especially table p.13 and conclusions pp.19–20', 'Mendelejeff, Zeitschrift für Chemie12 (1869),405–406, complete abstract translated by Carmen Giunta'],
       tags: ['Mendeleev', 'periodic law', 'history'],
-      verify: true,
+      verify: false,
       links: { reprint:'https://ru.djvu.online/file/xty8kYbSpDPfG', giunta: 'https://webserver.lemoyne.edu/~giunta/EA/MENDELEEVann.HTML', wikipedia: 'https://en.wikipedia.org/wiki/Mendeleev%27s_predicted_elements' },
       viz(v) {
         // Mendeleev's 1869 table, family = our selected color index (original analogous families are horizontal). w: printed weight; q: printed with '?'; gap: unnamed '?'.
