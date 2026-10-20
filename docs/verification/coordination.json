@@ -19,11 +19,14 @@
       "MASTER_PLAN.md",
       "docs/verification/waves-3-4*",
       "docs/verification/coordination.json",
-      "shared runtime and integration inventories"
+      "shared runtime and integration inventories",
+      "content/music/ch08-b.js and only music8.9\u20138.13 syllabus rows",
+      "collection audit lanes: game and qchem"
     ],
     "current": [
-      "Reconcile backlog and wave gates",
-      "Review historical primary-source blockers in logic and numerical linear algebra"
+      "Integrate independently reviewed batches and reconcile all wave gates",
+      "Independently review committed music7.15",
+      "Audit music8.9\u20138.13 in isolated source file and tests"
     ]
   },
   "workers": [
@@ -33,8 +36,8 @@
       "branch": "codex/atlas-worker-one",
       "collection": "music",
       "owns": [
-        "content/music/**",
-        "collection-specific audit docs and tests"
+        "content/music/** except ch08-b.js and8.9\u20138.13 syllabus rows",
+        "collection-specific audit docs and tests outside coordinator set-class batch"
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
@@ -44,14 +47,18 @@
       "agent": "worker_two",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-two/theorems-visualizations",
       "branch": "codex/atlas-worker-two",
-      "collection": "psych",
+      "collection": "tech",
       "owns": [
-        "content/psych/**",
+        "content/tech/**",
         "collection-specific audit docs and tests"
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
-      "peerReview": "Assigned by coordinator after a committed batch is ready"
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "completedCollections": [
+        "psych"
+      ],
+      "current": "Audit23 remaining technology entries in coherent source groups; peer-review committed coordinator candidates as assigned."
     },
     {
       "agent": "worker_three",
@@ -64,7 +71,8 @@
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
-      "peerReview": "Assigned by coordinator after a committed batch is ready"
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "current": "Complete remaining sociology entries; peer-review committed worker candidates as assigned."
     }
   ],
   "acceptedBatches": [
@@ -103,7 +111,12 @@
         "music-continued-followup.md",
         "music-well-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "94ed9f4",
+        "3fddde7",
+        "4dccc22"
+      ]
     },
     {
       "ids": [
@@ -114,7 +127,10 @@
       "reports": [
         "psych-pooling-inhibition-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "8a45e55"
+      ]
     },
     {
       "ids": [
@@ -126,7 +142,10 @@
       "reports": [
         "psych-scaling-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "9895d1a"
+      ]
     },
     {
       "ids": [
@@ -137,7 +156,10 @@
       "reports": [
         "music-edo-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "7c591b0"
+      ]
     },
     {
       "ids": [
@@ -148,7 +170,10 @@
       "reports": [
         "soc-centrality-online-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "7ea7dc1"
+      ]
     },
     {
       "ids": [
@@ -158,7 +183,10 @@
       "reports": [
         "game-nim-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "7c851a0"
+      ]
     },
     {
       "ids": [
@@ -169,7 +197,10 @@
       "reports": [
         "music-circle53-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "0e72fd2"
+      ]
     },
     {
       "ids": [
@@ -181,7 +212,10 @@
       "reports": [
         "psych-lightness-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "59a26ed"
+      ]
     },
     {
       "ids": [
@@ -193,7 +227,10 @@
       "reports": [
         "psych-patterns-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "c824d76"
+      ]
     },
     {
       "ids": [
@@ -203,7 +240,10 @@
       "reports": [
         "qchem-source-audit-mendeleev-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "88354b2"
+      ]
     },
     {
       "ids": [
@@ -214,7 +254,11 @@
       "reports": [
         "soc-tails-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "87c3869",
+        "cb9f0ed"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -227,5 +271,20 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 114
+  "currentPendingSourceReviews": 114,
+  "latestCheckpoint": {
+    "acceptedContentCommit": "c9b5466",
+    "pendingSourceReviews": 114,
+    "defaultTests": 1695,
+    "strictBuild": "0 errors/0 warnings",
+    "fullStaticItems": 6621,
+    "fullStatic": "0 errors/0 warnings",
+    "homeGzipBytes": 112785,
+    "crossFieldShortfall": 847,
+    "publishedCollectionsBelow25": 53,
+    "wholeSyllabiBelow25": 28,
+    "flagshipCuration": "2/100, alongside-wave work",
+    "fullMap60fps": "open",
+    "wave5": "prepared-not-started"
+  }
 }

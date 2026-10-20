@@ -11496,10 +11496,10 @@
       "collection": "psych",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 21,
-      "writtenToKnown": 24,
-      "wholeSyllabus": 46,
-      "publishedShortfall": 4,
+      "writtenToWritten": 22,
+      "writtenToKnown": 23,
+      "wholeSyllabus": 45,
+      "publishedShortfall": 3,
       "unknown": [],
       "edges": [
         {
@@ -11650,18 +11650,11 @@
           "prerequisiteWritten": true
         },
         {
-          "item": "psych-4.10",
-          "prerequisite": "art-6.3",
-          "prerequisiteField": "arts",
+          "item": "psych-4.14",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
           "itemWritten": true,
-          "prerequisiteWritten": false
-        },
-        {
-          "item": "psych-4.12",
-          "prerequisite": "art-6.12",
-          "prerequisiteField": "arts",
-          "itemWritten": true,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         },
         {
           "item": "psych-4.4",
@@ -11830,10 +11823,10 @@
       "collection": "soc",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 13,
-      "writtenToKnown": 17,
-      "wholeSyllabus": 40,
-      "publishedShortfall": 12,
+      "writtenToWritten": 15,
+      "writtenToKnown": 19,
+      "wholeSyllabus": 42,
+      "publishedShortfall": 10,
       "unknown": [],
       "edges": [
         {
@@ -11905,6 +11898,20 @@
           "prerequisiteField": "econ",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "soc-4.7",
+          "prerequisite": "prob-2.4.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "soc-4.7",
+          "prerequisite": "prob-2.4.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "soc-4.8",
