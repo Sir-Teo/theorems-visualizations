@@ -10,6 +10,7 @@
 // Real data: Shiller's annual series (ch05.shared.js), the daily and monthly market and industry returns (French library). Models and reconstructions are labelled as such.
 import { clamp, pct, fx, sg, data, daily, shiller, shillerDetrended, exPost, meanOf, sdOf, acf, normPdf, normCdf, pricePath, rng, mean, sdev, IND_NAMES } from './ch05.shared.js';
 import { bubbleScenario, sampledBubbleReturn } from './source-audit-bubbles.js';
+import { LAB_PRESETS, labFundamental, labSession, labDeviation, labMean } from './source-audit-laboratory.js';
 import { benchmarkExperiment, splitIllustration, fundIllustration } from './source-audit-efficiency.js';
 import { bachelierLaw, standardGaussianWalks, sampledBachelier, terminalHistogram } from './source-audit-bachelier.js';
 
@@ -92,53 +93,62 @@ The right panel shows **date-zero conditional expected discounted resale**, rath
       num: '5.12',
       kind: 'Phenomenon',
       name: 'Bubbles in the laboratory (Smith–Suchanek–Williams)',
-      statement: String.raw`In the **Smith–Suchanek–Williams** experiments, a small group of traders (university students, often about a dozen) trade a single asset in a computerised double auction over a fixed number of periods (15 in the standard design). At the end of each period every share pays a dividend drawn from a known distribution (in the standard design, $0, 8, 28$ or $60$ cents with equal probability, expected dividend 24 cents), and the share is worthless after the last period. So the **fundamental value** is known and **declines in a staircase**: with $n$ periods left it is $n\times$ (expected dividend), i.e. 3.60 dollars at the start and 0.24 at the last period. Instead of following that staircase, prices typically start below it, rise above it, form a **bubble** of many times the fundamental value and **crash** near the end. With **experienced** subjects (who have taken part in earlier sessions with the same market) the bubbles shrink or disappear.
+      statement: String.raw`Smith, Suchanek and Williams studied computerized double-auction asset markets with common announced dividend distributions. Their Table I **design 4** has 15 periods, no terminal buyout, and dividends of 0, 8, 28 or 60 cents, each with probability one quarter. Before period $t$'s dividend, the **undiscounted risk-neutral expected-dividend benchmark** is
+$$F_t=0.24(16-t)\quad(t=1,\ldots,15),$$
+with zero value after the final dividend. This is an expected cash-flow benchmark, not a certain realized dividend or a universal risk-adjusted price.
 
-Scope: the distinctive outcome of the original experiments (14 of 22 sessions with bubbles and crashes); results depend on design details (cash endowments, dividend structure, trading rules), and later studies find that bubbles are reduced by common knowledge of rationality and by experience. The dividend distribution above is from memory of the standard design and is flagged for checking.`,
-      idea: String.raw`Because the dividend process is public and the fundamental value is a simple staircase, a trader who trusts that others will trade rationally should sell above the staircase; the collapse of the bubble requires everyone to carry out backward induction to the end. Subjects instead extrapolate recent price changes (the paper's "endogenous expectations": prices rise because traders expect them to rise) and uncertainty about *others'* rationality makes it optimal to ride the trend (limits to arbitrage, fin-5.7). Experience shifts weight from trend-following to the fundamental value, and with cash-rich traders (high liquidity) bubbles grow larger.`,
-      caption: String.raw`A reduced-form **model** of mean market price per period, not the original data: each period the price moves by a **trend-following** share $\beta$ of its last change and by a share $\kappa$ of the gap to the fundamental value (the green staircase), plus noise; the pull to fundamentals strengthens as the end nears. Choose a preset (inexperienced, once experienced, twice experienced) or the sliders, and press **Resample** for new sessions (thin lines are other sessions with the same parameters). **Right**: the three presets side by side. The readout gives the average relative deviation (RD) and relative absolute deviation (RAD) of price from fundamental value. (Simulation; original data not reproduced.)`,
-      deps: ['fin-5.10'],
-      refs: ['BKM ch. 12'],
-      tags: ['experimental economics', 'bubbles', 'backward induction'],
-      credit: 'Smith, Suchanek & Williams, 1988',
-      scope: String.raw`Describes the laboratory asset market with a known declining fundamental value; it does not show that field markets behave the same way.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Vernon_L._Smith' },
+The paper classifies 14 of 22 experiments without intervention/disruption as bubble–crash markets; nine of those 14 used experienced subjects. Experience reduced the tendency to bubble without eliminating it. Other original designs used different dividends, terminal buyouts or a 30-period horizon. The chart below is an authored recurrence, not any original session.`,
+      idea: String.raw`The benchmark adds the 15-period design's remaining expected cash flows at zero discount, applying fin-1.5. Common knowledge of dividends does not force participants to have common expectations about other traders. The original study discusses that distinction; the recurrence here does not identify traders' motives or prove a learning mechanism.
+
+For a chosen trend weight $\beta$, pull $\kappa$ and Gaussian noise $\epsilon_t$, the illustration sets
+$$w_t=\kappa+\tfrac12(1-\kappa)(t/15)^6,$$
+$$m_t=p_{t-1}+\beta(p_{t-1}-p_{t-2}),$$
+$$a_t=m_t+w_t(F_t-p_{t-1}),$$
+$$p_t=\max\{0.02,a_t+\epsilon_t\}.$$
+The initial levels 1.9 and 1.6 dollars, two-cent floor and increasing pull are authored assumptions. The three parameter presets are not measured experience categories. Independent simulated paths have finite second moments; prob-2.2.3 explains convergence of their averages as the number of paths grows. Forty paths remain a finite estimate with sampling error.`,
+      caption: String.raw`**Left:** one bold authored session and four other sessions at the actual controls. All prices are before that period's dividend. Green is the expected-dividend staircase; the separate hollow marker at “after” is the assumed zero terminal value. It is not a simulated crash.
+
+**Right:** means of 40 finite paths under each of three chosen presets, using matched noise draws for comparison. Preset buttons set the left trend/pull controls; changing them manually selects a custom model. **Resample all paths** refreshes both panels. Neither prices nor parameter values are original observations or estimates, and the three sample curves need not be ordered.`,
+      deps: ['fin-1.5', 'prob-2.2.3'],
+      see: ['fin-5.10'],
+      refs: ['Smith, Suchanek & Williams (1988), §§1,3, Table I and §6.1, pp.1119–1126 and1147–1148'],
+      tags: ['experimental economics', 'bubbles', 'expectations'],
+      credit: 'Smith, Suchanek & Williams, 1988; specified recurrence authored here',
+      scope: String.raw`The original mechanism has actual bids, offers, cash/share endowments and no short selling. This recurrence simulates none of those constraints, has no endogenous order book or learning, and is not the paper's estimated lagged-excess-bid model. RD and RAD below are explicitly defined normalized descriptive errors, not an attribution of those metrics to the 1988 study. A finite simulated sample cannot certify an experience effect or predict field markets.`,
+      verify: false,
+      links: { doi: 'https://doi.org/10.2307/1911361', source: 'https://web.archive.org/web/20140202134430/http://teaching.ust.hk/~bee/papers/040918/1988-Smith_etal-bubbles.pdf' },
       viz(v) {
-        const T = 15, div = 0.24;
-        const FV = (t) => (T - t + 1) * div; // t = 1..15
-        const pre = v.select('traders', [{ value: 0, label: 'inexperienced' }, { value: 1, label: 'once experienced' }, { value: 2, label: 'twice experienced' }], 0, { onChange: (x) => { const P = PRE[x]; beta.set(P[0]); kap.set(P[1]); } });
-        const PRE = [[0.7, 0.07], [0.4, 0.2], [0.15, 0.45]];
-        const beta = v.slider('trend-following $\\beta$', 0, 1, 0.7, { step: 0.01 });
-        const kap = v.slider('pull to fundamental value $\\kappa$', 0, 0.8, 0.07, { step: 0.01 });
-        const noise = v.slider('noise (cents)', 0, 40, 12, { step: 1 });
-        let seed = 21; v.button('Resample', () => { seed++; });
-        const A = v.stage({ x: [0, 16], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1.3, minWidth: 300, xlabel: 'trading period', ylabel: 'price ($ per share)', xticks: [1, 3, 5, 7, 9, 11, 13, 15], title: 'one parameter set, several sessions (model)' });
-        const B = v.stage({ x: [0, 16], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'trading period', ylabel: 'mean price ($)', xticks: [1, 3, 5, 7, 9, 11, 13, 15], title: 'experience shrinks the bubble' });
-        const sim = (b, k, nz, sd) => {
-          const R = rng(sd), p = []; let p1 = 1.9, p2 = 1.6;
-          for (let t = 1; t <= T; t++) {
-            const w = Math.min(1, k + (1 - k) * Math.pow(t / T, 6) * 0.5);
-            let x = p1 + b * (p1 - p2) + w * (FV(t) - p1) + nz / 100 * R.normal();
-            x = Math.max(0.02, x); p.push(x); p2 = p1; p1 = x;
-          }
-          return p;
-        };
-        const meas = (p) => { let rd = 0, rad = 0, mfv = 0; for (let t = 1; t <= T; t++) mfv += FV(t) / T; for (let t = 1; t <= T; t++) { rd += (p[t - 1] - FV(t)) / T / mfv; rad += Math.abs(p[t - 1] - FV(t)) / T / mfv; } return { rd, rad, }; };
-        v.legend([['green', 'fundamental value'], ['red', 'inexperienced'], ['orange', 'once experienced'], ['teal', 'twice experienced']]);
-        let m = {};
+        const beta = v.slider('authored trend weight β', 0, 1, 0.7, { step: 0.01 });
+        const kap = v.slider('authored fundamental pull κ', 0, 0.8, 0.07, { step: 0.01 });
+        const noise = v.slider('Gaussian noise standard deviation (cents)', 0, 40, 12, { step: 1 });
+        const labels = ['A: high trend', 'B: balanced', 'C: strong pull'], colors = ['red', 'orange', 'teal'];
+        LAB_PRESETS.forEach((p, i) => v.button(`Preset ${labels[i]}`, () => { beta.set(p[0]); kap.set(p[1]); }));
+        let seed = 21; v.button('Resample all paths', () => { seed++; });
+        const options = { x: [0, 17], y: [-0.3, 6], axes: 'box', gutter: true, height: 340, minWidth: 300, xlabel: 'period (before dividend; then after)', ylabel: 'dollars per share', xticks: [[1, '1'], [5, '5'], [10, '10'], [16, 'after']] };
+        const A = v.stage({ ...options, title: 'authored session at current controls' });
+        const B = v.stage({ ...options, title: '40-path means of three authored presets' });
+        v.legend([['green', 'expected-dividend benchmark'], ['accent', 'current controls: one + four paths'], ['red', labels[0]], ['orange', labels[1]], ['teal', labels[2]], ['ink', 'assumed zero after final dividend']]);
+        let cache, key, st = {};
+        const draw = (b, k, n) => { const R = rng(n); return labSession(b, k, noise.value, () => R.normal()); };
         v.render(() => {
-          const stairs = []; for (let t = 1; t <= T; t++) { stairs.push([t - 0.5, FV(t)], [t + 0.5, FV(t)]); }
-          A.path(stairs, { color: 'green', width: 2.6 }); A.text('fundamental value', 1.2, 3.85, { size: 11.5, color: 'green', weight: 700 });
-          for (let s = 1; s <= 4; s++) A.path(sim(beta.value, kap.value, noise.value, seed * 100 + s).map((y, t) => [t + 1, y]), { color: 'accent', width: 1.2, alpha: 0.45 });
-          const main = sim(beta.value, kap.value, noise.value, seed * 100);
-          A.path(main.map((y, t) => [t + 1, y]), { color: 'accent', width: 2.8 }); A.dots(main.map((y, t) => [t + 1, y]), { r: 3.4, color: 'accent' });
-          B.path(stairs, { color: 'green', width: 2.2 });
-          const cols = ['red', 'orange', 'teal'], names = ['inexperienced', 'once experienced', 'twice experienced'];
-          PRE.forEach((P, k) => { const avg = new Array(T).fill(0); for (let s = 0; s < 40; s++) sim(P[0], P[1], noise.value, 5000 + s).forEach((y, t) => { avg[t] += y / 40; }); B.path(avg.map((y, t) => [t + 1, y]), { color: cols[k], width: 2.4 });  });
-          const mm = meas(main); let pk = 0, pf = 0; main.forEach((y, t) => { if (y > pk) { pk = y; pf = FV(t + 1); } }); m = { ...mm, pk, pf };
+          const next = [seed, beta.value, kap.value, noise.value].join('|');
+          if (key !== next) {
+            const sessions = Array.from({ length: 5 }, (_, j) => draw(beta.value, kap.value, seed * 100 + j));
+            const comparison = LAB_PRESETS.map(([b, k]) => labMean(Array.from({ length: 40 }, (_, j) => draw(b, k, seed * 10000 + 5000 + j))));
+            cache = { sessions, comparison, metrics: labDeviation(sessions[0]) }; key = next;
+          }
+          const { sessions, comparison, metrics } = cache, max = Math.max(3.6, ...sessions.flat(), ...comparison.flatMap(q => q.mean)), top = max * 1.15 + 0.1;
+          for (const s of [A, B]) {
+            s.setView([0, 17], [-0.08 * top, top]);
+            const stairs = []; for (let t = 1; t <= 15; t++) stairs.push([t - .5, labFundamental(t)], [t + .5, labFundamental(t)]);
+            s.path(stairs, { color: 'green', width: 2.3 }); s.dot(16, 0, { color: 'ink', r: 5, hollow: true });
+          }
+          for (let j = 1; j < 5; j++) A.path(sessions[j].map((p, t) => [t + 1, p]), { color: 'accent', width: 1.1, alpha: .4 });
+          A.path(sessions[0].map((p, t) => [t + 1, p]), { color: 'accent', width: 2.6 }); A.dots(sessions[0].map((p, t) => [t + 1, p]), { color: 'accent', r: 3.4 });
+          comparison.forEach((q, j) => B.path(q.mean.map((p, t) => [t + 1, p]), { color: colors[j], width: 2.4 }));
+          st = { ...metrics, comparison, preset: LAB_PRESETS.findIndex(([b, k]) => Math.abs(b - beta.value) < 1e-10 && Math.abs(k - kap.value) < 1e-10) };
         });
-        v.readout(() => `Session shown in bold: mean relative deviation from fundamental value **RD = ${sg(m.rd, 2)}**, relative absolute deviation **RAD = ${v.fix(m.rad, 2)}** (both divided by the mean fundamental value 1.92 dollars); peak price \\$${v.fix(m.pk, 2)} against a fundamental value of \\$${v.fix(m.pf, 2)} in that period. A market that follows the staircase would have RD = RAD = 0.\nModel parameters, not estimates: the presets are chosen to mimic the qualitative pattern (bubble, then smaller bubbles with experience), not fitted to the 1988 data.`);
+        v.readout(() => `Current parameters: ${st.preset < 0 ? 'custom' : labels[st.preset]}. Bold path RD = mean(p−F)/mean(F) = ${v.fix(st.rd, 4)}; RAD = mean|p−F|/mean(F) = ${v.fix(st.rad, 4)}. Mean(F) = 1.92 dollars. Peak price ${v.fix(st.peak, 3)} dollars at period ${st.peakPeriod}, benchmark ${v.fix(labFundamental(st.peakPeriod), 3)} dollars. These are uncalibrated model outputs.\nRight panel uses 40 paths per preset; largest estimated standard error across its 15 means: ${st.comparison.map((q, j) => `${'ABC'[j]} ${v.fix(Math.max(...q.se), 4)}`).join(', ')} dollars. A zero noise setting is deterministic. Every path/mean is shown within the plot bounds. The separate zero terminal marker is imposed by the no-buyout design, not evidence that a simulated price discovers its value.`);
       },
     },
     // ------------------------------------------------------------------ 5.13

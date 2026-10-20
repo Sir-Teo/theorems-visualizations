@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 186,
+  "remainingFlags": 185,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "micro": 3,
-    "fin": 6,
+    "fin": 5,
     "game": 18,
     "psych": 17,
     "soc": 16,
@@ -297,26 +297,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Economic_bubble"
-      }
-    },
-    {
-      "id": "fin-5.12",
-      "file": "content/fin/ch05-c.js",
-      "name": "Bubbles in the laboratory (Smith\u2013Suchanek\u2013Williams)",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "statement",
-          "text": "In the **Smith\u2013Suchanek\u2013Williams** experiments, a small group of traders (university students, often about a dozen) trade a single asset in a computerised double auction over a fixed number of periods (15 in the standard design). At the end of each period every share pays a dividend drawn from a known distribution (in the standard design, $0, 8, 28$ or $60$ cents with equal probability, expected dividend 24 cents), and the share is worthless after the last period. So the **fundamental value** is known and **declines in a staircase**: with $n$ periods left it is $n\\times$ (expected dividend), i.e. 3.60 dollars at the start and 0.24 at the last period. Instead of following that staircase, prices typically start below it, rise above it, form a **bubble** of many times the fundamental value and **crash** near the end. With **experienced** subjects (who have taken part in earlier sessions with the same market) the bubbles shrink or disappear.\n\nScope: the distinctive outcome of the original experiments (14 of 22 sessions with bubbles and crashes); results depend on design details (cash endowments, dividend structure, trading rules), and later studies find that bubbles are reduced by common knowledge of rationality and by experience. The dividend distribution above is from memory of the standard design and is flagged for checking."
-        }
-      ],
-      "refs": [
-        "BKM ch. 12"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Vernon_L._Smith"
       }
     },
     {
@@ -3679,7 +3659,8 @@
       "fin-5.13",
       "fin-5.14",
       "micro-9.4",
-      "micro-10.20"
+      "micro-10.20",
+      "fin-5.12"
     ]
   },
   "additionalFollowups": [
@@ -7822,6 +7803,12 @@
       "status": "resolved",
       "report": "docs/verification/micro-core-fringe-followup.md",
       "note": "Church\u2013Ware complete static\u00a74.2pp124\u2013129 and actualfigure127read; independent6math/8native/static pass acrossall665091control settings, exactexit/KKT and completeprofit/fringecurves; finalscreens and neighboringbodies checked."
+    },
+    {
+      "id": "fin-5.12",
+      "status": "resolved",
+      "report": "docs/verification/fin-laboratory-followup.md",
+      "note": "Actual Smith\u2013Suchanek\u2013Williams1988 scoped original and TableI design4 checked by root and independent agent; four mathematical groups including all335421controls and four final native theme/viewport groups pass independently. Authored presets, finite40-path means/SE, expected-dividend staircase and separate imposed terminal marker are correctly scoped; no historical experience calibration is claimed."
     }
   ]
 }
