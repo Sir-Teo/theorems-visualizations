@@ -1,0 +1,102 @@
+{
+  "edges": {
+    "2.9": [
+      "pma-3.26"
+    ],
+    "2.11": [
+      "pma-5.15"
+    ],
+    "2.12": [
+      "prob-4.1.9",
+      "prob-4.1.14"
+    ],
+    "3.8": [
+      "ode-1.5"
+    ],
+    "3.9": [
+      "pma-8.6"
+    ],
+    "3.10": [
+      "ladr-6.61"
+    ],
+    "2.4": [
+      "pma-9.23"
+    ],
+    "2.5": [
+      "pma-5.3"
+    ],
+    "4.6": [
+      "ode-1.5"
+    ],
+    "3.6": [
+      "pma-5.3"
+    ],
+    "3.7": [
+      "pma-5.3"
+    ],
+    "4.1": [
+      "ode-3.5"
+    ],
+    "4.2": [
+      "pma-8.6"
+    ],
+    "4.3": [
+      "ode-1.5"
+    ],
+    "1.10": [
+      "pma-8.6"
+    ]
+  },
+  "baseline": {
+    "2.9": {
+      "file": "content/macro/ch02-b.js"
+    },
+    "2.11": {
+      "file": "content/macro/ch02-b.js"
+    },
+    "2.12": {
+      "file": "content/macro/ch02-b.js"
+    },
+    "3.8": {
+      "file": "content/macro/ch03-b.js"
+    },
+    "3.9": {
+      "file": "content/macro/ch03-b.js"
+    },
+    "3.10": {
+      "file": "content/macro/ch03-b.js"
+    },
+    "2.4": {
+      "file": "content/macro/ch02.js"
+    },
+    "2.5": {
+      "file": "content/macro/ch02.js"
+    },
+    "4.6": {
+      "file": "content/macro/ch04-b.js"
+    },
+    "3.6": {
+      "file": "content/macro/ch03.js"
+    },
+    "3.7": {
+      "file": "content/macro/ch03.js"
+    },
+    "4.1": {
+      "file": "content/macro/ch04.js"
+    },
+    "4.2": {
+      "file": "content/macro/ch04.js"
+    },
+    "4.3": {
+      "file": "content/macro/ch04.js"
+    },
+    "1.10": {
+      "file": "content/macro/ch01.js"
+    }
+  },
+  "rowRepairs": {
+    "1.8": [
+      "stoch-4.1"
+    ]
+  }
+}

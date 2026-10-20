@@ -1,0 +1,484 @@
+{
+  "scope": "Producer evidence; independent peer pending; no source closure",
+  "before": [
+    9,
+    12,
+    15
+  ],
+  "after": [
+    25,
+    28,
+    31
+  ],
+  "arrays": [
+    {
+      "num": "1.8",
+      "added": [],
+      "itemBefore": [
+        "stoch-4.1"
+      ],
+      "itemAfter": [
+        "stoch-4.1"
+      ],
+      "rowBefore": [],
+      "rowAfter": [
+        "stoch-4.1"
+      ]
+    },
+    {
+      "num": "1.10",
+      "added": [
+        "pma-8.6"
+      ],
+      "itemBefore": [
+        "macro-1.6",
+        "demo-1.4"
+      ],
+      "itemAfter": [
+        "macro-1.6",
+        "demo-1.4",
+        "pma-8.6"
+      ],
+      "rowBefore": [
+        "macro-1.6"
+      ],
+      "rowAfter": [
+        "macro-1.6",
+        "demo-1.4",
+        "pma-8.6"
+      ]
+    },
+    {
+      "num": "2.9",
+      "added": [
+        "pma-3.26"
+      ],
+      "itemBefore": [
+        "macro-2.8"
+      ],
+      "itemAfter": [
+        "macro-2.8",
+        "pma-3.26"
+      ],
+      "rowBefore": [
+        "macro-2.8"
+      ],
+      "rowAfter": [
+        "macro-2.8",
+        "pma-3.26"
+      ]
+    },
+    {
+      "num": "2.11",
+      "added": [
+        "pma-5.15"
+      ],
+      "itemBefore": [
+        "macro-2.8",
+        "pma-5.8"
+      ],
+      "itemAfter": [
+        "macro-2.8",
+        "pma-5.8",
+        "pma-5.15"
+      ],
+      "rowBefore": [
+        "macro-2.8",
+        "pma-5.8"
+      ],
+      "rowAfter": [
+        "macro-2.8",
+        "pma-5.8",
+        "pma-5.15"
+      ]
+    },
+    {
+      "num": "2.12",
+      "added": [
+        "prob-4.1.9",
+        "prob-4.1.14"
+      ],
+      "itemBefore": [
+        "macro-2.11"
+      ],
+      "itemAfter": [
+        "macro-2.11",
+        "prob-4.1.9",
+        "prob-4.1.14"
+      ],
+      "rowBefore": [
+        "macro-2.11"
+      ],
+      "rowAfter": [
+        "macro-2.11",
+        "prob-4.1.9",
+        "prob-4.1.14"
+      ]
+    },
+    {
+      "num": "2.4",
+      "added": [
+        "pma-9.23"
+      ],
+      "itemBefore": [
+        "macro-1.8",
+        "pma-3.26"
+      ],
+      "itemAfter": [
+        "macro-1.8",
+        "pma-3.26",
+        "pma-9.23"
+      ],
+      "rowBefore": [
+        "macro-1.8"
+      ],
+      "rowAfter": [
+        "macro-1.8",
+        "pma-3.26",
+        "pma-9.23"
+      ]
+    },
+    {
+      "num": "2.5",
+      "added": [
+        "pma-5.3"
+      ],
+      "itemBefore": [
+        "macro-2.4"
+      ],
+      "itemAfter": [
+        "macro-2.4",
+        "pma-5.3"
+      ],
+      "rowBefore": [
+        "macro-2.4"
+      ],
+      "rowAfter": [
+        "macro-2.4",
+        "pma-5.3"
+      ]
+    },
+    {
+      "num": "3.8",
+      "added": [
+        "ode-1.5"
+      ],
+      "itemBefore": [
+        "macro-3.3",
+        "pma-5.15"
+      ],
+      "itemAfter": [
+        "macro-3.3",
+        "pma-5.15",
+        "ode-1.5"
+      ],
+      "rowBefore": [
+        "macro-3.3",
+        "pma-5.15"
+      ],
+      "rowAfter": [
+        "macro-3.3",
+        "pma-5.15",
+        "ode-1.5"
+      ]
+    },
+    {
+      "num": "3.9",
+      "added": [
+        "pma-8.6"
+      ],
+      "itemBefore": [
+        "macro-2.1"
+      ],
+      "itemAfter": [
+        "macro-2.1",
+        "pma-8.6"
+      ],
+      "rowBefore": [
+        "macro-2.1"
+      ],
+      "rowAfter": [
+        "macro-2.1",
+        "pma-8.6"
+      ]
+    },
+    {
+      "num": "3.10",
+      "added": [
+        "ladr-6.61"
+      ],
+      "itemBefore": [
+        "macro-3.8"
+      ],
+      "itemAfter": [
+        "macro-3.8",
+        "ladr-6.61"
+      ],
+      "rowBefore": [
+        "macro-3.8"
+      ],
+      "rowAfter": [
+        "macro-3.8",
+        "ladr-6.61"
+      ]
+    },
+    {
+      "num": "3.6",
+      "added": [
+        "pma-5.3"
+      ],
+      "itemBefore": [
+        "macro-3.2",
+        "demo-1.4"
+      ],
+      "itemAfter": [
+        "macro-3.2",
+        "demo-1.4",
+        "pma-5.3"
+      ],
+      "rowBefore": [
+        "macro-3.2",
+        "demo-1.4"
+      ],
+      "rowAfter": [
+        "macro-3.2",
+        "demo-1.4",
+        "pma-5.3"
+      ]
+    },
+    {
+      "num": "3.7",
+      "added": [
+        "pma-5.3"
+      ],
+      "itemBefore": [
+        "macro-3.6"
+      ],
+      "itemAfter": [
+        "macro-3.6",
+        "pma-5.3"
+      ],
+      "rowBefore": [
+        "macro-3.6"
+      ],
+      "rowAfter": [
+        "macro-3.6",
+        "pma-5.3"
+      ]
+    },
+    {
+      "num": "4.6",
+      "added": [
+        "ode-1.5"
+      ],
+      "itemBefore": [
+        "demo-7.1",
+        "macro-2.1"
+      ],
+      "itemAfter": [
+        "demo-7.1",
+        "macro-2.1",
+        "ode-1.5"
+      ],
+      "rowBefore": [
+        "demo-7.1",
+        "macro-2.1"
+      ],
+      "rowAfter": [
+        "demo-7.1",
+        "macro-2.1",
+        "ode-1.5"
+      ]
+    },
+    {
+      "num": "4.1",
+      "added": [
+        "ode-3.5"
+      ],
+      "itemBefore": [
+        "macro-3.2",
+        "macro-2.11"
+      ],
+      "itemAfter": [
+        "macro-3.2",
+        "macro-2.11",
+        "ode-3.5"
+      ],
+      "rowBefore": [
+        "macro-3.2",
+        "macro-2.11"
+      ],
+      "rowAfter": [
+        "macro-3.2",
+        "macro-2.11",
+        "ode-3.5"
+      ]
+    },
+    {
+      "num": "4.2",
+      "added": [
+        "pma-8.6"
+      ],
+      "itemBefore": [
+        "macro-3.5",
+        "macro-2.10"
+      ],
+      "itemAfter": [
+        "macro-3.5",
+        "macro-2.10",
+        "pma-8.6"
+      ],
+      "rowBefore": [
+        "macro-3.5",
+        "macro-2.10"
+      ],
+      "rowAfter": [
+        "macro-3.5",
+        "macro-2.10",
+        "pma-8.6"
+      ]
+    },
+    {
+      "num": "4.3",
+      "added": [
+        "ode-1.5"
+      ],
+      "itemBefore": [
+        "macro-3.2"
+      ],
+      "itemAfter": [
+        "macro-3.2",
+        "ode-1.5"
+      ],
+      "rowBefore": [
+        "macro-3.2"
+      ],
+      "rowAfter": [
+        "macro-3.2",
+        "ode-1.5"
+      ]
+    }
+  ],
+  "pixels": [
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-1.10-dark-idea.png",
+      "sha256": "240f5564598b48e2629836479987b9f0e02df8ef994b96892700880d78ac3b4a"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-1.10-light-idea.png",
+      "sha256": "40cfcd84507e3fa0a8b1e93fe44aaa75a28a2e4845e5cf2ae381c1e739f60660"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.11-dark-idea.png",
+      "sha256": "0a19a805d7074701f75643ea76a3decda1351584c54a85820c1ab3abd70ac407"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.11-light-idea.png",
+      "sha256": "86253e33a4831476dfea92835998fa7a7ae37fe9068ae730e5bfef086cee52de"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.12-dark-idea.png",
+      "sha256": "72af0f4ce99e9acfb1e9d1dabb74041f9099e7f13cd19a417eb0041df5877b79"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.12-light-idea.png",
+      "sha256": "f2894f3812b47845f92c6a78629a529cf47c31b3e99acdafc4f23da79b89cf30"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.4-dark-idea.png",
+      "sha256": "8ab79264c390baeed8a996618ccf5fc88773f1a6950e6593b57e773f790da965"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.4-light-idea.png",
+      "sha256": "9f4061c2a8bf1d902ceec7612eaee24a905ee4109ddd86291867add80009ccaf"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.5-dark-idea.png",
+      "sha256": "e71ceb56bed5a1f963c3a9f32ed9cb9efb562b5910f96c570e4d5545f5442105"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.5-light-idea.png",
+      "sha256": "44ff80c42cc78440ed69b1535528d0a3dc4219775b9baba0cbc97dd334f13480"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.9-dark-idea.png",
+      "sha256": "6a206e25ead5b5ad96a262e0546fa10d905ebfd3fa0eeea18d11d5cd53679545"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-2.9-light-idea.png",
+      "sha256": "ded7e5435f8eb32b7ef66353aff3e13cfae56c9689110e206aa3796df9fa72c5"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.10-dark-idea.png",
+      "sha256": "d88722179d1b90cce2b507c171694666faaa9db2646b2c90aee5b5d8277810c6"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.10-light-idea.png",
+      "sha256": "826762c2845f8029139f3320428f9f3396348800dcfe2c6d82e91d2723caa348"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.6-dark-idea.png",
+      "sha256": "f844ee15d0df9a1893d2c26aeee406451605ab5a471ac42ad87f0e0afb54a558"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.6-light-idea.png",
+      "sha256": "5d15529694fc974aeb2fdbf8f80697805e63afff3d6ba3176a8c627ac109df53"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.7-dark-idea.png",
+      "sha256": "2d293632bbda9693ffadbac01504d4e419fc57c1c63d8948945a456462561e70"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.7-light-idea.png",
+      "sha256": "aa8e1d87dee8dded0c287623a94c1b10fc1ffb64a27657716e280b55800a6116"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.8-dark-idea.png",
+      "sha256": "56d1ab8b814c60e6cf8289da1cf6dd3f351a96eb14dd4d5a13316375cb1dd23e"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.8-light-idea.png",
+      "sha256": "cc2a4dae7780807e3af18c4e65b0cf618a8ec1e58cc702509e2bef06c316430c"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.9-dark-idea.png",
+      "sha256": "688fc5ef7b089b76a649157cb337edd5f61d229ba8ffd1d5f81a47b0dd05ed12"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-3.9-light-idea.png",
+      "sha256": "0db8df2b6c5cd9f553738cd23dedb2b262b1226deaae459ccff41bc1f1e4ee9c"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-4.1-dark-idea.png",
+      "sha256": "845b57d281ef26a75b4a4cebebfdeb5beddd0799de49e8c83a67c1f3714ad0f5"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-4.1-light-idea.png",
+      "sha256": "2ebec5341308138cbefc6f04b4940dd61bfc4122f8b979a36cd5581e76d87bcd"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-4.2-dark-idea.png",
+      "sha256": "75f94223aca505124fba7e604f5d15e91b9b35d622757f7f35c7136465be2a75"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-4.2-light-idea.png",
+      "sha256": "330ca6768259fa1cd8f2e9e774330ba60b956f4e8c0de1006d2b5df5046b94d1"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-4.3-dark-idea.png",
+      "sha256": "ed3b9691fae867e6328a33caa5123011b451dc53922d73a930758b17956f0d50"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-4.3-light-idea.png",
+      "sha256": "e2329eb343b4cc3927e009cd2993541ccf7dc38929c1514f2438570855aabe9d"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-4.6-dark-idea.png",
+      "sha256": "12c57f730efed8fc0a96a8e4ed491faa20ff7eb96e4ae5fabccb0e32f7893cfa"
+    },
+    {
+      "path": "/tmp/atlas-macro-prereqs/native/macro-4.6-light-idea.png",
+      "sha256": "19edf913ff22c5a0156eb418a8ce17d938cecfe294f3c541a07e63b97022ecf5"
+    }
+  ]
+}
