@@ -1,0 +1,232 @@
+{
+  "scope": "Atmosphere & Ocean Dynamics producer candidate; independent review pending; no source closure",
+  "mapping": [
+    {
+      "item": "geo-1.1",
+      "target": "ode-1.3"
+    },
+    {
+      "item": "geo-1.3",
+      "target": "pma-8.6"
+    },
+    {
+      "item": "geo-1.4",
+      "target": "mech-4.2"
+    },
+    {
+      "item": "geo-1.7",
+      "target": "mech-3.2"
+    },
+    {
+      "item": "geo-1.9",
+      "target": "vcalc-2.11"
+    },
+    {
+      "item": "geo-2.2",
+      "target": "rca-0.3"
+    },
+    {
+      "item": "geo-2.4",
+      "target": "pma-5.15"
+    },
+    {
+      "item": "geo-2.5",
+      "target": "mech-3.4"
+    },
+    {
+      "item": "geo-2.6",
+      "target": "mech-2.9"
+    },
+    {
+      "item": "geo-2.7",
+      "target": "vcalc-3.8"
+    },
+    {
+      "item": "geo-3.4",
+      "target": "pma-9.41a"
+    },
+    {
+      "item": "geo-3.5",
+      "target": "pma-6.21"
+    },
+    {
+      "item": "geo-3.9",
+      "target": "pchem-3.3"
+    },
+    {
+      "item": "geo-4.2",
+      "target": "pma-6.21"
+    },
+    {
+      "item": "geo-4.5",
+      "target": "ode-1.4"
+    }
+  ],
+  "counts": {
+    "before": {
+      "writtenToWritten": 10,
+      "writtenToKnown": 15,
+      "wholeSyllabus": 31
+    },
+    "after": {
+      "writtenToWritten": 25,
+      "writtenToKnown": 30,
+      "wholeSyllabus": 46
+    }
+  },
+  "guard": {
+    "items": 34,
+    "functions": 34,
+    "sourceFlags": "unchanged",
+    "helpers": "byte-identical",
+    "moduleText": "byte-identical outside ideas/deps",
+    "syllabus": "15 exact full expected dependency lists; all other data identical",
+    "temporaryExplicitScript": "/tmp/atlas-new-imaging-source/geo-guard.mjs"
+  },
+  "checks": {
+    "mathCases": 4437,
+    "nativeCases": 30,
+    "viewport": 320,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "ownPixels": "All 30 complete changed-explanation screenshots inspected",
+    "static": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "strict": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "bridgeConsumers": []
+  },
+  "logs": [
+    "/tmp/atlas-new-imaging-source/geo-native.log",
+    "/tmp/atlas-new-imaging-source/geo-strict.log",
+    "/tmp/atlas-new-imaging-source/geo-static.log"
+  ],
+  "pictures": [
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.1-dark-320.png",
+      "sha256": "7e3b54f96a78c1a1c6be6f4e911328704fcaee6af686084cb4f61aa3e7f5a45f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.1-light-320.png",
+      "sha256": "16c32b81f6d51cb266200e7aad6688365158ff86c48bb316dc4f49de5d3a12ec"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.3-dark-320.png",
+      "sha256": "6732f88ae289c07a4ef43e225cebfe988a3cf58c7a1fa29c9ca39062025c666a"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.3-light-320.png",
+      "sha256": "3f5ec78e6dd82ba9069c43f20bf68be12a627b8cfb36da416d8e251608aa4475"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.4-dark-320.png",
+      "sha256": "5960d769ce12613d5bc625e0f0e9b50be59e95ea8e9e7acea0255746a2128b2f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.4-light-320.png",
+      "sha256": "577cab01e096c464d145d06d35b0836abeab4f16122b29f3afbc54c037ee9c20"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.7-dark-320.png",
+      "sha256": "02f21424f67dca1f8a324488c7da3d7947ea57671fb759229dcfd5aef6c2048a"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.7-light-320.png",
+      "sha256": "d9b060e3d351b39c7106a66713dbec95de4c05ab9e95396565656e12ba666ec0"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.9-dark-320.png",
+      "sha256": "24071ef32e0a687f08433638d313a8e20e543cbeae71decb28d9d674e80bc7e0"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-1.9-light-320.png",
+      "sha256": "bf1903fee620589ddcc15541f465ac1ab14dcc701c7bd6a3fe5d484abc31a99a"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.2-dark-320.png",
+      "sha256": "5262d82b707a65632799ac25c52798562e623081617f268e994cb42528d0b7f6"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.2-light-320.png",
+      "sha256": "ba58e43469ccc156b339e607fa50eb40dd7e4b83074d1da1c26a0a7e21e552fe"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.4-dark-320.png",
+      "sha256": "75a72ebb13d320c025734c96b0c3249fdfe3cd1021b26b7528902e917f2fec29"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.4-light-320.png",
+      "sha256": "b75b68745d4de8e4ebfa9a2c866d7882f85b690639aa9ea9b083a69c9cef7c0f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.5-dark-320.png",
+      "sha256": "8646bfe7c35c784949b619e2995e349dbd357b9626a9595620777578ddc788ae"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.5-light-320.png",
+      "sha256": "b9c31251d4d228c7926550d8cb7223a481c969934759121b2e3f36ae1a86c826"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.6-dark-320.png",
+      "sha256": "e5bb2c655da4cacc7a9a84f94425b30699bd871be4d045a4b35a5ea159c31ea2"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.6-light-320.png",
+      "sha256": "97c065c7a16a13bedd2cc1af9db61443f34a220f28ba6a4c836ef2d0e4604f51"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.7-dark-320.png",
+      "sha256": "561c7c8f5bb05657c292b20b9753d7e56b66d5779713f565e8b400df8587e55c"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-2.7-light-320.png",
+      "sha256": "394bc8ddc44a59dc074a82c2eedb1bfc7325f4f68eab04a0e57fb309c3c233ee"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-3.4-dark-320.png",
+      "sha256": "f39996fb0e3a8c0c4c45a8704d991c55c92db0c6ee4ff15de6cae757385fd9be"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-3.4-light-320.png",
+      "sha256": "8359a1b80b3461a2d2d3f8aaec19f1c9cbeeacbf2c0ad4004dbb2c93581be111"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-3.5-dark-320.png",
+      "sha256": "98b71635fa845e67b38ae04c6135013e37b7903c2db3c60121c9f2e0184ebbca"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-3.5-light-320.png",
+      "sha256": "e8f6ff4fa55c49bd4bb3462847af44d17fb10cc6925fec96e7bf7dbe3c1ea740"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-3.9-dark-320.png",
+      "sha256": "e324107b9bd300d3c014404dcda0c596b8d07a7405c704fe9415b254144eae5c"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-3.9-light-320.png",
+      "sha256": "9a351cb3aa5c170dd1d14151a67d7d36b73f523a0fb9fc4c30dc825c2a371a57"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-4.2-dark-320.png",
+      "sha256": "4a755f0a5709df2efcc72dee7b6e0839041c5add4a17e9d64e74f07c253776d3"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-4.2-light-320.png",
+      "sha256": "2f3dacabea8ac6b16e0683314852576088d8a008c5cb52e8edf8cf4d2883fb77"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-4.5-dark-320.png",
+      "sha256": "9f1013d70e433d86212fb9abab34728fb87bb779d4663f95221891f0288860f9"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geo-prerequisites/idea-4.5-light-320.png",
+      "sha256": "ef471c207cc4b5507fadf035d6eff1c490921594b2ab107f6598d23c33f802ca"
+    }
+  ]
+}
