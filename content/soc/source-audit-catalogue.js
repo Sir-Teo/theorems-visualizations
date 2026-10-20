@@ -1,0 +1,3 @@
+// Exact finite rank-weight sums (ordinary binary64 arithmetic), not estimated sales.
+export const SHELF_PERCENT=Object.freeze([0,1,10,50,100]);
+export function catalogueModel(alpha=.9,n=1000,percent=10){if(!Number.isFinite(alpha)||alpha<.5||alpha>1.6||![100,1000,10000].includes(n)||!SHELF_PERCENT.includes(percent))throw new RangeError('Offered finite catalogue domain required');const shelf=n*percent/100,raw=Array.from({length:n},(_,j)=>(j+1)**(-alpha));let total=0;const prefix=raw.map(x=>(total+=x)),weights=raw.map(x=>x/total),cumulative=prefix.map((x,j)=>[j+1,x/total]),head=(shelf?prefix[shelf-1]:0)/total,tail=raw.slice(shelf).reduce((a,b)=>a+b,0)/total;return{alpha,n,percent,shelf,raw,total,weights,cumulative,head,tail,topOnePercent:prefix[n/100-1]/total};}

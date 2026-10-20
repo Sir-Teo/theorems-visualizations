@@ -1,3 +1,4 @@
+import {catalogueModel,SHELF_PERCENT} from './source-audit-catalogue.js';
 import {webSeedValid,webModel,WEB_REGIONS,WEB_LABELS,WEB_PUBLISHED,WEB_TOTAL} from './source-audit-bowtie.js';
 import {marketSeedValid,MARKET_APPEAL,marketModel} from './source-audit-musiclab.js';
 // Networks & Collective Behavior — Chapter 4, part c: heavy tails in the wild (items 4.12–4.16)
@@ -7,8 +8,8 @@ import {marketSeedValid,MARKET_APPEAL,marketModel} from './source-audit-musiclab
 // unpredictability u_i = average difference in market share of song i between pairs of worlds (text of the paper and its SOM);
 // Gabaix, QJE 114 (3): 739–767 (1999) — Zipf's law for cities from proportional (Gibrat) growth with a lower reflecting barrier;
 // US populations are the 2020 census counts of the 30 largest cities as listed on Wikipedia (List of United States cities by
-// population, Oct 2026); Brynjolfsson, Hu & Smith, Management Science 49 (11): 1580–1596 (2003) — niche books about 39% of
-// Amazon's 2000 sales on their extrapolated fit (as reported in their 2010 follow-up; not checked in the 2003 paper itself);
+// population, Oct 2026); Brynjolfsson, Hu & Smith, Management Science 49 (11): 1580–1596 (2003), original §4.2/Table4:
+// fitted2001 rank data and2.3-million catalogue imply39.2% of Amazon unit sales beyond rank100,000;
 // Broder et al. (WWW9, 2000), AltaVista crawl of May 1999: 203,549,046 nodes: SCC 56,463,993; IN 43,343,168; OUT 43,166,185;
 // TENDRILS 43,797,944; DISCONNECTED 16,777,756 (text of the paper at archives.iw3c2.org/www9/w9cdrom/160/160.html).
 // Simulations (market, city growth, configuration model, directed random graph) are models and are labelled as such.
@@ -163,52 +164,24 @@ Molloy–Reed: $\langle k^2\rangle-2\langle k\rangle=${v.fix(mr, 1)}$ ${mr > 0 ?
     },
     // ------------------------------------------------------------------ 4.15
     {
-      num: '4.15',
-      kind: 'Phenomenon',
-      name: 'The long tail',
-      statement: String.raw`Sales of books, songs or films are very unequal: ranked by sales, the $r$th best-selling item sells roughly $r^{-\alpha}$ (a Zipf-like law with $\alpha$ near 1). A shop with limited shelf space stocks only the top $S$ items; an online store can stock $N\gg S$. The share of total demand that lies **beyond the shelf** is
-$$\frac{\sum_{r=S+1}^{N}r^{-\alpha}}{\sum_{r=1}^{N}r^{-\alpha}},$$
-which is large when the exponent $\alpha$ is near 1 or below: for $\alpha\le1$ the sum diverges with $N$, so each additional decade of titles adds a comparable or growing amount of demand, whereas for $\alpha>1$ the hits dominate.
+      num:'4.15',kind:'Model',name:'The long tail',
+      statement:String.raw`A finite rank-demand model assigns relative weight $r^{-\alpha}$ to title $r=1,\ldots,N$, with $\alpha>0$. A shelf containing the first $S$ titles serves the head; the remaining model share is
+$$T=\frac{\sum_{r=S+1}^N r^{-\alpha}}{\sum_{r=1}^N r^{-\alpha}}.$$
+An empty shelf has $T=1$ and a complete shelf has $T=0$. At fixed $N$ and interior $S$, a larger exponent concentrates weight toward the head and reduces the tail share. A larger catalogue at fixed $S$ adds positive tail weight; neither claim fixes how real consumers respond to selection, prices or search.
 
-Chris Anderson's *The Long Tail* (Wired, 2004, book 2006) argued that digital distribution makes the tail a large market. Brynjolfsson, Hu and Smith (2003), fitting a power law to Amazon's book sales, estimated that books not typically stocked by physical stores accounted for roughly 39% of Amazon's 2000 sales, and valued the added variety at \$731 million to \$1.03 billion a year. The claim that tail markets will rival hits is **contested**: studies of music-streaming data (Elberse, 2008) found the tail real but thin, with the top 1% of titles taking about a third of plays.`,
-      idea: String.raw`The demand beyond shelf position $S$ is the area under a power-law curve to the right of $S$: $\int_S^N r^{-\alpha}\,dr=\frac{S^{1-\alpha}-N^{1-\alpha}}{\alpha-1}$. When $\alpha<1$ this grows without bound as the catalogue is extended; when $\alpha>1$ it converges to a fixed amount, so the shares of the head and of the tail are set by $\alpha$ and by the ratio $N/S$. The economics follow: online stores change the *number of titles that can be stocked* (cheap storage and search), which raises $N$ and $S$ in the formula, not the shape of demand itself, and the effect on welfare depends on how much demand lives in the extension.`,
-      caption: String.raw`A model of demand $\propto r^{-\alpha}$. **Left**: sales per title against rank on log–log axes with the shelf limit $S$ and catalogue size $N$; the shaded region is demand that a shop with shelf $S$ cannot serve. **Right**: the cumulative share of demand against catalogue size. Drag $\alpha$ (about 0.8 to 1.2 for books and music) and the shelf size to see how strongly the tail share depends on the exponent.`,
-      scope: String.raw`Zipf-like demand is an idealisation; fitted exponents depend on the data set and the range of ranks, and the extrapolation of a power law far beyond observed ranks (as in the 39% estimate) is the contested step. The 39% and the welfare figures are as reported secondhand (from the authors' 2010 follow-up and abstract); the plot itself is a model, not Amazon's data.`,
-      deps: ['soc-4.7'],
-      refs: ['E&K §18.5'],
-      tags: ['long tail', 'Zipf', 'markets'],
-      credit: 'Anderson, 2004; Brynjolfsson, Hu & Smith, 2003; Elberse, 2008',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Long_tail' },
-      verify: true,
-      viz(v) {
-        const aS = v.slider('Zipf exponent $\\alpha$', 0.5, 1.6, 0.9, { step: 0.01 });
-        const sS = v.slider('shelf size $S$ (titles)', 100, 1e6, 1e5, { log: true, sig: 2 });
-        const nS = v.slider('catalogue size $N$', 1e3, 1e8, 3e6, { log: true, sig: 2 });
-        const harm = (r, a) => { const K = Math.min(r, 1000); let s = 0; for (let i = 1; i <= K; i++) s += Math.pow(i, -a); if (r > K) s += (Math.abs(a - 1) < 1e-9 ? Math.log(r / K) : (Math.pow(r, 1 - a) - Math.pow(K, 1 - a)) / (1 - a)) + 0.5 * (Math.pow(r, -a) - Math.pow(K, -a)); return s; };
-        const A = v.stage({ x: [1, 1e8], y: [1e-10, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'rank $r$', ylabel: 'sales of the $r$th title', title: 'sales by rank (relative)', minWidth: 300, weight: 1.1 });
-        const B = v.stage({ x: [1, 1e8], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 340, xlabel: 'titles stocked $r$', ylabel: 'share of demand served', title: 'cumulative demand', minWidth: 280, weight: 1 });
-        let st = null;
-        v.render(() => {
-          const a = aS.value, N = Math.max(nS.value, 2 * sS.value), S = Math.min(sS.value, N / 2), tot = harm(N, a);
-          const f = (r) => Math.pow(r, -a) / tot, hS = harm(S, a);
-          A.between(() => 1e-10, f, S, N, { fill: 'orange' });
-          A.fn(f, { color: 'accent', width: 2.4, domain: [1, N] });
-          A.vline(S, { color: 'gold', width: 1.6, dash: true }); A.vline(N, { color: 'muted', width: 1.2, dash: [4, 4] });
-          A.text('shelf', S, 3e-10, { dx: -6, size: 11, color: 'gold', align: 'right', weight: 700 }); A.text('catalogue', N, 3e-10, { dx: -6, size: 11, color: 'muted', align: 'right' });
-          B.fn((r) => harm(Math.max(1, Math.round(r)), a) / tot, { color: 'accent', width: 2.4, domain: [1, N], n: 160 });
-          B.vline(S, { color: 'gold', width: 1.6, dash: true }); B.vline(N, { color: 'muted', width: 1.2, dash: [4, 4] });
-          const head = hS / tot; B.dot(S, head, { r: 5, color: 'gold' });
-          B.hline(1, { color: 'faint', width: 1 });
-          st = { a, S, N, tail: 1 - head, head, top1: harm(Math.max(1, Math.round(0.01 * N)), a) / tot };
-        });
-        v.legend([['accent', 'sales $\\propto r^{-\\alpha}$'], ['orange', 'beyond the shelf', { area: true }], ['gold', 'shelf limit $S$', { dash: true }]]);
-        v.readout(() => {
-          if (!st) return '';
-          const { a, S, N, tail, head, top1 } = st;
-          const fm = (x) => (x >= 1e6 ? `${(x / 1e6).toFixed(1)} million` : x >= 1e3 ? `${Math.round(x / 1e3)} thousand` : String(Math.round(x)));
-          return String.raw`$\alpha=${v.fix(a, 2)}$, shelf ${fm(S)} of ${fm(N)} titles → the shelf serves **${v.fix(100 * head, 1)}%** of demand and **${v.fix(100 * tail, 1)}%** lies in the tail · the top 1% of titles take ${v.fix(100 * top1, 0)}% of demand
-Reported: niche books ≈ 39% of Amazon's 2000 sales (extrapolated power-law fit, Brynjolfsson et al.); Rhapsody streams: top 1% ≈ 32% of plays (Elberse)`;
-        });
+Brynjolfsson, Hu and Smith's 2003 study fits a sales-rank relationship using a publisher's 2001 data. Its Table 4 estimates 39.2% of Amazon unit sales above rank 100,000 when the available catalogue is taken as 2.3 million titles. This is a model-based estimate, not a direct count of every Amazon transaction or a universal share for online markets.`,
+      idea:String.raw`Normalize the finite positive weights by their sum. Moving a title from tail to shelf transfers exactly its normalized weight. For two ranks, one in the head and one in the tail, increasing $\alpha$ favors the smaller head rank, explaining the monotonicity at fixed $N,S$.
+
+For an infinite, unnormalized sequence the series converges when $\alpha>1$ and diverges when $\alpha\le1$. At $\alpha=1$, large rank decades add approximately equal unnormalized weight. Those asymptotic facts do not make a finite normalized tail share a welfare estimate. The cited study uses an integral approximation and additional economic assumptions; this widget directly sums a smaller authored discrete catalogue.`,
+      caption:String.raw`Choose catalogue size, shelf percentage and a continuous exponent. All offered sizes are multiples of 100, so the selected shelf percentage gives an exact integer $S$. Left: every title's finite normalized weight, orange beyond the shelf. Right: cumulative shares at every integer rank, joined for readability. A gold guide marks a nonempty shelf. Both plots show positive ranks only; the empty shelf is reported as zero served in the readout.`,
+      scope:String.raw`This is a fixed rank-weight assumption with catalogue sizes 100, 1000 or 10000, not Amazon data or the source's 2.3-million-title fit. All normalization and cumulative sums include every offered title and use ordinary binary64 arithmetic, without an Euler–Maclaurin tail approximation. Expanding selection need not leave real demand's shape unchanged. Costs, search, substitution, pricing and consumer valuation are absent; no welfare gain, current market forecast, universal exponent range or unsupported streaming statistic is derived.`,
+      deps:['soc-4.7'],refs:['Brynjolfsson, Hu & Smith, Management Science49:1580–1596 (2003), §4.2, Eq.13 and Tables2–4'],tags:['long tail','Zipf','markets'],credit:'Empirical context: Brynjolfsson, Hu & Smith, 2003; finite discrete rank model authored here.',links:{source:'https://oz.stern.nyu.edu/cite05/readings/brynjolfsson4.pdf',doi:'https://doi.org/10.1287/mnsc.49.11.1580.20580'},verify:true,
+      viz(v){
+        const alpha=v.slider('rank-weight exponent alpha',.5,1.6,.9,{step:'any',fmt:x=>x.toPrecision(6)}),size=v.select('catalogue titles',[100,1000,10000].map(value=>({value,label:String(value)})),1000),shelf=v.select('shelf share of titles',SHELF_PERCENT.map(value=>({value,label:`${value}%`})),10);let cache=null,info;
+        const A=v.stage({x:[.7,1400],y:[.00001,.1],xlog:true,ylog:true,axes:'box',gutter:true,height:340,minWidth:260,title:'every finite title weight',xlabel:'title rank r',ylabel:'normalized demand weight'}),B=v.stage({x:[.7,1400],y:[-.06,1.08],xlog:true,axes:'box',gutter:true,height:340,minWidth:260,title:'complete finite cumulative shares',xlabel:'positive title rank r',ylabel:'cumulative share'});
+        v.render(()=>{const key=`${alpha.value}|${size.value}|${shelf.value}`;if(!cache||cache.key!==key)cache={key,data:catalogueModel(alpha.value,size.value,shelf.value)};const p=cache.data,l=Math.log(p.n),y0=Math.log(p.weights.at(-1)),y1=Math.log(p.weights[0]),dy=Math.max(1,y1-y0),x=[Math.exp(-.08*l),Math.exp(1.08*l)];A.setView(x,[Math.exp(y0-.08*dy),Math.exp(y1+.08*dy)]);B.setView(x,[-.06,1.08]);A.dots(p.weights.slice(0,p.shelf).map((y,i)=>[i+1,y]),{r:1.3,ring:false,color:'accent'});A.dots(p.weights.slice(p.shelf).map((y,i)=>[p.shelf+i+1,y]),{r:1.3,ring:false,color:'orange'});B.path(p.cumulative,{color:'accent',width:1.8});if(p.shelf){A.line(p.shelf,p.weights.at(-1),p.shelf,p.weights[0],{color:'gold',width:1,dash:[4,4]});B.line(p.shelf,0,p.shelf,p.head,{color:'gold',width:1,dash:[4,4]});B.dot(p.shelf,p.head,{color:'gold',r:4,ring:false});}info=p;});
+        v.legend([['accent','shelf weights / cumulative share',{dot:true}],['orange','weights beyond shelf',{dot:true}],['gold','selected nonempty shelf',{dash:true}]]);
+        v.readout(()=>{const p=info;return `Finite authored catalogue: ${p.n} titles; shelf ${p.shelf} (${p.percent}% of titles); alpha ${p.alpha.toPrecision(12)}. Served head ${v.fix(100*p.head,6)}%; beyond-shelf tail ${v.fix(100*p.tail,6)}%; top 1% of titles ${v.fix(100*p.topOnePercent,6)}% of model demand. All ${p.n} title weights and cumulative ranks are included. The published 39.2% estimate belongs to its own fitted 2.3-million-title model, not this calculation. No consumer-surplus value is computed.`;});
       },
     },
     // ------------------------------------------------------------------ 4.16
