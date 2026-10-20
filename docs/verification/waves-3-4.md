@@ -913,3 +913,8 @@ Independent coordinator acceptance closes4.8with actual retained Roberts/Faith/H
 ## Accepted Toba and original Denavit–Hartenberg
 
 Independent peers close4.6andROBOT3.7. Toba now separates bounded actual dated climate/source claims from its authored continuous coalescent approximation, distinguishes conditional and initial-pair probabilities, and keeps source age endpoints fixed. ROBOT uses the actual1955homogeneous-first/sign convention and all16stored row parameters; its peer-found huge-yaw interaction defect is fixed by local raw bounds and actual drag wrapping. Source/main/SI limits, independent high-precision and alternative numerical oracles, both own320native matrices and corrected-state/pixel results are retained in [Toba](bighist-toba-peer.md) and [DH](worker-three-robot-denavit-peer.md). Current queue7=833initial+1added−827original resolved; team144accepted entries. Latest complete2053-test checkpoint remains e31b9dc; new full checkpoint is separate.
+
+
+## Accepted philosophy prerequisites
+
+Independent worker-one argument/target/byteguard/native review accepts six used links, taking PHIL19→25published edges while preserving every visualization and source flag. The horn's equivalent equation layout also fits320. Bayes squares, full-family independence, premise-versus-MP, finite primitives before improper limits, conditional induction and fixed-background deduction are checked within their actual hypotheses. See [independent evidence](phil-crossfield-independent-peer-worker-one.md). Two pre-existing target formula overflows observed by the peer are tracked separately for correction. Exact current inventory822published shortfall,49/64below25and28whole syllabi below25. Seven source reviews remain; Wave5is prepared/unstarted.

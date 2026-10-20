@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 50,
+  "publishedBelowTarget": 49,
   "wholeSyllabusBelowTarget": 28,
   "entries": [
     {
@@ -13531,10 +13531,10 @@
       "collection": "phil",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 19,
-      "writtenToKnown": 22,
-      "wholeSyllabus": 42,
-      "publishedShortfall": 6,
+      "writtenToWritten": 25,
+      "writtenToKnown": 28,
+      "wholeSyllabus": 48,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -13547,6 +13547,27 @@
         {
           "item": "phil-1.1",
           "prerequisite": "logic-2.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "phil-1.3",
+          "prerequisite": "epi-2.2",
+          "prerequisiteField": "med",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "phil-1.5",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "phil-1.6",
+          "prerequisite": "logic-4.1",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -13608,6 +13629,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "phil-2.9",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "phil-2.10",
           "prerequisite": "rca-2.20",
           "prerequisiteField": "math",
@@ -13624,6 +13652,13 @@
         {
           "item": "phil-2.10",
           "prerequisite": "pma-2.14",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "phil-3.1",
+          "prerequisite": "alg-2.1",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -13690,6 +13725,13 @@
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "phil-4.5",
+          "prerequisite": "logic-4.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "phil-5.6",
@@ -14613,15 +14655,15 @@
         },
         {
           "item": "bighist-4.6",
-          "prerequisite": "popgen-2.9",
+          "prerequisite": "popgen-2.3",
           "prerequisiteField": "bio",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
         {
           "item": "bighist-4.6",
-          "prerequisite": "popgen-2.1",
-          "prerequisiteField": "bio",
+          "prerequisite": "prob-1.2.4",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
