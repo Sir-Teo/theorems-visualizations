@@ -19,7 +19,7 @@ The actual 1993 erratum corrects Table VIII's 1.3/1.8 keV rows, which had mixed 
 
 Lawson's complete 1957 paper treats different, conduction-free scenarios; the displayed modern steady balance follows the explicit Wurzel–Hsu extension. The bars are calculated for the selected state. Fuel breakeven is distinct from scientific and electrical breakeven. Density and transport-time controls save three-significant-digit physical values on logarithmic scales; temperature saves half-keV ticks.`,
       credit: 'J. D. Lawson, 1957; modern steady power-balance extension',
-      verify: true,
+      verify: false,
       links: {original:'https://doi.org/10.1088/0370-1301/70/1/303',reactivity:'https://doi.org/10.1088/0029-5515/32/4/I07',erratum:'https://iopscience.iop.org/article/10.1088/0029-5515/33/12/513/pdf',balance:'https://arxiv.org/abs/2105.10954v4'},
       viz(v) {
         const s=v.stage({x:[.8,125],y:[1e19,1e23],xlog:true,ylog:true,axes:'box',gutter:{r:24},height:360,xlabel:'temperature T (keV)',ylabel:'n T τtr (keV s m⁻³)',full:true});

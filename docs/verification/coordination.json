@@ -1209,6 +1209,20 @@
       "commits": [
         "dc39238f60ebe2dd62f8d126cb835f86b13c9477"
       ]
+    },
+    {
+      "ids": [
+        "energy-3.10"
+      ],
+      "peer": "Coordinator independently read actual original1992/1993erratum/Lawson and bounded Wurzel sources/pixels, transcribed27cells, regenerated80digit reference, checked500SI scalings, found and verified intermediate contour correction, and passed fresh320both-theme native plus9pointerdrags/3edited-state replays and own pixels",
+      "reports": [
+        "docs/verification/energy-erratum-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "078e4f835b7fe35140e220d5c5f6c05f88a27307",
+        "7c9ab3c675b0ab2540285022f2cc4f17ebc278b7"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1221,7 +1235,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 16,
+  "currentPendingSourceReviews": 15,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",

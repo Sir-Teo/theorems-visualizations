@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 16,
+  "remainingFlags": 15,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -16,7 +16,6 @@
     "pharm": 1,
     "imaging": 1,
     "circ": 1,
-    "energy": 1,
     "robot": 1,
     "arch": 1,
     "bighist": 8
@@ -104,21 +103,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/CMOS",
         "doi": "https://doi.org/10.1109/ISSCC.1963.1157450"
-      }
-    },
-    {
-      "id": "energy-3.10",
-      "file": "content/energy/ch03-b.js",
-      "name": "Fusion and the Lawson criterion",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 9"
-      ],
-      "links": {
-        "crossref": "https://doi.org/10.1088/0370-1301/70/1/303"
       }
     },
     {
@@ -1102,7 +1086,8 @@
       "bighist-3.1",
       "bighist-4.1",
       "bighist-3.2",
-      "bighist-4.2"
+      "bighist-4.2",
+      "energy-3.10"
     ]
   },
   "additionalFollowups": [
@@ -5038,9 +5023,9 @@
     },
     {
       "id": "energy-3.10",
-      "status": "partial-source-review-pending",
+      "status": "resolved",
       "report": "docs/verification/energy-fusion-followup.md",
-      "note": "Complete original Lawson1957 and Bosch-Hale1992 plus relevant Wurzel-Hsu authored derivation read. Parent reran four mathematical/four native groups, reviewed original fit/power-balance formulas and inspected final images. Corrected fit-domain extrapolation, transport/radiation accounting and fuel/scientific gain definitions; later1993 Bosch-Hale erratum remains unread, so verify:true and the queued review are retained."
+      "note": "2026-10-20: Coordinator independently read actual original1992/1993erratum/Lawson and bounded Wurzel sources/pixels, transcribed27cells, regenerated80digit reference, checked500SI scalings, found and verified intermediate contour correction, and passed fresh320both-theme native plus9pointerdrags/3edited-state replays and own pixels; docs/verification/energy-erratum-peer.md."
     },
     {
       "id": "aero-3.7",
