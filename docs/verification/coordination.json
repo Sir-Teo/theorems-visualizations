@@ -44,7 +44,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "BIGHIST3.4GOE ready dea927f for worker_three peer; historical LOGIC4.12/ROBOT3.7/ARCH3.14 original-body recovery. Completed independent POLSCI edge/rounding peers. Endosymbiosis3.5production remains unstarted after worker access limitation.",
+      "current": "Recovered complete Denavit1955original215\u2013221 and producing exclusive ROBOT3.7convention-mapped follow-up. LOGIC4.12/ARCH3.14body recovery queued; BIGHIST3.5source-reading only after worker access limitation.",
       "completedCollections": [
         "music",
         "ling"
@@ -66,7 +66,7 @@
         "psych",
         "tech"
       ],
-      "current": "BIGHIST4.3ready2502b2e for peer; independently reviewing LUCA3.3cedbe66."
+      "current": "BIGHIST4.3accepted; independently reviewing rootadmixture4.5f15221b. Bounded MATHBIO3.14/CIRC4.17body recovery saved separately."
     },
     {
       "agent": "worker_three",
@@ -81,7 +81,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "POLSCI six prerequisites and separate5.8rounding correction accepted; independently reviewing GOE3.4dea927f before fluid prerequisite work.",
+      "current": "GOE3.4andOut-of-Africa4.3peers complete/accepted; preparing genuine FLUID prerequisites, then next deficient collection.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -1263,6 +1263,19 @@
       "commits": [
         "dea927f6eee36ba41b9f8813e2f38535209f8e6d"
       ]
+    },
+    {
+      "ids": [
+        "bighist-4.3"
+      ],
+      "peer": "Worker three independently read seven actual primary/official bodies and sourcepixels, checked ashminima/context/fossil/calibrated/modelled/activity distinctions and actual2026version, regenerated80digit36pair reference plus15independentarcintegrals, and passed fresh320both-theme native/realmap-rowclicks/directDOM/raw14rollbacks/exactreplay/ownpixels",
+      "reports": [
+        "docs/verification/bighist-dispersal-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2502b2e4bdb1cfaa1bc2e80668bc52a4c008e5f2"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1275,7 +1288,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 12,
+  "currentPendingSourceReviews": 11,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",
