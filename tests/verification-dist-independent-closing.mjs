@@ -1,0 +1,8 @@
+import assert from'node:assert/strict';import fs from'node:fs';
+const[base,final]=process.argv.slice(2),pairs=[
+[String.raw`and after $\log^* n+O(1)$ rounds the ring is properly coloured with at most 6 colours.`,String.raw`and the ring reaches at most 6 colours in $O(\log^* b+1)$ rounds. If the initial identifier range is bounded polynomially in n, so $b=O(\log n)$, this is $O(\log^* n)$ rounds.`],
+[String.raw`The colour count collapses from $2^b$ to 6 in a handful of rounds regardless of $n$.`,String.raw`The palette shrinks according to its initial bit width: $O(\log^* b+1)$ rounds suffice. The $O(\log^* n)$ form assumes a polynomially bounded initial identifier range; arbitrary b is not bounded by the process count alone.`]];
+let files=0;for(const f of fs.readdirSync(base+'/content/dist')){let x=fs.readFileSync(base+'/content/dist/'+f,'utf8');if(f==='ch02-b.js')for(const[a,b]of pairs){assert.equal(x.split(a).length,2);x=x.replace(a,()=>b);}assert.equal(x,fs.readFileSync(final+'/content/dist/'+f,'utf8'),f+' exact other bytes/functions/flags/deps');files++;}
+// This is an upper-bound recurrence, not a lower bound for a chosen finite ring.
+let checks=0;for(let b=3;b<=100000;b+=97){let x=b,rounds=0;while(x>3){x=Math.ceil(Math.log2(x))+1;rounds++;assert.ok(rounds<20);}assert.ok(x<=3);checks++;}for(let b of[4,16,65536,2**40]){let x=b,r=0;while(x>3){x=Math.ceil(Math.log2(x))+1;r++;}assert.ok(r>0&&r<10);checks++;}
+console.log(JSON.stringify({files,exactLiteralChanges:2,allOtherSourceBytes:'preserved',recurrenceCases:checks,scope:'width-dependent upper bound; polynomial-range n consequence'}));
