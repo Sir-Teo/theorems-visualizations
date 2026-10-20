@@ -1,9 +1,9 @@
+import{PERIODICITY_PRESETS,periodicityModel,periodicityHit,periodicityStateValid,periodicityAudio}from'./source-audit-periodicity.js';
 import{fiftyThreeModel,fiftyThreeAudio,circleModel,circleHit,circleAudio,CIRCLE_NAMES}from'./source-audit-circle53.js';
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (part c: items 7.13–7.17)
 import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, NOTE, TIM, sc, fold, circ, ring, cents, gcd, seqCents, chordCents, edoApprox, J5, harmonic, at, dissAll, dissCurve, minima } from './ch07.shared.js';
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
-const L3 = cents(3), L5 = cents(5); // the primes 3 and 5 in cents (1901.955, 2786.314)
 
 export default {
   collection: 'music',
@@ -64,71 +64,39 @@ Benson's Appendix M demonstrates the key-signature relationship with C/G and C/F
     },
     // ------------------------------------------------------------------ 7.15
     {
-      num: '7.15',
-      kind: 'Theorem',
-      name: 'Unison vectors and periodicity blocks (Fokker)',
-      statement: String.raw`Write every five-limit pitch class as $3^a5^b$ (mod octaves), a point $(a,b)$ of the lattice $\Z^2$ (fifths along $a$, major thirds along $b$). A **unison vector** is a lattice vector that is made to vanish by the tuning, such as the syntonic comma $81/80=(4,-1)$, the small diesis $128/125=(0,-3)$, or the Pythagorean comma $(12,0)$. If $u$ and $v$ are two independent unison vectors, then the points of the half-open parallelogram $\{su+tv:\ 0\le s,t<1\}$, a **periodicity block**, number exactly $|\det(u,v)|$, and every lattice point differs from exactly one of them by an integer combination of $u$ and $v$. Tempering $u$ and $v$ out therefore folds the infinite lattice onto a finite scale of $|\det(u,v)|$ notes, a torus; for $u=(4,-1)$ and $v=(0,-3)$ the determinant is 12 and the result is the twelve-note scale; $53$ comes from the schisma $(8,1)$ and the kleisma $(-5,6)$.`,
-      idea: String.raw`The quotient group $\Z^2/\langle u,v\rangle$ has order $|\det(u,v)|$ (the index of a lattice in $\Z^2$ is the area of its fundamental parallelogram, by counting lattice points in a large box). A fundamental parallelogram contains exactly one representative of each coset, so the tempered scale has $|\det|$ distinct notes, and any other fundamental region (a different shape of block) gives the same scale after tempering. In the equal division $n$-TET the unison vectors are the lattice points $(a,b)$ with $a\,m_3+b\,m_5\equiv0\pmod n$, where $m_3,m_5$ are the steps assigned to the primes 3 and 5: the shortest two of them span a block of $n$ points.`,
-      caption: String.raw`The lattice of $3^a5^b$; choose the equal division and the program picks two shortest unison vectors (or set your own with the sliders). The highlighted points are the periodicity block: as many as the determinant. Middle: the same block drawn on the torus (the unit square, opposite edges identified) with every lattice point inside the parallelogram marked. Right: the pitches of the block on the octave circle, as just ratios or with the unison vectors tempered out (a division of the octave); click any point of the lattice to hear it, or play the scale.`,
-      deps: ['music-7.6', 'music-7.3'],
-      see: ['music-7.5', 'music-7.13', 'music-7.12'],
-      refs: ['Benson ch. 6'],
-      tags: ['lattice', 'comma'],
-      credit: 'A. D. Fokker, "Unison vectors and periodicity blocks in the three-dimensional (3-5-7-) harmonic lattice of notes", Proc. Kon. Ned. Akad. Wetensch. B 72 (1969)',
-      scope: String.raw`Exact for any two independent integer vectors. The pitch of $3^a5^b$ is folded into one octave; the tempered scale is shown for the equal divisions with the patent mapping $m_3=\mathrm{round}(n\log_23)$, $m_5=\mathrm{round}(n\log_25)$. The picture is for the 5-limit (two primes besides 2); Fokker's own treatment was in the 3-5-7 lattice.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Periodicity_block' },
-      verify: true,
-      viz(v) {
-        const PRE = [12, 19, 31, 41, 53];
-        const ps = v.select('tempering', PRE.map((n) => ({ value: n, label: `${n}-TET` })).concat([{ value: 0, label: 'free choice' }]), 12, { onChange: () => sync() });
-        const ua = v.slider('u: fifths', -12, 12, 4, { int: true }), ub = v.slider('u: thirds', -12, 12, -1, { int: true });
-        const va = v.slider('v: fifths', -12, 12, 0, { int: true }), vb = v.slider('v: thirds', -12, 12, -3, { int: true });
-        const tmp = v.toggle('temper the unison vectors out', false);
-        const s = v.stage({ x: [-8.5, 10.5], y: [-4.5, 8.5], equal: true, axes: false, height: 360, title: 'the lattice (fifths →, thirds ↑)' });
-        const tor = v.stage({ x: [-0.15, 1.15], y: [-0.15, 1.15], equal: true, axes: false, height: 360, title: 'the torus' });
-        const rg = v.stage({ x: [-1.45, 1.45], y: [-1.4, 1.4], equal: true, axes: false, height: 360, title: 'the scale' });
-        const snd = v.sound();
-        const kernel = (n) => {
-          const m3 = Math.round((n * L3) / 1200), m5 = Math.round((n * L5) / 1200), K = [];
-          for (let a = -14; a <= 14; a++) for (let b = -14; b <= 14; b++) { if ((a || b) && ((a > 0) || (a === 0 && b > 0)) && ((a * m3 + b * m5) % n === 0)) K.push([a, b]); }
-          K.sort((p, q) => Math.hypot(...p) - Math.hypot(...q));
-          const u = K[0]; let best = null;
-          for (const w of K.slice(1, 40)) { const d = Math.abs(u[0] * w[1] - u[1] * w[0]); if (d && (!best || d < best.d || (d === best.d && Math.hypot(...w) < Math.hypot(...best.w)))) best = { w, d }; }
-          return { u, v: best.w, m3, m5 };
-        };
-        const cur = () => { if (ps.value) { const k = kernel(ps.value); return { u: k.u, w: k.v, n: ps.value, m3: k.m3, m5: k.m5 }; } return { u: [ua.value, ub.value], w: [va.value, vb.value], n: 0 }; };
-        const sync = () => { if (ps.value) { const k = kernel(ps.value); [ua, ub, va, vb].forEach((c, i) => c.set([k.u[0], k.u[1], k.v[0], k.v[1]][i])); } };
-        const pitch = (a, b, C) => (tmp.value && C.n ? ((((a * C.m3 + b * C.m5) % C.n) + C.n) % C.n) * (1200 / C.n) : fold(a * L3 + b * L5));
-        const coords = (a, b, C) => { const D = C.u[0] * C.w[1] - C.u[1] * C.w[0]; return [(a * C.w[1] - b * C.w[0]) / D, (C.u[0] * b - C.u[1] * a) / D, D]; };
-        const block = (C) => { const out = [], D = C.u[0] * C.w[1] - C.u[1] * C.w[0]; if (!D) return out; for (let a = -40; a <= 40; a++) for (let b = -40; b <= 40; b++) { const [x, y] = coords(a, b, C); if (x > -1e-9 && x < 1 - 1e-9 && y > -1e-9 && y < 1 - 1e-9) out.push([a, b, x, y]); } return out; };
-        const sc12 = (arr, C) => arr.map((p) => pitch(p[0], p[1], C)).sort((x, y) => x - y);
-        s.onClick((x, y) => { const a = Math.round(x), b = Math.round(y); if (Math.hypot(x - a, y - b) < 0.4) { const C = cur(); snd.stop(); snd.samples(seqCents([[pitch(a, b, C)]], C4, 1.4, 0), SR, { gain: 0.9 }); } });
-        v.soundButton('play the scale', (sd) => { const C = cur(), P = sc12(block(C), C); sd.samples(seqCents(P.concat([1200]).map((c) => [c]), C4, 0.45, 0.02), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const C = cur(), B = block(C), D = C.u[0] * C.w[1] - C.u[1] * C.w[0];
-          for (let a = -8; a <= 10; a++) for (let b = -4; b <= 8; b++) s.dot(a, b, { r: 2.6, color: 'faint' });
-          s.arrow(0, 0, C.u[0], C.u[1], { color: 'red', width: 2.4 }); s.arrow(0, 0, C.w[0], C.w[1], { color: 'orange', width: 2.4 });
-          s.text('u', C.u[0] * 0.5, C.u[1] * 0.5 + 0.4, { size: 14, color: 'red', weight: 700, align: 'center' }); s.text('v', C.w[0] * 0.5, C.w[1] * 0.5 + 0.4, { size: 14, color: 'orange', weight: 700, align: 'center' });
-          s.poly([[0, 0], C.u, [C.u[0] + C.w[0], C.u[1] + C.w[1]], C.w], { color: 'accent', width: 1.4, fill: 'accent', fillAlpha: 0.08 });
-          B.forEach(([a, b]) => { s.dot(a, b, { r: 5, color: 'accent' }); });
-          s.dot(0, 0, { r: 6.5, color: 'green' });
-          tor.rect(0, 0, 1, 1, { color: 'accent', width: 1.4, fill: 'accent', fillAlpha: 0.06 });
-          for (const [a, b, x, y] of B) { tor.dot(x, y, { r: 5, color: 'accent' }); }
-          tor.dot(0, 0, { r: 6.5, color: 'green' });
-          tor.arrow(-0.1, 0.5, -0.02, 0.5, { color: 'muted' }); tor.arrow(1.1, 0.5, 1.02, 0.5, { color: 'muted' }); tor.arrow(0.5, -0.1, 0.5, -0.02, { color: 'muted' }); tor.arrow(0.5, 1.1, 0.5, 1.02, { color: 'muted' });
-          tor.text('u →', 0.5, -0.11, { size: 11, color: 'red', align: 'center', baseline: 'top' }); tor.text('v →', 1.1, 0.5, { size: 11, color: 'orange', align: 'right', baseline: 'bottom', dy: -4 });
-          tor.text('opposite edges identified', 0.5, 1.12, { size: 10.5, color: 'muted', align: 'center', baseline: 'bottom' });
-          ring(rg, 1, { tick: 100, len: 0.04 });
-          const P = sc12(B, C);
-          P.forEach((c, i) => { const q = circ(c, 1); rg.dot(q[0], q[1], { r: 5.5, color: tmp.value && C.n ? 'orange' : 'accent' }); });
-          rg.text(`${Math.abs(D)} notes`, 0, 0.05, { size: 18, weight: 700, align: 'center' }); rg.text(tmp.value && C.n ? `${C.n}-TET` : 'just ratios 3ᵃ5ᵇ', 0, -0.17, { size: 11, color: 'muted', align: 'center' });
+      num:'7.15',kind:'Theorem',name:'Unison vectors and periodicity blocks (Fokker)',
+      statement:String.raw`Write a five-limit pitch class as $3^a5^b$ modulo octaves, with $(a,b)\in\Z^2$. Given independent integer vectors $u,v$, the half-open parallelogram $P=\{su+tv:0\le s,t<1\}$ contains exactly $|\det(u,v)|$ lattice points. Every lattice point differs from exactly one of these representatives by an integer combination of $u$ and $v$.
+
+This counts classes of $\Z^2/\langle u,v\rangle$. It gives that many distinct tempered pitches only when the pitch map has exactly this kernel. For example, $u=(2,0),v=(0,2)$ give four classes, but any map to octave pitch classes that kills both vectors has at most two distinct images: both generators must map to either 0 or 600 cents.
+
+For each offered $n$-TET preset, the source pair has determinant magnitude $n$ and lies in the kernel of $a m_3+b m_5\pmod n$. This map is onto, so the pair spans its full kernel and the block represents every one of the $n$ steps exactly once.`,
+      idea:String.raw`For any integer point $z$, write $(s,t)=[u\ v]^{-1}z$ and subtract $\lfloor s\rfloor u+\lfloor t\rfloor v$. The result is an integer point in $P$. Two points of $P$ cannot differ by a nonzero integer combination of $u,v$, because their two coefficient differences lie strictly between −1 and 1. Integer row and column operations reduce the generator matrix to a diagonal one while preserving index and determinant magnitude; the diagonal case has exactly the product of its diagonal magnitudes as classes.
+
+For a preset, $\gcd(n,m_3,m_5)=1$ makes the modular map onto. Its kernel therefore has index $n$. The generated sublattice lies inside that kernel and also has index $n$, so they are equal. Free vectors retain the exact class count; no arbitrary free quotient is asserted to be a faithful musical scale.`,
+      caption:String.raw`Choose one of Fokker's displayed two-dimensional vector pairs, or edit bounded integer vectors. The left panel contains the entire block; blue marks its exact half-open representatives. The middle panel plots their coefficient coordinates $(s,t)$ in a square with opposite edges identified. The right panel shows those representatives as pure ratios, or as distinct equal-tempered steps for a preset. Click a blue lattice point to select and hear it. The sequence button plays only the first twelve representatives in ascending displayed pitch order, explicitly limiting long free blocks.`,
+      deps:['music-7.6','music-7.3'],see:['music-7.5','music-7.13','music-7.12'],
+      refs:['A. D. Fokker, 1969, Unison vectors and periodicity blocks in the three-dimensional (3-5-7-) harmonic lattice of notes; Huygens–Fokker Foundation hosted transcription, sections The lattice, Unison vectors and Periodicity blocks (two-dimensional table)'],tags:['lattice','comma'],
+      credit:'Source vector pairs: A. D. Fokker (1969), hosted transcription. Exact half-open enumeration, kernel qualification and counterexample derived here.',
+      scope:String.raw`The lattice-class theorem holds for independent integer vectors. The widget allows coordinates −12 through 12, including singular pairs to test the independence hypothesis. Preset modular steps are explicitly assigned by rounding $n\log_2 3$ and $n\log_2 5$; the source table supplies vector pairs, not a shortest-vector algorithm or a claim that every determinant quotient is cyclic. The square represents a continuous torus containing the finite lattice classes, not an audible pitch circle. Pure representatives are exact rational ratios modulo powers of two, with numerical logarithms for display. Free choice has no tempering toggle. Audio is the mono 44,100-Hz C4=261.6256-Hz H8 signal of 7.4/7.9, bounded by 0.12 before output and with 10-ms ramps; no listener threshold is claimed.`,
+      links:{source:'https://www.huygens-fokker.org/docs/fokkerpb.html'},verify:true,
+      viz(v){
+        let selected=[0,0],info;
+        const reset=()=>{selected=[0,0];};
+        const ps=v.select('vector pair',PERIODICITY_PRESETS.map(p=>({value:p.n,label:`${p.n}-TET`})).concat([{value:0,label:'free vectors'}]),12,{onChange:reset});
+        const ua=v.slider('u: fifth coordinate',-12,12,0,{int:true,onChange:reset}),ub=v.slider('u: third coordinate',-12,12,-3,{int:true,onChange:reset}),va=v.slider('v: fifth coordinate',-12,12,4,{int:true,onChange:reset}),vb=v.slider('v: third coordinate',-12,12,-1,{int:true,onChange:reset});
+        const tmp=v.toggle('map preset to equal-tempered steps',false),model=()=>periodicityModel(ps.value,[ua.value,ub.value],[va.value,vb.value],tmp.value,selected);
+        const A=v.stage({x:[-1.4,5.4],y:[-5.4,1.4],equal:true,axes:false,full:true,height:390,minWidth:240,title:'complete lattice block: fifth coordinate →, third coordinate ↑'}),B=v.stage({x:[-.16,1.16],y:[-.16,1.16],equal:true,axes:false,full:true,height:330,minWidth:240,title:'coefficient square: opposite edges identified'}),C=v.stage({x:[-1.4,1.4],y:[-1.4,1.4],equal:true,axes:false,full:true,height:330,minWidth:240,title:'pitch classes of these representatives'});
+        v.shareState('periodicity selected representative',{get:()=>({n:ps.value,u:[ua.value,ub.value],v:[va.value,vb.value],point:selected.slice()}),validate:periodicityStateValid,set:data=>{if(data.n!==ps.value||data.u[0]!==ua.value||data.u[1]!==ub.value||data.v[0]!==va.value||data.v[1]!==vb.value)throw new RangeError('Saved representative and restored vectors disagree');selected=data.point.slice();}});
+        const play=(action,sd=v.sound())=>{const a=model();if(!a.valid)return;const audio=periodicityAudio(a,action);sd.stop();sd.samples(audio.samples,audio.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play selected representative',sd=>play('selected',sd));v.soundButton('Play first twelve representatives',sd=>play('sequence',sd));v.button('Stop audio',()=>v.sound().stop());
+        A.onClick((x,y)=>{const p=periodicityHit(model(),x,y);if(p){selected=[p.a,p.b];play('selected');}});
+        v.render(()=>{const a=model();info=a;for(const c of[ua,ub,va,vb])c.el.hidden=ps.value!==0;tmp.el.hidden=ps.value===0;A.setView(a.bounds.x,a.bounds.y);const radius=Math.max(2,Math.min(4.5,32/Math.sqrt(Math.max(1,a.size))));
+          A.path([...a.vertices,a.vertices[0]],{color:'accent',width:1.4});A.arrow(0,0,...a.u,{color:'red',width:2});A.arrow(0,0,...a.v,{color:'orange',width:2});B.rect(0,0,1,1,{color:'muted',width:1.4});C.circle(0,0,1,{color:'muted',width:1});
+          for(const p of a.points){const chosen=p.a===a.chosen.a&&p.b===a.chosen.b,col=chosen?'gold':'accent';A.dot(p.a,p.b,{r:chosen?5:radius,color:col,ring:false});B.dot(p.x,p.y,{r:chosen?5:radius,color:col,ring:false});C.dot(Math.sin(p.cents*Math.PI/600),Math.cos(p.cents*Math.PI/600),{r:chosen?5:Math.min(radius,3.5),color:col,ring:false});}
+          if(a.chosen){C.text(`${a.size} classes`,0,.12,{size:16,align:'center',baseline:'middle'});C.text(a.tempered?`${a.n}-TET`:'pure representatives',0,-.12,{size:11,align:'center',baseline:'middle',color:'muted'});}else{for(const s of[A,B,C])s.text('dependent vectors: no finite block',s===A?(a.bounds.x[0]+a.bounds.x[1])/2:s===B?.5:0,s===A?(a.bounds.y[0]+a.bounds.y[1])/2:s===B?.5:0,{size:11,align:'center',baseline:'middle',color:'red'});}
         });
-        v.legend([['red', 'unison vector u'], ['orange', 'unison vector v'], ['accent', 'points of the periodicity block'], ['green', 'the origin (1/1)']]);
-        v.readout(() => {
-          const C = cur(), B = block(C), D = C.u[0] * C.w[1] - C.u[1] * C.w[0];
-          const cu = fold(C.u[0] * L3 + C.u[1] * L5), cv = fold(C.w[0] * L3 + C.w[1] * L5), nm = (c) => `${v.fix(Math.min(c, 1200 - c), 2)} ¢`;
-          return `u = (${C.u}) is a comma of ${nm(cu)}, v = (${C.w}) of ${nm(cv)} · $\\det(u,v)=${D}$ and the block holds ${B.length} lattice points ${B.length === Math.abs(D) ? '= |det|' : '(≠ |det|?)'} · ${tmp.value && C.n ? `tempered out: ${C.n}-TET, steps ${C.m3} for the prime 3 and ${C.m5} for the prime 5` : 'untempered: the notes are just 5-limit ratios, distinct pitches'}`;
-        });
+        v.legend([['red','vector u'],['orange','vector v'],['accent','half-open representative'],['gold','selected representative']]);
+        v.readout(()=>{const a=info;if(!a.valid)return `u=(${a.u}), v=(${a.v}); determinant 0. Independence fails, so this is not a finite-index lattice block. Playback is inactive. Choose independent vectors.`;const p=a.chosen;return `u=(${a.u}), v=(${a.v}); signed determinant ${a.D}. Exact representative count ${a.points.length} = |det|. ${a.n?`Preset map: prime 3 → ${a.m3} steps, prime 5 → ${a.m5} steps modulo ${a.n}; every step occurs once.`:'Free block: these are lattice classes; no faithful octave-pitch quotient is asserted.'} Selected (${p.a},${p.b}), coefficients (${v.fix(p.x,6)},${v.fix(p.y,6)}), ${a.tempered?`step ${p.step}`:'pure ratio 3ᵃ5ᵇ modulo octaves'}, ${v.fix(p.cents,9)} cents, ${v.fix(p.hz,6)} Hz. Sequence plays ${a.sequence.length} of ${a.points.length} representatives, sorted by displayed pitch.`;});
       },
     },
     // ------------------------------------------------------------------ 7.16
