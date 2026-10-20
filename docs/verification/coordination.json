@@ -21,10 +21,11 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite429/22/18; REL23/CM16 remain belowtarget",
-      "Immutable checkpoint7 on69710ca passes2167tests/all6UI andstrict/static0/0",
-      "Isolated chunkprototype stopped atfirstexactsame-sceneimagefailure; independentfailureauditpending; no timing",
-      "BIGHIST3.5 frozen service restriction persists; no retry or edge acceptance"
+      "Accepted prerequisite343/20/17 after ASTRO/DIST;28furthercollections meet25written; source5unchanged",
+      "Latest immutablecheckpoint7 on69710ca passes2167tests/all6UI andstrict/static0/0; later SOLID/PL/ML/ASTRO/DIST awaitnextfullcheckpoint",
+      "Rejectedacf697e firstsame-sceneimagefailure reproducedinexactoriginal-onlyhistory; independentcontrolpeeraccepteddiagnosticonly, no renderer/timingacceptance",
+      "Atlasfirstcase6c45d07 hasstaleGPUborderbutzerooutputdifference; stopped/peerpreserved; separatelyauthorizedphase-sensitiveprobe pending",
+      "FrozenBIGHIST3.5service restrictionpersists; no retry/edgeacceptance"
     ]
   },
   "workers": [
@@ -32,7 +33,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "CG genuine prerequisite production after accepted PL boundary",
+      "current": "Bounded atlas physical-phase causalprobe and conditional private gutter prototype; CG finalpeerpending",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,7 +43,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "PL peer complete; map original-only control independent review next",
+      "current": "Read-only CAUSAL mapping while awaiting immutable atlasprobe; no newnative",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,7 +53,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "Independent CG combined prerequisite/wrap/LP peer",
+      "current": "Independent CG closing3395bc5 full1.9narrowpixels",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,7 +63,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "XTAL genuine prerequisite production after accepted DIST peer",
+      "current": "XTAL producer boundedprimitive/stabilizer/wrap successors",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,7 +73,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "MAT genuine prerequisite production after accepted SOLID peer",
+      "current": "MAT producer boundedfinitewindow/density/activation/CRSS successors",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,7 +83,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "CRYPTO genuine prerequisite production after accepted ASTRO peer",
+      "current": "CRYPTO producer boundedshare/collision/proof/wrap successors",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -2463,7 +2464,9 @@
       "loadedNodes": 13574,
       "loadedEdges": 23364,
       "method": "Correctness only:8tinyGL,6normal smoke,33lightmatrix states. State33 fractionalpan3840x2092map/DPR2 exactGPU31327channels/max121 difference; no timing.",
-      "limitation": "Original compared GPU/reference arrays and diff not saved; actualPNG thirdredraw and directPNG Canvas are not the failedoracle. Dark/lifecycle/faultmatrix unrun; oversizedDPR2unselected0optimizedtiles.64Mlogicalcurrent62471764/peak63895600pass does not acceptpixels/performance/physicalmemory."
+      "limitation": "Original compared GPU/reference arrays and diff not saved; actualPNG thirdredraw and directPNG Canvas are not the failedoracle. Dark/lifecycle/faultmatrix unrun; oversizedDPR2unselected0optimizedtiles.64Mlogicalcurrent62471764/peak63895600pass does not acceptpixels/performance/physicalmemory.",
+      "peer": "bc0a5ddaadb465fcb428411ad13785f7840d1bf4",
+      "followup": "a81c9e7original-onlycontrol +1244b0cindependentpeer reproduceALL4exactframes withoutchunkbinding. SequentialC1/O1conflateddifferenthistories; implementationremainsunaccepted; futureoracle mustmatchcold/warmordinalandtexturehistory."
     }
   ],
   "accountingSafeguards": [
@@ -2490,6 +2493,20 @@
       "status": "accepted-read-only-fixed-chunk-protocol",
       "report": "docs/verification/map-group-protocol-independent-peer.md",
       "scope": "Bounded fixed32768 index pair under one MAX mask and one style/tile composite; current-tile replay requires live unchanged original snapshot, expired snapshot requires complete original restart/Canvas. No actual binding/pixel/resource/performance acceptance."
+    },
+    {
+      "candidate": "a81c9e70edb1442f7f20d2921cd06dcfc6446943",
+      "peer": "1244b0c640b69015f891ab7403d1294723bd2c0d",
+      "status": "accepted-diagnostic-original-only-history-control",
+      "report": "docs/verification/map-original-control-independent-peer.md",
+      "scope": "Completeoriginaledge/scene bytes, fourrawRGBAstreams128532480byteseach exactlymatchpreviousC1/O1/O2/C2. Originalhistoryinstabilitydemonstrated, specificatlasmechanismunproven; no implementation/lifecycle/performanceacceptance."
+    },
+    {
+      "candidate": "6c45d07947c2074660cb0b9a0e01b3a42bc524b8",
+      "peer": "91c647e270bafbccc03cf64760405cf3183bc79d",
+      "status": "preserved-negative-causal-output-gate",
+      "report": "docs/verification/map-atlas-first-independent-peer.md",
+      "scope": "17actualdirtyperimetertexels+equalinnerglyphbytes butnativeoutputdifference0; all17unreachableatfirstquadphase. No privatefix/fullmatrix/timing; sourcegroundednewphysicalphaseprobe separatelyauthorized."
     }
   ]
 }
