@@ -1,0 +1,1901 @@
+{
+  "scope": "Source/model/tiny only; no full-map run or timing",
+  "sourceHashes": {
+    "scripts/lib/map-paired-quiescence.mjs": "7ef60f0c04c8f0223b84e5983aca4e5aaa279595f69d49314cb5a286ca814442",
+    "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+    "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+    "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+    "scripts/lib/map-paired-guarded-fixture.mjs": "6a6d1ff3b5c1cacd6a083662c820168c8b6d651be5e47338fa70b94900e9aec0",
+    "tests/map-paired-guarded-oracle.mjs": "3c941f237b4c0f52e000382dabaf1226f7b2474c79df70afdd8b3d07fc0f4bd6",
+    "tests/map-paired-quiescence-model.mjs": "9fcef3da62599cfcdfe9fc11bfa7b05ea53c81146de008bf7c6fce083e3cffc5",
+    "tests/map-paired-quiescence-tiny.mjs": "9708ba3467c3b8c2c4d78f430883f3c80bb7011f292a999c66e8c37b8f4b7536"
+  },
+  "rawFiles": [
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/failure-model/A0.rgba",
+      "bytes": 2048,
+      "sha256": "0fc1435eaf57ab580899f34dddb436dcde2aa539c4f6546580844521c8fa0810"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/failure-model/initialization-only.json",
+      "bytes": 715,
+      "sha256": "f397f08a355629517163647c0681d29fb4ea877b6f7847cc12208bcbd9d452b4"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/failure-model/mid-epoch.json",
+      "bytes": 88013,
+      "sha256": "0da58291e98634c4f3297e6043780b56243c7b34ed9c2ec55e9639a472e87eec"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/failure-model-final/A0.rgba",
+      "bytes": 2048,
+      "sha256": "0fc1435eaf57ab580899f34dddb436dcde2aa539c4f6546580844521c8fa0810"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/failure-model-final/initialization-only.json",
+      "bytes": 715,
+      "sha256": "f397f08a355629517163647c0681d29fb4ea877b6f7847cc12208bcbd9d452b4"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/failure-model-final/mid-epoch.json",
+      "bytes": 88869,
+      "sha256": "b8f3535260aac59ec506acea71fb8d7d1dc734e54b84352a84f38dd53a1f058d"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/failure-model-final.log",
+      "bytes": 144,
+      "sha256": "3982b00862de7a9305f8b5e56966b9f1afd5a6f562a090c9ded523281831912c"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/failure-model.log",
+      "bytes": 144,
+      "sha256": "3982b00862de7a9305f8b5e56966b9f1afd5a6f562a090c9ded523281831912c"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/model-final.log",
+      "bytes": 610,
+      "sha256": "fa90f949c85b71dd06339503a736fb1fd48fda804515820d285927a649b81c1c"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/model.log",
+      "bytes": 469,
+      "sha256": "e489fc502854ae81b64430863dec92b025a32110b5d028cf3682b5c0f1c0b1bb"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/prepare-boundary.log",
+      "bytes": 119,
+      "sha256": "914d8e126e2c384bd276080f2c5abe10a15ef0a4d689b603b3b5f0f52b258955"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/prepare-boundary2.log",
+      "bytes": 119,
+      "sha256": "914d8e126e2c384bd276080f2c5abe10a15ef0a4d689b603b3b5f0f52b258955"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/prepare-final.log",
+      "bytes": 119,
+      "sha256": "914d8e126e2c384bd276080f2c5abe10a15ef0a4d689b603b3b5f0f52b258955"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/prepare.log",
+      "bytes": 119,
+      "sha256": "914d8e126e2c384bd276080f2c5abe10a15ef0a4d689b603b3b5f0f52b258955"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/prepared/prepared.json",
+      "bytes": 7329,
+      "sha256": "42aabd26bc4a1fcd58951305df3a32d49e4ff2da67149241bf0668c59d332ed5"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/prepared-boundary/prepared.json",
+      "bytes": 7329,
+      "sha256": "cf3061e4b9e12c59bd14fd7df0bf0cc840060bfbacbe0100940c89c0d54dec26"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/prepared-boundary2/prepared.json",
+      "bytes": 7329,
+      "sha256": "faf20cc13245ba5b66a5d647c51400b73ab2ceb0515ca0c9c4d0ca210487bcbb"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/prepared-final/prepared.json",
+      "bytes": 7329,
+      "sha256": "7906b2a65d7d5112b5a5ebe4d6f679b0ca9726f53540c482b92241ff8e98feec"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/quiet-tiny/native.json",
+      "bytes": 12164,
+      "sha256": "353144448f8db37eda216db1de476b4ee26ff7499bb9954a7808be227f3edc7b"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/quiet-tiny-final/native.json",
+      "bytes": 12764,
+      "sha256": "7271bef4d27d04d89cd27458dfe9b83b4013bc3520e5848b50e0d0ba4f37633c"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/quiet-tiny-final.log",
+      "bytes": 72,
+      "sha256": "ed5a934a9bc4857c40be3202ab43c0e1907630b9ba2c5802da150fe40600d06f"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/quiet-tiny.log",
+      "bytes": 72,
+      "sha256": "ed5a934a9bc4857c40be3202ab43c0e1907630b9ba2c5802da150fe40600d06f"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/sha-model.log",
+      "bytes": 86,
+      "sha256": "7bf3a16cec9dcf9c7aa86f3a9f3fdc802c61cd958c274ecf7b2d68572c0ba123"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/01-read-state.json",
+      "bytes": 10608,
+      "sha256": "44dcaac023e2f097b3448f18cdc38a33b84ca5141f4c1d1d5525c93276519ecf"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/02-atlas-reset.json",
+      "bytes": 6727,
+      "sha256": "d09ba21070ac8deb70957658239d023a4671b59934349ca6dbb92e748bba0b30"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/03-comparisons.json",
+      "bytes": 1196,
+      "sha256": "5f51c444e77486020543ed83ae6cbf488679b24429abf97bc29789ba687aa630"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/complete.json",
+      "bytes": 695,
+      "sha256": "72436c15f389d5ac96359e68ec42891b568a8ae05131e8933c9b6753e31b49a8"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-0-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-0-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-0-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-0-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-0-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-0.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-1-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-1-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-1-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-1-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-1-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/observed-1.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/plain-0.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/plain-1-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/plain-1-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/plain-1-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/plain-1-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/plain-1-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny/plain-1.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/01-read-state.json",
+      "bytes": 10608,
+      "sha256": "44dcaac023e2f097b3448f18cdc38a33b84ca5141f4c1d1d5525c93276519ecf"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/02-atlas-reset.json",
+      "bytes": 6727,
+      "sha256": "d09ba21070ac8deb70957658239d023a4671b59934349ca6dbb92e748bba0b30"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/03-comparisons.json",
+      "bytes": 1196,
+      "sha256": "5f51c444e77486020543ed83ae6cbf488679b24429abf97bc29789ba687aa630"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/complete.json",
+      "bytes": 695,
+      "sha256": "72436c15f389d5ac96359e68ec42891b568a8ae05131e8933c9b6753e31b49a8"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-0-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-0-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-0-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-0-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-0-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-0.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-1-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-1-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-1-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-1-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-1-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/observed-1.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/plain-0.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/plain-1-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/plain-1-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/plain-1-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/plain-1-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/plain-1-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary/plain-1.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny-boundary.log",
+      "bytes": 70,
+      "sha256": "599a9bed4efd56591207cb7f83e8fd0f989d3fbef575e4da204b12731c32353d"
+    },
+    {
+      "path": "/tmp/atlas-paired-quiescence-successor/tiny.log",
+      "bytes": 70,
+      "sha256": "599a9bed4efd56591207cb7f83e8fd0f989d3fbef575e4da204b12731c32353d"
+    }
+  ],
+  "logs": {
+    "prepare-final.log": "Prepared sources/manifest only; no browser launched. Immutable independent peer and later root authorization required.\n",
+    "quiet-tiny.log": "PASS native fixed font/drain/quiet + retained injected callback; no map\n",
+    "tiny-boundary.log": "{\"pass\":true,\"browser\":\"155.0.8059.85\",\"readChecks\":2,\"atlasCases\":5}\n",
+    "prepare-boundary2.log": "Prepared sources/manifest only; no browser launched. Immutable independent peer and later root authorization required.\n",
+    "model.log": "\u2714 fixed schedule drains once, preserves wrapper behavior and fails rather than retrying quiet activity (2.20325ms)\n\u2714 routed callback observers preserve body, focus listener identity, worker and RAF hooks (1.67275ms)\n\u2714 exact original ledger comparison excludes only explicitly classified optional owners and recomputes independent peaks (0.704584ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 3\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 88.041916\n",
+    "sha-model.log": "{\"shaWitnesses\":18,\"symmetricGuard\":true,\"originalSourcesUnchanged\":true,\"pass\":true}\n",
+    "prepare.log": "Prepared sources/manifest only; no browser launched. Immutable independent peer and later root authorization required.\n",
+    "failure-model-final.log": "{\"pass\":true,\"midEpoch\":{\"completedMainBuffers\":1,\"draws\":9,\"readCalls\":1,\"bytes\":2048},\"initializationOnly\":true,\"nativeRenderingClaim\":false}\n",
+    "tiny.log": "{\"pass\":true,\"browser\":\"155.0.8059.85\",\"readChecks\":2,\"atlasCases\":5}\n",
+    "failure-model.log": "{\"pass\":true,\"midEpoch\":{\"completedMainBuffers\":1,\"draws\":9,\"readCalls\":1,\"bytes\":2048},\"initializationOnly\":true,\"nativeRenderingClaim\":false}\n",
+    "prepare-boundary.log": "Prepared sources/manifest only; no browser launched. Immutable independent peer and later root authorization required.\n",
+    "quiet-tiny-final.log": "PASS native fixed font/drain/quiet + retained injected callback; no map\n",
+    "model-final.log": "\u2714 fixed schedule drains once, preserves wrapper behavior and fails rather than retrying quiet activity (2.808791ms)\n\u2714 routed callback observers preserve body, focus listener identity, worker and RAF hooks (0.654458ms)\n\u2714 exact original ledger comparison excludes only explicitly classified optional owners and recomputes independent peaks (0.790167ms)\n\u2714 denied optional requests retain original prewarm and historical global peaks are not normalized by current optional bytes (0.177333ms)\n\u2139 tests 4\n\u2139 suites 0\n\u2139 pass 4\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 64.798417\n"
+  },
+  "nativePreparation": {
+    "browser": "155.0.8059.85",
+    "errors": [],
+    "returned": 23,
+    "calls": [
+      {
+        "sameThis": true,
+        "event": "witness"
+      }
+    ],
+    "preparation": {
+      "requests": [
+        {
+          "font": "600 11px Inter",
+          "characters": 36
+        },
+        {
+          "font": "italic 500 32px Newsreader",
+          "characters": 36
+        }
+      ],
+      "quietStart": 11,
+      "quietEnd": 11,
+      "schedule": [
+        "macro",
+        "raf",
+        "raf",
+        "macro"
+      ],
+      "snapshot": {
+        "W": 320,
+        "H": 100,
+        "dpr": 1,
+        "k": 0.8,
+        "tx": 0,
+        "ty": 0,
+        "control": "fixed",
+        "generation": 1,
+        "models": [
+          [
+            "bundles:0.5",
+            false
+          ],
+          [
+            "edges:0.5",
+            false
+          ],
+          [
+            "edges:4",
+            false
+          ]
+        ],
+        "pending": 0
+      }
+    },
+    "failure": "fixed quiet interval was not quiet",
+    "macroCalls": 4,
+    "provenance": {
+      "phase": "fixed-quiet",
+      "events": [
+        {
+          "kind": "native-wrapper",
+          "phase": "initialization",
+          "glyphEventIndex": 0,
+          "event": "witness",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at Object.<anonymous> (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:10:67)\n    at eval (eval at evaluate (:370:30), <anonymous>:1:282)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "explicit-font-load",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "font": "600 11px Inter",
+          "characters": 36,
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:35:33)\n    at eval (eval at evaluate (:370:30), <anonymous>:1:776)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "font-event",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "type": "loading",
+          "status": "loading",
+          "faces": []
+        },
+        {
+          "kind": "explicit-font-loaded",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "font": "600 11px Inter",
+          "faces": [
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "status": "loaded"
+            }
+          ],
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:35:178)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:770)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "explicit-font-load",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "font": "italic 500 32px Newsreader",
+          "characters": 36,
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:35:33)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:770)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "explicit-font-loaded",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "font": "italic 500 32px Newsreader",
+          "faces": [
+            {
+              "family": "Newsreader",
+              "style": "italic",
+              "weight": "500",
+              "status": "loaded"
+            },
+            {
+              "family": "Newsreader",
+              "style": "italic",
+              "weight": "500",
+              "status": "loaded"
+            }
+          ],
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:35:178)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:770)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "font-event",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "type": "loadingdone",
+          "status": "loaded",
+          "faces": [
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "stretch": "normal",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "stretch": "normal",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "stretch": "normal",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "stretch": "normal",
+              "status": "loaded"
+            },
+            {
+              "family": "Newsreader",
+              "style": "italic",
+              "weight": "500",
+              "stretch": "normal",
+              "status": "loaded"
+            },
+            {
+              "family": "Newsreader",
+              "style": "italic",
+              "weight": "500",
+              "stretch": "normal",
+              "status": "loaded"
+            }
+          ]
+        },
+        {
+          "kind": "preparation-checkpoint",
+          "phase": "fixed-drain",
+          "glyphEventIndex": 0,
+          "step": "macro",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:37:115)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:770)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "preparation-checkpoint",
+          "phase": "fixed-drain",
+          "glyphEventIndex": 0,
+          "step": "raf1",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:37:115)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:770)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "preparation-checkpoint",
+          "phase": "fixed-drain",
+          "glyphEventIndex": 0,
+          "step": "raf2",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:37:115)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:770)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "preparation-checkpoint",
+          "phase": "fixed-drain",
+          "glyphEventIndex": 0,
+          "step": "final-macro",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:37:115)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:770)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "explicit-font-load",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "font": "600 11px Inter",
+          "characters": 36,
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:35:33)\n    at eval (eval at evaluate (:370:30), <anonymous>:1:837)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "explicit-font-loaded",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "font": "600 11px Inter",
+          "faces": [
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "status": "loaded"
+            },
+            {
+              "family": "Inter",
+              "style": "normal",
+              "weight": "600",
+              "status": "loaded"
+            }
+          ],
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:35:178)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:831)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "explicit-font-load",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "font": "italic 500 32px Newsreader",
+          "characters": 36,
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:35:33)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:831)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "explicit-font-loaded",
+          "phase": "explicit-font-preparation",
+          "glyphEventIndex": 0,
+          "font": "italic 500 32px Newsreader",
+          "faces": [
+            {
+              "family": "Newsreader",
+              "style": "italic",
+              "weight": "500",
+              "status": "loaded"
+            },
+            {
+              "family": "Newsreader",
+              "style": "italic",
+              "weight": "500",
+              "status": "loaded"
+            }
+          ],
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:35:178)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:831)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "preparation-checkpoint",
+          "phase": "fixed-drain",
+          "glyphEventIndex": 0,
+          "step": "macro",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:37:115)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:831)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "preparation-checkpoint",
+          "phase": "fixed-drain",
+          "glyphEventIndex": 0,
+          "step": "raf1",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:37:115)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:831)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "preparation-checkpoint",
+          "phase": "fixed-drain",
+          "glyphEventIndex": 0,
+          "step": "raf2",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:37:115)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:831)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "preparation-checkpoint",
+          "phase": "fixed-drain",
+          "glyphEventIndex": 0,
+          "step": "final-macro",
+          "stack": "Error\n    at callbackEvent (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:9:189)\n    at prepareFixedQuiescence (http://127.0.0.1:64089/scripts/lib/map-paired-quiescence.mjs:37:115)\n    at async eval (eval at evaluate (:370:30), <anonymous>:1:831)\n    at async <anonymous>:396:30"
+        },
+        {
+          "kind": "injected-quiet-callback",
+          "phase": "fixed-quiet",
+          "glyphEventIndex": 0,
+          "preserved": true
+        }
+      ],
+      "characters": 8786
+    },
+    "mainDraws": 0
+  },
+  "01-read-state.json": {
+    "checks": [
+      {
+        "label": "separate-read-draw-PBO-pack",
+        "before": {
+          "read": 1,
+          "draw": 2,
+          "readBuffer": 0,
+          "packBuffer": 3,
+          "pack": [
+            8,
+            23,
+            2,
+            3
+          ],
+          "active": 33987,
+          "texture": 4,
+          "array": 5,
+          "vao": 6,
+          "program": null
+        },
+        "after": {
+          "read": 1,
+          "draw": 2,
+          "readBuffer": 0,
+          "packBuffer": 3,
+          "pack": [
+            8,
+            23,
+            2,
+            3
+          ],
+          "active": 33987,
+          "texture": 4,
+          "array": 5,
+          "vao": 6,
+          "program": null
+        },
+        "stateEqual": true,
+        "actualHash": "bfe45b2ae19b3e306e5920b5f06463efacca8b3b80075c98aa48c7dd6094548d",
+        "expectedHash": "bfe45b2ae19b3e306e5920b5f06463efacca8b3b80075c98aa48c7dd6094548d",
+        "bytes": [
+          11,
+          48,
+          85,
+          122,
+          159,
+          196,
+          233,
+          14,
+          51,
+          88,
+          125,
+          162,
+          199,
+          236,
+          17,
+          54,
+          91,
+          128,
+          165,
+          202,
+          239,
+          20,
+          57,
+          94,
+          131,
+          168,
+          205,
+          242,
+          23,
+          60,
+          97,
+          134,
+          171,
+          208,
+          245,
+          26,
+          63,
+          100,
+          137,
+          174,
+          211,
+          248,
+          29,
+          66,
+          103,
+          140,
+          177,
+          214,
+          251,
+          32,
+          69,
+          106,
+          143,
+          180,
+          217,
+          254,
+          35,
+          72,
+          109,
+          146,
+          183,
+          220,
+          1,
+          38,
+          75,
+          112,
+          149,
+          186,
+          223,
+          4,
+          41,
+          78,
+          115,
+          152,
+          189,
+          226,
+          7,
+          44,
+          81,
+          118,
+          155,
+          192,
+          229,
+          10,
+          47,
+          84,
+          121,
+          158,
+          195,
+          232,
+          13,
+          50,
+          87,
+          124,
+          161,
+          198,
+          235,
+          16,
+          53,
+          90,
+          127,
+          164,
+          201,
+          238,
+          19,
+          56,
+          93,
+          130,
+          167,
+          204,
+          241,
+          22,
+          59,
+          96,
+          133,
+          170,
+          207,
+          244,
+          25,
+          62,
+          99,
+          136,
+          173,
+          210,
+          247,
+          28,
+          65,
+          102,
+          139,
+          176,
+          213,
+          250,
+          31,
+          68,
+          105,
+          142,
+          179,
+          216,
+          253,
+          34,
+          71,
+          108,
+          145,
+          182,
+          219,
+          0,
+          37,
+          74,
+          111,
+          148,
+          185,
+          222,
+          3,
+          40,
+          77,
+          114,
+          151,
+          188,
+          225,
+          6,
+          43,
+          80,
+          117,
+          154,
+          191,
+          228,
+          9,
+          46,
+          83,
+          120,
+          157,
+          194,
+          231,
+          12,
+          49,
+          86,
+          123,
+          160,
+          197,
+          234,
+          15,
+          52,
+          89,
+          126,
+          163,
+          200,
+          237,
+          18,
+          55,
+          92,
+          129,
+          166,
+          203,
+          240,
+          21,
+          58,
+          95,
+          132,
+          169,
+          206,
+          243,
+          24,
+          61,
+          98,
+          135,
+          172,
+          209,
+          246,
+          27,
+          64,
+          101,
+          138,
+          175,
+          212,
+          249,
+          30,
+          67,
+          104,
+          141,
+          178,
+          215,
+          252,
+          33,
+          70,
+          107,
+          144,
+          181,
+          218,
+          255,
+          36,
+          73,
+          110,
+          147,
+          184,
+          221,
+          2,
+          39,
+          76,
+          113,
+          150,
+          187,
+          224,
+          5,
+          42,
+          79,
+          116,
+          153,
+          190,
+          227,
+          8,
+          45,
+          82,
+          119,
+          156,
+          193,
+          230,
+          11,
+          48,
+          85,
+          122,
+          159,
+          196,
+          233,
+          14,
+          51,
+          88,
+          125,
+          162,
+          199,
+          236,
+          17,
+          54,
+          91,
+          128,
+          165,
+          202,
+          239,
+          20,
+          57,
+          94,
+          131,
+          168,
+          205,
+          242,
+          23,
+          60,
+          97,
+          134,
+          171,
+          208,
+          245,
+          26,
+          63,
+          100,
+          137,
+          174,
+          211,
+          248,
+          29,
+          66,
+          103,
+          140,
+          177,
+          214,
+          251,
+          32,
+          69,
+          106,
+          143,
+          180,
+          217,
+          254,
+          35,
+          72,
+          109,
+          146,
+          183,
+          220,
+          1,
+          38,
+          75,
+          112,
+          149,
+          186,
+          223,
+          4,
+          41,
+          78,
+          115,
+          152,
+          189,
+          226,
+          7,
+          44,
+          81,
+          118,
+          155,
+          192,
+          229,
+          10,
+          47,
+          84,
+          121,
+          158,
+          195,
+          232,
+          13,
+          50,
+          87,
+          124,
+          161,
+          198,
+          235,
+          16,
+          53,
+          90,
+          127,
+          164,
+          201,
+          238,
+          19,
+          56,
+          93,
+          130,
+          167,
+          204,
+          241,
+          22,
+          59,
+          96,
+          133,
+          170,
+          207,
+          244,
+          25,
+          62,
+          99,
+          136,
+          173,
+          210,
+          247,
+          28,
+          65,
+          102,
+          139,
+          176,
+          213,
+          250,
+          31,
+          68,
+          105,
+          142,
+          179,
+          216,
+          253,
+          34,
+          71,
+          108,
+          145,
+          182,
+          219,
+          0,
+          37,
+          74,
+          111,
+          148,
+          185,
+          222,
+          3,
+          40,
+          77,
+          114,
+          151,
+          188,
+          225,
+          6,
+          43,
+          80,
+          117,
+          154,
+          191,
+          228,
+          9,
+          46,
+          83,
+          120,
+          157,
+          194,
+          231,
+          12,
+          49,
+          86,
+          123,
+          160,
+          197,
+          234,
+          15,
+          52,
+          89,
+          126,
+          163,
+          200,
+          237,
+          18,
+          55,
+          92,
+          129,
+          166,
+          203,
+          240,
+          21,
+          58,
+          95,
+          132,
+          169,
+          206,
+          243,
+          24,
+          61,
+          98,
+          135,
+          172,
+          209,
+          246,
+          27,
+          64,
+          101,
+          138,
+          175,
+          212,
+          249,
+          30,
+          67,
+          104,
+          141,
+          178,
+          215,
+          252,
+          33,
+          70,
+          107,
+          144,
+          181,
+          218,
+          255,
+          36,
+          73,
+          110,
+          147,
+          184,
+          221,
+          2,
+          39,
+          76,
+          113,
+          150,
+          187,
+          224,
+          5,
+          42,
+          79,
+          116,
+          153,
+          190,
+          227,
+          8,
+          45,
+          82,
+          119,
+          156,
+          193,
+          230,
+          11,
+          48,
+          85,
+          122,
+          159,
+          196,
+          233,
+          14,
+          51,
+          88,
+          125,
+          162,
+          199,
+          236,
+          17,
+          54,
+          91,
+          128,
+          165,
+          202,
+          239,
+          20,
+          57,
+          94,
+          131,
+          168,
+          205,
+          242,
+          23,
+          60,
+          97,
+          134,
+          171,
+          208,
+          245,
+          26,
+          63,
+          100,
+          137,
+          174,
+          211,
+          248,
+          29,
+          66,
+          103,
+          140,
+          177,
+          214,
+          251,
+          32,
+          69,
+          106,
+          143,
+          180,
+          217,
+          254,
+          35,
+          72,
+          109,
+          146,
+          183,
+          220,
+          1,
+          38,
+          75,
+          112,
+          149,
+          186,
+          223,
+          4,
+          41,
+          78,
+          115,
+          152,
+          189,
+          226,
+          7,
+          44,
+          81,
+          118,
+          155,
+          192,
+          229,
+          10,
+          47,
+          84,
+          121,
+          158,
+          195,
+          232,
+          13,
+          50,
+          87,
+          124,
+          161,
+          198,
+          235,
+          16,
+          53,
+          90,
+          127,
+          164,
+          201,
+          238,
+          19,
+          56,
+          93,
+          130,
+          167,
+          204,
+          241,
+          22,
+          59,
+          96,
+          133,
+          170,
+          207,
+          244,
+          25,
+          62,
+          99,
+          136,
+          173,
+          210,
+          247,
+          28,
+          65,
+          102,
+          139,
+          176,
+          213,
+          250,
+          31,
+          68,
+          105,
+          142,
+          179,
+          216,
+          253,
+          34,
+          71,
+          108,
+          145,
+          182,
+          219,
+          0,
+          37,
+          74,
+          111,
+          148,
+          185,
+          222,
+          3,
+          40,
+          77,
+          114,
+          151,
+          188,
+          225,
+          6,
+          43,
+          80,
+          117,
+          154,
+          191,
+          228,
+          9,
+          46,
+          83,
+          120,
+          157,
+          194,
+          231,
+          12,
+          49,
+          86,
+          123,
+          160,
+          197,
+          234,
+          15,
+          52,
+          89,
+          126,
+          163,
+          200,
+          237,
+          18,
+          55,
+          92,
+          129,
+          166,
+          203,
+          240,
+          21,
+          58,
+          95,
+          132,
+          169,
+          206,
+          243,
+          24,
+          61,
+          98,
+          135,
+          172,
+          209,
+          246,
+          27,
+          64,
+          101,
+          138,
+          175,
+          212,
+          249,
+          30,
+          67,
+          104,
+          141,
+          178,
+          215,
+          252,
+          33,
+          70,
+          107,
+          144,
+          181,
+          218,
+          255,
+          36,
+          73,
+          110,
+          147,
+          184,
+          221,
+          2
+        ],
+        "failure": null
+      },
+      {
+        "label": "consumer-fault-finally",
+        "stateEqual": true,
+        "expectedThrow": true
+      }
+    ],
+    "error": 0,
+    "diagnostic": {
+      "textureBytes": 876,
+      "packBytes": 256,
+      "scratchUpperBound": 1048576,
+      "persistentObserverAttachments": 0
+    }
+  },
+  "03-comparisons.json": [
+    {
+      "width": 256,
+      "height": 128,
+      "channels": 0,
+      "pixels": 0,
+      "max": 0,
+      "shaA": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "shaB": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "diff": "RGB abs difference with alpha difference promoted to RGB; opaque display, no acceptance mask; originals complete unchanged RGBA"
+    },
+    {
+      "width": 256,
+      "height": 128,
+      "channels": 0,
+      "pixels": 0,
+      "max": 0,
+      "shaA": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "shaB": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "diff": "RGB abs difference with alpha difference promoted to RGB; opaque display, no acceptance mask; originals complete unchanged RGBA"
+    },
+    {
+      "width": 256,
+      "height": 128,
+      "channels": 0,
+      "pixels": 0,
+      "max": 0,
+      "shaA": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "shaB": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "diff": "RGB abs difference with alpha difference promoted to RGB; opaque display, no acceptance mask; originals complete unchanged RGBA"
+    }
+  ],
+  "observed-0-comparison.json": {
+    "width": 256,
+    "height": 128,
+    "channels": 0,
+    "pixels": 0,
+    "max": 0,
+    "shaA": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+    "shaB": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+    "diff": "RGB abs difference with alpha difference promoted to RGB; opaque display, no acceptance mask; originals complete unchanged RGBA"
+  },
+  "complete.json": {
+    "pass": true,
+    "browser": "155.0.8059.85",
+    "readChecks": 2,
+    "atlasCases": 5,
+    "images": [
+      {
+        "mode": "plain",
+        "ordinal": 0,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "plain",
+        "ordinal": 1,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "observed",
+        "ordinal": 0,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "observed",
+        "ordinal": 1,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      }
+    ],
+    "traceEvents": 16,
+    "errors": []
+  },
+  "02-atlas-reset.json": {
+    "images": [
+      {
+        "mode": "plain",
+        "ordinal": 0,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "plain",
+        "ordinal": 1,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "observed",
+        "ordinal": 0,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "observed",
+        "ordinal": 1,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      }
+    ],
+    "cases": [
+      {
+        "label": "plain-fresh-replacement",
+        "pass": true
+      },
+      {
+        "label": "plain-cleanup",
+        "pass": true
+      },
+      {
+        "label": "preflight-refuses-before-mutation",
+        "pass": true
+      },
+      {
+        "label": "observed-fresh-replacement",
+        "pass": true
+      },
+      {
+        "label": "observed-cleanup",
+        "pass": true
+      }
+    ],
+    "trace": {
+      "events": [
+        {
+          "type": "fresh-reset-complete",
+          "stage": "plain-0",
+          "width": 256,
+          "height": 128
+        },
+        {
+          "type": "atlas-constructor-begin",
+          "stage": "plain-1",
+          "width": 256,
+          "height": 128
+        },
+        {
+          "type": "atlas-initial-upload",
+          "stage": "plain-1",
+          "width": 256,
+          "height": 128,
+          "sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "bytes": 131072
+        },
+        {
+          "type": "atlas-clear",
+          "stage": "plain-1",
+          "before": {
+            "generation": 0,
+            "x": 0,
+            "y": 0,
+            "rowHeight": 0,
+            "cacheSize": 0
+          },
+          "after": {
+            "generation": 1,
+            "x": 0,
+            "y": 0,
+            "rowHeight": 0,
+            "cacheSize": 0
+          }
+        },
+        {
+          "type": "atlas-constructor-end",
+          "stage": "plain-1",
+          "width": 256,
+          "height": 128,
+          "cursor": {
+            "generation": 1,
+            "x": 0,
+            "y": 0,
+            "rowHeight": 0,
+            "cacheSize": 0
+          }
+        },
+        {
+          "type": "request-begin",
+          "stage": "observed-0",
+          "key": "[\"Atlas i\",\"600 11px Inter\",\"top\",\"left\",\"0px\",false,1,1,\"rgba(71,115,207,.5)\",0.625,0.625]",
+          "text": "Atlas i",
+          "style": {
+            "font": "600 11px Inter",
+            "baseline": "top",
+            "align": "left",
+            "letterSpacing": "0px",
+            "color": "rgba(71,115,207,.5)",
+            "phaseX": 0.625,
+            "phaseY": 0.625
+          },
+          "dpr": 1,
+          "before": {
+            "generation": 1,
+            "x": 0,
+            "y": 0,
+            "rowHeight": 0,
+            "cacheSize": 0,
+            "hit": false
+          }
+        },
+        {
+          "type": "atlas-upload",
+          "stage": "observed-0",
+          "x": 0,
+          "y": 0,
+          "width": 39,
+          "height": 15,
+          "format": 6408,
+          "dataType": 5121,
+          "premultiply": true,
+          "scratch": [
+            256,
+            128
+          ],
+          "sha256": "60e910a3627c787cba92f0d994c56bfe9b5c19214bbc1af2a2c365f572606379",
+          "bytes": 2340
+        },
+        {
+          "type": "request-end",
+          "stage": "observed-0",
+          "key": "[\"Atlas i\",\"600 11px Inter\",\"top\",\"left\",\"0px\",false,1,1,\"rgba(71,115,207,.5)\",0.625,0.625]",
+          "word": {
+            "x": 0.00390625,
+            "y": 0.0078125,
+            "u": 0.14453125,
+            "v": 0.1015625,
+            "left": -2.625,
+            "top": -1.625,
+            "width": 37,
+            "height": 13,
+            "generation": 1
+          },
+          "after": {
+            "generation": 1,
+            "x": 39,
+            "y": 0,
+            "rowHeight": 15,
+            "cacheSize": 1
+          }
+        },
+        {
+          "type": "atlas-constructor-begin",
+          "stage": "observed-0",
+          "width": 256,
+          "height": 128
+        },
+        {
+          "type": "atlas-initial-upload",
+          "stage": "observed-0",
+          "width": 256,
+          "height": 128,
+          "sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "bytes": 131072
+        },
+        {
+          "type": "atlas-clear",
+          "stage": "observed-0",
+          "before": {
+            "generation": 0,
+            "x": 0,
+            "y": 0,
+            "rowHeight": 0,
+            "cacheSize": 0
+          },
+          "after": {
+            "generation": 1,
+            "x": 0,
+            "y": 0,
+            "rowHeight": 0,
+            "cacheSize": 0
+          }
+        },
+        {
+          "type": "atlas-constructor-end",
+          "stage": "observed-0",
+          "width": 256,
+          "height": 128,
+          "cursor": {
+            "generation": 1,
+            "x": 0,
+            "y": 0,
+            "rowHeight": 0,
+            "cacheSize": 0
+          }
+        },
+        {
+          "type": "fresh-reset-complete",
+          "stage": "observed-0",
+          "width": 256,
+          "height": 128
+        },
+        {
+          "type": "request-begin",
+          "stage": "observed-1",
+          "key": "[\"Atlas i\",\"600 11px Inter\",\"top\",\"left\",\"0px\",false,1,1,\"rgba(71,115,207,.5)\",0.625,0.625]",
+          "text": "Atlas i",
+          "style": {
+            "font": "600 11px Inter",
+            "baseline": "top",
+            "align": "left",
+            "letterSpacing": "0px",
+            "color": "rgba(71,115,207,.5)",
+            "phaseX": 0.625,
+            "phaseY": 0.625
+          },
+          "dpr": 1,
+          "before": {
+            "generation": 1,
+            "x": 0,
+            "y": 0,
+            "rowHeight": 0,
+            "cacheSize": 0,
+            "hit": false
+          }
+        },
+        {
+          "type": "atlas-upload",
+          "stage": "observed-1",
+          "x": 0,
+          "y": 0,
+          "width": 39,
+          "height": 15,
+          "format": 6408,
+          "dataType": 5121,
+          "premultiply": true,
+          "scratch": [
+            256,
+            128
+          ],
+          "sha256": "60e910a3627c787cba92f0d994c56bfe9b5c19214bbc1af2a2c365f572606379",
+          "bytes": 2340
+        },
+        {
+          "type": "request-end",
+          "stage": "observed-1",
+          "key": "[\"Atlas i\",\"600 11px Inter\",\"top\",\"left\",\"0px\",false,1,1,\"rgba(71,115,207,.5)\",0.625,0.625]",
+          "word": {
+            "x": 0.00390625,
+            "y": 0.0078125,
+            "u": 0.14453125,
+            "v": 0.1015625,
+            "left": -2.625,
+            "top": -1.625,
+            "width": 37,
+            "height": 13,
+            "generation": 1
+          },
+          "after": {
+            "generation": 1,
+            "x": 39,
+            "y": 0,
+            "rowHeight": 15,
+            "cacheSize": 1
+          }
+        }
+      ],
+      "characters": 3269,
+      "stage": "observed-1",
+      "drawSerial": 0
+    },
+    "error": 0
+  },
+  "plain-1-comparison.json": {
+    "width": 256,
+    "height": 128,
+    "channels": 0,
+    "pixels": 0,
+    "max": 0,
+    "shaA": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+    "shaB": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+    "diff": "RGB abs difference with alpha difference promoted to RGB; opaque display, no acceptance mask; originals complete unchanged RGBA"
+  },
+  "observed-1-comparison.json": {
+    "width": 256,
+    "height": 128,
+    "channels": 0,
+    "pixels": 0,
+    "max": 0,
+    "shaA": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+    "shaB": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+    "diff": "RGB abs difference with alpha difference promoted to RGB; opaque display, no acceptance mask; originals complete unchanged RGBA"
+  }
+}
