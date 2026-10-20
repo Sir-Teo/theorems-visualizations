@@ -125,3 +125,8 @@ Art rises from 6 to 7 published cross-field edges and from 27 to 28 across its w
 ## Accepted checkpoint through6978d28
 
 Published shortfall857→855 through actual prerequisite arguments: soc4.1→prob3.6.1 for the sparse Poisson limit (soc9→10published,36→37whole) and art4.3→ladr2.22 for dependence of four response vectors in R³ (art7→8published,28→29whole). Root read the actual arguments;53/64collections remain below25published edges and28whole syllabi remain below25. See [network acceptance](soc-erdos-renyi-followup.md), [colour acceptance](art-metamer-followup.md) and [combined checkpoint](checkpoint-6978d28.md).
+
+
+## Accepted checkpoint through1cf1a67
+
+Published counts remain at shortfall855,53/64collections below25published and28whole syllabi below25. Psych4.8 retains its actually used rca8.13 absolute-integrability prerequisite and moves unused planned art6.2 to related context, reducing the whole-syllabus psych count45→44 without changing published counts. See [retinal acceptance](psych-centresurround-followup.md) and [combined checkpoint](checkpoint-1cf1a67.md).

@@ -11497,8 +11497,8 @@
       "field": "social",
       "target": 25,
       "writtenToWritten": 19,
-      "writtenToKnown": 23,
-      "wholeSyllabus": 45,
+      "writtenToKnown": 22,
+      "wholeSyllabus": 44,
       "publishedShortfall": 6,
       "unknown": [],
       "edges": [
@@ -11634,13 +11634,6 @@
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
-        },
-        {
-          "item": "psych-4.8",
-          "prerequisite": "art-6.2",
-          "prerequisiteField": "arts",
-          "itemWritten": true,
-          "prerequisiteWritten": false
         },
         {
           "item": "psych-4.8",
