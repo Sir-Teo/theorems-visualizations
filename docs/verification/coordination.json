@@ -44,7 +44,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Recovered complete Denavit1955original215\u2013221 and producing exclusive ROBOT3.7convention-mapped follow-up. LOGIC4.12/ARCH3.14body recovery queued; BIGHIST3.5source-reading only after worker access limitation.",
+      "current": "FLUID metadata/scope peer accepted; ROBOT3.7local finite-yaw correction in production; LOGIC4.12/ARCH3.14body recovery paused at safe boundary.",
       "completedCollections": [
         "music",
         "ling"
@@ -53,7 +53,7 @@
     {
       "agent": "worker_two",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-two/theorems-visualizations",
-      "branch": "codex/bighist-orbits",
+      "branch": "codex/bighist-extinction",
       "collection": "arch",
       "owns": [
         "content/arch/**",
@@ -66,7 +66,7 @@
         "psych",
         "tech"
       ],
-      "current": "BIGHIST4.3accepted; independently reviewing rootadmixture4.5f15221b. Bounded MATHBIO3.14/CIRC4.17body recovery saved separately."
+      "current": "Exclusive BIGHIST4.8actual-source/analytic three-case megafauna audit in progress; accepted3.8files restored byte-identically after filename collision found."
     },
     {
       "agent": "worker_three",
@@ -81,7 +81,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "GOE3.4andOut-of-Africa4.3peers complete/accepted; preparing genuine FLUID prerequisites, then next deficient collection.",
+      "current": "ROBOT3.7source/math/native peer complete with concrete huge-yaw finding; final producer correction/recheck pending. Preparing PHIL genuine used prerequisites after accepted FLUID.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -1437,14 +1437,35 @@
       "report": "docs/verification/polsci-crossfield-prerequisites-peer.md",
       "publishedBefore": 19,
       "publishedAfter": 25
+    },
+    {
+      "commits": [
+        "6813dada75cd98444e3ff169c13bf0eaa94865ef",
+        "085f57ed880c9028da42cca9d03e362fc9fdc27e"
+      ],
+      "collection": "fluid",
+      "items": [
+        "fluid-1.4",
+        "fluid-2.4",
+        "fluid-2.9",
+        "fluid-3.3",
+        "fluid-4.3"
+      ],
+      "status": "accepted",
+      "producer": "worker_three",
+      "peer": "worker_one",
+      "report": "docs/verification/fluid-crossfield-independent-peer-worker-one.md",
+      "publishedBefore": 20,
+      "publishedAfter": 25,
+      "scopeCorrection": "Separate3.3time-dependentEuler wording; independent A-prime+A-squared pressure residual; no source flag closure."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 833,
-    "publishedBelow25": 51,
+    "publishedShortfall": 828,
+    "publishedBelow25": 50,
     "collections": 64,
     "wholeSyllabusBelow25": 28,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Current independently accepted4.5prerequisite included"
+    "acceptedSnapshot": "Exact accepted5614431 includes FLUID metadata and separate Euler scope correction; unaccepted Toba draft excluded"
   }
 }
