@@ -1,0 +1,299 @@
+{
+  "mapping": [
+    {
+      "num": "1.3",
+      "target": "ladr-3.21",
+      "file": "ch01.js",
+      "sourceFile": "ch01.js",
+      "before": [
+        "arch-1.2"
+      ],
+      "after": [
+        "arch-1.2",
+        "ladr-3.21"
+      ],
+      "paragraph": "The reaction classification uses rank-nullity (ladr 3.21) for the linear map $A:\\R^r\\to\\R^3$. Its null space has dimension $r-\\operatorname{rank}A$ and consists of reaction changes that leave the applied load unchanged. When rank is three, every load has a solution and the solution set is one particular reaction plus that null space; it is a singleton exactly when $r=3$. When rank is smaller, only loads in the range can be balanced. This is a statement about the chosen rigid-body support model, not a test of member strength or elastic stability."
+    },
+    {
+      "num": "1.6",
+      "target": "vcalc-4.9",
+      "file": "ch01.js",
+      "sourceFile": "ch01.js",
+      "before": [
+        "arch-1.2",
+        "solid-1.1"
+      ],
+      "after": [
+        "arch-1.2",
+        "solid-1.1",
+        "vcalc-4.9"
+      ],
+      "paragraph": "The section calculation uses the first and second area moments of vcalc 4.9, taking unit density as a geometric area measure. About a centroidal bending axis $\\int_A y\\,dA=0$ and $I=\\int_A y^2\\,dA$. Under the stated plane-section, linear elastic stress assumption, integrating $\\sigma=-My/I$ gives zero axial resultant and the required bending moment (up to the chosen face sign). For a rectangle of width $b$ and depth $d$, $I=bd^3/12$; adding uniform compression $P/(bd)$ leaves both extreme fibres compressive exactly when $|Pe|d/(2I)\\le P/(bd)$, or $|e|\\le d/6$. The moment integral supplies the coefficient; axial equilibrium alone would not determine this linear stress distribution."
+    },
+    {
+      "num": "2.1",
+      "target": "ladr-3.65",
+      "file": "ch02.js",
+      "sourceFile": "ch02.js",
+      "before": [
+        "arch-1.5"
+      ],
+      "after": [
+        "arch-1.5",
+        "ladr-3.65"
+      ],
+      "paragraph": "For the prescribed-force-density net, assume positive $q$ on each retained edge and that every component of free nodes is connected to a fixed boundary node. The reduced weighted graph matrix $L$ obeys $u^\\top Lu=\\sum_{\\text{free--free}}q_{ij}(u_i-u_j)^2+\\sum_{\\text{free--fixed}}q_{ij}u_i^2>0$ for nonzero free-node vectors, extending $u=0$ at fixed nodes. Thus its kernel is zero. The finite-dimensional injective--surjective theorem (ladr 3.65) makes $L$ invertible, so each coordinate has a unique solution for the given densities and boundary. A free component without an anchor has a constant null mode instead. This does not prove existence for an independently prescribed cable length or for arbitrary signed densities."
+    },
+    {
+      "num": "2.3",
+      "target": "pma-5.15",
+      "file": "ch02.js",
+      "sourceFile": "ch02.js",
+      "before": [
+        "arch-2.2",
+        "mech-5.11"
+      ],
+      "after": [
+        "arch-2.2",
+        "mech-5.11",
+        "pma-5.15"
+      ],
+      "paragraph": "Taylor's theorem (pma 5.15) also supplies the claimed shallow-sag error, rather than the exact catenary equation alone. Put $u=L/(2a)$ and $\\xi=2x/L$ measured from the midpoint. At the same span and sag, the normalized catenary height above its low point is $(\\cosh(u\\xi)-1)/(\\cosh u-1)$, while the parabola is $\\xi^2$. On $|\\xi|\\le1$ the finite Taylor remainder is uniform as $u\\to0$, giving their difference $u^2(\\xi^4-\\xi^2)/12+O(u^4)$. Since $d/L=(\\cosh u-1)/(2u)=u/4+O(u^3)$, the maximum gap divided by the sag is $\\tfrac13(d/L)^2+O((d/L)^4)$. This is a small-sag asymptote, not an error guarantee for deep chains."
+    },
+    {
+      "num": "2.6",
+      "target": "ode-3.13",
+      "file": "ch02.js",
+      "sourceFile": "ch02.js",
+      "before": [
+        "arch-2.5"
+      ],
+      "after": [
+        "arch-2.5",
+        "ode-3.13"
+      ],
+      "paragraph": "The length scale in the deck argument comes from the actual constant-coefficient operator. For fixed $EI>0$ and $H>0$, its homogeneous equation has characteristic polynomial $r^2(EI r^2-H)$. The solution-basis theorem (ode 3.13) therefore gives $1,x,e^{x/\\ell},e^{-x/\\ell}$ with $\\ell=\\sqrt{EI/H}$; if $H=0$ the fourfold zero root gives $1,x,x^2,x^3$. These modes explain why the span relative to $\\ell$ controls the balance between bending and tension. The applied truck load, end conditions and integral compatibility for $h$ still have to be imposed; this homogeneous calculation neither solves those conditions by itself nor validates aerodynamic stability."
+    },
+    {
+      "num": "3.2",
+      "target": "vcalc-4.9",
+      "file": "ch03.js",
+      "sourceFile": "ch03.js",
+      "before": [
+        "arch-3.1",
+        "arch-1.5"
+      ],
+      "after": [
+        "arch-3.1",
+        "arch-1.5",
+        "vcalc-4.9"
+      ],
+      "paragraph": "For a rectangular joint of width $b$ and depth $t$, let $p(y)\\ge0$ be compressive pressure, with $-t/2\\le y\\le t/2$. The resultant and its location are the mass/first-moment construction of vcalc 4.9 with pressure in place of density: $N=\\int p\\,dA$ and $Ne=\\int yp\\,dA$. A full-contact linear profile is $p(y)=N/(bt)+12Ney/(bt^3)$, whose minimum is nonnegative exactly when $|e|\\le t/6$. In a no-tension linear-elastic extension, a triangular pressure block at one edge has contact depth $3(t/2-|e|)$ and gives the usual partial-contact interpretation. General nonnegative pressure need not be linear: the middle-third test alone does not determine the actual cracking or pressure field."
+    },
+    {
+      "num": "3.3",
+      "target": "mech-2.3",
+      "file": "ch03.js",
+      "sourceFile": "ch03.js",
+      "before": [
+        "arch-1.6"
+      ],
+      "after": [
+        "arch-1.6",
+        "mech-2.3"
+      ],
+      "paragraph": "The unclosed half uses the centre-of-mass result (mech 2.3), including its uniform-gravity torque proof. For the stones above a cut, $x_c=\\sum_i W_i x_i/\\sum_i W_i$; replacing their weights by the total weight through $x_c$ preserves both vertical force and moment about every point of that cut. With no force at the free end there is no balancing horizontal thrust, so this resultant is vertical. Its crossing of the joint is the stated toppling test only under the no-sliding, no-crushing, no-tension assumptions; centering or other imposed reactions would change this free-body calculation."
+    },
+    {
+      "num": "3.5",
+      "target": "solid-4.10",
+      "file": "ch03.js",
+      "sourceFile": "ch03.js",
+      "before": [
+        "arch-3.2",
+        "arch-3.4"
+      ],
+      "after": [
+        "arch-3.2",
+        "arch-3.4",
+        "solid-4.10"
+      ],
+      "paragraph": "The static-certificate argument uses the actual lower-bound proof of solid 4.10, not its particular plastic-beam formula. Here its ideal contact specialization is compression-only unilateral contact with no sliding: a closed contact has zero relative normal velocity, an opening contact carries zero normal force, and tangential relative motion is excluded. These are the workless contact/normal-cone conditions behind the ideal dissipation argument. Equilibrium and admissibility are checked for the present fixed geometry and supports; changing that geometry requires a new certificate. Neither convex inequalities alone nor an arbitrary elastic stress guess proves the material/contact hypotheses, and finite crushing, sliding or geometric instability lies outside this certificate."
+    },
+    {
+      "num": "3.7",
+      "target": "pma-5.11",
+      "file": "ch03.js",
+      "sourceFile": "ch03.js",
+      "before": [
+        "arch-3.5"
+      ],
+      "after": [
+        "arch-3.5",
+        "pma-5.11"
+      ],
+      "paragraph": "The monotonicity used to keep the canonical line below the extrados follows from the derivative-sign theorem (pma 5.11). For $0<\\theta<\\pi$, differentiating $f(\\theta)=\\theta\\cot(\\theta/2)$ gives $f'(\\theta)=(\\sin\\theta-\\theta)/(2\\sin^2(\\theta/2))<0$. The numerator is negative because $\\theta-\\sin\\theta$ starts at zero and has derivative $1-\\cos\\theta>0$. Thus the comparison holds on the whole angular interval, not only at plotted samples. It justifies that one canonical-family inequality; the numerically located minimum radius and thickness transition retain their stated floating-point limitations."
+    },
+    {
+      "num": "3.9",
+      "target": "pma-5.11",
+      "file": "ch03-b.js",
+      "sourceFile": "ch03-b.js",
+      "before": [
+        "arch-3.2"
+      ],
+      "after": [
+        "arch-3.2",
+        "pma-5.11"
+      ],
+      "paragraph": "For a fixed imposed arch reaction with $H,V>0$ and $x_0>x_o$, the height dependence can be proved by the mean-value derivative argument of pma 5.11: $F'(h)=-V(x_0-x_o)/(Hh^2)<0$ for $h>0$. Its limit is $\\gamma w^2/(2H)$, so $w\\ge\\sqrt{2H/\\gamma}$ makes that limiting value at least one. Conversely, a narrower pier may still pass at finite height through the positive $1/h$ term. The reaction is held fixed in this derivative; allowing the arch reaction, weight position or support geometry to change would be a different comparison."
+    },
+    {
+      "num": "4.1",
+      "target": "pma-6.27",
+      "file": "ch04.js",
+      "sourceFile": "ch04.js",
+      "before": [
+        "arch-3.2",
+        "arch-1.5"
+      ],
+      "after": [
+        "arch-3.2",
+        "arch-1.5",
+        "pma-6.27"
+      ],
+      "paragraph": "Arc length as the integral of speed (pma 6.27) supplies the web-weight calculation. Parametrize a circular cross-section by $(R\\sin u,R\\cos u)$, whose speed is $R$; the strip between the groins has angular half-width $\\arcsin(|s|/R)$ and hence length $2R\\arcsin(|s|/R)$. Multiplying that length by the areal weight and allocating half to each endpoint yields the stated $q(s)$ after adding the adjacent web. Extruding the semicircular arc over length $2R$ likewise gives the barrel area. This integration determines weight in the chosen allocation, not the omitted horizontal web reactions or a complete vault equilibrium."
+    },
+    {
+      "num": "4.2",
+      "target": "vcalc-4.9",
+      "file": "ch04.js",
+      "sourceFile": "ch04.js",
+      "before": [
+        "arch-4.1",
+        "arch-3.4"
+      ],
+      "after": [
+        "arch-4.1",
+        "arch-3.4",
+        "vcalc-4.9"
+      ],
+      "paragraph": "The load positions in the rib calculation use the actual mass/centroid integrals of vcalc 4.9. For each positive-area polygonal rib block, uniform density gives its weight from area and its gravity line from the first area moment. For each web-load bin, integrating the nonnegative density and its position-weighted first moment similarly preserves both total vertical force and moment when it is replaced by one resultant. This is why a crown lump is generally not equivalent: matching total weight alone misses its moment about the springing. These exact load resultants do not supply the horizontal reactions omitted from the imposed plane-arch model."
+    },
+    {
+      "num": "4.3",
+      "target": "pma-10.46",
+      "file": "ch04.js",
+      "sourceFile": "ch04.js",
+      "before": [
+        "arch-3.2"
+      ],
+      "after": [
+        "arch-3.2",
+        "pma-10.46"
+      ],
+      "paragraph": "The distinction between surface weight and plan load uses the surface-area element of pma 10.46. For the sphere $\\Phi(\\varphi,\\theta)=(a\\sin\\varphi\\cos\\theta,a\\sin\\varphi\\sin\\theta,a\\cos\\varphi)$, the norm of the cross product of its partial derivatives is $a^2\\sin\\varphi$. Thus a cap of polar angle $\\varphi$ has weight $2\\pi wa^2(1-\\cos\\varphi)$; a uniform plan load instead contributes $p\\pi a^2\\sin^2\\varphi$. Substitution into the same vertical cap equilibrium yields respectively $-wa/(1+\\cos\\varphi)$ and $-pa/2$ for the meridional resultant. The pole is treated by a limiting chart or by removing a zero-area point, not by dividing by its zero circle radius."
+    },
+    {
+      "num": "4.6",
+      "target": "pma-5.15",
+      "file": "ch04-b.js",
+      "sourceFile": "source-audit-poleni-item.js",
+      "before": [
+        "arch-4.5",
+        "arch-3.1"
+      ],
+      "after": [
+        "arch-4.5",
+        "arch-3.1",
+        "pma-5.15"
+      ],
+      "paragraph": "The difference between the finite polygon and continuum hoop readouts follows from Taylor's theorem (pma 5.15). With $x=\\pi/n$, their ratio is $x/\\sin x$. The finite sine expansion with bounded remainder near zero gives $\\sin x=x-x^3/6+O(x^5)$, hence $T/[nH/(2\\pi)]=1+\\pi^2/(6n^2)+O(n^{-4})$ as $n\\to\\infty$. For finite $n\\ge3$, $0<\\sin x<x$, so the continuum expression underestimates this particular regular-polygon side tension. This comparison is conditional on identical radial nodal forces and says nothing about the historical hoop forces."
+    },
+    {
+      "num": "4.7",
+      "target": "vcalc-4.7",
+      "file": "ch04-b.js",
+      "sourceFile": "source-audit-pantheon-item.js",
+      "before": [
+        "arch-4.4"
+      ],
+      "after": [
+        "arch-4.4",
+        "vcalc-4.7"
+      ],
+      "paragraph": "The radial-volume weight law comes from the spherical change of variables in vcalc 4.7. Over a small angular patch, integrating $r^2\\sin\\varphi\\,dr\\,d\\varphi\\,d\\theta$ from the fixed inner radius $a$ to $a+t(\\varphi)$ and dividing by the inner-surface area $a^2\\sin\\varphi\\,d\\varphi\\,d\\theta$ gives $t+t^2/a+t^3/(3a^2)$. Multiplication by the chosen density and gravity yields exactly the stated weight per inner-surface area. The displayed density is treated as constant through the radial thickness of each angular patch; it may vary with polar angle. Jumps in the authored laws are integrated piece by piece, and the volume calculation does not add shell stiffness, cracking or restraint to the model."
+    },
+    {
+      "num": "4.8",
+      "target": "pma-6.21",
+      "file": "ch04-b.js",
+      "sourceFile": "source-audit-florence-item.js",
+      "before": [
+        "arch-4.4"
+      ],
+      "after": [
+        "arch-4.4",
+        "pma-6.21"
+      ],
+      "paragraph": "The analytic band evaluation uses the fundamental theorem in pma 6.21. With $B(u)=A(u)\\tan u$, the identity $B'=N_\\theta/w$ makes the signed hoop-resultant integral over a smooth meridian interval $[u_1,u_2]$ equal to $wR[B(u_2)-B(u_1)]$, since $ds=R\\,du$. To measure tensile demand, split at the hoop zeros and sum this primitive difference only where $N_\\theta>0$, rather than canceling it with compression. Endpoints at the crown use the stated finite one-sided limit. This is an integration identity for the completed circular-shell family; the built-height mask does not make it an equilibrium calculation for unfinished masonry."
+    },
+    {
+      "num": "4.9",
+      "target": "pma-10.46",
+      "file": "ch04-b.js",
+      "sourceFile": "source-audit-pendentives-item.js",
+      "before": [
+        "arch-4.3"
+      ],
+      "after": [
+        "arch-4.3",
+        "pma-10.46"
+      ],
+      "paragraph": "The spherical areas use the parametrized surface-area formula of pma 10.46, not the plan projection. On a sphere of radius $R$, the cross-product area element gives a cap of height $h$ area $2\\pi Rh$. Here $R=\\sqrt2a$: each upper-half side portion beyond a plane at distance $a$ has area $\\pi R(R-a)=\\pi(2-\\sqrt2)a^2$, and the top cap above $z=a$ has area $2\\pi R(R-a)=(4-2\\sqrt2)\\pi a^2$. The four side portions have no positive-area overlaps on the upper sphere; subtracting them and the top cap from its $4\\pi a^2$ area gives the stated pendentive area. Edge intersections and isolated pole/chart singularities have zero surface area."
+    },
+    {
+      "num": "4.11",
+      "target": "ladr-3.65",
+      "file": "ch04-b.js",
+      "sourceFile": "ch04-b.js",
+      "before": [
+        "arch-4.3",
+        "arch-1.5"
+      ],
+      "after": [
+        "arch-4.3",
+        "arch-1.5",
+        "ladr-3.65"
+      ],
+      "paragraph": "The claimed unique heights require an anchored positive-density network. With support heights fixed, differences $u$ of two candidate height solutions vanish at the supports and satisfy a reduced matrix equation $Lu=0$. For positive $q_{ij}$, $u^\\top Lu$ is the sum of $q_{ij}(u_i-u_j)^2$ over free--free edges and $q_{ij}u_i^2$ over free--support edges. The retained rows and columns connect every free node to the boundary, so this sum vanishes only for $u=0$. The finite-dimensional injective--surjective theorem (ladr 3.65) then gives existence and uniqueness for every specified vertical load vector. It does not certify that the resulting network fits the envelope or that the separate numerical search finds every admissible force diagram."
+    }
+  ],
+  "backfills": {
+    "1.4": [
+      "arch-1.2",
+      "vcalc-1.1"
+    ],
+    "1.6": [
+      "arch-1.2",
+      "solid-1.1"
+    ],
+    "1.8": [
+      "arch-1.2",
+      "arch-1.1",
+      "arch-1.3"
+    ]
+  },
+  "oldRows": {
+    "1.4": [
+      "arch-1.2"
+    ],
+    "1.6": [
+      "arch-1.2"
+    ],
+    "1.8": [
+      "arch-1.2",
+      "arch-1.1"
+    ]
+  }
+}
