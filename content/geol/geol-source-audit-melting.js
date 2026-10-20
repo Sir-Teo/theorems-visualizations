@@ -1,5 +1,5 @@
 // The polynomial version explicitly printed in Hirschmann2000's abstract;
-// publisher HTML Table2 / paragraph39 disagree. We do not identify it as a reconciled recommended fit.
+// actual original publisher PDF Table2 / paragraph39 also disagree with each other and the abstract. We do not identify it as a reconciled recommended fit.
 export const MELT={a:5.104,b:132.899,c:1120.661,G:15,latent:500,interval:700,rho:3300,rhoC:2900,g:9.8};
 export const solidus=P=>MELT.c+MELT.b*P-MELT.a*P*P;
 export function decompression(tp,lidKm){

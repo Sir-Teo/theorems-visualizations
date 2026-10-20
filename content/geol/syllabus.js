@@ -156,7 +156,7 @@ export default {
         { num: '4.9', kind: 'Phenomenon', name: 'Mantle plumes', deps: ['geol-4.7'], refs: ['Turcotte–Schubert ch. 6'],
           pic: 'Release hot buoyant fluid from a basal layer: it rises as a mushroom head trailing a thin tail, and the head spreads beneath the lithosphere as a flood-basalt source.' },
         { num: '4.10', kind: 'Phenomenon', name: 'Decompression melting', deps: ['geol-4.7', 'pchem-4.3'], refs: ['Turcotte–Schubert ch. 4'],
-          pic: 'Lift mantle rock along an adiabat: it crosses the solidus at a depth set by its potential temperature, and the melt fraction grows as it rises beneath ridges and plumes.' },
+          pic: 'Choose potential temperature and stopping depth in an explicitly authored linear melting closure using the identified abstract polynomial; compare latent cooling, onset, melt fraction and an equivalent column inventory.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
