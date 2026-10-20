@@ -404,8 +404,8 @@ export default {
           pic: 'Natural, harmonic and melodic minor drawn on the clock beside the major scale: the relative minor is the same set rotated to a new tonic, the parallel minor keeps the tonic and lowers three degrees, and each scale plays over a drone with the harmonic minor’s augmented second flagged.' },
         { num: '8.20', kind: 'Concept', name: 'Key signatures', deps: ['music-8.19', 'music-7.14'], refs: ['Benson app. M'], tags: ['keys', 'circle of fifths'],
           pic: 'Step around the circle of fifths and the key signature gains one sharp (in the order F C G D A E B) or one flat (in the reverse order) per step, with the tonic read off from the last accidental; each key’s scale plays with its altered notes lit on the keyboard.' },
-        { num: '8.21', kind: 'Concept', name: 'Change ringing and permutations', deps: ['comb-1.5'], refs: ['Benson ch. 9'], tags: ['permutations', 'bells'],
-          pic: 'Bells ring rows in changing orders, each change swapping disjoint adjacent pairs; the plain hunt draws a braid of crossing lines, and a method such as Plain Bob Minimus extends it until all 24 orders of four bells have rung exactly once, which the diagram checks as the peal plays.' },
+        { num:'8.21',kind:'Concept',name:'Change ringing and permutations',deps:['comb-1.5'],refs:['CCCBR Framework edition2 §§3.B–E,3.J and AppendixA; Plain Minimus Methods; Benson §9.4'],tags:['permutations','bells'],
+          pic:'Compute the complete course at whole-lead closure, verify actual effective-stage truth and the24-row Plain Bob extent, and follow or hear the selected row/window with explicit validated notation.' },
       ],
     },
     {
