@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 39,
+  "remainingFlags": 40,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "art": 2,
+    "art": 3,
     "arch": 6,
     "ling": 4,
     "bighist": 16
@@ -641,13 +641,33 @@
         "wikipedia": "https://en.wikipedia.org/wiki/Serial_founder_effect",
         "doi": "https://doi.org/10.1073/pnas.0507611102"
       }
+    },
+    {
+      "id": "art-3.3",
+      "file": "content/art/ch03.js",
+      "name": "Newton’s colour circle and centre-of-gravity mixing",
+      "field": "art",
+      "category": "neighboring-source-error",
+      "status": "source-review-pending",
+      "explicitUncertainty": [
+        "Inherited blue-arc fraction differs from actual1704 print; isolated candidate003e624 awaits independent acceptance"
+      ],
+      "refs": [
+        "Newton1704, BookI PartII PropositionVI pp.114–117",
+        "CIE1931 official matching-function dataset DOI10.25039/CIE.DS.xvudnb9b"
+      ],
+      "links": {
+        "original": "https://www.wilbourhall.org/pdfs/newton/opticks1704englishwh.pdf",
+        "transcription": "https://newtonproject.ox.ac.uk/view/texts/diplomatic/NATP00034"
+      }
     }
   ],
   "changesFromBaseline": {
     "addedFlags": [
       "circ-4.17",
       "art-3.12",
-      "art-3.13"
+      "art-3.13",
+      "art-3.3"
     ],
     "resolvedFlags": [
       "energy-4.8",
@@ -6480,6 +6500,11 @@
       "id": "ling-3.10",
       "status": "resolved",
       "note": "2026-10-20: Coordinator independently accepted exact e1cfabd after original source population, independent reference and native/output pixel review; docs/verification/ling-irregular-followup.md."
+    },
+    {
+      "id": "art-3.3",
+      "status": "source-review-pending",
+      "note": "2026-10-20: actual1704 print has blue1/10, inherited shared circle had1/16; coordinator assigned isolated repair; integrated exact003e624 remains flagged pending independent peer."
     }
   ]
 }

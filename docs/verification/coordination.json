@@ -903,7 +903,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 39,
+  "currentPendingSourceReviews": 40,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",
