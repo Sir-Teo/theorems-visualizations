@@ -252,7 +252,7 @@ export default {
       tags: ['Nim', 'impartial games', 'combinatorial game'],
       links: { source: 'https://www.jstage.jst.go.jp/article/tmj1911/41/0/41_0_438/_pdf', wikipedia: 'https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem' },
       scope: 'Normal play on finite terminating game trees. The finite widget uses2–4Nim heaps, each0–7tokens; zero heaps are allowed and all-zero is terminal. Kayles removes one pin or two adjacent pins, splitting a row into independent remaining rows. The grid covers row sizes0–12. These are exact finite integer calculations, without a claim about misère sums, games with cycles or historical priority. Saved state includes heaps, last-token result and random seed.',
-      verify: true,
+      verify: false,
       viz(v) {
         const A = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 340, weight: 1.1, title: 'Nim' });
         const Bb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 0.9, title: 'binary digits and the nim-sum' });

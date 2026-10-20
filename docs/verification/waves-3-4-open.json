@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 125,
+  "remainingFlags": 124,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 6,
+    "game": 5,
     "psych": 6,
     "soc": 8,
     "polsci": 9,
@@ -284,21 +284,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Strategy-stealing_argument"
-      }
-    },
-    {
-      "id": "game-4.12",
-      "file": "content/game/ch04-c.js",
-      "name": "Nim and the Sprague–Grundy theorem",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem"
       }
     },
     {
@@ -2765,7 +2750,8 @@
       "psych-3.4",
       "music-7.12",
       "soc-3.1",
-      "soc-4.4"
+      "soc-4.4",
+      "game-4.12"
     ]
   },
   "additionalFollowups": [
@@ -7339,6 +7325,11 @@
       "id": "soc-4.4",
       "status": "resolved",
       "note": "2026-10-20: coordinator original2011 papers, official2016 announcement, counting math and fresh narrow native review; soc-centrality-online-followup.md."
+    },
+    {
+      "id": "game-4.12",
+      "status": "resolved",
+      "note": "2026-10-20: worker_two exact-commit original Sprague source/proof/math and fresh narrow light/dark native matrices; game-nim-followup.md."
     }
   ]
 }

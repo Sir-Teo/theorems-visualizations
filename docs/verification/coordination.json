@@ -149,6 +149,16 @@
         "soc-centrality-online-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "game-4.12"
+      ],
+      "peer": "worker_two exact-commit original Sprague source/proof/math and fresh narrow light/dark native matrices",
+      "reports": [
+        "game-nim-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -161,5 +171,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 125
+  "currentPendingSourceReviews": 124
 }
