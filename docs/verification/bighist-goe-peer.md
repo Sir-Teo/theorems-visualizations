@@ -1,0 +1,29 @@
+# Independent peer: BIGHIST3.4
+
+Recommendation **ACCEPT exact dea927f6eee36ba41b9f8813e2f38535209f8e6d**, within its explicit source/version/model limits. No actionable findings remain. Reviewed immutable archive `/tmp/atlas-worker-three/goe-peer`; no producer, integration, global or source-flag writes.
+
+## Actual source comparison
+
+Read the complete original Farquhar/Bao/Thiemens2000 sulfur article, Science289:756–758, including all three figures/captions and notes. PDF page756's adjacent preceding chemistry article is distinct. Own rendered pages1–3 were personally inspected. The original abstract/body/Fig1 support a study-inferred sulfur-cycle transition bracket2090–2450Ma, rather than a universal dated disappearance at2310Ma. Existing yellow highlights belong to the downloaded facsimile. Own complete cached PDF SHA256 `97c6e0144e3b22409c3078d7c53c45cf61e987aaf1fd66fee5d60d5863060e0c`.
+
+Read actual Bekker2004 publisher author abstract, personally inspected its own rendered original HTML section. Its South African studied pyrites, roughly2.32Ga age and inferred oxygen above10⁻⁵PAL match the attributed abstract-only point and prose. The full article body remains subscription content and was not audited. The candidate's label, statement and scope preserve this access limit; no sample-table/raw-data or full-body claim is inferred from the abstract. Cached owner HTML SHA256 `da1bc0b78e576a4d29fc2a7e829e7f6193ac0df160162f70b6633dbd60a48f5b`.
+
+Read actual Philippot2018 main article sections relevant to regional chronology, continental-reservoir interpretation, full redefinition discussion and geochronology/isotope Methods. Personally inspected own actual Fig1/2 pixels (downloaded from the exact image URLs observed in cached PMC HTML), and own rendered original date paragraph. The source supports Australian signals from about2450Ma to younger than2310Ma, interrupted disappearances, a study-inferred regional memory effect, and an unconstrained upper TureeCreek age. The2312.7±5.6Ma date is for MBM diamictite, not the last sulfur anomaly; Methods explicitly dates five matrix samples/two pyrite separates by the reported isochron. The candidate preserves this distinction and does not claim independent raw-isotope/isochron reanalysis or a unique causal mechanism. Complete cached PMC HTML SHA256 `9f80aa9bbcbc9178e89db92818863b371034392a8c82fb7c5930b30b0569e7d7`.
+
+Read Lyons/Reinhard/Planavsky2014 relevant307–310 synthesis, Fig1, recycling and source/sink passages; personally inspected own p310 original pixels. Long-term burial avoids immediate respiratory consumption, contributing to net oxygen accumulation; it is not an oxygen sink. The source also qualifies monotone histories, proxy recycling, methane and oxygen-independent iron oxidation, consistent with the candidate's bounded author-review attribution. PDF SHA256 `1723aea6201181d25795ada96eea35c84576a1598e8f62c476f376a5e73c87a7`.
+
+All four source files were independently copied and hashed in own `sources/`. Fresh owner-page web requests in this review returned a Nature identity redirect and PMC browser-check response; no challenge was solved and no fresh full-body fetch is claimed. The successful complete owner caches and observed public figure assets were used honestly. Source links remain those recorded in the committed manifest, including the actual original facsimiles and dated owner articles.
+
+## Independent mathematics and model meaning
+
+All five mathematical groups and static1/0/0 PASS. Independently regenerated100digit24case monotone-bisection/source-unit/hash reference, changing only its source-cache root to the reviewer's own copies. Byte-identical SHA256 `44870b71ce8461502cbb640d41ecbbf667acf9e59901956b62522ad6e8bfe406`. Log `math.log`, own `reference-peer.py`/`reference.json`.
+
+The balance's increasing sink has derivative epsilon/(x+epsilon)²+k>0, starts at zero and is unbounded. Thus a nonnegative source has a unique nonnegative root; source-minus-sink perturbations restore that root. Implicit derivative is positive and bounded by1/k. The piecewise regular/rationalized quadratic roots are algebraically correct and continuous at source1; this finite-epsilon model has no bifurcation. Cubic source forcing is monotone between its exact endpoints, permitting decline when the after-source is smaller. Quasi-static roots are not a simulated integrated oxygen reservoir or fitted geological chronology. PAL and percent-of-present labels do not claim atmospheric oxygen volume fraction.
+
+Own additional oracle uses a separately weighted cubic interpolation and80-step monotone flux bisection at all161points of50canonical four-control profiles:8050full-curve roots agree, maximum relative error5.0263×10⁻¹⁴. `semantic-oracle.mjs`/`.log`. Source observation geometry stays independent of these four authored controls; no posterior/event interval or younger termination is invented by the open reference/short arrow.
+
+## Fresh native and personal output inspection
+
+Both full320light/dark groups PASS in own `native/`, logs `native-{light,dark}.log`. Covers16corners, decline, sources.99/1/1.01, actual clicks and keyboard for all four sliders, reset, independently edited complete canonical state/exact replay,40malformed raw whole-default rejections, direct actual numeric DOM=model, all161full curve points, complete stroke/glyph/text/TeX/page bounds and fixed bracket/dot/open-circle/arrow semantics.
+
+Personally inspected own default320light source panel, declining320dark full page, near-one320dark balance curve and manually edited canonical320light balance panel. Dates, source access label, younger continuation, unit annotations, controls and complete finite curve remain legible and contained. Actual source pixels listed above were separately inspected. This supports the bounded item and its repaired authored model, while retaining the expressly unread2004body and unanalysed raw-data limitations.

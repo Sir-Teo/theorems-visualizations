@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 13,
+  "remainingFlags": 12,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -18,7 +18,7 @@
     "circ": 1,
     "robot": 1,
     "arch": 1,
-    "bighist": 6
+    "bighist": 5
   },
   "queue": [
     {
@@ -134,22 +134,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
-      }
-    },
-    {
-      "id": "bighist-3.4",
-      "file": "content/bighist/ch03.js",
-      "name": "The Great Oxidation Event",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Great_Oxidation_Event",
-        "doi": "https://doi.org/10.1126/science.289.5480.756"
       }
     },
     {
@@ -1057,7 +1041,8 @@
       "bighist-4.2",
       "energy-3.10",
       "bighist-4.7",
-      "bighist-3.3"
+      "bighist-3.3",
+      "bighist-3.4"
     ]
   },
   "additionalFollowups": [
@@ -6216,6 +6201,11 @@
       "id": "bighist-3.3",
       "status": "resolved",
       "note": "2026-10-20: Worker two independently read actual1977/1990originals, bounded2024dating/methods and NCBIcode tables with ownpixels, regeneratedFractionreference/sourcehashes, added2402cutpointcases, and passed fresh320both-theme native/extra independent raw-selector edits/fullreplay/ownpixels; docs/verification/bighist-luca-peer.md."
+    },
+    {
+      "id": "bighist-3.4",
+      "status": "resolved",
+      "note": "2026-10-20: Worker three independently read actual2000/2018bodies and bounded2004authorabstract/2014review with own sourcepixels, regenerated100digitreference, checked8050independentroots, and passed fresh320both-theme fullnative/raw40rollbacks/directDOM/sourcegeometry/exactreplay/ownpixels; docs/verification/bighist-goe-peer.md."
     }
   ]
 }

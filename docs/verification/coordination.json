@@ -1250,6 +1250,19 @@
       "commits": [
         "cedbe66e1fd8f4f3d765d0ab0e78a862557d4158"
       ]
+    },
+    {
+      "ids": [
+        "bighist-3.4"
+      ],
+      "peer": "Worker three independently read actual2000/2018bodies and bounded2004authorabstract/2014review with own sourcepixels, regenerated100digitreference, checked8050independentroots, and passed fresh320both-theme fullnative/raw40rollbacks/directDOM/sourcegeometry/exactreplay/ownpixels",
+      "reports": [
+        "docs/verification/bighist-goe-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "dea927f6eee36ba41b9f8813e2f38535209f8e6d"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1262,7 +1275,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 13,
+  "currentPendingSourceReviews": 12,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",
