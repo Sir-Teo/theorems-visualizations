@@ -111,7 +111,7 @@ For a smooth axial displacement, strain is its derivative. The fundamental theor
 - **compatibility**: the members must deform in a geometrically consistent way, e.g. two parallel rods joined to a rigid plate stretch equally, $\delta_1 = \delta_2$;
 - **force–displacement laws**, $\delta_i = F_if_i$ with flexibility $f_i = L_i/E_iA_i$ (1.9).
 Substituting the third into the second gives one more equation and
-$$F_1 = P\,\frac{f_2}{f_1+f_2} = P\,\frac{k_1}{k_1+k_2},\qquad F_2 = P\,\frac{k_2}{k_1+k_2},\qquad k_i = \frac{E_iA_i}{L_i}:$$
+$$\begin{gathered}F_1 = P\,\frac{f_2}{f_1+f_2} \\= P\,\frac{k_1}{k_1+k_2},\\ F_2 = P\,\frac{k_2}{k_1+k_2},\\ k_i = \frac{E_iA_i}{L_i}:\end{gathered}$$
 the load divides in proportion to the stiffnesses. The same recipe solves a bar fixed at both ends and loaded at an intermediate point: $R_A + R_B = P$ and zero total elongation $R_A f_1 = R_B f_2$.`,
       idea: String.raw`Statics gives one line of admissible force pairs $(F_1, F_2)$; geometry gives another line (compatibility), and the real structure sits where the two cross. The stiffer member carries more of the load because it resists the common displacement more strongly. Note that the answer depends on $E$ and $A$, unlike in a determinate structure, where the member forces depend on geometry alone; this is why a redundant member makes the stress state depend on the materials, and why temperature changes or misfits (1.11) can stress an indeterminate structure with no load at all.
 
@@ -264,7 +264,7 @@ $$\sigma = -E\,\alpha\,\Delta T$$
       kind: 'Proposition',
       name: 'Stresses on inclined sections: maximum shear at 45°',
       statement: String.raw`In a bar of area $A$ under axial tension $P$, cut by a plane whose normal makes angle $\theta$ with the axis. The plane has area $A/\cos\theta$ and carries the force $P$, which resolves into a normal part $P\cos\theta$ and a shear part $P\sin\theta$. The stresses on the plane are therefore, with $\sigma = P/A$,
-$$\sigma_\theta = \sigma\cos^2\theta = \tfrac{\sigma}{2}(1+\cos 2\theta),\qquad \tau_\theta = \sigma\sin\theta\cos\theta = \tfrac{\sigma}{2}\sin 2\theta.$$
+$$\begin{gathered}\sigma_\theta = \sigma\cos^2\theta \\= \tfrac{\sigma}{2}(1+\cos 2\theta),\\ \tau_\theta = \sigma\sin\theta\cos\theta \\= \tfrac{\sigma}{2}\sin 2\theta.\end{gathered}$$
 The normal stress is largest ($\sigma$) on the cross-section $\theta = 0$ and vanishes along the axis; the shear stress is largest, $\tau_{\max} = \sigma/2$, on planes at $\theta = \pm 45^\circ$, where the normal stress is also $\sigma/2$. In the $(\sigma_\theta, \tau_\theta)$ plane the points lie on a circle of diameter $\sigma$ (Mohr's circle, 3.3) and a plane turned through $\theta$ is a point turned through $2\theta$.`,
       idea: String.raw`Equilibrium of the part of the bar on one side of the cut (1.1, 1.6) fixes the force on the plane; dividing by its tilted area gives the stresses. The double-angle form shows that $\sigma_\theta$ and $\tau_\theta$ are the coordinates of a point moving around a circle at twice the rate of the plane. This is why ductile metals begin to yield by slip on planes near 45° (Lüders bands, the 45° slip lines on a polished steel specimen), where the shear is greatest, while a brittle material that is weak in tension cracks on the cross-section where $\sigma_\theta$ is greatest.
 
@@ -403,7 +403,7 @@ Under the stated positive axial tension, the shear on a rotated plane is the smo
       statement: String.raw`The work done by an axial force $P$ that is applied slowly while the bar elongates by $\delta$ is stored as **strain energy**
 $$U = \int_0^{\delta} P\,\mathrm{d}\delta' ,$$
 the area under the force–elongation curve. For a linearly elastic bar ($P = k\delta$, $k = EA/L$) this is
-$$U = \tfrac12 P\delta = \frac{P^2L}{2EA} = \tfrac12 k\delta^2 = \frac{\sigma^2}{2E}\,AL ,$$
+$$\begin{gathered}U = \tfrac12 P\delta \\= \frac{P^2L}{2EA} \\= \tfrac12 k\delta^2 \\= \frac{\sigma^2}{2E}\,AL ,\end{gathered}$$
 so the energy per unit volume is $u = \sigma^2/2E = \tfrac12\sigma\varepsilon$. In an elastic bar all of it is recovered on unloading (the bar springs back); the value at the yield stress, $\sigma_y^2/2E$, is the **modulus of resilience**. If the material has yielded, only the elastic part $\sigma^2/2E$ is recovered along the unloading line, and the rest of the area is dissipated as heat.`,
       idea: String.raw`Slow loading means the load is always in equilibrium with the elastic force, so the work done on the bar is exactly the area under $P(\delta)$, which for Hooke's law (1.4, 1.9) is the triangle $\tfrac12P\delta$. The factor $\tfrac12$ is crucial: the force grows from zero to $P$, so the average force is only $P/2$. Dividing by the volume gives the energy density $\sigma^2/2E$, a property of the stress state rather than of the bar. Beyond yield the work is no longer a function of the final state alone: the loading path matters (1.3, 4.5).
 

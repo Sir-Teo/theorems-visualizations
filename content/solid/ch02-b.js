@@ -174,7 +174,7 @@ Plane strain is plane stress with $E\to E/(1-\nu^2)$ and $\nu\to\nu/(1-\nu)$.`,
       kind: 'Phenomenon',
       name: 'Auxetic materials: negative Poisson’s ratio',
       statement: String.raw`The thermodynamic limits $-1<\nu<\tfrac12$ of an isotropic solid (2.8) include **negative** values. A material with $\nu<0$ is *auxetic*: it gets fatter, not thinner, when stretched. Auxetic behaviour is a property of structure rather than of the base material: it occurs in re-entrant (bow-tie) honeycombs, foams with collapsed cells, certain crystals and rotating-square or chiral lattices. For a honeycomb of rigid ribs hinged at the nodes (ribs of length $L$ inclined at angle $\theta$, vertical ribs of length $H$) the small-strain Poisson ratio is
-$$\nu=-\frac{\varepsilon_y}{\varepsilon_x}=\frac{\cos^2\theta}{\big(H/L+\sin\theta\big)\sin\theta},$$
+$$\begin{gathered}\nu=-\frac{\varepsilon_y}{\varepsilon_x}\\=\frac{\cos^2\theta}{\big(H/L+\sin\theta\big)\sin\theta},\end{gathered}$$
 positive for $\theta>0$ (regular cells) and negative for $\theta<0$ (re-entrant cells).`,
       idea: String.raw`Stretching such a lattice makes the angle $\theta$ change, since the ribs themselves are stiff: the cell width is $2L\cos\theta$ and its height $H+L\sin\theta$ per row. In a regular hexagon, stretching in $x$ flattens the ribs (smaller $\theta$): the height $H+L\sin\theta$ drops, so the lattice narrows, $\nu>0$. In a re-entrant cell, $\theta<0$ and $\sin\theta<0$; flattening the ribs ($\theta\to0^-$) makes $H+L\sin\theta$ grow, so the height increases while the width does too, giving $\nu<0$. The hinge model is strongly anisotropic, so its values need not respect the isotropic bound $-1<\nu<\tfrac12$ of 2.8; real foams reach about $-0.7$ or less negative.
 
@@ -248,7 +248,7 @@ For positive cell width and height away from a stationary width, use the rib ang
       kind: 'Definition',
       name: 'Navier–Cauchy equations of elasticity',
       statement: String.raw`Substituting the strain–displacement relations (2.5) and Hooke's law (2.7) into the equilibrium equations (2.4) gives the **Navier–Cauchy equations**, three equations for the three displacement components of a homogeneous isotropic elastic body,
-$$\mu\nabla^2\mathbf u+(\lambda+\mu)\nabla(\nabla\!\cdot\!\mathbf u)+\mathbf b=\mathbf 0 ,$$
+$$\begin{gathered}\mu\nabla^2\mathbf u+(\lambda+\mu)\nabla(\nabla\!\cdot\!\mathbf u)\\+\mathbf b=\mathbf 0 ,\end{gathered}$$
 with Lamé constants $\lambda,\mu$. A boundary-value problem is closed by prescribing, on each part of the boundary, either the displacement $\mathbf u$ or the traction $\boldsymbol\sigma\mathbf n$ (and the compatibility conditions then hold automatically, since $\mathbf u$ is the unknown). In dynamics $\mathbf 0$ is replaced by $\rho\ddot{\mathbf u}$.`,
       idea: String.raw`The unknowns are the six stresses and six strains and three displacements; the equations are equilibrium (3), Hooke's law (6) and strain–displacement (6). Eliminating strain and stress in favour of $\mathbf u$ leaves just three second-order PDEs. Their weak (integrated) form is what a finite-element code solves: multiply by a test displacement, integrate by parts, and the traction boundary condition appears naturally. The equations are linear in $\mathbf u$ and $\mathbf b$, so solutions scale with the load and superpose.
 
@@ -307,9 +307,9 @@ For smooth displacement and constant Lamé coefficients, commuting the mixed coo
       kind: 'Method',
       name: 'Airy stress function',
       statement: String.raw`In plane stress or plane strain with no body force (or a conservative one, which can be absorbed), every stress field of the form
-$$\sigma_{xx}=\frac{\partial^2\phi}{\partial y^2},\qquad \sigma_{yy}=\frac{\partial^2\phi}{\partial x^2},\qquad \sigma_{xy}=-\frac{\partial^2\phi}{\partial x\,\partial y}$$
+$$\begin{gathered}\sigma_{xx}=\frac{\partial^2\phi}{\partial y^2},\\ \sigma_{yy}=\frac{\partial^2\phi}{\partial x^2},\\ \sigma_{xy}=-\frac{\partial^2\phi}{\partial x\,\partial y}\end{gathered}$$
 satisfies the equilibrium equations (2.4) identically. Such a stress field is also compatible (2.6), so that it comes from a displacement field in a simply connected region, if and only if $\phi$ is **biharmonic**:
-$$\nabla^4\phi=\frac{\partial^4\phi}{\partial x^4}+2\frac{\partial^4\phi}{\partial x^2\partial y^2}+\frac{\partial^4\phi}{\partial y^4}=0 .$$
+$$\begin{gathered}\nabla^4\phi=\frac{\partial^4\phi}{\partial x^4}+2\frac{\partial^4\phi}{\partial x^2\partial y^2}\\+\frac{\partial^4\phi}{\partial y^4}=0 .\end{gathered}$$
 Elasticity problems then reduce to finding a biharmonic $\phi$ whose derivatives match the tractions on the boundary (a polynomial gives the stress field of a rectangle loaded on its edges).`,
       idea: String.raw`Equilibrium $\partial_x\sigma_{xx}+\partial_y\sigma_{xy}=0$ and $\partial_x\sigma_{xy}+\partial_y\sigma_{yy}=0$ say that certain 1-forms are closed, hence exact on a simply connected region, and the potentials can be combined into one scalar $\phi$ (Airy 1862). Substituting into the compatibility equation of 2.6, written with Hooke's law (2.9) for the strains, gives $\nabla^4\phi=0$. Polynomials of degree $\le3$ are automatically biharmonic; degree 4 needs one relation among the coefficients; the quartic $x^4$ alone fails it.
 
