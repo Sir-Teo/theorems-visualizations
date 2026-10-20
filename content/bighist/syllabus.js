@@ -116,10 +116,10 @@ export default {
     {
       n: 4,
       title: 'Human origins',
-      summary: String.raw`Bipedal apes appeared in Africa several million years ago; brains tripled in size over the last two million. Ice ages paced by Earth’s orbital cycles shaped the environments our ancestors lived in. Modern humans spread out of Africa in the last hundred thousand years, losing genetic diversity at each step and interbreeding with Neanderthals and Denisovans on the way. Collective learning — the ability to share and accumulate knowledge — is Christian’s candidate for what made humans different.`,
+      summary: String.raw`Bipedal hominins were present in Africa several million years ago, before the later marked enlargement of the brain. Ice ages paced by Earth’s orbital cycles shaped the environments our ancestors lived in. Modern humans spread out of Africa in the last hundred thousand years, losing genetic diversity at each step and interbreeding with Neanderthals and Denisovans on the way. Collective learning — the ability to share and accumulate knowledge — is Christian’s candidate for what made humans different.`,
       items: [
-        { num: '4.1', kind: 'Event', name: 'Hominin evolution: bipedalism and brain growth', deps: ['bighist-3.9'], refs: ['Christian'],
-          pic: 'Brain volume of hominin fossils against age: a scatter that rises steeply over two million years, with species coloured and the energetic cost of brains read out.' },
+        { num: '4.1', kind: 'Event', name: 'Hominin evolution: bipedalism and brain growth', deps: ['bighist-3.9'], refs: ['Aiello & Wheeler1995, Tables1/4 and p208'],
+          pic: 'Compare bounded bipedalism context and four literal historical braincase summaries, then distinguish a reported basal budget from explicit volume-to-mass/allometric accounting without a causal regression.' },
         { num: '4.2', kind: 'Phenomenon', name: 'Glacial cycles and Milankovitch forcing', deps: ['mech-10.18'], refs: ['Christian'],
           pic: 'Combine eccentricity, obliquity and precession into summer insolation at 65° N and compare it with the ice-core temperature record of the last 800,000 years.' },
         { num: '4.3', kind: 'Event', name: 'Out of Africa', deps: ['bighist-4.1', 'popgen-3.9'], refs: ['Christian'],

@@ -1,11 +1,8 @@
+import homininItem from './hominin-item.js';
 // Big History & Quantitative History — Chapter 4: Human origins (items 4.1–4.4; 4.5–4.8 are in ch04-b.js)
 //
 // Sources checked (Oct 2026). Crossref was used for bibliographic details; "rounded" means the number was not taken from one table.
-//   4.1 Aiello & Wheeler, Curr. Anthropol. 36: 199 (1995) (expensive-tissue hypothesis; Crossref-checked). Species age spans and
-//     cranial-capacity ranges are rounded, indicative values from textbook-level summaries (several disagree by tens of cm3 at
-//     the edges; the Dmanisi skull 5 value of 546 cm3 was confirmed by a web search); they are boxes, not a specimen table.
-//     Bipedalism markers: Ardipithecus ramidus about 4.4 Ma, Laetoli footprints about 3.7 Ma, "Lucy" about 3.2 Ma (all rounded,
-//     not re-checked). Brain power of about 16 W for 1,350 cm3 and Kleiber's 3.4 M^0.75 W are model arithmetic (about 20% of rest).
+//   Audited4.1: actualAiello/Wheeler1995main199–211/reply217–218, Tables1/4/Fig6; historical summaries and authored accounting separated.
 //   4.2 Hays, Imbrie & Shackleton, Science 194: 1121 (1976) (Crossref-checked); Imbrie & Imbrie, Science 207: 943 (1980)
 //     (Crossref-checked). Milankovitch's name and his 1941 monograph are recalled, not re-checked. The orbital elements are a
 //     three-term-per-quantity caricature (periods 405, 124, 95 kyr; 41 kyr; 21 kyr; amplitudes approximate), tuned so that
@@ -22,22 +19,6 @@
 
 import { clamp } from './ch04.shared.js';
 import founderItem from './founder-item.js';
-
-// ── 4.1 helpers ─────────────────────────────────────────────────────────────────────────────────────────────────────────
-// [name, age from Ma, age to Ma, cm3 low, cm3 high, colour, label x, label y]  (rounded, indicative)
-const HOMININS = [
-  ['A. afarensis', 3.9, 3.0, 400, 550, 'orange', -3.45, 595, 'center'],
-  ['A. africanus', 3.0, 2.0, 420, 600, 'teal', -2.7, 685, 'center'],
-  ['P. boisei', 2.3, 1.2, 480, 550, 'purple', -1.45, 440, 'center'],
-  ['H. habilis', 2.3, 1.65, 500, 700, 'gold', -1.75, 765, 'right'],
-  ['H. erectus', 1.9, 0.1, 550, 1100, 'accent', -1.0, 800, 'center'],
-  ['H. heidelbergensis', 0.7, 0.2, 1100, 1400, 'pink', 0.05, 1260, 'left'],
-  ['H. neanderthalensis', 0.43, 0.04, 1200, 1750, 'red', 0.05, 1680, 'left'],
-  ['H. sapiens', 0.3, 0, 1100, 1750, 'green', 0.05, 1470, 'left'],
-];
-const BIPED = [[-4.4, 'Ardipithecus', 150], [-3.66, 'Laetoli footprints', 215], [-3.2, '“Lucy”', 150]];
-const kleiber = (kg) => 3.4 * kg ** 0.75;       // basal metabolic rate, W
-const brainW = (cc) => 0.0119 * cc;             // W, scaled from about 16 W at 1,350 cm3
 
 // ── 4.2 helpers: caricature orbital elements, t in kyr (negative = past) ───────────────────────────────────────────────────
 const D2R = Math.PI / 180;
@@ -81,64 +62,10 @@ export default {
   collection: 'bighist',
   chapter: 4,
   title: 'Human origins',
-  summary: String.raw`Bipedal apes appeared in Africa several million years ago; brains tripled in size over the last two million. Ice ages paced by Earth’s orbital cycles shaped the environments our ancestors lived in. Modern humans spread out of Africa in the last hundred thousand years, losing genetic diversity at each step and interbreeding with Neanderthals and Denisovans on the way. Collective learning — the ability to share and accumulate knowledge — is Christian’s candidate for what made humans different.`,
+  summary: String.raw`Bipedal hominins were present in Africa several million years ago, before the later marked enlargement of the brain. Ice ages paced by Earth’s orbital cycles shaped the environments our ancestors lived in. Modern humans spread out of Africa in the last hundred thousand years, losing genetic diversity at each step and interbreeding with Neanderthals and Denisovans on the way. Collective learning — the ability to share and accumulate knowledge — is Christian’s candidate for what made humans different.`,
   items: [
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-    {
-      num: '4.1',
-      kind: 'Event',
-      name: 'Hominin evolution: bipedalism and brain growth',
-      statement: String.raw`The hominin lineage, which split from the one leading to chimpanzees and bonobos some six to seven million years ago, shows two big changes in the fossil record. **Upright walking** came first: pelvis and foot bones and the Laetoli footprints show habitual bipedalism by about $3.7$ million years ago, in australopiths whose braincases were still chimpanzee-sized, roughly $400$–$550\ \mathrm{cm}^3$. **Brain enlargement** came later and faster: in the genus *Homo*, from about two million years ago, braincase volumes rise from some $500$–$700\ \mathrm{cm}^3$ (*H. habilis*) through about $900$ (*H. erectus*, with a very wide range) to about $1\,350\ \mathrm{cm}^3$ in modern people and up to $1\,500$ or more in Neanderthals.
-
-**Scope.** The species boxes are rounded and overlapping, species boundaries are debated, and the dates of the earliest bipeds (*Sahelanthropus*, *Orrorin*) are disputed; brain size is not the same as intelligence.`,
-      idea: String.raw`A brain is expensive: in people it is about $2\%$ of body mass but roughly a fifth of resting energy use. Aiello and Wheeler's *expensive-tissue hypothesis* (1995) proposed that a bigger brain could be paid for by a smaller gut, made possible by a richer, more digestible diet (meat, later cooking). The picture computes this budget: take a metabolic rate that scales as $M^{3/4}$ (Kleiber's law), give the brain about $0.012\ \mathrm{W}$ per cm³, and the brain's share of the whole budget climbs from under a tenth for a chimpanzee-sized brain to about a fifth. Standing on two legs freed the hands and made walking long distances cheaper, which fits the earlier change; the later brain growth fits the diet-and-tools story. The mammal lineage that made this possible survived the end-Cretaceous impact (bighist-3.9).`,
-      caption: String.raw`Left: approximate species ranges as boxes (age span across, braincase volume up), with the first evidence of upright walking along the bottom and a trend line fitted to the centres of the *Homo* boxes. Right: choose a species or set the brain volume and body mass yourself; the bar shows the energy budget and the readout the brain's share. The numbers are indicative, and the budget is model arithmetic.`,
-      deps: ['bighist-3.9'],
-      see: ['bighist-4.7'],
-      refs: ['Christian'],
-      credit: 'Aiello & Wheeler, 1995 (expensive-tissue hypothesis)',
-      tags: ['hominins', 'brain', 'energy'],
-      scope: String.raw`Rounded, indicative species ranges; the trend line is fitted to box centres, not to individual fossils.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Human_evolution', doi: 'https://doi.org/10.1086/204350' },
-      verify: true,
-      viz(v) {
-        const A = v.stage({ x: [-4.7, 1.9], y: [0, 1950], axes: 'box', gutter: true, height: 380, weight: 1.35, xlabel: 'age (Ma ago)', ylabel: 'braincase volume (cm³)', xticks: [[-4, '4'], [-3, '3'], [-2, '2'], [-1, '1'], [0, '0']], title: 'species ranges (rounded)' });
-        const B = v.stage({ x: [0, 5], y: [0, 125], axes: 'box', gutter: true, height: 380, weight: 1, ylabel: 'resting power (W)', xticks: [[0.5, 'chimp-like'], [1.5, 'A. afarensis'], [2.5, 'H. erectus'], [3.5, 'H. sapiens'], [4.5, 'yours']], title: 'energy budget of the brain' });
-        const PRE = { 'chimp-like': [400, 45], 'A. afarensis': [450, 40], 'H. erectus': [900, 55], 'H. sapiens': [1350, 65] };
-        let cc, kg;
-        const sel = v.select('preset', Object.keys(PRE), 'H. sapiens', { onChange: (n) => { cc.set(PRE[n][0]); kg.set(PRE[n][1]); } });
-        cc = v.slider('brain volume (cm³)', 350, 1700, 1350, { step: 10 });
-        kg = v.slider('body mass (kg)', 25, 90, 65, { step: 1 });
-        // trend through the centres of the Homo boxes: ln(cc) = a + b t
-        const hom = HOMININS.filter((h) => h[0].startsWith('H.')).map((h) => [-(h[1] + h[2]) / 2, Math.log((h[3] + h[4]) / 2)]);
-        const n = hom.length, mx = hom.reduce((s, p) => s + p[0], 0) / n, my = hom.reduce((s, p) => s + p[1], 0) / n;
-        const bs = hom.reduce((s, p) => s + (p[0] - mx) * (p[1] - my), 0) / hom.reduce((s, p) => s + (p[0] - mx) ** 2, 0), as = my - bs * mx;
-        v.render(() => {
-          for (const [name, f, t, lo, hi, col, lx, ly, al] of HOMININS) {
-            A.rect(-f, lo, -t, hi, { fill: col, fillAlpha: 0.22, color: col, width: 1.4, radius: 3 });
-            A.text(name, lx, ly, { size: 10.5, color: col, align: al });
-          }
-          A.fn((t) => Math.exp(as + bs * t), { domain: [-2.1, 0], color: 'ink', width: 1.6, dash: [5, 4] });
-          A.hline(400, { color: 'faint', width: 1, dash: [2, 3] });
-          for (const [t] of BIPED) A.dot(t, 120, { r: 4.5, color: 'ink' });
-          A.text('● upright walking: Ardipithecus 4.4 · Laetoli 3.7 · “Lucy” 3.2 Ma', -4.65, 40, { size: 10, color: 'muted', align: 'left' });
-          // energy stage
-          const bars = [...Object.entries(PRE).map(([k, [c, m]], i) => [i + 0.5, c, m]), [4.5, cc.value, kg.value]];
-          for (const [x, c, m] of bars) {
-            const tot = kleiber(m), br = brainW(c);
-            B.rect(x - 0.32, 0, x + 0.32, tot - br, { fill: 'muted', fillAlpha: 0.3, color: 'muted', width: 1 });
-            B.rect(x - 0.32, tot - br, x + 0.32, tot, { fill: 'gold', fillAlpha: 0.7, color: 'gold', width: 1 });
-            B.text(`${v.fix((100 * br) / tot, 0)}%`, x, tot + 4, { size: 11, color: 'ink', align: 'center', baseline: 'bottom' });
-          }
-          v.legend([['gold', 'brain'], ['muted', 'everything else']]);
-        });
-        v.readout(() => {
-          const tot = kleiber(kg.value), br = brainW(cc.value);
-          const t2 = Math.exp(as + bs * -2), t0 = Math.exp(as);
-          return `Your brain: **${v.fix(br, 1)} W** of a **${v.fix(tot, 0)} W** resting budget = **${v.fix((100 * br) / tot, 0)}%** (model arithmetic).\nTrend through the *Homo* box centres: ${v.fix(t2, 0)} cm³ at 2 Ma ago to ${v.fix(t0, 0)} cm³ today, a factor ${v.fix(t0 / t2, 1)} (rounded inputs).`;
-        });
-      },
-    },
+    homininItem,
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     {
       num: '4.2',
