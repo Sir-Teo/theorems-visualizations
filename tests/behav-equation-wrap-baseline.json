@@ -1,0 +1,344 @@
+{
+  "1.9": {
+    "file": "content/behav/ch01-b.js",
+    "hash": "3faada6e8ad755db15ee4c189c91a8100646ffa506190e4b1ff2338e8df853ff",
+    "fields": {}
+  },
+  "1.10": {
+    "file": "content/behav/ch01-b.js",
+    "hash": "ebfab726063b307000051c3fbe86219d5b77a5cbf535f6f65032ab6efa0ded8b",
+    "fields": {}
+  },
+  "1.11": {
+    "file": "content/behav/ch01-b.js",
+    "hash": "7743df950b402b63577ce67550816a9c0a4e6f5d26f19e0673cb3288ff4bcff4",
+    "fields": {}
+  },
+  "1.12": {
+    "file": "content/behav/ch01-b.js",
+    "hash": "b3afc758fbc8af0d88343ffe314493c78d292cf1641088112457669bb27f4839",
+    "fields": {}
+  },
+  "1.13": {
+    "file": "content/behav/ch01-b.js",
+    "hash": "68646717f69b016eabd7f3cf54a33c10e57c78ae0ec45c6411ed2ced514e1fd4",
+    "fields": {}
+  },
+  "1.14": {
+    "file": "content/behav/ch01-b.js",
+    "hash": "72e8c2b4bc4ff38f30997a28b143c7da0ec78fcb6af1d7739e7969e40809ecbc",
+    "fields": {}
+  },
+  "1.15": {
+    "file": "content/behav/ch01-b.js",
+    "hash": "54b1285176d5655257a42b952e8347a709bd85398cfad15cd557794c0ae15160",
+    "fields": {}
+  },
+  "1.16": {
+    "file": "content/behav/ch01-b.js",
+    "hash": "e80531df41905e7f1d38f8fe9af772e9aa3332ca3e063b6fd243f2988a883fc5",
+    "fields": {}
+  },
+  "1.1": {
+    "file": "content/behav/ch01.js",
+    "hash": "ad5f8d31ac7201f676f1487d27acce4b293dbba4696746a78e7a05d13dd6fb35",
+    "fields": {
+      "statement": "67be6c9e9d23f1427e3c0034abc5cd408dd27f5388a6af04c81e806f91ce76ec"
+    }
+  },
+  "1.2": {
+    "file": "content/behav/ch01.js",
+    "hash": "3ce7b96cfc72c84d4c790fb5f13e9f29aa729d43f10903ed9cf60e59ca50b225",
+    "fields": {}
+  },
+  "1.3": {
+    "file": "content/behav/ch01.js",
+    "hash": "d36d6f7bb43d53088002d1b931e44c44a39159ad9ed08b3bd4a4f71e0d7515d1",
+    "fields": {}
+  },
+  "1.4": {
+    "file": "content/behav/ch01.js",
+    "hash": "630e317411456d50173b39dd554f8df1ca68b315a637b150dee9a153bbc33c15",
+    "fields": {}
+  },
+  "1.5": {
+    "file": "content/behav/ch01.js",
+    "hash": "18a73d00509d11248d6c12da5ce67bcf8f4b3232115da8e5def6a59582d0f56c",
+    "fields": {}
+  },
+  "1.6": {
+    "file": "content/behav/ch01.js",
+    "hash": "c14b6d7506511d06d0b79916e444f7e65fb7cde7eb3494c9293f0f270c539971",
+    "fields": {
+      "statement": "c872aa4ae03dd146d28fdf8f90456814929960cf88dc4c1a79c3b9f8eb1f7d0f"
+    }
+  },
+  "1.7": {
+    "file": "content/behav/ch01.js",
+    "hash": "63e6347cfe266abd9b8d3823ce03a85ecf080fc41200e4aced7962b498f083fe",
+    "fields": {}
+  },
+  "1.8": {
+    "file": "content/behav/ch01.js",
+    "hash": "5c56a637be02d8cf26800418cb273f5594d2af67cce00778aecb77b9bed83572",
+    "fields": {}
+  },
+  "2.7": {
+    "file": "content/behav/ch02-b.js",
+    "hash": "8e3a56fa70cd57c0fb132dd03c88497b98280d9cc76e306fa9a612ad649c7031",
+    "fields": {}
+  },
+  "2.8": {
+    "file": "content/behav/ch02-b.js",
+    "hash": "573cfec5095e62e22ac5d19a57d7dc44c359eb3ebd4d769d4ddd9afb6f8c6ef7",
+    "fields": {}
+  },
+  "2.9": {
+    "file": "content/behav/ch02-b.js",
+    "hash": "a10ecb97a7eae5fb52dda104f7840118852fc0b40d3f2c6a0934a880cd643ab7",
+    "fields": {}
+  },
+  "2.10": {
+    "file": "content/behav/ch02-b.js",
+    "hash": "11598c286cf0719c6ad9594b4b2bf57ed1882f455a71b41bfbdcaa995f327611",
+    "fields": {}
+  },
+  "2.11": {
+    "file": "content/behav/ch02-b.js",
+    "hash": "f18dc320bbc0e829f2c546f872abe580c7899b61b40ac4c6d49e8d0bd9fd9290",
+    "fields": {}
+  },
+  "2.12": {
+    "file": "content/behav/ch02-b.js",
+    "hash": "47c8a26ea1a3ac7b1afc0ca6d3df79833a4d4f981aa2567364cd514e68f0f4f8",
+    "fields": {}
+  },
+  "2.13": {
+    "file": "content/behav/ch02-papers.js",
+    "hash": "5227eb0dd8b3d0a4002286a04f94fcd09abb5f8384daf5dbe89553ff6acdb7d4",
+    "fields": {}
+  },
+  "2.1": {
+    "file": "content/behav/ch02.js",
+    "hash": "05fa33d78570743d6764f2c27f0a84f5e7b1914f7e1981d0fd4a0a8e85f139e2",
+    "fields": {}
+  },
+  "2.2": {
+    "file": "content/behav/ch02.js",
+    "hash": "52e72eca8ad935dbb88441cd1d468b0c503272d40476c8b475474e5f6b462ef7",
+    "fields": {}
+  },
+  "2.3": {
+    "file": "content/behav/ch02.js",
+    "hash": "638b2907ee402d8869767fe8d6f5a3dd16b328936312eec383e4c16350184143",
+    "fields": {}
+  },
+  "2.4": {
+    "file": "content/behav/ch02.js",
+    "hash": "d2f90339c18c7d4599fe82ef361eb72348ab591e5c2a77a29c1733ebacb9d862",
+    "fields": {}
+  },
+  "2.5": {
+    "file": "content/behav/ch02.js",
+    "hash": "408f035aad056536224ad945dbce3430008545266b09258fb695b0a1df7ce998",
+    "fields": {}
+  },
+  "2.6": {
+    "file": "content/behav/ch02.js",
+    "hash": "e4217b7e2fc6bc0b5a14709ab1dc215bfc457ffdb802513b4facb844e87e8349",
+    "fields": {}
+  },
+  "3.11": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "fff9036749788d608ff6ea1b220a713f68c4ac110e5de5a186caac52613432da",
+    "fields": {}
+  },
+  "3.12": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "d1e9e07bf2f83c7818e03db2e8a1c4af1aa3404071463398ced1589c969471df",
+    "fields": {}
+  },
+  "3.13": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "61b7fe2e85daff01c25c30de60c06dfba9cd391a7e177bb6a795234170f8030c",
+    "fields": {}
+  },
+  "3.14": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "1e30b8426ef09614a55afdaab3f8bffd266aef3865b3d5d26432c14a48ead0f2",
+    "fields": {}
+  },
+  "3.15": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "85054fcfba7c937743bda230edd3afe6d711664371b4192df87f47c4422077cf",
+    "fields": {}
+  },
+  "3.16": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "9beff0b968954610fc93d1f023517258f3a15ff2458d18620171ed8a3bd88fa2",
+    "fields": {}
+  },
+  "3.17": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "47f959db8cf954a6c9cea2d6fcd5914e50761cd0e3d442c46fe533a3010e1111",
+    "fields": {}
+  },
+  "3.18": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "8d0ffb474f95364e4b8a05add6b4593df4c8d6294546704dc3709414d717d3d3",
+    "fields": {}
+  },
+  "3.19": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "5ecf91f6407f8bfa07d1648007fa510f17709398413d6320aa25d71aee62a6e5",
+    "fields": {}
+  },
+  "3.20": {
+    "file": "content/behav/ch03-b.js",
+    "hash": "3110ab4aaf91ad0c0a9df7f576c4087d48dc6c1f617dde823082791ebf20990c",
+    "fields": {}
+  },
+  "3.1": {
+    "file": "content/behav/ch03.js",
+    "hash": "134c1feebec8ae2d6925623471135adf619ff489602ea75205681f20ed5ce0f6",
+    "fields": {}
+  },
+  "3.2": {
+    "file": "content/behav/ch03.js",
+    "hash": "50553e8779c826e477ade89a26e68d0a1af3574c54262d2cdb7a978ba4d8d365",
+    "fields": {}
+  },
+  "3.3": {
+    "file": "content/behav/ch03.js",
+    "hash": "6914bc5c5aabdd429a398f42a131ef5ff7d456b2150b037449960e3124f11c48",
+    "fields": {}
+  },
+  "3.4": {
+    "file": "content/behav/ch03.js",
+    "hash": "8153a05d4d82afa200f864baaae30bff08b79047e54091d1d20ce1e4431335d5",
+    "fields": {}
+  },
+  "3.5": {
+    "file": "content/behav/ch03.js",
+    "hash": "aec80b945ebc63e45851165b746b92a77984472b40c2e6741e6cf4cfbcc2fb58",
+    "fields": {}
+  },
+  "3.6": {
+    "file": "content/behav/ch03.js",
+    "hash": "5d2fa8d4e2f6ee1b26bca350e147345ff48aca86e5efa9d97c4a3b3cc3ae0436",
+    "fields": {}
+  },
+  "3.7": {
+    "file": "content/behav/ch03.js",
+    "hash": "0a760d8b8c21f74ffe05893372c6fd94236d88a866b46e1fad80ca982047b327",
+    "fields": {}
+  },
+  "3.8": {
+    "file": "content/behav/ch03.js",
+    "hash": "9032f0c297446ed8baede2f7a79a5aaab5bec41abc43148da3f12cf2d130ab45",
+    "fields": {}
+  },
+  "3.9": {
+    "file": "content/behav/ch03.js",
+    "hash": "7d5f8abdb52b71e32ab5029edfa71149d265dff2a46f4e3b3ad0ccf401aad435",
+    "fields": {}
+  },
+  "3.10": {
+    "file": "content/behav/ch03.js",
+    "hash": "078abddfdb4018559536cf8634d4fd5b7722581ed9cd5cf715e6cd76d9de85e5",
+    "fields": {}
+  },
+  "4.5": {
+    "file": "content/behav/ch04-b.js",
+    "hash": "87dfdd90093de5daaabc113a2382733190708c7394337cce44144b15bd59f9c4",
+    "fields": {}
+  },
+  "4.6": {
+    "file": "content/behav/ch04-b.js",
+    "hash": "f6e60dc17436eaa5963e5e328aac3df319aa27d92d663249f9667b086421f069",
+    "fields": {}
+  },
+  "4.7": {
+    "file": "content/behav/ch04-b.js",
+    "hash": "a4318cfb8428c3943763b434715c4f14cc3c3cecd242a934fc3d2263e2a8633c",
+    "fields": {}
+  },
+  "4.1": {
+    "file": "content/behav/ch04.js",
+    "hash": "c123ff1b8ee1f2f3c7e082e6cc1dc72a9838d1bb4b4eff6f6dc44151f958f837",
+    "fields": {}
+  },
+  "4.2": {
+    "file": "content/behav/ch04.js",
+    "hash": "e496b65c4229f7b2cc2805587e7f880207d2c59797106ed838ab7edf10706737",
+    "fields": {}
+  },
+  "4.3": {
+    "file": "content/behav/ch04.js",
+    "hash": "b656dd444c216a762acf08215213b20a7c25a208fdfe16b7b2a909114dda9bec",
+    "fields": {}
+  },
+  "4.4": {
+    "file": "content/behav/ch04.js",
+    "hash": "373a7edca32c18fd76962ab8638f2342650e8e531f7ad0f8a20359ee8b4cdd2f",
+    "fields": {}
+  },
+  "5.7": {
+    "file": "content/behav/ch05-b.js",
+    "hash": "9cde32d5163bf0fca9167c082e0c9dd03d7bf44065db47e539cad6629b282160",
+    "fields": {}
+  },
+  "5.8": {
+    "file": "content/behav/ch05-b.js",
+    "hash": "bbc41c669fa26bad5fb3e7d0f03831386b620b08f1cc766ee89341f7a312815d",
+    "fields": {}
+  },
+  "5.9": {
+    "file": "content/behav/ch05-b.js",
+    "hash": "998784612a1327a3f89e3804418fd851ac346381e2b9ab49e1e73fb52b8cace5",
+    "fields": {}
+  },
+  "5.10": {
+    "file": "content/behav/ch05-b.js",
+    "hash": "a79fc6c4a2e37e7ea4c0cade8ad5bc89bbf1d944dab8ab5040f6aa3533687008",
+    "fields": {}
+  },
+  "5.11": {
+    "file": "content/behav/ch05-b.js",
+    "hash": "57c1d15bf2be427ada967e9eb0292d3da26ce319ffe4bf4374ce892bd1793da0",
+    "fields": {}
+  },
+  "5.1": {
+    "file": "content/behav/ch05.js",
+    "hash": "2bdbc7d5cdb8808c4ef388d8fb834bcce905c114fccfa10da940c51d119a9e68",
+    "fields": {}
+  },
+  "5.2": {
+    "file": "content/behav/ch05.js",
+    "hash": "f6769ac24ed192dfb91f760fbca6cf5ed3947932e3fc5ec4f184e35c84aec42c",
+    "fields": {}
+  },
+  "5.3": {
+    "file": "content/behav/ch05.js",
+    "hash": "a8686223da3275f4ad778e1aee0379d09ddf0d426df869f0a48d292622615f00",
+    "fields": {
+      "statement": "5db62aaaf589643aabe4ef232089475d6f983bc86d832ee8ca47029dadd405f2",
+      "idea": "d79a6a6b74195a911bf6b5ac5614e0438abbe431d914b5874f395972cd14aec2"
+    }
+  },
+  "5.4": {
+    "file": "content/behav/ch05.js",
+    "hash": "b98401c5aa6dd5ea250123baed991fa3458b6200599408b374922aecdda09e4e",
+    "fields": {}
+  },
+  "5.5": {
+    "file": "content/behav/ch05.js",
+    "hash": "8b051cb44e02ed9a1ab60016a29adce6d10d768c39b298ead88e9dcbc37335c0",
+    "fields": {}
+  },
+  "5.6": {
+    "file": "content/behav/ch05.js",
+    "hash": "664568df0618247cabfdd285dd98e711e4ca0ad71e9e60af7aa59c11e0fb7652",
+    "fields": {}
+  }
+}

@@ -108,7 +108,7 @@ export default {
       statement: String.raw`The simple **hyperbolic discount function** is $D(t)=1/(1+kt)$, $k>0$, $t\ge0$. Its **instantaneous** discount rate is
 $$-D'(t)/D(t)=k/(1+kt),$$
 while its **average continuously compounded** rate from now to $t>0$ is
-$$\bar r(t)=-\ln D(t)/t=\ln(1+kt)/t.$$
+$$\begin{aligned}\bar r(t)&=-\ln D(t)/t\\&=\ln(1+kt)/t.\end{aligned}$$
 Both decline with delay. An exponential $e^{-\rho t}$ has constant instantaneous and average rates. Loewenstein and Prelec (1992, p. 580) credit this simple form to Herrnstein (1981), investigated further by Mazur (1987); their generalized hyperbola has earlier work by Harvey (1986) and Prelec (1989).
 
 Thaler's 1981 **Table 2, form C, \$15 row** gives median later amounts of \$20 after one month, \$50 after one year and \$100 after ten years. The money-equivalent rates $\ln(X/15)/t$ are about 345%, 120% and 19% per year. These are continuously compounded rates, under a linear-money conversion, not effective annual interest rates or direct estimates of a utility discount function.`,
@@ -116,7 +116,7 @@ Thaler's 1981 **Table 2, form C, \$15 row** gives median later amounts of \$20 a
       idea: String.raw`Matching the one-year values sets $\rho=\ln(1+k)$. Concavity of $\ln(1+kt)$ gives $D_{\rm hyp}(t)<e^{-\rho t}$ for $0<t<1$, and the reverse for $t>1$: the matched curves cross at one year.
 
 A specific mixture also produces this hyperbola: if exponential rates $R$ have an **exponential distribution with mean $k$** (prob-1.2.4, density $k^{-1}e^{-r/k}$), then
-$$E[e^{-Rt}]=\int_0^\infty e^{-rt}\,k^{-1}e^{-r/k}\,dr=\frac1{1+kt}.$$
+$$\begin{aligned}E[e^{-Rt}]&=\int_0^\infty e^{-rt}\,k^{-1}e^{-r/k}\,dr\\&=\frac1{1+kt}.\end{aligned}$$
 An arbitrary distribution of rates produces a Laplace transform, which need not have this form. To evaluate the rate mixture rigorously, fix $M<\infty$ and write $c=t+1/k>0$. The continuous integrand has antiderivative $-e^{-cr}/(kc)$, so the fundamental theorem of calculus (pma-6.21) gives $\int_0^M k^{-1}e^{-cr}\,dr=(1-e^{-cM})/(kc)$. Taking $M\to\infty$ evaluates the improper integral as $1/(kc)=1/(1+kt)$. Positivity of $k$ and $t\ge0$ ensure convergence, including $t=0$, where the value is one.`,
       caption: String.raw`Drag the **gold handle** vertically at one year, or change $k$, to compare discount functions with the same one-year value. The handle respects exactly the slider's $k\in[0.2,20]$ range. Toggle the left delay axis between linear and log scales. The right panel uses log delay/rate axes and plots **average** rates, rather than the instantaneous derivative rate. Green dots are the coherent form-C medians.
 
