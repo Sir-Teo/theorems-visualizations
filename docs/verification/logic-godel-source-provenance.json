@@ -1,0 +1,162 @@
+{
+  "book": "Collected works I, ISBN9780195039641",
+  "public_ui": "https://books.google.com/books?id=5ya4A0w62skC&pg=PA103",
+  "permission": "UI states Pages displayed by permission of the publisher",
+  "status": "All11English translation pages103/105/...123 personally read as actual full pixels, including every formal axiom, displayed equation, theorem, proof and footnote; next124 confirmed separate1930a paper. Ten facingGerman104...122 saved but not fully read; no completeGerman-original claim.",
+  "pages": [
+    {
+      "page": 103,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA103&img=1&zoom=3&hl=en&sig=ACfU3U2ceWumODnyFMzXFbtqefFTy8dOBw&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p103.png",
+      "sha256": "ee23c20e2da6ee5dbbeee4914f08e8026e5dce06005fdece93231219eac88c64",
+      "bytes": 222881
+    },
+    {
+      "page": 104,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA104&img=1&zoom=3&hl=en&sig=ACfU3U1y1ifdvZjvzyj0s2SQJLcbWidvwA&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p104.png",
+      "sha256": "ad38ec2edc63a3a14ad1ff1acd09cfab4173aa420596bea638a87f6746e8697d",
+      "bytes": 157129
+    },
+    {
+      "page": 105,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA105&img=1&zoom=3&hl=en&sig=ACfU3U08s75AdqYiUnDWxnQYe6UXUV21Rw&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p105.png",
+      "sha256": "4462112bc22dc1dcf34659924519e05e9ae5e544344e21c4e5afbc500b71f837",
+      "bytes": 152235
+    },
+    {
+      "page": 106,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA106&img=1&zoom=3&hl=en&sig=ACfU3U2GhRF1bjcNzXdjnulbZUJxI8ddjQ&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p106.png",
+      "sha256": "aae7470bd6fd4e77d78226571bc7f251721a58e0ee23a1dabc29240e674c60cd",
+      "bytes": 168028
+    },
+    {
+      "page": 107,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA107&img=1&zoom=3&hl=en&sig=ACfU3U3TY2oQcLquDLp8yZS9tMYR7imN_Q&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p107.png",
+      "sha256": "dcc910405acb8532141d84640fd45cf0575563af54f975034cd7bcf5351f4fbc",
+      "bytes": 169280
+    },
+    {
+      "page": 108,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA108&img=1&zoom=3&hl=en&sig=ACfU3U0DLayHCuAf5JxJGp46DWkv7cnycw&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p108.png",
+      "sha256": "6e3d771b332a142c680e0fec1b819a38551959ecab1d4bd4a18e8ef989df8d61",
+      "bytes": 175264
+    },
+    {
+      "page": 109,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA109&img=1&zoom=3&hl=en&sig=ACfU3U2qoyEtTyN5D1U91weI6rluboWpcg&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p109.png",
+      "sha256": "3db0a1916b27d02076837af928a580e9041ade5dab9224f4ff5a67eabfbf4576",
+      "bytes": 171288
+    },
+    {
+      "page": 110,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA110&img=1&zoom=3&hl=en&sig=ACfU3U1AdcxTSh0O9NLhJcsJxCs7bWrQ9w&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p110.png",
+      "sha256": "17a821d95b80783ee7b6bb5c5718ec6317474fec7cc9bddf63302826f2b3199e",
+      "bytes": 136690
+    },
+    {
+      "page": 111,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA111&img=1&zoom=3&hl=en&sig=ACfU3U3HzojWWKMRdtpAw6SRzhJJkuBY6g&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p111.png",
+      "sha256": "717bec45140e6e5d3f79add794967184643e34189af72ef7001b9a848722736e",
+      "bytes": 135490
+    },
+    {
+      "page": 112,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA112&img=1&zoom=3&hl=en&sig=ACfU3U1d9TbhCMbxmZOhueIyv-5IsFeySg&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p112.png",
+      "sha256": "90941d9ed3ed579261ca48215ae593e03a43ae2922cd541e42daa5b9d1c9a4d8",
+      "bytes": 131929
+    },
+    {
+      "page": 113,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA113&img=1&zoom=3&hl=en&sig=ACfU3U0oSoGXCrXiFAAfokBYZz22r7EDVQ&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p113.png",
+      "sha256": "5271ec6ae29f9baa0bf5f4d67848a5335bfc50efd5b007ce13997a68b8c875ff",
+      "bytes": 122718
+    },
+    {
+      "page": 114,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA114&img=1&zoom=3&hl=en&sig=ACfU3U0DG87TkLxNwnbxcW5YSK3aSpdAZA&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p114.png",
+      "sha256": "e31b6e47104708e960114e6f05caec863499ba1f4323471e14a8e665ccdaafb5",
+      "bytes": 209746
+    },
+    {
+      "page": 115,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA115&img=1&zoom=3&hl=en&sig=ACfU3U2_hXYM-qruxRqKddVT_bHc9Md9iw&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p115.png",
+      "sha256": "2f5e34177718b3b4ff8ea43bac1ec7bd058237acc3f1a4120274bee715cea336",
+      "bytes": 188644
+    },
+    {
+      "page": 116,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA116&img=1&zoom=3&hl=en&sig=ACfU3U1xnE7l3oDu-RYlNksV1x3i548j9w&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p116.png",
+      "sha256": "592f15057c359797f30402b5d2bfa50569b2de8a781ee27343552ed17137ef02",
+      "bytes": 201969
+    },
+    {
+      "page": 117,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA117&img=1&zoom=3&hl=en&sig=ACfU3U3Yq3Eu8hj8mjgT23AjMWxFtBLcEA&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p117.png",
+      "sha256": "62a8cf3dcb8187a18f5d59427e126c2a3832ffcb268dc103a054742442e8846c",
+      "bytes": 200128
+    },
+    {
+      "page": 118,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA118&img=1&zoom=3&hl=en&sig=ACfU3U2oK1_QOI97vyu5cf1hA5jQfRVszA&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p118.png",
+      "sha256": "98e766d5546fa66b70df01933e9ea91dfbf1c593d8eed6f05440619c9d7cf6c0",
+      "bytes": 234963
+    },
+    {
+      "page": 119,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA119&img=1&zoom=3&hl=en&sig=ACfU3U1AY97mRg5aUBCZgIUuElbGMjLgiw&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p119.png",
+      "sha256": "0c58720361853cc40e766d49d6093fa01bb4ad936965f6b0452afaf87523cba0",
+      "bytes": 223434
+    },
+    {
+      "page": 120,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA120&img=1&zoom=3&hl=en&sig=ACfU3U0UV8xDXMm8j7mPvDgj0EfTvW5qPg&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p120.png",
+      "sha256": "c43289b43b937b89cca0ec2423664a9e9a02ee27b3687bc5e4ba58a862f2e3dc",
+      "bytes": 188471
+    },
+    {
+      "page": 121,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA121&img=1&zoom=3&hl=en&sig=ACfU3U2gAaVQAmfVvlM4P26jLrCJmUfkzQ&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p121.png",
+      "sha256": "25353c2fdc7b083b95e6a9ebb281adcf6515854287e42d8094e2622f9f26cffa",
+      "bytes": 193610
+    },
+    {
+      "page": 122,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA122&img=1&zoom=3&hl=en&sig=ACfU3U01vOt3GKG_wsSrB2sKYFEc6cotjw&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p122.png",
+      "sha256": "bfe12e2449c434a70b760a45a557a3ab2e68370939e23aa5c966fc2784dc1eb2",
+      "bytes": 200047
+    },
+    {
+      "page": 123,
+      "url": "https://books.google.com/books/content?id=5ya4A0w62skC&pg=PA123&img=1&zoom=3&hl=en&sig=ACfU3U2QXXJ9niQLplwz6HL63SMhHdITKA&w=1280",
+      "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-p123.png",
+      "sha256": "0c7ce5ba708e6d71cfaa95eb10f5bf522e794f34b487d468cb940eb12e81593a",
+      "bytes": 189583
+    }
+  ],
+  "assembled_pdf": {
+    "path": "/tmp/atlas-worker-one/historical-source-recovery/godel-authorized-preview/godel-cw1-1930-english-assembled.pdf",
+    "sha256": "dac2c013a325906492347897f7d34c4a35e5e77ed125dcf45879aac274c7d22b",
+    "bytes": 2115656,
+    "pages": 11,
+    "kind": "Image-only assembly preserving original1280pixel images; not publisher-downloaded PDF/OCR/text transcription"
+  }
+}

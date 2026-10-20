@@ -6,6 +6,8 @@ import {
 
 import { herbrandStage, godelSat, groundWitness, boundedHolds, freshenBound } from './source-audit.shared.js';
 
+import godelAudit from './source-audit-godel.js';
+
 // ---------- helpers ----------
 const SIGM = { rels: { P: 1, Q: 1, R: 2 }, funcs: {}, consts: [], name: 'the language with P, Q, R' };
 const noEq = (ast) => (preorder(ast).some((n) => n.op === 'rel' && (n.r === '=' || n.r === '≠')) ? 'equality is not part of this fragment: write the sentence without = or ≠' : preorder(ast).some((n) => n.t === 'fn') ? 'function symbols are not allowed here' : null);
@@ -446,120 +448,6 @@ export default {
       },
     },
     // ------------------------------------------------------------------ 4.12
-    {
-      num: '4.12',
-      kind: 'Paper',
-      name: 'Vollständigkeit der Axiome des logischen Funktionenkalküls',
-      paper: { authors: 'Kurt Gödel', year: 1930, title: 'Die Vollständigkeit der Axiome des logischen Funktionenkalküls', venue: 'Monatshefte für Mathematik und Physik 37: 349–360', doi: '10.1007/BF01696781' },
-      introduces: ['logic-4.6', 'logic-4.7'],
-      statement: String.raw`Gödel’s 1930 Theorem I states completeness for the restricted functional calculus: every valid formula is provable. The equivalent Theorem II gives a dichotomy between refutability and satisfiability in a denumerable domain. His Theorem X states compactness for a countable system of formulas. The initial calculus lacks identity; later theorems extend the results to identity. In the author-approved translation, footnote 3 says the terminology and symbolism follow Hilbert–Ackermann, while footnote 5 identifies the axioms with Principia Mathematica, apart from the redundant associative principle.`,
-      idea: String.raw`The illustration is an authored finite reconstruction for a prenex sentence with at most one universal block followed by an existential block and a quantifier-free matrix. It replaces universal variables by successively enumerated positive-integer tuples and existential variables by fresh numbers, then treats the resulting ground atoms propositionally. The conjunction $D_N=B_1\wedge\cdots\wedge B_N$ may have a checked finite assignment or a finite propositional contradiction. No fixed finite N settles all later prefixes. The passage from satisfiability of every prefix to one infinite assignment requires an infinitary selection argument; the widget does not execute it. Nor does it perform the historical reduction of arbitrary quantifier alternations.`,
-      caption: String.raw`A $\forall\exists$-sentence without equality is on the left; its instances $B_1,B_2,\dots$ (universals at the $n$-th tuple of positive numbers, existentials at fresh numbers) are listed with the propositional sentence $D_N=B_1\wedge\dots\wedge B_N$ they form. The middle panel is the tree of truth values for the first few atoms: a node is green if some assignment extending it satisfies $D_N$ and red if none does (orange means solver work is unresolved), and the gold path is the one chosen by always taking the first branch that stays extendable. The right panel previews at most seven coordinates of that finite assignment; it is not a model of the quantified sentence. Slide $N$ to watch a satisfiable sentence stay satisfiable, or try the refutable one and see $D_n$ collapse at a definite stage, with the offending instances in red.`,
-      scope: String.raw`The authorized 1967 Bauer-Mengelberg translation's prose and source footnotes were read through a public archive, but its HTML conversion omits displayed mathematical formulas, including the formal axioms and reduction equations. The publisher's current page is a subscription preview. Complete original-proof and exact historical degree-reduction verification remain open. The live finite expansion uses its own notation and computed instances, rather than reproducing source tables; only the current finite assignment is previewed, at most seven coordinates.`,
-      credit: 'Kurt Gödel, 1929 (doctoral dissertation) and 1930 (Monatshefte für Mathematik und Physik 37, 349–360)',
-      deps: ['logic-4.1', 'logic-4.4', 'logic-3.12', 'logic-2.11'],
-      refs: ['Gödel 1930, authorized Bauer-Mengelberg 1967 translation pp.583–591; prose/source footnotes only, missing displayed formulas; full-proof verification pending', 'Enderton, 2nd ed., §4.2, pp. 291–294 (modern finite expansion method)'],
-      tags: ['completeness', 'history'],
-      verify: true,
-      viz(v) {
-        const PRE = [
-          { id: 'ser', text: '∀x ∃y R(x,y)', label: 'serial: every x has an R-successor' },
-          { id: 'asym', text: '∀x ∃y (R(x,y) ∧ ¬R(y,x))', label: 'every x has a one-way successor' },
-          { id: 'mix', text: '∀x ∃y (P(x) → (R(x,y) ∧ P(y)))', label: 'P is passed on along R' },
-          { id: 'ref', text: '∀x ∀y ∃z (R(z,z) ∧ ¬R(x,y))', label: 'refutable (needs a stage-5 instance)' },
-          { id: 'ref1', text: '∀x ∃y (P(y) ∧ ¬P(y))', label: 'refutable at once' },
-        ];
-        const pre = v.select('sentence', PRE.map((p) => ({ value: p.id, label: p.label })), 'asym', { onChange: (id) => fld.set(PRE.find((p) => p.id === id).text) });
-        const fld = foField(v, 'or type one', PRE[1].text, { sig: { rels: { P: 1, Q: 1, R: 2 }, funcs: {}, consts: [], name: 'P, Q and R' }, width: 380, check: (a) => (freeVars(a).length ? 'it must be a sentence' : noEq(a)), onChange: () => v.invalidate() });
-        const NS = v.slider('stage $N$', 1, 12, 5, { int: true });
-        const A = v.stage({ x: [0, 100], y: [0, 100], axes: false, height: 340, weight: 1.1, minWidth: 320 });
-        const B = v.stage({ x: [0, 100], y: [0, 100], axes: false, height: 340, weight: 1.2, minWidth: 330 });
-        const C = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.6], equal: true, axes: false, height: 340, weight: 0.9, minWidth: 260 });
-        let S = null, key = '';
-        const compute = () => {
-          if (!fld.ok) { S = null; return; }
-          const k = `${toStr(fld.ast)}|${NS.value}`; if (k === key) return; key = k;
-          const steps = prenexSteps(freshenBound(fld.ast), 'correct'), pre0 = steps[steps.length - 1].ast, d = degreeOne(pre0);
-          if (!d) { S = { error: 'the prenex form is not of the shape ∀…∀∃…∃ (degree one); Gödel’s lemma would first reduce it' }; return; }
-          const N = NS.value, inst = godelInstances(d, N), r = godelSat(inst);
-          let firstUnsat = null;
-          for (let n = 1; n <= 12; n++) { if (godelSat(godelInstances(d, n)).sat === false) { firstUnsat = n; break; } }
-          S = { d, pre: pre0, inst, sat: r.sat, atoms: r.atoms.map((a) => a[0]), cnf: r.cnf, firstUnsat };
-          if (r.sat === false) { // minimal core by deletion
-            let keep = range(N); for (const i of [...keep].reverse()) { const t = keep.filter((j) => j !== i); if (godelSat(t.map((j) => inst[j])).sat === false) keep = t; }
-            S.core = keep;
-          } else if (r.sat) {
-            // greedy path through the tree of atom values
-            const witness = groundWitness(inst, S.atoms);
-            S.val = witness.val; S.witnessAborted = witness.aborted; S.tree = { top: S.atoms.slice(0, 4) };
-            S.ok = S.val ? inst.every((b) => evalGround(b.g, S.val)) : null;
-          }
-        };
-        v.render(() => {
-          compute();
-          if (!S) { A.text(fld.src.trim() ? 'cannot read the sentence' : 'type a sentence', 50, 50, { align: 'center', size: 13, color: 'red' }); return; }
-          if (S.error) { A.text(S.error, 50, 50, { align: 'center', size: 12, color: 'red' }); return; }
-          const N = NS.value;
-          A.text(`φ (prenex): ${clip(toStr(S.pre), 44)}`, 2, 98, { align: 'left', baseline: 'top', size: 11.5, color: 'ink', weight: 700 });
-          const rowH = Math.min(7.4, 84 / Math.max(N, 6));
-          S.inst.forEach((b, i) => {
-            const y = 88 - i * rowH, inCore = S.core && S.core.includes(i);
-            if (inCore) A.rect(0, y - rowH / 2, 100, y + rowH / 2, { fill: 'red', fillAlpha: 0.18, stroke: false });
-            A.text(`B${subNum(b.n)}`, 2, y, { align: 'left', baseline: 'middle', size: 11, color: 'muted', weight: 700 });
-            A.text(b.tuple.length ? `(${b.tuple.join(',')})` : '', 14, y, { align: 'left', baseline: 'middle', size: 10.5, color: 'muted' });
-            A.text(clip(toStr(b.g), 40), 30, y, { align: 'left', baseline: 'middle', size: 10.8, color: inCore ? 'red' : 'ink' });
-          });
-          A.corner(S.sat === false ? `D${subNum(N)} is refutable` : S.sat ? `D${subNum(N)} is satisfiable` : '', 'bl', { size: 12.5, color: S.sat === false ? 'red' : 'green', weight: 700 });
-          // tree
-          if (S.sat === false) {
-            B.text('D_N has no satisfying assignment', 50, 60, { align: 'center', size: 15, weight: 700, color: 'red' });
-            B.text(`the instances ${S.core.map((i) => `B${subNum(i + 1)}`).join(', ')} already contradict each other`, 50, 48, { align: 'center', size: 12, color: 'ink' });
-            B.text('so φ is refutable: ¬φ is provable', 50, 36, { align: 'center', size: 12.5, color: 'muted' });
-          } else if (S.sat && S.val) {
-            const H = Math.min(4, S.atoms.length);
-            B.text('values of the first atoms (True ↑, False ↓): the tree of partial assignments', 2, 98, { align: 'left', baseline: 'top', size: 11, color: 'muted', weight: 700 });
-            const nodes = [{ pre: [], x: 8, y: 46 }];
-            let level = nodes;
-            const colw = 84 / (H + 1);
-            for (let h = 0; h < H; h++) {
-              const next = [];
-              for (const nd of level) for (const b of [true, false]) {
-                const pre = [...nd.pre, [S.atoms[h], b]], span = 21 / 2 ** h;
-                const nn = { pre, x: 8 + (h + 1) * colw, y: nd.y + (b ? span : -span), parent: nd };
-                next.push(nn);
-              }
-              for (const nn of next) {
-                const ok = godelSat(S.inst, nn.pre).sat, onPath = nn.pre.every(([a, b]) => S.val.get(a) === b);
-                B.line(nn.parent.x, nn.parent.y, nn.x, nn.y, { color: onPath ? 'gold' : 'faint', width: onPath ? 3 : 1.2 });
-                nn.ok = ok; nn.onPath = onPath;
-              }
-              for (const nn of next) B.dot(nn.x, nn.y, { r: nn.onPath ? 6 : 4, color: nn.ok === null ? 'orange' : nn.ok ? 'green' : 'red', fill: nn.ok === null ? 'orange' : nn.ok ? 'green' : 'red', width: 1 });
-              B.text(S.atoms[h], 8 + (h + 1) * colw, 88, { align: 'center', baseline: 'top', size: 9.5, color: 'muted' });
-              level = next;
-            }
-            B.dot(8, 46, { r: 5, color: 'ink', fill: 'ink' });
-            B.corner(`the whole assignment has ${S.atoms.length} atoms; gold path extended to all of them`, 'bl', { size: 11, color: 'muted' });
-          }
-          if (S.sat === null || S.witnessAborted) { B.text('solver work unresolved', 50, 50, {align:'center',color:'orange',size:14}); C.text('no assignment preview yet', 0, 0, {align:'center',color:'orange',size:12}); }
-          if (S.sat === false) { C.text('no model', 0, 0.2, { align: 'center', size: 18, weight: 700, color: 'red' }); C.text('a refutable formula has none', 0, -0.2, { align: 'center', size: 12, color: 'muted' }); }
-          // model
-          if (S.sat && S.val) {
-            const K = Math.min(7, Math.max(2, ...S.atoms.flatMap((a) => (a.match(/\d+/g) || []).map(Number))));
-            const get = (r, args) => S.val.get(`${r}(${args.map((a) => a + 1).join(', ')})`) === true;
-            const M = { n: K, dom: range(K), rel: (r, a) => get(r, a), konst: () => 0, fn: () => 0 };
-            drawStruct(C, M, { rels: langOf(S.pre).rels, consts: new Set(), funcs: new Map() }, { radius: 1.0, r: 13, label: (a) => String(a + 1) });
-            C.corner(`finite assignment preview, coordinates 1…${K}; true recorded atoms only (not a model of φ)`, 'tl', { size: 10.5, color: 'muted' });
-          }
-        });
-        v.readout(() => {
-          if (!fld.ok) return fld.src.trim() ? `Cannot read the sentence: ${fld.error}.` : 'Type a ∀∃-sentence.';
-          if (!S || S.error) return S ? `${S.error}.` : '';
-          const N = NS.value;
-          if (S.sat === false) return `$D_{${N}}$ is unsatisfiable: the instances ${S.core.map((i) => `$B_{${i + 1}}$`).join(', ')} (${S.core.length} of ${N}) are propositionally contradictory. The first stage where this happens is $n=${S.firstUnsat}$, so $\\varphi$ is refutable, and a refutation of the finite propositional sentence is a derivation of $\\neg\\varphi$ in the calculus.`;
-          if (S.sat) return `$D_{${N}}$ is satisfiable. ${S.firstUnsat !== null ? `The later/first contradictory stage is $D_{${S.firstUnsat}}$; a satisfiable prefix does not certify a model.` : 'No contradiction was found in the first twelve prefixes; this finite test does not establish satisfiability of the original sentence.'} ${S.witnessAborted ? 'The finite witness search exceeded its work budget.' : `The displayed finite assignment satisfies all ${N} selected instances ${S.ok ? '✓ (checked)' : '✗'}.`} If every $D_n$ is satisfiable, an infinitary compactness/selection argument gives a single assignment satisfying all of them. The finite preview makes no such infinite-model claim.`;
-          return `The SAT solver gave up at stage ${N}.`;
-        });
-      },
-    },
+    godelAudit,
   ],
 };

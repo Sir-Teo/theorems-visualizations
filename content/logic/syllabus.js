@@ -153,8 +153,8 @@ export default {
           pic: 'Second-order induction pins down the natural numbers; add a constant above every numeral and every finite subset still has a model while the whole has none, so compactness — and hence any complete proof system — must fail.' },
         { num: '4.12', kind: 'Paper', name: 'Vollständigkeit der Axiome des logischen Funktionenkalküls',
           paper: { authors: 'Kurt Gödel', year: 1930, title: 'Die Vollständigkeit der Axiome des logischen Funktionenkalküls', venue: 'Monatshefte für Mathematik und Physik 37: 349–360', doi: '10.1007/BF01696781' },
-          introduces: ['logic-4.6', 'logic-4.7'], deps: ['logic-4.1', 'logic-4.4', 'logic-3.12', 'logic-2.11'], refs: [],
-          pic: 'Authored finite ∀∃ reconstruction: inspect current propositional instances and checked finite assignments, or a contradictory finite core. The bounded preview neither constructs an infinite model nor prints a formal refutation; the original reduction proof remains under source review because the available authorized transcription drops displayed formulas.' },
+          introduces: ['logic-4.6', 'logic-4.7'], deps: ['logic-4.1', 'logic-4.4', 'logic-3.12', 'logic-2.11'], refs: ['Gödel 1930, complete authorized Collected Works I translation, pp.103–123'],
+          pic: 'Run an authored bounded degree-one instance construction, inspect checked finite assignments or contradictory cores, and compare all twelve prefixes; the original proof additionally needs degree reduction and an infinitary compatible-system selection, neither of which this finite preview executes.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
