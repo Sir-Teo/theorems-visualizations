@@ -17,7 +17,7 @@ A line-free colouring alone does not give a drawing strategy. It might even assi
  tags:['tic-tac-toe','Hales–Jewett','strategy stealing'],
  credit:'Technical geometric-line exposition: Solomon W. Golomb and Alfred W. Hales (2002). Hales–Jewett statement: Conlon–Kamčev author paper. Finite search and diagnostic authored here.',
  scope:String.raw`Normal play with one mark per turn, no passing or swaps, and play stopping at the first completed line. The finite search asks about arbitrary two-colourings, not game values. It offers n=2–5 and d=1–4 where n^d≤256; the omitted 5^4 board is not silently substituted. The node budget is part of the cache key and saved state. Colour symmetry fixes cell zero blue without changing existence. “None” is a complete finite search result; an unknown result certifies neither existence nor impossibility. Historical priority, the unread 1963 original, Patashnik's original computer proof and an optimal high-dimensional strategy are outside this technical audit.`,
- links:{source:'https://library.slmath.org/books/Book42/files/golomb.pdf',halesJewett:'https://www.its.caltech.edu/~dconlon/Intervals.pdf'},verify:true,
+ links:{source:'https://library.slmath.org/books/Book42/files/golomb.pdf',halesJewett:'https://www.its.caltech.edu/~dconlon/Intervals.pdf'},verify:false,
  viz(v){let pick=0,info;
   const board=v.select('board',CUBE_BOARDS,'3^3',{onChange:()=>{pick=0;}}),budget=v.select('visited-node limit',CUBE_BUDGETS.map(value=>({value,label:value.toLocaleString('en-US')})),300000);
   v.shareState('selected hypercube cell',{get:()=>({board:board.value,pick}),validate:cubeSelectionValid,set:s=>{if(s.board!==board.value)throw new RangeError('Saved board disagrees');pick=s.pick;}});

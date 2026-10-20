@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 88,
+  "remainingFlags": 87,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 5,
+    "game": 4,
     "polsci": 6,
     "music": 6,
     "art": 9,
@@ -262,21 +262,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Strategy-stealing_argument"
-      }
-    },
-    {
-      "id": "game-4.13",
-      "file": "content/game/ch04-c.js",
-      "name": "High-dimensional tic-tac-toe: the first player wins",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ §3.4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Hales%E2%80%93Jewett_theorem"
       }
     },
     {
@@ -2169,7 +2154,8 @@
       "tech-4.10",
       "polsci-4.13",
       "polsci-5.1",
-      "polsci-5.7"
+      "polsci-5.7",
+      "game-4.13"
     ]
   },
   "additionalFollowups": [
@@ -6938,6 +6924,11 @@
       "id": "polsci-5.7",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently accepted exact 6aa6bbc; docs/verification/polsci-downs-followup.md."
+    },
+    {
+      "id": "game-4.13",
+      "status": "resolved",
+      "note": "2026-10-20: worker two independently accepted exact 2bf0ae7; docs/verification/game-hypercube-followup.md."
     }
   ]
 }

@@ -411,6 +411,16 @@
         "docs/verification/polsci-downs-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "game-4.13"
+      ],
+      "peer": "worker two independently accepted exact 2bf0ae7",
+      "reports": [
+        "docs/verification/game-hypercube-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -423,7 +433,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 88,
+  "currentPendingSourceReviews": 87,
   "latestCheckpoint": {
     "acceptedContentCommit": "214d86c",
     "pendingSourceReviews": 96,
