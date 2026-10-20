@@ -1,3 +1,4 @@
+import{longitude,chronometer}from'./source-audit-longitude.js';
 import{balance}from'./source-audit-huygens.js';
 import{anchor}from'./source-audit-clockdrives.js';
 // History of Technology — Chapter 5: Time and navigation (items 5.7–5.11; 5.1–5.6 are in ch05.js)
@@ -59,105 +60,51 @@ The nonlinear trajectory is evaluated from the same energy-conserving elliptic s
 
     // ------------------------------------------------------------------ 5.9
     {
-      num: '5.9',
-      kind: 'Concept',
-      name: 'The longitude problem',
-      credit: 'Posed by the voyages of the 15th–17th centuries; the Longitude Act of 1714 (Queen Anne) offered up to £20,000 for a method accurate to half a degree at the end of a voyage to the West Indies (lesser prizes for 1° and 2/3°); the clock approach was proposed by Gemma Frisius in 1530, the lunar-distance method by others',
-      verify: true,
-      statement: String.raw`**Latitude** is easy to find at sea: it follows from the height of the Sun at noon or of the pole star above the horizon. **Longitude** is not: the Earth turns $15^\circ$ every hour, so the difference of longitude between a ship and a home port equals $15^\circ$ per hour of difference between *local time* (from the Sun) and the *home-port time* (from a clock carried on board). Finding longitude at sea is therefore a problem of carrying accurate time. One minute of time is a quarter of a degree, $15'$ of arc, which at the equator is $15$ nautical miles, and $15\cos\varphi$ at latitude $\varphi$.
+      num:'5.9',kind:'Concept',name:'The longitude problem',verify:true,
+      credit:'Longitude Act, 1714, actual contemporary print in Cambridge RGO14/1; ideal time-error model authored here',
+      statement:String.raw`At local mean noon, comparing local mean solar time with an accurate clock carrying reference-meridian mean time determines longitude: 24 hours correspond to 360°. With east longitude positive, a clock that reads ε seconds too fast makes the inferred longitude ε/240 degrees too far west. This assumes the equation of time and observational errors have been removed; apparent solar noon is not itself mean noon.
 
-What the sources support: the Longitude Act of 1714 offered £20,000 for a method that fixed longitude within half a degree (30 arc-minutes) at the end of a transatlantic voyage, £15,000 within two-thirds of a degree and £10,000 within one degree. Half a degree is 2 minutes of time. Other methods (lunar distances, and the eclipses of Jupiter's satellites on land) competed with the clock for a century.
+The actual Longitude Act offered £10,000 for longitude within one degree of a great circle, £15,000 within two-thirds of that distance and £20,000 within half. Its printed text specifies further assessment and payment conditions, including a nominated voyage from Great Britain to the West Indies. Angular error alone does not establish an award. The Act does not prescribe a six-week voyage.`,
+      idea:String.raw`In the authored model a signed constant rate error r in seconds per day accumulates from initial clock error ε0:
+$$\varepsilon(d)=\varepsilon_0+rd.$$
+The signed longitude offset in degrees is
+$$\widehat\lambda-\lambda=-\varepsilon(d)/240.$$
+The absolute angular error is $|\varepsilon(d)|/4$ arc-minutes. On a sphere using 60 nautical miles per degree, the corresponding **parallel arc** at latitude φ is $|\varepsilon(d)|\cos\varphi/4$ nautical miles. This is neither a shortest geodesic on an ellipsoid nor an observed navigation error.
 
-Scope of the picture: the Sun's time is idealised to local mean noon (the equation of time, up to ±16 minutes, is assumed known and removed); the error is the clock's alone.`,
-      idea: String.raw`The Sun crosses the meridian of every place at that place's local noon, and the Earth's rotation turns $360^\circ$ in $24$ h, so a time difference $\Delta t$ is a longitude difference $15^\circ\,\Delta t/\mathrm{h}$. If the clock is wrong by $\epsilon$ seconds the longitude is wrong by $\epsilon/240$ degrees, i.e. $\epsilon/4$ arc-minutes, whatever the latitude; the distance on the sea shrinks as $\cos\varphi$ (geog-1.3). The error accumulates: a clock with a daily rate error $r$ is wrong by $r\cdot d$ after $d$ days. For the Act's half degree on a 6-week voyage, $r\le 120\text{ s}/42\text{ d}\approx2.9$ s/day. A pendulum clock (5.6), which a ship's motion upsets, cannot do it.`,
-      caption: String.raw`Drag the gold **ship** over the Atlantic. The navigator's clock is slow or fast by the **error** you set (the line from the true position to the red dot). Right: the longitude error against the days of the voyage for the chosen **daily rate error**, with the 1°, 40′ and 30′ prize limits; find the largest rate error that still earns the top prize.`,
-      deps: ['tech-5.6', 'geog-2.4'],
-      see: ['tech-5.10', 'geog-1.3'],
-      refs: ['Mokyr ch. 4', 'Sobel, Longitude (1995)'],
-      tags: ['early-modern', 'navigation', 'time'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Longitude_Act' },
-      viz(v) {
-        const A = v.stage({ x: [-80, 10], y: [0, 65], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 320, xlabel: 'longitude (°; west negative)', ylabel: 'latitude (°N)', title: 'true and believed position' });
-        const B = v.stage({ x: [0, 90], y: [0, 90], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 320, xlabel: 'days at sea', ylabel: 'longitude error (arc-minutes)', title: 'error against time at sea' });
-        const eS = v.slider('clock error now (min)', -8, 8, 2, { step: 0.05 });
-        const rS = v.slider('daily rate error (s/day)', 0, 20, 2.8, { step: 0.1 });
-        const ship = A.handle(-35, 38, { color: 'gold', r: 8, label: 'ship', labelPos: 'ne', constrain: { x: [-78, 8], y: [3, 62] } });
-        v.render(() => {
-          for (let lon = -60; lon <= 0; lon += 15) A.vline(lon, { color: 'faint', width: 1, dash: [2, 4] });
-          const dl = 0.25 * eS.value; // degrees per minute of time
-          const bx = ship.x - dl, by = ship.y;
-          A.line(ship.x, ship.y, bx, by, { color: 'red', width: 2, dash: [4, 3] });
-          A.dot(bx, by, { r: 6, color: 'red', label: 'believed', labelPos: 'se' });
-          A.dot(-0, 51, { r: 4, color: 'ink', label: 'Greenwich', labelPos: 'nw' });
-          // prize limits and the voyage
-          for (const [lim, lab, col] of [[60, '1°', 'muted'], [40, '40′', 'orange'], [30, '30′ (£20,000)', 'green']]) { B.hline(lim, { color: col, width: 1.6, dash: [5, 3] }); B.text(lab, 88, lim + 1.5, { size: 10.5, color: col, align: 'right' }); }
-          const r = rS.value; B.line(0, 0, 90, (r * 90) / 4, { color: 'accent', width: 2.6 });
-          B.dot(42, (r * 42) / 4, { r: 6, color: 'gold', label: '6 weeks', labelPos: 'nw' });
-        });
-        v.legend([['red', 'believed position', { dot: true }], ['accent', 'longitude error of the clock'], ['green', '30′ prize limit', { dash: [5, 3] }]]);
-        v.readout(() => {
-          const e = eS.value, lat = ship.y, errArc = Math.abs(e) * 15, nm = errArc * Math.cos(lat * D2R), r = rS.value, endErr = (r * 42) / 4;
-          return `clock error **${v.fix(e, 2)} min** = ${v.fix(Math.abs(e) * 0.25, 2)}° of longitude = **${v.fix(nm, 1)} nautical miles** at ${v.fix(lat, 0)}°N (${v.fix(errArc, 1)} nmi at the equator)\nrate ${v.fix(r, 1)} s/day: after 6 weeks the clock is ${fmtSec(r * 42)} out, the position ${v.fix(endErr, 0)}′ of longitude — ${endErr <= 30 ? '**inside** the half-degree prize limit' : endErr <= 40 ? 'inside 40′ only' : endErr <= 60 ? 'inside 1° only' : '**outside every prize**'}; the limit is 120 s in 42 days = 2.9 s/day`;
-        });
+The half-degree benchmark is 120 seconds. For an explicitly chosen 42-day illustration starting at zero error, it requires $|r|\le120/42\approx2.857143$ seconds per day. An initial offset can reinforce or cancel drift, so the whole error curve matters.`,
+      caption:String.raw`Drag the gold ship or use its coordinate controls. The red point, selected-day marker and complete 90-day error curve all use the same initial error and signed rate. A change of sign produces an exact zero-crossing vertex. The 30′, 40′ and 60′ lines compare the Act's angular thresholds; they do not decide legal eligibility.`,
+      deps:['tech-5.6','geog-2.4'],see:['tech-5.10','geog-1.3'],refs:['Longitude Act, 1714, contemporary print pp.355–357; Cambridge Digital Library RGO14/1 fols.11r–12r'],tags:['navigation','time'],
+      scope:String.raw`Constant signed clock-rate error, ideal reference and local mean solar times, fixed true coordinates and a declared spherical parallel-distance convention. No equation-of-time estimation, observation noise, real coastline, shortest-route distance or prize adjudication.`,
+      links:{source:'https://cudl.lib.cam.ac.uk/view/MS-RGO-00014-00001/21'},
+      viz(v){const initial=v.slider('initial clock error (minutes)',-8,8,2,{step:'any',decimals:6}),rate=v.slider('signed clock rate error (s/day)',-20,20,2.8,{step:'any',decimals:6}),day=v.slider('selected day',0,90,42,{step:'any',decimals:6}),lon=v.slider('true longitude (° east)',-78,8,-35,{step:'any',decimals:6}),lat=v.slider('true latitude (° north)',3,62,38,{step:'any',decimals:6}),A=v.stage({x:[-102,32],y:[-6,71],axes:'box',gutter:true,height:340,minWidth:260,xlabel:'longitude (° east)',ylabel:'latitude (° north)',title:'ideal true and inferred coordinates'}),B=v.stage({x:[-7,97],y:[-10,100],axes:'box',gutter:true,height:340,minWidth:260,xlabel:'elapsed days',ylabel:'absolute longitude error (arc-minutes)',title:'same clock model throughout the voyage'}),ship=A.handle(-35,38,{color:'gold',r:7,constrain:{x:[-78,8],y:[3,62]}}),set=ship.set;ship.set=(x,y)=>{if(!Number.isFinite(x)||!Number.isFinite(y)||x< -78||x>8||y<3||y>62)throw new RangeError('invalid ship coordinates');set(x,y);};ship.onDrag=()=>{lon.set(ship.x);lat.set(ship.y);};v.shareState('ship coordinate agreement',{get:()=>[lon.value,lat.value],validate:s=>Array.isArray(s)&&s.length===2&&s.every(Number.isFinite)&&s[0]>=-78&&s[0]<=8&&s[1]>=3&&s[1]<=62,set:s=>{if(s[0]!==lon.value||s[1]!==lat.value||ship.x!==s[0]||ship.y!==s[1])throw new RangeError('invalid ship coordinate agreement');}});let info;
+        v.legend([['gold','true ship / selected day'],['red','inferred position'],['accent','absolute clock error'],['green','30′ angular benchmark']]);
+        v.render(()=>{const p=longitude(initial.value,rate.value,day.value,lon.value,lat.value);ship.set(p.lon,p.lat);for(let x=-60;x<=0;x+=15)A.line(x,0,x,65,{color:'faint',width:1,dash:[2,4]});A.line(p.lon,p.lat,p.believed,p.lat,{color:'red',width:2,dash:[4,3]});A.dot(p.believed,p.lat,{color:'red',r:5,ring:false});A.dot(0,51,{color:'ink',r:3,ring:false});B.setView([-7,97],[-.14*p.top,p.top]);for(const[y,color]of[[30,'green'],[40,'orange'],[60,'muted']])B.line(0,y,90,y,{color,width:1.4,dash:[5,3]});B.path(p.curve,{color:'accent',width:2.4});B.dot(p.day,p.arc,{color:'gold',r:5,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Day ${v.fix(p.day,9)}: signed clock error ${v.fix(p.error,9)} s. Inferred longitude ${v.fix(p.believed,9)}°, offset ${v.fix(p.delta,9)}°.\nAbsolute error ${v.fix(p.arc,9)} arc-minutes; spherical parallel arc ${v.fix(p.parallel,9)} nautical miles at latitude ${v.fix(p.lat,9)}°. The map is a coordinate diagram; the black point marks Greenwich.\nAngular benchmarks: 30′ = 120 s, 40′ = 160 s, 60′ = 240 s. The Act has additional conditions; this display makes no award decision. The illustrative zero-offset 42-day rate bound is 120/42 s/day.`;});
       },
     },
 
     // ------------------------------------------------------------------ 5.10
     {
-      num: '5.10',
-      kind: 'Invention',
-      name: 'Harrison’s marine chronometer',
-      credit: 'John Harrison, H1 (1735), H2, H3, then the watch-form H4 (completed 1759); H4 was tested on a voyage to Jamaica (1761–62) and to Barbados (1764) and its timekeeping met the terms of the Longitude Act; the Board of Longitude paid Harrison in stages (the full award was long delayed). Reported performance: about 5 seconds slow after 81 days to Jamaica (figure disputed, see the text)',
-      verify: true,
-      statement: String.raw`A **marine chronometer** is a clock whose rate is so steady against changes of temperature and ship motion that, once its rate is measured in port, the time it carries can be trusted for weeks. Harrison's H4 (1759) was a large pocket-watch in form with a balance spring (5.8), a bimetallic compensation for temperature, a remontoire to keep the force on the escapement constant, and jewelled pallets. To earn the top prize of the Longitude Act (5.9) it had to be right within about 2 minutes of time at the end of a six-week voyage, i.e. to a few seconds a day.
+      num:'5.10',kind:'Invention',name:'Harrison’s marine chronometer',verify:true,
+      credit:'John Harrison, H4 longitude watch completed 1759; Royal Museums Greenwich ZAA0037. Authored uncalibrated voyage comparison',
+      statement:String.raw`Royal Museums Greenwich identifies H4, ZAA0037, as Harrison's longitude watch, completed in 1759 after work began in 1755. Its owner record describes a stable, high-frequency balance. The actual watch and its inscription provide historical context; they do not supply numerical noise or temperature coefficients for this simulation.
 
-What the sources support: H4 was carried to Jamaica from November 1761, and sources give a loss of about 5 seconds over 81 days (so, at the time of the landfall, an error of about $1\tfrac14'$ of longitude); this figure is reported but not independently verified, and one skeptical historian doubts it. The 1764 voyage to Barbados gave a second trial. Harrison's later watch designs were copied by Larcum Kendall (K1), and the marine chronometers of Arnold and Earnshaw replaced his design from about 1780.
-
-Scope of the picture: the three clock types have **assumed**, round stabilities (the daily random rate error, the temperature coefficient and the effect of ship motion) chosen to illustrate the argument and are not measurements of any named clock; the tropical warming is a straight ramp.`,
-      idea: String.raw`A clock rated in port has its mean rate removed, so what remains is the *change* of rate: a random part $\sigma$ per day (the errors add like a random walk, $\sigma\sqrt d$), and a systematic part, the temperature coefficient $c$ in s/day per °C times how far the temperature has moved from where it was rated; the latter adds up linearly in days. An ordinary watch has $c\approx1$ s/day/°C, so a voyage to the tropics ($+15^\circ$C) puts it out by hours. A pendulum is upset by the ship's motion, which adds a random term of many seconds a day. The cure is the compensation (a balance whose effective radius or spring changes with temperature to cancel $c$) and a constant-force escapement (5.8): $c$ falls to a few hundredths of a second per day per °C, and the error after 81 days is of order seconds to ten seconds.`,
-      caption: String.raw`Choose a **clock**, the **voyage length** and the **tropical warming**. Left: the clock's error in seconds against the day of the voyage, for five simulated voyages (thin) and the first (bold), against the 2-minute limit. Right: the corresponding position error at Port Royal's latitude (18°N). **New voyages** draws fresh random rate errors; the temperature part never changes.`,
-      deps: ['tech-5.8', 'tech-5.9'],
-      see: ['tech-5.6', 'tech-5.5'],
-      refs: ['Mokyr ch. 4', 'Cardwell', 'Sobel, Longitude (1995)'],
-      tags: ['early-modern', 'timekeeping', 'navigation'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Marine_chronometer' },
-      viz(v) {
-        const A = v.stage({ x: [0, 100], y: [-100, 400], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 320, xlabel: 'day of the voyage', ylabel: 'clock error (s)', title: 'clock error' });
-        const B = v.stage({ x: [0, 100], y: [0, 100], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 300, xlabel: 'day of the voyage', ylabel: 'position error at 18°N (nautical miles)', title: 'position error' });
-        const kinds = { watch: { name: 'ordinary watch', c: 1.0, s: 2, m: 0.5 }, pend: { name: 'pendulum clock on a ship', c: 0.5, s: 1, m: 25 }, chron: { name: 'compensated chronometer', c: 0.02, s: 0.1, m: 0.05 } };
-        const kS = v.select('clock', [{ value: 'watch', label: 'ordinary watch' }, { value: 'pend', label: 'pendulum clock' }, { value: 'chron', label: 'H4-like chronometer' }], 'chron');
-        const dS = v.slider('voyage length (days)', 10, 100, 81, { step: 1 });
-        const wS = v.slider('tropical warming (°C)', 0, 25, 15, { step: 1 });
-        let seed = 7;
-        v.button('new voyages', () => { seed += 1; });
-        const run = (k, days, warm, sd) => {
-          const r = v.rng(sd), out = [0]; let e = 0;
-          for (let d = 1; d <= days; d++) { const temp = (warm * d) / days + 1.5 * Math.sin(d * 0.9); e += k.c * temp + k.s * r.normal() + k.m * r.normal(); out.push(e); }
-          return out;
-        };
-        v.render(() => {
-          const k = kinds[kS.value], days = dS.value, runs = [];
-          for (let i = 0; i < 5; i++) runs.push(run(k, days, wS.value, seed * 13 + i));
-          let mx = 150; for (const r of runs) for (const e of r) mx = Math.max(mx, Math.abs(e) * 1.1); mx = Math.min(mx, 20000);
-          A.setView([0, 100], [-mx * 0.4, mx]);
-          A.hband(-120, 120, { color: 'green', alpha: 0.12 }); A.hline(120, { color: 'green', width: 1.5, dash: [5, 3] }); A.hline(-120, { color: 'green', width: 1.5, dash: [5, 3] }); A.hline(0, { color: 'muted', width: 1 });
-          A.text('±2 min (half-degree prize)', 98, 120 + mx * 0.03, { size: 10.5, color: 'green', align: 'right' });
-          runs.forEach((r, i) => A.path(r.map((e, d) => [d, e]), { color: i === 0 ? 'accent' : 'blue', width: i === 0 ? 2.8 : 1, alpha: i === 0 ? 1 : 0.45 }));
-          A.vline(days, { color: 'gold', width: 1.2, dash: [4, 3] });
-          const cosL = Math.cos(18 * D2R), nmax = (mx * 15 / 60) * cosL;
-          B.setView([0, 100], [0, Math.max(30, Math.min(nmax, 5000))]);
-          const lim = (120 / 4 / 60) * 60 * cosL; // 30′ at 18°N in nautical miles (arc-minutes of longitude × cos φ)
-          B.hline(30 * cosL, { color: 'green', width: 1.6, dash: [5, 3] }); B.text('30′ of longitude', 98, 30 * cosL * 1.04, { size: 10.5, color: 'green', align: 'right' });
-          runs.forEach((r, i) => B.path(r.map((e, d) => [d, (Math.abs(e) / 4) * cosL]), { color: i === 0 ? 'accent' : 'blue', width: i === 0 ? 2.8 : 1, alpha: i === 0 ? 1 : 0.45 }));
-          B.vline(days, { color: 'gold', width: 1.2, dash: [4, 3] });
-        });
-        v.legend([['accent', 'first simulated voyage'], ['blue', 'four more'], ['green', 'prize limit', { dash: [5, 3] }]]);
-        v.readout(() => {
-          const k = kinds[kS.value], days = dS.value, ends = []; for (let i = 0; i < 5; i++) { const r = run(k, days, wS.value, seed * 13 + i); ends.push(r[r.length - 1]); }
-          const sys = (k.c * wS.value * days) / 2, rnd = Math.sqrt(days * (k.s * k.s + k.m * k.m)), e0 = ends[0], arc = Math.abs(e0) / 4;
-          const ok = ends.filter((e) => Math.abs(e) <= 120).length;
-          return `${k.name} (assumed: $c=${k.c}$ s/day/°C, random ${v.fix(Math.hypot(k.s, k.m), 2)} s/day): after ${days} days the typical systematic part is ${fmtSec(sys)} (linear in days) and the random part ${fmtSec(rnd)} ($\\propto\\sqrt d$)\nfirst voyage ends **${fmtSec(e0)}** out = ${v.fix(arc, 1)}′ of longitude = ${v.fix(arc * Math.cos(18 * D2R), 1)} nmi at 18°N; **${ok} of 5** voyages inside the 2-minute limit`;
-        });
+The three profiles below are explicitly authored examples: thermal-sensitive, motion-sensitive and low-sensitivity. Their coefficients are not measurements of H4, an ordinary watch or a shipboard pendulum. This item does not independently authenticate a precise Jamaica trial error, a payment chronology or the priority of later makers.`,
+      idea:String.raw`For a voyage of D whole days, prescribe the end-of-day temperature change
+$$\Delta T_j=Wj/D+1.5\sin(0.9j).$$
+Each clock-error increment is $c\Delta T_j+sZ_j+mU_j$, where all Zj and Uj are assumed independent standard normal variables. The first term is systematic; the two random terms represent two declared sources of rate variation. At day d the exact systematic mean is
+$$R_d=\frac{Wd(d+1)}{2D},$$
+$$S_d=\frac{\sin(0.45d)\sin(0.45(d+1))}{\sin(0.45)},$$
+$$\mu_d=c(R_d+1.5S_d),$$
+and the random component has RMS $\sqrt{d(s^2+m^2)}$. This is a discrete end-of-day ramp; replacing its sum by WD/2 would give a different model. The five trajectories use a registered pseudorandom seed, rather than estimating a probability from five observations.`,
+      caption:String.raw`Choose an authored sensitivity profile, voyage length, final warming, latitude and seed. Both plots retain every daily sample, including negative clock errors. The orange line is the exact systematic mean. New voyages advances the saved seed. The ±120-second band and corresponding parallel arc are angular benchmarks, subject to the Act's additional conditions.`,
+      deps:['tech-5.8','tech-5.9'],see:['tech-5.6','tech-5.5'],refs:['Royal Museums Greenwich, H4 ZAA0037 owner record and actual inscription image; Longitude Act contemporary print pp.355–357'],tags:['timekeeping','navigation'],
+      scope:String.raw`Authored daily temperature schedule and independent Gaussian increments, illustrated by a specified seeded generator. Profiles (c,s,m) are (1,2,0.5), (0.5,1,25) and (0.02,0.1,0.05), with c in seconds/day/°C and s,m in seconds/day. No measured historical calibration, continuous-temperature integration, correlated weather, instrument observation errors or award adjudication. Distances are spherical parallel arcs using 60 nautical miles per degree.`,
+      links:{source:'https://www.rmg.co.uk/collections/objects/rmgc-object-79142'},
+      viz(v){const profile=v.select('authored sensitivity profile',[{value:'thermal',label:'thermal-sensitive'},{value:'motion',label:'motion-sensitive'},{value:'low',label:'low-sensitivity'}],'low'),days=v.slider('voyage length (whole days)',10,100,81,{step:1,int:true}),warm=v.slider('final ramp warming (°C)',0,25,15,{step:'any',decimals:6}),lat=v.slider('latitude (° north)',0,65,18,{step:'any',decimals:6}),seed=v.slider('saved voyage seed',1,9999,7,{step:1,int:true}),A=v.stage({x:[-8,108],y:[-150,150],axes:'box',gutter:true,height:340,minWidth:260,xlabel:'elapsed days',ylabel:'clock error (s)',title:'five authored trajectories and exact mean'}),B=v.stage({x:[-8,108],y:[-5,50],axes:'box',gutter:true,height:340,minWidth:260,xlabel:'elapsed days',ylabel:'parallel arc (nautical miles)',title:'same trajectories converted to position error'});let info;v.button('new voyages',()=>seed.set(seed.value===9999?1:seed.value+1));
+        v.legend([['accent','first trajectory'],['blue','four further trajectories'],['orange','exact systematic mean'],['green','angular benchmark']]);
+        v.render(()=>{const p=chronometer(profile.value,days.value,warm.value,lat.value,seed.value);A.setView([-8,108],[-p.top,p.top]);B.setView([-8,108],[-.14*p.distanceTop,p.distanceTop]);for(const y of[-120,120])A.line(0,y,100,y,{color:'green',width:1.4,dash:[5,3]});A.line(0,0,100,0,{color:'muted',width:1});p.runs.forEach((q,i)=>A.path(q,{color:i?'blue':'accent',width:i?1:2.6,alpha:i?.5:1}));A.path(p.mean,{color:'orange',width:2,dash:[4,3]});B.line(0,30*p.cos,100,30*p.cos,{color:'green',width:1.4,dash:[5,3]});p.distance.forEach((q,i)=>B.path(q,{color:i?'blue':'accent',width:i?1:2.6,alpha:i?.5:1}));info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Authored ${p.profile} profile: c=${p.k.c}, s=${p.k.s}, m=${p.k.m}; saved seed ${p.seed}. Day ${p.days}: exact systematic mean ${v.fix(p.meanEnd,9)} s; random-component RMS ${v.fix(p.rms,9)} s under the declared independent-increment assumptions.\nFirst trajectory ends at ${v.fix(p.ends[0],9)} s = ${v.fix(Math.abs(p.ends[0])/4,9)} arc-minutes; parallel arc ${v.fix(Math.abs(p.ends[0])/4*p.cos,9)} nautical miles at ${v.fix(p.latitude,9)}°. Of these five illustrated endpoints, ${p.within} are within ±120 s. This count is not an estimated historical success rate or a prize decision.\nAll coefficients and temperature inputs are authored and uncalibrated; H4's owner record supplies historical context only.`;});
       },
     },
 
