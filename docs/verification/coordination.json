@@ -658,6 +658,21 @@
       ],
       "status": "accepted",
       "commits": [
+        "f1e656d"
+      ]
+    },
+    {
+      "ids": [
+        "polsci-5.8",
+        "polsci-5.10"
+      ],
+      "peer": "worker_one exact-commit original-source/pixels, independent integer-polynomial, native-state and output-pixel review",
+      "reports": [
+        "docs/verification/polsci-aggregation-followup.md",
+        "docs/verification/polsci-essai-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
         "ee16fa1",
         "71e3f45"
       ]
@@ -673,7 +688,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 68,
+  "currentPendingSourceReviews": 66,
   "latestCheckpoint": {
     "acceptedContentCommit": "f9a9406",
     "report": "docs/verification/checkpoint-f9a9406.md",
