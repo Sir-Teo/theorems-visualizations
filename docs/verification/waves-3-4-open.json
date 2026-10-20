@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 43,
+  "remainingFlags": 40,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "art": 2,
-    "arch": 9,
+    "arch": 6,
     "ling": 5,
     "bighist": 16
   },
@@ -234,46 +234,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Theory_of_Colours"
-      }
-    },
-    {
-      "id": "arch-3.10",
-      "file": "content/arch/ch03-b.js",
-      "name": "Flying buttresses and pinnacles",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Heyman"
-      ],
-      "links": {}
-    },
-    {
-      "id": "arch-3.12",
-      "file": "content/arch/ch03-b.js",
-      "name": "Medieval rules of proportion for buttresses",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Heyman"
-      ],
-      "links": {}
-    },
-    {
-      "id": "arch-3.13",
-      "file": "content/arch/ch03-b.js",
-      "name": "A Description of Helioscopes, and Some Other Instruments",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "archive": "https://archive.org/details/bim_early-english-books-1641-1700_a-description-of-heliosc_hooke-robert_1676",
-        "wikipedia": "https://en.wikipedia.org/wiki/Catenary"
       }
     },
     {
@@ -1495,7 +1455,10 @@
       "ling-3.8",
       "ling-3.9",
       "bighist-3.9",
-      "bighist-3.10"
+      "bighist-3.10",
+      "arch-3.10",
+      "arch-3.12",
+      "arch-3.13"
     ]
   },
   "additionalFollowups": [
@@ -6509,6 +6472,21 @@
       "id": "bighist-3.10",
       "status": "resolved",
       "note": "2026-10-20: Worker two independently accepted exact 4f6b9c7 after primary-source, math and fresh native/pixel review; docs/verification/bighist-impact-followup.md."
+    },
+    {
+      "id": "arch-3.10",
+      "status": "resolved",
+      "note": "2026-10-20: Coordinator independently accepted exact e840446 after actual original sources, analytic math and fresh native/output pixels; docs/verification/arch-buttresses-followup.md."
+    },
+    {
+      "id": "arch-3.12",
+      "status": "resolved",
+      "note": "2026-10-20: Coordinator independently accepted exact e840446 after actual original sources, analytic math and fresh native/output pixels; docs/verification/arch-buttresses-followup.md."
+    },
+    {
+      "id": "arch-3.13",
+      "status": "resolved",
+      "note": "2026-10-20: Coordinator independently accepted exact e840446 after actual original sources, analytic math and fresh native/output pixels; docs/verification/arch-buttresses-followup.md."
     }
   ]
 }

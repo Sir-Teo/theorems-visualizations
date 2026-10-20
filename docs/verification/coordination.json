@@ -862,6 +862,22 @@
       "commits": [
         "4f6b9c7"
       ]
+    },
+    {
+      "ids": [
+        "arch-3.10",
+        "arch-3.12",
+        "arch-3.13"
+      ],
+      "peer": "Coordinator independently accepted exact e840446 after actual original sources, analytic math and fresh native/output pixels",
+      "reports": [
+        "docs/verification/arch-buttresses-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "e840446",
+        "5b58b7a"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -874,7 +890,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 43,
+  "currentPendingSourceReviews": 40,
   "latestCheckpoint": {
     "acceptedContentCommit": "a99dc23",
     "report": "docs/verification/checkpoint-a99dc23.md",
