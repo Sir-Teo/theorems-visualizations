@@ -790,6 +790,20 @@
       "commits": [
         "a99dc23"
       ]
+    },
+    {
+      "ids": [
+        "ling-4.8",
+        "ling-4.14"
+      ],
+      "peer": "worker_two exact-commit complete original-source/pixels, independent corpus and finite-joint oracles, native-state and output-pixel review",
+      "reports": [
+        "docs/verification/ling-shannon-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "62b0eaf"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -802,7 +816,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 52,
+  "currentPendingSourceReviews": 51,
   "latestCheckpoint": {
     "acceptedContentCommit": "a99dc23",
     "report": "docs/verification/checkpoint-a99dc23.md",

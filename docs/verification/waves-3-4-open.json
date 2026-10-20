@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 52,
+  "remainingFlags": 51,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "art": 6,
     "arch": 9,
-    "ling": 8,
+    "ling": 7,
     "bighist": 18
   },
   "queue": [
@@ -519,19 +519,6 @@
       "refs": [],
       "links": {
         "archive": "https://archive.org/details/psychobiologyofl0000zipf"
-      }
-    },
-    {
-      "id": "ling-4.14",
-      "file": "content/ling/ch04-c.js",
-      "name": "Prediction and Entropy of Printed English",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "doi": "https://doi.org/10.1002/j.1538-7305.1951.tb01366.x"
       }
     },
     {
@@ -1626,7 +1613,8 @@
       "tech-5.11",
       "tech-5.2",
       "tech-5.3",
-      "game-4.11"
+      "game-4.11",
+      "ling-4.14"
     ]
   },
   "additionalFollowups": [
@@ -6595,6 +6583,16 @@
       "id": "game-4.11",
       "status": "resolved",
       "note": "2026-10-20: worker_one exact-commit original-source/pixels, separate finite-state oracle, fresh native/input/replay and output-pixel review; docs/verification/game-stealing-followup.md."
+    },
+    {
+      "id": "ling-4.8",
+      "status": "resolved",
+      "note": "2026-10-20: worker_two exact-commit complete original-source/pixels, independent corpus and finite-joint oracles, native-state and output-pixel review; docs/verification/ling-shannon-followup.md."
+    },
+    {
+      "id": "ling-4.14",
+      "status": "resolved",
+      "note": "2026-10-20: worker_two exact-commit complete original-source/pixels, independent corpus and finite-joint oracles, native-state and output-pixel review; docs/verification/ling-shannon-followup.md."
     }
   ]
 }
