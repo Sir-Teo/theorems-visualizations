@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **32 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 619 edges. Even
-including planned items and planned prerequisites, **24 collections remain below 25**.
+Of 64 non-math collections, **30 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 590 edges. Even
+including planned items and planned prerequisites, **23 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -228,3 +228,10 @@ The [independent PHYSIO peer](physio-crossfield-prerequisite-peer.md) accepts fi
 ## Accepted atmosphere/ocean inputs and curl correction
 
 The [combined independent GEO peer](geo-prerequisites-independent-peer.md) accepts fifteen inputs across fifteen consumers, giving10/15/31→25/30/46. All34objects/functions/flags/fullsyllabus lists, independent mathematics and thirty narrow theme outputs pass. Its reviewer also identified an inherited2.7curl sign error; a separately authored negative sign with constant-rotation/divergence hypotheses received exact-diff,906component checks and both-theme native review before combined acceptance. Zero-column conclusion and numerical code are unchanged. Accepted shortfall619,32/64below25published,24whole syllabi below25.
+
+
+## Accepted behavior and epidemiology inputs
+
+The [BEHAV peer](behav-independent-peer.md) accepts fourteen inputs across thirteen consumers,11/15/17→25/29/31, plus four equivalent field wraps. All67objects/functions/flags, exact syllabus lists,106,445independent assertions and32changed-field images pass. No bridge is touched.
+
+The [EPI peer](epi-prerequisites-independent-peer.md) accepts fifteen inputs across fourteen consumers,10/11/29→25/26/44. Three inherited raw syllabus mismatches and the3.9censoring qualification were corrected and re-reviewed; informative censoring has an explicit counterexample. All47objects/functions/flags/helpers and full changed-row lists pass; original/new corrected native outputs and causality bridge cards were personally inspected. No source claim or biomedical scope expands. Accepted global shortfall590,30/64published collections below25,23whole syllabi below25.

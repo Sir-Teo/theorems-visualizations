@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 32,
-  "wholeSyllabusBelowTarget": 24,
+  "publishedBelowTarget": 30,
+  "wholeSyllabusBelowTarget": 23,
   "entries": [
     {
       "collection": "stat",
@@ -8857,15 +8857,36 @@
       "collection": "epi",
       "field": "med",
       "target": 25,
-      "writtenToWritten": 10,
-      "writtenToKnown": 11,
-      "wholeSyllabus": 29,
-      "publishedShortfall": 15,
+      "writtenToWritten": 25,
+      "writtenToKnown": 26,
+      "wholeSyllabus": 44,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
+          "item": "epi-1.2",
+          "prerequisite": "stat-3.5",
+          "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "epi-1.5",
           "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-1.5",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-1.5",
+          "prerequisite": "pma-6.21",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -8878,9 +8899,37 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "epi-1.8",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "epi-1.9",
           "prerequisite": "mathbio-4.1",
           "prerequisiteField": "bio",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-1.9",
+          "prerequisite": "prob-2.2.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-2.8",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-2.11",
+          "prerequisite": "prob-1.6.9a",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -8899,6 +8948,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "epi-2.4",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "epi-2.7",
           "prerequisite": "stat-6.5",
           "prerequisiteField": "stats",
@@ -8906,9 +8962,44 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "epi-2.7",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-3.9",
+          "prerequisite": "stat-5.6",
+          "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-3.12",
+          "prerequisite": "prob-1.2.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "epi-3.1",
           "prerequisite": "causal-1.4",
           "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-3.2",
+          "prerequisite": "stat-5.6",
+          "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-3.3",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -8936,6 +9027,20 @@
         {
           "item": "epi-4.6",
           "prerequisite": "causal-3.5",
+          "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-4.6",
+          "prerequisite": "causal-4.3",
+          "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "epi-4.13",
+          "prerequisite": "causal-4.4",
           "prerequisiteField": "stats",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -12660,18 +12765,32 @@
       "collection": "behav",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 11,
-      "writtenToKnown": 15,
-      "wholeSyllabus": 17,
-      "publishedShortfall": 14,
+      "writtenToWritten": 25,
+      "writtenToKnown": 29,
+      "wholeSyllabus": 31,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "behav-1.9",
+          "prerequisite": "pma-6.22",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "behav-1.10",
           "prerequisite": "stat-10.1",
           "prerequisiteField": "stats",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "behav-1.14",
+          "prerequisite": "pma-4.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "behav-1.1",
@@ -12681,8 +12800,22 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "behav-1.1",
+          "prerequisite": "prob-2.2.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "behav-1.2",
           "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-1.3",
+          "prerequisite": "prob-1.6.1",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -12702,8 +12835,29 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "behav-1.5",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "behav-1.6",
           "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-1.6",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-1.7",
+          "prerequisite": "pma-6.21",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -12751,8 +12905,50 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "behav-3.8",
+          "prerequisite": "prob-1.1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-3.9",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-3.10",
+          "prerequisite": "prob-2.1.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-3.10",
+          "prerequisite": "prob-2.3.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "behav-4.6",
           "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-4.6",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-4.2",
+          "prerequisite": "opt-3.4",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -12767,6 +12963,13 @@
         {
           "item": "behav-5.3",
           "prerequisite": "prob-1.2.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "behav-5.3",
+          "prerequisite": "pma-6.21",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -16326,7 +16529,9 @@
       "bd86a7e011b98a7787dcd1dc3d34a447b0326221",
       "ba5f1b2f51dd9828cb457f2f266ee508d0550599",
       "23b0fc2d861beebfb7b11122ea49716ac0c66cf2",
-      "41e28718ef13f3c5c8338d689b8407f21ff09b47"
+      "41e28718ef13f3c5c8338d689b8407f21ff09b47",
+      "2afbe7e27409aae87a402cc515291f9e9436e4f8",
+      "a13604f7bae12f3718d28fe089c18e4957e790d3"
     ],
     "excludedUnacceptedEdges": [
       {

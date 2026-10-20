@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Preserve rejected complete-raster candidate; read-only per-tile index feasibility",
+      "current": "Non-timing actual-mesh operation/storage census; current freeze pending",
       "owns": [
-        "Isolated rejected experiment artifacts; read-only GPU feasibility report"
+        "Explicit diagnostic math/storage/count files only; no renderer binding or timing"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +52,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "BIOINF genuine prerequisite production; KIN peer complete",
+      "current": "POPGEN genuine prerequisite production; BIOINF candidate under peer",
       "owns": [
-        "BIOINF written items/matching rows/unique reports/tests"
+        "POPGEN written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -62,9 +62,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "Independent BEHAV prerequisites/equation-wrap peer",
+      "current": "GEOG genuine prerequisite production",
       "owns": [
-        "Unique BEHAV peer files only"
+        "GEOG written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -72,9 +72,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent EPI peer; row synchronization pending",
+      "current": "MACRO genuine prerequisite production; EPI peer complete",
       "owns": [
-        "Unique EPI peer files only"
+        "MACRO written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent PHYSIO peer; EPI row correction next",
+      "current": "Independent BIOINF prerequisite peer",
       "owns": [
-        "Unique PHYSIO peer files; bounded EPI row/report followup"
+        "Unique BIOINF peer files only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -2031,15 +2031,47 @@
       "sourceClosure": "None; source flags/functions/helpers preserved.",
       "bridgeReview": "No changed consumers are bridge steps.",
       "correction": "2.7constant-rotation curl sign negative; independently verified without changing zero-column conclusion."
+    },
+    {
+      "collection": "behav",
+      "commits": [
+        "2afbe7e27409aae87a402cc515291f9e9436e4f8",
+        "19e4c9d9aec714f957834828a7833e29592d8f7f",
+        "3f2b68fd655b0fd6e26a6995b9ad6cad276f97d0"
+      ],
+      "publishedBefore": 11,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "deep_peer",
+      "peer": "imaging_source",
+      "report": "docs/verification/behav-independent-peer.md",
+      "sourceClosure": "None; all functions/helpers/source flags preserved.",
+      "followup": "Four equivalent fields wrapped after inherited320overflow; no bridge IDs."
+    },
+    {
+      "collection": "epi",
+      "commits": [
+        "a13604f7bae12f3718d28fe089c18e4957e790d3",
+        "8eb0cb02810d979f8518c1c58dae877b09106fbf",
+        "b8d4f2e29a8b64f2e595155679b1e7a024e35eb6"
+      ],
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/epi-prerequisites-independent-peer.md",
+      "sourceClosure": "None; all functions/helpers/source flags preserved.",
+      "followup": "Three raw rows synchronized;3.9non-informative censoring qualification independently checked; causality bridge accurate."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 619,
-    "publishedBelow25": 32,
+    "publishedShortfall": 590,
+    "publishedBelow25": 30,
     "collections": 64,
-    "wholeSyllabusBelow25": 24,
+    "wholeSyllabusBelow25": 23,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Sixteen further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Eighteen further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

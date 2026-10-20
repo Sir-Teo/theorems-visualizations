@@ -978,3 +978,6 @@ PHYSIO's fifteen inputs are [independently accepted](physio-crossfield-prerequis
 
 
 GEO's fifteen inputs and separate inheritedcurlsign correction are [independently accepted together](geo-prerequisites-independent-peer.md). Live shortfall619,32/64published collections below25,24whole syllabi below25; sourcequeue5 unchanged. Half of64collections now meet the written prerequisite target.
+
+
+[BEHAV](behav-independent-peer.md) and corrected [EPI](epi-prerequisites-independent-peer.md) prerequisites are independently accepted. Eighteen further collections meet target; current shortfall590,30/64below25published,23whole syllabi below25. Exact functions/source flags preserved; wraps, raw-row repairs and non-informative censoring qualification reviewed before acceptance. Sourcequeue5 unchanged. Next immutable full checkpoint is preparing.
