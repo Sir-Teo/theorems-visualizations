@@ -154,7 +154,7 @@ export default {
         { num: '4.12', kind: 'Paper', name: 'Vollständigkeit der Axiome des logischen Funktionenkalküls',
           paper: { authors: 'Kurt Gödel', year: 1930, title: 'Die Vollständigkeit der Axiome des logischen Funktionenkalküls', venue: 'Monatshefte für Mathematik und Physik 37: 349–360', doi: '10.1007/BF01696781' },
           introduces: ['logic-4.6', 'logic-4.7'], deps: ['logic-4.1', 'logic-4.4', 'logic-3.12', 'logic-2.11'], refs: [],
-          pic: 'Gödel’s method on a sentence the reader types: put it in prenex ∀∃ form, unwind it into ever longer conjunctions of propositional instances over terms, and step n forward — either some stage becomes unsatisfiable and a refutation is printed, or satisfying assignments persist and a König-tree argument assembles them into a model drawn on screen; never neither, which is the completeness theorem.' },
+          pic: 'Authored finite ∀∃ reconstruction: inspect current propositional instances and checked finite assignments, or a contradictory finite core. The bounded preview neither constructs an infinite model nor prints a formal refutation; the original reduction proof remains under source review because the available authorized transcription drops displayed formulas.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
