@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 78,
+  "remainingFlags": 77,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "game": 3,
-    "polsci": 4,
+    "polsci": 3,
     "music": 4,
     "art": 9,
     "arch": 9,
@@ -247,22 +247,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Strategy-stealing_argument"
-      }
-    },
-    {
-      "id": "polsci-5.6",
-      "file": "content/polsci/ch05-b.js",
-      "name": "Unanimous juries convict innocents (Feddersen–Pesendorfer)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Shepsle: group decisions",
-        "Feddersen and Pesendorfer (1998), American Political Science Review 92: 23–35"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.2307/2585926"
       }
     },
     {
@@ -2005,7 +1989,8 @@
       "tech-4.9",
       "music-8.14",
       "music-8.15",
-      "tech-4.11"
+      "tech-4.11",
+      "polsci-5.6"
     ]
   },
   "additionalFollowups": [
@@ -6844,6 +6829,11 @@
       "id": "tech-4.11",
       "status": "resolved",
       "note": "2026-10-20: worker one independent exact-commit primary-source/math/native review; docs/verification/tech-sailing-followup.md."
+    },
+    {
+      "id": "polsci-5.6",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent actual-source/math/native review including 2026 correction; docs/verification/polsci-strategic-jury-followup.md."
     }
   ]
 }

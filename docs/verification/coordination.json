@@ -536,6 +536,16 @@
         "docs/verification/tech-sailing-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "polsci-5.6"
+      ],
+      "peer": "coordinator independent actual-source/math/native review including 2026 correction",
+      "reports": [
+        "docs/verification/polsci-strategic-jury-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -548,7 +558,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 78,
+  "currentPendingSourceReviews": 77,
   "latestCheckpoint": {
     "acceptedContentCommit": "04ab914",
     "pendingSourceReviews": 85,
