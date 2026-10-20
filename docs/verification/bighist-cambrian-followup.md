@@ -27,3 +27,5 @@ All three numeric controls restore strict supported ticks before shared constrai
 - Focused static1/0/0. Isolated strict build6684written/6890planned/450chapters/85collections, zero errors/warnings, home112702bytes gzip. Scratch `/tmp/atlas-coordinator/bighist-cambrian-build`, logs `bighist-cambrian-{math,static,build}.log`. The final helper-only spacing cleanup affects readout provenance text; the full native matrix was rerun afterward, with formulas/data unchanged.
 
 Independent actual-source/math/native/own-pixel review remains required before clearing the source flag. No unread original dating study, universal origin of animal lineages or unique historical cause is certified.
+
+Independent peer found the review link had been changed by the typography cleanup to a nonexistent filename containing a space. Corrected it to the actual `Marshall2006.pdf` source; source data, formulas, controls and geometry are unchanged. The source flag remains pending peer acceptance.
