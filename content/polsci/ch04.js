@@ -1,4 +1,5 @@
 // Political Science & Social Choice — Chapter 4: Spatial models and the median voter
+import {yolkConcept} from './source-audit-yolk.js';
 import {chaosTheorem} from './source-audit-chaos.js';
 import {plottModel,PLOTT_BASE} from './source-audit-plott.js';
 import { CC, sum, range, clamp, txt, rr, chip, Phi, phi, median, mean, pct, dist2, votesFor, beats, yolk, medianLines, tournament, coverage, sophisticated, chaosPath, mixGrid, binX, gridMedian, gridMean, LINE } from './ch04.shared.js';
@@ -408,63 +409,8 @@ When q is not any ideal point, a generic line through it splits the odd electora
     // Source-audited bounded chain 4.6
     chaosTheorem,
 
-    // ───────────────────────────────────────────────────────────── 4.7
-    {
-      num: '4.7',
-      kind: 'Concept',
-      name: 'The uncovered set and the yolk',
-      statement: String.raw`When no point beats all others (polsci-4.5), two sets locate the "center" of a majority-rule electorate. For an odd number of voters with ideal points $p_1, \dots, p_n$ in the plane:
+    // Source-audited triangle and finite covering 4.7
+    yolkConcept,
 
-(a) a **median line** is a line with at most $(n-1)/2$ ideal points strictly on each side; the **yolk** is the smallest circle that meets every median line, with centre $c$ and radius $r$. Its radius is $0$ exactly when a majority-rule equilibrium exists.
-
-(b) A point $x$ **covers** $y$ if a majority prefers $x$ to $y$ and $x$ beats every point that $y$ beats. The **uncovered set** is the set of points covered by no point. It contains the outcome of sophisticated voting on any amendment agenda over the points considered, and, by a theorem of McKelvey, it lies within distance $4r$ of the yolk's centre; in practice it is usually much smaller than that bound.`,
-      idea: String.raw`If $x$ covers $y$, any point that would defeat $x$ also defeats $y$ — so $y$ is never the last survivor of an agenda that could have been won by $x$ — and the tournament of pairwise majorities, although cyclic, leaves only the uncovered points. With a fixed order of votes the sophisticated voters work backward from the last pair, and what they leave standing cannot be covered (Shepsle and Weingast). The yolk measures how far the profile is from Plott symmetry: its radius is the largest distance by which the median lines miss each other. Chaos (polsci-4.6) means every point can be reached, but not every point can be reached by a sophisticated agenda: those that can all sit in the uncovered set, which hugs the yolk.`,
-      caption: String.raw`Drag the ideal points (coloured dots). The gold ring is the **yolk** (computed from the median lines through pairs of ideal points) and the green cells are the **uncovered set** of the $28\times 28$ grid of policies; a dashed circle shows McKelvey's bound of radius $4r$ around the yolk centre. The tiny purple dots are the outcomes of random agendas that put every grid point to a vote in a random order, with voters looking ahead (sophisticated voting). They land inside the green region every time. Make the voters symmetric about voter 1 and both shrink to a single point, the majority-rule equilibrium.`,
-      deps: ['polsci-4.6'],
-      see: ['polsci-4.10', 'polsci-4.5'],
-      refs: ['Shepsle: spatial model', 'Miller (1980), AJPS 24: 68–96', 'Shepsle & Weingast (1984), AJPS 28: 49–74', 'McKelvey (1986), AJPS 30: 283–314'],
-      tags: ['yolk', 'uncovered set'],
-      credit: 'Miller, 1980; Ferejohn, McKelvey & Packel, 1984; McKelvey, 1986',
-      scope: String.raw`Euclidean preferences and an odd number of voters in two dimensions; the uncovered set is computed on a finite grid, so its boundary is only approximate.`,
-      viz(v) {
-        const L = 3.2, G = 28;
-        const S = v.stage({ x: [-L, L], y: [-L, L], equal: true, axes: false, height: 470, full: true, title: 'ideal points, yolk, uncovered set and sophisticated agenda outcomes' });
-        const nS = v.select('voters', [{ value: 3, label: '3' }, { value: 5, label: '5' }, { value: 7, label: '7' }], 5, { onChange: () => reset() });
-        const BASE = [[-1.6, 0.4], [0.1, 1.7], [1.5, 0.2], [0.4, -1.5], [-0.6, -0.6], [1.0, 1.2], [-1.2, -1.5]];
-        const H = BASE.map((p, i) => S.handle(p[0], p[1], { color: CC[i % 5], r: 9, label: `${i + 1}`, labelPos: 'n' }));
-        let seed = 7;
-        function reset() { BASE.forEach((p, i) => H[i].set(p[0], p[1])); }
-        v.button('make symmetric', () => { const p0 = [H[0].x, H[0].y]; [[1, 2], [3, 4], [5, 6]].forEach(([a, b]) => H[b].set(2 * p0[0] - H[a].x, 2 * p0[1] - H[a].y)); });
-        v.button('new random agendas', () => { seed += 1; });
-        v.button('reset', reset);
-        let info = null;
-        v.render(() => {
-          const n = nS.value, V = range(n).map((i) => [H[i].x, H[i].y]);
-          H.forEach((h, i) => { h.visible = i < n; });
-          const T = tournament(V, -L, L, G), C = coverage(T), yk = yolk(V);
-          const cw = (2 * L) / (G - 1);
-          for (let k = 0; k < T.N; k++) if (!C.covered[k]) S.rect(T.pts[2 * k] - cw / 2, T.pts[2 * k + 1] - cw / 2, T.pts[2 * k] + cw / 2, T.pts[2 * k + 1] + cw / 2, { fill: 'green', fillAlpha: 0.5, stroke: false });
-          S.circle(yk.x, yk.y, 4 * Math.max(yk.r, 0.0001), { color: 'muted', dash: true, width: 1.2 });
-          S.circle(yk.x, yk.y, Math.max(yk.r, 0.001), { color: 'gold', width: 2.6, fill: 'gold', fillAlpha: 0.2 });
-          S.dot(yk.x, yk.y, { r: 3, color: 'gold' });
-          // sophisticated outcomes of random complete amendment agendas
-          const rng = v.rng(seed), K = 120, order = range(T.N), hit = new Map();
-          let inside = 0;
-          for (let a = 0; a < K; a++) {
-            for (let i = T.N - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t; }
-            const w = sophisticated(T, order); hit.set(w, (hit.get(w) || 0) + 1); if (!C.covered[w]) inside++;
-          }
-          hit.forEach((c, w) => S.dot(T.pts[2 * w], T.pts[2 * w + 1], { r: 2.5 + Math.min(5, c * 0.25), color: 'purple', alpha: 0.85 }));
-          V.forEach((p, i) => S.dot(p[0], p[1], { r: 8.5, color: CC[i % 5] }));
-          let dmax = 0; for (let k = 0; k < T.N; k++) if (!C.covered[k]) dmax = Math.max(dmax, Math.hypot(T.pts[2 * k] - yk.x, T.pts[2 * k + 1] - yk.y));
-          info = { n, yk, unc: C.unc, N: T.N, K, inside, dmax, outcomes: hit.size };
-        });
-        v.legend([['gold', 'yolk'], ['green', 'uncovered set (grid)', { area: true }], ['purple', 'sophisticated outcomes', { dot: true }], ['muted', 'radius $4r$']]);
-        v.readout(() => {
-          const { yk, unc, N, K, inside, dmax, outcomes } = info;
-          return `Yolk radius $r=${v.fix(yk.r, 3)}$ at $(${v.fix(yk.x, 2)}, ${v.fix(yk.y, 2)})$. Uncovered set: **${unc}** of ${N} grid points (${v.fix((100 * unc) / N, 1)}%), the farthest ${v.fix(dmax, 2)} from the yolk centre (McKelvey's bound $4r=${v.fix(4 * yk.r, 2)}$, up to grid resolution ${v.fix((2 * 3.2) / 27, 2)}). Of ${K} random complete agendas, **${inside}** end inside the uncovered set, in ${outcomes} different places.`;
-        });
-      },
-    },
   ],
 };
