@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 156,
+  "remainingFlags": 154,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -25,7 +25,7 @@
     "game": 11,
     "psych": 12,
     "soc": 14,
-    "polsci": 11,
+    "polsci": 9,
     "music": 23,
     "art": 11,
     "arch": 11,
@@ -976,39 +976,6 @@
       "links": {
         "doi": "https://doi.org/10.1086/257897"
       }
-    },
-    {
-      "id": "polsci-5.4",
-      "file": "content/polsci/ch05.js",
-      "name": "Condorcet\u2019s jury theorem",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Shepsle: group decisions",
-        "Easley and Kleinberg, Networks, Crowds, and Markets, ch. 23"
-      ],
-      "links": {}
-    },
-    {
-      "id": "polsci-5.5",
-      "file": "content/polsci/ch05.js",
-      "name": "Correlated voters break the jury theorem",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "This one-leader model is a standard textbook-style illustration of correlated votes and is my own construction for the picture, not a model from a specific paper; the general results on correlated votes (for example Ladha 1992) are stated under different dependence conditions that I have not checked in detail."
-        }
-      ],
-      "refs": [
-        "Shepsle: group decisions",
-        "Ladha (1992), American Journal of Political Science 36: 617\u2013634"
-      ],
-      "links": {}
     },
     {
       "id": "music-7.7",
@@ -3239,7 +3206,9 @@
       "soc-4.9",
       "soc-4.10",
       "psych-4.1",
-      "psych-4.2"
+      "psych-4.2",
+      "polsci-5.4",
+      "polsci-5.5"
     ]
   },
   "additionalFollowups": [
@@ -7586,6 +7555,18 @@
       "status": "resolved",
       "report": "docs/verification/psych-retina-adaptation-followup.md",
       "note": "Actual Hecht1937 experiment scope checked; explicitly authored full log-threshold branches/isolation/delay, strict unique crossing with351 high-precision references and full initialrod5;4 math/8 native plus exact runtime replay checks pass."
+    },
+    {
+      "id": "polsci-5.4",
+      "status": "resolved",
+      "report": "docs/verification/polsci-jury-followup.md",
+      "note": "Actual Easley\u2013Kleinberg \u00a723.7 read; finite binomial proof/monotonicity and variance bound, stable rare error, all endpoints, odd-size replay rejection and 320px formula repairs independently accepted."
+    },
+    {
+      "id": "polsci-5.5",
+      "status": "resolved",
+      "report": "docs/verification/polsci-jury-followup.md",
+      "note": "Explicit authored common-leader model; independent finite mixtures, rho\u00b2 correlation, exact critical middle limit, all manual/analytic controls and complete saved-state/native checks independently accepted."
     }
   ]
 }

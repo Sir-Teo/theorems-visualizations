@@ -1,4 +1,5 @@
 // Political Science & Social Choice — Chapter 5: Turnout, information and juries (items 5.1-5.5; the rest are in ch05-b.js)
+import { assertOddJurySize, juryProbability, juryMass, juryLowerBound, juryLeader, juryNumber } from './source-audit-jury.js';
 import { sum, range, clamp, mean, pct, Phi, phi, lgam, binomPmf, binomTail, majProb, tieProb, hoeffding, logspace } from './ch05.shared.js';
 
 /** Tie probability for a given electorate size and expected support q (cached by rounding). */
@@ -10,7 +11,7 @@ export default {
   collection: 'polsci',
   chapter: 5,
   title: 'Turnout, information and juries',
-  summary: String.raw`A single vote almost never decides a large election, so a purely instrumental voter, who votes only to change the result, should stay home: this is the paradox of voting. The calculus of voting repairs the prediction by adding a taste for voting itself, and the probability of a decisive vote turns out to be an exact binomial calculation, with a very different size depending on what the voter knows about the electorate. Voting also aggregates information. Condorcet's jury theorem says that a majority of independent voters who are each better than chance is almost surely right when the group is large; it fails when votes are correlated, and strategic jurors who vote as though they were pivotal can make a unanimous jury convict more innocent defendants as it grows. The last items look at who bothers to learn anything (rational ignorance), why noisy electorates can still be wise (the miracle of aggregation), and why an uninformed voter may do best to abstain (the swing voter's curse). The chapter ends with Condorcet's own essay of 1785.`,
+  summary: String.raw`A single vote almost never decides a large election, so a purely instrumental voter, who votes only to change the result, should stay home: this is the paradox of voting. The calculus of voting repairs the prediction by adding a taste for voting itself, and the probability of a decisive vote turns out to be an exact binomial calculation, with a very different size depending on what the voter knows about the electorate. Voting also aggregates information. For independent voters with the same fixed better-than-chance competence, Condorcet’s jury theorem sends majority accuracy toward one as odd jury size grows; a shared-leader model shows how dependence can obstruct this conclusion, and strategic jurors who vote as though they were pivotal can make a unanimous jury convict more innocent defendants as it grows. The last items look at who bothers to learn anything (rational ignorance), why noisy electorates can still be wise (the miracle of aggregation), and why an uninformed voter may do best to abstain (the swing voter's curse). The chapter ends with Condorcet's own essay of 1785.`,
   items: [
     // ───────────────────────────────────────────────────────────── 5.1
     {
@@ -167,96 +168,95 @@ $$P_n(q)=\binom{n}{n/2}\,\bigl(q(1-q)\bigr)^{n/2}.$$
       num: '5.4',
       kind: 'Theorem',
       name: 'Condorcet’s jury theorem',
-      statement: String.raw`Two alternatives, exactly one of which is correct. A jury of $n$ voters (with $n$ odd) votes by simple majority, and each voter independently chooses the correct alternative with the same probability $p$. Let $P_n(p)$ be the probability that the majority is correct. Then:
-(a) if $p>\tfrac12$, $P_n(p)$ is increasing in $n$ and $P_n(p)\to 1$ as $n\to\infty$; moreover $P_n(p)\ge 1-e^{-2n(p-1/2)^2}$;
-(b) if $p<\tfrac12$, $P_n(p)\to0$;
-(c) if $p=\tfrac12$, $P_n=\tfrac12$ for every $n$.`,
-      idea: String.raw`The number of correct votes is $\mathrm{Bin}(n,p)$ with mean $np$, so the jury is wrong only when this falls to at most $n/2$, which is a deviation of $n(p-\tfrac12)$ below the mean. By the law of large numbers (or sharply by Hoeffding's inequality) such deviations have vanishing probability. Monotonicity comes from comparing a jury of $n$ with one of $n+2$: the extra two voters change the outcome only when the first $n$ are one vote from a tie, and then it is more likely they push the majority toward the correct side. The result rests on the computation of probabilities for the binomial distribution (polsci-5.3) and is the formal core of the wisdom-of-crowds argument for majority rule.`,
-      caption: String.raw`Left: the probability that the majority is right as the jury grows, for the competence $p$ you set (blue) with Hoeffding's lower bound (dashed), and the same curve for $1-p$ (red): a jury of the worse-than-chance is certain to be wrong. Right: the distribution of the number of correct votes for the jury size $n$ you choose; the bars to the right of the dashed line, in green, are the cases where the majority is right.`,
-      deps: ['polsci-5.3'],
-      see: ['polsci-5.5', 'polsci-5.8', 'polsci-5.10'],
-      refs: ['Shepsle: group decisions', 'Easley and Kleinberg, Networks, Crowds, and Markets, ch. 23'],
+      statement: String.raw`Fix two alternatives with exactly one correct. For odd $n=2m+1$, let the correct-vote indicators be independent, each with the same fixed probability $p\in[0,1]$. Sincere simple majority is correct with probability
+$$\begin{aligned}P_n(p)&=\sum_{k=m+1}^{n}b_k,\\b_k&=\binom nk p^k(1-p)^{n-k}.\end{aligned}$$
+For $1/2<p<1$ this probability strictly increases along odd jury sizes and tends to $1$; for $0<p<1/2$ it strictly decreases and tends to $0$. At $p=1/2$ it is exactly $1/2$. At $p=0$ or $1$ it is exactly $p$ for every $n$. For $p>1/2$ a variance bound gives
+$$\begin{aligned}P_n(p)&\ge\max\{0,1-B_n(p)\},\\B_n(p)&=\frac{p(1-p)}{n(p-1/2)^2}.\end{aligned}$$`,
+      idea: String.raw`The product rule for independent votes (prob-2.1.1a) gives the binomial sum. Their average has mean $p$ and variance $p(1-p)/n$. Applying the actual variance estimate in the weak law (prob-2.2.3) to the error event gives the displayed bound and its limit. A finite jury still has positive error when $0<p<1$.
+
+For monotonicity, adding two voters changes the outcome only when the first $n=2m+1$ correct-vote count is $m$ or $m+1$. Subtracting these two cases gives
+$$\begin{aligned}&P_{n+2}(p)-P_n(p)\\&\quad=\binom n m[p(1-p)]^{m+1}\\&\qquad\cdot(2p-1).\end{aligned}$$
+Symmetry gives $P_n(1-p)=1-P_n(p)$, including the fair-coin case. The bound explains the limit; the finite formula determines the curves.`,
+      caption: String.raw`Choose the fixed competence and an odd jury size. Left: finite majority accuracy for $p$ and $1-p$; the dashed variance lower bound appears only for $p>1/2$ and can be very loose. Right: all $n+1$ binomial outcomes, with a strict majority in green. The selected dots show the finite jury, and the readout retains its error probability even when accuracy rounds to one.`,
+      deps: ['prob-2.1.1a', 'prob-2.2.3'],
+      see: ['polsci-5.3', 'polsci-5.5', 'polsci-5.8', 'polsci-5.10'],
+      refs: ['Easley and Kleinberg (2010), Networks, Crowds, and Markets, §23.7, pp.756–758 (author preprint); finite monotonicity and variance calculation derived here'],
       tags: ['jury theorem', 'majority rule'],
-      credit: 'Marquis de Condorcet, 1785',
-      scope: String.raw`Holds for independent voters of equal competence $p$ choosing between two alternatives, with sincere voting (polsci-5.6 relaxes the last assumption and polsci-5.5 the independence). With different competences, the same conclusion holds if the average competence stays above $\tfrac12$ and the voters are independent, as shown by later authors; I do not reproduce that here.`,
-      verify: true,
-      links: {},
+      scope: String.raw`This is the fixed-truth, equal-competence, independent-vote theorem, conditional on which alternative is correct. Odd sizes exclude ties; no even-size tie rule is asserted. The source is the authors’ modern exposition, not a reading of Condorcet’s original essay. Different competences, strategic voting and general dependence require their own hypotheses. Binary64 arithmetic evaluates the exact finite formula; values rounded to one are labelled, and small errors are evaluated independently rather than by subtracting from one. Individual bar heights below binary64’s positive range round to zero; all count classes are retained.`,
+      verify: false,
+      links: { source: 'https://www.cs.cornell.edu/home/kleinber/networks-book/networks-book-ch23.pdf' },
       viz(v) {
-        const A = v.stage({ x: [0, 301], y: [0, 1.02], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'jury size $n$', ylabel: 'probability majority is right', title: 'the majority is right' });
-        const Bp = v.stage({ x: [-1, 32], y: [0, 0.3], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'number of correct votes', ylabel: 'probability', title: 'one jury' });
-        const pS = v.slider('competence $p$', 0.3, 0.8, 0.55, { step: 0.005 });
-        const nS = v.slider('jury size $n$', 1, 301, 31, { int: true, step: 2 });
-        const cache = new Map();
-        const curve = (p) => {
-          const key = p.toFixed(4);
-          if (!cache.has(key)) { if (cache.size > 40) cache.clear(); cache.set(key, range(151).map((i) => [2 * i + 1, majProb(2 * i + 1, p)])); }
-          return cache.get(key);
-        };
-        let info = {};
-        v.render(() => {
-          const p = pS.value, n = nS.value % 2 ? nS.value : nS.value + 1;
-          A.path(curve(p), { color: 'accent', width: 2.4 });
-          A.path(curve(1 - p), { color: 'red', width: 1.8, alpha: 0.8 });
-          if (p > 0.5) A.path(range(151).map((i) => [2 * i + 1, hoeffding(2 * i + 1, p)]), { color: 'ink', width: 1.4, dash: true });
-          A.hline(0.5, { color: 'faint', dash: true });
-          A.vline(n, { color: 'gold', width: 1.6, dash: true });
-          const vals = range(n + 1).map((k) => binomPmf(n, k, p)), mx = Math.max(...vals);
-          Bp.setView([-1, n + 1], [0, mx * 1.2]);
-          Bp.bars(vals, { x0: 0, dx: 1, color: (val, i) => (i > n / 2 ? 'green' : 'accent') });
-          Bp.vline(n / 2, { color: 'ink', dash: true, alpha: 0.6 });
-          info = { p, n, P: majProb(n, p), h: hoeffding(n, p) };
+        const A=v.stage({x:[-12,314],y:[-.07,1.08],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'odd jury size $n$',ylabel:'probability majority is right',title:'finite majority accuracy'});
+        const B=v.stage({x:[-2,33],y:[-.08,1.12],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'number of correct votes',ylabel:'probability',title:'all binomial outcomes'});
+        const pS=v.slider('competence $p$',0,1,.55,{step:.005,decimals:3});
+        const nS=v.slider('odd jury size $n$',1,301,31,{int:true,step:2,onChange:assertOddJurySize});
+        let cache=null,info={};
+        v.render(()=>{
+          const p=pS.value,n=nS.value;
+          if(cache?.p!==p)cache={p,right:range(151).map(i=>[2*i+1,juryProbability(2*i+1,p).right]),opposite:range(151).map(i=>[2*i+1,juryProbability(2*i+1,1-p).right]),bound:p>.5?range(151).map(i=>[2*i+1,juryLowerBound(2*i+1,p)]):[]};
+          A.path(cache.right,{color:'accent',width:2.4});A.path(cache.opposite,{color:'red',width:1.7});
+          if(cache.bound.length)A.path(cache.bound,{color:'ink',width:1.5,dash:true});
+          A.line(1,.5,301,.5,{color:'faint',dash:true});
+          const q=juryProbability(n,p),op=juryProbability(n,1-p);
+          A.dot(n,q.right,{color:'accent',r:5});A.dot(n,op.right,{color:'red',r:3.6});
+          const masses=juryMass(n,p),maximum=Math.max(...masses),pad=Math.max(.015,maximum*.12);
+          B.setView([-1.5,n+1.5],[-pad,maximum+pad]);
+          masses.forEach((mass,k)=>B.rect(k-.4,0,k+.4,mass,{fill:k>n/2?'green':'accent',fillAlpha:.8,stroke:false}));
+          B.line(n/2,0,n/2,maximum,{color:'ink',dash:true});
+          info={n,p,...q,bound:juryLowerBound(n,p),masses,maximum};
         });
-        v.legend([['accent', 'competence $p$'], ['red', 'competence $1-p$'], ['ink', 'Hoeffding bound', { dash: true }]]);
-        v.readout(() => `With $p=${v.fix(info.p, 3)}$ and $n=${info.n}$ the majority is right with probability **${v.fix(info.P, 4)}**${info.p > 0.5 ? `; the bound $1-e^{-2n(p-1/2)^2}$ gives ${v.fix(info.h, 4)}` : ''}. A single voter is right ${v.fix(info.p, 3)} of the time.`);
+        v.legend([['accent','competence $p$'],['red','competence $1-p$'],['ink','variance lower bound',{dash:true}],['green','correct majority outcomes',{area:true}]]);
+        v.readout(()=>`Odd $n=${info.n}$; $p=${v.fix(info.p,3)}$. Majority right: **${juryNumber(info.right,info.logRight)}**. Majority wrong: **${juryNumber(info.wrong,info.logWrong)}**. ${info.bound===null?'The displayed lower bound applies only for $p>1/2$.':`Variance lower bound: ${v.fix(info.bound,6)}.`} ${info.p===.5?'Fair votes give exactly one half for every odd size.':info.p===0||info.p===1?'Deterministic competence gives this exact endpoint at every size.':'These are finite probabilities, not certainty at this size.'}`);
       },
     },
 
     // ───────────────────────────────────────────────────────────── 5.5
     {
       num: '5.5',
-      kind: 'Phenomenon',
-      name: 'Correlated voters break the jury theorem',
-      statement: String.raw`Keep the setting of Condorcet's jury theorem (polsci-5.4) but let the votes be dependent in the following way. There is one opinion leader who is right with probability $p>\tfrac12$. Each voter, independently of the others, *follows the leader* with probability $\rho$ and otherwise votes independently, right with probability $p$. Every voter is still right with probability $p$ overall. Then the probability that the majority of $n$ voters is right is
-$$P_n=p\,\Pr\bigl[\mathrm{Bin}(n,\rho+(1-\rho)p)>\tfrac n2\bigr]+(1-p)\,\Pr\bigl[\mathrm{Bin}(n,(1-\rho)p)>\tfrac n2\bigr],$$
-and as $n\to\infty$ it tends to $1$ if $\rho<1-\frac1{2p}$ but to $p$ (not $1$) if $\rho>1-\frac1{2p}$.`,
-      idea: String.raw`Conditional on whether the leader is right, the voters are independent, so the jury theorem applies in each case with the competence of that case. When the leader is right a voter is right with probability $\rho+(1-\rho)p>\tfrac12$ and the majority is right in the limit. When the leader is wrong a voter is right only with probability $(1-\rho)p$, which is below $\tfrac12$ exactly when $\rho>1-\frac1{2p}$, and then the majority is wrong in the limit. With enough shared influence the large group is no better than the leader. This is the dependent version of the theorem: independence is not a technicality but the engine of the result.`,
-      caption: String.raw`Left: the probability that the majority is right against the jury size, for the strength of following $\rho$ you set (blue) and for independent voters (dashed grey). The dotted red line is the limit. Right: the probability that the majority is right as a function of $\rho$, for the jury size you choose (blue) and in the limit of an infinite jury (red step). The step sits at $\rho^*=1-1/(2p)$.`,
-      deps: ['polsci-5.4'],
+      kind: 'Model',
+      name: 'Correlated voters and a shared leader',
+      statement: String.raw`This authored dependence model fixes two alternatives with exactly one correct, $1/2<p<1$, and odd $n$. A shared leader is correct with probability $p$. Independently for each voter, with probability $\rho\in[0,1]$ the voter copies the leader; otherwise an independent private vote is correct with probability $p$. The leader is not an extra counted voter. Every counted voter still has marginal accuracy $p$.
+
+Conditional on the leader being correct or wrong, the votes are independent with respective accuracies $q_1=\rho+(1-\rho)p$ and $q_0=(1-\rho)p$. Thus
+$$\begin{aligned}P_n^{\rm leader}&=pP_n(q_1)\\&\quad+(1-p)P_n(q_0).\end{aligned}$$
+Writing $\rho^*=1-1/(2p)$, its limit along odd $n$ is
+$$\begin{gathered}L=\lim P_n^{\rm leader},\\L=\begin{cases}1,&\rho<\rho^*,\\(1+p)/2,&\rho=\rho^*,\\p,&\rho>\rho^*.\end{cases}\end{gathered}$$
+For distinct voters their pairwise correlation is $\rho^2$, not $\rho$. Positive dependence can therefore coexist with limiting accuracy one in this particular family.`,
+      idea: String.raw`Average over the two cells defined by the leader’s correctness, using finite-partition conditional expectation (prob-4.1.1a). Their probabilities are $p$ and $1-p$. Since $q_1>1/2$, polsci-5.4 sends the first conditional accuracy to one. The second tends to one, one half or zero according as $q_0$ is above, equal to or below one half. Equality is a separate case, not a rounded neighbourhood of the threshold.
+
+For distinct correct-vote indicators, conditional independence gives $E(X_iX_j)=p q_1^2+(1-p)q_0^2$. Subtracting $p^2$ gives covariance $\rho^2p(1-p)$; division by their common variance $p(1-p)>0$ yields correlation $\rho^2$. This model demonstrates one specific way shared information can obstruct aggregation, without a general claim about all correlated electorates.`,
+      caption: String.raw`Left: the exact finite mixture against odd jury size, its limit, and the independent comparison. Right: finite accuracy against following probability, with the two open endpoints and the filled value of the discontinuous limit at $\rho^*$. Choose “exact critical case” to set $\rho=\rho^*$ analytically; the disabled manual slider is then unused. The finite blue curve remains continuous at the jump in the infinite-jury limit.`,
+      deps: ['polsci-5.4', 'prob-4.1.1a'],
       see: ['polsci-5.8', 'soc-7.3'],
-      refs: ['Shepsle: group decisions', 'Ladha (1992), American Journal of Political Science 36: 617–634'],
+      refs: ['Authored common-leader construction and conditional-probability derivation; independent comparison: Easley and Kleinberg (2010), §23.7'],
       tags: ['jury theorem', 'correlation'],
-      scope: String.raw`This one-leader model is a standard textbook-style illustration of correlated votes and is my own construction for the picture, not a model from a specific paper; the general results on correlated votes (for example Ladha 1992) are stated under different dependence conditions that I have not checked in detail.`,
-      verify: true,
-      links: {},
+      scope: String.raw`The curves are calculated probabilities in an authored model, not observed voting data and not a model attributed to Ladha. Private votes, copying indicators and leader correctness are mutually independent before votes are combined. Dependence is unconditional; it disappears on conditioning on the leader. This is neither a theorem about arbitrary correlations nor a sequential information cascade. Manual sliders offer $p=0.550$–$0.900$ and $\rho=0$–$1$; exact critical mode supplies every threshold even when it is off the manual grid.`,
+      verify: false,
+      links: { source: 'https://www.cs.cornell.edu/home/kleinber/networks-book/networks-book-ch23.pdf' },
       viz(v) {
-        const A = v.stage({ x: [0, 401], y: [0, 1.02], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'jury size $n$', ylabel: 'probability majority is right', title: 'growth with the jury' });
-        const Bp = v.stage({ x: [0, 1], y: [0, 1.02], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'strength of following the leader $\\rho$', ylabel: 'probability majority is right', title: 'the limit as $\\rho$ varies' });
-        const pS = v.slider('competence $p$', 0.55, 0.9, 0.7, { step: 0.005 });
-        const rS = v.slider('following $\\rho$', 0, 1, 0.4, { step: 0.01 });
-        const nS = v.slider('jury size $n$', 1, 401, 101, { int: true, step: 2 });
-        const Pn = (n, p, r) => p * majProb(n, r + (1 - r) * p) + (1 - p) * majProb(n, (1 - r) * p);
-        const cache = new Map();
-        const curve = (p, r) => {
-          const key = p.toFixed(4) + '|' + r.toFixed(3);
-          if (!cache.has(key)) { if (cache.size > 40) cache.clear(); cache.set(key, range(101).map((i) => [4 * i + 1, Pn(4 * i + 1, p, r)])); }
-          return cache.get(key);
-        };
-        let info = {};
-        v.render(() => {
-          const p = pS.value, r = rS.value, n = nS.value % 2 ? nS.value : nS.value + 1, rs = 1 - 1 / (2 * p);
-          const lim = r < rs ? 1 : p;
-          A.path(curve(p, 0), { color: 'muted', width: 1.6, dash: true });
-          A.path(curve(p, r), { color: 'accent', width: 2.4 });
-          A.hline(lim, { color: 'red', width: 1.6, dash: [2, 4] });
-          A.vline(n, { color: 'gold', width: 1.6, dash: true });
-          Bp.path(range(81).map((i) => [i / 80, Pn(n, p, i / 80)]), { color: 'accent', width: 2.4 });
-          Bp.line(0, 1, rs, 1, { color: 'red', width: 2.2 }); Bp.line(rs, p, 1, p, { color: 'red', width: 2.2 });
-          Bp.vline(rs, { color: 'red', alpha: 0.4, dash: true });
-          Bp.vline(r, { color: 'gold', width: 1.6, dash: true });
-          info = { p, r, rs, n, P: Pn(n, p, r), lim };
+        const A=v.stage({x:[-16,418],y:[-.08,1.09],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'odd jury size $n$',ylabel:'probability majority is right',title:'finite common-leader mixture'});
+        const B=v.stage({x:[-.055,1.055],y:[-.08,1.09],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'following probability $\\rho$',ylabel:'probability majority is right',title:'finite accuracy and infinite limit'});
+        const pS=v.slider('competence $p$',.55,.9,.7,{step:.005,decimals:3});
+        const rS=v.slider('manual following $\\rho$',0,1,.4,{step:.01,decimals:2});
+        const nS=v.slider('odd jury size $n$',1,401,101,{int:true,step:2,onChange:assertOddJurySize});
+        const mode=v.select('following parameter',[{value:'manual',label:'manual following'},{value:'critical',label:'exact critical case'}],'manual');
+        let cache=null,info={};
+        v.render(()=>{
+          const p=pS.value,n=nS.value,manual=rS.value,critical=mode.value==='critical',q=juryLeader(n,p,manual,critical),key=`${p}|${manual}|${critical}|${n}`;
+          rS.input.disabled=critical;
+          if(cache?.key!==key)cache={key,growth:range(201).map(i=>[2*i+1,juryLeader(2*i+1,p,manual,critical).right]),independent:range(201).map(i=>[2*i+1,juryProbability(2*i+1,p).right]),following:[...range(101).map(i=>i/100),q.threshold].sort((a,b)=>a-b).map(r=>[r,juryLeader(n,p,r,r===q.threshold).right])};
+          A.path(cache.independent,{color:'muted',width:1.6,dash:true});A.path(cache.growth,{color:'accent',width:2.4});
+          A.line(1,q.limit,401,q.limit,{color:'red',width:1.6,dash:true});A.dot(n,q.right,{color:'accent',r:5});
+          B.path(cache.following,{color:'accent',width:2.4});
+          // Draw the larger selection first so the exact limiting markers remain visible at coincidences.
+          B.dot(q.rho,q.right,{color:'gold',r:6});
+          B.line(0,1,q.threshold,1,{color:'red',width:2});B.line(q.threshold,p,1,p,{color:'red',width:2});
+          B.dot(q.threshold,1,{color:'red',r:4,hollow:true});B.dot(q.threshold,p,{color:'red',r:4,hollow:true});
+          B.dot(q.threshold,(1+p)/2,{color:'red',r:4});
+          info=q;
         });
-        v.legend([['accent', 'following $\\rho$'], ['muted', 'independent ($\\rho=0$)', { dash: true }], ['red', 'limit $n\\to\\infty$']]);
-        v.readout(() => `$\\rho^*=1-1/(2p)=${v.fix(info.rs, 3)}$. With $\\rho=${v.fix(info.r, 2)}$ the majority of $n=${info.n}$ is right with probability **${v.fix(info.P, 4)}**; as $n\\to\\infty$ this ${info.r < info.rs ? 'tends to **1**' : `tends to **${v.fix(info.p, 3)}**, the leader's accuracy`}.`);
+        v.legend([['accent','finite majority accuracy'],['muted','independent comparison',{dash:true}],['red','infinite-jury limit'],['gold','chosen following',{dot:true}]]);
+        v.readout(()=>`$p=${v.fix(info.p,3)}$, odd $n=${info.n}$. ${info.critical?'**Exact critical case:** ':''}$\\rho=${v.fix(info.rho,6)}$ ${info.critical?'(rounded here; analytically equal to $\\rho^*$)':''}; $\\rho^*=${v.fix(info.threshold,6)}$. Conditional accuracies: $q_1=${v.fix(info.q1,6)}$, $q_0=${v.fix(info.q0,6)}$. Majority right: **${juryNumber(info.right,info.logRight)}**; wrong: ${juryNumber(info.wrong,info.logWrong)}. Limit: **${v.fix(info.limit,6)}** ${info.relation===0?'at the exact threshold':info.relation>0?'below the threshold, despite dependence when following is positive':'above the threshold, the leader’s accuracy'}. Pairwise correlation $\\rho^2=${v.fix(info.correlation,6)}$.`);
       },
     },
   ],

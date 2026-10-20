@@ -178,7 +178,7 @@ export default {
     {
       n: 5,
       title: 'Turnout, information and juries',
-      summary: String.raw`A single vote almost never decides a large election, so purely instrumental voters should stay home — the paradox of voting. Yet voting also aggregates information: Condorcet’s jury theorem shows that a majority of independent, better-than-chance voters is almost surely right in large groups. The theorem breaks when votes are correlated or when strategic voters condition on being pivotal.`,
+      summary: String.raw`A single vote almost never decides a large election, so purely instrumental voters should stay home — the paradox of voting. Yet voting also aggregates information: For independent voters with the same fixed better-than-chance competence, Condorcet’s jury theorem sends majority accuracy toward one as odd jury size grows. Shared influence can obstruct that limit, and strategic voters may condition on being pivotal.`,
       items: [
         { num: '5.1', kind: 'Paradox', name: 'The paradox of voting (Downs)', deps: ['behav-1.3'], refs: ['Shepsle: voting and turnout'],
           pic: 'Expected benefit p·B of voting against its cost c as the electorate grows; p collapses so fast that benefit falls below any realistic cost long before national scale.' },
@@ -186,10 +186,10 @@ export default {
           pic: 'Add the civic-duty term D to p·B − c; sliders show turnout predictions driven almost entirely by D, with close elections raising turnout only slightly.' },
         { num: '5.3', kind: 'Theorem', name: 'The probability of a decisive vote', deps: ['polsci-5.1', 'pma-8.22'], refs: ['Shepsle: voting and turnout'],
           pic: 'Exact binomial probability of an exact tie as n grows: about √(2/πn) for a 50–50 electorate but exponentially small once the expected split moves away from even.' },
-        { num: '5.4', kind: 'Theorem', name: 'Condorcet’s jury theorem', deps: ['polsci-5.3'], refs: ['Shepsle: group decisions'],
-          pic: 'Choose individual accuracy p and jury size n; the probability that the majority is right is computed exactly and climbs toward 1 for p > ½ and toward 0 for p < ½.' },
-        { num: '5.5', kind: 'Phenomenon', name: 'Correlated voters break the jury theorem', deps: ['polsci-5.4'], refs: ['Shepsle: group decisions'],
-          pic: 'Voters follow opinion leaders with probability ρ; as ρ rises the majority’s accuracy stops improving with size and plateaus at the leaders’ accuracy.' },
+        { num: '5.4', kind: 'Theorem', name: 'Condorcet’s jury theorem', deps: ['prob-2.1.1a', 'prob-2.2.3'], refs: ['Easley and Kleinberg (2010), §23.7, pp.756–758; finite monotonicity and variance derivation'],
+          pic: 'All odd jury sizes 1–301, competence 0–1, stable finite binomial accuracy and error, an actual weak-law variance lower bound, and all outcomes in the chosen jury.' },
+        { num: '5.5', kind: 'Model', name: 'Correlated voters and a shared leader', deps: ['polsci-5.4', 'prob-4.1.1a'], refs: ['Authored common-leader construction; independent comparison: Easley and Kleinberg (2010), §23.7'],
+          pic: 'Finite conditional-binomial mixture and all three infinite-jury regimes; exact critical mode, open/closed limit markers and the derived pairwise correlationρ².' },
         { num: '5.6', kind: 'Theorem', name: 'Unanimous juries convict innocents (Feddersen–Pesendorfer)', deps: ['polsci-5.4'], refs: ['Shepsle: group decisions'],
           pic: 'Strategic jurors vote as if pivotal; under unanimity rule the equilibrium probability of convicting an innocent defendant rises with jury size, compared with majority rule.' },
         { num: '5.7', kind: 'Concept', name: 'Rational ignorance', deps: ['polsci-5.1'], refs: ['Shepsle: voting and turnout'],

@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **156 flags**. The difference from the initial count reflects the review: 3 previously unflagged uncertainties remain newly marked, and 680 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **154 flags**. The difference from the initial count reflects the review: 3 previously unflagged uncertainties remain newly marked, and 682 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **156 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **154 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -818,3 +818,5 @@ The [exact accepted checkpoint through6522f86](checkpoint-6522f86.md) passes1,56
 
 
 [Exchange-proof curation](ladr-exchange-followup.md) accepts the second flagship with6 mathematical and8 native groups, all-frame invariant/certificate checks, actual vector/camera/replay evidence and explicit numerical limits. The curation registry is2/100; the historical102 control checks remain separate. This item had no queued flag, so the source queue remains156 and680 original flags resolved. The latest full checkpoint remains1,566 tests through6522f86;6 new default exchange groups pass separately.
+
+Independent root acceptance closes polsci5.4/5.5: actual Easley–Kleinberg §23.7, explicit finite/conditional derivations,22,317 separate exact-rational counterchecks,5 mathematical groups,12 full themed native groups at1450/430/320 plus12 targeted malformed-state/layout groups, static2/0/0 and exact neighbour guards. Fixed even-size saved-state rejection and narrow formula wrapping; no shared runtime change. Evidence: `polsci-jury-followup.md`. This targeted batch follows the frozen1566-test checkpoint; it does not relabel that checkpoint. **154 source reviews remain**.
