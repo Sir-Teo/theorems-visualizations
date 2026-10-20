@@ -213,7 +213,7 @@ The index $i$ is the reciprocal of the intercept on $\mathbf a_3$. A $120^\circ$
       kind: 'Proposition',
       name: 'Interplanar spacing formulas',
       statement: String.raw`The perpendicular distance $d_{hkl}$ between neighbouring planes of the family $(hkl)$ satisfies
-$$\frac1{d_{hkl}^2}=\mathbf h^{\mathsf T}G^{-1}\mathbf h,\qquad \mathbf h=(h,k,l)^{\mathsf T},\quad G_{ij}=\mathbf a_i\!\cdot\!\mathbf a_j,$$
+$$\begin{gathered}\frac1{d_{hkl}^2}=\mathbf h^{\mathsf T}G^{-1}\mathbf h,\\\mathbf h=(h,k,l)^{\mathsf T},\\G_{ij}=\mathbf a_i\!\cdot\!\mathbf a_j,\end{gathered}$$
 which gives, for the common cells,
 (a) cubic: $d=a/\sqrt{h^2+k^2+l^2}$;
 (b) tetragonal: $1/d^2=(h^2+k^2)/a^2+l^2/c^2$;
