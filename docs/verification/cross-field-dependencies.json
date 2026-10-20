@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 14,
+  "publishedBelowTarget": 13,
   "wholeSyllabusBelowTarget": 11,
   "entries": [
     {
@@ -5251,10 +5251,10 @@
       "collection": "rel",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 23,
-      "writtenToKnown": 24,
-      "wholeSyllabus": 46,
-      "publishedShortfall": 2,
+      "writtenToWritten": 25,
+      "writtenToKnown": 26,
+      "wholeSyllabus": 48,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -5349,8 +5349,22 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "rel-3.2",
+          "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "rel-3.4",
           "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.5",
+          "prerequisite": "pma-5.3",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -19157,7 +19171,8 @@
       "8ba4a4543155814a581066cc5ea5da9b14114ace",
       "4ba8813bf271ef95e28d5ffd11a1479996d4c635",
       "99650b2050ca81b4a28c3a70f1cbe671bd6030a1",
-      "761e7b53c333ec45496c3631394646dd11f9841e"
+      "761e7b53c333ec45496c3631394646dd11f9841e",
+      "e4bf3e16de02c4f91eca693fe426b908bde0ca29"
     ],
     "excludedUnacceptedEdges": [
       {

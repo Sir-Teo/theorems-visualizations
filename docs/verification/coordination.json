@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall 219; 14/64 published collections and 11 whole syllabi below target; 34 further collections meet 25 written inputs. Source queue 5 unchanged.",
+      "Accepted prerequisite shortfall 217; 13/64 published collections and 11 whole syllabi below target; 35 further collections meet 25 written inputs. Source queue 5 unchanged.",
       "Latest immutable checkpoint9 on7b90a07 passes2195 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private atlas guard passes independent tiny/native155 tests and exact original-only history stability; symmetric reset/upload-content matched original/chunk oracle is being prepared, with no run or timing acceptance.",
@@ -83,7 +83,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "CAUSAL independent native/pixel peer, then REL rotated peer",
+      "current": "CPLX genuine prerequisite producer after accepted CAUSAL/REL peers",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -2450,15 +2450,33 @@
       "followup": "23 genuine inputs across20 consumers; finite-design/blocking/covariance, conditional expectation/propensity, discrete level, regression and control qualifiers, eight equivalent wraps and one justified existing raw row repair. Full48 objects/functions/flags/helpers/96rows,2549 independent math checks, strict/static,80 personal full narrow-theme field captures and six actual bridge cards pass. Root preservation/math rechecks pass.",
       "sourceClosure": "None; all source flags preserved.",
       "bridgeReview": "Read, coherent; no bridge edits."
+    },
+    {
+      "collection": "rel",
+      "commits": [
+        "e4bf3e16de02c4f91eca693fe426b908bde0ca29",
+        "70b7f3ded1b33004363deb623e5f9c952fef853e",
+        "096ee3fc9b374dfb57ed964e5789ae4db6c8b967",
+        "eea07c0f6fcccfd06ddd71392b19cab7afca72e9"
+      ],
+      "publishedBefore": 23,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "logic_peer",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/rel-two-inputs-independent-peer.md",
+      "sourceClosure": "None; all flags preserved.",
+      "bridgeReview": "No affected bridge IDs.",
+      "followup": "Two direct rank-nullity/product-rule inputs reach25/26/48. Nonnegative accelerometer magnitude versus unchanged signed oscillator/readout explicitly distinguished in statement/idea/caption, zero case retained. Full57objects/functions/helpers/flags/156rows and all rawlists,35,240 independent witnesses, strict/static and30 personally inspected full native/caption/real-signed-input fields pass. Root explicit peer and four default regression groups pass; private baseline alignment excluded."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 219,
-    "publishedBelow25": 14,
+    "publishedShortfall": 217,
+    "publishedBelow25": 13,
     "collections": 64,
     "wholeSyllabusBelow25": 11,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Thirty-four further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Thirty-five further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

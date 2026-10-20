@@ -1073,3 +1073,7 @@ Independent [CRYPTO](crypto-crossfield-prerequisite-peer.md), [CAUSAL](causal-cr
 ### Full checkpoint through CAUSAL/CRYPTO/ML probability
 
 [Exact7b90a07 checkpoint](checkpoint-7b90a07.md) passes2,195default tests/all six UI groups, strict build and full static with zero errors/warnings. Accepted inventory219/14/11 and sourcequeue5 reconcile. Pending REL/SYSBIO/ECOL and later matched-upload preparation excluded; no additional map or Wave5 gate is accepted.
+
+### REL final two inputs
+
+[Independent REL followup](rel-two-inputs-independent-peer.md) reaches25published with full preservation and signed/magnitude qualification. Root explicit peer and four default regressions pass; live217/13/11,35further collections meet target. This follows checkpoint7b90a07; sourcequeue5 unchanged.
