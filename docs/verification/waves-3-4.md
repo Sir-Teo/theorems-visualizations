@@ -933,3 +933,10 @@ Independent exact-target/proof/function/flag/syllabus/native review accepts seve
 ## Accepted separate MATHBIO3.4 energy explanation
 
 Independent peer accepts actual-map area preservation, its nonzero default first-step energy error, and the final whole-item caption/syllabus correction. Fixed h=.002RK4is a numerical reference despite its old UIlabel; equilibrium examples may have zero error. All71functions/flags/full syllabus are guarded,102digit independent drift and actual first paintedpaths agree, and both320themes/all4equilibriumselectors/ownpixels pass. The initial missed caption finding remains recorded in [peer evidence](mathbio-symplectic-energy-peer.md). No numerical model, source flag or source-queue count changes.
+
+
+## New six-worker continuation and LOGIC acceptance
+
+Independent exact `d2ca3ba` source/math/native/own-pixel review accepts LOGIC4.12 using all11actual pages of the complete authorized English1930translation; no full German-original claim. Current queue6=833initial+1added−828original resolved;145accepted entries. See [peer](logic-godel-independent-peer-2026-10-20.md).
+
+Eight DEEPprerequisites and the touched stability note are independently accepted; current accepted shortfall807,47/64below25published,28whole syllabi below25, explicitly excluding the frozen BIGHIST3.5edge. New exact checkpoint8178911passes2079tests/all6UI, strict/static0/0, home112705bytesgzip. That snapshot precedes the LOGICflagclosure/newpeer test and laterbridge edits; see [exact checkpoint boundaries](checkpoint-8178911.md). IMAGING's newly located PDFrequires a password; ordinary inspection stops at that boundary and its sourceflag stays open.

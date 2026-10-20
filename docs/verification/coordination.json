@@ -32,7 +32,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Exact d2ca3ba immutable source/math/native peer",
+      "current": "Independent THERMO exact3fea5ed prerequisite peer; map low-copy report recorded",
       "owns": [
         "LOGIC4.12 unique peer report/tests only"
       ],
@@ -42,7 +42,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Exact e57c6a5 immutable prerequisite peer",
+      "current": "Independent CTRL prerequisite and touched feedback/stability note peer",
       "owns": [
         "DEEP unique peer report/tests only"
       ],
@@ -52,7 +52,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "Actual Heyman original audit and bounded candidate",
+      "current": "ARCH original audit candidate with dedicated exactdecimal boundary repair",
       "owns": [
         "ARCH3.14 item/private helper/matching row/tests/reports"
       ],
@@ -62,7 +62,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "IMAGING3.18 access-boundary evidence then local DEEP5.12 log repair",
+      "current": "DEEP5.12runtime candidate ready for peer; now ENERGY prerequisite production",
       "owns": [
         "IMAGING3.18 report only; DEEP5.12 local item/helper/tests/reports"
       ],
@@ -72,7 +72,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Genuine THERMO crossfield prerequisite production",
+      "current": "Independent ARCH actual-original peer; candidate decimal boundary repair pending",
       "owns": [
         "THERMO items/matching syllabus rows/tests/reports"
       ],
@@ -82,7 +82,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Genuine CTRL crossfield prerequisite production",
+      "current": "CTRL12edge producer finishing report; next DEEP5.12runtime peer",
       "owns": [
         "CTRL items/matching syllabus rows/tests/reports"
       ],
@@ -1492,6 +1492,14 @@
       "peer": "worker_two",
       "report": "docs/verification/mathbio-symplectic-energy-peer.md",
       "sourceClosure": "None;3.14originalsourceflag and all other flags unchanged."
+    },
+    {
+      "id": "deep-5.12-log-thumb",
+      "status": "candidate-awaiting-independent-peer",
+      "candidate": "d9bb7096a8d21f200aef2b2d96805f8b3cea2af6",
+      "producer": "imaging_source",
+      "report": "docs/verification/deep-clipping-state-followup.md",
+      "sourceClosure": "None; separate old-worker label-only correction still pending."
     }
   ],
   "acceptedSourceLimitations": [

@@ -1,10 +1,10 @@
 # Cross-field prerequisite gate
 
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
-MASTER_PLAN §7.3 against all current written and planned records.
+MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **51 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 833 edges. Even
+Of 64 non-math collections, **47 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 807 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -14,7 +14,7 @@ same-field links between collections do not count. Missing IDs are reported sepa
 This distinction prevents an unwritten prerequisite from being presented as currently
 available to a reader.
 
-Run `node scripts/audit-cross-field-deps.mjs` to regenerate the inventory and
+`node scripts/audit-cross-field-deps.mjs` generates a raw code inventory, which includes unaccepted candidate edges. Apply the documented accepted-edge exclusion before replacing this central accepted inventory. Run
 `node --test tests/cross-field-deps.test.mjs` for its counting regression. The test
 covers duplicate edges, planned availability, same-field collections and missing IDs.
 
