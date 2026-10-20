@@ -6,7 +6,7 @@ export function irregularModel(N=177,epoch='modern',pick='go',block='go',stored=
  const selected=IRREGULAR_ORDER.find(r=>r.w===pick),baseline=IRREGULAR_ORDER.find(r=>r.w==='shrink').count,top=IRREGULAR_ORDER.slice(0,N),irregular=top.reduce((s,r)=>s+r[epoch],0),scale=IRREGULAR_PICK.map(w=>{const r=IRREGULAR_ORDER.find(r=>r.w===w);return{w,count:r.count,ratio:Math.sqrt(r.count/baseline)};}),candidate=block==='go'?'goed':'gloriosity',listed=block==='go'?'went':'glory';
  return{N,epoch,pick,block,stored,rows:IRREGULAR_ORDER.map(r=>({...r,irregular:!!r[epoch]})),irregular,totalIrregular:IRREGULAR_ORDER.reduce((s,r)=>s+r[epoch],0),share:irregular/N,selected,baseline,scale,candidate,listed,result:stored?listed:candidate};
 }
-export default{num:'3.10',kind:'Phenomenon',name:'Irregular forms and blocking',verify:true,
+export default{num:'3.10',kind:'Phenomenon',name:'Irregular forms and blocking',verify:false,
  credit:'Aronoff’s lexical-blocking analysis; Lieberman and colleagues’ historical regularisation study',
  statement:String.raw`Irregular forms can compete with regular formations. In the rule-plus-exceptions illustration, a listed went pre-empts the mechanical past-tense candidate goed. Aronoff's1976 analysis also treats glory as blocking gloriosity, while gloriousness remains available: blocking is sensitive to morphological structure, not a ban on synonyms.
 

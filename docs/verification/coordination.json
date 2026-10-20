@@ -878,6 +878,19 @@
         "e840446",
         "5b58b7a"
       ]
+    },
+    {
+      "ids": [
+        "ling-3.10"
+      ],
+      "peer": "Coordinator independently accepted exact e1cfabd after original source population, independent reference and native/output pixel review",
+      "reports": [
+        "docs/verification/ling-irregular-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "e1cfabd"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -890,7 +903,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 40,
+  "currentPendingSourceReviews": 39,
   "latestCheckpoint": {
     "acceptedContentCommit": "a99dc23",
     "report": "docs/verification/checkpoint-a99dc23.md",

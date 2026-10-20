@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 40,
+  "remainingFlags": 39,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "art": 2,
     "arch": 6,
-    "ling": 5,
+    "ling": 4,
     "bighist": 16
   },
   "queue": [
@@ -341,19 +341,6 @@
           "text": "Choose a language (or click a dot on the right) to read the clause morpheme by morpheme: roots blue, affixes teal, with their glosses. The plot gives each clause's morphemes per word and the average number of grammatical features per affix, and shades nothing: the labels mark where the textbook classes sit. The four clauses are rough counterparts of “I can’t hear (very) well” and are **not** word-for-word translations. My own segmentation, checked against reference grammars only for Turkish ability/negation, Mandarin potential complements and the Inuktitut example (Wikipedia's *Inuit grammar*); Latin is from memory, and conventions for counting (is *qīngchu* one morpheme? is *-junga* one or two?) change the numbers a little."
         }
       ],
-      "refs": [
-        "Fromkin et al. ch. 2"
-      ],
-      "links": {}
-    },
-    {
-      "id": "ling-3.10",
-      "file": "content/ling/ch03-b.js",
-      "name": "Irregular forms and blocking",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
       "refs": [
         "Fromkin et al. ch. 2"
       ],
@@ -1458,7 +1445,8 @@
       "bighist-3.10",
       "arch-3.10",
       "arch-3.12",
-      "arch-3.13"
+      "arch-3.13",
+      "ling-3.10"
     ]
   },
   "additionalFollowups": [
@@ -6487,6 +6475,11 @@
       "id": "arch-3.13",
       "status": "resolved",
       "note": "2026-10-20: Coordinator independently accepted exact e840446 after actual original sources, analytic math and fresh native/output pixels; docs/verification/arch-buttresses-followup.md."
+    },
+    {
+      "id": "ling-3.10",
+      "status": "resolved",
+      "note": "2026-10-20: Coordinator independently accepted exact e1cfabd after original source population, independent reference and native/output pixel review; docs/verification/ling-irregular-followup.md."
     }
   ]
 }
