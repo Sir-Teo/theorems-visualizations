@@ -1,0 +1,47 @@
+{
+  "baseline": "199d71f40f98f4ff11613408196c16619495eb62",
+  "changes": [
+    {
+      "file": "content/xtal/ch04.js",
+      "num": "4.1",
+      "field": "statement",
+      "before": "A lattice vector is $\\mathbf r=U\\mathbf a+V\\mathbf b+W\\mathbf c$ with integers $U,V,W$.",
+      "after": "Vectors $\\mathbf r=U\\mathbf a+V\\mathbf b+W\\mathbf c$ with integers $U,V,W$ form the integer-edge sublattice of that cell; this is the full translation lattice when the chosen basis is primitive. Consider a nonzero vector of this form."
+    },
+    {
+      "file": "content/xtal/ch04.js",
+      "num": "4.1",
+      "field": "idea",
+      "before": "this picks the first lattice point met along the ray, i.e. the shortest lattice vector in that direction.",
+      "after": "this picks the first point of the integer-edge sublattice met along the ray. It is the shortest vector of the full translation lattice on that ray only when the cell basis is primitive; conventional centred cells can have nearer lattice points with fractional cell coordinates."
+    },
+    {
+      "file": "content/xtal/ch04.js",
+      "num": "4.1",
+      "field": "idea",
+      "before": "Hence there is no lattice point strictly between the origin and the primitive triple on its ray.",
+      "after": "Hence no point of the integer-edge sublattice lies strictly between the origin and the coprime triple on its ray. For a primitive lattice basis this also excludes intermediate points of the full lattice. For example, conventional bcc cell indices $[111]$ are coprime, but the body-centre vector $\\tfrac12(\\mathbf a+\\mathbf b+\\mathbf c)$ is halfway along that ray."
+    },
+    {
+      "file": "content/xtal/ch04.js",
+      "num": "4.1",
+      "field": "caption",
+      "before": "the green one the shortest vector on its line",
+      "after": "the green one the shortest integer-edge vector on its ray"
+    },
+    {
+      "file": "content/xtal/ch04-b.js",
+      "num": "4.6",
+      "field": "idea",
+      "before": "Here opposite planes $(hkl)$ and $(\\bar h\\bar k\\bar l)$ are counted as different when the group lacks an inversion.",
+      "after": "Opposite indexed normals $(hkl)$ and $(\\bar h\\bar k\\bar l)$ are retained as distinct orbit members whenever both occur. They may be symmetry related with or without inversion; the stabilizer here fixes the oriented normal, not just its unoriented line."
+    },
+    {
+      "file": "content/xtal/ch03-b.js",
+      "num": "3.8",
+      "field": "statement",
+      "before": "A position may be a fixed point, a line or a plane, with one, two or three free coordinates;",
+      "after": "A special position may be a fixed point, a line or a plane, with zero, one or two free coordinates respectively; a general position has three free coordinates;"
+    }
+  ]
+}
