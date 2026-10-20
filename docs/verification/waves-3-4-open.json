@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 85,
+  "remainingFlags": 84,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 4,
+    "game": 3,
     "polsci": 4,
     "music": 6,
     "art": 9,
@@ -217,21 +217,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Blotto_game"
-      }
-    },
-    {
-      "id": "game-3.10",
-      "file": "content/game/ch03-b.js",
-      "name": "Blackwell’s approachability theorem",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ §14.5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Approachability_(game_theory)"
       }
     },
     {
@@ -2128,7 +2113,8 @@
       "polsci-5.7",
       "game-4.13",
       "polsci-4.5",
-      "polsci-4.12"
+      "polsci-4.12",
+      "game-3.10"
     ]
   },
   "additionalFollowups": [
@@ -6922,6 +6908,11 @@
       "id": "polsci-4.12",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently accepted exact e7059d8; docs/verification/polsci-black-followup.md."
+    },
+    {
+      "id": "game-3.10",
+      "status": "resolved",
+      "note": "2026-10-20: worker two independently accepted exact 7d9262c including 0fb6977 after both state findings were repaired; docs/verification/game-blackwell-followup.md."
     }
   ]
 }

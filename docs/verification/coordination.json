@@ -473,6 +473,16 @@
       "commits": [
         "e7059d884439976550b252ab51ff10a602971a4b"
       ]
+    },
+    {
+      "ids": [
+        "game-3.10"
+      ],
+      "peer": "worker two independently accepted exact 7d9262c including 0fb6977 after both state findings were repaired",
+      "reports": [
+        "docs/verification/game-blackwell-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -485,7 +495,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 85,
+  "currentPendingSourceReviews": 84,
   "latestCheckpoint": {
     "acceptedContentCommit": "04ab914",
     "pendingSourceReviews": 85,
