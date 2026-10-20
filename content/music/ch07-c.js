@@ -78,7 +78,7 @@ For a preset, $\gcd(n,m_3,m_5)=1$ makes the modular map onto. Its kernel therefo
       refs:['A. D. Fokker, 1969, Unison vectors and periodicity blocks in the three-dimensional (3-5-7-) harmonic lattice of notes; Huygens–Fokker Foundation hosted transcription, sections The lattice, Unison vectors and Periodicity blocks (two-dimensional table)'],tags:['lattice','comma'],
       credit:'Source vector pairs: A. D. Fokker (1969), hosted transcription. Exact half-open enumeration, kernel qualification and counterexample derived here.',
       scope:String.raw`The lattice-class theorem holds for independent integer vectors. The widget allows coordinates −12 through 12, including singular pairs to test the independence hypothesis. Preset modular steps are explicitly assigned by rounding $n\log_2 3$ and $n\log_2 5$; the source table supplies vector pairs, not a shortest-vector algorithm or a claim that every determinant quotient is cyclic. The square represents a continuous torus containing the finite lattice classes, not an audible pitch circle. Pure representatives are exact rational ratios modulo powers of two, with numerical logarithms for display. Free choice has no tempering toggle. Audio is the mono 44,100-Hz C4=261.6256-Hz H8 signal of 7.4/7.9, bounded by 0.12 before output and with 10-ms ramps; no listener threshold is claimed.`,
-      links:{source:'https://www.huygens-fokker.org/docs/fokkerpb.html'},verify:true,
+      links:{source:'https://www.huygens-fokker.org/docs/fokkerpb.html'},verify:false,
       viz(v){
         let selected=[0,0],info;
         const reset=()=>{selected=[0,0];};

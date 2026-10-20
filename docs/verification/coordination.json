@@ -259,6 +259,18 @@
         "87c3869",
         "cb9f0ed"
       ]
+    },
+    {
+      "ids": [
+        "music-7.15",
+        "soc-4.12"
+      ],
+      "peer": "coordinator exact-commit Fokker hosted primary text/table, lattice/kernel proof, five math groups, regenerated Fraction/90-digit reference and fresh narrow dark native matrix",
+      "reports": [
+        "music-periodicity-followup.md",
+        "soc-musiclab-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -271,7 +283,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 114,
+  "currentPendingSourceReviews": 112,
   "latestCheckpoint": {
     "acceptedContentCommit": "c9b5466",
     "pendingSourceReviews": 114,

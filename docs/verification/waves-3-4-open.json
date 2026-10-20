@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 114,
+  "remainingFlags": 112,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,9 +22,9 @@
     "energy": 1,
     "robot": 1,
     "game": 5,
-    "soc": 6,
+    "soc": 5,
     "polsci": 9,
-    "music": 14,
+    "music": 13,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -297,22 +297,6 @@
       }
     },
     {
-      "id": "soc-4.12",
-      "file": "content/soc/ch04-c.js",
-      "name": "Unpredictable success in cultural markets (MusicLab)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "E&K §18.4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Experimental_Study_of_Inequality_and_Unpredictability_in_an_Artificial_Cultural_Market",
-        "doi": "https://doi.org/10.1126/science.1121066"
-      }
-    },
-    {
       "id": "soc-4.13",
       "file": "content/soc/ch04-c.js",
       "name": "Gibrat’s proportional growth and city-size laws",
@@ -504,21 +488,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1086/257897"
-      }
-    },
-    {
-      "id": "music-7.15",
-      "file": "content/music/ch07-c.js",
-      "name": "Unison vectors and periodicity blocks (Fokker)",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 6"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Periodicity_block"
       }
     },
     {
@@ -2582,7 +2551,9 @@
       "psych-4.13",
       "qchem-3.13",
       "soc-4.7",
-      "soc-4.11"
+      "soc-4.11",
+      "music-7.15",
+      "soc-4.12"
     ]
   },
   "additionalFollowups": [
@@ -7211,6 +7182,16 @@
       "id": "soc-4.11",
       "status": "resolved",
       "note": "2026-10-20: coordinator exact-commit primary CSN, published Broido and Voitalov definition review, three independent math groups and four fresh narrow native matrices; soc-tails-followup.md."
+    },
+    {
+      "id": "music-7.15",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit Fokker hosted primary text/table, lattice/kernel proof, five math groups, regenerated Fraction/90-digit reference and fresh narrow dark native matrix; music-periodicity-followup.md."
+    },
+    {
+      "id": "soc-4.12",
+      "status": "resolved",
+      "note": "2026-10-20: worker_one exact-commit original report/SOM review, independent Python uint32/integer inverse-CDF/Fraction countercheck, two math groups and fresh narrow light/dark native matrices; soc-musiclab-followup.md."
     }
   ]
 }
