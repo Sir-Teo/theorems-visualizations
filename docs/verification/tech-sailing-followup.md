@@ -1,0 +1,38 @@
+# Technology 4.11: sail comparison and blade rotation
+
+Candidate for independent acceptance. The existing verification flag remains true. No central queue, generated data, shared runtime or other chapter item changes. Closure is recommended for the revised, explicitly scoped item, subject to independent review.
+
+## Sources actually read
+
+- **Julian Whitewright, The Potential Performance of Ancient Mediterranean Sailing Rigs**, IJNA40.1:2–17 (2011), DOI [10.1111/j.1095-9270.2010.00276.x](https://doi.org/10.1111/j.1095-9270.2010.00276.x). The [author's university record](https://eprints.soton.ac.uk/204793/) identifies the article but offers no associated file. The complete16-page primary paper was obtained from an [archived PDF copy](https://www.ancientportsantiques.com/wp-content/uploads/Documents/ETUDESarchivees/Navires/Documents/Whitewright2011-SailingRigs.pdf), using a browser User-Agent after an initial403. Local `/tmp/atlas-worker-two/tech-sources/whitewright-2011.pdf`, SHA256 `817fa59f0f9bee0bc2bd79688def942de962da1eaa31873a6fb5452381af577a`. Read the entire main prose, printed2–15, including methodology, historical/ethnographic/reconstruction comparisons and conclusions. Printed3–7 explain missing controlled comparisons, uncertain voyage details and hull/environment/operating effects; printed13–15 explicitly make an approximate performance argument. Actual printed3 and14 pixels were inspected (`whitewright-2011-page2.png`, `whitewright-2011-page13.png`); the archived copy has highlighting on printed14. The item replays no quantitative source table and claims no measured polar equality. Figure1 also identifies the rig forms.
+- **Royal Museums Greenwich, component model SLR2362**, [actual owner record](https://www.rmg.co.uk/collections/objects/rmgc-object-68321). Read the complete description of separate wooden sternpost/rudder, brass hinges, paper strips and tiller markings, including unknown maker/date. Local `tech-sources/rmg-rudder.html`, SHA256 `5b2291ebca6486f8fe266e815dd72e9c0e1b1af4ed9cc5d6ffaeaaecb56add85`. Downloaded and inspected the owner's actual object pixels [l0251.jpg](https://collections.rmg.co.uk/media/543/233/l0251.jpg), local `rmg-slr2362.jpg`, SHA256 `ee87b48cdbb82f760cbd0822368e9fee16e2c13a75bc94e9fe8de6f8246c6cfe`.
+
+The previous earliest-date/transmission chain, unsupported reconstruction chronology and direct historical rig superiority claim are removed. No replacement priority is certified. Whitewright2018 was considered while grouping sources, but its university PDF remained403 and only limited publisher text was accessible; it is not a source for a claimed full reading or a numerical fixture here. The undated invention credit avoids treating a modern article's publication year as the invention date.
+
+## Declared mathematical comparison
+
+The sail law is authored: `F=q|q|n+0.02||A||A`, `q=A·n`, `A=(0,−1)−vb`, with b and n unit vectors. It is passive relative to apparent wind, `F·A=|q|³+0.02||A||³≥0`, invariant under reversal of n, odd in A and quadratic under positive scaling. Neither coefficient is fitted to historical rigs. A keel is assumed to cancel transverse force; leeway, heel feedback, waves and rig geometry are excluded. The two named cases differ only in their selected minimum trim, so identical trim domains produce identical results by construction.
+
+For each heading the finite trim grid is ±minimum, then every3° below90°, with ±90° included exactly. At speed v its residual is the maximum forward force across this grid minus cv². For fixed trim d, write `u=−cosγ−v`, `q=u sin d+sinγ cos d`. Its derivative is
+
+`−2 sin²d |q| −0.02(||A||+(A·b)²/||A||) −2cv`,
+
+away from the removable zero-wind point. Every fixed-trim residual decreases strictly over v≥0; their finite maximum does too. If the rest residual is nonpositive, the model reports zero speed, rather than a fictitious positive root.
+
+At v=2, set w=2+cosγ≥1 and t=sinγ≤1. Flip n if necessary so s=n·b≥0. A positive pressure contribution requires q≥0, and `q≤t−ws`, hence `s q²≤max[s(t−ws)²]=4t³/(27w)≤4/27`. The isotropic term's forward component is nonpositive, and cv²≥0.8, so the residual is strictly negative at the fixed upper bracket2 (the tested, looser bound is−0.3). Thus every moving case has a unique root in[0,2]. Forty-eight bisections give bracket width≤2/2⁴⁸; the selected speed, force, trim and residual are the same values used in the display. The independent oracle solves every single-trim scalar root separately and takes the largest, rather than repeating the envelope algorithm.
+
+Both polar curves contain181 one-degree headings0…180 and their reflected opposite tack. Purple markers maximize windward velocity **among these sampled headings**; selected controls are solved at the exact heading, including off-grid values. The cached family is keyed by both minimum trims and hull coefficient and is defensively copied. It cannot retain a result for different physical inputs.
+
+## Signed blade geometry
+
+Each one-metre blade starts vertically downward at transverse offset B, then the whole geometry rotates by heel θ about the centre waterline. Its top is `(Bcosθ,Bsinθ)` and bottom `(Bcosθ+sinθ,Bsinθ−cosθ)`. Signed tip depth is therefore `cosθ−Bsinθ`; for the centreline B=0 it is cosθ, which also changes with heel. All301 depth samples, both selected points and the actual drawn rods use this same geometry. A negative high-side tip depth is visibly above the fixed waterline. No steering-force, wetted-area or immersion-performance inference is made.
+
+Six continuous inputs: square minimum trim10…70°, lateen minimum trim5…70°, hull coefficient0.2…1.2, heading0…180°, high-side offset0.5…2m and heel0…30°. Every range uses step:any, so off-grid saved values agree with actual DOM ranges. Read the actual aero1.2 force decomposition and aero1.3 coefficient definitions; dependencies now identify these as context, without suggesting that a thin-airfoil lift law supplies the authored force.
+
+## Verification and evidence
+
+- `node --test tests/verification-tech-sailing.test.mjs`: six independent mathematical groups pass. Log `/tmp/atlas-worker-two/tech-sailing-math.log`. These cover passive power, reversal/scaling, finite root oracle, analytic residual monotonicity and upper bracket, full polar families/cache, every signed-depth sample/rod length and malformed domains.
+- `node scripts/check.mjs --collection tech --item 4.11 --static`: 53 items, zero errors/warnings. Final log `tech-sailing-static-final.log` under `/tmp/atlas-worker-two/`.
+- `node tests/verification-tech-sailing.mjs`: six native groups,1450/430/320×light/dark. Final log `tech-sailing-native.log`. Each group checks all64 input corners, continuous off-grid state, equal-trim identity, emerged tip, Home/End/ArrowLeft, exact reload/readout, malformed saved inputs and actual DOM/model value agreement. Every full polar/depth path and selected marker is checked, together with the actual rotated rod/hull/waterline geometry. Complete path strokes, circle/marker extents, arrowheads, canvas text, TeX, control and page bounds are asserted.
+- Screenshots under `/tmp/atlas-worker-two/tech-sailing/`. Actual320dark full page and the high-side emergence geometry panel were inspected; also inspected the full1450light off-grid page and430light emerged-tip curve panel after the final matrix. All labels and complete curves are contained.
+- Exact guards preserve every unowned item and other syllabus row. The old sail-only helper functions and now-unused imports are removed; other functions and shared runtime are untouched. No generated files are committed. Independent peer acceptance is required before clearing the flag.

@@ -1,43 +1,8 @@
+import { sailing } from './source-audit-sailing.js';
 import { draught, riderCoupling } from './source-audit-loads.js';
 import { stampStroke, lockChange } from './source-audit-mechanisms.js';
 import { smeatonWind } from './source-audit-power.js';
 // History of Technology — Chapter 4: Building, water and power before steam (items 4.7–4.12; 4.1–4.6 are in ch04.js)
-import { yearStage, drawYears, G, plate } from './ch04.shared.js';
-
-const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
-const D2R = Math.PI / 180;
-
-// ---------------------------------------------------------------- 4.11: flat-plate sail on a boat
-/** Force (in units of ½ρA = 1, true wind speed 1) of a thin flat sail with chord direction c in an apparent wind A. */
-function sailForce(A, c) {
-  const sp = Math.hypot(A[0], A[1]); if (sp < 1e-9) return [0, 0];
-  const Ah = [A[0] / sp, A[1] / sp];
-  const alpha = Math.acos(clamp(Math.abs(Ah[0] * c[0] + Ah[1] * c[1]), 0, 1));
-  let n = [-c[1], c[0]]; if (n[0] * Ah[0] + n[1] * Ah[1] < 0) n = [-n[0], -n[1]];
-  let Lh = [-Ah[1], Ah[0]]; if (Lh[0] * n[0] + Lh[1] * n[1] < 0) Lh = [-Lh[0], -Lh[1]];
-  const { CL, CD } = plate(alpha);
-  return [sp * sp * (CD * Ah[0] + CL * Lh[0]), sp * sp * (CD * Ah[1] + CL * Lh[1])];
-}
-/** Steady boat speed (true wind 1, blowing toward −y) at heading gamma from dead upwind, with the sail trimmed to the best chord angle in [dmin, 90°] to the boat axis; hull drag = ch v². */
-function boatSpeed(gamma, dmin, ch) {
-  const b = [Math.sin(gamma), Math.cos(gamma)];
-  const fwd = (v) => {
-    const A = [-v * b[0], -1 - v * b[1]];
-    let best = -1e9, bd = dmin;
-    for (let d = dmin; d <= 90.001 * D2R * 1; d += 3 * D2R) for (const sg of [-1, 1]) {
-      const cc = Math.cos(sg * d), ss = Math.sin(sg * d);
-      const c = [-(b[0] * cc - b[1] * ss), -(b[0] * ss + b[1] * cc)];
-      const F = sailForce(A, c), fw = F[0] * b[0] + F[1] * b[1];
-      if (fw > best) { best = fw; bd = sg * d; }
-    }
-    return { fw: best, d: bd };
-  };
-  const f = (v) => fwd(v).fw - ch * v * v;
-  if (f(0) <= 0) return { v: 0, d: fwd(0).d };
-  let lo = 0, hi = 4; for (let v = 0.05; v <= 4; v += 0.05) { if (f(v) < 0) { hi = v; break; } lo = v; }
-  for (let i = 0; i < 25; i++) { const mid = (lo + hi) / 2; if (f(mid) > 0) lo = mid; else hi = mid; }
-  return { v: lo, d: fwd(lo).d };
-}
 
 export default {
   collection: 'tech',
@@ -140,83 +105,24 @@ At elapsed fraction $\tau$, remaining head is $H(1-\tau)^2$ and transferred volu
 
     // ------------------------------------------------------------------ 4.11
     {
-      num: '4.11',
-      kind: 'Invention',
-      name: 'Sternpost rudder and lateen sail',
-      credit: 'Sternpost rudder: a Han pottery boat model (1st century CE) from Guangzhou, and European depictions c. 1180; lateen sail: Mediterranean, 2nd century CE iconography, excavated rigs from about 400 CE. Transmission between regions is argued, not settled',
-      verify: true,
-      statement: String.raw`Two steering and driving devices changed how ships were handled. The **sternpost rudder** is a vertical blade hinged on the stern post, on the centreline, turned by a tiller; it replaced the paddle-like **steering oars** hung over the quarters of ancient ships. The **lateen sail** is a triangular (or four-sided) sail on a long yard set obliquely to the mast, so that it lies along the boat, like later fore-and-aft sails, and not across it as a **square sail** does.
+      num:'4.11',kind:'Invention',name:'Sternpost rudder and lateen sail',verify:true,
+      credit:'Historical mechanisms documented by Royal Museums Greenwich and examined by Whitewright; force comparison authored here',
+      statement:String.raw`A sternpost rudder is a blade hinged at the stern and turned from above. Royal Museums Greenwich's component model SLR2362 depicts the rudder, sternpost, hinges and tiller position as separate parts; its maker and date are unknown. A lateen rig carries a triangular sail on an inclined yard. Sail shape alone does not establish how a whole vessel performs.
 
-Dates, as far as I could confirm from secondary sources. For the rudder: a 61 cm pottery junk from a Han tomb in Guangzhou (1st century CE) shows a stern-mounted rudder, which Needham and others take to precede its European appearance by about a thousand years; Arab sources describe a sternpost rudder by 985 (al-Muqaddasi); the oldest known European depictions of a pintle-and-gudgeon rudder, on carvings at Zedelgem and Winchester, are about 1180. Needham held that it passed from China to the West; the sources I read do not give a detailed counter-argument. For the lateen sail: depictions on a 2nd-century gravestone and a 4th-century mosaic, the excavated Yassi Ada II ship of about 400 CE, and the Kelenderis mosaic (late 5th to early 6th century, which some read as square-rigged); by the 6th century it had largely replaced the square sail in Mediterranean pictures. The old belief that it came from the East has been revised in favour of a Mediterranean origin.
+Whitewright's comparative study combines historical voyages, ethnographic observations and reconstructed vessels. It finds broadly similar potential performance for Mediterranean square-sail and lateen/settee rigs, while emphasizing uncertain voyage details, hull form, sea state and operating practice. This is an approximate historical comparison, not a controlled equality test or a numerical calibration for the widget. No earliest rudder/sail date or transmission path is certified here.`,
+      idea:String.raw`The authored illustration gives both sail cases the same passive force rule, changing only their allowed trim. For apparent wind $A=U-vb$, unit heading b and unit sail normal n, let $q=A\cdot n$ and set
+$$F=q|q|n+0.02\|A\|A.$$
+Thus $F\cdot A=|q|^3+0.02\|A\|^3\ge0$. This declared normal-pressure and drag rule has no measured historical coefficients. Choose the best forward force over both signs of the displayed minimum trim, then every 3° up to 90°, including 90° exactly. The steady speed is the nonnegative root where that finite maximum equals hull resistance $cv^2$; if the drive at rest is nonpositive, speed is zero. The residual decreases strictly with speed, giving a unique positive root when one exists. Equal trim domains give identical curves by construction.
 
-The popular claim that the lateen rig took over because it sails better to windward is itself contested: a study by Whitewright found the two rigs' performance very similar, and attributes the change to cost (fewer parts and less rope). The model below therefore does not assume that the lateen is better; it lets you set how close to the boat's axis each rig can be trimmed, and shows what follows.`,
-      idea: String.raw`A sail is a foil. In an apparent wind $A=U-V$ (true wind minus the boat's velocity) a thin sail at angle of attack $\alpha$ gives a lift and a drag (fluid-5.4, aero-1.3). Only the part of the sail force along the boat's heading drives it; the keel is assumed to cancel the sideways part. The boat's speed is where that drive equals hull resistance, which here grows as $v^2$.
-
-How close to the wind a boat can point depends mostly on how near the boat's axis the sail can be set. A square sail hangs from a yard that braces round against the shrouds, and cannot be braced far; a sail on an oblique yard can be sheeted nearer the centreline. Set the two limits the same and the polars coincide, which is the Whitewright point: the rig matters through the trim angle, and hull shape matters as much. Note too that the model has no leeway, no heel, and a sail of invented shape; the numbers are for comparison between rigs, not predictions.`,
-      caption: String.raw`Polar diagram: the wind blows from the top; the distance from the centre to the curve is the boat's speed in that direction. Set how close to the boat's axis each rig's sail can be trimmed (**square** and **fore-and-aft**) and the **hull drag**. The marked points are the best speed made good toward the wind. Drag the **heading** slider to see the sail trimmed for that heading. Bottom right: the steering oar on the high side loses blade depth as the boat heels, while a rudder on the centreline does not. Below: the dated evidence for the lateen sail and the sternpost rudder.`,
-      deps: ['fluid-5.4', 'aero-1.3'],
-      see: ['tech-4.6', 'fluid-4.11'],
-      refs: ['Mokyr ch. 3', 'Needham, Science and Civilisation in China 4.3, Johnstone & McGrail (1988), as cited by Wikipedia “Rudder”', 'Whitewright (2009–2012), Casson (1995), as cited by Wikipedia “Lateen”'],
-      tags: ['medieval', 'ships', 'transmission disputed'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Lateen' },
-      viz(v) {
-        const A = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, axes: false, height: 340, weight: 1.2, minWidth: 340, title: 'boat speed by heading (polar)' });
-        const R = v.stage({ x: [0, 30], y: [0, 1.05], axes: 'box', gutter: true, height: 340, weight: 0.9, minWidth: 280, xlabel: 'heel (°)', ylabel: 'blade depth in water', title: 'steering blade of a heeling boat' });
-        const Y = yearStage(v, [-600, 1300], { height: 230, full: true, title: 'dated evidence' });
-        const dSq = v.slider('closest trim, square sail (°)', 10, 70, 40, { step: 1 });
-        const dLa = v.slider('closest trim, fore-and-aft (°)', 5, 70, 20, { step: 1 });
-        const hull = v.slider('hull drag', 0.2, 1.2, 0.5, { step: 0.05 });
-        const head = v.slider('heading from the wind (°)', 20, 180, 70, { step: 1 });
-        const bOff = v.slider('steering oar offset (m)', 0.5, 2, 1.1, { step: 0.05 });
-        let key = '', pol = null;
-        const G0 = Array.from({ length: 46 }, (_, i) => (i * 4) * D2R);
-        v.render(() => {
-          const k = `${dSq.value}|${dLa.value}|${hull.value}`;
-          if (k !== key) { key = k; pol = { sq: G0.map((g) => boatSpeed(g, dSq.value * D2R, hull.value)), la: G0.map((g) => boatSpeed(g, dLa.value * D2R, hull.value)) }; }
-          const vmax = Math.max(0.6, ...pol.sq.map((p) => p.v), ...pol.la.map((p) => p.v));
-          A.setView([-vmax * 1.25, vmax * 1.25], [-vmax * 1.25, vmax * 1.25]);
-          for (const r of [0.5, 1, 1.5, 2, 2.5].filter((q) => q < vmax * 1.2)) A.circle(0, 0, r, { color: 'grid', width: 1, fill: false });
-          const ring = (arr, col) => { const pts = arr.map((p, i) => [p.v * Math.sin(G0[i]), p.v * Math.cos(G0[i])]); A.path(pts, { color: col, width: 2.6 }); A.path(pts.map(([x, y]) => [-x, y]), { color: col, width: 2.6 }); };
-          ring(pol.sq, 'orange'); ring(pol.la, 'green');
-          const vmg = (arr, sgn) => { let b = 0, bi = 0; arr.forEach((p, i) => { const q = sgn * p.v * Math.cos(G0[i]); if (q > b) { b = q; bi = i; } }); return { v: b, i: bi }; };
-          const uSq = vmg(pol.sq, 1), uLa = vmg(pol.la, 1), dSqd = vmg(pol.sq, -1), dLad = vmg(pol.la, -1);
-          A.dot(pol.sq[uSq.i].v * Math.sin(G0[uSq.i]), pol.sq[uSq.i].v * Math.cos(G0[uSq.i]), { r: 5, color: 'orange', hollow: true });
-          A.dot(pol.la[uLa.i].v * Math.sin(G0[uLa.i]), pol.la[uLa.i].v * Math.cos(G0[uLa.i]), { r: 5, color: 'green', hollow: true });
-          // wind arrow
-          A.arrow(0, vmax * 1.2, 0, vmax * 0.95, { color: 'gold', width: 3, head: 9 }); A.text('wind', 0.08 * vmax, vmax * 1.08, { size: 11.5, color: 'gold', align: 'left', baseline: 'middle' });
-          // the chosen heading: boat with its sail trimmed for the green rig
-          const g = head.value * D2R, bs = boatSpeed(g, dLa.value * D2R, hull.value), b = [Math.sin(g), Math.cos(g)];
-          const L0 = vmax * 0.22, c = (sg) => [Math.cos(sg * bs.d) * -b[0] - Math.sin(sg * bs.d) * -b[1], Math.sin(sg * bs.d) * -b[0] + Math.cos(sg * bs.d) * -b[1]];
-          const bx = b[0] * bs.v, by = b[1] * bs.v;
-          A.arrow(0, 0, bx, by, { color: 'green', width: 2, head: 7 }); A.dot(bx, by, { r: 4, color: 'green' });
-          const sgn = bs.d >= 0 ? 1 : -1, cc = (() => { const d = Math.abs(bs.d) * sgn; return [-(b[0] * Math.cos(d) - b[1] * Math.sin(d)), -(b[0] * Math.sin(d) + b[1] * Math.cos(d))]; })();
-          A.poly([[bx + b[0] * L0 * 0.6, by + b[1] * L0 * 0.6], [bx - b[0] * L0 * 0.6, by - b[1] * L0 * 0.6], [bx - b[0] * L0 * 0.3 + 0, by - b[1] * L0 * 0.3]], { fill: 'green', fillAlpha: 0.0, stroke: false });
-          A.line(bx, by, bx + cc[0] * L0, by + cc[1] * L0, { color: 'green', width: 4 });
-          A.line(bx + b[0] * L0 * 0.7, by + b[1] * L0 * 0.7, bx - b[0] * L0 * 0.7, by - b[1] * L0 * 0.7, { color: 'ink', width: 2 });
-          A._v = { uSq, uLa, dSqd, dLad, bs, vSq: boatSpeed(g, dSq.value * D2R, hull.value) };
-          // steering blade
-          const heel = Array.from({ length: 31 }, (_, i) => i);
-          R.fn((h) => clamp((0.9 - bOff.value * Math.sin(h * D2R)) / 0.9, 0, 1), { color: 'orange', width: 2.6 });
-          R.fn((h) => Math.cos(h * D2R), { color: 'green', width: 2.6 });
-          R.text('steering oar on the high side', 29.5, 0.18, { size: 10.5, color: 'orange', align: 'right', plate: true });
-          R.text('rudder on the centreline', 29.5, 1.0, { size: 10.5, color: 'green', align: 'right', baseline: 'top', plate: true });
-          drawYears(v, Y, [
-            { t: [-475, -221], label: 'steering oars, Chinese models', color: 'muted' },
-            { t: 150, label: '2nd c.: lateen on a gravestone' },
-            { t: 75, label: '1st c.: Han rudder model, Guangzhou', color: 'green' },
-            { t: 400, label: 'Yassi Ada II (lateen), c. 400' },
-            { t: 500, label: 'Kelenderis mosaic (square or lateen?)', contested: true },
-            { t: 625, label: 'Kellia graffito (early 7th c.)' },
-            { t: 985, label: 'al-Muqaddasi: Arab rudder (985)', color: 'green' },
-            { t: 1050, label: 'Dénia dish: lateen, 11th c.' },
-            { t: 1180, label: 'Zedelgem and Winchester carvings (c. 1180)', color: 'green' },
-          ], { lanes: 5, ticks: [-500, 0, 500, 1000] });
-        });
-        v.legend([['orange', 'square rig'], ['green', 'fore-and-aft (lateen) rig'], ['gold', 'wind']]);
-        v.readout(() => {
-          const w = A._v, f = (x) => v.fix(x, 2);
-          return `best speed made good to windward: square **${f(w.uSq.v)}** at ${4 * w.uSq.i}° from the wind, fore-and-aft **${f(w.uLa.v)}** at ${4 * w.uLa.i}° (speeds in units of the true wind speed; hull drag ${f(hull.value)} × speed²) · downwind: ${f(w.dSqd.v)} and ${f(w.dLad.v)}\nat heading ${head.value}°: fore-and-aft boat speed ${f(w.bs.v)}, sail trimmed at ${v.fix(Math.abs(w.bs.d) / D2R, 0)}° to the axis; square-rig speed ${f(w.vSq.v)}. Set both limits equal and the curves coincide.`;
-        });
+The separate roll model rotates a one-metre blade about a centreline at the water surface. At high-side offset B and heel θ, its signed tip depth is $\cos\theta-B\sin\theta$ metres; at the centreline it is $\cos\theta$. Both change with heel. A negative depth puts the tip above the ideal waterline. Tip depth alone does not predict steering force.`,
+      caption:String.raw`Compare chosen trim limits and hull resistance. Polar radius is model speed; the marked positions maximize windward velocity on the displayed one-degree heading grid. The heading control marks both cases at its exact selected angle. The roll panels show complete signed tip-depth curves and the actual rotated one-metre blades at the selected heel. Vary the oar offset and watch the high-side tip emerge.`,
+      deps:['aero-1.2','aero-1.3'],see:['tech-4.6'],refs:['Whitewright, The Potential Performance of Ancient Mediterranean Sailing Rigs, IJNA 40.1:2–17 (2011), DOI 10.1111/j.1095-9270.2010.00276.x; methods pp.3–7 and conclusions pp.13–15','Royal Museums Greenwich, SLR2362, sternpost and rudder component model; unknown date'],tags:['ships','sailing','steering'],
+      scope:String.raw`Dimensionless true wind speed 1, steady translation, no leeway or heel feedback in the sail model, and identical authored sail laws for both cases. The keel is assumed to cancel transverse force. The finite trim search is not a continuous aerodynamic optimum or a reconstruction of either historical rig. All headings 0…180° are shown; the opposite tack is its symmetric reflection. The roll model assumes rigid vertical one-metre blades, fixed offset and rotation about the centre waterline, omitting hull immersion, heave, wetted area and steering loads.`,
+      links:{source:'https://doi.org/10.1111/j.1095-9270.2010.00276.x',rudder:'https://www.rmg.co.uk/collections/objects/rmgc-object-68321'},
+      viz(v){const square=v.slider('minimum trim, square case (°)',10,70,40,{step:'any',decimals:6}),lateen=v.slider('minimum trim, lateen case (°)',5,70,20,{step:'any',decimals:6}),hull=v.slider('hull resistance coefficient',.2,1.2,.5,{step:'any',decimals:6}),heading=v.slider('heading from upwind (°)',0,180,70,{step:'any',decimals:6}),offset=v.slider('high-side blade offset (m)',.5,2,1.1,{step:'any',decimals:6}),heel=v.slider('heel (°)',0,30,15,{step:'any',decimals:6}),A=v.stage({x:[-1,1],y:[-1,1],equal:true,axes:false,height:330,minWidth:260,title:'authored steady-speed polars'}),R=v.stage({x:[-2,32],y:[-.3,1.2],axes:'box',gutter:true,height:330,minWidth:260,xlabel:'heel (°)',ylabel:'signed tip depth (m)',title:'centreline and high-side blade tips'}),C=v.stage({x:[-2.7,2.7],y:[-1.5,1.5],equal:true,axes:false,height:250,full:true,title:'rigid roll geometry; waterline fixed'});let info;
+        v.legend([['orange','square sail case / high-side blade'],['green','lateen sail case / centreline blade'],['purple','best sampled windward velocity'],['gold','wind / selected heel']]);
+        v.render(()=>{const p=sailing(square.value,lateen.value,hull.value,heading.value,offset.value,heel.value),z=1.25*Math.max(.5,...p.curves.flat().map(q=>Math.hypot(...q)),...p.selected.map(q=>q.speed));A.setView([-z,z],[-z,z]);for(const[r,color]of p.curves.map((r,i)=>[r,i?'green':'orange'])){A.path(r,{color,width:2});A.path(r.map(([x,y])=>[-x,y]),{color,width:2});}p.best.forEach(b=>A.dot(...b.point,{color:'purple',r:4,hollow:true}));p.selected.forEach((q,i)=>A.dot(q.speed*q.b[0],q.speed*q.b[1],{color:i?'green':'orange',r:5,ring:false}));A.arrow(-.8*z,.85*z,-.8*z,.5*z,{color:'gold',width:2,head:8});R.line(0,0,30,0,{color:'muted',width:1,dash:[4,3]});R.path(p.oar,{color:'orange',width:2});R.path(p.rudder,{color:'green',width:2});R.dot(p.heel,p.oarTip,{color:'orange',r:4,ring:false});R.dot(p.heel,p.rudderTip,{color:'green',r:4,ring:false});const a=p.heel*Math.PI/180;C.line(-2.5,0,2.5,0,{color:'accent',width:1.5});C.line(-2*Math.cos(a),-2*Math.sin(a),2*Math.cos(a),2*Math.sin(a),{color:'muted',width:3});p.rods.forEach((q,i)=>{C.line(...q.top,...q.bottom,{color:i?'orange':'green',width:4});C.dot(...q.bottom,{color:i?'orange':'green',r:4,ring:false});});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `At heading ${v.fix(p.heading,6)}°: square case speed ${v.fix(p.selected[0].speed,9)}, lateen case ${v.fix(p.selected[1].speed,9)}, in units of true wind speed. Selected trims ${v.fix(Math.abs(p.selected[0].trim),6)}° and ${v.fix(Math.abs(p.selected[1].trim),6)}°; force residuals ${v.fix(p.selected[0].residual,12)}, ${v.fix(p.selected[1].residual,12)}.\nBest sampled windward velocity: square ${v.fix(p.best[0].vmg,9)} at ${p.best[0].angle}°; lateen ${v.fix(p.best[1].vmg,9)} at ${p.best[1].angle}°. The same rule is applied to both chosen trim domains.\nAt heel ${v.fix(p.heel,6)}°: centreline tip depth ${v.fix(p.rudderTip,9)} m; high-side tip depth ${v.fix(p.oarTip,9)} m${p.oarTip<0?' (above the ideal waterline)':''}. These are signed vertical tip positions, not steering performance.`;});
       },
     },
 
