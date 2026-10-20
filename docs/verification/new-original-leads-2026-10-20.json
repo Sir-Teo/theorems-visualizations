@@ -98,6 +98,34 @@
         }
       ],
       "outcome": "No source closure, content change or new accepted edge. Only public ordinary links followed, no credentials or access/preview/password bypass. BIGHIST candidate not searched or retried."
+    },
+    {
+      "topic": "New public-title searches after accepted CPLX/SYSBIO and first paired-map stop",
+      "queries": [
+        "Nanowatt Logic original PDF excluding stopped IEEE/image routes",
+        "Hounsfield1973 Description of system original PDF excluding encrypted route",
+        "Kolmogoroff Sulla teoria di Volterra1936original PDF",
+        "Hughes Glass Jacobs1992original author/reprint PDF excluding stopped routes"
+      ],
+      "results": [
+        {
+          "url": "https://pubs.asahq.org/anesthesiology/article-pdf/76/3/334/322974/0000542-199203000-00003.pdf",
+          "scope": "Search service returned an indexed excerpt of printed page336, including figure descriptions and concentration-holding context. This is not a complete source body or parameter-table audit. Known stopped ASA route was not opened/retried."
+        },
+        {
+          "url": "https://device.report/m/63a3e89f3a5c8eab120139b9d7d77afc2a751906fbbee75ca8e65aea07943715",
+          "scope": "Contemporaneous conference news mentions the scheduled complementary MOS paper; not the requested complete1963paper."
+        },
+        {
+          "url": "https://cir.nii.ac.jp/crid/1363107371370267136",
+          "scope": "Hounsfield bibliographic record only, no original body."
+        },
+        {
+          "url": "https://math.ru/lib/files/pdf/Kolmogorov-biblio.pdf",
+          "scope": "Author bibliography identifies1936pages74\u201380, not original article body."
+        }
+      ],
+      "outcome": "No new original-body download or source closure. Search also returned an institutional-library proxy for abstract-only Hounsfield; did not follow a proxy or authenticated route. Encrypted/preview-limited and stopped routes remain stopped. Frozen BIGHIST3.5 was not searched/retried."
     }
   ]
 }
