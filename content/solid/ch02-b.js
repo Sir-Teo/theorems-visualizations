@@ -306,7 +306,7 @@ For smooth displacement and constant Lamé coefficients, commuting the mixed coo
       num: '2.12',
       kind: 'Method',
       name: 'Airy stress function',
-      statement: String.raw`In plane stress or plane strain with no body force (or a conservative one, which can be absorbed), every stress field of the form
+      statement: String.raw`In plane stress or plane strain with no body force, every stress field of the form
 $$\begin{gathered}\sigma_{xx}=\frac{\partial^2\phi}{\partial y^2},\\ \sigma_{yy}=\frac{\partial^2\phi}{\partial x^2},\\ \sigma_{xy}=-\frac{\partial^2\phi}{\partial x\,\partial y}\end{gathered}$$
 satisfies the equilibrium equations (2.4) identically. Such a stress field is also compatible (2.6), so that it comes from a displacement field in a simply connected region, if and only if $\phi$ is **biharmonic**:
 $$\begin{gathered}\nabla^4\phi=\frac{\partial^4\phi}{\partial x^4}+2\frac{\partial^4\phi}{\partial x^2\partial y^2}\\+\frac{\partial^4\phi}{\partial y^4}=0 .\end{gathered}$$
