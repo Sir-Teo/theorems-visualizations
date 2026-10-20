@@ -1,3 +1,4 @@
+import {configSeedValid,configModelFinite,CONFIG_PROFILES} from './source-audit-configuration.js';
 import {growthModel,growthSeedValid,GROWTH_TIMES} from './source-audit-growth.js';
 import {catalogueModel,SHELF_PERCENT} from './source-audit-catalogue.js';
 import {webSeedValid,webModel,WEB_REGIONS,WEB_LABELS,WEB_PUBLISHED,WEB_TOTAL} from './source-audit-bowtie.js';
@@ -69,68 +70,25 @@ That projection alters growth near the floor and creates exact ties at one. It i
     },
     // ------------------------------------------------------------------ 4.14
     {
-      num: '4.14',
-      kind: 'Model',
-      name: 'The configuration model',
-      statement: String.raw`Given a degree sequence $(k_1,\dots,k_n)$ with even sum, the **configuration model** gives vertex $i$ a number $k_i$ of half-edges ("stubs") and pairs all stubs uniformly at random; it is a uniformly random multigraph with that degree sequence (conditioning on "simple" gives a uniform simple graph). It keeps the degrees and randomises everything else, so it is the null model for "what follows from the degrees alone?".
+      num:'4.14',kind:'Model',name:'The configuration model',
+      statement:String.raw`For nonnegative integer degrees $k_1,\ldots,k_n$ with even total $D$, give each vertex $k_i$ labeled stubs and choose a uniform perfect matching of the stubs. Joining matched stubs produces a multigraph with exactly those incidence degrees: loops count twice and repeated edges are retained. Uniform stub matchings do **not** generally give equal probabilities to distinct multigraph adjacency matrices.
 
-With degree distribution $p_k$ and mean $\langle k\rangle$:
+If $D>0$, a uniformly chosen edge end reaches degree $k$ with probability $kp_k/\bar k$, where $p_k$ is the vertex-degree share. Its mean degree is
+$$\frac{\sum_i k_i^2}{\sum_i k_i}=\bar k+\frac{\operatorname{Var}(k)}{\bar k}.$$
+This exceeds the vertex mean when the degrees vary. It is a pooled edge-end average, not an assertion that every vertex's neighbors have this mean or that every vertex has fewer friends. With no stubs the edge-end distribution is undefined.`,
+      idea:String.raw`A vertex of degree $k$ contributes exactly $k$ labeled stubs, so counting all stubs gives the size bias and moment identity. The identity holds for every matching; no large-network approximation is needed. It concerns incidences in the multigraph, rather than distinct social neighbors when loops or repeated edges occur.
 
-(a) The degree of a vertex reached by following a random edge is **size-biased**: it equals $k+1$ with probability $q_k=(k+1)p_{k+1}/\langle k\rangle$, so the **mean excess degree** (the number of *other* neighbours) is $\langle k^2\rangle/\langle k\rangle-1$.
-
-(b) Since friends have degree $\langle k^2\rangle/\langle k\rangle$ on average, which exceeds $\langle k\rangle$ whenever the degrees vary (Cauchy–Schwarz), this explains the **friendship paradox** (soc-2.4) in closed form.
-
-(c) **Molloy–Reed criterion**: a giant component exists iff $\langle k^2\rangle-2\langle k\rangle>0$, i.e. when the mean excess degree exceeds 1 (the analogue of $c>1$ in 4.2); its size follows from $u=\sum_k q_k u^{k}$ and $S=1-\sum_kp_ku^k$.`,
-      idea: String.raw`Pick an edge at random and then an end of it: you land on a vertex of degree $k$ with probability proportional to $k\,p_k$, because a vertex with $k$ stubs has $k$ chances of being chosen. That single observation, normalised, is $q_k$. Exploring a component then behaves like a branching process whose offspring distribution is $q_k$ (not $p_k$) after the first step, so the process survives exactly when its mean $\langle k^2\rangle/\langle k\rangle-1$ exceeds one, and the extinction probability $u$ is the fixed point of its generating function $G_1(u)=\sum_k q_ku^k$. For Poisson degrees $q=p$ and the criterion is $c>1$ (4.2); for heavy-tailed $p_k$, $\langle k^2\rangle$ is huge and a giant component exists however sparse the network.`,
-      caption: String.raw`A model: 3000 vertices with a degree sequence from the chosen family, wired by random stub matching (loops and repeated pairs dropped). **Left**: the degree distribution $p_k$ (bars) and the excess-degree distribution measured at random edge ends (dots) against $(k+1)p_{k+1}/\langle k\rangle$ (line). **Right**: mean degree of a vertex's neighbours against its own degree: flat at $\langle k^2\rangle/\langle k\rangle$, above the diagonal for most vertices (the friendship paradox). Compare the giant component with the prediction.`,
-      scope: String.raw`Exact for the multigraph model as $n\to\infty$ with bounded moments; with $n=3000$, loops and multiple edges are dropped, which matters for the high-degree tail of the power-law family (capped at degree 800). The power-law family has exponent about 2.5 (its mean degree follows the slider only roughly, because of the heavy tail).`,
-      deps: ['soc-4.1', 'soc-2.4'],
-      refs: ['Newman ch. 12'],
-      tags: ['configuration model', 'degree', 'friendship paradox'],
-      credit: 'Bender & Canfield, 1978; Bollobás, 1980; Molloy & Reed, 1995; Newman, Strogatz & Watts, 2001',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Configuration_model' },
-      verify: true,
-      viz(v) {
-        const fam = v.select('degree distribution', [{ value: 'poisson', label: 'Poisson' }, { value: 'geometric', label: 'geometric' }, { value: 'power', label: 'power law' }, { value: 'bimodal', label: 'leaves and hubs' }, { value: 'regular', label: 'regular' }], 'geometric');
-        const cS = v.slider('mean degree (about)', 1, 8, 3, { step: 0.25 });
-        let seed = 2; v.button('Resample', () => { seed++; });
-        const n = 3000, KM = 20;
-        const A = v.stage({ x: [-0.5, KM + 0.5], y: [0, 0.5], axes: 'box', gutter: true, height: 340, xlabel: 'degree $k$', ylabel: 'probability', title: 'degrees and excess degrees', minWidth: 300, weight: 1.1 });
-        const B = v.stage({ x: [0, KM], y: [0, 20], axes: 'box', gutter: true, height: 340, xlabel: 'own degree $k$', ylabel: 'mean degree of neighbours', title: 'friendship paradox', minWidth: 280, weight: 1 });
-        const cache = {};
-        const build = () => { const key = `${fam.value}|${cS.value}|${seed}`; if (cache[key]) return cache[key]; const R = rng32(seed * 91 + 5), seq = degreeSequence(fam.value, n, fam.value === 'power' ? cS.value / 3 : cS.value, R), { g, dropped } = configModel(seq, R); return (cache[key] = { g, dropped }); };
-        let st = null;
-        v.render(() => {
-          const { g, dropped } = build(), deg = g.adj.map((a) => a.length), m2 = g.edges.length;
-          const p = new Float64Array(2000); for (const d of deg) p[d] += 1 / n;
-          let mean = 0, k2 = 0; deg.forEach((d) => { mean += d / n; k2 += d * d / n; });
-          const qm = new Float64Array(2000); for (const [a, b] of g.edges) { qm[deg[a] - 1] += 1 / (2 * m2); qm[deg[b] - 1] += 1 / (2 * m2); }
-          let peak = 0.1; for (let k = 0; k <= KM; k++) { peak = Math.max(peak, p[k], qm[k]); if (p[k]) A.rect(k - 0.4, 0, k, p[k], { fill: 'accent', fillAlpha: 0.6, stroke: false }); }
-          A.setView([-0.5, KM + 0.5], [0, peak * 1.2]);
-          const qt = (k) => ((k + 1) * p[k + 1]) / mean;
-          A.path(Array.from({ length: KM + 1 }, (_, k) => [k, qt(k)]), { color: 'ink', width: 1.8 });
-          A.dots(Array.from({ length: KM + 1 }, (_, k) => [k, qm[k]]), { r: 4, color: 'orange' });
-          // neighbour degrees
-          const nd = deg.map((d, i) => (d ? g.adj[i].reduce((s, j) => s + deg[j], 0) / d : NaN)), sum = new Float64Array(KM + 1), cnt = new Float64Array(KM + 1);
-          let higher = 0, nz = 0; deg.forEach((d, i) => { if (d > 0) { nz++; if (nd[i] > d) higher++; if (d <= KM) { sum[d] += nd[i]; cnt[d]++; } } });
-          const kap = k2 / mean, pts = []; for (let k = 1; k <= KM; k++) if (cnt[k] >= 10) pts.push([k, sum[k] / cnt[k]]);
-          B.setView([0, KM], [0, Math.max(10, kap * 1.5, ...pts.map((x) => x[1])) * 1.1]);
-          B.line(0, 0, KM, KM, { color: 'muted', width: 1.2, dash: [5, 4] });
-          B.hline(kap, { color: 'green', width: 2 });
-          B.dots(pts, { r: 3.6, color: 'accent' });
-          // generating functions
-          let u = 0; for (let i = 0; i < 400; i++) { let s = 0; for (let k = 1; k < 2000; k++) s += k * p[k] * Math.pow(u, k - 1) / mean; u = s; }
-          let G0 = 0; for (let k = 0; k < 2000; k++) G0 += p[k] * Math.pow(u, k);
-          const comp = components(g);
-          st = { mean, k2, kap, higher: higher / nz, S: 1 - G0, Sm: comp[0].length / n, mr: k2 - 2 * mean, dropped, maxd: Math.max(...deg) };
-        });
-        v.legend([['accent', 'degree distribution $p_k$', { area: true }], ['orange', 'measured excess degree at random edge ends', { dot: true }], ['ink', '$(k+1)p_{k+1}/\\langle k\\rangle$'], ['green', '$\\langle k^2\\rangle/\\langle k\\rangle$']]);
-        v.readout(() => {
-          if (!st) return '';
-          const { mean, k2, kap, higher, S, Sm, mr, dropped, maxd } = st;
-          return String.raw`$\langle k\rangle=${v.fix(mean, 2)}$, $\langle k^2\rangle=${v.fix(k2, 1)}$ (largest degree ${maxd}) → friends have **${v.fix(kap, 2)}** friends on average, and **${v.fix(100 * higher, 0)}%** of vertices have friends with a higher mean degree than their own · mean excess degree ${v.fix(kap - 1, 2)}
-Molloy–Reed: $\langle k^2\rangle-2\langle k\rangle=${v.fix(mr, 1)}$ ${mr > 0 ? '> 0: giant component' : '≤ 0: none'} · predicted giant component **${v.fix(100 * S, 1)}%**, measured **${v.fix(100 * Sm, 1)}%** (${dropped} loops/repeats dropped)`;
-        });
+The finite algorithm shuffles the labeled stubs, then pairs consecutive entries. Every perfect matching has the same $2^{D/2}(D/2)!$ permutation preimages under ideal uniform shuffling. Its seeded implementation supplies one reproducible finite matching. Component sizes are measured by searches in that actual multigraph; they are not inferred from a finite-sample “giant iff” moment test.`,
+      caption:String.raw`Choose a finite degree profile, vertex count and seed. Every vertex and matched edge is drawn. Loops and curved repeated edges remain visible; gold marks one largest connected component, with smallest-index tie breaking. Right: vertex-degree shares in blue and exact uniform-edge-end shares in orange. The profiles include all isolates, constant positive degree, and two mixtures with mean 2 but different variation. Resample changes the matching while preserving the selected degrees.`,
+      scope:String.raw`Authored profiles at n=80, 200 or 400, with degrees 0–4, not measured friendship data or fitted power-law degrees. The ideal model samples labeled-stub matchings; finite pseudorandom seeds do not enumerate that full ensemble. No loops or repeats are removed and no simple-graph conditioning is performed. Degree/excess counts refer to incidences, so subtracting an arrival incidence does not count distinct new neighbors in a looped graph. Largest finite component and asymptotic giant-component existence are separate questions. No universal “however sparse” giant claim or unspecified Molloy–Reed hypotheses are asserted.`,
+      deps:['soc-2.3','soc-2.4'],see:['soc-4.1','soc-4.2'],refs:['Newman, Strogatz & Watts, arXiv:cond-mat/0007235v2 (2001), §II.A Eqs.8–9 and §II.G numerical construction','Feld, American Journal of Sociology96:1464–1477 (1991), pp.1468–1472, pooled versus two-step averages'],tags:['configuration model','degree','friendship paradox'],credit:'Size bias: Newman, Strogatz & Watts, 2001; pooled friendship average: Feld, 1991; finite matching and profiles declared here.',links:{source:'https://arxiv.org/abs/cond-mat/0007235v2',friendship:'https://pdodds.w3.uvm.edu/research/papers/others/1991/feld1991a.pdf'},verify:true,
+      viz(v){
+        let seed=2,cache=null,info;v.shareState('configuration matching seed',{get:()=>seed,validate:configSeedValid,set:x=>{seed=x;cache=null;}});
+        const profile=v.select('incidence-degree profile',CONFIG_PROFILES.map(x=>({value:x.id,label:x.label})),'oneThree'),size=v.select('vertices',[80,200,400].map(value=>({value,label:String(value)})),200);v.button('Resample',()=>{seed=(seed+1)>>>0;cache=null;});
+        const A=v.stage({x:[-1.18,1.18],y:[-1.18,1.18],axes:false,equal:true,height:350,minWidth:260,title:'all vertices and retained matching edges'}),B=v.stage({x:[-.65,4.65],y:[-.08,1.12],axes:'box',gutter:true,height:350,minWidth:260,title:'exact vertex and edge-end distributions',xlabel:'incidence degree k',ylabel:'share',xticks:[0,1,2,3,4]});
+        v.render(()=>{const key=`${profile.value}|${size.value}|${seed}`;if(!cache||cache.key!==key)cache={key,data:configModelFinite(size.value,profile.value,seed)};const p=cache.data;for(const q of p.curves)A.path(q,{color:'faint',width:1});const gold=new Set(p.largest);p.positions.forEach(([x,y],i)=>A.dot(x,y,{color:gold.has(i)?'gold':'muted',r:2.5,ring:false}));p.p.forEach((x,k)=>B.rect(k-.34,0,k-.03,x,{fill:'accent',fillAlpha:.7,stroke:false}));if(p.endpoint)p.endpoint.forEach((x,k)=>B.rect(k+.03,0,k+.34,x,{fill:'orange',fillAlpha:.7,stroke:false}));info=p;});
+        v.legend([['gold','one largest finite component',{dot:true}],['muted','other vertices',{dot:true}],['accent','uniform vertex',{area:true}],['orange','uniform edge end',{area:true}]]);
+        v.readout(()=>{const p=info;return `Seed ${seed}; ${p.n} vertices, ${p.graph.edges.length} matched edges; total incidence degree ${p.degreeSum}=2M. Retained loops ${p.graph.loops}; repeated pairs beyond first ${p.graph.repeats}. Vertex mean degree ${v.fix(p.mean,6)}, variance ${v.fix(p.variance,6)}. ${p.endpointMean===null?'No edge ends: their distribution and mean are undefined.':`Uniform-edge-end mean degree ${v.fix(p.endpointMean,6)} = vertex mean + variance/mean; mean remaining incidences ${v.fix(p.endpointMean-1,6)}.`} Largest measured component ${p.largest.length}/${p.n}; ${p.components.length} total components. These are exact finite counts and ordinary floating moment calculations; no asymptotic giant prediction or individual-neighbor guarantee is computed.`;});
       },
     },
     // ------------------------------------------------------------------ 4.15
