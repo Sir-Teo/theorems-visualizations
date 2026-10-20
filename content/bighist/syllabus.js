@@ -120,8 +120,8 @@ export default {
       items: [
         { num: '4.1', kind: 'Event', name: 'Hominin evolution: bipedalism and brain growth', deps: ['bighist-3.9'], refs: ['Aiello & Wheeler1995, Tables1/4 and p208'],
           pic: 'Compare bounded bipedalism context and four literal historical braincase summaries, then distinguish a reported basal budget from explicit volume-to-mass/allometric accounting without a causal regression.' },
-        { num: '4.2', kind: 'Phenomenon', name: 'Glacial cycles and Milankovitch forcing', deps: ['mech-10.18'], refs: ['Christian'],
-          pic: 'Combine eccentricity, obliquity and precession into summer insolation at 65° N and compare it with the ice-core temperature record of the last 800,000 years.' },
+        { num: '4.2', kind: 'Phenomenon', name: 'Glacial cycles and Milankovitch forcing', deps: ['mech-10.18'], refs: ['Hays et al.1976; Imbrie & Imbrie1980'],
+          pic: 'Distinguish historical sediment-core evidence from an authored harmonic orbit, daily solstice insolation, exact held-forcing asymmetric response and honest finite power spectra.' },
         { num: '4.3', kind: 'Event', name: 'Out of Africa', deps: ['bighist-4.1', 'popgen-3.9'], refs: ['Christian'],
           pic: 'Animate the dispersal of modern humans on a map with dated sites: Arabia, Australia by about 50,000 years ago, the Americas by at least 15,000 years ago.' },
         { num: '4.4', kind: 'Model', name: 'The serial founder effect', deps: ['bighist-4.3', 'popgen-2.1', 'popgen-2.3', 'popgen-2.9'], refs: ['Ramachandran et al. 2005, Fig. 4 and bottleneck-only discussion'],

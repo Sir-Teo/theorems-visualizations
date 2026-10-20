@@ -1,13 +1,10 @@
+import orbitsItem from './orbits-item.js';
 import homininItem from './hominin-item.js';
 // Big History & Quantitative History — Chapter 4: Human origins (items 4.1–4.4; 4.5–4.8 are in ch04-b.js)
 //
 // Sources checked (Oct 2026). Crossref was used for bibliographic details; "rounded" means the number was not taken from one table.
 //   Audited4.1: actualAiello/Wheeler1995main199–211/reply217–218, Tables1/4/Fig6; historical summaries and authored accounting separated.
-//   4.2 Hays, Imbrie & Shackleton, Science 194: 1121 (1976) (Crossref-checked); Imbrie & Imbrie, Science 207: 943 (1980)
-//     (Crossref-checked). Milankovitch's name and his 1941 monograph are recalled, not re-checked. The orbital elements are a
-//     three-term-per-quantity caricature (periods 405, 124, 95 kyr; 41 kyr; 21 kyr; amplitudes approximate), tuned so that
-//     e = 0.0167, obliquity 23.4 deg and the perihelion longitude 283 deg hold today; it is not the Laskar solution. The ice
-//     response is the asymmetric linear-reservoir model with two time constants set by the reader, not the published fit.
+//   Audited4.2: actualHays1976main1121–1131/Imbrie1980main943–952; authored harmonics, daily insolation and finite response/power.
 //   4.3 Site ages: Jebel Irhoud, Hublin et al., Nature 546: 289 (2017) (about 315 ka, recalled); Omo Kibish, Vidal et al., Nature
 //     601: 579 (2022) (about 233 ka, confirmed by search); Misliya, Hershkovitz et al., Science 359: 456 (2018) (177-194 ka,
 //     confirmed); Madjedbebe, Clarkson et al., Nature 547: 306 (2017) (65 ka, contested, with 50 ka widely used); Bacho Kiro,
@@ -17,28 +14,7 @@ import homininItem from './hominin-item.js';
 //   4.4 Actual complete Ramachandran2005 original source read; conditional model and saved seed repaired.
 //     See docs/verification/bighist-founder-followup.md; source flag retained pending independent acceptance.
 
-import { clamp } from './ch04.shared.js';
 import founderItem from './founder-item.js';
-
-// ── 4.2 helpers: caricature orbital elements, t in kyr (negative = past) ───────────────────────────────────────────────────
-const D2R = Math.PI / 180;
-const ECC = [[0.011, 405], [0.0083, 124], [0.0077, 95]];
-const ECC_PH = (() => {
-  const ph = [0, 1.0, 2.3];
-  ph[0] = Math.acos(clamp((0.0167 - 0.028 - ECC[1][0] * Math.cos(ph[1]) - ECC[2][0] * Math.cos(ph[2])) / ECC[0][0], -1, 1));
-  return ph;
-})();
-const eccT = (t) => 0.028 + ECC.reduce((s, [A, P], k) => s + A * Math.cos((2 * Math.PI * t) / P + ECC_PH[k]), 0);
-const oblT = (t) => 23.34 + 1.2 * Math.cos((2 * Math.PI * t) / 41 + 1.49);
-const varpiT = (t) => 283 * D2R + (2 * Math.PI * t) / 21;
-/** Daily-mean insolation at the summer solstice, W/m2, latitude `lat` (degrees). */
-function solsticeQ(t, lat) {
-  const e = eccT(t), E = oblT(t) * D2R, w = varpiT(t), phi = lat * D2R;
-  const rho = (1 + e * Math.sin(w)) / (1 - e * e);
-  const ch = -Math.tan(phi) * Math.tan(E);
-  const h0 = ch >= 1 ? 0 : ch <= -1 ? Math.PI : Math.acos(ch);
-  return (1361 / Math.PI) * rho * rho * (h0 * Math.sin(phi) * Math.sin(E) + Math.cos(phi) * Math.cos(E) * Math.sin(h0));
-}
 
 // ── 4.3 helpers ─────────────────────────────────────────────────────────────────────────────────────────────────────────
 // [name, lon, lat, age in ka, group, note]
@@ -67,72 +43,7 @@ export default {
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     homininItem,
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-    {
-      num: '4.2',
-      kind: 'Phenomenon',
-      name: 'Glacial cycles and Milankovitch forcing',
-      statement: String.raw`For the last $2.6$ million years the Earth has swung between glacial and interglacial climates. The record in deep-sea sediment and ice shows these swings have spectral peaks at periods close to those of the Earth's orbit: about $41\,000$ years (the tilt, or *obliquity*, of the axis between about $22.1^\circ$ and $24.5^\circ$), about $19\,000$–$23\,000$ years (the *precession* of the equinoxes, which swings the season of closest approach to the Sun) and, in the last million years, about $100\,000$ years (cycles of eccentricity). The orbital changes barely alter the yearly total of sunlight but they redistribute it across seasons and latitudes; the **Milankovitch hypothesis** says that summer sunlight at high northern latitudes, where land can carry ice, paces the ice sheets. Hays, Imbrie and Shackleton (1976) gave the decisive evidence.
-
-**Scope.** Orbital forcing is the pacemaker, not the whole mechanism: the response needs ice-sheet, ocean and carbon-cycle feedbacks, and why the 100 kyr cycle dominates the last million years, although it is the weakest forcing, is unsettled.`,
-      idea: String.raw`The summer-solstice insolation at latitude $\varphi$ depends on three orbital elements: the tilt $\varepsilon$, the eccentricity $e$ and the precession angle $\varpi$ through the factor $\bigl((1+e\sin\varpi)/(1-e^2)\bigr)^2$ for the Earth–Sun distance. Tilt acts on the whole high-latitude summer, precession acts on the distance, and eccentricity only matters by modulating precession (the precession index is $e\sin\varpi$). A simple ice model makes the pacemaker idea concrete: an ice volume $V$ relaxes toward $-$(summer insolation), growing slowly (time constant $\tau_g$) and melting faster ($\tau_m$), as in Imbrie and Imbrie (1980). The precession of the equinoxes is the slow wobble of the spinning Earth treated in mechanics (mech-10.18).`,
-      caption: String.raw`Top left: the three caricature orbital elements over the last 800 kyr (toggle each; the orbit is a few-term sketch, not the Laskar solution). Top right: summer-solstice insolation at the chosen latitude and the ice volume that results from it (high = more ice). Bottom: the periodogram of each; vertical lines mark 100, 41 and 21 kyr (the model's precession is a single 21 kyr line; the real one splits into 23 and 19). Change the latitude and the two time constants. The ice-core temperature record is not drawn, only the ideas it tested.`,
-      deps: ['mech-10.18'],
-      see: ['bighist-4.3', 'bighist-4.8'],
-      refs: ['Christian'],
-      credit: 'Milankovitch, 1941 (following Croll and Adhémar); Hays, Imbrie & Shackleton, 1976',
-      tags: ['climate', 'orbital forcing', 'ice ages'],
-      scope: String.raw`Caricature orbit (three terms per element) and a two-time-constant ice model; the lines in the periodogram are indicative of the spectral peaks, not a reconstruction of any record.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Milankovitch_cycles', doi: 'https://doi.org/10.1126/science.194.4270.1121' },
-      verify: true,
-      viz(v) {
-        const tg = [v.toggle('eccentricity', true), v.toggle('tilt', true), v.toggle('precession', true)];
-        const lat = v.slider('latitude (°N)', 30, 80, 65, { step: 1 });
-        const tauG = v.slider('ice growth τ (kyr)', 10, 150, 30, { step: 1 });
-        const tauM = v.slider('ice melt τ (kyr)', 2, 40, 10, { step: 1 });
-        const A = v.stage({ x: [-800, 0], y: [0, 5.2], axes: 'box', gutter: true, height: 270, xlabel: 'time (kyr ago, negative)', title: 'orbital elements (caricature)', yticks: [] });
-        const B = v.stage({ x: [-800, 0], y: [-2.6, 2.6], axes: 'box', gutter: true, height: 270, xlabel: 'time (kyr ago, negative)', ylabel: 'normalised', title: 'summer insolation and ice volume' });
-        const C = v.stage({ x: [0, 0.075], y: [0, 1.05], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'period (kyr)', ylabel: 'power (relative)', xticks: [[0.01, '100'], [1 / 41, '41'], [1 / 21, '21']], title: 'periodograms (2,000 kyr run)' });
-        let cache = null, cacheKey = '';
-        function run() {
-          const key = `${lat.value}|${tauG.value}|${tauM.value}`;
-          if (key === cacheKey) return cache;
-          const NN = 2000, Q = [];
-          for (let k = 0; k <= NN; k++) Q.push(solsticeQ(-NN + k, lat.value));
-          const m = Q.reduce((s, q) => s + q, 0) / Q.length, sd = Math.sqrt(Q.reduce((s, q) => s + (q - m) ** 2, 0) / Q.length);
-          const x = Q.map((q) => (q - m) / sd);
-          let V = 0; const ice = [];
-          for (const u of x) { const f = -u; V += (f - V) / (f > V ? tauG.value : tauM.value); ice.push(V); }
-          const sp = (arr) => { const o = v.M.spectrum(arr.slice(1, 2001).map((y) => y), 1); const mxp = Math.max(...o.amp.slice(1)); return { f: o.freq, a: o.amp.map((q) => q / mxp) }; };
-          cache = { Q, x, ice, s1: sp(x), s2: sp(ice), m, sd };
-          cacheKey = key; return cache;
-        }
-        v.render(() => {
-          const R = run(), ts = [];
-          for (let t = -800; t <= 0; t += 2) ts.push(t);
-          if (tg[0].value) A.path(ts.map((t) => [t, 4.2 + (0.55 * (eccT(t) - 0.028)) / 0.02]), { color: 'purple', width: 2 });
-          if (tg[1].value) A.path(ts.map((t) => [t, 2.8 + ((oblT(t) - 23.34) / 1.2) * 0.5]), { color: 'orange', width: 2 });
-          if (tg[2].value) A.path(ts.map((t) => [t, 1.0 + eccT(t) * Math.sin(varpiT(t)) * 8]), { color: 'teal', width: 1.6 });
-          A.text('eccentricity', -795, 4.95, { size: 10.5, color: 'purple', align: 'left' });
-          A.text('tilt (22.1°–24.5°)', -795, 3.5, { size: 10.5, color: 'orange', align: 'left' });
-          A.text('precession index e sin ϖ', -795, 1.75, { size: 10.5, color: 'teal', align: 'left' });
-          const N = R.Q.length - 1;
-          B.path(ts.map((t) => [t, R.x[N + t]]), { color: 'orange', width: 1.6 });
-          B.path(ts.map((t) => [t, R.ice[N + t]]), { color: 'accent', width: 2.6 });
-          B.hline(0, { color: 'faint', width: 1, dash: [2, 3] });
-          C.path(R.s1.f.map((f, i) => [f, R.s1.a[i]]).filter((p) => p[0] < 0.075 && p[0] > 0.004), { color: 'orange', width: 1.8 });
-          C.path(R.s2.f.map((f, i) => [f, R.s2.a[i]]).filter((p) => p[0] < 0.075 && p[0] > 0.004), { color: 'accent', width: 2.2 });
-          for (const P of [100, 41, 21]) C.vline(1 / P, { color: 'faint', width: 1, dash: [3, 3] });
-          v.legend([['orange', 'summer insolation (normalised)'], ['accent', 'ice volume (model)']]);
-        });
-        v.readout(() => {
-          const R = run();
-          const pk = (s, a, b) => { let best = 0, bi = 0; s.f.forEach((f, i) => { if (f >= 1 / b && f <= 1 / a && s.a[i] > best) { best = s.a[i]; bi = i; } }); return { P: 1 / s.f[bi], a: best }; };
-          const p1 = pk(R.s2, 70, 140), p2 = pk(R.s2, 36, 46), p3 = pk(R.s2, 18, 25);
-          const q0 = R.Q[R.Q.length - 1];
-          return `Summer-solstice insolation at ${lat.value}° N: **${v.fix(q0, 0)} W/m²** today (model); over 800 kyr it ranges ${v.fix(Math.min(...R.Q.slice(-801)), 0)}–${v.fix(Math.max(...R.Q.slice(-801)), 0)}.\nIce-volume peaks (relative): near ${v.fix(p1.P, 0)} kyr **${v.fix(p1.a, 2)}**, near ${v.fix(p2.P, 0)} kyr **${v.fix(p2.a, 2)}**, near ${v.fix(p3.P, 0)} kyr **${v.fix(p3.a, 2)}**. The forcing here carries little 100 kyr power; the real records show much more (the “100 kyr problem”).`;
-        });
-      },
-    },
+    orbitsItem,
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     {
       num: '4.3',
