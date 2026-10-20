@@ -1,0 +1,30 @@
+[
+  {
+    "file": "north1980-nasa.pdf",
+    "url": "https://ntrs.nasa.gov/api/citations/19810008165/downloads/19810008165.pdf",
+    "bytes": 8593151,
+    "sha256": "ae0ea51b793c0b391063781d57235410b008b69c363bf27b3f5a4c0cbc698af2",
+    "readScope": "1980 NASApreprint, not a claim to read the published1981 typesetting; relevant\u00a72/\u00a74parameters/limitations, actualPDF11/13/22\u201326/48\u201352"
+  },
+  {
+    "file": "gough1981.pdf",
+    "url": "https://articles.adsabs.harvard.edu/pdf/1981SoPh...74...21G",
+    "bytes": 161494,
+    "sha256": "86b5097d14ae38d01be5e69492510377941812540b8c4d584b21290d61a38cb5",
+    "readScope": "Actual1981original14pages; retained standard-model assumptions/age on23 and\u00a76/Eq1 on28"
+  },
+  {
+    "file": "hoffman1998.pdf",
+    "url": "https://www.snowballearth.org/pdf/Hoffman_Science1998.pdf",
+    "bytes": 261759,
+    "sha256": "eb69c372d6f83bedf304215da34eaff26552efed23f639618ce0516716d8fcfb",
+    "readScope": "Actual1342\u20131346 body and relevant figures; neighboring preceding/following articles excluded"
+  },
+  {
+    "file": "myhre1998.pdf",
+    "url": "https://www.sealevel.info/Myhre1998_98GL01908.pdf",
+    "bytes": 457770,
+    "sha256": "b2c2424c97f0e326ea4ccd546cf5353d3f8d44cf980fca7709162842b7580cfc",
+    "readScope": "Actual4page original mirrored PDF, especially\u00a75/Fig1 and2718Table3; not an endorsement of mirror commentary"
+  }
+]
