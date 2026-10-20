@@ -1,0 +1,25 @@
+# Game3.10: source probability, directional coverage and actual sample paths
+
+Candidate for independent review; flag remains true. Producer narrow native smoke passes; full six viewport/theme groups are running at handoff and must pass before acceptance.
+
+## Primary evidence
+
+Read the actual original Blackwell1956, *An analog of the minimax theorem for vector payoffs*, [publisher PDF](https://msp.org/pjm/1956/6-1/pjm-v6-n1-p01-p.pdf), printed pp.1–6: finite bounded vector-payoff setup; p.2 uniform probability-of-any-late-excursion definition; Theorem1's projection separation and conditional expectation; squared-distance argument and probabilistic lemma; Theorem3 and Corollary2 for closed convex targets. Inspected actual printed pp.3,4,6 pixels, PDF4,5,7. Retained eleven-page publisher file (eight article pages plus cover/editorial matter) `/tmp/atlas-coordinator/sources/positional/blackwell-1956.pdf`, SHA256 `df6d1ab22a4fd6904792eca9f1707c1c26a849eedba621fa009526d1b749cb29`.
+
+The source distinguishes randomized realized payoffs from their conditional expectations. Its convex-set criterion is reproduced with the original intersection-of-row-hulls-against-each-column-mixture quantifiers, and the equivalent half-space formulation. Theorem1's strategy minimizes the outward projection scalar game. No universal deterministic finite-time rate on every random realized trajectory is attributed to the source. Later calibration/Hedge claims, empirical data and unrelated original sections are not certified.
+
+## Corrected finite comparison
+
+Preserves the original authored3×3 integer vector payoff matrix, disc/square target, draggable centre, adversarial/random/cyclic columns and400 rounds. Adds actual sampled-row play alongside the original mixed-row mean-vector convention. The adversary sees past history and the row mixture, not its private current draw. The reproducible integer seed participates in saved state. Complete paths and exact zero distances are retained; target bounds adapt to every offered radius/centre, and supporting lines are explicitly clipped to an inset rectangle.
+
+The former180-angle check incorrectly labeled a target approachable whenever its samples passed. The replacement keeps feasible normalized primal and dual scalar-game mixtures and brackets each value. Its support-minus-value function has Lipschitz constant ||c||+√8 for a disc, plus r√2 for a square. Every unit direction is within chord2sin(π/360) of a grid direction. Subtracting L times that chord from the least sampled lower margin provides a conservative coverage correction. A negative sampled upper margin gives a witness; between those tests the result remains unresolved. The displayed scalar margins use an outward1e−9 guard. This is explicitly a numerical certificate, not formally rounded interval arithmetic; no finite grid by itself is substituted for the all-direction theorem.
+
+The old pathwise bound discarded a cross term justified only in conditional expectation for random play. The new diagnostic expands t²d_t² and retains max(0,2(t−1)(a−c)·(r−c)) in an always-valid corrected bound, whether the target passes, fails or remains unresolved. The simpler base curve remains visible with its conditional status. At the default covered disc and seed1, sampled round2 has distance≈0.84924 but base≈0.65597, a concrete counterexample to the former claimed realized-path guarantee. Mean-vector records and actual sampled records are labeled separately; no finite simulation proves an asymptotic statement.
+
+## Validation and scope
+
+- Four math groups pass. An independent Gaussian-elimination vertex enumeration brackets scalar values over721 directions; coverage correction is checked against23,040 additional off-grid direction/target comparisons; all400 records in72 full shape/centre/radius/opponent/play-mode combinations satisfy independent average and squared-distance recurrences. The sampled base-bound counterexample, projections, clipped lines, full range, seeds and malformed domains are checked. `/tmp/atlas-coordinator/game-blackwell-math.log`.
+- Targeted static check: one item, zero errors/warnings. `/tmp/atlas-coordinator/game-blackwell-static.log`.
+- Fresh320px dark native smoke passes all shapes/radii/opponents/play modes and selected-round endpoints, all400 actual records and180 directional markers, real native controls/drag/resampling, exact replay and invalid seed, complete glyph/path/circle/stroke/text/TeX bounds. Inspected actual default full page, sampled counterexample, unresolved band and extreme target screenshots. `/tmp/atlas-coordinator/game-blackwell-native-debug.log`.
+- Full six1450/430/320×light/dark matrices are running in `/tmp/atlas-coordinator/game-blackwell-native.log`; their completion is an acceptance prerequisite.
+- Initial native smoke caught two overwide display formulas; equivalent shorter notation fixed both. Browser/Node trigonometric last-bit differences are compared with an explicit small tolerance; exact same-browser saved-state replay still requires equality. Shared runtime/LP solver and other game objects remain untouched.

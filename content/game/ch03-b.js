@@ -1,3 +1,4 @@
+import blackwellItem from './blackwell-item.js';
 // Game Theory & Social Choice — Chapter 3 (part b): learning the value, Blotto, approachability, von Neumann's 1928 paper
 import {
   C1, C2, nm, idx, TRI, triPt, triBary, triClamp, drawTriangle,
@@ -46,10 +47,6 @@ function blotto(N) {
   return (BL[N] = { al, A, sol: solveZS(A), pure: zsPure(A) });
 }
 
-// ---------- vector payoffs for Blackwell approachability: r[i][j] = payoff vector when row plays i, column j ----------
-const RV = [[[2, -1], [-1, 2], [0, 0]], [[-1, 0], [1, 1], [2, -2]], [[0, 2], [-2, 1], [1, -1]]];
-const dirVal = (u) => { const S = solveZS(RV.map((r) => r.map((c) => -(u[0] * c[0] + u[1] * c[1])))); return { val: -S.v, x: S.x }; };
-const DIRS = idx(180).map((k) => { const th = (2 * Math.PI * k) / 180, u = [Math.cos(th), Math.sin(th)]; return { u, val: dirVal(u).val }; });
 
 export default {
   collection: 'game',
@@ -216,79 +213,7 @@ By the minimax theorem (game-3.3) it has a value and optimal mixed allocations, 
         });
       },
     },
-    // ------------------------------------------------------------------ 3.10
-    {
-      num: '3.10',
-      kind: 'Theorem',
-      name: 'Blackwell’s approachability theorem',
-      credit: 'David Blackwell, 1956',
-      statement: String.raw`In a repeated game, when players $1$ and $2$ choose actions $i_t,j_t$, player 1 receives a **vector payoff** $r(i_t,j_t)\in\mathbb R^d$ (a finite set of possibilities). A closed convex set $S\subset\mathbb R^d$ is **approachable** by player 1 if she has a strategy (a rule giving her mixed action from the history) such that the average payoff $\bar r_T=\frac1T\sum_{t\le T}r(i_t,j_t)$ satisfies $\operatorname{dist}(\bar r_T,S)\to0$ whatever player 2 does. **Theorem (Blackwell 1956).** A closed convex set $S$ is approachable if and only if every half-space containing $S$ is approachable in the one-shot sense, i.e. for every unit vector $u$,
-$$\min_{x\in\Delta}\max_j\;u\cdot r(x,j)\;\le\;\max_{s\in S}u\cdot s .$$
-The strategy is explicit: at time $t$, with $c_t$ the point of $S$ nearest to $\bar r_{t-1}$ and $u_t=\bar r_{t-1}-c_t\ne0$, play a minimax strategy of the scalar game $u_t\cdot r(x,j)$. Then $\operatorname{dist}(\bar r_T,S)\le D/\sqrt T$ for a constant $D$ depending only on the payoffs, and approachability reduces to the scalar minimax theorem applied in each direction; this is its vector-valued analogue.`,
-      idea: String.raw`Suppose the average $\bar r_{t-1}$ is outside $S$ at distance $d$, nearest point $c$, direction $u$. Her prescribed mixed action makes the *expected* next payoff lie on the $S$-side of the hyperplane through $c$ perpendicular to $u$, whatever the column player does; this is the half-space condition (a closest-point projection, rca-4.10, supplies $c$ and $u$). The new average is a convex combination of $\bar r_{t-1}$ and that payoff, so its distance obeys $t^2d_t^2\le(t-1)^2d_{t-1}^2+\|r_t-c\|^2$: the cross term has the right sign. Summing gives $d_T\le D/\sqrt T$. Necessity: if some half-space $\{z:u\cdot z\le h\}\supset S$ is not approachable one-shot, then by the scalar minimax theorem (game-3.3) player 2 has a reply that keeps $u\cdot\bar r_T$ above $h$ on average. Blackwell's theorem underlies calibration and no-regret learning, and it implies the Hedge guarantee of game-3.7.`,
-      caption: String.raw`The nine dots are the payoff vectors $r(i,j)$ of a $3\times3$ game with vector payoffs (a model, chosen for the picture); the dashed hull is what she can get in one round. Drag the green target (disc or square) with its radius. If the half-space test passes for all 180 directions, the readout says *approachable* and the gold path of running averages $\bar r_t$ steers into the target; the black line is the half-space through the nearest point $c$ separating the target from the current average. If you move the target so that some half-space fails, the path stalls outside. The right plot shows $\operatorname{dist}(\bar r_t,S)$ falling below the $\sqrt{\sum\|r_s-c_s\|^2}/t$ bound. The payoff $r_t$ is that of her mixed action (an expectation) against the adversary's pure column.`,
-      deps: ['game-3.3', 'rca-4.10'],
-      refs: ['MSZ §14.5'],
-      tags: ['approachability', 'vector payoffs', 'minimax'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Approachability_(game_theory)' },
-      verify: true,
-      viz(v) {
-        let seed = 1, sim = null, skey = '';
-        const P = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: 'box', gutter: true, height: 400, weight: 1.1, xlabel: 'first component of the payoff', ylabel: 'second component', title: 'running average of the vector payoff' });
-        const D = v.stage({ x: [1, 400], y: [1e-3, 5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 400, weight: 0.9, xlabel: 'round t', ylabel: 'distance to the target', title: 'dist(r̄ₜ, S)' });
-        const shape = v.select('target', [{ value: 'disc', label: 'disc' }, { value: 'box', label: 'square' }], 'disc');
-        const adv = v.select('adversary', [{ value: 'adapt', label: 'worst case' }, { value: 'rand', label: 'random' }, { value: 'cyc', label: 'cyclic' }], 'adapt');
-        const R = v.slider('radius', 0.2, 2.5, 0.8, { step: 0.05 });
-        const T = v.slider('rounds $t$', 1, 400, 120, { int: true, log: true });
-        v.button('Resample', () => { seed += 1; });
-        const hc = P.handle(0.6, 0.4, { color: 'green', r: 10, constrain: { x: [-3, 3], y: [-3, 3] } });
-        const near = (a, c, r, sh) => { if (sh === 'disc') { const dx = a[0] - c[0], dy = a[1] - c[1], d = Math.hypot(dx, dy); return d <= r ? { p: a, d: 0 } : { p: [c[0] + (r * dx) / d, c[1] + (r * dy) / d], d: d - r }; } const p = [clamp(a[0], c[0] - r, c[0] + r), clamp(a[1], c[1] - r, c[1] + r)]; return { p, d: Math.hypot(a[0] - p[0], a[1] - p[1]) }; };
-        const supp = (u, c, r, sh) => u[0] * c[0] + u[1] * c[1] + (sh === 'disc' ? r : r * (Math.abs(u[0]) + Math.abs(u[1])));
-        const simulate = (c, r, sh, am, sd) => {
-          const rg = v.rng(sd * 7 + 3), rr = (x, j) => [0, 1].map((k) => x.reduce((s, xi, i) => s + xi * RV[i][j][k], 0));
-          let avg = [0, 0], cum = 0; const path = [], dist = [], bnd = [];
-          for (let t = 1; t <= 400; t++) {
-            const q = near(avg, c, r, sh); let x = t === 1 ? [1, 0, 0] : [1 / 3, 1 / 3, 1 / 3], u = null;
-            if (t > 1 && q.d > 1e-12) { u = [(avg[0] - q.p[0]) / q.d, (avg[1] - q.p[1]) / q.d]; x = dirVal(u).x; }
-            let j;
-            if (am === 'adapt' && u) j = argmax(idx(3).map((jj) => { const p = rr(x, jj); return u[0] * p[0] + u[1] * p[1]; })); else if (am === 'cyc') j = (t - 1) % 3; else j = rg.int(0, 2);
-            const p = rr(x, j); avg = t === 1 ? p : [((t - 1) * avg[0] + p[0]) / t, ((t - 1) * avg[1] + p[1]) / t];
-            cum += (p[0] - q.p[0]) ** 2 + (p[1] - q.p[1]) ** 2;
-            path.push(avg.slice()); dist.push(near(avg, c, r, sh).d); bnd.push(Math.sqrt(cum) / t);
-          }
-          return { path, dist, bnd };
-        };
-        let info = null;
-        v.render(() => {
-          const c = [hc.x, hc.y], r = R.value, sh = shape.value, am = adv.value, t = Math.round(T.value);
-          const k = `${c[0].toFixed(3)}|${c[1].toFixed(3)}|${r}|${sh}|${am}|${seed}`;
-          if (k !== skey) { sim = simulate(c, r, sh, am, seed); skey = k; }
-          const margin = Math.min(...DIRS.map((d) => supp(d.u, c, r, sh) - d.val)), ok = margin >= -1e-9;
-          if (sh === 'disc') P.circle(c[0], c[1], r, { fill: 'green', fillAlpha: 0.18, color: 'green', width: 2 }); else P.rect(c[0] - r, c[1] - r, c[0] + r, c[1] + r, { fill: 'green', fillAlpha: 0.18, color: 'green', width: 2 });
-          const pts = [];
-          RV.forEach((rw) => rw.forEach((q) => pts.push(q)));
-          P.poly(v.M.hull(pts), { color: 'muted', width: 1.2, fill: false, dash: true });
-          pts.forEach((q) => P.dot(q[0], q[1], { r: 4, color: 'muted' }));
-          const path = sim.path.slice(0, t);
-          P.path(path.filter((_, s) => s < 200 || s % 2 === 0), { color: 'gold', width: 1.6, alpha: 0.8 });
-          const a = sim.path[t - 1], q = near(a, c, r, sh);
-          if (q.d > 1e-9) { const u = [(a[0] - q.p[0]) / q.d, (a[1] - q.p[1]) / q.d], w = [-u[1], u[0]]; P.line(q.p[0] - 6 * w[0], q.p[1] - 6 * w[1], q.p[0] + 6 * w[0], q.p[1] + 6 * w[1], { color: 'ink', width: 2 }); P.dot(q.p[0], q.p[1], { r: 5, color: 'green' }); P.line(q.p[0], q.p[1], a[0], a[1], { color: 'red', width: 1.5 }); }
-          P.dot(a[0], a[1], { r: 7, color: 'gold' });
-          const dp = (a) => a.map((d, s) => (d > 1e-9 ? [s + 1, d] : null)).filter((q, s) => s < 100 || s % 2 === 0 || !q);
-          D.path(dp(sim.dist), { color: 'gold', width: 2.2, alpha: 0.35 });
-          D.path(dp(sim.dist.slice(0, t)), { color: 'gold', width: 2.4 });
-          D.path(sim.bnd.map((d, s) => [s + 1, Math.max(d, 1e-4)]), { color: 'muted', width: 1.8, dash: true });
-          D.vline(t, { color: 'gold', dash: true, width: 1.5 });
-          P.corner(ok ? 'approachable' : 'NOT approachable', 'tl', { color: ok ? 'green' : 'red', weight: 700, plate: true });
-          info = { margin, ok, t, d: sim.dist[t - 1], b: sim.bnd[t - 1], bad: DIRS.filter((d) => supp(d.u, c, r, sh) - d.val < -1e-9).length };
-        });
-        v.readout(() => {
-          if (!info) return '';
-          const { margin, ok, t, d, b, bad } = info;
-          return `half-space test over 180 directions: $\\min_u\\,[\\max_{s\\in S}u\\cdot s-\\operatorname{val}(u)]=${v.fix(margin, 3)}$ ${ok ? '$\\ge0$: approachable' : `$<0$ in ${bad} directions: not approachable`}\n$t=${t}$: $\\operatorname{dist}(\\bar r_t,S)=${v.fix(d, 4)}$ ${ok ? `$\\le\\sqrt{\\textstyle\\sum\\|r_s-c_s\\|^2}/t=${v.fix(b, 4)}$ ${d <= b + 1e-9 ? '✓' : ''}` : '(it stalls)'}`;
-        });
-      },
-    },
+    blackwellItem,
     // ------------------------------------------------------------------ 3.11
     {
       num: '3.11',
