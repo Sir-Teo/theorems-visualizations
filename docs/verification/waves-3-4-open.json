@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 91,
+  "remainingFlags": 88,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "game": 5,
-    "polsci": 9,
+    "polsci": 6,
     "music": 6,
     "art": 9,
     "arch": 9,
@@ -293,24 +293,6 @@
       }
     },
     {
-      "id": "polsci-4.13",
-      "file": "content/polsci/ch04-b.js",
-      "name": "An Economic Theory of Political Action in a Democracy",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "statement",
-          "text": "Downs treats political parties as vote-maximizing firms and voters as rational consumers of policy located on a left–right scale. In the model that bears his name, with voters distributed along the scale and each voting for the nearest party, two parties competing for votes move toward each other, and when the distribution of voters is single-peaked they converge on the position of the median voter. Downs also points out the limits of this result: when the electorate is bimodal, or when voters too far from both parties abstain, the parties can remain apart, and with three or more parties their positions need not settle. (This statement follows the standard account of the Downsian model; I could not check the article's own wording, so the paper-specific claims should be read with that caveat.)"
-        }
-      ],
-      "refs": [],
-      "links": {
-        "doi": "https://doi.org/10.1086/257897"
-      }
-    },
-    {
       "id": "polsci-4.5",
       "file": "content/polsci/ch04.js",
       "name": "Plott’s symmetry condition",
@@ -341,19 +323,6 @@
       "links": {
         "doi": "https://doi.org/10.2307/2585926"
       }
-    },
-    {
-      "id": "polsci-5.7",
-      "file": "content/polsci/ch05-b.js",
-      "name": "Rational ignorance",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Shepsle: voting and turnout"
-      ],
-      "links": {}
     },
     {
       "id": "polsci-5.8",
@@ -394,22 +363,6 @@
       "refs": [],
       "links": {
         "archive": "https://archive.org/details/essaisurlapplica00cond"
-      }
-    },
-    {
-      "id": "polsci-5.1",
-      "file": "content/polsci/ch05.js",
-      "name": "The paradox of voting (Downs)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Shepsle: voting and turnout",
-        "Gelman, Silver and Edlin (2012), Economic Inquiry 50: 321–326"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1086/257897"
       }
     },
     {
@@ -2213,7 +2166,10 @@
       "music-7.17",
       "tech-4.6",
       "tech-4.7",
-      "tech-4.10"
+      "tech-4.10",
+      "polsci-4.13",
+      "polsci-5.1",
+      "polsci-5.7"
     ]
   },
   "additionalFollowups": [
@@ -6967,6 +6923,21 @@
       "id": "music-6.5",
       "status": "resolved",
       "note": "2026-10-20: worker two independently accepted exact 4a240c9; docs/verification/music-roughness-followup.md."
+    },
+    {
+      "id": "polsci-4.13",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently accepted exact 6aa6bbc; docs/verification/polsci-downs-followup.md."
+    },
+    {
+      "id": "polsci-5.1",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently accepted exact 6aa6bbc; docs/verification/polsci-downs-followup.md."
+    },
+    {
+      "id": "polsci-5.7",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently accepted exact 6aa6bbc; docs/verification/polsci-downs-followup.md."
     }
   ]
 }

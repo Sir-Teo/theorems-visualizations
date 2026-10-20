@@ -399,6 +399,18 @@
         "docs/verification/music-roughness-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "polsci-4.13",
+        "polsci-5.1",
+        "polsci-5.7"
+      ],
+      "peer": "coordinator independently accepted exact 6aa6bbc",
+      "reports": [
+        "docs/verification/polsci-downs-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -411,7 +423,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 91,
+  "currentPendingSourceReviews": 88,
   "latestCheckpoint": {
     "acceptedContentCommit": "214d86c",
     "pendingSourceReviews": 96,
