@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 171,
+  "remainingFlags": 170,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 16,
-    "psych": 17,
+    "psych": 16,
     "soc": 16,
     "polsci": 11,
     "music": 23,
@@ -467,21 +467,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Backward_induction"
-      }
-    },
-    {
-      "id": "psych-3.8",
-      "file": "content/psych/ch03-b.js",
-      "name": "Luce\u2019s choice axiom (Bradley\u2013Terry\u2013Luce)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Gescheider ch. 9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Independence_of_irrelevant_alternatives"
       }
     },
     {
@@ -3464,7 +3449,8 @@
       "demo-4.9",
       "game-3.4",
       "game-3.6",
-      "phil-4.7"
+      "phil-4.7",
+      "psych-3.8"
     ]
   },
   "additionalFollowups": [
@@ -7721,6 +7707,12 @@
       "status": "resolved",
       "report": "docs/verification/phil-barber-followup.md",
       "note": "Actual Russell primary-text transcriptions and general diagonal/outside-domain proof checked; four independent math/four native groups plus final narrow images pass; selector and full outside-row geometry corrected."
+    },
+    {
+      "id": "psych-3.8",
+      "status": "resolved",
+      "report": "docs/verification/psych-luce-followup.md",
+      "note": "Actual Luce author exposition and finite positive family proof checked; five independent math/four native groups plus final full mobile/menu images pass; empty/singleton/clone/control hypotheses and full glyph bounds explicit."
     }
   ]
 }

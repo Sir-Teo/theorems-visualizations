@@ -1,5 +1,6 @@
 // Psychology & Perception — Chapter 3: Scaling sensation (items 3.6–3.10; 3.1–3.5 are in ch03.js)
 import { Phi, zq, logTicks, sig } from './ch03.shared.js';
+import { luceState } from './source-audit-luce.js';
 
 export default {
   collection: 'psych',
@@ -123,58 +124,53 @@ In **Case V**, the processes have equal spread and are uncorrelated, so $z_{ij}=
     },
     // ------------------------------------------------------------------ 3.8
     {
-      num: '3.8',
-      kind: 'Principle',
-      name: 'Luce’s choice axiom (Bradley–Terry–Luce)',
-      statement: String.raw`**Luce's choice axiom** says that the odds of choosing $i$ over $j$ do not depend on what other options are available: if $P(i\mid S)$ is the probability of choosing $i$ from the set $S$, then for $i,j\in S\subseteq T$,
-$$\frac{P(i\mid S)}{P(j\mid S)}=\frac{P(i\mid T)}{P(j\mid T)} .$$
-When no option is chosen with probability 0 or 1, this is equivalent to the existence of positive **strengths** $v_i$ with
-$$P(i\mid S)=\frac{v_i}{\sum_{k\in S}v_k}.$$
-For two options this is the **Bradley–Terry–Luce** model of paired comparison, $P(i\succ j)=v_i/(v_i+v_j)$. It implies independence from irrelevant alternatives: adding an option removes probability from every other option *in proportion to its strength*. Real choices break this when options are similar.`,
-      idea: String.raw`Each option is assigned a single number and choosing is a lottery weighted by those numbers, so removing or adding an option can only renormalise. That is what makes the model easy to fit (strengths are estimated from pairwise counts, as in rating players of a game) and it is the same shape as Thurstone's Case V (3.7) with a logistic instead of a normal curve for the pairwise probabilities. Debreu's red-bus/blue-bus example (1960) shows what it cannot do: if a car and a red bus are chosen equally often, adding a blue bus that is just a recolouring of the red bus should leave the car at one half, but the axiom takes a third away from each of the three.`,
-      caption: String.raw`Drag the **bar tops** to set the strengths $v_A,\dots,v_D$, and use the switches to decide which options are on offer. The right panel shows the choice probabilities; the small rings mark each option's probability when only $A$ and $B$ were offered. Under **Luce's axiom** the ratio $P(A)/P(B)$ stays equal to $v_A/v_B$ whatever else is offered. Switch on *C is a near-copy of B* (a blue bus next to a red one, $v_C$ locked to $v_B$) and change the model to **copies count once**: a simple model of our own where near-identical options form a group whose strength is that of its strongest member; now adding $C$ leaves $A$'s probability where it was and splits $B$'s between the two copies, so the ratio $P(A)/P(B)$ changes. Illustrative models, not experimental data.`,
-      deps: ['psych-3.7'],
-      refs: ['Gescheider ch. 9'],
-      tags: ['choice axiom', 'Bradley–Terry', 'IIA'],
-      credit: 'R. D. Luce, Individual Choice Behavior (1959); R. A. Bradley & M. E. Terry, Biometrika 39 (1952); E. Zermelo (1928/29) for the pairwise model; G. Debreu’s review of Luce (1960) for the red-bus/blue-bus objection',
-      scope: String.raw`An exact statement about choice probabilities when the axiom holds; it fails for sets containing similar or dominated options (similarity, decoy and compromise effects), so it is a good model of choice among dissimilar options and a poor one otherwise.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Independence_of_irrelevant_alternatives' },
+      num: '3.8', kind: 'Principle', name: 'Luce’s choice axiom',
+      statement: String.raw`Let $T$ be a finite nonempty set of alternatives. For **every nonempty** $S\subseteq T$, let $P_S$ be a probability distribution on $S$, with $P_S(i)>0$ for each offered $i$. Singletons have probability 1; larger menus have probabilities strictly below 1. In this positive case, the choice axiom requires, for $i\in S\subseteq U\subseteq T$,
+$$P_U(i)=P_S(i)P_U(S),$$
+where $P_U(S)=\sum_{k\in S}P_U(k)$. It is equivalent to **independence of irrelevant alternatives** (IIA): for distinct $i,j\in S\subseteq U\subseteq T$,
+$$\frac{P_S(i)}{P_S(j)}=\frac{P_U(i)}{P_U(j)}.$$
+It is also equivalent to positive weights, fixed across all menus, satisfying
+$$P_S(i)=\frac{v_i}{\sum_{k\in S}v_k}.$$
+The weights are determined up to a common positive multiplier. For two alternatives, the same formula is $P_{\{i,j\}}(i)=v_i/(v_i+v_j)$.
+
+This is the positive, finitely additive setting in **Luce's own 2008 exposition** of his earlier axiom. His account also discusses an additional original clause for zero pairwise probabilities; that clause is outside the theorem stated here. Choice-set notation describes different choice contexts, rather than assuming ordinary conditioning on one preexisting probability space.`,
+      idea: String.raw`Each menu has positive masses summing to one, using the finite probability-distribution definition in prob-1.1.1a. The axiom makes the common factor $P_U(S)$ cancel in each pair's odds. Conversely, IIA plus normalization gives $P_S(i)=P_U(i)/P_U(S)$ and hence the axiom. Set $v_i=P_T(i)$. IIA makes every ratio $P_S(i)/P_S(j)$ equal to $v_i/v_j$; normalization then forces the weight formula. Conversely that formula makes all menu denominators cancel in the odds. If weights $v$ and $w$ give the same full-menu probabilities, $w_i=cv_i$ with $c=(\sum w)/(\sum v)>0$. Thus absolute strengths are not identified. Writing $\theta_i=\log v_i$ gives logistic pairwise probabilities $1/(1+e^{\theta_j-\theta_i})$; log weights are identified up to a common additive constant.
+
+A similarity label alone does not mathematically contradict IIA. The **authored copy rule** below supplies a specific counterexample: group B and C together, give that group its largest member weight, then split its probability proportionally within the group. When C copies B exactly, adding C leaves an outside option's probability unchanged and halves B's share. Its odds against B therefore double. This is a model assumption used to demonstrate failure, not an experimental finding or a claim that every similar pair behaves this way.`,
+      caption: String.raw`Change the positive strengths with sliders or drag their bar tops; toggle any offered menu, including a singleton or the empty menu. With **C copies B** enabled, C's strength control is locked and its separate handle is hidden. The authored group rule is active only with this copy lock; without it, both rule selectors use individual Luce weights. The right bars show the selected menu, with current probabilities in a row beneath them; grey rings show the fixed A/B-only reference when both are offered. **Equal-clone counterexample** selects A,B,C at equal strength under the authored group rule: probabilities become $(1/2,1/4,1/4)$. Switching to Luce gives thirds. The readout compares the same current menu with C removed, holding D fixed, and audits all 15 nonempty menus and 54 nested-menu pair comparisons. A single displayed pair's unchanged odds cannot establish global IIA.`,
+      scope: String.raw`The theorem assumes a full finite family of positive choice distributions. Empty menus have no choice distribution; zero-weight/deterministic multi-option cases and incomplete-menu identification require other hypotheses. No estimates from finite trial counts are fitted here. The group rule is a chosen alternative to IIA, not Luce's model, a fitted nested-logit model or a general law of similarity. Normalizing strengths changes their common scale only. A floating-point residual audit describes the specified four-option model; exact conclusions come from its formulas, and do not certify empirical choice data.`,
+      deps: ['prob-1.1.1a'], see: ['psych-3.7'],
+      refs: ['R. Duncan Luce (2008), Luce’s choice axiom, Scholarpedia 3(12):8077, §1 and §§2.1–2.4', 'http://www.scholarpedia.org/article/Luce%27s_choice_axiom'],
+      tags: ['choice axiom','paired choice','iia'], credit: 'R. Duncan Luce, 2008 author exposition of the 1959 axiom', verify: false,
+      links: { source:'http://www.scholarpedia.org/article/Luce%27s_choice_axiom',doi:'https://doi.org/10.4249/scholarpedia.8077' },
       viz(v) {
-        const M = v.M, NAME = 'ABCD', COL = ['accent', 'orange', 'green', 'purple'], V0 = [4, 3, 3, 1];
-        const tg = NAME.split('').map((n, i) => v.toggle('offer ' + n, i < 3));
-        const copy = v.toggle('C is a near-copy of B', true);
-        const model = v.select('model', [{ value: 'luce', label: 'Luce’s axiom' }, { value: 'nest', label: 'copies count once' }], 'luce');
-        const sv = v.stage({ x: [0, 4], y: [0, 10], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 260, xticks: [[0.5, 'A'], [1.5, 'B'], [2.5, 'C'], [3.5, 'D']], ylabel: 'strength $v_i$', title: 'strengths (drag the bar tops)' });
-        const pb = v.stage({ x: [0, 4], y: [0, 1], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 260, xticks: [[0.5, 'A'], [1.5, 'B'], [2.5, 'C'], [3.5, 'D']], ylabel: 'choice probability', title: 'probability of choosing each offered option' });
-        const H = V0.map((x, i) => sv.handle(i + 0.5, x, { color: COL[i], r: 8, constrain: (xx, y) => [i + 0.5, M.clamp(y, 0.3, 10)] }));
-        v.legend([['muted', '$P(\\cdot\\mid\\{A,B\\})$', { dot: true }]]);
-        let st = null;
-        const probs = (vs, inc, mod, cp) => {
-          const P = [0, 0, 0, 0], idx = [0, 1, 2, 3].filter((i) => inc[i]);
-          if (mod === 'luce' || !(cp && inc[1] && inc[2])) { const T = M.sum(idx.map((i) => vs[i])); idx.forEach((i) => { P[i] = vs[i] / T; }); return P; }
-          const grp = [[0], [1, 2], [3]].map((g) => g.filter((i) => inc[i])).filter((g) => g.length), gs = grp.map((g) => Math.max(...g.map((i) => vs[i]))), T = M.sum(gs);
-          grp.forEach((g, k) => { const tt = M.sum(g.map((i) => vs[i])); g.forEach((i) => { P[i] = (gs[k] / T) * (vs[i] / tt); }); });
-          return P;
-        };
-        v.render(() => {
-          if (copy.value) H[2].set(2.5, H[1].y);
-          const vs = H.map((h) => h.y), inc = tg.map((t) => !!t.value), cp = copy.value, mod = model.value;
-          vs.forEach((x, i) => { sv.rect(i + 0.15, 0, i + 0.85, x, { fill: COL[i], fillAlpha: inc[i] ? 0.38 : 0.1, color: COL[i], width: inc[i] ? 1.8 : 0.8 }); });
-          const P = probs(vs, inc, mod, cp), P2 = probs(vs, [true, true, false, false], mod, cp);
-          for (let i = 0; i < 4; i++) if (inc[i]) {
-            pb.rect(i + 0.15, 0, i + 0.85, P[i], { fill: COL[i], fillAlpha: 0.45, color: COL[i], width: 1.8 });
-            pb.text(P[i].toFixed(2), i + 0.5, Math.max(P[i], i < 2 && (inc[2] || inc[3]) ? P2[i] : 0), { dy: -16, align: 'center', size: 12, weight: 700, color: COL[i] });
-          } else pb.text('not offered', i + 0.5, 0.04, { align: 'center', size: 10.5, color: 'muted' });
-          for (const i of [0, 1]) if (inc[2] || inc[3]) pb.dot(i + 0.5, P2[i], { r: 6, color: 'muted', hollow: true, width: 2 });
-          st = { vs, inc, P, P2, mod, cp };
+        const names='ABCD',colors=['accent','orange','green','purple'],initial=[4,3,3,1],strength=initial.map((x,i)=>v.slider('strength '+names[i],.3,10,x,{step:.1,decimals:3}));
+        const offer=[...names].map((n,i)=>v.toggle('offer '+n,i<3)),copy=v.toggle('C copies B (lock strength)',true),model=v.select('choice rule',[{value:'luce',label:'Luce weights'},{value:'copies',label:'authored copy groups'}],'luce');
+        const A=v.stage({x:[-.3,4.3],y:[-1.3,12],axes:'box',gutter:true,height:340,minWidth:270,xticks:[[.5,'A'],[1.5,'B'],[2.5,'C'],[3.5,'D']],ylabel:'positive strength',title:'strengths: full endpoints .3–10'});
+        const B=v.stage({x:[-.3,4.3],y:[-.3,1.3],axes:'box',gutter:true,height:340,minWidth:270,xticks:[[.5,'A'],[1.5,'B'],[2.5,'C'],[3.5,'D']],ylabel:'choice probability',title:'current menu / A,B reference'});
+        const handles=initial.map((x,i)=>A.handle(i+.5,x,{r:8,color:colors[i],constrain:(_,y)=>[i+.5,v.M.clamp(y,.3,10)],onDrag:h=>strength[i].set(h.y)}));
+        v.legend([['muted','A/B-only reference when both are offered',{dot:true}],['accent','A'],['orange','B'],['green','C'],['purple','D']]);
+        v.button('Equal-clone counterexample',()=>{strength.forEach(s=>s.set(1));offer.forEach((s,i)=>s.set(i<3));copy.set(true);model.set('copies');});
+        v.button('Offer only A and B',()=>offer.forEach((s,i)=>s.set(i<2)));
+        let info={};
+        v.render(()=>{
+          if(copy.value&&strength[2].value!==strength[1].value)strength[2].set(strength[1].value);
+          strength[2].input.disabled=copy.value;handles[2].visible=!copy.value;
+          const mask=offer.reduce((m,s,i)=>m+(s.value?1<<i:0),0),state=luceState(strength.map(s=>s.value),mask,model.value,copy.value);
+          state.weights.forEach((x,i)=>{handles[i].set(i+.5,x);A.rect(i+.15,0,i+.85,x,{fill:colors[i],fillAlpha:mask&(1<<i)?.4:.1,color:colors[i],width:1.6});});
+          if(!state.p){B.text('empty menu',2,.65,{align:'center',size:15,weight:700,color:'muted'});B.text('no choice distribution',2,.48,{align:'center',size:12,color:'muted'});}
+          else for(let i=0;i<4;i++){
+            if(mask&(1<<i)){const p=state.p[i];B.rect(i+.15,0,i+.85,p,{fill:colors[i],fillAlpha:.42,color:colors[i],width:1.8});B.text(v.fix(p,4),i+.5,-.15,{align:'center',size:12,weight:700,color:colors[i]});}
+            else B.text('absent',i+.5,-.15,{align:'center',size:10.5,color:'muted'});
+          }
+          if((mask&3)===3)for(let i=0;i<2;i++)B.dot(i+.5,state.pair[i],{r:6,color:'muted',hollow:true,width:2});
+          info=state;
         });
-        v.readout(() => {
-          if (!st) return '';
-          const { vs, inc, P, P2 } = st;
-          if (!(inc[0] && inc[1])) return 'Offer both $A$ and $B$ to compare their choice odds.';
-          const r = P[0] / P[1], r2 = P2[0] / P2[1], extra = inc[2] || inc[3];
-          return `Strengths: ${vs.map((x, i) => 'ABCD'[i] + '=' + v.fix(x, 1)).join(', ')} · $P(A)/P(B)$ = ${v.fix(r, 3)} in this set, ${v.fix(r2, 3)} in $\\{A,B\\}$, $v_A/v_B$ = ${v.fix(vs[0] / vs[1], 3)} · ${extra ? (Math.abs(r - r2) < 1e-9 ? 'the odds are unchanged: independence of irrelevant alternatives holds' : 'the odds changed when options were added: the choice axiom fails in this model') : 'only $A$ and $B$ on offer'} · pairwise (Bradley–Terry) $P(A\\succ B)$ = ${v.fix(vs[0] / (vs[0] + vs[1]), 3)}${inc[2] && st.cp ? ` · $P(\\text{car }A)$ = ${v.fix(P[0], 3)} with the copy, vs ${v.fix(P2[0], 3)} without it` : ''}`;
+        const menu=m=>[...names].filter((_,i)=>m&(1<<i)).join(',')||'empty';
+        v.readout(()=>{const p=info,a=p.audit,w=a.witness,head=p.p?`Menu {${menu(p.mask)}} probabilities (${p.p.map(x=>v.fix(x,6)).join(', ')}), sum ${v.fix(v.M.sum(p.p),10)}.`:'The empty menu is outside the theorem: no choice distribution is assigned.';
+          const odds=p.odds===null?'Offer A and B together for their current-menu odds.':`A/B odds ${v.fix(p.odds,6)} in this menu, versus ${v.fix(p.pairOdds,6)} in {A,B}. This checks this pair/menu only.`;
+          const removed=(p.mask&7)===7?`Removing C while holding the other offers fixed gives menu {${menu(p.withoutMask)}}: P(A) ${v.fix(p.without[0],6)} versus current ${v.fix(p.p[0],6)}.`:'The C-removal comparison is shown when A,B,C are all offered.';
+          return `${head}\n${odds} ${removed}\nAll 15 nonempty menus and ${a.comparisons.length} nested-menu pair comparisons: largest absolute cross-product residual ${a.maxResidual.toExponential(3)}; largest full-menu weight reconstruction error ${a.reconstructionMax.toExponential(3)}. ${p.grouped?'This authored family violates IIA: {A,B} versus {A,B,C} doubles A/B odds.':'This family satisfies IIA algebraically by the fixed-weight formula.'}\n${p.grouped?`A largest numerical discrepancy is pair ${names[w.i]}/${names[w.j]} in {${menu(w.small)}} versus {${menu(w.large)}}: odds ${v.fix(w.smallOdds,6)} and ${v.fix(w.largeOdds,6)}.`:'Strengths are identifiable only up to a common multiplier; their normalized full-menu weights are ('+p.normalized.map(x=>v.fix(x,6)).join(', ')+').'}`;
         });
       },
     },
