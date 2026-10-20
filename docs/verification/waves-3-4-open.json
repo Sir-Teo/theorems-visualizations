@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 188,
+  "remainingFlags": 186,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "micro": 5,
+    "micro": 3,
     "fin": 6,
     "game": 18,
     "psych": 17,
@@ -254,36 +254,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Arrow%E2%80%93Debreu_model"
-      }
-    },
-    {
-      "id": "micro-9.4",
-      "file": "content/micro/ch09.js",
-      "name": "Core of an exchange economy",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Varian Ch. 32"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Core_(game_theory)"
-      }
-    },
-    {
-      "id": "micro-10.20",
-      "file": "content/micro/ch10-d.js",
-      "name": "Price leadership by a dominant firm",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Varian Ch. 28"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Dominant_firm"
       }
     },
     {
@@ -3707,7 +3677,9 @@
       "behav-4.7",
       "fin-5.1",
       "fin-5.13",
-      "fin-5.14"
+      "fin-5.14",
+      "micro-9.4",
+      "micro-10.20"
     ]
   },
   "additionalFollowups": [
@@ -7838,6 +7810,18 @@
       "status": "resolved",
       "report": "docs/verification/fin-efficiency-followup.md",
       "note": "Original Fama theory/conclusions and independent agent source/model review agree;6math/8native/static plus all23477source values and calendar checks pass. Exact separate risk benchmark, weighted event model and complete known-noise fund z sample replace misleading efficiency claims."
+    },
+    {
+      "id": "micro-9.4",
+      "status": "resolved",
+      "report": "docs/verification/micro-core-fringe-followup.md",
+      "note": "Actual Debreu\u2013Scarf definition and competitive proof pp235\u2013240 read, actual238/239images inspected;6math/8native/static independent reruns pass, including falsecore, exact roots/singletons and unresolvedtinygains; finalscreens inspected and non-targetbodies bytechecked."
+    },
+    {
+      "id": "micro-10.20",
+      "status": "resolved",
+      "report": "docs/verification/micro-core-fringe-followup.md",
+      "note": "Church\u2013Ware complete static\u00a74.2pp124\u2013129 and actualfigure127read; independent6math/8native/static pass acrossall665091control settings, exactexit/KKT and completeprofit/fringecurves; finalscreens and neighboringbodies checked."
     }
   ]
 }

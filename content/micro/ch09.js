@@ -1,5 +1,6 @@
 // Microeconomics — Chapter 9: General equilibrium and welfare (items 9.1–9.6; 9.7–9.11 in ch09-b.js, 9.12–9.16 in ch09-c.js, 9.17–9.21 in ch09-d.js)
 import { clamp, GUIDE, fx, bisect, plateText, bar, W1, W2, W, pref, levelPts, toBox, market, contractCurve, improvements, improveTrail, boxStage, drawBox, drawA, drawB, drawLens, priceLineBox, slopeSeg, nearestOnPath, pathLength, f2 } from './ch09.shared.js';
+import { coreUtility, coreCurveY, coreAllocationState } from './source-audit-core-fringe.js';
 import { walrasBudgetState, paddedRange } from './source-audit-exchange.js';
 
 /** Trader preferences of the box items: Cobb–Douglas with weight `a` on good 1. */
@@ -184,48 +185,51 @@ and the contract curve is a curve running from $O_A$ to $O_B$. With less well-be
     // ------------------------------------------------------------------ 9.4
     {
       num: '9.4', kind: 'Definition', name: 'Core of an exchange economy',
-      statement: String.raw`Given an endowment $\omega$, a coalition $S$ of consumers **blocks** an allocation $x$ if the members can reallocate their own endowments among themselves, $\sum_{i \in S} z^i = \sum_{i \in S} \omega^i$, so that everybody in $S$ weakly and someone strictly prefers $z^i$ to $x^i$. The **core** is the set of feasible allocations that no coalition blocks. In a two-trader economy the coalitions are $\{A\}$, $\{B\}$ and $\{A, B\}$, so the core is the part of the contract curve that both traders weakly prefer to the endowment:
-$$\text{Core} = \{x \text{ Pareto efficient} : u_A(x^A) \ge u_A(\omega^A),\ u_B(x^B) \ge u_B(\omega^B)\}.$$
-Every core allocation is Pareto efficient (the grand coalition cannot block) and individually rational (neither trader blocks alone).`,
-      idea: String.raw`Blocking by a single consumer means refusing to trade: someone who can stay at the endowment will not accept a worse bundle, so the core lies in the lens of 9.1. Blocking by the grand coalition means finding a Pareto improvement, so the core lies on the contract curve of 9.3. The core is the overlap of the two sets, a segment of the curve, and it says how far a bargain can be pushed without relying on any price: it is a prediction about outcomes of free recontracting, Edgeworth's original idea, long before there was a theory of equilibrium prices. Where the endowment sits determines where the segment sits.`,
-      caption: String.raw`**Drag the endowment $\omega$** (gold): the green stretch of the purple contract curve inside the lens is the core and it slides with $\omega$. **Drag the black test allocation** to see why an allocation is not in the core: below the lens one trader would rather stay at $\omega$ (blocked alone); off the contract curve, the pair itself can do better (blocked by both).`,
+      statement: String.raw`A coalition $S$ **blocks** a feasible allocation if it can redistribute its own initial endowments so that every member is weakly better off and at least one is strictly better off. The **core** consists of feasible allocations blocked by no coalition. This is the weak-all, strict-one convention used by Debreu and Scarf (1963).
+
+With two traders the only coalitions are $\{A\}$, $\{B\}$ and $\{A,B\}$. Thus the core is exactly the Pareto-efficient allocations satisfying both reservation constraints:
+$$u_A(x^A)\ge u_A(\omega^A),\qquad u_B(x^B)\ge u_B(\omega^B).$$
+For the pictured Cobb–Douglas utilities $u_A=x^a y^{1-a}$ and $u_B=(10-x)^b(10-y)^{1-b}$, $0<a,b<1$, the efficient curve is
+$$y(x)=\frac{10b(1-a)x}{10a(1-b)+(b-a)x},\quad0\le x\le10.$$
+Its core segment has endpoints where $A$'s and $B$'s respective reservation constraints bind; it can collapse to a single allocation.`,
+      idea: String.raw`A singleton can withdraw its own endowment, so neither trader can receive a worse bundle in the core. The pair can redistribute all resources, so a core allocation must also be Pareto efficient. These are all the coalitions in a two-person economy, making the conditions sufficient as well as necessary.
+
+For the positive Cobb–Douglas bundles, equating the two marginal rates of substitution gives the rational curve above. Along it $A$'s utility rises strictly with $x$ and $B$'s falls strictly. Solving the two reservation equalities therefore gives a closed interval, including both endpoints. For an inefficient test allocation, the same construction using its current utilities finds a feasible allocation that improves both traders; the red witness and utility gains demonstrate the block directly.`,
+      caption: String.raw`Move the gold **endowment** and black **test allocation**, or use their separate sliders when they coincide. Purple is the complete efficient curve; the thick green interval and its endpoint rings are the core. Thin blue/orange curves bound the endowment's individually rational lens. **Lower/upper core endpoint** selects an exact reservation boundary; **project into core** selects the curve at the test point's horizontal coordinate, clipped to the core interval. **Efficient endowment** makes the core collapse to one point. A red witness, when shown, is an actual feasible improvement for the pair.`,
+      scope: String.raw`Two goods with totals $(10,10)$; positive taste weights $0.15\le a,b\le0.85$; positive endowments $0.3\le\omega_1^A,\omega_2^A\le9.7$ and the complementary bundle for $B$. Test allocations range over the entire feasible box. Utilities are model values, not interpersonal welfare measurements. Only numerical precision ($10^{-10}$ in utility or coordinate residuals) is used for computed membership; a percentage difference in marginal rates is not treated as economic efficiency.`,
       deps: ['micro-9.3'],
-      refs: ['Varian Ch. 32'], tags: ['exchange'],
-      credit: 'F. Y. Edgeworth, 1881 (recontracting); the name "core": D. B. Gillies and L. S. Shapley',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Core_(game_theory)' },
+      refs: ['Debreu & Scarf (1963), introduction and core definition, pp.235–239; competitive allocation argument p.240', 'https://ucema.edu.ar/~fr05/curso_corto/Debreu-Scarf.pdf'], tags: ['exchange'],
+      credit: 'Debreu & Scarf, 1963, §2 (reviewed blocking definition)',
+      verify: false,
+      links: { source: 'https://ucema.edu.ar/~fr05/curso_corto/Debreu-Scarf.pdf' },
       viz(v) {
-        const aS = v.slider('$A$: weight on good 1', 0.15, 0.85, 0.65, { step: 0.01 });
-        const bS = v.slider('$B$: weight on good 1', 0.15, 0.85, 0.3, { step: 0.01 });
-        const s = boxStage(v, { title: 'the core: efficient allocations nobody blocks', height: 420 });
-        v.legend([['purple', 'contract curve'], ['green', 'core (curve ∩ lens)'], ['green', 'lens of ω', { area: true }], ['ink', 'test allocation'], ['gold', 'endowment ω']]);
-        const H = s.handle(3, 7, { color: 'gold', r: 9, label: 'ω', labelPos: 'ne', constrain: { x: [0.3, W1 - 0.3], y: [0.3, W2 - 0.3] } });
-        const T = s.handle(6, 6, { color: 'ink', r: 8, label: 'x', labelPos: 'ne', constrain: { x: [0.2, W1 - 0.2], y: [0.2, W2 - 0.2] } });
-        let st = {};
-        v.render(() => {
-          const FA = cd(aS.value), FB = cd(bS.value), x = H.x, y = H.y, a0 = FA.u(x, y), b0 = FB.u(W1 - x, W2 - y);
-          drawBox(s);
-          drawLens(v, s, ua(FA), ub(FB), x, y, `lens4|${aS.value}|${bS.value}`, { alpha: 0.2 });
-          const cur = contractCurve(FA, FB, 160), core = [];
-          let seg = [];
-          for (const p of cur) { if (FA.u(p[0], p[1]) >= a0 - 1e-9 && FB.u(W1 - p[0], W2 - p[1]) >= b0 - 1e-9) seg.push(p); else if (seg.length) { core.push(seg); seg = []; } }
-          if (seg.length) core.push(seg);
-          s.path(cur, { color: 'purple', width: 2.2, alpha: 0.7 });
-          for (const c of core) { s.path(c, { color: 'green', width: 6 }); }
-          drawA(s, FA, a0, { width: 1.8, alpha: 0.8 }); drawB(s, FB, b0, { width: 1.8, alpha: 0.8 });
-          s.dot(x, y, { r: 6, color: 'gold' });
-          // test allocation
-          const tx = T.x, ty = T.y, ta = FA.u(tx, ty), tb = FB.u(W1 - tx, W2 - ty);
-          const blockA = ta < a0 - 1e-9, blockB = tb < b0 - 1e-9, eff = Math.abs(Math.log(FA.mrs(tx, ty) / FB.mrs(W1 - tx, W2 - ty))) < 0.04;
-          const verdict = blockA && blockB ? 'blocked by A alone and by B alone' : blockA ? 'blocked by A alone: A prefers ω' : blockB ? 'blocked by B alone: B prefers ω' : !eff ? 'blocked by the pair: a Pareto improvement exists' : 'in the core';
-          s.corner(verdict, 'tl', { color: verdict === 'in the core' ? 'green' : 'red', weight: 700, plate: true });
-          const len = core.reduce((t, c) => t + pathLength(c), 0), tot = pathLength(cur);
-          st = { verdict, len, tot, ncore: core.length, a0, b0, ta, tb };
+        const aS=v.slider('$A$: weight on good 1',.15,.85,.65,{step:.01}),bS=v.slider('$B$: weight on good 1',.15,.85,.3,{step:.01});
+        const wx=v.slider('endowment: good 1 for $A$',.3,9.7,3,{step:.05,decimals:4}),wy=v.slider('endowment: good 2 for $A$',.3,9.7,7,{step:.05,decimals:4});
+        const tx=v.slider('test: good 1 for $A$',0,10,6,{step:.05,decimals:4}),ty=v.slider('test: good 2 for $A$',0,10,6,{step:.05,decimals:4});
+        const s=v.stage({x:[-1.5,11.5],y:[-1.5,11.5],axes:'box',gutter:true,height:430,xlabel:'good 1 allocated to A',ylabel:'good 2 allocated to A',title:'the core and a genuine blocking witness'});
+        v.legend([['purple','efficient curve'],['green','core interval / endpoints'],['green','individually rational lens',{area:true}],['accent','A’s reservation boundary'],['orange','B’s reservation boundary'],['gold','endowment'],['ink','test allocation'],['red','pair improvement witness']]);
+        const H=s.handle(3,7,{color:'gold',r:9,constrain:{x:[.3,9.7],y:[.3,9.7]}}),T=s.handle(6,6,{color:'ink',r:8,constrain:{x:[0,10],y:[0,10]}});
+        H.onDrag=()=>{wx.set(H.x);wy.set(H.y);};T.onDrag=()=>{tx.set(T.x);ty.set(T.y);};
+        const current=()=>coreAllocationState(aS.value,bS.value,wx.value,wy.value,tx.value,ty.value),setTest=p=>{tx.set(p[0]);ty.set(p[1]);};
+        v.button('lower core endpoint',()=>setTest(current().lowPoint));v.button('upper core endpoint',()=>setTest(current().highPoint));
+        v.button('project into core',()=>{const p=current(),x=clamp(tx.value,p.lower,p.upper);setTest([x,coreCurveY(aS.value,bS.value,x)]);});
+        v.button('efficient endowment',()=>{wx.set(5);wy.set(coreCurveY(aS.value,bS.value,5));});
+        let info={};
+        v.render(()=>{
+          H.set(wx.value,wy.value);T.set(tx.value,ty.value);const p=current(),y=x=>coreCurveY(p.a,p.b,x),green=v.rgb('green');
+          s.rect(0,0,10,10,{color:'muted',width:1.5});
+          s.raster((x,z)=>x>=0&&x<=10&&z>=0&&z<=10&&coreUtility(p.a,x,z)>=p.reservationA&&coreUtility(p.b,10-x,10-z)>=p.reservationB?[green[0],green[1],green[2],45]:null,{key:`core-lens|${p.a}|${p.b}|${p.wx}|${p.wy}|${green}`,res:3});
+          s.fn(y,{domain:[0,10],color:'purple',width:2.2,n:260});
+          const xa=(p.reservationA/10**(1-p.a))**(1/p.a),xb=(p.reservationB/10**(1-p.b))**(1/p.b);
+          s.curve(t=>{const x=xa*(10/xa)**t;return[x,(p.reservationA/x**p.a)**(1/(1-p.a))];},0,1,{color:'accent',width:1.8,n:240});
+          s.curve(t=>{const x=xb*(10/xb)**t;return[10-x,10-(p.reservationB/x**p.b)**(1/(1-p.b))];},0,1,{color:'orange',width:1.8,n:240});
+          s.fn(y,{domain:[p.lower,p.upper],color:'green',width:6,n:150});
+          const endpointRadius=p.lower===p.upper?14:6;
+          s.dot(...p.lowPoint,{color:'green',r:endpointRadius,hollow:true});if(p.lower!==p.upper)s.dot(...p.highPoint,{color:'green',r:6,hollow:true});
+          if(p.witness?.resolved){const d=Math.hypot(s.X(p.witness.point[0])-s.X(p.x),s.Y(p.witness.point[1])-s.Y(p.y));s.arrow(p.x,p.y,...p.witness.point,{color:'red',width:1.7});s.dot(...p.witness.point,{color:'red',r:d<18?12:5,hollow:true});}
+          info=p;
         });
-        v.readout(() => {
-          const { verdict, len, tot, ncore, a0, b0, ta, tb } = st;
-          return `Core length: **${f2((len / tot) * 100, 0)}%** of the contract curve${ncore ? '' : ' (empty: not possible with convex preferences)'}. Reservation utilities $u_A(\\omega) = ${f2(a0)}$, $u_B(\\omega) = ${f2(b0)}$; test allocation: $u_A = ${f2(ta)}$, $u_B = ${f2(tb)}$, **${verdict}**.`;
-        });
+        v.readout(()=>{const p=info;return `Core interval in good 1: $[${f2(p.lower,7)},${f2(p.upper,7)}]${p.lower===p.upper?'$ (one allocation).':'$.'} Test: **${p.verdict}**.\nReservation utilities: $A=${f2(p.reservationA,7)}$, $B=${f2(p.reservationB,7)}$; test utilities $A=${f2(p.uA,7)}$, $B=${f2(p.uB,7)}$. IR slacks: ${f2(p.slackA,9)}, ${f2(p.slackB,9)}. Curve residual $y-y(x)=${f2(p.residual,9)}$.${p.witness?.resolved?`\nPair witness $(${p.witness.point.map(q=>f2(q,7)).join(',')})$: utility gains ${p.witness.gains.map(q=>'$'+v.sci(q,4)+'$').join(', ')}. The two complementary bundles still sum to $(10,10)$.`:p.witness?'\nThe curve test detects inefficiency, but the candidate utility gains are below arithmetic resolution.':''}`;});
       },
     },
     // ------------------------------------------------------------------ 9.5

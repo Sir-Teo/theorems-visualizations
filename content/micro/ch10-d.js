@@ -1,5 +1,6 @@
 // Microeconomics — Chapter 10: Market power: monopoly and oligopoly — items 10.18–10.22
 import { clamp, fx, bisect, argmax, plateText, bar, lin, mstage, tag, integ, tween } from './ch10.shared.js';
+import { dominantFirmState } from './source-audit-core-fringe.js';
 
 export default {
   collection: 'micro',
@@ -103,41 +104,43 @@ export default {
     // ------------------------------------------------------------------ 10.20
     {
       num: '10.20', kind: 'Model', name: 'Price leadership by a dominant firm',
-      statement: String.raw`A **dominant firm** faces a **competitive fringe** of small price-taking firms with aggregate supply $S_f(p)$ and total demand $D(p)$. The fringe sells whatever it wants at the going price, so the dominant firm faces the **residual demand** $D_r(p) = D(p) - S_f(p)$, which is flatter than market demand. It sets the price $p^*$ at which its marginal revenue from residual demand equals its marginal cost, $MR_r(q_d) = MC_d(q_d)$, and the fringe supplies $S_f(p^*)$ at that price. The price lies between the monopoly and competitive prices: the larger the fringe's supply response, the closer to competitive and the smaller the dominant firm's share.`,
-      idea: String.raw`Each unit the fringe supplies at a given price displaces a unit of the leader's sales, so the residual demand curve is market demand shifted left by the fringe's supply; with $D = a - p$ and $S_f = sp$ the inverse residual demand is $(a - q)/(1+s)$, and the leader behaves as a monopolist on it (10.2), with the elasticity rule (10.3) applied to the residual elasticity, which is larger than the market elasticity because it includes the fringe's response: $|\varepsilon_r| = (|\varepsilon_D| \cdot Q + \varepsilon_S\, S_f)/q_d$ in the usual decomposition. With no fringe ($s = 0$) the model reduces to monopoly; a very large fringe leaves the leader almost nothing to serve and the price falls toward the competitive one.`,
-      caption: String.raw`Market demand $D(p) = 20 - p$ (blue) and fringe supply $S_f(p) = s\,p$ (teal): at every price the **horizontal gap** between them is the leader's residual demand (purple). Its marginal revenue (dashed purple) meets the leader's marginal cost (orange) at the gold point, which fixes the price. The bar at that price splits the market between the fringe (teal) and the leader (orange). **Slide the fringe's size $s$**: with $s = 0$ you get the monopoly point; as the fringe grows the price falls and the leader's share shrinks. Check in the readout that $D(p^*) = q_d + S_f(p^*)$.`,
+      statement: String.raw`A price-setting firm faces a fixed competitive fringe whose price-taking supply is $S_f(p)$. Its nonnegative residual sales are the part of market demand remaining after that supply. This illustration specifies $D(p)=\max(0,20-p)$, $S_f(p)=sp$, and leader cost $C(q)=c_0q+mq^2/2$, with $s,c_0,m\ge0$. For $0\le q\le20$, inverse residual demand is $P_r(q)=(20-q)/(1+s)$, and the unique profit maximum is
+$$q_d^*=\max\!\left\{0,\frac{20-(1+s)c_0}{2+(1+s)m}\right\}.$$
+The market price is $p^*=P_r(q_d^*)$; the fringe sells $sp^*$, and their sum is $20-p^*$. At positive leader output, $MR_r=MC$. At zero output, $MR_r(0)\le MC(0)$ instead: the fringe clears the market at $20/(1+s)$. The equality rule alone misses this corner.`,
+      idea: String.raw`Subtract fringe supply from market demand, then substitute the residual price into revenue. The leader's profit is a strictly concave quadratic in its output, so its derivative identifies the global maximum, clipped at zero. The right panel displays that objective, making both an interior maximum and a zero-output boundary visible.
+
+For this specified family, price lies between the competitive benchmark and the same-cost monopoly benchmark. Larger fringe supply lowers price, but does not always drive leader output to zero: if $c_0=m=0$, output stays10 and its market share approaches one half as $s$ grows without bound. Positive $c_0$ gives exit once $(1+s)c_0\ge20$; with $c_0=0,m>0$, leader output tends to zero only in the limit.`,
+      caption: String.raw`Left: complete market demand, inverse residual demand, residual marginal revenue, leader marginal cost, and fringe supply over prices0–20. The horizontal bands split total sales between fringe (teal) and leader (orange); a zero leader quantity has no orange band. The purple ring marks the residual-demand price and the gold marker lies on residual MR. At exit that gold point is below MC. Right: actual leader profit over every feasible output0–20, with its maximizing quantity marked. **Leader exit boundary** selects equality at zero output; move cost upward to enter the strict exit region.`,
+      scope: String.raw`A static, homogeneous-product teaching model with fixed fringe size, no fixed costs, nonnegative quantities and common prices. Controls offer $0\le s\le4$, $0\le c_0\le8$, $0\le m\le0.5$. The fringe's linear supply is fixed while the leader chooses; dynamic entry is not simulated. The complete fringe curve is shown for $0\le p\le20$ and may extend to quantity80. The competitive benchmark makes the leader price-taking with the same marginal cost and the same fringe; monopoly removes the fringe. Historical market data and original Forchheimer/Stackelberg/Stigler results are not claimed reproduced.`,
       deps: ['micro-10.2', 'micro-8.4'],
-      refs: ['Varian Ch. 28'], tags: ['oligopoly'],
-      credit: 'K. Forchheimer, 1908, a dominant-firm model of partial monopoly; H. von Stackelberg, 1934; G. J. Stigler, 1940 (later developments of the model)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Dominant_firm' },
+      refs: ['Church & Ware (2000), Industrial Organization: A Strategic Approach, static §4.2 pp.124–129 before §4.2.1, equations4.1–4.7 and Figure4.2', 'https://irving.vassar.edu/faculty/gj/FTU/io/literature/church-ware.pdf'], tags: ['oligopoly'],
+      credit: 'Church & Ware, 2000, §4.2 (reviewed modern framework; specified linear model derived here)',
+      verify: false,
+      links: { source: 'https://irving.vassar.edu/faculty/gj/FTU/io/literature/church-ware.pdf' },
       viz(v) {
-        const sS = v.slider('fringe size $s$ ($S_f = s\\,p$)', 0, 4, 1, { step: 0.05 });
-        const cS = v.slider('leader\'s marginal cost at zero $c_0$', 0, 8, 2, { step: 0.05 });
-        const mS = v.slider('rise of leader\'s marginal cost $m$', 0, 0.5, 0.1, { step: 0.01 });
-        const a = 20;
-        const s = mstage(v, { x: [0, 22], y: [0, 22], title: 'market demand, fringe supply and the leader\'s residual demand', height: 400 });
-        v.legend([['accent', 'market demand'], ['teal', 'fringe supply'], ['purple', 'residual demand'], ['purple', 'residual $MR$', { dash: true }], ['orange', 'leader\'s $MC$'], ['gold', 'leader\'s choice', { dot: true }]]);
-        let st = {};
-        v.render(() => {
-          const sf = sS.value, c0 = cS.value, m = mS.value;
-          const Pr = (q) => (a - q) / (1 + sf), MRr = (q) => (a - 2 * q) / (1 + sf), MC = (q) => c0 + m * q;
-          const qd = bisect((q) => MRr(q) - MC(q), 0, a / 2, 60) ?? 0, p = Pr(qd), qf = sf * p, Q = a - p;
-          // monopoly benchmark (no fringe)
-          const qm = bisect((q) => a - 2 * q - MC(q), 0, a / 2, 60) ?? 0, pm = a - qm;
-          s.fn((q) => a - q, { domain: [0, 20], color: 'accent', width: 2.6 });
-          if (sf > 0) s.fn((q) => q / sf, { domain: [0, Math.min(22, 22 * sf)], color: 'teal', width: 2.6 });
-          s.fn(Pr, { domain: [0, a], color: 'purple', width: 2.6 }); s.fn(MRr, { domain: [0, a / 2], color: 'purple', width: 2, dash: [5, 3] });
-          s.fn(MC, { domain: [0, 22], color: 'orange', width: 2.6 });
-          s.rect(0, p - 0.45, qf, p + 0.45, { fill: 'teal', fillAlpha: 0.55, color: 'teal', width: 1 }); s.rect(qf, p - 0.45, Q, p + 0.45, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
-          s.hline(p, { color: 'muted', width: 1, dash: [3, 3] });
-          s.dot(qd, p, { r: 4, color: 'purple' }); s.dot(qd, MC(qd), { r: 7, color: 'gold' });
-          s.dot(Q, p, { r: 5, color: 'accent' });
-          s.dot(qm, pm, { r: 5, color: 'muted', hollow: true });
-          tag(s, 'fringe', qf / 2, p, 'teal', { dy: -14 }); tag(s, 'leader', (qf + Q) / 2, p, 'orange', { dy: -14 }); tag(s, 'monopoly (s = 0)', qm, pm, 'muted', { dy: -12, dx: 36 });
-          st = { p, qd, qf, Q, qm, pm, share: qd / Q, d: a - p };
+        const sf=v.slider('fringe size $s$',0,4,1,{step:.05}),c=v.slider('leader cost intercept $c_0$',0,8,2,{step:.05,decimals:4}),m=v.slider('leader cost slope $m$',0,.5,.1,{step:.01});
+        const A=v.stage({x:[-3,25],y:[-24,24],axes:'box',gutter:true,height:400,xlabel:'quantity (total, fringe or leader)',ylabel:'price / marginal revenue / cost',title:'residual demand and the quantity corner'});
+        const B=v.stage({x:[-2,22],y:[-100,110],axes:'box',gutter:true,height:400,xlabel:'leader output q',ylabel:'leader profit',title:'the global profit maximum'});
+        v.legend([['accent','market demand / total sales'],['teal','fringe supply / fringe band'],['purple','inverse residual demand'],['purple','residual MR',{dash:true}],['orange','leader MC / leader band'],['gold','chosen output on MR / profit'],['muted','monopoly benchmark',{dot:true}]]);
+        v.button('leader exit boundary',()=>{const s=Math.max(2,sf.value);sf.set(s);c.set(20/(1+s));});
+        let info={};
+        v.render(()=>{
+          const p=dominantFirmState(sf.value,c.value,m.value),xmax=Math.max(20,20*p.fringe);
+          A.setView([-.12*xmax,1.12*xmax],[-24,24]);
+          const low=Math.min(0,p.profitAt(20)),high=Math.max(1,p.profit),span=high-low;B.setView([-2,22],[low-.12*span,high+.2*span]);
+          A.fn(q=>20-q,{domain:[0,20],color:'accent',width:2.5});
+          A.curve(t=>[p.fringe*t,t],0,20,{color:'teal',width:2.4});
+          A.fn(p.inverse,{domain:[0,20],color:'purple',width:2.5});A.fn(p.marginalRevenue,{domain:[0,20],color:'purple',width:2,dash:[5,4]});
+          A.fn(p.marginalCost,{domain:[0,20],color:'orange',width:2.5});
+          if(p.fringeQuantity>0)A.rect(0,p.price-.3,p.fringeQuantity,p.price+.3,{fill:'teal',fillAlpha:.4,color:'teal'});
+          if(p.quantity>0)A.rect(p.fringeQuantity,p.price-.3,p.total,p.price+.3,{fill:'orange',fillAlpha:.45,color:'orange'});
+          A.hline(p.price,{color:'muted',dash:[3,4],width:1});
+          A.dot(p.quantity,p.price,{color:'purple',r:11,hollow:true});A.dot(p.quantity,p.mr,{color:'gold',r:7});A.dot(p.total,p.price,{color:'accent',r:5});
+          A.dot(p.monopolyQuantity,p.monopolyPrice,{color:'muted',r:5,hollow:true});
+          B.hline(0,{color:'muted',width:1});B.fn(p.profitAt,{domain:[0,20],color:'accent',width:2.6,n:300});B.dot(p.quantity,p.profit,{color:'gold',r:7});
+          info=p;
         });
-        v.readout(() => `Leader's price $${fx(st.p)}$ (monopoly with no fringe: $${fx(st.pm)}$). Quantities: leader $${fx(st.qd)}$, fringe $${fx(st.qf)}$, total $${fx(st.Q)}$ = $D(p) = ${fx(st.d)}$ ✓. Leader's share $${fx(100 * st.share, 1)}\\%$.`);
+        v.readout(()=>{const p=info;return `Leader output ${fx(p.quantity,7)}, fringe ${fx(p.fringeQuantity,7)}, total ${fx(p.total,7)} = demand ${fx(20-p.price,7)}. Price ${fx(p.price,7)}; leader share ${fx(100*p.share,5)}%.\n$MR_r=${fx(p.mr,7)}$, $MC=${fx(p.mc,7)}$; derivative $MR_r-MC=${fx(p.derivative,9)}$. ${p.active?'Positive output: the derivative is zero.':'Zero output: the derivative is nonpositive; the fringe clears the market.'} Maximum profit ${fx(p.profit,7)}.\nSame-cost competitive price ${fx(p.competitivePrice,7)} ≤ chosen price ${fx(p.price,7)} ≤ no-fringe monopoly price ${fx(p.monopolyPrice,7)}.`;});
       },
     },
     // ------------------------------------------------------------------ 10.21
