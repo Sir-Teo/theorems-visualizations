@@ -1,0 +1,78 @@
+{
+  "beforeCGCommit": "c0afdd5f40873a518c9fd46d0670554e40011ef3",
+  "unrelatedAtlasReportParent": "6c45d07947c2074660cb0b9a0e01b3a42bc524b8",
+  "before": {
+    "statement": "Instead of special-casing degenerate inputs (three collinear points, four cocircular points), one may regard each input coordinate as slightly perturbed by an infinitesimal $x_i\\mapsto x_i+\\varepsilon^{a_i}$, $y_i\\mapsto y_i+\\varepsilon^{b_i}$ with distinct, rapidly growing exponents depending on the point's index. Every predicate is then a polynomial in $\\varepsilon$ whose sign is the sign of its lowest-order nonzero term: it is never zero for distinct points, it agrees with the unperturbed sign whenever that is nonzero, and — being the predicate of one fixed (if infinitesimal) input — it is consistent. An algorithm written for general position then runs unchanged and returns the correct answer for the perturbed input, a legitimate answer for the original.",
+    "idea": "Expand the determinant with the perturbed entries. The constant term is the ordinary determinant; if it vanishes, the next term involves the first perturbation exponent, and so on. Choosing exponents so that all monomials are distinct (powers $2^{2i},2^{2i+1}$ here, in the spirit of Edelsbrunner–Mücke's *Simulation of Simplicity*) guarantees that the lowest term can not cancel, so some term decides. Because the answer is the sign of a fixed polynomial, permuting two points flips it exactly as a determinant should, which is what keeps the combinatorics consistent.\n\nOnce a predicate polynomial has first nonzero coefficient $a$ at exponent $k$, factor it as $\\varepsilon^k Q(\\varepsilon)$ with $Q(0)=a$. The sum/product continuity rules of PMA 4.9 make the polynomial $Q$ continuous at zero. Thus for all sufficiently small positive $\\varepsilon$, its distance from $a$ is less than $|a|/2$, so its sign is the sign of $a$; the positive factor does not change that sign. This justifies the leading-coefficient decision once nonvanishing has been established by the perturbation construction, not a nonvanishing theorem for arbitrary perturbations."
+  },
+  "after": {
+    "statement": "Symbolic perturbation treats the input coordinates as formally perturbed: $x_i\\mapsto x_i+\\varepsilon^{a_i}$ and $y_i\\mapsto y_i+\\varepsilon^{b_i}$, with exponents fixed by the coordinate indices. For a specified predicate whose resulting polynomial in $\\varepsilon$ is **not identically zero**, its sign for sufficiently small positive $\\varepsilon$ is the sign of its lowest-order nonzero coefficient; it agrees with the unperturbed sign when that constant coefficient is nonzero. Evaluating all predicates on one fixed formal input makes their answers consistent. Choosing exponents and proving nonvanishing are predicate-specific obligations. Interpreting an algorithm’s perturbed answer as an answer to the original degenerate problem also requires a separate correctness argument.",
+    "idea": "For planar orientation, expand the determinant with the perturbed coordinates. The constant term is the ordinary determinant. With coordinate exponents $2^{2i},2^{2i+1}$, each quadratic perturbation term uses two distinct coordinate variables, so the relevant multilinear terms have different binary subset-sum exponents and cannot cancel one another. This establishes nonvanishing for orientation on distinct indexed point arguments; swapping two arguments changes the determinant’s sign, as required.\n\nThe binary argument is not a theorem for arbitrary-degree predicates: at the origin, the nonzero polynomial $X^2-Y$ becomes identically zero under $(X,Y)=(\\varepsilon,\\varepsilon^2)$. For total degree at most $D$, assigning coordinate exponents as successive powers of an integer base $B>D$ distinguishes monomials by their exponent digits. Even this separation needs a proof that the substituted predicate is nonzero. Predicates with squared coordinates, such as the incircle determinant, need suitable degree separation or a separate predicate-specific nonvanishing proof. The demo’s chosen polynomial calculations do not certify generic Simulation of Simplicity or unconditional correctness for the original degenerate input.\n\nOnce a predicate polynomial has first nonzero coefficient $a$ at exponent $k$, factor it as $\\varepsilon^k Q(\\varepsilon)$ with $Q(0)=a$. The sum/product continuity rules of PMA 4.9 make the polynomial $Q$ continuous at zero. Thus for all sufficiently small positive $\\varepsilon$, its distance from $a$ is less than $|a|/2$, so its sign is the sign of $a$; the positive factor does not change that sign. This justifies the leading-coefficient decision once nonvanishing has been established by the perturbation construction, not a nonvanishing theorem for arbitrary perturbations."
+  },
+  "evidence": [
+    {
+      "path": "/tmp/atlas-cg-prereqs/text253-sos-final/cg-1.9-dark-proof.png",
+      "sha256": "7f7c70d9de3a061231e704609c927fa34f94f0c0580880c70c6d67e94bad042f"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/text253-sos-final/cg-1.9-dark-statement-scope.png",
+      "sha256": "0869e13ff59021fe5ede731ae73b6e355ca1d5862d549e12aaaf37ba22387a9c"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/text253-sos-final/cg-1.9-light-proof.png",
+      "sha256": "20818b89ba037418ddad9185ee76fd2ce190444c7d6356ad034693466c79116d"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/text253-sos-final/cg-1.9-light-statement-scope.png",
+      "sha256": "61fbc892e2a7afff5b442a293359902338cfefd3ef31336e9b479a729a9122b7"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/text253-sos-final/text.json",
+      "sha256": "8757490f5a133c825c86f36a8826f335159834e0950fd06904b355b50b0d634b"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/native-sos-final/cg-1.9-dark-proof.png",
+      "sha256": "e11b25af4cf9f1b6391029d44cc8df60ce7eaee709e468fa90449cd9f41afdcf"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/native-sos-final/cg-1.9-dark-statement-scope.png",
+      "sha256": "65995cc368a42f411dabeff3669d57d818f0a425f764f39889af8cf24de25997"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/native-sos-final/cg-1.9-light-proof.png",
+      "sha256": "3508a94db2be61ab6bd0932ca1fd4a0053b2f999ff4e96b69d31bbd6e8d661f7"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/native-sos-final/cg-1.9-light-statement-scope.png",
+      "sha256": "d6c514bc134435f2605cc052f8bcab4ae018219185e98345f2013681ea124b09"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/native-sos-final/text.json",
+      "sha256": "ce921306926852b3832379b2dab380c3491ac64be8a247de070b5faf55999705"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/sos-build.log",
+      "sha256": "323058d51a74ebc0d617fd7dc810f047c8c827eafb01454e9f8b549d69b4f777"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/sos-static.log",
+      "sha256": "d470b682752705b5e347524f38716e7909df40ead918edb2f2d70bee3e5d120d"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/sos-preservation.log",
+      "sha256": "cb7c3219f4d14cf48834f0393a0e089933f31c0f4aee0cefd35ed14169a5294c"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/sos-math.log",
+      "sha256": "759d9ccdce5dd0222d7777fa4f88ece43f00313dc0c1cc957637c9d25a286f74"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/sos-text253.log",
+      "sha256": "c74ea17101b365746a032ed483e35d3386d7261a6563b9379f2b99f3a47c62d8"
+    },
+    {
+      "path": "/tmp/atlas-cg-prereqs/sos-native.log",
+      "sha256": "c74ea17101b365746a032ed483e35d3386d7261a6563b9379f2b99f3a47c62d8"
+    }
+  ]
+}
