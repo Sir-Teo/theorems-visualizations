@@ -11496,10 +11496,10 @@
       "collection": "psych",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 19,
-      "writtenToKnown": 22,
-      "wholeSyllabus": 44,
-      "publishedShortfall": 6,
+      "writtenToWritten": 21,
+      "writtenToKnown": 24,
+      "wholeSyllabus": 46,
+      "publishedShortfall": 4,
       "unknown": [],
       "edges": [
         {
@@ -11636,6 +11636,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "psych-4.7",
+          "prerequisite": "pma-9.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "psych-4.8",
           "prerequisite": "rca-8.13",
           "prerequisiteField": "math",
@@ -11655,6 +11662,13 @@
           "prerequisiteField": "arts",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "psych-4.4",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "psych-5.2",
@@ -11816,10 +11830,10 @@
       "collection": "soc",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 10,
-      "writtenToKnown": 14,
-      "wholeSyllabus": 37,
-      "publishedShortfall": 15,
+      "writtenToWritten": 13,
+      "writtenToKnown": 17,
+      "wholeSyllabus": 40,
+      "publishedShortfall": 12,
       "unknown": [],
       "edges": [
         {
@@ -11916,6 +11930,27 @@
         {
           "item": "soc-4.2",
           "prerequisite": "stoch-3.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "soc-4.6",
+          "prerequisite": "prob-1.1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "soc-4.6",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "soc-4.6",
+          "prerequisite": "prob-2.2.13",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true

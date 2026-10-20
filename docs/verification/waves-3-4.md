@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **139 flags**. The difference from the initial count reflects the review: 7 previously unflagged uncertainties remain newly marked, and 701 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **130 flags**. The difference from the initial count reflects the review: 4 previously unflagged uncertainties remain newly marked, and 707 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **139 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **130 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -865,3 +865,10 @@ Root accepted psych-4.6/4.8 after actual original/author-source reading, seven m
 
 
 The [accepted checkpoint through1cf1a67](checkpoint-1cf1a67.md) passes1,634default tests including all six UI tests,114distinct validated changed routes, strict build6,684written+6,890planned/450chapters/85collections and full static6,621items, all0errors/0warnings. Exact queue139pending/701original resolved/7added; home112,815bytes gzip. Published cross-field shortfall remains855,53/64below25published and28whole syllabi below25; proof curation2/100. This snapshot includes just/meantone and whole-plane retinal/Mach-band acceptance, excludes active wolf/pooling/small-world drafts, and preserves all16retained-renderer identities.
+
+
+## Isolated-team acceptance — 2026-10-20
+
+Nine source reviews are accepted after original-source reading, independent mathematics, native input/light-dark checks and independent peer review: music7.4/7.8/7.9/7.10, psych4.4/4.7, soc4.5/4.6 and game4.3. The exact candidate commits and reviewers are recorded in [coordination.json](coordination.json); individual reports preserve source anchors, limitations and test evidence. Author flags were retained until coordinator acceptance. The actual2,260-item ledger reconciles130pending,707original resolved and4added uncertainties. New neighboring findings stay in worker candidates until they receive separate review; they are not silently accepted.
+
+The integrated checkpoint through5ad55b7 passes1,661tests with concurrency2, strict build and static0errors/0warnings, unchanged6,684written/6,890planned inventory and home JSON112,783bytes gzip. This includes the6existing UI tests. Full test log `/tmp/atlas-coordinator/checkpoint-tests.log`. The refreshed cross-field inventory still has53/64collections below25published edges and28whole syllabi below target; no arbitrary edges were added. Proof curation remains2/100 and the full-map60fps gate stays open; no concurrent benchmark is claimed. Wave5 is prepared at80chapters/1,031new+2preserved items and unstarted. Four separate worktrees protect the original checkout and inherited music/psych/soc drafts; global ledgers have one coordinator owner.
