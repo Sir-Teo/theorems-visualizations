@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 59,
+  "remainingFlags": 56,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "game": 1,
-    "art": 9,
+    "art": 6,
     "arch": 9,
     "ling": 8,
     "tech": 3,
@@ -284,19 +284,6 @@
       }
     },
     {
-      "id": "art-4.14",
-      "file": "content/art/ch04-b.js",
-      "name": "Zur Theorie der Farbenmischung",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Grassmann%27s_laws_(color_science)"
-      }
-    },
-    {
       "id": "art-4.15",
       "file": "content/art/ch04-b.js",
       "name": "On the Theory of Compound Colours",
@@ -312,34 +299,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/James_Clerk_Maxwell#Colour_vision"
-      }
-    },
-    {
-      "id": "art-4.16",
-      "file": "content/art/ch04-b.js",
-      "name": "The C.I.E. Colorimetric Standards and Their Use",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/CIE_1931_color_space"
-      }
-    },
-    {
-      "id": "art-4.5",
-      "file": "content/art/ch04.js",
-      "name": "Colour-matching functions",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Fairchild ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/CIE_1931_color_space"
       }
     },
     {
@@ -1726,7 +1685,10 @@
       "ling-4.9",
       "ling-4.10",
       "tech-5.9",
-      "tech-5.10"
+      "tech-5.10",
+      "art-4.5",
+      "art-4.14",
+      "art-4.16"
     ]
   },
   "additionalFollowups": [
@@ -6660,6 +6622,21 @@
       "id": "tech-5.10",
       "status": "resolved",
       "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent signed/discrete models and fresh native-state review including reproduced then repaired raw-coordinate finding; docs/verification/tech-longitude-followup.md."
+    },
+    {
+      "id": "art-4.5",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, official full-data, exact rational/Decimal, native-state and output-pixel review; docs/verification/art-colorimetry-followup.md."
+    },
+    {
+      "id": "art-4.14",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, official full-data, exact rational/Decimal, native-state and output-pixel review; docs/verification/art-colorimetry-followup.md."
+    },
+    {
+      "id": "art-4.16",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, official full-data, exact rational/Decimal, native-state and output-pixel review; docs/verification/art-colorimetry-followup.md."
     }
   ]
 }

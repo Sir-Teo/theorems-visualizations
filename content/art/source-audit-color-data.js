@@ -1,7 +1,7 @@
 // CIE2019, CIE1931 standard2-degree observer; DOI10.25039/CIE.DS.xvudnb9b.
 // Data only: CC BY-SA4.0 https://creativecommons.org/licenses/by-sa/4.0/ .
 // Source CSV SHA256 fa663e3535a7e0763a745993a1f0a192eb0275ac46ad2d1befd7626841e713c1.
-// All471 rows360–830nm, source1nm interval; linear interpolation, zero extrapolation.
+// All471 rows360–830nm, source1nm interval; linear interpolation; inputs outside the table range are rejected.
 export const COLOR_XYZ_1931=Object.freeze([
  Object.freeze([360.0,0.0001299,3.917e-06,0.0006061]),
  Object.freeze([361.0,0.000145847,4.393581e-06,0.0006808792]),
