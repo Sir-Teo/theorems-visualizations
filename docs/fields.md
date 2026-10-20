@@ -124,6 +124,23 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - State models as models. "Comparative advantage" is a `Principle` (or a `Theorem` in a precise
   two-good Ricardian setting); "supply and demand" is a `Model`; "Giffen good" is a
   `Phenomenon`. Avoid presenting contested empirical claims as laws; say what the model assumes.
+- Keep historical observations separate from authored simulations. Identify the actual sample,
+  benchmark, units, time aggregation and horizon cohorts. Arithmetic return sums, compounded
+  wealth, population identities and finite-sample statistics answer different questions; a
+  residual or fitted parameter alone does not identify a causal effect. See the
+  [event-study and fund audit](verification/fin-events-funds-followup.md).
+- Match demographic numerators and exposure denominators by age, period and marital status.
+  Distinguish an adjusted reference schedule from an observed population or a biological bound,
+  and distinguish hypothetical marital allocations from measured data. Survival weighting in
+  net reproduction concerns the prospective mother's survival to childbearing. See the
+  [reproduction](verification/demo-reproduction-followup.md) and
+  [fertility-index](verification/demo-fertility-indices-followup.md) audits.
+- State the whole family a behavioral axiom constrains: checking one pair of alternatives does
+  not establish menu-wide independence. Include singleton menus and describe empty menus
+  honestly. In games, retain weak best replies at ties, distinguish a computed certificate from
+  an exact theorem, and state the update timing and convergence target. See the
+  [choice-axiom](verification/psych-luce-followup.md) and
+  [minimax/learning](verification/game-minimax-followup.md) audits.
 
 ## Arts, music & design
 
@@ -149,4 +166,11 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Philosophy items are made concrete through decision problems, probability puzzles and models
   (the two-envelope paradox simulated, Bayesian confirmation computed). Present arguments fairly;
   where philosophers disagree, say so.
+- Specify the quantified domain, information available at each time, and permitted updates.
+  An outside-domain witness or an added no-exam outcome changes a premise; it does not fulfill
+  the original unrestricted claim. Editing a prior is different from conditioning that same
+  prior on an observation. A finite model should state which formulation it illustrates and
+  which semantic or epistemic assumptions it leaves outside its scope. See the
+  [barber](verification/phil-barber-followup.md) and
+  [surprise-examination](verification/phil-surprise-followup.md) audits.
 - Linguistics items work on real text and sound (Zipf's law on a passage, formant vowel charts).
