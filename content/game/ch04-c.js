@@ -1,3 +1,4 @@
+import hypercubeItem from './hypercube-item.js';
 // Game Theory & Social Choice — Chapter 4 (part c): strategy stealing, Nim and Sprague–Grundy, hypercube tic-tac-toe
 import { idx, nmz } from './ch04.shared.js';
 import { GAMES, grundyTable, sumSolver, nimSum, nimReply, validNimState } from './nim-audit.js';
@@ -64,43 +65,6 @@ function hexSolver(n) {
 const HEX4_WINNING = [3, 6, 9, 12];
 
 // ---------------------------------------------------------------- Nim / Grundy
-// ---------------------------------------------------------------- hypercube tic-tac-toe
-function hcLines(n, d) {
-  const enc = (a) => a.reduce((s, x, k) => s + x * n ** k, 0), set = new Set(), out = [];
-  const rec = (k, spec) => {
-    if (k === d) {
-      if (!spec.some((s) => s < 0)) return;
-      const cells = []; for (let t = 0; t < n; t++) cells.push(enc(spec.map((s) => (s >= 0 ? s : s === -1 ? t : n - 1 - t))));
-      const key = cells.slice().sort((a, b) => a - b).join(',');
-      if (!set.has(key)) { set.add(key); out.push(cells); }
-      return;
-    }
-    for (let c = 0; c < n; c++) rec(k + 1, [...spec, c]);
-    rec(k + 1, [...spec, -1]); rec(k + 1, [...spec, -2]);
-  };
-  rec(0, []);
-  return out;
-}
-const hcCache = {};
-/** Search for a 2-colouring of [n]^d with no monochromatic line. res: true (found), false (none exists: exhaustive), null (budget exhausted). */
-function hcSearch(n, d, limit = 300000) {
-  const key = `${n}^${d}`; if (hcCache[key]) return hcCache[key];
-  const lines = hcLines(n, d), N = n ** d, byMax = Array.from({ length: N }, () => []);
-  lines.forEach((l) => byMax[Math.max(...l)].push(l));
-  const col = new Int8Array(N).fill(-1); let steps = 0, deep = -1, deepCol = null;
-  const rec = (i) => {
-    if (++steps > limit) return null;
-    if (i > deep) { deep = i; deepCol = Array.from(col); }
-    if (i === N) return true;
-    for (const c of [0, 1]) {
-      col[i] = c;
-      if (byMax[i].every((l) => !l.every((x) => col[x] === c))) { const r = rec(i + 1); if (r !== false) return r; }
-    }
-    col[i] = -1; return false;
-  };
-  const res = rec(0);
-  return (hcCache[key] = { res, col: res ? Array.from(col) : deepCol, deep, lines, N, steps });
-}
 
 export default {
   collection: 'game',
@@ -332,69 +296,6 @@ export default {
         });
       },
     },
-    // ------------------------------------------------------------------ 4.13
-    {
-      num: '4.13',
-      kind: 'Theorem',
-      name: 'High-dimensional tic-tac-toe: the first player wins',
-      statement: String.raw`Play tic-tac-toe on the board $[n]^d=\{1,\dots,n\}^d$ (two players alternately mark empty cells; the first to fill a whole line of $n$ cells, in any row, column, diagonal or higher-dimensional analogue, wins). There are $\frac{(n+2)^d-n^d}{2}$ lines. If $d$ is large enough that every two-colouring of $[n]^d$ contains a monochromatic line, which by the Hales–Jewett theorem happens for all $d\ge d_0(n)$, then the game can never end in a draw, and the first player has a winning strategy.`,
-      idea: String.raw`If no full board colouring is free of monochromatic lines, then a completed game always has a winner. So by Zermelo (game-4.3) one of the players can force a win. If the second player could, the first player could steal her strategy (game-4.11): make an arbitrary first move, then answer as the second player would, ignoring the extra cell, and move arbitrarily whenever the strategy calls for the cell she already owns; an extra mark never hurts in a game of line-filling, so she wins too, which is absurd. As for Chomp and Hex, nothing says how to win. The theorem is only about large $d$: in $[3]^2$ the game is a draw, while for $n=3$ a line-free colouring ceases to exist already at $d=3$.`,
-      caption: String.raw`Choose $n$ and $d$ (boards of $d=3,4$ are drawn as arrays of $n\times n$ boards). The program searches for a two-colouring with no monochromatic line (blue/orange cells). If one is found a draw is not excluded; if the exhaustive search says none exists, every play-out has a winner and the stealing argument applies. If none exists, the picture shows the furthest the search ever got and the cell (red) where every colouring creates a line. Click a cell to see all lines through it. The table on the right collects the result for the sizes that fit. “?” means the step budget ran out: no conclusion.`,
-      credit: 'Hales & Jewett, 1963 (“Regularity and positional games”); Golomb & Hales, 2002 (survey)',
-      scope: String.raw`Lines are the geometric lines of $[n]^d$ (each coordinate constant, increasing or decreasing). “Line-free colouring exists” does not mean a draw is achievable with best play: for $4^3$ such colourings exist, yet the first player is known to win (Patashnik, 1980, by computer).`,
-      deps: ['comb-11.9', 'game-4.11'],
-      refs: ['MSZ §3.4'],
-      tags: ['tic-tac-toe', 'Hales–Jewett', 'strategy stealing'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Hales%E2%80%93Jewett_theorem' },
-      verify: true,
-      viz(v) {
-        const B = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 360, weight: 1.15, title: 'a two-colouring of the board' });
-        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 0.85, title: 'is there a line-free colouring?' });
-        const T = v.table(Tb, { rows: 4, cols: 4, square: false, cellAspect: 1.3, maxCell: 62, size: 15, labelSize: 12.5, rowLabels: ['n = 2', 'n = 3', 'n = 4', 'n = 5'], colLabels: ['d=1', 'd=2', 'd=3', 'd=4'], cornerLabel: '' });
-        let n = 3, d = 3, pick = null;
-        const sn = v.slider('side $n$', 2, 5, 3, { int: true, onChange: (x) => { n = x; clamp(); } });
-        const sd = v.slider('dimension $d$', 1, 4, 3, { int: true, onChange: (x) => { d = x; clamp(); } });
-        const clamp = () => { while (n ** d > 256 && d > 1) { d -= 1; sd.set(d); } pick = null; };
-        const coords = (i) => { const a = []; for (let k = 0; k < d; k++) { a.push(i % n); i = Math.floor(i / n); } return a; };
-        const place = (i) => {   // grid position of the cell: coordinates 0,1 within a board, 2,3 select the board
-          const a = coords(i), x = a[0] + (a[2] || 0) * (n + 0.8), y = (a[1] || 0) + (a[3] || 0) * (n + 0.8);
-          return [x, y];
-        };
-        B.onClick((x, y) => {
-          let best = null, bd = 0.6;
-          for (let i = 0; i < n ** d; i++) { const [px, py] = place(i), dd = Math.hypot(px + 0.5 - x, py + 0.5 - y); if (dd < bd) { bd = dd; best = i; } }
-          pick = best;
-        });
-        const SIZES = [2, 3, 4, 5];
-        let info;
-        v.render(() => {
-          const S = hcSearch(n, d), N = n ** d, cols = d >= 3 ? n * n + 0.8 * (n - 1) + 0 : n, W = (d >= 3 ? n * (n + 0.8) - 0.8 : n), H = (d >= 4 ? n * (n + 0.8) - 0.8 : d >= 2 ? n : 1);
-          const pad = 0.8; B.setView([-pad, W + pad], [-pad, H + pad]);
-          const through = pick != null ? S.lines.filter((l) => l.includes(pick)) : [];
-          const inLine = new Set(through.flat());
-          for (let i = 0; i < N; i++) {
-            const [px, py] = place(i), c = S.col ? S.col[i] : -1;
-            const col = c === 0 ? 'blue' : c === 1 ? 'orange' : 'muted', stuck = S.res !== true && i === S.deep;
-            B.rect(px + 0.06, py + 0.06, px + 0.94, py + 0.94, { fill: stuck ? 'red' : col, fillAlpha: c < 0 ? (stuck ? 0.35 : 0.08) : S.res === true ? 0.4 : 0.25, color: i === pick ? 'gold' : inLine.has(i) ? 'purple' : stuck ? 'red' : col, width: i === pick ? 3.5 : inLine.has(i) ? 3 : stuck ? 3 : 1 });
-          }
-          // draw the lines through the picked cell as polylines through cell centres
-          through.forEach((l) => B.path(l.map((i) => { const [px, py] = place(i); return [px + 0.5, py + 0.5]; }), { color: 'purple', width: 2, alpha: 0.7 }));
-          // table
-          const cell = {};
-          SIZES.forEach((nn) => [1, 2, 3, 4].forEach((dd) => { if (nn ** dd <= 256) cell[`${nn},${dd}`] = hcSearch(nn, dd); }));
-          T.draw({
-            data: SIZES.map((nn) => [1, 2, 3, 4].map((dd) => { const r = cell[`${nn},${dd}`]; return !r ? '' : r.res === true ? 'draw ok' : r.res === false ? 'no draws' : '?'; })),
-            fill: (i, j) => { const r = cell[`${SIZES[i]},${j + 1}`]; if (!r) return null; return r.res === false ? ['green', 0.3] : r.res === true ? ['gold', 0.25] : ['muted', 0.2]; },
-            highlight: [[n - 2, d - 1, 'accent']], size: 12,
-          });
-          info = { S, N, nl: S.lines.length, through: through.length };
-        });
-        v.readout(() => {
-          const { S, N, nl, through } = info, f = ((n + 2) ** d - n ** d) / 2;
-          const verdict = S.res === true ? 'a colouring with no monochromatic line exists, so a drawn full board is possible and this argument does not decide the game' : S.res === false ? 'NO colouring avoids a monochromatic line (exhaustive search): every full board has a winner, so by strategy stealing the first player wins' : 'search budget exhausted: no conclusion (neither a colouring nor a proof that none exists)';
-          return `$[${n}]^{${d}}$ has ${N} cells and ${nl} lines (formula $\\frac{(n+2)^d-n^d}{2}=${f}$)${through ? `; the selected cell lies on ${through} of them` : ''}\n${verdict} (${S.steps} search steps)`;
-        });
-      },
-    },
+    hypercubeItem,
   ],
 };
