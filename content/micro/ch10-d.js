@@ -1,6 +1,7 @@
 // Microeconomics — Chapter 10: Market power: monopoly and oligopoly — items 10.18–10.22
 import { clamp, fx, bisect, argmax, plateText, bar, lin, mstage, tag, integ, tween } from './ch10.shared.js';
 import { dominantFirmState } from './source-audit-core-fringe.js';
+import { COURNOT_EQUILIBRIUM, cournotProject, cournotState, cournotMany } from './source-audit-cournot.js';
 
 export default {
   collection: 'micro',
@@ -187,40 +188,53 @@ For this specified family, price lies between the competitive benchmark and the 
     },
     // ------------------------------------------------------------------ 10.22
     {
-      num: '10.22', kind: 'Paper', name: 'Principes mathématiques de la théorie des richesses',
+      num: '10.22', kind: 'Paper', name: 'Recherches sur les principes mathématiques de la théorie des richesses',
       paper: { authors: 'Augustin Cournot', year: 1838, title: 'Recherches sur les principes mathématiques de la théorie des richesses', venue: 'Paris: L. Hachette', url: 'https://gallica.bnf.fr/ark:/12148/bpt6k6117257c' },
       introduces: ['micro-10.2', 'micro-10.10', 'micro-10.11'],
       credit: 'A. A. Cournot, 1838',
-      verify: true,
-      statement: String.raw`Cournot's *Recherches* (1838) applied mathematics to economics for the first time on a large scale. It states the demand function $D = F(p)$, treats the **monopolist** who maximizes $pF(p) - \varphi(F(p))$ (chapter 5: the first-order condition equates marginal revenue and marginal cost), and then **competition between producers**: with two owners of mineral springs, each chooses its output taking the other's as given, and the price and quantities are determined by the intersection of two reaction relations (chapter 7). He shows that adding producers lowers the price towards marginal cost and that with a very large number the market approaches **unlimited competition** (chapter 8). In modern terms the book contains the Cournot equilibrium (a Nash equilibrium 110 years before Nash), the monopoly rule MR = MC and the convergence of Cournot oligopoly to competition.`,
-      idea: String.raw`Before Cournot, writers on value used verbal arguments or numerical examples; he treated demand as a function of price, took derivatives, and derived laws that follow from the shape of the curves. The step that made the book influential much later was the oligopoly chapter: instead of assuming a rival will charge a price or produce a quantity set by someone else, he lets each producer maximize taking the other's quantity as fixed, which defines a stable intersection. The book had little immediate influence and was rediscovered in the later nineteenth century (an early critique is Bertrand's 1883 review, which proposed price rather than quantity as the strategic variable, 10.14). The ideas it introduced here: the monopoly rule (10.2), the duopoly equilibrium (10.10) and the many-firm limit (10.11).`,
-      caption: String.raw`A **reconstruction in modern notation**, not a figure copied from the book: demand $P = a - Q$ (normalized, $a = 1$), zero cost (Cournot's springs). Left: the two reaction curves; **drag the gold start** and press play: the producers respond to each other in turn and the path converges to the crossing (this successive-reply path is the standard way of picturing the stability, 10.12, and is not claimed to be in the text). Right: the same market with $n$ producers (**slider**): price $a/(n+1)$ and total output $na/(n+1)$, from the monopoly ($n = 1$) towards the competitive limit $P = 0$, $Q = a$.`,
+      verify: false,
+      statement: String.raw`Cournot's *Recherches* (1838) studies monopoly revenue $pF(p)$ and production cost $\varphi(F(p))$ in chapter V §§26–35. Chapter VII §§43–46 considers owners of mineral springs who choose quantities while taking rivals' quantities as fixed; §43 describes successive replies and the dotted staircase in figure 2. These are the source frameworks for the **authored linear specialization** below, with zero cost, nonnegative outputs and profit
+$$\pi_i=q_i(1-q_i-Q_{-i}).$$
+The unique best reply is $R(Q_{-i})=\max\{0,(1-Q_{-i})/2\}$. For $n$ identical firms the unique equilibrium has $q_i=1/(n+1)$, total output $Q=n/(n+1)$ and price $P=1/(n+1)$. Thus $n=1$ gives monopoly output and price $1/2$; as $n\to\infty$, $Q\to1$ and $P\to0$. These formulas are for the specified affine model, rather than a general convergence theorem for nonlinear demand.`,
+      idea: String.raw`Holding rival output $r$ fixed, the quadratic objective has derivative $1-r-2q$ and second derivative $-2$. Its interior maximum satisfies the zero-derivative condition (PMA 5.8); the nonnegative boundary gives the clipped reply. An equilibrium cannot have $Q>1$: any positive producer loses money and could choose zero. At $Q=1$, a positive producer can halve its output to earn $q_i^2/4>0$ instead of zero. Hence $Q<1$, every firm produces positively, and $1-Q-q_i=0$ forces the stated symmetric solution.
+
+For the displayed **duopoly**, start anywhere with $q_1,q_2\ge0$ and $q_1+q_2\le1$. Each reply preserves that triangle. With firm 1 responding first, after $m$ complete two-reply sweeps,
+$$q_2^{(2m)}-\tfrac13=4^{-m}(q_2^{(0)}-\tfrac13).$$
+Firm 1's error is minus twice this error for $m\ge1$. This proves convergence for every displayed start, including the boundary. It concerns alternating duopoly replies; the right panel computes static equilibria and simulates no many-firm adjustment. Cournot's chapter VIII §§50–54 studies unlimited competition under its own marginal-cost assumptions.`,
+      caption: String.raw`Left: an affine reconstruction of the original chapter VII staircase, with both best-reply curves. **Drag the gold start**, or use either output control; increasing one output beyond the available triangle reduces the other. All three boundary vertices are accessible. **Selected reply 0–18** shows each successive response, firm 1 first: the faint full path retains the initial point and all 18 replies; the gold prefix ends at the current point. The green ring marks the exact equilibrium; the equilibrium button sets both start coordinates to $1/3$. Right: select any integer number of firms 1–30. The guides join those 30 discrete equilibria; a purple ring around the price marker shows their coincidence at $n=1$.`,
+      scope: String.raw`Zero production and fixed costs, no capacity constraints, and strategy space $q_i\ge0$. The payoff uses the affine expression $P=1-Q$ even at hypothetical $Q>1$; it is a quadratic teaching extension. The displayed initial triangle keeps every illustrated duopoly price nonnegative and does not restrict a firm's strategy space. Replacing the payoff by $q_i\max(1-Q,0)$ defines a different game: for example, duopoly $(1,1)$ is then a zero-profit equilibrium, but not an equilibrium of the quadratic model. Outputs and prices are dimensionless under the chosen unit intercept and slope. The displayed numerical formulas and contraction proof are derived here, not transcribed source data.`,
       deps: ['micro-2.1', 'pma-5.8'],
-      refs: [], tags: ['oligopoly', 'history'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Antoine_Augustin_Cournot' },
+      refs: ['Cournot (1838), chapter V §§26–35 pp.61–73; chapter VII §§43–49 pp.88–100, especially figure 2 and §46; chapter VIII §§50–54 pp.101–111', 'https://archive.org/download/AugustinCournotRecherches/Augustin%20Cournot%20Recherches.pdf'], tags: ['oligopoly', 'history'],
+      links: { source: 'https://archive.org/download/AugustinCournotRecherches/Augustin%20Cournot%20Recherches.pdf', catalogue: 'https://catalogue.bnf.fr/ark:/12148/cb30280488q' },
       viz(v) {
-        const nS = v.slider('number of producers $n$', 1, 30, 2, { int: true });
-        const a = 1, PER = 7;
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, equal: true, xlabel: 'output of producer 1', ylabel: 'output of producer 2', height: 380, title: 'two proprietors: reaction curves' });
-        const G = v.stage({ x: [1, 30], y: [0, 1], axes: 'box', gutter: true, xlabel: 'number of producers $n$', ylabel: 'price and total output', height: 380, title: 'adding producers', weight: 0.9, minWidth: 260 });
-        v.legend([['accent', 'producer 1\'s reply'], ['orange', 'producer 2\'s reply'], ['green', 'Cournot point', { dot: true }], ['ink', 'price'], ['purple', 'total output']]);
-        const H = s.handle(0.9, 0.05, { color: 'gold', r: 9, label: 'start', labelPos: 'ne', constrain: { x: [0.02, 0.98], y: [0.02, 0.98] } });
-        const eqn = (n) => bisect((q) => a - n * q - q, 0, a, 60); // each: P + qP' = 0 with P = a − nq
-        let st = {};
-        v.animate((t) => {
-          const R = (q) => Math.max(0, (a - q) / 2), steps = Math.min(18, Math.floor((t / PER) * 18 + 1e-9));
-          let q1 = H.x, q2 = H.y; const path = [[q1, q2]];
-          for (let i = 0; i < steps; i++) { if (i % 2 === 0) q1 = R(q2); else q2 = R(q1); path.push([q1, q2]); }
-          const stair = []; path.forEach((p, i) => { stair.push(p); });
-          s.line(0.5, 0, 0, 1, { color: 'accent', width: 2.4 }); s.line(0, 0.5, 1, 0, { color: 'orange', width: 2.4 });
-          s.path(path, { color: 'muted', width: 2 }); path.forEach((p, i) => s.dot(p[0], p[1], { r: i === steps ? 5 : 3, color: 'gold' }));
-          s.dot(a / 3, a / 3, { r: 8, color: 'green' }); tag(s, `$(a/3, a/3)$`, a / 3, a / 3, 'green', { dy: 18, dx: 26 });
-          const n = nS.value, qn = eqn(n);
-          G.fn((k) => a / (k + 1), { domain: [1, 30], color: 'ink', width: 2.6 }); G.fn((k) => (k * a) / (k + 1), { domain: [1, 30], color: 'purple', width: 2.6 });
-          G.dot(n, a - n * qn, { r: 7, color: 'ink' }); G.dot(n, n * qn, { r: 7, color: 'purple' }); G.hline(a, { color: 'muted', width: 1, dash: [3, 3] });
-          st = { n, qn, P: a - n * qn, Q: n * qn, q1, q2, steps };
-        }, { period: PER + 1.5, once: true, still: PER + 1.5 });
-        v.readout(() => `Reply $${st.steps}$ of 18: $(q_1, q_2) = (${fx(st.q1, 3)}, ${fx(st.q2, 3)})$, equilibrium $(a/3, a/3) = (${fx(1 / 3, 3)}, ${fx(1 / 3, 3)})$.\n$n = ${st.n}$ producers (solved from the first-order condition): price $${fx(st.P, 4)}$ (formula $a/(n+1) = ${fx(1 / (st.n + 1), 4)}$), total output $${fx(st.Q, 4)}$ (formula $na/(n+1) = ${fx(st.n / (st.n + 1), 4)}$); the monopoly $(n = 1)$ sells $a/2$ at $a/2$, the limit $n \\to \\infty$ is price $0$ and output $a$. These formulas are the same as the textbook ones: no discrepancy with today's accepted solution.`);
+        const q1=v.slider('initial output $q_1$',0,1,.9,{step:.01,decimals:5,onChange:x=>{if(x+q2.value>1)q2.set(1-x);}});
+        const q2=v.slider('initial output $q_2$',0,1,.05,{step:.01,decimals:5,onChange:y=>{if(q1.value+y>1)q1.set(1-y);}});
+        const step=v.slider('selected reply',0,18,18,{int:true}),nS=v.slider('number of producers $n$',1,30,2,{int:true});
+        const s=v.stage({x:[-.16,1.16],y:[-.16,1.16],axes:'box',gutter:true,equal:true,xlabel:'producer 1 output',ylabel:'producer 2 output',height:400,title:'duopoly: alternating best replies'});
+        const G=v.stage({x:[-2,33],y:[-.14,1.14],axes:'box',gutter:true,xlabel:'integer number of producers n',ylabel:'normalized price / total output',height:400,title:'static equilibria for 1–30 producers',weight:.9,minWidth:260});
+        v.legend([['accent','producer 1 reply'],['orange','producer 2 reply'],['gold','start / selected prefix and current point'],['muted','all 18 replies'],['green','exact duopoly equilibrium',{dot:true}],['ink','price'],['purple','total output']]);
+        const H=s.handle(q1.value,q2.value,{color:'gold',r:9,constrain:cournotProject,onDrag:h=>{q1.set(h.x);q2.set(h.y);}}),eq=COURNOT_EQUILIBRIUM;
+        const all=Array.from({length:30},(_,i)=>cournotMany(i+1));
+        v.button('Start at exact duopoly equilibrium',()=>{q1.set(eq);q2.set(eq);});
+        let info={};
+        v.render(()=>{
+          const state=cournotState([q1.value,q2.value],step.value,nS.value),p=state.point,m=state.many;
+          H.set(...state.start);
+          s.poly([[0,0],[1,0],[0,1]],{fill:'faint',fillAlpha:.24,stroke:false});
+          s.path([[0,0],[1,0],[0,1],[0,0]],{color:'faint',width:1.2});
+          s.path([[.5,0],[0,1]],{color:'accent',width:2.6});s.path([[0,.5],[1,0]],{color:'orange',width:2.6});
+          s.dot(eq,eq,{r:14,color:'green',hollow:true,width:2});
+          s.path(state.path,{color:'muted',width:1.5,dash:[3,4]});
+          s.path(state.path.slice(0,state.selected+1),{color:'gold',width:2.5});
+          state.path.forEach(([x,y])=>s.dot(x,y,{r:2,color:'muted',ring:false}));
+          s.dot(p[0],p[1],{r:5,color:'gold'});
+          tag(s,'$(1/3,1/3)$',.57,.35,'green',{dy:-17});
+          G.path(all.map(p=>[p.n,p.price]),{color:'ink',width:2.6});G.path(all.map(p=>[p.n,p.total]),{color:'purple',width:2.6});
+          G.line(1,1,30,1,{color:'muted',width:1.2,dash:[3,4]});
+          G.dot(m.n,m.total,{r:m.n===1?12:7,color:'purple',hollow:m.n===1,width:2});G.dot(m.n,m.price,{r:7,color:'ink'});
+          info=state;
+        });
+        v.readout(()=>{const p=info,m=p.many;return `Reply ${p.selected} of 18, firm 1 first: current outputs (${fx(p.point[0],8)}, ${fx(p.point[1],8)}), price ${fx(p.price,8)}; profits (${fx(p.profits[0],8)}, ${fx(p.profits[1],8)}). All 19 path points are retained, including the initial point.\nAfter each complete two-reply sweep, producer 2's error from 1/3 is exactly one quarter of its previous error in the real-arithmetic model. This proves the displayed duopoly convergence; reply 18 is a finite state, not an exact equilibrium certificate.\n${m.n} producers: each output ${fx(m.q,8)}, total ${fx(m.total,8)}, price ${fx(m.price,8)}, profit per firm ${fx(m.firmProfit,8)}. These are exact static formulas, with floating-point display; no many-firm adjustment is simulated.`;});
       },
     },
   ],

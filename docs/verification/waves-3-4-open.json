@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 181,
+  "remainingFlags": 180,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,6 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "micro": 1,
     "fin": 3,
     "game": 18,
     "psych": 17,
@@ -228,19 +227,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "micro-10.22",
-      "file": "content/micro/ch10-d.js",
-      "name": "Principes math\u00e9matiques de la th\u00e9orie des richesses",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Antoine_Augustin_Cournot"
       }
     },
     {
@@ -3608,7 +3594,8 @@
       "micro-9.21",
       "fin-5.7",
       "micro-9.20",
-      "fin-5.10"
+      "fin-5.10",
+      "micro-10.22"
     ]
   },
   "additionalFollowups": [
@@ -7799,6 +7786,12 @@
       "status": "resolved",
       "report": "docs/verification/fin-speculation-followup.md",
       "note": "Independent primary-section reading and original image inspection; five math groups, original CSV comparison of624 scalars/471 wealth points/157 month labels/291 plot points, four native viewport/theme groups and final screenshots pass. Qualified historical interpretations, explicit monthly spacing/shared normalization and exact authored finite-copying-chain law replace unsupported crash/information-cascade claims."
+    },
+    {
+      "id": "micro-10.22",
+      "status": "resolved",
+      "report": "docs/verification/micro-cournot-followup.md",
+      "note": "Independent reading of complete original French V/VII/VIII sections and actual1838 formula/plate images; unique global quadratic replies/equilibria, triangle projection/invariance and exact duopoly contraction assessed;4math+4native groups and final full mobile/marker screenshots pass. General demand and price-floor games are distinguished."
     }
   ]
 }
