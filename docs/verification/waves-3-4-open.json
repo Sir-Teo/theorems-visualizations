@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 116,
+  "remainingFlags": 114,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "game": 5,
-    "soc": 8,
+    "soc": 6,
     "polsci": 9,
     "music": 14,
     "art": 9,
@@ -294,38 +294,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Exchange_network_theory"
-      }
-    },
-    {
-      "id": "soc-4.7",
-      "file": "content/soc/ch04-b.js",
-      "name": "Power-law (heavy-tailed) distributions",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "E&K §18.2",
-        "Newman ch. 10"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Power_law"
-      }
-    },
-    {
-      "id": "soc-4.11",
-      "file": "content/soc/ch04-b.js",
-      "name": "Are real networks scale-free? (debated)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Newman ch. 10"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Scale-free_network",
-        "doi": "https://doi.org/10.1038/s41467-019-08746-5"
       }
     },
     {
@@ -2612,7 +2580,9 @@
       "psych-4.9",
       "psych-4.10",
       "psych-4.13",
-      "qchem-3.13"
+      "qchem-3.13",
+      "soc-4.7",
+      "soc-4.11"
     ]
   },
   "additionalFollowups": [
@@ -7231,6 +7201,16 @@
       "id": "psych-4.13",
       "status": "resolved",
       "note": "2026-10-20: worker_three exact-commit primary-source/model review, six math and six fresh narrow native groups plus528 independent checks; psych-patterns-followup.md."
+    },
+    {
+      "id": "soc-4.7",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit primary CSN, published Broido and Voitalov definition review, three independent math groups and four fresh narrow native matrices; soc-tails-followup.md."
+    },
+    {
+      "id": "soc-4.11",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit primary CSN, published Broido and Voitalov definition review, three independent math groups and four fresh narrow native matrices; soc-tails-followup.md."
     }
   ]
 }

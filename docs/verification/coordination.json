@@ -204,6 +204,17 @@
         "qchem-source-audit-mendeleev-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "soc-4.7",
+        "soc-4.11"
+      ],
+      "peer": "coordinator exact-commit primary CSN, published Broido and Voitalov definition review, three independent math groups and four fresh narrow native matrices",
+      "reports": [
+        "soc-tails-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -216,5 +227,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 116
+  "currentPendingSourceReviews": 114
 }
