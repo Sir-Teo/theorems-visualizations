@@ -1,3 +1,4 @@
+import{maxwellPaper}from'./source-audit-maxwell.js';
 import{grassmannPaperItem,cieStandardsPaperItem}from'./source-audit-colorimetry-items.js';
 // Visual Art & Color — Chapter 4: Trichromacy and colorimetry (items 4.9–4.16; 4.1–4.8 are in ch04.js)
 import { cmf, cmfT, specRGB, rgbOf, spdXYZ, xyOf, xyz, planck, gauss, sigm, drawChromaticity, LOCUS, inLocus, dominant, SRGB, toLMS, fromLMS, primSet, CIERGB, CIERGB_M, EW, mv3, inv3, cross3, PLANCK_TABLE, bbXY, uv60, xy60, cctNearest, cctMcCamy, SRGB_M, SRGB_MI, srgbDec, srgbEnc, codeToXYZ, xyzToCode, hsv2code, rgbMatrixFrom, Vphot, Vscot } from './ch04.shared.js';
@@ -289,65 +290,8 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
     },
     // Source-audited colorimetry 4.14
     grassmannPaperItem,
-    // ------------------------------------------------------------------ 4.15
-    {
-      num: '4.15',
-      kind: 'Paper',
-      name: 'On the Theory of Compound Colours',
-      paper: { authors: 'J. Clerk Maxwell', year: 1860, title: 'On the Theory of Compound Colours, and the Relations of the Colours of the Spectrum', venue: 'Philosophical Transactions of the Royal Society of London 150: 57–84', doi: '10.1098/rstl.1860.0005' },
-      introduces: ['art-4.5'],
-      credit: 'James Clerk Maxwell, 1860',
-      statement: String.raw`Maxwell measures colour matches with a “colour box”: the spectrum of a prism is produced and three narrow slits pick out a red, a green and a blue part of it; the light that passes the slits is recombined, and the observer adjusts the slit widths until the mixture matches either white light or a fourth, spectral colour. The amounts needed, plotted against the wavelength of the matched spectral colour, are his colour-mixture curves; he finds that every colour can be matched by the three, that for some spectral colours the match is possible only if one of the three is added to the colour being matched (a negative amount), and he represents the results on a colour triangle in which the whole spectrum runs outside the triangle on the side of the blue-green.`,
-      idea: String.raw`Young had suggested in 1802 that three sensations suffice; Helmholtz and Grassmann (art-4.14) gave the laws of mixing; Maxwell turned them into measurements with a calibrated instrument: the equations “white = $r\,R+g\,G+b\,B$” and “spectral colour = $r\,R+g\,G+b\,B$” are exactly the first colour-matching equations (art-4.5). His triangle and its negative amounts anticipate both the chromaticity diagram and the negative lobes of the later standard tables. He also argued that the eye’s three sensations are what the three primaries stimulate, which is the trichromatic principle (art-4.2) in quantitative form.`,
-      caption: String.raw`A computer version of the colour box. The three slits sit at 630, 518 and 465 nm (see the scope note). Choose the target (white or a spectral band) and move the three slit amounts until the left and right halves match, or press Match. The triangle shows the target in Maxwell’s plane (corners = the three slits); spectral colours that need a negative amount fall outside it, and the curve on the right shows the three amounts for every wavelength.`,
-      deps: ['art-4.4', 'art-4.2'],
-      refs: [],
-      tags: ['Maxwell', 'colour box', 'colour matching'],
-      scope: String.raw`The slit positions are my conversion of the positions printed in Maxwell’s paper (the scale divisions and Fraunhofer’s units in his Table II, where I read red 2328, green 1914 and blue 1717, with the green close to the line E, from an OCR transcription): multiplying by $2.707\times10^{-7}$ mm, the Paris inch scaled unit of Fraunhofer, gives about 630, 518 and 465 nm, but I have not verified the unit or the conversion. The calculation uses the CIE 1931 fit and an equal-energy white (Maxwell matched sky or white paper); his own data are not reproduced.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/James_Clerk_Maxwell#Colour_vision' },
-      verify: true,
-      viz(v) {
-        const P = primSet([630.2, 518.1, 464.8]);
-        const tgt = v.select('match', [{ value: 'white', label: 'white' }, { value: 'band', label: 'a spectral colour' }], 'band');
-        const lam = v.slider('spectral colour (nm)', 430, 680, 495, { step: 1 });
-        const am = ['red slit', 'green slit', 'blue slit'].map((nm, i) => v.slider(nm, -2, 3, [0.6, 0.3, 0.3][i], { step: 0.005 }));
-        const target = () => { if (tgt.value === 'white') return EW.slice(); const c = cmf(lam.value), s = c[0] + c[1] + c[2]; return c.map((u) => (u / s) * (EW[0] + EW[1] + EW[2]) * 0.4); };
-        const solve = () => { const a = P.amounts(target()); am.forEach((s, i) => s.set(Math.max(-2, Math.min(3, a[i])))); };
-        v.button('Match', solve); solve();
-        const F = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 120, full: true, title: 'target (left) and recombined slits (right)' });
-        const T = v.stage({ x: [-0.3, 1.3], y: [-0.25, 1.1], equal: true, axes: false, height: 330, weight: 1, minWidth: 260, title: 'Maxwell’s colour triangle' });
-        const A = v.stage({ x: [430, 680], y: [-0.8, 2.6], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'amount of each slit', height: 330, weight: 1.2, title: 'colour-mixture curves (rebuilt)' });
-        const V3 = [[0, 0], [1, 0], [0.5, Math.sqrt(3) / 2]];
-        const tri = (a) => { const s = a[0] + a[1] + a[2] || 1, f = a.map((u) => u / s); return [f[0] * V3[0][0] + f[1] * V3[1][0] + f[2] * V3[2][0], f[0] * V3[0][1] + f[1] * V3[1][1] + f[2] * V3[2][1]]; };
-        let info = {};
-        v.render(() => {
-          lam.el.hidden = tgt.value === 'white';
-          const t = target();
-          // express in the same units: P columns are scaled to EW, a is in units of the white amount
-          const mixC = [0, 0, 0], tC = t.slice();
-          [0, 1, 2].forEach((i) => { const a = am[i].value, p = P.prim(i); for (let k = 0; k < 3; k++) { if (a >= 0) mixC[k] += a * p[k]; else tC[k] += -a * p[k]; } });
-          const sc = 0.55 / (((tC[1] + mixC[1]) / 2) || 1);
-          F.rect(0, 0, 1, 1, { fill: rgbOf(tC.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          F.rect(1, 0, 2, 1, { fill: rgbOf(mixC.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          const d = Math.hypot(...toLMS(tC.map((u, k) => u - mixC[k]))) / Math.hypot(...toLMS(tC));
-          // triangle
-          T.poly(V3, { color: 'ink', width: 1.4, fill: 'accent', fillAlpha: 0.06 });
-          ['red', 'green', 'blue'].forEach((nm, i) => T.text(['630', '518', '465'][i], V3[i][0] + (i === 0 ? -0.08 : i === 1 ? 0.08 : 0), V3[i][1] + (i === 2 ? 0.07 : -0.07), { size: 10.5, color: 'muted', align: 'center' }));
-          const sp = []; for (let l = 430; l <= 680; l += 2) sp.push(tri(P.cmf(l)));
-          T.path(sp, { color: 'ink', width: 1.5 });
-          for (const l of [440, 480, 500, 520, 540, 580, 610]) { const q = tri(P.cmf(l)); T.dot(q[0], q[1], { r: 2.6, color: 'ink' }); T.text(`${l}`, q[0] - 0.02, q[1] + 0.03, { size: 9, color: 'muted', align: 'right' }); }
-          const w = tri(P.amounts(EW)); T.dot(w[0], w[1], { r: 4, hollow: true, color: 'ink', label: 'white', labelPos: 'ne' });
-          const q = tri(P.amounts(t)); T.dot(q[0], q[1], { r: 6, color: 'gold' });
-          const cols = ['red', 'green', 'accent'];
-                    for (let i = 0; i < 3; i++) A.fn((l) => P.cmf(l)[i] * EW[0], { color: cols[i], width: 2, domain: [430, 680] });
-          A.hline(0, { color: 'ink', width: 0.8, alpha: 0.6 });
-          if (tgt.value === 'band') A.vline(lam.value, { color: 'gold', dash: [4, 4], width: 1.4 });
-          info = { d, neg: am.some((s) => s.value < -0.001), a: P.amounts(t) };
-        });
-        v.legend([['red', 'red slit'], ['green', 'green slit'], ['accent', 'blue slit']]);
-        v.readout(() => `slit amounts needed for this target: $(${fmt3(v, info.a)})$ (equal-energy white needs $(1,1,1)$) · residual of your setting ${v.fix(100 * info.d, 2)}%${info.neg ? ' · a negative amount: that slit’s light is added to the target' : ''}\n${tgt.value === 'band' && lam.value > 440 && lam.value < 530 ? 'the red amount is negative here: the spectral colour is more saturated than any mixture of the three slits (it lies outside Maxwell’s triangle)' : ''}`);
-      },
-    },
+    // Source-audited Maxwell 4.15
+    maxwellPaper,
     // Source-audited colorimetry 4.16
     cieStandardsPaperItem,
   ],

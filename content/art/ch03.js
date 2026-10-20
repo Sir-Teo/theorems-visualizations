@@ -1,3 +1,4 @@
+import{spectralItem}from'./source-audit-spectra.js';
 // Visual Art & Color — Chapter 3: Light, spectra and colour mixing (items 3.1–3.7; 3.8–3.13 are in ch03-b.js)
 import { cmf, cmfT, specRGB, rgbOf, spdXYZ, xyOf, xyz2lin, lin2srgb, planck, bbXYZ, gauss, sigm, nBK7, nWater, specBars, drawChromaticity, SRGB, LOCUS, dominant, NEWTON, circPt, arcCentroid, newtonMix, arcAt, mixXYZ, rad, deg } from './ch03.shared.js';
 
@@ -140,81 +141,8 @@ For a prism of apex angle $A$ the deviation of a ray with incidence angle $i$ is
         v.readout(() => `$n(400\\,\\text{nm})=${v.fix(info.n4, 4)}$, $n(700\\,\\text{nm})=${v.fix(info.n7, 4)}$ · the 550 nm ray is deviated by $${v.fix(Math.abs(info.dev), 2)}^\\circ$ (minimum deviation needs incidence $${v.fix(info.im, 1)}^\\circ$, i.e. $D_{\\min}=2i-A=${v.fix(2 * info.im - Aang.value, 2)}^\\circ$)\nangle between the 400 nm and 700 nm rays leaving the ${second.value ? 'last prism' : 'prism'}: $${v.fix(Math.abs(info.spread), 4)}^\\circ$ · vertical separation of the two on the screen: $${v.fix(info.width, 3)}$ (beam width $0.5$)`);
       },
     },
-    // ------------------------------------------------------------------ 3.2
-    {
-      num: '3.2',
-      kind: 'Concept',
-      name: 'Spectral power distributions',
-      credit: 'CIE 1931 standard observer; Wyman, Sloan & Shirley, 2013 (analytic fit used here)',
-      statement: String.raw`A light is described by its **spectral power distribution** $S(\lambda)$: the power it carries per unit wavelength, over the visible range $380$–$780$ nm. The eye reduces this whole curve to three numbers, the responses of its three cone types, and the standard way to compute them is to integrate against the CIE colour-matching functions:
-$$X=\int S\,\bar x\,d\lambda,\qquad Y=\int S\,\bar y\,d\lambda,\qquad Z=\int S\,\bar z\,d\lambda .$$
-Two lights with different $S$ but the same $(X,Y,Z)$ look identical (metamers); a light with a narrow line or a smooth hump can be as bright and as white as another one with a completely different curve.`,
-      idea: String.raw`A spectrum is a point in an infinite-dimensional space, vision keeps only three linear functionals of it, and so the map from spectra to perceived colour has a huge kernel: that is the whole reason three primaries can imitate any colour (art-3.5). The colour a surface shows depends on the light as much as on the surface, because the reflected spectrum is the product $S(\lambda)R(\lambda)$: a lamp lacking the wavelengths a pigment reflects makes it look dark.`,
-      caption: String.raw`Choose a lamp: the curve is its spectrum, each bar tinted with the colour of its own wavelength. The swatches on the right are what a camera with fixed white balance would record for a white card and four coloured cards lit by that lamp. Compare the LED with sunlight: very different curves, almost the same white. Switch on “eye adapts” to rescale the lamp’s white to daylight white, as the visual system roughly does; the sodium lamp stays nearly monochromatic and cannot be rescued.`,
-      deps: ['art-3.1'],
-      refs: ['Fairchild ch. 3'],
-      tags: ['spectrum', 'colorimetry', 'metamerism'],
-      scope: String.raw`The curves are models, not measurements: the sun is a $5772$ K black body (the IAU nominal solar effective temperature), the incandescent lamp a $2856$ K black body (CIE illuminant A), the LED a blue Gaussian plus a broad phosphor Gaussian of generic shape, sodium its two D lines at $588.995$ and $589.592$ nm with intensities $2:1$. The card reflectances are smooth model curves. Colours use the standard-observer fit of the colour-matching functions and the sRGB primaries.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Spectral_power_distribution' },
-      verify: true,
-      viz(v) {
-        const SRC = {
-          sun: { f: (l) => planck(l, 5772), lines: null, label: 'sunlight (5772 K black body)' },
-          tung: { f: (l) => planck(l, 2856), lines: null, label: 'incandescent lamp (2856 K black body)' },
-          led: { f: (l) => 1.8 * gauss(l, 450, 22) + gauss(l, 570, 120), lines: null, label: 'white LED (blue pump + phosphor, model)' },
-          na: { f: () => 0, lines: [[588.995, 1], [589.592, 0.5]], label: 'sodium lamp (D lines)' },
-          eq: { f: () => 1, lines: null, label: 'equal-energy spectrum (CIE illuminant E)' },
-        };
-        const sel = v.select('light source', [{ value: 'sun', label: 'sunlight' }, { value: 'tung', label: 'incandescent' }, { value: 'led', label: 'white LED' }, { value: 'na', label: 'sodium lamp' }, { value: 'eq', label: 'equal energy' }], 'sun');
-        const adapt = v.toggle('eye adapts to the lamp’s white', false);
-        const S1 = v.stage({ x: [380, 780], y: [0, 1.18], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'relative power', height: 330, weight: 1.35, title: 'spectral power distribution $S(\\lambda)$' });
-        const S2 = v.stage({ x: [0, 6.4], y: [0, 3.9], axes: false, equal: true, height: 330, weight: 0.85, minWidth: 250, title: 'the lamp, and cards lit by it' });
-        const cards = [
-          { name: 'white', R: () => 0.9 },
-          { name: 'red', R: (l) => 0.05 + 0.85 * sigm((l - 595) / 10) },
-          { name: 'green', R: (l) => 0.05 + 0.55 * gauss(l, 540, 80) },
-          { name: 'blue', R: (l) => 0.05 + 0.6 * gauss(l, 450, 70) },
-          { name: 'yellow', R: (l) => 0.05 + 0.85 * sigm((l - 515) / 12) },
-        ];
-        const xyzOf = (src, R) => {
-          const c = spdXYZ((l) => src.f(l) * R(l), 5);
-          if (src.lines) for (const [l, p] of src.lines) { const m = cmf(l), r = R(l); c[0] += 4 * p * r * m[0]; c[1] += 4 * p * r * m[1]; c[2] += 4 * p * r * m[2]; }
-          return c;
-        };
-        const HPE = [[0.4002, 0.7076, -0.0808], [-0.2263, 1.1653, 0.0457], [0, 0, 0.9182]], HI = v.M.inverse(HPE), D65 = [0.9505, 1, 1.089];
-        const adaptXYZ = (c, w) => { const a = v.M.matVec(HPE, w), b = v.M.matVec(HPE, D65), q = v.M.matVec(HPE, c); return v.M.matVec(HI, q.map((u, i) => (u * b[i]) / a[i])); };
-        let info = {};
-        v.render(() => {
-          const src = SRC[sel.value], w = xyzOf(src, () => 1), Yw = w[1];
-          let fmax = 0;
-          const f = (l) => src.f(l);
-          for (let l = 380; l <= 780; l += 2) fmax = Math.max(fmax, f(l));
-          if (src.lines) {
-            for (const [l, p] of src.lines) { S1.line(l, 0, l, p, { color: specRGB(l, 0.55), width: 4 }); }
-            S1.text('two lines, 589.0 and 589.6 nm', 610, 0.9, { align: 'left', size: 11, color: 'muted' });
-          } else {
-            specBars(S1, (l) => f(l) / fmax, 380, 780, 2, { alpha: 0.85 });
-            S1.fn((l) => f(l) / fmax, { color: 'ink', width: 1.6, domain: [380, 780] });
-          }
-          S1.text(src.label, 384, 1.1, { align: 'left', size: 12, color: 'ink' });
-          // swatches
-          const paint = (R, x0, y0, x1, y1, nm) => {
-            let c = xyzOf(src, R).map((u) => u / Yw);
-            if (adapt.value) c = adaptXYZ(c, w.map((u) => u / Yw));
-            const rgb = rgbOf(c.map((u) => u * 0.8));
-            S2.rect(x0, y0, x1, y1, { fill: rgb, stroke: false, fillAlpha: 1, radius: 8 });
-            S2.text(nm, (x0 + x1) / 2, y0 - 0.08, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
-            return c;
-          };
-          const c0 = paint(() => 1, 0.1, 1.9, 3.2, 3.6, 'white card');
-          cards.slice(1).forEach((cd, i) => paint(cd.R, 0.1 + i * 1.6, 0.45, 0.1 + i * 1.6 + 1.4, 1.5, cd.name));
-          const sun = xyOf(xyzOf(SRC.sun, () => 1)), me = xyOf(w);
-          info = { xy: me, dsun: Math.hypot(me[0] - sun[0], me[1] - sun[1]), Yw, clip: rgbOf(w.map((u) => (u / Yw) * 0.8)).clip };
-        });
-        v.legend([['ink', 'spectrum'], ['accent', 'bars: colour of each wavelength']]);
-        v.readout(() => `chromaticity of the lamp: $x=${v.fix(info.xy[0], 4)},\\ y=${v.fix(info.xy[1], 4)}$ · distance from sunlight in the $xy$ plane: $${v.fix(info.dsun, 4)}$${sel.value !== 'sun' && info.dsun < 0.02 ? ' (almost the same colour as sunlight, from a different curve)' : ''}${info.clip > 0.02 ? ' · this colour lies outside the sRGB gamut and is shown desaturated' : ''}\nthe display colour of each card is the integral $\\int S(\\lambda)R(\\lambda)\\,\\bar c(\\lambda)\\,d\\lambda$, scaled by the lamp’s own $Y$`);
-      },
-    },
+    // Source-audited spectra 3.2
+    spectralItem,
     // ------------------------------------------------------------------ 3.3
     {
       num: '3.3',
