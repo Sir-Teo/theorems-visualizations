@@ -120,7 +120,7 @@ export default {
         { num: '3.13', kind: 'Paper', name: 'Properties and atomic weights of the elements',
           paper: { authors: 'D. Mendeleev', year: 1869, title: 'Соотношение свойств с атомным весом элементов (The relation of the properties to the atomic weights of the elements)', venue: 'Zhurnal Russkago Khimicheskago Obshchestva 1: 60–77', url: 'https://babel.hathitrust.org/cgi/pt?id=mdp.39015065536586&seq=70' },
           introduces: [], deps: ['qchem-3.9'], refs: ['Mendeleev, complete1869 article in the1926 Menshutkin reprint, pp.4–20; Giunta complete German-abstract translation'],
-          pic: 'Explore a modern responsive reflow of the German abstract's62 named table entries, joint Ni=Co and four anonymous weights45/68/70/180. Separate authored toy arithmetic from Mendeleev's claims and disclose differences from the complete Russian article's1926 reprint.' },
+          pic: "Explore a modern responsive reflow of62 named entries from the German abstract, joint Ni=Co and four anonymous weights45/68/70/180. Separate authored toy arithmetic from Mendeleev's claims and disclose differences from the complete Russian article's1926 reprint." },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
