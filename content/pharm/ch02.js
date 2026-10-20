@@ -140,7 +140,7 @@ export default {
       idea: String.raw`Taking logarithms turns the exponential $C_0e^{-kt}$ into the line $\ln C_0-kt$ (2.1), so least squares applies. In ordinary regression the slope's standard error is $\sigma/\sqrt{\sum(t_i-\bar t)^2}$, which is why samples far apart in time carry most of the information and why dropping the late ones widens the interval most. The method also assumes noise that is multiplicative (a constant percentage error), which is what makes it additive after the logarithm; the lognormal noise used here has that property.
 
 For positive reported concentrations, put $y_i=\log C_i$ and let U be the span of the constant vector and the sampling-time vector. The closest-subspace theorem ladr 6.61 makes the fitted line the unique orthogonal projection of y onto U when the times are not all equal; residual orthogonality gives the usual slope with denominator $S_{tt}=\sum(t_i-\bar t)^2$. For fixed, uncensored times with independent normal log-errors of common variance, the standardized slope error is normal and independent of the residual sum of squares divided by that variance, which is chi-squared with n-2 degrees of freedom. The normal/independent-chi-squared ratio in stat 1.10 then gives the stated Student interval using $s_b=\hat\sigma/\sqrt{S_{tt}}$. This is a conditional model result: removing observations below an assay limit selects their errors, so the widget's resulting nominal interval need not have exact 95-percent coverage.`,
-      caption: String.raw`Eleven blood samples of a drug with true half-life 5 h (dashed green line) are generated with lognormal assay noise. The accent line is the least-squares fit; its shaded band is the nominal 95 % interval for the slope. Choose whether to **keep the earliest or the latest** $n$ samples and slide $n$: the right panel plots the estimated half-life with its nominal 95 % interval for every $n$ (current one in gold). **New sample** draws fresh noise. Samples under the assay limit of 0.1 mg/L (hollow) are not reported. This outcome-dependent exclusion breaks the uncensored Gaussian pivot assumptions; the displayed intervals then have no exact 95 % coverage guarantee.`,
+      caption: String.raw`Eleven blood samples of a drug with true half-life 5 h (dashed green line) are generated with lognormal assay noise. The accent line is the least-squares fit; its shaded band is the nominal 95 % interval for the slope. Choose whether to **keep the earliest or the latest** $n$ samples and slide $n$: the right panel plots the estimated half-life with its nominal 95 % interval for every $n$ (current one in gold). **New sample** draws fresh noise. Samples under the assay limit of 0.1 mg/L (hollow) are not reported. This outcome-dependent exclusion breaks the uncensored Gaussian pivot assumptions; the displayed intervals then have no exact 95 % coverage guarantee. The right panel displays 0–30 h only: finite endpoints inside the range have caps; a top ∞ marks an unbounded upper endpoint and a top > a finite upper endpoint above 30 h. P> marks a positive point estimate above 30 h that is omitted from the plotted points. A bottom × means that the rate interval contains no positive elimination rate; nonpositive point estimates are omitted. These glyphs are status labels, not finite half-life estimates.`,
       scope: String.raw`The nominal Student interval requires an uncensored fixed design with independent Gaussian errors of constant variance on the log scale and all observations on one exponential phase. Proportional noise alone does not imply that distribution or independence. The chosen lognormal generator meets the Gaussian log-error assumption before assay-limit exclusion; fitting only reportable concentrations can introduce selection bias. Curved profiles and other error models require a different analysis.`,
       deps: ['pharm-2.1', 'ladr-6.61', 'stat-1.10'],
       refs: ['Rowland–Tozer'],
@@ -154,7 +154,7 @@ For positive reported concentrations, put $y_i=\log C_i$ and let U be the span o
         let seed = 3;
         v.button('new sample', () => { seed++; });
         const sA = v.stage({ x: [0, 25], y: [0.05, 40], ylog: true, axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L, log)', height: 330, weight: 1.15, minWidth: 260 });
-        const sB = v.stage({ x: [2.5, 11.5], y: [0, 30], axes: 'box', gutter: true, xlabel: 'samples used $n$', ylabel: 'estimated $t_{1/2}$ (h)', height: 330, weight: 1, minWidth: 250, xticks: [3, 4, 5, 6, 7, 8, 9, 10, 11] });
+        const sB = v.stage({ x: [2.5, 11.5], y: [0, 30], axes: 'box', gutter: true, xlabel: 'samples used $n$', ylabel: '$t_{1/2}$ (h; 0–30 display)', height: 330, weight: 1, minWidth: 250, xticks: [3, 4, 5, 6, 7, 8, 9, 10, 11] });
         const draw = memo();
         const fitOf = (idx, ts, ys) => {
           const x = idx.map((i) => ts[i]), y = idx.map((i) => Math.log(ys[i]));
@@ -191,17 +191,28 @@ For positive reported concentrations, put $y_i=\log C_i$ and let U be the span o
           sB.hline(t12.value, { color: 'green', width: 1.6, dash: true });
           const lim = 30;
           for (let q = 3; q <= ok.length; q++) {
-            const g = fitOf(sel(q), T, data);
-            const kc = g.k, w = g.tq * g.se, lo = kc + w > 0 ? LN2 / (kc + w) : 0, hi = kc - w > 0 ? Math.min(lim, LN2 / (kc - w)) : lim;
+            const g = fitOf(sel(q), T, data), kc = g.k, w = g.tq * g.se;
             const cur = q === m, col = cur ? 'gold' : 'accent';
-            sB.segment([q, lo], [q, hi], { color: col, width: cur ? 3 : 2 });
-            sB.segment([q - 0.15, lo], [q + 0.15, lo], { color: col, width: 2 });
-            sB.segment([q - 0.15, hi], [q + 0.15, hi], { color: col, width: 2 });
-            sB.dot(q, kc > 0 ? Math.min(lim, LN2 / kc) : lim, { r: 4, color: col });
+            if (!(kc + w > 0)) {
+              sB.text('×', q, 1.5, { color: 'red', size: 13, align: 'center' });
+              continue;
+            }
+            const lo = LN2 / (kc + w), hi = kc - w > 0 ? LN2 / (kc - w) : Infinity;
+            if (lo <= lim) {
+              sB.segment([q, lo], [q, Math.min(lim, hi)], { color: col, width: cur ? 3 : 2 });
+              sB.segment([q - 0.15, lo], [q + 0.15, lo], { color: col, width: 2 });
+            }
+            if (hi <= lim) sB.segment([q - 0.15, hi], [q + 0.15, hi], { color: col, width: 2 });
+            else sB.text(isFinite(hi) ? '>' : '∞', q, lim - 0.4, { color: col, size: 11, align: 'center', baseline: 'top' });
+            if (kc > 0) {
+              const point = LN2 / kc;
+              if (point <= lim) sB.dot(q, point, { r: 4, color: col });
+              else sB.text('P>', q, lim - 3.5, { color: col, size: 8, align: 'center', baseline: 'top' });
+            }
           }
           info = f ? { f, m, w: f.tq * f.se, ok: ok.length } : { f: null, m, ok: ok.length };
         });
-        v.legend([['green', 'true value', { dash: true }], ['accent', 'fit and 95 % interval'], ['gold', 'samples used', { dot: true }]]);
+        v.legend([['green', 'true value', { dash: true }], ['accent', 'fit and nominal 95 % interval'], ['gold', 'samples used', { dot: true }]]);
         v.readout(() => {
           if (!info.f) return 'fewer than three reportable samples';
           const { f, w } = info, rateLo = f.k - w, rateHi = f.k + w;

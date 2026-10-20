@@ -1,0 +1,33 @@
+{
+  "baseline": "9bfaf153b77c2c8a8f9fa41aa42223ba781b52ad",
+  "changes": [
+    {
+      "file": "content/pharm/ch02.js",
+      "num": "2.3",
+      "field": "viz",
+      "before": "          const lim = 30;\n          for (let q = 3; q <= ok.length; q++) {\n            const g = fitOf(sel(q), T, data);\n            const kc = g.k, w = g.tq * g.se, lo = kc + w > 0 ? LN2 / (kc + w) : 0, hi = kc - w > 0 ? Math.min(lim, LN2 / (kc - w)) : lim;\n            const cur = q === m, col = cur ? 'gold' : 'accent';\n            sB.segment([q, lo], [q, hi], { color: col, width: cur ? 3 : 2 });\n            sB.segment([q - 0.15, lo], [q + 0.15, lo], { color: col, width: 2 });\n            sB.segment([q - 0.15, hi], [q + 0.15, hi], { color: col, width: 2 });\n            sB.dot(q, kc > 0 ? Math.min(lim, LN2 / kc) : lim, { r: 4, color: col });\n          }\n",
+      "after": "          const lim = 30;\n          for (let q = 3; q <= ok.length; q++) {\n            const g = fitOf(sel(q), T, data), kc = g.k, w = g.tq * g.se;\n            const cur = q === m, col = cur ? 'gold' : 'accent';\n            if (!(kc + w > 0)) {\n              sB.text('\u00d7', q, 1.5, { color: 'red', size: 13, align: 'center' });\n              continue;\n            }\n            const lo = LN2 / (kc + w), hi = kc - w > 0 ? LN2 / (kc - w) : Infinity;\n            if (lo <= lim) {\n              sB.segment([q, lo], [q, Math.min(lim, hi)], { color: col, width: cur ? 3 : 2 });\n              sB.segment([q - 0.15, lo], [q + 0.15, lo], { color: col, width: 2 });\n            }\n            if (hi <= lim) sB.segment([q - 0.15, hi], [q + 0.15, hi], { color: col, width: 2 });\n            else sB.text(isFinite(hi) ? '>' : '\u221e', q, lim - 0.4, { color: col, size: 11, align: 'center', baseline: 'top' });\n            if (kc > 0) {\n              const point = LN2 / kc;\n              if (point <= lim) sB.dot(q, point, { r: 4, color: col });\n              else sB.text('P>', q, lim - 3.5, { color: col, size: 8, align: 'center', baseline: 'top' });\n            }\n          }\n"
+    },
+    {
+      "file": "content/pharm/ch02.js",
+      "num": "2.3",
+      "field": "viz",
+      "before": "ylabel: 'estimated $t_{1/2}$ (h)'",
+      "after": "ylabel: '$t_{1/2}$ (h; 0\u201330 display)'"
+    },
+    {
+      "file": "content/pharm/ch02.js",
+      "num": "2.3",
+      "field": "viz",
+      "before": "['accent', 'fit and 95 % interval']",
+      "after": "['accent', 'fit and nominal 95 % interval']"
+    },
+    {
+      "file": "content/pharm/ch02.js",
+      "num": "2.3",
+      "field": "caption",
+      "before": "Eleven blood samples of a drug with true half-life 5 h (dashed green line) are generated with lognormal assay noise. The accent line is the least-squares fit; its shaded band is the nominal 95 % interval for the slope. Choose whether to **keep the earliest or the latest** $n$ samples and slide $n$: the right panel plots the estimated half-life with its nominal 95 % interval for every $n$ (current one in gold). **New sample** draws fresh noise. Samples under the assay limit of 0.1 mg/L (hollow) are not reported. This outcome-dependent exclusion breaks the uncensored Gaussian pivot assumptions; the displayed intervals then have no exact 95 % coverage guarantee.",
+      "after": "Eleven blood samples of a drug with true half-life 5 h (dashed green line) are generated with lognormal assay noise. The accent line is the least-squares fit; its shaded band is the nominal 95 % interval for the slope. Choose whether to **keep the earliest or the latest** $n$ samples and slide $n$: the right panel plots the estimated half-life with its nominal 95 % interval for every $n$ (current one in gold). **New sample** draws fresh noise. Samples under the assay limit of 0.1 mg/L (hollow) are not reported. This outcome-dependent exclusion breaks the uncensored Gaussian pivot assumptions; the displayed intervals then have no exact 95 % coverage guarantee. The right panel displays 0\u201330 h only: finite endpoints inside the range have caps; a top \u221e marks an unbounded upper endpoint and a top > a finite upper endpoint above 30 h. P> marks a positive point estimate above 30 h that is omitted from the plotted points. A bottom \u00d7 means that the rate interval contains no positive elimination rate; nonpositive point estimates are omitted. These glyphs are status labels, not finite half-life estimates."
+    }
+  ]
+}
