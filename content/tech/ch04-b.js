@@ -1,5 +1,6 @@
+import { smeatonWind } from './source-audit-power.js';
 // History of Technology — Chapter 4: Building, water and power before steam (items 4.7–4.12; 4.1–4.6 are in ch04.js)
-import { yearStage, drawYears, RHO, G, undershotP, overshotP, plate, windCp, BETZ } from './ch04.shared.js';
+import { yearStage, drawYears, G, plate } from './ch04.shared.js';
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const D2R = Math.PI / 180;
@@ -448,88 +449,25 @@ How close to the wind a boat can point depends mostly on how near the boat's axi
 
     // ------------------------------------------------------------------ 4.12
     {
-      num: '4.12',
-      kind: 'Paper',
-      name: 'The Natural Powers of Water and Wind to Turn Mills',
-      credit: 'John Smeaton, 1759',
-      verify: true,
-      paper: { authors: 'John Smeaton', year: 1759, title: 'An Experimental Enquiry Concerning the Natural Powers of Water and Wind to Turn Mills, and Other Machines, Depending on a Circular Motion', venue: 'Philosophical Transactions of the Royal Society of London 51: 100–174', doi: '10.1098/rstl.1759.0019' },
-      introduces: ['tech-4.5'],
-      statement: String.raw`Smeaton's paper, read to the Royal Society in 1759 (he received the Society's Copley Medal for it), reports two series of experiments on working models. In the first he measured water wheels (the results are replayed in 4.5): at the same water and the same fall the overshot wheel does about twice the work of the undershot wheel, and each does best turning slowly. In the second part he tested windmill sails. Because natural wind is too uncertain, he carried the sails round a large circle on an arm, pulling it by hand and regulating the speed with a pendulum, so that the sails met an "artificial wind" of known speed (according to the OCR text, sails of 21 inches radius at a centre speed of 6 ft/s). He measured the load the sails could raise and their turns for different angles of weather (the angle between the sail and the plane of rotation), and concluded that sails set at 55° to the axis were not the best for work and that the angle should vary along the sail, larger near the axis than at the tip. For a sail divided in six parts from the axis outward he gave angles of weather of 18°, 19°, 18°, 16°, 12½° and 7° (the OCR layout of the last two is garbled), and he found that concave sails and a wider leading edge did better still.
+      num:'4.12',kind:'Paper',name:'The Natural Powers of Water and Wind to Turn Mills',verify:true,
+      credit:'John Smeaton, 1759',
+      paper:{authors:'John Smeaton',year:1759,title:'An Experimental Enquiry Concerning the Natural Powers of Water and Wind to Turn Mills, and Other Machines, Depending on a Circular Motion',venue:'Philosophical Transactions 51:100–174',doi:'10.1098/rstl.1759.0019'},introduces:['tech-4.5'],
+      statement:String.raw`Smeaton's 1759 paper reports water-wheel and windmill-sail experiments on working models, with explicit warnings about scaling to full machines. For wind, he moved the sail axis on a large circular arm against still air, using a hand-pulled cord and pendulum timing. His specimen uses 21-inch-radius sails at a nominal centre speed of 6 ft/s. Table III (p.144) compares 19 sets of sail forms, weather angles and cloth quantities.
 
-He also drew general rules from the windmill tests: the speed of the sails at maximum load is nearly proportional to the wind speed; the load at maximum is nearly, a little less than, proportional to the square of the wind speed; and the work done is nearly, a little less than, proportional to the cube of the wind speed.
+A plane sail at 35° of weather—55° to the axis—has printed product 318; tested plane sails at 15° and 18° have 464 and 462. Dutch, enlarged and elliptical-sector sails vary geometry and cloth area as well as position. The largest raw product therefore cannot alone establish the best output per unit cloth. The footnote on p.148 gives six angles tried at full size, 18°, 19°, 18°, 16°, 12½°, 7°, at radial stations 1/6 through 6/6. These are specified stations, not constant-angle bands covering an entire blade.`,
+      idea:String.raw`The method seeks the load and rotation giving greatest useful work for the stated setup. Table III's printed Product is retained directly rather than reconstructed from other rounded columns. Dividing by its reported cloth area provides an arithmetic comparison within that table; it is not a modern power coefficient, aerodynamic fit or proof of an optimal universal sail.
 
-What the paper changed: it gave a measured, not argued, answer to a question that engineers had been settling by opinion, and its method (vary one parameter on a model, find the maximum, scale up by stated rules) became a template. I read the paper's text only in an OCR transcription, so every figure quoted here is unverified against the printed page.`,
-      idea: String.raw`The context was a dispute about what a moving fluid can do to a machine. Mathematicians (Parent, Belidor) had argued from the momentum of the water that an undershot wheel should run at a third of the stream's speed and give a small fraction of its power; Smeaton's own later work on the "mechanic power" of moving bodies bears on the same quarrel over momentum and vis viva. He did not argue; he measured, using a model for which he could vary the head, the load and the wheel speed and compare the work done with the water's available power (ρgQH). For wind he built the whirling arm because no steady wind could be had.
-
-The ideas the paper introduced were the experimental model with its maximum-effect method (add weight to the scale until the product of load and turns is greatest), the efficiency of a water wheel as a measured fraction of the water's power (4.5), the observation that weight beats impulse where a fall is available (4.4), and the twisted windmill sail whose angle of weather varies with the distance from the axis (4.6).`,
-      caption: String.raw`Two benches. **Water:** the model wheel of 4.4 at a head of 0.8 m (Smeaton's 27–35 inches); add weight to the scale with the **load** slider (as a fraction of the weight that just stops the wheel) and watch the product of load and speed, his "effect", rise to a maximum and fall; the bands are his measured shares (Tables I and II). **Wind:** the power coefficient of a four-sail mill against tip-speed ratio, for flat sails of Smeaton's six angles, for a single plane angle, and for sails at 55° to the axis (35° of weather); the bars show his six angles. The sail model is the flat-plate blade-element model of 4.6, not his data.`,
-      deps: ['tech-4.4', 'tech-4.6'],
-      see: ['tech-4.5', 'tech-4.6'],
-      refs: ['Smeaton 1759, Phil. Trans. 51:100–174, doi 10.1098/rstl.1759.0019 (Crossref record; text read as OCR at jimclifford.ca)', 'Smeaton 1776, Phil. Trans. 66'],
-      tags: ['industrial', '1759', 'experiment'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/John_Smeaton' },
-      viz(v) {
-        const rig = v.select('bench', [{ value: 'water', label: 'water wheel' }, { value: 'wind', label: 'windmill sails' }], 'water');
-        const A = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1.15, minWidth: 340, xlabel: 'load ÷ load that stops the wheel', ylabel: 'effect (load × speed), ÷ water power', title: 'maximum-effect method' });
-        const B = v.stage({ x: [0.5, 6], y: [0, 0.3], axes: 'box', gutter: true, height: 300, weight: 1.15, minWidth: 340, xlabel: 'tip-speed ratio', ylabel: '$C_p$ (model)', title: 'sail angles on the whirling arm' });
-        const C = v.stage({ x: [0, 1], y: [0, 25], axes: 'box', gutter: true, height: 300, weight: 0.85, minWidth: 250, xlabel: 'distance from the axis ÷ sail radius', ylabel: 'angle of weather (°)', title: 'Smeaton’s six angles' });
-        const wheel = v.select('wheel', [{ value: 'under', label: 'undershot' }, { value: 'over', label: 'overshot' }], 'over');
-        const load = v.slider('load in the scale', 0.02, 1, 0.5, { step: 0.01 });
-        const uni = v.slider('plane sail: angle of weather (°)', 3, 45, 18, { step: 0.5 });
-        const sol = v.slider('sail area ÷ swept area', 0.1, 0.6, 0.3, { step: 0.01 });
-        const HM = 0.8, QM = 0.2, vj = Math.sqrt(2 * G * HM);
-        const tab = (kind) => {
-          const F0 = (() => { const u0 = 0.01, P = kind === 'under' ? undershotP(u0, { Q: QM, H: HM }) : overshotP(u0, { Q: QM, H: HM }).P; return P / u0; })();
-          const out = [];
-          for (let i = 1; i <= 500; i++) { const u = (vj * i) / 500, P = kind === 'under' ? undershotP(u, { Q: QM, H: HM }) : overshotP(u, { Q: QM, H: HM }).P; if (P <= 0 && i > 5) break; out.push({ u, P, L: clamp(P / u / F0, 0, 1.2) }); }
-          return out;
-        };
-        const tabs = { under: tab('under'), over: tab('over') };
-        const at = (kind, L) => { const t = tabs[kind]; let best = t[0]; for (const r of t) if (Math.abs(r.L - L) < Math.abs(best.L - L) && r.u > 0.05) best = r; return best; };
-        const SM = [18, 19, 18, 16, 12.5, 7];
-        const smeaton = (r) => SM[Math.min(5, Math.floor(r * 6 - 1e-9))] * D2R;
-        const lam = Array.from({ length: 40 }, (_, i) => 0.5 + (i * 5.5) / 39);
-        let key = '', curves = null;
-        v.render(() => {
-          const w = rig.value === 'water';
-          A.el.style.display = w ? '' : 'none'; wheel.el.hidden = !w; load.el.hidden = !w;
-          B.el.style.display = w ? 'none' : ''; C.el.style.display = w ? 'none' : ''; uni.el.hidden = w; sol.el.hidden = w;
-          if (w) {
-            const t = tabs[wheel.value], PM = RHO * G * QM * HM;
-            A.setView([0, 1], [0, 0.85]);
-            A.hband(0.28, 0.33, { color: 'accent', alpha: 0.12 }); A.hband(0.52, 0.76, { color: 'green', alpha: 0.12 });
-            A.text('Table I: 0.28–0.33', 0.02, 0.335, { size: 10.5, color: 'accent', baseline: 'bottom' }); A.text('Table II: 0.52–0.76', 0.02, 0.77, { size: 10.5, color: 'green', baseline: 'bottom' });
-            A.path(t.map((r) => [r.L, r.P / PM]), { color: wheel.value === 'over' ? 'green' : 'accent', width: 2.6 });
-            const pk = t.reduce((b, r) => (r.P > b.P ? r : b), t[0]), here = at(wheel.value, load.value);
-            A.dot(pk.L, pk.P / PM, { r: 5, hollow: true, color: 'ink', label: 'maximum effect', labelPos: 'n' });
-            A.dot(here.L, here.P / PM, { r: 7, color: 'gold' }); A.vline(here.L, { color: 'gold', width: 1.2, dash: [4, 3] });
-            A._w = { here, pk, PM };
-          } else {
-            const k = `${uni.value}|${sol.value}`;
-            if (k !== key) {
-              key = k;
-              const f = (b) => lam.map((l) => windCp(l, b, { solidity: sol.value }));
-              curves = { sm: f(smeaton), pl: f(() => uni.value * D2R), ax: f(() => 35 * D2R) };
-            }
-            B.setView([0.5, 6], [0, Math.max(0.1, ...curves.sm, ...curves.pl, ...curves.ax) * 1.2]);
-            B.path(lam.map((l, i) => [l, curves.sm[i]]), { color: 'green', width: 2.8 });
-            B.path(lam.map((l, i) => [l, curves.pl[i]]), { color: 'accent', width: 2.2 });
-            B.path(lam.map((l, i) => [l, curves.ax[i]]), { color: 'red', width: 2.2 });
-            for (let j = 0; j < 6; j++) { C.rect(j / 6 + 0.01, 0, (j + 1) / 6 - 0.01, SM[j], { fill: 'green', fillAlpha: 0.35, color: 'green', width: 1.2 }); C.text(`${SM[j]}°`, (j + 0.5) / 6, SM[j] + 0.6, { size: 11, color: 'green', align: 'center', baseline: 'bottom', weight: 600 }); }
-            C.hline(uni.value, { color: 'accent', width: 1.5, dash: [5, 3] }); C.hline(35, { color: 'red', width: 1.5, dash: [5, 3] });
-            C.text('plane sail', 0.99, uni.value + 0.5, { size: 10.5, color: 'accent', align: 'right', baseline: 'bottom' });
-          }
-        });
-        v.legend([['green', 'Smeaton’s six angles / overshot'], ['accent', 'plane sail / undershot'], ['red', 'sails at 55° to the axis']]);
-        v.readout(() => {
-          if (rig.value === 'water') {
-            const { here, pk, PM } = A._w, circ = 75 * 0.0254;
-            return `${wheel.value === 'over' ? 'overshot' : 'undershot'} model: load ${v.fix(100 * here.L, 0)}% of the stopping load → rim speed ${v.fix(here.u, 2)} m/s (${v.fix(here.u / 0.3048, 1)} ft/s${wheel.value === 'under' ? `; ${v.fix(60 * here.u / circ, 0)} turns/min on a 75-inch wheel` : ''}), effect ${v.fix(100 * here.P / PM, 0)}% of the water's power\nmaximum effect ${v.fix(100 * pk.P / PM, 0)}% at ${v.fix(100 * pk.L, 0)}% of the stopping load (paper's tables, from 4.5: undershot 28–33%, overshot 52–76% of the power of the whole descent; his best load ≈ ¾ of the stopping load)`;
-          }
-          const mx = (a) => Math.max(...a);
-          return `model peaks (flat-plate sails, solidity ${v.fix(sol.value, 2)}): Smeaton's six angles **${v.fix(mx(curves.sm), 3)}**, plane ${v.fix(uni.value, 1)}° **${v.fix(mx(curves.pl), 3)}**, 35° of weather **${v.fix(mx(curves.ax), 3)}**\nthe paper: sails at 55° to the axis were not best for work; angles of weather 18°, 19°, 18°, 16°, 12½°, 7° from the axis outward (OCR layout uncertain); the model need not reproduce his product values and is not fitted to them`;
-        });
+The second panel changes angle convention through $\theta_{\rm axis}=90^\circ-\theta_{\rm plane}$. No blade-element solver or assumed interpolation converts the six historical stations into invented measured power curves. The paper's later wind-speed scaling rules are approximate experimental generalizations under like shape and position, not exact laws of every windmill.`,
+      caption:String.raw`The left panel shows all 19 printed Table III products, or product divided by printed cloth area. Select a row to inspect its form, tip/greatest weather angles, product and area. The right panel shows the six full-size trial stations from the p.148 footnote; choose weather from the plane of rotation or its complementary angle from the axis. The selected Table III row and this separate footnote are identified independently. Water-wheel data and their denominator caveats are in 4.5.`,
+      deps:['tech-4.4','tech-4.6'],see:['tech-4.4','tech-4.6'],refs:['Smeaton 1759, Phil. Trans. 51:100–174; actual pp.138–155, Table III p.144 and footnote p.148'],tags:['industrial','1759','experiment'],
+      scope:String.raw`Only Table III's family, tip/greatest angles, printed product and cloth area are replayed. Printed rounding is preserved. No missing load or speed is inferred, and product/cloth area is not Cp. The six-station plot makes no radial interpolation or optimality claim. The source quantities are distinct from an aerodynamic model.`,
+      links:{source:'https://www.engr.psu.edu/mtah/projects/pdf/smeaton1759.pdf',doi:'https://doi.org/10.1098/rstl.1759.0019'},
+      viz(v){
+        const row=v.slider('Table III selected row',1,19,1,{int:true}),basis=v.select('plotted quantity',[{value:'product',label:'printed product'},{value:'area',label:'product per cloth area'}],'product'),convention=v.select('six-station angle convention',[{value:'plane',label:'from rotation plane'},{value:'axis',label:'from axis'}],'plane'),A=v.stage({x:[-.1,20.1],y:[-150,1400],axes:'box',gutter:true,height:310,minWidth:260,xlabel:'Table III set number',ylabel:'printed product',title:'all source sail comparisons'}),B=v.stage({x:[-.08,1.15],y:[-12,100],axes:'box',gutter:true,height:310,minWidth:260,xlabel:'radial station ÷ radius',ylabel:'angle (°)',title:'separate full-size trial stations'});let info;
+        A.onClick((x,y)=>{const p=smeatonWind(row.value,basis.value,convention.value);let best=null;for(const pt of p.points){const d=Math.hypot(A.X(pt[0])-A.X(x),A.Y(pt[1])-A.Y(y));if(!best||d<best.d)best={d,row:pt[0]};}if(best&&best.d<=18)row.set(best.row);});
+        v.legend([['accent','Table III printed quantities'],['green','p.148 six stations'],['gold','selected Table III row',{dot:true}]]);
+        v.render(()=>{const p=smeatonWind(row.value,basis.value,convention.value);A.setView([-.1,20.1],p.y);A.setLabels(undefined,p.basis==='product'?'printed product':'printed product ÷ cloth area');for(const q of p.points)A.dot(...q,{color:'accent',r:4,ring:false});A.dot(...p.selected,{color:'gold',r:7,hollow:true});for(const[x,y]of p.angles){B.line(x,0,x,y,{color:'green',width:2});B.dot(x,y,{color:'green',r:4,ring:false});}info=p;});
+        v.readout(()=>{if(!info)return'';const p=info,[family,tip,greatest,product,area]=p.source;return `Table III row ${p.row}, ${family}: tip weather ${tip}°, greatest weather ${greatest}°; printed Product ${product}, cloth area ${area} in². Plotted ${v.fix(p.selected[1],9)} ${p.basis==='area'?'product per in²':'printed product units'}.\nSeparate footnote stations, measured from ${p.convention==='plane'?'rotation plane':'axis'}: ${p.angles.map(q=>q[1]+'°').join(', ')}. No inferred power coefficient.`;});
       },
     },
   ],

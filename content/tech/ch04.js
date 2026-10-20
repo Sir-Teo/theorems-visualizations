@@ -1,6 +1,7 @@
+import { waterWheels, smeatonWater } from './source-audit-power.js';
 import { mortar, aqueduct } from './source-audit-water.js';
 // History of Technology — Chapter 4: Building, water and power before steam (items 4.1–4.6; 4.7–4.12 are in ch04-b.js)
-import { yearStage, drawYears, lump, RHO, G, undershotP, overshotP, breastP, plate, windCp, BETZ, archGeometry, archFeasible, thrustAt } from './ch04.shared.js';
+import { yearStage, drawYears, lump, plate, windCp, BETZ, archGeometry, archFeasible, thrustAt } from './ch04.shared.js';
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const D2R = Math.PI / 180;
@@ -171,184 +172,47 @@ Flow demand, bore, parallel pipes and wall ratio change the comparison. Capacity
     },
     // ------------------------------------------------------------------ 4.4
     {
-      num: '4.4',
-      kind: 'Invention',
-      name: 'The water wheel',
-      credit: 'Hellenistic Greek world. Earliest textual evidence: Philo of Byzantium, 3rd century BCE; first technical description: Vitruvius, c. 25 BCE. Whether the horizontal or the vertical wheel came first is disputed',
-      verify: true,
-      statement: String.raw`A **water wheel** turns the energy of falling water into rotation of a shaft. The vertical wheel comes in three arrangements. An **undershot** wheel dips floats into a fast stream, which pushes them by impulse. In a **breastshot** wheel the water enters at about the height of the axle and works partly by impulse and partly by its weight in buckets. In an **overshot** wheel the water is led over the top into buckets and its weight turns the wheel, so it needs a fall but hardly any speed. The ceiling for all three is the power of the water, $P_\mathrm{max}=\rho g Q H$, for a flow $Q$ falling through a head $H$.
+      num:'4.4',kind:'Invention',name:'The water wheel',verify:true,
+      credit:'River wheel and geared mill described by Vitruvius X.5; hydraulic comparisons authored here',
+      statement:String.raw`A water wheel converts energy transferred by moving or descending water into shaft work. Vitruvius X.5 describes river-driven paddles and a geared water mill. Smeaton's 1759 experiments distinguish water acting by impulse, by its weight in buckets, and mixed arrangements. These passages establish described mechanisms; they do not establish a unique inventor, first date or priority between horizontal and vertical wheels.
 
-The earliest evidence is textual: passages attributed to Philo of Byzantium (3rd century BCE) describe a water-driven wheel, an epigram of Antipater of Thessalonica (around the turn of the era) describes a mill, and Vitruvius gives the first technical description, of a geared undershot mill. Historians differ on whether the horizontal-wheeled "Greek" mill or the vertical-wheeled gear-driven mill came first, and the dates proposed for each rest on interpretations of these texts (M. J. T. Lewis argues for the 3rd century BCE for both).
+An undershot arrangement receives water low on the wheel, an overshot arrangement receives it near the top, and a breastshot arrangement receives it partway down. Performance depends on the actual race, geometry, flow and losses. The comparison below is an explicit family of authored hydraulic rules; Smeaton's measurements are shown separately in 4.5.`,
+      idea:String.raw`For the model's reservoir drop $H$ and discharge $Q$, available power is $P_0=\rho gQH$. A jet idealization gives $v=\sqrt{2gH}$. If a continuous captured stream leaves its one-direction momentum transfer moving at float speed $u$, the impulse formula is $P=\rho Q(v-u)u$ for $0\le u\le v$. It peaks at $u=v/2$, at half the incoming kinetic power; the plotted version retains 75% of that stream. This is a bound for that particular momentum model, not every undershot or impulse machine.
 
-Scope of the picture: it is a **model** with plausible but uncalibrated losses (the floats' leakage, buckets that spill, water thrown out by rotation). It is not a fit to measurements; for the measurements of an eighteenth-century experimenter see 4.5 and 4.12.`,
-      idea: String.raw`Whatever the arrangement, the wheel cannot deliver more than the water gives up, $\rho g Q H$ (energy-5.7). The jet from a sluice leaves at the speed $v=\sqrt{2gH}$ that turns the whole head into motion (Bernoulli, fluid-2.9), so an undershot wheel is an impulse machine: floats moving at $u$ take a momentum $\rho Q (v-u)$ per second out of the jet and deliver power $\rho Q(v-u)u$ (mech-2.1), which is greatest at $u=v/2$ and then equals half of the jet's power. No amount of care with the floats gets past that half, because water leaves still moving at $v-2u\neq0$ unless it is slowed in a closed channel.
-
-An overshot wheel uses the weight of the water instead. It has no such limit, its losses are the part of the head not used (the race above the wheel and the fall of the water as it spills out of the buckets) and the kinetic energy it carries off, and it works best at a slow rim speed, because buckets must have time to fill and must keep their water until low on the wheel. That is why the three curves peak at very different rim speeds.`,
-      caption: String.raw`The same stream of head $H$ drives three wheels at the same rim speed $u$ (the picture turns at that speed; the blue dots are loaded buckets). Below, the share of the stream's power each wheel delivers, against rim speed. Drag **rim speed** and watch each wheel's share move along its curve: the undershot wheel wants a rim speed near half the jet speed, the overshot wheel a speed of about a metre per second whatever the head. Open circles mark each wheel's best. Raise the head and only the undershot wheel's best speed moves.`,
-      deps: ['tech-2.2', 'tech-2.9', 'energy-5.7'],
-      see: ['tech-4.5', 'tech-4.12', 'tech-8.3'],
-      refs: ['Usher, “Water wheels and windmills”', 'Mokyr ch. 3', 'Lewis, Millstone and Hammer (1997), as cited by Wikipedia “Watermill”'],
-      tags: ['ancient', 'c. 250 BCE', 'prime mover'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Watermill' },
-      viz(v) {
-        const Wst = v.stage({ x: [0, 6.5], y: [-0.12, 1.2], equal: true, axes: false, height: 250, full: true, title: 'the same stream, three wheels, one rim speed' });
-        const Pst = v.stage({ x: [0, 9], y: [0, 1], axes: 'box', gutter: true, height: 260, full: true, xlabel: 'rim speed $u$ (m/s)', ylabel: 'power ÷ ρgQH', title: 'share of the stream’s power delivered' });
-        const Hs = v.slider('head $H$ (m)', 1, 10, 4, { step: 0.1 });
-        const Qs = v.slider('flow $Q$ (m³/s)', 0.05, 1, 0.2, { step: 0.01 });
-        const Us = v.slider('rim speed $u$ (m/s)', 0.1, 9, 1, { step: 0.05 });
-        const RN = { under: 0.45, over: 0.45, breast: 0.4 };
-        const eff = (k, u, H, Q) => {
-          const o = { Q, H };
-          const P = k === 'under' ? undershotP(u, o) : k === 'over' ? overshotP(u, o).P : breastP(u, o);
-          return P / (RHO * G * Q * H);
-        };
-        let best = {};
-        const bestOf = (k, H, Q, vmax) => { let b = 0, bu = 0; for (let i = 1; i <= 240; i++) { const u = (vmax * i) / 240, e = eff(k, u, H, Q); if (e > b) { b = e; bu = u; } } return { e: b, u: bu }; };
-        function wheel(ox, kind, ang, u, H, Q, label) {
-          const R = RN[kind], cx = ox + 1.45, cy = R, dir = kind === 'over' ? 1 : -1;
-          const fillF = bucketFillX(u), thD = (125 + 55 * (1 - fillF)) * D2R;
-          Wst.rect(ox, 0, ox + 0.55, 1, { fill: 'accent', fillAlpha: 0.2, stroke: false });
-          Wst.line(ox, 1, ox + 0.55, 1, { color: 'accent', width: 1.5 });
-          Wst.line(ox - 0.05, 0, ox + 2.3, 0, { color: 'muted', width: 2 });
-          if (kind === 'under') {
-            Wst.line(ox + 0.55, 1, ox + 0.55, 0.14, { color: 'muted', width: 3 });
-            Wst.rect(ox + 0.55, 0, cx + 0.85 * R, 0.1, { fill: 'accent', fillAlpha: 0.35, stroke: false });
-            Wst.arrow(ox + 0.65, 0.05, ox + 0.9, 0.05, { color: 'accent', width: 1.6, head: 6 });
-          } else if (kind === 'over') {
-            Wst.path([[ox + 0.55, 1.0], [cx - 0.05, 2 * R + 0.03]], { color: 'accent', width: 3, alpha: 0.7 });
-            Wst.line(ox + 0.55, 1.0, ox + 0.55, 0.9, { color: 'muted', width: 2 });
-          } else {
-            const ex = cx - R * Math.sin(Math.PI / 3), ey = cy + R * Math.cos(Math.PI / 3);
-            Wst.line(ox + 0.55, 1, ox + 0.55, ey + 0.08, { color: 'muted', width: 3 });
-            Wst.path([[ox + 0.55, ey + 0.04], [ex, ey + 0.01]], { color: 'accent', width: 3, alpha: 0.7 });
-          }
-          Wst.circle(cx, cy, R, { color: 'ink', width: 1.6, fill: false });
-          Wst.circle(cx, cy, 0.78 * R, { color: 'ink', width: 1, alpha: 0.6, fill: false });
-          const NB = 12;
-          for (let k = 0; k < NB; k++) {
-            const ph = (k / NB) * 2 * Math.PI + dir * ang, px = Math.sin(ph), py = Math.cos(ph);
-            Wst.line(cx + 0.78 * R * px, cy + 0.78 * R * py, cx + R * px, cy + R * py, { color: 'ink', width: 1.2, alpha: 0.8 });
-            const phn = ((ph % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-            let loaded = false;
-            if (kind === 'over') loaded = phn <= thD;
-            else if (kind === 'breast') { const q = (2 * Math.PI - phn) % (2 * Math.PI); loaded = q >= Math.PI / 3 && q <= thD; }
-            else { const bot = Math.abs(((phn - Math.PI + Math.PI) % (2 * Math.PI)) - Math.PI) ; loaded = Math.abs(phn - Math.PI) < 0.45; }
-            if (loaded) {
-              const pm = ph + (dir * Math.PI) / NB * (kind === 'under' ? 0 : 1) * 1;
-              const mid = ph + (Math.PI / NB) * (kind === 'over' ? 1 : -1);
-              if (kind === 'under') Wst.dot(cx + 0.9 * R * Math.sin(ph), cy + 0.9 * R * Math.cos(ph), { r: 3, color: 'accent' });
-              else Wst.dot(cx + 0.89 * R * Math.sin(mid), cy + 0.89 * R * Math.cos(mid), { r: 2 + 4 * fillF, color: 'accent' });
-            }
-          }
-          Wst.dot(cx, cy, { r: 3, color: 'ink' });
-          Wst.text(label, ox + 1.2, 1.12, { size: 12, color: 'ink', align: 'center', weight: 700 });
-          Wst.text(`${v.fix(100 * eff(kind, u, H, Q), 0)}% of ρgQH`, ox + 1.2, -0.08, { size: 11.5, color: 'muted', align: 'center' });
-        }
-        // buckets of the overshot/breastshot wheels are sized so that they just fill at u = 1/1.5 m/s
-        function bucketFillX(u) { return Math.min(1, 1 / Math.max(1e-6, 1.5 * u)); }
-        v.animate((t) => {
-          const H = Hs.value, Q = Qs.value, vj = Math.sqrt(2 * G * H), u = Math.min(Us.value, vj);
-          for (const [i, k, lab] of [[0, 'under', 'undershot'], [1, 'breast', 'breastshot'], [2, 'over', 'overshot']]) {
-            const ang = ((u / (RN[k] * H)) * t) % (2 * Math.PI * 1000);
-            wheel(2.15 * i, k, ang, u, H, Q, lab);
-            best[k] = bestOf(k, H, Q, vj);
-          }
-          Pst.setView([0, vj], [0, 1]);
-          const cols = { under: 'orange', breast: 'purple', over: 'green' };
-          Pst.hline(1, { color: 'muted', width: 1.2, dash: [5, 3] });
-          Pst.text('all of $\\rho g Q H$', vj * 0.99, 0.96, { size: 10.5, color: 'muted', align: 'right', baseline: 'top' });
-          for (const k of ['under', 'breast', 'over']) {
-            Pst.fn((x) => eff(k, x, H, Q), { color: cols[k], width: 2.4, n: 300 });
-            Pst.dot(best[k].u, best[k].e, { r: 5, color: cols[k], hollow: true });
-            Pst.dot(u, eff(k, u, H, Q), { r: 5, color: cols[k] });
-          }
-          Pst.vline(u, { color: 'gold', width: 1.3, dash: [4, 3] });
-        }, { period: 1e9, still: 1.2 });
-        v.legend([['orange', 'undershot'], ['purple', 'breastshot'], ['green', 'overshot'], ['gold', 'rim speed', { dash: [4, 3] }]]);
-        v.readout(() => {
-          const H = Hs.value, Q = Qs.value, vj = Math.sqrt(2 * G * H), u = Math.min(Us.value, vj);
-          const kw = (k) => eff(k, u, H, Q) * RHO * G * Q * H / 1000;
-          return `head ${v.fix(H, 1)} m, flow ${v.fix(Q, 2)} m³/s: the stream carries $\\rho g Q H = ${v.fix(RHO * G * Q * H / 1000, 1)}$ kW, jet speed ${v.fix(vj, 1)} m/s\nat $u=${v.fix(u, 2)}$ m/s: undershot **${v.fix(kw('under'), 2)}** kW, breastshot **${v.fix(kw('breast'), 2)}** kW, overshot **${v.fix(kw('over'), 2)}** kW · best shares: ${v.fix(100 * (best.under?.e ?? 0), 0)}% (at ${v.fix(best.under?.u ?? 0, 1)} m/s), ${v.fix(100 * (best.breast?.e ?? 0), 0)}% (${v.fix(best.breast?.u ?? 0, 1)} m/s), ${v.fix(100 * (best.over?.e ?? 0), 0)}% (${v.fix(best.over?.u ?? 0, 1)} m/s) · the undershot ideal is 50% (at $u=v/2$) before leakage`;
-        });
+Bucket rules use physical radii $0.45H$ (undershot/overshot) or $0.4H$ (breastshot), a prescribed filling fraction, spilling angle and speed loss. Breastshot adds a specified impulse term using the head above its entry. Their coefficients are chosen assumptions, not measured efficiencies or a universal best-speed rule.`,
+      caption:String.raw`Choose a wheel to inspect its arrangement, then vary head, flow, rim speed and elapsed model time. The diagram is normalized to a common drawing size; its phase uses the selected physical radius. It is schematic rather than a reconstruction of Vitruvius or Smeaton's apparatus. The other panel shows all three complete power-share curves over the offered 0–15 m/s range. Gold circles mark the selected rim speed, including speeds above the jet speed without silently changing the control. Hollow markers are the largest values on the 601-point comparison grid.`,
+      deps:['tech-2.2','tech-2.9','energy-5.7'],see:['tech-4.5','tech-4.12'],
+      refs:['Vitruvius, De architectura X.5.1–2; Morgan 1914 pp.294–295 and Gwilt 1826','Smeaton 1759, Phil. Trans. 51:100–174, Parts I–II and scholium pp.137–138'],tags:['ancient','prime mover','hydraulics'],
+      scope:String.raw`The finite 601-point grids, captured fraction 0.75, bucket capacity, spilling angles, radius/head ratios and loss factors are authored. Water density is 1000 kg/m³ and gravity 9.81 m/s². The model omits detailed free-surface flow, blade deflection, gearing and bearing losses. Marks are finite-grid maxima, not continuous optimization certificates or experimental observations.`,
+      links:{source:'https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Vitruvius/10*.html',experiment:'https://www.engr.psu.edu/mtah/projects/pdf/smeaton1759.pdf'},
+      viz(v){
+        const head=v.slider('head H (m)',1,10,4,{step:'any',decimals:6}),flow=v.slider('flow Q (m³/s)',.05,1,.2,{step:'any',decimals:6}),speed=v.slider('rim speed u (m/s)',0,15,1,{step:'any',decimals:6}),time=v.slider('elapsed model time (s)',0,5,1,{step:'any',decimals:6}),kind=v.select('wheel',[{value:'under',label:'undershot'},{value:'breast',label:'breastshot'},{value:'over',label:'overshot'}],'under'),A=v.stage({x:[-1.3,1.3],y:[-.25,2.4],equal:true,axes:false,height:310,minWidth:260,title:'selected schematic arrangement'}),B=v.stage({x:[-.7,15.7],y:[-.12,1.12],axes:'box',gutter:true,height:310,minWidth:260,xlabel:'rim speed (m/s)',ylabel:'power ÷ ρgQH',title:'complete authored speed family'});let info;
+        v.legend([['orange','undershot'],['purple','breastshot'],['green','overshot'],['gold','selected speed',{dot:true}]]);
+        v.render(()=>{const p=waterWheels(head.value,flow.value,speed.value,time.value,kind.value),cols=['orange','purple','green'];A.circle(0,1,.8,{color:'ink',width:1.6});A.circle(0,1,.55,{color:'muted',width:1});for(let i=0;i<12;i++){const a=p.phase+i*Math.PI/6;A.line(.55*Math.sin(a),1+.55*Math.cos(a),.8*Math.sin(a),1+.8*Math.cos(a),{color:'ink',width:1.4});}A.dot(0,1,{color:'ink',r:4,ring:false});if(p.kind==='under')A.arrow(-1.15,.25,-.45,.25,{color:'accent',width:3});else if(p.kind==='over')A.path([[-1.15,2.05],[-.1,2.05],[-.1,1.9]],{color:'accent',width:3});else A.arrow(-1.15,1.4,-.7,1.4,{color:'accent',width:3});A.text(p.kind==='under'?'undershot':p.kind==='over'?'overshot':'breastshot',0,2.25,{align:'center',color:'ink',size:12});for(let i=0;i<3;i++){B.path(p.curves[i],{color:cols[i],width:2});B.dot(p.peaks[i][0],p.peaks[i][1],{color:cols[i],r:4,hollow:true});B.dot(p.u,p.power[i]/p.available,{color:'gold',r:3.5,ring:false});}B.line(0,1,15,1,{color:'muted',dash:[4,3]});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Available ${v.fix(p.available/1000,9)} kW; jet ${v.fix(p.jet,9)} m/s. Selected speed ${v.fix(p.u,9)} m/s; physical radius ${v.fix(p.radius,9)} m; phase ${v.fix(p.phase,9)} rad.\nModel powers (undershot, breastshot, overshot): ${p.power.map(x=>v.fix(x/1000,9)).join(', ')} kW. Largest shares among 601 grid speeds: ${p.peaks.map(x=>`${v.fix(x[1],9)} at ${v.fix(x[0],3)} m/s`).join('; ')}. Authored rules, not source measurements.`;});
       },
     },
 
     // ------------------------------------------------------------------ 4.5
     {
-      num: '4.5',
-      kind: 'Event',
-      name: 'Smeaton’s water-wheel experiments',
-      credit: 'John Smeaton, experiments begun 1752, reported to the Royal Society 1759',
-      verify: true,
-      statement: String.raw`In the 1750s the English engineer **John Smeaton** built a working model of a water wheel, with a cistern at a controlled head, a sluice, and a cord that lifted a weight, and measured how much work it did for a given quantity of water. He ran 27 sets of experiments on **undershot** wheels (his Table I) and 16 on **overshot** wheels (Table II), recording for each the power of the water (weight of water used times the height it fell) and the effect (weight raised times the height). He published the results in 1759. The result that mattered: **at the same quantity of water and the same fall, an overshot wheel does about twice the work of an undershot wheel**, and, for each wheel, the maximum effect comes with the wheel turning slowly (for his undershot wheel about two-fifths of the speed of the water). At the time it was widely believed that undershot wheels were the more powerful; Smeaton's measurements are the source of the engineering rule that water's weight, not its impulse, should be used where there is a fall.
+      num:'4.5',kind:'Event',name:'Smeaton’s water-wheel experiments',verify:true,
+      credit:'John Smeaton, experiments 1752–1753, published 1759',
+      statement:String.raw`Smeaton measured model water wheels under controlled water supply and load. His 1759 paper gives 27 undershot sets in Table I (p.115) and 16 overshot sets in Table II (p.129). He explicitly warns that model results require checks at full size. His general comparison is that overshot work was about twice undershot work under like quantity and fall; this is his experimental conclusion, not a universal theorem about all wheels.
 
-How the numbers below were obtained: the two tables were read from an OCR transcription of the 1759 paper (Philosophical Transactions 51, in an online archive), not from page images. The ratio of effect to power was recomputed from the printed Power and Effect columns and agrees with his printed ratios to about 0.05 in 41 of the 43 rows; in rows 10 and 20 of Table I the printed ratio differs by about 0.1, which may be an OCR error or a misprint. The figures called "Smeaton's" are therefore marked unverified against the original pages.`,
-      idea: String.raw`The experiment is a clean application of conservation of energy (mech-3.6): what the water gives up in falling is $W_\mathrm{water}\,h$, the useful part is the weight raised times its rise, and the ratio of the two is an efficiency that Smeaton could measure for every setting of the sluice and the load. The load was increased until the product of load and turns of the wheel (the effect) was greatest, as that is the working point of a mill.
-
-The replay shows what a theory of impulse alone would not: for an impulse wheel an ideal argument predicts that the best rim speed is half the water's speed and the best load half of the load that just stops the wheel, and an efficiency of at most one half. Smeaton measured about a third, a best speed of two-fifths and a best load three-quarters of the stopping load (his "4 : 3"), and so showed that the ideal picture overstates how the wheel behaves, while the weight of water in the buckets of the overshot wheel gives more than twice as much.`,
-      caption: String.raw`Left: every experiment of Smeaton's Tables I (27 undershot sets, blue) and II (16 overshot sets, green) as the share of the water's power that was delivered as work; click a point to read its row. Choose whether the overshot share is of the power of the **whole descent** or of the **wheel's own diameter**. The two horizontal lines are the means. Right: the modelled share against load for the same two wheel types (the models of 4.4 at a head of 0.8 m, about his 27–35 inches), with his measured ranges as bands and his measured load ratio for the undershot wheel as a vertical line: the model's best load for an impulse wheel is 0.5 of the stopping load, his was about 0.75.`,
-      deps: ['tech-4.4', 'mech-3.6'],
-      see: ['tech-4.12'],
-      refs: ['Mokyr ch. 5', 'Smeaton 1759, Phil. Trans. 51:100–174 (doi 10.1098/rstl.1759.0019), Tables I and II (OCR transcription at jimclifford.ca)', 'Smeaton 1776, Phil. Trans. 66 (one-half versus one-third of the water’s speed)'],
-      tags: ['industrial', '1759', 'experiment'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/John_Smeaton' },
-      viz(v) {
-        const A = v.stage({ x: [0, 28], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1.15, minWidth: 340, xlabel: 'experiment number', ylabel: 'effect ÷ power', title: 'Smeaton’s Tables I and II' });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 320, xlabel: 'load ÷ load that stops the wheel', ylabel: 'effect ÷ power', title: 'modelled wheels at a head of 0.8 m' });
-        // [power, effect]  — Table I (undershot), Smeaton 1759, as transcribed
-        const T1 = [[4358, 1411], [3970, 1266], [3329, 1044], [2890, 901.4], [2439, 735.7], [1970, 561.8], [1524, 442.5], [1173, 328], [733, 213.7], [404.7, 117], [4890, 1505], [4009, 1223], [2993, 975], [2659, 774], [1872, 549], [1280, 390], [712, 212], [3748, 1210], [2887, 878], [1734, 541], [1064, 317], [3338, 1006], [2257, 686], [1231, 385], [2588, 783], [1544, 450], [1811, 534]];
-        // [descent in, water lb/min, turns/min, weight lb, power whole descent, power of wheel, effect] — Table II (overshot)
-        const T2 = [[27, 30, 19, 6.5, 810, 720, 556], [27, 56, 16.5, 14.5, 1530, 1360, 1050], [27, 56, 20.5, 12.5, 1530, 1360, 1167], [27, 63, 20.5, 13.5, 1710, 1524, 1245], [27, 76, 21.5, 15.5, 2070, 1840, 1500], [28.5, 73.5, 18.5, 17.5, 2090, 1764, 1476], [28.5, 96.5, 20.5, 20.5, 2755, 2320, 1868], [30, 90, 20, 19.5, 2700, 2160, 1755], [30, 96.5, 20.5, 20.5, 2900, 2320, 1914], [30, 113.5, 21, 23.5, 3400, 2720, 2221], [33, 56.5, 20.5, 13.5, 1870, 1360, 1230], [33, 106.5, 22.5, 21.5, 3520, 2560, 2153], [33, 146.5, 23, 27.5, 4840, 3520, 2846], [35, 65, 19.5, 16.5, 2275, 1560, 1466], [35, 120, 21.5, 25.5, 4200, 2880, 2467], [35, 163.5, 25, 26.5, 5728, 3924, 2981]];
-        const r1 = T1.map(([p, e]) => e / p), mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
-        const basis = v.select('overshot share of', [{ value: 'whole', label: 'whole descent' }, { value: 'wheel', label: 'wheel’s own fall' }], 'whole');
-        let sel = null;
-        const r2 = () => T2.map((r) => (basis.value === 'whole' ? r[6] / r[4] : r[6] / r[5]));
-        A.onClick((x, y) => {
-          let bestD = 1e9, pick = null;
-          const test = (kind, i, xx, yy) => { const d = Math.hypot((xx - x) * 8, (yy - y) * 80); if (d < bestD) { bestD = d; pick = { kind, i }; } };
-          r1.forEach((r, i) => test('u', i, i + 1, r)); r2().forEach((r, i) => test('o', i, i + 1, r));
-          sel = pick; v.invalidate();
-        });
-        const HM = 0.8, QM = 0.2, vj = Math.sqrt(2 * G * HM);
-        const curve = (kind) => {
-          const pts = [], F0 = (() => { const u0 = 0.01; const P = kind === 'under' ? undershotP(u0, { Q: QM, H: HM }) : overshotP(u0, { Q: QM, H: HM }).P; return P / u0; })();
-          for (let i = 1; i <= 400; i++) {
-            const u = (vj * i) / 400, P = kind === 'under' ? undershotP(u, { Q: QM, H: HM }) : overshotP(u, { Q: QM, H: HM }).P;
-            if (P <= 0 && i > 5) break;
-            pts.push([clamp(P / u / F0, 0, 1.2), P / (RHO * G * QM * HM), u]);
-          }
-          return pts;
-        };
-        const cu = curve('under'), co = curve('over');
-        const peak = (c) => c.reduce((b, p) => (p[1] > b[1] ? p : b), c[0]);
-        v.render(() => {
-          const o = r2();
-          A.hband(mean(r1) - 0.003, mean(r1) + 0.003, { color: 'accent', alpha: 0.9 });
-          A.hband(mean(o) - 0.003, mean(o) + 0.003, { color: 'green', alpha: 0.9 });
-          r1.forEach((r, i) => A.dot(i + 1, r, { r: 4.5, color: 'accent' }));
-          o.forEach((r, i) => A.dot(i + 1, r, { r: 4.5, color: 'green' }));
-          A.text(`undershot mean ${v.fix(mean(r1), 2)}`, 27.6, mean(r1) + 0.03, { size: 11, color: 'accent', align: 'right', baseline: 'bottom', plate: true });
-          A.text(`overshot mean ${v.fix(mean(o), 2)}`, 27.6, mean(o) + 0.03, { size: 11, color: 'green', align: 'right', baseline: 'bottom', plate: true });
-          if (sel) { const y = sel.kind === 'u' ? r1[sel.i] : o[sel.i]; A.circle(sel.i + 1, y, 0.0, {}); A.dot(sel.i + 1, y, { r: 8, color: 'gold', hollow: true }); }
-          // model
-          B.hband(Math.min(...r1), Math.max(...r1), { color: 'accent', alpha: 0.12 });
-          B.hband(Math.min(...o), Math.max(...o), { color: 'green', alpha: 0.12 });
-          B.path(cu.map((p) => [p[0], p[1]]), { color: 'accent', width: 2.4 });
-          B.path(co.map((p) => [p[0], p[1]]), { color: 'green', width: 2.4 });
-          const pu = peak(cu), po = peak(co);
-          B.dot(pu[0], pu[1], { r: 5, color: 'accent', hollow: true }); B.dot(po[0], po[1], { r: 5, color: 'green', hollow: true });
-          B.vline(0.75, { color: 'orange', width: 1.4, dash: [5, 3] });
-          B.text('Smeaton: best load\n≈ ¾ of stopping load', 0.74, 0.04, { size: 10.5, color: 'orange', align: 'right', baseline: 'bottom', plate: true });
-          B.text('Table I range', 0.02, Math.max(...r1) + 0.01, { size: 10.5, color: 'accent', baseline: 'bottom' });
-          B.text('Table II range', 0.02, Math.min(...o) - 0.01, { size: 10.5, color: 'green', baseline: 'top' });
-        });
-        v.legend([['accent', 'undershot'], ['green', 'overshot'], ['gold', 'selected row', { dot: true }], ['orange', 'measured best load', { dash: [5, 3] }]]);
-        v.readout(() => {
-          const o = r2();
-          const pu = peak(cu), po = peak(co);
-          const row = sel ? (sel.kind === 'u' ? `Table I no. ${sel.i + 1}: power ${T1[sel.i][0]}, effect ${T1[sel.i][1]}, effect ÷ power = ${v.fix(r1[sel.i], 3)}` : (() => { const r = T2[sel.i]; return `Table II no. ${sel.i + 1}: descent ${r[0]} in, water ${r[1]} lb/min, ${r[2]} turns/min, raised ${r[3]} lb; power ${r[4]} (wheel's own: ${r[5]}), effect ${r[6]}, share ${v.fix(o[sel.i], 3)}`; })()) : 'click a point to read its row';
-          return `mean share: undershot **${v.fix(mean(r1), 3)}** (range ${v.fix(Math.min(...r1), 2)}–${v.fix(Math.max(...r1), 2)}), overshot **${v.fix(mean(o), 3)}** (range ${v.fix(Math.min(...o), 2)}–${v.fix(Math.max(...o), 2)}) → ratio **${v.fix(mean(o) / mean(r1), 2)}**, Smeaton's "about double"\nmodel: undershot best at load ${v.fix(pu[0], 2)} of the stopping load (${v.fix(100 * pu[1], 0)}%) and rim speed ${v.fix(pu[2] / vj, 2)} of the jet's (Smeaton: ¾ and 0.4); overshot best share ${v.fix(100 * po[1], 0)}%\n${row}`;
-        });
+The two tabulated denominators require care. Table I's printed Power uses **virtual/effective head**, inferred from unloaded wheel speed. Table II reports both **whole descent** and **wheel diameter** power. An arithmetic mean of the plotted row ratios is not a controlled like-for-like estimate across identical conditions. The view preserves the printed power/effect columns and separately checks the printed ratios, including genuine internal discrepancies.`,
+      idea:String.raw`His useful effect combines the raised weight and its rise, with stated machine corrections. The plot divides the **printed Effect** by the chosen **printed Power**, without replacing them by products of other rounded columns. The second plot subtracts the printed second term r of a 10:r ratio:
+$$\delta=10\,\frac{\mathrm{Effect}}{\mathrm{Power}}-r.$$
+Small residuals can reflect rounding. Larger discrepancies remain visible rather than being silently repaired. Table I row 11 prints Power 4800 and Effect 1505 with ratio 10:3.075; row 10 and row 20 also have conspicuous differences. Table II row 2 prints Effect 1060. These readings were checked against actual original page images.`,
+      caption:String.raw`Both panels include all 43 sets. Choose the overshot denominator and select one row from each table using the sliders or clicking near a marker. Gold rings mark both selections; the readout gives raw printed columns and their independently recomputed fractions. The left means are explicitly unweighted means of these finite rows. The right plot shows every rounding/discrepancy residual on a complete dynamic range. Ancillary water-flow, speed and load columns are not transcribed or inferred here.`,
+      deps:['tech-4.4','mech-3.6'],see:['tech-4.12'],refs:['Smeaton 1759, Phil. Trans. 51:100–174; actual pp.100–138, Table I p.115 and Table II p.129'],tags:['industrial','1759','experiment'],
+      scope:String.raw`This is an arithmetic replay of selected printed columns. Published numbers and ratios are retained even when inconsistent; no correction of an alleged printing error is inferred. The two power bases, row-specific conditions, source approximations and full-size caveat prevent treating the ratio of row means as a universal efficiency multiplier.`,
+      links:{source:'https://www.engr.psu.edu/mtah/projects/pdf/smeaton1759.pdf',doi:'https://doi.org/10.1098/rstl.1759.0019'},
+      viz(v){
+        const basis=v.select('overshot denominator',[{value:'whole',label:'whole descent'},{value:'wheel',label:'wheel diameter'}],'whole'),under=v.slider('Table I selected row',1,27,1,{int:true}),over=v.slider('Table II selected row',1,16,1,{int:true}),A=v.stage({x:[-.5,28.5],y:[-.12,1.12],axes:'box',gutter:true,height:310,minWidth:260,xlabel:'set number within its table',ylabel:'printed Effect ÷ printed Power',title:'source columns, declared denominator'}),B=v.stage({x:[-.5,28.5],y:[-.2,.2],axes:'box',gutter:true,height:310,minWidth:260,xlabel:'set number within its table',ylabel:'10 × fraction − printed ratio term',title:'printed arithmetic discrepancies'});let info;
+        const pick=(s,x,y)=>{const p=smeatonWater(basis.value,under.value,over.value),sets=[p.under,p.over];let best=null;sets.forEach((rs,k)=>rs.forEach(r=>{const yy=s===A?r.ratio:r.residual,d=Math.hypot(s.X(r.row)-s.X(x),s.Y(yy)-s.Y(y));if(!best||d<best.d)best={d,k,row:r.row};}));if(best&&best.d<=18)(best.k?over:under).set(best.row);};A.onClick((x,y)=>pick(A,x,y));B.onClick((x,y)=>pick(B,x,y));
+        v.legend([['accent','Table I: virtual head'],['green','Table II: chosen basis'],['gold','selected rows',{dot:true}]]);
+        v.render(()=>{const p=smeatonWater(basis.value,under.value,over.value);B.setView([-.5,28.5],p.residualY);B.line(0,0,28,0,{color:'muted',dash:[4,3]});for(const[rows,col,selected,m]of[[p.under,'accent',p.selectedUnder,p.meanUnder],[p.over,'green',p.selectedOver,p.meanOver]]){A.line(0,m,28,m,{color:col,dash:[4,3]});for(const r of rows){A.dot(r.row,r.ratio,{color:col,r:3.8,ring:false});B.dot(r.row,r.residual,{color:col,r:3.8,ring:false});}A.dot(selected.row,selected.ratio,{color:'gold',r:7,hollow:true});B.dot(selected.row,selected.residual,{color:'gold',r:7,hollow:true});}info=p;});
+        v.readout(()=>{if(!info)return'';const p=info,describe=(label,r)=>`${label} row ${r.row}: printed Power ${r.power}, Effect ${r.effect}, ratio 10:${r.printed}; Effect/Power ${v.fix(r.ratio,9)}, residual ${v.fix(r.residual,9)}.`;return `${describe('Table I (virtual head)',p.selectedUnder)}\n${describe(`Table II (${p.basis==='whole'?'whole descent':'wheel diameter'})`,p.selectedOver)} Unweighted row means ${v.fix(p.meanUnder,9)} and ${v.fix(p.meanOver,9)}; differing source denominators and conditions must be retained.`;});
       },
     },
 
