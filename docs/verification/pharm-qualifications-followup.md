@@ -1,0 +1,11 @@
+# PHARM bounded text qualifications
+
+Separate successor to prerequisite-only `d02ad69fedb2db4abc9f1e411c6be20df5a5e010`: nine exact text fields, no executable changes. Manifest/probe `tests/pharm-qualifications-manifest.json` and `verification-pharm-qualifications.mjs` reconstruct every PHARM source file and permit only these fields; all objects/functions/flags/helpers/dependencies/raw rows otherwise remain byte-identical.
+
+3.1 now correctly identifies generator eigenvalues as −α,−β, rather than calling the positive decay rates eigenvalues.2.3 statement/caption/scope distinguish the conditional exact Student pivot for an uncensored fixed design with independent constant-variance Gaussian log errors from the widget's nominal interval after assay-dependent selection. Conditioning a standard normal error to be positive gives mean sqrt(2/π)≈.797885, not zero; a lognormal generator before truncation does not preserve the pivot after truncation.
+
+4.7 separates expected input from a realized finite dose rate and almost-sure long-run limits. Three planned doses with adherence probability.8 can never realize a taken fraction exactly.8; a missing exponential contribution remains positive at every finite time and halves over a half-life rather than ending. The chosen band and finite cohort are not clinical outcome guarantees, and arbitrary patterned misses are not covered by the independent-miss proof.
+
+3.3 corrects the inherited implication that an early distribution phase always means negligible elimination. Immediately after a central bolus, redistribution/removal fluxes are Q·C1 and CL·C1; with Q=1,CL=10 only1/11 of this initial outward flux is redistribution, while exchanging those coefficients gives10/11. The slow fixed-ratio phase remains correctly described, but its name does not impose a small-clearance hypothesis.
+
+Own analytic/numerical qualification witnesses and all21-source byte guard pass; raw `/tmp/atlas-pharm-prereqs/qualification-guard-math.log`. Final narrow native/pixel checks are deferred to the combined producer boundary, with the separately authorized2.3 readout endpoint and4.2 bar-label corrections still to follow. Source3.12 and every flag remain unchanged/open; no blocked historical-source route was retried.

@@ -1,0 +1,68 @@
+{
+  "baseline": "d02ad69fedb2db4abc9f1e411c6be20df5a5e010",
+  "changes": [
+    {
+      "file": "content/pharm/ch03.js",
+      "num": "3.1",
+      "field": "statement",
+      "before": "Let a central compartment (volume $V_1$, which holds the plasma) lose drug by elimination with clearance CL and exchange it with a peripheral compartment (volume $V_2$) at the intercompartmental clearance $Q$. With rate constants $k_{10}=\\mathrm{CL}/V_1$, $k_{12}=Q/V_1$, $k_{21}=Q/V_2$ the amounts obey $\\dot A_1=-(k_{10}+k_{12})A_1+k_{21}A_2$ and $\\dot A_2=k_{12}A_1-k_{21}A_2$. After an intravenous bolus $D$ the plasma concentration is the sum of two exponentials, $C(t)=A\\,e^{-\\alpha t}+B\\,e^{-\\beta t}$ with $\\alpha>\\beta>0$. The rates are the two eigenvalues of the rate matrix, so $\\alpha+\\beta=k_{10}+k_{12}+k_{21}$ and $\\alpha\\beta=k_{10}k_{21}$; $A+B=D/V_1$, and $\\mathrm{AUC}=D/\\mathrm{CL}$ still holds.",
+      "after": "Let a central compartment (volume $V_1$, which holds the plasma) lose drug by elimination with clearance CL and exchange it with a peripheral compartment (volume $V_2$) at the intercompartmental clearance $Q$. With rate constants $k_{10}=\\mathrm{CL}/V_1$, $k_{12}=Q/V_1$, $k_{21}=Q/V_2$ the amounts obey $\\dot A_1=-(k_{10}+k_{12})A_1+k_{21}A_2$ and $\\dot A_2=k_{12}A_1-k_{21}A_2$. After an intravenous bolus $D$ the plasma concentration is the sum of two exponentials, $C(t)=A\\,e^{-\\alpha t}+B\\,e^{-\\beta t}$ with $\\alpha>\\beta>0$. The rate matrix has eigenvalues $-\\alpha$ and $-\\beta$; the positive decay rates therefore satisfy $\\alpha+\\beta=k_{10}+k_{12}+k_{21}$ and $\\alpha\\beta=k_{10}k_{21}$; $A+B=D/V_1$, and $\\mathrm{AUC}=D/\\mathrm{CL}$ still holds."
+    },
+    {
+      "file": "content/pharm/ch02.js",
+      "num": "2.3",
+      "field": "statement",
+      "before": "Given plasma concentrations $C_i$ at times $t_i$ after an intravenous bolus, the elimination rate constant is estimated by regressing $\\ln C_i$ on $t_i$: the fitted slope is $-\\hat k$, the intercept is $\\ln\\hat C_0$, and $\\hat t_{1/2}=\\ln 2/\\hat k$, $\\hat V=D/\\hat C_0$, $\\widehat{\\mathrm{CL}}=\\hat k\\hat V$. With $n$ samples the slope has standard error $s_b$ from the regression, and a $95\\,\\%$ confidence interval is $\\hat k\\pm t_{n-2,0.975}\\,s_b$. The interval is narrow when the samples cover a long stretch of time (a large spread of the $t_i$) and when assay noise is small.",
+      "after": "Given plasma concentrations $C_i$ at times $t_i$ after an intravenous bolus, the elimination rate constant is estimated by regressing $\\ln C_i$ on $t_i$: the fitted slope is $-\\hat k$, the intercept is $\\ln\\hat C_0$, and $\\hat t_{1/2}=\\ln 2/\\hat k$, $\\hat V=D/\\hat C_0$, $\\widehat{\\mathrm{CL}}=\\hat k\\hat V$. For fixed uncensored sampling times with independent normal log-errors of common variance, $n>2$ reportable samples and distinct times, the estimated slope standard error is $s_b$ and the nominal $95\\,\\%$ interval is $\\hat k\\pm t_{n-2,0.975}\\,s_b$. The interval is narrow when the samples cover a long stretch of time (a large spread of the $t_i$) and when assay noise is small."
+    },
+    {
+      "file": "content/pharm/ch02.js",
+      "num": "2.3",
+      "field": "caption",
+      "before": "Eleven blood samples of a drug with true half-life 5 h (dashed green line) are generated with lognormal assay noise. The accent line is the least-squares fit; its shaded band is the 95 % interval for the slope. Choose whether to **keep the earliest or the latest** $n$ samples and slide $n$: the right panel plots the estimated half-life with its 95 % interval for every $n$ (current one in gold). **New sample** draws fresh noise. Samples under the assay limit of 0.1 mg/L (hollow) are not reported, as in a real assay.",
+      "after": "Eleven blood samples of a drug with true half-life 5 h (dashed green line) are generated with lognormal assay noise. The accent line is the least-squares fit; its shaded band is the nominal 95 % interval for the slope. Choose whether to **keep the earliest or the latest** $n$ samples and slide $n$: the right panel plots the estimated half-life with its nominal 95 % interval for every $n$ (current one in gold). **New sample** draws fresh noise. Samples under the assay limit of 0.1 mg/L (hollow) are not reported. This outcome-dependent exclusion breaks the uncensored Gaussian pivot assumptions; the displayed intervals then have no exact 95 % coverage guarantee."
+    },
+    {
+      "file": "content/pharm/ch02.js",
+      "num": "2.3",
+      "field": "scope",
+      "before": "Requires that all samples lie on one exponential phase after distribution is complete, and noise that is proportional to the concentration; a curved profile or additive noise biases the fit.",
+      "after": "The nominal Student interval requires an uncensored fixed design with independent Gaussian errors of constant variance on the log scale and all observations on one exponential phase. Proportional noise alone does not imply that distribution or independence. The chosen lognormal generator meets the Gaussian log-error assumption before assay-limit exclusion; fitting only reportable concentrations can introduce selection bias. Curved profiles and other error models require a different analysis."
+    },
+    {
+      "file": "content/pharm/ch04.js",
+      "num": "4.7",
+      "field": "statement",
+      "before": "When doses are taken at random with probability $a$ (adherence), the realised dosing rate is $a\\cdot D/\\tau$ and the long-run mean concentration is $a\\bar C_{ss}$, but the concentration fluctuates widely. A drug with $t_{1/2}\\ll\\tau$ falls to ineffective levels after a single missed dose; a drug with $t_{1/2}\\gg\\tau$ averages over many doses, so isolated misses barely show (the drug is “forgiving”).",
+      "after": "When planned doses are taken independently with probability $a$ (adherence), the expected dosing rate is $a\\cdot D/\\tau$, and the realized long-run rate tends to this value almost surely. In the fixed linear model the long-run time-mean concentration is $a\\bar C_{ss}$; a finite record need not have that mean. A short half-life relative to the interval can let a missed dose take the model curve below a chosen comparison band, while a long half-life averages contributions from many earlier doses. This mathematical smoothing does not guarantee efficacy or safety after a miss."
+    },
+    {
+      "file": "content/pharm/ch04.js",
+      "num": "4.7",
+      "field": "idea",
+      "before": "The concentration is the superposition of the doses actually taken (pharm-4.1): each missed dose deletes one term. The effect of the deletion lasts about one half-life, and what matters is how that compares with the interval. With a long half-life the missing term is small relative to the stored sum from many earlier doses; with a short one it is most of the signal.\n\nWrite the taken-dose indicators as independent Bernoulli variables B_j with mean a. Linearity of expectation (prob 1.6.1) gives expected input $aND$ over N planned doses and, in a stationary dosing history, expected concentration equal to a times the perfect-adherence periodic curve. The strong law prob 2.4.1 applies because these indicators are identically distributed, pairwise independent and bounded: their realized average tends to a almost surely. Integrated mass balance over N intervals then gives the same long-run time-mean concentration, since the remaining gut/body amount is bounded for fixed positive rates and contributes a vanishing endpoint term after division by N. This is an asymptotic model result; the finite 14-day history with a perfect-adherence lead-in and the 60-member sampled band statistic are not exact realizations of that mean.",
+      "after": "The concentration is the superposition of the doses actually taken (pharm-4.1): each missed dose deletes one term. The missing single-dose contribution has a decaying tail; one elimination half-life halves its terminal component rather than ending its effect. The relevant comparison is this decay time against the dosing interval. With a long half-life the missing term is small relative to the stored sum from many earlier doses; with a short one it is most of the signal.\n\nWrite the taken-dose indicators as independent Bernoulli variables B_j with mean a. Linearity of expectation (prob 1.6.1) gives expected input $aND$ over N planned doses and, in a stationary dosing history, expected concentration equal to a times the perfect-adherence periodic curve. The strong law prob 2.4.1 applies because these indicators are identically distributed, pairwise independent and bounded: their realized average tends to a almost surely. Integrated mass balance over N intervals then gives the same long-run time-mean concentration, since the remaining gut/body amount is bounded for fixed positive rates and contributes a vanishing endpoint term after division by N. This is an asymptotic model result; the finite 14-day history with a perfect-adherence lead-in and the 60-member sampled band statistic are not exact realizations of that mean."
+    },
+    {
+      "file": "content/pharm/ch04.js",
+      "num": "4.7",
+      "field": "scope",
+      "before": "Model: independent misses, no “catching up”, a fixed dose time each day, oral absorption $k_a=1.5$ h$^{-1}$, history of perfect adherence before day 0. Real adherence is patterned (drug holidays, clusters of misses), which is worse than independent misses. The window is illustrative, not drug-specific.",
+      "after": "Model: independent misses, no “catching up”, a fixed dose time each day, oral absorption $k_a=1.5$ h$^{-1}$, history of perfect adherence before day 0. Real adherence can be patterned (drug holidays or clustered misses), changing gap lengths and band occupancy; these patterns are outside the independent-miss argument. The window is illustrative, not drug-specific."
+    },
+    {
+      "file": "content/pharm/ch03.js",
+      "num": "3.3",
+      "field": "statement",
+      "before": "After an intravenous bolus into a two-compartment body the plasma curve has two phases. In the early **distribution ($\\alpha$) phase** the concentrations in the two compartments are far from each other and most of the fall in plasma concentration is drug moving into the periphery; elimination removes only a small part of the dose. When the fast mode has died out the concentration ratio $C_2/C_1$ has become constant and the body behaves as one pool: the **elimination ($\\beta$) phase**, in which both compartments decline together at rate $\\beta$ and the loss is by clearance. The peripheral amount is greatest exactly when $C_1=C_2$.",
+      "after": "After an intravenous bolus into a two-compartment body the plasma curve has two phases. In the early **distribution ($\\alpha$) phase** the concentrations in the two compartments differ, and both redistribution and elimination lower the central concentration. At the initial bolus their outward fluxes are in the ratio $Q:\\mathrm{CL}$, so redistribution dominates initially only when exchange is large relative to clearance; the phase label alone does not make elimination small. When the fast mode has died out the concentration ratio $C_2/C_1$ has become constant and the body behaves as one pool: the **elimination ($\\beta$) phase**, in which both compartments decline together at rate $\\beta$ and the loss is by clearance. The peripheral amount is greatest exactly when $C_1=C_2$."
+    },
+    {
+      "file": "content/pharm/ch03.js",
+      "num": "3.3",
+      "field": "idea",
+      "before": "The peripheral amount changes at rate $Q\\,(C_1-C_2)$, so it grows while plasma is richer than tissue and shrinks when the order reverses; its maximum is the instant $C_1=C_2$. The fast mode, an eigenvector pointing across the compartments (3.1), decays with $\\alpha$; once it is gone only the slow eigenvector survives, along which the ratio $C_2/C_1$ is fixed, so both curves become parallel lines on the semilog plot. The initial rapid fall of plasma concentration therefore mostly reflects dilution into a larger volume, not removal from the body, which is why $V_1$ and $V_{ss}$ differ.",
+      "after": "The peripheral amount changes at rate $Q\\,(C_1-C_2)$, so it grows while plasma is richer than tissue and shrinks when the order reverses; its maximum is the instant $C_1=C_2$. The fast mode, an eigenvector pointing across the compartments (3.1), decays with $\\alpha$; once it is gone only the slow eigenvector survives, along which the ratio $C_2/C_1$ is fixed, so both curves become parallel lines on the semilog plot. When exchange dominates the initial central loss, a rapid plasma fall can mainly reflect movement into a larger effective volume while much of the dose remains. This interpretation depends on the exchange-to-clearance ratio; the slow fixed-ratio mode and the distinction between initial and steady-state volumes do not require elimination to be negligible."
+    }
+  ]
+}
