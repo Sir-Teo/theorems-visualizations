@@ -1,4 +1,5 @@
 // Microeconomics — Chapter 9: General equilibrium and welfare (items 9.17–9.21; 9.1–9.6 in ch09.js, 9.7–9.11 in ch09-b.js, 9.12–9.16 in ch09-c.js)
+import { WALRAS_EQUILIBRIUM, walrasFlow, walrasTrajectory } from './source-audit-walras.js';
 import { adMarket, adConvexEquilibrium, adNonconvexCertificate, adPriceMap, adProjectStart, adTrajectory } from './source-audit-arrow-debreu.js';
 import { clamp, GUIDE, bisect, argmax, plateText, bar, W1, W2, pref, market, boxStage, drawBox, drawA, drawB, drawLens, priceLineBox, improvements, f2 } from './ch09.shared.js';
 
@@ -204,58 +205,59 @@ export default {
       num: '9.20', kind: 'Paper', name: 'Éléments d’économie politique pure',
       paper: { authors: 'Léon Walras', year: 1874, title: 'Éléments d’économie politique pure, ou théorie de la richesse sociale', venue: 'Lausanne: L. Corbaz', url: 'https://archive.org/details/lmentsdconomiep00walrgoog' },
       introduces: ['micro-9.5', 'micro-9.6', 'micro-2.7'],
-      credit: 'Léon Walras, 1874',
-      verify: true,
-      statement: String.raw`Walras (first edition, 1874–77) formulated, for the first time, the economy as a **system of simultaneous markets**: with $n$ goods there are $n$ prices (one a numéraire) and $n$ market equations, one of which is implied by the others (**Walras' law**), and the equilibrium prices solve the system. He also proposed how a market could find them: the **tâtonnement** ("groping"), in which a crier calls prices, traders announce what they would buy and sell, and the crier **raises the price of goods in excess demand and lowers the price of those in excess supply** until every market clears; no trade takes place before equilibrium is reached. Modern treatments formalise it as $\dot p_k = z_k(p)$; counting equations against unknowns suggests but does not prove existence (9.7), and Walras' own argument that groping converges was heuristic; convergence is proved under gross substitutability (Arrow, Block and Hurwicz, 1959) and fails in general (9.8).`,
-      idea: String.raw`Before Walras, economists analysed one market at a time (partial equilibrium, 2.5). His insight is that the markets are linked by budgets: the value of everything a trader demands equals the value of everything he or she supplies, so excess demands cannot all be positive at once, and the quantity demanded of one good depends on all prices. The tâtonnement shows how a decentralised process could, in principle, find the prices without anyone knowing preferences: only excess-demand announcements are needed. He introduced the demand-and-supply equations for $n$ goods, the numéraire, the law of the auction, and the tâtonnement itself, ideas later formalised as price adjustment (2.7) and the Walras' law and Walrasian equilibrium of 9.5–9.6. What counts as "the" first edition's content (an exchange model in 1874, production in 1877) is simplified here; the picture is the modern reconstruction, not a figure of the book.`,
-      caption: String.raw`A **model reconstruction** (not a figure from the book): three goods, three Cobb–Douglas traders with the endowments shown in the readout, good 3 as numéraire. **Drag the gold starting prices** $(p_1, p_2)$ in the left panel; the crier raises each price at the rate of its excess demand, $\dot p_k = z_k$ (arrows: the direction field), and the path winds in to the equilibrium (green). Middle: the three excess demands shrink to zero together. Right: the value of each good's excess demand and their **sum, always exactly zero** (Walras' law), at the moment shown.`,
-      deps: ['micro-2.5', 'micro-4.9'],
+      credit: 'Léon Walras, 1874, Lessons 9 and21–23; the displayed simultaneous ODE is an authored reconstruction',
+      verify: false,
+      statement: String.raw`Walras's 1874 text describes auction prices rising under excess demand and falling under excess supply (Lesson 9), then links many markets through individual exchange budgets (Lessons 21–22). His value identity implies that one clearing equation is redundant when all prices are positive. Lesson 22 describes successive proportional price adjustments and gives a heuristic argument for approaching equilibrium; it is not the simultaneous differential equation drawn here.
+
+The picture is an **authored three-good exchange economy**, with good 3 as numéraire, $p_3=1$. Each Cobb–Douglas trader spends fixed shares of endowment income, so
+$$x_{ig}(p)=\alpha_{ig}\frac{p\cdot\omega_i}{p_g},$$
+$$z_g=\sum_i x_{ig}-W_g,\qquad\sum_g p_gz_g=0.$$
+The chosen model dynamics are $\dot p_1=z_1$, $\dot p_2=z_2$ in model time. Its exact clearing prices are
+$$p^*=\left(\frac{892}{797},\frac{1160}{797},1\right).$$
+For this particular ODE, all strictly positive starting prices converge to $p^*$ by the explicit contraction argument below. This conclusion is proved for the model; it is not inferred from a finite plotted path or asserted for arbitrary economies.`,
+      idea: String.raw`Apply the multiplier equations of 5.4 to $\sum_g\alpha_{ig}\log x_{ig}$ on the budget $\sum_g p_gx_{ig}=p\cdot\omega_i$. They give $\alpha_{ig}/x_{ig}=\lambda_i p_g$ and, because each row of shares sums to one, $\lambda_i=1/(p\cdot\omega_i)$. Thus each individual budget is exhausted and summing budgets proves Walras's value identity at every positive price, including away from equilibrium.
+
+Let $C_{gh}=\sum_i\alpha_{ig}\omega_{ih}$. For the displayed shares and endowments,
+$$C=\begin{pmatrix}19/10&9/10&8/5\\27/20&3/2&7/5\\5/4&11/10&2\end{pmatrix}.$$
+Then $z_g=(Cp)_g/p_g-W_g$. The first two clearing equations with $p_3=1$ are linear:
+$$\frac{13}{5}p_1-\frac9{10}p_2=\frac85,$$
+$$-\frac{27}{20}p_1+2p_2=\frac75.$$
+Their unique solution is the stated rational pair; the third market clears by the value identity. No long numerical run is used to locate this equilibrium.
+
+For the model-specific convergence proof, put $r_i=p_i/p_i^*$ for $i=1,2$ and fix $r_3=1$. Define $a_{ih}=C_{ih}p_h^*/(p_i^*)^2>0$. Using the equilibrium equations gives
+$$\dot r_i=\frac1{r_i}\sum_{h\ne i}a_{ih}(r_h-r_i).$$
+The rectangle $[m,R]^2$, where $m=\min\{1,r_1(0),r_2(0)\}>0$ and $R=\max\{1,r_1(0),r_2(0)\}$, is invariant: each boundary derivative points inward. Smoothness on this compact positive rectangle gives global continuation. Set $V=\max_i|r_i-1|$. At every active maximum, including ties, the other ratio term has the favorable sign while the fixed anchor contributes strict decay:
+$$D^+V\le-\kappa V,\qquad\kappa=\frac{\min\{a_{13},a_{23}\}}R>0.$$
+Integrating the scalar comparison yields $V(t)\le V(0)e^{-\kappa t}$. This is a strict contraction, rather than just nonincreasing price extrema. It concerns the exact ODE. The finite integration and its step-doubling error estimate are separate numerical evidence.`,
+      caption: String.raw`Move the gold **starting prices** or their sliders; the third slider selects **model time** 0–14. The left panel shows the complete finite price path, its current point and the exact green equilibrium ring. Arrows use the physical excess-demand direction. The middle panel retains all three complete excess-demand histories, including their starting peaks; dots mark the selected time. Signed bars on the right show the actual value terms and their floating-point sum at that time. **Start at exact equilibrium** selects the rational solution. No prices, histories or bars are clipped to an artificial range.`,
+      scope: String.raw`Illustrative shares $(0.5,0.3,0.2)$, $(0.2,0.5,0.3)$, $(0.3,0.2,0.5)$; endowments $(3,0.5,1)$, $(0.5,2.5,1)$, $(1,0.5,3)$; totals $(4.5,3.5,5)$. These are authored model numbers, not data from the book. The model holds endowments fixed throughout price adjustment. Offered starting prices are $0.1\le p_1,p_2\le2.9$; model time is an arbitrary adjustment parameter, not measured trading rounds. The numerical path uses positive-stage RK4 with step doubling, sampled every 0.05 model-time unit; its local error target $2\times10^{-11}$ is an estimate, not a rigorous global numerical-error bound. The analytic contraction applies to every strictly positive start for this fixed ODE and its chosen adjustment speeds. The book's historical market-by-market process and a general convergence theorem are not simulated.`,
+      deps: ['micro-2.5', 'micro-4.9', 'micro-5.4'],
       see: ['micro-9.5', 'micro-9.6'],
-      refs: [], tags: ['general equilibrium', 'history', 'price adjustment'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/T%C3%A2tonnement' },
+      refs: ['Walras (1874), Lesson 9 §§40–43 pp.47–51; Lessons 21–23 §§116–136 pp.119–137', 'https://archive.org/download/lmentsdconomiep00walrgoog/lmentsdconomiep00walrgoog.pdf'], tags: ['general equilibrium', 'history', 'price adjustment'],
+      links: { source: 'https://archive.org/download/lmentsdconomiep00walrgoog/lmentsdconomiep00walrgoog.pdf', wikipedia: 'https://en.wikipedia.org/wiki/T%C3%A2tonnement' },
       viz(v) {
-        const TMAX = 14;
-        const L = v.stage({ x: [0, 3], y: [0, 3], equal: true, axes: 'box', gutter: true, height: 380, xlabel: 'price of good 1 (good 3 = 1)', ylabel: 'price of good 2', title: 'tâtonnement in the price plane', weight: 1.1 });
-        const T = v.stage({ x: [0, TMAX], y: [-3, 5], axes: 'box', gutter: true, height: 380, xlabel: 'time (rounds of the crier)', ylabel: 'excess demand', title: 'excess demands over time', weight: 1.1 });
-        const B = v.stage({ x: [0.4, 4.6], y: [-3, 3], axes: 'box', gutter: true, height: 380, ylabel: 'value p_k z_k', title: 'Walras’ law at this moment', weight: 0.8, minWidth: 240, xticks: [[1, 'good 1'], [2, 'good 2'], [3, 'good 3'], [4, 'sum']] });
-        v.legend([['blue', 'good 1'], ['orange', 'good 2'], ['teal', 'good 3'], ['green', 'equilibrium'], ['gold', 'starting prices']]);
-        const H = L.handle(2.4, 0.5, { color: 'gold', r: 9, label: 'p(0)', labelPos: 'ne', constrain: { x: [0.1, 2.9], y: [0.1, 2.9] } });
-        const zf = (p1, p2) => excess([p1, p2, 1]);
-        // equilibrium: long run of the same dynamics from (1, 1)
-        const eq = (() => { let q = [1, 1]; for (let i = 0; i < 20000; i++) { const z = zf(q[0], q[1]); q = [clamp(q[0] + 0.01 * z[0], 0.02, 20), clamp(q[1] + 0.01 * z[1], 0.02, 20)]; } return q; })();
-        const DT = 0.02, NS = Math.round(TMAX / DT); let cache = { key: '', tr: [] };
-        const traj = (p0) => {
-          const key = p0.join('|'); if (cache.key === key) return cache.tr;
-          const f = (q) => { const z = zf(clamp(q[0], 0.02, 30), clamp(q[1], 0.02, 30)); return [z[0], z[1]]; };
-          let q = [...p0]; const tr = [q];
-          for (let k = 0; k < NS; k++) {
-            const a = f(q), b = f([q[0] + (DT / 2) * a[0], q[1] + (DT / 2) * a[1]]), c = f([q[0] + (DT / 2) * b[0], q[1] + (DT / 2) * b[1]]), d = f([q[0] + DT * c[0], q[1] + DT * c[1]]);
-            q = [clamp(q[0] + (DT / 6) * (a[0] + 2 * b[0] + 2 * c[0] + d[0]), 0.02, 30), clamp(q[1] + (DT / 6) * (a[1] + 2 * b[1] + 2 * c[1] + d[1]), 0.02, 30)]; tr.push(q);
-          }
-          cache = { key, tr }; return tr;
-        };
-        let st = {};
-        v.animate((t) => {
-          const tr = traj([Math.round(H.x * 100) / 100, Math.round(H.y * 100) / 100]), n = Math.min(NS, Math.round(((t / 12) * TMAX) / DT)), q = tr[n];
-          // direction field
-          for (let i = 1; i <= 8; i++) for (let j = 1; j <= 8; j++) { const x = 0.37 * i, y = 0.37 * j, z = zf(x, y); arrowPx(L, x, y, z[0], z[1], 11, { color: 'muted', width: 1.2, alpha: 0.55 }); }
-          L.path(tr.slice(0, n + 1).filter((_, i) => i % 4 === 0), { color: 'accent', width: 2.6 });
-          L.dot(eq[0], eq[1], { r: 8, color: 'green' }); L.dot(H.x, H.y, { r: 6, color: 'gold' }); L.dot(q[0], q[1], { r: 6, color: 'accent' });
-          T.hline(0, { color: 'muted', width: 1 });
-          const col = ['blue', 'orange', 'teal'];
-          for (let g = 0; g < 3; g++) T.path(tr.filter((_, i) => i % 5 === 0 && i <= n).map((r, i) => [i * 5 * DT, excess([r[0], r[1], 1])[g]]), { color: col[g], width: 2.4 });
-          T.vline((n * DT), { color: 'gold', width: 1.4, dash: [4, 4] });
-          const z = excess([q[0], q[1], 1]), pz = [q[0] * z[0], q[1] * z[1], z[2]], sum = pz[0] + pz[1] + pz[2];
-          B.hline(0, { color: 'muted', width: 1 });
-          pz.forEach((val, g) => bar(B, g + 1, 0.55, 0, val, col[g]));
-          bar(B, 4, 0.55, 0, sum, 'green', { fillAlpha: 0.9 });
-          B.text('Σ = 0', 4, 0, { dy: -14, size: 12, weight: 700, color: 'green', align: 'center', plate: true });
-          st = { q, z, sum, t: n * DT };
-        }, { period: 12, still: 11.5 });
-        v.readout(() => {
-          const { q, z, sum, t } = st;
-          return `Round ${f2(t, 1)}: prices $(p_1, p_2, p_3) = (${f2(q[0], 3)}, ${f2(q[1], 3)}, 1)$, excess demands $(${f2(z[0], 3)}, ${f2(z[1], 3)}, ${f2(z[2], 3)})$. The value of excess demand $\\sum_k p_k z_k = ${f2(sum, 6)}$ at every price vector, not just in equilibrium. Equilibrium: $p^* = (${f2(eq[0], 3)}, ${f2(eq[1], 3)}, 1)$. Model economy: Cobb–Douglas traders with budget shares $(0.5, 0.3, 0.2)$, $(0.2, 0.5, 0.3)$, $(0.3, 0.2, 0.5)$ and endowments $(3, 0.5, 1)$, $(0.5, 2.5, 1)$, $(1, 0.5, 3)$; gross substitutes, so the groping converges from every start.`;
+        const p1=v.slider('starting relative price $p_1$',.1,2.9,2.4,{step:.1,decimals:7}),p2=v.slider('starting relative price $p_2$',.1,2.9,.5,{step:.1,decimals:7});
+        const time=v.slider('model time',0,14,7,{step:.05,decimals:2});
+        const L=v.stage({x:[-.25,3.25],y:[-.25,3.25],equal:true,axes:'box',gutter:true,height:380,xlabel:'relative price p₁',ylabel:'p₂ (good 3 = 1)',title:'complete finite price path',xticks:[0,1,2,3],yticks:[0,1,2,3],weight:1.1});
+        const T=v.stage({x:[-.6,14.6],y:[-3,5],axes:'box',gutter:true,height:380,xlabel:'time (model units)',ylabel:'excess demand',title:'all three complete demand histories',weight:1.1});
+        const B=v.stage({x:[.45,4.55],y:[-3,3],axes:'box',gutter:true,height:380,ylabel:'value pᵢ zᵢ',title:'signed value terms at selected time',weight:.85,minWidth:240,xticks:[[1,'good 1'],[2,'good 2'],[3,'good 3'],[4,'sum']]});
+        v.legend([['blue','good 1'],['orange','good 2'],['teal','good 3'],['green','exact equilibrium ring'],['gold','starting prices'],['accent','current prices / path']]);
+        const H=L.handle(p1.value,p2.value,{color:'gold',r:9,constrain:{x:[.1,2.9],y:[.1,2.9]}});H.onDrag=()=>{p1.set(H.x);p2.set(H.y);};
+        v.button('Start at exact equilibrium',()=>{p1.set(WALRAS_EQUILIBRIUM[0]);p2.set(WALRAS_EQUILIBRIUM[1]);});
+        let cache={key:'',trace:null},info={};
+        const range=(values,pad)=>{const lo=Math.min(0,...values),hi=Math.max(0,...values),margin=Math.max(.25,(hi-lo)*pad);return[lo-margin,hi+margin];};
+        v.render(()=>{
+          H.set(p1.value,p2.value);const key=`${p1.value}|${p2.value}`;if(key!==cache.key)cache={key,trace:walrasTrajectory([p1.value,p2.value])};
+          const trace=cache.trace,index=Math.min(trace.points.length-1,Math.round(time.value/.05)),current=trace.points[index],colors=['blue','orange','teal'];
+          for(let i=0;i<8;i++)for(let j=0;j<8;j++){const x=.2+.36*i,y=.2+.36*j,z=walrasFlow([x,y]);arrowPx(L,x,y,z[0],z[1],11,{color:'muted',width:1.2,alpha:.5});}
+          L.path(trace.points.map(q=>q.p.slice(0,2)),{color:'accent',width:2.6});L.dot(...WALRAS_EQUILIBRIUM.slice(0,2),{color:'green',r:14,hollow:true});L.dot(...current.p.slice(0,2),{color:'accent',r:6});
+          T.setView([-.6,14.6],range(trace.points.flatMap(q=>q.z),.14));T.hline(0,{color:'muted',width:1});
+          for(let g=0;g<3;g++){T.path(trace.points.map(q=>[q.t,q.z[g]]),{color:colors[g],width:2.4});T.dot(current.t,current.z[g],{color:colors[g],r:5});}T.vline(current.t,{color:'gold',width:1.2,dash:[4,4]});
+          B.setView([.45,4.55],range([...current.valueTerms,current.value],.22));B.hline(0,{color:'muted',width:1});current.valueTerms.forEach((q,g)=>bar(B,g+1,.55,0,q,colors[g]));bar(B,4,.55,0,current.value,'green',{fillAlpha:.9});
+          const certificate=trace.certificate,deviation=Math.max(...current.p.slice(0,2).map((q,g)=>Math.abs(q/WALRAS_EQUILIBRIUM[g]-1)));
+          const state={...current,start:[p1.value,p2.value],certificate,deviation,bound:certificate.initial*Math.exp(-certificate.rate*current.t),largestErrorRatio:trace.largestErrorRatio};info=state;
         });
+        v.readout(()=>{const q=info;return `Model time ${f2(q.t,2)}: prices $(${q.p.map(p=>f2(p,7)).join(',')})$; excess demands $(${q.z.map(z=>f2(z,7)).join(',')})$. Value terms $(${q.valueTerms.map(z=>f2(z,7)).join(',')})$; computed sum $${v.sci(q.value,4)}$ (the exact budget identity is zero).\nExact equilibrium: $(892/797,1160/797,1)$. Normalized price deviation $V=${v.sci(q.deviation,4)}$; analytic bound $V(0)e^{-\\kappa t}=${v.sci(q.bound,4)}$, with $\\kappa=${f2(q.certificate.rate,6)}$. This bound proves the model ODE’s convergence; a finite numerical trace alone does not.\nAll 281 output times and all three demand histories are retained. Accepted local error estimates stay within their target (largest ratio ${f2(q.largestErrorRatio,5)}); this is not a formal global numerical-error certificate.`;});
       },
     },
     // ------------------------------------------------------------------ 9.21

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 183,
+  "remainingFlags": 182,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "micro": 2,
+    "micro": 1,
     "fin": 4,
     "game": 18,
     "psych": 17,
@@ -228,19 +228,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "micro-9.20",
-      "file": "content/micro/ch09-d.js",
-      "name": "\u00c9l\u00e9ments d\u2019\u00e9conomie politique pure",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/T%C3%A2tonnement"
       }
     },
     {
@@ -3634,7 +3621,8 @@
       "micro-10.20",
       "fin-5.12",
       "micro-9.21",
-      "fin-5.7"
+      "fin-5.7",
+      "micro-9.20"
     ]
   },
   "additionalFollowups": [
@@ -7813,6 +7801,12 @@
       "status": "resolved",
       "report": "docs/verification/fin-arbitrage-followup.md",
       "note": "Root and independent agent read actual ShleiferVishny1997 intro/complete \u00a7\u00a7I\u2013II and conclusion, inspected original41/46formulas and reran4math+4final native groups. Separate authored daily Gaussian spread refuses invalid initial margins, retains true observed overshoot/negative exit wealth and cash freeze, and shows finite400-path statistics on separate full-range axes. No certain-convergence or original-equilibrium-replication claim remains."
+    },
+    {
+      "id": "micro-9.20",
+      "status": "resolved",
+      "report": "docs/verification/micro-walras-followup.md",
+      "note": "Actual1874original Lessons9and21\u201323 independently read with title/50/124/131images. Authored simultaneous ODE separated from historical successive-price process; exact rational clearing and global positive-invariant/active-index Dini contraction independently assessed. Root4math+4native groups and separate75digit24-reference generator pass; complete histories/arrows/bars and final screenshots checked."
     }
   ]
 }
