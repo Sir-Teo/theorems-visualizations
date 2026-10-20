@@ -1,10 +1,7 @@
 // Big History & Quantitative History — Chapter 3: Life on Earth (items 3.1–3.5; 3.6–3.10 are in ch03-b.js)
 //
 // Sources checked (Oct 2026):
-//   3.1 S. L. Miller, Science 117: 528 (1953); Johnson et al., Science 322: 404 (2008) (archived 1950s vials, more than 20
-//     amino acids). Schlesinger & Miller, J. Mol. Evol. 19: 376 (1983): carbon yields of amino acids 1.2–4.7% in CH4-rich
-//     mixtures, about 2% for H2/CO or H2/CO2 of 2–4, about 1e-3 % for H2/CO2 = 0; glycine dominant in CO/CO2 mixtures. Only these
-//     reported end points are plotted as data; the curve between them and the time course are labelled as a model.
+//   3.1 Actual Miller1953 report, Johnson2008 fullmain+SOM/TableS1 and NASA CP2276 printed50 audited; see private source report.
 //   3.2 Gilbert, Nature 319: 618 (1986); Powner, Gerland & Sutherland, Nature 459: 239 (2009); Patel et al., Nature Chem. 7: 301
 //     (2015); Wachtershauser, Microbiol. Rev. 52: 452 (1988); Russell & Hall, J. Geol. Soc. 154: 377 (1997); Kelley et al.,
 //     Nature 412: 145 (2001) (Lost City). The 0–3 ratings in the matrix are the author's coarse qualitative reading, not data.
@@ -23,6 +20,7 @@
 //     (2021) (MitoCarta3.0, 1,136 human genes); Spang et al., Nature 521: 173 (2015); Imachi et al., Nature 577: 519 (2020).
 
 import { clamp } from './ch03.shared.js';
+import millerEvent from './source-audit-miller.js';
 
 export default {
   collection: 'bighist',
@@ -31,55 +29,7 @@ export default {
   summary: String.raw`Life appeared on Earth within a billion years of its formation, by routes still debated. For most of its history it was microbial, yet microbes oxidised the atmosphere and, by merging, built the complex cells from which plants and animals came. Animal life diversified rapidly in the Cambrian, and five mass extinctions, at least one caused by an asteroid, repeatedly reset the board.`,
   items: [
     // ───────────────────────────────────────────────────────────────────────────────────── 3.1
-    {
-      num: '3.1',
-      kind: 'Event',
-      name: 'The Miller–Urey experiment',
-      statement: String.raw`In 1952–53 Stanley Miller, in Harold Urey's laboratory in Chicago, circulated water vapour past an electric spark in a closed glass apparatus holding methane, ammonia and hydrogen, to imitate lightning in a reducing early atmosphere. After about a week the water had turned deep red-brown and contained organic compounds, among them the amino acids glycine, $\alpha$- and $\beta$-alanine, aspartic acid and $\alpha$-aminobutyric acid. Later work showed that the yield depends strongly on the gas mixture: with methane it is of order $1$–$5\%$ of the carbon, with CO or CO$_2$ it stays near $2\%$ only if hydrogen is plentiful ($\mathrm{H_2}/\mathrm{CO_2}\gtrsim 2$), and in a CO$_2$–N$_2$–H$_2$O mixture without hydrogen it collapses by about three orders of magnitude.
-
-**Scope.** The experiment shows that organic building blocks form easily from simple gases and an energy source. It does not show that the early atmosphere was strongly reducing (most models now make it much less so, with local reducing environments such as volcanic plumes), and it does not explain how amino acids became life.`,
-      idea: String.raw`The sparks split and recombine the gases into hydrogen cyanide and aldehydes. These dissolve in the water and combine with ammonia in the **Strecker synthesis**: an aldehyde, HCN and NH$_3$ give an aminonitrile, which hydrolyses to an amino acid. So the yield is limited by how much HCN and aldehyde the atmosphere can make, which needs reduced carbon and enough hydrogen to keep nitrogen oxides from destroying the products. A neutral atmosphere makes little of either, which is why the picture below changes so sharply when hydrogen is removed. Miller's archived vials from the 1950s were reanalysed in 2008 and held more than twenty amino acids.`,
-      caption: String.raw`Left: carbon yield of amino acids against the $\mathrm{H_2}/\mathrm{CO_2}$ ratio. The dots and the green band are the yields reported by Schlesinger and Miller (1983); the dashed line between them is only a guide, since the intermediate values were not tabulated here. Switch the carbon source, move the ratio, and read the yield. Right: a model of how the amino acids accumulate over the week (a saturating curve with a two-day time constant, assumed; Miller did not publish a time course in this form).`,
-      deps: [],
-      see: ['bighist-3.2'],
-      refs: ['Christian'],
-      credit: 'S. L. Miller, 1953 (Chicago, in H. C. Urey’s laboratory)',
-      tags: ['origin of life', 'prebiotic chemistry'],
-      scope: String.raw`Holds for spark discharge in closed flasks with the gas mixtures tested; says nothing about which atmosphere the early Earth actually had.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Miller%E2%80%93Urey_experiment', doi: 'https://doi.org/10.1126/science.117.3046.528' },
-      verify: true,
-      viz(v) {
-        const src = v.select('carbon source', [{ value: 'ch4', label: 'CH₄ (reducing)' }, { value: 'co2', label: 'CO₂ (neutral)' }], 'ch4');
-        const rS = v.slider('H₂ / CO₂ ratio', 0, 4, 0, { step: 0.05 });
-        const dS = v.slider('days of sparking', 0, 7, 7, { step: 0.1 });
-        const A = v.stage({ x: [0, 4.3], y: [3e-4, 10], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'H₂ / CO₂', ylabel: 'amino-acid carbon (% of carbon)', title: 'yield against hydrogen supply' });
-        const B = v.stage({ x: [0, 7], y: [0, 5], axes: 'box', gutter: true, height: 300, xlabel: 'days', ylabel: 'amino-acid carbon (%)', title: 'accumulation over a week (model)' });
-        const yieldCo2 = (r) => (r >= 2 ? 2 : 10 ** (-3 + 1.651 * r));
-        const yieldOf = () => (src.value === 'ch4' ? 2.4 : yieldCo2(rS.value));
-        v.render(() => {
-          A.hband(1.2, 4.7, { color: 'green', alpha: 0.18, edges: false });
-          A.text('CH₄-rich mixtures: 1.2–4.7%', 3.95, 5.6, { align: 'right', size: 10.5, color: 'green' });
-          const guide = []; for (let i = 0; i <= 40; i++) { const r = (2 * i) / 40; guide.push([r, yieldCo2(r)]); }
-          A.path(guide, { color: 'muted', width: 1.5, dash: [5, 4] });
-          A.hline(2, { color: 'faint', width: 1, dash: [2, 3] });
-          A.dot(0, 1e-3, { r: 5.5, color: 'red' }); A.dot(2, 2, { r: 5.5, color: 'ink' }); A.dot(4, 2, { r: 5.5, color: 'ink' });
-          A.text('H₂/CO₂ = 0: 10⁻³ %', 0.08, 2.2e-3, { align: 'left', size: 10.5, color: 'red' });
-          A.text('≈ 2% at ratios 2–4', 3.9, 0.9, { align: 'right', size: 10.5, color: 'ink' });
-          if (src.value === 'co2') A.dot(rS.value, yieldCo2(rS.value), { r: 8, color: 'accent', label: 'you' });
-          else A.vline(rS.value, { color: 'accent', width: 1.2, dash: [4, 3] });
-          const Y = yieldOf();
-          B.fn((t) => Y * (1 - Math.exp(-t / 2)), { color: 'accent', width: 2.5, domain: [0, 7] });
-          B.hline(Y, { color: 'faint', width: 1, dash: [2, 3] });
-          B.dot(dS.value, Y * (1 - Math.exp(-dS.value / 2)), { r: 6, color: 'gold' });
-          v.legend([['ink', 'reported yields (Schlesinger & Miller 1983)', { dot: true }], ['muted', 'guide between them', { dash: true }]]);
-        });
-        v.readout(() => {
-          const Y = yieldOf(), y = Y * (1 - Math.exp(-dS.value / 2));
-          const lab = src.value === 'ch4' ? 'CH₄ mixture, taken at 2.4%, the middle of the reported band' : `CO₂ mixture at H₂/CO₂ = ${v.fix(rS.value, 2)}`;
-          return `${lab}: final amino-acid yield ≈ **${Y >= 0.1 ? v.fix(Y, 2) : v.fix(Y, 4)}%** of the carbon; after ${v.fix(dS.value, 1)} days ≈ ${y >= 0.1 ? v.fix(y, 2) : v.fix(y, 4)}%.\n1953 products: glycine, α- and β-alanine, aspartic acid, α-aminobutyric acid · 2008 reanalysis of archived vials: more than 20 amino acids.`;
-        });
-      },
-    },
+    millerEvent,
     // ───────────────────────────────────────────────────────────────────────────────────── 3.2
     {
       num: '3.2',

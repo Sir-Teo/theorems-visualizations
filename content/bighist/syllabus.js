@@ -87,8 +87,8 @@ export default {
       title: 'Life on Earth',
       summary: String.raw`Life appeared on Earth within a billion years of its formation, by routes still debated. For most of its history it was microbial, yet microbes oxidised the atmosphere and, by merging, built the complex cells from which plants and animals came. Animal life diversified rapidly in the Cambrian, and five mass extinctions, at least one caused by an asteroid, repeatedly reset the board.`,
       items: [
-        { num: '3.1', kind: 'Event', name: 'The Miller–Urey experiment', deps: [], refs: ['Christian'],
-          pic: 'Spark a flask of methane, ammonia, hydrogen and water: amino-acid yields over a week are plotted, and switching to a less reducing atmosphere lowers them.' },
+        { num: '3.1', kind: 'Event', name: 'The Miller–Urey experiment', deps: [], refs: ['Miller1953; Johnson et al.2008 plus TableS1; Miller & Schlesinger NASA CP2276'],
+          pic: 'Distinguish original secure and tentative identifications, then compare all27 archived-sample compounds across three apparatus with exact printed ratios and qualitative nondetections.' },
         { num: '3.2', kind: 'Hypothesis', name: 'The RNA world and rival origin-of-life hypotheses', deps: ['bighist-3.1'], refs: ['Christian'],
           pic: 'Compare scenarios — RNA world, metabolism first, hydrothermal vents, warm ponds — on a chart of what each explains and what evidence supports it.' },
         { num: '3.3', kind: 'Event', name: 'LUCA and the tree of life', deps: ['bighist-3.2', 'popgen-3.9'], refs: ['Christian'],
