@@ -928,3 +928,8 @@ Fresh exact snapshot passes2068default tests including6UI, strict build/fullstat
 ## Accepted MATHBIO arguments and Gompertz domain
 
 Independent exact-target/proof/function/flag/syllabus/native review accepts seven prerequisites, taking MATHBIO18→25published edges and correcting compound-rule error sign, absolute-versus-relative rabbit modes, Jordan polynomial factors and the affected sigmoid domain. The peer-found unqualified Gompertz statement is fixed separately and independently checked; no numerical model/source flag changes, especially Kolmogorov3.14. See [peer evidence](mathbio-crossfield-prerequisites-peer.md). Immutable accepted98d3de0inventory excludes the active BIGHIST3.5draft and yields815published shortfall,48/64below25and28whole syllabi below25. Separate3.4symplectic-energy prose remains under peer review; latest full checkpoint remains e0f9fb5.
+
+
+## Accepted separate MATHBIO3.4 energy explanation
+
+Independent peer accepts actual-map area preservation, its nonzero default first-step energy error, and the final whole-item caption/syllabus correction. Fixed h=.002RK4is a numerical reference despite its old UIlabel; equilibrium examples may have zero error. All71functions/flags/full syllabus are guarded,102digit independent drift and actual first paintedpaths agree, and both320themes/all4equilibriumselectors/ownpixels pass. The initial missed caption finding remains recorded in [peer evidence](mathbio-symplectic-energy-peer.md). No numerical model, source flag or source-queue count changes.

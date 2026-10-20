@@ -1454,6 +1454,20 @@
       ],
       "peer": "worker_two",
       "sourceClosure": "None; both existing source flags unchanged, equivalent statements only."
+    },
+    {
+      "ids": [
+        "mathbio-3.4"
+      ],
+      "status": "accepted",
+      "finding": "Symplectic Euler preserves log-coordinate area, not exact first-integral energy; caption/syllabus and tinyRK4 numerical-reference distinction corrected.",
+      "commits": [
+        "1b5e4d6947f822ed13bf1aa0bc386db2f0f585d0",
+        "4e4a1d7dd7c1b1e13332c9c33f8b8f959d031830"
+      ],
+      "peer": "worker_two",
+      "report": "docs/verification/mathbio-symplectic-energy-peer.md",
+      "sourceClosure": "None;3.14originalsourceflag and all other flags unchanged."
     }
   ],
   "acceptedSourceLimitations": [
