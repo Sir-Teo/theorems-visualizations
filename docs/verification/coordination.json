@@ -53,7 +53,7 @@
     {
       "agent": "worker_two",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-two/theorems-visualizations",
-      "branch": "codex/atlas-worker-two",
+      "branch": "codex/bighist-orbits",
       "collection": "arch",
       "owns": [
         "content/arch/**",
@@ -71,7 +71,7 @@
     {
       "agent": "worker_three",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-three/theorems-visualizations",
-      "branch": "codex/atlas-worker-three",
+      "branch": "codex/atlas-energy-erratum",
       "collection": "historical source stragglers",
       "owns": [
         "content/art/**",
@@ -81,7 +81,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Cambrian independently accepted; peer ARCH4.9exact22ac03ad next; six hard original-source bodies remain open.",
+      "current": "New actual official1993erratum recovered; independently auditable ENERGY3.10candidate in production, then actual cross-field prerequisite reconciliation.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -1182,14 +1182,14 @@
   },
   "currentPendingSourceReviews": 19,
   "latestCheckpoint": {
-    "acceptedContentCommit": "5c65e26",
-    "report": "docs/verification/checkpoint-5c65e26.md",
-    "defaultTests": 1993,
+    "acceptedContentCommit": "61ced0c",
+    "report": "docs/verification/checkpoint-61ced0c.md",
+    "defaultTests": 2011,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 112.859563208,
+    "testDurationSeconds": 106.800800125,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1200,10 +1200,10 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112703,
-    "pendingSourceReviews": 23,
-    "acceptedTeamEntries": 128,
-    "publishedCrossFieldShortfall": 845,
+    "homeGzipBytes": 112701,
+    "pendingSourceReviews": 19,
+    "acceptedTeamEntries": 132,
+    "publishedCrossFieldShortfall": 844,
     "publishedCollectionsBelowTarget": 53,
     "nonMathCollections": 64,
     "wholeSyllabusBelowTarget": 28,
@@ -1214,12 +1214,12 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-coordinator/checkpoint9-tests.log",
-      "/tmp/atlas-coordinator/checkpoint9-build.log",
-      "/tmp/atlas-coordinator/checkpoint9-static.log"
+      "/tmp/atlas-coordinator/checkpoint10-tests.log",
+      "/tmp/atlas-coordinator/checkpoint10-build.log",
+      "/tmp/atlas-coordinator/checkpoint10-static.log"
     ],
     "limitations": [
-      "Exact immutable accepted snapshot5c65e26 includes accepted Pantheon, Florence and Cambrian production are excluded.",
+      "Exact immutable accepted snapshot61ced0c includes Florence, Cambrian URL fix, pendentives and corrected Miller; ongoing collective-learning/other production excluded.",
       "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },
