@@ -3,10 +3,8 @@
 // Sources checked (Oct 2026); Crossref was used for bibliographic details.
 //   4.5 Actual Green2010ancestry-estimation/limitations, Reich2010Melanesian analysis,
 //     Fu2014dating/admixture/Fig5–6 read; authored stationary-window law and censoring explicit.
-//   4.6 Ambrose, J. Hum. Evol. 34: 623 (1998) and Rampino & Self, Nature 359: 50 (1992) (Crossref-checked); Storey et al., PNAS 109:
-//     18684 (2012) (Crossref-checked; date of about 74 ka rounded, the value 73.88 ka was not confirmed); Lane et al., PNAS 110:
-//     8025 (2013) and Yost et al., J. Hum. Evol. (2018) (Lake Malawi ash: no volcanic winter; only the titles/gist were confirmed
-//     by search). The pairwise-coalescence calculation is textbook; the bottleneck sizes are the reader's.
+//   4.6 Actual Rampino1992/Lane2013 bodies and bounded Ambrose/Storey/Yost author abstracts.
+//     Fixed calibrated source age separated from an analytic authored coalescent history.
 //   4.7 Actual Christian2004pp146–148/Henrich2004pp200–203/210 source versions read.
 //     Four-group extension and best/mean/rounded-share distinctions explicit; independent review pending.
 //   4.8 Roberts et al., Science 292: 1888 (2001) (about 46 ka); Saltre et al., Nat. Commun. 7: 10511 (2016); Faith & Surovell, PNAS 106:
@@ -17,6 +15,7 @@
 import { clamp } from './ch04.shared.js';
 import learningItem from './learning-item.js';
 import admixtureItem from './admixture-item.js';
+import tobaItem from './toba-item.js';
 
 // ── 4.8 data: arrival window, extinction window, climate window (or null); ages in ka before present ─────────
 const REG = [
@@ -37,59 +36,7 @@ export default {
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     admixtureItem,
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-    {
-      num: '4.6',
-      kind: 'Hypothesis',
-      name: 'The Toba bottleneck (contested)',
-      statement: String.raw`About $74\,000$ years ago the Toba volcano in Sumatra produced the largest eruption of the last two million years. In 1992 Rampino and Self argued that the resulting volcanic winter could have caused a severe drought and cooling; Ambrose (1998) added that human populations were cut to a few thousand breeding individuals and that this explains the low genetic diversity of our species. The **Toba catastrophe hypothesis** is therefore: a short, severe bottleneck at about $74$ ka left a detectable mark on the DNA of every living person.
-
-**Scope.** The hypothesis is now widely doubted: archaeological sites in India show people living through the ash fall, and sediment cores from Lake Malawi find ash without evidence of a volcanic winter in East Africa. The date of the eruption is not in doubt, only its effect on people.`,
-      idea: String.raw`Genetic diversity measures how long the lineages of two genomes take to coalesce. Going backwards in time two lineages coalesce with probability $1/(2N)$ per generation, so in a population whose size is $N(t)$ the chance of coalescing between times $t_1$ and $t_2$ is $1-\exp\bigl(-\int_{t_1}^{t_2}\tfrac{dt}{2N(t)}\bigr)$. A bottleneck of $N_b$ individuals for $d$ generations therefore sweeps up a fraction $1-e^{-d/(2N_b)}$ of all pairs at once: a visible spike in the coalescence times only if $d$ is comparable to $2N_b$. The model is the finite-population drift of Wright–Fisher (popgen-2.1) viewed in reverse, as in the serial founder effect (bighist-4.4).`,
-      caption: String.raw`Left: the population-size history with a bottleneck at the Toba date (move it, make it deeper or longer). Right: the fraction of pairs of lineages that have coalesced by each time with and without the bottleneck; a bottleneck shows as a jump. The default (3,000 individuals for 1,000 years) leaves a jump of under 1% — a bottleneck needs to be far longer or tighter to be seen in genomes.`,
-      deps: ['bighist-4.3', 'popgen-2.9', 'popgen-2.1'],
-      see: ['bighist-4.4', 'bighist-4.2'],
-      refs: ['Christian'],
-      credit: 'Rampino & Self, 1992; Ambrose, 1998 (hypothesis); Lane et al., 2013 and Yost et al., 2018 (sediment evidence against a volcanic winter)',
-      tags: ['bottleneck', 'volcanism', 'coalescence'],
-      scope: String.raw`Single panmictic population with a constant ancestral size; a model of what a bottleneck would do, not an inference from data.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Toba_catastrophe_theory', doi: 'https://doi.org/10.1006/jhev.1998.0219' },
-      verify: true,
-      viz(v) {
-        const N0 = v.slider('ancestral size $N_0$', 2000, 50000, 10000, { step: 100, log: true });
-        const Nb = v.slider('bottleneck size $N_b$', 50, 20000, 3000, { step: 10, log: true });
-        const dur = v.slider('duration (years)', 20, 30000, 1000, { step: 10, log: true });
-        const tb = v.slider('bottleneck time (ka ago)', 30, 140, 74, { step: 1 });
-        const gen = v.slider('generation time (years)', 20, 30, 25, { step: 1 });
-        const A = v.stage({ x: [-200, 0], y: [30, 3e4], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'time (ka ago, negative)', ylabel: 'population size N', title: 'size history' });
-        const B = v.stage({ x: [-300, 0], y: [0, 1], axes: 'box', gutter: true, height: 300, xlabel: 'time (ka ago, negative)', ylabel: 'fraction of pairs coalesced (looking back)', title: 'coalescence of lineage pairs' });
-        const calc = () => {
-          const dt = 0.02, tMax = 300, win = [tb.value - dur.value / 1000, tb.value]; // [t_lo, t_hi] ka ago
-          let L1 = 0, L0 = 0; const c1 = [], c0 = [];
-          for (let t = 0; t <= tMax; t += dt) {
-            const inB = t >= win[0] && t < win[1];
-            L1 += ((dt * 1000) / gen.value) / (2 * (inB ? Nb.value : N0.value));
-            L0 += ((dt * 1000) / gen.value) / (2 * N0.value);
-            if (Math.abs(t / 2 - Math.round(t / 2)) < dt / 2 || (t >= win[0] - 1 && t <= win[1] + 1 && Math.abs(t / 0.5 - Math.round(t / 0.5)) < dt / 2)) { c1.push([-t, 1 - Math.exp(-L1)]); c0.push([-t, 1 - Math.exp(-L0)]); }
-          }
-          return { c1, c0, win };
-        };
-        v.render(() => {
-          const { c1, c0, win } = calc();
-          const w0 = Math.max(win[0], 0);
-          A.path([[-200, N0.value], [-win[1], N0.value], [-win[1], Nb.value], [-w0, Nb.value], [-w0, N0.value], [0, N0.value]], { color: 'accent', width: 2.6 });
-          A.vline(-tb.value, { color: 'red', width: 1.2, dash: [4, 3] }); A.text('Toba eruption', -tb.value - 2, 40, { size: 10.5, color: 'red', align: 'right' });
-          B.path(c0, { color: 'muted', width: 2, dash: [5, 4] });
-          B.path(c1, { color: 'accent', width: 2.6 });
-          B.vband(-win[1], -w0, { color: 'red', alpha: 0.15, edges: false });
-          v.legend([['muted', 'no bottleneck', { dash: true }], ['accent', 'with the bottleneck']]);
-        });
-        v.readout(() => {
-          const d = (dur.value / gen.value), P = 1 - Math.exp(-d / (2 * Nb.value));
-          const base = 1 - Math.exp(-d / (2 * N0.value));
-          return `The bottleneck lasts **${v.fix(d, 0)} generations**; a pair of lineages coalesces inside it with probability **${v.fix(100 * P, 2)}%** (against ${v.fix(100 * base, 2)}% without it), so ${P < 0.05 ? 'the signal in genome-wide data is tiny' : P < 0.3 ? 'the signal is modest but detectable with many genomes' : 'a clear spike would appear'}.\nThe hypothesis needs $d/(2N_b)$ to be of order one. Sediments near the lake and in India argue against such a collapse.`;
-        });
-      },
-    },
+    tobaItem,
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     learningItem,
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
