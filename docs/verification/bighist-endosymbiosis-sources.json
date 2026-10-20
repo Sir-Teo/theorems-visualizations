@@ -1,0 +1,51 @@
+[
+  {
+    "file": "sagan1967.pdf",
+    "url": "https://coleoguy.github.io/reading.group/Sagan_1967.pdf",
+    "bytes": 2677681,
+    "sha256": "3d58ea1261ab449dc2947b4ff6cf300c56c93ed78272bb42c052c2a4994e6413",
+    "readScope": "Actual complete56PDFpage copy includes original225\u2013274 plus endmatter. Bounded actual225\u2013228proposal/intro read, own original225\u2013226pixels inspected; no full1967theory/modern endorsement/unique first-proponent claim."
+  },
+  {
+    "file": "rickettsia1998.pdf",
+    "url": "https://www.nature.com/articles/24094.pdf",
+    "bytes": 1197145,
+    "sha256": "9b395135c10b194a8b65214ceb95c02efa7df524d570bdadc03927db894ca197",
+    "readScope": "Actual complete cached11page publisher PDF; bounded main133genome-feature paragraph/abstract,834complete ORFs and1111523bp. Original133pixels inspected; no current closest-relative or underlying phylogenetic rerun claim."
+  },
+  {
+    "file": "caulobacter2001.html",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC31192/",
+    "bytes": 264180,
+    "sha256": "cea13b48a42ab8b4382e47afab8d0031db4f8f9bf9eda60bf4a22fd3cc574602",
+    "readScope": "Actual full PMCbody; bounded abstract/ORFprediction Methods/GeneralFeatures, historical3767predictedORFs/4016942bp, own labelled retained-body readingrender inspected. Not the raw annotation pipeline."
+  },
+  {
+    "file": "mitocarta2021.html",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7778944/",
+    "bytes": 222498,
+    "sha256": "22230f5c2a981b0b444beb0b120bc0d5d027e7c5697b92d5bb09a46a3f24fa61",
+    "readScope": "Actual full PMCbody, NAR2021volume49/online11Nov2020; actual abstract/introduction/inventory passages and own labelled readingrender inspected. Published1136human geneinventory/13mtDNA, not independently recounted full rawcatalogue or current universe of all mitochondrial proteins."
+  },
+  {
+    "file": "lang1997.html",
+    "url": "https://www.nature.com/articles/387493a0",
+    "bytes": 312647,
+    "sha256": "74252d0777ee4603f1f99f1773539265a9b484ea1b4ea4684bbbf7bb0c22a2b2",
+    "readScope": "Actual publisher author abstract only, historical69034bp/97inclusive genes. Full original body not certified; plotted67CDS comes from actual later RefSeq annotation, not silently attributed to the abstract."
+  },
+  {
+    "file": "NC_001823.1.gb",
+    "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_001823.1&rettype=gbwithparts&retmode=text",
+    "bytes": 168574,
+    "sha256": "8cba0088feda81edea3069713f50fd10264a97e0c331cf4fd5578e96c3ec108a",
+    "readScope": "Complete cached official provisional RefSeq record dated3Apr2023; header/comment/version and complete feature-table keys/CDS locations independently counted. Not all bases/experimental functions; feature-type rRNA includes RNaseP annotation and no functional4rRNA inference is made."
+  },
+  {
+    "file": "NC_012920.1.gb",
+    "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_012920.1&rettype=gbwithparts&retmode=text",
+    "bytes": 64640,
+    "sha256": "7530d659e7174272372814edfecb2ece1f87a444395a861fcdf1b977c4aa5c1f",
+    "readScope": "Complete cached official provisional rCRS record dated3Apr2023; header/revision/comment/version and complete feature keys/CDSlocations counted. Revised sequence explicitly distinguished from1981CRS; underlying sequencing/functions not revalidated."
+  }
+]
