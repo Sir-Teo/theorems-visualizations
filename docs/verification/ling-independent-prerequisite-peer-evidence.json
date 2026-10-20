@@ -1,0 +1,93 @@
+{
+  "status": "independent combined peer pass",
+  "baseline": "d4f67e50ec2f4571f6b31010531e69e341734a33",
+  "final": "d086b952ec561a5e02d6460905789d1c48bc83cb",
+  "producerChain": [
+    "f0ac876e6c36942bb7be490bc0d81f1a64990ed7",
+    "90443c022c30b09d3a2253c00945630b25abfdcf",
+    "16d7fe32332a53095ad5ae5cd1f7e73c5db85268",
+    "b21a1e13f462cd10baceb0644394e7ae2a9c1acd",
+    "622dd04d66908d8f9a3827a5e51c0e1183abded2",
+    "d086b952ec561a5e02d6460905789d1c48bc83cb"
+  ],
+  "preservation": {
+    "pass": true,
+    "fields": {
+      "eng": 1,
+      "math": 15,
+      "cs": 4
+    },
+    "items": 52,
+    "vizFunctions": 52,
+    "modules": 25,
+    "rows": 136,
+    "changedConsumers": 17,
+    "addedEdges": 20,
+    "qualifierLiterals": 1,
+    "equivalentWraps": 4
+  },
+  "math": {
+    "pass": true,
+    "groups": 16,
+    "checks": 1715,
+    "names": [
+      "tract eigenaction and separate ideal radiation derivative",
+      "mixed pressure boundaries with no zero mode",
+      "centered logarithms cancel common factor, not unequal factors",
+      "complete ABX outcomes including independent repeats and ties",
+      "compact energy sublevel collision exclusion",
+      "binary product capacities and conjunction extensions",
+      "rule ordering sequences versus outputs",
+      "random typing block counts and normalized nonempty word law",
+      "innovation exact mean without cross-token independence",
+      "occupancy enumeration and decreasing increments",
+      "safe fixed-codeword assignment swap",
+      "positive separated Menzerath solutions and distinct projection step",
+      "contextwise entropy mixture lower and average-conditioning upper",
+      "finite-context cross entropy exact token identity including zero support",
+      "ideal cue surprisal and square-cost sign",
+      "Poisson count likelihood contrast with positive rates and exposure"
+    ]
+  },
+  "sourceAuditAndProducerMathTests": 51,
+  "sourceAuditAndProducerMathBoundary": "16d7fe32332a53095ad5ae5cd1f7e73c5db85268",
+  "strict": {
+    "errors": 0,
+    "warnings": 0,
+    "homeGzip": 112721
+  },
+  "static": {
+    "items": 52,
+    "errors": 0,
+    "warnings": 0
+  },
+  "native": {
+    "initialStates": 34,
+    "historicalFailingStates": [
+      "4.4 light",
+      "4.4 dark"
+    ],
+    "closingStates": 2,
+    "totalPictures": 108,
+    "finalAcceptedFieldsPersonallyInspected": {
+      "statementScope": 34,
+      "proof": 34,
+      "caption": 34
+    },
+    "closingDisplayClientScroll": [
+      253,
+      253
+    ]
+  },
+  "narrow253": {
+    "initialStates": 34,
+    "closingStates": 2,
+    "totalPictures": 108,
+    "allBoundsPass": true
+  },
+  "evidenceRoot": "/tmp/atlas-thermo-ling-peer",
+  "bridges": [],
+  "globalsEdited": false,
+  "sourceFlagsChanged": false,
+  "browsersClosed": true
+}
