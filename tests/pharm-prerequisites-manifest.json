@@ -1,0 +1,293 @@
+{
+  "baseline": "5622b5071b4b0b31c854d7b44d77ce456b994d2d",
+  "field": "med",
+  "changes": {
+    "1.1": {
+      "file": "content/pharm/ch01.js",
+      "before": [],
+      "added": [
+        "pma-5.3"
+      ],
+      "full": [
+        "pma-5.3"
+      ],
+      "note": "The sum rule for derivatives (pma 5.3) turns the five displayed model balances into a conservation check. In $G+P+T+M+U$, each gut-to-plasma, plasma-to-tissue, return, metabolism and excretion flow occurs once with each sign, so the derivative of the total is zero. Its initial value is the administered dose. M and U are cumulative parent-dose equivalents in this bookkeeping model; this cancellation is not a claim that every real metabolite has the same molecular mass as its parent.",
+      "rowBefore": []
+    },
+    "2.7": {
+      "file": "content/pharm/ch02-b.js",
+      "before": [
+        "pharm-2.1"
+      ],
+      "added": [
+        "ode-1.4"
+      ],
+      "full": [
+        "pharm-2.1",
+        "ode-1.4"
+      ],
+      "note": "Here ode 1.4 is used with a time-varying source, not a constant infusion: multiplying $A'+kA=k_aFD e^{-k_at}$ by $e^{kt}$ leaves the integral of $k_aFD e^{(k-k_a)t}$. Its value gives the difference of exponentials when the two positive rates differ. If they coincide, the integrand is constant and the solution is $FDk\\,t e^{-kt}$ directly; there is no division by a zero rate difference. This calculation presumes a fixed bioavailable gut amount FD and linear disposition.",
+      "rowBefore": [
+        "pharm-2.1"
+      ]
+    },
+    "2.8": {
+      "file": "content/pharm/ch02-b.js",
+      "before": [
+        "pharm-2.7",
+        "pharm-1.6"
+      ],
+      "added": [
+        "pma-5.8"
+      ],
+      "full": [
+        "pharm-2.7",
+        "pharm-1.6",
+        "pma-5.8"
+      ],
+      "note": "For positive dose, volume and rate constants the Bateman curve is differentiable, starts at zero, is positive at positive times and returns to zero. Any interior peak therefore has zero derivative by pma 5.8. The derivative equation shown above has exactly one positive solution: its exponential ratio is strictly monotone, and the derivative changes from positive to negative there. Thus the stationary point is the global peak; a zero derivative alone would not suffice for that conclusion. With equal rates the derivative of $t e^{-kt}$ changes sign at 1/k.",
+      "rowBefore": [
+        "pharm-2.7",
+        "pharm-1.6"
+      ]
+    },
+    "2.10": {
+      "file": "content/pharm/ch02-b.js",
+      "before": [
+        "pharm-2.1"
+      ],
+      "added": [
+        "pma-6.21"
+      ],
+      "full": [
+        "pharm-2.1",
+        "pma-6.21"
+      ],
+      "note": "The fundamental theorem pma 6.21 integrates the continuous urinary outflow on a finite interval: $A_e(t)-A_e(0)=\\int_0^t k_eD e^{-ks}\\,ds=(k_eD/k)(1-e^{-kt})$. Letting t tend to infinity for k>0 gives $A_e^\\infty=f_eD$, and subtracting yields the sigma-minus exponential. This argument requires the complete cumulative amount or a justified tail estimate; replacing the infinite total by a short collection changes the logged residual rather than merely adding noise.",
+      "rowBefore": [
+        "pharm-2.1"
+      ]
+    },
+    "2.3": {
+      "file": "content/pharm/ch02.js",
+      "before": [
+        "pharm-2.1"
+      ],
+      "added": [
+        "ladr-6.61",
+        "stat-1.10"
+      ],
+      "full": [
+        "pharm-2.1",
+        "ladr-6.61",
+        "stat-1.10"
+      ],
+      "note": "For positive reported concentrations, put $y_i=\\log C_i$ and let U be the span of the constant vector and the sampling-time vector. The closest-subspace theorem ladr 6.61 makes the fitted line the unique orthogonal projection of y onto U when the times are not all equal; residual orthogonality gives the usual slope with denominator $S_{tt}=\\sum(t_i-\\bar t)^2$. For fixed, uncensored times with independent normal log-errors of common variance, the standardized slope error is normal and independent of the residual sum of squares divided by that variance, which is chi-squared with n-2 degrees of freedom. The normal/independent-chi-squared ratio in stat 1.10 then gives the stated Student interval using $s_b=\\hat\\sigma/\\sqrt{S_{tt}}$. This is a conditional model result: removing observations below an assay limit selects their errors, so the widget's resulting nominal interval need not have exact 95-percent coverage.",
+      "rowBefore": [
+        "pharm-2.1"
+      ]
+    },
+    "2.4": {
+      "file": "content/pharm/ch02.js",
+      "before": [
+        "pharm-2.2"
+      ],
+      "added": [
+        "ode-1.4"
+      ],
+      "full": [
+        "pharm-2.2",
+        "ode-1.4"
+      ],
+      "note": "Apply the integrating-factor formula ode 1.4 to $A'+kA=R$ on the constant-input interval. Multiplication by $e^{kt}$ gives $(e^{kt}A)'=Re^{kt}$, hence $A=R(1-e^{-kt})/k$ from zero. After the switch-off, use the actual continuous amount A(T) as the new initial value with zero source. Positive k is needed for a finite plateau; with zero elimination the same formula's limiting equation is linear accumulation, not convergence to a steady concentration.",
+      "rowBefore": [
+        "pharm-2.2"
+      ]
+    },
+    "3.8": {
+      "file": "content/pharm/ch03-b.js",
+      "before": [
+        "pharm-1.4",
+        "pharm-1.5"
+      ],
+      "added": [
+        "pma-6.12"
+      ],
+      "full": [
+        "pharm-1.4",
+        "pharm-1.5",
+        "pma-6.12"
+      ],
+      "note": "Linearity of the integral (pma 6.12) permits integrating the finite sum of pathway outflows, and pulling each constant clearance outside its integral. On every finite horizon the removed amounts are $\\mathrm{CL}_i\\int C(t)\\,dt$; taking the complete-elimination limit gives the common-AUC dose fractions above. This uses one common concentration and fixed parallel coefficients, not statistical independence of random organ outputs. If blocking removes every eliminating route, the residual clearance is zero and the finite AUC-ratio formula has no finite value.",
+      "rowBefore": [
+        "pharm-1.4"
+      ]
+    },
+    "3.9": {
+      "file": "content/pharm/ch03-b.js",
+      "before": [
+        "pharm-3.1",
+        "physio-4.1"
+      ],
+      "added": [
+        "ladr-7.62",
+        "ladr-3.84"
+      ],
+      "full": [
+        "pharm-3.1",
+        "physio-4.1",
+        "ladr-7.62",
+        "ladr-3.84"
+      ],
+      "note": "The quadratic-form criterion in ladr 7.62 applies to -G: its form is the sum of the positive flow-weighted squared blood/tissue differences and the positive liver-loss square. A zero sum forces every venous concentration to equal blood and the liver value to be zero, hence the entire vector is zero. Thus -G is positive definite for this connected positive-flow model with positive hepatic loss. With S the positive square-root capacity matrix, $W^{-1}G=S^{-1}(S^{-1}GS^{-1})S$ is a change of coordinates as in ladr 3.84. The symmetric negative-definite matrix in parentheses therefore gives the same negative generator eigenvalues and decaying modes as the original concentration system. Zero clearance would leave a conserved mode instead of strict decay.",
+      "rowBefore": [
+        "pharm-3.1",
+        "physio-4.1"
+      ]
+    },
+    "3.10": {
+      "file": "content/pharm/ch03-b.js",
+      "before": [
+        "pharm-1.2",
+        "pharm-1.5"
+      ],
+      "added": [
+        "prob-1.6.9a"
+      ],
+      "full": [
+        "pharm-1.2",
+        "pharm-1.5",
+        "prob-1.6.9a"
+      ],
+      "note": "With complete elimination from the sampled central pool and constant clearance, $f(t)=\\mathrm{CL}C(t)/D$ is a nonnegative normalized elimination-time density. The moment definition in prob 1.6.9a then makes its first moment $\\int_0^\\infty t f(t)\\,dt=\\mathrm{AUMC}/\\mathrm{AUC}$. A finite first moment is required, and the endpoint represents exit of parent-dose equivalents under this model. This probability argument does not by itself prove the separate steady-state-volume identity, nor make a finite trapezoid/tail estimate an exact moment.",
+      "rowBefore": [
+        "pharm-1.2"
+      ]
+    },
+    "3.1": {
+      "file": "content/pharm/ch03.js",
+      "before": [
+        "pharm-2.1",
+        "ladr-7.29"
+      ],
+      "added": [
+        "ode-3.3"
+      ],
+      "full": [
+        "pharm-2.1",
+        "ladr-7.29",
+        "ode-3.3"
+      ],
+      "note": "The constant-matrix flow theorem ode 3.3 supplies the dynamical step after diagonalization: the amount vector is $e^{tM}(D,0)^T$. Each eigenvector with generator eigenvalue $-\\alpha$ or $-\\beta$ evolves with the corresponding decaying exponential. The symmetric scaling and spectral theorem already used above provide the real orthogonal modes; matrix-flow uniqueness turns their sum into the solution for the specified bolus, rather than merely a representation of a symmetric matrix. Strictly positive exchange and elimination give positive decay rates.",
+      "rowBefore": [
+        "pharm-2.1",
+        "ladr-7.29"
+      ]
+    },
+    "3.4": {
+      "file": "content/pharm/ch03.js",
+      "before": [
+        "pharm-3.3"
+      ],
+      "added": [
+        "ode-1.4"
+      ],
+      "full": [
+        "pharm-3.3",
+        "ode-1.4"
+      ],
+      "note": "For the separate massless effect-site proxy, ode 1.4 gives $C_e(t)=e^{-k_{e0}t}C_e(0)+\\int_0^t k_{e0}e^{-k_{e0}(t-s)}C_1(s)\\,ds$. The central concentration is the prescribed forcing of this scalar equation; the proxy does not feed back into the three amount balances. Its lagged concentration therefore adds no stored drug to the conserved body total. This positive-kernel calculation describes the chosen proxy and supplies no patient recovery threshold.",
+      "rowBefore": [
+        "pharm-3.3"
+      ]
+    },
+    "3.6": {
+      "file": "content/pharm/ch03.js",
+      "before": [
+        "pharm-1.4",
+        "pharm-1.7"
+      ],
+      "added": [
+        "pma-5.5"
+      ],
+      "full": [
+        "pharm-1.4",
+        "pharm-1.7",
+        "pma-5.5"
+      ],
+      "note": "For positive flow Q and capacity $x=f_u\\mathrm{CL}_{int}$, apply the chain rule pma 5.5 to the logarithm of $\\mathrm{CL}_H=Qx/(Q+x)$. Multiplying each partial derivative by its positive input and dividing by clearance gives $\\partial\\log\\mathrm{CL}_H/\\partial\\log Q=x/(Q+x)=E$ and $\\partial\\log\\mathrm{CL}_H/\\partial\\log x=Q/(Q+x)=1-E$. These are local elasticities of this well-stirred formula. For the alternative tube expression the same differentiation yields different intermediate elasticities; equal limiting regimes do not identify the models.",
+      "rowBefore": [
+        "pharm-1.4",
+        "physio-6.10"
+      ]
+    },
+    "4.1": {
+      "file": "content/pharm/ch04.js",
+      "before": [
+        "pharm-2.1"
+      ],
+      "added": [
+        "ode-3.1"
+      ],
+      "full": [
+        "pharm-2.1",
+        "ode-3.1"
+      ],
+      "note": "The superposition argument is the linear-solution property in ode 3.1 applied between the prescribed dose jumps. Each shifted single-dose state solves the same homogeneous disposition system after its own arrival; differentiation of their finite sum gives that system between doses, while the sum has exactly the required bolus increments. For an oral dose include the linear gut compartment as part of the state. Uniqueness on each interval then identifies this sum with the piecewise initial-value solution. Saturable loss or coefficients that change with dose break this argument.",
+      "rowBefore": [
+        "pharm-2.1"
+      ]
+    },
+    "4.3": {
+      "file": "content/pharm/ch04.js",
+      "before": [
+        "pharm-4.2",
+        "pharm-1.5"
+      ],
+      "added": [
+        "pma-7.16"
+      ],
+      "full": [
+        "pharm-4.2",
+        "pharm-1.5",
+        "pma-7.16"
+      ],
+      "note": "Passing from finitely many previous doses to the periodic profile needs a justified limit under the integral. For these positive-rate one-compartment IV or Bateman responses, the old-dose tails on one dosing interval are bounded by a summable geometric sequence (with an additional linear age factor in the equal-rate Bateman case). The partial sums therefore converge uniformly on that interval. Uniform convergence and integration, pma 7.16, let their integrals tend to the integral of the periodic profile; partitioning the single-dose time axis into consecutive intervals gives the full single-dose AUC. This is a steady-state limit, not the area during a finite startup interval.",
+      "rowBefore": [
+        "pharm-4.2",
+        "pharm-1.5"
+      ]
+    },
+    "4.7": {
+      "file": "content/pharm/ch04.js",
+      "before": [
+        "pharm-4.1"
+      ],
+      "added": [
+        "prob-1.6.1",
+        "prob-2.4.1"
+      ],
+      "full": [
+        "pharm-4.1",
+        "prob-1.6.1",
+        "prob-2.4.1"
+      ],
+      "note": "Write the taken-dose indicators as independent Bernoulli variables B_j with mean a. Linearity of expectation (prob 1.6.1) gives expected input $aND$ over N planned doses and, in a stationary dosing history, expected concentration equal to a times the perfect-adherence periodic curve. The strong law prob 2.4.1 applies because these indicators are identically distributed, pairwise independent and bounded: their realized average tends to a almost surely. Integrated mass balance over N intervals then gives the same long-run time-mean concentration, since the remaining gut/body amount is bounded for fixed positive rates and contributes a vanishing endpoint term after division by N. This is an asymptotic model result; the finite 14-day history with a perfect-adherence lead-in and the 60-member sampled band statistic are not exact realizations of that mean.",
+      "rowBefore": [
+        "pharm-4.1"
+      ]
+    }
+  },
+  "rowRepairs": {
+    "3.11": {
+      "before": [
+        "pharm-2.7"
+      ],
+      "after": [
+        "pharm-2.7",
+        "pma-3.26"
+      ],
+      "reason": "Existing written geometric-series proof already consumes pma3.26; no new written edge or quota credit."
+    }
+  }
+}
