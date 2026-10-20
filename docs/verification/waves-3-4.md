@@ -923,3 +923,8 @@ Independent worker-one argument/target/byteguard/native review accepts six used 
 ## Accepted checkpoint through e0f9fb5 and separate narrow formulas
 
 Fresh exact snapshot passes2068default tests including6UI, strict build/fullstatic0errors/warnings, home112704bytes gzip; queue7=833initial+1added−827original resolved, team144accepted entries. Published prerequisite shortfall822,49/64below25and28whole syllabi below25. The initial stale pending-flag assertion failure is preserved and the full successful rerun is documented in [checkpoint-e0f9fb5](checkpoint-e0f9fb5.md). Later equivalent EPI2.2/PROB2.1.1a display wrapping is independently accepted:26moduleitems/full2syllabi/formula tokens/functions/flags guarded,4fresh320theme/itemgroups pass with complete fractions/Borelqualification visible. See [separate peer](prerequisite-formula-wrap-peer.md); no source count changes. Active MATHBIO/endosymbiosis/LOGICdrafts remain excluded.
+
+
+## Accepted MATHBIO arguments and Gompertz domain
+
+Independent exact-target/proof/function/flag/syllabus/native review accepts seven prerequisites, taking MATHBIO18→25published edges and correcting compound-rule error sign, absolute-versus-relative rabbit modes, Jordan polynomial factors and the affected sigmoid domain. The peer-found unqualified Gompertz statement is fixed separately and independently checked; no numerical model/source flag changes, especially Kolmogorov3.14. See [peer evidence](mathbio-crossfield-prerequisites-peer.md). Immutable accepted98d3de0inventory excludes the active BIGHIST3.5draft and yields815published shortfall,48/64below25and28whole syllabi below25. Separate3.4symplectic-energy prose remains under peer review; latest full checkpoint remains e0f9fb5.

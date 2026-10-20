@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 49,
+  "publishedBelowTarget": 48,
   "wholeSyllabusBelowTarget": 28,
   "entries": [
     {
@@ -6526,10 +6526,10 @@
       "collection": "mathbio",
       "field": "bio",
       "target": 25,
-      "writtenToWritten": 18,
-      "writtenToKnown": 34,
-      "wholeSyllabus": 68,
-      "publishedShortfall": 7,
+      "writtenToWritten": 25,
+      "writtenToKnown": 41,
+      "wholeSyllabus": 75,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -6568,6 +6568,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "mathbio-1.3",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "mathbio-1.4",
           "prerequisite": "ode-1.6",
           "prerequisiteField": "math",
@@ -6577,6 +6584,27 @@
         {
           "item": "mathbio-1.5",
           "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "mathbio-1.6",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "mathbio-1.7",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "mathbio-1.8",
+          "prerequisite": "ode-1.5",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -6612,6 +6640,13 @@
         {
           "item": "mathbio-2.1",
           "prerequisite": "pma-3.31",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "mathbio-2.2",
+          "prerequisite": "ladr-5.50",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -6750,6 +6785,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "mathbio-4.2",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "mathbio-4.3",
           "prerequisite": "rca-18.5",
           "prerequisiteField": "math",
@@ -6759,6 +6801,13 @@
         {
           "item": "mathbio-4.3",
           "prerequisite": "stoch-4.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "mathbio-4.4",
+          "prerequisite": "ladr-8.46",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true

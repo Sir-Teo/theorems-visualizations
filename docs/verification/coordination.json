@@ -1463,6 +1463,13 @@
       "evidence": "Actual complete original abstract/Table2/paragraph39 independently confirm three incompatible printed versions.",
       "acceptedClaim": "The illustration uses exactly the identified abstract coefficients with a declared authored closure; no reconciled recommended fit is claimed.",
       "report": "docs/verification/geol-hirschmann-peer.md"
+    },
+    {
+      "ids": [
+        "bighist-4.6"
+      ],
+      "scope": "ActualRampino/Lanebounded originals, actualAmbrose/Storey/Yostauthorabstractclaims. CompleteAmbrose/Yostbody and independentdating/geneticpipelines not certified; retainedclaims limited accordingly.",
+      "report": "docs/verification/bighist-toba-peer.md"
     }
   ],
   "crossFieldBatches": [
@@ -1537,14 +1544,37 @@
       "report": "docs/verification/phil-crossfield-independent-peer-worker-one.md",
       "publishedBefore": 19,
       "publishedAfter": 25
+    },
+    {
+      "commits": [
+        "47c466a937528fee41143961a6c25551600b9138",
+        "94742318b79711f95f73d0936381a573c19ccd32"
+      ],
+      "collection": "mathbio",
+      "items": [
+        "mathbio-1.3",
+        "mathbio-1.6",
+        "mathbio-1.7",
+        "mathbio-1.8",
+        "mathbio-2.2",
+        "mathbio-4.2",
+        "mathbio-4.4"
+      ],
+      "status": "accepted",
+      "producer": "worker_three",
+      "peer": "worker_two",
+      "report": "docs/verification/mathbio-crossfield-prerequisites-peer.md",
+      "publishedBefore": 18,
+      "publishedAfter": 25,
+      "corrections": "Rule70sign, relative rabbitmode, complex Jordan factors, sigmoid domains;3.14originalflag unchanged."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 822,
-    "publishedBelow25": 49,
+    "publishedShortfall": 815,
+    "publishedBelow25": 48,
     "collections": 64,
     "wholeSyllabusBelow25": 28,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Exact accepted62c98d6 includes Toba/megafauna/ROBOT and independent PHIL prerequisite review; open layout followup separate"
+    "acceptedSnapshot": "Exact98d3de0 accepts MATHBIO prerequisite/Gompertz prose; unaccepted3.5draft excluded via immutable archive"
   }
 }
