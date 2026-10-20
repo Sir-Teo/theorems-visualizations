@@ -1,0 +1,96 @@
+{
+  "sources": [
+    {
+      "file": "wals20.html",
+      "url": "https://wals.info/chapter/20",
+      "bytes": 28645,
+      "sha256": "fd55ddf58a2ef24c8298061a8e4a84ef186239044a26ed8796bd42d1171d1959"
+    },
+    {
+      "file": "wals21.html",
+      "url": "https://wals.info/chapter/21",
+      "bytes": 45654,
+      "sha256": "0c46ad7959be9553e34779a2f27a1a691a8f48672768d5c57991f8e35ff12d85"
+    },
+    {
+      "file": "wals22.html",
+      "url": "https://wals.info/chapter/22",
+      "bytes": 41351,
+      "sha256": "f0776ae85121b1623dbce1ad041fa4df11fd59c18fdaf46a039f20c5b13f2e20"
+    },
+    {
+      "file": "sapir-pg12629.html",
+      "url": "https://www.gutenberg.org/files/12629/12629-h/12629-h.htm",
+      "bytes": 645092,
+      "sha256": "137ea5fe0bac5120031d43a702db09752d9015332862d06bd5445bff0f1c0aaf"
+    }
+  ],
+  "words": [
+    {
+      "key": "painted",
+      "form": "paint-ed",
+      "M": 2,
+      "W": 1,
+      "ratio": "2"
+    },
+    {
+      "key": "future",
+      "form": "will paint",
+      "M": 2,
+      "W": 2,
+      "ratio": "1"
+    },
+    {
+      "key": "lai",
+      "form": "a-nii làay",
+      "M": 3,
+      "W": 1,
+      "ratio": "3"
+    },
+    {
+      "key": "nootka",
+      "form": "inikw-ihl-’minih-’is-it",
+      "M": 5,
+      "W": 1,
+      "ratio": "5"
+    }
+  ],
+  "sample": 145,
+  "survey": [
+    {
+      "label": "0-1 category per word",
+      "count": 5,
+      "percent": "3.44827586206896551724137931034482758620689655172413793103448"
+    },
+    {
+      "label": "2-3 categories per word",
+      "count": 24,
+      "percent": "16.5517241379310344827586206896551724137931034482758620689655"
+    },
+    {
+      "label": "4-5 categories per word",
+      "count": 52,
+      "percent": "35.8620689655172413793103448275862068965517241379310344827586"
+    },
+    {
+      "label": "6-7 categories per word",
+      "count": 31,
+      "percent": "21.3793103448275862068965517241379310344827586206896551724138"
+    },
+    {
+      "label": "8-9 categories per word",
+      "count": 24,
+      "percent": "16.5517241379310344827586206896551724137931034482758620689655"
+    },
+    {
+      "label": "10-11 categories per word",
+      "count": 7,
+      "percent": "4.82758620689655172413793103448275862068965517241379310344828"
+    },
+    {
+      "label": "12-13 categories per word",
+      "count": 2,
+      "percent": "1.37931034482758620689655172413793103448275862068965517241379"
+    }
+  ]
+}
