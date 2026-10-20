@@ -457,12 +457,16 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 - Heavy computation: spread it over frames with a `setTimeout` loop that calls `v.invalidate()`; `s.dots` is slow above ~10⁴ points (draw squares directly on `s.ctx`).
 - Match slider domains to the model: use `step: 'any'` for continuous values, or explicitly reject unsupported saved ticks for a discrete model. Keep exact saved/model values. Native range inputs can serialize fewer decimal digits; verify the actual input against a fresh native range with the declared attributes and `String(modelValue)`, separately checking the declared step and domain. Do not round the mathematics or change shared replay behavior to make a test pass.
 
+- Offscreen visualizations pause rendering. Before a state screenshot, bring the visualization into view, wait for fonts and a fresh frame, and assert model/control/readout agreement. A full-page screenshot can otherwise combine fresh controls with an old canvas.
+
 **Numerics and data**
 - `rng.shuffle` returns a **copy**. `v.rng` gives 32-bit uniforms: build 53-bit values from two draws when summing many terms. `M.bisect(f, a, b, tol)` takes a number, not an options object. `M.smoothstep` has one argument. `M.solve` inverts the matrix — write a banded/dense solver for big systems.
 - `M.eigC` does **not** return orthogonal eigenvectors for repeated eigenvalues: use `M.eigH` for Hermitian matrices. `M.eigSym` fixes only the sign of each vector's largest component (it flips across a degeneracy).
 - Root finders that scan for sign changes must test every grid point (a root exactly on a grid point is easy to miss).
 - A fixed iteration budget does not establish equilibrium. Check the stated equation's residual at offered control extremes, expose nonconvergence, and do not hide invalid returned values by clipping the drawing.
 - On log axes a zero error cannot be drawn: clip to a floor (~10⁻¹⁷) and say so.
+- For tiny widths around a nonzero centre, forming absolute endpoints can lose the width before evaluation. Evaluate a ramp in centred coordinates, such as `0.5 + (x - centre) / width`, and handle width zero explicitly. Test sub-ULP widths and independent midpoint values.
+- Array `some` and `every` skip missing indices. Validate dense own indices before generating samples from a declared finite event list; include sparse outer and inner arrays in malformed-input checks.
 
 **3D**
 - `stage3d` has no handles, no click hit-testing and no sphere/surface primitives; `v.scene3` has handles (to planes or lines through the origin), polygons and dots but no hidden-line removal, tubes, sphere shading or box clipping. Build surfaces from polygons (`patch`/`planePatch` helpers exist in `content/vcalc/ch01.shared.js`), draw far-side curves faintly, and sync the yaw/pitch of two scenes by hand.
