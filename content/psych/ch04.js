@@ -1,113 +1,61 @@
 // Psychology & Perception — Chapter 4: Early vision (items 4.1–4.5; 4.6–4.10 are in ch04-b.js, 4.11–4.14 in ch04-c.js)
 import { logTicks, grey, clamp01, smooth01, coneDensity, rodDensity, BLIND } from './ch04.shared.js';
+import { RETINA_TEMPORAL, retinaX, retinaY, retinaNearest, retinaView, darkAdaptation } from './source-audit-retina.js';
 
 export default {
   collection: 'psych',
   chapter: 4,
   title: 'Early vision: receptors, contrast and lightness',
-  summary: String.raw`The retina already processes the image. Two receptor systems trade sensitivity for acuity: cones, packed densely in the fovea, serve daylight and fine detail, while rods, absent from the fovea and pooled many-to-one, serve the dark. Neighbouring cells then inhibit one another, so that the visual system reports differences, edges and ratios rather than absolute light levels. Lateral inhibition predicts Mach bands and explains some contrast illusions, but the Hermann grid and the lightness illusions show that the account is incomplete and that the brain also reasons about surfaces and illumination. And fixed images fade away: vision is built for change.`,
+  summary: String.raw`The retina already processes the image. Two receptor systems trade sensitivity for acuity: cones, packed densely in the fovea, serve daylight and fine detail, while rods, absent from the foveal center and pooled many-to-one, serve the dark. Neighbouring cells then inhibit one another, so that the visual system reports differences, edges and ratios rather than absolute light levels. Lateral inhibition predicts Mach bands and explains some contrast illusions, but the Hermann grid and the lightness illusions show that the account is incomplete and that the brain also reasons about surfaces and illumination. And fixed images fade away: vision is built for change.`,
   items: [
     // ------------------------------------------------------------------ 4.1
     {
-      num: '4.1',
-      kind: 'Concept',
-      name: 'Duplex retina: rods and cones',
-      statement: String.raw`The human retina contains two kinds of photoreceptor with complementary jobs. **Cones** (three types, about 4.6 million per eye) work in bright light, are packed most densely at the **fovea** and give fine detail and colour. **Rods** (about 92 million per eye) are far more sensitive, work in dim light, are absent from a rod-free zone about $1.25^\circ$ across at the centre of the fovea, reach their highest density some $15$–$20^\circ$ off the centre and give no colour. Which system carries vision depends on the light level: cones in daylight (*photopic*), rods in starlight (*scotopic*) and both in between (*mesopic*). The eye is therefore two sensors in one, with a hand-over between them.`,
-      idea: String.raw`The two systems have different photochemistry and wiring, and the numbers above are anatomical counts from human retinas (Curcio et al. 1990). The rod pigment catches single photons and its signal is pooled over many receptors (4.4), which buys sensitivity; cones are sparse enough in the periphery to be outnumbered by rods but dense enough in the fovea to sample the image at about a micrometre-scale grid, which buys acuity. A cone mosaic of spacing $s$ cannot resolve gratings finer than one cycle per $2s$ (the sampling limit), which is why the fovea, and only the fovea, resolves detail at the limit of the optics.`,
-      caption: String.raw`**Top:** receptor density against distance from the fovea along the temporal retina (log scale). Drag the **gold** handle. **Bottom:** a 30 µm square patch of retina at that place, drawn as a random mosaic with the density given by the curves: large **blue** discs are cones and small **orange** dots are rods. The *Lighting* control switches which receptors are active (the rest are dimmed). Notice that the fovea has no rods at all, so a faint star vanishes when you look straight at it. The density curves are a **stylised model** built through the published peak values, not the measured profile.`,
-      deps: [],
-      refs: ['Goldstein ch. 2'],
-      tags: ['retina', 'rods and cones', 'acuity'],
-      credit: 'Max Schultze proposed the duplex (rod and cone) theory, 1866; counts from Curcio et al., 1990, J. Comp. Neurol. 292: 497–523',
-      scope: String.raw`The curves are drawn along the temporal horizontal meridian; the nasal side differs (the optic disc sits at about 15° nasal on the retina), and cone density at the fovea varies several-fold between people. Light levels for the scotopic, mesopic and photopic ranges are conventional, not sharp.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Photoreceptor_cell', pubmed: 'https://pubmed.ncbi.nlm.nih.gov/2324310/' },
-      verify: true,
-      viz(v) {
-        const M = v.M;
-        const light = v.select('Lighting', [{ value: 'day', label: 'daylight' }, { value: 'dusk', label: 'twilight' }, { value: 'star', label: 'starlight' }], 'day');
-        const dens = v.stage({ x: [0.1, 70], y: [1e3, 3e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 290, weight: 1.1, minWidth: 320, xlabel: 'distance from the fovea (degrees)', ylabel: 'receptors per mm²', title: 'receptor density (stylised model)', xticks: [[0.1, '0.1'], [1, '1'], [10, '10'], [70, '70']] });
-        const mos = v.stage({ x: [0, 30], y: [0, 30], equal: true, axes: false, height: 290, weight: 0.9, minWidth: 280, title: 'a 30 µm patch of retina' });
-        const h = dens.handle(8, 1.5e3, { color: 'gold', r: 8, label: 'here', labelPos: 'n', constrain: (x) => [M.clamp(x, 0.1, 70), 1.5e3] });
-        v.legend([['accent', 'cones'], ['orange', 'rods'], ['gold', 'where you are looking at the patch']]);
-        let st = null;
-        v.render(() => {
-          const e = h.x, rc = coneDensity(e), rr = rodDensity(e);
-          dens.fn(coneDensity, { domain: [0.1, 70], color: 'accent', width: 2.6 });
-          dens.fn(rodDensity, { domain: [0.1, 70], color: 'orange', width: 2.6 });
-          dens.line(e, 1e3, e, Math.max(rc, rr, 1e3), { color: 'gold', dash: [4, 3], width: 1.4 });
-          dens.vband(0.1, 0.625, { color: 'accent', alpha: 0.08 });
-          dens.text('rod-free zone', 0.7, 2.4e5, { align: 'left', size: 11.5, color: 'muted' });
-          // mosaic: jittered grid at the combined density
-          const tot = rc + rr, sp = Math.sqrt(1e6 / tot) * 1.0; // µm (square grid of the same density)
-          const nx = Math.max(2, Math.ceil(30 / sp)), R = v.rng(11);
-          const pc = rc / tot, cr = Math.min(0.5 * 4.5, 0.55 + 0.11 * Math.min(e, 30)) ; // cone radius (µm) grows with eccentricity
-          const dayOn = light.value !== 'star', starOn = light.value !== 'day';
-          mos.rect(0, 0, 30, 30, { fill: 'panel', fillAlpha: 1, color: 'faint' });
-          let nc = 0, nr = 0;
-          const cells = [];
-          for (let i = 0; i < nx; i++) for (let j = 0; j < nx; j++) {
-            const x = (i + 0.15 + 0.7 * R()) * 30 / nx, y = (j + 0.15 + 0.7 * R()) * 30 / nx, isC = R() < pc;
-            cells.push([x, y, isC]); if (isC) nc++; else nr++;
-          }
-          for (const [x, y, isC] of cells) {
-            if (isC) mos.circle(x, y, Math.min(cr, sp * 0.62), { fill: 'accent', fillAlpha: dayOn ? 0.85 : 0.18, stroke: false });
-            else mos.circle(x, y, Math.min(0.55, sp * 0.4), { fill: 'orange', fillAlpha: starOn ? 0.9 : 0.2, stroke: false });
-          }
-          mos.text(`${nc} cones, ${nr} rods in view`, 15, 1.2, { align: 'center', size: 12, color: 'muted', plate: true });
-          const spacing = Math.sqrt(2 / (Math.sqrt(3) * Math.max(rc, 1))) * 1000;
-          st = { e, rc, rr, spacing, nyq: 0.5 / (spacing / 288) };
-        });
-        v.readout(() => {
-          if (!st) return '';
-          const s = light.value === 'day' ? 'photopic: cones carry vision' : light.value === 'dusk' ? 'mesopic: rods and cones both contribute' : 'scotopic: rods carry vision' + (st.rr === 0 ? ' — **but there are no rods here, so nothing is seen**' : '');
-          return `At $${v.fix(st.e, 1)}^\\circ$: cones ${v.fmt(st.rc, 3)} /mm², rods ${v.fmt(st.rr, 3)} /mm² (cone : rod = 1 : ${st.rr > 0 ? v.fmt(st.rr / st.rc, 2) : '0'}) · cone-mosaic spacing ≈ ${v.fix(st.spacing, 1)} µm, sampling limit ≈ ${v.fix(st.nyq, 0)} cycles/degree (taking 1° ≈ 288 µm) · ${s}`;
-        });
+      num:'4.1',kind:'Concept',name:'Duplex retina: rods and cones',
+      statement:String.raw`Human rods and cones have different spatial distributions and roles in vision. Cones are concentrated at the foveal center; rods are absent from its center and become numerous farther out. In Curcio and colleagues' human anatomical study, whole-eye estimates averaged about **4.6 million cones** (range 4.08–5.29 million) and **92 million rods** (78–107 million). These are sample estimates, not universal counts.
+
+The reported mean foveal cone peak was about 199,000/mm², with substantial individual variation. The often-quoted **1.25° rod-free diameter** describes the average horizontal extent inside the study's 1,000-rods/mm² contour. It is not a precisely symmetric, strictly zero-rod disk in every eye or in an interpolated composite. The measured anatomy supports distinct cone-rich central and rod-rich peripheral sampling; receptor counts alone do not predict a person's visibility or acuity.`,
+      idea:String.raw`Curcio et al. counted receptors in selected whole-mounted human retinas, reconstructed each distribution and resampled it at common locations before averaging. Fellow eyes counted as one individual. The displayed temporal-meridian data are the authors' archived **composite means**, with seven contributing individuals for central cone values and five for central rod values; the available number decreases toward the periphery. They are not raw microscope counting windows.
+
+A 30-µm square has area $900\,\mu\mathrm m^2=0.0009\,\mathrm{mm}^2$. Multiplying a local density by this area gives an expected count for a uniform patch. The picture rounds each expected count to its nearest integer and supplies an authored layout. In particular, zero rounded icons can coexist with a small positive density. Whole-eye totals are reported separately: integrating this truncated meridian, or a smaller composite retina, cannot reproduce those whole-eye estimates.`,
+      caption:String.raw`Choose any of the **28 source locations** with the slider or drag the gold handle, which snaps to those locations. Blue and orange points retain the authors' archived cone and rod means; connecting lines are visual guides. Both axes use $\log_{10}(1+\text{value})$ spacing to retain zero while expanding the central region; tick labels give ordinary degrees and densities.
+
+The 30-µm patch shows nearest-integer counts with **schematic positions and symbol sizes**, not a photomicrograph or a packing model. *Schematic emphasis* dims one receptor type for comparison. It does not simulate lighting, activation, detection or the view through an eye.`,
+      deps:[],refs:['Curcio et al. (1990), Human Photoreceptor Topography, methods, Table 3 and Figures 6/9; author archived temporal means'],tags:['retina','rods and cones','sampling'],
+      credit:'Christine A. Curcio, Kenneth R. Sloan, Robert E. Kalina and Anita E. Hendrickson (1990), Journal of Comparative Neurology 292:497–523',
+      scope:String.raw`The source sample comprises eight retinas from seven individuals aged 27–44; reconstruction, specimen selection and geometric conversion matter. The retained 28 temporal locations span 0–58.7683 visual degrees where both archived means are present. The archived central composite 196,890 cones/mm² and the paper's approximately 199,000 peak summary are separately reported quantities. Missing peripheral values are not zero or extrapolated. Nasal, superior and inferior meridians differ. The illustrative patch is a local uniform-density count calculation, not anatomical coordinates, a clinical measurement or a visibility prediction.`,
+      links:{source:'https://christineacurcio.com/PRtopo/',paper:'https://christineacurcio.com/PRtopo/Curcio_JCompNeurol1990_PRtopo_searchable.pdf'},verify: false,
+      viz(v){
+        const sample=v.slider('retinal location (source sample)',0,27,14,{int:true,fmt:i=>`${i+1}/28: ${RETINA_TEMPORAL[i].degrees.toFixed(5)}°`}),emphasis=v.select('schematic emphasis',[{value:'both',label:'both types'},{value:'cones',label:'emphasize cones'},{value:'rods',label:'emphasize rods'}],'both');
+        const A=v.stage({x:[-.12,1.9],y:[-.6,5.65],height:340,minWidth:280,axes:'box',gutter:true,xlabel:'eccentricity (deg; compressed scale)',ylabel:'density (/mm²; compressed scale)',xticks:[0,.5,2,10,50].map(x=>[retinaX(x),String(x)]),yticks:[0,10,100,1000,10000,100000].map(y=>[retinaY(y),y>=1000?`${y/1000}k`:String(y)]),title:'28 archived temporal-meridian means'}),B=v.stage({x:[-2,32],y:[-4,32],equal:true,height:340,minWidth:280,axes:false,title:'authored count diagram: 30-µm square'});
+        const h=A.handle(0,-.1,{r:8,color:'gold',constrain:x=>[retinaX(RETINA_TEMPORAL[retinaNearest(x)].degrees),-.1],onDrag:q=>sample.set(retinaNearest(q.x))});
+        v.legend([['accent','archived cone means',{dot:true}],['orange','archived rod means',{dot:true}],['gold','selected source location',{dot:true}]]);let info;
+        v.render(()=>{const p=retinaView(sample.value,emphasis.value);A.path(p.coneCurve,{color:'accent',width:2});A.path(p.rodCurve,{color:'orange',width:2});for(const[x,y]of p.coneCurve)A.dot(x,y,{r:2.5,color:'accent',ring:false});for(const[x,y]of p.rodCurve)A.dot(x,y,{r:2.5,color:'orange',ring:false});const x=retinaX(p.degrees);h.set(x,-.1);A.dot(x,retinaY(p.cones),{r:5,color:'accent'});A.dot(x,retinaY(p.rods),{r:5,color:'orange'});B.rect(0,0,30,30,{fill:'panel',fillAlpha:1,color:'muted',width:1});for(const c of p.cells)B.dot(c.x,c.y,{r:c.cone?4:2.2,color:c.cone?'accent':'orange',alpha:c.alpha,ring:false});B.text(`${p.coneCount} cones + ${p.rodCount} rods (rounded)`,15,-2,{align:'center',size:12,color:'ink'});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Source sample ${p.index+1}/28: ${p.degrees.toFixed(5)} visual degrees; normalized retinal arc ${p.mm.toFixed(5)} mm. Composite means: cones ${p.cones.toFixed(6)}/mm² (N=${p.coneN}), rods ${p.rods.toFixed(6)}/mm² (N=${p.rodN}).\nUniform-patch count calculation: expected cones ${p.expectedCones.toFixed(6)}, rods ${p.expectedRods.toFixed(6)}; displayed nearest integers ${p.coneCount} and ${p.rodCount}. ${p.rodCount===0&&p.rods>0?'Zero rod icons here reflects rounding of a positive source density. ':''}Symbol positions/sizes and emphasis are authored, with no activation, acuity or visibility prediction.`;});
       },
     },
     // ------------------------------------------------------------------ 4.2
     {
-      num: '4.2',
-      kind: 'Phenomenon',
-      name: 'Dark adaptation and the rod–cone break',
-      statement: String.raw`After exposure to bright light, the threshold for seeing a faint flash falls with time in the dark, over about half an hour and by some four to five log units. The curve is **biphasic**: first a fast fall (cones, levelling off within a few minutes at a threshold well above the rods' limit), then, after the **rod–cone break** at roughly 7–10 minutes, a second, slower fall (rods) to the final dark-adapted threshold. At any moment the threshold is the lower of the cone and rod curves. The break disappears if the test spot is confined to the rod-free fovea (cone branch only) and, in a person with no functioning cones (rod monochromat), only a single rod branch remains.`,
-      idea: String.raw`Two independent receptor systems (4.1), each with its own recovery after pigment bleaching, and a detector that uses whichever is more sensitive: the observed curve is the lower envelope $\min(T_\mathrm{cone}(t),T_\mathrm{rod}(t))$. Cones recover quickly but to a limited sensitivity; rods start recovering later (their pigment regenerates more slowly, so the delay grows with the bleaching dose) but go much further. The break occurs where the curves cross. Hecht and colleagues used exactly the tests the toggle offers: confining the stimulus to the fovea removes the rod branch, and rod monochromats lack the cone branch.`,
-      caption: String.raw`Log threshold against minutes in the dark. The **blue** curve is the cone branch, the **purple** curve the rod branch and the thick **black** curve is what you would measure: the lower of the two. *Test* switches between a normal observer, a spot confined to the **fovea** (rod-free, so the cone branch only) and a **rod monochromat** (rod branch only). Increase the *bleaching light* and the rod branch starts later, so the break moves right. Time constants and levels are a **qualitative model** chosen to put the break at about 8 minutes, not fitted data.`,
-      deps: ['psych-4.1'],
-      refs: ['Goldstein ch. 2'],
-      tags: ['dark adaptation', 'rods and cones', 'threshold'],
-      credit: 'Hecht, Haig & Chase, 1937, J. Gen. Physiol. 20: 831–850 (dark-adaptation curves and the rod–cone break); earlier observations by Aubert, 1865 (unconfirmed)',
-      scope: String.raw`The time of the break depends on the bleaching intensity and duration, on the colour and position of the test spot (a red test light shows little break, since rods are insensitive to long wavelengths; a peripheral violet one shows it clearly) and on the person; textbook values quote about 7–10 minutes, with full adaptation after 30 minutes or more.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Adaptation_(eye)#Dark_adaptation' },
-      verify: true,
-      viz(v) {
-        const test = v.select('Test', [{ value: 'norm', label: 'normal, peripheral spot' }, { value: 'fov', label: 'fovea only' }, { value: 'mono', label: 'rod monochromat' }], 'norm');
-        const bl = v.slider('bleaching light', 0, 1, 0.5, { step: 0.01 });
-        const s = v.stage({ x: [0, 40], y: [-6.5, 1.5], axes: 'box', gutter: true, height: 340, xlabel: 'time in the dark (minutes)', ylabel: 'log threshold (relative)', title: 'dark adaptation curve', yticks: [-6, -5, -4, -3, -2, -1, 0, 1] });
-        const cone = (t) => -2.3 + 3.3 * Math.exp(-t / 1.6);
-        const rod = (t, t0) => (t < t0 ? 5 : -6 + 11 * Math.exp(-(t - t0) / 5.5));
-        v.legend([['accent', 'cone branch'], ['purple', 'rod branch'], ['ink', 'measured threshold'], ['orange', 'rod–cone break']]);
-        let brk = null;
-        v.render(() => {
-          const t0 = 0.5 + 3.5 * bl.value, m = test.value;
-          const T = (t) => (m === 'fov' ? cone(t) : m === 'mono' ? rod(t, t0) : Math.min(cone(t), rod(t, t0)));
-          s.fn(cone, { domain: [0, 40], color: 'accent', width: 1.8, dash: m === 'mono' ? [4, 4] : false, alpha: m === 'mono' ? 0.4 : 1 });
-          s.fn((t) => rod(t, t0), { domain: [t0, 40], color: 'purple', width: 1.8, dash: m === 'fov' ? [4, 4] : false, alpha: m === 'fov' ? 0.4 : 1 });
-          s.fn(T, { domain: [0, 40], color: 'ink', width: 3.4 });
-          brk = null;
-          if (m === 'norm') { for (let t = t0; t < 40; t += 0.02) if (rod(t, t0) < cone(t)) { brk = { t, y: cone(t) }; break; } }
-          if (brk) {
-            s.vline(brk.t, { color: 'orange', dash: [4, 3], width: 1.5 });
-            s.dot(brk.t, brk.y, { r: 6, color: 'orange' });
-            s.text('rod–cone break', brk.t, 0.6, { dx: 8, align: 'left', color: 'orange', weight: 700, size: 12.5 });
-          }
-          s.text('cones recover fast but to a limit', 16, cone(16), { dy: -14, align: 'left', size: 11.5, color: 'accent' });
-          s.text('rods go on to the dark-adapted limit', 38, rod(38, t0), { dy: -14, align: 'right', size: 11.5, color: 'purple' });
-        });
-        v.readout(() => {
-          const t0 = 0.5 + 3.5 * bl.value;
-          if (test.value === 'norm') return brk ? `Break at ≈ **${v.fix(brk.t, 1)} min**, threshold there ≈ $10^{${v.fix(brk.y, 1)}}$ · after 30 min the rod branch has fallen to $10^{${v.fix(-6 + 11 * Math.exp(-(30 - t0) / 5.5), 1)}}$ (the cone branch stopped at $10^{-2.3}$), a further ${v.fix(-2.3 - (-6 + 11 * Math.exp(-(30 - t0) / 5.5)), 1)} log units of gain from the rods`: '';
-          return test.value === 'fov' ? 'Fovea only: the test spot falls on the rod-free fovea, so the curve is the cone branch alone and has **no break**; its final threshold stays at about $10^{-2.3}$.' : 'Rod monochromat: no cone branch, so the curve is the rod branch alone: a single smooth fall, starting high and ending at the rod limit. **No break.**';
-        });
+      num:'4.2',kind:'Phenomenon',name:'Dark adaptation and the rod–cone break',
+      statement:String.raw`Dark adaptation depends on the preceding illumination and the test's spectrum, area, location and criterion. After sufficiently strong preadaptation, an early cone-dominated fall can be followed by a later rod-dominated fall, producing a **rod–cone break**. A universal break time or a two-phase curve under every condition is not implied.
+
+Hecht, Haig and Chase's 1937 study used three observers and a peripheral test field after controlled white-light preadaptation. Higher preadaptation delayed the rod-dominated portion. Weak preadaptation and red test light produced different courses; even extreme red light could reveal a small late rod contribution. The displayed lower envelope is an **authored illustration** of a detector using the more sensitive of two branches, not a fitted physiological law.`,
+      idea:String.raw`The two receptor systems in 4.1 motivate a branch comparison. Write the illustrative **logarithmic** thresholds, with time $t$ in minutes and authored delay $t_0\in[0.5,4]$, as
+$$C(t)=-2.3+3.3e^{-t/1.6},$$
+$$R(t)=\begin{cases}5,&t\le t_0,\\-6+11e^{-(t-t_0)/5.5},&t>t_0.\end{cases}$$
+All constants and relative threshold units are authored; $t_0$ is not a calibrated bleaching dose. For both branches the chosen log threshold is $\min(C,R)$, since exponentiation preserves order. After $t_0$, the ratio of the positive cone term to the magnitude of the negative rod term in $(R-C)'$ is
+$$\frac{3.3/1.6}{11/5.5}\,e^{-t_0/1.6}\,e^{-(t-t_0)(1/1.6-1/5.5)}<1.$$
+Thus $R-C$ strictly decreases there. It is positive at $t_0$ and negative at 40 throughout the offered delay range, so the two authored branches cross once. Bisection locates that model crossing; it is not a proof about every human adaptation curve.`,
+      caption:String.raw`Move the **authored rod delay** or its purple onset handle; move the time slider or gold probe to inspect the actual selected trace. *Model branch isolation* chooses both, cone-only or rod-only. These are mathematical isolations, not reproductions of foveal or rod-monochromat experiments. Colored curves retain both reference branches, including the full initial rod level 5; the thick trace is the selected model. An orange crossing marker appears only when both branches determine that trace.`,
+      deps:['psych-4.1'],refs:['Hecht, Haig and Chase (1937), §§I–VII, methods and Figures 2–5'],tags:['dark adaptation','rods and cones','threshold'],
+      credit:'Selig Hecht, Charles Haig and Aurin M. Chase (1937), Journal of General Physiology 20(6):831–850, DOI 10.1085/jgp.20.6.831',
+      scope:String.raw`The original used three investigators as observers, a 5° field centered 30° nasally on the retina, 0.2-s flashes, 2-min white preadaptation and a black-cross criterion about three times diffuse visibility threshold. Its historical illumination unit “photon” is not a literal count of light quanta. The illustrative exponential branches, delays and both-branch envelope’s limiting seven-log-unit range (1 to −6) are authored. The isolated rod branch spans eleven log units (5 to −6). These are not source measurements or an adaptation/clinical test. No fixed 7–10-min transition, universal red-light absence of rods or original branch-isolation treatment is claimed.`,
+      links:{source:'https://pmc.ncbi.nlm.nih.gov/articles/PMC2141534/'},verify: false,
+      viz(v){
+        const delay=v.slider('authored rod delay $t_0$ (min)',.5,4,2.25,{step:.01,decimals:2}),time=v.slider('probe time (min)',0,40,8,{step:.1}),mode=v.select('model branch isolation',[{value:'both',label:'both model branches'},{value:'cone',label:'model cone only'},{value:'rod',label:'model rod only'}],'both'),A=v.stage({x:[-2.5,42.5],y:[-6.9,6.5],height:370,minWidth:280,axes:'box',gutter:true,xlabel:'time in darkness (min)',ylabel:'log₁₀ relative model threshold',title:'authored recovery branches; no data fit'});
+        const hDelay=A.handle(2.25,5.6,{r:8,color:'purple',constrain:x=>[Math.round(v.M.clamp(x,.5,4)*100)/100,5.6],onDrag:h=>delay.set(h.x)}),hTime=A.handle(8,0,{r:8,color:'gold',constrain:x=>[Math.round(v.M.clamp(x,0,40)*10)/10,0],onDrag:h=>time.set(h.x)});let info;
+        v.legend([['accent','authored cone branch'],['purple','authored rod branch'],['ink','selected model trace'],['orange','model crossing',{dot:true}],['gold','time probe',{dot:true}]]);
+        v.render(()=>{const p=darkAdaptation(delay.value,mode.value,time.value);A.path(p.coneCurve,{color:'accent',width:1.8,alpha:p.mode==='rod'?.4:1});A.path(p.rodCurve,{color:'purple',width:1.8,alpha:p.mode==='cone'?.4:1});A.path(p.selectedCurve,{color:'ink',width:3});hDelay.set(p.t0,5.6);A.line(p.t0,5,p.t0,5.6,{color:'purple',dash:[3,3],width:1});hTime.set(p.time,p.value);if(p.mode==='both')A.dot(p.crossing.t,p.crossing.y,{r:6,color:'orange'});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Authored delay ${p.t0.toFixed(2)} min; probe ${p.time.toFixed(1)} min. Cone log threshold ${p.coneAtTime.toFixed(6)}, rod ${p.rodAtTime.toFixed(6)}; selected ${p.mode} trace ${p.value.toFixed(6)} (relative threshold ${Math.pow(10,p.value).toExponential(6)}).\n${p.mode==='both'?`Unique authored branch crossing at ${p.crossing.t.toFixed(9)} min, log threshold ${p.crossing.y.toFixed(9)}; numerical R−C residual ${p.crossing.residual.toExponential(2)}.`:'This isolated trace has no switch between cone and rod branches.'} The rod reference starts at log threshold 5, and the authored limiting values are C→−2.3 and R→−6. These are model values, not measured observer thresholds.`;});
       },
     },
     // ------------------------------------------------------------------ 4.3

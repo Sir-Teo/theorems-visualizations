@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 158,
+  "remainingFlags": 156,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 11,
-    "psych": 14,
+    "psych": 12,
     "soc": 14,
     "polsci": 11,
     "music": 23,
@@ -571,42 +571,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Troxler%27s_fading"
-      }
-    },
-    {
-      "id": "psych-4.1",
-      "file": "content/psych/ch04.js",
-      "name": "Duplex retina: rods and cones",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Goldstein ch. 2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Photoreceptor_cell",
-        "pubmed": "https://pubmed.ncbi.nlm.nih.gov/2324310/"
-      }
-    },
-    {
-      "id": "psych-4.2",
-      "file": "content/psych/ch04.js",
-      "name": "Dark adaptation and the rod\u2013cone break",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "credit",
-          "text": "Hecht, Haig & Chase, 1937, J. Gen. Physiol. 20: 831\u2013850 (dark-adaptation curves and the rod\u2013cone break); earlier observations by Aubert, 1865 (unconfirmed)"
-        }
-      ],
-      "refs": [
-        "Goldstein ch. 2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Adaptation_(eye)#Dark_adaptation"
       }
     },
     {
@@ -3273,7 +3237,9 @@
       "psych-3.9",
       "game-3.11",
       "soc-4.9",
-      "soc-4.10"
+      "soc-4.10",
+      "psych-4.1",
+      "psych-4.2"
     ]
   },
   "additionalFollowups": [
@@ -7608,6 +7574,18 @@
       "status": "resolved",
       "report": "docs/verification/soc-attachment-followup.md",
       "note": "Actual DMSv1/CSN\u00a73.1 source checked; correct2m(m+1) stationary coefficient, declared frozen with-replacement multigraph/finite affine correction and pure-uniform law; inclusive approximate tail diagnostic has no iid confidence claim."
+    },
+    {
+      "id": "psych-4.1",
+      "status": "resolved",
+      "report": "docs/verification/psych-retina-adaptation-followup.md",
+      "note": "Actual Curcio1990 source and original author XLS28 temporal composite records/N verified; rod-free1000/mm\u00b2 contour, full zero-capable curves and exact rounded900\u00b5m\u00b2 authored patch counts replace unsupported response/acuity claims."
+    },
+    {
+      "id": "psych-4.2",
+      "status": "resolved",
+      "report": "docs/verification/psych-retina-adaptation-followup.md",
+      "note": "Actual Hecht1937 experiment scope checked; explicitly authored full log-threshold branches/isolation/delay, strict unique crossing with351 high-precision references and full initialrod5;4 math/8 native plus exact runtime replay checks pass."
     }
   ]
 }
