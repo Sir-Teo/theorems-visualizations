@@ -9,6 +9,7 @@
 //     Authored exact plane/point-weight models are separate from those historical observations.
 //     Source pages, independent derivations and native evidence: docs/verification/arch-buttresses-followup.md.
 
+import { buttressPier } from './source-audit-buttress-pier.js';
 import { pinnacle, proportion, hanging, HOOKE_PHRASE, HOOKE_LETTERS } from './source-audit-buttresses.js';
 
 import { arch, archFromLine, thrustRows, thrustLP, thrustRange, thrustLine, hinges, collapseFactor, centralLine, bestFit, drawArch, drawThrust, momentCoef, rot, clamp, f2, blockAt, extradosY, drawSupport } from './ch03.shared.js';
@@ -99,63 +100,17 @@ export default {
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.9
     {
-      num: '3.9',
-      kind: 'Concept',
-      name: 'Buttresses: bringing the thrust to the ground',
-      statement: String.raw`An arch pushes its supports outward with the horizontal thrust $H$ as well as down with its weight. A **buttress** (or a thick pier) must bring this inclined force to the ground: the line of thrust continues down through it, leaning outward at the top and bending back toward the vertical as the weight of each course is added, and it must meet the foundation inside the base. Seen from the outside, the buttress is safe against overturning when the line reaches the base inside the outer toe (safe theorem, arch-3.5); the whole base stays in compression when it lies in the middle third. If the arch's own thrust may be anywhere between its least and greatest values, the buttress is certainly safe if it is safe for the greatest, and safe in principle if it is safe for the least. A wider buttress, a taller one, or one with extra load on top all bring the line in; but a tall buttress cannot be made safe by height alone: its line approaches a limit at a distance $H/\gamma w$ from the axis, so it needs $w \ge \sqrt{2H/\gamma}$ however tall it is.`,
-      idea: String.raw`Treat the buttress as a stack of slices, each of weight $\gamma w\,\mathrm{d}d$. Moments about the point where the line crosses depth $d$ give $X(d) = \bigl(V_0 x_0 + \gamma w d\, x_c - H d\bigr)/\bigl(V_0 + \gamma w d\bigr)$: the line is a hyperbola in depth, drifting outward through the term $-Hd$ while the weight in the denominator grows. As $d \to \infty$ it tends to $x_c - H/\gamma w$, which is inside the base of width $w$ exactly when $w^2 \ge 2H/\gamma$ (the proportional design, independent of scale). For a buttress of given height the factor against overturning about the outer toe is the restoring moment over the overturning moment, $\bigl[V_0(x_0 - x_o) + \gamma w^2 h/2\bigr]/Hh$. The thrust itself is the arch's $(H, V_0)$ from arch-3.5, with the freedom to take any value in $[H_{\min}, H_{\max}]$.`,
-      caption: String.raw`A semicircular arch of 6 m span (ring 0.5 m thick) stands on two buttresses. Change their width and height and choose which thrust of the arch acts (the least, the greatest, or the middle of the allowed range). The red line is the line of thrust continuing from the arch through the buttress; it turns orange if it leaves the base. The plot shows the width needed for stability against the height, for the least and the greatest thrust, with the limit $\sqrt{2H/\gamma}$ for a very tall buttress as dashed lines; the disc is your buttress.`,
-      deps: ['arch-3.2'],
-      see: ['arch-3.10', 'arch-3.12'],
-      refs: ['Heyman'],
-      scope: String.raw`Plane arch of 6 m span and 0.5 m ring on rectangular buttresses; unit weight 22 kN/m³ (illustrative) for both, per metre of depth; no wind, no sliding, no crushing. Stability judged by the line of thrust, not by stress.`,
-      tags: ['buttress', 'overturning'],
-      viz(v) {
-        const R = 3, t = 0.5, N = 24, g = arch({ R, t, N, gamma: GAM });
-        const wS = v.slider('buttress width w (m)', 0.6, 4, 1.2, { step: 0.05 }), hS = v.slider('buttress height h (m)', 1, 12, 4, { step: 0.1 });
-        const st = v.select('thrust of the arch', [{ value: 'min', label: 'least thrust' }, { value: 'mid', label: 'middle' }, { value: 'max', label: 'greatest thrust' }], 'max');
-        const A = v.stage({ x: [-9, 9], y: [-8, 4.5], equal: true, axes: false, height: 340, weight: 1.5, title: 'the arch on its buttresses' });
-        const B = v.stage({ x: [0, 12], y: [0, 5], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'buttress height h (m)', ylabel: 'width w needed (m)', title: 'width needed against height' });
-        const rg = thrustRange(g, []), tl0 = rg ? thrustLine(g, [], rg.min) : null;
-        const xi = g.joints[0].a[0];
-        const stateU = (k) => (k === 'min' ? rg.min : k === 'max' ? rg.max : rg.min.map((a, i) => (a + rg.max[i]) / 2));
-        const info = (u, w, h) => { const tl = thrustLine(g, [], u), x0 = tl[0].p[0], H = u[0], V0 = u[1], xo = xi - w, xc = xi - w / 2, X = (d) => (V0 * x0 + GAM * w * d * xc - H * d) / (V0 + GAM * w * d); const FS = (V0 * (x0 - xo) + (GAM * w * w * h) / 2) / (H * h); return { tl, x0, H, V0, X, xo, xc, FS, asym: xc - H / (GAM * w), wInf: Math.sqrt((2 * H) / GAM) }; };
-        const wReq = (u, h) => { const tl = thrustLine(g, [], u), x0 = tl[0].p[0], H = u[0], V0 = u[1], c = V0 * (x0 - xi) - H * h; return (-V0 + Math.sqrt(V0 * V0 - 2 * GAM * h * c)) / (GAM * h); };
-        let M = null;
-        v.render(() => {
-          const w = wS.value, h = hS.value;
-          A.setView([-(R + w + 1.5 + 0.0 * h), R + w + 1.5], [-h - 0.8, R + t + 0.8]);
-          drawArch(v, A, g, { fillAlpha: 0.14 });
-          if (!rg) { A.corner('the ring cannot stand', 'tl', { color: 'red' }); return; }
-          const u = stateU(st.value), I = info(u, w, h), tl = I.tl;
-          for (const sg of [-1, 1]) {
-            A.rect(sg < 0 ? xi - w : -xi, -h, sg < 0 ? xi : -xi + w, 0, { fill: 'muted', fillAlpha: 0.2, color: 'ink', width: 1.2 });
-            A.line(-9, -h, 9, -h, { color: 'faint', width: 1 });
-          }
-          drawThrust(v, A, tl, { color: 'red', width: 2.4 });
-          const ok = I.X(h) >= I.xo - 1e-9, third = I.X(h) >= I.xo + w / 3 - 1e-9;
-          for (const sg of [-1, 1]) {
-            const pts = [[sg * I.x0, 0]]; for (let k = 1; k <= 40; k++) { const d = (h * k) / 40; pts.push([sg * I.X(d), -d]); }
-            A.path(pts, { color: ok ? 'red' : 'orange', width: 2.6 });
-            A.dot(sg * I.X(h), -h, { r: 5, color: ok ? 'green' : 'red' });
-          }
-          A.line(I.xo + w / 3, -h, I.xo + w / 3, -h - 0.25, { color: 'muted', width: 2 }); A.line(I.xo + (2 * w) / 3, -h, I.xo + (2 * w) / 3, -h - 0.25, { color: 'muted', width: 2 });
-          A.line(I.asym, 0, I.asym, -h, { color: 'muted', width: 1, dash: [3, 4] });
-          A.corner(ok ? (third ? 'the line reaches the base inside the middle third' : 'inside the base but outside the middle third: the joint cracks') : 'the line leaves the base: the buttress overturns', 'tl', { color: ok ? 'muted' : 'red' });
-          // plot
-          const hs = Array.from({ length: 61 }, (_, i) => 0.4 + (i / 60) * 11.6), us = [rg.min, rg.max];
-          B.setView([0, 12], [0, Math.max(4, ...hs.map((x) => wReq(rg.max, x))) * 1.1]);
-          B.path(hs.map((x) => [x, wReq(rg.min, x)]), { color: 'green', width: 2.2 }); B.path(hs.map((x) => [x, wReq(rg.max, x)]), { color: 'red', width: 2.2 });
-          B.hline(info(rg.min, w, h).wInf, { color: 'green', dash: [4, 3], width: 1 }); B.hline(info(rg.max, w, h).wInf, { color: 'red', dash: [4, 3], width: 1 });
-          B.dot(h, w, { r: 6, color: 'accent' }); B.text('greatest thrust', 11.8, wReq(rg.max, 11.8), { dy: -12, align: 'right', size: 11.5, color: 'red' }); B.text('least thrust', 11.8, wReq(rg.min, 11.8), { dy: 14, align: 'right', size: 11.5, color: 'green' });
-          M = { I, rg, ok, third, w, h, Imin: info(rg.min, w, h), Imax: info(rg.max, w, h), W: g.W };
-        });
-        v.legend([['red', 'line of thrust'], ['muted', 'limit of the line for a very tall buttress', { dash: true }], ['accent', 'your buttress (plot)']]);
-        v.readout(() => {
-          if (!M) return '';
-          const { I, Imin, Imax } = M;
-          return `Arch weight ${f2(M.W, 0)} kN/m; its thrust may be $H$ = ${f2(rg.Hmin, 1)} to ${f2(rg.Hmax, 1)} kN/m with $V_0 = ${f2(I.V0, 1)}$ kN/m at each springing. For the chosen thrust the line meets the base ${f2(Math.abs(I.X(M.h) - I.xo) , 2)} m ${I.X(M.h) >= I.xo ? 'inside' : 'outside'} the outer toe; factor against overturning **${f2(I.FS, 2)}** (least thrust ${f2(Imin.FS, 2)}, greatest ${f2(Imax.FS, 2)}). A very tall buttress needs $w \\ge \\sqrt{2H/\\gamma}$ = ${f2(Imin.wInf, 2)} m (least thrust) to ${f2(Imax.wInf, 2)} m (greatest).`;
-        });
+      num:'3.9',kind:'Concept',name:'Buttresses: bringing the thrust to the ground',
+      statement:String.raw`An arch delivers an outward horizontal force and a downward reaction to its supports. A rectangular buttress must transmit their resultant to its base. Under the no-sliding, no-crushing plane model, an outer-toe moment condition checks outward overturning for those imposed reactions. Widening the pier or adding a centred top load can help. Increasing its height under the same arch reaction can make it worse: the horizontal force's lever arm also grows. The drawing separates this conditional equilibrium check from a whole-building assessment.`,
+      idea:String.raw`At depth d, write $X(d)=[Vx_0+\gamma wd\,x_c-Hd]/[V+\gamma wd]$. With outer toe $x_o=x_i-w$ and pier axis $x_c=x_i-w/2$, the factor against outward overturning is $F(h)=V(x_0-x_o)/(Hh)+\gamma w^2/(2H)$. Its first term decreases with height; its limit is at least1 only when $w\ge\sqrt{2H/\gamma}$. This is an asymptotic criterion, not a necessary width for every finite-height pier. For the fixed arch used here, the maximum-H state also minimizes this factor over all admissible arch reactions: every reaction has $x_0\ge-3.25$ m and $V/H\ge V_*/H_*\approx2.109979923$, where the starred reaction is the maximum-H state and both bounds are attained there. Since $w\ge0.6>0.5$ m, these bounds and $H\le H_{\max}$ give the result. It is a property of this fixed example, not a theorem about arbitrary vaults.`,
+      caption:String.raw`A fixed authored arch of mean radius 3 m and ring thickness 0.5 m (clear span 5.5 m), represented by 24 polygonal blocks. Change pier width/height and select a minimum, middle or maximum horizontal-thrust state. The complete curves show the required width for the two extreme states and the asymptotic width limits. At width 1.2 m, the maximum-thrust case satisfies the toe condition at height 1 m and fails at height 12 m. A middle-third label refers to the usual linear full-contact normal-stress assumption.`,
+      deps:['arch-3.2'],see:['arch-3.10','arch-3.12'],refs:[],
+      scope:String.raw`Authored finite polygon-block equilibrium with radial joints, masonry weight 22 kN/m³ and unit depth. The drawn arch uses exact polygon areas/centroids, not a certified continuous annular-arch minimum. Independent enumeration of all 30 reaction vertices and a positive dual certificate establish the stated fixed-case bound; source/proof details are retained in docs/verification/arch-buttress-pier-followup.md. The historical/geometrical context follows Huerta's complete “Geometry and equilibrium: The gothic theory of structural design” (2006), pp23–28, and the conditional use of plane no-tension analysis in Rodríguez-Mayorga et al. (2015), §5.1; neither paper supplies these authored dimensions. Foundation failure, material crushing, sliding, wind, support movements and a complete vault/three-dimensional building are excluded. A resultant outside the middle third would require tension under a linear full-contact stress distribution; it does not alone demonstrate overall collapse.`,
+      verify:true,tags:['buttress','overturning'],
+      viz(v){const width=v.slider('pier width w (m)',.6,4,1.2,{step:'any',decimals:6}),height=v.slider('pier height h (m)',1,12,4,{step:'any',decimals:6}),choice=v.select('fixed arch reaction',[{value:'min',label:'least thrust'},{value:'mid',label:'middle'},{value:'max',label:'greatest thrust'}],'max');const A=v.stage({x:[-6,6],y:[-5,4],equal:true,axes:false,height:350,title:'fixed arch and rectangular piers'}),B=v.stage({x:[0,12.8],y:[-.2,4.5],axes:'box',gutter:true,height:320,xlabel:'pier height h (m)',ylabel:'required width w (m)',title:'finite-height and asymptotic toe criteria'});let info;
+        v.render(()=>{const p=buttressPier(width.value,height.value,choice.value);info=p;const I=p.selected,xmax=3+p.w+1.5;A.setView([-xmax,xmax],[-p.h-.9,4]);for(const b of p.blocks)A.poly(b.poly,{fill:'muted',fillAlpha:.14,color:'ink',width:.8});for(const sign of[-1,1])A.rect(sign<0?p.innerFace-p.w:-p.innerFace,-p.h,sign<0?p.innerFace:-p.innerFace+p.w,0,{fill:'muted',fillAlpha:.2,color:'ink',width:1.2});A.line(-xmax+.6,-p.h,xmax-.6,-p.h,{color:'faint',width:1});A.path(I.line,{color:'red',width:2.2});for(const sign of[-1,1]){A.path(I.curve.map(([x,y])=>[sign*x,y]),{color:p.inside?'red':'orange',width:2.4});A.dot(sign*I.base,-p.h,{r:5,color:p.inside?'green':'orange'});}A.line(I.limit,0,I.limit,-p.h,{color:'muted',width:1,dash:[3,4]});A.corner(p.inside?(p.middle?'inside middle third':'inside base'):'outside outer toe','tl',{color:p.inside?'muted':'orange'});
+          const ymax=Math.max(4,...p.highCurve.map(q=>q[1]))*1.15;B.setView([0,12.8],[-.06*ymax,ymax]);B.path(p.lowCurve,{color:'green',width:2.1});B.path(p.highCurve,{color:'red',width:2.1});for(const[s,color]of[[p.min,'green'],[p.max,'red']])B.line(.25,s.infiniteWidth,12,s.infiniteWidth,{color,width:1,dash:[4,3]});B.dot(p.h,p.w,{r:6,color:'accent'});
+        });v.legend([['red','maximum-H width / selected arch line'],['green','minimum-H width'],['muted','asymptotic position / dashed width limits'],['accent','selected pier'],['orange','selected resultant outside base']]);v.readout(()=>{const p=info,I=p.selected;return `Fixed arch weight ${f2(p.weight,6)} kN/m; selected H=${f2(I.H,6)}, V=${f2(I.V,6)} kN/m. Outer-toe clearance ${f2(I.clearance,6)} m; factor ${f2(I.FS,6)}. ${p.inside?'The selected reaction satisfies the toe condition.':'The selected reaction fails the toe condition.'} Required width at this height: ${f2(p.needLow,6)} m for minimum H; ${f2(p.needHigh,6)} m for maximum H. Increasing height at fixed width/reaction decreases the factor. The maximum-H guarantee applies to this fixed arch; it does not establish whole-building safety.`;});
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.10
