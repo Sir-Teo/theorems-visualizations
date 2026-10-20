@@ -1,0 +1,11 @@
+# Private tiny atlas check on system Chrome 155
+
+The independently accepted private tiny candidate `781d336`, following `bc5e18f`, also passes on system **Chrome 155.0.8059.85**, the exact installed browser version recorded by the prior root original-only full-map control. The producer and independent tiny peer used bundled Chromium 153.0.8010.12. No browser update is inferred: these are different executables.
+
+Root ran the unchanged frozen eight-case phase probe, 36 private cases, eight multiword cases, four 3.5px-stroke cases and four scaled-title cases using the existing `CHROME_PATH` override, sequentially with unique outputs under `/tmp/atlas-root-atlas155`. All completed without a first failure. The independent offline raw/extent audit passes 1,024 witnesses, five positive phase cases, 52 private cases, 14 original history divergences and 220 actual guarded uploads. No persistent owner, upload source, transform, threshold or test case was changed.
+
+All **448 complete raw draw/texture files** across the phase and private cases are byte-for-byte identical to the corresponding independently reviewed Chromium 153 files. This compares bytes, not only their hashes. The committed evidence records every path, size and SHA256, along with the complete raw audit. The independent peer personally inspected all 224 corresponding output views; root additionally inspected its own scaled dark-title guarded output and positive serif reused output. No crop or visual judgement replaces an exact byte gate.
+
+This bridges tiny-scene browser coverage only. The original-renderer full-map history run uses a separate frozen harness and evidence directory and is not a result of this report. Production remains unchanged; no full-map, alternate binding, broad lifecycle, physical-memory or timing acceptance follows.
+
+Logs: `/tmp/atlas-root-atlas155-{phase,gutter,multi,extra,title}.log`; evidence: [raw and browser comparison](map-atlas-gutter-chrome155-evidence.json). Archived tiny source: `/tmp/atlas-new-map-atlas-gutter-peer/archive`; phase source: `/tmp/atlas-new-map-atlas-gutter-peer/phase`. Root executed the extra utility from independent peer `9291c808` against that archive. All five browser/server jobs closed before the original-only full-map window.
