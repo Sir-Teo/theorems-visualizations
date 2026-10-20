@@ -1,0 +1,82 @@
+{
+  "status": "isolated producer correctness; independent current-data peer and performance pending",
+  "finalCodeCommit": "93f033a044609e4fe411a9456ae9b2a96333429a",
+  "fullMatrixBeforeResizeAmendment": {
+    "complete": true,
+    "pictures": 136,
+    "nativeAudits": 8,
+    "maximumMeanChannelDifference": 1.3606995608806232,
+    "maximumAbove20ChannelFraction": 0.005210071928151328,
+    "maximumCombinedExtraPixels": 15790080,
+    "hashes": {
+      "data/index.json": "350e5418e62ec7c2f051d8493db8d55c3ec7ef8570cb28b4cafbf7f4ebe80bc2",
+      "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+      "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "scripts/lib/map-canvas-compositor-runtime.mjs": "d389470693cb2a1d46b3cd02b970e6b9f93a845a972b697e39351cd854b7367d",
+      "scripts/lib/map-canvas-compositor-prototype.mjs": "f5a0dbbbb94c0a00d14b3cb88f893380d44e70f7b7d58a698166e6c47496db07",
+      "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+      "tests/map-canvas-compositor-native.mjs": "2f29a97d0979d27fb1db1f04046e5a3e93ade677ff08dedb3f8df57221fb0884"
+    },
+    "raw": "/tmp/atlas-map-canvas-compositor-final-v4/correctness.json",
+    "rawSHA256": "4f809aee606c77c8f49e90f2c9c7a8ed43c29a11920e642b875fdec3762b780f",
+    "code": "19c3d81 with protocol5b8d32d",
+    "nodes": 13574,
+    "edges": 23149,
+    "oversizedWholeCanvasIdentityPairs": 34
+  },
+  "finalCodeResize": {
+    "complete": true,
+    "transitions": 12,
+    "raw": "/tmp/atlas-map-canvas-compositor-resize-final/resize.json",
+    "hashes": {
+      "data/index.json": "350e5418e62ec7c2f051d8493db8d55c3ec7ef8570cb28b4cafbf7f4ebe80bc2",
+      "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+      "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "scripts/lib/map-canvas-compositor-runtime.mjs": "059cfb397057e0211a4a62d2f0178d27ef20789bae7923ad3c18269af6fe9a25",
+      "scripts/lib/map-canvas-compositor-prototype.mjs": "2ef8f9e43899e3858a514daf3f433eb71fc194c25751e3600b78b99788ad54fd",
+      "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+      "tests/map-canvas-compositor-native.mjs": "2f29a97d0979d27fb1db1f04046e5a3e93ade677ff08dedb3f8df57221fb0884"
+    },
+    "observedMaximumPixels": 15982208
+  },
+  "finalCodeFocusedFidelity": {
+    "light": {
+      "complete": true,
+      "pictures": 17,
+      "nativeAudits": 1,
+      "maximumMeanChannelDifference": 1.2099325921951996,
+      "maximumAbove20ChannelFraction": 0.003918295978381815,
+      "maximumCombinedExtraPixels": 5637376,
+      "hashes": {
+        "data/index.json": "350e5418e62ec7c2f051d8493db8d55c3ec7ef8570cb28b4cafbf7f4ebe80bc2",
+        "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+        "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+        "scripts/lib/map-canvas-compositor-runtime.mjs": "059cfb397057e0211a4a62d2f0178d27ef20789bae7923ad3c18269af6fe9a25",
+        "scripts/lib/map-canvas-compositor-prototype.mjs": "2ef8f9e43899e3858a514daf3f433eb71fc194c25751e3600b78b99788ad54fd",
+        "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+        "tests/map-canvas-compositor-native.mjs": "2f29a97d0979d27fb1db1f04046e5a3e93ade677ff08dedb3f8df57221fb0884"
+      },
+      "raw": "/tmp/atlas-map-canvas-compositor-resize-fidelity-light/correctness.json",
+      "rawSHA256": "e8a81d73ea209db9e974a8cbc4a134ea72cbaae3a8279a96915edde52550491e"
+    },
+    "dark": {
+      "complete": true,
+      "pictures": 17,
+      "nativeAudits": 1,
+      "maximumMeanChannelDifference": 1.3606995608806232,
+      "maximumAbove20ChannelFraction": 0.005210071928151328,
+      "maximumCombinedExtraPixels": 5637376,
+      "hashes": {
+        "data/index.json": "350e5418e62ec7c2f051d8493db8d55c3ec7ef8570cb28b4cafbf7f4ebe80bc2",
+        "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+        "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+        "scripts/lib/map-canvas-compositor-runtime.mjs": "059cfb397057e0211a4a62d2f0178d27ef20789bae7923ad3c18269af6fe9a25",
+        "scripts/lib/map-canvas-compositor-prototype.mjs": "2ef8f9e43899e3858a514daf3f433eb71fc194c25751e3600b78b99788ad54fd",
+        "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+        "tests/map-canvas-compositor-native.mjs": "2f29a97d0979d27fb1db1f04046e5a3e93ade677ff08dedb3f8df57221fb0884"
+      },
+      "raw": "/tmp/atlas-map-canvas-compositor-resize-fidelity-dark/correctness.json",
+      "rawSHA256": "62dc8340a09cb61491000e82d3a83070bec95e87da6eb8a6c62b92c308665d02"
+    }
+  }
+}
