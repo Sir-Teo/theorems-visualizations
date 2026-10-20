@@ -31,3 +31,7 @@ Focused static two items/zero errors/zero warnings (`ling-models-static.log`). S
 Narrow review found a clipped low-end curve stroke/marker and neighboring two-decimal value-label collisions; local axis margins and one-decimal chart labels were corrected, retaining more precise readouts. Final personally inspected pixels will be recorded after the complete final run below.
 
 All 12 final native item/theme/viewport groups passed. Personally inspected final `ling-models-9-initial-320-dark-panel0.png`, `ling-models-9-edited-320-light.png`, `ling-models-10-initial-320-light-panel{0,1}.png` and `ling-models-10-endpoints-320-dark-panel2.png`, all under `/tmp/atlas-worker-one/`. Samples include visible literal unknown tokens; the single generated sequence matches selected controls. Numeric bar labels are distinct in the narrow light view; the low-end selected marker is fully inside its dark panel. Source pixels and final output pixels were inspected separately.
+
+## Independent worker_three acceptance, 2026-10-20
+
+Exactf4183e3 original-source, independent corpus/arithmetic, native-input/replay and source/output-pixel review passes. See [the complete independent peer report](ling-language-models-peer.md), including actual mutable source versions, exact corpus differences, fresh48reference regeneration,2560extra normalization cases,3000independent UID objectives and four fresh narrow native groups. No actionable finding remains within the stated source versions/corpus/authored finite scope. The coordinator accepts both existing flags.

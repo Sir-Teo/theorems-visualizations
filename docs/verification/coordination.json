@@ -42,7 +42,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Political-science5.8/5.10 independently accepted; clear10 queued LING reviews in exclusive batches.",
+      "current": "LING4.9/4.10 independently accepted; continue4.8/4.14 (new4.8 flag to be centrally registered) then remaining queuedLING.",
       "completedCollections": [
         "music"
       ]
@@ -76,7 +76,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Finish ART4.5/4.14/4.16 candidate, then independent LING4.9/4.10 peer f4183e3 before remainingART.",
+      "current": "ART4.5/4.14/4.16 candidatee14ccef under coordinator peer; LING4.9/4.10 peer accepted; resume remainingART.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -705,6 +705,20 @@
         "9997e2c",
         "4f598d4"
       ]
+    },
+    {
+      "ids": [
+        "ling-4.9",
+        "ling-4.10"
+      ],
+      "peer": "worker_three exact-commit primary-source/pixels, independent corpus and arithmetic, native-state and output-pixel review",
+      "reports": [
+        "docs/verification/ling-language-models-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2c0092b"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -717,7 +731,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 63,
+  "currentPendingSourceReviews": 61,
   "latestCheckpoint": {
     "acceptedContentCommit": "f9a9406",
     "report": "docs/verification/checkpoint-f9a9406.md",

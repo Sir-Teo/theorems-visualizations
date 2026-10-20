@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 63,
+  "remainingFlags": 61,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -24,7 +24,7 @@
     "game": 1,
     "art": 9,
     "arch": 9,
-    "ling": 10,
+    "ling": 8,
     "tech": 5,
     "bighist": 18
   },
@@ -549,36 +549,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Menzerath%27s_law"
-      }
-    },
-    {
-      "id": "ling-4.9",
-      "file": "content/ling/ch04-b.js",
-      "name": "N-gram language models",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Jurafsky & Martin ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/N-gram"
-      }
-    },
-    {
-      "id": "ling-4.10",
-      "file": "content/ling/ch04-b.js",
-      "name": "Uniform information density",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Jurafsky & Martin ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Uniform_information_density_hypothesis"
       }
     },
     {
@@ -1790,7 +1760,9 @@
       "polsci-5.10",
       "tech-5.6",
       "tech-5.8",
-      "game-3.9"
+      "game-3.9",
+      "ling-4.9",
+      "ling-4.10"
     ]
   },
   "additionalFollowups": [
@@ -6704,6 +6676,16 @@
       "id": "game-3.9",
       "status": "resolved",
       "note": "2026-10-20: worker_two exact-commit original-source/pixels, exact rational inequalities, native-state and output-pixel review; credit-year follow-up independently confirmed; docs/verification/game-blotto-followup.md."
+    },
+    {
+      "id": "ling-4.9",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three exact-commit primary-source/pixels, independent corpus and arithmetic, native-state and output-pixel review; docs/verification/ling-language-models-followup.md."
+    },
+    {
+      "id": "ling-4.10",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three exact-commit primary-source/pixels, independent corpus and arithmetic, native-state and output-pixel review; docs/verification/ling-language-models-followup.md."
     }
   ]
 }
