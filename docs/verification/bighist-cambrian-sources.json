@@ -1,0 +1,20 @@
+[
+  {
+    "source": "marshall2006",
+    "url": "https://cs.brynmawr.edu/Courses/cs361/spring2008/Readings/Marshall2006.pdf",
+    "bytes": 549048,
+    "sha256": "18f30e1f5e9db771572b27f9bdc108a06b960971b1c238abb180d8e20e39e647",
+    "pdfPages": 32,
+    "scope": "Actual original review pp355\u2013363/Fig1, pp364\u2013369 environmental/developmental/ecological explanation sections. Personally inspected chronology/figure and governing hypothesis source pixels357/358/364/369. Underlying original dating studies and universal priority not certified.",
+    "cache": "/tmp/atlas-coordinator/sources/bighist/marshall2006.pdf"
+  },
+  {
+    "source": "ics2024-12",
+    "url": "https://stratigraphy.org/ICSchart/ChronostratChart2024-12.pdf",
+    "bytes": 332682,
+    "sha256": "7ce1edf87ca913933c704cae3be2f68f932d14aaa111db36c3d9c0e79e57c237",
+    "pdfPages": 1,
+    "scope": "Official actual chart version2024/12, personally inspected entire chart pixels including538.8\u00b10.6Ma boundary/version title. This is a separately dated version, not a recalibration of the 2006 fossil rows.",
+    "cache": "/tmp/atlas-coordinator/sources/bighist/ics2024-12.pdf"
+  }
+]
