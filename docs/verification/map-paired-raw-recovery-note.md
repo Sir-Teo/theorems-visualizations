@@ -1,0 +1,5 @@
+# Deterministic raw metadata recovery disclosure
+
+During independent paired-oracle peer review, the peer ran the explicit failure model with a positional output argument instead of its required MAP_PAIRED_FAILURE_OUTPUT environment variable. It disclosed that this could replace the producer's deterministic files under `/tmp/atlas-map-paired-epoch-failure`. The committed producer evidence boundary `2c7a6d35` was unchanged. Independent evidence is the peer's subsequent rerun under its own unique output directory.
+
+The producer restored only `mid-epoch.json` and `initialization-only.json` from their exact committed evidence payloads, and independently reproduced their original SHA-256 hashes: `7d096fa2aa8b345cd0de6c5ccde72bcafb625bdebc760efaccc7b1cdcf4fd9d6` and `3c83981bced12abe968bdc6c38c738161154b54f0b96d95e51862b3ce86f4759`. The deterministic A0 raw bytes also still match their committed manifest hash. No source, checkout content, accepted result or old failure record was modified by that recovery. No additional browser/full-map/timing run occurred.
