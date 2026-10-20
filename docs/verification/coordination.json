@@ -51,7 +51,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "QINFO genuine prerequisite production",
+      "current": "ASTRO genuine prerequisite production after accepted CM peer",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -2185,10 +2185,28 @@
       "sourceClosure": "None; all57functions/flags/helpers preserved.",
       "bridgeReview": "No affected bridge references.",
       "followup": "Sixteen genuine inputs across12consumers. Unit-normalized four-acceleration coefficient and small-rapidity Newtonian rocket qualifier corrected; three equivalent narrow statement wraps. Full57raw lists match; remaining published shortfall2."
+    },
+    {
+      "collection": "cm",
+      "commits": [
+        "eb35ab8d07c9c2def5436f9fa188aebde0faccc6",
+        "be6788864a0be00a45832950a054adff9f760e01",
+        "775df1461b4bec90abc6cd768f19eac743fbb23c",
+        "f66b5e49fc7a8b1c960d79a41b53e3c36f7594b7"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 16,
+      "status": "accepted-bounded-below-target",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/cm-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all52objects/functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Nine genuine different-field math inputs; initial same-field overcount rejected. Four bounded mass/orbit qualifications and three equivalent wraps. Two existing same-field rows backfilled without credit. Independent1613checks/ownpixels; published shortfall9 remains. Initial peer output-directory typo affected some producer temporary pictures; peer final independent directory and retained producer final/correction/wrap evidence used and disclosed."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 476,
+    "publishedShortfall": 467,
     "publishedBelow25": 24,
     "collections": 64,
     "wholeSyllabusBelow25": 19,

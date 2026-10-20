@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
 Of 64 non-math collections, **24 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 476 edges. Even
+written ideas in a different field**. Their combined shortfall is 467 edges. Even
 including planned items and planned prerequisites, **19 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -260,3 +260,7 @@ The [combined CIRC peer](circ-prerequisites-independent-peer.md) accepts sevente
 ## REL bounded acceptance
 
 [REL independent peer](rel-independent-peer-followup.md) accepts sixteen genuine inputs across twelve consumers,7/8/30→23/24/46. Corrected unit-normalized four-acceleration and the small-rapidity Newtonian rocket criterion, plus three equivalent narrow statements. All57objects/functions/flags/helpers/raw lists,7,341independent assertions and24own narrow native cases pass. REL remains2below the published target. Live476shortfall,24/64below25published,19whole syllabi below25. No source closure; this is after the2167-test checkpoint.
+
+## CM bounded acceptance
+
+[CM peer](cm-crossfield-prerequisite-peer.md) accepts nine genuine mathfield inputs,7/15/15→16/24/24. Same-field physics links receive no quota credit. The combined batch qualifies nondegenerate effective-mass extrema, positive hole/electron orbit periods and the in-plane gradient, and wraps three equivalent statements. All52objects/functions/flags/helpers/fullrawlists and own independent math/narrow pixels pass. CM remains9below25written. Live467shortfall,24/64below25published,19whole syllabi below25. No sourceclosure; later than2167-test checkpoint.

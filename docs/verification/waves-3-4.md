@@ -1005,3 +1005,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### REL bounded acceptance
 
 [Independent REL peer](rel-independent-peer-followup.md) accepts16genuineinputs, two bounded mathematical qualifications and three equivalent wraps. Published23is still2below25; livegate476/24/19. No sourceclosure; later than checkpointa4a5103.
+
+### CM bounded acceptance
+
+[CM independent peer](cm-crossfield-prerequisite-peer.md) accepts9genuine mathfield inputs and bounded mass/orbit statements/equivalent wraps. Published16remains9below25; live467/24/19, sourcequeue5. This is after checkpointa4a5103.

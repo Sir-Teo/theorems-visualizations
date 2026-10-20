@@ -3883,15 +3883,22 @@
       "collection": "cm",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 7,
-      "writtenToKnown": 15,
-      "wholeSyllabus": 15,
-      "publishedShortfall": 18,
+      "writtenToWritten": 16,
+      "writtenToKnown": 24,
+      "wholeSyllabus": 24,
+      "publishedShortfall": 9,
       "unknown": [],
       "edges": [
         {
           "item": "cm-1.9",
           "prerequisite": "rca-4.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cm-1.10",
+          "prerequisite": "pma-3.26",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -3911,6 +3918,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "cm-1.3",
+          "prerequisite": "ladr-7.31",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cm-1.4",
           "prerequisite": "xtal-6.2",
           "prerequisiteField": "chem",
@@ -3925,6 +3939,20 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "cm-1.5",
+          "prerequisite": "ladr-7.31",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cm-1.6",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cm-2.8",
           "prerequisite": "vcalc-9.4",
           "prerequisiteField": "math",
@@ -3932,8 +3960,22 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "cm-2.11",
+          "prerequisite": "pma-9.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cm-2.3",
           "prerequisite": "ladr-7.29",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cm-2.3",
+          "prerequisite": "pma-9.15",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -3981,6 +4023,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "cm-3.5",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cm-3.8",
           "prerequisite": "xtal-6.4",
           "prerequisiteField": "chem",
@@ -3993,6 +4042,20 @@
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "cm-4.5",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cm-4.5",
+          "prerequisite": "pma-5.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         }
       ]
     },
@@ -17336,7 +17399,8 @@
       "35771b8239fb74cce147524a7e1f410ed7320305",
       "27e280c4b611ed2191a63a203ddb6987ca9ef17d",
       "7bcb87d3efad2734933920d067dda3af050f0b55",
-      "f61887e3f2bc1cdb89d63c7670526803aed92a9b"
+      "f61887e3f2bc1cdb89d63c7670526803aed92a9b",
+      "eb35ab8d07c9c2def5436f9fa188aebde0faccc6"
     ],
     "excludedUnacceptedEdges": [
       {
