@@ -11496,10 +11496,10 @@
       "collection": "psych",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 16,
-      "writtenToKnown": 20,
-      "wholeSyllabus": 42,
-      "publishedShortfall": 9,
+      "writtenToWritten": 19,
+      "writtenToKnown": 23,
+      "wholeSyllabus": 45,
+      "publishedShortfall": 6,
       "unknown": [],
       "edges": [
         {
@@ -11611,6 +11611,27 @@
           "item": "psych-3.9",
           "prerequisite": "music-1.9",
           "prerequisiteField": "arts",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "psych-3.10",
+          "prerequisite": "ladr-7.29",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "psych-3.10",
+          "prerequisite": "ladr-7.38",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "psych-3.10",
+          "prerequisite": "prob-1.2.5",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -13349,10 +13370,10 @@
       "collection": "phil",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 17,
-      "writtenToKnown": 20,
-      "wholeSyllabus": 40,
-      "publishedShortfall": 8,
+      "writtenToWritten": 18,
+      "writtenToKnown": 21,
+      "wholeSyllabus": 41,
+      "publishedShortfall": 7,
       "unknown": [],
       "edges": [
         {
@@ -13456,6 +13477,13 @@
         {
           "item": "phil-4.7",
           "prerequisite": "logic-1.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "phil-4.8",
+          "prerequisite": "prob-4.1.1a",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true

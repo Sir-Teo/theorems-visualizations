@@ -51,7 +51,7 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 1. Continue the Wave 3–4 source-review queue: **163 items remain**. The named modern PWT/MRW input audit is complete; its evidence and reproducible extraction are in `docs/verification/pwt-10.0.json` and `scripts/verify-pwt.py`.
 2. Continue agent screenshot inspection in light and dark themes and close remaining input/model gaps. [Automated audio coverage](docs/verification/audio-input-followup.md) passes 53 items and 95 actions. Human review, subjective listening and user approval are not required.
    Reconcile the existing cross-field prerequisite gate: [the inventory](docs/verification/cross-field-dependencies.md)
-   finds 53 of64 non-math collections below25 published edges, with27 below25 even across
+   finds 53 of64 non-math collections below25 published edges, with28 below25 even across
    planned chapters. Add connections only when the argument or model actually requires them.
    The home JSON gate passes. [Steady-pan measurements](docs/verification/map-performance.md)
    reach60fps in eight tested modes. [Zoom/hover comparisons](docs/verification/map-transitions-followup.md)
@@ -65,9 +65,11 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    A [bounded retained-edge experiment](docs/verification/map-retained-parent-check.md) passes independent
    picture/resource/lifecycle checks but regresses all twelve controlled matched cases and remains isolated.
    Continue renderer work from these measured constraints; the full 60 fps gate stays open.
+   Finish source/proof curation for 100 flagship steppers; the existing 102 first/next/last
+   control checks establish interaction coverage, not that curation gate.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
-The completed checkpoint through `24abff6` passes **1,520 tests**, including all six UI tests, and a **73-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is112,809 bytes gzipped. The accepted snapshot excludes ongoing drafts and its source ledger reconciles 170 pending and 666 original resolved. Finance has 29 published cross-field edges; 53 of 64 non-math collections and 28 complete syllabi remain below target after actual prerequisite additions and removal of an unused link. The isolated retained-edge experiment remains rejected and the full-map gate remains open. See [checkpoint evidence](docs/verification/checkpoint-24abff6.md).
+The completed checkpoint through `00b1ea9` passes **1,543 tests**, including all six UI tests, and an **80-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,805 bytes gzipped. Its exact accepted snapshot excludes ongoing drafts and reconciles 163 pending and 673 original source flags resolved. Since the previous checkpoint, seven original flags close through independently checked surprise-exam, classical-scaling, strengthened-liar and finite-game batches. A separate font-completion runtime fix has three new browser regressions. The cross-field shortfall is 862; 53 of 64 non-math collections and 28 complete syllabi remain below target. The full-map 60 fps and 100-flagship source/proof-curation gates remain open. See [checkpoint evidence](docs/verification/checkpoint-00b1ea9.md).
 
 ### Where we started
 

@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **53 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 866 edges. Even
+written ideas in a different field**. Their combined shortfall is 862 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -102,3 +102,6 @@ The checkpoint throughc211d3a has published shortfall866,53of64non-math collecti
 
 
 Accepted snapshot24abff6 (2026-10-19): finance has29published cross-field edges, psychology16 and demography12. Four genuine normal/variance/weak-law links in finance and one finite-probability link in psychology were added through source/proof review. The unused stable-population dependency in reproduction4.3 was removed; demography’s complete syllabus therefore falls from25to24. Combined published shortfall stays866 and the quota gate remains open. This inventory excludes ongoing drafts.
+
+
+Accepted snapshot `00b1ea9`: psychology has 19 published cross-field prerequisites and philosophy 18. Classical scaling uses the actual written symmetric spectral theorem, positive-operator factorization and normal-noise distribution; the surprise-exam illustration uses actual finite conditional probability. Root read those prerequisite arguments and checked their model use. The four additional published edges reduce the combined shortfall from 866 to 862. There are still 53 of 64 collections below 25 published edges and 28 below 25 over their complete syllabi. No arbitrary prerequisite was added to meet a count. The inventory excludes ongoing drafts. See [MDS](psych-mds-followup.md) and [conditional-information audit](phil-surprise-followup.md).
