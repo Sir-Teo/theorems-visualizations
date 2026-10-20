@@ -1,4 +1,5 @@
 // Political Science & Social Choice — Chapter 5 (part b): items 5.6-5.10
+import {aggregationConcept} from './source-audit-aggregation.js';
 import {swingTheorem} from './source-audit-swing.js';
 import {juryTheorem} from './source-audit-strategic-jury.js';
 import {downsIgnorance} from './source-audit-downs-items.js';
@@ -14,55 +15,8 @@ export default {
     // Source-audited finite comparison 5.7
     downsIgnorance,
 
-    // ───────────────────────────────────────────────────────────── 5.8
-    {
-      num: '5.8',
-      kind: 'Concept',
-      name: 'The miracle of aggregation',
-      statement: String.raw`Let a fraction $f$ of $N$ voters be informed, each right with probability $a>\tfrac12$, and let the others be uninformed, each right with probability $u$; all votes are independent. The average chance of being right is $\bar p = fa+(1-f)u$. By the law of large numbers the majority is right with probability tending to $1$ whenever $\bar p>\tfrac12$, that is, whenever
-$$f\,(a-\tfrac12) \;>\; (1-f)\,(\tfrac12-u).$$
-In particular, if the uninformed guess completely at random ($u=\tfrac12$), then **any** positive fraction of informed voters, however small, makes the large majority right: the random votes cancel and the informed minority decides. If the uninformed are systematically biased ($u<\tfrac12$) the inequality can fail and the majority is wrong in the limit.`,
-      idea: String.raw`Write the number of correct votes as a sum of independent Bernoulli variables; its mean is $N\bar p$ and its standard deviation is of order $\sqrt N$, so only the sign of $\bar p-\tfrac12$ matters when $N$ is large (polsci-5.4). Uninformed voters with $u=\tfrac12$ add a symmetric random walk to the tally, which has size $\sqrt N$, while the informed add a drift of $f N (a-\tfrac12)$, which wins eventually. Random noise is harmless; *bias* is what defeats the argument, and bias is exactly what correlation produces (polsci-5.5). This is the sense in which a public that is largely uninformed can still reach a sensible collective judgment, an argument associated with the study of public opinion by Page and Shapiro (1992).`,
-      caption: String.raw`The colour shows (by a normal approximation) the probability that the majority is right for $N$ voters as a function of the informed share $f$ (horizontal) and the uninformed voters’ accuracy $u$ (vertical). Above the red curve, $\bar p>\tfrac12$ and large majorities are right. Drag the dot to choose a point; the right panel gives the exact distribution of the number of correct votes with the majority threshold.`,
-      deps: ['polsci-5.4'],
-      see: ['polsci-5.5', 'polsci-5.7'],
-      refs: ['Shepsle: group decisions', 'Page and Shapiro (1992), The Rational Public'],
-      tags: ['aggregation', 'public opinion'],
-      scope: String.raw`Votes are independent with two accuracy levels, and the heat map uses a normal approximation of the number of correct votes (the readout and bar chart on the right are exact). Whether real electorates behave this way is exactly the empirical question the literature debates; the argument gives conditions, not evidence. I did not trace the phrase to its first use; Page and Shapiro (1992) is the work usually cited for the argument.`,
-      verify: true,
-      links: {},
-      viz(v) {
-        const H = v.stage({ x: [0, 1], y: [0.3, 0.7], axes: 'box', gutter: true, height: 340, minWidth: 320, xlabel: 'informed share $f$', ylabel: 'uninformed accuracy $u$', title: 'probability the majority is right' });
-        const Bp = v.stage({ x: [0, 100], y: [0, 0.1], axes: 'box', gutter: true, height: 340, minWidth: 300, xlabel: 'number of correct votes', ylabel: 'probability', title: 'the vote count' });
-        const NS = v.slider('voters $N$', 11, 501, 201, { int: true, step: 2 });
-        const aS = v.slider('informed accuracy $a$', 0.55, 0.95, 0.65, { step: 0.01 });
-        const h = H.handle(0.1, 0.5, { color: 'gold', r: 9, constrain: { x: [0, 1], y: [0.3, 0.7] } });
-        const approx = (N, a, f, u) => {
-          const F = f * N, m = F * a + (N - F) * u, sd = Math.sqrt(Math.max(1e-12, F * a * (1 - a) + (N - F) * u * (1 - u)));
-          return Phi((m - N / 2) / sd);
-        };
-        let info = {};
-        v.render(() => {
-          const N = NS.value % 2 ? NS.value : NS.value + 1, a = aS.value;
-          H.heat((f, u) => approx(N, a, f, u), { range: [0, 1], cmap: 'theme', color: 'green', res: 5, key: `h${N}|${a}` });
-          H.path(range(101).map((i) => { const f = i / 100; return [f, (0.5 - f * a) / (1 - f + 1e-9)]; }).filter((p) => p[1] >= 0.3 && p[1] <= 0.7), { color: 'red', width: 2.2 });
-          H.hline(0.5, { color: 'ink', dash: true, alpha: 0.5 });
-          const F = Math.round(h.x * N), f = F / N, u = h.y;
-          // exact distribution: Bin(F, a) convolved with Bin(N - F, u)
-          const d1 = range(F + 1).map((k) => binomPmf(F, k, a)), d2 = range(N - F + 1).map((k) => binomPmf(N - F, k, u));
-          const tot = new Float64Array(N + 1);
-          for (let i = 0; i <= F; i++) for (let j = 0; j <= N - F; j++) tot[i + j] += d1[i] * d2[j];
-          const exact = sum(range(N + 1).filter((k) => k > N / 2).map((k) => tot[k]));
-          const lo = Math.max(0, Math.floor(N * 0.2)), hi = Math.min(N, Math.ceil(N * 0.8)), vals = range(hi - lo + 1).map((i) => tot[lo + i]);
-          Bp.setView([lo - 1, hi + 1], [0, Math.max(...vals) * 1.2]);
-          Bp.bars(vals, { x0: lo, dx: 1, color: (val, i) => (lo + i > N / 2 ? 'green' : 'accent') });
-          Bp.vline(N / 2, { color: 'ink', dash: true, alpha: 0.6 });
-          info = { N, a, f, u, exact, pbar: f * a + (1 - f) * u, F };
-        });
-        v.legend([['red', '$\\bar p=\\tfrac12$ (limit boundary)'], ['gold', 'chosen $(f,u)$', { dot: true }]]);
-        v.readout(() => `$N=${info.N}$ voters, ${info.F} informed ($f=${v.fix(info.f, 3)}$, $a=${v.fix(info.a, 2)}$), uninformed accuracy $u=${v.fix(info.u, 3)}$: average accuracy $\\bar p=${v.fix(info.pbar, 4)}$ ${info.pbar > 0.5 ? '(above ½)' : '(at most ½)'}. The majority is right with probability **${v.fix(info.exact, 4)}** (exact).`);
-      },
-    },
+    // Source-audited independent aggregation illustration 5.8
+    aggregationConcept,
 
     // Source-audited exact deviation example 5.9
     swingTheorem,
