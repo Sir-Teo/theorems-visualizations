@@ -20,13 +20,13 @@
       "docs/verification/waves-3-4*",
       "docs/verification/coordination.json",
       "shared runtime and integration inventories",
-      "content/music/ch08-b.js and only music8.9\u20138.13 syllabus rows",
+      "content/music/ch08-b.js and only music8.9–8.13 syllabus rows",
       "collection audit lanes: game and qchem"
     ],
     "current": [
       "Integrate independently reviewed batches and reconcile all wave gates",
-      "Independently review committed music7.15",
-      "Audit music8.9\u20138.13 in isolated source file and tests"
+      "Peer-review committed music7.16/7.17",
+      "Continue game and difficult original-source audits"
     ]
   },
   "workers": [
@@ -36,12 +36,13 @@
       "branch": "codex/atlas-worker-one",
       "collection": "music",
       "owns": [
-        "content/music/** except ch08-b.js and8.9\u20138.13 syllabus rows",
-        "collection-specific audit docs and tests outside coordinator set-class batch"
+        "content/music/** except coordinator music8.9–8.13 objects and their isolated setclass files",
+        "Only owned syllabus rows, collection-specific source reports and tests"
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
-      "peerReview": "Assigned by coordinator after a committed batch is ready"
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "current": "Repair newly discovered6.4/6.5 minima claims, then continue queued8.14/8.15 and remaining music items; retain flags for independent peer acceptance."
     },
     {
       "agent": "worker_two",
@@ -58,21 +59,24 @@
       "completedCollections": [
         "psych"
       ],
-      "current": "Audit23 remaining technology entries in coherent source groups; peer-review committed coordinator candidates as assigned."
+      "current": "Audit17 remaining technology entries, beginning4.6/4.7/4.10, in coherent original-source groups."
     },
     {
       "agent": "worker_three",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-three/theorems-visualizations",
       "branch": "codex/atlas-worker-three",
-      "collection": "soc",
+      "collection": "polsci",
       "owns": [
-        "content/soc/**",
-        "collection-specific audit docs and tests"
+        "content/polsci/**",
+        "Only owned syllabus rows, collection-specific source reports and tests"
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Complete remaining sociology entries; peer-review committed worker candidates as assigned."
+      "current": "Audit nine remaining political-science entries, beginning shared Downs sources4.13/5.1/5.7; peer review committed worker candidates as assigned.",
+      "completedCollections": [
+        "soc"
+      ]
     }
   ],
   "acceptedBatches": [
@@ -270,7 +274,11 @@
         "music-periodicity-followup.md",
         "soc-musiclab-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "e2b5a3c",
+        "7903435"
+      ]
     },
     {
       "ids": [
@@ -282,7 +290,10 @@
       "reports": [
         "tech-water-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "7aa8cf2"
+      ]
     },
     {
       "ids": [
@@ -298,17 +309,27 @@
         "soc-configuration-followup.md",
         "soc-growth-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "14c47bb",
+        "522b26c",
+        "1511edd",
+        "21bff6e",
+        "eecb09a"
+      ]
     },
     {
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "54ff9a0"
+      ]
     },
     {
       "ids": [
@@ -322,7 +343,10 @@
       "reports": [
         "music-setclass-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "f5c65dd"
+      ]
     },
     {
       "ids": [
@@ -334,7 +358,10 @@
       "reports": [
         "tech-power-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "8f1496d"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -349,13 +376,13 @@
   },
   "currentPendingSourceReviews": 96,
   "latestCheckpoint": {
-    "acceptedContentCommit": "c9b5466",
-    "pendingSourceReviews": 114,
-    "defaultTests": 1695,
+    "acceptedContentCommit": "214d86c",
+    "pendingSourceReviews": 96,
+    "defaultTests": 1735,
     "strictBuild": "0 errors/0 warnings",
     "fullStaticItems": 6621,
     "fullStatic": "0 errors/0 warnings",
-    "homeGzipBytes": 112785,
+    "homeGzipBytes": 112757,
     "crossFieldShortfall": 847,
     "publishedCollectionsBelow25": 53,
     "wholeSyllabiBelow25": 28,

@@ -11824,8 +11824,8 @@
       "field": "social",
       "target": 25,
       "writtenToWritten": 15,
-      "writtenToKnown": 19,
-      "wholeSyllabus": 42,
+      "writtenToKnown": 18,
+      "wholeSyllabus": 41,
       "publishedShortfall": 10,
       "unknown": [],
       "edges": [
@@ -11919,13 +11919,6 @@
           "prerequisiteField": "stats",
           "itemWritten": true,
           "prerequisiteWritten": true
-        },
-        {
-          "item": "soc-4.13",
-          "prerequisite": "geog-9.9",
-          "prerequisiteField": "earth",
-          "itemWritten": true,
-          "prerequisiteWritten": false
         },
         {
           "item": "soc-4.1",
@@ -12517,9 +12510,9 @@
       "collection": "music",
       "field": "arts",
       "target": 25,
-      "writtenToWritten": 32,
-      "writtenToKnown": 34,
-      "wholeSyllabus": 53,
+      "writtenToWritten": 33,
+      "writtenToKnown": 35,
+      "wholeSyllabus": 54,
       "publishedShortfall": 0,
       "unknown": [],
       "edges": [
@@ -12736,6 +12729,13 @@
         {
           "item": "music-7.2",
           "prerequisite": "pma-1.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "music-8.10",
+          "prerequisite": "rep-3.15",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -13746,9 +13746,9 @@
       "collection": "tech",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 33,
-      "writtenToKnown": 44,
-      "wholeSyllabus": 89,
+      "writtenToWritten": 32,
+      "writtenToKnown": 43,
+      "wholeSyllabus": 88,
       "publishedShortfall": 0,
       "unknown": [],
       "edges": [
@@ -13952,13 +13952,6 @@
           "item": "tech-4.1",
           "prerequisite": "arch-3.5",
           "prerequisiteField": "arts",
-          "itemWritten": true,
-          "prerequisiteWritten": true
-        },
-        {
-          "item": "tech-4.2",
-          "prerequisite": "mat-2.8",
-          "prerequisiteField": "chem",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
