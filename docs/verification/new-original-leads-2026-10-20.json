@@ -31,7 +31,7 @@
         },
         {
           "url": "https://mathdoc-cfp-pre.u-ga.fr/library/26/etat/?colref=&electronique=&istartswith=&ouvert=false&pcmath=true&periodique__titre__istartswith=Z&pole=&positionne=&vivant=false",
-          "scope": "Institutional holdings list includes journal1930–1939; no complete article body obtained."
+          "scope": "Institutional holdings list includes journal1930\u20131939; no complete article body obtained."
         }
       ],
       "outcome": "No original body or missing translation pages; no source closure."
@@ -46,7 +46,7 @@
       "results": [
         {
           "url": "https://www.computerhistory.org/siliconengine/complementary-mos-circuit-configuration-is-invented/",
-          "scope": "Museum history and bibliography cite original32–33; not a complete original PDF."
+          "scope": "Museum history and bibliography cite original32\u201333; not a complete original PDF."
         }
       ],
       "outcome": "Search results are citations or secondary textbook figure reprints, not complete requested originals. No source-body download or acceptance; known failed routes not retried."
@@ -55,7 +55,7 @@
       "topic": "MATHBIO1936 original-title PDF and institutional catalog search",
       "queries": [
         "\"Kolmogoroff\" \"Sulla teoria\" filetype:pdf1936",
-        "\"Giornale\" \"74–80\" \"Kolmogorov\" pdf"
+        "\"Giornale\" \"74\u201380\" \"Kolmogorov\" pdf"
       ],
       "results": [
         {
@@ -70,6 +70,34 @@
         }
       ],
       "outcome": "No complete original or missing authorized translation pages found; flag/sourceledger unchanged. No access restriction bypass or stopped-route retry."
+    },
+    {
+      "topic": "Further public original-body discovery after checkpoint8",
+      "queries": [
+        "Kolmogoroff Sulla teoria PDF1936",
+        "Hounsfield Description of system filetype:pdf",
+        "Hughes Glass Jacobs1992 334 PDF context sensitive half time",
+        "Wanlass Sah Nanowatt Logic1963 original PDF"
+      ],
+      "results": [
+        {
+          "url": "https://romatrepress.uniroma3.it/wp-content/uploads/2025/09/Mathemata-n.-1-ebook-1.pdf",
+          "scope": "Search-indexed later bibliographic reference to1936article; not original body."
+        },
+        {
+          "url": "https://www.anaesthsoftware.com/en/references.php",
+          "scope": "Ordinary public references page links PHARM download to journals.lww.com; linked webfetch failed, no body obtained. No stopped ASA/CiteSeer route retry."
+        },
+        {
+          "url": "https://machinelibrary.ai/r/10.1109/isscc.1963.1157450",
+          "scope": "Public metadata page links PDF at https://xplorestaging.ieee.org/ielx6/8307/25939/01157450.pdf?arnumber=1157450. One ordinary linked fetch returned418. Stop this route; no original body or acceptance."
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/1539843/",
+          "scope": "Original abstract/metadata already recorded, not the full parameter tables."
+        }
+      ],
+      "outcome": "No source closure, content change or new accepted edge. Only public ordinary links followed, no credentials or access/preview/password bypass. BIGHIST candidate not searched or retried."
     }
   ]
 }
