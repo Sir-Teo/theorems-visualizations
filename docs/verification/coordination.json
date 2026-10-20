@@ -62,9 +62,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "GEOG genuine prerequisite production",
+      "current": "GEOG bounded correctness successor and POPGEN wrap peer; REL preparation",
       "owns": [
-        "GEOG written items/matching rows/unique reports/tests"
+        "GEOG exact finding fixes; unique POPGEN peer files; REL source preparation"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -72,9 +72,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent CIRC peer awaiting exact row followup; MACRO notation delivered",
+      "current": "CLIMATE genuine prerequisite production; CIRC peer complete",
       "owns": [
-        "Unique CIRC peer files; completed MACRO notation report"
+        "CLIMATE written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "TOC genuine prerequisite production; BIOINF/accounting peers complete",
+      "current": "Independent GEOG peer including sphere/reflection metadata findings; TOC preserved",
       "owns": [
-        "TOC written items/matching rows/unique reports/tests"
+        "Unique GEOG peer files only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -2096,15 +2096,33 @@
       "sourceClosure": "None; functions/helpers/flags preserved.",
       "bridgeReview": "No changed IDs are bridge steps.",
       "followup": "Three justified raw row omissions backfilled; signed residual coefficient beta_x distinguished from positive convergence b."
+    },
+    {
+      "collection": "circ",
+      "commits": [
+        "1a6f054a6b1bf6b02af7851f0e0a50be0dfc2118",
+        "f29bbcb3310a654cb63e4156632ae1d693b99483",
+        "56e03b7b9395378837bc90f8765aaaeeb2763865",
+        "20c1dd6d5ce9f716447756792b4a9b9ebaf50624"
+      ],
+      "publishedBefore": 8,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "deep_peer",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/circ-prerequisites-independent-peer.md",
+      "sourceClosure": "None; CIRC4.17original source remains byte-identical and open.",
+      "bridgeReview": "No changed IDs are bridge steps.",
+      "followup": "Three bounded consistency/port/diode statements and two existing raw row omissions independently repaired; no numerical functions/flags changed."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 559,
-    "publishedBelow25": 28,
+    "publishedShortfall": 542,
+    "publishedBelow25": 27,
     "collections": 64,
     "wholeSyllabusBelow25": 22,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Twenty further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Twenty-one further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

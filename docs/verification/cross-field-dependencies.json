@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 28,
+  "publishedBelowTarget": 27,
   "wholeSyllabusBelowTarget": 22,
   "entries": [
     {
@@ -10375,10 +10375,10 @@
       "collection": "circ",
       "field": "eng",
       "target": 25,
-      "writtenToWritten": 8,
-      "writtenToKnown": 22,
-      "wholeSyllabus": 40,
-      "publishedShortfall": 17,
+      "writtenToWritten": 25,
+      "writtenToKnown": 39,
+      "wholeSyllabus": 57,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -10438,6 +10438,34 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "circ-2.7",
+          "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-2.8",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-2.9",
+          "prerequisite": "ladr-3.65",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-2.9",
+          "prerequisite": "ladr-7.38",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "circ-2.14",
           "prerequisite": "em-6.15",
           "prerequisiteField": "physics",
@@ -10473,11 +10501,74 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "circ-3.9",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "circ-3.10",
           "prerequisite": "em-6.9",
           "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "circ-3.10",
+          "prerequisite": "ladr-6.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-3.1",
+          "prerequisite": "ladr-3.63",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-3.6",
+          "prerequisite": "ladr-7.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-3.7",
+          "prerequisite": "ladr-7.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-4.8",
+          "prerequisite": "pma-9.28",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-4.9",
+          "prerequisite": "logic-2.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-4.12",
+          "prerequisite": "pma-9.17",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-4.13",
+          "prerequisite": "ode-3.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "circ-4.14",
@@ -10529,8 +10620,36 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "circ-4.1",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-4.2",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-4.2",
+          "prerequisite": "pma-5.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "circ-4.4",
           "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "circ-4.5",
+          "prerequisite": "ode-1.4",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -16750,7 +16869,8 @@
       "2afbe7e27409aae87a402cc515291f9e9436e4f8",
       "a13604f7bae12f3718d28fe089c18e4957e790d3",
       "f893017643c70994854fa6af773c68606a2be26f",
-      "a7f647f181ee4575efb60253c9ee3f7680661600"
+      "a7f647f181ee4575efb60253c9ee3f7680661600",
+      "1a6f054a6b1bf6b02af7851f0e0a50be0dfc2118"
     ],
     "excludedUnacceptedEdges": [
       {

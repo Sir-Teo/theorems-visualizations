@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **28 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 559 edges. Even
+Of 64 non-math collections, **27 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 542 edges. Even
 including planned items and planned prerequisites, **22 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -247,3 +247,8 @@ The separately [reviewed accounting tool](cross-field-accounting-independent-pee
 ## Accepted macroeconomics inputs and signed regression notation
 
 The [combined MACRO peer](macro-crossfield-prerequisite-peer.md) accepts sixteen used inputs across fifteen consumers,9/12/15→25/28/31. All48objects/functions/flags/helpers/full raw lists, three justified row repairs and signed-beta clarification pass. Independent QR checks on actual full/OECD samples, theorem calculations and30base+2followup narrow-theme proofs support the review. No bridge is touched. Accepted shortfall559,28/64published collections below25,22whole syllabi below25.
+
+
+## Accepted circuit inputs and bounded statement repairs
+
+The [combined CIRC peer](circ-prerequisites-independent-peer.md) accepts seventeen inputs across fifteen consumers,8/22/40→25/39/57. Three statements now distinguish structural count from consistency, singular port conversions and diode load/domain/asymptotic hypotheses. ExactBigInt counterexamples,6,138independent assertions,30proof+6actual built-statement narrow-theme images and full56object/function/flag/helper preservation pass. Two touched rows backfill existing inputs without extra credit. No bridge changes or historical source closure:4.17remains unchanged/open. Accepted shortfall542,27/64below25published,22whole syllabi below25.
