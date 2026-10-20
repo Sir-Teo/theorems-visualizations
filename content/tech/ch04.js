@@ -1,26 +1,12 @@
+import { masonry } from './source-audit-loads.js';
 import { windDisk } from './source-audit-mechanisms.js';
 import { waterWheels, smeatonWater } from './source-audit-power.js';
 import { mortar, aqueduct } from './source-audit-water.js';
 // History of Technology — Chapter 4: Building, water and power before steam (items 4.1–4.6; 4.7–4.12 are in ch04-b.js)
-import { yearStage, drawYears, lump, archGeometry, archFeasible, thrustAt } from './ch04.shared.js';
+import { yearStage, drawYears, lump } from './ch04.shared.js';
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const D2R = Math.PI / 180;
-
-// ---------------------------------------------------------------- 4.1 helpers
-/** Smallest ring thickness (fraction of intrados radius) that still holds a thrust line, by bisection on the joint constraints. */
-function minThickness(alpha) {
-  let lo = 0.004, hi = 0.6;
-  if (!archFeasible(archGeometry(hi, alpha, 180), 2, 2).ok) return NaN;
-  for (let i = 0; i < 24; i++) {
-    const mid = (lo + hi) / 2;
-    if (archFeasible(archGeometry(mid, alpha, 180), 2, 2).ok) hi = mid; else lo = mid;
-  }
-  return hi;
-}
-/** Harmonic number H_n. */
-const harm = (n) => { let s = 0; for (let i = 1; i <= n; i++) s += 1 / i; return s; };
-
 
 export default {
   collection: 'tech',
@@ -30,96 +16,27 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.1
     {
-      num: '4.1',
-      kind: 'Invention',
-      name: 'The true arch in Roman engineering',
-      credit: 'No single inventor. Arched openings are older than Rome (Near East and Egypt); Roman builders made the semicircular arch the basis of bridges, aqueducts and vaults',
-      verify: true,
-      statement: String.raw`A **true arch** is a curved span of wedge-shaped blocks (**voussoirs**) that press on one another, so that the load travels along the curve in compression and nothing is asked to resist bending or tension. The weight of the stones pushes outward at the feet (the **thrust**), which the piers or abutments must resist. A **corbelled** opening is different: each course projects a little beyond the one below, and every block is a cantilever held down by the weight above and behind it.
+      num:'4.1',kind:'Invention',name:'The true arch in Roman engineering',verify:true,
+      credit:'Vitruvius VI.8.3–4 describes radiating voussoirs and resisting end piers; finite statics comparison authored here',
+      statement:String.raw`A voussoir arch transfers load through contacts between wedge-shaped blocks and pushes outward on its supports. Vitruvius VI.8.3–4 describes arches with joints radiating toward a centre and recommends wider end piers to resist their outward action. This is evidence for the described Roman building practice; no earliest invention or transmission date is inferred here.
 
-The arch was not a Roman invention. Arched openings in brick and stone are found in the Near East and Egypt well before Rome (the earliest dates quoted vary between sources, from the fourth millennium BCE for debated Mesopotamian finds to about 2000 BCE for firmly dated examples), and the Etruscans passed arch building to Rome. What Roman builders did was use the semicircular arch as a system: bridges, aqueducts (4.3), amphitheatres and vaults, built in cut stone and then in concrete (4.2).
+The ideal equilibrium approach assumes no tensile contact force, unlimited compressive strength, no sliding and fixed supports. Finding an admissible compression equilibrium is a sufficient safety argument under the applicable ideal assumptions, rather than identification of the actual internal forces. The illustration tests a finite rigid-block model at its prescribed joints.`,
+      idea:String.raw`The arch has 24 annular-sector blocks per half, equal density and radial joints. Let $W$ be half-arch weight. At joint angle $\theta$, let V and M be the cumulative weight and its moment about the vertical centreline. Crown thrust H is measured in units of W; its height is $y_c$ in intrados-radius units. Moment balance gives the radial contact position
+$$\rho=\frac{Hy_c+M/W}{H\cos\theta+(V/W)\sin\theta}.$$
+The requirements $1\le\rho\le1+t/R_i$ are affine inequalities in H and $B=Hy_c$. Eliminating B gives the feasible thrust interval. Every drawn candidate is checked at all 25 joints per half. Failure means no such finite joint equilibrium, without a simulated collapse or a continuous-arch thickness theorem.
 
-Scope of the picture: it takes stone with no tensile strength, effectively unlimited compressive strength and no sliding between voussoirs (the standard assumptions for masonry), a circular arch carrying only its own weight, and abutments that do not move.`,
-      idea: String.raw`If the stones are free to carry only compression, the arch stands if and only if some line of thrust, the curve along which the force passes from joint to joint, lies inside the ring everywhere (Heyman's safe theorem, arch-3.5). Cutting a symmetric arch at the crown leaves one unknown horizontal thrust $H$ and the height $y_c$ where it crosses the crown joint; statics then gives the thrust line through every other joint from the weights of the voussoirs (arch-3.2). Hooke's remark that "as hangs the flexible line, so but inverted will stand the rigid arch" is the same statement: a chain hangs in a pure tension curve, and its mirror image is a pure compression curve.
-
-A free-standing stack of blocks has no such freedom. A block can overhang its support by at most half its own length, and a stack of $n$ equal blocks can reach out by $\tfrac12(1+\tfrac12+\dots+\tfrac1n)$ lengths in all, which grows like $\tfrac12\ln n$. To close a gap of $S$ block lengths the two sides need about $e^{S-\gamma}$ courses, so reach is paid for with height, exponentially. Real corbel vaults load the courses from behind with masonry and do far better, but the geometry of the cantilever is why a corbel opens in height and an arch in width.`,
-      caption: String.raw`Left: a voussoir arch of the chosen span and shape under its own weight. Thickness is measured relative to the intrados radius $R_i$; the readout also converts the limiting thickness to the mean-radius convention of arch-3.7. The ring is shaded; the **orange** and **purple** dashed curves are the thrust lines of smallest and largest horizontal thrust that stay inside the ring, and any line in between would do as well. Thin the ring with the **thickness** slider: for a semicircle the two lines merge and then no line fits (the readout then says there is no admissible thrust line, and the red thrust line leaves the masonry at the hinge points). Right: a corbel of the same span, built from free-standing courses of unit blocks. Raise the **courses** until the two sides meet; the readout says how many the span needs.`,
-      deps: ['arch-3.2', 'arch-3.5'],
-      see: ['arch-3.13', 'arch-3.7', 'tech-4.3'],
-      refs: ['Makris & Alexakis (2013), radial joints: t/R_m = 0.1075; https://doi.org/10.1007/s00419-013-0763-4', 'Mokyr ch. 2', 'Heyman, The Stone Skeleton (1966), Int. J. Solids Struct. 2:249', 'Woodman & Bloom (eds), Arch (2003), as cited by Wikipedia "Arch"'],
-      tags: ['ancient', 'masonry', 'statics'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Arch' },
-      viz(v) {
-        const A = v.stage({ x: [-2.5, 2.5], y: [-0.8, 2.2], equal: true, axes: false, height: 330, weight: 1.25, minWidth: 340, title: 'voussoir arch: self-weight, thrust lines' });
-        const B = v.stage({ x: [-4, 4], y: [-1, 6], equal: true, axes: false, height: 330, weight: 1, minWidth: 300, title: 'corbel of free-standing courses' });
-        const shape = v.select('shape', [{ value: 'semi', label: 'semicircle' }, { value: 'seg', label: 'segmental (60°)' }], 'semi');
-        const span = v.slider('span $S$ (block lengths)', 1, 6, 3, { step: 0.1 });
-        const thick = v.slider('ring thickness $t/R_i$', 0.03, 0.3, 0.16, { step: 0.005 });
-        const nC = v.slider('corbel courses $n$', 1, 40, 6, { int: true });
-        const tMinCache = {};
-        let cacheKey = '', geo = null, feas = null;
-        const NJ = 24;
-        v.render(() => {
-          const alpha = (shape.value === 'semi' ? 90 : 60) * D2R, S = span.value, t = thick.value;
-          const key = `${shape.value}|${t.toFixed(4)}`;
-          if (key !== cacheKey) { cacheKey = key; geo = archGeometry(t, alpha, NJ); feas = archFeasible(geo, 90, 60); }
-          if (!(shape.value in tMinCache)) tMinCache[shape.value] = minThickness(alpha);
-          const r0 = S / (2 * Math.sin(alpha)), Re = r0 * (1 + t), ysp = r0 * Math.cos(alpha);
-          const pt = (rho, th, sgn) => [sgn * rho * r0 * Math.sin(th), rho * r0 * Math.cos(th)];
-          const okc = feas.ok ? 'green' : 'red';
-          const halfW = Re * Math.sin(alpha) + 0.45, top = Math.max(Re, ysp) + 0.35;
-          A.setView([-halfW, halfW], [ysp - 1.3 - 0.0, top]);
-          // piers
-          for (const sg of [-1, 1]) {
-            const a = pt(1, alpha, sg), b = pt(1 + t, alpha, sg);
-            A.poly([a, b, [b[0], ysp - 1.2], [a[0], ysp - 1.2]], { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1.2 });
-          }
-          A.line(-halfW, ysp - 1.2, halfW, ysp - 1.2, { color: 'muted', width: 2 });
-          // voussoirs
-          for (let k = 0; k < NJ; k++) for (const sg of [-1, 1]) {
-            const t0 = k * geo.dth, t1 = (k + 1) * geo.dth;
-            A.poly([pt(1, t0, sg), pt(1 + t, t0, sg), pt(1 + t, t1, sg), pt(1, t1, sg)], { fill: feas.ok ? 'orange' : 'red', fillAlpha: feas.ok ? 0.16 : 0.12, color: 'muted', width: 0.9 });
-          }
-          // thrust lines
-          const draw = (H, yc, col, dash, w) => {
-            const p = thrustAt(geo, H, yc);
-            for (const sg of [-1, 1]) {
-              const pts = p.map((rho, k) => pt(rho, k * geo.dth, sg));
-              A.path(pts, { color: col, width: w, dash });
-            }
-          };
-          if (feas.ok) {
-            draw(feas.max.H, feas.max.yc, 'purple', [5, 3], 1.8);
-            draw(feas.min.H, feas.min.yc, 'orange', [5, 3], 1.8);
-            draw(feas.middle.H, feas.middle.yc, 'green', null, 2.6);
-          } else if (feas.best) {
-            draw(feas.best.H, feas.best.yc, 'red', null, 2.4);
-            A.text('no thrust line fits: hinges form', 0, top - 0.1, { size: 12, color: 'red', weight: 700, align: 'center', plate: true });
-          }
-          A.text('crown', 0, Re + 0.15, { size: 10.5, color: 'muted', align: 'center' });
-          // ---- corbel
-          const n = nC.value, h = 0.36, Hn = harm(n);
-          let need = 1; while (harm(need) < S && need < 2e6) need++;
-          const reach = (j) => { let s = 0; for (let i = j; i <= n; i++) s += 1 / (2 * i); return s; };
-          const closed = Hn >= S;
-          B.setView([-S / 2 - 1.8, S / 2 + 1.8], [-1.0, Math.max(3.5, n * h + 0.7)]);
-          B.rect(-S / 2 - 1.8, -1, -S / 2, 0, { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1.2 });
-          B.rect(S / 2, -1, S / 2 + 1.8, 0, { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1.2 });
-          for (let j = n; j >= 1; j--) {
-            const y0 = (n - j) * h, tip = Math.min(reach(j), S / 2);
-            B.rect(-S / 2 + tip - 1, y0, -S / 2 + tip, y0 + h, { fill: closed ? 'green' : 'orange', fillAlpha: 0.22, color: 'muted', width: 0.9 });
-            B.rect(S / 2 - tip, y0, S / 2 - tip + 1, y0 + h, { fill: closed ? 'green' : 'orange', fillAlpha: 0.22, color: 'muted', width: 0.9 });
-          }
-          B.measure(-S / 2, -0.55, S / 2, -0.55, `span ${v.fmt(S, 2)}`);
-          B.corner(closed ? 'the courses meet' : `gap of ${v.fix(S - Hn, 2)} remains`, 'tr', { color: closed ? 'green' : 'red', weight: 700 });
-          B._need = need; B._Hn = Hn;
-        });
-        v.legend([['green', 'a thrust line inside the ring'], ['orange', 'least thrust', { dash: [5, 3] }], ['purple', 'greatest thrust', { dash: [5, 3] }], ['red', 'no line fits', {}]]);
-        v.readout(() => {
-          const tmin = tMinCache[shape.value], t = thick.value;
-          const hmin = feas && feas.ok ? `thrust between **${v.fix(feas.min.H, 2)}** and **${v.fix(feas.max.H, 2)}** of a half-arch's weight` : '**no admissible thrust line**';
-          return `${shape.value === 'semi' ? 'semicircle' : 'segmental arch'}, ring $t/R_i = ${v.fix(t, 3)}$: ${hmin}; the thinnest ring that stands is $t/R_i \\approx ${v.fix(tmin, 3)}$ (180 joints per half-arch; mean-radius ratio $t/R_m=${v.fix(tmin / (1 + tmin / 2), 5)}$)\nCorbel with $n=${nC.value}$ courses reaches $H_n=${v.fix(B._Hn, 2)}$ block lengths; spanning $S=${v.fix(span.value, 1)}$ needs $n \\ge ${B._need}$ courses`;
-        });
+For the comparison stack of unit-length equal blocks, balancing the centre of mass of the top j blocks at the next support gives successive overhangs $1/(2j)$. One side can therefore project $H_n/2$, where $H_n=\sum_{j=1}^n1/j$. When the two stacks meet, the picture caps each projection at half the gap; it does not let the blocks overlap. This cap reduces the overhang and preserves nonnegative centre-of-mass margins.`,
+      caption:String.raw`Change the arch shape, span, ring thickness and number of corbel courses. Orange and purple show the least and greatest feasible horizontal thrust; green shows an intermediate candidate. A red diagnostic is only a failed finite-joint candidate. The corbel uses separate free-standing stacks, with projection capped when their tips meet. Its readout distinguishes theoretical uncapped reach, actual gap and balance margin.`,
+      deps:['arch-3.2','arch-3.5'],see:['arch-3.7','tech-4.3'],refs:['Vitruvius VI.8.3–4; Morgan 1914 p.190','Huerta 2009, The Debate about the Structural Behaviour of Gothic Vaults, pp.842–843, equilibrium approach and ideal masonry assumptions'],tags:['ancient','masonry','statics'],
+      scope:String.raw`Symmetric self-weight only, rigid annular voussoirs and prescribed radial contacts; no sliding, crushing, moving abutments, live loads or block fracture. Contact positions are tested at the finite joints. Straight segments connecting them are a diagram, not a continuous admissibility certificate. The stack is an authored equal-block balance problem without a back wall or mortar. Marginal contact is neutral equilibrium, not a practical safety allowance.`,
+      links:{source:'https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Vitruvius/6*.html',equilibrium:'https://oa.upm.es/2497/1/HUERTA_PON_2009_01A.pdf'},
+      viz(v){const shape=v.select('arch shape',[{value:'semi',label:'semicircle'},{value:'seg',label:'segmental 60°'}],'semi'),span=v.slider('span in unit block lengths',1,6,3,{step:'any',decimals:6}),thick=v.slider('ring thickness / intrados radius',.03,.3,.16,{step:'any',decimals:6}),courses=v.slider('corbel courses',1,40,6,{int:true}),A=v.stage({x:[-3,3],y:[-1.5,3],axes:false,equal:true,height:330,minWidth:260,title:'24 rigid voussoirs per half; radial contacts'}),B=v.stage({x:[-4,4],y:[-1,5],axes:false,equal:true,height:330,minWidth:260,title:'two capped equal-block stacks'});let info;
+        v.legend([['green','intermediate finite-joint equilibrium'],['orange','least horizontal thrust'],['purple','greatest horizontal thrust'],['red','failed diagnostic only']]);
+        v.render(()=>{const p=masonry(span.value,thick.value,shape.value,courses.value),r=p.radius,point=(rho,k,sg=1)=>[sg*r*rho*Math.sin(k*p.geo.dth),r*rho*Math.cos(k*p.geo.dth)],paths=p.lines.flatMap(q=>[-1,1].map(sg=>({name:q.name,pts:q.rho.map((rho,k)=>point(rho,k,sg))}))),all=paths.flatMap(q=>q.pts),half=Math.max(r*(1+p.t)*Math.sin(p.alpha)+.4,...all.map(q=>Math.abs(q[0])+.25)),top=Math.max(r*(1+p.t)+.35,...all.map(q=>q[1]+.25)),low=Math.min(p.spring-.9,...all.map(q=>q[1]-.25));A.setView([-half,half],[low-.15,top]);
+          for(const sg of[-1,1]){const a=point(1,24,sg),b=point(1+p.t,24,sg);A.poly([a,b,[b[0],p.spring-.8],[a[0],p.spring-.8]],{fill:'muted',fillAlpha:.25,color:'muted',width:1});for(let k=0;k<24;k++){const outer=Array.from({length:5},(_,j)=>point(1+p.t,k+j/4,sg)),inner=Array.from({length:5},(_,j)=>point(1,k+1-j/4,sg));A.poly([...outer,...inner],{fill:p.ok?'orange':'red',fillAlpha:.15,color:'muted',width:.7});}}
+          for(const q of paths)A.path(q.pts,{color:q.name==='middle'?'green':q.name==='min'?'orange':q.name==='max'?'purple':'red',width:q.name==='middle'?2.3:1.6,dash:q.name==='middle'||q.name==='diagnostic'?null:[4,3]});
+          const c=p.corbel,h=.3;B.setView([-p.span/2-1.6,p.span/2+1.6],[-.8,Math.max(2.2,c.n*h+.3)]);for(const sg of[-1,1])B.rect(sg<0?-p.span/2-1.3:p.span/2,-.6,sg<0?-p.span/2:p.span/2+1.3,0,{fill:'muted',fillAlpha:.25,color:'muted',width:1});for(let j=c.n-1;j>=0;j--){const tip=c.tips[j],y=(c.n-j-1)*h;B.rect(-p.span/2+tip-1,y,-p.span/2+tip,y+h,{fill:c.meets?'green':'orange',fillAlpha:.25,color:'muted',width:.8});B.rect(p.span/2-tip,y,p.span/2-tip+1,y+h,{fill:c.meets?'green':'orange',fillAlpha:.25,color:'muted',width:.8});}info=p;});
+        v.readout(()=>{if(!info)return'';const p=info,c=p.corbel;return `Finite arch: ${p.ok?'admissible compression contacts at all 25 joints per half':'no admissible finite-joint equilibrium'}. ${p.lines.map(q=>`${q.name}: H/W=${v.fix(q.H,8)}, crown height/Ri=${v.fix(q.yc,8)}`).join('; ')}.\nCorbel: uncapped reach per side ${v.fix(c.reach,8)} block lengths; actual remaining gap ${v.fix(c.gap,8)}. Hn=${v.fix(c.Hn,8)}; meeting this span requires at least ${c.need} courses under the uncapped rule. Smallest upper-stack centre-of-mass margin ${v.fix(c.margin,9)} block lengths; zero is neutral equilibrium.`;});
       },
     },
 

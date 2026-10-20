@@ -1,3 +1,4 @@
+import { draught, riderCoupling } from './source-audit-loads.js';
 import { stampStroke, lockChange } from './source-audit-mechanisms.js';
 import { smeatonWind } from './source-audit-power.js';
 // History of Technology — Chapter 4: Building, water and power before steam (items 4.7–4.12; 4.1–4.6 are in ch04.js)
@@ -68,135 +69,48 @@ During the prescribed lift, guide force is $m(g+\ddot y)$. Its minimum is $m(g-6
 
     // ------------------------------------------------------------------ 4.8
     {
-      num: '4.8',
-      kind: 'Invention',
-      name: 'The heavy plough and the horse collar',
-      credit: 'Early medieval northern Europe (heavy plough); horse collar: earliest secure depiction in China, 5th century CE (Dunhuang), and in Europe c. 800–1000. Both the dates and the size of their effects are disputed',
-      verify: true,
-      statement: String.raw`The **heavy plough** has a vertical **coulter** to cut the sod, a **share** to cut it from below and a **mouldboard** to turn it over, so it opens a deep furrow in wet, heavy soils where the older scratch plough (the ard) only scored the surface. It needs a strong team. The **horse collar** is a padded, stiff ring resting on a horse's shoulders, so that the horse pulls with its chest and shoulders and not against its windpipe.
+      num:'4.8',kind:'Invention',name:'The heavy plough and the horse collar',verify:true,
+      credit:'Harness and implement interaction: F. Inns, FAO field report; force comparison authored here',
+      statement:String.raw`A mouldboard plough cuts and turns a strip of soil. Harnesses connect the animal to the implement; fit, load distribution and the angle of pull matter. F. Inns's FAO report describes collar, split-collar and breastband systems for equines, and field trials that varied the pull angle with an adjustable hip strap. It measures draught as the horizontal component of trace tension. It also warns that implement weight, adjustment, soil and work quality affect the comparison.
 
-The historical claim associated with Lynn White Jr. (*Medieval Technology and Social Change*, 1962) is that these inventions, together with the horseshoe, let medieval Europe plough the heavy northern soils and raised agricultural output, and that the collar multiplied a horse's useful pull. How much of this survives is disputed. The idea that the older throat-and-girth harness choked the horse goes back to Lefebvre des Noëttes (1931), and a test attributed to him is quoted as limiting two horses to about 1100 lb against about 1½ tons for one horse in a collar (as cited by Needham). Reconstructions by Spruytte (published 1977 and 1983), working with M. Littauer, found that ancient harnesses, correctly fitted, let a horse pull nearly as much; on that view the collar's real gain was a lower point of attachment, which suited ploughing. The modest effect of the collar is also argued by Weller. I could not check the original measurements, so the two views below are presented as claims, not data.
+A collar's historical effect cannot be assigned a universal force multiplier from this geometry. The picture studies an explicitly prescribed horizontal resistance and a chosen per-animal axial capacity. These are comparison inputs, without a medieval field calibration, harness-efficiency claim or daily acreage forecast.`,
+      idea:String.raw`For the authored resistance rule, let k be specific resistance in kN/m² and w,d be furrow width and depth in metres: $D=1000kwd$. With trace angle $\theta$,
+$$F=D/\cos\theta,\qquad F_y=D\tan\theta.$$
+The animal pulls the implement toward its attachment point. Positive $F_y$ lifts the implement and exerts an equal downward reaction on the animal; a lower animal attachment reverses this component. If each animal can supply axial tension C at this same angle and load is shared equally, the continuous demand is F/C and the integer team is its ceiling.
 
-What the picture does compute is statics. The trace from the harness to the plough's clevis is a straight line; the pull along it has a horizontal part that the soil resists and a vertical part that depends on how high the horse's attachment is above the clevis. The numbers for soil resistance and the pull of an animal are illustrative round figures.`,
-      idea: String.raw`The plough needs a horizontal force $D$ to cut and turn a furrow of cross-section $A_f$ (depth times width): $D=k A_f$, with a specific draught $k$ that depends on soil and moisture and is tens of kilonewtons per square metre in field trials of modern mouldboard ploughs. Deeper furrows in heavier soils need more animals.
-
-The trace carries a tension $F$ at an angle $\vartheta$ to the horizontal, so the horizontal part is $F\cos\vartheta=D$ and the vertical part is $F\sin\vartheta=D\tan\vartheta$ (arch-1.2): when the horse's attachment is higher than the clevis it lifts the plough and loads the horse's shoulders downward. A lower attachment reduces both. Whether a team can supply $D$ depends on the pull each animal can keep up over the working day, often put at about a tenth of its weight at walking pace (a rule of thumb from secondary sources), and on how much of that the harness lets the animal use: a factor of 1 in the Spruytte view, much less in Lefebvre's.`,
-      caption: String.raw`Left: the side view of a plough team. Drag the **orange attachment** point on the horse (the harness) up and down, and the **gold clevis** on the plough beam: the trace tilts, the pull $F$ grows as $D/\cos\vartheta$, and the vertical part lifting the plough (or pressing down the horse) appears. Right: how many animals a furrow needs as it deepens. Choose the **harness view**: Lefebvre's (a horse in the old harness delivers about a fifth of its pull; set from the quoted test ratio) or Spruytte's (nearly all of it). The horse's speed is taken as 1.5 times an ox's, as secondary sources say, so the area ploughed per day differs too.`,
-      deps: ['tech-1.8', 'tech-3.3', 'arch-1.2'],
-      see: ['tech-4.9', 'mech-1.15'],
-      refs: ['Mokyr ch. 3', 'White, Medieval Technology and Social Change (Oxford: Clarendon, 1962)', 'Spruytte, Early Harness Systems (London: Allen, 1983)', 'Weller, Roman Traction Systems (online), and Needham (1986) as cited by Wikipedia “Horse collar”'],
-      tags: ['medieval', 'agriculture', 'disputed'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Horse_collar' },
-      viz(v) {
-        const A = v.stage({ x: [-0.6, 5.2], y: [-0.2, 2.1], equal: true, axes: false, height: 300, weight: 1.15, minWidth: 340, title: 'line of draught' });
-        const B = v.stage({ x: [5, 30], y: [0, 14], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 320, xlabel: 'furrow depth (cm)', ylabel: 'animals needed', title: 'team size' });
-        const view = v.select('harness view', [{ value: 'L', label: 'Lefebvre: old harness weak' }, { value: 'S', label: 'Spruytte: nearly equal' }], 'S');
-        const kS = v.slider('soil resistance $k$ (kN/m²)', 20, 80, 45, { step: 1 });
-        const wF = v.slider('furrow width (cm)', 15, 40, 25, { step: 1 });
-        const depth = v.slider('furrow depth (cm)', 5, 30, 18, { step: 1 });
-        const ha = A.handle(0.8, 1.35, { color: 'orange', r: 8, label: 'harness', labelPos: 'ne', constrain: { x: [0.8, 0.8], y: [0.8, 1.7] } });
-        const hc = A.handle(4.3, 0.55, { color: 'gold', r: 8, label: 'clevis', labelPos: 'ne', constrain: { x: [4.3, 4.3], y: [0.15, 1.2] } });
-        const PULL = { horse: 450 * G * 0.1, ox: 600 * G * 0.1 }; // sustained pull, N (illustrative: a tenth of body weight)
-        v.render(() => {
-          const eff = view.value === 'L' ? 550 / 3000 : 1;
-          const D = kS.value * 1000 * (depth.value / 100) * (wF.value / 100);
-          const dx = hc.x - ha.x, dy = ha.y - hc.y, th = Math.atan2(dy, dx), F = D / Math.cos(th), Fv = D * Math.tan(th);
-          // horse (facing left): body, legs, head
-          A.poly([[0.5, 1.15], [0.55, 1.45], [0.9, 1.5], [1.9, 1.4], [2.1, 1.0], [1.9, 0.75], [0.7, 0.8]], { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1.4 });
-          A.poly([[0.55, 1.45], [0.15, 1.65], [0.0, 1.5], [0.2, 1.25], [0.5, 1.2]], { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1.4 });
-          for (const x of [0.65, 0.85, 1.7, 1.9]) A.line(x, 0.8, x, 0, { color: 'muted', width: 2.5 });
-          A.line(-0.6, 0, 5.2, 0, { color: 'muted', width: 2.5 });
-          // plough
-          A.path([[hc.x, hc.y], [4.0, 0.3], [3.7, 0.0]], { color: 'ink', width: 3 });
-          A.poly([[3.7, 0], [4.1, 0], [3.95, -0.12]], { fill: 'ink', fillAlpha: 0.6, color: 'ink', width: 1 });
-          A.line(4.0, 0.3, 4.9, 1.0, { color: 'ink', width: 3 });
-          A.text('plough', 4.6, 1.2, { size: 11, color: 'muted' });
-          A.rect(2.6, -0.2, 3.7, 0, { fill: 'orange', fillAlpha: 0.18, stroke: false }); A.text('furrow', 3.15, -0.15, { size: 10, color: 'muted', align: 'center' });
-          // trace and components
-          A.line(ha.x, ha.y, hc.x, hc.y, { color: 'accent', width: 3 });
-          const sc = 1.3 / Math.max(F, 1);
-          A.arrow(hc.x, hc.y, hc.x - D * sc, hc.y, { color: 'green', width: 2, head: 7 });
-          A.arrow(hc.x - D * sc, hc.y, hc.x - D * sc, hc.y + Fv * sc, { color: 'red', width: 2, head: 7 });
-          A.text(`D = ${v.fix(D / 1000, 2)} kN`, hc.x - D * sc / 2, hc.y - 0.12, { size: 10.5, color: 'green', align: 'center', baseline: 'top', plate: true });
-          if (Math.abs(Fv) > 30) A.text(`${Fv >= 0 ? 'lift' : 'push'} ${v.fix(Math.abs(Fv) / 1000, 2)} kN`, hc.x - D * sc - 0.08, hc.y + Fv * sc / 2, { size: 10.5, color: 'red', align: 'right', plate: true });
-          A.text(`angle ${v.fix(th / D2R, 1)}°`, 2.6, 0.95, { size: 11, color: 'accent', align: 'center', plate: true });
-          A._D = D; A._F = F; A._Fv = Fv; A._th = th;
-          // team size curve
-          const dd = (x) => kS.value * 1000 * (x / 100) * (wF.value / 100);
-          B.fn((x) => dd(x) / PULL.ox, { color: 'orange', width: 2.4 });
-          B.fn((x) => dd(x) / (PULL.horse * eff), { color: 'green', width: 2.4 });
-          B.fn((x) => dd(x) / PULL.horse, { color: 'accent', width: 1.6, dash: [5, 3] });
-          B.vline(depth.value, { color: 'gold', width: 1.2, dash: [4, 3] });
-          B.text('oxen', 29.5, dd(29) / PULL.ox - 0.3, { size: 11, color: 'orange', align: 'right', baseline: 'top', plate: true });
-          B.text(view.value === 'L' ? 'horses, old harness' : 'horses, old harness = collar', 29.5, dd(29) / (PULL.horse * eff) + 0.3, { size: 11, color: 'green', align: 'right', baseline: 'bottom', plate: true });
-          if (view.value === 'L') B.text('horses, collar', 29.5, dd(29) / PULL.horse + 0.3, { size: 11, color: 'accent', align: 'right', baseline: 'bottom', plate: true });
-          B._eff = eff;
-        });
-        v.legend([['accent', 'trace'], ['green', 'draught $D$ (soil)'], ['red', 'vertical part'], ['orange', 'oxen team'], ['gold', 'chosen depth', { dash: [4, 3] }]]);
-        v.readout(() => {
-          const D = A._D, eff = B._eff, nOx = D / PULL.ox, nH = D / (PULL.horse * eff), nHc = D / PULL.horse;
-          const area = (spd) => (wF.value / 100) * spd * 6 * 3600 / 10000;
-          return `furrow ${v.fix(depth.value, 0)} × ${v.fix(wF.value, 0)} cm needs a draught of **${v.fix(D / 1000, 2)} kN**; the trace is at ${v.fix(A._th / D2R, 1)}°, so the tension is ${v.fix(A._F / 1000, 2)} kN and the vertical part ${v.fix(A._Fv / 1000, 2)} kN\nanimals needed (a tenth of the body weight each: 590 N horse, 590 N ox): oxen **${v.fix(nOx, 1)}**, horses **${v.fix(nH, 1)}** (${v.fix(nHc, 1)} with a collar) · ploughed in six hours: oxen ${v.fix(area(0.67), 2)} ha, horses ${v.fix(area(1), 2)} ha (illustrative speeds 0.67 and 1 m/s)`;
-        });
+Holding D fixed isolates vector decomposition. In actual tillage D itself can change when the attachment angle changes: Inns's measured examples and effective-vertical-force argument illustrate that interaction. The selected C is an authored axial capacity.`,
+      caption:String.raw`Drag either attachment point, or use its registered height control, to tilt the trace. Change the authored soil rule, furrow size and axial capacity. The arrows show the horizontal and vertical components at the clevis. The full depth curve uses the same angle and capacity as the readout, and its scale includes the largest offered depth.`,
+      deps:['tech-1.8','tech-3.3','arch-1.2'],see:['tech-4.9'],refs:['F. Inns, Matching tillage implements to draught animal potential, FAO: Fundamentals, field trials and angle-of-pull discussion'],tags:['agriculture','forces'],
+      scope:String.raw`Static straight trace, fixed 3.5-m horizontal separation, no friction in the coupling and equal axial load sharing. The resistance coefficient, capacity and dimensions are authored examples. Angle-dependent soil feedback, animal physiology, gait, fitting and harness efficiency are omitted. A force-equivalent team size is conditional on these assumptions.`,
+      links:{source:'https://www.fao.org/4/W0613T/w0613T0g.htm'},
+      viz(v){const k=v.slider('authored resistance k (kN/m²)',20,80,45,{step:'any',decimals:6}),width=v.slider('furrow width (cm)',15,40,25,{step:'any',decimals:6}),depth=v.slider('furrow depth (cm)',5,30,18,{step:'any',decimals:6}),ah=v.slider('animal attachment height (m)',.8,1.7,1.35,{step:'any',decimals:6}),ch=v.slider('implement attachment height (m)',.15,1.2,.55,{step:'any',decimals:6}),capacity=v.slider('chosen axial capacity per animal (N)',200,1000,600,{step:'any',decimals:6}),A=v.stage({x:[-.3,5.2],y:[-.35,2.05],axes:false,equal:true,height:280,minWidth:260,title:'straight trace and clevis force components'}),B=v.stage({x:[3,32],y:[-1,10],axes:'box',gutter:true,height:300,minWidth:260,xlabel:'furrow depth (cm)',ylabel:'axial force / chosen capacity',title:'full conditional team demand'}),ha=A.handle(.8,1.35,{color:'orange',r:7,constrain:(_x,y)=>[.8,Math.max(.8,Math.min(1.7,y))]}),hc=A.handle(4.3,.55,{color:'gold',r:7,constrain:(_x,y)=>[4.3,Math.max(.15,Math.min(1.2,y))]});for(const[h,x,lo,hi]of[[ha,.8,.8,1.7],[hc,4.3,.15,1.2]]){const set=h.set;h.set=(a,b)=>{if(a!==x||!Number.isFinite(b)||b<lo||b>hi)throw new RangeError('invalid trace attachment');set(a,b);};}ha.onDrag=()=>ah.set(ha.y);hc.onDrag=()=>ch.set(hc.y);v.shareState('trace endpoint agreement',{get:()=>[ah.value,ch.value],validate:s=>Array.isArray(s)&&s.length===2&&s.every(Number.isFinite)&&s[0]>=.8&&s[0]<=1.7&&s[1]>=.15&&s[1]<=1.2,set:s=>{if(s[0]!==ah.value||s[1]!==ch.value||ha.y!==s[0]||hc.y!==s[1])throw new RangeError('invalid trace endpoint agreement');}});let info;
+        v.legend([['accent','straight trace'],['orange','animal attachment'],['green','horizontal force'],['red','vertical force'],['gold','selected depth / clevis']]);
+        v.render(()=>{const p=draught(k.value,width.value,depth.value,ah.value,ch.value,capacity.value);ha.set(.8,p.animalHeight);hc.set(4.3,p.clevisHeight);A.line(0,0,5,0,{color:'muted',width:1.5});A.rect(.35,.7,1.4,1.55,{color:'muted',fill:'muted',fillAlpha:.15,width:1});A.path([[4.3,p.clevisHeight],[3.9,.2],[3.6,0]],{color:'ink',width:2});A.line(.8,p.animalHeight,4.3,p.clevisHeight,{color:'accent',width:2});const scale=1.2/p.F,x=4.3-p.D*scale,y=p.clevisHeight+p.vertical*scale;A.arrow(4.3,p.clevisHeight,x,p.clevisHeight,{color:'green',width:2,head:7});A.arrow(x,p.clevisHeight,x,y,{color:'red',width:2,head:7});const max=p.depthCurve.at(-1)[1];B.setView([3,32],[-.12*max,1.18*max]);B.path(p.depthCurve,{color:'green',width:2.3});B.dot(p.depth,p.continuous,{color:'gold',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Horizontal resistance ${v.fix(p.D,9)} N; angle ${v.fix(p.angle*180/Math.PI,9)}°. Trace tension ${v.fix(p.F,9)} N; vertical component on implement ${v.fix(p.vertical,9)} N.\nChosen capacity ${v.fix(p.capacity,9)} N per animal: continuous demand ${v.fix(p.continuous,9)}, conditional integer team ${p.team}. This comparison holds the prescribed horizontal resistance fixed as the trace angle changes.`;});
       },
     },
 
     // ------------------------------------------------------------------ 4.9
     {
-      num: '4.9',
-      kind: 'Invention',
-      name: 'The stirrup',
-      credit: 'China, 3rd–4th century CE (a single mounting stirrup in a Jin tomb figurine of 302 CE; paired riding stirrups from the 320s–415 CE); spread west through Central Asia from the 6th century',
-      verify: true,
-      statement: String.raw`A **stirrup** is a footrest hung from the saddle. The earliest datable evidence comes from China: a funerary figurine from a Western Jin tomb near Changsha (302 CE) shows a single stirrup, too short for riding and probably a mounting aid; a double-sided riding stirrup is shown from a tomb near Nanjing (322 CE), and the earliest surviving pair comes from the tomb of Feng Sufu (415 CE). An iron stirrup from Mongolia has a radiocarbon range of 243–405 CE, so the earliest date is not settled. Stirrups reached eastern Europe with Central Asian horsemen, the Avars, around the end of the 6th century, and were adopted widely in the West in the 8th century (an archaeological count finds them in only 13 of 704 eighth-century male graves in Germany).
+      num:'4.9',kind:'Invention',name:'The stirrup',verify:true,
+      credit:'Bayarsaikhan and colleagues, Antiquity 2024, Mongolian saddle/stirrup evidence; sequential coupling model authored here',
+      statement:String.raw`A stirrup is a foot support suspended from a saddle. Bayarsaikhan and colleagues report a small iron stirrup from Khukh Nuur and a birch frame saddle from Urd Ulaan Uneet in Mongolia. The Khukh Nuur date of 243–405 cal AD comes from associated human bone, with an explicit possible freshwater reservoir effect; it does not directly date the iron. The saddle's horse-hide strap was directly dated to 267–535 cal AD at 95.4% probability. Its bilateral hanging straps suggest paired stirrups, although no stirrups were recovered with that saddle.
 
-In 1962 Lynn White Jr. argued that the stirrup made mounted shock combat possible (the rider and horse becoming one body behind the lance) and thereby caused feudalism. Most historians have since rejected that chain of causes: Bullough and Bachrach argued that the stirrup gave little advantage in shock combat and chiefly helped the rider to keep his seat and to mount, and mounted lancers existed long before it.
-
-The picture below is a **model** of one question, what the stirrup could add when a couched lance strikes a target. Its parameters are my assumptions and the conclusion depends on them; it is a way to test the argument, not evidence for either side.`,
-      idea: String.raw`When a rider on a galloping horse strikes a target of mass $m_t$ and the lance does not give way, the impulse delivered is the change in momentum of everything that moves with the lance: $J=\mu v$ with the reduced mass $\mu = m_a m_t/(m_a+m_t)$ (a perfectly inelastic blow, mech-2.6). If only the rider's body is behind the lance, $m_a=m_r$; if the rider is locked to the horse, $m_a=m_r+m_h$, which is several times larger.
-
-To use the horse's mass the rider must hold on: the whole force must pass between the rider and the saddle. Without stirrups the rider can transmit a force limited by friction at the seat and grip, $F_\mathrm{max}=\mu_s (m_rg+N_\mathrm{grip})$ (mech-1.15); with stirrups the rider can also brace with the legs. A blow that lasts $\Delta t$ needs a force of about $J/\Delta t$. For a short blow the seat cannot hold, and the stirrup adds only a modest extra force; for a long one (a lance that bends, a charge that drives through) both reach the same full impulse. That is the shape of the modern argument.`,
-      caption: String.raw`The curves give the impulse delivered to the target against the duration of the blow, for a rider held by the seat alone (red) and a rider who can also brace in stirrups (green); the dashed ceilings are the rider alone and the rider locked to the horse. The vertical line is the duration you set. Change the **grip**, the **leg bracing** and the **speed**. Make the blow long and the two curves meet; make it short and the horse's mass cannot be used either way. Below, the dated evidence for the stirrup (hollow and dashed where the date is disputed).`,
-      deps: ['mech-2.1', 'mech-1.15'],
-      see: ['tech-4.8', 'mech-2.6'],
-      refs: ['Mokyr ch. 3', 'White, Medieval Technology and Social Change (1962)', 'Bachrach 1970 and Bullough 1970, as cited by Wikipedia “Stirrup”'],
-      tags: ['medieval', 'disputed', 'mechanics'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Stirrup' },
-      viz(v) {
-        const A = v.stage({ x: [0, 0.3], y: [0, 700], axes: 'box', gutter: true, height: 300, weight: 1.15, minWidth: 340, xlabel: 'duration of the blow (s)', ylabel: 'impulse delivered (N s)', title: 'impulse against blow duration' });
-        const B = yearStage(v, [150, 820], { height: 190, full: true, title: 'dated evidence' });
-        const speed = v.slider('closing speed (m/s)', 3, 12, 7, { step: 0.5 });
-        const grip = v.slider('grip force (N)', 0, 1500, 300, { step: 10 });
-        const brace = v.slider('leg bracing in stirrups (× body weight)', 0, 2, 1, { step: 0.05 });
-        const dt = v.slider('duration of the blow (s)', 0.01, 0.3, 0.05, { step: 0.005 });
-        const mr = 80, mh = 450, mt = 80, mus = 0.5;
-        const red = (a) => (a * mt) / (a + mt);
-        const Jr = () => red(mr) * speed.value, Jf = () => red(mr + mh) * speed.value;
-        const Fns = () => mus * (mr * G + grip.value), Fs = () => Fns() + brace.value * mr * G;
-        const Jat = (F, t) => Jr() + Math.min(Jf() - Jr(), F * t);
-        v.render(() => {
-          A.setView([0, 0.3], [0, Jf() * 1.15]);
-          A.hline(Jf(), { color: 'muted', width: 1.2, dash: [6, 4] }); A.text('rider and horse as one body', 0.295, Jf(), { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom' });
-          A.hline(Jr(), { color: 'muted', width: 1.2, dash: [6, 4] }); A.text('rider alone', 0.295, Jr(), { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom' });
-          A.fn((t) => Jat(Fns(), t), { color: 'red', width: 2.6, n: 200 });
-          A.fn((t) => Jat(Fs(), t), { color: 'green', width: 2.6, n: 200 });
-          A.vline(dt.value, { color: 'gold', width: 1.4, dash: [4, 3] });
-          A.dot(dt.value, Jat(Fns(), dt.value), { r: 5, color: 'red' }); A.dot(dt.value, Jat(Fs(), dt.value), { r: 5, color: 'green' });
-          drawYears(v, B, [
-            { t: 302, label: 'Changsha figurine (302)', contested: true },
-            { t: 322, label: 'Nanjing (322)' },
-            { t: [243, 405], label: 'Mongolian stirrup (14C)', contested: true },
-            { t: 415, label: 'Feng Sufu pair (415)' },
-            { t: [575, 628], label: 'Strategikon?', contested: true },
-            { t: 600, label: 'Eastern Mediterranean (c. 600)', color: 'green' },
-            { t: [700, 800], label: 'Western Europe (8th c.)', color: 'green' },
-          ], { lanes: 5, ticks: [200, 300, 400, 500, 600, 700, 800] });
-        });
-        v.legend([['red', 'seat and grip only'], ['green', 'with stirrups'], ['gold', 'chosen duration', { dash: [4, 3] }]]);
-        v.readout(() => {
-          const t = dt.value, Jn = Jat(Fns(), t), Js = Jat(Fs(), t), req = (Jf() - Jr()) / t;
-          return `masses: rider ${mr} kg, horse ${mh} kg, target ${mt} kg, perfectly inelastic blow (assumptions) → rider alone ${v.fix(Jr(), 0)} N s, locked to the horse ${v.fix(Jf(), 0)} N s\nfor a blow of ${v.fix(1000 * t, 0)} ms: seat holds ${v.fix(Fns(), 0)} N, stirrups ${v.fix(Fs(), 0)} N, whereas the extra impulse needs about ${v.fix(req, 0)} N → delivered **${v.fix(Jn, 0)} N s** without, **${v.fix(Js, 0)} N s** with stirrups (+${v.fix(100 * (Js - Jn) / Jn, 0)}%)`;
-        });
+The model below isolates how finite coupling between moving masses changes transferred momentum. Its force capacities are authored choices, rather than measurements of stirrups, a reconstruction of combat, or evidence for an historical cause of feudalism.`,
+      idea:String.raw`First, a rider of mass $m_r$ moving at speed v captures a stationary target $m_t$ in an instantaneous perfectly inelastic collision. Their joined mass $M=m_r+m_t$ begins at $u_0=m_rv/M$. A horse $m_h$ remains at v. Then a constant internal force F accelerates the joined body and slows the horse until the chosen time or equal speeds, whichever occurs first.
+$$I=\min\{Ft,K\},$$
+$$K=\frac{v-u_0}{1/m_h+1/M}.$$
+The final speeds are $u=u_0+I/M$ and $w=v-I/m_h$. The target's total impulse is
+$$J=m_tu=m_tu_0+(m_t/M)I.$$
+The factor $m_t/M$ is essential: internal horse-to-rider impulse does not all become target impulse. At equal speeds the result is the combined perfectly inelastic value $m_t(m_r+m_h)v/(m_r+m_h+m_t)$. Momentum is conserved throughout and kinetic energy decreases.`,
+      caption:String.raw`Compare a chosen baseline coupling capacity with that capacity plus a chosen extra bracing force. Change speed, both force choices and elapsed coupling time. The complete curves include time zero and show saturation when speeds equalize. The selected points report actual target impulses, both remaining speeds and dissipated energy. This is a sequential three-mass thought experiment, with no claim that a stirrup supplies the selected force.`,
+      deps:['mech-2.1','mech-2.6'],see:['tech-4.8'],refs:['Bayarsaikhan et al., The origins of saddles and riding technology in East Asia, Antiquity 98(397),102–118 (2024), pp.109–114; DOI 10.15184/aqy.2023.172'],tags:['riding','mechanics','archaeology'],
+      scope:String.raw`Fixed masses: rider 80 kg, horse 450 kg, target 80 kg. One-dimensional instantaneous rider–target capture is followed by bounded constant dissipative coupling; the force switches off at equal speed. No further external impulse, lance compliance, saddle geometry, rider balance or injury model is included. Historical sample dates retain their material and uncertainty qualifications.`,
+      links:{source:'https://doi.org/10.15184/aqy.2023.172'},
+      viz(v){const speed=v.slider('initial rider / horse speed (m/s)',3,12,7,{step:'any',decimals:6}),seat=v.slider('chosen baseline coupling force (N)',0,1500,550,{step:'any',decimals:6}),brace=v.slider('chosen additional bracing force (N)',0,1600,800,{step:'any',decimals:6}),time=v.slider('time after rider–target capture (s)',0,.3,.05,{step:'any',decimals:6}),A=v.stage({x:[-.02,.32],y:[-10,700],axes:'box',gutter:true,height:320,minWidth:260,xlabel:'elapsed coupling time (s)',ylabel:'target impulse (N s)',title:'momentum transfer after instantaneous capture'}),B=v.stage({x:[-.02,.32],y:[-1,14],axes:'box',gutter:true,height:320,minWidth:260,xlabel:'elapsed coupling time (s)',ylabel:'speed (m/s)',title:'braced case: horse and joined-body speeds'});let info;
+        v.legend([['red','baseline target impulse'],['green','with extra chosen force / joined speed'],['purple','horse speed'],['gold','selected time']]);
+        v.render(()=>{const p=riderCoupling(speed.value,seat.value,brace.value,time.value);A.setView([-.02,.32],[-.12*p.Jfull,1.18*p.Jfull]);A.path(p.plainCurve,{color:'red',width:2.1});A.path(p.bracedCurve,{color:'green',width:2.1});A.line(0,p.Jfull,.3,p.Jfull,{color:'muted',width:1,dash:[4,3]});A.dot(p.time,p.plain.J,{color:'red',r:4,ring:false});A.dot(p.time,p.braced.J,{color:'green',r:4,ring:false});B.setView([-.02,.32],[-.12*p.speed,1.18*p.speed]);const I=t=>Math.min((p.seat+p.brace)*t,p.K);B.path(p.times.map(t=>[t,p.u0+I(t)/p.M]),{color:'green',width:2.2});B.path(p.times.map(t=>[t,p.speed-I(t)/p.mh]),{color:'purple',width:2.2});B.dot(p.time,p.braced.u,{color:'green',r:4,ring:false});B.dot(p.time,p.braced.w,{color:'purple',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Initial target impulse ${v.fix(p.J0,9)} N s; fully equalized ceiling ${v.fix(p.Jfull,9)} N s. Baseline target impulse ${v.fix(p.plain.J,9)}; braced ${v.fix(p.braced.J,9)} N s.\nBraced internal coupling impulse ${v.fix(p.braced.I,9)} N s; joined speed ${v.fix(p.braced.u,9)}, horse speed ${v.fix(p.braced.w,9)} m/s; total kinetic-energy loss ${v.fix(p.braced.loss,9)} J, including initial capture. Equalization time ${p.braced.equalTime===null?'never with zero force':v.fix(p.braced.equalTime,9)+' s'}.`;});
       },
     },
 
