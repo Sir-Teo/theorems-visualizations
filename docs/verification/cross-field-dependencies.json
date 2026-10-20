@@ -12858,10 +12858,10 @@
       "collection": "art",
       "field": "arts",
       "target": 25,
-      "writtenToWritten": 6,
-      "writtenToKnown": 11,
-      "wholeSyllabus": 27,
-      "publishedShortfall": 19,
+      "writtenToWritten": 7,
+      "writtenToKnown": 12,
+      "wholeSyllabus": 28,
+      "publishedShortfall": 18,
       "unknown": [],
       "edges": [
         {
@@ -12930,6 +12930,13 @@
         {
           "item": "art-4.14",
           "prerequisite": "ladr-1.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-4.2",
+          "prerequisite": "ladr-2.28",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true

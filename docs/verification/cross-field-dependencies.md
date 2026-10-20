@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **53 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 858 edges. Even
+written ideas in a different field**. Their combined shortfall is 857 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -115,3 +115,8 @@ This inventory is generated from the exact accepted export, excluding ongoing ex
 ## Accepted checkpoint through 55c657d
 
 The exact accepted export excludes active music, colour and vault drafts. Political science rises from 16 to 19 published cross-field edges and 25 to 28 over its complete syllabus: jury 5.4 genuinely uses the written independent-product rule and variance weak law; 5.5 uses finite-partition conditional expectation. Root read the actual prerequisite arguments and checked their use in the finite and conditional proofs. The published shortfall falls 861→858; 53/64 non-math collections and 28 whole syllabi remain below 25. The gate remains open. See [jury acceptance](polsci-jury-followup.md) and [combined checkpoint](checkpoint-55c657d.md).
+
+
+## Accepted checkpoint through b229c72
+
+Art rises from 6 to 7 published cross-field edges and from 27 to 28 across its whole syllabus: trichromacy 4.2 explicitly uses the written basis criterion ladr-2.28 for existence and uniqueness. Root read its actual argument and checked its use with the full-rank primary matrix. The published shortfall falls from 858 to 857; 53/64 non-math collections and 28 whole syllabi remain below 25. No arbitrary prerequisites are added. See [cone-matching acceptance](art-cones-trichromacy-followup.md) and [combined checkpoint](checkpoint-b229c72.md).

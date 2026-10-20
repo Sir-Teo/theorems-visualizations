@@ -446,6 +446,7 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 - Stage text: `$…$` goes through KaTeX; prices like "$5 and $10" stay plain. Axis tick labels are plain text (use Unicode superscripts, `M.pow10Text`). `s.tex` takes raw LaTeX **without** `$`. In canvas text a bare `$` is fine and `\$` prints the backslash (rich text/captions are the opposite: write `\$`). There is no monospace option and no multiline text — wrap by hand.
 - Palette `ink` turns light in dark mode; use fixed RGB arrays for things that must stay dark (charcoal, soot).
 - Stages have a minimum height of about 200 px, so thin strips come out tall. `equal: true` with a gutter widens the window beyond the requested range — drop `equal` where exact counting matters.
+- Check complete strokes, hollow-marker rings, handle hover halos and label backing plates at narrow widths. A glyph fitting inside the stage does not establish that its plate leaves neighboring labels visible. Wait for fonts and split long displayed equations when necessary.
 
 **Controls and state**
 - `v.readout(fn)` must be registered **once**, outside `v.render`; calling it inside the render loops forever. Set a variable in render and read it in the readout.
@@ -454,11 +455,13 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 - Hiding a stage: set `stage.el.style.display = 'none'` (`el.hidden` does not work on a flex `.stage`). The checker ignores hidden stages. Clicking a handle never fires `onClick`; selecting by dragging works.
 - `v.animate` has one clock per viz and its period is fixed at registration. For button-triggered motions use your own `requestAnimationFrame` loop, cleaned up with `onCleanup`, and jump to the end under `window.__vizStill`. Do not call `v.restart()` on the first frame. Screenshots without `--still` are taken ~1.5 s into an animation; set a `still` frame with a meaningful state.
 - Heavy computation: spread it over frames with a `setTimeout` loop that calls `v.invalidate()`; `s.dots` is slow above ~10⁴ points (draw squares directly on `s.ctx`).
+- Match slider domains to the model: use `step: 'any'` for continuous values, or explicitly reject unsupported saved ticks for a discrete model. Keep exact saved/model values. Native range inputs can serialize fewer decimal digits; verify the actual input against a fresh native range with the declared attributes and `String(modelValue)`, separately checking the declared step and domain. Do not round the mathematics or change shared replay behavior to make a test pass.
 
 **Numerics and data**
 - `rng.shuffle` returns a **copy**. `v.rng` gives 32-bit uniforms: build 53-bit values from two draws when summing many terms. `M.bisect(f, a, b, tol)` takes a number, not an options object. `M.smoothstep` has one argument. `M.solve` inverts the matrix — write a banded/dense solver for big systems.
 - `M.eigC` does **not** return orthogonal eigenvectors for repeated eigenvalues: use `M.eigH` for Hermitian matrices. `M.eigSym` fixes only the sign of each vector's largest component (it flips across a degeneracy).
 - Root finders that scan for sign changes must test every grid point (a root exactly on a grid point is easy to miss).
+- A fixed iteration budget does not establish equilibrium. Check the stated equation's residual at offered control extremes, expose nonconvergence, and do not hide invalid returned values by clipping the drawing.
 - On log axes a zero error cannot be drawn: clip to a floor (~10⁻¹⁷) and say so.
 
 **3D**
@@ -468,3 +471,4 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 - The syllabus decides which items exist, their numbers, kinds and deps. If your brief and the syllabus disagree, build the syllabus.
 - A chapter's `chNN.shared.js` may import its own chapter's helpers; other chapters of the same collection may re-export from it (`export * from './ch01.shared.js'` works); never import across collections — copy.
 - Say in the item what is illustrative, what is from memory, and what is a secondary source. Recompute printed numbers (the Pearson, Rabin and Patriot items each found real slips that way).
+- A numerical coordinate distance or a display proxy does not establish a perceptual threshold. State the observer, conditions and source for a perception claim; keep authored model calculations distinct from measured brightness, visibility or structural safety.
