@@ -168,6 +168,7 @@ For density, this authored argument completes the finite near-miss step. Given i
       tags: ['tuning', 'wolf'],
       scope: String.raw`Pythagorean tuning with a 12-note chain; the cents are exact. The traditional placement G♯–E♭ keeps the commonly used keys (up to three sharps or flats) free of the wolf; in practice the wolf was also moved to suit a piece. The anchor of the tuning (here the note opposite the wolf) is set to its equal-tempered pitch.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Wolf_interval' },
+      verify: true,
       viz(v) {
         const WOLF = FIFTH - PCOMMA;
         const w = v.slider('the wolf is the fifth starting on…', 0, 11, 11, { int: true, fmt: (x) => `${CH[x]}–${CH[(x + 1) % 12]}` });

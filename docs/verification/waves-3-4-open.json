@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 142,
+  "remainingFlags": 143,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -26,7 +26,7 @@
     "psych": 11,
     "soc": 12,
     "polsci": 9,
-    "music": 21,
+    "music": 22,
     "art": 10,
     "arch": 9,
     "ling": 10,
@@ -2330,6 +2330,23 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Lateral_inhibition"
       }
+    },
+    {
+      "id": "music-7.4",
+      "file": "content/music/ch07.js",
+      "name": "The wolf fifth",
+      "field": "arts",
+      "category": "historical-credit-empirical-input-or-reference",
+      "status": "source-review-pending",
+      "explicitUncertainty": [
+        "False equal-size-only closure claim and reversed excess/shortfall accounting; readout gives comma ratio as the wolf ratio. Exact/rounded cents, historical claims, full chain/audio/input/replay require audit."
+      ],
+      "refs": [
+        "Benson ch. 5"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Wolf_interval"
+      }
     }
   ],
   "changesFromBaseline": {
@@ -2338,7 +2355,8 @@
       "art-3.12",
       "art-3.13",
       "art-4.3",
-      "psych-4.7"
+      "psych-4.7",
+      "music-7.4"
     ],
     "resolvedFlags": [
       "energy-4.8",
@@ -7491,6 +7509,12 @@
       "status": "resolved",
       "report": "docs/verification/soc-erdos-renyi-followup.md",
       "note": "Critical probability scale, finite uniform-edge growth versus limiting G(n,c/n), original parameter conversion, stable positive root and exact prefix/domain/replay checks accepted after actual sources and independent numerical/native review."
+    },
+    {
+      "id": "music-7.4",
+      "status": "source-review-pending",
+      "report": "docs/verification/music-wolf-fifth-open.md",
+      "note": "Root confirmed closure/excess and comma-versus-wolf algebra defects in the actual current item; newly flagged for a complete source/model/audio/native audit."
     }
   ]
 }

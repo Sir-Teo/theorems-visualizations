@@ -1,0 +1,11 @@
+# Open follow-up: music 7.4 wolf fifth
+
+This newly identified source review remains open. Root read the complete current statement, idea, caption, scope and widget after the neighboring tuning audit identified an algebra problem. The idea claims that twelve fifths total seven octaves only when every fifth is700cents, contradicting its own eleven-pure-fifths plus wolf construction. Equality of all twelve sizes is an extra hypothesis. The next sentence also reverses the accounting: twelve pure fifths exceed seven octaves by the Pythagorean comma; eleven pure fifths plus the smaller closing fifth total seven octaves exactly.
+
+The readout wrongly equates the wolf's678.5cents with `3^12/2^19`, which is the comma ratio. From the actual eleven-pure-fifths construction, the closing ratio is `2^7/(3/2)^11 = 2^18/3^11 = 262144/177147`, agreeing with the existing statement. The discrepancy between the pure fifth and the closing fifth is the comma. These identities establish the identified algebra defects, without certifying the rest of the current historical, audibility or key-usability claims.
+
+The current scope additionally says the displayed decimal cents are exact; a source/model follow-up should distinguish exact ratios/logarithmic formulas from rounded display values. The full tuning-chain implementation, all12wolf positions/thirds, actual audio buffers, native controls and replay still need an independent acceptance audit against the actual cited source. The adjacent7.5/7.7 audit preserves this item and does not resolve it by proximity.
+
+This root change adds only an uncertainty flag, queue entry and this bounded reading record. No source flag is cleared, no full source/native acceptance is claimed and no human review is required.
+
+The exact accepted-HEAD-plus-flag export `/tmp/atlas-music74-flag-checkpoint` reconciles all2,260scoped items,143pending reviews,696original resolved and6added, and preserves Wave5 at80chapters/1,031new+2existing. Static checking selects the actual one item and passes0errors/0warnings. A preliminary live-workspace queue check failed when an unrelated in-progress music draft temporarily did not parse; its zero-item static result is not acceptance evidence. The resulting transient plan inventory was replaced with the verified isolated-export plan before staging.
