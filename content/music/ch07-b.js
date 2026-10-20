@@ -1,5 +1,6 @@
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (part b: items 7.7–7.12)
 import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, NOTE, sc, fold, circ, ring, cents, seqCents, chordCents, nearPairs, tuneFromFifths, CHAIN, chainSemi, ivl, triadC, triadAbs, cfExpand, convs, edoApprox } from './ch07.shared.js';
+import { meantoneModel, meantoneAudio, JM_ET_ALPHA } from './source-audit-just-meantone.js';
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
@@ -9,53 +10,40 @@ export default {
   items: [
     // ------------------------------------------------------------------ 7.7
     {
-      num: '7.7',
-      kind: 'Method',
-      name: 'Quarter-comma meantone',
-      statement: String.raw`**Meantone temperament** narrows every fifth of the chain by the same fraction $\alpha$ of the syntonic comma ($81/80$, 21.506 ¢), so that its size is $701.955-21.506\,\alpha$ ¢. Four such fifths make a major third, $4(701.955-21.506\alpha)-2400 = 386.314 + (1-4\alpha)\,21.506$ ¢. Choose $\alpha=\tfrac14$ (**quarter-comma meantone**): the fifth is $696.578$ ¢ and the major third is exactly the pure $5{:}4$. Then eleven fifths are equal and tempered, the twelfth, closing the circle, is the wolf, now 35.7 ¢ **wider** than a pure fifth ($737.6$ ¢), and the eight major thirds that do not use it are pure, to within rounding in the arithmetic; the four affected thirds are unusable (about 41 ¢ sharp). The minor thirds are 5.4 ¢ narrow of $6/5$ and the fifths 5.4 ¢ narrow of $3/2$. $\alpha=\tfrac13$ makes the minor third pure; $\alpha=\tfrac1{11}$ makes all fifths equal to 700 ¢ and the wolf disappears: twelve-tone equal temperament.`,
-      idea: String.raw`The comma identity of 7.6 says four pure fifths exceed a pure third (plus two octaves) by one syntonic comma. To make that stack of four fifths come out exactly on the pure third, each fifth must give up a quarter of it. The cost is paid elsewhere: the remaining twelfth fifth must close the circle at seven octaves, $8400-11\cdot696.578=737.65$ ¢, and its leftover, the diesis of 41 ¢, ruins the thirds that cross it. At the other end, $\alpha=1/11$ is the only value with all twelve fifths equal: $12(701.955-21.506\alpha)=8400$ gives $\alpha=1/11$, because the Pythagorean comma is twelve times the shortfall of the equal-tempered fifth, $23.46=12\cdot1.955$, and $1.955=21.506/11$.`,
-      caption: String.raw`Slide the fraction of the syntonic comma that each fifth gives up (or press a preset). Upper left: the error, in cents from the pure ratio, of the tempered fifth, major third, minor third and the wolf. Upper right: the twelve major thirds, one on each note, as errors from the pure third 5/4 (the four wolf thirds are sharp by a diesis; at 1/4 the rest are pure). Play the triad on the key chosen (with the wolf position G♯–E♭ as tuned traditionally) and the wolf itself; at 1/11 everything becomes equal.`,
-      deps: ['music-7.6', 'music-7.4'],
-      see: ['music-7.12', 'music-7.8', 'music-7.9'],
-      refs: ['Benson ch. 5', 'Loy I ch. 3'],
-      tags: ['meantone', 'temperament'],
-      credit: 'Pietro Aron, 1523 (probable first description); Zarlino, 1571; widely used c. 1500–1700',
-      scope: String.raw`Exact arithmetic for a chain of twelve fifths with the wolf at G♯–E♭. Historical meantone keyboards often had split keys (G♯ and A♭ as separate pitches) to avoid the wolf, which the twelve-note model here does not include. Priority statements about Aron and Zarlino are from secondary sources and should be re-checked.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Quarter-comma_meantone' },
-      verify: true,
-      viz(v) {
-        const al = v.slider('fraction of the syntonic comma taken from each fifth', 0, 0.34, 0.25, { step: 0.001, fmt: (x) => `${v.fix(x, 3)}  (${v.fix(x * SCOMMA, 2)} ¢)` });
-        const key = v.slider('triad on …', 0, 11, 0, { int: true, fmt: (x) => NOTE[x] });
-        const PRE = [['Pythagorean', 0], ['1/4', 0.25], ['1/3', 1 / 3], ['1/11  (12-TET)', 1 / 11]];
-        PRE.forEach(([n, x]) => v.button(n, () => al.set(x)));
-        const eb = v.stage({ x: [-0.6, 3.6], y: [-42, 42], axes: 'box', gutter: true, height: 320, xticks: [[0, 'fifth'], [1, 'major third'], [2, 'minor third'], [3, 'wolf']], yticks: [-40, -20, 0, 20, 40].map((y) => [y, String(y)]), ylabel: 'error from the pure interval (¢)', title: 'intervals of the chain' });
-        const tb = v.stage({ x: [-0.6, 11.6], y: [-8, 48], axes: 'box', gutter: true, height: 320, xticks: [], yticks: [0, 10, 20, 30, 40].map((y) => [y, String(y)]), xlabel: 'major third on … (gold: the triad you play)', ylabel: 'error from 5/4 (¢)', title: 'the twelve major thirds' });
-        const snd = v.sound();
-        const fifth = () => FIFTH - al.value * SCOMMA, wolf = () => 8400 - 11 * fifth();
-        const fifths = () => Array.from({ length: 12 }, (_, i) => (i === 11 ? wolf() : fifth()));
-        const pcs = () => tuneFromFifths(fifths());
-        v.soundButton('play the triad', (sd) => { const P = pcs(); sd.samples(chordCents(triadAbs(P, key.value), C4, 2.0), SR, { gain: 0.9 }); });
-        v.soundButton('play the wolf (G♯–E♭)', (sd) => { const P = pcs(), b = P[8] > 600 ? P[8] - 1200 : P[8]; sd.samples(chordCents([b, b + wolf()], C4, 2.0), SR, { gain: 0.9 }); });
-        v.soundButton('a tempered fifth, then pure', (sd) => sd.samples(seqCents([[0, fifth()], [0, FIFTH]], C4, 1.6, 0.15), SR, { gain: 0.9 }));
-        v.render(() => {
-          const f = fifth(), m3 = 4 * f - 2400, m3m = 2400 - 3 * f, w = wolf();
-          const E = [f - FIFTH, m3 - M3J, m3m - cents(6 / 5), w - FIFTH], col = ['accent', 'orange', 'purple', 'red'];
-          eb.hline(0, { color: 'green', width: 1.6 });
-          E.forEach((e, i) => { eb.rect(i - 0.3, 0, i + 0.3, e, { fill: col[i], fillAlpha: 0.55, color: col[i] }); eb.text(sc(v, e, 2), i, e, { size: 11.5, align: 'center', baseline: e >= 0 ? 'bottom' : 'top', dy: e >= 0 ? -3 : 3, weight: 600, plate: true }); });
-          const P = pcs();
-          tb.hline(0, { color: 'green', width: 1.6 });
-          for (let r = 0; r < 12; r++) {
-            const t = fold(P[(r + 4) % 12] - P[r]) - M3J, c = Math.abs(t) < 2.5 ? 'green' : t > 15 ? 'red' : 'orange';
-            tb.rect(r - 0.38, 0, r + 0.38, t, { fill: c, fillAlpha: 0.55, color: c });
-            tb.text(NOTE[r], r, -1.5, { size: 11, align: 'center', baseline: 'top', plate: true });
-            tb.text(sc(v, t, 1), r, t, { size: 10, align: 'center', baseline: t >= 0 ? 'bottom' : 'top', dy: t >= 0 ? -3 : 3, color: 'muted' });
-          }
-          tb.dot(key.value, -6.5, { r: 6, color: 'gold' });
+      num:'7.7',kind:'Method',name:'Quarter-comma meantone',
+      statement:String.raw`Let $C_s=1200\log_2(81/80)$ be the syntonic comma in cents. A regular meantone fifth with narrowing fraction $\alpha$ has ratio
+$$q=(3/2)(81/80)^{-\alpha}.$$
+Its size is $f=1200\log_2q$. Four regular fifths minus two octaves give a major third of $4f-2400$ cents. At $\alpha=1/4$, $q^4=5$, so that third is exactly $5/4$; $f\approx696.578428$ cents. At $\alpha=1/3$, $q^3=10/3$, so the regular minor third $4/q^3$ is exactly $6/5$.
+
+In the specified twelve-note cut, eleven fifths have ratio $q$ and the closing fifth has ratio $W=2^7/q^{11}$. At quarter comma, $W/q=128/125$: eight major thirds are pure and the four crossing the cut are higher by about 41.058858 cents.
+
+Twelve equal fifths require $f=700$, hence
+$$\alpha_{\rm ET}=\frac{1200\log_2(3/2)-700}{C_s}$$
+which is approximately 0.090903680. It is close to $1/11$, but is not equal to it.`,
+      idea:String.raw`The syntonic comma identity (7.6) gives $(3/2)^4/(5/4)=4(81/80)$. Removing a quarter comma from each of four fifths therefore makes the major third pure. The twelve fifths must multiply to $2^7$; eleven chosen generators determine the closing fifth, rather than forcing all twelve generators to be equal.
+
+Our chain is E♭–B♭–F–C–G–D–A–E–B–F♯–C♯–G♯, with C anchored at ratio 1. The closing step G♯–E♭ is the cut. A major third traverses four steps: eight do not cross the cut and four do. Their difference is $1200\log_2(W/q)$. In quarter comma $q^{12}=125$, proving the diesis ratio $128/125$. In equal temperament $q^{12}=128$, so $W=q$ and the difference vanishes.`,
+      caption:String.raw`The continuous $\alpha$ control covers 0–0.34. Presets use exact Pythagorean, quarter-comma, third-comma and equal-tempered definitions; the separate $1/11$ preset demonstrates its small difference from equal temperament. Left: deviations of the regular fifth, regular major/minor thirds and closing fifth from their pure ratios. Right: every major third in the specified twelve-note cut; gold selects the triad played. The plots include the entire offered range.`,
+      deps:['music-7.6','music-7.5'],see:['music-7.4','music-7.12','music-7.8','music-7.9'],
+      refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §5.12, pp.176–179 and exercise1'],tags:['meantone','temperament'],
+      credit:'Tuning exposition: Dave Benson, 2008 Web version; twelve-note cut, continuous controls and synthesis authored here.',
+      scope:String.raw`A specified mathematical twelve-note model, not a historical priority, keyboard prescription or judgement that a third is unusable. Other cuts and extra enharmonic keys are possible. Preset identities are exact symbolic definitions; general control values and displayed cents are evaluated numerically. At $1/11$, the regular fifth is approximately 699.999884 cents and the closing fifth 700.001280 cents. Audio uses the same authored C4 = 261.6256-Hz, six-harmonic, 44,100-Hz convention as 7.5, with peak bound 0.12 and 10-ms end ramps. The output is uncalibrated and does not certify a perceptual difference.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify: false,
+      viz(v){
+        const alpha=v.slider('syntonic-comma fraction α',0,.34,.25,{step:'any',fmt:x=>x.toPrecision(12)}),key=v.slider('triad root',0,11,0,{int:true,fmt:x=>meantoneModel(.25,x).keyName});
+        [['Pythagorean',0],['1/4',.25],['1/3',1/3],['Exact 12-TET',JM_ET_ALPHA],['1/11 comparison',1/11]].forEach(([label,x])=>v.button(label,()=>alpha.set(x)));
+        const A=v.stage({x:[-.7,3.7],y:[-40,75],axes:'box',gutter:true,height:340,minWidth:280,xticks:[[0,'5th'],[1,'M3'],[2,'m3'],[3,'close 5th']],ylabel:'error from pure (cents)',title:'regular intervals and closing fifth'});
+        const B=v.stage({x:[-35,85],y:[-1.1,12.2],axes:false,full:true,height:430,minWidth:280,title:'all twelve major-third errors (cents)'});
+        let info;const play=action=>sd=>{const a=meantoneAudio(alpha.value,key.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play selected triad',play('triad'));v.soundButton('Play closing fifth',play('closing'));v.soundButton('Regular fifth, then pure',play('compare'));v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{
+          const a=meantoneModel(alpha.value,key.value);info=a;const lo=Math.min(0,...a.errors)-15,hi=Math.max(0,...a.errors)+15;A.setView([-.7,3.7],[lo,hi]);A.line(-.45,0,3.45,0,{color:'muted',width:1});
+          a.errors.forEach((e,j)=>{const col=['accent','orange','purple','red'][j];A.rect(j-.3,0,j+.3,e,{fill:col,fillAlpha:.55,stroke:false});A.text(`${e<0?'−':'+'}${v.fix(Math.abs(e),3)}`,j,e,{size:10.5,align:'center',baseline:e>=0?'bottom':'top',dy:e>=0?-4:4,color:col});});
+          B.text('note',-32,11.7,{size:11,weight:700,align:'left',baseline:'middle'});B.text('third error (¢)',28,11.7,{size:11,weight:700,align:'center',baseline:'middle'});B.line(0,-.3,0,11.3,{color:'muted',width:1});
+          a.thirds.forEach((t,j)=>{const y=11-j,col=t.pure?'green':t.error<0?'purple':'orange';B.text(t.name,-32,y,{size:12,align:'left',baseline:'middle'});if(j===key.value)B.dot(-18,y,{r:4.5,ring:false,color:'gold'});B.rect(0,y-.22,t.error,y+.22,{fill:col,fillAlpha:.65,stroke:false});B.text(`${t.error<0?'−':'+'}${v.fix(Math.abs(t.error),3)}`,80,y,{size:10.5,align:'right',baseline:'middle',color:col});});
         });
-        v.readout(() => {
-          const f = fifth(), m3 = 4 * f - 2400, P = pcs(), k = key.value;
-          return `α = ${v.fix(al.value, 3)} of 81/80: fifth ${v.fix(f, 3)} ¢ (${sc(v, f - FIFTH, 2)} from 3/2) · major third ${v.fix(m3, 2)} ¢ (${sc(v, m3 - M3J, 2)} from 5/4) · minor third ${v.fix(2400 - 3 * f, 2)} ¢ · wolf ${v.fix(wolf(), 2)} ¢ (${sc(v, wolf() - FIFTH, 1)} from pure) · triad on ${NOTE[k]}: third ${v.fix(ivl(P, k, 4), 2)} ¢, fifth ${v.fix(ivl(P, k, 7), 2)} ¢${Math.abs(al.value - 1 / 11) < 0.002 ? ' · all twelve fifths are now 700 ¢: this is equal temperament' : ''}`;
-        });
+        v.legend([['green','exact pure third at quarter-comma preset'],['purple','below the pure third'],['orange','above the pure third'],['gold','selected root']]);
+        v.readout(()=>{const a=info;return `α=${a.alpha.toPrecision(12)}; ${a.kind==='equal'?'exact 12-TET preset: all twelve fifths are 700 cents':a.kind==='quarter'?'quarter-comma preset: eight exact pure major thirds':a.kind==='third'?'third-comma preset: regular minor third is exactly 6/5':a.kind==='pythagorean'?'Pythagorean generator':'general numerical parameter'}. Regular fifth ${v.fix(a.fifth,9)} cents; closing fifth ${v.fix(a.closing,9)} cents. Regular major / minor third ${v.fix(a.major,9)} / ${v.fix(a.minor,9)} cents. Cut difference ${v.fix(a.delta,9)} cents. Selected ${a.keyName} triad: ${a.triad.map(x=>v.fix(x,6)).join(', ')} Hz; intervals ${a.triadCents.map(x=>v.fix(x,6)).join(', ')} cents. At 1/11 the fifths are close to equal, and are not all 700 cents.`;});
       },
     },
     // ------------------------------------------------------------------ 7.8

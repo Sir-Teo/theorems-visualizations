@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **143 flags**. The difference from the initial count reflects the review: 7 previously unflagged uncertainties remain newly marked, and 697 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **141 flags**. The difference from the initial count reflects the review: 7 previously unflagged uncertainties remain newly marked, and 699 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **143 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **141 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -858,3 +858,5 @@ Root accepted art-4.3/4.4 after actual source/prerequisite reading, six independ
 
 
 The [accepted checkpoint through6978d28](checkpoint-6978d28.md) passes1,621default tests including all six UI tests,110distinct validated changed routes, strict build6,684written+6,890planned/450chapters/85collections and full static6,621items, all0errors/0warnings. Exact queue143pending/697original resolved/7added; home112,817bytes gzip. Published cross-field shortfall855,53/64below25published and28whole syllabi below25; proof curation2/100. The snapshot includes game/network/colour acceptance and spectral-marker correction, excludes active music/retinal drafts, and preserves all16retained-renderer identities.
+
+Root accepted music-7.5/7.7 after actual Benson/prerequisite reading, six mathematical groups, independent5,820state/66buffer counterchecks, all12final native groups, static2/0/0 and exact neighbor guards. The full finite ratio/cut model distinguishes exact ETfrom1/11;216actual buffered actions check played registers and the real audio path. Selected-fill order and sparse-event guards were independently reproduced and fixed. Six groups are default-wired. See `docs/verification/music-just-meantone-followup.md`;7.4/7.9remain separate pending audits. **141 source reviews remain**.

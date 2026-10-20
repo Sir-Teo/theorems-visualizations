@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 143,
+  "remainingFlags": 141,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -26,7 +26,7 @@
     "psych": 12,
     "soc": 12,
     "polsci": 9,
-    "music": 22,
+    "music": 20,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -847,22 +847,6 @@
       }
     },
     {
-      "id": "music-7.7",
-      "file": "content/music/ch07-b.js",
-      "name": "Quarter-comma meantone",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 5",
-        "Loy I ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Quarter-comma_meantone"
-      }
-    },
-    {
       "id": "music-7.8",
       "file": "content/music/ch07-b.js",
       "name": "Well temperaments",
@@ -986,22 +970,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Bohlen%E2%80%93Pierce_scale"
-      }
-    },
-    {
-      "id": "music-7.5",
-      "file": "content/music/ch07.js",
-      "name": "Just intonation",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 5",
-        "Loy I ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Just_intonation"
       }
     },
     {
@@ -3058,7 +3026,9 @@
       "game-4.10",
       "soc-4.1",
       "soc-4.2",
-      "art-4.4"
+      "art-4.4",
+      "music-7.5",
+      "music-7.7"
     ]
   },
   "additionalFollowups": [
@@ -7543,6 +7513,18 @@
       "status": "resolved",
       "report": "docs/verification/art-metamer-followup.md",
       "note": "Modern-source linear matching proof, rank distinct from additivity, full nonnegative spectra and unilateral degeneracies; root actual sources, sixmath/eightnative/static and exact neighbor guards pass. Original1853paper remains unacquired/unclaimed."
+    },
+    {
+      "id": "music-7.5",
+      "status": "resolved",
+      "report": "docs/verification/music-just-meantone-followup.md",
+      "note": "Actual Benson just-major table and upward triads; exact finite prime-power patch, actual played-register partial pairs and distinct just/ET audio. Root sixmath/full12native/static plus independent ratio/spectral counterreview and final marker/sparse guards pass."
+    },
+    {
+      "id": "music-7.7",
+      "status": "resolved",
+      "report": "docs/verification/music-just-meantone-followup.md",
+      "note": "Actual Benson meantone exposition and complete generator/cut proof; exact ET versus1/11, allkeys/full endpoints, actual audio/state. Root final sixmath/12native/static and independent80digit/spectral review accepted, with no historical priority or perceptual claim."
     }
   ]
 }

@@ -1,5 +1,6 @@
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (items 7.1–7.6)
 import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, M3P, NOTE, sc, fold, circ, ring, cents, gcd, seqCents, chordCents, nearPairs, tuneChain, chainSemi, CHAIN } from './ch07.shared.js';
+import { jiModel, jiAudio } from './source-audit-just-meantone.js';
 
 import { pythagoreanScale, rotationModel, tuningAudio } from './source-audit-pythagorean.js';
 
@@ -210,72 +211,39 @@ For density, this authored argument completes the finite near-miss step. Given i
     },
     // ------------------------------------------------------------------ 7.5
     {
-      num: '7.5',
-      kind: 'Method',
-      name: 'Just intonation',
-      statement: String.raw`**Five-limit just intonation** builds every interval from the primes 2, 3 and 5: every note has a ratio $2^a3^b5^c$ to the tonic. Laid out on a lattice with pure fifths $3{:}2$ in one direction and pure major thirds $5{:}4$ in the other, the notes of the just major scale are $1,\ 9/8,\ 5/4,\ 4/3,\ 3/2,\ 5/3,\ 15/8$ (C D E F G A B), and the three main triads on the tonic, subdominant and dominant (C E G, F A C, G B D) are all exactly $4{:}5{:}6$: their partials coincide, so they sound without beats. The price: some intervals of the scale are not what a Pythagorean ear expects (the whole tone $9{:}8$ and the smaller $10{:}9$ both occur), and the scale cannot be transposed (7.6).`,
-      idea: String.raw`A consonant interval is one where partials coincide (6.2); the simplest coincidences are $3{:}2$, $4{:}3$, $5{:}4$, $6{:}5$. Choose the major scale so that the three triads on I, IV and V are $4{:}5{:}6$: this fixes the notes $1,\,5/4,\,3/2$ (I), $4/3,\,5/3,\,2$ (IV) and $3/2,\,15/8,\,9/4$ (V), seven notes in all. In the lattice the I, IV and V triads are the three triangles (upward-pointing) that share corners; the scale has three step sizes: $9/8$ (203.9 ¢), $10/9$ (182.4 ¢) and $16/15$ (111.7 ¢). Compared with equal temperament the thirds of 386.3 ¢ and sixths of 884.4 ¢ are much closer to the ratios of small numbers.`,
-      caption: String.raw`The 5-limit lattice (notes folded into one octave): fifths run to the right, pure major thirds upward. Choose to light the whole just major scale or one triad; click any node to hear that note, or play the chord in just intonation, in equal temperament, or alternately. The readout gives each lit note's offset from equal temperament and the beats of the nearly coincident partials in the equal-tempered chord.`,
-      deps: ['music-7.1', 'music-6.2'],
-      see: ['music-6.1', 'music-7.6', 'music-7.13', 'music-7.15'],
-      refs: ['Benson ch. 5', 'Loy I ch. 3'],
-      tags: ['just intonation', 'lattice'],
-      credit: 'Ptolemy (the "intense diatonic", 2nd c.); Zarlino, Le istitutioni harmoniche, 1558',
-      scope: String.raw`Tonic-centred 5-limit tuning: the triads on I, IV and V are pure, but the supertonic triad D F A has a mistuned fifth (680.4 ¢, narrower by the syntonic comma) and the scale cannot modulate (7.6). Zarlino's role in making the Ptolemaic scale the standard of just intonation is widely stated but I have not re-checked the dates.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Just_intonation' },
-      verify: true,
-      viz(v) {
-        const SC = [['C', 0, 0], ['D', 2, 0], ['E', 0, 1], ['F', -1, 0], ['G', 1, 0], ['A', -1, 1], ['B', 1, 1]];
-        const TR = { I: ['C', 'E', 'G'], IV: ['F', 'A', 'C'], V: ['G', 'B', 'D'] };
-        const sel = v.select('light up', [{ value: 'scale', label: 'major scale' }, { value: 'I', label: 'I  (C E G)' }, { value: 'IV', label: 'IV  (F A C)' }, { value: 'V', label: 'V  (G B D)' }], 'scale');
-        const s = v.stage({ x: [-3.6, 4.6], y: [-2.6, 3.6], equal: true, axes: false, height: 440, title: 'the 5-limit lattice' });
-        const snd = v.sound();
-        // exact ratio of lattice point (i, j) folded into [1, 2)
-        const ratio = (i, j) => { let p = 1, q = 1; if (i >= 0) { p *= 3 ** i; q *= 2 ** i; } else { p *= 2 ** -i; q *= 3 ** -i; } if (j >= 0) { p *= 5 ** j; q *= 4 ** j; } else { p *= 4 ** -j; q *= 5 ** -j; } while (p >= 2 * q) q *= 2; while (p < q) p *= 2; const g = gcd(p, q); return [p / g, q / g]; };
-        const rc = (i, j) => { const [p, q] = ratio(i, j); return cents(p / q); };
-        const NAMEPOS = Object.fromEntries(SC.map(([n, i, j]) => [n, [i, j]]));
-        const SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-        const lit = () => (sel.value === 'scale' ? SC.map((x) => x[0]) : TR[sel.value]);
-        const chord = () => (sel.value === 'scale' ? null : TR[sel.value]);
-        const cj = (names) => { const c = names.map((n) => rc(...NAMEPOS[n])); const b0 = c[0]; return c.map((x) => { let d = x - b0; while (d < 0) d += 1200; return d; }).sort((a, b) => a - b); };
-        const rootJ = () => (chord() ? rc(...NAMEPOS[chord()[0]]) : 0);
-        const play = (mode) => {
-          const ch = chord();
-          if (!ch) { snd.stop(); snd.samples(seqCents(SC.map(([n, i, j]) => [rc(i, j)]).sort((a, b) => a[0] - b[0]).concat([[1200]]), C4, 0.5, 0.03), SR, { gain: 0.9 }); return; }
-          const bj = rootJ() > 600 ? rootJ() - 1200 : rootJ(), r0 = SEMI[ch[0]] * 100, be = r0 > 600 ? r0 - 1200 : r0;
-          const jj = cj(ch).map((x) => bj + x), ee = ch.map((n) => fold(SEMI[n] * 100 - r0)).sort((a, b) => a - b).map((x) => be + x);
-          snd.stop();
-          snd.samples(seqCents(mode === 'just' ? [jj] : mode === 'et' ? [ee] : [jj, ee, jj, ee], C4, mode === 'alt' ? 1.3 : 2.2, 0.12), SR, { gain: 0.9 });
-        };
-        v.soundButton('play: just', () => play('just'));
-        v.soundButton('play: equal temperament', () => play('et'));
-        v.soundButton('alternate: just, 12-TET', () => play('alt'));
-        s.onClick((x, y) => { const i = Math.round(x), j = Math.round(y); if (Math.abs(x - i) < 0.4 && Math.abs(y - j) < 0.4) { snd.stop(); snd.samples(seqCents([[rc(i, j)]], C4, 1.4, 0), SR, { gain: 0.9 }); } });
-        v.render(() => {
-          const L = lit(), inSet = (i, j) => SC.find((x) => x[1] === i && x[2] === j && L.includes(x[0]));
-          for (let j = -2; j <= 3; j++) for (let i = -3; i <= 4; i++) { if (i < 4) s.line(i, j, i + 1, j, { color: 'faint', width: 1, alpha: 0.5 }); if (j < 3) s.line(i, j, i, j + 1, { color: 'faint', width: 1, alpha: 0.5 }); }
-          if (sel.value !== 'scale') { const P = TR[sel.value].map((n) => NAMEPOS[n]); s.poly(P.map(([i, j]) => [i, j]), { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 1.6 }); }
-          else for (const t of Object.values(TR)) s.poly(t.map((n) => NAMEPOS[n]), { color: 'green', width: 1, alpha: 0.4, fill: 'green', fillAlpha: 0.05 });
-          for (let j = -2; j <= 3; j++) for (let i = -3; i <= 4; i++) {
-            const hit = inSet(i, j), [p, q] = ratio(i, j);
-            s.dot(i, j, { r: hit ? 17 : 11, color: hit ? (sel.value === 'scale' ? 'green' : 'accent') : 'faint', hollow: !hit });
-            s.text(`${p}/${q}`, i, j, { size: hit ? 11 : 9.5, color: hit ? 'ink' : 'muted', align: 'center', baseline: 'middle', weight: hit ? 700 : 400 });
-            if (hit) s.text(hit[0], i, j, { size: 11.5, color: sel.value === 'scale' ? 'green' : 'accent', align: 'center', baseline: 'middle', dy: -26 / 1.3, weight: 700 });
-          }
-          s.text('× 3/2  →', 3.2, -2.35, { size: 11, color: 'muted', align: 'center' }); s.text('× 5/4  ↑', -3.2, 3.35, { size: 11, color: 'muted', align: 'center' });
+      num:'7.5',kind:'Method',name:'Just intonation',
+      statement:String.raw`A five-limit interval is a frequency ratio $2^a3^b5^c$ with integers $a,b,c$. Octave reduction puts a pitch ratio in $[1,2)$. A standard just major scale uses the ordered ratios $1,9/8,5/4,4/3$, then $3/2,5/3,15/8$, followed by the octave $2$. Its I, IV and V triads, voiced upward from their own roots, each have ratios $4{:}5{:}6$. The consecutive scale steps are $9/8$, $10/9$ and $16/15$; they are not equal-sized whole tones and semitones.
+
+This is one fixed tonic-centred collection. It does not make every triad pure: for example D–A has ratio $(5/3)/(9/8)=40/27$, rather than $3/2$. Multiplying all frequencies by one positive factor does transpose the entire collection while preserving every interval.`,
+      idea:String.raw`Start with C–E–G at ratios $1,5/4,3/2$. Pure IV and V triads add F–A–C at $4/3,5/3,2$ and G–B–D at $3/2,15/8,9/4$. Their seven pitch classes give Benson’s just-major table. Horizontal lattice steps multiply by $3/2$, vertical steps by $5/4$, followed by octave reduction (7.1).
+
+For harmonic tones the specifically compared partial frequencies are integer multiples of the played fundamentals (6.2). In a $4{:}5{:}6$ triad, the root’s fifth partial equals the third’s fourth, and the root’s third equals the fifth’s second. These exact coincidences do not say that every partial coincides or that a chord has no beating, roughness or dissonance. The readout compares only these declared pairs using the actual register used in playback.`,
+      caption:String.raw`The authored eight-node patch contains the seven scale notes and one extra ratio $45/32$; the full five-limit lattice is infinite. Choose the scale or one triad to highlight it. Click a visible node to select and play its just ratio, or select it with the single-note control. The table always gives the complete source scale and its closing octave. Just, equal-tempered and alternating playback use distinct frequency lists for both scales and chords, with the same C4 anchor.`,
+      deps:['music-7.1','music-6.2'],see:['music-6.1','music-7.6','music-7.13','music-7.15'],
+      refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §5.5, pp.159–160'],tags:['just intonation','lattice'],
+      credit:'Tuning exposition: Dave Benson, 2008 Web version; finite patch, registers and synthesis authored here.',
+      scope:String.raw`An exact ratio construction, not a claim about an ancient priority, a unique chromatic just scale or measured consonance. The source table is C-relative; F and G chords are voiced upward from F4 and G4, including C5 or D5 when needed. Audio is uncalibrated mono 44,100-Hz synthesis at C4 = 261.6256 Hz, six harmonics with amplitudes proportional to $1/h$, a pre-output peak bound 0.12 and 10-ms end ramps. Output uses the runtime master gain/limiter and the device; no perceived beat or loudness judgement is certified.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify: false,
+      viz(v){
+        const family=v.select('highlight / collection',[{value:'scale',label:'major scale'},{value:'I',label:'I: C E G'},{value:'IV',label:'IV: F A C'},{value:'V',label:'V: G B D'}],'scale');
+        const base=jiModel(),node=v.select('single note',base.nodes.map(p=>({value:p.id,label:p.name==='extra'?'45/32 extra':p.name})),'0,0');
+        const A=v.stage({x:[-1.7,2.7],y:[-.8,1.9],equal:true,axes:false,height:330,minWidth:280,title:'finite five-limit lattice patch'});
+        const B=v.stage({x:[0,4.65],y:[-.6,9.5],axes:false,full:true,height:390,minWidth:280,title:'complete C-major scale and closing octave'});
+        let info;
+        const play=action=>sd=>{const a=jiAudio(family.value,node.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play just collection',play('just'));v.soundButton('Play equal-tempered collection',play('et'));v.soundButton('Alternate just / equal',play('alternate'));v.soundButton('Play selected node',play('node'));v.button('Stop audio',()=>v.sound().stop());
+        A.onClick((x,y)=>{const p=base.nodes.find(p=>Math.hypot(x-p.i,y-p.j)<.36);if(p){node.set(p.id);v.sound().stop();play('node')(v.sound());}});
+        v.render(()=>{
+          const a=jiModel(family.value,node.value);info=a;
+          for(const p of a.nodes){if(p.i<2)A.line(p.i,p.j,p.i+1,p.j,{color:'faint',width:1});if(p.j<1)A.line(p.i,p.j,p.i,p.j+1,{color:'faint',width:1});}
+          const groups=family.value==='scale'?['I','IV','V']:[family.value];groups.forEach(t=>{const tri=jiModel(t).chord;const points=tri.map(p=>{const q=a.scale.find(q=>q.name===p.name);return[q.i,q.j];});A.poly(points,{fill:'green',fillAlpha:.10,color:'green',width:1.1});});
+          for(const p of a.nodes){const hit=a.lit.includes(p.name);if(p.id===node.value)A.dot(p.i,p.j,{r:21,hollow:true,ring:false,color:'gold',width:1.7});A.dot(p.i,p.j,{r:hit?17:14,ring:false,hollow:!hit,color:hit?'green':'muted',width:1});A.text(p.exact,p.i,p.j,{size:10.5,align:'center',baseline:'middle',color:hit?'ink':'muted'});A.text(p.name,p.i,p.j,{size:11,align:'center',baseline:'middle',dy:-25,color:hit?'green':'muted'});}
+          A.text('right: ×3/2; octave folded',.5,-.53,{size:10.5,align:'center',baseline:'middle',color:'muted'});A.text('up: ×5/4; octave folded',.5,1.62,{size:10.5,align:'center',baseline:'middle',color:'muted'});
+          ['note','ratio','cents','offset ¢'].forEach((t,j)=>B.text(t,[.3,1.35,2.65,4.05][j],8.8,{size:11,weight:700,align:'center',baseline:'middle'}));
+          a.table.forEach((p,k)=>{const y=7.8-k,color=a.lit.includes(p.name)?'green':'ink';[p.name,p.exact,v.fix(p.cents,3),`${p.offset<0?'−':'+'}${v.fix(Math.abs(p.offset),2)}`].forEach((t,j)=>B.text(t,[.3,1.35,2.65,4.05][j],y,{size:j===0?12:10.5,align:'center',baseline:'middle',color}));});
         });
-        v.readout(() => {
-          const L = lit(), rows = SC.filter((x) => L.includes(x[0])).map(([n, i, j]) => `${n} ${ratio(i, j).join('/')} (${sc(v, rc(i, j) - SEMI[n] * 100, 1)} ¢)`);
-          let bt = '';
-          const ch = chord();
-          if (ch) {
-            const jc = cj(ch), ec = ch.map((n) => fold(SEMI[n] * 100 - SEMI[ch[0]] * 100)).sort((a, b) => a - b), f0 = C4;
-            const fJ = jc.map((c) => f0 * 2 ** (c / 1200)), fE = ec.map((c) => f0 * 2 ** (c / 1200));
-            const ne = nearPairs(fE, 6, 15).filter((p) => p.d > 0.05).slice(0, 3);
-            bt = ` · just chord ${jc.map((c) => v.fix(c, 1)).join(', ')} ¢: coinciding partials only (${nearPairs(fJ, 6, 0.05).length} pairs, no beating pair) · 12-TET chord ${ec.join(', ')} ¢: beats at ${ne.map((p) => `${v.fix(p.d, 1)} Hz`).join(', ') || 'none below 15 Hz'} (partials ${ne[0] ? ne[0].hi + ' and ' + ne[0].hj : ''}, root at C4)`;
-          }
-          return `offset from 12-TET: ${rows.join(', ')}${bt}`;
-        });
+        v.legend([['green','highlighted collection'],['gold','selected single note']]);
+        v.readout(()=>{const a=info;let pairs='';if(a.chord){const j=a.chord.map(x=>x.hz),e=a.chord.map(x=>x.etHz);pairs=` Actual just frequencies: ${j.map(x=>v.fix(x,6)).join(', ')} Hz; equal-tempered: ${e.map(x=>v.fix(x,6)).join(', ')} Hz. Declared partial separations, root5–third4 / root3–fifth2: just ${v.fix(Math.abs(5*j[0]-4*j[1]),6)} / ${v.fix(Math.abs(3*j[0]-2*j[2]),6)} Hz; equal ${v.fix(Math.abs(5*e[0]-4*e[1]),6)} / ${v.fix(Math.abs(3*e[0]-2*e[2]),6)} Hz. These are frequency differences, not measured roughness.`;}return `Selected node ${a.selected.name}: ${a.selected.exact}, ${v.fix(a.selected.hz,6)} Hz. Complete scale gap ratios: ${a.gaps.map(x=>x.exact).join(', ')}.${pairs}`;});
       },
     },
     // ------------------------------------------------------------------ 7.6
