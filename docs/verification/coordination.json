@@ -1002,6 +1002,19 @@
       "commits": [
         "73e2c4d"
       ]
+    },
+    {
+      "ids": [
+        "bighist-4.4"
+      ],
+      "peer": "worker one independently read original2005source, regenerated complete reference and checked exact distribution and fresh native/output evidence",
+      "reports": [
+        "docs/verification/bighist-founder-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9285ee1"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1014,7 +1027,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 31,
+  "currentPendingSourceReviews": 30,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",

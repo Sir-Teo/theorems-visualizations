@@ -1,6 +1,6 @@
 import{founderModel}from'./source-audit-founder.js';
 export default{
-  num:'4.4',kind:'Model',name:'The serial founder effect',verify:true,
+  num:'4.4',kind:'Model',name:'The serial founder effect',verify:false,
   statement:String.raw`A new colony founded by N diploid individuals samples $2N$ gene copies from the previous colony. In the neutral biallelic model, $X\mid p\sim\mathrm{Binomial}(2N,p)$ and the next frequency is $p'=X/(2N)$. The expected gene diversity $H=2p(1-p)$ loses a fraction $1/(2N)$ at each founding:
 $$\mathbb E[H_k]=H_0\left(1-\frac1{2N}\right)^k.$$
 This geometric curve is approximately linear only when the cumulative loss is small, $k/(2N)\ll1$. It does not require each individual simulated path to decrease at every step.
