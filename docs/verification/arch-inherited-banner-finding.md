@@ -15,3 +15,5 @@ s.text(verdict[0], 5, 4.05, { align: 'center', size: 12.5, weight: 700, color: v
 ```
 
 The full numeric r/rank/status readout already exists below the controls and would stay unchanged. The verdict strings, colors, coordinates, font and every computation/control remain unchanged. The coordinator explicitly authorized this one-line banner-only successor after reviewing the proposal, and released the browser/heavy hold. It will be authored only after freezing the main producer boundary, with an exact literal guard and fresh actual narrow light/dark determinate/mechanism/indeterminate/default-control pixels. No runtime change is included in the prerequisite/qualification/wrap boundary itself.
+
+The authorized successor is now complete and independently reviewable; `arch-banner-layout-followup.md` records the exact guard and fresh16 actual/narrow three-status/default-restoration captures. Other computations and controls remain unchanged.

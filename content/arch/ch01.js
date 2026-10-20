@@ -303,7 +303,7 @@ The reaction classification uses rank-nullity (ladr 3.21) for the linear map $A:
             }
           }
           const verdict = a.rank < 3 ? ['MECHANISM', 'red'] : a.r === 3 ? ['STATICALLY DETERMINATE', 'green'] : [`INDETERMINATE (degree ${a.r - 3})`, 'purple'];
-          s.text(`r = ${a.r} unknowns, rank A = ${a.rank}: ${verdict[0]}`, 5, 4.05, { align: 'center', size: 12.5, weight: 700, color: verdict[1] });
+          s.text(verdict[0], 5, 4.05, { align: 'center', size: 12.5, weight: 700, color: verdict[1] });
           v.legend([['orange', 'load'], ['green', 'reactions (free-body diagram)'], ['accent', 'elastic deflection (exaggerated)', { dash: true }], ['red', 'mechanism', { dash: true }]]);
         });
         v.readout(() => {
