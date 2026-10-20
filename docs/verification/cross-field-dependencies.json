@@ -13746,9 +13746,9 @@
       "collection": "tech",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 32,
-      "writtenToKnown": 43,
-      "wholeSyllabus": 88,
+      "writtenToWritten": 35,
+      "writtenToKnown": 45,
+      "wholeSyllabus": 90,
       "publishedShortfall": 0,
       "unknown": [],
       "edges": [
@@ -13915,7 +13915,7 @@
         },
         {
           "item": "tech-4.9",
-          "prerequisite": "mech-1.15",
+          "prerequisite": "mech-2.6",
           "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -13929,10 +13929,10 @@
         },
         {
           "item": "tech-4.11",
-          "prerequisite": "fluid-5.4",
-          "prerequisiteField": "physics",
+          "prerequisite": "aero-1.2",
+          "prerequisiteField": "eng",
           "itemWritten": true,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
         },
         {
           "item": "tech-4.11",
@@ -13984,6 +13984,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "tech-5.7",
+          "prerequisite": "mech-4.4",
+          "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "tech-5.8",
           "prerequisite": "mech-4.2",
           "prerequisiteField": "physics",
@@ -14031,6 +14038,13 @@
           "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "tech-5.4",
+          "prerequisite": "mech-4.7",
+          "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "tech-5.5",

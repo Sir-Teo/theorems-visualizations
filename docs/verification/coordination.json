@@ -25,8 +25,8 @@
     ],
     "current": [
       "Integrate independently reviewed batches and reconcile all wave gates",
-      "Repair/re-review Blackwell saved-state findings; peer-review new political-science consequences and music Fourier batch",
-      "Continue game and difficult original-source audits"
+      "Peer-review music8.16 and political-science5.8; continue game3.9/4.11",
+      "Continue difficult original-source audits; preserve source-access limitations"
     ]
   },
   "workers": [
@@ -42,7 +42,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Finish queued music8.14/8.15, peer-review technology loads fe252d9, then remaining music8.5/8.6/8.16/8.21."
+      "current": "Music8.5/8.6 and Fourier accepted;8.16 candidate62efc37 under coordinator peer; finish8.21 bell-ringing audit."
     },
     {
       "agent": "worker_two",
@@ -59,23 +59,24 @@
       "completedCollections": [
         "psych"
       ],
-      "current": "Peer-review Blackwell state repair7d9262c; technology4.1/4.8/4.9 candidate fe252d9 awaits worker-one peer; then4.11 and ten clock/navigation entries."
+      "current": "Technology loads/sailing/clockdrives accepted; finish5.2/5.3/5.6/5.8/5.9/5.10/5.11. Chainstore independent peer accepted."
     },
     {
       "agent": "worker_three",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-three/theorems-visualizations",
       "branch": "codex/atlas-worker-three",
-      "collection": "polsci",
+      "collection": "art",
       "owns": [
-        "content/polsci/**",
-        "Only owned syllabus rows, collection-specific source reports and tests"
+        "content/art/**",
+        "Only owned art syllabus rows, collection-specific reports/helpers/tests"
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Newly found4.6 consequence candidate d79a689 awaits coordinator peer; audit4.7 consequences, then four queued jury/aggregation items5.6/5.8/5.9/5.10.",
+      "current": "All9 original political-science IDs have candidates;5.8/5.10 await coordinator peer. Continue9 queued ART reviews in exclusive batches.",
       "completedCollections": [
-        "soc"
+        "soc",
+        "polsci candidate production (acceptance pending5.8/5.10)"
       ]
     }
   ],
@@ -482,7 +483,12 @@
       "reports": [
         "docs/verification/game-blackwell-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "0fb6977",
+        "7d9262c",
+        "b17815f"
+      ]
     },
     {
       "ids": [
@@ -494,7 +500,13 @@
       "reports": [
         "docs/verification/tech-loads-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "ee8c409",
+        "123e70f",
+        "795c87d",
+        "be623a1"
+      ]
     },
     {
       "ids": [
@@ -505,7 +517,11 @@
       "reports": [
         "docs/verification/music-fourier-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "860a712",
+        "293a00e"
+      ]
     },
     {
       "ids": [
@@ -535,7 +551,11 @@
       "reports": [
         "docs/verification/tech-sailing-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "5895f07",
+        "d91ba25"
+      ]
     },
     {
       "ids": [
@@ -545,7 +565,11 @@
       "reports": [
         "docs/verification/polsci-strategic-jury-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "2136598",
+        "225d766"
+      ]
     },
     {
       "ids": [
@@ -555,7 +579,11 @@
       "reports": [
         "docs/verification/game-chainstore-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "06b1ee4",
+        "571c301"
+      ]
     },
     {
       "ids": [
@@ -566,7 +594,12 @@
       "reports": [
         "docs/verification/music-generated-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "ea19bd4",
+        "2ec687f",
+        "940ad19"
+      ]
     },
     {
       "ids": [
@@ -578,7 +611,11 @@
       "reports": [
         "docs/verification/tech-clockdrives-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "b2c24f0",
+        "5a1988e"
+      ]
     },
     {
       "ids": [
@@ -588,7 +625,12 @@
       "reports": [
         "docs/verification/polsci-swing-followup.md"
       ],
-      "status": "accepted"
+      "status": "accepted",
+      "commits": [
+        "b464858",
+        "af74bcd",
+        "f9a9406"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -603,19 +645,45 @@
   },
   "currentPendingSourceReviews": 70,
   "latestCheckpoint": {
-    "acceptedContentCommit": "04ab914",
-    "pendingSourceReviews": 85,
-    "defaultTests": 1775,
-    "strictBuild": "0 errors/0 warnings",
-    "fullStaticItems": 6621,
-    "fullStatic": "0 errors/0 warnings",
-    "homeGzipBytes": 112755,
-    "crossFieldShortfall": 847,
-    "publishedCollectionsBelow25": 53,
-    "wholeSyllabiBelow25": 28,
-    "flagshipCuration": "2/100, alongside-wave work",
-    "fullMap60fps": "open",
-    "wave5": "prepared-not-started",
-    "limitation": "Blackwell3.10 remains source-flagged; saved-state repair7d9262c is after this immutable full checkpoint and requires targeted independent acceptance."
+    "acceptedContentCommit": "f9a9406",
+    "report": "docs/verification/checkpoint-f9a9406.md",
+    "defaultTests": 1827,
+    "uiTests": 6,
+    "testFailures": 0,
+    "testCancelled": 0,
+    "testSkipped": 0,
+    "testDurationSeconds": 93.998,
+    "testConcurrency": 2,
+    "strictBuildErrors": 0,
+    "strictBuildWarnings": 0,
+    "staticItems": 6621,
+    "staticErrors": 0,
+    "staticWarnings": 0,
+    "writtenItems": 6684,
+    "plannedItems": 6890,
+    "chapters": 450,
+    "collections": 85,
+    "homeGzipBytes": 112744,
+    "pendingSourceReviews": 70,
+    "acceptedTeamEntries": 78,
+    "publishedCrossFieldShortfall": 847,
+    "publishedCollectionsBelowTarget": 53,
+    "nonMathCollections": 64,
+    "wholeSyllabusBelowTarget": 28,
+    "wave5Status": "prepared-unstarted",
+    "wave5Chapters": 80,
+    "wave5NewItems": 1031,
+    "wave5PreservedItems": 2,
+    "map60fps": "open; no benchmark amid competing browser jobs",
+    "flagshipProofCuration": "2/100 alongside-wave work",
+    "evidence": [
+      "/tmp/atlas-coordinator/checkpoint5-tests.log",
+      "/tmp/atlas-coordinator/checkpoint5-build.log",
+      "/tmp/atlas-coordinator/checkpoint5-static.log"
+    ],
+    "limitations": [
+      "Unintegrated worker candidates are excluded from this snapshot.",
+      "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
+    ]
   }
 }

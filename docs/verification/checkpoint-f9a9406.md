@@ -1,0 +1,12 @@
+# Combined checkpoint through f9a9406
+
+The isolated team has78 independently accepted entries:69 queued reviews cleared from its139-item starting queue and nine additional neighboring errors repaired. The coordinator alone integrates and records acceptance. Exact source, independent math/native/audio and source/output-pixel evidence are linked from the coordination ledger. The original checkout's inherited drafts remain untouched. Unintegrated music and political-science candidates are excluded from this snapshot.
+
+- **1,827 default tests pass**, including all six UI tests; zero failures/cancellations/skips. Exact source snapshot `f9a9406`, concurrency2,93.998seconds. `/tmp/atlas-coordinator/checkpoint5-tests.log`.
+- **Strict build:**6,684 written+6,890 planned items,450 chapters/85 collections; zero errors/warnings. Home JSON112,744bytes gzip. `/tmp/atlas-coordinator/checkpoint5-build.log`.
+- **Full static:**6,621 items, zero errors/warnings. `/tmp/atlas-coordinator/checkpoint5-static.log`.
+- **Source ledger:**70 pending=833 initial+4 added−767 original resolved across2,260 scoped items. All actual flags reconcile. Psychology and sociology queues remain clear.
+- **Cross-field inventory:**847 published-edge shortfall,53/64 non-math collections below25 published prerequisites;28 whole syllabi below25. No arbitrary quota-filling links were added.
+- **Wave5:**80 chapters/1,031 new items+two preserved entries, prepared and unstarted. Source and explicit §7.3 gates remain open. Full-map60fps remains open and is not benchmarked amid competing browser jobs. Proof curation2/100 is separate alongside-wave work.
+
+Since the prior immutable checkpoint, independent review closed Blackwell's saved-radius/centre findings, accepted Fourier/generic-span/generated-scale and technology contacts/draught/coupling/sailing/clock batches, verified the actual strategic-jury correction, and accepted the original chain-store game with its separately derived type extension. New spatial-voting neighbors received source/math/native review and strict raw-coordinate repair. Saved-state reviews also caught hidden browser step sanitization in generated scales and swing-voter accuracy; both now reject unsupported raw values locally, with valid edited replay and direct DOM/model regression checks. The checkpoint includes those final repairs. No unavailable original or published revision is certified merely because a model passes tests.
