@@ -2,16 +2,16 @@
 //
 // Data: Zachary's karate club, the Florentine marriage network (networkx 3.7 copies, see ch02.shared.js) and the
 // 10-node "kite" edge list of networkx's krackhardt_kite_graph. Directed web pages (3.3) and the societies of 3.5 are
-// models, not data. The lab figures quoted in 3.7 are the ones reported in Easley & Kleinberg, ch. 12 (secondary
-// source); everything else printed on the pages is recomputed in the browser.
+// models, not data. Exchange fixtures (3.7) evaluate specified payoffs and outside options, not laboratory data.
 import {
   getNet, nodeSpec, RANK, CYC, betweenness, deg, kite, letter, layoutOf, normLayout,
   centralities, leadingEigen, secondRatio, eigStep, katz, pearson,
   hitsHistory, pageRank,
   trustRows, degrootStep, influence, society,
   modularity, greedyHistory, bestLouvain, bestBisection,
-  exchangeOutcomes, rng32, shuffle,
+  rng32, shuffle,
 } from './ch03.shared.js';
+import {exchangeFixture,EXCHANGE_CHOICES} from './source-audit-exchange.js';
 
 // ---------- small shared pieces ----------
 const NETS3 = [{ value: 'karate', label: 'Karate club' }, { value: 'florence', label: 'Florence' }, { value: 'kite', label: 'Kite (10 nodes)' }];
@@ -401,70 +401,34 @@ where $m_g$ is the number of edges inside group $g$ and $K_g$ the total degree o
     // ------------------------------------------------------------------ 3.7
     {
       num: '3.7',
-      kind: 'Phenomenon',
+      kind: 'Model',
       name: 'Power from position in exchange networks',
-      statement: String.raw`In **network exchange experiments**, people sit at the nodes of a small graph and each edge carries a pool of \$1 that its two endpoints may split if they agree. Under the **1-exchange rule** each person can complete at most one trade per round, so the trades form a matching and anyone left out earns nothing. The shares that emerge after many rounds depend on the *position*: on the 2-node path the split is about even; on the 3-node path the middle node B, who can fall back on the other partner while A and C have no alternative, takes most of the dollar; on the 4-node path the two inner nodes get a modest advantage only; on the 5-node path the central node is not strong.
+      statement: String.raw`In a **one-exchange network model**, every edge offers one unit to divide, each vertex can trade with at most one neighbour, and unmatched vertices receive zero. An outcome is a matching $M$ and nonnegative payoffs $x_i$, with $x_i+x_j=1$ on each matched edge.
 
-The standard model predicts such shares as **balanced outcomes**: a matching with node values such that matched partners' values sum to 1, no unmatched pair could both do better by trading with each other (**stability**), and each matched pair splits the surplus evenly after each has received its best outside option (**Nash bargaining** with outside options).`,
-      idea: String.raw`A node's outside option is the most it could earn by stealing a neighbour away: if neighbour $w$ currently receives $x_w$, offering it slightly more makes $w$ defect and leaves the thief $1-x_w$. Position matters because excluded people have value 0 and therefore bid low, which hands their would-be partners a high outside option. The page computes balanced outcomes by iterating "each matched pair splits what is left after the two outside options" for every maximal matching, until the values stop changing (the Nash bargaining solution from 7.1 of the game theory collection). A graph with no stable outcome, such as the triangle, is predicted to have negotiations that never settle.`,
-      caption: String.raw`Choose a graph (or edit it: click empty space to add a person, click two people to add or remove a link, alt-click to delete) and read the balanced outcome off the bars. The 3-path gives B everything and the 4-path gives the inner nodes $2/3$. Gold bands mark the laboratory results quoted in Easley and Kleinberg's chapter 12; on the 3-path the lab figure (about $5/6$) is below the model's 1, so the model overstates the advantage. Make a triangle by joining A and C.`,
-      scope: String.raw`Holds for the 1-exchange rule with a unit pool on every edge. The lab figures are not original data: they are as summarised in Easley and Kleinberg (§12.3), who attribute the 3-node and 4-node results to Lucas, Younts, Lovaglia and Markovsky (2001, Social Forces) and report the 2-node split as approximately even; they are not reproduced from the primary papers here. Different theories (balanced outcomes, equiresistance and others) disagree on larger graphs.`,
+The outside option is $\alpha_i=\max(\{0\}\cup\{1-x_j:ij\in E\setminus M\})$. An outcome is **stable** when $x_i\ge\alpha_i$ for every vertex, equivalently $x_i+x_j\ge1$ on every edge outside the matching. It is **balanced** when it is stable and matched partners have equal surplus over their outside options: $x_i-\alpha_i=x_j-\alpha_j$. The four-node path has the balanced payoff vector $(1/3,2/3,2/3,1/3)$; a middle position alone does not determine a vertex's payoff.`,
+      idea: String.raw`An outside option is the limiting amount a vertex could keep by offering another neighbour slightly more than that neighbour currently gets. Stability prevents a pair from both gaining by abandoning their current agreements. Equal division of the surplus refines stability: on the four-node path, the inner vertices' options depend on each other's payoffs, giving the two-thirds split.
+
+For a triangle, any nonempty matching leaves one vertex with zero. Stability on its two incident edges would require both matched vertices to receive at least one, contradicting their total of one. The empty matching also fails. This proves nonexistence of a stable outcome in this model; it does not specify a negotiation process or prove that real negotiations never settle.`,
+      caption: String.raw`Choose one of six fixed graphs. At zero deviation, the five paths/stem examples show an exact balanced outcome; the triangle shows a feasible half-and-half candidate that fails stability. Change the first trading pair's split while preserving its total of one. Compare every payoff with its outside option and watch the stability and balance residuals. Red edges identify pairs with a positive stability deficit.`,
+      scope: String.raw`Finite undirected, unit-edge, one-exchange model, following the definitions and examples in Kleinberg and Tardos (2008), pp.295–297. The widget evaluates specified outcomes on the six offered fixtures; it is not a solver for arbitrary edited graphs and does not estimate laboratory shares or negotiation dynamics. The triangle's nonexistence claim follows the proof above, independently of a numerical iteration. Other fixtures show one specified matching, without claiming to enumerate every matching or balanced payoff.`,
       deps: ['soc-3.1', 'game-7.1'],
-      refs: ['E&K §12.2', 'E&K §12.3'],
+      refs: ['Kleinberg & Tardos, Balanced Outcomes in Social Exchange Networks (STOC 2008), pp.295–297, definitions and Fig.2'],
       tags: ['exchange networks', 'bargaining', 'power'],
-      credit: 'Cook, Emerson, Gillmore & Yamagishi, 1983 (experiments); Rochford, 1984 and Cook & Yamagishi, 1992 (balanced outcomes)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Exchange_network_theory' },
+      credit: 'Definitions and examples: Kleinberg & Tardos, 2008; their account attributes the balanced-outcome model to Cook & Yamagishi, 1992.',
+      links: { source: 'https://www.cs.cornell.edu/info/people/kleinber/stoc08-exchange.pdf' },
       verify: true,
       viz(v) {
-        const s = v.stage({ x: [-1.5, 1.5], y: [-1.05, 1.05], axes: false, equal: true, height: 340 });
-        const sb = v.stage({ x: [-0.7, 7.7], y: [0, 1.1], axes: 'box', gutter: true, xticks: [], ylabel: 'share of the dollar', height: 340, weight: 0.9, minWidth: 260 });
-        const P = {
-          p2: { label: '2-node path', pos: [[-0.6, 0], [0.6, 0]], E: [[0, 1]], lab: [[0, 0.5, 0.5], [1, 0.5, 0.5]] },
-          p3: { label: '3-node path', pos: [[-1, 0], [0, 0], [1, 0]], E: [[0, 1], [1, 2]], lab: [[1, 5 / 6, 5 / 6]] },
-          p4: { label: '4-node path', pos: [[-1.2, 0], [-0.4, 0], [0.4, 0], [1.2, 0]], E: [[0, 1], [1, 2], [2, 3]], lab: [[1, 7 / 12, 2 / 3], [2, 7 / 12, 2 / 3]] },
-          p5: { label: '5-node path', pos: [[-1.2, 0], [-0.6, 0], [0, 0], [0.6, 0], [1.2, 0]], E: [[0, 1], [1, 2], [2, 3], [3, 4]], lab: [] },
-          stem: { label: 'stem graph', pos: [[-1.1, 0], [-0.2, 0], [0.7, 0.7], [0.7, -0.7]], E: [[0, 1], [1, 2], [1, 3], [2, 3]], lab: [] },
-          tri: { label: 'triangle', pos: [[-0.8, -0.6], [0, 0.8], [0.8, -0.6]], E: [[0, 1], [1, 2], [0, 2]], lab: [] },
-        };
-        const sel = v.select('Graph', Object.entries(P).map(([value, o]) => ({ value, label: o.label })), 'p3', { onChange: load });
-        const mk = (o) => ({ nodes: o.pos.map((p, i) => ({ id: i, x: p[0], y: p[1] })), edges: o.E.map(([a, b]) => ({ from: a, to: b })) });
-        const G = v.graph(s, { ...mk(P.p3), layout: 'none', editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true, moveNode: true }, r: 13, autoRadius: false, directed: false });
-        function load() { G.set({ ...mk(P[sel.value]), directed: false }); }
-        const key = (E) => E.map(([a, b]) => (a < b ? a + '-' + b : b + '-' + a)).sort().join();
-        let st = {};
-        v.render(() => {
-          const n = G.nodes.length, idx = new Map(G.nodes.map((nd, i) => [String(nd.id), i]));
-          const E = G.edges.map((e) => [idx.get(String(e.from)), idx.get(String(e.to))]).filter(([a, b]) => a != null && b != null && a !== b);
-          let outs = [], tooBig = n > 9 || n < 2;
-          if (!tooBig) outs = exchangeOutcomes(n, E).filter((o) => o.ok);
-          const uniq = []; for (const o of outs) if (!uniq.some((u) => u.x.every((q, i) => Math.abs(q - o.x[i]) < 1e-6))) uniq.push(o);
-          const o = uniq[0];
-          const P0 = P[sel.value], same = key(E) === key(P0.E) && n === P0.pos.length;
-          G.draw({
-            nodeLabel: (id) => letter(idx.get(String(id))), nodeColor: () => 'accent',
-            nodeFill: (id) => { if (!o) return null; const i = idx.get(String(id)); return o.x[i] > 0.5 + 1e-6 ? 'gold' : null; },
-            edgeColor: (e) => { if (!o) return null; const a = idx.get(String(e.from)), b = idx.get(String(e.to)); return o.partner[a] === b ? 'green' : null; },
-            edgeWidth: (e) => { if (!o) return null; const a = idx.get(String(e.from)), b = idx.get(String(e.to)); return o.partner[a] === b ? 4 : null; },
-          });
-          sb.setView([-0.7, Math.max(n, 3) - 0.3], [0, 1.1]); sb.setTicks(Array.from({ length: n }, (_, i) => [i, letter(i)]), null);
-          for (let i = 0; i < n; i++) {
-            const val = o ? o.x[i] : 0;
-            sb.rect(i - 0.32, 0, i + 0.32, val, { fill: o ? 'accent' : 'faint', fillAlpha: 0.7, color: o ? 'accent' : 'faint' });
-            if (o) sb.text(frac(val), i, val + 0.03, { size: 12, align: 'center', baseline: 'bottom', color: 'ink' });
-          }
-          if (same) for (const [i, lo, hi] of P0.lab) { sb.rect(i - 0.42, lo, i + 0.42, hi + (hi === lo ? 0.012 : 0), { fill: 'gold', fillAlpha: 0.5, color: 'gold' }); sb.text('lab', i + 0.5, (lo + hi) / 2, { size: 11, align: 'left', baseline: 'middle', color: 'gold' }); }
-          st = { n, tooBig, uniq, same, name: P0.label, P0 };
-        });
-        v.legend([['green', 'trading pair (matching edge)'], ['gold', 'bands: laboratory results as quoted by Easley & Kleinberg'], ['gold', 'node: gets more than half', { dot: true }]]);
-        v.readout(() => {
-          if (st.tooBig) return 'Use between 2 and 9 people.';
-          if (!st.uniq.length) return `**No stable outcome exists** on this graph: whichever matching you pick, some unmatched pair could both do better by trading with each other, so the model predicts that negotiations never settle (E&K report this for the free-standing triangle).`;
-          const o = st.uniq[0]; const pairs = o.match.map(([a, b]) => `${letter(a)}–${letter(b)}`).join(', ');
-          const vals = o.x.map((q, i) => `${letter(i)} ${frac(q)}`).join(' · ');
-          let lab = '';
-          if (st.same) { const k = Object.keys(P).find((kk) => P[kk] === st.P0); lab = { p2: '\nLab: approximately an even split.', p3: '\nLab (as quoted by E&K, from Lucas et al. 2001): B receives roughly 5/6 of the dollar; the model says 1.', p4: '\nLab (as quoted by E&K): B’s share in the A–B trade is between 7/12 and 2/3; the model says 2/3.', p5: '\nLab (as quoted by E&K): the centre C does only slightly better than A and E; the model gives C no more than the ends.', stem: '\nE&K give the balanced outcome 1/4 – 3/4 for A and B; no lab figure is quoted here.', tri: '' }[k] || ''; }
-          return `Balanced outcome${st.uniq.length > 1 ? ` (one of ${st.uniq.length} with different payoffs)` : ''}: trades ${pairs} · values ${vals}${lab}`;
-        });
+        const s=v.stage({x:[-1.5,1.5],y:[-1.15,1.15],axes:false,equal:true,height:320});
+        const sb=v.stage({x:[-.7,4.7],y:[-.1,1.35],axes:'box',xticks:[],ylabel:'unit-edge amount',height:320});
+        const sel=v.select('graph',EXCHANGE_CHOICES,'p3',{onChange:()=>d.set(0)});
+        const d=v.slider('first-pair split deviation',-1,1,0,{step:.01});
+        v.button('Reset split',()=>d.set(0));let info;
+        v.render(()=>{const p=exchangeFixture(sel.value,d.value);sb.setView([-.7,p.n-.3],[-.1,1.35]);sb.setTicks(Array.from({length:p.n},(_,i)=>[i,letter(i)]),null);
+          p.edges.forEach(([a,b],j)=>s.line(...p.pos[a],...p.pos[b],{color:p.partner[a]===b?'green':p.edgeGaps[j]>2e-12?'red':'muted',width:p.partner[a]===b?4:1.6}));
+          p.pos.forEach(([x,y],i)=>{s.dot(x,y,{color:'accent',r:6});s.text(letter(i),p.id==='stem'&&i>=2?x+.18:x,p.id==='stem'&&i>=2?y:y+.2,{align:p.id==='stem'&&i>=2?'left':'center',baseline:p.id==='stem'&&i>=2?'middle':'bottom',color:'ink',size:13});});
+          p.values.forEach((x,i)=>{sb.rect(i-.31,0,i-.03,x,{fill:'accent',fillAlpha:.75,color:'accent'});sb.rect(i+.03,0,i+.31,p.outside[i],{fill:'orange',fillAlpha:.75,color:'orange'});sb.text(frac(x),i-.17,x+.055,{align:'center',baseline:'bottom',size:12,color:'ink'});});info=p;});
+        v.legend([['green','specified trading pair'],['red','edge with a stability deficit'],['accent','payoff'],['orange','outside option']]);
+        v.readout(()=>{const p=info;return `Specified matching: ${p.match.map(([a,b])=>`${letter(a)}–${letter(b)}`).join(', ')}. First changed pair: ${p.match[0].map(letter).join('–')}.\nPayoffs: ${p.values.map((x,i)=>`${letter(i)} ${frac(x)}`).join(' · ')}. Outside options: ${p.outside.map((x,i)=>`${letter(i)} ${frac(x)}`).join(' · ')}.\nMaximum stability deficit ${v.fix(p.stabilityResidual,8)}; maximum matched surplus imbalance ${v.fix(p.balanceResidual,8)}. Within numerical tolerance: ${p.balanced?'stable and balanced':p.stable?'stable, not balanced':'fails stability'}.${p.id==='tri'?' No stable outcome exists on the triangle by the matching argument above; these bars show one candidate.':' These checks evaluate this specified outcome only.'}`;});
       },
     },
   ],

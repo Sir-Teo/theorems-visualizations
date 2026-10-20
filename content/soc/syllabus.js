@@ -131,8 +131,8 @@ export default {
           pic: 'Noisy private signals averaged through DeGroot updating: a star network converges to the hub’s error, while balanced networks approach the truth as they grow.' },
         { num: '3.6', kind: 'Concept', name: 'Community structure and modularity', deps: ['soc-2.5'], refs: ['Newman ch. 14'],
           pic: 'Run a modularity-maximizing split on the karate-club network and compare it with the real factional split after the club broke up.' },
-        { num: '3.7', kind: 'Phenomenon', name: 'Power from position in exchange networks', deps: ['soc-3.1', 'game-7.1'], refs: ['E&K §12.2', 'E&K §12.3'],
-          pic: 'Bargaining over a dollar on paths of 2, 3 and 4 nodes: lab results and the balanced-outcome predictions show the middle node of a 3-path taking almost everything.' },
+        { num: '3.7', kind: 'Model', name: 'Power from position in exchange networks', deps: ['soc-3.1', 'game-7.1'], refs: ['Kleinberg & Tardos (2008), pp.295–297'],
+          pic: 'Compare exact specified outcomes on six unit-edge exchange graphs, perturb one trading pair, and inspect every payoff, outside option, stability deficit and matched surplus imbalance; the triangle impossibility follows a matching proof.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

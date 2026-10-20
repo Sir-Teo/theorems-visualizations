@@ -1,0 +1,24 @@
+# Sociology3.7: specified balanced outcomes
+
+Candidate for independent acceptance. The item retains `verify:true`; no central verification ledger or master-plan file is changed.
+
+## Primary comparison
+
+Read the actual author-hosted [Kleinberg and Tardos, *Balanced Outcomes in Social Exchange Networks*, STOC2008](https://www.cs.cornell.edu/info/people/kleinber/stoc08-exchange.pdf), introduction pp.295–297. The local ten-page PDF is `/tmp/atlas-worker-three/exchange2008.pdf`, extracted text `exchange2008.txt`, SHA256 `01518fd30ab4647a686d5840f7b633e01460b76295756eb33dc76485f291ead8`. Personally inspected actual PDF pages2–3, including Figure2 and the definitions (`exchange2008-page{2,3}.png`).
+
+The source defines an outcome as a matching and nonnegative vertex values, matched values summing to one and unmatched values zero. Its alternatives exclude the current matched edge. Stability bounds each alternative by the current payoff; balance adds equal surplus over alternatives on each matched edge. The source explicitly studies outcome conditions rather than specifying fine-grained negotiation dynamics. Its Figure2 and text give the four-path two-thirds values, five-path strong positions and stem three-quarters value. The source attributes the balanced model to Cook and Yamagishi1992; the item attributes that history to this account rather than claiming a fresh reading of their1992 original.
+
+The old arbitrary editable-graph widget used a bounded fixed-point iteration, filtered failed iterations, and called an empty result proof of nonexistence. It also inferred that actual negotiations never settle and displayed secondary laboratory bands. Those claims and bands are removed. No raw exchange experiment, original1992 paper, full2008 general algorithm, or convergence theorem is certified by this pass.
+
+## Exact finite contract
+
+The replacement offers the two/three/four/five-node paths, stem and triangle. The first five have specified balanced payoffs and one specified matching; the triangle starts at a feasible half-and-half split, with its unmatched vertex at zero. There is no claim to enumerate arbitrary graphs, all matchings, or all balanced payoffs. The triangle impossibility is proved directly: any one-edge matching leaves a zero-payoff vertex whose two incident stability inequalities force both matched payoffs to be at least one. The empty matching also fails. This argument is independent of numerical search.
+
+The split-deviation slider moves the first pair's first payoff toward either feasible extreme, with the other payoff always its complement. A payoff already at an extreme cannot move farther in that direction. All other specified pair payoffs stay fixed, and all unmatched payoffs remain zero. Every outside option, edge deficit and matched surplus imbalance is recomputed. The readout explicitly separates stable-but-unbalanced outcomes from failures of stability, uses a2e-12 decision tolerance, and makes no general dynamic prediction. Bars show all payoffs and outside options; graph edges identify the specified matching and actual stability deficits. Changing fixture resets the deviation; button reset and saved nonzero deviations are deterministic.
+
+## Checks and evidence
+
+- `node --test tests/verification-soc-exchange.test.mjs`:3/3 groups. Independent matching/feasibility/outside-option/equal-surplus checks; scalar derivations of path/stem values; all six fixtures at201 split values with independently accumulated edge and surplus residuals;1,001 triangle splits versus the analytic `max(q,1-q)` deficit; stable-but-unbalanced two-path; replay isolation and domain rejection. `/tmp/atlas-worker-three/exchange-math.log`.
+- `node scripts/check.mjs soc-3.7 --static`:1 item, zero errors/warnings. `/tmp/atlas-worker-three/exchange-static.log`.
+- `node tests/verification-soc-exchange.mjs`: final1450/430/320 × light/dark matrix, six groups. All six graphs, split endpoints/intermediates, actual graph/reset buttons, native slider Home/End/ArrowLeft, exact saved-state replay and malformed select recovery. Every graph edge, full marker/ring, payoff/option rectangle, canvas text/halo, TeX and page bound is checked. `/tmp/atlas-worker-three/exchange-native-final.log`; screenshots `/tmp/atlas-worker-three/exchange-{p4,stem,tri}-{width}-{theme}.png` plus panel crops. Initial screenshots identified triangle value labels overlapping the y-axis caption; final labels sit above their own payoff bars with additional headroom. Stem labels were also moved clear of the vertical matching edge. Final screenshot inspection is recorded with the acceptance handoff.
+- Exact text guards confirm all other chapter objects and syllabus rows unchanged. Only the obsolete import and source-header note outside the item were updated; the old shared solver remains unmodified for any other consumers. `git diff --check` passes. No shared runtime, generated tracked data or global queue edits.
