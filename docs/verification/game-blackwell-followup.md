@@ -1,6 +1,6 @@
 # Game3.10: source probability, directional coverage and actual sample paths
 
-Candidate for independent review; flag remains true. Producer narrow native smoke passes; full six viewport/theme groups are running at handoff and must pass before acceptance.
+Candidate for independent review; flag remains true. Producer narrow smoke and all six final viewport/theme groups pass; independent acceptance remains pending.
 
 ## Primary evidence
 
@@ -21,5 +21,6 @@ The old pathwise bound discarded a cross term justified only in conditional expe
 - Four math groups pass. An independent Gaussian-elimination vertex enumeration brackets scalar values over721 directions; coverage correction is checked against23,040 additional off-grid direction/target comparisons; all400 records in72 full shape/centre/radius/opponent/play-mode combinations satisfy independent average and squared-distance recurrences. The sampled base-bound counterexample, projections, clipped lines, full range, seeds and malformed domains are checked. `/tmp/atlas-coordinator/game-blackwell-math.log`.
 - Targeted static check: one item, zero errors/warnings. `/tmp/atlas-coordinator/game-blackwell-static.log`.
 - Fresh320px dark native smoke passes all shapes/radii/opponents/play modes and selected-round endpoints, all400 actual records and180 directional markers, real native controls/drag/resampling, exact replay and invalid seed, complete glyph/path/circle/stroke/text/TeX bounds. Inspected actual default full page, sampled counterexample, unresolved band and extreme target screenshots. `/tmp/atlas-coordinator/game-blackwell-native-debug.log`.
-- Full six1450/430/320×light/dark matrices are running in `/tmp/atlas-coordinator/game-blackwell-native.log`; their completion is an acceptance prerequisite.
+- All six final1450/430/320×light/dark matrices pass in `/tmp/atlas-coordinator/game-blackwell-native.log`. Every final group includes all declared corners, actual controls and exact replay.
+- Strict combined build passes6684 written items with zero errors/warnings; `/tmp/atlas-coordinator/game-blackwell-build.log`.
 - Initial native smoke caught two overwide display formulas; equivalent shorter notation fixed both. Browser/Node trigonometric last-bit differences are compared with an explicit small tolerance; exact same-browser saved-state replay still requires equality. Shared runtime/LP solver and other game objects remain untouched.
