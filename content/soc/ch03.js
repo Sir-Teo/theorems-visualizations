@@ -44,47 +44,47 @@ export default {
       num: '3.1',
       kind: 'Definition',
       name: 'Degree, closeness and betweenness centrality',
-      statement: String.raw`Let $G$ be a connected undirected graph on $n$ nodes, $k_i$ the degree of node $i$, $d(i,j)$ the shortest-path distance, and $\sigma_{st}$ the number of shortest paths from $s$ to $t$ ($\sigma_{st}(i)$ of them through $i$). Three classical centralities, each scaled to lie in $[0,1]$:
+      statement: String.raw`Let $G$ be a finite simple connected undirected graph on $n\ge3$ nodes, $k_i$ the degree of node $i$, $d(i,j)$ the shortest-path distance, and $\sigma_{st}$ the number of shortest paths from $s$ to $t$ ($\sigma_{st}(i)$ of them through $i$). Three classical centralities, each scaled to lie in $[0,1]$:
 
 (a) **Degree:** $C_D(i) = \dfrac{k_i}{n-1}$, the share of the other people $i$ is directly tied to.
 
 (b) **Closeness:** $C_C(i) = \dfrac{n-1}{\sum_{j\ne i} d(i,j)}$, the inverse of the average distance to everyone else.
 
-(c) **Betweenness:** $C_B(i) = \dfrac{1}{\binom{n-1}{2}} \sum_{s<t,\; s,t\ne i} \dfrac{\sigma_{st}(i)}{\sigma_{st}}$, the share of the shortest paths between other pairs that run through $i$.
+(c) **Betweenness:** $C_B(i) = \dfrac{1}{\binom{n-1}{2}} \sum_{s<t,\; s,t\ne i} \dfrac{\sigma_{st}(i)}{\sigma_{st}}$, the mean fraction of shortest paths through $i$, giving each unordered pair of other vertices equal weight.
 
-The measures need not agree: the most connected person, the person nearest to everyone, and the person who controls the traffic can be three different people.`,
-      idea: String.raw`The three formulas formalise three different ideas of being central: being *active* (many direct contacts), being *independent* of intermediaries (few steps to everyone), and *controlling flow* (many shortest paths pass through you). They separate because they respond to different parts of the structure: a node inside a dense cluster has many ties but few shortest paths run through it, while a node whose only job is to link two clusters has few ties but lies on every shortest path between them. Closeness needs one breadth-first search from each node (distances as in 2.2), and Brandes' algorithm accumulates all betweenness values from the same searches.`,
-      caption: String.raw`Switch the measure: node size shows it and the gold node is the top-ranked one; the bars list the eight highest scores. On the kite graph the top node changes from the most connected person (D) to the best-placed one (F, G) to the bridge (H) as you change the measure. Drag nodes to untangle the picture.`,
-      scope: String.raw`Defined for connected undirected graphs; on a graph with several components closeness must be redefined (here: scaled by the share of nodes reachable). The kite graph is a ten-person example with the edge list of networkx's \`krackhardt_kite_graph\`; its attribution to Krackhardt (1990) is from memory and was not checked against the paper.`,
+The measures need not agree: the most connected person, the person nearest to everyone, and the person on the largest mean fraction of shortest paths can be three different people.`,
+      idea: String.raw`The three formulas formalise three different ideas of being central: being *active* (many direct contacts), being *independent* of intermediaries (few steps to everyone), and *controlling flow* (many shortest paths pass through you). They separate because they respond to different parts of the structure: a node inside a dense cluster has many ties but few shortest paths run through it, while a node whose only job is to link two clusters has few ties but lies on every shortest path between them. A breadth-first search from each node supplies distances and shortest-path counts (2.2); a backwards accumulation then computes betweenness from those counts.`,
+      caption: String.raw`Switch the measure: node size shows the relative score and every tied top node is gold; the bars list the eight highest scores. On the kite graph the top node changes from the most connected person (D) to the best-placed one (F, G) to the bridge (H) as you change the measure. Florence vertices use numeric labels; the ranking lists their family names. The fixed drawing leaves edges unchanged when the measure changes.`,
+      scope: String.raw`The displayed formulas concern connected unweighted undirected graphs with at least three vertices. All three offered graphs are connected. These structural scores do not establish observed influence, actual routing or causal power. The kite, karate-club and Florentine-marriage edge lists are the NetworkX 3.7 bundled examples; the kite is labelled A–J here. Its name follows that package, without a separate claim to authenticate the graph against Krackhardt's original paper. Graph positions are a drawing choice and do not affect scores.`,
       deps: ['soc-2.2'],
-      refs: ['Newman ch. 7'],
+      refs: ['Freeman, Centrality in Social Networks: Conceptual Clarification (1978/79), pp.220–226','NetworkX 3.7 source: krackhardt_kite_graph, karate_club_graph, florentine_families_graph'],
       tags: ['centrality', 'networks'],
-      credit: 'Freeman: betweenness 1977; the three measures compared 1978/79',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Centrality' },
+      credit: 'Three centrality definitions compared by Linton C. Freeman, 1978/79; NetworkX 3.7 example graphs.',
+      links: { source:'https://www.cin.ufpe.br/~rbcp/taia/Freeman1979-centrality.pdf',graph:'https://networkx.org/documentation/stable/reference/generated/networkx.generators.small.krackhardt_kite_graph.html' },
       verify: true,
       viz(v) {
         const s = v.stage({ x: [-1.4, 1.4], y: [-1.15, 1.15], axes: false, equal: true, height: 400 });
-        const sb = v.stage({ x: [0, 1.6], y: [-0.2, 8.2], axes: false, height: 400, weight: 0.8, minWidth: 240, title: 'Eight highest scores' });
+        const sb = v.stage({ x: [-0.5, 3.2], y: [-0.2, 8.2], axes: false, height: 400, weight: 0.8, minWidth: 240, title: 'Eight highest scores' });
         const sel = v.select('Network', [{ value: 'kite', label: 'Kite (10 nodes)' }, { value: 'karate', label: 'Karate club' }, { value: 'florence', label: 'Florence' }], 'kite', { onChange: load });
         const meas = v.select('Node size shows', [{ value: 'degree', label: 'Degree' }, { value: 'closeness', label: 'Closeness' }, { value: 'betweenness', label: 'Betweenness' }], 'degree');
         let net = net3('kite'), cache = {};
-        const G = v.graph(s, { nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), layout: 'fit', r: 11, autoRadius: false });
-        function load() { net = net3(sel.value); G.set({ nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), r: 11, autoRadius: false }).layout('fit'); }
+        const G = v.graph(s, { nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), layout: 'fit', r: 24, autoRadius: false, draggable: false });
+        function load() { net = net3(sel.value); G.set({ nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), r: 24, autoRadius: false }).layout('fit'); }
         const get = () => (cache[sel.value] ??= centralities(net.g, betweenness(net.g)));
         let st = {};
         v.render(() => {
           const c = get(), arr = c[meas.value], mx = Math.max(...arr), top = argmaxAll(arr);
-          G.nodes.forEach((nd) => { nd.r = 5 + 18 * Math.sqrt(arr[nd.id] / mx); });
+          G.nodes.forEach((nd) => { nd.r = 8 + 15 * Math.sqrt(arr[nd.id] / mx); });
           G.draw({
             nodeColor: () => 'accent', nodeFill: (id) => (top.includes(id) ? 'gold' : null),
-            nodeLabel: (id) => (net.g.n < 40 && net.g.n !== 15 ? net.labels[id] : ''), nodeNote: (id) => (net.g.n === 15 ? net.labels[id] : null),
+            nodeLabel: (id) => net.g.n === 15 ? String(id+1) : net.labels[id],
           });
           const order = [...arr.keys()].sort((a, b) => arr[b] - arr[a]).slice(0, 8);
           order.forEach((i, r) => {
             const y = 7.5 - r, w = arr[i] / mx * 1.0;
-            sb.rect(0.32, y - 0.32, 0.32 + w, y + 0.32, { fill: top.includes(i) ? 'gold' : 'accent', fillAlpha: 0.7, color: top.includes(i) ? 'gold' : 'accent' });
-            sb.text(nodeName(net, i), 0.28, y, { align: 'right', baseline: 'middle', size: 12, color: 'ink' });
-            sb.text(v.fix(arr[i], 2), 0.36 + w, y, { align: 'left', baseline: 'middle', size: 11.5, color: 'muted' });
+            sb.rect(1.4, y - 0.32, 1.4 + w, y + 0.32, { fill: top.includes(i) ? 'gold' : 'accent', fillAlpha: 0.7, color: top.includes(i) ? 'gold' : 'accent' });
+            sb.text(net.g.n===15?`${i+1} ${nodeName(net,i)}`:nodeName(net,i), 1.32, y, { align: 'right', baseline: 'middle', size: 11, color: 'ink' });
+            sb.text(v.fix(arr[i], 2), 1.44 + w, y, { align: 'left', baseline: 'middle', size: 11.5, color: 'muted' });
           });
           st = { c, tops: ['degree', 'closeness', 'betweenness'].map((k) => argmaxAll(c[k])) };
         });

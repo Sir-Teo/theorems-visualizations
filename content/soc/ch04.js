@@ -8,7 +8,7 @@
 // Watts & Strogatz, Nature393:440–442 (1998), and Kleinberg’s complete author paper, Theorems2–3, pp.4–12.
 // Everything drawn from a simulation is labelled as a model on the page.
 import {
-  rng32, components, meanDistER, triangleStats, poissonPmf, pairUniforms, gnpCoupled, growthCurve, giantTheory,
+  rng32, components, triangleStats, poissonPmf, pairUniforms, gnpCoupled, growthCurve, giantTheory,
 } from './ch04.shared.js';
 import { erSeed, erValidSeed, erUniforms, erCircle, erGnp, erDegreeLaw, erCenti, erGiant, erEdgeOrder, erGrowth, erGrowthAt } from './source-audit-erdos-renyi.js';
 import { swSeedValid, swSkeleton, swBuild, navigationGraph, navigationLaw, navigationRoute, navigationSummary, navigationHalving } from './source-audit-smallworld.js';
@@ -182,52 +182,31 @@ Reported experiments: Travers–Milgram 64 of 296 chains arrived (22%), Dodds et
     },
     // ------------------------------------------------------------------ 4.4
     {
-      num: '4.4',
-      kind: 'Phenomenon',
-      name: 'Six degrees in online networks',
-      statement: String.raw`When the whole graph is available, distances can be measured directly instead of by letters. Facebook's friendship graph was measured in May 2011 (Ugander et al., 721 million active users, 68.7 billion friendships, mean degree about 190, median 99): the average distance was **4.7 hops** (3.7 intermediaries) and 99.91% of users lay in one connected component. A 2016 measurement by Facebook's data team (Edunov et al., 1.59 billion active users) gave an average distance of **4.57** hops, i.e. 3.57 intermediaries.
+      num:'4.4',kind:'Phenomenon',name:'Six degrees in online networks',
+      statement:String.raw`Backstrom and colleagues' Facebook study reports a mean shortest-path distance of **4.74 friendship links** among reachable pairs in its May 2011 active-user graph, with approximately 721 million users and 69 billion undirected friendships. Their probabilistic HyperANF computation estimates network distances; it does not trace how people actually forward messages.
 
-So online social networks are "small" in the sense of 4.3, and have become smaller as they grew and densified. A random graph with the same number of vertices and mean degree predicts a distance of $\approx(\ln N-\gamma)/\ln c+\tfrac12$ with $\gamma\approx0.577$ (Euler's constant); for $N=721$ million and $c=190$ this is about 4.3, a little below the measured 4.7: the real network is slightly less efficient than a random one because it is clustered and has heterogeneous degrees.`,
-      idea: String.raw`Growth of a neighbourhood: starting from one vertex, about $c^d$ vertices are within $d$ steps while that is much less than $N$, so the whole graph is reached when $c^d\approx N$, i.e. at $d\approx\ln N/\ln c$. Distances therefore grow with the *logarithm* of the population: multiplying $N$ by 1000 adds only $\ln1000/\ln c\approx1.3$ steps at $c=190$. Clustering and degree heterogeneity both reduce the number of *new* vertices per step, which is why real networks sit above the random-graph value.`,
-      caption: String.raw`**Left**: a model: about $c^d$ people lie within $d$ hops, so the neighbourhood fills the population in a few steps; the bars give the share of people at each distance (drag $c$ and $N$). **Right**: the mean distance predicted for a random graph as the population $N$ grows, for the chosen $c$, with the two Facebook measurements marked. Dragging $N$ over six orders of magnitude moves the prediction by only a few hops.`,
-      scope: String.raw`The measured averages are for Facebook's active users at the stated dates (not the whole world's population) and count hops along friendship links. The random-graph curve is a model; the 2016 post does not report a mean degree, so no prediction is drawn for it. "Degrees of separation" in the 2016 report equals the distance minus one.`,
-      deps: ['soc-4.3'],
-      refs: ['E&K §20.4'],
-      tags: ['small world', 'social networks', 'online'],
-      credit: 'Ugander, Karrer, Backstrom & Marlow, 2011; Edunov et al., 2016',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Six_degrees_of_separation', arxiv: 'https://arxiv.org/abs/1111.4503' },
-      verify: true,
-      viz(v) {
-        const fmtN = (x) => (x >= 1e9 ? `${(x / 1e9).toPrecision(3)} billion` : x >= 1e6 ? `${(x / 1e6).toPrecision(3)} million` : x >= 1e3 ? `${Math.round(x / 1e3 * 10) / 10} thousand` : `${Math.round(x)}`);
-        const cS = v.slider('mean degree $c$', 3, 400, 190, { step: 1, int: true });
-        const NS = v.slider('population $N$', 1e3, 1e10, 7.21e8, { log: true, fmt: fmtN });
-        const A = v.stage({ x: [-0.5, 9.5], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'distance $d$ (hops)', ylabel: 'share of the population at distance $d$', title: 'model: how a neighbourhood fills the network', minWidth: 280, weight: 1 });
-        const B = v.stage({ x: [1e3, 1e10], y: [0, 9], xlog: true, axes: 'box', gutter: true, height: 330, xlabel: 'population $N$', ylabel: 'mean distance', title: 'random-graph prediction vs Facebook', minWidth: 300, weight: 1.2 });
-        // occupancy model: within d hops the expected share of the population is 1 − exp(−c^d / N)
-        const reach = (c, N, d) => (d === 0 ? 1 / N : 1 - Math.exp(-Math.pow(c, d) / N));
-        let st = null;
-        v.render(() => {
-          const c = cS.value, N = NS.value; let mean = 0, pk = 0;
-          const P = []; for (let d = 1; d <= 9; d++) { const x = reach(c, N, d) - reach(c, N, d - 1); P[d] = x; mean += d * x; pk = Math.max(pk, x); }
-          P.forEach((x, d) => { if (x > 1e-4) A.rect(d - 0.4, 0, d + 0.4, x, { fill: 'accent', fillAlpha: 0.6, stroke: false }); });
-          A.setView([-0.5, 9.5], [0, pk * 1.25]);
-          A.vline(mean, { color: 'gold', width: 2 });
-          A.text(`mean ${v.fix(mean, 2)}`, mean, pk * 1.12, { dx: 6, size: 11.5, color: 'gold', weight: 700, align: 'left' });
-          B.fn((x) => meanDistER(x, c), { color: 'accent', width: 2.4, n: 200 });
-          B.dot(7.21e8, 4.74, { r: 6, color: 'red' }); B.text('2011: 4.74', 7.21e8, 4.74, { dx: -9, dy: -14, size: 11.5, weight: 700, color: 'red', align: 'right' });
-          B.dot(7.21e8, meanDistER(7.21e8, 190), { r: 5, hollow: true, color: 'green' });
-          B.dot(1.59e9, 4.57, { r: 6, color: 'purple' }); B.text('2016: 4.57', 1.59e9, 4.57, { dx: 10, dy: 20, size: 11.5, weight: 700, color: 'purple', align: 'left' });
-          B.vline(N, { color: 'gold', width: 1.4, dash: true });
-          B.dot(N, meanDistER(N, c), { r: 5, color: 'gold' });
-          st = { c, N, sm: mean, pred: meanDistER(N, c), p2011: meanDistER(7.21e8, 190) };
+Their convention calls distance minus one the number of intermediaries or “degrees of separation”: 4.74 links corresponds to 3.74 intermediaries. Facebook's official announcement of 4 February 2016 reports a newer separation statistic of **3.57**, down from 3.74 in 2011. Under that convention this corresponds to 4.57 links.
+
+These reported figures concern the measured Facebook populations and graph definitions; they are not maximum distances, universal claims about all people, or evidence that a decentralized search will find a shortest route.`,
+      idea:String.raw`A route with $d$ friendship links has $d+1$ people, including its source and target, hence $d-1$ intermediaries. An average may be fractional even though each individual path length is an integer. Subtracting one from every connected pair's distance also subtracts one from their mean.
+
+The 2011 technical study distinguishes finite distances between connected pairs from pairs in different components. Its companion analysis by Ugander and colleagues reports 99.91% of the active-user graph in the largest component. Neither a finite connected-pair average nor that large component makes the distance between disconnected pairs finite. Changes in the reported numbers alone do not identify a cause such as growth, clustering or degree heterogeneity.`,
+      caption:String.raw`Switch between links and intermediaries to compare the two published summaries under one counting convention. No distance histogram is inferred from those values. The second panel is an authored individual path: change its integer link count and count the people between its two endpoints. It is a counting example, not a sampled Facebook route.`,
+      scope:String.raw`Sources are the complete 2011 author papers and Facebook's accessible 2016 official announcement. The latter supplies the reported comparison, not a newly reproduced 2016 computation or raw dataset. Its population size, unpublished degree distribution and error bars are not invented here. The plotted 2011 value is an estimate from probabilistic graph analysis, not an exhaustive BFS of every pair.`,
+      deps:['soc-2.2','soc-4.3'],refs:['Backstrom et al., arXiv:1111.4570v3, abstract and §§3–4','Ugander et al., arXiv:1111.4503v1, Path lengths and Component sizes, PDFpp.4–5','Facebook, Friends Day: Celebrating the Importance of Connections, 4 February 2016'],
+      tags:['small world','social networks','online'],credit:'Backstrom, Boldi, Rosa, Ugander & Vigna, 2011/2012; Ugander, Karrer, Backstrom & Marlow, 2011; Facebook, 2016.',
+      links:{study:'https://arxiv.org/abs/1111.4570v3',structure:'https://arxiv.org/abs/1111.4503v1',announcement:'https://about.fb.com/news/2016/02/friends-day/'},verify:true,
+      viz(v){
+        const mode=v.select('count',[{value:'links',label:'friendship links'},{value:'between',label:'intermediaries'}],'links'),d=v.slider('links in the example path',1,8,5,{int:true});
+        const A=v.stage({x:[-.2,2.2],y:[-.45,6],axes:'box',gutter:true,height:320,minWidth:260,xticks:[[.5,'2011'],[1.5,'2016']],ylabel:'reported count',title:'two reported summaries; switch the convention'}),B=v.stage({x:[-.6,10.6],y:[-1,1],axes:false,height:260,minWidth:260,title:'authored individual path; integer links'});
+        v.render(()=>{
+          [4.74,4.57].forEach((x,j)=>{const value=x-(mode.value==='between'?1:0),at=.5+j;A.rect(at-.25,0,at+.25,value,{fill:j?'purple':'accent',fillAlpha:.65,stroke:false});A.text(value.toFixed(2),at,value+.2,{align:'center',baseline:'middle',color:j?'purple':'accent',weight:700,size:13});});
+          for(let j=0;j<d.value;j++)B.line(10*j/d.value,0,10*(j+1)/d.value,0,{color:'muted',width:2});
+          for(let j=0;j<=d.value;j++)B.dot(10*j/d.value,0,{r:5,ring:false,color:j===0?'purple':j===d.value?'green':'orange'});
+          B.text('source',0,-.35,{align:'left',baseline:'middle',color:'purple',size:11});B.text('target',10,-.35,{align:'right',baseline:'middle',color:'green',size:11});B.text(`${d.value} links; ${d.value-1} intermediaries`,5,.4,{align:'center',baseline:'middle',color:'ink',size:12});
         });
-        v.legend([['accent', 'random graph with mean degree $c$'], ['red', 'Facebook, May 2011 (measured)', { dot: true }], ['purple', 'Facebook, 2016 (measured)', { dot: true }], ['green', 'random graph, same $N$ and $c$ as 2011', { dot: true }]]);
-        v.readout(() => {
-          if (!st) return '';
-          const { c, N, sm, pred, p2011 } = st;
-          return String.raw`$c=${c}$, $N=$ ${fmtN(N)}: neighbourhood-growth model mean **${v.fix(sm, 2)}**, formula $(\ln N-\gamma)/\ln c+\tfrac12=$ **${v.fix(pred, 2)}** · within $d$ hops about $c^d$ people (at $c=${c}$: ${[1, 2, 3, 4].map((d) => fmtN(Math.pow(c, d))).join(', ')} for $d=1,\dots,4$) · each factor of 1000 in $N$ adds $\ln1000/\ln c=${v.fix(Math.log(1000) / Math.log(c), 2)}$ hops
-2011: measured 4.74 vs random-graph value ${v.fix(p2011, 2)} ($N=721$ million, $c=190$); 2016: measured 4.57 with 1.59 billion users`;
-        });
+        v.legend([['accent','2011 reported mean'],['purple','2016 reported statistic / example source'],['orange','example intermediaries'],['green','example target']]);
+        v.readout(()=>`Reported ${mode.value==='links'?'friendship links: 2011 4.74, 2016 4.57':'intermediaries: 2011 3.74, 2016 3.57'}. The change is 0.17 in either convention. Authored path: ${d.value} links, ${d.value+1} people in total, ${d.value-1} intermediaries. No measured distance distribution, maximum path length or routing success is inferred.`);
       },
     },
     // ------------------------------------------------------------------ 4.5
