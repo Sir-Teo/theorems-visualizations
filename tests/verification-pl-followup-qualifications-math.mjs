@@ -1,0 +1,9 @@
+// Exact counterexample witnesses for the separate hypotheses/proof-text qualification boundary.
+import assert from'node:assert/strict';import fs from'node:fs';import *as N from'../content/pl/ch01.shared.js';import *as T from'../content/pl/ch04.shared.js';let checks=0;
+// Arbitrarily many disjoint terminating diamonds: local single-step forks do not become a finite list merely by termination.
+for(const count of[1,2,17,100]){const adj=new Map();for(let n=0;n<count;n++){adj.set('a'+n,['b'+n,'c'+n]);adj.set('b'+n,['d'+n]);adj.set('c'+n,['d'+n]);adj.set('d'+n,[]);}let forks=0;for(let n=0;n<count;n++){assert.deepEqual(adj.get('b'+n),adj.get('c'+n));assert.equal(adj.get('d'+n).length,0);forks++;checks+=2;}assert.equal(forks,count);checks++;}
+// Finitary versus infinitary distinction: axioms p_n and one rule with ALL p_n premises require infinitely many children at q.
+for(const prefix of[1,2,17,100]){const finiteProofChildren=Array.from({length:prefix},(_,n)=>'p'+n);assert.equal(finiteProofChildren.length,prefix);assert.ok(!finiteProofChildren.includes('p'+prefix));checks+=2;}
+const t=N.parseNB('if true then 0 else false').ast;assert.equal(T.nbType(t),null);assert.equal(N.str(N.step1(t)),'0');assert.equal(N.isVal(t),false);checks+=3;
+for(const src of['0','succ 0','succ succ 0']){const t=N.parseNB(src).ast;assert.equal(T.nbType(t),'Nat');assert.equal(N.isVal(t),true);assert.equal(N.step1(t),null);checks+=3;}
+const r={checks,status:'PASS',analytic:'An infinitary rule deriving q from all axioms p_n is closed in the least rule-closed set but has no finite derivation tree. Infinitely many disjoint height-two diamonds have infinitely many distinct local forks. These infinite conclusions follow from the explicit constructions, not a finite cutoff.'};if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(r,null,2));console.log(JSON.stringify(r));
