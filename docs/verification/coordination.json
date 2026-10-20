@@ -26,8 +26,8 @@
     ],
     "current": [
       "Serial integration and full immutable checkpoints",
-      "BIGHIST4.6Toba actual-source/analytic coalescence audit; BIGHIST3.5source-reading follow-up remains queued",
-      "BIGHIST4.5accepted; assigning4.8to worker_two in existing isolated worktree"
+      "BIGHIST3.5actual-source/CDS-unit audit; Toba4.6/megafauna4.8accepted",
+      "PHIL metadata integration; hard original bodies/prerequisite/full-map gates remain open"
     ]
   },
   "workers": [
@@ -44,7 +44,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "FLUID metadata/scope peer accepted; ROBOT3.7local finite-yaw correction in production; LOGIC4.12/ARCH3.14body recovery paused at safe boundary.",
+      "current": "ROBOT source/camera and PHIL peer complete; producing separate responsive equation-only correction for epi2.2/prob2.1.1a; hard original-body recovery paused.",
       "completedCollections": [
         "music",
         "ling"
@@ -66,7 +66,7 @@
         "psych",
         "tech"
       ],
-      "current": "Exclusive BIGHIST4.8actual-source/analytic three-case megafauna audit in progress; accepted3.8files restored byte-identically after filename collision found."
+      "current": "Megafauna4.8andToba4.6accepted; read-only new CIRC/MATHBIO original-body or authorized1936translation locators."
     },
     {
       "agent": "worker_three",
@@ -81,7 +81,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "ROBOT3.7source/math/native peer complete with concrete huge-yaw finding; final producer correction/recheck pending. Preparing PHIL genuine used prerequisites after accepted FLUID.",
+      "current": "ROBOT corrected-yaw peer accepted; PHIL candidate independently reviewed; producing genuine MATHBIOprerequisites with bounded argument corrections, preserving1936flag.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -1305,6 +1305,23 @@
         "73b30d611685e0643b7ff9e6cc2d49fcd647ffdc",
         "41662ecc3e6d5e1fc3b166e03c42eeacc75c69c2"
       ]
+    },
+    {
+      "ids": [
+        "bighist-4.6",
+        "robot-3.7"
+      ],
+      "peer": "Independent worker_twoToba and worker_threeROBOT source/math/native/ownpixel acceptance; separate source scopes retained in named peer reports.",
+      "reports": [
+        "docs/verification/bighist-toba-peer.md",
+        "docs/verification/worker-three-robot-denavit-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "29a3e75ca3c58d202ec8090b5c5c73273d59dea6",
+        "659731fd8275c6137a4082c85e0d13ca7f13208c",
+        "f75ac4d5acecf74b386373058706b3d4694276b2"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1317,7 +1334,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 9,
+  "currentPendingSourceReviews": 7,
   "latestCheckpoint": {
     "acceptedContentCommit": "e31b9dc",
     "report": "docs/verification/checkpoint-e31b9dc.md",
@@ -1361,7 +1378,18 @@
       "Current source/prerequisite/full-map gates remain open; passing tests do not certify unread bodies or active drafts."
     ]
   },
-  "openStateFindings": [],
+  "openStateFindings": [
+    {
+      "ids": [
+        "epi-2.2",
+        "prob-2.1.1a"
+      ],
+      "status": "layout-followup-pending",
+      "finding": "Independent PHIL prerequisite peer observed unchanged target display formulas clipped at320; exact formulas read, no target-source/math acceptance implied.",
+      "producer": "worker_one",
+      "report": "docs/verification/phil-crossfield-independent-peer-worker-one.md"
+    }
+  ],
   "stateFollowups": [
     {
       "ids": [
@@ -1408,6 +1436,18 @@
       "correction": "b5d0bdd61175caadeb1aaebf6325f8dfec0b9775",
       "report": "docs/verification/polsci-aggregation-rounding-peer.md",
       "verification": "Worker one independently exhausted96096allocations,576exact rational polynomial masses/tails/moments and both320native/real-pointer/rawreplay/ownpixels; preserved offgrid raster semantics. No new original-source closure counted."
+    },
+    {
+      "ids": [
+        "robot-3.7"
+      ],
+      "status": "accepted",
+      "finding": "Finite huge saved yaw disabled horizontal drag; local bounded raw yaw and real-drag wrap independently verified.",
+      "commits": [
+        "f75ac4d5acecf74b386373058706b3d4694276b2"
+      ],
+      "report": "docs/verification/worker-three-robot-denavit-peer.md",
+      "sourceClosure": "Same3.7original closure, not a second source-review count."
     }
   ],
   "acceptedSourceLimitations": [

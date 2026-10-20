@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 9,
+  "remainingFlags": 7,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -16,9 +16,8 @@
     "pharm": 1,
     "imaging": 1,
     "circ": 1,
-    "robot": 1,
     "arch": 1,
-    "bighist": 2
+    "bighist": 1
   },
   "queue": [
     {
@@ -106,19 +105,6 @@
       }
     },
     {
-      "id": "robot-3.7",
-      "file": "content/robot/ch03.js",
-      "name": "A Kinematic Notation for Lower-Pair Mechanisms",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
       "id": "arch-3.14",
       "file": "content/arch/ch03-b.js",
       "name": "The Stone Skeleton",
@@ -150,22 +136,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Endosymbiont",
         "doi": "https://doi.org/10.1016/0022-5193(67)90079-3"
-      }
-    },
-    {
-      "id": "bighist-4.6",
-      "file": "content/bighist/ch04-b.js",
-      "name": "The Toba bottleneck (contested)",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Toba_catastrophe_theory",
-        "doi": "https://doi.org/10.1006/jhev.1998.0219"
       }
     }
   ],
@@ -998,7 +968,9 @@
       "bighist-3.4",
       "bighist-4.3",
       "bighist-4.5",
-      "bighist-4.8"
+      "bighist-4.8",
+      "bighist-4.6",
+      "robot-3.7"
     ]
   },
   "additionalFollowups": [
@@ -6177,6 +6149,16 @@
       "id": "bighist-4.8",
       "status": "resolved",
       "note": "2026-10-20: Coordinator independently read actual retained source bodies/figures, verified complete source hashes, regenerated791Fraction references plus2050independent90digit integrals, and passed both320full native/20actualdrags/65raw/source-readout ownpixels; dependency and portabletest findings corrected separately; docs/verification/bighist-megafauna-peer.md."
+    },
+    {
+      "id": "bighist-4.6",
+      "status": "resolved",
+      "note": "2026-10-20: Worker two independently read actual Rampino/Lane facsimiles and bounded actual author abstracts/sourcepixels, regenerated70digit reference plus120RK4profiles, and passed both320full native/5actualdrags/25raw/exactDOM/replay/ownpixels; docs/verification/bighist-toba-peer.md."
+    },
+    {
+      "id": "robot-3.7",
+      "status": "resolved",
+      "note": "2026-10-20: Worker three independently read all7original pages/convention mapping, regenerated85digit fixtures and2400quaternionchains, found then verified bounded-yaw correction, and passed both320full native/all17directDOM/16rows/126raw/12camera-wrap cases/exactreplay/ownpixels; docs/verification/worker-three-robot-denavit-peer.md."
     }
   ]
 }

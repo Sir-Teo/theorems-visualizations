@@ -1,6 +1,6 @@
 import{tobaModel,tobaTick,TOBA_DOMAINS,TOBA_DEFAULTS,TOBA_DATE}from'./source-audit-toba.js';
 export default{
- num:'4.6',kind:'Hypothesis',name:'The Toba bottleneck (contested)',verify:true,
+ num:'4.6',kind:'Hypothesis',name:'The Toba bottleneck (contested)',verify:false,
  statement:String.raw`The Youngest Toba Tuff eruption and a proposed human population bottleneck are distinct claims. Rampino and Self's 1992 paper modelled a brief volcanic winter and possible longer climate feedback; it did not estimate a human population crash. Ambrose's 1998 author abstract proposed that volcanic winter could have severely reduced human populations, especially outside tropical refugia. That is a hypothesis, not an observed global census.
 
 Storey and colleagues' 2012 author abstract reports an eruption age of 73.88±0.32 ka, with one-sigma full external errors. Calibration matters: Lane and colleagues' 2013 Lake Malawi study discusses this estimate alongside 75.0±0.9 ka and uses the latter for its core chronology. Neither date fixes a population history.
