@@ -3,6 +3,7 @@ import {
   nm, idx, leaf, dec, isLeaf, prep, backward, bpath, infoSets, pureStrategies, stratName, playBeh, asBeh, strategicForm, pureNash,
   drawTree, treeView, pickNode, nmz, randTree, solveGame,
 } from './ch04.shared.js';
+import { DETERMINACY_GAMES, solveLineGame, validLineHistory } from './determinacy-audit.js';
 import { TREE_EXAMPLES, entryEquilibria, randomFiniteTree, solveFiniteTree, checkFiniteProfile, binaryTreeCounts, finiteTreeInspector } from './finite-tree-audit.js';
 
 const ancestors = (n) => { const s = new Set(); for (let x = n; x; x = x.par) s.add(x); return s; };
@@ -116,57 +117,28 @@ A **pure strategy** is a complete plan: one action at every node assigned to tha
       kind: 'Theorem',
       name: 'Zermelo: chess is determined',
       statement: String.raw`Consider a finite two-player game of perfect information with no chance moves whose outcomes are *win for player 1*, *draw* or *win for player 2* (chess is such a game once the draw rules guarantee that play is finite). Then exactly one of the following holds: player 1 has a strategy that forces a win; player 2 has a strategy that forces a win; or both players have strategies that guarantee at least a draw. The game is **determined**: there is a value of the game, and with best play from the start it is realised.`,
-      idea: String.raw`This is backward induction (game-4.2) applied to the three-valued payoffs $+1, 0, -1$ for player 1. Label each final position by its result and then label every earlier position by what the mover can force: win if some move leads to a position that is lost for the opponent, loss if all moves do, draw otherwise. Induction on the distance to the end gives every position, in particular the start, one of the three labels. For a game as large as chess the labelling exists but nobody has computed it; for small games it can be computed completely.`,
+      idea: String.raw`Assign terminal histories the fixed player-1 payoffs $+1,0,-1$. At a player-1 node take the maximum of the child values; at a player-2 node take their minimum. Induction on the finite remaining tree proves that each player can guarantee the resulting value against every opposing strategy. A root value $+1$ gives player 1 a winning strategy, $-1$ gives player 2 one, and $0$ gives each a strategy guaranteeing at least a draw. The pictures use alternating moves and values for the next player: a node is winning if some child is losing for the opponent, losing if every child is winning for the opponent, and drawn otherwise. This finite-tree proof is a modern formulation. Zermelo's original argument instead uses sets of continuations and explicitly allows infinite play as a draw.`,
       caption: String.raw`Pick a game; the computer has solved every position reachable from the empty board. Each empty square is coloured by what the player to move gets by playing there: green = forces a win, gold = draw, red = loses against best play. Click squares to play (the other side is played by the computer if the switch is on) and watch the colours change. The bars count all reachable positions by value for the player to move.`,
-      credit: 'Zermelo, 1913 (correct proof by Kálmán, 1928)',
-      scope: String.raw`Finite games of perfect information without chance. Zermelo’s own argument concerned chess; the usual modern proof is by induction as above.`,
+      credit: 'Ernst Zermelo, 1913 (chess); modern finite-tree formulation',
+      scope: String.raw`A finite rooted game tree, two players who prefer their own win to a draw to a loss, observed histories and no chance moves. Modern chess fits only after its termination rules are specified. Zermelo's 1913 paper, pp.501–504, instead permits infinite play as a draw; this widget does not reproduce his continuation sets or proposed move bound. The three small line games are solved exhaustively without symmetry reduction, stopping immediately on a completed line. Undo removes one individual move, including a computer reply. Saved states include the board and the complete undo history.`,
       deps: ['game-4.2'],
-      refs: ['MSZ ch. 1'],
+      refs: ['Zermelo (1913), Proceedings of the Fifth ICM, vol. II, pp.501–504', 'Bonanno (2024), §3.5, Theorem 3.5.2, pp.92–93'],
       tags: ['determinacy', 'chess', 'combinatorial game'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)' },
+      links: { source: 'https://www.mathunion.org/fileadmin/ICM/Proceedings/ICM1912.2/ICM1912.2.ocr.pdf#page=503', textbook: 'https://faculty.econ.ucdavis.edu/faculty/bonanno/PDF/GT_book.pdf#page=92', wikipedia: 'https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)' },
       verify: true,
       viz(v) {
-        const mkLines = (W, H, K) => {
-          const L = [];
-          for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
-            const cells = []; for (let t = 0; t < K; t++) { const rr = r + dr * t, cc = c + dc * t; if (rr < 0 || rr >= H || cc < 0 || cc >= W) break; cells.push(rr * W + cc); }
-            if (cells.length === K) L.push(cells);
-          }
-          return L;
-        };
-        const GAMES = {
-          ttt: { label: 'tic-tac-toe', W: 3, H: 3, K: 3, mis: false },
-          mis: { label: 'misère tic-tac-toe', W: 3, H: 3, K: 3, mis: true },
-          t34: { label: '3 × 4, three in a row', W: 4, H: 3, K: 3, mis: false },
-        };
-        const cache = {};
-        const setup = (k) => {
-          if (cache[k]) return cache[k];
-          const g = GAMES[k], L = mkLines(g.W, g.H, g.K), N = g.W * g.H;
-          const lineBy = (st, ch) => L.some((l) => l.every((i) => st[i] === ch));
-          const mover = (st) => { let x = 0, o = 0; for (const c of st) { if (c === 'X') x++; else if (c === 'O') o++; } return x === o ? 'X' : 'O'; };
-          const term = (st) => {
-            const m = mover(st), other = m === 'X' ? 'O' : 'X';
-            if (lineBy(st, other)) return g.mis ? 1 : -1;   // the player who just moved completed a line
-            if (!st.includes('.')) return 0;
-            return null;
-          };
-          const memo = new Map();
-          const val = (st) => {
-            if (memo.has(st)) return memo.get(st);
-            const t = term(st); let r;
-            if (t != null) r = t; else { const m = mover(st); r = -1; for (let i = 0; i < N; i++) if (st[i] === '.') { const x = -val(st.slice(0, i) + m + st.slice(i + 1)); if (x > r) r = x; } }
-            memo.set(st, r); return r;
-          };
-          const empty = '.'.repeat(N); val(empty);
-          const counts = [0, 0, 0]; memo.forEach((x) => { counts[x + 1]++; });
-          return (cache[k] = { g, N, term, mover, val, empty, counts, rootVal: memo.get(empty) });
-        };
-        let key = 'ttt', G = setup(key), st = G.empty, comp = true, hist = [];
+        const GAMES = DETERMINACY_GAMES, cache = {};
+        const setup = key => cache[key] || (cache[key] = solveLineGame(GAMES[key]));
+        let key = 'ttt', G = setup(key), st = G.empty, hist = [];
         const sg = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 330, title: 'the board (values for the player to move)' });
         const sb = v.stage({ x: [0.3, 3.7], y: [0, 1], axes: 'box', gutter: true, height: 330, weight: 0.8, yticks: [], xticks: [[1, 'loss'], [2, 'draw'], [3, 'win']], xlabel: 'value for the player to move', title: 'all reachable positions' });
-        v.select('game', Object.keys(GAMES).map((k) => ({ value: k, label: GAMES[k].label })), key, { onChange: (k) => { key = k; G = setup(k); st = G.empty; hist = []; } });
-        const tg = v.toggle('computer plays the other side', true, { onChange: () => {} });
+        const game = v.select('game', Object.keys(GAMES).map((k) => ({ value: k, label: GAMES[k].label })), key, { onChange: (k) => { key = k; G = setup(k); st = G.empty; hist = []; } });
+        const tg = v.toggle('computer replies after your move', true);
+        v.shareState('line-game board and undo history', {
+          get: () => ({ game: key, board: st, history: hist.slice() }),
+          validate: d => !!d && typeof d.game === 'string' && Object.hasOwn(GAMES, d.game) && validLineHistory(setup(d.game), d.board, d.history),
+          set: d => { game.set(d.game); key = d.game; G = setup(key); st = d.board; hist = d.history.slice(); },
+        });
         v.button('new game', () => { st = G.empty; hist = []; });
         v.button('undo', () => { if (hist.length) st = hist.pop(); });
         const play = (i) => { hist.push(st); st = st.slice(0, i) + G.mover(st) + st.slice(i + 1); };

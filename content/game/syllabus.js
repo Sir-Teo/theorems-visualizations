@@ -136,7 +136,7 @@ export default {
           pic: 'Edit terminal payoffs in three finite deterministic trees; every complete contingent plan and profile payoff is retained in the strategic form, with actual pure Nash cells highlighted.' },
         { num: '4.2', kind: 'Method', name: 'Backward induction', deps: ['game-4.1'], refs: ['Bonanno (2024), Definition 3.2.1', 'Osborne & Rubinstein (1994), Proposition 99.2'],
           pic: 'Evaluate every node of a seeded binary or ternary finite tree in postorder; inspect each continuation at readable size and compare coherent first/last tie selections.' },
-        { num: '4.3', kind: 'Theorem', name: 'Zermelo: chess is determined', deps: ['game-4.2'], refs: ['MSZ ch. 1'],
+        { num: '4.3', kind: 'Theorem', name: 'Zermelo: chess is determined', deps: ['game-4.2'], refs: ['Zermelo (1913), Proceedings of the Fifth ICM, vol. II, pp.501–504', 'Bonanno (2024), §3.5, Theorem 3.5.2, pp.92–93'],
           pic: 'Solve small finite board games (tic-tac-toe, a 3 × 3 chess-like game) by exhaustive backward induction; every position is coloured win, loss or draw for the player to move.' },
         { num: '4.4', kind: 'Definition', name: 'Subgame perfect equilibrium', deps: ['game-4.1', 'game-1.3'], refs: ['Osborne & Rubinstein (1994), Definition 97.2 and Lemma 98.2; notes pp.114–115', 'Bonanno (2024), Definition 4.4.1'],
           pic: 'The full entry-payoff control lattice, including both indifference boundaries, separates every pure SPE from Nash-only cells and shows the selected profile path.' },
