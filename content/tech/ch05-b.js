@@ -109,7 +109,7 @@ and the random component has RMS $\sqrt{d(s^2+m^2)}$. This is a discrete end-of-
 
     // ------------------------------------------------------------------ 5.11
     {
-      num:'5.11',kind:'Invention',name:'The octant and sextant',verify:true,
+      num:'5.11',kind:'Invention',name:'The octant and sextant',verify:false,
       credit:'John Hadley’s actual Royal Society communication; ideal double-reflection geometry authored here',
       statement:String.raw`A reflecting angle instrument brings a directly viewed object and a twice-reflected object into coincidence. One mirror is fixed; the other moves with the index arm. In ideal plane geometry the two reflections rotate the apparent direction by twice the relative mirror angle α. A chosen 45° mirror-angle range therefore measures separations through 90°; a chosen 60° range measures through 120°.
 

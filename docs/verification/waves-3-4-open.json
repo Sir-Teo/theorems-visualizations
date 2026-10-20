@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 56,
+  "remainingFlags": 55,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -25,7 +25,7 @@
     "art": 6,
     "arch": 9,
     "ling": 8,
-    "tech": 3,
+    "tech": 2,
     "bighist": 18
   },
   "queue": [
@@ -549,22 +549,6 @@
       "refs": [],
       "links": {
         "doi": "https://doi.org/10.1002/j.1538-7305.1951.tb01366.x"
-      }
-    },
-    {
-      "id": "tech-5.11",
-      "file": "content/tech/ch05-b.js",
-      "name": "The octant and sextant",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mokyr ch. 4",
-        "Hadley, John (MacTutor / Oxford DNB)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Octant_(instrument)"
       }
     },
     {
@@ -1688,7 +1672,8 @@
       "tech-5.10",
       "art-4.5",
       "art-4.14",
-      "art-4.16"
+      "art-4.16",
+      "tech-5.11"
     ]
   },
   "additionalFollowups": [
@@ -6637,6 +6622,11 @@
       "id": "art-4.16",
       "status": "resolved",
       "note": "2026-10-20: coordinator exact-commit original-source/pixels, official full-data, exact rational/Decimal, native-state and output-pixel review; docs/verification/art-colorimetry-followup.md."
+    },
+    {
+      "id": "tech-5.11",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit actual-original/owner-source, independent reflection/latitude, native-state and source/output-pixel review; docs/verification/tech-optics-followup.md."
     }
   ]
 }
