@@ -115,6 +115,7 @@ for illuminant $I_a$, it does not follow that the same holds for another illumin
       tags: ['metamerism', 'spectrum'],
       scope: String.raw`The daylight is a $6504$ K black body (a crude stand-in for the CIE D65 spectrum), the other lamps are models (incandescent: $2856$ K black body; LED and fluorescent: generic shapes). The reflectances are smooth invented curves. The standard observer is the CIE 1931 fit; individual observers differ and see observer metamerism too.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Metamerism_(color)' },
+      verify: true,
       viz(v) {
         const day = (l) => planck(l, 6504);
         const LAMP = {

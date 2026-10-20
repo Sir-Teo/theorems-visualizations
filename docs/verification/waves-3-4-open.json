@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 146,
+  "remainingFlags": 147,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "soc": 14,
     "polsci": 9,
     "music": 21,
-    "art": 9,
+    "art": 10,
     "arch": 9,
     "ling": 10,
     "tech": 23,
@@ -2397,13 +2397,31 @@
         "wikipedia": "https://en.wikipedia.org/wiki/Serial_founder_effect",
         "doi": "https://doi.org/10.1073/pnas.0507611102"
       }
+    },
+    {
+      "id": "art-4.3",
+      "file": "content/art/ch04.js",
+      "name": "Metamerism",
+      "field": "arts",
+      "category": "historical-credit-empirical-input-or-reference",
+      "status": "source-review-pending",
+      "explicitUncertainty": [
+        "Numerical u-prime/v-prime cutoffs are asserted to establish perception without specified observer/task evidence; admissible reflectance bounds, quadrature and adaptation interpretation require audit."
+      ],
+      "refs": [
+        "Fairchild ch. 3"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Metamerism_(color)"
+      }
     }
   ],
   "changesFromBaseline": {
     "addedFlags": [
       "circ-4.17",
       "art-3.12",
-      "art-3.13"
+      "art-3.13",
+      "art-4.3"
     ],
     "resolvedFlags": [
       "energy-4.8",
@@ -7502,6 +7520,12 @@
       "status": "resolved",
       "report": "docs/verification/art-cones-trichromacy-followup.md",
       "note": "One consistent full-rank primary-response matrix, actual signed-primary source convention and basis prerequisite; independently checked projections/physical-side identities/range proof, declared XYZ_F displayproxy;12fullnative/12state groups plus source/math/static and exact neighbor guards pass."
+    },
+    {
+      "id": "art-4.3",
+      "status": "source-review-pending",
+      "report": "docs/verification/art-metamerism-open.md",
+      "note": "Newly identified unsupported perception thresholds and admissible-reflectance/kernel interpretation; exact model/native/source follow-up remains open. Actual Wyman/CIE sources prepared, no acceptance claimed."
     }
   ]
 }
