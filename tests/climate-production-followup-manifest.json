@@ -1,0 +1,47 @@
+{
+  "1.3": {
+    "file": "ch01.js",
+    "fields": {
+      "statement": {
+        "before": "The wavelength at which the blackbody spectrum $B_\\lambda(T)$ peaks is inversely proportional to the temperature:\n$$\\lambda_{\\max} = \\frac{b}{T},\\qquad b = 2897.8\\ \\mu\\text{m}\\cdot\\text{K}.$$\nEarth at 288 K peaks near $10\\ \\mu$m, in the thermal infrared; the Sun at 5772 K near $0.50\\ \\mu$m, in the green. The constant depends on how the spectrum is measured: per unit frequency the peak lies at $\\lambda T = 5099\\ \\mu$m·K, and per unit $\\ln\\lambda$ (equal energy per octave) at $3670\\ \\mu$m·K. All three move as $1/T$.",
+        "after": "The wavelength at which the blackbody spectrum $B_\\lambda(T)$ peaks is inversely proportional to the temperature:\n$$\\begin{gathered}\\lambda_{\\max}=\\frac{b}{T},\\\\\nb=2897.8\\ \\mu\\text{m}\\cdot\\text{K}.\\end{gathered}$$\nEarth at 288 K peaks near $10\\ \\mu$m, in the thermal infrared; the Sun at 5772 K near $0.50\\ \\mu$m, in the green. The constant depends on how the spectrum is measured: per unit frequency the peak lies at $\\lambda T = 5099\\ \\mu$m·K, and per unit $\\ln\\lambda$ (equal energy per octave) at $3670\\ \\mu$m·K. All three move as $1/T$."
+      }
+    }
+  },
+  "3.9": {
+    "file": "ch03-b.js",
+    "fields": {
+      "scope": {
+        "before": "Chosen Gaussian feedback centres/widths and equicorrelated errors, not published likelihoods or an inference from observed datasets. The process centre1.16 and width0.40 resemble the assessed process line; the other widths/centres are illustrative. A flat prior in feedback is not flat in ECS. All densities and intervals condition on positive restoring feedback. AR6 §7.5.5 explicitly discusses dependencies and expert judgement; Table 7.13 includes paleoclimate likely<4.5, verylikely>1.5 and extremelylikely<8K (the last is not mislabelled as a two-sided very-likely interval). [Primary assessment](https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_Chapter07.pdf).",
+        "after": "Chosen Gaussian feedback centres/widths and equicorrelated errors, not published likelihoods or an inference from observed datasets. The process centre1.16 and width0.40 resemble the assessed process line; the other widths/centres are illustrative. A flat prior in feedback is not flat in ECS. All densities and intervals condition on positive restoring feedback. AR6 §7.5.5 explicitly discusses dependencies and expert judgement; Table 7.13 includes paleoclimate likely<4.5, verylikely>1.5 and extremelylikely<8K (the last is not mislabelled as a two-sided very-likely interval). Primary assessment (linked below)."
+      },
+      "links": {
+        "before": {
+          "wikipedia": "https://en.wikipedia.org/wiki/Climate_sensitivity"
+        },
+        "after": {
+          "wikipedia": "https://en.wikipedia.org/wiki/Climate_sensitivity",
+          "Primary assessment": "https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_Chapter07.pdf"
+        }
+      }
+    }
+  },
+  "3.10": {
+    "file": "ch03-b.js",
+    "fields": {
+      "scope": {
+        "before": "Fixed 300m deep, nonabsorbing, monodisperse liquid layer at chosen water path; $g=0.85$. The rational albedo curve is a chosen two-stream approximation, not Twomey's original numerical calculation. The independent angular Monte Carlo may differ systematically from that closure; it is an illustration, not a proof of the formula. A finite scattering limit records unresolved photons separately and bounds their possible reflection, instead of silently counting them as transmission. Global scaling uses 340 W/m² times a chosen affected fraction, neglecting atmospheric absorption, adjustments and spatial/diurnal weighting; it is not an ERF estimate. [Original Twomey1977](https://atmos.washington.edu/academics/classes/2008Q2/591A/Articles/twomey_i1520-0469-34-7-1149.pdf); AR6 Table7.8 is the source for the separately quoted assessed aerosol–cloud ERF.",
+        "after": "Fixed 300m deep, nonabsorbing, monodisperse liquid layer at chosen water path; $g=0.85$. The rational albedo curve is a chosen two-stream approximation, not Twomey's original numerical calculation. The independent angular Monte Carlo may differ systematically from that closure; it is an illustration, not a proof of the formula. A finite scattering limit records unresolved photons separately and bounds their possible reflection, instead of silently counting them as transmission. Global scaling uses 340 W/m² times a chosen affected fraction, neglecting atmospheric absorption, adjustments and spatial/diurnal weighting; it is not an ERF estimate. Original Twomey1977 (linked below); AR6 Table7.8 is the source for the separately quoted assessed aerosol–cloud ERF."
+      },
+      "links": {
+        "before": {
+          "wikipedia": "https://en.wikipedia.org/wiki/Cloud_condensation_nuclei"
+        },
+        "after": {
+          "wikipedia": "https://en.wikipedia.org/wiki/Cloud_condensation_nuclei",
+          "Original Twomey1977": "https://atmos.washington.edu/academics/classes/2008Q2/591A/Articles/twomey_i1520-0469-34-7-1149.pdf"
+        }
+      }
+    }
+  }
+}

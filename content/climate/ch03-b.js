@@ -150,8 +150,8 @@ export default {
       refs: ['IPCC AR6 WG1 ch. 7'],
       tags: ['climate sensitivity', 'Bayesian', 'uncertainty'],
       verify: false,
-      scope: String.raw`Chosen Gaussian feedback centres/widths and equicorrelated errors, not published likelihoods or an inference from observed datasets. The process centre1.16 and width0.40 resemble the assessed process line; the other widths/centres are illustrative. A flat prior in feedback is not flat in ECS. All densities and intervals condition on positive restoring feedback. AR6 §7.5.5 explicitly discusses dependencies and expert judgement; Table 7.13 includes paleoclimate likely<4.5, verylikely>1.5 and extremelylikely<8K (the last is not mislabelled as a two-sided very-likely interval). [Primary assessment](https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_Chapter07.pdf).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Climate_sensitivity' },
+      scope: String.raw`Chosen Gaussian feedback centres/widths and equicorrelated errors, not published likelihoods or an inference from observed datasets. The process centre1.16 and width0.40 resemble the assessed process line; the other widths/centres are illustrative. A flat prior in feedback is not flat in ECS. All densities and intervals condition on positive restoring feedback. AR6 §7.5.5 explicitly discusses dependencies and expert judgement; Table 7.13 includes paleoclimate likely<4.5, verylikely>1.5 and extremelylikely<8K (the last is not mislabelled as a two-sided very-likely interval). Primary assessment (linked below).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Climate_sensitivity', 'Primary assessment': 'https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_Chapter07.pdf' },
       viz(v) {
         const LINES = [
           { n: 'process', col: 'blue', e: F2X / 1.16, sd: 0.40, on: true },
@@ -202,8 +202,8 @@ export default {
       refs: ['IPCC AR6 WG1 ch. 7'],
       tags: ['aerosols', 'clouds', 'albedo'],
       verify: false,
-      scope: String.raw`Fixed 300m deep, nonabsorbing, monodisperse liquid layer at chosen water path; $g=0.85$. The rational albedo curve is a chosen two-stream approximation, not Twomey's original numerical calculation. The independent angular Monte Carlo may differ systematically from that closure; it is an illustration, not a proof of the formula. A finite scattering limit records unresolved photons separately and bounds their possible reflection, instead of silently counting them as transmission. Global scaling uses 340 W/m² times a chosen affected fraction, neglecting atmospheric absorption, adjustments and spatial/diurnal weighting; it is not an ERF estimate. [Original Twomey1977](https://atmos.washington.edu/academics/classes/2008Q2/591A/Articles/twomey_i1520-0469-34-7-1149.pdf); AR6 Table7.8 is the source for the separately quoted assessed aerosol–cloud ERF.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cloud_condensation_nuclei' },
+      scope: String.raw`Fixed 300m deep, nonabsorbing, monodisperse liquid layer at chosen water path; $g=0.85$. The rational albedo curve is a chosen two-stream approximation, not Twomey's original numerical calculation. The independent angular Monte Carlo may differ systematically from that closure; it is an illustration, not a proof of the formula. A finite scattering limit records unresolved photons separately and bounds their possible reflection, instead of silently counting them as transmission. Global scaling uses 340 W/m² times a chosen affected fraction, neglecting atmospheric absorption, adjustments and spatial/diurnal weighting; it is not an ERF estimate. Original Twomey1977 (linked below); AR6 Table7.8 is the source for the separately quoted assessed aerosol–cloud ERF.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cloud_condensation_nuclei', 'Original Twomey1977': 'https://atmos.washington.edu/academics/classes/2008Q2/591A/Articles/twomey_i1520-0469-34-7-1149.pdf' },
       viz(v) {
         const lwp = v.slider('liquid water path (g/m²)', 20, 300, 100, { log: true, sig: 2 });
         const N0 = v.slider('reference droplet number $N_1$ (cm⁻³)', 20, 400, 50, { log: true, sig: 2 });
