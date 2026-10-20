@@ -473,9 +473,11 @@ $$E[X]=\sum_{i=1}^n E[X_i]=\sum_{i=1}^n \Pr[X_i=1],$$
 whether or not the $X_i$ are independent.
 
 **Example (the hiring problem).** Candidates arrive in uniformly random order and each one better than all earlier candidates is hired. Candidate $i$ is hired exactly when it is the best of the first $i$, which has probability $1/i$, so the expected number of hires is $H_n=\sum_{i=1}^n 1/i=\ln n+O(1)$.`,
-      idea: String.raw`Linearity holds because expectation is a sum over outcomes and sums can be reordered; no independence is used. The method replaces a hard question (the distribution of $X$) by $n$ easy ones (the probability of each small event). In the hiring problem the events are dependent (a hire at position 2 makes a hire at position 3 less likely), yet among the first $i$ candidates each is equally likely to be the best, so $\Pr[X_i=1]=1/i$ and the harmonic estimate (1.14) finishes the job. The same move drives randomized quicksort (3.11), bucket sort (3.15) and quickselect (3.17).`,
+      idea: String.raw`Linearity holds because expectation is a sum over outcomes and sums can be reordered; no independence is used. The method replaces a hard question (the distribution of $X$) by $n$ easy ones (the probability of each small event). In the hiring problem, among the first $i$ candidates each is equally likely to be the best, so $\Pr[X_i=1]=1/i$ and the harmonic estimate (1.14) finishes the job. The same move drives randomized quicksort (3.11), bucket sort (3.15) and quickselect (3.17).
+
+The expectation theorem (prob-1.6.1) applies to these bounded indicators and their finite sum. Independence is unnecessary: for the deliberately dependent pair $X_1=X_2=I\{\text{one fair coin is heads}\}$, both expectations are $1/2$ and $E(X_1+X_2)=1$. Hiring records are a different example: their individual probabilities follow from the uniform arrival order, not from an assumption that linearity requires independence.`,
       caption: String.raw`Top: one random interview order; gold bars are the hires, each better than everyone before (the green staircase is the best so far). Bottom: over all simulated orders, the fraction hiring at position $i$ (bars) against the indicator's expectation $1/i$ (green). Add orders and watch the bars settle on the curve and the mean number of hires settle on $H_n$.`,
-      deps: ['algo-1.3'],
+      deps: ['algo-1.3', 'prob-1.6.1'],
       refs: ['CLRS 4e §5.2'],
       tags: ['probability'],
       viz(v) {

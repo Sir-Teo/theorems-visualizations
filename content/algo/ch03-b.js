@@ -389,9 +389,11 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
       statement: String.raw`**Bucket sort** sorts $n$ real numbers in $[0,1)$: it distributes them into $n$ buckets, number $x$ going to bucket $\lfloor nx\rfloor$, sorts each bucket by insertion sort (3.2), and concatenates the buckets in order.
 
 If the inputs are drawn independently and uniformly from $[0,1)$, the expected running time is $\Theta(n)$: with $n_i$ the load of bucket $i$, the cost is $\Theta\big(n+\sum_i n_i^2\big)$ and $E\big[\sum_i n_i^2\big]=2n-1$. Without that assumption the worst case is $\Theta(n^2)$.`,
-      idea: String.raw`Insertion sort on a bucket of $n_i$ keys costs $O(n_i^2)$, so the total is $O(n+\sum n_i^2)$. Write $n_i$ as a sum of indicators $X_{ij}$ that key $j$ lands in bucket $i$ (3.3); then $E[n_i^2]=\sum_j E[X_{ij}]+\sum_{j\ne l}E[X_{ij}X_{il}]=1+n(n-1)/n^2=2-1/n$. Summing over the $n$ buckets gives $2n-1$. The argument uses the uniformity of the input; clustered inputs pile into few buckets and the quadratic cost returns.`,
+      idea: String.raw`Insertion sort on a bucket of $n_i$ keys costs $O(n_i^2)$, so the total is $O(n+\sum n_i^2)$. Write $n_i$ as a sum of indicators $X_{ij}$ that key $j$ lands in bucket $i$ (3.3); then $E[n_i^2]=\sum_j E[X_{ij}]+\sum_{j\ne l}E[X_{ij}X_{il}]=1+n(n-1)/n^2=2-1/n$. Summing over the $n$ buckets gives $2n-1$. The argument uses the uniformity of the input; clustered inputs pile into few buckets and the quadratic cost returns.
+
+The off-diagonal step uses factorization for independent products (prob-2.1.13): for distinct keys $j\ne\ell$, their bucket indicators are independent, so $E(X_{ij}X_{i\ell})=(1/n)^2$. The diagonal terms instead use $X_{ij}^2=X_{ij}$. Uniform marginals alone do not suffice: if every key equals the same uniform random number, all keys land in one bucket and $\sum_i n_i^2=n^2$, despite each key being uniform.`,
       caption: String.raw`The input values (top strip) drop into $n$ equal buckets and stack up; stacks are coloured by load. Uniform data spreads out with $\sum n_i^2\approx 2n$. A clustered input with a bounded density stays linear, only with a larger constant; a density that blows up (skewed, $u^4$) or an adversarial input piles keys into few buckets, and $\sum n_i^2$, the true cost, grows faster than $n$. **Resample** for a fresh draw. Below: $\sum n_i^2/n$ averaged over draws as $n$ grows: flat means linear time.`,
-      deps: ['algo-3.2', 'algo-3.3'],
+      deps: ['algo-3.2', 'algo-3.3', 'prob-2.1.13'],
       refs: ['CLRS 4e §8.4'],
       tags: ['sorting', 'randomized'],
       viz(v) {
