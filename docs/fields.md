@@ -47,6 +47,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   predicts beside the measured one (period vs amplitude, orbit period vs semi-major axis³ᐟ²).
 
 - An equation count does not prove existence or uniqueness for arbitrary element laws. For network models, test coefficient and augmented ranks or establish the actual positivity/invertibility hypotheses; conflicting ideal sources can make a structurally balanced system inconsistent.
+- State the dimensionless quantity that must be small for an approximation. A small factor alone can fail when multiplied by a large interval or logarithm: the Newtonian rocket approximation requires small final rapidity, not only small exhaust speed. Check normalization and units when passing between a unit direction, four-velocity and four-acceleration. See the [REL peer](verification/rel-independent-peer-followup.md).
+- Distinguish signed response coefficients from positive measured magnitudes. At a band extremum strict Hessian signs need nondegeneracy; a quartic minimum can have a zero Hessian. A positive orbit period uses the absolute area derivative and the gradient projected into the orbit plane. See the [CM peer](verification/cm-crossfield-prerequisite-peer.md).
 
 ## Statistics & data science
 
