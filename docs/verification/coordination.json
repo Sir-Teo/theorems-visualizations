@@ -115,6 +115,18 @@
         "psych-pooling-inhibition-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "psych-3.2",
+        "psych-3.3",
+        "psych-3.4"
+      ],
+      "peer": "worker_one exact-commit primary-source/proof/math and six narrow native groups",
+      "reports": [
+        "psych-scaling-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -127,5 +139,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 130
+  "currentPendingSourceReviews": 128
 }

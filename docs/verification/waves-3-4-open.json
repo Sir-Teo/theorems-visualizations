@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 130,
+  "remainingFlags": 128,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 6,
-    "psych": 8,
+    "psych": 6,
     "soc": 10,
     "polsci": 9,
     "music": 16,
@@ -314,36 +314,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Hales%E2%80%93Jewett_theorem"
-      }
-    },
-    {
-      "id": "psych-3.3",
-      "file": "content/psych/ch03.js",
-      "name": "Exponents across sensory continua",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Gescheider ch. 13"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Stevens%27s_power_law"
-      }
-    },
-    {
-      "id": "psych-3.4",
-      "file": "content/psych/ch03.js",
-      "name": "Cross-modality matching",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Gescheider ch. 12"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Stevens%27s_power_law"
       }
     },
     {
@@ -2841,7 +2811,9 @@
       "soc-4.6",
       "music-7.10",
       "music-7.8",
-      "game-4.3"
+      "game-4.3",
+      "psych-3.3",
+      "psych-3.4"
     ]
   },
   "additionalFollowups": [
@@ -7380,6 +7352,21 @@
       "id": "game-4.3",
       "status": "resolved",
       "note": "2026-10-20: worker_two exact-commit original-source/proof/math and full native review; game-determinacy-followup.md."
+    },
+    {
+      "id": "psych-3.2",
+      "status": "resolved",
+      "note": "2026-10-20: worker_one exact-commit primary-source/proof/math and six narrow native groups; psych-scaling-followup.md."
+    },
+    {
+      "id": "psych-3.3",
+      "status": "resolved",
+      "note": "2026-10-20: worker_one exact-commit primary-source/proof/math and six narrow native groups; psych-scaling-followup.md."
+    },
+    {
+      "id": "psych-3.4",
+      "status": "resolved",
+      "note": "2026-10-20: worker_one exact-commit primary-source/proof/math and six narrow native groups; psych-scaling-followup.md."
     }
   ]
 }
