@@ -15,7 +15,7 @@ export function millerModel(app='volcanic',compound='Ala'){
  return{app,compound,ai,ci,description:APPS[ai].description,rows,selected,comparison,detectedAcids:rows.filter(r=>r.kind==='acid'&&r.value!==null).length,detectedAmines:rows.filter(r=>r.kind==='amine'&&r.value!==null).length};
 }
 function label(S,text,x,y,left,right,size=12,extra={}){const c=S.ctx;c.save();c.font=`500 ${size}px Inter, system-ui, sans-serif`;const width=c.measureText(text).width;c.restore();S.text(text,x,y,{size:Math.min(size,size*(Math.abs(S.X(right)-S.X(left))-6)/Math.max(width,1)),halo:false,...extra});}
-export default{num:'3.1',kind:'Event',name:'The Miller–Urey experiment',verify:true,
+export default{num:'3.1',kind:'Event',name:'The Miller–Urey experiment',verify:false,
  statement:String.raw`Miller’s 1953 report circulated water vapour through methane, ammonia and hydrogen past an electrical discharge for a week. Paper chromatography identified glycine, α-alanine and β-alanine; aspartic acid and α-amino-n-butyric acid were explicitly less certain because their spots were weak. The total amino-acid yield was estimated in the milligram range. This tested abiotic organic synthesis, not the production of life or the actual early atmosphere.
 
 Johnson and colleagues’ 2008 reanalysis distinguished three 1953–54 apparatus configurations. Eleven archived vials from the steam-jet “volcanic” apparatus yielded 22 amino acids and 5 amines. This result does not describe the single classic experiment reported in 1953.`,

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 20,
+  "remainingFlags": 19,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -19,7 +19,7 @@
     "energy": 1,
     "robot": 1,
     "arch": 1,
-    "bighist": 12
+    "bighist": 11
   },
   "queue": [
     {
@@ -150,22 +150,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
-      }
-    },
-    {
-      "id": "bighist-3.1",
-      "file": "content/bighist/ch03.js",
-      "name": "The Miller–Urey experiment",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Miller%E2%80%93Urey_experiment",
-        "doi": "https://doi.org/10.1126/science.117.3046.528"
       }
     },
     {
@@ -1162,7 +1146,8 @@
       "arch-4.7",
       "arch-4.8",
       "bighist-3.7",
-      "arch-4.9"
+      "arch-4.9",
+      "bighist-3.1"
     ]
   },
   "additionalFollowups": [
@@ -6291,6 +6276,11 @@
       "id": "arch-4.9",
       "status": "resolved",
       "note": "2026-10-20: worker three independently read original French text and scans, checked analytic surface/plan geometry and independent polar quadrature, regenerated 80-digit reference, fresh 320px native/projection/camera matrices and own source/output pixels without findings; docs/verification/arch-pendentives-peer.md."
+    },
+    {
+      "id": "bighist-3.1",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently read actual original sources and all81table cells, found and confirmed corrected classic beta-ABA transcription, regenerated 65-digit reference, fresh final320px native themes and own source/output pixels without remaining findings; docs/verification/bighist-miller-peer.md."
     }
   ]
 }

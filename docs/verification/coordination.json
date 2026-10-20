@@ -26,8 +26,8 @@
     ],
     "current": [
       "Serially integrate independently reviewed candidates and reconcile source/wave gates",
-      "BIGHIST4.5\u20134.8 original source/model/state audits; worker two now owns4.1\u20134.3",
-      "Independent Miller3.1 peer after original-source table finding; full immutable checkpoints"
+      "BIGHIST4.5\u20134.8 original-source/model/state audits; producing4.7collective-learning correction",
+      "Full immutable checkpoints; source versions/access limits remain explicit"
     ]
   },
   "workers": [
@@ -1152,6 +1152,22 @@
         "22ac03ad84002487648c94e90bd59c64ef4710bf",
         "0b0636a"
       ]
+    },
+    {
+      "ids": [
+        "bighist-3.1"
+      ],
+      "peer": "coordinator independently read actual original sources and all81table cells, found and confirmed corrected classic beta-ABA transcription, regenerated 65-digit reference, fresh final320px native themes and own source/output pixels without remaining findings",
+      "reports": [
+        "docs/verification/bighist-miller-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "b608940",
+        "f83f8e71",
+        "95ca6fa",
+        "0d648a8"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1164,7 +1180,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 20,
+  "currentPendingSourceReviews": 19,
   "latestCheckpoint": {
     "acceptedContentCommit": "5c65e26",
     "report": "docs/verification/checkpoint-5c65e26.md",
