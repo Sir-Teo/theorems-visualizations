@@ -156,6 +156,7 @@ Two lights with different $S$ but the same $(X,Y,Z)$ look identical (metamers); 
       tags: ['spectrum', 'colorimetry', 'metamerism'],
       scope: String.raw`The curves are models, not measurements: the sun is a $5772$ K black body (the IAU nominal solar effective temperature), the incandescent lamp a $2856$ K black body (CIE illuminant A), the LED a blue Gaussian plus a broad phosphor Gaussian of generic shape, sodium its two D lines at $588.995$ and $589.592$ nm with intensities $2:1$. The card reflectances are smooth model curves. Colours use the standard-observer fit of the colour-matching functions and the sRGB primaries.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Spectral_power_distribution' },
+      verify: true,
       viz(v) {
         const SRC = {
           sun: { f: (l) => planck(l, 5772), lines: null, label: 'sunlight (5772 K black body)' },

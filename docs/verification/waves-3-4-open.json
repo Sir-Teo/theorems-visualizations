@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 144,
+  "remainingFlags": 145,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "soc": 12,
     "polsci": 9,
     "music": 22,
-    "art": 10,
+    "art": 11,
     "arch": 9,
     "ling": 10,
     "tech": 23,
@@ -2364,6 +2364,23 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Retinal_ganglion_cell"
       }
+    },
+    {
+      "id": "art-3.2",
+      "file": "content/art/ch03.js",
+      "name": "Spectral power distributions",
+      "field": "arts",
+      "category": "historical-credit-empirical-input-or-reference",
+      "status": "source-review-pending",
+      "explicitUncertainty": [
+        "A nonzero kernel does not imply rank three or that three nonnegative physical primaries reproduce every colour; fitted XYZ, cone responses, appearance, camera/adaptation proxy and actual numerical/state model need separate review."
+      ],
+      "refs": [
+        "Fairchild ch. 3"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Spectral_power_distribution"
+      }
     }
   ],
   "changesFromBaseline": {
@@ -2374,7 +2391,8 @@
       "art-4.3",
       "psych-4.7",
       "music-7.4",
-      "psych-4.4"
+      "psych-4.4",
+      "art-3.2"
     ],
     "resolvedFlags": [
       "energy-4.8",
@@ -7539,6 +7557,12 @@
       "status": "source-review-pending",
       "report": "docs/verification/psych-discrete-pooling-open.md",
       "note": "Root read actual item and independently summed the discrete receptor aperture; continuous sinc curve disagrees even for a single receptor. Full source/model/native audit remains open."
+    },
+    {
+      "id": "art-3.2",
+      "status": "source-review-pending",
+      "report": "docs/verification/art-spectral-map-open.md",
+      "note": "Actual prerequisite reading revealed an invalid kernel-to-universal-physical-primary inference; only the integral and reflected-product argument is used by the neighboring accepted model. Full audit remains open."
     }
   ]
 }
