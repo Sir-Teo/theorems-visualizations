@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall 277; 17/64 published collections and 14 whole syllabi below target; 31 further collections meet 25 written inputs. Source queue 5 unchanged.",
+      "Accepted prerequisite shortfall 219; 14/64 published collections and 11 whole syllabi below target; 34 further collections meet 25 written inputs. Source queue 5 unchanged.",
       "Latest immutable checkpoint8 on be8d100 passes 2187 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private atlas guard passes independent tiny/native155 tests and exact original-only history stability; symmetric reset/upload-content matched original/chunk oracle is being prepared, with no run or timing acceptance.",
@@ -2392,15 +2392,73 @@
       "sourceClosure": "None; all 42 functions/flags/helpers preserved.",
       "bridgeReview": "No affected bridge input.",
       "followup": "22 genuine inputs across 18 consumers, 21 math and one physics into chemistry. Finite Morse/Boltzmann window, occupied layer density, activation ratio/units, defect prefactors, slip-rank scope and eight equivalent statements corrected. 42 full raw lists, all other source bytes and two justified existing row backfills preserved. Independent 8,537 math plus 24 SI checks, 48 existing tests, fresh full actual narrow-theme fields and closing pixels pass. Root composition preservation/closing and math rechecks pass."
+    },
+    {
+      "collection": "crypto",
+      "commits": [
+        "4ba8813bf271ef95e28d5ffd11a1479996d4c635",
+        "55966c10ac12cdc12b27560e9b276a1d8ead019d",
+        "04c1f51e72aad11d4551c1c34b53733474b40807",
+        "597b1f51fae56ea9ed329e464af246201551e640",
+        "6efed909a9eada0c6ba47ac61ae592b814d523c4",
+        "c65990162cfa0df389f8d83fa0c51739fd442b07"
+      ],
+      "publishedBefore": 1,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/crypto-crossfield-prerequisite-peer.md",
+      "followup": "24 genuine inputs across23 consumers; sharing dimension/privacy, birthday-bound scope/concavity, conjugation, exhaustive-search upper bound and prior quantifiers corrected, eight equivalent wraps. Full48 objects/functions/flags/helpers/154rows,39,007 independent math checks, strict/static and138 personally inspected complete narrow fields pass. Root preservation/math rechecks pass.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "Read, coherent; no bridge edits."
+    },
+    {
+      "collection": "ml",
+      "commits": [
+        "99650b2050ca81b4a28c3a70f1cbe671bd6030a1",
+        "0ffa06b0c3cc85ed97f6c47cc67835238cbb8e91",
+        "2aa0248967951451f28bb84ab30bfb188383533a",
+        "fb5596deaaf9d269128161090ef9f743e2994d0a"
+      ],
+      "publishedBefore": 14,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "logic_peer",
+      "peer": "deep_peer",
+      "report": "docs/verification/ml-probability-independent-peer.md",
+      "followup": "11 direct PROB math inputs across8 consumers; actual independence/product/tower/Markov/fixed-h integrable LLN and explicitly idealized cue-column model uses. Accepted atom-safe/zero-range content retained; one token-equivalent wrap. Full25 objects/functions/flags/helpers/367rows,290 independent checks, strict/static and64 personally read full narrow-theme output PNGs pass. Root peer and eight default math regression groups pass. Private baseline alignment b924349 excluded.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "Read, coherent; no bridge edits."
+    },
+    {
+      "collection": "causal",
+      "commits": [
+        "761e7b53c333ec45496c3631394646dd11f9841e",
+        "e48c3a78986e17c057dcede3da2e42499acafa91",
+        "09af3e1488726b1c1e73edf142885fca7acd4a68",
+        "c55936084492a3c9648a475bd7a1290a8f74babf",
+        "7faa10d9333d3edcb8ca76dc8c17058ae915a0e2",
+        "55e67c19e2acf4f44090fa8124558d2384d401f1"
+      ],
+      "publishedBefore": 2,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/causal-crossfield-prerequisite-peer.md",
+      "followup": "23 genuine inputs across20 consumers; finite-design/blocking/covariance, conditional expectation/propensity, discrete level, regression and control qualifiers, eight equivalent wraps and one justified existing raw row repair. Full48 objects/functions/flags/helpers/96rows,2549 independent math checks, strict/static,80 personal full narrow-theme field captures and six actual bridge cards pass. Root preservation/math rechecks pass.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "Read, coherent; no bridge edits."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 277,
-    "publishedBelow25": 17,
+    "publishedShortfall": 219,
+    "publishedBelow25": 14,
     "collections": 64,
-    "wholeSyllabusBelow25": 14,
+    "wholeSyllabusBelow25": 11,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Thirty-one further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Thirty-four further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

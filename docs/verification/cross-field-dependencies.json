@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 17,
-  "wholeSyllabusBelowTarget": 14,
+  "publishedBelowTarget": 14,
+  "wholeSyllabusBelowTarget": 11,
   "entries": [
     {
       "collection": "stat",
@@ -492,10 +492,10 @@
       "collection": "ml",
       "field": "stats",
       "target": 25,
-      "writtenToWritten": 14,
-      "writtenToKnown": 14,
-      "wholeSyllabus": 19,
-      "publishedShortfall": 11,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 30,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -513,6 +513,20 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "ml-1.1a",
+          "prerequisite": "prob-2.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-1.1a",
+          "prerequisite": "prob-2.1.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "ml-2.1a",
           "prerequisite": "rca-1.24",
           "prerequisiteField": "math",
@@ -522,6 +536,13 @@
         {
           "item": "ml-2.1c",
           "prerequisite": "rca-2.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-2.1e",
+          "prerequisite": "prob-2.1.11",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -548,8 +569,29 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "ml-2.3",
+          "prerequisite": "prob-2.1.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-2.3",
+          "prerequisite": "prob-2.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "ml-3.1",
           "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-3.1",
+          "prerequisite": "prob-2.1.13",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -569,8 +611,22 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "ml-3.2b",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "ml-3.4",
           "prerequisite": "rca-1.24",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-4.1",
+          "prerequisite": "prob-2.2.14",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -583,8 +639,29 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "ml-4.5",
+          "prerequisite": "prob-2.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-4.5",
+          "prerequisite": "prob-1.6.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "ml-4.6",
           "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ml-4.6",
+          "prerequisite": "prob-2.1.10",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -1034,12 +1111,82 @@
       "collection": "causal",
       "field": "stats",
       "target": 25,
-      "writtenToWritten": 2,
-      "writtenToKnown": 2,
-      "wholeSyllabus": 3,
-      "publishedShortfall": 23,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 26,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "causal-1.9",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-1.10",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-1.11",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-1.3",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-1.3",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-1.5",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-1.6",
+          "prerequisite": "prob-4.1.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-2.7",
+          "prerequisite": "prob-4.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-2.7",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-2.9",
+          "prerequisite": "ladr-6.57",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "causal-2.12",
           "prerequisite": "comb-1.6",
@@ -1048,9 +1195,100 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "causal-2.2",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-2.2",
+          "prerequisite": "comb-1.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-2.3",
+          "prerequisite": "prob-1.6.9a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-2.4",
+          "prerequisite": "comb-1.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-2.5",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-2.6",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "causal-3.1",
           "prerequisite": "algo-8.11",
           "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-3.3",
+          "prerequisite": "prob-2.1.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-4.12",
+          "prerequisite": "ladr-6.61",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-4.3",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-4.4",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-4.5",
+          "prerequisite": "ladr-6.61",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-4.6",
+          "prerequisite": "ladr-6.61",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "causal-4.7",
+          "prerequisite": "ladr-6.61",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -1864,15 +2102,183 @@
       "collection": "crypto",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 1,
-      "writtenToKnown": 1,
-      "wholeSyllabus": 23,
-      "publishedShortfall": 24,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 47,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
+          "item": "crypto-1.9",
+          "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-1.3",
+          "prerequisite": "nt-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-1.4",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-1.5",
+          "prerequisite": "comb-1.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-1.6",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-2.1",
+          "prerequisite": "stat-2.1",
+          "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-2.2",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-2.3",
+          "prerequisite": "alg-1.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-2.4",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-2.5",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-2.8",
+          "prerequisite": "prob-1.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-2.9",
+          "prerequisite": "prob-2.1.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.11",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.12",
+          "prerequisite": "prob-1.1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.13",
+          "prerequisite": "prob-1.1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "crypto-3.15",
           "prerequisite": "nt-4.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.15",
+          "prerequisite": "nt-2.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.15",
+          "prerequisite": "nt-4.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.1",
+          "prerequisite": "pma-3.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.2",
+          "prerequisite": "pma-3.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.5",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-3.8",
+          "prerequisite": "pma-1.33",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-4.8",
+          "prerequisite": "prob-2.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-4.3",
+          "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "crypto-4.4",
+          "prerequisite": "alg-1.20",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -18748,7 +19154,10 @@
       "e3c25b3511ef4d9de191b0e464084675820d0681",
       "36559492c902de1863658395b742a4adb663eb86",
       "c08ce47f98934df38f31ece002417f9cb6ff2fb5",
-      "8ba4a4543155814a581066cc5ea5da9b14114ace"
+      "8ba4a4543155814a581066cc5ea5da9b14114ace",
+      "4ba8813bf271ef95e28d5ffd11a1479996d4c635",
+      "99650b2050ca81b4a28c3a70f1cbe671bd6030a1",
+      "761e7b53c333ec45496c3631394646dd11f9841e"
     ],
     "excludedUnacceptedEdges": [
       {

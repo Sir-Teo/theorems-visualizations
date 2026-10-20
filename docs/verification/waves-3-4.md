@@ -1065,3 +1065,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### Guarded original single-history result
 
 [Original/guarded history](map-guarded-original-history-followup.md) independently reproduces the prior original-only raw frames and establishes exact stability of all four guarded frames, matching observed request/draw/clear histories and original logical owners. No direct-Canvas, alternate-binding, lifecycle, production or timing gate is accepted. Browser hold ended; content native reviews resumed.
+
+### CRYPTO, CAUSAL and ML probability follow-up
+
+Independent [CRYPTO](crypto-crossfield-prerequisite-peer.md), [CAUSAL](causal-crossfield-prerequisite-peer.md) and [ML](ml-probability-independent-peer.md) peers accept24/23/11 genuine inputs, all reaching25 published. Full preservation, bounded proof/finite-model/layout corrections, fresh native/personal pixels and root integrated rechecks pass. Live shortfall219,14/64 published and11 whole syllabi below target;34 further collections meet target. Source queue five; later than checkpoint be8d100.
