@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 84,
+  "remainingFlags": 81,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "art": 9,
     "arch": 9,
     "ling": 10,
-    "tech": 14,
+    "tech": 11,
     "bighist": 18
   },
   "queue": [
@@ -812,46 +812,6 @@
       }
     },
     {
-      "id": "tech-4.8",
-      "file": "content/tech/ch04-b.js",
-      "name": "The heavy plough and the horse collar",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "statement",
-          "text": "The **heavy plough** has a vertical **coulter** to cut the sod, a **share** to cut it from below and a **mouldboard** to turn it over, so it opens a deep furrow in wet, heavy soils where the older scratch plough (the ard) only scored the surface. It needs a strong team. The **horse collar** is a padded, stiff ring resting on a horse's shoulders, so that the horse pulls with its chest and shoulders and not against its windpipe.\n\nThe historical claim associated with Lynn White Jr. (*Medieval Technology and Social Change*, 1962) is that these inventions, together with the horseshoe, let medieval Europe plough the heavy northern soils and raised agricultural output, and that the collar multiplied a horse's useful pull. How much of this survives is disputed. The idea that the older throat-and-girth harness choked the horse goes back to Lefebvre des Noëttes (1931), and a test attributed to him is quoted as limiting two horses to about 1100 lb against about 1½ tons for one horse in a collar (as cited by Needham). Reconstructions by Spruytte (published 1977 and 1983), working with M. Littauer, found that ancient harnesses, correctly fitted, let a horse pull nearly as much; on that view the collar's real gain was a lower point of attachment, which suited ploughing. The modest effect of the collar is also argued by Weller. I could not check the original measurements, so the two views below are presented as claims, not data.\n\nWhat the picture does compute is statics. The trace from the harness to the plough's clevis is a straight line; the pull along it has a horizontal part that the soil resists and a vertical part that depends on how high the horse's attachment is above the clevis. The numbers for soil resistance and the pull of an animal are illustrative round figures."
-        }
-      ],
-      "refs": [
-        "Mokyr ch. 3",
-        "White, Medieval Technology and Social Change (Oxford: Clarendon, 1962)",
-        "Spruytte, Early Harness Systems (London: Allen, 1983)",
-        "Weller, Roman Traction Systems (online), and Needham (1986) as cited by Wikipedia “Horse collar”"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Horse_collar"
-      }
-    },
-    {
-      "id": "tech-4.9",
-      "file": "content/tech/ch04-b.js",
-      "name": "The stirrup",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mokyr ch. 3",
-        "White, Medieval Technology and Social Change (1962)",
-        "Bachrach 1970 and Bullough 1970, as cited by Wikipedia “Stirrup”"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Stirrup"
-      }
-    },
-    {
       "id": "tech-4.11",
       "file": "content/tech/ch04-b.js",
       "name": "Sternpost rudder and lateen sail",
@@ -866,24 +826,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Lateen"
-      }
-    },
-    {
-      "id": "tech-4.1",
-      "file": "content/tech/ch04.js",
-      "name": "The true arch in Roman engineering",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Makris & Alexakis (2013), radial joints: t/R_m = 0.1075; https://doi.org/10.1007/s00419-013-0763-4",
-        "Mokyr ch. 2",
-        "Heyman, The Stone Skeleton (1966), Int. J. Solids Struct. 2:249",
-        "Woodman & Bloom (eds), Arch (2003), as cited by Wikipedia \"Arch\""
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Arch"
       }
     },
     {
@@ -2114,7 +2056,10 @@
       "game-4.13",
       "polsci-4.5",
       "polsci-4.12",
-      "game-3.10"
+      "game-3.10",
+      "tech-4.1",
+      "tech-4.8",
+      "tech-4.9"
     ]
   },
   "additionalFollowups": [
@@ -6913,6 +6858,21 @@
       "id": "game-3.10",
       "status": "resolved",
       "note": "2026-10-20: worker two independently accepted exact 7d9262c including 0fb6977 after both state findings were repaired; docs/verification/game-blackwell-followup.md."
+    },
+    {
+      "id": "tech-4.1",
+      "status": "resolved",
+      "note": "2026-10-20: worker one independent exact-commit source/math/native review; coordinator metadata review; docs/verification/tech-loads-followup.md."
+    },
+    {
+      "id": "tech-4.8",
+      "status": "resolved",
+      "note": "2026-10-20: worker one independent exact-commit source/math/native review; coordinator metadata review; docs/verification/tech-loads-followup.md."
+    },
+    {
+      "id": "tech-4.9",
+      "status": "resolved",
+      "note": "2026-10-20: worker one independent exact-commit source/math/native review; coordinator metadata review; docs/verification/tech-loads-followup.md."
     }
   ]
 }

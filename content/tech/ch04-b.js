@@ -69,7 +69,7 @@ During the prescribed lift, guide force is $m(g+\ddot y)$. Its minimum is $m(g-6
 
     // ------------------------------------------------------------------ 4.8
     {
-      num:'4.8',kind:'Invention',name:'The heavy plough and the horse collar',verify:true,
+      num:'4.8',kind:'Invention',name:'The heavy plough and the horse collar',verify:false,
       credit:'Harness and implement interaction: F. Inns, FAO field report; force comparison authored here',
       statement:String.raw`A mouldboard plough cuts and turns a strip of soil. Harnesses connect the animal to the implement; fit, load distribution and the angle of pull matter. F. Inns's FAO report describes collar, split-collar and breastband systems for equines, and field trials that varied the pull angle with an adjustable hip strap. It measures draught as the horizontal component of trace tension. It also warns that implement weight, adjustment, soil and work quality affect the comparison.
 
@@ -92,7 +92,7 @@ Holding D fixed isolates vector decomposition. In actual tillage D itself can ch
 
     // ------------------------------------------------------------------ 4.9
     {
-      num:'4.9',kind:'Invention',name:'The stirrup',verify:true,
+      num:'4.9',kind:'Invention',name:'The stirrup',verify:false,
       credit:'Mongolian saddle/stirrup evidence reported by Bayarsaikhan and colleagues; sequential coupling model authored here',
       statement:String.raw`A stirrup is a foot support suspended from a saddle. Bayarsaikhan and colleagues report a small iron stirrup from Khukh Nuur and a birch frame saddle from Urd Ulaan Uneet in Mongolia. The Khukh Nuur date of 243–405 cal AD comes from associated human bone, with an explicit possible freshwater reservoir effect; it does not directly date the iron. The saddle's horse-hide strap was directly dated to 267–535 cal AD at 95.4% probability. Its bilateral hanging straps suggest paired stirrups, although no stirrups were recovered with that saddle.
 

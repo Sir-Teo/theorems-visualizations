@@ -47,3 +47,9 @@ Read the actual prerequisite statements of arch3.2/3.5/1.2 and mechanics2.1/2.6.
 - Exact guards preserve every unowned chapter object and other syllabus row. Shared helpers/runtime, package files and tracked generated data remain unchanged. `git diff --check` passes. Independent peer acceptance remains the flag-closing gate.
 
 Metadata follow-up: the publication year is kept in the references rather than the invention credit. The site derives its timeline year from the first year in `credit`; labeling the archaeological source as2024 there would otherwise falsely date the stirrup invention to2024. The revised undated credit makes no invention-year claim. No model, state or visualization code changes.
+
+## Independent acceptance, 2026-10-20
+
+Worker one independently reviewed exact candidate `fe252d92b9b2d04611835251cfd473f13533bdf3` plus the credit-only `0441e0a` followup in `/tmp/music-peer-tech-loads`. Its complete peer record is `/tmp/music-peer-tech-loads/peer-review.md`. The review read the actual primary/official sources, inspected source and output pixels, passed six mathematical groups, independently checked 80 rational momentum/energy cases, 80 force cases, eight arch families and 40 stacks, and passed all six fresh narrow item/theme native runs. No actionable finding remains within the explicit finite/authored scope.
+
+The coordinator separately reviewed `067611c`: it removes only source publication years from the 4.2/4.6/4.7 credit metadata, retains those dates in references, and preserves their previously accepted flags. The cherry-pick conflicts were limited to those accepted flags; the resolved files keep `verify:false` for 4.6/4.7. The 4.1/4.8/4.9 flags may now close. No inaccessible original or removed historical claim is certified by this acceptance.

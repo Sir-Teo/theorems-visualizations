@@ -16,7 +16,7 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.1
     {
-      num:'4.1',kind:'Invention',name:'The true arch in Roman engineering',verify:true,
+      num:'4.1',kind:'Invention',name:'The true arch in Roman engineering',verify:false,
       credit:'Vitruvius VI.8.3–4 describes radiating voussoirs and resisting end piers; finite statics comparison authored here',
       statement:String.raw`A voussoir arch transfers load through contacts between wedge-shaped blocks and pushes outward on its supports. Vitruvius VI.8.3–4 describes arches with joints radiating toward a centre and recommends wider end piers to resist their outward action. This is evidence for the described Roman building practice; no earliest invention or transmission date is inferred here.
 

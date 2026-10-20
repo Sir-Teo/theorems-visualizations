@@ -483,6 +483,18 @@
         "docs/verification/game-blackwell-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "tech-4.1",
+        "tech-4.8",
+        "tech-4.9"
+      ],
+      "peer": "worker one independent exact-commit source/math/native review; coordinator metadata review",
+      "reports": [
+        "docs/verification/tech-loads-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -495,7 +507,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 84,
+  "currentPendingSourceReviews": 81,
   "latestCheckpoint": {
     "acceptedContentCommit": "04ab914",
     "pendingSourceReviews": 85,
