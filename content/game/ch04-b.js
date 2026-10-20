@@ -1,3 +1,4 @@
+import chainstoreItem from './chainstore-item.js';
 // Game Theory & Social Choice — Chapter 4 (part b): centipede, ultimatum, chain store, imperfect information, Kuhn's theorem
 import {
   idx, leaf, dec, isLeaf, prep, playBeh, infoSets, pureStrategies, stratName, drawTree, treeView, nmz, kuhnBehaviour, mixedOutcome,
@@ -5,35 +6,6 @@ import {
 import { informationNumber, informationProfile, informationRecallModel, informationForgetModel, informationPlanText, drawInformationTree, drawInformationProbabilities } from './information-audit.js';
 import { assertUltimatumAlphaTick, centipedeModel, ultimatumModel } from './source-audit-centipede-ultimatum.js';
 
-// ---------------------------------------------------------------- chain store (reputation) helpers
-const EQ = 1e-9;
-/** Entrant enters with probability e; the weak monopolist fights an entrant with probability s. k = towns left, p = belief "tough". */
-function chainStrat(k, p) {
-  const thr = 2 ** -k;
-  if (p > thr * (1 + EQ)) { if (k === 1) return { e: 0, s: 0 }; const q = Math.min(1, p * 2 ** (k - 1)); return { e: 0, s: (q - p) / (1 - p) }; }
-  if (p < thr * (1 - EQ)) { const q = Math.min(1, p * 2 ** (k - 1)); return { e: 1, s: (q - p) / (1 - p) }; }
-  return { e: 1 / 3, s: (0.5 - p) / (1 - p) };
-}
-function chainValue(k, p) {
-  if (k === 0) return 0;
-  const { e, s } = chainStrat(k, p), q = p + (1 - p) * s;
-  const out = 5 + chainValue(k - 1, p), acc = 2 + 2 * (k - 1), fight = q > 0 ? chainValue(k - 1, p / q) : 0;
-  return (1 - e) * out + e * (s * fight + (1 - s) * acc);
-}
-/** For a weak monopolist: probability that town t (1..K) is entered, in equilibrium, plus expected payoff. */
-function chainEntry(K, p0) {
-  const ent = new Array(K + 1).fill(0), fightP = new Array(K + 1).fill(0);
-  const go = (k, p, mass) => {
-    if (k === 0 || mass < 1e-15) return;
-    const t = K - k + 1, { e, s } = chainStrat(k, p), q = p + (1 - p) * s;
-    ent[t] += mass * e; fightP[t] += mass * e * s;
-    for (let r = 1; r < k; r++) ent[t + r] += mass * e * (1 - s);           // accommodated once: revealed weak, later entrants all enter
-    if (e < 1) go(k - 1, p, mass * (1 - e));
-    if (e > 0 && s > 0 && q > 0) go(k - 1, p / q, mass * e * s);
-  };
-  go(K, p0, 1);
-  return { ent, fightP, value: chainValue(K, p0) };
-}
 
 export default {
   collection: 'game',
@@ -104,50 +76,7 @@ Rejection has utility zero. With acceptance on indifference, accept exactly when
         v.readout(()=>{if(!info)return'';const p=info,details=p.mode==='population'?`Uniform threshold support: ${p.support.join(', ')}; each has weight 1/${p.denominator}.`:p.mode==='threshold'?`Fixed threshold ${p.mu}${p.mu===11?' (never accept)':''}.`:p.mode==='inequity'?`Responder β=0, α=${p.alpha}; real threshold ${v.fix(p.realThreshold,6)}, accepted integer offers ${p.numerators.flatMap((k,x)=>k?[x]:[]).join(', ')}; accept on utility ties.`:`Money-only responder ${p.zero==='accept'?'accepts':'rejects'} zero and accepts every positive offer.`;return `${details}\nBest offers: ${p.bestOffers.join(', ')}. Proposer expected money ${v.fix(p.best,6)}. Responder expected money at these offers: ${p.bestOffers.map(x=>`${x}→${v.fix(p.responderMoney[x],4)}`).join('; ')}.\nThe two pure-money SPE are offer 0 / accept 0 and offer 1 / reject 0, with acceptance of all positive offers in both. Other modes are explicitly specified utilities or authored response rules, not observed experimental frequencies.`;});
       },
     },
-    // ------------------------------------------------------------------ 4.8
-    {
-      num: '4.8',
-      kind: 'Paradox',
-      name: 'Chain-store paradox',
-      statement: String.raw`A monopolist owns stores in $K$ towns, and in each town in turn a different potential entrant chooses *Out* (entrant 1, monopolist 5) or *In*; if she enters the monopolist either **accommodates** (2, 2) or **fights** (0, 0). The payoffs here are an illustration in the style of Selten’s example. Fighting is bad for the monopolist after entry, so backward induction (game-4.2) gives: in the last town she accommodates; hence the entrant there enters; hence the second-last fight cannot deter anything, and so on. The unique subgame perfect equilibrium has every entrant enter and every entry accommodated, although the monopolist would like to be known as a fighter.`,
-      idea: String.raw`The argument starts from the last town, where reputation is worth nothing, and the unravelling cannot be stopped by any earlier fight. Selten found the conclusion unconvincing as a description of behaviour. Kreps–Wilson and Milgrom–Roberts resolved it with a little incomplete information: with prior probability $p_0$ the monopolist is a “tough” type who always fights. Then a weak monopolist fights early to be taken for the tough type. In the equilibrium computed here entrants stay out until about $\log_2(1/p_0)$ towns remain, and the entry that does occur is mixed.`,
-      caption: String.raw`Bars: the probability that each town is entered in equilibrium (for the weak monopolist), compared with the backward-induction prediction (entry in every town, grey line). Raise the number of towns $K$ or the prior $p_0$ of the tough type: the entry-free stretch grows. The right plot shows the weak monopolist’s average payoff per town as $K$ grows: it climbs far above the backward-induction value $2$. Equilibrium computed by the recursion in the idea above (own derivation for these payoffs, checked by one-shot-deviation tests).`,
-      credit: 'Selten, 1978; Kreps & Wilson, 1982; Milgrom & Roberts, 1982',
-      scope: String.raw`Simplified payoffs; the tough type fights every entrant; entrants live one period and maximise their own payoff; equilibrium is sequential (beliefs by Bayes’ rule).`,
-      deps: ['game-4.2'],
-      refs: ['Osborne §7.2'],
-      tags: ['paradox', 'reputation', 'entry deterrence'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Chain_store_paradox' },
-      verify: true,
-      viz(v) {
-        const L = v.stage({ x: [0.3, 20.7], y: [0, 1.15], axes: 'box', gutter: true, height: 320, xlabel: 'town (in order of play)', ylabel: 'probability of entry', title: 'who enters in equilibrium' });
-        const R = v.stage({ x: [1, 20], y: [1.5, 5.3], axes: 'box', gutter: true, height: 320, weight: 0.7, xlabel: 'number of towns $K$', ylabel: 'monopolist’s payoff per town', title: 'value of a reputation' });
-        const sK = v.slider('number of towns $K$', 1, 20, 12, { int: true });
-        const sp = v.slider('prior probability of the tough type $p_0$', 0.002, 0.5, 0.05, { log: true, sig: 2 });
-        let info;
-        v.render(() => {
-          const K = sK.value, p0 = sp.value, r = chainEntry(K, p0);
-          L.setView([0.3, Math.max(K, 3) + 0.7], [0, 1.15]);
-          L.line(0.3, 1, K + 0.7, 1, { color: 'faint', dash: true });
-          for (let t = 1; t <= K; t++) {
-            L.rect(t - 0.34, 0, t + 0.34, Math.min(1, r.ent[t]), { fill: 'gold', fillAlpha: 0.4, color: 'gold', width: 1.5 });
-            L.dot(t, 1, { r: 3.5, color: 'muted' });
-          }
-          L.text('backward induction: every town enters', Math.max(K, 3) + 0.6, 1.07, { align: 'right', size: 11.5, color: 'muted', weight: 600 });
-          R.setView([1, 20], [1.5, 5.3]);
-          R.hline(2, { color: 'muted', dash: true }); R.text('backward induction', 19.8, 1.88, { align: 'right', size: 11.5, color: 'muted', weight: 600, plate: true });
-          R.hline(5, { color: 'muted', dash: true }); R.text('no entry at all', 19.8, 5.05, { align: 'right', size: 11.5, color: 'muted', weight: 600, plate: true });
-          const pts = idx(20).map((i) => [i + 1, chainValue(i + 1, p0) / (i + 1)]);
-          R.path(pts, { color: 'green', width: 2.5 }); R.dot(K, chainValue(K, p0) / K, { r: 6, color: 'gold' });
-          info = { K, p0, r };
-        });
-        v.readout(() => {
-          const { K, p0, r } = info, ent = r.ent.slice(1).reduce((a, b) => a + Math.min(1, b), 0);
-          const first = r.ent.findIndex((x, i) => i > 0 && x > 1e-9);
-          return `expected number of entered towns: ${v.fix(ent, 2)} of ${K}${first > 0 ? `, entry first possible at town ${first} (the last ${K - first + 1} towns)` : ', none'}; expected payoff for the weak monopolist ${v.fix(r.value, 2)} against $2K=${2 * K}$ without reputation\nrule of thumb: with $p_0=${v.fix(p0, 3)}$ entry is deterred while more than $\\log_2(1/p_0)\\approx${v.fix(Math.log2(1 / p0), 1)}$ towns remain`;
-        });
-      },
-    },
+    chainstoreItem,
     // ------------------------------------------------------------------ 4.9
     {
       num: '4.9', kind: 'Definition',
