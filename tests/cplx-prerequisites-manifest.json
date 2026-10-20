@@ -1,0 +1,103 @@
+{
+  "baseline": "eea07c0f6fcccfd06ddd71392b19cab7afca72e9",
+  "mapping": [
+    {
+      "num": "1.1",
+      "file": "ch01.js",
+      "target": "pma-3.26",
+      "paragraph": "The amortized clock bound uses the geometric series (pma-3.26): in a full countdown from $T$ to zero, bit $j$ flips $\\lfloor T/2^j\\rfloor$ times, with bit 0 the low bit. Thus the total flips are at most $T\\sum_{j\\ge0}2^{-j}=2T$, rather than $T\\log T$; the finite counter never needs infinitely many bits."
+    },
+    {
+      "num": "1.3",
+      "file": "ch01.js",
+      "target": "comb-1.1",
+      "paragraph": "The configuration bound is a product-rule count (comb-1.1): choose the state, each head position and the contents of each bounded tape. These choices describe a configuration even when some combinations are unreachable; counting a superset is enough for the stopping bound."
+    },
+    {
+      "num": "1.3",
+      "file": "ch01.js",
+      "target": "comb-1.2",
+      "paragraph": "The pigeonhole principle (comb-1.2) then turns the finite configuration count into a time limit. Once a deterministic run visits more configurations than there are descriptions, two are equal, and their subsequent runs coincide. An accepting or rejecting halt cannot first occur after that repetition."
+    },
+    {
+      "num": "1.4",
+      "file": "ch01.js",
+      "target": "pma-8.6",
+      "paragraph": "The asymptotic separation uses exponential domination (pma-8.6(f)), not just a comparison of plotted values. Put $x=\\log n$: $x^2e^{-x}\\to0$ gives $(\\log n)^2=o(n)$. The logarithm of $n^{\\log n}\\log(n^{\\log n})/2^n$ therefore tends to $-\\infty$, and $\\log^2n/n\\to0$ supplies the space gap as well; a different fixed logarithm base changes only constants."
+    },
+    {
+      "num": "1.11",
+      "file": "ch01-b.js",
+      "target": "pma-3.20",
+      "paragraph": "The required fresh length exists by pma-3.20(d): for each fixed clock $n^d$ and constant $C$, $Cn^d/2^n\\to0$. Hence a stage can choose an arbitrarily large length with more candidate strings than queries. This numerical gap leaves an unqueried string; it does not itself prove that later stages preserve earlier oracle answers."
+    },
+    {
+      "num": "2.13",
+      "file": "ch02-b.js",
+      "target": "logic-1.3",
+      "paragraph": "The set-theoretic step is the chain pairing in Schröder–Bernstein (logic-1.3), applied to two disjoint copies of the full string universe. It proves bijectivity of the piecewise choice of forward map or backward inverse. Effectiveness is additional: the stated injectivity, strict length increase and polynomial-time inverse checks let one follow a chain backwards for at most its starting length, deciding which copy contains its first point. The classical theorem alone gives no running-time bound."
+    },
+    {
+      "num": "3.2",
+      "file": "ch03.js",
+      "target": "nt-3.1",
+      "paragraph": "Multiplicative order (nt-3.1) justifies the verifier: the first congruence makes $g$ a unit and forces its order to divide $p-1$. The tests for every distinct prime factor exclude every proper divisor of $p-1$; order $p-1$ then forces at least that many distinct units, impossible for a composite modulus."
+    },
+    {
+      "num": "3.2",
+      "file": "ch03.js",
+      "target": "nt-3.2",
+      "paragraph": "Completeness needs more than that soundness argument. Primitive roots modulo a prime (nt-3.2) supply an element of order $p-1$ for every prime $p$, so all the required noncongruences can hold simultaneously. Recursing on the prime factors supplies certificates for the smaller primes; no primitive-root assertion for composite moduli is used."
+    },
+    {
+      "num": "3.3",
+      "file": "ch03.js",
+      "target": "nt-1.6",
+      "paragraph": "The fundamental theorem of arithmetic (nt-1.6) supplies the missing exclusion step: every divisor $d>1$ has a prime factor, and that prime occurs in the verified factorization of $N$. If every listed prime exceeds $k$, so does $d$. Pratt certificates establish primality of the entries; unique factorization explains why no unlisted smaller prime divisor can remain."
+    },
+    {
+      "num": "4.1",
+      "file": "ch04.js",
+      "target": "logic-2.5",
+      "paragraph": "Existence of a circuit for every truth table is the canonical DNF construction (logic-2.5): form one minterm for each true row and OR the minterms. Each minterm is true at exactly its own row, so the resulting circuit computes precisely the prescribed function. Constants handle an empty set of true rows; this construction proves existence without a small-size guarantee."
+    },
+    {
+      "num": "4.2",
+      "file": "ch04.js",
+      "target": "comb-1.1",
+      "paragraph": "The description bound uses the product rule (comb-1.1) before pigeonhole applies. At each gate there are at most three types and $(s+n)^2$ ordered input choices; multiply these bounds over $s$ gates. Topological validity only removes descriptions, and duplicate descriptions of the same function do not weaken an upper bound on how many functions can be represented."
+    },
+    {
+      "num": "4.6",
+      "file": "ch04.js",
+      "target": "logic-1.2",
+      "paragraph": "The uncountability assertion uses Cantor’s diagonal theorem (logic-1.2). Subsets $S\\subseteq\\N$ correspond to unary languages $\\{1^n:n\\in S\\}$, all in P/poly, whereas machines have only countably many finite descriptions. More explicitly, any proposed list of unary languages misses the language that reverses the $n$th listed language on $1^n$; advice is allowed to encode this uncomputable sequence."
+    },
+    {
+      "num": "4.11",
+      "file": "ch04-b.js",
+      "target": "alg-1.15",
+      "paragraph": "The associativity transferred from alg-1.15 is composition of maps $\\{0,1\\}\\to\\{0,1\\}$. A valid carry pair has $g\\wedge p=0$, giving exactly one of the three distinct maps: constant zero, identity or constant one. Combining adjacent valid pairs stays in this set and represents the composition in the stated high-to-low order. Since this representation is one-to-one on valid pairs, associativity of composition gives associativity of their pair operation, which permits the balanced prefix regrouping."
+    }
+  ],
+  "rowBackfills": {
+    "4.3": [
+      "cplx-4.1",
+      "cplx-4.2"
+    ],
+    "4.7": [
+      "cplx-4.5",
+      "toc-12.11"
+    ],
+    "4.8": [
+      "cplx-4.4",
+      "cplx-3.6",
+      "cplx-3.4"
+    ],
+    "4.9": [
+      "cplx-4.8",
+      "cplx-4.5",
+      "cplx-3.5"
+    ]
+  }
+}
