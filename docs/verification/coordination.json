@@ -62,9 +62,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "DEEP5.12runtime candidate ready for peer; now ENERGY prerequisite production",
+      "current": "ALGO genuine prerequisite production",
       "owns": [
-        "IMAGING3.18 report only; DEEP5.12 local item/helper/tests/reports"
+        "ALGO items/matchingrows/unique tests/reports"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent exactDEEP5.12runtime d9bb709 peer; separate label correction pending",
+      "current": "ROBOT genuine prerequisite production",
       "owns": [
-        "Unique DEEP5.12peer report/tests only"
+        "ROBOT items/matchingrows/unique tests/reports; no DHruntime changes"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -1399,10 +1399,20 @@
   "openStateFindings": [
     {
       "id": "deep-5.12-log-thumb",
-      "status": "assigned",
+      "status": "closed",
       "owner": "imaging_source",
       "finding": "Saved/model eta=.002 differs from actual DOM log thumb; c=20 also snaps on inherited400tick grid.",
-      "scope": "Dedicated local synchronization; preserve exact physical model/replay and2sig nativeinput; no shared runtime change."
+      "scope": "Dedicated local synchronization; preserve exact physical model/replay and2sig nativeinput; no shared runtime change.",
+      "peer": "ctrl_prereqs",
+      "peerCommit": "421ca255c0a8f0097ea6cdc321a06aee929f4ed0",
+      "report": "docs/verification/deep512-log-native-peer.md"
+    },
+    {
+      "id": "deep-5.12-coordinate-labels",
+      "status": "awaiting-separate-old-worker-commit",
+      "finding": "Coordinateclipping plot has eta*c*sqrt2 bound but inherited legend/readout still eta*c.",
+      "owner": "oldworker_three immutable delivery only; successor does not edit oldtree",
+      "sourceClosure": "None; no commit yet as of lastread ofcodex/atlas-crossfield-psych e57c6a5."
     }
   ],
   "stateFollowups": [
@@ -1495,11 +1505,16 @@
     },
     {
       "id": "deep-5.12-log-thumb",
-      "status": "candidate-awaiting-independent-peer",
+      "status": "accepted",
       "candidate": "d9bb7096a8d21f200aef2b2d96805f8b3cea2af6",
       "producer": "imaging_source",
-      "report": "docs/verification/deep-clipping-state-followup.md",
-      "sourceClosure": "None; separate old-worker label-only correction still pending."
+      "report": "docs/verification/deep512-log-native-peer.md",
+      "sourceClosure": "None; separate old-worker label-only correction still pending.",
+      "commits": [
+        "d9bb7096a8d21f200aef2b2d96805f8b3cea2af6",
+        "421ca255c0a8f0097ea6cdc321a06aee929f4ed0"
+      ],
+      "peer": "ctrl_prereqs"
     }
   ],
   "acceptedSourceLimitations": [
