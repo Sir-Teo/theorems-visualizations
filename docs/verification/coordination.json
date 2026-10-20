@@ -159,6 +159,17 @@
         "game-nim-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "music-7.13",
+        "music-7.14"
+      ],
+      "peer": "coordinator exact-commit Benson source/proof review, certified rational-log reference, four math groups and four fresh narrow native matrices",
+      "reports": [
+        "music-circle53-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -171,5 +182,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 124
+  "currentPendingSourceReviews": 123
 }

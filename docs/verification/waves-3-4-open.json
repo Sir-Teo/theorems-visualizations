@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 124,
+  "remainingFlags": 123,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -26,7 +26,7 @@
     "psych": 6,
     "soc": 8,
     "polsci": 9,
-    "music": 15,
+    "music": 14,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -668,21 +668,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1086/257897"
-      }
-    },
-    {
-      "id": "music-7.13",
-      "file": "content/music/ch07-c.js",
-      "name": "53-tone equal temperament",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 6"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/53_equal_temperament"
       }
     },
     {
@@ -2751,7 +2736,8 @@
       "music-7.12",
       "soc-3.1",
       "soc-4.4",
-      "game-4.12"
+      "game-4.12",
+      "music-7.13"
     ]
   },
   "additionalFollowups": [
@@ -7330,6 +7316,16 @@
       "id": "game-4.12",
       "status": "resolved",
       "note": "2026-10-20: worker_two exact-commit original Sprague source/proof/math and fresh narrow light/dark native matrices; game-nim-followup.md."
+    },
+    {
+      "id": "music-7.13",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit Benson source/proof review, certified rational-log reference, four math groups and four fresh narrow native matrices; music-circle53-followup.md."
+    },
+    {
+      "id": "music-7.14",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit Benson source/proof review, certified rational-log reference, four math groups and four fresh narrow native matrices; music-circle53-followup.md."
     }
   ]
 }

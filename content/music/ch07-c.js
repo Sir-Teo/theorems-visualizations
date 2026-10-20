@@ -25,7 +25,7 @@ For $25/16=(5/4)^2$, the assigned 34-step error is twice that of 17 steps agains
       refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §6.3, pp.213–216; declared reference table and25/16 counterexample computed here'],tags:['equal temperament','just intonation'],
       credit:'Technical53-TET exposition: Dave Benson; finite reference table, counterexample and synthesis authored here.',
       scope:String.raw`A mathematical finite comparison. The ratio list is declared rather than a unique five-limit scale, and no universal 1.5-cent or listener-threshold claim is made. Historical priority and naming of the 53-fifth closure excess are outside this claim. Integer step counts and the prime-power ratio are exact definitions; decimal logarithms/frequencies are numerical evaluations. Audio is the C4=261.6256-Hz,44,100-Hz H8 signal specified in 7.4/7.9, with pre-output bound 0.12 and 10-ms ramps; no perceived-beat or consonance certificate is inferred.`,
-      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
       viz(v){
         const chord=v.select('chord',[{value:'major',label:'major triad 4:5:6'},{value:'minor',label:'minor triad 10:12:15'},{value:'major7',label:'major seventh 8:10:12:15'}],'major');
         const A=v.stage({x:[-1.5,1.5],y:[-1.45,1.45],equal:true,axes:false,full:true,height:350,minWidth:240,title:'53 equal ticks and the selected chord'}),B=v.stage({x:[0,1],y:[-.5,12.7],axes:false,full:true,height:440,minWidth:240,title:'declared rational references and signed errors (cents)'});
@@ -53,7 +53,7 @@ Benson's Appendix M demonstrates the key-signature relationship with C/G and C/F
       refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §§5.3–5.4, pp.155–158; Appendix M, pp.393–394'],tags:['circle of fifths'],
       credit:'Tuning and key-signature exposition: Dave Benson; continuous uniform-fifth diagram and synthesis authored here.',
       scope:String.raw`A specified constant-fifth family with registered controls, rather than a simulation of every well temperament. The final note's unison with C is exact at the equal endpoint; intermediate calculations and decimal readouts use binary 64. Every audio root is folded into C4–C5, and its two upper voices ascend by the displayed four-fifth major third and fifth. C4 is 261.6256Hz. Audio uses the mono 44,100-Hz H8 contract of 7.4/7.9 with pre-output bound 0.12 and 10-ms ramps. No subjective key-character or perceptual equality is inferred.`,
-      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
       viz(v){
         const tau=v.slider('tempering: pure to equal',0,1,0,{step:'any',decimals:9}),selected=v.slider('selected chain note',0,11,0,{int:true,fmt:x=>CIRCLE_NAMES[x]});
         const A=v.stage({x:[-1.8,1.8],y:[-1.8,1.8],equal:true,axes:false,full:true,height:390,minWidth:240,title:'chain order; radial displacement encodes accumulated excess'});let info;
