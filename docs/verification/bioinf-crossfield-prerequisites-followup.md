@@ -1,0 +1,41 @@
+# BIOINF genuine prerequisites — 20 October 2026
+
+Candidate adds **15 genuine written prerequisite edges across 11 existing written items**. Read-only counts move **10/15/31 → 25/30/46** written-to-written/written-to-known/whole-syllabus, zero unknown targets. These are candidate counts pending separate independent peer acceptance. No global inventory, source flag, source closure or biological model is changed. KIN peer and PHYSIO candidate boundaries remain preserved.
+
+I read the complete actual statements and proof ideas of all seven newly used targets and the complete consuming arguments/statements/scopes. Each added edge supplies an existing calculation, with its required hypotheses made explicit:
+
+| Consumer | Added target(s) | Consumed step and limits |
+|---|---|---|
+| 1.2 approximate word counts | prob-1.6.1 | Sum window indicators under uniform independent-letter null; overlapping windows need not be independent for the expected count. Expectation is not a significance test. |
+| 1.6 profile scores | prob-2.1.1a; pma-8.6 | Independent columns supply likelihood products; positive probabilities permit log-product conversion to score sums. Zero probabilities require an extended score, not an ordinary log at zero. |
+| 1.10 randomized restarts | prob-2.1.1a | Independent runs with common success probability yield complementary failure probability. No assertion that any particular planted problem has positive success probability is added. |
+| 2.4 substitution scores | pma-8.6 | Positive factorized per-column likelihood ratios give unrounded additive log odds; integer rounding and gap calibration are additional choices. |
+| 3.5 maximal scores | prob-1.6.13 | Given Poisson exceedance approximation, its exact zero-count formula gives approximate maximum-score distribution. Finite/gapped applicability remains separate. |
+| 3.6 bits/E-values | prob-1.6.13; pma-8.6 | Zero versus at-least-one Poisson counts distinguish probability from expectation; exponential/log identities establish bit conversion. No new gapped-score calibration or finite-length claim. |
+| 3.8 spaced seeds | prob-1.6.1; prob-2.1.1a | Independent match bits give p^w at one placement; expectation sums overlapping placement indicators without placement independence. Valid-placement count depends on span. |
+| 4.2 likelihood discrimination | stat-6.4 | Simple-versus-simple likelihood-ratio test optimal at attained size; boundary randomization for exact discrete size, common first-letter law cancels. Equal-prior/equal-cost error comparison is pointwise. |
+| 4.4 Viterbi | algo-7.2 | Induction over time-layer subproblem DAG proves recurrence; KT cells with K predecessors give complexity. Zero-probability edges need exclusion or extended log weights. |
+| 4.7 posterior decoding | stat-2.1; prob-1.6.1 | Finite joint-mass conditional normalization requires positive observation likelihood and HMM conditional independence. Expected positionwise accuracy adds posterior probabilities; allowed-path decoding is a different constraint. |
+| 4.12 numerical stability | pma-8.6 | Positive incremental scaling factors give log-likelihood sum; max factorization yields finite-input log-sum-exp. Both negative-infinity inputs need their own zero-probability branch. |
+
+No biochemical, genomic, clinical or empirical scope is expanded. The added text explains existing abstract string/probability/computation models and their limits.
+
+## Exact bounded corrections
+
+- **3.8 idea qualification:** the inherited opening said expected hit count was equal for every seed of equal weight in a region. That ignores differing spans and hence differing placement counts. It now requires a common set of valid placements. The appended derivation gives `(L−s+1) p^w` for span s and length L, and retains overlap dependence for at-least-one probability. This exact prefix replacement is separately guarded; the executable seed model, statement, scope and reported example values are unchanged.
+- **4.12 idea typo:** max-factorization prevents a large **positive** exponential argument; the inherited word “negative” was incorrect. Only that word is corrected in the original prefix, followed by the bounded logarithm explanation. No runtime fix is asserted.
+- **3.2 syllabus backfill:** the written item already has `['bioinf-2.2','prob-2.7.1']` and explicitly invokes Fekete's lemma; the syllabus omitted the second edge. I read the actual prob-2.7.1 statement/proof (fixed-block superadditivity supplies liminf, supremum supplies limsup) and full existing LCS consumer. Concatenating common subsequences supplies the required superadditivity of expected length. The syllabus now matches the existing written list. This is **no additional quota edge** and does not newly certify its separate concentration/almost-sure argument. All other full item/syllabus lists agree; no aliases require changes.
+
+## Preservation and validation
+
+`tests/bioinf-prerequisites-manifest.json` records exact mapped additions and expected changed ideas. Explicit-only `verification-bioinf-prerequisites-audit.mjs`, run with `BIOINF_PEER_BASELINE=/tmp/atlas-new-arch-source/bioinf-prereqs/baseline`, compares every complete object/property/function/flag for all **47 written items** to the immutable pre-batch snapshot (parent `10c9b97cbe0a6bf13602c034749ca900a3bc6e86`). Only exact mapped deps and expected ideas are allowed, with the two exact prefix repairs above. Complete syllabus comparison permits exactly those additions and the 3.2 row backfill, and checks **all 47 full item/row dependency arrays**, including multiline lists. Every private/shared helper, collection metadata and nonchapter BIOINF file is byte-identical. Statements, captions, scopes, refs, all functions and source flags are unchanged. No whole-object hashes are introduced into default tests.
+
+Independent `verification-bioinf-prerequisites-math.mjs` passes **15 groups**, with no production helper imports: exhaustive overlapping-window counts, normalized column products/log scores, independent restart probabilities including endpoints, unrounded pair-score sums, Poisson mass/mean/zero counts, bit-score conversions, finite independent match-bit seed enumerations with different span counts, exhaustive finite Neyman–Pearson rejection-set comparisons, brute-force tiny HMM paths against Viterbi/forward/backward conditional slices, exhaustive expected positionwise-accuracy optimization and stable log identities. These are model witnesses alongside the read theorem proofs, not universal numerical proofs. All **8 existing BIOINF default tests pass**, no failures/skips/cancels.
+
+Fresh strict build: **6684 written / 6890 planned / 450 chapters / 85 collections; 0 errors, 0 warnings**, home **112706 bytes gzip**. Scoped static: **47 / 0 / 0**. Git whitespace check passes.
+
+Fresh native run covers **11 items × light/dark at 320px**, native visualization runtime/TeX/nonblank mount checks followed by separate actual built production proof checks. Every proof has **288 client / 288 scroll** width, including internal displayed-math scroll checks. I personally inspected all **22 complete proof output images** in six readable contact sheets, plus individual 3.8 images in both themes. Initial captures of the longest proof clipped text because the capture viewport was too short; the final run uses a taller viewport at the same 320px width and two animation frames after font readiness. Final captures include every line, with no clipped changed content. No content/CSS was changed for capture. This certifies changed prose and native mounts, not all inherited control/replay behavior.
+
+Search of actual `content/bridges` found no BIOINF reference, so there is no affected bridge step to update or render. Browser and server closed. No FPS measurement, global write, source closure or runtime/helper edit occurred.
+
+Evidence: `/tmp/atlas-new-arch-source/bioinf-prereqs/{baseline,mapping.json,build.log,static.log,math-own.log,math-existing.log,native-final.log,native/}`. Native images are `native/<num>-<theme>-idea.png`, with six contact sheets `native/{light,dark}-{0,1,2}.png`. Reproduce the explicit audit from the candidate root with the immutable baseline path above; `--guard-only` skips browser work. Separate immutable peer acceptance is required before integration/count acceptance.
