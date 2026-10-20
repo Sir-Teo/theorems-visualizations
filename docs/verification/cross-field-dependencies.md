@@ -1,10 +1,10 @@
 # Cross-field prerequisite gate
 
-2026-10-19. The executable inventory in `cross-field-dependencies.json` checks
+2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against all current written and planned records.
 
-Of 64 non-math collections, **53 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 855 edges. Even
+Of 64 non-math collections, **52 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 840 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -135,3 +135,8 @@ Published counts remain at shortfall855,53/64collections below25published and28w
 ## Accepted checkpoint through fb1cb6e
 
 The exact accepted snapshot has847 published-edge shortfall,53/64 non-math collections below25 published prerequisites and28 below25 over their complete syllabi. Big History3.9 now explicitly uses the actual kinetic-energy definition mech3.1, with chapter/syllabus synchronized; that collection already met the published target, so the summed shortfall stays847. The inventory excludes the ongoing extinction logistic prerequisite and other unaccepted drafts. Counts do not establish justification; the gate remains open.
+
+
+## Psychology reaches the published prerequisite target
+
+Three actual existing computations now name their written inputs: psych2.10→prob2.1.12 for independent-pair indicator expectation, psych3.1→nla2.8 for the full-rank log-coordinate least-squares fit, and psych4.4→sig2.10 for group-end finite moving averages before subsampling. Independent semantic/strict/static and six320theme checks pass; no source flags or executable visualizations change. Psychology has25published/48whole-syllabus edges. The current exact inventory has840summed published-edge shortfall,52/64collections below25published and28whole syllabi below25. See [independent acceptance](psych-crossfield-prerequisites-peer.md). Counts remain separate from justification; Wave5's gate is open.

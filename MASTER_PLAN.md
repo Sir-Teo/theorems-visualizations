@@ -53,7 +53,7 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 1. Continue the Wave 3–4 source-review queue: **14 items remain**. The named modern PWT/MRW input audit is complete; its evidence and reproducible extraction are in `docs/verification/pwt-10.0.json` and `scripts/verify-pwt.py`.
 2. Continue agent screenshot inspection in light and dark themes and close remaining input/model gaps. [Automated audio coverage](docs/verification/audio-input-followup.md) passes 53 items and 95 actions. Human review, subjective listening and user approval are not required.
    Reconcile the existing cross-field prerequisite gate: [the inventory](docs/verification/cross-field-dependencies.md)
-   finds 53 of64 non-math collections below25 published edges, with28 below25 even across
+   finds 52 of64 non-math collections below25 published edges, with28 below25 even across
    planned chapters. Add connections only when the argument or model actually requires them.
    The home JSON gate passes. [Steady-pan measurements](docs/verification/map-performance.md)
    reach60fps in eight tested modes. [Zoom/hover comparisons](docs/verification/map-transitions-followup.md)

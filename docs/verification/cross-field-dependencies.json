@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 53,
+  "publishedBelowTarget": 52,
   "wholeSyllabusBelowTarget": 28,
   "entries": [
     {
@@ -11496,10 +11496,10 @@
       "collection": "psych",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 22,
-      "writtenToKnown": 23,
-      "wholeSyllabus": 45,
-      "publishedShortfall": 3,
+      "writtenToWritten": 25,
+      "writtenToKnown": 26,
+      "wholeSyllabus": 48,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -11562,6 +11562,13 @@
           "item": "psych-1.4",
           "prerequisite": "stat-5.5",
           "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "psych-2.10",
+          "prerequisite": "prob-2.1.12",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -11636,6 +11643,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "psych-3.1",
+          "prerequisite": "nla-2.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "psych-4.7",
           "prerequisite": "pma-9.23",
           "prerequisiteField": "math",
@@ -11660,6 +11674,13 @@
           "item": "psych-4.4",
           "prerequisite": "prob-2.2.1",
           "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "psych-4.4",
+          "prerequisite": "sig-2.10",
+          "prerequisiteField": "eng",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -14395,10 +14416,10 @@
       "collection": "bighist",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 14,
-      "writtenToKnown": 20,
-      "wholeSyllabus": 43,
-      "publishedShortfall": 11,
+      "writtenToWritten": 18,
+      "writtenToKnown": 24,
+      "wholeSyllabus": 47,
+      "publishedShortfall": 7,
       "unknown": [],
       "edges": [
         {
@@ -14479,6 +14500,20 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "bighist-3.7",
+          "prerequisite": "ode-1.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-3.8",
+          "prerequisite": "ode-1.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "bighist-3.9",
           "prerequisite": "mech-3.1",
           "prerequisiteField": "physics",
@@ -14508,6 +14543,13 @@
         },
         {
           "item": "bighist-4.7",
+          "prerequisite": "stat-1.12",
+          "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-4.7",
           "prerequisite": "bioinf-3.5",
           "prerequisiteField": "bio",
           "itemWritten": true,
@@ -14529,14 +14571,21 @@
         },
         {
           "item": "bighist-4.4",
-          "prerequisite": "popgen-2.9",
+          "prerequisite": "popgen-2.1",
           "prerequisiteField": "bio",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
         {
           "item": "bighist-4.4",
-          "prerequisite": "popgen-2.1",
+          "prerequisite": "popgen-2.3",
+          "prerequisiteField": "bio",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-4.4",
+          "prerequisite": "popgen-2.9",
           "prerequisiteField": "bio",
           "itemWritten": true,
           "prerequisiteWritten": true

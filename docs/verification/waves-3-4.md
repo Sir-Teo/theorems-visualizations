@@ -888,3 +888,8 @@ The accepted queue is96 =833 initial+4 added−741 original resolved. Coordinato
 ## Isolated-team checkpoint through fb1cb6e (2026-10-20)
 
 The exact immutable accepted snapshot passes1,930 default tests including all6UI tests, strict build6684written/6890planned/450chapters/85collections and full static6621, with0errors/warnings. Home JSON112,724bytes gzip. It has39pending source reviews,797 original flags resolved and3added; all actual flags reconcile. The team has110independently accepted entries. Cross-field published shortfall847,53/64below25 and28whole-syllabus collections below25. Wave5 remains prepared/unstarted and map60fps remains open. See [durable checkpoint](checkpoint-fb1cb6e.md). Ongoing producer drafts are excluded.
+
+
+## Accepted source and prerequisite progress after61ced0c
+
+Current source queue14=833initial+1added−820original resolved. Independently accepted hominin source summaries, origin proposal comparison, orbital forcing, actual fusion1993erratum and collective learning bring the active team's accepted entries to137. Peer review found and verified corrections for fusion contour strokes at an intermediate native state and27exact rational learning allocation ties. Psychology now has25published cross-field prerequisites; exact global shortfall840,52/64published and28whole syllabi below25. Six new psychology prose/theme checks preserve all executable visualizations/source flags. An additional POLSCI5.8rounding consequence is registered separately for repair. Latest full immutable checkpoint remains61ced0c; later active/integrated content is not attributed to that snapshot. Source/prerequisite/full-map gates remain open and Wave5 remains prepared/unstarted.
