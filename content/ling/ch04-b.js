@@ -1,3 +1,4 @@
+import menzerathConcept from './source-audit-menzerath.js';
 import {shannonGuessConcept} from './source-audit-shannon.js';
 import {ngramModel,uidHypothesis} from './source-audit-language-models.js';
 // Linguistics & Language — Chapter 4, part b: items 4.6–4.10
@@ -10,18 +11,6 @@ const letterLM = () => (_LM || (_LM = letterModel(trainSyms(), 3)));
 const _qCache = {};
 const modelQ = (k) => (_qCache[k] || (_qCache[k] = guessDistribution(letterLM(), toSyms(TEST_TEXT), k)));
 const sentencesOf = (text) => (text.match(/[^.;]+[.;]/g) || []).map((x) => x.trim()).filter((x) => x.length >= 40 && x.length <= 105);
-
-// ---- 4.6 helpers
-const MENZ_TEXTS = [{ value: 'alice', label: 'English (Alice)' }, { value: 'pride', label: 'English (Pride & Prej.)' }, { value: 'de', label: 'German' }, { value: 'es', label: 'Spanish' }];
-function menzerathData(key, weighted) {
-  const c = corpus(key); const lang = key === 'de' || key === 'es' ? key : 'en'; const by = new Map();
-  for (const [w, f] of c.rf) {
-    const k = syllables(w, lang); if (k > 7 || w.length < 1) continue; const wt = weighted ? f : 1; let o = by.get(k);
-    if (!o) by.set(k, (o = { k, n: 0, sL: 0, sL2: 0, sW: 0 })); const y = w.length / k;
-    o.n += wt; o.sL += wt * y; o.sL2 += wt * y * y; o.sW += wt * w.length;
-  }
-  return [...by.values()].filter((o) => o.n >= 5).sort((a, b) => a.k - b.k).map((o) => ({ k: o.k, n: o.n, y: o.sL / o.n, sd: Math.sqrt(Math.max(0, o.sL2 / o.n - (o.sL / o.n) ** 2)), L: o.sW / o.n }));
-}
 
 // ---- 4.7 helpers
 const CIPHER_TEXTS = [
@@ -36,47 +25,7 @@ export default {
   chapter: 4,
   items: [
     // ───────────────────────────────────────────────────────────────────────── 4.6
-    {
-      num: '4.6',
-      kind: 'Law',
-      name: 'Menzerath’s law',
-      credit: 'Paul Menzerath (qualitative observation for German; his work is cited as 1928 or 1954); given its mathematical form by Gabriel Altmann, 1980 (Glottometrika 2, 1–10)',
-      statement: String.raw`The larger a linguistic construct, the smaller its constituents: the more syllables a word has, the shorter its syllables are on average (and likewise for clauses made of more words, words made of more morphs, sounds in longer syllables). Altmann's formula for the mean constituent size $y$ as a function of the number $x$ of constituents is
-$$y(x)\;=\;a\,x^{\,b}\,e^{-cx},\qquad b<0,\ c\ge 0,$$
-which reduces to a power law $y=a\,x^{b}$ when $c=0$.`,
-      idea: String.raw`Part of the effect is arithmetic and part is substance. If every extra syllable added a full average syllable's worth of letters, syllable length would be flat; instead words grow more slowly than they gain syllables, because speakers compress the parts of long words: the second panel shows word length rising far less than in proportion to syllable count. The law is general (it is found in genomes and music too), and it has been argued to follow from a simple trade-off, a constant total budget shared among parts. Here syllable length is measured in letters and syllables are counted by a heuristic, so the picture is a proxy for the phonetic law.`,
-      caption: String.raw`Pick a language and whether to count word types or running words. Dots with bars: mean letters per syllable (±1 SD) for words of $x$ syllables; the curve is Altmann's formula fitted by least squares (log scale). Right: mean word length against syllable count, with the dashed line “no compression” (length proportional to syllables).`,
-      scope: String.raw`A statistical tendency measured on averages; words are not constrained individually. Proxy measurement: syllables are counted by vowel groups, and orthographic letters stand in for sound duration.`,
-      deps: ['ling-4.5'],
-      refs: ['Jurafsky & Martin ch. 2'],
-      tags: ['syllables', 'word length'],
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Menzerath%27s_law' },
-      viz(v) {
-        const tx = v.select('Text', MENZ_TEXTS, 'alice', { onChange: () => v.invalidate() });
-        const wt = v.select('Count', [{ value: 'types', label: 'word types' }, { value: 'tokens', label: 'running words' }], 'types');
-        const form = v.select('Fit', [{ value: 'alt', label: '$a x^b e^{-cx}$' }, { value: 'pow', label: '$a x^b$' }], 'alt');
-        const s1 = v.stage({ x: [0.5, 7.5], y: [0, 8], axes: 'box', gutter: true, xlabel: 'syllables in the word, x', ylabel: 'letters per syllable, y', height: 340, title: 'Syllable length' });
-        const s2 = v.stage({ x: [0.5, 7.5], y: [0, 14], axes: 'box', gutter: true, xlabel: 'syllables in the word, x', ylabel: 'mean word length (letters)', height: 340, title: 'Word length' });
-        let info = {};
-        v.render(() => {
-          const D = menzerathData(tx.value, wt.value === 'tokens'); if (D.length < 3) return;
-          const ymax = Math.max(...D.map((d) => d.y + d.sd)) * 1.1; s1.setView([0.5, 7.5], [0, Math.max(3, ymax)]);
-          const w = D.map((d) => Math.sqrt(d.n));
-          const cost = (p) => { let e = 0; D.forEach((d, i) => { const m = form.value === 'alt' ? Math.log(Math.abs(p[0]) + 1e-9) + p[1] * Math.log(d.k) - p[2] * p[2] * d.k : Math.log(Math.abs(p[0]) + 1e-9) + p[1] * Math.log(d.k); e += w[i] * (m - Math.log(d.y)) ** 2; }); return e; };
-          const fitr = v.M.nelderMead(cost, form.value === 'alt' ? [D[0].y, -0.3, 0.05] : [D[0].y, -0.3, 0], { step: 0.3, tol: 1e-10, maxIt: 2000 });
-          const [a, b, cc0] = fitr.x; const c = form.value === 'alt' ? cc0 * cc0 : 0;
-          s1.fn((x) => Math.abs(a) * Math.pow(x, b) * Math.exp(-c * x), { domain: [1, 7], color: 'green', width: 3 });
-          for (const d of D) { s1.line(d.k, Math.max(0, d.y - d.sd), d.k, d.y + d.sd, { color: 'accent', width: 1.5, alpha: 0.6 }); s1.dot(d.k, d.y, { r: 3 + Math.min(7, Math.log10(d.n)), color: 'accent' }); }
-          s2.setView([0.5, 7.5], [0, Math.max(...D.map((d) => d.L)) * 1.15]);
-          s2.line(1, D[0].L, 7, 7 * D[0].L, { color: 'muted', dash: true, width: 1.5 });
-          s2.path(D.map((d) => [d.k, d.L]), { color: 'orange', width: 2.5 }); s2.dots(D.map((d) => [d.k, d.L]), { r: 5, color: 'orange' });
-          info = { a: Math.abs(a), b, c, D };
-        });
-        v.legend([['accent', 'mean ± SD of letters per syllable', { dot: true }], ['green', 'fitted curve'], ['orange', 'mean word length', { dot: true }]]);
-        v.readout(() => (info.D ? `Fit: $y=${v.fix(info.a, 2)}\\,x^{${v.fix(info.b, 2)}}${info.c ? `e^{-${v.fix(info.c, 3)}x}` : ''}$. Words with 1 syllable: ${v.fix(info.D[0].y, 2)} letters per syllable; with ${info.D[info.D.length - 1].k}: ${v.fix(info.D[info.D.length - 1].y, 2)}.\nWord length grows from ${v.fix(info.D[0].L, 1)} to ${v.fix(info.D[info.D.length - 1].L, 1)} letters while syllables multiply by ${info.D[info.D.length - 1].k}.` : ''));
-      },
-    },
+    menzerathConcept,
     // ───────────────────────────────────────────────────────────────────────── 4.7
     {
       num: '4.7',
