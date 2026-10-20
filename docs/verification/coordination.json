@@ -546,6 +546,16 @@
         "docs/verification/polsci-strategic-jury-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "game-4.8"
+      ],
+      "peer": "worker two independent actual-source/math/native review and 81940 belief-state checks",
+      "reports": [
+        "docs/verification/game-chainstore-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -558,7 +568,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 77,
+  "currentPendingSourceReviews": 76,
   "latestCheckpoint": {
     "acceptedContentCommit": "04ab914",
     "pendingSourceReviews": 85,

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 77,
+  "remainingFlags": 76,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 3,
+    "game": 2,
     "polsci": 3,
     "music": 4,
     "art": 9,
@@ -217,21 +217,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Blotto_game"
-      }
-    },
-    {
-      "id": "game-4.8",
-      "file": "content/game/ch04-b.js",
-      "name": "Chain-store paradox",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Osborne §7.2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Chain_store_paradox"
       }
     },
     {
@@ -1990,7 +1975,8 @@
       "music-8.14",
       "music-8.15",
       "tech-4.11",
-      "polsci-5.6"
+      "polsci-5.6",
+      "game-4.8"
     ]
   },
   "additionalFollowups": [
@@ -6834,6 +6820,11 @@
       "id": "polsci-5.6",
       "status": "resolved",
       "note": "2026-10-20: coordinator independent actual-source/math/native review including 2026 correction; docs/verification/polsci-strategic-jury-followup.md."
+    },
+    {
+      "id": "game-4.8",
+      "status": "resolved",
+      "note": "2026-10-20: worker two independent actual-source/math/native review and 81940 belief-state checks; docs/verification/game-chainstore-followup.md."
     }
   ]
 }

@@ -1,6 +1,6 @@
 import{chainModel}from'./chainstore-audit.js';
 export default{
- num:'4.8',kind:'Paradox',name:'Chain-store paradox',verify:true,
+ num:'4.8',kind:'Paradox',name:'Chain-store paradox',verify:false,
  statement:String.raw`In Selten's 1974 working-paper version, one incumbent faces K different one-period entrants in a known finite sequence. Out pays (entrant 1, incumbent 5); entry followed by cooperation pays (2,2); entry followed by aggression pays (0,0). These are the original Table 1 numbers, with the entrant written first. All past choices are public; there is no binding threat or promise. The unique subgame-perfect strategy profile of this complete-information game has entry and cooperation at every history. With 20 towns the incumbent earns 40.
 
 Selten contrasts that backward-induction conclusion with a deterrence intuition. His 17-Out/3-cooperation illustration earns 91 if the proposed behavior occurs; it is not a subgame-perfect prediction or an experimental estimate. The paper expressly calls its market story fictitious.
