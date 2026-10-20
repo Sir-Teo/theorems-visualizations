@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 167,
+  "remainingFlags": 163,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 16,
+    "game": 12,
     "psych": 15,
     "soc": 16,
     "polsci": 11,
@@ -392,37 +392,6 @@
       }
     },
     {
-      "id": "game-4.1",
-      "file": "content/game/ch04.js",
-      "name": "Extensive game with perfect information",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Osborne \u00a75.1",
-        "MSZ \u00a73.3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Extensive-form_game"
-      }
-    },
-    {
-      "id": "game-4.2",
-      "file": "content/game/ch04.js",
-      "name": "Backward induction",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Osborne \u00a75.5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Backward_induction"
-      }
-    },
-    {
       "id": "game-4.3",
       "file": "content/game/ch04.js",
       "name": "Zermelo: chess is determined",
@@ -435,38 +404,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)"
-      }
-    },
-    {
-      "id": "game-4.4",
-      "file": "content/game/ch04.js",
-      "name": "Subgame perfect equilibrium",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Osborne \u00a75.4",
-        "MSZ \u00a77.1"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Subgame_perfect_equilibrium"
-      }
-    },
-    {
-      "id": "game-4.5",
-      "file": "content/game/ch04.js",
-      "name": "Kuhn: perfect-information games have a pure subgame perfect equilibrium",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ \u00a74.13",
-        "Osborne \u00a75.5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Backward_induction"
       }
     },
     {
@@ -3406,7 +3343,11 @@
       "psych-3.8",
       "phil-4.8",
       "psych-3.10",
-      "phil-4.1"
+      "phil-4.1",
+      "game-4.1",
+      "game-4.2",
+      "game-4.4",
+      "game-4.5"
     ]
   },
   "additionalFollowups": [
@@ -7687,6 +7628,30 @@
       "status": "resolved",
       "report": "docs/verification/phil-liar-followup.md",
       "note": "Actual Kripke and P\u0159enosil passages/images read independently; exact pair equations distinguish object negation, external reporting and conditional self-enrichment. Four math and four final native groups plus static checks pass; no full-language or general-collapse claim."
+    },
+    {
+      "id": "game-4.1",
+      "status": "resolved",
+      "report": "docs/verification/game-finite-tree-followup.md",
+      "note": "Actual finite-tree definitions, one-deviation proof, existence/uniqueness construction and attribution notes checked independently. Complete plans, coherent ties and all-subgame whole-plan deviations verified by seven math and twenty native groups; original tree inventory, saved state and full bounds retained."
+    },
+    {
+      "id": "game-4.2",
+      "status": "resolved",
+      "report": "docs/verification/game-finite-tree-followup.md",
+      "note": "Actual finite-tree definitions, one-deviation proof, existence/uniqueness construction and attribution notes checked independently. Complete plans, coherent ties and all-subgame whole-plan deviations verified by seven math and twenty native groups; original tree inventory, saved state and full bounds retained."
+    },
+    {
+      "id": "game-4.4",
+      "status": "resolved",
+      "report": "docs/verification/game-finite-tree-followup.md",
+      "note": "Actual finite-tree definitions, one-deviation proof, existence/uniqueness construction and attribution notes checked independently. Complete plans, coherent ties and all-subgame whole-plan deviations verified by seven math and twenty native groups; original tree inventory, saved state and full bounds retained."
+    },
+    {
+      "id": "game-4.5",
+      "status": "resolved",
+      "report": "docs/verification/game-finite-tree-followup.md",
+      "note": "Actual finite-tree definitions, one-deviation proof, existence/uniqueness construction and attribution notes checked independently. Complete plans, coherent ties and all-subgame whole-plan deviations verified by seven math and twenty native groups; original tree inventory, saved state and full bounds retained."
     }
   ]
 }
