@@ -44,7 +44,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "BIGHIST3.1/3.2accepted;3.3LUCA committed cedbe66 queued for worker_two peer; producing3.4GOE then3.5endosymbiosis. Completed independent4.2peer.",
+      "current": "BIGHIST3.4GOE ready dea927f for worker_three peer; historical LOGIC4.12/ROBOT3.7/ARCH3.14 original-body recovery. Completed independent POLSCI edge/rounding peers. Endosymbiosis3.5production remains unstarted after worker access limitation.",
       "completedCollections": [
         "music",
         "ling"
@@ -66,7 +66,7 @@
         "psych",
         "tech"
       ],
-      "current": "BIGHIST4.1/4.2accepted; producing4.3source-specific dated evidence; then independently peer LUCA3.3."
+      "current": "BIGHIST4.3ready2502b2e for peer; independently reviewing LUCA3.3cedbe66."
     },
     {
       "agent": "worker_three",
@@ -81,7 +81,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "ENERGY3.10accepted after original erratum and contour correction; learning4.7peer complete. Psychology three-edge batch accepted; preparing POLSCI six-edge candidate then separate5.8rounding correction, followed by fluid prerequisites.",
+      "current": "POLSCI six prerequisites and separate5.8rounding correction accepted; independently reviewing GOE3.4dea927f before fluid prerequisite work.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -1292,16 +1292,7 @@
       "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },
-  "openStateFindings": [
-    {
-      "id": "polsci-5.8-rational-half-ties",
-      "status": "open",
-      "finding": "Math.round(f*N) disagrees with exact offered thousandth-share rounding in6of96096states, including N25/f.58 and N45/f.7.",
-      "owner": "worker_three",
-      "scope": "Separate runtime correction; accepted source flag remains unchanged.",
-      "evidence": "/tmp/atlas-worker-three/polsci-crossfield-evidence/rounding-consequence.json"
-    }
-  ],
+  "openStateFindings": [],
   "stateFollowups": [
     {
       "ids": [
@@ -1337,6 +1328,17 @@
       "finding": "Some15significant-digit tiny values in native0..12/0..1.2 ranges serialize with fewer significant digits, escaping the current15digit-only raw guard.",
       "verification": "Independent actual native counterexamples; six math/static3/0/0 and six fresh320 native groups with exactDOM/tiny raw rollback/canonical replay and own pixels pass.",
       "report": "docs/verification/art-optics-native-roundtrip-followup.md"
+    },
+    {
+      "id": "polsci-5.8-rational-half-ties",
+      "status": "closed",
+      "finding": "Math.round(f*N) disagrees with exact offered thousandth-share rounding in6of96096states, including N25/f.58 and N45/f.7.",
+      "owner": "worker_three",
+      "scope": "Separate runtime correction; accepted source flag remains unchanged.",
+      "evidence": "/tmp/atlas-worker-three/polsci-crossfield-evidence/rounding-consequence.json",
+      "correction": "b5d0bdd61175caadeb1aaebf6325f8dfec0b9775",
+      "report": "docs/verification/polsci-aggregation-rounding-peer.md",
+      "verification": "Worker one independently exhausted96096allocations,576exact rational polynomial masses/tails/moments and both320native/real-pointer/rawreplay/ownpixels; preserved offgrid raster semantics. No new original-source closure counted."
     }
   ],
   "acceptedSourceLimitations": [
@@ -1363,13 +1365,32 @@
       "report": "docs/verification/psych-crossfield-prerequisites-peer.md",
       "publishedBefore": 22,
       "publishedAfter": 25
+    },
+    {
+      "commit": "a27e698fe5562fd29e91211c4a9d86f2e359e43a",
+      "collection": "polsci",
+      "items": [
+        "polsci-4.5",
+        "polsci-4.6",
+        "polsci-4.7",
+        "polsci-5.3",
+        "polsci-5.6",
+        "polsci-5.8"
+      ],
+      "status": "accepted",
+      "producer": "worker_three",
+      "peer": "worker_one",
+      "report": "docs/verification/polsci-crossfield-prerequisites-peer.md",
+      "publishedBefore": 19,
+      "publishedAfter": 25
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 840,
-    "publishedBelow25": 52,
+    "publishedShortfall": 834,
+    "publishedBelow25": 51,
     "collections": 64,
     "wholeSyllabusBelow25": 28,
-    "date": "2026-10-20"
+    "date": "2026-10-20",
+    "acceptedSnapshot": "4620575; excludes ongoing BIGHIST4.5draft"
   }
 }
