@@ -128,7 +128,7 @@ export default {
         { num: '3.15', kind: 'Paper', name: 'The North Pacific: an Example of Tectonics on a Sphere',
           paper: { authors: 'D. P. McKenzie and R. L. Parker', year: 1967, title: 'The North Pacific: an Example of Tectonics on a Sphere', venue: 'Nature 216 (5122): 1276–1280', doi: '10.1038/2161276a0' },
           introduces: ['geol-3.4'], deps: ['geol-3.3', 'geol-3.2', 'geol-3.14'], refs: [],
-          pic: 'Rotate a rigid Pacific plate about an Euler pole on a globe: the reader places the pole and compares predicted slip directions with earthquake slip vectors from California to Japan, then redraws the map as a Mercator projection about the pole, where every predicted slip line becomes a parallel.' },
+          pic: 'Choose an Euler pole and compare local clockwise predictions with ten explicitly synthetic slip directions in a rotated Mercator map; inspect signed residuals, reversed sense and the projection singularity.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

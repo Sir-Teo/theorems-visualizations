@@ -1,3 +1,4 @@
+import mckenziePaper from './mckenzie-paper-item.js';
 import {wilsonState,wilsonTrajectory,wilsonFloorAge} from './wilson-audit.shared.js';
 import {APW_MODEL,gadInclination,apwState} from './paleomag-audit.shared.js';
 import {chosenHeightDensity,heightMoments,driftColumns} from './drift-original-audit.shared.js';
@@ -15,9 +16,7 @@ import {VM_PROFILES,vmProfile} from './magnetic-audit.shared.js';
 //        Exact Fig4 magnetic bearings and .0027/.0053 cgs susceptibilities retained;
 //        flat layer/equal widths are a chosen variant, not the original11/20km Curie-depth geometry.
 //        Original-source distinction, SI conversion and unbounded periodic field documented in the follow-up.
-//   3.15 McKenzie & Parker (1967) Nature 216: 1276–1280 (Crossref-checked). The paper's slip vectors were not read; the "observed"
-//        slip azimuths here are SYNTHETIC: predicted by the MORVEL (DeMets et al. 2010) North America–Pacific pole as quoted in a
-//        course table (48.9° N, 71.7° W, 0.75°/Myr, North America relative to Pacific; not checked against the paper), plus 7° noise.
+//   3.15 Full original1276–1280 read; see isolated mckenzie-paper-item and follow-up.
 
 import { D, R_EARTH, V, LL, angDist, bearing, dest, arc, rotMat, rotPts, rotApply, velAt, mod360, wrap180, azDiff, azDiff180, clamp, meanAngle, fitPole, poleMisfit, polarityAt, NORMALS, anomalyProfile, gauss, HYPS, hypsDensity } from './ch03.shared.js';
 
@@ -195,76 +194,6 @@ export default {
       },
     },
     // ───────────────────────────────────────── 3.15
-    {
-      num: '3.15',
-      kind: 'Paper',
-      name: 'The North Pacific: an Example of Tectonics on a Sphere',
-      paper: {
-        authors: 'D. P. McKenzie and R. L. Parker',
-        year: 1967,
-        title: 'The North Pacific: an Example of Tectonics on a Sphere',
-        venue: 'Nature 216 (5122): 1276–1280',
-        doi: '10.1038/2161276a0',
-      },
-      introduces: ['geol-3.4'],
-      statement: String.raw`McKenzie and Parker showed that the surface of the Earth could be treated as a mosaic of rigid "paving stones" that move without internal deformation, and that on a sphere the motion of each is a rotation about an Euler pole (geol-3.4). Applying this to the Pacific, they showed that the directions of slip in earthquakes along its northern boundary, from California through Alaska to the Aleutians, are consistent with a single rotation, and that if the map is redrawn in a Mercator projection with the pole as the pole of the projection, the slip vectors on the boundary become parallel and the small circles about the pole become straight horizontal lines.`,
-      idea: String.raw`In 1967 the faults were known (strike-slip on the San Andreas and Queen Charlotte faults, thrusting at the Aleutian trench) and earthquake fault-plane solutions gave slip directions. Rigid motion on a sphere means that the slip vector at each point is tangent to a small circle about one pole, so a single pole must fit all the slip directions along the boundary. A Mercator projection whose "equator" is the great circle $90^\circ$ from the pole turns every small circle about the pole into a straight line parallel to the equator, so the test is simply whether the slip vectors are horizontal. This clean statement of rigid-plate kinematics, written within a year of Wilson's transform faults, is the precursor of Morgan's (1968) and Le Pichon's (1968) global plate models.`,
-      caption: String.raw`Gold arrows are the slip directions at ten places along the Pacific–North America boundary (synthetic: predicted by a hidden pole plus $7^\circ$ of noise, since the paper's own fault-plane solutions are not reproduced here); purple arrows are the directions predicted by your pole $E$. Drag $E$ on the globe: in the lower map (a Mercator projection about $E$) your predictions are exactly horizontal, and the observed vectors become parallel to them only when $E$ is right. "Best fit" finds the least-squares pole.`,
-      deps: ['geol-3.3', 'geol-3.2', 'geol-3.14'],
-      refs: [],
-      tags: ['mckenzie-parker', 'pacific', 'euler-pole', 'history'],
-      credit: 'D. P. McKenzie & R. L. Parker, 1967',
-      links: { doi: 'https://doi.org/10.1038/2161276a0' },
-      verify: true,
-      viz(v) {
-        const HID = [-71.7, 48.9], OM = -0.75; // Pacific relative to North America: clockwise about the NA-relative-to-Pacific pole
-        const sites = [['Southern California', [-116.5, 33.4]], ['Parkfield', [-120.4, 35.9]], ['Cape Mendocino', [-124.2, 40.4]], ['Queen Charlotte', [-132.5, 53]], ['Fairweather', [-137.5, 58.5]], ['Kodiak', [-152, 57]], ['Shumagin', [-160, 54.2]], ['Unalaska', [-166, 53]], ['Andreanof', [-175, 51.5]], ['Rat Islands', [178, 51.5]]];
-        const rng = v.rng(21), pts = sites.map((q) => q[1]);
-        const obs = pts.map((p) => mod360(velAt(p, HID, OM).az + 7 * rng.normal()));
-        const best = fitPole(pts, obs, [0, 60], 1);
-        const s = v.stage({ height: 400, full: true });
-        const G = v.globe(s, { projection: 'orthographic', center: [-145, 45], graticule: 15 });
-        const E = G.handle(-100, 25, { label: 'E', color: 'purple' });
-        v.button('Best fit', () => E.set(best.pole[0], best.pole[1]));
-        v.button('Reset', () => E.set(-100, 25));
-        const m = v.stage({ x: [-150, 150], y: [-25, 85], equal: true, axes: false, height: 330, full: true, title: 'Mercator projection about the pole $E$' });
-        const NA = G.landmass('North America'), EU = G.landmass('Eurasia'), landRings = [...NA, ...EU];
-        let info = {};
-        v.render(() => {
-          const pole = [E.lon, E.lat], th0 = meanAngle(pts.map((p) => bearing(pole, p)));
-          const proj = (p) => { const d = angDist(p, pole), b = bearing(pole, p), lat = 90 - d; return [wrap180(b - th0), (Math.log(Math.tan(Math.PI / 4 + (clamp(lat, -85, 85) * D) / 2))) / D, d]; };
-          G.draw({ land: false });
-          G.land(null, { fillAlpha: 0.1, alpha: 0.35, color: 'muted', fill: 'muted' });
-          let sq = 0; const res = [];
-          pts.forEach((p, i) => {
-            const pred = velAt(p, pole, -1).az, e = azDiff(pred, obs[i]); sq += e * e; res.push(e);
-            G.smallCircle(pole, angDist(p, pole), { color: 'purple', width: 0.7, alpha: 0.25 });
-            G.arrow(p, dest(p, obs[i], 7), { color: 'gold', width: 2.4 }); G.arrow(p, dest(p, pred, 7), { color: 'purple', width: 1.8 });
-            G.dot(p, { r: 3, color: 'ink' });
-          });
-          G.dot(pole, { r: 4, color: 'purple' });
-          const mx = pts.reduce((a, p) => a + proj(p)[0], 0) / pts.length; m.setView([mx - 110, mx + 110], [-25, 85]);
-          // Mercator about the pole
-          m.hline(0, { color: 'grid' });
-          for (const lat of [0, 15, 30, 45, 60, 75]) { const y = Math.log(Math.tan(Math.PI / 4 + (lat * D) / 2)) / D; m.hline(y, { color: 'grid', alpha: 0.6 }); m.text(`${90 - lat}°`, mx - 108, y + 1.5, { size: 10, color: 'muted' }); }
-          m.text('angular distance from E', mx - 108, 82, { size: 10, color: 'muted' });
-          for (const ring of landRings) {
-            const out = []; let prev = null;
-            for (const p of ring) { const q = proj(p); if (q[2] < 8 || q[2] > 118) { out.push(null); prev = null; continue; } if (prev && Math.abs(q[0] - prev[0]) > 180) out.push(null); out.push([q[0], q[1]]); prev = q; }
-            m.path(out, { color: 'muted', width: 1, alpha: 0.7 });
-          }
-          pts.forEach((p, i) => {
-            const a = proj(p), b = proj(dest(p, obs[i], 7)), c = proj(dest(p, velAt(p, pole, -1).az, 7));
-            const sg = Math.abs(b[0] - a[0]) > 180 ? 0 : 1;
-            m.arrow(a[0], a[1], c[0], c[1], { color: 'purple', width: 1.8, head: 6 });
-            if (sg) m.arrow(a[0], a[1], b[0], b[1], { color: 'gold', width: 2.4, head: 6 });
-            m.dot(a[0], a[1], { r: 3, color: 'ink' });
-          });
-          info = { rms: Math.sqrt(sq / pts.length), res, pole };
-        });
-        v.legend([['gold', 'observed (synthetic) slip direction'], ['purple', 'direction predicted by $E$'], ['muted', 'coastlines']]);
-        v.readout(() => `rms slip-direction misfit **${v.fix(info.rms, 1)}°** for $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$ · least-squares pole $(${v.fix(best.pole[1], 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(best.pole[0]), 1)}^\\circ\\mathrm{${best.pole[0] < 0 ? 'W' : 'E'}})$ with rms ${v.fix(best.rms, 1)}° (noise 7°; the hidden MORVEL pole is $48.9^\\circ$N, $71.7^\\circ$W) · the McKenzie–Parker pole itself is not quoted here.`);
-      },
-    },
+    mckenziePaper,
   ],
 };
