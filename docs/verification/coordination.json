@@ -976,6 +976,19 @@
       "commits": [
         "73fe4dc"
       ]
+    },
+    {
+      "ids": [
+        "arch-3.7"
+      ],
+      "peer": "coordinator independently compared primary annular sources, tangency/quadrature math and fresh native/output evidence",
+      "reports": [
+        "docs/verification/arch-circular-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9d9a64b"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -988,7 +1001,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 33,
+  "currentPendingSourceReviews": 32,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",

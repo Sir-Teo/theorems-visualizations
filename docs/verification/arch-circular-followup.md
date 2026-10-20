@@ -31,3 +31,5 @@ Final validation: all six1450/430/320 × light/dark native groups pass, plus fre
 Personally inspected actual source equation/table/limiting-mode pixels and own320light/dark horseshoe line, clearance/table panels, explicit non-positiveH state, and1450dark full initial output. Full curves and all marker strokes are contained and text remains readable. Native checking first exposed marker halos at the right edge of the log-thickness plot and top of the source-comparison plot; enlarged plot margins now contain them in every matrix.
 
 Logs: `/tmp/atlas-worker-two/arch-circular-{math,static,native-final,finalcopy-light,finalcopy-dark,build,owned-guard}.log`. Output pixels: `/tmp/atlas-worker-two/arch-circular/`. Source evidence and the bounded source discrepancy remain available independently of the live page.
+
+Independent acceptance: [coordinator peer report](arch-circular-peer.md), exact9d9a64b; bounded source/math/native reconstruction passes.

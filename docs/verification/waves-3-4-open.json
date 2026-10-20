@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 33,
+  "remainingFlags": 32,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "arch": 6,
+    "arch": 5,
     "ling": 2,
     "bighist": 15
   },
@@ -204,19 +204,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
       }
-    },
-    {
-      "id": "arch-3.7",
-      "file": "content/arch/ch03.js",
-      "name": "Minimum thickness of a semicircular arch",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Heyman"
-      ],
-      "links": {}
     },
     {
       "id": "arch-4.6",
@@ -1356,7 +1343,8 @@
       "ling-4.13",
       "bighist-3.8",
       "ling-4.12",
-      "nla-3.15"
+      "nla-3.15",
+      "arch-3.7"
     ]
   },
   "additionalFollowups": [
@@ -6430,6 +6418,11 @@
       "id": "nla-3.15",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently compared actual1947 source, exact rational arithmetic and fresh native/output evidence; docs/verification/nla-original-peer.md."
+    },
+    {
+      "id": "arch-3.7",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently compared primary annular sources, tangency/quadrature math and fresh native/output evidence; docs/verification/arch-circular-peer.md."
     }
   ]
 }
