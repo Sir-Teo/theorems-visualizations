@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall 323; 19/64 published collections and 16 whole syllabi below target; 29 further collections meet 25 written inputs. Source queue 5 unchanged.",
+      "Accepted prerequisite shortfall 299; 18/64 published collections and 15 whole syllabi below target; 30 further collections meet 25 written inputs. Source queue 5 unchanged.",
       "Latest immutable checkpoint8 on be8d100 passes 2187 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private phase/gutter boundary 781d336 follows positive phase witness bc5e18f; independent tiny peer in progress before any full-map run.",
@@ -2353,15 +2353,35 @@
       "sourceClosure": "None; all38functions/flags/helpers preserved.",
       "bridgeReview": "No affected bridge steps.",
       "followup": "Twenty genuine mathinputs across18consumers; shoelacewrap, LPoptimalface/constantobjective andconditionalpredicate/degree-separatedsymbolicperturbation qualifications. Threeexisting samefield rawrows backfillednoquota. Full114rows/rawlists/objects plus104767independentchecks andfreshcomplete253px/narrowtheme pictures pass."
+    },
+    {
+      "collection": "xtal",
+      "commits": [
+        "c08ce47f98934df38f31ece002417f9cb6ff2fb5",
+        "db09d655bed8388fce307ceef61af0e8d40090cf",
+        "199d71f40f98f4ff11613408196c16619495eb62",
+        "b99ea74d4daf72001af464e99e8eb64f9c5b1199",
+        "5882ef67e1ab39adfe2bfb44091daa6466815bc0",
+        "9b1ef96125febe59904cd1f7c065c3594501872d"
+      ],
+      "publishedBefore": 1,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/xtal-independent-peer.md",
+      "sourceClosure": "None; all 34 functions/flags/helpers preserved.",
+      "bridgeReview": "Affected symmetry bridge read and compatible; no bridge edit.",
+      "followup": "24 genuine inputs across 19 consumers: 23 math and one earth field, different from XTAL chemistry. Primitive-cell vs integer-sublattice, noncyclic stabilizer, fixed-set dimensions and oriented-normal scope corrected; six equivalent layout exceptions. All raw lists, full objects and other bytes preserved. 21,555 independent assertions, actual 253px both-theme complete fields and closing caption pixels pass. Root integrated preservation/math and queue rechecks pass."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 323,
-    "publishedBelow25": 19,
+    "publishedShortfall": 299,
+    "publishedBelow25": 18,
     "collections": 64,
-    "wholeSyllabusBelow25": 16,
+    "wholeSyllabusBelow25": 15,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Twenty-nine further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Thirty further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

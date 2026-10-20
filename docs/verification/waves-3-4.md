@@ -1049,3 +1049,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### Full checkpoint through CG
 
 [Exact be8d100 checkpoint](checkpoint-be8d100.md) passes 2,187 default tests including all six UI groups, strict build and full static with zero errors/warnings. Accepted inventory remains 323/19/16 and source queue five. Pending producer and private atlas candidates are excluded; full-map 60fps remains open and Wave 5 unstarted.
+
+### XTAL combined acceptance
+
+[Independent XTAL peer](xtal-independent-peer.md) accepts 24 direct inputs with primitive-basis, noncyclic-stabilizer, fixed-space-dimension and oriented-normal corrections. Full objects/functions/flags/raw lists and fresh narrow-theme fields pass; root integrated preservation/math and source queue rechecks pass. Live prerequisite shortfall 299, 18/64 published and 15 whole syllabi below target; 30 further collections meet target. This follows checkpoint be8d100; source queue five and map/Wave 5 gates remain open.

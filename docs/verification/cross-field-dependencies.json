@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 19,
-  "wholeSyllabusBelowTarget": 16,
+  "publishedBelowTarget": 18,
+  "wholeSyllabusBelowTarget": 15,
   "entries": [
     {
       "collection": "stat",
@@ -6646,18 +6646,74 @@
       "collection": "xtal",
       "field": "chem",
       "target": 25,
-      "writtenToWritten": 1,
-      "writtenToKnown": 3,
-      "wholeSyllabus": 19,
-      "publishedShortfall": 24,
+      "writtenToWritten": 25,
+      "writtenToKnown": 27,
+      "wholeSyllabus": 43,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "xtal-1.7",
+          "prerequisite": "ladr-6.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-1.11",
+          "prerequisite": "opt-2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-1.2",
+          "prerequisite": "vcalc-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-1.2",
+          "prerequisite": "ladr-9.49",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-1.3",
+          "prerequisite": "vcalc-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-1.5",
+          "prerequisite": "ladr-6.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "xtal-2.2",
           "prerequisite": "art-9.1",
           "prerequisiteField": "arts",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "xtal-2.2",
+          "prerequisite": "ladr-8.50",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-2.4",
+          "prerequisite": "alg-5.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "xtal-2.5",
@@ -6667,8 +6723,120 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "xtal-2.5",
+          "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-3.7",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-3.8",
+          "prerequisite": "alg-6.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-3.9",
+          "prerequisite": "geog-5.2",
+          "prerequisiteField": "earth",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-3.10",
+          "prerequisite": "rep-2.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-3.10",
+          "prerequisite": "rep-3.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "xtal-3.11",
           "prerequisite": "ladr-7.29",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-3.12",
+          "prerequisite": "rep-2.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-3.12",
+          "prerequisite": "rep-3.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-3.3",
+          "prerequisite": "ladr-9.61",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-4.5",
+          "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-4.5",
+          "prerequisite": "vcalc-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-4.6",
+          "prerequisite": "alg-6.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-4.7",
+          "prerequisite": "vcalc-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-4.1",
+          "prerequisite": "alg-2.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-4.4",
+          "prerequisite": "ladr-3.112",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "xtal-4.4",
+          "prerequisite": "vcalc-2.8",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -18424,7 +18592,8 @@
       "0026d445591cb294549063f7e85e7afdd6d003c5",
       "d28855802e3b9e69fca532ed0669d886c1547bba",
       "e3c25b3511ef4d9de191b0e464084675820d0681",
-      "36559492c902de1863658395b742a4adb663eb86"
+      "36559492c902de1863658395b742a4adb663eb86",
+      "c08ce47f98934df38f31ece002417f9cb6ff2fb5"
     ],
     "excludedUnacceptedEdges": [
       {

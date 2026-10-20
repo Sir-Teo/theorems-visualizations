@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **19 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 323 edges. Even
-including planned items and planned prerequisites, **16 collections remain below 25**.
+Of 64 non-math collections, **18 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 299 edges. Even
+including planned items and planned prerequisites, **15 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -292,3 +292,7 @@ The [combined CIRC peer](circ-prerequisites-independent-peer.md) accepts sevente
 ## CG combined acceptance
 
 [CG independent peer](cg-crossfield-prerequisite-peer.md) accepts twenty actual mathematical inputs,5/8/24→25/28/44. Full38objects/functions/flags/helpers+114rows/rawlists preserved apart from declared additions, three justified existingrowbackfills and bounded proof/layout changes. LPface/constant-objective and nonzero-predicate/degree-qualifiedsymbolicperturbation claims are explicit. Independent104,767checks and fresh full253px/narrow-theme pixels pass. Live323shortfall,19/64below25published,16whole syllabi below25; no sourceclosure. Aftercheckpoint69710ca.
+
+## XTAL combined acceptance
+
+[Independent XTAL peer](xtal-independent-peer.md) accepts 24 direct inputs, reaching 25 published / 27 known / 43 whole. The additions are 23 math and one earth-field edge into a chemistry collection. Primitive-cell/subgroup/orientation qualifications and actual narrow equations are independently reviewed; no source closure. Current accepted gate is 299 / 18 / 15, with the frozen BIGHIST edge still excluded.
