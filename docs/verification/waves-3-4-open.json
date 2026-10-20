@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 15,
+  "remainingFlags": 14,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -18,7 +18,7 @@
     "circ": 1,
     "robot": 1,
     "arch": 1,
-    "bighist": 8
+    "bighist": 7
   },
   "queue": [
     {
@@ -214,22 +214,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Toba_catastrophe_theory",
         "doi": "https://doi.org/10.1006/jhev.1998.0219"
-      }
-    },
-    {
-      "id": "bighist-4.7",
-      "file": "content/bighist/ch04-b.js",
-      "name": "Collective learning",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Cumulative_cultural_evolution",
-        "doi": "https://doi.org/10.2307/4128416"
       }
     },
     {
@@ -1087,7 +1071,8 @@
       "bighist-4.1",
       "bighist-3.2",
       "bighist-4.2",
-      "energy-3.10"
+      "energy-3.10",
+      "bighist-4.7"
     ]
   },
   "additionalFollowups": [
@@ -6236,6 +6221,11 @@
       "id": "bighist-4.2",
       "status": "resolved",
       "note": "2026-10-20: Worker one independently read actual Hays1976/Imbrie1980 bodies and pixels, regenerated80digit reference, checked648 independent insolation integrals/340DFT bins/three2048-step recurrences, and passed fresh320both themes plus nine real pointer drags and own pixels; docs/verification/bighist-orbits-peer.md."
+    },
+    {
+      "id": "bighist-4.7",
+      "status": "resolved",
+      "note": "2026-10-20: Worker three independently read actual Christian2004/Henrich2004 and prerequisite bodies/pixels, found27rational half-tie errors, verified exactf09b533 correction with independent BigInt26250grid and byte-identical65digit10profile fixtures, and passed fresh320both-theme complete native/replay/own pixels; docs/verification/bighist-learning-peer.md."
     }
   ]
 }

@@ -1,6 +1,6 @@
 import{learningModel}from'./source-audit-learning.js';
 export default{
- num:'4.7',kind:'Concept',name:'Collective learning',verify:true,
+ num:'4.7',kind:'Concept',name:'Collective learning',verify:false,
  statement:String.raw`Christian's discussion of collective learning emphasizes knowledge shared within communities and retained across generations. Henrich's 2004 model asks a narrower question: how can biased copying of a skilled model combine with noisy inference to increase or reduce an abstract skill? Under its Gumbel assumptions, the stated mean-change criterion is
 $$\begin{aligned}\Delta\bar z&=-\alpha+\beta(\ln N+\gamma),\\N&>e^{\alpha/\beta-\gamma}\quad(\Delta\bar z>0).\end{aligned}$$
 Here N is an interacting pool of learners, not automatically a census population. This conditional mathematical criterion is not a universal archaeological threshold or a measurement of intelligence.`,

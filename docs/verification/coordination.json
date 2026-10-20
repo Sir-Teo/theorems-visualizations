@@ -1223,6 +1223,20 @@
         "078e4f835b7fe35140e220d5c5f6c05f88a27307",
         "7c9ab3c675b0ab2540285022f2cc4f17ebc278b7"
       ]
+    },
+    {
+      "ids": [
+        "bighist-4.7"
+      ],
+      "peer": "Worker three independently read actual Christian2004/Henrich2004 and prerequisite bodies/pixels, found27rational half-tie errors, verified exactf09b533 correction with independent BigInt26250grid and byte-identical65digit10profile fixtures, and passed fresh320both-theme complete native/replay/own pixels",
+      "reports": [
+        "docs/verification/bighist-learning-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "30f1711",
+        "f09b533"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1235,7 +1249,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 15,
+  "currentPendingSourceReviews": 14,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",
