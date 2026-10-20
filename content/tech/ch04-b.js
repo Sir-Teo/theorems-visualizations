@@ -93,7 +93,7 @@ Holding D fixed isolates vector decomposition. In actual tillage D itself can ch
     // ------------------------------------------------------------------ 4.9
     {
       num:'4.9',kind:'Invention',name:'The stirrup',verify:true,
-      credit:'Bayarsaikhan and colleagues, Antiquity 2024, Mongolian saddle/stirrup evidence; sequential coupling model authored here',
+      credit:'Mongolian saddle/stirrup evidence reported by Bayarsaikhan and colleagues; sequential coupling model authored here',
       statement:String.raw`A stirrup is a foot support suspended from a saddle. Bayarsaikhan and colleagues report a small iron stirrup from Khukh Nuur and a birch frame saddle from Urd Ulaan Uneet in Mongolia. The Khukh Nuur date of 243–405 cal AD comes from associated human bone, with an explicit possible freshwater reservoir effect; it does not directly date the iron. The saddle's horse-hide strap was directly dated to 267–535 cal AD at 95.4% probability. Its bilateral hanging straps suggest paired stirrups, although no stirrups were recovered with that saddle.
 
 The model below isolates how finite coupling between moving masses changes transferred momentum. Its force capacities are authored choices, rather than measurements of stirrups, a reconstruction of combat, or evidence for an historical cause of feudalism.`,
