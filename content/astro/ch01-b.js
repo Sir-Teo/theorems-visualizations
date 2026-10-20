@@ -262,7 +262,7 @@ of the starlight (modified by limb darkening), and the shape of the transit fixe
       kind: 'Phenomenon',
       name: 'Nodal precession from oblateness (J₂)',
       statement: String.raw`The equatorial bulge of a planet adds to its potential the quadrupole term $\Phi_2 = \frac{GM}{r}J_2\big(\frac{R}{r}\big)^2 P_2(\sin\phi)$ ($J_2 = 1.0826\times10^{-3}$ for the Earth). Averaged over an orbit it leaves $a$, $e$ and $i$ unchanged but makes the orbit plane precess about the polar axis at
-$$\dot\Omega = -\frac{3}{2}\,n\,J_2\Big(\frac{R}{p}\Big)^2\cos i,\qquad p = a(1-e^2):$$
+$$\begin{gathered}\dot\Omega = -\frac{3}{2}\,n\,J_2\Big(\frac{R}{p}\Big)^2\cos i,\\\qquad p = a(1-e^2):\end{gathered}$$
 the node **regresses** (moves westward) for prograde orbits, advances for retrograde ones, and stands still for polar orbits. Choosing $i$ slightly above $90^\circ$ so that $\dot\Omega = +360^\circ/\text{yr}$ gives a **Sun-synchronous** orbit, whose plane keeps a fixed angle to the Sun all year (about $98^\circ$ for altitudes of 600–800 km). The perigee also precesses, at $\dot\omega = \frac34 nJ_2(R/p)^2(5\cos^2 i - 1)$.`,
       idea: String.raw`The bulge exerts a torque on the orbit: averaged over a revolution, the satellite is a ring of mass, and the extra pull of the equatorial bulge tries to twist this ring into the equatorial plane. Like a spinning top under gravity, the orbit’s angular momentum (orbital elements, 1.1) does not tip over but precesses about the polar axis, at a rate proportional to the torque component, hence to $\cos i$. The size of the effect follows from perturbation theory of the Kepler orbit; for slightly non-circular orbits the same averaged potential drives the apsidal motion of mech 8.11.
 
