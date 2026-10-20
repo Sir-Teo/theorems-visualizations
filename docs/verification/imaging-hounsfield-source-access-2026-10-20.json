@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-10-20T19:52:51Z",
+  "url": "https://radiology-history.online/papers/ct-hounsfield1-O.pdf",
+  "httpStatus": 200,
+  "contentType": "application/pdf",
+  "contentLength": 1336360,
+  "sha256": "6a1063b4defca9bf75da9a45df16536b4d46aea79560b12698a0000db6d93e48",
+  "header": "%PDF-1.7",
+  "terminalEOF": true,
+  "encryptReferencePresent": true,
+  "normalInspection": {
+    "command": "pdfinfo /tmp/atlas-new-imaging-source/ct-hounsfield1-O.pdf",
+    "exitCode": 1,
+    "stderr": "Command Line Error: Incorrect password"
+  },
+  "boundary": "Stopped immediately at password requirement. No password guessing, decryption, alternate rendering, or access-limit workaround attempted.",
+  "established": [
+    "Ordinary GET delivered the advertised byte length with a PDF header and terminal EOF."
+  ],
+  "notEstablished": [
+    "Page count",
+    "Actual paper identity",
+    "Page sequence or completeness of source body",
+    "Any source text or output pixels"
+  ],
+  "sourceVerification": "open; content/imaging/ch03-d.js imaging-3.18 verify remains true"
+}

@@ -28,3 +28,11 @@ Read the complete 19-page author [Nobel lecture PDF](https://www.nobelprize.org/
 Agent-inspected `/tmp/atlas-imaging-hounsfield-light.png` and `/tmp/atlas-imaging-hounsfield-dark.png`: the phantom, angular data, small replacement increment, window controls and quantitative readout agree visually with the revised scope. No human review is claimed or required.
 
 Remaining work is to read the named original paper, check any resulting paper-specific facts/interpretation, and rerun relevant validation if that reading changes the entry. General CT knowledge and the later lecture do not justify closing that original-paper task.
+
+## 20 October 2026: new historian-collection lead stops at password
+
+An ordinary HTTPS GET of the new [historian-collection PDF lead](https://radiology-history.online/papers/ct-hounsfield1-O.pdf) returned HTTP 200, `application/pdf`, and 1,336,360 bytes, matching its Content-Length. SHA-256: `6a1063b4defca9bf75da9a45df16536b4d46aea79560b12698a0000db6d93e48`. The payload has a `%PDF-1.7` header, a terminal `%%EOF`, and an `/Encrypt` reference. These establish a complete HTTP payload, not the identity or completeness of the paper inside it.
+
+Normal `pdfinfo` inspection exited 1 with `Command Line Error: Incorrect password`. The route was stopped immediately under the explicit no-password-bypass instruction. No passwords, decryption, alternate renderers, or access-limit workarounds were attempted. Page count, paper identity, source text, page completeness, and source pixels therefore remain unverified. No new source/math/native acceptance is claimed, and `imaging-3.18` remains `verify: true`.
+
+Machine-readable evidence: `imaging-hounsfield-source-access-2026-10-20.json`; local raw response and downloaded PDF: `/tmp/atlas-new-imaging-source/`. This is a report-only update; no runtime/content changes or tests were necessary. Further useful work requires a new normally readable, legitimately accessible source body or authorized access supplied by its rights holder.
