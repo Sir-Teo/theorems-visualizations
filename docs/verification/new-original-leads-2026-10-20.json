@@ -16,5 +16,40 @@
     "topic": "Hughes1992authorized-reprint possibility in Classic Papers Revisited",
     "webFetch": "403Forbidden; no actualbody obtained; no sourceclosure."
   },
-  "status": "All corresponding sourceflags remain open. No acceptance count or model change."
+  "status": "All corresponding sourceflags remain open. No acceptance count or model change.",
+  "furtherOrdinarySearches": [
+    {
+      "topic": "MATHBIO1936 Italian original institutional holdings",
+      "queries": [
+        "Giornale Istituto italiano attuari1936 Kolmogoroff archivio digitale",
+        "Kolmogorov lotta esistenza download1936 italiano"
+      ],
+      "results": [
+        {
+          "url": "https://portal.issn.org/resource/ISSN/0390-5780",
+          "scope": "Journal bibliographic record, not article body."
+        },
+        {
+          "url": "https://mathdoc-cfp-pre.u-ga.fr/library/26/etat/?colref=&electronique=&istartswith=&ouvert=false&pcmath=true&periodique__titre__istartswith=Z&pole=&positionne=&vivant=false",
+          "scope": "Institutional holdings list includes journal1930\u20131939; no complete article body obtained."
+        }
+      ],
+      "outcome": "No original body or missing translation pages; no source closure."
+    },
+    {
+      "topic": "PHARM1992 author-hosted/permission reprint and CIRC1963 museum original",
+      "queries": [
+        "Hughes Glass Jacobs1992 filetype:pdf site:duke.edu",
+        "Context-sensitive Half-time Reprinted with permission pdf excluding known failed routes",
+        "Nanowatt logic filetype:pdf site:computerhistory.org"
+      ],
+      "results": [
+        {
+          "url": "https://www.computerhistory.org/siliconengine/complementary-mos-circuit-configuration-is-invented/",
+          "scope": "Museum history and bibliography cite original32\u201333; not a complete original PDF."
+        }
+      ],
+      "outcome": "Search results are citations or secondary textbook figure reprints, not complete requested originals. No source-body download or acceptance; known failed routes not retried."
+    }
+  ]
 }
