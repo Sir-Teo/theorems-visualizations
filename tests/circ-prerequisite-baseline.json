@@ -1,0 +1,531 @@
+{
+  "edges": {
+    "2.7": [
+      "ladr-3.21"
+    ],
+    "2.8": [
+      "ladr-3.43"
+    ],
+    "2.9": [
+      "ladr-3.65",
+      "ladr-7.38"
+    ],
+    "3.1": [
+      "ladr-3.63"
+    ],
+    "3.6": [
+      "ladr-7.1"
+    ],
+    "3.7": [
+      "ladr-7.5"
+    ],
+    "3.9": [
+      "ladr-3.43"
+    ],
+    "3.10": [
+      "ladr-6.12"
+    ],
+    "4.1": [
+      "pma-8.6"
+    ],
+    "4.2": [
+      "pma-4.23",
+      "pma-5.10"
+    ],
+    "4.5": [
+      "ode-1.4"
+    ],
+    "4.8": [
+      "pma-9.28"
+    ],
+    "4.9": [
+      "logic-2.6"
+    ],
+    "4.12": [
+      "pma-9.17"
+    ],
+    "4.13": [
+      "ode-3.9"
+    ]
+  },
+  "baseline": {
+    "1.6": {
+      "file": "content/circ/ch01-b.js",
+      "deps": [
+        "circ-1.1"
+      ],
+      "hash": "2d910cc1ed48b8cc518f3544e5aa2101f9c784e53302c9b4d57d809cfb8d5771"
+    },
+    "1.7": {
+      "file": "content/circ/ch01-b.js",
+      "deps": [
+        "circ-1.6",
+        "circ-1.4"
+      ],
+      "hash": "4a2288058a9a1c1fb191c3061884433408b53abd0616cebd536982e3b65f4ea4"
+    },
+    "1.8": {
+      "file": "content/circ/ch01-b.js",
+      "deps": [
+        "circ-1.2",
+        "circ-1.4",
+        "em-6.6"
+      ],
+      "hash": "5575f0f7a64609b5e2e7ba13f226d9d41e185319b713dfe3c98645ea5e637bda"
+    },
+    "1.9": {
+      "file": "content/circ/ch01-b.js",
+      "deps": [
+        "circ-1.4",
+        "circ-1.6"
+      ],
+      "hash": "2bc130cbcbfcef15fbe22ab3e6178ac727af23768151443ec8eaebac9745da92"
+    },
+    "1.10": {
+      "file": "content/circ/ch01-b.js",
+      "deps": [
+        "circ-1.3"
+      ],
+      "hash": "5518f96c04eb4dba0bdef7dfc3f0cca2244f7c51a016034e2c0de7d2a63b7eac"
+    },
+    "1.1": {
+      "file": "content/circ/ch01.js",
+      "deps": [
+        "em-1.2",
+        "em-2.3",
+        "em-6.1"
+      ],
+      "hash": "9ed6a00bb22046c37e265edbdbaa0160af83315bb45dd0d1ddb9ba8ab14ea4e0"
+    },
+    "1.2": {
+      "file": "content/circ/ch01.js",
+      "deps": [
+        "circ-1.1"
+      ],
+      "hash": "2a486bdacb7f7cae72cb4706b9a5197fb081be18930ca846dba75cf7b9c38297"
+    },
+    "1.3": {
+      "file": "content/circ/ch01.js",
+      "deps": [
+        "circ-1.1",
+        "em-9.3",
+        "em-1.2"
+      ],
+      "hash": "477670408faf5e45e28a94cd3c9aa81e4f13e2260d5bf699c0b154b5849116a2"
+    },
+    "1.4": {
+      "file": "content/circ/ch01.js",
+      "deps": [
+        "circ-1.1",
+        "em-6.3"
+      ],
+      "hash": "f1c0eda6656f24445e28edf0ca783f0b7b4431951f62d47cff8dc3e69779e5c5"
+    },
+    "1.5": {
+      "file": "content/circ/ch01.js",
+      "deps": [
+        "circ-1.4",
+        "em-6.5"
+      ],
+      "hash": "be73fd45335758994f7f0844001abcbc456fd23229e377f1197fcb2e3c16f88a"
+    },
+    "2.7": {
+      "file": "content/circ/ch02-b.js",
+      "deps": [
+        "circ-2.1",
+        "circ-2.2"
+      ],
+      "idea": "Write KCL as $\\mathbf A\\mathbf i = 0$ with $\\mathbf A$ the $n\\times b$ incidence matrix: each column has one $+1$ and one $-1$, so the rows sum to zero and $\\operatorname{rank}\\mathbf A\\le n-1$; a spanning tree supplies $n-1$ columns that are independent, so the rank is $n-1$. KVL says the branch voltages $\\mathbf v = \\mathbf A^{\\!\\top}\\mathbf e$ come from node potentials, equivalently $\\mathbf B\\mathbf v = 0$ for the fundamental-loop matrix $\\mathbf B$, which has one row per non-tree branch and a $1$ in its own column, so $\\operatorname{rank}\\mathbf B = b-n+1$. The two row spaces are orthogonal complements: $\\mathbf A\\mathbf B^{\\!\\top} = 0$ and $(n-1)+(b-n+1)=b$ (this is the cycle space and cut space of the graph, 1.10).",
+      "hash": "8d3007f3b857802fffbf21ec0d9b8fbd6a7dc5f844bceabc5692f842de38e5d8"
+    },
+    "2.8": {
+      "file": "content/circ/ch02-b.js",
+      "deps": [
+        "circ-2.5"
+      ],
+      "idea": "Ohm's law (1.4) gives the current $g_{jk}(v_j - v_k)$ from $j$ to $k$ through each branch, and summing these over the neighbours of $j$ is exactly KCL (2.1) written out: $\\sum_k g_{jk}(v_j - v_k) = (\\mathbf L\\mathbf v)_j$. A constant vector of node voltages produces no currents, so $\\mathbf L\\mathbf 1 = \\mathbf 0$ and every row sums to zero. The quadratic form $\\mathbf v^{\\!\\top}\\mathbf L\\mathbf v = \\sum_{\\text{branches}} g\\,(v_j - v_k)^2$ is the total power dissipated.",
+      "hash": "6f0b046f5e683f8dc5428fca283f495ab171d4717fd52b00895d919d2edda4f1"
+    },
+    "2.9": {
+      "file": "content/circ/ch02-b.js",
+      "deps": [
+        "circ-2.8"
+      ],
+      "idea": "For any node potentials $\\mathbf v$, the quadratic form $\\mathbf v^{\\!\\top}\\mathbf L\\mathbf v = \\sum g_{jk}(v_j - v_k)^2$ is a sum of nonnegative terms (2.8), and it vanishes only when $v_j = v_k$ across every branch, i.e. when $\\mathbf v$ is constant on each connected component. Fixing the ground node at $0$ forces that constant to be $0$ on its component; if the network is connected, the only vector with zero power is $\\mathbf v = 0$, so $\\mathbf G$ is positive definite and invertible. Physically: a passive network that is not driven dissipates nothing only if nothing moves.",
+      "hash": "668f0532d7859cae457a156755d2fc015339226077afff59c24db39fb2d7481e"
+    },
+    "2.10": {
+      "file": "content/circ/ch02-b.js",
+      "deps": [
+        "circ-2.3",
+        "circ-2.4"
+      ],
+      "hash": "f61c5ea5bfc948c4df3287a36f344171b2f991cbe0c8ff4adee42919b4973124"
+    },
+    "2.11": {
+      "file": "content/circ/ch02-b.js",
+      "deps": [
+        "circ-2.3"
+      ],
+      "hash": "b7ca959b28f2eee1dab6db62bfe0c7aa99e379d5765545a4091b16ccaf6f9663"
+    },
+    "2.12": {
+      "file": "content/circ/ch02-c.js",
+      "deps": [
+        "circ-2.8",
+        "circ-2.7"
+      ],
+      "hash": "f834c68bfdf0091840d3a6c991b7d898490fd1010a6098f2296c2e11c9ae3acb"
+    },
+    "2.13": {
+      "file": "content/circ/ch02-c.js",
+      "deps": [
+        "circ-2.12"
+      ],
+      "hash": "58feb7602f4cea3e994a13a772b16799a4eceddf71e54eb8d3e589d460e5daf2"
+    },
+    "2.14": {
+      "file": "content/circ/ch02-c.js",
+      "deps": [
+        "circ-2.5",
+        "circ-2.8",
+        "em-6.15"
+      ],
+      "hash": "79ab6c373fb514e5ad1646a24e05e4656a2eeb21694c198b13f20105f2f87818"
+    },
+    "2.15": {
+      "file": "content/circ/ch02-c.js",
+      "deps": [
+        "circ-2.1",
+        "circ-1.4",
+        "circ-2.13"
+      ],
+      "hash": "1ab805c76363e812521f9b495c5ee7000fb42849a0533fe004f28e6d06ef391c"
+    },
+    "2.1": {
+      "file": "content/circ/ch02.js",
+      "deps": [
+        "circ-1.3",
+        "circ-1.10",
+        "em-6.2",
+        "em-6.8"
+      ],
+      "hash": "8b98d1c0de1a393192b1edf2752af331d3cccce4402d30ab4470d2604871a3cc"
+    },
+    "2.2": {
+      "file": "content/circ/ch02.js",
+      "deps": [
+        "circ-1.3",
+        "circ-1.10",
+        "em-6.8"
+      ],
+      "hash": "b048e9b2c6f23c110932eb0324908ce015c7ac33d23f1344fc05b60c97c0b750"
+    },
+    "2.3": {
+      "file": "content/circ/ch02.js",
+      "deps": [
+        "circ-2.2",
+        "circ-1.4"
+      ],
+      "hash": "2efdd4aae9d5b81caed32128a38a39123090e36386d5f0146afa2c0b39dfa8a8"
+    },
+    "2.4": {
+      "file": "content/circ/ch02.js",
+      "deps": [
+        "circ-2.1",
+        "circ-1.4"
+      ],
+      "hash": "5a4f98a28b7f77a712f30851556114dbb7b848f0db413f91bf6221c8829852e9"
+    },
+    "2.5": {
+      "file": "content/circ/ch02.js",
+      "deps": [
+        "circ-2.1",
+        "circ-1.4",
+        "pma-9.36"
+      ],
+      "hash": "c928c31847ab22eb3495bd48a49c82687b087527a0d365ed505b8ad095fdb8fa"
+    },
+    "2.6": {
+      "file": "content/circ/ch02.js",
+      "deps": [
+        "circ-2.2",
+        "circ-1.4"
+      ],
+      "hash": "99aaa6f5b32f5bb0e7fc512d13abdb76bb070bf63b5fe9b9b7a9a1c6f553daef"
+    },
+    "3.8": {
+      "file": "content/circ/ch03-b.js",
+      "deps": [
+        "circ-1.6"
+      ],
+      "hash": "7d699429bb4614cb040d2dd53fe50ba124fbf235d39b58f93d4937c84cbfe418"
+    },
+    "3.9": {
+      "file": "content/circ/ch03-b.js",
+      "deps": [
+        "circ-3.2",
+        "circ-3.8"
+      ],
+      "idea": "Port currents and voltages are the only variables the outside world sees, and the network equations are linear, so after eliminating all internal nodes (Thévenin's theorem, 3.2, applied twice, or by Gaussian elimination) four variables are tied by two linear equations. Choosing which two are the \"inputs\" gives the four matrix forms; they are related by the algebra of $2\\times2$ matrices (for example $\\mathbf z = \\mathbf y^{-1}$). The ABCD form is built for cascades, because the output variables of one stage are exactly the input variables of the next. A dependent source (3.8) can make $y_{12} \\ne y_{21}$, so reciprocity (3.7) is lost.",
+      "hash": "24875e9c9ab3676baca1f1f72e28098192c7b9f662cd8e82e1789c29b91a8586"
+    },
+    "3.10": {
+      "file": "content/circ/ch03-b.js",
+      "deps": [
+        "circ-2.9",
+        "circ-3.6",
+        "em-6.9"
+      ],
+      "idea": "KCL-satisfying flows with the same net current differ from the true flow $\\mathbf i^\\ast$ by a circulation $\\boldsymbol\\delta$ (a combination of loop currents). Expand $P(\\mathbf i^\\ast+\\boldsymbol\\delta) = P(\\mathbf i^\\ast) + 2\\sum_k R_k i^\\ast_k\\delta_k + \\sum_k R_k\\delta_k^2$. The middle term is the work of the true voltages $v^\\ast_k = R_k i^\\ast_k$ on a circulation; because the voltages derive from node potentials (KVL), it is $\\sum_k v^\\ast_k\\delta_k = 0$ (Tellegen, 3.6). What remains is a positive-definite quadratic in $\\boldsymbol\\delta$: a bowl with its bottom at $\\boldsymbol\\delta = 0$. Setting the gradient of $P$ to zero loop by loop is the same as writing KVL around each loop.",
+      "hash": "bc010ed7f267f8deb08e4c052034678df1a02af2f286976284c3a57eb8af60a2"
+    },
+    "3.11": {
+      "file": "content/circ/ch03-b.js",
+      "deps": [
+        "circ-2.6",
+        "circ-2.5"
+      ],
+      "hash": "e83959f3fd6708dd3d99edf8e639282ca7f6163816a1eaaac5e083f3743c5029"
+    },
+    "3.12": {
+      "file": "content/circ/ch03-b.js",
+      "deps": [
+        "circ-3.4",
+        "circ-2.5"
+      ],
+      "hash": "8f67e3769e6a2c08f41f93a3c3c04fd25f90e874b48e3eafae24e6949b669b25"
+    },
+    "3.13": {
+      "file": "content/circ/ch03-b.js",
+      "deps": [
+        "circ-2.5",
+        "circ-3.8"
+      ],
+      "hash": "94befec982067a908725f9ff232d30ff64ad19d62e0c1cbaf37c6185a391433b"
+    },
+    "3.1": {
+      "file": "content/circ/ch03.js",
+      "deps": [
+        "circ-2.5",
+        "circ-2.9"
+      ],
+      "idea": "Node-voltage analysis (2.5) turns the circuit into a linear system $\\mathbf G\\mathbf v = \\mathbf s$ whose right-hand side $\\mathbf s$ is a sum of columns, one for each source, and $\\mathbf G$ is invertible (2.9). Linearity of the inverse gives $\\mathbf v = \\sum_k \\mathbf G^{-1}\\mathbf s_k$, and each term is exactly the solution with only source $k$ present. The argument breaks at once if any element is nonlinear, because then there is no matrix $\\mathbf G$ independent of the sources.",
+      "hash": "8cd1873a41eb140fff4c7983e848266bb619e2b7b5207a5e8c7a246bf208dd56"
+    },
+    "3.2": {
+      "file": "content/circ/ch03.js",
+      "deps": [
+        "circ-3.1"
+      ],
+      "hash": "11fabe3484ade228c83f65d933a98e1df2821a06607569f611a86a59a18ccad8"
+    },
+    "3.3": {
+      "file": "content/circ/ch03.js",
+      "deps": [
+        "circ-3.2"
+      ],
+      "hash": "15e646e2a15060db22505d9f7b34593b593c8a0ecf9a0183811217260734994a"
+    },
+    "3.4": {
+      "file": "content/circ/ch03.js",
+      "deps": [
+        "circ-3.3",
+        "circ-3.2"
+      ],
+      "hash": "b5b3be41b05d0cda6c15d786ea2eab8627b89d9e2f0a1e41e571b0e4a4949208"
+    },
+    "3.5": {
+      "file": "content/circ/ch03.js",
+      "deps": [
+        "circ-3.2",
+        "circ-2.3"
+      ],
+      "hash": "4ce8f5dcc9c03d61a36c565914695a0a351e31e7e65a31d962aa53aecdf868b7"
+    },
+    "3.6": {
+      "file": "content/circ/ch03.js",
+      "deps": [
+        "circ-2.1",
+        "circ-2.2",
+        "circ-2.7"
+      ],
+      "idea": "KVL says the voltage vector is $\\mathbf v = \\mathbf A^{\\top}\\boldsymbol\\varphi$ for node potentials $\\boldsymbol\\varphi$ (the incidence matrix $\\mathbf A$ has rows for nodes, columns for branches). KCL says $\\mathbf A\\mathbf i = \\mathbf 0$. Hence $\\mathbf v^{\\top}\\mathbf i = \\boldsymbol\\varphi^{\\top}\\mathbf A\\mathbf i = 0$: the voltage vector lies in the row space of $\\mathbf A$, the current vector in its null space, and these are orthogonal complements (2.7). No element law was used.",
+      "hash": "d951fb43b1aada3a86b4ee1844e4b8780c172aa263d396cd1e2a661f66607087"
+    },
+    "3.7": {
+      "file": "content/circ/ch03.js",
+      "deps": [
+        "circ-3.6",
+        "circ-2.8"
+      ],
+      "idea": "With node potentials as unknowns, the network equations are $\\mathbf G\\boldsymbol\\varphi = \\mathbf i$ with $\\mathbf G$ the conductance matrix, which is symmetric for reciprocal elements ($\\mathbf G = \\mathbf G^{\\top}$, 2.8). The transfer resistance from port $A$ (current vector $\\mathbf a$) to port $B$ (vector $\\mathbf b$) is $\\mathbf b^{\\top}\\mathbf G^{-1}\\mathbf a$, which equals $\\mathbf a^{\\top}\\mathbf G^{-1}\\mathbf b$ because the inverse of a symmetric matrix is symmetric. Equivalently, it follows from Tellegen's theorem (3.6) applied to the two experiments, whose branch voltages and currents are related by the same element laws.",
+      "hash": "0c0d3b00bc634ec1d03d37b56b344f954a7b003a6efb1cdd5a5cbe3e6be26828"
+    },
+    "4.7": {
+      "file": "content/circ/ch04-b.js",
+      "deps": [
+        "circ-4.6",
+        "circ-4.3"
+      ],
+      "hash": "1e10bb70b3538b649daa667171e83eb55a89295dbcf4a3cb8cef812efd5f90b4"
+    },
+    "4.8": {
+      "file": "content/circ/ch04-b.js",
+      "deps": [
+        "circ-4.7"
+      ],
+      "idea": "The complementary pull-up provides a low-resistance path to the high rail when the pull-down is off, and conversely for the low rail. This removes the resistor-load inverter's continuous rail-state current. For intermediate bias, equating the two drain currents fixes the output, and their transconductances give a steep negative transfer slope. Device strengths, thresholds and finite gain determine the noise margins; matching the two strengths makes the transfer curve symmetric.",
+      "hash": "a7f3e200006ae2d78560bdb88be1af96816fc1e58abba807bbaff4df2dbd4248"
+    },
+    "4.9": {
+      "file": "content/circ/ch04-b.js",
+      "deps": [
+        "circ-4.8"
+      ],
+      "idea": "For each true row of a finite truth table, form the AND of literals that selects exactly that row, then OR those terms. Replacing each NOT, AND and OR with its NAND construction proves the claim for any finite number of inputs; constant functions are handled as stated. The five small networks below illustrate this proof but are not themselves a proof for arbitrary arity. CMOS implementations can realize NAND directly using complementary pull-up and pull-down networks.",
+      "hash": "74832d1bd42c75d61d6ed8c784dbf8dd3e5e986279e25bb686dc781aa006040b"
+    },
+    "4.10": {
+      "file": "content/circ/ch04-b.js",
+      "deps": [
+        "circ-4.7"
+      ],
+      "hash": "8a3bd0abdc9cbc709d1d1484c9b0b34dddc7576636864cbeaf5e9783ca41b74d"
+    },
+    "4.11": {
+      "file": "content/circ/ch04-b.js",
+      "deps": [
+        "circ-4.1"
+      ],
+      "hash": "8064ac74ef03618de572da3670130ea1380bc6411cea1ba3a6e71b014827d8a9"
+    },
+    "4.12": {
+      "file": "content/circ/ch04-b.js",
+      "deps": [
+        "circ-4.10",
+        "circ-4.4"
+      ],
+      "idea": "In saturation the device is a voltage-controlled current source $i_D=g_m v_{gs}$ (4.10), the load resistor turns the current into a voltage, and the sign comes from Kirchhoff's voltage law at the drain: more current means more drop across $R_D$, so less output voltage. The gain is the slope of the transfer curve $v_{out}(v_{GS})$ at the bias point, i.e. small-signal analysis (4.4) of the whole amplifier. The bias puts the operating point in the middle of the saturation region so the swing is symmetric.",
+      "hash": "4097a78eef4bc3b01117362941f5cca6c7ee4cd789a039e4935d495ccb5ec9ce"
+    },
+    "4.13": {
+      "file": "content/circ/ch04-b.js",
+      "deps": [
+        "circ-4.8",
+        "circ-4.6"
+      ],
+      "idea": "Odd symmetry and monotonicity force equilibria onto $v_1+v_2=V_{DD}$. Writing $z=2v_1/V_{DD}-1$ reduces the problem to $z=\\tanh(gz)$. For $g>1$, strict concavity of $\\tanh(gz)$ for $z>0$ gives exactly one positive root and its negative counterpart. Linearization has eigenvalues $[-1\\pm\\sqrt{f'(v_1)f'(v_2)}]/\\tau$: the outer pair has loop gain below one, the midpoint above one. At $g=1$, a strictly decreasing quadratic Lyapunov function establishes stability despite the zero eigenvalue. Positive feedback is the physical latch principle; this tanh model is an illustration, not a transistor-level reconstruction.",
+      "hash": "625879a33e74fea7a60ae6ee7227652f0b4fd1b5db97abaed19373d060e56f99"
+    },
+    "4.14": {
+      "file": "content/circ/ch04-c.js",
+      "deps": [
+        "mat-9.5"
+      ],
+      "hash": "a7150a1fa621cef7b5534d374bb066bf58608ae3c0332243e887896939bbad2f"
+    },
+    "4.15": {
+      "file": "content/circ/ch04-c.js",
+      "deps": [
+        "mat-9.5",
+        "cm-4.7"
+      ],
+      "hash": "eb0c00de31387dc938a0abaf9631b7147f7ee17a2e15a8353d4cdfb1cbab597b"
+    },
+    "4.16": {
+      "file": "content/circ/ch04-c.js",
+      "deps": [
+        "tech-11.16",
+        "circ-4.11"
+      ],
+      "hash": "525c64b9d5f6ebdd64b441a7a3ea3c16069351a4c40694d2329924ac3d950915"
+    },
+    "4.17": {
+      "file": "content/circ/ch04-c.js",
+      "deps": [
+        "circ-4.7",
+        "cm-4.10"
+      ],
+      "hash": "a181664c9011a07db937e5ae8d8c7abfdca29c2c63d42d2eca989a24025a9a01"
+    },
+    "4.18": {
+      "file": "content/circ/ch04-c.js",
+      "deps": [
+        "tech-11.17"
+      ],
+      "hash": "632a1b9f6f876c976361f49eb8bade7e23f1d1751b875f78b6dd80cb7135e7c0"
+    },
+    "4.1": {
+      "file": "content/circ/ch04.js",
+      "deps": [
+        "circ-1.9",
+        "cm-4.7"
+      ],
+      "idea": "The equation comes from the physics of the junction (cm-4.8): minority carriers injected across the junction are proportional to a Boltzmann factor $e^{qv/kT}$, so the current is exponential in the voltage. The circuit consequence is what matters here: the exponential makes the voltage across a conducting diode almost independent of the current. A million-fold change in current moves the voltage by only about $0.36$ V, which is why a conducting diode is \"about $0.6$–$0.7$ V\".",
+      "hash": "6c061f28462ccfb4ce535f07e51990336d132b5e82c4d5ac0c9d743299f5fa1a"
+    },
+    "4.2": {
+      "file": "content/circ/ch04.js",
+      "deps": [
+        "circ-4.1",
+        "circ-3.2"
+      ],
+      "idea": "Replace everything except the nonlinear element by its Thévenin equivalent: this is legitimate because the rest is linear. Two relations now link the two unknowns $v, i$: the element law and the Kirchhoff law of the equivalent loop, $V_{\\mathrm{Th}} = R_{\\mathrm{Th}} i + v$. Solving simultaneously is a graphical intersection. Uniqueness: $g(v)-(V_{\\mathrm{Th}}-v)/R_{\\mathrm{Th}}$ is strictly increasing and changes sign, so it has exactly one zero. Numerically, Newton's method on this equation is what SPICE does: at each step it replaces the diode by its tangent line (a conductance and a current source) and solves the linear circuit.",
+      "hash": "14ea06533c1c7779c49746c62bfb9a46396637b0b9c12c9158e6431fbd01e49f"
+    },
+    "4.3": {
+      "file": "content/circ/ch04.js",
+      "deps": [
+        "circ-4.1",
+        "circ-4.2"
+      ],
+      "hash": "5b57bd3f38b727916780d54dbb0559c6960fa103c514cba38de1c57a80b81eaa"
+    },
+    "4.4": {
+      "file": "content/circ/ch04.js",
+      "deps": [
+        "circ-4.2",
+        "pma-5.15"
+      ],
+      "hash": "738047f5d0f4b061a3431a601da95e6d840b315fe807cb196785eee577e2e94c"
+    },
+    "4.5": {
+      "file": "content/circ/ch04.js",
+      "deps": [
+        "circ-4.3"
+      ],
+      "idea": "A diode conducts while the source can support the capacitor voltage and load current; during the off interval the resistor discharges the capacitor exponentially. For small ripple, $i=C\\,dv/dt$ gives $\\Delta V\\approx I_{\\mathrm{load}}\\Delta t/C$, with nearly a full interval $\\Delta t\\approx1/f_r$ between charging peaks. The bridge doubles the peak frequency, so its ripple is roughly half in that limit; its extra diode drop also lowers the output level. The factor of two and the inverse-capacitance rule are approximations, not identities at arbitrary load.",
+      "hash": "b517d7982163c62a37a54bcb8a70f35ba6b5d9dd5bd8778a855329750b6093aa"
+    },
+    "4.6": {
+      "file": "content/circ/ch04.js",
+      "deps": [
+        "circ-1.9"
+      ],
+      "hash": "d62e791e5836077388f3f25d02fc7c5894d7a83d7e83a40943d6560af5e240f6"
+    }
+  },
+  "syllabusHash": "7697324164c2a0c618733356171190270db02306799c84dab59d94a482ab6cbe",
+  "untouched": {
+    "ch01-b.js": "80accd3f2181f3ae12bd948094a00e1857d0c5d9d37941ec2e389cf16cc45ae4",
+    "ch01.js": "57deeefe0309532b8dc35e29e6263150a7ffd5530fbff11610c630722c069a02",
+    "ch01.shared.js": "ccf26d1806c86e2394991ed354b1f3f183082cda997bde024c14f2a2319de856",
+    "ch02-c.js": "180b0432f4d74cb993c1a64d251233eaf011267aa473c1b8b1812850b049b14d",
+    "ch02.js": "28c6cb28fbb4dff62cd995bec2da0e014a62defb6235270b4cb3c7621d35d890",
+    "ch02.shared.js": "092fb8ccd32df6e48bfefc6904865abd686a237d8259f8d892bfa874e256912a",
+    "ch03.shared.js": "ccca052783812cb038a4090a45ebda68cd8583ae9b2416665234099453a6c751",
+    "ch04-c.js": "775cd656586e7e91ea7dc747b906db4e4f9c369cb68637b6e6684df3dd9dc372",
+    "ch04.shared.js": "b33d76e1a5582836f1bb6b5a889903ca246fc80d0f6201c2f8d246c0acda2eed",
+    "circ-source-audit-cmos-power.shared.js": "260af13fb75ac44b30b2635a064ba4d434fbf3e535c602c755e706bc58f26551",
+    "circ-source-audit-devices.shared.js": "21d419e8d9db45836d3b763d84383e61ba90b1e3e4909a5fd8e1ba634f258a74",
+    "circ-source-audit-junction.shared.js": "118d1c271a003f228f80b10fa1ce345dcc873c9dc9a1cbaef2b1542528f7f734",
+    "circ-source-audit-kilby.shared.js": "e7726b5076da0a88e8b8cea8b8904643b50d4928b59542ddda859fb0b6b1739b",
+    "circ-source-audit-logic.shared.js": "7becb8e65587994d1cf13ea4c42ead5a31286cc440cf9c46ab44b74be96689ac",
+    "circ-source-audit-moore.shared.js": "53b01b1002f484c9e6aeee6358f4559af4491be6d37d1aaecb66c66614d6107c",
+    "circ-source-audit-networks.shared.js": "0a514586feaa80a481bbac00c03bf8f6d159fd16530b128107a1dba961e9c50d",
+    "circ-source-audit-pointcontact.shared.js": "3c0dbfdc63f32d983fd2af1dab15cb13c2388901cee1b30c1d241aadaa50803c",
+    "circ-source-audit-rectifier.shared.js": "b529ad99487e5b768b4a35da981e252da322575ad1121f857880d5e6a5a30ee7",
+    "collection.js": "2526476f770cf5a447405aa981181739dcb56c94b8b57a057fbdeb86d53dba20"
+  }
+}
