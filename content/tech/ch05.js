@@ -1,45 +1,9 @@
+import{astrolabe,compass,dipoleField}from'./source-audit-skycompass.js';
 import{pendulumScene}from'./source-audit-huygens.js';
 import{foliot,fusee}from'./source-audit-clockdrives.js';
 import { waterClock } from './source-audit-water.js';
 // History of Technology — Chapter 5: Time and navigation (items 5.1–5.6; 5.7–5.11 are in ch05-b.js)
 import { yearStage, drawYears, D2R, clamp, ellipK, pendulumRatio, lossPerDay, bangPeriod, bangAngle, OBLIQ, sunLon, eclDec, eclRA, altitude, dayName, hhmm } from './ch05.shared.js';
-
-// ---------------------------------------------------------------- 5.2 helpers: stereographic plate and rete
-const STARS = [ // name, right ascension (hours), declination (degrees); J2000 values rounded to about 0.1°
-  ['Sirius', 6.752, -16.72], ['Betelgeuse', 5.919, 7.41], ['Rigel', 5.242, -8.20], ['Aldebaran', 4.599, 16.51], ['Capella', 5.278, 46.00],
-  ['Procyon', 7.655, 5.22], ['Pollux', 7.755, 28.03], ['Regulus', 10.140, 11.97], ['Arcturus', 14.261, 19.18], ['Spica', 13.420, -11.16],
-  ['Antares', 16.490, -26.43], ['Vega', 18.616, 38.78], ['Altair', 19.846, 8.87], ['Deneb', 20.690, 45.28],
-];
-/** Stereographic projection from the south celestial pole onto the equatorial plane (equator radius 1): declination dec, hour angle H (degrees). The meridian is "up", west to the right. */
-function proj(dec, H) { const r = Math.tan(((90 - dec) / 2) * D2R); return [r * Math.sin(H * D2R), r * Math.cos(H * D2R)]; }
-/** Almucantar (circle of equal altitude a) for latitude lat, as a projected polyline (broken where it leaves the plate). */
-function almucantar(lat, a) {
-  const pts = [], f = lat * D2R, al = a * D2R;
-  for (let i = 0; i <= 240; i++) {
-    const A = (i / 240) * 2 * Math.PI, sd = Math.sin(f) * Math.sin(al) + Math.cos(f) * Math.cos(al) * Math.cos(A);
-    const dec = Math.asin(clamp(sd, -1, 1)) / D2R, H = Math.atan2(-Math.cos(al) * Math.sin(A), Math.sin(al) * Math.cos(f) - Math.cos(al) * Math.sin(f) * Math.cos(A)) / D2R;
-    const q = proj(dec, H); pts.push(Math.hypot(q[0], q[1]) < 1.7 ? q : null);
-  }
-  return pts;
-}
-
-// ---------------------------------------------------------------- 5.3 helpers: a centred tilted dipole
-/** Bearing (degrees clockwise from true north, in (−180, 180]) from the point (lat, lon) toward the geomagnetic pole (plat, plon): the declination of a centred dipole. */
-function dipoleDecl(lat, lon, plat, plon) {
-  const f = lat * D2R, f2 = plat * D2R, dl = (plon - lon) * D2R;
-  return Math.atan2(Math.sin(dl) * Math.cos(f2), Math.cos(f) * Math.sin(f2) - Math.sin(f) * Math.cos(f2) * Math.cos(dl)) / D2R;
-}
-/** Damped needle: theta'' = −w0² sin(theta) − 2 zeta w0 theta', released at rest from th0 (radians); returns the angle at time t by RK4 on a cached table. */
-function needleTable(w0, zeta, th0, T = 10, dt = 0.01) {
-  const n = Math.round(T / dt), out = new Float64Array(n + 1); let th = th0, w = 0; out[0] = th;
-  const acc = (x, y) => -w0 * w0 * Math.sin(x) - 2 * zeta * w0 * y;
-  for (let i = 1; i <= n; i++) {
-    const k1 = [w, acc(th, w)], k2 = [w + dt / 2 * k1[1], acc(th + dt / 2 * k1[0], w + dt / 2 * k1[1])];
-    const k3 = [w + dt / 2 * k2[1], acc(th + dt / 2 * k2[0], w + dt / 2 * k2[1])], k4 = [w + dt * k3[1], acc(th + dt * k3[0], w + dt * k3[1])];
-    th += dt / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); w += dt / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]); out[i] = th;
-  }
-  return { at: (t) => { const x = clamp(t / dt, 0, n - 1e-9), i = Math.floor(x); return out[i] + (out[i + 1] - out[i]) * (x - i); }, dt, n };
-}
 
 export default {
   collection: 'tech',
@@ -74,120 +38,53 @@ Toggle the constant-head comparison to see a supply vessel kept full by overflow
     },
     // ------------------------------------------------------------------ 5.2
     {
-      num: '5.2',
-      kind: 'Invention',
-      name: 'The astrolabe',
-      credit: 'Origin disputed: stereographic projection is attributed to Hipparchus (2nd century BCE) and treated by Ptolemy (Planisphaerium); the oldest surviving treatise is by John Philoponus (about 550 CE), the first astrolabes in the Islamic world are credited to al-Fazari (8th century), and the earliest surviving instrument is dated 927–928 CE',
-      verify: true,
-      statement: String.raw`A **planispheric astrolabe** is a portable analogue computer of the sky. A *plate* made for one latitude carries the stereographic projection of the horizon, the circles of equal altitude (almucantars) and the meridian; over it turns the *rete*, an open-work disc that carries the projected ecliptic circle and pointers for bright stars. Turning the rete to the present hour angle puts the sky on the plate, and one reads off altitudes, rising and setting, and the time of day or night. The back carries a sighting arm (alidade) to measure altitude.
+      num:'5.2',kind:'Invention',name:'The astrolabe',verify:true,
+      credit:'Royal Museums Greenwich astrolabe owner record; ideal stereographic sky model authored here',
+      statement:String.raw`A planispheric astrolabe places a rotating sky map, the rete, over a plate drawn for one observer latitude. The plate carries projected circles of equal altitude, including the horizon. The rete carries celestial directions and the ecliptic. Turning it represents the sky's rotation about the celestial pole.
 
-What the sources support: the mathematics of stereographic projection is Greek (Hipparchus is said to have known it, and Ptolemy wrote about it) but there is no convincing evidence that the plane astrolabe itself existed before late antiquity; Philoponus' treatise (about 550 CE) is the oldest that survives, and the oldest surviving instrument is dated 927–928 CE. The popular claims that Hipparchus built one or that Hypatia did are not supported by evidence.
-
-Scope of the picture: projection from the south celestial pole onto the equatorial plane for a northern observer; 14 bright stars at rounded J2000 coordinates (precession is ignored); the Sun's place is a low-precision formula good to about a degree.`,
-      idea: String.raw`Stereographic projection (geog-5.2) sends circles on the sphere to circles on the plane, so the horizon and every almucantar are circles that can be drawn with a compass once, for a given latitude, and the ecliptic circle and the star pointers are fixed relative to one another. Only their orientation changes with time, because the sky turns about the pole once a sidereal day. So the rete turns rigidly over a fixed plate, and every altitude is read by position. The projection of the point of declination $\delta$ and hour angle $H$ is $r=\tan\tfrac{90^\circ-\delta}{2}$ at the angle $H$, which puts the tropic of Capricorn on the outer rim (radius $\tan 56.7^\circ\approx1.52$).`,
-      caption: String.raw`The plate (latitude, horizon in bold, almucantars every 10°) is fixed and the rete (ecliptic circle, 14 stars, and the Sun on the ecliptic) turns with the **hour**. Pick a **date**: the Sun moves along the ecliptic. Pick a **star**: the gold circle is the almucantar it sits on, so its altitude is read straight off the plate; the readout checks it against the spherical-trigonometry formula.`,
-      deps: ['geog-5.2'],
-      see: ['geog-2.4', 'tech-5.11'],
-      refs: ['Mokyr ch. 3', 'Evans, The History and Practice of Ancient Astronomy', 'Savage-Smith, Islamicate Celestial Globes (as cited by Wikipedia “Astrolabe”)'],
-      tags: ['ancient', 'astronomy', 'projection'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Astrolabe' },
-      viz(v) {
-        const S = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 460, minWidth: 360, title: 'plate and rete' });
-        const latS = v.slider('latitude (°N)', 10, 70, 50, { step: 1 });
-        const dateS = v.slider('date', 1, 365, 172, { step: 1, fmt: (x) => dayName(x) });
-        const hourS = v.slider('solar time (h)', 0, 24, 15, { step: 0.05, fmt: (x) => hhmm(x) });
-        const starS = v.select('star', STARS.map((s, i) => ({ value: String(i), label: s[0] })), '0');
-        v.render(() => {
-          const lat = latS.value, lam = sunLon(dateS.value), decS = eclDec(lam), raS = eclRA(lam), Hs = (hourS.value - 12) * 15, LST = Hs + raS;
-          // fixed plate
-          for (const [d, nm] of [[0, 'equator'], [OBLIQ, 'Cancer'], [-OBLIQ, 'Capricorn']]) { const r = Math.tan((90 - d) / 2 * D2R); S.circle(0, 0, r, { color: 'muted', width: d === 0 ? 1.4 : 1, alpha: 0.7, dash: d === 0 ? null : [4, 3] }); }
-          S.line(0, -1.62, 0, 1.62, { color: 'faint', width: 1 }); S.line(-1.62, 0, 1.62, 0, { color: 'faint', width: 1 });
-          for (let a = 10; a <= 80; a += 10) S.path(almucantar(lat, a), { color: 'blue', width: 1, alpha: 0.45 });
-          const star = STARS[+starS.value], sH = LST - star[1] * 15, sAlt = altitude(lat, star[2], sH);
-          if (sAlt > 0) S.path(almucantar(lat, sAlt), { color: 'gold', width: 2.2 });
-          S.path(almucantar(lat, 0), { color: 'blue', width: 2.8 });
-          S.text('horizon', proj(lat - 90 + 3, 0)[0] + 0.05, proj(lat - 90 + 3, 0)[1], { size: 10.5, color: 'blue', align: 'left' });
-          S.text('zenith', proj(lat, 0)[0] + 0.07, proj(lat, 0)[1], { size: 10.5, color: 'blue', align: 'left' });
-          S.dot(...proj(lat, 0), { r: 3, color: 'blue' });
-          S.dot(0, 0, { r: 3.5, color: 'ink' });
-          S.text('N pole', 0.08, -0.08, { size: 10, color: 'muted', align: 'left', baseline: 'top' });
-          // rete: ecliptic, stars
-          const ecl = []; for (let l = 0; l <= 360; l += 3) { ecl.push(proj(eclDec(l), LST - eclRA(l))); }
-          S.path(ecl, { color: 'orange', width: 2.4 });
-          for (const [lab, l] of [['♈', 0], ['♋', 90], ['♎', 180], ['♑', 270]]) { const q = proj(eclDec(l), LST - eclRA(l)); S.dot(q[0], q[1], { r: 3, color: 'orange' }); }
-          STARS.forEach((s, i) => { const q = proj(s[2], LST - s[1] * 15); const on = i === +starS.value; S.dot(q[0], q[1], { r: on ? 6 : 3.5, color: on ? 'gold' : 'purple', label: s[0], labelPos: 'ne' }); });
-          const sq = proj(decS, Hs + raS - raS); // the Sun: hour angle Hs
-          S.dot(sq[0], sq[1], { r: 8, color: 'gold' }); S.text('Sun', sq[0] + 0.08, sq[1] + 0.1, { size: 11.5, color: 'ink', align: 'left' });
-          S.text('rim: tropic of Capricorn', 0, -1.68, { size: 10, color: 'muted', align: 'center' });
-        });
-        v.legend([['blue', 'plate: horizon and almucantars'], ['orange', 'rete: ecliptic'], ['purple', 'rete: stars', { dot: true }], ['gold', 'selected star and its almucantar']]);
-        v.readout(() => {
-          const lat = latS.value, lam = sunLon(dateS.value), decS = eclDec(lam), raS = eclRA(lam), Hs = (hourS.value - 12) * 15, LST = Hs + raS;
-          const star = STARS[+starS.value], sH = LST - star[1] * 15, sAlt = altitude(lat, star[2], sH), sunAlt = altitude(lat, decS, Hs);
-          return `Sun: declination ${v.fix(decS, 1)}°, altitude **${v.fix(sunAlt, 1)}°** ${sunAlt < 0 ? '(below the horizon)' : ''}\n${star[0]} (RA ${v.fix(star[1], 2)} h, dec ${v.fix(star[2], 1)}°): hour angle ${v.fix(((sH % 360) + 360) % 360, 0)}°, altitude **${v.fix(sAlt, 1)}°** ${sAlt < 0 ? '(below the horizon)' : ''} — the gold almucantar passes through it only when it is up`;
-        });
+Royal Museums Greenwich's AST0558 has a stereographically engraved mater and two plates, with a separate rete and calendar/zodiac scales. The owner notes imprecise star positions, uncertain origin and later additions including the alidade. Its actual separated-parts photograph shows the plate/rete mechanism. This item models that principle; it does not certify an earliest inventor, surviving instrument or exact historical star catalogue.`,
+      idea:String.raw`Project from the south celestial pole onto the equatorial plane, taking the equator as unit radius. A direction of declination δ and hour angle H projects to
+$$r=\tan((90^\circ-\delta)/2),$$
+$$x=r\sin H,\qquad y=r\cos H.$$
+At latitude φ, altitude a obeys
+$$\begin{aligned}\sin a={}&\sin\varphi\sin\delta\\&+\cos\varphi\cos\delta\cos H.\end{aligned}$$
+Substituting the inverse projection gives
+$$(\sin\varphi+\sin a)(x^2+y^2)$$
+$$-2\cos\varphi\,y+\sin a-\sin\varphi=0.$$
+This is a circle for the nonnegative altitudes and northern latitudes used here. The finite plate ends at declination−23.44°; each altitude circle is intersected with that disk using exact boundary endpoints. Only the drawn arcs are sampled.`,
+      caption:String.raw`Choose latitude, sidereal rotation angle, ideal circular-orbit Sun longitude, and a marked celestial point's right ascension and declination. The rete turns rigidly over the fixed plate. The marked point stays on the plate even below the horizon; a gold equal-altitude arc is shown when it is above. The second panel contains its complete sidereal altitude cycle and the selected rotation. The Sun model uses a declared 23.44° obliquity and uniform ideal orbit, without a calendar or operational ephemeris claim.`,
+      deps:['geog-5.2'],see:['geog-2.4','tech-5.11'],refs:['Royal Museums Greenwich, AST0558 actual owner record, separated mater/plates/rete photograph and condition account'],tags:['astronomy','projection'],
+      scope:String.raw`Authored celestial coordinates, fixed obliquity23.44°, ideal circular ecliptic and south-pole stereographic projection. The plate includes declinations−23.44…90°, without extending clipped arcs beyond its rim. Marked declination−23.44…80° avoids the pole-coordinate degeneracy. No actual star catalogue, precession, calendar-to-Sun conversion, refraction, instrument calibration or historical priority is certified.`,
+      links:{source:'https://www.rmg.co.uk/collections/objects/rmgc-object-10720'},
+      viz(v){const latitude=v.slider('observer latitude (° north)',10,70,50,{step:'any',decimals:6}),phase=v.slider('sidereal rotation angle (°)',0,360,120,{step:'any',decimals:6}),orbit=v.slider('ideal Sun ecliptic longitude (°)',0,360,90,{step:'any',decimals:6}),ra=v.slider('marked right ascension (°)',0,360,60,{step:'any',decimals:6}),dec=v.slider('marked declination (°)',-23.44,80,20,{step:'any',decimals:6}),A=v.stage({x:[-1.9,1.9],y:[-1.9,1.9],equal:true,axes:false,height:430,minWidth:260,title:'finite plate and rotating ideal rete'}),B=v.stage({x:[-25,385],y:[-105,105],axes:'box',gutter:true,height:330,minWidth:260,xlabel:'sidereal rotation angle (°)',ylabel:'marked altitude (°)',title:'complete altitude cycle; below horizon retained'});let info;
+        v.legend([['blue','plate horizon / altitude circles'],['orange','rotating ecliptic'],['purple','chosen celestial point'],['gold','Sun / selected altitude circle'],['muted','plate rim / equator / tropic']]);
+        v.render(()=>{const p=astrolabe(latitude.value,phase.value,orbit.value,ra.value,dec.value);for(const r of[p.rim,1,1/p.rim])A.circle(0,0,r,{color:'muted',width:1,dash:[4,3]});p.plate.forEach((q,j)=>A.path(q,{color:'blue',width:j?1:2.5,alpha:j?.45:1}));if(p.selectedArc.length)A.path(p.selectedArc,{color:'gold',width:2});A.path(p.ecliptic,{color:'orange',width:2});A.dot(...p.point,{color:'purple',r:6,ring:false});A.dot(...p.sunPoint,{color:'gold',r:6,ring:false});A.dot(...p.zenith,{color:'blue',r:3,ring:false});A.dot(0,0,{color:'ink',r:3,ring:false});B.line(0,0,360,0,{color:'muted',width:1.5});B.path(p.curve,{color:'purple',width:2});B.dot(p.phase,p.altitude,{color:'gold',r:5,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Marked point: hour angle ${v.fix(p.hourAngle,9)}°, altitude ${v.fix(p.altitude,9)}° (${p.altitude>=0?'above':'below'} the ideal horizon). Projected point(${v.fix(p.point[0],9)}, ${v.fix(p.point[1],9)}).\nIdeal Sun: right ascension ${v.fix(p.sun.ra,9)}°, declination ${v.fix(p.sun.dec,9)}°, altitude ${v.fix(p.sunAltitude,9)}°. These are authored circular-orbit values, not a dated ephemeris.\nThe outer rim radius is ${v.fix(p.rim,9)} equator units. The blue dot is the zenith; black is the north celestial pole. Only the part of each altitude circle inside this finite plate is drawn.`;});
       },
     },
 
     // ------------------------------------------------------------------ 5.3
     {
-      num: '5.3',
-      kind: 'Invention',
-      name: 'The magnetic compass',
-      credit: 'Shen Kuo, Dream Pool Essays (1088): magnetised needle and magnetic declination; Zhu Yu, Pingzhou Ketan (written about 1111–1117): use at sea; Alexander Neckam in Europe (about 1187–1190)',
-      verify: true,
-      statement: String.raw`A **magnetic compass** is a magnetised needle free to turn in a horizontal plane. It settles along the horizontal part of the Earth's magnetic field, which in most places differs from the direction to the geographic pole by the **declination** $D$ (east positive). The restoring torque on a needle of moment $m$ at angle $\theta$ from the field direction is $-mB_h\sin\theta$ (em-7.18), so the needle swings about magnetic north and, with damping, settles.
+      num:'5.3',kind:'Invention',name:'The magnetic compass',verify:true,
+      credit:'Royal Museums Greenwich RAF Mark II compass owner mechanism account; ideal field and damping model authored here',
+      statement:String.raw`A magnetic compass turns toward the horizontal component of a magnetic field. That direction can differ from geographic north; its signed angle east of north is declination. If the horizontal field is zero, a horizontal needle has no preferred bearing.
 
-What the sources support: Chinese texts of the Song period give the first descriptions of a magnetised needle and, in Shen Kuo's *Dream Pool Essays* (1088), of the fact that it does not point exactly to the geographic pole (declination). Shen describes it for geomancy and not for sea use; Zhu Yu's *Pingzhou Ketan* records pilots reading it on cloudy days. In Europe the earliest mentions are those of Alexander Neckam (the 1180s–1190s). The earlier claim of a Han-dynasty "south-pointing spoon" is not supported by evidence of a magnet compass.
+Royal Museums Greenwich's ACO0299, an RAF Mark II compass, has two needles in a float and strips arranged as damping vanes. The owner also records balancing, vibration and manufacturing limitations. This is evidence for an actual damped mechanism, rather than calibration of the coefficients below. Earlier Chinese/European textual priority and an earliest magnetic compass are not independently certified here.`,
+      idea:String.raw`Let p point toward a declared attracting dipole-axis pole and r be the observer's unit position. Choose the dimensionless dipole field
+$$B=p-3(p\cdot r)r.$$
+Its horizontal component is $p-(p\cdot r)r$, toward that pole along a great circle. Its east and north components give declination by atan2; at either axis pole that angle is undefined. The displayed field is an authored dipole, not the present terrestrial magnetic field.
 
-Scope of the picture: the declination map is a **model**: a centred dipole whose pole is set at 80° N, 72° W (round numbers). The real field has large departures from a dipole, and the real declination at, say, London differs from this model by several degrees and changes year by year.`,
-      idea: String.raw`The torque on a magnetic moment $\mathbf m$ in a field $\mathbf B$ is $\mathbf m\times\mathbf B$ (em-7.18); for a needle confined to the horizontal plane only the horizontal component $B_h$ matters, and $I\ddot\theta=-mB_h\sin\theta-c\dot\theta$. For small angles this is a damped oscillator with $\omega_0=\sqrt{mB_h/I}$ (mech-4.2), so the needle rings at $\omega_0$ and decays at a rate set by the damping: a dry pivot is slow to settle, and a liquid-filled bowl is nearly critically damped. For a dipole field the horizontal field points along the great circle to the magnetic pole, so declination is the bearing from the observer to that pole; the field is horizontal at the magnetic equator and vertical at the poles, where a compass is useless.`,
-      caption: String.raw`Drag the gold **place** on the map (model declination in colour) and the needle is drawn at the local bearing of magnetic north. Release the needle at **start angle** $\theta_0$ and choose the damping: the curve shows the swing, and the needle at the left follows it. Move the **magnetic pole** to see how the declination map changes.`,
-      deps: ['em-7.18'],
-      see: ['mech-4.7', 'tech-5.10'],
-      refs: ['Mokyr ch. 3', 'Needham, Science and Civilisation in China 4.1, as cited by Wikipedia “Compass”'],
-      tags: ['medieval', 'magnetism', 'navigation'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Compass' },
-      viz(v) {
-        const A = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 300, weight: 0.8, minWidth: 260, title: 'the needle' });
-        const B = v.stage({ x: [0, 10], y: [-100, 100], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 280, xlabel: 'time (s)', ylabel: 'angle from magnetic north (°)', title: 'the swing' });
-        const M = v.stage({ x: [-180, 180], y: [-80, 80], axes: 'box', gutter: true, height: 300, full: true, xlabel: 'longitude (°)', ylabel: 'latitude (°)', title: 'model declination (centred dipole)' });
-        const Y = yearStage(v, [1050, 1250], { height: 130, full: true, title: 'dated evidence' });
-        const th0S = v.slider('start angle $\\theta_0$ (°)', 5, 170, 90, { step: 1 });
-        const w0S = v.slider('needle strength $\\omega_0$ (rad/s)', 1, 4, 2.2, { step: 0.05 });
-        const dampS = v.select('damping', [{ value: '0.06', label: 'dry pivot' }, { value: '0.5', label: 'oil-damped' }, { value: '1', label: 'critical' }], '0.06');
-        const plat = v.slider('magnetic pole latitude (°N)', 60, 90, 80, { step: 0.5 });
-        const place = M.handle(-5, 50, { color: 'gold', r: 8, label: 'place', labelPos: 'ne', constrain: { x: [-180, 180], y: [-75, 75] } });
-        const PLON = -72;
-        let tab = null, key = '';
-        v.animate((t) => {
-          const kk = `${th0S.value}|${w0S.value}|${dampS.value}`;
-          if (kk !== key) { key = kk; tab = needleTable(w0S.value, +dampS.value, th0S.value * D2R); }
-          const tt = t % 10, th = tab.at(tt) / D2R, D = dipoleDecl(place.y, place.x, plat.value, PLON), bearing = D + th;
-          // compass rose
-          A.circle(0, 0, 1.25, { color: 'muted', width: 1.5 }); A.circle(0, 0, 1.12, { color: 'faint', width: 1 });
-          for (let a = 0; a < 360; a += 15) { const r0 = a % 90 === 0 ? 1.0 : 1.12; A.line(r0 * Math.sin(a * D2R), r0 * Math.cos(a * D2R), 1.25 * Math.sin(a * D2R), 1.25 * Math.cos(a * D2R), { color: 'muted', width: a % 90 === 0 ? 2 : 1 }); }
-          A.text('N', 0, 1.38, { size: 13, color: 'ink', align: 'center', weight: 700 }); A.text('E', 1.38, 0, { size: 11, color: 'muted', align: 'center', baseline: 'middle' }); A.text('S', 0, -1.38, { size: 11, color: 'muted', align: 'center', baseline: 'middle' }); A.text('W', -1.38, 0, { size: 11, color: 'muted', align: 'center', baseline: 'middle' });
-          const bx = Math.sin(bearing * D2R), by = Math.cos(bearing * D2R), px = -by * 0.09, py = bx * 0.09;
-          A.poly([[bx * 0.95, by * 0.95], [px, py], [-px, -py]], { fill: 'red', fillAlpha: 0.85, color: 'red', width: 1 });
-          A.poly([[-bx * 0.95, -by * 0.95], [px, py], [-px, -py]], { fill: 'muted', fillAlpha: 0.7, color: 'muted', width: 1 });
-          A.dot(0, 0, { r: 4, color: 'ink' });
-          const dm = D * D2R; A.line(0, 0, 0, 1.0, { color: 'accent', width: 1.2, dash: [3, 3] }); A.line(0, 0, 1.0 * Math.sin(dm), 1.0 * Math.cos(dm), { color: 'green', width: 1.8, dash: [5, 3] });
-          // swing curve
-          const pts = []; for (let i = 0; i <= 400; i++) { const x = i / 40; pts.push([x, tab.at(x) / D2R]); }
-          B.hline(0, { color: 'muted', width: 1 }); B.path(pts, { color: 'accent', width: 2.2 }); B.dot(tt, th, { r: 6, color: 'gold' });
-          // map
-          M.heat((lon, lat) => dipoleDecl(lat, lon, plat.value, PLON), { range: [-120, 120], cmap: 'diverging', res: 4, key: `${plat.value}` });
-          M.vline(PLON, { color: 'faint', width: 1, dash: [3, 4] });
-          M.dot(PLON, plat.value, { r: 5, hollow: true, color: 'ink', label: 'pole', labelPos: 'ne' });
-          M.axes();
-          drawYears(v, Y, [{ t: 1088, label: 'Shen Kuo: needle, declination' }, { t: [1111, 1117], label: 'Zhu Yu: pilots read it' }, { t: [1187, 1190], label: 'Neckam in Europe' }], { lanes: 3, ticks: [1100, 1150, 1200] });
-        }, { period: 10, still: 1.2 });
-        v.legend([['red', 'north end of the needle'], ['accent', 'true north', { dash: [3, 3] }], ['green', 'magnetic north (declination)', { dash: [5, 3] }]]);
-        v.readout(() => {
-          const D = dipoleDecl(place.y, place.x, plat.value, PLON), zeta = +dampS.value, w0 = w0S.value;
-          return `place ${v.fix(place.y, 0)}°, ${v.fix(place.x, 0)}°: model declination **${v.fix(D, 1)}°** (${D >= 0 ? 'east' : 'west'}), so a navigator steering by the needle is off true north by that much\nneedle: small-swing frequency $\\omega_0=${v.fix(w0, 2)}$ rad/s, period ${v.fix(2 * Math.PI / w0, 2)} s${zeta < 1 ? `, ring-down rate $\\zeta\\omega_0=${v.fix(zeta * w0, 2)}$ s$^{-1}$ (amplitude falls by ${v.fix(Math.exp(-zeta * w0 * 2 * Math.PI / (w0 * Math.sqrt(1 - zeta * zeta))), 2)} each swing)` : ', critically damped: no overshoot'}; model, not a measured field`;
-        });
+For angle θ relative to the local horizontal field, the damped needle model is
+$$\ddot\theta+2\zeta\omega\dot\theta+\omega^2\sin\theta=0.$$
+Here $\omega=\omega_*\sqrt{B_h}$, with selected reference strength ω* and dimensionless horizontal magnitude Bh. Inertia is normalized to one. Holding the selected local damping ratio ζ fixed as the field changes deliberately changes the viscous coefficient 2ζω; this is not one fixed material viscosity. Energy $E=\dot\theta^2/2+\omega^2(1-\cos\theta)$ satisfies $\dot E=-2\zeta\omega\dot\theta^2$. The ζ=1 label refers to the **linear small-angle** critical case, without asserting a global nonlinear no-overshoot theorem.`,
+      caption:String.raw`Drag the place or use its saved coordinates. Change the chosen dipole-axis latitude, release angle, reference strength, damping and actual elapsed time. The needle and full ten-second curve share one numerical trajectory, released from rest. The field colour is blue for west and red for east; the map excludes geographic poles. At an axis pole the preferred direction and relative-angle experiment are suppressed.`,
+      deps:['em-7.18','mech-4.7'],see:['tech-5.10'],refs:['Royal Museums Greenwich, RAF Mark II ACO0299, actual owner account of float/needles, damping vanes, balancing and vibration limits'],tags:['magnetism','navigation'],
+      scope:String.raw`Chosen centred dipole with attracting-axis longitude−72°, observer latitude−75…75°, axis latitude60…90°. No real-year magnetic map or measured material coefficient. A horizontal point needle with normalized unit inertia, linear viscous damping, fixed local field and rest release are assumed. The local damping ratio is selected rather than a fixed material viscosity. Fourth-order Runge–Kutta uses step0.0025s, including a final partial step for selected time; the sampled curve has501points. Geographic-pole coordinates and horizontal magnitude≤10⁻¹² have no displayed bearing. No pivot friction, hysteresis, magnetic deviation, platform dynamics or historical priority is inferred.`,
+      links:{source:'https://www.rmg.co.uk/collections/objects/rmgc-object-7378'},
+      viz(v){const initial=v.slider('release angle from field (°)',5,170,90,{step:'any',decimals:6}),strength=v.slider('reference strength ω* (rad/s)',1,4,2.2,{step:'any',decimals:6}),pole=v.slider('attracting-axis latitude (° north)',60,90,80,{step:'any',decimals:6}),lon=v.slider('observer longitude (° east)',-180,180,-5,{step:'any',decimals:6}),lat=v.slider('observer latitude (° north)',-75,75,50,{step:'any',decimals:6}),time=v.slider('elapsed time (s)',0,10,1.2,{step:'any',decimals:6}),damping=v.select('declared damping',[{value:'.06',label:'ζ=0.06'},{value:'.5',label:'ζ=0.5'},{value:'1',label:'ζ=1 (linear critical)'}],'.06'),A=v.stage({x:[-1.65,1.65],y:[-1.65,1.65],equal:true,axes:false,height:300,minWidth:260,title:'needle and local preferred direction'}),B=v.stage({x:[-.8,10.8],y:[-200,200],axes:'box',gutter:true,height:300,minWidth:260,xlabel:'elapsed time (s)',ylabel:'angle from field (°)',title:'full nonlinear damped trajectory'}),M=v.stage({x:[-210,210],y:[-105,105],axes:'box',gutter:true,height:340,full:true,xlabel:'longitude (° east)',ylabel:'latitude (° north)',title:'authored dipole declination; no current-world forecast'}),place=M.handle(-5,50,{color:'gold',r:7,constrain:{x:[-180,180],y:[-75,75]}}),set=place.set;place.set=(x,y)=>{if(!Number.isFinite(x)||!Number.isFinite(y)||x< -180||x>180||y< -75||y>75)throw new RangeError('invalid compass observer');set(x,y);};place.onDrag=()=>{if(place.dragging){lon.set(place.x);lat.set(place.y);}};v.shareState('compass observer agreement',{get:()=>[lon.value,lat.value],validate:s=>Array.isArray(s)&&s.length===2&&s.every(Number.isFinite)&&s[0]>=-180&&s[0]<=180&&s[1]>=-75&&s[1]<=75,set:s=>{if(s[0]!==lon.value||s[1]!==lat.value||place.x!==s[0]||place.y!==s[1])throw new RangeError('invalid compass observer agreement');}});let info;
+        v.legend([['red','north-seeking needle end'],['green','local preferred bearing'],['gold','place / selected time'],['blue','west declination'],['red','east declination']]);
+        v.render(()=>{const p=compass(initial.value,strength.value,pole.value,lon.value,lat.value,time.value,+damping.value);place.set(p.longitude,p.latitude);A.circle(0,0,1.2,{color:'muted',width:1.4});for(const[t,x,y]of[['N',0,1.4],['E',1.4,0],['S',0,-1.4],['W',-1.4,0]])A.text(t,x,y,{size:11,align:'center',baseline:'middle',color:'muted'});B.line(0,0,10,0,{color:'muted',width:1});if(p.field.defined){const d=p.bearing*Math.PI/180,x=Math.sin(d),y=Math.cos(d),t=[-.09*y,.09*x];A.poly([[.95*x,.95*y],t,[-t[0],-t[1]]],{fill:'red',fillAlpha:.8,color:'red',width:1});A.poly([[-.95*x,-.95*y],t,[-t[0],-t[1]]],{fill:'muted',fillAlpha:.6,color:'muted',width:1});const b=p.field.declination*Math.PI/180;A.line(0,0,Math.sin(b),Math.cos(b),{color:'green',width:1.6,dash:[4,3]});B.path(p.curve,{color:'accent',width:2});B.dot(p.time,p.angle,{color:'gold',r:5,ring:false});}A.dot(0,0,{color:'ink',r:3,ring:false});M.heat((x,y)=>{const q=dipoleField(y,x,p.poleLatitude);return q.defined?q.declination:NaN;},{rect:[-180,-80,180,80],range:[-180,180],cmap:'theme-diverging',neg:'blue',pos:'red',res:4,key:p.poleLatitude});M.dot(-72,p.poleLatitude,{color:'ink',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;if(!p.field.defined)return `Horizontal field ${v.fix(p.field.horizontal,12)}: preferred bearing is undefined at this axis pole. A relative-angle needle experiment is not displayed. Coordinates and saved controls remain available.`;return `Authored field declination ${v.fix(p.field.declination,9)}°, horizontal magnitude ${v.fix(p.field.horizontal,12)}. Local small-angle frequency ${v.fix(p.omega,9)} rad/s; ζ=${p.zeta}.\nAt ${v.fix(p.time,9)} s: relative angle ${v.fix(p.angle,9)}°, angular velocity ${v.fix(p.velocity,9)} rad/s. Model energy ${v.fix(p.energy,12)}; accumulated viscous dissipation ${v.fix(p.dissipation,12)}; initial energy ${v.fix(p.initialEnergy,12)}. Their balance is a numerical accuracy check.\nFourth-order integration step ${p.step} s; the selected time includes a partial step. The black map dot is the chosen attracting-axis pole, and colours are an authored dipole model rather than an operational field chart.`;});
       },
     },
 
