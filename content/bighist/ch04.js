@@ -17,10 +17,11 @@
 //     Hublin et al., Nature 581: 299 (2020) (before 45 ka); Ust'-Ishim, Fu et al., Nature 514: 445 (2014) (45 ka); White Sands,
 //     Bennett et al., Science 373: 1528 (2021) (21-23 ka, contested); Monte Verde (about 14.5 ka, recalled). Qafzeh/Skhul
 //     (about 100 ka), Lake Mungo (about 42 ka?) and Tianyuan (about 40 ka) are rounded recalled values. Coordinates are approximate.
-//   4.4 Ramachandran et al., PNAS 102: 15942 (2005) (confirmed: heterozygosity falls linearly with distance from Africa); the
-//     simulation is a plain founder chain, not a fit to those data.
+//   4.4 Actual complete Ramachandran2005 original source read; conditional model and saved seed repaired.
+//     See docs/verification/bighist-founder-followup.md; source flag retained pending independent acceptance.
 
 import { clamp } from './ch04.shared.js';
+import founderItem from './founder-item.js';
 
 // ── 4.1 helpers ─────────────────────────────────────────────────────────────────────────────────────────────────────────
 // [name, age from Ma, age to Ma, cm3 low, cm3 high, colour, label x, label y]  (rounded, indicative)
@@ -265,77 +266,6 @@ export default {
         });
       },
     },
-    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-    {
-      num: '4.4',
-      kind: 'Model',
-      name: 'The serial founder effect',
-      statement: String.raw`Suppose a population spreads along a route in steps: each new group is founded by a small sample of $N_f$ diploid individuals from the previous one, and then grows large. At a given genetic locus with allele frequency $p$, the founders carry a binomial sample of the $2N_f$ gene copies, so the expected heterozygosity $H = 2p(1-p)$ shrinks by the factor $(1 - 1/(2N_f))$ at each step. After $k$ steps from the origin the expected diversity is
-$$\mathbb E[H_k] = H_0\Bigl(1-\frac1{2N_f}\Bigr)^k \approx H_0\,e^{-k/(2N_f)},$$
-and since $k$ is proportional to the distance travelled, diversity decays roughly **linearly with distance from the origin** when the decay per step is small. Ramachandran and colleagues (2005) found that heterozygosity in worldwide human populations declines nearly linearly with distance from East Africa, as this model predicts.
-
-**Scope.** The model assumes independent loci, no gene flow after founding, no mutation during the spread and equal bottlenecks; real data are also shaped by admixture, selection and population structure, and other models also give a decline with distance.`,
-      idea: String.raw`Each founder event is one generation of Wright–Fisher drift (popgen-2.1) with a tiny population, so it loses a fraction $1/(2N_f)$ of the heterozygosity in expectation and leaves many alleles at frequency $0$ or $1$ (rare variants vanish first). Repeating it $k$ times compounds the losses geometrically, $(1-1/2N_f)^k$, which looks like a straight line for the first part of the decay. The same argument explains why the populations farthest from Africa, in the Americas, are the least diverse, and gives the idea a role in testing the origin of modern humans (4.3): the origin that gives the best straight line is the one in Africa.`,
-      caption: String.raw`A chain of 400 independent loci passes through steps of founders. Change the founder size, the number of steps or press Resample (new random chains, thin lines; bold = mean over the chains). The dashed line is the formula. The right panel shows the allele-frequency histogram at the start and at the end of the route.`,
-      deps: ['bighist-4.3', 'popgen-2.9', 'popgen-2.1'],
-      see: ['bighist-4.6'],
-      refs: ['Christian'],
-      credit: 'Ramachandran et al., 2005 (fit to worldwide heterozygosity); the founder effect itself is due to Mayr, 1942',
-      tags: ['genetic drift', 'founder effect', 'diversity'],
-      scope: String.raw`A plain founder chain, not a fit to the human data; no gene flow, mutation or selection.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Serial_founder_effect', doi: 'https://doi.org/10.1073/pnas.0507611102' },
-      verify: true,
-      viz(v) {
-        const Nf = v.slider('founders per step $N_f$', 2, 200, 10, { step: 1, int: true, log: true });
-        const K = v.slider('steps', 3, 24, 16, { step: 1, int: true });
-        const seedBtn = { s: 3 };
-        v.button('Resample', () => { seedBtn.s += 1; });
-        const A = v.stage({ x: [0, 24], y: [0, 0.6], axes: 'box', gutter: true, height: 340, weight: 1.3, xlabel: 'steps from the origin (≈ distance)', ylabel: 'heterozygosity H', title: 'diversity falls along the route' });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'allele frequency', ylabel: 'fraction of loci', title: 'allele frequencies: start vs end' });
-        const L = 400, R = 20;
-        const sim = () => {
-          const r = v.rng(seedBtn.s * 977 + Nf.value * 13 + K.value);
-          const runs = [];
-          let p0 = Array.from({ length: L }, () => { const u = r(); return 0.5 * (1 - Math.cos(Math.PI * u)) * 0.98 + 0.01; }); // U-shaped-ish start
-          const H = (p) => p.reduce((s, q) => s + 2 * q * (1 - q), 0) / p.length;
-          for (let c = 0; c < R; c++) {
-            let p = p0.slice(); const hs = [H(p)];
-            for (let k = 1; k <= K.value; k++) {
-              const n = 2 * Nf.value;
-              p = p.map((q) => { let x = 0; for (let i = 0; i < n; i++) if (r() < q) x++; return x / n; });
-              hs.push(H(p));
-            }
-            runs.push({ hs, pEnd: p });
-          }
-          return { runs, p0 };
-        };
-        let key = '', cache = null;
-        v.render(() => {
-          const kk = `${Nf.value}|${K.value}|${seedBtn.s}`;
-          if (kk !== key) { cache = sim(); key = kk; }
-          const { runs, p0 } = cache;
-          const H0 = runs[0].hs[0];
-          for (const rn of runs) A.path(rn.hs.map((h, k) => [k, h]), { color: 'accent', width: 1, alpha: 0.28 });
-          const mean = Array.from({ length: K.value + 1 }, (_, k) => runs.reduce((s, rn) => s + rn.hs[k], 0) / runs.length);
-          A.path(mean.map((h, k) => [k, h]), { color: 'accent', width: 3 });
-          A.fn((k) => H0 * (1 - 1 / (2 * Nf.value)) ** k, { domain: [0, K.value], color: 'orange', width: 2, dash: [5, 4] });
-          const bins = 10, hist = (arr) => { const c = Array(bins).fill(0); arr.forEach((q) => { c[Math.min(bins - 1, Math.floor(q * bins))]++; }); return c.map((x) => x / arr.length); };
-          const h0 = hist(p0), h1 = hist(runs[0].pEnd);
-          h0.forEach((f, i) => { B.rect(i / bins + 0.005, 0, (i + 0.5) / bins, f, { fill: 'teal', fillAlpha: 0.35, color: 'teal', width: 1 }); });
-          h1.forEach((f, i) => { B.rect((i + 0.5) / bins, 0, (i + 1) / bins - 0.005, f, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1 }); });
-          A.setView([0, K.value], [0, H0 * 1.15]);
-          B.setView([0, 1], [0, Math.max(0.2, Math.min(1, Math.max(...h0, ...h1) * 1.15))]);
-          v.legend([['accent', 'chains (thin) and mean (bold)'], ['orange', '$H_0(1-1/2N_f)^k$', { dash: true }], ['teal', 'start (left bars)'], ['red', 'end (right bars)']]);
-          cache.mean = mean;
-        });
-        v.readout(() => {
-          if (!cache) return '';
-          const mean = cache.mean, n = mean.length;
-          const xs = mean.map((_, k) => k), lr = v.M.linreg(xs, mean);
-          const fixed = cache.runs[0].pEnd.filter((q) => q === 0 || q === 1).length / L;
-          return `Mean $H$ falls from **${v.fix(mean[0], 3)}** to **${v.fix(mean[n - 1], 3)}** in ${n - 1} steps (formula: ${v.fix(mean[0] * (1 - 1 / (2 * Nf.value)) ** (n - 1), 3)}). A straight line through the mean has $R^2 = ${v.fix(lr.r2, 3)}$.\nIn the first chain **${v.fix(100 * fixed, 0)}%** of loci are fixed (frequency 0 or 1) at the end, against ${v.fix(100 * cache.p0.filter((q) => q < 0.011 || q > 0.989).length / L, 0)}% at the start.`;
-        });
-      },
-    },
+    founderItem,
   ],
 };

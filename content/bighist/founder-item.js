@@ -1,0 +1,30 @@
+import{founderModel}from'./source-audit-founder.js';
+export default{
+  num:'4.4',kind:'Model',name:'The serial founder effect',verify:true,
+  statement:String.raw`A new colony founded by N diploid individuals samples $2N$ gene copies from the previous colony. In the neutral biallelic model, $X\mid p\sim\mathrm{Binomial}(2N,p)$ and the next frequency is $p'=X/(2N)$. The expected gene diversity $H=2p(1-p)$ loses a fraction $1/(2N)$ at each founding:
+$$\mathbb E[H_k]=H_0\left(1-\frac1{2N}\right)^k.$$
+This geometric curve is approximately linear only when the cumulative loss is small, $k/(2N)\ll1$. It does not require each individual simulated path to decrease at every step.
+
+Ramachandran and colleagues (2005) analyzed 1,027 individuals from 53 populations at 783 microsatellite loci. Their waypoint-distance/heterozygosity pattern was consistent with a serial-founder expansion from Africa under their assumptions. This statistical support is distinct from proving a unique demographic history or locating a precise origin.`,
+  idea:String.raw`The binomial moments give $\mathbb E[p'\mid p]=p$ and $\operatorname{Var}(p'\mid p)=p(1-p)/(2N)$. Therefore $\mathbb E[2p'(1-p')\mid p]=(1-1/(2N))2p(1-p)$. Apply the written expectation argument in popgen-2.3 repeatedly. Our model treats each founding as one such sampling generation, with no additional drift during subsequent rapid growth. This is the bottleneck-only approximation discussed on the paper’s 15946–15947; its published simulation also includes mutation and additional population history. The displayed chains do not reproduce that simulation.`,
+  caption:String.raw`An authored pool of 400 independent biallelic loci starts from a specified U-shaped distribution of frequencies, not human observations. Twenty independent seeded chains pass through equal founder bottlenecks. Thin curves show individual chains, bold their finite mean, and the dashed curve the ideal conditional expectation for the shared initial pool. Right: the initial frequencies and the final frequencies of the first chain in ten bins, including exact 0/1 in the end bins. Change the saved seed or press Resample. Extending the step count preserves every existing chain prefix.`,
+  scope:String.raw`No selection, mutation, migration, linkage, varying founder size or drift during growth. The initial frequency law is an authored choice. The expectation assumes ideal independent sampling; the display uses a finite seeded pseudorandom generator and 20 chains, so its mean need not equal the expectation or remain monotone. Seed and all controls save/replay. Step count has no calibrated distance or year scale.
+
+The source study uses multiallelic microsatellites and a different demographic simulation. Its Figure 4A fit is H≈0.7682−6.52×10⁻⁶d with d in waypoint-adjusted kilometres and R²=0.7630. Those are reported source results, not a fit of this biallelic illustration. Sampling, migration routes and additional demographic processes limit the inference; a straight line alone does not establish a unique origin or a numerical share of variation caused by drift. Historical first-use/Mayr priority is not certified here.`,
+  deps:['bighist-4.3','popgen-2.1','popgen-2.3','popgen-2.9'],see:['bighist-4.6'],refs:['Ramachandran et al.2005, PNAS102:15942–15947, Results/Fig4 and bottleneck-only discussion'],
+  credit:'Ramachandran and colleagues (2005); authored biallelic founder-chain illustration',tags:['genetic drift','founder effect','diversity'],
+  links:{original:'https://web.stanford.edu/group/rosenberglab/papers/RamachandranEtAl2005-PNAS.pdf',doi:'https://doi.org/10.1073/pnas.0507611102'},
+  viz(v){
+    const N=v.slider('founders per step N',2,200,10,{int:true}),K=v.slider('founding steps',3,24,16,{int:true}),seed=v.slider('saved sample seed',0,9999,3,{int:true});
+    for(const[c,lo,hi]of[[N,2,200],[K,3,24],[seed,0,9999]]){const set=c.set;c.set=x=>{if(!Number.isInteger(x)||x<lo||x>hi)throw new RangeError('Saved founder control outside integer domain');return set(x);};}
+    v.button('Resample',()=>seed.set((seed.value+1)%10000));
+    const A=v.stage({x:[-.5,24.5],y:[-.02,.55],axes:'box',gutter:true,height:340,title:'authored chains and conditional mean',xlabel:'founding steps; no distance calibration',ylabel:'biallelic gene diversity H'}),B=v.stage({x:[-.03,1.03],y:[-.04,1.08],axes:'box',gutter:true,height:340,title:'first chain: initial and final frequencies',xlabel:'allele frequency; ten fixed bins',ylabel:'fraction of 400 loci'});let info,key='',cache;
+    v.render(()=>{
+      const next=`${N.value}|${K.value}|${seed.value}`;if(next!==key){cache=founderModel(N.value,K.value,seed.value);key=next;}const m=cache;info=m;
+      const top=Math.max(...m.runs.flatMap(r=>r.hs),...m.expected);A.setView([-.5,m.K+.5],[-.04*top,1.15*top]);
+      for(const r of m.runs)A.path(r.hs.map((h,k)=>[k,h]),{color:'accent',width:1,alpha:.23});A.path(m.mean.map((h,k)=>[k,h]),{color:'accent',width:2.8});A.path(m.expected.map((h,k)=>[k,h]),{color:'orange',width:2,dash:[5,4]});
+      const high=Math.max(...m.initialHist,...m.finalHist);B.setView([-.03,1.03],[-.06*Math.max(.2,high),1.15*Math.max(.2,high)]);m.initialHist.forEach((h,i)=>B.rect(i/10+.008,0,i/10+.047,h,{fill:'teal',color:'teal',fillAlpha:.5,width:1}));m.finalHist.forEach((h,i)=>B.rect(i/10+.053,0,i/10+.092,h,{fill:'red',color:'red',fillAlpha:.5,width:1}));
+    });v.legend([['accent','twenty chains / finite mean'],['orange','ideal expected H'],['teal','initial bin fraction'],['red','first chain final bin fraction']]);
+    v.readout(()=>{const m=info;if(!m)return'';return `Saved seed ${m.seed}; N=${m.N}, ${m.K} founding steps. Initial H=${v.fix(m.H0,6)}; finite 20-chain mean ${v.fix(m.mean.at(-1),6)}; ideal expectation ${v.fix(m.expected.at(-1),6)}. Cumulative k/(2N)=${v.fix(m.K/(2*m.N),4)}; small per-step loss alone does not guarantee a nearly straight curve.\nFirst chain: ${v.fix(100*m.fixed,2)}% of 400 loci exactly fixed/lost; initially 0%. All three controls, including the Resample seed, replay exactly. These are model samples; the human microsatellite data and source fit are not plotted.`;});
+  },
+};
