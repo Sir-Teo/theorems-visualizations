@@ -4,14 +4,14 @@
 // participants from 166 countries, 18 targets in 13 countries, 24,163 distinct chains of which 384 completed, mean length of the
 // completed chains 4.01 (text of the paper); Ugander et al. (arXiv 1111.4503): 721 million users, 68.7 billion edges, mean degree
 // ~190, median 99, average distance 4.7, 99.91% in the largest component; Edunov et al. (Facebook Research blog, Feb 2016):
-// 1.59 billion users, average distance 4.57 (3.57 intermediaries); Kleinberg, Nature 406: 845 (2000), the delivery-time bounds
-// as stated in course notes (side length n of an n × n lattice; q < 2: Omega(n^((2-q)/3)); q > 2: Omega(n^((q-2)/(q-1)))),
-// not checked against the paper. Everything drawn from a simulation is labelled as a model on the page.
+// 1.59 billion users, average distance 4.57 (3.57 intermediaries). Items 4.5–4.6 additionally checked against
+// Watts & Strogatz, Nature393:440–442 (1998), and Kleinberg’s complete author paper, Theorems2–3, pp.4–12.
+// Everything drawn from a simulation is labelled as a model on the page.
 import {
   rng32, components, meanDistER, triangleStats, poissonPmf, pairUniforms, gnpCoupled, growthCurve, giantTheory,
-  wsSkeleton, wsBuild, pathAndClustering, meanDelivery, linkLengthShares, circlePos,
 } from './ch04.shared.js';
 import { erSeed, erValidSeed, erUniforms, erCircle, erGnp, erDegreeLaw, erCenti, erGiant, erEdgeOrder, erGrowth, erGrowthAt } from './source-audit-erdos-renyi.js';
+import { swSeedValid, swSkeleton, swBuild, navigationGraph, navigationLaw, navigationRoute, navigationSummary, navigationHalving } from './source-audit-smallworld.js';
 
 export default {
   collection: 'soc',
@@ -232,114 +232,73 @@ So online social networks are "small" in the sense of 4.3, and have become small
     },
     // ------------------------------------------------------------------ 4.5
     {
-      num: '4.5',
-      kind: 'Model',
-      name: 'Watts–Strogatz small-world model',
-      statement: String.raw`Start with $n$ vertices on a ring, each joined to its $k$ nearest neighbours ($k$ even). With probability $p$ rewire each edge: keep one end and move the other to a vertex chosen uniformly at random (no loops or repeated edges). Let $L(p)$ be the mean shortest-path length and $C(p)$ the mean clustering coefficient.
+      num:'4.5',kind:'Model',name:'Watts–Strogatz small-world model',
+      statement:String.raw`Watts and Strogatz start with an undirected ring of $n$ vertices, each joined to its $k$ nearest neighbours, with even $2\le k<n$. Consider each clockwise lattice edge once, in successive distance laps. Independently mark it with probability $p$. A marked edge keeps its first endpoint and chooses a uniformly admissible new endpoint; loops and duplicate edges are forbidden. The number of edges remains $nk/2$.
 
-(a) $p=0$ is a **regular lattice**: highly clustered, $C(0)\approx\tfrac34$ for $k\gg1$, but with long distances, $L(0)\approx n/2k$.
+The original paper's numerical evidence shows a regime with short paths and substantial local clustering. It is not an identity for every finite sample or a universal transition at $p=0.01$. The fully rewired distribution is not exactly an independent-edge random graph.
 
-(b) $p=1$ is essentially a **random graph**: $C\approx k/n$ and $L\approx\ln n/\ln k$.
+Here $C$ means the **mean of local coefficients** $C_i$, with $C_i=0$ for degree below two. Transitivity is a different ratio: three times the triangle count divided by the number of centred neighbour pairs. Global mean distance $L$ is infinite if any distinct pair is disconnected; a mean restricted to reachable pairs is reported separately.`,
+      idea:String.raw`The local fraction in soc-2.5 counts edges among each vertex's neighbours. Averaging these fractions and taking one ratio of total counts give different summaries. All distances here come from complete breadth-first searches (soc-2.2), not a sample of paths.
 
-(c) In between, for small $p$ a few random shortcuts cut $L$ drastically while $C$ barely moves: $L(p)/L(0)$ collapses by $p\sim10^{-2}$ while $C(p)/C(0)\approx(1-p)^3$ stays near 1. A wide range of $p$ gives a network that is **both clustered and small**, like the real networks measured in the original paper.`,
-      idea: String.raw`Clustering is a *local* property: rewiring one edge destroys only the triangles through that edge, so $C$ falls in proportion to $(1-p)^3$ (an original triangle survives only if all three of its edges do). Path length is a *global* property: a single shortcut links two distant parts of the ring and shortens the paths of everyone near both ends, so a handful of shortcuts, $pnk/2\gtrsim1$, changes the scaling of $L$ from linear in $n$ to logarithmic. The two properties therefore respond at very different values of $p$, which opens the window in which both are satisfied.`,
-      caption: String.raw`**Left**: a 24-vertex ring; the shortcuts (orange) appear as you raise $p$ (the same random choices are reused, so the graphs nest). **Right**: simulated $L(p)/L(0)$ and $C(p)/C(0)$ on a log-$p$ axis for a 300-vertex ring with $k=6$ (average of 4 runs per point), the formula $(1-p)^3$ (dashed), and the live value for the current $p$. Switch to *add shortcuts* (Newman–Watts) to keep the lattice intact.`,
-      scope: String.raw`Stated for $n\gg k\gg\ln n\gg1$ (the limits in the original paper). The curves use $n=300$, $k=6$, a much smaller ring than the paper's 1000 vertices with $k=10$, so the collapse sits at somewhat larger $p$. The shortcut variant is due to Newman and Watts (1999, from memory).`,
-      deps: ['soc-2.5', 'soc-4.1'],
-      refs: ['E&K §20.2'],
-      tags: ['small world', 'clustering', 'path length'],
-      credit: 'Watts & Strogatz, 1998',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Watts%E2%80%93Strogatz_model' },
-      verify: true,
-      viz(v) {
-        const mode = v.select('model', [{ value: 'rewire', label: 'rewire edges (Watts–Strogatz)' }, { value: 'add', label: 'add shortcuts (Newman–Watts)' }], 'rewire');
-        const pS = v.slider('probability $p$', 0.001, 1, 0.05, { log: true, sig: 2 });
-        const SD = v.stage({ x: [-1.25, 1.25], y: [-1.25, 1.25], equal: true, axes: false, height: 340, title: 'a ring of 24 (k = 4)', minWidth: 280 });
-        const SC = v.stage({ x: [1e-3, 1], y: [0, 1.08], xlog: true, axes: 'box', gutter: true, height: 340, xlabel: 'probability $p$', ylabel: 'relative to $p=0$', title: 'n = 300, k = 6', minWidth: 320, weight: 1.3 });
-        const sk24 = wsSkeleton(24, 4, 3), sk300 = wsSkeleton(300, 6, 9);
-        const ring = circlePos(24, 1, Math.PI / 2);
-        const G = v.graph(SD, { nodes: ring.map(([x, y], i) => ({ id: i, x, y })), edges: [], layout: 'none', r: 6, autoRadius: false, draggable: false });
-        const PG = [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1], curves = {};
-        const curveOf = (m) => curves[m] ??= (() => {
-          const b = pathAndClustering(wsBuild(sk300, 0, m).g);
-          const pts = PG.map((p) => { let Ls = 0, Cs = 0; for (let r = 0; r < 4; r++) { const r2 = pathAndClustering(wsBuild(wsSkeleton(300, 6, 100 + r), p, m).g); Ls += r2.L; Cs += r2.C; } return [p, Ls / 4 / b.L, Cs / 4 / b.C]; });
-          return { base: b, pts };
-        })();
-        let st = null;
-        v.render(() => {
-          const p = pS.value, m = mode.value, W = wsBuild(sk24, p, m), moved = new Set(W.moved.map(([a, b]) => (a < b ? `${a}-${b}` : `${b}-${a}`)));
-          G.edges = W.g.edges.map(([a, b]) => ({ from: a, to: b, mv: moved.has(a < b ? `${a}-${b}` : `${b}-${a}`) }));
-          G.draw({ nodeColor: () => 'accent', nodeLabel: () => '', edgeColor: (e) => (e.mv ? 'orange' : 'muted'), edgeWidth: (e) => (e.mv ? 2.4 : 1.4) });
-          const cv = curveOf(m);
-          SC.fn((x) => Math.pow(1 - x, 3), { color: 'orange', width: 1.5, dash: [6, 4] });
-          SC.path(cv.pts.map(([x, l]) => [x, l]), { color: 'accent', width: 2.4 }); SC.dots(cv.pts.map(([x, l]) => [x, l]), { r: 3.5, color: 'accent' });
-          SC.path(cv.pts.map(([x, , c]) => [x, c]), { color: 'orange', width: 2.4 }); SC.dots(cv.pts.map(([x, , c]) => [x, c]), { r: 3.5, color: 'orange' });
-          const live = pathAndClustering(wsBuild(sk300, p, m).g);
-          SC.vline(p, { color: 'gold', width: 1.4, dash: true });
-          SC.dot(p, live.L / cv.base.L, { r: 5.5, color: 'gold' }); SC.dot(p, live.C / cv.base.C, { r: 5.5, color: 'gold' });
-          st = { p, live, base: cv.base, moved: W.moved.length, m };
+For the unrewired ring, distance is $\lceil d_{\rm ring}/(k/2)\rceil$. In our size/degree domain, each neighbourhood has $3k(k-2)/8$ edges, giving $C(0)=3(k-2)/[4(k-1)]$. Rewiring removes local edges and creates other triangles while changing degrees: survival of an original triangle's three unmarked edges does not prove $C(p)/C(0)=(1-p)^3$.
+
+The explicitly authored **ring retained** comparison instead includes a fixed list of distinct extra candidate edges independently with probability $p$. That family nests, so adding edges cannot increase any shortest distance. The rewiring family does not nest, and neither model guarantees monotone clustering.`,
+      caption:String.raw`Both panels use the selected size, degree and seed. Every vertex and edge of the current graph is drawn. Orange edges were rewired or added. Curves give complete-graph statistics at nine marked probabilities; gold gives the current continuous $p$. The probability axis uses $\log_{10}(1+999p)/3$ to include zero. Infinite global distances appear as gaps. Change the seed to inspect a different finite realization.`,
+      scope:String.raw`A bounded authored diagnostic at $n=24,48,96$ and $k=4,6$, not the original paper's 1,000-vertex, degree-10, twenty-realization experiment. If no new endpoint is admissible, the edge is retained and counted as blocked. Ideal probabilities assume independent uniforms; the demonstration uses a seeded finite pseudorandom generator. The ring-retained comparison is authored here and is not claimed to reproduce Newman–Watts. No fit to a real network or finite-sample asymptotic certificate is asserted.`,
+      deps:['soc-2.2','soc-2.5'],see:['soc-4.1','soc-4.6'],refs:['Watts & Strogatz (1998), pp.440–442, Figs.1–2'],
+      tags:['small world','clustering','path length'],credit:'Watts & Strogatz, 1998; bounded finite diagnostics and ring-retained comparison authored here.',links:{source:'https://www.cs.cornell.edu/courses/cs6241/2020sp/readings/Watts-1998-smallworld.pdf'},verify:true,
+      viz(v){
+        let seed=3,cache=new Map(),info;
+        v.shareState('small-world seed',{get:()=>seed,validate:swSeedValid,set:x=>{seed=x;cache.clear();}});
+        const size=v.select('vertices n',[24,48,96].map(value=>({value,label:String(value)})),24),degree=v.select('initial degree k',[4,6].map(value=>({value,label:String(value)})),4),mode=v.select('construction',[{value:'rewire',label:'rewire (Watts–Strogatz)'},{value:'retain',label:'ring retained (authored)'}],'rewire');
+        const p=v.slider('probability p',0,1,.05,{step:'any',fmt:x=>x.toPrecision(6)});
+        v.button('Lattice',()=>p.set(0));v.button('All marked',()=>p.set(1));v.button('Resample',()=>{seed=(seed+1)>>>0;cache.clear();});
+        const A=v.stage({x:[-1.18,1.18],y:[-1.18,1.18],equal:true,axes:false,height:340,minWidth:260,title:'complete selected graph'}),B=v.stage({x:[-.06,1.06],y:[-.1,1.2],axes:'box',gutter:true,height:340,minWidth:260,xlabel:'p (transformed axis, including zero)',ylabel:'relative to the lattice',xticks:[0,.001,.01,.1,1].map(x=>[Math.log10(1+999*x)/3,String(x)]),title:'complete-graph L and mean local C'});
+        const grid=[0,.001,.003,.01,.03,.1,.3,.6,1],tx=x=>Math.log10(1+999*x)/3;
+        v.render(()=>{
+          const key=`${size.value}|${degree.value}|${mode.value}|${seed}`;let c=cache.get(key);if(!c){cache.clear();const sk=swSkeleton(size.value,degree.value,seed),base=swBuild(sk,0,mode.value),pts=grid.map(x=>{const g=swBuild(sk,x,mode.value);return[x,g.stats.globalL===null?null:g.stats.globalL/base.stats.globalL,g.stats.meanLocal/base.stats.meanLocal];});c={sk,base,pts};cache.set(key,c);}
+          const g=swBuild(c.sk,p.value,mode.value),R=Array.from({length:g.n},(_,i)=>[Math.cos(2*Math.PI*i/g.n),Math.sin(2*Math.PI*i/g.n)]),moved=new Set(g.moved.map(([a,b])=>a<b?`${a},${b}`:`${b},${a}`));
+          for(const[a,b]of g.edges)A.line(...R[a],...R[b],{color:moved.has(a<b?`${a},${b}`:`${b},${a}`)?'orange':'muted',width:.9,alpha:.65});R.forEach(([x,y])=>A.dot(x,y,{r:g.n===24?4:g.n===48?3.2:2.5,ring:false,color:'accent'}));
+          const ll=g.stats.globalL===null?null:g.stats.globalL/c.base.stats.globalL,cc=g.stats.meanLocal/c.base.stats.meanLocal,top=Math.max(1,...c.pts.flatMap(x=>x.slice(1).filter(y=>y!==null)),ll??0,cc);B.setView([-.06,1.06],[-.12*top,1.2*top]);
+          B.path(c.pts.map(([x,l])=>l===null?null:[tx(x),l]),{color:'accent',width:2});B.path(c.pts.map(([x,,c])=>[tx(x),c]),{color:'green',width:2});c.pts.forEach(([x,l,c])=>{if(l!==null)B.dot(tx(x),l,{r:2.8,ring:false,color:'accent'});B.dot(tx(x),c,{r:2.8,ring:false,color:'green'});});B.line(tx(p.value),0,tx(p.value),top,{color:'gold',width:1,dash:[4,4]});if(ll!==null)B.dot(tx(p.value),ll,{r:4,ring:false,color:'gold'});B.dot(tx(p.value),cc,{r:4,ring:false,color:'gold'});info={g,base:c.base.stats,seed};
         });
-        v.legend([['accent', 'path length $L(p)/L(0)$'], ['orange', 'clustering $C(p)/C(0)$'], ['orange', '$(1-p)^3$', { dash: true }], ['gold', 'current $p$', { dot: true }]]);
-        v.readout(() => {
-          if (!st) return '';
-          const { p, live, base, moved } = st;
-          return String.raw`$p=${v.fix(p, 3)}$ · on the ring of 24: ${moved} ${st.m === 'add' ? 'shortcuts added' : 'edges rewired'} of 48 · on $n=300$: $L=${v.fix(live.L, 2)}$ (lattice ${v.fix(base.L, 2)}, $n/2k=25$), $C=${v.fix(live.C, 3)}$ (lattice ${v.fix(base.C, 3)}, $\tfrac34(k-2)/(k-1)=${v.fix(0.75 * 4 / 5, 3)}$) → $L/L(0)=${v.fix(live.L / base.L, 2)}$, $C/C(0)=${v.fix(live.C / base.C, 2)}$, $(1-p)^3=${v.fix(Math.pow(1 - p, 3), 2)}$`;
-        });
+        v.legend([['accent','global L / lattice L'],['green','mean local C / lattice C'],['gold','current p',{dot:true}],['orange','changed edges']]);
+        v.readout(()=>{const{g,base,seed}=info,s=g.stats;return `Seed ${seed}; n=${g.n}, k=${degree.value}, p=${p.value.toPrecision(12)}. Edges ${g.edges.length}; marked ${g.marked}, changed ${g.moved.length}, blocked ${g.blocked}. Components ${s.components}; reachable ordered pairs ${s.reachable}/${s.pairs}. Global L: ${s.globalL===null?'infinite (disconnected)':v.fix(s.globalL,6)}; reachable-pair mean: ${s.reachableL===null?'undefined':v.fix(s.reachableL,6)}. Mean local C=${v.fix(s.meanLocal,6)} (degree<2 contributes zero); transitivity=${s.transitivity===null?'undefined (no neighbour pairs)':v.fix(s.transitivity,6)}. Triangles ${s.triangles}; centred neighbour pairs ${s.wedges}. Lattice L=${v.fix(base.globalL,6)}, mean local C=${v.fix(base.meanLocal,6)}. All pairs and all local neighbourhoods were counted; these finite curves are not an asymptotic or empirical certificate.`;});
       },
     },
     // ------------------------------------------------------------------ 4.6
     {
-      num: '4.6',
-      kind: 'Theorem',
-      name: 'Kleinberg’s navigability theorem',
-      statement: String.raw`Take an $n\times n$ lattice of people; each knows its four lattice neighbours and one extra *long-range contact* $w$, chosen with probability proportional to $d(u,w)^{-q}$, where $d$ is lattice distance. A message is sent from a random source to a random target using a **decentralised** rule: every holder knows only its own contacts and the lattice position of the target, and passes the message to the contact closest to the target (greedy routing).
+      num:'4.6',kind:'Theorem',name:'Kleinberg’s navigability theorem',
+      statement:String.raw`Use a bounded $n\times n$ square of lattice points, with nonwrapping Manhattan distance $d$. Every vertex has directed links to its lattice neighbours and one independently chosen directed long-range contact, with endpoint law $d(u,v)^{-r}/Z_u$ for $v\ne u$, where $r\ge0$ is fixed and $Z_u=\sum_{v\ne u}d(u,v)^{-r}$. A long-range contact may also be a lattice neighbour.
 
-(a) For $q=2$ (the dimension of the lattice) the expected delivery time is $O((\log n)^2)$: polylogarithmic in the side length.
+Expected delivery time averages over the random network and independently uniform source and target. A decentralized rule knows the grid, target position and contacts revealed by all vertices already touched by the message, but not unrevealed long-range contacts.
 
-(b) For every other exponent no decentralised rule is polylogarithmic: the expected time is at least a power of $n$: $\Omega(n^{(2-q)/3})$ for $q<2$ and $\Omega(n^{(q-2)/(q-1)})$ for $q>2$.
+At $r=2$, greedy routing has expected time $O((\log n)^2)$. For each fixed $0\le r<2$, every decentralized rule has expected time $\Omega(n^{(2-r)/3})$. For each fixed $r>2$, the lower bound is $\Omega(n^{(r-2)/(r-1)})$. Constants may depend on $r$. Here $n$ is the **side length**, not the number $n^2$ of vertices. These asymptotic expectations do not say that the best finite-sample exponent is exactly two.`,
+      idea:String.raw`Greedy routing strictly decreases integer distance because a local neighbour is one step nearer. It never revisits a vertex, so deferred independent contacts remain fresh. At $r=2$, counting at most $4h$ nodes at distance $h$ gives $Z_u\le4\ln(6n)$.
 
-So short paths may exist without being **findable**: without a map, a message can be routed efficiently only when long links are spread evenly over all distance scales.`,
-      idea: String.raw`At $q=2$ the probability that the long link of $u$ has length in $[2^j,2^{j+1})$ is about the same for every $j$: a link falls in each "distance scale" equally often (the number of vertices at that scale grows like $d^2$ and each is chosen with weight $d^{-2}$). The greedy message needs to halve its distance to the target, and in each such phase it has a chance of order $1/\log n$ per step of finding a link that does it, so each phase costs $O(\log n)$ steps and there are $O(\log n)$ phases. For $q<2$ links are too long, so they are rarely close enough to the target to help in the final approach; for $q>2$ links are too short to cross the lattice quickly. In both cases the missing scales cost a polynomial factor.`,
-      caption: String.raw`A model run on real routes: **left**, mean greedy delivery time against $q$ for lattices of side 32, 128 and 512 (200 random messages per point); **middle**, delivery time against side length for the chosen $q$ on log–log axes, with the theorem's lower-bound slopes dashed; **right**, the share of long links in each distance scale $[2^j,2^{j+1})$: flat only at $q=2$. Finite lattices are small, so the best $q$ drifts towards 2 only slowly as the side grows.`,
-      scope: String.raw`Statement as given in course notes for the $n\times n$ lattice with one long-range contact per node; the lower bounds in terms of the side length are quoted from those notes and were not checked against Kleinberg's paper. The simulated lattice is a torus with Manhattan distance, for sizes up to 512×512; the optimum at finite size is below 2, and the theorem is asymptotic.`,
-      deps: ['soc-4.5'],
-      refs: ['E&K §20.3'],
-      tags: ['small world', 'navigation', 'decentralised search'],
-      credit: 'Jon Kleinberg, 2000',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Small-world_routing' },
-      verify: true,
-      viz(v) {
-        const qS = v.slider('exponent $q$', 0, 4, 2, { step: 0.05 });
-        const A = v.stage({ x: [0, 4], y: [2, 300], ylog: true, axes: 'box', gutter: true, height: 320, xlabel: 'exponent $q$', ylabel: 'mean delivery time', title: 'delivery time vs q', minWidth: 260, weight: 1 });
-        const B = v.stage({ x: [8, 512], y: [1, 400], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: 'side length $n$', ylabel: 'mean delivery time', title: 'scaling at the chosen q', minWidth: 260, weight: 1 });
-        const C = v.stage({ x: [-0.6, 9.6], y: [0, 0.6], axes: 'box', gutter: true, height: 320, xlabel: 'scale $j$: link length in $[2^j, 2^{j+1})$', ylabel: 'share of long links', title: 'long links by distance scale', minWidth: 260, weight: 1 });
-        const SIZES = [32, 128, 512], SC = ['green', 'accent', 'purple'], GRID = [];
-        for (let q = 0; q <= 4.001; q += 0.25) GRID.push(+q.toFixed(2));
-        let curves = null;
-        const mkCurves = () => (curves ??= SIZES.map((L) => GRID.map((q) => meanDelivery(L, q, 200, 5))));
-        let st = null;
-        v.render(() => {
-          const q = qS.value, cv = mkCurves();
-          cv.forEach((row, i) => { A.path(GRID.map((g, j) => [g, row[j]]), { color: SC[i], width: 2.2 }); A.dots(GRID.map((g, j) => [g, row[j]]), { r: 2.6, color: SC[i] }); });
-          A.vline(q, { color: 'gold', width: 1.5, dash: true }); A.vline(2, { color: 'muted', width: 1, dash: [3, 4] });
-          const sides = [8, 16, 32, 64, 128, 256, 512], T = sides.map((L) => meanDelivery(L, q, 200, 5));
-          B.path(sides.map((L, i) => [L, T[i]]), { color: 'gold', width: 2.4 }); B.dots(sides.map((L, i) => [L, T[i]]), { r: 3.8, color: 'gold' });
-          const e = q < 2 ? (2 - q) / 3 : q > 2 ? (q - 2) / (q - 1) : 0;
-          if (q !== 2) B.fn((x) => T[0] * Math.pow(x / 8, e), { color: 'red', width: 1.5, dash: [6, 4], domain: [8, 512] });
-          else B.fn((x) => T[0] * (Math.log2(x) / 3) ** 2, { color: 'green', width: 1.5, dash: [6, 4], domain: [8, 512] });
-          const sh = linkLengthShares(512, q);
-          sh.forEach((s, j) => { C.rect(j - 0.4, 0, j + 0.4, s, { fill: 'accent', fillAlpha: 0.65, stroke: false }); });
-          C.setView([-0.6, 9.6], [0, Math.max(0.2, ...sh) * 1.15]);
-          const slope = Math.log(T[6] / T[2]) / Math.log(512 / 32);
-          st = { q, T, e, slope, best: GRID[cv[2].indexOf(Math.min(...cv[2]))] };
+For a phase with $R<d(u,t)\le2R$, let $B$ be the target ball of radius $R$. Boundary phases also need a count: choose the direction with more room in each coordinate at $t$. The resulting quadrant contains a square of side $\lfloor\min(R,n-1)/2\rfloor+1$ inside $B$. Since $R<2(n-1)$, this gives $|B|\ge R^2/16$. Every vertex in $B$ is within $3R$ of $u$, so the next long contact enters $B$ with probability at least $a=1/[576\ln(6n)]$.
+
+Thus the phase tail is bounded by $(1-a)^{m-1}$. The tail-expectation identity (prob-2.2.13) and geometric sum give expected phase time at most $1/a$. Linearity of expectation (prob-1.6.1) sums the $O(\log n)$ phases; distance at most two takes at most two final steps. Independence of phase lengths is not required.
+
+For $r<2$, the normalizer is at least a constant times $n^{2-r}$. Put $\delta=(2-r)/3$. A final ball of radius $n^\delta$ has $O(n^{2\delta})$ vertices. The union bound (prob-1.1.1) makes the chance of discovering a link into it in $\lambda n^\delta$ trials small for sufficiently small fixed $\lambda$. Without such a link, the final local walk takes at least this order of steps, on a positive-probability event that source and target start far apart.
+
+For $r>2$, write $\varepsilon=r-2$. For an integer $m\ge1$, the correctly counted tail is
+$\Pr\{d(u,V)>m\}\le4\sum_{h>m}h^{1-r}$. Bounding the sum by its integral gives $4m^{2-r}/(r-2)$.
+Set $\gamma=1/(r-1)$, $\beta=(r-2)/(r-1)$, the integer threshold $m=\lceil n^\gamma\rceil$ and $\lambda=\min(\varepsilon,1)/32$. In the first $\lfloor\lambda n^\beta\rfloor$ trials, the union bound gives probability at most $4\lambda/\varepsilon\le1/8$ of seeing a jump longer than $m$. Otherwise, since $m\le2n^\gamma$, total travel is at most $2\lambda n^{\beta+\gamma}<n/4$. A positive fraction of source–target pairs start at least $n/4$ apart. These obstacles prove the polynomial lower bounds; a plotted finite mean is not their proof.`,
+      caption:String.raw`A fully specified authored 16×16 square matches the theorem's edge conventions. Every vertex's seeded contact is fixed before route queries. Choose source, target and a trace step; after delivery, later steps remain at the target. Left: all local links, the selected greedy route, and the current vertex's directed long contact. Centre: its entire distance trace. Right: the current vertex's finite-law probability masses from complete endpoint sums in dyadic distance bins. These bars need not be flat at $r=2$. The readout also counts all 65,280 distinct ordered pairs in this one graph, comparing greedy routes with omniscient directed BFS.`,
+      scope:String.raw`The theorem assumes ideal independent choices; this finite realization uses 32-bit seeded pseudorandom uniforms and binary64 probabilities. The 16×16 diagnostics do not estimate a success probability, certify an asymptotic exponent or fit a social network. Greedy always arrives because local links enforce progress, for every offered r. The all-pairs finite comparison conditions on this single graph and excludes source=target; the theorem's averaging includes independently uniform sources and targets. Ties use the smallest vertex label. Original source: Kleinberg's complete author paper, Theorems2–3 and §§2–3; the finite model and controls are authored here.`,
+      deps:['soc-2.2','prob-1.1.1','prob-1.6.1','prob-2.2.13'],see:['soc-4.5'],refs:['Kleinberg, The Small-World Phenomenon: An Algorithmic Perspective, author version, pp.4–12, Theorems2–3','Easley & Kleinberg, draft10 June2010, §§20.3–20.4 and20.7'],tags:['small world','navigation','decentralised search'],credit:'Jon Kleinberg, 2000; bounded graph diagnostics authored here.',links:{source:'https://www.cs.cornell.edu/home/kleinber/swn.pdf'},verify:true,
+      viz(v){
+        let seed=5,cache=null,info;v.shareState('navigation seed',{get:()=>seed,validate:swSeedValid,set:x=>{seed=x;cache=null;}});
+        const r=v.slider('long-link exponent r',0,4,2,{step:'any',fmt:x=>x.toPrecision(6)}),s=v.slider('source vertex',0,255,0,{int:true}),t=v.slider('target vertex',0,255,255,{int:true}),step=v.slider('trace step (stays after delivery)',0,30,0,{int:true});v.button('Inverse square',()=>r.set(2));v.button('Same source and target',()=>t.set(s.value));v.button('Resample',()=>{seed=(seed+1)>>>0;cache=null;});
+        const A=v.stage({x:[-1,16],y:[-1,16],equal:true,axes:false,height:350,minWidth:260,title:'16×16 bounded square; selected route'}),B=v.stage({x:[-1,31],y:[-2,33],axes:'box',gutter:true,height:310,minWidth:260,xlabel:'greedy hop',ylabel:'Manhattan distance to target',title:'complete selected trace'}),C=v.stage({x:[-.7,4.7],y:[-.12,1.2],axes:'box',gutter:true,height:310,minWidth:260,xticks:[[0,'1–<2'],[1,'2–<4'],[2,'4–<8'],[3,'8–<16'],[4,'16–<32']],xlabel:'long-contact distance bin',ylabel:'finite probability mass',title:'current vertex’s endpoint law'});
+        const xy=u=>[u%16,Math.floor(u/16)];
+        v.render(()=>{if(!cache||cache.r!==r.value||cache.seed!==seed){const g=navigationGraph(r.value,seed);cache={r:r.value,seed,g,summary:navigationSummary(g)};}const g=cache.g,route=navigationRoute(g,s.value,t.value),at=Math.min(step.value,route.hops),u=route.path[at],law=navigationLaw(r.value,u);
+          for(let vtx=0;vtx<256;vtx++){if(vtx%16<15)A.line(...xy(vtx),...xy(vtx+1),{color:'faint',width:.65});if(vtx<240)A.line(...xy(vtx),...xy(vtx+16),{color:'faint',width:.65});}A.path(route.path.map(xy),{color:'accent',width:2});A.arrow(...xy(u),...xy(g.contacts[u]),{color:'orange',width:1.5,head:6});A.dot(...xy(u),{r:7,hollow:true,ring:false,color:'gold',width:1.6});for(let vtx=0;vtx<256;vtx++)A.dot(...xy(vtx),{r:1.8,ring:false,color:'muted'});A.dot(...xy(s.value),{r:4,ring:false,color:'purple'});A.dot(...xy(t.value),{r:4,ring:false,color:'green'});
+          B.path(route.distances.map((d,j)=>[j,d]),{color:'accent',width:2});route.distances.forEach((d,j)=>B.dot(j,d,{r:2.5,ring:false,color:'accent'}));B.dot(at,route.distances[at],{r:4,ring:false,color:'gold'});law.bins.forEach((p,j)=>C.rect(j-.3,0,j+.3,p,{fill:'accent',fillAlpha:.65,stroke:false}));info={g,route,at,u,law,halving:navigationHalving(law,t.value),summary:cache.summary,seed};
         });
-        v.legend([['green', 'side 32'], ['accent', 'side 128'], ['purple', 'side 512'], ['gold', 'chosen $q$', { dot: true }], ['red', 'lower-bound slope (or $\\log^2n$ at $q=2$)', { dash: true }]]);
-        v.readout(() => {
-          if (!st) return '';
-          const { q, T, e, slope, best } = st;
-          return String.raw`$q=${v.fix(q, 2)}$: delivery time ${v.fix(T[0], 1)} (side 8) → ${v.fix(T[6], 1)} (side 512); measured log–log slope between sides 32 and 512: **${v.fix(slope, 2)}**; the theorem's lower-bound exponent: **${v.fix(e, 2)}**${q === 2 ? ' (none: polylogarithmic)' : ''}
-best exponent on the 512 × 512 lattice (grid step 0.25): $q=${best}$ — the optimum sits below 2 at these sizes and creeps towards 2 as $n$ grows`;
-        });
+        v.legend([['accent','greedy route / probability'],['orange','current long contact'],['purple','source',{dot:true}],['green','target',{dot:true}],['gold','current step',{dot:true}]]);
+        v.readout(()=>{const a=info,h=a.summary;return `Seed ${a.seed}; r=${r.value.toPrecision(12)}; 256 vertices, side length16. Source ${s.value}, target ${t.value}; ${a.route.hops} hops, initial lattice distance ${a.route.distances[0]}; shown step ${a.at} of requested ${step.value}. Current vertex ${a.u}, fixed directed long contact ${a.g.contacts[a.u]}; normalizer Z=${v.fix(a.law.Z,9)}, mass sum=${v.fix(a.law.bins.reduce((x,y)=>x+y,0),9)}. Probability its long contact halves target distance: ${a.halving===null?'not applicable (delivered)':v.fix(a.halving,9)}. All ${h.pairs} distinct ordered pairs: greedy mean ${v.fix(h.greedyMean,6)}, shortest directed BFS mean ${v.fix(h.shortestMean,6)}; greedy is strictly longer for ${h.strict} pairs. These are complete finite-realization diagnostics, not an asymptotic or sampled-success certificate.`;});
       },
     },
   ],
