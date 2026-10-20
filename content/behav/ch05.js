@@ -117,11 +117,11 @@ Thaler's 1981 **Table 2, form C, \$15 row** gives median later amounts of \$20 a
 
 A specific mixture also produces this hyperbola: if exponential rates $R$ have an **exponential distribution with mean $k$** (prob-1.2.4, density $k^{-1}e^{-r/k}$), then
 $$E[e^{-Rt}]=\int_0^\infty e^{-rt}\,k^{-1}e^{-r/k}\,dr=\frac1{1+kt}.$$
-An arbitrary distribution of rates produces a Laplace transform, which need not have this form.`,
+An arbitrary distribution of rates produces a Laplace transform, which need not have this form. To evaluate the rate mixture rigorously, fix $M<\infty$ and write $c=t+1/k>0$. The continuous integrand has antiderivative $-e^{-cr}/(kc)$, so the fundamental theorem of calculus (pma-6.21) gives $\int_0^M k^{-1}e^{-cr}\,dr=(1-e^{-cM})/(kc)$. Taking $M\to\infty$ evaluates the improper integral as $1/(kc)=1/(1+kt)$. Positivity of $k$ and $t\ge0$ ensure convergence, including $t=0$, where the value is one.`,
       caption: String.raw`Drag the **gold handle** vertically at one year, or change $k$, to compare discount functions with the same one-year value. The handle respects exactly the slider's $k\in[0.2,20]$ range. Toggle the left delay axis between linear and log scales. The right panel uses log delay/rate axes and plots **average** rates, rather than the instantaneous derivative rate. Green dots are the coherent form-C medians.
 
 **Fit k** searches 601 logarithmically spaced candidates in [0.2,20] and minimizes the sum of **squared log average-rate residuals**. It need not pass through all three points; the readout reports its actual objective and predictions.`,
-      deps: ['behav-5.1', 'prob-1.2.4'], refs: ['Thaler (1981), §§2–3 and Table 2 form C', 'Loewenstein & Prelec (1992), §III.1, pp. 579–581'], tags: ['discounting', 'hyperbolic'],
+      deps: ['behav-5.1', 'prob-1.2.4', 'pma-6.21'], refs: ['Thaler (1981), §§2–3 and Table 2 form C', 'Loewenstein & Prelec (1992), §III.1, pp. 579–581'], tags: ['discounting', 'hyperbolic'],
       credit: 'Simple form: Herrnstein, 1981, and Mazur, 1987 (as credited by Loewenstein–Prelec); Thaler data, 1981',
       links: { doi: 'https://doi.org/10.1016/0165-1765(81)90067-7', wikipedia: 'https://en.wikipedia.org/wiki/Hyperbolic_discounting' },
       verify: false,
