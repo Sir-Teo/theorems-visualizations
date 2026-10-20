@@ -332,7 +332,7 @@
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
@@ -1439,7 +1439,7 @@
     {
       "id": "algo-5.18-upper-bound-and-retry",
       "status": "closed",
-      "finding": "Concrete modp hashfamily need not attain displayed expectation2n\u22121; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
+      "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
       "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap.",
       "commits": [
         "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
@@ -1453,7 +1453,7 @@
       "id": "imaging-2.9-singular-energies-and-log-dose",
       "status": "closed",
       "owner": "ctrl_prereqs",
-      "finding": "Energydomains overlap40\u201380:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
+      "finding": "Energydomains overlap40–80:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
       "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent.",
       "candidate": "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
       "peer": "arch_source",
@@ -2114,15 +2114,69 @@
       "sourceClosure": "None; CIRC4.17original source remains byte-identical and open.",
       "bridgeReview": "No changed IDs are bridge steps.",
       "followup": "Three bounded consistency/port/diode statements and two existing raw row omissions independently repaired; no numerical functions/flags changed."
+    },
+    {
+      "collection": "popgen",
+      "commits": [
+        "35771b8239fb74cce147524a7e1f410ed7320305",
+        "090de9f8a298b7972ca64c1a248d37be568ae545",
+        "9890c6e6994913c82002040a441dc2327d70c058",
+        "bc90b274c0382ffde4b184acc62339b42cd92f53"
+      ],
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "producer": "arch_source",
+      "peer": "imaging_source",
+      "report": "docs/verification/popgen-independent-wrap-peer.md",
+      "followup": "Seventeen genuine additions and one removed analogy-only edge, net sixteen. Seven equivalent statement wraps; twelve existing raw row backfills. Full62 objects/functions/flags preserved.",
+      "status": "accepted",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "No affected bridge step."
+    },
+    {
+      "collection": "toc",
+      "commits": [
+        "27e280c4b611ed2191a63a203ddb6987ca9ef17d",
+        "96f0d03f4aa3d3f0f151108c4ae5d92a00860668"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 25,
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/toc-crossfield-prerequisite-peer.md",
+      "followup": "Eighteen genuine inputs; bounded permutation, fragment-boundary and initial partition qualifications, equivalent statement wraps and two existing same-field row backfills. Full51 objects/functions/flags preserved.",
+      "status": "accepted",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "No affected bridge step."
+    },
+    {
+      "collection": "geog",
+      "commits": [
+        "7bcb87d3efad2734933920d067dda3af050f0b55",
+        "295e92fbdf1c57868ce23399656c7d72e8f9ce6d",
+        "df2dfe35a131c3995800fb930b174dee7b7245ae",
+        "7c0fe370b686726a9bcf0ac64effdd44aab9cb5d",
+        "48b26f0d4aa4fb3a705603141ca93c34b4e05f04",
+        "5e19ba532c35d7a2b2ccf255ab9954ec262f8adb"
+      ],
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "producer": "imaging_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/geog-crossfield-prerequisite-peer.md",
+      "followup": "Sixteen genuine inputs; sphere equality and orthogonal-map qualifications, equivalent statement wraps including actual253px inner field, two existing raw row backfills. Full48 objects/functions/flags preserved.",
+      "status": "accepted",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "Existing map-distortion bridge reviewed; no edit required."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 542,
-    "publishedBelow25": 27,
+    "publishedShortfall": 492,
+    "publishedBelow25": 24,
     "collections": 64,
-    "wholeSyllabusBelow25": 22,
+    "wholeSyllabusBelow25": 19,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Twenty-one further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Twenty-four further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
@@ -2133,7 +2187,7 @@
       "owns": [
         "content/ling/**",
         "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
-        "Only BIGHIST3.1\u20133.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
+        "Only BIGHIST3.1–3.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",

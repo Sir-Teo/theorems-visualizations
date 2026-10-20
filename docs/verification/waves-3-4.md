@@ -993,3 +993,7 @@ Exact [68aa4e2checkpoint](checkpoint-68aa4e2.md) passes2,152default tests, all6U
 
 
 [CIRC's combined independent review](circ-prerequisites-independent-peer.md) accepts seventeen inputs, three bounded statement repairs and two raw row backfills. Live prerequisite shortfall542,27/64below25published,22whole syllabi below25. Sourcequeue5unchanged;4.17historical original remains open. This is later than68aa4e2.
+
+### POPGEN, TOC and GEOG accepted
+
+Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bounded statement qualifications, exact raw rows and actual narrow-theme wraps. Live prerequisite492/24/19; sourcequeue5 unchanged. Twenty-four further collections now meet25written inputs. Full checkpoint follows; Wave5 remains unstarted.
