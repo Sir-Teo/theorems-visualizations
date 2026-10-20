@@ -1,0 +1,62 @@
+{
+  "1.7": {
+    "idea": {
+      "before": "This is mass-action kinetics (pchem-7.4) for the reaction closed \u21c4 open, or equivalently the mean of the two-state Markov chain of neuro-1.6. The voltage dependence comes from charged parts of the protein moving in the membrane field. The ratio $\\alpha/\\beta$ is a Boltzmann factor $e^{q(V - V_{1/2})/kT}$ (thermo-6.1), which makes $x_\\infty(V)$ sigmoidal. Since the relaxation is exponential with a single time constant (ode-1.5), measuring $x_\\infty$ and $\\tau_x$ at each voltage under voltage clamp (neuro-1.5) determines $\\alpha_x(V) = x_\\infty/\\tau_x$ and $\\beta_x(V) = (1-x_\\infty)/\\tau_x$. Hodgkin and Huxley did exactly this for the gates $n$, $m$ and $h$ (neuro-2.1, neuro-2.2).\n\nDuring a fixed-voltage clamp the two rates are constants, so the gating equation has the integrating-factor form in ode-1.4: its damping coefficient is $\\alpha+\\beta>0$ and its forcing is alpha. Multiplying by $e^{(\\alpha+\\beta)t}$ and integrating gives the displayed relaxation toward $\\alpha/(\\alpha+\\beta)$. This also recovers the two rates from the equilibrium fraction and time constant. It is exact for the held-voltage rate equation, not for a changing-voltage trajectory with frozen coefficients.",
+      "after": "This is mass-action kinetics (pchem-7.4) for the reaction closed \u21c4 open, or equivalently the mean of the two-state Markov chain of neuro-1.6. The voltage dependence comes from charged parts of the protein moving in the membrane field. In a two-state equilibrium model with a single linearly voltage-dependent free-energy difference, the ratio $\\alpha/\\beta$ is a Boltzmann factor $e^{q(V - V_{1/2})/kT}$ (thermo-6.1), giving a logistic equilibrium fraction. General empirical HH rate fits need not have that exact ratio or logistic form. Since the relaxation is exponential with a single time constant (ode-1.5), measuring $x_\\infty$ and $\\tau_x$ at each voltage under voltage clamp (neuro-1.5) determines $\\alpha_x(V) = x_\\infty/\\tau_x$ and $\\beta_x(V) = (1-x_\\infty)/\\tau_x$. Hodgkin and Huxley did exactly this for the gates $n$, $m$ and $h$ (neuro-2.1, neuro-2.2).\n\nDuring a fixed-voltage clamp the two rates are constants, so the gating equation has the integrating-factor form in ode-1.4: its damping coefficient is $\\alpha+\\beta>0$ and its forcing is alpha. Multiplying by $e^{(\\alpha+\\beta)t}$ and integrating gives the displayed relaxation toward $\\alpha/(\\alpha+\\beta)$. This also recovers the two rates from the equilibrium fraction and time constant. It is exact for the held-voltage rate equation, not for a changing-voltage trajectory with frozen coefficients.",
+      "pairs": [
+        [
+          "The ratio $\\alpha/\\beta$ is a Boltzmann factor $e^{q(V - V_{1/2})/kT}$ (thermo-6.1), which makes $x_\\infty(V)$ sigmoidal.",
+          "In a two-state equilibrium model with a single linearly voltage-dependent free-energy difference, the ratio $\\alpha/\\beta$ is a Boltzmann factor $e^{q(V - V_{1/2})/kT}$ (thermo-6.1), giving a logistic equilibrium fraction. General empirical HH rate fits need not have that exact ratio or logistic form."
+        ]
+      ],
+      "file": "ch01-b.js"
+    }
+  },
+  "2.1": {
+    "statement": {
+      "before": "In the Hodgkin\u2013Huxley description the delayed-rectifier potassium conductance of the squid axon is $g_K(t) = \\bar g_K\\, n(t)^4$, where the gating variable obeys first-order kinetics $\\dot n = \\alpha_n(V)(1-n) - \\beta_n(V)\\,n$. After a voltage-clamp step from a hyperpolarized holding potential, where $n\\approx 0$, to a fixed $V$, the conductance rises as\n$$g_K(t) = g_{K\\infty}\\big(1 - e^{-t/\\tau_n}\\big)^4,\\qquad g_{K\\infty} = \\bar g_K\\, n_\\infty(V)^4,\\quad \\tau_n = \\frac{1}{\\alpha_n+\\beta_n},$$\nan S-shaped curve with a delay at onset, whereas it falls back after repolarization as $g_K \\propto e^{-4t/\\tau_n}$ at late times. The exponent 4 is the model's empirical choice for the squid axon; other preparations are fitted with other powers.",
+      "after": "In the Hodgkin\u2013Huxley description the delayed-rectifier potassium conductance of the squid axon is $g_K(t) = \\bar g_K\\, n(t)^4$, where the gating variable obeys first-order kinetics $\\dot n = \\alpha_n(V)(1-n) - \\beta_n(V)\\,n$. After a voltage-clamp step from a hyperpolarized holding potential, where $n\\approx 0$, to a fixed $V$, the conductance rises as\n$$g_K(t) = g_{K\\infty}\\big(1 - e^{-t/\\tau_n}\\big)^4,\\qquad g_{K\\infty} = \\bar g_K\\, n_\\infty(V)^4,\\quad \\tau_n = \\frac{1}{\\alpha_n+\\beta_n},$$\nan S-shaped curve with a delay at onset, After repolarization, n relaxes toward the new equilibrium fraction. If that target is zero, $g_K\\propto e^{-4t/\\tau_n}$; for a nonzero target, the conductance approaches $\\bar g_K n_\\infty^4$ with a generally leading $e^{-t/\\tau_n}$ correction instead. The exponent 4 is the model's empirical choice for the squid axon; other preparations are fitted with other powers.",
+      "pairs": [
+        [
+          "whereas it falls back after repolarization as $g_K \\propto e^{-4t/\\tau_n}$ at late times.",
+          "After repolarization, n relaxes toward the new equilibrium fraction. If that target is zero, $g_K\\propto e^{-4t/\\tau_n}$; for a nonzero target, the conductance approaches $\\bar g_K n_\\infty^4$ with a generally leading $e^{-t/\\tau_n}$ correction instead."
+        ]
+      ],
+      "file": "ch02.js"
+    }
+  },
+  "3.6": {
+    "idea": {
+      "before": "Instantaneous inward activation supplies positive feedback, while delayed outward potassium activation restores voltage. This is a model in its own right, not an exact reduction of Hodgkin\u2013Huxley or a parameter fit to a particular cell. At equilibrium $w=w_\\infty(V)$, so define $I_\\infty(V)=g_L(V-E_L)+g_{Ca}m_\\infty(V)(V-E_{Ca})+g_Kw_\\infty(V)(V-E_K)$. Its intersections with the chosen input locate equilibria. Stationary points of this curve locate folds; the full two-dimensional Jacobian is needed for stability and Hopf candidates. A fold alone does not prove a global return, nor does a Hopf candidate specify the stable global firing branch.\n\nFor the local equilibrium diagnostic, the Jacobian governs a linear perturbation system and ode-3.9 supplies its spectral test. Strictly negative real parts make every solution of that linear system decay; a positive real part gives a growing linear mode. In two dimensions this is equivalent to negative trace and positive determinant for strict linear asymptotic stability. Eigenvalues on the imaginary axis require further information, including Jordan structure for bounded linear motion and nonlinear nondegeneracy for a Hopf theorem. None of these local tests certifies a stable global firing cycle from a finite run.",
+      "after": "Instantaneous inward activation supplies positive feedback, while delayed outward potassium activation restores voltage. This is a model in its own right, not an exact reduction of Hodgkin\u2013Huxley or a parameter fit to a particular cell. At equilibrium $w=w_\\infty(V)$, so define $I_\\infty(V)=g_L(V-E_L)+g_{Ca}m_\\infty(V)(V-E_{Ca})+g_Kw_\\infty(V)(V-E_K)$. Its intersections with the chosen input locate equilibria. Stationary points of this curve give fold candidates; a generic equilibrium fold additionally needs a nonzero second derivative and a nonzero transverse eigenvalue; the full two-dimensional Jacobian is needed for stability and Hopf candidates. A fold alone does not prove a global return, nor does a Hopf candidate specify the stable global firing branch.\n\nFor the local equilibrium diagnostic, the Jacobian governs a linear perturbation system and ode-3.9 supplies its spectral test. Strictly negative real parts make every solution of that linear system decay; a positive real part gives a growing linear mode. In two dimensions this is equivalent to negative trace and positive determinant for strict linear asymptotic stability. Eigenvalues on the imaginary axis require further information, including Jordan structure for bounded linear motion and nonlinear nondegeneracy for a Hopf theorem. None of these local tests certifies a stable global firing cycle from a finite run.",
+      "pairs": [
+        [
+          "Stationary points of this curve locate folds;",
+          "Stationary points of this curve give fold candidates; a generic equilibrium fold additionally needs a nonzero second derivative and a nonzero transverse eigenvalue;"
+        ]
+      ],
+      "file": "ch03-b.js"
+    }
+  },
+  "4.4": {
+    "statement": {
+      "before": "In dimensionless variables $X=x/\\lambda$, $T=t/\\tau_m$ the passive cable equation is $\\partial_TV=\\partial_X^2V-V+s(X,T)$. On an infinite cable, a brief current that deposits a charge $Q$ at $X=0$ at $T=0$ ($s=\\kappa\\,\\delta(X)\\delta(T)$, with $\\kappa$ proportional to $Q$) produces\n$$V(X,T)=\\kappa\\,G(X,T),\\qquad G(X,T)=\\frac{1}{\\sqrt{4\\pi T}}\\exp\\!\\Big(-T-\\frac{X^2}{4T}\\Big)\\quad(T>0),$$\na Gaussian of variance $2T$ that spreads and, at the same time, shrinks by the factor $e^{-T}$ (its area is $e^{-T}$). At a distance $X$ the response peaks at $T^*(X)=\\tfrac14\\big(\\sqrt{1+4X^2}-1\\big)$, which grows with $X$, and the peak is lower the farther away. For any source $s$ the solution is the superposition $V=\\iint G(X-X',T-T')\\,s(X',T')\\,dX'dT'$.",
+      "after": "In dimensionless variables $X=x/\\lambda$, $T=t/\\tau_m$ the passive cable equation is $\\partial_TV=\\partial_X^2V-V+s(X,T)$. On an infinite cable, a brief current that deposits a charge $Q$ at $X=0$ at $T=0$ ($s=\\kappa\\,\\delta(X)\\delta(T)$, with $\\kappa$ proportional to $Q$) produces\n$$V(X,T)=\\kappa\\,G(X,T),\\qquad G(X,T)=\\frac{1}{\\sqrt{4\\pi T}}\\exp\\!\\Big(-T-\\frac{X^2}{4T}\\Big)\\quad(T>0),$$\na Gaussian of variance $2T$ that spreads and, at the same time, shrinks by the factor $e^{-T}$ (its area is $e^{-T}$). For $X\\ne0$ the response has a unique positive-time peak at $T^*(X)=\\tfrac14\\big(\\sqrt{1+4X^2}-1\\big)$, which grows with $X$, and the peak is lower the farther away. At $X=0$ the ideal point-charge kernel diverges as $T\\downarrow0$; the formula gives a singular boundary limit, not a finite attained maximum. For zero initial voltage and a smooth bounded source $s$ with bounded continuous spatial derivatives through order two on finite time intervals, the solution is the causal superposition $V=\\iint G(X-X',T-T')\\,s(X',T')\\,dX'dT'$, over $X'\\in\\R$ and $0<T'<T$.",
+      "pairs": [
+        [
+          "At a distance $X$ the response peaks at",
+          "For $X\\ne0$ the response has a unique positive-time peak at"
+        ],
+        [
+          "and the peak is lower the farther away. For any source $s$ the solution is the superposition",
+          "and the peak is lower the farther away. At $X=0$ the ideal point-charge kernel diverges as $T\\downarrow0$; the formula gives a singular boundary limit, not a finite attained maximum. For zero initial voltage and a smooth bounded source $s$ with bounded continuous spatial derivatives through order two on finite time intervals, the solution is the causal superposition"
+        ],
+        [
+          "$V=\\iint G(X-X',T-T')\\,s(X',T')\\,dX'dT'$.",
+          "$V=\\iint G(X-X',T-T')\\,s(X',T')\\,dX'dT'$, over $X'\\in\\R$ and $0<T'<T$."
+        ]
+      ],
+      "file": "ch04.js"
+    }
+  }
+}
