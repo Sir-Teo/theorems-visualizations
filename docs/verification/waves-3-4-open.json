@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 61,
+  "remainingFlags": 59,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -25,7 +25,7 @@
     "art": 9,
     "arch": 9,
     "ling": 8,
-    "tech": 5,
+    "tech": 3,
     "bighist": 18
   },
   "queue": [
@@ -590,44 +590,6 @@
       "refs": [],
       "links": {
         "doi": "https://doi.org/10.1002/j.1538-7305.1951.tb01366.x"
-      }
-    },
-    {
-      "id": "tech-5.9",
-      "file": "content/tech/ch05-b.js",
-      "name": "The longitude problem",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mokyr ch. 4",
-        "Sobel, Longitude (1995)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Longitude_Act"
-      }
-    },
-    {
-      "id": "tech-5.10",
-      "file": "content/tech/ch05-b.js",
-      "name": "Harrison’s marine chronometer",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "statement",
-          "text": "A **marine chronometer** is a clock whose rate is so steady against changes of temperature and ship motion that, once its rate is measured in port, the time it carries can be trusted for weeks. Harrison's H4 (1759) was a large pocket-watch in form with a balance spring (5.8), a bimetallic compensation for temperature, a remontoire to keep the force on the escapement constant, and jewelled pallets. To earn the top prize of the Longitude Act (5.9) it had to be right within about 2 minutes of time at the end of a six-week voyage, i.e. to a few seconds a day.\n\nWhat the sources support: H4 was carried to Jamaica from November 1761, and sources give a loss of about 5 seconds over 81 days (so, at the time of the landfall, an error of about $1\\tfrac14'$ of longitude); this figure is reported but not independently verified, and one skeptical historian doubts it. The 1764 voyage to Barbados gave a second trial. Harrison's later watch designs were copied by Larcum Kendall (K1), and the marine chronometers of Arnold and Earnshaw replaced his design from about 1780.\n\nScope of the picture: the three clock types have **assumed**, round stabilities (the daily random rate error, the temperature coefficient and the effect of ship motion) chosen to illustrate the argument and are not measurements of any named clock; the tropical warming is a straight ramp."
-        }
-      ],
-      "refs": [
-        "Mokyr ch. 4",
-        "Cardwell",
-        "Sobel, Longitude (1995)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Marine_chronometer"
       }
     },
     {
@@ -1762,7 +1724,9 @@
       "tech-5.8",
       "game-3.9",
       "ling-4.9",
-      "ling-4.10"
+      "ling-4.10",
+      "tech-5.9",
+      "tech-5.10"
     ]
   },
   "additionalFollowups": [
@@ -6686,6 +6650,16 @@
       "id": "ling-4.10",
       "status": "resolved",
       "note": "2026-10-20: worker_three exact-commit primary-source/pixels, independent corpus and arithmetic, native-state and output-pixel review; docs/verification/ling-language-models-followup.md."
+    },
+    {
+      "id": "tech-5.9",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent signed/discrete models and fresh native-state review including reproduced then repaired raw-coordinate finding; docs/verification/tech-longitude-followup.md."
+    },
+    {
+      "id": "tech-5.10",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent signed/discrete models and fresh native-state review including reproduced then repaired raw-coordinate finding; docs/verification/tech-longitude-followup.md."
     }
   ]
 }

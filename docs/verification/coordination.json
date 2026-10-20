@@ -62,7 +62,7 @@
       "completedCollections": [
         "psych"
       ],
-      "current": "Navigation5.9/5.10 candidate735e0f5 awaits raw-state fix; repair corresponding tech4.8 callbacks, then finish5.2/5.3/5.11. Blotto peer accepted."
+      "current": "Navigation5.9/5.10 accepted and4.8state regression closed; finish technology5.11/5.2/5.3."
     },
     {
       "agent": "worker_three",
@@ -719,6 +719,21 @@
       "commits": [
         "2c0092b"
       ]
+    },
+    {
+      "ids": [
+        "tech-5.9",
+        "tech-5.10"
+      ],
+      "peer": "coordinator exact-commit original-source/pixels, independent signed/discrete models and fresh native-state review including reproduced then repaired raw-coordinate finding",
+      "reports": [
+        "docs/verification/tech-longitude-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "4e20348",
+        "61dc46b"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -731,7 +746,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 61,
+  "currentPendingSourceReviews": 59,
   "latestCheckpoint": {
     "acceptedContentCommit": "f9a9406",
     "report": "docs/verification/checkpoint-f9a9406.md",
@@ -774,13 +789,20 @@
       "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },
-  "openStateFindings": [
+  "openStateFindings": [],
+  "stateFollowups": [
     {
-      "id": "tech-4.8",
-      "status": "open",
-      "finding": "Endpoint onDrag callbacks can overwrite valid changed saved height controls during handle restoration; independently confirmed callback ordering matches navigation reproduction. Worker_two repairing separately; prior source audit remains accepted, native-state gate stays open.",
-      "relatedCandidate": "735e0f5 navigation peer reproduction",
-      "evidence": "/tmp/atlas-coordinator/tech-longitude-peer-raw.log"
+      "ids": [
+        "tech-4.8",
+        "tech-5.9"
+      ],
+      "status": "closed",
+      "commits": [
+        "61dc46b",
+        "44b9ffd"
+      ],
+      "peer": "coordinator exactd58dcc0 fresh source/model/native review and control-only discrepancy regressions",
+      "report": "docs/verification/tech-longitude-followup.md"
     }
   ]
 }

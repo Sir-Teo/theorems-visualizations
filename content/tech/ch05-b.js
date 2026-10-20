@@ -60,7 +60,7 @@ The nonlinear trajectory is evaluated from the same energy-conserving elliptic s
 
     // ------------------------------------------------------------------ 5.9
     {
-      num:'5.9',kind:'Concept',name:'The longitude problem',verify:true,
+      num:'5.9',kind:'Concept',name:'The longitude problem',verify:false,
       credit:'Longitude Act, 1714, actual contemporary print in Cambridge RGO14/1; ideal time-error model authored here',
       statement:String.raw`At local mean noon, comparing local mean solar time with an accurate clock carrying reference-meridian mean time determines longitude: 24 hours correspond to 360°. With east longitude positive, a clock that reads ε seconds too fast makes the inferred longitude ε/240 degrees too far west. This assumes the equation of time and observational errors have been removed; apparent solar noon is not itself mean noon.
 
@@ -85,7 +85,7 @@ The half-degree benchmark is 120 seconds. For an explicitly chosen 42-day illust
 
     // ------------------------------------------------------------------ 5.10
     {
-      num:'5.10',kind:'Invention',name:'Harrison’s marine chronometer',verify:true,
+      num:'5.10',kind:'Invention',name:'Harrison’s marine chronometer',verify:false,
       credit:'John Harrison, H4 longitude watch completed 1759; Royal Museums Greenwich ZAA0037. Authored uncalibrated voyage comparison',
       statement:String.raw`Royal Museums Greenwich identifies H4, ZAA0037, as Harrison's longitude watch, completed in 1759 after work began in 1755. Its owner record describes a stable, high-frequency balance. The actual watch and its inscription provide historical context; they do not supply numerical noise or temperature coefficients for this simulation.
 
