@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 148,
+  "remainingFlags": 146,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "soc": 14,
     "polsci": 9,
     "music": 21,
-    "art": 11,
+    "art": 9,
     "arch": 9,
     "ling": 10,
     "tech": 23,
@@ -1394,36 +1394,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/CIE_1931_color_space"
-      }
-    },
-    {
-      "id": "art-4.1",
-      "file": "content/art/ch04.js",
-      "name": "Cone fundamentals: L, M and S",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Fairchild ch. 1"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/LMS_color_space"
-      }
-    },
-    {
-      "id": "art-4.2",
-      "file": "content/art/ch04.js",
-      "name": "Trichromacy (Young\u2013Helmholtz)",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Fairchild ch. 1"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Trichromacy"
       }
     },
     {
@@ -3123,7 +3093,9 @@
       "music-7.1",
       "music-7.2",
       "arch-4.1",
-      "arch-4.2"
+      "arch-4.2",
+      "art-4.1",
+      "art-4.2"
     ]
   },
   "additionalFollowups": [
@@ -7518,6 +7490,18 @@
       "status": "resolved",
       "report": "docs/verification/arch-vault-followup.md",
       "note": "Actual source discussion; 24-block own weights and integrated web loads, one prescribed plane thrust candidate; independent7826-state/195650-joint checks and continuous-depth nonsingularity bounds; root full native/state/static pass with no3D or collapse inference."
+    },
+    {
+      "id": "art-4.1",
+      "status": "resolved",
+      "report": "docs/verification/art-cones-trichromacy-followup.md",
+      "note": "Actual official CIE2006 energy table/metadata and original cone-source discussion read; exact source rows and independent analytic integration; five math groups,12fullnative/12state/6zero groups and static2/0/0 pass; corrected320pxformula and exact browser serialization oracle."
+    },
+    {
+      "id": "art-4.2",
+      "status": "resolved",
+      "report": "docs/verification/art-cones-trichromacy-followup.md",
+      "note": "One consistent full-rank primary-response matrix, actual signed-primary source convention and basis prerequisite; independently checked projections/physical-side identities/range proof, declared XYZ_F displayproxy;12fullnative/12state groups plus source/math/static and exact neighbor guards pass."
     }
   ]
 }

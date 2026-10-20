@@ -1,4 +1,5 @@
 // Visual Art & Color — Chapter 4: Trichromacy and colorimetry (items 4.1–4.8; 4.9–4.16 are in ch04-b.js)
+import { CONE_CURVES, CONE_AMOUNT_MAX, coneStimulus, coneLeastSquares, coneMatchTarget, coneMatch, coneDisplayPair } from './source-audit-cones.js';
 import { cmf, cmfT, specRGB, rgbOf, spdXYZ, xyOf, xyz, planck, gauss, sigm, drawChromaticity, LOCUS, inLocus, dominant, specBars, SRGB, coneFund, conePeaks, coneResp, toLMS, fromLMS, primSet, CIERGB, EW, adaptXYZ, mv3, inv3, metamerNull } from './ch04.shared.js';
 
 const CONE_COL = ['red', 'green', 'accent'], CONE_NAME = ['L', 'M', 'S'];
@@ -21,108 +22,82 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.1
     {
-      num: '4.1',
-      kind: 'Concept',
-      name: 'Cone fundamentals: L, M and S',
-      credit: 'Stockman & Sharpe, 2000 (standard fundamentals); here the Hunt–Pointer–Estévez matrix applied to the CIE 1931 fit',
-      statement: String.raw`Under daylight the retina has three kinds of cone, with long-, medium- and short-wavelength sensitivity curves $\bar l(\lambda),\bar m(\lambda),\bar s(\lambda)$ (the cone fundamentals). A light with spectrum $S(\lambda)$ excites them by
-$$q_L=\int S\,\bar l\,d\lambda,\qquad q_M=\int S\,\bar m\,d\lambda,\qquad q_S=\int S\,\bar s\,d\lambda ,$$
-and these three numbers are everything the cones report about the light. The $L$ and $M$ curves overlap heavily; the $S$ curve peaks far to the blue and is much less sensitive.`,
-      idea: String.raw`Each cone pigment absorbs photons with a wavelength-dependent probability and then outputs a single number, the rate of absorptions, whatever the wavelength that caused it (the principle of univariance). So a cone cannot tell a dim light at its best wavelength from a bright light at a worse one, and a spectrum is reduced to three integrals against fixed curves (the dot product of $S$ with each fundamental). Everything in the rest of the chapter is linear algebra on those three numbers.`,
-      caption: String.raw`The coloured curves are the three cone fundamentals (peak-normalised); the gold curve is the light. Choose the light and drag its centre and bandwidth. The shaded area is the product $S\cdot\bar c$ of the light with the cone you select, whose integral is the response in the bar chart (relative to an equal-energy light, which reads 1, 1, 1). Notice that a very narrow band excites the $L$ and $M$ cones in a ratio that depends only on its wavelength, which is how the brain can read hue from a ratio.`,
-      deps: ['art-3.2'],
-      refs: ['Fairchild ch. 1'],
-      tags: ['cones', 'vision', 'spectrum'],
-      scope: String.raw`These are not the measured Stockman–Sharpe fundamentals: they are the CIE 1931 colour-matching functions (the analytic fit of Wyman, Sloan & Shirley) mapped to cone space by the Hunt–Pointer–Estévez matrix, which is a common textbook approximation. Its $S$ curve is too broad and the $L$ curve peaks at a different wavelength from the modern fundamentals. Values hold for the 2° foveal field in photopic light.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/LMS_color_space' },
-      verify: true,
-      viz(v) {
-        const src = v.select('light', [{ value: 'bump', label: 'broad band' }, { value: 'mono', label: 'narrow band' }, { value: 'eq', label: 'equal energy' }, { value: 'tung', label: 'incandescent' }], 'bump');
-        const lam = v.slider('centre wavelength (nm)', 400, 700, 540, { step: 1 });
-        const wid = v.slider('bandwidth (FWHM, nm)', 20, 160, 80, { step: 1 });
-        const pick = v.select('show the product with the', [{ value: 0, label: 'L cone' }, { value: 1, label: 'M cone' }, { value: 2, label: 'S cone' }], 1);
-        const A = v.stage({ x: [380, 780], y: [0, 1.3], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'relative', height: 330, weight: 1.5, title: 'cone fundamentals, the light, and their product' });
-        const B = v.stage({ x: [0, 4], y: [0, 1.6], axes: false, height: 330, weight: 0.8, minWidth: 240, title: 'cone responses' });
-        const fOf = () => {
-          if (src.value === 'eq') return () => 1;
-          if (src.value === 'tung') return (l) => planck(l, 2856) / planck(780, 2856);
-          return (l) => gauss(l, lam.value, src.value === 'mono' ? 8 : wid.value);
-        };
-        const eq = coneResp(() => 1);
-        lam.el.hidden = wid.el.hidden = false;
-        let resp = [0, 0, 0];
-        v.render(() => {
-          lam.el.hidden = src.value === 'eq' || src.value === 'tung'; wid.el.hidden = src.value !== 'bump';
-          const f = fOf(), k = pick.value;
-          A.fn((l) => f(l) * cf(l)[k], { color: CONE_COL[k], fill: CONE_COL[k], fillAlpha: 0.3, width: 1, domain: [380, 780] });
-          for (let i = 0; i < 3; i++) A.fn((l) => cf(l)[i], { color: CONE_COL[i], width: i === k ? 2.6 : 1.4, alpha: i === k ? 1 : 0.8, domain: [380, 780] });
-          A.fn(f, { color: 'gold', width: 2, domain: [380, 780] });
-          resp = coneResp(f).map((u, i) => u / eq[i]);
-          const top = Math.max(1.2, ...resp) * 1.1; B.setView([0, 4], [-0.12 * top, top]);
-          resp.forEach((r, i) => {
-            B.rect(0.3 + i * 1.2, 0, 1.3 + i * 1.2, r, { fill: CONE_COL[i], fillAlpha: 0.75, stroke: false });
-            B.text(CONE_NAME[i], 0.8 + i * 1.2, -0.02 * top, { size: 13, color: 'ink', align: 'center', baseline: 'top' });
-            B.text(v.fix(r, 2), 0.8 + i * 1.2, r, { size: 11.5, color: 'ink', align: 'center', baseline: 'bottom', dy: -3 });
-          });
-          B.hline(1, { color: 'muted', dash: [4, 4], width: 1 });
+      num:'4.1',kind:'Concept',name:'Cone fundamentals: L, M and S',
+      statement:String.raw`Photopic trichromatic colour matching can be modelled by three relative cone signals. Here $\bar l,\bar m,\bar s$ are the **CIE 2006 2° energy-based cone fundamentals**: standard-observer corneal sensitivities, including the effects of ocular filtering. For spectral power density $S(\lambda)$ in consistent energy units,
+$$q_i=\int S(\lambda)\,\bar c_i(\lambda)\,d\lambda.$$
+Here $i=L,M,S$.
+A cone obeys univariance: its response depends on absorption rate rather than a separate wavelength label. These three relative signals are not a complete account of spatial, temporal or adapted colour appearance.`,
+      idea:String.raw`Multiplying the spectrum by a sensitivity curve weights the wavelengths that contribute to that cone signal; integration adds their contributions. Scaling the spectrum scales every signal. A single signal cannot distinguish an intensity change from a wavelength change that gives the same response. The curves overlap, so ratios can carry information under restricted stimulus assumptions, but $L/M$ alone does not identify an arbitrary spectrum or its perceived hue.
+
+The numerical source tabulates energy-based sensitivities separately normalized for the three classes; their heights do not measure relative cone counts or absolute gains. We linearly interpolate the published 5 nm table and integrate numerically. Bars divide each $q_i$ by that cone’s response to unit, equal-energy spectral density over the table range, so that reference gives $(1,1,1)$. The spectrum concept is art-3.2.`,
+      caption:String.raw`Choose an authored spectrum, its intensity, and the cone whose product is shaded. Broad and narrow bands are Gaussian shapes; narrow means 8 nm FWHM, not a delta function. The gold spectrum and shaded product use the same relative spectral-density scale. Compare the actual integral bars, including zero intensity and the equal-energy reference. The black-body option is an authored 2856 K Planck spectrum, not a measured lamp.`,
+      deps:['art-3.2'],
+      refs:['CIE 170-1:2006 Table 6.7, official energy-based 2° dataset/metadata, DOI 10.25039/CIE.DS.tijidesg','Stockman & Sharpe (2000), §§1.1–1.2; Stockman & Rider (2023), §§1/1.1,2.3,6–7'],
+      tags:['cones','vision','spectrum'],
+      scope:String.raw`Standard-observer photopic, centrally viewed 2° matching conditions; individual observers vary. The CIE table is a standardized estimate, not three raw single-cone recordings. Its L/M columns cover 390–830 nm; its S column ends at 615 nm. Missing S values are zero-extended as specified by the dataset convention, not asserted to be physiological zeros. Spectra are restricted to this numerical band; FWHM describes the Gaussian before that band limit. The published 2000 paper’s own Table 2 is quantal; it is not the energy table used here. No display colour or subjective hue is inferred from these bars.`,
+      links:{source:'https://cie.co.at/datatable/cie-2006-lms-cone-fundamentals-2-field-size-terms-energy',account:'https://doi.org/10.1002/col.22879'},verify: false,
+      viz(v){
+        const mode=v.select('authored spectrum',[{value:'bump',label:'broad Gaussian'},{value:'mono',label:'8 nm Gaussian'},{value:'eq',label:'equal energy'},{value:'tung',label:'2856 K black body'}],'bump');
+        const center=v.slider('Gaussian centre (nm)',400,700,540,{int:true}),width=v.slider('Gaussian FWHM (nm)',20,160,80,{int:true}),intensity=v.slider('spectral-density multiplier',0,2,1,{step:'any',fmt:x=>String(+x.toFixed(6))});
+        const pick=v.select('product with',[{value:0,label:'L cone'},{value:1,label:'M cone'},{value:2,label:'S cone'}],1);
+        const A=v.stage({x:[378,842],y:[-.12,1.14],axes:'box',gutter:true,height:340,minWidth:300,weight:1.4,xlabel:'wavelength (nm)',ylabel:'relative sensitivity / density',title:'CIE table, authored spectrum and product'});
+        const B=v.stage({x:[-.2,3.2],y:[-.15,1.2],axes:false,height:340,minWidth:260,weight:.85,title:'signals / equal-energy reference'});
+        let info;
+        v.render(()=>{
+          const p=coneStimulus(mode.value,center.value,width.value,intensity.value);info=p;
+          center.el.hidden=!['bump','mono'].includes(mode.value);width.el.hidden=mode.value!=='bump';
+          const top=Math.max(1,intensity.value);A.setView([378,842],[-.12*top,1.14*top]);
+          A.path(p.products[pick.value],{color:CONE_COL[pick.value],fill:CONE_COL[pick.value],fillAlpha:.22,width:1});
+          CONE_CURVES.forEach((points,k)=>A.path(points,{color:CONE_COL[k],width:k===pick.value?2.5:1.4,alpha:k===pick.value?1:.7}));
+          A.path(p.light,{color:'gold',width:2});
+          const bt=Math.max(1,...p.relative)*1.25;B.setView([-.2,3.2],[-.2*bt,bt]);
+          B.line(0,1,3,1,{color:'muted',width:1,dash:true});
+          p.relative.forEach((q,k)=>{B.rect(k+.15,0,k+.85,q,{fill:CONE_COL[k],fillAlpha:.7,stroke:false});B.text(CONE_NAME[k],k+.5,-.06*bt,{align:'center',baseline:'top',size:13});B.text(v.fix(q,4),k+.5,q+.025*bt,{align:'center',baseline:'bottom',size:11.5});});
         });
-        v.legend([['red', 'L'], ['green', 'M'], ['accent', 'S'], ['gold', 'light $S(\\lambda)$']]);
-        v.readout(() => `$(L,M,S)$ relative to equal energy: $(${fmt3(v, resp)})$ · peaks of the model fundamentals: $L$ ${conePeaks[0]} nm, $M$ ${conePeaks[1]} nm, $S$ ${conePeaks[2]} nm\nthe whole spectrum is replaced by these three numbers${resp[0] / resp[1] > 0 ? ` (ratio $L/M=${v.fix(resp[0] / resp[1], 2)}$)` : ''}`);
+        v.legend([['red','L sensitivity'],['green','M sensitivity'],['accent','S sensitivity'],['gold','authored spectrum']]);
+        v.readout(()=>`Relative signals $(L,M,S)=(${info.relative.map(x=>v.fix(x,6)).join(', ')})$. ${info.ratio===null?'The computed L/M ratio is undefined (zero computed M signal).':`Relative $L/M=${v.fix(info.ratio,6)}$; this is not a general hue estimate.`} Source sample maxima: L 570 nm, M 545 nm, S 445 nm (5 nm samples, not exact continuous peaks). Integrals use Simpson quadrature of the interpolated source; S ends at 615 nm.`);
       },
     },
     // ------------------------------------------------------------------ 4.2
     {
-      num: '4.2',
-      kind: 'Principle',
-      name: 'Trichromacy (Young–Helmholtz)',
-      credit: 'Thomas Young, 1802 (hypothesis); developed by Helmholtz and Maxwell in the 1850s',
-      verify: true,
-      statement: String.raw`For a normal observer at photopic levels, any light can be matched in colour by a mixture of three fixed lights (primaries) in suitable amounts, provided that an amount may be negative, meaning that the primary is added to the light being matched. Three primaries suffice, and two never do: the set of colours is three-dimensional, and the primaries must be linearly independent (none matched by a mixture of the other two).`,
-      idea: String.raw`Because the eye keeps only the three cone responses (art-4.1), two lights match exactly when their $(L,M,S)$ triples agree. A mixture of primaries has response $a_1\mathbf p_1+a_2\mathbf p_2+a_3\mathbf p_3$ where $\mathbf p_i$ is the cone-response triple of primary $i$, so matching a test with response $\mathbf t$ is the linear system $P\mathbf a=\mathbf t$. It has a unique solution for independent primaries; with only two primaries the system has more equations than unknowns and fails except on a plane of tests.`,
-      caption: String.raw`A split field: the test light on the left (a narrow band of the chosen wavelength, with optional white added) and the primaries 700, 546.1 and 435.8 nm on the right. Adjust the three amounts until the halves agree, or press Match. With three primaries you can always get zero residual (sometimes with a negative amount: the field then shows the primary moved to the left, onto the test); reduce the number of primaries to two or one and a good match is no longer possible.`,
-      deps: ['art-4.1'],
-      refs: ['Fairchild ch. 1'],
-      tags: ['trichromacy', 'colour matching'],
-      scope: String.raw`Holds for a normal trichromat in a small foveal field at fixed adaptation. The matches are computed from the CIE 1931 fit, not measured. The shown colours are mapped to sRGB, which cannot display saturated lights; they are desaturated for display, but the residual is computed on the true values.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Trichromacy' },
-      viz(v) {
-        const lt = v.slider('test wavelength (nm)', 420, 680, 580, { step: 1 });
-        const wh = v.slider('white added to the test', 0, 0.9, 0, { step: 0.01 });
-        const nP = v.select('number of primaries', [{ value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' }], 3);
-        const names = ['green 546.1', 'red 700', 'blue 435.8'], order = [1, 0, 2];
-        const am = [0, 1, 2].map((i) => v.slider(`amount of ${names[i]} nm`, -3, 3, 0.5, { step: 0.01 }));
-        const S = EW[0];
-        const test = () => { const c = cmf(lt.value), s = (S) / (c[0] + c[1] + c[2]); return [0, 1, 2].map((k) => (1 - wh.value) * c[k] * s + wh.value * EW[k] / 3); };
-        const pr = (i) => CIERGB.prim(order[i]);
-        const solve = () => {
-          const n = nP.value, t = test(), A = [0, 1, 2].map((r) => Array.from({ length: n }, (_, j) => pr(j)[r]));
-          const a = v.M.lstsq(A, t); am.forEach((s, j) => s.set(j < n ? Math.max(-3, Math.min(3, a[j])) : 0));
-        };
-        v.button('Match', solve);
-        solve();
-        const F = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 190, weight: 1.2, title: 'the split field: test (left) and mixture of primaries (right)' });
-        const Bst = v.stage({ x: [0, 4], y: [-3.2, 3.2], axes: false, height: 190, weight: 0.8, minWidth: 240, title: 'amounts of the primaries' });
-        let info = {};
-        v.render(() => {
-          const n = nP.value;
-          am.forEach((s, j) => { s.el.hidden = j >= n; });
-          const t = test(); let L = t.slice(), R = [0, 0, 0];
-          for (let j = 0; j < n; j++) { const a = am[j].value, p = pr(j); for (let k = 0; k < 3; k++) { if (a >= 0) R[k] += a * p[k]; else L[k] += -a * p[k]; } }
-          const sc = 0.55 / (((L[1] + R[1]) / 2) || 1);
-          F.rect(0, 0, 1, 1, { fill: rgbOf(L.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          F.rect(1, 0, 2, 1, { fill: rgbOf(R.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          F.line(1, 0, 1, 1, { color: 'panel', width: 1 });
-          const lt3 = toLMS(L), rt3 = toLMS(R), d = Math.hypot(lt3[0] - rt3[0], lt3[1] - rt3[1], lt3[2] - rt3[2]), tn = Math.hypot(...toLMS(t));
-          [0, 1, 2].forEach((j) => {
-            const a = j < n ? am[j].value : 0, col = ['green', 'red', 'accent'][j];
-            Bst.rect(0.3 + j * 1.2, 0, 1.3 + j * 1.2, a, { fill: col, fillAlpha: 0.75, stroke: false });
-            Bst.text(names[j].split(' ')[0], 0.8 + j * 1.2, 0, { size: 11.5, color: 'muted', align: 'center', baseline: a >= 0 ? 'top' : 'bottom', dy: a >= 0 ? 4 : -4 });
-          });
-          Bst.hline(0, { color: 'ink', width: 1 });
-          info = { rel: d / tn, neg: am.slice(0, n).some((s) => s.value < -1e-6) };
+      num:'4.2',kind:'Principle',name:'Trichromacy and independent primaries',
+      statement:String.raw`For symmetric, photopic colour matches at fixed viewing conditions, the linear three-cone model represents a uniform light by a triple $\mathbf t=(L,M,S)$. Let the response triples of three fixed primary lights be independent columns of $P$. Then
+$$P\mathbf a=\mathbf t$$
+has one real solution for every target triple. A negative amount is implemented by adding that primary to the **test** side; positive amounts go to the comparison side. Three independent primaries therefore suffice within this model when signed matching is allowed.
+
+One or two primaries span only a line or plane and cannot match arbitrary three-dimensional targets. They **can** match targets in that span, including a primary itself. A positive-only mixture of three real primaries has a restricted gamut.`,
+      idea:String.raw`Each column is obtained from the same cone fundamentals as art-4.1. Linearity adds the primary responses. The basis criterion (ladr-2.28) makes representation both possible and unique for three independent columns; it does not make two columns fail for every individual target.
+
+Here the authored monochromatic primaries are 540, 610 and 450 nm, each with one unit of integrated radiant power. The target is a unit-power spectral line at the selected wavelength mixed with a unit-power equal-energy spectrum: $\mathbf t=(1-w)\mathbf c(\lambda)+w\mathbf e$, where $\mathbf e$ is the equal-energy integral divided by 440 nm. For fewer primaries, the solve button finds the unconstrained least-squares projection in these LMS coordinates. This residual is a numerical model distance, not a perceptual colour-difference threshold.`,
+      caption:String.raw`Adjust the signed amounts or solve for the selected primaries. “Test first primary” supplies a known match even with one primary; “test blue primary” supplies a counterexample when blue is omitted. The LMS bars compare the two physical sides after negative amounts have moved to the test. The split-field patches are display proxies; similar screen colours do not certify equal responses. Every computed solution for the offered target family fits the displayed amount bounds without clipping.`,
+      deps:['art-4.1','ladr-2.28'],
+      refs:['Stockman & Sharpe (2000), §1.2/Eqs 1–3','Stockman & Rider (2023), complete §§6–7/Eqs 11–14; CIE 2006 2° energy dataset'],
+      tags:['trichromacy','colour matching'],
+      scope:String.raw`Authored standard-observer calculation, not experimental responses or a calibrated on-screen matching task. This uses CIE 2006 energy fundamentals, not CIE 1931 fits or the CIE RGB primary matrix. The display proxy transforms LMS to cone-based XYZ_F with the published 2° matrix, then uses an sRGB-style matrix/transfer and an authored channel-lift/scale gamut map. XYZ_F uses a different observer from the 1931 XYZ underlying sRGB, so these patches are illustrative, not a standard colorimetric reproduction. Actual matching comparisons use the unmodified LMS signals. No historical priority claim or all-context colour-appearance equivalence is asserted.`,
+      links:{source:'https://doi.org/10.1002/col.22879',data:'https://cie.co.at/datatable/cie-2006-lms-cone-fundamentals-2-field-size-terms-energy'},verify: false,
+      viz(v){
+        const lambda=v.slider('test line wavelength (nm)',400,700,580,{int:true}),white=v.slider('equal-energy fraction $w$',0,1,0,{step:'any',fmt:x=>String(+x.toFixed(6))});
+        const n=v.select('active primaries',[{value:1,label:'1: green'},{value:2,label:'2: green + red'},{value:3,label:'3: green + red + blue'}],3);
+        const names=['green 540','red 610','blue 450'],cols=['green','red','accent'];
+        const amounts=names.map(name=>v.slider(`${name} nm signed amount`,-CONE_AMOUNT_MAX,CONE_AMOUNT_MAX,0,{step:'any',fmt:x=>x.toFixed(6)}));
+        const solve=()=>{const a=coneLeastSquares(coneMatchTarget(lambda.value,white.value),n.value);a.forEach((x,j)=>{if(Math.abs(x)>CONE_AMOUNT_MAX)throw new Error('Proved primary range exceeded');amounts[j].set(x);});};
+        v.button('Solve least squares',solve);v.button('Test first primary',()=>{lambda.set(540);white.set(0);solve();});v.button('Test blue primary',()=>{lambda.set(450);white.set(0);solve();});solve();
+        const F=v.stage({x:[-.08,2.08],y:[-.08,1.25],axes:false,height:210,minWidth:280,weight:1.1,title:'illustrative display proxy; compare LMS below'});
+        const B=v.stage({x:[-.2,3.2],y:[-2.35,2.35],axes:false,height:210,minWidth:280,weight:1,title:'signed primary amounts'});
+        const C=v.stage({x:[-.2,3.2],y:[-.15,1.2],axes:false,height:250,minWidth:280,title:'actual model LMS on the two sides'});
+        let info;
+        v.render(()=>{
+          amounts.forEach((c,j)=>{c.el.hidden=j>=n.value;});
+          const p=coneMatch(lambda.value,white.value,n.value,amounts.map(c=>c.value));info=p;const colors=coneDisplayPair(p.left,p.right);
+          F.rect(0,0,1,1,{fill:colors[0],fillAlpha:1,stroke:false});F.rect(1,0,2,1,{fill:colors[1],fillAlpha:1,stroke:false});F.line(1,0,1,1,{color:'panel',width:1});
+          F.text('test side',.5,1.12,{align:'center',baseline:'middle',size:12});F.text('comparison',1.5,1.12,{align:'center',baseline:'middle',size:12});
+          for(let j=0;j<3;j++){const a=j<n.value?amounts[j].value:0;B.rect(j+.15,0,j+.85,a,{fill:cols[j],fillAlpha:.7,stroke:false});B.text(names[j],j+.5,0,{align:'center',baseline:a>=0?'top':'bottom',dy:a>=0?4:-4,size:11});}
+          B.line(0,0,3,0,{color:'muted',width:1});
+          const top=Math.max(.05,...p.left,...p.right)*1.3;C.setView([-.2,3.2],[-.2*top,top]);
+          for(let k=0;k<3;k++){C.rect(k+.12,0,k+.45,p.left[k],{fill:'blue',fillAlpha:.7,stroke:false});C.rect(k+.55,0,k+.88,p.right[k],{fill:'orange',fillAlpha:.7,stroke:false});C.text(CONE_NAME[k],k+.5,-.06*top,{align:'center',baseline:'top',size:13});}
         });
-        v.legend([['green', 'green primary'], ['red', 'red primary'], ['accent', 'blue primary']]);
-        v.readout(() => `residual cone-response difference between the halves: ${v.fix(100 * info.rel, 2)}% of the test response${info.rel < 0.005 ? ' (a match)' : nP.value < 3 ? ' (with fewer than three primaries no setting removes it)' : ''}${info.neg ? '\na negative amount means that primary is added to the test half' : ''}`);
+        v.legend([['blue','test-side LMS'],['orange','comparison-side LMS'],['green','540 nm primary'],['red','610 nm primary'],['accent','450 nm primary']]);
+        v.readout(()=>`Current relative LMS residual: $${v.sci(info.relative,4)}$. Least possible residual in this ${info.n}-primary span: $${v.sci(info.bestRelative,4)}$. These are numerical distances, not perceptual thresholds.\nTest side: (${info.left.map(x=>v.fix(x,6)).join(', ')}); comparison: (${info.right.map(x=>v.fix(x,6)).join(', ')}). ${info.negative?'Negative amounts have been added to the test side.':'All active amounts are nonnegative.'} ${info.n===3?'Three independent columns give an exact algebraic solution; the solved residual reflects floating-point evaluation.':'A smaller span can match special targets; try the first primary itself.'}`);
       },
     },
     // ------------------------------------------------------------------ 4.3
