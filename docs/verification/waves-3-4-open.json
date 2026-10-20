@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 184,
+  "remainingFlags": 183,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "micro": 2,
-    "fin": 5,
+    "fin": 4,
     "game": 18,
     "psych": 17,
     "soc": 16,
@@ -254,21 +254,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Antoine_Augustin_Cournot"
-      }
-    },
-    {
-      "id": "fin-5.7",
-      "file": "content/fin/ch05-b.js",
-      "name": "Limits to arbitrage",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "BKM ch. 12"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Limits_to_arbitrage"
       }
     },
     {
@@ -3648,7 +3633,8 @@
       "micro-9.4",
       "micro-10.20",
       "fin-5.12",
-      "micro-9.21"
+      "micro-9.21",
+      "fin-5.7"
     ]
   },
   "additionalFollowups": [
@@ -7821,6 +7807,12 @@
       "status": "resolved",
       "report": "docs/verification/micro-efficiency-followup.md",
       "note": "Four explicit closed efficient sets include smooth endpoints, complements weak-line/diagonal degeneracies and both substitute edge orientations/equal-slope whole box; global arguments, complete strokes and native drags independently checked. Root4math+12native groups pass; additional unflagged followup, no pending count change."
+    },
+    {
+      "id": "fin-5.7",
+      "status": "resolved",
+      "report": "docs/verification/fin-arbitrage-followup.md",
+      "note": "Root and independent agent read actual ShleiferVishny1997 intro/complete \u00a7\u00a7I\u2013II and conclusion, inspected original41/46formulas and reran4math+4final native groups. Separate authored daily Gaussian spread refuses invalid initial margins, retains true observed overshoot/negative exit wealth and cash freeze, and shows finite400-path statistics on separate full-range axes. No certain-convergence or original-equilibrium-replication claim remains."
     }
   ]
 }

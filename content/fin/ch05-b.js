@@ -5,6 +5,7 @@
 // Froot & Dabora, JFE 53(2):189–216 (1999); Mandelbrot, J. Business 36(4):394–419 (1963); Engle, Econometrica 50(4):987–1007 (1982); Bollerslev, J. Econometrics 31(3):307–327 (1986);
 // Kirman, QJ Economics 108(1):137–156 (1993); Temin & Voth, AER 94(5):1654–1668 (2004).
 // Real data: Shiller's annual series and the daily market in ch05.shared.js; monthly industry returns (French library) via ch04.shared.js. Simulations are labelled.
+import { arbitrageGap, arbitrageOutcome, arbitrageSample } from './source-audit-arbitrage.js';
 import { clamp, pct, fx, sg, data, daily, shiller, shillerDetrended, exPost, meanOf, sdOf, acf, normPdf, normCdf, kurtosis, simGarch, rng, monthLabel } from './ch05.shared.js';
 
 export default {
@@ -62,67 +63,78 @@ Scope: a statement about a constant discount rate and stationary (detrended) ser
     },
     // ------------------------------------------------------------------ 5.7
     {
-      num: '5.7',
-      kind: 'Concept',
-      name: 'Limits to arbitrage',
-      statement: String.raw`Arbitrage is supposed to push a mispriced asset back to its fundamental value (fin-1.13). But a real arbitrageur has **limited capital**, borrows at the margin, and answers to investors who judge her by recent performance. If the mispricing $m_t$ can widen before it closes (**noise-trader risk**), a levered position can lose money in the short run, be forced to liquidate at the worst moment, and never collect the profit. Then a mispricing can persist and even grow, although it is certain to disappear eventually.
+      num: '5.7', kind: 'Concept', name: 'Limits to arbitrage',
+      statement: String.raw`A favorable expected return is different from the riskless arbitrage of fin-1.13. A spread can move against a capital-constrained position before it narrows. Shleifer and Vishny's original three-date economy shows how poor performance and withdrawals of outside funds can force arbitrageurs to reduce positions precisely when assets become more underpriced. Their model assumes recovery to fundamental value at date 3; this is a specific assumption, not a property of every mean-reverting process.
 
-In a standard setup, with capital $K=1$, leverage $\Lambda$ (position $\Lambda K$) and an initial mispricing $m_0$ that mean-reverts, $dm=-\kappa m\,dt+\sigma\,dW$, the position has equity $E_t=1+\Lambda(m_0-m_t)$ and is closed out when $E_t\le\rho\Lambda$ (maintenance margin $\rho$). The probability of forced liquidation rises with $\Lambda$ and $\sigma$ although the *expected* terminal gain is positive.
+The **separate authored daily model** below has a spread in percentage points,
+$$m_{t+1}=e^{-\kappa}m_t+\sigma Z_{t+1},$$
+with independent standard normal innovations $Z_t$.
+Its expected gap tends to zero, but positive noise leaves a nonzero limiting variance: individual paths are not guaranteed to converge to zero. A fixed linear exposure of size $\Lambda$, with initial wealth 1, has marked equity
+$$E_t=1+\Lambda(m_0-m_t)/100.$$
+The chosen admission rule requires $1>\rho\Lambda$. An admitted position is closed at the first **observed daily** equity at or below $\rho\Lambda$. Its actual observed equity is then held as cash through day 250; a daily overshoot can make it negative.`,
+      idea: String.raw`The original agency mechanism concerns investors allocating funds from past performance, rather than knowing an arbitrageur's exact opportunities. The illustration isolates a simpler collateral constraint: it has no outside-fund withdrawals, endogenous market price or optimal position choice, and it does not reproduce the original three-date equilibrium.
 
-Scope: stylised model of the argument (Shleifer–Vishny; De Long et al.). The twin-shares example (Royal Dutch and Shell, fixed 60:40 claim on joint cash flows) is the classical case in which the fundamental ratio is known.`,
-      idea: String.raw`The no-arbitrage argument of fin-1.13 assumes arbitrage is riskless and costless. When the position must be held for some time, the trader bears the risk of the spread moving against her, and because her capital is finite she must liquidate when losses exceed her margin, even if the expected profit is large. Rational arbitrageurs therefore take smaller positions than would close the gap, and the mispricing can survive: "markets can stay irrational longer than you can stay solvent". This also qualifies the efficient-market argument of fin-5.1, which relied on arbitrage eliminating predictable profits.`,
-      caption: String.raw`A stylised twin-shares spread $m_t$ starts at a gap you set; an arbitrageur goes long the cheap and short the dear share with the leverage you choose. **Left**: the gap, with the level at which she is liquidated. **Middle**: her equity. **Right**: over 400 simulated paths, the share liquidated and her average outcome as functions of leverage: moderate leverage collects the convergence profit, high leverage is wiped out before it comes. Raise **noise-trader risk** $\sigma$ or lower the **reversion speed** and the safe leverage shrinks. (Model; not the actual Royal Dutch/Shell data.)`,
-      deps: ['fin-5.1', 'fin-1.13'],
-      refs: ['BKM ch. 12'],
-      tags: ['arbitrage', 'noise traders', 'leverage'],
-      credit: 'De Long, Shleifer, Summers & Waldmann, 1990; Shleifer & Vishny, 1997',
-      scope: String.raw`Describes arbitrage by levered, performance-judged intermediaries; for unconstrained, long-horizon investors the standard no-arbitrage logic applies.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Limits_to_arbitrage' },
+For an admitted position the liquidation threshold is
+$$m_{\rm exit}=m_0+100/\Lambda-100\rho.$$
+This threshold identifies the first sampled crossing; it does not supply the execution price. Without stopping, expected day-250 equity would be
+$$1+\Lambda m_0(1-e^{-250\kappa})/100>1.$$
+That expected gain is not a sure profit. The actual stopped outcome depends on the entire path. Finite-horizon Gaussian paths and their stopped wealth have finite second moments; prob-2.2.3 explains convergence of independent path averages as the sample grows. Four hundred paths remain a finite estimate with sampling error.`,
+      caption: String.raw`**Gap:** one of 400 authored paths. The red guide is the daily liquidation threshold for the chosen admitted position. The spread continues after exit; later narrowing does not pay a closed position.
+
+**Wealth:** the selected position's full equity/cash history. A red dot is its actual daily exit, including any overshoot. If the initial margin is inadmissible, no position opens and wealth stays at 1.
+
+**Exit frequency:** the share of the same 400 paths liquidated by day 250 at each admitted leverage. Shaded leverage values are not admitted, and have no plotted exit statistic.
+
+**Mean terminal wealth:** the stopped sample mean in original wealth units, beside the analytic mean without stopping, over admitted leverages. Negative modeled wealth remains visible. **New paths** refreshes all panels; the boundary button selects an exactly inadmissible initial margin.`,
+      deps: ['fin-1.13', 'prob-2.2.3'], see: ['fin-5.1'],
+      refs: ['Shleifer & Vishny (1997), introduction and §§I–II, pp.35–47; conclusion p.54'],
+      tags: ['arbitrage', 'capital constraints', 'leverage'],
+      credit: 'Shleifer & Vishny, 1997; daily spread and margin rule authored here',
+      scope: String.raw`Illustrative daily Gaussian spread and fixed linear exposure, not a reconstructed twin-share trade, continuous-time OU liquidation or fund-flow model. There are no financing/transaction costs, limited-liability protection, capital injections or interest on cash. Entry is refused when initial equity does not strictly exceed the chosen maintenance requirement. Daily checks miss intraday crossings; negative equity after a sampled gap is retained rather than capped or reset to the margin. The finite-path comparison is conditional on these assumptions and cannot establish market efficiency or inevitable recovery.`,
+      verify: false,
+      links: { doi: 'https://doi.org/10.1111/j.1540-6261.1997.tb03807.x', source: 'https://web.stanford.edu/~piazzesi/Reading/ShleiferVishny1997.pdf' },
       viz(v) {
-        const m0 = v.slider('initial gap $m_0$ (%)', 1, 12, 5, { step: 0.25 });
-        const lev = v.slider('leverage $\\Lambda$', 1, 30, 10, { step: 0.5 });
-        const sig = v.slider('noise-trader risk $\\sigma$ (% per day)', 0.1, 1.2, 0.6, { step: 0.05 });
-        const kap = v.slider('reversion speed $\\kappa$ (per day)', 0.002, 0.05, 0.01, { log: true, sig: 2 });
-        const rho = v.slider('maintenance margin $\\rho$ (% of position)', 0, 20, 5, { step: 0.5 });
-        let seed = 4; v.button('New path', () => { seed++; });
-        const T = 250;
-        const A = v.stage({ x: [0, T], y: [-2, 16], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'trading day', ylabel: 'price gap m (%)', title: 'the mispricing' });
-        const B = v.stage({ x: [0, T], y: [0, 4], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'trading day', ylabel: 'equity (capital = 1)', title: 'the arbitrageur’s equity' });
-        const C = v.stage({ x: [1, 30], y: [0, 100], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'leverage Λ', ylabel: '% of paths', title: '400 paths: who survives?' });
-        // simulate an OU path (daily steps, in percent)
-        const path = (R, m, k, s) => { const out = [m]; for (let t = 1; t <= T; t++) { m = m - k * m + s * R.normal(); out.push(m); } return out; };
-        let stat = { liq: 0 };
-        v.render(() => {
-          const k = kap.value, s = sig.value, L = lev.value, r0 = rho.value / 100;
-          const R = rng(seed * 4099 + 13), mp = path(R, m0.value, k, s);
-          const thr = m0.value + (1 - r0 * L) / L * 100; // gap (in %) at which equity hits the maintenance margin: 1 + L(m0 - m)/100 = r0 L
-          let liqAt = -1; const eq = []; for (let t = 0; t <= T; t++) { const e = 1 + L * (m0.value - mp[t]) / 100; eq.push(e); if (liqAt < 0 && e <= r0 * L) { liqAt = t; break; } }
-          A.setView([0, T], [Math.min(-2, ...mp) - 0.5, Math.max(16, thr + 1, ...mp) + 0.5]);
-          A.hline(0, { color: 'green', dash: true }); A.text('fundamental ratio (gap 0)', T, 0, { dx: -4, dy: -9, align: 'right', size: 10.5, color: 'green' });
-          A.hline(thr, { color: 'red', dash: true }); A.text('liquidation level', T, thr, { dx: -4, dy: -9, align: 'right', size: 10.5, color: 'red', weight: 700 });
-          const upto = liqAt < 0 ? T : liqAt;
-          A.path(mp.map((y, t) => [t, y]), { color: liqAt >= 0 ? 'muted' : 'accent', width: 1.6 });
-          A.path(mp.slice(0, upto + 1).map((y, t) => [t, y]), { color: 'accent', width: 2.4 });
-          if (liqAt >= 0) { A.dot(liqAt, mp[liqAt], { r: 7, color: 'red' }); A.text('forced out', liqAt, mp[liqAt], { dx: -8, dy: -12, align: 'right', size: 11.5, color: 'red', weight: 700 }); }
-          const ymax = Math.max(4, ...eq) + 0.2; B.setView([0, T], [0, ymax]);
-          B.hline(1, { color: 'faint', dash: true }); B.hline(r0 * L, { color: 'red', dash: true });
-          B.path(eq.map((y, t) => [t, y]), { color: liqAt >= 0 ? 'red' : 'green', width: 2.6 });
-          if (liqAt >= 0) B.dot(liqAt, eq[liqAt], { r: 7, color: 'red' }); else B.dot(T, eq[T], { r: 6, color: 'green' });
-          // Monte-Carlo over leverage
-          const M = 400, R2 = rng(777), mx = [], fin = [];
-          for (let i = 0; i < M; i++) { const p = path(R2, m0.value, k, s); mx.push(Math.max(...p)); fin.push(p[T]); }
-          const liqP = [], mean = []; const Ls = []; for (let l = 1; l <= 30; l += 0.5) Ls.push(l);
-          for (const l of Ls) { let nl = 0, sm = 0; const th = m0.value + (1 - r0 * l) / l * 100; for (let i = 0; i < M; i++) { if (mx[i] >= th) { nl++; sm += r0 * l; } else sm += 1 + l * (m0.value - fin[i]) / 100; } liqP.push(100 * nl / M); mean.push(sm / M); }
-          C.path(Ls.map((l, i) => [l, liqP[i]]), { color: 'red', width: 2.4 });
-          C.path(Ls.map((l, i) => [l, clamp(50 * mean[i], 0, 100)]), { color: 'green', width: 2.4 });
-          C.text('liquidated before day 250', 30, liqP[liqP.length - 1], { dx: -4, dy: 14, align: 'right', size: 11, color: 'red', weight: 700 });
-          C.text('mean final equity (50 = 1.0)', 30, 8, { dx: -4, align: 'right', size: 11, color: 'green', weight: 700 });
-          C.vline(L, { color: 'gold', width: 2 });
-          let nl = 0, sm = 0; const th = m0.value + (1 - r0 * L) / L * 100; for (let i = 0; i < M; i++) { if (mx[i] >= th) { nl++; sm += r0 * L; } else sm += 1 + L * (m0.value - fin[i]) / 100; }
-          stat = { liq: nl / M, mean: sm / M, liqAt, thr, eqEnd: eq[eq.length - 1] };
+        const m0=v.slider('initial gap (percentage points)',1,12,5,{step:.25});
+        const lev=v.slider('fixed exposure $\\Lambda$',1,30,10,{step:.5});
+        const sig=v.slider('daily innovation $\\sigma$ (percentage points)',.1,1.2,.6,{step:.05});
+        const kap=v.slider('daily reversion parameter $\\kappa$',.002,.05,.01,{log:true,sig:2});
+        const rho=v.slider('maintenance margin (% of exposure)',0,20,5,{step:.5});
+        let seed=4;v.button('New paths',()=>{seed++;});v.button('Initial admission boundary',()=>{lev.set(10);rho.set(10);});
+        const options={axes:'box',gutter:true,height:310,minWidth:260};
+        const A=v.stage({...options,x:[-12,262],y:[-5,20],xlabel:'day',ylabel:'spread (percentage points)',title:'one authored gap path'});
+        const B=v.stage({...options,x:[-12,262],y:[-1,4],xlabel:'day',ylabel:'equity / cash (initial wealth = 1)',title:'actual marked wealth and exit'});
+        const C=v.stage({...options,x:[0,31],y:[-10,110],xlabel:'fixed exposure Λ',ylabel:'liquidated by day 250 (%)',title:'400-path daily liquidation frequency'});
+        const D=v.stage({...options,x:[0,31],y:[0,4],xlabel:'fixed exposure Λ',ylabel:'terminal wealth (initial wealth = 1)',title:'stopped sample mean and unstopped expectation'});
+        v.legend([['accent','selected gap / open position'],['red','daily liquidation / threshold'],['green','stopped sample mean / cash'],['teal','analytic mean without stopping'],['muted','inadmissible initial margin',{area:true}]]);
+        const exposures=Array.from({length:59},(_,j)=>1+j/2),pad=values=>{const lo=Math.min(0,...values),hi=Math.max(1,...values),p=.1*(hi-lo)+.1;return[lo-p,hi+p];};
+        let cache,pathKey='',summaryKey='',rows=[],st={};
+        v.render(()=>{
+          const key=[seed,m0.value,kap.value,sig.value].join('|');
+          if(key!==pathKey){const R=rng(seed*4099+13);cache=Array.from({length:400},()=>arbitrageGap(m0.value,kap.value,sig.value,()=>R.normal()));pathKey=key;summaryKey='';}
+          const L=lev.value,margin=rho.value/100,selected=arbitrageOutcome(cache[0],L,margin),next=key+'|'+margin;
+          if(summaryKey!==next){rows=exposures.map(leverage=>({leverage,...arbitrageSample(cache,leverage,margin),unstopped:1+leverage*m0.value*(-Math.expm1(-250*kap.value))/100}));summaryKey=next;}
+          const valid=rows.filter(q=>q.status==='admissible'),chosen=rows.find(q=>q.leverage===L),p=cache[0].path;
+          A.setView([-12,262],pad([...p,...(selected.threshold===null?[]:[selected.threshold])]));
+          A.hline(0,{color:'green',dash:[4,4]});A.path(p.map((x,t)=>[t,x]),{color:'accent',width:2});
+          if(selected.threshold!==null)A.hline(selected.threshold,{color:'red',dash:[4,4]});
+          if(selected.exitDay!==null)A.dot(selected.exitDay,p[selected.exitDay],{color:'red',r:6});
+          B.setView([-12,262],pad([...selected.equity,margin*L]));B.hline(1,{color:'faint'});B.hline(margin*L,{color:'red',dash:[4,4]});
+          B.path(selected.equity.map((x,t)=>[t,x]),{color:selected.status==='liquidated'?'red':selected.status==='inadmissible'?'green':'accent',width:2.5});
+          if(selected.exitDay!==null)B.dot(selected.exitDay,selected.wealth,{color:'red',r:6});
+          D.setView([0,31],pad(valid.flatMap(q=>[q.mean,q.unstopped])));
+          if(margin>0&&1/margin<31){const boundary=1/margin;for(const s of[C,D])s.rect(boundary,s.view.y[0],31,s.view.y[1],{fill:'muted',fillAlpha:.13,stroke:false});}
+          C.path(valid.map(q=>[q.leverage,100*q.probability]),{color:'red',width:2.4});
+          D.path(valid.map(q=>[q.leverage,q.mean]),{color:'green',width:2.4});D.path(valid.map(q=>[q.leverage,q.unstopped]),{color:'teal',width:1.8,dash:[5,3]});
+          for(const s of[C,D])s.vline(L,{color:'gold',width:1.4});
+          if(chosen.status==='admissible'){C.dot(L,100*chosen.probability,{color:'gold',r:5});D.dot(L,chosen.mean,{color:'gold',r:5});}
+          st={seed,m0:m0.value,kappa:kap.value,sigma:sig.value,leverage:L,margin,selected,rows,chosen,gap:p,unstopped:1+L*m0.value*(-Math.expm1(-250*kap.value))/100};
         });
-        v.readout(() => `This path: ${stat.liqAt >= 0 ? `liquidated on day **${stat.liqAt}** when the gap reached ${v.fix(stat.thr, 1)}% (it started at ${v.fix(m0.value, 1)}%); the gap later closes, but she is no longer in the trade.` : `still in the trade at day ${T}, equity **${v.fix(stat.eqEnd, 2)}**.`}\nAt leverage ${v.fix(lev.value, 1)}: **${v.fix(100 * stat.liq, 0)}%** of 400 paths are liquidated; average final equity ${v.fix(stat.mean, 2)}. Fundamental value is certain to be recovered, yet the leveraged arbitrageur often does not survive to see it.`);
+        v.readout(()=>{
+          const q=st.selected,s=st.chosen;
+          if(q.status==='inadmissible')return `**No position admitted:** initial wealth 1 does not strictly exceed the maintenance requirement ${v.fix(st.margin*st.leverage,3)}. Selected wealth remains 1; this is not an immediate simulated liquidation. There is no exit-frequency or stopped-mean statistic at this exposure. Curves use only admitted exposures. All 400 spread paths still belong to the chosen model.`;
+          const state=q.exitDay===null?`No daily liquidation by day 250; marked final wealth ${v.fix(q.wealth,4)}.`:`Daily liquidation on day **${q.exitDay}**: observed gap ${v.fix(st.gap[q.exitDay],4)} pp, threshold ${v.fix(q.threshold,4)} pp, actual exit wealth **${v.fix(q.wealth,4)}**, held as cash thereafter.`;
+          return `${state}\nAmong all 400 matched paths: ${s.liquidated}/400 liquidated (${pct(s.probability,1)}); estimated frequency SE ${v.fix(100*s.probabilitySE,2)} percentage points. Stopped mean wealth ${v.fix(s.mean,4)}, estimated SE ${v.fix(s.se,4)}; individual final wealth ranges from ${v.fix(s.min,4)} to ${v.fix(s.max,4)}. Analytic mean without stopping ${v.fix(st.unstopped,4)}. These finite sample results are neither sure recovery nor an executable arbitrage profit. All four panels resample together.`;
+        });
       },
     },
     // ------------------------------------------------------------------ 5.8
