@@ -1,0 +1,29 @@
+{
+  "disposition": "accept exact combined candidate",
+  "prerequisite": "8ba4a4543155814a581066cc5ea5da9b14114ace",
+  "qualification": "74a8ddf4d499e8c09d7fae99eddd645b9b00503b",
+  "wrapped": "38d8f8702d65b44f968645b37e6b467ed24c6bae",
+  "final": "6e555f45a1c7247c2d305f6f7cd55f1408ba4337",
+  "objects": 42,
+  "functions": 42,
+  "rawLists": 42,
+  "addedEdges": 22,
+  "consumers": 18,
+  "fields": {
+    "math": 21,
+    "physics": 1,
+    "consumer": "chem"
+  },
+  "mathAssertions": 8537,
+  "closingSIAssertions": 24,
+  "existingTests": 48,
+  "nativeCases": 36,
+  "nativePictures": 144,
+  "personallyInspectedMainProofs": 36,
+  "personallyInspectedMainStatementsScopes": 36,
+  "closingNativeCases": 2,
+  "closingPictures": 8,
+  "personallyInspectedClosingMainPictures": 4,
+  "sourceClosure": false,
+  "browsersClosed": true
+}
