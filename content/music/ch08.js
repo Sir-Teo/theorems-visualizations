@@ -1,6 +1,8 @@
 // Music Theory & Acoustics — Chapter 8: Scales, pitch classes and symmetry (items 8.1–8.7)
 import { SR, C4, NOTE, mod, norm, Tn, key, setStr, braceStr, clk, pcAt, drawClock, polyOf, dotsOf, CLOCK_STAGE, seqCents, droneScale, PRESETS, modeOf, MODE_NAMES, compose, opName, applyOp, orbit, circ } from './ch08.shared.js';
 
+import { GS_GENERATORS, myhillModel, generatedModel, generatedAudio } from './source-audit-generated.js';
+
 export default {
   collection: 'music',
   chapter: 8,
@@ -226,105 +228,44 @@ export default {
     },
     // ------------------------------------------------------------------ 8.5
     {
-      num: '8.5',
-      kind: 'Theorem',
-      name: 'Myhill’s property: two sizes per generic interval',
-      statement: String.raw`Let a scale have $n$ notes in a $c$-note chromatic circle. Its **generic interval** $k$ ($0<k<n$) is "$k$ scale steps", and a **specific size** is the number of chromatic steps it spans. A scale has **Myhill's property** if every generic interval comes in exactly two specific sizes. If $\gcd(c,n)=1$ then the maximally even scale $\{\lfloor cj/n\rfloor\}$ has Myhill's property, with the sizes $\lfloor ck/n\rfloor$ and $\lceil ck/n\rceil$. In particular the diatonic scale (every second a tone or semitone, every third a major or minor third, …) and the pentatonic scale have it; harmonic minor, the octatonic and whole-tone scales do not.`,
-      idea: String.raw`For the maximally even set, the span of $k$ steps starting at the $j$-th point is $\lfloor c(j+k)/n\rfloor-\lfloor cj/n\rfloor$, which for any real shift is $\lfloor ck/n\rfloor$ or $\lfloor ck/n\rfloor+1$ (8.4). It takes both values because $ck/n$ is not an integer when $\gcd(c,n)=1$ and $0<k<n$, and the fractional parts of $cj/n$ run through every multiple of $1/n$. Scales with a repeating sub-pattern ($\gcd>1$) have integer $ck/n$ for some $k$ and so a generic interval with a single size.`,
-      caption: String.raw`Choose a scale and a generic interval $k$. Chords join every note to the note $k$ steps up, coloured by specific size (semitones). The bar chart counts the specific sizes of every generic interval of the scale: green when exactly two, red otherwise. Switch to harmonic minor, or draw a random scale, and watch the property fail.`,
-      deps: ['music-8.4'],
-      see: ['music-8.6'],
-      refs: ['Tymoczko ch. 4'],
-      tags: ['scales', 'combinatorics'],
-      credit: 'Named for the mathematician John Myhill by John Clough and Gerald Myerson, "Variety and multiplicity in diatonic systems", Journal of Music Theory 29 (1985)',
-      scope: String.raw`Scales with $\gcd(c,n)=1$ in the theorem as stated here; the converse (Myhill's property characterises the maximally even, equivalently well-formed, scales) is due to the same literature and is only illustrated by the examples.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cardinality_equals_variety' },
-      verify: true,
-      viz(v) {
-        const SC = { diatonic: ['diatonic', PRESETS.diatonic], pent: ['pentatonic', PRESETS.pentatonic], harm: ['harmonic minor', PRESETS.harmMinor], mel: ['melodic minor', PRESETS.melMinor], whole: ['whole-tone', PRESETS.wholetone], oct: ['octatonic', PRESETS.octatonic], rand: ['random 7 notes', null] };
-        const sc = v.select('scale', Object.entries(SC).map(([value, [label]]) => ({ value, label })), 'diatonic');
-        const kk = v.slider('generic interval $k$ (scale steps)', 1, 6, 2, { int: true });
-        let rseed = 3;
-        v.button('new random scale', () => { rseed = Math.floor(Math.random() * 1e6); sc.value = 'rand'; });
-        const s = v.stage({ ...CLOCK_STAGE, height: 380, title: 'every note joined to the note $k$ steps up' });
-        const bs = v.stage({ x: [0.4, 6.6], y: [0, 5], axes: 'box', gutter: true, height: 380, xlabel: 'generic interval $k$', ylabel: 'number of specific sizes', title: 'specific sizes per generic interval' });
-        const scale = () => { if (sc.value !== 'rand') return SC[sc.value][1]; const r = v.rng(rseed); return norm([0, ...r.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).slice(0, 6)]); };
-        const sizes = (S, k) => { const m = {}; S.forEach((p, i) => { const d = mod(S[(i + k) % S.length] - p) || 12; m[d] = (m[d] || 0) + 1; }); return m; };
-        const COL = ['accent', 'orange', 'red', 'purple', 'teal'];
-        v.render(() => {
-          const S = scale(), n = S.length, k = Math.min(kk.value, n - 1);
-          drawClock(s, { names: true });
-          const sz = sizes(S, k), keys = Object.keys(sz).map(Number).sort((a, b) => a - b);
-          S.forEach((p, i) => { const q = S[(i + k) % n], a = clk(p, 0.95), b = clk(q, 0.95); s.line(a[0], a[1], b[0], b[1], { color: COL[keys.indexOf(mod(q - p) || 12)] || 'ink', width: 2.4, alpha: 0.75 }); });
-          dotsOf(s, S, 1, { color: 'ink', r: 6 });
-          keys.forEach((d, i) => s.text(`${d} semitones × ${sz[d]}`, 0, 0.2 - 0.2 * i, { size: 14, color: COL[i], align: 'center', baseline: 'middle', weight: 600, plate: true }));
-          for (let j = 1; j <= 6; j++) {
-            if (j >= n) { bs.text('—', j, 0.4, { size: 12, color: 'faint', align: 'center' }); continue; }
-            const c = Object.keys(sizes(S, j)).length;
-            bs.rect(j - 0.34, 0, j + 0.34, c, { fill: c === 2 ? 'green' : 'red', fillAlpha: j === k ? 0.85 : 0.4, color: j === k ? 'ink' : 'muted', width: j === k ? 2 : 0.8 });
-            bs.text(String(c), j, c + 0.25, { size: 12, color: 'ink', align: 'center' });
-          }
-          bs.hline(2, { color: 'green', dash: [4, 4], alpha: 0.7 });
-        });
-        v.legend([['accent', 'smaller size'], ['orange', 'larger size'], ['red', 'a third size (property fails)']]);
-        v.readout(() => {
-          const S = scale(), n = S.length; const counts = []; for (let j = 1; j < n; j++) counts.push(Object.keys(sizes(S, j)).length);
-          const ok = counts.every((c) => c === 2);
-          return `${SC[sc.value][0]} $${braceStr(S)}$ with $n=${n}$ notes · sizes per generic interval $k=1..${n - 1}$: ${counts.join(', ')} · Myhill's property ${ok ? '**holds**' : '**fails**'} · ${ok ? '' : 'the property needs exactly 2 at every $k$; '}$\\gcd(12,${n})=${gcd12(n)}$.`;
-        });
+      num:'8.5',kind:'Theorem',name:'Myhill’s property: two sizes per generic interval',
+      statement:String.raw`A scale is a sorted set of $n\ge2$ distinct positions in $\Z/c$, with $c>n$. A generic interval $k$, $1\le k<n$, spans $k$ successive scale steps, including the octave wrap. **Myhill's property** requires exactly two distinct specific spans at every such $k$. For $S=\{\lfloor cj/n\rfloor:0\le j<n\}$, the spans are $\lfloor ck/n\rfloor$ and $\lceil ck/n\rceil$. Both occur exactly when $n\nmid ck$; consequently this floor scale has Myhill's property if and only if $\gcd(c,n)=1$. This implication does not characterize maximal evenness among arbitrary scales: $\{0,1,2\}\subset\Z/12$ has two spans at every generic interval, but is not maximally even.`,
+      idea:String.raw`Extend the sorted floor sequence by $s_{j+n}=s_j+c$. Each span is $s_{j+k}-s_j$, so subtracting floors gives the two adjacent integer roundings of $ck/n$. The sum of all $n$ spans is $ck$. If $ck/n$ is nonintegral, this average lies strictly between the roundings, forcing both to occur; if it is integral, only one occurs. The number of larger spans is $ck-n\lfloor ck/n\rfloor$. General Myhill spans need not be adjacent integers.`,
+      caption:String.raw`Choose a scale and a generic interval. The clock joins every starting note to the note that many scale steps higher; the readout lists every distinct span and its multiplicity. Green bars mean exactly two sizes. The cluster example separates Myhill's property from maximal evenness. Random scales use the displayed saved seed; the sound plays every sorted note and the octave.`,
+      deps:['music-8.4'],see:['music-8.6'],refs:['Amiot2007 §2.3 Theorem11, pp.109–110; Carey–Clampitt1989 pp.201–202'],tags:['scales','combinatorics'],
+      credit:'Myhill’s property, as treated by Clough–Myerson and Carey–Clampitt; finite span comparison authored',
+      scope:String.raw`The general formula concerns floor scales with integers $c>n\ge2$. The interactive examples are finite twelve-tone pitch-class sets; no converse identifying arbitrary Myhill scales with maximally even sets is asserted. Exactly two sizes differs from at most two.`,
+      links:{source:'https://journals.openedition.org/msh/pdf/4272'},verify:true,
+      viz(v){
+        const labels={diat:'diatonic',pent:'pentatonic',harm:'harmonic minor',mel:'melodic minor',whole:'whole-tone',oct:'octatonic',cluster:'cluster {0,1,2}',rand:'seeded random seven'};
+        const sc=v.select('scale',Object.entries(labels).map(([value,label])=>({value,label})),'diat'),kk=v.slider('generic interval k',1,7,2,{int:true}),seed=v.slider('random seed',0,9999,3,{int:true});
+        v.button('next random scale',()=>{seed.set((seed.value+1)%10000);sc.value='rand';});
+        const s=v.stage({...CLOCK_STAGE,title:'specific spans of the selected generic interval'}),bs=v.stage({x:[.35,7.65],y:[-.3,6.5],axes:'box',gutter:true,height:380,xlabel:'generic interval k',ylabel:'number of sizes',title:'exact size count for every generic interval'});
+        let info;v.soundButton('play displayed scale',sd=>{const a=myhillModel(sc.value,kk.value,seed.value),b=generatedAudio([...a.S.map(p=>p*100),1200]);sd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=myhillModel(sc.value,kk.value,seed.value);info=a;drawClock(s,{names:true});const colors=['accent','orange','red','purple','teal','gold'];a.S.forEach((p,i)=>{const q=a.S[(i+a.selected)%a.n],u=clk(p,.95),w=clk(q,.95),ci=a.active.sizes.indexOf(a.active.values[i]);s.line(...u,...w,{color:colors[ci],width:2.2,alpha:.75});});dotsOf(s,a.S,1,{color:'ink',r:6});s.text(`k = ${a.selected}`,0,.35,{size:16,color:'ink',align:'center',baseline:'middle',plate:true,weight:700});a.active.sizes.forEach((d,j)=>s.text(`${d} semitones × ${a.active.counts[j]}`,0,.1-j*.22,{size:13,color:colors[j],align:'center',baseline:'middle',plate:true}));a.spans.forEach(r=>{bs.rect(r.k-.32,0,r.k+.32,r.sizes.length,{fill:r.sizes.length===2?'green':'red',fillAlpha:r.k===a.selected?.9:.4,color:r.k===a.selected?'ink':'muted',width:r.k===a.selected?2:.7});bs.text(String(r.sizes.length),r.k,r.sizes.length+.24,{size:12,color:'ink',align:'center'});});bs.line(.4,2,7.6,2,{color:'green',dash:[4,4],alpha:.5});});
+        v.legend([['accent','first span size'],['orange','second span size'],['red','further size; property fails']]);
+        v.readout(()=>{const a=info;return `${labels[a.name]}: {${a.S.join(', ')}}; n=${a.n}; selected k=${a.selected}${a.selected!==a.k?` (clamped from ${a.k} to n−1)`:''}.\nSizes per generic interval: ${a.spans.map(r=>`${r.k}: ${r.sizes.join('/')} [${r.counts.join('/')}]`).join('; ')}.\nMyhill (exactly two at every k): ${a.myhill?'yes':'no'}. Maximally even (every span is a floor/ceiling of 12k/n): ${a.even?'yes':'no'}. gcd(12,n)=${a.gcd}; this coprimality criterion applies to the floor construction, not every scale.`;});
       },
     },
     // ------------------------------------------------------------------ 8.6
     {
-      num: '8.6',
-      kind: 'Theorem',
-      name: 'Well-formed scales and the three-gap theorem',
-      statement: String.raw`Let $\alpha\in(0,1)$ be irrational and place the $n$ points $\{j\alpha\}$ (fractional part), $j=0,\dots,n-1$, on the circle $\R/\Z$. Then the gaps between neighbouring points take **at most three** distinct lengths, and when there are three, the longest is the sum of the other two. For the generator $\alpha=\log_2(3/2)$ (the pure fifth, 701.955 cents) the gaps take exactly two lengths for $n=2,3,5,7,12,17,29,41,53,\dots$: these are the sizes of the **well-formed** scales generated by the fifth, among them the pentatonic (5), diatonic (7) and chromatic (12) scales.`,
-      idea: String.raw`When a new point $n\alpha$ is added, it falls into one of the existing gaps and splits it into two pieces, each of which equals a gap length that was already present or the difference of two; tracking which gap lengths have been used up gives the three-gap pattern, and the places where a gap type is exhausted (denominators of convergents and intermediate fractions, 7.10) are exactly the sizes with two gaps. A scale generated by one interval $g$ and folded into the octave is well formed when it has two step sizes; this is the structure behind the diatonic scale (7.1) and Myhill's property (8.5).`,
-      caption: String.raw`Pick the generator (in cents) and the number of notes $n$: the stacked generator's notes appear in order of generation, and the arcs between neighbours are coloured by gap length. The bar chart below counts the distinct gaps for every $n$ up to 60 (bars at height 2 are the well-formed sizes). Try the pure fifth, the equal-tempered fifth, and the golden section $1200/\varphi^2$.`,
-      deps: ['music-8.5', 'music-7.10'],
-      see: ['music-7.11', 'music-8.4'],
-      refs: ['Tymoczko ch. 4'],
-      tags: ['scales', 'three-gap'],
-      credit: 'Three-gap theorem: conjectured by Hugo Steinhaus and proved independently by Vera Sós, János Surányi and Stanisław Świerczkowski in the late 1950s (sources differ on the exact years). Well-formed scales: Norman Carey and David Clampitt, "Aspects of well-formed scales", Music Theory Spectrum 11 (1989)',
-      scope: String.raw`Irrational $\alpha$ in the statement; for a rational generator (such as the equal-tempered fifth $7/12$) the points repeat after 12 notes and the count of gaps is read off the same picture. The listed well-formed sizes are computed here for $\log_2(3/2)$ with floating-point tolerance $10^{-9}$.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Three-gap_theorem' },
-      verify: true,
-      viz(v) {
-        const g = v.slider('generator (cents)', 0, 1200, 701.955, { step: 0.001, decimals: 3 });
-        const n = v.slider('number of notes $n$', 1, 60, 7, { int: true });
-        [['pure fifth', 701.955], ['12-TET fifth', 700], ['golden', 1200 * (1 - 1 / 1.6180339887)], ['major third', 386.314], ['pure fourth', 498.045]].forEach(([l, x]) => v.button(l, () => g.set(x)));
-        const s = v.stage({ ...CLOCK_STAGE, height: 400, title: 'notes generated by stacking the generator, folded into the octave' });
-        const bs = v.stage({ x: [0, 61], y: [0, 4], axes: 'box', gutter: true, height: 400, xlabel: 'number of notes $n$', ylabel: 'distinct step sizes', yticks: [0, 1, 2, 3], title: 'how many step sizes for each $n$' });
-        const pts = (a, m) => Array.from({ length: m }, (_, j) => mod(j * a, 1));
-        const gapInfo = (a, m) => {
-          const P = pts(a, m).map((x, j) => ({ x, j })).sort((p, q) => p.x - q.x), G = [];
-          for (let i = 0; i < m; i++) { const nx = i + 1 < m ? P[i + 1].x : P[0].x + 1; G.push({ from: P[i].x, len: nx - P[i].x }); }
-          const U = []; G.map((q) => q.len).sort((p, q) => p - q).forEach((x) => { if (!U.length || x - U[U.length - 1] > 1e-9) U.push(x); });
-          return { P, G, U };
-        };
-        const COL = ['accent', 'orange', 'red'];
-        v.soundButton('play the scale', (sd) => { const a = g.value / 1200, m = Math.min(n.value, 16), P = pts(a, m).sort((p, q) => p - q); sd.samples(seqCents(P.concat([1]).map((x) => [1200 * x]), C4, 0.35, 0.02), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const a = g.value / 1200, m = n.value, { P, G, U } = gapInfo(a, m);
-          s.circle(0, 0, 1, { color: 'faint', width: 1.2 });
-          for (let c = 0; c < 1200; c += 100) { const p = circ(c, 1, 1200), q = circ(c, 0.96, 1200); s.line(p[0], p[1], q[0], q[1], { color: 'faint' }); }
-          G.forEach((q) => {
-            const ci = U.findIndex((u) => Math.abs(u - q.len) < 1e-9), pa = []; for (let i = 0; i <= 14; i++) pa.push(circ((q.from + (q.len * i) / 14) * 1200, 1.1, 1200));
-            s.path(pa, { color: COL[Math.min(ci, 2)], width: 6, alpha: 0.85 });
-          });
-          P.forEach((q) => { const p = circ(q.x * 1200, 1, 1200); s.dot(p[0], p[1], { r: m > 30 ? 3 : 5.5, color: q.j === m - 1 ? 'gold' : 'ink' }); if (m <= 14) { const t = circ(q.x * 1200, 0.84, 1200); s.text(String(q.j), t[0], t[1], { size: 11, color: 'muted', align: 'center', baseline: 'middle' }); } });
-          s.text(`${U.length} step size${U.length > 1 ? 's' : ''}`, 0, 0, { size: 18, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
-          for (let j = 1; j <= 60; j++) { const c = gapInfo(a, j).U.length; bs.rect(j - 0.4, 0, j + 0.4, c, { fill: c === 2 ? 'green' : c === 3 ? 'red' : 'faint', fillAlpha: j === m ? 0.95 : 0.5, stroke: false }); }
-          bs.vline(m, { color: 'orange', dash: [4, 3] }); bs.hline(2, { color: 'green', dash: [4, 4], alpha: 0.5 });
-        });
-        v.legend([['accent', 'smallest gap'], ['orange', 'middle / second gap'], ['red', 'largest gap (three-gap case)'], ['gold', 'newest note']]);
-        v.readout(() => {
-          const a = g.value / 1200, { U } = gapInfo(a, n.value);
-          const two = []; for (let j = 1; j <= 60; j++) if (gapInfo(a, j).U.length <= 2) two.push(j);
-          const sums = U.length === 3 ? `longest ${v.fix(U[2] * 1200, 3)} ¢ = ${v.fix(U[0] * 1200, 3)} + ${v.fix(U[1] * 1200, 3)} = ${v.fix((U[0] + U[1]) * 1200, 3)} ¢` : U.map((u) => v.fix(u * 1200, 3)).join(' and ') + ' ¢';
-          return `$n=${n.value}$ notes from the generator ${v.fix(g.value, 3)} ¢ · ${U.length} distinct step sizes: ${sums} · sizes $n\\le60$ with at most two step sizes: ${two.join(', ')}.`;
-        });
+      num:'8.6',kind:'Theorem',name:'Well-formed scales and the three-gap theorem',
+      statement:String.raw`For irrational $\alpha\in(0,1)$, the points $\{j\alpha\}$, $0\le j<n$, partition the circle into at most three positive gap lengths. If there are three, the largest is the sum of the smaller two. The corresponding positive-gap statement also holds for rational rotations after duplicate positions are identified. A generated scale of $n$ distinct notes is **well formed** in the order-preserving sense when generation index $j$ has scale-order rank $Mj\pmod n$ for a unit $M$ modulo $n$. Here nondegenerate well-formed scales have two gap sizes; equally spaced complete orbits are labelled degenerate. For the exact pure fifth $\alpha=\log_2(3/2)$, the nondegenerate well-formed sizes up to60 are $2,3,5,7,12,17,29,41,53$.`,
+      idea:String.raw`The three-gap result is a theorem about a rotation orbit, rather than arbitrary points on a circle. The lattice proof represents each forward gap by a shortest positive vertical displacement in a strip: two basis displacements and their sum supply the possible lengths. Well-formedness separately compares generation order with scale order by a cyclic-group automorphism; Carey–Clampitt relate its sizes to continued-fraction convergents and semiconvergents. The widget computes both the gap inventory and the rank test.`,
+      caption:String.raw`Choose an exact-formula preset or a custom generator in thousandths of a cent. Repeated rational positions are merged, so only positive gaps and distinct notes are counted. The bars give positive-gap counts for1–60 generated points; green additionally passes the nondegenerate rank test. The saved generator choice distinguishes a true pure fifth from a rounded slider value. The sound plays every displayed distinct note, followed by the octave.`,
+      deps:['music-8.5','music-7.10'],see:['music-7.11','music-8.4'],refs:['Carey–Clampitt1989 pp.196,198–202; Marklof–Strömbergsson2017 §§1–2, Proposition2'],tags:['scales','three-gap'],
+      credit:'Three-gap theorem and Carey–Clampitt’s generated-scale theory; finite rational and numerical comparison authored',
+      scope:String.raw`The mathematical irrational statement is exact. Preset transcendental/algebraic values are evaluated in binary floating point for n≤60, with gap grouping tolerance $10^{-11}$ of an octave checked against90-digit fixtures. Custom generators are rational integer/1,200,000 and their orbit, repetitions and gap equality are computed with exact integer residues. Degenerate equal spacing and repeated generation are reported separately from nondegenerate well-formedness.`,
+      links:{source:'https://arxiv.org/abs/1612.04906'},verify:true,
+      viz(v){
+        const type=v.select('generator',Object.entries(GS_GENERATORS).map(([value,p])=>({value,label:p.label})),'fifth'),g=v.slider('custom generator (cents)',0,1200,701.955,{step:.001,decimals:3}),n=v.slider('generated points n',1,60,7,{int:true});
+        // Only an actual slider input chooses custom; restoring its saved value must preserve the saved preset.
+        g.input.addEventListener('input',()=>{type.value='custom';});
+        const s=v.stage({...CLOCK_STAGE,height:400,title:'distinct notes and positive circular gaps'}),bs=v.stage({x:[0,61],y:[-.3,4],axes:'box',gutter:true,height:400,xlabel:'generated points n',ylabel:'positive gap sizes',yticks:[0,1,2,3],title:'gap inventory; green also passes the rank test'});let info;
+        v.soundButton('play displayed scale',sd=>{const a=generatedModel(type.value,g.value,n.value),b=generatedAudio([...a.P.map(p=>1200*p.x),1200]);sd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=generatedModel(type.value,g.value,n.value);info=a;const colors=['accent','orange','red'];s.circle(0,0,1,{color:'faint',width:1.2});for(let c=0;c<1200;c+=100)s.line(...circ(c,1,1200),...circ(c,.96,1200),{color:'faint'});a.gaps.forEach(q=>{const points=Array.from({length:25},(_,j)=>circ((q.from+q.len*j/24)*1200,1.1,1200));s.path(points,{color:colors[q.kind],width:5,alpha:.85});});a.P.forEach(q=>{const p=circ(q.x*1200,1,1200);s.dot(...p,{r:a.m>30?3:5.5,color:q.j===a.n-1?'gold':'ink'});if(a.m<=14){const t=circ(q.x*1200,.83,1200);s.text(String(q.j),...t,{size:11,color:'muted',align:'center',baseline:'middle'});}});s.text(`${a.m} distinct note${a.m===1?'':'s'}`,0,.13,{size:16,color:'ink',align:'center',baseline:'middle',weight:700});s.text(`${a.sizes.length} positive gap size${a.sizes.length===1?'':'s'}`,0,-.13,{size:14,color:'ink',align:'center',baseline:'middle'});a.inventory.forEach(r=>bs.rect(r.n-.38,0,r.n+.38,r.count,{fill:r.wellFormed?'green':r.equal?'muted':'red',fillAlpha:r.n===a.n?.95:.45,stroke:false}));bs.line(a.n,-.25,a.n,3.95,{color:'orange',dash:[4,3]});bs.line(.5,2,60.5,2,{color:'green',dash:[4,4],alpha:.4});});
+        v.legend([['accent','smallest gap'],['orange','second gap'],['red','third gap / other inventory'],['green','nondegenerate order-preserving scale']]);
+        v.readout(()=>{const a=info,p=GS_GENERATORS[a.type];return `${p.label}: α=${a.type==='custom'?`${a.num}/${a.den}`:p.formula}; ${v.fix(a.alpha*1200,9)} cents. ${a.rational?`Exact rational period ${a.period}.`:'Irrational formula preset, evaluated numerically.'}\nGenerated ${a.n} points; ${a.m} distinct positions; ${a.n-a.m} repeats merged. Positive gaps (cents × count): ${a.sizes.map((x,j)=>`${v.fix(1200*x,9)} × ${a.counts[j]}`).join('; ')}.\n${a.sumError===null?'':`Largest minus sum of smaller gaps: ${a.rational?'exactly zero (integer residues)':`${v.fix(1200*a.sumError,12)} cents`}. `}Generation-to-rank automorphism: ${a.orderPreserved?'yes':'no'}${a.orderPreserved&&a.n>1?`, M=${a.step} mod ${a.n}`:''}; ${a.equal?'equally spaced (degenerate)':a.wellFormed?'nondegenerate well formed':'not nondegenerate well formed'}.\nNondegenerate rank-test sizes n≤60: ${a.inventory.filter(r=>r.wellFormed).map(r=>r.n).join(', ')||'none'}. Audio: all ${a.m} displayed distinct notes plus octave.`;});
       },
     },
     // ------------------------------------------------------------------ 8.7
