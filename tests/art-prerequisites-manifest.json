@@ -1,0 +1,643 @@
+{
+  "baseline": "2f4154e960686381ccfe54ae174452d9047dab59",
+  "acceptedArtBaseline": "d4f67e50",
+  "field": "arts",
+  "changes": {
+    "1.4": {
+      "file": "content/art/ch01.js",
+      "beforeDeps": [
+        "art-1.2"
+      ],
+      "afterDeps": [
+        "art-1.2",
+        "pma-3.3"
+      ],
+      "added": [
+        "pma-3.3"
+      ],
+      "note": "For the limiting calculation, divide numerator and denominator by t. The projected coordinate is d(A_x/t+u_x)/(A_y/t+u_y). Along every sequence t→∞ in the visible part of the line, the quotient-limit theorem pma 3.3 gives d u_x/u_y when u_y≠0; the same calculation gives the height. A zero limiting denominator is precisely the excluded parallel-to-picture direction, not a finite vanishing point."
+    },
+    "1.9": {
+      "file": "content/art/ch01-b.js",
+      "beforeDeps": [
+        "art-1.8"
+      ],
+      "afterDeps": [
+        "art-1.8",
+        "vcalc-1.2"
+      ],
+      "added": [
+        "vcalc-1.2"
+      ],
+      "note": "The metric step uses vcalc 1.2: perpendicular edge directions have zero dot product. Each image-plane vector V_i−H is perpendicular to the eye-normal n, so expanding (V_i−H−dn)·(V_j−H−dn) leaves (V_i−H)·(V_j−H)+d². Subtracting two such identities makes an altitude perpendicular to the opposite side. This is why the orthocentre and the recovered positive eye distance concern mutually perpendicular directions, rather than an arbitrary three-point projective view."
+    },
+    "1.11": {
+      "file": "content/art/ch01-b.js",
+      "beforeDeps": [
+        "art-1.10"
+      ],
+      "afterDeps": [
+        "art-1.10",
+        "ladr-9.23"
+      ],
+      "added": [
+        "ladr-9.23"
+      ],
+      "note": "The axis calculation is a quadratic-form calculation (ladr 9.23). Rotate picture coordinates so the centre direction is (sinθ,cosθ,0), with rays q=(x,d,z). Tangency gives (q·n)²=cos²α |q|². Its quadratic coefficients in the radial and transverse directions are A=cos²θ−sin²α and cos²α. When A>0, translation completes the square; the squared semiaxes are d²sin²α cos²α/A² and d²sin²α/A. Their ratio is the stated cosα/√A. Positive definiteness is essential: the algebra does not classify every oblique cone cut as a bounded ellipse."
+    },
+    "1.12": {
+      "file": "content/art/ch01-b.js",
+      "beforeDeps": [
+        "art-1.2"
+      ],
+      "afterDeps": [
+        "art-1.2",
+        "vcalc-1.3"
+      ],
+      "added": [
+        "vcalc-1.3"
+      ],
+      "note": "The cancellation can be written with the oriented-area identity vcalc 1.3. Put O at the origin and take signed scalar cross products in the plane. For X,Y on one source line, X×Y equals its fixed signed height times the directed separation XY. Thus the cross-ratio is (A×C)(B×D)/[(B×C)(A×D)]. Replacing each ray vector X by its nonzero projected multiple k_X X multiplies numerator and denominator by the same k_A k_B k_C k_D. This proves invariance whenever the four points and finite images are distinct and the denominator is nonzero."
+    },
+    "1.13": {
+      "file": "content/art/ch01-b.js",
+      "beforeDeps": [
+        "art-1.12"
+      ],
+      "afterDeps": [
+        "art-1.12",
+        "ladr-2.43"
+      ],
+      "added": [
+        "ladr-2.43"
+      ],
+      "note": "The common-line step is the dimension formula ladr 2.43. In homogeneous coordinates for projective three-space, a plane corresponds to a three-dimensional subspace of R⁴. Two distinct such plane subspaces span R⁴, so their intersection has dimension 3+3−4=2: its projectivization is a line. The three side-intersections belong to both triangle planes and therefore to that line. This also includes parallel affine triangle planes: their common projective line is at infinity. Nondegenerate triangles and well-defined corresponding-side intersections are required by this argument."
+    },
+    "2.8": {
+      "file": "content/art/ch02-b.js",
+      "beforeDeps": [
+        "art-2.5",
+        "art-2.3"
+      ],
+      "afterDeps": [
+        "art-2.5",
+        "art-2.3",
+        "ladr-7.29"
+      ],
+      "added": [
+        "ladr-7.29"
+      ],
+      "note": "The actual camera fit is homogeneous DLT: the normalized point equations form a real matrix A and a unit camera vector p is chosen to minimize |Ap|². The real spectral theorem ladr 7.29 diagonalizes the symmetric matrix AᵀA in an orthonormal eigenbasis. Writing p in that basis makes pᵀAᵀAp a weighted average of its eigenvalues, so a smallest-eigenvalue eigenvector minimizes this algebraic residual. The subsequently reported reprojection RMS is a different quantity; this fit is not a guarantee of its global minimum or a historical test identifying tracing."
+    },
+    "2.9": {
+      "file": "content/art/ch02-b.js",
+      "beforeDeps": [
+        "art-1.10",
+        "art-2.1"
+      ],
+      "afterDeps": [
+        "art-1.10",
+        "art-2.1",
+        "ladr-9.50"
+      ],
+      "added": [
+        "ladr-9.50"
+      ],
+      "note": "The planarity constraint can be checked by the determinant criterion ladr 9.50. Write each apparent corner as P_i=(x_i,y_i,z_i), scaled from the eye to λ_i P_i with λ_i>0. Four scaled corners are coplanar exactly when their augmented 4×4 coordinate matrix is singular. Factoring λ_i from each row replaces its last entry by 1/λ_i. For each nondegenerate apparent rectangular face whose plane does not contain the eye, the two affine-diagonal sums of the first three coordinates agree, so the remaining determinant condition is precisely the displayed equality of opposite reciprocal-scale sums. The condition is geometric planarity, not an inference about perceived depth."
+    },
+    "3.2": {
+      "file": "content/art/source-audit-spectra.js",
+      "beforeDeps": [
+        "art-3.1"
+      ],
+      "afterDeps": [
+        "art-3.1",
+        "pma-6.12",
+        "ladr-9.46"
+      ],
+      "added": [
+        "pma-6.12",
+        "ladr-9.46"
+      ],
+      "note": "Linearity of each fixed-observer integral is pma 6.12: integrating a sum of spectra gives the sum of responses, and a scalar power factor comes outside. Here the continuous functions are piecewise polynomial on a finite band, so the integrability hypotheses hold. Separately, the signed-minor kernel construction uses the determinant expansion ladr 9.46: for a 3×4 response matrix B, set c_j=(−1)^j det(B with column j deleted), with indices starting at zero. Every component of Bc is the expansion of a determinant with a repeated row and is zero. A nonzero minor proves rank three; normalizing the coefficient absolute sum then supplies the separate all-wavelength nonnegativity bound already stated."
+    },
+    "3.3": {
+      "file": "content/art/source-audit-optics-items.js",
+      "beforeDeps": [
+        "art-3.1"
+      ],
+      "afterDeps": [
+        "art-3.1",
+        "opt-2.1"
+      ],
+      "added": [
+        "opt-2.1"
+      ],
+      "note": "The geometric center is a convex combination in the sense of opt 2.1: for nonnegative amounts with positive total, w_i/Σw_j are nonnegative and sum to one. Hence Z lies in the convex hull of the declared arc centroids, regardless of whether its direction is numerically resolvable. This is a statement about Newton’s geometric construction, not proof that those weights or centroids reproduce physical color matching. Zero total light is excluded from the division and is treated separately."
+    },
+    "3.4": {
+      "file": "content/art/ch03.js",
+      "beforeDeps": [
+        "art-3.1",
+        "mech-5.2"
+      ],
+      "afterDeps": [
+        "art-3.1",
+        "mech-5.2",
+        "pma-5.8"
+      ],
+      "added": [
+        "pma-5.8"
+      ],
+      "note": "The stationary-angle step uses pma 5.8 at an interior differentiable extremum. For the primary bow, ψ(i)=4 arcsin(sin i/n)−2i, so ψ′(i)=4cos i/(n cos r)−2. Setting this to zero gives 4cos²i=n²−sin²i and therefore 3cos²i=n²−1. For water, 1<n<2, the derivative changes from positive to negative across this root, making it a maximum; the zero-derivative theorem alone would not establish that sign change or a brightness law. The endpoints and the secondary-bow minimum require their own angular branch."
+    },
+    "3.6": {
+      "file": "content/art/ch03.js",
+      "beforeDeps": [
+        "art-3.2"
+      ],
+      "afterDeps": [
+        "art-3.2",
+        "ode-1.5"
+      ],
+      "added": [
+        "ode-1.5"
+      ],
+      "note": "The thickness rule is the constant-rate decay law ode 1.5 applied separately at each wavelength. For a homogeneous absorber with fixed nonnegative coefficient κ(λ), dS/dx=−κS gives S(x)=S(0)e^{−κx}. Its unit-thickness transmittance is T=e^{−κ}, and thickness d therefore gives T^d. This assumes no wavelength conversion, scattering or interreflection; the exponential law is not inferred from arbitrary stacks with changing material coefficients."
+    },
+    "3.9": {
+      "file": "content/art/ch03-b.js",
+      "beforeDeps": [
+        "art-3.2",
+        "waves-6.5"
+      ],
+      "afterDeps": [
+        "art-3.2",
+        "waves-6.5",
+        "ladr-3.43"
+      ],
+      "added": [
+        "ladr-3.43"
+      ],
+      "note": "The layer calculation composes linear maps, as in ladr 3.43. At a fixed wavelength, angle and polarization, each layer maps the two tangential field coordinates at one face to those at the other in the same coordinate convention. Its complex 2×2 characteristic matrix is [[cosδ, i sinδ/η],[iη sinδ, cosδ]], with δ=2πnd cosθ_t/λ and the appropriate polarization admittance η. The ordered product propagates through the stack; reversing layers need not commute. Boundary conditions then give a reflected amplitude, whose squared magnitude is reflectance. This is field-amplitude composition, not addition of reflected intensities."
+    },
+    "4.2": {
+      "file": "content/art/ch04.js",
+      "beforeDeps": [
+        "art-4.1",
+        "ladr-2.28"
+      ],
+      "afterDeps": [
+        "art-4.1",
+        "ladr-2.28",
+        "ladr-6.70"
+      ],
+      "added": [
+        "ladr-6.70"
+      ],
+      "note": "The fewer-primary solve is the best-approximation result ladr 6.70. Regard the selected primary columns as a linear map P from signed powers to LMS responses. Its pseudoinverse gives the closest vector in range(P); the residual is orthogonal to that range. It is zero exactly for targets in the span, so a single primary matches itself even when it cannot match arbitrary triples. This unconstrained least-squares statement does not guarantee nonnegative powers, a perceptual match threshold or a complete color-appearance model."
+    },
+    "4.10": {
+      "file": "content/art/ch04-b.js",
+      "beforeDeps": [
+        "art-4.7",
+        "art-3.10"
+      ],
+      "afterDeps": [
+        "art-4.7",
+        "art-3.10",
+        "pma-5.8"
+      ],
+      "added": [
+        "pma-5.8"
+      ],
+      "note": "The normal-line construction uses the interior-extremum criterion pma 5.8. For a differentiable locus r(T) in the declared uv plane and a fixed test point q, differentiate squared distance: D′(T)=2(r(T)−q)·r′(T). A differentiable interior closest point must have D′=0, hence its displacement is perpendicular to a nonzero tangent. This is a necessary local condition, not a uniqueness guarantee, and finite table endpoints require separate checks. The widget searches its sampled locus; its finite nearest-point result is not an exact continuum or perceptual certificate."
+    },
+    "4.12": {
+      "file": "content/art/source-audit-dichromacy.js",
+      "beforeDeps": [
+        "art-4.2"
+      ],
+      "afterDeps": [
+        "art-4.2",
+        "vcalc-1.3"
+      ],
+      "added": [
+        "vcalc-1.3"
+      ],
+      "note": "The projection plane uses the cross-product normal of vcalc 1.3. If the neutral response E and chosen anchor A are independent, n=E×A is nonzero and perpendicular to both; their span is therefore the plane n·q′=0. Keeping the two retained coordinates fixed and solving this equation for the missing coordinate requires n_j≠0 and gives exactly the displayed formula. That division and the retained-signal choice of plane are essential; an arbitrary plane or a plane parallel to the missing-coordinate direction would not define this projection."
+    },
+    "4.15": {
+      "file": "content/art/source-audit-maxwell.js",
+      "beforeDeps": [
+        "art-4.4",
+        "art-4.2"
+      ],
+      "afterDeps": [
+        "art-4.4",
+        "art-4.2",
+        "opt-2.1"
+      ],
+      "added": [
+        "opt-2.1"
+      ],
+      "note": "The source-coordinate triangle uses the distinction between affine and convex combinations in opt 2.1. When a₁+a₂+a₃≠0, the normalized coefficients sum to one and locate an affine combination of the reference points. Nonnegative normalized coefficients place it in their triangle; signed coefficients may place it outside. These are coordinates of the rounded published equations, not negative emitted light. Transposing the negative source terms still compares two nonnegative physical fields; a zero coefficient sum cannot be normalized into this affine chart."
+    },
+    "4.16": {
+      "file": "content/art/source-audit-colorimetry-items.js",
+      "beforeDeps": [
+        "art-4.5",
+        "art-4.13"
+      ],
+      "afterDeps": [
+        "art-4.5",
+        "art-4.13",
+        "ladr-9.50"
+      ],
+      "added": [
+        "ladr-9.50"
+      ],
+      "note": "The determinant-to-inverse step is ladr 9.50: a square coordinate map is invertible exactly when its determinant is nonzero. For the declared path P(t), the four coefficients in the displayed determinant polynomial are positive; for 0≤t≤1 at least one of its nonnegative basis terms is positive, so det P(t)>0 throughout. Thus the inverse used on every table row exists at both endpoints and in between. This proves a coordinate change for the authored path, not realizability of its primaries as physical lights or a historical interpolation claim."
+    }
+  },
+  "edits": [
+    {
+      "file": "content/art/ch01.js",
+      "num": "1.4",
+      "field": "idea",
+      "before": "A point running along the line $A+t\\mathbf u$ is drawn at $d\\,(A_x+tu_x)/(A_y+tu_y)$ (art-1.2), which tends to $d\\,u_x/u_y$ as $t\\to\\infty$, whatever $A$ is. Geometrically, the image of a line is the trace on $\\Pi$ of the plane through $E$ and the line; all the planes through $E$ containing lines parallel to $\\mathbf u$ share the ray from $E$ in direction $\\mathbf u$, so their traces all pass through its pierce point. Earlier painters used the convergence of orthogonals; Guidobaldo del Monte stated and proved it for every family of parallels.",
+      "after": "A point running along the line $A+t\\mathbf u$ is drawn at $d\\,(A_x+tu_x)/(A_y+tu_y)$ (art-1.2), which tends to $d\\,u_x/u_y$ as $t\\to\\infty$, whatever $A$ is. Geometrically, the image of a line is the trace on $\\Pi$ of the plane through $E$ and the line; all the planes through $E$ containing lines parallel to $\\mathbf u$ share the ray from $E$ in direction $\\mathbf u$, so their traces all pass through its pierce point. Earlier painters used the convergence of orthogonals; Guidobaldo del Monte stated and proved it for every family of parallels.\n\nFor the limiting calculation, divide numerator and denominator by t. The projected coordinate is d(A_x/t+u_x)/(A_y/t+u_y). Along every sequence t→∞ in the visible part of the line, the quotient-limit theorem pma 3.3 gives d u_x/u_y when u_y≠0; the same calculation gives the height. A zero limiting denominator is precisely the excluded parallel-to-picture direction, not a finite vanishing point."
+    },
+    {
+      "file": "content/art/ch01.js",
+      "num": "1.4",
+      "field": "deps",
+      "before": "['art-1.2']",
+      "after": "[\"art-1.2\", \"pma-3.3\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "1.4",
+      "field": "deps",
+      "before": "['art-1.2']",
+      "after": "[\"art-1.2\", \"pma-3.3\"]"
+    },
+    {
+      "file": "content/art/ch01-b.js",
+      "num": "1.9",
+      "field": "idea",
+      "before": "The sight lines from the eye $E$ to the vanishing points are parallel to the three edges (art-1.4), so they are mutually perpendicular. Writing $E=H+d\\,\\mathbf n$ with $\\mathbf n$ normal to the picture, $(V_i-E)\\cdot(V_j-E)=0$ becomes $(V_i-H)\\cdot(V_j-H)+d^2=0$. Subtracting two of these equations gives $(V_1-H)\\cdot(V_2-V_3)=0$: $H$ lies on the altitude from $V_1$, and likewise on the other two, so it is the orthocentre. All three products are negative, and $d$ is real, only when the orthocentre lies inside the triangle, that is when the triangle is acute. Two-point perspective (art-1.8) is the limit in which $V_3$ runs off to infinity.",
+      "after": "The sight lines from the eye $E$ to the vanishing points are parallel to the three edges (art-1.4), so they are mutually perpendicular. Writing $E=H+d\\,\\mathbf n$ with $\\mathbf n$ normal to the picture, $(V_i-E)\\cdot(V_j-E)=0$ becomes $(V_i-H)\\cdot(V_j-H)+d^2=0$. Subtracting two of these equations gives $(V_1-H)\\cdot(V_2-V_3)=0$: $H$ lies on the altitude from $V_1$, and likewise on the other two, so it is the orthocentre. All three products are negative, and $d$ is real, only when the orthocentre lies inside the triangle, that is when the triangle is acute. Two-point perspective (art-1.8) is the limit in which $V_3$ runs off to infinity.\n\nThe metric step uses vcalc 1.2: perpendicular edge directions have zero dot product. Each image-plane vector V_i−H is perpendicular to the eye-normal n, so expanding (V_i−H−dn)·(V_j−H−dn) leaves (V_i−H)·(V_j−H)+d². Subtracting two such identities makes an altitude perpendicular to the opposite side. This is why the orthocentre and the recovered positive eye distance concern mutually perpendicular directions, rather than an arbitrary three-point projective view."
+    },
+    {
+      "file": "content/art/ch01-b.js",
+      "num": "1.9",
+      "field": "deps",
+      "before": "['art-1.8']",
+      "after": "[\"art-1.8\", \"vcalc-1.2\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "1.9",
+      "field": "deps",
+      "before": "['art-1.8']",
+      "after": "[\"art-1.8\", \"vcalc-1.2\"]"
+    },
+    {
+      "file": "content/art/ch01-b.js",
+      "num": "1.11",
+      "field": "idea",
+      "before": "The rays from the eye that graze a sphere form a circular cone around the line of sight to its centre (art-1.1), and the picture of the sphere is the section of that cone by the picture plane (art-1.2). For a sphere straight ahead the plane cuts the cone at right angles and the section is a circle; for a sphere at angle $\\theta$ the cut is oblique, and an oblique section of a circular cone is an ellipse, stretched about $1/\\cos\\theta$ times along the radial direction. The cross-section on the right shows the chord on the picture line growing toward the margin even though every sphere subtends the same angle. The retina, curved around the eye, receives every sphere as a round patch, which is why the ellipses look wrong (art-1.10).",
+      "after": "The rays from the eye that graze a sphere form a circular cone around the line of sight to its centre (art-1.1), and the picture of the sphere is the section of that cone by the picture plane (art-1.2). For a sphere straight ahead the plane cuts the cone at right angles and the section is a circle; for a sphere at angle $\\theta$ the cut is oblique, and an oblique section of a circular cone is an ellipse, stretched about $1/\\cos\\theta$ times along the radial direction. The cross-section on the right shows the chord on the picture line growing toward the margin even though every sphere subtends the same angle. The retina, curved around the eye, receives every sphere as a round patch, which is why the ellipses look wrong (art-1.10).\n\nThe axis calculation is a quadratic-form calculation (ladr 9.23). Rotate picture coordinates so the centre direction is (sinθ,cosθ,0), with rays q=(x,d,z). Tangency gives (q·n)²=cos²α |q|². Its quadratic coefficients in the radial and transverse directions are A=cos²θ−sin²α and cos²α. When A>0, translation completes the square; the squared semiaxes are d²sin²α cos²α/A² and d²sin²α/A. Their ratio is the stated cosα/√A. Positive definiteness is essential: the algebra does not classify every oblique cone cut as a bounded ellipse."
+    },
+    {
+      "file": "content/art/ch01-b.js",
+      "num": "1.11",
+      "field": "deps",
+      "before": "['art-1.10']",
+      "after": "[\"art-1.10\", \"ladr-9.23\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "1.11",
+      "field": "deps",
+      "before": "['art-1.10']",
+      "after": "[\"art-1.10\", \"ladr-9.23\"]"
+    },
+    {
+      "file": "content/art/ch01-b.js",
+      "num": "1.12",
+      "field": "idea",
+      "before": "Express each length through the area of a triangle with apex $O$: $\\overline{XY}=OX\\cdot OY\\,\\sin\\angle XOY/h$, where $h$ is the distance from $O$ to the line. In the cross-ratio the distances $OX$ and $h$ cancel, leaving\n$$\\frac{\\sin\\angle AOC\\,\\sin\\angle BOD}{\\sin\\angle BOC\\,\\sin\\angle AOD},$$\nwhich depends only on the four rays through $O$. So every line cutting those rays, in particular the picture of the original line (art-1.2), shows the same value. Pappus knew the invariance; Möbius and Chasles made it a cornerstone of projective geometry.",
+      "after": "Express each length through the area of a triangle with apex $O$: $\\overline{XY}=OX\\cdot OY\\,\\sin\\angle XOY/h$, where $h$ is the distance from $O$ to the line. In the cross-ratio the distances $OX$ and $h$ cancel, leaving\n$$\\frac{\\sin\\angle AOC\\,\\sin\\angle BOD}{\\sin\\angle BOC\\,\\sin\\angle AOD},$$\nwhich depends only on the four rays through $O$. So every line cutting those rays, in particular the picture of the original line (art-1.2), shows the same value. Pappus knew the invariance; Möbius and Chasles made it a cornerstone of projective geometry.\n\nThe cancellation can be written with the oriented-area identity vcalc 1.3. Put O at the origin and take signed scalar cross products in the plane. For X,Y on one source line, X×Y equals its fixed signed height times the directed separation XY. Thus the cross-ratio is (A×C)(B×D)/[(B×C)(A×D)]. Replacing each ray vector X by its nonzero projected multiple k_X X multiplies numerator and denominator by the same k_A k_B k_C k_D. This proves invariance whenever the four points and finite images are distinct and the denominator is nonzero."
+    },
+    {
+      "file": "content/art/ch01-b.js",
+      "num": "1.12",
+      "field": "deps",
+      "before": "['art-1.2']",
+      "after": "[\"art-1.2\", \"vcalc-1.3\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "1.12",
+      "field": "deps",
+      "before": "['art-1.2']",
+      "after": "[\"art-1.2\", \"vcalc-1.3\"]"
+    },
+    {
+      "file": "content/art/ch01-b.js",
+      "num": "1.13",
+      "field": "idea",
+      "before": "If the triangles lie in different planes the proof is one sentence: the planes of $ABC$ and $A'B'C'$ meet in a line, and each pair of corresponding sides lies in one plane through $O$, so the two sides meet at a point of both triangle planes, that is, on their common line (right panel). A plane configuration is a central projection of such a spatial one (art-1.2), and projection keeps lines and their intersections, so the three points stay collinear. Desargues’ work on perspective was published in 1648 by his pupil Abraham Bosse; the theorem became one of the foundations of projective geometry, alongside the cross-ratio (art-1.12).",
+      "after": "If the triangles lie in different planes the proof is one sentence: the planes of $ABC$ and $A'B'C'$ meet in a line, and each pair of corresponding sides lies in one plane through $O$, so the two sides meet at a point of both triangle planes, that is, on their common line (right panel). A plane configuration is a central projection of such a spatial one (art-1.2), and projection keeps lines and their intersections, so the three points stay collinear. Desargues’ work on perspective was published in 1648 by his pupil Abraham Bosse; the theorem became one of the foundations of projective geometry, alongside the cross-ratio (art-1.12).\n\nThe common-line step is the dimension formula ladr 2.43. In homogeneous coordinates for projective three-space, a plane corresponds to a three-dimensional subspace of R⁴. Two distinct such plane subspaces span R⁴, so their intersection has dimension 3+3−4=2: its projectivization is a line. The three side-intersections belong to both triangle planes and therefore to that line. This also includes parallel affine triangle planes: their common projective line is at infinity. Nondegenerate triangles and well-defined corresponding-side intersections are required by this argument."
+    },
+    {
+      "file": "content/art/ch01-b.js",
+      "num": "1.13",
+      "field": "deps",
+      "before": "['art-1.12']",
+      "after": "[\"art-1.12\", \"ladr-2.43\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "1.13",
+      "field": "deps",
+      "before": "['art-1.12']",
+      "after": "[\"art-1.12\", \"ladr-2.43\"]"
+    },
+    {
+      "file": "content/art/ch02-b.js",
+      "num": "2.8",
+      "field": "idea",
+      "before": "Whatever the answer, the logic is a statistical one. The test is: fit the best single projective camera (a $3\\times4$ matrix with 11 parameters) to the known 3D shape and its painted image, and look at the leftover misfit. A traced image has small misfit; but so does an image constructed with care, and a bigger misfit does not exclude tracing in pieces from several lens positions. The decisive quantity is therefore the unaided accuracy of the painters of the time, which is exactly what is in dispute. The experiment below is synthetic: a made-up chandelier and your own assumed error sizes, not measurements of any painting.",
+      "after": "Whatever the answer, the logic is a statistical one. The test is: fit the best single projective camera (a $3\\times4$ matrix with 11 parameters) to the known 3D shape and its painted image, and look at the leftover misfit. A traced image has small misfit; but so does an image constructed with care, and a bigger misfit does not exclude tracing in pieces from several lens positions. The decisive quantity is therefore the unaided accuracy of the painters of the time, which is exactly what is in dispute. The experiment below is synthetic: a made-up chandelier and your own assumed error sizes, not measurements of any painting.\n\nThe actual camera fit is homogeneous DLT: the normalized point equations form a real matrix A and a unit camera vector p is chosen to minimize |Ap|². The real spectral theorem ladr 7.29 diagonalizes the symmetric matrix AᵀA in an orthonormal eigenbasis. Writing p in that basis makes pᵀAᵀAp a weighted average of its eigenvalues, so a smallest-eigenvalue eigenvector minimizes this algebraic residual. The subsequently reported reprojection RMS is a different quantity; this fit is not a guarantee of its global minimum or a historical test identifying tracing."
+    },
+    {
+      "file": "content/art/ch02-b.js",
+      "num": "2.8",
+      "field": "deps",
+      "before": "['art-2.5', 'art-2.3']",
+      "after": "[\"art-2.5\", \"art-2.3\", \"ladr-7.29\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "2.8",
+      "field": "deps",
+      "before": "['art-2.5', 'art-2.3']",
+      "after": "[\"art-2.5\", \"art-2.3\", \"ladr-7.29\"]"
+    },
+    {
+      "file": "content/art/ch02-b.js",
+      "num": "2.9",
+      "field": "idea",
+      "before": "Both are consequences of art-1.10: the picture is a set of rays from $E_0$, and any scene whose points lie on those rays gives the same image. In the quadratura the ceiling replaces the painted architecture by its shadow from $E_0$; moving the eye changes the directions of the painted points but not those of the real architecture, so the join breaks. In the Ames room each point $P$ of the “apparent” rectangular room is slid along its ray to $\\lambda P$; to keep the floor, ceiling and walls planar the factors at the four corners must satisfy $1/\\lambda_{NL}+1/\\lambda_{BR}=1/\\lambda_{NR}+1/\\lambda_{BL}$. The viewer, assuming the walls are square, assigns the depth $y$ instead of $\\lambda y$ to a figure, hence the apparent height $h/\\lambda$.",
+      "after": "Both are consequences of art-1.10: the picture is a set of rays from $E_0$, and any scene whose points lie on those rays gives the same image. In the quadratura the ceiling replaces the painted architecture by its shadow from $E_0$; moving the eye changes the directions of the painted points but not those of the real architecture, so the join breaks. In the Ames room each point $P$ of the “apparent” rectangular room is slid along its ray to $\\lambda P$; to keep the floor, ceiling and walls planar the factors at the four corners must satisfy $1/\\lambda_{NL}+1/\\lambda_{BR}=1/\\lambda_{NR}+1/\\lambda_{BL}$. The viewer, assuming the walls are square, assigns the depth $y$ instead of $\\lambda y$ to a figure, hence the apparent height $h/\\lambda$.\n\nThe planarity constraint can be checked by the determinant criterion ladr 9.50. Write each apparent corner as P_i=(x_i,y_i,z_i), scaled from the eye to λ_i P_i with λ_i>0. Four scaled corners are coplanar exactly when their augmented 4×4 coordinate matrix is singular. Factoring λ_i from each row replaces its last entry by 1/λ_i. For each nondegenerate apparent rectangular face whose plane does not contain the eye, the two affine-diagonal sums of the first three coordinates agree, so the remaining determinant condition is precisely the displayed equality of opposite reciprocal-scale sums. The condition is geometric planarity, not an inference about perceived depth."
+    },
+    {
+      "file": "content/art/ch02-b.js",
+      "num": "2.9",
+      "field": "deps",
+      "before": "['art-1.10', 'art-2.1']",
+      "after": "[\"art-1.10\", \"art-2.1\", \"ladr-9.50\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "2.9",
+      "field": "deps",
+      "before": "['art-1.10', 'art-2.1']",
+      "after": "[\"art-1.10\", \"art-2.1\", \"ladr-9.50\"]"
+    },
+    {
+      "file": "content/art/source-audit-spectra.js",
+      "num": "3.2",
+      "field": "idea",
+      "before": "Three independent linear measurements compress a spectral vector. Their map has rank 3 here, independently checked from the actual table responses. A nonzero kernel alone would not prove that rank, and three nonnegative physical primaries need not reproduce every stimulus.\nThe optional metamer example constructs a kernel vector from four separated triangular bands using signed 3×3 minors. Its coefficients have absolute sum below 1, so both S₊=1+u·h and S₋=1−u·h stay nonnegative for 0≤u≤1. Their raw white-card XYZ agree in the declared model. Multiplication by a colored reflectance need not preserve that equality.",
+      "after": "Three independent linear measurements compress a spectral vector. Their map has rank 3 here, independently checked from the actual table responses. A nonzero kernel alone would not prove that rank, and three nonnegative physical primaries need not reproduce every stimulus.\nThe optional metamer example constructs a kernel vector from four separated triangular bands using signed 3×3 minors. Its coefficients have absolute sum below 1, so both S₊=1+u·h and S₋=1−u·h stay nonnegative for 0≤u≤1. Their raw white-card XYZ agree in the declared model. Multiplication by a colored reflectance need not preserve that equality.\n\nLinearity of each fixed-observer integral is pma 6.12: integrating a sum of spectra gives the sum of responses, and a scalar power factor comes outside. Here the continuous functions are piecewise polynomial on a finite band, so the integrability hypotheses hold. Separately, the signed-minor kernel construction uses the determinant expansion ladr 9.46: for a 3×4 response matrix B, set c_j=(−1)^j det(B with column j deleted), with indices starting at zero. Every component of Bc is the expansion of a determinant with a repeated row and is zero. A nonzero minor proves rank three; normalizing the coefficient absolute sum then supplies the separate all-wavelength nonnegativity bound already stated."
+    },
+    {
+      "file": "content/art/source-audit-spectra.js",
+      "num": "3.2",
+      "field": "deps",
+      "before": "['art-3.1']",
+      "after": "[\"art-3.1\", \"pma-6.12\", \"ladr-9.46\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "3.2",
+      "field": "deps",
+      "before": "['art-3.1']",
+      "after": "[\"art-3.1\", \"pma-6.12\", \"ladr-9.46\"]"
+    },
+    {
+      "file": "content/art/source-audit-optics-items.js",
+      "num": "3.3",
+      "field": "idea",
+      "before": "For declared points cᵢ and nonnegative amounts wᵢ, the geometric rule is Z=Σwᵢcᵢ/Σwᵢ. In modern CIE xy coordinates, standard-observer XYZ responses add linearly, but their chromaticities average with weights proportional to radiant power times X+Y+Z. Thus equal radiant powers do not generally have equal chromaticity weights. The second panel checks that separate modern statement for seven explicitly authored monochromatic wavelengths.",
+      "after": "For declared points cᵢ and nonnegative amounts wᵢ, the geometric rule is Z=Σwᵢcᵢ/Σwᵢ. In modern CIE xy coordinates, standard-observer XYZ responses add linearly, but their chromaticities average with weights proportional to radiant power times X+Y+Z. Thus equal radiant powers do not generally have equal chromaticity weights. The second panel checks that separate modern statement for seven explicitly authored monochromatic wavelengths.\n\nThe geometric center is a convex combination in the sense of opt 2.1: for nonnegative amounts with positive total, w_i/Σw_j are nonnegative and sum to one. Hence Z lies in the convex hull of the declared arc centroids, regardless of whether its direction is numerically resolvable. This is a statement about Newton’s geometric construction, not proof that those weights or centroids reproduce physical color matching. Zero total light is excluded from the division and is treated separately."
+    },
+    {
+      "file": "content/art/source-audit-optics-items.js",
+      "num": "3.3",
+      "field": "deps",
+      "before": "['art-3.1']",
+      "after": "[\"art-3.1\", \"opt-2.1\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "3.3",
+      "field": "deps",
+      "before": "['art-3.1']",
+      "after": "[\"art-3.1\", \"opt-2.1\"]"
+    },
+    {
+      "file": "content/art/ch03.js",
+      "num": "3.4",
+      "field": "idea",
+      "before": "Snell’s law (mech-5.2) turns the family of parallel rays into a map $b\\mapsto\\psi$; light is concentrated where that map has a stationary point, since $\\psi$ changes least there. That is a fold caustic of the ray bundle, and it is why a rainbow is a thin ring and not a disc. Descartes found the 42° ring by tracing rays through a large water-filled sphere and computing; Newton’s prism result (art-3.1) supplied the missing step, that each colour has its own $n$ and therefore its own ring.",
+      "after": "Snell’s law (mech-5.2) turns the family of parallel rays into a map $b\\mapsto\\psi$; light is concentrated where that map has a stationary point, since $\\psi$ changes least there. That is a fold caustic of the ray bundle, and it is why a rainbow is a thin ring and not a disc. Descartes found the 42° ring by tracing rays through a large water-filled sphere and computing; Newton’s prism result (art-3.1) supplied the missing step, that each colour has its own $n$ and therefore its own ring.\n\nThe stationary-angle step uses pma 5.8 at an interior differentiable extremum. For the primary bow, ψ(i)=4 arcsin(sin i/n)−2i, so ψ′(i)=4cos i/(n cos r)−2. Setting this to zero gives 4cos²i=n²−sin²i and therefore 3cos²i=n²−1. For water, 1<n<2, the derivative changes from positive to negative across this root, making it a maximum; the zero-derivative theorem alone would not establish that sign change or a brightness law. The endpoints and the secondary-bow minimum require their own angular branch."
+    },
+    {
+      "file": "content/art/ch03.js",
+      "num": "3.4",
+      "field": "deps",
+      "before": "['art-3.1', 'mech-5.2']",
+      "after": "[\"art-3.1\", \"mech-5.2\", \"pma-5.8\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "3.4",
+      "field": "deps",
+      "before": "['art-3.1', 'mech-5.2']",
+      "after": "[\"art-3.1\", \"mech-5.2\", \"pma-5.8\"]"
+    },
+    {
+      "file": "content/art/ch03.js",
+      "num": "3.6",
+      "field": "idea",
+      "before": "Each wavelength is attenuated independently of the others, and attenuations compose by multiplication since a layer removes a fixed fraction of what reaches it (the Beer–Lambert law). That is why the subtractive primaries are the colours that remove one third of the spectrum each: cyan removes red, magenta removes green, yellow removes blue, so that any pair leaves one third (cyan × yellow leaves green) and all three leave almost nothing. The additive primaries (red, green, blue filters) are poor subtractive primaries because each removes two thirds of the spectrum, and a pair of them already kills everything.",
+      "after": "Each wavelength is attenuated independently of the others, and attenuations compose by multiplication since a layer removes a fixed fraction of what reaches it (the Beer–Lambert law). That is why the subtractive primaries are the colours that remove one third of the spectrum each: cyan removes red, magenta removes green, yellow removes blue, so that any pair leaves one third (cyan × yellow leaves green) and all three leave almost nothing. The additive primaries (red, green, blue filters) are poor subtractive primaries because each removes two thirds of the spectrum, and a pair of them already kills everything.\n\nThe thickness rule is the constant-rate decay law ode 1.5 applied separately at each wavelength. For a homogeneous absorber with fixed nonnegative coefficient κ(λ), dS/dx=−κS gives S(x)=S(0)e^{−κx}. Its unit-thickness transmittance is T=e^{−κ}, and thickness d therefore gives T^d. This assumes no wavelength conversion, scattering or interreflection; the exponential law is not inferred from arbitrary stacks with changing material coefficients."
+    },
+    {
+      "file": "content/art/ch03.js",
+      "num": "3.6",
+      "field": "deps",
+      "before": "['art-3.2']",
+      "after": "[\"art-3.2\", \"ode-1.5\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "3.6",
+      "field": "deps",
+      "before": "['art-3.2']",
+      "after": "[\"art-3.2\", \"ode-1.5\"]"
+    },
+    {
+      "file": "content/art/ch03-b.js",
+      "num": "3.9",
+      "field": "idea",
+      "before": "The reflected spectrum is the squared magnitude of the sum of reflected waves, so it oscillates with $1/\\lambda$ and the colour is whatever the surviving wavelengths look like (thin-film interference, waves-6.5). The picture is computed with the characteristic-matrix method for lossless layers, which includes the Fresnel amplitudes at each face and the multiple internal reflections; the simple formula above is its first approximation. Because the colour comes from structure and not from absorption, it cannot be mixed like paint (art-3.7): it changes with the angle, and it is brightest on a dark background.",
+      "after": "The reflected spectrum is the squared magnitude of the sum of reflected waves, so it oscillates with $1/\\lambda$ and the colour is whatever the surviving wavelengths look like (thin-film interference, waves-6.5). The picture is computed with the characteristic-matrix method for lossless layers, which includes the Fresnel amplitudes at each face and the multiple internal reflections; the simple formula above is its first approximation. Because the colour comes from structure and not from absorption, it cannot be mixed like paint (art-3.7): it changes with the angle, and it is brightest on a dark background.\n\nThe layer calculation composes linear maps, as in ladr 3.43. At a fixed wavelength, angle and polarization, each layer maps the two tangential field coordinates at one face to those at the other in the same coordinate convention. Its complex 2×2 characteristic matrix is [[cosδ, i sinδ/η],[iη sinδ, cosδ]], with δ=2πnd cosθ_t/λ and the appropriate polarization admittance η. The ordered product propagates through the stack; reversing layers need not commute. Boundary conditions then give a reflected amplitude, whose squared magnitude is reflectance. This is field-amplitude composition, not addition of reflected intensities."
+    },
+    {
+      "file": "content/art/ch03-b.js",
+      "num": "3.9",
+      "field": "deps",
+      "before": "['art-3.2', 'waves-6.5']",
+      "after": "[\"art-3.2\", \"waves-6.5\", \"ladr-3.43\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "3.9",
+      "field": "deps",
+      "before": "['art-3.2', 'waves-6.5']",
+      "after": "[\"art-3.2\", \"waves-6.5\", \"ladr-3.43\"]"
+    },
+    {
+      "file": "content/art/ch04.js",
+      "num": "4.2",
+      "field": "idea",
+      "before": "Each column is obtained from the same cone fundamentals as art-4.1. Linearity adds the primary responses. The basis criterion (ladr-2.28) makes representation both possible and unique for three independent columns; it does not make two columns fail for every individual target.\n\nHere the authored monochromatic primaries are 540, 610 and 450 nm, each with one unit of integrated radiant power. The target is a unit-power spectral line at the selected wavelength mixed with a unit-power equal-energy spectrum: $\\mathbf t=(1-w)\\mathbf c(\\lambda)+w\\mathbf e$, where $\\mathbf e$ is the equal-energy integral divided by 440 nm. For fewer primaries, the solve button finds the unconstrained least-squares projection in these LMS coordinates. This residual is a numerical model distance, not a perceptual colour-difference threshold.",
+      "after": "Each column is obtained from the same cone fundamentals as art-4.1. Linearity adds the primary responses. The basis criterion (ladr-2.28) makes representation both possible and unique for three independent columns; it does not make two columns fail for every individual target.\n\nHere the authored monochromatic primaries are 540, 610 and 450 nm, each with one unit of integrated radiant power. The target is a unit-power spectral line at the selected wavelength mixed with a unit-power equal-energy spectrum: $\\mathbf t=(1-w)\\mathbf c(\\lambda)+w\\mathbf e$, where $\\mathbf e$ is the equal-energy integral divided by 440 nm. For fewer primaries, the solve button finds the unconstrained least-squares projection in these LMS coordinates. This residual is a numerical model distance, not a perceptual colour-difference threshold.\n\nThe fewer-primary solve is the best-approximation result ladr 6.70. Regard the selected primary columns as a linear map P from signed powers to LMS responses. Its pseudoinverse gives the closest vector in range(P); the residual is orthogonal to that range. It is zero exactly for targets in the span, so a single primary matches itself even when it cannot match arbitrary triples. This unconstrained least-squares statement does not guarantee nonnegative powers, a perceptual match threshold or a complete color-appearance model."
+    },
+    {
+      "file": "content/art/ch04.js",
+      "num": "4.2",
+      "field": "deps",
+      "before": "['art-4.1','ladr-2.28']",
+      "after": "[\"art-4.1\", \"ladr-2.28\", \"ladr-6.70\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "4.2",
+      "field": "deps",
+      "before": "['art-4.1', 'ladr-2.28']",
+      "after": "[\"art-4.1\", \"ladr-2.28\", \"ladr-6.70\"]"
+    },
+    {
+      "file": "content/art/ch04-b.js",
+      "num": "4.10",
+      "field": "idea",
+      "before": "The black-body spectrum depends on one parameter, $T$ (art-3.10), so its chromaticities form a curve (art-4.7); a general white light is described by two numbers, and CCT is the projection onto that curve. The projection is done in $(u,v)$ because that plane is more perceptually uniform than $(x,y)$ (a rough forerunner of art-5.5): the nearest point there is the black body that looks most like the light. McCamy’s cubic in $n=(x-0.3320)/(y-0.1858)$ is a quick empirical approximation of the same number near daylight.",
+      "after": "The black-body spectrum depends on one parameter, $T$ (art-3.10), so its chromaticities form a curve (art-4.7); a general white light is described by two numbers, and CCT is the projection onto that curve. The projection is done in $(u,v)$ because that plane is more perceptually uniform than $(x,y)$ (a rough forerunner of art-5.5): the nearest point there is the black body that looks most like the light. McCamy’s cubic in $n=(x-0.3320)/(y-0.1858)$ is a quick empirical approximation of the same number near daylight.\n\nThe normal-line construction uses the interior-extremum criterion pma 5.8. For a differentiable locus r(T) in the declared uv plane and a fixed test point q, differentiate squared distance: D′(T)=2(r(T)−q)·r′(T). A differentiable interior closest point must have D′=0, hence its displacement is perpendicular to a nonzero tangent. This is a necessary local condition, not a uniqueness guarantee, and finite table endpoints require separate checks. The widget searches its sampled locus; its finite nearest-point result is not an exact continuum or perceptual certificate."
+    },
+    {
+      "file": "content/art/ch04-b.js",
+      "num": "4.10",
+      "field": "deps",
+      "before": "['art-4.7', 'art-3.10']",
+      "after": "[\"art-4.7\", \"art-3.10\", \"pma-5.8\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "4.10",
+      "field": "deps",
+      "before": "['art-4.7', 'art-3.10']",
+      "after": "[\"art-4.7\", \"art-3.10\", \"pma-5.8\"]"
+    },
+    {
+      "file": "content/art/source-audit-dichromacy.js",
+      "num": "4.12",
+      "field": "idea",
+      "before": "A plane through the origin, neutral E and anchor A has normal n=E×A. Its projected coordinate is q′ⱼ=−Σₖ≠ⱼnₖqₖ/nⱼ, with the other two coordinates unchanged. The choice of plane must itself use the retained signals: compare S/M for protan, S/L for deutan and M/L for tritan against the same neutral ratio. This makes the entire confusion line map to one point.\nHere an invertible matrix P contains three actual model spectral-primary responses. Powers p+t·P⁻¹eⱼ vary only the missing response. Restricting t so every primary power stays0–1 gives physically nonnegative mixtures. If the interval collapses, the selected line contains just one available mixture.",
+      "after": "A plane through the origin, neutral E and anchor A has normal n=E×A. Its projected coordinate is q′ⱼ=−Σₖ≠ⱼnₖqₖ/nⱼ, with the other two coordinates unchanged. The choice of plane must itself use the retained signals: compare S/M for protan, S/L for deutan and M/L for tritan against the same neutral ratio. This makes the entire confusion line map to one point.\nHere an invertible matrix P contains three actual model spectral-primary responses. Powers p+t·P⁻¹eⱼ vary only the missing response. Restricting t so every primary power stays0–1 gives physically nonnegative mixtures. If the interval collapses, the selected line contains just one available mixture.\n\nThe projection plane uses the cross-product normal of vcalc 1.3. If the neutral response E and chosen anchor A are independent, n=E×A is nonzero and perpendicular to both; their span is therefore the plane n·q′=0. Keeping the two retained coordinates fixed and solving this equation for the missing coordinate requires n_j≠0 and gives exactly the displayed formula. That division and the retained-signal choice of plane are essential; an arbitrary plane or a plane parallel to the missing-coordinate direction would not define this projection."
+    },
+    {
+      "file": "content/art/source-audit-dichromacy.js",
+      "num": "4.12",
+      "field": "deps",
+      "before": "['art-4.2']",
+      "after": "[\"art-4.2\", \"vcalc-1.3\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "4.12",
+      "field": "deps",
+      "before": "['art-4.2']",
+      "after": "[\"art-4.2\", \"vcalc-1.3\"]"
+    },
+    {
+      "file": "content/art/source-audit-maxwell.js",
+      "num": "4.15",
+      "field": "idea",
+      "before": "The published equation b·C=a₁R+a₂G+a₃B gives coordinates for b units of the selected light. The triangle point is the affine combination with weights aᵢ/(a₁+a₂+a₃). A negative weight can put a point outside the reference triangle. It does not represent emission of a negative light: move that term to the other field.\nThe figure reproduces source-coordinate geometry from the actual rounded tables. It does not identify those coordinates with current CIE XYZ, cone excitation, or emitted display colors. Differences between the two observers are part of these measurements, rather than numerical errors to be forced away.",
+      "after": "The published equation b·C=a₁R+a₂G+a₃B gives coordinates for b units of the selected light. The triangle point is the affine combination with weights aᵢ/(a₁+a₂+a₃). A negative weight can put a point outside the reference triangle. It does not represent emission of a negative light: move that term to the other field.\nThe figure reproduces source-coordinate geometry from the actual rounded tables. It does not identify those coordinates with current CIE XYZ, cone excitation, or emitted display colors. Differences between the two observers are part of these measurements, rather than numerical errors to be forced away.\n\nThe source-coordinate triangle uses the distinction between affine and convex combinations in opt 2.1. When a₁+a₂+a₃≠0, the normalized coefficients sum to one and locate an affine combination of the reference points. Nonnegative normalized coefficients place it in their triangle; signed coefficients may place it outside. These are coordinates of the rounded published equations, not negative emitted light. Transposing the negative source terms still compares two nonnegative physical fields; a zero coefficient sum cannot be normalized into this affine chart."
+    },
+    {
+      "file": "content/art/source-audit-maxwell.js",
+      "num": "4.15",
+      "field": "deps",
+      "before": "['art-4.4','art-4.2']",
+      "after": "[\"art-4.4\", \"art-4.2\", \"opt-2.1\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "4.15",
+      "field": "deps",
+      "before": "['art-4.4', 'art-4.2']",
+      "after": "[\"art-4.4\", \"art-4.2\", \"opt-2.1\"]"
+    },
+    {
+      "file": "content/art/source-audit-colorimetry-items.js",
+      "num": "4.16",
+      "field": "idea",
+      "before": "The paper's p.88 matrix M has positive determinant and every row sums to1. The authored path P(t)=(1−t)M+tI therefore keeps the same white reference, moving its primary triangle from the source RGB coordinates to the abstract XYZ vertices. Its determinant is positive throughout: the coefficients of (1−t)³, t(1−t)², t²(1−t), t³ are respectively det(M), the sum of its principal two-minors, trace(M), and1, all positive.\nFor each t, multiply the official XYZ table by P(t) inverse. This is an exact change-of-basis identity in the linear model. At t=1 it returns the original nonnegative XYZ rows. Intermediate points are an authored mathematical interpolation, with no historical or physical-primary meaning.",
+      "after": "The paper's p.88 matrix M has positive determinant and every row sums to1. The authored path P(t)=(1−t)M+tI therefore keeps the same white reference, moving its primary triangle from the source RGB coordinates to the abstract XYZ vertices. Its determinant is positive throughout: the coefficients of (1−t)³, t(1−t)², t²(1−t), t³ are respectively det(M), the sum of its principal two-minors, trace(M), and1, all positive.\nFor each t, multiply the official XYZ table by P(t) inverse. This is an exact change-of-basis identity in the linear model. At t=1 it returns the original nonnegative XYZ rows. Intermediate points are an authored mathematical interpolation, with no historical or physical-primary meaning.\n\nThe determinant-to-inverse step is ladr 9.50: a square coordinate map is invertible exactly when its determinant is nonzero. For the declared path P(t), the four coefficients in the displayed determinant polynomial are positive; for 0≤t≤1 at least one of its nonnegative basis terms is positive, so det P(t)>0 throughout. Thus the inverse used on every table row exists at both endpoints and in between. This proves a coordinate change for the authored path, not realizability of its primaries as physical lights or a historical interpolation claim."
+    },
+    {
+      "file": "content/art/source-audit-colorimetry-items.js",
+      "num": "4.16",
+      "field": "deps",
+      "before": "['art-4.5','art-4.13']",
+      "after": "[\"art-4.5\", \"art-4.13\", \"ladr-9.50\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "4.16",
+      "field": "deps",
+      "before": "['art-4.5', 'art-4.13']",
+      "after": "[\"art-4.5\", \"art-4.13\", \"ladr-9.50\"]"
+    },
+    {
+      "file": "content/art/syllabus.js",
+      "num": "3.10",
+      "field": "deps",
+      "before": "['art-3.2', 'qm-1.1']",
+      "after": "[\"art-3.2\", \"qm-1.1\", \"thermo-9.4\"]"
+    }
+  ],
+  "rowRepair": {
+    "3.10": {
+      "fullDeps": [
+        "art-3.2",
+        "qm-1.1",
+        "thermo-9.4"
+      ],
+      "reason": "existing Planck idea explicitly consumes thermo-9.4; planned, zero published credit"
+    }
+  },
+  "counts": {
+    "newEdges": 18,
+    "consumers": 17
+  }
+}
