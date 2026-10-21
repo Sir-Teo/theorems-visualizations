@@ -22,7 +22,7 @@
     ],
     "current": [
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
-      "Latest fully passing immutable checkpoint12 remains 94a77908 (2,230 tests). New checkpoint13 d4bceece completes 2,232/2,233: one unchanged MATHBIO4.14 convergence assertion fails; isolated diagnostic passes but does not waive it. Strict/static/queue/prerequisite checks pass; independent diagnosis underway.",
+      "Latest immutable checkpoint14 (5eb8fb42) passes all 2,233 tests on existing CI major Node22.23.3, strict/static/queue/inventory checks pass. Prior Node26 checkpoint13 failure and independent diagnostics remain unresolved compatibility evidence; no assertion/model/runtime policy changed.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Frozen light and dark 3840/DPR2 paired cases independently accepted at 87e95436 and e3c5e6f6. Actual optimized main pixels, exact renderer histories and logical-resource gates pass for those two cases. FontFace preparation-order differences remain disclosed. Current 23,955-edge source preparation, unused private lifecycle repair native-tiny work and numerical-test diagnosis continue. No broader/current matrix, lifecycle or 60 fps acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
@@ -1369,13 +1369,13 @@
   "latestCheckpoint": {
     "testedContentCommit": "94a77908068d8c6a3be5fbe10808d0910195facf",
     "acceptedContentCommit": "94a77908",
-    "report": "docs/verification/checkpoint-94a77908.md",
-    "defaultTests": 2230,
+    "report": "docs/verification/checkpoint-5eb8fb42-node22.md",
+    "defaultTests": 2233,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 105.444316709,
+    "testDurationSeconds": 153.0708085,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1386,7 +1386,7 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 113187,
+    "homeGzipBytes": 112515,
     "pendingSourceReviews": 5,
     "acceptedTeamEntriesAtSnapshot": 146,
     "publishedCrossFieldShortfall": 0,
@@ -1400,17 +1400,21 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-continuation/checkpoint12-build.log",
-      "/tmp/atlas-continuation/checkpoint12-tests.log",
-      "/tmp/atlas-continuation/checkpoint12-static.log",
-      "/tmp/atlas-continuation/checkpoint12-queue.log",
-      "/tmp/atlas-continuation/checkpoint12-crossfield-accepted.log"
+      "/tmp/atlas-continuation/checkpoint14-build.log",
+      "/tmp/atlas-continuation/checkpoint14-tests.log",
+      "/tmp/atlas-continuation/checkpoint14-static.log",
+      "/tmp/atlas-continuation/checkpoint14-queue.log",
+      "/tmp/atlas-continuation/checkpoint14-crossfield-accepted.log"
     ],
     "limitations": [
-      "Includes all accepted prerequisite inputs through final GAME; zero accepted shortfall/unknowns. Includes ARCH right-reaction and ART plan label repairs. Excludes pending PL compact-canvas and CPLX count/ID/preset corrections and one-shard readiness/guard implementation.",
-      "Frozen BIGHIST3.5 remains unaccepted and excluded; source queue5 unchanged. Default tests do not replace source review.",
-      "Both old original-only map attempts stop before alternate opens. New source/model/tiny readiness does not accept a full map, lifecycle or timing."
-    ]
+      "Includes all accepted prerequisites and source-count inventory, reviewed local runtime repairs, independent frozen light/dark case reports and unused private lifecycle source-model proposal. Excludes later current-atlas fixture and native tiny attempt.",
+      "Default tests do not execute explicit full map or negative lifecycle probes; current/wider/native/performance gates remain open.",
+      "Node26 checkpoint13 and independent reproduced convergence failures remain preserved and unresolved. Node22 pass is a distinct configured-runtime result.",
+      "Frozen BIGHIST3.5 restriction/exclusion and source queue5 remain exact; no source flag cleared by prerequisite or map work."
+    ],
+    "commit": "5eb8fb42d994560f43dd49840305c37cb4e49731",
+    "runtime": "Node22.23.3 / V8 12.4.254.21-node.57, matching existing CI major22; local Darwin arm64",
+    "runtimePolicy": "Existing workflows pin22. Temporary official binary, SHA verified; no project/global policy change. Node26 failure remains open."
   },
   "openStateFindings": [
     {
@@ -1554,13 +1558,16 @@
     },
     {
       "id": "mathbio-4.14-convergence-test-observation",
-      "status": "open-independent-diagnosis",
+      "status": "open-node26-compatibility-diagnosis-frozen",
       "finding": "Unchanged convergence assertion fails in checkpoint13 and a fresh independent exact-file child; other isolated runs pass. Exact source hashes preserved. Numerical locals observed under inspector show coarse and middle rates equal; this does not yet establish model, quadrature or JIT cause.",
       "report": "docs/verification/checkpoint-d4bceece.md",
       "scope": "Retain all failures, diagnose actual values without weakening assertions or model. This is MATHBIO4.14, separate from open original-source3.14.",
       "diagnostic": "787bf97c7a70f728095a3d81ab17875ab3c0aba8",
       "diagnosticReport": "docs/verification/mathbio-age-convergence-independent-diagnostic.md",
-      "note": "39boundedchildren retain two exact-file failures; pausedcoarse/middlerates equal. Cause unproved; further minimal per-call/grid identity witness sought. No assertion/model/runtime change; checkpoint13 remainsfailed."
+      "note": "39boundedchildren retain two exact-file failures; pausedcoarse/middlerates equal. Cause unproved; further minimal per-call/grid identity witness sought. No assertion/model/runtime change; checkpoint13 remainsfailed.",
+      "followup": "3711cf67ee6d40b9218d545484ae4f7893c29efc",
+      "followupReport": "docs/verification/mathbio-age-minimal-followup.md",
+      "configuredRuntimeResult": "Existing CI major22: full unchanged default suite2,233/2,233 passes onNode22.23.3 at5eb8fb42. This does not prove or erase Node26 cause; no speculative correction."
     }
   ],
   "stateFollowups": [
@@ -3200,6 +3207,15 @@
       ],
       "report": "docs/verification/map-single-dark-source-logic-peer.md",
       "scope": "Bounded separate dark mirror from f778d8eb: seven exact runner literal substitutions, same original light runner and20protected paths, fixed frozen case/options, five producer and seven independently browser/server-blocked PREPARE cases. Root integrated model passes. Unique default directories; inherited explicit-directory PREPARE metadata overwrite documented. Root staged d05e26f1, full dark case unrun pending accepted light audit and new six-worker quiet hold."
+    },
+    {
+      "status": "accepted-current-source-tiny-model-prepare-only",
+      "commits": [
+        "20ff60a1b9150310c80354c17d8fdb69c96f525a",
+        "d86d94a440347f08d9675148e029b1210f1ed23a"
+      ],
+      "report": "docs/verification/map-current-atlas-logic-peer.md",
+      "scope": "Pins checkpoint12 full2179-file static tree and support closure; actual13574/23955 including540pdeps, selectedclosure10/3442, LADR365/9. Independent resolver/loader/protected-state guard and PREPARE checks pass; root integrated model/prepare pass onNode22. Synthetic scene owners are not GPU-cost evidence. Separate full oracle source proposal pending; no browser/fullmap/currentpixel/resource acceptance."
     }
   ],
   "latestFailedCheckpoint": {
@@ -3234,5 +3250,51 @@
       "report": "docs/verification/map-private-lifecycle-repair-independent-peer.md",
       "scope": "Three exact reversible snippets. Same 31 source-model cases give old9fail/new0; 12 independent adverse cases give old7fail/new0. Root integrated paired/adverse checks pass. Production and existing static fixtures remain byte-exact. Separate native tiny producer assigned; no runner wiring or native acceptance."
     }
+  },
+  "previousPassingCheckpoint": {
+    "testedContentCommit": "94a77908068d8c6a3be5fbe10808d0910195facf",
+    "acceptedContentCommit": "94a77908",
+    "report": "docs/verification/checkpoint-94a77908.md",
+    "defaultTests": 2230,
+    "uiTests": 6,
+    "testFailures": 0,
+    "testCancelled": 0,
+    "testSkipped": 0,
+    "testDurationSeconds": 105.444316709,
+    "testConcurrency": 2,
+    "strictBuildErrors": 0,
+    "strictBuildWarnings": 0,
+    "staticItems": 6621,
+    "staticErrors": 0,
+    "staticWarnings": 0,
+    "writtenItems": 6684,
+    "plannedItems": 6890,
+    "chapters": 450,
+    "collections": 85,
+    "homeGzipBytes": 113187,
+    "pendingSourceReviews": 5,
+    "acceptedTeamEntriesAtSnapshot": 146,
+    "publishedCrossFieldShortfall": 0,
+    "publishedCollectionsBelowTarget": 0,
+    "nonMathCollections": 64,
+    "wholeSyllabusBelowTarget": 0,
+    "wave5Status": "prepared-unstarted",
+    "wave5Chapters": 80,
+    "wave5NewItems": 1031,
+    "wave5PreservedItems": 2,
+    "map60fps": "open; no benchmark amid competing browser jobs",
+    "flagshipProofCuration": "2/100 alongside-wave work",
+    "evidence": [
+      "/tmp/atlas-continuation/checkpoint12-build.log",
+      "/tmp/atlas-continuation/checkpoint12-tests.log",
+      "/tmp/atlas-continuation/checkpoint12-static.log",
+      "/tmp/atlas-continuation/checkpoint12-queue.log",
+      "/tmp/atlas-continuation/checkpoint12-crossfield-accepted.log"
+    ],
+    "limitations": [
+      "Includes all accepted prerequisite inputs through final GAME; zero accepted shortfall/unknowns. Includes ARCH right-reaction and ART plan label repairs. Excludes pending PL compact-canvas and CPLX count/ID/preset corrections and one-shard readiness/guard implementation.",
+      "Frozen BIGHIST3.5 remains unaccepted and excluded; source queue5 unchanged. Default tests do not replace source review.",
+      "Both old original-only map attempts stop before alternate opens. New source/model/tiny readiness does not accept a full map, lifecycle or timing."
+    ]
   }
 }
