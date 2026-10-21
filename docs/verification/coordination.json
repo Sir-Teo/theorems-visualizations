@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest immutable checkpoint14 (5eb8fb42) passes all 2,233 tests on existing CI major Node22.23.3, strict/static/queue/inventory checks pass. Prior Node26 checkpoint13 failure and independent diagnostics remain unresolved compatibility evidence; no assertion/model/runtime policy changed.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Frozen light/dark optimized cases, one current packed-XY fallback case and the new current-light curve case are independently accepted at their exact boundaries. Current curve main frames use 125 tiles/152 chunks/1,741,699 indices with zero fallback and logical peak 60,216,360. Wider matrix, lifecycle, production and 60 fps remain open.",
+      "Frozen light/dark optimized cases, one current packed-XY fallback case, 32 curve tiny cases and one optimized current-light curve case are independently accepted at their exact correctness boundaries. The subsequent instrumented timing screen is independently verified as FAILED: cadence 10.96 to 7.59 draws/s and _draw wall p95 4.3 to 140 ms. Failed evidence is preserved; wider cases, production, lifecycle and 60 fps acceptance remain blocked.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -33,7 +33,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold explicitly released; no new native, optimization implementation or Wave 5 authorized.",
+      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -43,7 +43,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold explicitly released; no new native, optimization implementation or Wave 5 authorized.",
+      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -53,7 +53,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold explicitly released; no new native, optimization implementation or Wave 5 authorized.",
+      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,8 +62,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "timing-failed-saved-evidence-peer",
-      "current": "Independent offline audit of one failed timing screen; no native/browser/server or new variants.",
+      "status": "available-all-jobs-closed",
+      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -73,7 +73,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold explicitly released; no new native, optimization implementation or Wave 5 authorized.",
+      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -83,7 +83,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold explicitly released; no new native, optimization implementation or Wave 5 authorized.",
+      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -3446,7 +3446,7 @@
     "nativePeerReport": "docs/verification/map-curve-edge-native-independent-imaging-peer.md"
   },
   "curveCurrentTiming": {
-    "status": "one-native-performance-screen-failed-independent-saved-peer-pending",
+    "status": "independently-verified-failed-instrumented-performance-screen",
     "planCommits": [
       "d849436efd072c512c3f2eb316cee3c0eadb1f74",
       "3376b17f6c4fe5297b04bb57ba9f9cc156181c34"
@@ -3487,7 +3487,11 @@
     "curveCadence": 7.593494906259625,
     "originalDrawP95MS": 4.299999952316284,
     "curveDrawP95MS": 140,
-    "rootAudit": "/tmp/atlas-continuation/curve-timing-root-audit.json"
+    "rootAudit": "/tmp/atlas-continuation/curve-timing-root-audit.json",
+    "nativePeer": "44c10528c27d2470909055580b837e8110922a38",
+    "nativePeerReport": "docs/verification/map-curve-timing-independent-imaging-peer.md",
+    "additionalNativeAuthorised": false,
+    "allJobsClosed": true
   },
   "s2ReadbackIsolation": {
     "status": "independently-reviewed-diagnostic-reference-unresolved",

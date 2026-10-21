@@ -1,6 +1,6 @@
 # Current-light curve timing screen — preserved failure
 
-The one instrumented matched pair **fails the predeclared performance screen**, after all runner correctness, resource and timing-path gates pass. Root ran exactly once from immutable `51f12b83ad940b2af5476ba58827d7e72d6aaeff`; exit 1 occurs only at the final performance assertion. Independent saved-evidence review is pending. This result stops wider cases and production adoption; it does not measure displayed FPS or establish a cause.
+The one instrumented matched pair **fails the predeclared performance screen**, after all runner correctness, resource and timing-path gates pass. Root ran exactly once from immutable `51f12b83ad940b2af5476ba58827d7e72d6aaeff`; exit 1 occurs only at the final performance assertion. [Independent saved-evidence review](map-curve-timing-independent-imaging-peer.md) at `44c10528c27d2470909055580b837e8110922a38` confirms the failure and all stated correctness/timing-path checks. This result stops wider cases and production adoption; it does not measure displayed FPS or establish a cause.
 
 | Recorded metric | Original persistent scene | Curve candidate |
 | --- | ---: | ---: |

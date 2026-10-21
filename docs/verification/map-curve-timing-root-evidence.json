@@ -1,0 +1,47 @@
+{
+  "pass": true,
+  "scope": "Independent root re-open of saved failed instrumented timing screen; no rendering or timing rerun",
+  "sourceStage": "51f12b83ad940b2af5476ba58827d7e72d6aaeff",
+  "failureSHA256": "6c2bacabd4c5a61c85b2a5882f1e664fdb9f29845a32348487f1eac90658ade6",
+  "pieces": 1010,
+  "transportBytes": 1054711197,
+  "completeFiles": 10,
+  "variants": {
+    "original": {
+      "samples": 24,
+      "cadence": 10.961406713861612,
+      "cpuMean": 2.6333333055178323,
+      "cpuP95": 4.299999952316284,
+      "originalEvents": 447,
+      "traceEvents": 4128,
+      "callbacks": 72,
+      "rawSHA256": {
+        "A0": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822",
+        "A1": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822",
+        "A2": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822",
+        "A3": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+      },
+      "retained": 57483620,
+      "peak": 59375200
+    },
+    "chunk": {
+      "samples": 24,
+      "cadence": 7.593494906259625,
+      "cpuMean": 131.06250001986822,
+      "cpuP95": 140,
+      "originalEvents": 447,
+      "traceEvents": 4128,
+      "callbacks": 72,
+      "rawSHA256": {
+        "A0": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822",
+        "A1": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822",
+        "A2": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822",
+        "A3": "7d92770cb067446ac7183c2df631f711483037c9cedc50c55b6befae2de2c822"
+      },
+      "retained": 58324780,
+      "peak": 60216360
+    }
+  },
+  "performanceAccepted": false,
+  "nativeRepeated": false
+}
