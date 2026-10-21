@@ -1,0 +1,54 @@
+# Wave 5: Music 9 — Harmony and chord geometry
+
+Authored 2026-10-21. All 23 planned numbers 9.1–9.23 are implemented in `ch09.js`, `ch09-b.js`, `ch09-c.js`, using only the new isolated helper `ch09.shared.js`. Only chapter-9 syllabus rows are synchronized. Earlier music drafts, central generated data and other chapters are preserved. This is a candidate for independent review, not a source-queue acceptance.
+
+## Source evidence and honest scope
+
+The primary geometry source was retrieved and its complete article body on printed pp.72–74 read through the web tool: Dmitri Tymoczko, [The Geometry of Musical Chords](https://www.brainmusic.org/EducationalActivities/Tymoczko_chords2006.pdf), *Science* 313 (2006), DOI 10.1126/science.1126287. PDF page1 is a download cover, so printed pages72–74 are PDF pages2–4. The used passages are the voice-leading definition on72, the torus/permutation quotient and Möbius-strip construction on73, and the distinction among transpositional, permutational and inversional near-symmetries on73–74. Supporting movies, repertoire transcriptions and the supplemental general optimization algorithm were not authenticated. The new displays compute original small models rather than reproduce paper figures.
+
+The authoritative open teaching source is **Open Music Theory 2e**. Actual used headings/passages were accessed through web open/search on2026-10-21:
+
+| Items | Source and actual reading |
+|---|---|
+| 9.1 | [Chord Symbols](https://viva.pressbooks.pub/openmusictheory/chapter/chord-symbols/), triad/seventh quality tables; [Seventh Chords](https://viva.pressbooks.pub/openmusictheory/chapter/seventh-chords/), qualities and naming. |
+| 9.2,9.22 | [Inversion](https://viva.pressbooks.pub/openmusictheory/chapter/inversion/), root versus bass and triadic inversion. |
+| 9.3 | [Roman Numerals](https://viva.pressbooks.pub/openmusictheory/chapter/roman-numerals/), root degree/case/quality; [Harmonic functions](https://open-musictheory.github.io/docs/harmony/harmonicFunctions/), style/context dependence. No corpus was supplied or invented. |
+| 9.6 | [First-Species Counterpoint](https://viva.pressbooks.pub/openmusictheory/chapter/first-species-counterpoint/), independence, crossing and parallel perfect-consonance passages. Only a declared subset of rules is checked. |
+| 9.10,9.12,9.13 | [Neo-Riemannian Triadic Progressions](https://viva.pressbooks.pub/openmusictheory/chapter/neo-riemannian-triadic-progressions/), P/L/R definitions, lattice triangles and alternating cycles. The formulas and finite cycle counts are independently calculated. |
+| 9.15 | [Figured Bass and Roman Numerals with Figures](https://viva.pressbooks.pub/openmusictheory/chapter/figured-bass/), triadic/seventh inversion figures. Generic letter intervals are computed separately from semitones. |
+| 9.16 | [Introduction to Harmony, Cadences, and Phrase Endings](https://viva.pressbooks.pub/openmusictheory/chapter/intro-to-harmony/), authentic/half cadence and PAC/IAC criteria. Local harmonic ingredients are separated from phrase-level classification. |
+| 9.17 | [Strengthening Endings with V7](https://viva.pressbooks.pub/openmusictheory/chapter/strengthening-endings-with-v7/), default complete-V7 to incomplete-I resolution, including tripled tonic and omitted fifth; B→C, F→E and D→C tendencies. |
+| 9.18 | [Diatonic Sequences in Middles](https://viva.pressbooks.pub/openmusictheory/chapter/diatonic-sequences/), model/copy and descending-fifths construction. The example is explicitly a root skeleton with block playback. |
+| 9.19 | [Tonicization](https://viva.pressbooks.pub/openmusictheorycopy/chapter/tonicization/), tonicizing major/minor targets; diminished/augmented target exclusions in the elementary key model. |
+| 9.20 | [Extended Tonicization and Modulation to Closely Related Keys](https://viva.pressbooks.pub/openmusictheory/chapter/extended-tonicization-and-modulation-to-closely-related-keys/), shared diatonic pivots, matching candidate lists and tonicization/modulation distinction. |
+| 9.21 | [Substitutions](https://viva.pressbooks.pub/openmusictheory/chapter/substitutions/), tritone-away dominant replacement and shared guide tones. |
+
+Some Pressbooks opens returned403 while web search or later opens returned the chapter body; this record claims only the named actual passages, not complete reading of the entire book. Public refs are tied to those sources and original computations; unread textbook chapters are not credited as checked evidence.
+
+Item9.4 and9.14 are modular major-scale derivations; the helper explicitly supplies the seven major-scale degrees. Their six-common-tone and one-semitone identities are exhaustively checked across all twelve keys. Item9.9 proves a specific cyclic-matching bound from gaps; it does not inherit the syllabus’s overly broad “efficient voice leading needs nearly even chords” assertion. The gap-simplex diagram in9.8 is expressly a two-dimensional cross-section, not the full three-dimensional quotient.
+
+**Retained uncertainty:**9.11 gives its own finite centralizer proof and tests all24 triads and all generated permutations. The [Fiore–Noll paper](https://arxiv.org/abs/1102.1496) abstract and bibliographic identity were inspected, but its complete original proof passages were not read; `verify:true` remains. For9.22, the [Library of Congress catalogue search record07034192](https://www.loc.gov/item/07034192/) confirms author/title/year; a direct open returned403. The original French treatise has not been independently read. The historical account remains flagged, and the root-reduction example is explicitly modern/authored. Neither flag is silently cleared by the numerical tests.
+
+## Variety and computational contract
+
+The chapter uses clock polygons, a registered root/bass plot, a phrase graph, intersection bars, assignment line diagrams, a rule diagnostic, projected Möbius parameterization, a gap simplex, transposition-cost bars, a commuting-action graph, a Tonnetz patch, alternating cycles, a seven-voice scale replacement, computed figured bass, cadence/tendency-tone examples, a sequence graph, pivot table, a jazz substitution comparison, historical root reduction and an interpolated quotient path. Distinct models share small drawing functions, not one generic static picture.
+
+The helper’s assignment search enumerates all permutations and chooses the shortest octave displacement for each matched pair. The menu declares L1/L2/L∞. For three voices this is global over the stated pitch-class domain; no claim is made about a constrained SATB optimum. The chapter’s bound9.9 uses actual gaps and is independently checked for every three-element integer pitch-class set anchored at zero. Its Möbius rectangle glues `(0,d)` to `(6,12−d)`; the projected surface is topological illustration, not a metric isometry. Repeated notes are retained where the multiset quotient requires them.
+
+Audio is user-triggered only: four harmonics1/h per voice at mono44100Hz, normalized by voice count and25/12, multiplied by0.1, with441-sample end ramps. Events have2205-sample silent gaps. Every authored register lies below Nyquist even at the fourth partial. The pre-runtime waveform bound is0.1. The shared runtime output stage and device remain outside this mathematical amplitude contract. Buffer values and actual browser-triggered buffers are checked; no human listening or perceptual certification is claimed.
+
+## Verification
+
+- `node --test tests/wave5-music.test.mjs`:11/11 groups pass. This includes full inventory, all24 PLR states/involutions and T/I commutations, exact24-permutation closure and simple transitivity, independent octave-lift optimization under all three metrics, all integer three-note gap bounds, PL/PR cycles, continuous Möbius seam and simplex checks, all major-key/pivot identities, parallel diagnostics, waveform samples/ramps/gaps/normalization/Nyquist checks, actual G/B/D/F inversion basses, and exact played chord-class membership/guide-tone resolutions.
+- `node scripts/check.mjs music/9 --static`:23 items,0 errors,0 warnings. Log `/tmp/atlas-wave5-music-static.log`.
+- `node tests/wave5-music.mjs`: **92/92 native groups pass**, all23 items ×940/360px ×light/dark. This checks every segmented option, every offered integer slider value, representative continuous midpoints/endpoints, toggles, finite readouts, actual text bounds and pixel content, page/TeX overflow, exact saved-state replay, actual H4 buffer rates/finite values/peak/zero endpoints, stop actions and no autoplay. There are1,472 checked states,512 screenshot outputs and136 actual playback actions. Log `/tmp/atlas-wave5-music-native.log`.
+- Final changed-item reruns also pass:32 groups/420states/168shots/56audio actions (`...-native-targeted.log`),8 bar groups/88states/32shots (`...-native-bars.log`), and16 voice-legend groups/224states/96shots/32audio actions (`...-native-legends.log`). These overwrite the same state screenshot filenames with final source, rather than claiming every attempted output is unique. All logs are under `/tmp/atlas-wave5-music-*`.
+- The standard chapter harness additionally passes23/23 with zero failures, TeX/blank warnings or quality warnings: `node scripts/check.mjs music/9 --still --jobs=1`, log `/tmp/atlas-wave5-music-harness-light.log`.
+
+Agent visual inspection covered all23 default light desktop layouts and all23 light/dark mobile layouts through contact sheets, plus full-size mobile clock/group panels and the final dyad-path, substitution and inversion displays. The independent reviewer inspected both source and diagrams, reran the11 math groups, supplied an independent145,200-combination voice-assignment oracle, and reran8 native9.17/9.21 groups. See their independent report for acceptance scope; this note does not impersonate that review.
+
+The review caught and repaired two actual voiced-chord issues: the dominant-inversion rotation initially left the low G in the bass, and the original substitution playback used an added A instead of the declared G7’s D. The corrected shared models are tested against actual bass classes and complete declared source pitch-class sets. A tonic-third omission in the cadence example was also repaired. Readout/diagram descriptions and figured-bass abbreviation wording were clarified; source-order voice legends were added.
+
+A development native blank diagnostic initially aliased the regularly spaced bar pixels because of the shared harness’s every37th-pixel sample. Visual inspection confirmed the populated chart. The owned native gate independently scans actual alpha pixels without that stride; a meaningful zero baseline was also added to each bar chart, and the unchanged standard harness subsequently passes. No shared runtime or harness was edited.
+
+No whole-suite or generated-data build is performed by this chapter worker. Parent owns wave reconciliation, full build and independent-review acceptance.
