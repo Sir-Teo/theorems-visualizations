@@ -1,0 +1,87 @@
+{
+  "baseline": "ee15d812",
+  "collection": "bighist",
+  "scope": "Four consumers only; bighist3.5 remains frozen and byte-identical, no source review or source closure.",
+  "changes": [
+    {
+      "num": "1.5",
+      "file": "content/bighist/ch01.js",
+      "added": [
+        "ladr-6.14"
+      ],
+      "note": "For each overlap with nonconstant ring sequences, centre both vectors and divide their inner product by the product of their norms. Cauchy–Schwarz (ladr-6.14) bounds this Pearson correlation between −1 and 1; equality means proportional centred patterns. A high correlation alone does not establish a unique date: searching many lags, autocorrelation and shared trends still require the replication and filtering described above.",
+      "before": [
+        "geol-1.4"
+      ],
+      "full": [
+        "geol-1.4",
+        "ladr-6.14"
+      ],
+      "itemDepsBefore": "deps: ['geol-1.4']",
+      "itemDepsAfter": "deps: ['geol-1.4', 'ladr-6.14']",
+      "rowDepsBefore": "deps: []",
+      "rowDepsAfter": "deps: ['geol-1.4', 'ladr-6.14']"
+    },
+    {
+      "num": "1.8",
+      "file": "content/bighist/ch01.js",
+      "added": [
+        "pma-6.21",
+        "ladr-6.61"
+      ],
+      "note": "The random-event generator can be derived on its finite positive interval $[A,B]$. The fundamental theorem (pma-6.21) integrates $t^{-k}$: use $F(t)=(t^{1-k}-A^{1-k})/(B^{1-k}-A^{1-k})$ for $k\\ne1$, and $F(t)=\\ln(t/A)/\\ln(B/A)$ for $k=1$. These strictly increasing CDFs map the endpoints to 0 and 1, so solving $F(t)=u$ for a uniform draw gives the displayed sampler. Separately, the fitted log–log line is the orthogonal projection of the vector $y_i=\\log_{10}\\Delta t_i$ onto the span of the constant vector and $x_i=\\log_{10}t_i$ (ladr-6.61). With at least two distinct $x_i$, this gives the unique least-squares intercept and slope; it does not turn a selected milestone list into an unbiased historical test.",
+      "before": [
+        "bighist-1.1"
+      ],
+      "full": [
+        "bighist-1.1",
+        "pma-6.21",
+        "ladr-6.61"
+      ],
+      "itemDepsBefore": "deps: ['bighist-1.1']",
+      "itemDepsAfter": "deps: ['bighist-1.1', 'pma-6.21', 'ladr-6.61']",
+      "rowDepsBefore": "deps: ['bighist-1.1']",
+      "rowDepsAfter": "deps: ['bighist-1.1', 'pma-6.21', 'ladr-6.61']"
+    },
+    {
+      "num": "2.5",
+      "file": "content/bighist/ch02.js",
+      "added": [
+        "mech-2.12",
+        "mech-2.8"
+      ],
+      "note": "For the impact estimate, take the origin at the two-body centre of mass and write the relative position and velocity as $\\mathbf r$ and $\\mathbf v$. The centre-of-mass decomposition (mech-2.12), with $m_1\\mathbf r_1+m_2\\mathbf r_2=0$, reduces the orbital sum to $\\mu\\,\\mathbf r\\times\\mathbf v$, where $\\mu=m_1m_2/(m_1+m_2)$. The angular-momentum lever-arm formula (mech-2.8) then gives its magnitude $\\mu v b$ for the incoming relative trajectory. This is the orbital contribution; initial spins and the angular momentum carried by escaping material must be included in a full impact budget. The estimate alone does not establish the simulated disk composition.",
+      "before": [
+        "bighist-2.4"
+      ],
+      "full": [
+        "bighist-2.4",
+        "mech-2.12",
+        "mech-2.8"
+      ],
+      "itemDepsBefore": "deps: ['bighist-2.4']",
+      "itemDepsAfter": "deps: ['bighist-2.4', 'mech-2.12', 'mech-2.8']",
+      "rowDepsBefore": "deps: ['bighist-2.4']",
+      "rowDepsAfter": "deps: ['bighist-2.4', 'mech-2.12', 'mech-2.8']"
+    },
+    {
+      "num": "2.7",
+      "file": "content/bighist/ch02.js",
+      "added": [
+        "geol-3.4"
+      ],
+      "note": "The single-pole reconstruction uses the rigid-cap result geol-3.4: an orientation-preserving rigid displacement about Earth's fixed centre is one rotation about an Euler axis, and compositions are again such rotations. Thus a finite reconstruction needs a pole and an angle, while reversing its history uses inverse rotations in reverse order. This applies within the rigid-plate approximation; deforming boundaries and uncertainty in old poles are not removed by the rotation theorem.",
+      "before": [
+        "bighist-2.4"
+      ],
+      "full": [
+        "bighist-2.4",
+        "geol-3.4"
+      ],
+      "itemDepsBefore": "deps: ['bighist-2.4']",
+      "itemDepsAfter": "deps: ['bighist-2.4', 'geol-3.4']",
+      "rowDepsBefore": "deps: ['bighist-2.4']",
+      "rowDepsAfter": "deps: ['bighist-2.4', 'geol-3.4']"
+    }
+  ]
+}
