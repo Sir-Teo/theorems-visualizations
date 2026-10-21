@@ -3,7 +3,7 @@
   "baselinePath": "tests/map-curve-current-oracle.mjs",
   "baselineSHA256": "41874db761a1514e71a2335eac3354d406bbbc2b74d2a2f856610dccea632128",
   "candidatePath": "tests/map-curve-timing-oracle.mjs",
-  "candidateSHA256": "871fb57bfef192accad0183c8b5e36b6a158c2bcfa4c67c768784c20a040d84f",
+  "candidateSHA256": "6a049e670ad3e60a7cf99f4c45d2d2f001d6ddc45a809f7ed61a780666a40b95",
   "exceptions": [
     {
       "before": "import{curveCurrentFixture as currentAtlasFixture,manifestSHA256,sha}from'../scripts/lib/map-curve-current-fixture.mjs';",
@@ -12,7 +12,7 @@
     },
     {
       "before": "from'../scripts/lib/map-curve-current-boundary.mjs';",
-      "after": "from'../scripts/lib/map-curve-timing-boundary.mjs';import{validateTimingMetadata,screenDecision}from'../scripts/lib/map-curve-timing-protocol.mjs';import{cpus,freemem}from'node:os';",
+      "after": "from'../scripts/lib/map-curve-timing-boundary.mjs';import{validateTimingMetadata,screenDecision}from'../scripts/lib/map-curve-timing-protocol.mjs';import{captureOwnedBrowserPID,runTimingWatchdog,closeOwnedBrowser,within}from'../scripts/lib/map-curve-timing-watchdog.mjs';import{cpus,freemem}from'node:os';",
       "reason": "New exact root+quiet flags and pure finite validators; host identities outside clock."
     },
     {
@@ -37,12 +37,12 @@
     },
     {
       "before": "window.__pairedFailureMetadata=freezeFailureEpoch({message});",
-      "after": "const{timingEvidence}=await import('/scripts/lib/map-curve-timing-browser.mjs');window.__pairedFailureMetadata={...freezeFailureEpoch({message}),timing:timingEvidence()};",
+      "after": "const{timingEvidence,stopTimingTail}=await import('/scripts/lib/map-curve-timing-browser.mjs');await stopTimingTail(message);window.__pairedFailureMetadata={...freezeFailureEpoch({message}),timing:timingEvidence()};",
       "reason": "Preserve partial timing evidence with unchanged raw salvage."
     },
     {
       "before": "return captureGuardedEpoch();});",
-      "after": "return captureGuardedEpoch();});const timingDevice=await page.evaluate(()=>{const gl=window.__mapAudit.__scene.gl,e=gl.getExtension('WEBGL_debug_renderer_info');return{visibility:document.visibilityState,renderer:gl.getParameter(e?e.UNMASKED_RENDERER_WEBGL:gl.RENDERER),vendor:gl.getParameter(e?e.UNMASKED_VENDOR_WEBGL:gl.VENDOR),version:gl.getParameter(gl.VERSION)};}),timingHostBefore=hostSnapshot();results.variants[variant]={header,timingDevice,timingHostBefore};await fsp.writeFile(path.join(out,'timing-window-entry.json'),JSON.stringify(results,null,2));const timingRun=await page.evaluate(async variant=>{const{captureTimingTail}=await import('/scripts/lib/map-curve-timing-browser.mjs');return captureTimingTail(window.__mapAudit.__scene,variant);},variant),timingHostAfter=hostSnapshot();",
+      "after": "return captureGuardedEpoch();});const timingDevice=await page.evaluate(()=>{const gl=window.__mapAudit.__scene.gl,e=gl.getExtension('WEBGL_debug_renderer_info');return{visibility:document.visibilityState,renderer:gl.getParameter(e?e.UNMASKED_RENDERER_WEBGL:gl.RENDERER),vendor:gl.getParameter(e?e.UNMASKED_VENDOR_WEBGL:gl.VENDOR),version:gl.getParameter(gl.VERSION)};}),timingHostBefore=hostSnapshot();results.variants[variant]={header,timingDevice,timingHostBefore};await fsp.writeFile(path.join(out,'timing-window-entry.json'),JSON.stringify(results,null,2));const timingRun=await runTimingWatchdog(()=>page.evaluate(async variant=>{const{captureTimingTail}=await import('/scripts/lib/map-curve-timing-browser.mjs');return captureTimingTail(window.__mapAudit.__scene,variant);},variant),{browser,owner:browserOwnership,salvage:message=>salvageFailure(page,variant,message),record:async evidence=>{results.watchdog=evidence;await fsp.writeFile(path.join(out,'watchdog.json'),JSON.stringify(evidence,null,2));}}),timingHostAfter=hostSnapshot();",
       "reason": "Unchanged correctness prefix, then one finite timed tail before any raw transfer/direct Canvas."
     },
     {
@@ -79,6 +79,31 @@
       "before": "await fsp.writeFile(path.join(out,'complete.json'),JSON.stringify({...results,pass:true},null,2));",
       "after": "results.performance=screenDecision(results.variants.original.timingSummary,results.variants.chunk.timingSummary);await fsp.writeFile(path.join(out,'performance-pending-assertions.json'),JSON.stringify(results,null,2));assert.ok(results.performance.pass,results.performance.reasons.join('; '));await fsp.writeFile(path.join(out,'complete.json'),JSON.stringify({...results,pass:true},null,2));",
       "reason": "Persist all raw/correctness/performance outcomes before unrounded60/no-observed-regression screen."
+    },
+    {
+      "description": "Finite timeout and owned cleanup successor",
+      "before": "let browser,activePage=null",
+      "after": "let browser,browserOwnership=null,activePage=null"
+    },
+    {
+      "description": "Finite timeout and owned cleanup successor",
+      "before": "const page=activePage=await browser.newPage",
+      "after": "browserOwnership=await captureOwnedBrowserPID(browser);const page=activePage=await browser.newPage"
+    },
+    {
+      "description": "Finite timeout and owned cleanup successor",
+      "before": "await browser.close();browser=null;activePage=null;",
+      "after": "await closeOwnedBrowser(browser,browserOwnership);browser=null;browserOwnership=null;activePage=null;"
+    },
+    {
+      "description": "Finite timeout and owned cleanup successor",
+      "before": "}catch(e){if(activePage",
+      "after": "}catch(e){if(e.watchdog){results.watchdog=e.watchdog;browser=null;activePage=null;}if(activePage"
+    },
+    {
+      "description": "Finite timeout and owned cleanup successor",
+      "before": "finally{await browser?.close();await new Promise(r=>server.close(r));}",
+      "after": "finally{if(browser)await closeOwnedBrowser(browser,browserOwnership);try{await within(()=>new Promise(r=>server.close(r)),5000,'owned HTTP close');}catch(error){server.closeAllConnections();results.serverCloseFailure=error.message;await fsp.writeFile(path.join(out,'cleanup-failure.json'),JSON.stringify(results,null,2));}}"
     }
   ]
 }

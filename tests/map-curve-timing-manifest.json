@@ -40,16 +40,20 @@
       "sha256": "bdcc03ab7515b299113f2e3adb3aa12b18d75e91a2fcfcd5be1af6a97f1de15a"
     },
     "scripts/lib/map-curve-timing-protocol.mjs": {
-      "bytes": 7417,
-      "sha256": "d20e1a43add32485a8f5d58fc247ccb975c2f2114aa99c46abd30d9fbdd13dd1"
+      "bytes": 7465,
+      "sha256": "0005b4cbdd76223dd15808150caf0017f0d513f2560588e0078ffdacc7128425"
     },
     "scripts/lib/map-curve-timing-browser.mjs": {
-      "bytes": 6005,
-      "sha256": "81fe6b30a29fc6ebfe7207f6442d8aa4df2187f66471aedd646ecdead74fdd75"
+      "bytes": 8313,
+      "sha256": "f52a268145aea9637df8b90906643b100442d58dd9744d955aa836c6c0669336"
     },
     "scripts/lib/map-curve-timing-boundary.mjs": {
       "bytes": 449,
       "sha256": "710577e384118a90417aae3b598034181edd469dc52c30c159fd4fbdfa508d90"
+    },
+    "scripts/lib/map-curve-timing-watchdog.mjs": {
+      "bytes": 3178,
+      "sha256": "36de272e3ba68acb8fb1f00887f8e25cb96a9e13f81f2cb51de4b32fca8c15d6"
     }
   },
   "browserFiles": [
