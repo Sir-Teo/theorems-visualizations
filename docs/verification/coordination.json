@@ -1551,6 +1551,13 @@
       ],
       "report": "docs/verification/cplx-local-runtime-independent-peer.md",
       "scope": "Single right chord [0,4] changed to [0,6]; explicit permutation maps all 49 adjacency entries, with equal histograms at every offered step. Root focused model/default checks pass."
+    },
+    {
+      "id": "mathbio-4.14-convergence-test-observation",
+      "status": "open-independent-diagnosis",
+      "finding": "Unchanged convergence assertion fails in checkpoint13 and a fresh independent exact-file child; other isolated runs pass. Exact source hashes preserved. Numerical locals observed under inspector show coarse and middle rates equal; this does not yet establish model, quadrature or JIT cause.",
+      "report": "docs/verification/checkpoint-d4bceece.md",
+      "scope": "Retain all failures, diagnose actual values without weakening assertions or model. This is MATHBIO4.14, separate from open original-source3.14."
     }
   ],
   "stateFollowups": [
@@ -3165,6 +3172,15 @@
       ],
       "report": "docs/verification/map-selected-shard-independent-imaging-peer.md",
       "scope": "One explicit actual frozen LADR shard load before font census. Exact365metadata/9summary additions, protected catalog/node/model/owner/layout/closure identities and full callback/network prefixes. Independent review found9falseaccepts inold0fed guard; all retained. Separatec66closing passes20independentcases (normal+19adverse),32producer cases+7existingmodels andfreshone-fetch available-statement tiny withpersonalPNGinspection. Rootintegrated32+7models andprepare-onlypass. Sameepoch/atlas/binding/resource/fonthelpers/gates, no retries/select/draw/warmup or logreplacement. Explicitmissing\u2192available DOM readiness differs oldemptyhistory. Fullmap/lifecycle/timing UNRUN; diagnostic full-map storage unmeasured."
+    },
+    {
+      "status": "accepted-source-model-prepare-only",
+      "commits": [
+        "5de7ae4265c5cdda15ef8920799ee1c51931b6df",
+        "46b87b41009c4ccdba4fedd42a2f8a9397dbf89d"
+      ],
+      "report": "docs/verification/map-single-dark-source-logic-peer.md",
+      "scope": "Bounded separate dark mirror from f778d8eb: seven exact runner literal substitutions, same original light runner and20protected paths, fixed frozen case/options, five producer and seven independently browser/server-blocked PREPARE cases. Root integrated model passes. Unique default directories; inherited explicit-directory PREPARE metadata overwrite documented. Root staged d05e26f1, full dark case unrun pending accepted light audit and new six-worker quiet hold."
     }
   ],
   "latestFailedCheckpoint": {
