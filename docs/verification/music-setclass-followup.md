@@ -1,0 +1,41 @@
+# Music 8.9–8.13: complete finite pitch-class actions and interval vectors
+
+Candidate: all five source flags remain true until an independent peer accepts the exact committed snapshot. Changes are confined to these five objects, their syllabus rows, three isolated files and their checks. Neighboring 8.8 and 8.14 bodies are preserved.
+
+## Primary technical source actually read
+
+Read Dave Benson, *Music: A Mathematical Offering*, author-hosted web version dated 14 December 2008: https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf. The complete 531-page PDF is retained at `/tmp/atlas-music-pythagorean-sources/benson-music.pdf`, SHA256 `6983deabf65460f5bfa01fdf3748963d2a4a8045c3fe8a4c42aa18a477da57a7`. Read the complete used §9.13 lemma/proof on printed pp.330–331 and §9.14 on pp.332–336, including both orbit tables, the explicit representative convention, interval vectors, set-class examples and the hexachord complement list. The adjacent tone-row application on pp.331–332 was read as context; its counts are not substituted for subset counts.
+
+Actual source-page pixels, rather than extracted formulas alone, were inspected for printed pp.333–336: `/tmp/atlas-coordinator/music-setclass-sources/benson-{347,348,349,350}.png`. The corresponding PDF pages are numbered 347–350 using a one-based count. No original Forte, Rahn, Babbitt, Lewin, Fox or nineteenth-century priority claim is authenticated here. Benson supplies the technical exposition; the all-domain classification and finite implementation are explicitly authored computations. An apparently inconsistent final paragraph on printed p.334 is not used to infer the examples: all numeric vectors are independently calculated from their stated sets.
+
+## Corrections and mathematical scope
+
+- **8.9:** states the exact representative convention: minimize the sorted image tuple by first entry, last entry, then successive interior entries. Enumerating the 24 transpositions/inversions and taking this minimum is invariant on an orbit. The original ordered pitch list itself is not invariant under transposition. Every distinct class member is displayed in a responsive grid; repeated images and stabilizing operations are distinguished, with their product equal to 24. No generic Forte name or claim of agreement with every other prime-form convention is attached to larger sets.
+- **8.10:** gives the double-counting proof, a dependency on the actual Burnside lemma, exact fixed-subset counts from permutation cycles, all 13 cardinalities and direct orbit counts. The identity's 924 six-note sets are displayed as a readable number instead of being clipped by a bar scale. Totals include empty and full sets: 352 under transposition, 224 with inversion.
+- **8.11:** counts each unordered pair once, including a tritone pair, and separates an invariant from a complete orbit description. The supplied examples are exact. Unsupported historical/perceptual claims are removed. Zero-valued hollow copy markers and dense vectors remain fully inside the plot.
+- **8.12:** proves the general complement identity by inclusion–exclusion. The shift is 12−2k in classes 1–5 and 6−k in the antipodal class. A general circle's half-circle term is likewise treated separately. All 4096 subsets, including empty/full, can be edited; random buttons use a declared finite seeded generator rather than an ideal iid claim.
+- **8.13:** requires equal cardinalities and both transposition/inversion equivalence. Complete orbit enumeration gives 23 unordered Z-pairs, distributed 1/3/15/3/1 over sizes 4–8. All 15 six-note pairs are complementary classes. Every pair and all 24 operation overlaps are available; no perceived sound difference is inferred from mathematical inequivalence.
+
+The five syllabus rows match the actual click targets, source references, dependencies, finite model and playback. Existing neighboring content is preserved. New helpers do not change the shared set-class/audio runtime or other musical items.
+
+## Sound and state
+
+The bounded renderer supports up to 24 events and 12 simultaneous notes, unlike the existing four-note/twelve-event helper. It declares C4=261.6256 Hz, equal-tempered pitch classes in one octave, eight harmonics with 1/h amplitude, mono 44100 Hz samples, 441-sample endpoint ramps and peak normalization bounded by 0.12. Class playback uses every distinct member in increasing mask order. Other buttons compare their declared actual sets. Empty events are silence. The runtime routes the buffer through the normal voice/master/limiter path and Stop cancels playback; restoring state never starts sound.
+
+All twelve-bit masks and seeds have bounded validators. Edited masks, random state, choices, sliders and inversion switches round-trip exactly. Clicking the empty center/exterior does not accidentally toggle a note; actual visible note positions and member clocks are interactive.
+
+## Evidence
+
+`node --test tests/verification-music-setclass.test.mjs`: six groups pass, `/tmp/atlas-coordinator/music-setclass-math.log`. Independent generator-based orbit partitions check every subset and its canonical tuple, witnesses and stabilizers. Independent bit-permutation enumeration and cycle-polynomial coefficients check all 312 fixed counts. Circular correlations check every interval vector and complement identity, including all 924 hexachords. Independently constructed vector buckets check every Z-pair and all operation overlaps. Additional checks cover all visible targets, deterministic seeds, malformed domains, returned-cache immutability and independently sampled H8 waveform/gap/peak values.
+
+`node scripts/check.mjs music-8.9 music-8.10 music-8.11 music-8.12 music-8.13 --static`: five items, zero errors/warnings. `/tmp/atlas-coordinator/music-setclass-static.log`. The syllabus also passes `node --check`.
+
+`node tests/verification-music-setclass.mjs` (filtered by item): all 30 item × 1450/430/320px × light/dark matrices pass after the final source/text changes. Logs are `/tmp/atlas-coordinator/music-setclass-native-{class,burnside,vector,hex,z}.log`. Every preset, all 13 cardinalities and both groups, all 23 Z-pairs and operation corners, every actual note hit, member selection, seeded subset, saved-state replay and malformed fallback are exercised. Native input values and accessible text are checked. Every actual audio sample is independently recomputed in the browser, including every event, voice, silence gap, peak bound, scheduled start, gain/master/limiter route and Stop action. Full path/circle/marker strokes, canvas labels, table non-overlap, TeX and page bounds remain enforced.
+
+Actual narrow output pixels were inspected for the 24-member grid, the full 924-count table, transformed colored pairs, complement bars and complete Z-overlap chart. Source and output inspection is machine-assisted agent review, not a claimed human study. `git diff --check` and byte-for-byte guards for both neighboring item bodies and all unowned syllabus rows pass. Source flags remain true at this candidate stage.
+
+Initial checks caught an assertion's negative-zero expected pair count at k=0 and a harness assumption that native range elements expose `aria-valuenow`. The corrected assertions check the nonnegative unordered-pair count and the actual native input value plus runtime `aria-valuetext`. No production bounds, mathematical tolerance or geometry check was weakened.
+
+## Independent acceptance, 20 October 2026
+
+Worker three accepted exactf5c65dd after independently reading all used Benson sections and source pixels, inspecting the three isolated production files and five syllabus rows, and running fresh exhaustive math6/6, static5/0/0 and all10 narrow light/dark native groups. It also independently checked92,840 general-circle complement cases for circle sizes3–13. The complete sound buffers, real click targets/choices, all Z-pairs, replay/fallback, output-chain route, Stop and no-autoplay checks passed. Fresh grid,924table, transformed pairs, complement bars and complete overlap-chart pixels were inspected. Evidence: `/tmp/atlas-worker-three/setclass-peer-{math,static,native,extra}.log` and `setclass-peer-*.png`. No actionable findings remained in the scoped claims. The coordinator may clear all five source flags.

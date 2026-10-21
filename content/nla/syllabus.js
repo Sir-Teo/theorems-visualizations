@@ -42,7 +42,7 @@ export default {
         { num: '1.7', kind: 'Theorem', name: 'Norms, rank and subspaces from the SVD', deps: ['nla-1.6'], refs: ['Trefethen–Bau Lec. 5'],
           pic: 'Slide a singular value to zero; the ellipse flattens to a segment, the rank readout drops, and the range and null space are read off as spans of columns of U and V.' },
         { num: '1.8', kind: 'Theorem', name: 'Eckart–Young: best low-rank approximation', deps: ['nla-1.7', 'ladr-7.92'], refs: ['Trefethen–Bau Lec. 5'],
-          pic: 'Truncate the SVD of a matrix after k terms; the 2-norm error equals σ_{k+1} exactly, and competitors of rank at most k cannot do better (equality is possible).' },
+          pic: 'Truncate the SVD of a matrix after k terms; the 2-norm error equals σ_{k+1} exactly, and random rank-k competitors drawn for comparison always do worse.' },
         { num: '1.9', kind: 'Method', name: 'Image compression by truncated SVD', deps: ['nla-1.8'], refs: ['Trefethen–Bau Lec. 5'],
           pic: 'A greyscale image is rebuilt from its first k singular triplets with a slider for k; storage cost, relative error and the singular value decay curve are shown together.' },
         { num: '1.10', kind: 'Method', name: 'Principal component analysis via the SVD', deps: ['nla-1.8'], refs: ['Trefethen–Bau Lec. 5'],
@@ -127,7 +127,7 @@ export default {
         { num: '3.15', kind: 'Paper', name: 'Numerical inverting of matrices of high order',
           paper: { authors: 'John von Neumann and H. H. Goldstine', year: 1947, title: 'Numerical inverting of matrices of high order', venue: 'Bulletin of the American Mathematical Society 53 (11): 1021–1099', doi: '10.1090/S0002-9904-1947-08909-6' },
           introduces: ['nla-3.2'], deps: ['nla-4.1', 'nla-1.4', 'nla-3.1'], refs: [],
-          pic: 'Elimination in simulated low-precision arithmetic on matrices of growing order: the reader compares the error of the computed inverse for well-conditioned matrices and for Hilbert matrices, sees it scale like (condition number) × (unit roundoff) as the paper’s estimates predict, and sets it against the 4ⁿ error growth the paper refuted.' },
+          pic: 'Separate modern partial-pivoted p-bit experiment: compare relative inverse error, unnormalized residual and authored κ₂u/4ⁿu scales for random and Hilbert matrices. Original1947 fixed-point/definite-matrix analysis, Gram reduction and conditional statistical estimates are explicitly distinguished; resampled seeds replay exactly.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

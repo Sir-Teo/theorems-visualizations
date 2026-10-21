@@ -1,0 +1,23 @@
+[
+  {
+    "file": "hays-imbrie-shackleton-1976.pdf",
+    "url": "https://www.whoi.edu/cms/files/hays76sci_268464.pdf",
+    "bytes": 3004061,
+    "sha256": "ec5072f6f57d834d7eeba99086788c81e46767332cd26b0c8e668b67fde86d19",
+    "readScope": "Original13pagePDF inclJSTORcover. Main1121\u20131131 read with second original-reprint OCR aid; Table4p1124 and conclusions1131 personally inspected as original pixels. Originalrawcoredata/BergerandMilankovitch sources not audited."
+  },
+  {
+    "file": "hays-harvard-1976.pdf",
+    "url": "https://courses.seas.harvard.edu/climate/eli/Courses/EPS231/Sources/06-Glacial/2-Milankovitch/Papers/Hays-Imbrie-Shackleton-1977.pdf",
+    "bytes": 1202496,
+    "sha256": "5318ba8b58fb50a4ae1addb9e1c6423190355d0980ecb53034f20bbe8f3f1dc1",
+    "readScope": "Author-uploaded originalreprint in coursecache;15pages includingResearchGate/wrapper pages, actual article1121\u20131132. Filename/headermetadata1977doesnotreplace actualoriginal10December1976 date. Used OCR aid only; numerical claims crosschecked originalWHOIpixels."
+  },
+  {
+    "file": "imbrie-imbrie-1980.pdf",
+    "url": "https://www.whoi.edu/cms/files/imbrie80sci_268884.pdf",
+    "bytes": 1970536,
+    "sha256": "f75f4cacc90e63c830198c4043b8c82cbf20d42962919f9901831dd34bcfd438",
+    "readScope": "Original12pagePDF inclJSTORcover. Main943\u2013952 read, actual944orbitaldiscussion,949Eqs1/2,950Fig9andparameterdescription personally inspected. References953 and cited raworbital data/otheroriginals not independently audited."
+  }
+]

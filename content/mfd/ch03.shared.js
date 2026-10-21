@@ -38,3 +38,16 @@ export function project0(g, x, y, it = 30) {
 
 /** Marsaglia-free tiny helper: wrap an angle difference into (-pi, pi]. */
 export const adiff = (a) => { let d = ((a % TAU) + TAU) % TAU; if (d > Math.PI) d -= TAU; return d; };
+
+/** Exact critical data for tilted height on the torus of revolution (R=1.25, r=.5). */
+export function torusHeightData(tau) {
+ const s=Math.sin(tau),c=Math.cos(tau),h=(a,b)=>s*(1.25+.5*Math.cos(b))*Math.cos(a)+.5*c*Math.sin(b);
+ if(tau===0)return {h,critical:[],degenerate:true};
+ const beta=Math.PI/2-tau;
+ const critical=[[0,beta],[Math.PI,Math.PI-beta],[Math.PI,-beta],[0,beta-Math.PI]].map(([a,b])=>{
+  b=((b%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+  const haa=-s*(1.25+.5*Math.cos(b))*Math.cos(a),hbb=-.5*(s*Math.cos(a)*Math.cos(b)+c*Math.sin(b));
+  const l=[haa,hbb].sort((a,b)=>a-b);return {a,b,val:h(a,b),H:[[haa,0],[0,hbb]],l,idx:l.filter(x=>x<0).length};
+ }).sort((p,q)=>p.val-q.val);
+ return {h,critical,degenerate:false};
+}

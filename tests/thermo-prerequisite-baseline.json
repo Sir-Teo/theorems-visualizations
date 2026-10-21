@@ -1,0 +1,531 @@
+{
+  "edges": {
+    "1.16": [
+      "pma-6.21"
+    ],
+    "2.11": [
+      "pma-6.21"
+    ],
+    "3.5": [
+      "pma-9.15"
+    ],
+    "3.11": [
+      "pma-6.21"
+    ],
+    "4.10": [
+      "pma-5.8"
+    ],
+    "6.3": [
+      "prob-1.6.9a"
+    ],
+    "6.4": [
+      "prob-2.2.1"
+    ],
+    "6.8": [
+      "prob-2.1.11"
+    ],
+    "6.15": [
+      "pma-8.21"
+    ],
+    "6.16": [
+      "pma-8.21",
+      "pma-8.22"
+    ]
+  },
+  "baseline": {
+    "1.11": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "db9e7f1d08d4681d36ff32d2acf92942f2d7f5e29e4ba1a4a7bdabbff89dc9db"
+    },
+    "1.12": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "c6c55860626be97e78534ea5fdc991e724cac5ff302422ea5720d694e6e5d5ce"
+    },
+    "1.13": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "5d85485706c5124c3b1014e0a906137c58c501565a802d9cedc26a23dd1559dc"
+    },
+    "1.14": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "44c2fa57f4c3d44ee1a35a2595e4ff77953d69edd80e2a6d6dd22a605a99f6e8"
+    },
+    "1.15": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "93c15c9efb1543032793576f72a0ad711a5df8faef3d87303f306188428a660a"
+    },
+    "1.16": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "b83bdcff803d9101a84a799008780018109b41643d963129f52a6d353df53625",
+      "deps": [
+        "thermo-1.11",
+        "thermo-1.13"
+      ],
+      "idea": "Insulated, every bit of work done on the gas stays in it: $\\tfrac f2 Nk\\,dT = -P\\,dV = -NkT\\,dV/V$, so $\\tfrac f2\\,d\\ln T = -d\\ln V$, i.e. $TV^{2/f}$ is constant \u2014 and $PV = NkT$ turns that into $PV^{(f+2)/f}$ = const. In contact with a bath the same work flows straight out as heat, and $T$ stays put. Molecularly, each molecule bouncing off an advancing piston comes back a little faster; an insulated gas keeps that energy, a conducting one hands it to the walls. Molecules with rotational energy share the gain over more degrees of freedom, so their temperature rises less: $\\gamma$ falls from 5/3 to 7/5."
+    },
+    "1.17": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "04c25697d95b6009dbab193d5903873ef1e637870c97b841b784c013ecc7cfae"
+    },
+    "1.18": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "a9620b323eab82dc80f7debbe2d20a8d1cf3a8dc110f33038372ab9d4ca5fd12"
+    },
+    "1.19": {
+      "file": "content/thermo/ch01-b.js",
+      "hash": "4c0ce001d417ce6652e870f189bc13adb51c79745537246ad756835e4314471f"
+    },
+    "1.1": {
+      "file": "content/thermo/ch01.js",
+      "hash": "c9b2573f36c1d683d93643018a0134b9b17ad973dc0034b264f99380a1d87c10"
+    },
+    "1.2": {
+      "file": "content/thermo/ch01.js",
+      "hash": "93817b18d08077396874d329118f1c02073a22b12f23d1a3ccb95bb3b12921d8"
+    },
+    "1.3": {
+      "file": "content/thermo/ch01.js",
+      "hash": "6478658e0dfb906ef71bfb9019eb438729cf879c0fefdbb69149f744abe6f60e"
+    },
+    "1.4": {
+      "file": "content/thermo/ch01.js",
+      "hash": "cd59a8a851b27507e1eb32a6a6ef680736e1569ef7588c04c5fb8bcc7801bd5e"
+    },
+    "1.5": {
+      "file": "content/thermo/ch01.js",
+      "hash": "25f5d494331825061b07f3f4376a3681cfe21c2cca75cbfa5d2a517098c46904"
+    },
+    "1.6": {
+      "file": "content/thermo/ch01.js",
+      "hash": "76551435a745a93ba8a2d88e2b5f39dcac322b611b13a53157c8fd3321cfe9de"
+    },
+    "1.7": {
+      "file": "content/thermo/ch01.js",
+      "hash": "c7ced990280bdca0689e1c6b467e2b96790125c7cc5034330241041643836d8b"
+    },
+    "1.8": {
+      "file": "content/thermo/ch01.js",
+      "hash": "56f3f3b6e9d219dedb7b1f483eda9399be730421a84b35592d41bad46ffb85cc"
+    },
+    "1.9": {
+      "file": "content/thermo/ch01.js",
+      "hash": "7cbec4fd54dc71d6365f707148a92ed29eff20bcaef18429f26d200fd353f26a"
+    },
+    "1.10": {
+      "file": "content/thermo/ch01.js",
+      "hash": "d9858df41f85de3569d6ad0c98f6f5c56cd0c11e814e0d923510c2e41a53757a"
+    },
+    "2.10": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "dd28e73872d073d69068e3f50df05d734149d7c1100596b94d19a6884ee7cfd2"
+    },
+    "2.11": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "9c4f6579edd86b016143c774f6a88d814b06731bd5bb3279b303174d4d205cfc",
+      "deps": [
+        "thermo-2.9",
+        "thermo-1.15"
+      ],
+      "idea": "Along a reversible path the first law gives $\\delta Q_{\\text{rev}} = dU + P\\,dV = nC_V\\,dT + nRT\\,dV/V$; dividing by $T$ leaves an exact differential (2.9) that integrates at once. Constant $S$ means $C_V\\ln T + R\\ln V$ fixed, i.e. $TV^{R/C_V} = TV^{\\gamma - 1}$ fixed: reversible adiabats are isentropes, which is why \"adiabatic\" and \"isentropic\" are used interchangeably for quasistatic processes. Raising $T$ or $V$ raises $S$ \u2014 more energy to share, more room to share it in."
+    },
+    "2.12": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "b7c6e1c934f2488a6a4601977f6aaaa94a0b86098646a472258026e3790c82fc"
+    },
+    "2.13": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "e18df36e9d1edda50d1355283de87ff27273451e4fb4d9f8bb678e963b8b58b0"
+    },
+    "2.14": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "64526cba8c346ada0ce2139d668b562a78a09f7d3679159c4755d2466f007183"
+    },
+    "2.15": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "67822ba3d2ff47625b17e9fe6613bea36dcf4f142a84ca02814d122b31f7f7c5"
+    },
+    "2.16": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "d93948bbdf8bb70b991b180116b13bb9c91081f8f895c3c468a94ca607f731e7"
+    },
+    "2.17": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "2a2cedec69b2fcf309f44b08ccb5442b6bd28279a753b40b3d7360ceedc02fdf"
+    },
+    "2.18": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "d7da635fed4c9c76b50a7fee54276642df40fb31d7945a505766376a591efe7e"
+    },
+    "2.19": {
+      "file": "content/thermo/ch02-b.js",
+      "hash": "22d92c7e96857526c0d8177cf6700e175e03db568759d8f5ef461e67fa91424b"
+    },
+    "2.1": {
+      "file": "content/thermo/ch02.js",
+      "hash": "8f991866b773b7fb0778290d506b4fb54f1beb35e6346b2f5ed5d608d1ab14f9"
+    },
+    "2.2": {
+      "file": "content/thermo/ch02.js",
+      "hash": "716de2bc596537c7128d3fddd96beedc8dd4cc3c50c15ab078d2ef36ed3acbae"
+    },
+    "2.3": {
+      "file": "content/thermo/ch02.js",
+      "hash": "1259478eeb8675d38f87f110c35e8419d29b2df774588b999149d631f5724674"
+    },
+    "2.4": {
+      "file": "content/thermo/ch02.js",
+      "hash": "0c644335a1f3ad558a7b80aee9bd02cc362cda2b72dc42af2b857367e1a4fb19"
+    },
+    "2.5": {
+      "file": "content/thermo/ch02.js",
+      "hash": "e35db99882ff27041c3994091decfe04719df5ce95b2c361e5fafc97cd1b2ac5"
+    },
+    "2.6": {
+      "file": "content/thermo/ch02.js",
+      "hash": "a04f227be87a5330ae78182914c4baf7ecd0f86980a9baf8d4b1ea4136b08fbb"
+    },
+    "2.7": {
+      "file": "content/thermo/ch02.js",
+      "hash": "6ea334970e49491603e8c190b5a7e935e68ccd8ec306891ce60c76bb49d0db95"
+    },
+    "2.8": {
+      "file": "content/thermo/ch02.js",
+      "hash": "ab95f738fb1679a7dea4a01b982064ba68d5211ac2338777a123079994f7f242"
+    },
+    "2.9": {
+      "file": "content/thermo/ch02.js",
+      "hash": "49445fc4c0ae4353cd799608e16a93a67825b5e47a3a18c72229e776d915ad09"
+    },
+    "3.11": {
+      "file": "content/thermo/ch03-b.js",
+      "hash": "59810917765072aa3c7cac05c7d3381f130aafc21a0658a588edaf12e9a74f68",
+      "deps": [
+        "thermo-3.10"
+      ],
+      "idea": "Body, engines and environment form an isolated system. Energy conservation gives $W = (U - U_0) - Q_0$, where $Q_0$ is the heat dumped into the environment, and the entropy principle (2.10, 3.10) requires $Q_0/T_0 - (S - S_0) \\ge 0$. So $Q_0 \\ge T_0(S - S_0)$ and $W \\le (U - U_0) - T_0(S - S_0)$; the gap is $T_0$ times the entropy generated. Equivalently, each parcel of heat $dQ = -C\\,dT$ leaving the block at $T$ can run a Carnot engine of efficiency $1 - T_0/T$ (2.5), and the exergy is the integral of these efficiencies \u2014 a Riemann integral, approached from below by any finite sequence of engines."
+    },
+    "3.12": {
+      "file": "content/thermo/ch03-b.js",
+      "hash": "c702e00f70208fe3084a1ffe8bd9e3e2a979af336cf6a53d02d0029921f3d46d"
+    },
+    "3.13": {
+      "file": "content/thermo/ch03-b.js",
+      "hash": "65a22cf600b4ed83ee715a3f5640fecd4c7e6f016e50fe083f45be90c9d24a32"
+    },
+    "3.14": {
+      "file": "content/thermo/ch03-b.js",
+      "hash": "0e436cd4ab7b74688b09312e45b95d47eebcad57005e28c3bae8f8e3cfe0dc50"
+    },
+    "3.15": {
+      "file": "content/thermo/ch03-b.js",
+      "hash": "f5c89147813c41b14142a3195ddca2a10104719de50785d1b4f431180c8af139"
+    },
+    "3.17": {
+      "file": "content/thermo/ch03-b.js",
+      "hash": "2d3d2166ca465c47afdfba13ae4198d3f1cf89f35746aefc0268c4cf2e8f6ad1"
+    },
+    "3.18": {
+      "file": "content/thermo/ch03-b.js",
+      "hash": "a55d9c912759c6ef656bee287b2f2797c0189d352f5efae888812a6879be2c5e"
+    },
+    "3.19": {
+      "file": "content/thermo/ch03-b.js",
+      "hash": "4908c0ba7e360ad37079ae85f8de0eeb00f8246312bbe75fd406b74f6c1607f3"
+    },
+    "3.1": {
+      "file": "content/thermo/ch03.js",
+      "hash": "547d58a94d3773691655e5d8662a42c67032fcd3530648ce087b281895548ec4"
+    },
+    "3.2": {
+      "file": "content/thermo/ch03.js",
+      "hash": "46a3d1617fdfe87900ac5942e42c382ad2ce8c5104232c127f278190b16cb7db"
+    },
+    "3.3": {
+      "file": "content/thermo/ch03.js",
+      "hash": "e0c32121085a3d1f172ab5a45b0e1a0ec564d12c83b1ec4815e0f6b4e50a1c36"
+    },
+    "3.4": {
+      "file": "content/thermo/ch03.js",
+      "hash": "c05667a1bdf17f23dcbb22756f8fb1a5c945d4145a1485c09a7ba189fb1f0da8"
+    },
+    "3.5": {
+      "file": "content/thermo/ch03.js",
+      "hash": "030dfd5299a8dc75b036aa76ba172de616433f0fafd227644c4e69ff5cf47468",
+      "deps": [
+        "thermo-3.3"
+      ],
+      "idea": "Differentiate the homogeneity identity with respect to $\\lambda$ and set $\\lambda = 1$ (Euler's theorem on homogeneous functions): $S = U\\,\\partial_U S + V\\,\\partial_V S + N\\,\\partial_N S$, and the partial derivatives are $1/T$, $P/T$, $-\\mu/T$ (3.2). Geometrically, $\\lambda \\mapsto S(\\lambda X)$ is a straight line through the origin, so its tangent at $\\lambda = 1$ \u2014 whose slope is the right-hand side \u2014 passes through the origin too. The thermodynamic identity (3.3) then \"integrates\" to the Euler form because $T$, $P$, $\\mu$ stay fixed as the system is scaled."
+    },
+    "3.6": {
+      "file": "content/thermo/ch03.js",
+      "hash": "374f446638f02801571681f87fdb8b1a0a6cca83a30fbc806251a5562b1274d6"
+    },
+    "3.7": {
+      "file": "content/thermo/ch03.js",
+      "hash": "0ad57660de6ed418d7779d03f325d92b8039de26e66c6439c3db7099431e7b18"
+    },
+    "3.8": {
+      "file": "content/thermo/ch03.js",
+      "hash": "748e08c9e09695115a18031a08c5b8181c77d33988972fbd9e36256ee598271d"
+    },
+    "3.9": {
+      "file": "content/thermo/ch03.js",
+      "hash": "df24b431c3cf3c8d72cdc1f2eead371b75bdd1558b8fa3e2a5b8b5708d7b568a"
+    },
+    "3.10": {
+      "file": "content/thermo/ch03.js",
+      "hash": "7f4d0179d37aebe27dc0debebd29b428bb6d26c86a2a94a2c715defa1e3af4cb"
+    },
+    "4.9": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "059b2209993a3a9b3b6c8a6c6b5ccd57981a273c52b1ea3f55d434fe65180c4f"
+    },
+    "4.10": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "c78657a1831f2e4de371bc8480a3fe49354f1a6d8fd142dd7dfbfb3a2de955dc",
+      "deps": [
+        "thermo-4.9",
+        "thermo-3.10"
+      ],
+      "idea": "A small cluster is mostly surface: its interface costs free energy proportional to $r^2$, while its interior gains only in proportion to $r^3$, so tiny clusters are uphill (that is why metastable states persist, 4.9). Thermal fluctuations climb the barrier with Boltzmann probability $e^{-\\Delta G^*/kT}$ (minimum principle at fixed $T$ and $P$, 3.10). Because $\\Delta g_v$ grows linearly with supercooling and the barrier goes as its inverse square, the exponent changes by orders of magnitude over a few kelvin \u2014 homogeneous freezing of pure water droplets is negligible at \u221220 \u00b0C and almost instantaneous near \u221238 \u00b0C. Impurities and surfaces lower the barrier (heterogeneous nucleation), which is why ordinary water freezes near 0 \u00b0C."
+    },
+    "4.11": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "572c278f34e28265544e55c5af626bce56ad332e6d132e74ac1ffafc4ddc8549"
+    },
+    "4.12": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "df9d9b85306357200cf6b046a57d0dd5bca2cb1e121923c2e4274b2b8038c167"
+    },
+    "4.13": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "5fe7ca2e4d59546fe55eea2e9e4eeb3f07a2cc6f6f5ed6cda447d77bcc8fb579"
+    },
+    "4.14": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "0ec4680c667421ae67c7b119c3c59480cd42f085abf1899187182a1fec27e9dd"
+    },
+    "4.15": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "6e3e1b709f0e74ec7f5c4a0771c8e9a944ab2c8ba7d8857a097d774ae54f21e2"
+    },
+    "4.16": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "4d8947910ebba97754fc8022126c407006d35482ff197617efd0e7aad07f75d1"
+    },
+    "4.17": {
+      "file": "content/thermo/ch04-b.js",
+      "hash": "ae597588c000bcbea37862a2813a8793afce800175733dbcdadd6e0c2763bd27"
+    },
+    "4.1": {
+      "file": "content/thermo/ch04.js",
+      "hash": "5df21ab4cfcf403b366ef08b1772cefdaa2eeb5216dd9976d6171261f4eca6c8"
+    },
+    "4.2": {
+      "file": "content/thermo/ch04.js",
+      "hash": "889b15970be04b6fa767bd4644578cf8d2e340efc2e12e07f182e5c043e19fbc"
+    },
+    "4.3": {
+      "file": "content/thermo/ch04.js",
+      "hash": "83e8d6ba3183ab6f87b7b7faa33e30376230ee3172f0489ded6e97ee55f58ae4"
+    },
+    "4.4": {
+      "file": "content/thermo/ch04.js",
+      "hash": "b2dd27de9873e142d44814895e1959f9147883bddb7f276537778ef5e669eab8"
+    },
+    "4.5": {
+      "file": "content/thermo/ch04.js",
+      "hash": "6446f1f1e8ec9d392ce0af7b7170d7c7e3e383265859c874ccb48fe50cf3767f"
+    },
+    "4.6": {
+      "file": "content/thermo/ch04.js",
+      "hash": "7ce5bd8be71f54227b2592ad7ea3b2e3abe3ac253b54732e59fc27db3ed9f8f9"
+    },
+    "4.7": {
+      "file": "content/thermo/ch04.js",
+      "hash": "f3e569e7065fd5a4a2a93f7c86b7c91436797622488257bdb0fb93cf9ba48e74"
+    },
+    "4.8": {
+      "file": "content/thermo/ch04.js",
+      "hash": "bf4fb10b83e1684e0b484ef8b5c1160f19f1c8f13fbee9b237e137a0c28a6a8a"
+    },
+    "5.11": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "630329cd184dbfb29edfed8027780123cea9f667e5e651dda95f825901e36e5f"
+    },
+    "5.12": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "649cc07e5f118d91e403304c2a483694b3f09fd716cf58761b6713d7a7a16dd9"
+    },
+    "5.13": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "b2f6bd67eb1f150eb28ee2ddf7a482afeadc2ea562d358111e41a9edb6138664"
+    },
+    "5.14": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "fa6b143a3de7586d7a879ef3be089dd62cc76814b67c5cf44b6514f5c96ec04d"
+    },
+    "5.15": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "ca81f309bab28c4a87fb6cff349d3d412c454931149a5b5afeae204fa47c3fed"
+    },
+    "5.16": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "bd18288cde5834619e055121cff1947eec585246d56a0319a4f005fd90a3303e"
+    },
+    "5.17": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "bb16e211f2464718e53c8c044b7de7fbee6d27149a0059d4da0dddf0fd4c6ed3"
+    },
+    "5.18": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "8e4d24f313ce13a66dfc75f073d6c876237275f186001602cbe5b7ac6c531f46"
+    },
+    "5.19": {
+      "file": "content/thermo/ch05-b.js",
+      "hash": "8c0e6c44accf9d7c784f101c7f1379438e5f652367fc5f9ca016ae379a64d2f9"
+    },
+    "5.1": {
+      "file": "content/thermo/ch05.js",
+      "hash": "c1c33615e4a4a58d321184f61bbd9c998fb1c69b73f996e6ff2cae2beb2d9053"
+    },
+    "5.2": {
+      "file": "content/thermo/ch05.js",
+      "hash": "3a1c510295fac610dd332d10a0d30940b72109cc22a92fb16742d95c6cf40d1a"
+    },
+    "5.3": {
+      "file": "content/thermo/ch05.js",
+      "hash": "3ce80d67e79925f628732096a19958b80969fc7fe18ab2a69280763336996640"
+    },
+    "5.4": {
+      "file": "content/thermo/ch05.js",
+      "hash": "a17b3fe83ed33fd925db27f16e9f63b5210919a0c7aa9407e18ed970935c1310"
+    },
+    "5.5": {
+      "file": "content/thermo/ch05.js",
+      "hash": "7cff65a846136802f88c790c9bb7b479da30eecbf04c40fd43542b12b7e75327"
+    },
+    "5.6": {
+      "file": "content/thermo/ch05.js",
+      "hash": "5a5f26b18a57653e6e1d8f071a3d55bb1cae340aea08e13ec37b0fc4e545e521"
+    },
+    "5.7": {
+      "file": "content/thermo/ch05.js",
+      "hash": "caee4302ea7c0071f28c66af396c6d8dd89902b7e9d6bd7995d08ee9a2399a62"
+    },
+    "5.8": {
+      "file": "content/thermo/ch05.js",
+      "hash": "d9fe4c97eb491d7c690d59cdcc0e04314c4d3b65707ded13271aa3892a93e8e9"
+    },
+    "5.9": {
+      "file": "content/thermo/ch05.js",
+      "hash": "f6e4d92657a9e8407a8210c06935500050a94213e01f8cad36752922e802770f"
+    },
+    "5.10": {
+      "file": "content/thermo/ch05.js",
+      "hash": "389745586e7028f281b7a086084ce38d44e69b40da24a6cdf76f8e09aa76948f"
+    },
+    "6.11": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "fedf8b9a38df82cc6dcafd4ee5bca4db0255464200acd34e43918d11ebc4150c"
+    },
+    "6.12": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "6bfff6635c764fe154bf23b71fd32df709a3d6cb2134142a2449af8af44da08c"
+    },
+    "6.13": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "e871bc226cdc6d9d4ea5e3ecf849579748366498548a1f77a2dc92c0312ee740"
+    },
+    "6.14": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "2be16ec6d8b8a0d753cf9cbe42a259ee587d365b701fb6cde1948b48c77c240a"
+    },
+    "6.15": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "f09a53cb8889dab88381c7fa007e6d648b909e48e873ebce19d5ee4feee1de89",
+      "deps": [
+        "thermo-6.1",
+        "thermo-6.12"
+      ],
+      "idea": "The energy of a molecule is $\\frac12mv^2$ plus other terms that do not involve $\\mathbf v$, so the Boltzmann factor (6.1) makes $\\mathbf v$ Gaussian with variance $kT/m$ in each component (the equipartition value, 6.12). The speed density is that Gaussian integrated over a shell of area $4\\pi v^2$: a rising $v^2$ (more phase space) times a falling exponential (Boltzmann factor). Maxwell obtained the same law in 1860 from the demand that the components be independent and the distribution isotropic; collisions are what drive a gas to it."
+    },
+    "6.16": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "c5307b502b0895c9fb184ed52e505e7e3b32568cbc2e3ea2e7421154e3de9f84",
+      "deps": [
+        "thermo-6.8",
+        "thermo-5.12"
+      ],
+      "idea": "Independent atoms give a product of single-atom sums (6.8); the single-atom sum is the phase-space integral $\\int d^3x\\,d^3p\\,e^{-p^2/2mkT}/h^3=V/\\lambda^3$ (a Gaussian integral). The $1/N!$ corrects for the indistinguishability of identical atoms, which is what restores extensivity of $S$ (Gibbs paradox, 5.12); with Stirling's formula $\\ln N!\\approx N\\ln N-N$ it produces $V/N$ inside the logarithm. The constant $h$ is the only trace of quantum mechanics."
+    },
+    "6.17": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "d4ce247068fb3921b6ed67941e19fc9699e957c55bc2fa0a1dcf9d1e30035c0c"
+    },
+    "6.18": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "72a8a45ea0c5e32b454b4a24d92e38bdc4c5e714a765f624845124faec7b896a"
+    },
+    "6.19": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "4859def30fecda2f94c9f0d024c5edc0252ebe3ab67625448058ab7484cbc786"
+    },
+    "6.20": {
+      "file": "content/thermo/ch06-b.js",
+      "hash": "0ceab9eeb3077f46ff84576b2b3422c1f5e64d4edfbf93e241ff7afe822a6638"
+    },
+    "6.1": {
+      "file": "content/thermo/ch06.js",
+      "hash": "ff013f45867e784f224ae763c53042b8d71ab16787d81cdc9617cec6d4950468"
+    },
+    "6.2": {
+      "file": "content/thermo/ch06.js",
+      "hash": "93e8eb448f072ef3fc1fca709ba7835691e3829673712b6f65d6bb521cf5388f"
+    },
+    "6.3": {
+      "file": "content/thermo/ch06.js",
+      "hash": "3b670b6464ff3b9206699aa951492455b5e7117eb700c2200e0828e774222153",
+      "deps": [
+        "thermo-6.2"
+      ],
+      "idea": "Differentiating $Z=\\sum e^{-\\beta E_s}$ brings down a factor $-E_s$ from each term, and dividing by $Z$ is exactly the Boltzmann-weighted average: $-\\partial_\\beta Z/Z=\\langle E\\rangle$. A second derivative brings down $E_s^2$, giving $\\langle E^2\\rangle$, so $\\partial_\\beta^2\\ln Z$ is a variance; and $C=dU/dT=-k\\beta^2\\,\\partial_\\beta U$ gives the second form."
+    },
+    "6.4": {
+      "file": "content/thermo/ch06.js",
+      "hash": "80ee06558e07acb595ff9d7ab4791e85c1919941be83e7e032dbbb0c1796971c",
+      "deps": [
+        "thermo-6.3"
+      ],
+      "idea": "From 6.3, $\\sigma_E^2=\\partial^2_\\beta\\ln Z=-\\partial U/\\partial\\beta$, and $-\\partial U/\\partial\\beta=kT^2\\,\\partial U/\\partial T=kT^2C_V$. Heat capacity, an equilibrium response, therefore equals a fluctuation of the very quantity it measures: a fluctuation\u2013response relation, the simplest of its kind. Because $\\ln Z$ of $N$ independent parts is a sum of $N$ terms, its derivatives grow like $N$, so $\\sigma_E/U\\sim N^{-1/2}$."
+    },
+    "6.5": {
+      "file": "content/thermo/ch06.js",
+      "hash": "0ff252894e74fbe8d6cf9144a80338c7818214e60589b24cdb7dbed945b0b70c"
+    },
+    "6.6": {
+      "file": "content/thermo/ch06.js",
+      "hash": "1f90f016a819f753fdd844e160339bf4f54cb44ca702a13b06a05fa2325d9cde"
+    },
+    "6.7": {
+      "file": "content/thermo/ch06.js",
+      "hash": "c9b87e8e43e05e4d0c5867b265e0263f476ad315fcec6416dcb7487c1cacd845"
+    },
+    "6.8": {
+      "file": "content/thermo/ch06.js",
+      "hash": "13377fdd7f04795fcf00aba795f4e8ed0927b395bf3060d18f87e184081fae96",
+      "deps": [
+        "thermo-6.2"
+      ],
+      "idea": "The exponential turns a sum of energies into a product of Boltzmann factors, $e^{-\\beta(E_a+E_b)}=e^{-\\beta E_a}e^{-\\beta E_b}$, and a double sum of a product of factors is a product of sums. The probabilities factor too, so independent parts are statistically independent. Any coupling $W_{ab}$ spoils the factorization by the extra factor $e^{-\\beta W_{ab}}$. For $N$ identical independent parts this gives $Z=Z_1^N$ (and $Z_1^N/N!$ for indistinguishable ones, 6.16)."
+    },
+    "6.9": {
+      "file": "content/thermo/ch06.js",
+      "hash": "a786d87689b9bb20b8ab09fe52f85791417fe9246225c704906e184ba1b9f4ab"
+    },
+    "6.10": {
+      "file": "content/thermo/ch06.js",
+      "hash": "28494164e26c39385c84c41f87dad7a9bb18aae2f254e017ca7b2ef402d33790"
+    }
+  },
+  "syllabusHash": "a8f9759ffb115eb85d80fff5c746374847bf62b5daccb2cd8f492fe00f97828f"
+}

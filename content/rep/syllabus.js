@@ -114,9 +114,9 @@ export default {
         { num: '3.15', kind: 'Proposition', name: 'Burnside’s lemma: counting orbits', deps: ['rep-3.6', 'rep-1.2'], refs: ['Serre §2.3'], see: ['comb-10.3'],
           pic: 'Count colourings of a necklace or a cube up to symmetry: the average number of fixed colourings, which is ⟨χ_perm, 1⟩, matches a brute-force orbit count.' },
         { num: '3.16', kind: 'Paper', name: 'Über Gruppencharaktere',
-          paper: { authors: 'G. Frobenius', year: 1896, title: 'Über Gruppencharaktere', venue: 'Sitzungsberichte der Königlich Preußischen Akademie der Wissenschaften zu Berlin 1896: 985–1021', url: 'https://doi.org/10.3931/e-rara-18877' },
-          introduces: ['rep-3.1', 'rep-3.5', 'rep-3.14'], deps: ['nt-11.1', 'ladr-9.43'], refs: ['Frobenius, Über Gruppencharaktere (1896), §§1–6, pp985–1006, https://doi.org/10.3931/e-rara-18877', 'Frobenius, Über die Primfactoren der Gruppendeterminante (1896), §§1–9, pp1343–1372, https://doi.org/10.3931/e-rara-18882', 'Etingof et al., Introduction to Representation Theory, §§4.10–4.11 (modern representation formulation)'],
-          pic: 'Dedekind’s group determinant, the question that led Frobenius to characters: for S₃, Q₈ or A₄ the |G| × |G| matrix (x_{gh⁻¹}) factors into irreducible polynomials whose degrees and multiplicities are the character degrees, and factor derivatives at the identity recover the character table as the reader picks the group.' },
+          paper: { authors: 'G. Frobenius', year: 1896, title: 'Über Gruppencharaktere', venue: 'Sitzungsberichte der Königlich Preußischen Akademie der Wissenschaften zu Berlin 1896: 985–1021', url: 'https://archive.org/details/sitzungsberichte1896deutsch' },
+          introduces: ['rep-3.1', 'rep-3.5', 'rep-3.14'], deps: ['nt-11.1', 'ladr-9.43'], refs: [],
+          pic: 'Dedekind’s group determinant, the question that led Frobenius to characters: for S₃, Q₈ or A₄ the |G| × |G| matrix (x_{gh⁻¹}) factors into irreducible polynomials whose degrees and multiplicities are the character degrees, and the resulting character table is checked for row and column orthogonality as the reader picks the group.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

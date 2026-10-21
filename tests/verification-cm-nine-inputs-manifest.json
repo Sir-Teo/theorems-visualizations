@@ -1,0 +1,47 @@
+{
+  "2.7": {
+    "target": "prob-2.1.13",
+    "paragraph": "Within the stated constant-relaxation-time model, take independent collision waiting times with positive rates $\\lambda_{\\rm imp}$ and $\\lambda_{\\rm ph}$. Their no-collision indicators at time $t\\ge0$ are bounded independent variables. Factoring the expectation of their product (prob 2.1.13) makes the probability of no collision in either channel the product $e^{-\\lambda_{\\rm imp}t}e^{-\\lambda_{\\rm ph}t}=e^{-(\\lambda_{\\rm imp}+\\lambda_{\\rm ph})t}$. The mean waiting time is therefore $1/(\\lambda_{\\rm imp}+\\lambda_{\\rm ph})$. With the same carriers, density and mass in Drude's law, this gives the additive resistivities; it does not justify adding resistivities of separate parallel carrier populations. A zero-rate channel can be omitted; if both rates vanish, this model has no finite collision time.",
+    "file": "ch02.js"
+  },
+  "2.8": {
+    "target": "pma-5.15",
+    "paragraph": "For the zero-temperature free gas, $n(E)=C E^{3/2}$ with $C>0$ and $E_F>0$. On a compact positive-energy interval around $E_F$ this function has bounded second derivative, so Taylor's theorem (pma 5.15) gives $n(E_F+e\\phi)=n(E_F)+n'(E_F)e\\phi+O((e\\phi)^2)$. Identifying $n'(E_F)=g(E_F)$ yields the linear induced charge used in Poisson's equation. The expansion requires $|e\\phi|\\ll E_F$; it is an amplitude approximation, additional to the slow spatial variation assumption.",
+    "file": "ch02-b.js"
+  },
+  "3.3": {
+    "target": "ladr-7.29",
+    "paragraph": "For $m,M,K>0$, use mass-weighted amplitudes $(\\sqrt m\\,U,\\sqrt M\\,V)$ and rephase the two Bloch amplitudes. The resulting dynamical block is real symmetric, with diagonal entries $2K/m$, $2K/M$ and off-diagonal entry $-2K\\cos(ka/2)/\\sqrt{mM}$. The real spectral theorem (ladr 7.29) supplies an orthonormal eigenbasis in these coordinates; its characteristic polynomial gives the two displayed squared frequencies. The weighting is essential: the unweighted amplitude equations need not form a symmetric matrix when the masses differ.",
+    "file": "ch03.js"
+  },
+  "3.4": {
+    "target": "ladr-7.31",
+    "paragraph": "At each fixed $\\mathbf k$, positive atomic masses allow mass weighting of the harmonic equations. The resulting finite $3p$-dimensional dynamical operator is complex Hermitian, hence normal; the complex spectral theorem (ladr 7.31) gives a complete orthonormal eigenbasis with $3p$ eigenvalues counted with multiplicity. Hermiticity makes those eigenvalues real, and harmonic stability makes them nonnegative. The three rigid translations are independent zero modes at $\\mathbf k=0$; the stated absence of additional zero modes is needed to call all remaining branches optical. The already counted $N$ wave vectors then give $3pN$ modes.",
+    "file": "ch03.js"
+  },
+  "3.14": {
+    "target": "rca-3.3",
+    "paragraph": "The inequality step can be made explicit first for a finite-time regularized or discretized path model. Normalize the trial measure and let $\\Delta S$ be the real, integrable dimensionless action difference, with finite $\\mathbb E_0 e^{-\\Delta S}$. Jensen's inequality (rca 3.3) for the convex exponential gives $\\log\\mathbb E_0e^{-\\Delta S}\\ge-\\mathbb E_0\\Delta S$, so $F\\le F_0+\\beta^{-1}\\mathbb E_0\\Delta S$. The physical path-integral and zero-temperature limits supply the ground-state interpretation; the finite-measure inequality alone neither constructs those limits nor certifies a numerical optimizer or the effective-mass estimate.",
+    "file": "ch03-b.js"
+  },
+  "3.15": {
+    "target": "rca-1.26",
+    "paragraph": "For $\\Theta>0$, put $f(x)=x^5e^x/(e^x-1)^2$ for $x>0$ and $f(0)=0$. As $T$ decreases to zero, the nonnegative measurable functions $f(x)\\,\\mathbf1_{[0,\\Theta/T]}(x)$ increase to $f$. Monotone convergence (rca 1.26) gives their limiting integral; it is finite and positive because $f(x)=O(x^3)$ near zero and $f(x)=O(x^5e^{-x})$ at infinity. Thus the low-temperature resistivity divided by $T^5$ tends to a finite positive constant in this model, rather than merely assuming that a growing integration range can be replaced by infinity.",
+    "file": "ch03-b.js"
+  },
+  "4.2": {
+    "target": "pma-8.21",
+    "paragraph": "The prefactor also uses a definite integral, not only cancellation of chemical potentials. With $T>0$ and a positive density-of-states mass, the three-dimensional parabolic DOS requires $\\int_0^\\infty\\sqrt{\\epsilon}\\,e^{-\\epsilon/k_BT}\\,d\\epsilon$. The Gaussian and half-integer Gamma identities (pma 8.21) evaluate it as $\\tfrac{\\sqrt\\pi}{2}(k_BT)^{3/2}$. Combining this with the spin-two, per-volume DOS normalization gives exactly the displayed $N_c$ or $N_v$. The replacement of the Fermi function by that exponential still requires the stated nondegenerate band-edge regime.",
+    "file": "ch04.js"
+  },
+  "4.8": {
+    "target": "ode-3.13",
+    "paragraph": "In each long, uniformly doped neutral region, steady low-injection diffusion and recombination give $D\\,\\delta n''-\\delta n/\\tau=0$ with constant $D,\\tau>0$. The constant-coefficient solution theorem (ode 3.13) gives the two exponentials with characteristic roots $\\pm1/L$, where $L=\\sqrt{D\\tau}$. Using distance into the bulk, decay removes the growing exponential and the injected edge excess fixes $\\delta n(x)=\\delta n(0)e^{-x/L}$. For positive forward injection its edge-current magnitude is $eD\\,\\delta n(0)/L$; adding the electron and hole contributions gives $J_0$. Linearity retains the sign when the edge excess is negative in ideal reverse bias. This step does not solve recombination inside the depletion region.",
+    "file": "ch04-b.js"
+  },
+  "4.9": {
+    "target": "pma-5.11",
+    "paragraph": "For the positive coefficients used here, the total loss $R(n)=An+Bn^2+Cn^3$ has $R'(n)=A+2Bn+3Cn^2>0$ for $n\\ge0$. The derivative-sign theorem and its mean-value proof (pma 5.11) make density strictly ordered by current, so there is at most one nonnegative density root for a given current. Also $\\eta(n)=Bn/(A+Bn+Cn^2)$ has derivative with the sign of $A-Cn^2$; its unique maximum occurs at $n=\\sqrt{A/C}$ and remains the maximum when plotted against $J$. Its value is $B/(B+2\\sqrt{AC})$, which can be small even at that optimum.",
+    "file": "ch04-b.js"
+  }
+}

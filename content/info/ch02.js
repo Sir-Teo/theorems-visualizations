@@ -140,9 +140,11 @@ with equality if and only if $p=q$. More generally, if $q$ is only a sub-probabi
       statement: String.raw`For non-negative numbers $a_1,\dots,a_n$ and $b_1,\dots,b_n$, with $A=\sum a_i$ and $B=\sum b_i$,
 $$\sum_{i=1}^n a_i\log\frac{a_i}{b_i}\ \ge\ A\log\frac AB,$$
 with equality if and only if $a_i/b_i$ is the same constant for every $i$ (with $0\log\frac0b=0$ and $a\log\frac a0=\infty$). The numbers need not sum to one.`,
-      idea: String.raw`The function $f(t)=t\log t$ is convex on $[0,\infty)$ (rca-3.1). Put the weights $b_i/B$ on the points $t_i=a_i/b_i$; Jensen's inequality gives $\sum\frac{b_i}{B}f(t_i)\ge f\big(\sum\frac{b_i}{B}t_i\big)=f(A/B)$, and multiplying through by $B$ is the claim. Equality needs all $t_i$ equal because $f$ is strictly convex. The identity $\sum a_i\log\frac{a_i}{b_i}-A\log\frac AB=A\,D(\hat a\|\hat b)$ for the normalised lists $\hat a=a/A$, $\hat b=b/B$ shows that the gap *is* a relative entropy, so this inequality is Gibbs' inequality (2.2) in disguise. It is the workhorse behind the convexity of $D$ (2.9) and the data-processing inequality.`,
+      idea: String.raw`The function $f(t)=t\log t$ is convex on $[0,\infty)$ (rca-3.1). Put the weights $b_i/B$ on the points $t_i=a_i/b_i$; Jensen's inequality gives $\sum\frac{b_i}{B}f(t_i)\ge f\big(\sum\frac{b_i}{B}t_i\big)=f(A/B)$, and multiplying through by $B$ is the claim. Equality needs all $t_i$ equal because $f$ is strictly convex. The identity $\sum a_i\log\frac{a_i}{b_i}-A\log\frac AB=A\,D(\hat a\|\hat b)$ for the normalised lists $\hat a=a/A$, $\hat b=b/B$ shows that the gap *is* a relative entropy, so this inequality is Gibbs' inequality (2.2) in disguise. It is the workhorse behind the convexity of $D$ (2.9) and the data-processing inequality.
+
+The averaging step is specifically Jensen's inequality rca-3.3: for positive $b_i$ the weights $b_i/B$ form a probability measure and the values $a_i/b_i$ are integrable on this finite space. Apply it to the convex function $t\ln t$ and multiply by $B$; division by $\ln2$ changes nats to bits without reversing the inequality. Zero entries follow by limits, while a positive $a_i$ paired with $b_i=0$ gives an infinite left side.`,
       caption: String.raw`Drag the bars of the two lists (blue $a_i$, orange $b_i$). On the right the pieces $a_i\log(a_i/b_i)$ are added up as a waterfall (red bars subtract) and compared with the single term $A\log(A/B)$; the gap is $A\,D(\hat a\|\hat b)$. “Equal ratios” rescales $b$ to be proportional to $a$ and the gap closes.`,
-      deps: ['rca-3.1', 'info-2.2'],
+      deps: ['rca-3.1', 'info-2.2', 'rca-3.3'],
       refs: ['Cover–Thomas §2.7'],
       tags: ['log-sum', 'convexity'],
       viz(v) {
@@ -204,9 +206,11 @@ $$H(p,q)=-\sum_x p(x)\log_2 q(x)=\mathbb E_{X\sim p}\big[-\log_2 q(X)\big].$$
 It is the expected number of bits needed to encode a draw of $X\sim p$ with an ideal code built for $q$, and it decomposes as
 $$H(p,q)=H(p)+D(p\,\|\,q).$$
 It is $+\infty$ when $q$ gives probability $0$ to an outcome that $p$ allows. For fixed $p$, minimising $H(p,q)$ over $q$ is the same as minimising $D(p\|q)$, and the minimum $H(p)$ is attained only at $q=p$.`,
-      idea: String.raw`Insert $\log p$ inside the logarithm: $-\log q=-\log p+\log\frac pq$, and take the $p$-average to get $H(p)+D(p\|q)$. Since $D\ge0$ (2.2), no model can beat the truth, and the excess over $H(p)$ is exactly the divergence. With samples $x_1,\dots,x_n$ drawn from $p$, the law of large numbers makes the average log-loss $\frac1n\sum-\log q(x_t)$ converge to $H(p,q)$; this is why “minimise the average negative log-likelihood” is the same as “minimise the divergence from the data distribution” in statistics and machine learning.`,
+      idea: String.raw`Insert $\log p$ inside the logarithm: $-\log q=-\log p+\log\frac pq$, and take the $p$-average to get $H(p)+D(p\|q)$. Since $D\ge0$ (2.2), no model can beat the truth, and the excess over $H(p)$ is exactly the divergence. With samples $x_1,\dots,x_n$ drawn from $p$, the law of large numbers makes the average log-loss $\frac1n\sum-\log q(x_t)$ converge to $H(p,q)$; this is why “minimise the average negative log-likelihood” is the same as “minimise the divergence from the data distribution” in statistics and machine learning.
+
+For i.i.d. data, let $Z_t=-\log_2q(X_t)$. Whenever $E_p|Z_1|<\infty$, the finite-mean weak law prob-2.2.14 makes the sample mean log-loss converge in probability to $E_pZ_1=H(p,q)$. For a finite alphabet it suffices that $q$ be positive on the support of $p$. A model assigning zero probability to a possible outcome has infinite cross-entropy and does not satisfy this finite-mean hypothesis.`,
       caption: String.raw`Drag the bars of the true $p$ and the model $q$. Samples from $p$ (fixed random stream, so dragging moves the picture smoothly) are scored by $-\log_2 q(x)$ and the running average, in gold, settles on the red line $H(p)+D(p\|q)$, never below the green line $H(p)$. “New samples” redraws; give $q$ a zero where $p$ is positive and the running average blows up.`,
-      deps: ['info-2.1'],
+      deps: ['info-2.1', 'prob-2.2.14'],
       refs: ['Cover–Thomas §5.4'],
       tags: ['cross-entropy', 'log-loss'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cross-entropy' },

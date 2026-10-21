@@ -16,19 +16,16 @@ function lebesgue3(M, N) {
   return LEB3[N];
 }
 
-import { denseFourierDivergence, countableDenseNotGdelta } from './category-fourier.shared.js';
-
 export default {
   collection: 'rca',
   chapter: 5,
   items: [
-    denseFourierDivergence,
-    countableDenseNotGdelta,
-    // ------------------------------------------------------------------ 5.14
+    // ------------------------------------------------------------------ 5.12
     {
-      num: '5.14',
+      num: '5.12',
       kind: 'Theorem',
       name: 'Riemann–Lebesgue lemma on the circle',
+      credit: 'Riemann & Lebesgue, 1854',
       statement: String.raw`For $f\in L^1(T)$ put $\hat f(n)=\int_T f(t)e^{-int}\,dm(t)$ $(n\in\Z)$. Then $|\hat f(n)|\le\norm{f}_1$ for every $n$, and
 $$\lim_{\abs{n}\to\infty}\hat f(n)=0,$$
 i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at infinity.`,
@@ -36,7 +33,7 @@ i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at inf
       caption: String.raw`Pick an $L^1$ function (the middle one is unbounded) and a degree $d$. Top: $f$ and its Fejér mean $P=\sigma_df$, a trigonometric polynomial of degree $d$, with $\abs{f-P}$ shaded. Bottom: $|\hat f(n)|$, computed by quadrature. Every bar to the right of $n=d$ lies below the line at height $\norm{f-P}_1$ — exactly the estimate of the proof — and raising $d$ pushes the line down.`,
       deps: ['rca-4.25', 'rca-3.14'],
       see: ['rca-9.6'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 5.14, p. 103'],
+      verify: true,
       tags: ['Fourier coefficients', 'L1'],
       viz(v) {
         const M = v.M;
@@ -91,17 +88,16 @@ i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at inf
         });
       },
     },
-    // ------------------------------------------------------------------ 5.15
+    // ------------------------------------------------------------------ 5.13
     {
-      num: '5.15',
+      num: '5.13',
       kind: 'Theorem',
       name: 'Fourier coefficients of L¹ functions do not fill c₀',
       statement: String.raw`The map $f\mapsto\hat f$ is a one-to-one bounded linear transformation of $L^1(T)$ **into**, but not **onto**, $c_0$.`,
-      idea: String.raw`It maps into $c_0$ with norm $\le1$ by 5.14. If $\hat f=0$ then $\int fg\,dm=0$ for all trigonometric polynomials $g$, hence for all $g\in C(T)$ (4.25), hence $f=0$ a.e. If the map were onto, it would be a continuous bijection between Banach spaces, so by 5.10 $\|\hat f\|_\infty\ge\delta\norm{f}_1$ for some $\delta>0$. The Dirichlet kernels refute this: $\|\hat D_n\|_\infty=1$ while $\norm{D_n}_1\to\infty$ (5.11).`,
+      idea: String.raw`It maps into $c_0$ with norm $\le1$ by 5.12. If $\hat f=0$ then $\int fg\,dm=0$ for all trigonometric polynomials $g$, hence for all $g\in C(T)$ (4.25), hence $f=0$ a.e. If the map were onto, it would be a continuous bijection between Banach spaces, so by 5.10 $\|\hat f\|_\infty\ge\delta\norm{f}_1$ for some $\delta>0$. The Dirichlet kernels refute this: $\|\hat D_n\|_\infty=1$ while $\norm{D_n}_1\to\infty$ (5.11).`,
       caption: String.raw`Left: a bounded inverse (5.10) would force $\|\hat f\|_\infty/\norm{f}_1\ge\delta$ for every $f\in L^1(T)$. For the Dirichlet kernels this ratio is $1/\norm{D_k}_1$ (dots: quadrature for $k\le1000$; dashed: the asymptote $\frac{4}{\pi^2}\log k+1.27$). Drag $\delta$: it always falls below — though only at astronomically large $k$ for small $\delta$. Right: an explicit sequence in $c_0$ outside the range, $b_n=1/\log n$ as sine coefficients. For an odd $f\in L^1$ the sum $\sum b_n/n$ must converge (a classical criterion, not Rudin's argument); here it grows like $\log\log N$.`,
-      deps: ['rca-5.14', 'rca-5.10', 'rca-5.11', 'rca-4.25'],
+      deps: ['rca-5.12', 'rca-5.10', 'rca-5.11', 'rca-4.25'],
       see: ['rca-9.6'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 5.15 and proof, p. 104'],
       tags: ['Fourier coefficients', 'open mapping'],
       viz(v) {
         const M = v.M;
@@ -119,7 +115,7 @@ i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at inf
           const eCross = ((1 / d - 1.27) * Math.PI * Math.PI / 4) / Math.LN10;   // log10 of the crossing k (asymptotic)
           L.hband(d, 1.05, { color: 'green', alpha: 0.08 });
           L.hline(d, { color: 'green', width: 1.8 });
-          L.tex(`\\delta = ${v.fix(d, 3)}`, 12.1, d, { color: 'green', align: 'right', baseline: 'bottom', dy: -3, size: 13 });
+          L.tex(`\\delta = ${v.fix(d, 3)}`, 40.5, d, { color: 'green', align: 'right', baseline: 'bottom', dy: -3, size: 13 });
           L.fn(asym, { domain: [3, 12.4], color: 'accent', width: 1.6, dash: [6, 4] });
           L.dots(pts.filter((p) => p[1] >= d), { r: 3, color: 'accent' });
           L.dots(pts.filter((p) => p[1] < d), { r: 3, color: 'red' });
@@ -140,9 +136,9 @@ i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at inf
         });
       },
     },
-    // ------------------------------------------------------------------ 5.17
+    // ------------------------------------------------------------------ 5.15
     {
-      num: '5.17',
+      num: '5.15',
       kind: 'Lemma',
       name: 'Complex functionals are determined by their real parts',
       statement: String.raw`Let $X$ be a complex vector space.
@@ -153,7 +149,7 @@ i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at inf
       caption: String.raw`Take $X=\C$. Drag the gradient $(\alpha,\beta)$ of the real-linear functional $u(x+iy)=\alpha x+\beta y$ (its level lines are drawn) and the point $z$. Right: $f(z)=u(z)-i\,u(iz)$ is built from the two real numbers $u(z)$ and $u(iz)$; it equals $(\alpha-i\beta)z$, so $f(iz)=i f(z)$ and $f$ maps the unit circle onto the circle of radius $\norm f=\norm u=\sqrt{\alpha^2+\beta^2}$.`,
       deps: ['rca-5.2'],
       see: ['fa-3.3'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Proposition 5.17, pp. 105–106'],
+      verify: true,
       tags: ['Hahn–Banach', 'linear functional'],
       viz(v) {
         const L = v.stage({ x: [-1.9, 1.9], y: [-1.6, 1.6], equal: true, height: 330, title: 'domain $X=\\C$: level lines of $u$' });
@@ -211,9 +207,9 @@ i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at inf
       name: 'Hahn–Banach theorem',
       credit: 'Hahn & Banach, 1927',
       statement: String.raw`If $M$ is a subspace of a normed linear space $X$ and $f$ is a bounded linear functional on $M$, then $f$ extends to a bounded linear functional $F$ on $X$ with $\norm{F}=\norm{f}$.`,
-      idea: String.raw`Real case, $\norm f=1$: to extend to $M+\R x_1$ one needs a value $\alpha=F(x_1)$ with $f(y)-\norm{y-x_1}\le\alpha\le\norm{y+x_1}-f(y)$ for all $y\in M$; such $\alpha$ exist because the triangle inequality makes every left side at most every right side. The Hausdorff maximality theorem (4.21) pushes this one-dimensional step to all of $X$. The complex case applies the real case to $u=\Re f$ and returns via $F(x)=U(x)-iU(ix)$ (5.17).`,
+      idea: String.raw`Real case, $\norm f=1$: to extend to $M+\R x_1$ one needs a value $\alpha=F(x_1)$ with $f(y)-\norm{y-x_1}\le\alpha\le\norm{y+x_1}-f(y)$ for all $y\in M$; such $\alpha$ exist because the triangle inequality makes every left side at most every right side. The Hausdorff maximality theorem (4.21) pushes this one-dimensional step to all of $X$. The complex case applies the real case to $u=\Re f$ and returns via $F(x)=U(x)-iU(ix)$ (5.15).`,
       caption: String.raw`$X=\R^2$ with the $\ell^p$ norm; $M$ is the line through $0$ (drag its direction) and $f$ has norm $1$ on $M$. Right: the dual plane, where an extension $F=\langle a,\cdot\rangle$ is a point on the orange line $\{a:\ a|_M=f\}$ and $\norm F=\norm{a}_q$. Admissible extensions form the green set where that line touches the dual ball: a whole interval when $M$ runs through a corner of the unit ball (try $p=1$ or $p=\infty$; the handle snaps to those directions), a single point otherwise and always for $p=2$. Drag $a$: on the left, the level lines $F=\pm1$ support the unit ball exactly when $\norm F=1$.`,
-      deps: ['rca-5.17', 'rca-4.21', 'rca-5.2'],
+      deps: ['rca-5.15', 'rca-4.21', 'rca-5.2'],
       see: ['fa-3.2', 'fa-3.3', 'fa-3.4'],
       tags: ['Hahn–Banach', 'duality'],
       viz(v) {

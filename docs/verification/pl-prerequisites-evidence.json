@@ -1,0 +1,2618 @@
+{
+  "parent": "acf697eda8a235710428df17c14e431d3183d655",
+  "items": [
+    {
+      "id": "pl-1.7",
+      "file": "content/pl/ch01-b.js",
+      "beforeObject": "a987da59b3736645630781acf2b61603d1138b0728352ee92d40b8978886eb84",
+      "afterObject": "a987da59b3736645630781acf2b61603d1138b0728352ee92d40b8978886eb84",
+      "beforeDeps": [
+        "pl-1.6"
+      ],
+      "afterDeps": [
+        "pl-1.6"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "c4b51ee4c1777ebfff2ddfe719e448d34cad52e4e4f8db48306fbea77bb53b65",
+      "vizAfter": "c4b51ee4c1777ebfff2ddfe719e448d34cad52e4e4f8db48306fbea77bb53b65"
+    },
+    {
+      "id": "pl-1.8",
+      "file": "content/pl/ch01-b.js",
+      "beforeObject": "585e9cc07d4be6f75f05a01efda4ab472c5e6d7fec7a54a7c1c1d73f5b33d841",
+      "afterObject": "585e9cc07d4be6f75f05a01efda4ab472c5e6d7fec7a54a7c1c1d73f5b33d841",
+      "beforeDeps": [
+        "pl-1.3"
+      ],
+      "afterDeps": [
+        "pl-1.3"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "0b0f4e133e81741f85498cad24bb0c47e40a30da0d26dcbb0d5dba5581fb6601",
+      "vizAfter": "0b0f4e133e81741f85498cad24bb0c47e40a30da0d26dcbb0d5dba5581fb6601"
+    },
+    {
+      "id": "pl-1.9",
+      "file": "content/pl/ch01-b.js",
+      "beforeObject": "c1122997d551b3a0d761938a4d93ebc67e077a0463e9a709a0fd40d224e3723a",
+      "afterObject": "c1122997d551b3a0d761938a4d93ebc67e077a0463e9a709a0fd40d224e3723a",
+      "beforeDeps": [
+        "pl-1.8",
+        "pl-1.7"
+      ],
+      "afterDeps": [
+        "pl-1.8",
+        "pl-1.7"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "894e75496ff8bce3f8caff5e648ef33061734df7556a727f5aaa6b13f116c073",
+      "vizAfter": "894e75496ff8bce3f8caff5e648ef33061734df7556a727f5aaa6b13f116c073"
+    },
+    {
+      "id": "pl-1.10",
+      "file": "content/pl/ch01-b.js",
+      "beforeObject": "15fef5bc787ead4e114333cc064904b0545048c348465729cf30703ca7014e80",
+      "afterObject": "15fef5bc787ead4e114333cc064904b0545048c348465729cf30703ca7014e80",
+      "beforeDeps": [
+        "pl-1.4"
+      ],
+      "afterDeps": [
+        "pl-1.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "34f20e8cad0c621d80b95cce94775063253a2122bf4b55bccfbd04be8819618d",
+      "vizAfter": "34f20e8cad0c621d80b95cce94775063253a2122bf4b55bccfbd04be8819618d"
+    },
+    {
+      "id": "pl-1.11",
+      "file": "content/pl/ch01-b.js",
+      "beforeObject": "b6d866fad314874089be8f6ba4209123de5d4ed3e086b9a30458dd62f8df24fd",
+      "afterObject": "6ba124375befb0c15f2e4f498563d70f8b9cd4751dac8e8d39db3878b786fa46",
+      "beforeDeps": [
+        "pl-1.4"
+      ],
+      "afterDeps": [
+        "pl-1.4",
+        "logic-3.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "aadc89af5677c8ed0d6b907c02f37dae102c23a9d375bde7495e89490938709d",
+      "vizAfter": "aadc89af5677c8ed0d6b907c02f37dae102c23a9d375bde7495e89490938709d"
+    },
+    {
+      "id": "pl-1.1",
+      "file": "content/pl/ch01.js",
+      "beforeObject": "2efe9fdb0d76e1715bea005e954476d021157bb79e058c4a043e3205b8a4ce7a",
+      "afterObject": "2efe9fdb0d76e1715bea005e954476d021157bb79e058c4a043e3205b8a4ce7a",
+      "beforeDeps": [
+        "toc-5.2"
+      ],
+      "afterDeps": [
+        "toc-5.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "cca7bd7c2757a2f01f66eca1cde43864b2dfd3b50dcac7bced954eb470cbebd0",
+      "vizAfter": "cca7bd7c2757a2f01f66eca1cde43864b2dfd3b50dcac7bced954eb470cbebd0"
+    },
+    {
+      "id": "pl-1.2",
+      "file": "content/pl/ch01.js",
+      "beforeObject": "b1cd135a3fc4564595fdd24b6d977dd4e0f021d1785a8ebbdec548f16613438f",
+      "afterObject": "1036f28ac6ee56bc70434b802f12d0527ed6343b989a8b141e940acfbe146673",
+      "beforeDeps": [
+        "pl-1.1"
+      ],
+      "afterDeps": [
+        "pl-1.1",
+        "logic-2.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "a4dac1df04c69e613db74f7315df24f83a9bebbdeb962fff0a881775db7c2660",
+      "vizAfter": "a4dac1df04c69e613db74f7315df24f83a9bebbdeb962fff0a881775db7c2660"
+    },
+    {
+      "id": "pl-1.3",
+      "file": "content/pl/ch01.js",
+      "beforeObject": "9321e18b9154c736fbb64502b888e603a93d98ad90c0f7a45a2e36429a968b3f",
+      "afterObject": "9321e18b9154c736fbb64502b888e603a93d98ad90c0f7a45a2e36429a968b3f",
+      "beforeDeps": [
+        "pl-1.1"
+      ],
+      "afterDeps": [
+        "pl-1.1"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "ad9659649ed1aa6e0e2e96f935e5ecbe2b327ce9c2d4ac805984ac0b7b861607",
+      "vizAfter": "ad9659649ed1aa6e0e2e96f935e5ecbe2b327ce9c2d4ac805984ac0b7b861607"
+    },
+    {
+      "id": "pl-1.4",
+      "file": "content/pl/ch01.js",
+      "beforeObject": "5bf4cc5b68b5c1ea3bc99fb45f70c92b01e609892809da2c37f38826aeefb800",
+      "afterObject": "5bf4cc5b68b5c1ea3bc99fb45f70c92b01e609892809da2c37f38826aeefb800",
+      "beforeDeps": [
+        "pl-1.3"
+      ],
+      "afterDeps": [
+        "pl-1.3"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "ef9cfd7f356349d1e02d8fed94c912fa43d2f8747a4ca9359ae0a9e4023fba95",
+      "vizAfter": "ef9cfd7f356349d1e02d8fed94c912fa43d2f8747a4ca9359ae0a9e4023fba95"
+    },
+    {
+      "id": "pl-1.5",
+      "file": "content/pl/ch01.js",
+      "beforeObject": "4913eed67beee53714c2a08ea12a178d71b609f637d9f1345e0f626d06fe83d5",
+      "afterObject": "4913eed67beee53714c2a08ea12a178d71b609f637d9f1345e0f626d06fe83d5",
+      "beforeDeps": [
+        "pl-1.4",
+        "pl-1.2"
+      ],
+      "afterDeps": [
+        "pl-1.4",
+        "pl-1.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "22ab4b5af2cbdd3856fb8d59eb9b4193d34850c70aa8b2d590e3d3cf8b6384e4",
+      "vizAfter": "22ab4b5af2cbdd3856fb8d59eb9b4193d34850c70aa8b2d590e3d3cf8b6384e4"
+    },
+    {
+      "id": "pl-1.6",
+      "file": "content/pl/ch01.js",
+      "beforeObject": "6c2a69cea1eae3113d051cd3638a88fdbaaaa4c7c216490d6486e36b350351ca",
+      "afterObject": "6c2a69cea1eae3113d051cd3638a88fdbaaaa4c7c216490d6486e36b350351ca",
+      "beforeDeps": [
+        "pl-1.4"
+      ],
+      "afterDeps": [
+        "pl-1.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "3f8818df200e555d3865f4c4c8ff1ec2556b8da87501276e8cf7859c65e2667d",
+      "vizAfter": "3f8818df200e555d3865f4c4c8ff1ec2556b8da87501276e8cf7859c65e2667d"
+    },
+    {
+      "id": "pl-2.7",
+      "file": "content/pl/ch02-b.js",
+      "beforeObject": "6b512481d6eda8b32aa7d53859016d509873b61c671d5bab46eefe9652dab6a1",
+      "afterObject": "6b512481d6eda8b32aa7d53859016d509873b61c671d5bab46eefe9652dab6a1",
+      "beforeDeps": [
+        "pl-2.6"
+      ],
+      "afterDeps": [
+        "pl-2.6"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "c1d47ba40a1d8aa105dcdcb9b1e5cfb35710d630353ff1aff747e8937471caf6",
+      "vizAfter": "c1d47ba40a1d8aa105dcdcb9b1e5cfb35710d630353ff1aff747e8937471caf6"
+    },
+    {
+      "id": "pl-2.8",
+      "file": "content/pl/ch02-b.js",
+      "beforeObject": "e6a56d3a9f38f5b5973936a430f9fcddfb9891f7207a674d5f113c5fcad50264",
+      "afterObject": "e6a56d3a9f38f5b5973936a430f9fcddfb9891f7207a674d5f113c5fcad50264",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "578332fcb4cfc4e422154ea07a9444b94995b22b9c66acd95090753c23270ace",
+      "vizAfter": "578332fcb4cfc4e422154ea07a9444b94995b22b9c66acd95090753c23270ace"
+    },
+    {
+      "id": "pl-2.9",
+      "file": "content/pl/ch02-b.js",
+      "beforeObject": "6593cba72c8813ca9363cc0ff12aa220af32364a993f45d565f23ab3399b94db",
+      "afterObject": "6593cba72c8813ca9363cc0ff12aa220af32364a993f45d565f23ab3399b94db",
+      "beforeDeps": [
+        "pl-2.8",
+        "pl-2.5"
+      ],
+      "afterDeps": [
+        "pl-2.8",
+        "pl-2.5"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "13a009b7164bd568bc66e72cd350c072f4a49504ef8972adaa87b41e5b9c1f62",
+      "vizAfter": "13a009b7164bd568bc66e72cd350c072f4a49504ef8972adaa87b41e5b9c1f62"
+    },
+    {
+      "id": "pl-2.10",
+      "file": "content/pl/ch02-b.js",
+      "beforeObject": "40c319fc2d61c2cabc88dfce2a08525e9e6ed08e68df30edae9d09f66e26a391",
+      "afterObject": "40c319fc2d61c2cabc88dfce2a08525e9e6ed08e68df30edae9d09f66e26a391",
+      "beforeDeps": [
+        "pl-2.9",
+        "pl-2.7",
+        "toc-8.11"
+      ],
+      "afterDeps": [
+        "pl-2.9",
+        "pl-2.7",
+        "toc-8.11"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "7aaa2652a2c520524456e38479862d0e941edc78c33d92600eee470216be1fba",
+      "vizAfter": "7aaa2652a2c520524456e38479862d0e941edc78c33d92600eee470216be1fba"
+    },
+    {
+      "id": "pl-2.11",
+      "file": "content/pl/ch02-b.js",
+      "beforeObject": "447bbc736680c1ffe86353883154399ff281ef52b6c6e195f2fd8855eee49962",
+      "afterObject": "447bbc736680c1ffe86353883154399ff281ef52b6c6e195f2fd8855eee49962",
+      "beforeDeps": [
+        "pl-2.3"
+      ],
+      "afterDeps": [
+        "pl-2.3"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "d6e4d3fa9d75451a029ec5f77461f85d40ccad5d864af7debae35a0c159cff01",
+      "vizAfter": "d6e4d3fa9d75451a029ec5f77461f85d40ccad5d864af7debae35a0c159cff01"
+    },
+    {
+      "id": "pl-2.12",
+      "file": "content/pl/ch02-b.js",
+      "beforeObject": "fc13d1f4c62f67b6be5efe4cd066029bf4008870e6d93e04175b478554ba45fa",
+      "afterObject": "fc13d1f4c62f67b6be5efe4cd066029bf4008870e6d93e04175b478554ba45fa",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "eaeab8e2b5031587d6652da60168683fc96f03b926187a5dd2e289561b058e59",
+      "vizAfter": "eaeab8e2b5031587d6652da60168683fc96f03b926187a5dd2e289561b058e59"
+    },
+    {
+      "id": "pl-2.1",
+      "file": "content/pl/ch02.js",
+      "beforeObject": "ecef860078b631536bac85a2749149dea3c6b3ef5b94f26f3f60533793c516f2",
+      "afterObject": "ecef860078b631536bac85a2749149dea3c6b3ef5b94f26f3f60533793c516f2",
+      "beforeDeps": [
+        "pl-1.1"
+      ],
+      "afterDeps": [
+        "pl-1.1"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "307efe8e60e1b89d8bc1404d28b68e93d5748ae548e3b426f5729f2c8891e42a",
+      "vizAfter": "307efe8e60e1b89d8bc1404d28b68e93d5748ae548e3b426f5729f2c8891e42a"
+    },
+    {
+      "id": "pl-2.2",
+      "file": "content/pl/ch02.js",
+      "beforeObject": "ac9439f46bbb86598bfcbfe0859b50fb57478c68bc190ef834bf9dc6a11b2cbd",
+      "afterObject": "ba1b9090d4acd16d3f3cea7dde6f0c9d4b550fd7b71edff8df5868499a5f8fc6",
+      "beforeDeps": [
+        "pl-2.1"
+      ],
+      "afterDeps": [
+        "pl-2.1",
+        "logic-3.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "ec061f64e3c2018514c25ebffa77bcf907a10d517a490fc47f7ab7d8d99d9a73",
+      "vizAfter": "ec061f64e3c2018514c25ebffa77bcf907a10d517a490fc47f7ab7d8d99d9a73"
+    },
+    {
+      "id": "pl-2.3",
+      "file": "content/pl/ch02.js",
+      "beforeObject": "20fbba541da376d2d0c991087d1dbe1a44f48bb8e9d59d4c2763c1be8060bdbb",
+      "afterObject": "20fbba541da376d2d0c991087d1dbe1a44f48bb8e9d59d4c2763c1be8060bdbb",
+      "beforeDeps": [
+        "pl-2.2"
+      ],
+      "afterDeps": [
+        "pl-2.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "080a9c4e29c87ff5e9a747e48157248e2e85f31fcc5f1c753807988389e1999b",
+      "vizAfter": "080a9c4e29c87ff5e9a747e48157248e2e85f31fcc5f1c753807988389e1999b"
+    },
+    {
+      "id": "pl-2.4",
+      "file": "content/pl/ch02.js",
+      "beforeObject": "25baf1d474c683e09381dc1043eb7d63fa572b4ae0cae77d06185a199582268c",
+      "afterObject": "25baf1d474c683e09381dc1043eb7d63fa572b4ae0cae77d06185a199582268c",
+      "beforeDeps": [
+        "pl-2.3"
+      ],
+      "afterDeps": [
+        "pl-2.3"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "c4737bcdd7d2decfbe466d48aec5d1153f8513e2c5990d38d209ad0c7c35a13b",
+      "vizAfter": "c4737bcdd7d2decfbe466d48aec5d1153f8513e2c5990d38d209ad0c7c35a13b"
+    },
+    {
+      "id": "pl-2.5",
+      "file": "content/pl/ch02.js",
+      "beforeObject": "684791920d232f33eea0e123db0b92a69dbf10509199f1da16f5403a0d23b993",
+      "afterObject": "684791920d232f33eea0e123db0b92a69dbf10509199f1da16f5403a0d23b993",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "8991435760792518017c7a5a2ad23f5eae5096a58cb51b3701d0376a78ed28b0",
+      "vizAfter": "8991435760792518017c7a5a2ad23f5eae5096a58cb51b3701d0376a78ed28b0"
+    },
+    {
+      "id": "pl-2.6",
+      "file": "content/pl/ch02.js",
+      "beforeObject": "84063c72eb571f741cbd59a701e2a8e5eaa6e3fdb277d0905e28c9764fd6a27a",
+      "afterObject": "38033ae584832837288d0d4501c8a97201f08f846d392608614986b7c8efa808",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4",
+        "logic-2.3"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "474a11d6cd256023927360dcd7338e753b0595171bc24b00f8d19e2b98efc499",
+      "vizAfter": "474a11d6cd256023927360dcd7338e753b0595171bc24b00f8d19e2b98efc499"
+    },
+    {
+      "id": "pl-3.6",
+      "file": "content/pl/ch03-b.js",
+      "beforeObject": "b18cb9cc67842350e2ca033fe58dd84dec8c6157897e231c506858eca1606f68",
+      "afterObject": "b18cb9cc67842350e2ca033fe58dd84dec8c6157897e231c506858eca1606f68",
+      "beforeDeps": [
+        "pl-3.4",
+        "pl-2.5"
+      ],
+      "afterDeps": [
+        "pl-3.4",
+        "pl-2.5"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "11070897963c628ccc6ccf625d028f34c342b1a56328def3f8c3958a21f60d16",
+      "vizAfter": "11070897963c628ccc6ccf625d028f34c342b1a56328def3f8c3958a21f60d16"
+    },
+    {
+      "id": "pl-3.7",
+      "file": "content/pl/ch03-b.js",
+      "beforeObject": "3f6a1fa1c337f12807ed751bfe5b54d60be9bc4d7e2fc638c03c34c39dd7030e",
+      "afterObject": "3f6a1fa1c337f12807ed751bfe5b54d60be9bc4d7e2fc638c03c34c39dd7030e",
+      "beforeDeps": [
+        "pl-2.10",
+        "pl-3.5",
+        "pl-3.6",
+        "toc-9.7",
+        "toc-10.5"
+      ],
+      "afterDeps": [
+        "pl-2.10",
+        "pl-3.5",
+        "pl-3.6",
+        "toc-9.7",
+        "toc-10.5"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "35b6de9794be885b3c2f55a697a7eccc94af12d6919d71bf25fc9ef6aa50484b",
+      "vizAfter": "35b6de9794be885b3c2f55a697a7eccc94af12d6919d71bf25fc9ef6aa50484b"
+    },
+    {
+      "id": "pl-3.8",
+      "file": "content/pl/ch03-b.js",
+      "beforeObject": "defe24df6a3849348d9fed7351acc5fff7478186eea799831f853f614f762001",
+      "afterObject": "defe24df6a3849348d9fed7351acc5fff7478186eea799831f853f614f762001",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "ba9c87d6cfe25fd87659849e5a9ead41e690461c68b98a99a1a0d465d0e5de0a",
+      "vizAfter": "ba9c87d6cfe25fd87659849e5a9ead41e690461c68b98a99a1a0d465d0e5de0a"
+    },
+    {
+      "id": "pl-3.9",
+      "file": "content/pl/ch03-b.js",
+      "beforeObject": "aa2468b14501ab3d4908d8481a0ae03f0a6d0e6c1a3f1722dcbef9c1a25290ce",
+      "afterObject": "aa2468b14501ab3d4908d8481a0ae03f0a6d0e6c1a3f1722dcbef9c1a25290ce",
+      "beforeDeps": [
+        "pl-3.8"
+      ],
+      "afterDeps": [
+        "pl-3.8"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "3e6afcee7805710b88a9a7e19593f04f103ce7ef8dfcf6f9a67689264eccb45e",
+      "vizAfter": "3e6afcee7805710b88a9a7e19593f04f103ce7ef8dfcf6f9a67689264eccb45e"
+    },
+    {
+      "id": "pl-3.10",
+      "file": "content/pl/ch03-b.js",
+      "beforeObject": "9a6d20ac6c9af2e84e61e2eda1e5fa92ec69483d3e62c5f79b2bb0d0400542c3",
+      "afterObject": "f31d0e02350ecd4ac60fe610a9142f10fa88d914badbfb8deabce30a835203fb",
+      "beforeDeps": [
+        "pl-2.9",
+        "pl-2.8"
+      ],
+      "afterDeps": [
+        "pl-2.9",
+        "pl-2.8",
+        "logic-4.1",
+        "logic-4.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "cb744e95d3b1345aee13c7bacc42f91f1698c43f1d8ee4c97072931483be2ebf",
+      "vizAfter": "cb744e95d3b1345aee13c7bacc42f91f1698c43f1d8ee4c97072931483be2ebf"
+    },
+    {
+      "id": "pl-3.1",
+      "file": "content/pl/ch03.js",
+      "beforeObject": "3312fadbc3ec008754477099803415d84750d63180cf8bacb3e978e042054350",
+      "afterObject": "3312fadbc3ec008754477099803415d84750d63180cf8bacb3e978e042054350",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "63a96edfd842223cf15ed27681ff53cf6ffb6ecf711b6844d3e0105d9f0bbe08",
+      "vizAfter": "63a96edfd842223cf15ed27681ff53cf6ffb6ecf711b6844d3e0105d9f0bbe08"
+    },
+    {
+      "id": "pl-3.2",
+      "file": "content/pl/ch03.js",
+      "beforeObject": "5863a1f7f26379e0f56f63048d8bdb66dc7fb4c6de7ff3db3fb9f301b4db7807",
+      "afterObject": "5863a1f7f26379e0f56f63048d8bdb66dc7fb4c6de7ff3db3fb9f301b4db7807",
+      "beforeDeps": [
+        "pl-3.1"
+      ],
+      "afterDeps": [
+        "pl-3.1"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "70b766de52fb41864b840f83437918a6c3d145d27d753f716843c9b6ea394bee",
+      "vizAfter": "70b766de52fb41864b840f83437918a6c3d145d27d753f716843c9b6ea394bee"
+    },
+    {
+      "id": "pl-3.3",
+      "file": "content/pl/ch03.js",
+      "beforeObject": "96be3edffeec4d66b4d2b9d3182c09f4e49f81f41dbfcc586178837e587745e3",
+      "afterObject": "96be3edffeec4d66b4d2b9d3182c09f4e49f81f41dbfcc586178837e587745e3",
+      "beforeDeps": [
+        "pl-3.1"
+      ],
+      "afterDeps": [
+        "pl-3.1"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "f834ee5a9acd8dfd7109c2d6cdb4fe18fea4a696f2eee73d21d0d3d9d88da6cb",
+      "vizAfter": "f834ee5a9acd8dfd7109c2d6cdb4fe18fea4a696f2eee73d21d0d3d9d88da6cb"
+    },
+    {
+      "id": "pl-3.4",
+      "file": "content/pl/ch03.js",
+      "beforeObject": "5c0715ec46ef7bf97569933ce8952554bd12d924ff830ca96b6b14bc226f732a",
+      "afterObject": "5c0715ec46ef7bf97569933ce8952554bd12d924ff830ca96b6b14bc226f732a",
+      "beforeDeps": [
+        "pl-3.3"
+      ],
+      "afterDeps": [
+        "pl-3.3"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "e80b0d5bdb9a7df74bb1ebd1e4f2736cf0ea5391fc577907c5877d5642ef3f54",
+      "vizAfter": "e80b0d5bdb9a7df74bb1ebd1e4f2736cf0ea5391fc577907c5877d5642ef3f54"
+    },
+    {
+      "id": "pl-3.5",
+      "file": "content/pl/ch03.js",
+      "beforeObject": "913ae849346e817c1134ac9ad5d15b876819308f87b853fc580e0cd059b5b44a",
+      "afterObject": "913ae849346e817c1134ac9ad5d15b876819308f87b853fc580e0cd059b5b44a",
+      "beforeDeps": [
+        "pl-3.4"
+      ],
+      "afterDeps": [
+        "pl-3.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "dc3ae02ebbb97aa0a1ff5bab3052e43efdff864359b07e2443faa5bef6dfb5c2",
+      "vizAfter": "dc3ae02ebbb97aa0a1ff5bab3052e43efdff864359b07e2443faa5bef6dfb5c2"
+    },
+    {
+      "id": "pl-4.6",
+      "file": "content/pl/ch04-b.js",
+      "beforeObject": "974908e6c2a28b6902565ec69db4fb3c5c2307a7aa532b20a4491657bac81ac0",
+      "afterObject": "974908e6c2a28b6902565ec69db4fb3c5c2307a7aa532b20a4491657bac81ac0",
+      "beforeDeps": [
+        "pl-4.5",
+        "toc-10.5"
+      ],
+      "afterDeps": [
+        "pl-4.5",
+        "toc-10.5"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "c9720f50e8caf87c573d4962acac6abcd8721400ec1740a75dd6dad78be6bc29",
+      "vizAfter": "c9720f50e8caf87c573d4962acac6abcd8721400ec1740a75dd6dad78be6bc29"
+    },
+    {
+      "id": "pl-4.7",
+      "file": "content/pl/ch04-b.js",
+      "beforeObject": "72f874df275ffc90aa1626e3dde70179442243dc6f954e6ca2ea306213a3d4b1",
+      "afterObject": "72f874df275ffc90aa1626e3dde70179442243dc6f954e6ca2ea306213a3d4b1",
+      "beforeDeps": [
+        "pl-2.4",
+        "pl-4.1"
+      ],
+      "afterDeps": [
+        "pl-2.4",
+        "pl-4.1"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "04798ce759a835007c5e65e935e0b57bceb83c6ac3e4d27d5dac4d3662abd2d8",
+      "vizAfter": "04798ce759a835007c5e65e935e0b57bceb83c6ac3e4d27d5dac4d3662abd2d8"
+    },
+    {
+      "id": "pl-4.8",
+      "file": "content/pl/ch04-b.js",
+      "beforeObject": "dfd2dfaac96ea548d07940bb8d57c11ed5bfc14c712a9585e0df5e1b2263d98b",
+      "afterObject": "6e8ee511d250a8044228ed9a8b87e983cde0b33b988287849b335de799a0d966",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7",
+        "logic-2.1"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "280baeae58cd57687cd33e2da2f25f2592f1c51f9d8d54c7c478a1e799bc07f0",
+      "vizAfter": "280baeae58cd57687cd33e2da2f25f2592f1c51f9d8d54c7c478a1e799bc07f0"
+    },
+    {
+      "id": "pl-4.9",
+      "file": "content/pl/ch04-b.js",
+      "beforeObject": "22e7260aadd1cabd7ede5bc2c7d6d71159204dacae899395e06cb5d052dc469a",
+      "afterObject": "22e7260aadd1cabd7ede5bc2c7d6d71159204dacae899395e06cb5d052dc469a",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "7efff8fcaa1935abf168aa4ec3c3b4cb36fdc0442505b9e60bedc2b7dae35593",
+      "vizAfter": "7efff8fcaa1935abf168aa4ec3c3b4cb36fdc0442505b9e60bedc2b7dae35593"
+    },
+    {
+      "id": "pl-4.10",
+      "file": "content/pl/ch04-c.js",
+      "beforeObject": "e3992d3253fdf88669e37917c572baaf5a8f8d492fe201f2e8721b156437a8ff",
+      "afterObject": "e3992d3253fdf88669e37917c572baaf5a8f8d492fe201f2e8721b156437a8ff",
+      "beforeDeps": [
+        "pl-4.9",
+        "pl-4.5"
+      ],
+      "afterDeps": [
+        "pl-4.9",
+        "pl-4.5"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "a9ea85b21c4e46acfc7ff185427d35ec49d7520fcbdbdb2ba5cf2be53aeac7f6",
+      "vizAfter": "a9ea85b21c4e46acfc7ff185427d35ec49d7520fcbdbdb2ba5cf2be53aeac7f6"
+    },
+    {
+      "id": "pl-4.11",
+      "file": "content/pl/ch04-c.js",
+      "beforeObject": "87f50124cb2cff885f03f0276dc444a2c4581f1f17c5a653d2411fa5d5a79aca",
+      "afterObject": "831f5b919284c49d681bdcc07427832a5a8bc8e5987cc594382ed2ab6da14bb1",
+      "beforeDeps": [
+        "pl-4.10"
+      ],
+      "afterDeps": [
+        "pl-4.10",
+        "logic-2.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "167e08c80f2a0e06ef93afe26b4e5cba1bcb1f0c68b9a1268a53f3ab597b09d4",
+      "vizAfter": "167e08c80f2a0e06ef93afe26b4e5cba1bcb1f0c68b9a1268a53f3ab597b09d4"
+    },
+    {
+      "id": "pl-4.12",
+      "file": "content/pl/ch04-c.js",
+      "beforeObject": "34d533fe82d96f824a23a72008477d3f1a926e467d08103e11c4cb319837697b",
+      "afterObject": "34d533fe82d96f824a23a72008477d3f1a926e467d08103e11c4cb319837697b",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "6629895969a6e629d0efdcd838bb9f69d9b28a28846805ca719b957ab5f1638b",
+      "vizAfter": "6629895969a6e629d0efdcd838bb9f69d9b28a28846805ca719b957ab5f1638b"
+    },
+    {
+      "id": "pl-4.13",
+      "file": "content/pl/ch04-c.js",
+      "beforeObject": "4a0995c4f9df7633e8ad6af5e83c8efa2bf5c575e29ab05423f405edfa04ffa8",
+      "afterObject": "26c640e51f19d41134c194556aaf785ee2f014587c67121c609ffcf1fc396da7",
+      "beforeDeps": [
+        "pl-4.11",
+        "pl-2.8"
+      ],
+      "afterDeps": [
+        "pl-4.11",
+        "pl-2.8",
+        "logic-2.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "b9fe24fe96a7f81f6a5657ade094af397bcb7b290ca071488d7d6013ae78e295",
+      "vizAfter": "b9fe24fe96a7f81f6a5657ade094af397bcb7b290ca071488d7d6013ae78e295"
+    },
+    {
+      "id": "pl-4.1",
+      "file": "content/pl/ch04.js",
+      "beforeObject": "34ca69d652cde26c942c0fe1ea7f8d85bb6fee54bd651f0e473e5a4066cd8edd",
+      "afterObject": "34ca69d652cde26c942c0fe1ea7f8d85bb6fee54bd651f0e473e5a4066cd8edd",
+      "beforeDeps": [
+        "pl-1.4",
+        "pl-1.3"
+      ],
+      "afterDeps": [
+        "pl-1.4",
+        "pl-1.3"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "d5ab7d6bdf845ee1c9b3e2f0a16335ee5061b649b6e22eb991830d8c35c6ad74",
+      "vizAfter": "d5ab7d6bdf845ee1c9b3e2f0a16335ee5061b649b6e22eb991830d8c35c6ad74"
+    },
+    {
+      "id": "pl-4.2",
+      "file": "content/pl/ch04.js",
+      "beforeObject": "f7806f5619b4d3f10ff40b46b4a8f723ea950436a820864f2d86124882554467",
+      "afterObject": "f7806f5619b4d3f10ff40b46b4a8f723ea950436a820864f2d86124882554467",
+      "beforeDeps": [
+        "pl-4.1"
+      ],
+      "afterDeps": [
+        "pl-4.1"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "cb3b330c19043e365ebd7a3ade4c1a9e6b1bdd1836a8bd280c6f40a9a85afe9e",
+      "vizAfter": "cb3b330c19043e365ebd7a3ade4c1a9e6b1bdd1836a8bd280c6f40a9a85afe9e"
+    },
+    {
+      "id": "pl-4.3",
+      "file": "content/pl/ch04.js",
+      "beforeObject": "d9abd2203cf47e1ac2b3f8195e32b33edf3858e894a3410b3b963bdb5e08fe74",
+      "afterObject": "d9abd2203cf47e1ac2b3f8195e32b33edf3858e894a3410b3b963bdb5e08fe74",
+      "beforeDeps": [
+        "pl-4.2"
+      ],
+      "afterDeps": [
+        "pl-4.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "635ad0170267b8d2f52eb9fb5f71e0d643bf78a379806e4c9629fcea5c6dbd99",
+      "vizAfter": "635ad0170267b8d2f52eb9fb5f71e0d643bf78a379806e4c9629fcea5c6dbd99"
+    },
+    {
+      "id": "pl-4.4",
+      "file": "content/pl/ch04.js",
+      "beforeObject": "362b5e3c333c6bf40490c657f6fa33bca32aed8ec883a2e432e56b2408684e1f",
+      "afterObject": "362b5e3c333c6bf40490c657f6fa33bca32aed8ec883a2e432e56b2408684e1f",
+      "beforeDeps": [
+        "pl-4.2"
+      ],
+      "afterDeps": [
+        "pl-4.2"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "5c5e159754f9ab1323bd058d79e01c0710bd0c9119467b5f4cbc061225261863",
+      "vizAfter": "5c5e159754f9ab1323bd058d79e01c0710bd0c9119467b5f4cbc061225261863"
+    },
+    {
+      "id": "pl-4.5",
+      "file": "content/pl/ch04.js",
+      "beforeObject": "c51b9034779c756d49964ac56ee485236226131373d530215be486c142370546",
+      "afterObject": "c51b9034779c756d49964ac56ee485236226131373d530215be486c142370546",
+      "beforeDeps": [
+        "pl-4.3",
+        "pl-4.4"
+      ],
+      "afterDeps": [
+        "pl-4.3",
+        "pl-4.4"
+      ],
+      "flags": {
+        "verify": "ABSENT",
+        "sourceVerify": "ABSENT",
+        "mathVerify": "ABSENT",
+        "vizVerify": "ABSENT"
+      },
+      "vizBefore": "eb292618e0808d3954fbcda754fbeb4268f781bf4ad9817d9edee5094b2c83c6",
+      "vizAfter": "eb292618e0808d3954fbcda754fbeb4268f781bf4ad9817d9edee5094b2c83c6"
+    }
+  ],
+  "syllabus": [
+    {
+      "num": "1.1",
+      "beforeDeps": [
+        "toc-5.2"
+      ],
+      "afterDeps": [
+        "toc-5.2"
+      ]
+    },
+    {
+      "num": "1.2",
+      "beforeDeps": [
+        "pl-1.1"
+      ],
+      "afterDeps": [
+        "pl-1.1",
+        "logic-2.2"
+      ]
+    },
+    {
+      "num": "1.3",
+      "beforeDeps": [
+        "pl-1.1"
+      ],
+      "afterDeps": [
+        "pl-1.1"
+      ]
+    },
+    {
+      "num": "1.4",
+      "beforeDeps": [
+        "pl-1.3"
+      ],
+      "afterDeps": [
+        "pl-1.3"
+      ]
+    },
+    {
+      "num": "1.5",
+      "beforeDeps": [
+        "pl-1.4",
+        "pl-1.2"
+      ],
+      "afterDeps": [
+        "pl-1.4",
+        "pl-1.2"
+      ]
+    },
+    {
+      "num": "1.6",
+      "beforeDeps": [
+        "pl-1.4"
+      ],
+      "afterDeps": [
+        "pl-1.4"
+      ]
+    },
+    {
+      "num": "1.7",
+      "beforeDeps": [
+        "pl-1.6"
+      ],
+      "afterDeps": [
+        "pl-1.6"
+      ]
+    },
+    {
+      "num": "1.8",
+      "beforeDeps": [
+        "pl-1.3"
+      ],
+      "afterDeps": [
+        "pl-1.3"
+      ]
+    },
+    {
+      "num": "1.9",
+      "beforeDeps": [
+        "pl-1.8",
+        "pl-1.7"
+      ],
+      "afterDeps": [
+        "pl-1.8",
+        "pl-1.7"
+      ]
+    },
+    {
+      "num": "1.10",
+      "beforeDeps": [
+        "pl-1.4"
+      ],
+      "afterDeps": [
+        "pl-1.4"
+      ]
+    },
+    {
+      "num": "1.11",
+      "beforeDeps": [
+        "pl-1.4"
+      ],
+      "afterDeps": [
+        "pl-1.4",
+        "logic-3.4"
+      ]
+    },
+    {
+      "num": "2.1",
+      "beforeDeps": [
+        "pl-1.1"
+      ],
+      "afterDeps": [
+        "pl-1.1"
+      ]
+    },
+    {
+      "num": "2.2",
+      "beforeDeps": [
+        "pl-2.1"
+      ],
+      "afterDeps": [
+        "pl-2.1",
+        "logic-3.2"
+      ]
+    },
+    {
+      "num": "2.3",
+      "beforeDeps": [
+        "pl-2.2"
+      ],
+      "afterDeps": [
+        "pl-2.2"
+      ]
+    },
+    {
+      "num": "2.4",
+      "beforeDeps": [
+        "pl-2.3"
+      ],
+      "afterDeps": [
+        "pl-2.3"
+      ]
+    },
+    {
+      "num": "2.5",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ]
+    },
+    {
+      "num": "2.6",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4",
+        "logic-2.3"
+      ]
+    },
+    {
+      "num": "2.7",
+      "beforeDeps": [
+        "pl-2.6"
+      ],
+      "afterDeps": [
+        "pl-2.6"
+      ]
+    },
+    {
+      "num": "2.8",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ]
+    },
+    {
+      "num": "2.9",
+      "beforeDeps": [
+        "pl-2.8",
+        "pl-2.5"
+      ],
+      "afterDeps": [
+        "pl-2.8",
+        "pl-2.5"
+      ]
+    },
+    {
+      "num": "2.10",
+      "beforeDeps": [
+        "pl-2.9",
+        "pl-2.7",
+        "toc-8.11"
+      ],
+      "afterDeps": [
+        "pl-2.9",
+        "pl-2.7",
+        "toc-8.11"
+      ]
+    },
+    {
+      "num": "2.11",
+      "beforeDeps": [
+        "pl-2.3"
+      ],
+      "afterDeps": [
+        "pl-2.3"
+      ]
+    },
+    {
+      "num": "2.12",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ]
+    },
+    {
+      "num": "3.1",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ]
+    },
+    {
+      "num": "3.2",
+      "beforeDeps": [
+        "pl-3.1"
+      ],
+      "afterDeps": [
+        "pl-3.1"
+      ]
+    },
+    {
+      "num": "3.3",
+      "beforeDeps": [
+        "pl-3.1"
+      ],
+      "afterDeps": [
+        "pl-3.1"
+      ]
+    },
+    {
+      "num": "3.4",
+      "beforeDeps": [
+        "pl-3.3"
+      ],
+      "afterDeps": [
+        "pl-3.3"
+      ]
+    },
+    {
+      "num": "3.5",
+      "beforeDeps": [
+        "pl-3.4"
+      ],
+      "afterDeps": [
+        "pl-3.4"
+      ]
+    },
+    {
+      "num": "3.6",
+      "beforeDeps": [
+        "pl-3.4",
+        "pl-2.5"
+      ],
+      "afterDeps": [
+        "pl-3.4",
+        "pl-2.5"
+      ]
+    },
+    {
+      "num": "3.7",
+      "beforeDeps": [
+        "pl-2.10",
+        "toc-10.5"
+      ],
+      "afterDeps": [
+        "pl-2.10",
+        "toc-10.5"
+      ]
+    },
+    {
+      "num": "3.8",
+      "beforeDeps": [
+        "pl-2.4"
+      ],
+      "afterDeps": [
+        "pl-2.4"
+      ]
+    },
+    {
+      "num": "3.9",
+      "beforeDeps": [
+        "pl-3.8"
+      ],
+      "afterDeps": [
+        "pl-3.8"
+      ]
+    },
+    {
+      "num": "3.10",
+      "beforeDeps": [
+        "pl-2.9"
+      ],
+      "afterDeps": [
+        "pl-2.9",
+        "pl-2.8",
+        "logic-4.1",
+        "logic-4.2"
+      ]
+    },
+    {
+      "num": "4.1",
+      "beforeDeps": [
+        "pl-1.4"
+      ],
+      "afterDeps": [
+        "pl-1.4"
+      ]
+    },
+    {
+      "num": "4.2",
+      "beforeDeps": [
+        "pl-4.1"
+      ],
+      "afterDeps": [
+        "pl-4.1"
+      ]
+    },
+    {
+      "num": "4.3",
+      "beforeDeps": [
+        "pl-4.2"
+      ],
+      "afterDeps": [
+        "pl-4.2"
+      ]
+    },
+    {
+      "num": "4.4",
+      "beforeDeps": [
+        "pl-4.2"
+      ],
+      "afterDeps": [
+        "pl-4.2"
+      ]
+    },
+    {
+      "num": "4.5",
+      "beforeDeps": [
+        "pl-4.3",
+        "pl-4.4"
+      ],
+      "afterDeps": [
+        "pl-4.3",
+        "pl-4.4"
+      ]
+    },
+    {
+      "num": "4.6",
+      "beforeDeps": [
+        "pl-4.5",
+        "toc-10.5"
+      ],
+      "afterDeps": [
+        "pl-4.5",
+        "toc-10.5"
+      ]
+    },
+    {
+      "num": "4.7",
+      "beforeDeps": [
+        "pl-2.4",
+        "pl-4.1"
+      ],
+      "afterDeps": [
+        "pl-2.4",
+        "pl-4.1"
+      ]
+    },
+    {
+      "num": "4.8",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7",
+        "logic-2.1"
+      ]
+    },
+    {
+      "num": "4.9",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "4.10",
+      "beforeDeps": [
+        "pl-4.9",
+        "pl-4.5"
+      ],
+      "afterDeps": [
+        "pl-4.9",
+        "pl-4.5"
+      ]
+    },
+    {
+      "num": "4.11",
+      "beforeDeps": [
+        "pl-4.10"
+      ],
+      "afterDeps": [
+        "pl-4.10",
+        "logic-2.2"
+      ]
+    },
+    {
+      "num": "4.12",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "4.13",
+      "beforeDeps": [
+        "pl-4.11",
+        "pl-2.8"
+      ],
+      "afterDeps": [
+        "pl-4.11",
+        "pl-2.8",
+        "logic-2.2"
+      ]
+    },
+    {
+      "num": "5.1",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "5.2",
+      "beforeDeps": [
+        "pl-5.1"
+      ],
+      "afterDeps": [
+        "pl-5.1"
+      ]
+    },
+    {
+      "num": "5.3",
+      "beforeDeps": [
+        "pl-4.11",
+        "pl-2.9"
+      ],
+      "afterDeps": [
+        "pl-4.11",
+        "pl-2.9"
+      ]
+    },
+    {
+      "num": "5.4",
+      "beforeDeps": [
+        "pl-5.2"
+      ],
+      "afterDeps": [
+        "pl-5.2"
+      ]
+    },
+    {
+      "num": "5.5",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "5.6",
+      "beforeDeps": [
+        "pl-5.5",
+        "pl-4.10"
+      ],
+      "afterDeps": [
+        "pl-5.5",
+        "pl-4.10"
+      ]
+    },
+    {
+      "num": "5.7",
+      "beforeDeps": [
+        "pl-5.5",
+        "pl-4.11"
+      ],
+      "afterDeps": [
+        "pl-5.5",
+        "pl-4.11"
+      ]
+    },
+    {
+      "num": "5.8",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "5.9",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "5.10",
+      "beforeDeps": [
+        "pl-5.9"
+      ],
+      "afterDeps": [
+        "pl-5.9"
+      ]
+    },
+    {
+      "num": "5.11",
+      "beforeDeps": [
+        "pl-5.5",
+        "pl-5.8"
+      ],
+      "afterDeps": [
+        "pl-5.5",
+        "pl-5.8"
+      ]
+    },
+    {
+      "num": "5.12",
+      "beforeDeps": [
+        "pl-2.1",
+        "toc-8.4",
+        "pl-5.4"
+      ],
+      "afterDeps": [
+        "pl-2.1",
+        "toc-8.4",
+        "pl-5.4"
+      ]
+    },
+    {
+      "num": "6.1",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "6.2",
+      "beforeDeps": [
+        "pl-6.1",
+        "pl-5.1"
+      ],
+      "afterDeps": [
+        "pl-6.1",
+        "pl-5.1"
+      ]
+    },
+    {
+      "num": "6.3",
+      "beforeDeps": [
+        "pl-6.1"
+      ],
+      "afterDeps": [
+        "pl-6.1"
+      ]
+    },
+    {
+      "num": "6.4",
+      "beforeDeps": [
+        "pl-6.3",
+        "pl-5.5"
+      ],
+      "afterDeps": [
+        "pl-6.3",
+        "pl-5.5"
+      ]
+    },
+    {
+      "num": "6.5",
+      "beforeDeps": [
+        "pl-6.1"
+      ],
+      "afterDeps": [
+        "pl-6.1"
+      ]
+    },
+    {
+      "num": "6.6",
+      "beforeDeps": [
+        "pl-6.2",
+        "pl-6.3"
+      ],
+      "afterDeps": [
+        "pl-6.2",
+        "pl-6.3"
+      ]
+    },
+    {
+      "num": "6.7",
+      "beforeDeps": [
+        "pl-6.6"
+      ],
+      "afterDeps": [
+        "pl-6.6"
+      ]
+    },
+    {
+      "num": "6.8",
+      "beforeDeps": [
+        "pl-6.1"
+      ],
+      "afterDeps": [
+        "pl-6.1"
+      ]
+    },
+    {
+      "num": "6.9",
+      "beforeDeps": [
+        "pl-6.2",
+        "pl-5.5"
+      ],
+      "afterDeps": [
+        "pl-6.2",
+        "pl-5.5"
+      ]
+    },
+    {
+      "num": "6.10",
+      "beforeDeps": [
+        "pl-6.9"
+      ],
+      "afterDeps": [
+        "pl-6.9"
+      ]
+    },
+    {
+      "num": "6.11",
+      "beforeDeps": [
+        "pl-6.10"
+      ],
+      "afterDeps": [
+        "pl-6.10"
+      ]
+    },
+    {
+      "num": "7.1",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "7.2",
+      "beforeDeps": [
+        "pl-7.1"
+      ],
+      "afterDeps": [
+        "pl-7.1"
+      ]
+    },
+    {
+      "num": "7.3",
+      "beforeDeps": [
+        "pl-7.2"
+      ],
+      "afterDeps": [
+        "pl-7.2"
+      ]
+    },
+    {
+      "num": "7.4",
+      "beforeDeps": [
+        "pl-7.3"
+      ],
+      "afterDeps": [
+        "pl-7.3"
+      ]
+    },
+    {
+      "num": "7.5",
+      "beforeDeps": [
+        "pl-7.4"
+      ],
+      "afterDeps": [
+        "pl-7.4"
+      ]
+    },
+    {
+      "num": "7.6",
+      "beforeDeps": [
+        "pl-7.5"
+      ],
+      "afterDeps": [
+        "pl-7.5"
+      ]
+    },
+    {
+      "num": "7.7",
+      "beforeDeps": [
+        "pl-7.6"
+      ],
+      "afterDeps": [
+        "pl-7.6"
+      ]
+    },
+    {
+      "num": "7.8",
+      "beforeDeps": [
+        "pl-7.5",
+        "pl-5.6"
+      ],
+      "afterDeps": [
+        "pl-7.5",
+        "pl-5.6"
+      ]
+    },
+    {
+      "num": "7.9",
+      "beforeDeps": [
+        "pl-7.1"
+      ],
+      "afterDeps": [
+        "pl-7.1"
+      ]
+    },
+    {
+      "num": "7.10",
+      "beforeDeps": [
+        "pl-7.9",
+        "pl-2.7"
+      ],
+      "afterDeps": [
+        "pl-7.9",
+        "pl-2.7"
+      ]
+    },
+    {
+      "num": "7.11",
+      "beforeDeps": [
+        "pl-7.9",
+        "pl-4.11"
+      ],
+      "afterDeps": [
+        "pl-7.9",
+        "pl-4.11"
+      ]
+    },
+    {
+      "num": "7.12",
+      "beforeDeps": [
+        "pl-7.9"
+      ],
+      "afterDeps": [
+        "pl-7.9"
+      ]
+    },
+    {
+      "num": "7.13",
+      "beforeDeps": [
+        "pl-7.9",
+        "toc-10.12"
+      ],
+      "afterDeps": [
+        "pl-7.9",
+        "toc-10.12"
+      ]
+    },
+    {
+      "num": "7.14",
+      "beforeDeps": [
+        "pl-7.9",
+        "pl-6.1"
+      ],
+      "afterDeps": [
+        "pl-7.9",
+        "pl-6.1"
+      ]
+    },
+    {
+      "num": "7.15",
+      "beforeDeps": [
+        "pl-7.14",
+        "toc-10.12"
+      ],
+      "afterDeps": [
+        "pl-7.14",
+        "toc-10.12"
+      ]
+    },
+    {
+      "num": "7.16",
+      "beforeDeps": [
+        "pl-7.3",
+        "pl-7.4",
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-7.3",
+        "pl-7.4",
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "8.1",
+      "beforeDeps": [
+        "pl-5.4"
+      ],
+      "afterDeps": [
+        "pl-5.4"
+      ]
+    },
+    {
+      "num": "8.2",
+      "beforeDeps": [
+        "pl-8.1"
+      ],
+      "afterDeps": [
+        "pl-8.1"
+      ]
+    },
+    {
+      "num": "8.3",
+      "beforeDeps": [
+        "pl-8.1",
+        "pl-2.9"
+      ],
+      "afterDeps": [
+        "pl-8.1",
+        "pl-2.9"
+      ]
+    },
+    {
+      "num": "8.4",
+      "beforeDeps": [
+        "pl-1.2"
+      ],
+      "afterDeps": [
+        "pl-1.2"
+      ]
+    },
+    {
+      "num": "8.5",
+      "beforeDeps": [
+        "pl-8.4",
+        "pl-8.2",
+        "pl-6.6"
+      ],
+      "afterDeps": [
+        "pl-8.4",
+        "pl-8.2",
+        "pl-6.6"
+      ]
+    },
+    {
+      "num": "8.6",
+      "beforeDeps": [
+        "pl-7.9"
+      ],
+      "afterDeps": [
+        "pl-7.9"
+      ]
+    },
+    {
+      "num": "8.7",
+      "beforeDeps": [
+        "pl-8.6",
+        "pl-7.12"
+      ],
+      "afterDeps": [
+        "pl-8.6",
+        "pl-7.12"
+      ]
+    },
+    {
+      "num": "8.8",
+      "beforeDeps": [
+        "pl-8.6"
+      ],
+      "afterDeps": [
+        "pl-8.6"
+      ]
+    },
+    {
+      "num": "9.1",
+      "beforeDeps": [
+        "pl-4.7"
+      ],
+      "afterDeps": [
+        "pl-4.7"
+      ]
+    },
+    {
+      "num": "9.2",
+      "beforeDeps": [
+        "pl-9.1",
+        "pl-4.11"
+      ],
+      "afterDeps": [
+        "pl-9.1",
+        "pl-4.11"
+      ]
+    },
+    {
+      "num": "9.3",
+      "beforeDeps": [
+        "pl-9.1",
+        "pl-5.2"
+      ],
+      "afterDeps": [
+        "pl-9.1",
+        "pl-5.2"
+      ]
+    },
+    {
+      "num": "9.4",
+      "beforeDeps": [
+        "pl-9.2"
+      ],
+      "afterDeps": [
+        "pl-9.2"
+      ]
+    },
+    {
+      "num": "9.5",
+      "beforeDeps": [
+        "pl-9.1",
+        "pl-5.9"
+      ],
+      "afterDeps": [
+        "pl-9.1",
+        "pl-5.9"
+      ]
+    },
+    {
+      "num": "9.6",
+      "beforeDeps": [
+        "pl-9.1",
+        "pl-7.9"
+      ],
+      "afterDeps": [
+        "pl-9.1",
+        "pl-7.9"
+      ]
+    },
+    {
+      "num": "9.7",
+      "beforeDeps": [
+        "pl-7.9"
+      ],
+      "afterDeps": [
+        "pl-7.9"
+      ]
+    },
+    {
+      "num": "9.8",
+      "beforeDeps": [
+        "pl-9.7"
+      ],
+      "afterDeps": [
+        "pl-9.7"
+      ]
+    },
+    {
+      "num": "9.9",
+      "beforeDeps": [
+        "pl-9.8"
+      ],
+      "afterDeps": [
+        "pl-9.8"
+      ]
+    },
+    {
+      "num": "10.1",
+      "beforeDeps": [
+        "pma-1.8",
+        "pma-1.10",
+        "comb-8.1"
+      ],
+      "afterDeps": [
+        "pma-1.8",
+        "pma-1.10",
+        "comb-8.1"
+      ]
+    },
+    {
+      "num": "10.2",
+      "beforeDeps": [
+        "pl-10.1",
+        "pma-1.5"
+      ],
+      "afterDeps": [
+        "pl-10.1",
+        "pma-1.5"
+      ]
+    },
+    {
+      "num": "10.3",
+      "beforeDeps": [
+        "pl-10.2",
+        "pl-1.11"
+      ],
+      "afterDeps": [
+        "pl-10.2",
+        "pl-1.11"
+      ]
+    },
+    {
+      "num": "10.4",
+      "beforeDeps": [
+        "pl-10.2"
+      ],
+      "afterDeps": [
+        "pl-10.2"
+      ]
+    },
+    {
+      "num": "10.5",
+      "beforeDeps": [
+        "pl-10.3",
+        "pl-5.3"
+      ],
+      "afterDeps": [
+        "pl-10.3",
+        "pl-5.3"
+      ]
+    },
+    {
+      "num": "10.6",
+      "beforeDeps": [
+        "pl-1.4"
+      ],
+      "afterDeps": [
+        "pl-1.4"
+      ]
+    },
+    {
+      "num": "10.7",
+      "beforeDeps": [
+        "pl-10.5",
+        "pl-10.6"
+      ],
+      "afterDeps": [
+        "pl-10.5",
+        "pl-10.6"
+      ]
+    },
+    {
+      "num": "10.8",
+      "beforeDeps": [
+        "pl-1.11"
+      ],
+      "afterDeps": [
+        "pl-1.11"
+      ]
+    },
+    {
+      "num": "10.9",
+      "beforeDeps": [
+        "pl-10.8"
+      ],
+      "afterDeps": [
+        "pl-10.8"
+      ]
+    },
+    {
+      "num": "10.10",
+      "beforeDeps": [
+        "pl-10.8"
+      ],
+      "afterDeps": [
+        "pl-10.8"
+      ]
+    },
+    {
+      "num": "10.11",
+      "beforeDeps": [
+        "pl-10.2",
+        "pl-1.11"
+      ],
+      "afterDeps": [
+        "pl-10.2",
+        "pl-1.11"
+      ]
+    },
+    {
+      "num": "10.12",
+      "beforeDeps": [
+        "toc-10.5",
+        "pl-10.11"
+      ],
+      "afterDeps": [
+        "toc-10.5",
+        "pl-10.11"
+      ]
+    },
+    {
+      "num": "10.13",
+      "beforeDeps": [
+        "pl-1.11",
+        "pl-10.9"
+      ],
+      "afterDeps": [
+        "pl-1.11",
+        "pl-10.9"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "content/pl/ch01-b.js",
+      "before": "66f80abf7638bd29e39eace03e6cf4d7355543234604d90ce20dde1410bcf020",
+      "after": "d8f3d7e8efb20dd256b30eb9dd5c581de00d16810a044957c00f93b31a3d5b0a"
+    },
+    {
+      "file": "content/pl/ch01.js",
+      "before": "e77a8ea9fc16110bcf6fc4f2b0f407b66e9c99a4d7f7bdafff414c3a752c660e",
+      "after": "6cb7aee4f875c627115ee1e9702366139ccf6537fc2d4c2a00402e2f349fe059"
+    },
+    {
+      "file": "content/pl/ch01.shared.js",
+      "before": "917bf45714ce120e7b4b305ecf21da5ee8293ac4181cc272fae177ee55a6176e",
+      "after": "917bf45714ce120e7b4b305ecf21da5ee8293ac4181cc272fae177ee55a6176e"
+    },
+    {
+      "file": "content/pl/ch02-b.js",
+      "before": "d75ff371fd1895ffa4798eb1e4c8a7624a0a41e4f99320d38dddb3c3e742d284",
+      "after": "d75ff371fd1895ffa4798eb1e4c8a7624a0a41e4f99320d38dddb3c3e742d284"
+    },
+    {
+      "file": "content/pl/ch02.js",
+      "before": "e79d8bfb19b7c2a6cc6710a241243d5208f2f0af2d85b584d3224a90e7542c9e",
+      "after": "ee1b5fa5837baf3c53b2fd60bda3449a347be2ad15daf608e0817d4fc6cd3e80"
+    },
+    {
+      "file": "content/pl/ch02.shared.js",
+      "before": "4a52c603a9abacec65a52cfcd66dd4cd5a478fe2dad7d5d51b158de925e9a6a5",
+      "after": "4a52c603a9abacec65a52cfcd66dd4cd5a478fe2dad7d5d51b158de925e9a6a5"
+    },
+    {
+      "file": "content/pl/ch03-b.js",
+      "before": "82ced7f5cf6315d2ddc9b062dfbf3f77b88beef679b9287ed6d08ab2c4df46cd",
+      "after": "e2b3b04a46c30969835401400c8b2265cf0d3b05e5c6b02adfce89d697842fa3"
+    },
+    {
+      "file": "content/pl/ch03.js",
+      "before": "2e873884186a16e9236639bcb0befffd9461d20ced71c975e05f2005c67ab969",
+      "after": "2e873884186a16e9236639bcb0befffd9461d20ced71c975e05f2005c67ab969"
+    },
+    {
+      "file": "content/pl/ch03.shared.js",
+      "before": "8126ef7b947e9c60258d10488a489c69b0d539bd6c04a642128822c813b0ce7d",
+      "after": "8126ef7b947e9c60258d10488a489c69b0d539bd6c04a642128822c813b0ce7d"
+    },
+    {
+      "file": "content/pl/ch04-b.js",
+      "before": "91c276fcb2e0602e6f435be7cfe1ed4c942f4220dff823945ff28129f517ea3e",
+      "after": "49d23623330f2317e05e5fea9a157bc5ed3c38492b511e0e86e2c11b9f421861"
+    },
+    {
+      "file": "content/pl/ch04-c.js",
+      "before": "62033c1ee7ee464cc4fe2a83a964df52e40135a717c792d913d9decf83c7cfb1",
+      "after": "3ab31bde92709fab4aef3c0dfa2df6681b5249be128f09ab2d29cd529c27fe30"
+    },
+    {
+      "file": "content/pl/ch04.js",
+      "before": "e6048a1a4b55b5cf6ee5a07fa7bdfa85067e7952053a94f31ac49da1af535886",
+      "after": "e6048a1a4b55b5cf6ee5a07fa7bdfa85067e7952053a94f31ac49da1af535886"
+    },
+    {
+      "file": "content/pl/ch04.shared.js",
+      "before": "af13b43d3e30c9c5eb710dd908f4dec5ec7c355dd34badd4ed4d15dba96620f8",
+      "after": "af13b43d3e30c9c5eb710dd908f4dec5ec7c355dd34badd4ed4d15dba96620f8"
+    },
+    {
+      "file": "content/pl/collection.js",
+      "before": "d3fd909858c434102293aafea0394f6891703d4d18d26ce082d9aaceb3887bff",
+      "after": "d3fd909858c434102293aafea0394f6891703d4d18d26ce082d9aaceb3887bff"
+    },
+    {
+      "file": "content/pl/reduction-audit.shared.js",
+      "before": "c92b887dfaf0757cb19ee2dc8b6da0c531db151bdd133ec1353e40375f205d25",
+      "after": "c92b887dfaf0757cb19ee2dc8b6da0c531db151bdd133ec1353e40375f205d25"
+    },
+    {
+      "file": "content/pl/syllabus.js",
+      "before": "4f087e2949dc8d4fdab91e4cc830c55c5dec8a57e633745842cd019ee60d3df0",
+      "after": "3adaf7500e84acc2b430e3d1c885739d0eb8895bdad48ba1a3e652f16a5e340a"
+    }
+  ],
+  "targets": [
+    {
+      "file": "content/logic/ch02.js",
+      "sha256": "c89cf4fbe08686fb1dde113c75986c5e205fb57e7fae8593a67599b518c285eb"
+    },
+    {
+      "file": "content/logic/ch03.js",
+      "sha256": "b5f94058997ac03abc314d5b208141dc7ec3a4a281c361c2ede915e3ebd0c213"
+    },
+    {
+      "file": "content/logic/ch04.js",
+      "sha256": "57f9b6a01b424c5d148ad560e386dda443efcc149ca7a1a668b585f3b43c31a7"
+    },
+    {
+      "file": "content/bridges/fixed-points.js",
+      "sha256": "88536db4f8d1e133f2ddee3189cfbae7a715e8d487b01b837ca9e0d756e2451d"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-1.11-dark-proof.png",
+      "sha256": "58208bdae73cc8bf6bf4179af0852ee7e32dc02d77127188975a73fe428bebdd"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-1.11-dark-statement-scope.png",
+      "sha256": "ad6e7db9d8fdba362bbae75eaff2e4fd0c3c375bc14209bfcfacb263512dcac2"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-1.11-light-proof.png",
+      "sha256": "2ceea12c0e3f3cf02e46c1d544fce4795f0cc2a576f989c0fa889e8cc3928621"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-1.11-light-statement-scope.png",
+      "sha256": "9cae339360eec9ef264f45d51cd521eda3a45e95e0750b040bd8da29343d3732"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-1.2-dark-proof.png",
+      "sha256": "e0c5bce0b2d5766bbb2f3ac37b38334b832e9acb5b10ef9f70d00161301dba52"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-1.2-dark-statement-scope.png",
+      "sha256": "c6e462227a516ed52f189174836119f284b010c99331771425d0ab1e9c3cf28a"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-1.2-light-proof.png",
+      "sha256": "8be44d4d46616caba0d087c11787dfc8994220f7f776e84f5755780733046705"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-1.2-light-statement-scope.png",
+      "sha256": "69ad2c9b6ac949b6f5af3a9bdb280c3b40b181ad9ecc81fa3b43819ba5b4898e"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-2.2-dark-proof.png",
+      "sha256": "3a3646325c63f86208aa1d57feca8c87db3e11b9bb496a82f94c0b0729730538"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-2.2-dark-statement-scope.png",
+      "sha256": "575c4b59d6b1b7caf0769e4f18f5b9bf0316033d86ecdc5c31a5bd42910b157f"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-2.2-light-proof.png",
+      "sha256": "1d4f2ccab68a031bf300378a103299cadc578f09c238b1d6694df9a8f7ff2620"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-2.2-light-statement-scope.png",
+      "sha256": "5b3758e276b98d0470f4a0f217aadb7af492e80a9dc66df162288b870bf25a08"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-2.6-dark-proof.png",
+      "sha256": "9c844e9bd811f8304def40506fd909e8982aafda2bcad4deed5d3c2053a421f6"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-2.6-dark-statement-scope.png",
+      "sha256": "08569c3ff0bcff9a4a3c87f4ef12a208a302aed61294eab48e75162245710012"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-2.6-light-proof.png",
+      "sha256": "0d96b7bf9fd79967f1ad9ca4fbcbde7c4789f715c734f3e0e3c6514a609fe8df"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-2.6-light-statement-scope.png",
+      "sha256": "ff6f2adb36ff1df2ccc14e6df2bef53992afe150d71d6a9f4f86591b372d8742"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-3.10-dark-proof.png",
+      "sha256": "9a6a673fa88ee365a60265be56610d8ea785044408d203984499fb953003b492"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-3.10-dark-statement-scope.png",
+      "sha256": "083d65c5b2db158e2a1ef74907a0d5840b6cbe0b73604a36a248688e27fcbecd"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-3.10-light-proof.png",
+      "sha256": "f972fb87edcd93b28fd8093456e2682f7f4d88f6a4c160418ad2e98d3d659b4f"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-3.10-light-statement-scope.png",
+      "sha256": "24774c8148e1c6854f412df98f3d90c3d4aa8bfdc3237ab459ecf1febf23f327"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.11-dark-proof.png",
+      "sha256": "cbbfd9abfb4c30d17f19f2930ec8b8b31a2a047152d07c8f2514fdd3e08af318"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.11-dark-statement-scope.png",
+      "sha256": "25922afae006025d3a3f29fa8a6745300f999511c626a9b304e54faf01685468"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.11-light-proof.png",
+      "sha256": "d0f86a241cfce660aa1ae78f88349925b222d51c7b185d14c07c57c6c28a8f0c"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.11-light-statement-scope.png",
+      "sha256": "d0daa179781ee3a65eb3e741dd335b41eaed9bc1be6adad0b0808ee676aa59cf"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.13-dark-proof.png",
+      "sha256": "e9a3787c9fe6cd67ea9b1bef5bb536762fa1485db8a5fe496c9010d8ae23f391"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.13-dark-statement-scope.png",
+      "sha256": "5d82b95efbc1b78d3e494d02565c7e5da0565642a946b198a3518b5344c5c175"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.13-light-proof.png",
+      "sha256": "4fbb209689867fc95c83822e1e04daf91aefe7f0f9421c0f015b10cb43102e82"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.13-light-statement-scope.png",
+      "sha256": "80d8af27d38848e257d7111969f4bbffb3169370f57e8ff620fc6c15e7bf7e4e"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.8-dark-proof.png",
+      "sha256": "db7c832a4256d59568e58dbcbab38cf4cc860077b561c1623e766d920862eb0c"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.8-dark-statement-scope.png",
+      "sha256": "875001160961ea78cbe563eb60975168612a442f0e7b1db9c66ce9f2d7bb564c"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.8-light-proof.png",
+      "sha256": "dbf2584b6ecf34fa9f2cfb93d11da6787931f51629b3e1582be3d30968fab2c6"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/pl-4.8-light-statement-scope.png",
+      "sha256": "18996d106aead8bdee04a4ea6a4c8fe9a2663086fe34aa8471d17125cfce896c"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native/text.json",
+      "sha256": "afeb075bb84a91488622e5dc2b1c16f103c6a8ba9a71555520467342f364a26b"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-1.11-dark-proof.png",
+      "sha256": "7f54ccb6be29645a08ebdbb349c79934b5d6f16fd6947a21769bad73a6284cc8"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-1.11-dark-statement-scope.png",
+      "sha256": "1c11fa83924af9d2835285103f58d7ba072eae697dade54fc30e7ded3bb458eb"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-1.11-light-proof.png",
+      "sha256": "7d2479ec44f7910ea9e953acee3d1335d6cfefb93e63abe43e3f9df5557a1b7e"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-1.11-light-statement-scope.png",
+      "sha256": "f96463ae2ad7d8917da002df013961e66324e3e94eb1d1348e845303daf9d3f5"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-1.2-dark-proof.png",
+      "sha256": "9e691889e59f4b543077672ab94a5b5a55ab4f19c2d77149fafe655819690e68"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-1.2-dark-statement-scope.png",
+      "sha256": "4fdb29ac86f0a73a7ce07c5cb2b48ff07ed1690c4f38af964787ccb69dfa5df8"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-1.2-light-proof.png",
+      "sha256": "abda1ca67ee9aaa8cc86147c4c55ab29743ea9574a9dfc86ca97979758f12e6a"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-1.2-light-statement-scope.png",
+      "sha256": "3be195f7f6fd6df6f916e210517259f2c053675bdb45950e0c7d9886fba5024c"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-2.2-dark-proof.png",
+      "sha256": "414c4ee3a551b983354c970946648d463a2c60a2561ba1dd098807e53f9da25c"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-2.2-dark-statement-scope.png",
+      "sha256": "639e3174c93485eed80110b6bd8dbdcee9cac15e411f3a8148f81fb3727ab022"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-2.2-light-proof.png",
+      "sha256": "57678752860e04f1c4b68be0b653dbef7fbb533d8e1cbf5a9fac990d3926e2fe"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-2.2-light-statement-scope.png",
+      "sha256": "95eabb0c64804cdc293f0bbbca28002a79ad3cddc33e9419057a4e3e8de78e92"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-2.6-dark-proof.png",
+      "sha256": "17b127e391430239eafadccba5e3e1595e1298bc52884560599ae47711f54925"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-2.6-dark-statement-scope.png",
+      "sha256": "c0eb1df8ad09e70a989c2d1c9a4f1b15ba54390509b4b94acf78d5041cffe585"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-2.6-light-proof.png",
+      "sha256": "6c93e4b86e74fe8e82daacba958bfbc2886bb18ae8d3ddafd8d4d8677b0f1c57"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-2.6-light-statement-scope.png",
+      "sha256": "5d27390aa4004d432dc7b698e9518f5d700e8fbafdf33717070491f4839759bd"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-3.10-dark-proof.png",
+      "sha256": "909c88d09b5ec5df3e51b341228d3dbb9a028c85f90577cd17cb3e609331989b"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-3.10-dark-statement-scope.png",
+      "sha256": "d128ca5fd86925cab71b07c1044f7f3d1e523dda443e629f310d9f197e9cbfd3"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-3.10-light-proof.png",
+      "sha256": "98cbc2ae0c5e116c2240ee3a981ce2d8bb49d0265d3b1db3015a1c63a03ea4e2"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-3.10-light-statement-scope.png",
+      "sha256": "af26770a807c61e7b86b048bbe942731d61dcff16e9ca5b7ecc0e43f6fc1889d"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.11-dark-proof.png",
+      "sha256": "9d03344ee1adc1ab924f4a7ef2c041c4bd4f2083d0e753c9cb81cee825b53354"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.11-dark-statement-scope.png",
+      "sha256": "ef1e1c48beff0176b9c43305e735edc1ce35ee2e420f56cb410b5a099648cf77"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.11-light-proof.png",
+      "sha256": "3f79484ccf926706e32d05a8b3d3efac28ceb900a38db5680300c623d263763d"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.11-light-statement-scope.png",
+      "sha256": "0f03981d43d497b03ae40e1d22aed93db0619908d37435bf8a90b90d5ca09605"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.13-dark-proof.png",
+      "sha256": "156dffe763ecf4165db19e7baf08a2c0f515e7dd03607c1ce6b49a5b01fb5781"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.13-dark-statement-scope.png",
+      "sha256": "652b3b4d96c6e489b2f2effcbbdcf89b9d4520d723ba0e35bed9169e7d8a88f1"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.13-light-proof.png",
+      "sha256": "015f20639e03e9580be4e125d207facfdd4df9ad8fd611528bb3408755fd98e5"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.13-light-statement-scope.png",
+      "sha256": "ee8d3d14d8129de494c99724c4a05f25922b0e3e8cff7260369883d15aaa8cf1"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.8-dark-proof.png",
+      "sha256": "d674b1140ca31bca9e42e43ee9e2763db0a1021c203a4b1729ff8f07d9be92ab"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.8-dark-statement-scope.png",
+      "sha256": "787c8b82da161088d5e39774a9c929ece5f6aba374e9b71c7f78dd665fa681ca"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.8-light-proof.png",
+      "sha256": "2001b8654871f03913128ddbf2b59f246e8ffd7af5f9330724db7690629a5717"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/pl-4.8-light-statement-scope.png",
+      "sha256": "c3d51eec9cde5fcddcdece19aff205e4605b83d31741d08067db34cdbb799f90"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final/text.json",
+      "sha256": "0d0db24e0cfd83cae740174a8192c0d530b5d95741e476362fb59d6d8e3d1134"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/build.log",
+      "sha256": "f06cb44234ba9e0b01edcfd693c1c0b80788afac8a02f05204682ede34932960"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/static.log",
+      "sha256": "68a7ee4f99f3b5d90e38cdf8c5db8ed943cc9aa8a12601ba00c852be40aa1123"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/preservation.log",
+      "sha256": "3f8bf18ef1683b7b0f07a3a9363cca23f12d214feb4c3a49fb65ace945fbbe91"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/math.log",
+      "sha256": "9d36223b843f6aeb3a6df83a5d1934299a90bee35feb2fe6d8e8a22d01c89643"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/math-initial-probe-errors.log",
+      "sha256": "d593bb5fff5ab592764522931d96d3b5767bbf2be8c4fdf55699459f9c104e97"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/native.log",
+      "sha256": "56f4be3203198a52ac037f38de19dad5439346c608c9c504b68aaefbe5cce06c"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253.log",
+      "sha256": "85d395dce7dab30a714456ec7fa0f9c5eb7b08ddc8266c7586d83caf9f4e25d2"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-final.log",
+      "sha256": "56f4be3203198a52ac037f38de19dad5439346c608c9c504b68aaefbe5cce06c"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/text253-initial-hiddenmathml-probe.log",
+      "sha256": "85d395dce7dab30a714456ec7fa0f9c5eb7b08ddc8266c7586d83caf9f4e25d2"
+    },
+    {
+      "path": "/tmp/atlas-pl-prereqs/inventory.json",
+      "sha256": "3a1118d0838cd94af9c6aa99e9802e1e3c62653e8fc15e6e82c0128d5ad51610"
+    }
+  ],
+  "inventory": {
+    "collection": "pl",
+    "field": "cs",
+    "target": 25,
+    "writtenToWritten": 9,
+    "writtenToKnown": 9,
+    "wholeSyllabus": 13,
+    "publishedShortfall": 16,
+    "unknown": [],
+    "edges": [
+      {
+        "item": "pl-1.11",
+        "prerequisite": "logic-3.4",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-1.2",
+        "prerequisite": "logic-2.2",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-2.2",
+        "prerequisite": "logic-3.2",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-2.6",
+        "prerequisite": "logic-2.3",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-3.10",
+        "prerequisite": "logic-4.1",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-3.10",
+        "prerequisite": "logic-4.2",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-4.8",
+        "prerequisite": "logic-2.1",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-4.11",
+        "prerequisite": "logic-2.2",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-4.13",
+        "prerequisite": "logic-2.2",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-10.1",
+        "prerequisite": "pma-1.8",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-10.1",
+        "prerequisite": "pma-1.10",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "pl-10.1",
+        "prerequisite": "comb-8.1",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "pl-10.2",
+        "prerequisite": "pma-1.5",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      }
+    ]
+  }
+}

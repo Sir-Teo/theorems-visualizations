@@ -89,7 +89,7 @@ then $T$ is **differentiable** at $x$ and $T'(x)=A$ (the operator $A$ is unique)
       num: '7.23',
       kind: 'Lemma',
       name: 'A perturbation of the identity covers a smaller ball',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Lemma 7.23 and proof, p. 151'],
+      verify: true,
       statement: String.raw`Let $B$ be the open unit ball of $\R^k$, $\bar B$ its closure and $S$ its boundary sphere. If $F:\bar B\to\R^k$ is continuous, $0<\eps<1$, and $|F(x)-x|<\eps$ for every $x\in S$, then
 $$F(B)\supset B(0,1-\eps).$$`,
       idea: String.raw`Suppose some $a$ with $|a|<1-\eps$ is not a value of $F$ on $\bar B$. Then $G(x)=\dfrac{a-F(x)}{|a-F(x)|}$ is a continuous map of $\bar B$ into $S\subset\bar B$, so by Brouwer's fixed point theorem $G(x)=x$ for some $x$, necessarily with $|x|=1$. Then $\langle x,F(x)-x\rangle=\langle x,a\rangle-|a-F(x)|-1<|a|-1<-\eps$, contradicting $|F(x)-x|<\eps$. So $a\in F(\bar B)$, and $a\notin F(S)$ because $F(S)$ lies within $\eps$ of $S$; hence $a\in F(B)$. In the plane this is the statement that the loop $F(S)$ winds once around every point of $B(0,1-\eps)$.`,
@@ -200,7 +200,7 @@ $$\lim_{r\to0}\frac{m(T(B(x,r)))}{m(B(x,r))}=|J_T(x)| .$$`,
       num: '7.25',
       kind: 'Lemma',
       name: 'Pointwise Lipschitz maps send null sets to null sets',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Lemma 7.25 and proof, p. 153'],
+      verify: true,
       statement: String.raw`Let $E\subset\R^k$ with $m(E)=0$, and let $T:E\to\R^k$ satisfy
 $$\limsup_{y\to x,\ y\in E}\frac{|T(y)-T(x)|}{|y-x|}<\infty\qquad\text{for every }x\in E .$$
 Then $m(T(E))=0$. In particular, a map $T:V\to\R^k$ ($V$ open) that is differentiable at every point of a null set $E\subset V$ maps $E$ onto a null set.`,

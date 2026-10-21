@@ -1,0 +1,30 @@
+# Political science: six existing computations and their written prerequisites
+
+This is an edge/argument reconciliation, with every verify flag and executable visualization preserved. The candidate adds only six idea/dependency pairs and their exact matching syllabus dependencies. It does not certify new original sources or close the separately reported aggregation rounding finding.
+
+The inventory was recomputed into own temporary files through `crossFieldInventory(await loadAll())`, without invoking the global-writing CLI. Political science changes19→25 unique written-to-written cross-field prerequisites,20→26 written-to-known and28→34 whole-syllabus edges; no unknown target appears. Each edge is justified by its actual computation, independently of these counts.
+
+| Existing item | Exact written target read | Pedagogical and mathematical use |
+| --- | --- | --- |
+| polsci4.5, Euclidean majority improvement half-plane test | vcalc1.2, Dot product, angle and projection | The target's squared-norm expansion gives the exact displayed improvement inequality. Embed the policy plane by a zero third coordinate. Subtracting the squared distances yields2(pi−q)·(y−q)>‖y−q‖²; no extra utility-gradient assumption is introduced. |
+| polsci4.6, shortest finite majority-winning chain | algo8.5, BFS computes unweighted shortest-path distances | The actual helper uses a FIFO queue and predecessor links on a finite directed graph. An edge is one strict-majority vote; the target proves fewest-edge predecessor paths. A missed finite target remains separate from full-plane reachability. |
+| polsci4.7, exact three-voter incircle numerator | vcalc1.3, Cross product as oriented area | With zero third components, the cross-product magnitude is the policy parallelogram area2Δ. The actual helper divides this numerator by the perimeter to obtain the incircle radius. This supplies the area computation; the existing median-line/minimality argument remains necessary for its yolk interpretation. Collinear cases retain the separate zero-radius median rule. |
+| polsci5.3, exact tie probability averaged over a uniform prior | pma8.20, The beta integral | For n=2k, the existing integral is choose(2k,k)B(k+1,k+1)=1/(2k+1). Both beta parameters are strictly positive. This justifies the exact finite uniform-prior area separately from the existing Stirling asymptotics and general-density limit. |
+| polsci5.6, corrected unanimity error limit | pma8.6, Properties of the exponential function | The target states derivatives of exp and its inverse log. Their derivative limits at0/1 give(eᵗ−1)/t→1 and log(1+t)/t→1. With the actual displayed p=.8,q=.9, f is strictly between0and1 and t=−log(f)/(n−1)>0. Factoring−n log[1+a(eᵗ−1)] proves its limit a log f. This explicitly supports the corrected existing proof; it does not revive the original false squeeze argument. |
+| polsci5.8, two-group Bernoulli concentration | prob2.2.6, Weak law from a variance bound | The actual row sum has finite variance≤N/4 and normalizer N, so variance/N²→0. The written target permits rows with different Bernoulli accuracies and changing group size; independence supplies the variance bound here. The existing strict limiting mean gap and rounding bound then translate concentration into a majority conclusion. No claim about empirical public-opinion cancellation or same-mean dependent voters is added. |
+
+Read every exact written target's statement and argument and the actual current political-science proof/model/helper. These are computational prerequisites, rather than related-topic or planned links.
+
+## Bounded verification and limits
+
+Exact comparison against parent `f768b45` through an isolated baseline archive checks all62political-science items: every verify flag, executable visualization function, unowned property and other syllabus row is unchanged. Only the intended six idea/dependency pairs differ. No shared runtime, model arithmetic or global inventory is edited.
+
+An independent one-off mapping check covers1000squared-distance/dot-product identities,200triangle area/radius identities,6finite graphs against Bellman–Ford relaxation,101exact integer beta ratios,9exp/log convergence profiles and81two-group mean/variance rows. It validates the added applications without adding implementation-mirroring repository tests. Script/log `/tmp/atlas-worker-three/polsci-crossfield-evidence/verify.mjs`,`semantic-byteguard.log`.
+
+Focused static6items0errors/0warnings. Isolated final strict scratch build6684written/6890planned/450chapters/85collections,0errors/0warnings, home112710bytes gzip. Cycle and unknown-ID validation pass. Generated output remains solely `/tmp/atlas-worker-three/polsci-crossfield-build`; logs `static.log`,`build.log` in own evidence directory.
+
+All12fresh320px checks (six items×both themes) pass for actual explanation text, runtime/blank/TeX/page bounds. Personally inspected all12own final explanation screenshots `polsci-{4.5,4.6,4.7,5.3,5.6,5.8}-idea-320-{light,dark}.png`, with full-page counterparts retained. This prose check does not claim a new complete input/state/source audit of the unchanged visualizations.
+
+The earlier learning-model rational-rounding discovery prompted an independent consequence check during this reading. The accepted aggregation widget5.8 has six valid half-tie errors among its96096offered odd-N/thousandth-share pairs. Explicit evidence `rounding-consequence.json` records all six, including N25/f.58→14rather than15 and N45/f.7→31rather than32. This candidate preserves its arithmetic and flag, as requested for an independently reviewable prerequisite change. The coordinator has authorized a separate model/native correction next and owns central runtime-finding reconciliation. The variance-bound prerequisite remains valid for the actual integer group counts; the exact finite allocation still requires that separate correction.
+
+Independent acceptance of each proposed edge and central inventory updates remain the coordinator's responsibility.

@@ -1,0 +1,11 @@
+# Integrated checkpoint through 7b90a07
+
+Exact immutable snapshot `7b90a07bba3c8159ae6bc8e814963cf9043b10f8`, archived at `/tmp/atlas-continuation/checkpoint9`, passes **2,195 default tests**, including all six UI groups. Concurrency2; zero failures, cancellations or skips;111.708112875seconds. Strict build ran first:6,684written/6,890planned items,450chapters,85collections, zero errors/warnings; home JSON113,144bytes gzip. Full static:6,621items, zero errors/warnings.
+
+Source ledger:2,260scoped items, **5 =833initial +1added −829original resolved**,146independently accepted entries. Accepted prerequisite shortfall219;14/64collections below25published and11whole syllabi below target. Thirty-four further collections meet the published target. Frozen BIGHIST3.5candidate/edge remains unaccepted and explicitly excluded; default tests do not replace its rejected source peer.
+
+Includes all accepted content through XTAL, MAT, CRYPTO, CAUSAL and the ML probability followup after checkpoint be8d100. Includes preserved private map failures, independently accepted tiny gutter/Chrome155 evidence and the bounded original-only guarded-history stability record. Excludes pending REL/SYSBIO/ECOL content and later independent matched-upload preparation. No full-map alternate binding, numeric direct-Canvas fidelity, full matrix/lifecycle, production adoption or performance gate is accepted by this checkpoint. Original and old worker drafts remain untouched. Production `assets/js/graph.js` remains unchanged SHA `9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc`.
+
+Wave5 remains prepared and unstarted until all§7.3gates pass. Full-map60fps remains open; flagship curation remains2/100alongside-wave work.
+
+Evidence: `/tmp/atlas-continuation/checkpoint9-{build,tests,static,queue,crossfield-accepted}.log`, exact marker `checkpoint9-commit.txt`, accepted inventory `checkpoint9-crossfield-accepted.json`. Archived ledger uses recorded gitdir/worktree. Frozen generated index SHA `de7e58d3c60bcb79553cf1e422f38712b7695d9f3d12e7ac816d62f04c91e115`; planned SHA `9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd`; atlas.css SHA `792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f`.

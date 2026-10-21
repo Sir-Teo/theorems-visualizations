@@ -3,8 +3,8 @@
 // Items 5.6, 5.7 and 5.9 train real deep multilayer perceptrons (the DNet engine of ch05.shared.js, with analytic
 // backpropagation through skips and batch normalization, checked against finite differences) on a two-armed spiral, live in the page. The
 // numbers on screen are measured on those runs: a toy-scale model of the phenomena, not the CIFAR/ImageNet experiments of the papers.
-import { makeResidualField, residualEuler, residualRK4 } from './residual-ode-source.shared.js';
 import { clamp, mnus, memo, rand, hashStr, toyData, makeRace, makeDNet, dnetRun, dnetStep, dnetProb, regionRaster, drawPoints, rampLUT } from './ch05.shared.js';
+import { residualModel, residualReference, eulerPath, ODE_DEPTHS, positiveRange, pathView } from './source-audit.shared.js';
 
 const TR = () => toyData('spiral', 120, { noise: 0.12, seed: 3 });
 const TE = () => toyData('spiral', 400, { noise: 0.12, seed: 9 });
@@ -107,51 +107,31 @@ and the expansion of the product contains the term $I$: the output gradient reac
       num: '5.8',
       kind: 'Concept',
       name: 'Residual networks as discretized ODEs',
-      statement: String.raw`A residual stack with $L$ blocks of step $1/L$,
-$$h_{l+1}=h_l+\tfrac1L\,f\!\bigl(h_l,\tfrac lL;\theta\bigr),\qquad l=0,\dots,L-1,$$
-is the **forward Euler** discretization, with step $1/L$, of the ordinary differential equation $\dot x(t)=f(x(t),t;\theta)$ on $t\in[0,1]$. If $f$ is globally Lipschitz in $x$, continuous in $t$, and Lipschitz in $t$ along the relevant trajectories, the ODE has a unique flow $\Phi_{0\to1}$ (ode-2.4), and Euler's method converges to it at first order: $\max_i\|h_L(x_i)-\Phi_{0\to1}(x_i)\|\le C/L$. The depth $L$ is thus the number of time steps, a residual network is a numerical integration of a learned vector field, and the limiting map is the ODE **flow map**, a homeomorphism. A finite Euler network need not be invertible unless additional step-size conditions hold.`,
-      idea: String.raw`Rewrite $h_{l+1}-h_l=\frac1L f(h_l,t_l)$ as a difference quotient; Euler's polygon converges to the solution of the integral equation $x(t)=x_0+\int_0^tf(x(s),s)\,ds$ as the step shrinks, which is the constructive existence proof (ode-2.10), and Gronwall's inequality controls the local errors $O(1/L^2)$ accumulated over $L$ steps into a global $O(1/L)$. Haber & Ruthotto (2017, §§2–3) formulate scaled residual propagation as a dynamical-system parameter-estimation problem, and Chen et al. (2018) replaced the fixed Euler steps by an adaptive ODE solver with the adjoint method for gradients ("neural ODEs"). Real ResNets do not scale their branches by $1/L$ and use different weights in each block, so the ODE is an interpretation that becomes literal only in this scaled limit.`,
-      caption: String.raw`An untrained, fixed smooth time-dependent vector field $f$ (a random one-hidden-layer tanh field, amplitude adjustable) moves 48 points of two moons. Each coloured polyline is the path of a point through the $L$ layers of the residual stack; the grey curves are a numerical flow reference (RK4 with 400 steps), the hollow rings its endpoints. Right: the mean endpoint error against $L$ on log–log axes: it falls with slope $-1$ (dashed), the first-order convergence of Euler's method. Increase the amplitude to make the flow stiffer and the error larger at every $L$.`,
+      statement: String.raw`A scaled residual stack
+$$h_{l+1}=h_l+\tfrac1L f(h_l,l/L),\qquad l=0,\ldots,L-1,$$
+is forward Euler for $\dot x=f(x,t)$ on $[0,1]$. If $f$ is continuous in $t$ and uniformly globally Lipschitz in $x$, the initial-value problem has a unique solution for every input. If also $\|x''(t)\|\le M$ uniformly over the trajectories considered (for example from suitable bounded first derivatives of $f$), then $\max_i\|h_L(x_i)-\Phi_{0\to1}(x_i)\|\le C/L$. The **ODE flow** is a homeomorphism: backward uniqueness gives its inverse. A finite Euler stack need not be invertible: $f(x,t)=-x$ with $L=1$ maps every input to zero.`,
+      idea: String.raw`Taylor's theorem bounds each local defect by $M/(2L^2)$. If $K$ is the spatial Lipschitz constant, the error recurrence $e_{l+1}\le(1+K/L)e_l+M/(2L^2)$ gives $e_L\le M(e^K-1)/(2KL)$ (use the limit when $K=0$). Mere time continuity does not by itself give this first-order rate. Haber–Ruthotto (2017) formulate scaled ResNet propagation as Euler steps; Chen et al. (2018) use numerical ODE solvers and continuous adjoints. A discrete block is injective if its step satisfies $K/L<1$, since distances contract by at most $K/L$ under its residual perturbation. The continuous-flow interpretation requires a common limiting field and controlled steps; arbitrary independently chosen layers need not meet these conditions.`,
+      caption: String.raw`A fixed, untrained smooth tanh vector field moves 48 two-moon inputs. Coloured polylines show the Euler layers. Grey reference paths and hollow endpoints use **RK4 with 800 steps**, a numerical approximation, not an exact flow. The toggle hides both reference paths and rings. The map fits the displayed paths. The log–log error panel compares Euler endpoints to that reference, with a slope $-1$ guide; the readout also reports the largest endpoint change from 400 to 800 RK4 steps. This refinement diagnostic is not a rigorous error certificate. Increasing amplitude increases the field's derivative bound, but need not increase every plotted error monotonically.`,
       deps: ['deep-5.7', 'ode-2.10', 'ode-2.4'],
-      refs: ['Haber and Ruthotto, arXiv:1705.03341v1 (9 May 2017), §§2–3, pp.3–5, equations (2.1) and (3.6)', 'Chen et al., arXiv:1806.07366v1 (19 June 2018), pp.1–2 and discussion p.9', 'Euler convergence follows from the stated regularity and Gronwall; the numerical reference is checked against independent DOP853 integration'],
+      refs: ['Haber–Ruthotto (2017), Eqs. 2.1 and 3.5', 'Chen et al. (2018), §1 Eqs. 1–2, §2', 'Peterson, IVP notes, Theorem 3.1'],
       tags: ['ODE', 'Euler method', 'flows'],
       credit: 'Haber & Ruthotto, 2017; Chen, Rubanova, Bettencourt & Duvenaud, 2018',
-      scope: String.raw`Literal for residual networks of the form $h+\frac1Lf$ with smoothly varying weights; for standard ResNets (no $1/L$ scaling, independent weights per block) it is a heuristic picture. The vector field in the picture is random, not trained.`,
+      scope: String.raw`The smooth bounded field here satisfies global spatial Lipschitz and bounded trajectory second-derivative assumptions. It is fixed as $L$ changes. The illustration is not trained and makes no claim about predictive accuracy, all ResNets, or invertibility of coarse Euler steps.`,
       links: { arxiv: 'https://arxiv.org/abs/1806.07366' },
       viz(v) {
-        const Ls = v.slider('layers $L$ (steps of size $1/L$)', 1, 128, 4, { log: true, int: true });
-        const aS = v.slider('field amplitude', 0.5, 3, 1.1, { step: 0.05 });
-        const showODE = v.toggle('show RK4 reference', true);
-        const sM = v.stage({ x: [-4.4, 4.4], y: [-3.1, 3.1], equal: true, height: 360, axes: false, weight: 1.15, minWidth: 300, title: 'points moved by the residual stack' });
-        const sE = v.stage({ x: [1, 128], y: [1e-4, 10], xlog: true, ylog: true, height: 360, axes: 'box', gutter: true, xlabel: 'layers $L$', ylabel: 'mean endpoint error', weight: 0.85, minWidth: 260, title: 'convergence to the flow' });
-        const field = makeResidualField();
-        const D = toyData('moons', 48, { noise: 0.07, seed: 2 }), P0 = D.X.map(([x, y]) => [x * 1.35, y * 1.35]);
-        const euler = (...args) => residualEuler(field, ...args), rk4 = (...args) => residualRK4(field, ...args);
-        const mc = memo(); const LS = [1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128];
-        let info = null;
-        v.render(() => {
-          const L = Ls.value, a = aS.value;
-          const ref = mc('ref' + a, () => { const ex = P0.map((p) => rk4(p, a, 400)), tr = P0.map((p) => rk4(p, a, 400, 10)); const err = LS.map((l) => P0.reduce((s, p, i) => { const q = euler(p, l, a, false); return s + Math.hypot(q[0] - ex[i][0], q[1] - ex[i][1]); }, 0) / P0.length); return { ex, tr, err }; });
-          sM.field((x, y) => field(x, y, 0.5, a), { spacing: 44, color: 'faint', alpha: 0.55 });
-          if (showODE.value) ref.tr.forEach((tr) => sM.path(tr, { color: 'muted', width: 1.1, alpha: 0.55 }));
-          let err = 0;
-          P0.forEach((p, i) => {
-            const tr = euler(p, L, a, true), c = D.Y[i] ? 'orange' : 'accent';
-            sM.path(tr, { color: c, width: 1.5, alpha: 0.9 });
-            if (L <= 24) sM.dots(tr.slice(1, -1), { r: 2.2, color: c, alpha: 0.8 });
-            const e = tr[tr.length - 1]; sM.dot(e[0], e[1], { r: 3.8, color: c });
-            sM.dot(ref.ex[i][0], ref.ex[i][1], { r: 4.6, hollow: true, color: 'ink', width: 1.1, alpha: 0.7 });
-            err += Math.hypot(e[0] - ref.ex[i][0], e[1] - ref.ex[i][1]);
-            sM.dot(p[0], p[1], { r: 2.2, color: 'muted' });
-          });
-          err /= P0.length;
-          sE.path(LS.map((l, i) => [l, ref.err[i]]), { color: 'accent', width: 2 }); sE.dots(LS.map((l, i) => [l, ref.err[i]]), { r: 3, color: 'accent' });
-          sE.path([[1, ref.err[0]], [128, ref.err[0] / 128]], { color: 'muted', dash: true, width: 1.3 });
-          sE.dot(L, err, { r: 6, color: 'gold' });
-          info = { L, err, e1: ref.err[0], e128: ref.err[LS.length - 1] };
+        const Ls=v.slider('layers $L$ (steps of size $1/L$)',1,128,4,{int:true}),aS=v.slider('field amplitude',.5,3,1.1,{step:.05}),showODE=v.toggle('show RK4 reference',true);
+        const sM=v.stage({x:[-4.4,4.4],y:[-3.1,3.1],equal:true,height:360,axes:false,weight:1.15,minWidth:300,title:'Euler layers and numerical reference'}),sE=v.stage({x:[1,128],y:[1e-4,10],xlog:true,ylog:true,height:360,axes:'box',gutter:true,xlabel:'layers $L$',ylabel:'mean endpoint error vs RK4',weight:.85,minWidth:260,title:'comparison to 800-step RK4'});
+        const model=residualModel(),mc=memo();let info=null;
+        v.render(()=>{
+          const L=Ls.value,a=aS.value,ref=mc('ref'+a,()=>residualReference(model,a)),trs=model.P0.map(p=>eulerPath(model.field,p,L,a)),view=pathView([...trs,...(showODE.value?ref.tr:[])]);sM.setView(...view);
+          sM.field((x,y)=>model.field(x,y,.5,a),{spacing:44,color:'faint',alpha:.55});
+          if(showODE.value)ref.tr.forEach(tr=>sM.path(tr,{color:'muted',width:1.1,alpha:.55}));
+          let err=0;trs.forEach((tr,i)=>{const c=model.Y[i]?'orange':'accent',p=model.P0[i],end=tr.at(-1);sM.path(tr,{color:c,width:1.5,alpha:.9});if(L<=24)sM.dots(tr.slice(1,-1),{r:2.2,color:c,alpha:.8});sM.dot(...end,{r:3.8,color:c});if(showODE.value)sM.dot(...ref.ex[i],{r:4.6,hollow:true,color:'ink',width:1.1,alpha:.7});sM.dot(...p,{r:2.2,color:'muted'});err+=Math.hypot(...end.map((x,j)=>x-ref.ex[i][j]));});err/=model.P0.length;
+          const guide=[ref.err[0],ref.err[0]/128];sE.setView([1,128],positiveRange([...ref.err,err,...guide]));sE.path(ODE_DEPTHS.map((l,i)=>[l,ref.err[i]]),{color:'accent',width:2});sE.dots(ODE_DEPTHS.map((l,i)=>[l,ref.err[i]]),{r:3,color:'accent'});sE.path([[1,guide[0]],[128,guide[1]]],{color:'muted',dash:true,width:1.3});sE.dot(L,err,{r:6,color:'gold'});
+          info={L,err,discrepancy:ref.discrepancy,order:Math.log2(ref.err[11]/ref.err[13]),K:model.bounds(a).K};
         });
-        v.legend([['accent', 'one class, through the layers'], ['orange', 'other class'], ['ink', 'ring: RK4 reference endpoint', { dot: true }], ['muted', 'dashed: slope −1 (first order)', { dash: true }]]);
-        v.readout(() => info && String.raw`$L=${info.L}$ layers (step $1/L=${v.fix(1 / info.L, 3)}$): mean distance of the endpoints from the RK4 reference = **${v.fix(info.err, 4)}**` + `\n` + `from $L=1$ to $L=128$ the error falls from ${v.fix(info.e1, 3)} to ${v.fix(info.e128, 4)}, a factor ${v.fix(info.e1 / info.e128, 0)} for 128 times more layers — first order, as Euler's method predicts`);
+        v.legend([['accent','class 1 Euler paths / errors'],['orange','class 2 Euler paths'],['ink','hollow: numerical reference endpoint',{dot:true}],['muted','reference paths; dashed slope −1 guide',{dash:true}]]);
+        v.readout(()=>info&&String.raw`$L=${info.L}$: mean endpoint distance to 800-step RK4 **$${v.sci(info.err,3)}$**. Observed 64→128 order: ${v.fix(info.order,2)} (a finite comparison, not a proof).`+`\n`+String.raw`Largest RK4 endpoint change, 400→800 steps: $${v.sci(info.discrepancy,2)}$. Global spatial derivative bound $K\le${v.fix(info.K,2)}$; $K/L=${v.fix(info.K/info.L,2)}$ (the sufficient injectivity condition is $K/L<1$).`);
       },
     },
     // ───────────────────────────────────────────────────────────── 5.9
@@ -161,14 +141,14 @@ is the **forward Euler** discretization, with step $1/L$, of the ordinary differ
       name: 'Batch normalization',
       statement: String.raw`For a mini-batch $\mathcal B$ of $m$ examples, **batch normalization** replaces each unit's pre-activation $z$ by
 $$\hat z=\frac{z-\mu_{\mathcal B}}{\sqrt{\sigma^2_{\mathcal B}+\epsilon}},\qquad y=\gamma\,\hat z+\beta,$$
-with $\mu_{\mathcal B},\sigma_{\mathcal B}^2$ the mean and variance of that unit over the batch and $\gamma,\beta$ learned per unit (so the layer can restore any mean and scale it needs). Gradients are propagated through $\mu_{\mathcal B}$ and $\sigma_{\mathcal B}$. At test time running averages of the training statistics replace the batch statistics. By construction $\hat z$ has batch mean 0 and variance $\sigma_{\mathcal B}^2/(\sigma_{\mathcal B}^2+\epsilon)$: approximately 1 when the variance dominates $\epsilon$. With $\epsilon>0$ the formula is defined for $m=1$ but gives $\hat z\equiv0$, losing all input distinctions; small batches give noisy estimates.`,
+with $\mu_{\mathcal B},\sigma_{\mathcal B}^2$ the mean and variance of that unit over the batch and $\gamma,\beta$ learned per unit (so the layer can restore any mean and scale it needs). Gradients are propagated through $\mu_{\mathcal B}$ and $\sigma_{\mathcal B}$. At test time running averages of the training statistics replace the batch statistics. By construction $\hat z$ has batch mean 0 and variance 1 whatever the weights below it are doing; the method is undefined for $m=1$ (then $\hat z\equiv0$) and noisy for small $m$, because the statistics of $m$ samples fluctuate by about $\sigma/\sqrt m$.`,
       idea: String.raw`Standardizing every unit's input removes the drift in scale and offset that earlier layers cause as they change, and keeps units in the responsive range of the nonlinearity; Ioffe and Szegedy (2015) attributed the benefit to reduced *internal covariate shift* and reported reaching the same accuracy with 14 times fewer training steps. Later work questions that explanation: Santurkar et al. (2018) found that normalization makes the loss and its gradients smoother (better conditioned) even when covariate shift is injected artificially, and the scale invariance it creates (5.10) changes the effective learning rate. The batch-size dependence also has a cost: examples in a batch are no longer processed independently, which motivates layer normalization (5.11).`,
-      caption: String.raw`Two 4-hidden-layer tanh networks (width 16) are trained from the same initialization on the same minibatch sequence, one without normalization and one with batch normalization; we watch one unit of the third layer. Left: histogram of its input to the activation at the chosen training step: without normalization (red) the distribution wanders in location and width as the layers below change, with batch norm (blue) it is standardized to mean 0 and approximately unit variance (the standard normal is the green curve; the histogram of 160 points is only roughly Gaussian). Middle: its mean and ±1 standard deviation over training (orange: the batch-norm net's unit before normalizing, which wanders too). Right: the trained batch-norm net evaluated with test batches of $B$ examples normalized by their own statistics: accuracy collapses to chance at $B=1$ and is noisy for small $B$; running statistics (green) fix it. Choose the training batch size to see how noise in $\mu_{\mathcal B},\sigma_{\mathcal B}$ matters; at 1 the batch-norm network cannot learn input-dependent distinctions (the unnormalized one also struggles at this step size).`,
+      caption: String.raw`Two 4-hidden-layer tanh networks (width 16) are trained from the same initialization on the same minibatch sequence, one without normalization and one with batch normalization; we watch one unit of the third layer. Left: histogram of its input to the activation at the chosen training step: without normalization (red) the distribution wanders in location and width as the layers below change, with batch norm (blue) it is standardized to mean 0 and variance 1 (the standard normal is the green curve; the histogram of 160 points is only roughly Gaussian). Middle: its mean and ±1 standard deviation over training (orange: the batch-norm net's unit before normalizing, which wanders too). Right: the trained batch-norm net evaluated with test batches of $B$ examples normalized by their own statistics: accuracy collapses to chance at $B=1$ and is noisy for small $B$; running statistics (green) fix it. Choose the training batch size to see how noise in $\mu_{\mathcal B},\sigma_{\mathcal B}$ matters; at 1 the batch-norm network cannot learn at all (the unnormalized one also struggles at this step size).`,
       deps: ['deep-5.1'],
-      refs: ['Ioffe and Szegedy, arXiv:1502.03167v1, Algorithm 1 p.3 and inference discussion pp.3–4 (variance-one statement explicitly neglects epsilon)', 'Prince §11.4', 'Goodfellow §8.7'],
+      refs: ['Prince §11.4', 'Goodfellow §8.7'],
       tags: ['normalization', 'batch statistics', 'training speed'],
       credit: 'Ioffe & Szegedy, 2015',
-      scope: String.raw`The mean and stabilized-variance formulas are exact; their benefit for training speed is empirical, and the *explanation* (internal covariate shift versus smoothing of the loss) is still debated. Needs batches of more than a few examples drawn i.i.d.; for sequences or small batches layer normalization (5.11) is used instead.`,
+      scope: String.raw`The standardization is exact by construction; its benefit for training speed is empirical, and the *explanation* (internal covariate shift versus smoothing of the loss) is still debated. Needs batches of more than a few examples drawn i.i.d.; for sequences or small batches layer normalization (5.11) is used instead.`,
       links: { arxiv: 'https://arxiv.org/abs/1502.03167' },
       viz(v) {
         const bS = v.select('training batch size', [1, 4, 16, 64].map((b) => ({ value: b, label: String(b) })), 16);

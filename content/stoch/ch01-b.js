@@ -81,8 +81,8 @@ export default {
         function load() {
           const k = gsel.value;
           if (k === 'petersen') G.set({ ...v.graphs('petersen'), r: 13 });
-          else if (k === 'grid') { G.set({ ...v.graphs('grid', 3, 4), r: 13 }); G.layout('fit'); }
-          else if (k === 'star') { G.set({ ...v.graphs('star', 8), r: 13 }); G.layout('force'); }
+          else if (k === 'grid') G.set({ ...v.graphs('grid', 3, 4), r: 13 });
+          else if (k === 'star') G.set({ ...v.graphs('star', 8), r: 13 });
           else {
             const nodes = [], edges = [];
             for (let i = 0; i < 5; i++) { const a = Math.PI / 2 + (2 * Math.PI * i) / 5 + 0.3; nodes.push({ id: i, x: 0.75 * Math.cos(a), y: 0.75 * Math.sin(a) }); }

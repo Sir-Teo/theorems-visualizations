@@ -1,0 +1,167 @@
+[
+  {
+    "num": "1.9",
+    "file": "content/rel/ch01-b.js",
+    "added": [
+      "prob-1.6.2"
+    ],
+    "expectedDeps": [
+      "rel-1.7",
+      "pma-6.27",
+      "prob-1.6.2"
+    ],
+    "append": "For the polygonal paths shown, give each leg weight $\\Delta t_i/T$. Jensen (prob 1.6.2) applied to the convex function $-\\sqrt{1-z^2}$ for $|z|<1$ bounds the weighted sum of proper-time rates by the rate at the weighted mean velocity. That mean is the fixed endpoint displacement divided by $T$, so the straight leg maximizes proper time. Strict convexity gives equality only when all positive-duration legs have the same velocity."
+  },
+  {
+    "num": "2.4",
+    "file": "content/rel/ch02.js",
+    "added": [
+      "pma-5.5"
+    ],
+    "expectedDeps": [
+      "rel-2.1",
+      "rel-2.3",
+      "pma-5.5"
+    ],
+    "append": "The chain rule (pma 5.5), applied along a differentiable particle worldline, gives $dx/dt=(dx/dt\\prime)/(dt/dt\\prime)$. Applying it to the inverse Lorentz coordinate formulas produces the displayed velocity ratio. For subluminal input speeds $dt/dt\\prime=\\gamma_v(1+u\\prime v/c^2)>0$, so the change of time parameter is legitimate; division by a vanishing time derivative is not being assumed."
+  },
+  {
+    "num": "2.5",
+    "file": "content/rel/ch02.js",
+    "added": [
+      "pma-5.15"
+    ],
+    "expectedDeps": [
+      "rel-2.4",
+      "pma-5.15"
+    ],
+    "append": "Taylor's theorem (pma 5.15) applies to the exact velocity ratio as a smooth function of the flow speed near zero, with fixed refractive index. Its value is $c/n$ and its derivative is $1-1/n^2$ at zero flow, giving the displayed first-order drag term. A bounded second derivative on a small closed flow interval controls the omitted remainder; this does not extend the nondispersive model to arbitrary media."
+  },
+  {
+    "num": "2.7",
+    "file": "content/rel/ch02.js",
+    "added": [
+      "pma-6.12"
+    ],
+    "expectedDeps": [
+      "rel-1.9",
+      "rel-2.6",
+      "pma-6.12"
+    ],
+    "append": "In the home frame the traveller's proper-time rate is at most one. Integral order and interval additivity (pma 6.12) apply on the two smooth legs, giving their total proper time at most $T$. For a genuine trip with nonzero speed over positive duration the inequality is strict. Splitting at the idealized turn avoids requiring a derivative there; acceleration is not an extra negative term in the clock integral."
+  },
+  {
+    "num": "2.13",
+    "file": "content/rel/ch02-b.js",
+    "added": [
+      "ladr-3.8",
+      "ladr-3.65"
+    ],
+    "expectedDeps": [
+      "rel-2.1",
+      "ladr-9.9",
+      "ladr-3.8",
+      "ladr-3.65"
+    ],
+    "append": "Composition obeys the associative and identity laws of ladr 3.8. If a matrix preserves the nondegenerate Minkowski form, a vector in its kernel would be orthogonal to every vector before transformation and must be zero. In four finite dimensions, injectivity gives invertibility by ladr 3.65. The form-preserving equation is then closed under products and inverses. These algebraic steps justify the group operations; they do not by themselves classify its connected components."
+  },
+  {
+    "num": "2.14",
+    "file": "content/rel/ch02-b.js",
+    "added": [
+      "ladr-3.43",
+      "ladr-7.93"
+    ],
+    "expectedDeps": [
+      "rel-2.13",
+      "rel-2.4",
+      "ladr-3.43",
+      "ladr-7.93"
+    ],
+    "append": "The matrix-of-composition theorem (ladr 3.43) identifies successive boosts with an ordered matrix product in compatible coordinate bases. Real polar decomposition (ladr 7.93) separates an invertible product into an orthogonal factor and a positive symmetric factor; the equivalent left decomposition puts the positive factor first. For proper orthochronous Lorentz products the Lorentz constraint identifies these as a pure boost and a spatial rotation. The polar theorem alone does not identify an arbitrary positive matrix with a physical boost."
+  },
+  {
+    "num": "3.4",
+    "file": "content/rel/ch03.js",
+    "added": [
+      "pma-5.5"
+    ],
+    "expectedDeps": [
+      "rel-3.1",
+      "rel-1.9",
+      "pma-5.5"
+    ],
+    "append": "On a smooth timelike segment, $d\\tau/dt=1/\\gamma$ is positive. The chain rule (pma 5.5) therefore converts each coordinate derivative from lab time to proper time: $dx^\\mu/d\\tau=(dx^\\mu/dt)(dt/d\\tau)$. This yields the displayed factor $\\gamma$ component by component. Null curves have no such positive proper-time parameter, so this step concerns massive-particle timelike motion."
+  },
+  {
+    "num": "3.6",
+    "file": "content/rel/ch03.js",
+    "added": [
+      "pma-6.21"
+    ],
+    "expectedDeps": [
+      "rel-3.5",
+      "rel-2.3",
+      "pma-6.21"
+    ],
+    "append": "With the stated constant proper acceleration, the rapidity is linear in proper time. The smooth hyperbolic components of $u^\\mu$ have the displayed coordinate functions as antiderivatives. The fundamental theorem (pma 6.21) evaluates their integrals on each finite proper-time interval; the initial position and rest condition fix the constants. This is exact integration of the ideal prescribed motion, not a fuel-consumption or variable-thrust model."
+  },
+  {
+    "num": "4.1",
+    "file": "content/rel/ch04.js",
+    "added": [
+      "pma-5.3"
+    ],
+    "expectedDeps": [
+      "rel-3.4",
+      "pma-5.3"
+    ],
+    "append": "In an inertial change of coordinates the Lorentz matrix has constant entries. Applying the sum and product derivative rules (pma 5.3) to each transformed coordinate passes those constants through the proper-time derivative. Thus the tangent transforms by the same matrix, and multiplication by a constant invariant rest mass gives the stated four-momentum transformation. A coordinate-dependent matrix would contribute additional derivative terms."
+  },
+  {
+    "num": "4.12",
+    "file": "content/rel/ch04-b.js",
+    "added": [
+      "pma-6.21",
+      "pma-8.6"
+    ],
+    "expectedDeps": [
+      "rel-4.3",
+      "rel-2.3",
+      "mech-2.7",
+      "pma-6.21",
+      "pma-8.6"
+    ],
+    "append": "For positive remaining mass, $1/m$ is continuous and its logarithmic antiderivative is supplied by pma 8.6. The fundamental theorem (pma 6.21) integrates the stated comoving momentum balance between the two positive endpoint masses. The logarithm product rule gives $\\log m_0-\\log m=\\log(m_0/m)$, producing the rapidity. Exhaust speed is held constant in this calculation; it is not a proof of a variable-exhaust rocket law."
+  },
+  {
+    "num": "4.13",
+    "file": "content/rel/ch04-c.js",
+    "added": [
+      "pma-5.3",
+      "pma-5.5"
+    ],
+    "expectedDeps": [
+      "rel-4.1",
+      "rel-3.5",
+      "pma-5.3",
+      "pma-5.5"
+    ],
+    "append": "For a differentiable subluminal velocity and constant rest mass, the product rule (pma 5.3) differentiates each component of $\\gamma m\\mathbf v$. The chain rule (pma 5.5) differentiates $\\gamma=(1-|\\mathbf v|^2/c^2)^{-1/2}$ and gives the stated $d\\gamma/dt$. These are the calculus inputs to the force-acceleration identity. Rest-mass variation would add a term and lies outside the stated model."
+  },
+  {
+    "num": "4.16",
+    "file": "content/rel/ch04-c.js",
+    "added": [
+      "pma-5.15"
+    ],
+    "expectedDeps": [
+      "rel-2.1",
+      "rel-2.9",
+      "em-11.5",
+      "rel-1.14",
+      "pma-5.15"
+    ],
+    "append": "Taylor's theorem (pma 5.15), applied to $(1-z)^{-1/2}$ near $z=0$, gives $\\gamma-1=z/2+O(z^2)$ with $z=v^2/c^2$. Multiplying by the emitted energy isolates the leading low-speed kinetic-energy difference used in the paper's inertial-mass comparison. The exact frame-energy balance precedes this expansion; the approximation does not establish an exact finite-speed kinetic-energy formula by itself."
+  }
+]

@@ -2,8 +2,10 @@
 // ħ = 1 unless an item says otherwise.
 import {
   TAU, fz, spinOps, spinAlong, propagator, mvec, mmul, madd, mscale, msub, fnorm, heig, cplx, cells, cabs, cabs2, cmul, cis, cscale, ip, sub,
-  cg, cgByLowering, productBasis, ylm, sphereIP, SX, SY, SZ, eye, texC, phaseRGB, rotate3, blochOf, stateOf,
+  cgByLowering, productBasis, ylm, sphereIP, SX, SY, SZ, eye, texC, phaseRGB, rotate3, blochOf, stateOf,
 } from './ch07.shared.js';
+
+import {cgSafe as cg,tensorAngularRows,tensorSummary,ELECTRON_G_MAGNITUDE,BOHR_HZ_PER_T} from './spin-coupling-audit.shared.js';
 
 /** Signed square-root fraction text for x with x² rational (e.g. −√(1/2)). */
 function sqFrac(x) {
@@ -25,12 +27,12 @@ export default {
       num: '7.13',
       kind: 'Phenomenon',
       name: 'Spin magnetic moment and g ≈ 2',
-      statement: String.raw`A charge $-e$ moving in an orbit has a magnetic moment proportional to its orbital angular momentum, $\boldsymbol\mu_L=-\tfrac{e}{2m_e}\mathbf L=-g_L\mu_B\mathbf L/\hbar$ with $g_L=1$ ($\mu_B=e\hbar/2m_e$ is the Bohr magneton). The electron's *spin* has a moment $\boldsymbol\mu_S=-g_s\mu_B\mathbf S/\hbar$ with $g_s\approx2$, **twice** what the classical orbital relation would give; the free-electron Dirac equation gives $2$ before radiative corrections, and radiative corrections raise it to $g_s=2.0023193\ldots$ (CODATA2022 magnitude: $2.002\,319\,304\,360\,92(36)$). In a field $\mathbf B$ the moments precess at the angular frequencies $g\,\mu_BB/\hbar$: the spin turns about twice as fast as an orbit.`,
-      idea: String.raw`In a uniform field $H=-\boldsymbol\mu\cdot\mathbf B$, so $H=g\omega_L\,\hat{\mathbf b}\cdot\mathbf J$ with $\omega_L=\mu_BB/\hbar$, and by qm-7.12 the expectation of the angular momentum precesses at $g\omega_L$. The classical relation $\mu=\frac q{2m}L$ holds for orbital motion, but for spin there is no classical orbit to compare with: the ratio $g_s\simeq2$ follows from the relativistic Dirac equation; the small excess comes from the electron's coupling to the quantum electromagnetic field (the leading anomalous moment is $a_e=(g_s-2)/2=\alpha/(2\pi)+\cdots$).`,
-      caption: String.raw`**Choose the field $B$** (log scale, in tesla) and watch an orbital angular momentum ($l=1$, left, blue) and a spin angular momentum ($s=\tfrac12$, right, orange) start along $x$ and precess about $B$. Both are computed by evolving the real state vectors with the matrices of qm-7.12; the right panel plots the unwrapped precession angle of each. The slope ratio is the readout’s $g$. **Toggle** the QED correction to switch between the Dirac value $2$ and the measured $2.0023$. The frequencies are real numbers for this field: about $14.0$ GHz per tesla for the orbit, $28.0$ GHz per tesla for the spin.`,
+      statement: String.raw`In SI units the electron orbital moment is $\boldsymbol\mu_L=-\mu_B\mathbf L/\hbar$ ($g_L=1$), while $\boldsymbol\mu_S=-g_s\mu_B\mathbf S/\hbar$, where $\mu_B=e\hbar/(2m_e)$. For a minimally coupled Dirac particle the leading low-energy Pauli Hamiltonian gives $g_s=2$. Radiative corrections give the free-electron magnitude $g_s=2.002\,319\,304\,360\,92(36)$ (2022 CODATA). NIST's signed electron factor is $g_e=-g_s$; here the minus sign is explicit in $\boldsymbol\mu_S$. In a uniform field the linear Zeeman Hamiltonian rotates $\langle\mathbf J\rangle$ at angular rate $g\mu_BB/\hbar$. Thus spin orientation precesses about twice as fast as orbital angular-momentum orientation in this model.`,
+      idea: String.raw`Since $H=-\boldsymbol\mu\cdot\mathbf B=g\mu_BB J_z/\hbar$, the angular-momentum commutators give $\dot{\mathbf J}=(g\mu_B\mathbf B/\hbar)\times\mathbf J$. The Foldy–Wouthuysen expansion of the minimally coupled Dirac Hamiltonian produces the Pauli spin term, with twice the orbital coefficient. The anomalous moment is $a_e=(g_s-2)/2=\alpha/(2\pi)+O(\alpha^2)$. This concerns the linear Zeeman orientation of a fixed orbital multiplet; it is not the cyclotron circulation frequency of a free electron.`,
+      caption: String.raw`**Choose $B$** (log scale, tesla) and toggle the anomalous correction. The arrows show $\langle\mathbf L\rangle$ for $l=1$ and $\langle\mathbf S\rangle$ for $s=\tfrac12$, initially along $x$; the electron magnetic moments point opposite to these arrows. Matrix evolution gives the unwrapped angles and their slope ratio. The clock is rescaled to $t/T_L$, where $T_L=h/(\mu_BB)$: changing $B$ changes the physical frequencies and seconds per frame, while the normalized animation retains its speed. The linear Zeeman model neglects spin–orbit coupling and quadratic field terms; the full field range illustrates that model rather than a universal weak-field range for every atom.`,
       deps: ['qm-7.7', 'em-7.17'],
-      refs: ['Fitzpatrick §10.6 Eqs10.57–10.77; NIST CODATA2022 full constants table'],
-      credit: 'Dirac magnetic moment and radiative anomaly',
+      refs: ['Littlejohn, Physics 221A (2021–22), Notes 14 §§2,4–7: https://bohr.physics.berkeley.edu/classes/221/notes/spinmagf.pdf', 'Littlejohn, Notes 49 §§3–6, equations (3)–(34), Dirac-to-Pauli derivation: https://bohr.physics.berkeley.edu/classes/221/notes/foldyw.pdf', 'NIST, 2022 CODATA electron g factor and Bohr magneton in Hz/T: https://physics.nist.gov/cuu/Constants/Table/allascii.txt'],
+      credit: 'Dirac–Pauli model with the free-electron anomalous moment',
       tags: ['spin', 'magnetic moment', 'g-factor'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gyromagnetic_ratio#Electron_g-factor' },
       viz(v) {
@@ -39,7 +41,7 @@ export default {
         const B = v.slider('field $B$ (tesla)', 0.01, 10, 1, { log: true, sig: 2 });
         const qed = v.toggle('include the QED correction ($g_s=2.0023$)', true);
         const M = v.M, S1 = spinOps(1), S2 = spinOps(0.5);
-        const GE = 2.00231930436092;
+        const GE = ELECTRON_G_MAGNITUDE;
         const x1 = [[1, 0], [0, 0], [0, 0]], psiL = (() => { const E = heig(S1.Sx); return E.vectors[E.values.indexOf(Math.max(...E.values))]; })();
         const x2 = (() => { const E = heig(S2.Sx); return E.vectors[E.values.indexOf(Math.max(...E.values))]; })();
         const ang = (S, psi, H, t) => { const u = mvec(propagator(H, t), psi); const ex = (O) => ip(u, mvec(O, u))[0]; return [ex(S.Sx), ex(S.Sy)]; };
@@ -51,19 +53,19 @@ export default {
           const track = (S, psi, H, k) => { const out = []; let prev = 0, acc = 0; for (let i = 0; i <= 120; i++) { const t = (1.5 * i) / 120, [a, b] = ang(S, psi, H, t), th = Math.atan2(b, a); if (i) { let d = th - prev; while (d > Math.PI) d -= TAU; while (d < -Math.PI) d += TAU; acc += d; } prev = th; out.push([t, acc + (i ? 0 : th)]); } return out; };
           const aL = track(S1, psiL, HL), aS = track(S2, x2, HS);
           const R = 1.3;
-          for (const [cx, v2, mag, col, lab] of [[-1.7, Lv, 1, 'accent', 'orbit $l=1$, $g_L=1$'], [1.7, Sv, 0.5, 'orange', 'spin $\\tfrac12$, $g_s$']]) {
+          for (const [cx, v2, mag, col, lab] of [[-1.7, Lv, 1, 'accent', 'orbital $l=1$, $g_L=1$'], [1.7, Sv, 0.5, 'orange', 'spin $\\tfrac12$, $g_s$']]) {
             A.circle(cx, 0, R, { color: 'faint', width: 1 }); A.line(cx - R, 0, cx + R, 0, { color: 'faint', width: 0.8 }); A.line(cx, -R, cx, R, { color: 'faint', width: 0.8 });
             A.arrow(cx, 0, cx + (R * v2[0]) / mag, (R * v2[1]) / mag, { color: col, width: 3, head: 10 });
             A.text(lab, cx, -1.5, { color: col, size: 13, align: 'center' });
           }
           P.path(aL, { color: 'accent', width: 2.4 }); P.path(aS, { color: 'orange', width: 2.4 });
-          P.dot(tT, aL.reduce((r, p) => (Math.abs(p[0] - tT) < Math.abs(r[0] - tT) ? p : r))[1], { color: 'accent', r: 5 });
-          P.dot(tT, aS.reduce((r, p) => (Math.abs(p[0] - tT) < Math.abs(r[0] - tT) ? p : r))[1], { color: 'orange', r: 5 });
+          P.dot(tT, TAU*tT, { color: 'accent', r: 5 });
+          P.dot(tT, g*TAU*tT, { color: 'orange', r: 5 });
           const slope = (a) => (a[a.length - 1][1] - a[0][1]) / (a[a.length - 1][0] - a[0][0]);
-          st = { g, ratio: slope(aS) / slope(aL), fL: (M.CONST.muB * B.value) / M.CONST.h, tT };
+          st = { g, ratio: slope(aS) / slope(aL), fL: BOHR_HZ_PER_T * B.value, tT };
         }, { period: 12, still: 12 * 0.6 });
-        v.legend([['accent', 'orbital moment ($g_L=1$)'], ['orange', 'spin moment ($g_s$)']]);
-        v.readout(() => `$B=${v.fmt(B.value, 3)}$ T: orbit precesses at $\\mu_BB/h=${v.fix(st.fL / 1e9, 3)}$ GHz, spin at $g_s\\,\\mu_BB/h=${v.fix((st.g * st.fL) / 1e9, 3)}$ GHz (fit of the two slopes: $g_s/g_L=${v.fix(st.ratio, 5)}$; input $g_s=${v.fix(st.g, 5)}$).`);
+        v.legend([['accent', 'orbital angular momentum ($g_L=1$)'], ['orange', 'spin angular momentum ($g_s$)']]);
+        v.readout(() => `$B=${v.fmt(B.value, 3)}$ T: orbital orientation precesses at $\\mu_BB/h=${v.fix(st.fL / 1e9, 3)}$ GHz, spin at $g_s\\,\\mu_BB/h=${v.fix((st.g * st.fL) / 1e9, 3)}$ GHz (fit of the two slopes: $g_s/g_L=${v.fix(st.ratio, 5)}$; input $g_s=${v.fix(st.g, 5)}$); normalized time $t/T_L=${v.fix(st.tT,3)}$, $T_L=${v.sci(1/st.fL,3)}$ seconds.`);
       },
     },
     // ------------------------------------------------------------------ 7.14
@@ -125,22 +127,21 @@ each $J$ appearing exactly once, in steps of $1$. The quantum number $M$ of $J_z
       num: '7.15',
       kind: 'Theorem',
       name: 'Clebsch–Gordan coefficients and the triangle rule',
-      statement: String.raw`The coupled states are expanded in the product basis,
+      statement: String.raw`For nonnegative integer or half-integer $j_1,j_2$, with $m_i=-j_i,-j_i+1,\dots,j_i$ and $M=-J,\dots,J$, the coupled states are expanded in the product basis,
 $$|J,M\rangle=\sum_{m_1+m_2=M}\langle j_1m_1;j_2m_2|J\,M\rangle\;|j_1,m_1\rangle|j_2,m_2\rangle ,$$
 with real **Clebsch–Gordan coefficients** (in the Condon–Shortley convention: $\langle j_1j_1;j_2\,J{-}j_1|J\,J\rangle>0$). They vanish unless $m_1+m_2=M$ and unless $J$ satisfies the **triangle rule** $|j_1-j_2|\le J\le j_1+j_2$ with $J-j_1-j_2\in\mathbb Z$. For fixed $M$ they form an orthogonal matrix: $\sum_{m_1m_2}\langle j_1m_1;j_2m_2|JM\rangle\langle j_1m_1;j_2m_2|J'M\rangle=\delta_{JJ'}$ and the transposed relation.`,
       idea: String.raw`The top state $|j_1+j_2,\,j_1+j_2\rangle$ is a single product state; lowering with $J_-=J_{1-}+J_{2-}$ (qm-7.3) produces the rest of that multiplet. Each new highest state $|J,J\rangle$ is the vector in the $M=J$ subspace orthogonal to the higher multiplets already built, fixed in sign by the convention; lowering again fills in the multiplet. Both sets $\{|J,M\rangle\}$ and $\{|m_1,m_2\rangle\}$ are orthonormal bases of the same space, so the transformation is orthogonal; $J_z=J_{1z}+J_{2z}$ is diagonal in both, which is the selection $m_1+m_2=M$.`,
-      caption: String.raw`**Choose the pair $(j_1,j_2)$.** The grid is the table of coefficients: rows are product states $|m_1,m_2\rangle$ (sorted by $m_1+m_2$), columns are coupled states $|J,M\rangle$; each non-zero entry is a disc of area $\propto$ modulus (colour: sign, blue positive, orange negative) labelled with its exact value. The entries are produced by *lowering from the top state with the matrices of $J_-$*; the readout compares them with Racah's closed formula and checks orthogonality. The **trial $J$** slider tests the triangle rule: outside the allowed range every coefficient is zero.`,
+      caption: String.raw`**Choose the pair $(j_1,j_2)$.** The grid is the table of coefficients: rows are product states $|m_1,m_2\rangle$ (sorted by $m_1+m_2$), columns are coupled states $|J,M\rangle$; each non-zero entry is a disc of area $\propto$ modulus (colour indicates sign) labelled with its exact value. The entries are produced by *lowering from the top state with the matrices of $J_-$*; the readout compares them with Racah's closed formula and checks orthogonality. The **trial $J$** slider tests the triangle rule: outside the allowed range, or at the wrong integer/half-integer parity, every coefficient is zero.`,
       deps: ['qm-7.14'],
-      refs: ['NIST DLMF34.1.1,34.2.1–5,34.3.16–17; Fitzpatrick §11.3'],
-      credit: 'Clebsch–Gordan angular-momentum coupling',
+      refs: ['Littlejohn, Physics 221A (2021–22), Notes 18 §§7–12, equations (34)–(61): https://bohr.physics.berkeley.edu/classes/221/notes/jjcouple.pdf', 'NIST DLMF 34.1.1 and 34.2.4, CG/3j relation and finite factorial formula: https://dlmf.nist.gov/34.2'],
       tags: ['angular momentum', 'Clebsch–Gordan'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients' },
       viz(v) {
         const pairs = { '1/2,1/2': [0.5, 0.5], '1,1/2': [1, 0.5], '1,1': [1, 1], '3/2,1/2': [1.5, 0.5], '3/2,1': [1.5, 1] };
         const pick = v.select('$(j_1,j_2)$', Object.keys(pairs).map((k) => ({ value: k, label: `$(${k.replace(',', ',\\,')})$` })), '1,1/2');
         const Jt = v.slider('trial $J$ (triangle rule)', 0, 4, 1, { step: 0.5 });
-        const T = v.stage({ x: [-2.4, 12], y: [-3.4, 12], equal: true, axes: false, height: 420, title: 'Clebsch–Gordan table (rows $|m_1,m_2\\rangle$, columns $|J,M\\rangle$)', weight: 1.7 });
-        const NL = v.stage({ x: [-0.3, 5.3], y: [-1, 1], axes: false, height: 120, title: 'triangle rule for $J$', weight: 1 });
+        const T = v.stage({ x: [-2, 10.4], y: [-0.6, 11.8], equal: true, axes: false, height: 560, full: true, title: 'Clebsch–Gordan table (rows $|m_1,m_2\\rangle$, columns $|J,M\\rangle$)', weight: 1.7 });
+        const NL = v.stage({ x: [-0.3, 5.3], y: [-1, 1], axes: false, height: 120, full: true, title: 'triangle rule for $J$', weight: 1 });
         const wheel = phaseRGB(v);
         let st = null;
         v.render(() => {
@@ -154,8 +155,10 @@ with real **Clebsch–Gordan coefficients** (in the Condon–Shortley convention
           cells(v, T, A, rect, {
             max: 1, tile: 'grid', minR: 0.5,
             text: (z, i, j) => (Math.abs(A[i][j][0]) > 1e-9 ? sqFrac(A[i][j][0]) : null),
-            rowLabels: rows.map((r) => `${half(r.m1)},${half(r.m2)}`), colLabels: cols.map((c) => `${half(c.J)},${half(c.M)}`),
+            rowLabels: rows.map((r) => `${half(r.m1)},${half(r.m2)}`),
           });
+          T.text('J',-.15,11.0,{align:'right',size:11,color:'muted'});T.text('M',-.15,10.5,{align:'right',size:11,color:'muted'});
+          cols.forEach((c,j)=>{const x=(j+.5)*W/n;T.text(half(c.J),x,11.0,{align:'center',size:10,color:'muted'});T.text(half(c.M),x,10.5,{align:'center',size:10,color:'muted'});});
           // verification
           let maxd = 0, nonzero = 0, offblock = 0; const C = rows.map((r, ri) => cols.map((c, ci) => { const w = cg(a, r.m1, b, r.m2, c.J, c.M); maxd = Math.max(maxd, Math.abs(w - A[ri][ci][0])); if (Math.abs(A[ri][ci][0]) > 1e-9) nonzero++; if (Math.abs(r.m1 + r.m2 - c.M) > 1e-9 && Math.abs(A[ri][ci][0]) > 1e-9) offblock++; return w; }));
           let orth = 0; for (let p = 0; p < n; p++) for (let q = 0; q < n; q++) { let s = 0; for (let k = 0; k < n; k++) s += A[k][p][0] * A[k][q][0]; orth = Math.max(orth, Math.abs(s - (p === q ? 1 : 0))); }
@@ -170,7 +173,7 @@ with real **Clebsch–Gordan coefficients** (in the Condon–Shortley convention
           st = { maxd, orth, nonzero, n, offblock, okT, Jtr, tw, Jmin, Jmax, a, b };
         });
         v.readout(() => `lowering vs Racah's formula: max difference $${v.sci(st.maxd, 1)}$; orthogonality $\\|C^{\\mathsf T}C-I\\|_{\\max}=${v.sci(st.orth, 1)}$; ${st.nonzero} non-zero entries of ${st.n * st.n}, of which ${st.offblock} violate $m_1+m_2=M$.\n` +
-          `Allowed $J$: $${half(st.Jmin)},\\dots,${half(st.Jmax)}$. Trial $J=${v.fix(st.Jtr, 1)}$: ${st.okT ? `allowed; $\\sum_{M,m_1}|\\langle\\cdot|J M\\rangle|^2=${v.fix(st.tw, 3)}=2J+1$.` : '**forbidden by the triangle rule** — all coefficients vanish.'}`);
+          `Allowed $J$: $${half(st.Jmin)},\\dots,${half(st.Jmax)}$. Trial $J=${v.fix(st.Jtr, 1)}$: ${st.okT ? `allowed; $\\sum_{M,m_1}|\\langle\\cdot|J M\\rangle|^2=${v.fix(st.tw, 3)}=2J+1$.` : '**forbidden by the triangle / parity rule** — all coefficients vanish.'}`);
       },
     },
     // ------------------------------------------------------------------ 7.16
@@ -182,7 +185,7 @@ with real **Clebsch–Gordan coefficients** (in the Condon–Shortley convention
 $$|1,1\rangle=|{\uparrow\uparrow}\rangle,\quad|1,0\rangle=\tfrac1{\sqrt2}(|{\uparrow\downarrow}\rangle+|{\downarrow\uparrow}\rangle),\quad|1,-1\rangle=|{\downarrow\downarrow}\rangle,\qquad|0,0\rangle=\tfrac1{\sqrt2}(|{\uparrow\downarrow}\rangle-|{\downarrow\uparrow}\rangle).$$
 The triplet states are symmetric and the singlet antisymmetric under exchange of the two spins. The singlet is invariant under any joint rotation $U\otimes U$ (it has total spin zero), and measuring both spins along the *same* axis always gives opposite results, whatever the axis. The triplet states transform among themselves.`,
       idea: String.raw`This is qm-7.14 with $j_1=j_2=\tfrac12$ and the Clebsch–Gordan coefficients of qm-7.15 (all of modulus $1$ or $1/\sqrt2$). The singlet is the only vector orthogonal to the triplet; since $S=0$, $\mathbf S|0,0\rangle=0$ and the rotation operator $e^{-i\theta\mathbf n\cdot\mathbf S}$ acts on it as the identity (qm-7.6). Its perfect anticorrelation along every axis, $\langle\boldsymbol\sigma_1\cdot\mathbf a\;\boldsymbol\sigma_2\cdot\mathbf a\rangle=-1$, follows from the same rotational invariance and is the correlation used in Bell tests (qm-14).`,
-      caption: String.raw`**Pick one of the four states**, a rotation axis and angle. Top: the four amplitudes in the basis $\uparrow\uparrow,\uparrow\downarrow,\downarrow\uparrow,\downarrow\downarrow$ before (outline) and after (filled) the *same* rotation $U\otimes U$ of both spins. For the singlet nothing moves; for a triplet state weight moves among the three triplet entries but never to the singlet — the readout tracks the weight in each subspace. Bottom: the correlation $E(\mathbf a,\mathbf a)=\langle\sigma_a\otimes\sigma_a\rangle$ for a measurement axis $\mathbf a$ in the $xz$-plane at angle $\beta$: the singlet is at $-1$ for every $\beta$.`,
+      caption: String.raw`**Pick one of the four states**, a rotation axis and angle. Top: the four probabilities in the product basis $\uparrow\uparrow,\uparrow\downarrow,\downarrow\uparrow,\downarrow\downarrow$ before (outline) and after (filled) the *same* rotation $U\otimes U$ of both spins. For the singlet nothing moves; for a triplet state these product-basis probabilities can change while the state stays inside the three-dimensional triplet subspace — the readout tracks the weight in each subspace. Bottom: the correlation $E(\mathbf a,\mathbf a)=\langle\sigma_a\otimes\sigma_a\rangle$ for a measurement axis $\mathbf a$ in the $xz$-plane at angle $\beta$: the singlet is at $-1$ for every $\beta$.`,
       deps: ['qm-7.14', 'qm-7.7'],
       refs: ['Griffiths §4.4'],
       tags: ['spin', 'singlet', 'triplet'],
@@ -218,58 +221,48 @@ The triplet states are symmetric and the singlet antisymmetric under exchange of
       num: '7.17',
       kind: 'Theorem',
       name: 'Wigner–Eckart theorem',
-      statement: String.raw`Let $T^{(k)}_q$ ($q=-k,\dots,k$) be the components of a **spherical tensor operator** of rank $k$, i.e. transforming under rotations like $Y_k^q$ (a scalar for $k=0$, a vector for $k=1$). Then the matrix elements between angular-momentum eigenstates factor as
-$$\langle\alpha',j',m'|T^{(k)}_q|\alpha,j,m\rangle=\langle j\,m;k\,q|j'\,m'\rangle\;\frac{\langle\alpha'j'\|T^{(k)}\|\alpha j\rangle}{\sqrt{2j'+1}} :$$
-the dependence on the magnetic quantum numbers $m,q,m'$ is entirely in the Clebsch–Gordan coefficient (geometry), while the **reduced matrix element** $\langle\alpha'j'\|T\|\alpha j\rangle$ carries the dynamics and is independent of $m,q,m'$. In particular the matrix element vanishes unless $m'=m+q$ and $|j-k|\le j'\le j+k$.`,
-      idea: String.raw`Because $T_q^{(k)}|j,m\rangle$ transforms under rotations exactly like the product $|k,q\rangle|j,m\rangle$ (qm-7.6), it lies in the space $V_k\otimes V_j$ of qm-7.14, and projecting it on $V_{j'}$ gives a multiple of the Clebsch–Gordan state $|j',m'\rangle$ of qm-7.15: the same multiple for every $m,q$, since any rotation moves all of them together. The multiple is the reduced element divided by $\sqrt{2j\prime+1}$ in the convention displayed above. All the $m$-dependence of every dipole transition rate is thus computable once and for all.`,
-      caption: String.raw`**Choose the pair of multiplets $(l\to l')$ and the operator** — the components of the unit vector $\hat{\mathbf r}$ (rank 1), of $\sqrt{4\pi/5}Y_2^q$ (rank 2), or a *mixture* of rank 1 and rank 3 ($\hat r_q+0.9\,T^{(3)}_q$), which is not a single tensor. Ranks 1 and 3 have the same parity, so for $1\to2$ both contribute; the rank-2 operator connects only multiplets with $l+l'$ even. The top bars are the angular matrix elements $\langle Y_{l'}^{m'}|T_q|Y_l^m\rangle$ computed by quadrature on the sphere; the middle bars are the Clebsch–Gordan coefficients of rank 1 (or 2 for the second operator); the bottom dots are their ratio. For a true tensor operator the dots lie on one horizontal line (the reduced element divided by $\sqrt{2l'+1}$); the mixture breaks it (the ratio is taken against the rank-1 coefficients), and parity-forbidden pairs give zero.`,
+      statement: String.raw`Let $T^{(k)}_q$, $q=-k,\dots,k$, be an irreducible spherical tensor of integer rank $k\ge0$, with $U(R)T^{(k)}_qU(R)^\dagger=\sum_{q'}T^{(k)}_{q'}D^{(k)}_{q'q}(R)$. Between standard angular-momentum bases in the same phase convention,
+$$\langle\alpha',j',m'|T^{(k)}_q|\alpha,j,m\rangle=\langle j\,m;k\,q|j'\,m'\rangle\;\frac{R_{\alpha'j',\alpha j}^{(k)}}{\sqrt{2j'+1}}.$$
+The reduced element $R$ is independent of $m,q,m'$. This atlas uses the displayed square-root convention; Littlejohn's reduced element equals $R/\sqrt{2j'+1}$. Matrix elements vanish unless $m'=m+q$ and $j'=|j-k|,|j-k|+1,\dots,j+k$. A zero reduced element can impose further selection rules.`,
+      idea: String.raw`The map $|jm\rangle\otimes|kq\rangle\mapsto T^{(k)}_q|\alpha jm\rangle$ intertwines rotations from $V_j\otimes V_k$ to the physical state space; the image need not be a tensor-product ket and may be zero. Decompose its domain into the multiplicity-one irreducible spaces of qm-7.14. Projection to a fixed target multiplet $\alpha'j'$ is an intertwiner on $V_{j'}$, hence a scalar times the standard identification (Schur's lemma). Expanding the coupled basis yields the CG coefficient times a scalar independent of magnetic indices. This is the factorization above; the overall square-root normalization is a convention.`,
+      caption: String.raw`**Choose $(l\to l')$ and the angular multiplication operator.** Here $C^{(k)}_q=\sqrt{4\pi/(2k+1)}Y_k^q$, with Condon–Shortley harmonics: $C^{(1)}$ is the unit-vector tensor. Choose $C^{(1)}$, $C^{(2)}$, or $C^{(1)}+0.9C^{(3)}$ (not a single rank). Top: raw matrix elements by 20-point Gauss–Legendre × 40-point azimuthal quadrature; middle: raw rank-1 (or rank-2) CG coefficients. Bottom: $\sqrt{2l'+1}\,\mathrm{ME}/\mathrm{CG}$ wherever CG is nonzero, in the statement's reduced-element convention. A mixture can produce varying ratios or a nonzero matrix element at zero reference CG (red bar), but a particular block can hide its extra rank: for $1\to0$, rank 3 is forbidden. Zero matrix elements with allowed CG correspond to a valid reduced element $R=0$. Numerical agreement in these examples illustrates the source theorem; it does not prove it.`,
       deps: ['qm-7.15'],
-      refs: ['MIT5.73 Lecture27,complete spherical-tensor formulation and applications'],
-      credit: 'Wigner–Eckart factorization',
+      refs: ['Littlejohn, Physics 221A (2021–22), Notes 20 §§5–11, equations (30)–(69), full Wigner–Eckart proof: https://bohr.physics.berkeley.edu/classes/221/notes/wigeck.pdf', 'Littlejohn, Notes 18 §15, equation (67), integral of three spherical harmonics: https://bohr.physics.berkeley.edu/classes/221/notes/jjcouple.pdf'],
+      credit: 'Wigner–Eckart factorization; explicit reduced-element convention',
       tags: ['angular momentum', 'selection rules', 'tensor operators'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Wigner%E2%80%93Eckart_theorem' },
       viz(v) {
         const pairSel = v.select('$(l\\to l\')$', [{ value: '1,2', label: '$1\\to2$' }, { value: '1,0', label: '$1\\to0$' }, { value: '2,3', label: '$2\\to3$' }, { value: '1,1', label: '$1\\to1$' }, { value: '2,2', label: '$2\\to2$' }], '1,2');
-        const op = v.select('operator', [{ value: '1', label: 'rank 1: $\\hat{\\mathbf r}$' }, { value: '2', label: 'rank 2: $\\sqrt{4\\pi/5}Y_2^q$' }, { value: 'mix', label: 'mixture of ranks 1 and 3' }], '1');
+        const op = v.select('operator', [{ value: '1', label: 'rank 1: $\\hat{\\mathbf r}$' }, { value: '2', label: 'rank 2: $C^{(2)}_q$' }, { value: 'mix', label: 'mixture of ranks 1 and 3' }], '1');
         const SA = v.stage({ x: [-0.7, 16.7], y: [-1, 1], axes: 'box', gutter: true, height: 190, ylabel: '$\\langle Y_{l\'}^{m\'}|T_q|Y_l^m\\rangle$', title: 'matrix elements (by quadrature)', full: true });
         const SB = v.stage({ x: [-0.7, 16.7], y: [-1, 1], axes: 'box', gutter: true, height: 190, ylabel: '$\\langle lm;kq|l\'m\'\\rangle$', title: 'Clebsch–Gordan coefficients of rank $k$ ($k=1$ for the mixture)', full: true });
-        const SC = v.stage({ x: [-0.7, 16.7], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 190, ylabel: 'ratio', xlabel: 'index of $(m,q)$', title: 'ratio matrix element / CG', full: true });
+        const SC = v.stage({ x: [-0.7, 16.7], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 190, ylabel: 'reduced element $R$', xlabel: 'index of $(m,q)$', title: "$\\sqrt{2l'+1}$ × matrix element / CG", full: true });
         const cache = new Map();
         let st = null;
         v.render(() => {
           const [l, lp] = pairSel.value.split(',').map(Number), o = op.value, k = o === '2' ? 2 : 1;
           const key = `${l}|${lp}|${o}`;
-          if (!cache.has(key)) {
-            const T = (q) => (th, ph) => {
-              const t1 = ylm(1, q, th, ph).map((z) => z * Math.sqrt((4 * Math.PI) / 3)), t2 = o === '2' ? (Math.abs(q) <= 2 ? ylm(2, q, th, ph).map((z) => z * Math.sqrt((4 * Math.PI) / 5)) : [0, 0]) : (Math.abs(q) <= 3 ? ylm(3, q, th, ph).map((z) => z * Math.sqrt((4 * Math.PI) / 7)) : [0, 0]);
-              if (o === '1') return t1; if (o === '2') return t2; return [t1[0] + 0.9 * t2[0], t1[1] + 0.9 * t2[1]];
-            };
-            const rows = [];
-            for (let q = -3; q <= 3; q++) { if ((o === '1' && Math.abs(q) > 1) || (o === '2' && Math.abs(q) > 2)) continue; for (let m = -l; m <= l; m++) { const mp = m + q; if (Math.abs(mp) > lp) continue;
-              const f = (th, ph) => { const y = ylm(l, m, th, ph), t = T(q)(th, ph); return [t[0] * y[0] - t[1] * y[1], t[0] * y[1] + t[1] * y[0]]; };
-              const me = sphereIP(f, (th, ph) => ylm(lp, mp, th, ph), 36, 72), c = cg(l, m, k, q, lp, mp);
-              rows.push({ m, q, mp, me: me[0], im: me[1], c }); } }
-            cache.set(key, rows);
-          }
-          const rows = cache.get(key), mx = Math.max(0.3, ...rows.map((r) => Math.abs(r.me)));
-          const mc = Math.max(0.3, ...rows.map((r) => Math.abs(r.c)));
-          const xr = [-0.7, Math.max(rows.length, 3) - 0.3]; SA.setView(xr, [-1.05, 1.05]); SB.setView(xr, [-1.05, 1.05]);
-          { const mm = rows.filter((r) => Math.abs(r.c) > 1e-9).map((r) => r.me / r.c), mu = mm.length ? mm.reduce((a, b) => a + b, 0) / mm.length : 0; SC.setView(xr, [Math.min(-1.5, mu - 1.2), Math.max(1.5, mu + 1.2)]); SC.hline(mu, { color: 'green', width: 1, dash: [4, 4] }); }
-          rows.forEach((r, i) => {
-            SA.rect(i - 0.35, 0, i + 0.35, r.me, { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1 });
-            SB.rect(i - 0.35, 0, i + 0.35, r.c, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
-            if (Math.abs(r.c) > 1e-9) SC.dot(i, r.me / r.c, { color: 'green', r: 5 });
-            SA.text(`${r.m},${r.q}`, i, -0.92, { size: 9.5, align: 'center', color: 'muted' });
+          if (!cache.has(key)) cache.set(key,tensorAngularRows(l,lp,o));
+          const rows=cache.get(key), summary=tensorSummary(rows), xr=[-.7,Math.max(rows.length,3)-.3];
+          const ma=Math.max(.1,summary.maxMe)*1.25, mc=Math.max(.1,...rows.map(r=>Math.abs(r.c)))*1.25;
+          SA.setView(xr,[-ma,ma]);SB.setView(xr,[-mc,mc]);
+          const lo=Math.min(-.2,...summary.ratios), hi=Math.max(.2,...summary.ratios),pad=.15*(hi-lo);
+          SC.setView(xr,[lo-pad,hi+pad]);if(summary.ratios.length)SC.hline(summary.mean,{color:'green',width:1,dash:[4,4]});
+          rows.forEach((r,i)=>{
+            SA.rect(i-.35,0,i+.35,r.me,{fill:Math.abs(r.c)<1e-10&&Math.abs(r.me)>1e-10?'red':'accent',fillAlpha:.55,color:'accent',width:1});
+            SB.rect(i-.35,0,i+.35,r.c,{fill:'orange',fillAlpha:.55,color:'orange',width:1});
+            if(r.reduced!==null)SC.dot(i,r.reduced,{color:'green',r:5});
+            SA.text(`${r.m},${r.q}`,i,-ma*.88,{size:9.5,align:'center',color:'muted'});
           });
-          
-          const rat = rows.filter((r) => Math.abs(r.c) > 1e-9).map((r) => r.me / r.c);
-          const mean = rat.length ? rat.reduce((a, b) => a + b, 0) / rat.length : 0, spread = rat.length ? Math.max(...rat.map((x) => Math.abs(x - mean))) : 0;
-          const maxMe = Math.max(0, ...rows.map((r) => Math.abs(r.me)));
-          
-          st = { n: rows.length, mean, spread, maxMe, l, lp, k, o, imMax: Math.max(0, ...rows.map((r) => Math.abs(r.im))) };
+          st={...summary,n:rows.length,l,lp,k,o};
         });
-        v.readout(() => st.maxMe < 1e-6 ? `$l=${st.l}\\to l'=${st.lp}$: every matrix element vanishes (parity / triangle selection rule: $|l-k|\\le l'\\le l+k$ fails, or $l+k+l'$ is odd) — no reduced element to compare.` :
-          `${st.n} matrix elements; ratio (matrix element)/(CG) has mean $${v.fix(st.mean, 4)}$ (reduced element divided by $\\sqrt{2l'+1}$) and maximal deviation $${v.sci(st.spread, 1)}$ ${st.o === 'mix' ? '— **not constant**: the operator is not a spherical tensor of a single rank.' : '— constant up to quadrature error.'}`);
+        v.readout(()=>{
+          const lead=`$l=${st.l}\\to l'=${st.lp}$: ${st.n} matrix elements; max imaginary quadrature residue $${v.sci(st.imMax,1)}$.\n`;
+          if(!st.ratios.length)return lead+'All reference CG coefficients vanish: triangle-forbidden block; no ratio is defined.';
+          const values=`$\\sqrt{2l'+1}\\,\\mathrm{ME}/\\mathrm{CG}$: mean $${v.fix(st.mean,5)}$, maximal deviation $${v.sci(st.spread,1)}$; ${st.zeroCGNonzero} nonzero matrix elements at zero reference CG. `;
+          if(st.o==='mix')return lead+values+(st.maxMe<1e-10?'This block vanishes by parity, so it cannot diagnose the mixture.':st.spread<1e-10&&st.zeroCGNonzero===0?'This block hides rank 3 (triangle-forbidden); a constant ratio here does not make the full operator rank 1.':'Varying ratios and/or zero-CG violations distinguish this mixture from rank 1.');
+          return lead+values+(st.maxMe<1e-10?'The allowed CG block has reduced element R=0 (additional parity selection).':'Constant within numerical quadrature error, consistent with the source theorem.');
+        });
       },
     },
   ],

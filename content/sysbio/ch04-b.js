@@ -1,14 +1,10 @@
 // Systems Biology — Chapter 4 (part 2): lambda switch, Waddington's landscape, titration, MAPK cascade, the toggle-switch paper (4.6-4.10)
-import { rep, toggleRoots, integrate, hillEff, gk1, gk2 } from './ch04.shared.js';
+import { rep, integrate, hillEff, gk1, gk2 } from './ch04.shared.js';
 
 const pw = (x, n) => Math.pow(Math.max(x, 0), n);
 
-// ── lambda decision model (illustrative): u = CI, v = Cro, c = CII; m = number of phage genomes in the cell ──
-export const LAM = { eps: 0.05, A: 6, V: 8, dc: 1, kap: 1.5 };
-export const lamF = (m, kap, E, uv) => (y) => {
-  const [u, v, c] = y;
-  return [(LAM.eps + LAM.A * u * u / (1 + u * u) + E * c) / (1 + v * v) - (1 + uv) * u, LAM.V / (1 + 4 * u * u) - v, m * kap / (1 + 4 * u * u) - LAM.dc * c];
-};
+import {lambdaParameters as LAM,lambdaRun,lambdaUV} from './sysbio-source-audit-lambda.shared.js';
+import {toggleEquilibria as toggleRoots,toggleStart,togglePulse} from './sysbio-source-audit-toggle.shared.js';
 
 // ── quasi-potential of a two-gene fate circuit by relaxing the Fokker–Planck equation on a grid ──
 const FATE = { b: 0.5 };
@@ -46,28 +42,28 @@ export default {
       num: '4.6',
       kind: 'Model',
       name: 'Lambda phage lysis–lysogeny decision',
-      statement: String.raw`After bacteriophage $\lambda$ infects *E. coli* it either **lyses** the cell (producing new phage) or becomes a **lysogen** (its genome integrates, silent, and is copied with the host). The decision is made by a bistable switch: the repressor CI (maintained by its own positive feedback, since CI activates its promoter $P_{RM}$) represses the lytic genes, including *cro*, while Cro represses *cI*. The real circuit contains additional regulators; the mutual-repression diagram alone does not derive the following observations. (i) A cell infected by *several* phage is more likely to choose lysogeny, with cell size and other physiological variables also affecting the response. The early regulator CII helps establish CI synthesis. (ii) A lysogen is stable for generations but switches to lysis when DNA damage (UV) activates RecA, which makes CI cleave itself: lowering CI past a threshold removes the lysogenic state.`,
-      idea: String.raw`Treat CI ($u$), Cro ($v$) and CII ($c$) as in 4.2, with extra terms: CI's promoter has a positive-feedback term and a CII-driven establishment term and is repressed by Cro; Cro's promoter is repressed by CI (strongly, through cooperative binding); CII is made from the same promoter as Cro and is lost at a fixed rate. The number of genomes $m$ scales CII production. After infection every cell starts with no CI, Cro or CII; a race follows between CI establishment and Cro build-up, and cell-to-cell variation in the CII rate decides who wins, which produces a fraction of high-CI endpoints in this chosen model. This is heterogeneity in a fixed parameter, not simulated intrinsic reaction noise. In a lysogen, extra loss of CI at rate $(1+s)$ (UV) shrinks the high-CI state and can move the trajectory into the Cro-high basin. The finite endpoint sweep does not by itself locate or prove a saddle–node bifurcation.`,
-      caption: String.raw`Switch between **infection** and **UV induction**. *Infection*: each curve is a simulated cell in the $(\text{CI},\text{Cro})$ plane for the chosen number of phage $m$ (green: ends lysogenic, red: lytic); the bars on the right give the fraction of 60 cells choosing lysogeny at every $m$. Raise $m$ and more cells reach the CI-high state; make cells more uniform and the response sharpens. *UV induction*: a lysogen is exposed to UV from time 20 on; right: final CI against dose, with the dose of the slider marked. This is a qualitative caricature: its parameters are chosen to show the logic, not fitted to $\lambda$.`,
+      statement: String.raw`After bacteriophage $\lambda$ infects E. coli, lytic development can produce phage and lyse the cell, or a lysogenic state can maintain a prophage with most lytic genes repressed. CI supports lysogeny by repressing lytic promoters and activating its maintenance promoter $P_{RM}$; at higher occupancy CI also represses its own transcription. Cro regulates early transcription, including CII establishment of CI, and can directly repress $P_{RM}$. Infection and induction are distinct processes: initial fate also depends on CII, host physiology and infecting-virus number, while DNA-damaging induction inactivates CI. These facts do not follow from mutual repression alone.`,
+      idea: String.raw`The chosen three-variable illustration has $\dot u=(0.05+6u^2/(1+u^2)+Ec)/(1+v^2)-(1+s)u$, $\dot v=8/(1+4u^2)-v$, $\dot c=m\kappa/(1+4u^2)-c$. Here u,v,c represent CI,Cro,CII-like levels. Multiplicity scales only CII synthesis, and E establishes CI; that selective scaling and sustained CII term are chosen simplifications, not measured genome-copy kinetics. Fixed cell-to-cell variability in kappa yields heterogeneous deterministic endpoints. For induction, s adds CI removal after time 20. A sampled endpoint change at time 100 does not by itself prove a bifurcation or predict a biological UV dose.`,
+      caption: String.raw`Chosen model trajectories, not experimental data. Infection mode draws 24 of a fixed 60-member cohort from zero initial levels; green means CI exceeds Cro after 60 model units, red the reverse. Bars apply the same endpoint criterion to all 60 members at each m. Induction mode begins from the same relaxed CI-high state for every rate and adds CI removal after time 20. The right plot samples endpoints after 80 further units. Its marked transition is a finite-time grid observation, not an exact equilibrium threshold or a physical UV dose.`,
       deps: ['sysbio-4.2'],
-      refs: ['Zeng et al. 2010, Cell 141:682–691, Figs. 1–5, Results and Discussion'],
+      refs: ['Ptashne (2006), Current Biology16:R459–R462, Figure1 and switch overview R459–R461; Zeng et al. (2010), Cell141:682–691, Figures2–3/Results683–687 and host-context limitation687'],
       tags: ['phage lambda', 'cell fate', 'bistability'],
-      scope: String.raw`Toy three-variable model, not a quantitative model of $\lambda$: $\dot u=[0.05+6u^2/(1+u^2)+E c]/(1+v^2)-(1+s)u$, $\dot v=8/(1+4u^2)-v$, $\dot c=m\kappa/(1+4u^2)-c$. Time and levels are arbitrary units; s is an added first-order CI loss, not a calibrated UV dose. CII synthesis continues throughout the toy infection window instead of reproducing its real transient regulation. The model omits the CI dimer/octamer DNA looping, the $P_{RE}$/$P_{L}$ architecture, CIII, host proteases and growth. Zeng et al. (2010) showed that in real cells the decision is taken virus by virus and then combined, so this whole-cell reduction omits their unanimous-voting mechanism. Their fitted individual-phage probability depends on m/cell length, and whole-cell lysogeny scales as that probability raised to m; MOI alone does not collapse the data. The present model changes only CII production with m, not every genome-dependent rate. Source verification remains open for the biochemical UV/RecA–CI autocleavage claim and exact CI/Cro promoter architecture: those complete original sources have not been inspected.`,
-      credit: 'Ptashne (A Genetic Switch); multiplicity dependence: P. Kourilsky, 1973; single-virus decisions: L. Zeng et al., 2010 (Cell 141: 682–691)',
+      scope: String.raw`Full Ptashne author review and full Zeng et al. original article checked. The toy omits CI negative autoregulation, DNA looping, separate promoter architecture, host proteases/CIII, growth, genome replication and actual cell lysis. Zeng et al. found multiplicity and cell size affect fate and supported a unanimous single-phage-vote model in the studied host; a dnaJ mutant changed the voting behavior. The displayed well-mixed cohort implements neither single-phage votes nor chemical reaction noise. Its 60-member fraction is a chosen model statistic, not an empirical probability or asymptotic fate guarantee. Concentrations, times and added CI removal are dimensionless model quantities.`,
+      credit: 'M. Ptashne, 2006 (author review of lambda switch); L. Zeng, S. O. Skinner, C. Zong, J. Sippy, M. Feiss & I. Golding, 2010 (single-virus infection experiment); toy kinetics chosen here',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lambda_phage' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const mode = v.select('experiment', [{ value: 'inf', label: 'infection (MOI)' }, { value: 'uv', label: 'UV induction of a lysogen' }], 'inf');
-        const M = v.slider('phage genomes per cell m (MOI)', 1, 8, 3, { int: true });
+        const mode = v.select('experiment', [{ value: 'inf', label: 'infection (chosen m)' }, { value: 'uv', label: 'UV induction of a lysogen' }], 'inf');
+        const M = v.slider('chosen infecting-genome count m', 1, 8, 3, { int: true });
         const Es = v.slider(String.raw`CII establishment strength`, 2, 8, 4.5, { step: 0.1 });
         const Sg = v.slider('cell-to-cell variability', 0.5, 3, 2.5, { step: 0.1 });
-        const UV = v.slider('UV dose (CI cleavage rate)', 0, 3, 1.2, { step: 0.05 });
+        const UV = v.slider('added CI removal rate s (model units)', 0, 3, 1.2, { step: 0.05 });
         const S1 = v.stage({ x: [0, 7], y: [0, 9], axes: 'box', gutter: true, height: 340, weight: 1.2, minWidth: 290, xlabel: 'CI', ylabel: 'Cro' });
         const S2 = v.stage({ x: [0, 9], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'phage per cell m', ylabel: 'fraction lysogenic' });
         const zs = [], r0 = v.rng(21); for (let i = 0; i < 60; i++) zs.push((r0() + r0() + r0() - 1.5) * 2);
         let key = '', frac = [], paths = [], ukey = '', ucurve = [], utr = [], info = null;
         const kOf = (z) => LAM.kap * Math.exp(0.25 * Sg.value * z);
-        const run = (m, k, E, uv, y0, T, n, every) => integrate(lamF(m, k, E, uv), y0, T, n, every);
+        const run=(m,k,E,uv,y0,T,n,every)=>lambdaRun(m,k,E,uv,y0,T,.05,every===n?Math.round(T/.05):every);
         v.render(() => {
           const lys = mode.value === 'inf';
           M.el.hidden = !lys; Es.el.hidden = !lys; Sg.el.hidden = !lys; UV.el.hidden = lys;
@@ -77,33 +73,31 @@ export default {
               key = k; frac = [];
               for (let m = 1; m <= 8; m++) { let c = 0; zs.forEach((z) => { const tr = run(m, kOf(z), Es.value, 0, [0, 0, 0], 60, 600, 600); const y = tr[tr.length - 1]; if (y[1] > y[2]) c++; }); frac.push(c / zs.length); }
             }
-            S1.setView([0, 7], [0, 9]); S1.setLabels('CI', 'Cro'); S2.setView([0, 9], [0, 1]); S2.setLabels('phage per cell m', 'fraction lysogenic');
+            S1.setView([0, 7], [0, 9]); S1.setLabels('CI', 'Cro'); S2.setView([0, 9], [0, 1]); S2.setLabels('chosen genome count m', 'CI-dominant endpoint fraction');
             paths = [];
             const m = M.value; let nl = 0;
             zs.slice(0, 24).forEach((z) => {
               const tr = run(m, kOf(z), Es.value, 0, [0, 0, 0], 60, 1200, 8), y = tr[tr.length - 1], ok = y[1] > y[2];
               if (ok) nl++; paths.push({ pts: tr.map((r) => [r[1], r[2]]), ok });
             });
+            S1.setView([0,Math.max(7,1.08*Math.max(...paths.flatMap(p=>p.pts.map(q=>q[0]))))],[0,Math.max(9,1.08*Math.max(...paths.flatMap(p=>p.pts.map(q=>q[1]))))]);
             paths.forEach((p) => S1.path(p.pts, { color: p.ok ? 'green' : 'red', width: 1.6, alpha: 0.75 }));
             paths.forEach((p) => S1.dot(p.pts[p.pts.length - 1][0], p.pts[p.pts.length - 1][1], { r: 4, color: p.ok ? 'green' : 'red' }));
-            S1.text('lysogeny: CI high', 6.9, 0.5, { size: 11, color: 'green', align: 'right' }); S1.text('lysis: Cro high', 0.15, 8.6, { size: 11, color: 'red' });
+            S1.text('CI-dominant endpoint', 6.9, 0.5, { size: 11, color: 'green', align: 'right' }); S1.text('Cro-dominant endpoint', 0.15, 8.6, { size: 11, color: 'red' });
             S2.bars(frac, { x0: 1, dx: 1, color: (val, i) => (i + 1 === m ? 'gold' : 'accent') });
             info = { lys: true, f: frac[m - 1], nl, n: paths.length };
           } else {
             const uk = 'u';
             if (ukey !== uk) {
               ukey = uk; ucurve = [];
-              for (let i = 0; i <= 40; i++) { const s = (3 * i) / 40; const tr = run(1e-9, LAM.kap, 0, s, [3.5, 0.5, 0], 80, 800, 800); ucurve.push([s, tr[tr.length - 1][1], tr[tr.length - 1][2]]); }
+              for (let i = 0; i <= 40; i++) { const s = (3 * i) / 40; const fin=lambdaUV(s).final; ucurve.push([s,...fin.slice(0,2)]); }
             }
-            S1.setView([0, 100], [0, 9]); S1.setLabels('time (UV applied from t = 20)', 'level');
-            utr = run(1e-9, LAM.kap, 0, 0, [3.5, 0.5, 0], 20, 200, 4).map((r) => [r[0], r[1], r[2]]);
-            const last = utr[utr.length - 1];
-            const after = integrate(lamF(1e-9, LAM.kap, 0, UV.value), [last[1], last[2], 0], 80, 800, 4).map((r) => [r[0] + 20, r[1], r[2]]);
-            const all = utr.concat(after);
+            S1.setView([0, 100], [0, 9]); S1.setLabels('model time (extra CI removal from t = 20)', 'model level');
+            const {all}=lambdaUV(UV.value);
             S1.vband(20, 100, { color: 'purple', alpha: 0.08 });
             S1.path(all.map((r) => [r[0], r[1]]), { color: 'green', width: 3 }); S1.path(all.map((r) => [r[0], r[2]]), { color: 'red', width: 3 });
-            S1.text('UV on', 22, 8.5, { size: 11, color: 'purple' });
-            S2.setView([0, 3], [0, 9]); S2.setLabels('UV dose (CI cleavage rate)', 'CI (green) and Cro (red) after 80 time units');
+            S1.text('extra CI loss', 22, 8.5, { size: 11, color: 'purple' });
+            S2.setView([0, 3], [0, 9]); S2.setLabels('added CI removal rate s (model units)', 'CI (green) and Cro (red) after 80 time units');
             S2.path(ucurve.map((r) => [r[0], r[1]]), { color: 'green', width: 3 }); S2.path(ucurve.map((r) => [r[0], r[2]]), { color: 'red', width: 3 });
             S2.vline(UV.value, { color: 'gold', width: 2 });
             const fin = all[all.length - 1];
@@ -111,11 +105,11 @@ export default {
             info = { lys: false, crit: crit ? crit[0] : NaN, ci: fin[1], cro: fin[2] };
           }
         });
-        v.legend([['green', 'CI / lysogeny'], ['red', 'Cro / lysis'], ['gold', 'chosen m or dose', { dot: true }]]);
+        v.legend([['green', 'CI-like level / endpoint'], ['red', 'Cro-like level / endpoint'], ['gold', 'chosen m or dose', { dot: true }]]);
         v.readout(() => {
           if (!info) return '';
-          if (info.lys) return `m = ${M.value}: **${v.fix(100 * info.f, 0)}%** of the 60 cells choose lysogeny (${info.nl} of the ${info.n} drawn paths) · fractions by m: ${frac.map((f, i) => `${i + 1}: ${v.fix(100 * f, 0)}%`).join(', ')}`;
-          return `lysogen after 80 time units at this dose: CI = ${v.fix(info.ci, 2)}, Cro = ${v.fix(info.cro, 2)} → **${info.cro > info.ci ? 'induced into lysis' : 'stays lysogenic'}**\nfirst sampled dose with Cro > CI after 80 time units ≈ ${Number.isFinite(info.crit) ? v.fix(info.crit, 2) : '—'} (finite endpoint criterion, not a bifurcation calculation)`;
+          if (info.lys) return `m = ${M.value}: **${v.fix(100 * info.f, 0)}%** of the fixed 60-member cohort have CI > Cro at time 60 (${info.nl} of the ${info.n} drawn paths) · fractions by m: ${frac.map((f, i) => `${i + 1}: ${v.fix(100 * f, 0)}%`).join(', ')}`;
+          return `after 80 model time units of added CI removal: CI = ${v.fix(info.ci, 2)}, Cro = ${v.fix(info.cro, 2)} → **${info.cro > info.ci ? 'Cro-dominant endpoint' : 'CI-dominant endpoint'}**\nfirst sampled rate with Cro > CI at time 100 ≈ ${Number.isFinite(info.crit) ? v.fix(info.crit, 2) : '—'} (grid spacing 0.075; finite-time criterion, not a proven bifurcation or physical dose)`;
         });
       },
     },
@@ -181,11 +175,15 @@ export default {
       kind: 'Model',
       name: 'Ultrasensitivity by molecular titration',
       statement: String.raw`Suppose an activator $A$ (total concentration $A_T$) is bound one-to-one and very tightly (dissociation constant $K_d\ll I_T$) by an inhibitor $I$ (total $I_T$) into an inactive complex. Mass action gives the free activator
-$$A_{\rm free}=\tfrac12\Bigl[(A_T-I_T-K_d)+\sqrt{(A_T-I_T-K_d)^2+4K_dA_T}\Bigr],$$
+$$\begin{gathered}A_{\rm free}=\\
+ \tfrac12\Bigl[(A_T-I_T-K_d)+\\
+ \sqrt{(A_T-I_T-K_d)^2+4K_dA_T}\Bigr],\end{gathered}$$
 which for $K_d\to0$ becomes **threshold-linear**: $A_{\rm free}=\max(0,\,A_T-I_T)$. A downstream gene that responds to free activator with an ordinary non-cooperative input function $A_{\rm free}/(K+A_{\rm free})$ then responds to $A_T$ much more steeply than a Hill function with $n=1$: the effective Hill coefficient (measured by $\ln 81/\ln({\rm EC}_{90}/{\rm EC}_{10})$) rises well above 1 as $K_d/I_T$ and $K/I_T$ fall.`,
-      idea: String.raw`Below the threshold $A_T<I_T$ every activator molecule meets a free inhibitor and is sequestered, so almost nothing is free; once $A_T$ exceeds $I_T$ the inhibitor is used up and each added activator molecule stays free. The kink at $A_T=I_T$ is the sharpest possible response of this kind; weaker binding ($K_d$ comparable to $I_T$) rounds it off. Because the output is a function of $A_{\rm free}$, the response is a sharp rise followed by saturation, which is ultrasensitivity without any cooperativity in binding — the titration route to a switch, as an alternative to the cooperative Hill input functions of 1.3 and 1.10. Together with a positive feedback loop (4.1) it is a way to build the sigmoid nonlinearity that bistability requires.`,
+      idea: String.raw`Below the threshold $A_T<I_T$ every activator molecule meets a free inhibitor and is sequestered, so almost nothing is free; once $A_T$ exceeds $I_T$ the inhibitor is used up and each added activator molecule stays free. The kink at $A_T=I_T$ is the sharpest possible response of this kind; weaker binding ($K_d$ comparable to $I_T$) rounds it off. Because the output is a function of $A_{\rm free}$, the response is a sharp rise followed by saturation, which is ultrasensitivity without any cooperativity in binding — the titration route to a switch, as an alternative to the cooperative Hill input functions of 1.3 and 1.10. Together with a positive feedback loop (4.1) it is a way to build the sigmoid nonlinearity that bistability requires.
+
+The elementary bimolecular mass-action rule (kin 1.3) gives association flux $k_{\rm on}A_{\rm free}I_{\rm free}$ and dissociation flux $k_{\rm off}C$ for the complex. At equilibrium, with $A_T=A_{\rm free}+C$ and $I_T=I_{\rm free}+C$, eliminating C yields the quadratic for the nonnegative free-activator root displayed above. This uses dilute ideal concentrations, one-to-one binding and a conserved total for each partner; adding production, removal or nonideal binding would require a different balance.`,
       caption: String.raw`**Left**: free activator against total activator, with the threshold-linear limit $\max(0,A_T-I_T)$ dashed and the no-inhibitor line $A_{\rm free}=A_T$ in grey (here $I_T=1$). **Right**: the output of a downstream non-cooperative gene, on a logarithmic axis, against the Hill curve with $n=1$ that has the same half-point. Slide $K_d$ down to make the knee sharp and read off the effective Hill coefficient; slide the gene's own constant $K$ down to make it sharper still; set $K_d$ large and the response relaxes to the ordinary $n\approx1$ curve.`,
-      deps: ['sysbio-4.1', 'thermo-4.15'],
+      deps: ['sysbio-4.1', 'kin-1.3'],
       refs: ['Alon: Positive Feedback, Bistability and Memory'],
       tags: ['ultrasensitivity', 'titration', 'sequestration'],
       scope: String.raw`Equilibrium binding with one inhibitor per activator, no degradation of the complex, and an output with a fast, non-cooperative response to free activator. Real sequestration circuits (sigma/anti-sigma factors, toxin–antitoxin pairs, microRNAs) add production and decay of both partners, which smooths the threshold.`,
@@ -223,9 +221,11 @@ which for $K_d\to0$ becomes **threshold-linear**: $A_{\rm free}=\max(0,\,A_T-I_T
       kind: 'Model',
       name: 'MAPK cascade ultrasensitivity',
       statement: String.raw`In the mitogen-activated protein kinase (MAPK) cascade a kinase (MAPKKK) activated by an input phosphorylates the next kinase (MAPKK) on two sites, which in turn phosphorylates MAPK on two sites; each level is reversed by a phosphatase. Even when no enzyme is cooperative, the stimulus–response curve of the *last* level is much steeper than that of the first: in the numerical model of Huang and Ferrell and in their measurements on *Xenopus* oocyte extracts the final response was as steep as that of an enzyme with Hill coefficient of about 4–5. The steepening comes from two sources: **zero-order (saturation) ultrasensitivity** of each covalent-modification cycle (Goldbeter–Koshland) and **multi-step phosphorylation**, whose two steps must both occur; and each level feeds the next with its own steep curve, so the steepness compounds.`,
-      idea: String.raw`A single modification cycle of a protein with Michaelis constants small compared with its total concentration is an ultrasensitive switch (mathbio-5.10). When each of the two steps of a dual cycle is zero-order, and the activity of the kinase at one level is proportional to the doubly modified fraction at the previous level, the stimulus–response curve at level $k$ is a steep function of a steep function. At steady state the cycle can be solved by balance of the opposing fluxes $g(X_1)=r_1\,g(X_0)$, $g(X_2)=r_2\,g(X_1)$ with $g(x)=x/(K_m+x)$, which this picture solves exactly for the model below (a quasi-steady-state, non-competitive caricature, not the 22-equation mass-action model of the paper). Because the effective Hill coefficient of each level is measured from its 10% and 90% response points, the compounding of the three levels can be read off directly.`,
+      idea: String.raw`A single modification cycle of a protein with Michaelis constants small compared with its total concentration is an ultrasensitive switch (mathbio-5.10). When each of the two steps of a dual cycle is zero-order, and the activity of the kinase at one level is proportional to the doubly modified fraction at the previous level, the stimulus–response curve at level $k$ is a steep function of a steep function. At steady state the cycle can be solved by balance of the opposing fluxes $g(X_1)=r_1\,g(X_0)$, $g(X_2)=r_2\,g(X_1)$ with $g(x)=x/(K_m+x)$, which this picture solves exactly for the model below (a quasi-steady-state, non-competitive caricature, not the 22-equation mass-action model of the paper). Because the effective Hill coefficient of each level is measured from its 10% and 90% response points, the compounding of the three levels can be read off directly.
+
+The chain rule (pma 5.5) explains local steepness in a nested cascade: on positive differentiable single-valued steady-state branches, the logarithmic derivative of a composite response is the product of the logarithmic derivatives of its stages. This is a local sensitivity identity. It does not say that the three global 10-to-90-percent effective Hill coefficients multiply exactly, nor that this reduced noncompetitive cascade reproduces the detailed measured system.`,
       caption: String.raw`The three levels' response to the input (log axis), each normalised to its own maximum. Move $K_m$ (in units of the total substrate) toward 0 to put the cycles into the zero-order regime: every level steepens, and the last one the most. The right panel reports the effective Hill coefficients of the three levels. Put $K_m$ above 1 or $c$ near 1 and the cascade collapses to nearly hyperbolic curves. A dashed Hill curve with $n=1$ is shown for comparison.`,
-      deps: ['mathbio-5.10'],
+      deps: ['mathbio-5.10', 'pma-5.5'],
       refs: ['Alon: Robust Signalling'],
       tags: ['ultrasensitivity', 'MAPK', 'signal transduction'],
       scope: String.raw`A simplified steady-state model: Michaelis–Menten fluxes without enzyme–substrate complexes or substrate competition, fully distributive double phosphorylation, no feedback or retroactivity, and the same ratio $c$ of kinase to phosphatase activity at every level. The numbers it produces are illustrative; the Hill coefficient of 4–5 is the published value for the paper's detailed model and extracts.`,
@@ -267,15 +267,16 @@ which for $K_d\to0$ becomes **threshold-linear**: $A_{\rm free}=\max(0,\,A_T-I_T
       introduces: ['sysbio-4.2', 'sysbio-4.3'],
       statement: String.raw`Gardner, Cantor and Collins built a **synthetic bistable gene circuit** in *Escherichia coli*: two repressible promoters arranged so that each drives the repressor of the other. They gave a simple model,
 $$\dot u=\frac{\alpha_1}{1+v^{\,\beta}}-u,\qquad \dot v=\frac{\alpha_2}{1+u^{\,\gamma}}-v,$$
-whose analysis predicts that bistability needs cooperative repression ($\beta\gamma>1$) and sufficiently large and balanced synthesis rates, and showed experimentally that the circuit can be flipped between its two states by a transient chemical or thermal induction and then holds the state, with a nearly ideal switching threshold. The toggle was proposed as an addressable cellular memory unit.`,
-      idea: String.raw`By 2000 multistability was known in natural switches such as the $\lambda$ lysis–lysogeny decision (4.6), but it was not known whether it could be engineered from non-specialised parts. The authors started from the model, derived the conditions for bistability (the loop-gain argument of 4.3: cooperativity and balanced promoters), and then built toggles from different promoter–repressor pairs to test them. Two inducers acting on the two repressors play the role of the pulses of 4.2. Published in the same issue as the repressilator, the paper helped found synthetic biology: a circuit designed on paper from a model, built from parts, and validated by its behaviour.`,
-      caption: String.raw`**Left**: the model's phase plane for the chosen $\alpha_1,\alpha_2,\beta,\gamma$, with nullclines and steady states; the gold dot is the cell's state. Press **IPTG-like pulse** (inactivates $u$) or **heat-like pulse** (inactivates $v$) to flip the cell and watch the gold path; a sufficiently strong pulse can switch basins when two stable states exist. **Right**: the design map in the $(\alpha_1,\alpha_2)$ plane for the current $\beta,\gamma$ (green: bistable; drag the white handle, or use the sliders). The map is a numerical root-count screen, with limited resolution near folds, not digitised data. Defaults are an illustrative symmetric circuit; **Paper Fig. 5 parameters** loads $\alpha_1=156.25$, $\alpha_2=15.6$, $\beta=2.5$, $\gamma=1$. With $\beta\gamma\le1$ the green region is empty.`,
+whose nullcline analysis explains the need for cooperative repression and balanced synthesis rates, and showed experimentally that the circuit can be flipped between its two states by a transient chemical or thermal induction and then holds the state, with a nearly ideal switching threshold. The toggle was proposed as an addressable cellular memory unit.`,
+      idea: String.raw`By 2000 multistability was known in natural switches such as the $\lambda$ lysis–lysogeny decision (4.6), but it was not known whether it could be engineered from non-specialised parts. Box1 gives the dimensionless model and geometric design argument. Both pTAK (LacI/temperature-sensitive CI) and pIKE (LacI/TetR) variants were built; pTAK uses IPTG/heat and pIKE IPTG/aTc. Five of six tested toggles were bistable. The inequality $\beta\gamma>1$ follows from the loop-gain bound of 4.3; it is a necessary refinement for this model, not a sufficient design guarantee or a verbatim condition printed in Box1. Two inducers acting on the two repressors play the role of the pulses of 4.2. Published in the same issue as the repressilator, the paper helped found synthetic biology: a circuit designed on paper from a model, built from parts, and validated by its behaviour.`,
+      caption: String.raw`**Left**: the model's phase plane for the chosen $\alpha_1,\alpha_2,\beta,\gamma$, with nullclines and steady states; the gold dot is the cell's state. Press **IPTG-like pulse** (rescales u as a LacI-like repressor) or **heat-like pulse** (rescales v as a CI-like repressor). Each chosen pulse lasts 20 model units followed by 40 without induction. Switching can fail; the readout reports the finite endpoint and its ODE residual. Changing a parameter resets to a current-model equilibrium. **Right**: the design map in the $(\alpha_1,\alpha_2)$ plane for the current $\beta,\gamma$ (green: bistable; drag the white handle, or use the sliders). The map is computed from the model here; it is not digitised from the paper, with illustrative symmetric defaults. Figure5’s original fit uses $\alpha_1=156.25,\alpha_2=15.6,\beta=2.5,\gamma=1$ and a separate IPTG binding law; that fit is not reproduced here. With $\beta\gamma\le1$ the green region is empty.`,
       deps: ['sysbio-4.1', 'mathbio-6.6'],
-      refs: ['Gardner, Cantor & Collins (2000), Box 1 p. 339; Figs. 2, 4–6 pp. 340–342'],
+      refs: ['Gardner, Cantor & Collins (2000), original Nature403:339–342: Box1 p339; Figures2–3/pTAK-pIKE p340; Figures4–5 memory/threshold p341; Figure6 and Methods p342'],
       tags: ['synthetic biology', 'toggle switch', 'bistability'],
-      scope: String.raw`Box 1 gives the dimensionless equations. The pTAK circuits pair LacI/Ptrc-2 with temperature-sensitive CI/PLs1con; pIKE circuits instead use TetR/PLtetO-1 and aTc. GFPmut3 reports Ptrc-2 expression by flow cytometry, not a direct measurement of either model variable. Fig. 5 fits an asymmetric pTAK117 circuit with $\beta=2.5$, $\gamma=1$, so both exponents need not exceed one. The pulse here divides active repressor by 11 for 20 model time units and then relaxes for 40: these are illustrative choices, not the measured 3–6 h IPTG or ≤35 min thermal switching times. Fig. 5 uses an IPTG binding curve with $h=2.0015$, $K=2.9618\times10^{-5}$ M; that concentration calibration is not implemented here.`,
+      scope: String.raw`The complete original four-page paper was read, including Box1 and all six figures. Experiments used plasmid circuits in E. coli JM2.300 with GFPmut3 flow-cytometry readout. Original Figure4 follows finite memory, including 22 hours without inducer; Figures5–6 show a noisy threshold and asymmetric switching times. Neither eternal memory nor perfect discontinuity was measured. The displayed symmetric rates, 11-fold repressor rescaling, pulse 20/recovery 40 and design-map raster are chosen illustrations, not the original fit, real temperature protocol or hours. Root isolation uses analytic loop-gain partitions; the colored raster remains a finite sampling of parameter space. Marginal fold roots are separately labeled.`,
       credit: 'Timothy S. Gardner, Charles R. Cantor & James J. Collins, 2000',
       links: { doi: 'https://doi.org/10.1038/35002131', wikipedia: 'https://en.wikipedia.org/wiki/Genetic_toggle_switch' },
+      verify: false,
       viz(v) {
         const lb = v.slider(String.raw`$\beta$ (cooperativity of $v$ repressing $u$)`, 0.5, 4, 2, { step: 0.05 });
         const lg = v.slider(String.raw`$\gamma$ (cooperativity of $u$ repressing $v$)`, 0.5, 4, 2, { step: 0.05 });
@@ -284,21 +285,16 @@ whose analysis predicts that bistability needs cooperative repression ($\beta\ga
         const L = v.stage({ x: [0, 11], y: [0, 11], axes: 'box', gutter: true, height: 360, weight: 1.1, minWidth: 280, xlabel: 'repressor 1  u', ylabel: 'repressor 2  v' });
         const Rg = v.stage({ x: [1, 300], xlog: true, y: [1, 300], ylog: true, axes: 'box', gutter: true, height: 360, weight: 1, minWidth: 280, xlabel: 'α₁', ylabel: 'α₂', title: 'design map: where the toggle is bistable' });
         const hd = Rg.handle(10, 10, { color: 'ink', r: 8 });
-        let st = { u: 10, v: 0.1 }, trail = [], last = '', info = null;
+        let st={u:10,v:.1},trail=[],last='',info=null,paramKey='',residual=0;
         const stateOf = () => (st.u > st.v ? 'u high' : 'v high');
         const pulse = (sg) => {
-          const a1 = a1s.value, a2 = a2s.value, b = lb.value, g = lg.value, I = 10;
-          const iu = sg > 0 ? 1 + I : 1, iv = sg < 0 ? 1 + I : 1;
-          const F = (inducer) => (y) => [a1 * rep(y[1] / (inducer ? iv : 1), b) - y[0], a2 * rep(y[0] / (inducer ? iu : 1), g) - y[1]];
-          const p1 = integrate(F(true), [st.u, st.v], 20, 400, 4), e1 = p1[p1.length - 1];
-          const p2 = integrate(F(false), [e1[1], e1[2]], 40, 800, 8), e2 = p2[p2.length - 1];
-          trail = p1.concat(p2).map((r) => [r[1], r[2]]); st = { u: e2[1], v: e2[2] };
-          last = sg > 0 ? 'IPTG-like pulse' : 'heat-like pulse';
+          const result=togglePulse(a1s.value,a2s.value,lb.value,lg.value,[st.u,st.v],sg);
+          trail=result.path;st={u:result.final[0],v:result.final[1]};residual=result.residual;
+          last=sg>0?'IPTG-like pulse':'heat-like pulse';
         };
         v.button('IPTG-like pulse (inactivate u)', () => pulse(1));
         v.button('heat-like pulse (inactivate v)', () => pulse(-1));
-        v.button('Paper Fig. 5 parameters', () => { a1s.set(156.25); a2s.set(15.6); lb.set(2.5); lg.set(1); trail = []; last = 'parameter change; press Reset to equilibrate'; });
-        v.button('Reset', () => { const r = toggleRoots(a1s.value, a2s.value, lb.value, lg.value).filter((q) => q.stable); const q = r.length ? r.reduce((p, w) => (p.u > w.u ? p : w)) : { u: 10, v: 0 }; st = { u: q.u, v: q.v }; trail = []; last = ''; });
+        v.button('Reset',()=>{const q=toggleStart(a1s.value,a2s.value,lb.value,lg.value);st={u:q[0],v:q[1]};trail=[];last='';residual=0;});
         let syncing = false;
         v.render(() => {
           const A1 = a1s.value, A2 = a2s.value, b = lb.value, g = lg.value;
@@ -306,18 +302,19 @@ whose analysis predicts that bistability needs cooperative repression ($\beta\ga
           if (!syncing && (Math.abs(Math.log(hd.x / A1)) > 1e-6 || Math.abs(Math.log(hd.y / A2)) > 1e-6)) {
             if (hd.dragging) { syncing = true; a1s.set(Math.min(300, Math.max(1, hd.x))); a2s.set(Math.min(300, Math.max(1, hd.y))); syncing = false; } else hd.set(A1, A2);
           }
-          const m = 1.12 * Math.max(A1, A2, 2); L.setView([0, 1.12 * Math.max(A1, 2)], [0, 1.12 * Math.max(A2, 2)]);
+          const pk=`${A1}|${A2}|${b}|${g}`;if(pk!==paramKey){paramKey=pk;const q=toggleStart(A1,A2,b,g);st={u:q[0],v:q[1]};trail=[];last='';residual=0;}
+          const m = 1.12 * Math.max(A1, A2, 2); L.setView([0, m], [0, m]);
           L.fn((x) => A2 * rep(x, g), { color: 'purple', width: 2.2 });
           L.curve((y) => [A1 * rep(y, b), y], 0, m, { color: 'orange', width: 2.2, n: 300 });
           const roots = toggleRoots(A1, A2, b, g);
-          roots.forEach((r) => L.dot(r.u, r.v, { r: 6, color: r.stable ? 'green' : 'red', hollow: !r.stable }));
+          roots.forEach((r) => L.dot(r.u, r.v, { r: 6, color: r.marginal?'gold':r.stable ? 'green' : 'red', hollow: !r.stable }));
           if (trail.length) L.path(trail, { color: 'gold', width: 2 });
           L.dot(st.u, st.v, { r: 7, color: 'gold' });
           Rg.raster((x, y) => (toggleRoots(x, y, b, g, 0, 160).filter((r) => r.stable).length >= 2 ? [...v.rgb('green').slice(0, 3), 90] : null), { res: 4, key: `${b}|${g}` });
-          info = { k: roots.length, s: roots.filter((r) => r.stable).length, bg: b * g };
+          info={k:roots.length,s:roots.filter(r=>r.stable).length,marginal:roots.filter(r=>r.marginal).length,bg:b*g};
         });
         v.legend([['orange', 'u-nullcline'], ['purple', 'v-nullcline'], ['gold', 'cell state', { dot: true }]]);
-        v.readout(() => (info ? `$\\beta\\gamma=${v.fix(info.bg, 2)}$ — necessary loop-gain condition for bistability: $\\beta\\gamma>1$ (${info.bg > 1 ? 'met' : 'not met'}); this circuit: ${info.k} steady state${info.k === 1 ? '' : 's'}, ${info.s} stable → **${info.s >= 2 ? 'bistable' : 'monostable'}**\nstate now: **${stateOf()}**${last ? ` (after the last ${last})` : ''}` : ''));
+        v.readout(() => (info ? `$\\beta\\gamma=${v.fix(info.bg, 2)}$ — necessary loop-gain condition for this model: $\\beta\\gamma>1$ (${info.bg > 1 ? 'met' : 'not met'}); this circuit: ${info.k} steady state${info.k === 1 ? '' : 's'}, ${info.s} strictly stable, ${info.marginal} marginal → **${info.s>=2?'bistable':info.marginal?'boundary / marginal':'monostable'}**\nfinite endpoint dominance: **${stateOf()}**${last?` (after the last ${last}; uninduced ODE residual ${v.fix(residual,6)})`:' (current-model equilibrium)'}` : ''));
       },
     },
   ],

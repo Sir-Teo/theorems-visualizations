@@ -1,3 +1,4 @@
+import {binaryArrival,binaryFold,wavefronts,synchronization} from './rel-source-audit.js';
 // Special & General Relativity — Chapter 1: Spacetime and the two postulates (items 1.1–1.6; 1.7–1.12 in ch01-b.js)
 // Landmark papers 1.13 and 1.14 live in ch01-papers.js and ch01-p.js.
 //
@@ -135,28 +136,27 @@ export default {
       name: 'Invariance of the speed of light',
       credit: 'Einstein, 1905',
       statement: String.raw`In every inertial frame, light in vacuum travels with the same speed $c=299\,792\,458$ m/s, whatever the motion of its source. A pulse emitted by a moving source therefore spreads, in any inertial frame, as a sphere centred on the place where the **emission** happened, not on where the source is now. This is the second postulate of special relativity; it sits beside the principle of relativity (rel-1.2) and replaces the Galilean addition $c\pm v$.`,
-      idea: String.raw`Maxwell's equations give one wave speed (em-11.1), and under the relativity principle that speed cannot depend on the frame; so it also cannot depend on the source's velocity, which is a frame statement. The alternative, an emitter ("ballistic") theory where light inherits the source's velocity, would send light from the approaching part of an orbiting binary faster than from the receding part, so for a distant binary the arrival order of the flashes would be scrambled. De Sitter pointed out in 1913 that such distortions are not seen; Brecher (1977) repeated the test with X-ray binaries, and CERN measured photons from fast $\pi^0$ decays (Alväger et al., 1964).`,
-      caption: String.raw`**Left:** a source moving to the right flashes at regular intervals. Under the postulate each ring stays centred on its emission point (the rings are off-centre toward the back); under the emitter theory they all stay centred on the source. **Right:** emission time against arrival time for a binary star seen from afar, with $D$ the light travel time in orbital periods. Raise $D$ under the emitter theory until the curve folds back: the star would be seen in several places at once.`,
+      idea: String.raw`The postulate says that a pulse propagates independently of its source's motion. Einstein's 1905 paper states this explicitly in its introduction and §2, then shows in §3 that a light sphere transforms into a light sphere. The two panels contrast that postulate with a specified Galilean emitter model. In the periodic-source illustration the emitter's position and velocity change consistently; even with constant light speed its changing distance produces a small arrival-time delay, but cannot reverse the arrival order because the radial speed remains below $c$. The emitter model can reverse that order at sufficiently large distances.`,
+      caption: String.raw`**Left:** a uniformly moving source flashes at regular lab-time intervals. Under the light postulate each ring stays centred at its emission event; under the chosen Galilean emitter theory its centre moves with the source. **Right:** emission time against arrival time for a small periodic radial motion. Raise the baseline light-travel time $D$ under the emitter theory until the arrival curve folds. This is a kinematic teaching model, not reconstructed observations of a named star.`,
       deps: ['em-11.1', 'em-13.2'],
-      refs: ['Einstein1905,complete introduction and §§1–2; deSitter/Brecher/Alväger original experimental checks still pending'],
+      refs: ['Einstein, Zur Elektrodynamik bewegter Körper (1905), introduction and §§1–3; Perrett–Jeffery translation (1923)', 'BIPM, SI defining constants: exact c=299792458 m/s'],
       tags: ['speed of light', 'postulate'],
-      scope: String.raw`Light (and any massless signal) in vacuum, in inertial frames. The binary has an illustrative orbital speed $\beta=10^{-4}$, not a particular star. The astronomical test is complicated by absorption and re-emission in the interstellar medium (the extinction theorem), which is why laboratory and X-ray tests were added.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/De_Sitter_double_star_experiment' },
+      scope: String.raw`Vacuum and inertial coordinates, with Einstein synchronization. The exact SI value of $c$ fixes the metre; it is not a 1905 numerical measurement. The right panel uses radial velocity $v/c=10^{-4}\sin(2\pi t)$ and position $x/c=-10^{-4}\cos(2\pi t)/(2\pi)$, in source-period units. Both models include the distance change. Ballistic photons retain their emission velocity in this specified Galilean model. Folding is determined from the analytic derivative, not a finite curve sample; historical astronomical and laboratory data are not asserted by this toy model.`,
+      verify: false,
+      links: { 'Full author text (translation)': 'https://www.fourmilab.ch/etexts/einstein/specrel/www/', 'SI constants': 'https://www.bipm.org/en/measurement-units/si-defining-constants' },
       viz(v) {
         const th = v.select('theory', [{ value: 'light', label: 'light postulate' }, { value: 'emit', label: 'emitter (ballistic)' }], 'light');
         const bS = v.slider('source speed $v/c$', 0, 0.8, 0.5, { step: 0.01 });
         const Dl = v.slider('$D$ (light travel time, orbital periods)', 1, 1e6, 3000, { log: true });
         const BORB = 1e-4;
         const A = v.stage({ x: [-6, 6], y: [-2.6, 2.6], equal: true, axes: false, height: 320, weight: 1.2, minWidth: 320, title: 'wavefronts from a moving flashing source' });
-        const B = v.stage({ x: [-1, 3], y: [0, 2], axes: 'box', gutter: true, height: 320, weight: 0.9, minWidth: 280, xlabel: 'arrival time $-D$ (periods)', ylabel: 'emission time (periods)', title: 'binary star seen from far away' });
+        const B = v.stage({ x: [-1, 3], y: [0, 2], axes: 'box', gutter: true, height: 320, weight: 0.9, minWidth: 280, xlabel: 'arrival time $-D$ (periods)', ylabel: 'emission time (periods)', title: 'periodic source seen from far away' });
         let st = {};
         v.animate((t) => {
           const b = bS.value, emit = th.value === 'emit', te0 = 0.6, x0 = -4;
           const xs = x0 + b * t;
           A.clip(() => {
-            for (let te = 0; te <= t + 1e-9; te += te0) {
-              const r = t - te, xe = x0 + b * te, cx = emit ? xs : xe;
+            for (const {te,r,x:cx} of wavefronts(t,b,emit,te0,x0)) {
               A.circle(cx, 0, r, { color: 'gold', width: 1.4, alpha: 0.85 });
             }
           });
@@ -166,19 +166,19 @@ export default {
           const cxf = (tt) => (emit ? x0 + b * tt : x0), vf = (cxf(t + 0.01) + t + 0.01 - cxf(t) - t) / 0.01, vb = -(cxf(t + 0.01) - t - 0.01 - cxf(t) + t) / 0.01;
           // arrival-time curve
           const D = Dl.value, amp = D * BORB;
-          const cur = (te) => { const vl = BORB * Math.sin(2 * Math.PI * te); const x=-(BORB/(2*Math.PI))*Math.cos(2*Math.PI*te); return emit ? te + (D-x)/(1+vl)-D : te-x; };
-          const R = Math.max(1, amp * 1.15);
+          const cur = te => binaryArrival(te,D,emit,BORB);
+          const R = emit ? Math.max(1, amp * 1.15) : 1;
           B.setView([-R, 2 + R], [0, 2]);
           B.path(Array.from({ length: 401 }, (_, k) => { const te = k / 200; return [cur(te), te]; }), { color: emit ? 'red' : 'accent', width: 2.4 });
           B.line(0, 0, 2, 2, { color: 'gold', width: 1, dash: [4, 4] });
-          let folded = false; for (let k = 1; k <= 400; k++) if (cur(k / 200) <= cur((k - 1) / 200)) folded = true;
+          const folded = emit && binaryFold(D,BORB).folded;
           st = { vf, vb, emit, folded, D, crit: 1 / (2 * Math.PI * BORB) };
         }, { period: 8, still: 4.5 });
         v.legend([['gold', 'wavefront'], ['red', 'source'], ['accent', 'postulate'], ['red', 'emitter theory', { dash: true }]]);
         v.readout(() => {
           if (st.vf === undefined) return '';
           return String.raw`Lab-frame speed of the front ahead of the source: $${v.fix(st.vf, 2)}\,c$, behind: $${v.fix(st.vb, 2)}\,c$ ` + (st.emit ? '(the source speed is added — no frame-independent $c$).' : '(always $c$, in every direction).') + '\n' +
-            (st.emit ? String.raw`Binary at $D=${v.fix(st.D, 0)}$ periods: the arrival order is ${st.folded ? '**scrambled** (the curve folds; scrambling begins near $D\\approx' + v.fix(st.crit, 0) + '$)' : 'still ordered (it scrambles once $D\\gtrsim' + v.fix(st.crit, 0) + '$)'}. This is an idealized propagation model; actual binary-star tests also require source/medium modelling.` : 'Light postulate: arrival order stays monotone; the tiny orbital light-travel-time modulation is retained.');
+            (st.emit ? String.raw`Periodic source at $D=${v.fix(st.D, 0)}$ periods: the arrival order is ${st.folded ? '**scrambled** (the curve folds; scrambling begins near $D\\approx' + v.fix(st.crit, 0) + '$)' : 'still ordered (it scrambles once $D\\gtrsim' + v.fix(st.crit, 0) + '$)'}. This is a prediction of the specified emitter model.` : 'Light postulate: arrival times include the small distance delay, while emission order is preserved at every distance.');
         });
       },
     },
@@ -245,18 +245,19 @@ export default {
       num: '1.5',
       kind: 'Definition',
       name: 'Clock synchronization by light signals',
-      credit: 'Einstein,1905,§1 synchronization convention',
-      statement: String.raw`Two identical clocks at rest at different places in an inertial frame are **synchronized** by light signals as follows. A pulse leaves clock $A$ when it reads $t_e$, is reflected at clock $B$ and returns to $A$ when it reads $t_r$. Clock $B$ is correctly set if its reading at the reflection event equals $t_e+\tfrac12(t_r-t_e)$. Applied from one master clock to a whole lattice of clocks, this defines the time coordinate of the frame. The convention assigns equal one-way travel times to the two directions. A measurement of one-way speed between separated clocks already depends on their synchronization.`,
-      idea: String.raw`If the speed of light is $c$ in every direction (rel-1.3), the pulse spends equal times on the way out and back, so the moment of reflection is the midpoint of the round trip, and a clock at distance $d$ must be set to $t_e+d/c$ when the pulse reaches it. Einstein (1905), §1, uses this equal-time prescription to define time throughout a frame. The next item shows that two frames do not agree on it.`,
-      caption: String.raw`**Drag the target clock $P$** anywhere and watch the pulse from the master clock at the centre. The ring is the outgoing pulse; each lattice clock jumps to $t_e+d/c$ as the ring passes and then ticks along; the orange ring is the echo returning from $P$. Compare the set value with half of the measured round trip.`,
+      credit: 'Einstein, 1905, §1 synchronization prescription',
+      statement: String.raw`Two clocks at rest at different positions in an inertial frame are Einstein-synchronized by this prescription: a pulse leaves $A$ at $t_e$, reflects at $B$ and returns to $A$ at $t_r$. Set the reading at the reflection event to $t_B=(t_e+t_r)/2$. With isotropic one-way light speed $c$, a clock a distance $d$ away is set to $t_e+d/c$ when the pulse arrives. Applying this convention consistently across stationary clocks defines an inertial time coordinate; the round-trip light travel time is measurable using one clock.`,
+      idea: String.raw`Einstein's §1 first distinguishes local clock readings from a common time at separated places. He then defines equal outgoing and returning light-travel times and states the symmetry and transitivity required of synchronization. The equality is the synchronization convention; the measured two-way speed is a separate input. Once these are adopted, elementary geometry yields $t_r-t_e=2d/c$ and the midpoint setting. The ring animation uses a master clock emitted at $t_e=0$: each clock is set on arrival and thereafter reads the master-frame coordinate time.`,
+      caption: String.raw`**Drag the target clock $P$** within its allowed disc and watch the pulse from the master clock at the centre. The ring is the outgoing pulse; each lattice clock jumps to $t_e+d/c$ as the ring passes and then ticks along; the orange ring is the echo returning from $P$. Compare the set value with half of the measured round trip.`,
       deps: ['rel-1.3'],
-      refs: ['Einstein1905,On the Electrodynamics of Moving Bodies,complete §1'],
+      refs: ['Einstein, Zur Elektrodynamik bewegter Körper, Annalen der Physik17 (1905), §1; Perrett–Jeffery1923 translation'],
       tags: ['synchronization', 'radar', 'convention'],
-      scope: String.raw`Clocks at rest in one inertial frame, light speed isotropic. Light's one-way speed cannot be measured without already having synchronized clocks, so the isotropy is part of the definition.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Einstein_synchronisation' },
+      scope: String.raw`Stationary clocks in one inertial frame, vacuum propagation and Einstein's midpoint convention. This is not a synchronization prescription for arbitrary rotating coordinates or gravitational fields. The displayed target is constrained to radius 3.8 so that its complete round trip fits the 10-unit animation. The echo is a reflected spherical pulse; the orange wavefront meets the master at $t=2d$.`,
+      verify: false,
+      links: { 'Full author prescription (translation)': 'https://www.fourmilab.ch/etexts/einstein/specrel/www/' },
       viz(v) {
         const S = v.stage({ x: [-4.4, 4.4], y: [-4.2, 4.2], equal: true, axes: false, height: 460, full: true, title: 'a lattice of clocks set by a pulse from the master clock (c = 1)' });
-        const Pt = S.handle(2.4, 1.3, { color: 'purple', label: 'P', labelPos: 'ne', r: 9 });
+        const Pt = S.handle(2.4, 1.3, { color: 'purple', label: 'P', labelPos: 'ne', r: 9, constrain:(x,y)=>{const r=Math.hypot(x,y);return r>3.8?[x*3.8/r,y*3.8/r]:[x,y];} });
         let st = {};
         v.animate((t) => {
           const d = Math.hypot(Pt.x, Pt.y);
@@ -271,7 +272,7 @@ export default {
           }
           S.dot(0, 0, { r: 15, color: 'accent', hollow: true }); S.text(v.fix(t, 1), 0, 0, { size: 10, align: 'center', baseline: 'middle', color: 'ink' });
           S.text('master', 0, -0.62, { size: 10, align: 'center', color: 'accent' });
-          st = { d, t, back: t >= 2 * d };
+          st = { ...synchronization(Pt.x,Pt.y,t),t };
         }, { period: 10, still: 5 });
         v.legend([['gold', 'outgoing pulse'], ['orange', 'echo from P'], ['green', 'clock already set']]);
         v.readout(() => {

@@ -1,0 +1,8 @@
+import{DSU,binom,range}from'./ch04.shared.js';
+/** Enumerate all trees by pruning cyclic edge prefixes; n=1 is a separate valid tree. */
+export function exactCayleyCounts(n){if(!Number.isInteger(n)||n<1||n>7)throw Error('exact tree enumeration needs 1<=n<=7');const E=[];for(let a=0;a<n;a++)for(let b=a+1;b<n;b++)E.push([a,b]);const deg1=new Array(n+1).fill(0),pick=[];let trees=0;function rec(start){if(pick.length===n-1){trees++;deg1[pick.filter(([a,b])=>a===0||b===0).length]++;return;}for(let e=start;e<E.length;e++){const D=new DSU(n);pick.forEach(([a,b])=>D.union(a,b));if(!D.union(...E[e]))continue;pick.push(E[e]);rec(e+1);pick.pop();}}rec(0);return{trees,deg1};}
+export function cayleyDegreeCounts(n){if(!Number.isInteger(n)||n<1)throw Error('positive integer n required');if(n===1)return[1,0];return range(n+1).map(d=>d>=1&&d<=n-1?binom(n-2,d-1)*(n-1)**(n-1-d):0);}
+export function cayleyDegreeLaw(n){if(!Number.isInteger(n)||n<2)throw Error('shifted binomial law needs n>=2');return range(n-1).map(k=>binom(n-2,k)*(1/n)**k*(1-1/n)**(n-2-k));}
+export function greedyZeckendorf(n,F){if(!Number.isInteger(n)||n<0||F.at(-1)<=n)throw Error('nonnegative integer and sufficient Fibonacci table required');let rest=n;const used=[];while(rest>0){let k=2;while(k+1<F.length&&F[k+1]<=rest)k++;if(F[k]>rest)throw Error('Insufficient Fibonacci values');used.push(k);rest-=F[k];}return used;}
+export function zeckendorfSubsets(F,lastIndex=14,cap=400){const bits=lastIndex-1,rep=new Array(cap+1).fill(0),nonc=rep.slice();for(let mask=0;mask<2**bits;mask++){let sum=0;for(let b=0;b<bits;b++)if(mask&(1<<b))sum+=F[b+2];if(sum<=cap){rep[sum]++;if(!(mask&(mask>>1)))nonc[sum]++;}}return{rep,nonc};}
+export const fibonacciRatioError=(n,F)=>((1-Math.sqrt(5))/2)**n/F[n];

@@ -1,0 +1,277 @@
+{
+  "edges": {
+    "1.6": [
+      "prob-2.2.1"
+    ],
+    "2.9": [
+      "pma-9.36",
+      "nla-3.1"
+    ],
+    "3.7": [
+      "rca-9.11"
+    ],
+    "3.8": [
+      "rca-9.13"
+    ],
+    "3.11": [
+      "ladr-6.55"
+    ],
+    "3.12": [
+      "ladr-7.70"
+    ],
+    "4.7": [
+      "prob-2.1.1a"
+    ]
+  },
+  "baseline": {
+    "1.6": {
+      "file": "content/imaging/ch01-b.js",
+      "hash": "1eb7016ae1ac8878492b65b03ea26e08c45960bead508f4d5f1cc358eabd1150",
+      "deps": [],
+      "idea": "A decision between \"lesion\" and \"background\" is a decision between two noisy populations. Their separation, measured in units of the noise, is the only thing that matters when the noise is roughly Gaussian and the same in both: the overlap of two bell curves $\\mu$ and $\\mu+\\Delta$ with common $\\sigma$ depends on $\\Delta/\\sigma$ alone. Contrast alone (the numerator) ignores how large the fluctuations are; SNR alone ignores how different the object is from its surroundings. Averaging $n$ independent pixels, or frames, divides $\\sigma$ by $\\sqrt n$, which is how a large lesion becomes visible at the same CNR per pixel."
+    },
+    "1.7": {
+      "file": "content/imaging/ch01-b.js",
+      "hash": "2bab2c51cc7998920ff692b1070ccca9c5ea5a2577772e4fef5eb9bf8f7d6097"
+    },
+    "1.8": {
+      "file": "content/imaging/ch01-b.js",
+      "hash": "59a3734292fc9e870a2ee32fda14ded04e2b436de003d5706a6bab4a91e8f05b"
+    },
+    "1.9": {
+      "file": "content/imaging/ch01-b.js",
+      "hash": "02762d5b3dac0a0aa24b60e6a46c87129310aa6445d03f33124c43f23a8e313a"
+    },
+    "1.10": {
+      "file": "content/imaging/ch01-b.js",
+      "hash": "0b9a0d9d3e3a3464b541c58de7f9cbd9e95fe7a9541dc4bc1dbbad84383e11c2"
+    },
+    "1.1": {
+      "file": "content/imaging/ch01.js",
+      "hash": "c58e8627a4a2b5eef09e248ed713ab217b6a384b4a9eb5ff99174755a27b446d"
+    },
+    "1.2": {
+      "file": "content/imaging/ch01.js",
+      "hash": "9d1d741c5b32f63e8ba29945db43bd879bc88a90098057bc4d35fb722d07d022"
+    },
+    "1.3": {
+      "file": "content/imaging/ch01.js",
+      "hash": "6a6ebbf50a9a9803c1c8f6ea81293441ad130fada08e8dc09ff54417a55785d4"
+    },
+    "1.4": {
+      "file": "content/imaging/ch01.js",
+      "hash": "c5bef0519cc59c800ae7fec44d02cc215777a6799fc1a9ea35832b0205b18674"
+    },
+    "1.5": {
+      "file": "content/imaging/ch01.js",
+      "hash": "0c834e7dfcfd4bd753dda47132a37074be5a3d67f0b3972e1554c1c76cf19406"
+    },
+    "2.6": {
+      "file": "content/imaging/ch02-b.js",
+      "hash": "f6546d5aa7e736b657ce168cfaa1383254be7e6cb276c03dce8604a350793d39"
+    },
+    "2.7": {
+      "file": "content/imaging/ch02-b.js",
+      "hash": "859b41ca0ebdc491709321d5fc8fceecd918a647141d034ca544f84df865c03d"
+    },
+    "2.8": {
+      "file": "content/imaging/ch02-b.js",
+      "hash": "05548c6555cb7846cd9ea66a1b4bf239697e662de46d6a9bed3abeabc098f605"
+    },
+    "2.9": {
+      "file": "content/imaging/ch02-b.js",
+      "hash": "36cb116b6ebd6fd973bfa335725e92adc1311d3ca96bb4c76f985ab19ba9511f",
+      "deps": [
+        "imaging-2.4"
+      ],
+      "idea": "Each pixel's Beer–Lambert exponent (imaging-2.3) is a sum over the materials crossed; at two energies the bone/tissue ratio differs because bone's photoelectric absorption falls faster with energy than tissue's (imaging-2.4), so the two equations are independent and the $2\\times2$ system is invertible. Noise from counting statistics (Poisson, imaging-1.7) in $A_1$ and $A_2$ is propagated through the matrix inverse, and a nearly singular matrix magnifies it, producing a noisier subtraction than either original image.",
+      "vizLabelReplacements": [
+        [
+          " (condition number $${fx(st.cond, 1)}$): the further apart $E_1,E_2$, the better conditioned the inversion.",
+          " (row-angle proxy $${fx(st.cond, 1)}$): this proxy measures near-parallel rows, not the relative condition number."
+        ]
+      ],
+      "allowedFields": [
+        "statement",
+        "scope"
+      ],
+      "expectedFields": {
+        "statement": "cff3bbf2ba140efef76e0bb9f0934262c2e5bbf90d93469c8131759682f94d92",
+        "scope": "3430cb9dbe2d699737c7243d6d202eb8aad82208a4a79b008855b82a9f78b871"
+      }
+    },
+    "2.10": {
+      "file": "content/imaging/ch02-c.js",
+      "hash": "6e3026e2ac8b32d425f946d7bb68951636d7aec0fe73ea0479768e687490f574"
+    },
+    "2.11": {
+      "file": "content/imaging/ch02-c.js",
+      "hash": "b17e27e79611dbe71906ec6c81dcd644d27c33586b83a58d8163ce67363e50e4"
+    },
+    "2.12": {
+      "file": "content/imaging/ch02-c.js",
+      "hash": "4937aad8b36a95c97e554a9e5c5f2d3fc8b0badf67642576b1bb37eb80ed0769"
+    },
+    "2.1": {
+      "file": "content/imaging/ch02.js",
+      "hash": "39369032100e6bcd9e4a199aa92de7b4b27e56bdb15a44797b32797186718502"
+    },
+    "2.3": {
+      "file": "content/imaging/ch02.js",
+      "hash": "f5ba6c26d93e5c6f651921c576894b21b1109c50b24734f2b6bdaa008c73d6b7"
+    },
+    "2.4": {
+      "file": "content/imaging/ch02.js",
+      "hash": "cf2171c45686896accffb4311766991b5d74b9314f8065d15484605ff838edea"
+    },
+    "2.5": {
+      "file": "content/imaging/ch02.js",
+      "hash": "2be7ee5564a434aba74abf5fdc901d4b960089c814e9ffeca22e7e9d2022a9af"
+    },
+    "3.6": {
+      "file": "content/imaging/ch03-b.js",
+      "hash": "974fb00f8c51131ab5af14740a3825f3194b662bbd7a72143901b4cdb71e1663"
+    },
+    "3.7": {
+      "file": "content/imaging/ch03-b.js",
+      "hash": "9a0c3f5419c7750f8ced91e2a6fda787c306f2f0f1b1807ac8aec022099246fe",
+      "deps": [
+        "imaging-3.4",
+        "imaging-3.6",
+        "pma-10.9"
+      ],
+      "idea": "Polar coordinates in the inverse 2-D Fourier transform supply the Jacobian |ω|. The slice theorem replaces each radial Fourier restriction by the corresponding projection transform; its inverse transform is qθ, and the remaining angle integral is back-projection. In the continuous full-band model this inverts the 1/r blur. A finite Nyquist cutoff limits resolution, and sampled edges introduce aliasing. Kak & Slaney §3.3.3 explicitly distinguish the finite kernel's nonzero DFT value at DC from simply sampling |ω| and forcing its DC bin to zero; zero-padding permits the desired aperiodic convolution over the retained detector samples."
+    },
+    "3.8": {
+      "file": "content/imaging/ch03-b.js",
+      "hash": "9d0826e63d6771200edc8db98e80db955e61f2d534cd0b1233ae5b430b653b90",
+      "deps": [
+        "imaging-3.7"
+      ],
+      "idea": "Reconstruction is linear, so noise in the sinogram passes through the same filter-and-back-project operation as the signal. White noise in the projections has a flat spectrum; after the ramp its spectrum grows as $\\omega^2$, so variance comes mostly from the highest frequencies. A window removes those frequencies — less variance, and a lower modulation transfer (imaging-1.4) at fine scale. The reconstruction's point spread function is the Fourier transform of the windowed filter, so the window also fixes the edge sharpness measured here.",
+      "allowedFields": [
+        "statement",
+        "caption",
+        "scope"
+      ],
+      "expectedFields": {
+        "statement": "89c152d3a4424f93096795f4e647fe251bc72730535582b901a256fb7706c5c2",
+        "caption": "091b3c308b8c806d79afc3ed4258feb55d9dd7ca29e6abde8dad0ab70b384493",
+        "scope": "1a14b619807f432b7e1685a37cc3c53f32b57b7483a6610d7c026a40976afc53"
+      },
+      "wholeIdeaHash": "ef6b6646e6ed57f5866a86adbc0e0b9e742cb2e9e161799dcfab7a1122c6ed0d"
+    },
+    "3.9": {
+      "file": "content/imaging/ch03-b.js",
+      "hash": "a0c28220bfd8fc76ed3c35ab5ddd55b190a1aa91f9e45b89c9515cfe7d2ff6ca"
+    },
+    "3.10": {
+      "file": "content/imaging/ch03-b.js",
+      "hash": "a026bc85a7decac9c6c690810b031798600c3630d777fcdd543db1907258b163"
+    },
+    "3.11": {
+      "file": "content/imaging/ch03-c.js",
+      "hash": "57c972ba428dc6777b16a7ba2a50f4ef5d1c2ed6173c197bdceecc8edd054743",
+      "deps": [
+        "imaging-3.1"
+      ],
+      "idea": "For any solution $z$ of a consistent system, one update gives\n$$\\|x^+-z\\|^2=\\|x-z\\|^2-\\lambda(2-\\lambda)\\frac{(b_i-\\mathbf a_i\\cdot x)^2}{\\|\\mathbf a_i\\|^2}.$$\nThus distances to every solution decrease or stay fixed. Summing this identity makes successive corrections tend to zero; cyclic visitation then makes every row residual tend to zero. Boundedness gives a solution cluster point, and the same distance identity forces convergence to it. Every correction lies in the row space, so the null-space component of the start is preserved: the limit is its closest solution. For mutually orthogonal independent rows, $\\lambda=1$ reaches that solution in one complete pass, not one row step. Row order and angles affect speed; no filter or positivity projection is used here.",
+      "ideaPrefix": "For any solution $z$ of a consistent system, put $r_i=b_i-\\mathbf a_i\\cdot x$. One update gives\n$$\\begin{aligned}\\|x^+-z\\|^2&=\\|x-z\\|^2\\\\&\\quad-\\lambda(2-\\lambda)\\frac{r_i^2}{\\|\\mathbf a_i\\|^2}.\\end{aligned}$$\nThus distances to every solution decrease or stay fixed. Summing this identity makes successive corrections tend to zero; cyclic visitation then makes every row residual tend to zero. Boundedness gives a solution cluster point, and the same distance identity forces convergence to it. Every correction lies in the row space, so the null-space component of the start is preserved: the limit is its closest solution. For mutually orthogonal independent rows, $\\lambda=1$ reaches that solution in one complete pass, not one row step. Row order and angles affect speed; no filter or positivity projection is used here."
+    },
+    "3.12": {
+      "file": "content/imaging/ch03-c.js",
+      "hash": "b910aeef4464176b833b12b51ff52244449e9b0f2e1662ba9763a13271e4d16c",
+      "deps": [
+        "imaging-3.11"
+      ],
+      "idea": "The normalization gives a direct convergence proof for the stated SIRT variant. Set $B=R^{1/2}AC^{1/2}$ and $y=C^{-1/2}\\mu$. Weighted Cauchy–Schwarz yields\n$$\\|Bz\\|^2\\le\\sum_i\\sum_j a_{ij}z_j^2/c_j=\\|z\\|^2.$$\nThe update becomes $y^+=y+\\lambda B^T(R^{1/2}b-By)$. Each positive singular mode contracts by $1-\\lambda\\sigma^2\\in(-1,1)$, while null components remain fixed, proving the weighted least-squares claim. Small singular values make some modes slow and can amplify noise in the limit. SART's view blocks use updated images between views; this SIRT proof does not assert that an inconsistent cyclic SART run has the same limit. Kak–Slaney Eq.32 supplies the view-wise normalization, but the illustration deliberately omits their bilinear basis and longitudinal Hamming weighting."
+    },
+    "3.13": {
+      "file": "content/imaging/ch03-c.js",
+      "hash": "a455510719036db79b8564d68a60f222c47c08f0745fc6bbb4f622d00ef3d53a"
+    },
+    "3.14": {
+      "file": "content/imaging/ch03-c.js",
+      "hash": "8820ddcdc31600f5f92a2a3edb34c1211fb65d35530412bc95cee9df26cc8e5f"
+    },
+    "3.15": {
+      "file": "content/imaging/ch03-d.js",
+      "hash": "85b306b67300312698930740be22e81e1cdc3914626de815cbeddc2592564637"
+    },
+    "3.16": {
+      "file": "content/imaging/ch03-d.js",
+      "hash": "57a8cb5935c3246c78d4a16337a8d9d7e65d98056a5d740ce0c8781d2d669228"
+    },
+    "3.17": {
+      "file": "content/imaging/ch03-d.js",
+      "hash": "cec8e0ec995010eb38e536a447880e456a9df2e813f6f2faac8216930e15a12a"
+    },
+    "3.18": {
+      "file": "content/imaging/ch03-d.js",
+      "hash": "103512e236bce0ec75bea04f35a7563d875c25db96e7526005031987097cc65b"
+    },
+    "3.1": {
+      "file": "content/imaging/ch03.js",
+      "hash": "c8f5147d4a8fc77387280e123a37fdb3caef3364a5dd3068e359a0bcfe95b22b"
+    },
+    "3.2": {
+      "file": "content/imaging/ch03.js",
+      "hash": "c2cae1bdf831841d46edd10a435975004ddf1fe98ac5bd68e8d80323a5760ace"
+    },
+    "3.3": {
+      "file": "content/imaging/ch03.js",
+      "hash": "21580990ee66c72bcda1162c0bb05b108b7f2d744bfe4c1afdd114e8cdb20987"
+    },
+    "3.4": {
+      "file": "content/imaging/ch03.js",
+      "hash": "9d7da1deca0010382239a1be1ea7f2af7307ed105bf1878bf82d87691ece9fde"
+    },
+    "3.5": {
+      "file": "content/imaging/ch03.js",
+      "hash": "1b346deaf8fbead50444e084868bc8b1d3ef3b106005ed929caa71051218810b"
+    },
+    "4.5": {
+      "file": "content/imaging/ch04-b.js",
+      "hash": "bd66a8c9c5b9eac8a3d58f7d072a38ee35ec2a9a433a2f4ad1488646b62fe89e"
+    },
+    "4.6": {
+      "file": "content/imaging/ch04-b.js",
+      "hash": "22620410cd8b584e675aac55a97ddadf5de739f39c3993bcb95e054585a2c07d"
+    },
+    "4.7": {
+      "file": "content/imaging/ch04-b.js",
+      "hash": "2fc15353086d3e3f3b9e2b514084dca86bbeded6fb70f7771de37cfafa42c172",
+      "deps": [
+        "imaging-4.6",
+        "imaging-2.2",
+        "imaging-3.1"
+      ],
+      "idea": "The survival probabilities of the two photons are exponentials of path integrals over complementary pieces of the line, and the exponent of a product is the sum of exponents, $\\int_0^t+\\int_t^\\ell=\\int_0^\\ell$. The depth variable cancels. This is the Beer–Lambert law (imaging-2.2) applied twice, and it is the reason PET is quantitative: one measured number per LOR, a ray sum of $\\mu$ as in imaging-3.1, corrects the emission data exactly (for narrow-beam, scatter-free photons), whereas SPECT (4.5) needs the whole $\\mu$ map and gets only an approximate correction."
+    },
+    "4.8": {
+      "file": "content/imaging/ch04-c.js",
+      "hash": "dcc62c058503050a307016a8ed874dd7f2f92576f687dbd6e029ab8aac72e231"
+    },
+    "4.9": {
+      "file": "content/imaging/ch04-c.js",
+      "hash": "083eba500855e89b0489f6af3c613e0369c0037aaaccbba351ebcf2fe070e84f"
+    },
+    "4.10": {
+      "file": "content/imaging/ch04-c.js",
+      "hash": "e7a465981945224f040e0a68d84353cfeccad0b84c8d087704c37c8109668536"
+    },
+    "4.2": {
+      "file": "content/imaging/ch04.js",
+      "hash": "d5e19c6b72114532c9650146f8b2057b83f45fc6bd0e9e30016ddca7d5085d52"
+    },
+    "4.3": {
+      "file": "content/imaging/ch04.js",
+      "hash": "cb33a443ee24f3dcd543f3a7b32d4010ed859ce7645f324769adfcba1fb4beef"
+    },
+    "4.4": {
+      "file": "content/imaging/ch04.js",
+      "hash": "ef4be740d792ee30559986e2893aed0e39f8b1fdccb48798f12fb0a1c12bfe81"
+    }
+  },
+  "syllabusHash": "e63e15f2c315ebd8309a67142941b4adeb77c33b92608ce5e60b93c2f9f6a55d"
+}

@@ -15,11 +15,13 @@ export default {
       kind: 'Model',
       name: 'Wright–Fisher model',
       statement: String.raw`Take a diploid population of constant size $N$ with non-overlapping generations, random mating, and no selection, mutation or migration. Equivalently, regard each generation as a pool of $2N$ gene copies. Let $X_t$ be the number of copies of allele $A$ in generation $t$ and $p_t = X_t/2N$ its frequency. The next generation is formed by drawing $2N$ copies independently, with replacement, from the current pool:
-$$X_{t+1}\mid X_t = k \;\sim\; \mathrm{Binomial}\!\left(2N,\ \tfrac{k}{2N}\right).$$
+$$\begin{gathered}X_{t+1}\mid X_t = k \\ \;\sim\; \mathrm{Binomial}\!\left(2N,\ \tfrac{k}{2N}\right).\end{gathered}$$
 So $\mathbb E[p_{t+1}\mid p_t]=p_t$ and $\operatorname{Var}(p_{t+1}\mid p_t)=p_t(1-p_t)/2N$. The states $0$ and $2N$ are absorbing: once an allele is lost or fixed, it stays so, and with probability one every run is absorbed.`,
-      idea: String.raw`Each of the $2N$ copies in the next generation picks its parent copy uniformly and independently, so the number of descendants of the $A$ copies is a binomial count. That single sampling step is the whole model: no force pushes $p$ in any direction (the conditional mean is $p_t$), but the sampling noise has variance $p(1-p)/2N$ and, because it vanishes only at $0$ and $1$, it keeps shaking $p$ until the chain falls into one of those two absorbing states. The noise is large exactly when $N$ is small.`,
+      idea: String.raw`Each of the $2N$ copies in the next generation picks its parent copy uniformly and independently, so the number of descendants of the $A$ copies is a binomial count. That single sampling step is the whole model: no force pushes $p$ in any direction (the conditional mean is $p_t$), but the sampling noise has variance $p(1-p)/2N$ and, because it vanishes only at $0$ and $1$, it keeps shaking $p$ until the chain falls into one of those two absorbing states. The noise is large exactly when $N$ is small.
+
+Conditional on the current frequency, the next-generation count is the sum of $2N$ independent Bernoulli indicators in this model. Each has finite variance $p(1-p)$, so prob-2.2.1 adds their variances; division by $(2N)^2$ gives $p(1-p)/(2N)$ for frequency. Independence is within the conditional sampling step, not between successive generations. This moment calculation alone does not prove eventual absorption.`,
       caption: String.raw`Twenty replicate populations start at the same frequency (coloured paths; a dot marks the generation each is lost or fixed). Drag $N$ down and the paths become jagged and hit the walls sooner; drag it up and they creep. The right panel uses 300 further runs to show the share of populations lost (orange), fixed (blue) and still polymorphic (unshaded) as time passes. **New run** reseeds.`,
-      deps: ['popgen-1.1', 'popgen-1.4', 'stoch-1.1'],
+      deps: ['popgen-1.1','popgen-1.4','prob-2.2.1'],
       refs: ['Ewens ch. 3', 'Gillespie'],
       credit: 'R. A. Fisher, 1930; Sewall Wright, 1931',
       scope: String.raw`Ideal population: constant size, random mating, equal offspring variance (Poisson-like), no selection, mutation or migration. Real populations are mapped onto it through the effective size (2.6).`,
@@ -134,11 +136,13 @@ So $\mathbb E[p_{t+1}\mid p_t]=p_t$ and $\operatorname{Var}(p_{t+1}\mid p_t)=p_t
       kind: 'Theorem',
       name: 'Heterozygosity decays as (1 − 1/2N)ᵗ',
       statement: String.raw`In the neutral Wright–Fisher model with $N$ diploid individuals, let $H_t = 2p_t(1-p_t)$ be the heterozygosity expected under random mating. Then
-$$\mathbb E[H_{t+1}\mid p_t]=\Bigl(1-\frac1{2N}\Bigr)H_t,\qquad\text{so}\qquad \mathbb E[H_t]=H_0\Bigl(1-\frac1{2N}\Bigr)^{t}\approx H_0\,e^{-t/2N}.$$
+$$\begin{gathered}\mathbb E[H_{t+1}\mid p_t]=\\\Bigl(1-\frac1{2N}\Bigr)H_t,\qquad\\\text{so}\qquad\\ \mathbb E[H_t]=\\H_0\Bigl(1-\frac1{2N}\Bigr)^{t}\\\approx H_0\,e^{-t/2N}.\end{gathered}$$
 Equivalently, the probability that two gene copies drawn in generation $t$ are identical by descent obeys $F_{t+1}=\tfrac1{2N}+\bigl(1-\tfrac1{2N}\bigr)F_t$.`,
-      idea: String.raw`Write $\mathbb E[p_{t+1}(1-p_{t+1})]=\mathbb E[p_{t+1}]-\mathbb E[p_{t+1}^2]$. The binomial second moment is $\mathbb E[p_{t+1}^2\mid p_t]=p_t^2+p_t(1-p_t)/2N$, so the conditional expectation of $p(1-p)$ is $p_t(1-p_t)(1-1/2N)$: each generation a fraction $1/2N$ of the remaining variation is lost, because two newly drawn copies have probability $1/2N$ of descending from the same parent copy. Iterating gives the geometric decay; the Hardy–Weinberg heterozygosity (1.10) is the quantity being eroded.`,
+      idea: String.raw`Write $\mathbb E[p_{t+1}(1-p_{t+1})]=\mathbb E[p_{t+1}]-\mathbb E[p_{t+1}^2]$. The binomial second moment is $\mathbb E[p_{t+1}^2\mid p_t]=p_t^2+p_t(1-p_t)/2N$, so the conditional expectation of $p(1-p)$ is $p_t(1-p_t)(1-1/2N)$: each generation a fraction $1/2N$ of the remaining variation is lost, because two newly drawn copies have probability $1/2N$ of descending from the same parent copy. Iterating gives the geometric decay; the Hardy–Weinberg heterozygosity (1.10) is the quantity being eroded.
+
+For each fixed current frequency, linearity of expectation prob-1.6.1 splits the conditional mean of $p_{t+1}(1-p_{t+1})$ into its first moment minus its second moment. Substituting the binomial moments gives the one-generation factor; averaging that conditional identity and iterating gives the expected trajectory. No claim that every realized trajectory decreases geometrically follows from this mean identity.`,
       caption: String.raw`The average of $H_t/H_0$ over 1500 runs (dots) lies on the theoretical curve (green) in both panels; a few single runs (thin) wander and die to zero. On the logarithmic panel the decay is a straight line with slope $\ln(1-1/2N)$ (the fitted line is drawn in gold). Drag $N$: the half-life is about $1.39N$ generations.`,
-      deps: ['popgen-2.1', 'popgen-1.10'],
+      deps: ['popgen-2.1','popgen-1.10','prob-1.6.1'],
       refs: ['Ewens ch. 3', 'Gillespie'],
       credit: 'Sewall Wright, 1931',
       scope: String.raw`Neutral ideal Wright–Fisher population. The statement is about the expectation over replicate populations; any single population’s heterozygosity is erratic and ends at exactly $0$.`,
@@ -192,7 +196,7 @@ Equivalently, the probability that two gene copies drawn in generation $t$ are i
       statement: String.raw`In the neutral Wright–Fisher model with $2N$ gene copies, an allele present in $k$ copies is eventually fixed with probability exactly $k/2N=p_0$ and lost with probability $1-p_0$. In particular a new mutant ($k=1$) fixes with probability $1/2N$, and in a population of constant size the neutral substitution rate is therefore (number of new mutants per generation) $\times\,1/2N$.`,
       idea: String.raw`By 2.2 the process $p_t$ is a bounded martingale, and absorption happens almost surely, so optional stopping applies at the absorption time $\tau$: $p_0=\mathbb E[p_\tau]=1\cdot\Pr(\text{fix})+0\cdot\Pr(\text{loss})$. The same argument is Gambler’s ruin for a fair game, the cleanest sanity check. Another way to see it: looking forward far enough, all present copies descend from one copy now, and each of the $2N$ copies is equally likely to be that ancestor; the allele fixes if the ancestor carried it.`,
       caption: String.raw`Left: start $2N$-copy populations at ten different frequencies, run each to absorption, and plot the fraction that fixed (dots, with 95% error bars) against the starting frequency; they land on the diagonal. Right: for the chosen $p_0$, the running fixation fraction wanders inside the $\pm2\sigma$ funnel around $p_0$ and settles. Turn on **selection** to leave the hypothesis: the points bend away from the diagonal toward the diffusion curve $\dfrac{1-e^{-4Nsp}}{1-e^{-4Ns}}$.`,
-      deps: ['popgen-2.2', 'prob-4.4.1', 'stoch-2.4'],
+      deps: ['popgen-2.2', 'prob-4.4.1'],
       refs: ['Ewens §4.3'],
       credit: 'R. A. Fisher, 1930; Sewall Wright, 1931 (diffusion form by Kimura, 1962)',
       scope: String.raw`Neutral alleles. With selection of strength $s$ the fixation probability is $\approx(1-e^{-4Nsp_0})/(1-e^{-4Ns})$ (diffusion approximation, valid for small $s$).`,
@@ -248,7 +252,7 @@ Equivalently, the probability that two gene copies drawn in generation $t$ are i
       statement: String.raw`A population has $n$ haploid individuals (equivalently $n$ gene copies), $k$ of them of type $A$. At each step one individual, chosen uniformly, reproduces and its offspring replaces another individual chosen uniformly (possibly itself). Then $k\mapsto k+1$ with probability $p(1-p)$, $k\mapsto k-1$ with probability $p(1-p)$, and $k$ is unchanged otherwise, where $p=k/n$. This is a birth–death chain absorbed at $0$ and $n$. Measured in units of $n/2$ steps, it has the same mean and variance per unit time, $0$ and $p(1-p)/n$, as the Wright–Fisher model with $n$ gene copies, and (in the limit of large $n$) the same absorption-time distribution.`,
       idea: String.raw`One Moran step changes $k$ by at most one, so the process is a random walk with local variance $2p(1-p)/n^2$ per step in frequency. A Wright–Fisher generation changes $p$ with variance $p(1-p)/n$. Equating the two, one Wright–Fisher generation corresponds to $n/2$ Moran steps. The Moran chain is a time-reversible birth–death chain, which makes exact calculation easy (absorption probabilities and times), while the Wright–Fisher chain is more natural biologically; the diffusion limit of both is the same.`,
       caption: String.raw`Left: a few Wright–Fisher paths (blue) and Moran paths (purple, stepwise) from the same starting frequency, with Moran time divided by $n/2$ so both run on a generation axis. Right: the distributions of absorption times from 500 runs of each model; the means (vertical lines) agree with the diffusion value $-2n[p\ln p+(1-p)\ln(1-p)]$. **New run** reseeds.`,
-      deps: ['popgen-2.1', 'stoch-1.10'],
+      deps: ['popgen-2.1'],
       refs: ['Ewens ch. 3', 'Ewens §9.3.2'],
       credit: 'P. A. P. Moran, 1958',
       scope: String.raw`Neutral, constant size, no mutation. The Moran model allows overlapping generations; its time scale (steps per generation) is a convention.`,

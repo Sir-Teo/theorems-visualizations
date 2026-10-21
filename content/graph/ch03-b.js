@@ -500,12 +500,11 @@ Then $G$ contains $M_H(G)$ independent $H$-paths.`,
     },
     // ================================================================== 3.5 Linking pairs of vertices
     {
-      num: '3.5.1a', kind: 'Definition', name: 'k-linked graphs',
+      num: '3.5.1a', kind: 'Definition', name: 'k-linked graphs', verify: true,
       statement: String.raw`A set $X\subseteq V(G)$ is **linked** in $G$ if for every choice of distinct vertices $s_1,\dots,s_\ell,t_1,\dots,t_\ell\in X$ there are disjoint paths $P_i=s_i\dots t_i$ in $G$ with no inner vertex in $X$. $G$ is **$k$-linked** if $|G|\ge 2k$ and every set of at most $2k$ vertices is linked — equivalently, if $|G|\ge2k$ and for every $2k$ distinct vertices $s_1,\dots,s_k,t_1,\dots,t_k$ there are disjoint paths $P_i=s_i\dots t_i$.`,
       idea: String.raw`Unlike Menger's theorem, which only asks for disjoint paths between two sets, linkedness prescribes which vertex each path must reach — a much stronger demand. Every $k$-linked graph is $k$-connected, but not conversely: in a 3-connected planar graph, four vertices around a face in the order $s_1,s_2,t_1,t_2$ cannot be linked, because the two paths would have to cross. The equivalence of the two forms holds because extra dummy terminals can pad a smaller set up to $2k$ vertices.`,
       caption: String.raw`Click vertices to place terminals: each click on a free vertex gives it the next missing label $s_1,t_1,s_2,t_2,\dots$; click a terminal to remove it. The app searches exhaustively for disjoint paths $s_i\dots t_i$. The readout also tests **every** placement of $2k$ terminals: the cube is 3-connected but not 2-linked (the default placement around a face fails), while the octahedron and the Petersen graph are 2-linked. **Show a failing placement** finds one if there is any.`,
-      deps: ['graph-1.3.1a', 'graph-1.4.1b'], refs: ['Diestel, Graph Theory, 6th ed., §3.5, p. 79'], tags: ['linkage'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch3.pdf' },
+      deps: ['graph-1.3.1a', 'graph-1.4.1b'], refs: ['Diestel §3.5'], tags: ['linkage'],
       viz(v) {
         const PRE = { cube: () => named('cube'), oct: () => named('octahedron'), pet: () => named('petersen'), k5: () => named('complete', 5), k33: () => named('kmn', 3, 3) };
         const DEF = { cube: [0, 2, 1, 3], oct: [0, 4, 1, 5], pet: [0, 2, 1, 3], k5: [0, 2, 1, 3], k33: [0, 1, 3, 4] };

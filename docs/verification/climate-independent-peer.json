@@ -1,0 +1,6059 @@
+{
+  "candidate": "93398ea791be4ed5d5b109ec1a176f622d35c127",
+  "prerequisite": "0cf13c462023a444e2beadc2178b2ef52125c4e0",
+  "fiveWraps": "f9fed2ec60515e6af72245e763c6080935c07a0d",
+  "productionRepair": "9094a791e98d676a73f4bbdad49e28215b3f044b",
+  "baseline": "20c1dd6d5ce9f716447756792b4a9b9ebaf50624",
+  "disposition": "accept combined; all observed blockers resolved; source obligations unchanged",
+  "preservation": {
+    "objects": 51,
+    "functions": 51,
+    "changedIdeas": 17,
+    "addedEdges": 19,
+    "wraps": 5,
+    "exactOwnedRawRows": 17,
+    "inheritedUnchangedRowMismatches": [
+      {
+        "num": "3.7",
+        "item": [
+          "climate-2.8",
+          "climate-2.3"
+        ],
+        "row": [
+          "climate-2.8"
+        ]
+      },
+      {
+        "num": "3.8",
+        "item": [
+          "climate-3.2",
+          "climate-1.9",
+          "climate-3.5"
+        ],
+        "row": [
+          "climate-3.2",
+          "climate-1.9"
+        ]
+      },
+      {
+        "num": "3.1",
+        "item": [
+          "climate-2.6",
+          "climate-2.8"
+        ],
+        "row": [
+          "climate-2.6"
+        ]
+      },
+      {
+        "num": "3.5",
+        "item": [
+          "climate-3.4",
+          "climate-3.1"
+        ],
+        "row": [
+          "climate-3.4"
+        ]
+      }
+    ]
+  },
+  "closingPreservation": {
+    "objects": 51,
+    "exactFieldExceptions": 6,
+    "sourceURLs": "identical and moved into existing links maps",
+    "otherFieldsFunctionsFlagsDepsHelpersSyllabus": "unchanged",
+    "blackbodyCounterexample": {
+      "s255": 3.76090390737,
+      "s288": 5.41812673216512,
+      "assessedMagnitude": 3.3
+    }
+  },
+  "math": {
+    "checks": 1205,
+    "groups": 17,
+    "helpers": "actual twoBox/irfInt/combineFeedback/stableFeedbackLaw checked against independent oracles",
+    "scope": "mathematical prerequisite calculations; no empirical/source reacceptance"
+  },
+  "initialNative": {
+    "complete": true,
+    "cases": 34,
+    "pictureCount": 102,
+    "changedIdeaPictures": 34,
+    "statementPictures": 68,
+    "rows": [
+      {
+        "id": "climate-1.2",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.2-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 111.171875,
+              "right": 218.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 246.46875,
+              "right": 267.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 289.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 262.71875,
+              "right": 294.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 38.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 265.921875,
+              "right": 286.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 152.484375,
+              "right": 181.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 206.453125,
+              "right": 291.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 47.609375,
+              "right": 158,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 123.25,
+              "right": 183.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 290.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 101.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 142.921875,
+              "right": 216.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 145.328125,
+              "right": 182.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 64,
+              "right": 84.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 97.078125,
+              "right": 114.9375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.2",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.2-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 49.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 127.984375,
+              "right": 252.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 278.859375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.2",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.2-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.3",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.3-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 287.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 250.359375,
+              "right": 261.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 148.65625,
+              "right": 172.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 270.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 92.703125,
+              "right": 200.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 94.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 144.71875,
+              "right": 284.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.125,
+              "right": 176.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 289.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 142.109375,
+              "right": 183.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 220.625,
+              "right": 249.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 134.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 177.109375,
+              "right": 218.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.1875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.3",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.3-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 182.75,
+              "right": 230.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 260,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 260,
+              "client": 249
+            },
+            {
+              "left": 223.8125,
+              "right": 256.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 129.234375,
+              "right": 175.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 265.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 214.015625,
+              "right": 242.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 231.171875,
+              "right": 281.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 197.6875,
+              "right": 228.15625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.3",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.3-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 291,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 275
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.7",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.7-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 35.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 134.953125,
+              "right": 220.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 255.203125,
+              "right": 267.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 166.9375,
+              "right": 224.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 244.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 112.53125,
+              "right": 285.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 167.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 272.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 192.53125,
+              "right": 210.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 112.359375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.7",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.7-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 121.46875,
+              "right": 188.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 169.0625,
+              "right": 209.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.6875,
+              "right": 104.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 116.5,
+              "right": 147.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 206.5625,
+              "right": 273.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 154.28125,
+              "right": 257.484375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.7",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.7-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-1.8",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.8-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 124.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 235.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 84.625,
+              "right": 147.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 197.609375,
+              "right": 298.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 62.546875,
+              "right": 143.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.015625,
+              "right": 241.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 129.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37.796875,
+              "right": 119.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 297.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 86.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 38.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 197.078125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.8",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.8-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 94.609375,
+              "right": 106.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 83.875,
+              "right": 92.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 178,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 273.328125,
+              "right": 281.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 175.171875,
+              "right": 195.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 207.78125,
+              "right": 225.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 187.171875,
+              "right": 238.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 108.65625,
+              "right": 117.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 85.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 117.953125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.8",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.8-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.9-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 157.8125,
+              "right": 230.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 77.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 110.984375,
+              "right": 196.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 149.375,
+              "right": 209.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 179.765625,
+              "right": 298.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 117.34375,
+              "right": 143.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 89.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 36.75,
+              "right": 87.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 73.734375,
+              "right": 142.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 273.03125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.9-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 257.578125,
+              "right": 271.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 82.09375,
+              "right": 92.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 99.671875,
+              "right": 171.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 71,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 244.15625,
+              "right": 278.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 226.453125,
+              "right": 243.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 111.078125,
+              "right": 207.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 278.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 152.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 47.1875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.9",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.9-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.5",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.5-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 264.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 39.640625,
+              "right": 66.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 160.25,
+              "right": 238.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 104.890625,
+              "right": 148.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 67.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 290.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 92.34375,
+              "right": 205.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 284.34375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.5",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.5-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 255.140625,
+              "right": 280.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 227.109375,
+              "right": 236.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 69.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 252.90625,
+              "right": 261.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 150.59375,
+              "right": 207.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 223.203125,
+              "right": 239.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 150.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 204.3125,
+              "right": 219.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 98.265625,
+              "right": 187.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 234.078125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.5",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.5-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.6-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 67.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 224.921875,
+              "right": 244.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 268.375,
+              "right": 284.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 115.015625,
+              "right": 159.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 126.375,
+              "right": 175.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 295.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 58.46875,
+              "right": 75.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 167.78125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.6-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 245.421875,
+              "right": 255.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 83.875,
+              "right": 99.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 165.5,
+              "right": 213.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.421875,
+              "right": 126.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 176.859375,
+              "right": 198.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 127.140625,
+              "right": 180.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 87.546875,
+              "right": 139.546875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.6",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.6-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            },
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.8",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.8-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 238.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 121.640625,
+              "right": 179.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 106.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 54.953125,
+              "right": 65.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.9375,
+              "right": 180.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.71875,
+              "right": 139.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 187.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 97.4375,
+              "right": 175.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 107.453125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.8",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.8-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 177.125,
+              "right": 196.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 218.796875,
+              "right": 232.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 144.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 101.578125,
+              "right": 130.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 210.625,
+              "right": 250.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.359375,
+              "right": 139.984375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.8",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.8-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.10",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.10-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 186.03125,
+              "right": 196.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.125,
+              "right": 279.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 234.953125,
+              "right": 245.484375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.10",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.10-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 161.765625,
+              "right": 171.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.34375,
+              "right": 115.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 102.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 101.828125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.10",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.10-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.3",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.3-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 55.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.109375,
+              "right": 196.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 60.34375,
+              "right": 110.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 145.953125,
+              "right": 189.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 193.171875,
+              "right": 273.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 176.65625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.3",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.3-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 53.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 61.171875,
+              "right": 278.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 253.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 173.578125,
+              "right": 209.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 172.9375,
+              "right": 190.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 260.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 183.625,
+              "right": 199.75,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.3",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.3-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-3.4",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.4-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 276.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 119.96875,
+              "right": 281.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 140.328125,
+              "right": 197.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 289.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 172.015625,
+              "right": 180.90625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.4",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.4-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 250.21875,
+              "right": 277.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 99.796875,
+              "right": 242.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 171.875,
+              "right": 253.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 228.671875,
+              "right": 257.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 117.171875,
+              "right": 263.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 180.09375,
+              "right": 263.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.078125,
+              "right": 279.171875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.4",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.4-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-3.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.6-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 167.59375,
+              "right": 178.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 60.375,
+              "right": 252,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 80.703125,
+              "right": 235.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 56,
+              "right": 288.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 47,
+              "right": 212.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 71.4375,
+              "right": 230.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.1875,
+              "right": 219.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 180.515625,
+              "right": 294.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 128.484375,
+              "right": 247.90625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.6-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 102.484375,
+              "right": 179.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.734375,
+              "right": 248.28125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.6",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.6-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-3.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.9-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 254.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 106.9375,
+              "right": 230.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 79.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 115.125,
+              "right": 179.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 77.921875,
+              "right": 273.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 47,
+              "right": 148.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 96.5,
+              "right": 191.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 168.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 259.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.390625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.9-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 269.453125,
+              "right": 279.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 233.34375,
+              "right": 276.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 152.078125,
+              "right": 260.421875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.9",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.9-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 593,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-3.10",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.10-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 89.3125,
+              "right": 246.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 66.53125,
+              "right": 76.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 117.359375,
+              "right": 154.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 189.140625,
+              "right": 262.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 46.734375,
+              "right": 116.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 143.984375,
+              "right": 154.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 47.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 204.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 157.59375,
+              "right": 249.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 167.953125,
+              "right": 249.078125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.10",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.10-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 189.421875,
+              "right": 205.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 120.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 105.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 216.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 194.53125,
+              "right": 258.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 257.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 82.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 91.53125,
+              "right": 136.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 158.6875,
+              "right": 203.890625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.10",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.10-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 605,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-4.1",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.1-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 51.9375,
+              "right": 254.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.25,
+              "right": 130.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 261.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 51.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 210.625,
+              "right": 279.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 206.546875,
+              "right": 250.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 52.71875,
+              "right": 89.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.5625,
+              "right": 287.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 47,
+              "right": 125.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 267.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 279.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 186.484375,
+              "right": 204.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 93.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 87.078125,
+              "right": 141.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 292.75,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.1",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.1-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 169.59375,
+              "right": 280.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 83.875,
+              "right": 133.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 90.78125,
+              "right": 110.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.625,
+              "right": 113.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 127.921875,
+              "right": 147.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 154.84375,
+              "right": 264.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 281.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 204.046875,
+              "right": 247.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 113.5625,
+              "right": 223.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 127.28125,
+              "right": 233.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 135.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 170.96875,
+              "right": 223.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 208.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 64.9375,
+              "right": 107.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 144.53125,
+              "right": 187.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 182.578125,
+              "right": 225.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 93.75,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.1",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.1-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-4.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.6-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 87.078125,
+              "right": 201.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 219.609375,
+              "right": 230.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 261.625,
+              "right": 273.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 175.171875,
+              "right": 186.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 172.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 279.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.53125,
+              "right": 116.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 268.4375,
+              "right": 288.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 284.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 164.703125,
+              "right": 231.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 109.34375,
+              "right": 250.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 241.71875,
+              "right": 300.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 233.8125,
+              "right": 278.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 96.3125,
+              "right": 140.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 127.078125,
+              "right": 153.046875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.6-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 201.890625,
+              "right": 212.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 169.453125,
+              "right": 212.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 172.109375,
+              "right": 190.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 193.390625,
+              "right": 257.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 234.421875,
+              "right": 277.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 168.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 174.84375,
+              "right": 199.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.953125,
+              "right": 165.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 234.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 132.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.84375,
+              "right": 115.828125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.6",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.6-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.8",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.8-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 203.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 254.6875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.8",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.8-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 231.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 202.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 141.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 80.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 88.375,
+              "right": 148.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.109375,
+              "right": 176.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 259.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 225.03125,
+              "right": 246.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 56.046875,
+              "right": 77.34375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.8",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.8-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-1.2",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.2-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 111.171875,
+              "right": 218.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 246.46875,
+              "right": 267.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 289.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 262.71875,
+              "right": 294.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 38.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 265.921875,
+              "right": 286.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 152.484375,
+              "right": 181.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 206.453125,
+              "right": 291.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 47.609375,
+              "right": 158,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 123.25,
+              "right": 183.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 290.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 101.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 142.921875,
+              "right": 216.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 145.328125,
+              "right": 182.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 64,
+              "right": 84.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 97.078125,
+              "right": 114.9375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.2",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.2-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 49.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 127.984375,
+              "right": 252.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 278.859375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.2",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.2-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.3",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.3-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 287.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 250.359375,
+              "right": 261.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 148.65625,
+              "right": 172.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 270.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 92.703125,
+              "right": 200.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 94.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 144.71875,
+              "right": 284.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.125,
+              "right": 176.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 289.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 142.109375,
+              "right": 183.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 220.625,
+              "right": 249.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 134.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 177.109375,
+              "right": 218.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.1875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.3",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.3-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 182.75,
+              "right": 230.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 260,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 260,
+              "client": 249
+            },
+            {
+              "left": 223.8125,
+              "right": 256.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 129.234375,
+              "right": 175.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 265.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 214.015625,
+              "right": 242.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 231.171875,
+              "right": 281.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 197.6875,
+              "right": 228.15625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.3",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.3-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 291,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 275
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.7",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.7-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 35.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 134.953125,
+              "right": 220.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 255.203125,
+              "right": 267.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 166.9375,
+              "right": 224.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 244.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 112.53125,
+              "right": 285.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 167.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 272.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 192.53125,
+              "right": 210.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 112.359375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.7",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.7-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 121.46875,
+              "right": 188.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 169.0625,
+              "right": 209.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.6875,
+              "right": 104.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 116.5,
+              "right": 147.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 206.5625,
+              "right": 273.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 154.28125,
+              "right": 257.484375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.7",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.7-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-1.8",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.8-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 124.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 235.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 84.625,
+              "right": 147.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 197.609375,
+              "right": 298.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 62.546875,
+              "right": 143.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.015625,
+              "right": 241.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 129.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37.796875,
+              "right": 119.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 297.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 86.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 38.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 197.078125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.8",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.8-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 94.609375,
+              "right": 106.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 83.875,
+              "right": 92.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 178,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 273.328125,
+              "right": 281.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 175.171875,
+              "right": 195.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 207.78125,
+              "right": 225.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 187.171875,
+              "right": 238.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 108.65625,
+              "right": 117.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 85.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 117.953125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.8",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.8-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.9-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 157.8125,
+              "right": 230.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 77.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 110.984375,
+              "right": 196.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 149.375,
+              "right": 209.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 179.765625,
+              "right": 298.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 117.34375,
+              "right": 143.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 89.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 36.75,
+              "right": 87.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 73.734375,
+              "right": 142.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 273.03125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.9-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 257.578125,
+              "right": 271.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 82.09375,
+              "right": 92.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 99.671875,
+              "right": 171.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 71,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 244.15625,
+              "right": 278.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 226.453125,
+              "right": 243.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 111.078125,
+              "right": 207.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 278.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 152.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 47.1875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-1.9",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/1.9-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.5",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.5-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 264.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 39.640625,
+              "right": 66.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 160.25,
+              "right": 238.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 104.890625,
+              "right": 148.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 67.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 290.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 92.34375,
+              "right": 205.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 284.34375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.5",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.5-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 255.140625,
+              "right": 280.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 227.109375,
+              "right": 236.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 69.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 252.90625,
+              "right": 261.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 150.59375,
+              "right": 207.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 223.203125,
+              "right": 239.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 150.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 204.3125,
+              "right": 219.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 98.265625,
+              "right": 187.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 234.078125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.5",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.5-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.6-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 67.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 224.921875,
+              "right": 244.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 268.375,
+              "right": 284.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 115.015625,
+              "right": 159.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 126.375,
+              "right": 175.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 295.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 58.46875,
+              "right": 75.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 167.78125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.6-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 245.421875,
+              "right": 255.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 83.875,
+              "right": 99.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 165.5,
+              "right": 213.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.421875,
+              "right": 126.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 176.859375,
+              "right": 198.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 127.140625,
+              "right": 180.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 87.546875,
+              "right": 139.546875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.6",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.6-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            },
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.8",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.8-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 238.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 121.640625,
+              "right": 179.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 106.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 54.953125,
+              "right": 65.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.9375,
+              "right": 180.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.71875,
+              "right": 139.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 187.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 97.4375,
+              "right": 175.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 107.453125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.8",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.8-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 177.125,
+              "right": 196.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 218.796875,
+              "right": 232.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 144.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 101.578125,
+              "right": 130.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 210.625,
+              "right": 250.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.359375,
+              "right": 139.984375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.8",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.8-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.10",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.10-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 186.03125,
+              "right": 196.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.125,
+              "right": 279.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 234.953125,
+              "right": 245.484375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.10",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.10-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 161.765625,
+              "right": 171.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.34375,
+              "right": 115.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 102.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 101.828125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-2.10",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/2.10-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.3",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.3-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 55.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.109375,
+              "right": 196.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 60.34375,
+              "right": 110.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 145.953125,
+              "right": 189.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 193.171875,
+              "right": 273.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 176.65625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.3",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.3-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 53.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 61.171875,
+              "right": 278.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 253.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 173.578125,
+              "right": 209.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 172.9375,
+              "right": 190.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 260.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 183.625,
+              "right": 199.75,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.3",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.3-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-3.4",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.4-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 276.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 119.96875,
+              "right": 281.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 140.328125,
+              "right": 197.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 289.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 172.015625,
+              "right": 180.90625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.4",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.4-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 250.21875,
+              "right": 277.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 99.796875,
+              "right": 242.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 171.875,
+              "right": 253.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 228.671875,
+              "right": 257.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 117.171875,
+              "right": 263.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 180.09375,
+              "right": 263.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.078125,
+              "right": 279.171875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.4",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.4-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-3.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.6-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 167.59375,
+              "right": 178.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 60.375,
+              "right": 252,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 80.703125,
+              "right": 235.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 56,
+              "right": 288.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 47,
+              "right": 212.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 71.4375,
+              "right": 230.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.1875,
+              "right": 219.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 180.515625,
+              "right": 294.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 128.484375,
+              "right": 247.90625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.6-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 102.484375,
+              "right": 179.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.734375,
+              "right": 248.28125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.6",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.6-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-3.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.9-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 254.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 106.9375,
+              "right": 230.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 79.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 115.125,
+              "right": 179.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 77.921875,
+              "right": 273.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 47,
+              "right": 148.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 96.5,
+              "right": 191.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 168.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 259.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.390625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.9-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 269.453125,
+              "right": 279.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 233.34375,
+              "right": 276.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 152.078125,
+              "right": 260.421875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.9",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.9-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 593,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-3.10",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.10-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 89.3125,
+              "right": 246.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 66.53125,
+              "right": 76.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 117.359375,
+              "right": 154.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 189.140625,
+              "right": 262.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 46.734375,
+              "right": 116.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 143.984375,
+              "right": 154.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 47.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 204.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 157.59375,
+              "right": 249.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 167.953125,
+              "right": 249.078125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.10",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.10-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 189.421875,
+              "right": 205.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 120.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 105.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 216.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 194.53125,
+              "right": 258.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 257.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 82.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 91.53125,
+              "right": 136.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 158.6875,
+              "right": 203.890625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-3.10",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/3.10-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 605,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-4.1",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.1-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 51.9375,
+              "right": 254.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.25,
+              "right": 130.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 261.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 51.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 210.625,
+              "right": 279.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 206.546875,
+              "right": 250.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 52.71875,
+              "right": 89.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.5625,
+              "right": 287.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 47,
+              "right": 125.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 267.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 279.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 186.484375,
+              "right": 204.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 93.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 87.078125,
+              "right": 141.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 292.75,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.1",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.1-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 169.59375,
+              "right": 280.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 83.875,
+              "right": 133.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 90.78125,
+              "right": 110.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.625,
+              "right": 113.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 127.921875,
+              "right": 147.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 154.84375,
+              "right": 264.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 281.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 204.046875,
+              "right": 247.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 113.5625,
+              "right": 223.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 127.28125,
+              "right": 233.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 135.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 170.96875,
+              "right": 223.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 208.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 64.9375,
+              "right": 107.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 144.53125,
+              "right": 187.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 182.578125,
+              "right": 225.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 93.75,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.1",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.1-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "climate-4.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.6-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 87.078125,
+              "right": 201.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 219.609375,
+              "right": 230.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 261.625,
+              "right": 273.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 175.171875,
+              "right": 186.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 172.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 279.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.53125,
+              "right": 116.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 268.4375,
+              "right": 288.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 284.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 164.703125,
+              "right": 231.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 109.34375,
+              "right": 250.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 241.71875,
+              "right": 300.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 233.8125,
+              "right": 278.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 96.3125,
+              "right": 140.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 127.078125,
+              "right": 153.046875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.6-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 201.890625,
+              "right": 212.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 169.453125,
+              "right": 212.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 172.109375,
+              "right": 190.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 193.390625,
+              "right": 257.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 234.421875,
+              "right": 277.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 168.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 174.84375,
+              "right": 199.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.953125,
+              "right": 165.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 234.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 132.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.84375,
+              "right": 115.828125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.6",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.6-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.8",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.8-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 203.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 254.6875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.8",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.8-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 231.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 202.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 141.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 80.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 88.375,
+              "right": 148.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.109375,
+              "right": 176.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 259.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 225.03125,
+              "right": 246.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 56.046875,
+              "right": 77.34375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "climate-4.8",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-map-peer/climate-independent-native/4.8-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      }
+    ]
+  },
+  "closingNative": {
+    "complete": true,
+    "cases": 34,
+    "pictures": 72,
+    "rows": [
+      {
+        "num": "1.2",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.2-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.2",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.2-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.3",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.3-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.3",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.3-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.7",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.7-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.7",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.7-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "1.8",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.8-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.8",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.8-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.9-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.9-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.5",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.5-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.5",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.5-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.6-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.6-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.8",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.8-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.8",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.8-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.10",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.10-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.10",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.10-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.3",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.3-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.3",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.3-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.4",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.4-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.4",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.4-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.6-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.6-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.9-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.9-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.9",
+        "theme": "light",
+        "kind": "source-link",
+        "href": "https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_Chapter07.pdf",
+        "text": "Primary assessment",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.9-light-link.png"
+      },
+      {
+        "num": "3.10",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.10-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.10",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.10-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.10",
+        "theme": "light",
+        "kind": "source-link",
+        "href": "https://atmos.washington.edu/academics/classes/2008Q2/591A/Articles/twomey_i1520-0469-34-7-1149.pdf",
+        "text": "Original Twomey1977",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.10-light-link.png"
+      },
+      {
+        "num": "4.1",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.1-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "4.1",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.1-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "4.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.6-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "4.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.6-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "4.8",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.8-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "4.8",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.8-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "1.2",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.2-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.2",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.2-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.3",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.3-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.3",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.3-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.7",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.7-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.7",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.7-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "1.8",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.8-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.8",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.8-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.9-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/1.9-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.5",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.5-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.5",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.5-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.6-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.6-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.8",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.8-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.8",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.8-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.10",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.10-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.10",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/2.10-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.3",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.3-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.3",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.3-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.4",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.4-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.4",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.4-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.6-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.6-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.9-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.9-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.9",
+        "theme": "dark",
+        "kind": "source-link",
+        "href": "https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_Chapter07.pdf",
+        "text": "Primary assessment",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.9-dark-link.png"
+      },
+      {
+        "num": "3.10",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.10-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.10",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.10-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "3.10",
+        "theme": "dark",
+        "kind": "source-link",
+        "href": "https://atmos.washington.edu/academics/classes/2008Q2/591A/Articles/twomey_i1520-0469-34-7-1149.pdf",
+        "text": "Original Twomey1977",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/3.10-dark-link.png"
+      },
+      {
+        "num": "4.1",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.1-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "4.1",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.1-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      },
+      {
+        "num": "4.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.6-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "4.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.6-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "4.8",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.8-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "4.8",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/climate-closing-native/4.8-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": []
+      }
+    ]
+  }
+}

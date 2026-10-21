@@ -5,6 +5,8 @@ import {
   fbpAt, fanScan, fanSino, fanFBP, fanRebin, rmse, rms, rng32, noiseField, poissonFrom,
 } from './ch03.shared.js';
 
+import { finiteRampIntegralAudit } from './source-audit-radon.shared.js';
+
 const PI = Math.PI;
 const grey = (t) => { const c = Math.round(255 * clamp(t, 0, 1)); return [c, c, c]; };
 const lin = (a, b, n) => Array.from({ length: n }, (_, i) => a + ((b - a) * i) / (n - 1));
@@ -23,7 +25,7 @@ $$b(x,y)=\int_0^{\pi}p_\theta(x\cos\theta+y\sin\theta)\,d\theta .$$
 It is the adjoint of the Radon transform, not its inverse: back-projecting the projections of a point source gives not a point but the blur $1/|\mathbf r-\mathbf r_0|$ centred on it, so in general $b=f*\dfrac1{|\mathbf r|}$ (convolution in the plane). Back-projection alone is therefore always a blurred version of the object, with a long $1/r$ halo.`,
       idea: String.raw`Rays through a point source all give it the same large value, so back-projecting puts the full value at the source; but every ray also deposits that value along its whole length, not only at the source. Each direction contributes a line; the lines pass through the source and spread out like spokes, so the density a distance $r$ away is $\int_0^\pi\delta\!\big(r\cos(\theta-\varphi)\big)d\theta=1/r$. The radial distribution is thus the same $1/r$ wherever the source is: the blur is shift-invariant, so $b=f*(1/r)$, and in the Fourier domain (3.4) the blur is $1/|\omega|$ — the reason the ramp filter $|\omega|$ undoes it (3.7).`,
       caption: String.raw`Drag the **point** (left panel; displayed on a log grey scale) and change the **number of views**: with few views the back-projection is a star of rays, with many a smooth halo. The middle panel plots the profile on log–log axes against the dashed $1/r$ line; the slope fitted to it is read out. Choose **phantom** to back-project the head phantom's real sinogram and compare the profile with the truth: everything is there, but washed out.`,
-      deps: ['imaging-3.3', 'fa-6.33'],
+      deps: ['imaging-3.3'],
       tags: ['back-projection', 'point spread function'],
       refs: ['Kak–Slaney §3.3'],
       scope: String.raw`Parallel-beam, noise-free, with the continuous view integral replaced by $n$ equally spaced views; the point is a narrow Gaussian ($\sigma=0.02$ of the half-width) so that its projections are finite. The exact $1/r$ law is the limit of many views; the radial profile is measured to the right of the point.`,
@@ -91,25 +93,27 @@ It is the adjoint of the Radon transform, not its inverse: back-projecting the p
       num: '3.7',
       kind: 'Algorithm',
       name: 'Filtered back-projection',
-      statement: String.raw`Filtered back-projection reconstructs $f$ from its projections by two steps. First **filter** each projection with the ramp filter, $q_\theta=p_\theta*h$ with $\hat h(\omega)=|\omega|$; then **back-project** the filtered projections:
-$$f(x,y)=\int_0^\pi q_\theta(x\cos\theta+y\sin\theta)\,d\theta,\qquad q_\theta(s)=\int_{-\infty}^\infty |\omega|\,P_\theta(\omega)\,e^{2\pi i\omega s}\,d\omega .$$
-In the discrete implementation $h$ is the band-limited Ram–Lak kernel, $h[0]=1/(4\tau^2)$, $h[n]=-1/(\pi^2n^2\tau^2)$ for odd $n$ and $0$ for even $n\ne0$, with detector spacing $\tau$; the negative side-lobes cancel the $1/r$ halo of simple back-projection. The filtered projection integrates to (almost) zero.`,
-      idea: String.raw`Write the inverse 2-D Fourier transform in polar coordinates, using the Fourier slice theorem (imaging-3.4) to replace $F(\omega\cos\theta,\omega\sin\theta)$ by $P_\theta(\omega)$; the polar area element $dk_x\,dk_y=|\omega|\,d\omega\,d\theta$ (change of variables, pma-10.9) supplies the factor $|\omega|$. The $\theta$-integral is then a back-projection (imaging-3.6) — of filtered, not raw, projections. The ramp is large at high frequencies, which in the sampled implementation is cut off at the detector's Nyquist frequency, giving the discrete kernel with its negative tails; in space these tails subtract exactly the $1/r$ halo.`,
-      caption: String.raw`Drag **views accumulated** from 1 to 180: each filtered projection is smeared across the image and the head phantom emerges (left). Switch **filter** off to see the blurry unfiltered result (simple back-projection). The sinogram of filtered projections (second panel) has dark/light fringes next to every edge — the negative side-lobes. Right: the current raw projection, its filtered version, and the Ram–Lak kernel.`,
-      deps: ['imaging-3.4', 'imaging-3.6', 'pma-10.9'],
+      statement: String.raw`For smooth compactly supported f with complete ideal parallel projections, filtered back-projection applies the Fourier multiplier |ω| to each projection, then integrates the filtered values over directions:
+Write $s_\theta=x\cos\theta+y\sin\theta$. Then
+$$q_\theta(s)=\int_{-\infty}^{\infty}|\omega|P_\theta(\omega)e^{2\pi i\omega s}\,d\omega,$$
+$$f(x,y)=\int_0^\pi q_\theta(s_\theta)\,d\theta.$$
+Bandlimiting the ramp at detector Nyquist 1/(2τ) gives sampled kernel h[0]=1/(4τ²), h[n]=−1/(π²n²τ²) for odd n, and zero for nonzero even n. The corresponding discrete convolution is q[j]=τΣₘh[j−m]p[m]. The ideal ramp has zero response exactly at frequency0; a finite cropped filtered projection need not integrate to zero.`,
+      idea: String.raw`Polar coordinates in the inverse 2-D Fourier transform supply the Jacobian |ω|. The slice theorem replaces each radial Fourier restriction by the corresponding projection transform; its inverse transform is qθ, and the remaining angle integral is back-projection. In the continuous full-band model this inverts the 1/r blur. A finite Nyquist cutoff limits resolution, and sampled edges introduce aliasing. Kak & Slaney §3.3.3 explicitly distinguish the finite kernel's nonzero DFT value at DC from simply sampling |ω| and forcing its DC bin to zero; zero-padding permits the desired aperiodic convolution over the retained detector samples. Fourier inversion (rca 9.11) justifies the inverse-transform step: each smooth compactly supported ideal projection and its transform are integrable, so the projection is recovered by the inverse integral. Changing from that theorem's angular frequency to the cycles-per-length convention used here gives the factor $e^{2\pi i\omega s}$. Multiplying the projection spectrum by $|\omega|$ before that inverse integral defines the filtered projection $q_\theta$; finite sampled data do not acquire the ideal theorem's exact recovery guarantee.`,
+      caption: String.raw`Accumulate the first k ordered one-degree views from a fixed 180-view scan: this changes angular coverage, rather than selecting k uniformly spaced directions over180°. Filtering is followed by back-projection with fixed π/180 angular weights. The sinogram follows the chosen filter mode; the next panel always compares the last raw view with its filtered counterpart. The kernel panel includes the full nearest negative side-lobes. “None” shows raw back-projection after an affine fit to the known phantom solely for display/error comparison; that fit would require ground truth in an application.`,
+      deps: ['imaging-3.4', 'imaging-3.6', 'pma-10.9', 'rca-9.11'],
       tags: ['filtered back-projection', 'ramp filter'],
-      refs: ['Kak–Slaney §3.3', 'Prince–Links ch. 6'],
-      credit: 'Ramachandran & Lakshminarayanan, 1971 (convolution back-projection); Shepp & Logan, 1974',
-      verify: true,
-      scope: String.raw`Parallel beam, noise-free, 140 detector samples and up to 180 views; the Shepp–Logan values here are Toft's contrast-enhanced version. With fewer views, streaks (3.10); with noise, the ramp amplifies it (3.8); the reconstructed values are in the same units as the object.`,
+      refs: ['Kak & Slaney §3.3.2–3.3.3, pp.63–75, Eqs.33–35,61,65–68; Kuchment & Quinto Theorem11.1/proof'],
+      credit: 'Author presentation: Kak & Slaney, 1988, §3.3',
+      verify: false,
+      scope: String.raw`Chosen noise-free ten-ellipse head-like phantom, not patient data or a reproduction of the original phantom's amplitudes. Parallel geometry, 140 ideal point samples per view on±1.45, 180 views on[0,180°), 96×96 output. The filter uses a512-point zero-padded FFT of the finite sampled ramp kernel and τ convolution scaling; back-projection interpolates detector values linearly. The finite kernel has a small positive numerical DC response, and cropping the filtered data omits its external tails. Their actual values are reported. Filtered output retains object units approximately under this discretization; raw unfiltered back-projection needs the stated fitted rescaling. The image uses a fixed grey window0.05–0.4 for contrast, so display saturation is intentional and is not applied to numerical errors.`,
       viz(v) {
         const Wp = 96, nA = 180, nd = 140, PH = slEllipses(0.9);
         const sc = makeScan(nA, nd), sino = sinoEll(PH, sc), truth = raster((x, y) => ellAt(PH, x, y), Wp, Wp, 2);
         const F = makeFilter(nd, sc.tau, 'ramp', 1), q = filterSino(sino, sc, F);
         const A = v.stage({ x: [0, Wp], y: [0, Wp], equal: true, axes: false, height: 290, title: 'Reconstruction', minWidth: 230 });
-        const S = v.stage({ x: [0, 180], y: [-1.45, 1.45], axes: 'box', gutter: true, height: 290, xlabel: 'view angle $\\theta$ (°)', ylabel: 's', title: 'Filtered sinogram', minWidth: 230, xticks: [0, 90, 180] });
+        const S = v.stage({ x: [0, 180], y: [-1.45, 1.45], axes: 'box', gutter: true, height: 290, xlabel: 'view angle $\\theta$ (°)', ylabel: 's', title: 'Sinogram: selected filter mode', minWidth: 230, xticks: [0, 90, 180] });
         const P = v.stage({ x: [-1.45, 1.45], y: [-1.2, 1.4], axes: 'box', gutter: true, height: 290, xlabel: 'detector position $s$', ylabel: 'value', title: 'One view: raw, filtered', minWidth: 230 });
-        const K = v.stage({ x: [-8.5, 8.5], y: [-0.35, 1.1], axes: 'box', gutter: true, height: 290, xlabel: 'sample index $n$', ylabel: '$h[n]/h[0]$', title: 'Ram–Lak kernel $h[n]$', minWidth: 230 });
+        const K = v.stage({ x: [-8.5, 8.5], y: [-0.46, 1.1], axes: 'box', gutter: true, height: 290, xlabel: 'sample index $n$', ylabel: '$h[n]/h[0]$', title: 'Ram–Lak kernel $h[n]$', minWidth: 230 });
         const nv = v.slider('views accumulated', 1, 180, 180, { step: 1, int: true });
         const fl = v.select('filter', [{ value: 'ramp', label: 'ramp (filtered)' }, { value: 'none', label: 'none (simple BP)' }], 'ramp');
         const cache = new Map();
@@ -124,7 +128,7 @@ In the discrete implementation $h$ is the band-limited Ram–Lak kernel, $h[0]=1
           const ok = fl.value === 'ramp';
           // unfiltered image: scale to best fit for display and for the error
           let a = 1, b = 0;
-          if (!ok) { const mr = mean(r), mt = mean(truth); let sxy = 0, sxx = 0; for (let i = 0; i < r.length; i++) { sxy += (r[i] - mr) * (truth[i] - mt); sxx += (r[i] - mr) ** 2; } a = sxy / sxx; b = mt - a * mr; }
+          if (!ok) { const mr = mean(r), mt = mean(truth); let sxy = 0, sxx = 0; for (let i = 0; i < r.length; i++) { sxy += (r[i] - mr) * (truth[i] - mt); sxx += (r[i] - mr) ** 2; } a = sxx>0?sxy/sxx:0; b = mt-a*mr; }
           const shown = ok ? r : Float64Array.from(r, (x) => a * x + b);
           showImage(A, shown, Wp, Wp, { lo: 0.05, hi: 0.4, id: 'fbp', extra: `${k}${fl.value}` }); frame(A, Wp, Wp);
           const qs = ok ? q : sino; let mx = 0; for (const x of qs) mx = Math.max(mx, Math.abs(x));
@@ -137,18 +141,18 @@ In the discrete implementation $h$ is the band-limited Ram–Lak kernel, $h[0]=1
           S.vline((180 * (k - 1)) / nA, { color: 'gold', width: 1.5 });
           const kk = k - 1, th = (kk * 180) / nA;
           const raw = Array.from({ length: nd }, (_, j) => [sc.sOf(j), sino[kk * nd + j]]), fil = Array.from({ length: nd }, (_, j) => [sc.sOf(j), q[kk * nd + j]]);
-          P.setView([-1.45, 1.45], [-1.2, Math.max(1.4, ...raw.map((p) => p[1]) ) * 1.1]);
+          const values=[0,...raw.map(p=>p[1]),...fil.map(p=>p[1])],lo=Math.min(...values),hi=Math.max(...values),pad=.08*Math.max(.1,hi-lo);P.setView([-1.45,1.45],[lo-pad,hi+pad]);
           P.hline(0, { color: 'faint', width: 1 });
           P.path(raw, { color: 'muted', width: 2 });
           P.path(fil, { color: 'accent', width: 2.2 });
-          const h0 = 1 / (4 * sc.tau * sc.tau);
-          for (let n = -8; n <= 8; n++) { const hv = n === 0 ? h0 : n % 2 === 0 ? 0 : -1 / (PI * PI * n * n * sc.tau * sc.tau); const y = hv / h0; K.segment([n, 0], [n, y], { color: n === 0 ? 'accent' : 'red', width: 2.5 }); K.dot(n, y, { r: 4, color: n === 0 ? 'accent' : 'red' }); }
+          const h0=F.kernel(0);
+          for (let n = -8; n <= 8; n++) { const hv=F.kernel(n); const y = hv / h0; K.segment([n, 0], [n, y], { color: n === 0 ? 'accent' : 'red', width: 2.5 }); K.dot(n, y, { r: 4, color: n === 0 ? 'accent' : 'red' }); }
           K.hline(0, { color: 'faint', width: 1 });
           const ints = (arr) => arr.reduce((s, p) => s + p[1], 0) * sc.tau;
-          st = { k, th, e: rmse(shown, truth), ip: ints(raw), iq: ints(fil), ok };
+          const D=finiteRampIntegralAudit({raw:raw.map(p=>p[1]),filtered:fil.map(p=>p[1])},sc,F);st={k,th,e:rmse(shown,truth),ip:D.raw,iq:D.filtered,dc:D.finiteDC,ok};
         });
         v.legend([['muted', 'raw projection'], ['accent', 'filtered projection'], ['red', 'negative tails of $h$', { dot: true }]]);
-        v.readout(() => st ? `${st.k} view${st.k === 1 ? '' : 's'} (last at $${fx(st.th, 0)}^\\circ$), ${st.ok ? 'ramp-filtered' : 'unfiltered (rescaled to best fit)'}: RMS error against the phantom $${fx(st.e, 4)}$ (phantom RMS $${fx(rms(truth), 3)}$).\nThis view: $\\int p\\,ds=${fx(st.ip, 3)}$ (the total mass) but $\\int q\\,ds=${fx(st.iq, 4)}\\approx0$: the ramp removes the zero-frequency component and puts negative lobes beside every positive feature.` : '');
+        v.readout(()=>st?`${st.k}/180 ordered views through${fx(st.th,0)}°; ${st.ok?'ramp-filtered':'raw BP with ground-truth affine display fit'}. RMS error of the displayed numerical values=${fx(st.e,6)}; phantom RMS=${fx(rms(truth),6)}.`+'\n'+`Last view: finite detector-window ∫p ds=${fx(st.ip,6)}; finite cropped ∫q ds=${fx(st.iq,6)} (not constrained to zero). Actual finite-filter DC gain τH[0]=${fx(st.dc,6)}; ideal whole-line ramp DC=0. Image contrast window0.05–0.4 does not alter this error calculation.`:'');
       },
     },
 
@@ -157,13 +161,17 @@ In the discrete implementation $h$ is the band-limited Ram–Lak kernel, $h[0]=1
       num: '3.8',
       kind: 'Concept',
       name: 'Ramp-filter windows and noise',
-      statement: String.raw`The ramp $|\omega|$ amplifies high spatial frequencies, where photon-counting noise (imaging-1.7) is as strong as at low frequencies and the signal is weak. Practical filters multiply the ramp by a **window** $W(\omega)$ that falls from 1 to 0 at a cutoff $\omega_c$: Shepp–Logan $\operatorname{sinc}$, cosine, Hamming or Hann. The reconstructed noise variance is proportional to $\int|\omega|^2W(\omega)^2\,d\omega$ while the resolution is set by the width of $|\omega| W(\omega)$; a sharper filter (ramp, high cutoff) gives better resolution and more noise, a smoother one the reverse, and the trade-off is a curve in the noise–resolution plane.`,
-      idea: String.raw`Reconstruction is linear, so noise in the sinogram passes through the same filter-and-back-project operation as the signal. White noise in the projections has a flat spectrum; after the ramp its spectrum grows as $\omega^2$, so variance comes mostly from the highest frequencies. A window removes those frequencies — less variance, and a lower modulation transfer (imaging-1.4) at fine scale. The reconstruction's point spread function is the Fourier transform of the windowed filter, so the window also fixes the edge sharpness measured here.`,
-      caption: String.raw`The phantom has a flat region (noise measured there), and a bright disc whose edge rise measures resolution. Change **window**, **cutoff** and **photons per ray**. Left: the reconstruction from Poisson-noisy projections. Middle: the filter responses $|\omega|W(\omega)$ for all windows (current one thick). Right: noise against edge width for every window as the cutoff goes from 0.3 to 1 — a smoother filter moves a point down and to the right along its curve; the gold dot is the current setting.`,
-      deps: ['imaging-3.7'],
+      statement: String.raw`A windowed ramp filter has frequency response $H(\omega)=|\omega|W(\omega)$ within a finite passband. Windows such as Shepp–Logan, cosine, Hamming and Hann suppress high spatial frequencies, usually trading edge sharpness for reduced noise. In the **stationary white projection-noise idealization**, the variance after this one-dimensional filter is proportional to
+$$\int |\omega|^2|W(\omega)|^2\,d\omega.$$
+This is not a universal formula for reconstructed-image noise: back-projection geometry and the input covariance also enter. The displayed Poisson-counting experiment instead measures a fixed realization's reconstructed error in a chosen region and its noise-free edge response.`,
+      idea: String.raw`Linearity sends noise through the same filter and back-projection operator as the signal. For stationary white projection noise with constant spectral density $S_0$, the filter output has spectral density $S_0|H(\omega)|^2$; integrating it gives the filtered-projection variance. Plancherel (rca 9.13), after matching Fourier conventions, equates this finite-passband integral with the energy of the square-integrable filter kernel. It is the kernel to which the finite-energy theorem applies: ideal white noise on an infinite line is not itself an $L^2$ function.
+
+For independent equal-variance sampled errors, filtered variance is the input variance times the sum of squared kernel weights. Unequal input variances instead contribute $\sum_j h_j^2\sigma_j^2$; a complete linear reconstruction also mixes rays through its back-projection weights. Here transmitted Poisson counts have different means on different rays, and the negative-log transform generally produces unequal error variances and low-count bias. The plotted region's spatial spread of one reconstructed error realization is therefore not an ensemble variance or a direct evaluation of the white-noise integral. The window also changes the noise-free reconstructed edge, which is measured separately.`,
+      caption: String.raw`Change **window**, **cutoff** and **photons per ray**. Left: reconstruction from Poisson-noisy projections. Middle: filter responses $|\omega|W(\omega)$ (current one thick). Right: spatial error spread in the flat region against the **noise-free** 10–90% edge width for each window and cutoff; the gold dot marks the selected setting. These are measurements of this sampled phantom experiment, rather than a universal noise–resolution law.`,
+      deps: ['imaging-3.7', 'rca-9.13'],
       tags: ['filter window', 'noise', 'resolution'],
       refs: ['Kak–Slaney §3.3', 'Kak–Slaney §5.2'],
-      scope: String.raw`Parallel beam, 180 views, 140 detector samples; Poisson counts $N\sim\mathrm{Poisson}(I_0e^{-p})$ per ray with fixed noise realisation; attenuation scaled so the largest line integral is about $2.5$. Noise is the standard deviation of reconstruction error in a uniform 0.12-radius disc, resolution the 10–90% rise across the edge of the bright disc. Both are measured on this phantom only.`,
+      scope: String.raw`Parallel beam, 180 views, 140 detector samples; independent Poisson counts $N\sim\mathrm{Poisson}(I_0e^{-p})$ per ray with fixed noise realization; attenuation scaled so the largest line integral is about $2.5$. Counts are clipped below0.5 before the negative log, which regularizes zeros and can introduce bias. The reported noise is the spatial standard deviation of reconstructed projection-error values in a uniform0.12-radius disc, divided by disc contrast; it is not an ensemble estimate. Resolution is the10–90% rise of the noise-free filtered bright-disc edge. The stationary-white-noise filter formula is a separate idealization; actual post-log Poisson errors are generally heteroscedastic. Neither the sampled ROI measurement nor its trend is guaranteed by that formula.`,
       viz(v) {
         const Wp = 96, nA = 180, nd = 140, KAP = 5;
         const PH = [[0.2, 0.7, 0.7, 0, 0, 0], [0.3, 0.22, 0.22, -0.28, 0.18, 0], [0.3, 0.06, 0.06, 0.3, 0.38, 0], [0.3, 0.04, 0.04, 0.45, 0.15, 0], [0.3, 0.025, 0.025, 0.1, 0.5, 0], [-0.15, 0.09, 0.09, -0.1, -0.35, 0]];

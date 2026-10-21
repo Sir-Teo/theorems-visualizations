@@ -1,6 +1,7 @@
-import {consecutive as abc,intermediatePeak} from './verification-models.shared.js';
 // Chemical Kinetics — Chapter 4: Complex mechanisms (items 4.1–4.5)
 import { clamp, ode, logspace, nz } from './ch04.shared.js';
+
+import{consecutive as abc,intermediatePeak}from'./kin-source-audit-mechanisms.js';
 
 export default {
   collection: 'kin',
@@ -11,17 +12,18 @@ export default {
     // ------------------------------------------------------------------ 4.1
     {
       num: '4.1', kind: 'Proposition', name: 'Consecutive reactions A → B → C',
-      statement: String.raw`For two successive first-order steps $\mathrm A\xrightarrow{k_1}\mathrm B\xrightarrow{k_2}\mathrm C$ with $k_1,k_2>0$ and only A present at $t=0$,
+      statement: String.raw`For two successive first-order steps $\mathrm A\xrightarrow{k_1}\mathrm B\xrightarrow{k_2}\mathrm C$ with only A present at $t=0$,
 $$[\mathrm A]=[\mathrm A]_0e^{-k_1t},\qquad [\mathrm B]=\frac{k_1[\mathrm A]_0}{k_2-k_1}\bigl(e^{-k_1t}-e^{-k_2t}\bigr),\qquad [\mathrm C]=[\mathrm A]_0-[\mathrm A]-[\mathrm B],$$
-and $[\mathrm B]=k_1t\,e^{-k_1t}[\mathrm A]_0$ when $k_1=k_2$. The intermediate rises, passes a single maximum at
+and $[\mathrm B]=k_1t\,e^{-k_1t}[\mathrm A]_0$ when $k_1=k_2$. For positive rate constants, the intermediate rises, passes a single maximum at
 $$t_{\max}=\frac{\ln(k_1/k_2)}{k_1-k_2},\qquad [\mathrm B]_{\max}=[\mathrm A]_0\Bigl(\frac{k_1}{k_2}\Bigr)^{k_2/(k_2-k_1)},$$
-with the continuous equal-rate limits $t_{\max}=1/k_1$ and $[\mathrm B]_{\max}=[\mathrm A]_0/e$. It then decays; the product C starts with zero slope (an induction period), so it is not formed at its fastest at $t=0$.`,
-      idea: String.raw`The rate equations are linear: $\dot A=-k_1A$ is solved at once (1.5), and $\dot B=k_1A-k_2B$ is a first-order equation driven by the known function $A(t)$, solved with an integrating factor $e^{k_2t}$; C follows from mass conservation. The maximum of B is where inflow equals outflow, $k_1A=k_2B$, which is why it lies where $\dot B=0$. The product C is symmetric under $k_1\leftrightarrow k_2$ (B itself is not), and late-time behaviour is governed by the smaller of the two rate constants, the seed of the rate-determining step (4.2).`,
+with the equal-rate limits $t_{\max}=1/k_1$ and $[\mathrm B]_{\max}=[\mathrm A]_0/e$. It then decays; the product C starts with zero slope (an induction period), so it is not formed at its fastest at $t=0$.`,
+      idea: String.raw`The rate equations are linear: $\dot A=-k_1A$ is solved at once (1.5), and $\dot B=k_1A-k_2B$ is a first-order equation driven by the known function $A(t)$, solved with an integrating factor $e^{k_2t}$; C follows from mass conservation. The maximum of B is where inflow equals outflow, $k_1A=k_2B$, which is why it lies where $\dot B=0$. The final-product curve C is symmetric under swapping $k_1$ and $k_2$; the intermediate B is not. C's late-time behaviour is governed by the smaller of the two rate constants, the seed of the rate-determining step (4.2).`,
       caption: String.raw`Slide $k_1$ and $k_2$ (log scale). The curves are the closed forms; the dots are an independent numerical integration of the rate equations, and the vertical line marks $t_{\max}$. Make $k_2\gg k_1$ and the induction period of C shrinks; make $k_2\ll k_1$ and B piles up and C waits for it. Tick the box to show the tangent to C at the origin: it is horizontal.`,
       deps: ['kin-1.5', 'ode-3.5'],
-      refs: ['Harcourt–Esson1866, William Esson theoretical appendix pp216–221, especially Eq18–21 on p220; Phil.Trans.R.Soc.156:193–221, full original https://upload.wikimedia.org/wikipedia/commons/7/77/On_the_Laws_of_Connexion_between_the_Conditions_of_a_Chemical_Change_and_Its_Amount_%28IA_jstor-108945%29.pdf'],
+      refs: ['Claire Vallance, Reaction Kinetics author notes, §10 pp.14–15 and §12 pp.16–17; exact integrating-factor/peak derivation independently checked'],
       tags: ['consecutive reactions', 'intermediates'],
-      credit: 'William Esson’s theoretical appendix in Harcourt–Esson, 1866 (Phil.Trans.R.Soc.156), Eqs18–21 with the direct-loss rate α set to0',
+      credit: 'Two-step linear mass-action model',
+      verify: false,
       scope: String.raw`Two irreversible first-order (or pseudo-first-order) steps in a closed, constant-volume system with no other fate for B.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Chemical_kinetics' },
       viz(v) {
@@ -39,7 +41,7 @@ with the continuous equal-rate limits $t_{\max}=1/k_1$ and $[\mathrm B]_{\max}=[
           const sol = ode((t, y) => [-a * y[0], a * y[0] - b * y[1], b * y[1]], [1, 0, 0], T, { kmax: Math.max(a, b) });
           const pts = []; for (let i = 0; i <= 24; i++) { const t = T * i / 24, y = sol.at(t); pts.push([t, y[1]]); }
           s.dots(pts, { r: 3, color: 'ink' });
-          const tm = intermediatePeak(a,b).time;
+          const tm=intermediatePeak(a,b).t;
           const Bm = abc(a, b, tm)[1];
           s.vline(tm, { color: 'muted', dash: true });
           s.dot(tm, Bm, { r: 5, color: 'orange' });
@@ -48,16 +50,16 @@ with the continuous equal-rate limits $t_{\max}=1/k_1$ and $[\mathrm B]_{\max}=[
           info = { tm, Bm, maxNum, tn, T };
         });
         v.legend([['accent', 'A'], ['orange', 'B (intermediate)'], ['green', 'C (product)'], ['ink', 'numerical integration', { dot: true }]]);
-        v.readout(() => `$t_{\\max}=\\ln(k_1/k_2)/(k_1-k_2)=${nz(v, info.tm)}$ s, $[\\mathrm B]_{\\max}=${v.fix(info.Bm, 3)}$ ; numerical maximum $${v.fix(info.maxNum, 3)}$ at $${nz(v, info.tn)}$ s.\n$k_1/k_2=${v.fix(k1.value / k2.value, 2)}$: ${k1.value > k2.value ? 'B accumulates, C is slow to appear' : 'B stays small and C follows A'}.`);
+        v.readout(() => `$t_{\\max}=\\ln(k_1/k_2)/(k_1-k_2)=${nz(v, info.tm)}$ s, $[\\mathrm B]_{\\max}=${v.fix(info.Bm, 3)}$ ; numerical maximum $${v.fix(info.maxNum, 3)}$ at $${nz(v, info.tn)}$ s.\n$k_1/k_2=${v.fix(k1.value / k2.value, 2)}$: ${k1.value > 10*k2.value ? 'B accumulates before the slower conversion to C' : k2.value > 10*k1.value ? 'B remains small while C follows A consumption' : 'the rates are comparable; B has an appreciable transient population'}.`);
       },
     },
     // ------------------------------------------------------------------ 4.2
     {
       num: '4.2', kind: 'Concept', name: 'Rate-determining step',
       statement: String.raw`In a mechanism made of irreversible steps in sequence, $\mathrm A_0\xrightarrow{k_1}\mathrm A_1\xrightarrow{k_2}\cdots\xrightarrow{k_n}\mathrm A_n$, the mean time for a molecule to reach the end is $\sum_i 1/k_i$. If one step is much slower than the others, $k_s\ll k_i$ for $i\ne s$, the overall conversion is approximately first order with the rate constant of that step, $[\mathrm A_n]\approx[\mathrm A_0](1-e^{-k_st})$ after a short delay, and only that step's rate constant (and the species before it) appears in the observed rate law. The step is called rate-determining or rate-limiting. For a *branching* or reversible mechanism the notion is more delicate: it is the step whose rate constant, among the transition states and intermediates, has the largest influence on the overall rate.`,
-      idea: String.raw`The sequence is a chain of linear first-order steps, so the time to complete is a sum of independent exponential waiting times (4.1). The mean is $\sum1/k_i$, dominated by the largest term, the slowest step. Fast steps after the bottleneck are drained as soon as material arrives, so their intermediates never accumulate; fast steps before it only hurry the queue to the front. The idea has an energetic twin in transition-state theory (3.2): the step with the highest transition state relative to the preceding intermediate is the slow one.`,
+      idea: String.raw`The sequence is a chain of linear first-order steps, so the time to complete is a sum of independent exponential waiting times (4.1). The mean is $\sum1/k_i$, dominated by the largest term, the slowest step. Fast steps after the bottleneck are drained as soon as material arrives, so their intermediates never accumulate; fast steps before it only hurry the queue to the front. The idea has an energetic twin in transition-state theory (3.2): the step with the highest transition state relative to the preceding intermediate is the slow one. Linearity of expectation in prob 1.6.1 turns the sum of the finite-mean stage waiting times into $E[\sum_iT_i]=\sum_iE[T_i]=\sum_i1/k_i$ for positive rates. Independence is part of the exponential-clock model, but is not needed for this mean-addition step itself; domination by one large mean is the extra bottleneck approximation.`,
       caption: String.raw`Four steps in series with adjustable rate constants (log scale). Left: populations of all five species; the dashed curve is the one-step model $1-e^{-k_{\rm s}t}$ for the slowest step. Right: bars show where the material is at the chosen time. Make one constant 100 times smaller than the rest and the queue builds in front of it, and the dashed model lies on the product curve; make them all equal and no step is singled out.`,
-      deps: ['kin-4.1', 'prob-1.2.4'],
+      deps: ['kin-4.1', 'prob-1.6.1'],
       refs: ['Houston'],
       tags: ['rate-determining step', 'bottleneck'],
       scope: String.raw`Irreversible first-order steps in series. With reversible steps or branching the rate-determining step is not simply the smallest rate constant.`,
@@ -98,23 +100,24 @@ with the continuous equal-rate limits $t_{\max}=1/k_1$ and $[\mathrm B]_{\max}=[
       num: '4.3', kind: 'Method', name: 'Steady-state approximation',
       statement: String.raw`If a reactive intermediate I is consumed much faster than it is formed, its concentration stays small and nearly constant after a brief start-up, and one may set $d[\mathrm I]/dt\approx0$ and solve the resulting *algebraic* equation for $[\mathrm I]$. For $\mathrm A\xrightarrow{k_1}\mathrm I\xrightarrow{k_2}\mathrm P$ this gives
 $$[\mathrm I]_{\rm ss}=\frac{k_1}{k_2}[\mathrm A],\qquad \frac{d[\mathrm P]}{dt}=k_1[\mathrm A]\quad\Rightarrow\quad [\mathrm P]=[\mathrm A]_0\bigl(1-e^{-k_1t}\bigr).$$
-It is accurate when $k_2\gg k_1$ and after a time of order $1/k_2$; the maximum absolute product error, normalized by $[\mathrm A]_0$, is of order $k_1/k_2$. Relative product error is not uniformly small near t=0. The method is applied in the same way to every intermediate of a longer mechanism, and it replaces the coupled differential equations by a rate law in terms of the stable species only.`,
+It is accurate when $k_2\gg k_1$ and after a time of order $1/k_2$; the maximum absolute error in product fraction is of order $k_1/k_2$; a uniform relative-error claim at the initial zero product is not intended. The method is applied in the same way to every intermediate of a longer mechanism, and it replaces the coupled differential equations by a rate law in terms of the stable species only.`,
       idea: String.raw`Compare with the exact solution (4.1): $[\mathrm I]=\frac{k_1}{k_2-k_1}(e^{-k_1t}-e^{-k_2t})[\mathrm A]_0$. Once $e^{-k_2t}$ has died out, $[\mathrm I]=\frac{k_1}{k_2-k_1}[\mathrm A]$, which equals the steady-state value times $1/(1-k_1/k_2)$: the approximation is the first term of an expansion in the small parameter $k_1/k_2$. What the approximation discards is the start-up transient (duration $1/k_2$) and the small amount of material sitting in I. In a singular-perturbation language it is the slow manifold of the system, reached after a fast initial layer.`,
       caption: String.raw`Left: exact $[\mathrm I]$ (blue) and the steady-state value $k_1[\mathrm A]/k_2$ (orange, dashed); the product P exact (solid) and from the approximation (dashed). Right: the largest deviation of the approximate P from the exact one over all times, against $k_2/k_1$ (log–log), with a dot at your setting. Push $k_2/k_1$ below about 10 and the approximation visibly fails, a case examined in 4.5.`,
       deps: ['kin-4.1'],
-      refs: ['Houston', 'Steinfeld et al.'],
+      refs: ['Claire Vallance, Reaction Kinetics author notes, §10 pp.14–15 and §12 pp.16–17; exact integrating-factor/peak derivation independently checked'],
       tags: ['steady state', 'approximation'],
-      credit: 'Bodenstein, 1913 (the "Bodenstein stationary-state principle"); Chapman & Underhill, 1913',
-      verify: true,
+      credit: 'Fast-intermediate asymptotic approximation',
+      verify: false,
       scope: String.raw`Valid when the intermediate is formed slowly and consumed quickly, and for times long compared with its lifetime; it can fail early in the reaction, or when the intermediate builds up.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Steady-state_approximation' },
       viz(v) {
-        const ratio = v.slider('$k_2/k_1$', 0.2, 1000, 20, { log: true, sig: 2 });
+        const ratio = v.slider('$k_2/k_1$', 0.2, 1000, 20, { log: true, sig: 2, fmt: x=>x<10?x.toFixed(2):x.toFixed(0) });
         const a = 1;
         const s = v.stage({ x: [0, 5], y: [0, 1.05], axes: 'box', gutter: true, height: 320, xlabel: 'time $t$ ($k_1=1$)', ylabel: 'concentration / [A]₀', title: 'intermediate and product', weight: 1.2 });
         const e = v.stage({ x: [0.2, 1000], y: [1e-4, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$k_2/k_1$', ylabel: 'max |ΔP|', title: 'worst error of the approximation', weight: 1 });
         const exact = (k2, t) => { const r = abc(a, k2, t); return { A: r[0], I: r[1], P: r[2] }; };
-        const maxErr = (k2) => intermediatePeak(1,k2).value;
+        // P_ss-P_exact equals the exact intermediate fraction at every time.
+        const maxErr=k2=>intermediatePeak(1,k2).B;
         const curve = logspace(0.2, 1000, 60).map((r) => [r, maxErr(r)]);
         let info = {};
         v.render(() => {
@@ -123,15 +126,15 @@ It is accurate when $k_2\gg k_1$ and after a time of order $1/k_2$; the maximum 
           s.fn((t) => Math.exp(-t) / k2, { color: 'orange', width: 2, dash: true, domain: [0, T] });
           s.fn((t) => exact(k2, t).P, { color: 'green', width: 2.4, domain: [0, T] });
           s.fn((t) => 1 - Math.exp(-t), { color: 'ink', width: 1.8, dash: true, domain: [0, T] });
-          s.setView([0, T], [0, Math.max(1.05, 1.1/k2)]);
-          e.path(curve, { color: 'accent', width: 2.2 });
-          const me = maxErr(k2); e.dot(k2, Math.max(me, 1.5e-4), { r: 6, color: 'orange' });
+          s.setView([0,T],[0,1.05*Math.max(1,1/k2)]);
+          e.setView([.2,1000],[1e-4,5.5]);e.path(curve, { color: 'accent', width: 2.2 });
+          const me = maxErr(k2); e.dot(k2, me, { r: 6, color: 'orange' });
           e.fn((r) => 1 / r, { color: 'faint', dash: true, domain: [0.2, 1000] });
           const t1 = 3; const ex = exact(k2, t1);
           info = { me, Iex: ex.I, Iss: Math.exp(-t1) / k2, t1 };
         });
         v.legend([['accent', 'I exact'], ['orange', 'I steady-state', { dash: true }], ['green', 'P exact'], ['ink', 'P steady-state', { dash: true }]]);
-        v.readout(() => `$k_2/k_1=${nz(v, ratio.value, 3)}$: largest error in [P] $=${v.sci(info.me, 2)}$ (compare $k_1/k_2=${v.sci(1 / ratio.value, 2)}$, the faint line on the right).\nAt $t=${info.t1}/k_1$: $[\\mathrm I]_{\\rm exact}=${v.sci(info.Iex, 3)}$, $[\\mathrm I]_{\\rm ss}=${v.sci(info.Iss, 3)}$, ratio $${v.fix(info.Iex / info.Iss, 3)}$ ${ratio.value > 1 ? '(the long-time ratio tends to $1/(1-k_1/k_2)$).' : '(the quoted long-time constant requires k₂>k₁; it does not apply here).'}`);
+        v.readout(() => `$k_2/k_1=${nz(v, ratio.value, 3)}$: largest error in [P] $=${v.sci(info.me, 2)}$ (compare $k_1/k_2=${v.sci(1 / ratio.value, 2)}$, the faint line on the right).\nAt $t=${info.t1}/k_1$: $[\\mathrm I]_{\\rm exact}=${v.sci(info.Iex, 3)}$, $[\\mathrm I]_{\\rm ss}=${v.sci(info.Iss, 3)}$, ratio $${v.fix(info.Iex / info.Iss, 3)}$ ${ratio.value>1?'(approaches $1/(1-k_1/k_2)$ after the fast transient).':'(fast-consumption assumption fails here; that long-time factor is inapplicable).'}`);
       },
     },
     // ------------------------------------------------------------------ 4.4
@@ -184,7 +187,7 @@ The observed rate constant is $k_{\rm eff}=Kk_2/(1+K)$, which reduces to $Kk_2$ 
       statement: String.raw`"The intermediate is reactive, so set its rate of change to zero" is not a theorem. The steady-state approximation needs a *small parameter* and a *time scale separation*, not just a short-lived species: it holds on the slow manifold, reached after an initial layer of duration $\sim1/k_2$ in which the intermediate is still being established, and its error is of relative order $\varepsilon=k_1/k_2$. For $\mathrm A\xrightarrow{k_1}\mathrm I\xrightarrow{k_2}\mathrm P$ for $k_2>k_1$ the exact long-time ratio is $[\mathrm I]/[\mathrm A]=k_1/(k_2-k_1)$, not $k_1/k_2$, and for $k_2<k_1$ the intermediate accumulates ($[\mathrm I]/[\mathrm A]$ grows without bound) and the approximation is wrong by a large factor. A highly reactive intermediate that is also formed in a burst (large initial amount, or a fast first step) is not in a steady state either.`,
       idea: String.raw`Write the exact equations as $\dot A=-k_1A,\ \dot I=k_1A-k_2I$. The line $I=\frac{k_1}{k_2-k_1}A$ is invariant (the eigenvector of the slow eigenvalue $-k_1$), and every trajectory is attracted to it at rate $k_2$. Setting $\dot I=0$ replaces it by $I=\frac{k_1}{k_2}A$, a different line unless $k_1\ll k_2$. What matters is therefore the ratio of the two eigenvalues, the separation of time scales (as in singular perturbation theory with small parameter $\varepsilon$), and the initial condition's distance from the slow manifold; "short-lived" only controls the first.`,
       caption: String.raw`Left: the phase plane of $(A,I)$ with the true slow manifold (green) and the steady-state line (orange dashed); the trajectory starts at $(1,I_0)$ and hugs the green line after the initial layer. Right: $[\mathrm I]$ against time, exact and steady-state. Lower $k_2/k_1$ toward 1, or start with $I_0>0$, and the orange line misses the trajectory; at $k_2<k_1$ there is no such line (the trajectory runs off to the $I$ axis as A is used up first) and the approximation is useless.`,
-      deps: ['kin-4.3', 'ode-3.9'],
+      deps: ['kin-4.3'],
       refs: ['Steinfeld et al.'],
       tags: ['steady state', 'time scales'],
       scope: String.raw`Two-step linear example, where the slow manifold is known in closed form; in nonlinear mechanisms the same conditions apply with the manifold found numerically.`,

@@ -3,6 +3,8 @@ import {
   clamp, tf, pmul, simLoop, trace, stepInfo, second, stepExact, fx, TAU, proots, xMark, tfAt, cabs, ddeStep, kiCritical,
 } from './ch04.shared.js';
 
+import { secondOrderValue, laggedSecondOrderValue, lagErrorBound } from './ctrl-source-audit.shared.js';
+
 export default {
   collection: 'ctrl',
   chapter: 4,
@@ -140,30 +142,33 @@ with the **error constants** $K_p=\lim_{s\to0}L(s)$, $K_v=\lim_{s\to0}sL(s)$, $K
       num: '4.8',
       kind: 'Concept',
       name: 'Dominant-pole approximation',
-      statement: String.raw`The **dominant poles** are a slow pair (or single real pole) that controls the response after faster modes decay. A low-order model retaining these poles and the DC gain can approximate a stable system when the discarded modal residues and zero effects are also controlled; pole separation alone is not a general error guarantee. For $G(s)=\dfrac{\omega_n^2p}{(s+p)(s^2+2\zeta\omega_ns+\omega_n^2)}$ the full response is
-$$y(t)=y_2(t)+B\,e^{-pt}+\text{(small change in the second-order part)},\qquad |B|=\frac{\omega_n^2}{p^2-2\zeta\omega_np+\omega_n^2}\to\frac{\omega_n^2}{p^2}\ \ (p\gg\omega_n),$$
-so for $p\gg\omega_n$ the extra term is small and decays quickly, and the response differs from $y_2$ mainly by a small delay of about $1/p$. Theory gives no sharp threshold for "much closer": the error falls smoothly as the ratio $p/\sigma$ of the real parts grows, with $\sigma=\zeta\omega_n$, but that ratio alone is insufficient when damping is small: the displayed cascade requires $p\gg\omega_n$, and the measured error is the useful check.`,
-      idea: String.raw`In the partial-fraction expansion of $Y(s)=G(s)/s$ (sig-9.14 for dominant poles, sig-9.7 for the poles themselves) each pole $s_k$ contributes a term $c_ke^{s_kt}$. A pole with real part ten times larger decays ten times sooner but fixed DC gain alone does not bound its modal residue. After a short transient the fast terms decay; whether dropping them gives a good approximation must be checked from residues and the observed response. In the specific cascaded-lag family shown here the fast residue does become small as $p/\omega_n\to\infty$. What is lost is a small delay: the far pole acts like an extra lag of about $1/p$ seconds, shifting the response to the right by roughly that amount.`,
-      caption: String.raw`The dominant pair has $\omega_n=1$ and the damping ratio you choose; the extra real pole sits at $-p$ (drag the **teal** marker or use the slider for the ratio $p/\sigma$, with $\sigma=\zeta\omega_n$ the dominant real part). The full third-order response (**solid**) is compared with the second-order approximation (**dashed**), and the shaded gap is the error. The right panel plots the largest error against the ratio $p/\sigma$: it falls steadily rather than switching on at a magic ratio, and it is not negligible until $p$ is many times $\sigma$.`,
-      deps: ['sig-9.14', 'ctrl-4.2'],
-      refs: ['Åström–Murray, Feedback Systems (2008), §6.3 pp. 187–188 (modal residues/caveat)', 'MIT 16.06 (2012), Lecture 7 pp. 4–5 (added-pole convolution)'],
+      statement: String.raw`In a stable transfer function, poles nearest the imaginary axis give the slowest exponential modes. A low-order approximation using these **dominant poles** also needs the neglected residues and changes in retained residues to be small; pole separation alone is not a uniform error guarantee. For $G(s)=\dfrac{\omega_n^2p}{(s+p)(s^2+2\zeta\omega_ns+\omega_n^2)}$, with $0<\zeta<1$ and $\omega_n,p>0$, put $\sigma=\zeta\omega_n$, $\omega_d=\omega_n\sqrt{1-\zeta^2}$. Its exact zero-state step response is
+$$y(t)=1+B e^{-pt}+e^{-\sigma t}(C\cos\omega_dt+D\sin\omega_dt),$$
+where $B=-\omega_n^2/(p^2-2\sigma p+\omega_n^2)$, $C=-1-B$ and $D=(pB+\sigma C)/\omega_d$. Thus $|B|\sim\omega_n^2/p^2$ as $p/\omega_n\to\infty$, and the response approaches the second-order response $y_2$, mainly with a delay of about $1/p$. A ratio $p/\sigma$ of about five is a design heuristic, not an error tolerance. For this particular cascade,
+$$\sup_{t\ge0}|y(t)-y_2(t)|\le L/p,\qquad L=\omega_n\exp[-\zeta\arccos\zeta/\sqrt{1-\zeta^2}]=\sup_{t\ge0}|y_2^{\prime}(t)|.$$`,
+      idea: String.raw`In the partial-fraction expansion of $Y(s)=G(s)/s$ (sig-9.14 for dominant poles, sig-9.7 for the poles themselves) each pole $s_k$ contributes a term $c_ke^{s_kt}$. A pole with real part ten times farther left decays ten times sooner, but fixed DC gain does not bound its residue. For the displayed cascade, the exact residue is the stated $B$, which is small when $p$ is large compared with $\omega_n$. Since the third-order response is the causal exponential average $\int_0^\infty p e^{-pu}y_2(t-u)du$ with $y_2=0$ for negative time, the Lipschitz bound $|y_2(t-u)-y_2(t)|\le Lu$ gives the uniform error bound $L/p$. What is lost is a small delay: the far pole acts like an extra lag of about $1/p$ seconds, shifting the response to the right by roughly that amount.
+
+The mean value theorem pma-5.10 turns the derivative bound $|y_2'|\le L$ into the Lipschitz bound, also across $t=0$ for the zero extension since $y_2(0)=y_2'(0)=0$. Apply the integral triangle inequality pma-6.13 on finite intervals to the exponential average, then pass to the convergent improper limit: the error is at most $\int_0^\infty pe^{-pu}Lu\,du=L/p$.`,
+      caption: String.raw`The dominant pair has $\omega_n=1$ and the damping ratio you choose; the extra real pole sits at $-p$ (drag the **teal** marker or use the slider for the ratio $p/\sigma$, with $\sigma=\zeta\omega_n$ the dominant real part). The full third-order response (**solid**) is compared with the second-order approximation (**dashed**), and the shaded gap is the error. The right panel plots the sampled maximum error (over at least nine dominant decay times) against the ratio $p/\sigma$: it falls steadily rather than switching on at a magic ratio, and it is not negligible until $p$ is many times $\sigma$.`,
+      verify: false, // source audit awaits integration; five-times heuristic checked in Bayen slides 42–43
+      deps: ['sig-9.14', 'ctrl-4.2', 'pma-5.10', 'pma-6.13'],
+      refs: ['Franklin–Powell §3.5', 'Bayen, EE C128 Chapter 4, slides 40–43 (five-times heuristic and modal expansion)'],
       tags: ['dominant poles', 'approximation'],
-      scope: String.raw`The displayed approximation concerns the specified cascade with a constant numerator and fixed DC gain. In a general system, decay rates alone do not control approximation error: inspect modal residues, zeros, cancellations and the time interval of interest. The 5σ guide is an illustrative ratio, not an accuracy threshold.`,
+      scope: String.raw`Needs the other poles to be well to the left of the dominant pair and no zeros close to them (a nearby zero can cancel or dominate a pole's contribution).`,
       viz(v) {
         const WN = 1;
         const zS = v.slider('damping $\\zeta$ of the dominant pair', 0.2, 0.9, 0.5, { step: 0.01 });
         const rS = v.slider('ratio $p/\\sigma$', 1, 15, 3, { step: 0.05, log: true });
-        const sp = v.stage({ x: [0.25, 20], y: [-1.5, 1.5], xlog: true, axes: 'box', gutter: true, height: 320, xlabel: '−Re s (log scale)', ylabel: 'Im s', minWidth: 260, weight: 1.1 });
+        const sp = v.stage({ x: [0.15, 20], y: [-1.5, 1.5], xlog: true, axes: 'box', gutter: true, height: 320, xlabel: '−Re s (log scale)', ylabel: 'Im s', minWidth: 260, weight: 1.1 });
         const st = v.stage({ x: [0, 16], y: [0, 1.5], axes: 'box', gutter: true, xlabel: 't (s)', ylabel: 'step response', height: 320, weight: 1.2 });
         const er = v.stage({ x: [1, 15], y: [0, 0.5], xlog: true, axes: 'box', gutter: true, xlabel: 'ratio p/σ', ylabel: 'max |error|', height: 320, minWidth: 240 });
         const hp = sp.handle(1.5, 0, { color: 'teal', r: 8, constrain: 'x', label: 'extra pole', labelPos: 'n' });
         hp.onDrag = () => { const sg = zS.value * WN; rS.set(clamp(hp.x / sg, 1, 15)); };
-        const full = (z, p) => { const c = WN * WN, b = 2 * z * WN; return tf([p * c], [p * c, c + p * b, p + b, 1]); };
         const cache = new Map();
         const maxErr = (z, r) => {
           const k = z + '|' + r; if (cache.has(k)) return cache.get(k);
-          const p = r * z * WN, T = Math.max(14, 9 / (z * WN)), a = stepExact(v.M, full(z, p), T, 400), b = stepExact(v.M, second(z, WN), T, 400);
-          let m = 0; for (let i = 0; i < a.y.length; i++) m = Math.max(m, Math.abs(a.y[i] - b.y[i]));
+          const p = r * z * WN, T = Math.max(14, 9 / (z * WN));
+          let m = 0; for (let i = 0; i <= 2000; i++) { const t = T * i / 2000; m = Math.max(m, Math.abs(laggedSecondOrderValue(z, WN, p, t) - secondOrderValue(z, WN, t))); }
           if (cache.size > 400) cache.clear(); cache.set(k, m); return m;
         };
         let R = null;
@@ -176,22 +181,26 @@ so for $p\gg\omega_n$ the extra term is small and decays quickly, and the respon
           sp.text('σ', sg, 1.3, { size: 12, color: 'accent', dx: 4, align: 'left' }); sp.text('5σ', 5 * sg, 1.3, { size: 12, color: 'muted', dx: 4, align: 'left' });
           sp.dot(sg, wd, { r: 6, color: 'accent' }); sp.dot(sg, -wd, { r: 6, color: 'accent' });
           sp.dot(p, 0, { r: 6, color: 'teal' });
-          const T = 16, N = 800, a = stepExact(v.M, full(z, p), T, N), b = stepExact(v.M, second(z, WN), T, N);
+          const T = Math.max(16, 9 / sg), N = 2000, a = { t: [], y: [] }, b = { t: [], y: [] };
+          for (let i = 0; i <= N; i++) { const t = T * i / N; a.t.push(t); b.t.push(t); a.y.push(laggedSecondOrderValue(z, WN, p, t)); b.y.push(secondOrderValue(z, WN, t)); }
+          st.setView([0, T], [0, 1.65]);
           st.hline(1, { color: 'muted', dash: [2, 4] });
           st.clip(() => { for (let i = 0; i < N; i += 1) st.line(a.t[i], a.y[i], a.t[i], b.y[i], { color: 'red', alpha: 0.28, width: 1.6 }); });
           trace(st, b.t, b.y, { color: 'orange', width: 2.4, dash: [7, 4] });
           trace(st, a.t, a.y, { color: 'accent', width: 3 });
           const ia = stepInfo(a.t, a.y, 1, 0.02), ib = stepInfo(b.t, b.y, 1, 0.02);
           const rr = []; for (let i = 0; i <= 28; i++) rr.push(10 ** ((i / 28) * Math.log10(15)));
-          er.path(rr.map((r) => [r, maxErr(z, r)]), { color: 'ink', width: 2.6 });
+          const errorPoints = rr.map((r) => [r, maxErr(z, r)]);
+          er.setView(null, [0, 1.1 * Math.max(...errorPoints.map(q => q[1]), 0.05)]);
+          er.path(errorPoints, { color: 'ink', width: 2.6 });
           er.vline(rS.value, { color: 'teal', width: 1.6, dash: [4, 3] });
           er.dot(rS.value, maxErr(z, rS.value), { r: 6, color: 'teal' });
-          R = { ia, ib, err: maxErr(z, rS.value), B: -WN * WN / (p * p - 2 * z * WN * p + WN * WN), p, sg };
+          R = { ia, ib, err: maxErr(z, rS.value), B: -WN * WN / (p * p - 2 * z * WN * p + WN * WN), p, sg, T, bound: lagErrorBound(z, WN, p) };
         });
         v.legend([['accent', 'full third-order response'], ['orange', 'dominant pair only', { dash: true }], ['red', 'error']]);
         v.readout(() => {
           if (!R) return '';
-          return `extra pole at $-${fx(R.p, 2)}$, ratio $p/\\sigma=${fx(rS.value, 2)}$; size of its mode $B=${fx(R.B, 3)}$ · overshoot $${fx(100 * R.ia.Mp, 1)}\\,\\%$ (dominant pair alone: $${fx(100 * R.ib.Mp, 1)}\\,\\%$) · settling time $${fx(R.ia.ts, 2)}$ s (alone: $${fx(R.ib.ts, 2)}$ s) · largest error between the curves $${fx(R.err, 3)}$`;
+          return `extra pole at $-${fx(R.p, 2)}$, ratio $p/\\sigma=${fx(rS.value, 2)}$; size of its mode $B=${fx(R.B, 3)}$ · overshoot $${fx(100 * R.ia.Mp, 1)}\\,\\%$ (dominant pair alone: $${fx(100 * R.ib.Mp, 1)}\\,\\%$) · settling time $${fx(R.ia.ts, 2)}$ s (alone: $${fx(R.ib.ts, 2)}$ s) · sampled maximum error through ${fx(R.T, 1)} s: $${fx(R.err, 3)}$; rigorous all-time bound $L/p=${fx(R.bound, 3)}$`;
         });
       },
     },

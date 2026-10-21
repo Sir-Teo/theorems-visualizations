@@ -250,7 +250,7 @@ export default {
       caption: String.raw`Here $a_n=b_n=\frac{(-1)^n}{(n+1)^s}$; slide $s$. Left: on $[0,1)$ the power series satisfy $h(x)=f(x)^2$ exactly, and Abel's limit $x\to1^-$ carries the identity to the sums. Right: the partial sums $C_N$ of the Cauchy product. For $s>\frac12$ all three series converge and $C_N\to AB$ even when $s\le1$ (no absolute convergence); for $s\le\frac12$ the terms $c_n$ stop shrinking — the case of 3.49 — and $\sum c_n$ diverges, so the theorem does not apply.`,
       deps: ['pma-3.48', 'pma-3.50'],
       see: ['pma-8.2'],
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 3.51, p. 75; proof after Theorem 8.2'],
+      verify: true,
       tags: ['series', 'Cauchy product'],
       viz(v) {
         const sS = v.slider('$s$', 0.3, 1.4, 0.75, { step: 0.05 });

@@ -1,21 +1,17 @@
-import { pinnaclePier } from './assessment.shared.js';
 // Architecture & Structural Form — Chapter 3: Arches and the line of thrust (items 3.8–3.14; 3.1–3.7 are in ch03.js)
 //
 // Sources checked (Oct 2026): see the header of ch03.js for Heyman (1966, 1969), the minimum-thickness literature, Hooke's anagram
 // and Gaudí's hanging models. Additional sources used here:
-//   Gothic buttress rules: S. Huerta, "Galileo was Wrong: The Geometrical Design of Masonry Arches", Nexus Network Journal 8 (2):
-//     25–52 (2006), doi:10.1007/s00004-006-0016-8: Gothic rules give a buttress depth of nearly 1/4 of the span, Renaissance rules
-//     between 1/3 and 1/2; the late-Gothic manuscript "Vom des Chores Mass" (Coenen 1990) gives wall = s/10 and buttress = 3s/10;
-//     the geometrical rule (fig. 3 of the paper, after Derand 1643): divide the intrados of the transverse arch in three parts, join one
-//     of the points with the springing, prolong the line by its own length, and the end point gives the buttress depth. Huerta
-//     (ICE paper, 2010) notes that the rule is Gothic in origin, appears in the lost 1546 treatise of Baccojani and was later called
-//     Blondel's rule (secondary summaries; the book pages were not seen). The reading used here (first third-point of the intrados,
-//     measured along its length) gives exactly span/4 for a semicircle, consistent with "nearly 1/4 of the span".
 //   Pointed arches: Nikolić, Savremena dostignuća u građevinarstvu, Subotica 2016, paper 019, Table 2 (minimum thickness t/R of
 //     pointed arches by eccentricity ξ = e/(R−e) and embrace angle), used as a check of the engine for α = 90°.
-//   Flying buttresses and pinnacles: Heyman's 1966–67 studies are cited in secondary sources as the fullest account of the structural
-//     role of flying buttresses; the explanation that a pinnacle's weight steepens the thrust line is given in standard accounts
-//     (e.g. the Open University film "The Arch Never Sleeps" with Heyman); the numbers used here are illustrative, not a real church.
+//   Audited 3.10, 3.12 and 3.13: actual Rodríguez-Mayorga et al. 2015, Huerta 2006,
+//     Derand's 1743 edition Part I chVI p10/plate1, Hooke 1676 p31 and Waller 1705 pxxi.
+//     Authored exact plane/point-weight models are separate from those historical observations.
+//     Source pages, independent derivations and native evidence: docs/verification/arch-buttresses-followup.md.
+
+import heymanItem from './source-audit-heyman-item.js';
+import { buttressPier } from './source-audit-buttress-pier.js';
+import { pinnacle, proportion, hanging, HOOKE_PHRASE, HOOKE_LETTERS } from './source-audit-buttresses.js';
 
 import { arch, archFromLine, thrustRows, thrustLP, thrustRange, thrustLine, hinges, collapseFactor, centralLine, bestFit, drawArch, drawThrust, momentCoef, rot, clamp, f2, blockAt, extradosY, drawSupport } from './ch03.shared.js';
 
@@ -105,116 +101,36 @@ export default {
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.9
     {
-      num: '3.9',
-      kind: 'Concept',
-      name: 'Buttresses: bringing the thrust to the ground',
-      statement: String.raw`An arch pushes its supports outward with the horizontal thrust $H$ as well as down with its weight. A **buttress** (or a thick pier) must bring this inclined force to the ground: the line of thrust continues down through it, leaning outward at the top and bending back toward the vertical as the weight of each course is added, and it must meet the foundation inside the base. Seen from the outside, the buttress is safe against overturning when the line reaches the base inside the outer toe (safe theorem, arch-3.5); the whole base stays in compression when it lies in the middle third. If the arch's own thrust may be anywhere between its least and greatest values, the buttress is certainly safe if it is safe for the greatest, and safe in principle if it is safe for the least. A wider buttress, a taller one, or one with extra load on top all bring the line in; but a tall buttress cannot be made safe by height alone: its line approaches a limit at a distance $H/\gamma w$ from the axis, so it needs $w \ge \sqrt{2H/\gamma}$ however tall it is.`,
-      idea: String.raw`Treat the buttress as a stack of slices, each of weight $\gamma w\,\mathrm{d}d$. Moments about the point where the line crosses depth $d$ give $X(d) = \bigl(V_0 x_0 + \gamma w d\, x_c - H d\bigr)/\bigl(V_0 + \gamma w d\bigr)$: the line is a hyperbola in depth, drifting outward through the term $-Hd$ while the weight in the denominator grows. As $d \to \infty$ it tends to $x_c - H/\gamma w$, which is inside the base of width $w$ exactly when $w^2 \ge 2H/\gamma$ (the proportional design, independent of scale). For a buttress of given height the factor against overturning about the outer toe is the restoring moment over the overturning moment, $\bigl[V_0(x_0 - x_o) + \gamma w^2 h/2\bigr]/Hh$. The thrust itself is the arch's $(H, V_0)$ from arch-3.5, with the freedom to take any value in $[H_{\min}, H_{\max}]$.`,
-      caption: String.raw`A semicircular arch of 6 m span (ring 0.5 m thick) stands on two buttresses. Change their width and height and choose which thrust of the arch acts (the least, the greatest, or the middle of the allowed range). The red line is the line of thrust continuing from the arch through the buttress; it turns orange if it leaves the base. The plot shows the width needed for stability against the height, for the least and the greatest thrust, with the limit $\sqrt{2H/\gamma}$ for a very tall buttress as dashed lines; the disc is your buttress.`,
-      deps: ['arch-3.2'],
-      see: ['arch-3.10', 'arch-3.12'],
-      refs: ['Heyman'],
-      scope: String.raw`Plane arch of 6 m span and 0.5 m ring on rectangular buttresses; unit weight 22 kN/m³ (illustrative) for both, per metre of depth; no wind, no sliding, no crushing. Stability judged by the line of thrust, not by stress.`,
-      tags: ['buttress', 'overturning'],
-      viz(v) {
-        const R = 3, t = 0.5, N = 24, g = arch({ R, t, N, gamma: GAM });
-        const wS = v.slider('buttress width w (m)', 0.6, 4, 1.2, { step: 0.05 }), hS = v.slider('buttress height h (m)', 1, 12, 4, { step: 0.1 });
-        const st = v.select('thrust of the arch', [{ value: 'min', label: 'least thrust' }, { value: 'mid', label: 'middle' }, { value: 'max', label: 'greatest thrust' }], 'max');
-        const A = v.stage({ x: [-9, 9], y: [-8, 4.5], equal: true, axes: false, height: 340, weight: 1.5, title: 'the arch on its buttresses' });
-        const B = v.stage({ x: [0, 12], y: [0, 5], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'buttress height h (m)', ylabel: 'width w needed (m)', title: 'width needed against height' });
-        const rg = thrustRange(g, []), tl0 = rg ? thrustLine(g, [], rg.min) : null;
-        const xi = g.joints[0].a[0];
-        const stateU = (k) => (k === 'min' ? rg.min : k === 'max' ? rg.max : rg.min.map((a, i) => (a + rg.max[i]) / 2));
-        const info = (u, w, h) => { const tl = thrustLine(g, [], u), x0 = tl[0].p[0], H = u[0], V0 = u[1], xo = xi - w, xc = xi - w / 2, X = (d) => (V0 * x0 + GAM * w * d * xc - H * d) / (V0 + GAM * w * d); const FS = (V0 * (x0 - xo) + (GAM * w * w * h) / 2) / (H * h); return { tl, x0, H, V0, X, xo, xc, FS, asym: xc - H / (GAM * w), wInf: Math.sqrt((2 * H) / GAM) }; };
-        const wReq = (u, h) => { const tl = thrustLine(g, [], u), x0 = tl[0].p[0], H = u[0], V0 = u[1], c = V0 * (x0 - xi) - H * h; return (-V0 + Math.sqrt(V0 * V0 - 2 * GAM * h * c)) / (GAM * h); };
-        let M = null;
-        v.render(() => {
-          const w = wS.value, h = hS.value;
-          A.setView([-(R + w + 1.5 + 0.0 * h), R + w + 1.5], [-h - 0.8, R + t + 0.8]);
-          drawArch(v, A, g, { fillAlpha: 0.14 });
-          if (!rg) { A.corner('the ring cannot stand', 'tl', { color: 'red' }); return; }
-          const u = stateU(st.value), I = info(u, w, h), tl = I.tl;
-          for (const sg of [-1, 1]) {
-            A.rect(sg < 0 ? xi - w : -xi, -h, sg < 0 ? xi : -xi + w, 0, { fill: 'muted', fillAlpha: 0.2, color: 'ink', width: 1.2 });
-            A.line(-9, -h, 9, -h, { color: 'faint', width: 1 });
-          }
-          drawThrust(v, A, tl, { color: 'red', width: 2.4 });
-          const ok = I.X(h) >= I.xo - 1e-9, third = I.X(h) >= I.xo + w / 3 - 1e-9;
-          for (const sg of [-1, 1]) {
-            const pts = [[sg * I.x0, 0]]; for (let k = 1; k <= 40; k++) { const d = (h * k) / 40; pts.push([sg * I.X(d), -d]); }
-            A.path(pts, { color: ok ? 'red' : 'orange', width: 2.6 });
-            A.dot(sg * I.X(h), -h, { r: 5, color: ok ? 'green' : 'red' });
-          }
-          A.line(I.xo + w / 3, -h, I.xo + w / 3, -h - 0.25, { color: 'muted', width: 2 }); A.line(I.xo + (2 * w) / 3, -h, I.xo + (2 * w) / 3, -h - 0.25, { color: 'muted', width: 2 });
-          A.line(I.asym, 0, I.asym, -h, { color: 'muted', width: 1, dash: [3, 4] });
-          A.corner(ok ? (third ? 'the line reaches the base inside the middle third' : 'inside the base but outside the middle third: the joint cracks') : 'the line leaves the base: the buttress overturns', 'tl', { color: ok ? 'muted' : 'red' });
-          // plot
-          const hs = Array.from({ length: 61 }, (_, i) => 0.4 + (i / 60) * 11.6), us = [rg.min, rg.max];
-          B.setView([0, 12], [0, Math.max(4, ...hs.map((x) => wReq(rg.max, x))) * 1.1]);
-          B.path(hs.map((x) => [x, wReq(rg.min, x)]), { color: 'green', width: 2.2 }); B.path(hs.map((x) => [x, wReq(rg.max, x)]), { color: 'red', width: 2.2 });
-          B.hline(info(rg.min, w, h).wInf, { color: 'green', dash: [4, 3], width: 1 }); B.hline(info(rg.max, w, h).wInf, { color: 'red', dash: [4, 3], width: 1 });
-          B.dot(h, w, { r: 6, color: 'accent' }); B.text('greatest thrust', 11.8, wReq(rg.max, 11.8), { dy: -12, align: 'right', size: 11.5, color: 'red' }); B.text('least thrust', 11.8, wReq(rg.min, 11.8), { dy: 14, align: 'right', size: 11.5, color: 'green' });
-          M = { I, rg, ok, third, w, h, Imin: info(rg.min, w, h), Imax: info(rg.max, w, h), W: g.W };
-        });
-        v.legend([['red', 'line of thrust'], ['muted', 'limit of the line for a very tall buttress', { dash: true }], ['accent', 'your buttress (plot)']]);
-        v.readout(() => {
-          if (!M) return '';
-          const { I, Imin, Imax } = M;
-          return `Arch weight ${f2(M.W, 0)} kN/m; its thrust may be $H$ = ${f2(rg.Hmin, 1)} to ${f2(rg.Hmax, 1)} kN/m with $V_0 = ${f2(I.V0, 1)}$ kN/m at each springing. For the chosen thrust the line meets the base ${f2(Math.abs(I.X(M.h) - I.xo) , 2)} m ${I.X(M.h) >= I.xo ? 'inside' : 'outside'} the outer toe; factor against overturning **${f2(I.FS, 2)}** (least thrust ${f2(Imin.FS, 2)}, greatest ${f2(Imax.FS, 2)}). A very tall buttress needs $w \\ge \\sqrt{2H/\\gamma}$ = ${f2(Imin.wInf, 2)} m (least thrust) to ${f2(Imax.wInf, 2)} m (greatest).`;
-        });
+      num:'3.9',kind:'Concept',name:'Buttresses: bringing the thrust to the ground',
+      statement:String.raw`An arch delivers an outward horizontal force and a downward reaction to its supports. A rectangular buttress must transmit their resultant to its base. Under the no-sliding, no-crushing plane model, an outer-toe moment condition checks outward overturning for those imposed reactions. Widening the pier or adding a centred top load can help. Increasing its height under the same arch reaction can make it worse: the horizontal force's lever arm also grows. The drawing separates this conditional equilibrium check from a whole-building assessment.`,
+      idea:String.raw`At depth d, write $X(d)=[Vx_0+\gamma wd\,x_c-Hd]/[V+\gamma wd]$. With outer toe $x_o=x_i-w$ and pier axis $x_c=x_i-w/2$, the factor against outward overturning is $F(h)=V(x_0-x_o)/(Hh)+\gamma w^2/(2H)$. Its first term decreases with height; its limit is at least1 only when $w\ge\sqrt{2H/\gamma}$. This is an asymptotic criterion, not a necessary width for every finite-height pier. For the fixed arch used here, the maximum-H state also minimizes this factor over all admissible arch reactions: every reaction has $x_0\ge-3.25$ m and $V/H\ge V_*/H_*\approx2.109979923$, where the starred reaction is the maximum-H state and both bounds are attained there. Since $w\ge0.6>0.5$ m, these bounds and $H\le H_{\max}$ give the result. It is a property of this fixed example, not a theorem about arbitrary vaults.`,
+      caption:String.raw`A fixed authored arch of mean radius 3 m and ring thickness 0.5 m (clear span 5.5 m), represented by 24 polygonal blocks. Change pier width/height and select a minimum, middle or maximum horizontal-thrust state. The complete curves show the required width for the two extreme states and the asymptotic width limits. At width 1.2 m, the maximum-thrust case satisfies the toe condition at height 1 m and fails at height 12 m. A middle-third label refers to the usual linear full-contact normal-stress assumption.`,
+      deps:['arch-3.2'],see:['arch-3.10','arch-3.12'],refs:[],
+      scope:String.raw`Authored finite polygon-block equilibrium with radial joints, masonry weight 22 kN/m³ and unit depth. The drawn arch uses exact polygon areas/centroids, not a certified continuous annular-arch minimum. Independent enumeration of all 30 reaction vertices and a positive dual certificate establish the stated fixed-case bound; source/proof details are retained in docs/verification/arch-buttress-pier-followup.md. The historical/geometrical context follows Huerta's complete “Geometry and equilibrium: The gothic theory of structural design” (2006), pp23–28, and the conditional use of plane no-tension analysis in Rodríguez-Mayorga et al. (2015), §5.1; neither paper supplies these authored dimensions. Saved numeric controls must round-trip at 15 significant digits; excess raw precision is visibly rejected before restoration. Foundation failure, material crushing, sliding, wind, support movements and a complete vault/three-dimensional building are excluded. A resultant outside the middle third would require tension under a linear full-contact stress distribution; it does not alone demonstrate overall collapse.`,
+      verify:false,tags:['buttress','overturning'],
+      viz(v){const width=v.slider('pier width w (m)',.6,4,1.2,{step:'any',decimals:6}),height=v.slider('pier height h (m)',1,12,4,{step:'any',decimals:6}),choice=v.select('fixed arch reaction',[{value:'min',label:'least thrust'},{value:'mid',label:'middle'},{value:'max',label:'greatest thrust'}],'max');for(const[c,lo,hi]of[[width,.6,4],[height,1,12]]){const set=c.set;c.set=x=>{if(typeof x!=='number'||!Number.isFinite(x)||x<lo||x>hi||x!==Number(x.toPrecision(15)))throw new RangeError('Saved pier dimension must round-trip at 15 significant digits');return set(x);};}const A=v.stage({x:[-6,6],y:[-5,4],equal:true,axes:false,height:350,title:'fixed arch and rectangular piers'}),B=v.stage({x:[0,12.8],y:[-.2,4.5],axes:'box',gutter:true,height:320,xlabel:'pier height h (m)',ylabel:'required width w (m)',title:'finite-height and asymptotic toe criteria'});let info;
+        v.render(()=>{const p=buttressPier(width.value,height.value,choice.value);info=p;const I=p.selected,xmax=3+p.w+1.5;A.setView([-xmax,xmax],[-p.h-.9,4]);for(const b of p.blocks)A.poly(b.poly,{fill:'muted',fillAlpha:.14,color:'ink',width:.8});for(const sign of[-1,1])A.rect(sign<0?p.innerFace-p.w:-p.innerFace,-p.h,sign<0?p.innerFace:-p.innerFace+p.w,0,{fill:'muted',fillAlpha:.2,color:'ink',width:1.2});A.line(-xmax+.6,-p.h,xmax-.6,-p.h,{color:'faint',width:1});A.path(I.line,{color:'red',width:2.2});for(const sign of[-1,1]){A.path(I.curve.map(([x,y])=>[sign*x,y]),{color:p.inside?'red':'orange',width:2.4});A.dot(sign*I.base,-p.h,{r:5,color:p.inside?'green':'orange'});}A.line(I.limit,0,I.limit,-p.h,{color:'muted',width:1,dash:[3,4]});A.corner(p.inside?(p.middle?'inside middle third':'inside base'):'outside outer toe','tl',{color:p.inside?'muted':'orange'});
+          const ymax=Math.max(4,...p.highCurve.map(q=>q[1]))*1.15;B.setView([0,12.8],[-.06*ymax,ymax]);B.path(p.lowCurve,{color:'green',width:2.1});B.path(p.highCurve,{color:'red',width:2.1});for(const[s,color]of[[p.min,'green'],[p.max,'red']])B.line(.25,s.infiniteWidth,12,s.infiniteWidth,{color,width:1,dash:[4,3]});B.dot(p.h,p.w,{r:6,color:'accent'});
+        });v.legend([['red','maximum-H width / selected arch line'],['green','minimum-H width'],['muted','asymptotic position / dashed width limits'],['accent','selected pier'],['orange','selected resultant outside base']]);v.readout(()=>{const p=info,I=p.selected;return `Fixed arch weight ${f2(p.weight,6)} kN/m; selected H=${f2(I.H,6)}, V=${f2(I.V,6)} kN/m. Outer-toe clearance ${f2(I.clearance,6)} m; factor ${f2(I.FS,6)}. ${p.inside?'The selected reaction satisfies the toe condition.':'The selected reaction fails the toe condition.'} Required width at this height: ${f2(p.needLow,6)} m for minimum H; ${f2(p.needHigh,6)} m for maximum H. Increasing height at fixed width/reaction decreases the factor. The maximum-H guarantee applies to this fixed arch; it does not establish whole-building safety.`;});
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.10
     {
-      num: '3.10',
-      kind: 'Concept',
-      name: 'Flying buttresses and pinnacles',
-      statement: String.raw`In a Gothic church the thrust of the nave vault is carried over the aisle roof by a **flying buttress** to a slender outer pier. The thrust arrives near the top of the pier; its line, leaving the flyer at the flyer's slope, drifts outward as it descends and, if the pier is slender, leaves the masonry before it reaches the ground. A **pinnacle**, a heavy stone spire on the pier top, adds vertical load on the axis of the pier: the line of thrust steepens toward the vertical and comes back inside. A pinnacle is therefore a stabilising load as well as an ornament, and there is a minimum weight below which the pier is unsafe; adding more than the minimum helps only until the line is well inside.`,
-      idea: String.raw`Below the flyer the pier is a buttress as in arch-3.9, with the extra loads at the top: the flyer delivers a horizontal force $H$ and a vertical one $V_B = H\tan\theta + 26\,\mathrm{kN/m}$ (the flyer is a strut along the thrust line) at the pier's inner face, and the pinnacle and the pier top add $P + W_{\text{top}}$ on the axis. Moments about the point where the line crosses depth $d$ below the flyer give $X(d) = \bigl(V_B x_i + (P + W_{\text{top}} + \gamma w d)\,x_c + H d\bigr)/\bigl(V_B + P + W_{\text{top}} + \gamma w d\bigr)$. Raising $P$ pulls $X$ toward the axis $x_c$ at every depth, so the smallest pinnacle load that keeps the line inside is found where the line first touches the outer face, which the plot gives for any thrust. Hooke's inversion (arch-3.1) and the safe theorem (arch-3.5) justify drawing just one line that fits.`,
-      caption: String.raw`A schematic section: nave wall on the left, a flyer carrying the vault's thrust $H$ to a pier. Raise the thrust (a heavier vault or a wind load), thin the pier, and add pinnacle weight: the red line from the flyer through the pier steepens and re-enters the pier. The plot shows the minimum pinnacle weight needed for each thrust, for this pier; the disc is the current state. All dimensions and loads are illustrative, not those of a real church.`,
-      deps: ['arch-3.9'],
-      see: ['arch-3.5', 'arch-4.2'],
-      refs: ['Heyman'],
-      credit: 'Heyman, 1966–67 (structural role of flying buttresses; secondary sources)',
-      scope: String.raw`Schematic plane section, unit weight 22 kN/m³, flyer idealised as a straight strut plus an illustrative 26-kN/m vertical dead load applied to the pier at the flyer level, per metre of nave length; ignores the weight of the aisle roof and wind pressure on the pier itself. Not the section of any real church.`,
-      verify: true,
-      tags: ['gothic', 'pinnacle', 'flying buttress'],
+      num: '3.10', kind: 'Concept', name: 'Flying buttresses and pinnacles',
+      statement: String.raw`A flying buttress can transfer a vault's lateral thrust to an outer pier. A centred pinnacle adds vertical load and can improve that pier's resistance to outward overturning. The effect depends on the force, its height and the position of the added weight: a pinnacle is not a universal guarantee of stability. Rodríguez-Mayorga, Yanes-Bustamante and Sáez-Pérez's investigation of Santiago in Jerez shows why the actual geometry matters: its high flyers contributed little to the calculated balancing of the vault, and the position of pinnacles worsened an already unbalanced arrangement.`,
+      idea: String.raw`Here a massless straight strut delivers $H$ and $V=H\tan\theta$ to the inner face $x_i$ of a rectangular pier. Its axis is $x_c=x_i+w/2$, its outer toe $x_o=x_i+w$, and its upper part weighs $W_t$. At depth $d$ below the strut, moment balance gives $X(d)=[Vx_i+(P+W_t+\gamma wd)x_c+Hd]/[V+P+W_t+\gamma wd]$. The outer-toe condition is $Hd\le Vw+(P+W_t+\gamma wd)w/2$. Both sides are affine in $d$, so checking the top and base checks every intermediate horizontal cut. This gives $P_{\min}=\max(0,2Hh/w-2V-W_t-\gamma wh)$.`,
+      caption: String.raw`An authored plane section, not a surveyed church. Change the vault thrust, pier width and centred pinnacle load. The full plot shows the exact minimum load for the displayed pier, including values above the initial setting. “Admissible” means the resultant stays between the two faces on every horizontal cut; equality at the toe is a limiting case.`,
+      deps: ['arch-3.9'], see: ['arch-3.5', 'arch-4.2'], refs: [],
+      credit: 'Authored plane equilibrium example; Rodríguez-Mayorga, Yanes-Bustamante and Sáez-Pérez, case study',
+      scope: String.raw`Unit thickness into the page; masonry weight 22 kN/m³; strut endpoints (0,13) and (3.6,10.2) m; pier top 14 m. The strut is massless, so there is no additional vertical load hidden in its reaction. P is an imposed centred top force; the pictured spire is a symbol, not a volume-to-weight calculation. Assumes no sliding, crushing or foundation failure and does not test the flyer itself, wind, vault or whole church. Source: “Analysis and Diagnosis of the Church of Santiago in Jerez de la Frontera (Spain)”, Informes de la Construcción 67(540), e127 (2015), §§4–5, Figs 6–8, doi:10.3989/ic.15.030. The source's measured building and numerical analysis are not reproduced.`,
+      verify: false, tags: ['gothic', 'pinnacle', 'flying buttress'],
       viz(v) {
-        const yA = 13, yB = 10.2, yTop = 14, L = 3.6, xi = L, tanT = (yA - yB) / L;
-        const Hs = v.slider('vault thrust H (kN/m)', 10, 120, 60, { step: 1 }), wS = v.slider('pier width w (m)', 0.8, 3, 1.5, { step: 0.05 }), Ps = v.slider('pinnacle weight P (kN/m)', 0, 3000, 260, { step: 5 });
-        const A = v.stage({ x: [-2, 9], y: [-0.8, 19.6], equal: true, axes: false, height: 420, weight: 1.15, title: 'a section: nave, flying buttress and pier' });
-        const B = v.stage({ x: [0, 120], y: [0, 500], axes: 'box', gutter: true, height: 420, weight: 1, minWidth: 250, xlabel: 'vault thrust H (kN/m)', ylabel: 'pinnacle weight needed (kN/m)', title: 'how heavy must the pinnacle be?' });
-        const model = pinnaclePier;
-        let M = null;
-        v.render(() => {
-          const H = Hs.value, w = wS.value, P = Ps.value, m = model(H, w, P), ok = m.worst >= -1e-9;
-          A.line(-2, 0, 9, 0, { color: 'faint', width: 1.2 });
-          A.rect(-1, 0, 0, yA + 2.2, { fill: 'muted', fillAlpha: 0.14, color: 'ink', width: 1.2 }); A.text('nave wall', -0.5, 1.5, { size: 11, color: 'muted', align: 'center' });
-          A.arrow(-1.6, yA, -0.05, yA, { color: 'gold', width: 3, head: 9 }); A.text('vault thrust H', -1.9, yA, { dy: -14, size: 11.5, color: 'gold', align: 'left' });
-          // flyer (a strut along the thrust line)
-          const nx = tanT / Math.hypot(1, tanT) * 0.3, ny = 1 / Math.hypot(1, tanT) * 0.3;
-          A.poly([[0, yA + 0.3], [xi, yB + 0.3], [xi, yB - 0.3], [0, yA - 0.3]], { fill: 'muted', fillAlpha: 0.22, color: 'ink', width: 1.2 });
-          A.rect(xi, 0, xi + w, yTop, { fill: 'muted', fillAlpha: 0.22, color: 'ink', width: 1.2 });
-          const px = xi + w / 2; A.poly([[xi + 0.12 * w, yTop], [xi + 0.88 * w, yTop], [px, yTop + 3.4]], { fill: 'orange', fillAlpha: 0.25, color: 'orange', width: 1.4 });
-          if (P > 0) A.arrow(px, yTop + 3.6 + 0.4 + Math.min(1.3, P / 300), px, yTop + 3.5, { color: 'gold', width: 3, head: 9 });
-          // line: A → B, then down the pier
-          const pts = [[0, yA], [xi, yB]]; for (let k = 1; k <= 50; k++) { const d = (yB * k) / 50; pts.push([m.X(d), yB - d]); }
-          A.path(pts, { color: ok ? 'red' : 'orange', width: 2.8 });
-          A.dot(m.X(yB), 0, { r: 5.5, color: ok ? 'green' : 'red' });
-          A.corner(ok ? 'the line stays inside the pier' : 'the line leaves the pier: it overturns outward', 'tl', { color: ok ? 'muted' : 'red' });
-          // plot
-          const Hg = Array.from({ length: 49 }, (_, i) => i * 2.5), cur = Hg.map((h) => [h, Math.max(0, model(h, w, 0).need)]);
-          B.setView([0, 120], [0, Math.max(520, 1.1 * P, ...cur.map(p => 1.1 * p[1]))]);
-          B.path(cur, { color: 'accent', width: 2.4 }); B.dot(H, P, { r: 6, color: ok ? 'green' : 'red' });
-          B.text('safe: line inside the pier', 6, 480, { size: 12, color: 'green', align: 'left' }); B.text('overturns', 70, 20, { size: 12, color: 'red', align: 'left' });
-          M = { m, ok, H, w, P };
-        });
-        v.legend([['red', 'line of thrust'], ['accent', 'minimum pinnacle weight for this pier'], ['gold', 'thrust and pinnacle weight']]);
-        v.readout(() => {
-          if (!M) return '';
-          const { m, ok, P } = M;
-          return `At the foot the line meets the ground ${f2(Math.abs(m.worst), 2)} m ${ok ? 'inside' : 'outside'} the outer face (pier ${f2(M.w, 2)} m wide, flyer at ${f2(deg(Math.atan(tanT)), 0)}° carrying $H = ${M.H}$ kN/m with $V_B = ${f2(m.VB, 0)}$ kN/m). The smallest pinnacle that keeps the line inside this pier is ${f2(m.need > 0 ? m.need : 0, 0)} kN/m; yours is ${P} kN/m, ${P >= m.need ? 'enough' : 'too little'}.`;
-        });
+        const H=v.slider('vault thrust H (kN/m)',10,120,60,{step:'any',decimals:6}),w=v.slider('pier width w (m)',.8,3,1.5,{step:'any',decimals:6}),P=v.slider('centred pinnacle force P (kN/m)',0,3000,260,{step:'any',decimals:6});
+        const A=v.stage({x:[-2.6,11],y:[-1,20.5],equal:true,axes:false,height:400,title:'a strut and a loaded pier'}),B=v.stage({x:[0,130],y:[-150,3100],axes:'box',gutter:true,height:310,xlabel:'H (kN/m)',ylabel:'P (kN/m)',title:'outer-toe equilibrium threshold'});let info;
+        v.render(()=>{const p=pinnacle(H.value,w.value,P.value);info=p;
+          A.setView([-2.6,Math.max(10.5,...p.curve.map(q=>q[0]))+1],[ -1,20.5]);A.line(-2,0,9,0,{color:'faint'});A.rect(-1,0,0,15.2,{fill:'muted',fillAlpha:.12,color:'ink'});A.poly([[0,13.3],[3.6,10.5],[3.6,9.9],[0,12.7]],{fill:'muted',fillAlpha:.2,color:'ink'});A.rect(p.xi,0,p.toe,14,{fill:'muted',fillAlpha:.18,color:'ink'});A.poly([[p.xi+.12*p.w,14],[p.toe-.12*p.w,14],[p.axis,17.4]],{fill:'orange',fillAlpha:.22,color:'orange'});A.arrow(-1.8,13,-.1,13,{color:'gold',head:8});if(p.P>0)A.arrow(p.axis,19,p.axis,17.7,{color:'gold',head:8});A.path([[0,13],[3.6,10.2]],{color:'muted',width:2.1});A.path(p.curve,{color:p.admissible?'red':'orange',width:2.5});A.dot(p.base,0,{color:p.admissible?'green':'orange',r:5});
+          const curve=Array.from({length:81},(_,j)=>{const h=10+110*j/80;return[h,pinnacle(h,p.w,0).need];}),ymax=Math.max(600,p.P,...curve.map(q=>q[1]))*1.15;B.setView([0,130],[-.06*ymax,ymax]);B.path(curve,{color:'accent',width:2.4});B.dot(p.H,p.P,{color:p.admissible?'green':'orange',r:6});
+        });v.legend([['red','admissible resultant'],['orange','resultant outside pier'],['accent','minimum P for this pier'],['gold','imposed forces']]);v.readout(()=>{const p=info;if(!p)return'';return `Vertical strut reaction ${f2(p.vertical,3)} kN/m; upper pier weight ${f2(p.topWeight,3)} kN/m. Minimum centred P ${f2(p.need,3)} kN/m; selected ${f2(p.P,3)} kN/m. Base resultant ${f2(p.toe-p.base,4)} m inside the outer toe (negative means outside). ${p.admissible?'Every horizontal cut satisfies the face inequalities.':'The outer-toe inequality fails at the base.'} This is conditional equilibrium, not a whole-building safety test.`;});
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.11
@@ -280,165 +196,40 @@ export default {
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.12
     {
-      num: '3.12',
-      kind: 'Method',
-      name: 'Medieval rules of proportion for buttresses',
-      statement: String.raw`Long before the line of thrust was understood, builders sized buttresses by geometric rules: the depth is a fixed fraction of the span, or follows from a construction drawn on the arch itself. In Huerta's survey the Gothic rules give a depth of nearly a quarter of the span and the Renaissance rules between a third and a half; a late-Gothic manuscript on the choir sets the wall at a tenth of the span and the buttress at three times that, three tenths. A geometrical rule of Gothic origin, recorded by Derand (1643) and later called Blondel's rule, divides the intrados of the arch into three equal parts, joins the first division point to the springing, and prolongs that line by its own length: the end point gives the depth of the buttress. All these rules are proportional, so the same ratio serves a span of 10 m or 100 m. Checking them against the thrust-line calculation of arch-3.9 shows how much margin each leaves, and how the construction adapts to a pointed or a flat arch.`,
-      idea: String.raw`A rule that scales with the span is consistent with statics: arch weight, thrust $H$ and buttress weight all scale with the same power of the size, so the line of thrust enters the base at the same fraction of the span however large the building is (Galileo's square-cube argument concerns stresses, which the safe theorem does not use, arch-3.5). The Derand construction makes the depth depend on the arch's shape through the position of the first third-point of the intrados: for a semicircle it is exactly a quarter of the span, a pointed arch gives less, a flatter one more, which follows the trend of the thrust (pointed arches push less, arch-3.11). The calculation below takes the least and the greatest thrust compatible with the ring (arch-3.5) and finds the width at which the line of thrust just reaches the outer toe of a buttress of the chosen height, with the closed formula of arch-3.9.`,
-      caption: String.raw`Choose an arch shape and a buttress height. The picture draws the Derand construction on the intrados (division points, the line from the springing to the first division point and its prolongation to F), the buttress with the depth the selected rule gives, and the line of thrust through arch and buttress. The plot compares the rule widths (horizontal lines) with the width needed against overturning, for the least and the greatest thrust of the arch, as the buttress gets taller. All widths are fractions of the clear span (the intrados). The rule is one reading of a verbal description (see scope); the other two are the proportions quoted in the survey.`,
-      deps: ['arch-3.9'],
-      see: ['arch-3.10', 'arch-3.11'],
-      refs: ['Heyman'],
-      credit: 'Gothic geometrical rule, set down by Derand in 1643; survey by Huerta, 2006',
-      scope: String.raw`The Derand construction is read here as: the first third-point of the intrados, by length, is joined to the springing, and the buttress depth is the horizontal distance from the springing to that point (the prolonged line ends at its mirror image, so the depth is the same). This reading gives exactly span/4 for a semicircle, matching "nearly a quarter of the span" for Gothic rules; I did not see Derand's own text. The comparison uses plain rectangular buttresses of the same masonry as the arch, no surcharge, self-weight only.`,
-      verify: true,
-      tags: ['proportion', 'gothic', 'buttress'],
-      viz(v) {
-        const N = 40, S = 5, span = 10;
-        const shape = v.select('arch shape', [{ value: 'round', label: 'round' }, { value: 'equi', label: 'equilateral' }, { value: 'lancet', label: 'lancet' }, { value: 'seg', label: 'segmental 120°' }], 'round');
-        const rule = v.select('rule shown', [{ value: 'derand', label: 'Derand construction' }, { value: 'q', label: 'span / 4' }, { value: 'tenth', label: '3 span / 10' }], 'derand');
-        const tS = v.slider('ring thickness / span', 0.04, 0.16, 0.08, { step: 0.005 }), hS = v.slider('buttress height / span', 0.2, 3, 1, { step: 0.02 }), st = v.select('thrust of the arch', [{ value: 'min', label: 'least' }, { value: 'max', label: 'greatest' }], 'max');
-        const A = v.stage({ x: [-9, 9], y: [-12, 9], equal: true, axes: false, height: 340, weight: 1.5, title: 'the Derand construction and the thrust line' });
-        const B = v.stage({ x: [0, 3], y: [0, 0.6], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'buttress height / span', ylabel: 'width / span', title: 'rules against the width needed' });
-        const mkArch = (k, tr) => (k === 'round' ? arch({ R: S, t: tr * span, N, gamma: GAM }) : k === 'equi' ? arch({ R: 2 * S, e: S, t: tr * span, N, gamma: GAM }) : k === 'lancet' ? arch({ R: 3 * S, e: 2 * S, t: tr * span, N, gamma: GAM }) : arch({ R: S / Math.sin(Math.PI / 3), t: tr * span, N, alpha: Math.PI / 3, gamma: GAM }));
-        const third = (g) => { const P = g.joints.map((J) => J.a), cum = [0]; for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1])); const tot = cum[cum.length - 1], at = (s) => { let i = 1; while (i < cum.length - 1 && cum[i] < s) i++; const f = (s - cum[i - 1]) / (cum[i] - cum[i - 1]); return [P[i - 1][0] + f * (P[i][0] - P[i - 1][0]), P[i - 1][1] + f * (P[i][1] - P[i - 1][1])]; }; return { C: at(tot / 3), Bp: at((2 * tot) / 3) }; };
-        let M = null;
-        v.render(() => {
-          const g = mkArch(shape.value, tS.value), rg = thrustRange(g, []), SP = g.span, h = hS.value * SP, D = g.joints[0].a, { C, Bp } = third(g);
-          const wD = C[0] - D[0], rules = { derand: wD, q: SP / 4, tenth: (3 * SP) / 10 }, w = rules[rule.value];
-          const need = (u, hh) => { const tl = thrustLine(g, [], u), x0 = tl[0].p[0], H = u[0], V0 = u[1], c = V0 * (x0 - D[0]) - H * hh; return (-V0 + Math.sqrt(V0 * V0 - 2 * GAM * hh * c)) / (GAM * hh); };
-          A.setView([-S * 1.9 - 1, S * 1.9 + 1], [-h - 1.5, g.rise + 1.8]);
-          drawArch(v, A, g, { fillAlpha: 0.12 });
-          if (!rg) { A.corner('this ring cannot stand', 'tl', { color: 'red' }); return; }
-          const u = rg[st.value], tl = thrustLine(g, [], u), x0 = tl[0].p[0], H = u[0], V0 = u[1], xo = D[0] - w, xc = D[0] - w / 2, X = (d) => (V0 * x0 + GAM * w * d * xc - H * d) / (V0 + GAM * w * d), ok = X(h) >= xo - 1e-9;
-          const FS = (V0 * (x0 - xo) + (GAM * w * w * h) / 2) / (H * h);
-          for (const sg of [-1, 1]) { A.rect(sg < 0 ? xo : -D[0], -h, sg < 0 ? D[0] : -xo, 0, { fill: 'muted', fillAlpha: 0.2, color: 'ink', width: 1.2 }); }
-          A.line(-S * 1.9, -h, S * 1.9, -h, { color: 'faint', width: 1 });
-          drawThrust(v, A, tl, { color: 'red', width: 2.2 });
-          for (const sg of [-1, 1]) { const pts = [[sg * x0, 0]]; for (let k = 1; k <= 40; k++) { const d = (h * k) / 40; pts.push([sg * X(d), -d]); } A.path(pts, { color: ok ? 'red' : 'orange', width: 2.4 }); }
-          // construction
-          const F = [2 * D[0] - C[0], 2 * D[1] - C[1]];
-          A.line(F[0], F[1], C[0], C[1], { color: 'purple', width: 1.6, dash: [5, 3] }); A.dot(C[0], C[1], { r: 4.5, color: 'purple' }); A.dot(Bp[0], Bp[1], { r: 4.5, color: 'purple' }); A.dot(F[0], F[1], { r: 4.5, color: 'purple' }); A.dot(D[0], D[1], { r: 3.5, color: 'ink' });
-          A.text('C', C[0], C[1], { dx: 9, dy: -8, size: 12, color: 'purple', weight: 650 }); A.text('B', Bp[0], Bp[1], { dx: -9, dy: -8, size: 12, color: 'purple', weight: 650, align: 'right' }); A.text('F', F[0], F[1], { dx: -9, dy: 6, size: 12, color: 'purple', weight: 650, align: 'right' });
-          A.line(D[0], -h - 0.9, D[0] - wD, -h - 0.9, { color: 'purple', width: 2 }); A.line(D[0], -h - 1.3, D[0] - w, -h - 1.3, { color: 'ink', width: 2 });
-          A.corner(ok ? 'the line stays inside the base' : 'the line leaves the base: overturns', 'tl', { color: ok ? 'muted' : 'red' });
-          // plot
-          const hs = Array.from({ length: 60 }, (_, i) => 0.05 + (i / 59) * 2.95), lo = hs.map((x) => [x, need(rg.min, x * SP) / SP]), hi = hs.map((x) => [x, need(rg.max, x * SP) / SP]);
-          B.setView([0, 3], [0, Math.max(0.35, ...hi.map((p) => p[1])) * 1.12]);
-          B.path(lo, { color: 'green', width: 2.2 }); B.path(hi, { color: 'red', width: 2.2 });
-          B.hline(wD / SP, { color: 'purple', width: 1.6 }); B.hline(0.25, { color: 'gold', width: 1.2, dash: [4, 3] }); B.hline(0.3, { color: 'orange', width: 1.2, dash: [4, 3] });
-          B.dot(hS.value, w / SP, { r: 6, color: 'accent' });
-          M = { g, rg, w, wD, FS, ok, h, FSmin: (() => { const uu = rg.min, tl2 = thrustLine(g, [], uu); return (uu[1] * (tl2[0].p[0] - xo) + (GAM * w * w * h) / 2) / (uu[0] * h); })(), need: [need(rg.min, h), need(rg.max, h)], SP };
-        });
-        v.legend([['purple', 'Derand width'], ['gold', 'span/4', { dash: true }], ['orange', '3 span/10', { dash: true }], ['green', 'needed, least thrust'], ['red', 'needed, greatest thrust'], ['accent', 'rule selected (disc)']]);
-        v.readout(() => {
-          if (!M || !M.rg) return '';
-          return `Derand width ${f2(M.wD / M.SP, 3)} of the span of the intrados (a semicircle gives 0.250). Selected rule: ${f2(M.w / M.SP, 3)} of the span; width needed for stability at this height: ${f2(M.need[0] / M.SP, 3)} (least thrust) to ${f2(M.need[1] / M.SP, 3)} (greatest thrust). Factor against overturning with the selected width: ${f2(M.FSmin, 2)} (least thrust) and ${f2(M.FS, 2)} (the thrust shown).`;
-        });
+      num: '3.12', kind: 'Method', name: 'Medieval rules of proportion for buttresses',
+      statement: String.raw`Huerta's survey describes a Gothic buttress rule reproduced from Derand: divide the transverse arch's intrados into three equal arc lengths, join a third-point to its adjacent springing, and extend that segment by its own length. The extended point fixes the buttress's outer edge by vertical projection. For a semicircle the resulting depth is one quarter of the clear span. Huerta also records a late-Gothic German rule with wall thickness s/10 and buttress depth three times that, 3s/10, adjusted for masonry quality and tapered with height. These were rules used with a builder's wider experience, not universal structural guarantees.`,
+      idea: String.raw`The geometrical construction scales exactly with the span. But not every historical rule is proportional: Huerta explicitly distinguishes Rodrigo Gil de Hontañón's non-proportional arithmetic rules. Here the geometry is compared with a separate, authored rectangular-pier benchmark. Write its height as h/s=η, width as w/s=u, and imposed top forces as V=βγs², H=αγs², with β=1/4 and α=β(H/V). The base toe condition is βu+ηu²/2≥αη, hence u_min=2αη/[β+sqrt(β²+2αη²)]. All quantities are per unit depth. This checks the chosen imposed forces, not the unknown thrust of a historical vault.`,
+      caption: String.raw`Purple draws the equal-arc construction, including its extension and projection. The grey pier has the selected rule's width. Its red or orange curve is the resultant under the explicitly selected H/V and the benchmark vertical load. The plot compares the three geometric widths with the exact benchmark width as the pier gets taller. The displayed arch is a geometric guide, not a solved masonry ring.`,
+      deps: ['arch-3.9'], see: ['arch-3.10', 'arch-3.11'], refs: [],
+      credit: 'Gothic construction reproduced by Derand; Huerta survey',
+      scope: String.raw`Source: Santiago Huerta, “Geometry and equilibrium: The gothic theory of structural design”, The Structural Engineer, 17 January 2006, pp23–28, especially p24 Fig3 and pp25–28. The full survey and its reproduced diagram were checked, as were Derand’s 1743 edition, Part I chapter VI p10 and plate1 (figures N–Q), doi:10.3931/e-rara-4695. This is an actual later edition, not a claim to have read the 1643 original. Huerta distinguishes the rule’s Gothic vault-buttress context from its later use for simple arches. Earlier manuscripts, first-publication priority and use in individual buildings are not certified here. Circular and two-centred ideal profiles have clear span 2; their equal arc lengths are analytic, not polyline estimates. The independent pier model ignores sliding, crushing, foundations and vault compatibility. Its three widths are illustrative comparisons, not prescriptions.`,
+      verify: false, tags: ['proportion', 'gothic', 'buttress'],
+      viz(v){
+        const shape=v.select('arch profile',[{value:'round',label:'round'},{value:'equi',label:'equilateral'},{value:'lancet',label:'lancet'},{value:'segment',label:'segmental 120°'}],'round'),rule=v.select('width rule',[{value:'derand',label:'geometrical construction'},{value:'quarter',label:'span / 4'},{value:'three-tenths',label:'3 span / 10'}],'derand'),height=v.slider('pier height / clear span',.2,3,1,{step:'any',decimals:6}),ratio=v.slider('imposed force ratio H / V',0,1.5,.4,{step:'any',decimals:6});
+        const A=v.stage({x:[-3.4,1.4],y:[-2.5,2.8],equal:true,axes:false,height:360,title:'geometric rule and separate pier benchmark'}),B=v.stage({x:[0,3.2],y:[-.05,1.2],axes:'box',gutter:true,height:310,xlabel:'pier height / span',ylabel:'width / span',title:'proportions versus imposed-load benchmark'});let info;
+        v.render(()=>{const p=proportion(shape.value,rule.value,height.value,ratio.value);info=p;const g=p.geometry,minx=Math.min(-1-2*p.width,...p.curve.map(q=>q[0]),g.extension[0]);A.setView([minx-.5,1.5],[Math.min(-2*p.height,g.extension[1])-.7,g.rise+.7]);A.path(g.points,{color:'ink',width:2.2});A.rect(-1-2*p.width,-2*p.height,-1,0,{fill:'muted',fillAlpha:.18,color:'ink'});A.path(p.curve,{color:p.admissible?'red':'orange',width:2.2});A.path([g.third,g.spring,g.extension],{color:'purple',width:1.6,dash:[4,3]});A.line(g.extension[0],g.extension[1],g.extension[0],0,{color:'purple',dash:[3,3]});A.line(-1,0,g.extension[0],0,{color:'purple',width:2.2});for(const q of[g.third,g.other,g.spring,g.extension])A.dot(...q,{color:'purple',r:4});
+          const ymax=Math.max(.35,p.width,...p.comparison.map(q=>q[1]))*1.2;B.setView([0,3.2],[-.06*ymax,ymax]);B.path(p.comparison,{color:'accent',width:2.4});for(const[y,color]of[[g.width/2,'purple'],[.25,'gold'],[.3,'orange']])B.line(.05,y,3,y,{color,width:1.4,dash:[4,3]});B.dot(p.height,p.width,{color:p.admissible?'green':'orange',r:6});
+        });v.legend([['purple','equal-arc construction'],['gold','s/4'],['orange','3s/10'],['accent','benchmark minimum width']]);v.readout(()=>{const p=info;if(!p)return'';return `Construction width ${f2(p.geometry.width/2,6)} s; selected width ${f2(p.width,6)} s. For imposed H/V=${f2(p.ratio,6)} and V=γs²/4, benchmark minimum ${f2(p.need,6)} s. Base clearance ${f2(p.baseClearance,6)} s. ${p.admissible?'The benchmark pier satisfies the outer-toe condition.':'The benchmark pier fails the outer-toe condition.'} This comparison does not determine a historical vault's thrust.`;});
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.13
     {
-      num: '3.13',
-      kind: 'Paper',
-      name: 'A Description of Helioscopes, and Some Other Instruments',
-      paper: { authors: 'Robert Hooke', year: 1676, title: 'A Description of Helioscopes, and Some Other Instruments', venue: 'London, p. 31, invention 2; decipherment published by Richard Waller (1705), The Life of Dr. Robert Hooke, pp. xx–xxi', url: 'https://doi.org/10.3931/e-rara-2171' },
-      introduces: ['arch-3.1'],
-      statement: String.raw`In the list of inventions at the end of this book, Hooke announced a method for finding the form and abutments of building arches (p. 31, invention 2). He asserted that architectural writers had not solved the problem, but gave his answer only as an alphabetised anagram. Richard Waller published its decipherment in 1705: *ut pendet continuum flexile, sic stabit contiguum rigidum inversum*: as the flexible line hangs, so, inverted, the rigid arch will stand. In the ideal planar equilibrium interpretation, reflecting a hanging cable and reversing its tensile forces produces compressive equilibrium under the corresponding downward loads. An arch containing that thrust line satisfies the no-tension equilibrium condition, subject to adequate supports, compressive strength and resistance to sliding.`,
-      idea: String.raw`The principle follows by reflecting the vertical coordinate and reversing the internal forces: horizontal equilibrium is preserved, while the loads are again downward (arch-1.4, arch-1.5). It constructs a funicular arch for a specified cable and load distribution; it does not say every prescribed arch shape is funicular for arbitrary weights. A uniform flexible cable under its own weight has a catenary shape (arch-2.1). In the thin continuous idealization, its inversion can carry the corresponding weight through its centreline. The picture instead samples a smooth catenary at 25 equal-arc-length positions and constructs 24 finite polygonal voussoirs with their own centroidal weights. Their computed minimum thickness is a result of that discretized model and the numerical tolerances, not a proof that every positive thickness works.`,
-      caption: String.raw`A modern illustration of the inversion principle, rather than a figure from the announcement. Left, a smooth uniform cable with 25 markers at equal arc-length intervals; right, 24 constant-thickness polygonal voussoirs arranged along its inversion. Choose the rise and thickness, then deform the ring with **bump** while the reference cable stays fixed. The solver searches for a thrust line within all joints; its thickness estimate uses a lower search bound of 0.0001 half-span. Press **decipher** to reveal the Latin sentence published by Waller.`,
-      deps: ['arch-2.1'],
-      refs: ['Hooke (1676), p. 31, invention 2, ETH e-rara 2171', 'Waller (1705), The Life of Dr. Robert Hooke, pp. xx–xxi, in The Posthumous Works of Robert Hooke; Wellcome b30454621_0001, scans 32–33'],
-      credit: 'R. Hooke, 1676',
-      scope: String.raw`Ideal planar, vertical-load inversion and a modern finite-block reconstruction. The no-tension solver assumes rigid blocks, sufficient compression capacity and no sliding; it does not assess an actual building. The displayed letters are recomputed from Waller's Latin sentence with v normalized to u, not a diplomatic transcription of the 1676 typesetting. The original announcement and Waller's decipherment have been checked in digitized scans; Waller says he found the decipherment, but does not date when he did so.`,
-      tags: ['hooke', 'history', 'catenary'],
-      links: { original: 'https://doi.org/10.3931/e-rara-2171', decipherment: 'https://wellcomecollection.org/works/xxggvyj3/items?canvas=33', wikipedia: 'https://en.wikipedia.org/wiki/Catenary' },
-      viz(v) {
-        const M_ = 24, phrase = 'ut pendet continuum flexile sic stabit contiguum rigidum inversum', letters = phrase.replace(/[^a-z]/g, '').replace(/v/g, 'u').split('').sort().join('');
-        let shown = false;
-        const hS = v.slider('rise of the chain / half-span', 0.2, 1.3, 0.7, { step: 0.01 }), tS = v.slider('thickness of the ring', 0.005, 0.12, 0.05, { step: 0.0025 });
-        const bS = v.slider('bump: push the arch off the chain', -0.2, 0.2, 0, { step: 0.005 }), xS = v.slider('bump position', -0.85, 0.85, -0.4, { step: 0.01 });
-        v.button('decipher the anagram', () => { shown = !shown; });
-        const S = v.stage({ x: [-1.4, 1.4], y: [-1.75, 0.25], equal: true, axes: false, height: 280, title: 'a uniform cable hangs' });
-        const A = v.stage({ x: [-1.4, 1.4], y: [-0.25, 1.5], equal: true, axes: false, height: 280, title: 'turned over: the arch' });
-        const catA = (h) => { let lo = 0.02, hi = 200; for (let i = 0; i < 80; i++) { const a = Math.sqrt(lo * hi); if (a * (Math.cosh(1 / a) - 1) > h) lo = a; else hi = a; } return Math.sqrt(lo * hi); };
-        let Mo = null;
-        v.render(() => {
-          const h = hS.value, a = catA(h), Sl = a * Math.sinh(1 / a), amp = bS.value, xb = xS.value;
-          const base = Array.from({ length: M_ + 1 }, (_, j) => { const s = -Sl + (2 * Sl * j) / M_, x = a * Math.asinh(s / a); return [x, a * (Math.cosh(1 / a) - Math.cosh(x / a))]; });
-          const pts = base.map(([x, y]) => [x, y + amp * Math.exp(-(((x - xb) / 0.22) ** 2)) * (1 - x * x)]);
-          const mk = (t) => archFromLine(pts, t, GAM), g = mk(tS.value), rg = thrustRange(g, []), c = rg ? centralLine(g, []) : null, fit = bestFit(mk, () => [], {}, 1e-4, 1, 24);
-          const u = c ? c.u : fit ? fit.u : rg ? rg.min : null, tl = u ? thrustLine(g, [], u) : null;
-          const curve = Array.from({ length: 81 }, (_, i) => { const x = -1 + (2 * i) / 80; return [x, a * (Math.cosh(1 / a) - Math.cosh(x / a))]; });
-          S.path(curve.map(([x, y]) => [x, -y]), { color: 'red', width: 2.4 }); base.forEach(([x, y]) => S.dot(x, -y, { r: 3.2, color: 'accent' })); for (const x of [-1, 1]) S.dot(x, 0, { r: 5.5, color: 'ink' });
-          S.text(`uniform cable: catenary parameter $a = ${f2(a, 3)}$`, 0, -h - 0.25, { size: 12, color: 'muted', align: 'center' });
-          drawArch(v, A, g, { fillAlpha: 0.14 });
-          A.path(curve, { color: 'muted', width: 1.4, dash: [5, 4] });
-          if (tl) drawThrust(v, A, tl, { color: c ? 'red' : 'orange', width: 2.6 });
-          A.corner(c ? 'a thrust line fits in this model' : 'no admissible thrust line found', 'tl', { color: c ? 'muted' : 'red' });
-          for (const x of [-1, 1]) A.dot(x, 0, { r: 5.5, color: 'ink' });
-          v.legend([['red', 'chain / line of thrust'], ['muted', 'inverted catenary', { dash: true }], ['accent', 'equal-arc markers']]);
-          Mo = { a, g, rg, c, fit, h };
-        });
-        v.readout(() => {
-          if (!Mo) return '';
-          const { fit, rg, c, g } = Mo;
-          const txt = shown ? `**Ut pendet continuum flexile, sic stabit contiguum rigidum inversum**: “as hangs the flexible line, so, inverted, will the rigid arch stand”.` : `Alphabetised letters of the solution (${letters.length}): ${letters}`;
-          const minimum = fit ? `$t_{\\min} ${fit.t < 5e-4 ? '< 0.0005' : '\\approx ' + f2(fit.t, 4)}$` : 'no feasible thickness found up to 1';
-          return `${txt}\nWith the ring ${tS.value.toFixed(3)} thick (half-span 1) and the bump ${bS.value.toFixed(3)}: finite-block thickness search: ${minimum}; ${c ? `an admissible line has minimum joint clearance ${f2(c.eps, 3)}.` : 'no admissible line was found for the current thickness.'}${bS.value === 0 ? ' The undeformed ring approximates the inverted continuous cable; small thickness estimates are limited by discretization and solver tolerance.' : ''}`;
-        });
+      num: '3.13', kind: 'Paper', name: 'A Description of Helioscopes, and Some Other Instruments',
+      paper:{authors:'Robert Hooke',year:1676,title:'A Description of Helioscopes, and Some Other Instruments',venue:'London, p31, invention 2; Richard Waller, Life of Hooke, in The Posthumous Works (1705), pxxi',url:'https://doi.org/10.3931/e-rara-2171'},
+      introduces:['arch-3.1'],
+      statement:String.raw`On p31 Hooke announces an arch-and-abutment result as a letter cipher in the second entry of a list of proposed inventions. Waller's biographical introduction to the Posthumous Works prints its solution on pxxi: *ut pendet continuum flexile, sic stabit contiguum rigidum inversum*. The principle reverses a tensile equilibrium into a compressive one while preserving the same vertical loads. It does not say that every finite stone ring following a catenary carries its own weight at arbitrarily small thickness: the distribution and points of application of the loads must agree.`,
+      idea:String.raw`For this exact finite example, 23 equal downward point loads sit at equally spaced internal nodes between supports $x=-1$ and $x=1$. The 24 straight links are massless. Their vertical support reactions are $V=23/2$. At internal node j, the beam moment is $M_j=V(x_j+1)-\sum_{i<j}(x_j-x_i)$. Horizontal tension $H$ gives hanging height $-M_j/H$. After inversion, horizontal compression $H$ and the same weights balance at every node. Every positive reciprocal thrust $k=1/H$ gives height $kM_j$. For internal nodes only, put $L=\max(0,\max_j((c_j-t/2)/M_j))$ and $U=\min_j((c_j+t/2)/M_j)$. A vertical envelope centred at $c_j$ contains a funicular exactly when $L\le U$ and $U>0$. The supports have zero height; their inequalities are automatic. Straight segments and envelope edges make the nodal inequalities sufficient between nodes too.`,
+      caption:String.raw`Left: an exact polygon of 24 massless links carrying 23 equal node weights, calibrated to the chosen rise. Right: its inversion, a vertically measured envelope, and a funicular for those same fixed weights. A local bump changes only the envelope. The analytic interval test determines whether any positive-thrust funicular fits this family; the readout gives its minimum vertical thickness. It is not a finite-voussoir self-weight calculation. The registered decipher control switches between the normalised letter multiset and Waller's Latin solution.`,
+      deps:['arch-2.1'],refs:[],credit:'R. Hooke, 1676',
+      scope:String.raw`The original 1676 p31 and Waller's actual 1705 pxxi were inspected in ETH's scans: doi:10.3931/e-rara-2171 and doi:10.3931/e-rara-88704. Letters are recomputed from Waller's sentence, with v normalised to u and spaces removed; this is not a diplomatic transcription of either cipher's typography. Waller calls the curve a catenary; the model deliberately uses discrete point weights and straight massless links rather than a continuous uniform chain. The right-hand envelope has vertical, not normal, thickness. No finite stone weights, friction, crushing, support movements or whole-arch safety are simulated.`,
+      verify:false,tags:['hooke','history','funicular'],
+      viz(v){const rise=v.slider('polygon rise / half-span',.2,1.3,.7,{step:'any',decimals:6}),thickness=v.slider('vertical envelope thickness',.005,.4,.05,{step:'any',decimals:6}),bump=v.slider('local envelope bump',-.2,.2,0,{step:'any',decimals:6}),position=v.slider('bump position',-.85,.85,-.4,{step:'any',decimals:6}),decipher=v.select('cipher display',[{value:'letters',label:'normalised letters'},{value:'solution',label:'deciphered solution'}],'letters');
+        const S=v.stage({x:[-1.25,1.25],y:[-1.6,.3],equal:true,axes:false,height:290,title:'massless links with fixed node weights'}),A=v.stage({x:[-1.25,1.25],y:[-.4,1.8],equal:true,axes:false,height:320,title:'the same weights in compression'});let info;
+        v.render(()=>{const p=hanging(rise.value,thickness.value,bump.value,position.value);info=p;S.setView([-1.25,1.25],[-p.rise-.25,.25]);A.setView([-1.25,1.25],[Math.min(-.15,...p.envelope.map(q=>q[1]),...p.line.map(q=>q[1]))-.2,Math.max(.3,...p.envelope.map(q=>q[1]),...p.line.map(q=>q[1]))+.3]);S.path(p.chain,{color:'red',width:2.2});for(const q of p.chain)S.dot(...q,{color:'accent',r:2.5});for(const j of[3,9,15,21])S.arrow(p.chain[j][0],p.chain[j][1]+.1,p.chain[j][0],p.chain[j][1]-.1,{color:'gold',head:5});A.poly(p.envelope,{fill:'muted',fillAlpha:.18,color:'ink',width:1.2});A.path(p.centreline,{color:'muted',dash:[4,3],width:1.2});A.path(p.line,{color:p.admissible?'red':'orange',width:2.5});for(let j=0;j<p.line.length;j++)A.dot(...p.line[j],{color:j===0||j===24?'ink':'accent',r:j===0||j===24?4:2.5});
+        });v.legend([['red','hanging / admissible compression polygon'],['orange','best fitting polygon outside envelope'],['muted','envelope centre'],['gold','representative fixed node weights']]);v.readout(()=>{const p=info;if(!p)return'';const cipher=decipher.value==='solution'?`**${HOOKE_PHRASE}** — as the flexible line hangs, so the inverted rigid assembly stands.`:`Normalised solution letters (${HOOKE_LETTERS.length}): ${HOOKE_LETTERS}`;return `${cipher}\nAnalytic minimum vertical thickness ${f2(p.minimum,6)}; selected ${f2(p.thickness,6)}. ${p.admissible?'A positive-thrust funicular for these same 23 weights fits the envelope.':'No positive-thrust funicular for these same weights fits this envelope.'} Drawn horizontal compression ${f2(1/p.k,6)} in node-weight units; vertical reaction ${f2(p.V,3)} at each support. The links are massless; this does not certify a finite stone ring under its own weight.`;});
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.14
-    {
-      num: '3.14',
-      kind: 'Paper',
-      name: 'The Stone Skeleton',
-      paper: { authors: 'Jacques Heyman', year: 1966, title: 'The stone skeleton', venue: 'International Journal of Solids and Structures 2 (2): 249–279', doi: '10.1016/0020-7683(66)90018-7' },
-      introduces: ['arch-3.4', 'arch-3.5'],
-      statement: String.raw`Heyman's paper argues that the safety of a masonry structure is a question of geometry and equilibrium, not of stress. If masonry has no tensile strength, has compressive strength that is never approached, and does not slide (arch-3.4), a structure of it is a rigid-plastic body to which the theorems of plastic theory apply: a thrust line inside the masonry, in equilibrium with the loads, proves the structure safe (arch-3.5), and collapse comes by the formation of hinges (arch-3.6). He works the idea out for the arch and for the Gothic cathedral, where the flying buttress and the quadripartite vault are treated in some detail, with a brief look at domes. The practical consequence is that safety is measured by proportions, not by stress: an arch and a copy of it ten times larger are equally safe in this sense, while their stresses differ tenfold.`,
-      idea: String.raw`Earlier writers, from Couplet (1730), had used thrust lines and hinge mechanisms, and the same three conditions were the working hypotheses for calculating masonry arches throughout the nineteenth century; the dominant tool, however, was the search for the one true state of stress, which depends on small support movements nobody can know. Heyman explicitly credits Kooharian’s earlier limit-analysis result (1953) and develops its consequences for the Gothic structural system: one admissible state suffices for the safe theorem, so the true state, with its cracks and settlements, need not be found. The paper makes the three assumptions (arch-3.4) and the safe theorem (arch-3.5) its working basis, and applies them to arches, vaults and buttresses; later work (arch-3.7, arch-3.8) turned them into numbers such as the minimum thickness and the effect of settlement.`,
-      caption: String.raw`The paper's own figures and numbers are not reproduced (I did not have the full text): what is recreated is its argument. The map on the right shows, for a semicircular arch with a point load at the chosen position, which combinations of ring thickness and load stand (green) and which do not (red); drag the disc. The arch on the left shows the thrust line that fits, or, when none does, the line at the instant of collapse with its hinges. The readout gives the two safety measures that follow: the geometric factor $t/t_{\min}$ and the load factor, and the stress, which grows with the span.`,
-      deps: ['arch-3.2', 'solid-4.10'],
-      refs: ['Heyman (1966), The stone skeleton, pp. 252–259 (assumptions, limit principles and arches), pp. 260–278 (buttresses and vaults); doi:10.1016/0020-7683(66)90018-7'],
-      credit: 'J. Heyman, 1966',
-      scope: String.raw`Reconstruction of the argument for a semicircular arch with radial joints, self-weight 22 kN/m³ and one point load; the paper's own examples (cathedral section, vault, flying buttress) and numbers are not used. The complete original-paper text was read in a third-party OCR transcription, including its material assumptions, limit-design principles and arch/vault/buttress sections. The scan’s figures and several OCR-damaged equations still need inspection before full source closure; the picture uses its own explicitly reconstructed data.`,
-      verify: true,
-      tags: ['heyman', 'limit analysis', 'history'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Line_of_thrust' },
-      viz(v) {
-        const N = 24, xS = v.slider('load position x / R', -0.92, 0.92, -0.5, { step: 0.01 }), spS = v.slider('span of the real arch (m)', 5, 150, 20, { log: true });
-        const A = v.stage({ x: [-1.3, 1.3], y: [-0.25, 1.45], equal: true, axes: false, height: 340, weight: 1.35, title: 'the arch' });
-        const B = v.stage({ x: [0.1, 0.4], y: [0, 3], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'ring thickness t / R', ylabel: 'point load / arch weight', title: 'map of safety: drag the disc' });
-        const hnd = B.handle(0.2, 0.25, { color: 'accent', r: 8, constrain: { x: [0.1, 0.4], y: [0, 3] } });
-        const bound = new Map();
-        const curve = (x) => { const key = x.toFixed(3); if (bound.has(key)) return bound.get(key); const pts = []; for (let i = 0; i <= 30; i++) { const t = 0.1 + (0.3 * i) / 30, g = arch({ R: 1, t, N }), c = collapseFactor(g, [{ x, P: g.W, var: true, k: blockAt(g, x) }]); pts.push([t, c ? c.lam : 0]); } if (bound.size > 8) bound.clear(); bound.set(key, pts); return pts; };
-        let M = null;
-        v.render(() => {
-          const x = xS.value, pts = curve(x), t = hnd.x, share = hnd.y, g = arch({ R: 1, t, N }), k = blockAt(g, x), loadsV = [{ x, P: g.W, var: true, k }], cf = collapseFactor(g, loadsV);
-          const ymax = Math.min(3, Math.max(0.6, ...pts.map((p) => p[1]))) * 1.05; B.setView([0.1, 0.4], [0, ymax]); if (hnd.y > ymax) hnd.set(hnd.x, ymax);
-          B.poly([...pts.map((p) => [p[0], Math.min(p[1], ymax)]), [0.4, 0], [0.1, 0]], { fill: 'green', fillAlpha: 0.2, color: 'green', width: 1.8 });
-          B.poly([...pts.map((p) => [p[0], Math.min(p[1], ymax)]), [0.4, ymax], [0.1, ymax]], { fill: 'red', fillAlpha: 0.1, color: 'red', stroke: false });
-          B.text('stands', 0.3, ymax * 0.12, { size: 12, color: 'green', align: 'center' }); B.text('collapses', 0.3, ymax * 0.92, { size: 12, color: 'red', align: 'center' });
-          drawArch(v, A, g, { fillAlpha: 0.12 });
-          const yl = extradosY(g, x), lam = cf ? cf.lam : 0, stands = cf && share <= lam + 1e-9;
-          let u = null, hs = [];
-          if (stands) { const lo = [{ x, P: share * g.W, k }], c = centralLine(g, lo); if (c) { u = c.u; const rg = thrustRange(g, lo); if (rg) for (const uu of [rg.min, rg.max]) { const tl = thrustLine(g, lo, uu); for (let i = 0; i + 1 < tl.length; i++) A.line(tl[i].p[0], tl[i].p[1], tl[i + 1].p[0], tl[i + 1].p[1], { color: 'muted', width: 1.1, dash: [4, 3] }); } drawThrust(v, A, thrustLine(g, lo, c.u), { color: 'green', width: 2.8 }); } }
-          else if (cf) { u = cf.u; drawThrust(v, A, thrustLine(g, loadsV, cf.u), { color: 'red', width: 2.8 }); hs = hinges(g, loadsV, cf.u, {}, 1e-6); for (const h of hs) { const p = h.side === 'a' ? g.joints[h.j].a : g.joints[h.j].b; A.dot(p[0], p[1], { r: 5.5, color: 'red' }); } }
-          else A.corner('this ring cannot even stand alone', 'tl', { color: 'red' });
-          if (share > 0) A.arrow(x, yl + 0.15 + 0.6 * Math.min(1, share), x, yl + 0.02, { color: 'gold', width: 3.5, head: 10 });
-          if (cf) A.corner(stands ? 'a thrust line fits: safe' : 'no thrust line fits: collapse (hinges shown)', 'tl', { color: stands ? 'green' : 'red' });
-          const fit = share > 0 ? bestFit((tt) => arch({ R: 1, t: tt, N }), (gg) => [{ x, P: share * gg.W, k: blockAt(gg, x) }], {}, 0.05, 0.6, 22) : bestFit((tt) => arch({ R: 1, t: tt, N }), () => [], {}, 0.05, 0.6, 22);
-          let F = 0; if (u) { const tl = thrustLine(g, stands ? [{ x, P: share * g.W, k }] : loadsV, u); F = Math.max(...tl.map((q) => Math.hypot(...q.F))); }
-          M = { g, cf, share, stands, tmin: fit ? fit.t : NaN, F, t, lam };
-        });
-        v.legend([['green', 'thrust line that fits'], ['red', 'line at collapse, hinges'], ['muted', 'lowest and highest lines', { dash: true }]]);
-        v.readout(() => {
-          if (!M || !M.cf) return 'This ring cannot stand even under its own weight.';
-          const R = spS.value / 2, stress = (M.F * R) / M.t / 1000;
-          return `Ring $t/R = ${f2(M.t, 3)}$, point load ${f2(M.share, 2)} of the arch weight at $x = ${f2(xS.value, 2)}\\,R$. Collapse load ${f2(M.lam, 2)} W, so the **load factor** is ${M.share > 0 ? f2(M.lam / M.share, 2) : '∞'}; the thinnest ring that would carry this load is $t_{\\min}/R = ${f2(M.tmin, 3)}$, so the **geometric factor** is $t/t_{\\min} = ${f2(M.t / M.tmin, 2)}$ — neither depends on the size of the arch.\nFor a span of ${spS.value.toFixed(0)} m the largest force in the arch is about ${f2((M.F * R * R) / 1, 0)} kN/m, a mean stress of roughly ${f2(stress, 2)} MPa over the joint: it grows in proportion to the span while the safety measures above do not.`;
-        });
-      },
-    },
+    heymanItem,
   ],
 };

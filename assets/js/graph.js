@@ -1,6 +1,5 @@
 // Dependency-graph views: theorem lineage, chapter graph, chapter flow, and the global map.
 import { resolveColor, withAlpha, inlineHTML, richHTML, escapeHTML } from './viz/core.js';
-import { traceClippedCubic } from './map-path.js';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const svg = (tag, attrs = {}, parent) => { const el = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) if (v != null) el.setAttribute(k, v); if (parent) parent.append(el); return el; };
@@ -306,6 +305,7 @@ export function collectionFlow(G, groups, { includePlanned = true } = {}) {
 }
 
 // ------------------------------------------------------------ global map (canvas)
+const MAX_MAP_RASTER_PIXELS = 16_000_000, MAX_MAP_RASTER_EDGE = 8192;
 export class MapView {
   constructor(host, G, { onOpen, focus, loadShard, onQuery, query = '' } = {}) {
     this.host = host; this.G = G; this.onOpen = onOpen; this.loadShard = loadShard; this.hl = null;
@@ -315,6 +315,10 @@ export class MapView {
       ...G.items.map((it) => ({ it, x: it.x, y: it.y, r: Math.min(8, 2.6 + Math.sqrt(it.desc || 0) * 0.4) })),
       ...G.planned.map((it) => ({ it, x: it.x, y: it.y, r: 2.2, ghost: true })),
     ];
+    // Static world-space bins keep pointer hit tests independent of render LOD.
+    // Preserve original node order for exact tie behavior across neighboring bins.
+    this.nodeBins = new Map(); this.closures = new Map();
+    this.nodes.forEach((n, order) => { n.order = order; const key = `${Math.floor(n.x / 256)},${Math.floor(n.y / 256)}`; if (!this.nodeBins.has(key)) this.nodeBins.set(key, []); this.nodeBins.get(key).push(n); });
     const fieldsHere = G.fields.filter((F) => this.nodes.some((n) => this.fieldOf.get(n.it.col) === F.id));
     host.innerHTML = `
       <canvas tabindex="0" aria-label="Map of all results and their dependencies. Use arrow keys to pan, plus and minus to zoom, and 0 to fit."></canvas>
@@ -334,7 +338,6 @@ export class MapView {
         <span><svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="var(--c-green)" stroke-width="2.5"/></svg>used by (descendants)</span>
         ${G.planned.length ? '<span><svg width="12" height="12"><circle cx="6" cy="6" r="3.5" fill="none" stroke="var(--ink-3)" stroke-dasharray="2 2"/></svg>planned, not yet written</span>' : ''}
         <span>node size ∝ results that depend on it</span>
-        <span>nearby links · details return after panning</span>
       </div>
       <div class="map-help">scroll / pinch to zoom · drag to pan · click a node · double-click to open</div>`;
     this.canvas = host.querySelector('canvas'); this.ctx = this.canvas.getContext('2d');
@@ -368,14 +371,15 @@ export class MapView {
     this.ro.observe(host);
     this.resize(); this.fit(false);
     if (focus && this.byId.has(focus)) this.select(this.byId.get(focus), true);
-    this.onTheme = () => { this.panCache = null; this.textWidths?.clear(); this.draw(); }; window.addEventListener('themechange', this.onTheme);
-    this.onFonts = () => { this.panCache = null; this.textWidths?.clear(); this.draw(); };
-    document.fonts?.addEventListener('loadingdone', this.onFonts);
+    this.onTheme = () => { this.mapRaster = this.focusRaster = null; this.draw(); }; window.addEventListener('themechange', this.onTheme);
+    this.onFonts = () => { if (!this.dead) { this.mapRaster = this.focusRaster = null; this._tipMeasure = null; this.draw(); } };
+    document.fonts?.ready.then(this.onFonts); document.fonts?.addEventListener('loadingdone', this.onFonts);
   }
-  destroy() { this.dead = true; this.panCache = null; clearTimeout(this.detailTimer); document.fonts?.removeEventListener('loadingdone', this.onFonts); clearTimeout(this.queryTimer); this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); cancelAnimationFrame(this._raf); }
+  destroy() { this.dead = true; this.mapRaster = this.focusRaster = null; this.closures.clear(); clearTimeout(this.queryTimer); clearTimeout(this.zoomTimer); clearTimeout(this.hoverTimer); this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); document.fonts?.removeEventListener('loadingdone', this.onFonts); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); this.anim = 0; cancelAnimationFrame(this._raf); this.anim = this._raf = 0; this.zooming = this.dragging = false; }
   visible(n) { return this.show.fields.has(this.fieldOf.get(n.it.col)) && (this.show.defs || n.it.kind !== 'Definition') && (this.show.planned || !n.ghost); }
   /** Emphasize a set of ids (null clears); fit = zoom to them. */
   setHighlight(ids, { fit = false, label = '' } = {}) {
+    this.mapRaster = this.focusRaster = null;
     this.hl = ids && ids.size ? ids : null;
     const n = this.host.querySelector('.map-q-n'); if (n) n.textContent = ids ? (ids.size ? `${ids.size.toLocaleString('en')} match${ids.size === 1 ? '' : 'es'}` : 'no matches') : label;
     if (fit && this.hl) this.fit(true); else this.draw();
@@ -384,6 +388,7 @@ export class MapView {
     const r = this.host.getBoundingClientRect(); const d = Math.min(2, devicePixelRatio || 1);
     this.W = r.width; this.H = r.height; this.canvas.width = this.W * d; this.canvas.height = this.H * d;
     this.canvas.style.width = this.W + 'px'; this.canvas.style.height = this.H + 'px'; this.dpr = d;
+    this._tipMeasure = null;
   }
   bounds() {
     const vis = this.nodes.filter((n) => this.visible(n) && (!this.hl || this.hl.has(n.it.id))); const ns = vis.length ? vis : this.nodes;
@@ -397,49 +402,54 @@ export class MapView {
     this.flyTo(k, this.W / 2 - k * (x0 + x1) / 2, (this.H + 40) / 2 - k * (y0 + y1) / 2, animate);
   }
   flyTo(k, tx, ty, animate = true) {
-    cancelAnimationFrame(this.anim);
+    cancelAnimationFrame(this.anim); this.anim = 0;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) animate = false;
-    if (!animate) { this.k = k; this.tx = tx; this.ty = ty; this.draw(); return; }
+    if (!animate) { this.finishZoom(); this.k = k; this.tx = tx; this.ty = ty; this.draw(); return; }
+    this.startZoom(false);
     const s = { k: this.k, tx: this.tx, ty: this.ty }, t0 = performance.now(), D = 600;
-    const step = (now) => { const u = Math.min(1, (now - t0) / D), e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; this.beginMovement(); this.k = s.k + (k - s.k) * e; this.tx = s.tx + (tx - s.tx) * e; this.ty = s.ty + (ty - s.ty) * e; this.draw(); if (u < 1) this.anim = requestAnimationFrame(step); };
+    // An earlier paint in the same RAF can be expensive. Advance using actual
+    // elapsed time so its stale frame timestamp cannot prolong the transition.
+    const step = () => { const u = Math.min(1, (performance.now() - t0) / D), e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; this.k = s.k + (k - s.k) * e; this.tx = s.tx + (tx - s.tx) * e; this.ty = s.ty + (ty - s.ty) * e; this.draw(); if (u < 1) this.anim = requestAnimationFrame(step); else { this.anim = 0; this.finishZoom(); } };
     this.anim = requestAnimationFrame(step);
   }
   zoom(factor) {
-    cancelAnimationFrame(this.anim); this.userMoved = true; this.beginMovement();
+    cancelAnimationFrame(this.anim); this.anim = 0; this.userMoved = true;
+    this.startZoom();
     const k = Math.min(8, Math.max(0.01, this.k * factor)), r = k / this.k;
     this.tx = this.W / 2 - (this.W / 2 - this.tx) * r;
     this.ty = this.H / 2 - (this.H / 2 - this.ty) * r;
     this.k = k; this.draw();
   }
+  startZoom(debounce = true) {
+    clearTimeout(this.zoomTimer); this.zooming = true;
+    if (debounce) this.zoomTimer = setTimeout(() => this.finishZoom(), 160);
+  }
+  finishZoom() {
+    clearTimeout(this.zoomTimer);
+    if (!this.zooming) return;
+    this.zooming = false; this.mapRaster = null; this._settledHover = this.hover;
+    if (!this.dead) this.draw();
+  }
   focusNode(n) { const k = Math.max(this.k, 1.6); this.flyTo(k, this.W / 2 - n.x * k - (this.side.classList.contains('open') && this.W > 700 ? 180 : 0), this.H / 2 - n.y * k); }
   sx(x) { return x * this.k + this.tx; } sy(y) { return y * this.k + this.ty; }
-  beginMovement() {
-    // Keep every node during movement. Expensive link/text details return once
-    // input settles, so crossing the raster boundary does not stall a drag.
-    this.interacting = true; this.hover = null; this.tip.style.display = 'none';
-    clearTimeout(this.detailTimer);
-    this.detailTimer = setTimeout(() => { if (!this.dead) { this.interacting = false; this.draw(); } }, 160);
-  }
-  panTo(tx, ty) { this.beginMovement(); this.tx = tx; this.ty = ty; this.draw(); }
-  textWidth(text) {
-    this.textWidths ||= new Map();
-    const key = this.ctx.font + '/' + this.ctx.letterSpacing + '\0' + text;
-    if (!this.textWidths.has(key)) {
-      if (this.textWidths.size > 20000) this.textWidths.clear();
-      this.textWidths.set(key, this.ctx.measureText(text).width);
-    }
-    return this.textWidths.get(key);
-  }
   hit(px, py) {
     let best = null, bd = 12;
-    for (const n of this.nodes) { if (!this.visible(n)) continue; const d = Math.hypot(this.sx(n.x) - px, this.sy(n.y) - py) - Math.max(2, n.r * Math.min(1.4, this.k)) + (n.ghost ? 3 : 0); if (d < bd) { bd = d; best = n; } }
+    const x = (px - this.tx) / this.k, y = (py - this.ty) / this.k, radius = 24 / this.k;
+    for (let bx = Math.floor((x - radius) / 256); bx <= Math.floor((x + radius) / 256); bx++) for (let by = Math.floor((y - radius) / 256); by <= Math.floor((y + radius) / 256); by++) for (const n of this.nodeBins.get(`${bx},${by}`) || []) {
+      if (!this.visible(n)) continue;
+      const d = Math.hypot(this.sx(n.x) - px, this.sy(n.y) - py) - Math.max(2, n.r * Math.min(1.4, this.k)) + (n.ghost ? 3 : 0);
+      if (d < bd || best && d === bd && n.order < best.order) { bd = d; best = n; }
+    }
     return best;
   }
   closure(n) {
+    if (this.closures.has(n.it.id)) { const cached = this.closures.get(n.it.id); this.closures.delete(n.it.id); this.closures.set(n.it.id, cached); return cached; }
     const anc = new Set(), desc = new Set();
     const up = [n.it.id]; while (up.length) { const x = up.pop(); for (const d of depsOf(this.G.byId.get(x))) if (!anc.has(d) && this.G.byId.has(d)) { anc.add(d); up.push(d); } }
     const dn = [n.it.id]; while (dn.length) { const x = dn.pop(); for (const c of this.G.allChildren.get(x) || []) if (!desc.has(c)) { desc.add(c); dn.push(c); } }
-    return { anc, desc };
+    const result = { anc, desc }; this.closures.set(n.it.id, result);
+    if (this.closures.size > 8) this.closures.delete(this.closures.keys().next().value);
+    return result;
   }
   head(it) {
     const C = this.G.colById.get(it.col);
@@ -448,7 +458,21 @@ export class MapView {
   /** Statements live in per-collection shards; fetch on demand and refresh `then`. */
   needSt(it, then) {
     if (it.st != null || it.planned || !this.loadShard) return;
-    this.loadShard(it.col).then(() => { if (!this.dead) then(); });
+    this.loadShard(it.col).then(() => { if (!this.dead) then(); }).catch(() => {
+      if (this.dead) return;
+      if (this.sel?.it === it) {
+        const box = this.side.querySelector('.st');
+        if (box) {
+          box.textContent = 'Statement unavailable. ';
+          const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'btn'; retry.textContent = 'Retry statement';
+          retry.addEventListener('click', () => this.needSt(it, then)); box.append(retry);
+        }
+      }
+      if (this._tipN?.it === it) {
+        const box = this.tip.querySelector('.st');
+        if (box) { box.textContent = 'Statement unavailable. Move away and return to retry.'; this._tipMeasure = null; }
+      }
+    });
   }
   select(n, fly) {
     this.sel = n; this.selClosure = n ? this.closure(n) : null;
@@ -467,13 +491,16 @@ export class MapView {
     const cv = this.canvas; const ptrs = new Map(); let drag = null, pinch = null, moved = false;
     const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.addEventListener('wheel', (e) => {
-      e.preventDefault(); cancelAnimationFrame(this.anim); this.userMoved = true; this.beginMovement();
+      e.preventDefault(); cancelAnimationFrame(this.anim); this.anim = 0; this.userMoved = true;
+      this.startZoom();
       const [px, py] = pos(e); const f = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018));
       const k = Math.min(8, Math.max(0.01, this.k * f)); const r = k / this.k;
       this.tx = px - (px - this.tx) * r; this.ty = py - (py - this.ty) * r; this.k = k; this.draw();
     }, { passive: false });
     cv.addEventListener('pointerdown', (e) => {
-      cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, pos(e)); moved = false; cancelAnimationFrame(this.anim);
+      cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, pos(e)); moved = false; cancelAnimationFrame(this.anim); this.anim = 0;
+      this.dragging = true;
+      this.finishZoom();
       if (ptrs.size === 1) drag = { p: pos(e), tx: this.tx, ty: this.ty };
       if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), k: this.k, c: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], tx: this.tx, ty: this.ty }; drag = null; }
     });
@@ -481,21 +508,25 @@ export class MapView {
       const p = pos(e);
       if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, p);
       if (pinch && ptrs.size === 2) {
-        this.beginMovement();
+        this.startZoom(false);
         const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
         const k = Math.min(8, Math.max(0.01, pinch.k * d / pinch.d)); const r = k / pinch.k;
         this.k = k; this.tx = pinch.c[0] - (pinch.c[0] - pinch.tx) * r; this.ty = pinch.c[1] - (pinch.c[1] - pinch.ty) * r; moved = true; this.draw(); return;
       }
-      if (drag) { const dx = p[0] - drag.p[0], dy = p[1] - drag.p[1]; if (Math.hypot(dx, dy) > 3) { moved = true; this.userMoved = true; this.panTo(drag.tx + dx, drag.ty + dy); } return; }
+      if (drag) { const dx = p[0] - drag.p[0], dy = p[1] - drag.p[1]; if (Math.hypot(dx, dy) > 3) { moved = true; this.userMoved = true; } this.tx = drag.tx + dx; this.ty = drag.ty + dy; this.draw(); return; }
       const n = this.hit(p[0], p[1]);
       if (n !== this.hover) { this.hover = n; cv.style.cursor = n ? 'pointer' : 'grab'; this.draw(); }
       this._tip(n, p);
     });
     const up = (e) => {
+      const panned = drag && moved, pinched = !!pinch;
       const p = pos(e); ptrs.delete(e.pointerId);
       if (ptrs.size < 2) pinch = null;
       if (drag && !moved) { const n = this.hit(p[0], p[1]); this.select(n || null, false); }
       drag = null;
+      this.dragging = ptrs.size > 0;
+      if (panned) { this.mapRaster = null; this.draw(); }
+      if (pinched) this.finishZoom();
     };
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
     cv.addEventListener('pointerleave', () => { this.hover = null; this._tip(null); this.draw(); });
@@ -507,9 +538,10 @@ export class MapView {
       else if (e.key === '-') this.zoom(1 / 1.4);
       else if (e.key === '0') this.fit(false);
       else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-        cancelAnimationFrame(this.anim); this.userMoved = true;
+        cancelAnimationFrame(this.anim); this.anim = 0; this.userMoved = true;
+        this.finishZoom();
         this.tx += e.key === 'ArrowLeft' ? 48 : e.key === 'ArrowRight' ? -48 : 0;
-        this.ty += e.key === 'ArrowUp' ? 48 : e.key === 'ArrowDown' ? -48 : 0; this.beginMovement(); this.draw();
+        this.ty += e.key === 'ArrowUp' ? 48 : e.key === 'ArrowDown' ? -48 : 0; this.draw();
       } else return;
       e.preventDefault();
     };
@@ -518,102 +550,152 @@ export class MapView {
   _tip(n, p) {
     if (!n) { this.tip.style.display = 'none'; this._tipN = null; return; }
     const it = n.it; this._tipN = n; this._tipP = p;
-    this.tip.innerHTML = `${this.head(it)}<div class="nm">${inlineHTML(it.name)}</div><div class="st">${it.planned ? '<span class="faint">planned</span>' : richHTML(it.st || '')}</div>`;
+    if (this._tipIt !== it || this._tipSt !== it.st || this._tipName !== it.name) {
+      this.tip.innerHTML = `${this.head(it)}<div class="nm">${inlineHTML(it.name)}</div><div class="st">${it.planned ? '<span class="faint">planned</span>' : richHTML(it.st || '')}</div>`;
+      this._tipIt = it; this._tipSt = it.st; this._tipName = it.name; this._tipMeasure = null;
+    }
     this.tip.style.display = 'block';
-    const w = this.tip.offsetWidth, h = this.tip.offsetHeight;
+    const [w, h] = this._tipMeasure || (this._tipMeasure = [this.tip.offsetWidth, this.tip.offsetHeight]);
     let x = p[0] + 16, y = p[1] + 16; if (x + w > this.W - 8) x = p[0] - w - 16; if (y + h > this.H - 8) y = p[1] - h - 16;
     this.tip.style.left = x + 'px'; this.tip.style.top = y + 'px';
     this.needSt(it, () => { if (this._tipN === n) this._tip(n, this._tipP); });
   }
   draw() {
-    if (this._raf) return;
+    if (this.dead || this._raf) return;
     this._raf = requestAnimationFrame(() => { this._raf = 0; this._draw(); });
   }
   _draw() {
-    // Panning translates the same picture. Keep a padded raster until the view
-    // leaves it; picking still uses the actual nodes, and zoom/filter/focus
-    // changes render from the full graph again.
-    if (!this.W || !this.H) { this._paint(); return; }
-    const key = `${this.k}/${this.W}/${this.H}/${this.dpr}/${!!this.interacting}/${this.show.defs}/${this.show.planned}/${this.hover?.it.id || ''}/${this.sel?.it.id || ''}/${[...this.show.fields].sort().join(',')}`;
-    let cache = this.panCache;
-    if (!cache || cache.key !== key || cache.highlight !== this.hl || Math.abs(this.tx-cache.tx) > cache.pad || Math.abs(this.ty-cache.ty) > cache.pad) {
-      const pad = 192, canvas = cache?.canvas || document.createElement('canvas');
-      const width = Math.ceil((this.W + 2*pad)*this.dpr), height = Math.ceil((this.H + 2*pad)*this.dpr);
-      if (canvas.width !== width) canvas.width = width;
-      if (canvas.height !== height) canvas.height = height;
-      const old = { ctx: this.ctx, W: this.W, H: this.H, tx: this.tx, ty: this.ty };
+    // A selected moving view has no changing-hover backdrop to reuse. Drawing
+    // directly avoids constructing/flushing a larger padded scene per zoom step;
+    // finishZoom rebuilds the exact full-resolution pan raster after motion.
+    if (this.zooming && this.sel) { this.mapRaster = this.focusRaster = null; this._paint(); return; }
+    // The map has thousands of translucent marks and dependency edges. Reuse
+    // their raster while panning; include a margin so newly exposed pixels exist.
+    // A moving zoom can scale a covered raster within the same LOD tier; settling
+    // redraws at the exact transform. Filters, highlights, fonts and theme rebuild.
+    // Focus layers share one combined 16M-pixel budget, rather than 16M each.
+    // A selected closure is stable: an extra backdrop only adds cold/zoom work.
+    // A different hovered node can reuse that backdrop; selected motion above
+    // remains direct, and hovering the selection itself needs only one raster.
+    const layered = !!this.hover && this.hover !== this.sel, slots = layered ? 2 : 1;
+    let pad = 256;
+    while (pad > 0 && Math.ceil((this.W + 2 * pad) * this.dpr) * Math.ceil((this.H + 2 * pad) * this.dpr) * slots > MAX_MAP_RASTER_PIXELS) pad = Math.max(0, pad - 16);
+    const width = this.W + 2 * pad, height = this.H + 2 * pad;
+    const pixelWidth = Math.ceil(width * this.dpr), pixelHeight = Math.ceil(height * this.dpr);
+    if (pixelWidth * pixelHeight * slots > MAX_MAP_RASTER_PIXELS || Math.max(pixelWidth, pixelHeight) > MAX_MAP_RASTER_EDGE) {
+      this.mapRaster = this.focusRaster = null; this._paint(); return;
+    }
+    if (!layered) this.focusRaster = null;
+    const lod = this.k < .13 ? 0 : this.k < .35 ? 1 : this.k < 1.15 ? 2 : 3;
+    const key = [this.W, this.H, this.dpr, this.show.defs, this.show.planned, [...this.show.fields].join(','), this.hover?.it.id, this.sel?.it.id].join('|');
+    let cache = this.mapRaster;
+    const ratio = cache ? this.k / cache.k : 1;
+    const left = cache ? this.tx - cache.tx * ratio - cache.pad * ratio : 0, top = cache ? this.ty - cache.ty * ratio - cache.pad * ratio : 0;
+    const covered = cache && left <= 0 && top <= 0 && left + cache.width * ratio >= this.W && top + cache.height * ratio >= this.H;
+    const zoomMatches = cache && (cache.k === this.k || this.zooming && cache.lod === lod && ratio >= .6 && ratio <= 1.8);
+    if (!cache || cache.key !== key || cache.highlight !== this.hl || !zoomMatches || !covered) {
+      const baseKey = [this.k, width, height, this.dpr, this.show.defs, this.show.planned, [...this.show.fields].join(',')].join('|');
+      const baseReady = this.focusRaster?.key === baseKey && this.focusRaster.highlight === this.hl && this.focusRaster.tx === this.tx && this.focusRaster.ty === this.ty;
+      if (layered && cache?.focus !== this.hover && baseReady && !this.zooming && !this.dragging && this._settledHover !== this.hover) {
+        // Composite changing hover content directly onto the display. Avoid an
+        // offscreen read/flush/copy per pointer event; cache the complete picture
+        // after the pointer settles so subsequent panning still uses one blit.
+        const c = this.ctx; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
+        c.drawImage(this.focusRaster.canvas, -pad, -pad, width, height); this._paint({ layer: 'overlay' });
+        clearTimeout(this.hoverTimer); const hover = this.hover;
+        this.hoverTimer = setTimeout(() => { if (!this.dead && this.hover === hover) { this._settledHover = hover; this.draw(); } }, 120);
+        return;
+      }
+      const canvas = cache?.canvas || document.createElement('canvas');
+      if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
+      if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+      const saved = { ctx: this.ctx, W: this.W, H: this.H, tx: this.tx, ty: this.ty };
       try {
-        this.ctx = canvas.getContext('2d'); this.W += 2*pad; this.H += 2*pad; this.tx += pad; this.ty += pad;
-        this._paint();
-      } finally { Object.assign(this, old); }
-      cache = this.panCache = { key, highlight: this.hl, pad, canvas, tx: this.tx, ty: this.ty };
+        this.ctx = canvas.getContext('2d'); this.W = width; this.H = height; this.tx += pad; this.ty += pad;
+        if (layered) {
+          let base = this.focusRaster;
+          if (!base || base.key !== baseKey || base.highlight !== this.hl || base.tx !== saved.tx || base.ty !== saved.ty) {
+            const background = base?.canvas || document.createElement('canvas');
+            if (background.width !== pixelWidth) background.width = pixelWidth;
+            if (background.height !== pixelHeight) background.height = pixelHeight;
+            this.ctx = background.getContext('2d'); this._paint({ layer: 'base' });
+            base = this.focusRaster = { key: baseKey, highlight: this.hl, canvas: background, tx: saved.tx, ty: saved.ty };
+          }
+          this.ctx = canvas.getContext('2d'); this.ctx.setTransform(1, 0, 0, 1, 0, 0); this.ctx.clearRect(0, 0, pixelWidth, pixelHeight); this.ctx.drawImage(base.canvas, 0, 0);
+          this._paint({ layer: 'overlay' });
+        } else this._paint();
+      } finally { Object.assign(this, saved); }
+      cache = this.mapRaster = { key, highlight: this.hl, focus: this.hover || this.sel, pad, canvas, tx: this.tx, ty: this.ty, k: this.k, lod, width, height };
     }
     const c = this.ctx;
     c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
-    c.drawImage(cache.canvas, this.tx-cache.tx-cache.pad, this.ty-cache.ty-cache.pad, this.W+2*cache.pad, this.H+2*cache.pad);
+    const scale = this.k / cache.k;
+    const x = Math.round((this.tx - cache.tx * scale) * this.dpr) / this.dpr - cache.pad * scale;
+    const y = Math.round((this.ty - cache.ty * scale) * this.dpr) / this.dpr - cache.pad * scale;
+    c.drawImage(cache.canvas, x, y, cache.width * scale, cache.height * scale);
   }
-  _paint() {
-    const c = this.ctx, k = this.k; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
+  _paint({ layer = 'all' } = {}) {
     const focus = this.hover || this.sel;
+    if (layer === 'all' && focus && !this.sel) { this._paint({ layer: 'base' }); this._paint({ layer: 'overlay' }); return; }
+    const overlay = layer === 'overlay', base = layer === 'base';
+    const c = this.ctx, k = this.k; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); if (!overlay) c.clearRect(0, 0, this.W, this.H);
     const fc = focus ? (focus === this.sel ? this.selClosure : this.closure(focus)) : null;
     const off = (x0, y0, x1, y1) => x1 < 0 || x0 > this.W || y1 < 0 || y0 > this.H;
-    // field regions
-    for (const F of this.G.map?.fields || []) {
-      if (!this.show.fields.has(F.field)) continue;
-      const x0 = this.sx(F.x0), y0 = this.sy(F.y0), x1 = this.sx(F.x1), y1 = this.sy(F.y1);
-      if (off(x0, y0, x1, y1)) continue;
-      c.fillStyle = withAlpha('field-' + F.field, 0.035); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 18 * Math.min(1, k * 4)); c.fill();
-      // the title must fit its region: fall back to the short name, then shrink
-      let fs = Math.max(13, Math.min(30, 60 * k)), txt = F.title.toUpperCase();
-      c.save(); c.letterSpacing = '0.08em'; c.fillStyle = withAlpha('field-' + F.field, 0.95); c.textAlign = 'left'; c.textBaseline = 'bottom';
-      const room = x1 - x0 - 8, fit = () => { c.font = `600 ${fs}px Inter, system-ui, sans-serif`; return this.textWidth(txt); };
-      if (fit() > room) { txt = (this.G.fieldById?.get(F.field)?.short || F.field).toUpperCase(); if (fit() > room) { fs = Math.max(9, fs * room / this.textWidth(txt)); fit(); } }
-      c.fillText(txt, x0 + 4, y0 - 4); c.restore();
+    if (!overlay) {
+      // field regions
+      for (const F of this.G.map?.fields || []) {
+        if (!this.show.fields.has(F.field)) continue;
+        const x0 = this.sx(F.x0), y0 = this.sy(F.y0), x1 = this.sx(F.x1), y1 = this.sy(F.y1);
+        if (off(x0, y0, x1, y1)) continue;
+        c.fillStyle = withAlpha('field-' + F.field, 0.035); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 18 * Math.min(1, k * 4)); c.fill();
+        // the title must fit its region: fall back to the short name, then shrink
+        let fs = Math.max(13, Math.min(30, 60 * k)), txt = F.title.toUpperCase();
+        c.save(); c.letterSpacing = '0.08em'; c.fillStyle = withAlpha('field-' + F.field, 0.95); c.textAlign = 'left'; c.textBaseline = 'bottom';
+        const room = x1 - x0 - 8, fit = () => { c.font = `600 ${fs}px Inter, system-ui, sans-serif`; return c.measureText(txt).width; };
+        if (fit() > room) { txt = (this.G.fieldById?.get(F.field)?.short || F.field).toUpperCase(); if (fit() > room) { fs = Math.max(9, fs * room / c.measureText(txt).width); fit(); } }
+        c.fillText(txt, x0 + 4, y0 - 4); c.restore();
+      }
+      // chapter bands
+      c.font = '600 11px Inter, system-ui, sans-serif';
+      for (const C of this.G.collections) {
+        if (!this.show.fields.has(C.field)) continue;
+        C.chapters.forEach((Ch, i) => {
+          const b = Ch.band; if (!b) return;
+          if (!Ch.count && !this.show.planned) return;
+          const x0 = this.sx(b.x0), x1 = this.sx(b.x1), y0 = this.sy(b.y0), y1 = this.sy(b.y1);
+          if (off(x0, y0, x1, y1)) return;
+          c.fillStyle = withAlpha(C.id, (i % 2 ? 0.035 : 0.065) * (Ch.count ? 1 : 0.5)); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 8 * Math.min(1, k)); c.fill();
+          const wpx = x1 - x0;
+          if (wpx < 18) return;
+          c.fillStyle = withAlpha(C.id, Ch.count ? 0.9 : 0.5); c.textAlign = 'left'; c.textBaseline = 'top';
+          const label = wpx > 150 ? `${Ch.n} · ${Ch.title}` : wpx > 60 ? `Ch ${Ch.n}` : `${Ch.n}`;
+          c.save(); c.beginPath(); c.rect(x0, y0, wpx, 30); c.clip(); c.fillText(label, x0 + 6, y0 + 7); c.restore();
+        });
+      }
+      for (const R of k < 0.13 ? [] : this.G.map?.rows || []) {
+        if (!this.show.fields.has(this.fieldOf.get(R.col))) continue;
+        const fs = Math.max(13, Math.min(28, 26 * k));
+        const x = this.sx(R.x), y = this.sy(R.y); if (off(x, y - fs - 8, x + 600, y)) continue;
+        c.font = `italic 500 ${fs}px Newsreader, serif`; c.fillStyle = withAlpha(R.col, 1); c.textAlign = 'left'; c.textBaseline = 'bottom';
+        c.fillText(R.label, x + 4, y - 6);
+      }
+      c.font = '600 11px Inter, system-ui, sans-serif';
     }
-    // chapter bands
-    c.font = '600 11px Inter, system-ui, sans-serif';
-    for (const C of this.G.collections) {
-      if (!this.show.fields.has(C.field)) continue;
-      C.chapters.forEach((Ch, i) => {
-        const b = Ch.band; if (!b) return;
-        if (!Ch.count && !this.show.planned) return;
-        const x0 = this.sx(b.x0), x1 = this.sx(b.x1), y0 = this.sy(b.y0), y1 = this.sy(b.y1);
-        if (off(x0, y0, x1, y1)) return;
-        c.fillStyle = withAlpha(C.id, (i % 2 ? 0.035 : 0.065) * (Ch.count ? 1 : 0.5)); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 8 * Math.min(1, k)); c.fill();
-        const wpx = x1 - x0;
-        if (wpx < 18 || this.interacting) return;
-        c.fillStyle = withAlpha(C.id, Ch.count ? 0.9 : 0.5); c.textAlign = 'left'; c.textBaseline = 'top';
-        const label = wpx > 150 ? `${Ch.n} · ${Ch.title}` : wpx > 60 ? `Ch ${Ch.n}` : `${Ch.n}`;
-        c.save(); c.beginPath(); c.rect(x0, y0, wpx, 30); c.clip(); c.fillText(label, x0 + 6, y0 + 7); c.restore();
-      });
-    }
-    for (const R of k < 0.13 || this.interacting ? [] : this.G.map?.rows || []) {
-      if (!this.show.fields.has(this.fieldOf.get(R.col))) continue;
-      const fs = Math.max(13, Math.min(28, 26 * k));
-      const x = this.sx(R.x), y = this.sy(R.y); if (off(x, y - fs - 8, x + 600, y)) continue;
-      c.font = `italic 500 ${fs}px Newsreader, serif`; c.fillStyle = withAlpha(R.col, 1); c.textAlign = 'left'; c.textBaseline = 'bottom';
-      c.fillText(R.label, x + 4, y - 6);
-    }
-    c.font = '600 11px Inter, system-ui, sans-serif';
     // edges
     const drawEdges = (list, style, width, dash) => {
       c.beginPath();
       for (const [a, b] of list) {
         const x1 = this.sx(a.x), y1 = this.sy(a.y), x2 = this.sx(b.x), y2 = this.sy(b.y);
-        // Unfocused long links between two offscreen nodes obscure the local
-        // graph. Their full ancestry remains available on hover/selection.
-        const nearby = (x,y) => x>=-50 && x<=this.W+50 && y>=-50 && y<=this.H+50;
-        if (!fc && !nearby(x1,y1) && !nearby(x2,y2)) continue;
+        if (Math.max(x1, x2) < -50 || Math.min(x1, x2) > this.W + 50 || Math.max(y1, y2) < -50 || Math.min(y1, y2) > this.H + 50) continue;
         const dx = Math.max(20 * k, Math.abs(x2 - x1) * 0.45);
-        traceClippedCubic(c, [x1,y1,x1+dx,y1,x2-dx,y2,x2,y2], this.W, this.H);
+        c.moveTo(x1, y1); c.bezierCurveTo(x1 + dx, y1, x2 - dx, y2, x2, y2);
       }
       c.strokeStyle = style; c.lineWidth = width; c.setLineDash(dash || []); c.stroke(); c.setLineDash([]);
     };
     const far = k < 0.13;
     const vis = far && !fc ? [] : this.edges.filter(([a, b]) => this.visible(a) && this.visible(b));
-    if (this.interacting) {
-      // Links are refined after movement; nodes below remain complete.
-    } else if (far && !fc) {
+    if (base) drawEdges(vis, withAlpha('ink', 0.05), 0.7);
+    else if (far && !fc) {
       // bundled collection-to-collection edges
       for (const e of this.bundles) {
         if (!this.show.fields.has(this.fieldOf.get(e.a)) || !this.show.fields.has(this.fieldOf.get(e.b))) continue;
@@ -631,7 +713,7 @@ export class MapView {
       for (const [col, list] of byCol) drawEdges(list, withAlpha(col, this.hl ? 0.05 : 0.16), Math.max(0.6, Math.min(1.3, k)));
       if (this.show.planned) drawEdges(vis.filter(([a, b]) => a.ghost || b.ghost), withAlpha('muted', 0.12), 0.7, [3, 3]);
     } else {
-      drawEdges(vis, withAlpha('ink', 0.05), 0.7);
+      if (!overlay) drawEdges(vis, withAlpha('ink', 0.05), 0.7);
       const id = focus.it.id; const A = new Set([...fc.anc, id]), D = new Set([...fc.desc, id]);
       drawEdges(vis.filter(([a, b]) => A.has(a.it.id) && A.has(b.it.id)), withAlpha('accent', 0.55), Math.max(1, Math.min(2, k * 1.2)));
       drawEdges(vis.filter(([a, b]) => D.has(a.it.id) && D.has(b.it.id)), withAlpha('green', 0.55), Math.max(1, Math.min(2, k * 1.2)));
@@ -639,37 +721,37 @@ export class MapView {
     // nodes
     const rk = Math.max(0.55, Math.min(1.5, k));
     if (far && !fc) {
-      // Nodes are grouped by collection in the catalog. Avoid reparsing the same
-      // canvas colour for every dot in the 13k-node overview.
-      const colors = new Map(); let fill;
       for (const n of this.nodes) {
         if (!this.visible(n)) continue;
         const x = this.sx(n.x), y = this.sy(n.y); if (x < -4 || x > this.W + 4 || y < -4 || y > this.H + 4) continue;
         const on = !this.hl || this.hl.has(n.it.id);
         const r = this.hl && on ? 3.4 : n.ghost ? 1 : Math.max(1.2, Math.min(3, n.r * k * 2.2));
-        const alpha = !on ? 0.06 : n.ghost && !this.hl ? 0.35 : 0.95;
-        const key = `${n.it.col}/${alpha}`;
-        if (!colors.has(key)) colors.set(key, withAlpha(n.it.col, alpha));
-        const color = colors.get(key);
-        if (fill !== color) { c.fillStyle = color; fill = color; }
-        c.fillRect(x - r, y - r, 2 * r, 2 * r);
+        c.fillStyle = withAlpha(n.it.col, !on ? 0.06 : n.ghost && !this.hl ? 0.35 : 0.95); c.fillRect(x - r, y - r, 2 * r, 2 * r);
         if (this.hl && on) { c.lineWidth = 1.2; c.strokeStyle = withAlpha('ink', 0.55); c.strokeRect(x - r - 1.5, y - r - 1.5, 2 * r + 3, 2 * r + 3); }
       }
     } else for (const n of this.nodes) {
       if (!this.visible(n)) continue;
       const x = this.sx(n.x), y = this.sy(n.y); if (x < -20 || x > this.W + 20 || y < -20 || y > this.H + 20) continue;
       let alpha = 1;
-      if (fc && n !== focus && !fc.anc.has(n.it.id) && !fc.desc.has(n.it.id)) alpha = 0.14;
+      const connected = fc && (n === focus || fc.anc.has(n.it.id) || fc.desc.has(n.it.id));
+      if (overlay && !connected && n !== this.sel) continue;
+      if (base || fc && !connected) alpha = 0.14;
       const hit = this.hl && this.hl.has(n.it.id); if (this.hl && !hit && !fc) alpha = 0.1;
       const r = Math.max(n.ghost ? 1.4 : 1.6, n.r * rk);
-      c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2);
-      if (n.ghost) { c.lineWidth = 1; c.strokeStyle = withAlpha(n.it.col, alpha * 0.45); c.stroke(); }
-      else if (n.it.kind === 'Definition') { c.fillStyle = withAlpha('panel', alpha); c.fill(); c.lineWidth = 1.4; c.strokeStyle = withAlpha(n.it.col, alpha); c.stroke(); }
-      else { c.fillStyle = withAlpha(n.it.col, alpha); c.fill(); }
-      if (hit) { c.beginPath(); c.arc(x, y, r + 2.5, 0, Math.PI * 2); c.lineWidth = 1.6; c.strokeStyle = withAlpha('accent', 0.9); c.stroke(); }
-      if (n === focus || n === this.sel) { c.beginPath(); c.arc(x, y, r + 4, 0, Math.PI * 2); c.lineWidth = 2; c.strokeStyle = resolveColor('ink'); c.stroke(); }
+      if (!overlay || connected) {
+        c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2);
+        if (n.ghost) {
+          // Compensate for the faint ghost already present in the base layer.
+          const opacity = overlay ? (.45 - .14 * .45) / (1 - .14 * .45) : alpha * .45;
+          c.lineWidth = 1; c.strokeStyle = withAlpha(n.it.col, opacity); c.stroke();
+        }
+        else if (n.it.kind === 'Definition') { c.fillStyle = withAlpha('panel', alpha); c.fill(); c.lineWidth = 1.4; c.strokeStyle = withAlpha(n.it.col, alpha); c.stroke(); }
+        else { c.fillStyle = withAlpha(n.it.col, alpha); c.fill(); }
+      }
+      if (hit && !overlay) { c.beginPath(); c.arc(x, y, r + 2.5, 0, Math.PI * 2); c.lineWidth = 1.6; c.strokeStyle = withAlpha('accent', 0.9); c.stroke(); }
+      if (!base && (n === focus || n === this.sel)) { c.beginPath(); c.arc(x, y, r + 4, 0, Math.PI * 2); c.lineWidth = 2; c.strokeStyle = resolveColor('ink'); c.stroke(); }
     }
-    if (this.interacting) return;
+    if (base) return;
     // labels
     const occupied = [];
     const free = (x, y, w, h) => { for (const o of occupied) if (x < o[0] + o[2] && x + w > o[0] && y < o[1] + o[3] && y + h > o[1]) return false; occupied.push([x, y, w, h]); return true; };
@@ -679,7 +761,7 @@ export class MapView {
       const x = this.sx(n.x), y = this.sy(n.y); if (x < -100 || x > this.W || y < 0 || y > this.H) return;
       const txt = `${n.it.num} ${plainName(n.it.name, strong ? 60 : 30)}`;
       c.font = `${strong ? 600 : 500} ${strong ? 12.5 : 11}px Inter, system-ui, sans-serif`;
-      const w = this.textWidth(txt); const r = Math.max(1.6, n.r * rk) + (this.hl && this.hl.has(n.it.id) ? 4 : 0);
+      const w = c.measureText(txt).width; const r = Math.max(1.6, n.r * rk) + (this.hl && this.hl.has(n.it.id) ? 4 : 0);
       if (!strong && !free(x + r + 3, y - 7, w + 4, 14)) return;
       c.lineWidth = 3.5; c.strokeStyle = withAlpha('bg', 0.9); c.strokeText(txt, x + r + 4, y);
       c.fillStyle = resolveColor(strong ? 'ink' : n.ghost ? 'faint' : 'muted'); c.fillText(txt, x + r + 4, y);
@@ -714,6 +796,7 @@ function squarify(items, x, y, w, h) {
  * (written + planned), solid = written, pale = planned. Click a field to zoom in, a collection to open it.
  */
 export function renderTreemap(host, G, { field = null, onField, onCollection, onChapter, height = 520 } = {}) {
+  const active = host.contains(document.activeElement) ? document.activeElement.getAttribute('aria-label') : null;
   host.innerHTML = '';
   const W = Math.max(320, host.clientWidth || 1000), H = field ? Math.round(height * 1.05) : height;
   const root = svg('svg', { class: 'treemap-svg', width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: 'group', 'aria-label': 'Treemap of every field and collection' }, host);
@@ -766,6 +849,7 @@ export function renderTreemap(host, G, { field = null, onField, onCollection, on
       cg.addEventListener('keydown', (e) => { if (e.key === 'Enter') onCollection?.(C.id); });
     }
   }
+  if (active) [...host.querySelectorAll('[tabindex]')].find(node => node.getAttribute('aria-label') === active)?.focus({ preventScroll: true });
 }
 
 // ------------------------------------------------------------ timeline of ideas (canvas)

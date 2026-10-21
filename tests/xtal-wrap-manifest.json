@@ -1,0 +1,47 @@
+{
+  "baseline": "db09d655bed8388fce307ceef61af0e8d40090cf",
+  "changes": [
+    {
+      "file": "content/xtal/ch01.js",
+      "num": "1.2",
+      "field": "statement",
+      "before": "$V=abc\\sqrt{1+2\\cos\\alpha\\cos\\beta\\cos\\gamma-\\cos^2\\alpha-\\cos^2\\beta-\\cos^2\\gamma}$",
+      "after": "$$\\begin{gathered}V=\\\\abc\\sqrt{\\begin{gathered}1+2\\cos\\alpha\\cos\\beta\\cos\\gamma\\\\-\\cos^2\\alpha-\\cos^2\\beta\\\\-\\cos^2\\gamma\\end{gathered}}\\end{gathered}$$"
+    },
+    {
+      "file": "content/xtal/ch02.js",
+      "num": "2.4",
+      "field": "statement",
+      "before": "$1,\\ 2,\\ 3,\\ 4,\\ 6,\\ m,\\ 2mm,\\ 3m,\\ 4mm,\\ 6mm$",
+      "after": "$$\\begin{gathered}1,\\ 2,\\ 3,\\ 4,\\ 6,\\\\m,\\ 2mm,\\ 3m,\\ 4mm,\\ 6mm\\end{gathered}$$"
+    },
+    {
+      "file": "content/xtal/ch04.js",
+      "num": "4.4",
+      "field": "statement",
+      "before": "$$\\frac1{d_{hkl}^2}=\\mathbf h^{\\mathsf T}G^{-1}\\mathbf h,\\qquad \\mathbf h=(h,k,l)^{\\mathsf T},\\quad G_{ij}=\\mathbf a_i\\!\\cdot\\!\\mathbf a_j,$$",
+      "after": "$$\\begin{gathered}\\frac1{d_{hkl}^2}=\\mathbf h^{\\mathsf T}G^{-1}\\mathbf h,\\\\\\mathbf h=(h,k,l)^{\\mathsf T},\\\\G_{ij}=\\mathbf a_i\\!\\cdot\\!\\mathbf a_j,\\end{gathered}$$"
+    },
+    {
+      "file": "content/xtal/ch04-b.js",
+      "num": "4.5",
+      "field": "statement",
+      "before": "$$[uvw]=[\\,k_1l_2-l_1k_2,\\ \\ l_1h_2-h_1l_2,\\ \\ h_1k_2-k_1h_2\\,]/\\gcd,$$",
+      "after": "$$\\begin{gathered}[uvw]=\\\\\\left[\\,\\begin{gathered}k_1l_2-l_1k_2,\\\\l_1h_2-h_1l_2,\\\\h_1k_2-k_1h_2\\end{gathered}\\,\\right]/\\gcd,\\end{gathered}$$"
+    },
+    {
+      "file": "content/xtal/ch04-b.js",
+      "num": "4.7",
+      "field": "statement",
+      "before": "$$\\cos\\varphi_{\\text{dir}}=\\frac{\\mathbf u_1^{\\mathsf T}G\\,\\mathbf u_2}{\\sqrt{\\mathbf u_1^{\\mathsf T}G\\mathbf u_1}\\sqrt{\\mathbf u_2^{\\mathsf T}G\\mathbf u_2}},\\qquad\n\\cos\\varphi_{\\text{pl}}=\\frac{\\mathbf h_1^{\\mathsf T}G^{*}\\mathbf h_2}{\\sqrt{\\mathbf h_1^{\\mathsf T}G^{*}\\mathbf h_1}\\sqrt{\\mathbf h_2^{\\mathsf T}G^{*}\\mathbf h_2}},$$",
+      "after": "$$\\begin{gathered}\\cos\\varphi_{\\text{dir}}=\\\\\\frac{\\mathbf u_1^{\\mathsf T}G\\,\\mathbf u_2}{\\sqrt{\\mathbf u_1^{\\mathsf T}G\\mathbf u_1}\\sqrt{\\mathbf u_2^{\\mathsf T}G\\mathbf u_2}},\\\\\\cos\\varphi_{\\text{pl}}=\\\\\\frac{\\mathbf h_1^{\\mathsf T}G^{*}\\mathbf h_2}{\\sqrt{\\mathbf h_1^{\\mathsf T}G^{*}\\mathbf h_1}\\sqrt{\\mathbf h_2^{\\mathsf T}G^{*}\\mathbf h_2}},\\end{gathered}$$"
+    },
+    {
+      "file": "content/xtal/ch01-b.js",
+      "num": "1.7",
+      "field": "idea",
+      "before": "$a\\sqrt3/4=r\\sqrt{3/2}$",
+      "after": "$a\\sqrt3/4$ $=r\\sqrt{3/2}$"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "1.4": {
+    "file": "ch01.js",
+    "pairs": [
+      [
+        "Brute force works against every cipher, whatever its design, so the key space is a lower bound on the attacker\u2019s work.",
+        "Exhaustive key search supplies an upper bound on an attacker\u2019s optimal work, since other attacks may be faster."
+      ],
+      [
+        "The cost is linear in $2^b$, hence exponential in the key length: every added bit doubles the attacker\u2019s time while costing the defender almost nothing",
+        "That search\u2019s cost is linear in $2^b$, hence exponential in the key length: every added bit doubles its expected work while costing the defender almost nothing"
+      ]
+    ],
+    "before": "Brute force works against every cipher, whatever its design, so the key space is a lower bound on the attacker\u2019s work. The cost is linear in $2^b$, hence exponential in the key length: every added bit doubles the attacker\u2019s time while costing the defender almost nothing, which is why designers pick keys with enough margin ($\\ge 128$ bits today) to survive faster hardware, parallel machines and decades of progress.\n\nFor $N$ equally likely keys in a fixed search order, write the number of trials as the sum of the indicators that trial $j$ is reached. Linearity of expectation prob-1.6.1 gives the sum of $(N-j+1)/N$ for $j=1,\\ldots,N$, namely $(N+1)/2$. With $N=2^b$ this is the displayed approximate half-keyspace work; dividing by a fixed trial rate converts trials to time. No independence of those indicators is needed.",
+    "after": "Exhaustive key search supplies an upper bound on an attacker\u2019s optimal work, since other attacks may be faster. That search\u2019s cost is linear in $2^b$, hence exponential in the key length: every added bit doubles its expected work while costing the defender almost nothing, which is why designers pick keys with enough margin ($\\ge 128$ bits today) to survive faster hardware, parallel machines and decades of progress.\n\nFor $N$ equally likely keys in a fixed search order, write the number of trials as the sum of the indicators that trial $j$ is reached. Linearity of expectation prob-1.6.1 gives the sum of $(N-j+1)/N$ for $j=1,\\ldots,N$, namely $(N+1)/2$. With $N=2^b$ this is the displayed approximate half-keyspace work; dividing by a fixed trial rate converts trials to time. No independence of those indicators is needed."
+  },
+  "2.1": {
+    "file": "ch02.js",
+    "pairs": [
+      [
+        "The posterior equals the prior exactly when that likelihood is the same for every $m$, which is the second formulation, and which does not mention the prior at all \u2014 so perfect secrecy holds for *all* priors or for none.",
+        "For a full-support prior, posterior-equals-prior for every positive-mass ciphertext forces the likelihood to be the same for every message. That prior-free likelihood condition establishes perfect secrecy for every prior. A particular restricted-support prior can still hide a scheme\u2019s leakage: a point-mass message prior always remains unchanged."
+      ]
+    ],
+    "before": "Seeing $c$ is a piece of evidence, and Bayes\u2019 rule updates the prior on $M$ by the likelihood $\\Pr[C=c\\mid M=m]$. The posterior equals the prior exactly when that likelihood is the same for every $m$, which is the second formulation, and which does not mention the prior at all \u2014 so perfect secrecy holds for *all* priors or for none. A scheme leaks as soon as some message makes some ciphertext more likely than another message does.\n\nApply the conditional-density ratio in stat-2.1 with counting measure on the finite message and ciphertext spaces. For a positive-probability ciphertext c, the posterior mass at m is the prior mass times its ciphertext likelihood, divided by the marginal mass at c. If all message likelihoods agree, this ratio is the prior for every prior law. Conversely, a uniform full-support prior makes posterior-equals-prior force all those likelihoods to agree. Conditioning on an impossible ciphertext is excluded.",
+    "after": "Seeing $c$ is a piece of evidence, and Bayes\u2019 rule updates the prior on $M$ by the likelihood $\\Pr[C=c\\mid M=m]$. For a full-support prior, posterior-equals-prior for every positive-mass ciphertext forces the likelihood to be the same for every message. That prior-free likelihood condition establishes perfect secrecy for every prior. A particular restricted-support prior can still hide a scheme\u2019s leakage: a point-mass message prior always remains unchanged. A scheme leaks as soon as some message makes some ciphertext more likely than another message does.\n\nApply the conditional-density ratio in stat-2.1 with counting measure on the finite message and ciphertext spaces. For a positive-probability ciphertext c, the posterior mass at m is the prior mass times its ciphertext likelihood, divided by the marginal mass at c. If all message likelihoods agree, this ratio is the prior for every prior law. Conversely, a uniform full-support prior makes posterior-equals-prior force all those likelihoods to agree. Conditioning on an impossible ciphertext is excluded."
+  }
+}

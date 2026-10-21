@@ -1,26 +1,8 @@
 // Quantum Chemistry & Spectroscopy — Chapter 4: Approximation methods (items 4.1–4.6; 4.7–4.12 are in ch04-b.js)
 import { HARTREE_EV, lagL, fact, boxX, boxMatrix, goldenMin } from './ch04.shared.js';
 
-// Radial quadrature r_i = a (i + ½)², dr = 2a (i + ½): fine near the nucleus, reaches r = 400 a₀ with 3000 points.
-const NQ = 3000, AQ = 400 / (NQ * NQ);
-const RQ = Float64Array.from({ length: NQ }, (_, i) => AQ * (i + 0.5) ** 2);
-const WQ = Float64Array.from({ length: NQ }, (_, i) => 2 * AQ * (i + 0.5));
-
-// Hydrogen trial functions ψ(r) and ψ'(r), one parameter p
-const TRIALS = {
-  gauss: { psi: (r, p) => Math.exp(-p * r * r), dpsi: (r, p) => -2 * p * r * Math.exp(-p * r * r), lo: 0.03, hi: 1.2 },
-  slater: { psi: (r, p) => Math.exp(-p * r), dpsi: (r, p) => -p * Math.exp(-p * r), lo: 0.2, hi: 2.4 },
-  lor: { psi: (r, p) => (1 + p * r) ** -3, dpsi: (r, p) => -3 * p * (1 + p * r) ** -4, lo: 0.1, hi: 4 },
-};
-/** Rayleigh quotient of the trial ψ(r;p) for hydrogen (hartree) and its weight on the exact 1s state. */
-export function hydrogenTrial(fam, p) {
-  const T = TRIALS[fam]; let num = 0, den = 0, ov = 0, kin = 0;
-  for (let i = 0; i < NQ; i++) {
-    const r = RQ[i], w = WQ[i] * r * r, f = T.psi(r, p), g = T.dpsi(r, p);
-    den += w * f * f; kin += 0.5 * w * g * g; num += w * (0.5 * g * g - (f * f) / r); ov += w * f * Math.exp(-r);
-  }
-  return { E: num / den, T: kin / den, c0: (4 * ov * ov) / den };
-}
+import { starkBasis, fieldSaddle, fieldSecant } from './qchem-source-audit-perturbation.shared.js';
+import { HYDROGEN_TRIALS as TRIALS, hydrogenEnergy, hydrogenTrial, heliumTerms, heliumOptimum } from './qchem-source-audit-variational.shared.js';
 
 // Tilted box  H = −½ d²/dx² + F x  on [0, 1]  (ħ = m = 1); box energies E_n = n²π²/2.
 const EBOX = (n) => (n * n * Math.PI * Math.PI) / 2;
@@ -37,23 +19,24 @@ export default {
       num: '4.1',
       kind: 'Theorem',
       name: 'Variational principle',
-      credit: 'Rayleigh–Ritz variational method',
-      statement: String.raw`Let $H$ be a Hermitian operator bounded below with lowest eigenvalue $E_0$. For every normalisable trial state $\psi$ in the domain of $H$,
-$$E[\psi]=\frac{\langle\psi|H|\psi\rangle}{\langle\psi|\psi\rangle}\;\ge\;E_0,$$
-with equality exactly when $\psi$ is a ground state. More generally $E[\psi]\ge E_k$ whenever $\psi$ is orthogonal to the $k$ lowest eigenstates, and the stationary points of $E[\psi]$ are the eigenstates (the Euler–Lagrange equation of the quotient is $H\psi=E\psi$).`,
-      scope: String.raw`For the nonrelativistic molecular Hamiltonian with fixed nuclei, bounded below. A quantitative state-error bound needs a spectral gap: for a nondegenerate ground state separated by $\Delta>0$, $1-|c_0|^2\le(E[\psi]-E_0)/\Delta$. Energy accuracy alone does not control all other observables.`,
-      idea: String.raw`Expand the trial state in the eigenstates of $H$ (the spectral theorem, qchem-1.3; the resulting Rayleigh-quotient bound is fa-12.25): $\psi=\sum_n c_n\phi_n$. Then $E[\psi]-E_0=\sum_n|c_n|^2(E_n-E_0)/\sum_n|c_n|^2$, a weighted average of non-negative numbers, hence $\ge0$, and zero only if all the weight sits on the ground level. Minimising over a family of trial functions therefore always gives the best upper bound the family allows; this is why a guess with an adjustable parameter is worth making.`,
-      caption: String.raw`The trial function is for the **hydrogen atom** (atomic units). Choose a family, then drag the parameter $p$: the left panel is the Rayleigh quotient $E(p)$, computed by numerical integration, with the exact $-0.5$ hartree as a dashed line; the right panel compares the radial density $4\pi r^2\psi^2$ with the exact $1s$ one. Notice that no value of $p$ goes below the dashed line, that the exponential family touches it at $\zeta=1$ (because the exact $1s$ function belongs to that family), and that the readout's weight $|c_{1s}|^2$ reaches 1 only there. The Gaussian cannot reproduce the nuclear cusp and misses by about 15 %.`,
-      deps: ['qchem-1.3', 'fa-12.25', 'qm-12.1'],
-      see: ['qm-12.1', 'fa-12.25'],
-      refs: ['Tong, Topics in Quantum Mechanics §2.1.1, pp.24–27; Fitzpatrick §§14.2–14.3'],
+      credit: 'Rayleigh–Ritz variational method; proof: Tong, Topics in Quantum Mechanics §2.1.1; spectral formulation: Teschl (2009), §4.3',
+      statement: String.raw`Let $H$ be self-adjoint and bounded below, with a lowest eigenvalue $E_0$. For every nonzero trial vector in its quadratic-form domain,
+$$E[\psi]=\frac{q_H[\psi]}{\langle\psi|\psi\rangle}\ge E_0.$$
+On the operator domain $q_H[\psi]=\langle\psi|H\psi\rangle$. Equality holds exactly in the ground eigenspace. If discrete levels are counted with multiplicity, a trial vector orthogonal to the first $k$ eigenvectors has $E[\psi]\ge E_k$ (zero-based indexing). Stationarity under all admissible variations gives the eigenvalue equation in its weak form.`,
+      scope: String.raw`The lower-bound hypothesis holds for the nonrelativistic fixed-nuclei Coulomb Hamiltonian; trial states must also obey the required particle symmetry. An energy upper bound alone does not quantify state accuracy. With a nondegenerate ground state and a gap $\Delta>0$, $1-|\langle0|\psi\rangle|^2\le(E[\psi]-E_0)/\Delta$ for a normalized trial state. Degenerate ground states require projection onto the whole ground eigenspace.`,
+      idea: String.raw`The spectral measure of a normalized trial vector is a probability measure supported in $[E_0,\infty)$, so its mean energy is at least $E_0$. In a discrete expansion this reads $E[\psi]-E_0=\sum_n|c_n|^2(E_n-E_0)\ge0$. Equality requires all spectral weight at $E_0$. For a gap $\Delta$, the excited-state terms are at least $\Delta\sum_{n>0}|c_n|^2$, giving the stated overlap bound. Optimizing inside a chosen family improves its bound but does not certify how close that family comes to the exact state.`,
+      caption: String.raw`Hydrogen in atomic units. Choose a family and drag $p$: the left panel uses closed radial integrals for the Rayleigh quotient, with the exact $-0.5$ hartree dashed; its axes include the full selected parameter range. The right panel shows normalized radial probability per bohr on the finite window $0\le r\le6$; probability outside the window is retained in the normalization. The overlap with $1s$ is analytic for the exponential and numerically integrated for the other families. The exponential reaches the exact state at $p=1$. The Gaussian minimum is $-4/(3\pi)$, about 15% above $E_0$.`,
+      deps: ['qchem-1.3', 'fa-12.13', 'qm-12.1'],
+      see: ['qm-12.1', 'fa-12.13'],
+      refs: ['Tong, Topics in Quantum Mechanics (Lent 2017), §§2.1.1–2.1.2, pp. 24–27', 'Teschl, Mathematical Methods in Quantum Mechanics (2009), §4.3, Theorem 4.10'],
       tags: ['variational principle', 'upper bound', 'trial function'],
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Variational_method_(quantum_mechanics)' },
       viz(v) {
         const fam = v.select('trial family', [
           { value: 'gauss', label: 'Gaussian $e^{-pr^2}$' }, { value: 'slater', label: 'exponential $e^{-pr}$' }, { value: 'lor', label: 'rational $(1+pr)^{-3}$' },
         ], 'gauss', { onChange: () => showSl() });
-        const sl = { gauss: v.slider('parameter $p$', 0.03, 1.2, 0.28, { step: 0.005 }), slater: v.slider('parameter $p$', 0.2, 2.4, 0.6, { step: 0.005 }), lor: v.slider('parameter $p$', 0.1, 4, 0.9, { step: 0.01 }) };
+        const sl = { gauss: v.slider('parameter $p$', 0.03, 1.5, 0.28, { step: 0.005 }), slater: v.slider('parameter $p$', 0.2, 2.4, 0.6, { step: 0.005 }), lor: v.slider('parameter $p$', 0.1, 4, 0.9, { step: 0.01 }) };
         const showSl = () => { for (const k in sl) sl[k].el.hidden = k !== fam.value; };
         showSl();
         const sE = v.stage({ x: [0, 4], y: [-0.55, 0.4], axes: 'box', gutter: true, height: 320, weight: 1, xlabel: 'parameter p', ylabel: 'E[ψ] (hartree)', title: 'Rayleigh quotient' });
@@ -61,16 +44,17 @@ with equality exactly when $\psi$ is a ground state. More generally $E[\psi]\ge 
         const cache = {};
         const curve = (f) => {
           if (cache[f]) return cache[f];
-          const T = TRIALS[f], pts = []; for (let i = 0; i <= 120; i++) { const p = T.lo + ((T.hi - T.lo) * i) / 120; pts.push([p, hydrogenTrial(f, p).E]); }
+          const T = TRIALS[f], pts = []; for (let i = 0; i <= 120; i++) { const p = T.lo + ((T.hi - T.lo) * i) / 120; pts.push([p, hydrogenEnergy(f, p).E]); }
           let best = pts[0]; for (const q of pts) if (q[1] < best[1]) best = q;
-          const pOpt = goldenMin((p) => hydrogenTrial(f, p).E, Math.max(T.lo, best[0] - (T.hi - T.lo) / 60), Math.min(T.hi, best[0] + (T.hi - T.lo) / 60), 1e-7);
-          return (cache[f] = { pts, pOpt, Emin: hydrogenTrial(f, pOpt).E });
+          const pOpt = goldenMin((p) => hydrogenEnergy(f, p).E, Math.max(T.lo, best[0] - (T.hi - T.lo) / 60), Math.min(T.hi, best[0] + (T.hi - T.lo) / 60), 1e-7);
+          return (cache[f] = { pts, pOpt, Emin: hydrogenEnergy(f, pOpt).E });
         };
         let info = null;
         v.render(() => {
           const f = fam.value, T = TRIALS[f], c = curve(f), p = sl[f].value;
-          const { E, T: kin, c0 } = hydrogenTrial(f, p);
-          sE.setView([T.lo, T.hi], [-0.56, Math.max(0.45, E * 1.12)]);
+          const { E, T: kin, c0, norm } = hydrogenTrial(f, p);
+          const eHi = Math.max(0.1, ...c.pts.map(q => q[1]));
+          sE.setView([T.lo - .04 * (T.hi - T.lo), T.hi + .04 * (T.hi - T.lo)], [-0.56, eHi + 0.08 * (eHi + 0.56)]);
           sE.hline(-0.5, { color: 'green', dash: true, width: 1.6 });
           sE.hline(0, { color: 'faint' });
           sE.path(c.pts, { color: 'accent', width: 2.4 });
@@ -78,10 +62,9 @@ with equality exactly when $\psi$ is a ground state. More generally $E[\psi]\ge 
           sE.dot(p, E, { r: 7, color: 'gold' });
           sE.tex(String.raw`E_0=-\tfrac12`, T.hi - 0.03 * (T.hi - T.lo), -0.525, { color: 'green', align: 'right' });
           // densities
-          let nrm = 0; for (let i = 0; i < NQ; i++) nrm += WQ[i] * RQ[i] ** 2 * T.psi(RQ[i], p) ** 2;
-          const D = (r) => (r * r * T.psi(r, p) ** 2) / nrm;
+          const D = (r) => (r * r * T.psi(r, p) ** 2) / norm;
+          sR.setView([0, 6], [0, 1.15 * Math.max(4 / Math.E ** 2, D(T.peak(p)))]);
           sR.fn((r) => 4 * r * r * Math.exp(-2 * r), { color: 'green', width: 2, dash: true, domain: [0, 6] });
-          sR.setView([0, 6], [0, Math.max(0.65, 1.1 * Math.max(...Array.from({length:121},(_,i)=>D(i/20))))]);
           sR.fn(D, { color: 'accent', width: 2.4, domain: [0, 6], fill: true });
           info = { E, kin, c0, p, pOpt: c.pOpt, Emin: c.Emin, f };
         });
@@ -94,17 +77,18 @@ with equality exactly when $\psi$ is a ground state. More generally $E[\psi]\ge 
       num: '4.2',
       kind: 'Method',
       name: 'Linear variation and the secular determinant',
-      credit: 'Rayleigh–Ritz method and Cauchy interlacing',
-      statement: String.raw`Take trial functions $\psi=\sum_{i=1}^{N}c_i\chi_i$ from a fixed set of $N$ basis functions. Making the Rayleigh quotient stationary in the coefficients gives the generalised eigenvalue problem
-$$\sum_j (H_{ij}-E\,S_{ij})\,c_j=0,\qquad H_{ij}=\langle\chi_i|H|\chi_j\rangle,\;S_{ij}=\langle\chi_i|\chi_j\rangle,$$
-whose nontrivial solutions need the **secular determinant** $\det(\mathbf H-E\mathbf S)=0$. Its $N$ roots $E^{(N)}_1\le\dots\le E^{(N)}_N$ satisfy $E^{(N)}_k\ge E_k$ (each is an upper bound to the $k$-th exact level) and, when a basis function is added, they interlace: $E^{(N+1)}_k\le E^{(N)}_k\le E^{(N+1)}_{k+1}$.`,
-      scope: String.raw`Orthonormal bases make $\mathbf S=\mathbf 1$; the bound and the interlacing hold for any basis of a Hermitian $H$ bounded below. The basis must be linearly independent, so its overlap matrix is positive definite; the bounds concern isolated discrete eigenvalues. The finite-difference comparison is a numerical reference, not the exact spectrum.`,
+      credit: 'Rayleigh–Ritz method; min–max proof: Teschl (2009), §4.3, Theorem 4.10',
+      statement: String.raw`For $N$ linearly independent trial functions in the quadratic-form domain of a self-adjoint lower-bounded Hamiltonian, write $\psi=\sum_i c_i\chi_i$. Stationarity of the Rayleigh quotient gives
+$$\mathbf Hc=E\mathbf Sc,\qquad H_{ij}=q_H(\chi_i,\chi_j),\quad S_{ij}=\langle\chi_i|\chi_j\rangle.$$
+The positive-definite Gram matrix $\mathbf S$ makes this a Hermitian generalized eigenproblem. Its ordered Ritz values obey $E_k^{(N)}\ge E_k$ for the discrete eigenvalues below the essential spectrum (and the corresponding min–max threshold thereafter). For nested spaces of dimensions $N,N+1$, $E_k^{(N+1)}\le E_k^{(N)}\le E_{k+1}^{(N+1)}$. Equivalently, $\det(\mathbf H-E\mathbf S)=0$.`,
+      scope: String.raw`An orthonormal basis gives $\mathbf S=\mathbf1$; linear dependence instead makes the pencil singular and must be removed. Interlacing requires nested trial spaces. Finite-difference eigenvalues plotted here are numerical references with mesh error, not exact levels or independent proofs of the upper-bound theorem.`,
       idea: String.raw`In the span of the basis the Rayleigh quotient is a quotient of two quadratic forms, and its stationary points are the eigenvectors of the pencil $(\mathbf H,\mathbf S)$ (for $\mathbf S=\mathbf 1$ this is the real spectral theorem, ladr-7.29; invertibility of $\mathbf H-E\mathbf S$ fails exactly where its determinant vanishes, pma-9.36). The $N$-dimensional space is a subspace of the $(N+1)$-dimensional one, so the min-max principle forces each root down or keeps it as more functions are added, and the old roots can never fall below the next new root.`,
-      caption: String.raw`A particle in a box $[0,1]$ ($\hbar=m=1$) with a Gaussian bump of height $V_0$ at the centre. The basis functions are the first $N$ levels of the *empty* box, $\sqrt2\sin(k\pi x)$. Drag the basis size $N$: the left panel plots the lowest roots against $N$ (dashed lines are the finite-difference exact levels) and the Ritz roots fall monotonically; the dashed finite-difference comparison has discretization error; the middle panel is the wavefunction of the chosen level in the current basis against the exact one; the right panel is the secular function $\operatorname{sgn}D\,|D|^{1/N}$ with $D(E)=\det(\mathbf H-E)$, whose zero crossings are the roots. Increase $V_0$ and watch how many functions are needed.`,
+      caption: String.raw`A particle in $[0,1]$ with $\hbar=m=1$ and a Gaussian central bump. The trial space contains the first $N$ empty-box sine functions. Left: the lowest four Ritz values versus $N$, with a 700-point finite-difference reference. Middle: the selected Ritz state, when $N$ is large enough to contain that level, against the reference state; the faint bump is rescaled for illustration. Right: $\operatorname{sgn}D\,|D|^{1/N}$, normalized vertically, over a range containing all $N$ roots. The finite comparisons illustrate the min–max proof; increasing $N$ cannot raise a Ritz value in these nested spaces.`,
       deps: ['qchem-4.1', 'pma-9.36', 'ladr-7.29'],
       see: ['qm-12.2', 'qm-12.3'],
-      refs: ['Bindel, CS6210, Theory for SEP and SVD, generalized pencils and Theorems1–2; Johnson, MIT18.303 min–max notes'],
+      refs: ['Teschl, Mathematical Methods in Quantum Mechanics (2009), §4.3, Theorem 4.10, pp. 117–119', 'Tong, Topics in Quantum Mechanics (2017), §2.1.1'],
       tags: ['Rayleigh–Ritz', 'secular determinant', 'basis expansion'],
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rayleigh%E2%80%93Ritz_method' },
       viz(v) {
         const M = v.M, NB = 14;
@@ -122,10 +106,11 @@ whose nontrivial solutions need the **secular determinant** $\det(\mathbf H-E\ma
         v.render(() => {
           const N = nS.value, v0 = V0.value, k = lev.value;
           if (exactKey !== String(v0)) { exact = M.schrodinger1D((x) => v0 * bump(x), [0, 1], { n: 700, k: 5 }); exactKey = String(v0); }
-          const Ex = exact.E, hi = Math.max(Ex[3] * 1.2, 30);
+          const Ex = exact.E;
+          const all = []; for (let n = 1; n <= NB; n++) all.push(roots(n, v0));
+          const hi = 1.1 * Math.max(30, Ex[3], ...all.flatMap(a => a.slice(0, 4)));
           sC.setView([0.5, NB + 0.5], [0, hi]);
           for (let j = 0; j < 4; j++) sC.hline(Ex[j], { color: 'green', dash: true, alpha: 0.7 });
-          const all = []; for (let n = 1; n <= NB; n++) all.push(roots(n, v0));
           for (let j = 0; j < 4; j++) {
             const pts = []; for (let n = j + 1; n <= NB; n++) pts.push([n, all[n - 1][j]]);
             sC.path(pts, { color: j === k ? 'accent' : 'muted', width: j === k ? 2.4 : 1.2, alpha: j === k ? 1 : 0.8 });
@@ -133,20 +118,21 @@ whose nontrivial solutions need the **secular determinant** $\det(\mathbf H-E\ma
           }
           sC.vline(N, { color: 'orange', width: 1.6 });
           // wavefunction in the current basis
-          const eg = M.eigSym(Hn(N, v0)), idx = N - 1 - Math.min(k, N - 1), c = eg.vecs[idx];
-          const xs = M.linspace(0, 1, 301), psi = xs.map((x) => c.reduce((s, ci, i) => s + ci * Math.SQRT2 * Math.sin((i + 1) * Math.PI * x), 0));
-          const pe = exact.psi[Math.min(k,N-1)], sg = psi.reduce((s, y, i) => s + y * M.clamp(pe[Math.round((i / 300) * (pe.length - 1))], -1e9, 1e9), 0) < 0 ? -1 : 1;
-          sW.fn((x) => 4 * bump(x) * (v0 > 0 ? 1 : 0), { color: 'faint', fill: true, fillAlpha: 0.1, width: 1 });
+          const have = k < N, eg = M.eigSym(Hn(N, v0)), c = have ? eg.vecs[N - 1 - k] : null;
+          const xs = M.linspace(0, 1, 301), psi = have ? xs.map(x => c.reduce((sum, ci, i) => sum + ci * Math.SQRT2 * Math.sin((i + 1) * Math.PI * x), 0)) : [];
+          const pe = exact.psi[k], sg = have && psi.reduce((sum, y, i) => sum + y * pe[Math.round((i / 300) * (pe.length - 1))], 0) < 0 ? -1 : 1;
+          const wh = 1.25 * Math.max(1, ...Array.from(pe, Math.abs), ...psi.map(Math.abs));
+          sW.setView([0, 1], [-wh, wh]);
+          sW.fn(x => .75 * wh * bump(x) * (v0 > 0 ? 1 : 0), { color: 'faint', fill: true, fillAlpha: .1, width: 1 });
           sW.hline(0, { color: 'faint' });
           sW.path(Array.from(exact.x, (x, i) => [x, pe[i]]), { color: 'green', width: 2, dash: true });
-          if(k<N) sW.path(xs.map((x, i) => [x, sg * psi[i]]), { color: 'accent', width: 2.4 });
-          else sW.corner('selected level absent from this basis');
-          sW.text('bump (shape only)', 0.5, -1.8, { color: 'faint', align: 'center', size: 11 });
+          if (have) sW.path(xs.map((x, i) => [x, sg * psi[i]]), { color: 'accent', width: 2.4 });
+          else sW.text('selected level unavailable at this N', .5, .85 * wh, {color: 'orange', align:'center', size:11});
+          sW.text('bump (rescaled shape only)', .5, -.85 * wh, { color: 'faint', align: 'center', size: 11 });
           // secular function
-          const rr = roots(N, v0), Emax = hi;
+          const rr = all[N - 1], Emax = 1.05 * rr.at(-1);
           sD.setView([0, Emax], [-1.2, 1.2]);
-          const H = Hn(N, v0), pts = [];
-          for (let i = 0; i <= 400; i++) { const E = (Emax * i) / 400, A = H.map((r, a) => r.map((x, b) => x - (a === b ? E : 0))), d = M.det(A); pts.push([E, Math.sign(d) * Math.abs(d) ** (1 / N)]); }
+          const es = [...Array.from({ length: 401 }, (_, i) => Emax * i / 400), ...rr].sort((a,b) => a-b), pts = es.map(E => { const d = rr.reduce((d,r) => d * (r-E), 1); return [E, Math.sign(d) * Math.abs(d) ** (1/N)]; });
           const sc = Math.max(...pts.map((q) => Math.abs(q[1])), 1e-9); for (const q of pts) q[1] /= sc;
           sD.hline(0, { color: 'faint' });
           sD.path(pts.map(([e, y]) => [e, y]), { color: 'accent', width: 2 });
@@ -158,7 +144,7 @@ whose nontrivial solutions need the **secular determinant** $\det(\mathbf H-E\ma
           info = { r0: rr[k] ?? NaN, ex: Ex[k], inter, upper, N, have: k < N };
         });
         v.legend([['accent', 'roots / basis state'], ['green', 'finite-difference reference', { dash: true }], ['orange', 'current $N$']]);
-        v.readout(() => info && (info.have ? `level ${lev.value + 1}: $E^{(${info.N})}=${v.fix(info.r0, 3)}$ against finite-difference $${v.fix(info.ex, 3)}$ (excess ${v.fix(info.r0 - info.ex, 3)}) · ` : `level ${lev.value + 1} does not exist yet with $N=${info.N}$ functions · `) + `bound $E^{(N)}_k\\ge E_k$ for all shown levels: ${info.upper ? '**holds**' : '**violated**'} · interlacing with $N-1$ roots: ${info.N < 2 ? 'n/a' : info.inter ? '**holds**' : '**violated**'}`);
+        v.readout(() => info && (info.have ? `level ${lev.value + 1}: $E^{(${info.N})}=${v.fix(info.r0, 3)}$ against FD reference $${v.fix(info.ex, 3)}$ (difference ${v.fix(info.r0 - info.ex, 3)}) · ` : `level ${lev.value + 1} does not exist yet with $N=${info.N}$ functions · `) + `Ritz values above the FD references: ${info.upper ? '**yes**' : '**no**'} · interlacing with $N-1$ roots: ${info.N < 2 ? 'n/a' : info.inter ? '**holds**' : '**violated**'}`);
       },
     },
     // ------------------------------------------------------------------ 4.3
@@ -166,48 +152,49 @@ whose nontrivial solutions need the **secular determinant** $\det(\mathbf H-E\ma
       num: '4.3',
       kind: 'Model',
       name: 'Variational helium: the effective charge 27/16',
-      credit: 'Single-exponent variational product state; numerical references: A. V. Turbiner, J. C. López Vieyra and H. Olivares Pilón, 2017',
-      statement: String.raw`Take for the two electrons of a helium-like ion of nuclear charge $Z$ the product of two hydrogenic $1s$ functions with a common adjustable exponent $\zeta$, $\psi=\frac{\zeta^3}{\pi}e^{-\zeta(r_1+r_2)}$. Then, in hartree,
-$$E(\zeta)=\underbrace{\zeta^2}_{\langle T\rangle}\;\underbrace{-\,2Z\zeta}_{\langle V_{ne}\rangle}\;+\;\underbrace{\tfrac58\zeta}_{\langle 1/r_{12}\rangle},$$
-minimal at $\zeta^*=Z-\tfrac5{16}$ with $E(\zeta^*)=-(Z-\tfrac5{16})^2$. For helium, $\zeta^*=\tfrac{27}{16}=1.6875$ and $E=-2.8477$ hartree, $1.9\,\%$ above the exact non-relativistic energy $-2.9037$. Each electron screens the nucleus from the other by $\tfrac5{16}$ of a unit charge.`,
-      scope: String.raw`Fixed point nucleus (infinite nuclear mass), nonrelativistic electrons and atomic units; the rounded correlated reference energies use the infinite-mass column of Turbiner et al., Table I. A spatial product cannot correlate the two electron positions, but its orbital shape can be optimized beyond a single exponential. The approximately $0.056$ hartree ($1.5$ eV) error of this restricted trial therefore includes orbital-shape error as well as correlation; the correlation energy is defined relative to the fully optimized Hartree–Fock reference (7.2). For H$^-$ this trial lies above the H + free-electron threshold and fails to establish binding; an upper bound above threshold does not prove nonbinding.`,
+      credit: 'Effective-charge product trial; full derivation: Tong, Topics in Quantum Mechanics (2017), §2.1.2',
+      statement: String.raw`For a nonrelativistic two-electron ion with a fixed infinitely massive nucleus of charge $Z$, take the normalized spatial product $\psi=\zeta^3\pi^{-1}e^{-\zeta(r_1+r_2)}$ with $\zeta>0$, multiplied by an antisymmetric spin singlet. In atomic units,
+$$E(\zeta)=\underbrace{\zeta^2}_{\langle T\rangle}-\underbrace{2Z\zeta}_{-\langle V_{ne}\rangle}+\underbrace{\tfrac58\zeta}_{\langle1/r_{12}\rangle}.$$
+For $Z>5/16$, the minimum is at $\zeta^*=Z-5/16$ and equals $-(Z-5/16)^2$. For helium, $\zeta^*=27/16$ and $E=-2.84765625$ hartree, versus the reference energy approximately $-79.0$ eV (about $-2.90$ hartree). The exponent difference $5/16$ is an effective screening parameter of this trial family.`,
+      scope: String.raw`The independent-orbital product has no explicit interelectronic-distance correlation and omits finite nuclear mass and relativistic effects. For $Z=1$ its minimum is $-0.47265625$, above the H + free-electron threshold $-0.5$: this upper bound fails to establish H$^-$ binding and cannot prove absence of a bound state. The helium reference is rounded, not an exact mathematical value; no numerical ground-state reference is asserted here for the other ions.`,
       idea: String.raw`Without repulsion the two electrons would each be a hydrogenic $1s$ electron with $\zeta=Z$ and $E=-Z^2$ ($-4$ hartree, $-108.8$ eV for helium); the repulsion integral $\langle1/r_{12}\rangle=\tfrac58\zeta$ is positive and grows with $\zeta$, so the best compromise lets the electrons spread out a little, i.e. lowers $\zeta$ below $Z$. Minimising the parabola gives the screening $\tfrac5{16}$. At the minimum $\langle T\rangle=-E$ and $\langle V\rangle=2E$, the virial theorem (4.9) in action, and by the variational principle (4.1) the result can never be below the exact energy.`,
-      caption: String.raw`Choose the nuclear charge $Z$ and drag $\zeta$. Left: the three terms of $E(\zeta)$ and their sum, with the exact energy (dashed green) and the unscreened value $\zeta=Z$ (grey dot). Right: the radial density of one electron for your $\zeta$ and for $\zeta=Z$: with the charge screened the cloud is a little bigger. Notice that the minimum sits at $\zeta=Z-5/16$ for every $Z$, that for $Z=1$ the minimum lies *above* the energy of an H atom plus a free electron ($-0.5$), so this trial function fails to prove H$^-$ binding, and that the percentage error shrinks with $Z$.`,
+      caption: String.raw`Choose $Z$ and drag $\zeta$. The energy panel includes all three component curves and their sum over the full exponent range. For helium, the green dashed line is a rounded reference energy; for H$^-$ it is the dissociation threshold $-0.5$, not its ground-state energy. The gray dot is the unscreened trial exponent $\zeta=Z$. The radial probability is normalized on $[0,\infty)$ and shown on a finite radial window; both peaks remain visible. At $Z=1$ a variational energy above the threshold is inconclusive about true binding.`,
       deps: ['qchem-4.1', 'qchem-3.3', 'qm-12.4'],
       see: ['qm-12.4'],
-      refs: ['Tong, Topics in Quantum Mechanics §§2.1.1–2.1.2, pp.24–32; Fitzpatrick §14.3', 'Turbiner, López Vieyra and Olivares Pilón, arXiv:1707.07547, Hamiltonian Eq.(1), pp.2–3 and Table I p.7'],
+      refs: ['Tong, Topics in Quantum Mechanics (Lent 2017), §2.1.2, pp. 27–31, equations (2.1)–(2.6)'],
       tags: ['helium', 'screening', 'variational'],
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Helium_atom' },
       viz(v) {
-        // Infinite-mass nonrelativistic ground-state references rounded to 6 decimals: arXiv:1707.07547 Table I, p.7.
-        const EXACT = { 1: -0.527751, 2: -2.903724, 3: -7.279913, 4: -13.655566 };
+        // Rounded helium value from Tong §2.1.2; H threshold is analytic.
+        const REFERENCE = { 1: -.5, 2: -79 / HARTREE_EV };
         const Zs = v.select('nuclear charge $Z$', [{ value: 1, label: 'H$^-$ (1)' }, { value: 2, label: 'He (2)' }, { value: 3, label: 'Li$^+$ (3)' }, { value: 4, label: 'Be$^{2+}$ (4)' }], 2);
         const zS = v.slider('exponent $\\zeta$', 0.6, 5, 27 / 16, { step: 0.005 });
         const sE = v.stage({ x: [0.6, 5], y: [-9, 10], axes: 'box', gutter: true, height: 330, weight: 1.15, xlabel: 'ζ', ylabel: 'energy (hartree)', title: 'E(ζ) and its parts' });
         const sR = v.stage({ x: [0, 5], y: [0, 1.2], axes: 'box', gutter: true, height: 330, weight: 0.9, xlabel: 'r (bohr)', ylabel: '4πr²|φ|²', title: 'one electron' });
         let info = null;
         v.render(() => {
-          const Z = +Zs.value, z = zS.value, E = (q) => q * q - 2 * Z * q + 0.625 * q, zo = Z - 5 / 16, lo = 0.6, hi = 5;
-          const eMin = Math.min(-Z*Z-1,-2*Z*hi,EXACT[Z]), eMax = Math.max(hi*hi,E(lo),E(hi));
-          sE.setView([lo, hi], [Math.min(-9, eMin * 1.0), Math.max(10, eMax)]);
+          const Z = +Zs.value, z = zS.value, E = q => heliumTerms(Z,q).E, zo = heliumOptimum(Z).z, lo = .6, hi = 5;
+          const eMin = Math.min(-2 * Z * hi, E(zo), REFERENCE[Z] ?? 0), eMax = Math.max(hi * hi, E(hi));
+          sE.setView([lo - .04 * (hi - lo), hi + .04 * (hi - lo)], [eMin - .07 * (eMax - eMin), eMax + .07 * (eMax - eMin)]);
           sE.hline(0, { color: 'faint' });
-          sE.hline(EXACT[Z], { color: 'green', dash: true, width: 1.8 });
-          sE.fn((q) => q * q, { color: 'orange', width: 1.4, alpha: 0.8 });
-          sE.fn((q) => -2 * Z * q, { color: 'purple', width: 1.4, alpha: 0.8 });
-          sE.fn((q) => 0.625 * q, { color: 'red', width: 1.4, alpha: 0.8 });
-          sE.fn(E, { color: 'accent', width: 2.6 });
+          if (Z in REFERENCE) sE.hline(REFERENCE[Z], { color: 'green', dash: true, width: 1.8 });
+          sE.fn((q) => q * q, { color: 'orange', width: 1.4, alpha: 0.8, domain: [lo,hi] });
+          sE.fn((q) => -2 * Z * q, { color: 'purple', width: 1.4, alpha: 0.8, domain: [lo,hi] });
+          sE.fn((q) => 0.625 * q, { color: 'red', width: 1.4, alpha: 0.8, domain: [lo,hi] });
+          sE.fn(E, { color: 'accent', width: 2.6, domain: [lo,hi] });
           sE.dot(zo, E(zo), { r: 5, color: 'green', label: 'minimum', labelPos: 'se' });
           sE.dot(Z, E(Z), { r: 5, color: 'muted', hollow: true, label: 'ζ = Z', labelPos: 'ne' });
           sE.vline(z, { color: 'gold', dash: true });
           sE.dot(z, E(z), { r: 7, color: 'gold' });
           const D = (q) => (r) => 4 * q ** 3 * r * r * Math.exp(-2 * q * r);
-          sR.setView([0, 5 / Math.max(1, Z * 0.55)], [0, 1.15 * 4 * Math.max(Z,z) * Math.exp(-2)]);
+          sR.setView([0, 5 / Math.max(1, Z * 0.55)], [0, 1.15 * 4 * Math.max(Z, z) / Math.E ** 2]);
           sR.fn(D(Z), { color: 'muted', dash: true, width: 1.8 });
           sR.fn(D(z), { color: 'gold', width: 2.4, fill: true });
-          info = { Z, z, e: E(z), zo, eo: E(zo), ex: EXACT[Z] };
+          info = { Z, z, e: E(z), zo, eo: E(zo), ex: REFERENCE[Z] };
         });
-        v.legend([['accent', '$E(\\zeta)$'], ['orange', '$\\langle T\\rangle=\\zeta^2$'], ['purple', '$\\langle V_{ne}\\rangle$'], ['red', '$\\langle 1/r_{12}\\rangle$'], ['green', 'exact', { dash: true }]]);
-        v.readout(() => info && `$E(\\zeta)=${v.fix(info.e, 4)}$ hartree (${v.fix(info.e * HARTREE_EV, 2)} eV) · minimum at $\\zeta^*=Z-\\tfrac5{16}=${v.fix(info.zo, 4)}$ with $E=${v.fix(info.eo, 4)}$ · exact $${v.fix(info.ex, 4)}$: error ${v.fix(100 * (info.eo - info.ex) / Math.abs(info.ex), 2)} %\nscreening by the other electron $\\sigma=Z-\\zeta^*=${v.fix(info.Z - info.zo, 4)}$ · at the minimum $\\langle T\\rangle/E=${v.fix(info.zo ** 2 / info.eo, 3)}$ (virial: $-1$)` + (info.Z === 1 ? `\n**this trial function lies above $-0.5$ (the H atom + free electron), so it fails to establish binding of H$^-$**` : ''));
+        v.legend([['accent', '$E(\\zeta)$'], ['orange', '$\\langle T\\rangle=\\zeta^2$'], ['purple', '$\\langle V_{ne}\\rangle$'], ['red', '$\\langle 1/r_{12}\\rangle$'], ['green', 'He reference / H threshold', { dash: true }]]);
+        v.readout(() => info && String.raw`$E(\zeta)=${v.fix(info.e, 4)}$ hartree (${v.fix(info.e * HARTREE_EV, 2)} eV) · minimum at $\zeta^*=Z-5/16=${v.fix(info.zo, 4)}$ with $E=${v.fix(info.eo, 6)}$` + (info.Z === 2 ? ` · rounded He reference $-79.0$ eV: error ${v.fix(100 * (info.eo - info.ex) / Math.abs(info.ex), 2)} %` : '') + '\n' + String.raw`effective screening parameter $Z-\zeta^*=0.3125$ · at the minimum $\langle T\rangle/E=-1$` + (info.Z === 1 ? '\n**Above the H + free-electron threshold −0.5: this trial does not establish binding; it does not prove no binding.**' : ''));
       },
     },
     // ------------------------------------------------------------------ 4.4
@@ -319,36 +306,23 @@ Every excited level $m$ above $n$ pushes it down, every level below pushes it up
       num: '4.6',
       kind: 'Phenomenon',
       name: 'Stark effect and polarizability',
-      credit: 'Hydrogen Stark effect',
-      statement: String.raw`In a uniform field $\mathcal F$ along $z$ the hydrogen Hamiltonian acquires $W=\mathcal F z$ (atomic units, electron charge $-1$). The nondegenerate ground state shifts quadratically,
-$$E_{1s}(\mathcal F)=-\tfrac12-\tfrac12\,\alpha\,\mathcal F^2+\cdots,\qquad \alpha=2\sum_{m}\frac{|\langle m|z|1s\rangle|^2}{E_m-E_{1s}}=\tfrac92\ \text{a.u.},$$
-because $\langle z\rangle_{1s}=0$ and the field induces the dipole $p=\alpha\mathcal F$. The $n=2$ level is degenerate (2s and 2p), $z$ couples the 2s to the $2p_0$ state, and the first-order shifts are *linear*, $E=-\tfrac18\pm3\mathcal F$ (for the $m=0$ pair); the $2p_{\pm1}$ states do not shift to first order.`,
-      scope: String.raw`The polarizability sum includes discrete and continuum excitations. Weak fields only: a real hydrogen atom in a static field is ionised by tunnelling (the levels are resonances). The numerical model below uses a finite basis that cannot ionise, so the slider stops at $\mathcal F=0.004$ a.u., where the ground state remains below the field's saddle $-2\sqrt{\mathcal F}$; the upper $n=2$ branches can already lie above it ($1\ \text{a.u.}=5.14\times10^{11}$ V/m; the displayed fields are illustrative rather than a claimed universal laboratory range).`,
-      idea: String.raw`For a nondegenerate level the first-order shift is $\langle z\rangle=0$ by parity (the unperturbed state has definite parity), so the leading effect is second order (4.5): the field mixes in $p$ states, which lowers the energy and shifts the electron *against* the field, giving the induced dipole. In the degenerate $n=2$ shell the correct zeroth-order states are mixtures of 2s and 2p (4.7), which already have a permanent dipole $\mp3$ a.u., hence the linear shift. The numbers below come from diagonalising $H_0+\mathcal Fz$ in a basis of $r^{l+1}e^{-\lambda r}L_k^{(2l+2)}(2\lambda r)Y_{l0}$ with $l\le5$.`,
-      caption: String.raw`Left: the lowest $m=0$ levels of hydrogen against the field, computed by diagonalisation in a finite basis (solid). Choose the ground-state view for $E_{1s}(\mathcal F)-E_{1s}(0)$ against the textbook parabola $-\tfrac94\mathcal F^2$, or the $n=2$ shell for the linear shifts $-\tfrac18\pm3\mathcal F$ (dashed). Right: a cross-section of the electron cloud in the $xz$ plane; the field points along $+z$ (arrow). For the $1s$ state the picture is the *change* of density caused by the field (the shift is far too small to see in the density itself): charge moves toward $-z$ and leaves a deficit at $+z$. The two $n=2$ clouds are strongly one-sided from the start, one toward each side, and the readout's slope $dE/d\mathcal F$ equals the average $\langle z\rangle$ of that cloud.`,
+      credit: 'Hydrogen Stark effect; derivations: Fitzpatrick §§12.5–12.7 and Schwartz, Annals of Physics 6 (1959), pp. 157–160',
+      statement: String.raw`For nonrelativistic fixed-nucleus hydrogen, an electric field $\mathcal F\hat z$ adds $W=\mathcal Fz$ in atomic units. The formal weak-field ground-resonance expansion is
+$$E_{1s}(\mathcal F)\sim-\tfrac12-\tfrac12\alpha\mathcal F^2+\cdots,\qquad\alpha=2\sum_{m\ne0}\frac{|\langle m|z|1s\rangle|^2}{E_m-E_{1s}}=\tfrac92,$$
+where the spectral sum includes the continuum. Parity removes first order; the induced electric dipole is $p=-\langle z\rangle\sim\alpha\mathcal F$. Neglecting spin, fine structure and Lamb shift, the degenerate $n=2,m=0$ pair has first-order energies $-1/8\pm3\mathcal F$; $m=\pm1$ states have no first-order shift.`,
+      scope: String.raw`A nonzero uniform static field makes this Hamiltonian unbounded below; physical bound levels become resonances with tunnelling ionization. The finite square-integrable basis below gives real eigenvalues and cannot predict widths or ionization. Its endpoint 0.004 a.u. is not a certified weak-field validity threshold: the upper $n=2$ branch can lie above the classical saddle $-2\sqrt{\mathcal F}$. A saddle comparison is not a lifetime calculation. Infinitesimal-field excited-state ordering also changes when omitted fine structure/Lamb splitting is restored.`,
+      idea: String.raw`Parity makes $\langle1s|z|1s\rangle=0$. The exact first-order wavefunction per unit field is $\psi_1=-(r+r^2/2)\cos\theta\,\psi_{1s}$: direct substitution gives $(H_0-E_0)\psi_1=-z\psi_{1s}$. Hence $E^{(2)}=\langle\psi_{1s}|z|\psi_1\rangle=-9/4$, including bound and continuum response without truncating a discrete sum. In the $n=2$ subspace, diagonalizing the projected $z$ matrix with off-diagonal magnitude 3 gives the linear pair. The visualization uses 42 Laguerre radial/angular functions with 7 radial functions for each $0\le l\le5$, restricted to $m=0$.`,
+      caption: String.raw`Real eigenvalues of a finite basis of 42 $m=0$ functions, compared with weak-field formulas. The ground panel shows the numerical energy shift against $-9\mathcal F^2/4$; the $n=2$ panel shows only its two $m=0$ branches. The cloud is a finite-window cross-section, with density change for $1s$ and density for the excited states; its colors are rescaled, not a probability integral. All basis coefficients enter the density, including small coefficients multiplying large unnormalized basis functions. The readout compares the actual secant derivative with $\langle z\rangle$ and displays the saddle test. At zero field an arbitrary vector in the excited degenerate subspace need not be the differentiable branch required by Hellmann–Feynman.`,
       deps: ['qchem-4.5', 'qchem-2.1', 'qm-11.16'],
       see: ['qm-11.16'],
-      refs: ['Fitzpatrick §§12.4–12.7, Eqs.(12.56)–(12.106)'],
+      refs: ['Fitzpatrick, Quantum Mechanics, §§12.5–12.7, pp. 156–164, equations (12.58)–(12.112)', 'Tong, Topics in Quantum Mechanics, §4.1, pp. 106–109 (static-field instability)', 'Schwartz, Calculations in Schrödinger Perturbation Theory, Annals of Physics 6 (1959), pp. 157–160, equations (5)–(7), (13)–(14)'],
       tags: ['Stark effect', 'polarizability', 'hydrogen'],
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Stark_effect' },
       viz(v) {
-        const M = v.M, LAM = 0.6, KB = 7, LM = 5, NR = 1600, RMAX = 70, AQ6 = RMAX / (NR * NR);
-        // basis u_{kl}(r) = r^{l+1} e^{-λr} L_k^{(2l+2)}(2λr); matrices H0, S, Z (z-coupling) precomputed once (quadrature r = a(i+½)²)
-        const fns = []; for (let l = 0; l <= LM; l++) for (let k = 0; k < KB; k++) fns.push({ l, k });
-        const nF = fns.length, r = Float64Array.from({ length: NR }, (_, i) => AQ6 * (i + 0.5) ** 2), wq = Float64Array.from({ length: NR }, (_, i) => 2 * AQ6 * (i + 0.5));
-        const U = fns.map(({ l, k }) => Float64Array.from(r, (x) => x ** (l + 1) * Math.exp(-LAM * x) * lagL(k, 2 * l + 2, 2 * LAM * x)));
-        const dU = fns.map(({ l, k }) => Float64Array.from(r, (x) => { const L = lagL(k, 2 * l + 2, 2 * LAM * x), Lp = k > 0 ? -lagL(k - 1, 2 * l + 3, 2 * LAM * x) : 0; return Math.exp(-LAM * x) * ((l + 1) * x ** l * L - LAM * x ** (l + 1) * L + x ** (l + 1) * 2 * LAM * Lp); }));
-        const S = [], H0 = [], Zm = [];
-        for (let i = 0; i < nF; i++) { S.push(new Array(nF).fill(0)); H0.push(new Array(nF).fill(0)); Zm.push(new Array(nF).fill(0)); }
-        for (let i = 0; i < nF; i++) for (let j = i; j < nF; j++) {
-          const A = fns[i], B = fns[j]; let s = 0, hh = 0, z = 0;
-          if (A.l === B.l) { for (let q = 0; q < NR; q++) { const w = wq[q]; s += w * U[i][q] * U[j][q]; hh += w * (0.5 * dU[i][q] * dU[j][q] + ((A.l * (A.l + 1)) / (2 * r[q] * r[q]) - 1 / r[q]) * U[i][q] * U[j][q]); } }
-          else if (Math.abs(A.l - B.l) === 1) { const l = Math.min(A.l, B.l); for (let q = 0; q < NR; q++) z += wq[q] * U[i][q] * r[q] * U[j][q]; z *= (l + 1) / Math.sqrt((2 * l + 1) * (2 * l + 3)); }
-          S[i][j] = S[j][i] = s; H0[i][j] = H0[j][i] = hh; Zm[i][j] = Zm[j][i] = z;
-        }
-        const solve = (F) => M.genEig(H0.map((row, i) => row.map((x, j) => x + F * Zm[i][j])), S);
+        const M=v.M, B=starkBasis(M), {LAM,KB,LM,NR,RMAX,fns,nF,S,H0,Zm,solve}=B;
         const base = solve(0), E00 = base.values[0];
-        const FMAX = 0.004, NL = 4, NS = 25, mapF = Array.from({ length: NS + 1 }, (_, i) => (FMAX * i) / NS);
+        const FMAX = 0.004, NL = 3, NS = 25, mapF = Array.from({ length: NS + 1 }, (_, i) => (FMAX * i) / NS);
         const map = mapF.map((F) => solve(F).values.slice(0, NL));
         const fS = v.slider('field $\\mathcal F$ (a.u.)', 0, FMAX, 0.0025, { step: 0.0001, decimals: 4 });
         const lvS = v.select('state shown', [{ value: 0, label: '1s: change of density' }, { value: 1, label: '2nd level (n = 2)' }, { value: 2, label: '3rd level (n = 2)' }], 0);
@@ -358,26 +332,26 @@ because $\langle z\rangle_{1s}=0$ and the field induces the dipole $p=\alpha\mat
         // radial lookup tables R_kl(r) = u/r for the cloud
         const NT = 500, RC = 14, tab = fns.map(({ l, k }) => Float64Array.from({ length: NT + 1 }, (_, i) => { const x = Math.max((i / NT) * RC, 1e-9); return x ** l * Math.exp(-LAM * x) * lagL(k, 2 * l + 2, 2 * LAM * x); }));
         const legendre = (l, x) => { let p0 = 1, p1 = x; if (l === 0) return 1; for (let q = 2; q <= l; q++) { const p2 = ((2 * q - 1) * x * p1 - (q - 1) * p0) / q; p0 = p1; p1 = p2; } return p1; };
-        const normed = (sol, k) => { const c = sol.vecs[k]; let nrm = 0, zz = 0; for (let i = 0; i < nF; i++) for (let j = 0; j < nF; j++) { nrm += c[i] * c[j] * S[i][j]; zz += c[i] * c[j] * Zm[i][j]; } const cut = c.map((x) => x / Math.sqrt(nrm)); return { cut, act: cut.map((x, i) => (Math.abs(x) > 1e-4 ? i : -1)).filter((i) => i >= 0), dz: zz / nrm }; };
+        const normed = (sol, k) => { const c = sol.vecs[k]; let nrm = 0, zz = 0; for (let i = 0; i < nF; i++) for (let j = 0; j < nF; j++) { nrm += c[i] * c[j] * S[i][j]; zz += c[i] * c[j] * Zm[i][j]; } const cut = c.map((x) => x / Math.sqrt(nrm)); return { cut, act: cut.map((_, i) => i), dz: zz / nrm }; };
         const psiAt = (st, x, z) => { const rr = Math.hypot(x, z); if (rr > RC - 0.1) return 0; const ct = rr < 1e-9 ? 1 : z / rr, f = (rr / RC) * NT, i0 = Math.min(NT - 1, Math.floor(f)), t = f - i0; let psi = 0; for (const i of st.act) { const l = fns[i].l; psi += st.cut[i] * (tab[i][i0] * (1 - t) + tab[i][i0 + 1] * t) * Math.sqrt((2 * l + 1) / (4 * Math.PI)) * legendre(l, ct); } return psi; };
         let info = null;
         v.render(() => {
           const F = fS.value, k = +lvS.value, sol = solve(F), E = sol.values[k], st = normed(sol, k), st0 = normed(base, 0), n2 = viewS.value === 'n2';
           if (!n2) {
-            sM.setView([0, FMAX], [-6.5, 0.5]); sM.setLabels('field F (a.u.)', 'E(F) − E(0)  (10⁻⁵ hartree)');
+            sM.setView([-.00015, FMAX+.00015], [-6.5, 0.5]); sM.setLabels('field F (a.u.)', 'E(F) − E(0)  (10⁻⁵ hartree)');
             sM.hline(0, { color: 'faint' });
-            sM.fn((f) => -2.25 * f * f * 1e5, { color: 'orange', dash: true, width: 1.6 });
+            sM.fn((f) => -2.25 * f * f * 1e5, { color: 'orange', dash: true, width: 1.6, domain:[0,FMAX] });
             sM.path(mapF.map((f, i) => [f, (map[i][0] - E00) * 1e5]), { color: 'accent', width: 2.6 });
             sM.dot(F, (sol.values[0] - E00) * 1e5, { r: 6, color: 'gold' });
           } else {
-            sM.setView([0, FMAX], [-0.15, -0.095]); sM.setLabels('field F (a.u.)', 'E (hartree)');
-            sM.fn((f) => -0.125 - 3 * f, { color: 'green', dash: true, width: 1.6 }); sM.fn((f) => -0.125 + 3 * f, { color: 'green', dash: true, width: 1.6 });
+            sM.setView([-.00015, FMAX+.00015], [-0.15, -0.095]); sM.setLabels('field F (a.u.)', 'E (hartree)');
+            sM.fn((f) => -0.125 - 3 * f, { color: 'green', dash: true, width: 1.6,domain:[0,FMAX] }); sM.fn((f) => -0.125 + 3 * f, { color: 'green', dash: true, width: 1.6,domain:[0,FMAX] });
             sM.hline(-0.125, { color: 'faint' });
             for (let j = 1; j < NL; j++) sM.path(mapF.map((f, i) => [f, map[i][j]]), { color: j === k ? 'accent' : 'muted', width: j === k ? 2.6 : 1.5 });
             if (k > 0) sM.dot(F, E, { r: 6, color: 'gold' });
           }
           sM.vline(F, { color: 'gold', dash: true, alpha: 0.6 });
-          const key = `${F},${k}`;
+          const key = `${F},${k},${v.rgb('panel').join(',')}`;
           if (k === 0) {
             let mx = 1e-12; for (let a = -6; a <= 6; a += 0.5) for (let b = -6; b <= 6; b += 0.5) mx = Math.max(mx, Math.abs(psiAt(st, a, b) ** 2 - psiAt(st0, a, b) ** 2));
             sC.raster((x, z) => { const rr = Math.hypot(x, z); if (rr > RC - 0.1) return null; const d = (psiAt(st, x, z) ** 2 - psiAt(st0, x, z) ** 2) / mx; return v.diverge(M.clamp(d * 1.4, -1, 1), 'orange', 'accent'); }, { res: 3, key });
@@ -387,10 +361,10 @@ because $\langle z\rangle_{1s}=0$ and the field induces the dipole $p=\alpha\mat
           sC.dot(0, 0, { r: 3, color: 'ink' });
           sC.arrow(4.8, -1.2, 4.8, 1.8, { color: 'red', width: 2 }); sC.text('field', 4.8, 2.4, { color: 'red', align: 'center', size: 11 });
           sC.setTitle(k === 0 ? '1s: density with field minus without (blue +, orange −)' : 'electron density |ψ|²');
-          info = { F, k, E, dz: st.dz, alpha: F > 0 ? (-2 * (sol.values[0] - E00)) / (F * F) : NaN, slope: (solve(F + 1e-4).values[k] - solve(Math.max(0, F - 1e-4)).values[k]) / (F + 1e-4 - Math.max(0,F-1e-4)) };
+          info = { F, k, E, dz: st.dz, alpha: F > 0 ? (-2 * (sol.values[0] - E00)) / (F * F) : NaN, slope:fieldSecant(solve,F,k),saddle:fieldSaddle(F) };
         });
         v.legend([['accent', 'computed levels'], ['orange', '$-\\tfrac94\\mathcal F^2$', { dash: true }], ['green', '$-\\tfrac18\\pm3\\mathcal F$', { dash: true }]]);
-        v.readout(() => info && `level ${info.k + 1}: $E=${v.fix(info.E, 6)}$ hartree · $\\langle z\\rangle=${v.fix(info.dz, 4)}$ bohr · slope $dE/d\\mathcal F=${v.fix(info.slope, 4)}$ (equals $\\langle z\\rangle$, see 4.8)\nground-state polarizability from the curvature: $\\alpha_{\\rm est}=-2(E_{1s}(\\mathcal F)-E_{1s}(0))/\\mathcal F^2=${isNaN(info.alpha) ? '—' : v.fix(info.alpha, 3)}$ a.u. (exact $4.5$) · $\\mathcal F=${v.fix(info.F, 4)}$ a.u. $=${v.fix(info.F * 5.14220674763e11 / 1e9, 2)}$ GV/m`);
+        v.readout(() => info && String.raw`finite-basis level ${info.k+1}: $E=${v.fix(info.E,6)}$ hartree, $\langle z\rangle=${v.fix(info.dz,5)}$ bohr; secant slope ${v.fix(info.slope,5)}, difference ${v.fix(info.slope-info.dz,6)}. $\alpha_{\rm est}=${isNaN(info.alpha)?'—':v.fix(info.alpha,3)}$ (weak-field exact 4.5).` + '\n' + String.raw`$\mathcal F=${v.fix(info.F,4)}$ a.u. =${v.fix(info.F*5.14220674763e11/1e9,2)}GV/m; ` + (info.saddle===null?'zero field: no finite saddle; degenerate excited basis states need not define a derivative branch.':String.raw`$E_{saddle}=${v.fix(info.saddle,6)}$ hartree; selected level is **${info.E<info.saddle?'below':'above'}** the saddle. This finite model gives no ionization rate.`));
       },
     },
   ],

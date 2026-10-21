@@ -191,7 +191,7 @@ export function kuhnBehaviour(P, p, S, mu) {
   const wt = (cond) => S.reduce((t, s, i) => t + (cond.every(([k, a]) => s[k] === a) ? mu[i] : 0), 0);
   infoSets(P, p).forEach((I) => {
     const path = own(I.nodes[0]), w0 = wt(path);
-    beh[I.key] = Array.from({ length: I.na }, (_, a) => (w0 > 0 ? wt([...path, [I.key, a]]) / w0 : 1 / I.na));
+    beh[I.key] = Array.from({ length: I.na }, (_, a) => (w0 > 1e-12 ? wt([...path, [I.key, a]]) / w0 : 1 / I.na));
   });
   return beh;
 }

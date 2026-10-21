@@ -1,37 +1,9 @@
 // Macroeconomics — Chapter 3 (part b): convergence, growth accounting and the growth puzzles (items 3.8–3.13)
-import { clamp, pc, fx, ols, olsMulti, sgn, rkPath, at, rows, GA_PWT, XS_PWT, IT_US, NAMES } from './ch03.shared.js';
+import { clamp, pc, fx, ols, olsMulti, sgn, rkPath, at, rows, GA_PWT, XS_PWT, IT_US, NAMES, growthAccounting } from './ch03.shared.js';
 
 const GA = rows(GA_PWT, 7); // country, year, rgdpna, rnna, emp, hc, labsh
 const XS = rows(XS_PWT.flat(), 10); // code, name, y60, y19, s, n, hc60, hc19, oecd, irr
 const IT = rows(IT_US, 3); // year, IT investment % of GDP, BLS TFP index
-
-/** Exact utilization from K(0)=v L(0), Y=min(K/v,L), K'=sY-delta K. */
-export function fixedProportionsAt(s, v, n, delta, t) {
-  const a = s / v, b = n + delta, gap = a - b;
-  const ratio = gap <= 0 ? Math.exp(gap * t)
-    : 1 + gap * (b === 0 ? t : -Math.expm1(-b * t) / b);
-  return { ratio, employed: Math.min(1, ratio), capitalUsed: Math.min(1, 1 / ratio) };
-}
-
-/** Exact K/Y for Cobb-Douglas y=k^alpha, starting at k(0)=1. */
-export function solowCapitalOutputAt(s, n, delta, t, alpha = 0.35) {
-  const rate = (1 - alpha) * (n + delta);
-  return 1 + ((1 - alpha) * s - rate) * (rate === 0 ? t : -Math.expm1(-rate * t) / rate);
-}
-
-/** Period-average-share growth accounting; averages weight each interval by years. */
-export function growthAccounts(records, share = 'pwt') {
-  const intervals = records.slice(0, -1).map((a0, i) => {
-    const a1 = records[i + 1], years = a1[1] - a0[1];
-    const gr = (j) => Math.log(a1[j] / a0[j]) / years;
-    const al = share === 'third' ? 1 / 3 : 1 - (a0[6] + a1[6]) / 2;
-    const gY = gr(2), cap = al * gr(3), lab = (1 - al) * gr(4), hc = (1 - al) * gr(5);
-    return { gY, cap, lab, hc, tfp: gY - cap - lab - hc, al, years };
-  });
-  const years = intervals.reduce((s, r) => s + r.years, 0);
-  const average = Object.fromEntries(['gY', 'cap', 'lab', 'hc', 'tfp'].map(key => [key, intervals.reduce((s, r) => s + r[key] * r.years, 0) / years]));
-  return { intervals, average, years };
-}
 
 export default {
   collection: 'macro',
@@ -47,7 +19,7 @@ The same rate applies to output per effective worker. For $\alpha = 1/3$ and $n+
 Empirically, regressions across regions and countries typically find a rate of about $2\%$ a year (half-life about 35 years); matching it in the model would require a capital share far above one third.
 
 Scope: a statement about the *linearization* — for large gaps the exact path is faster at first, as the figure shows.`,
-      idea: String.raw`Write $\dot{\hat k} = g(\hat k) = s\hat k^{\alpha} - (n+g+\delta)\hat k$. At the steady state $g(\hat k^*)=0$, and by Taylor's theorem with the first-order term (pma-5.15) $g(\hat k)\approx g'(\hat k^*)(\hat k-\hat k^*)$ with $g'(\hat k^*) = \alpha(n+g+\delta) - (n+g+\delta) = -(1-\alpha)(n+g+\delta)$, using $s\hat k^{*\alpha-1} = n+g+\delta$. A linear equation $\dot x=-\lambda x$ has the solution $e^{-\lambda t}$: this is the stability of macro-3.3 turned into a number.`,
+      idea: String.raw`Write $\dot{\hat k} = g(\hat k) = s\hat k^{\alpha} - (n+g+\delta)\hat k$. At the steady state $g(\hat k^*)=0$, and by Taylor's theorem with the first-order term (pma-5.15) $g(\hat k)\approx g'(\hat k^*)(\hat k-\hat k^*)$ with $g'(\hat k^*) = \alpha(n+g+\delta) - (n+g+\delta) = -(1-\alpha)(n+g+\delta)$, using $s\hat k^{*\alpha-1} = n+g+\delta$. A linear equation $\dot x=-\lambda x$ has the solution $e^{-\lambda t}$: this is the stability of macro-3.3 turned into a number. After the local Taylor approximation, the deviation x obeys $\dot x=-\lambda x$, exactly the scalar growth/decay equation ode 1.5 with negative coefficient. Its solution supplies the exponential gap and half-life $\ln2/\lambda$ when $\lambda>0$. The exponential is exact for the linearized equation; it remains a local approximation to the nonlinear capital path.`,
       caption: String.raw`**Left:** the law of motion $\dot{\hat k}$ with its tangent at the steady state (slope $-\lambda$); drag the **gold handle** to choose the starting gap. **Right:** the fraction of the initial gap still open, on a log axis, so exponential decay is a straight line: exact path (blue), linear approximation (green), and the empirical 2% a year (red dashed). Change $\alpha$ to see what it takes for the model to be as slow as the data.`,
       deps: ['macro-3.3', 'pma-5.15', 'ode-1.5'], refs: ['Romer ch. 1'], tags: ['growth', 'convergence'],
       scope: String.raw`Linearization of the Cobb–Douglas Solow model; the empirical 2% is a summary of regressions (e.g. Barro and Sala-i-Martin 1992 for U.S. states and regions), not a constant of nature.`,
@@ -90,16 +62,16 @@ Scope: a statement about the *linearization* — for large gaps the exact path i
     // ------------------------------------------------------------------ 3.9
     {
       num: '3.9', kind: 'Method', name: 'Growth accounting and the Solow residual',
-      statement: String.raw`Take an aggregate production function $Y = A\,F(K, L)$ with differentiable $F$ homogeneous of degree one and competitive factor payments, so that the elasticity of output with respect to capital is capital's income share $\alpha$ and with respect to labour $1-\alpha$. Differentiating logarithms in time gives the exact decomposition
+      statement: String.raw`Take an aggregate production function $Y = A\,F(K, L)$ with constant returns to scale and competitive factor payments, so that the elasticity of output with respect to capital is capital's income share $\alpha$ and with respect to labour $1-\alpha$. Differentiating logarithms in time gives the exact decomposition
 $$\frac{\dot Y}{Y} = \alpha\,\frac{\dot K}{K} + (1-\alpha)\,\frac{\dot L}{L} + \frac{\dot A}{A},$$
 and the **Solow residual** $\dot A/A$ is whatever output growth is not explained by measured growth in inputs, weighted by their income shares. Splitting labour into employment and a human-capital index gives one more term.
 
 Scope: a measurement identity, not a causal theory: the residual is "total factor productivity" only if inputs are correctly measured, factors are paid their marginal products and returns to scale are constant; it also absorbs measurement error.`,
-      idea: String.raw`With Cobb–Douglas technology (macro-2.1) the logarithm of output is a weighted sum of the logarithms of inputs plus $\ln A$; differentiating in time gives the displayed sum, and the weights can be read off national accounts as the shares of income paid to capital and labour. Solow (1957) applied this to U.S. nonfarm data for 1909–1949 and found that only a small part of the rise in output per hour could be attributed to more capital per hour: as usually reported, about seven eighths of it was left to technical change. Applied to several countries, the residual explains very different fractions of growth.`,
-      caption: String.raw`Pick a **country**. Each bar is a decade of growth in real GDP (Penn World Table), split into the contribution of capital $\alpha\,g_K$ (orange), employment (blue), human capital per worker (teal) and the residual (gold); the black dot is total output growth. Choose whether the capital share is PWT's measured $1 - $ labour share or a fixed $1/3$.`,
-      deps: ['macro-2.1', 'pma-9.15'], refs: ['Mankiw ch. 10'], tags: ['growth', 'measurement'],
+      idea: String.raw`With Cobb–Douglas technology (macro-2.1) the logarithm of output is a weighted sum of the logarithms of inputs plus $\ln A$; differentiating in time gives the displayed sum, and the weights can be read off national accounts as the shares of income paid to capital and labour. For U.S. private non-farm output per hour over 1909–1949, Solow (1957, p. 316) attributed roughly seven eighths of the increase to the shift in the production function. This historical calculation used his particular input and utilization measures; the modern chart below is a separate illustration. Applied to several countries, the residual explains very different fractions of growth. For positive differentiable Cobb–Douglas inputs, the product logarithm in pma 8.6 gives $\ln Y=\ln A+\alpha\ln K+(1-\alpha)\ln L$. Its derivative $d\ln X/dt=\dot X/X$ gives the continuous decomposition with fixed exponents. The chart instead uses finite log changes and endpoint-average shares as its stated Törnqvist-style approximation; the logarithm identity does not make arbitrary changing-share endpoint averages exact continuous contributions.`,
+      caption: String.raw`Pick a **country**. Each bar is an interval of annual log growth in real GDP (PWT 10.0; the final interval is nine years), split into the contribution of capital $\alpha\,g_K$ (orange), employment (blue), human capital per worker (teal) and the residual (gold); the black dot is total output growth. Choose whether the capital share is PWT's measured $1 - $ labour share or a fixed $1/3$.`,
+      deps: ['macro-2.1', 'pma-8.6'], refs: ['Solow (1957), Technical Change and the Aggregate Production Function, pp. 312–316; https://economicstrategy.org/wp-content/uploads/2013/10/Solow1957.pdf', 'Feenstra, Inklaar & Timmer (2015); PWT 10.0, CC BY 4.0; https://www.rug.nl/ggdc/productivity/pwt/pwt-releases/pwt100'], tags: ['growth', 'measurement'],
       credit: 'Robert Solow, 1957',
-      scope: String.raw`Decomposition with period-average income shares (Törnqvist weights); the residual includes anything not measured, including mismeasurement of capital and labour quality.`,
+      scope: String.raw`Finite-interval log decomposition with endpoint-average factor shares, a Törnqvist-style approximation to continuous growth accounting. Labour input is employment times PWT's human-capital index; hours and utilization are not controlled. The residual absorbs omitted inputs and measurement error. Full-period rates weight intervals by years.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Solow_residual' },
       viz(v) {
         const cs = Object.keys(NAMES);
@@ -108,10 +80,9 @@ Scope: a measurement identity, not a causal theory: the residual is "total facto
         const S = v.stage({ x: [0, 6], y: [-0.02, 0.1], axes: 'box', gutter: true, height: 360, full: true, xlabel: 'period', ylabel: 'growth of real GDP per year (0.02 = 2%)', xticks: [[0.5, '1960–70'], [1.5, '1970–80'], [2.5, '1980–90'], [3.5, '1990–2000'], [4.5, '2000–10'], [5.5, '2010–19']], title: 'where growth came from' });
         let st = null;
         v.render(() => {
-          const c = sel.value, R = GA.filter((r) => r[0] === c), accounting = growthAccounts(R, wt.value), out = accounting.intervals;
-          const lo = Math.min(-.01, ...out.map(o => [o.cap, o.lab, o.hc, o.tfp].reduce((s, x) => s + Math.min(0, x), 0)));
-          const hi = Math.max(.05, ...out.map(o => [o.cap, o.lab, o.hc, o.tfp].reduce((s, x) => s + Math.max(0, x), 0)));
-          S.setView([0, 6], [lo - 0.005, hi * 1.08]);
+          const c = sel.value, R = GA.filter((r) => r[0] === c);
+          const {out,mean,lo,hi} = growthAccounting(R,wt.value==='third'?1/3:null);
+          S.setView([0, 6], [Math.min(-0.01,lo) - 0.005, Math.max(0.05,hi) * 1.08]);
           S.hline(0, { color: 'ink' });
           out.forEach((o, i) => {
             let pos = 0, neg = 0;
@@ -121,10 +92,10 @@ Scope: a measurement identity, not a causal theory: the residual is "total facto
             }
             S.dot(i + 0.5, o.gY, { r: 6, color: 'ink' });
           });
-          st = { out, tot: accounting.average, c };
+          st = { out, mean, c };
         });
         v.legend([['orange', 'capital α·g_K'], ['accent', 'employment (1−α)·g_L'], ['teal', 'human capital (1−α)·g_h'], ['gold', 'Solow residual (TFP)'], ['ink', 'GDP growth', { dot: true }]]);
-        v.readout(() => st && `${NAMES[st.c]}: average growth ${pc(st.tot.gY, 1)} a year over 1960–2019, of which capital ${pc(st.tot.cap, 1)} and the residual ${pc(st.tot.tfp, 1)} (${st.tot.gY > 0 ? fx((100 * st.tot.tfp) / st.tot.gY, 0) : '—'}% of growth). The 59-year average weights intervals by their duration. By decade the residual ranges from ${pc(Math.min(...st.out.map((o) => o.tfp)), 1)} to ${pc(Math.max(...st.out.map((o) => o.tfp)), 1)}. Capital share used: ${st.out.map((o) => fx(o.al, 2)).join(', ')}. The accounting identity holds exactly by construction: signed contributions sum to the black dot.`);
+        v.readout(() => st && `${NAMES[st.c]}: mean log GDP growth ${pc(st.mean.gY, 1)} a year over 1960–2019, of which capital accumulation ${pc(st.mean.cap, 1)} and the residual ${pc(st.mean.tfp, 1)} (${st.mean.gY > 0 ? fx((100 * st.mean.tfp) / st.mean.gY, 0) : '—'}% of growth). By decade the residual ranges from ${pc(Math.min(...st.out.map((o) => o.tfp)), 1)} to ${pc(Math.max(...st.out.map((o) => o.tfp)), 1)}. Capital share used: ${st.out.map((o) => fx(o.al, 2)).join(', ')}. The accounting identity holds exactly by construction: the bars sum to the black dot.`);
       },
     },
     // ------------------------------------------------------------------ 3.10
@@ -135,9 +106,9 @@ $$\tfrac1T\ln\frac{y_T}{y_0} = a - b\ln y_0 + c_1\ln s + c_2\ln(n+g+\delta) + c_
 The Solow model predicts conditional convergence and says nothing about absolute convergence unless countries share the same fundamentals.
 
 Scope: an empirical hypothesis. In samples of broadly similar economies (current OECD members, U.S. states) absolute convergence appears; across all countries it is weak or absent in the data below.`,
-      idea: String.raw`In macro-3.8 the growth of a country at $\hat k$ below its own steady state is $\lambda$ times the gap to *that* steady state; if steady states differ, the gap to a common benchmark is a poor predictor. Baumol (1986) found convergence among a group of industrial countries; critics replied that this sample was selected by being rich at the end. Mankiw, Romer and Weil (1992) and Barro and Sala-i-Martin (1992) showed that controlling for saving, population growth and schooling brings out convergence across larger samples at about 2% a year. Here the same regression is run on Penn World Table data from 1960 to 2019, with the controls partialled out by the Frisch–Waugh theorem.`,
+      idea: String.raw`In macro-3.8 the growth of a country at $\hat k$ below its own steady state is $\lambda$ times the gap to *that* steady state; if steady states differ, the gap to a common benchmark is a poor predictor. Baumol (1986) found convergence among a group of industrial countries; critics replied that this sample was selected by being rich at the end. Mankiw, Romer and Weil (1992) and Barro and Sala-i-Martin (1992) showed that controlling for saving, population growth and schooling brings out convergence across larger samples at about 2% a year. Here the same regression is run on Penn World Table data from 1960 to 2019, with the controls partialled out by the Frisch–Waugh theorem. Let C span the intercept and displayed controls. The closest-point theorem ladr 6.61 makes least squares an orthogonal projection. For a fixed signed initial-income coefficient $\beta_x$, minimizing over the control coefficients leaves residual $M_C(y-\beta_x x)$, where $M_C=I-P_C$. Minimizing its squared norm gives $\beta_x=(M_Cx)^\top M_Cy/\|M_Cx\|^2$ when $M_Cx\ne0$. Under the statement's convention $-b\ln y_0$ with $b>0$, this signed coefficient is $\beta_x=-b$. This is the partialled-out slope used by the picture; full column rank supplies unique coefficients, and projection geometry alone supplies no causal identification.`,
       caption: String.raw`Growth 1960–2019 against initial income for 85 countries. Choose the **sample** (all countries or long-standing OECD members) and whether to look at the **raw** relation (absolute convergence) or the relation after removing the effect of saving, population growth and schooling (conditional; each axis is a regression residual, an *added-variable plot* whose slope is the coefficient on initial income). Click a country to label it.`,
-      deps: ['macro-3.8', 'ladr-6.55'], refs: ['Mankiw ch. 10'], tags: ['growth', 'convergence', 'econometrics'],
+      deps: ['macro-3.8', 'ladr-6.61'], refs: ['Mankiw ch. 10'], tags: ['growth', 'convergence', 'econometrics'],
       credit: 'Baumol 1986; Barro & Sala-i-Martin 1992; Mankiw, Romer & Weil 1992',
       scope: String.raw`Cross-section regression on 85 countries with data from 1960 and more than one million people in 2019; investment share stands in for the saving rate, years-of-schooling index for human capital; observational, so slopes are associations.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Convergence_(economics)' },
@@ -180,14 +151,14 @@ Scope: an empirical hypothesis. In samples of broadly similar economies (current
       num: '3.11', kind: 'Paradox', name: 'The Lucas paradox',
       statement: String.raw`If every country had the same Cobb–Douglas technology $y = A k^{\alpha}$ and capital were paid its marginal product $f'(k)=\alpha A k^{\alpha-1}$, then the ratio of returns to capital in a poor and a rich country would be
 $$\frac{f'(k_{\text{poor}})}{f'(k_{\text{rich}})} = \Big(\frac{y_{\text{rich}}}{y_{\text{poor}}}\Big)^{\frac{1-\alpha}{\alpha}} .$$
-With $\alpha = 0.4$ and a 15-fold gap in income per worker this is about 58. With returns that different, capital should flow massively from rich to poor countries; yet observed flows fall far short of that prediction. **The paradox** is the failure of the neoclassical prediction; Lucas offered differences in human capital and externalities, and later work stresses institutions, risk and the measurement of capital.
+With $\alpha = 0.4$ and a 15-fold gap in income per worker this is about 58. With returns that different, capital should flow massively from rich to poor countries; observed flows are far smaller than this prediction. **The paradox** is the failure of the neoclassical prediction; Lucas examined human-capital differences, knowledge spillovers, monopoly power and political risk as possible explanations.
 
 Scope: the prediction requires identical technology, no frictions and no differences in labour quality.`,
-      idea: String.raw`Under diminishing returns (macro-3.3) the marginal product of capital falls with the capital–labour ratio, and with a common Cobb–Douglas technology (macro-2.1) capital per worker is proportional to $y^{1/\alpha}$, so $f' \propto y^{-(1-\alpha)/\alpha}$. Small differences in the exponent matter hugely because income gaps are large: with $\alpha=0.4$ the exponent is $1.5$. Lucas (1990) compared India and the United States using Summers and Heston’s 1988 publication and concluded that the prediction was wildly at odds with observed flows; the alternative explanations differ in whether the returns really are so different. His own proposal was to measure labour in efficiency units, which shrinks the implied gap.`,
-      caption: String.raw`**Left:** the implied ratio of returns to capital against the income gap, for your $\alpha$; drag the handle (the default 15 and $\alpha=0.4$ reproduce the textbook 58). **Right:** for 85 countries (Penn World Table, 2019), the return implied by the model relative to the U.S. (blue), on a log axis, against income per worker, together with the return the Penn World Table reports (green). Switch to **per effective worker** to divide income by the human-capital index and watch the implied gaps shrink. Click a country to label it. The green returns are constructed by the Penn World Table from asset prices and depreciation, not directly observed.`,
-      deps: ['macro-3.3'], refs: ['Romer ch. 4'], tags: ['growth', 'capital flows', 'development'],
+      idea: String.raw`Under diminishing returns (macro-3.3) the marginal product of capital falls with the capital–labour ratio, and with a common Cobb–Douglas technology (macro-2.1) capital per worker is proportional to $y^{1/\alpha}$, so $f' \propto y^{-(1-\alpha)/\alpha}$. Small differences in the exponent matter hugely because income gaps are large: with $\alpha=0.4$ the exponent is $1.5$. Lucas (1990, p. 92) used the approximate U.S.–India income gap reported by Summers and Heston (1988) and concluded that the prediction was wildly at odds with observed flows; the alternative explanations differ in whether the returns really are so different. His own proposal was to measure labour in efficiency units, which shrinks the implied gap.`,
+      caption: String.raw`**Left:** the implied ratio of returns to capital against the income gap, for your $\alpha$; drag the handle (the default 15 and $\alpha=0.4$ reproduce Lucas's rounded factor of 58). **Right:** for 85 countries (PWT 10.0; income in 2019), the return implied by the model relative to the U.S. (blue), on a log axis, against income per worker, together with PWT's mean available constructed return in 2000–2019 (green). Switch to **per effective worker** to divide income by the human-capital index and watch the implied gaps shrink. Click a country to label it. The green returns are constructed by the Penn World Table from asset prices and depreciation, not directly observed.`,
+      deps: ['macro-3.3'], refs: ['Lucas (1990), Why Doesn’t Capital Flow from Rich to Poor Countries?, AER 80(2), 92–96, especially pp. 92–93; https://www.sfu.ca/~kkasa/lucas90.pdf', 'Feenstra, Inklaar & Timmer (2015); PWT 10.0, CC BY 4.0; https://www.rug.nl/ggdc/productivity/pwt/pwt-releases/pwt100'], tags: ['growth', 'capital flows', 'development'],
       credit: 'Robert Lucas, 1990',
-      scope: String.raw`Lucas (1990, p. 92), using Summers and Heston (1988), assumes a 15-fold income gap and $\alpha=0.4$, giving $15^{1.5}\approx58$. The right panel uses PWT 10.01 income in 2019 and mean constructed returns in 2000–2019, not Lucas’s data. Capital-flow data are not shown.`,
+      scope: String.raw`Lucas's p. 92 calculation takes a rough 15-fold income gap and capital share 0.4; 1988 is the year of the cited Summers–Heston publication. The right panel is a separate PWT 10.0 illustration, with 2019 incomes and 2000–2019 return averages, rather than Lucas's original data. Capital-flow data are not shown.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lucas_paradox' },
       viz(v) {
         const aS = v.slider('capital share $\\alpha$', 0.2, 0.7, 0.4, { step: 0.01 });
@@ -199,6 +170,7 @@ Scope: the prediction requires identical technology, no frictions and no differe
         R.onClick((x, y) => { let best = null, bd = 1e9; for (const p of pts) { const dx = R.X(p.x) - R.X(x), dy = R.Y(p.y) - R.Y(y); if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = p.r[0]; } } pick = best; });
         v.render(() => {
           const a = aS.value, e = (1 - a) / a, us = XS.find((r) => r[0] === 'USA');
+          L.setView([0.9,44],[0.9,Math.max(1000,40**e*1.15)]);
           const val = (r) => (adj.value === 'e' ? r[3] / r[7] : r[3]);
           L.fn((x) => x ** e, { color: 'accent', width: 2.8, domain: [1, 40] });
           L.fn((x) => x, { color: 'faint', dash: [4, 4], width: 1.4, domain: [1, 40] });
@@ -206,8 +178,9 @@ Scope: the prediction requires identical technology, no frictions and no differe
           L.hline(1, { color: 'faint' });
           L.text(`exponent (1−α)/α = ${fx(e, 2)}`, 1.3, 400, { color: 'accent', weight: 700, size: 12, align: 'left' });
           pts = XS.map((r) => ({ x: r[3], y: (val(us) / val(r)) ** e, r }));
-          L.setView([1, 40], [1, Math.max(1000, 40 ** e * 1.1)]);
-          R.setView([Math.min(.5, ...pts.map(p => p.x * .8)), 150], [.1, Math.max(500, ...pts.map(p => p.y * 1.1))]);
+          const reported = pts.filter(p=>p.r[9]!=null).map(p=>p.r[9]/us[9]);
+          const incomes = pts.map(p=>p.x), returns = pts.map(p=>p.y).concat(reported);
+          R.setView([Math.min(...incomes)/1.25,Math.max(...incomes)*1.25], [Math.min(...returns)/1.25,Math.max(...returns)*1.25]);
           R.hline(1, { color: 'faint', dash: [4, 4] });
           for (const p of pts) R.dot(p.x, p.y, { r: 4.5, color: 'accent', alpha: 0.8 });
           for (const p of pts) if (p.r[9] != null) R.dot(p.x, p.r[9] / us[9], { r: 4.5, color: 'green', alpha: 0.85 });
@@ -216,27 +189,27 @@ Scope: the prediction requires identical technology, no frictions and no differe
           const ind = XS.find((r) => r[0] === 'IND');
           st = { e, ratio, pr: ratio ** e, sel, us, selY: sel ? sel.y : 0, ind, indRatio: val(us) / val(ind), indRet: (val(us) / val(ind)) ** e };
         });
-        v.legend([['accent', 'return implied by the model', { dot: true }], ['green', 'PWT internal rate of return, 2000–19', { dot: true }], ['faint', 'equal to the U.S.', { dash: true }]]);
-        v.readout(() => st && `a ${fx(st.ratio, 1)}-fold income gap implies a ${fx(st.pr, 0)}-fold gap in returns at $\\alpha = ${fx(aS.value, 2)}$. In the 2019 Penn World Table the U.S.-to-India gap in income per ${adj.value === 'e' ? 'effective worker' : 'worker'} is ${fx(st.indRatio, 1)}, implying returns ${fx(st.indRet, 0)} times higher in India${st.sel ? `; ${st.sel.r[1]}: ${fx(st.sel.r[3], 1)} thousand dollars per worker, implied return ${fx(st.selY, 1)} times the U.S.${st.sel.r[9] != null ? `, PWT's constructed return ${fx(st.sel.r[9] / st.us[9], 2)} times the U.S.` : ''}` : ''}. The plotted constructed returns are far less dispersed than the model predictions. This illustrates the return-gap motivation for the paradox; it does not itself measure international capital flows.`);
+        v.legend([['accent', 'return implied by the model', { dot: true }], ['green', 'PWT 10.0 internal return, mean available 2000–19', { dot: true }], ['faint', 'equal to the U.S.', { dash: true }]]);
+        v.readout(() => st && `a ${fx(st.ratio, 1)}-fold income gap implies a ${fx(st.pr, 0)}-fold gap in returns at $\\alpha = ${fx(aS.value, 2)}$. In the 2019 Penn World Table the U.S.-to-India gap in income per ${adj.value === 'e' ? 'effective worker' : 'worker'} is ${fx(st.indRatio, 1)}, implying returns ${fx(st.indRet, 0)} times higher in India${st.sel ? `; ${st.sel.r[1]}: ${fx(st.sel.r[3], 1)} thousand dollars per worker, implied return ${fx(st.selY, 1)} times the U.S.${st.sel.r[9] != null ? `, PWT's constructed return ${fx(st.sel.r[9] / st.us[9], 2)} times the U.S.` : ''}` : ''}. The green series is a separate constructed-return comparison, not a direct test of international investment flows.`);
       },
     },
     // ------------------------------------------------------------------ 3.12
     {
       num: '3.12', kind: 'Model', name: 'Harrod–Domar and the knife edge',
-      statement: String.raw`Suppose output is produced with **fixed proportions**: $Y = \min\{K/v,\ L\}$, a fixed capital requirement $v$ per unit of capacity output, and labour growing at the **natural rate** $n\ge0$. Saving is the fraction $s>0$ of actual output, $\dot K = sY - \delta K$, with $\delta\ge0$. Starting with both factors fully used, $K(0)=vL(0)$, full use of both is maintained only if
+      statement: String.raw`Suppose output is produced with **fixed proportions**: $Y = \min\{K/v,\ L\}$, a constant capital–output ratio $v$ and labour (in efficiency units) growing at the **natural rate** $n$. Saving is the fraction $s$ of output, $\dot K = sY - \delta K$. The **warranted growth rate** at which capital is fully used is $s/v - \delta$. Unless
 $$\frac{s}{v} - \delta = n$$
-exactly. This is a knife edge for **balanced growth with full utilization**. If $s/v-\delta<n$, the employed share is $e^{(s/v-\delta-n)t}$, tending to zero: unemployment approaches $100\%$. If $s/v-\delta>n$, labour stays fully employed and some capital becomes idle. For $n+\delta>0$ the capital-utilization share tends to $v(n+\delta)/s$, a positive fraction below one; it does not fall without bound.
+exactly, the economy does not grow in balance: if $s/v-\delta > n$ capital grows faster than labour and an ever larger share of it stands idle; if $s/v-\delta < n$ output is limited by capital and the unemployment rate rises without bound. Balanced growth is a *knife edge*.
 
-Scope: this is a fixed-proportions saving model, not the full historical investment-expectations mechanism of Harrod or Domar. The actual ratio $K/Y$ need not equal the technical coefficient $v$ when capital is idle.`,
-      idea: String.raw`Set $x=K/(vL)$, the ratio of capital capacity to available labour. The stated production and saving equations give $\dot x=(s/v)\min(x,1)-(n+\delta)x$. Below one, $x$ grows at the constant rate $s/v-\delta-n$; above one, actual output is labour-limited, so $\dot x=s/v-(n+\delta)x$. Starting at $x=1$, a negative gap gives $x=e^{(s/v-\delta-n)t}$ and a positive gap gives $x=1+\frac{s/v-n-\delta}{n+\delta}(1-e^{-(n+\delta)t})$. Employment and capital utilization are respectively $\min(x,1)$ and $\min(1,1/x)$, always between zero and one. When $n+\delta=0$, the excess-capital solution is instead $x=1+(s/v)t$. Thus a mismatch breaks full utilization, but does not by itself establish an explosive instability of this saving model. In Solow's Cobb–Douglas model the actual capital–output ratio adjusts to $s/(n+\delta)$ when $n+\delta>0$; without labour growth or depreciation it has no finite steady value.`,
-      caption: String.raw`**Left (fixed proportions):** exact employed-labour and capital-utilization fractions over 100 years, starting with both fully used. A saving shortfall makes unemployment approach $100\%$; excess saving leaves a bounded idle-capital fraction when $n+\delta>0$. **Right (Solow):** the actual capital–output ratio for the same $s$, $n$ and $\delta$. The orange line is the fixed technical coefficient $v$ used on the left, not its actual $K/Y$ when capital is idle.`,
+Scope: the conclusion depends on fixed proportions and on exogenous $s$, $v$ and $n$. Solow's model (macro-3.2) makes $v$ adjust and removes the knife edge.`,
+      idea: String.raw`Harrod (1939) and Domar (1946) tied growth to the saving rate and the capital–output ratio: with $v$ fixed, a given saving rate buys capital that supports growth of $s/v$ (less depreciation), which has no reason to equal the growth of the labour force, which depends on demography. Any gap compounds, so the model is unstable. The cure is to allow substitution between capital and labour: with a neoclassical production function the capital–output ratio moves to $s/(n+\delta)$ and the economy returns to full employment. Each of the two "growth rates" in Harrod's analysis, warranted and natural, is a different object; their equality is the miracle that Solow's flexibility makes automatic.`,
+      caption: String.raw`**Left (Harrod–Domar):** the share of labour employed (blue) and of capital in use (orange) over 100 years; slide $s$, $v$, $n$ and $\delta$ and watch the economy fall off the knife edge whenever the warranted rate $s/v-\delta$ differs from $n$. **Right (Solow):** capital–output ratio for the *same* $s$, $n$, $\delta$ when production is Cobb–Douglas: it adjusts to $s/(n+\delta)$ and both factors stay fully employed. The sliders start at a mismatch; try to land on the edge.`,
       deps: ['macro-3.2'], refs: ['Romer ch. 1'], tags: ['growth', 'instability'],
       credit: 'Roy Harrod, 1939; Evsey Domar, 1946',
-      scope: String.raw`Fixed production coefficients, exogenous saving and labour growth, no price adjustment; the right panel uses Cobb–Douglas with $\alpha=0.35$ for contrast.`,
+      scope: String.raw`Fixed capital–output ratio, exogenous saving and labour growth, no price adjustment; the right panel uses Cobb–Douglas with $\alpha=0.35$ for contrast.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Harrod%E2%80%93Domar_model' },
       viz(v) {
         const sS = v.slider('saving rate $s$', 0.05, 0.4, 0.2, { step: 0.005 });
-        const vS = v.slider('capital requirement $v$', 1.5, 6, 3, { step: 0.05 });
+        const vS = v.slider('capital–output ratio $v$', 1.5, 6, 3, { step: 0.05 });
         const nS = v.slider('labour growth $n$', 0, 0.05, 0.01, { step: 0.001 });
         const dS = v.slider('depreciation $\\delta$', 0, 0.08, 0.03, { step: 0.001 });
         const L = v.stage({ x: [0, 100], y: [0, 1.05], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 270, xlabel: 'years', ylabel: 'fraction in use', title: 'Harrod–Domar: fixed proportions' });
@@ -244,31 +217,28 @@ Scope: this is a fixed-proportions saving model, not the full historical investm
         let st = null;
         v.render(() => {
           const s = sS.value, vv = vS.value, n = nS.value, d = dS.value, a = 0.35, dt = 0.25, T = 100;
-          // Use exact solutions so the full-utilization knife edge stays exact.
-          const E = [], U = [];
+          // Harrod–Domar
+          let K = vv, Lb = 1; const E = [], U = [];
           for (let t = 0; t <= T + 1e-9; t += dt) {
-            const point = fixedProportionsAt(s, vv, n, d, t);
-            E.push([t, point.employed]); U.push([t, point.capitalUsed]);
+            const Y = Math.min(K / vv, Lb); E.push([t, Y / Lb]); U.push([t, Y / (K / vv)]);
+            K += dt * (s * Y - d * K); Lb *= Math.exp(n * dt);
           }
           L.hline(1, { color: 'faint', dash: [4, 4] });
           L.path(E, { color: 'accent', width: 2.8 }); L.path(U, { color: 'orange', width: 2.8 });
           const wr = s / vv - d;
-          L.text(`warranted s/v − δ = ${pc(wr, 2)}   natural n = ${pc(n, 2)}`, 50, 0.08, { align: 'center', color: Math.abs(wr - n) < 1e-12 ? 'green' : 'red', weight: 700, size: 12 });
+          L.text(`warranted s/v − δ = ${pc(wr, 2)}   natural n = ${pc(n, 2)}`, 50, 0.08, { align: 'center', color: Math.abs(wr - n) < 0.0006 ? 'green' : 'red', weight: 700, size: 12 });
           // Solow with the same s, n, δ: state per effective unit of labour
-          const KY = [];
-          for (let t = 0; t <= T + 1e-9; t += dt) KY.push([t, solowCapitalOutputAt(s, n, d, t, a)]);
+          let kk = 1; const KY = []; // K/L, with y = kk^a
+          for (let t = 0; t <= T + 1e-9; t += dt) { KY.push([t, kk / kk ** a]); kk += dt * (s * kk ** a - (n + d) * kk); }
           R.setView([0, T], [0, Math.max(8, ...KY.map((p) => p[1]))]);
-          R.hline(vv, { color: 'orange', width: 2.4 }); R.text('fixed technical coefficient v', 98, vv, { dy: -10, align: 'right', color: 'orange', weight: 700, size: 12 });
-          const target = n + d > 0 ? s / (n + d) : null;
-          if (target != null) {
-            R.hline(target, { color: 'green', dash: [6, 4] });
-            R.text('s/(n+δ)', 2, target, { dy: -10, align: 'left', color: 'green', weight: 700, size: 12 });
-          }
+          R.hline(vv, { color: 'orange', width: 2.4 }); R.text('Harrod–Domar v (fixed)', 98, vv, { dy: -10, align: 'right', color: 'orange', weight: 700, size: 12 });
+          R.hline(s / (n + d), { color: 'green', dash: [6, 4] });
+          R.text('s/(n+δ)', 98, s / (n + d), { dy: -10, align: 'right', color: 'green', weight: 700, size: 12 });
           R.path(KY, { color: 'accent', width: 2.8 });
-          st = { wr, n, e: E[E.length - 1][1], u: U[U.length - 1][1], ky: KY[KY.length - 1][1], target };
+          st = { wr, n, e: E[E.length - 1][1], u: U[U.length - 1][1], ky: KY[KY.length - 1][1], target: s / (n + d) };
         });
-        v.legend([['accent', 'share of labour employed'], ['orange', 'share of capital in use'], ['green', 'Solow steady K/Y (when finite)', { dash: true }]]);
-        v.readout(() => st && `after 100 years the fixed-proportions model has ${pc(st.e, 1)} of labour employed and ${pc(st.u, 1)} of capital in use: ${Math.abs(st.wr - st.n) < 1e-12 ? 'on the full-utilization knife edge: both stay fully used' : st.wr > st.n ? 'labour stays fully employed while some capital becomes idle' : 'the unemployment fraction increases toward 100%, never beyond it'}. In Solow, ${st.target == null ? 'there is no finite steady capital–output ratio when n + δ = 0' : `$K/Y$ tends to $s/(n+\\delta) = ${fx(st.target, 2)}$`}; after 100 years $K/Y = ${fx(st.ky, 2)}$.`);
+        v.legend([['accent', 'share of labour employed'], ['orange', 'share of capital in use'], ['green', 's/(n+δ)', { dash: true }]]);
+        v.readout(() => st && `after 100 years Harrod–Domar leaves ${pc(st.e, 0)} of the labour force employed and ${pc(st.u, 0)} of capital in use: ${Math.abs(st.wr - st.n) < 0.0006 ? 'on the knife edge: both stay fully used' : st.wr > st.n ? 'warranted growth exceeds natural growth, so capital piles up idle' : 'warranted growth is below natural growth, so unemployment grows without limit'}. In the Solow version with the same $s$, $n$ and $\\delta$, $K/Y$ goes to $s/(n+\\delta) = ${fx(st.target, 2)}$ (after 100 years ${fx(st.ky, 2)}); nothing is idle.`);
       },
     },
     // ------------------------------------------------------------------ 3.13

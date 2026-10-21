@@ -1,3 +1,8 @@
+import { FF_PRESETS, ffMaskValid, ffMod, fourierModel, intervalModel, fourierAudio, ffValue } from './source-audit-fourier.js';
+const FF_OPTIONS=[['diat','diatonic'],['pent','pentatonic'],['whole','whole-tone'],['oct','octatonic'],['aug','augmented'],['dim','diminished'],['hex','hexachord'],['z4','Z tetrachord'],['cluster','chromatic cluster'],['single','singleton'],['empty','empty'],['full','all twelve'],['free','custom']].map(([value,label])=>({value,label}));
+const ffPoint=(p,r=1)=>[r*Math.sin(2*Math.PI*p/12),r*Math.cos(2*Math.PI*p/12)],ffHit=(x,y)=>ffMod(Math.round(12*Math.atan2(x,y)/(2*Math.PI))),ffPair=([a,b])=>b===0?String(a):`${a}${b<0?' − ':' + '}${Math.abs(b)}√3`;
+function ffClock(stage,mask,other=null){stage.circle(0,0,1,{color:'grid',width:1.2});for(let p=0;p<12;p++){stage.line(...ffPoint(p,.95),...ffPoint(p,1.03),{color:'muted',width:1});stage.text(String(p),...ffPoint(p,1.25),{align:'center',baseline:'middle',size:11,color:'muted'});}for(const[m,r,color,rad]of[[mask,1,'accent',6],[other,.77,'red',4.5]]){if(m===null)continue;const pcs=Array.from({length:12},(_,j)=>j).filter(j=>m&(1<<j)),points=pcs.map(p=>ffPoint(p,r));if(points.length>1)stage.path([...points,points[0]],{color,width:1.3,alpha:.65});points.forEach(p=>stage.dot(...p,{color,r:rad}));}}
+import setClassItems from './setclass-items.js';
 // Music Theory & Acoustics — Chapter 8 (part b): items 8.8–8.14, symmetry, set classes, interval vectors, Fourier
 import { SR, C4, NOTE, mod, norm, Tn, In, key, setStr, braceStr, ic, clk, pcAt, drawClock, polyOf, dotsOf, CLOCK_STAGE, seqCents, PRESETS, orbit, complement, icv, vecStr, normalOrder, primeForm, toPrime, forteName, classes, fixCounts, popc, fromMask, maskOf, fcoef, fmag, ifun, mini, maxFourier, zPairs, applyOp, opName } from './ch08.shared.js';
 
@@ -54,292 +59,30 @@ export default {
         });
       },
     },
-    // ------------------------------------------------------------------ 8.9
-    {
-      num: '8.9',
-      kind: 'Definition',
-      name: 'Set classes and prime form',
-      statement: String.raw`Two pitch-class sets are in the same **set class** (transposition/inversion class) when one is the image of the other under some $T_n$ or $T_nI$ (8.7). Each class is named by a **prime form**: first the **normal order**, the rotation of the set's elements that fits in the smallest span (ties resolved by packing the small gaps to the left), then the more compact of the normal orders of the set and of its inversion, transposed to start at 0. There are 224 classes in all (counting the empty set and the full set), and the classes of three and four notes have the standard Forte names $3\text{-}1,\dots,3\text{-}12$ and $4\text{-}1,\dots,4\text{-}29$.`,
-      idea: String.raw`A class is an orbit of $D_{12}$ (8.7), and the prime form is the canonical representative of the orbit: the normal order removes the freedom of rotation (it is invariant under $T_n$), and comparing with the inverted set removes the reflection. Forte's names list the classes of each size in a fixed order, and a Z marks a class whose interval content is shared with another class (8.13).`,
-      caption: String.raw`Click the clock to build a set. The shaded wedge is the largest gap, so the normal order starts just after it; the second clock shows the prime form (green) with the operation that reaches it. The strip lists every member of the class as a small clock (click one to take it); play the class to hear every member in turn. Prime forms here follow the packed-to-the-left rule, which agrees with Forte's list for 3 and 4 notes (for a few larger classes Forte's printed prime form differs).`,
-      deps: ['music-8.7'],
-      see: ['music-8.10', 'music-8.11'],
-      refs: ['Benson §9.14 pp. 332–335 (first-last-second lexicographic convention)'],
-      tags: ['set theory'],
-      credit: 'Allen Forte, "A theory of set-complexes for music" (1964) and The Structure of Atonal Music (1973); prime-form conventions also by John Rahn, Basic Atonal Theory (1980)',
-      scope: String.raw`A class has 24 members divided by the order of the stabiliser of its sets in $D_{12}$ (24 when the set has no symmetry). The packed-to-the-left rule used for the prime form is Forte's for 3 and 4 notes (checked against the list of set classes); for some larger classes (e.g. 5-20) the printed prime form of Forte or Rahn differs.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Set_theory_(music)', wikipedia2: 'https://en.wikipedia.org/wiki/List_of_set_classes' },
-      verify: true,
-      viz(v) {
-        let S = [2, 6, 7, 9]; let seed = 1;
-        const pre = v.select('start from', [...preOpts, { value: 'free', label: 'free' }], 'free', { onChange: (x) => { if (PRE[x]) S = Tn(PRE[x][1], 2); } });
-        v.button('random set', () => { const r = v.rng(++seed * 7919), k = r.int(3, 7); S = norm(r.shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).slice(0, k)); pre.value = 'free'; });
-        const s = v.stage({ x: [-1.6, 1.6], y: [-1.45, 1.45], equal: true, axes: false, height: 340, title: 'the set and its normal order' });
-        const p = v.stage({ x: [-1.6, 1.6], y: [-1.45, 1.45], equal: true, axes: false, height: 340, title: 'the prime form' });
-        const m = v.stage({ x: [0, 12], y: [0, 2.0], equal: true, axes: false, full: true, height: 190, title: 'every member of the class (click one)' });
-        s.onClick((x, y) => { if (Math.hypot(x, y) < 0.45) return; const k = pcAt(x, y); S = S.includes(k) ? S.filter((q) => q !== k) : norm([...S, k]); pre.value = 'free'; v.invalidate(); });
-        let mem = [];
-        m.onClick((x, y) => { const i = Math.floor(x) + (y < 1 ? 12 : 0); if (mem[i]) { S = mem[i].slice(); pre.value = 'free'; v.invalidate(); } });
-        v.soundButton('play every member of the class', (sd) => { if (mem.length) sd.samples(seqCents(mem.map((X) => X.map((k) => k * 100)), C4, 0.55, 0.05), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const N = normalOrder(S), PF = primeForm(S), tp = toPrime(S);
-          mem = orbit(S, true).sort((a, b) => key(a) < key(b) ? -1 : 1);
-          drawClock(s, { names: true }); drawClock(p, { num: true });
-          if (N.length >= 2) {
-            // largest gap wedge: from the last note of the normal order to the first
-            const a = N[N.length - 1], gap = mod(N[0] - a) || 12, pts = [[0, 0]]; for (let i = 0; i <= 20; i++) pts.push(clk(a + (gap * i) / 20, 1));
-            s.poly(pts, { fill: 'red', fillAlpha: 0.1, stroke: false });
-          }
-          polyOf(s, S, 1, { color: 'accent' }); dotsOf(s, S, 1, { color: 'accent', r: 8 });
-          if (N.length) { const q = clk(N[0], 1); s.dot(q[0], q[1], { r: 12, color: 'gold', hollow: true }); }
-          s.text(S.length ? `normal order ${braceStr(N)}`.replace('{', '[').replace('}', ']') : 'click to add notes', 0, 0, { size: 13, color: 'ink', align: 'center', baseline: 'middle', weight: 600, plate: true });
-          polyOf(p, PF, 1, { color: 'green' }); dotsOf(p, PF, 1, { color: 'green', r: 8 });
-          p.text(S.length ? `prime form [${PF.join(',')}]` : '', 0, 0, { size: 13, color: 'green', align: 'center', baseline: 'middle', weight: 600, plate: true });
-          p.text(S.length ? `${tp.inv ? 'T' + tp.n + ' I' : 'T' + tp.n} takes the set to it` : '', 0, -0.25, { size: 11.5, color: 'muted', align: 'center', baseline: 'middle' });
-          mem.forEach((X, i) => { const row = i < 12 ? 1 : 0; mini(m, (i % 12) + 0.5, row * 1.0 + 0.5, 0.4, X, { color: key(X) === key(norm(S)) ? 'gold' : 'accent', border: key(X) === key(norm(S)) ? 'gold' : 'faint', bw: key(X) === key(norm(S)) ? 2.4 : 1, tick: true, dot: 2.3 }); });
-        });
-        v.legend([['accent', 'your set'], ['green', 'prime form'], ['gold', 'start of the normal order']]);
-        v.readout(() => {
-          if (!S.length) return 'Click the clock to add notes.';
-          const PF = primeForm(S), f = forteName(S), n = orbit(S, true).length;
-          return `${S.length} notes: normal order $[${normalOrder(S).join(',')}]$, prime form $[${PF.join(',')}]$${f ? `, Forte name **${f}**` : ''} · the class has ${n} members (${n === 24 ? '24: no symmetry' : `24/${24 / n}: the set is symmetric under ${24 / n} of the 24 operations`}) · interval vector ${vecStr(icv(S))}.`;
-        });
-      },
-    },
-    // ------------------------------------------------------------------ 8.10
-    {
-      num: '8.10',
-      kind: 'Theorem',
-      name: 'Counting set classes (Burnside)',
-      statement: String.raw`Burnside's lemma: if a finite group $G$ acts on a finite set $X$, the number of orbits is $\frac1{|G|}\sum_{g\in G}|\mathrm{Fix}(g)|$. For the 4096 subsets of $\Z/12$ with $G=\{T_n\}$ (order 12) this gives **352** classes of sets under transposition, and with $G=D_{12}=\{T_n,T_nI\}$ (order 24) **224** classes under transposition and inversion, including the empty set and the full set. Restricted to $k$-element sets, the 224 split as $1,1,6,12,29,38,50,38,29,12,6,1,1$ for $k=0,\dots,12$ (so 29 four-note classes, 38 five-note classes, 50 six-note classes) and the 352 as $1,1,6,19,43,66,80,66,43,19,6,1,1$.`,
-      idea: String.raw`Count pairs $(g,x)$ with $gx=x$ in two ways: summing over $g$ gives $\sum|\mathrm{Fix}(g)|$, and summing over $x$ gives $\sum_x|\mathrm{Stab}(x)|=\sum_x|G|/|\text{orbit of }x|$, which equals $|G|$ times the number of orbits. For $T_n$ with $d=\gcd(n,12)$, a $k$-set is fixed exactly when it is a union of the $d$ cycles of length $12/d$, which gives $\binom{d}{kd/12}$ when $12/d$ divides $k$ and 0 otherwise; inversions fix their own count by pairing up positions.`,
-      caption: String.raw`Pick the number of notes $k$ and the group. Each bar counts the $k$-note sets fixed by one of the 24 operations $T_0,\dots,T_{11},I_0,\dots,I_{11}$ (found by testing all 4096 subsets); the dashed line is their average over the group, which is the number of classes. The lower chart gives the class counts for every $k$, checked against a direct enumeration of orbits.`,
-      deps: ['music-8.9'],
-      see: ['music-8.8'],
-      refs: ['Benson §§9.13–9.14 pp. 330–334 (complete proof and orbit tables)'],
-      tags: ['burnside', 'counting'],
-      credit: 'Burnside\'s lemma (named after William Burnside, Theory of Groups of Finite Order, 1897; earlier forms by Cauchy and Frobenius). Counting musical set classes with Pólya/Burnside: David L. Reiner, "Enumeration in music theory", American Mathematical Monthly 92 (1985), 51–54',
-      scope: String.raw`Exact for subsets of the 12-element circle under $T_n$ and $T_n/I$; the counts of 224 and 352 are computed by the picture itself from all 4096 subsets (Forte's catalogue lists only the 208 classes of 3 to 9 notes, the sum of the middle entries).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Burnside%27s_lemma' },
-      verify: true,
-      viz(v) {
-        const k = v.slider('number of notes $k$', 0, 12, 4, { int: true });
-        const grp = v.select('group', [{ value: 'T', label: 'transpositions (order 12)' }, { value: 'TI', label: 'transpositions and inversions (order 24)' }], 'TI');
-        const fx = Array.from({ length: 13 }, (_, j) => fixCounts(j));
-        const C = classes();
-        const cnt = (arr) => { const r = Array(13).fill(0); arr.forEach((mem) => { r[popc(mem[0])]++; }); return r; };
-        const cTI = cnt(C.ti), cT = cnt(C.t);
-        const b = v.stage({ x: [-0.7, 24.3], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'operation', ylabel: 'sets fixed', title: 'the sets fixed by each operation' });
-        const c = v.stage({ x: [-0.7, 12.7], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'number of notes $k$', ylabel: 'classes', title: 'classes by size' });
-        v.render(() => {
-          const f = fx[k.value], n = grp.value === 'T' ? 12 : 24, cls = (grp.value === 'T' ? cT : cTI);
-          const avg = f.slice(0, n).reduce((a, q) => a + q, 0) / n, others = Math.max(0, ...f.slice(1, n));
-          const top = Math.max(4, others * 1.6, avg * 1.5);
-          b.setView([-0.7, 24.3], [0, top]);
-          for (let i = 0; i < 24; i++) {
-            const on = i < n, nm = i < 12 ? `T${i}` : `I${i - 12}`, h = Math.min(f[i], top * 0.97);
-            b.rect(i - 0.38, 0, i + 0.38, h, { fill: i < 12 ? 'accent' : 'orange', fillAlpha: on ? 0.75 : 0.12, stroke: false });
-            if (on && f[i]) b.text(f[i] > top * 0.97 ? `${f[i]} ↑` : String(f[i]), i, h + top * 0.015, { size: 9.5, color: 'ink', align: i === 0 ? 'left' : 'center', dx: i === 0 ? 6 : 0 });
-            b.text(nm, i, 0, { size: 8, color: on ? 'muted' : 'faint', align: 'center', baseline: 'top', dy: 4 });
-          }
-          b.hline(avg, { color: 'green', dash: [5, 4], width: 2 }); b.text(`average ${v.fix(avg, 2)}`, 23.8, top * 0.93, { size: 12, color: 'green', align: 'right', baseline: 'top', weight: 700, plate: true });
-          const mx = Math.max(...cls); c.setView([-0.7, 12.7], [0, mx * 1.15]);
-          for (let j = 0; j <= 12; j++) { c.rect(j - 0.38, 0, j + 0.38, cls[j], { fill: j === k.value ? 'green' : 'accent', fillAlpha: j === k.value ? 0.85 : 0.4, stroke: false }); c.text(String(cls[j]), j, cls[j] + mx * 0.03, { size: 10.5, color: 'ink', align: 'center' }); }
-        });
-        v.readout(() => {
-          const f = fx[k.value], n = grp.value === 'T' ? 12 : 24, sum = f.slice(0, n).reduce((a, q) => a + q, 0), cls = grp.value === 'T' ? cT : cTI;
-          const tot = cls.reduce((a, q) => a + q, 0);
-          return `$k=${k.value}$ · $\\sum_g|\\mathrm{Fix}(g)|=${sum}$ over $|G|=${n}$ gives $${sum}/${n}=${v.fix(sum / n, 3)}$ classes · direct count of orbits: ${cls[k.value]} ✓ · all sizes together: ${tot} classes (${grp.value === 'T' ? '352 expected' : '224 expected'}) · check: $T_n$ fixes $\\binom{d}{kd/12}$ sets for $d=\\gcd(n,12)$ when $12/d\\mid k$ (e.g. $T_6$ fixes $\\binom{6}{k/2}=${k.value % 2 === 0 ? choose(6, k.value / 2) : 0}$ at this $k$, bar shows ${f[6]}).`;
-        });
-      },
-    },
-    // ------------------------------------------------------------------ 8.11
-    {
-      num: '8.11',
-      kind: 'Concept',
-      name: 'The interval vector',
-      statement: String.raw`The **interval vector** of a pitch-class set $S$ is $\langle v_1,\dots,v_6\rangle$, where $v_i$ is the number of unordered pairs $\{a,b\}\subseteq S$ with interval class $\operatorname{ic}(a,b)=i$ (8.2). Its entries sum to $\binom{|S|}{2}$. It is unchanged by every $T_n$ and $T_nI$, so it is a function of the set class; the diatonic scale has $\langle 2,5,4,3,6,1\rangle$ (each interval class a different number of times), the whole-tone scale $\langle 0,6,0,6,0,3\rangle$ and the major triad $\langle 0,0,1,1,1,0\rangle$.`,
-      idea: String.raw`Transposition adds $n$ to both notes of a pair and leaves the difference unchanged, and inversion negates the difference and the interval class forgets the sign, so every pair keeps its class and the vector is invariant. The vector counts the "pair types" the ear hears in a chord, which is why chords with one dominant entry (the diatonic scale has six perfect fifths/fourths, a lot of its character) sound alike across transpositions.`,
-      caption: String.raw`Every pair of notes is joined by a chord coloured by interval class; the bar chart is the interval vector. Click the clock to edit the set, or choose a preset. Move the transposition slider and the inversion toggle: the orange copy moves but its vector (dots) stays on top of the bars.`,
-      deps: ['music-8.2', 'music-8.9'],
-      see: ['music-8.12', 'music-8.13'],
-      refs: ['Benson §9.14 p. 334 (pair-count definition)'],
-      tags: ['interval vector'],
-      credit: 'Allen Forte, 1964 ("A theory of set-complexes for music", Journal of Music Theory 8), who used interval vectors to study set classes; the vector is not a complete invariant, since Z-related classes can share it',
-      scope: String.raw`Counts each unordered pair once; $v_6$ counts tritone pairs once, so a set with an antipodal pair $\{a,a+6\}$ counts it once (unlike the interval function IF of 8.15, which counts the pair in both directions).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Interval_vector' },
-      verify: true,
-      viz(v) {
-        let S = PRESETS.diatonic.slice();
-        const pre = v.select('preset', [...preOpts, { value: 'free', label: 'free' }], 'diat', { onChange: (x) => { if (PRE[x]) S = PRE[x][1].slice(); } });
-        const tn = v.slider('transpose the copy by', 0, 11, 5, { int: true });
-        const inv = v.toggle('invert the copy', false);
-        const s = v.stage({ ...CLOCK_STAGE, height: 380, title: 'pairs coloured by interval class (click to edit)' });
-        const bs = v.stage({ x: [0.3, 6.7], y: [0, 10], axes: 'box', gutter: true, height: 380, xlabel: 'interval class', ylabel: 'number of pairs', title: 'the interval vector' });
-        s.onClick((x, y) => { if (Math.hypot(x, y) < 0.3) return; const k = pcAt(x, y); S = S.includes(k) ? S.filter((q) => q !== k) : norm([...S, k]); pre.value = 'free'; v.invalidate(); });
-        v.soundButton('play the set', (sd) => { if (S.length) sd.samples(seqCents([S.map((k) => k * 100)], C4, 2, 0), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const T = inv.value ? In(S, tn.value) : Tn(S, tn.value), V = icv(S), W = icv(T);
-          drawClock(s, { names: true });
-          for (let i = 0; i < S.length; i++) for (let j = i + 1; j < S.length; j++) { const a = clk(S[i], 0.97), b = clk(S[j], 0.97); s.line(a[0], a[1], b[0], b[1], { color: ICCOL[ic(S[j] - S[i]) - 1], width: 2.2, alpha: 0.8 }); }
-          dotsOf(s, S, 1, { color: 'ink', r: 6 }); dotsOf(s, T, 1.2, { color: 'orange', r: 4, hollow: true });
-          bs.setView([0.3, 6.7], [0, Math.max(6, ...V) + 1.5]);
-          V.forEach((x, i) => { bs.rect(i + 1 - 0.36, 0, i + 1 + 0.36, x, { fill: ICCOL[i], fillAlpha: 0.75, stroke: false }); bs.text(String(x), i + 1, x + 0.35, { size: 13, color: 'ink', align: 'center', weight: 700 }); bs.dot(i + 1, W[i], { r: 5, color: 'orange', hollow: true }); });
-        });
-        v.legend([['ink', 'set'], ['orange', 'transposed/inverted copy (dots on the bars)', { dot: true }]]);
-        v.readout(() => {
-          const V = icv(S), T = inv.value ? In(S, tn.value) : Tn(S, tn.value), W = icv(T), k = S.length;
-          return `$S=${braceStr(S)}$, $|S|=${k}$ · interval vector $${vecStr(V).replace('⟨', '\\langle ').replace('⟩', '\\rangle')}$ · entries sum to ${V.reduce((a, q) => a + q, 0)} $=\\binom{${k}}{2}=${k * (k - 1) / 2}$ · the copy $${braceStr(T)}$ has ${key(V) === key(W) ? 'the same' : 'a different'} vector.`;
-        });
-      },
-    },
-    // ------------------------------------------------------------------ 8.12
-    {
-      num: '8.12',
-      kind: 'Theorem',
-      name: 'The hexachord theorem',
-      statement: String.raw`If $S\subseteq\Z/12$ has six elements, then $S$ and its complement $S^c=\Z/12\setminus S$ have the same interval vector. More generally, for a $k$-element set, $\operatorname{icv}(S^c)_i=\operatorname{icv}(S)_i+(12-2k)$ for $i=1,\dots,5$ and $\operatorname{icv}(S^c)_6=\operatorname{icv}(S)_6+(6-k)$. The complementary hexachords may or may not belong to the same set class; the theorem says only that their interval content agrees.`,
-      idea: String.raw`Fix $d\ne0$ and let $N_d$ be the number of $a$ with $a\in S$ and $a+d\in S$. By inclusion–exclusion on the two sets $S$ and $S-d$ (each of size $k$), the number of $a$ with both $a$ and $a+d$ outside $S$ is $12-2k+N_d$. Each unordered pair of interval class $i<6$ is counted once at $d=i$ and once at $d=12-i$, so $N_i=v_i$ and $v_i^c=v_i+12-2k$; a tritone pair is counted twice at $d=6$, giving $v_6^c=v_6+6-k$. For $k=6$ both shifts vanish. The same fact falls out of 8.15: complementary sets have equal nonzero-frequency Fourier magnitudes, and for hexachords their zero-frequency coefficients agree too.`,
-      caption: String.raw`Click the clock to choose any set: it appears in blue and its complement in red, with their interval vectors side by side. For six notes the two sets of bars match exactly; for any other size the complement's bars differ by the constant shown. The check below tests all 924 six-note sets.`,
-      deps: ['music-8.11'],
-      see: ['music-8.15', 'music-8.13'],
-      refs: ['Benson §9.14 p. 334 (complement vectors)'],
-      tags: ['interval vector', 'complement'],
-      credit: 'Observed by Milton Babbitt and proved by David Lewin (note in the Journal of Music Theory, c. 1959–60); other early proofs by Ralph Fox, Kassler (1961), Regener (1974) and Wilcox (1983). Attribution details taken from secondary sources and not checked against the originals.',
-      scope: String.raw`Subsets of the 12-element circle ($\operatorname{ic}$ taken mod 12); for other circle sizes the same count gives the shift $c-2k$ ($c$ the circle size).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Interval_vector#Hexachordal_theorem' },
-      verify: true,
-      viz(v) {
-        let S = [0, 1, 4, 5, 8, 10]; let seed = 5;
-        v.button('random six notes', () => { const r = v.rng(++seed * 104729); S = norm(r.shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).slice(0, 6)); });
-        v.button('random set (any size)', () => { const r = v.rng(++seed * 15485863); S = norm(r.shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).slice(0, r.int(3, 9))); });
-        const s = v.stage({ ...CLOCK_STAGE, height: 380, title: 'a set and its complement (click to edit)' });
-        const bs = v.stage({ x: [0.3, 6.7], y: [0, 10], axes: 'box', gutter: true, height: 380, xlabel: 'interval class', ylabel: 'pairs', title: 'interval vectors' });
-        s.onClick((x, y) => { if (Math.hypot(x, y) < 0.3) return; const k = pcAt(x, y); S = S.includes(k) ? S.filter((q) => q !== k) : norm([...S, k]); v.invalidate(); });
-        let all6 = null;
-        const check6 = () => { if (all6) return all6; let n = 0, bad = 0; for (let m = 0; m < 4096; m++) { if (popc(m) !== 6) continue; n++; const A = fromMask(m), B = fromMask(~m & 4095); if (key(icv(A)) !== key(icv(B))) bad++; } return (all6 = { n, bad }); };
-        v.soundButton('play set, then complement', (sd) => { if (S.length && S.length < 12) sd.samples(seqCents([S.map((k) => k * 100), complement(S).map((k) => k * 100)], C4, 1.8, 0.2), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const Cm = complement(S), V = icv(S), W = icv(Cm);
-          drawClock(s, { names: true });
-          polyOf(s, S, 1, { color: 'accent' }); dotsOf(s, S, 1, { color: 'accent', r: 8 });
-          polyOf(s, Cm, 0.76, { color: 'red' }); dotsOf(s, Cm, 0.76, { color: 'red', r: 6 });
-          s.text(`${S.length} + ${Cm.length}`, 0, 0, { size: 17, color: 'muted', align: 'center', baseline: 'middle', weight: 700 });
-          const top = Math.max(2, ...V, ...W) + 1.5; bs.setView([0.3, 6.7], [0, top]);
-          for (let i = 0; i < 6; i++) {
-            bs.rect(i + 1 - 0.38, 0, i + 1, V[i], { fill: 'accent', fillAlpha: 0.75, stroke: false }); bs.rect(i + 1, 0, i + 1.38, W[i], { fill: 'red', fillAlpha: 0.75, stroke: false });
-            bs.text(String(V[i]), i + 1 - 0.19, V[i] + 0.3, { size: 11.5, color: 'accent', align: 'center', weight: 700 }); bs.text(String(W[i]), i + 1.19, W[i] + 0.3, { size: 11.5, color: 'red', align: 'center', weight: 700 });
-          }
-        });
-        v.legend([['accent', 'set $S$'], ['red', 'complement $S^c$']]);
-        v.readout(() => {
-          const Cm = complement(S), V = icv(S), W = icv(Cm), k = S.length, c = check6();
-          const diff = W.map((x, i) => x - V[i]), pred = [0, 1, 2, 3, 4].map(() => 12 - 2 * k).concat([6 - k]);
-          return `$|S|=${k}$: ${vecStr(V)} vs complement ${vecStr(W)} · differences ${vecStr(diff)} · predicted $12-2k=${12 - 2 * k}$ (and $6-k=${6 - k}$ for the tritone) ${key(diff) === key(pred) ? '✓' : '✗'} · ${k === 6 ? 'six notes: the vectors are identical' : 'not six notes, so the vectors differ'} · all ${c.n} six-note sets tested: ${c.bad} exceptions.`;
-        });
-      },
-    },
-    // ------------------------------------------------------------------ 8.13
-    {
-      num: '8.13',
-      kind: 'Concept',
-      name: 'Z-related sets',
-      statement: String.raw`Two pitch-class sets are **Z-related** if they have the same interval vector but are not in the same set class, that is, no $T_n$ or $T_nI$ carries one onto the other. The smallest example is the pair of all-interval tetrachords $\{0,1,4,6\}$ (4-Z15) and $\{0,1,3,7\}$ (4-Z29), both with vector $\langle1,1,1,1,1,1\rangle$. Counting classes of $\Z/12$ under $T_n/T_nI$ shows 23 Z-related pairs of classes in all: 1 of four notes, 3 of five, 15 of six, 3 of seven, 1 of eight. In every Z-related pair of hexachords, one class is the complement of the other.`,
-      idea: String.raw`The interval vector counts pairs, the set class records the whole shape; and the map from classes to vectors is not injective because a shape has more information (for tetrachords, the order in which the intervals are arranged around the circle) than its pair counts. Z-pairs are therefore the cases where interval content does not determine the class, and their equal Fourier magnitudes (8.15) say exactly how the two sets are alike. Of the 15 hexachord pairs, every one consists of a class and the class of its complement (checked by the code that builds this picture), while the pairs of other sizes are not complementary to each other.`,
-      caption: String.raw`Choose a Z-pair. The blue set is moved by the transposition slider and inversion toggle and compared with the red one: the number of common notes is shown, and the lower chart gives it for all 24 operations. It never reaches the full set size, so no operation carries one set to the other, even though the interval vectors on the right match bar for bar.`,
-      deps: ['music-8.11', 'music-8.9'],
-      see: ['music-8.12', 'music-8.15'],
-      refs: ['Benson §9.14 p. 334 (equal-vector inequivalent sets)'],
-      tags: ['interval vector', 'counterexample'],
-      credit: 'The name and the relation are due to Allen Forte (1964); the relation was considered earlier by Howard Hanson, who called such sets "isomeric" (secondary sources)',
-      scope: String.raw`Classes under $T_n/T_nI$. Under transposition alone the notion changes (a set and its inversion can have the same vector without being a transposition of each other); the counts of 23 pairs here are computed from the 224 classes.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Z-relation' },
-      verify: true,
-      viz(v) {
-        const Z = zPairs();
-        const pair = v.slider('Z-pair number', 1, Z.length, 1, { int: true });
-        const tn = v.slider('transpose the blue set by', 0, 11, 0, { int: true });
-        const inv = v.toggle('invert the blue set', false);
-        const s = v.stage({ ...CLOCK_STAGE, height: 380, title: 'blue: set A moved; red: set B' });
-        const bs = v.stage({ x: [0.3, 6.7], y: [0, 10], axes: 'box', gutter: true, height: 380, xlabel: 'interval class', ylabel: 'pairs', title: 'the two interval vectors' });
-        const ov = v.stage({ x: [-0.7, 24.3], y: [0, 1], axes: 'box', gutter: true, full: true, height: 190, xlabel: 'operation (T0…T11, I0…I11)', ylabel: 'common notes', title: 'common notes of (operation applied to A) and B' });
-        const AB = () => { const [a, b] = Z[pair.value - 1]; return [fromMask(a[0]), fromMask(b[0])]; };
-        const name = (S) => forteName(S) || `[${primeForm(S).join(',')}]`;
-        v.soundButton('play A, then B', (sd) => { const [A, B] = AB(); sd.samples(seqCents([A.map((k) => k * 100), B.map((k) => k * 100)], C4, 1.6, 0.2), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const [A, B] = AB(), M = inv.value ? In(A, tn.value) : Tn(A, tn.value), V = icv(A), W = icv(B);
-          drawClock(s, { names: true });
-          polyOf(s, B, 1, { color: 'red' }); dotsOf(s, B, 1, { color: 'red', r: 11, hollow: true });
-          polyOf(s, M, 1, { color: 'accent' }); dotsOf(s, M, 1, { color: 'accent', r: 6 });
-          const common = M.filter((x) => B.includes(x)).length;
-          s.text(`${common} of ${A.length} notes agree`, 0, 0, { size: 16, color: common === A.length ? 'green' : 'ink', align: 'center', baseline: 'middle', weight: 700 });
-          bs.setView([0.3, 6.7], [0, Math.max(...V, ...W) + 1.5]);
-          for (let i = 0; i < 6; i++) { bs.rect(i + 1 - 0.38, 0, i + 1, V[i], { fill: 'accent', fillAlpha: 0.75, stroke: false }); bs.rect(i + 1, 0, i + 1.38, W[i], { fill: 'red', fillAlpha: 0.75, stroke: false }); bs.text(String(V[i]), i + 1 - 0.19, V[i] + 0.3, { size: 11.5, color: 'accent', align: 'center', weight: 700 }); bs.text(String(W[i]), i + 1.19, W[i] + 0.3, { size: 11.5, color: 'red', align: 'center', weight: 700 }); }
-          ov.setView([-0.7, 24.3], [0, A.length + 0.8]);
-          for (let i = 0; i < 24; i++) { const X = applyOp(A, [i >= 12 ? 1 : 0, i % 12]), c = X.filter((x) => B.includes(x)).length; ov.rect(i - 0.38, 0, i + 0.38, c, { fill: 'purple', fillAlpha: 0.6, stroke: false }); }
-          ov.hline(A.length, { color: 'green', dash: [5, 4], width: 2 }); ov.text(`a match would reach ${A.length}`, 23.8, A.length, { size: 11, color: 'green', align: 'right', baseline: 'bottom', dy: -3 });
-        });
-        v.legend([['accent', 'A (moved)'], ['red', 'B']]);
-        v.readout(() => {
-          const [A, B] = AB(); let best = 0; for (let i = 0; i < 24; i++) best = Math.max(best, applyOp(A, [i >= 12 ? 1 : 0, i % 12]).filter((x) => B.includes(x)).length);
-          const cardCount = {}; Z.forEach(([a]) => { const c = popc(a[0]); cardCount[c] = (cardCount[c] || 0) + 1; });
-          return `pair ${pair.value} of ${Z.length}: **${name(A)}** $${braceStr(primeForm(A))}$ and **${name(B)}** $${braceStr(primeForm(B))}$ · both ${vecStr(icv(A))} · best overlap over all 24 operations: ${best} of ${A.length} notes (a match would need ${A.length}), so they are in different classes · pairs by size: ${Object.entries(cardCount).map(([c, n]) => `${c} notes: ${n}`).join('; ')}.`;
-        });
-      },
-    },
+    ...setClassItems,
     // ------------------------------------------------------------------ 8.14
     {
-      num: '8.14',
-      kind: 'Method',
-      name: 'The Fourier transform of a pitch-class set',
-      statement: String.raw`The discrete Fourier transform of a set $S\subseteq\Z/12$ is $f_k(S)=\sum_{j\in S}e^{-2\pi i jk/12}$, $k=0,\dots,11$, with $f_0=|S|$ and $f_{12-k}=\overline{f_k}$, so only $|f_1|,\dots,|f_6|$ matter. Transposing $S$ by $n$ multiplies $f_k$ by $e^{-2\pi ink/12}$, so $|f_k|$ is unchanged; inversion conjugates $f_k$, so $|f_k|$ is again unchanged. Large $|f_k|$ means the set clusters into $k$ clumps around the circle: $|f_1|$ for chromatic clusters, $|f_6|$ for the whole-tone scale, $|f_3|$ for augmented triads, $|f_4|$ for diminished sevenths and the octatonic scale, $|f_5|$ for diatonic and pentatonic sets. For $d$ from 2 to 10 the maximally even $d$-note set (8.4) has the largest possible value of $|f_{\min(d,12-d)}|$ among all $d$-note sets (verified here by brute force).`,
-      idea: String.raw`This is the Fourier transform on the finite group $\Z/12$ (the characters $j\mapsto e^{-2\pi ijk/12}$ are an orthogonal system, as in Rudin's orthonormal systems, pma-8.10). Each note contributes a unit vector at angle $-2\pi jk/12$, and $f_k$ is their vector sum, which is long when the notes bunch together at that $k$-fold symmetry: when all notes are at the same angle modulo $2\pi/k$ the vectors line up. The translation property is the shift theorem, and the picture checks that evenness (8.4) shows up as the largest attainable $|f_d|$ (Amiot proved this in general).`,
-      caption: String.raw`Click the clock to edit the set (or pick a preset). The bar chart shows $|f_1|,\dots,|f_6|$ with a tick at the largest value any set of the same size can reach; the third panel adds the unit vectors for the chosen $k$ tip to tail, ending at $f_k$. Slide the transposition: the phasor chain rotates, but the lengths do not change.`,
-      deps: ['music-8.1', 'music-8.4', 'pma-8.10'],
-      see: ['music-8.15', 'music-8.4'],
-      refs: ['Tymoczko, A Geometry of Music'],
-      tags: ['fourier', 'evenness'],
-      credit: 'Fourier analysis of pitch-class sets: David Lewin (interval function, from 1959), Ian Quinn ("General equal-tempered harmony", 2006–07), Emmanuel Amiot (e.g. "David Lewin and maximally even sets", 2007; Music Through Fourier Space, 2016); attributions from secondary sources, not checked against the originals',
-      scope: String.raw`The set-theoretic statements are exact for $\Z/12$; the interpretation of each $k$ (chromatic, tritone, augmented, diminished, diatonic, whole-tone) is a convention of this literature. The "largest possible" tick is a brute-force maximum over all subsets of that size.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Discrete_Fourier_transform' },
-      verify: true,
-      viz(v) {
-        let S = PRESETS.diatonic.slice();
-        const pre = v.select('preset', [...preOpts, { value: 'free', label: 'free' }], 'diat', { onChange: (x) => { if (PRE[x]) S = PRE[x][1].slice(); } });
-        const kk = v.select('phasor chain for $k$', [1, 2, 3, 4, 5, 6].map((k) => ({ value: k, label: String(k) })), 5);
-        const tn = v.slider('transpose by', 0, 11, 0, { int: true });
-        const inv = v.toggle('invert', false);
-        const s = v.stage({ ...CLOCK_STAGE, height: 340, title: 'the set (click to edit)' });
-        const bs = v.stage({ x: [0.3, 6.7], y: [0, 6], axes: 'box', gutter: true, height: 340, xlabel: 'k', ylabel: '$|f_k|$', xticks: [[1, '1 chrom.'], [2, '2 tritone'], [3, '3 aug.'], [4, '4 dim.'], [5, '5 diat.'], [6, '6 whole']], title: 'Fourier magnitudes' });
-        const ph = v.stage({ x: [-4, 4], y: [-4, 4], equal: true, axes: true, height: 340, title: 'the sum of unit vectors for chosen $k$' });
-        s.onClick((x, y) => { if (Math.hypot(x, y) < 0.3) return; const k = pcAt(x, y); S = S.includes(k) ? S.filter((q) => q !== k) : norm([...S, k]); pre.value = 'free'; v.invalidate(); });
-        const LAB = ['chromatic', 'tritone', 'augmented', 'diminished', 'diatonic', 'whole-tone'];
-        v.soundButton('play the set', (sd) => { if (S.length) sd.samples(seqCents([S.map((k) => k * 100)], C4, 2, 0), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const T = inv.value ? In(S, tn.value) : Tn(S, tn.value), mf = maxFourier()[S.length] || [], k = kk.value;
-          drawClock(s, { names: true });
-          polyOf(s, T, 1, { color: 'accent' }); dotsOf(s, T, 1, { color: 'accent', r: 8 });
-          if (S.length && (tn.value || inv.value)) dotsOf(s, S, 1.15, { color: 'faint', r: 4 });
-          const top = Math.max(2, ...mf.slice(1)) + 0.5; bs.setView([0.3, 6.7], [0, top]);
-          for (let j = 1; j <= 6; j++) {
-            const m = fmag(T, j); bs.rect(j - 0.34, 0, j + 0.34, m, { fill: j === k ? 'orange' : 'accent', fillAlpha: 0.75, stroke: false });
-            bs.text(v.fix(m, 2), j, m + top * 0.03, { size: 11, color: 'ink', align: 'center', weight: 600 });
-            if (mf[j]) bs.line(j - 0.42, mf[j], j + 0.42, mf[j], { color: 'green', width: 2.5 });
-          }
-          const els = norm(T), chain = [[0, 0]]; els.forEach((j) => { const a = (-2 * Math.PI * j * k) / 12, q = chain[chain.length - 1]; chain.push([q[0] + Math.cos(a), q[1] + Math.sin(a)]); });
-          const ext = Math.max(2, ...chain.map((q) => Math.hypot(q[0], q[1]))) * 1.15; ph.setView([-ext, ext], [-ext, ext]);
-          ph.circle(0, 0, 1, { color: 'faint', dash: [3, 4] });
-          let x = 0, y = 0;
-          for (let i = 1; i < chain.length; i++) { ph.arrow(chain[i - 1][0], chain[i - 1][1], chain[i][0], chain[i][1], { color: 'accent', width: 2, alpha: 0.8 }); x = chain[i][0]; y = chain[i][1]; }
-          ph.arrow(0, 0, x, y, { color: 'orange', width: 3 }); ph.dot(x, y, { r: 6, color: 'orange' });
-          ph.text(`f${k}`, x, y, { size: 13, color: 'orange', dx: 8, dy: -8, weight: 700 });
-        });
-        v.legend([['accent', 'one unit vector per note'], ['orange', 'their sum $f_k$'], ['green', 'largest $|f_k|$ any set of this size has']]);
-        v.readout(() => {
-          const T = inv.value ? In(S, tn.value) : Tn(S, tn.value), mg = [1, 2, 3, 4, 5, 6].map((j) => fmag(T, j)), mg0 = [1, 2, 3, 4, 5, 6].map((j) => fmag(S, j));
-          const best = mg.indexOf(Math.max(...mg)) + 1, same = mg.every((x, i) => Math.abs(x - mg0[i]) < 1e-9);
-          return `$|S|=${S.length}$ · $|f_1|\\dots|f_6|=${mg.map((x) => v.fix(x, 3)).join(',\\ ')}$ · largest at $k=${best}$ (${LAB[best - 1]}) · magnitudes of the moved copy ${same ? 'equal' : 'differ from'} those of the original (invariance under $T_n$, $I$) · $\\sum_k|f_k|^2$ over $k=0..11$ equals $12|S|=${12 * S.length}$ (Parseval): ${v.fix(S.length ** 2 + 2 * mg.slice(0, 5).reduce((a, x) => a + x * x, 0) + mg[5] * mg[5], 3)}.`;
-        });
+      num:'8.14',kind:'Method',name:'The Fourier transform of a pitch-class set',verify:false,
+      statement:String.raw`For a set $S\subseteq\Z/12$, define
+$$f_k(S)=\sum_{j\in S}e^{-2\pi i jk/12}.$$
+Here $f_0=|S|$ and $f_{12-k}=\overline{f_k}$. Thus $k=1,\ldots,6$ list the nonzero-frequency magnitudes up to conjugacy; they summarize the set but do not determine it, because they discard phase. Transposition by $n$ multiplies $f_k$ by $e^{-2\pi ink/12}$; inversion $j\mapsto-j$ conjugates it. Both preserve every magnitude.
+The length $|f_k|$ measures alignment of the notes' unit phasors at bin $k$. For cardinality $d=2,\ldots,10$ in this twelve-point universe, maximizing bin $k=\min(d,12-d)$ characterizes the maximally even sets. The widget verifies this finite claim over all 4,096 subsets using exact squared magnitudes.`,
+      idea:String.raw`Each note contributes a unit vector; transposition rotates every one through the same angle, while inversion reflects them. Keep the base-note order fixed in the tip-to-tail chain so that this transformation is visible even when notes wrap past pitch class zero. For twelve classes, each squared magnitude is exactly $a+b\sqrt3$ with integer $a,b$, so every maximum and tie can be compared without floating-point tolerances. The maximally even comparison uses all generic cyclic intervals, not merely the adjacent gaps.`,
+      caption:String.raw`Choose a preset or click the clock to edit the displayed set; editing correctly accounts for the active transposition and inversion. Change the Fourier bin, transposition or inversion. Green ticks are exact maxima for this cardinality; the chain uses the same mapped notes and keeps their original order. Empty/full sets and saved custom sets are supported. Play the displayed, transformed set with the declared synthetic spectrum.`,
+      deps:['music-8.1','music-8.4','pma-8.10'],see:['music-8.15','music-8.4'],
+      refs:['Amiot 2007, Gammes bien réparties et transformée de Fourier discrète, §§1.2–1.4 and 2.2, pp. 99–108'],tags:['fourier','evenness'],
+      credit:'Emmanuel Amiot, source treatment; finite exact enumeration authored',
+      scope:String.raw`This widget works in the twelve-element pitch-class circle. Exact squared magnitudes and inverse interval counts use the field $\Q(\sqrt3)$; phasor coordinates, square roots and audio frequencies use floating-point evaluation. The finite exhaustive check does not prove a statement for every cyclic group. A large bin describes phasor alignment, not a unique musical category or a listener preference; magnitudes alone can coincide for different sets. Audio uses C4=261.6256 Hz, eight harmonics with relative amplitudes $1/h$, mono 44,100-Hz synthesis, 10-ms ramps and a pre-output bound 0.12.`,
+      links:{source:'https://journals.openedition.org/msh/pdf/4272'},
+      viz(v){
+        let mask=FF_PRESETS.diat,info;const pre=v.select('preset',FF_OPTIONS,'diat',{onChange:name=>{if(name!=='free')mask=FF_PRESETS[name];}}),bin=v.slider('Fourier bin k',1,6,5,{int:true,step:1}),tn=v.slider('transpose by',0,11,0,{int:true,step:1}),inv=v.toggle('invert',false);
+        v.shareState('Fourier edited pitch-class mask',{get:()=>mask,validate:ffMaskValid,set:data=>{mask=data;}});
+        const clock=v.stage({x:[-1.6,1.6],y:[-1.6,1.6],equal:true,height:320,full:true,title:'displayed set: click a pitch class'}),bars=v.stage({x:[.35,6.65],y:[-.3,8],axes:'box',gutter:true,full:true,height:290,xticks:[1,2,3,4,5,6],xlabel:'Fourier bin k',ylabel:'magnitude',title:'six magnitudes and exact attainable maxima'}),phasor=v.stage({x:[-3,3],y:[-3,3],equal:true,axes:'box',gutter:true,full:true,height:320,xlabel:'real part',ylabel:'imaginary part',title:'one vector per mapped base note'});
+        const model=()=>fourierModel(mask,bin.value,tn.value,inv.value);clock.onClick((x,y)=>{if(Math.hypot(x,y)<.3)return;const p=ffHit(x,y),base=ffMod(inv.value?tn.value-p:p-tn.value);mask^=1<<base;pre.value='free';v.invalidate();});
+        const play=v.soundButton('play displayed set',snd=>{const a=model();if(!a.A.m)return;const b=fourierAudio([a.T.mask]);snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;play.disabled=a.A.m===0;ffClock(clock,a.T.mask);const top=Math.max(1.25,...a.maxMags.slice(1));bars.setView([.35,6.65],[-.12*top,1.28*top]);for(let k=1;k<=6;k++){bars.rect(k-.29,0,k+.29,a.T.mags[k],{fill:k===a.k?'orange':'accent',fillAlpha:.75,stroke:false});bars.line(k-.4,a.maxMags[k],k+.4,a.maxMags[k],{color:'green',width:2});bars.text(v.fix(a.T.mags[k],2),k,a.T.mags[k]+.07*top,{size:10,color:'ink',align:'center'});}phasor.setView([-a.extent,a.extent],[-a.extent,a.extent]);phasor.circle(0,0,1,{color:'grid',dash:[3,4]});for(let j=1;j<a.chain.length;j++)phasor.arrow(...a.chain[j-1],...a.chain[j],{color:'accent',width:1.8,head:7});phasor.arrow(0,0,...a.T.F[a.k],{color:'orange',width:2.6,head:8});phasor.dot(...a.T.F[a.k],{color:'orange',r:5});});
+        v.legend([['accent','one phasor per note'],['orange','chosen bin and vector sum'],['green','maximum among all sets of this size']]);
+        v.readout(()=>{const a=info,p=a.T.F[a.k];return `Cardinality ${a.A.m}; displayed pitch classes {${a.T.pcs.join(', ')}}. Magnitudes k=1…6: ${a.T.mags.slice(1,7).map(x=>v.fix(x,5)).join(', ')}.\nChosen sum: (${v.fix(p[0],6)}, ${v.fix(p[1],6)}); exact squared magnitude ${ffPair(a.T.powers[a.k])}. Exact Parseval sum ${ffPair(a.T.parseval)} =12×${a.A.m}.\n${a.metric===null?'The maximally even comparison here covers cardinalities 2…10.':`Maximally even by all generic intervals: ${a.even?'yes':'no'}; bin ${a.metric} reaches its maximum: ${a.attains?'yes':'no'}; exactly ${a.maxCount} sets of this size attain it.`} Phase is retained in the complex sum; it is absent from the six magnitude bars.`;});
       },
     },
   ],

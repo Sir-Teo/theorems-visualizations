@@ -129,15 +129,13 @@ export function reverseN(M) {
     for (const c of M.alpha) for (const t of M.delta[q]?.[c] || []) (rd[t][c] ||= []).push(q);
     for (const t of M.eps?.[q] || []) re[t].push(q);
   }
-  let z = 'z'; while (ids.includes(z)) z += '_';
-  re[z] = M.states.filter((s) => s.acc).map((s) => s.id);
-  const N = nfa(M.alpha, [...M.states.map((s) => [s.id, s.x, s.y, s.id === M.start, s.label]), [z, 0, 0, false, '$\\ast$']], z, { ...rd, [z]: {} }, re);
-  N.reverseStart = z;
+  re.z = M.states.filter((s) => s.acc).map((s) => s.id);
+  const N = nfa(M.alpha, [...M.states.map((s) => [s.id, s.x, s.y, s.id === M.start, s.label]), ['z', 0, 0, false, '$\\ast$']], 'z', { ...rd, z: {} }, re);
   return N;
 }
-/** Accessible subset construction, empty set omitted (partial DFA), the artificial start of reverseN left out of every subset; states renamed q0, q1, … in BFS order, each remembering its subset in `set`. */
+/** Accessible subset construction, empty set omitted (partial DFA), the artificial start 'z' of reverseN left out of every subset; states renamed q0, q1, … in BFS order, each remembering its subset in `set`. */
 export function detRename(N) {
-  const drop = (S) => S.filter((q) => q !== N.reverseStart), key = (S) => S.join(','), ids = new Map(), list = [];
+  const drop = (S) => S.filter((q) => q !== 'z'), key = (S) => S.join(','), ids = new Map(), list = [];
   const add = (S) => { const k = key(S); if (!ids.has(k)) { ids.set(k, list.length); list.push(S); } return ids.get(k); };
   add(drop(closure(N, [N.start])));
   const delta = {};

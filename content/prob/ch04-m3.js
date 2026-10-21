@@ -3,9 +3,9 @@ import { clampN, fr, sciT, pts, meanOf, seOf, walkPath } from './ch04-m.shared.j
 
 /**
  * A martingale X_n = sum_{m<=n} xi_m sigma_m with fair signs xi_m and PREDICTABLE step sizes sigma_m (a function of the past),
- * so E((X_m - X_{m-1})^2 | F_{m-1}) = sigma_m^2 and A_n = sum sigma_m^2. kind: const | poly (n^-g) | adapt (1/(1+|X|)) | coin (hidden coin: 1/n or n^-0.4) | band (1/n inside |X|<1, else n^-0.4).
+ * so E((X_m - X_{m-1})^2 | F_{m-1}) = sigma_m^2 and A_n = sum sigma_m^2. kind: const | poly (n^-g) | adapt (1/(1+|X|)) | coin (coin revealed in F_0: 1/n or n^-0.4) | band (1/n inside |X|<1, else n^-0.4).
  */
-function martPath(r, N, kind, g = 0.75) {
+export function martPath(r, N, kind, g = 0.75) {
   const X = new Float64Array(N + 1), A = new Float64Array(N + 1), coin = r() < 0.5;
   for (let n = 1; n <= N; n++) {
     let s;
@@ -19,7 +19,7 @@ function martPath(r, N, kind, g = 0.75) {
   }
   return { X, A, coin };
 }
-const SCHED_OPTS = [{ value: 'const', label: '$\\sigma_n=1$' }, { value: 'poly', label: '$\\sigma_n=n^{-3/4}$' }, { value: 'adapt', label: '$\\sigma_n=\\frac1{1+|X_{n-1}|}$' }, { value: 'coin', label: 'coin: $1/n$ or $n^{-0.4}$' }];
+const SCHED_OPTS = [{ value: 'const', label: '$\\sigma_n=1$' }, { value: 'poly', label: '$\\sigma_n=n^{-3/4}$' }, { value: 'adapt', label: '$\\sigma_n=\\frac1{1+|X_{n-1}|}$' }, { value: 'coin', label: 'initial coin: $1/n$ or $n^{-0.4}$' }];
 
 export default {
   collection: 'prob',
@@ -143,12 +143,12 @@ The conditional variance of the future increment is the conditional growth of th
       statement: String.raw`Let $X_n$ be a martingale with $EX_n^2<\infty$. Then $X_n^2$ is a submartingale, and Doob's decomposition (4.3.2) writes it uniquely as $X_n^2=M_n+A_n$ with $M_n$ a martingale and $A_n$ a predictable increasing process, $A_0=0$. This $A_n$ is the **increasing process** of $X$ (often written $\langle X\rangle_n$):
 $$A_n=\sum_{m=1}^nE\big[(X_m-X_{m-1})^2\mid\mathcal F_{m-1}\big],\qquad A_\infty=\lim_nA_n\in[0,\infty].$$
 It records the total conditional variance of the steps; $E X_n^2=EX_0^2+EA_n$.`,
-      idea: String.raw`Since $X$ is a martingale, $E(X_m^2-X_{m-1}^2\mid\mathcal F_{m-1})=E((X_m-X_{m-1})^2\mid\mathcal F_{m-1})$ (the cross term vanishes as in 4.4.8), so the compensator of $X^2$ from 4.3.2 is the sum of the conditional step variances. It is predictable because each term is $\mathcal F_{m-1}$-measurable. It is the random clock of the martingale: later results show $X_n$ behaves like a Brownian motion run for time $A_n$.`,
-      caption: String.raw`Choose the step-size rule (the sign of each step is fair, its size $\sigma_n$ is allowed to depend on the past). Left: one path with the band $\pm\sqrt{A_n}$ ($A_n$ being the quantity that sets how far the path typically wanders). Middle: its increasing process $A_n$ (orange staircase; for adaptive sizes it is random but known one step ahead) and the average of $A_n$ over 600 paths (dashed). Right: $X_n^2-A_n$ for the same path, with the average over 600 paths (dashed) which stays on $0$: the compensated square is a martingale. The readout compares $EX_n^2$ with $EA_n$.`,
+      idea: String.raw`Since $X$ is a martingale, $E(X_m^2-X_{m-1}^2\mid\mathcal F_{m-1})=E((X_m-X_{m-1})^2\mid\mathcal F_{m-1})$ (the cross term vanishes as in 4.4.8), so the compensator of $X^2$ from 4.3.2 is the sum of the conditional step variances. It is predictable because each term is $\mathcal F_{m-1}$-measurable. It measures accumulated conditional variance; no Brownian representation is asserted for an arbitrary discrete martingale.`,
+      caption: String.raw`Choose the step-size rule (the sign of each step is fair, its size $\sigma_n$ is allowed to depend on the past). For the coin schedule, the coin is revealed initially and is included in $\mathcal F_0$, so the sizes are predictable. Left: one path with the band $\pm\sqrt{A_n}$ ($A_n$ being the quantity that sets how far the path typically wanders). Middle: its increasing process $A_n$ (orange curve; for adaptive sizes it is random but known one step ahead) and the average of $A_n$ over 600 paths (dashed). Right: $X_n^2-A_n$ for the same path, with the average over 600 paths (dashed) which estimates $0$ with sampling error: the compensated square is a martingale. The readout compares $EX_n^2$ with $EA_n$.`,
       deps: ['prob-4.3.2'],
       tags: ['martingales', 'quadratic variation'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.5, pp. 240–241 (increasing process); Theorem 4.3.2, p. 225'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, unnumbered definition at the start of §4.5, p. 240; the displayed identity also permits nonzero square-integrable X₀.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=248' },
       viz(v) {
         const sch = v.select('step sizes', SCHED_OPTS, 'adapt');
         const nS = v.slider('$n$', 20, 400, 200, { int: true });
@@ -169,13 +169,13 @@ It records the total conditional variance of the steps; $E X_n^2=EX_0^2+EA_n$.`,
             cache = { key, mA, mM, mX2, seM: seOf(Float64Array.from(acc)) };
           }
           const { X: x, A: a } = martPath(v.rng(seed * 13 + 5), n, sch.value);
-          const xs = Array.from(x), env = Array.from(a, (q) => Math.sqrt(q)), ext = Math.max(2, ...xs.map(Math.abs)) * 1.15;
+          const xs = Array.from(x), env = Array.from(a, (q) => Math.sqrt(q)), ext = Math.max(2, ...xs.map(Math.abs),...env) * 1.15;
           X.setView([0, n], [-ext, ext]); X.hline(0, { color: 'grid' });
           X.path(env.map((e, k) => [k, e]), { color: 'orange', width: 1.2, dash: [5, 4] }); X.path(env.map((e, k) => [k, -e]), { color: 'orange', width: 1.2, dash: [5, 4] });
           X.path(pts(x), { color: 'accent', width: 1.8 });
           Aa.setView([0, n], [0, Math.max(1, ...a, ...cache.mA) * 1.15]);
           Aa.path(pts(a), { color: 'orange', width: 2 }); Aa.path(pts(cache.mA), { color: 'muted', width: 1.4, dash: [5, 4] });
-          const mm = Array.from(x, (q, k) => q * q - a[k]), mx = Math.max(2, ...mm.map(Math.abs)) * 1.15;
+          const mm = Array.from(x, (q, k) => q * q - a[k]), mx = Math.max(2, ...mm.map(Math.abs),...cache.mM.map(Math.abs)) * 1.15;
           Ms.setView([0, n], [-mx, mx]); Ms.hline(0, { color: 'grid' });
           Ms.path(pts(mm), { color: 'green', width: 1.6 }); Ms.path(pts(cache.mM), { color: 'muted', width: 1.6, dash: [5, 4] });
           st = { n, ex2: cache.mX2[n], ea: cache.mA[n], emn: cache.mM[n], se: cache.seM, an: a[n] };
@@ -248,7 +248,7 @@ $$E\Big(\sup_{m\ge0}X_m^2\Big)\le4\,EA_\infty .$$
       deps: ['prob-4.5.1', 'prob-4.2.9'],
       tags: ['martingales', 'convergence'],
       viz(v) {
-        const sch = v.select('step sizes', [{ value: 'const', label: '$\\sigma_n=1$' }, { value: 'coin', label: 'coin: $1/n$ or $n^{-0.4}$' }, { value: 'band', label: 'band: freeze near $0$' }], 'band');
+        const sch = v.select('step sizes', [{ value: 'const', label: '$\\sigma_n=1$' }, { value: 'coin', label: 'initial coin: $1/n$ or $n^{-0.4}$' }, { value: 'band', label: 'band: freeze near $0$' }], 'band');
         let seed = 1; v.button('Resample', () => { seed++; });
         const N = 5000, NP = 300, H = N >> 1;
         const P = v.stage({ x: [0, N], y: [-12, 12], axes: 'box', gutter: true, height: 320, xlabel: '$n$', title: 'paths $X_n$', weight: 1.3 });

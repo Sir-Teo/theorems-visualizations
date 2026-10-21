@@ -141,12 +141,11 @@ export default {
       },
     },
     {
-      num: '3.1.1a', kind: 'Definition', name: 'Blocks and cutvertices',
+      num: '3.1.1a', kind: 'Definition', name: 'Blocks and cutvertices', verify: true,
       statement: String.raw`A **block** of a graph $G$ is a maximal connected subgraph without a cutvertex (of itself). So every block is a maximal 2-connected subgraph, or a bridge together with its ends, or an isolated vertex; conversely every such subgraph is a block. Distinct blocks overlap in at most one vertex, which is then a **cutvertex** of $G$; every edge lies in a unique block, and $G$ is the union of its blocks.`,
       idea: String.raw`Two different blocks sharing two vertices would together form a larger connected subgraph without a cutvertex, contradicting maximality; so blocks meet in single vertices, and such a shared vertex separates the rest of one block from the rest of the other. An edge on a cycle lies in the maximal 2-connected subgraph containing that cycle; an edge on no cycle is a bridge, a block on its own. Blocks are to 2-connectedness what components are to connectedness — except that they need not be disjoint.`,
       caption: String.raw`Each block is shaded in its own colour; cutvertices are gold. The graph has blocks of all three kinds: 2-connected pieces, bridges and an isolated vertex. With **click deletes a vertex**, click a vertex: deleting a cutvertex splits its component, deleting any other vertex does not. With **edit**, change the graph (${EDIT}) and watch the blocks regroup.`,
-      deps: ['graph-1.4.1b'], refs: ['Diestel, Graph Theory, 6th ed., §3.1, p. 64'], tags: ['blocks', 'cutvertices'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch3.pdf' },
+      deps: ['graph-1.4.1b'], refs: ['Diestel §3.1'], tags: ['blocks', 'cutvertices'],
       viz(v) {
         const mode = v.select('click', [{ value: 'del', label: 'click deletes a vertex' }, { value: 'edit', label: 'edit' }], 'del');
         const s = gstage(v, { height: 340, x: [0, 10], y: [-0.5, 6.4] });
@@ -272,12 +271,11 @@ export default {
       },
     },
     {
-      num: '3.1.3a', kind: 'Definition', name: 'Block graph',
+      num: '3.1.3a', kind: 'Definition', name: 'Block graph', verify: true,
       statement: String.raw`Let $A$ be the set of cutvertices of $G$ and $\mathcal B$ the set of its blocks. The **block graph** of $G$ is the bipartite graph on $A\cup\mathcal B$ whose edges are the pairs $aB$ with $a\in B$.`,
       idea: String.raw`The block graph records only how the blocks hang together: which blocks share which cutvertices. Every cutvertex lies in at least two blocks, so it has degree $\ge 2$ in the block graph, while the leaves of the block graph are blocks — the "end blocks", which contain a single cutvertex. Lemma 3.1.4 shows that for a connected graph this coarse picture is always a tree.`,
       caption: String.raw`Left: the graph with its blocks shaded; right: its block graph — boxes are blocks (in the same colours), gold discs are cutvertices. Click a node of the block graph to highlight that block or cutvertex in the graph. Edit the graph on the left (${EDIT}); the block graph is rebuilt.`,
-      deps: ['graph-3.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §3.1, pp. 65–66'], tags: ['blocks', 'block graph'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch3.pdf' },
+      deps: ['graph-3.1.1a'], refs: ['Diestel §3.1'], tags: ['blocks', 'block graph'],
       viz(v) {
         const s = gstage(v, { height: 320, weight: 1.25 }), t = v.stage({ x: [0, 10], y: [0, 6.4], axes: false, equal: true, height: 320, title: 'block graph' });
         const G = v.graph(s, { ...BLOCKY(false), r: 12, editable: true });

@@ -1,7 +1,7 @@
 // Differential Geometry of Curves & Surfaces — Chapter 3 (part b): 3.7–3.12
 import {
   TAU, clamp, add, sub, mul, dot, cross, len, unit, mkCurve, derivs, trigInterp, CURVES, scene, plot, plane, bbox, sphereWire, drawTrack,
-  hueAlong, fourier2, ringPts, numEval, sampleClosed, crossings, periodicExtrema, SHAPES, widthDir, reuleaux, widthCurve, rotPts, polyLen, polyArea,
+  hueAlong, fourier2, ringPts, numEval, sampleClosed, crossings, periodicExtrema, SHAPES, widthDir, reuleaux, widthCurve, rotPts, polyLen, polyArea, knotCurveData, knotTotalCurvature,
 } from './ch03.shared.js';
 
 const PI = Math.PI;
@@ -352,46 +352,44 @@ for this $u$: $\min T\cdot u=${v.fix(info.tmin, 3)}$, $\max T\cdot u=${v.fix(inf
       num: '3.12',
       kind: 'Theorem',
       name: 'Fáry–Milnor theorem',
-      statement: String.raw`If a simple closed regular $C^2$ space curve is knotted, i.e. not isotopic to a round circle, then its total curvature is strictly greater than $4\pi$:
+      statement: String.raw`If a closed embedded $C^2$ regular curve in $\R^3$ is knotted, i.e. not isotopic to a round circle, then its total curvature is strictly greater than $4\pi$:
 $$\int_0^L \kappa\,ds \;>\; 4\pi .$$
-Contrast Fenchel's bound $2\pi$ for every closed curve (dg-3.11): the threshold doubles as soon as the curve is tied in a knot. The converse is false: an unknotted curve can have arbitrarily large total curvature, so only the inequality for knots is claimed.`,
-      idea: String.raw`For a generic direction $u$, one local maximum of the height $x\mapsto x\cdot u$ would make the two monotone arcs bound an embedded disc, so a knot has at least two maxima. Averaging gives total curvature $K=\tfrac12\int_{S^2}\mu(u)\,du\ge4\pi$. Milnor excludes equality using an inscribed polygon $P$ isotopic to the curve, with $K(P)\le K$. A knotted polygon is nonplanar; sliding a vertex slightly along an adjacent edge at four consecutive noncoplanar vertices strictly decreases total curvature while preserving its knot type. If $K=4\pi$, this would give a knot below the already proved bound, a contradiction. Having two maxima alone does not make a knot trivial: trefoils admit such height functions.`,
-      caption: String.raw`The curve is the $(2,3)$ torus knot $\bigl((1.3+0.3\cos3\theta)\cos2\theta,\ (1.3+0.3\cos3\theta)\sin2\theta,\ \varepsilon\sin3\theta\bigr)$ (a trefoil for every $\varepsilon>0$: at each of the three crossings of its shadow the two strands differ in height by $2\varepsilon$), or the unknot $(1.3\cos\theta,1.3\sin\theta,\varepsilon\sin2\theta)$. Slide $\varepsilon$: the plot on the right records the total curvature in units of $\pi$ along each family. The trefoil family always stays above the green line $4\pi$ — it tends to it as $\varepsilon\to0$, where the shadow is a curve with $\kappa>0$ that winds twice — while the unknot family tends to $2\pi$. An unknot can have arbitrarily large total curvature (wrinkle a circle as much as you like), so the bound only works in one direction; in the window shown this unknot family stays below $4\pi$.`,
+Contrast Fenchel's bound $2\pi$ for every closed curve (dg-3.11): the threshold doubles as soon as the curve is tied in a knot. The converse is false: an unknotted curve can have total curvature greater than $4\pi$, so only the inequality for knots is claimed.`,
+      idea: String.raw`For a generic unit direction $u$, let $\mu(u)$ count the height function's local maxima. Milnor's averaging formula is $K(C)=\tfrac12\int_{S^2}\mu(u)\,du$. A knot cannot have a direction with just one maximum, because the two monotone arcs can then be straightened to an unknot. Thus averaging gives $K\ge4\pi$. Two maxima alone do not imply an unknot. Strictness needs an extra argument: inscribe an isotopic knotted polygon $P$, with $K(P)\le K(C)$. A small slide of a vertex among four consecutive noncoplanar vertices along an adjacent edge preserves its knot type and strictly decreases its total curvature (Milnor's Corollary 1.2). The perturbed polygon still has curvature at least $4\pi$, so $K(C)\ge K(P)>4\pi$. This proves the smooth statement without assuming three height maxima on a positive-measure set.`,
+      caption: String.raw`The trefoil is $((1.3+0.3\cos3\theta)\cos2\theta,(1.3+0.3\cos3\theta)\sin2\theta,\varepsilon\sin3\theta)$. For every $\varepsilon>0$ it is an invertible vertical stretch of the standard $(2,3)$ torus knot. Its three shadow crossings have height difference $2\varepsilon$. The two unknots are graphs over a circle, $(1.3\cos\theta,1.3\sin\theta,\varepsilon\sin(m\theta))$, with $m=2$ or $6$; flattening their heights gives an isotopy to the circle. Slide $\varepsilon$: the plot uses analytic derivatives and numerical quadrature, with the active family marked in gold. The wrinkled unknot exceeds $4\pi$ at some heights, showing why the theorem has no converse. As $\varepsilon\to0$, the trefoil's self-crossing planar limit has total curvature $4\pi$, and both unknots tend to $2\pi$. The numerical curves illustrate these facts; the quadrature is not a proof of the strict inequality.`,
       deps: ['dg-3.11', 'top-11.14'],
-      refs: ['Milnor (1950), On the Total Curvature of Knots, Lemma1.1, Corollary1.2, Theorems2.2/3.1/4.2 and Corollaries4.4–4.6, pp.249–256, https://paperzz.com/doc/7254332/on-the-total-curvature-of-knots', 'do Carmo, §5-7 Theorem4, pp.409–410; Fáry (1949), Theorems1–3, pp.131–138; Sullivan, Curves of Finite Total Curvature, §4'],
+      refs: ['Milnor (1950), Theorem 3.1, Corollaries 1.2 and 4.4–4.6; Fáry (1949), Theorem 3'],
+      links: { source: 'https://people.reed.edu/~ormsbyk/milnor-total-curvature.pdf', fary: 'https://www.numdam.org/item/10.24033/bsmf.1405.pdf' },
       tags: ['knots', 'total curvature'],
       credit: 'I. Fáry (1949) and J. Milnor (1950), independently',
-      scope: String.raw`Simple closed regular curves of class $C^2$. Milnor’s inscribed-polygon and strict vertex-slide argument also establishes $>4\pi$ for simple closed knotted curves of finite total curvature. The curve here is a specific family, a worked example and not a proof. Curvature is estimated numerically from finite differences and quadrature.`,
+      scope: String.raw`Embedded closed regular $C^2$ curves. For finite-total-curvature curves, use the supremum of inscribed polygonal total curvatures. The curve here is a specific family, a worked example and not a proof.`,
       viz(v) {
-        const kn = v.select('curve', [{ value: 'tre', label: 'trefoil knot' }, { value: 'unk', label: 'unknot' }], 'tre');
+        const kn = v.select('curve', [{ value: 'tre', label: 'trefoil knot' }, { value: 'unk', label: 'unknot' }, { value: 'wrinkle', label: 'wrinkled unknot' }], 'tre');
         const eS = v.slider('height $\\varepsilon$', 0.02, 1.6, 0.6, { step: 0.005 });
-        const mk = (kind, e) => kind === 'tre'
-          ? mkCurve((t) => { const R = 1.3 + 0.3 * Math.cos(3 * t); return [R * Math.cos(2 * t), R * Math.sin(2 * t), e * Math.sin(3 * t)]; }, 0, TAU, { closed: true })
-          : mkCurve((t) => [1.3 * Math.cos(t), 1.3 * Math.sin(t), e * Math.sin(2 * t)], 0, TAU, { closed: true });
-        const totK = (c, n = 360) => { let K = 0; const dt = TAU / n; for (let i = 0; i < n; i++) { const f = c.at(i * dt); K += f.kappa * f.sp * dt; } return K; };
         const { S, sc } = scene(v, { title: 'the closed curve (drag the background to rotate)', height: 400, weight: 1.1, minWidth: 290, lim: 2.2, axis: 1.8, yaw: 0.35, pitch: 0.85 });
         const P = v.stage({ x: [0, 1.6], y: [0, 8], axes: 'box', gutter: true, height: 400, weight: 0.95, minWidth: 270, xlabel: 'height $\\varepsilon$', ylabel: 'total curvature $/\\pi$', title: 'total curvature along each family' });
-        v.legend([['pink', 'trefoil family'], ['teal', 'unknot family'], ['green', '$4\\pi$ (Fáry–Milnor)'], ['orange', '$2\\pi$ (Fenchel)']]);
-        let tre = null, unk = null, info = {};
+        v.legend([['pink', 'trefoil family'], ['teal', 'unknot family'], ['purple', 'wrinkled unknot family'], ['green', '$4\\pi$ (Fáry–Milnor)'], ['orange', '$2\\pi$ (Fenchel)']]);
+        let curves = null, info = {};
         v.render(() => {
-          if (!tre) {
-            const es = Array.from({ length: 81 }, (_, i) => 0.02 + (1.58 * i) / 80);
-            tre = es.map((e) => [e, totK(mk('tre', e)) / PI]); unk = es.map((e) => [e, totK(mk('unk', e)) / PI]);
-            P.setView([0, 1.6], [0, Math.max(6, Math.ceil(Math.max(...tre.map((p) => p[1]), ...unk.map((p) => p[1])) + 0.5))]);
+          if (!curves) {
+            const es=Array.from({length:81},(_,i)=>.02+1.58*i/80);
+            curves=Object.fromEntries(['tre','unk','wrinkle'].map(k=>[k,es.map(e=>[e,knotTotalCurvature(k,e)/PI])]));
+            P.setView([0,1.6],[0,Math.ceil(Math.max(...Object.values(curves).flat().map(p=>p[1]))+.5)]);
           }
-          const e = eS.value, c = mk(kn.value, e), tab = [];
-          for (let i = 0; i <= 360; i++) tab.push(c.r((TAU * i) / 360));
+          const e=eS.value,tab=Array.from({length:721},(_,i)=>knotCurveData(kn.value,e,TAU*i/720).p);
           sc.begin();
-          drawTrack(sc, tab, { width: 3.4 }, tab.slice(0, -1).map((_, i) => hueAlong(v, i / 360)));
+          drawTrack(sc, tab, { width: 3.4 }, tab.slice(0, -1).map((_, i) => hueAlong(v, i / 720)));
           sc.flush();
           P.hline(4, { color: 'green', width: 2 }); P.hline(2, { color: 'orange', width: 2 });
-          P.path(tre, { color: 'pink', width: 2.8 }); P.path(unk, { color: 'teal', width: 2.8 });
-          const K = totK(c) / PI;
+          ['tre','unk','wrinkle'].forEach((k,i)=>P.path(curves[k],{color:['pink','teal','purple'][i],width:2.8}));
+          const K = knotTotalCurvature(kn.value,e) / PI;
           P.dot(e, K, { color: 'gold', r: 7 });
           info = { K, e, kind: kn.value };
         });
-        v.readout(() => String.raw`${info.kind === 'tre' ? '**trefoil**' : '**unknot**'} with $\varepsilon=${v.fix(info.e, 3)}$: total curvature $=${v.fix(info.K, 4)}\,\pi$ ${info.kind === 'tre' ? `$=4\\pi+${v.fix(info.K - 4, 4)}\\pi$ — above $4\\pi$, as the theorem demands` : info.K > 4 ? '— above $4\\pi$ although the curve is unknotted' : info.K >= 2 ? '— above Fenchel’s $2\\pi$' : ''}${info.kind === 'tre' ? '' : ''}
-a trefoil with $\varepsilon\to0$ gets as close to $4\pi$ as we like along this family, but the theorem says it never reaches it`);
+        v.readout(() => {
+          const name={tre:'trefoil',unk:'unknot',wrinkle:'wrinkled unknot'}[info.kind];
+          return `**${name}**, $\\varepsilon=${v.fix(info.e,3)}$: numerical total curvature $K\\approx${v.fix(info.K,6)}\\pi$. ${info.kind==='tre'?`Computed gap above $4\\pi$: $\\approx${v.sci(info.K-4,3)}\\pi$. Strict positivity is guaranteed by the theorem, independently of this quadrature.`:info.K>4?'This unknotted curve has total curvature above $4\\pi$: the converse fails.':'This unknotted curve is below $4\\pi$ at the selected height.'} The limit as the height tends to zero is $4\\pi$ for this trefoil family and $2\\pi$ for the unknots.`;
+        });
       },
     },
   ],

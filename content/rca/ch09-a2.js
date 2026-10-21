@@ -170,7 +170,7 @@ $$\lim_{\lambda\to0}(g*h_\lambda)(x)=g(x).$$`,
 $$\lim_{\lambda\to0}\norm{f*h_\lambda-f}_p=0 .$$`,
       idea: String.raw`Because $h_\lambda\,dm$ is a probability measure, Jensen's inequality (3.3) gives $|(f*h_\lambda)(x)-f(x)|^p\le\int|f(x-y)-f(x)|^p h_\lambda(y)\,dm(y)$. Integrate in $x$ and use Fubini (8.8):
 $$\norm{f*h_\lambda-f}_p^p\le\int\norm{f_y-f}_p^p\,h_\lambda(y)\,dm(y)=(\phi*h_\lambda)(0),$$
-where $\phi(y)=\norm{f_{-y}-f}_p^p$ is bounded and continuous with $\phi(0)=0$ by 9.5. Theorem 9.9 says this tends to $\phi(0)=0$. For $p=\infty$ convergence need not hold: a jump function gives a counterexample. This is an essential-supremum norm, so changing a representative on a null set cannot by itself cause failure.`,
+where $\phi(y)=\norm{f_{-y}-f}_p^p$ is bounded and continuous with $\phi(0)=0$ by 9.5. Theorem 9.9 says this tends to $\phi(0)=0$. For $p=\infty$ the statement is false for every discontinuous $f$.`,
       caption: String.raw`Choose $f$, $p$ and $\lambda$ (log scale). Top: $f$ and the smoothed $f*h_\lambda$ (closed forms), with $|f*h_\lambda-f|$ shaded. Bottom: $\norm{f*h_\lambda-f}_p$ against $\lambda$ on log–log axes, computed by quadrature. For $p<\infty$ the curve dives to $0$ (for the step roughly like $\lambda^{1/p}$, up to a logarithm when $p=1$); with $p=\infty$ and the step function it stays at $\tfrac12$ — the hypothesis $p<\infty$ is essential.`,
       deps: ['rca-9.5', 'rca-9.9', 'rca-3.3', 'rca-8.8'],
       see: ['pma-8.15'],

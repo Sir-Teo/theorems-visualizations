@@ -1,3 +1,4 @@
+import inversionPaper from './inversion-paper-item.js';
 // Numerical Linear Algebra — Chapter 3: Conditioning, floating point and stability
 // Part 2 (this file): 3.9–3.15 — backward stability and accuracy, Householder QR, back substitution, least squares conditioning,
 // the normal equations, and the von Neumann–Goldstine paper. Part 1 (3.1–3.8) is in ch03.js.
@@ -337,73 +338,6 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
       },
     },
     // ------------------------------------------------------------------ 3.15
-    {
-      num: '3.15',
-      kind: 'Paper',
-      name: 'Numerical inverting of matrices of high order',
-      paper: { authors: 'John von Neumann and H. H. Goldstine', year: 1947, title: 'Numerical inverting of matrices of high order', venue: 'Bulletin of the American Mathematical Society 53 (11): 1021–1099', doi: '10.1090/S0002-9904-1947-08909-6' },
-      introduces: ['nla-3.2'],
-      statement: String.raw`Von Neumann and Goldstine asked whether the solution of large linear systems and the inversion of matrices of high order (they had in mind orders of a hundred or more) could be trusted on the electronic computers then being built, when every arithmetic operation is rounded. They analysed elimination, which they presented as the factorization of the matrix into triangular factors followed by the inversion of the factors, and derived rigorous bounds for the error of the computed inverse in terms of the unit of roundoff, the order $n$, and the ratio of the largest to the smallest singular value of the matrix (what is now called its condition number). Their treatment distinguishes positive definite matrices from general matrices. Exact hypotheses, constants and historical comparisons require checking the full original; this reconstruction illustrates sensitivity and does not establish the paper’s error bounds.`,
-      idea: String.raw`Before the paper, the standard worry — voiced for elimination in the 1940s, e.g. by Hotelling, whose estimate allowed for the loss of roughly $n\log_{10}4$ digits (as reported in Turing's 1948 paper) — was a factor like $4^{n}$ in the error. Von Neumann and Goldstine wrote the elimination as a matrix factorization, so that the rounding errors could be bounded with matrix norms, step by step, and found that the inverse is accurate to a modest power of $n$ times the roundoff times the ratio of extreme singular values $\sigma_1/\sigma_n$; the quantity that decides everything is therefore a property of the *matrix*, which Turing (1948) then named the condition number $\kappa(A)$ (3.2). They also considered what ratio to expect for matrices of high order that are drawn at random. The full constants and the treatment of general (non-definite) matrices are in the paper; this page does not reproduce them.`,
-      caption: String.raw`This is a *reconstruction*, not the paper's data: Gaussian elimination with partial pivoting inverts the $n\times n$ matrix $A$ in $p$-bit arithmetic (the paper's own tables and bounds are not reproduced). Left: for $n=2,\dots,N$ the relative error of the computed inverse (orange) against $\kappa(A)\,\epsilon_{\rm machine}$ (purple dashed) and against a $4^{n}\epsilon_{\rm machine}$ curve (grey), the kind of exponential-in-$n$ growth that estimates of the 1940s allowed for. Choose random matrices or the increasingly ill-conditioned Hilbert family. Right: every computed inverse as a point (orange: random matrices, blue: Hilbert), error against $\kappa\epsilon_{\rm machine}$: the $\kappa\epsilon_{\rm machine}$ diagonal is a reference scale, not an equality or a universal bound. Note that for the Hilbert matrix the error soon *exceeds* the $4^n\epsilon$ curve, and for random matrices stays far below it: conditioning contributes strongly to the observed error, while dimension, pivot growth and roundoff also affect its bounds.`,
-      deps: ['nla-4.1', 'nla-1.4', 'nla-3.1'],
-      tags: ['history', 'matrix-inversion', 'rounding-error'],
-      refs: [],
-      verify: true,
-      scope: 'A reconstruction in simulated p-bit arithmetic of the qualitative result (error of the computed inverse ~ κ·ε, no 4ⁿ growth); the paper’s own bounds, constants and numerical tables are not reproduced, and the 4ⁿ comparison curve is illustrative. Details of the paper’s content (its bounds’ dependence on n, its treatment of general matrices) and the attribution of the 4ⁿ-type estimate to Hotelling are taken from secondary sources (Grcar; Higham; Turing 1948 as summarized there) and are flagged for verification.',
-      viz(v) {
-        const M = v.M;
-        const fam = v.select('matrices', [{ value: 'rand', label: 'random Gaussian' }, { value: 'hil', label: 'Hilbert' }], 'hil');
-        const pb = v.slider('significand bits $p$', 12, 40, 30, { int: true });
-        const nmax = v.slider('largest order $N$', 6, 24, 16, { int: true });
-        let seed = 1;
-        v.button('Resample', () => { seed++; });
-        const L = v.stage({ x: [1, 25], y: [1e-17, 1e12], ylog: true, axes: 'box', gutter: true, height: 380, minWidth: 340, xlabel: 'order n', ylabel: 'relative error of the computed inverse', title: 'error of the computed inverse against the order' });
-        const R = v.stage({ x: [1e-12, 1e8], y: [1e-12, 1e8], xlog: true, ylog: true, axes: 'box', gutter: true, height: 380, minWidth: 320, xlabel: 'κ(A)·ε_machine', ylabel: 'error of the inverse', title: 'the error is governed by κ·ε' });
-        const cache = {};
-        const trial = (kind, n, p, s) => {
-          const key = `${kind}-${n}-${p}-${s}`;
-          if (cache[key]) return cache[key];
-          let A, Ainv, kappa;
-          if (kind === 'hil') { A = hilbert(n); Ainv = hilbertInv(n); kappa = hilbertKappa(M, n); } else {
-            const r = v.rng(s * 1009 + n * 7); A = Array.from({ length: n }, () => Array.from({ length: n }, () => r.normal()));
-            Ainv = M.inverse(A); kappa = spec(M, A) * spec(M, Ainv);
-          }
-          const X = flSolve(A, eye(n), p);
-          if (!X) return (cache[key] = null);
-          const err = spec(M, sub(X, Ainv)) / spec(M, Ainv), Ap = A, res = spec(M, sub(mm(Ap, X), eye(n)));
-          return (cache[key] = { n, kappa, err, res });
-        };
-        let st = null;
-        v.render(() => {
-          const p = pb.value, u = 2 ** -p, N = nmax.value, k = fam.value;
-          L.setView([1, N + 1], [1e-17, 1e12]);
-          const main = [], resid = [], kap = [], four = [], all = [], allH = [];
-          for (let n = 2; n <= N; n++) {
-            const t = trial(k, n, p, seed); if (!t) continue;
-            main.push([n, Math.max(1e-17, t.err)]); resid.push([n, Math.max(1e-17, t.res)]); kap.push([n, t.kappa * u]); four.push([n, 4 ** n * u]);
-            for (let s2 = 0; s2 < 2; s2++) { const t2 = trial('rand', n, p, seed + 100 + s2); if (t2) all.push([t2.kappa * u, Math.max(1e-17, t2.err)]); }
-            const t3 = trial('rand', n, p, seed); if (t3) all.push([t3.kappa * u, Math.max(1e-17, t3.err)]);
-            const th = trial('hil', n, p, seed); if (th) allH.push([th.kappa * u, Math.max(1e-17, th.err)]);
-          }
-          L.path(four, { color: 'muted', width: 1.6 });
-          L.path(kap, { color: 'purple', width: 2, dash: true });
-          L.path(resid, { color: 'green', width: 1.4 });
-          L.path(main, { color: 'orange', width: 2.4 }); L.dots(main, { color: 'orange', r: 3.6 });
-          L.hline(1, { color: 'red', width: 1.2, dash: true, alpha: 0.7 });
-          L.text('4ⁿ ε', Math.min(N - 3, 12), Math.min(4 ** Math.min(N - 3, 12) * u * 5, 1e10), { color: 'muted', size: 12 });
-          L.text('κ ε', 3.2, (kap[1] ? kap[1][1] : 1e-10) * 12, { color: 'purple', size: 12 });
-          R.path([[1e-12, 1e-12], [1e8, 1e8]], { color: 'muted', width: 1.6 });
-          R.hline(1, { color: 'red', width: 1.2, dash: true, alpha: 0.7 });
-          R.dots(all, { color: 'orange', r: 3.4 });
-          R.dots(allH, { color: 'blue', r: 3.4 });
-          const worst = Math.max(...all.concat(allH).filter((q) => q[0] < 0.01).map((q) => q[1] / q[0]), 0);
-          const last = main[main.length - 1], tl = trial(k, N, p, seed);
-          st = { u, N, worst, kappaN: tl ? tl.kappa : NaN, errN: last ? last[1] : NaN, resN: tl ? tl.res : NaN };
-        });
-        v.legend([['orange', 'error of the computed inverse'], ['green', 'residual $\\|AX-I\\|$'], ['purple', '$\\kappa\\,\\epsilon_{\\rm machine}$', { dash: true }], ['muted', '$4^{n}\\epsilon_{\\rm machine}$']]);
-        v.readout(() => st ? `$\\epsilon_{\\rm machine}=${sciT(st.u)}$. At $n=${st.N}$: $\\kappa(A)=${sciT(st.kappaN)}$, error of the computed inverse $${sciT(st.errN)}$, $\\kappa\\epsilon_{\\rm machine}=${sciT(st.kappaN * st.u)}$.\nAcross all runs with $\\kappa\\epsilon_{\\rm machine}<0.01$ the error never exceeds $${nm(st.worst, 2)}\\times\\kappa\\epsilon_{\\rm machine}$ (reconstruction only: this is *not* a number from the paper).` : '');
-      },
-    },
+    inversionPaper,
   ],
 };

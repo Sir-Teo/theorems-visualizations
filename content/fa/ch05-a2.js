@@ -1,4 +1,3 @@
-import { sourceDiagrams } from './ch05-source.shared.js';
 // Rudin, Functional Analysis — Chapter 5 (part 2): generalized Stone–Weierstrass, interpolation
 
 // ---------------------------------------------------------------- complex helpers ([re, im] pairs)
@@ -60,17 +59,18 @@ export default {
       num: '5.6',
       kind: 'Definition',
       name: 'Antisymmetric sets of a function algebra',
-      statement: String.raw`Let $S$ be a compact Hausdorff space and $A$ a subalgebra of $C(S)$. A set $E\subset S$ is **$A$-antisymmetric** if every $f\in A$ whose restriction to $E$ is real-valued is constant on $E$. Single points are antisymmetric, the closure of an antisymmetric set is antisymmetric, and two antisymmetric sets that meet have an antisymmetric union; hence the **maximal** $A$-antisymmetric sets are closed and form a partition of $S$.`,
+      statement: String.raw`Let $S$ be a compact Hausdorff space and $A$ a closed subalgebra of $C(S)$ that contains the constants. A set $E\subset S$ is **$A$-antisymmetric** if every $f\in A$ whose restriction to $E$ is real-valued is constant on $E$. Single points are antisymmetric, the closure of an antisymmetric set is antisymmetric, and two antisymmetric sets that meet have an antisymmetric union; hence the **maximal** $A$-antisymmetric sets are closed and form a partition of $S$.`,
       idea: String.raw`Antisymmetric sets are the places where $A$ is "as far from self-adjoint as possible". If $A$ is closed under complex conjugation, then $\Re f$ and $\Im f$ belong to $A$, so an antisymmetric set is one on which every member of $A$ is constant; when $A$ also separates points these are single points. For the disc algebra on $\bar D$ the whole disc is antisymmetric, because a holomorphic function that is real on an open set is constant.`,
       deps: [],
       tags: ['function algebras', 'Stone–Weierstrass'],
+      verify: true,
     },
     {
       num: '5.7',
       kind: 'Theorem',
       name: "Bishop's generalized Stone–Weierstrass theorem",
-
-      statement: String.raw`Let $A$ be a closed subalgebra of $C(S)$, $S$ compact Hausdorff,, and let $\mathscr K$ be the collection of maximal $A$-antisymmetric sets. If $g\in C(S)$ and, for every $E\in\mathscr K$, the restriction $g|_E$ agrees with the restriction to $E$ of some member of $A$, then $g\in A$.
+      credit: 'Bishop, 1961',
+      statement: String.raw`Let $A$ be a closed subalgebra of $C(S)$, $S$ compact Hausdorff, that contains the constants, and let $\mathscr K$ be the collection of maximal $A$-antisymmetric sets. If $g\in C(S)$ and, for every $E\in\mathscr K$, the restriction $g|_E$ agrees with the restriction to $E$ of some member of $A$, then $g\in A$.
 
 In particular, if $A$ is closed under conjugation and separates points, every $E\in\mathscr K$ is a point and $A=C(S)$ (the complex Stone–Weierstrass theorem).`,
       idea: String.raw`Suppose $g\notin A$. By Hahn–Banach and the Riesz representation theorem some measure $\mu$ annihilating $A$ has $\int g\,d\mu\ne0$. The annihilating measures of norm $\le1$ form a weak$^*$-compact convex set (3.15), on which $\mu\mapsto\int g\,d\mu$ is a nonzero continuous linear functional, so it is nonzero at some extreme point $\mu$ (Krein–Milman, 3.23). *de Branges' lemma*: the support of such an extreme point is antisymmetric — if $f\in A$ were real and non-constant there, normalized to $0<f<1$, then $\mu=\|f\mu\|\frac{f\mu}{\|f\mu\|}+\|(1-f)\mu\|\frac{(1-f)\mu}{\|(1-f)\mu\|}$ would split $\mu$ into other annihilating measures, as $A$ is an algebra. So $\mu$ lives on one $E\in\mathscr K$, where $g$ agrees with a member of $A$, forcing $\int g\,d\mu=0$.`,
@@ -78,6 +78,7 @@ In particular, if $A$ is closed under conjugation and separates points, every $E
       deps: ['fa-5.6', 'fa-3.15', 'fa-3.23', 'fa-3.5', 'rca-6.19'],
       see: ['pma-7.32', 'pma-7.33'],
       tags: ['Stone–Weierstrass', 'Krein–Milman', 'function algebras'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const onD = (z) => z[0] * z[0] + z[1] * z[1] <= 1 + 1e-9;
@@ -135,15 +136,7 @@ In particular, if $A$ is closed under conjugation and separates points, every $E
     },
     // ------------------------------------------------------------------ two interpolation theorems
     {
-      num: '5.8', kind: 'Theorem', name: 'Polynomial approximation over nonseparating complex fibers',
-      statement: String.raw`Let $K\subset\mathbb R^n\times\mathbb C$ be compact. Suppose every fiber $K_t=\{z:(t,z)\in K\}$ does not separate the plane. If $g\in C(K)$ and $z\mapsto g(t,z)$ is holomorphic in the interior of each $K_t$, then for every $\varepsilon>0$ there is a polynomial $P(t_1,\ldots,t_n,z)$ with $|P-g|<\varepsilon$ everywhere on $K$.`,
-      idea: String.raw`Let $A$ be the uniform closure of these polynomials. Real polynomials in $t$ separate distinct real coordinates, so each maximal $A$-antisymmetric set lies in a fiber. Mergelyan approximation on one nonseparating fiber supplies a series of polynomial approximants there. Multiply its terms by sufficiently high powers of a real polynomial peaking at that fiber; compactness makes the resulting series converge uniformly on all of $K$ while preserving the desired fiber restriction. Bishop's theorem 5.7 then gives $g\in A$.`,
-      caption: String.raw`Use $K=[-1,1]\times\overline{\mathbb D}$ and $g(t,z)=e^{tz}+|t|z^2$. A Taylor polynomial in $tz$ plus a Bernstein polynomial for $|t|$ gives explicit joint polynomials. The left panel shows the selected fiber error; the right compares sampled errors with the proved bound $e/(n+1)!+1/\sqrt n$. Adding $0.3\bar z$ breaks fiber holomorphy and leaves approximation distance at least 0.3.`,
-      deps: ['fa-5.7', 'rca-20.5'],
-      viz: sourceDiagrams['5.8'],
-    },
-    {
-      num: '5.9',
+      num: '5.8',
       kind: 'Theorem',
       name: 'Interpolation on null sets for annihilating measures',
       statement: String.raw`Let $S$ be a compact Hausdorff space, $Y$ a closed subspace of $C(S)$, and $K\subset S$ a compact set such that $|\mu|(K)=0$ for every measure $\mu\in M(S)$ that annihilates $Y$. Then the restriction map $F\mapsto F|_K$ carries the open unit ball of $Y$ onto the open unit ball of $C(K)$: every $f\in C(K)$ with $\|f\|_K<1$ is $F|_K$ for some $F\in Y$ with $\|F\|_S<1$.`,
@@ -152,6 +145,7 @@ In particular, if $A$ is closed under conjugation and separates points, every $E
       deps: ['fa-4.13', 'rca-6.19'],
       see: ['rca-17.13'],
       tags: ['interpolation', 'duality', 'disc algebra'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const mS = v.select('$m=|K|$', [2, 3, 4, 5].map((k) => ({ value: k, label: String(k) })), 3);
@@ -180,7 +174,73 @@ In particular, if $A$ is closed under conjugation and separates points, every $E
           R.corner(sup < 1 ? `‖F‖ = ${v.fmt(sup, 4)} < 1` : `‖F‖ = ${v.fmt(sup, 4)} ≥ 1 — raise N`, 'tl', { color: sup < 1 ? 'green' : 'red', weight: 600 });
           st = { sup, err, N, gmax: Math.max(...tg.map(cabs)) };
         });
-        v.readout(() => `$\\|f\\|_K=${v.fix(st.gmax, 3)}<1$; $\\max_j|F(\\zeta_j)-f(\\zeta_j)|=${v.M.sci(st.err, 2)}$ (exact interpolation), $\\|F\\|_\\T=${v.fix(st.sup, 4)}$ ${st.sup < 1 ? '$<1$: $F$ lies in the open unit ball of $Y$, as 5.9 promises.' : '$\\ge1$ — the peaks $p_j^N$ are still too wide; a larger $N$ works.'} As $N\\to\\infty$, $\\|F\\|\\to\\|f\\|_K$.`);
+        v.readout(() => `$\\|f\\|_K=${v.fix(st.gmax, 3)}<1$; $\\max_j|F(\\zeta_j)-f(\\zeta_j)|=${v.M.sci(st.err, 2)}$ (exact interpolation), $\\|F\\|_\\T=${v.fix(st.sup, 4)}$ ${st.sup < 1 ? '$<1$: $F$ lies in the open unit ball of $Y$, as 5.8 promises.' : '$\\ge1$ — the peaks $p_j^N$ are still too wide; a larger $N$ works.'} As $N\\to\\infty$, $\\|F\\|\\to\\|f\\|_K$.`);
+      },
+    },
+    {
+      num: '5.9',
+      kind: 'Theorem',
+      name: "Bishop's peak-interpolation theorem",
+      credit: 'Bishop, 1962',
+      statement: String.raw`Let $S$, $Y$ and $K$ be as in 5.8: $Y$ a closed subspace of $C(S)$ and $K\subset S$ compact with $|\mu|(K)=0$ for every $\mu\in Y^\perp$. Let $\psi\in C(S)$ be strictly positive and $f\in C(K)$ with $|f(p)|<\psi(p)$ for all $p\in K$. Then there is $F\in Y$ with $F|_K=f$ and $|F(x)|<\psi(x)$ for **every** $x\in S$.
+
+For the disc algebra and a closed set $K\subset\T$ of Lebesgue measure $0$ this contains the *Rudin–Carleson theorem*: every $f\in C(K)$ extends to a member of the disc algebra (with the dominant $\psi$ as close to $|f|$ on $K$ as desired).`,
+      idea: String.raw`5.8 gives an extension of norm $<1$; the work is to control the size pointwise. One builds $F=\sum_nF_n$, where $F_n\in Y$ interpolates the error left on $K$ after the first $n-1$ steps and is chosen, again via the isometry of $R^*$ and Theorem 4.13, small away from a shrinking neighbourhood of $K$; the errors decrease geometrically, so the series converges in $Y$ and the bound $|F|<\psi$ survives in the limit. For the disc algebra the hypothesis comes from the F. and M. Riesz theorem: annihilating measures are absolutely continuous, so they do not charge a null set $K$.`,
+      caption: String.raw`The disc algebra on $\T$, unrolled to $\theta\in[0,2\pi]$. Choose a dominant $\psi$ and drag the three data points $(\theta_j,|f(\theta_j)|)$ anywhere below it. The interpolant is $F=h\cdot\sum_jc_jp_j^N$, where $h$ is the outer function with $|h|=\psi$ on $\T$, so $|F|/\psi=|\sum_jc_jp_j^N|$. Raise $N$ until $|F|<\psi$ on the whole circle (green), not only on $K$.`,
+      deps: ['fa-5.8', 'fa-4.13'],
+      see: ['rca-17.13'],
+      tags: ['interpolation', 'disc algebra', 'peak sets'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const PSI = {
+          one: { label: '$\\psi\\equiv1$', f: () => 1 },
+          bump: { label: 'bump', f: (t) => 0.3 + 0.75 * Math.exp(-2.2 * (1 - Math.cos(t - 3.4))) },
+          wave: { label: 'wavy', f: (t) => 0.62 + 0.25 * Math.sin(t) + 0.1 * Math.cos(3 * t) },
+        };
+        const which = v.select('dominant $\\psi$', Object.entries(PSI).map(([value, o]) => ({ value, label: o.label })), 'bump');
+        const NS = v.slider('$N$ (peaking exponent)', 1, 120, 4, { int: true });
+        const top = v.stage({ x: [0, M.TAU], y: [0, 1.25], height: 280, full: true, axes: 'box', xticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π'], [1.5 * Math.PI, '3π/2'], [M.TAU, '2π']], title: '$|F(e^{i\\theta})|$ under the dominant $\\psi(\\theta)$' });
+        const bot = v.stage({ x: [0, M.TAU], y: [0, 1.3], height: 150, full: true, axes: 'box', xticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π'], [1.5 * Math.PI, '3π/2'], [M.TAU, '2π']], yticks: [0, 0.5, 1], title: 'the ratio $|F|/\\psi$ — must stay below $1$ everywhere' });
+        const cache = {};
+        function outer(key) {
+          if (cache[key]) return cache[key];
+          const psi = PSI[key].f, S = 512, K = 80, lg = M.range(S).map((m) => Math.log(psi(M.TAU * m / S)));
+          const a = M.range(K + 1).map((k) => { let re = 0, im = 0; for (let m = 0; m < S; m++) { const t = M.TAU * m / S; re += lg[m] * Math.cos(k * t); im -= lg[m] * Math.sin(k * t); } return [re / S, im / S]; });
+          const h = (z) => { let s = [a[0][0], 0], zk = [1, 0]; for (let k = 1; k <= K; k++) { zk = cmul(zk, z); s = cadd(s, cmul([2 * a[k][0], 2 * a[k][1]], zk)); } return cexp(s); };
+          return (cache[key] = { h, psi });
+        }
+        const PH = [0.3, 2.4, 4.4], T0 = [1.2, 3.1, 5.0], Y0 = [0.5, 0.6, 0.4];
+        const hs = T0.map((t, j) => top.handle(t, Y0[j], { color: 'gold', label: `f(ζ${'₁₂₃'[j]})`, constrain: (x, y) => { const xx = M.clamp(x, 0.08, M.TAU - 0.08); const P = PSI[which.value].f(xx); return [xx, M.clamp(y, 0.03, 0.96 * P)]; } }));
+        let st = {}, last = null;
+        v.legend([['red', 'dominant $\\psi$'], ['gold', 'data $|f(\\zeta_j)|<\\psi(\\zeta_j)$'], ['blue', '$|F|$ on $\\T$'], ['green', '$|F|<\\psi$ everywhere', { area: true }]]);
+        v.render(() => {
+          const key = which.value, O = outer(key), N = NS.value;
+          if (last !== key) { last = key; hs.forEach((h, j) => { const P = O.psi(h.x); h.y = Math.min(h.y, 0.85 * P); }); }
+          const zeta = hs.map((h) => [Math.cos(h.x), Math.sin(h.x)]);
+          const data = hs.map((h, j) => [h.y * Math.cos(PH[j]), h.y * Math.sin(PH[j])]);
+          const targets = data.map((g, j) => cdiv(g, O.h(zeta[j])));
+          const { F } = peakInterp(zeta, targets, N);
+          const n = 900, pts = [], rat = []; let worst = 0;
+          for (let k = 0; k <= n; k++) { const t = M.TAU * k / n, z = [Math.cos(t), Math.sin(t)], f = F(z), Ft = cabs(cmul(O.h(z), f)); pts.push([t, Ft]); const r = Ft / O.psi(t); rat.push([t, r]); worst = Math.max(worst, r); }
+          const ymax = Math.max(1.15, ...pts.map((p) => p[1])) * 1.08;
+          top.setView(null, [0, Math.max(ymax, 1.1 * Math.max(...M.range(200).map((k) => O.psi(M.TAU * k / 200))))]);
+          const ok = worst < 1;
+          top.between((t) => O.psi(t), () => 0, 0, M.TAU, { fill: ok ? 'green' : 'red', fillAlpha: 0.07, n: 300 });
+          top.fn((t) => O.psi(t), { color: 'red', width: 2.2, domain: [0, M.TAU] });
+          top.path(pts, { color: 'blue', width: 2.2 });
+          hs.forEach((h) => top.vline(h.x, { color: 'orange', width: 1, dash: [3, 4] }));
+          top.tex('\\psi', 0.45, O.psi(0.45), { color: 'red', dy: -14, align: 'left' });
+          bot.setView(null, [0, Math.max(1.3, worst * 1.1)]);
+          bot.hband(1, 99, { color: 'red', alpha: 0.08 });
+          bot.hline(1, { color: 'red', width: 1.6, dash: [6, 4] });
+          bot.path(rat, { color: ok ? 'green' : 'red', width: 2.2 });
+          hs.forEach((h) => bot.vline(h.x, { color: 'orange', width: 1, dash: [3, 4] }));
+          bot.corner(ok ? `max |F|/ψ = ${v.fix(worst, 3)} < 1` : `max |F|/ψ = ${v.fix(worst, 3)} ≥ 1 — raise N`, 'tr', { color: ok ? 'green' : 'red', weight: 600 });
+          let err = 0; zeta.forEach((z, j) => { err = Math.max(err, cabs(csub(cmul(O.h(z), F(z)), data[j]))); });
+          st = { worst, err, N };
+        });
+        v.readout(() => `Interpolation error on $K$: $${v.M.sci(st.err, 2)}$. $\\max_\\T|F|/\\psi=${v.fix(st.worst, 4)}$ ${st.worst < 1 ? '$<1$: $|F|<\\psi$ on all of $\\T$ and $F(\\zeta_j)=f(\\zeta_j)$ — the conclusion of 5.9.' : '$\\ge1$: at this $N$ the peaks leak past $\\psi$; the theorem says some $F$ works, and a larger $N$ finds one.'}`);
       },
     },
   ],

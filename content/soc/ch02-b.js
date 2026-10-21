@@ -1,9 +1,11 @@
-// Networks & Collective Behavior — Chapter 2b.
-// Full originals reviewed: Dunbar 1992 p.479 (RMA equation), Dunbar 1993 author preprint §3.1
-// (human extrapolation; preprint edition explicitly identified), Lindenfors et al.2021 Table1,
-// Feld1981 pp.1016–1021, Granovetter1973 pp.1361–1364/1371. See docs/verification/soc-source-review.md.
-// Primate scatter is simulated. All89 Southern Women attendance edges match NetworkX's maintained generator.
-// Job counts9/30/15 are reconstructed from the original rounded percentages, not a raw-data release.
+// Networks & Collective Behavior — Chapter 2, part b: homophily, influence, assortativity, balance, Dunbar, foci, the 1973 paper (2.9–2.16).
+//
+// Dunbar items: the 1992 regression log10 N = 0.093 + 3.389 log10 CR and the human neocortex ratio 4.1 match the standard published values (they reproduce the
+// commonly quoted prediction of about 148). The interval figures (1992: 100–230; 2021 reanalysis: 4–520
+// Bayesian, 2–336 generalised least squares) were checked against the abstract of Lindenfors, Wartel & Lind (2021).
+// The primate scatter drawn on 2.13 is SIMULATED around that line; it is not Dunbar's data table.
+// Granovetter (1973) percentages 16.7 / 55.6 / 27.8 % (N = 54 who found jobs via contacts; 282 respondents in Newton, MA) were confirmed against secondary summaries; the counts 9, 30, 15 of 54 are
+// inferred from them (they reproduce all three percentages).
 import {
   getNet, KARATE, SOUTHERN, mkGraph, rng32, shuffle, deg, assortativity, barabasi, relax, circlePos, normLayout, layoutOf, CYC,
 } from './ch02.shared.js';
@@ -45,11 +47,11 @@ export default {
       num: '2.9',
       kind: 'Concept',
       name: 'Homophily',
-      statement: String.raw`**Homophily** is the tendency of people to be tied to others who are like themselves (in age, race, occupation, belief, ...). Given a split of the population into two types with shares $p$ and $1-p$, if ties ignored type then the expected share of **cross-type** edges would be $2p(1-p)$. A network shows homophily by this baseline test when its observed cross-type share is significantly lower.`,
+      statement: String.raw`**Homophily** is the tendency of people to be tied to others who are like themselves (in age, race, occupation, belief, ...). Given a split of the population into two types with shares $p$ and $1-p$, under independently assigned types the expected share of **cross-type** edges would be $2p(1-p)$. A network shows homophily by this baseline test when its observed cross-type share is significantly lower.`,
       scope: String.raw`The baseline treats ties as independent of type, which is a statistical null, not a model of how people meet. It reveals the pattern but not its cause (see selection and influence, 2.10), and a low cross-type share can also result from segregation of opportunity (people simply do not meet).`,
-      idea: String.raw`If each edge's two ends were drawn independently from the population, the chance that they differ is $2p(1-p)$. Shuffling the type labels over the same graph keeps its structure and breaks only the link between structure and type, so the shuffled cross-type shares show what chance looks like. A real value far below that cloud is evidence of homophily.`,
+      idea: String.raw`For independently assigned types, the indicator that one edge crosses types has expectation $2p(1-p)$. Linearity of expectation (prob-1.6.1) then gives the same expected cross-edge share without assuming that different edge indicators are independent. The fixed-count relabellings shown here use a different finite null: if $A$ of the $n$ vertices have the first type, each edge crosses with probability $2A(n-A)/[n(n-1)]$. Summing these indicators again gives the expected share even though labels sampled without replacement, and edges sharing vertices, are dependent. Shuffling keeps the graph fixed and compares its observed share with that finite null.`,
       caption: String.raw`Pick the karate club (types: the two factions it later split into) or a modelled school where you set the group share and the strength of homophily. The histogram is the cross-type share after 1000 random relabellings of the same graph; the observed value is the vertical line.`,
-      deps: ['soc-2.1', 'prob-2.1.1a'],
+      deps: ['soc-2.1', 'prob-1.6.1'],
       refs: ['E&K §4.1'],
       tags: ['homophily', 'mixing'],
       credit: 'Lazarsfeld & Merton, 1954',
@@ -159,11 +161,12 @@ A single snapshot of a network, with its traits, cannot distinguish them: both g
       kind: 'Definition',
       name: 'Assortative mixing by degree',
       statement: String.raw`A network is **assortative by degree** when high-degree nodes tend to be tied to high-degree nodes, and **disassortative** when hubs tend to be tied to low-degree nodes. The **assortativity coefficient** $r$ is the Pearson correlation of the degrees at the two ends of an edge, taken over all edges and both orientations:
-$$r = \frac{\langle k k'\rangle_E - \langle k\rangle_E^2}{\langle k^2\rangle_E - \langle k\rangle_E^2}, \qquad -1 \le r \le 1,$$
-where $\langle\cdot\rangle_E$ averages over edge ends. It is undefined if all degrees are equal.`,
-      idea: String.raw`Averaging over edge ends rather than over nodes weights each node by its degree (the weighting behind the friendship paradox), and $r$ is just the correlation coefficient of the pairs $(k, k')$ on the two ends of each edge. A degree-preserving rewiring keeps every degree and so the denominator fixed, and changes only how the degrees are paired in the numerator: the coefficient can be tuned freely without changing the degree distribution.`,
-      caption: String.raw`Each dot is an edge, plotted twice (once per orientation) as the degrees at its two ends, with a little jitter. Choose the karate club or the Les Misérables network, or the model network, which lets you swap edges (keeping every degree fixed) until the correlation reaches your target.`,
-      deps: ['soc-2.3'],
+$$r = \frac{\langle k k'\rangle_E - \mu_E^2}{v_E},\qquad |r|\le1,$$
+where $\mu_E=\langle k\rangle_E$ and $v_E=\langle k^2\rangle_E-\mu_E^2$.
+Here $\langle\cdot\rangle_E$ averages over edge ends. It is undefined if all degrees are equal.`,
+      idea: String.raw`Choose an oriented edge uniformly and call its endpoint degrees $X,Y$. The two marginals agree, so $r=E[(X-EX)(Y-EY)]/\operatorname{Var}(X)$. Applying Hölder with exponents $2,2$ (prob-1.6.3) to the centred variables gives $|E[(X-EX)(Y-EY)]|\le\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}$, proving $|r|\le1$ whenever the variance is positive. Degree-preserving rewiring fixes the endpoint marginals and denominator while changing the numerator. Its attainable correlations remain constrained by the given degree sequence and simple-graph structure; an arbitrary target is not guaranteed to be reachable.`,
+      caption: String.raw`Each dot is an edge, plotted twice (once per orientation) as the degrees at its two ends, with a little jitter. Choose the karate club or the Les Misérables network, or the model network, which lets you swap edges (keeping every degree fixed) toward your target correlation. The actual value may stop short because the degree sequence restricts which correlations are attainable.`,
+      deps: ['soc-2.3', 'prob-1.6.3'],
       refs: ['Newman ch. 7'],
       tags: ['assortativity', 'degree'],
       credit: 'Newman, 2002',
@@ -264,16 +267,17 @@ where $\langle\cdot\rangle_E$ averages over edge ends. It is undefined if all de
       num: '2.13',
       kind: 'Hypothesis',
       name: 'Dunbar’s number (contested)',
-      statement: String.raw`**Hypothesis.** Among primates the typical size $N$ of a social group rises with the relative size of the neocortex (neocortex volume divided by the volume of the rest of the brain, the neocortex ratio $CR$), because tracking relationships takes brain. Dunbar's reduced major axis regression of $\log_{10} N$ on $\log_{10} CR$, extrapolated to the human ratio $CR\approx 4.1$, predicts a group of about **150** people (the human extrapolation in Dunbar’s 1993 author preprint §3.1 is $147.8$, with a reported 95% confidence interval $100.2$ to $231.1$).
+      statement: String.raw`**Hypothesis.** Among primates the typical size $N$ of a social group rises with the relative size of the neocortex (neocortex volume divided by the volume of the rest of the brain, the neocortex ratio $CR$), because tracking relationships takes brain. Dunbar's regression of $\log_{10} N$ on $\log_{10} CR$, extrapolated to the human ratio $CR\approx 4.1$, predicts a group of about **150** people (the "number" is $\approx 148$ with a 95% confidence interval of about 100 to 230).
 
-Lindenfors, Wartel and Lind (2021) analysed updated, larger datasets with phylogenetic methods. Across their neocortex-based model specifications, reported 95% intervals extend from about 4 to 520 (Bayesian) and 2 to 336 (generalised least squares). These are envelopes across models, not intervals from one common estimate.`,
+A 2021 reanalysis with modern phylogenetic methods found that the same data give 95% confidence intervals of about 4 to 520 (Bayesian) and 2 to 336 (generalised least squares) for humans, so that naming a single number has little support.`,
       scope: String.raw`An extrapolation: the human neocortex ratio lies beyond the range of the non-human primates the line was fitted to, and group size is defined differently across species. As a statement about humans, the number is a hypothesis, not a measured constant.`,
-      idea: String.raw`Ordinary least squares gives a prediction interval whose width grows as one moves away from the middle of the data: for a new point at $x_0$ it is $\hat y \pm t\,\hat\sigma\sqrt{1 + 1/n + (x_0-\bar x)^2/S_{xx}}$. Extrapolating beyond every observation, with scatter around the line, with few species and with relatedness between species ignored, the interval balloons. This OLS demonstration is not a reproduction of Dunbar’s reduced major axis fit or the 2021 phylogenetic analyses. The prediction at $CR = 4.1$ comes from the line; its uncertainty depends on the statistical model.`,
-      caption: String.raw`Dots are SIMULATED primate genera scattered around the 1992 line (not the original data). Drag the slider for the scatter $\sigma$ (in $\log_{10}$ units) and the number of genera, and see the prediction interval at the human ratio (the purple bar) against the author-reported 1993 interval and the 2021 model envelopes.`,
-      deps: ['soc-2.3', 'stat-8.12'],
+      idea: String.raw`Ordinary least squares gives a prediction interval whose width grows as one moves away from the middle of the data: for a new point at $x_0$ it is $\hat y \pm t\,\hat\sigma\sqrt{1 + 1/n + (x_0-\bar x)^2/S_{xx}}$. Extrapolating beyond every observation, with scatter around the line, with few species and with relatedness between species ignored, the interval balloons. The prediction at $CR = 4.1$ comes from the line; whether it is informative depends on this interval.`,
+      caption: String.raw`Dots are SIMULATED primate genera scattered around the 1992 line (not the original data). Drag the slider for the scatter $\sigma$ (in $\log_{10}$ units) and the number of genera, and see the prediction interval at the human ratio (the purple bar) against the published intervals.`,
+      deps: ['soc-2.3'],
       refs: [],
       tags: ['dunbar', 'regression'],
-      credit: 'Dunbar, 1992 and 1993 author preprint; Lindenfors, Wartel & Lind, 2021',
+      credit: 'Dunbar, 1992; Lindenfors, Wartel & Lind, 2021',
+      verify: true,
       viz(v) {
         const s = v.stage({ x: [1, 5], y: [1, 1000], ylog: true, axes: 'box', gutter: true, xlabel: 'neocortex ratio $CR$', ylabel: 'group size $N$', height: 420, weight: 1.4 });
         const sig = v.slider('Scatter $\\sigma$ (in $\\log_{10}$ units)', 0.05, 0.6, 0.2, { step: 0.01 });
@@ -289,22 +293,20 @@ Lindenfors, Wartel and Lind (2021) analysed updated, larger datasets with phylog
           const t = v.M.dist.studentT(n - 2).quantile(0.975);
           const pi = (c) => { const x0 = Math.log10(c), y0 = fit.predict(x0), w = t * sh * Math.sqrt(1 + 1 / n + (x0 - xm) ** 2 / Sxx); return [10 ** (y0 - w), 10 ** y0, 10 ** (y0 + w)]; };
           const band = (a) => { const L = [], U = []; for (let c = 1.1; c <= 5; c += 0.05) { const q = pi(c); L.push([c, q[0]]); U.push([c, q[2]]); } return a ? L : U; };
-          const lower = band(true), upper = band(false), allY = [1.2, 1000, ...lower.map((p) => p[1]), ...upper.map((p) => p[1]), ...Y.map((y) => 10 ** y)];
-          s.setView([1, 5], [Math.min(...allY) / 1.4, Math.max(...allY) * 1.4]);
-          s.path(lower, { color: 'purple', width: 1.4, dash: true }); s.path(upper, { color: 'purple', width: 1.4, dash: true });
+          s.path(band(true), { color: 'purple', width: 1.4, dash: true }); s.path(band(false), { color: 'purple', width: 1.4, dash: true });
           const line = []; for (let c = 1.1; c <= 5; c += 0.05) line.push([c, 10 ** fit.predict(Math.log10(c))]); s.path(line, { color: 'purple', width: 2.4 });
           s.dots(X.map((x, i) => [10 ** x, 10 ** Y[i]]), { color: 'accent', r: 4 });
           s.vband(1.2, 3.3, { color: 'faint', alpha: 0.06 });
           const q = pi(cr.value);
           s.vline(cr.value, { color: 'muted', dash: [4, 3] });
-          s.segment([4.28, 100], [4.28, 230], { color: 'accent', width: 6 }); s.text('1993 report', 4.28, 84, { size: 11, color: 'accent', align: 'center', baseline: 'top' });
+          s.segment([4.28, 100], [4.28, 230], { color: 'accent', width: 6 }); s.text('1992', 4.28, 84, { size: 11, color: 'accent', align: 'center', baseline: 'top' });
           s.segment([4.5, 4], [4.5, 520], { color: 'orange', width: 6 }); s.text('2021 Bayes', 4.5, 3.2, { size: 11, color: 'orange', align: 'center', baseline: 'top' });
           s.segment([4.72, 2], [4.72, 336], { color: 'red', width: 6 }); s.text('2021 GLS', 4.72, 1.6, { size: 11, color: 'red', align: 'center', baseline: 'top' });
           s.segment([cr.value, q[0]], [cr.value, q[2]], { color: 'purple', width: 6 }); s.dot(cr.value, q[1], { color: 'gold', r: 6 });
           st = { q, fit, cr: cr.value, ratio: q[2] / q[0] };
         });
-        v.legend([['accent', 'simulated genera', { dot: true }], ['purple', 'fit and 95% prediction band'], ['accent', 'Dunbar 1993 report: 100–230'], ['orange', '2021 Bayesian: 4–520'], ['red', '2021 GLS: 2–336']]);
-        v.readout(() => `Fit to the simulated sample: $\\log_{10}N = ${v.fix(st.fit.intercept, 2)} + ${v.fix(st.fit.slope, 2)}\\log_{10}CR$ · at $CR = ${v.fix(st.cr, 2)}$ the prediction is **${v.fix(st.q[1], 0)}** with a 95% prediction interval **${v.fix(st.q[0], 0)} to ${v.fix(st.q[2], 0)}** (a factor ${v.fix(st.ratio, 1)} from end to end)\nThe 1992 line gives $10^{0.093 + 3.389\\log_{10}4.1} \\approx ${v.fix(10 ** (0.093 + 3.389 * Math.log10(4.1)), 0)}$ at $CR = 4.1$. Coloured bars show Dunbar’s reported 1993 interval and the rounded 2021 model envelopes; the primate points above are simulated, not Dunbar's table.`);
+        v.legend([['accent', 'simulated genera', { dot: true }], ['purple', 'fit and 95% prediction band'], ['accent', '1992: 100–230'], ['orange', '2021 Bayesian: 4–520'], ['red', '2021 GLS: 2–336']]);
+        v.readout(() => `Fit to the simulated sample: $\\log_{10}N = ${v.fix(st.fit.intercept, 2)} + ${v.fix(st.fit.slope, 2)}\\log_{10}CR$ · at $CR = ${v.fix(st.cr, 2)}$ the prediction is **${v.fix(st.q[1], 0)}** with a 95% prediction interval **${v.fix(st.q[0], 0)} to ${v.fix(st.q[2], 0)}** (a factor ${v.fix(st.ratio, 1)} from end to end)\nThe 1992 line gives $10^{0.093 + 3.389\\log_{10}4.1} \\approx ${v.fix(10 ** (0.093 + 3.389 * Math.log10(4.1)), 0)}$ at $CR = 4.1$. Coloured bars at the right are the published intervals; the primate points above are simulated, not Dunbar's table.`);
       },
     },
 
@@ -313,16 +315,17 @@ Lindenfors, Wartel and Lind (2021) analysed updated, larger datasets with phylog
       num: '2.14',
       kind: 'Concept',
       name: 'Affiliation networks and focal closure',
-      statement: String.raw`An **affiliation network** (a two-mode or bipartite network) joins people to the **foci** they take part in (clubs, workplaces, classes, events); there are no direct person-person edges, only person-focus ones. Two people sharing a focus are likely to meet and, over time, become friends: **focal closure** is the formation of a tie between two people who share one or more foci. The independent-chances model below makes tie probability increase with the number of shared foci.
+      statement: String.raw`An **affiliation network** (a two-mode or bipartite network) joins people to the **foci** they take part in (clubs, workplaces, classes, events); there are no direct person-person edges, only person-focus ones. Two people sharing a focus are likely to meet and, over time, become friends: **focal closure** is the formation of a tie between two people who share one or more foci. The more foci two people share, the more likely they are tied.
 
 A model: each shared focus independently gives a chance $q$ of a tie, so that two people with $k$ shared foci are tied with probability $1 - (1-b)(1-q)^k$ (where $b$ is a base rate unrelated to foci), which rises steadily with $k$.`,
-      scope: String.raw`The independent-chances formula is a model, not a law; Feld’s theory allows foci to vary in size and constraint and also allows ties to form outside foci (1981, pp. 1018–1021). Shared foci and existing ties can affect each other, so the displayed model is not a causal estimate.`,
-      idea: String.raw`Projecting a bipartite network onto its people gives a graph in which every focus becomes a clique, so affiliation produces many triangles on its own: this is the "closure by foci" next to the "closure by common friends" of 2.5. Each additional shared focus is another independent occasion to become friends, so the failure probabilities multiply.`,
+      scope: String.raw`The independent-chances formula is a model, not a law; in empirical studies of evolving networks the chance of becoming friends does rise with the number of shared foci, but the shape varies and shared foci also reflect homophily and choice of focus.`,
+      idea: String.raw`Projecting a bipartite network onto its people makes every focus a clique, so affiliation produces triangles without a separate friend-of-a-friend process. For the stated probability model, let $I_0$ indicate failure of the background opportunity and $I_j$ failure at shared focus $j$. These bounded indicators are jointly independent by assumption. The independent-product theorem (prob-2.1.13) gives $E\prod_{j=0}^k I_j=(1-b)(1-q)^k$; subtracting from one gives the tie probability. Correlated opportunities need not obey this product, even when every marginal chance is unchanged.`,
       caption: String.raw`The 18 women and 14 events of the Davis–Gardner–Gardner study of southern women (a standard dataset). Click a woman to highlight her events and everyone she shared one with. Switch to the projected network, where the width of a line is the number of shared events, then set $q$ and the base rate $b$: bars show how often simulated pairs with $k$ shared events became friends.`,
-      deps: ['soc-2.5', 'soc-2.9', 'prob-2.1.1a'],
+      deps: ['soc-2.5', 'soc-2.9', 'prob-2.1.13'],
       refs: ['E&K §4.3', 'E&K §4.4'],
       tags: ['affiliation', 'bipartite'],
-      credit: 'Feld, 1981 (foci); NetworkX Southern Women dataset (attendance)',
+      credit: 'Breiger, 1974; Feld, 1981; Kossinets & Watts, 2006',
+      verify: true,
       viz(v) {
         const s = v.stage({ x: [-2.05, 1.45], y: [-1.15, 1.2], axes: false, equal: true, height: 460, weight: 1.15 });
         const p = v.stage({ x: [-0.5, 8.5], y: [0, 1], axes: 'box', gutter: true, xlabel: 'shared events $k$', ylabel: 'P(friends)', height: 460, weight: 0.9 });
@@ -427,13 +430,14 @@ A model: each shared focus independently gives a chance $q$ of a tie, so that tw
       name: 'The Strength of Weak Ties',
       paper: { authors: 'Mark S. Granovetter', year: 1973, title: 'The Strength of Weak Ties', venue: 'American Journal of Sociology 78 (6): 1360–1380', doi: '10.1086/225469' },
       introduces: ['soc-2.6', 'soc-2.7'],
-      statement: String.raw`Granovetter argued that the strength of a tie (a mix of time, emotional intensity, intimacy and reciprocal services) can be treated as a variable, and that if a person $A$ has strong ties to $B$ and $C$, then there is a high chance of at least a weak tie between $B$ and $C$: the "forbidden triad" of two strong ties without a third tie is rare. Under the strict forbidden-triad assumption, a bridge must be weak if at least one endpoint has another strong tie; an isolated strong dyad is an exception (p. 1364). The paper then argues that weak ties are therefore the channels through which information and influence reach a group from beyond it, and offers as evidence a study of how professional, technical and managerial workers in Newton, Massachusetts (a Boston suburb) found their jobs: most who used a personal contact saw that contact only occasionally or rarely.`,
-      idea: String.raw`Before the paper, network studies concentrated on the cohesion of strong-tie groups, and weak ties were treated as marginal. Granovetter turned this around: a strong-tie cluster is redundant internally (everyone knows what everyone knows), so what spreads between clusters travels on bridges, and bridges with an endpoint that has another strong tie are (by the forbidden-triad argument, 2.6) weak ties. The paper introduced the forbidden triad and the bridge argument, the idea that weak ties are the connectors, and the job-search evidence. Its central argument connects a qualitative structural hypothesis with observational job-search evidence; the 54 contact-based job finders came from 100 personal interviews, a random subsample of the full sample of 282 (p. 1371, note 16).`,
-      caption: String.raw`Left: the forbidden triad. $A$ is strongly tied to $B$ and $C$; choose the tie between $B$ and $C$ to see when the triad is forbidden and when a bridge could be strong. Right: the job-contact data of the paper, reported on p. 1371 (counts inferred from the rounded percentages); choose where "strong" begins and see how much of the new information arrives over weak ties.`,
+      statement: String.raw`Granovetter argued that the strength of a tie (a mix of time, emotional intensity, intimacy and reciprocal services) can be treated as a variable, and that if a person $A$ has strong ties to $B$ and $C$, then there is a high chance of at least a weak tie between $B$ and $C$: the "forbidden triad" of two strong ties without a third tie is rare. A consequence is that a tie that is the only bridge between two clusters cannot be strong. The paper then argues that weak ties are therefore the channels through which information and influence reach a group from beyond it, and offers as evidence a study of how professional, technical and managerial workers in Newton, Massachusetts (a Boston suburb) found their jobs: most who used a personal contact saw that contact only occasionally or rarely.`,
+      idea: String.raw`Before the paper, network studies concentrated on the cohesion of strong-tie groups, and weak ties were treated as marginal. Granovetter turned this around: a strong-tie cluster is redundant internally (everyone knows what everyone knows), so what spreads between clusters travels on bridges, and bridges are (by the forbidden-triad argument, 2.6) weak ties. The paper introduced the forbidden triad and the bridge argument, the idea that weak ties are the connectors, and the job-search evidence. Its central argument is verbal; later work (the strong triadic closure theorem, large phone-call networks, and a 2022 field experiment on a professional networking site) made it precise and tested it.`,
+      caption: String.raw`Left: the forbidden triad. $A$ is strongly tied to $B$ and $C$; choose the tie between $B$ and $C$ to see when the triad is forbidden and when a bridge could be strong. Right: the job-contact data of the paper, as the syllabus quotes it; choose where "strong" begins and see how much of the new information arrives over weak ties.`,
       deps: ['soc-2.5'],
       refs: [],
       credit: 'Mark Granovetter, 1973',
       links: { doi: 'https://doi.org/10.1086/225469' },
+      verify: true,
       viz(v) {
         const s = v.stage({ x: [-1.3, 1.3], y: [-1.0, 1.05], axes: false, equal: true, height: 360, weight: 1 });
         const p = v.stage({ x: [-0.5, 3], y: [0, 70], axes: 'box', gutter: true, xlabel: 'how often the contact was seen', ylabel: '% of job finders using a contact', height: 360, weight: 1.1, xticks: [[0, 'often'], [1, 'occasionally'], [2, 'rarely']] });

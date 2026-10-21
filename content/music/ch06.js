@@ -1,4 +1,6 @@
+import { inducedModel, inducedAudio } from './source-audit-induced-paper.js';
 // Music Theory & Acoustics — Chapter 6: Consonance and dissonance (part a: items 6.1–6.8)
+import { ROUGH_C4, roughCents, roughPreset, roughDyadModel, roughStretchModel, roughAudio } from './source-audit-roughness.js';
 import { SR, loopVoice, playhead, finish, cbw, pl, at, dissAll, diss2, dissCurve, minima, sample, cents, gcd, nearRatio, gradus, tenney, JUST, harmonic, stretched, sharc, BEAM, JUBLAG, UGAL, TET10, ratioStr, harmonicity, toneBuf, mixBuf, seqBuf, loopParts, ratioTicks, plDiss65 } from './ch06.shared.js';
 
 /** Spectrum presets used by several items: name → [[ratio, amp], …]. */
@@ -256,172 +258,79 @@ whose peak lies at $s\,\Delta f=\ln(b_2/b_1)/(b_2-b_1)\approx0.22$. Because the 
     },
     // ------------------------------------------------------------------ 6.4
     {
-      num: '6.4',
-      kind: 'Model',
-      name: 'Dissonance curves of complex tones (Sethares)',
-      statement: String.raw`Let a tone have partials at frequencies $f_1,\dots,f_n$ with amplitudes $a_1,\dots,a_n$. Its **dissonance curve** is the total sensory dissonance of the tone sounded with a copy of itself transposed by the ratio $\alpha$:
-$$D(\alpha)=\sum_{\text{pairs }i<j\text{ of the }2n\text{ partials }\{f_k\}\cup\{\alpha f_k\}}d(\text{freq}_i,\text{freq}_j)\,\min(\text{amp}_i,\text{amp}_j),$$
-with $d$ the Plomp–Levelt curve of two pure tones (6.3). For a harmonic spectrum $D$ has its global minimum at the unison and **local minima exactly at simple ratios** $\alpha=p/q$ ($p,q\le n$): $2/1$, $3/2$, $4/3$, $5/3$, $5/4$, $6/5$, …, deeper for smaller numbers. Which minima exist, and how deep they are, depends on the amplitudes of the partials.`,
-      idea: String.raw`Near $\alpha=p/q$ the $q$-th partial of the upper copy approaches the $p$-th partial of the lower; their contribution to $D$ is a narrow Plomp–Levelt peak centred on the coincidence, so $D$ has a sharp notch there, of depth set by the two amplitudes and of width about a critical band. All other partial pairs vary smoothly. The curve is the sum of a broad, smooth background and these notches; notches from strong low partials (octave, fifth) are deepest, and a notch disappears when one of the partials that make it is removed. This is the model behind Plomp and Levelt's Fig. 11 (6.14) and Sethares's dissonance curves (6.15).`,
-      caption: String.raw`Top: the spectrum; drag a bar up or down to change a partial's amplitude, or choose a preset (Sethares's $0.88^{k-1}$, $1/k$, odd harmonics only like a clarinet's low register, or the measured violin and clarinet spectra of SHARC). Bottom: the dissonance curve over a little more than an octave above middle C, with its local minima (green) labelled by the nearest simple ratio; the faint curve is the same for pure tones. Remove the 3rd partial and the fifth's dip weakens; with odd harmonics only the octave and fifth dips vanish while 5/3 and 7/5 survive. Click the curve to hear that interval with this timbre.`,
-      deps: ['music-6.3', 'music-6.2'],
-      see: ['music-6.15', 'music-6.14', 'music-4.1'],
-      refs: ['Sethares ch. 5', 'Benson ch. 4'],
-      tags: ['dissonance', 'timbre'],
-      credit: 'Plomp & Levelt, 1965 (summation); W. A. Sethares, 1993 (dissonance curves)',
-      scope: String.raw`A model of sensory roughness only (no harmonicity, masking, or loudness weighting), using Sethares's amplitude rule $\min(a_i,a_j)$; other choices (products of amplitudes, loudness in sones) change depths but not where the minima sit. Steady tones at middle-C register; SHARC spectra are single sustained notes (E4) of one recording each.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Consonance_and_dissonance' },
-      viz(v) {
-        const M = v.M, F0 = 261.63, CMAX = 1250, N = 8;
-        let amps = harmonic(N, 0.88).map((p) => p[1]), cache = null, cur = null;
-        const pre = v.select('spectrum', [{ value: 'set', label: '0.88ᵏ' }, { value: 'inv', label: '1/k' }, { value: 'odd', label: 'odd only' }, { value: 'violin', label: 'violin' }, { value: 'clarinet', label: 'clarinet' }], 'set', { onChange: (x) => { amps = preset(x, N).map((p) => p[1]); const m = Math.max(...amps); amps = amps.map((a) => a / m); cache = null; v.invalidate(); } });
-        const sp = v.stage({ x: [0.4, N + 0.6], y: [0, 1.12], height: 170, axes: 'box', gutter: true, full: true, xticks: Array.from({ length: N }, (_, k) => [k + 1, String(k + 1)]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'partial number', ylabel: 'amplitude', title: 'the spectrum (drag the bars)' });
-        const cv = v.stage({ x: [0, CMAX], y: [0, 1.1], height: 300, axes: 'box', gutter: true, full: true, xticks: [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200].map((c) => [c, String(c)]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval above C4 (cents)', ylabel: 'dissonance (rel.)', title: 'dissonance curve: the tone against a transposed copy of itself' });
-        sp.onDrag((x, y) => { const k = Math.round(x); if (k >= 1 && k <= N) { amps[k - 1] = M.clamp(y, 0, 1); cache = null; } });
-        const spec = () => amps.map((a, k) => [k + 1, a]);
-        const curve = () => {
-          if (cache) return cache;
-          const S = nz(spec()), C = dissCurve(S, F0, 0, CMAX, 625), P = dissCurve([[1, 1]], F0, 0, CMAX, 300);
-          let mx = 0; for (const x of C.d) mx = Math.max(mx, x);
-          let pm = 0; for (const x of P.d) pm = Math.max(pm, x);
-          cache = { C, P, mx, pm, mins: minima(C, 0.006) }; return cache;
-        };
-        cv.onClick((x) => { cur = M.clamp(x, 0, CMAX); const S = nz(spec()); v.sound().stop(); v.sound().samples(mixBuf([[S, F0], [S, F0 * 2 ** (cur / 1200)]], 1.6), SR, { gain: 0.9 }); v.invalidate(); });
-        v.soundButton('play the tone', (snd) => snd.samples(mixBuf([[nz(spec()), F0]], 1.2), SR, { gain: 0.9 }));
-        v.render(() => {
-          amps.forEach((a, k) => { sp.rect(k + 1 - 0.32, 0, k + 1 + 0.32, Math.max(a, 0.004), { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1 }); });
-          const K = curve();
-          for (let c = 100; c < CMAX; c += 100) cv.vline(c, { color: 'grid', width: 1 });
-          cv.path(Array.from(K.P.c, (x, i) => [x, (0.85 * K.P.d[i]) / K.pm]), { color: 'muted', width: 1.2, alpha: 0.6 });
-          cv.path(Array.from(K.C.c, (x, i) => [x, K.C.d[i] / K.mx]), { color: 'accent', width: 2.4 });
-          let lastX = -1e9;
-          for (const m of K.mins) {
-            const r0 = nearRatio(m.c, 9, 15), r = r0 && Math.abs(r0.err) <= 15 ? r0 : null, y = m.d / K.mx;
-            cv.dot(m.c, y, { r: 4, color: 'green' });
-            if (m.c - lastX > 45 && m.c > 30) { cv.text(r ? rl(r) : `${v.fix(m.c, 0)}¢`, m.c, y, { color: 'green', size: 10.5, align: 'center', dy: y < 0.16 ? -10 : 14 }); lastX = m.c; }
-          }
-          if (cur != null) { cv.vline(cur, { color: 'gold', width: 2 }); cv.dot(cur, sample(K.C, cur) / K.mx, { r: 5, color: 'gold' }); }
-        });
-        v.legend([['accent', 'this spectrum'], ['muted', 'pure tones (rescaled)'], ['green', 'local minima'], ['gold', 'clicked interval']]);
-        v.readout(() => {
-          const K = curve(), list = K.mins.filter((m) => m.c > 30).map((m) => { const r = nearRatio(m.c, 9, 15); return `${v.fix(m.c, 0)} ¢${r && Math.abs(r.err) <= 15 ? ` (${rl(r)} ${sc(v, r.err, 1)})` : ' (shallow, no simple ratio)'}`; });
-          return `${list.length} local minima above the unison: ${list.join(' · ')}${cur != null ? ` · clicked ${v.fix(cur, 0)} ¢, dissonance ${v.fix(sample(K.C, cur) / K.mx, 3)}` : ''}`;
-        });
+      num:'6.4',kind:'Model',name:'Dissonance curves of complex tones (Sethares)',verify:false,
+      statement:String.raw`A finite tone is specified by partial ratios $h_i>0$ and nonnegative amplitudes $a_i$. For a lower fundamental $f$, concatenate the partial lists of that tone and its copy at $\alpha f$. The later MATLAB model published by Sethares sums over every unordered pair, including pairs within each tone:
+$$D_f(\alpha)=\sum_{i<j}w_{ij}g(x_{ij}),$$
+$$w_{ij}=5\min(a_i,a_j),$$
+$$g(x)=e^{-3.51x}-e^{-5.75x},$$
+$$x_{ij}=\frac{0.24\delta_{ij}}{0.0207m_{ij}+18.96}.$$
+Here $\delta_{ij}=|f_i-f_j|$ and $m_{ij}=\min(f_i,f_j)$.
+Partial coincidences at $\alpha=h_i/h_j$ are candidate locations for notches, not a complete list of local minima. The smooth contributions from other pairs can produce shallow minima between coincidences. Changing amplitudes, the weighting convention or the register can change the curve and its minima.`,
+      idea:String.raw`At a coincidence, one pair's contribution is zero and grows on either side; the remaining terms can reinforce or overwhelm that notch. Between coincidences all terms are smooth, and their derivatives can cancel. For the two equal-amplitude partials $f$ and $2f$ at $f=261.6256$ Hz, the only distinct coincidence above unison is $2{:}1$, yet this model has an interior minimum at a ratio between 1.4814 and 1.4816 (about 680.5 cents). This gives a concrete counterexample to the claim that all minima are partial ratios.`,
+      caption:String.raw`The default two-partial tone exhibits that shallow minimum. Choose an explicitly synthetic preset or drag the amplitude handles; click the curve or move the interval control, then play the selected dyad. Green markers are minima of the displayed 2-cent grid, including one-sided endpoints; their positions are not certified continuous minima. The dotted lines mark actual partial coincidences. Both curves use one common vertical divisor, and the readout reports the unscaled score.`,
+      deps:['music-6.3','music-6.2'],see:['music-6.15','music-6.14','music-4.1'],
+      refs:['Sethares, Some Useful Computer Programs, MATLAB dissmeasure and concatenated-tone example','Sethares, Relating Tuning and Timbre, How to Calculate Dissonance Curves and Figure4'],
+      tags:['dissonance','timbre'],credit:'W. A. Sethares, published author program and explanatory article',
+      scope:String.raw`This is a finite steady-tone roughness model, not a complete model of musical consonance or a claim about listeners. The later minimum-amplitude convention is distinct from the amplitude-product formula in the 1994 adaptive-tuning paper. Presets are authored numerical spectra, not measured instruments: eight harmonics with amplitudes $0.88^{k-1}$, $1/k$, odd harmonics with $1/k$, two equal partials, one pure tone, or silence. Every positive amplitude is retained. Plot and sound use the same spectrum and C4=261.6256 Hz. Mono 44,100-Hz synthesis has 10-ms ramps and pre-output magnitude bounded by 0.12; silence has a zero score and zero signal.`,
+      links:{source:'https://sethares.engr.wisc.edu/comprog.html'},
+      viz(v){
+        let info;const pre=v.select('authored spectrum',[{value:'two',label:'two partials'},{value:'h8',label:'eight harmonics'},{value:'inverse',label:'1/k'},{value:'odd',label:'odd only'},{value:'pure',label:'pure tone'},{value:'silent',label:'silence'}],'two',{onChange:name=>{roughPreset(name).forEach(([,a],j)=>handles[j].set(j+1,a));}});
+        const interval=v.slider('selected interval (cents)',0,1250,680.5,{step:'any',fmt:x=>v.fix(x,2)});
+        const sp=v.stage({x:[.35,8.65],y:[-.25,1.3],height:190,axes:'box',gutter:true,full:true,xticks:Array.from({length:8},(_,j)=>[j+1,String(j+1)]),yticks:[[0,'0'],[.5,'0.5'],[1,'1']],xlabel:'harmonic number',ylabel:'amplitude',title:'synthetic spectrum: drag the handles'});
+        const handles=roughPreset().map(([,a],j)=>sp.handle(j+1,a,{color:'gold',constrain:(_x,y)=>[j+1,Math.max(0,Math.min(1,y))]}));
+        const cv=v.stage({x:[-50,1300],y:[-.08,1.15],height:300,axes:'box',gutter:true,full:true,xticks:[0,200,400,600,800,1000,1200].map(c=>[c,String(c)]),yticks:[[0,'0'],[.5,'0.5'],[1,'1']],xlabel:'interval above C4 (cents)',ylabel:'score / common maximum',title:'coincidences and sampled minima'});
+        let key='',cached;const model=()=>{const s=handles.map((h,j)=>[j+1,h.y]),k=JSON.stringify([s,interval.value]);if(k!==key){key=k;cached=roughDyadModel(s,interval.value);}return cached;};
+        cv.onClick(x=>{interval.set(Math.max(0,Math.min(1250,x)));v.invalidate();});
+        v.soundButton('play selected dyad',snd=>{const a=model(),b=roughAudio([[ROUGH_C4,ROUGH_C4*2**(a.selected/1200)]],a.s);snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});
+        v.soundButton('play this tone',snd=>{const b=roughAudio([[ROUGH_C4]],model().s);snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});
+        v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;handles.forEach((h,j)=>sp.rect(j+.72,0,j+1.28,h.y,{fill:'accent',fillAlpha:.5,color:'accent',width:1}));for(const r of a.ratios)cv.line(roughCents(r),-.025,roughCents(r),1.04,{color:'purple',width:1,dash:[3,4],alpha:.45});cv.path(a.pure.points.map(([x,y])=>[x,y/a.ymax]),{color:'muted',width:1.2});cv.path(a.points.map(([x,y])=>[x,y/a.ymax]),{color:'accent',width:2.3});a.minima.forEach(([x,y])=>cv.dot(x,y/a.ymax,{r:3.5,color:'green'}));cv.line(a.selected,-.03,a.selected,1.06,{color:'gold',width:1.3});cv.dot(a.selected,a.value/a.ymax,{r:4.5,color:'gold'});});
+        v.legend([['accent','edited spectrum'],['muted','pure-tone comparison'],['purple','actual coincidences'],['green','2-cent sampled minima'],['gold','selected interval']]);
+        v.readout(()=>{const a=info;return `Raw selected score ${v.fix(a.value,6)} · ratio ${v.fix(2**(a.selected/1200),7)} · common divisor ${v.fix(a.ymax,6)} · ${a.s.filter(([,amp])=>amp>0).length} active partials.\nSampled minima (cents): ${a.minima.length?a.minima.map(([x])=>v.fix(x,0)).join(', '):'none; the edited spectrum is silent'}. Coincidence ratios: ${a.ratios.length?a.ratios.map(r=>v.fix(r,5)).join(', '):'none'}.`;});
       },
     },
     // ------------------------------------------------------------------ 6.5
     {
-      num: '6.5',
-      kind: 'Principle',
-      name: 'Timbre determines the most consonant tuning',
-      statement: String.raw`**Principle of local consonance** (Sethares, 1993): a timbre and a scale are *related* when the local minima of the timbre's dissonance curve (6.4) fall on the intervals of the scale. Since by the coincidence argument the minima sit at ratios $f_i/f_j$ of the timbre's own partials, the consonant intervals of a sound are set by its spectrum. Harmonic spectra are related to just intonation and, approximately, to 12-tone equal temperament. For **stretched** or **compressed** spectra $f_j=f\,A^{\log_2 j}$ (Slaymaker; Mathews and Pierce) the ratio $A$ plays the role of the octave, a *pseudo-octave*: the true octave $2{:}1$ becomes rough unless $A=2$, while the minima sit near the steps $A^{k/12}$ of a correspondingly stretched 12-step scale.`,
-      idea: String.raw`Stretching maps every partial ratio $j/k$ to $A^{\log_2(j/k)}$, so every coincidence of the harmonic case happens at the stretched interval instead: the octave coincidence $2f$ with $2f$ moves to $A$, the fifth's $3f$ with $3f$ moves to $A^{\log_2 1.5}$, and so on. The whole dissonance curve is the harmonic one, re-plotted on an axis stretched by $\log_2 A$ (apart from small changes from the frequency dependence of the critical band). Music built on the stretched scale with the stretched timbre therefore has the familiar pattern of consonance and dissonance; the same music with an ordinary harmonic timbre beats everywhere, and so does ordinary music with the stretched timbre.`,
-      caption: String.raw`Slide the pseudo-octave $A$ from compressed (1.87) through harmonic (2.00) to stretched (2.2). The blue curve is the dissonance curve of a 6-partial tone with partials $f\,A^{\log_2 j}$; the faint curve is the harmonic one. Orange ticks mark the 12 steps of the stretched scale $A^{k/12}$; the green dots are the minima. Watch the octave (dashed) lose its dip while the pseudo-octave gains one. Play a I–IV–V–I cadence with the matched pair (stretched timbre in the stretched scale) and with each of the two mismatches; the readout gives the mean dissonance of the chords in each case.`,
-      deps: ['music-6.4'],
-      see: ['music-6.6', 'music-6.15', 'music-2.11'],
-      refs: ['Sethares ch. 6', 'Benson ch. 4'],
-      tags: ['dissonance', 'tuning'],
-      credit: 'W. A. Sethares, 1993; stretched partials: F. H. Slaymaker, 1970; M. V. Mathews & J. R. Pierce, 1980',
-      scope: String.raw`Concerns sensory roughness, not melody or harmonicity; listeners also hear stretched timbres as less fused and their pseudo-octaves as "wrong" octaves (Mathews and Pierce report musically usable but distinctly different results). The real stretch of piano strings (2.11) is far smaller (a few cents per octave) than these examples.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pseudo-octave' },
-      viz(v) {
-        const M = v.M, F0 = 261.63, CMAX = 1480;
-        let cache = null;
-        const aS = v.slider('pseudo-octave $A$', 1.87, 2.22, 2.1, { step: 0.005, fmt: (x) => `${v.fix(x, 3)} (${v.fix(cents(x), 0)} ¢)`, onChange: () => { cache = null; } });
-        const s = v.stage({ x: [0, CMAX], y: [0, 1.12], height: 340, axes: 'box', gutter: true, full: true, xticks: [0, 200, 400, 600, 800, 1000, 1200, 1400].map((c) => [c, String(c)]), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], xlabel: 'interval (cents)', ylabel: 'dissonance (rel.)', title: 'stretched timbre: the minima follow the partials' });
-        const harm = dissCurve(harmonic(6, 0.88), F0, 0, CMAX, 540); let hm = 0; for (const x of harm.d) hm = Math.max(hm, x);
-        const curve = () => {
-          if (cache) return cache;
-          const C = dissCurve(stretched(6, aS.value, 0.88), F0, 0, CMAX, 540); let mx = 0; for (const x of C.d) mx = Math.max(mx, x);
-          cache = { C, mx, mins: minima(C, 0.006) }; return cache;
-        };
-        const PROG = [[0, 4, 7], [5, 9, 12], [7, 11, 14], [0, 4, 7]];
-        const chords = (step, spec, root = 196) => PROG.map((ch) => ch.map((k) => [spec, root * 2 ** ((k * step) / 1200)]));
-        const meanD = (step, spec) => { const cs = chords(step, spec); return cs.reduce((s, ch) => s + dissAll(ch.flatMap(([S, f]) => at(S, f))), 0) / cs.length; };
-        v.soundButton('matched: stretched timbre, stretched scale', (snd) => snd.samples(seqBuf(chords(cents(aS.value) / 12, stretched(6, aS.value)), 1.0), SR, { gain: 0.9 }));
-        v.soundButton('stretched timbre, ordinary scale', (snd) => snd.samples(seqBuf(chords(100, stretched(6, aS.value)), 1.0), SR, { gain: 0.9 }));
-        v.soundButton('harmonic timbre, stretched scale', (snd) => snd.samples(seqBuf(chords(cents(aS.value) / 12, harmonic(6, 0.88)), 1.0), SR, { gain: 0.9 }));
-        v.render(() => {
-          const K = curve(), cA = cents(aS.value);
-          for (let k = 1; k <= 12; k++) { const c = (k * cA) / 12; if (c <= CMAX) s.line(c, 0, c, 0.05, { color: 'orange', width: 2 }); }
-          s.text('stretched 12-step scale', (2 * cA) / 12, 0.075, { color: 'orange', size: 10.5, align: 'left' });
-          s.vline(1200, { color: 'red', dash: [5, 4], width: 1.2 }); s.text('octave 2:1', 1200, 1.08, { color: 'red', size: 10.5, align: cA >= 1200 ? 'right' : 'left', dx: cA >= 1200 ? -4 : 4, plate: true });
-          s.vline(cA, { color: 'green', dash: [5, 4], width: 1.2 }); s.text('pseudo-octave A', cA, 1.0, { color: 'green', size: 10.5, align: cA >= 1200 ? 'left' : 'right', dx: cA >= 1200 ? 4 : -4, plate: true });
-          s.path(Array.from(harm.c, (x, i) => [x, harm.d[i] / hm]), { color: 'muted', width: 1.2, alpha: 0.6 });
-          s.path(Array.from(K.C.c, (x, i) => [x, K.C.d[i] / K.mx]), { color: 'accent', width: 2.4 });
-          for (const m of K.mins) s.dot(m.c, m.d / K.mx, { r: 4, color: 'green' });
-        });
-        v.legend([['accent', 'stretched timbre'], ['muted', 'harmonic timbre'], ['green', 'minima'], ['orange', 'steps $A^{k/12}$']]);
-        v.readout(() => {
-          const K = curve(), A = aS.value, cA = cents(A), st = stretched(6, A), hs = harmonic(6, 0.88);
-          const dO = sample(K.C, 1200) / K.mx, dA = sample(K.C, Math.min(cA, CMAX)) / K.mx;
-          const steps = [3, 4, 5, 7, 8, 9, 12].map((k) => (k * cA) / 12), near = steps.filter((c) => K.mins.some((m) => Math.abs(m.c - c) < 20)).length;
-          return `dissonance at the octave ${v.fix(dO, 3)}, at the pseudo-octave ${v.fix(dA, 3)} · minima within 20 ¢ of ${near} of the 7 consonant steps (3, 4, 5, 7, 8, 9, 12) · mean chord dissonance of the cadence: matched ${v.fix(meanD(cA / 12, st), 2)}, stretched timbre in 12-TET ${v.fix(meanD(100, st), 2)}, harmonic timbre in stretched scale ${v.fix(meanD(cA / 12, hs), 2)} (harmonic in 12-TET: ${v.fix(meanD(100, hs), 2)})`;
-        });
+      num:'6.5',kind:'Principle',name:'Local consonance relates timbres and scales',verify:false,
+      statement:String.raw`Sethares calls a timbre and a scale related when local minima of the timbre's dissonance curve occur at scale positions. This is a model-based way to propose intervals for a given sound, rather than a theorem that its spectrum determines one best musical tuning. Partial coincidences can suggest notches, while additional shallow minima can occur between them (6.4).
+For a stretched or compressed spectrum $f_j=fA^{\log_2j}$, every partial-ratio coincidence $j/k$ moves to $A^{\log_2(j/k)}$. A comparison scale has twelve equal steps per pseudo-octave $A$, with step ratios $A^{k/12}$. These equal steps need not coincide exactly with partial ratios or with all minima.`,
+      idea:String.raw`Stretching transforms the coincidence locations, but the frequency differences and critical-band factor in the roughness formula also change. The full score must therefore be recomputed; there is no exact horizontal-rescaling identity for its curve. Spectrum, register, amplitude weighting and musical context all matter. Compare the numerical roughness of specific chords instead of inferring that every matched passage is smoother than every mismatch.`,
+      caption:String.raw`Move $A$ continuously through compressed, harmonic and stretched examples. The blue and grey curves share one vertical divisor; green markers are local minima on the 2-cent grid, with one-sided endpoint tests. Orange ticks show all thirteen positions from unison through $A$. Play the same four authored chord voicings in all four combinations of spectrum and scale; the raw mean score uses the exact frequencies and amplitudes in that audio. At $A=2$ all four combinations agree.`,
+      deps:['music-6.4'],see:['music-6.6','music-6.15','music-2.11'],
+      refs:['Sethares, Relating Tuning and Timbre, local consonance and Stretched and Compressed Timbres','Sethares, Some Useful Computer Programs, later MATLAB convention'],tags:['dissonance','tuning'],
+      credit:'W. A. Sethares, principle of local consonance',
+      scope:String.raw`This finite authored example has six partials, amplitudes $0.88^{j-1}$ and lower anchor C4=261.6256 Hz. The four voicings are [0,4,7], [5,9,12], [7,11,14], [0,4,7], using either 100-cent steps or $1200\log_2(A)/12$-cent steps. A score is a roughness-model output in arbitrary units, not a listener rating or a guarantee about complete music. Mono 44,100-Hz synthesis uses every scored partial, 10-ms ramps and a pre-output bound 0.12. No measured piano stretch or human perceptual threshold is inferred.`,
+      links:{source:'https://sethares.engr.wisc.edu/consemi.html'},
+      viz(v){
+        let info,key,cached;const ctl=v.slider('pseudo-octave A',1.87,2.22,2.1,{step:'any',fmt:x=>`${v.fix(x,5)} (${v.fix(roughCents(x),2)} cents)`});
+        const s=v.stage({x:[-55,1535],y:[-.08,1.3],height:340,axes:'box',gutter:true,full:true,xticks:[0,200,400,600,800,1000,1200,1400].map(c=>[c,String(c)]),yticks:[[0,'0'],[.5,'0.5'],[1,'1']],xlabel:'interval (cents)',ylabel:'score / common maximum',title:'recomputed curves for two spectra'});
+        const model=()=>{if(key!==ctl.value){key=ctl.value;cached=roughStretchModel(key);}return cached;};
+        for(const[action,label]of[['related','stretched spectrum / stretched scale'],['ordinary','stretched spectrum / ordinary scale'],['harmonic','harmonic spectrum / stretched scale'],['baseline','harmonic spectrum / ordinary scale']])v.soundButton(label,snd=>{const c=model().cadences[action],b=roughAudio(c.frequencies,c.s,.6,.05);snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});
+        v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;for(const x of a.steps)s.line(x,-.03,x,.04,{color:'orange',width:2});s.line(1200,-.025,1200,1.06,{color:'red',width:1.2,dash:[5,4]});s.line(roughCents(a.A),-.025,roughCents(a.A),1.12,{color:'purple',width:1.2,dash:[5,4]});s.text('2:1',1200,1.09,{color:'red',size:11,align:'right',dx:-4});s.text('A',roughCents(a.A),1.16,{color:'purple',size:11,align:'left',dx:4});s.path(a.harmonic.points.map(([x,y])=>[x,y/a.ymax]),{color:'muted',width:1.3});s.path(a.points.map(([x,y])=>[x,y/a.ymax]),{color:'accent',width:2.4});for(const[x,y]of a.minima)s.dot(x,y/a.ymax,{r:3.5,color:'green'});});
+        v.legend([['accent','stretched spectrum'],['muted','harmonic spectrum'],['green','2-cent sampled minima'],['orange','equal steps in A'],['red','octave 2:1'],['purple','pseudo-octave A']]);
+        v.readout(()=>{const a=info;return `Raw dyad score: octave ${v.fix(a.octave,6)}, pseudo-octave ${v.fix(a.pseudo,6)} · common divisor ${v.fix(a.ymax,6)}.\nRaw mean chord score: stretched/stretched ${v.fix(a.cadences.related.mean,6)}; stretched/ordinary ${v.fix(a.cadences.ordinary.mean,6)}; harmonic/stretched ${v.fix(a.cadences.harmonic.mean,6)}; harmonic/ordinary ${v.fix(a.cadences.baseline.mean,6)}.\nSampled minima (cents): ${a.minima.map(([x])=>v.fix(x,0)).join(', ')}. Grid spacing 2 cents; no exact coincidence with equal-scale steps is asserted.`;});
       },
     },
     // ------------------------------------------------------------------ 6.6
     {
-      num: '6.6',
-      kind: 'Method',
-      name: 'Designing spectra for a tuning',
-      statement: String.raw`Given a scale, one can choose a spectrum whose dissonance curve has its minima on the scale's steps. For an $n$-tone equal temperament with step $b=2^{1/n}$, Sethares's construction takes **induced** spectra: partials placed at powers of $b$, $f_j=f\,b^{m_j}$. Every ratio of two partials is then a power of $b$, so every coincidence, and hence (6.4) almost every minimum of the dissonance curve, falls on a step of the scale. A practical recipe starts from a harmonic spectrum and moves each partial to the nearest power of $b$. For 10-tone equal temperament, where harmonic timbres sound poor, Sethares published spectra such as $\{b^0,b^{10},b^{17},b^{20},b^{25},b^{28},b^{30}\}$, $b=2^{1/10}$.`,
-      idea: String.raw`Minima of a dissonance curve arise where partials of the two copies coincide, at the ratios $f_i/f_j$ of the spectrum (6.15). Placing all partials on a lattice of powers of $b$ makes the set of ratios a subset of that lattice, so the minima are forced onto the scale; amplitudes then control which steps get deep minima. The nearest-step snap keeps the spectrum close to a familiar harmonic sound, which is why induced timbres for 12-TET come out almost harmonic, and 10-TET timbres come out noticeably bell-like. More generally Sethares posed timbre design as minimizing the dissonance at the scale steps, solved by random search or a genetic algorithm (6.15).`,
-      caption: String.raw`Pick a temperament and step through the algorithm (or press play). Top: the partials on a log-frequency axis against the scale's steps (faint lines); each step moves one partial (orange arrow) from its harmonic position to the nearest step. Bottom: the dissonance curve with the scale steps marked, green where a minimum lies within 15 ¢, red where none does; the faint curve is the harmonic timbre's. For 10-TET a last step swaps in Sethares's published spectrum. Play the scale's dyads (tonic plus each step) with the designed timbre and with the harmonic one.`,
-      deps: ['music-6.5'],
-      see: ['music-6.15', 'music-7.9', 'music-7.12'],
-      refs: ['Sethares ch. 12'],
-      tags: ['timbre', 'tuning'],
-      credit: 'W. A. Sethares, 1993; earlier: J. R. Pierce, 1966 (a timbre for 8-tone equal temperament)',
-      scope: String.raw`Rests on the roughness model of 6.4; designed timbres can sound inharmonic (bell- or metallophone-like) and lose fusion and pitch clarity, which the model ignores. The nearest-step snap is a simple illustrative algorithm, not Sethares's optimization.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Equal_temperament' },
-      viz(v) {
-        const M = v.M, F0 = 261.63, NP = 7;
-        const edo = v.select('temperament', [{ value: 10, label: '10-TET' }, { value: 11, label: '11-TET' }, { value: 8, label: '8-TET' }, { value: 12, label: '12-TET' }], 10, { onChange: () => { curves.clear(); S.reset(build(), { at: 'end' }); } });
-        const AMP = (k) => 0.88 ** k;
-        function build() {
-          const n = edo.value, b = 2 ** (1 / n);
-          let spec = Array.from({ length: NP }, (_, k) => [k + 1, AMP(k)]);
-          const frames = [{ spec: spec.map((p) => p.slice()), moved: -1, from: null, note: `Start: a harmonic spectrum, partials 1–${NP}, amplitudes $0.88^{k-1}$.`, line: 1 }];
-          for (let k = 1; k < NP; k++) {
-            const r = spec[k][0], m = Math.round(Math.log(r) / Math.log(b)), to = b ** m;
-            spec = spec.map((p) => p.slice()); spec[k][0] = to;
-            frames.push({ spec, moved: k, from: k + 1, note: `Move partial ${k + 1} from ${k + 1} to $b^{${m}} = ${to.toFixed(3)}$ (${sc(v, cents(to / (k + 1)), 0)} ¢).`, line: 2 });
-          }
-          if (n === 10) frames.push({ spec: TET10.map((m, i) => [b ** m, AMP(i)]), moved: -2, from: null, note: `Sethares's published 10-TET spectrum $\\{b^0, b^{10}, b^{17}, b^{20}, b^{25}, b^{28}, b^{30}\\}$.`, line: 3 });
-          return frames;
-        }
-        const S = v.steps({ frames: build(), code: ['start from harmonic partials 1 … 7', 'for each partial $k$: move it to $b^{\\mathrm{round}(\\log_b k)}$', '(10-TET) compare Sethares’s published spectrum'], codePos: 'below', speed: 1.2, start: 'end', still: 'end' });
-        const sp = v.stage({ x: [-0.08, 3.2], y: [0, 1.15], height: 190, axes: 'box', gutter: true, full: true, xticks: [0, 1, 2, 3].map((o) => [o, ['1', '2', '4', '8'][o]]), yticks: [], xlabel: 'partial frequency ÷ fundamental (log scale)', title: 'the spectrum on the scale’s lattice' });
-        const cv = v.stage({ x: [0, 1250], y: [0, 1.12], height: 270, axes: 'box', gutter: true, full: true, xticks: [0, 200, 400, 600, 800, 1000, 1200].map((c) => [c, String(c)]), yticks: [[0, '0'], [1, '1']], xlabel: 'interval (cents)', ylabel: 'dissonance', title: 'dissonance curve and the scale steps' });
-        const curves = new Map();
-        const curveOf = (spec) => { const k = spec.map((p) => p[0].toFixed(4)).join(); if (!curves.has(k)) { const C = dissCurve(spec, F0, 0, 1250, 500); let mx = 0; for (const x of C.d) mx = Math.max(mx, x); curves.set(k, { C, mx, mins: minima(C, 0.006) }); } return curves.get(k); };
-        const harmK = () => curveOf(Array.from({ length: NP }, (_, k) => [k + 1, AMP(k)]));
-        const score = (K) => { const n = edo.value; let hit = 0, sum = 0; for (let k = 1; k < n; k++) { const c = (1200 * k) / n; if (K.mins.some((m) => Math.abs(m.c - c) < 15)) hit++; sum += sample(K.C, c) / K.mx; } return { hit, mean: sum / (n - 1) }; };
-        const dyads = (spec) => { const n = edo.value; return Array.from({ length: n }, (_, k) => [[spec, 220], [spec, 220 * 2 ** ((k + 1) / n)]]); };
-        v.soundButton('dyads, designed timbre', (snd) => snd.samples(seqBuf(dyads(S.frame.spec), 0.55, 0.06), SR, { gain: 0.9 }));
-        v.soundButton('dyads, harmonic timbre', (snd) => snd.samples(seqBuf(dyads(harmonic(NP, 0.88)), 0.55, 0.06), SR, { gain: 0.9 }));
-        v.render(() => {
-          const n = edo.value, fr = S.frame, spec = fr.spec || [];
-          for (let m = 0; m <= 3 * n; m++) sp.line(m / n, 0, m / n, 1.15, { color: 'grid', width: m % n ? 1 : 2 });
-          for (let k = 2; k <= NP; k++) { sp.line(Math.log2(k), 0, Math.log2(k), AMP(k - 1), { color: 'muted', width: 1, dash: [2, 3], alpha: 0.7 }); sp.dot(Math.log2(k), AMP(k - 1), { r: 3, color: 'muted', hollow: true }); }
-          spec.forEach(([r, a], i) => {
-            const x = Math.log2(r), hl = i === fr.moved;
-            sp.line(x, 0, x, a, { color: hl ? 'orange' : 'accent', width: hl ? 4 : 3 });
-            sp.dot(x, a, { r: hl ? 5 : 3.5, color: hl ? 'orange' : 'accent' });
-            if (hl && fr.from) sp.arrow(Math.log2(fr.from), a + 0.09, x, a + 0.09, { color: 'orange', width: 1.6, head: 7 });
-          });
-          const K = curveOf(spec), H = harmK();
-          cv.path(Array.from(H.C.c, (x, i) => [x, H.C.d[i] / H.mx]), { color: 'muted', width: 1.1, alpha: 0.55 });
-          cv.path(Array.from(K.C.c, (x, i) => [x, K.C.d[i] / K.mx]), { color: 'accent', width: 2.3 });
-          for (let k = 1; k <= n; k++) { const c = (1200 * k) / n, ok = K.mins.some((m) => Math.abs(m.c - c) < 15); cv.line(c, 0, c, 0.08, { color: ok ? 'green' : 'red', width: 3 }); }
-          for (const m of K.mins) cv.dot(m.c, m.d / K.mx, { r: 3, color: 'green' });
-        });
-        v.legend([['accent', 'designed spectrum'], ['muted', 'harmonic spectrum'], ['green', 'step with a minimum within 15 ¢'], ['red', 'step without one']]);
-        v.readout(() => {
-          const n = edo.value, K = curveOf(S.frame.spec || []), H = harmK(), a = score(K), h = score(H);
-          return `${n}-TET (step ${v.fix(1200 / n, 1)} ¢) · designed spectrum: minima on ${a.hit} of ${n - 1} inner steps, mean dissonance at the steps ${v.fix(a.mean, 3)} · harmonic spectrum: ${h.hit} of ${n - 1}, mean ${v.fix(h.mean, 3)}`;
-        });
+      num:'6.6',kind:'Method',name:'Designing spectra for a tuning',verify:false,
+      statement:String.raw`For an $n$-tone equal temperament, write $b=2^{1/n}$. An induced timbre has partial ratios $b^{m_j}$ with integer exponents. Each partial coincidence then occurs at a scale ratio $b^{m_i-m_j}$. Such timbres are candidates for matching a scale's roughness minima; this algebra does not force every coincidence to be a minimum, every scale step to have a minimum, or every minimum to lie on the scale.
+Sethares's 1993 paper treats constrained timbre selection and gives induced examples. Its first 10-tone example uses the seven exponents $0,10,17,20,25,28,30$. Snapping harmonic partials to their nearest scale positions is a separate illustrative construction, not his optimization algorithm.`,
+      idea:String.raw`The differences of integer exponents prove the coincidence-lattice claim exactly. Whether a candidate is a minimum depends on the other partial pairs, amplitudes and bandwidth; shallow minima can also occur between coincidences. The original paper's optimization combines roughness values with a penalty for scale positions lacking a local minimum, while fixing amplitudes and bounding the frequency search. Minimizing roughness alone can favor trivial or poorly matched spectra.`,
+      caption:String.raw`Choose a temperament and move through the six snap operations. For 10-TET, compare the exact exponent list printed in the source. Upper bars show the actual spectrum; lower curves use the same original-1993 product-amplitude formula and one common divisor. Green/orange marks are numerical minima and scale steps within 15 cents of one, respectively; the proximity test is not an equality theorem. Play every non-unison scale dyad with either spectrum.`,
+      deps:['music-6.5'],see:['music-6.15','music-7.9','music-7.12'],
+      refs:['Sethares 1993,  JASA94(3), §§IV.A–C, pp. 1224–1226, Eqs. 9–12 and first induced spectrum'],tags:['timbre','tuning'],credit:'W. A. Sethares,1993; nearest-step demonstration authored',
+      scope:String.raw`The seven amplitudes are authored as $0.88^{j-1}$; plot, raw scores and audio use the same C4=261.6256-Hz lower anchor and partials. The score uses the paper's Eqs. 1–6, not the later minimum-amplitude program of 6.4. Curves sample a 2-cent grid plus every partial coincidence in range; green points are finite-sample minima, including one-sided endpoints. A 15-cent count is an authored diagnostic, not a perceptual threshold. This example certifies neither a global optimizer nor human consonance. Mono 44,100-Hz audio is bounded by 0.12 before output, with 10-ms ramps and every partial below Nyquist.`,
+      links:{source:'https://sethares.engr.wisc.edu/paperspdf/consonance.pdf'},
+      viz(v){
+        let info,key,cached;const edo=v.select('temperament',[{value:10,label:'10-TET'},{value:11,label:'11-TET'},{value:8,label:'8-TET'},{value:12,label:'12-TET'}],10),moved=v.slider('harmonics snapped after the fundamental',0,6,6,{int:true,step:1}),mode=v.select('10-TET construction',[{value:'snap',label:'nearest steps'},{value:'source',label:'source exponents'}],'snap');
+        const model=()=>{const k=JSON.stringify([edo.value,moved.value,mode.value]);if(key!==k){key=k;cached=inducedModel(edo.value,moved.value,mode.value);}return cached;};
+        const sp=v.stage({x:[-.18,3.25],y:[-.14,1.3],height:220,axes:'box',gutter:true,full:true,xticks:[[0,'1'],[1,'2'],[2,'4'],[3,'8']],yticks:[[0,'0'],[1,'1']],xlabel:'partial ratio (log2 axis)',ylabel:'amplitude',title:'harmonic reference and the current spectrum'}),cv=v.stage({x:[-50,1300],y:[-.08,1.2],height:300,axes:'box',gutter:true,full:true,xticks:[0,200,400,600,800,1000,1200].map(c=>[c,String(c)]),yticks:[[0,'0'],[1,'1']],xlabel:'interval above C4 (cents)',ylabel:'score / common maximum',title:'induced coincidences need a numerical check'});
+        for(const[which,label]of[['designed','play dyads with current spectrum'],['harmonic','play dyads with harmonic spectrum']])v.soundButton(label,snd=>{const b=inducedAudio(model(),which);snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;mode.el.hidden=a.n!==10;moved.el.querySelector('input').disabled=a.source;for(let j=0;j<=3*a.n;j++)sp.line(j/a.n,-.02,j/a.n,1.08,{color:'grid',width:j%a.n?.7:1.2});a.s.forEach(([h,amp],j)=>{sp.line(Math.log2(j+1),0,Math.log2(j+1),amp,{color:'muted',width:1,dash:[3,4]});sp.dot(Math.log2(j+1),amp,{color:'muted',r:3,hollow:true});sp.line(Math.log2(h),0,Math.log2(h),amp,{color:'accent',width:2.5});sp.dot(Math.log2(h),amp,{color:'accent',r:3.5});});cv.path(a.harmonic.points.map(([x,y])=>[x,y/a.ymax]),{color:'muted',width:1.3});cv.path(a.points.map(([x,y])=>[x,y/a.ymax]),{color:'accent',width:2.3});for(const r of a.steps)cv.line(r.cents,-.025,r.cents,.05,{color:r.near?'orange':'red',width:2});for(const[x,y]of a.minima)cv.dot(x,y/a.ymax,{color:'green',r:3.5});});
+        v.legend([['accent','current spectrum'],['muted','harmonic reference'],['green','sampled minima'],['orange','step within 15 cents of one'],['red','step without a nearby minimum']]);
+        v.readout(()=>{const a=info;return `${a.n}-TET; ${a.source?'source exponent comparison':`${a.moved} snapped harmonics after the fundamental`} · ${a.hits}/${a.n-1} inner steps within 15 cents of a sampled minimum.\nRaw mean dyad score over those inner steps: current ${v.fix(a.mean,6)}, harmonic ${v.fix(a.harmonicMean,6)}. Audio also includes the octave endpoint.\nActual partial ratios: ${a.s.map(([h])=>v.fix(h,5)).join(', ')}. Common divisor ${v.fix(a.ymax,6)}; 2-cent grid plus actual coincidence candidates.`;});
       },
     },
     // ------------------------------------------------------------------ 6.7

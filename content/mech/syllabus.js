@@ -511,7 +511,7 @@ export default {
           pic: 'Set the number of beads N on a spring chain; mode shapes and the dispersion relation ω = 2√(k/m)|sin(qa/2)| are drawn, and as N grows the low end straightens into the wave equation’s line.' },
         { num: '11.9', kind: 'Model', name: 'Vibrating string: standing waves', deps: ['mech-11.8', 'pma-8.14'], refs: ['Taylor §16.1'],
           pic: 'Pluck a string at an adjustable point; its shape is decomposed into sine modes with a bar chart of mode energies, and plucking at a node of mode n removes that harmonic.' },
-        { num: '11.10', kind: 'Theorem', name: 'Rayleigh’s principle', deps: ['mech-11.4', 'fa-12.25'], refs: ['Arnold §24'],
+        { num: '11.10', kind: 'Theorem', name: 'Rayleigh’s principle', deps: ['mech-11.4', 'fa-12.13'], refs: ['Arnold §24'],
           pic: 'Drag a trial mode shape for a chain; its Rayleigh quotient is always at least the lowest ω² and touches it only when the trial shape matches the true fundamental mode.' },
         { num: '11.11', kind: 'Theorem', name: 'Interlacing of frequencies under constraints', deps: ['mech-11.10'], refs: ['Arnold §24'],
           pic: 'Pin one bead of a chain or stiffen one spring: the new frequencies are drawn as ticks between the old ones (interlacing), and every frequency moves upward when stiffness is added.' },

@@ -1,0 +1,59 @@
+{
+  "baseline": "7da1da8c0743178f5ba25ad9cd86669a1c1c9a0a",
+  "files": {
+    "ch01-b.js": "80accd3f2181f3ae12bd948094a00e1857d0c5d9d37941ec2e389cf16cc45ae4",
+    "ch01.js": "57deeefe0309532b8dc35e29e6263150a7ffd5530fbff11610c630722c069a02",
+    "ch01.shared.js": "ccf26d1806c86e2394991ed354b1f3f183082cda997bde024c14f2a2319de856",
+    "ch02-b.js": "a2ced604a556b57a93780dc10cecdf6e7de49160c0a79bd38d41187883e19967",
+    "ch02-c.js": "180b0432f4d74cb993c1a64d251233eaf011267aa473c1b8b1812850b049b14d",
+    "ch02.js": "28c6cb28fbb4dff62cd995bec2da0e014a62defb6235270b4cb3c7621d35d890",
+    "ch02.shared.js": "092fb8ccd32df6e48bfefc6904865abd686a237d8259f8d892bfa874e256912a",
+    "ch03-b.js": "33961ae675bf3626acd22279e7064bb6c9f418cc83f259bfb46610338ffcfd56",
+    "ch03.js": "4677a0408032d7710832e92cad2bb67868fc96223003fbc85fb829a442c3221d",
+    "ch03.shared.js": "ccca052783812cb038a4090a45ebda68cd8583ae9b2416665234099453a6c751",
+    "ch04-b.js": "92b5f6cdfc7bc78150cc44dee3802e7cd7ba53816927f7fc6a9eb3e5b4f7f00c",
+    "ch04-c.js": "775cd656586e7e91ea7dc747b906db4e4f9c369cb68637b6e6684df3dd9dc372",
+    "ch04.js": "ac2b29321a5056cb4c413f93a25e309c49c1256d9c1e2b3f0da82664557c2993",
+    "ch04.shared.js": "b33d76e1a5582836f1bb6b5a889903ca246fc80d0f6201c2f8d246c0acda2eed",
+    "circ-source-audit-cmos-power.shared.js": "260af13fb75ac44b30b2635a064ba4d434fbf3e535c602c755e706bc58f26551",
+    "circ-source-audit-devices.shared.js": "21d419e8d9db45836d3b763d84383e61ba90b1e3e4909a5fd8e1ba634f258a74",
+    "circ-source-audit-junction.shared.js": "118d1c271a003f228f80b10fa1ce345dcc873c9dc9a1cbaef2b1542528f7f734",
+    "circ-source-audit-kilby.shared.js": "e7726b5076da0a88e8b8cea8b8904643b50d4928b59542ddda859fb0b6b1739b",
+    "circ-source-audit-logic.shared.js": "7becb8e65587994d1cf13ea4c42ead5a31286cc440cf9c46ab44b74be96689ac",
+    "circ-source-audit-moore.shared.js": "53b01b1002f484c9e6aeee6358f4559af4491be6d37d1aaecb66c66614d6107c",
+    "circ-source-audit-networks.shared.js": "0a514586feaa80a481bbac00c03bf8f6d159fd16530b128107a1dba961e9c50d",
+    "circ-source-audit-pointcontact.shared.js": "3c0dbfdc63f32d983fd2af1dab15cb13c2388901cee1b30c1d241aadaa50803c",
+    "circ-source-audit-rectifier.shared.js": "b529ad99487e5b768b4a35da981e252da322575ad1121f857880d5e6a5a30ee7",
+    "collection.js": "2526476f770cf5a447405aa981181739dcb56c94b8b57a057fbdeb86d53dba20",
+    "syllabus.js": "dcc28d1d3101f77c805a68e3695cd4044b4366516f53fdf0aae2492be0e831d1"
+  },
+  "data": {
+    "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "data/col/circ.json": "e071c4030b89701e7c0a181d178fcfb3fbb8868ba2e8e7a4760c86605c40b9d4"
+  },
+  "rows": {
+    "3.1": {
+      "before": [
+        "circ-2.5",
+        "ladr-3.63"
+      ],
+      "after": [
+        "circ-2.5",
+        "circ-2.9",
+        "ladr-3.63"
+      ]
+    },
+    "3.7": {
+      "before": [
+        "circ-3.6",
+        "ladr-7.5"
+      ],
+      "after": [
+        "circ-3.6",
+        "circ-2.8",
+        "ladr-7.5"
+      ]
+    }
+  },
+  "indexCanonicalHash": "62e229db9e58d08af3f95ef28176d1bbd1a884b22c5587ba2adaafabb744547b"
+}

@@ -102,7 +102,7 @@ export default {
       idea: String.raw`Let $V$ be a bounded neighbourhood of $0$. Its closure is bounded (1.13(f)) and closed, hence compact by the Heine–Borel property. So $X$ is locally compact, and 1.22 applies.`,
       caption: String.raw`Both hypotheses are needed. In $\ell^2$ (locally bounded) the closed unit ball is closed and bounded, but the sequence $e_n$ has no convergent subsequence: no Heine–Borel property. In $H(D)$, the holomorphic functions on the unit disc (Heine–Borel by Montel's theorem), the basic neighbourhood $V=\{f:\sup_{\abs z\le 1/2}\abs f<1\}$ contains $f_n(z)=0.9(2z)^n$, whose values on $\abs z=3/4$ blow up: $V$ is not bounded. In $\R^2$ both hold and the space is finite-dimensional.`,
       deps: ['fa-1.22', 'fa-1.13', 'fa-1.8'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.23, pp. 18'],
+      verify: true,
       tags: ['Heine–Borel', 'local boundedness', 'finite dimension'],
       viz(v) {
         const sp = v.select('space', [{ value: 'H', label: '$H(D)$: HB, not loc. bounded' }, { value: 'l2', label: '$\\ell^2$: loc. bounded, not HB' }, { value: 'R2', label: '$\\R^2$: both' }], 'H');
@@ -230,7 +230,7 @@ If in addition $X$ is locally convex, $d$ can be chosen to satisfy (a), (b), (c)
       name: 'Cauchy sequences',
       statement: String.raw`(a) If $d$ is a metric on a set $X$, a sequence $(x_n)$ is **$d$-Cauchy** if for every $\eps>0$ there is $N$ such that $d(x_m,x_n)<\eps$ whenever $m,n>N$.
 (b) If $X$ is a topological vector space, $(x_n)$ is a **Cauchy sequence** if for every neighbourhood $V$ of $0$ there is $N$ such that $x_m-x_n\in V$ whenever $m,n>N$.
-If $d$ is an invariant metric compatible with the topology, its balls about $0$ form a local base, so (a) and (b) coincide. Thus two compatible invariant metrics have the same Cauchy sequences and are complete together. For a non-invariant compatible metric they may differ.`,
+If $d$ is an invariant metric compatible with the topology, its balls about $0$ form a local base, so (a) and (b) coincide. For a non-invariant compatible metric they may differ.`,
       idea: String.raw`Definition (b) uses only the vector-space structure and the topology, so it makes sense in every TVS — even non-metrizable ones — and is the notion behind completeness of F-spaces. The example $d(x,y)=\abs{\varphi(x)-\varphi(y)}$ on $\R$, with $\varphi(x)=x/(1+\abs x)$, is compatible with the usual topology, yet $x_n=n$ is $d$-Cauchy without being Cauchy in the sense of (b).`,
       caption: String.raw`Definition (b) in pictures: the gold dots are the differences $x_m-x_n$ for $m,n>N$. A sequence is Cauchy when, for every neighbourhood $V$ of $0$ (orange; change its size), this cloud eventually fits inside $V$. Raise $N$: for the converging spiral the cloud collapses to $0$; for the bounded sequence $(\cos n,\sin n)$ it never fits in a small $V$.`,
       deps: ['fa-1.6', 'fa-1.24'],
@@ -274,43 +274,52 @@ If $d$ is an invariant metric compatible with the topology, its balls about $0$ 
     {
       num: '1.26',
       kind: 'Theorem',
-      name: 'The dilation principle: expanded images are closed',
-      statement: String.raw`Let $(X,d_1)$ be a complete metric space, let $(Y,d_2)$ be a metric space, and let $E$ be closed in $X$. If $f:E\to Y$ is continuous and
-$$d_2(f(x),f(x'))\ge d_1(x,x')\qquad(x,x'\in E),$$
-then $f(E)$ is closed in $Y$.`,
-      idea: String.raw`If $f(x_n)$ converges in $Y$, it is Cauchy. The distance inequality makes $x_n$ Cauchy in $X$; completeness and closedness of $E$ give a limit $x\in E$. Continuity then identifies the image limit with $f(x)$. The invariant-metric observation preceding this theorem belongs to §1.25, rather than to the numbered dilation principle.`,
-      caption: String.raw`The graph map $f(t)=(t,a\sin t)$ expands distances: the horizontal difference alone is $|t-s|$. Drag $t$ and change $a$ to compare image and source distances to $s=0$. Switch to $f(t)=(\arctan t,0)$: a complete domain now has a nonclosed image because expansion fails. In the incomplete-domain example $X=E=(0,1]$, the identity into $\R$ preserves distances but its image misses its limit $0$.`,
+      name: 'Invariant metrics with the same topology share Cauchy sequences',
+      statement: String.raw`Let $d_1$ and $d_2$ be invariant metrics on a vector space $X$ that induce the same topology. Then
+(a) $d_1$ and $d_2$ have the same Cauchy sequences, and
+(b) $d_1$ is complete if and only if $d_2$ is complete.`,
+      idea: String.raw`For an invariant compatible metric, being $d$-Cauchy is the same as being Cauchy in the topological sense of 1.25(b), which refers only to the topology; so (a) holds. For (b), a $d_1$-Cauchy sequence is $d_2$-Cauchy, converges in $d_2$ if $d_2$ is complete, and convergence is a topological notion.`,
+      caption: String.raw`Three metrics on $\R$ with the usual topology: $d_1=\abs{x-y}$ and $d_2=\frac{\abs{x-y}}{1+\abs{x-y}}$ are invariant; $d_3=\abs{\varphi(x)-\varphi(y)}$ with $\varphi(x)=\frac{x}{1+\abs x}$ is not. The chart plots the tail diameter $\sup_{m,n\ge N}d(x_m,x_n)$. For every sequence the two invariant metrics agree on whether it tends to $0$; $d_3$ calls the divergent $x_n=n$ and $x_n=\log n$ Cauchy, and it is not complete.`,
       deps: ['fa-1.25'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., Theorem 1.26, p. 21'],
-      tags: ['complete metric spaces', 'closed images', 'dilation principle'],
+      verify: true,
+      tags: ['Cauchy sequences', 'invariant metric', 'completeness'],
       viz(v) {
-        const mode = v.select('map', [{ value: 'graph', label: 'expanding graph' }, { value: 'contract', label: 'arctan: expansion fails' }, { value: 'incomplete', label: 'identity: completeness fails' }], 'graph');
-        const amp = v.slider('graph amplitude $a$', 0, 2, 1, { step: .01 });
-        const n = v.slider('sequence index $n$', 1, 80, 10, { int: true });
-        const S = v.stage({ x: [-2, 2], y: [-2.4, 2.4], equal: true, height: 360, axes: 'box', title: 'image in $Y=\\R^2$' });
-        const h = S.handle(.8, .7, { color: 'gold', constrain: (x) => { const t = Math.max(-1.8, Math.min(1.8, x)); return [t, amp.value * Math.sin(t)]; } });
-        let st = {};
+        const SEQ = {
+          alt: { label: '$\\sum_{k\\le n}(-1)^k/k$', arr: (M) => { const a = [0]; let s = 0; for (let k = 1; k <= M; k++) { s += (k % 2 ? -1 : 1) / k; a.push(s); } return a; } },
+          lin: { label: '$n$', arr: (M) => Array.from({ length: M + 1 }, (_, n) => n) },
+          log: { label: '$\\log n$', arr: (M) => Array.from({ length: M + 1 }, (_, n) => (n ? Math.log(n) : 0)) },
+          osc: { label: '$\\sin n$', arr: (M) => Array.from({ length: M + 1 }, (_, n) => Math.sin(n)) },
+        };
+        const which = v.select('$x_n$', Object.entries(SEQ).map(([value, o]) => ({ value, label: o.label })), 'lin');
+        const S = v.stage({ x: [0, 4], y: [0, 1.15], height: 330, axes: 'box', xlabel: 'N', xticks: [[0, '1'], [1, '10'], [2, '100'], [3, '1000'], [4, '10⁴']], title: 'tail diameter $\\sup_{m,n\\ge N} d(x_m,x_n)$ (sampled to $n=10^5$)' });
+        let st = {}; const cache = {};
         v.render(() => {
-          const graph = mode.value === 'graph', inc = mode.value === 'incomplete';
-          h.visible = graph;
-          const f = graph ? (t) => [t, amp.value * Math.sin(t)] : inc ? (t) => [t, 0] : (t) => [Math.atan(t), 0];
-          if (graph) {
-            S.path(Array.from({ length: 201 }, (_, i) => f(-2 + i / 50)), { color: 'accent', width: 2.5 });
-            const p = f(h.x); h.set(...p); S.line(0, 0, ...p, { color: 'gold', width: 2 });
-            S.line(0, -.3, h.x, -.3, { color: 'green', width: 2 });
-            st = { source: Math.abs(h.x), image: Math.hypot(...p) };
-          } else {
-            const limit = inc ? 0 : Math.PI / 2;
-            S.line(inc ? 0 : -Math.PI / 2, 0, inc ? 1 : Math.PI / 2, 0, { color: 'accent', width: 3 });
-            S.dot(limit, 0, { color: 'red', hollow: true, r: 7 });
-            const t = inc ? 1 / n.value : n.value, p = f(t); S.dot(...p, { color: 'gold', r: 6 });
-            st = { t, image: p[0], limit };
+          const key = which.value, M = 100000;
+          if (!cache[key]) {
+            const xs = SEQ[key].arr(M);
+            const mx = new Float64Array(M + 2).fill(-Infinity), mn = new Float64Array(M + 2).fill(Infinity);
+            for (let n = M; n >= 1; n--) { mx[n] = Math.max(mx[n + 1], xs[n]); mn[n] = Math.min(mn[n + 1], xs[n]); }
+            const D1 = [], D2 = [], D3 = [];
+            for (let i = 0; i <= 400; i++) {
+              const L = 4 * i / 400, N = Math.round(Math.pow(10, L)), w = mx[N] - mn[N];
+              D1.push([L, Math.min(1.1, w)]); D2.push([L, w / (1 + w)]); D3.push([L, phi(mx[N]) - phi(mn[N])]);
+            }
+            cache[key] = { D1, D2, D3 };
           }
+          const { D1, D2, D3 } = cache[key];
+          S.hline(1, { color: 'faint', dash: [3, 3], width: 1 });
+          S.path(D1, { color: 'blue', width: 2.4 });
+          S.path(D2, { color: 'green', width: 2.4, dash: [7, 5] });
+          S.path(D3, { color: 'red', width: 2.4 });
+          if (D1[400][1] > 1.05) S.text('d₁ is off the chart (clipped)', 3.95, 1.1, { color: 'blue', size: 12, align: 'right', baseline: 'top', dy: 4 });
+          st = { a: D1[400][1], b: D2[400][1], c: D3[400][1] };
         });
-        v.legend([['accent', 'image'], ['gold', 'chosen point / sequence'], ['red', 'missing image limit']]);
-        v.readout(() => mode.value === 'graph'
-          ? `$d_2(f(t),f(0))=${v.fix(st.image, 3)}\\ge |t|=${v.fix(st.source, 3)}$: the expanding graph is closed.`
-          : `$t_n=${v.fix(st.t, 4)}$, $f(t_n)=${v.fix(st.image, 4)}\\to${v.fix(st.limit, 4)}$, outside the image. ${mode.value === 'incomplete' ? 'The domain is not complete.' : 'The distance-expansion hypothesis fails.'}`);
+        v.legend([['blue', '$d_1=|x-y|$ (invariant)'], ['green', '$d_2=\\frac{|x-y|}{1+|x-y|}$ (invariant)', { dash: true }], ['red', '$d_3=|\\varphi(x)-\\varphi(y)|$ (not invariant)']]);
+        v.readout(() => {
+          const s = st; if (s.a == null) return '';
+          const conv = s.b < 0.02;
+          return `At $N=10^4$: $d_1$-diameter $${s.a > 1.05 ? '>1' : v.fix(s.a, 4)}$, $d_2$-diameter $${v.fix(s.b, 4)}$, $d_3$-diameter $${v.fix(s.c, 4)}$. ` + (conv ? 'Cauchy for all three metrics.' : (s.c < 0.05 ? 'Not Cauchy for $d_1,d_2$ — but $d_3$ is fooled: it is not invariant.' : 'Not Cauchy for any of them.'));
+        });
       },
     },
     // ------------------------------------------------------------------ 1.27

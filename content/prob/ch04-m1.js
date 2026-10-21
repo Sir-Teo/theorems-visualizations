@@ -2,6 +2,8 @@
 import { clampN, fr, sciT, walkPath, meanOf, pts, lawFromPmf, offspringLaw, LAW_OPTS, gwPath } from './ch04-m.shared.js';
 
 // ---------- measures on [0,1) used by 4.3.5 and 4.3.6: mu = (1-w)*[density 6x(1-x)] + w*[singular part] ----------
+import { doobWalkDecomposition, polyaFiniteLaw, discreteKolmogorov } from './ch04-stopping.shared.js';
+
 const F_AC = (x) => 3 * x * x - 2 * x * x * x;           // integral of 6t(1-t) on [0,x]
 const SING = {
   cantor: { label: 'Cantor measure', cdf: (M) => (x) => M.cantorFn(x) },
@@ -34,10 +36,10 @@ export default {
 $$C=\{\lim_n X_n \text{ exists and is finite}\},\qquad D=\{\limsup_n X_n=+\infty,\ \liminf_n X_n=-\infty\}.$$
 Then $P(C\cup D)=1$: almost every path either settles down or swings between arbitrarily large positive and negative values. There is no third behaviour (drifting off to $+\infty$, say).`,
       idea: String.raw`Fix $a$ and stop the martingale the first time it goes below $-a$ (a stopping time, by 4.2.8a). Bounded increments mean the stopped process is bounded below by $-a-K$, so adding the constant it becomes a nonnegative martingale, which converges by 4.2.12. Hence on $\{\inf_n X_n>-a\}$ the path converges. Letting $a\to\infty$ gives convergence on $\{\liminf X_n>-\infty\}$. The same argument applied to $-X_n$ handles $\{\limsup X_n<\infty\}$. What is left is exactly $D$.`,
-      caption: String.raw`300 seeded paths, 40 drawn, are run for $3000$ steps and sorted by how much they still move in the second half (the range $R$ of $X_n$ over $n\ge1500$). Green paths have settled ($R<1$), red ones are still swinging ($R\ge3$) and orange ones have drifted away ($|X_{3000}|>0.06\cdot3000$). The classes are finite-horizon proxies for the events $C$ and $D$. Switch martingales: the gap in the histogram of $R$ is the theorem. The last option is not a martingale (biased steps): orange (drifting) paths appear, so the hypothesis matters. In the coin option about half the paths are frozen and half swing: both $C$ and $D$ can have positive probability.`,
+      caption: String.raw`300 seeded paths, 40 drawn, are run for $3000$ steps and sorted by how much they still move in the second half (the range $R$ of $X_n$ over $n\ge1500$). Green paths have settled ($R<1$), red ones are still swinging ($R\ge3$) and orange ones have drifted away ($|X_{3000}|>0.06\cdot3000$). These classes are finite-horizon proxies for the events $C$ and $D$. Switch martingales to compare the finite range histograms; these classifications do not decide the infinite-time alternatives. The last option is not a martingale (biased steps): orange (drifting) paths appear, so the hypothesis matters. In the coin option about half the paths are frozen and half swing: both $C$ and $D$ can have positive probability.`,
       deps: ['prob-4.2.9', 'prob-4.2.12'],
       tags: ['martingales'],
-      scope: String.raw`Needs bounded increments (not just integrable ones) and a genuine martingale (or at least a sub- or supermartingale along the lines of 4.2.12's proof).`,
+      scope: String.raw`Requires uniformly bounded increments and a martingale. A biased walk with bounded increments can drift to positive or negative infinity, so neither a submartingale nor a supermartingale alone suffices.`,
       viz(v) {
         const reg = v.select('martingale', [
           { value: 'rw', label: 'steps $\\pm1$' }, { value: 'shrink', label: 'steps $\\pm1/n$' }, { value: 'exit', label: 'stop on leaving $(-6,6)$' },
@@ -70,8 +72,8 @@ Then $P(C\cup D)=1$: almost every path either settles down or swings between arb
             }
             cache = { key, paths, cls, Rs };
           }
-          const sc = { rw: 200, shrink: 2.5, exit: 9, mix: 200, bias: 200 }[reg.value];
-          A.setView([0, N], reg.value === 'bias' ? [-100, 400] : [-sc, sc]);
+          let vlo=0,vhi=0;for(const row of cache.paths.slice(0,40))for(const y of row){vlo=Math.min(vlo,y);vhi=Math.max(vhi,y);}
+          A.setView([0,N],[vlo-.08*(vhi-vlo+1),vhi+.08*(vhi-vlo+1)]);
           A.vline(H, { color: 'faint', dash: [4, 4] });
           const col = { C: 'green', D: 'red', E: 'orange', U: 'gold' };
           for (let i = 0; i < 40; i++) A.path(pts(cache.paths[i], 8), { color: col[cache.cls[i]], width: 1.1, alpha: 0.7 });
@@ -94,14 +96,13 @@ Then $P(C\cup D)=1$: almost every path either settles down or swings between arb
       name: 'Doob’s decomposition',
       statement: String.raw`Every submartingale $X_n$ ($n\ge0$) can be written in exactly one way as
 $$X_n=M_n+A_n,$$
-where $M_n$ is a martingale and $A_n$ is **predictable** ($A_n\in\mathcal F_{n-1}$) and increasing, with $A_0=0$. Explicitly $A_n=\sum_{m=1}^n E(X_m-X_{m-1}\mid\mathcal F_{m-1})$. For a supermartingale the same holds with $A_n$ decreasing.`,
+where $M_n$ is a martingale and $A_n$ is **predictable** ($A_n\in\mathcal F_{n-1}$) and increasing, with $A_0=0$ (predictability is required for $n\ge1$). Uniqueness means equality almost surely at every time. Explicitly $A_n=\sum_{m=1}^n E(X_m-X_{m-1}\mid\mathcal F_{m-1})$. For a supermartingale the same holds with $A_n$ decreasing.`,
       idea: String.raw`Defining $A_n$ by the displayed sum makes it predictable, and it is increasing exactly because $X$ is a submartingale (every conditional increment is $\ge0$). Then $M_n=X_n-A_n$ has $E(M_n-M_{n-1}\mid\mathcal F_{n-1})=0$ by the definition of $A$. If $X=M'+A'$ is a second decomposition, $M_n-M'_n=A'_n-A_n$ is both a martingale and predictable, and a predictable martingale is constant ($E(Y_n\mid\mathcal F_{n-1})=Y_n$ and $=Y_{n-1}$), so it is $0$.`,
-      caption: String.raw`A walk $S_n$ that steps up with probability $p$ is pushed through a function $g$, giving the path $X_n=g(S_n)$ (left). The compensator $A_n$ (middle, orange) adds up the conditional drift $pg(S+1)+(1-p)g(S-1)-g(S)$, computed from the current position only: it is predictable. What remains, $M_n=X_n-A_n$ (right, green), is a fair game: the dashed line is the average of $M_n$ over 400 seeded paths and stays at $X_0$. When $p=\tfrac12$, for $g=|s|$ the compensator counts visits $S_m=0$ for $0\le m<n$, and for $g=s^2$ it is $n$. Change $p$ to see $A$ stop being monotone when $X$ is no longer a submartingale.`,
+      caption: String.raw`A walk $S_n$ that steps up with probability $p$ is pushed through a function $g$, giving the path $X_n=g(S_n)$ (left). The compensator $A_n$ (middle, orange) adds up the conditional drift $pg(S+1)+(1-p)g(S-1)-g(S)$, computed from the current position only: it is predictable. What remains, $M_n=X_n-A_n$ (right, green), is a fair game: the dashed grey line is the average of $M_n$ over 400 seeded paths, which fluctuates around the exact mean $X_0$ (dashed ink). When $p=\tfrac12$, $g=|s|$ gives the number of visits to $0$ before the next step and $g=s^2$ gives $A_n=n$. Change $p$ to see $A$ stop being monotone when $X$ is no longer a submartingale.`,
       deps: ['prob-4.2.1a', 'prob-4.2.7a'],
       tags: ['martingales'],
-      credit: 'J. L. Doob',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.3.2 and proof, p. 225'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., Theorem 4.3.2, p. 225'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=233' },
       viz(v) {
         const G = {
           abs: { f: (s) => Math.abs(s), name: '|s|' }, sq: { f: (s) => s * s, name: 's^2' }, pos: { f: (s) => Math.max(s, 0), name: 's^+' }, neg: { f: (s) => -Math.abs(s), name: '-|s|' },
@@ -113,31 +114,23 @@ where $M_n$ is a martingale and $A_n$ is **predictable** ($A_n\in\mathcal F_{n-1
         const X = v.stage({ x: [0, 300], y: [-10, 10], axes: 'box', gutter: true, height: 270, xlabel: '$n$', title: '$X_n=g(S_n)$' });
         const Aa = v.stage({ x: [0, 300], y: [0, 10], axes: 'box', gutter: true, height: 270, xlabel: '$n$', title: 'predictable part $A_n$' });
         const Mm = v.stage({ x: [0, 300], y: [-10, 10], axes: 'box', gutter: true, height: 270, xlabel: '$n$', title: 'martingale part $M_n$' });
-        function decompose(S, g, p) {
-          const n = S.length - 1, Xs = new Float64Array(n + 1), As = new Float64Array(n + 1), Ms = new Float64Array(n + 1);
-          Xs[0] = g(0); Ms[0] = Xs[0];
-          for (let m = 1; m <= n; m++) {
-            const s = S[m - 1], c = p * g(s + 1) + (1 - p) * g(s - 1) - g(s);
-            As[m] = As[m - 1] + c; Xs[m] = g(S[m]); Ms[m] = Xs[m] - As[m];
-          }
-          return { Xs, As, Ms };
-        }
+        const decompose = doobWalkDecomposition;
         let st = null, cache = null;
         v.render(() => {
           const g = G[gSel.value].f, p = pS.value, n = nS.value;
           const r = v.rng(seed * 31 + 7), S = walkPath(r, 300, p), D = decompose(S.subarray(0, n + 1), g, p);
           const key = `${gSel.value}|${p}|${n}|${seed}`;
           if (!cache || cache.key !== key) {
-            const rr = v.rng(4242), mA = new Float64Array(n + 1), mM = new Float64Array(n + 1), mX = new Float64Array(n + 1), M = 400;
+            const rr = v.rng(4242), mA = new Float64Array(n + 1), mM = new Float64Array(n + 1), mX = new Float64Array(n + 1), mM2 = new Float64Array(n + 1), M = 400;
             for (let i = 0; i < M; i++) {
               const d = decompose(walkPath(rr, n, p), g, p);
-              for (let k = 0; k <= n; k++) { mA[k] += d.As[k] / M; mM[k] += d.Ms[k] / M; mX[k] += d.Xs[k] / M; }
+              for (let k = 0; k <= n; k++) { mA[k] += d.As[k] / M; mM[k] += d.Ms[k] / M; mM2[k] += d.Ms[k]**2 / M; mX[k] += d.Xs[k] / M; }
             }
-            cache = { key, mA, mM, mX };
+            cache = { key, mA, mM, mX, mM2 };
           }
           const lim = (arr) => { let lo = Infinity, hi = -Infinity; for (const a of arr) { lo = Math.min(lo, a); hi = Math.max(hi, a); } return [lo, hi]; };
           const pad = (lo, hi, f = 0.12) => { const d = Math.max(hi - lo, 1e-6) * f; return [lo - d, hi + d]; };
-          const [xl, xh] = lim(D.Xs), [al, ah] = lim(cache.mA), [a2l, a2h] = lim(D.As), [ml, mh] = lim(D.Ms);
+          const [xl, xh] = lim([...D.Xs,...cache.mX]), [al, ah] = lim(cache.mA), [a2l, a2h] = lim(D.As), [ml, mh] = lim([...D.Ms,...cache.mM]);
           X.setView([0, n], pad(Math.min(xl, 0), Math.max(xh, 0)));
           Aa.setView([0, n], pad(Math.min(al, a2l, 0), Math.max(ah, a2h, 0.5)));
           Mm.setView([0, n], pad(Math.min(ml, cache.mM[0], 0), Math.max(mh, cache.mM[0], 0)));
@@ -147,30 +140,30 @@ where $M_n$ is a martingale and $A_n$ is **predictable** ($A_n\in\mathcal F_{n-1
           Aa.path(pts(D.As), { color: 'orange', width: 2 });
           Aa.path(pts(cache.mA), { color: 'muted', width: 1.3, dash: [5, 4] });
           Mm.path(pts(D.Ms), { color: 'green', width: 1.8 });
+          Mm.hline(g(0), { color:'ink',dash:[2,4],width:1.4 });
           Mm.path(pts(cache.mM), { color: 'muted', width: 1.3, dash: [5, 4] });
           let minInc = Infinity; for (let k = 1; k <= n; k++) minInc = Math.min(minInc, D.As[k] - D.As[k - 1]);
           let resid = 0; for (let k = 0; k <= n; k++) resid = Math.max(resid, Math.abs(D.Xs[k] - D.Ms[k] - D.As[k]));
-          st = { n, minInc, resid, eA: cache.mA[n], eX: cache.mX[n] - cache.mX[0], eM: cache.mM[n], X0: g(0), An: D.As[n], Mn: D.Ms[n] };
+          st = { n, minInc, resid, eA: cache.mA[n], eX: cache.mX[n] - cache.mX[0], eM: cache.mM[n], X0: g(0), seM:Math.sqrt(Math.max(0,cache.mM2[n]-cache.mM[n]**2)/399), An: D.As[n], Mn: D.Ms[n] };
         });
         v.legend([['accent', 'one path'], ['muted', 'average of 400 paths', { dash: [5, 4] }]]);
-        v.readout(() => st && `$n=${st.n}$: $A_n=${fr(st.An, 2)}$ (predictable), $M_n=${fr(st.Mn, 2)}$, residual $\\max|X-M-A|=${sciT(st.resid, 1)}$.\nAverages: $EM_n\\approx${fr(st.eM, 2)}$ (should be $X_0=${fr(st.X0, 0)}$), $EA_n\\approx${fr(st.eA, 2)}$ and $EX_n-X_0\\approx${fr(st.eX, 2)}$. Smallest one-step change of $A$: $${fr(st.minInc, 2)}$ ${st.minInc < -1e-9 ? '(negative: $X$ is not a submartingale here)' : '(never negative)'}.`);
+        v.readout(() => st && `$n=${st.n}$: $A_n=${fr(st.An, 2)}$ (predictable), $M_n=${fr(st.Mn, 2)}$, residual $\\max|X-M-A|=${sciT(st.resid, 1)}$.\nAverages: $EM_n\\approx${fr(st.eM, 2)}$ (estimated s.e. $${fr(st.seM,2)}$; exact mean $X_0=${fr(st.X0, 0)}$), $EA_n\\approx${fr(st.eA, 2)}$ and $EX_n-X_0\\approx${fr(st.eX, 2)}$. Smallest one-step change of $A$: $${fr(st.minInc, 2)}$ ${st.minInc < -1e-9 ? '(negative: $X$ is not a submartingale here)' : '(never negative)'}.`);
       },
     },
     // ======================================================================== 4.3.4
     {
       num: '4.3.4',
       kind: 'Theorem',
-      name: 'Lévy’s extension of the Borel–Cantelli lemmas',
+      name: 'Conditional Borel–Cantelli lemma',
       statement: String.raw`Let $(\mathcal F_n)_{n\ge0}$ be a filtration and $B_n\in\mathcal F_n$ for $n\ge1$. Then almost surely
 $$\{B_n\ \text{infinitely often}\}=\Big\{\sum_{n\ge1}P(B_n\mid\mathcal F_{n-1})=\infty\Big\}.$$
-For independent events $P(B_n\mid\mathcal F_{n-1})=P(B_n)$ and this is the pair of Borel–Cantelli lemmas; here the events may depend on the past in any way.`,
-      idea: String.raw`Let $N_n=\sum_{m\le n}1_{B_m}$ and $S_n=\sum_{m\le n}P(B_m\mid\mathcal F_{m-1})$. Then $N_n-S_n$ is a martingale (it is the martingale part in Doob's decomposition, 4.3.2) with increments bounded by $1$. By 4.3.1 it either converges or oscillates between $\pm\infty$. If $S_\infty<\infty$ the oscillating case is impossible, since $N_n\ge0$ gives $N_n-S_n\ge-S_\infty$; so $N_\infty<\infty$ too. If $S_\infty=\infty$, the same argument applied to the stopped martingales shows $N_\infty=\infty$.`,
-      caption: String.raw`Events $B_n$ whose probability given the past is $q_n$ (the dashed orange curve $S_n=\sum q_m$ against the solid blue count $N_n$, one path, $n$ on a log axis). Pick a rule: independent $1/(n+1)$ (diverges), independent $1/(n+1)^2$ (converges), "environment" (the rate is $1/(n+1)$ while a hidden walk with a coin-chosen drift is $\ge0$, else $1/(n+1)^2$: both fates occur), and "clumping" (after an occurrence the next probability jumps to $0.5$). Right: $N_{N}$ against $S_{N}$ for 150 paths at $N=20000$; they lie together, and large $N$ goes with large $S$.`,
+For independent events with the natural filtration $\mathcal F_n=\sigma(B_1,\dots,B_n)$, $P(B_n\mid\mathcal F_{n-1})=P(B_n)$ and this is the pair of Borel–Cantelli lemmas; here the events may depend on the past in any way.`,
+      idea: String.raw`Let $N_n=\sum_{m\le n}1_{B_m}$ and $S_n=\sum_{m\le n}P(B_m\mid\mathcal F_{m-1})$. Then $N_n-S_n$ is a martingale (it is the martingale part in Doob's decomposition, 4.3.2) with increments bounded by $1$. By 4.3.1 it either converges or oscillates between $\pm\infty$. If $S_\infty<\infty$ the oscillating case is impossible, since $N_n\ge0$ gives $N_n-S_n\ge-S_\infty$; so $N_\infty<\infty$ too. On the convergence event for $N_n-S_n$, either both increasing sums have finite limits or both diverge. On the oscillation event, $N_n$ must be unbounded to allow positive excursions and $S_n$ must be unbounded to allow negative excursions. Thus the two divergence events agree almost surely.`,
+      caption: String.raw`Events $B_n$ whose probability given the past is $q_n$ (the dashed orange curve $S_n=\sum q_m$ against the solid blue count $N_n$, one path, $n$ on a log axis). Pick a rule: independent $1/(n+1)$ (diverges), independent $1/(n+1)^2$ (converges), "environment" (the rate is $1/(n+1)$ while a hidden walk with a coin-chosen drift is $\ge0$, else $1/(n+1)^2$: both fates occur), and "clumping" (after an occurrence the next probability jumps to $0.5$). The environment filtration includes the past walk and event outcomes; its coin-chosen drift need not be known. Right: occurrence counts against conditional-probability sums for 150 paths at time 20000. These finite counts fluctuate and cannot decide whether either infinite sum diverges.`,
       deps: ['prob-4.3.1', 'prob-4.3.2'],
       tags: ['borel-cantelli', 'martingales'],
-      credit: 'Paul Lévy',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.3.4 and proof, pp. 225–226'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., Theorem 4.3.4, pp. 225–226 (the proof also works with nontrivial initial information)'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=233' },
       viz(v) {
         const rule = v.select('rule', [{ value: 'one', label: '$1/(n+1)$' }, { value: 'two', label: '$1/(n+1)^2$' }, { value: 'env', label: 'environment' }, { value: 'clump', label: 'clumping' }], 'env');
         let seed = 1; v.button('Next path', () => { seed++; });
@@ -201,7 +194,7 @@ For independent events $P(B_n\mid\mathcal F_{n-1})=P(B_n)$ and this is the pair 
           L.setView([1, T], [0, top]);
           L.path(xs.map((n) => [n, one.Ss[n]]), { color: 'orange', width: 2, dash: [6, 4] });
           L.path(xs.map((n) => [n, one.Ns[n]]), { color: 'accent', width: 1.8 });
-          const mx = Math.max(4, ...cache.runs.map((u) => Math.max(u.N, u.S))) * 1.1;
+          const mx = Math.max(4, one.N, one.S, ...cache.runs.map((u) => Math.max(u.N, u.S))) * 1.1;
           R.setView([0, mx], [0, mx]);
           R.line(0, 0, mx, mx, { color: 'muted', dash: [4, 4] });
           R.dots(cache.runs.map((u) => [u.S, u.N]), { r: 3.2, color: 'accent', alpha: 0.45 });
@@ -221,14 +214,14 @@ For independent events $P(B_n\mid\mathcal F_{n-1})=P(B_n)$ and this is the pair 
       statement: String.raw`An urn holds $b$ black and $r$ red balls ($b,r>0$). Repeatedly draw a ball uniformly at random and return it together with one more ball of the same colour. Let $X_n$ be the fraction of black balls after $n$ draws. Then $X_n$ is a martingale, $X_n\to X_\infty$ almost surely, and
 $$X_\infty\sim\mathrm{Beta}(b,r),\qquad\text{density }\frac{x^{b-1}(1-x)^{r-1}}{B(b,r)}\ \text{on }(0,1).$$
 For $b=r=1$ the limit is uniform.`,
-      idea: String.raw`Given the history, the fraction after the next draw is $\frac{B+1}{T+1}$ with probability $\frac BT$ and $\frac{B}{T+1}$ otherwise, whose mean is $\frac BT$: a martingale taking values in $[0,1]$, hence convergent by 4.2.12 (shift by a constant to make it nonnegative). To identify the limit, note that the probability of any particular sequence of $k$ black and $n-k$ red draws is $\frac{b^{\overline k}\,r^{\overline{n-k}}}{(b+r)^{\overline n}}$ (rising factorials) whatever the order. These are the moments of a Beta$(b,r)$ variable, so conditioned on the limit the draws behave like i.i.d. coin flips with a Beta$(b,r)$ random bias.`,
-      caption: String.raw`Left: fraction of black balls for 40 seeded urns against the number of draws (log axis); every path flattens out, each at its own random level. Right: the histogram of the fraction over 1500 urns after $n$ draws, with the Beta$(b,r)$ density drawn over it (green). Change the starting counts $b,r$ (try $1,1$, then $1,4$ and $8,8$), and shorten $n$ to see the histogram approach the density. The readout gives the Kolmogorov distance between the 1500 sampled fractions and the Beta law.`,
-      deps: ['prob-4.2.12'],
+      idea: String.raw`Given the history, the fraction after the next draw is $\frac{B+1}{T+1}$ with probability $\frac BT$ and $\frac{B}{T+1}$ otherwise, whose mean is $\frac BT$: a martingale taking values in $[0,1]$, hence convergent by 4.2.12 (no shift is needed). To identify the limit, note that the probability of any particular sequence of $k$ black and $n-k$ red draws is $\frac{b^{\overline k}\,r^{\overline{n-k}}}{(b+r)^{\overline n}}$ (rising factorials) whatever the order. Equivalently, the whole draw sequence has the same finite-dimensional laws as independent coin flips conditional on a Beta$(b,r)$ random bias, obtained by integrating $x^k(1-x)^{n-k}$ against its density. The strong law for that mixture identifies the limiting fraction with the random bias.`,
+      caption: String.raw`Left: fraction of black balls for 40 seeded urns against the number of draws (log axis); finite paths illustrate stabilization toward different random limits; a finite trace does not establish convergence. Right: the histogram of the fraction over 1500 urns after $n$ draws, with the Beta$(b,r)$ density drawn over it (green). Change the starting counts $b,r$ (try $1,1$, then $1,4$ and $8,8$), and shorten $n$ to see the histogram approach the density. The readout compares the sample with both the exact finite-draw beta-binomial law and the continuous Beta limit; their difference is finite-time approximation, separate from sampling error.`,
+      deps: ['prob-4.2.12', 'prob-2.4.1'],
       see: ['stoch-12.10', 'stat-10.4'],
       tags: ['martingales', 'urns'],
-      scope: String.raw`The picture adds one ball of the sampled colour per draw. Adding $c>0$ balls instead gives a Beta$(b/c,r/c)$ limit, as derived in Durrett §4.3.2.`,
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.3.2, pp. 226–227 (Polya urn and general Beta limit)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., unnumbered Pólya urn scheme in §4.3.2, pp. 226–227'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=234' },
+      scope: String.raw`One extra ball per draw. Other reinforcement sizes (adding $c$ balls) give a Beta$(b/c,r/c)$ limit; schemes that add the opposite colour behave differently.`,
       viz(v) {
         const bS = v.slider('black $b$', 1, 10, 2, { int: true });
         const rS = v.slider('red $r$', 1, 10, 3, { int: true });
@@ -257,18 +250,20 @@ For $b=r=1$ the limit is uniform.`,
           P.hline(b / (b + r0), { color: 'muted', dash: [4, 4] });
           for (const path of cache.shown) P.path(path, { color: 'accent', width: 1, alpha: 0.5 });
           const hh = v.M.histogram(xs, { bins: 40, range: [0, 1] });
-          const ymax = Math.max(1.3, Math.max(...hh.counts) * 40 / NP, ...Array.from({ length: 101 }, (_, i) => be.pdf(0.005 + 0.99 * i / 100)).filter(isFinite).map((y) => Math.min(y, 6))) * 1.12;
+          const finite = polyaFiniteLaw(b,r0,nSel.value), bins=finite.hist(40), mode=b===1?0:r0===1?1:(b-1)/(b+r0-2);
+          const ymax = Math.max(1.3, Math.max(...hh.counts)*40/NP, ...bins.map(x=>40*x), be.pdf(mode), ...Array.from({length:401},(_,i)=>be.pdf(i/400)).filter(isFinite))*1.12;
           Hs.setView([0, 1], [0, ymax]);
           Hs.hist(xs, { bins: 40, range: [0, 1], density: true, color: 'accent', fillAlpha: 0.35 });
-          Hs.fn((x) => Math.min(be.pdf(x), 1e3), { color: 'green', width: 2.4, domain: [0.002, 0.998], n: 400 });
+          Hs.hist({edges:Array.from({length:41},(_,i)=>i/40),counts:bins.map(x=>40*x)}, {color:'orange',fillAlpha:0,outline:true});
+          Hs.fn((x) => be.pdf(x), { color: 'green', width: 2.4, domain: [0.002, 0.998], n: 400 });
           P.vline(nSel.value, { color: 'gold', dash: [4, 4] });
           const s = Array.from(xs).sort((a, c) => a - c); let ks = 0;
           s.forEach((x, i) => { const F = be.cdf(x); ks = Math.max(ks, Math.abs((i + 1) / s.length - F), Math.abs(i / s.length - F)); });
           let m = 0, m2 = 0; for (const x of xs) { m += x / NP; m2 += x * x / NP; }
-          st = { m, sd: Math.sqrt(m2 - m * m), bm: be.mean, bs: Math.sqrt(be.variance), ks, n: nSel.value, ks95: 1.36 / Math.sqrt(NP) };
+          st = { finiteKS:discreteKolmogorov(xs,finite), finiteSD:Math.sqrt(finite.variance), m, sd: Math.sqrt(m2 - m * m), bm: be.mean, bs: Math.sqrt(be.variance), ks, n: nSel.value };
         });
-        v.legend([['accent', 'urn paths / histogram'], ['green', 'Beta$(b,r)$ density'], ['muted', 'start fraction $b/(b+r)$', { dash: [4, 4] }]]);
-        v.readout(() => st && `After $n=${st.n}$ draws: mean $${fr(st.m, 3)}$ (Beta: $${fr(st.bm, 3)}$), standard deviation $${fr(st.sd, 3)}$ (Beta: $${fr(st.bs, 3)}$).\nKolmogorov distance to Beta$(b,r)$: $${fr(st.ks, 3)}$ (a 5% sampling threshold for 1500 samples is $${fr(st.ks95, 3)}$).`);
+        v.legend([['accent', 'urn paths / histogram'], ['orange', 'exact finite-draw bin density'], ['green', 'Beta$(b,r)$ limit density'], ['muted', 'start fraction $b/(b+r)$', { dash: [4, 4] }]]);
+        v.readout(() => st && `After $n=${st.n}$ draws: mean $${fr(st.m, 3)}$ (Beta: $${fr(st.bm, 3)}$), standard deviation $${fr(st.sd, 3)}$ (exact finite-draw: $${fr(st.finiteSD,3)}$; Beta limit: $${fr(st.bs, 3)}$).\nKolmogorov distance to exact finite-draw law: $${fr(st.finiteKS,3)}$. Distance to the Beta limit: $${fr(st.ks,3)}$ (includes finite-time approximation).`);
       },
     },
     // ======================================================================== 4.3.5
@@ -384,14 +379,15 @@ $$\frac{\mu(I)}{\lambda(I)}=\tfrac12\Big(\frac{\mu(I_0)}{\lambda(I_0)}+\frac{\mu
       num: '4.3.8',
       kind: 'Theorem',
       name: 'Kakutani dichotomy for product measures',
-      statement: String.raw`Let $\mu=\prod_n\mu_n$ and $\nu=\prod_n\nu_n$ be infinite product measures with $\nu_n\ll\mu_n$, and let $a_n=\int\sqrt{d\nu_n/d\mu_n}\,d\mu_n\in(0,1]$ (the Hellinger affinity). Then either $\nu\ll\mu$ or $\nu\perp\mu$, and
+      statement: String.raw`Let $\mu=\prod_n\mu_n$ and $\nu=\prod_n\nu_n$ be infinite product measures with mutually absolutely continuous coordinate laws $\nu_n\sim\mu_n$, and let $a_n=\int\sqrt{d\nu_n/d\mu_n}\,d\mu_n\in(0,1]$ (the Hellinger affinity). Then either $\nu\ll\mu$ or $\nu\perp\mu$, and
 $$\nu\ll\mu\iff\prod_na_n>0,\qquad \nu\perp\mu\iff\prod_na_n=0.$$
 Under $\mu$ the likelihood ratio $R_n=\prod_{k\le n}\frac{d\nu_k}{d\mu_k}$ then converges to a limit that is positive a.s. in the first case and is $0$ a.s. in the second.`,
-      idea: String.raw`Under $\mu$, $R_n$ is a nonnegative martingale (4.3.6), so $R_n\to R$ a.s. The square roots $\sqrt{R_n}$ have mean $E\sqrt{R_n}=\prod_{k\le n}a_k$ by independence. If $\prod a_k=0$ this mean tends to $0$, so $R=0$ a.s. and $\nu\perp\mu$ by 4.3.5. If $\prod a_k>0$, $\sqrt{R_n}$ is Cauchy in $L^2$ (the product of the $a_k$ controls $E(\sqrt{R_n}-\sqrt{R_m})^2$), so $R_n$ is uniformly integrable and $\nu\ll\mu$ with density $R$. The zero-one law (1.6.2 gives the inequality $a_n\le1$) rules out anything in between.`,
-      caption: String.raw`$\mu$ is an infinite sequence of fair coins and $\nu$ a sequence of coins with bias $\tfrac12+\varepsilon_n$, $\varepsilon_n=c\,n^{-\gamma}$ (capped at $0.49$). Left: paths of $R_n$ under $\mu$ on log-log axes. Right: the partial affinity products $\prod_{k\le n}a_k$ (blue, exact) and Monte Carlo estimates of $E\sqrt{R_n}$ (gold dots, 600 paths) which agree with it. Cross $\gamma=\tfrac12$ (where $\sum\varepsilon_n^2$ changes from divergent to convergent): below it the product sinks to $0$ and every $R_n$ collapses; above it the product levels off at a positive limit and the paths settle at positive values.`,
-      deps: ['prob-4.3.5', 'prob-1.6.2'],
+      idea: String.raw`Under $\mu$, $R_n$ is a nonnegative martingale (4.3.6), so $R_n\to R$ a.s. The square roots $\sqrt{R_n}$ have mean $E\sqrt{R_n}=\prod_{k\le n}a_k$ by independence. If $\prod a_k=0$ this mean tends to $0$, so $R=0$ a.s. and $\nu\perp\mu$ by 4.3.5. If $\prod a_k>0$, $\sqrt{R_n}$ is Cauchy in $L^2$ (the product of the $a_k$ controls $E(\sqrt{R_n}-\sqrt{R_m})^2$), so $R_n$ is uniformly integrable and $\nu\ll\mu$ with density $R$. Strictly positive coordinate likelihood ratios make the zero-limit event a tail event, so the independent-coordinate zero-one law gives probability zero or one. Jensen gives $a_n\le1$.`,
+      caption: String.raw`$\mu$ is an infinite sequence of fair coins and $\nu$ a sequence of coins with bias $\tfrac12+\varepsilon_n$, $\varepsilon_n=c\,n^{-\gamma}$ (capped at $0.49$). Left: paths of $R_n$ under $\mu$ on log-log axes. Right: the partial affinity products $\prod_{k\le n}a_k$ (blue, exact) and Monte Carlo estimates of $E\sqrt{R_n}$ (gold dots, 600 paths), which fluctuate around it and can be unreliable for highly skewed likelihood ratios. Cross $\gamma=\tfrac12$ (where $\sum\varepsilon_n^2$ changes from divergent to convergent): at or below it the infinite product is zero and $R_n$ tends to zero almost surely; above it the product is positive and the likelihood ratio has a positive limit almost surely. The finite plots illustrate this distinction and may still show large fluctuations.`,
+      deps: ['prob-4.3.5', 'prob-2.5.3', 'prob-1.6.2'],
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., Theorem 4.3.8 and preceding strict-positivity hypothesis, pp. 229–230'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=237' },
       tags: ['martingales', 'radon-nikodym'],
-      credit: 'S. Kakutani, 1948 (Ann. of Math. 49, 214–224)',
       viz(v) {
         const gS = v.slider('exponent $\\gamma$', 0.2, 1.2, 0.35, { step: 0.01 });
         const cS = v.slider('size $c$', 0.05, 0.45, 0.3, { step: 0.01 });
@@ -421,11 +417,12 @@ Under $\mu$ the likelihood ratio $R_n=\prod_{k\le n}\frac{d\nu_k}{d\mu_k}$ then 
             }
             cache = { key, prod, emp, cp, paths, finals, s2, eps };
           }
-          const fin = cache.paths.map((row) => Math.exp(row[row.length - 1])), lo = Math.max(1e-60, Math.min(...fin) * 0.2), hi = Math.max(20, Math.max(...fin) * 4);
+          const all=cache.paths.flat().map(l=>Math.max(Math.exp(l),1e-60)),lo=Math.max(1e-60,Math.min(...all)*.2),hi=Math.max(20,Math.max(...all)*4);
           L.setView([1, T], [Math.min(lo, 0.01), hi]);
           L.hline(1, { color: 'muted', dash: [5, 4] });
           for (const row of cache.paths) L.path(row.map((l, j) => [cache.cp[j], Math.max(Math.exp(l), 1e-60)]), { color: 'accent', width: 1.1, alpha: 0.55 });
           const xs = []; for (let k = 0; k <= 120; k++) xs.push(Math.max(1, Math.round(Math.exp((Math.log(T) * k) / 120))));
+          R.setView([1,T],[0,Math.max(1,...cache.emp)*1.05]);
           R.hline(0, { color: 'grid' });
           R.path(xs.map((n) => [n, cache.prod[n]]), { color: 'accent', width: 2.4 });
           R.dots(cache.cp.map((n, j) => [n, cache.emp[j]]), { r: 4, color: 'gold' });
@@ -443,15 +440,15 @@ Under $\mu$ the likelihood ratio $R_n=\prod_{k\le n}\frac{d\nu_k}{d\mu_k}$ then 
       name: 'Galton–Watson branching process',
       statement: String.raw`Let $p_0,p_1,p_2,\dots$ be a probability distribution on $\{0,1,2,\dots\}$ (the **offspring law**) and let $\xi^n_i$ ($n\ge1$, $i\ge1$) be i.i.d. with this law. The **Galton–Watson process** with $Z_0=1$ is
 $$Z_{n+1}=\sum_{i=1}^{Z_n}\xi^{n+1}_i\qquad(\text{and }Z_{n+1}=0\text{ if }Z_n=0).$$
-$Z_n$ is the number of individuals in generation $n$ when every individual independently leaves a random number of children. Write $\mu=\sum_kkp_k$ for the mean offspring number and $\varphi(s)=\sum_kp_ks^k$ for the generating function.`,
-      idea: String.raw`The process is a Markov chain on $\{0,1,\dots\}$ with $0$ absorbing. The independence of the $\xi$'s makes the family tree "renew" at every individual, which gives $E(Z_{n+1}\mid\mathcal F_n)=\mu Z_n$ (the martingale of 4.3.9) and $E s^{Z_n}=\varphi^{\circ n}(s)$, the $n$-fold iterate of $\varphi$. The fundamental question is whether the line dies out, answered by the sign of $\mu-1$ (4.3.10–4.3.12).`,
+$Z_n$ is the number of individuals in generation $n$ when every individual independently leaves a random number of children. Write $\mu=\sum_kkp_k<\infty$ for the mean offspring number and $\varphi(s)=\sum_kp_ks^k$ for the generating function.`,
+      idea: String.raw`The process is a Markov chain on $\{0,1,\dots\}$ with $0$ absorbing. The independence of the $\xi$'s makes the family tree "renew" at every individual, which gives $E(Z_{n+1}\mid\mathcal F_n)=\mu Z_n$ (the martingale of 4.3.9) and $E s^{Z_n}=\varphi^{\circ n}(s)$, the $n$-fold iterate of $\varphi$. The fundamental question is whether the line dies out, governed by the mean and the offspring law (4.3.10–4.3.12). In particular, at $\mu=1$ the deterministic one-child law survives forever and must be excluded from the usual critical-extinction conclusion.`,
       caption: String.raw`A family tree grows from one ancestor generation by generation; each node's number of children is drawn from the offspring law you choose. Change the law and its mean $m$, add generations, and resample. Right: the generation sizes $Z_n$ (bars) against $\mu^n$ (dashed). The simulation stops at the generation that pushes the total past 700 individuals, so supercritical trees show fewer generations.`,
       deps: ['prob-2.2.3a'],
       see: ['stoch-3.9', 'soc-5.8'],
       tags: ['branching'],
-      scope: String.raw`Individuals reproduce independently with the same nonnegative integer-valued offspring law. The illustration starts with one ancestor and truncates drawing when its tree reaches 700 individuals.`,
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.3.4, pp. 229–230 (branching-process definition)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., unnumbered definition and equation (4.3.4), p. 230; Lemma 4.3.9 and Theorem 4.3.11, pp. 230–231'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=238' },
+      scope: String.raw`Poisson and geometric displays use normalized finite truncations of their offspring laws with omitted mass below $2\times10^{-15}$ over the offered mean range. The bars and reference means use that same implemented law. The cap stops after a complete generation, so that generation is sampled without conditioning on size.`,
       viz(v) {
         const law = v.select('offspring law', LAW_OPTS, 'poisson');
         const mS = v.slider('mean $m$', 0.2, 2, 1.6, { step: 0.05 });

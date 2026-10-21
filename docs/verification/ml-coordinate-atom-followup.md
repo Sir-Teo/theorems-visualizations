@@ -1,0 +1,7 @@
+# ML coordinate-atom wording followup
+
+This separate successor to a8ac4a0 removes the optional claim that an atomless planar law permits exact-mass coordinate strips. Uniform arclength on the vertical segment x=1/2, 0≤y≤1 has no point atoms, but its x-coordinate marginal is a unit atom. An x-side strip has mass zero or one, so it cannot have prescribed mass q in (0,1).
+
+Only ml-3.1's idea changes: “Coordinate atoms may increase a witness's mass and only improve its miss bound.” The fixed quantiles for the measure restricted to the target rectangle, boundary atoms, strict missed-side inequality and four-event bound remain intact. No formula, dependency, function, model, flag or syllabus entry changes.
+
+Validation: `ML_COORDINATE_BASELINE=/tmp/atlas-ml-coordinate-atom/baseline node tests/verification-ml-coordinate-atom.mjs` passed 73 checks and the exact one-field/full-25-object source guard, including all functions, helpers, flags, dependencies and whole syllabus. Strict build passed with zero errors/warnings (home gzip 112758 bytes). `ML_PREREQ_NUMS=3.1 ML_PREREQ_OUTPUT=/tmp/atlas-ml-coordinate-atom/native node tests/verification-ml-prereq-prose.mjs` passed fresh native and actual built statement/proof checks at 320px in both themes; inner display bounds, TeX and runtime checks were clean. Both complete proof images were personally inspected, including the changed sentence and quantile qualifications. Evidence is under `/tmp/atlas-ml-coordinate-atom`. Earlier immutable-boundary guards retain their original scope.

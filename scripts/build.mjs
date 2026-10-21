@@ -1,13 +1,14 @@
 // Build the atlas data from content/**:
 //   data/index.json      registry, chapters, light item records, graph statistics, map layout
+//   data/home.json       bounded home-page data, including all landmark papers and derived features
 //   data/col/<id>.json   per-collection detail (statements, refs, scope, …), lazy-loaded by the app
 //   data/atlas.css       collection and field colours (light + dark) as CSS custom properties
 //   node scripts/build.mjs [--strict] [--verbose]
 import { writeFile, mkdir, rm, rename } from 'node:fs/promises';
 import { join } from 'node:path';
-import { loadAll, loadBridges, validate, printProblems, cmpNum, ROOT } from './lib.mjs';
-import { encodeCatalog } from '../assets/js/catalog.js';
 import { gzipSync } from 'node:zlib';
+import { loadAll, loadBridges, validate, printProblems, cmpNum, ROOT } from './lib.mjs';
+import { makeHomeCatalog, HOME_JSON_BUDGET } from './home-catalog.mjs';
 
 const strict = process.argv.includes('--strict');
 const { fields, collections, chapters, items, planned, aliases, problems } = await loadAll();
@@ -262,7 +263,7 @@ const index = {
   }),
   items: all.map((it) => ({
     id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name,
-    deps: it.deps, pdeps: it.pdeps.length ? it.pdeps : undefined, see: it.see.length ? it.see : undefined,
+    deps: it.deps, pdeps: it.pdeps.length ? it.pdeps : undefined, see: it.see.length ? it.see : undefined, tags: it.tags?.length ? it.tags : undefined,
     file: it.file, viz: typeof it.viz === 'function', x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0),
     anc: ancestors(it.id).size, desc: descCount.get(it.id), depth: depth(it.id), verify: it.verify ? 1 : undefined, yr: paperYear(it) ?? yearOf(it.credit),
     au: it.kind === 'Paper' && it.paper?.authors ? shortAuthors(it.paper.authors) : undefined, intro: it.introduces?.length ? it.introduces : undefined,
@@ -274,19 +275,20 @@ const index = {
   collectionEdges: edgeList(colEdges),
   fieldEdges: edgeList(fieldEdges),
   paperCount,
-  // Home-page paper timeline needs these summaries, not the complete planned graph.
-  plannedPapers: ghosts.filter(it => it.kind === 'Paper').map(it => ({
-    id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name,
-    yr: paperYear(it), au: shortAuthors(it.paper?.authors || []), planned: true,
-  })),
 };
+const homePlanned = ghosts.map(it => ({
+  id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name, deps: it.deps,
+  planned: true, yr: paperYear(it), au: it.paper?.authors ? shortAuthors(it.paper.authors) : undefined,
+  intro: it.introduces?.length ? it.introduces : undefined,
+}));
+const homeJSON = JSON.stringify(makeHomeCatalog(index, homePlanned)), homeGzipBytes = gzipSync(homeJSON).length;
+if (homeGzipBytes > HOME_JSON_BUDGET) throw new Error(`Home JSON exceeds its ${HOME_JSON_BUDGET}-byte gzip budget: ${homeGzipBytes} bytes`);
 // write into a private folder, then swap it in, so pages being served or checked never see a half-written data/
 const OUT = `data.tmp-${process.pid}`;
 await rm(join(ROOT, OUT), { recursive: true, force: true });
 await mkdir(join(ROOT, OUT, 'col'), { recursive: true });
-const indexJSON = JSON.stringify(encodeCatalog(index));
-const indexGzipBytes = gzipSync(indexJSON).length;
-await writeFile(join(ROOT, OUT, 'index.json'), indexJSON);
+await writeFile(join(ROOT, OUT, 'index.json'), JSON.stringify(index));
+await writeFile(join(ROOT, OUT, 'home.json'), homeJSON);
 // planned (ghost) items, compact rows, loaded lazily: [num, chapter, kind#, name, deps, x, y, paper?: {y, a, i}] grouped by collection
 const KIND_LIST = [...new Set(ghosts.map((it) => it.kind))];
 const plannedOut = { kinds: KIND_LIST, cols: {} };
@@ -300,7 +302,7 @@ for (const C of collections) {
   const its = all.filter((it) => it.col === C.id), pl = ghosts.filter((it) => it.col === C.id);
   if (!its.length && !pl.length) continue;
   const det = {};
-  for (const it of its) det[it.id] = { st: it.statement, tags: it.tags?.length ? it.tags : undefined, refs: it.refs?.length ? it.refs : undefined, scope: it.scope || undefined, credit: it.credit || undefined, links: it.links || undefined, paper: it.paper || undefined };
+  for (const it of its) det[it.id] = { st: it.statement, refs: it.refs?.length ? it.refs : undefined, scope: it.scope || undefined, credit: it.credit || undefined, links: it.links || undefined, paper: it.paper || undefined };
   for (const it of pl) det[it.id] = { pic: it.pic || undefined, refs: it.refs?.length ? it.refs : undefined, tags: it.tags?.length ? it.tags : undefined, paper: it.paper || undefined };
   // chapter summaries live here (not in index.json) to keep the catalog small
   const sums = Object.fromEntries([...chapters.values()].filter((c) => c.col === C.id && c.summary).map((c) => [c.chapter, c.summary]));
@@ -312,5 +314,4 @@ const OLD = `data.old-${process.pid}`;
 await rename(join(ROOT, 'data'), join(ROOT, OLD)).catch(() => {});
 await rename(join(ROOT, OUT), join(ROOT, 'data'));
 await rm(join(ROOT, OLD), { recursive: true, force: true });
-console.log(`wrote data/index.json (${(indexJSON.length / 1024).toFixed(0)} KB; ${indexGzipBytes} bytes gzipped), data/planned.json (${(JSON.stringify(plannedOut).length / 1024).toFixed(0)} KB), data/col/*.json, data/atlas.css`);
-if (strict && indexGzipBytes > 300000) { console.error('Home-page JSON exceeds the 300 KB gzip budget'); process.exitCode = 1; }
+console.log(`wrote data/index.json (${(JSON.stringify(index).length / 1024).toFixed(0)} KB), data/home.json (${homeGzipBytes} bytes gzip), data/planned.json (${(JSON.stringify(plannedOut).length / 1024).toFixed(0)} KB), data/col/*.json, data/atlas.css`);

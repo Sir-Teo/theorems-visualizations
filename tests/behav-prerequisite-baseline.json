@@ -1,0 +1,557 @@
+{
+  "edges": {
+    "1.1": [
+      "prob-2.2.16"
+    ],
+    "1.3": [
+      "prob-1.6.1"
+    ],
+    "1.5": [
+      "pma-5.5"
+    ],
+    "1.6": [
+      "prob-1.6.1"
+    ],
+    "1.7": [
+      "pma-6.21"
+    ],
+    "1.9": [
+      "pma-6.22"
+    ],
+    "1.14": [
+      "pma-4.16"
+    ],
+    "3.8": [
+      "prob-1.1.1"
+    ],
+    "3.9": [
+      "prob-2.2.1"
+    ],
+    "3.10": [
+      "prob-2.1.9",
+      "prob-2.3.12"
+    ],
+    "4.2": [
+      "opt-3.4"
+    ],
+    "4.6": [
+      "prob-2.2.1"
+    ],
+    "5.3": [
+      "pma-6.21"
+    ]
+  },
+  "baseline": {
+    "1.9": {
+      "file": "content/behav/ch01-b.js",
+      "deps": [
+        "behav-1.4",
+        "micro-13.1"
+      ],
+      "idea": "Integrating by parts, $E\\,u(A)-E\\,u(B)=\\int_a^b u'(x)\\,[F_B(x)-F_A(x)]\\,dx$, which is non-negative for all increasing $u$ exactly when $F_B-F_A\\ge0$ everywhere (test with step utilities). Integrating once more, $=u'(b)\\!\\int_a^b(F_B-F_A)-\\int_a^b u''(x)\\Big[\\int_a^x(F_B-F_A)\\Big]dx$, so a concave $u$ ($u''\\le0$) prefers $A$ whenever every partial integral of $F_B-F_A$ is non-negative. Jensen's inequality (behav-1.4) is the special case of a sure amount against a lottery with the same mean. Dominance lets one rank lotteries knowing only the sign of $u'$ or $u''$, without a utility function.",
+      "hash": "d3e4486cc3d7c547d6b9f0e663b85353d9f2c67bf5fd758c3a9f74c5efce4b54"
+    },
+    "1.10": {
+      "file": "content/behav/ch01-b.js",
+      "deps": [
+        "behav-1.3",
+        "stat-10.1"
+      ],
+      "hash": "ebfab726063b307000051c3fbe86219d5b77a5cbf535f6f65032ab6efa0ded8b"
+    },
+    "1.11": {
+      "file": "content/behav/ch01-b.js",
+      "deps": [
+        "behav-1.3"
+      ],
+      "hash": "7743df950b402b63577ce67550816a9c0a4e6f5d26f19e0673cb3288ff4bcff4"
+    },
+    "1.12": {
+      "file": "content/behav/ch01-b.js",
+      "deps": [
+        "behav-1.3"
+      ],
+      "hash": "b3afc758fbc8af0d88343ffe314493c78d292cf1641088112457669bb27f4839"
+    },
+    "1.13": {
+      "file": "content/behav/ch01-b.js",
+      "deps": [
+        "behav-1.10"
+      ],
+      "hash": "68646717f69b016eabd7f3cf54a33c10e57c78ae0ec45c6411ed2ced514e1fd4"
+    },
+    "1.14": {
+      "file": "content/behav/ch01-b.js",
+      "deps": [
+        "behav-1.13"
+      ],
+      "idea": "In Ellsberg's urn, red is known to be 1/3 and the black share $b$ is unsure, so take $\\mathcal C$ to be the priors with $b$ in an interval around 1/3. Expected payoffs are linear in $b$, so each bet's worst case sits at an end of the interval: bet II (black) is judged as if few balls were black, bet III (red or yellow) as if many were black, while I and IV, whose chances are known, are unaffected. Hence I beats II and IV beats III for any interval of positive width: the Ellsberg pattern with no contradiction, because each act is evaluated with its own worst prior. Shrinking the interval to a point recovers expected utility.",
+      "hash": "1ed927706767bbd39b33fba3e4f3b1e72e9b5b99ee2ac975f56bd10a9d371a64"
+    },
+    "1.15": {
+      "file": "content/behav/ch01-b.js",
+      "deps": [
+        "behav-1.1"
+      ],
+      "hash": "54b1285176d5655257a42b952e8347a709bd85398cfad15cd557794c0ae15160"
+    },
+    "1.16": {
+      "file": "content/behav/ch01-b.js",
+      "deps": [
+        "behav-1.3"
+      ],
+      "hash": "e80531df41905e7f1d38f8fe9af772e9aa3332ca3e063b6fd243f2988a883fc5"
+    },
+    "1.1": {
+      "file": "content/behav/ch01.js",
+      "deps": [
+        "micro-13.1",
+        "pma-3.21"
+      ],
+      "idea": "The expected value is a series (pma-3.21) whose terms do not shrink: every possible length of game contributes exactly half a ducat, because a payout twice as large comes with half the probability. The large payouts are so rare that a finite run almost never sees them. In $n$ games the longest run of tails is about $\\log_2 n$, and each of the roughly $\\log_2 n$ game lengths seen so far contributes about half a ducat, so sample averages understate the mean and creep up only logarithmically. A banker with a finite fortune can honour only the first $\\log_2B$ of the half-ducats. The paradox is that expected value (micro-13.1), the natural rule for fair prices, gives an answer nobody accepts; Bernoulli's resolution (behav-1.2) changes the scale on which the outcomes are averaged.",
+      "hash": "d1da8c065a62ccc92915980e41e50bd214834e4205dc84d993674a30e4868ddc"
+    },
+    "1.2": {
+      "file": "content/behav/ch01.js",
+      "deps": [
+        "behav-1.1",
+        "pma-8.6"
+      ],
+      "hash": "3ce7b96cfc72c84d4c790fb5f13e9f29aa729d43f10903ed9cf60e59ca50b225"
+    },
+    "1.3": {
+      "file": "content/behav/ch01.js",
+      "deps": [
+        "micro-13.2",
+        "micro-4.3",
+        "micro-13.1"
+      ],
+      "idea": "Independence is the axiom with teeth. Mixing two lotteries with the same third lottery $r$ shrinks the segment from $p$ to $q$ toward $r$ by the factor $\\alpha$ without turning it, so if indifference lines are parallel the two mixtures stand in the same relation as $p$ and $q$. Conversely, independence forces indifference curves to be straight (mix a lottery with an equivalent one) and parallel (slide a pair of equivalent lotteries toward any other point). Continuity rules out lexicographic tastes and supplies the utility numbers: $u(x_2)$ is the probability $q$ at which $x_2$ for sure is matched by a $q$ chance of $x_3$ and $1-q$ of $x_1$. Observed choices break independence in a patterned way, with indifference lines that **fan out**, steeper toward the best prize, which is the Allais paradox (behav-1.11).",
+      "hash": "96ba6ef0a553ce1a01c4826c339b4170891c9b7f631f075a0569e5fc0e4818bf"
+    },
+    "1.4": {
+      "file": "content/behav/ch01.js",
+      "deps": [
+        "micro-13.3",
+        "rca-3.3"
+      ],
+      "hash": "630e317411456d50173b39dd554f8df1ca68b315a637b150dee9a153bbc33c15"
+    },
+    "1.5": {
+      "file": "content/behav/ch01.js",
+      "deps": [
+        "behav-1.4",
+        "pma-5.15"
+      ],
+      "idea": "Normalizing $u(w)=0$ and $u'(w)=1$ removes the arbitrary scale; what remains near $w$ is the second-order term of Taylor's theorem (pma-5.15), $\\tfrac12u''(w)/u'(w)\\,(x-w)^2=-\\tfrac12A(w)(x-w)^2$. For (i)⇒(ii), $\\varphi=u_1\\circ u_2^{-1}$ has $\\frac{d}{dx}\\ln\\varphi'\\big(u_2(x)\\big)=A_2(x)-A_1(x)\\le0$, so $\\varphi'$ decreases and $\\varphi$ is concave; then Jensen's inequality for $\\varphi$ (behav-1.4) puts $u_1$'s certainty equivalent below $u_2$'s for every risk, which is (iii). If the coefficients cross, so do the risk premia: neither utility is more risk averse overall.",
+      "hash": "eab778cb41c522554cb80e43b5a9d483cb78b593bf27b0265753afc80cf8c3ad"
+    },
+    "1.6": {
+      "file": "content/behav/ch01.js",
+      "deps": [
+        "behav-1.5",
+        "micro-13.4",
+        "pma-5.15"
+      ],
+      "idea": "Expand both sides around $w$ (Taylor's theorem, pma-5.15): $u(w-\\pi)\\approx u(w)-\\pi u'(w)$, and $E\\,u(w+\\tilde\\varepsilon)\\approx u(w)+\\tfrac12\\sigma^2u''(w)$, the first-order term vanishing because the risk is fair. Equating gives $\\pi\\approx\\tfrac12\\sigma^2\\big(-u''/u'\\big)$: the Arrow–Pratt coefficient (behav-1.5) times half the variance, which is the Jensen gap of behav-1.4 converted into money (micro-13.4). At a kink the left and right slopes differ, the first-order terms no longer cancel, and the premium is of order $\\sigma$. That is why kinked, loss-averse preferences can produce noticeable aversion to small bets, which smooth expected utility cannot (behav-1.8).",
+      "hash": "64c2a060582fb9fd15e62a87f818b62f81f913a8494847bd3a8086294323f14f"
+    },
+    "1.7": {
+      "file": "content/behav/ch01.js",
+      "deps": [
+        "behav-1.5"
+      ],
+      "idea": "Constant $A$ means $u''/u'$ is constant, so $u'$ is an exponential and adding a sure amount to wealth multiplies $u$ by a constant: preferences over additive gambles ignore the level of wealth. Constant $R$ means $u'(w)\\propto w^{-\\gamma}$, so scaling wealth multiplies $u$ by a constant: preferences over proportional gambles ignore the scale. The portfolio results follow by maximizing $E\\,u\\big(w(1+r)+\\alpha(\\tilde R-r)\\big)$ over the dollar holding $\\alpha$: the wealth term factors out of CARA and scales out of CRRA. Their Arrow–Pratt coefficients (behav-1.5) are the simplest possible, which is why these two families carry most applied work in finance and macroeconomics.",
+      "hash": "04fbf601ea3ce4aa9c6c80f61ba953972644dc4eedfc8d8d198aeba085ebb891"
+    },
+    "1.8": {
+      "file": "content/behav/ch01.js",
+      "deps": [
+        "behav-1.4"
+      ],
+      "hash": "5c56a637be02d8cf26800418cb273f5594d2af67cce00778aecb77b9bed83572"
+    },
+    "2.7": {
+      "file": "content/behav/ch02-b.js",
+      "deps": [
+        "behav-2.3"
+      ],
+      "hash": "8e3a56fa70cd57c0fb132dd03c88497b98280d9cc76e306fa9a612ad649c7031"
+    },
+    "2.8": {
+      "file": "content/behav/ch02-b.js",
+      "deps": [
+        "behav-2.4",
+        "behav-1.9"
+      ],
+      "hash": "573cfec5095e62e22ac5d19a57d7dc44c359eb3ebd4d769d4ddd9afb6f8c6ef7"
+    },
+    "2.9": {
+      "file": "content/behav/ch02-b.js",
+      "deps": [
+        "behav-2.2"
+      ],
+      "hash": "a10ecb97a7eae5fb52dda104f7840118852fc0b40d3f2c6a0934a880cd643ab7"
+    },
+    "2.10": {
+      "file": "content/behav/ch02-b.js",
+      "deps": [
+        "behav-2.2"
+      ],
+      "hash": "11598c286cf0719c6ad9594b4b2bf57ed1882f455a71b41bfbdcaa995f327611"
+    },
+    "2.11": {
+      "file": "content/behav/ch02-b.js",
+      "deps": [
+        "behav-2.3"
+      ],
+      "hash": "f18dc320bbc0e829f2c546f872abe580c7899b61b40ac4c6d49e8d0bd9fd9290"
+    },
+    "2.12": {
+      "file": "content/behav/ch02-b.js",
+      "deps": [
+        "behav-2.2"
+      ],
+      "hash": "47c8a26ea1a3ac7b1afc0ca6d3df79833a4d4f981aa2567364cd514e68f0f4f8"
+    },
+    "2.13": {
+      "file": "content/behav/ch02-papers.js",
+      "deps": [
+        "behav-1.16",
+        "behav-1.3",
+        "psych-1.11"
+      ],
+      "hash": "5227eb0dd8b3d0a4002286a04f94fcd09abb5f8384daf5dbe89553ff6acdb7d4"
+    },
+    "2.1": {
+      "file": "content/behav/ch02.js",
+      "deps": [
+        "behav-1.2"
+      ],
+      "hash": "05fa33d78570743d6764f2c27f0a84f5e7b1914f7e1981d0fd4a0a8e85f139e2"
+    },
+    "2.2": {
+      "file": "content/behav/ch02.js",
+      "deps": [
+        "behav-2.1"
+      ],
+      "hash": "52e72eca8ad935dbb88441cd1d468b0c503272d40476c8b475474e5f6b462ef7"
+    },
+    "2.3": {
+      "file": "content/behav/ch02.js",
+      "deps": [
+        "behav-2.1",
+        "behav-2.2",
+        "psych-1.11"
+      ],
+      "hash": "638b2907ee402d8869767fe8d6f5a3dd16b328936312eec383e4c16350184143"
+    },
+    "2.4": {
+      "file": "content/behav/ch02.js",
+      "deps": [
+        "behav-1.12",
+        "behav-2.3"
+      ],
+      "hash": "d2f90339c18c7d4599fe82ef361eb72348ab591e5c2a77a29c1733ebacb9d862"
+    },
+    "2.5": {
+      "file": "content/behav/ch02.js",
+      "deps": [
+        "behav-2.3",
+        "behav-2.4"
+      ],
+      "hash": "408f035aad056536224ad945dbce3430008545266b09258fb695b0a1df7ce998"
+    },
+    "2.6": {
+      "file": "content/behav/ch02.js",
+      "deps": [
+        "behav-2.4",
+        "behav-1.11"
+      ],
+      "hash": "e4217b7e2fc6bc0b5a14709ab1dc215bfc457ffdb802513b4facb844e87e8349"
+    },
+    "3.11": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [
+        "behav-3.10"
+      ],
+      "hash": "fff9036749788d608ff6ea1b220a713f68c4ac110e5de5a186caac52613432da"
+    },
+    "3.12": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [
+        "stat-12.9"
+      ],
+      "hash": "d1e9e07bf2f83c7818e03db2e8a1c4af1aa3404071463398ced1589c969471df"
+    },
+    "3.13": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [],
+      "hash": "61b7fe2e85daff01c25c30de60c06dfba9cd391a7e177bb6a795234170f8030c"
+    },
+    "3.14": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [
+        "behav-3.13"
+      ],
+      "hash": "1e30b8426ef09614a55afdaab3f8bffd266aef3865b3d5d26432c14a48ead0f2"
+    },
+    "3.15": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [],
+      "hash": "85054fcfba7c937743bda230edd3afe6d711664371b4192df87f47c4422077cf"
+    },
+    "3.16": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [
+        "psych-3.8"
+      ],
+      "hash": "9beff0b968954610fc93d1f023517258f3a15ff2458d18620171ed8a3bd88fa2"
+    },
+    "3.17": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [
+        "behav-1.3"
+      ],
+      "hash": "47f959db8cf954a6c9cea2d6fcd5914e50761cd0e3d442c46fe533a3010e1111"
+    },
+    "3.18": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [
+        "behav-3.1"
+      ],
+      "hash": "8d0ffb474f95364e4b8a05add6b4593df4c8d6294546704dc3709414d717d3d3"
+    },
+    "3.19": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [
+        "micro-13.2"
+      ],
+      "hash": "5ecf91f6407f8bfa07d1648007fa510f17709398413d6320aa25d71aee62a6e5"
+    },
+    "3.20": {
+      "file": "content/behav/ch03-b.js",
+      "deps": [
+        "behav-3.5",
+        "behav-3.6"
+      ],
+      "hash": "3110ab4aaf91ad0c0a9df7f576c4087d48dc6c1f617dde823082791ebf20990c"
+    },
+    "3.1": {
+      "file": "content/behav/ch03.js",
+      "deps": [],
+      "hash": "134c1feebec8ae2d6925623471135adf619ff489602ea75205681f20ed5ce0f6"
+    },
+    "3.2": {
+      "file": "content/behav/ch03.js",
+      "deps": [],
+      "hash": "50553e8779c826e477ade89a26e68d0a1af3574c54262d2cdb7a978ba4d8d365"
+    },
+    "3.3": {
+      "file": "content/behav/ch03.js",
+      "deps": [
+        "behav-2.7",
+        "behav-2.3"
+      ],
+      "hash": "6914bc5c5aabdd429a398f42a131ef5ff7d456b2150b037449960e3124f11c48"
+    },
+    "3.4": {
+      "file": "content/behav/ch03.js",
+      "deps": [],
+      "hash": "8153a05d4d82afa200f864baaae30bff08b79047e54091d1d20ce1e4431335d5"
+    },
+    "3.5": {
+      "file": "content/behav/ch03.js",
+      "deps": [],
+      "hash": "aec80b945ebc63e45851165b746b92a77984472b40c2e6741e6cf4cfbcc2fb58"
+    },
+    "3.6": {
+      "file": "content/behav/ch03.js",
+      "deps": [
+        "stat-10.1"
+      ],
+      "hash": "5d2fa8d4e2f6ee1b26bca350e147345ff48aca86e5efa9d97c4a3b3cc3ae0436"
+    },
+    "3.7": {
+      "file": "content/behav/ch03.js",
+      "deps": [
+        "behav-3.6",
+        "stat-10.1"
+      ],
+      "hash": "0a760d8b8c21f74ffe05893372c6fd94236d88a866b46e1fad80ca982047b327"
+    },
+    "3.8": {
+      "file": "content/behav/ch03.js",
+      "deps": [
+        "behav-3.6"
+      ],
+      "idea": "The description is representative of a feminist and unrepresentative of a bank teller, and adding \"feminist\" makes the story more similar to Linda (behav-3.6), even though every added detail can only remove possibilities. In a Venn diagram the feminist bank tellers are a subset of the bank tellers, so their probability is at most that of the larger set, whatever the numbers. Critics argued that people read \"bank teller\" as \"bank teller and not feminist\", or \"probable\" in a non-mathematical sense; the fallacy shrinks with frequency formats (\"of 100 women like Linda, how many…\") and incentives, but survives in betting versions.",
+      "hash": "8a0e58a64ad437038425393433acbe336a2e958348d7a78656993e3a86efa1e9"
+    },
+    "3.9": {
+      "file": "content/behav/ch03.js",
+      "deps": [],
+      "idea": "The proportion of boys in a day's $n$ births has standard deviation $\\sqrt{p(1-p)/n}$, so a deviation of 10 percentage points is about 0.8 standard deviations for $n=15$ but 1.3 for $n=45$. Exactly, $P(\\text{more than }60\\%\\text{ boys})$ is $P(X\\ge10)$ for $X\\sim\\text{Bin}(15,\\tfrac12)$, about 0.15, against $P(X\\ge28)$ for $\\text{Bin}(45,\\tfrac12)$, about 0.07. Representativeness (behav-3.6) ignores $n$: \"more than 60%\" looks equally typical either way. In the county map the same variance makes rates of small counties spread widely around the common true rate, so both tails of the ranking are filled with small counties, inviting causal stories about rural life.",
+      "hash": "1838bc107fd700eb1654d72a475cb7bf925736a9323e1b80dc1821135c726894"
+    },
+    "3.10": {
+      "file": "content/behav/ch03.js",
+      "deps": [
+        "behav-3.9"
+      ],
+      "idea": "Applying representativeness (behav-3.6) locally, people expect every short stretch of a sequence to look like the long-run 50–50 mix, the law of small numbers (behav-3.9) applied to sequences. A fair coin has no memory, so the number of alternations among $n$ flips is $\\text{Bin}(n-1,\\tfrac12)$, and the longest run grows like $\\log_2 n$; both distributions can be computed exactly, so a \"human\" sequence can be tested against them. The mirror-image belief, that streaks continue, is the hot hand (behav-3.11).",
+      "hash": "10b436ba6848039fcad922dfd8c0f54a7cfa4fee8c65510899861f74ea747662"
+    },
+    "4.5": {
+      "file": "content/behav/ch04-b.js",
+      "deps": [
+        "behav-4.1"
+      ],
+      "hash": "87dfdd90093de5daaabc113a2382733190708c7394337cce44144b15bd59f9c4"
+    },
+    "4.6": {
+      "file": "content/behav/ch04-b.js",
+      "deps": [
+        "behav-4.1",
+        "prob-2.2.3"
+      ],
+      "idea": "For $K_n\\sim\\operatorname{Binomial}(n,1/2)$, $S_n=300K_n-100n$ dollars. Thus $ES_n=50n$ dollars and $\\operatorname{sd}(S_n)=150\\sqrt n$ dollars; the standard deviation of the **average** is $150/\\sqrt n$. The finite-variance weak law (prob-2.2.3) gives $S_n/n\\to50$ in probability, so $P(S_n<0)\\to0$. Absolute risk does not shrink, and finite loss probabilities can jump: $P(S_3<0)=1/8$, while $P(S_4<0)=5/16$.\n\nSamuelson's theorem has a stronger premise than rejecting one bet at today's wealth: if the expected utility of a single bet is no better than abstention **at every wealth level reachable within the specified range**, then no finite independent sequence staying in that range improves expected utility. Rejection only at the initial wealth does not establish that premise.",
+      "hash": "332dffbcfbc24653ad683a10853ecce679b3923fc093c9376692b142c2ec140a"
+    },
+    "4.7": {
+      "file": "content/behav/ch04-b.js",
+      "deps": [
+        "behav-4.1",
+        "behav-2.1"
+      ],
+      "hash": "a4318cfb8428c3943763b434715c4f14cc3c3cecd242a934fc3d2263e2a8633c"
+    },
+    "4.1": {
+      "file": "content/behav/ch04.js",
+      "deps": [
+        "behav-2.1",
+        "behav-2.3"
+      ],
+      "hash": "c123ff1b8ee1f2f3c7e082e6cc1dc72a9838d1bb4b4eff6f6dc44151f958f837"
+    },
+    "4.2": {
+      "file": "content/behav/ch04.js",
+      "deps": [
+        "behav-2.3",
+        "behav-4.1"
+      ],
+      "idea": "Everything follows from the shape of the value function. Concave gains make two small gains worth more than their sum; convex losses make one big loss hurt less than two small ones; and the kink at zero makes mixed outcomes ambiguous: whether a small gain softens a large loss (silver lining) depends on how quickly the loss branch flattens out. The principle is the practical use of prospect theory (behav-2.3) and of the mental-account idea that the way an outcome is posted changes how it feels (behav-4.1).",
+      "hash": "7d82ad34c9e36d74f07805cfeb5503349421676cedfbaebdfe68c53bee14bc82"
+    },
+    "4.3": {
+      "file": "content/behav/ch04.js",
+      "deps": [
+        "behav-4.1",
+        "micro-7.13"
+      ],
+      "hash": "b656dd444c216a762acf08215213b20a7c25a208fdfe16b7b2a909114dda9bec"
+    },
+    "4.4": {
+      "file": "content/behav/ch04.js",
+      "deps": [
+        "behav-4.1"
+      ],
+      "hash": "373a7edca32c18fd76962ab8638f2342650e8e531f7ad0f8a20359ee8b4cdd2f"
+    },
+    "5.7": {
+      "file": "content/behav/ch05-b.js",
+      "deps": [
+        "behav-5.6"
+      ],
+      "hash": "9cde32d5163bf0fca9167c082e0c9dd03d7bf44065db47e539cad6629b282160"
+    },
+    "5.8": {
+      "file": "content/behav/ch05-b.js",
+      "deps": [],
+      "hash": "bbc41c669fa26bad5fb3e7d0f03831386b620b08f1cc766ee89341f7a312815d"
+    },
+    "5.9": {
+      "file": "content/behav/ch05-b.js",
+      "deps": [
+        "behav-5.1"
+      ],
+      "hash": "998784612a1327a3f89e3804418fd851ac346381e2b9ab49e1e73fb52b8cace5"
+    },
+    "5.10": {
+      "file": "content/behav/ch05-b.js",
+      "deps": [
+        "behav-5.3"
+      ],
+      "hash": "a79fc6c4a2e37e7ea4c0cade8ad5bc89bbf1d944dab8ab5040f6aa3533687008"
+    },
+    "5.11": {
+      "file": "content/behav/ch05-b.js",
+      "deps": [
+        "behav-5.1"
+      ],
+      "hash": "57c1d15bf2be427ada967e9eb0292d3da26ce319ffe4bf4374ce892bd1793da0"
+    },
+    "5.1": {
+      "file": "content/behav/ch05.js",
+      "deps": [
+        "micro-11.9",
+        "pma-8.6"
+      ],
+      "hash": "2bdbc7d5cdb8808c4ef388d8fb834bcce905c114fccfa10da940c51d119a9e68"
+    },
+    "5.2": {
+      "file": "content/behav/ch05.js",
+      "deps": [
+        "behav-5.1"
+      ],
+      "hash": "f6769ac24ed192dfb91f760fbca6cf5ed3947932e3fc5ec4f184e35c84aec42c"
+    },
+    "5.3": {
+      "file": "content/behav/ch05.js",
+      "deps": [
+        "behav-5.1",
+        "prob-1.2.4"
+      ],
+      "idea": "Matching the one-year values sets $\\rho=\\ln(1+k)$. Concavity of $\\ln(1+kt)$ gives $D_{\\rm hyp}(t)<e^{-\\rho t}$ for $0<t<1$, and the reverse for $t>1$: the matched curves cross at one year.\n\nA specific mixture also produces this hyperbola: if exponential rates $R$ have an **exponential distribution with mean $k$** (prob-1.2.4, density $k^{-1}e^{-r/k}$), then\n$$E[e^{-Rt}]=\\int_0^\\infty e^{-rt}\\,k^{-1}e^{-r/k}\\,dr=\\frac1{1+kt}.$$\nAn arbitrary distribution of rates produces a Laplace transform, which need not have this form.",
+      "hash": "92abc2e9e7b333ddd7b15fd80cc7aa49cf2f91d574018023d24410a7b6c493c6"
+    },
+    "5.4": {
+      "file": "content/behav/ch05.js",
+      "deps": [
+        "behav-5.3"
+      ],
+      "hash": "b98401c5aa6dd5ea250123baed991fa3458b6200599408b374922aecdda09e4e"
+    },
+    "5.5": {
+      "file": "content/behav/ch05.js",
+      "deps": [
+        "behav-5.3"
+      ],
+      "hash": "8b051cb44e02ed9a1ab60016a29adce6d10d768c39b298ead88e9dcbc37335c0"
+    },
+    "5.6": {
+      "file": "content/behav/ch05.js",
+      "deps": [
+        "behav-5.5"
+      ],
+      "hash": "664568df0618247cabfdd285dd98e711e4ca0ad71e9e60af7aa59c11e0fb7652"
+    }
+  },
+  "syllabusHash": "e9ad83131118c1cccd584218fd3071769ed6a4116c3061327a99be734fa2e3cf",
+  "untouched": {
+    "ch01.shared.js": "fdeab279b8d143d7585c36777cc2b46027493aa5b2a4ef5c5b77c551a749f140",
+    "ch02-b.js": "889bee1219001e75619cb0350f58998411bf6bc247f39ce518cc8be9a9253655",
+    "ch02-papers.js": "fc0d53cc803c211e4f0f4fa350765ff33dce2038cbd13a897803d42c38e4cdcc",
+    "ch02.js": "ae24b01880135b7e446e95908e4a0cfebdeff5083bb8b4df05f9f1b37ab78939",
+    "ch02.shared.js": "7ff2a9496a052c81b4dec262768ba54982bb3e19f3be3bc2fbe3e85a9e62c618",
+    "ch03-b.js": "18ca26b7faf93785415b6e45efa56349b8906142cc22fe0c9a0e40b4178205e0",
+    "ch03.shared.js": "cd5bf34718def4d4b2fde89e77497f89f1fef81d9d6a41cbb0770a0dbc406a53",
+    "ch04.shared.js": "92d72d6b446f881504f965369baa8db23a83680a763917912ac5927ee1979e00",
+    "ch05-b.js": "2090672c2365cb47bac277a471b1484a6e190d3a1a5b24db698ac890d80ca50c",
+    "ch05.shared.js": "29ac55c6530aaf7917515c93e0178d87867f239be347dabd307917aa383e631c",
+    "collection.js": "50476ab459a9083d8031517f9d50b99684eb5da18ecdeec00a02504cb0bcf326",
+    "source-audit-bracketing.js": "09313d2674daed0d49aa0e59adabe568a908827577f57bf10e13d68de401eb6b",
+    "source-audit-deadlines.js": "6e070888ab6dcedd2ba8b197a735911e65b70f3d0ab38f3db4c8c4a6f572b911",
+    "source-audit-discounting.js": "65481625b8e64e906e5dc7f96be76dcf02ccd8b1ffa42df30a4a73cc90041479"
+  }
+}

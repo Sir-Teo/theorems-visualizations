@@ -1,3 +1,4 @@
+import { paperModel, paperAudio } from './source-audit-induced-paper.js';
 // Music Theory & Acoustics — Chapter 6: Consonance and dissonance (part b: items 6.9–6.15)
 import { SR, loopVoice, cbw, pl, at, dissAll, diss2, dissCurve, minima, sample, cents, gcd, lcm, factor, gradus, gradusN, nearRatio, JUST, harmonic, stretched, BEAM, TET10, ratioStr, toneBuf, mixBuf, seqBuf, loopParts, ratioTicks, plStd, plDiss65, plComplex, PL_FIG10, PL_MEDIANS, PL_FIG11, PL_FIG12, helmPair, noteOf } from './ch06.shared.js';
 
@@ -464,57 +465,24 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
     },
     // ------------------------------------------------------------------ 6.15
     {
-      num: '6.15',
-      kind: 'Paper',
-      name: 'Local Consonance, Timbre and Scale',
-      paper: { authors: 'William A. Sethares', year: 1993, title: 'Local consonance and the relationship between timbre and scale',
-               venue: 'Journal of the Acoustical Society of America 94 (3): 1218–1228', doi: '10.1121/1.408175' },
-      introduces: ['music-6.4', 'music-6.5'],
-      statement: String.raw`Sethares gave the Plomp–Levelt curve an explicit form as a difference of exponentials (6.3), defined the **dissonance curve** of any spectrum by summing it over all pairs of partials of the tone and a transposed copy (6.4), and stated the **principle of local consonance**: a timbre and a scale are related when the curve's local minima fall on the scale's intervals (6.5). He proved general properties: (1) the unison is the global minimum; (2) for large intervals the dissonance tends to no more than the timbre's intrinsic dissonance; (3) a spectrum of $n$ partials has at most $2n(n-1)$ local minima, placed symmetrically on a log scale about the unison; (4) up to half of them lie exactly at ratios $f_i/f_j$ of the timbre's own partials, the others being shallow minima between widely spaced partials. He then went both ways: from timbre to scale (the free bar of a xylophone, stretched and compressed spectra, FM spectra with non-integer ratios) and from scale to timbre, by optimizing partial positions with a genetic algorithm or by choosing spectra "induced" by an equal temperament, such as spectra for 10-tone equal temperament (6.6).`,
-      idea: String.raw`Plomp and Levelt (6.14) had computed curves only for harmonic tones and used them to explain the familiar consonances; Pierce (1966) had built a timbre for an 8-tone scale, and Mathews and Pierce had explored stretched partials. Sethares turned the calculation into a general tool for any spectrum and any scale, at the moment when synthesizers made arbitrary spectra playable. It changed the question "which intervals are consonant?" into "consonant for which sound?", and it underlies later work on adaptive tuning (7.16) and the book *Tuning, Timbre, Spectrum, Scale* (1998).`,
-      caption: String.raw`Figures from the paper's examples, recomputed. **Two partials**: a tone of two equal partials whose ratio you set; very close partials give no local minimum, a moderate ratio gives one exactly at that ratio, a wide one gives a steep minimum at the ratio and a second, shallow one (property 4). **Free bar** (two octaves), **stretched** ($A=2.1$) and **10-TET** spectra show minima moving to the timbre's own ratios. Left: the spectrum; right: the curve, minima in green, and the timbre's partial ratios $f_i/f_j$ as orange marks on the axis. Click the curve to hear an interval with this timbre.`,
-      deps: ['music-6.3', 'music-4.1'],
-      see: ['music-6.4', 'music-6.5', 'music-6.6', 'music-6.7'],
-      refs: [],
-      tags: ['history', 'dissonance', 'timbre'],
-      credit: 'William A. Sethares, 1993',
-      links: { doi: 'https://doi.org/10.1121/1.408175' },
-      viz(v) {
-        const M = v.M;
-        const fig = v.select('example', [{ value: 'two', label: 'two partials' }, { value: 'beam', label: 'free bar' }, { value: 'str', label: 'stretched' }, { value: 'tet', label: '10-TET timbre' }], 'two', { onChange: () => { cache = null; vis(); } });
-        const rS = v.slider('ratio of the two partials', 1.01, 2.2, 1.86, { step: 0.01, onChange: () => { cache = null; } });
-        function vis() { rS.el.hidden = fig.value !== 'two'; v.invalidate(); }
-        const def = () => {
-          const b = 2 ** 0.1;
-          if (fig.value === 'two') return { spec: [[1, 1], [rS.value, 1]], f0: 500, cmax: 1300 };
-          if (fig.value === 'beam') return { spec: BEAM.map((r, i) => [r, 0.88 ** i]), f0: 261.63, cmax: 2450 };
-          if (fig.value === 'str') return { spec: stretched(7, 2.1), f0: 261.63, cmax: 1350 };
-          return { spec: TET10.map((m, i) => [b ** m, 0.88 ** i]), f0: 261.63, cmax: 1250 };
-        };
-        let cache = null, cur = null;
-        const curve = () => { if (cache) return cache; const D = def(), C = dissCurve(D.spec, D.f0, 0, D.cmax, 650); let mx = 0, mn = Infinity; for (const x of C.d) { mx = Math.max(mx, x); mn = Math.min(mn, x); } cache = { ...D, C, mx, mn, mins: minima(C, fig.value === 'two' ? 0.01 : 0.004) }; return cache; };
-        const sp = v.stage({ x: [0.9, 30], y: [0, 1.15], xlog: true, height: 300, axes: 'box', gutter: true, weight: 0.6, minWidth: 220, yticks: [], xticks: [[1, '1'], [2, '2'], [5, '5'], [10, '10'], [20, '20']], xlabel: 'partial ÷ fundamental', title: 'spectrum' });
-        const cv = v.stage({ x: [0, 1300], y: [-0.09, 1.12], height: 300, axes: 'box', gutter: true, weight: 1.4, yticks: [[0, '0'], [1, '1']], xlabel: 'interval (cents)', ylabel: 'dissonance', title: 'dissonance curve' });
-        cv.onClick((x) => { const K = curve(); cur = M.clamp(x, 0, K.cmax); v.sound().stop(); v.sound().samples(mixBuf([[K.spec, K.f0], [K.spec, K.f0 * 2 ** (cur / 1200)]], 1.6), SR, { gain: 0.9 }); v.invalidate(); });
-        const ratios = (spec, cmax) => { const out = []; for (const [a] of spec) for (const [b] of spec) if (b > a * 1.0001) { const c = cents(b / a); if (c <= cmax) out.push(c); } return out; };
-        v.render(() => {
-          const K = curve(), nrm = (d) => (d - K.mn) / (K.mx - K.mn);
-          sp.setView([0.9, Math.max(3, 1.3 * Math.max(...K.spec.map((p) => p[0])))], [0, 1.15]);
-          for (const [r, a] of K.spec) { sp.line(r, 0, r, a, { color: 'accent', width: 3 }); sp.dot(r, a, { r: 4, color: 'accent' }); sp.text(ratioStr(r), r, a, { color: 'accent', size: 10, align: 'center', dy: -10 }); }
-          cv.setView([0, K.cmax], [-0.09, 1.12]);
-          cv.setTicks(Array.from({ length: Math.floor(K.cmax / 200) + 1 }, (_, k) => [200 * k, String(200 * k)]), undefined);
-          const R = ratios(K.spec, K.cmax);
-          for (const c of R) cv.poly([[c, -0.015], [c - K.cmax * 0.007, -0.085], [c + K.cmax * 0.007, -0.085]], { fill: 'orange', fillAlpha: 0.85, color: 'orange' });
-          cv.path(Array.from(K.C.c, (c, i) => [c, nrm(K.C.d[i])]), { color: 'accent', width: 2.4 });
-          for (const m of K.mins) { const onR = R.some((c) => Math.abs(c - m.c) < 10); cv.dot(m.c, nrm(m.d), { r: onR ? 5 : 4, color: 'green', hollow: !onR }); }
-          if (cur != null) cv.vline(cur, { color: 'gold', width: 1.6 });
-        });
-        v.legend([['accent', 'dissonance curve'], ['green', 'minima (filled: at a ratio $f_i/f_j$; hollow: shallow type)'], ['orange', 'ratios of the timbre’s own partials']]);
-        vis();
-        v.readout(() => {
-          const K = curve(), R = ratios(K.spec, K.cmax), on = K.mins.filter((m) => R.some((c) => Math.abs(c - m.c) < 10)).length, n = K.spec.length;
-          return `${n} partials · ${K.mins.length} local minima above the unison in this range (property 3 allows at most ${n * (n - 1)} above it, ${2 * n * (n - 1)} in all) · ${on} of them within 10 ¢ of a ratio $f_i/f_j$ of the timbre (property 4) · minima at ${K.mins.map((m) => v.fix(m.c, 0)).join(', ') || 'none'} ¢${cur != null ? ` · clicked ${v.fix(cur, 0)} ¢` : ''}`;
-        });
+      num:'6.15',kind:'Paper',name:'Local Consonance, Timbre and Scale',verify:false,
+      paper:{authors:'William A. Sethares',year:1993, title:'Local consonance and the relationship between timbre and scale',venue:'Journal of the Acoustical Society of America 94(3):1218–1228',doi:'10.1121/1.408175'},introduces:['music-6.4','music-6.5'],
+      statement:String.raw`Sethares's 1993 paper specifies a product-amplitude roughness model for finite spectra (Eqs. 1–6) and defines related timbres and scales through local minima of the resulting dissonance curves. Partial coincidences suggest candidate minima, and the paper also exhibits broad minima between coincidences. Its applications include stretched/compressed spectra, a uniform free beam and induced equal-tempered timbres; timbre selection is a constrained optimization, rather than a guarantee that coincidence alone determines every minimum.
+The theorem section makes two explicit simplifications: unit partial amplitudes and a single fixed bandwidth factor $s=1$. Its stated minimum-count bounds and other general properties must not be transferred without justification to the full frequency-dependent, unequal-amplitude plots below.`,
+      idea:String.raw`The paper relates two complementary tasks: proposing scale intervals for a sound and designing a sound for scale intervals. Algebra fixes the possible coincidence locations, while the full roughness sum determines which local minima actually appear. The author reports informal listening comparisons, then calls for controlled tests; this is not evidence that every matched sound/scale is universally preferred. The four examples here expose numerical spectra and scores so that coincidence proximity can be checked rather than assumed.`,
+      caption:String.raw`These are declared numerical illustrations using the paper's product-amplitude formula, not pixel reproductions of its figures. Select an example; for two partials, vary their ratio continuously. First panel: actual spectrum. Second panel: the 2-cent grid augmented with every coincidence candidate, with finite-sample minima in green. Filled markers mean within 10 cents of a coincidence; hollow markers mean farther away. That tolerance does not prove exact coincidence or classify the shape of the minimum. Click the curve or move the fraction control, then play the selected dyad.`,
+      deps:['music-6.3','music-4.1'],see:['music-6.4','music-6.5','music-6.6','music-6.7'],
+      refs:['Sethares 1993,  Eqs. 1–6, §II simplifying assumptions, §III.B–C, §IV.C, discussion and Appendix'],tags:['history','dissonance','timbre'],credit:'William A. Sethares,1993',
+      scope:String.raw`The examples use two equal partials at 500 Hz; the source's seven rounded free-beam ratios at C3=130.8128 Hz; seven stretched partials with $A=2.1$ at C4; or the first source 10-TET exponent list at C4. The last three use authored amplitudes $0.88^{j-1}$. The lower beam register keeps every scored and played partial below Nyquist throughout its 2450-cent span. Each single curve is divided by its own maximum; raw scores remain visible. Endpoint minima are one-sided finite-sample tests. The widget does not verify Appendix proofs, a universal bound for the full model, exact minima locations, or listener ratings. Audio is mono 44,100-Hz, bounded by 0.12 before output, with 10-ms ramps.`,
+      links:{doi:'https://doi.org/10.1121/1.408175',source:'https://sethares.engr.wisc.edu/paperspdf/consonance.pdf'},
+      viz(v){
+        let info,key,cached;const example=v.select('example',[{value:'two',label:'two partials'},{value:'beam',label:'free beam'},{value:'stretched',label:'stretched'},{value:'ten',label:'10-TET spectrum'}],'two'),ratio=v.slider('ratio of the two partials',1.01,2.2,1.86,{step:'any',fmt:x=>v.fix(x,6)}),fraction=v.slider('selected fraction of displayed interval range',0,1,.5,{step:'any',fmt:x=>v.fix(x,6)});
+        const model=()=>{const k=JSON.stringify([example.value,ratio.value,fraction.value]);if(key!==k){key=k;cached=paperModel(example.value,ratio.value,fraction.value);}return cached;};
+        const sp=v.stage({x:[.85,32],y:[-.14,1.3],xlog:true,height:260,axes:'box',gutter:true,full:true,xticks:[[1,'1'],[2,'2'],[5,'5'],[10,'10'],[20,'20']],yticks:[[0,'0'],[1,'1']],xlabel:'partial ratio (log axis)',ylabel:'amplitude',title:'the actual numerical spectrum'}),cv=v.stage({x:[-52,1352],y:[-.09,1.2],height:310,axes:'box',gutter:true,full:true,xticks:[0,200,400,600,800,1000,1200].map(c=>[c,String(c)]),yticks:[[0,'0'],[1,'1']],xlabel:'interval (cents)',ylabel:'score / maximum',title:'sampled minima and actual coincidence candidates'});
+        cv.onClick(x=>{fraction.set(Math.max(0,Math.min(1,x/model().cmax)));v.invalidate();});v.soundButton('play selected dyad',snd=>{const b=paperAudio(model());snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;ratio.el.hidden=a.name!=='two';sp.setView([.85,Math.max(3,a.s.at(-1)[0]*1.3)],[-.14,1.3]);for(const[h,amp]of a.s){sp.line(h,0,h,amp,{color:'accent',width:2.5});sp.dot(h,amp,{color:'accent',r:3.5});}cv.setView([-.04*a.cmax,1.04*a.cmax],[-.09,1.2]);cv.setTicks(Array.from({length:Math.floor(a.cmax/400)+1},(_,j)=>[400*j,String(400*j)]),undefined);for(const x of a.candidates)cv.line(x,-.025,x,.045,{color:'orange',width:1.5});cv.path(a.points.map(([x,y])=>[x,y/a.max]),{color:'accent',width:2.4});for(const r of a.classified)cv.dot(r.c,r.y/a.max,{color:'green',r:3.5,hollow:!r.near});cv.line(a.selected,-.04,a.selected,1.08,{color:'gold',width:1.3});cv.dot(a.selected,a.value/a.max,{color:'gold',r:4.5});});
+        v.legend([['accent','original 1993 product model'],['green','sampled minima; filled means within 10 cents'],['orange','coincidence candidates'],['gold','selected interval']]);
+        v.readout(()=>{const a=info;return `Lower anchor ${v.fix(a.f0,4)} Hz · selected ${v.fix(a.selected,3)} cents; raw score ${v.fix(a.value,7)}, divisor ${v.fix(a.max,7)}.\nSpectrum (ratio:amplitude): ${a.s.map(([h,amp])=>`${v.fix(h,5)}:${v.fix(amp,4)}`).join('; ')}.\n${a.minima.length} finite-sample minima including one-sided endpoints: ${a.minima.map(([c])=>v.fix(c,2)).join(', ')} cents. Grid spacing 2 cents plus coincidence candidates; ${a.classified.filter(r=>r.near).length} minima within 10 cents of one.`;});
       },
     },
   ],

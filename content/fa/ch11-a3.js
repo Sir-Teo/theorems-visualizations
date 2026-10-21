@@ -1,7 +1,7 @@
 // Rudin, Functional Analysis — Chapter 11 (part 3): automatic continuity, closed Gelfand images,
 // involutions on Δ, maximal commutative subalgebras, commuting elements
 //
-// Source: full Rudin second-edition sections and proofs reviewed; see verification ledger.
+// Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
 const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
 const csub = (a, b) => [a[0] - b[0], a[1] - b[1]];
@@ -63,15 +63,16 @@ export default {
       name: 'Homomorphisms into semisimple algebras are continuous',
       statement: String.raw`Let $A$ be a Banach algebra and $B$ a commutative Banach algebra with unit that is semisimple. Then every homomorphism $\psi:A\to B$ is continuous.`,
       idea: String.raw`Use the closed graph theorem (2.15). Suppose $x_n\to x$ in $A$ and $\psi(x_n)\to y$ in $B$. For each $h\in\Delta_B$, $h\circ\psi$ is either $0$ or a complex homomorphism of $A$, and either way it is continuous (10.7). Hence $h(y)=\lim h(\psi(x_n))=h(\psi(x))$ for every $h\in\Delta_B$. So $y-\psi(x)$ lies in the radical of $B$ (11.9), which is $\{0\}$, and the graph of $\psi$ is closed. In particular a commutative semisimple Banach algebra carries only one Banach-algebra topology: apply the theorem to the identity map between two such norms.`,
-      caption: String.raw`A homomorphism $\psi:\ell^1(\Z_+)\to C[0,1]$ is fixed by the function $g=\psi(z)$, through $\psi(x)(t)=\sum x_ng(t)^n$. Drag the three points the curve $g$ passes through ($t=0,\frac12,1$). Evaluation at $t$ composed with $\psi$ is a complex homomorphism of $\ell^1(\Z_+)$, so $g(t)$ must lie in its maximal ideal space, the closed disc (green). Then $|\psi(x)(t)|\le\norm x_1$: $\psi$ is continuous, with norm $\le1$. Right: a400-term approximation of $|\psi(x)(t)|$ for $x_n=(n+1)^{-2}$, against $\norm x_1$ (orange). Push the curve out of the disc: there the series diverges (red), and no such homomorphism exists.`,
+      caption: String.raw`A homomorphism $\psi:\ell^1(\Z_+)\to C[0,1]$ is fixed by the function $g=\psi(z)$, through $\psi(x)(t)=\sum x_ng(t)^n$. Drag the three points the curve $g$ passes through ($t=0,\frac12,1$). Evaluation at $t$ composed with $\psi$ is a complex homomorphism of $\ell^1(\Z_+)$, so $g(t)$ must lie in its maximal ideal space, the closed disc (green). Then $|\psi(x)(t)|\le\norm x_1$: $\psi$ is continuous, with norm $\le1$. Right: $|\psi(x)(t)|$ for $x_n=(n+1)^{-2}$, against $\norm x_1$ (orange). Push the curve out of the disc: there the series diverges (red), and no such homomorphism exists.`,
       deps: ['fa-11.9', 'fa-11.8', 'fa-10.7', 'fa-2.15'],
       tags: ['commutative Banach algebras', 'automatic continuity'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const L = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, height: 340, axes: true, ticks: false, title: 'the curve $g([0,1])$ in $\\Delta_{\\ell^1(\\Z_+)}=\\overline U$' });
         const R = v.stage({ x: [0, 1], y: [0, 2.2], height: 340, axes: 'box', xlabel: 't', title: '$|\\psi(x)(t)|=|\\hat x(g(t))|$ and $\\|x\\|_1$' });
         const H = [[-0.75, -0.25], [0.05, 0.85], [0.8, -0.35]].map(([a, b], k) => L.handle(a, b, { color: 'blue', r: 6, label: ['g(0)', 'g(½)', 'g(1)'][k] }));
-        const NX = 400, nx = Math.PI ** 2 / 6;
+        const NX = 400; let nx = 0; for (let n = 0; n < NX; n++) nx += 1 / (n + 1) ** 2;
         let st = {};
         v.legend([['green', 'inside $\\Delta$: $\\psi(x)(t)$ is defined'], ['red', 'outside: the series diverges'], ['orange', '$\\|x\\|_1$', { dash: true }]]);
         v.render(() => {
@@ -107,6 +108,7 @@ Then $s^2\le r\le s$.`,
       caption: String.raw`Each dot is a polynomial $x$, plotted at $u=\norm{\hat x}_\infty/\norm x$, $w=\norm{x^2}/\norm x^2$. Grey: random polynomials of degree $\le6$. Purple: the Rudin–Shapiro polynomials of length $2^k$, whose coefficients are all $\pm1$. In $\ell^1(\Z_+)$ every dot stays above the parabola $w=u^2$ (the pointwise form of $s^2\le r$), and the Rudin–Shapiro dots march toward $(0,0)$, so $r=s=0$ there. With the sup norm of the disc algebra every dot sits at $(1,1)$: $r=s=1$.`,
       deps: ['fa-11.9', 'fa-10.13'],
       tags: ['Gelfand transform', 'commutative Banach algebras'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const alg = v.select('norm', [{ value: 'l1', label: '$\\ell^1(\\Z_+)$' }, { value: 'sup', label: 'disc algebra (sup norm)' }], 'l1');
@@ -154,9 +156,10 @@ Then $s^2\le r\le s$.`,
 $$\norm x^2\le K\norm{x^2}\qquad(x\in A).$$
 In particular $\norm{\hat x}_\infty=\norm x$ for every $x$ if and only if $\norm{x^2}=\norm x^2$ for every $x$.`,
       idea: String.raw`With $r$ and $s$ as in Lemma 11.11, $s^2\le r\le s$, so $r>0$ exactly when $s>0$, and $r>0$ is the stated inequality with $K=1/r$. Now $s>0$ says $\norm{\hat x}_\infty\ge s\norm x$: then the Gelfand transform is one-to-one, so the radical is $\{0\}$, and $\hat A$ is complete, hence closed. Conversely, if $A$ is semisimple and $\hat A$ is closed, $x\mapsto\hat x$ is a continuous bijection of $A$ onto the Banach space $\hat A$, so its inverse is bounded (2.12) and $s>0$. When $K=1$, $s\ge r=1$ gives $\norm{\hat x}_\infty=\norm x$.`,
-      caption: String.raw`$x=1+az+bz^2$ (drag $a,b$) in two Banach algebras with the same $\Delta=\overline U$: $\ell^1(\Z_+)$ (norm $\sum|c_n|$) and the disc algebra (sup norm). Left: $|\hat x|$ on $\Delta$; the dot marks its maximum $\norm{\hat x}_\infty=\rho(x)$. Right: $\norm{x^n}^{1/n}$ for $n=1,\dots,64$ (dots at $n=2^k$, the subsequence used in the proof). With the sup norm it is constant, because $\norm{x^2}=\norm x^2$. In $\ell^1$ it starts at $\norm x$ and converges to $\rho(x)$; monotonicity is not required. No constant $K$ works for $\ell^1(\Z_+)$ (see 11.11), so its Gelfand image is not closed in $C(\overline U)$.`,
+      caption: String.raw`$x=1+az+bz^2$ (drag $a,b$) in two Banach algebras with the same $\Delta=\overline U$: $\ell^1(\Z_+)$ (norm $\sum|c_n|$) and the disc algebra (sup norm). Left: $|\hat x|$ on $\Delta$; the dot marks its maximum $\norm{\hat x}_\infty=\rho(x)$. Right: $\norm{x^n}^{1/n}$ for $n=1,\dots,64$ (dots at $n=2^k$, the subsequence used in the proof). With the sup norm it is constant, because $\norm{x^2}=\norm x^2$. In $\ell^1$ it starts at $\norm x$ and creeps down to $\rho(x)$. No constant $K$ works for $\ell^1(\Z_+)$ (see 11.11), so its Gelfand image is not closed in $C(\overline U)$.`,
       deps: ['fa-11.11', 'fa-11.9', 'fa-2.12'],
       tags: ['Gelfand transform', 'commutative Banach algebras'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const nrm = v.select('norm', [{ value: 'l1', label: '$\\ell^1(\\Z_+)$: $\\sum|c_n|$' }, { value: 'sup', label: 'disc algebra: $\\max_{\\overline U}|x|$' }], 'l1');
@@ -198,12 +201,15 @@ In particular $\norm{\hat x}_\infty=\norm x$ for every $x$ if and only if $\norm
     {
       num: '11.16',
       kind: 'Theorem',
-      name: 'Semisimple commutative involutions are continuous',
-      statement: String.raw`Every involution on a semisimple commutative Banach algebra is continuous. More generally, any involution on a commutative Banach algebra induces $\tau(h)(x)=\overline{h(x^*)}$ on $\Delta$, with $\tau^2=\mathrm{id}$ and $\widehat{x^*}=\overline{\hat x\circ\tau}$; this induced map is a homeomorphism.`,
+      name: 'Involutions act on Δ; semisimple ⇒ the involution is continuous',
+      statement: String.raw`Let $A$ be a commutative Banach algebra with an involution.
+(a) For each $h\in\Delta$, $\tilde h(x)=\overline{h(x^*)}$ defines an element $\tilde h\in\Delta$. The map $\tau:h\mapsto\tilde h$ is a homeomorphism of $\Delta$ with $\tau\circ\tau=\mathrm{id}$, and $\widehat{x^*}=\overline{\hat x\circ\tau}$.
+(b) If $A$ is semisimple, the involution is continuous: there is a $C$ with $\norm{x^*}\le C\norm x$.`,
       idea: String.raw`(a) $\tilde h$ is linear and multiplicative because the involution reverses products and conjugates scalars, and $\tilde h(e)=1$ (11.15). $\tilde h_\alpha\to\tilde h$ whenever $h_\alpha\to h$ pointwise, so $\tau$ is continuous; it is its own inverse. (b) Closed graph theorem (2.15). If $x_n\to x$ and $x_n^*\to y$, then for every $h$, $h(y)=\lim h(x_n^*)=\lim\overline{\tilde h(x_n)}=\overline{\tilde h(x)}=h(x^*)$, since $\tilde h$ is continuous. So $y-x^*$ lies in the radical, which is $\{0\}$.`,
-      caption: String.raw`Two involutions on algebras whose $\Delta$ you can see. **Disc algebra**, $f^*(z)=\overline{f(\bar z)}$: here $\tau(w)=\bar w$, a reflection of the disc. **$\ell^1(\Z)$**, $x^*_n=\overline{x_{-n}}$: here $\Delta=\T$ and $\tau=\mathrm{id}$. Drag the point $w$ and the coefficients of $f=c_0+c_1z+c_2z^2$ (right). The readout checks $\widehat{f^*}(w)=\overline{\hat f(\tau w)}$. The colour shows $|\operatorname{Im}\widehat{(f+f^*)}|$ for the hermitian element $f+f^*$: symmetry forces it to vanish on the fixed points of $\tau$ (the real diameter, or the whole circle).`,
+      caption: String.raw`Two involutions on algebras whose $\Delta$ you can see. **Disc algebra**, $f^*(z)=\overline{f(\bar z)}$: here $\tau(w)=\bar w$, a reflection of the disc. **$\ell^1(\Z)$**, $x^*_n=\overline{x_{-n}}$: here $\Delta=\T$ and $\tau=\mathrm{id}$. Drag the point $w$ and the coefficients of $f=c_0+c_1z+c_2z^2$ (right). The readout checks $\widehat{f^*}(w)=\overline{\hat f(\tau w)}$. The colour shows $|\operatorname{Im}\widehat{(f+f^*)}|$ for the hermitian element $f+f^*$: it vanishes exactly on the fixed points of $\tau$ (the real diameter, or the whole circle).`,
       deps: ['fa-11.15', 'fa-11.9', 'fa-11.8', 'fa-2.15'],
       tags: ['involutions', 'commutative Banach algebras', 'automatic continuity'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const alg = v.select('algebra', [{ value: 'disc', label: "disc algebra, $f^*(z)=\\overline{f(\\bar z)}$" }, { value: 'l1', label: "$\\ell^1(\\Z)$, $x^*_n=\\overline{x_{-n}}$" }], 'disc');
@@ -232,7 +238,7 @@ In particular $\norm{\hat x}_\infty=\norm x$ for every $x$ if and only if $\norm
         });
         v.readout(() => {
           const s = st;
-          return `$\\widehat{f^*}(w)=${fmtC(v, s.lhs)}$, $\\overline{\\hat f(\\tau w)}=${fmtC(v, s.rhs)}$ (difference $${s.err < 1e-14 ? '0' : v.sci(s.err, 1)}$ up to rounding). Hermitian element: $\\widehat{(f+f^*)}(w)=${fmtC(v, s.herm)}$` + (s.disc ? ' — guaranteed real on the real diameter, the fixed set of $\\tau$.' : ' — real everywhere on $\\Delta$: this involution is **symmetric** ($\\tau=\\mathrm{id}$).');
+          return `$\\widehat{f^*}(w)=${fmtC(v, s.lhs)}$, $\\overline{\\hat f(\\tau w)}=${fmtC(v, s.rhs)}$ (difference $${s.err < 1e-14 ? '0' : v.sci(s.err, 1)}$ up to rounding). Hermitian element: $\\widehat{(f+f^*)}(w)=${fmtC(v, s.herm)}$` + (s.disc ? ' — real only on the real diameter, the fixed set of $\\tau$.' : ' — real everywhere on $\\Delta$: this involution is **symmetric** ($\\tau=\\mathrm{id}$).');
         });
       },
     },
@@ -240,12 +246,14 @@ In particular $\norm{\hat x}_\infty=\norm x$ for every $x$ if and only if $\norm
     {
       num: '11.22',
       kind: 'Theorem',
-      name: 'Commuting sets lie in inverse-closed commutative algebras',
-      statement: String.raw`If $S$ is a pairwise commuting subset of a Banach algebra $A$, its double centralizer $B=\Gamma(\Gamma(S))$ is a commutative Banach algebra containing $S$ and the unit, and $\sigma_B(x)=\sigma_A(x)$ for all $x\in B$.`,
-      idea: String.raw`Centralizers are closed unital subalgebras, and $S\subset\Gamma(\Gamma(S))$. Since $S$ commutes, its double centralizer commutes. If $x\in B$ is invertible in $A$, its inverse commutes with every element commuting with $x$, hence with every element of $\Gamma(S)$. Thus $x^{-1}\in B$, proving equality of spectra.`,
-      caption: String.raw`$A=M_3(\C)$ and $x$ with eigenvalues $\lambda_1,\lambda_2,\lambda_3$ (drag them). When they are distinct, the commutant of $x$ is the algebra of polynomials in $x$, the double centralizer $B$ of dimension $3$. Drag $\lambda$: $(x-\lambda)^{-1}$ equals $p(x)$, where $p$ is the quadratic that interpolates $1/(t-\lambda)$ at the eigenvalues. So the inverse never leaves $B$, which is why $\sigma_B(x)=\sigma_A(x)$. The colour shows $\log_{10}\norm{(x-\lambda)^{-1}}_F$, singular only at the eigenvalues. At an exactly repeated eigenvalue the single centralizer grows and may be noncommutative; the double centralizer remains commutative.`,
-      deps: ['fa-11.21','fa-10.10'],
+      name: 'Maximal commutative subalgebras keep the spectrum',
+      statement: String.raw`Let $A$ be a Banach algebra with unit and $B$ a maximal commutative subalgebra of $A$. Then $B$ is closed, $e\in B$, and
+$$\sigma_B(x)=\sigma_A(x)\qquad(x\in B).$$`,
+      idea: String.raw`$B$ is its own commutant in $A$: anything that commutes with all of $B$ can be adjoined, so by maximality it already lies in $B$. Commutants are closed and contain $e$. If $x\in B$ and $x-\lambda e$ is invertible in $A$, its inverse commutes with everything that commutes with $x-\lambda e$, in particular with all of $B$, so it lies in $B$. Thus $\sigma_B(x)\subset\sigma_A(x)$, and the reverse inclusion holds for every subalgebra containing $e$. This is how Gelfand theory reaches noncommutative algebras: every element lies in a maximal commutative $B$, and there its spectrum is the range of $\hat x$ (11.9).`,
+      caption: String.raw`$A=M_3(\C)$ and $x$ with eigenvalues $\lambda_1,\lambda_2,\lambda_3$ (drag them). When they are distinct, the commutant of $x$ is the algebra of polynomials in $x$, a maximal commutative subalgebra $B$ of dimension $3$. Drag $\lambda$: $(x-\lambda)^{-1}$ equals $p(x)$, where $p$ is the quadratic that interpolates $1/(t-\lambda)$ at the eigenvalues. So the inverse never leaves $B$, which is why $\sigma_B(x)=\sigma_A(x)$. The colour shows $\log_{10}\norm{(x-\lambda)^{-1}}_F$, singular only at the eigenvalues. Drag one eigenvalue onto another: the commutant jumps to dimension $5$ and is no longer commutative.`,
+      deps: ['fa-10.10', 'fa-11.9'],
       tags: ['Banach algebras', 'spectrum', 'commutants'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-2.6, 2.6], y: [-1.8, 1.8], equal: true, height: 360, axes: true, title: '$\\log_{10}\\|(x-\\lambda)^{-1}\\|_F$ over the $\\lambda$-plane' });
@@ -269,13 +277,13 @@ In particular $\norm{\hat x}_\infty=\norm x$ for every $x$ if and only if $\norm
           const scl = (A, c) => A.map((r) => r.map((e) => cmul(e, c)));
           const Rz = mmul(mmul(realM(Sm), diagC(L.map((l) => cdiv([1, 0], csub(l, z))))), realM(Si));
           const res = ok ? fro(msub(madd(madd(scl(I3, c0), scl(X, c1)), scl(X2, c2)), Rz)) : NaN;
-          const groups = []; L.forEach((l) => { const g = groups.find((q) => q[0][0] === l[0] && q[0][1] === l[1]); if (g) g[1]++; else groups.push([l, 1]); });
+          const groups = []; L.forEach((l) => { const g = groups.find((q) => cabs(csub(q[0], l)) < 0.06); if (g) g[1]++; else groups.push([l, 1]); });
           st = { ok, res, c: [c0, c1, c2], dimC: groups.reduce((s, q) => s + q[1] * q[1], 0) };
         });
         v.readout(() => {
           const s = st;
           const dimTxt = `Commutant of $x$: dimension $${s.dimC}$` + (s.dimC === 3 ? ', the polynomials in $x$ (maximal commutative).' : ', not commutative (two eigenvalues coincide).');
-          if (!s.ok) return dimTxt + ' The quadratic interpolation is ill-conditioned or repeated eigenvalues are present; move them apart.';
+          if (!s.ok) return dimTxt + ' With a repeated eigenvalue the interpolating polynomial has lower degree; move the eigenvalues apart to see the quadratic.';
           return `$(x-\\lambda)^{-1}=c_0+c_1x+c_2x^2$ with $c_0=${fmtC(v, s.c[0], 2)}$, $c_1=${fmtC(v, s.c[1], 2)}$, $c_2=${fmtC(v, s.c[2], 2)}$; $\\|p(x)-(x-\\lambda)^{-1}\\|_F=${v.sci(s.res + 1e-17, 1)}$. ` + dimTxt;
         });
       },
@@ -292,6 +300,7 @@ so $\rho(x+y)\le\rho(x)+\rho(y)$ and $\rho(xy)\le\rho(x)\rho(y)$. Without commut
       caption: String.raw`$A=M_3(\C)$, with $x$ diagonal in one basis (eigenvalues $\lambda_k$, red) and $y$ diagonal in a second basis that is rotated by the angle $\theta$ (eigenvalues $\mu_k$, blue). Grey dots: the nine sums $\lambda_j+\mu_k$ (or products). Green: the actual eigenvalues of $x+y$ (or $xy$), computed from the matrices. At $\theta=0$, $x$ and $y$ commute, and $\sigma(x+y)=\{\lambda_k+\mu_k\}$ sits on three of the nine dots. Turn $\theta$: the commutator grows and the eigenvalues leave the grid.`,
       deps: ['fa-11.22', 'fa-11.5', 'fa-10.13'],
       tags: ['Banach algebras', 'spectrum', 'commuting elements'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const mode = v.select('', [{ value: 'sum', label: '$x+y$' }, { value: 'prod', label: '$xy$' }], 'sum');

@@ -1,0 +1,245 @@
+[
+  {
+    "num": "1.4",
+    "file": "content/dist/ch01.js",
+    "added": [
+      "comb-1.12"
+    ],
+    "expectedDeps": [
+      "comb-1.12"
+    ],
+    "append": "For a fixed number $a_i$ of atomic actions of each process, a complete schedule is a word containing $a_i$ copies of process label $i$. Its occurrences determine that process's actions in their fixed program order. The multinomial count (comb 1.12) therefore gives $(\\sum_i a_i)!/\\prod_i a_i!$ schedules. The dynamic-programming histogram partitions exactly these words by their resulting register value; it does not treat an ordinary read followed by a write as a single atomic increment."
+  },
+  {
+    "num": "1.6",
+    "file": "content/dist/ch01-b.js",
+    "added": [
+      "alg-2.1"
+    ],
+    "expectedDeps": [
+      "dist-1.5",
+      "alg-2.1"
+    ],
+    "append": "Apply mathematical induction (alg 2.1) to the integer execution length, starting at zero. The base case is precisely initial-state inclusion; the inductive step uses closure for the last transition of every length-$k+1$ execution. Only after that induction establishes membership in $I$ does $I\\subseteq\\varphi$ give the desired safety property. The finite explorer checks this instance's states, while the induction is the general proof rule."
+  },
+  {
+    "num": "1.9",
+    "file": "content/dist/ch01-b.js",
+    "added": [
+      "alg-1.30"
+    ],
+    "expectedDeps": [
+      "dist-1.6",
+      "alg-1.30"
+    ],
+    "append": "The congruence classes modulo two (alg 1.30) give the precise meaning of the two bits: the sender stores the class of $a$ and the receiver the class of $d$. Flipping adds one modulo two. Under the stated invariant $d-a\\in\\{0,1\\}$, the classes agree exactly when $d=a$; the adjacent case has the other class. This parity calculation distinguishes a current frame from its immediate predecessor under the FIFO assumptions. Parity alone does not prove progress on a channel that loses every retransmission."
+  },
+  {
+    "num": "2.1",
+    "file": "content/dist/ch02.js",
+    "added": [
+      "graph-1.5.1",
+      "graph-1.5.2"
+    ],
+    "expectedDeps": [
+      "dist-1.1",
+      "graph-1.5.1",
+      "graph-1.5.2"
+    ],
+    "append": "Earlier adoption times exclude a cycle of parent pointers, and connected reachability supplies a path to the root for every reached process. The tree characterizations (graph 1.5.1) then give a unique root path, so a subtree contribution travels through one parent rather than being counted twice. A connected tree on $n$ processes has exactly $n-1$ edges (graph 1.5.2); these are exactly the parent-edge directions omitted from the $2m$ possible directed floods. Subtracting them gives $2m-(n-1)$ floods, and one answer per flood doubles that count."
+  },
+  {
+    "num": "2.3",
+    "file": "content/dist/ch02.js",
+    "added": [
+      "alg-2.1",
+      "alg-4.13"
+    ],
+    "expectedDeps": [
+      "dist-1.7",
+      "alg-2.1",
+      "alg-4.13"
+    ],
+    "append": "Induction on synchronous rounds (alg 2.1) preserves equality of states related by the initial ring rotation: corresponding neighbours supply corresponding messages and determinism preserves the equality. For rotation by $k=n/p$ seats, the cyclic-group order formula (alg 4.13) gives $n/\\gcd(n,k)=p$. Each orbit therefore has $p$ processes with the same output. Since $p>1$, a union of such leader orbits cannot contain exactly one process; this uses a symmetric deterministic schedule and initial state, not randomized execution."
+  },
+  {
+    "num": "2.4",
+    "file": "content/dist/ch02.js",
+    "added": [
+      "prob-1.6.1",
+      "prob-2.3.11"
+    ],
+    "expectedDeps": [
+      "dist-2.3",
+      "prob-1.6.1",
+      "prob-2.3.11"
+    ],
+    "append": "For a uniformly permuted ring, count messages by possible travel distances. A specified identifier survives for a $k$-th hop exactly when it is largest among itself and the preceding $k-1$ identifiers it has passed. The uniform-rank step in the records proof (prob 2.3.11) gives probability $1/k$; independent continuous ranks induce the same uniform permutation. Linearity of expectation (prob 1.6.1) sums the $n$ transmission indicators at each distance, giving $n\\sum_{k=1}^n1/k=nH_n$. The indicators need not be independent, and the records theorem's almost-sure limit is not asserted for this finite ring."
+  },
+  {
+    "num": "2.7",
+    "file": "content/dist/ch02-b.js",
+    "added": [
+      "prob-2.1.1a",
+      "stoch-2.3",
+      "stoch-2.5"
+    ],
+    "expectedDeps": [
+      "dist-2.3",
+      "prob-2.1.1a",
+      "stoch-2.3",
+      "stoch-2.5"
+    ],
+    "append": "Independence (prob 2.1.1a) assigns probability $K^{-m}$ to each vector of $m$ draws. In particular, one designated candidate drawing $K$ and all others drawing $1$ has positive probability and leaves a unique maximum. With a fixed finite initial $n$, each nonabsorbing candidate count can therefore reach one. The finite absorbing-chain theorem (stoch 2.5) applies to the transition matrix used for the exact round law. The mean-round calculation is its first-step equation (stoch 2.3): $E_1=0$ and $E_m=1+\\sum_{j=2}^mP_{mj}E_j$, including the self-transition before solving. Fresh independent rounds and fixed $K\\ge2$ are essential; seeded finite runs illustrate this ideal law."
+  },
+  {
+    "num": "2.8",
+    "file": "content/dist/ch02-b.js",
+    "added": [
+      "prob-1.6.1",
+      "prob-1.6.4"
+    ],
+    "expectedDeps": [
+      "dist-1.2",
+      "prob-1.6.1",
+      "prob-1.6.4"
+    ],
+    "append": "Write the number of surviving edges after a round as a finite sum of edge-survival indicators. Linearity (prob 1.6.1) adds their probabilities without requiring the indicators to be independent. Given the standard constant-fraction contraction quoted above, iteration gives $EM_r\\le m(1-c)^r$ for some fixed $c>0$. Markov's inequality (prob 1.6.4), at threshold one, bounds $P(M_r\\ge1)$ by this expectation. Isolated active vertices disappear in the next round. Thus the counting lemma yields a logarithmic tail bound, not merely a decreasing average; these expectation inequalities do not replace the graph-specific contraction lemma."
+  },
+  {
+    "num": "2.9",
+    "file": "content/dist/ch02-b.js",
+    "added": [
+      "alg-2.9"
+    ],
+    "expectedDeps": [
+      "dist-1.2",
+      "alg-2.9"
+    ],
+    "append": "The division algorithm (alg 2.9) with divisor two says that $2i+b$ uniquely encodes quotient $i$ and remainder $b\\in\\{0,1\\}$. Consequently equal new colours would require both the same differing-bit index and the same bit value. Adjacent vertices using that index have opposite bit values by its definition, so equality is impossible. For $b$-bit old colours the index is below $b$, giving a new colour below $2b$; this justifies the encoding step without assuming adjacent old colours have different lengths."
+  },
+  {
+    "num": "2.11",
+    "file": "content/dist/ch02-b.js",
+    "added": [
+      "graph-1.5.2"
+    ],
+    "expectedDeps": [
+      "dist-1.2",
+      "dist-2.1",
+      "graph-1.5.2"
+    ],
+    "append": "For synchronizer $\\beta$, use the actual spanning tree, not every network edge. The tree edge-count theorem (graph 1.5.2) gives exactly $n-1$ edges. One safe report travels upward on each and one pulse announcement downward, so this tree-control exchange contributes $2(n-1)$ messages per pulse. The count concerns the stated control exchange; application messages and the acknowledgements that establish local safety are separate costs."
+  },
+  {
+    "num": "3.2",
+    "file": "content/dist/ch03.js",
+    "added": [
+      "alg-2.1"
+    ],
+    "expectedDeps": [
+      "dist-3.1",
+      "alg-2.1"
+    ],
+    "append": "For a finite causal chain, mathematical induction (alg 2.1) begins with one generating edge: local counter increment or send-to-receive strict increase. If stamps increase from the first event to the $k$-th, the next generating edge and transitivity of integer inequality extend the result to the $(k+1)$-st. Every happened-before comparison has such a finite chain, so the Clock Condition follows. This induction proves the forward implication only; it cannot infer causality from an arbitrary pair of numerical stamps."
+  },
+  {
+    "num": "3.4",
+    "file": "content/dist/ch03.js",
+    "added": [
+      "alg-2.1"
+    ],
+    "expectedDeps": [
+      "dist-3.1",
+      "alg-2.1"
+    ],
+    "append": "Induct over the events of a finite execution in a causality-compatible listing (alg 2.1). Initially all per-process past counts are zero. At a local event only that process's prefix grows; at a receive, the known prefix of each process is the union of two prefixes, whose length is their maximum, followed by the receiver's new event. These are exactly the merge-and-increment rules. The induction establishes the causal-prefix-count invariant, rather than assuming that componentwise maximum by itself detects all causality."
+  },
+  {
+    "num": "3.5",
+    "file": "content/dist/ch03.js",
+    "added": [
+      "alg-2.1"
+    ],
+    "expectedDeps": [
+      "dist-3.4",
+      "alg-2.1"
+    ],
+    "append": "The forward implication uses induction on a finite generating chain (alg 2.1): increment and merge never decrease any coordinate, and the sender-to-receiver edge carries the sender's whole vector. Conversely, the causal-prefix-count invariant of 3.4 says that coordinate $i\\ge k$ means the $k$-th event of process $i$ belongs to the known prefix. For distinct events this supplies an actual causal chain. The induction concerns the exact merge rules; removing the merge invalidates its step."
+  },
+  {
+    "num": "3.7",
+    "file": "content/dist/ch03-b.js",
+    "added": [
+      "alg-1.2"
+    ],
+    "expectedDeps": [
+      "dist-3.1",
+      "alg-1.2"
+    ],
+    "append": "Use membership and the union/intersection laws of alg 1.2 on two downward-closed event sets. If an event is in their union, one set contains it and therefore contains all its predecessors; if it is in their intersection, both sets contain every predecessor. Both results are again consistent cuts. Their union is the least containing cut and their intersection the greatest contained cut, which supplies the stated lattice operations. Per-process prefixes and causal closure, rather than a common physical instant, are the hypotheses."
+  },
+  {
+    "num": "3.9",
+    "file": "content/dist/ch03-c.js",
+    "added": [
+      "prob-2.1.16"
+    ],
+    "expectedDeps": [
+      "dist-1.2",
+      "prob-2.1.16"
+    ],
+    "append": "For the histogram's independent uniform delays on the same interval of width $u>0$, the convolution theorem (prob 2.1.16) applies to $d_1+(-d_2)$. Intersecting the two uniform-density support intervals gives the difference density $(u-|z|)/u^2$ on $|z|\\le u$. Since the clock error is $z/2$, its density is $2(u-2|e|)/u^2$ on $|e|\\le u/2$. This explains the triangular ideal histogram and its bounded support, not a worst-case guarantee under an extra systematic return delay or dependent network delays."
+  },
+  {
+    "num": "4.4",
+    "file": "content/dist/ch04.js",
+    "added": [
+      "comb-1.2"
+    ],
+    "expectedDeps": [
+      "dist-4.1",
+      "dist-1.7",
+      "comb-1.2"
+    ],
+    "append": "The recurring outside target in the covering argument is a finite pigeonhole step (comb 1.2). If there are $q$ possible shared-variable targets, $q+1$ side-branch choices must repeat a target, yielding the earlier and later occurrence used by the insertion argument. This counting step does not prove hiddenness: the intervening covering block must still erase the earlier writes under the source proof's premises. It also does not extend the result to stronger atomic read-modify-write actions."
+  },
+  {
+    "num": "4.10",
+    "file": "content/dist/ch04-c.js",
+    "added": [
+      "comb-1.2"
+    ],
+    "expectedDeps": [
+      "dist-4.8",
+      "comb-1.2"
+    ],
+    "append": "The finite-progress argument charges a changed collect to a writer. The pigeonhole principle (comb 1.2) is the step that prevents indefinitely many obstructions all being attributed to distinct writers: after enough changes among finitely many writers, one writer must recur. The algorithm's sequence numbers identify such repeated movement, at which point its embedded view, not the current mixed collect, can be borrowed. The time-containment argument above is still needed to justify that view; counting alone does not establish its linearization point."
+  },
+  {
+    "num": "4.11",
+    "file": "content/dist/ch04-c.js",
+    "added": [
+      "comb-3.1"
+    ],
+    "expectedDeps": [
+      "dist-4.8",
+      "dist-1.3",
+      "comb-3.1"
+    ],
+    "append": "For two reply sets $A,B$ inside $n$ replicas, two-set inclusion-exclusion (comb 3.1) gives $|A\\cap B|=|A|+|B|-|A\\cup B|\\ge |A|+|B|-n$. Strict majorities therefore intersect. The timestamp stored at that common responder connects an earlier completed write-back to the later query; the intersection inequality is used in both read phases. Intersection proves the safety step, while termination additionally needs fewer than half the replicas crashed and reliable eventual replies."
+  },
+  {
+    "num": "4.12",
+    "file": "content/dist/ch04-c.js",
+    "added": [
+      "comb-3.1"
+    ],
+    "expectedDeps": [
+      "dist-4.11",
+      "dist-1.7",
+      "comb-3.1"
+    ],
+    "append": "Apply the two-set case of inclusion-exclusion (comb 3.1) to responder sets of size $n-f$. It gives $|A\\cap B|\\ge n-2f$, which is positive when $n>2f$. At $n\\le2f$, two disjoint sets of that size fit in the replica universe, realizing the missing intersection shown in the picture. This cardinality calculation identifies the threshold; the indistinguishable delayed executions above are separately required for the impossibility theorem, rather than being replaced by a quorum count."
+  }
+]

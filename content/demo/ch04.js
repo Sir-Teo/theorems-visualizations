@@ -1,4 +1,6 @@
 // Demography — Chapter 4: Fertility and reproduction (part a: 4.1–4.6)
+import { reproductionRates } from './source-audit-reproduction.js';
+import { AGE22 } from './ch04.shared.js';
 import { clamp, sum, fx, int, CTRY, CNAME, SEXY, FAGES, FMID, FLAB, FY0, FY1, asfr, women, indAt, tfrOf, macOf, lerpAt, femSurv, lAtAge, stepPath, cOpts } from './ch04.shared.js';
 
 const yearTicks = (a = 1950, b = 2020, d = 10) => { const t = []; for (let y = a; y <= b; y += d) t.push([y, String(y)]); return t; };
@@ -60,9 +62,9 @@ export default {
       kind: 'Definition',
       name: 'Total fertility rate',
       statement: String.raw`The **total fertility rate** of a period is the sum of its age-specific fertility rates over all single years of age. With five-year groups of rates $f_a$ this is $\mathrm{TFR} = 5\sum_a f_a$. It is the number of children a hypothetical woman would bear if she lived through the childbearing years experiencing, at each age, the rates of the period. It is a **synthetic-cohort** measure: no real group of women need have the experience it describes, and it can differ from the completed family size of any real cohort when the timing of childbearing is changing (4.6).`,
-      idea: String.raw`A rate $f_a$ of births per woman-year, applied for the five years of an age group, gives $5 f_a$ births per woman in that group. Stacking these contributions over age is just the integral of the schedule of 4.1, so the TFR is the **area** under the age-specific curve; unlike the crude birth rate it does not depend on the age distribution of the women. It is the fertility counterpart of the period life expectancy of 2.7, which likewise cuts the age-specific rates of one period into an imaginary lifetime.`,
+      idea: String.raw`A rate $f_a$ of births per woman-year, applied for the five years of an age group, gives $5 f_a$ births per woman in that group. Stacking these contributions over age is just the integral of the schedule of 4.1, so the TFR is the **area** under the age-specific curve; unlike the crude birth rate it does not depend on the age distribution of the women. It is the fertility counterpart of the period life expectancy of 2.7, which likewise cuts the age-specific rates of one period into an imaginary lifetime. For the displayed piecewise-constant schedule, refining partitions around the finitely many age boundaries makes the upper and lower sums in pma 6.1 approach the same value. Its integral is exactly the sum of rate times band width; the factor five comes from that width, not from a probability assumption.`,
       caption: String.raw`Left: the five-year contributions $5 f_a$ stacked into one column per population; the top of the column is the TFR and the dashed line marks 2.1, near replacement (4.4). Right: the TFR of every country since 1950 with your pick highlighted. Slide the year and watch the stack shrink and its bands shift to older ages; the readout compares the sum computed here with the TFR published by the UN.`,
-      deps: ['demo-4.1'],
+      deps: ['demo-4.1', 'pma-6.1'],
       refs: ['PHG ch. 5'],
       tags: ['fertility', 'synthetic cohort'],
       scope: String.raw`Computed from the nine five-year groups 10–14 … 50–54 of the UN estimates; the UN publishes TFR from single-year rates, so the two differ by a few hundredths. Period measure: it does not predict the completed fertility of any cohort.`,
@@ -98,48 +100,42 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 4.3
     {
-      num: '4.3',
-      kind: 'Definition',
-      name: 'Gross and net reproduction rates',
-      statement: String.raw`Count only daughters. The **gross reproduction rate** is $\mathrm{GRR} = \sum_a 5\,f_a/(1+\mathrm{SRB})$, with SRB the sex ratio at birth in boys per girl: the daughters a woman would bear if none of the women died before the end of childbearing. The **net reproduction rate** is $\mathrm{NRR} = \sum_a f_a\,\bigl(L_a/\ell_0\bigr)/(1+\mathrm{SRB})$, where $L_a/\ell_0$ is the number of years a newborn girl is expected to live in age group $a$ according to the life table: the expected number of daughters born to a newborn girl over her lifetime under the specified fertility and mortality schedules. The survival factor belongs to the mother reaching each childbearing age; it is not a second survival test imposed on each daughter. Always $\mathrm{NRR} \le \mathrm{GRR}$, and $\mathrm{NRR}$ is the factor by which a generation replaces itself, which makes it the one-sex stable-population form of $R_0$ of Chapter 6.`,
-      idea: String.raw`The net maternity function $\varphi(a) = f(a)\,\ell(a)/(1+\mathrm{SRB})$ multiplies fertility at age $a$ by the chance $\ell(a)$ that a girl survives to be there and by the share of births that are girls; its integral is the expected number of daughters of a newborn girl, which is the basic reproduction number $R_0$ of mathematical biology (mathbio 4.5) applied to women. Survival uses the life-table columns of 2.3. Mortality below the childbearing ages cuts the net below the gross, with a gap that is tiny in Japan today and over 30 per cent in Nigeria in 1990.`,
-      caption: String.raw`Blue: daughters per woman at each age if no one died (area = GRR). Green: the same after multiplying by the survival of girls to that age (area = NRR); the red slice between them is the loss to mortality. Pick a country and a year; use the mortality slider to scale the death hazard of the girls (1 = actual, 0 = no mortality, 2 = twice the hazard) and watch NRR fall below 1 while GRR does not change. The right panel shows the survival curve behind it.`,
-      deps: ['demo-4.2', 'demo-2.3', 'mathbio-4.5'],
-      refs: ['PHG ch. 5'],
+      num: '4.3', kind: 'Definition', name: 'Gross and net reproduction rates',
+      statement: String.raw`Reproduction rates count **live daughters born**, per woman in a hypothetical female birth cohort. If fertility $f_a$ is in births per woman-year over five-year age bands and $s$ is boys per girl at birth, assume the same daughter share $b=1/(1+s)$ at every maternal age. Then
+$$\mathrm{GRR}=b\sum_a 5f_a,$$
+$$\mathrm{NRR}=b\sum_a f_a\frac{{}_5L_a}{\ell_0}.$$
+Here $\,{}_5L_a/\ell_0$ is expected **person-years lived by the prospective mother** in the age band per newborn girl. GRR ignores her mortality; NRR accounts for her survival to and through childbearing. It does not additionally require each daughter to survive to adulthood.
+
+For nonnegative fertility and a valid female life table, $0\le\mathrm{NRR}\le\mathrm{GRR}$. These are period, synthetic-cohort measures, not observed completed fertility or a prediction of next year's population growth.`,
+      idea: String.raw`With female survival $S(x)=\ell(x)/\ell_0$, the continuous form is $\mathrm{NRR}=b\int f(x)S(x)\,dx$. The units cancel: births per woman-year times expected years lived, times the daughter share. Life-table person-years (demo-2.3) supply the grouped version.
+
+For the slider, an **authored reconstruction** joins the female survivor knots by constant hazards within each age interval. Scaling those hazards by $k$ gives $S_k(x)=S(x)^k$. The net bars use the exact interval averages of this same curve, rather than raising an interval's average survival to a power. At $k=0$ there is no mortality and NRR equals GRR; increasing $k$ cannot raise NRR. Under fixed future fertility/mortality and no migration, NRR 1 describes generational replacement; age structure can still produce short-run growth or decline.`,
+      caption: String.raw`**Left:** gross daughters per woman-year (blue), the net contribution after the prospective mother's mortality in the local reconstruction (green), and their difference (red). All nine fertility bands, ages 10–14 through 50–54, enter the areas.
+
+**Right:** the same reconstructed female survival used by the net bars; grey points are the abridged UN survivor knots. Choose a country/year and scale the reconstructed hazard from 0 to 3. At 1, compare the reconstructed NRR with the separate official-person-years aggregation and UN's published NRR in the readout. The interpolation is not asserted to reproduce their finer-age method exactly.`,
+      deps: ['demo-4.2', 'demo-2.3'], see: ['mathbio-4.5', 'demo-4.4'],
+      refs: ['UN Demographic Yearbook, natality Table 3 technical notes: definitions, computation and limitations', 'UN World Population Prospects 2024, fertility by age5, female abridged life tables and demographic indicators'],
       tags: ['reproduction', 'net maternity'],
-      credit: 'UN Demographic Yearbook technical notes, Table4 (definitions and computation)',
-      scope: String.raw`Period measures built from UN WPP 2024 schedules and female life tables (tables exist for 1950, 1970, 1990, 2010 and 2023 in our data); the sex ratio at birth is the UN estimate for the year. Replacement interpretations assume the period schedules persist and exclude migration. The mortality slider approximately rescales grouped survival, $\ell^k$ for hazard $k$ times the actual.`,
-      links: { data: 'https://population.un.org/wpp/' },
+      verify: false,
+      scope: String.raw`Period estimates for ten countries at 1950,1970,1990,2010,2023, with fertility and female mortality matched to the same year. The birth-sex fraction is assumed constant across maternal ages; SRB data are boys per 100 girls, converted to 100/(100+SRB). The official grouped comparison treats each five-year fertility rate as constant in its band. The slider instead uses a declared log-linear survivorship reconstruction, integrating its powered survival exactly. Published NRR, official-person-years aggregation and reconstructed NRR are distinct quantities. Replacement interpretation assumes unchanged schedules and no migration; neither male fertility constraints nor population momentum is modeled.`,
+      links: { source: 'https://unstats.un.org/unsd/Demographic/products/dyb/DYBNat/NotesNatStatTab03.htm', data: 'https://population.un.org/wpp/' },
       viz(v) {
-        const co = v.select('country', cOpts(), 'NGA');
-        const yr = v.select('life table year', SEXY.map((y) => ({ value: String(y), label: String(y) })), '1990');
-        const k = v.slider('mortality hazard ×', 0, 3, 1, { step: 0.05 });
-        const s = v.stage({ x: [10, 55], y: [0, 0.1], axes: 'box', gutter: true, xlabel: 'age of mother', ylabel: 'daughters per woman-year', height: 360, title: 'Gross and net maternity' });
-        const t = v.stage({ x: [0, 100], y: [0, 1], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'girls surviving, ℓ(a)', height: 360, title: 'Survival of girls' });
-        let R = null;
-        v.render(() => {
-          const y = +yr.value, c = co.value, f = asfr(c, y), srb = indAt(c, 'srb', y) / 100;
-          const sv = femSurv(c, y), kk = k.value;
-          const gross = f.map((x) => x / (1 + srb));
-          const net = f.map((x, i) => x * Math.pow(sv.lmid[i], kk) / (1 + srb));
-          const top = Math.max(...gross, 0.02) * 1.2;
-          s.setView([10, 55], [0, top]);
-          FAGES.forEach((a, i) => {
-            s.rect(a, 0, a + 5, gross[i], { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 1.5 });
-            s.rect(a, net[i], a + 5, gross[i], { fill: 'red', fillAlpha: 0.35, stroke: false });
-            s.rect(a, 0, a + 5, net[i], { fill: 'green', fillAlpha: 0.45, color: 'green', width: 1.5 });
-          });
-          const lc = [0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
-          const surv = (a) => Math.pow(lAtAge(sv.l, a), kk);
-          t.path(lc.map((a) => [a, surv(a)]), { color: 'green', width: 2.6 });
-          t.path(lc.map((a) => [a, lAtAge(sv.l, a)]), { color: 'muted', width: 1.4, dash: true });
-          t.vband(15, 50, { color: 'accent', alpha: 0.08 });
-          t.text('childbearing ages', 32.5, 0.06, { size: 11, color: 'muted', align: 'center' });
-          const GRR = 5 * sum(gross), NRR = 5 * sum(net);
-          R = { GRR, NRR, srb, pub: indAt(c, 'nrr', y), pubTfr: indAt(c, 'tfr', y), y, c, l30: Math.pow(sv.l30, kk) };
+        const country=v.select('country',cOpts(),'NGA');
+        const year=v.select('matched fertility/life-table year',SEXY.map(y=>({value:String(y),label:String(y)})),'1990');
+        const hazard=v.slider('reconstructed mortality hazard ×',0,3,1,{step:.05});
+        const A=v.stage({x:[8,57],y:[-.005,.12],axes:'box',gutter:true,xlabel:'maternal age (years)',ylabel:'live daughters per woman-year',height:360,minWidth:280,title:'gross and reconstructed net maternity'});
+        const B=v.stage({x:[-4,104],y:[-.05,1.08],axes:'box',gutter:true,xlabel:'prospective mother’s age (years)',ylabel:'survival from female birth S(x)',height:360,minWidth:280,title:'the same reconstructed survival behind the bars'});
+        v.legend([['accent','gross maternity'],['green','reconstructed net maternity / survival'],['red','maternal mortality loss',{area:true}],['muted','UN survivor knots / baseline reconstruction'],['accent','offered fertility ages 10–54',{area:true}]]);
+        let st;
+        v.render(()=>{
+          const c=country.value,y=+year.value,sv=femSurv(c,y),f=asfr(c,y),srb=indAt(c,'srb',y),k=hazard.value;
+          const model=reproductionRates({ages:AGE22,survivors:sv.l,personYears:sv.L,fertilityAges:FAGES,fertility:f,boysPer100Girls:srb,multiplier:k});
+          const top=Math.max(.02,...model.gross);A.setView([8,57],[-.03*top,1.16*top]);
+          FAGES.forEach((a,i)=>{A.rect(a,0,a+5,model.gross[i],{fill:'accent',fillAlpha:.2,color:'accent',width:1.5});A.rect(a,model.net[i],a+5,model.gross[i],{fill:'red',fillAlpha:.35,stroke:false});A.rect(a,0,a+5,model.net[i],{fill:'green',fillAlpha:.45,color:'green',width:1.2});});
+          B.vband(10,55,{color:'accent',alpha:.07});B.path(model.baselineCurve,{color:'muted',width:1.4,dash:[4,4]});B.path(model.adjustedCurve,{color:'green',width:2.6});B.dots(model.knots,{color:'muted',r:2.5});
+          st={country:c,year:y,multiplier:k,srb,fertility:f,model,published:indAt(c,'nrr',y),publishedTFR:indAt(c,'tfr',y)};
         });
-        v.legend([['accent', 'GRR: daughters, no deaths'], ['green', 'NRR: daughters allowing for maternal survival'], ['red', 'lost to mortality']]);
-        v.readout(() => `${CNAME[R.c]} ${R.y}, SRB ${v.fix(R.srb * 100, 1)} boys per 100 girls: **GRR = ${v.fix(R.GRR, 2)}**, **NRR = ${v.fix(R.NRR, 2)}**, survival of a girl to 30: ${v.fix(R.l30 * 100, 1)}%.\n${k.value === 1 ? `UN published NRR ${v.fix(R.pub, 2)} (our sum uses the abridged life table).` : 'Hypothetical mortality: the UN figure applies only at 1×.'} The population ${R.NRR > 1 ? 'more than replaces itself' : R.NRR < 1 ? 'falls short of replacement' : 'just replaces itself'} each generation.`);
+        v.readout(()=>{const{model:m}=st;const side=m.NRR>1?'above':m.NRR<1?'below':'at';return `${CNAME[st.country]} ${st.year}: SRB ${v.fix(st.srb,1)} boys per 100 girls; daughter share ${v.fix(m.daughterShare,6)}. **GRR ${v.fix(m.GRR,4)}**, **reconstructed NRR(${v.fix(st.multiplier,2)}) ${v.fix(m.NRR,4)}**, mortality difference ${v.fix(m.loss,4)} live daughters per newborn prospective mother. Reconstructed survival to age 30: ${v.fix(100*m.survival30,3)}%.\n\nAt baseline mortality only: official-L grouped NRR ${v.fix(m.grouped,4)}, reconstructed NRR(1) ${v.fix(m.reconstructedBaseline,4)}, UN published NRR ${v.fix(st.published,4)}. The local interpolation and grouped fertility may differ from UN's finer-age calculation; the published reference does not change with the hypothetical slider. The selected reconstructed NRR is ${side} 1. This describes replacement under unchanged schedules and no migration, not current or next-year population growth.`;});
       },
     },
     // ───────────────────────────────────────────────────────────── 4.4

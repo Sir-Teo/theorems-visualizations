@@ -1,127 +1,243 @@
 {
-  "schemaVersion": 2,
-  "measuredAt": "2026-10-19T03:15:45.269Z",
-  "browserVersion": "154.0.8037.57",
-  "nodeVersion": "v24.19.0",
-  "fingerprints": {
-    "assets/css/style.css": "7f9d50e6b5823c50f9316f8703742c9381b3e7a35d69f5c1152c04415f37d354",
-    "assets/js/app.js": "d699d11b6bd4b00eae2f828c37ec9140358762b7d44552602eafd8f8da06c0cf",
-    "assets/js/catalog.js": "5a437bade9c99ad984ab82d16591631a4688846c7c008009cbd226b1bdcae669",
-    "assets/js/graph.js": "60f6a67a1ccffa10036909b148b16e0ff30f0e6b564e58af1916dcc6bbaaaba5",
-    "assets/js/map-path.js": "b47fc1e57cd0dc7fa3741413fcbe6b0fa551761cc00dd079765f4ce114a60c8e",
-    "assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
-    "assets/js/viz/core.js": "b36de7665a47158636105e419a33bc723c42b1c583e2909c9c94d8498147362f",
-    "assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
-    "assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
-    "assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
-    "assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
-    "assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
-    "assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
-    "assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
-    "assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
-    "assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
-    "assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
-    "assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
-    "assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
-    "assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
-    "assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
-    "assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
-    "assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
-    "assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
-    "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
-    "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
-    "data/index.json": "ba717b4c2f36c458acabae26754e52db215e272d780e842dfaf421301d2abd1a",
-    "data/planned.json": "acc93a3793c27d9ed8841198b719152d08f95162fedbcc75ea010ba2f3ff8f9d",
-    "index.html": "92db1c316b4d3ca83fd39d8c1e23924da77e3cab83deb5197ec332d7c84b21d1",
-    "package-lock.json": "c346579ff4a6f7d99303117739e66bcbc7de459bb9ffb6ea728a7ec08ec4cfc4",
-    "scripts/browser.mjs": "04b142df52b2f7d067f4d5c97e234e4131ccf500c638d68b766bf8e0d51d6e84",
-    "scripts/measure-map.mjs": "056aca2916087a046e05daef95a04b0382865a32b576f4da0e23873efa7076d0",
-    "scripts/serve.mjs": "6b4c8f0c6bb0375c00d1c65e866c04c623b552b61051ddf5500ff6ade206bd7b"
-  },
+  "date": "2026-10-19T21:00:48.679Z",
+  "browser": "153.0.8010.12",
   "viewport": {
-    "width": 1280,
-    "height": 900,
-    "dpr": 1
+    "width": 1440,
+    "height": 1000
   },
-  "environment": "Headless Chromium in a shared four-core cloud VM",
-  "scenarios": [
+  "method": "120 controlled RAF pan frames per mode, 20 warm-up draws; all fields, written/planned nodes and definitions enabled. Native pointer pan checked separately. Draw timings are CPU submission time, frame cadence includes browser scheduling; headless results do not certify every GPU or device. Warm-up excludes cache reconstruction; this is steady panning evidence, not every hover/zoom transition.",
+  "results": [
     {
-      "name": "overview",
-      "scale": 0.06409813407049067,
-      "nodes": 13661,
-      "edges": 24142,
-      "settledDetailMs": 71.79999999701977,
-      "cacheRebuilds": 0,
-      "drawMedianMs": 0.10000000149011612,
-      "drawP95Ms": 0.20000000298023224,
-      "drawMaxMs": 0.5,
-      "frameMedianMs": 16.699999999999818,
-      "frameP95Ms": 16.700000000000273,
-      "framesWithinBudget": 90,
-      "frames": 90
+      "theme": "light",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "overview",
+      "zoom": 0.07313471727612264,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.034166671832402545,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.19999980926513672
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.665833333333335,
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999727,
+        "max": 16.800000000000182
+      },
+      "fps": 60.003000150007495
     },
     {
-      "name": "collections",
-      "scale": 0.5,
-      "nodes": 13661,
-      "edges": 24142,
-      "settledDetailMs": 137.90000000596046,
-      "cacheRebuilds": 0,
-      "drawMedianMs": 0.10000000149011612,
-      "drawP95Ms": 0.20000000298023224,
-      "drawMaxMs": 0.3999999985098839,
-      "frameMedianMs": 16.699999999999818,
-      "frameP95Ms": 16.800000000000182,
-      "framesWithinBudget": 90,
-      "frames": 90
+      "theme": "light",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "overview-selected",
+      "zoom": 0.07313471727612264,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.04166666070620219,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.20000004768371582
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.666666666666664,
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.800000000000182
+      },
+      "fps": 60.00000000000001
     },
     {
-      "name": "items",
-      "scale": 1.5,
-      "nodes": 13661,
-      "edges": 24142,
-      "settledDetailMs": 96.70000000298023,
-      "cacheRebuilds": 0,
-      "drawMedianMs": 0.10000000149011612,
-      "drawP95Ms": 0.20000000298023224,
-      "drawMaxMs": 0.5,
-      "frameMedianMs": 16.699999999999818,
-      "frameP95Ms": 16.799999999999272,
-      "framesWithinBudget": 90,
-      "frames": 90
+      "theme": "light",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "detail",
+      "zoom": 0.8,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.03833332459131877,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.10000014305114746
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.666666666666668,
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 16.800000000000182
+      },
+      "fps": 59.99999999999999
     },
     {
-      "name": "overview-wide-pan",
-      "scale": 0.06409813407049067,
-      "nodes": 13661,
-      "edges": 24142,
-      "settledDetailMs": 6.199999995529652,
-      "cacheRebuilds": 16,
-      "drawMedianMs": 0.10000000149011612,
-      "drawP95Ms": 15.100000001490116,
-      "drawMaxMs": 16.600000001490116,
-      "frameMedianMs": 16.699999999999818,
-      "frameP95Ms": 16.700000000000728,
-      "framesWithinBudget": 90,
-      "frames": 90
+      "theme": "light",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "selected",
+      "zoom": 0.8,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.026666667064030966,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.20000004768371582
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.664999999999996,
+        "p50": 16.69999999999891,
+        "p95": 16.799999999999272,
+        "max": 16.80000000000109
+      },
+      "fps": 60.00600060006002
     },
     {
-      "name": "items-wide-pan",
-      "scale": 1.5,
-      "nodes": 13661,
-      "edges": 24142,
-      "settledDetailMs": 68.20000000298023,
-      "cacheRebuilds": 16,
-      "drawMedianMs": 0.10000000149011612,
-      "drawP95Ms": 8.099999994039536,
-      "drawMaxMs": 13.400000005960464,
-      "frameMedianMs": 16.69999999999891,
-      "frameP95Ms": 16.700000000000728,
-      "framesWithinBudget": 90,
-      "frames": 90
+      "theme": "dark",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "overview",
+      "zoom": 0.07313471727612264,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.03916666309038798,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.20000004768371582
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.66583333333333,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.800000000000182
+      },
+      "fps": 60.00300015000751
+    },
+    {
+      "theme": "dark",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "overview-selected",
+      "zoom": 0.07313471727612264,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.03166667024294535,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.10000014305114746
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.666666666666668,
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.800000000000182
+      },
+      "fps": 59.99999999999999
+    },
+    {
+      "theme": "dark",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "detail",
+      "zoom": 0.8,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.03416666388511658,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.10000014305114746
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.66583333333334,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.800000000000182
+      },
+      "fps": 60.00300015000748
+    },
+    {
+      "theme": "dark",
+      "counts": {
+        "written": 6684,
+        "planned": 6890,
+        "nodes": 13574,
+        "edges": 23068,
+        "fields": 13,
+        "plannedEnabled": true,
+        "definitionsEnabled": true
+      },
+      "mode": "selected",
+      "zoom": 0.8,
+      "drawMS": {
+        "samples": 120,
+        "mean": 0.04500000675519308,
+        "p50": 0,
+        "p95": 0.10000014305114746,
+        "max": 0.20000004768371582
+      },
+      "frameMS": {
+        "samples": 120,
+        "mean": 16.66583333333333,
+        "p50": 16.69999999999891,
+        "p95": 16.799999999999272,
+        "max": 16.80000000000109
+      },
+      "fps": 60.00300015000751
     }
-  ],
-  "errors": [],
-  "inputsStable": true,
-  "passes60Fps": true
+  ]
 }

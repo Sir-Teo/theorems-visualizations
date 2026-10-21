@@ -169,13 +169,3 @@ export function mono(v, st, str, x, y, { size = 13, color = 'ink', colors = null
   for (let i = 0; i < str.length; i++) { c.fillStyle = v.color((colors && colors[i]) || color); c.fillText(str[i], X0 + i * cw, Y); }
   c.restore(); return cw;
 }
-
-/** Shortest complete dyadic cell inside [lo,hi); null when floating precision cannot resolve one. */
-export function arithmeticTag(lo, hi) {
-  if (!(0 <= lo && lo < hi && hi <= 1)) return null;
-  for (let k = 0; k <= 52; k++) {
-    const scale = 2 ** k, j = Math.ceil(lo * scale);
-    if (j < scale && (j + 1) / scale <= hi) return { code: k ? j.toString(2).padStart(k, '0') : '', value: j / scale, low: j / scale, high: (j + 1) / scale, bits: k };
-  }
-  return null;
-}

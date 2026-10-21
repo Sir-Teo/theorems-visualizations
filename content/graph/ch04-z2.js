@@ -5,6 +5,8 @@ import {
   cyclesToBonds, randomTriangulation, triDraw, schnyder, schnyderRegions, crossings,
 } from './ch04-z.shared.js';
 
+import { abstractDualAudit, incidenceRealizer, schnyderCertificate, drawingDefects } from './ch04-duality-audit.shared.js';
+
 // ---------- presets (same graphs as part Z1) ----------
 const K24 = () => ({ nodes: [[0, 0], [3, 0], [1.5, 1.7], [1.5, 0.6], [1.5, -0.6], [1.5, -1.7]].map(([x, y], i) => ({ id: i, x, y })), edges: [[0, 2], [0, 3], [0, 4], [0, 5], [1, 2], [1, 3], [1, 4], [1, 5]] });
 const K4K4 = () => ({ nodes: [[0, 0.8], [0, -0.8], [-1.4, 0], [-0.6, 0.15], [1.4, 0], [0.6, -0.15]].map(([x, y], i) => ({ id: i, x, y })), edges: [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3], [0, 4], [0, 5], [1, 4], [1, 5], [4, 5]] });
@@ -22,7 +24,7 @@ const toS = (p) => [CX + SC * p[0], CY + SC * p[1]];
 /** Plane setup of a planar 2-connected preset: straight-line drawing (stage coordinates), faces, plane dual. */
 function plane(N, outer) {
   const faces = dmp(N.n, N.E); const o = outer == null ? outerOf(faces) : ((outer % faces.length) + faces.length) % faces.length;
-  const rel = spread(N.n, N.E, tutte(N.n, N.E, faces, o), 60, faces[o]), P = rel.map(toS), H = ixE(N.n, N.E), F = faceWalks(H, P);
+  const rel = tutte(N.n, N.E, faces, o), P = rel.map(toS), H = ixE(N.n, N.E), F = faceWalks(H, P);
   const dual = dualOf(H, F.map((f) => f.walk)), oi = F.findIndex((f) => f.area < 0);
   const cen = F.map((f, i) => (i === oi ? null : [f.walk.reduce((a, u) => a + P[u][0], 0) / f.walk.length, f.walk.reduce((a, u) => a + P[u][1], 0) / f.walk.length]));
   const c = [F[oi].walk.reduce((a, u) => a + P[u][0], 0) / F[oi].walk.length, F[oi].walk.reduce((a, u) => a + P[u][1], 0) / F[oi].walk.length];
@@ -52,11 +54,11 @@ export default {
   items: [
     // =====================================================================================================  4.5
     {
-      num: '4.5.1', kind: 'Theorem', name: 'MacLane’s planarity criterion', credit: 'S. Mac Lane, 1937',
-      statement: String.raw`A graph is planar if and only if its cycle space has a **simple basis**: a basis consisting of cycles (edge sets of cycles) in which every edge of the graph lies in at most two of the basis elements.`,
-      idea: String.raw`In a plane graph the boundaries of all faces but one form a basis of the cycle space (1.9.5 together with Euler's formula count $m-n+1$ bounded faces), and every edge lies on exactly two faces (4.2.2), which gives a simple basis. For the converse one shows that having a simple basis passes to minors (contracting an edge keeps the family simple), so a graph with a simple basis has no $K^5$ or $K_{3,3}$ minor, and the Kuratowski–Wagner theorem 4.4.6 makes it planar. For $K^5$ and $K_{3,3}$ the non-existence is a finite check, which the app performs for you.`,
-      caption: String.raw`The app searches *exhaustively* through all cycles of the graph for a family of $m-n+1$ independent cycles in which every edge is used at most twice. For planar graphs it finds one at once (these are the face boundaries). For $K^5$, $K_{3,3}$ and the Petersen graph the search is complete and fails; the best family it can build has only $\dim-1$ cycles. The matrix on the right has one row per cycle of the family and one column per edge; the bottom row counts how many cycles use the edge. Use the slider to look at one cycle at a time.`,
-      deps: ['graph-1.9.5', 'graph-4.2.6', 'graph-4.4.6', 'graph-4.2.2'], refs: ['Diestel §4.5'], tags: ['planar', 'cycle space'],
+      num: '4.5.1', kind: 'Theorem', name: 'MacLane’s planarity criterion',
+      statement: String.raw`A finite graph is planar if and only if its cycle space has a **sparse basis** (also called a simple basis): every edge lies in at most two basis elements. Equivalently, such a basis can be chosen to consist of edge sets of individual cycles.`,
+      idea: String.raw`For a connected plane graph, the boundaries of its bounded faces, interpreted as edge sets modulo two, form a sparse basis of the cycle space: every edge is incident with at most two faces. Apply this component by component for a disconnected graph, whose cycle-space dimension is $m-n+c$. A boundary vector need not be a single cycle; split it into edge-disjoint cycles and extract a basis without increasing edge usage. Conversely, Diestel proves that a sparse basis implies planarity (4.5.1), using inheritance under edge deletion and subdivision, then dimension and girth counts to exclude $K^5$ and $K_{3,3}$. The finite searches here illustrate that theorem on the offered graphs; they are not its general proof.`,
+      caption: String.raw`The app searches through all cycles of the graph for a family of $m-n+1$ independent cycles in which every edge is used at most twice. A found basis is a positive certificate. A completed unsuccessful search certifies nonexistence; a search stopped by its budget is inconclusive. A partial independent family found by the search is shown when no basis is found, without a maximum-size claim. The matrix on the right has one row per cycle of the family and one column per edge; the bottom row counts how many cycles use the edge. Use the slider to look at one cycle at a time.`,
+      deps: ['graph-1.9.5', 'graph-4.2.6', 'graph-4.4.6', 'graph-4.2.2'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 4.5.1, p. 112'], tags: ['planar', 'cycle space'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Planar_graph#Other_criteria' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k4', 'k33', 'k5', 'pet']), 'cube', { onChange: () => load() });
@@ -79,16 +81,16 @@ export default {
         v.legend([['orange', 'edge in two basis cycles', { dot: true }], ['accent', 'edge in one', { dot: true }], ['green', 'cycle shown', { dash: false }]]);
         v.readout(() => res.tooBig ? 'graph too large for the exhaustive search' : res.basis
           ? `$n=${H.n}$, $m=${H.m}$, cycle space dimension $m-n+1=${res.dim}$ · a **simple basis exists**: ${res.basis.length} cycles, every edge in at most two of them ✓ (${res.basis.map((c) => c.vs.length).join(', ')} edges long) → consistent with planarity: **${isPlanar(H) ? 'planar' : 'NOT planar'}**`
-          : `$n=${H.n}$, $m=${H.m}$, cycle space dimension $m-n+1=${res.dim}$ · searched all ${res.nCycles} cycles: **no simple basis exists** (the largest independent family with every edge in $\\le2$ cycles has only ${res.best.length}${res.exhausted ? ', and the search was exhaustive' : ', search budget exhausted'}) → the graph is **${isPlanar(H) ? 'planar?!' : 'not planar'}**`);
+          : `$n=${H.n}$, $m=${H.m}$, cycle space dimension $m-n+1=${res.dim}$ · searched all ${res.nCycles} cycles: ${res.exhausted?'**no simple basis exists** (completed search)':'**no basis found within the search budget** (inconclusive)'}; partial independent family found: ${res.best.length} cycles → the graph is **${isPlanar(H) ? 'planar?!' : 'not planar'}**`);
       },
     },
     {
-      num: '4.5.2', kind: 'Theorem', name: 'Kelmans’s planarity criterion for 3-connected graphs', credit: 'A. K. Kelmans, 1978',
-      statement: String.raw`A 3-connected graph is planar if and only if every edge lies on at most two non-separating induced cycles (equivalently, on exactly two).`,
-      idea: String.raw`In a 3-connected plane graph, the non-separating induced cycles are exactly its facial cycles (4.2.7), and every edge lies on exactly two of them (4.2.2, 4.2.6). Conversely, all non-separating induced cycles generate the cycle space by 3.2.6; if every edge lies on at most two, a basis chosen from this generating set is sparse, and MacLane's theorem 4.5.1 gives planarity.`,
+      num: '4.5.2', kind: 'Theorem', name: 'Kelmans’s planarity criterion for 3-connected graphs',
+      statement: String.raw`A finite 3-connected graph is planar if and only if every edge lies on at most two non-separating induced cycles (equivalently, on exactly two).`,
+      idea: String.raw`In a plane drawing of a 3-connected graph the non-separating induced cycles are exactly the facial cycles (4.2.7), and an edge borders exactly two faces (4.2.2); so planar graphs satisfy the condition with equality. For the converse one uses that the non-separating induced cycles generate the cycle space (3.2.6): if every edge lay on at most two of them, a suitable choice of $m-n+1$ of them would form a simple basis, and MacLane's theorem 4.5.1 applies.`,
       caption: String.raw`Each edge is labelled with the number of non-separating induced cycles that contain it (all of them found by brute force). In a planar graph every label is 2; in a non-planar 3-connected graph some edge is on three or more (red). Click an edge, then use the slider to run through the non-separating induced cycles through it; the cycle shown is drawn in green.`,
-      deps: ['graph-3.2.6', 'graph-4.2.7', 'graph-4.2.2'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.5.2 and proof, p. 113'], tags: ['planar', 'induced cycles'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
+      deps: ['graph-3.2.6', 'graph-4.2.7', 'graph-4.2.2'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 4.5.2, p. 113'], tags: ['planar', 'induced cycles'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf#page=21' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k4', 'k33', 'k5', 'pet']), 'cube', { onChange: () => load() });
         const which = v.slider('cycle through the selected edge', 1, 8, 1, { int: true });
@@ -118,29 +120,33 @@ export default {
       },
     },
     {
-      num: '4.5.3', kind: 'Theorem', name: 'Schnyder: planar iff incidence poset has dimension ≤ 3', credit: 'W. Schnyder, 1989',
-      statement: String.raw`A graph $G$ is planar if and only if its **incidence poset** — the set $V\cup E$ with $v<e$ whenever the vertex $v$ is an end of the edge $e$ — has order dimension at most $3$, i.e. it is the intersection of three linear orders.`,
-      idea: String.raw`The source states this characterization without a proof. The diagram illustrates a related constructive object, a Schnyder wood of a plane triangulation: every inner vertex has one outgoing edge of each of three colours, with the colour paths leading to the three outer vertices. These paths divide the triangulation into regions, whose face counts give grid coordinates. The drawing is checked for crossings below; it does not construct or verify three linear orders of the full incidence poset.`,
-      caption: String.raw`A random plane triangulation with outer vertices $a_1,a_2,a_3$ and its Schnyder wood from a canonical ordering: every inner edge is an arrow in colour 1, 2 or 3 (each inner vertex has one outgoing arrow of each colour). Click a vertex $v$: its three paths to the corners cut the triangle into three shaded regions $R_1,R_2,R_3$. The right panel places each vertex at (number of faces in $R_1$, number of faces in $R_2$): Schnyder's grid drawing, which is crossing-free — a related geometric illustration; the three incidence-poset orders are not computed here.`,
-      deps: ['graph-4.4.1a', 'graph-4.2.7a', 'graph-4.4.6'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.5.3 (no proof supplied), p. 113'], see: ['comb-8.1'], tags: ['planar', 'order dimension', 'Schnyder wood'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
+      num: '4.5.3', kind: 'Theorem', name: 'Schnyder: planar iff incidence poset has dimension ≤ 3',
+      statement: String.raw`A finite simple graph $G$ is planar if and only if its **incidence poset** — the set $V\cup E$ with $v<e$ whenever the vertex $v$ is an end of the edge $e$ — has order dimension at most $3$, i.e. it is the intersection of three linear orders.`,
+      idea: String.raw`Three suitable vertex orders have no common comparison between distinct vertices and have the following separation property: for every edge $uv$ and vertex $w\notin\{u,v\}$, some order places $w$ above both ends. Insert each edge after its later endpoint in each order; the resulting three orders on vertices and edges realize the incidence poset. Schnyder woods give these vertex orders for planar triangulations: face-count coordinates separate every nonincident vertex-edge pair. The general theorem follows by extending planar graphs to triangulations and restricting orders. For the converse, standard three-order representations admit an edge contraction and inverse vertex-insertion induction that builds a plane triangulation; the theorem is not proved by a failed finite drawing search. See Barrera-Cruz–Haxell, Theorems 1, 4 and 5, and the face-count separation property (R1) in Barrera-Cruz–Haxell–Lubiw.`,
+      caption: String.raw`A random plane triangulation with outer vertices $a_1,a_2,a_3$ and its Schnyder wood: each inner edge has one orientation and colour, and each inner vertex has one outgoing edge of each colour. Click an inner vertex to shade the three regions bounded by its root paths. The right drawing uses counts of inner faces in two regions. The readout checks the complete wood rules, distinct vertices and all edge contacts. Toggle the three orders to inspect an actual incidence-poset realizer: $v_i$ names vertex $i$ (the first three are $a_1,a_2,a_3$); the toggled edge labels identify $e_i$. Every ordered pair is checked.`,
+      deps: ['graph-4.4.1a', 'graph-4.2.7a', 'graph-4.4.6'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 4.5.3, p. 113', 'Barrera-Cruz & Haxell, A Note on Schnyder’s Theorem, https://arxiv.org/abs/1606.08943', 'Barrera-Cruz, Haxell & Lubiw, Morphing Schnyder drawings of planar triangulations, §2 Theorem 1 and (R1), https://arxiv.org/abs/1411.6186'], see: ['comb-8.1'], tags: ['planar', 'order dimension', 'Schnyder wood'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf#page=21' },
       viz(v) {
+        const showOrders = v.toggle('show the three incidence orders',false);
         const nS = v.slider('$n$', 5, 12, 8, { int: true, onChange: () => make() });
         v.button('new triangulation', () => { seed++; make(); });
         const sL = v.stage({ x: [0, 10], y: [0, 6.4], axes: false, equal: true, height: 350, title: 'Schnyder wood' }), sR = v.stage({ x: [-1, 15], y: [-1, 15], axes: false, equal: true, height: 350, title: 'grid drawing from the region counts' });
         const OC = ['orange', 'teal', 'purple'];
         const G = v.graph(sL, { nodes: [], edges: [], r: 10, draggable: false, directed: true });
-        let seed = 1, n, T, W, E, pos, Pg, sel = 3, regs;
+        let seed = 1, n, T, W, E, pos, Pg, sel = 3, regs, woodCheck, realizer, coordinates;
         const sp = (p) => [5 + 3.0 * p[0], 3.0 + 3.0 * p[1]];
         function make() {
           n = nS.value; let tries = 0;
           do { const r = v.rng(seed * 8191 + 17 + tries); T = triDraw(randomTriangulation(n, r, 4 + Math.floor(r() * 8))); W = schnyder(n, T.E, T.pos); tries++; } while (!W && tries < 20);
+          if(!W)throw new Error('No Schnyder wood found for this triangulation');
           pos = spread(n, T.E, T.pos, 60, [0, 1, 2]); E = T.E;
+          woodCheck=schnyderCertificate(n,E,pos,W.out);
           const ed = []; for (let u = 0; u < n; u++) for (const [a, b, c] of W.out[u]) if (!(a < 3 && b < 3)) ed.push({ from: a, to: b, c, directed: true });
           for (const [a, b] of [[0, 1], [1, 2], [0, 2]]) ed.push({ from: a, to: b, c: 0, directed: false });
           G.set({ nodes: pos.map((p, i) => { const q = sp(p); return { id: i, x: q[0], y: q[1], label: i < 3 ? ['a₁', 'a₂', 'a₃'][i] : lab1(i) }; }), edges: ed, directed: true }); G.layout('none');
           const m = 2 * n - 5; regs = []; Pg = [];
           for (let u = 0; u < n; u++) { if (u < 3) { regs.push(null); Pg.push(u === 0 ? [m, 0] : u === 1 ? [0, m] : [0, 0]); continue; } const R = schnyderRegions(n, T.tri, W.out, u); regs.push(R); Pg.push([R.counts[0], R.counts[1]]); }
+          coordinates=Pg.map((p,u)=>u<3?[+(u===0)*m,+(u===1)*m,+(u===2)*m]:regs[u].counts);realizer=incidenceRealizer(n,E,coordinates);
           sel = 3; const mm = 2 * n - 5; sR.setView([-1, mm + 1], [-1, mm + 1]);
         }
         make();
@@ -153,6 +159,7 @@ export default {
           G.draw({
             edgeColor: (e) => { if (!e.c) return 'muted'; const k = ekey2(e.from, e.to); return OC[e.c - 1]; },
             edgeWidth: (e) => { const k = ekey2(e.from, e.to); return e.c && onPath[e.c - 1].has(k) ? 4.2 : e.c ? 1.8 : 2.6; },
+            edgeLabel:e=>showOrders.value?'e'+(E.findIndex(([a,b])=>ekey2(a,b)===ekey2(e.from,e.to))+1):null,
             nodeFill: (id) => (id === sel ? 'gold' : null), nodeRing: (id) => (id < 3 ? 'ink' : null),
           });
           // right panel
@@ -163,19 +170,19 @@ export default {
         });
         v.legend([['orange', 'colour 1 (to $a_1$)', { dash: false }], ['teal', 'colour 2 (to $a_2$)', { dash: false }], ['purple', 'colour 3 (to $a_3$)', { dash: false }]]);
         v.readout(() => {
-          const R = regs[sel], c = R.counts, H = ixE(n, E), cr = crossings(H, Pg).length, tot = c[0] + c[1] + c[2];
-          return `vertex ${lab1(sel)}: regions contain **${c[0]}, ${c[1]}, ${c[2]}** faces, total $${tot}=2n-5=${2 * n - 5}$ ${tot === 2 * n - 5 ? '✓' : '✗'} · grid drawing on $[0,${2 * n - 5}]^2$: **${cr} crossings** · every inner vertex has one outgoing edge of each colour: ✓ (checked)`;
+          const R=regs[sel],c=R.counts,tot=c.reduce((a,b)=>a+b,0),defects=drawingDefects(n,E,Pg),name=x=>x<n?'v_{'+(x+1)+'}':'e_{'+(x-n+1)+'}';
+          return `vertex ${lab1(sel)}: region face counts **${c.join(', ')}**, total $${tot}=2n-5=${2*n-5}$. Complete wood rules/root paths: **${woodCheck.valid?'pass':'FAIL'}**. Grid drawing defects (coincidences, vertex-edge contacts, crossings): **${defects.length}**. Three orders realize the incidence poset: **${realizer.valid?'yes':'NO'}**, checking all ${realizer.checked} ordered pairs.${showOrders.value?'\n'+realizer.orders.map((L,i)=>'$L_'+(i+1)+'$: '+L.map(x=>'$'+name(x)+'$').join(' < ')).join('\n'):''}`;
         });
       },
     },
     // =====================================================================================================  4.6
     {
       num: '4.6.1a', kind: 'Definition', name: 'Plane duals',
-      statement: String.raw`Let $G=(V,E)$ be a connected plane graph. Its **plane dual** $G^*=(V^*,E^*)$ is the multigraph with one vertex $v^*(f)$ in the interior of every face $f$ of $G$ and, for every edge $e$ of $G$, an edge $e^*$ crossing $e$ exactly once and no other edge of $G$, joining the vertices of the two faces on either side of $e$ (a loop if $e$ is a bridge). The dual of a connected plane graph is a connected plane multigraph.`,
+      statement: String.raw`Let $G=(V,E)$ be a finite connected plane multigraph. Loops and parallel edges are allowed; loops and pairs of parallel edges count as cycles. Its **plane dual** $G^*=(V^*,E^*)$ is the multigraph with one vertex $v^*(f)$ in the interior of every face $f$ of $G$ and, for every edge $e$ of $G$, an edge $e^*$ crossing $e$ exactly once and no other edge of $G$, joining the vertices of the two faces on either side of $e$ (a loop if $e$ is a bridge). The dual of a connected plane graph is a connected plane multigraph.`,
       idea: String.raw`The construction exchanges the roles of vertices and faces: $G^*$ has $\ell$ vertices and $m$ edges, where $\ell$ is the number of faces of $G$; the degree of $v^*(f)$ is the length of the boundary walk of $f$. Euler's formula $n-m+\ell=2$ is symmetric under this exchange, and for a connected plane graph one finds $G^{**}\cong G$. Parallel edges arise when two faces share more than one edge, so duals of simple graphs are in general multigraphs. Different drawings of the same abstract graph can have non-isomorphic duals; for 3-connected graphs the drawing is unique (4.3.2), and so is the dual.`,
-      caption: String.raw`The plane graph is drawn in blue; its dual is drawn on top in orange: one hollow dot per bounded face, the dashed circle standing for the unbounded face (all dual edges that end there run to it), and a dual edge crossing each primal edge. Change the outer face with the slider and watch the dual change. $K_{2,4}$ has four faces of length 4 sharing two edges at a time: its dual has parallel edges; two $K^4$ glued along an edge give a dual with multiple edges as well.`,
-      deps: ['graph-4.2.1a', 'graph-1.10.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.6, pp. 114–115'], tags: ['duality', 'plane graphs'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
+      caption: String.raw`The finite examples are 2-connected simple plane graphs, drawn in blue. Orange paths show dual incidence: one hollow dot per bounded face, the dashed circle representing a single identified outer-face vertex (its endpoints on the circle are identified; this is a schematic representation), and a dual edge crossing each primal edge. Changing the outer face redraws the same embedding with a different unbounded face; its abstract dual incidences are preserved. $K_{2,4}$ has four faces of length 4 sharing two edges at a time: its dual has parallel edges. Two $K^4$ glued along an edge provide a contrasting 2-connected example whose displayed dual has no parallel pair.`,
+      deps: ['graph-4.2.1a', 'graph-1.10.1a'], refs: ['Diestel, Graph Theory, 6th ed. (2025), unnumbered plane-dual definition, pp. 114–115'], tags: ['duality', 'plane graphs'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf#page=22' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k4', 'k24', 'k4k4']), 'cube', { onChange: () => load() });
         const out = v.slider('outer face', 0, 11, 0, { int: true, onChange: () => load() });
@@ -235,11 +242,11 @@ export default {
     },
     {
       num: '4.6.1b', kind: 'Definition', name: 'Abstract duals',
-      statement: String.raw`A graph $G^*$ (or multigraph) is an **abstract dual** of $G$ if there is a bijection $\varphi\colon E(G)\to E(G^*)$ such that a set $F\subseteq E(G)$ is the edge set of a cycle of $G$ if and only if $\varphi(F)$ is a bond of $G^*$. By 4.6.1, the plane dual of a connected plane graph is an abstract dual.`,
-      idea: String.raw`The definition forgets the drawing and keeps only the matroidal content: which edge sets are cycles on one side and bonds on the other. The bijection matters: a graph can be an abstract dual of $G$ through one pairing of the edges and fail through another. $K^4$ is an abstract dual of itself: pairing each edge with its opposite gives one valid pairing, as do pairings obtained from this by automorphisms.`,
-      caption: String.raw`The left graph is $G$ with numbered edges. On the right is a candidate $G^*$; each of its edges carries the number of the edge of $G$ it is paired with. The app tests the definition on every cycle of $G$ and tells you whether it maps to a bond. For the plane dual of $G$ the test succeeds; click two edges of the candidate to swap their labels and break the pairing (a failing cycle is shown in red on both sides). For $K^4$, choose **$G$ itself** and fix the pairing by swapping edges until it works.`,
-      deps: ['graph-4.6.1', 'graph-1.9.1b'], refs: ['Diestel, Graph Theory, 6th ed., §4.6, pp. 115–116'], tags: ['duality', 'abstract dual'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
+      statement: String.raw`For finite multigraphs $G$ and $G^*$, $G^*$ is an **abstract dual** of $G$ if there is a bijection $\varphi\colon E(G)\to E(G^*)$ such that a set $F\subseteq E(G)$ is the edge set of a cycle of $G$ if and only if $\varphi(F)$ is a bond of $G^*$. Neither graph must be connected. Loops and two parallel edges count as cycles. By 4.6.1, a plane dual is an abstract dual.`,
+      idea: String.raw`The definition forgets the drawing and keeps only the matroidal content: which edge sets are cycles on one side and bonds on the other. The bijection matters: a graph can be an abstract dual of $G$ through one pairing of the edges and fail through another. Pairing every edge of $K^4$ with its opposite gives one self-duality. Composing it with a vertex automorphism gives 24 valid edge pairings; the opposite pairing is not unique.`,
+      caption: String.raw`The left graph is $G$ with numbered edges. On the right is a candidate $G^*$; each of its edges carries the number of the edge of $G$ it is paired with. The app tests both directions: every cycle must map to a bond and every candidate bond must be the image of a cycle. For the plane dual of $G$ the test succeeds; click two edges of the candidate to swap their labels and test the modified pairing (a failing witness is shown in red on both sides). For $K^4$, choose **$G$ itself** and fix the pairing by swapping edges until it works.`,
+      deps: ['graph-4.6.1', 'graph-1.9.1b'], refs: ['Diestel, Graph Theory, 6th ed. (2025), unnumbered abstract-dual definition, p. 116'], tags: ['duality', 'abstract dual'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf#page=24' },
       viz(v) {
         const ex = v.select('graph', opts(['k4', 'cube', 'prism', 'w5']), 'k4', { onChange: () => load() });
         const cand = v.select('candidate $G^*$', [{ value: 'dual', label: 'plane dual' }, { value: 'self', label: '$G$ itself' }], 'dual', { onChange: () => load() });
@@ -263,7 +270,7 @@ export default {
         v.button('reset the pairing', () => { pi = Dm.ends.map((_, k) => k); sel = null; });
         v.button('swap two random labels', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); const a = Math.floor(r() * pi.length); let b = Math.floor(r() * pi.length); if (b === a) b = (a + 1) % pi.length; [pi[a], pi[b]] = [pi[b], pi[a]]; });
         v.render(() => {
-          const bad = cyclesToBonds(H, Dm, pi, cycles);
+          const bad = abstractDualAudit(H, Dm, pi, cycles);
           const badG = new Set(), badD = new Set(); if (bad) bad.E.forEach((x, k) => { if (x) { badG.add(HG.E[k][2]); badD.add(pi[k]); } });
           G.draw({ edgeLabel: (e) => String(HG.eix.get(e) + 1), edgeColor: (e) => (badG.has(e) ? 'red' : null), edgeWidth: (e) => (badG.has(e) ? 3.6 : null) });
           D.draw({
@@ -271,17 +278,17 @@ export default {
           });
         });
         v.readout(() => {
-          const bad = cyclesToBonds(H, Dm, pi, cycles);
-          return bad ? `**the pairing is not an abstract duality:** the cycle of $G$ with edges ${bad.E.map((x, k) => (x ? k + 1 : 0)).filter(Boolean).join(', ')} is mapped to a set that is not a bond of the candidate (red)` : `all ${cycles.length} cycles of $G$ are mapped to bonds ${cand.value === 'dual' && pi.every((x, k) => x === k) ? '(the plane dual with its natural pairing)' : ''} ✓ → $G^*$ is an abstract dual of $G$ through this pairing`;
+          const bad = abstractDualAudit(H, Dm, pi, cycles);
+          return bad?.kind==='bond'?`**the pairing is not an abstract duality:** a candidate bond has inverse edge set ${Array.from(bad.E,(x,k)=>x?k+1:0).filter(Boolean).join(', ')}, which is not a cycle of $G$ (red)`:bad ? `**the pairing is not an abstract duality:** the cycle of $G$ with edges ${bad.E.map((x, k) => (x ? k + 1 : 0)).filter(Boolean).join(', ')} is mapped to a set that is not a bond of the candidate (red)` : `all ${cycles.length} cycles of $G$ correspond exactly to all candidate bonds ${cand.value === 'dual' && pi.every((x, k) => x === k) ? '(the plane dual with its natural pairing)' : ''} ✓ → $G^*$ is an abstract dual of $G$ through this pairing`;
         });
       },
     },
     {
       num: '4.6.2', kind: 'Proposition', name: 'An abstract dual swaps cycle space and cut space',
-      statement: String.raw`Let $G^*$ be an abstract dual of the connected graph $G$ via the bijection $\varphi\colon E(G)\to E(G^*)$. Then $F\subseteq E(G)$ lies in the cycle space $\mathscr C(G)$ if and only if $\varphi(F)$ lies in the cut space $\mathscr C^*(G^*)$; so $\varphi$ induces an isomorphism $\mathscr C(G)\cong\mathscr C^*(G^*)$, and the dimensions agree: $m-n+1=n^*-1$.`,
-      idea: String.raw`Extend $\varphi$ linearly to a map between the edge spaces over $\mathbb F_2$. The cycle space is generated by the cycles of $G$ (1.9.1), and the cut space of $G^*$ is generated by its bonds, because every cut is a disjoint union of bonds (1.9.3). By definition $\varphi$ sends cycles of $G$ exactly to bonds of $G^*$, so it maps a generating set of $\mathscr C(G)$ onto a generating set of the cut space of $G^*$, and being bijective on edges it is an isomorphism between the two spaces. The dimensions are $m-n+1$ (1.9.5) for the cycle space and $|G^*|-1$ for the cut space of a connected graph, so $|G^*|=m-n+2$; for plane duals this is Euler's formula.`,
+      statement: String.raw`Let $G^*$ be an abstract dual of the finite multigraph $G$ via the bijection $\varphi\colon E(G)\to E(G^*)$. Then $F\subseteq E(G)$ lies in the cycle space $\mathscr C(G)$ if and only if $\varphi(F)$ lies in the cut space $\mathscr C^*(G^*)$; so $\varphi$ induces an isomorphism $\mathscr C(G)\cong\mathscr C^*(G^*)$, and the dimensions agree: $m-n+c=n^*-c^*$, where $c,c^*$ count components, including isolated vertices.`,
+      idea: String.raw`Extend $\varphi$ linearly to a map between the edge spaces over $\mathbb F_2$. The cycle space is generated by the cycles of $G$ (1.9.1), and the cut space of $G^*$ is generated by its bonds, because every cut is a disjoint union of bonds (1.9.3). By definition $\varphi$ sends cycles of $G$ exactly to bonds of $G^*$, so it maps a generating set of $\mathscr C(G)$ onto a generating set of the cut space of $G^*$, and being bijective on edges it is an isomorphism between the two spaces. The dimensions are $m-n+c$ and $|G^*|-c^*$. A connected primal graph can still have a disconnected abstract dual, because isolated dual vertices do not affect bonds. For connected plane duals $c=c^*=1$ and the identity becomes Euler's formula.`,
       caption: String.raw`$G^*$ is the plane dual with its natural pairing. Click edges of $G$ to build an arbitrary edge set $F$; the right panel shows the same set $F^*$ in the dual. The app reports whether $F$ is in the cycle space (every vertex has even degree in $F$) and whether $F^*$ is in the cut space of $G^*$ (the vertices of $G^*$ can be 2-coloured so that $F^*$ is exactly the set of bichromatic edges; if so the two colours are shown). The two answers always agree. **random cycle-space element** adds up a few cycles for you.`,
-      deps: ['graph-4.6.1b', 'graph-1.9.4', 'graph-1.9.3', 'graph-3.1.3'], refs: ['Diestel §4.6'], tags: ['duality', 'cycle space', 'cut space'],
+      deps: ['graph-4.6.1b', 'graph-1.9.4', 'graph-1.9.3', 'graph-1.9.2', 'graph-1.9.5'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Proposition 4.6.2, p. 116'], tags: ['duality', 'cycle space', 'cut space'],
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k4']), 'cube', { onChange: () => load() });
         const sL = gstage(v, { height: 340, title: 'edge set $F\\subseteq E(G)$ (click edges)' }), sR = gstage(v, { height: 340, title: 'dual edge set $F^*$ in $G^*$' });
@@ -320,12 +327,12 @@ export default {
       },
     },
     {
-      num: '4.6.3', kind: 'Theorem', name: 'Whitney: planar iff an abstract dual exists', credit: 'H. Whitney, 1932',
-      statement: String.raw`A graph is planar if and only if it has an abstract dual.`,
-      idea: String.raw`For a planar $G$, take the plane dual of each connected component of a drawing and form their disjoint union as abstract multigraphs. Its bonds correspond exactly to the cycles of $G$. Conversely, if $G^*$ is an abstract dual, 4.6.2 identifies $\mathcal C(G)$ with $\mathcal B(G^*)$. The cut space has a sparse basis: in each non-trivial component choose all vertex stars except one; every edge is in at most two chosen stars (loops occur in none). MacLane's theorem therefore makes $G$ planar. No 2-connectivity assumption on the abstract dual is needed.`,
-      caption: String.raw`For a planar graph the app draws the plane dual with its natural edge pairing and checks the definition on every cycle (the readout reports the test). For $K^5$, $K_{3,3}$ and the Petersen graph there is no drawing to take a dual of. Suppose there were an abstract dual: the proof turns it into a simple basis of the cycle space, so the app runs the exhaustive search of 4.5.1 — it fails, and the picture on the right shows the largest simple independent family it could assemble, which stops one cycle short of a basis.`,
-      deps: ['graph-4.6.1', 'graph-4.6.2', 'graph-4.5.1', 'graph-1.9.2'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.6.3 and proof, pp. 116–117'], see: ['circ-3.11'], tags: ['duality', 'planar'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Dual_graph' },
+      num: '4.6.3', kind: 'Theorem', name: 'Whitney: planar iff an abstract dual exists',
+      statement: String.raw`A finite graph is planar if and only if it has an abstract dual.`,
+      idea: String.raw`For a planar graph, take a plane dual separately for each connected component and form their disjoint union; cycles and bonds correspond component by component. Conversely, abstract duality identifies the cycle space of $G$ with the cut space of $G^*$ (4.6.2). The latter has a sparse basis of atomic cuts (1.9.2), so the former has a sparse basis and MacLane's criterion (4.5.1) proves planarity. This works with disconnected graphs and isolated vertices; no 2-connectivity assumption is needed. If one wants basis vectors that are single cycles, split Eulerian vectors into edge-disjoint cycles and extract a basis without increasing any edge's total use.`,
+      caption: String.raw`For a planar graph the app draws the plane dual with its natural edge pairing and checks the definition in both directions on all cycles and bonds (the readout reports the test). For $K^5$, $K_{3,3}$ and the Petersen graph there is no drawing to take a dual of. Suppose there were an abstract dual: the proof turns it into a simple basis of the cycle space, so the app searches for a sparse cycle basis. A completed search can certify nonexistence; a budget-limited failure is inconclusive. The right picture shows a partial independent family found by the search, not a claimed maximum.`,
+      deps: ['graph-4.6.1', 'graph-4.6.2', 'graph-4.5.1', 'graph-1.9.2'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 4.6.3, p. 117'], see: ['circ-3.11'], tags: ['duality', 'planar'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf#page=25' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k4', 'k24', 'k33', 'k5', 'pet']), 'cube', { onChange: () => load() });
         const sL = gstage(v, { height: 340, title: 'graph $G$' }), sR = gstage(v, { height: 340, title: 'its dual, or a failed search' });
@@ -337,7 +344,7 @@ export default {
           if (isPlanar(H) && H.n >= 3 && isKconn(H, 2).ok) {
             S = plane(N); setPlane(G, S); HG = ix(G);
             const Dm = { n: S.F.length, ends: S.dual.edges.map((e) => [e.a, e.b]) }, cycles = CYC(H);
-            test = { bad: cyclesToBonds(H, Dm, Dm.ends.map((_, k) => k), cycles), nc: cycles.length, bonds: allBonds(dualIx(S)).length };
+            test = { bad: abstractDualAudit(H, Dm, Dm.ends.map((_, k) => k), cycles), nc: cycles.length, bonds: allBonds(dualIx(S)).length };
             const pts = S.F.map((f, i) => (i === S.oi ? [S.ring.c[0], S.ring.c[1] + 1.25 * S.ring.R] : S.cen[i]));
             R.set({ nodes: pts.map((p, i) => ({ id: i, x: p[0], y: p[1], label: '*' + (i + 1) })), edges: S.dual.edges.map((e, k) => ({ from: e.a, to: e.b, k })) }); R.layout('fit'); HR = ix(R, { multi: true });
           } else {
@@ -359,9 +366,12 @@ export default {
         v.readout(() => {
           if (S) return `**planar** (${H.n} vertices, ${H.m} edges, ${S.F.length} faces): the plane dual with the pairing $e\\mapsto e^*$ maps all ${test.nc} cycles of $G$ to bonds of $G^*$ ${test.bad ? '✗' : '✓'}, and $G^*$ has ${test.bonds} bonds ${test.bonds === test.nc ? '✓' : '✗'} → an abstract dual exists`;
           if (res.tooBig) return 'too large';
-          return `**not planar** · an abstract dual would give a simple basis of the cycle space (dimension ${res.dim}); the exhaustive search over ${res.nCycles} cycles finds none — the best family has only ${res.best.length} independent cycles ${res.exhausted ? '(search complete)' : ''} → no abstract dual exists, as the theorem says${isPlanar(H) ? '' : ''}`;
+          return `Exact planarity test: **${isPlanar(H)?'planar':'not planar'}**. Cycle-space dimension ${res.dim}; searched ${res.nCycles} cycles. ${res.basis?'A sparse basis was found.':res.exhausted?'The basis search completed and no sparse basis exists.':'The search budget was exhausted; failure to find a basis is inconclusive.'} A partial independent family of ${res.best?.length||0} cycles was found (no maximum-size claim). By the theorem, ${isPlanar(H)?'an abstract dual exists':'no abstract dual exists'}.`;
         });
       },
     },
   ],
 };
+
+// Exposed pure construction for independent combinatorial/geometry verification.
+export { plane as planeDualModel, PRE as dualityPresets, dualLine as planeDualLine };

@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 12 (part 2): normal operators, projections, Fuglede–Putnam–Rosenblum
 //
-// Numbering, statements and proofs checked against Rudin, second edition, pp.306–341.
+// Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
 const dot3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
@@ -41,7 +41,7 @@ Consequently $\overline{\mathscr R(T)}=\mathscr N(T^*)^\perp$, and $T$ has dense
       deps: ['fa-12.9', 'fa-12.2'],
       see: ['fa-4.12'],
       tags: ['Hilbert space', 'adjoint', 'range'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.10 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const aS = v.slider('rotation of the range', 0, 3.14, 0.7, { step: 0.01 });
@@ -78,7 +78,7 @@ Consequently $\overline{\mathscr R(T)}=\mathscr N(T^*)^\perp$, and $T$ has dense
       },
     },
     {
-      num: '12.12',
+      num: '12.11',
       kind: 'Theorem',
       name: 'Characterisations of normal operators',
       statement: String.raw`$T\in B(H)$ is normal ($TT^*=T^*T$) if and only if
@@ -86,9 +86,9 @@ $$\norm{Tx}=\norm{T^*x}\qquad(x\in H).$$
 If $T$ is normal, then $\mathscr N(T)=\mathscr N(T^*)$; $\mathscr R(T)$ is dense iff $T$ is one-to-one; $T$ is invertible iff $\norm{Tx}\ge c\norm x$ for some $c>0$; $Tx=\alpha x$ implies $T^*x=\bar\alpha x$; and eigenvectors for distinct eigenvalues are orthogonal.`,
       idea: String.raw`$\norm{Tx}^2-\norm{T^*x}^2=((T^*T-TT^*)x,x)$, and a self-adjoint operator whose quadratic form vanishes is $0$ (12.7). The other statements follow by applying the norm identity to $T-\alpha I$, which is normal along with $T$, and to 12.10. Orthogonality: $\alpha(x,y)=(Tx,y)=(x,T^*y)=(x,\bar\beta y)=\beta(x,y)$.`,
       caption: String.raw`A real $2\times2$ matrix $T=\begin{pmatrix}a&b\\c&d\end{pmatrix}$. Left: the images of the unit circle under $T$ (blue) and $T^*$ (orange). Right: $\norm{Tx_\theta}$ and $\norm{T^*x_\theta}$ for $x_\theta=(\cos\theta,\sin\theta)$. They coincide for every $\theta$ exactly when $T$ is normal — try $b=c$ (symmetric) or $b=-c$, $a=d$ (a rotation times a dilation). Then the eigen-directions (dashed) are orthogonal.`,
-      deps: ['fa-12.9','fa-12.7a','fa-12.10','fa-1.26','fa-2.11'],
+      deps: ['fa-12.9', 'fa-12.7', 'fa-12.10'],
       tags: ['normal operators', 'Hilbert space'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.12 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const aS = v.slider('$a$', -1.5, 1.5, 0.9, { step: 0.01 });
@@ -127,15 +127,15 @@ If $T$ is normal, then $\mathscr N(T)=\mathscr N(T^*)$; $\mathscr R(T)$ is dense
       },
     },
     {
-      num: '12.25',
+      num: '12.13',
       kind: 'Theorem',
-      name: 'A normal operator’s norm equals its numerical radius',
-      statement: String.raw`If $T\in B(H)$ is normal, then $\|T\|=\sup_{\|x\|\le1}|(Tx,x)|$. Normality matters: the nonzero nilpotent matrix $\left(\begin{smallmatrix}0&1\\0&0\end{smallmatrix}\right)$ has norm $1$ and numerical radius $1/2$. For a self-adjoint finite matrix, the illustrated extreme Rayleigh quotients are its extreme eigenvalues.`,
-      idea: String.raw`The continuous functional calculus gives $\|T\|=\max_{\lambda\in\sigma(T)}|\lambda|$. Choose a spectral point of maximal modulus and a small neighbourhood $\omega$ of it. Its spectral projection is nonzero. A unit vector in its range has $(Tx,x)$ within the neighbourhood radius of that spectral point, so its modulus approaches $\|T\|$. The reverse bound follows from Schwarz.`,
+      name: 'Self-adjoint operators: spectrum between inf and sup of (Tx, x)',
+      statement: String.raw`If $T\in B(H)$ is self-adjoint, put $m=\inf\{(Tx,x):\norm x=1\}$ and $M=\sup\{(Tx,x):\norm x=1\}$. Then $\sigma(T)\subset[m,M]$, both $m$ and $M$ belong to $\sigma(T)$, and $\norm T=\max(|m|,|M|)=\rho(T)$. More generally $\norm T=\rho(T)$ for every normal $T$.`,
+      idea: String.raw`For $\lambda<m$, $((T-\lambda I)x,x)\ge(m-\lambda)\norm x^2$, so $T-\lambda I$ is bounded below and (being self-adjoint) invertible; similarly above $M$. To see $M\in\sigma(T)$, apply Cauchy–Schwarz to the positive form $((MI-T)x,y)$: unit vectors with $(Tx_n,x_n)\to M$ give $(MI-T)x_n\to0$. For normal $T$, $\norm{T^2}=\norm T^2$ (from $\norm{T^*T}=\norm T^2$ and 12.11), iterate, and use the spectral radius formula.`,
       caption: String.raw`A real symmetric $3\times3$ operator $T=Q\operatorname{diag}(\lambda_1,\lambda_2,\lambda_3)Q^\top$ (set the eigenvalues; drag to rotate). The unit sphere is coloured by the Rayleigh quotient $(Tx,x)$; the eigenvectors (dots, red for the extremes) are exactly where its minimum $m$ and maximum $M$ are attained — the largest and smallest eigenvalues. Every value in $[m,M]$ is taken on the sphere (it is connected), but only the eigenvalues are in the spectrum.`,
-      deps: ['fa-12.22','fa-12.24','fa-11.18'],
+      deps: ['fa-12.11', 'fa-12.7', 'fa-10.13'],
       tags: ['self-adjoint operators', 'numerical range', 'spectrum'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.25 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const l1S = v.slider('$\\lambda_1$', -2, 2, 1.6, { step: 0.01 });
@@ -159,25 +159,25 @@ If $T$ is normal, then $\mathscr N(T)=\mathscr N(T^*)$; $\mathscr R(T)$ is dense
       },
     },
     {
-      num: '12.11',
+      num: '12.14',
       kind: 'Definition',
-      name: 'Normal, self-adjoint, unitary and projection operators',
-      statement: String.raw`For $T\in B(H)$: **normal** means $TT^*=T^*T$; **self-adjoint** means $T=T^*$; **unitary** means $T^*T=TT^*=I$; and a **projection**, in Rudin’s algebraic convention, means $T^2=T$. An algebraic projection need not be orthogonal; self-adjoint projections are the orthogonal ones, as shown in12.14.`,
-      idea: String.raw`Self-adjoint and unitary operators commute with their adjoints and are therefore normal. Idempotence splits $H$ into range and kernel algebraically, while self-adjointness makes the splitting orthogonal. Keeping these two meanings of projection separate is essential for the next results.`,
-      deps: ['fa-12.9'],
+      name: 'Projections in a Hilbert space',
+      statement: String.raw`An operator $P\in B(H)$ is a **projection** if $P^2=P=P^*$ (an orthogonal, or self-adjoint, projection). Then $\mathscr R(P)$ is closed, $\mathscr N(P)=\mathscr R(P)^\perp$, and $P$ is the orthogonal projection onto $\mathscr R(P)$ of 12.2. Conversely, the orthogonal projection onto any closed subspace is a projection in this sense. Idempotents that are not self-adjoint ($P^2=P\ne P^*$) are oblique projections.`,
+      idea: String.raw`For $P^2=P$, $H=\mathscr R(P)\oplus\mathscr N(P)$ algebraically; self-adjointness makes the two summands orthogonal by 12.10, since $\mathscr N(P)=\mathscr N(P^*)=\mathscr R(P)^\perp$. Then $\norm{Px}^2=(Px,x)\le\norm x^2$.`,
+      deps: ['fa-12.2', 'fa-12.10'],
       tags: ['projections', 'Hilbert space'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.11 (full statement and proof inspected)'],
+      verify: true,
     },
     {
-      num: '12.14',
-      kind: 'Theorem',
-      name: 'Equivalent conditions for an orthogonal projection',
-      statement: String.raw`For an algebraic projection $P\in B(H)$, $P^2=P$, the following are equivalent: $P=P^*$; $P$ is normal; $\mathscr R(P)=\mathscr N(P)^\perp$; and $(Px,x)=\|Px\|^2$ for every $x\in H$. Two self-adjoint projections $P,Q$ have orthogonal ranges exactly when $PQ=0$. In the two-line illustration, the oblique projection norm is $1/\sin\alpha$; this is an additional finite-dimensional computation.`,
-      idea: String.raw`Self-adjoint implies normal. For a normal projection,12.12 gives $\mathscr N(P)=\mathscr N(P^*)=\mathscr R(P)^\perp$, and the range is closed since it is $\mathscr N(I-P)$. An orthogonal range–kernel splitting gives $(Px,x)=\|Px\|^2$. This identity in turn makes $P$ and $P^*$ have the same quadratic form, hence they coincide by12.7. Finally $(Px,Qy)=(x,PQy)$ tests orthogonality of the two ranges.`,
+      num: '12.15',
+      kind: 'Proposition',
+      name: 'Idempotents: self-adjoint iff norm ≤ 1',
+      statement: String.raw`Let $P\in B(H)$ with $P^2=P\ne0$. The following are equivalent: (a) $P=P^*$; (b) $\mathscr N(P)\perp\mathscr R(P)$; (c) $\norm P=1$ (equivalently $\norm P\le1$); (d) $(Px,x)\ge0$ for all $x$. If $\mathscr R(P)$ and $\mathscr N(P)$ meet at angle $\alpha$, then $\norm P=1/\sin\alpha$.`,
+      idea: String.raw`(a)⇒(b) by 12.14. (b)⇒(c): $\norm{Px}^2\le\norm{Px}^2+\norm{(I-P)x}^2=\norm x^2$. (c)⇒(b): if $y\in\mathscr R(P)$ and $z\in\mathscr N(P)$ were not orthogonal, then $\norm{P(y+tz)}=\norm y>\norm{y+tz}$ for a suitable small $t$. The angle formula is a right-triangle computation in the plane spanned by the two lines.`,
       caption: String.raw`An idempotent on $\R^2$ projecting onto the line $\mathscr R(P)$ (green) along the line $\mathscr N(P)$ (orange); rotate either. The unit circle (grey) is mapped onto a segment of $\mathscr R(P)$ of half-length $\norm P=1/\sin\alpha$ (green bar). Drag $x$: $Px$ travels parallel to $\mathscr N(P)$. Only when the two lines are perpendicular is $P$ self-adjoint and $\norm P=1$.`,
-      deps: ['fa-12.11','fa-12.12','fa-12.4a','fa-12.7'],
+      deps: ['fa-12.14', 'fa-12.10'],
       tags: ['projections', 'idempotents'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.14 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const rS = v.slider('angle of $\\mathscr R(P)$', 0, 180, 20, { step: 1 });
@@ -211,14 +211,15 @@ If $T$ is normal, then $\mathscr N(T)=\mathscr N(T^*)$; $\mathscr R(T)$ is dense
       num: '12.16',
       kind: 'Theorem',
       name: 'Fuglede–Putnam–Rosenblum theorem',
+      credit: 'Fuglede, Putnam & Rosenblum, 1950',
       statement: String.raw`Suppose $M,N,T\in B(H)$, $M$ and $N$ are normal, and
 $$MT=TN .$$
 Then $M^*T=TN^*$. In particular (Fuglede), an operator that commutes with a normal operator $N$ also commutes with $N^*$.`,
       idea: String.raw`Iterating $MT=TN$ gives $p(M)T=Tp(N)$ for polynomials, hence $T=e^{-\bar\lambda M}Te^{\bar\lambda N}$ for all $\lambda\in\C$. Put $f(\lambda)=e^{\lambda M^*}Te^{-\lambda N^*}$. Because $M$ commutes with $M^*$ (normality), $f(\lambda)=U_1(\lambda)\,T\,U_2(\lambda)$ with $U_1=e^{\lambda M^*-\bar\lambda M}$ and $U_2=e^{\bar\lambda N-\lambda N^*}$, both unitary since their exponents are skew-adjoint. So $\norm{f(\lambda)}\le\norm T$: $f$ is a bounded entire $B(H)$-valued function, constant by Liouville, and its derivative at $0$ is $M^*T-TN^*=0$.`,
       caption: String.raw`Take $N=M$ and $T=M^2+M$, which commutes with $M$ ($MT=TM$). Fuglede's theorem says $T$ then also commutes with $M^*$ — if $M$ is normal. Here $M$ is a $3\times3$ matrix with eigenvalues you drag and a non-normal part $k$. The bars show the entries of $M^*T-TM^*$: they vanish exactly at $k=0$. Lower panel: $\norm{M^*T-TM^*}$ against $k$, with $\norm{MT-TM}=0$ throughout — the hypothesis $MT=TN$ alone is not enough without normality.`,
-      deps: ['fa-12.11','fa-3.32'],
+      deps: ['fa-12.11', 'rca-10.23'],
       tags: ['normal operators', 'commutativity'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.16 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const Mm = v.M;
         const kS = v.slider('non-normal part $k$', 0, 1.5, 0.6, { step: 0.01 });

@@ -1,5 +1,4 @@
 // Population Genetics & Evolution — Chapter 2 (part b): items 2.8–2.14
-import {replicateDriftPaths} from './drift-replicates.shared.js';
 import { clamp, memo, binom, binomPmf, wfNext, wfAbsorb, lsq, wfMatrix, evolve, kimuraDensity, kimuraMasses, fokkerPlanck } from './ch02.shared.js';
 
 /** Multinomial(n; f) by sequential binomials. */
@@ -87,9 +86,11 @@ It equals the census size $N_m+N_f$ only if the sexes are equal in number, and i
       kind: 'Phenomenon',
       name: 'Founder effects and bottlenecks',
       statement: String.raw`When a large, diverse population passes through a **bottleneck** — a few generations at small size $n$ — or a new population is founded by $n$ individuals, random sampling of the gene pool removes variation. Expected heterozygosity (gene diversity) is multiplied by $(1-1/2n)^d$ over $d$ generations at size $n$, a loss of about $d/2n$ for $n\gg1$. The number of alleles falls much faster than the heterozygosity, because alleles at low frequency are lost with probability $\approx(1-f)^{2n}$ when they are sampled once: a bottleneck of $n$ individuals typically retains only alleles with $f\gtrsim 1/2n$.`,
-      idea: String.raw`Heterozygosity is dominated by the common alleles, which survive a bottleneck of any size, and it falls by the single-generation sampling factor of 2.3 repeated $d$ times. Allelic richness counts every allele equally, and rare ones are numerous but have small frequency: an allele of frequency $f$ is absent from a sample of $2n$ copies with probability $(1-f)^{2n}\approx e^{-2nf}$, so most of the rare alleles disappear even when $n$ is large enough to keep most of the heterozygosity. This is why recovered populations look genetically depauperate in rare variants even when their present size is large (Mayr’s founder principle).`,
+      idea: String.raw`Heterozygosity is dominated by the common alleles, which survive a bottleneck of any size, and it falls by the single-generation sampling factor of 2.3 repeated $d$ times. Allelic richness counts every allele equally, and rare ones are numerous but have small frequency: an allele of frequency $f$ is absent from a sample of $2n$ copies with probability $(1-f)^{2n}\approx e^{-2nf}$, so most of the rare alleles disappear even when $n$ is large enough to keep most of the heterozygosity. This is why recovered populations look genetically depauperate in rare variants even when their present size is large (Mayr’s founder principle).
+
+For an allele at fixed source frequency f, independent sampling of $2n$ copies uses prob-2.1.1a to make its absence probability $(1-f)^{2n}$. This is the per-allele absence event; absence events for different alleles in the same fixed-size sample need not be independent. Repeated generations change frequencies and introduce further dependence, so this product is not a universal multi-generation extinction law.`,
       caption: String.raw`A population carries 20 alleles at one locus, most of them rare (grey outline = initial frequencies). Choose the size and length of the bottleneck: the coloured bars show one simulated population just after it. Right: expected remaining heterozygosity (green, theory $(1-1/2n)^d$) and the share of alleles still present (blue, from 150 simulated bottlenecks), as the bottleneck size varies. The marker shows your setting. **New run** redraws the left panel.`,
-      deps: ['popgen-2.7'],
+      deps: ['popgen-2.7','prob-2.1.1a'],
       refs: ['Gillespie'],
       credit: 'Ernst Mayr, 1942 (founder principle)',
       scope: String.raw`Neutral sampling, no mutation during the bottleneck, population recovers fast afterwards. The initial allele spectrum shown is illustrative (a Zipf-like distribution), not a measured one.`,
@@ -133,41 +134,44 @@ It equals the census size $N_m+N_f$ only if the sexes are equal in number, and i
       num: '2.10',
       kind: 'Phenomenon',
       name: 'Drift in replicate populations (Buri 1956)',
-      statement: String.raw`Peter Buri followed two series of *Drosophila melanogaster* cultures for 19 generations: 107 smaller-vial lines (I) and 105 larger-bottle lines (II), each founded with eight male and eight female heterozygotes for the eye-colour alleles $bw^{75}$ and $bw$, at frequency $\tfrac12$. The distribution of $bw^{75}$ frequency across the replicate lines spread out from a spike at $\tfrac12$, flattened, and piled up in the classes of loss and fixation, as the Wright–Fisher model predicts, but the experiments were not identical neutral replicates: series II rose to a mean frequency near 0.57 in its first four generations. Recipient-class variances gave average effective sizes $N_e\approx9$ for I and $11.5$ for II, both below the census 16.`,
-      idea: String.raw`Controlled replicate cultures let Buri compare sampling variation with selection and reproductive heterogeneity. A neutral model has conditional variance $p(1-p)/(2N_e)$ per generation and expected gene diversity $2p(1-p)$ declining by the factor $1-1/(2N_e)$, while its mean frequency remains constant. Buri’s original analysis also found frequency-dependent variance in series I and used a two-generation recurrence for actual genotype heterozygosity; that quantity is distinct from the allele-frequency diversity plotted here.`,
-      caption: String.raw`A neutral illustration using the chosen series’ initial line count and 32 census gene copies, all starting at 16 $bw^{75}$ copies; these are **new simulations, not Buri’s counts**. Drag the generation $t$ and watch the histogram of $bw^{75}$ copies per line flatten and pile up at 0 and 32. Right: relative gene diversity $H(t)/H(0)$, where $H=\langle2p(1-p)\rangle$, against the moment-matched neutral theory (green) and census-size theory (grey dashed). Lower $N_e$ speeds the spread; resample for another set of lines.`,
+      statement: String.raw`In series I, Peter Buri followed 107 laboratory populations of *Drosophila melanogaster*, each kept at 16 flies per generation (all started with 16 heterozygotes for two eye-colour alleles, $bw^{75}$ and $bw$, at frequency $\tfrac12$) for 19 generations. The distribution of $bw^{75}$ frequency across the replicate lines spread out from a spike at $\tfrac12$, flattened, and piled up in the classes of loss and fixation, as the Wright–Fisher model predicts, with the mean frequency staying near $\tfrac12$. The spread was somewhat faster than for 16 breeding flies, Buri estimated $N_e=9.0$ for series I and $N_e=11.5$ for the separate series II (Summary §7, p. 400), both below the census 16.`,
+      idea: String.raw`This experiment tests drift with replicated populations. All lines begin identical, so neutral sampling predicts divergence: the variance among lines grows by $p(1-p)/2N_e$ per generation (2.1) and heterozygosity decays as $(1-1/2N_e)^t$ (2.3), while the mean stays put (2.2). The observed recipient-class variances give $N_e=9.0$ for series I, below the census number of 16 — ordinary variation in family size and unequal fertility (2.6).`,
+      caption: String.raw`A Wright–Fisher approximation to Buri’s series I with 107 lines, started at frequency $1/2$, **not his original counts**. The simulated gene pool has $2N_e$ copies; frequencies are rounded onto the census 32-copy scale for display. Drag the generation $t$ and watch the histogram of $bw^{75}$ copies per line flatten and pile up at 0 and 32. Right: mean heterozygosity of the lines against theory for the chosen $N_e$ (green) and for census size 16 (grey dashed). Lower $N_e$ speeds the spread; resample for another set of lines.`,
       deps: ['popgen-2.3'],
-      refs: ['Buri (1956), pp. 368–369, 377–396 and summary pp. 400–401; Tables 7–8 and 17'],
+      refs: ['Buri (1956), Evolution 10:367–402, Table 7 and Summary §7; https://www.rpgroup.caltech.edu/embl_pboc_2023/assets/pdfs/buri1956.pdf'],
       credit: 'Peter Buri, 1956 (Evolution 10: 367–402)',
-      scope: String.raw`The historical values are checked against the complete original. The simulation keeps 32 census copies and inflates neutral sampling variance with a beta-binomial draw to match the selected $N_e$; it does not reproduce Buri’s sex-specific sampling, early frequency trend, genotype proportions or frequency-dependent $N_e$ in series I. The original heterozygote fraction begins at 100%, unlike gene diversity $2p(1-p)=0.5$ at $p=0.5$; the right panel normalises the latter to one.`,
+      scope: String.raw`Illustration by simulation of the published design; the lines are random, not the recorded data. The default $N_e=9$ is Buri’s estimate for series I, not the $11.5$ estimate for series II. A constant effective size is an approximation to his more heterogeneous experimental populations.`,
       tags: ['drift', 'experiment', 'Drosophila'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Genetic_drift#Experiment' },
       viz(v) {
-        const series=v.select('experimental series',[{value:'I',label:'I: 107 lines'},{value:'II',label:'II: 105 lines'}],'II',{onChange:s=>neS.set(s==='I'?9:11.5)});
-        const neS = v.slider('effective size $N_e$ of each line', 4, 16, 11.5, { step:.5 });
+        const neS = v.slider('effective size $N_e$ of each line', 4, 16, 9, { int: true });
         const tS = v.slider('generation $t$', 0, 19, 19, { int: true });
         let seed = 1; v.button('Resample lines', () => { seed++; });
-        const L = v.stage({ x: [-1, 33], y: [0, 0.4], axes: 'box', gutter: true, height: 320, xlabel: 'number of bw75 copies in a line (out of 32)', ylabel: 'share of simulated lines', title: 'Replicate lines at generation t' });
-        const Rg = v.stage({ x: [0, 19], y: [0, 1.05], axes: 'box', gutter: true, height: 320, xlabel: 'generation', ylabel: 'relative gene diversity H(t)/H(0)', title: 'Gene diversity of the lines', minWidth: 300 });
+        const L = v.stage({ x: [-1, 33], y: [0, 0.4], axes: 'box', gutter: true, height: 320, xlabel: 'number of bw75 copies in a line (out of 32)', ylabel: 'share of the 107 lines', title: 'Replicate lines at generation t' });
+        const Rg = v.stage({ x: [0, 19], y: [0, 1.05], axes: 'box', gutter: true, height: 320, xlabel: 'generation', ylabel: 'relative heterozygosity $H/H_0$', title: 'Heterozygosity of the lines', minWidth: 300 });
         const sim = memo();
         let info = {};
         v.render(() => {
-          const Ne = neS.value, n = 32, lines=series.value==='I'?107:105, t = tS.value;
-          const D = sim(`${lines}|${Ne}|${seed}`,()=>replicateDriftPaths(v.rng(1956+seed*17),lines,Ne));
+          const Ne = neS.value, n = 2 * Ne, t = tS.value;
+          const D = sim(`${Ne}|${seed}`, () => {
+            const r = v.rng(1956 + seed * 17), P = [];
+            for (let i = 0; i < 107; i++) { const a = [n / 2]; for (let g = 1; g <= 19; g++) { const k = a[g - 1]; a.push(k > 0 && k < n ? binom(r, n, k / n) : k); } P.push(a); }
+            return P;
+          });
           const cnt = new Float64Array(33), H = new Float64Array(20);
           let lo = 0, hi = 0, sum = 0;
-          D.forEach((a) => { const p = a[t] / n; cnt[Math.round(p * 32)]++; sum += p; if (a[t] === 0) lo++; if (a[t] === n) hi++; for (let g = 0; g <= 19; g++) { const q = a[g] / n; H[g] += 2 * q * (1 - q) / lines; } });
-          const ymax = Math.max(0.12, Math.max(...cnt) / lines * 1.15); L.setView([-1, 33], [0, ymax]);
-          cnt.forEach((c, k) => { if (c) { const end = k === 0 || k === 32; L.rect(k - 0.42, 0, k + 0.42, c / lines, { fill: end ? 'red' : 'accent', fillAlpha: 0.4, color: end ? 'red' : 'accent', width: 1 }); } });
+          D.forEach((a) => { const p = a[t] / n; cnt[Math.round(p * 32)]++; sum += p; if (a[t] === 0) lo++; if (a[t] === n) hi++; for (let g = 0; g <= 19; g++) { const q = a[g] / n; H[g] += 2 * q * (1 - q) / 107; } });
+          const ymax = Math.max(0.12, Math.max(...cnt) / 107 * 1.15); L.setView([-1, 33], [0, ymax]);
+          cnt.forEach((c, k) => { if (c) { const end = k === 0 || k === 32; L.rect(k - 0.42, 0, k + 0.42, c / 107, { fill: end ? 'red' : 'accent', fillAlpha: 0.4, color: end ? 'red' : 'accent', width: 1 }); } });
           L.vline(16, { color: 'muted', dash: true, alpha: 0.7 });
-          Rg.fn((g) => Math.pow(1 - 1 / (2*Ne), g), { domain: [0, 19], n: 60, color: 'green', width: 3 });
+          Rg.fn((g) => Math.pow(1 - 1 / n, g), { domain: [0, 19], n: 60, color: 'green', width: 3 });
           Rg.fn((g) => Math.pow(1 - 1 / 32, g), { domain: [0, 19], n: 60, color: 'muted', width: 2, dash: true });
           Rg.dots(Array.from(H, (h, g) => [g, h / 0.5]), { r: 3.5, color: 'accent' });
           Rg.vline(t, { color: 'gold', width: 1.5 });
-          info = { Ne, lines, t, lo, hi, mean: sum / lines, seg: lines - lo - hi, Hn: H[19] / 0.5, th: Math.pow(1 - 1 / (2*Ne), 19), thC: Math.pow(1 - 1 / 32, 19) };
+          info = { Ne, t, lo, hi, mean: sum / 107, seg: 107 - lo - hi, Hn: H[19] / 0.5, th: Math.pow(1 - 1 / n, 19), thC: Math.pow(1 - 1 / 32, 19) };
         });
         v.legend([['accent', 'simulated lines', { dot: true }], ['green', '$(1-1/2N_e)^t$'], ['muted', 'census 16', { dash: true }]]);
-        v.readout(() => `${info.lines} simulated lines, generation ${info.t}: ${info.lo} lines lost $bw^{75}$, ${info.hi} fixed it, ${info.seg} still segregating; mean frequency ${v.fix(info.mean, 3)}.\nRelative gene diversity at generation 19: simulated ${v.fix(info.Hn, 3)}, theory ${v.fix(info.th, 3)} for $N_e=${info.Ne}$, ${v.fix(info.thC, 3)} for 16 flies.`);
+        v.readout(() => `Generation ${info.t}: ${info.lo} lines lost $bw^{75}$, ${info.hi} fixed it, ${info.seg} still segregating; mean frequency ${v.fix(info.mean, 3)}.\nHeterozygosity at generation 19: simulated ${v.fix(info.Hn, 3)}, theory ${v.fix(info.th, 3)} for $N_e=${info.Ne}$, ${v.fix(info.thC, 3)} for 16 flies.`);
       },
     },
 

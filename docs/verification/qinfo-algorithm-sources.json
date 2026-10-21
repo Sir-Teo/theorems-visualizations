@@ -1,0 +1,38 @@
+[
+  {
+    "name": "repeater",
+    "url": "https://people.ee.duke.edu/~jungsang/ECE590_01/BriegelPRL1998.pdf",
+    "sha256": "f1196b41425c8e0b7498cf751e0900fd1716e28e9e944dd54feb405b66be2bff",
+    "read": "Complete original paper, PRL81(1998)5932\u20135935; PDF1\u20134. Equations1\u20136, purification-loop and sequential-memory/nesting condition, figures1\u20132. Printed5933 rendered/inspected."
+  },
+  {
+    "name": "sk",
+    "url": "https://arxiv.org/pdf/quant-ph/0505030",
+    "sha256": "4cd7033be2dd4265b228ff0a834d07715558b398b8fa16d8365392638fd4ea7e",
+    "read": "Complete \u00a7\u00a72\u20134 pp2\u20139: Def1/Theorem1, algorithm, compressed-vs-explicit output cost, balanced commutator and complete Lemma1 perturbation proof eq1\u201320. Also read \u00a75 pp10\u201313 and historical \u00a76 but unnecessary original-priority claims removed. PhysicalPDFpage=printedpage; rendered/inspected p8."
+  },
+  {
+    "name": "aaronson",
+    "url": "https://arxiv.org/pdf/quant-ph/0406196",
+    "sha256": "ef9e472536b380b60c365ca6a03b92680a43d725cfe5f8189a8325fc16bc11ef",
+    "read": "Complete \u00a7\u00a7II\u2013III pp3\u20135, Theorem1, representation, rowsum and H/S/CNOT/random/deterministic measurement rules; full Proposition3 deterministic-outcome proof. v5(18Jun2008) author preprint of2004article."
+  },
+  {
+    "name": "gottesman",
+    "url": "https://arxiv.org/pdf/quant-ph/9807006",
+    "sha256": "4c5f0b3c818cb85f8dd0290e697d96370981720a6283ee4fd7db002b7e3baad8",
+    "read": "Complete \u00a7\u00a72\u20135 pp3\u201311; \u00a78 pp17\u201319, including original Theorem1(Knill theorem), generator evolution, measurement/classical-control summary. Not claiming unrelated quantum-code/protocol sections fully read."
+  },
+  {
+    "name": "cleve",
+    "url": "https://arxiv.org/pdf/quant-ph/9708016",
+    "sha256": "2f4e608d20c79dc4e7997618a20601500ed6660cfd2f5232a27df6f786895a3f",
+    "read": "Complete \u00a7\u00a71\u20133 pp1\u20137: eq1.2 controlled-unitary phase kickback, reversible oracle eq2.1/3.3 and phase-oracle eq2.2/3.5 derivations. Not claiming unrelated later algorithm sections fully read."
+  },
+  {
+    "name": "trotter-childs",
+    "url": "https://arxiv.org/pdf/1912.08854",
+    "sha256": "c76e2980dee799253ac3a5fa6176ac9005f78c844c1243dc2e579433137c7965",
+    "read": "Complete \u00a75.1 pp37\u201339, equations139\u2013152: exact integral error identities, first/second-order bounds and full proofs of Propositions15\u201316. Also read discussion pp40\u201343, but removed unnecessary higher-order/asymptotic-history material. PhysicalPDFpage=printedpage."
+  }
+]

@@ -302,7 +302,7 @@ The middle step is associativity — that is where the proof really works. In th
 (3) $(gh)^n=(h^{-1}g^{-1})^{-n}$; and if $G$ is abelian, $(gh)^n=g^nh^n$.
 In additive notation these read $mg+ng=(m+n)g$, $m(ng)=(mn)g$ and $m(g+h)=mg+mh$.`,
       idea: String.raw`For $m,n\ge0$, (1) and (2) just count factors, using associativity to drop brackets; negative exponents reduce to these because $g^{-1}$ cancels $g$ (Proposition 3.19 handles the inverse of a product), and an induction on $|n|$ makes it rigorous. (3) is $(gh)^{-1}=h^{-1}g^{-1}$ raised to the power $-n$. The law $(gh)^n=g^nh^n$ needs the $g$'s and $h$'s to be moved past each other, which is exactly commutativity.`,
-      caption: String.raw`Click a chip to choose $g$ (shift-click for $h$). The powers of $g$ go round a cycle: $m$ steps (blue) then $n$ more (orange) land on $g^{m+n}$, whatever the signs. The table compares $(gh)^n$, $g^nh^n$ and $(h^{-1}g^{-1})^{-n}$ for $n=-3,\ldots,3$: the first and last always agree. The middle one agrees in every row exactly when $g$ and $h$ commute; individual rows, such as $n=0,1$, can agree even when they do not — try $D_4$ with $g=r$, $h=s$.`,
+      caption: String.raw`Click a chip to choose $g$ (shift-click for $h$). The powers of $g$ go round a cycle: $m$ steps (blue) then $n$ more (orange) land on $g^{m+n}$, whatever the signs. The table compares $(gh)^n$, $g^nh^n$ and $(h^{-1}g^{-1})^{-n}$ for $n=-3,\ldots,3$: the first and last always agree, the middle one only when $g$ and $h$ commute — try $D_4$ with $g=r$, $h=s$.`,
       deps: ['alg-3.19', 'alg-2.1'],
       refs: ['Judson §3.2'],
       tags: ['groups', 'exponents'],

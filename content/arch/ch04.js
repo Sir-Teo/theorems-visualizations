@@ -1,4 +1,3 @@
-import { groinHeight } from './assessment.shared.js';
 // Architecture & Structural Form — Chapter 4: Vaults and domes (items 4.1–4.5; 4.6–4.11 are in ch04-b.js)
 //
 // Sources checked (Oct 2026):
@@ -11,10 +10,11 @@ import { groinHeight } from './assessment.shared.js';
 //   Everything is recomputed numerically from vertical and radial equilibrium (see ch04.shared.js: membrane()).
 //   Cracked domes as sliced arches: Heyman, The Stone Skeleton (CUP 1995) and "Equilibrium of shell structures" (OUP 1977) — cited at book level;
 //   the thrust-line check of a gore is computed with the chapter 3 engine, not copied from a table.
-//   Groin and rib vaults: load model (webs lean on the groins) derived and integrated numerically in ch04.shared.js: crossVault();
-//   it is an idealisation, labelled as such in each item.
+//   Groin and rib vaults: corrected max-surface geometry, authored vertical-load accounting and
+//   a conditional plane-rib candidate are isolated in vault-audit.js; no complete 3D force network is claimed.
 
 import { crossVault, domeSlice, sphereMid, profile, membrane, hoopZero, deg, archFromLine, bestFit, centralLine, thrustLine, thrustRange, thrustLP, hinges, drawThrust, clamp, f2, placeLabels, blockAt } from './ch04.shared.js';
+import { vaultHeight, vaultAccounting, vaultRib, validVaultCamera, canonicalVaultYaw } from './vault-audit.js';
 
 const kN = (x, d = 3) => `${Math.abs(x) < 0.05 ? 0 : x.toLocaleString('en-US', { maximumSignificantDigits: d })} kN`;
 
@@ -26,165 +26,114 @@ export default {
   items: [
     // ───────────────────────────────────────────────────────────────────────────────────── 4.1
     {
-      num: '4.1',
-      kind: 'Concept',
-      name: 'Barrel and groin vaults',
-      statement: String.raw`A **barrel vault** is an arch extruded along a line: every slice across it is the same arch, so its weight and its horizontal thrust arrive on the two walls as a *continuous* line load, in this simple load path; an opening requires another member to transfer the load around it. A **groin (cross) vault** is the intersection of two barrel vaults of equal height at right angles, keeping the upper envelope of the two ceiling surfaces where they cross. The four webs meet along two diagonal curves, the groins. Each web is a set of short arches that lean on the groins, so the weight of the vault is gathered into the groins and carried to the four corner piers as *concentrated* forces, each with an outward diagonal thrust. The walls between the piers carry almost nothing from the vault and can be opened up.`,
-      idea: String.raw`Cut a barrel vault into slices and each slice is an arch (arch-3.2) whose reactions go straight to the wall below. In a groin vault a slice of one web stops at the groin, so it cannot reach the wall: it presses on the groin, which is itself an arch whose span is the diagonal of the bay (the funicular argument of arch-1.5 gives its thrust). In the illustrated vertical-load projection, web strips are short near the crown and longer near the springings, so the assigned vertical load grows toward each end of a groin. The thrust of the groin arch sits in the vertical plane of the diagonal, so it leaves the pier at 45° to the walls. The price of freeing the walls is that the piers and the buttressing behind them must be strong and must be exactly where the groins land.`,
-      caption: String.raw`Switch between **barrel** and **groin**, and add bays. The plan shows where the vault's weight lands: a band of load along the full length of both walls for the barrel, circles at the four (or $2n+2$) piers for the groin, with the diagonal thrust drawn as arrows. Open up the walls with the slider: for the barrel the load concentrates on what remains of the wall, for the groin nothing changes. The vault is a semicircular one of radius 3 m and thickness 0.3 m, with unit weight 22 kN/m³; the numbers are illustrative.`,
-      deps: ['arch-3.2'],
-      see: ['arch-4.2'],
-      tags: ['vaults', 'load path'],
-      refs: ['Heyman (1966), The stone skeleton, pp. 269–276 (vault geometry, half-bay weight and limitations of membrane/sliced models); doi:10.1016/0020-7683(66)90018-7'],
-      scope: String.raw`Idealised statics: each web is cut into slices that lean on the groin, the groin is a semi-elliptical arch with its thrust line through the crown, and the walls carry only the weight of the webs they directly support (neglected). Horizontal reactions of the web arches and interactions between slices are omitted. The displayed diagonal thrust is a vertical-load surrogate, not a complete statically admissible solution for a real vault (arch-4.11).`,
-      credit: 'Roman concrete vaulting (groin vaults widely used in imperial Roman buildings)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Groin_vault' },
+      num: '4.1', kind: 'Concept', name: 'Barrel and groin vaults',
+      statement: String.raw`A **barrel vault** extrudes an arch along a straight line. A square **groin vault** joins four cylindrical webs along two diagonal groins. For the equal semicircular cylinders shown here, centred on $[-R,R]^2$, its upper surface is
+$$f(s)=\sqrt{R^2-s^2},$$
+$$z=\max\{f(x),f(y)\}.$$
+Each perimeter edge is an open semicircular arch; each diagonal is a semiellipse of rise $R$ and span $2\sqrt2R$. Geometry alone does not determine how a masonry vault distributes its forces. Parallel barrel strips and web strips supported by the groins are two **chosen models**, with continuous wall reactions in the first and corner weight allocation in the second.`,
+      idea: String.raw`Give the surface the areal weight $w=\gamma t$. Integrating cylindrical arc length gives the barrel area $2\pi R^2$ and groin area $4(\pi-2)R^2$. In our groin allocation, a web strip is a short arch between two groins. Its curved length is $2R\arcsin(|s|/R)$; assigning half its weight to either endpoint and adding the adjacent web gives $dW=q(s)\,ds$ at the diagonal point $(s,\pm s)$: the density is per metre of the coordinate $s$.
+$$q(s)=2wR\arcsin(|s|/R).$$
+It vanishes at the crown and increases towards the corners. Its integral is half the bay weight, so symmetry assigns a quarter to each corner. The orange arrows additionally use a three-hinged diagonal **plane-arch candidate under those vertical loads only**, as in arch-1.5. They omit the horizontal web reactions; this accounting is not a complete three-dimensional equilibrium network. Block's alternative networks show why a real vault need not follow a unique skeleton.`,
+      caption: String.raw`Compare both surfaces, one to three bays, and wall openings. Circles show the chosen corner weight allocation; the barrel bands show the unchanged model's required continuous line support. Orange arrows indicate the conditional plane-arch thrust, on a common scale within each plan. The opening slider changes the wall drawing only: it supplies no lintel, redistribution or safety calculation. Drag the space view to rotate it. Here $R=3$ m, $t=0.3$ m and $\gamma=22$ kN/m³.`,
+      deps: ['arch-3.2', 'arch-1.5'], see: ['arch-4.2', 'arch-4.11'], tags: ['vaults', 'load path'], refs: [],
+      scope: String.raw`Authored square-bay geometry and thin-surface areal-weight accounting. The corner allocation and vertical-only plane arches are conditional examples; horizontal web forces, shell equilibrium, support adequacy, finite-thickness intersections and construction are not solved. Openings are geometry, not permission to remove a supporting wall.`,
+      credit: 'Source discussion: Philippe Block (2009), §§2.1.2–2.1.3, 4.1.1 and 6.2; Santiago Huerta (2009), pp.842–843. The formulas and allocation here are an authored illustration.',
+      verify: false,
+      links: { source: 'https://web.mit.edu/masonry/papers/Block_PhD_2009.pdf', discussion: 'https://oa.upm.es/2497/1/HUERTA_PON_2009_01A.pdf' },
       viz(v) {
-        const R = 3, T = 0.3, GAM = 22, HW = 2.4, cv = crossVault(R, T, GAM);
+        const R = 3, HW = 2.4, cv = vaultAccounting();
         const kind = v.select('vault', [{ value: 'barrel', label: 'barrel vault' }, { value: 'groin', label: 'groin vault' }], 'groin');
         const nb = v.slider('bays along the nave', 1, 3, 2, { int: true });
-        const open = v.slider('wall openings (share of wall length)', 0, 0.8, 0, { step: 0.05 });
-        const S3 = v.stage({ x: [-2, 2], y: [-1.5, 1.7], equal: true, axes: false, height: 380, weight: 1.25, title: 'the vault in space' });
-        const sc = v.scene3(S3, { yaw: -0.75, pitch: 0.42, axes: false });
-        const PL = v.stage({ x: [-2, 20], y: [-6.2, 6.2], equal: true, axes: false, height: 300, weight: 1, minWidth: 300, title: 'plan: where the weight lands' });
-        let info = {};
+        const open = v.slider('wall openings (share of wall length)', 0, .8, 0, { step: 'any', decimals: 6, fmt: x => Number(x.toPrecision(6)).toString() });
+        const S3 = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 350, minWidth: 240, title: 'space: geometry, not a force network' });
+        const sc = v.scene3(S3, { yaw: -.75, pitch: .42, axes: false });
+        v.shareState('vault camera', { get: () => ({ yaw: canonicalVaultYaw(sc.yaw), pitch: sc.pitch }), validate: validVaultCamera, set: d => { sc.yaw = d.yaw; sc.pitch = d.pitch; } });
+        const PL = v.stage({ x: [-2, 20], y: [-5.2, 5.2], equal: true, axes: false, height: 300, minWidth: 240, title: 'plan: chosen vertical weight allocation' });
+        let info;
         v.render(() => {
-          const n = nb.value, g = kind.value === 'groin', k = 1 / (R * (0.55 + 0.45 * n)) * 1.05, cxm = n * R;
-          const P = (x, y, z) => [(x - cxm) * k, y * k, (z - 0.15 * R) * k];
-          const zf = (x, y) => (g ? groinHeight(R, x - R, y) : Math.sqrt(Math.max(0, R * R - y * y)));
-          const M = 14;
-          sc.begin();
-          // floor and walls
-          sc.poly([P(0, -R, -HW), P(2 * R * n, -R, -HW), P(2 * R * n, R, -HW), P(0, R, -HW)], { fill: 'muted', fillAlpha: 0.06, color: 'faint', width: 1 });
-          for (const sy of [-1, 1]) for (let b = 0; b < n; b++) {
-            const x0 = 2 * R * b, x1 = x0 + 2 * R, w = open.value * 2 * R, xa = x0 + R - w / 2, xb = x0 + R + w / 2, z0 = -HW, z1 = 0;
-            const wall = (a, c, lo, hi) => sc.poly([P(a, sy * R, lo), P(c, sy * R, lo), P(c, sy * R, hi), P(a, sy * R, hi)], { fill: 'muted', fillAlpha: 0.12, color: 'muted', width: 0.8, alpha: 0.5 });
-            if (w < 0.01) wall(x0, x1, z0, z1);
-            else { wall(x0, xa, z0, z1); wall(xb, x1, z0, z1); wall(xa, xb, z0, z0 + 0.25 * HW); wall(xa, xb, z1 - 0.25 * HW, z1); }
+          const n = nb.value, groin = kind.value === 'groin', cloud = [], P = (x,y,z) => { const p = [x-n*R,y,z]; cloud.push(p); return p; };
+          sc.yaw = canonicalVaultYaw(sc.yaw); sc.begin();
+          sc.poly([P(0,-R,-HW),P(2*R*n,-R,-HW),P(2*R*n,R,-HW),P(0,R,-HW)], { fill: 'muted', fillAlpha: .04, color: 'faint' });
+          for (const sy of [-1,1]) for (let b=0;b<n;b++) {
+            const x=2*R*b, a=x+R*(1-open.value), c=x+R*(1+open.value);
+            const wall=(l,r,lo,hi)=>sc.poly([P(l,sy*R,lo),P(r,sy*R,lo),P(r,sy*R,hi),P(l,sy*R,hi)],{fill:'muted',fillAlpha:.12,color:'muted',width:.7});
+            if (!open.value) wall(x,x+2*R,-HW,0);
+            else { wall(x,a,-HW,0); wall(c,x+2*R,-HW,0); wall(a,c,-HW,-.75*HW); wall(a,c,-.25*HW,0); }
           }
-          // vault surface
-          for (let b = 0; b < n; b++) for (let i = 0; i < M; i++) for (let j = 0; j < M; j++) {
-            const x0 = 2 * R * b + (2 * R * i) / M, x1 = x0 + (2 * R) / M, y0 = -R + (2 * R * j) / M, y1 = y0 + (2 * R) / M;
-            const xl = (x) => x - 2 * R * b, f = (x, y) => zf(xl(x), y);
-            const xm = (x0 + x1) / 2 - 2 * R * b - R, ym = (y0 + y1) / 2;
-            const web = g && Math.abs(xm) > Math.abs(ym);
-            sc.poly([P(x0, y0, f(x0, y0)), P(x1, y0, f(x1, y0)), P(x1, y1, f(x1, y1)), P(x0, y1, f(x0, y1))], { fill: g ? (web ? 'accent' : 'orange') : 'accent', fillAlpha: 0.2 + ((i + j) % 2) * 0.07, edge: true, color: g ? (web ? 'accent' : 'orange') : 'accent', alpha: 0.35, width: 0.7 });
+          const G=16;
+          for(let b=0;b<n;b++) for(let i=0;i<G;i++) for(let j=0;j<G;j++) {
+            const x=-R+2*R*i/G,y=-R+2*R*j/G,dx=2*R/G;
+            const ps=[[x,y],[x+dx,y],[x+dx,y+dx],[x,y+dx]], color=groin&&Math.abs(x+dx/2)>Math.abs(y+dx/2)?'orange':'accent';
+            sc.poly(ps.map(([a,c])=>P(2*R*b+R+a,c,vaultHeight(a,c,R,groin?'groin':'barrel'))),{fill:color,fillAlpha:.22,edge:true,color,width:.55,alpha:.3});
           }
-          if (g) for (let b = 0; b < n; b++) for (const sg of [-1, 1]) {
-            const pts = Array.from({ length: 41 }, (_, i) => { const s = -R + (2 * R * i) / 40; return P(2 * R * b + R + s, sg * s, Math.sqrt(Math.max(0, R * R - s * s))); });
-            sc.path(pts, { color: 'red', width: 2.4 });
-          }
-          for (let b = 0; b <= n; b++) for (const sy of [-1, 1]) sc.line(P(2 * R * b, sy * R, 0), P(2 * R * b, sy * R, -HW), { color: 'ink', width: 3.2 }, 1);
-          sc.flush();
-          // plan
-          const adj = (b) => (b === 0 || b === n ? 1 : 2);
-          const pierV = (b) => adj(b) * cv.pier, wallW = (cv.Wbarrel / 2) / (2 * R) / (1 - open.value);
-          PL.setView([-2.2, 6 * n + 2.2], [-6.2, 6.2]);
-          for (let b = 0; b < n; b++) PL.rect(2 * R * b, -R, 2 * R * b + 2 * R, R, { color: 'muted', fill: 'muted', fillAlpha: 0.05, width: 1 });
-          for (let b = 0; b <= n; b++) for (const sy of [-1, 1]) PL.rect(2 * R * b - 0.28, sy * R - 0.28, 2 * R * b + 0.28, sy * R + 0.28, { fill: 'ink', fillAlpha: 0.22, color: 'ink' });
-          if (g) {
-            for (let b = 0; b < n; b++) for (const sg of [-1, 1]) PL.line(2 * R * b, -sg * R, 2 * R * b + 2 * R, sg * R, { color: 'red', width: 1.6, alpha: 0.75 });
-            const arrowScale = 1 / 60;
-            for (let b = 0; b <= n; b++) for (const sy of [-1, 1]) {
-              const px = 2 * R * b, py = sy * R;
-              let fx = 0, fy = 0;
-              for (let c = 0; c < n; c++) { const cx = 2 * R * c + R; if (Math.abs(cx - px) <= R + 1e-9) { const dx = px - cx, dy = py, d = Math.hypot(dx, dy); fx += (cv.Hd * dx) / d; fy += (cv.Hd * dy) / d; } }
-              PL.circle(px, py, 0.16 * Math.sqrt(pierV(b) / 100) * 1.3, { fill: 'accent', fillAlpha: 0.35, color: 'accent', width: 1.6 });
-              PL.arrow(px, py, px + fx * arrowScale * 1.3, py + fy * arrowScale * 1.3, { color: 'orange', width: 2.4, head: 8 });
-              PL.text(`${Math.round(pierV(b))}`, px, py - sy * 1.15, { size: 11, color: 'accent', align: 'center' });
+          if(groin) for(let b=0;b<n;b++) for(const sign of[-1,1]) sc.path(Array.from({length:49},(_,i)=>{const s=-R+2*R*i/48;return P(2*R*b+R+s,sign*s,Math.sqrt(Math.max(0,R*R-s*s)));}),{color:'red',width:2.3});
+          for(let b=0;b<=n;b++) for(const sy of[-1,1]) sc.line(P(2*R*b,sy*R,0),P(2*R*b,sy*R,-HW),{color:'ink',width:3},1);
+          const projected=cloud.map(sc.P), mx=Math.max(...projected.map(p=>Math.abs(p[0]))), my=Math.max(...projected.map(p=>Math.abs(p[1])));
+          S3.setView([-mx*1.18-.15,mx*1.18+.15],[-my*1.18-.15,my*1.18+.15]); sc.flush();
+          PL.setView([-1.5,2*R*n+1.5],[-5.2,5.2]);
+          for(let b=0;b<n;b++) PL.rect(2*R*b,-R,2*R*(b+1),R,{color:'muted',fill:'muted',fillAlpha:.04,width:1});
+          for(let b=0;b<=n;b++) for(const sy of[-1,1]) PL.rect(2*R*b-.22,sy*R-.22,2*R*b+.22,sy*R+.22,{fill:'ink',fillAlpha:.2,color:'ink'});
+          if(groin) {
+            for(let b=0;b<n;b++) for(const sign of[-1,1]) PL.line(2*R*b,-sign*R,2*R*(b+1),sign*R,{color:'red',width:1.3,alpha:.65});
+            for(let b=0;b<=n;b++) for(const sy of[-1,1]) {
+              const adj=b===0||b===n?1:2, fx=b===0?-1:b===n?1:0, fy=adj*sy, x=2*R*b,y=sy*R;
+              PL.circle(x,y,.18*Math.sqrt(adj),{fill:'accent',fillAlpha:.4,color:'accent',width:1.5});
+              PL.arrow(x,y,x+.48*fx,y+.48*fy,{color:'orange',width:2,head:6});
+              PL.text(`${Math.round(adj*cv.corner)}`,x,y-sy*.85,{size:11,color:'accent',align:'center'});
             }
-          } else {
-            const sc2 = 0.045;
-            for (const sy of [-1, 1]) for (let b = 0; b < n; b++) {
-              const x0 = 2 * R * b, w = open.value * 2 * R, segs = w < 0.01 ? [[x0, x0 + 2 * R]] : [[x0, x0 + R - w / 2], [x0 + R + w / 2, x0 + 2 * R]];
-              for (const [a, c] of segs) PL.rect(a, sy * R, c, sy * R + sy * wallW * sc2 * 1.0, { fill: 'accent', fillAlpha: 0.35, color: 'accent', width: 1.2 });
-              if (w >= 0.01) PL.line(x0 + R - w / 2, sy * R, x0 + R + w / 2, sy * R, { color: 'faint', dash: [3, 3] });
-              for (const xa of [x0 + 0.5 * R, x0 + 1.5 * R]) PL.arrow(xa, sy * R, xa, sy * (R + cv.Hbarrel * 0.07), { color: 'orange', width: 1.8, head: 6 });
-            }
-            PL.text(`${f2(wallW, 1)} kN/m`, 6 * n / 2, R + 2.9, { size: 12, color: 'accent', align: 'center' });
+          } else for(const sy of[-1,1]) for(let b=0;b<n;b++) {
+            const x=2*R*b; PL.rect(x,sy*R,x+2*R,sy*(R+.5),{fill:'accent',fillAlpha:.25,color:'accent',width:1});
+            for(const u of[.5,1.5]) PL.arrow(x+u*R,sy*(R+.55),x+u*R,sy*(R+1.15),{color:'orange',width:1.7,head:6});
+            if(open.value) PL.line(x+R*(1-open.value),sy*R,x+R*(1+open.value),sy*R,{color:'red',width:2.5,dash:[3,3]});
           }
-          info = { wallW, pierMax: Math.max(...Array.from({ length: n + 1 }, (_, b) => pierV(b))), n, g };
-          v.legend(g ? [['accent', 'webs of one family'], ['orange', 'webs of the other'], ['red', 'groins'], ['accent', 'pier load, kN (circles); thrust (arrows)', { dot: true }]] : [['accent', 'wall load, kN/m', { area: true }], ['orange', 'thrust']]);
+          info={n,groin,opening:open.value};
+          v.legend(groin?[['accent','corner weight, kN',{dot:true}],['red','groins'],['orange','conditional plane thrust']]:[['accent','required line support',{area:true}],['red','opening: transfer not solved',{dash:true}],['orange','plane-strip thrust']]);
         });
-        v.readout(() => info.g
-          ? `Groin vault, ${info.n} bay(s) of $6\\times6$ m: the vault weighs ${kN(cv.Wgroin)} per bay and all of it reaches the **piers**: ${kN(cv.pier)} per bay-corner (interior piers serve two bays, up to ${kN(info.pierMax)}). The vertical-load surrogate gives ${kN(cv.Hd)} of diagonal thrust at 45° to the walls. Wall load from the vault: **0 kN/m**, in this idealized allocation; the plot does not assess an actual opening.`
-          : `Barrel vault, ${info.n} bay(s): the vault weighs ${kN(cv.Wbarrel)} per bay and loads each wall with **${f2(info.wallW, 1)} kN/m** over the whole length (more where the wall is opened), with a continuous thrust of ${f2(cv.Hbarrel, 1)} kN/m pushing the walls outward.`);
+        v.readout(()=>info.groin
+          ? `${info.n} bay(s): **${kN(cv.Wgroin)} per bay**, ${kN(cv.corner)} per bay-corner; an interior pier receives two such weight shares. One diagonal receives ${kN(cv.Wgroin/2)}. The vertical-only three-hinged candidate has $H=${f2(cv.Hdiagonal,2)}$ kN along that diagonal. Horizontal web reactions and complete 3D equilibrium are omitted. Wall openings ${(100*info.opening).toFixed(0)}%: **no support-safety conclusion**.`
+          : `${info.n} bay(s): **${kN(cv.Wbarrel)} per bay**; the unchanged strip model requires ${f2(cv.wall,2)} kN/m vertically along each wall and plane-strip thrust ${f2(cv.Hbarrel,2)} kN/m. Opening ${(100*info.opening).toFixed(0)}% of a wall requires an additional transfer/support model; this drawing supplies none.`);
       },
     },
 
     // ───────────────────────────────────────────────────────────────────────────────────── 4.2
     {
-      num: '4.2',
-      kind: 'Concept',
-      name: 'Rib vaults and the Gothic skeleton',
-      statement: String.raw`A **rib vault** is a groin vault in which the groins, and usually the arches along the edges of the bay, are built as separate stone arches (ribs) first, and the surfaces between them (the webs or severies) are laid afterwards as a thin infill. The webs can then be thin and light, because they only have to span between ribs; an idealized **skeleton** load path assigns the web loads to the ribs and then to the piers. Actual load sharing also depends on the web shell and its boundary restraints. Since the loads arrive at the piers only at the rib springings, the walls between piers need not carry the vault, and in Gothic churches the thrust of the nave vault is then taken by flying buttresses (arch-3.10) placed at the pier heads.`,
-      idea: String.raw`The statics is that of arch-4.1: the web is a set of slices leaning on the diagonal ribs, which are arches (arch-3.2) loaded by the web and by their own weight. The rib has to be about as deep as any arch of its span (arch-3.7: roughly a tenth of the radius), and the web adds to that only a moderate amount, but this comparison does not imply that most of a particular vault’s mass lies in its ribs; the reconstruction reports the actual model load split. Because ribs and webs are different structural elements, the ribs can be built first on timber centering and the webs laid on them with little formwork. The skeleton reading of Gothic architecture, in which every stone has a structural job, goes back to nineteenth-century writers such as Viollet-le-Duc; historians now argue about how far medieval builders thought this way, so treat it as a description of the statics, not of intentions.`,
-      caption: String.raw`The left panel is one bay with its ribs; switch **webs in place** off to lift the infill and see the skeleton alone. The right panel is the diagonal rib as an arch, loaded by the web slices that lean on it (blue arrows) and by its own weight, with its most central thrust line (green, orange where it leaves the stone). Thicken the web and the rib must become deeper to contain the line; thin the web, or lift it off, and a shallower rib is enough, though never a slim one, since a rib is an arch of 8.5 m span. All sizes are illustrative (bay $6\times6$ m, rib width 0.3 m, unit weight 22 kN/m³).`,
-      deps: ['arch-4.1', 'arch-3.10'],
-      see: ['arch-3.5', 'arch-3.9'],
-      tags: ['gothic', 'ribs'],
-      refs: ['Heyman (1966), The stone skeleton, pp. 269–276 (rib-vault statics and sliced safe solutions); doi:10.1016/0020-7683(66)90018-7'],
-      scope: String.raw`The same slice model as arch-4.1: the web leans on the diagonal rib only (the edge ribs and the wall are neglected), the rib is a plane arch with radial joints under vertical loads, no sliding. The web arches’ horizontal forces are omitted, so these rib forces/depths do not certify the equilibrium of the whole vault.`,
-      credit: 'rib vaults developed in the late 11th–12th centuries (for example at Durham Cathedral, begun 1093) and spread through Gothic architecture',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Rib_vault' },
+      num: '4.2', kind: 'Concept', name: 'Rib vaults and the Gothic skeleton',
+      statement: String.raw`A **rib vault** has distinct arches along its groins and often along its bay edges, with webs between them. A skeleton of ribs is one useful structural interpretation, not a universal measured load path. Ribs and webs can interact in different ways, and alternative compression networks can carry load towards the corners. Here we impose the vertical web-weight allocation of arch-4.1 on a single diagonal rib and test **one specified plane-arch candidate**. This does not determine the actual force distribution of a Gothic vault.`,
+      idea: String.raw`The diagonal is a semiellipse, not a semicircle: its half-span is $\sqrt2R$ and its rise is $R$. Divide its mean curve into 24 blocks, offset their joints normally by half the chosen rib depth, and compute each polygon's area and centroid. Integrate each web-load bin and its first moment, rather than replacing the whole web by a crown load. Symmetry gives $V=W/2$; moment balance of the left half fixes $H$ for a candidate passing through the mean springings and crown (arch-1.5). At every joint, balance moments to locate the resultant and check compressive force and containment (arch-3.2). A candidate leaving the rib rules out that candidate only. No universal depth-to-radius rule or monotone thickness conclusion follows.`,
+      caption: String.raw`Lift off the webs, vary their areal-weight thickness, and change the rib depth. The space view shows mean rib curves with illustrative stroke widths; the plane view shows the actual 24 model blocks. Blue arrows are imposed vertical web loads, normalized to a common visible scale. Green segments connect joint-resultant points whose endpoint checks pass; orange marks a failed endpoint check. Support and crown dots mark the specified candidate's mean-line crossings. Drag the space view to rotate. Bay $6\times6$ m, rib width 0.3 m, masonry unit weight 22 kN/m³.`,
+      deps: ['arch-4.1', 'arch-3.4'], see: ['arch-3.5', 'arch-3.9', 'arch-3.10'], tags: ['gothic', 'ribs'], refs: [],
+      scope: String.raw`Conditional two-dimensional rigid-block model: vertical loads only; no tension, unlimited compressive strength and no sliding are assumed. The web's horizontal reactions, edge-rib loads, shell compatibility, support motion, finite strength and construction sequence are omitted. All joint checks refer to this polygonal model and a numerical tolerance, not a masonry design certificate or proof of collapse.`,
+      credit: 'Source discussion: Philippe Block (2009), §6.2, and Santiago Huerta (2009), pp.842–843. The 24-block candidate is an authored illustration, not a reconstruction of a particular building.',
+      verify: false,
+      links: { source: 'https://web.mit.edu/masonry/papers/Block_PhD_2009.pdf', discussion: 'https://oa.upm.es/2497/1/HUERTA_PON_2009_01A.pdf' },
       viz(v) {
-        const R = 3, GAM = 22, bw = 0.3, Nb = 24;
-        const web = v.toggle('webs in place', true);
-        const tw = v.slider('web thickness (m)', 0.08, 0.5, 0.15, { step: 0.01 });
-        const dr = v.slider('rib depth (m)', 0.1, 1.0, 0.7, { step: 0.01 });
-        const S3 = v.stage({ x: [-1.7, 1.7], y: [-1.2, 1.5], equal: true, axes: false, height: 330, weight: 1, minWidth: 280, title: 'one bay: ribs and webs' });
-        const sc = v.scene3(S3, { yaw: -0.7, pitch: 0.38, axes: false });
-        const A = v.stage({ x: [-4.9, 4.9], y: [-0.7, 3.7], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 320, title: 'the diagonal rib as an arch' });
-        const pts = Array.from({ length: Nb + 1 }, (_, k) => { const s = -R + (2 * R * k) / Nb; return [Math.SQRT2 * s, Math.sqrt(Math.max(0, R * R - s * s))]; });
-        const sAt = (k) => -R + (2 * R * k) / Nb;
-        const webLoad = (t) => Array.from({ length: Nb }, (_, k) => {
-          let P = 0; const m = 10;
-          for (let i = 0; i < m; i++) { const s = sAt(k) + ((sAt(k + 1) - sAt(k)) * (i + 0.5)) / m; P += 2 * GAM * t * R * Math.asin(Math.min(1, Math.abs(s) / R)) * ((sAt(k + 1) - sAt(k)) / m); }
-          return P;
-        });
-        let M = null;
-        const model = () => {
-          const t = web.value ? tw.value : 0, WL = webLoad(t), mk = (d) => archFromLine(pts, d, GAM * bw);
-          const g = mk(dr.value), loads = WL.map((P, k) => ({ x: (pts[k][0] + pts[k + 1][0]) / 2, P, k })).filter((l) => l.P > 0);
-          const c = centralLine(g, loads), fit = bestFit(mk, () => loads, {}, 0.005, 2, 22);
-          const u = c ? c.u : fit ? fit.u : [1, 1, 0], tl = thrustLine(g, loads, u);
-          const Wweb = WL.reduce((a, b) => a + b, 0);
-          return { g, loads, tl, ok: !!c, eps: c ? c.eps : 0, dmin: fit ? fit.t : NaN, Wweb, Wrib: g.W, u, WL };
-        };
-        v.render(() => {
-          const m = M = model();
-          // skeleton in space
-          const k = 0.5 / R, P = (x, y, z) => [(x - R) * k * 1.3, y * k * 1.3, (z - 0.35 * R) * k * 1.3];
-          sc.begin();
-          sc.poly([P(0, -R, -1.2), P(2 * R, -R, -1.2), P(2 * R, R, -1.2), P(0, R, -1.2)], { fill: 'muted', fillAlpha: 0.05, color: 'faint', width: 1 });
-          if (web.value) {
-            const G = 12;
-            for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
-              const x0 = (2 * R * i) / G, x1 = x0 + (2 * R) / G, y0 = -R + (2 * R * j) / G, y1 = y0 + (2 * R) / G;
-              const z = (x, y) => groinHeight(R, x - R, y);
-              const web1 = Math.abs((x0 + x1) / 2 - R) > Math.abs((y0 + y1) / 2);
-              sc.poly([P(x0, y0, z(x0, y0)), P(x1, y0, z(x1, y0)), P(x1, y1, z(x1, y1)), P(x0, y1, z(x0, y1))], { fill: web1 ? 'accent' : 'orange', fillAlpha: 0.12 + 0.5 * tw.value * ((i + j) % 2 ? 0.8 : 1), edge: false });
-            }
+        const R=3, web=v.toggle('webs in place',true), tw=v.slider('web thickness (m)',.08,.5,.15,{step:'any',decimals:6,fmt:x=>Number(x.toPrecision(6)).toString()}), dr=v.slider('rib depth (m)',.1,1,.7,{step:'any',decimals:6,fmt:x=>Number(x.toPrecision(6)).toString()});
+        const S3=v.stage({x:[-4,4],y:[-4,4],equal:true,axes:false,height:330,minWidth:240,title:'space: mean rib curves and webs'}), sc=v.scene3(S3,{yaw:-.7,pitch:.38,axes:false});
+        v.shareState('vault camera',{get:()=>({yaw:canonicalVaultYaw(sc.yaw),pitch:sc.pitch}),validate:validVaultCamera,set:d=>{sc.yaw=d.yaw;sc.pitch=d.pitch;}});
+        const A=v.stage({x:[-5,5],y:[-.7,4.3],equal:true,axes:false,height:330,minWidth:240,title:'plane: one prescribed thrust candidate'});
+        let model;
+        v.render(()=>{
+          const m=model=vaultRib({web:web.value,webThickness:tw.value,ribDepth:dr.value}), cloud=[], P=(x,y,z)=>{const p=[x,y,z-.8];cloud.push(p);return p;};sc.yaw=canonicalVaultYaw(sc.yaw);sc.begin();
+          if(web.value) for(let i=0;i<16;i++) for(let j=0;j<16;j++) {
+            const x=-R+2*R*i/16,y=-R+2*R*j/16,d=2*R/16,c=Math.abs(x+d/2)>Math.abs(y+d/2)?'orange':'accent';
+            sc.poly([[x,y],[x+d,y],[x+d,y+d],[x,y+d]].map(([a,b])=>P(a,b,vaultHeight(a,b))),{fill:c,fillAlpha:.14+.3*tw.value,edge:false});
           }
-          const rib = (arr, w, c) => sc.path(arr, { color: c, width: w });
-          for (const sg of [-1, 1]) rib(Array.from({ length: 41 }, (_, i) => { const s = -R + (2 * R * i) / 40; return P(R + s, sg * s, Math.sqrt(Math.max(0, R * R - s * s))); }), 1.6 + dr.value * 7, 'red');
-          for (const x of [0, 2 * R]) rib(Array.from({ length: 31 }, (_, i) => { const y = -R + (2 * R * i) / 30; return P(x, y, Math.sqrt(Math.max(0, R * R - y * y))); }), 1.4 + dr.value * 4, 'ink');
-          for (const y of [-R, R]) rib(Array.from({ length: 31 }, (_, i) => { const x = (2 * R * i) / 30; return P(x, y, Math.sqrt(Math.max(0, R * R - (x - R) ** 2))); }), 1.4 + dr.value * 4, 'ink');
-          for (const x of [0, 2 * R]) for (const y of [-R, R]) sc.line(P(x, y, 0), P(x, y, -1.2), { color: 'ink', width: 3.4 }, 1);
-          sc.flush();
-          // the diagonal rib
-          const g = m.g;
-          g.blocks.forEach((b, i) => A.poly(b.poly, { fill: 'red', fillAlpha: 0.14 + (i % 2) * 0.07, color: 'ink', width: 0.8, alpha: 0.8 }));
-          drawThrust(v, A, m.tl, { color: 'green', bad: 'orange', width: 2.6 });
-          m.loads.forEach((l) => { const y = (pts[l.k][1] + pts[l.k + 1][1]) / 2 + 0.2, len = 0.05 + 0.03 * l.P; A.arrow(l.x, y + len, l.x, y + 0.03, { color: 'accent', width: 1.6, head: 5, alpha: 0.85 }); });
-          for (const x of [-R * Math.SQRT2, R * Math.SQRT2]) A.dot(x, 0, { r: 5, color: 'ink' });
-          v.legend([['red', 'rib (diagonal)'], ['green', 'thrust line'], ['accent', 'web load on the rib']]);
+          for(const sign of[-1,1]) sc.path(Array.from({length:49},(_,i)=>{const s=-R+2*R*i/48;return P(s,sign*s,Math.sqrt(Math.max(0,R*R-s*s)));}),{color:'red',width:1.6+dr.value*7});
+          for(const a of[-R,R]) for(const swap of[false,true]) sc.path(Array.from({length:49},(_,i)=>{const s=-R+2*R*i/48;return P(...(swap?[s,a]:[a,s]),Math.sqrt(Math.max(0,R*R-s*s)));}),{color:'ink',width:1.4+dr.value*4});
+          for(const x of[-R,R])for(const y of[-R,R])sc.line(P(x,y,0),P(x,y,-1.2),{color:'ink',width:3.4},1);
+          const ps=cloud.map(sc.P),mx=Math.max(...ps.map(p=>Math.abs(p[0]))),my=Math.max(...ps.map(p=>Math.abs(p[1])));S3.setView([-mx*1.2-.2,mx*1.2+.2],[-my*1.2-.2,my*1.2+.2]);sc.flush();
+          const maxP=Math.max(...m.loads.map(l=>l.P)), arrows=m.loads.filter(l=>l.P>0).map(l=>{const y=(m.pts[l.k][1]+m.pts[l.k+1][1])/2+.2;return[l.x,y+.15+.7*l.P/maxP,y];});
+          const ext=[...m.g.blocks.flatMap(b=>b.poly),...m.joints.map(j=>j.point),...arrows.flatMap(([x,hi,lo])=>[[x,hi],[x,lo]])],xmin=Math.min(...ext.map(p=>p[0])),xmax=Math.max(...ext.map(p=>p[0])),ymin=Math.min(...ext.map(p=>p[1])),ymax=Math.max(...ext.map(p=>p[1]));
+          A.setView([xmin-.55,xmax+.55],[ymin-.55,ymax+.55]);
+          m.g.blocks.forEach((b,i)=>A.poly(b.poly,{fill:'red',fillAlpha:.13+(i%2)*.07,color:'ink',width:.8}));
+          for(let i=1;i<m.joints.length;i++){const a=m.joints[i-1],b=m.joints[i];A.line(...a.point,...b.point,{color:a.inside&&b.inside?'green':'orange',width:2.5});}
+          arrows.forEach(([x,hi,lo])=>A.arrow(x,hi,x,lo,{color:'accent',width:1.4,head:4,alpha:.8}));
+          for(const i of[0,12,24])A.dot(...m.pts[i],{r:4,color:'ink'});
+          v.legend([['red','24 rib blocks',{area:true}],['green','candidate: endpoint checks pass'],['orange','candidate: endpoint check fails'],['accent','imposed vertical web loads']]);
         });
-        v.readout(() => {
-          const m = M, tot = m.Wweb + m.Wrib, st = m.ok ? `the vertical-load rib model **admits a thrust line**: the line keeps ${f2(m.eps, 3)} m from the nearest edge` : `the vertical-load rib model **does not admit** a thrust line: it needs depth $\\ge ${f2(m.dmin, 2)}$ m`;
-          return `Web ${web.value ? `${f2(tw.value, 2)} m thick` : 'lifted off'}: the diagonal rib carries ${kN(m.Wweb)} of web plus its own ${kN(m.Wrib)} (rib = ${f2((100 * m.Wrib) / tot, 0)}% of the load). With depth ${f2(dr.value, 2)} m, ${st}; the smallest sufficient depth is $d_{\\min} = ${f2(m.dmin, 2)}$ m. Springing reaction: $H = ${f2(m.u[0], 1)}$ kN, $V = ${f2(m.u[1], 1)}$ kN.`;
+        v.readout(()=>{
+          const m=model;
+          return `${web.value?`Web ${f2(tw.value,2)} m`:'Web lifted off'}: one diagonal receives **${kN(m.Wweb)}** of web weight plus ${kN(m.Wrib)} of model rib weight. Depth ${f2(dr.value,2)} m: ${m.contained?'**this candidate passes all 25 joint checks**':'**this candidate leaves a joint**, by up to '+f2(m.excess,3)+' m; another candidate has not been searched'}. Reaction at each springing: $H=${f2(m.H,2)}$ kN, $V=${f2(m.V,2)}$ kN. Joint-fraction tolerance $10^{-8}$; largest moment residual ${m.residual.toExponential(1)} kN·m. This is a vertical-load plane model, not a 3D vault safety assessment.`;
         });
       },
     },
@@ -199,7 +148,7 @@ $$N_\varphi=-\frac{w a}{1+\cos\varphi},\qquad N_\theta=w a\Big(\frac1{1+\cos\var
 (compression negative). For a vertical load $p$ per unit area of *plan* (snow) the forces are $N_\varphi=-pa/2$ and $N_\theta=-\tfrac12 pa\cos2\varphi$. The meridional force is always compressive; the hoop force starts as compression at the crown and, for a deep dome, changes sign lower down.`,
       idea: String.raw`Cut the dome along a parallel circle and keep the cap above the cut. Its weight must be balanced by the vertical components of $N_\varphi$ around the circle of radius $a\sin\varphi$, which fixes $N_\varphi$ (this is the equilibrium of arch-1.2 applied to a cap). The weight of a small element has a component normal to the surface that $N_\varphi$ and $N_\theta$ must balance together, as the tension of a balloon balances pressure, and that equation gives $N_\theta$ once $N_\varphi$ is known. A dome is therefore a statically determinate system of arches (the meridians) held in place by rings (the parallels), which is why one can read off whether it can stand without tension (arch-4.4).`,
       caption: String.raw`Choose a load, set the opening angle of the dome, and drag the gold handle along the section: the plot shows $N_\varphi$ (blue) and $N_\theta$ (red) in units of $wa$ (or $pa$), and the dome is coloured along the meridian, blue where the hoop force is compression and red where it is tension. The dashed curves are the closed-form formulas; the full curves are computed numerically from equilibrium of every cap, so the two agree. With a lantern the crown is open and a ring load is added at its edge.`,
-      deps: ['arch-3.2', 'vcalc-1.6'],
+      deps: ['arch-3.2'],
       see: ['arch-4.4', 'arch-6.1'],
       tags: ['dome', 'shells', 'membrane'],
       refs: ['Heyman'],

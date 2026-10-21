@@ -1,6 +1,9 @@
+import {exactCouplingTail,graphPeriod} from './ch05-recurrence.audit.js';
 // Probability: Theory and Examples (Durrett) — Chapter 5, part Z1: periodicity, convergence and tail fields (§5.6-5.7)
 import { CLS, gcd, gcdAll, retTimes, ringChord, circlePos, drawGraph, cyclicChain, adjOfP, vecP, tvd, stationary, stepFrom, bfs, reflWalk, fx } from './ch05-z.shared.js';
 import { logChoose } from './ch04-z.shared.js';
+
+export const COUPLING_AP = [[0.2, 0.5, 0.3, 0, 0, 0], [0, 0.1, 0.4, 0.5, 0, 0], [0.3, 0, 0, 0.3, 0.4, 0], [0, 0, 0.5, 0, 0.2, 0.3], [0.4, 0, 0, 0.3, 0.3, 0], [0.5, 0, 0, 0, 0.2, 0.3]];
 
 const markovDef = 'prob-5.1.1a';
 
@@ -57,18 +60,18 @@ where $1/\infty:=0$. So if $y$ is positive recurrent the long-run fraction of ti
       num: '5.6.2a',
       kind: 'Definition',
       name: 'Period of a state',
-      statement: String.raw`The **period** of a state $x$ is $d_x=\gcd\{n\ge1:\ p^n(x,x)>0\}$, the greatest common divisor of the lengths of closed paths through $x$ (taken as undefined, or $\infty$, if there are none). The state is **aperiodic** if $d_x=1$.`,
+      statement: String.raw`For a recurrent state $x$, its **period** is $d_x=\gcd\{n\ge1:\ p^n(x,x)>0\}$, the greatest common divisor of the lengths of closed paths through $x$. The state is **aperiodic** if $d_x=1$.`,
       idea: String.raw`Only the pattern of which return times are possible matters, not their probabilities, so the period can be read off the transition graph. Return to $x$ in $m$ steps and in $n$ steps implies return in $m+n$ steps, so the set of return times is closed under addition. A self-loop gives return time $1$ at once; an odd cycle added to an even one makes the gcd odd, and coprime cycle lengths drive it to $1$.`,
-      caption: String.raw`A directed ring $0\to1\to\dots\to L-1\to0$ with an optional chord from $M-1$ back to $0$ (a second cycle of length $M$) and an optional self-loop at $0$. The bar chart lists every $n\le40$ at which a closed path of length $n$ from $0$ exists. Move $M$ or add the loop and watch the gcd collapse to $1$.`,
+      caption: String.raw`A directed ring $0\to1\to\dots\to L-1\to0$ with an optional chord from $M-1$ back to $0$ when $M<L$ (a second cycle of length $M$; values $M\ge L$ add no chord) and an optional self-loop at $0$. The bar chart lists every $n\le40$ at which a closed path of length $n$ from $0$ exists. Move $M$ or add the loop and watch the gcd collapse to $1$.`,
       deps: [markovDef],
       see: ['stoch-1.6'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.6, p. 312 (definition before Example 5.6.3)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, unnumbered period definition before Example 5.6.3, p. 312.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=320' },
       tags: ['periodicity'],
       scope: String.raw`Durrett defines the period through $\{n\ge1: p^n(x,x)>0\}$; the page uses the same gcd definition, with $p^n$ replaced by its support (existence of a path).`,
       viz(v) {
         const L = v.slider('ring length $L$', 2, 9, 6, { int: true });
-        const M = v.slider('chord length $M$', 1, 9, 9, { int: true });
+        const M = v.slider('chord parameter $M$', 1, 9, 9, { int: true });
         const loop = v.toggle('self-loop at 0', false);
         const G = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 320, title: 'transition graph' });
         const B = v.stage({ x: [0, 41], y: [0, 1.4], height: 320, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`$n$ with $p^n(0,0)>0$` });
@@ -83,7 +86,7 @@ where $1/\infty:=0$. So if $y$ is positive recurrent the long-run fraction of ti
         v.readout(() => {
           const l = L.value, m = Math.min(M.value, l), rt = retTimes(ringChord(l, m, loop.value), 0, 40), d = gcdAll(rt);
           const cyc = [l, ...(m < l ? [m] : []), ...(loop.value ? [1] : [])];
-          return `Cycle lengths through $0$: ${cyc.join(', ')}. First return times: ${rt.slice(0, 8).join(', ')}…\n$d_0=\\gcd=${d}$${d === 1 ? ' — aperiodic' : ''}.`;
+          return `Effective chord parameter $\\min(M,L)=${m}$; ${m===l?'no additional chord':'chord present'}. Cycle lengths through $0$: ${cyc.join(', ')}. First return times: ${rt.slice(0, 8).join(', ')}…\n$d_0=\\gcd=${d}$${d === 1 ? ' — aperiodic' : ''}.`;
         });
       },
     },
@@ -149,18 +152,17 @@ where $1/\infty:=0$. So if $y$ is positive recurrent the long-run fraction of ti
       num: '5.6.6',
       kind: 'Theorem',
       name: 'Convergence theorem (coupling)',
-      statement: String.raw`Let $p$ be irreducible, aperiodic, with a stationary distribution $\pi$. Then for every initial state $x$ and all $y$,
+      statement: String.raw`Let $p$ be an irreducible, aperiodic transition matrix on a countable state space, with a stationary distribution $\pi$. Then for every initial state $x$ and all $y$,
 $$p^n(x,y)\to\pi(y)\quad(n\to\infty),$$
 and, in fact, $\sum_y|p^n(x,y)-\pi(y)|\to0$. More precisely, if $(X_n,Y_n)$ are independent copies of the chain run until they first meet at $T$ and move together afterwards, with $X_0=x$ and $Y_0\sim\pi$, then $\|p^n(x,\cdot)-\pi\|_{TV}\le P(T>n)$.`,
       idea: String.raw`The product chain on pairs has the stationary distribution $\pi\times\pi$ so it is recurrent (5.5.10); aperiodicity of $p$ (via 5.6.5) makes the product chain irreducible, so the two copies meet almost surely. After the meeting time the copy started at $x$ has the same law as the one started at $\pi$, which is stationary at every time. Hence $|P(X_n\in B)-\pi(B)|\le P(T>n)\to0$.`,
-      links: { thesis: 'https://numdam.org/item/THESE_1938__204__1_0/' },
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.6.6 and coupling proof, pp. 313–315'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
-      caption: String.raw`Left: the exact total variation distance from $\pi$ (green) and the simulated coupling tail $P(T>n)$ (orange, 1500 runs) for the chain started at state $0$; the true coupling tail bounds the green curve; the sampled orange curve has Monte Carlo error. Right: one coupled pair, with the meeting time marked. Switch to the periodic chain: the independent copies may sit in different classes forever, $P(T>n)$ stalls at about $\tfrac12$, and the distance does not tend to $0$.`,
+      refs: ['Durrett, fifth edition, Theorem 5.6.6 and coupling proof, pp. 313–315.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=321' },
+      caption: String.raw`Left: the exact total variation distance from $\pi$ (green) and the coupling tail $P(T>n)$ from the finite killed product-chain matrix (orange), with estimates from 1500 runs in gold for the chain started at state $0$; the theoretical tail bounds total variation. Gold estimates have sampling error and may cross the exact curves. Values below $10^{-4}$ are clipped at the log-axis floor and identified in the readout. Right: one coupled pair, with the meeting time marked. Switch to the periodic chain: the independent copies may sit in different classes forever, $P(T>n)$ stalls at about $\tfrac12$, and the distance does not tend to $0$.`,
       deps: ['prob-5.6.5', 'prob-5.5.10', 'prob-5.3.1'],
       see: ['stoch-4.7', 'stoch-5.7'],
       tags: ['convergence', 'coupling'],
-      scope: String.raw`Needs irreducible, aperiodic and a stationary distribution. The attribution to Doeblin concerns the coupling idea for finite chains; the exact form of the theorem is the textbook's.`,
+      scope: String.raw`The theorem concerns countable state spaces and requires irreducibility, aperiodicity, and a stationary probability distribution. The demo has six states; matrix recursions compute the coupling tail without sampling, while the gold estimate uses a separate finite simulation. Historical priority is not asserted.`,
       viz(v) {
         const mode = v.select('chain', [{ value: 'ap', label: 'aperiodic' }, { value: 'per', label: 'period 2' }], 'ap');
         const nS = v.slider('$n$', 0, 30, 6, { int: true });
@@ -168,7 +170,7 @@ and, in fact, $\sum_y|p^n(x,y)-\pi(y)|\to0$. More precisely, if $(X_n,Y_n)$ are 
         const L = v.stage({ x: [0, 30], y: [1e-4, 1.2], ylog: true, height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`distance to $\pi$` });
         const R = v.stage({ x: [0, 30], y: [-0.5, 5.5], height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`a coupled pair $(X_n,Y_n)$` });
         const NS = 6, NM = 30;
-        const AP = [[0.2, 0.5, 0.3, 0, 0, 0], [0, 0.1, 0.4, 0.5, 0, 0], [0.3, 0, 0, 0.3, 0.4, 0], [0, 0, 0.5, 0, 0.2, 0.3], [0.4, 0, 0, 0.3, 0.3, 0], [0.5, 0, 0, 0, 0.2, 0.3]];
+        const AP = COUPLING_AP;
         const chains = {};
         const build = (m) => {
           if (chains[m]) return chains[m];
@@ -179,7 +181,7 @@ and, in fact, $\sum_y|p^n(x,y)-\pi(y)|\to0$. More precisely, if $(X_n,Y_n)$ are 
           const draw = () => { let u = r(), c = 0; for (let j = 0; j < NS; j++) { c += pi[j]; if (u < c) return j; } return NS - 1; };
           for (let k = 0; k < RUNS; k++) { let x = 0, y = draw(), T = x === y ? 0 : Infinity; for (let n = 1; n <= NM && T === Infinity; n++) { x = stepFrom(P, x, r); y = stepFrom(P, y, r); if (x === y) T = n; } if (T <= NM) for (let n = T; n <= NM; n++) meet[n]++; cand.push(T); }
           const tail = Array.from({ length: NM + 1 }, (_, n) => 1 - meet[n] / RUNS);
-          return (chains[m] = { P, pi, tv, tail });
+          return (chains[m] = { P, pi, tv, tail, exactTail:exactCouplingTail(P,pi,0,NM) });
         };
         const pair = () => {
           const { P, pi } = build(mode.value), r = v.rng(seed * 17 + 1); const draw = () => { let u = r(), c = 0; for (let j = 0; j < NS; j++) { c += pi[j]; if (u < c) return j; } return NS - 1; };
@@ -190,17 +192,17 @@ and, in fact, $\sum_y|p^n(x,y)-\pi(y)|\to0$. More precisely, if $(X_n,Y_n)$ are 
         v.render(() => {
           const c = build(mode.value), n = nS.value;
           L.path(c.tv.map((t, i) => [i, Math.max(1e-4, t)]), { color: 'green', width: 2.2 });
-          L.path(c.tail.map((t, i) => [i, Math.max(1e-4, t)]), { color: 'orange', width: 2.2 });
+          L.path(c.exactTail.map((t,i)=>[i,Math.max(1e-4,t)]),{color:'orange',width:2.2});c.tail.forEach((t,i)=>L.dot(i,Math.max(1e-4,t),{color:'gold',r:2.5}));
           c.tv.forEach((t, i) => L.dot(i, Math.max(1e-4, t), { color: 'green', r: 2.5 }));
           L.vline(n, { color: 'gold', width: 1.4, dash: true });
           const q = pair();
           R.path(q.X.map((s, i) => [i, s]), { color: 'accent', width: 2 });
-          R.path(q.Y.map((s, i) => [i, s + 0.08]), { color: 'orange', width: 2, dash: [6, 4] });
+          R.path(q.Y.map((s, i) => [i, s]), { color: 'orange', width: 2, dash: [6, 4] });
           if (q.T >= 0) { R.vline(q.T, { color: 'gold', width: 1.6, dash: true }); R.text('meet', q.T + 0.3, 5.1, { color: 'gold', size: 12 }); }
           else R.text('no meeting yet', 1, 5.1, { color: 'red', size: 12 });
         });
-        v.legend([['green', '$\\|p^n(0,\\cdot)-\\pi\\|_{TV}$'], ['orange', '$P(T>n)$ (simulated)'], ['accent', '$X_n$ from $0$'], ['orange', '$Y_n$ from $\\pi$', { dash: true }]]);
-        v.readout(() => { const c = build(mode.value), n = nS.value; return `At $n=${n}$: exact distance $${fx(c.tv[n], 4)}$; sampled $P(T>n)\\approx${fx(c.tail[n], 4)}\\pm${fx(2*Math.sqrt(c.tail[n]*(1-c.tail[n])/1500),4)}$ (two standard errors). The theoretical bound uses the true tail.${mode.value === 'per' ? ' The chain has period 2: the distance does not tend to 0.' : ''}`; });
+        v.legend([['green', '$\\|p^n(0,\\cdot)-\\pi\\|_{TV}$'], ['orange','$P(T>n)$, product-chain recursion'],['gold','1500-run estimate'], ['accent', '$X_n$ from $0$'], ['orange', '$Y_n$ from $\\pi$', { dash: true }]]);
+        v.readout(() => { const c=build(mode.value),n=nS.value,se=Math.sqrt(c.tail[n]*(1-c.tail[n])/1500);return `At $n=${n}$: distance $${fx(c.tv[n],6)}\\le P(T>n)=${fx(c.exactTail[n],6)}$ (matrix recursion). Estimate $${fx(c.tail[n],4)}$, estimated standard error $${fx(se,4)}$ (pointwise). Values below $10^{-4}$ lie at the positive log-axis floor.${mode.value==='per'?' The period-2 chain need not couple from opposite classes; convergence to the stationary law fails.':''}`; });
       },
     },
     {
@@ -289,40 +291,38 @@ while $p^n(x,y)=0$ whenever $n\not\equiv r\pmod d$. In particular $p^n(x,y)$ has
       num: '5.7.3',
       kind: 'Theorem',
       name: 'Tail σ-field of a periodic recurrent chain',
-      statement: String.raw`Let $p$ be an irreducible recurrent chain of period $d$ with cyclic classes $C_0,\dots,C_{d-1}$. Up to null sets under any initial distribution, the tail $\sigma$-field is
-$$\mathcal T=\sigma\big(\{X_0\in C_r\}:0\le r<d\big).$$
-Thus every tail event is a union of starting-class events. If the initial distribution is concentrated on one cyclic class, the tail field is trivial, even when $d>1$; aperiodicity guarantees triviality for every initial distribution.`,
-      idea: String.raw`With a fixed initial state, successive return excursions are i.i.d.; a tail event is invariant under finitely many permutations of these excursions, so Hewitt–Savage makes its probability $0$ or $1$. Within a cyclic class, reachability at compatible times makes that value identical for every starting state. Under a general initial distribution only the starting cyclic class can remain as tail information. Conversely that class can be recovered from arbitrarily late observations, so its events belong to the tail field. This argument uses recurrence and does not require positive recurrence.`,
-      caption: String.raw`Thirty paths from random starting states, each plotted as the *tail label* $\kappa_n-n \bmod d$ against $n$ (slightly separated vertically). Every path is a flat line: the label is fixed from the start and can be read off at any later time. Right: the frequency of each label against the starting-class frequency. Switch on the shortcut edge and the structure breaks: the labels wander and the tail is trivial.`,
-      deps: ['prob-5.7.1', 'prob-2.5.1a'],
-      credit: 'Orey; proof of Blackwell and Freedman, 1964 (as credited by Durrett)',
+      statement: String.raw`Let $p$ be an irreducible recurrent chain on a countable state space of period $d$ with cyclic classes $C_0,\dots,C_{d-1}$. The tail $\sigma$-field $\mathcal T=\bigcap_n\sigma(X_n,X_{n+1},\dots)$ is generated (up to null sets) by the $d$ events $A_r=\{X_n\in C_{(r+n)\bmod d}\text{ for all }n\}$, which are disjoint and exhaust the space. For any initial distribution, the tail events are precisely unions of these cyclic-class events up to null sets. Thus the tail is trivial when the initial distribution is concentrated on one cyclic class, even for a periodic chain. If the initial law charges all cyclic classes, it is trivial if and only if $d=1$.`,
+      idea: String.raw`The cyclic-class label $\kappa_n-n\bmod d$ is constant and recoverable from every future, hence tail-measurable. For a fixed starting state, recurrent excursions are i.i.d.; tail events lie in their exchangeable field, so Hewitt–Savage makes them trivial. Irreducibility and aperiodicity of $p^d$ within a class transfer the same zero-one value between starting states in that class. Therefore a tail event can only select a union of initial cyclic classes. This argument requires recurrence, not a stationary probability distribution; the positive-recurrent coupling theorem alone would not justify the null-recurrent case.`,
+      caption: String.raw`Thirty paths from the chosen initial law, each plotted as the *tail label* $\kappa_n-n \bmod d$ against $n$ (slightly separated vertically). Without the shortcut, every path is a flat line: the label is fixed from the start and can be read off at any later time. Right: the frequency of each label against the starting-class frequency. Choose an initial law in class $0$ or a fixed state: all true tail labels are then constant $0$, and the tail is trivial despite periodicity. With the shortcut edge, the actual period becomes $1$; the plotted original-partition labels can wander, but are no longer true tail labels. Triviality follows from the theorem, not from finite wandering.`,
+      deps: ['prob-5.7.1', 'prob-2.5.1a', 'prob-2.5.4', 'prob-5.2.5'],
       tags: ['tail sigma-field', 'periodicity'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.7.3 and proof, pp. 318–319'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
-      scope: String.raw`Recurrence suffices. Tail triviality for a periodic chain depends on its initial distribution: only classes given positive initial mass contribute tail atoms.`,
+      refs: ['Durrett, fifth edition, Theorem 5.7.3 and three-case proof, pp. 318–319.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=326' },
+      scope: String.raw`Recurrence is the source hypothesis; positive recurrence is not needed. The displayed finite chains are irreducible, so they are recurrent. Tail triviality depends on the initial law as well as the period. A finite-time original-partition label need not become independent of the starting state exactly.`,
       viz(v) {
         const dS = v.select('period $d$', [2, 3, 4].map((d) => ({ value: d, label: String(d) })), 3);
+        const initial=v.select('initial law',[{value:'all',label:'uniform over all states'},{value:'class0',label:'uniform within class 0'},{value:'state0',label:'fixed state 0'}],'all');
         const brk = v.toggle('add a shortcut edge', false);
         let seed = 1; v.button('New paths', () => { seed++; });
         const L = v.stage({ x: [0, 40], y: [-0.7, 4], height: 340, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`tail label $(\kappa_n-n)\bmod d$` });
         const R = v.stage({ x: [0, 5], y: [0, 0.6], height: 340, axes: 'box', gutter: true, xlabel: 'label $r$', title: 'frequencies', minWidth: 220, weight: 0.7 });
         let key = '', D = null;
         const get = () => {
-          const k = dS.value + '|' + brk.value + '|' + seed; if (k === key) return D; key = k;
+          const k = dS.value + '|' + initial.value + '|' + brk.value + '|' + seed; if (k === key) return D; key = k;
           const d = dS.value, ch = cyclicChain(d, d === 4 ? 2 : 3, v.rng(seed * 3 + 1), brk.value), r = v.rng(seed * 101 + 9), paths = [];
-          for (let i = 0; i < 30; i++) { let x = Math.floor(r() * ch.n); const st = ch.cls[x], tr = [(ch.cls[x]) % d]; const lab = [st]; for (let n = 1; n <= 40; n++) { x = stepFrom(ch.P, x, r); lab.push(((ch.cls[x] - n) % d + d) % d); } paths.push({ st, lab }); }
-          D = { d, paths }; return D;
+          for (let i = 0; i < 30; i++) { let x=initial.value==='all'?Math.floor(r()*ch.n):initial.value==='class0'?d*Math.floor(r()*(ch.n/d)):0; const st = ch.cls[x], tr = [(ch.cls[x]) % d]; const lab = [st]; for (let n = 1; n <= 40; n++) { x = stepFrom(ch.P, x, r); lab.push(((ch.cls[x] - n) % d + d) % d); } paths.push({ st, lab }); }
+          D = { d, paths,actualPeriod:graphPeriod(ch.adj) }; return D;
         };
         v.render(() => {
           const { d, paths } = get(); L.setView([0, 40], [-0.7, d - 0.3 + 0.5]);
           paths.forEach((p, i) => L.path(p.lab.map((l, n) => [n, l + (i - 15) * 0.012]), { color: CLS[p.st], width: 1.6, alpha: 0.85 }));
           const fr = Array(d).fill(0), fs = Array(d).fill(0); paths.forEach((p) => { fr[p.lab[40]]++; fs[p.st]++; });
-          R.setView([0, d + 1], [0, 0.65]);
-          fs.forEach((c, r) => R.rect(r + 0.55, 0, r + 0.95, c / 30, { fill: 'orange', fillAlpha: 0.4, color: 'orange' }));
-          fr.forEach((c, r) => R.rect(r + 1.05, 0, r + 1.45, c / 30, { fill: 'green', fillAlpha: 0.5, color: 'green' }));
+          R.setView([-.6,d-.4],[0,1.1]);R.setTicks(Array.from({length:d},(_,r)=>r),null);L.setTitle(brk.value?'original-partition labels; not tail labels':'true cyclic tail label');
+          fs.forEach((c, r) => R.rect(r - 0.45, 0, r - 0.05, c / 30, { fill: 'orange', fillAlpha: 0.4, color: 'orange' }));
+          fr.forEach((c, r) => R.rect(r + 0.05, 0, r + 0.45, c / 30, { fill: 'green', fillAlpha: 0.5, color: 'green' }));
         });
         v.legend([['orange', 'starting class'], ['green', 'label at $n=40$']]);
-        v.readout(() => { const { d, paths } = get(); const flat = paths.filter((p) => p.lab.every((l) => l === p.lab[0])).length; return `${flat} of 30 paths have a constant tail label$\\ (d=${d}${brk.value ? ', shortcut added: chain is aperiodic' : ''})$. ${brk.value ? 'The label no longer carries information about the start.' : 'The label equals the starting class on every path.'}`; });
+        v.readout(() => {const{d,paths,actualPeriod}=get(),flat=paths.filter(p=>p.lab.every(l=>l===p.lab[0])).length;return `${flat} of 30 displayed paths have a constant original-partition label. Actual chain period: $${actualPeriod}$. ${brk.value?'The shortcut makes this finite irreducible chain aperiodic; its tail is trivial. Wandering original labels are not tail variables.':initial.value==='all'?'The true label equals the starting cyclic class; the all-state initial law charges all '+d+' classes, so the tail is nontrivial.':'The initial law is confined to class 0: its tail is trivial even though the chain is periodic.'}`;});
       },
     },
     {

@@ -1,0 +1,281 @@
+{
+  "mapping": [
+    {
+      "num": "2.7",
+      "file": "ch02-b.js",
+      "target": "ode-3.5",
+      "paragraph": "Write the linear secular equations in complex coordinates $z_j=k_j+ih_j$, so $\\dot z=iAz$. The eigenvector-solution theorem ode-3.5 turns a complete eigenbasis of the secular matrix into modes $z(t)=\\sum_i c_i v_i e^{ig_it}$. Taking real and imaginary parts gives the displayed cosine and sine sums. The canonical normal-mode reduction supplies that basis in this model; eigenvalues alone would not justify this expansion for an arbitrary defective matrix."
+    },
+    {
+      "num": "2.8",
+      "file": "ch02-b.js",
+      "target": "pma-5.15",
+      "paragraph": "Near a stable resonant angle, Taylor theorem pma-5.15 gives $\\sin(\\varphi-\\varphi_0)=(\\varphi-\\varphi_0)+O((\\varphi-\\varphi_0)^3)$. Thus the small-libration period is set by the inverse square root of the restoring coefficient. The energy difference from the bottom to the pendulum separatrix scales as that coefficient, so the momentum width scales as its square root. These are local pendulum scalings, not a uniform approximation at vanishing eccentricity or through the separatrix."
+    },
+    {
+      "num": "2.12",
+      "file": "ch02-b.js",
+      "target": "pma-8.6",
+      "paragraph": "In the stated repeated-renormalization measurement, let each positive stretch factor be s_j over a fixed time step. The logarithm product identity pma-8.6 turns the cumulative factor into the sum of $\\log s_j$; dividing that sum by elapsed time gives the finite-time exponential growth estimate. Renormalization keeps the test displacement in a local regime. A finite positive estimate is not a proof of long-term instability or of the quoted collision fraction."
+    },
+    {
+      "num": "2.1",
+      "file": "ch02.js",
+      "target": "pma-9.15",
+      "paragraph": "The multivariable chain rule pma-9.15 justifies differentiating the potential along a smooth collision-free trajectory: $d\\Omega/dt=\\nabla\\Omega\\cdot\\dot{\\mathbf r}$. Dotting the rotating-frame equation with velocity gives the same derivative for half the squared speed, because a cross product is perpendicular to that velocity. Their difference is therefore constant. Circular primaries make this potential time independent; the argument does not survive an added explicit time derivative."
+    },
+    {
+      "num": "2.3",
+      "file": "ch02.js",
+      "target": "ode-3.5",
+      "paragraph": "The modal statement uses ode-3.5 on the first-order four-dimensional linearization. Strictly below the positive-mass Routh threshold, the two distinct nonzero imaginary frequency pairs give a complete eigenvector basis, so every linear perturbation is a bounded sum of oscillatory modes. Above it, a mode with positive real exponent grows. A repeated imaginary root at the threshold does not by itself guarantee bounded motion: diagonalizability must also be checked. This is linear stability, not a general nonlinear-stability theorem."
+    },
+    {
+      "num": "2.4",
+      "file": "ch02.js",
+      "target": "pma-5.15",
+      "paragraph": "Taylor theorem pma-5.15 supplies the local expansions used in the co-orbital model. Kepler mean motion changes as $n(a+\\delta a)=n(a)[1-3\\delta a/(2a)+O((\\delta a/a)^2)]$, giving the stated longitude drift. Expanding the smooth effective potential about either triangular minimum yields a positive quadratic restoring term and small-amplitude libration. This expansion applies away from the singular conjunction and does not describe an arbitrarily close encounter."
+    },
+    {
+      "num": "4.7",
+      "file": "ch04-b.js",
+      "target": "ode-1.4",
+      "paragraph": "The integrating-factor theorem ode-1.4 solves the transfer equation in optical-depth coordinates. Multiplication by $e^\\tau$ makes the derivative of $e^\\tau I$ equal to $e^\\tau B$; for a constant source B and incident intensity I_0 this gives $I(\\tau)=I_0e^{-\\tau}+B(1-e^{-\\tau})$. The two terms are therefore a boundary contribution and emitted replacement light, under the homogeneous no-scattering assumptions, not two independent fitted spectral laws."
+    },
+    {
+      "num": "4.9",
+      "file": "ch04-b.js",
+      "target": "pma-5.11",
+      "paragraph": "At fixed positive electron pressure in the displayed ground-state model, the logarithmic derivative of the Saha ratio is $d\\log R/dT=5/(2T)+\\chi/(k_BT^2)>0$. The derivative-sign proof pma-5.11 therefore makes R strictly increasing, and so is the fraction $R/(1+R)$. Lowering the imposed pressure multiplies R upward and moves any fixed ionization-fraction threshold to lower temperature. Allowing electron pressure to vary with ionization changes this argument."
+    },
+    {
+      "num": "4.12",
+      "file": "ch04-b.js",
+      "target": "ladr-6.61",
+      "paragraph": "The displayed synthetic straight-line fit is a least-squares projection, using ladr-6.61. In the Euclidean space of selected log-luminosities, project onto the span of the constant vector and the selected log-masses. Orthogonality of the residual to both columns gives the intercept and slope formulas used by the fit; uniqueness of both coefficients needs nonconstant log-masses. This geometric minimization does not validate independent-error assumptions, a physical global power law, or the quoted observational calibration outside its domains."
+    },
+    {
+      "num": "3.1",
+      "file": "ch03.js",
+      "target": "pma-8.7",
+      "paragraph": "The unit-circle representation of sine and cosine in pma-8.7 adds the two semidiurnal components as complex amplitudes. Their combined amplitude is the modulus of $1+ke^{2i\\psi}$, whose square is $1+k^2+2k\\cos2\\psi$. This gives the spring/neap ratio by substituting aligned and opposite phases. The result belongs to the linear equilibrium-tide superposition, not a prediction of a particular ocean basin response."
+    },
+    {
+      "num": "3.2",
+      "file": "ch03.js",
+      "target": "ode-1.3",
+      "paragraph": "The separated-equation method ode-1.3 applies to the positive orbital radius: write $\\dot a=C a^{-11/2}$ with C fixed by the constant-lag model. Integrating gives $a^{13/2}=a_0^{13/2}+(13/2)Ct$ while the model assumptions hold. The positive-radius restriction permits division by the power of a; no extrapolation through the planet or through a change of dissipation law follows from this solution."
+    },
+    {
+      "num": "3.4",
+      "file": "ch03.js",
+      "target": "pma-8.10",
+      "paragraph": "The Fourier coefficient in the averaged torque is selected by the orthogonality in pma-8.10. Expand the periodic orbital factor in integer harmonics of mean anomaly. Near $2\\dot\\theta=pn$, averaging its product with the spin phase over an orbital cycle retains the matching p-th coefficient, while nonmatching integer harmonics have zero mean. This explains the resonance selection rule; whether the retained coefficient vanishes and whether capture occurs remain separate dynamical questions."
+    },
+    {
+      "num": "3.7",
+      "file": "ch03.js",
+      "target": "pma-5.15",
+      "paragraph": "The leading eccentricity estimate uses Taylor theorem pma-5.15 on the inverse-cube tidal amplitude. If $r=a(1+\\eta)$ with small eta, then $(a/r)^3=1-3\\eta+O(\\eta^2)$. The time-dependent part is therefore first order in e, and its quadratic dissipation is leading order $e^2$. This establishes the power counting, not the numerical coefficient or an all-eccentricity heating law."
+    },
+    {
+      "num": "3.8",
+      "file": "ch03.js",
+      "target": "pma-5.15",
+      "paragraph": "Taylor theorem pma-5.15 gives the small-eccentricity limit of the stated homogeneous Maclaurin figure relation: $\\Omega^2/(\\pi G\\rho)=(8/15)e^2+O(e^4)$, while the geometric flattening is $f=1-\\sqrt{1-e^2}=e^2/2+O(e^4)$. Since $q=3\\Omega^2/(4\\pi G\\rho)$ to this order, eliminating e yields $f=5q/4+O(q^2)$. This derives the uniform-fluid first-order coefficient, not the separate Darwin-Radau approximation for a centrally condensed body."
+    },
+    {
+      "num": "3.9",
+      "file": "ch03.js",
+      "target": "pma-6.22",
+      "paragraph": "The escape flux weights outward velocities by their normal component, rather than using the unweighted speed-tail probability. Angular integration of an isotropic Maxwellian leaves a radial integral proportional to $\\int_{\\sqrt\\lambda}^{\\infty}u^3e^{-u^2}\\,du$. With $s=u^2$, integration by parts pma-6.22 gives $\\tfrac12(1+\\lambda)e^{-\\lambda}$, with the upper endpoint vanishing. This is the origin of the displayed prefactor under the static collisionless assumptions."
+    },
+    {
+      "num": "3.10",
+      "file": "ch03.js",
+      "target": "ode-1.3",
+      "paragraph": "For the circular-orbit approximation, separation of variables ode-1.3 integrates $\\dot r=-C/r$ on $r>0$, with $C=2\\beta GM/c$ fixed. It yields $r^2=r_0^2-2Ct$, hence the stated formal endpoint time. This is a solution only until that positive-radius branch ends; a real solar surface or a failure of the circular approximation can terminate the model earlier."
+    },
+    {
+      "num": "4.1",
+      "file": "ch04.js",
+      "target": "pma-5.15",
+      "paragraph": "Taylor theorem pma-5.15 explains the stated uncertainty propagation. Expanding the reciprocal at a positive parallax p gives $1/(p+\\Delta p)=1/p-\\Delta p/p^2+O((\\Delta p)^2)$ on a neighborhood bounded away from zero. Thus the fractional linearized distance error has scale $\\sigma_p/p$. This local expansion does not justify reciprocal estimates near zero parallax or assign a distance to a negative noisy measurement."
+    },
+    {
+      "num": "4.3",
+      "file": "ch04.js",
+      "target": "pma-8.6",
+      "paragraph": "The product and inverse logarithm rules pma-8.6 apply to positive flux and distance. Taking a logarithm turns the inverse-square flux ratio into minus twice a log-distance ratio, and the magnitude coefficient then gives the factor five in the distance modulus. Exponentiating inverts the relation. Extinction adds its separately specified magnitude term rather than being canceled by the logarithm."
+    },
+    {
+      "num": "4.5",
+      "file": "ch04.js",
+      "target": "pma-8.6",
+      "paragraph": "Using the positive-power definition and logarithm identities pma-8.6, the temperature-radius luminosity equation becomes an affine equation in log coordinates. Holding R fixed gives slope four in log luminosity versus log effective temperature, while changing R shifts the intercept by twice its logarithm. This coordinate change uses the effective-temperature definition and supplies no independent atmosphere or radius measurement."
+    },
+    {
+      "num": "1.1",
+      "file": "ch01.js",
+      "target": "pma-5.11",
+      "paragraph": "The inversion of Kepler equation uses the derivative-sign argument pma-5.11. For a bound ellipse with $0\\le e<1$, the derivative of $E-e\\sin E$ is $1-e\\cos E\\ge1-e>0$. Thus the mean anomaly determines one eccentric anomaly per chosen revolution, rather than a choice among several roots. The orientation singularities listed in the statement still require separate angle conventions."
+    },
+    {
+      "num": "1.3",
+      "file": "ch01.js",
+      "target": "pma-8.6",
+      "paragraph": "The logarithm identities in pma-8.6 turn the positive-variable Kepler relation into $2\\log T=3\\log a-\\log[G(M+m)/(4\\pi^2)]$. Hence a fixed total mass gives the stated slope three halves. Likewise the angular-size relation makes the inferred mass proportional to the cube of the adopted distance. This logarithmic straightening does not remove the total-mass or distance assumptions."
+    }
+  ],
+  "fixes": {
+    "2.2": {
+      "idea": [
+        [
+          "$L_1, L_2, L_3$ are saddles and $L_4, L_5$ maxima",
+          "in the orbital plane $L_1, L_2, L_3$ are saddles and $L_4, L_5$ minima"
+        ]
+      ]
+    },
+    "2.3": {
+      "statement": [
+        [
+          "The triangular Lagrange points $L_4$, $L_5$ of the circular restricted problem are linearly stable if and only if",
+          "For positive mass parameter $0<\\mu\\le1/2$, the triangular Lagrange points $L_4$, $L_5$ of the circular restricted problem have bounded linear perturbations if and only if"
+        ]
+      ],
+      "idea": [
+        [
+          "At $L_4$ the effective potential $\\Omega$ is a maximum (mech 9.12), so without rotation it would be unstable.",
+          "At $L_4$ the effective potential energy $-\\Omega$ has a planar maximum (mech 9.12), so without the Coriolis term the linearized motion would be unstable."
+        ],
+        [
+          "are real and negative exactly when the discriminant is positive; at $\\mu_R$ the two frequencies collide and split off the imaginary axis.",
+          "are distinct negative real values when the discriminant is positive in the stated positive-mass range. At $\\mu_R$ the repeated imaginary roots have nontrivial Jordan blocks, so generic linear perturbations are not bounded; above it the frequencies split off the imaginary axis."
+        ]
+      ]
+    },
+    "2.4": {
+      "statement": [
+        [
+          "libration period $\\approx 2\\pi/\\sqrt{27\\mu/4}$ orbits",
+          "libration period $\\approx 1/\\sqrt{27\\mu/4}$ orbital periods"
+        ]
+      ]
+    },
+    "2.7": {
+      "statement": [
+        [
+          "the total angular-momentum deficit $\\sum_j m_j\\sqrt{a_j}\\,(1 - \\sqrt{1-e_j^2})$ is conserved",
+          "the eccentricity-sector quadratic angular-momentum deficit $\\tfrac12\\sum_j m_j\\sqrt{a_j}\\,e_j^2$ is conserved within the retained linear theory"
+        ]
+      ]
+    }
+  },
+  "wraps": {
+    "2.7": {
+      "statement": [
+        [
+          "Averaging the planets\u2019 mutual attractions over their orbital periods and keeping terms linear in the eccentricities and inclinations, the eccentricity vectors $(k_j, h_j) = e_j(\\cos\\varpi_j, \\sin\\varpi_j)$ of $N$ planets obey the linear system\n$$\\dot h_j = \\sum_{l} A_{jl}\\,k_l,\\qquad \\dot k_j = -\\sum_l A_{jl}\\,h_l,$$\nwith $A_{jj} = \\frac{n_j}{4}\\sum_{l\\ne j}\\frac{m_l}{M_\\odot}\\,\\alpha_{jl}\\bar\\alpha_{jl}\\,b^{(1)}_{3/2}(\\alpha_{jl})$ and $A_{jl} = -\\frac{n_j}{4}\\frac{m_l}{M_\\odot}\\,\\alpha_{jl}\\bar\\alpha_{jl}\\,b^{(2)}_{3/2}(\\alpha_{jl})$ (Laplace coefficients $b$ of the semi-major-axis ratios $\\alpha$). The solution is a superposition of $N$ **secular modes**, $h_j = \\sum_i e_{ji}\\sin(g_it + \\beta_i)$, $k_j = \\sum_i e_{ji}\\cos(g_it+\\beta_i)$, with the eigenfrequencies $g_i$ of $A$: eccentricities oscillate and are exchanged between planets on timescales of $10^4$\u2013$10^6$ years while semi-major axes stay fixed, and the eccentricity-sector quadratic angular-momentum deficit $\\tfrac12\\sum_j m_j\\sqrt{a_j}\\,e_j^2$ is conserved within the retained linear theory. The theory holds for small $e$, $i$ and away from mean-motion resonances.",
+          "Averaging the planets\u2019 mutual attractions over their orbital periods and keeping terms linear in the eccentricities and inclinations, the eccentricity vectors $(k_j, h_j) = e_j(\\cos\\varpi_j, \\sin\\varpi_j)$ of $N$ planets obey the linear system\n$$\\begin{gathered}\\dot h_j = \\sum_{l} A_{jl}\\,k_l,\\qquad\\\\ \\dot k_j = -\\sum_l A_{jl}\\,h_l,\\end{gathered}$$\nwith $A_{jj} = \\frac{n_j}{4}\\sum_{l\\ne j}\\frac{m_l}{M_\\odot}\\,\\alpha_{jl}\\bar\\alpha_{jl}\\,b^{(1)}_{3/2}(\\alpha_{jl})$ and $A_{jl} = -\\frac{n_j}{4}\\frac{m_l}{M_\\odot}\\,\\alpha_{jl}\\bar\\alpha_{jl}\\,b^{(2)}_{3/2}(\\alpha_{jl})$ (Laplace coefficients $b$ of the semi-major-axis ratios $\\alpha$). The solution is a superposition of $N$ **secular modes**, $h_j = \\sum_i e_{ji}\\sin(g_it + \\beta_i)$, $k_j = \\sum_i e_{ji}\\cos(g_it+\\beta_i)$, with the eigenfrequencies $g_i$ of $A$: eccentricities oscillate and are exchanged between planets on timescales of $10^4$\u2013$10^6$ years while semi-major axes stay fixed, and the eccentricity-sector quadratic angular-momentum deficit $\\tfrac12\\sum_j m_j\\sqrt{a_j}\\,e_j^2$ is conserved within the retained linear theory. The theory holds for small $e$, $i$ and away from mean-motion resonances."
+        ]
+      ]
+    },
+    "2.8": {
+      "statement": [
+        [
+          "When an asteroid\u2019s mean motion $n$ and Jupiter\u2019s $n_J$ are nearly in a ratio of small integers \u2014 for a first-order resonance $(j+1)n_J - jn \\approx 0$ \u2014 the **resonant angle** $\\varphi = (j+1)\\lambda_J - j\\lambda - \\varpi$ (for the 2:1 resonance $\\varphi = 2\\lambda_J - \\lambda - \\varpi$) changes slowly, and the corresponding term of the disturbing function no longer averages out. To lowest order it makes $\\varphi$ obey a pendulum equation,\n$$\\ddot\\varphi = -\\omega_0^2\\sin(\\varphi - \\varphi_0),\\qquad \\omega_0^2 \\propto \\mu\\,e\\,n^2,$$\nso the phase portrait in $(\\varphi, a)$ has a separatrix: inside it $\\varphi$ **librates** and the semi-major axis oscillates about the exact resonance, outside it circulates. The libration width in $a$ grows like $\\sqrt{\\mu e}$ and the libration period like $1/\\sqrt{\\mu e}$. The model fails at small $e$, where the precession of the pericentre $\\dot\\varpi$ (neglected here) dominates.",
+          "When an asteroid\u2019s mean motion $n$ and Jupiter\u2019s $n_J$ are nearly in a ratio of small integers \u2014 for a first-order resonance $(j+1)n_J - jn \\approx 0$ \u2014 the **resonant angle** $\\varphi = (j+1)\\lambda_J - j\\lambda - \\varpi$ (for the 2:1 resonance $\\varphi = 2\\lambda_J - \\lambda - \\varpi$) changes slowly, and the corresponding term of the disturbing function no longer averages out. To lowest order it makes $\\varphi$ obey a pendulum equation,\n$$\\begin{gathered}\\ddot\\varphi = -\\omega_0^2\\sin(\\varphi - \\varphi_0),\\qquad\\\\ \\omega_0^2 \\propto \\mu\\,e\\,n^2,\\end{gathered}$$\nso the phase portrait in $(\\varphi, a)$ has a separatrix: inside it $\\varphi$ **librates** and the semi-major axis oscillates about the exact resonance, outside it circulates. The libration width in $a$ grows like $\\sqrt{\\mu e}$ and the libration period like $1/\\sqrt{\\mu e}$. The model fails at small $e$, where the precession of the pericentre $\\dot\\varpi$ (neglected here) dominates."
+        ]
+      ]
+    },
+    "2.1": {
+      "statement": [
+        [
+          "In the circular restricted three-body problem \u2014 a massless particle moving under two masses $1-\\mu$ and $\\mu$ that circle their barycentre with angular velocity $n = 1$ (unit separation, $G(m_1+m_2) = 1$) \u2014 the quantity\n$$C_J = 2\\Omega(x,y,z) - (\\dot x^2 + \\dot y^2 + \\dot z^2),\\qquad \\Omega = \\tfrac12(x^2+y^2) + \\frac{1-\\mu}{r_1} + \\frac{\\mu}{r_2},$$\ncomputed in the frame rotating with the primaries, is conserved. Equivalently, in the inertial frame neither the particle\u2019s energy $E$ nor its angular momentum $h$ (per unit mass) is conserved, but the combination $E - n h = -C_J/2$ is. It is the only known integral of the problem, and it requires the primaries\u2019 orbit to be circular.",
+          "In the circular restricted three-body problem \u2014 a massless particle moving under two masses $1-\\mu$ and $\\mu$ that circle their barycentre with angular velocity $n = 1$ (unit separation, $G(m_1+m_2) = 1$) \u2014 the quantity\n$$\\begin{gathered}C_J =\\\\ 2\\Omega(x,y,z) - (\\dot x^2 + \\dot y^2 + \\dot z^2),\\\\ \\Omega =\\\\ \\tfrac12(x^2+y^2) + \\frac{1-\\mu}{r_1} + \\frac{\\mu}{r_2},\\end{gathered}$$\ncomputed in the frame rotating with the primaries, is conserved. Equivalently, in the inertial frame neither the particle\u2019s energy $E$ nor its angular momentum $h$ (per unit mass) is conserved, but the combination $E - n h = -C_J/2$ is. It is the only known integral of the problem, and it requires the primaries\u2019 orbit to be circular."
+        ]
+      ]
+    },
+    "2.3": {
+      "statement": [
+        [
+          "For positive mass parameter $0<\\mu\\le1/2$, the triangular Lagrange points $L_4$, $L_5$ of the circular restricted problem have bounded linear perturbations if and only if\n$$27\\,\\mu(1-\\mu) < 1,\\qquad\\text{i.e.}\\qquad \\mu < \\mu_R = \\tfrac12\\Big(1 - \\sqrt{23/27}\\Big) \\approx 0.03852 .$$\nLinearising about $L_4$ gives the characteristic equation $\\lambda^4 + \\lambda^2 + \\tfrac{27}{4}\\mu(1-\\mu) = 0$ (frequencies in units of the orbital rate $n$). Below $\\mu_R$ all four roots are imaginary, $\\lambda = \\pm i\\omega_{1,2}$, and a small displacement librates as a sum of a short-period epicycle ($\\omega_1 \\approx 1$) and a long-period drift around $L_4$ ($\\omega_2 \\approx \\sqrt{27\\mu/4}$); above $\\mu_R$ two roots have positive real part and displacements grow exponentially. The Sun\u2013Jupiter ($\\mu \\approx 0.001$) and Earth\u2013Moon ($\\mu \\approx 0.012$) points are stable; Pluto\u2013Charon ($\\mu \\approx 0.11$) is not.",
+          "For positive mass parameter $0<\\mu\\le1/2$, the triangular Lagrange points $L_4$, $L_5$ of the circular restricted problem have bounded linear perturbations if and only if\n$$\\begin{gathered}27\\,\\mu(1-\\mu) < 1,\\\\\\text{i.e.}\\\\ \\mu < \\mu_R = \\tfrac12\\Big(1 - \\sqrt{23/27}\\Big) \\\\\\approx 0.03852 .\\end{gathered}$$\nLinearising about $L_4$ gives the characteristic equation $\\lambda^4 + \\lambda^2 + \\tfrac{27}{4}\\mu(1-\\mu) = 0$ (frequencies in units of the orbital rate $n$). Below $\\mu_R$ all four roots are imaginary, $\\lambda = \\pm i\\omega_{1,2}$, and a small displacement librates as a sum of a short-period epicycle ($\\omega_1 \\approx 1$) and a long-period drift around $L_4$ ($\\omega_2 \\approx \\sqrt{27\\mu/4}$); above $\\mu_R$ two roots have positive real part and displacements grow exponentially. The Sun\u2013Jupiter ($\\mu \\approx 0.001$) and Earth\u2013Moon ($\\mu \\approx 0.012$) points are stable; Pluto\u2013Charon ($\\mu \\approx 0.11$) is not."
+        ]
+      ]
+    },
+    "2.4": {
+      "statement": [
+        [
+          "A small body sharing a planet\u2019s orbit ($a \\approx a_p$, $\\mu = m_p/M \\ll 1$) does not stay put relative to the planet. Averaged over its short epicycles, its longitude relative to the planet, $\\phi = \\lambda - \\lambda_p$, and its fractional semi-major-axis offset $x = \\delta a/a$ obey\n$$\\dot\\phi = -\\tfrac32 n x,\\qquad \\tfrac34 x^2 + 2\\mu S(\\phi) = \\text{const},\\qquad S(\\phi) = \\frac{1}{2|\\sin(\\phi/2)|} - \\cos\\phi .$$\n$S$ has minima at $\\phi = \\pm 60^\\circ$ ($L_4$, $L_5$) and a maximum at $180^\\circ$ ($L_3$). Orbits with $\\tfrac12 < \\tfrac38 x^2/\\mu + S < \\tfrac32$ librate around one triangular point (**tadpoles**, like Jupiter\u2019s Trojan asteroids, libration period $\\approx 1/\\sqrt{27\\mu/4}$ orbital periods \u2014 about 150 years); those above $\\tfrac32$ enclose $L_3$, $L_4$ and $L_5$ (**horseshoes**), approaching the planet from alternate sides. Saturn\u2019s moons Janus and Epimetheus, whose orbits differ by about 50 km, swap places on a horseshoe every four years.",
+          "A small body sharing a planet\u2019s orbit ($a \\approx a_p$, $\\mu = m_p/M \\ll 1$) does not stay put relative to the planet. Averaged over its short epicycles, its longitude relative to the planet, $\\phi = \\lambda - \\lambda_p$, and its fractional semi-major-axis offset $x = \\delta a/a$ obey\n$$\\begin{gathered}\\dot\\phi = -\\tfrac32 n x,\\qquad\\\\ \\tfrac34 x^2 + 2\\mu S(\\phi) = \\text{const},\\qquad\\\\ S(\\phi) = \\frac{1}{2|\\sin(\\phi/2)|} - \\cos\\phi .\\end{gathered}$$\n$S$ has minima at $\\phi = \\pm 60^\\circ$ ($L_4$, $L_5$) and a maximum at $180^\\circ$ ($L_3$). Orbits with $\\tfrac12 < \\tfrac38 x^2/\\mu + S < \\tfrac32$ librate around one triangular point (**tadpoles**, like Jupiter\u2019s Trojan asteroids, libration period $\\approx 1/\\sqrt{27\\mu/4}$ orbital periods \u2014 about 150 years); those above $\\tfrac32$ enclose $L_3$, $L_4$ and $L_5$ (**horseshoes**), approaching the planet from alternate sides. Saturn\u2019s moons Janus and Epimetheus, whose orbits differ by about 50 km, swap places on a horseshoe every four years."
+        ]
+      ]
+    },
+    "3.4": {
+      "statement": [
+        [
+          "Mercury turns three times on its axis for every two orbits around the Sun (rotation $58.65$ d, orbit $87.97$ d). A slightly elongated (triaxial) planet feels a torque from the Sun, and with the orbit's eccentricity ($e = 0.2056$) the rotation angle $\\theta$ obeys\n$$\\ddot\\theta = -\\tfrac32\\,\\frac{B-A}{C}\\,\\frac{GM_\\odot}{r^3}\\,\\sin 2(\\theta - f),$$\na pendulum equation driven by the changing distance $r$ and true anomaly $f$. Averaging near $\\dot\\theta=\\tfrac p2 n$ ($p$ an integer) gives a resonant restoring term only when its Fourier coefficient is nonzero; a sufficiently small opposing torque can then leave a stable libration. At $e=0$ only 1:1 remains: the other integer and half-integer resonances also require eccentricity. Tidal despinning that slows a fast-rotating planet can capture it into one of these states as it passes; the capture probability depends on the eccentricity history, and Mercury's final state is the 3:2.",
+          "Mercury turns three times on its axis for every two orbits around the Sun (rotation $58.65$ d, orbit $87.97$ d). A slightly elongated (triaxial) planet feels a torque from the Sun, and with the orbit's eccentricity ($e = 0.2056$) the rotation angle $\\theta$ obeys\n$$\\begin{gathered}\\ddot\\theta =\\\\ -\\tfrac32\\,\\frac{B-A}{C}\\,\\frac{GM_\\odot}{r^3}\\,\\sin 2(\\theta - f),\\end{gathered}$$\na pendulum equation driven by the changing distance $r$ and true anomaly $f$. Averaging near $\\dot\\theta=\\tfrac p2 n$ ($p$ an integer) gives a resonant restoring term only when its Fourier coefficient is nonzero; a sufficiently small opposing torque can then leave a stable libration. At $e=0$ only 1:1 remains: the other integer and half-integer resonances also require eccentricity. Tidal despinning that slows a fast-rotating planet can capture it into one of these states as it passes; the capture probability depends on the eccentricity history, and Mercury's final state is the 3:2."
+        ]
+      ]
+    },
+    "3.10": {
+      "statement": [
+        [
+          "A dust grain orbiting the Sun absorbs sunlight and re-emits it isotropically in its own frame. In the Sun's frame the grain's motion tilts the absorbed radiation momentum, so the radiation force has a small component against the velocity:\n$$\\mathbf F_\\mathrm{rad} = \\beta\\,\\frac{GMm}{r^2}\\left[\\Big(1 - \\frac{\\dot r}{c}\\Big)\\hat{\\mathbf r} - \\frac{\\mathbf v}{c}\\right],\\qquad \\beta = \\frac{3L_\\odot Q_\\mathrm{pr}}{16\\pi G M_\\odot c\\,\\rho s}$$\n($s$ grain radius, $\\rho$ density, $Q_\\mathrm{pr}$ the radiation-pressure efficiency, $\\approx1$ for large grains). The radial part just weakens gravity by the factor $1-\\beta$; the drag part removes angular momentum, so the grain spirals inward: for a circular orbit $dr/dt = -2\\beta GM/(cr)$ and it reaches the Sun in $t_\\mathrm{PR} = c\\,r_0^2/(4\\beta GM)$, proportional to the grain size and to $r_0^2$.",
+          "A dust grain orbiting the Sun absorbs sunlight and re-emits it isotropically in its own frame. In the Sun's frame the grain's motion tilts the absorbed radiation momentum, so the radiation force has a small component against the velocity:\n$$\\begin{gathered}\\mathbf F_\\mathrm{rad} =\\\\ \\beta\\,\\frac{GMm}{r^2}\\left[\\Big(1 - \\frac{\\dot r}{c}\\Big)\\hat{\\mathbf r} - \\frac{\\mathbf v}{c}\\right],\\\\ \\beta = \\frac{3L_\\odot Q_\\mathrm{pr}}{16\\pi G M_\\odot c\\,\\rho s}\\end{gathered}$$\n($s$ grain radius, $\\rho$ density, $Q_\\mathrm{pr}$ the radiation-pressure efficiency, $\\approx1$ for large grains). The radial part just weakens gravity by the factor $1-\\beta$; the drag part removes angular momentum, so the grain spirals inward: for a circular orbit $dr/dt = -2\\beta GM/(cr)$ and it reaches the Sun in $t_\\mathrm{PR} = c\\,r_0^2/(4\\beta GM)$, proportional to the grain size and to $r_0^2$."
+        ]
+      ]
+    },
+    "4.7": {
+      "statement": [
+        [
+          "(1) An optically thick thermal emitter approaches a **continuous blackbody spectrum**. (2) An optically thin excited gas can show **emission lines**, as well as continuum processes absent from this toy. (3) A continuous background seen through a cooler absorbing gas can show **absorption lines** at the same atomic transition wavelengths. In terms of the transfer of radiation through a slab of optical depth $\\tau_\\lambda$ and source function $B_\\lambda(T_g)$ (the gas being in thermal equilibrium at temperature $T_g$), a background of intensity $B_\\lambda(T_s)$ emerges as\n$$I_\\lambda = B_\\lambda(T_s)\\,e^{-\\tau_\\lambda} + B_\\lambda(T_g)\\bigl(1 - e^{-\\tau_\\lambda}\\bigr),$$\nso lines appear in absorption if $T_g<T_s$, in emission if $T_g>T_s$, and vanish if $T_g=T_s$.",
+          "(1) An optically thick thermal emitter approaches a **continuous blackbody spectrum**. (2) An optically thin excited gas can show **emission lines**, as well as continuum processes absent from this toy. (3) A continuous background seen through a cooler absorbing gas can show **absorption lines** at the same atomic transition wavelengths. In terms of the transfer of radiation through a slab of optical depth $\\tau_\\lambda$ and source function $B_\\lambda(T_g)$ (the gas being in thermal equilibrium at temperature $T_g$), a background of intensity $B_\\lambda(T_s)$ emerges as\n$$\\begin{gathered}I_\\lambda =\\\\ B_\\lambda(T_s)\\,e^{-\\tau_\\lambda}\\\\ + B_\\lambda(T_g)\\bigl(1 - e^{-\\tau_\\lambda}\\bigr),\\end{gathered}$$\nso lines appear in absorption if $T_g<T_s$, in emission if $T_g>T_s$, and vanish if $T_g=T_s$."
+        ]
+      ]
+    },
+    "4.9": {
+      "statement": [
+        [
+          "In thermal equilibrium, the ratio of the number densities of an atom in successive ionization stages $i$ and $i+1$ (ionization energy $\\chi_i$) is\n$$\\frac{N_{i+1}}{N_i}\\,n_e = \\frac{2 U_{i+1}(T)}{U_i(T)}\\left(\\frac{2\\pi m_e kT}{h^2}\\right)^{3/2} e^{-\\chi_i/kT},$$\nwhere $U_i(T)$ are the internal partition functions relative to each ionic ground state (replace them by ground-state degeneracies only when that approximation applies), and $n_e$ is the free-electron density, equivalently an electron pressure $P_e = n_e kT$. For the displayed ground-state-only hydrogen approximation ($U_{\\rm II}=1$, $U_{\\rm I}=2$) the ionized fraction is $x = R/(1+R)$ with $R = N_{\\rm II}/N_{\\rm I}=(2\\pi m_e/h^2)^{3/2}(kT)^{5/2}e^{-13.6\\,{\\rm eV}/kT}/P_e$. It switches from nearly $0$ to nearly $1$ over a narrow range of temperature (a few thousand K), and the switch moves to *lower* $T$ when the electron pressure is lower.",
+          "In thermal equilibrium, the ratio of the number densities of an atom in successive ionization stages $i$ and $i+1$ (ionization energy $\\chi_i$) is\n$$\\begin{gathered}\\frac{N_{i+1}}{N_i}\\,n_e =\\\\ \\frac{2 U_{i+1}(T)}{U_i(T)}\\left(\\tfrac{2\\pi m_e kT}{h^2}\\right)^{3/2} e^{-\\chi_i/kT},\\end{gathered}$$\nwhere $U_i(T)$ are the internal partition functions relative to each ionic ground state (replace them by ground-state degeneracies only when that approximation applies), and $n_e$ is the free-electron density, equivalently an electron pressure $P_e = n_e kT$. For the displayed ground-state-only hydrogen approximation ($U_{\\rm II}=1$, $U_{\\rm I}=2$) the ionized fraction is $x = R/(1+R)$ with $R = N_{\\rm II}/N_{\\rm I}=(2\\pi m_e/h^2)^{3/2}(kT)^{5/2}\\allowbreak e^{-13.6\\,{\\rm eV}/kT}/P_e$. It switches from nearly $0$ to nearly $1$ over a narrow range of temperature (a few thousand K), and the switch moves to *lower* $T$ when the electron pressure is lower."
+        ]
+      ]
+    },
+    "4.3": {
+      "statement": [
+        [
+          "The **apparent magnitude** $m$ is a logarithmic measure of flux, defined so that a difference of five magnitudes is a flux ratio of exactly $100$:\n$$m_1 - m_2 = -2.5\\log_{10}\\frac{F_1}{F_2}\\qquad\\Longleftrightarrow\\qquad \\frac{F_1}{F_2}=100^{(m_2-m_1)/5}\\approx 2.512^{\\,m_2-m_1}.$$\nLarger $m$ means a fainter star. The **absolute magnitude** $M$ is the apparent magnitude the star would have at $10$ pc. Because $F\\propto d^{-2}$ (4.2),\n$$m - M = 5\\log_{10}\\frac{d}{10\\ \\text{pc}},$$\nthe **distance modulus**, which gives the distance of any star of known $M$ from its apparent magnitude.",
+          "The **apparent magnitude** $m$ is a logarithmic measure of flux, defined so that a difference of five magnitudes is a flux ratio of exactly $100$:\n$$\\begin{gathered}m_1 - m_2 = -2.5\\log_{10}\\frac{F_1}{F_2}\\qquad\\\\\\Longleftrightarrow\\qquad\\\\ \\frac{F_1}{F_2}=100^{(m_2-m_1)/5}\\\\\\approx 2.512^{\\,m_2-m_1}.\\end{gathered}$$\nLarger $m$ means a fainter star. The **absolute magnitude** $M$ is the apparent magnitude the star would have at $10$ pc. Because $F\\propto d^{-2}$ (4.2),\n$$m - M = 5\\log_{10}\\frac{d}{10\\ \\text{pc}},$$\nthe **distance modulus**, which gives the distance of any star of known $M$ from its apparent magnitude."
+        ]
+      ]
+    },
+    "4.5": {
+      "statement": [
+        [
+          "A star of luminosity $L$ and effective temperature $T_{\\rm eff}$ has radius\n$$R = \\sqrt{\\frac{L}{4\\pi\\sigma T_{\\rm eff}^4}},\\qquad\\text{or}\\qquad \\frac{R}{R_\\odot}=\\Big(\\frac{L}{L_\\odot}\\Big)^{1/2}\\Big(\\frac{T_\\odot}{T_{\\rm eff}}\\Big)^{2},$$\nwith $T_\\odot = 5772$ K. In a plot of $\\log L$ against $\\log T_{\\rm eff}$ the stars of a given radius lie on a line $\\log L = 2\\log R + 4\\log T_{\\rm eff} + \\text{const}$: a family of parallel lines of slope $4$. Stellar radii span about seven orders of magnitude, from $\\sim\\!10^{-2}R_\\odot$ (white dwarfs, Earth-sized) to $\\sim\\!10^{3}R_\\odot$ (red supergiants).",
+          "A star of luminosity $L$ and effective temperature $T_{\\rm eff}$ has radius\n$$\\begin{gathered}R = \\sqrt{\\frac{L}{4\\pi\\sigma T_{\\rm eff}^4}},\\qquad\\\\\\text{or}\\qquad\\\\ \\frac{R}{R_\\odot}=\\Big(\\frac{L}{L_\\odot}\\Big)^{1/2}\\Big(\\frac{T_\\odot}{T_{\\rm eff}}\\Big)^{2},\\end{gathered}$$\nwith $T_\\odot = 5772$ K. In a plot of $\\log L$ against $\\log T_{\\rm eff}$ the stars of a given radius lie on a line $\\log L = 2\\log R + 4\\log T_{\\rm eff} + \\text{const}$: a family of parallel lines of slope $4$. Stellar radii span about seven orders of magnitude, from $\\sim\\!10^{-2}R_\\odot$ (white dwarfs, Earth-sized) to $\\sim\\!10^{3}R_\\odot$ (red supergiants)."
+        ]
+      ]
+    },
+    "4.12": {
+      "statement": [
+        [
+          "Main-sequence luminosity rises strongly with mass, but a single power law does not fit all masses. An empirical calibration of 509 detached-binary components by Eker et al. (2018) uses\n$$\\log_{10}(L/L_\\odot)=a\\log_{10}(M/M_\\odot)+b,$$\nwith six mass domains: $(a,b)=(2.028,-.976),(4.572,-.102),(5.743,-.007),(4.329,.010),(3.967,.093),(2.865,1.105)$ over boundaries $0.179,0.45,0.72,1.05,2.4,7,31\\,M_\\odot$. These are separate empirical fits, with scatter; their small boundary jumps are not physical luminosity discontinuities. A constant available-fuel fraction would give a fuel-time scaling $t\\propto M/L$, rather than an exact stellar lifetime.",
+          "Main-sequence luminosity rises strongly with mass, but a single power law does not fit all masses. An empirical calibration of 509 detached-binary components by Eker et al. (2018) uses\n$$\\begin{gathered}\\log_{10}(L/L_\\odot)=\\\\a\\log_{10}(M/M_\\odot)+b,\\end{gathered}$$\nwith six mass domains: $$\\begin{gathered}(a,b)=(2.028,-.976),\\\\(4.572,-.102),\\\\(5.743,-.007),\\\\(4.329,.010),\\\\(3.967,.093),\\\\(2.865,1.105)\\end{gathered}$$ over boundaries $0.179,0.45,0.72,\\allowbreak1.05,2.4,\\allowbreak7,31\\,M_\\odot$. These are separate empirical fits, with scatter; their small boundary jumps are not physical luminosity discontinuities. A constant available-fuel fraction would give a fuel-time scaling $t\\propto M/L$, rather than an exact stellar lifetime."
+        ]
+      ]
+    }
+  },
+  "extraNative": [
+    {
+      "num": "2.2",
+      "file": "ch02.js"
+    }
+  ],
+  "rowBackfills": {
+    "4.12": "astro-1.3"
+  }
+}

@@ -923,7 +923,7 @@ $$T \text{ is normal} \iff \|Tv\| = \|T^*v\| \text{ for every } v \in V.$$`,
       idea: String.raw`$\|Tv\|^2 - \|T^*v\|^2 = \langle T^*Tv, v\rangle - \langle TT^*v, v\rangle = \langle (T^*T - TT^*)v, v\rangle$. The operator $T^*T - TT^*$ is self-adjoint, so by 7.16 its quadratic form vanishes identically exactly when it is $0$ — that is, exactly when $T$ is normal. Geometrically: $T$ and $T^*$ stretch every vector by the same factor, so they carry the unit circle onto the same ellipse, though they may run around it differently.`,
       caption: String.raw`The unit vector $v$ (gold) runs round the circle while $Tv$ (blue) and $T^*v$ (orange, dashed) trace their images. For a normal $T$ both tips always lie on one dotted circle about $0$, the two traces cover the same ellipse, and on the right the graphs of $\|Tv\|$ and $\|T^*v\|$ coincide. Choose the shear, or add a shear $s$ to a normal matrix: the norms separate (red gap) and the images become two different ellipses.`,
       deps: ['ladr-7.18', 'ladr-7.16'],
-      see: ['fa-12.12'],
+      see: ['fa-12.11'],
       tags: ['normal'],
       viz(v) {
         const PRE = { rs: [[0.9, -1.2], [1.2, 0.9]], sym: [[1.3, 0.6], [0.6, 0.1]], shear: [[0.8, 1.2], [0, 0.8]] };

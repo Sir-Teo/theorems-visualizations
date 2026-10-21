@@ -1,0 +1,21 @@
+# Energy 3.7–3.8 — delayed groups and point kinetics
+
+Status: primary-source reading, independent mathematics, native browser and agent visual checks complete; parent independent mathematical/native checks and screenshot inspection passed; source flags and ledger are reconciled.
+
+Read the complete relevant “Prompt and Delayed Neutrons” section, DOE-HDBK-1019/1-93, NP-02 printed pp. 29–32 (PDF pp. 133–136), including Table 3 on printed p. 30, in the [official Volume 1 PDF](https://www.energy.gov/sites/default/files/2026-04/DOE-HDBK-1019-93_VOL1.pdf). Local `/tmp/atlas-energy-doe-nuclear1.pdf`, 142 pages, SHA-256 `7acb55d13898930bb18daee31d2ef02df422597af00b58cca350347460b56796`. Agent-inspected rendered Table 3 at `/tmp/atlas-energy-doe-delayed-groups.png`.
+
+The six thermal U-235 fractions are 0.00021, 0.00142, 0.00127, 0.00257, 0.00075 and 0.00027; half-lives are 55.7, 22.7, 6.2, 2.3, 0.61 and 0.23 s. Their sum is **0.00649**, which rounds to the table's printed total 0.0065. Decay constants are derived from those half-lives. The inspected rounded DOE values replace the extra digits formerly attributed to Keepin. The original 1957 Keepin paper was not obtained and is not claimed as read. These entries are a concept and a model; they now explicitly identify the available DOE numerical source.
+
+The model treats the printed birth fractions as effective point-kinetics coefficients; it does not calculate spatial or energy importance, fuel evolution or effective delayed fractions for a real core. The six-group balance and inhour equation are derived from the stated equations. Conditional mean precursor delay, the low-reactivity generation-time approximation, and the exact inhour period are distinguished. Crossing one dollar does not make the delayed and counterfactual zero-beta solutions coincide, nor does an arbitrarily small excess above one dollar imply a universal millisecond period.
+
+For 3.7, the constant-reactivity solution now finds the actual crossing of the plotted power ceiling rather than evaluating matrix exponentials far beyond the visible range. The prompt-only comparison has the same reactivity and ends at the same power ceiling. All plotted values remain finite at the smallest generation time and highest reactivity. The prompt jump is labelled as an approximation and is omitted at or above prompt criticality.
+
+For 3.8, constant-reactivity substeps use the matrix exponential. Ramp and energy-feedback substeps use midpoint freezing with a full-step/two-half-step comparison and a relative power/energy tolerance of 0.001. The 10 s scram boundary is represented exactly. The model reports its actual end time and stop reason, rather than calling an early power-ceiling stop a completed 60 s run. The reactivity axis expands to include feedback excursions; the time axis includes fast positive-reactivity runs. The energy-feedback coefficient is an illustrative independent input, not calibrated Doppler or coolant physics. No core damage or reactor-safety prediction is made.
+
+`node --test tests/verification-energy-kinetics.test.mjs`: six groups pass—printed DOE inputs; neutron/precursor balance and critical equilibrium; inhour eigenmodes at negative, zero and prompt-critical reactivity; constant-reactivity matrix exponential against an independent explicit Runge–Kutta solve; coupled feedback against an independent eight-equation solve; finite extreme-control curves, true ceiling end times and the scram boundary.
+
+`node tests/verification-energy-kinetics.mjs`: four light/dark groups pass. Entry 3.7 covers five reactivities including 0.99, 1 and 1.01 dollars at both generation-time extremes. Entry 3.8 covers all three programs, all eight reactivity/generation-time/feedback-coefficient corners and both feedback states in each theme. No runtime, TeX, blank-stage, nonfinite-readout or instrumented-data clipping errors occur.
+
+`node scripts/check.mjs energy-3.7 energy-3.8 --static`: two items, zero errors/warnings.
+
+Agent-inspected `/tmp/atlas-energy-kinetics-3.{7,8}-{light,dark}.png`: both logarithmic power curves, delayed-group bars, period annotations, program controls, reactivity thresholds and actual stop readouts are legible. No human review is claimed or required.

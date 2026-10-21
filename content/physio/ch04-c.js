@@ -1,5 +1,6 @@
-import {oedemaFlows} from './circulation-review.shared.js';
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part c: 4.11–4.15)
+import { tissuePressure, oedemaModel, oedemaTrajectory } from './physio-source-audit-oedema.js';
+import { reynolds, reynoldsLine } from './physio-source-audit-flow.js';
 import { clamp, RHO_BLOOD, MU_BLOOD, priesRel, twoLayerRel, hnoise, womersleyU, womersleyCentre } from './ch04.shared.js';
 
 export default {
@@ -115,40 +116,35 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       num: '4.13',
       kind: 'Phenomenon',
       name: 'Oedema from unbalanced Starling forces',
-      statement: String.raw`Oedema is an excess of fluid in the interstitial space. The interstitial volume $V$ obeys $\dot V=J_v(V)-J_\text{lymph}(V)$, with the filtration $J_v=K_f[(P_c-P_i(V))-\sigma(\pi_c-\pi_i(V))]$ of Starling's law (physio-4.12) and a lymph return that grows with interstitial pressure up to a ceiling. Oedema results when something pushes the filtration beyond what the lymph can remove: a **raised capillary pressure** (venous obstruction, heart failure), a **lowered plasma protein** (liver disease, nephrotic syndrome), a **leakier wall** (a lowered $\sigma$), or a **lymphatic obstruction**. A "safety factor" of several mmHg is provided by the rise of $P_i$ with volume, the washout of interstitial protein and the lymph increase.`,
-      idea: String.raw`At steady state the filtration and the lymph flow balance; the stable volume is the intersection of the two curves of flow against volume. As the interstitium swells, $P_i$ rises (reducing filtration), the interstitial protein is diluted (raising the net inward pull) and the lymph increases, all negative feedback; this is why a modest rise in capillary pressure produces no visible swelling. Once the pressure in the tissue becomes positive its compliance rises sharply (the gel loosens and free fluid collects), the feedback weakens, and the equilibrium may move beyond the plotted volume range. In this particular model interstitial pressure continues to rise without bound, so a finite equilibrium eventually exists even when none is visible below 15 L.`,
-      caption: String.raw`**Left:** filtration (red) and lymph flow (blue) against the excess interstitial volume; the filled dot is the steady state (no dot: no equilibrium within the plotted 0–15 L range). **Right:** the volume over the first day starting from normal. Raise **venous pressure** or lower **plasma protein**, or block the **lymphatics**, and watch the steady state move, potentially beyond the plotted range. The readout shows the steady excess volume and the interstitial pressure.`,
-      scope: String.raw`A reconstruction with round-number parameters in the style of the textbook analysis ($K_f$ about 7 mL/min/mmHg for the whole body, $P_i$ about −3 mmHg, a capillary pressure of 17.3 mmHg and plasma oncotic pressure 28 mmHg, a lymph ceiling of 25 times its resting flow); the plasma volume is not tracked, whereas in a patient the loss of a litre of filtrate would drain it unless the kidney retained salt and water, so the swelling here is faster than in life; the interstitial pressure–volume curve and the lymph law are schematic. The conclusions are qualitative: which direction each factor pushes, and that there is a threshold. Nothing here is a clinical prediction.`,
-      deps: ['physio-4.12'],
+      statement: String.raw`Oedema means excess interstitial fluid. A compartment balance is $\dot x=(J_v-J_{lymph})/1000$ for excess volume $x$ in litres and flows in mL/min. In the chosen classical model, $J_v=K_f[(P_c-P_i(x))-\sigma(\pi_c-\pi_i(x))]$: increasing capillary pressure, decreasing plasma oncotic pressure or decreasing the protein reflection coefficient raises outward filtration at a fixed tissue state. Reducing lymph return also raises accumulation. Tissue pressure and protein dilution provide feedback as volume increases.`,
+      idea: String.raw`The steady state is where filtration equals lymph return. Here tissue pressure rises with volume, interstitial oncotic pressure falls and lymph flow rises toward a ceiling, so the net accumulation rate decreases strictly with volume. The chosen pressure law keeps rising even after its slope becomes smaller: therefore these particular curves **always have a finite stable equilibrium** over the controls shown. An intersection beyond an old plotting window does not establish runaway growth. The break in the chosen pressure curve at 1.5 L illustrates weaker feedback, not a universal diagnostic threshold.
+
+For these chosen continuous feedback curves, let the net accumulation rate be $f(x)$. Once two finite volumes bracket opposite signs, the intermediate value theorem pma-4.23 supplies an equilibrium between them. The stated strict decrease makes it unique and directs the scalar flow toward it. The unbounded rising tissue-pressure law eventually makes accumulation negative; that mathematical assumption, not a universal physiological reserve, is why the illustration has a finite equilibrium.`,
+      caption: String.raw`The **left** panel shows the complete filtration and lymph curves through their computed intersection. The **right** panel integrates the volume balance for 24 hours from zero excess volume. Change **venous pressure**, **plasma oncotic pressure**, **lymph function** and **reflection coefficient** to compare the equilibrium with the fluid accumulated during the first day. Full trajectories are shown without a volume cap.`,
+      scope: String.raw`A classical compartment illustration with chosen parameters: $K_f=7$ mL/min/mmHg, initial $P_i=-3$ mmHg, $P_c=17.3+0.8\Delta P_v$ mmHg, $\pi_i=96/(12+x)$ mmHg, basal lymph flow 2.1 mL/min and a ceiling 52.5 mL/min before the lymph-function multiplier. The piecewise pressure–volume law and exponential lymph response are illustrative, not fitted measurements. Plasma depletion, protein transport, renal replacement and glycocalyx effects are omitted; large-volume equilibria are mathematical extrapolations. Starling's 1896 paper supplies historical pressure/protein reasoning and explicitly discusses lymphatic removal; it does not validate these chosen functions or numerical values. This panel does not predict clinical swelling or its timing.`,
+      deps: ['physio-4.12','pma-4.23'],
       see: ['physio-4.20'],
-      refs: ['Guyton–Hall'],
+      refs: ['Starling (1896), On the Absorption of Fluids from the Connective Tissue Spaces, J Physiol 19:312–326, pp.321–325 pressure/protein reasoning and lymphatic qualification; DOI 10.1113/jphysiol.1896.sp000596; constitutive laws chosen here'],
       tags: ['oedema', 'lymph', 'Starling'],
-      verify: true,
+      verify: false,
       viz(v) {
         const sPv = v.slider('rise in venous pressure', 0, 30, 13, { step: 0.5, fmt: (x) => `+${x} mmHg` });
         const sPi = v.slider('plasma oncotic pressure $\\pi_c$', 8, 28, 28, { step: 0.5, fmt: (x) => `${x} mmHg` });
         const sL = v.slider('lymph function', 0, 1, 1, { step: 0.05, fmt: (x) => `${v.fix(100 * x, 0)}%` });
         const sK = v.slider('capillary leakiness (σ lowered)', 0, 0.6, 0, { step: 0.05, fmt: (x) => `σ = ${v.fix(1 - x, 2)}` });
-        const a = v.stage({ x: [0, 15], y: [-25, 60], height: 300, axes: 'box', gutter: true, xlabel: 'excess interstitial volume (L)', ylabel: 'flow (mL/min)', weight: 1 });
-        const b = v.stage({ x: [0, 24], y: [0, 15], height: 300, axes: 'box', gutter: true, xlabel: 'time (hours)', ylabel: 'excess volume (L)', weight: 1 });
-        let o = null;
-        v.render(() => {
-          const {Jf,Jl,Pi} = oedemaFlows(sPv.value,sPi.value,sL.value,1-sK.value);
-          a.setView([0,15], [Math.min(-25, 1.1 * Jf(15)), Math.max(60, 1.1 * Jf(0))]);
-          a.fn(Jf, { color: 'red', width: 2.8 }); a.fn(Jl, { color: 'accent', width: 2.8 });
-          a.hline(0, { color: 'muted', width: 1 }); a.vline(1.5, { color: 'faint', dash: [4, 4] }); a.text('Pi = 0', 1.6, 56, { size: 11, color: 'muted', align: 'left' });
-          // steady state: first sign change of Jf − Jl from x = 0
-          let xs = null; { let prev = Jf(0) - Jl(0); if (prev <= 0) xs = 0; else for (let x = 0.02; x <= 15 && xs === null; x += 0.02) { const cur = Jf(x) - Jl(x); if (cur <= 0) { let lo = x - 0.02, hi = x; for (let k = 0; k < 40; k++) { const m = (lo + hi) / 2; if (Jf(m) - Jl(m) > 0) lo = m; else hi = m; } xs = (lo + hi) / 2; } prev = cur; } }
-          if (xs !== null) a.dot(xs, Jf(xs), { r: 8, color: 'green' }); else a.text('equilibrium beyond 15 L', 7.5, 30, { size: 14, color: 'red', align: 'center', weight: 700 });
-          const o0 = xs;
-          // time course (explicit steps of 10 min)
-          const pts = []; let x = 0; const dt = 10, nS = 24 * 6; for (let k = 0; k <= nS; k++) { if (k % 2 === 0) pts.push([k / 6, Math.min(x, 15)]); x = Math.max(0, x + ((Jf(x) - Jl(x)) * dt) / 1000); }
-          b.path(pts, { color: 'purple', width: 2.8 }); b.hline(1.5, { color: 'faint', dash: [4, 4] }); b.setView([0, 24], [0, o0 === null ? 15 : Math.max(3.5, o0 * 1.4)]); b.text('Pi turns positive', 23.8, 1.5, { size: 11, color: 'muted', align: 'right', baseline: 'bottom', dy: -3 });
-          if (xs !== null) b.hline(xs, { color: 'green', dash: [5, 4] });
-          o = { xs, Pi: xs === null ? null : Pi(xs), Jl0: Jl(0), Jf0: Jf(0), end: pts[pts.length - 1][1] };
+        const a=v.stage({x:[0,15],y:[-25,60],height:300,axes:'box',gutter:true,xlabel:'excess interstitial volume (L)',ylabel:'flow (mL/min)',weight:1});
+        const b=v.stage({x:[0,24],y:[0,15],height:300,axes:'box',gutter:true,xlabel:'time (hours)',ylabel:'excess volume (L)',weight:1});
+        let o=null;
+        v.render(()=>{
+          const model=oedemaModel(sPv.value,sPi.value,sL.value,sK.value),xs=model.equilibrium,pts=oedemaTrajectory(model),xmax=Math.max(3.5,xs*1.18),ymin=Math.min(-5,model.filtration(xmax))*1.15,ymax=Math.max(5,model.filtration(0),model.lymph(xmax))*1.25;
+          a.setView([-xmax*.04,xmax],[ymin,ymax]);
+          a.fn(model.filtration,{color:'red',width:2.8,domain:[0,xmax]});a.fn(model.lymph,{color:'accent',width:2.8,domain:[0,xmax]});a.hline(0,{color:'muted',width:1});a.vline(1.5,{color:'faint',dash:[4,4]});a.text('chosen pressure-law break',1.5,ymax*.88,{size:11,color:'muted',align:'left'});a.dot(xs,model.filtration(xs),{r:8,color:'green'});
+          b.setView([-1,25],[-.04*xmax,xmax]);b.path(pts,{color:'purple',width:2.8});b.hline(xs,{color:'green',dash:[5,4]});b.hline(1.5,{color:'faint',dash:[4,4]});
+          o={xs,Pi:tissuePressure(xs),Jf0:model.filtration(0),Jl0:model.lymph(0),end:pts.at(-1)[1],model,pts};
         });
-        v.legend([['red', 'filtration $J_v$'], ['accent', 'lymph flow'], ['purple', 'volume over time']]);
-        v.readout(() => `at the start: filtration ${v.fix(o.Jf0, 1)} mL/min vs lymph ${v.fix(o.Jl0, 1)} mL/min (normal ≈ 2 mL/min each)\n${o.xs === null ? 'no steady state below 15 L: the filtration outruns the lymph (the volume plotted is clipped at 15 L)' : `steady state: excess ${v.fix(o.xs, 2)} L, interstitial pressure ${v.fix(o.Pi, 1)} mmHg → ${o.Pi > 0 ? 'oedema (positive tissue pressure)' : 'no visible oedema (the feedback has absorbed the load)'}`}\nin this model the first oedema appears once the capillary pressure has risen by about 9 mmHg (the model threshold depends on its assumed pressure, protein and lymph functions)`);
+        v.legend([['red','filtration $J_v$'],['accent','lymph flow'],['green','model equilibrium'],['purple','integrated volume']]);
+        v.readout(()=>`initial filtration ${v.fix(o.Jf0,1)} mL/min; lymph return ${v.fix(o.Jl0,1)} mL/min\nfinite model equilibrium: excess ${v.fix(o.xs,2)} L at tissue pressure ${v.fix(o.Pi,2)} mmHg; after 24 hours: ${v.fix(o.end,2)} L excess (plasma volume is not tracked)`);
+
       },
     },
     // ------------------------------------------------------------------ 4.14
@@ -156,31 +152,31 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       num: '4.14',
       kind: 'Concept',
       name: 'Reynolds number, turbulence and bruits',
-      statement: String.raw`The **Reynolds number** $\mathrm{Re}=\rho \bar u D/\mu$ compares inertial to viscous forces. Steady flow in a straight tube is laminar for $\mathrm{Re}$ below about 2000–2300 and turbulent well above that; transition depends on disturbances and experimental conditions. In the body $\mathrm{Re}$ is large only in the aorta and big arteries and in narrowed or abnormal places (a stenosis, a high-output state), where disturbed flow and turbulence can occur. Turbulence makes the wall vibrate and is heard through the stethoscope as a **murmur** (in the heart) or a **bruit** (over a vessel); a lowered blood viscosity (anaemia) raises $\mathrm{Re}$ and can produce a flow murmur.`,
-      idea: String.raw`Dimensional analysis (the dynamic similarity of fluid-6.5) shows that Reynolds-number similarity applies when the nondimensional geometry, boundary conditions and other relevant groups also agree. Equal Re alone does not make a stenotic jet and a straight vessel dynamically equivalent; pulsatile flow additionally depends on Womersley number. Laminar flow keeps its parabolic profile (physio-4.2); beyond the critical value small disturbances grow, the profile flattens, momentum is exchanged across the stream, the wall shear and the pressure drop increase above the Poiseuille values, and the fluctuating pressure at the wall is what the ear picks up. The 2000 figure is an empirical number for steady flow in a smooth straight tube; pulsatile flow, curvature and a rough wall change it.`,
-      caption: String.raw`**Left:** the tube with dye particles (a schematic, not a flow simulation): in laminar flow they move on parallel paths with a parabolic speed profile, and above the critical Reynolds number they get a flat mean profile and random cross-stream motion. **Right:** a map of tube diameter against mean velocity with lines of constant $\mathrm{Re}$; drag the **handle** ("you") to choose a vessel, or look at the labelled points. Lower the **viscosity** (as in anaemia) to push the same vessel toward turbulence. The speaker plays synthetic noise above the chosen cartoon threshold; it is not a recording or an acoustic prediction.`,
-      scope: String.raw`The critical value (about 2000) is for steady flow in a long, straight, smooth tube; the pulsatile aorta can stay laminar in part of the cycle at a peak Re above that, and a stenotic jet becomes turbulent downstream of the narrowing. The animation is a cartoon of laminar vs turbulent flow, not a Navier–Stokes solution. The labelled vessel values are rounded orders of magnitude.`,
+      statement: String.raw`The **Reynolds number** $\mathrm{Re}=\rho\bar uD/\mu$ compares inertial and viscous scales for a Newtonian fluid. Raising speed or diameter raises this ratio; raising viscosity lowers it. Reynolds' pipe experiments linked the transition from straight dye streaks to eddying motion to this combination, and showed that the transition depends on inlet disturbances. A value near 2000 is a useful teaching reference for long straight pipes, **not a universal boundary for arteries**. A stenotic jet can produce unsteady fluctuations, but a Reynolds number by itself cannot predict an audible murmur or bruit.`,
+      idea: String.raw`Nondimensionalizing the steady incompressible momentum equation with length $D$ and speed $\bar u$ gives the viscous coefficient $1/\mathrm{Re}$. Equal Reynolds numbers support dynamic similarity only when geometry and boundary conditions also match; pulsatility adds further parameters such as Womersley number (physio-4.15). A smaller viscosity at fixed speed and diameter increases Re without proving that a particular vessel becomes turbulent. The particle cartoon uses a prescribed transition band and does not solve fluid equations or acoustic transmission.`,
+      caption: String.raw`**Left:** a schematic of parallel paths and a flatter, fluctuating pattern as the chosen transition reference is crossed. **Right:** a log map of diameter and mean speed; drag the gold handle and change viscosity to test $\mathrm{Re}=\rho\bar uD/\mu$. The labelled points are chosen examples at vessel-like scales, not measurements. The sound button plays synthetic pink noise above the selected reference; its sound and amplitude do not simulate a stethoscope recording.`,
+      scope: String.raw`The numerical Reynolds ratio is computed honestly; the classification band, vessel-scale points, density of 1060 kg/m³ and viscosity range are illustrative model inputs. The transition control is a teaching reference, not a validated clinical threshold. Arterial elasticity, non-Newtonian rheology, curvature, pulsatility and acoustic transmission are omitted. This panel cannot infer disease or absence of disease from sound or Re.`,
       deps: ['physio-4.2', 'fluid-6.5'],
       see: ['physio-4.18'],
-      refs: ['Guyton–Hall'],
+      refs: ['Reynolds (1883), pp. 937–943, §§4–6 and 11; pp. 946–947, pipe resistance experiments', 'Hatle, Angelsen & Tromsdal (1980), pp. 285 and 291–292 (observed jet-sound limitations)'],
       tags: ['Reynolds', 'turbulence', 'murmur'],
       credit: 'O. Reynolds, 1883',
       links: { doi: 'https://doi.org/10.1098/rstl.1883.0029' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sMu = v.slider('blood viscosity $\\mu$', 1.5, 6, 3.5, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} mPa·s` });
-        const sCrit = v.slider('critical $\\mathrm{Re}$', 1500, 3000, 2000, { step: 50 });
+        const sCrit = v.slider('transition reference $\\mathrm{Re}$', 1500, 3000, 2000, { step: 50 });
         const snd = v.sound();
-        v.soundButton('Listen (stethoscope)', (s) => { if (cur.Re > sCrit.value) s.noise({ color: 'pink', duration: 1.4, gain: Math.min(0.5, 0.08 + 0.1 * Math.log10(cur.Re / sCrit.value + 1)) }); });
+        v.soundButton('Listen to synthetic noise', (s) => { if (cur.Re > sCrit.value) s.noise({ color: 'pink', duration: 1.4, gain: Math.min(0.5, 0.08 + 0.1 * Math.log10(cur.Re / sCrit.value + 1)) }); });
         const A = v.stage({ x: [0, 10], y: [-1.4, 1.4], height: 260, axes: false, weight: 1.1 });
-        const B = v.stage({ x: [0.005, 50], y: [1e-4, 10], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, xlabel: 'tube diameter (mm)', ylabel: 'mean velocity (m/s)', weight: 1 });
+        const B = v.stage({ x: [0.004, 65], y: [5e-5, 20], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, xlabel: 'tube diameter (mm)', ylabel: 'mean velocity (m/s)', weight: 1 });
         const h = B.handle(14, 0.4, { color: 'gold', label: 'you', labelPos: 'n', constrain: (x, y) => [clamp(x, 0.005, 50), clamp(y, 1e-4, 10)] });
         const P = [
           { n: 'aorta, mean', D: 25, u: 0.2, dy: 0.45 }, { n: 'aorta, peak', D: 25, u: 1.0 }, { n: 'femoral', D: 6, u: 0.15, dy: 0.45 }, { n: 'capillary', D: 0.008, u: 0.0004 },
           { n: 'stenotic jet', D: 4, u: 4 },
         ];
         const cur = { Re: 0 };
-        const reOf = (D, u, mu) => (RHO_BLOOD * u * (D * 1e-3)) / (mu * 1e-3);
+        const reOf = reynolds;
         const prs = Array.from({ length: 70 }, (_, k) => ({ y: ((k * 0.6180339) % 1) * 2 - 1, x: (k * 0.4142135) % 1, ph: k * 2.399 }));
         v.animate((t) => {
           const mu = sMu.value, Rec = sCrit.value;
@@ -196,19 +192,23 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
             const x = (((p.x * 10 + t * spd * 3 * sp) % 10) + 10) % 10;
             const wob = turb * 0.45 * (hnoise(Math.floor(t * 7 + p.ph) + p.ph, 1) * (1 - 0.5 * Math.abs(p.y)));
             const y = clamp(p.y * 0.92 + wob * Math.sin(t * 9 + p.ph * 3), -0.95, 0.95);
-            A.dot(x, y, { r: 3, color: turb > 0.5 ? 'orange' : 'accent' });
+            A.dot(.12 + .976 * x, y, { r: 3, color: turb > 0.5 ? 'orange' : 'accent' });
           }
           A.text(turb > 0.5 ? 'turbulent' : turb > 0 ? 'transitional' : 'laminar', 0.2, 1.22, { size: 13, color: turb > 0.5 ? 'orange' : turb > 0 ? 'gold' : 'accent', align: 'left', weight: 700 });
-          A.text(`Re = ${v.fix(Re, Re < 10 ? 3 : 0)}`, 9.8, 1.22, { size: 13, color: 'ink', align: 'right', weight: 700 });
+          A.text(`Re = ${v.fmt(Re, 3)}`, 9.8, 1.22, { size: 13, color: 'ink', align: 'right', weight: 700 });
           // right: map
-          for (const r of [1, 100, 1e4]) { const f = (d) => (r * mu * 1e-3) / (RHO_BLOOD * d * 1e-3); B.fn(f, { color: 'faint', width: 1.2, dash: [4, 4], domain: [0.005, 50] }); }
-          B.fn((d) => (Rec * mu * 1e-3) / (RHO_BLOOD * d * 1e-3), { color: 'red', width: 2.4, domain: [0.005, 50] });
-          B.text('Re = 1', 0.0075, 1 * 3.5e-3 / (RHO_BLOOD * 7.5e-6) * 1.8, { size: 10, color: 'muted', align: 'left' });
-          B.text('Re = 100', 0.0075, 100 * 3.5e-3 / (RHO_BLOOD * 7.5e-6) * 1.8, { size: 10, color: 'muted', align: 'left' });
+          for (const r of [1, 100, 1e4, Rec]) {
+            const line = reynoldsLine(r, mu);
+            if (line.lo <= line.hi) B.fn(line.speed, { color: r === Rec ? 'red' : 'faint', width: r === Rec ? 2.4 : 1.2, dash: r === Rec ? false : [4, 4], domain: [line.lo, line.hi] });
+          }
+          for (const r of [1, 100]) {
+            const d = r === 1 ? .012 : .12, yy = reynolds(d, 1, mu);
+            B.text(`Re = ${r}`, d, r / yy * 1.2, { size: 10, color: 'muted', align: 'left' });
+          }
           for (const q of P) { B.dot(q.D, q.u, { r: 4, color: 'ink' }); B.text(q.n, q.D, q.u * (q.dy || 1.7), { size: 10, color: 'muted', align: 'center' }); }
         }, { period: 4, still: 1.7 });
-        v.legend([['red', 'chosen cartoon transition threshold'], ['faint', 'Re = 1, 100, 10⁴', { dash: true }]]);
-        v.readout(() => `$\\mathrm{Re}=\\rho\\bar uD/\\mu=${v.fix(cur.Re, cur.Re < 10 ? 3 : 0)}$ (ρ = 1060 kg/m³) → ${cur.Re < sCrit.value * 0.9 ? 'laminar: a quiet vessel' : cur.Re < sCrit.value * 1.2 ? 'transitional' : 'above the cartoon transition threshold; no sound diagnosis'}\nat the normal viscosity of 3.5 mPa·s this vessel would have $\\mathrm{Re}=${v.fix(cur.Re * sMu.value / 3.5, 0)}$; with your viscosity of ${v.fix(sMu.value, 1)} mPa·s it has ${v.fix(cur.Re, 0)}`);
+        v.legend([['red', 'chosen pipe-flow transition reference'], ['faint', 'Re = 1, 100, 10⁴', { dash: true }]]);
+        v.readout(() => `$\\mathrm{Re}=\\rho\\bar uD/\\mu=${v.sci(cur.Re, 3)}$ (ρ = 1060 kg/m³) → ${cur.Re < sCrit.value * 0.9 ? 'below the chosen reference' : cur.Re < sCrit.value * 1.2 ? 'within the schematic transition band' : 'above the chosen reference'}\nat the reference viscosity of 3.5 mPa·s this vessel would have $\\mathrm{Re}=${v.sci(cur.Re * sMu.value / 3.5, 3)}$; with your viscosity of ${v.fix(sMu.value, 1)} mPa·s it has ${v.fmt(cur.Re, 3)}`);
       },
     },
     // ------------------------------------------------------------------ 4.15
@@ -216,44 +216,45 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       num: '4.15',
       kind: 'Concept',
       name: 'Womersley number and pulsatile flow',
-      statement: String.raw`For an oscillatory pressure gradient of angular frequency $\omega$ in a tube of radius $R$, the dimensionless **Womersley number** $\alpha=R\sqrt{\omega\rho/\mu}$ has square $\alpha^2$ equal to the characteristic ratio of unsteady inertia to viscosity. For $\alpha\lesssim1$ the profile is a parabola that rises and falls in step with the pressure gradient (a "breathing" Poiseuille flow); for $\alpha\gg1$ the fluid in the core moves as a flat plug that lags the gradient by almost 90°, and the shear is confined to a thin Stokes layer of thickness $\delta=\sqrt{2\mu/(\rho\omega)}=\sqrt2 R/\alpha$ at the wall (the thin-layer approximation applies only for large $\alpha$). The exact solution for the velocity is
+      statement: String.raw`For an oscillatory pressure gradient of angular frequency $\omega$ in a tube of radius $R$, the dimensionless **Womersley number** $\alpha=R\sqrt{\omega\rho/\mu}$ has square $\alpha^2=\omega\rho R^2/\mu$, the ratio of unsteady inertial to viscous terms at the radius scale. For $\alpha\ll1$ the profile is approximately a parabola that rises and falls nearly in step with the pressure gradient (a "breathing" Poiseuille flow); for $\alpha\gg1$ the fluid in the core moves as a flat plug that lags the gradient by almost 90°, and the shear is confined to a thin Stokes layer of penetration depth $\delta=\sqrt{2\mu/(\rho\omega)}=\sqrt2R/\alpha$ at the wall. The exact solution for the velocity is
 $$u(r,t)=\operatorname{Re}\!\Bigl\{\tfrac{-iG}{\rho\omega}\Bigl[1-\tfrac{J_0(\alpha i^{3/2}r/R)}{J_0(\alpha i^{3/2})}\Bigr]e^{i\omega t}\Bigr\}\quad\text{for } -\partial_z p=G\cos\omega t.$$
-For the illustrative preset radii and common frequency/fluid properties below, $\alpha$ is about 18.5 for the aorta, 4.6 for the femoral artery, and below 1 for the small-vessel examples. These are calculated examples, not measured reference ranges.`,
+Here the anatomical labels denote illustrative radii; the model computes $\alpha$ from those radii and the stated frequency, density and viscosity.`,
       idea: String.raw`Write $u=\operatorname{Re}[\hat u(r)e^{i\omega t}]$ in the axisymmetric momentum equation: $i\omega\rho\hat u=G+\mu(\hat u''+\hat u'/r)$, whose regular solution is a Bessel function of complex argument, $J_0(\alpha i^{3/2}r/R)$. For small $\alpha$ the viscous term wins and the series reproduces the Poiseuille parabola (physio-4.2) at each instant; for large $\alpha$ the inertia wins in the core, the velocity is $G/(i\omega\rho)$ there (90° behind the gradient), and the wall layer is thin. The reason that this matters is that the oscillatory flow in large arteries is not quasi-steady, so Poiseuille's law gives the wrong resistance to the pulsatile components of flow.`,
-      caption: String.raw`The **left** panel shows the velocity profile across the tube as it oscillates (animated, with eight phases of the cycle drawn faintly); the **right** panel plots the pressure gradient (grey) and the centre-line velocity (blue) over one cycle. Raise the **Womersley number** with the slider or choose a vessel: the parabola flattens into a plug, the centre-line response shrinks, and its lag approaches 90° from an initial value near 0°; the centre-line lag can slightly exceed 90° at intermediate $\alpha$. The profile is computed from the exact Bessel-function solution, with a complex Bessel series evaluated numerically.`,
-      scope: String.raw`Exact for a rigid straight tube, an incompressible Newtonian fluid and a sinusoidal gradient (physiological waveforms are sums of such harmonics, each with its own $\alpha$). The rigid-wall and spatially uniform gradient assumptions are the limitations explicitly discussed by Womersley (1955), pp. 562–563. The presets use illustrative radii 12, 3, 0.5 and 0.015 mm, 75 beats/min, density 1060 kg/m³ and viscosity 3.5 mPa·s; they do not reconstruct the paper’s dog-femoral experiment. Its p. 562 human-femoral calculation instead uses radius 2.5 mm, 72 beats/min, density 1050 kg/m³ and viscosity 4 mPa·s, yielding $\alpha=3.52$.`,
-      deps: ['physio-4.2', 'ode-4.4'],
+      caption: String.raw`The **left** panel shows the velocity profile across the tube as it oscillates (animated, with eight phases of the cycle drawn faintly); the **right** panel plots the pressure gradient (grey) and the centre-line velocity (blue) over one cycle. Raise the **Womersley number** with the slider or choose a vessel: the parabola flattens into a plug, the centre-line response shrinks, and its centre-line lag tends towards 90° at large $\alpha$. It need not approach monotonically: the centre-line lag can slightly exceed 90°. The original paper’s volume-flow phase curve is a different observable. The profile is computed from the exact Bessel-function solution, with a complex Bessel series evaluated numerically.`,
+      scope: String.raw`Exact fully developed laminar solution for a rigid straight circular tube with no slip, an incompressible Newtonian fluid and a sinusoidal gradient (physiological waveforms are sums of such harmonics, each with its own $\alpha$). Vessel elasticity changes the flow (Womersley's elastic-tube theory), and the illustrative radius presets use a heart rate of 75 beats/min, a blood density of 1060 kg/m³ and viscosity 3.5 mPa·s.`,
+      deps: ['physio-4.2'],
       see: ['physio-4.9'],
-      refs: ['Womersley (1955), J. Physiol. 127:553–563, Eqs. (4)–(9), pp. 562–563'],
+      refs: ['Womersley (1955), pp. 553–556, equations (4)–(9), and limitations pp. 562–563'],
       tags: ['Womersley', 'pulsatile flow', 'Bessel'],
       credit: 'J. R. Womersley, 1955',
       links: { doi: 'https://doi.org/10.1113/jphysiol.1955.sp005276' },
+      verify: false,
       viz(v) {
         const w = 2 * Math.PI * 1.25, aOf = (Rmm) => Rmm * 1e-3 * Math.sqrt((w * RHO_BLOOD) / MU_BLOOD);
-        const sA = v.slider('Womersley number $\\alpha$', 0.1, 20, 4.6, { log: true, sig: 2, fmt: (x) => v.fix(x, x < 1 ? 2 : 1) });
-        const pre = v.select('or pick a vessel', [{ value: 12, label: 'aorta' }, { value: 3, label: 'femoral' }, { value: 0.5, label: 'small artery' }, { value: 0.015, label: 'arteriole' }], 3, {
-          onChange: (Rmm) => sA.set(clamp(aOf(+Rmm), 0.1, 20)),
+        const sA = v.slider('Womersley number $\\alpha$', 0.01, 20, 4.6, { log: true, sig: 2, fmt: (x) => v.fix(x, x < 1 ? 2 : 1) });
+        const pre = v.select('or pick a vessel', [{ value: 12, label: 'aorta scale (12 mm)' }, { value: 3, label: 'femoral scale (3 mm)' }, { value: 0.5, label: 'small artery (0.5 mm)' }, { value: 0.015, label: 'arteriole (0.015 mm)' }], 3, {
+          onChange: (Rmm) => sA.set(clamp(aOf(+Rmm), 0.01, 20)),
         });
         const a = v.stage({ x: [-1.05, 1.05], y: [-1.05, 1.05], height: 330, axes: 'box', gutter: true, xlabel: 'radius r/R', ylabel: 'velocity (units of $GR^2/4\\mu$)', weight: 1.1 });
-        const b = v.stage({ x: [0, 1], y: [-1.15, 1.15], height: 330, axes: 'box', gutter: true, xlabel: 'time (fraction of a cycle)', ylabel: 'relative to Poiseuille peak', weight: 1 });
+        const b = v.stage({ x: [-0.03, 1.03], y: [-1.15, 1.15], height: 330, axes: 'box', gutter: true, xlabel: 'time (fraction of a cycle)', ylabel: 'relative to Poiseuille peak', weight: 1 });
         const prof = (al, ph) => Array.from({ length: 81 }, (_, k) => { const s = -1 + k / 40; return [s, womersleyU(al, Math.abs(s), ph)]; });
         let o = null;
         v.animate((t) => {
           const al = sA.value, ph = 2 * Math.PI * (t % 1);
           for (let k = 0; k < 8; k++) { const p2 = (2 * Math.PI * k) / 8; a.path(prof(al, p2), { color: 'faint', width: 1, alpha: 0.6 }); }
           let amp = 0.05; for (let k = 0; k < 8; k++) for (const [, u] of prof(al, (2 * Math.PI * k) / 8)) amp = Math.max(amp, Math.abs(u));
-          const yr = Math.min(1.05, amp * 1.25); a.setView([-1.05, 1.05], [-yr, yr]); b.setView([0, 1], [-1.15, 1.15]);
+          const yr = Math.min(1.05, amp * 1.25); a.setView([-1.05, 1.05], [-yr, yr]); b.setView([-.03, 1.03], [-1.15, 1.15]);
           const pr = prof(al, ph);
           a.poly([[-1, 0], ...pr.map(([s, u]) => [s, u]), [1, 0]], { fill: 'accent', fillAlpha: 0.18, stroke: false });
           a.path(pr, { color: 'accent', width: 2.8 }); a.hline(0, { color: 'muted', width: 1 });
           const c = womersleyCentre(al), gain = Math.hypot(c[0], c[1]), lag = -Math.atan2(c[1], c[0]) * 180 / Math.PI;
-          b.fn((x) => Math.cos(2 * Math.PI * x), { color: 'muted', width: 2, dash: [5, 4] });
-          b.fn((x) => womersleyU(al, 0, 2 * Math.PI * x), { color: 'accent', width: 2.8 });
+          b.fn((x) => Math.cos(2 * Math.PI * x), { domain: [0, 1], color: 'muted', width: 2, dash: [5, 4] });
+          b.fn((x) => womersleyU(al, 0, 2 * Math.PI * x), { domain: [0, 1], color: 'accent', width: 2.8 });
           b.vline(t % 1, { color: 'gold', dash: [3, 4] }); b.dot(t % 1, womersleyU(al, 0, ph), { r: 6, color: 'gold' });
           o = { al, gain, lag, ph, uc: womersleyU(al, 0, ph), delta: Math.SQRT2 / al };
         }, { period: 1, still: 0.12 });
         v.legend([['muted', 'pressure gradient $G\\cos\\omega t$', { dash: true }], ['accent', 'centre-line velocity']]);
-        v.readout(() => `$\\alpha=${v.fix(o.al, 2)}$: centre-line amplitude ${v.fix(100 * o.gain, 0)}% of the quasi-steady (Poiseuille) value, lagging the gradient by ${v.fix(o.lag, 0)}°;  formal Stokes thickness $\\sqrt2 R/\\alpha$ = ${v.fix(100 * o.delta, 0)}% of the radius${o.al < 3 ? ' (not a thin layer here)' : ''}`);
+        v.readout(() => `$\\alpha=${v.fix(o.al, 2)}$: centre-line amplitude ${v.fix(100 * o.gain, 0)}% of the quasi-steady (Poiseuille) value, lagging the gradient by ${v.fix(o.lag, 0)}°;  viscous penetration depth $\\delta/R=\\sqrt2/\\alpha=${v.fix(o.delta, 2)}$. ${o.delta < .3 ? 'Thin-layer approximation is useful at this setting.' : 'This is not a thin wall layer relative to the tube radius.'}`);
       },
     },
   ],

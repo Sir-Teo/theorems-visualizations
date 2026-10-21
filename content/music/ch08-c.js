@@ -1,3 +1,9 @@
+import { BELL_PRESETS, ringingModel, ringingAudio, bellFactorial } from './source-audit-ringing.js';
+import { ROW_PRESETS, rowParse, rowRandom, rowModel, rowAudio } from './source-audit-rows.js';
+import { FF_PRESETS, ffMaskValid, ffMod, fourierModel, intervalModel, fourierAudio, ffValue } from './source-audit-fourier.js';
+const FF_OPTIONS=[['diat','diatonic'],['pent','pentatonic'],['whole','whole-tone'],['oct','octatonic'],['aug','augmented'],['dim','diminished'],['hex','hexachord'],['z4','Z tetrachord'],['cluster','chromatic cluster'],['single','singleton'],['empty','empty'],['full','all twelve'],['free','custom']].map(([value,label])=>({value,label}));
+const ffPoint=(p,r=1)=>[r*Math.sin(2*Math.PI*p/12),r*Math.cos(2*Math.PI*p/12)],ffHit=(x,y)=>ffMod(Math.round(12*Math.atan2(x,y)/(2*Math.PI))),ffPair=([a,b])=>b===0?String(a):`${a}${b<0?' − ':' + '}${Math.abs(b)}√3`;
+function ffClock(stage,mask,other=null){stage.circle(0,0,1,{color:'grid',width:1.2});for(let p=0;p<12;p++){stage.line(...ffPoint(p,.95),...ffPoint(p,1.03),{color:'muted',width:1});stage.text(String(p),...ffPoint(p,1.25),{align:'center',baseline:'middle',size:11,color:'muted'});}for(const[m,r,color,rad]of[[mask,1,'accent',6],[other,.77,'red',4.5]]){if(m===null)continue;const pcs=Array.from({length:12},(_,j)=>j).filter(j=>m&(1<<j)),points=pcs.map(p=>ffPoint(p,r));if(points.length>1)stage.path([...points,points[0]],{color,width:1.3,alpha:.65});points.forEach(p=>stage.dot(...p,{color,r:rad}));}}
 // Music Theory & Acoustics — Chapter 8 (part c): items 8.15–8.21, Fourier and interval content, rows, notation, keys, change ringing
 import { SR, C4, NOTE, mod, norm, Tn, In, key, setStr, braceStr, ic, clk, pcAt, drawClock, polyOf, dotsOf, CLOCK_STAGE, seqCents, PRESETS, complement, icv, vecStr, classes, fromMask, fcoef, fmag, ifun, droneScale, LETTERS, LET_PC, accStr, stepMidi, stepName, spell, midiFreq, drawStaff, noteHead, teStr } from './ch08.shared.js';
 
@@ -12,133 +18,54 @@ export default {
   items: [
     // ------------------------------------------------------------------ 8.15
     {
-      num: '8.15',
-      kind: 'Theorem',
-      name: 'Interval content from Fourier magnitudes',
-      statement: String.raw`For $S\subseteq\Z/12$ let $\mathrm{IF}_S(d)=\#\{(a,b)\in S^2: b-a\equiv d\}$ (the **interval function**, an autocorrelation) and $f_k(S)=\sum_{j\in S}e^{-2\pi ijk/12}$. Then
-$$|f_k(S)|^2=\sum_{d=0}^{11}\mathrm{IF}_S(d)\,e^{-2\pi ikd/12},\qquad \mathrm{IF}_S(d)=\frac1{12}\sum_{k=0}^{11}|f_k(S)|^2\,e^{2\pi ikd/12}.$$
-So the interval content (the interval vector, since $\mathrm{IF}_S(d)$ equals the entry $v_{\operatorname{ic}(d)}$ for $d\ne0,6$ and $2v_6$ for $d=6$) and the Fourier magnitudes determine each other. Consequently two sets of the same cardinality have the same interval vector exactly when $|f_k|$ agrees for all $k$. A set and its complement always agree at $k\ne0$; they also agree at $k=0$ precisely when both are hexachords, giving the hexachord theorem. Every Z-related pair agrees at all frequencies.`,
-      idea: String.raw`Multiplying $f_k$ by its conjugate gives $\sum_{a,b\in S}e^{-2\pi ik(b-a)/12}$, a sum over all ordered pairs grouped by their difference, which is the first formula; the second is its inverse transform (compare Parseval, 8.16 in Rudin: $\sum|f_k|^2=12|S|$). Complement: $f_k(\Z/12)=0$ for $k\ne0$, so $f_k(S^c)=-f_k(S)$ and the magnitudes agree for $k\ge1$; only $|f_0|^2=|S|^2$ versus $(12-|S|)^2$ differ, and their difference spread over the 12 differences, $\frac{(12-k)^2-k^2}{12}=12-2k$ for $k=|S|$, is the shift of 8.12.`,
-      caption: String.raw`Choose a set and what to compare it with. Top right: the interval function of the set (blue) and of the comparison (red), with purple rings showing the interval function rebuilt from the squared Fourier magnitudes below. Bottom: $|f_k|^2$ for both. Complements share all magnitudes for $k\ge1$; a Z-mate shares everything; the transposed or inverted copy shares everything too.`,
-      deps: ['music-8.14', 'music-8.12', 'pma-8.16'],
-      see: ['music-8.13', 'music-8.11'],
-      refs: ['Tymoczko, A Geometry of Music'],
-      tags: ['fourier', 'interval vector'],
-      credit: 'The interval function is David Lewin\'s (1959 onward); its relation to Fourier magnitudes is developed by Ian Quinn and Emmanuel Amiot (2000s); attributions from secondary sources, not checked against the originals',
-      scope: String.raw`Finite sets on the 12-element circle; the identity is a convolution theorem for $\Z/12$ and holds for any finite cyclic group. The bridge to "same vector $\Rightarrow$ same magnitudes" uses that $\mathrm{IF}_S$ (including $\mathrm{IF}_S(0)=|S|$) is determined by the vector and the size.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Autocorrelation#Wiener%E2%80%93Khinchin_theorem' },
-      verify: true,
-      viz(v) {
-        let S = PRESETS.diatonic.slice();
-        const pre = v.select('set A', [...preOpts, { value: 'free', label: 'free' }], 'diat', { onChange: (x) => { if (preSets[x]) S = preSets[x][1].slice(); } });
-        const rel = v.select('compare with', [{ value: 'comp', label: 'complement' }, { value: 'ti', label: 'moved copy (T/I)' }, { value: 'z', label: 'Z-mate' }], 'comp');
-        const tn = v.slider('copy: transpose by', 0, 11, 4, { int: true });
-        const inv = v.toggle('copy: invert', true);
-        const s = v.stage({ ...CLOCK_STAGE, height: 340, title: 'set A (blue) and B (red); click to edit A' });
-        const ib = v.stage({ x: [-0.7, 11.7], y: [0, 8], axes: 'box', gutter: true, height: 340, xlabel: 'difference $d$', ylabel: 'IF(d)', xticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], title: 'interval function and its rebuild' });
-        const fb = v.stage({ x: [-0.7, 6.7], y: [0, 10], axes: 'box', gutter: true, full: true, height: 230, xlabel: 'k', ylabel: '$|f_k|^2$', title: 'squared Fourier magnitudes' });
-        s.onClick((x, y) => { if (Math.hypot(x, y) < 0.3) return; const k = pcAt(x, y); S = S.includes(k) ? S.filter((q) => q !== k) : norm([...S, k]); pre.value = 'free'; v.invalidate(); });
-        const zmate = (A) => { const { ti, tiOf } = classes(), V = key(icv(A)), ma = A.reduce((m, x) => m | (1 << x), 0), my = tiOf[ma]; for (let c = 0; c < ti.length; c++) { if (c === my) continue; const B = fromMask(ti[c][0]); if (B.length === A.length && key(icv(B)) === V) return B; } return null; };
-        const other = () => { if (rel.value === 'comp') return complement(S); if (rel.value === 'ti') return inv.value ? In(S, tn.value) : Tn(S, tn.value); return zmate(S); };
-        v.soundButton('play A, then B', (sd) => { const B = other(); if (S.length && B && B.length) sd.samples(seqCents([S.map((k) => k * 100), B.map((k) => k * 100)], C4, 1.6, 0.2), SR, { gain: 0.9 }); });
-        const sq = (X, k) => fmag(X, k) ** 2;
-        v.render(() => {
-          const B = other() || S, ok = !!other();
-          drawClock(s, { names: true });
-          polyOf(s, S, 1, { color: 'accent' }); dotsOf(s, S, 1, { color: 'accent', r: 8 });
-          if (ok) { polyOf(s, B, 0.8, { color: 'red' }); dotsOf(s, B, 0.8, { color: 'red', r: 6 }); }
-          if (!ok) s.text('no Z-mate: A is alone in its vector class', 0, 0, { size: 13, color: 'muted', align: 'center', baseline: 'middle', plate: true });
-          const FA = ifun(S), FB = ifun(B), top = Math.max(2, ...FA, ...FB) + 1;
-          ib.setView([-0.7, 11.7], [0, top]);
-          for (let d = 0; d < 12; d++) {
-            ib.rect(d - 0.38, 0, d, FA[d], { fill: 'accent', fillAlpha: 0.75, stroke: false }); if (ok) ib.rect(d, 0, d + 0.38, FB[d], { fill: 'red', fillAlpha: 0.75, stroke: false });
-            let rec = 0; for (let k = 0; k < 12; k++) rec += sq(S, k) * Math.cos((2 * Math.PI * k * d) / 12); rec /= 12;
-            ib.dot(d - 0.19, rec, { r: 5, color: 'purple', hollow: true });
-          }
-          const mx = Math.max(S.length ** 2, B.length ** 2, ...[1, 2, 3, 4, 5, 6].map((k) => Math.max(sq(S, k), sq(B, k)))) * 1.1 + 0.5;
-          fb.setView([-0.7, 6.7], [0, mx]);
-          for (let k = 0; k <= 6; k++) { fb.rect(k - 0.38, 0, k, sq(S, k), { fill: 'accent', fillAlpha: 0.75, stroke: false }); if (ok) fb.rect(k, 0, k + 0.38, sq(B, k), { fill: 'red', fillAlpha: 0.75, stroke: false }); }
-        });
-        v.legend([['accent', 'A'], ['red', 'B'], ['purple', 'IF of A rebuilt from $|f_k|^2$', { dot: true }]]);
-        v.readout(() => {
-          const B = other();
-          if (!B) return `A = $${braceStr(S)}$ has no Z-mate (no other class shares its interval vector).`;
-          const dm = Math.max(...[1, 2, 3, 4, 5, 6].map((k) => Math.abs(sq(S, k) - sq(B, k)))), FA = ifun(S), FB = ifun(B);
-          const di = Math.max(...FA.slice(1).map((x, i) => Math.abs(x - FB[i + 1])));
-          let err = 0; for (let d = 0; d < 12; d++) { let rec = 0; for (let k = 0; k < 12; k++) rec += sq(S, k) * Math.cos((2 * Math.PI * k * d) / 12); err = Math.max(err, Math.abs(rec / 12 - FA[d])); }
-          return `$|A|=${S.length}$, $|B|=${B.length}$ · largest difference of $|f_k|^2$ for $k=1..6$: ${v.fix(dm, 6)} · largest difference of IF for $d\\ne0$: ${di}${di > 0 && dm < 1e-9 ? ` (it equals $|12-2|A||=${Math.abs(12 - 2 * S.length)}$: only $|f_0|$ differs)` : ''} · interval vectors ${key(icv(S)) === key(icv(B)) ? 'equal' : 'differ'} · rebuild error ${v.fix(err, 10)}.`;
-        });
+      num:'8.15',kind:'Theorem',name:'Interval content from Fourier magnitudes',verify:false,
+      statement:String.raw`For $S\subseteq\Z/12$, let $I_S(d)$ count ordered pairs $(a,b)\in S^2$ with $b-a\equiv d$. For its Fourier coefficients $f_k$ from 8.14, put $\omega=e^{-2\pi i/12}$. Then
+$$|f_k|^2=\sum_{d=0}^{11}I_S(d)\omega^{kd},$$
+$$I_S(d)=\frac1{12}\sum_{k=0}^{11}|f_k|^2\omega^{-kd}.$$
+Therefore the full interval function and all squared Fourier magnitudes determine each other. For two sets of the same cardinality, equality of their six-entry interval vectors is equivalent to equality of all Fourier magnitudes. The cardinality condition matters: the empty set and a singleton both have zero interval vector, but their Fourier magnitudes differ.
+Every complement satisfies $f_k(S^c)=-f_k(S)$ for $k\ne0$, so the nonzero-frequency magnitudes agree. The full interval functions agree for complementary hexachords, where both sets have six notes. For arbitrary size $m=|S|$,
+$$I_{S^c}(d)=I_S(d)+12-2m$$
+for every difference $d$, including zero.`,
+      idea:String.raw`Multiply a Fourier coefficient by its conjugate and group the resulting terms by the ordered-pair difference. Character orthogonality gives the inverse formula. The zero difference records cardinality: $I_S(0)=|S|$. For differences 1…5 and 7…11 the counts equal the corresponding interval-vector entries; difference 6 counts each tritone pair twice. Complementation preserves nonzero bins while changing $f_0$ from $m$ to $12-m$; the resulting constant inverse-transform shift explains exactly when equal interval content follows.`,
+      caption:String.raw`Choose a set, edit the clock and compare with its complement, a moved copy or a Z-mate of the same cardinality. Purple rings reconstruct the full interval function using exact squared coefficients. The power plot includes bin 0 so that unequal complement sizes remain visible. If no Z-mate exists, the comparison is explicitly absent. Play A then B; an empty event is silence.`,
+      deps:['music-8.14','music-8.12','pma-8.16'],see:['music-8.13','music-8.11'],
+      refs:['Amiot 2007, §§1.2–1.3, pp. 99–101, Theorems2–4 and convolution proof'],tags:['fourier','interval vector'],
+      credit:'Amiot, source exposition of the interval-content identity and hexachord condition',
+      scope:String.raw`The transform identities hold for finite cyclic groups; this implementation explicitly computes all twelve differences/bins in $\Z/12$. Exact squared coefficients lie in $\Q(\sqrt3)$, and the inverse is evaluated there to integral counts; the readout also reports the independent floating-point inverse error. A Z-mate is a same-cardinality set with the same interval vector outside A's transposition/inversion class; when several exist the smallest integer bitmask is chosen. The finite search covers all 4,096 sets. No historical priority or perceptual sameness follows from an interval vector. Audio is the declared C4/H8 signal of 8.14, with 0.6-second events and 0.1-second silence between them.`,
+      links:{source:'https://journals.openedition.org/msh/pdf/4272'},
+      viz(v){
+        let mask=FF_PRESETS.diat,info;const pre=v.select('set A',FF_OPTIONS,'diat',{onChange:name=>{if(name!=='free')mask=FF_PRESETS[name];}}),relation=v.select('compare with',[{value:'complement',label:'complement'},{value:'moved',label:'moved copy'},{value:'z',label:'Z-mate'}],'complement'),tn=v.slider('copy transposition',0,11,4,{int:true,step:1}),inv=v.toggle('copy inversion',true);
+        v.shareState('Interval Fourier edited pitch-class mask',{get:()=>mask,validate:ffMaskValid,set:data=>{mask=data;}});
+        const clock=v.stage({x:[-1.6,1.6],y:[-1.6,1.6],equal:true,height:320,full:true,title:'A outside; B inside; click to edit A'}),counts=v.stage({x:[-.8,11.8],y:[-.8,9],axes:'box',gutter:true,full:true,height:310,xticks:[0,2,4,6,8,10],xlabel:'ordered difference d',ylabel:'interval count',title:'full interval functions and exact reconstruction'}),powers=v.stage({x:[-.8,6.8],y:[-1,60],axes:'box',gutter:true,full:true,height:280,xticks:[0,1,2,3,4,5,6],xlabel:'Fourier bin k (including 0)',ylabel:'squared magnitude',title:'bin zero records the cardinality difference'});
+        const model=()=>intervalModel(mask,relation.value,tn.value,inv.value);clock.onClick((x,y)=>{if(Math.hypot(x,y)<.3)return;mask^=1<<ffHit(x,y);pre.value='free';v.invalidate();});
+        const play=v.soundButton('play A then B',snd=>{const a=model();if(!a.B)return;const b=fourierAudio([a.A.mask,a.B.mask]);snd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;tn.el.hidden=inv.el.hidden=a.relation!=='moved';play.disabled=!a.B;ffClock(clock,a.A.mask,a.B?.mask??null);if(!a.B){clock.text('No Z-mate',0,.1,{align:'center',baseline:'middle',size:12,color:'muted'});clock.text('for this set',0,-.15,{align:'center',baseline:'middle',size:11,color:'muted'});}const top=Math.max(2,...a.A.IF,...(a.B?.IF??[]))+2;counts.setView([-.8,11.8],[-.08*top,top]);for(let d=0;d<12;d++){counts.rect(d-.34,0,d,a.A.IF[d],{fill:'accent',fillAlpha:.75,stroke:false});if(a.B)counts.rect(d,0,d+.34,a.B.IF[d],{fill:'red',fillAlpha:.65,stroke:false});counts.dot(d-.17,a.A.rebuilt[d],{color:'purple',r:4,hollow:true});}const high=Math.max(1,...a.A.powers.slice(0,7).map(ffValue),...(a.B?.powers.slice(0,7).map(ffValue)??[]));powers.setView([-.8,6.8],[-.04*high,1.15*high]);for(let k=0;k<=6;k++){powers.rect(k-.34,0,k,ffValue(a.A.powers[k]),{fill:'accent',fillAlpha:.75,stroke:false});if(a.B)powers.rect(k,0,k+.34,ffValue(a.B.powers[k]),{fill:'red',fillAlpha:.65,stroke:false});}});
+        v.legend([['accent','A'],['red','B when present'],['purple','exact inverse-transform counts',{dot:true}]]);
+        v.readout(()=>{const a=info;return `A: ${a.A.m} notes {${a.A.pcs.join(', ')}}; interval vector [${a.A.iv.join(', ')}].\n${a.B?`B: ${a.B.m} notes {${a.B.pcs.join(', ')}}; interval vector [${a.B.iv.join(', ')}]. Full squared magnitudes equal: ${a.fullPowersEqual?'yes':'no'}; interval vectors equal: ${a.vectorEqual?'yes':'no'}; largest nonzero-bin power difference ${v.fix(a.nonzeroDifference,8)}.`:'No same-cardinality Z-mate outside this T/I class; B and its audio are absent.'}\n${a.relation==='complement'?`Exact difference I(B)−I(A) is ${a.shift} for every d=0…11. Equal full interval content occurs exactly at size 6.`:''}\nExact reconstruction agrees at all 12 differences. Floating inverse error ${a.A.inverseError.toExponential(2)}; bin 0 powers ${ffPair(a.A.powers[0])}${a.B?` versus ${ffPair(a.B.powers[0])}`:''}.`;});
       },
     },
     // ------------------------------------------------------------------ 8.16
     {
-      num: '8.16',
-      kind: 'Concept',
-      name: 'Twelve-tone rows and the row matrix',
-      statement: String.raw`A **twelve-tone row** is an ordering $p=(p_0,\dots,p_{11})$ of the twelve pitch classes. Its 48 standard forms are the prime forms $P_n$ ($T_n$ of the row), the retrogrades $R_n$ (reversed), the inversions $I_n$ ($p_j\mapsto 2p_0-p_j$, then transposed) and the retrograde inversions $RI_n$. The **row matrix** is the $12\times12$ array with entries $m_{ij}=p_j-p_i+p_0 \pmod{12}$: row $i$ is a prime form (it starts on $2p_0-p_i$), column $j$ is an inversion form (starting on $p_j$), and reading rows backwards or columns upwards gives all retrogrades. Every row and every column contains each pitch class exactly once, and the 48 forms are distinct unless the row has a symmetry (such as being its own retrograde inversion at some transposition).`,
-      idea: String.raw`The forms are the images of $p$ under the group generated by $T_n$ and $I$ (8.7) together with reversal of order, a group of order $4\cdot12=48$ acting on orderings; the matrix writes out all $12$ transpositions of $P$ in its rows and all 12 transpositions of the inversion in its columns by the formula $p_j-p_i+p_0$, in which fixing $i$ translates the row and fixing $j$ gives $p_j$ plus the (negated) differences $p_i-p_0$. Permutation property: for fixed $i$, $j\mapsto p_j+c$ is a bijection of $\Z/12$.`,
-      caption: String.raw`The matrix of the row of Berg's Violin Concerto, or type your own row (12 numbers 0–11, or note names like C, Eb, F#). Click a row, column or any edge label to select a form: the form is outlined and its pitches listed and played. Random rows and rows with symmetry (try the chromatic scale and the circle of fifths) change the count of distinct forms.`,
-      deps: ['music-8.7'],
-      see: ['music-8.8'],
-      refs: ['Benson §9.8 pp. 322–324; §9.13 pp. 330–332'],
-      tags: ['serialism', 'symmetry'],
-      credit: 'Arnold Schoenberg (method developed from about 1921; the Suite for Piano, Op. 25 is generally cited as the first piece to use it throughout) and, independently, Josef Matthias Hauer (a twelve-note system from about 1920); the default row is that of Alban Berg\'s Violin Concerto (1935)',
-      scope: String.raw`The 48 forms count the orderings obtained by transposition, inversion and retrograde; symmetric rows give fewer distinct forms. The default row is given as G B♭ D F♯ A C E G♯ B C♯ E♭ F (program notes), checked against two sources.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Twelve-tone_technique' },
-      verify: true,
-      viz(v) {
-        const BERG = [7, 10, 2, 6, 9, 0, 4, 8, 11, 1, 3, 5];
-        const EX = { berg: ['Berg, Violin Concerto', BERG], chrom: ['chromatic scale (very symmetric)', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]], allint: ['an all-interval row', [0, 11, 1, 10, 2, 9, 3, 8, 4, 7, 5, 6]], fifths: ['circle of fifths', [0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5]] };
-        let p = BERG.slice(), sel = { t: 'P', i: 0 }, seed = 1, err = '';
-        const parse = (txt) => {
-          const toks = txt.replace(/[,;]/g, ' ').trim().split(/\s+/).filter(Boolean), out = [];
-          for (const t of toks) {
-            let x; if (/^\d+$/.test(t)) x = +t; else if (t === 'T' || t === 't') x = 10; else if (t === 'E' || t === 'e') x = 11; else { const m = t.match(/^([A-Ga-g])([#♯b♭]*)$/); if (!m) return null; x = LET_PC[LETTERS.indexOf(m[1].toUpperCase())]; for (const ch of m[2]) x += ch === '#' || ch === '♯' ? 1 : -1; }
-            out.push(mod(x));
-          }
-          return out.length === 12 && new Set(out).size === 12 ? out : null;
-        };
-        const inp = v.input('row (12 distinct pitch classes)', teStr(p), { width: 330, onChange: (t) => { const r = parse(t); if (r) { p = r; err = ''; sel = { t: 'P', i: 0 }; } else err = 'not a row: need 12 distinct pitch classes'; v.invalidate(); } });
-        v.select('start from', [...Object.entries(EX).map(([value, [label]]) => ({ value, label })), { value: 'own', label: 'my row' }], 'berg', { onChange: (x) => { if (EX[x]) { p = EX[x][1].slice(); inp.set(teStr(p)); err = ''; sel = { t: 'P', i: 0 }; } } });
-        v.button('random row', () => { const r = v.rng(++seed * 7717); p = r.shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]); inp.set(teStr(p)); err = ''; sel = { t: 'P', i: 0 }; });
-        const names = v.select('show', [{ value: 'num', label: 'numbers' }, { value: 'name', label: 'note names' }], 'num');
-        const s = v.stage({ x: [-3.2, 15.2], y: [-1.9, 13.9], equal: true, axes: false, full: true, height: 520, title: 'the row matrix (click a row, a column or a label)' });
-        const form = () => { const m = matrix(); if (sel.t === 'P') return m[sel.i].slice(); if (sel.t === 'R') return m[sel.i].slice().reverse(); const col = m.map((r) => r[sel.i]); return sel.t === 'I' ? col : col.reverse(); };
-        const matrix = () => p.map((pi) => p.map((pj) => mod(pj - pi + p[0])));
-        s.onClick((x, y) => {
-          const j = Math.floor(x), i = 11 - Math.floor(y); const inside = j >= 0 && j < 12 && i >= 0 && i < 12;
-          if (inside) sel = { t: 'P', i };
-          else if (x < 0 && i >= 0 && i < 12) sel = { t: 'P', i };
-          else if (x >= 12 && i >= 0 && i < 12) sel = { t: 'R', i };
-          else if (y >= 12 && j >= 0 && j < 12) sel = { t: 'I', i: j };
-          else if (y < 0 && j >= 0 && j < 12) sel = { t: 'RI', i: j };
-          v.invalidate();
-        });
-        v.soundButton('play the selected form', (sd) => { const f = form(); sd.samples(seqCents(f.map((k) => [k * 100 + (k > 6 ? -1200 : 0)]), C4, 0.34, 0.02), SR, { gain: 0.9 }); });
-        const lab = (x) => (names.value === 'num' ? teStr([x]) : NOTE[x]);
-        v.render(() => {
-          const m = matrix();
-          for (let i = 0; i < 12; i++) for (let j = 0; j < 12; j++) {
-            const x = m[i][j], y = 11 - i, hl = (sel.t === 'P' && sel.i === i) || (sel.t === 'R' && sel.i === i) || (sel.t === 'I' && sel.i === j) || (sel.t === 'RI' && sel.i === j);
-            s.rect(j + 0.04, y + 0.04, j + 0.96, y + 0.96, { fill: v.ramp(0.12 + 0.55 * (x / 11), hl ? 'orange' : 'accent'), fillAlpha: 1, stroke: false, radius: 3 });
-            s.text(lab(x), j + 0.5, y + 0.5, { size: names.value === 'num' ? 13 : 11, color: 'ink', align: 'center', baseline: 'middle', weight: hl ? 700 : 400 });
-          }
-          for (let i = 0; i < 12; i++) { s.text(`P${m[i][0]}`, -0.25, 11 - i + 0.5, { size: 10.5, color: sel.t === 'P' && sel.i === i ? 'orange' : 'muted', align: 'right', baseline: 'middle', weight: 600 }); s.text(`R${m[i][0]}`, 12.25, 11 - i + 0.5, { size: 10.5, color: sel.t === 'R' && sel.i === i ? 'orange' : 'muted', align: 'left', baseline: 'middle', weight: 600 }); }
-          for (let j = 0; j < 12; j++) { s.text(`I${p[j]}`, j + 0.5, 12.35, { size: 10.5, color: sel.t === 'I' && sel.i === j ? 'orange' : 'muted', align: 'center', baseline: 'middle', weight: 600 }); s.text(`RI${p[j]}`, j + 0.5, -0.4, { size: 10, color: sel.t === 'RI' && sel.i === j ? 'orange' : 'muted', align: 'center', baseline: 'middle', weight: 600 }); }
-          // selected-form outline and direction arrow
-          if (sel.t === 'P' || sel.t === 'R') { const y = 11 - sel.i + 0.5, rev = sel.t === 'R'; s.rect(0, y - 0.5, 12, y + 0.5, { color: 'orange', width: 2.4, fill: false }); s.arrow(rev ? 11.8 : 0.2, y + 0.62, rev ? 0.2 : 11.8, y + 0.62, { color: 'orange', width: 1.5 }); }
-          else { const x = sel.i + 0.5, rev = sel.t === 'RI'; s.rect(x - 0.5, 0, x + 0.5, 12, { color: 'orange', width: 2.4, fill: false }); s.arrow(x + 0.62, rev ? 0.2 : 11.8, x + 0.62, rev ? 11.8 : 0.2, { color: 'orange', width: 1.5 }); }
-        });
-        v.readout(() => {
-          if (err) return err;
-          const f = form(), forms = new Set(); const m = matrix();
-          for (let i = 0; i < 12; i++) { const r = m[i]; forms.add(key(r)); forms.add(key(r.slice().reverse())); }
-          for (let j = 0; j < 12; j++) { const c = m.map((r) => r[j]); forms.add(key(c)); forms.add(key(c.slice().reverse())); }
-          const iv = p.slice(1).map((x, i) => mod(x - p[i])), allInt = new Set(iv.map((d) => ic(d))).size === 6 && new Set(iv).size === 11;
-          const ok = m.every((r) => new Set(r).size === 12) && m[0].every((_, j) => new Set(m.map((r) => r[j])).size === 12);
-          const nm = sel.t === 'P' ? `P${m[sel.i][0]}` : sel.t === 'R' ? `R${m[sel.i][0]}` : sel.t === 'I' ? `I${p[sel.i]}` : `RI${p[sel.i]}`;
-          return `selected **${nm}**: ${teStr(f)} · row $p=(${teStr(p, ',')})$ · successive intervals ${iv.join(' ')} (${new Set(iv).size} distinct${allInt ? ', an all-interval row' : ''}) · every row and column is a permutation: ${ok ? 'yes ✓' : 'no'} · distinct forms among the 48: ${forms.size}.`;
-        });
+      num:'8.16',kind:'Concept',name:'Twelve-tone rows and the row matrix',verify:false,
+      statement:String.raw`A twelve-tone row $p=(p_0,\ldots,p_{11})$ is a permutation of the twelve pitch classes. Transposition $T_n:p_j\mapsto p_j+n$, inversion $I:p_j\mapsto-p_j$ and order reversal $R$ generate48 operations: $T_n$, $T_nI$, $T_nR$, $T_nRI$. They can produce fewer than48 distinct ordered rows when a combined operation fixes p. The matrix
+$$m_{ij}=p_j-p_i+p_0\pmod{12}$$
+has p as its first row. Every row and column is a permutation: fixing i translates p, while fixing j translates its pitch-class inversion. Read rows left-to-right for P, right-to-left for R, columns top-to-bottom for I and bottom-to-top for RI. Here the subscript names the first pitch of the associated forward P or I form, including when its retrograde is selected.`,
+      idea:String.raw`Translation, pitch-class reflection and reversal preserve the order's twelve distinct values. Reversal commutes with transposition and inversion, giving the group $D_{12}\times C_2$ of order48. The matrix organizes all its images. A set of pitches loses order and cannot distinguish these forms; this widget counts complete twelve-element sequences. Orbit size times stabilizer size is48. An all-interval row uses each of the eleven nonzero directed successive intervals once; pitch-class interval classes alone cannot certify that condition.`,
+      caption:String.raw`Choose a source example, enter your own row with an explicit numeric or note-name grammar, or generate a saved seeded row. Select P/R/I/RI and a matrix index. Inside the matrix a click selects a row for P/R or a column for I/RI; edge labels select their indicated family directly. The outline, listed sequence and sound use the same selected form. Invalid text is shown as an error and disables playback.`,
+      deps:['music-8.7'],see:['music-8.8'],refs:['Benson §9.8 pp.322–324 and §9.13; Arnold Schönberg Center, Suite op.25; Vancouver Symphony Orchestra, Berg Violin Concerto program notes'],tags:['serialism','symmetry'],
+      credit:'Twelve-tone practice documented by the Arnold Schönberg Center; ordered-row matrix construction authored',
+      scope:String.raw`Pitch classes are modulo12, with synthetic fixed-register audio C4–B4; no score rhythm or orchestration is reconstructed. The Berg example G B♭ D F♯ A C E G♯ B C♯ E♭ F is documented in the cited official orchestra notes. The Schönberg Center documents op.25 drafts in1921 and Hauer's1920 treatise; no exclusive first-invention claim is certified here. Numeric syntax accepts0–11 and T/E for10/11; note syntax treats E as the note E. Values outside the numeric range and enharmonic duplicates are rejected.`,
+      links:{source:'https://schoenberg.at/en/schoenberg/kompositionen/suite-for-piano-op-25'},
+      viz(v){
+        const syntax=v.select('input syntax',[{value:'number',label:'numbers 0–11 / T E'},{value:'note',label:'note names C D E…'}],'number'),inp=v.input('row: twelve distinct pitches',ROW_PRESETS.berg.join(' '),{width:320,onChange:()=>v.invalidate()}),family=v.select('form family',['P','R','I','RI'],'P'),idx=v.slider('matrix row or column index',0,11,0,{int:true}),seed=v.slider('random seed',0,9999,1,{int:true}),names=v.select('display',[{value:'num',label:'numbers'},{value:'name',label:'note names'}],'num');
+        for(const[value,label]of[['berg','Berg concerto'],['chrom','chromatic row'],['allint','all-interval row'],['fifths','fifths row']])v.button(label,()=>{syntax.value='number';inp.set(ROW_PRESETS[value].join(' '));});
+        v.button('new seeded row',()=>{seed.set((seed.value+1)%10000);syntax.value='number';inp.set(rowRandom(seed.value).join(' '));});
+        const s=v.stage({x:[-2.1,14.1],y:[-1.6,13.6],equal:true,axes:false,full:true,height:520,title:'ordered row matrix; edge labels select direction'});let info;
+        const model=()=>{const p=rowParse(inp.value,syntax.value);return p?rowModel(p,family.value,idx.value):null;};
+        s.onClick((x,y)=>{const j=Math.floor(x),i=11-Math.floor(y),inside=i>=0&&i<12&&j>=0&&j<12;if(inside)idx.set(family.value==='P'||family.value==='R'?i:j);else if(i>=0&&i<12&&(x<0||x>=12)){family.value=x<0?'P':'R';idx.set(i);}else if(j>=0&&j<12&&(y<0||y>=12)){family.value=y<0?'RI':'I';idx.set(j);}v.invalidate();});
+        const play=v.soundButton('play selected form',sd=>{const a=model();if(!a)return;const b=rowAudio(a.selected);sd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;play.disabled=!a;if(!a){s.text('Invalid row',6,6,{size:20,color:'red',align:'center',baseline:'middle'});return;}const size=s.width<400?9.5:12,lab=x=>names.value==='num'?String(x):NOTE[x],row=a.type==='P'||a.type==='R';for(let i=0;i<12;i++)for(let j=0;j<12;j++){const active=row?a.index===i:a.index===j;s.rect(j+.04,11-i+.04,j+.96,11-i+.96,{fill:active?'orange':'accent',fillAlpha:active?.6:.16,stroke:false});s.text(lab(a.M[i][j]),j+.5,11-i+.5,{size,color:'ink',align:'center',baseline:'middle',weight:active?700:400});}for(let i=0;i<12;i++){s.text(`P${a.M[i][0]}`,-.15,11-i+.5,{size:9.5,color:a.type==='P'&&a.index===i?'orange':'muted',align:'right',baseline:'middle'});s.text(`R${a.M[i][0]}`,12.15,11-i+.5,{size:9.5,color:a.type==='R'&&a.index===i?'orange':'muted',align:'left',baseline:'middle'});}for(let j=0;j<12;j++){s.text(`I${a.p[j]}`,j+.5,12.35,{size:9,color:a.type==='I'&&a.index===j?'orange':'muted',align:'center',baseline:'middle'});s.text(`RI${a.p[j]}`,j+.5,-.4,{size:8,color:a.type==='RI'&&a.index===j?'orange':'muted',align:'center',baseline:'middle'});}if(row){const y=11-a.index;s.rect(0,y,12,y+1,{color:'orange',width:2,fill:false});const reverse=a.type==='R';s.arrow(reverse?11.8:.2,y+.55,reverse?.2:11.8,y+.55,{color:'orange',width:1.2,head:5,alpha:.4});}else{const x=a.index;s.rect(x,0,x+1,12,{color:'orange',width:2,fill:false});const reverse=a.type==='RI';s.arrow(x+.55,reverse?.2:11.8,x+.55,reverse?11.8:.2,{color:'orange',width:1.2,head:5,alpha:.4});}});
+        v.readout(()=>{const a=info;if(!a)return 'Invalid row: enter twelve distinct pitches in the selected syntax. Numeric values must be 0–11 (T=10, E=11); note-name E means pitch class 4. Playback is disabled.';return `Selected ${a.type}${a.subscript} at matrix index ${a.index}: ${a.selected.join(' ')}.\nInput row: ${a.p.join(' ')}. Directed successive intervals: ${a.successive.join(' ')}; all eleven nonzero intervals once: ${a.allInterval?'yes':'no'}.\nEvery row and column is a permutation. Distinct ordered forms: ${a.distinct}; stabilizer size ${a.stabilizers.length}; product ${a.distinct*a.stabilizers.length}=48. The retrograde subscript refers to its associated forward form.`;});
       },
     },
     // ------------------------------------------------------------------ 8.17
@@ -354,62 +281,18 @@ So the interval content (the interval vector, since $\mathrm{IF}_S(d)$ equals th
     },
     // ------------------------------------------------------------------ 8.21
     {
-      num: '8.21',
-      kind: 'Concept',
-      name: 'Change ringing and permutations',
-      statement: String.raw`In **change ringing**, $n$ tuned bells are rung one after another in a **row**, an ordering of the bells $1,\dots,n$ (bell 1, the treble, is highest). Between consecutive rows a **change** is made: the bells swap places in disjoint adjacent pairs, so each change is a product of commuting adjacent transpositions, and a bell moves by at most one place. Written in **place notation**, a change lists the places that stay (e.g. $14$ on four bells leaves places 1 and 4 and swaps places 2 and 3; $x$ swaps every adjacent pair). A **method** is a sequence of changes repeated until rounds $(1,2,\dots,n)$ returns; the rows rung must be distinct in a true performance, and a method that rings all $n!$ rows once is an **extent**. **Plain hunt** on four bells ($x14x14x14x14$) returns to rounds after 8 rows; **Plain Bob Minimus** ($x14x14x14x12$, the last change a "lead end" that shifts the dodge) rings all 24 rows of four bells exactly once before rounds returns.`,
-      idea: String.raw`Each change is an involution $\sigma_c$ in the symmetric group $S_n$, and a row is the product of the changes so far applied to rounds. Plain hunt uses the two involutions $a=(12)(34)\cdots$ and $b=(23)(45)\cdots$ alternately; $(ab)$ has order $n$ (a rotation of the sequence), so $2n$ rows return to rounds. Plain Bob replaces the last change of each lead by one that fixes bells 1 and 2 so the lead end is a different permutation, and the group generated is all of $S_4$, whose 24 elements are visited once: counting them is Lagrange's theorem and the walk is a Hamiltonian cycle in the Cayley graph for these generators.`,
-      caption: String.raw`Each bell's path across the rows is drawn as a line (the treble in gold; choose another bell to follow in orange). Move the slider to ring the changes row by row, and press the speaker to hear the whole composition (bell 1 is the highest note). Pick a method or type your own place notation: the check counts how many distinct rows occur before rounds returns, and compares with $n!$.`,
-      deps: ['comb-1.5'],
-      see: ['music-8.7', 'comb-1.5'],
-      refs: ['Benson §9.4 pp. 314–316', 'Tintinnalogia, 1671 edition, title page and sections Of the Changes / Plain Changes on four Bells (Project Gutenberg18567)'],
-      tags: ['permutations', 'bells'],
-      credit: 'Change ringing in England from the early seventeenth century; the first printed treatments are Tintinnalogia (1668, published by Fabian Stedman, text attributed to Richard Duckworth) and Stedman\'s Campanalogia (1677); dates from secondary sources (one gives 1667 for Tintinnalogia)',
-      scope: String.raw`Plain methods on 4–6 bells as given by their place notation. A "true" extent of $n!$ rows is feasible only for small $n$ (24 rows on 4 bells, 120 on 5, 720 on 6, 40320 on 8); the viz stops after 130 changes.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Change_ringing' },
-      verify: true,
-      viz(v) {
-        const PRE = { hunt4: ['plain hunt, 4 bells', 4, 'x14x14x14x14'], bob: ['Plain Bob Minimus', 4, 'x14x14x14x12'], hunt5: ['plain hunt, 5 bells (Doubles)', 5, '5.1.5.1.5.1.5.1.5.1'], hunt6: ['plain hunt, 6 bells (Minor)', 6, 'x16x16x16x16x16x16'] };
-        const nb = v.select('bells', [4, 5, 6].map((n) => ({ value: n, label: String(n) })), 4);
-        const inp = v.input('place notation', 'x14x14x14x12', { width: 320, onChange: () => v.invalidate() });
-        const pre = v.select('method', [...Object.entries(PRE).map(([value, [label]]) => ({ value, label })), { value: 'own', label: 'my own' }], 'bob', { onChange: (x) => { if (PRE[x]) { nb.set(PRE[x][1]); inp.set(PRE[x][2]); } } });
-        const fol = v.select('follow bell', [2, 3, 4, 5, 6].map((n) => ({ value: n, label: String(n) })), 2);
-        const pos = v.slider('change number', 0, 48, 48, { int: true });
-        const s = v.stage({ x: [-0.5, 25.5], y: [0.3, 6.7], axes: false, full: true, height: 330, title: 'the path of each bell through the rows' });
-        const parse = (pn, n) => { const toks = pn.split(/(x|-|\.)/).filter((t) => t && t !== '.'); if (!toks.length) return null; const out = []; for (const t of toks) { if (t === 'x' || t === '-') { out.push([]); continue; } const pl = []; for (const ch of t) { const q = ch === '0' ? 10 : ch === 'E' ? 11 : ch === 'T' ? 12 : +ch; if (!(q >= 1 && q <= n)) return null; pl.push(q); } out.push(pl); } return out; };
-        const ring = (pn, n) => {
-          const ch = parse(pn.trim(), n); if (!ch) return { err: 'cannot read the place notation for this number of bells' };
-          let row = Array.from({ length: n }, (_, i) => i + 1); const rows = [row.slice()];
-          for (let it = 0; it < 130; it++) { const pl = new Set(ch[it % ch.length]), nr = row.slice(); let i = 0; while (i < n) { if (pl.has(i + 1)) { i++; continue; } if (i + 1 < n && !pl.has(i + 2)) { [nr[i], nr[i + 1]] = [nr[i + 1], nr[i]]; i += 2; } else return { err: `a change leaves bell at place ${i + 1} with no partner to swap with (a place must be made or paired)` }; } row = nr; rows.push(row.slice()); if (row.every((x, j) => x === j + 1)) return { rows, back: true }; }
-          return { rows, back: false };
-        };
-        const res = () => ring(inp.value, nb.value);
-        const pitch = (b, n) => [0, 200, 400, 500, 700, 900, 1100, 1200][n - b];
-        v.soundButton('ring the whole thing', (sd) => { const r = res(); if (!r.rows) return; const n = nb.value, parts = []; r.rows.slice(0, 48).forEach((row) => { parts.push(seqCents(row.map((b) => [pitch(b, n)]), C4, 0.17, 0.0)); parts.push(new Float32Array(Math.round(0.07 * SR))); }); const L = parts.reduce((a, q) => a + q.length, 0), out = new Float32Array(L); let o = 0; parts.forEach((q) => { out.set(q, o); o += q.length; }); sd.samples(out, SR, { gain: 0.9 }); });
-        v.render(() => {
-          const r = res(), n = nb.value;
-          if (!r.rows) {
-            s.setView([0, 10], [0, 4]);
-            s.text('No rows: invalid place notation', 5, 2.6, { size: 18, weight: 700, color: 'red', align: 'center' });
-            s.text(`For ${n} bells, every unfixed place needs an adjacent swap partner.`, 5, 2, { size: 14, color: 'ink', align: 'center' });
-            s.text('Choose a matching method, or edit the place notation.', 5, 1.4, { size: 14, color: 'muted', align: 'center' });
-            return;
-          }
-          const R = r.rows, last = R.length - 1, cur = Math.min(pos.value, last), xs = (i) => i;
-          s.setView([-1, Math.max(8, last + 1)], [0.3, n + 0.7]);
-          const f = Math.min(fol.value, n);
-          for (let i = 0; i <= last; i++) if (i === cur) s.rect(i - 0.4, 0.4, i + 0.4, n + 0.6, { fill: 'orange', fillAlpha: 0.1, stroke: false });
-          for (let b = 1; b <= n; b++) { const P = R.map((row, i) => [xs(i), n + 1 - (row.indexOf(b) + 1)]); s.path(P, { color: b === 1 ? 'gold' : b === f ? 'orange' : 'accent', width: b === 1 || b === f ? 3.4 : 1.2, alpha: b === 1 || b === f ? 1 : 0.35 }); }
-          if (last <= 40) R.forEach((row, i) => row.forEach((b, j) => { if (b === 1 || b === f || last <= 12) s.text(String(b), i, n - j, { size: 10, color: 'ink', align: 'center', baseline: 'middle', plate: b === 1 || b === f }); }));
-          R[cur].forEach((b, j) => s.dot(cur, n - j, { r: 6, color: b === 1 ? 'gold' : b === f ? 'orange' : 'accent' }));
-          s.text(`row ${cur}: ${R[cur].join(' ')}`, Math.max(8, last + 1) / 2 - 0.5, n + 0.55, { size: 14, color: 'ink', align: 'center', baseline: 'middle', weight: 700, plate: true });
-        });
-        v.legend([['gold', 'treble (bell 1)'], ['orange', 'followed bell']]);
-        v.readout(() => {
-          const r = res(), n = nb.value; if (!r.rows) return r.err;
-          const R = r.rows, distinct = new Set(R.slice(0, R.length - (r.back ? 1 : 0)).map((x) => x.join(''))).size, fact = [1, 1, 2, 6, 24, 120, 720][n], len = R.length - 1;
-          return `${n} bells: ${r.back ? `rounds returns after ${len} changes` : `no return to rounds within ${len} changes`} · distinct rows rung: ${distinct} of $${n}!=${fact}$ · ${r.back && distinct === len ? 'every row is different (a true method)' : 'some rows repeat'}${distinct === fact && r.back ? ' · all $n!$ rows are rung: an extent ✓' : ''} · each change is a product of disjoint adjacent swaps, so a bell moves at most one place per change.`;
-        });
+      num:'8.21',kind:'Concept',name:'Change ringing and permutations',verify:false,
+      statement:String.raw`A row orders the bells1,…,n, with the treble1 normally highest. An **adjacent change** fixes some places and swaps the others in disjoint neighbouring pairs; it excludes the identity change. Explicit place notation lists fixed places:14 on four bells swaps2 and3, while x swaps all adjacent pairs on an even stage. A static method specifies a finite sequence of changes, and its **plain course** repeats the whole sequence until the starting row returns at a lead boundary. Returning to rounds partway through a lead does not end the course.
+
+There are $n!$ possible rows. Plain hunt gives8,10,12 changes on4,5,6 bells. The Central Council lists Plain Bob Minimus as x14x14x14x12: its three8-change leads produce all24 four-bell rows once before the closing rounds. The closing row is excluded when counting truth. Modern CCCBR truth permits complete repeated extents plus distinct additional rows, at the effective stage after permanently fixed places are removed.`,
+      idea:String.raw`A lead composes its adjacent involutions into a position permutation L. If its disjoint cycles have lengths $a_1,\ldots,a_r$, its order is their least common multiple, so a lead of length m closes after $m\,\operatorname{ord}(L)$ changes. This finite computation produces the entire course, including earlier returns inside leads. Exhaustive row counts certify the24-row Plain Bob extent; generating the whole symmetric group alone would not prove that the chosen walk visits every element once. For general input the checker counts each effective-stage row: CCCBR truth holds when occurrence counts, including unseen rows with count0, differ by at most1.`,
+      caption:String.raw`Choose a method or enter up to120 explicit adjacent changes. The full course is checked; the picture shows up to13 consecutive rows around the selected change, so individual bells remain readable. Move the saved change slider or click a visible row. Playback rings either that exact row or every visible row, with bell1 highest; these are synthetic tones. Invalid notation displays an error and disables sound.`,
+      deps:['comb-1.5'],see:['music-8.7','comb-1.5'],refs:['CCCBR Framework edition2 §§3.B–E,3.J and AppendixA; Central Council Plain Minimus Methods, Plain Bob; Benson §9.4 pp.314–316'],tags:['permutations','bells'],
+      credit:'Change ringing and explicit place notation documented by the Central Council of Church Bell Ringers; finite course illustration authored',
+      scope:String.raw`Stages4–6,1–120 explicitly written adjacent changes, no jump changes, inferred external places or comma/palindrome abbreviation. The maximum permutation order on at most6 positions is6, so the whole course has at most720 changes. Every course row is checked even when it lies outside the visible window. The diagram and audio window are explicitly bounded; no real bell spectrum, swinging dynamics, accepted-truth exceptions, calls or record-performance certification is modelled. CCCBR's history places the emergence in late16th/early17th-century England and identifies Tintinnalogia1668 and Campanologia1677; those publication dates are not first-invention dates.`,
+      links:{source:'https://framework.cccbr.org.uk/edition2/fundamentals.html',methods:'https://methods.cccbr.org.uk/text/CCCBR_Plain4.html'},
+      viz(v){const stage=v.select('bells',[4,5,6],4),input=v.input('explicit place notation','x14x14x14x12',{width:320,onChange:()=>v.invalidate()}),position=v.slider('change number',0,720,24,{int:true}),follow=v.slider('follow bell',1,6,2,{int:true});for(const p of Object.values(BELL_PRESETS))v.button(p.label,()=>{stage.value=p.n;input.set(p.pn);position.set(0);});const s=v.stage({x:[-.7,12.7],y:[-.8,3.8],axes:false,full:true,height:330,title:'a window of consecutive rows; click to select'});let info;const model=()=>ringingModel(input.value,stage.value,position.value,follow.value),play=which=>sd=>{const a=model();if(a.err)return;const b=ringingAudio(which==='row'?[a.rows[a.cur]]:a.window,a.n);sd.samples(b.samples,b.sampleRate,{gain:1,normalize:false});},one=v.soundButton('ring selected row',play('row')),visiblePlay=v.soundButton('ring visible rows',play('window'));v.button('Stop audio',()=>v.sound().stop());s.onClick(x=>{if(info&&!info.err)position.set(Math.max(info.start,Math.min(info.end,info.start+Math.round(x))));v.invalidate();});
+        v.render(()=>{const a=model();info=a;one.disabled=visiblePlay.disabled=!!a.err;if(a.err){s.text('Invalid notation',6,1.5,{size:20,color:'red',align:'center',baseline:'middle'});return;}s.setView([-.7,Math.max(8,a.end-a.start)+.7],[-.8,a.n-.2]);const x=a.cur-a.start;s.rect(x-.3,-.45,x+.3,a.n-.55,{fill:'orange',fillAlpha:.12,stroke:false});for(let b=1;b<=a.n;b++){const points=a.window.map((row,j)=>[j,a.n-1-row.indexOf(b)]);s.path(points,{color:b===1?'gold':b===a.followed?'orange':'accent',width:b===1||b===a.followed?2.5:1.1,alpha:b===1||b===a.followed?1:.45});}a.rows[a.cur].forEach((b,k)=>s.dot(x,a.n-1-k,{r:5.5,color:b===1?'gold':b===a.followed?'orange':'accent',hollow:true}));a.window.forEach((row,j)=>row.forEach((b,k)=>s.text(String(b),j,a.n-1-k,{size:10,color:b===1?'gold':b===a.followed?'orange':'ink',align:'center',baseline:'middle',plate:j!==x})));});v.legend([['gold','treble1'],['orange','followed bell'],['accent','other bells']]);v.readout(()=>{const a=info;if(a.err)return `Invalid notation: ${a.err} Playback disabled. All fixed places must be explicit; comma abbreviation is not accepted.`;return `${a.n} bells; lead ${a.changes.length} changes; lead permutation order ${a.order}; complete plain course ${a.length} changes. Returns to rounds at changes: ${a.returns.join(', ')}.\nSelected row ${a.cur}${a.cur!==a.position?` (clamped from ${a.position})`:''}: ${a.rows[a.cur].join(' ')}. Visible rows ${a.start}–${a.end}; followed bell ${a.followed}.\nDistinct rows excluding final closure: ${a.distinct} of ${bellFactorial(a.n)} full-stage rows. Full-stage extent exactly once: ${a.fullExtent?'yes':'no'}.\nFixed places: ${a.fixedPlaces.map(j=>j+1).join(', ')||'none'}; effective stage ${a.effective}; effective extent ${a.extent}; row occurrence counts ${a.minimum}…${a.maximum}. CCCBR truth: ${a.trueTouch?'yes':'no'}; complete equal multiplicities: ${a.complete?'yes':'no'}. This checks the full course, including rows outside the picture.`;});
       },
     },
   ],

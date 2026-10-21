@@ -76,7 +76,7 @@ export default {
           const why = [];
           if (t.close) why.push(String.raw`$${L[t.close[0]]}${G.add ? '+' : ''}${L[t.close[1]]} = ${L[G.T[t.close[0]][t.close[1]]]}\notin H$`);
           if (!t.hasE) why.push(`the identity $${L[G.e]}$ is missing`);
-          if (t.inv != null) why.push(`$(${L[t.inv]})^{-1} = ${L[G.inv[t.inv]]}\\notin H$`);
+          if (t.inv != null) why.push(`$${L[t.inv]}^{-1} = ${L[G.inv[t.inv]]}\\notin H$`);
           return String.raw`$H = ${roster(G, H)}$ is **not a subgroup**: ${why.join('; ')}. The smallest subgroup containing it is $${roster(G, generated(G, arr))}$ (ringed).`;
         });
       },
@@ -181,7 +181,7 @@ export default {
           if (!t.arr.length) return 'The empty set fails condition (1).';
           if (!t.hasE) bits.push(`$${L[G.e]}\\notin H$`);
           if (t.close) bits.push(`$${G.add ? `${L[t.close[0]]} + ${L[t.close[1]]}` : `${L[t.close[0]]}${L[t.close[1]]}`} = ${L[G.T[t.close[0]][t.close[1]]]}\\notin H$`);
-          if (t.inv != null) bits.push(`$(${L[t.inv]})^{-1} = ${L[G.inv[t.inv]]}\\notin H$`);
+          if (t.inv != null) bits.push(`$${L[t.inv]}^{-1} = ${L[G.inv[t.inv]]}\\notin H$`);
           return t.ok ? `$H = ${roster(G, H)}$ satisfies (1), (2) and (3): **a subgroup** of order ${t.arr.length}.` : `$H = ${roster(G, H)}$ is **not a subgroup**: ${bits.join('; ')}.`;
         });
       },
@@ -213,7 +213,7 @@ export default {
           const ei = arr.indexOf(G.e), hl = [];
           arr.forEach((_, i) => hl.push([i, i, 'green']));
           if (ei >= 0) arr.forEach((_, j) => { if (j !== ei) hl.push([ei, j, 'teal']); });
-          T.draw({ rows: arr.length, cols: arr.length, rowLabels: (i) => lab(G.L[arr[i]]), colLabels: (j) => `$(${G.L[arr[j]]})^{-1}$`, cornerLabel: '',
+          T.draw({ rows: arr.length, cols: arr.length, rowLabels: (i) => lab(G.L[arr[i]]), colLabels: (j) => `$${G.L[arr[j]]}^{-1}$`, cornerLabel: '',
             value: (i, j) => lab(G.L[q(arr[i], arr[j])]), fill: (i, j) => (H.has(q(arr[i], arr[j])) ? [elColor(v, q(arr[i], arr[j]), G.n), 0.22] : ['red', 0.45]), highlight: hl });
         });
         v.readout(() => {

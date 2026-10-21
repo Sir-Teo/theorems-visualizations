@@ -226,7 +226,7 @@ and $C(T)$ the continuous ones with the sup norm. $L^2(T)$ is a Hilbert space wi
       caption: String.raw`The proof as a chain of approximations. A discontinuous $f\in L^2(T)$ (black) is first replaced by a continuous $g$ — here its moving average over windows of width $w$ (orange) — and $g$ by the trigonometric polynomial $P=g*Q_k$ of degree $k$ (green). The bars check $\|f-P\|_2\le\|f-g\|_2+\|g-P\|_\infty$: shrink $w$ and raise $k$ and the trigonometric polynomials get as close to $f$ in $L^2$ as you like.`,
       deps: ['rca-4.18', 'rca-4.23', 'rca-3.14', 'rca-4.25'],
       see: ['pma-8.15'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Sections 4.24–4.25, pp. 89–91'],
+      verify: true,
       tags: ['Fourier', 'density'],
       viz(v) {
         const M = v.M;
@@ -354,7 +354,7 @@ Thus $f\mapsto\hat f$ is a Hilbert space isomorphism of $L^2(T)$ onto $\ell^2(\Z
       caption: String.raw`Partial sums $s_N$ (gold) of three classical Fourier series. Bottom left: the energies $|\hat f(n)|^2+|\hat f(-n)|^2$; the red tail beyond $N$ is exactly $\|f-s_N\|_2^2$ (Parseval). Bottom right, on a log scale: the $L^2$ error always goes to $0$, but for the square wave and the sawtooth the uniform error does not — the Gibbs overshoot near each jump stays at about $9\%$ of the jump however large $N$ is. For the continuous triangle wave both errors vanish.`,
       deps: ['rca-4.17', 'rca-4.18', 'rca-4.24', 'rca-4.25'],
       see: ['pma-8.16', 'rca-9.13'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 4.26, pp. 91–92'],
+      verify: true,
       tags: ['Fourier series', 'Parseval', 'Riesz–Fischer'],
       viz(v) {
         const M = v.M;

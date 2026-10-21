@@ -22,11 +22,7 @@ export function windkessel({ R = 1.05, C = 1.5, Zc = 0, HR = 75, SV = 70, Pv = 0
   const Q = (t) => { const u = ((t % T) + T) % T; return u < Ts ? Qpk * Math.sin((Math.PI * u) / Ts) : 0; };
   const f = (t, p) => (Q(t) - (p - Pv) / R) / C;
   const n = Math.max(1, Math.round(T / 0.002)), h = T / n;
-  // Solve the affine one-beat map p(T)-Pv = a(p(0)-Pv)+b exactly.
-  // A fixed beat count from an arbitrary pressure does not converge for large RC.
-  const tau = R * C, omega = Math.PI / Ts, lambda = 1 / tau;
-  const drivenEnd = (Qpk / C) * omega * (1 + Math.exp(-Ts / tau)) / (lambda * lambda + omega * omega);
-  let p = Pv + drivenEnd * Math.exp(-(T - Ts) / tau) / -Math.expm1(-T / tau), t = 0;
+  let p = Pv + 60, t = 0;
   const ts = [], qs = [], ps = [], pw = [];
   for (let b = 0; b < beats; b++) {
     const last = b === beats - 1;
@@ -38,7 +34,7 @@ export function windkessel({ R = 1.05, C = 1.5, Zc = 0, HR = 75, SV = 70, Pv = 0
     }
   }
   let Ps = -1e9, Pd = 1e9, Pm = 0;
-  for (let i = 0; i < ps.length; i++) { Ps = Math.max(Ps, ps[i]); Pd = Math.min(Pd, ps[i]); Pm += ps[i] * (i === 0 || i === ps.length - 1 ? .5 : 1) / (ps.length - 1); }
+  for (let i = 0; i < ps.length; i++) { Ps = Math.max(Ps, ps[i]); Pd = Math.min(Pd, ps[i]); Pm += ps[i] / ps.length; }
   return { T, Ts, t: ts, Q: qs, P: ps, Pw: pw, Ps, Pd, Pm, PP: Ps - Pd, Qmean: (SV * HR) / 60, Qf: Q };
 }
 

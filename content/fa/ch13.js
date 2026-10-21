@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 13: Unbounded Operators (part 1: graphs, adjoints, symmetric operators)
 //
-// Source audit: complete relevant statements/proofs in Rudin, second edition, pp.347–385 inspected.
+// Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
 function simpson(f, a, b, n) {
   if (!(b > a)) return 0;
@@ -32,11 +32,11 @@ export default {
       statement: String.raw`An **operator in $H$** is a linear map $T:\mathscr D(T)\to H$ defined on a subspace $\mathscr D(T)\subset H$, its **domain**; it is **densely defined** if $\mathscr D(T)$ is dense. Its **graph** is $\mathscr G(T)=\{(x,Tx):x\in\mathscr D(T)\}\subset H\times H$. $T$ is **closed** if $\mathscr G(T)$ is closed, i.e. $x_n\to x$, $Tx_n\to y$ with $x_n\in\mathscr D(T)$ imply $x\in\mathscr D(T)$ and $Tx=y$. $S$ **extends** $T$, $T\subset S$, if $\mathscr G(T)\subset\mathscr G(S)$. Sums and products get their natural domains, $\mathscr D(S+T)=\mathscr D(S)\cap\mathscr D(T)$ and $\mathscr D(ST)=\{x\in\mathscr D(T):Tx\in\mathscr D(S)\}$.
 
 If $T$ is densely defined, its **adjoint** $T^*$ has domain $\mathscr D(T^*)=\{y\in H: x\mapsto(Tx,y)$ is bounded on $\mathscr D(T)\}$, and $T^*y$ is the unique vector with $(Tx,y)=(x,T^*y)$ for all $x\in\mathscr D(T)$.`,
-      idea: String.raw`Closedness requires convergence of both coordinates of a graph point. The closed graph theorem makes an everywhere-defined closed operator bounded. For a densely defined operator, Riesz representation12.5 extends each bounded functional x↦(Tx,y) uniquely to all of H, defining its adjoint.`,
-      caption: String.raw`$T=d/dx$ on $L^2[0,1]$, defined on $C^1$ functions. The functions $f_n$ (blue) — smooth ramps of width $1/n$ — converge in $L^2$ to the step function $H(x-\frac12)$, which is not in the Sobolev domain of the closed weak derivative; their derivatives $f_n'$ (orange) are spikes whose $L^2$ norms $\norm{f_n'}_2=\sqrt n\cdot c$ blow up. So $(f_n,Tf_n)$ does **not** converge in $H\times H$ and the closedness of $T$'s closure is not violated. Switch to $g_n=\frac1{\sqrt n}\sin(nx)$: $g_n\to0$ but $Tg_n=\sqrt n\cos(nx)$ is unbounded — $T$ is not bounded, yet closable.`,
-      deps: ["fa-2.15", "fa-12.1", "fa-12.5"],
+      idea: String.raw`By the closed graph theorem, a closed operator defined on all of $H$ is bounded; so the interesting closed operators live on proper dense domains. Differentiation is the model: on $L^2[0,1]$ the graph of $f\mapsto f'$ on smooth functions is not closed, but its closure is the derivative on absolutely continuous functions with $f'\in L^2$. Density of $\mathscr D(T)$ is what makes $T^*y$ unique (Riesz representation 12.3).`,
+      caption: String.raw`$T=d/dx$ on $L^2[0,1]$, defined on $C^1$ functions. The functions $f_n$ (blue) — smooth ramps of width $1/n$ — converge in $L^2$ to the step function $H(x-\frac12)$, which is not in any domain of a derivative; their derivatives $f_n'$ (orange) are spikes whose $L^2$ norms $\norm{f_n'}_2=\sqrt n\cdot c$ blow up. So $(f_n,Tf_n)$ does **not** converge in $H\times H$ and the closedness of $T$'s closure is not violated. Switch to $g_n=\frac1{\sqrt n}\sin(nx)$: $g_n\to0$ but $Tg_n=\sqrt n\cos(nx)$ is unbounded — $T$ is not bounded, yet closable.`,
+      deps: ['fa-2.15', 'fa-12.1', 'fa-12.3'],
       tags: ['unbounded operators', 'closed operators', 'graphs'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §13.1 (full relevant statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const which = v.select('sequence', [{ value: 'ramp', label: 'ramps $f_n\\to H(x-\\frac12)$' }, { value: 'osc', label: '$g_n=n^{-1/2}\\sin nx$' }], 'ramp');
@@ -71,27 +71,29 @@ If $T$ is densely defined, its **adjoint** $T^*$ has domain $\mathscr D(T^*)=\{y
     {
       num: '13.3',
       kind: 'Definition',
-      name: "Symmetric and self-adjoint operators",
-      statement: String.raw`An operator T in a complex Hilbert space is symmetric when $(Tx,y)=(x,Ty)$ for every x,y in its domain; density is not required for this definition. If T is densely defined, this is equivalent to $T\subset T^*$. It is self-adjoint when $T=T^*$, including equality of the domains.`,
-      idea: String.raw`The smaller $\mathscr D(T)$, the larger $\mathscr D(T^*)$ (13.1): shrinking a domain makes the adjoint bigger. Symmetric operators sit below their adjoints; self-adjoint ones are fixed points of this order-reversing operation.`,
-      deps: ["fa-13.1"],
+      name: 'Symmetric, self-adjoint and normal operators',
+      statement: String.raw`A densely defined operator $T$ in $H$ is **symmetric** if $T\subset T^*$, i.e. $(Tx,y)=(x,Ty)$ for $x,y\in\mathscr D(T)$; **self-adjoint** if $T=T^*$ (same domain); **normal** if $T$ is closed, densely defined and $T^*T=TT^*$.`,
+      idea: String.raw`The smaller $\mathscr D(T)$, the larger $\mathscr D(T^*)$ (13.2): shrinking a domain makes the adjoint bigger. Symmetric operators sit below their adjoints; self-adjoint ones are fixed points of this order-reversing operation.`,
+      deps: ['fa-13.1', 'fa-13.2'],
       tags: ['unbounded operators', 'adjoint', 'self-adjoint operators'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §13.3 (full relevant statement and proof inspected)'],
+      verify: true,
     },
     {
       num: '13.8',
       kind: 'Theorem',
       name: 'The adjoint via the graph: G(T*) = (V G(T))^⊥',
-      statement: String.raw`Put $V(x,y)=(-y,x)$ on the product Hilbert space $H\times H$. For every densely defined operator T, $\mathscr G(T^*)=(V\mathscr G(T))^\perp$. Thus the graph of the adjoint is determined by the graph of T.`,
+      statement: String.raw`Let $V(a,b)=(-b,a)$ on $H\times H$. If $T$ is densely defined, then
+$$\mathscr G(T^*)=\big(V\mathscr G(T)\big)^\perp .$$
+Consequently $T^*$ is closed, $T$ is closable iff $T^*$ is densely defined, and then $T^{**}=\overline T$; $H\times H=V\mathscr G(T)\oplus\mathscr G(T^*)$ when $T$ is closed.`,
       idea: String.raw`$(y,z)\perp V\mathscr G(T)$ means $(-Tx,y)+(x,z)=0$ for all $x\in\mathscr D(T)$, i.e. $(Tx,y)=(x,z)$, i.e. $y\in\mathscr D(T^*)$ and $z=T^*y$. Orthogonal complements are closed, so $T^*$ is closed. Applying the same identity twice and using $V^2=-I$ gives $\mathscr G(T^{**})=\overline{\mathscr G(T)}$ whenever $T^*$ is densely defined.`,
       caption: String.raw`The finite-dimensional skeleton: $H=\R$, so $H\times H=\R^2$ and an operator $T$ is multiplication by a number $t$ (slope). Its graph is the blue line; $V$ rotates it by $90^\circ$ (orange); the orthogonal complement of the rotated line (green) is the graph of $T^*$ — here again slope $t$, since real $1\times1$ matrices are self-adjoint. For $H=\R^2$ and a non-symmetric $2\times2$ matrix $T$ (the slider sets its entry $T_{12}$) the graphs are planes in $\R^4$; the readout checks that the graph of the transpose is orthogonal to $V\mathscr G(T)$, i.e. that it is $\mathscr G(T^*)$.`,
-      deps: ["fa-13.1", "fa-13.7"],
+      deps: ['fa-13.3', 'fa-12.2'],
       tags: ['unbounded operators', 'adjoint', 'graphs'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §13.8 (full relevant statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-2.2, 2.2], y: [-2, 2], equal: true, height: 360, axes: true, xlabel: 'x', ylabel: 'Tx', title: '$H\\times H=\\R^2$: graphs of $T$, $V\\mathscr G(T)$ and $\\mathscr G(T^*)$' });
-        const ht = S.handle(1.4, 0.7, { color: 'blue', label: 'slope t', constrain: (x, y) => { x=Math.max(.12,x); const r = Math.hypot(x, y) || 1; return [1.6 * x / r, 1.6 * y / r]; } });
+        const ht = S.handle(1.4, 0.7, { color: 'blue', label: 'slope t', constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [1.6 * x / r, 1.6 * y / r]; } });
         const aS = v.slider('$2\\times2$ case: entry $T_{12}$', -2, 2, 0.8, { step: 0.01 });
         let st = {};
         v.legend([['blue', '$\\mathscr G(T)$'], ['orange', '$V\\mathscr G(T)$'], ['green', '$(V\\mathscr G(T))^\\perp=\\mathscr G(T^*)$', { dash: true }]]);
@@ -99,7 +101,7 @@ If $T$ is densely defined, its **adjoint** $T^*$ has domain $\mathscr D(T^*)=\{y
           const d = [ht.x, ht.y], vd = [-d[1], d[0]], perp = [-vd[1], vd[0]];
           const L = (u, col, w, dash) => S.line(-3 * u[0], -3 * u[1], 3 * u[0], 3 * u[1], { color: col, width: w, dash });
           L(d, 'blue', 2.6); L(vd, 'orange', 2.2); L(perp, 'green', 2.2, [7, 5]);
-          const t = d[1] / d[0];
+          const t = Math.abs(d[0]) > 1e-9 ? d[1] / d[0] : Infinity;
           // 2×2 check: G(T*) ⟂ V G(T) in R⁴
           const T = [[0.7, aS.value], [-0.4, 1.1]], Tt = [[0.7, -0.4], [aS.value, 1.1]];
           let mx = 0;
@@ -110,7 +112,7 @@ If $T$ is densely defined, its **adjoint** $T^*$ has domain $\mathscr D(T^*)=\{y
           }
           st = { t, mx, a: aS.value };
         });
-        v.readout(() => `$H=\\R$: $T=$ multiplication by $t = ${isFinite(st.t) ? v.fix(st.t, 3) : '\\infty'}$, and $\\mathscr G(T^*)$ is the same line. $H=\\R^2$: $\\max|\\langle Vg,g^*\\rangle| = ${v.sci(st.mx, 1)}$ over basis graph vectors, with $T^*=T^\\top$ ($T_{12}=${v.fix(st.a, 2)}$ moves to position $21$).`);
+        v.readout(() => `$H=\\R$: $T=$ multiplication by $t = ${isFinite(st.t) ? v.fix(st.t, 3) : '\\infty'}$, and $\\mathscr G(T^*)$ is the same line. $H=\\R^2$: $\\max|\\langle Vg,g^*\\rangle| = ${v.sci(st.mx + 1e-17, 1)}$ over basis graph vectors, with $T^*=T^\\top$ ($T_{12}=${v.fix(st.a, 2)}$ moves to position $21$).`);
       },
     },
   ],

@@ -76,15 +76,9 @@ export function heartBeat(over = {}) {
   R.Pmax = Math.max(...R.P); R.PaMax = Math.max(...R.Pa); R.PaMin = Math.min(...R.Pa); R.EDP = ev.iMVC >= 0 ? R.P[ev.iMVC] : 0;
   R.Pes = ev.iAVC >= 0 ? R.P[ev.iAVC] : 0;
   R.loop = R.t.map((_, i) => [R.V[i], R.P[i]]);
-  // Signed ∫P dV is negative for this counter-clockwise ventricular loop.
-  // Work delivered to blood is −∫P dV, in mmHg·mL.
-  let A = 0; R.ejectionWork = 0; R.fillingWork = 0;
-  for (let i = 0; i < n - 1; i++) {
-    const dV = R.V[i + 1] - R.V[i], dW = dV * (R.P[i + 1] + R.P[i]) / 2;
-    A += dW;
-    if (dV < 0) R.ejectionWork -= dW; else R.fillingWork += dW;
-  }
-  R.work = -A;
+  // loop area ∫P dV (shoelace, mmHg·mL, counter-clockwise positive)
+  let A = 0; for (let i = 0; i < n - 1; i++) A += (R.V[i + 1] - R.V[i]) * (R.P[i + 1] + R.P[i]) / 2;
+  R.work = Math.abs(A);
   // pre-beat check for periodicity
   R.drift = Math.abs(R.V[n - 1] - R.V[0]);
   if (_cache.size > 400) _cache.clear();

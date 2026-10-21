@@ -27,7 +27,7 @@ $$d^2=-\overrightarrow{HV_i}\cdot\overrightarrow{HV_j}\qquad(i\neq j).$$
 Conversely, three points forming a right or obtuse triangle cannot be the vanishing points of three perpendicular directions.`,
       idea: String.raw`The sight lines from the eye $E$ to the vanishing points are parallel to the three edges (art-1.4), so they are mutually perpendicular. Writing $E=H+d\,\mathbf n$ with $\mathbf n$ normal to the picture, $(V_i-E)\cdot(V_j-E)=0$ becomes $(V_i-H)\cdot(V_j-H)+d^2=0$. Subtracting two of these equations gives $(V_1-H)\cdot(V_2-V_3)=0$: $H$ lies on the altitude from $V_1$, and likewise on the other two, so it is the orthocentre. All three products are negative, and $d$ is real, only when the orthocentre lies inside the triangle, that is when the triangle is acute. Two-point perspective (art-1.8) is the limit in which $V_3$ runs off to infinity.`,
       caption: String.raw`Tilt the camera with the slider, or drag any of the three vanishing points. The tower is redrawn by the camera those points imply: its principal point is the orthocentre $H$, where the dashed altitudes meet, and its eye distance $d$ comes from the dot products. Drag a vertex until the triangle is obtuse: no camera can produce that picture.`,
-      deps: ['art-1.8', 'ladr-6.10'],
+      deps: ['art-1.8'],
       refs: ['Kemp ch. 3'],
       tags: ['perspective', 'three-point', 'orthocentre'],
       viz(v) {
@@ -104,7 +104,7 @@ A viewer standing elsewhere who takes the picture as a window reconstructs a dif
 $$\Bigl(X-\tfrac{v_x}{d}\,Y,\ \ \tfrac{v_d}{d}\,Y\Bigr),$$
 where $v_x$ is his sideways offset and $v_d$ his distance (art-1.2); heights come out unchanged. Squares become rectangles or parallelograms. The tile diagonals vanish at distance $d$ from $C$ (art-1.7), so the picture tells the viewer where to stand. Real viewers compensate for much of the error when they can see the picture surface, which is why paintings survive being seen from the wrong place; the distortion becomes obvious when that cue is removed, as with a peephole (art-1.3).`,
       caption: String.raw`Left: the picture, with the tile diagonals carried to the two distance points, which give the correct viewing distance. Right: the floor plan that a viewer at the blue point reconstructs (blue), over the true floor (grey). Drag yourself closer, farther or sideways, or pick a position: the squares stretch, compress and shear, and they are squares again only at the station point.`,
-      deps: ['art-1.7', 'ladr-3.1'],
+      deps: ['art-1.7'],
       refs: ['Kemp ch. 1'],
       tags: ['perspective', 'viewpoint', 'distance point'],
       viz(v) {
@@ -503,7 +503,7 @@ Each keeps some properties of what we see and gives up others; none of them is �
 - **Still water.** The reflection of a point lies on the vertical through it, as far below the water level as the point is above it; a post standing at the water is continued by a reflection of the same length in the picture.`,
       idea: String.raw`Parallel rays form a family of parallel lines and share a vanishing point (art-1.4). The shadow of a vertical post lies in the vertical plane through the post that contains the light direction; that plane meets the ground in a horizontal line, whose vanishing point is on the horizon (art-1.5), directly below the sun’s image. A lamp is a finite centre of projection, so the shadows are the central projection of the objects onto the ground from the lamp (art-1.2), and the lamp’s foot takes the place of the vanishing point. A level mirror sends $(x,y,z)$ to $(x,y,-z)$; vertical lengths at one depth are drawn at one scale, so a post and its reflection have equal lengths when the post stands at the water.`,
       caption: String.raw`Choose the sun or a lamp, then drag the light source in the picture (for the lamp, also its foot on the ground). Dashed lines show the construction: light rays from the source through the tops of the posts, shadow lines from the shadow vanishing point or the lamp’s foot through their feet; the shadows end where the two meet. Drag the sun below the horizon to put it behind you. The pool reflects the post standing at its edge.`,
-      deps: ['art-1.4', 'waves-4.5'],
+      deps: ['art-1.4'],
       see: ['mech-5.2'],
       refs: ['Kemp ch. 3'],
       tags: ['perspective', 'shadows', 'reflections'],

@@ -1,6 +1,8 @@
 // Psychology & Perception — Chapter 3: Scaling sensation (items 3.6–3.10; 3.1–3.5 are in ch03.js)
-import { relativeToneGains } from './verification-models.js';
 import { Phi, zq, logTicks, sig } from './ch03.shared.js';
+import { luceState } from './source-audit-luce.js';
+import { mdsSynthetic, mdsView } from './source-audit-mds.js';
+import { loudnessModel, loudnessAudio } from './source-audit-loudness.js';
 
 export default {
   collection: 'psych',
@@ -124,173 +126,129 @@ In **Case V**, the processes have equal spread and are uncorrelated, so $z_{ij}=
     },
     // ------------------------------------------------------------------ 3.8
     {
-      num: '3.8',
-      kind: 'Principle',
-      name: 'Luce’s choice axiom (Bradley–Terry–Luce)',
-      statement: String.raw`**Luce's choice axiom** says that the odds of choosing $i$ over $j$ do not depend on what other options are available: if $P(i\mid S)$ is the probability of choosing $i$ from the set $S$, then for $i,j\in S\subseteq T$,
-$$\frac{P(i\mid S)}{P(j\mid S)}=\frac{P(i\mid T)}{P(j\mid T)} .$$
-When every pairwise choice probability is strictly between0and1, this is equivalent to the existence of positive **strengths** $v_i$ with
-$$P(i\mid S)=\frac{v_i}{\sum_{k\in S}v_k}.$$
-For two options this is the **Bradley–Terry–Luce** model of paired comparison, $P(i\succ j)=v_i/(v_i+v_j)$. It implies independence from irrelevant alternatives: adding an option removes probability from every other option *in proportion to its strength*. Real choices break this when options are similar.`,
-      idea: String.raw`Each option is assigned a single number and choosing is a lottery weighted by those numbers, so removing or adding an option can only renormalise. That is what makes the model easy to fit (strengths are estimated from pairwise counts, as in rating players of a game) and it is the same shape as Thurstone's Case V (3.7) with a logistic instead of a normal curve for the pairwise probabilities. The bus-color variant discussed in Luce’s own2008 exposition shows a possible violation of IIA: if a car and a red bus are chosen equally often, adding a blue bus that is just a recolouring of the red bus should leave the car at one half, but the axiom assigns one third to each option. This bus variant should not be attributed literally to Debreu’s different1960 example.`,
-      caption: String.raw`Drag the **bar tops** to set the strengths $v_A,\dots,v_D$, and use the switches to decide which options are on offer. The right panel shows the choice probabilities; the small rings mark each option's probability when only $A$ and $B$ were offered. Under **Luce's axiom** the ratio $P(A)/P(B)$ stays equal to $v_A/v_B$ whatever else is offered. Switch on *C is a near-copy of B* (a blue bus next to a red one, $v_C$ locked to $v_B$) and change the model to **copies count once**: a simple model of our own where near-identical options form a group whose strength is that of its strongest member; now adding $C$ leaves $A$'s probability where it was and splits $B$'s between the two copies, so the ratio $P(A)/P(B)$ changes. Illustrative models, not experimental data.`,
-      deps: ['psych-3.7'],
-      refs: ['Gescheider ch. 9'],
-      tags: ['choice axiom', 'Bradley–Terry', 'IIA'],
-      credit: 'R. Duncan Luce,1959; complete author exposition, “Luce’s choice axiom”, Scholarpedia3(12):8077(2008), equations4 and7',
-      scope: String.raw`An exact statement about choice probabilities when the axiom holds; similarity, decoy and compromise effects can violate it. Whether it fits a particular set of options is an empirical question, not guaranteed by dissimilarity alone.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Independence_of_irrelevant_alternatives' },
+      num: '3.8', kind: 'Principle', name: 'Luce’s choice axiom',
+      statement: String.raw`Let $T$ be a finite nonempty set of alternatives. For **every nonempty** $S\subseteq T$, let $P_S$ be a probability distribution on $S$, with $P_S(i)>0$ for each offered $i$. Singletons have probability 1; larger menus have probabilities strictly below 1. In this positive case, the choice axiom requires, for $i\in S\subseteq U\subseteq T$,
+$$P_U(i)=P_S(i)P_U(S),$$
+where $P_U(S)=\sum_{k\in S}P_U(k)$. It is equivalent to **independence of irrelevant alternatives** (IIA): for distinct $i,j\in S\subseteq U\subseteq T$,
+$$\frac{P_S(i)}{P_S(j)}=\frac{P_U(i)}{P_U(j)}.$$
+It is also equivalent to positive weights, fixed across all menus, satisfying
+$$P_S(i)=\frac{v_i}{\sum_{k\in S}v_k}.$$
+The weights are determined up to a common positive multiplier. For two alternatives, the same formula is $P_{\{i,j\}}(i)=v_i/(v_i+v_j)$.
+
+This is the positive, finitely additive setting in **Luce's own 2008 exposition** of his earlier axiom. His account also discusses an additional original clause for zero pairwise probabilities; that clause is outside the theorem stated here. Choice-set notation describes different choice contexts, rather than assuming ordinary conditioning on one preexisting probability space.`,
+      idea: String.raw`Each menu has positive masses summing to one, using the finite probability-distribution definition in prob-1.1.1a. The axiom makes the common factor $P_U(S)$ cancel in each pair's odds. Conversely, IIA plus normalization gives $P_S(i)=P_U(i)/P_U(S)$ and hence the axiom. Set $v_i=P_T(i)$. IIA makes every ratio $P_S(i)/P_S(j)$ equal to $v_i/v_j$; normalization then forces the weight formula. Conversely that formula makes all menu denominators cancel in the odds. If weights $v$ and $w$ give the same full-menu probabilities, $w_i=cv_i$ with $c=(\sum w)/(\sum v)>0$. Thus absolute strengths are not identified. Writing $\theta_i=\log v_i$ gives logistic pairwise probabilities $1/(1+e^{\theta_j-\theta_i})$; log weights are identified up to a common additive constant.
+
+A similarity label alone does not mathematically contradict IIA. The **authored copy rule** below supplies a specific counterexample: group B and C together, give that group its largest member weight, then split its probability proportionally within the group. When C copies B exactly, adding C leaves an outside option's probability unchanged and halves B's share. Its odds against B therefore double. This is a model assumption used to demonstrate failure, not an experimental finding or a claim that every similar pair behaves this way.`,
+      caption: String.raw`Change the positive strengths with sliders or drag their bar tops; toggle any offered menu, including a singleton or the empty menu. With **C copies B** enabled, C's strength control is locked and its separate handle is hidden. The authored group rule is active only with this copy lock; without it, both rule selectors use individual Luce weights. The right bars show the selected menu, with current probabilities in a row beneath them; grey rings show the fixed A/B-only reference when both are offered. **Equal-clone counterexample** selects A,B,C at equal strength under the authored group rule: probabilities become $(1/2,1/4,1/4)$. Switching to Luce gives thirds. The readout compares the same current menu with C removed, holding D fixed, and audits all 15 nonempty menus and 54 nested-menu pair comparisons. A single displayed pair's unchanged odds cannot establish global IIA.`,
+      scope: String.raw`The theorem assumes a full finite family of positive choice distributions. Empty menus have no choice distribution; zero-weight/deterministic multi-option cases and incomplete-menu identification require other hypotheses. No estimates from finite trial counts are fitted here. The group rule is a chosen alternative to IIA, not Luce's model, a fitted nested-logit model or a general law of similarity. Normalizing strengths changes their common scale only. A floating-point residual audit describes the specified four-option model; exact conclusions come from its formulas, and do not certify empirical choice data.`,
+      deps: ['prob-1.1.1a'], see: ['psych-3.7'],
+      refs: ['R. Duncan Luce (2008), Luce’s choice axiom, Scholarpedia 3(12):8077, §1 and §§2.1–2.4', 'http://www.scholarpedia.org/article/Luce%27s_choice_axiom'],
+      tags: ['choice axiom','paired choice','iia'], credit: 'R. Duncan Luce, 2008 author exposition of the 1959 axiom', verify: false,
+      links: { source:'http://www.scholarpedia.org/article/Luce%27s_choice_axiom',doi:'https://doi.org/10.4249/scholarpedia.8077' },
       viz(v) {
-        const M = v.M, NAME = 'ABCD', COL = ['accent', 'orange', 'green', 'purple'], V0 = [4, 3, 3, 1];
-        const tg = NAME.split('').map((n, i) => v.toggle('offer ' + n, i < 3));
-        const copy = v.toggle('C is a near-copy of B', true);
-        const model = v.select('model', [{ value: 'luce', label: 'Luce’s axiom' }, { value: 'nest', label: 'copies count once' }], 'luce');
-        const sv = v.stage({ x: [0, 4], y: [0, 10], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 260, xticks: [[0.5, 'A'], [1.5, 'B'], [2.5, 'C'], [3.5, 'D']], ylabel: 'strength $v_i$', title: 'strengths (drag the bar tops)' });
-        const pb = v.stage({ x: [0, 4], y: [0, 1], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 260, xticks: [[0.5, 'A'], [1.5, 'B'], [2.5, 'C'], [3.5, 'D']], ylabel: 'choice probability', title: 'probability of choosing each offered option' });
-        const H = V0.map((x, i) => sv.handle(i + 0.5, x, { color: COL[i], r: 8, constrain: (xx, y) => [i + 0.5, M.clamp(y, 0.3, 10)] }));
-        v.legend([['muted', '$P(\\cdot\\mid\\{A,B\\})$', { dot: true }]]);
-        let st = null;
-        const probs = (vs, inc, mod, cp) => {
-          const P = [0, 0, 0, 0], idx = [0, 1, 2, 3].filter((i) => inc[i]);
-          if (mod === 'luce' || !(cp && inc[1] && inc[2])) { const T = M.sum(idx.map((i) => vs[i])); idx.forEach((i) => { P[i] = vs[i] / T; }); return P; }
-          const grp = [[0], [1, 2], [3]].map((g) => g.filter((i) => inc[i])).filter((g) => g.length), gs = grp.map((g) => Math.max(...g.map((i) => vs[i]))), T = M.sum(gs);
-          grp.forEach((g, k) => { const tt = M.sum(g.map((i) => vs[i])); g.forEach((i) => { P[i] = (gs[k] / T) * (vs[i] / tt); }); });
-          return P;
-        };
-        v.render(() => {
-          if (copy.value) H[2].set(2.5, H[1].y);
-          const vs = H.map((h) => h.y), inc = tg.map((t) => !!t.value), cp = copy.value, mod = model.value;
-          vs.forEach((x, i) => { sv.rect(i + 0.15, 0, i + 0.85, x, { fill: COL[i], fillAlpha: inc[i] ? 0.38 : 0.1, color: COL[i], width: inc[i] ? 1.8 : 0.8 }); });
-          const P = probs(vs, inc, mod, cp), P2 = probs(vs, [true, true, false, false], mod, cp);
-          for (let i = 0; i < 4; i++) if (inc[i]) {
-            pb.rect(i + 0.15, 0, i + 0.85, P[i], { fill: COL[i], fillAlpha: 0.45, color: COL[i], width: 1.8 });
-            pb.text(P[i].toFixed(2), i + 0.5, Math.max(P[i], i < 2 && (inc[2] || inc[3]) ? P2[i] : 0), { dy: -16, align: 'center', size: 12, weight: 700, color: COL[i] });
-          } else pb.text('not offered', i + 0.5, 0.04, { align: 'center', size: 10.5, color: 'muted' });
-          for (const i of [0, 1]) if (inc[2] || inc[3]) pb.dot(i + 0.5, P2[i], { r: 6, color: 'muted', hollow: true, width: 2 });
-          st = { vs, inc, P, P2, mod, cp };
+        const names='ABCD',colors=['accent','orange','green','purple'],initial=[4,3,3,1],strength=initial.map((x,i)=>v.slider('strength '+names[i],.3,10,x,{step:.1,decimals:3}));
+        const offer=[...names].map((n,i)=>v.toggle('offer '+n,i<3)),copy=v.toggle('C copies B (lock strength)',true),model=v.select('choice rule',[{value:'luce',label:'Luce weights'},{value:'copies',label:'authored copy groups'}],'luce');
+        const A=v.stage({x:[-.3,4.3],y:[-1.3,12],axes:'box',gutter:true,height:340,minWidth:270,xticks:[[.5,'A'],[1.5,'B'],[2.5,'C'],[3.5,'D']],ylabel:'positive strength',title:'strengths: full endpoints .3–10'});
+        const B=v.stage({x:[-.3,4.3],y:[-.3,1.3],axes:'box',gutter:true,height:340,minWidth:270,xticks:[[.5,'A'],[1.5,'B'],[2.5,'C'],[3.5,'D']],ylabel:'choice probability',title:'current menu / A,B reference'});
+        const handles=initial.map((x,i)=>A.handle(i+.5,x,{r:8,color:colors[i],constrain:(_,y)=>[i+.5,v.M.clamp(y,.3,10)],onDrag:h=>strength[i].set(h.y)}));
+        v.legend([['muted','A/B-only reference when both are offered',{dot:true}],['accent','A'],['orange','B'],['green','C'],['purple','D']]);
+        v.button('Equal-clone counterexample',()=>{strength.forEach(s=>s.set(1));offer.forEach((s,i)=>s.set(i<3));copy.set(true);model.set('copies');});
+        v.button('Offer only A and B',()=>offer.forEach((s,i)=>s.set(i<2)));
+        let info={};
+        v.render(()=>{
+          if(copy.value&&strength[2].value!==strength[1].value)strength[2].set(strength[1].value);
+          strength[2].input.disabled=copy.value;handles[2].visible=!copy.value;
+          const mask=offer.reduce((m,s,i)=>m+(s.value?1<<i:0),0),state=luceState(strength.map(s=>s.value),mask,model.value,copy.value);
+          state.weights.forEach((x,i)=>{handles[i].set(i+.5,x);A.rect(i+.15,0,i+.85,x,{fill:colors[i],fillAlpha:mask&(1<<i)?.4:.1,color:colors[i],width:1.6});});
+          if(!state.p){B.text('empty menu',2,.65,{align:'center',size:15,weight:700,color:'muted'});B.text('no choice distribution',2,.48,{align:'center',size:12,color:'muted'});}
+          else for(let i=0;i<4;i++){
+            if(mask&(1<<i)){const p=state.p[i];B.rect(i+.15,0,i+.85,p,{fill:colors[i],fillAlpha:.42,color:colors[i],width:1.8});B.text(v.fix(p,4),i+.5,-.15,{align:'center',size:12,weight:700,color:colors[i]});}
+            else B.text('absent',i+.5,-.15,{align:'center',size:10.5,color:'muted'});
+          }
+          if((mask&3)===3)for(let i=0;i<2;i++)B.dot(i+.5,state.pair[i],{r:6,color:'muted',hollow:true,width:2});
+          info=state;
         });
-        v.readout(() => {
-          if (!st) return '';
-          const { vs, inc, P, P2 } = st;
-          if (!(inc[0] && inc[1])) return 'Offer both $A$ and $B$ to compare their choice odds.';
-          const r = P[0] / P[1], r2 = P2[0] / P2[1], extra = inc[2] || inc[3];
-          return `Strengths: ${vs.map((x, i) => 'ABCD'[i] + '=' + v.fix(x, 1)).join(', ')} · $P(A)/P(B)$ = ${v.fix(r, 3)} in this set, ${v.fix(r2, 3)} in $\\{A,B\\}$, $v_A/v_B$ = ${v.fix(vs[0] / vs[1], 3)} · ${extra ? (Math.abs(r - r2) < 1e-9 ? 'the odds are unchanged: independence of irrelevant alternatives holds' : 'the odds changed when options were added: the choice axiom fails in this model') : 'only $A$ and $B$ on offer'} · pairwise (Bradley–Terry) $P(A\\succ B)$ = ${v.fix(vs[0] / (vs[0] + vs[1]), 3)}${inc[2] && st.cp ? ` · $P(\\text{car }A)$ = ${v.fix(P[0], 3)} with the copy, vs ${v.fix(P2[0], 3)} without it` : ''}`;
+        const menu=m=>[...names].filter((_,i)=>m&(1<<i)).join(',')||'empty';
+        v.readout(()=>{const p=info,a=p.audit,w=a.witness,head=p.p?`Menu {${menu(p.mask)}} probabilities (${p.p.map(x=>v.fix(x,6)).join(', ')}), sum ${v.fix(v.M.sum(p.p),10)}.`:'The empty menu is outside the theorem: no choice distribution is assigned.';
+          const odds=p.odds===null?'Offer A and B together for their current-menu odds.':`A/B odds ${v.fix(p.odds,6)} in this menu, versus ${v.fix(p.pairOdds,6)} in {A,B}. This checks this pair/menu only.`;
+          const removed=(p.mask&7)===7?`Removing C while holding the other offers fixed gives menu {${menu(p.withoutMask)}}: P(A) ${v.fix(p.without[0],6)} versus current ${v.fix(p.p[0],6)}.`:'The C-removal comparison is shown when A,B,C are all offered.';
+          return `${head}\n${odds} ${removed}\nAll 15 nonempty menus and ${a.comparisons.length} nested-menu pair comparisons: largest absolute cross-product residual ${a.maxResidual.toExponential(3)}; largest full-menu weight reconstruction error ${a.reconstructionMax.toExponential(3)}. ${p.grouped?'This authored family violates IIA: {A,B} versus {A,B,C} doubles A/B odds.':'This family satisfies IIA algebraically by the fixed-weight formula.'}\n${p.grouped?`A largest numerical discrepancy is pair ${names[w.i]}/${names[w.j]} in {${menu(w.small)}} versus {${menu(w.large)}}: odds ${v.fix(w.smallOdds,6)} and ${v.fix(w.largeOdds,6)}.`:'Strengths are identifiable only up to a common multiplier; their normalized full-menu weights are ('+p.normalized.map(x=>v.fix(x,6)).join(', ')+').'}`;
         });
       },
     },
     // ------------------------------------------------------------------ 3.9
     {
-      num: '3.9',
-      kind: 'Law',
-      name: 'Loudness in sones: doubling per 10 dB',
-      statement: String.raw`The **sone** is the unit of perceived loudness, defined so that a 1 kHz tone at a loudness level of 40 phon (40 dB SPL for that tone) has loudness 1 sone. Above about 40 phon, loudness $N$ in sones doubles with every 10 dB increase in level $L$:
-$$N=2^{(L-40)/10}\quad(L\gtrsim40),$$
-equivalently $N\propto I^{\,0.3}$ in sound *intensity* $I$ (since $10$ dB is a factor $10$ in intensity and $10^{0.301}=2$), or about $p^{0.6}$ in sound pressure. A tone that is $\Delta$ dB louder than another therefore sounds $2^{\Delta/10}$ times as loud. Below 40 phon loudness falls off faster than this rule says.`,
-      idea: String.raw`The sone scale is Stevens' power law (3.2) for loudness, with an exponent near $0.3$ for intensity (about $0.6$–$0.67$ for pressure in Stevens' table) found by magnitude estimation (3.1) and by fractionation (“set a tone half as loud as this one”). The level in decibels is itself a log of intensity, so a power law in intensity is a straight line in dB on a log-loudness axis: the “10 dB per doubling” is just $10\log_{10}2/0.3$. The exponent in dB terms is $3.01/m$ for an intensity exponent $m$. Equal-loudness contours (music-1.9) say how level and frequency map to phons; the sone then maps phons to a ratio scale.`,
-      caption: String.raw`**Left:** loudness in sones (log axis) against the level of a 1 kHz tone; drag the **gold** handle for the level $L$ of the first tone. The **dashed** continuation is the doubling rule extended below 40 phon, where it is not valid; the solid curve there is an illustrative steeper extension, unverified against the ISO loudness standard. **Right:** the loudness ratio produced by $\Delta$ dB of extra level, for the intensity exponent $m$ you choose. Use *Hear L, then L+Δ* to judge for yourself whether $10$ dB sounds twice as loud (your device volume sets the absolute level; the electronic amplitude ratio is set by the level-difference slider; your playback system is not calibrated to the displayed absolute SPL). Estimates of how many dB make a doubling vary between studies and listeners.`,
-      deps: ['psych-3.2', 'music-1.9'],
-      refs: ['Goldstein ch. 11'],
-      tags: ['loudness', 'sone', 'psychoacoustics'],
-      credit: 'S. S. Stevens, “A scale for the measurement of a psychological magnitude: loudness”, Psychological Review 43 (1936): 405–416 (the sone); Stevens 1956, 1957 (the power-law exponent)',
-      scope: String.raw`For a 1 kHz tone (or loudness level in phons for other tones, via equal-loudness contours) between about 40 and 100 dB; the doubling interval found in experiments depends on the method and listener (about 10 dB is the classical figure, smaller values have also been reported), and below 40 phon the sone scale is steeper; complex sounds need a loudness model.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Sone' },
-      viz(v) {
-        const M = v.M;
-        const dl = v.slider('extra level $\\Delta$ (dB)', 1, 30, 10, { step: 0.5, fmt: (x) => x.toFixed(1) + ' dB' });
-        const mSl = v.slider('intensity exponent $m$', 0.2, 0.5, 0.301, { step: 0.001 });
-        const exact = v.toggle('apply the illustrative below-40 phon extension', true);
-        const N = (L, m, below) => (L >= 40 ? Math.pow(10, (m * (L - 40)) / 10) : below ? Math.max(1e-3, Math.pow(L / 40, 2.86) - 0.005) : Math.pow(10, (m * (L - 40)) / 10));
-        const s1 = v.stage({ x: [10, 100], y: [-2.3, 2.2], axes: 'box', gutter: true, height: 320, weight: 1.1, minWidth: 290, xlabel: 'level of a 1 kHz tone $L$ (dB SPL = phon)', ylabel: 'loudness (sones)', yticks: logTicks(-2.3, 2.2, { mult: [1] }), title: 'loudness against level' });
-        const s2 = v.stage({ x: [0, 30], y: [0, 9], axes: 'box', gutter: true, height: 320, weight: 0.9, minWidth: 250, xlabel: 'level difference $\\Delta$ (dB)', ylabel: 'loudness ratio', title: 'how many times as loud?' });
-        const hL = s1.handle(50, 0, { color: 'gold', r: 8, constrain: (x) => [M.clamp(x, 12, 100-dl.value), 0] });
-        v.soundButton('Hear two tones $\\Delta$ dB apart', (snd) => { const [g0,g1]=relativeToneGains(dl.value); snd.tone(1000, { duration: 1, gain: g0 }); snd.tone(1000, { duration: 1, gain: g1, delay: 1.5 }); });
-        v.legend([['accent', 'sones'], ['muted', 'doubling rule extended', { dash: true }], ['gold', 'chosen levels', { dot: true }]]);
-        let st = null;
-        v.render(() => {
-          const m = mSl.value, D = dl.value, L = Math.min(hL.x,100-D), b = exact.value, f = (x) => Math.log10(N(x, m, b));
-          s1.setView([10,100],[-2.3,Math.max(2.2,f(100)+.2)]);
-          s2.setView([0,30],[0,Math.max(9,Math.pow(10,m*3)*1.12)]);
-          s1.fn(f, { domain: [10, 100], color: 'accent', width: 3, n: 220 });
-          s1.fn((x) => Math.log10(N(x, m, false)), { domain: [10, 40], color: 'muted', width: 1.6, n: 40, dash: [5, 4] });
-          s1.line(40, -2.3, 40, 0, { color: 'faint', dash: [2, 3] }); s1.text('1 sone at 40 phon', 39, -2.0, { align: 'right', size: 11, color: 'muted' });
-          hL.set(L, f(L));
-          const L2 = L + D;
-          s1.line(L, -2.3, L, f(L), { color: 'gold', dash: [3, 3] }); s1.line(L2, -2.3, L2, f(L2), { color: 'gold', dash: [3, 3] });
-          s1.dot(L, f(L), { r: 5.5, color: 'gold' }); s1.dot(L2, f(L2), { r: 5.5, color: 'gold' });
-          s1.text(sig(N(L, m, b)) + ' sone', L, f(L), { dx: -10, dy: -10, align: 'right', size: 11.5, weight: 700, color: 'ink' });
-          s1.text(sig(N(L2, m, b)) + ' sone', L2, f(L2), { dx: -10, dy: -10, align: 'right', size: 11.5, weight: 700, color: 'ink' });
-          s2.fn((x) => Math.pow(10, (m * x) / 10), { domain: [0, 30], color: 'accent', width: 2.8, n: 120 });
-          s2.fn((x) => Math.pow(2, x / 10), { domain: [0, 30], color: 'muted', width: 1.4, dash: [5, 4], n: 60 });
-          s2.line(0, 2, 3.01 / m, 2, { color: 'green', dash: [3, 3] }); s2.line(3.01 / m, 0, 3.01 / m, 2, { color: 'green', dash: [3, 3] });
-          s2.text('doubling at ' + v.fix(3.01 / m, 1) + ' dB', 3.01 / m, 2, { dx: 8, dy: -10, align: 'left', size: 11.5, color: 'green', weight: 700 });
-          s2.dot(D, Math.pow(10, (m * D) / 10), { r: 6, color: 'gold' });
-          st = { m, D, L, L2, ratio: Math.pow(10, (m * D) / 10), r2: N(L2, m, b) / N(L, m, b), N1: N(L, m, b), N2: N(L2, m, b) };
-        });
-        v.readout(() => st ? `$L$ = ${v.fix(st.L, 1)} dB → ${sig(st.N1)} sone; $L+\\Delta$ = ${v.fix(st.L2, 1)} dB → ${sig(st.N2)} sone (ratio ${v.fix(st.r2, 2)}) · rule: $10^{m\\Delta/10}$ = ${v.fix(st.ratio, 2)}, equal to $2^{\\Delta/10}$ = ${v.fix(Math.pow(2, st.D / 10), 2)} when $m=0.301$ · loudness doubles every ${v.fix(3.01 / st.m, 1)} dB for this $m$` : '');
+      num: '3.9',kind:'Model',name:'Loudness in sones: a mid-level approximation',
+      statement:String.raw`**Loudness** in sones and **loudness level** in phons describe perception, while sound pressure level (SPL) describes an RMS pressure relative to $20\,\mu\mathrm{Pa}$. One sone uses a 1-kHz reference tone at 40 dB SPL. A sound's loudness level in phons is the SPL of an equally loud 1-kHz reference; phons and SPL are therefore numerically aligned for that reference tone, not for every sound.
+
+Moore's technical account describes approximate 10-dB doubling over **40–80 dB** for a steady 1-kHz sinusoid in quiet, with binaural, frontal free-field presentation in the normal-hearing reference setting. A simple nominal approximation is
+$$N\approx2^{(L-40)/10}\ \text{sones},\qquad40\le L\le80.$$
+This is a mid-level reference model, not an exact universal perceptual law or the full Cambridge loudness algorithm. Frequency, bandwidth, duration, hearing and presentation conditions matter. We do not extend this approximation below 40 or above 80 here.`,
+      idea:String.raw`The power-law form (psych-3.2) and level conversion (music-1.8) explain the relation. For a progressive plane wave at fixed acoustic impedance, intensity ratios are squared RMS-pressure ratios, so
+$$\begin{gathered}\Delta=10\log_{10}(I_2/I_1)\\=20\log_{10}(p_2/p_1).\end{gathered}$$
+If the selected model is $N\propto I^m$, normalized to 1 sone at the reference level 40, then
+$$\begin{gathered}N_m(L)=10^{m(L-40)/10},\\N_2/N_1=10^{m\Delta/10},\\\Delta_{\rm double}=10\log_{10}2/m.\end{gathered}$$
+Exact 10-dB doubling **within the nominal formula** uses $m=\log_{10}2\approx0.301029996$, with pressure exponent $2m$. The rounded $m=0.3$ instead gives $10^{0.3}\approx1.995262$ per 10 dB and a doubling interval about 10.0343 dB. The custom exponent is an authored exploration, not a fitted observer or a reported range of human exponents. It does not change the acoustic pressure/intensity conversion.`,
+      caption:String.raw`The base level $L$ ranges 40–80 and the **actual difference control is coupled** to $0\le\Delta\le80-L$, keeping both modeled tones inside 40–80. Raising $L$ reduces the displayed difference bound and reduces an excessive current difference to that bound; the slider's value/output and the plotted second level agree. At $L=80$, the difference control is disabled at 0. Drag the gold base-level handle or the right-hand difference handle. Choose the nominal exact-doubling formula, its rounded 0.3 version or the authored custom exponent. The colored curves show the chosen model; grey dashed curves show the nominal reference. Both vertical axes display logarithmic values with ordinary sone/ratio tick labels.
+
+**Play relative 1-kHz pair** uses only the current difference, with two identical finite carriers/envelopes: the second digital peak is 0.02 of full scale and the first is $0.02\,10^{-\Delta/20}$. Playback is uncalibrated and does not represent the plotted absolute SPL. The shared audio limiter and your device may alter output levels; neither a precise acoustic difference nor exact perceived doubling is demonstrated.`,
+      scope:String.raw`The empirical reference is an approximation for specified steady-tone listening conditions, not a rule for arbitrary frequencies, broadband/complex sounds, threshold-level sounds, impaired hearing or headphone transfer responses. Phons are not physical pressure or intensity, and sones are not decibels. The model curves are calculated formulas, not new perceptual measurements or an ISO/Cambridge implementation. The finite audio pair illustrates requested digital amplitude ratios only; no listener calibration or subjective-loudness test is performed.`,
+      deps:['psych-3.2','music-1.8'],see:['music-1.9'],
+      refs:['Brian C. J. Moore (2014), Development and Current Status of the Cambridge Loudness Models, Predictions of the 1997 Model/Figure 6','Karl D. Kryter (1966), Review of Research and Methods for Measuring the Loudness and Noisiness of Complex Sounds, printed pp. 2–5','David S. Pallett and Marilyn A. Cadoff (March 1977), NBSIR 75-938, §2.1.1 pp. 5–6'],
+      tags:['loudness','sone','psychoacoustics'],credit:'Technical references: Kryter (1966); Moore (2014) author account; Pallett and Cadoff (1977)',verify: false,
+      links:{source:'https://pmc.ncbi.nlm.nih.gov/articles/PMC4227665/',reference:'https://ntrs.nasa.gov/api/citations/19660011809/downloads/19660011809.pdf'},
+      viz(v){
+        const L=v.slider('modeled base $L$ (dB SPL)',40,80,50,{int:true}),D=v.slider('permitted difference $\\Delta$ (dB)',0,40,10,{int:true}),custom=v.slider('authored custom intensity exponent $m$',.2,.5,.3,{step:.001,decimals:6}),mode=v.select('power-law formula',[{value:'nominal',label:'nominal 10-dB reference'},{value:'rounded',label:'rounded m=0.3'},{value:'custom',label:'authored custom m'}],'nominal');
+        const sync=()=>{const max=80-L.value;D.input.min='0';D.input.max=String(max);if(D.value>max)D.set(max);D.input.disabled=max===0;custom.input.disabled=mode.value!=='custom';return max;};
+        const A=v.stage({x:[36,84],y:[-.2,2.35],height:340,minWidth:280,axes:'box',gutter:true,xlabel:'modeled 1-kHz level (dB SPL = phon)',ylabel:'model loudness (sones)',yticks:logTicks(-.2,2.35,{mult:[1,2,5]}),title:'mid-level approximation: 40–80 only'}),B=v.stage({x:[-3,43],y:[-.2,2.35],height:340,minWidth:280,axes:'box',gutter:true,xlabel:'permitted level difference (dB)',ylabel:'model loudness ratio',yticks:logTicks(-.2,2.35,{mult:[1,2,5]}),title:'ratio over the current permitted interval'});
+        const hL=A.handle(50,0,{r:8,color:'gold',constrain:x=>[Math.round(v.M.clamp(x,40,80)),0],onDrag:h=>{L.set(h.x);sync();}}),hD=B.handle(10,0,{r:8,color:'gold',constrain:x=>[Math.round(v.M.clamp(x,0,80-L.value)),0],onDrag:h=>D.set(h.x)});
+        v.legend([['accent','chosen power-law formula'],['muted','nominal 10-dB reference',{dash:true}],['gold','first modeled level/difference',{dot:true}],['orange','second modeled level',{dot:true}],['green','model doubling, when permitted',{dot:true}]]);
+        let info,lastAudio=null;
+        v.soundButton('Play relative 1-kHz pair (uncalibrated)',snd=>{const pair=loudnessAudio(D.value);snd.samples(pair.samples,pair.sampleRate,{gain:1,normalize:false});lastAudio={delta:pair.delta,gain1:pair.gain1,gain2:pair.gain2};});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{sync();const state=loudnessModel(L.value,D.value,mode.value,custom.value);A.path(state.levelReference,{color:'muted',width:1.5,dash:[5,4]});A.path(state.levelCurve,{color:'accent',width:2.6});hL.set(state.L,state.logN1);A.dot(state.L2,state.logN2,{r:5,color:'orange'});hD.visible=state.maxDelta>0;hD.set(state.delta,state.logRatio);
+          if(state.maxDelta>0){B.path(state.ratioReference,{color:'muted',width:1.5,dash:[5,4]});B.path(state.ratioCurve,{color:'accent',width:2.6});}else B.dot(0,0,{r:5,color:'gold'});
+          if(state.doubling<=state.maxDelta)B.dot(state.doubling,Math.log10(2),{r:5,color:'green'});info={...state,lastAudio};});
+        v.readout(()=>{if(!info)return'';const p=info;return `Modeled levels ${p.L} and ${p.L2} dB SPL (1-kHz reference phons); permitted Δ 0–${p.maxDelta} dB, actual Δ ${p.delta} dB. Chosen m=${p.m.toFixed(9)}; pressure exponent 2m=${(2*p.m).toFixed(9)}. Model sones ${p.N1.toFixed(6)} → ${p.N2.toFixed(6)}, ratio ${p.ratio.toFixed(6)}; nominal reference ratio ${p.referenceRatio.toFixed(6)}.\nAcoustic conversion at fixed impedance: RMS pressure ratio ${p.pressureRatio.toFixed(6)}, intensity ratio ${p.intensityRatio.toFixed(6)}. Modeled RMS pressures ${p.pressure1.toFixed(6)} and ${p.pressure2.toFixed(6)} Pa re 20 µPa; these are not measured device pressures. This formula doubles every ${p.doubling.toFixed(6)} dB${p.doubling>p.maxDelta?' (beyond the current permitted interval)':''}.\nUncalibrated digital pair uses Δ only, independent of modeled absolute L: first peak ${(0.02*10**(-p.delta/20)).toFixed(8)}, second 0.02000000 of full scale, before the shared limiter/device. ${p.lastAudio?`Last played Δ ${p.lastAudio.delta} dB.`:'No audio has been played.'} No calibrated SPL or perceived-doubling claim.`;});
       },
     },
     // ------------------------------------------------------------------ 3.10
     {
-      num: '3.10',
-      kind: 'Method',
-      name: 'Multidimensional scaling of similarity',
-      statement: String.raw`**Multidimensional scaling (MDS)** takes judged dissimilarities $\delta_{ij}$ between $m$ stimuli and finds points $y_1,\dots,y_m$ in a low-dimensional space whose distances $d_{ij}=\lVert y_i-y_j\rVert$ reproduce them. In **classical (Torgerson) MDS**, with squared dissimilarities $\Delta^{(2)}=[\delta_{ij}^2]$ and the centring matrix $J=I-\frac1m\mathbf 1\mathbf 1^{\!\top}$, the matrix $B=-\tfrac12J\Delta^{(2)}J$ is symmetric; if the $\delta_{ij}$ are exact Euclidean distances between points, then $B=YY^{\!\top}$ and the coordinates are the top eigenvectors of $B$, scaled by the square roots of their eigenvalues. This page measures fit by a **normalized distance error**
-$$s=\Big(\sum_{i<j}(\delta_{ij}-d_{ij})^2\Big/\sum_{i<j}\delta_{ij}^2\Big)^{1/2},$$
-and plotting this error against dimension shows what is lost by keeping fewer dimensions. This normalization uses squared judged dissimilarities; it is not Kruskal’s nonmetric Stress1, whose denominator uses fitted distances. The solution is determined only up to rotation, reflection and shift.`,
-      idea: String.raw`Squared distances determine inner products once the origin is moved to the centroid ($B$ is that double-centred matrix), so the real spectral theorem (ladr-7.29) supplies an orthonormal eigenbasis and a spectral decomposition recovers the configuration whenever one exists; noise in the judgments puts small eigenvalues on the “spurious” directions and the stress shows how much is lost by keeping the first few. The method grew out of Thurstone-style scaling (3.7), which turns choices into one-dimensional scale values; MDS turns *dissimilarity ratings* into a configuration in several dimensions, and the picture can reveal structure (a circle, clusters) that no single rating scale shows. Torgerson's 1952 paper gave the classical solution; later nonmetric versions (Shepard, Kruskal) use only the rank order of the dissimilarities.`,
-      caption: String.raw`**Left:** the *true* configuration of 12 stimuli, a hidden psychological space; drag the points to reshape it or choose a preset (a hue circle, a line, clusters). A simulated judge rates every pair's dissimilarity as the true distance times random noise (slider). **Middle:** the configuration recovered by classical MDS from those ratings alone, rotated and scaled to sit on the truth (thin lines show the errors). **Right:** stress against dimension: it drops to near zero at the true dimension (2 for a circle or clusters, 1 for a line) when the noise is small (classical MDS minimises a different criterion, the strain of $B$, so stress can wobble as dimensions are added). Simulated judgments. For real colour data, Ekman's 1954 similarity ratings of 14 spectral colours are often cited as an example in which MDS arranges the colours around a circle.`,
-      deps: ['psych-3.7', 'ladr-7.29'],
-      refs: ['Gescheider ch. 10'],
-      tags: ['multidimensional scaling', 'similarity', 'stress'],
-      credit: 'W. S. Torgerson, “Multidimensional scaling: I. Theory and method”, Psychometrika 17 (1952): 401–419; J. B. Kruskal (1964) for stress and nonmetric MDS',
-      scope: String.raw`Classical MDS is exact for Euclidean distances and approximate otherwise; real similarity judgments are noisy, may be non-Euclidean or asymmetric, and the number of dimensions is chosen by judgment from the stress plot. The map is unique only up to rotation, reflection and translation.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Multidimensional_scaling' },
+      num: '3.10', kind: 'Method', name: 'Classical multidimensional scaling',
+      statement: String.raw`Let $n\ge2$ and let $\Delta=[\delta_{ij}]$ be an $n\times n$ symmetric matrix of nonnegative dissimilarities, with $\delta_{ii}=0$. Write
+$$J=I-\frac1n\mathbf1\mathbf1^{\mathsf T},\qquad B=-\tfrac12J[\delta_{ij}^2]J.$$
+The dissimilarities are exact Euclidean distances **if and only if** the centered Gram matrix $B$ is positive semidefinite. If its rank is $r$, an exact centered configuration in $\mathbf R^r$ comes from its positive eigenvalues and orthonormal eigenvectors:
+$$\begin{gathered}Y=Q_r\operatorname{diag}(\sqrt{\lambda_1},\ldots,\sqrt{\lambda_r}),\\ YY^{\mathsf T}=B.\end{gathered}$$
+Keeping the largest $k$ positive directions gives classical spectral scaling in at most $k$ dimensions. Negative eigenvalues indicate that exact Euclidean reconstruction is impossible. This spectral construction does **not** directly minimize raw-distance stress. Full exact configurations differ only by rigid translation, rotation or reflection; the supplied distance scale is fixed. A truncated solution can depend on the chosen subspace when the eigenvalue at its cutoff is repeated.`,
+      idea: String.raw`Expand $\|x_i-x_j\|^2=\|x_i\|^2+\|x_j\|^2-2x_i\cdot x_j$. Multiplying by $J$ on both sides removes the two norm terms because $J\mathbf1=0$, leaving $B=X_cX_c^{\mathsf T}$ for centered rows $X_c$. The real spectral theorem (ladr-7.29) gives orthonormal eigenvectors; the positive-operator characterizations (ladr-7.38) identify nonnegative eigenvalues and the Gram factorization. Conversely, for symmetric zero-diagonal input, $B_{ii}+B_{jj}-2B_{ij}=\delta_{ij}^2$, so a positive-semidefinite factorization reproduces all distances. Its rank is at most $n-1$ because $B\mathbf1=0$.
+
+We report a directly defined **normalized distance error**,
+$$E_k=\sqrt{\frac{\sum_{i<j}(\delta_{ij}-d_{ij}^{(k)})^2}{\sum_{i<j}\delta_{ij}^2}}.$$
+It is a diagnostic of the spectral fit, not a claim that this fit minimizes it, not a universal Stress-1 convention and not an intrinsic-dimension certificate. If every target distance is zero, this ratio is undefined; the absolute RMS distance error is still defined. Metric least-squares scaling explicitly optimizes a distance criterion; nonmetric scaling can also fit a monotone transformation of dissimilarities. Neither optimizer runs here. The mathematical account used is Williams's own technical exposition, §2, rather than a claim to reproduce a historical psychological experiment.`,
+      caption: String.raw`**Left:** 12 authored planar points; drag them inside the full $[-2.3,2.3]^2$ input box, or choose a circle, line, clusters, one outlier or coincident points. Every pair's synthetic dissimilarity is its true distance times $\exp(sZ_{ij})$, with a symmetric table of standard-normal draws (prob-1.2.5) and slider $s$. For $s>0$ the theoretical multiplier distribution has median 1 and mean greater than 1; at $s=0$ every multiplier equals 1. **Middle:** a two-dimensional classical fit, aligned by translation, rotation and possible reflection only—**no fitted rescaling**. Grey rings are centered truth, colored dots are recovered points and connecting segments are position errors. **Right:** the defined $E_k$ for dimensions 1–4. Exact noiseless planar data have zero error once enough dimensions are retained, up to rounding; noisy data need not. All coordinates and full glyphs determine padded plot bounds.`,
+      scope: String.raw`Inputs here are complete, finite, symmetric, nonnegative dissimilarities with zero diagonal; asymmetric or missing data need another method. All point sets and noise are authored examples. No actual color judgments, nonmetric fitting or psychological dimension estimates are supplied. Positive/negative eigenvalue counts are numerical diagnostics using an explicit rounding cutoff, not exact PSD certificates. Tiny positive modes at or below that cutoff are omitted with negative modes. A zero distance denominator and zero truth radius receive explicit undefined status; neither is replaced by a fake ratio. Error dimensions 1–4 do not display every possible direction of a noisy 12-point matrix.`,
+      deps: ['ladr-7.29','ladr-7.38','prob-1.2.5'], see: ['psych-3.7'],
+      refs: ['Christopher K. I. Williams, On a Connection between Kernel PCA and Metric Multidimensional Scaling, NIPS2000, proceedings2001, §2.1–2.3'],
+      tags: ['multidimensional scaling','dissimilarity','Gram matrices'], credit: 'Classical scaling; technical account: Christopher K. I. Williams, NIPS2000/2001, §2', verify: false,
+      links: {source:'https://proceedings.neurips.cc/paper_files/paper/2000/file/d4b2aeb2453bdadaa45cbe9882ffefcf-Paper.pdf'},
       viz(v) {
-        const M = v.M, NP = 12;
-        let seed = 31, Z = null, zSeed = -1;
-        const PRE = { circle: M.range(NP).map((k) => [1.5 * Math.cos((2 * Math.PI * k) / NP), 1.5 * Math.sin((2 * Math.PI * k) / NP)]),
-          line: M.range(NP).map((k) => [-1.8 + (3.6 * k) / (NP - 1), 0]),
-          clusters: M.range(NP).map((k) => { const c = [[-1.4, 1.0], [1.4, 0.7], [0, -1.5]][k % 3], a = (k * 2.399) % 6.28; return [c[0] + 0.45 * Math.cos(a), c[1] + 0.45 * Math.sin(a)]; }) };
-        const noise = v.slider('judgment noise (log-SD)', 0, 0.6, 0.1, { step: 0.01 });
-        const cfg = v.select('preset', [{ value: 'circle', label: 'hue circle' }, { value: 'line', label: 'line' }, { value: 'clusters', label: 'clusters' }], 'circle', { onChange: (c) => PRE[c].forEach((p, i) => H[i].set(p[0], p[1])) });
-        v.button('New judgments', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
-        const tr = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, axes: false, height: 290, weight: 1, minWidth: 220, title: 'true configuration (drag)' });
-        const rc = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, axes: false, height: 290, weight: 1, minWidth: 220, title: 'recovered by classical MDS' });
-        const sb = v.stage({ x: [0.4, 4.6], y: [0, 0.6], axes: 'box', gutter: true, height: 290, weight: 0.85, minWidth: 220, xlabel: 'number of dimensions', ylabel: 'stress', xticks: [1, 2, 3, 4], title: 'stress by dimension' });
-        const colr = (i) => M.hsl2rgb(i / NP, 0.7, 0.5);
-        const H = PRE.circle.map((p, i) => tr.handle(p[0], p[1], { color: colr(i), r: 8, constrain: (x, y) => [M.clamp(x, -2.3, 2.3), M.clamp(y, -2.3, 2.3)] }));
-        let st = null;
-        v.render(() => {
-          if (zSeed !== seed) { const R = v.rng(seed); Z = M.zeros(NP, NP); for (let i = 0; i < NP; i++) for (let j = i + 1; j < NP; j++) { Z[i][j] = R.normal(); Z[j][i] = Z[i][j]; } zSeed = seed; }
-          const X = H.map((h) => [h.x, h.y]), sd = noise.value;
-          const dist = (A, i, j) => Math.hypot(...A[i].map((a, k) => a - A[j][k]));
-          const Dm = M.zeros(NP, NP); for (let i = 0; i < NP; i++) for (let j = 0; j < NP; j++) if (i !== j) Dm[i][j] = dist(X, i, j) * Math.exp(sd * Z[i][j]);
-          const D2 = Dm.map((r) => r.map((x) => x * x)), rm = D2.map((r) => M.mean(r)), gm = M.mean(rm);
-          const B = D2.map((r, i) => r.map((x, j) => -0.5 * (x - rm[i] - rm[j] + gm)));
-          const E = M.eigSym(B), lam = E.values;
-          const coord = (k) => E.vecs.slice(0, k).map((ev, a) => ev.map((x) => x * Math.sqrt(Math.max(lam[a], 0)))); // k lists of m
-          const stress = (k) => { const C = coord(k); let num = 0, den = 0; for (let i = 0; i < NP; i++) for (let j = i + 1; j < NP; j++) { let d2 = 0; for (let a = 0; a < k; a++) d2 += (C[a][i] - C[a][j]) ** 2; num += (Dm[i][j] - Math.sqrt(d2)) ** 2; den += Dm[i][j] ** 2; } return den>0 ? Math.sqrt(num / den) : 0; };
-          const sts = [1, 2, 3, 4].map(stress);
-          // align 2-D solution to truth: reflect?, rotate, scale
-          const C2 = coord(2), Y = M.range(NP).map((i) => [C2[0][i], C2[1][i]]), cx = M.mean(X.map((p) => p[0])), cy = M.mean(X.map((p) => p[1])), Xc = X.map((p) => [p[0] - cx, p[1] - cy]);
-          let best = null;
-          for (const refl of [1, -1]) {
-            const Yr = Y.map((p) => [p[0], refl * p[1]]); const my0 = M.mean(Yr.map((p) => p[0])), my1 = M.mean(Yr.map((p) => p[1])), Yc = Yr.map((p) => [p[0] - my0, p[1] - my1]);
-            let a = 0, b = 0, nn = 0; for (let i = 0; i < NP; i++) { a += Xc[i][0] * Yc[i][0] + Xc[i][1] * Yc[i][1]; b += Yc[i][0] * Xc[i][1] - Yc[i][1] * Xc[i][0]; nn += Yc[i][0] ** 2 + Yc[i][1] ** 2; }
-            const th = Math.atan2(b, a), c = Math.cos(th), s = Math.sin(th), sc = nn > 1e-12 ? Math.hypot(a, b) / nn : 1;
-            const R = Yc.map((p) => [sc * (c * p[0] - s * p[1]), sc * (s * p[0] + c * p[1])]);
-            const err = Math.sqrt(M.mean(R.map((p, i) => (p[0] - Xc[i][0]) ** 2 + (p[1] - Xc[i][1]) ** 2)));
-            if (!best || err < best.err) best = { R, err };
-          }
-          const rad = Math.sqrt(M.mean(Xc.map((p) => p[0] ** 2 + p[1] ** 2)));
-          best.R.forEach((p, i) => { rc.line(Xc[i][0], Xc[i][1], p[0], p[1], { color: 'muted', alpha: 0.6, width: 1.2 }); rc.dot(Xc[i][0], Xc[i][1], { r: 3.5, color: 'muted', hollow: true, width: 1.4 }); rc.dot(p[0], p[1], { r: 7, color: colr(i), label: String(i + 1), labelPos: 'ne' }); });
-          sts.forEach((s, k) => { sb.rect(k + 1 - 0.3, 0, k + 1 + 0.3, s, { fill: k === 1 ? 'accent' : 'muted', fillAlpha: k === 1 ? 0.5 : 0.25, color: k === 1 ? 'accent' : 'muted', width: 1.6 }); sb.text(s.toFixed(3), k + 1, s, { dy: -10, align: 'center', size: 11.5, weight: 700, color: 'ink' }); });
-          sb.setView([0.4, 4.6], [0, Math.max(0.2, Math.max(...sts) * 1.18)]);
-          st = { sts, err: best.err, rad, lam: lam.slice(0, 4) };
+        const NP=12,M=v.M,colors=M.range(NP).map(i=>M.hsl2rgb(i/NP,.7,.5));let seed=31,noiseSeed=null,Z;
+        const presets={circle:M.range(NP).map(k=>[1.5*Math.cos(2*Math.PI*k/NP),1.5*Math.sin(2*Math.PI*k/NP)]),line:M.range(NP).map(k=>[-1.8+3.6*k/(NP-1),0]),clusters:M.range(NP).map(k=>{const c=[[-1.4,1],[1.4,.7],[0,-1.5]][k%3],a=k*2.399;return[c[0]+.45*Math.cos(a),c[1]+.45*Math.sin(a)];}),outlier:M.range(NP).map(k=>k===0?[2.3,2.3]:[-2.3,-2.3]),coincident:M.range(NP).map(()=>[0,0])};
+        const noise=v.slider('authored normal log-noise $s$',0,.6,.1,{step:.01,decimals:2});
+        v.select('authored point preset',[{value:'circle',label:'circle'},{value:'line',label:'line'},{value:'clusters',label:'clusters'},{value:'outlier',label:'one outlier'},{value:'coincident',label:'coincident'}],'circle',{onChange:k=>presets[k].forEach((p,i)=>H[i].set(...p))});
+        v.button('New authored noise',()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;});
+        const tr=v.stage({x:[-2.9,2.9],y:[-2.9,2.9],equal:true,axes:false,height:320,minWidth:260,title:'authored truth: drag all 12 points'}),rc=v.stage({x:[-2.9,2.9],y:[-2.9,2.9],equal:true,axes:false,height:320,minWidth:260,title:'2D fit: rigid alignment, scale 1'}),sb=v.stage({x:[.4,4.6],y:[-.1,.6],axes:'box',gutter:true,height:320,minWidth:260,xlabel:'retained dimensions',ylabel:'normalized distance error',xticks:[1,2,3,4],title:'spectral fit diagnostic, no stress optimizer'});
+        const H=presets.circle.map((p,i)=>tr.handle(...p,{r:8,color:colors[i],constrain:(x,y)=>[M.clamp(x,-2.3,2.3),M.clamp(y,-2.3,2.3)]}));
+        v.legend([['muted','centered truth',{dot:true}],['accent','recovered points (colors match handles)',{dot:true}],['muted','position difference',{dash:true}]]);let info;
+        v.render(()=>{
+          if(noiseSeed!==seed){const R=v.rng(seed);Z=M.zeros(NP,NP);for(let i=0;i<NP;i++)for(let j=i+1;j<NP;j++)Z[i][j]=Z[j][i]=R.normal();noiseSeed=seed;}
+          const fit=mdsSynthetic(H.map(h=>[h.x,h.y]),noise.value,Z),a=fit.alignment,bounds=mdsView([...a.truth,...a.points]);rc.setView(bounds.x,bounds.y);
+          a.points.forEach((p,i)=>{rc.line(...a.truth[i],...p,{color:'muted',width:1.2,alpha:.6});rc.dot(...a.truth[i],{r:8,color:'muted',hollow:true,width:1.4});rc.dot(...p,{r:5,color:colors[i]});});
+          if(fit.targetSquares===0){sb.setView([.4,4.6],[-.1,.6]);sb.text('all target distances are 0',2.5,.32,{align:'center',size:13,weight:700,color:'muted'});sb.text('normalized error undefined (0/0)',2.5,.21,{align:'center',size:11,color:'muted'});}
+          else{const high=Math.max(.2,...fit.fits.map(f=>f.normalized));sb.setView([.4,4.6],[-.14*high,1.32*high]);fit.fits.forEach(f=>{sb.rect(f.dimension-.3,0,f.dimension+.3,f.normalized,{fill:f.dimension===2?'accent':'muted',fillAlpha:.4,color:f.dimension===2?'accent':'muted',width:1.6});sb.text(f.normalized.toFixed(4),f.dimension,f.normalized,{dy:-13,align:'center',size:11.5,weight:700,color:'ink'});});}
+          info={...fit,seed};
         });
-        v.readout(() => st ? `Stress for 1, 2, 3, 4 dimensions: ${st.sts.map((s) => v.fix(s, 3)).join(', ')} · root-mean-square position error of the 2-D map after alignment: ${v.fix(st.err, 3)} (${v.fix(st.rad>0?(100*st.err)/st.rad:0,0)}% of the configuration's radius) · leading eigenvalues of $B$: ${st.lam.map((l) => v.fix(l, 2)).join(', ')} · with no noise and a planar truth the stress at 2 dimensions is 0` : '');
+        const number=x=>x.toExponential(3);
+        v.readout(()=>{if(!info)return'';const p=info,a=p.alignment;return `Authored seed ${p.seed}; all ${p.pairs} symmetric pair dissimilarities retained. Normalized distance errors E1–E4: ${p.fits.map(f=>f.normalized===null?'undefined (0/0)':number(f.normalized)).join(', ')}. Absolute RMS distance errors: ${p.fits.map(f=>number(f.absoluteRms)).join(', ')} in the supplied distance units.\nRigid-only 2D position RMS ${number(a.rms)}; truth radius ${number(a.radius)}; relative position error ${a.relative===null?'undefined (zero radius)':number(a.relative)}. Fitted scale remains exactly 1.\nNumerically resolved positive/negative/near-zero eigenvalues: ${p.positive}/${p.negative}/${p.nearZero}; cutoff ${number(p.tolerance)}. All eigenvalues: ${p.eigenvalues.map(number).join(', ')}. These are numerical diagnostics; no exact PSD or empirical dimension certificate is inferred.\nThis is classical spectral scaling, not an optimized raw-distance stress or nonmetric solution.`;});
       },
     },
   ],

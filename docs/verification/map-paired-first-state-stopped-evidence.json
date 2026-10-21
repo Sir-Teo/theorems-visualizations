@@ -1,0 +1,89 @@
+{
+  "status": "stopped-unaccepted",
+  "variant": "original-only",
+  "actualFrames": 12,
+  "mainRawBytes": 514129920,
+  "mainSHA256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+  "mainOrdinalsByteIdentical": true,
+  "transportPieces": 495,
+  "transportBytes": 516882084,
+  "traceEvents": 5050,
+  "resetAt": 2461,
+  "postCaptureEvents": 259,
+  "postCaptureTypes": {
+    "atlas-clear": 2,
+    "draw-begin": 1,
+    "request-begin": 85,
+    "atlas-upload": 85,
+    "request-end": 85,
+    "draw-end": 1
+  },
+  "directCanvas": {
+    "width": 7680,
+    "height": 4184,
+    "mean": 0.4882011249867219,
+    "changed": 0.0020204076043658383,
+    "mask": "none; all RGB channels of full map-page screenshots"
+  },
+  "alternateOpened": false,
+  "physicalMemoryCapClaim": false,
+  "testedCommit": "1309fe4f08143939d1c9931c15aff682df78b32b",
+  "evidenceRoot": "/tmp/atlas-root-paired-first-state",
+  "files": [
+    {
+      "path": "/tmp/atlas-root-paired-first-state/prepared.json",
+      "bytes": 6622,
+      "sha256": "e1eeb8ee92a0bd4ced95e4b793e0fbc3715a1b25df299b1c19ea712f6d45a848"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state/failure.json",
+      "bytes": 5723529,
+      "sha256": "7bd81ba2261e477fb4df4012b8840ec87750848f280dcd691a6bde5ea25983c7"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state/pending.json",
+      "bytes": 5723308,
+      "sha256": "38b7d1507f6bea6b675551c1d68e69a0810a21a18bd3f5a7458d3d09610550aa"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state/original/metadata.json",
+      "bytes": 2752164,
+      "sha256": "c9454a6e45369c17b05283f657928969f772df765832f0845c5d7f154f0abeea"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state/original/post-capture-events.json",
+      "bytes": 131857,
+      "sha256": "95aafecc1a6ab8fb316c8c6dbf5a8878ecd723dcc5deb282a2466804b0a5d3e8"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state/original/direct-difference.json",
+      "bytes": 168,
+      "sha256": "636fedcc3debb4a6bb0109dc854652f0a1f4a8432da6559d4e9840d2d4fd1579"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state.log",
+      "bytes": 373,
+      "sha256": "b5a91d48b508506536db1ce10e1785057efd201d767b09693ede31f57ffe2200"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state-audit.json",
+      "bytes": 658,
+      "sha256": "a5b5e952072a6c6736c1b51b9b874129e3f327e0cf0e44c981ba2db71b13792d"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state/original/history-A1-comparison.json",
+      "bytes": 378,
+      "sha256": "b1b6feec17068432b27c185aa397b1f2aef257b36d95971cd644fe5636022261"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state/original/history-A2-comparison.json",
+      "bytes": 378,
+      "sha256": "b1b6feec17068432b27c185aa397b1f2aef257b36d95971cd644fe5636022261"
+    },
+    {
+      "path": "/tmp/atlas-root-paired-first-state/original/history-A3-comparison.json",
+      "bytes": 378,
+      "sha256": "b1b6feec17068432b27c185aa397b1f2aef257b36d95971cd644fe5636022261"
+    }
+  ]
+}

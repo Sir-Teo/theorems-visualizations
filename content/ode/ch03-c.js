@@ -1,5 +1,4 @@
 // Ordinary Differential Equations & Dynamical Systems — Chapter 3 (part c): resonance, Laplace transform, Floquet theory, invariant subspaces, robustness
-import { mathieuFloquet } from './mathieu.shared.js';
 import { flow, mmul, madd, mscale, mvec, eye, fro, opnorm, expm, eig2, matFlow, C } from './ch03.shared.js';
 
 const trim = (pts, cap = 1e5) => { const o = []; for (const p of pts) { if (!p.every((q) => isFinite(q) && Math.abs(q) <= cap)) break; o.push(p); } return o; };
@@ -189,7 +188,7 @@ Its eigenvalues $\mu_1,\dots,\mu_n$ (the *Floquet multipliers*) do not depend on
       kind: 'Phenomenon',
       name: 'Parametric resonance (Mathieu equation)',
       statement: String.raw`In the Mathieu equation $\ddot y+(\delta+\varepsilon\cos t)\,y=0$ the $(\delta,\varepsilon)$ plane is divided by Floquet theory (3.17) into stable regions ($|\operatorname{tr}\Phi(2\pi)|<2$, bounded solutions) and *tongues* of instability ($|\operatorname{tr}\Phi(2\pi)|>2$, exponential growth) that emanate from the points $\delta=n^2/4$, $n=1,2,3,\dots$ of the axis $\varepsilon=0$. To first order in $\varepsilon$ the first tongue is $|\delta-\tfrac14|<\tfrac\varepsilon2$: the system, whose natural frequency is $\sqrt\delta$, is destabilised by a modulation of *twice* its natural frequency. Damping $c$ in $\ddot y+c\dot y+(\delta+\varepsilon\cos t)y=0$ shifts and lifts the tongues, so the modulation must exceed a threshold in order to pump the oscillator.`,
-      idea: String.raw`At $\varepsilon=0$ the multipliers are $e^{\pm i\sqrt\delta\,2\pi}$ and lie on the unit circle; they leave it only by colliding at $\pm1$, which happens exactly when $\sqrt\delta\cdot2\pi\in\pi\mathbb Z$, i.e. $\delta=n^2/4$. For $\varepsilon\ne0$ the collision point opens into an interval, because $\det\Phi=1$ forces a collided pair of multipliers to split into a real pair $\mu,1/\mu$, one of which exceeds $1$. Substitution $y=e^{-ct/2}z$ gives $\ddot z+(\delta-c^2/4+\varepsilon\cos t)z=0$. Thus the damped multipliers are $e^{-cT/2}$ times those of the undamped equation at the shifted parameter $\delta-c^2/4$, and instability needs that shifted growth rate to exceed $c/2$.`,
+      idea: String.raw`At $\varepsilon=0$ the multipliers are $e^{\pm i\sqrt\delta\,2\pi}$ and lie on the unit circle; they leave it only by colliding at $\pm1$, which happens exactly when $\sqrt\delta\cdot2\pi\in\pi\mathbb Z$, i.e. $\delta=n^2/4$. For $\varepsilon\ne0$ the collision point opens into an interval, because $\det\Phi=1$ forces a collided pair of multipliers to split into a real pair $\mu,1/\mu$, one of which exceeds $1$. Damping multiplies every multiplier by $e^{-cT/2}$ (substitute $y=e^{-ct/2}z$), so the tongue only survives where the undamped growth rate beats $c/2$.`,
       caption: String.raw`The chart colours each $(\delta,\varepsilon)$ by the growth rate of the Floquet multipliers (red = growth, pale green = bounded), computed pixel by pixel from the monodromy matrix; dashed lines are the first-order tongue boundary $\delta=\frac14\pm\frac\varepsilon2$. Drag the point in the chart: the right panel integrates the solution that starts at rest from $y=0.1$ — like a swing pushed by modulating its effective length at twice its natural frequency. Add damping and the tongue lifts off the $\delta$-axis.`,
       deps: ['ode-3.17'],
       refs: ['Teschl §3.6'],
@@ -202,7 +201,12 @@ Its eigenvalues $\mu_1,\dots,\mu_n$ (the *Floquet multipliers*) do not depend on
         const sy = v.stage({ x: [0, 40], y: [-3, 3], axes: 'box', gutter: true, height: 400, xlabel: 't', ylabel: 'y', title: 'the solution from $y(0)=0.1$, $\\dot y(0)=0$', weight: 1, minWidth: 260 });
         const H = s.handle(0.3, 0.5, { color: 'ink', label: '$(\\delta,\\varepsilon)$', labelPos: 'ne', constrain: { x: [0.01, 1.58], y: [0.01, 1.48] } });
         const T = 2 * Math.PI;
-        const growth = (d, e, c) => mathieuFloquet(d, e, c).growth;
+        const growth = (d, e, c) => {
+          const Af = (t) => [[0, 1], [-(d + e * Math.cos(t)), -c]];
+          const Phi = matFlow(Af, eye(2), 0, T, 64), tr = Phi[0][0] + Phi[1][1], det = Phi[0][0] * Phi[1][1] - Phi[0][1] * Phi[1][0], disc = tr * tr - 4 * det;
+          const m = disc >= 0 ? Math.max(Math.abs((tr + Math.sqrt(disc)) / 2), Math.abs((tr - Math.sqrt(disc)) / 2)) : Math.sqrt(det);
+          return Math.log(m) / T;
+        };
         const green = v.rgb('green'), red = v.rgb('red');
         v.legend([['red', 'unstable: growth rate (darker = faster)'], ['green', 'stable (bounded, or decaying with damping)'], ['ink', 'first-order tongue $|\\delta-\\frac14|=\\frac\\varepsilon2$', { dash: true }]]);
         let info = null;

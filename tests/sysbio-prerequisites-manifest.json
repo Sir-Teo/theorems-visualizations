@@ -1,0 +1,394 @@
+{
+  "baseline": "95f05d0fc64be0e105ca8c3928852c121cb35749",
+  "field": "bio",
+  "changes": {
+    "1.1": {
+      "file": "content/sysbio/ch01.js",
+      "before": [],
+      "added": [
+        "graph-1.10.1a"
+      ],
+      "full": [
+        "graph-1.10.1a"
+      ],
+      "note": "The directed-graph definition (graph 1.10.1a) supplies the separate initial and terminal vertices of each regulatory edge. A regulator's out-degree counts its outgoing target edges, while a gene's in-degree counts incoming regulatory edges; an autoregulatory edge is a directed loop. Edge signs and input functions are additional biological labels, not part of the bare digraph definition. Graph terminology alone does not verify any interaction in the illustrative network.",
+      "rowBefore": []
+    },
+    "1.2": {
+      "file": "content/sysbio/ch01.js",
+      "before": [
+        "sysbio-1.1",
+        "mathbio-5.8"
+      ],
+      "added": [
+        "kin-1.9"
+      ],
+      "full": [
+        "sysbio-1.1",
+        "mathbio-5.8",
+        "kin-1.9"
+      ],
+      "note": "For a fixed free-regulator concentration x, promoter binding reduces to the reversible first-order pair in kin 1.9: free promoter becomes bound at pseudo-first-order rate $k_{\\rm on}x$, and bound promoter becomes free at rate $k_{\\rm off}$. With total promoter fraction one, the bound equilibrium fraction is $k_{\\rm on}x/(k_{\\rm on}x+k_{\\rm off})$, giving $x/(K+x)$, and the relaxation rate is the sum of those two rates. Treating x as externally fixed and binding as fast is essential to using this equilibrium input downstream.",
+      "rowBefore": [
+        "sysbio-1.1",
+        "mathbio-5.8"
+      ]
+    },
+    "1.3": {
+      "file": "content/sysbio/ch01.js",
+      "before": [
+        "sysbio-1.2",
+        "mathbio-5.8"
+      ],
+      "added": [
+        "pma-8.6"
+      ],
+      "full": [
+        "sysbio-1.2",
+        "mathbio-5.8",
+        "pma-8.6"
+      ],
+      "note": "For positive x and K, the real powers in pma 8.6 satisfy $(x/K)^n=\\exp(n\\log(x/K))$. Solving the two fractional-response equations gives $\\log(x_{90}/x_{10})=\\log81/n$, so the quoted width follows for any positive real effective exponent. This algebra applies to fitted noninteger n as well as integer n; it does not turn an effective fitted Hill exponent into the molecularity of an elementary binding reaction.",
+      "rowBefore": [
+        "sysbio-1.2",
+        "mathbio-5.8"
+      ]
+    },
+    "1.4": {
+      "file": "content/sysbio/ch01.js",
+      "before": [
+        "sysbio-1.3"
+      ],
+      "added": [
+        "prob-2.1.1a"
+      ],
+      "full": [
+        "sysbio-1.3",
+        "prob-2.1.1a"
+      ],
+      "note": "The probabilistic interpretation of the smooth AND product uses independence as defined in prob 2.1.1a: if two regulatory events have probabilities a and b and are independent, their joint occurrence has probability ab. Their four joint states have weights $(1-a)(1-b)$, $a(1-b)$, $(1-a)b$ and ab; summing the ON states gives the chosen bounded OR $a+b-ab$. At Boolean corners this recovers the truth tables. It is a stipulated independent-input interpolation, not evidence that arbitrary promoter occupancies are independent or that the lac surface is a pure gate.",
+      "rowBefore": [
+        "sysbio-1.3"
+      ]
+    },
+    "1.5": {
+      "file": "content/sysbio/ch01.js",
+      "before": [
+        "sysbio-1.2"
+      ],
+      "added": [
+        "ode-1.4"
+      ],
+      "full": [
+        "sysbio-1.2",
+        "ode-1.4"
+      ],
+      "note": "The integrating-factor result ode 1.4 applies with constant coefficients $a(t)=\\alpha>0$ and $b(t)=\\beta$. Multiplication by $e^{\\alpha t}$ makes the derivative exact, giving the displayed solution and exponential decay of the difference of any two solutions. The division by alpha and finite relaxation time require positive removal; at $\\alpha=0$ the equation instead gives linear accumulation $p=p_0+\\beta t$. This is the deterministic constant-rate result, not the separate stochastic Poisson claim.",
+      "rowBefore": [
+        "sysbio-1.2"
+      ]
+    },
+    "1.6": {
+      "file": "content/sysbio/ch01.js",
+      "before": [
+        "sysbio-1.5"
+      ],
+      "added": [
+        "pma-8.6"
+      ],
+      "full": [
+        "sysbio-1.5",
+        "pma-8.6"
+      ],
+      "note": "The inverse-exponential and logarithm laws in pma 8.6 solve the half-deviation condition: taking logs of $e^{-\\alpha T}=1/2$ gives $-\\alpha T=-\\log2$. With $\\alpha>0$ and a nonzero initial-to-final change, the strictly decreasing exponential crosses that level exactly once. Beta changes the amplitude but cancels from the fraction of the completed response; a moving production input would not satisfy this one-exponential calculation.",
+      "rowBefore": [
+        "sysbio-1.5"
+      ]
+    },
+    "1.8": {
+      "file": "content/sysbio/ch01-b.js",
+      "before": [
+        "sysbio-1.6"
+      ],
+      "added": [
+        "pma-5.3",
+        "prob-1.6.1"
+      ],
+      "full": [
+        "sysbio-1.6",
+        "pma-5.3",
+        "prob-1.6.1"
+      ],
+      "note": "For differentiable N and positive V between divisions, the quotient rule pma 5.3 gives $\\dot c=\\dot N/V-N\\dot V/V^2$, producing the two additive removal terms above. At a symmetric division with N fixed molecules, write the daughter count as a sum of N assignment indicators, each of mean one half. Linearity of expectation (prob 1.6.1) gives mean count N/2 and, for prescribed daughter volume V/2, mean concentration N/V. This conditional mean does not claim that each daughter has exactly the same concentration or that a ratio with random daughter volume can be replaced by a ratio of means.",
+      "rowBefore": [
+        "sysbio-1.6"
+      ]
+    },
+    "1.10": {
+      "file": "content/sysbio/ch01-b.js",
+      "before": [
+        "sysbio-1.3"
+      ],
+      "added": [
+        "pma-5.5"
+      ],
+      "full": [
+        "sysbio-1.3",
+        "pma-5.5"
+      ],
+      "note": "The chain rule (pma 5.5), with positive input and positive normalized output, gives $d\\log\\tilde f/d\\log x=x\\tilde f\\prime(x)/\\tilde f(x)$. For Hill activation, direct substitution yields $n/(1+(x/K)^n)$ and hence n/2 at half response. Differentiability and nonzero output are needed for this local quantity; its value at one point does not determine the global 10-to-90-percent width for a general response shape.",
+      "rowBefore": [
+        "sysbio-1.3"
+      ]
+    },
+    "2.1": {
+      "file": "content/sysbio/ch02.js",
+      "before": [
+        "sysbio-1.6",
+        "sysbio-1.3"
+      ],
+      "added": [
+        "pma-4.23"
+      ],
+      "full": [
+        "sysbio-1.6",
+        "sysbio-1.3",
+        "pma-4.23"
+      ],
+      "note": "With positive beta, alpha and K, the continuous production-minus-removal function is positive at p=0 and negative at $p=\\beta/\\alpha$. The intermediate value theorem (pma 4.23) therefore gives an interior steady state. Its strict decrease for nonnegative p makes that crossing unique. The signs on either side supply the direction of motion in this scalar model; the crossing argument does not include delays, noise or a changing removal rate.",
+      "rowBefore": [
+        "sysbio-1.6",
+        "sysbio-1.3"
+      ]
+    },
+    "2.2": {
+      "file": "content/sysbio/ch02.js",
+      "before": [
+        "sysbio-2.1"
+      ],
+      "added": [
+        "pma-6.20"
+      ],
+      "full": [
+        "sysbio-2.1",
+        "pma-6.20"
+      ],
+      "note": "On the interval from zero to half the positive steady state, the net production F(p) is continuous and strictly positive. The integral-as-upper-limit theorem (pma 6.20) therefore gives $T(q)=\\int_0^q dp/F(p)$ with derivative $T\\prime(q)=1/F(q)$. Along a solution, differentiation yields $dT(p(t))/dt=1$, making this integral the actual first-passage time to q. The full net rate, including removal, is required in the denominator; a production-only approximation needs its own error control.",
+      "rowBefore": [
+        "sysbio-2.1"
+      ]
+    },
+    "2.3": {
+      "file": "content/sysbio/ch02.js",
+      "before": [
+        "sysbio-2.1",
+        "ctrl-1.7"
+      ],
+      "added": [
+        "pma-5.5"
+      ],
+      "full": [
+        "sysbio-2.1",
+        "ctrl-1.7",
+        "pma-5.5"
+      ],
+      "note": "Apply the chain rule (pma 5.5) to the steady-state composition $\\log h(p(\\beta))$ for positive beta and p. The derivative with respect to log beta is $(d\\log h/d\\log p)(d\\log p/d\\log\\beta)$, which is the product used above. The positive denominator $1+n u/(1+u)$ permits solving for the local sensitivity. This derivative concerns a smooth deterministic equilibrium branch, not the distribution of intrinsic molecular fluctuations.",
+      "rowBefore": [
+        "sysbio-2.1",
+        "ctrl-1.7"
+      ]
+    },
+    "2.4": {
+      "file": "content/sysbio/ch02.js",
+      "before": [
+        "sysbio-1.6"
+      ],
+      "added": [
+        "ode-2.13"
+      ],
+      "full": [
+        "sysbio-1.6",
+        "ode-2.13"
+      ],
+      "note": "The scalar comparison principle (ode 2.13) formalizes the matched-state comparison. Below the chosen steady state, the increasing production function P(p) is smaller than $P(p_{\\rm st})=\\alpha p_{\\rm st}$, so the simple-gene trajectory is a supersolution for $\\dot p=P(p)-\\alpha p$. The Hill field is locally Lipschitz on the nonnegative interval, and the trajectories start together; comparison keeps the autoregulated response below the simple response. Reaching the same half-level is therefore slower under the stipulated single-state assumptions; this ordering alone says nothing about the sign of the curve's second derivative.",
+      "rowBefore": [
+        "sysbio-1.6"
+      ]
+    },
+    "2.5": {
+      "file": "content/sysbio/ch02.js",
+      "before": [
+        "sysbio-2.4",
+        "mathbio-6.6"
+      ],
+      "added": [
+        "ode-1.8"
+      ],
+      "full": [
+        "sysbio-2.4",
+        "mathbio-6.6",
+        "ode-1.8"
+      ],
+      "note": "At a positive fixed point, the smooth scalar field has derivative equal to the production-curve slope minus alpha. The one-dimensional linear stability theorem ode 1.8 therefore makes a crossing with negative derivative locally attracting and one with positive derivative repelling. At a fold, where the derivative is zero, that theorem is inconclusive and higher terms are needed. These deterministic classifications do not by themselves imply a bimodal stationary distribution for every noise strength or observation time.",
+      "rowBefore": [
+        "sysbio-2.4",
+        "mathbio-6.6"
+      ]
+    },
+    "3.1": {
+      "file": "content/sysbio/ch03.js",
+      "before": [
+        "sysbio-1.9"
+      ],
+      "added": [
+        "comb-1.1"
+      ],
+      "full": [
+        "sysbio-1.9",
+        "comb-1.1"
+      ],
+      "note": "The product rule (comb 1.1) counts two independent sign choices for each of the three specified directed edges, giving eight sign assignments. Once the two indirect signs are fixed, exactly one choice of the direct sign agrees with their product and the other disagrees. Thus four assignments are coherent and four incoherent. This counts abstract signed patterns, not their database frequencies or any claimed universal evolutionary preference.",
+      "rowBefore": [
+        "sysbio-1.9"
+      ]
+    },
+    "3.8": {
+      "file": "content/sysbio/ch03-b.js",
+      "before": [
+        "sysbio-1.4"
+      ],
+      "added": [
+        "ode-1.4",
+        "pma-6.12"
+      ],
+      "full": [
+        "sysbio-1.4",
+        "ode-1.4",
+        "pma-6.12"
+      ],
+      "note": "The integrating-factor formula ode 1.4 gives each reporter as the convolution of its input with the common positive exponential kernel. Subtracting two solutions with equal zero initial values gives exactly the integral displayed above. The order property of the integral (pma 6.12) preserves the nonnegative input difference, so the pointwise reporter order follows. Common removal and initial conditions matter: different kernels or initial levels need not preserve this ordering, even if the input thresholds remain ordered.",
+      "rowBefore": [
+        "sysbio-1.4"
+      ]
+    },
+    "3.10": {
+      "file": "content/sysbio/ch03-b.js",
+      "before": [
+        "sysbio-1.9",
+        "sysbio-1.4"
+      ],
+      "added": [
+        "comb-1.1"
+      ],
+      "full": [
+        "sysbio-1.9",
+        "sysbio-1.4",
+        "comb-1.1"
+      ],
+      "note": "The Boolean-function count uses the product rule (comb 1.1) twice. There are $2^k$ input rows because each of k signals has two values; assigning either zero or one independently to every row gives $2^{2^k}$ abstract truth tables. This is the space of all Boolean functions on k inputs, not a claim that the widget's restricted AND/OR/repressor rule, or a real promoter, can realize every such table.",
+      "rowBefore": [
+        "sysbio-1.9"
+      ]
+    },
+    "4.1": {
+      "file": "content/sysbio/ch04.js",
+      "before": [
+        "sysbio-1.3",
+        "ctrl-1.12"
+      ],
+      "added": [
+        "ctrl-3.4"
+      ],
+      "full": [
+        "sysbio-1.3",
+        "ctrl-1.12",
+        "ctrl-3.4"
+      ],
+      "note": "At a smooth equilibrium the Jacobian has diagonal entries minus one and off-diagonal slopes a and b of the two regulatory inputs. For these same-sign loops, ab is nonnegative and the eigenvalues are $-1\\pm\\sqrt{ab}$. The nonlinear linearisation theorem ctrl 3.4 gives local asymptotic stability for ab<1 and instability with a saddle direction for ab>1. At ab=1 it does not decide stability. This tests each actual crossing; a positive loop sign alone neither guarantees multiple crossings nor classifies a marginal one.",
+      "rowBefore": [
+        "sysbio-1.3",
+        "ctrl-1.12"
+      ]
+    },
+    "4.3": {
+      "file": "content/sysbio/ch04.js",
+      "before": [
+        "sysbio-4.2",
+        "mathbio-3.2"
+      ],
+      "added": [
+        "pma-5.5"
+      ],
+      "full": [
+        "sysbio-4.2",
+        "mathbio-3.2",
+        "pma-5.5"
+      ],
+      "note": "The chain rule (pma 5.5) applies to the positive nullcline maps and their logarithms. It multiplies the two logarithmic derivatives to give the stated loop gain. In particular $d\\log(G(v)/v)/d\\log v=\\beta\\gamma ab-1$, strictly negative when the product of exponents is at most one; endpoint limits then give the unique crossing. This derivative bound supplies the steady-state count, not the separate planar no-cycle or global-attraction argument, and exceeding one is a necessary possibility rather than a sufficient parameter test for bistability.",
+      "rowBefore": [
+        "sysbio-4.2",
+        "mathbio-3.2"
+      ]
+    },
+    "4.5": {
+      "file": "content/sysbio/ch04.js",
+      "before": [
+        "sysbio-4.1",
+        "sysbio-2.5"
+      ],
+      "added": [
+        "ctrl-3.4"
+      ],
+      "full": [
+        "sysbio-4.1",
+        "sysbio-2.5",
+        "ctrl-3.4"
+      ],
+      "note": "For this smooth two-variable model, the Jacobian has diagonal entries minus one and positive off-diagonal product $G\\prime(X)$. Its eigenvalues are the two values quoted above. Applying nonlinear linearisation (ctrl 3.4) makes a root locally attracting when $G\\prime<1$ and a saddle when $G\\prime>1$; equality is marginal and requires further analysis. These local conclusions concern the prescribed uptake–permease model and do not turn a finite cohort endpoint into a universal experimental fate probability.",
+      "rowBefore": [
+        "sysbio-4.1",
+        "sysbio-2.5"
+      ]
+    },
+    "4.8": {
+      "file": "content/sysbio/ch04-b.js",
+      "before": [
+        "sysbio-4.1"
+      ],
+      "added": [
+        "kin-1.3"
+      ],
+      "full": [
+        "sysbio-4.1",
+        "kin-1.3"
+      ],
+      "note": "The elementary bimolecular mass-action rule (kin 1.3) gives association flux $k_{\\rm on}A_{\\rm free}I_{\\rm free}$ and dissociation flux $k_{\\rm off}C$ for the complex. At equilibrium, with $A_T=A_{\\rm free}+C$ and $I_T=I_{\\rm free}+C$, eliminating C yields the quadratic for the nonnegative free-activator root displayed above. This uses dilute ideal concentrations, one-to-one binding and a conserved total for each partner; adding production, removal or nonideal binding would require a different balance.",
+      "rowBefore": [
+        "sysbio-4.1"
+      ]
+    },
+    "4.9": {
+      "file": "content/sysbio/ch04-b.js",
+      "before": [
+        "mathbio-5.10"
+      ],
+      "added": [
+        "pma-5.5"
+      ],
+      "full": [
+        "mathbio-5.10",
+        "pma-5.5"
+      ],
+      "note": "The chain rule (pma 5.5) explains local steepness in a nested cascade: on positive differentiable single-valued steady-state branches, the logarithmic derivative of a composite response is the product of the logarithmic derivatives of its stages. This is a local sensitivity identity. It does not say that the three global 10-to-90-percent effective Hill coefficients multiply exactly, nor that this reduced noncompetitive cascade reproduces the detailed measured system.",
+      "rowBefore": [
+        "mathbio-5.10"
+      ]
+    }
+  },
+  "rowRepairs": {
+    "3.10": [
+      "sysbio-1.9",
+      "sysbio-1.4"
+    ]
+  }
+}

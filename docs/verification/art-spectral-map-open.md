@@ -1,0 +1,7 @@
+# Open follow-up: art 3.2 spectral map and physical primaries
+
+This newly identified review remains open. Root read the actual3.2statement, idea, scope and caption while checking the integral/product prerequisite used by4.3/4.4. The idea says a large kernel is the whole reason that three primaries can imitate any colour. A kernel does not establish rank three, and linear spanning by three independent responses permits signed coefficients. Restricting physical primary intensities to nonnegative values gives a cone (a triangle after chromaticity normalization), so the universal physical-primary claim is false. The accepted4.1/4.2 audit already distinguishes signed linear matching from physically nonnegative mixtures.
+
+The existing XYZ integrals and reflected product IR are the specific mathematical prerequisites used by the neighboring audit. Those calculations do not validate3.2's broader statements equating fitted1931XYZ values directly with cone responses, unrestricted appearance equality, camera output or eye adaptation. The full authored lamp/reflectance integration, numerical band/rounding, display normalization/adaptation proxy, empirical constants, actual controls and saved-state behavior still need a source/model/native audit.
+
+This bounded triage adds only an uncertainty flag, queue entry and this report. It is not a complete reading of3.2's renderer or a completed primary-source/native acceptance. No neighboring acceptance implies this item is resolved, and no human review is required.

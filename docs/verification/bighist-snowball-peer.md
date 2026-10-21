@@ -1,0 +1,17 @@
+# Independent peer review: BIGHIST3.6
+
+**Accept exact candidate9a1c859. No actionable findings.** Reviewed an immutable git archive at `/tmp/atlas-worker-two/bighist-snowball-peer/`; producer and coordinator worktrees were untouched. Original verification flag remains for coordinator reconciliation.
+
+Compared complete actual Hoffman1998 article body1342–1346, excluding adjacent articles, with the bounded geological/historical summary. Personally inspected1344Fig2 and the separately attributed0.12bar discussion. It supports the stated hypothesis/evidence history without establishing complete ocean coverage from the widget. [Original article](https://www.snowballearth.org/pdf/Hoffman_Science1998.pdf).
+
+Read the relevant actual NASA-TM-82047 preprint§2/§4 passages: PDF11–13,22–26,48–52. Personally inspected actual11/13/25/48 pixels. Checked S₂=−.477, A203.3/B2.09/D.649 and ice/albedo parameters against original print. Preprint status/year and climatological parameter limitations are explicit; no unread published typesetting is certified. [Official NASA record](https://ntrs.nasa.gov/citations/19810008165).
+
+Read actual Gough1981p23 age assumptions and p28§6/Eq1; original pixels verify2/5 and exponent−1. Substituting t=t₀−age yields the candidate's reciprocal solar law; chosen4570Myr is distinguished from the source's4700Myr. Read actual Myhre1998§5/Fig1/Table3 and inspected original2718 pixels:5.35lnratio is correct, and the candidate expressly discloses the huge-ratio extrapolation. All four cached source SHA256 hashes match the manifest.
+
+Checked the finite-volume derivation: equal-area x cells, exact integral of P₂, conservative shared face exchange and zero boundary flux. Summing cell equations cancels transport exactly. The implicit linear solve plus explicit albedo matches the stated numerical procedure; residual/nonconvergence and finite continuation samples are presented honestly. It does not assign physical time or real melt thresholds. Numerical warm/frozen branches are deterministic and independently saved, rather than depending on render history.
+
+Fresh four mathematical groups and static1/0/0 PASS. Regenerated independent80-digit dense-LU12-profile reference is byte-identical to the candidate (SHA2566ded4231007f25fbdd467ad978047b46655dd554a7d9c5b23c434a64d4d97e6d). Additional peer integration/face-flux calculations independently check every cell of72complete profiles using4/7/24/96cells, three ages, three forcings and both starts; local imbalance stays below2e−8W/m². The source/finite model distinction and numerical tolerances remain material limits, rather than acceptance blockers.
+
+Fresh320light and320dark native groups PASS to my explicit output path: all24selected cells, all90complete continuation states, full paths/selected point, corners, keyboard/buttons, exact DOM/model and pressed state, no hidden history, supported edited/subnormal replay and15raw whole-default rollbacks. Personally inspected own light temperature/hysteresis panels and full dark edited state/formula. Curves, labels, equations and controls are readable and contained. No audio/camera/drag state exists.
+
+Evidence: `/tmp/atlas-worker-two/bighist-snowball-peer-{math,static,light,dark,extra}.log`, regenerated reference `/tmp/atlas-worker-two/bighist-snowball-peer-reference.json`, own rendered pixels `/tmp/atlas-worker-two/bighist-snowball-peer-output/`. Producer's full six viewport/theme and strict-build evidence was read and checked alongside the fresh peer checks.

@@ -44,8 +44,7 @@ export default {
       num: '1.4.1a',
       kind: 'Definition',
       name: 'Simple functions and their integral',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §1.4, pp. 18–19 (simple-function integral and representation independence)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       statement: String.raw`Let $(\Omega,\mathcal F,\mu)$ be a $\sigma$-finite measure space. A **simple function** is a finite sum
 $$\varphi=\sum_{i=1}^n a_i\,1_{A_i}$$
 with real numbers $a_i$ and pairwise disjoint sets $A_i\in\mathcal F$ of finite measure. Its integral is

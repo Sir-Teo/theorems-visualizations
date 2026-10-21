@@ -1,5 +1,6 @@
 // Algorithms — Chapter 10: Greedy algorithms, spanning trees and matroids (items 10.1–10.8; 10.9–10.16 in ch10-b.js; 10.17–10.22 in ch10-c.js)
 import { K, ids, plural, clamp, fmt, rngOf, sumOf, ivRandom, ivOk, ivGreedy, ivBrute, ivDepth, R, TX, LN, strip } from './ch10.shared.js';
+import {scheduleStats,swapFirstInversion} from './greedy-audit.shared.js';
 
 const LETTER = (i) => String.fromCharCode(65 + i);
 const ordinal = (k) => `${k}`;
@@ -330,30 +331,31 @@ export default {
       num: '10.6',
       kind: 'Algorithm',
       name: 'Minimizing maximum lateness (earliest deadline first)',
-      statement: String.raw`**Problem.** One machine, $n$ jobs, all available at time $0$; job $j$ needs $t_j$ units of uninterrupted time and is due at time $d_j$. In a schedule with no idle time job $j$ finishes at $C_j$ and has **lateness** $\ell_j=C_j-d_j$ (negative if early). Choose the order that minimises $L_{\max}=\max_j \ell_j$. **Theorem.** Running the jobs in nondecreasing order of deadline (*earliest deadline first*, EDF) minimises the maximum lateness. Ties between equal deadlines do not matter.`,
-      idea: String.raw`Any order with no idle time and an *inversion* (job $i$ immediately before $j$ although $d_i>d_j$) can be improved by swapping that adjacent pair. After the swap the jobs outside the pair finish exactly when they did. Job $j$ now finishes earlier, so its lateness only drops, and job $i$ now finishes where $j$ used to, at $C_j$, so its new lateness is $C_j-d_i<C_j-d_j$, below $j$'s old lateness. So $L_{\max}$ does not increase. Removing inversions one adjacent swap at a time turns any schedule into the EDF one, so EDF is optimal: an exchange argument (10.3). The idea goes back to Jackson's rule for single-machine scheduling.`,
-      caption: String.raw`**Drag the five points** (duration to the right, deadline up) and pick an order; the schedule below shows each job as a bar ending at its completion time, with a stalk and dot at its deadline and a red strip along the part that runs past it. **Swap an inverted pair** exchanges the first adjacent pair out of deadline order: $L_{\max}$ never rises. The readout also compares with an exhaustive search over all $5!=120$ orders.`,
+      statement: String.raw`**Problem.** One machine, $n\ge1$ jobs, all available at time $0$; job $j$ needs $t_j>0$ units of uninterrupted time and is due at time $d_j$. It finishes at $C_j$ and has **signed lateness** $\ell_j=C_j-d_j$ (negative if early). Choose a nonoverlapping schedule starting at or after $0$ to minimise $L_{\max}=\max_j\ell_j$. **Theorem.** An idle-free schedule in nondecreasing deadline order (*earliest deadline first*, EDF) is optimal. Equal-deadline ties may be ordered arbitrarily. EDF also minimises the nonnegative maximum tardiness $\max\{0,L_{\max}\}$.`,
+      idea: String.raw`Removing idle gaps only decreases completion times, so it suffices to consider idle-free schedules. In an adjacent *inversion*, job $i$ immediately precedes $j$ although $d_i>d_j$. Swap the pair. Other jobs finish at the same times; $j$ finishes earlier, and $i$ now finishes at the old $C_j$, giving new lateness $C_j-d_i<C_j-d_j$. Thus the maximum signed lateness does not increase. The number of strict deadline inversions drops by one, so repeated swaps reach deadline order. Within an equal-deadline block, its last completion determines the block's maximum lateness independently of the internal order. All EDF tie orders therefore have the same optimum. Applying $x\mapsto\max(0,x)$ gives the maximum-tardiness claim.`,
+      caption: String.raw`**Drag the five points** (duration right, deadline up) and choose an initial order. Editing jobs keeps that current order, so new inversions may appear. Bars show processing intervals; stalks mark deadlines. A red strip marks processing after a deadline; its width need not equal the full lateness if the job also started late. The number below the bar is the full signed $C_j-d_j$. **Swap an inverted pair** removes the first adjacent inversion without raising $L_{\max}$. The readout compares all $5!=120$ orders.`,
       deps: ['algo-10.3'],
-      refs: ['Wayne, Greedy Algorithms I, §4.2, slides 24–32; KT §4.2'], sourceUrl: 'https://www.cs.princeton.edu/~wayne/kleinberg-tardos/pdf/04GreedyAlgorithmsI.pdf',
+      refs: ['Kleinberg–Tardos, Algorithm Design (2006), §4.2 pp.125–131, (4.7)–(4.10)', 'Kevin Wayne, Greedy Algorithms I, updated 2020-02-25, slides 25–32'],
       tags: ['greedy', 'scheduling'],
-      credit: 'Exchange proof: Kevin Wayne, Algorithm Design lecture 4, §4.2, slides 24–32; the proof also applies to the signed lateness convention used here',
-      scope: String.raw`All jobs are available at time zero, on one nonpreemptive machine, with positive processing times. Wayne’s slides clip lateness at zero; the same adjacent-swap inequality holds for the signed $C_j-d_j$ objective here, including schedules in which every job is early. No original-publication priority is claimed.`,
+      credit: 'Earliest-deadline-first rule; proof sources: Kleinberg–Tardos §4.2 and Kevin Wayne slides 25–32',
+      scope: 'Single machine, nonpreemptive jobs with a common release time and no precedence constraints. The cited text calls max(0,C−d) lateness; this entry explicitly uses signed lateness, supported by the same exchange inequalities. The display uses integer durations/deadlines. Finite enumeration validates those examples, while the exchange proof establishes the general theorem.',
+      links: { source: 'https://www.cs.princeton.edu/~wayne/kleinberg-tardos/pdf/04GreedyAlgorithmsI.pdf', textbook: 'https://djvu.online/file/89ohtfonnHm6V' },
       viz(v) {
         const N = 5, NAMES = 'ABCDE', COL = ['blue', 'orange', 'purple', 'teal', 'pink'];
-        const ord = v.select('order', [{ value: 'edf', label: 'earliest deadline' }, { value: 'spt', label: 'shortest first' }, { value: 'lpt', label: 'longest first' }, { value: 'idx', label: 'A, B, C, D, E' }, { value: 'rev', label: 'latest deadline' }], 'rev', { onChange: () => { order = byRule(ord.value); lastSwap = null; } });
+        const ord = v.select('start from order', [{ value: 'edf', label: 'earliest deadline' }, { value: 'spt', label: 'shortest first' }, { value: 'lpt', label: 'longest first' }, { value: 'idx', label: 'A, B, C, D, E' }, { value: 'rev', label: 'latest deadline' }], 'rev', { onChange: () => { order = byRule(ord.value); lastSwap = null; } });
         const s = v.stage({ x: [0, 7], y: [0, 17], axes: 'box', gutter: true, height: 300, xlabel: 'duration $t_j$', ylabel: 'deadline $d_j$', title: 'the jobs', weight: 0.8, xticks: [1, 2, 3, 4, 5, 6], yticks: [[0, '0'], [4, '4'], [8, '8'], [12, '12'], [16, '16']] });
         const sc = v.stage({ x: [0, 20], y: [0, 3], axes: 'box', gutter: true, height: 300, xlabel: 'time', title: 'the schedule', weight: 1.3, yticks: [] });
         const init = [[3, 5], [2, 7], [1, 8], [4, 9], [3, 13]];
         const H = init.map(([t, d], i) => s.handle(t, d, { color: COL[i], r: 8, label: NAMES[i], labelPos: 'ne', constrain: (x, y) => [clamp(Math.round(x), 1, 6), clamp(Math.round(y), 1, 16)] }));
         const jobs = () => H.map((h, i) => ({ id: i, t: Math.round(h.x), d: Math.round(h.y) }));
         const byRule = (r) => { const J = jobs(); const cmp = { edf: (a, b) => a.d - b.d || a.id - b.id, spt: (a, b) => a.t - b.t || a.id - b.id, lpt: (a, b) => b.t - a.t || a.id - b.id, idx: (a, b) => a.id - b.id, rev: (a, b) => b.d - a.d || a.id - b.id }[r]; return J.sort(cmp).map((j) => j.id); };
-        let order = byRule('rev'), lastSwap = null, info = null;
-        const lmax = (ordr, J) => { let t = 0, m = -Infinity; for (const id of ordr) { t += J[id].t; m = Math.max(m, t - J[id].d); } return m; };
-        v.button('swap the first inverted pair', () => { const J = jobs(); for (let k = 0; k + 1 < order.length; k++) if (J[order[k]].d > J[order[k + 1]].d) { const before = lmax(order, J); [order[k], order[k + 1]] = [order[k + 1], order[k]]; lastSwap = { k, before, after: lmax(order, J) }; return; } lastSwap = { none: true }; });
+        let order = byRule('rev'), lastSwap = null, info = null, jobsKey='';
+        const lmax = (ordr,J) => scheduleStats(J,ordr).L;
+        v.button('swap the first inverted pair', () => { lastSwap=swapFirstInversion(jobs(),order);order=lastSwap.order; });
         v.button('shuffle', () => { const r = rngOf(Math.floor(Math.random() * 1e6)); order = order.slice().sort(() => r() - 0.5); lastSwap = null; });
         v.render(() => {
-          const J = jobs(); let t = 0; const rows = [];
-          for (const id of order) { const a = t; t += J[id].t; rows.push({ id, a, c: t, d: J[id].d, l: t - J[id].d }); }
+          const J = jobs(),key=JSON.stringify(J);if(key!==jobsKey){jobsKey=key;lastSwap=null;}
+          const state=scheduleStats(J,order),rows=state.rows,t=state.time;
           const horizon = Math.max(8, t, ...J.map((j) => j.d)) + 1;
           sc.setView([0, horizon + 0.5], [0, 3]); sc.setTicks(null, []);
           rows.forEach((r) => {
@@ -367,9 +369,9 @@ export default {
           const edf = byRule('edf'); const perms = []; const permute = (a, k) => { if (k === a.length) { perms.push(a.slice()); return; } for (let i = k; i < a.length; i++) { [a[k], a[i]] = [a[i], a[k]]; permute(a, k + 1); [a[k], a[i]] = [a[i], a[k]]; } };
           permute([0, 1, 2, 3, 4], 0);
           const best = Math.min(...perms.map((p) => lmax(p, J)));
-          info = { J, rows, L: Math.max(...rows.map((r) => r.l)), Ledf: lmax(edf, J), best, inv: order.reduce((c, a, k) => c + order.slice(k + 1).filter((b) => J[a].d > J[b].d).length, 0) };
+          info = { J, rows, L:state.L, Ledf:lmax(edf,J), best,inv:state.inversions };
         });
-        v.legend([['red', 'lateness (past the deadline)', { area: true }], ['muted', 'circle on a stalk: the deadline', { dot: true }]]);
+        v.legend([['red', 'processing after deadline', { area: true }], ['muted', 'circle on a stalk: the deadline', { dot: true }]]);
         v.readout(() => {
           if (!info) return '';
           const { L, Ledf, best, inv } = info;

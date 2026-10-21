@@ -25,164 +25,14 @@ export default {
     {
       num: '11.1',
       kind: 'Definition',
-      name: 'Ideals and maximal ideals',
-      statement: String.raw`In a commutative complex algebra $A$, an ideal is a vector subspace $J$ such that $xJ\subset J$ for every $x\in A$. It is proper if $J\ne A$, and maximal if it is proper and no strictly larger proper ideal contains it.`,
-      idea: String.raw`An ideal absorbs multiplication by every element of the algebra. Maximality concerns inclusion among proper ideals; it is an algebraic condition.`,
-      deps: ['fa-10.1'],
-      tags: ['commutative Banach algebras', 'ideals'],
-      },
-    {
-      num: '11.2',
-      kind: 'Proposition',
-      name: 'Proper ideals exclude invertible elements',
-      statement: String.raw`No proper ideal in a commutative unital complex algebra contains an invertible element. In a commutative Banach algebra, the closure of any ideal is again an ideal.`,
-      idea: String.raw`If an ideal contains invertible $x$, it contains $x^{-1}x=e$ and thus every element. Closure preserves the ideal operations because multiplication by a fixed element and vector operations are continuous.`,
-      caption: String.raw`$A=C[0,1]$ is the complex algebra; the two displayed functions $f_1,f_2$ are **real-valued**. Their ideal contains $g=f_1^2+f_2^2$. Each multiplier in the plotted formulas is at least $0.6$, so $g(t)\ge0.36[(t-a)^2+(t-b)^2]\ge0.18(a-b)^2$: distinct zeros give an analytic positive lower bound and an invertible $g$, hence the ideal is all of $A$ by 11.2. Drag the zeros or make them coincide; then every member of their ideal vanishes at the common zero, so the ideal lies in the proper maximal ideal $M_a=\{f:f(a)=0\}$. For general complex-valued functions use $g=|f_1|^2+|f_2|^2=\bar f_1f_1+\bar f_2f_2$; ordinary squares can cancel. The plotted grid minimum is only an approximation.`,
-      deps: ['fa-11.1','fa-10.1'],
-      tags: ['ideals', 'commutative Banach algebras'],
-      viz(v) {
-        const M = v.M;
-        const S = v.stage({ x: [0, 1], y: [-0.8, 1.4], height: 330, full: true, axes: true, title: '$f_1$, $f_2$ and $g=f_1^2+f_2^2$' });
-        const ha = S.handle(0.3, 0, { color: 'blue', label: 'a', labelPos: 's', constrain: (x) => [M.clamp(x, 0.02, 0.98), 0] });
-        const hb = S.handle(0.62, 0, { color: 'orange', label: 'b', labelPos: 's', constrain: (x) => [M.clamp(x, 0.02, 0.98), 0] });
-        v.button('Make zeros coincide', () => hb.set(ha.x, 0));
-        let st = {};
-        v.legend([['blue', '$f_1(t)=(t-a)(1+0.4\\sin5t)$'], ['orange', '$f_2(t)=(t-b)(1+0.4\\cos2t)$'], ['green', '$g=f_1^2+f_2^2$']]);
-        v.render(() => {
-          const a = ha.x, b = hb.x;
-          const f1 = (t) => (t - a) * (1 + 0.4 * Math.sin(5 * t)), f2 = (t) => (t - b) * (1 + 0.4 * Math.cos(2 * t)), g = (t) => f1(t) ** 2 + f2(t) ** 2;
-          S.fn(f1, { color: 'blue', width: 2 });
-          S.fn(f2, { color: 'orange', width: 2 });
-          S.fn(g, { color: 'green', width: 2.6, fill: 'green', fillAlpha: 0.12 });
-          let mn = Infinity, at = 0; for (let i = 0; i <= 2000; i++) { const t = i / 2000, y = g(t); if (y < mn) { mn = y; at = t; } }
-          const common = a === b;
-          if (common) { mn = 0; at = a; } // The known zero need not lie on the sampling grid.
-          S.dot(at, mn, { color: common ? 'red' : 'green', r: 5 });
-          st = { mn, at, common, lower: 0.18 * (a - b) ** 2 };
-        });
-        v.readout(() => (st.common ? `Common zero at $t=${v.fix(st.at, 3)}$: $g$ vanishes there, the ideal $(f_1,f_2)$ is proper and lies in the maximal ideal $M_{${v.fix(st.at, 2)}}$.` : `Grid minimum $g\\approx${v.sci(st.mn, 2)}$ near $t=${v.fix(st.at, 3)}$. Analytically $g(t)\\ge0.18(a-b)^2\\approx${v.sci(st.lower, 2)}>0$, so $g$ is invertible and $e=g\\cdot g^{-1}\\in(f_1,f_2)$: the ideal is all of $A$.`));
-      },
-    },
-    {
-      num: '11.3',
-      kind: 'Theorem',
-      name: 'Existence and closedness of maximal ideals',
-      statement: String.raw`In any commutative complex algebra with a unit, every proper ideal lies in a maximal ideal. In a commutative Banach algebra, every maximal ideal is closed.`,
-      idea: String.raw`(a) If $x\in J$ is invertible, then $y=yx^{-1}x\in J$ for every $y$. (b) Continuity of the operations. (c) Zorn's lemma, using (a): a union of a chain of proper ideals still misses $e$. (d) $G(A)$ is open and contains $e$, so the closure of a proper ideal still misses $G(A)$ by (a); it is proper, hence equal to the maximal ideal.`,
-      caption: String.raw`$A=C[0,1]$ is the complex algebra; the two displayed functions $f_1,f_2$ are **real-valued**. Their ideal contains $g=f_1^2+f_2^2$. Each multiplier in the plotted formulas is at least $0.6$, so $g(t)\ge0.36[(t-a)^2+(t-b)^2]\ge0.18(a-b)^2$: distinct zeros give an analytic positive lower bound and an invertible $g$, hence the ideal is all of $A$ by 11.2. Drag the zeros or make them coincide; then every member of their ideal vanishes at the common zero, so the ideal lies in the proper maximal ideal $M_a=\{f:f(a)=0\}$. For general complex-valued functions use $g=|f_1|^2+|f_2|^2=\bar f_1f_1+\bar f_2f_2$; ordinary squares can cancel. The plotted grid minimum is only an approximation.`,
-      deps: ['fa-11.2','fa-10.12'],
-      tags: ['ideals', 'commutative Banach algebras'],
-      viz(v) {
-        const M = v.M;
-        const S = v.stage({ x: [0, 1], y: [-0.8, 1.4], height: 330, full: true, axes: true, title: '$f_1$, $f_2$ and $g=f_1^2+f_2^2$' });
-        const ha = S.handle(0.3, 0, { color: 'blue', label: 'a', labelPos: 's', constrain: (x) => [M.clamp(x, 0.02, 0.98), 0] });
-        const hb = S.handle(0.62, 0, { color: 'orange', label: 'b', labelPos: 's', constrain: (x) => [M.clamp(x, 0.02, 0.98), 0] });
-        v.button('Make zeros coincide', () => hb.set(ha.x, 0));
-        let st = {};
-        v.legend([['blue', '$f_1(t)=(t-a)(1+0.4\\sin5t)$'], ['orange', '$f_2(t)=(t-b)(1+0.4\\cos2t)$'], ['green', '$g=f_1^2+f_2^2$']]);
-        v.render(() => {
-          const a = ha.x, b = hb.x;
-          const f1 = (t) => (t - a) * (1 + 0.4 * Math.sin(5 * t)), f2 = (t) => (t - b) * (1 + 0.4 * Math.cos(2 * t)), g = (t) => f1(t) ** 2 + f2(t) ** 2;
-          S.fn(f1, { color: 'blue', width: 2 });
-          S.fn(f2, { color: 'orange', width: 2 });
-          S.fn(g, { color: 'green', width: 2.6, fill: 'green', fillAlpha: 0.12 });
-          let mn = Infinity, at = 0; for (let i = 0; i <= 2000; i++) { const t = i / 2000, y = g(t); if (y < mn) { mn = y; at = t; } }
-          const common = a === b;
-          if (common) { mn = 0; at = a; } // The known zero need not lie on the sampling grid.
-          S.dot(at, mn, { color: common ? 'red' : 'green', r: 5 });
-          st = { mn, at, common, lower: 0.18 * (a - b) ** 2 };
-        });
-        v.readout(() => (st.common ? `Common zero at $t=${v.fix(st.at, 3)}$: $g$ vanishes there, the ideal $(f_1,f_2)$ is proper and lies in the maximal ideal $M_{${v.fix(st.at, 2)}}$.` : `Grid minimum $g\\approx${v.sci(st.mn, 2)}$ near $t=${v.fix(st.at, 3)}$. Analytically $g(t)\\ge0.18(a-b)^2\\approx${v.sci(st.lower, 2)}>0$, so $g$ is invertible and $e=g\\cdot g^{-1}\\in(f_1,f_2)$: the ideal is all of $A$.`));
-      },
-    },
-    {
-      num: '11.4',
-      kind: 'Definition',
-      name: 'Quotient algebras and homomorphism kernels',
-      statement: String.raw`The kernel of a homomorphism between commutative algebras is an ideal; it is closed when the homomorphism is continuous. For a closed proper ideal $J$ of a commutative Banach algebra $A$, multiplication $(x+J)(y+J)=xy+J$ makes the quotient Banach space $A/J$ a Banach algebra. The quotient map is a continuous homomorphism and $e+J$ is its norm-one unit.`,
-      idea: String.raw`Changing representatives changes a product by an element of $J$, so multiplication is well defined. Taking infima over representatives gives the submultiplicative quotient norm. Completeness follows from1.41, and the nonzero quotient unit has norm1.`,
-      caption: String.raw`$A=C[0,1]$ with the sup norm, and a closed ideal: the maximal ideal $M_p=\{f:f(p)=0\}$ or the ideal $J_K=\{f:f=0\text{ on }K\}$ of a closed interval $K$. The coset $f+J$ consists of all functions that agree with $f$ on the zero set (faint: a few of them). For $M_p$, the constant $f(p)$ is an exact minimum-norm representative. For $J_K$, green clips $f$ at a certified upper bound for $\max_K|f|$, at most $7.8|K|/800$ above it, using $|f'|\le7.8$. So $\norm{f+M_p}=|f(p)|$ — $A/M_p\cong\C$ — and $\norm{f+J_K}=\max_K|f|$ — $A/J_K\cong C(K)$.`,
-      deps: ['fa-11.1','fa-1.41','fa-10.1'],
-      tags: ['ideals', 'quotient algebras'],
-      viz(v) {
-        const M = v.M;
-        const kind = v.select('ideal', [{ value: 'pt', label: 'maximal $M_p$' }, { value: 'iv', label: '$J_K$, $K$ an interval' }], 'pt');
-        const S = v.stage({ x: [0, 1], y: [-1.6, 1.6], height: 340, full: true, axes: true, title: 'the coset $f+J$ and its smallest-norm representative' });
-        const hp = S.handle(0.35, -1.45, { color: 'purple', label: 'p', labelPos: 'n', constrain: (x) => [M.clamp(x, 0, 1), -1.45] });
-        const hq = S.handle(0.65, -1.45, { color: 'purple', label: 'K', labelPos: 'n', constrain: (x) => [M.clamp(x, 0, 1), -1.45] });
-        const f = (t) => 0.9 * Math.sin(7 * t) + 0.5 * Math.cos(3 * t) - 0.2;
-        const rnd = v.rng(5), others = M.range(6).map(() => [rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(2, 9)]);
-        let st = {};
-        v.legend([['blue', '$f$'], ['muted', 'other representatives $f+g$, $g\\in J$'], ['green', 'exact point / near-optimal interval representative'], ['purple', 'zero set of $J$']]);
-        v.render(() => {
-          const pt = kind.value === 'pt';
-          hq.visible = !pt;
-          const a = pt ? hp.x : Math.min(hp.x, hq.x), b = pt ? hp.x : Math.max(hp.x, hq.x);
-          const vanish = (t) => (t >= a && t <= b ? 0 : Math.min(1, Math.min(Math.abs(t - a), Math.abs(t - b)) * 6));   // a function in J (0 on the zero set)
-          for (const [c1, c2, w] of others) S.fn((t) => f(t) + vanish(t) * (c1 + c2 * Math.sin(w * t)), { color: 'muted', width: 1, alpha: 0.45 });
-          S.fn(f, { color: 'blue', width: 2.4 });
-          let m;
-          if (pt) { m = Math.abs(f(a)); S.hline(f(a), { color: 'green', width: 2.6 }); S.dot(a, f(a), { color: 'purple', r: 5 }); }
-          else { m = 0; for (let i = 0; i <= 400; i++) { const t = a + (b - a) * i / 400; m = Math.max(m, Math.abs(f(t))); } m += 7.8*(b-a)/800; S.fn((t) => M.clamp(f(t), -m, m), { color: 'green', width: 2.6 }); S.line(a, -1.45, b, -1.45, { color: 'purple', width: 5 }); S.hband(-m, m, { color: 'green', alpha: 0.06 }); }
-          S.vband(a, b, { color: 'purple', alpha: 0.06 });
-          st = { pt, m, a, b, fp: f(a) };
-        });
-        v.readout(() => (st.pt ? `$\\|f+M_p\\| = |f(p)| = ${v.fix(st.m, 4)}$ with $p=${v.fix(st.a, 3)}$: the quotient map is $f\\mapsto f(p)$, an isometric isomorphism $A/M_p\\to\\C$.` : `Certified $\\|f+J_K\\| = \\max_K|f| \\le ${v.fix(st.m, 4)}$ (upper bound error at most $${v.fix(7.8*(st.b-st.a)/800,5)}$) for $K=[${v.fix(st.a, 2)},${v.fix(st.b, 2)}]$: $A/J_K\\cong C(K)$, which is not a field.`));
-      },
-    },
-    {
-      num: '11.5',
-      kind: 'Theorem',
-      name: "Gelfand's theorem: maximal ideals are kernels of homomorphisms",
-      statement: String.raw`(a) Every maximal ideal of $A$ is the kernel of some $h\in\Delta$.
-(b) If $h\in\Delta$, the kernel of $h$ is a maximal ideal.
-(c) An element $x\in A$ is invertible if and only if $h(x)\ne0$ for every $h\in\Delta$.
-(d) $x$ is invertible if and only if $x$ lies in no proper ideal of $A$.
-(e) $\lambda\in\sigma(x)$ if and only if $h(x)=\lambda$ for some $h\in\Delta$.`,
-      idea: String.raw`(a) For maximal $M$, the quotient $A/M$ is a Banach algebra by11.4 and a division algebra by maximality. Gelfand–Mazur10.14 identifies it with $\C$, giving a character with kernel $M$. (b) holds because $\ker h$ has codimension $1$. (d): a non-invertible $x$ generates the proper ideal $xA$; conversely (11.3(a)). (c): if $x$ is not invertible, $xA$ lies in a maximal ideal $=\ker h$ by (a), so $h(x)=0$; the converse is10.6. (e) is (c) applied to $\lambda e-x$.`,
-      caption: String.raw`A finite-dimensional commutative algebra with a radical: $A=\C[z]/\big((z-z_1)^2(z-z_2)^2(z-z_3)^2\big)$, polynomials remembered only through their values **and first derivatives** at three points $z_k$ (blue, draggable). $\Delta=\{h_1,h_2,h_3\}$ with $h_k(p)=p(z_k)$. Take $x=p$ with roots $r_1,r_2$ (red). Right: $|h_k(x)|$ and the size of $x^{-1}$, computed by Hermite interpolation ($q(z_k)=1/p(z_k)$, $q'(z_k)=-p'(z_k)/p(z_k)^2$). Drag a root onto some $z_k$: $h_k(x)=0$, $x$ falls into the maximal ideal $\ker h_k$, and the inverse blows up.`,
-      deps: ['fa-11.4','fa-11.3','fa-10.14','fa-10.6'],
-      see: ['rca-18.17'],
-      tags: ['commutative Banach algebras', 'Gelfand theory', 'maximal ideals'],
-      viz(v) {
-        const M = v.M;
-        const L = v.stage({ x: [-2, 2], y: [-1.6, 1.6], equal: true, height: 320, axes: true, title: 'points $z_k$ (the homomorphisms) and roots of $p$' });
-        const R = v.stage({ x: [0.3, 4.7], y: [-4, 3], height: 320, axes: 'box', xticks: [[1, 'h₁(x)'], [2, 'h₂(x)'], [3, 'h₃(x)'], [4, '‖x⁻¹‖']], title: 'sizes, on a log scale' });
-        const Z = [[-1.1, 0.4], [0.2, -0.8], [1.2, 0.6]].map(([a, b], k) => L.handle(a, b, { color: 'blue', r: 6, label: `z${'₁₂₃'[k]}` }));
-        const Rt = [[0.6, 0.9], [-0.9, -0.6]].map(([a, b], k) => L.handle(a, b, { color: 'red', r: 6, label: `r${'₁₂'[k]}` }));
-        v.button('Put a root on the first character', () => Rt[0].set(Z[0].x, Z[0].y));
-        let st = {};
-        v.render(() => {
-          const z = Z.map((h) => [h.x, h.y]), r = Rt.map((h) => [h.x, h.y]);
-          const p = (w) => cmul(csub(w, r[0]), csub(w, r[1])), dp = (w) => cadd(csub(w, r[0]), csub(w, r[1]));
-          L.domain((w) => { const q = p([w.re, w.im]); return new v.Cx(q[0], q[1]); }, { key: JSON.stringify(r), res: 3 });
-          L.axes();
-          const hv = z.map(p), mags = hv.map(cabs);
-          // Hermite data of the inverse; its size measured as max_k (|q(z_k)| + |q'(z_k)|)
-          let inv = 0, ok = true;
-          z.forEach((zk, k) => { const pk = hv[k]; if (cabs(pk) === 0) { ok = false; return; } const q0 = cdiv([1, 0], pk), q1 = cscale(cdiv(dp(zk), cmul(pk, pk)), -1); inv = Math.max(inv, cabs(q0) + cabs(q1)); });
-          const vals = [...mags.map((m) => Math.log10(m + 1e-12)), ok ? Math.log10(inv) : 3];
-          vals.forEach((y, i) => R.rect(i + 1 - 0.3, -4, i + 1 + 0.3, Math.min(y, 2.9), { fill: i < 3 ? (mags[i] < 0.02 ? 'red' : 'blue') : ok ? 'green' : 'red', fillAlpha: 0.75, stroke: false }));
-          R.setTicks([[1, 'h₁(x)'], [2, 'h₂(x)'], [3, 'h₃(x)'], [4, '‖x⁻¹‖']], [-4, -2, 0, 2].map((k) => [k, p10(k)]));
-          st = { hv, ok, inv, kill: mags.findIndex((m) => m === 0) };
-        });
-        v.readout(() => {
-          const s = st;
-          const sp = `$\\sigma(x)=\\{h_k(x)\\}=\\{${s.hv.map((w) => fmtC(v, w, 2)).join(',\\;')}\\}$. `;
-          if (s.kill >= 0) return sp + `$h_{${s.kill + 1}}(x)=0$: $x$ is in the maximal ideal $\\ker h_{${s.kill + 1}}$ and has no inverse.`;
-          return sp + `No homomorphism kills $x$, so $x$ is invertible; size of $x^{-1}$: $${v.fix(s.inv, 3)}$. (The element $(z-z_1)(z-z_2)(z-z_3)$ is killed by all $h_k$ yet is not $0$: it is in the radical.)`;
-        });
-      },
-    },
-    {
-      num: '11.8',
-      kind: 'Definition',
-      name: 'Gelfand transforms, topology and the radical',
-      statement: String.raw`For a commutative Banach algebra $A$, let $\Delta$ be its nonzero complex homomorphisms. Define $\hat x(h)=h(x)$ and give $\Delta$ the weakest topology making all $\hat x$ continuous, called the Gelfand topology. The resulting space is the maximal ideal space. The radical $\operatorname{rad}A$ is the intersection of maximal ideals; $A$ is semisimple if it is $\{0\}$.`,
-      idea: String.raw`The topology records pointwise convergence of homomorphisms. By11.5 the maximal ideals correspond to these homomorphisms, and the radical is exactly the part invisible to all of them. Every homomorphism has norm1 by10.7.`,
+      name: 'The maximal ideal space Δ',
+      credit: 'Gelfand, 1941',
+      statement: String.raw`Throughout the chapter $A$ is a commutative complex Banach algebra with unit $e$. Its **maximal ideal space** $\Delta$ is the set of all complex homomorphisms $h:A\to\C$ (nonzero, linear, multiplicative). Each $h\in\Delta$ satisfies $h(e)=1$ and $|h(x)|\le\norm x$, so $\Delta$ lies in the closed unit ball of $A^*$.`,
+      idea: String.raw`The bound $|h(x)|\le\norm x$ is 10.7(c): if $|h(x)|>\norm x$, then $e-x/h(x)$ would be invertible yet killed by $h$. The name anticipates 11.5: the kernels of the elements of $\Delta$ are exactly the maximal ideals. For $C(K)$, $\Delta$ is $K$ (point evaluations); for the disc algebra it is the closed disc.`,
       caption: String.raw`The disc algebra $A$ (uniform limits of polynomials on $\T$, sup norm). For any $w\in\C$, $h_w(p)=p(w)$ is multiplicative on polynomials; it extends to a homomorphism of $A$ only if it is bounded. Drag $w$: the bars are $|h_w(z^n)|=|w|^n$ against $\norm{z^n}=1$ — bounded exactly when $|w|\le1$. The lower panel tests the bound on a polynomial $p$: $|p(w)|\le\max_\T|p|$ inside the disc (maximum modulus), not outside. So $\Delta$ is the closed unit disc.`,
-      deps: ['fa-11.5','fa-10.7'],
+      deps: ['fa-10.4', 'fa-10.7'],
       tags: ['commutative Banach algebras', 'maximal ideal space'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const L = v.stage({ x: [-2, 2], y: [-1.6, 1.6], equal: true, height: 300, axes: true, title: 'the point $w$ and the closed unit disc' });
@@ -193,7 +43,7 @@ export default {
         let st = {};
         v.legend([['blue', '$|w|^n$'], ['ink', 'bound $1$', { dash: true }], ['orange', '$|p(w)|$', { dash: true }]]);
         v.render(() => {
-          const w = [hw.x, hw.y], r = cabs(w), ok = r <= 1;
+          const w = [hw.x, hw.y], r = cabs(w), ok = r <= 1 + 1e-9;
           L.circle(0, 0, 1, { color: 'ink', width: 2, fill: 'green', fillAlpha: 0.08 });
           L.corner(ok ? 'w ∈ D̄: h_w ∈ Δ' : '|w| > 1: h_w unbounded', 'tl', { color: ok ? 'green' : 'red', weight: 600 });
           const bars = []; for (let n = 0; n <= 20; n++) bars.push(Math.pow(r, n));
@@ -201,7 +51,7 @@ export default {
           B.bars(bars.map((b) => Math.min(b, 8)), { x0: 0, dx: 1, color: ok ? 'blue' : 'red' });
           B.hline(1, { color: 'ink', width: 1.4, dash: [5, 4] });
           const vals = M.linspace(0, 2 * Math.PI, 361).map((t) => cabs(p([Math.cos(t), Math.sin(t)])));
-          const mx = Math.sqrt(19) / 2, pw = cabs(p(w)); // exact maximum at cos(t)=1/2
+          const mx = Math.max(...vals), pw = cabs(p(w));
           P.setView(null, [0, Math.max(mx, pw) * 1.15]);
           P.path(M.linspace(0, 2 * Math.PI, 361).map((t, i) => [t, vals[i]]), { color: 'ink', width: 2 });
           P.hline(pw, { color: pw <= mx + 1e-9 ? 'orange' : 'red', width: 2, dash: [6, 4] });
@@ -211,17 +61,153 @@ export default {
       },
     },
     {
+      num: '11.2',
+      kind: 'Definition',
+      name: 'Ideals, maximal ideals, quotient algebras',
+      statement: String.raw`A subspace $J\subset A$ is an **ideal** if $xy\in J$ whenever $x\in A$, $y\in J$; it is **proper** if $J\ne A$, and **maximal** if it is proper and contained in no larger proper ideal. If $J$ is a closed proper ideal, the quotient space $A/J$ with $(x+J)(y+J)=xy+J$ and the quotient norm $\norm{x+J}=\inf\{\norm{x+y}:y\in J\}$ is again a commutative Banach algebra with unit $e+J$.`,
+      idea: String.raw`The quotient is a Banach space by 1.41; multiplication is well defined because $J$ is an ideal, and $\norm{(x+J)(y+J)}\le\norm{x+J}\norm{y+J}$ follows by taking infima. That $\norm{e+J}=1$ uses that $J$ is proper and closed: $\norm{e-y}<1$ would make $y\in J$ invertible (10.7).`,
+      deps: ['fa-1.41', 'fa-10.1'],
+      tags: ['commutative Banach algebras', 'ideals'],
+      verify: true,
+    },
+    {
+      num: '11.3',
+      kind: 'Proposition',
+      name: 'Basic facts about ideals',
+      statement: String.raw`(a) No proper ideal of $A$ contains an invertible element.
+(b) The closure of an ideal is an ideal.
+(c) Every proper ideal is contained in a maximal ideal.
+(d) Every maximal ideal is closed.`,
+      idea: String.raw`(a) If $x\in J$ is invertible, then $y=yx^{-1}x\in J$ for every $y$. (b) Continuity of the operations. (c) Zorn's lemma, using (a): a union of a chain of proper ideals still misses $e$. (d) $G(A)$ is open and contains $e$, so the closure of a proper ideal still misses $G(A)$ by (a); it is proper, hence equal to the maximal ideal.`,
+      caption: String.raw`$A=C[0,1]$. The ideal generated by two functions $f_1,f_2$ (drag their zeros $a$ and $b$) contains $g=f_1^2+f_2^2$. If $f_1,f_2$ have no common zero, $g$ is bounded below, hence invertible, and the ideal is all of $A$ by (a). Slide $a$ onto $b$: $g$ acquires a zero, the ideal becomes proper, and it sits inside the maximal ideal $M_b=\{f:f(b)=0\}$, as (c) predicts.`,
+      deps: ['fa-11.2', 'fa-10.12'],
+      tags: ['ideals', 'commutative Banach algebras'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [0, 1], y: [-0.8, 1.4], height: 330, full: true, axes: true, title: '$f_1$, $f_2$ and $g=f_1^2+f_2^2$' });
+        const ha = S.handle(0.3, 0, { color: 'blue', label: 'a', labelPos: 's', constrain: (x) => [M.clamp(x, 0.02, 0.98), 0] });
+        const hb = S.handle(0.62, 0, { color: 'orange', label: 'b', labelPos: 's', constrain: (x) => [M.clamp(x, 0.02, 0.98), 0] });
+        let st = {};
+        v.legend([['blue', '$f_1(t)=(t-a)(1+0.4\\sin5t)$'], ['orange', '$f_2(t)=(t-b)\\cos2t$'], ['green', '$g=f_1^2+f_2^2$']]);
+        v.render(() => {
+          const a = ha.x, b = hb.x;
+          const f1 = (t) => (t - a) * (1 + 0.4 * Math.sin(5 * t)), f2 = (t) => (t - b) * Math.cos(2 * t), g = (t) => f1(t) ** 2 + f2(t) ** 2;
+          S.fn(f1, { color: 'blue', width: 2 });
+          S.fn(f2, { color: 'orange', width: 2 });
+          S.fn(g, { color: 'green', width: 2.6, fill: 'green', fillAlpha: 0.12 });
+          let mn = Infinity, at = 0; for (let i = 0; i <= 2000; i++) { const t = i / 2000, y = g(t); if (y < mn) { mn = y; at = t; } }
+          S.dot(at, mn, { color: mn < 1e-4 ? 'red' : 'green', r: 5 });
+          st = { mn, at, common: Math.abs(a - b) < 0.005 };
+        });
+        v.readout(() => (st.common ? `Common zero at $t=${v.fix(st.at, 3)}$: $g$ vanishes there, the ideal $(f_1,f_2)$ is proper and lies in the maximal ideal $M_{${v.fix(st.at, 2)}}$.` : `$\\min g = ${v.sci(st.mn, 2)}$ at $t=${v.fix(st.at, 3)}$: $g$ is invertible in $C[0,1]$, so $e=g\\cdot g^{-1}\\in(f_1,f_2)$ and the ideal is all of $A$.`));
+      },
+    },
+    {
+      num: '11.4',
+      kind: 'Theorem',
+      name: 'Quotients by closed ideals; A/M ≅ ℂ',
+      statement: String.raw`If $J$ is a closed proper ideal of $A$, then $A/J$ is a commutative Banach algebra with unit (11.2). If $M$ is a maximal ideal, then $A/M$ is a field, and by the Gelfand–Mazur theorem it is isometrically isomorphic to $\C$: there is $h\in\Delta$ with $x-h(x)e\in M$ for every $x$, and $\norm{x+M}=|h(x)|$.`,
+      idea: String.raw`In $A/M$ every nonzero element is invertible: if $x\notin M$, the ideal $\{ax+y:a\in A,y\in M\}$ is larger than $M$, hence equals $A$ and contains $e$. So $A/M$ is a Banach division algebra, i.e. $\C$ (10.14). The composite $A\to A/M\cong\C$ is the homomorphism $h$ with kernel $M$.`,
+      caption: String.raw`$A=C[0,1]$ with the sup norm, and a closed ideal: the maximal ideal $M_p=\{f:f(p)=0\}$ or the ideal $J_K=\{f:f=0\text{ on }K\}$ of a closed interval $K$. The coset $f+J$ consists of all functions that agree with $f$ on the zero set (faint: a few of them). Its norm is attained by the green representative: the constant $f(p)$ for $M_p$, and $f$ clipped at height $\max_K|f|$ for $J_K$. So $\norm{f+M_p}=|f(p)|$ — $A/M_p\cong\C$ — and $\norm{f+J_K}=\max_K|f|$ — $A/J_K\cong C(K)$.`,
+      deps: ['fa-11.3', 'fa-10.14', 'fa-1.41'],
+      tags: ['ideals', 'quotient algebras'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const kind = v.select('ideal', [{ value: 'pt', label: 'maximal $M_p$' }, { value: 'iv', label: '$J_K$, $K$ an interval' }], 'pt');
+        const S = v.stage({ x: [0, 1], y: [-1.6, 1.6], height: 340, full: true, axes: true, title: 'the coset $f+J$ and its smallest-norm representative' });
+        const hp = S.handle(0.35, -1.45, { color: 'purple', label: 'p', labelPos: 'n', constrain: (x) => [M.clamp(x, 0, 1), -1.45] });
+        const hq = S.handle(0.65, -1.45, { color: 'purple', label: 'K', labelPos: 'n', constrain: (x) => [M.clamp(x, 0, 1), -1.45] });
+        const f = (t) => 0.9 * Math.sin(7 * t) + 0.5 * Math.cos(3 * t) - 0.2;
+        const rnd = v.rng(5), others = M.range(6).map(() => [rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(2, 9)]);
+        let st = {};
+        v.legend([['blue', '$f$'], ['muted', 'other representatives $f+g$, $g\\in J$'], ['green', 'smallest-norm representative'], ['purple', 'zero set of $J$']]);
+        v.render(() => {
+          const pt = kind.value === 'pt';
+          hq.visible = !pt;
+          const a = pt ? hp.x : Math.min(hp.x, hq.x), b = pt ? hp.x : Math.max(hp.x, hq.x);
+          const vanish = (t) => (t >= a && t <= b ? 0 : Math.min(1, Math.min(Math.abs(t - a), Math.abs(t - b)) * 6));   // a function in J (0 on the zero set)
+          for (const [c1, c2, w] of others) S.fn((t) => f(t) + vanish(t) * (c1 + c2 * Math.sin(w * t)), { color: 'muted', width: 1, alpha: 0.45 });
+          S.fn(f, { color: 'blue', width: 2.4 });
+          let m;
+          if (pt) { m = Math.abs(f(a)); S.hline(f(a), { color: 'green', width: 2.6 }); S.dot(a, f(a), { color: 'purple', r: 5 }); }
+          else { m = 0; for (let i = 0; i <= 400; i++) { const t = a + (b - a) * i / 400; m = Math.max(m, Math.abs(f(t))); } S.fn((t) => M.clamp(f(t), -m, m), { color: 'green', width: 2.6 }); S.line(a, -1.45, b, -1.45, { color: 'purple', width: 5 }); S.hband(-m, m, { color: 'green', alpha: 0.06 }); }
+          S.vband(a, b, { color: 'purple', alpha: 0.06 });
+          st = { pt, m, a, b, fp: f(a) };
+        });
+        v.readout(() => (st.pt ? `$\\|f+M_p\\| = |f(p)| = ${v.fix(st.m, 4)}$ with $p=${v.fix(st.a, 3)}$: the quotient map is $f\\mapsto f(p)$, an isometric isomorphism $A/M_p\\to\\C$.` : `$\\|f+J_K\\| = \\max_{K}|f| = ${v.fix(st.m, 4)}$ for $K=[${v.fix(st.a, 2)},${v.fix(st.b, 2)}]$: $A/J_K\\cong C(K)$, which is not a field.`));
+      },
+    },
+    {
+      num: '11.5',
+      kind: 'Theorem',
+      name: "Gelfand's theorem: maximal ideals are kernels of homomorphisms",
+      credit: 'Gelfand, 1941',
+      statement: String.raw`(a) Every maximal ideal of $A$ is the kernel of some $h\in\Delta$.
+(b) If $h\in\Delta$, the kernel of $h$ is a maximal ideal.
+(c) An element $x\in A$ is invertible if and only if $h(x)\ne0$ for every $h\in\Delta$.
+(d) $x$ is invertible if and only if $x$ lies in no proper ideal of $A$.
+(e) $\lambda\in\sigma(x)$ if and only if $h(x)=\lambda$ for some $h\in\Delta$.`,
+      idea: String.raw`(a) is 11.4; (b) holds because $\ker h$ has codimension $1$. (d): a non-invertible $x$ generates the proper ideal $xA$; conversely (11.3(a)). (c): if $x$ is not invertible, $xA$ lies in a maximal ideal $=\ker h$ by (a), so $h(x)=0$; the converse is 10.5. (e) is (c) applied to $\lambda e-x$.`,
+      caption: String.raw`A finite-dimensional commutative algebra with a radical: $A=\C[z]/\big((z-z_1)^2(z-z_2)^2(z-z_3)^2\big)$, polynomials remembered only through their values **and first derivatives** at three points $z_k$ (blue, draggable). $\Delta=\{h_1,h_2,h_3\}$ with $h_k(p)=p(z_k)$. Take $x=p$ with roots $r_1,r_2$ (red). Right: $|h_k(x)|$ and the size of $x^{-1}$, computed by Hermite interpolation ($q(z_k)=1/p(z_k)$, $q'(z_k)=-p'(z_k)/p(z_k)^2$). Drag a root onto some $z_k$: $h_k(x)=0$, $x$ falls into the maximal ideal $\ker h_k$, and the inverse blows up.`,
+      deps: ['fa-11.4', 'fa-11.3', 'fa-10.5'],
+      see: ['rca-18.17'],
+      tags: ['commutative Banach algebras', 'Gelfand theory', 'maximal ideals'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const L = v.stage({ x: [-2, 2], y: [-1.6, 1.6], equal: true, height: 320, axes: true, title: 'points $z_k$ (the homomorphisms) and roots of $p$' });
+        const R = v.stage({ x: [0.3, 4.7], y: [-4, 3], height: 320, axes: 'box', xticks: [[1, 'h₁(x)'], [2, 'h₂(x)'], [3, 'h₃(x)'], [4, '‖x⁻¹‖']], title: 'sizes, on a log scale' });
+        const Z = [[-1.1, 0.4], [0.2, -0.8], [1.2, 0.6]].map(([a, b], k) => L.handle(a, b, { color: 'blue', r: 6, label: `z${'₁₂₃'[k]}` }));
+        const Rt = [[0.6, 0.9], [-0.9, -0.6]].map(([a, b], k) => L.handle(a, b, { color: 'red', r: 6, label: `r${'₁₂'[k]}` }));
+        let st = {};
+        v.render(() => {
+          const z = Z.map((h) => [h.x, h.y]), r = Rt.map((h) => [h.x, h.y]);
+          const p = (w) => cmul(csub(w, r[0]), csub(w, r[1])), dp = (w) => cadd(csub(w, r[0]), csub(w, r[1]));
+          L.domain((w) => { const q = p([w.re, w.im]); return new v.Cx(q[0], q[1]); }, { key: JSON.stringify(r), res: 3 });
+          L.axes();
+          const hv = z.map(p), mags = hv.map(cabs);
+          // Hermite data of the inverse; its size measured as max_k (|q(z_k)| + |q'(z_k)|)
+          let inv = 0, ok = true;
+          z.forEach((zk, k) => { const pk = hv[k]; if (cabs(pk) < 1e-9) { ok = false; return; } const q0 = cdiv([1, 0], pk), q1 = cscale(cdiv(dp(zk), cmul(pk, pk)), -1); inv = Math.max(inv, cabs(q0) + cabs(q1)); });
+          const vals = [...mags.map((m) => Math.log10(m + 1e-12)), ok ? Math.log10(inv) : 3];
+          vals.forEach((y, i) => R.rect(i + 1 - 0.3, -4, i + 1 + 0.3, Math.min(y, 2.9), { fill: i < 3 ? (mags[i] < 0.02 ? 'red' : 'blue') : ok ? 'green' : 'red', fillAlpha: 0.75, stroke: false }));
+          R.setTicks([[1, 'h₁(x)'], [2, 'h₂(x)'], [3, 'h₃(x)'], [4, '‖x⁻¹‖']], [-4, -2, 0, 2].map((k) => [k, p10(k)]));
+          st = { hv, ok, inv, kill: mags.findIndex((m) => m < 0.02) };
+        });
+        v.readout(() => {
+          const s = st;
+          const sp = `$\\sigma(x)=\\{h_k(x)\\}=\\{${s.hv.map((w) => fmtC(v, w, 2)).join(',\\;')}\\}$. `;
+          if (s.kill >= 0) return sp + `$h_{${s.kill + 1}}(x)\\approx0$: $x$ is (nearly) in the maximal ideal $\\ker h_{${s.kill + 1}}$ and has no inverse.`;
+          return sp + `No homomorphism kills $x$, so $x$ is invertible; size of $x^{-1}$: $${v.fix(s.inv, 3)}$. (The element $(z-z_1)(z-z_2)(z-z_3)$ is killed by all $h_k$ yet is not $0$: it is in the radical.)`;
+        });
+      },
+    },
+    {
+      num: '11.8',
+      kind: 'Definition',
+      name: 'Radical; semisimple algebras',
+      statement: String.raw`The **radical** of $A$, $\operatorname{rad}A$, is the intersection of all maximal ideals of $A$. $A$ is **semisimple** if $\operatorname{rad}A=\{0\}$. By 11.5, $x\in\operatorname{rad}A$ iff $h(x)=0$ for every $h\in\Delta$, iff $\sigma(x)=\{0\}$, iff $\lim\norm{x^n}^{1/n}=0$ ($x$ is quasinilpotent).`,
+      idea: String.raw`$C(K)$, $\ell^1(\Z)$ and the disc algebra are semisimple; the algebras of 11.5 with repeated points, or the algebra generated by the Volterra operator, are not — their radicals consist of nilpotent or quasinilpotent elements, invisible to every homomorphism.`,
+      deps: ['fa-11.5', 'fa-10.13'],
+      tags: ['commutative Banach algebras', 'radical'],
+      verify: true,
+    },
+    {
       num: '11.9',
       kind: 'Theorem',
       name: 'The Gelfand transform',
+      credit: 'Gelfand, 1941',
       statement: String.raw`For $x\in A$ define $\hat x:\Delta\to\C$ by $\hat x(h)=h(x)$, and give $\Delta$ the weakest topology making every $\hat x$ continuous (the **Gelfand topology**, the weak* topology inherited from $A^*$). Then
 (a) $\Delta$ is a compact Hausdorff space;
 (b) $x\mapsto\hat x$ is a homomorphism of $A$ onto a subalgebra $\hat A$ of $C(\Delta)$ that separates points and contains the constants, with kernel $\operatorname{rad}A$;
 (c) $\hat x(\Delta)=\sigma(x)$ and $\norm{\hat x}_\infty=\rho(x)\le\norm x$.`,
       idea: String.raw`$\Delta$ is a weak*-closed subset of the unit ball of $A^*$ (multiplicativity and $h(e)=1$ are preserved under pointwise limits), hence compact by Banach–Alaoglu. $\hat x(\Delta)=\sigma(x)$ is 11.5(e), and then $\norm{\hat x}_\infty=\rho(x)$ by definition of the spectral radius; the kernel is the radical by 11.8.`,
-      caption: String.raw`$A=\ell^1(\Z)$, whose maximal ideal space is the circle (11.13): $\hat x(e^{i\theta})=\sum_nx_ne^{in\theta}$. Drag the bar tops of $x$ (left). Middle: $\hat x(\T)=\sigma(x)$ in the plane, with the circles of radius $\norm{\hat x}_\infty=\rho(x)$ (green) and $\norm x_1$ (orange). Right: $\norm{x^n}_1^{1/n}$ (convolution powers) against $n$, converging to $\norm{\hat x}_\infty$, without requiring monotonicity — the spectral radius formula computed two ways.`,
+      caption: String.raw`$A=\ell^1(\Z)$, whose maximal ideal space is the circle (11.13): $\hat x(e^{i\theta})=\sum_nx_ne^{in\theta}$. Drag the bar tops of $x$ (left). Middle: $\hat x(\T)=\sigma(x)$ in the plane, with the circles of radius $\norm{\hat x}_\infty=\rho(x)$ (green) and $\norm x_1$ (orange). Right: $\norm{x^n}_1^{1/n}$ (convolution powers) against $n$, decreasing to $\norm{\hat x}_\infty$ — the spectral radius formula computed two ways.`,
       deps: ['fa-11.5', 'fa-11.8', 'fa-3.15', 'fa-10.13'],
       tags: ['Gelfand transform', 'commutative Banach algebras'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const B = v.stage({ x: [-3.6, 3.6], y: [-1.2, 1.2], height: 300, minWidth: 220, axes: true, xticks: [-3, -2, -1, 0, 1, 2, 3], title: '$x=(x_n)\\in\\ell^1(\\Z)$' });
@@ -247,7 +233,7 @@ export default {
           P.dots(seq, { color: 'blue', r: 3 });
           st = { sup, n1, last: seq[29][1] };
         });
-        v.readout(() => `Sampled $\\max|\\hat x| = ${v.fix(st.sup, 4)}$, $\\;\\|x^{30}\\|_1^{1/30} = ${v.fix(st.last, 4)}$, $\\;\\|x\\|_1 = ${v.fix(st.n1, 4)}$: $\\rho(x)=\\|\\hat x\\|_\\infty\\le\\|x\\|_1$.`);
+        v.readout(() => `$\\|\\hat x\\|_\\infty = ${v.fix(st.sup, 4)}$, $\\;\\|x^{30}\\|_1^{1/30} = ${v.fix(st.last, 4)}$, $\\;\\|x\\|_1 = ${v.fix(st.n1, 4)}$: $\\rho(x)=\\|\\hat x\\|_\\infty\\le\\|x\\|_1$.`);
       },
     },
   ],

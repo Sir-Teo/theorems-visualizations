@@ -1,6 +1,8 @@
 // Signals & Systems — Chapter 4: Fourier series (items 4.5–4.8)
 import { TAU, PI, WAVES, coefsOf, waveMenu, mag, partial, zip, grid, powerOf, tailPower, fcoef, wrap, PI_TICKS } from './ch04.shared.js';
 
+import { linearPeriodicSpectrum } from './sig-source-audit.shared.js';
+
 const POW = {};
 const powOf = (id) => (POW[id] ??= powerOf(WAVES[id].f));
 
@@ -69,27 +71,27 @@ Moreover $E_N\to0$ as $N\to\infty$: the Fourier series converges to $x$ in the m
 $$\frac1T\int_T|x(t)|^2\,dt=\sum_{k=-\infty}^{\infty}|c_k|^2 .$$
 For a real signal this is $c_0^2+2\sum_{k\ge1}|c_k|^2$: the average power is the sum of the powers of the harmonics, the $k$-th harmonic contributing $|c_k|^2$ at frequency $+k\omega_0$ and $|c_k|^2$ at $-k\omega_0$. The partial sums satisfy $\frac1T\int|x-S_N|^2=\sum_{|k|>N}|c_k|^2$.`,
       idea: String.raw`Parseval is the Pythagorean theorem for the orthonormal exponentials (sig-4.2): the squared length of $x$ is the sum of the squared lengths of its components. Take $a_k=c_k$ in the identity of sig-4.5, let $N\to\infty$ and use $E_N\to0$ (completeness). The statement for $L^2$ functions on the circle is pma-8.16; the general Riesz–Fischer form is rca-4.26.`,
-      caption: String.raw`Draw your own periodic waveform in the top-left panel by dragging (it wraps around at $\pm\pi$), or start from a preset. The top-right panel gives the power of each harmonic, $c_0^2$ and $2|c_k|^2$; the bottom panel adds them up as $N$ grows and approaches the time-domain average power (green line), which is computed by integrating $x^2$ directly. The readout shows both numbers agree.`,
+      caption: String.raw`Draw your own periodic waveform in the top-left panel by dragging (it wraps around at $\pm\pi$), or start from a preset. The top-right panel gives the power of each harmonic, $c_0^2$ and $2|c_k|^2$; the bottom panel adds them up as $N$ grows and approaches the time-domain average power (green line), which is computed by integrating $x^2$ directly. The presets are periodic linear interpolants through 48 samples, so their corners are ramps. Coefficients and the integral of $x^2$ are evaluated analytically for this interpolant; the remaining power is the harmonic tail, up to floating-point rounding.`,
       deps: ['sig-4.5', 'pma-8.16'],
-      refs: ['Oppenheim–Willsky §3.5'],
+      refs: ['Oppenheim–Willsky §3.5', 'S. New, Lebesgue Integration and Fourier Analysis, §§4.23, 5.26–5.28'],
       tags: ['Parseval', 'power'],
-      credit: 'Parseval, c. 1799 (a relation for series that was later recognised as this identity); Plancherel for the transform version',
-      verify: true,
+      credit: 'Parseval (Fourier-series identity)',
+      verify: false,
       viz(v) {
         const NN = 48, K = 60, ys = new Float64Array(NN);
         const preset = (name) => {
           for (let i = 0; i < NN; i++) {
             const t = -PI + (TAU * i) / NN;
-            ys[i] = name === 'square' ? (t >= 0 ? 0.8 : -0.8) : name === 'saw' ? (0.8 * t) / PI : name === 'tri' ? 0.8 - (1.6 * Math.abs(t)) / PI
+            ys[i] = name === 'zero' ? 0 : name === 'square' ? (t >= 0 ? 0.8 : -0.8) : name === 'saw' ? (0.8 * t) / PI : name === 'tri' ? 0.8 - (1.6 * Math.abs(t)) / PI
               : 0.7 * Math.sin(t) + 0.45 * Math.cos(2 * t + 0.6) + 0.25 * Math.sin(3 * t) + 0.6 * Math.exp(-(((t - 2) / 0.3) ** 2));
           }
         };
         preset('hand');
         const f = (t) => { const u = ((wrap(t) + PI) / TAU) * NN, i = Math.floor(u) % NN, a = u - Math.floor(u); return ys[i] * (1 - a) + ys[(i + 1) % NN] * a; };
-        const sel = v.select('start from', [{ value: 'hand', label: 'mixture' }, { value: 'square', label: 'square' }, { value: 'saw', label: 'sawtooth' }, { value: 'tri', label: 'triangle' }], 'hand', { onChange: (val) => { preset(val); } });
+        const sel = v.select('start from', [{ value: 'hand', label: 'mixture' }, { value: 'square', label: 'square' }, { value: 'saw', label: 'sawtooth' }, { value: 'tri', label: 'triangle' }, { value: 'zero', label: 'zero' }], 'hand', { onChange: (val) => { preset(val); } });
         const nsl = v.slider('harmonics included $N$', 0, 30, 3, { step: 1, int: true });
         const A = v.stage({ x: [-PI, PI], y: [-1.6, 1.6], axes: 'box', gutter: true, xlabel: 't', xticks: PI_TICKS, height: 300, title: 'drag to draw one period (it wraps)' });
-        const B = v.stage({ x: [-0.8, 24.8], y: [0, 1], axes: 'box', gutter: true, xlabel: 'k', ylabel: 'power', height: 300, title: 'power of each harmonic: $c_0^2$, $2|c_k|^2$' });
+        const B = v.stage({ x: [-0.8, 30.8], y: [0, 1], axes: 'box', gutter: true, xlabel: 'k', ylabel: 'power', height: 300, title: 'power of each harmonic: $c_0^2$, $2|c_k|^2$' });
         const C = v.stage({ x: [0, 30], y: [0, 1], axes: 'box', gutter: true, xlabel: 'N', ylabel: 'power', height: 210, full: true, title: 'power collected by harmonics $0\\ldots N$' });
         let last = -1;
         A.onDrag((x, y, ph) => {
@@ -100,22 +102,23 @@ For a real signal this is $c_0^2+2\sum_{k\ge1}|c_k|^2$: the average power is the
         });
         let info = null;
         v.render(() => {
-          const c = fcoef(f, K, 1536);
-          const P = powerOf(f, 6000);
+          const c = linearPeriodicSpectrum(ys, K);
+          const P = c.power;
           const ts = grid(-PI, PI, 480);
           A.path(zip(ts, ts.map(f)), { color: 'accent', width: 2.2 });
           A.dots(Array.from(ys, (y, i) => [-PI + (TAU * i) / NN, y]), { r: 3, color: 'accent' });
-          const pw = Array.from({ length: 25 }, (_, k) => (k === 0 ? c.re[0] ** 2 : 2 * (c.re[k] ** 2 + c.im[k] ** 2)));
-          B.setView(null, [0, Math.max(0.05, ...pw) * 1.15]);
+          const pw = Array.from({ length: 31 }, (_, k) => (k === 0 ? c.re[0] ** 2 : 2 * (c.re[k] ** 2 + c.im[k] ** 2)));
+          const largestBin = Math.max(...pw);
+          B.setView(null, [0, largestBin > 0 ? largestBin * 1.15 : 1]);
           B.bars(pw, { x0: 0, color: (val, i) => (i <= nsl.value ? 'accent' : 'faint') });
           const cum = []; let s = 0; for (let k = 0; k <= 30; k++) { s += k === 0 ? c.re[0] ** 2 : 2 * (c.re[k] ** 2 + c.im[k] ** 2); cum.push(s); }
-          C.setView(null, [0, Math.max(P, 0.05) * 1.15]);
+          C.setView(null, [0, P > 0 ? P * 1.15 : 1]);
           C.hline(P, { color: 'green', width: 1.8 });
           C.bars(cum, { x0: 0, color: (val, i) => (i <= nsl.value ? 'accent' : 'faint'), barWidth: 0.8 });
           info = { P, part: cum[nsl.value], all: cum[30], N: nsl.value };
         });
         v.legend([['green', 'average power $\\frac1T\\int x^2$ (time domain)'], ['accent', 'sum of harmonic powers']]);
-        v.readout(() => `Time domain: $\\frac1{2\\pi}\\int x^2\\,dt=${v.fix(info.P, 5)}$. Frequency domain: $\\sum_{|k|\\le 30}|c_k|^2=${v.fix(info.all, 5)}$ (difference $${v.sci(Math.abs(info.P - info.all), 2)}$, the power above harmonic 30). Harmonics $0\\ldots${info.N}$ already carry $${v.fix((100 * info.part) / info.P, 2)}\\%$ of the power.`);
+        v.readout(() => `Time domain: $\\frac1{2\\pi}\\int x^2\\,dt=${v.fix(info.P, 5)}$. Frequency domain: $\\sum_{|k|\\le 30}|c_k|^2=${v.fix(info.all, 5)}$ (remaining power $${v.sci(Math.max(0, info.P - info.all), 2)}$, up to rounding). ${info.P > 0 ? `Harmonics $0\\ldots${info.N}$ already carry $${v.fix((100 * info.part) / info.P, 2)}\\%$ of the power.` : 'The zero signal has no power; a percentage of zero total power is not defined.'}`);
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -192,9 +195,9 @@ For a real signal this is $c_0^2+2\sum_{k\ge1}|c_k|^2$: the average power is the
 - If $x\in C^\infty$, then $c_k=O(|k|^{-p})$ for every $p$.
 - If $x$ extends analytically to the strip $|\Im t|<\sigma$, then $|c_k|\le C_\varepsilon e^{-(\sigma-\varepsilon)|k|}$ for every $\varepsilon>0$ (geometric decay).
 Conversely, fast decay of the $c_k$ forces smoothness. Consequently the error of the partial sum $S_N$ decays like $N^{-m-1/2}$ in the mean square for a signal of smoothness $m$.`,
-      idea: String.raw`Differentiate $m$ times under the series: by sig-4.7 the coefficients of $x^{(m)}$ are $(jk)^mc_k$. Since $x^{(m)}$ is at least integrable, its coefficients tend to zero (the Riemann–Lebesgue lemma on the circle, rca-5.14), and when it is piecewise continuous with bounded variation, integration by parts once more gives $O(1/|k|)$ for them. Hence $c_k=o(|k|^{-m})$, and in fact $O(|k|^{-m-1})$. For analytic signals shift the integration contour in $c_k=\frac1{2\pi}\int x(t)e^{-jkt}dt$ to $\Im t=\mp\sigma'$ and gain a factor $e^{-\sigma'|k|}$.`,
+      idea: String.raw`Differentiate $m$ times under the series: by sig-4.7 the coefficients of $x^{(m)}$ are $(jk)^mc_k$. Since $x^{(m)}$ is at least integrable, its coefficients tend to zero (the Riemann–Lebesgue lemma on the circle, rca-5.12), and when it is piecewise continuous with bounded variation, integration by parts once more gives $O(1/|k|)$ for them. Hence $c_k=o(|k|^{-m})$, and in fact $O(|k|^{-m-1})$. For analytic signals shift the integration contour in $c_k=\frac1{2\pi}\int x(t)e^{-jkt}dt$ to $\Im t=\mp\sigma'$ and gain a factor $e^{-\sigma'|k|}$.`,
       caption: String.raw`Five signals, each rescaled to unit power: coefficients $\propto k^{-n}$ for $n=1,2,3,4$ (jump, corner, and two smoother ones) and an analytic one with $c_k=r^{|k|}$. The left panel is the coefficient size on log–log axes (straight lines of slope $-n$; the analytic one bends down), the middle panel the mean-square error of the partial sums against $N$, the right panel the waveforms themselves, visibly smoother as $n$ grows. Switch curves on and off, and move $r$ toward 1 to make the analytic signal sharper.`,
-      deps: ['sig-4.7', 'rca-5.14'],
+      deps: ['sig-4.7', 'rca-5.12'],
       refs: ['Oppenheim–Willsky §3.5'],
       tags: ['smoothness', 'decay'],
       viz(v) {

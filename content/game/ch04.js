@@ -3,21 +3,10 @@ import {
   nm, idx, leaf, dec, isLeaf, prep, backward, bpath, infoSets, pureStrategies, stratName, playBeh, asBeh, strategicForm, pureNash,
   drawTree, treeView, pickNode, nmz, randTree, solveGame,
 } from './ch04.shared.js';
+import { DETERMINACY_GAMES, solveLineGame, validLineHistory } from './determinacy-audit.js';
+import { TREE_EXAMPLES, entryEquilibria, randomFiniteTree, solveFiniteTree, checkFiniteProfile, binaryTreeCounts, finiteTreeInspector } from './finite-tree-audit.js';
 
 const ancestors = (n) => { const s = new Set(); for (let x = n; x; x = x.par) s.add(x); return s; };
-const profilePay = (n, prof) => { let x = n; while (!isLeaf(x)) x = x.kids[prof[x.id]].n; return x.u; };
-const bestDev = (n, j, prof) => (isLeaf(n) ? n.u[j] : n.p === j + 1 ? Math.max(...n.kids.map((k) => bestDev(k.n, j, prof))) : bestDev(n.kids[prof[n.id]].n, j, prof));
-
-/** Pure subgame-perfect profiles (Out/In, Fight/Accept), including both indifference boundaries. */
-export function entrySPE(fightPayoff, entrantIfFought) {
-  const result = [];
-  for (const j of [0, 1]) {
-    if ((j === 0 ? fightPayoff : 1) < Math.max(fightPayoff, 1)) continue;
-    const entryPayoff = j === 0 ? entrantIfFought : 1;
-    for (const i of [0, 1]) if ((i === 0 ? 0 : entryPayoff) >= Math.max(0, entryPayoff)) result.push([i, j]);
-  }
-  return result;
-}
 
 export default {
   collection: 'game',
@@ -30,22 +19,19 @@ export default {
       num: '4.1',
       kind: 'Definition',
       name: 'Extensive game with perfect information',
-      statement: String.raw`An **extensive game with perfect information** is a finite rooted tree. Each non-terminal node is labelled with the player who moves there, and each edge leaving it with an action available to that player; each terminal node (leaf) carries a payoff for every player. Every player always observes the whole history, so a mover knows exactly which node she is at.
+      statement: String.raw`Here we use the **finite, deterministic** version of an extensive game with perfect information. There is a finite nonempty set of players and a finite rooted tree. Every nonterminal node has a nonempty finite set of outgoing actions, with distinct labels at that node, and exactly one player who moves there. Every terminal node carries a finite real payoff for each player. The whole history is observed, so the mover knows exactly which node has been reached. A root that is already terminal is allowed. There are no chance moves or simultaneous choices in this model; perfect information alone does not mean that a general extensive game is finite or has no chance moves.
 
-A **pure strategy** of a player is a *complete plan*: a choice of one action at **every** node where she would move, including nodes that her own earlier choices make unreachable. A profile of pure strategies determines a path from the root to a leaf, hence a payoff vector. The table of all these payoffs is the **strategic form** of the game (game-1.1), so every extensive game has a strategic-form counterpart, and Nash equilibrium (game-1.3) applies to it.`,
-      idea: String.raw`The tree says *when* things happen, the matrix says *what each player has committed to*. A strategy must name an action at every decision node because it has to tell a mover what to do whatever happens: it is what a player could write on a card and hand to a deputy. The number of strategies is the product of the action counts over the player's nodes, so it grows far faster than the tree itself, while many different strategies lead to the same outcome. This is why the strategic form hides the order of moves, and why game-4.4 will need subgames to say which equilibria are sensible.`,
+A **pure strategy** is a complete plan: one action at every node assigned to that player, including nodes excluded by her own earlier choices. A player with no decision nodes has one empty plan. A pure profile determines one root-to-terminal path and its payoff vector. Taking these complete plans as actions produces the **strategic form** (game-1.1), whose Nash equilibria are defined by game-1.3.`,
+      idea: String.raw`If player $i$ moves at nodes $H_i$ and has action set $A(h)$ at node $h$, then $|S_i|=\prod_{h\in H_i}|A(h)|$, with an empty product equal to one. The finite tree and its nonempty action sets ensure that a plan exists and that following a profile ends at a terminal node. Different plans can induce the same path because their off-path choices differ, and different terminal histories can have equal payoff vectors. Strategy counts can grow exponentially: in a binary tree with $D$ decision nodes the total number of pure profiles is $2^D$. Such growth is not universal; nodes with only one action add no choices. The strategic form retains every payoff comparison but does not itself display the timing; subgames in game-4.4 add restrictions at histories that a chosen profile does not reach.`,
       caption: String.raw`Choose a game. Left: its tree (blue = player 1 moves, orange = player 2, payoffs at the leaves are player 1's, player 2's). Click a leaf and use the two sliders to change its payoffs. Right: the strategic form, one row or column per complete plan. Click a cell to light up the path that profile produces; green cells are Nash equilibria of the table.`,
-      credit: 'Kuhn, 1950–53 (extensive form; von Neumann & Morgenstern, 1944)',
-      deps: ['game-1.1', 'comb-1.1'],
-      refs: ['Osborne §5.1', 'MSZ §3.3'],
+      credit: 'von Neumann & Morgenstern, 1944; Kuhn, 1953 (formulation)',
+      deps: ['game-1.1', 'game-1.3'],
+      refs: ['Bonanno (2024), §§3.1, 3.3', 'Osborne & Rubinstein (1994), §§6.1.1–6.1.3; notes pp.114–115'],
       tags: ['extensive form', 'strategy'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Extensive-form_game' },
+      links: { source: 'https://faculty.econ.ucdavis.edu/faculty/bonanno/PDF/GT_book.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Extensive-form_game' },
+      verify: false,
       viz(v) {
-        const MAKE = {
-          entry: () => dec(1, [['Out', leaf(0, 2)], ['In', dec(2, [['Fight', leaf(-1, -1)], ['Accept', leaf(1, 1)]])]]),
-          react: () => dec(1, [['L', dec(2, [['l', leaf(3, 1)], ['r', leaf(0, 0)]])], ['R', dec(2, [['l', leaf(1, 0)], ['r', leaf(2, 2)]])]]),
-          centi: () => dec(1, [['Take', leaf(1, 0)], ['Pass', dec(2, [['Take', leaf(0, 2)], ['Pass', dec(1, [['Take', leaf(3, 1)], ['Pass', leaf(2, 4)]])]])]]),
-        };
+        const MAKE = TREE_EXAMPLES;
         let key = 'entry', P, F, sel = [0, 0], lf = null;
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.1, title: 'the game tree' });
         const M = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.9, title: 'its strategic form' });
@@ -53,8 +39,13 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
         const s1 = v.slider('payoff to player 1 at the selected leaf', -3, 9, 0, { int: true, onChange: (x) => { if (lf) lf.u[0] = x; } });
         const s2 = v.slider('payoff to player 2 at the selected leaf', -3, 9, 0, { int: true, onChange: (x) => { if (lf) lf.u[1] = x; } });
         const build = () => { P = prep(MAKE[key]()); sel = [0, 0]; lf = P.leaves[0]; s1.set(lf.u[0]); s2.set(lf.u[1]); };
-        v.select('game', [{ value: 'entry', label: 'entry game' }, { value: 'react', label: 'reaction game' }, { value: 'centi', label: 'take or pass' }], key, { onChange: (k) => { key = k; build(); } });
+        const game = v.select('game', [{ value: 'entry', label: 'entry game' }, { value: 'react', label: 'reaction game' }, { value: 'centi', label: 'take or pass' }], key, { onChange: (k) => { key = k; build(); } });
         build();
+        v.shareState('edited finite tree', {
+          get: () => ({ game: key, payoffs: P.leaves.map(n => n.u.slice()), leaf: P.leaves.indexOf(lf), cell: sel.slice() }),
+          validate: d => { if (!d || typeof d.game !== 'string' || !Object.hasOwn(MAKE, d.game) || !Array.isArray(d.payoffs)) return false; const q = prep(MAKE[d.game]()), f = strategicForm(q); return d.payoffs.length === q.leaves.length && d.payoffs.every(u => Array.isArray(u) && u.length === 2 && u.every(x => Number.isInteger(x) && x >= -3 && x <= 9)) && Number.isInteger(d.leaf) && d.leaf >= 0 && d.leaf < q.leaves.length && Array.isArray(d.cell) && d.cell.length === 2 && d.cell.every(Number.isInteger) && d.cell[0] >= 0 && d.cell[0] < f.S1.length && d.cell[1] >= 0 && d.cell[1] < f.S2.length; },
+          set: d => { key = d.game; game.set(key); build(); P.leaves.forEach((n, i) => { n.u = d.payoffs[i].slice(); }); lf = P.leaves[d.leaf]; sel = d.cell.slice(); s1.set(lf.u[0]); s2.set(lf.u[1]); },
+        });
         T.onClick((x, y) => { const n = pickNode(P, x, y, 0.35); if (n && isLeaf(n)) { lf = n; s1.set(n.u[0]); s2.set(n.u[1]); } });
         M.onClick((x, y) => { const c = TB.hit(x, y); if (c && c.i >= 0 && c.j >= 0) sel = [c.i, c.j]; });
         let info;
@@ -76,7 +67,7 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
         });
         v.readout(() => {
           const { R, C, ne, u, nodes, leaves } = info;
-          return `${nodes} nodes, ${leaves} leaves; player 1 has ${R} pure strategies, player 2 has ${C}, the table has ${R * C} cells but the tree only ${leaves} outcomes\nselected profile (${stratName(P, 1, F.S1[sel[0]])} ; ${stratName(P, 2, F.S2[sel[1]])}) pays $(${nmz(u[0])},\\,${nmz(u[1])})$; pure Nash equilibria of the table: ${ne.length}`;
+          return `${nodes} nodes, ${leaves} terminal histories; player 1 has ${R} pure strategies, player 2 has ${C}; ${R * C} profile cells can lead to just ${leaves} terminal histories\nselected profile (${stratName(P, 1, F.S1[sel[0]])} ; ${stratName(P, 2, F.S2[sel[1]])}) pays $(${nmz(u[0])},\\,${nmz(u[1])})$; pure Nash equilibria of the table: ${ne.length}`;
         });
       },
     },
@@ -85,46 +76,39 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       num: '4.2',
       kind: 'Method',
       name: 'Backward induction',
-      statement: String.raw`In a finite game of perfect information (game-4.1), solve the tree from the leaves toward the root. At a node whose children are all already valued, the mover picks a child that maximises her own payoff coordinate, and the node is assigned that child's payoff vector. Repeating this up to the root assigns a payoff vector to every node. Following the chosen branches from the root gives the **equilibrium path**; the choices at *all* nodes, on or off that path, form a strategy profile. If several children tie for the mover, any may be chosen.`,
+      statement: String.raw`In the finite deterministic perfect-information model of game-4.1, label each terminal node by its payoff vector. At a decision node whose children are already valued, choose an action maximizing the mover's coordinate of those continuation vectors, record that action, and assign its vector to the node. Continue until the root is valued. This records a complete pure profile, including off-path choices; game-4.5 proves that it is subgame perfect. A terminal root needs no evaluation. Nonterminal nodes have nonempty finite action sets, so every maximization is attained. If actions tie for the mover, select one and propagate its entire vector: another tie selection can change the payoffs faced by ancestors.`,
       idea: String.raw`The method rests on one observation: whoever moves at the last decision nodes faces a plain one-person optimisation, whose answer does not depend on anything else. Replace each last node by its resulting payoffs; the tree is now shorter, and the same reasoning applies again. Each step assumes that the people moving later will do what is best for themselves, so the profile built this way never relies on an empty threat. That property is made precise by subgame perfection (game-4.4).`,
-      caption: String.raw`Step through the solution (or press play). The node being processed gets a gold ring, the chosen branch turns green and the node shows the payoff pair it hands upward. Change the depth, branching or roll a new random tree. Ties (the mover is indifferent) are shown by two green branches.`,
-      credit: 'Kuhn, 1950, Theorem 1; expanded treatment, 1953',
+      caption: String.raw`Step through the complete postorder evaluation, including every off-path node. The inspector shows the current node and its immediate children at readable size; click a child or use root/parent/previous/next to inspect any node. “Follow evaluated node” returns to the active step. Gold marks the selected action; green marks another tied best action under the displayed continuations. Choose first or last listed action on ties, change depth or binary/ternary branching, or generate a seeded tree. Every displayed tree has exactly the selected branching. Randomness generates the fixed example; there are no chance moves during play.`,
+      credit: 'Kuhn, 1953 (finite-game existence; modern backward-induction proof)',
       deps: ['game-4.1'],
-      refs: ['Osborne §5.5'],
+      refs: ['Bonanno (2024), Definition 3.2.1', 'Osborne & Rubinstein (1994), Proposition 99.2'],
       tags: ['backward induction', 'algorithm'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Backward_induction' },
+      links: { source: 'https://faculty.econ.ucdavis.edu/faculty/bonanno/PDF/GT_book.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Backward_induction' },
+      verify: false,
       viz(v) {
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, title: 'solving a random game tree' });
-        let seed = 7, P, order = [];
-        const depth = v.select('depth', [2, 3, 4].map((d) => ({ value: d, label: String(d) })), 3, { onChange: () => rebuild() });
-        const br = v.select('branching', [2, 3].map((d) => ({ value: d, label: String(d) })), 2, { onChange: () => rebuild() });
-        const rebuild = () => {
-          const b = depth.value === 4 && br.value === 3 ? 2 : br.value;
-          P = prep(randTree(v.rng(seed), depth.value, b)); backward(P.root);
-          order = P.nodes.filter((n) => !isLeaf(n)).sort((a, b2) => b2.d - a.d || a.x - b2.x);
-          if (S) S.reset(frames());
-        };
-        const frames = () => [{ k: 0, note: 'Leaves carry payoffs (player 1, player 2). Start at the deepest decision nodes.' }, ...order.map((n, i) => ({
+        const stage = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, title: 'one node and its immediate continuations' });
+        let P, solution, S, inspector;
+        const depth = v.select('depth', [2, 3, 4].map(d => ({ value: d, label: String(d) })), 3, { onChange: () => rebuild() });
+        const branching = v.select('branching', [2, 3].map(d => ({ value: d, label: String(d) })), 2, { onChange: () => rebuild() });
+        const seed = v.slider('tree seed', 1, 64, 7, { int: true, onChange: () => rebuild() });
+        const tie = v.select('ties', [{ value: 'first', label: 'first action' }, { value: 'last', label: 'last action' }], 'first', { onChange: () => rebuild() });
+        const follow = v.toggle('follow evaluated node', true);
+        const frames = () => [{ k: 0, note: 'Only terminal nodes are valued initially. Each step evaluates one decision node after all its children.' }, ...solution.order.map((n, i) => ({
           k: i + 1, cur: n,
-          note: `Player ${n.p} moves here: ${n.kids.map((kd) => nmz(kd.n.v[n.p - 1])).join(' vs ')} for herself, so she picks ${n.bi.map((j) => `“${n.kids[j].a}”`).join(' or ')}; the node is worth $(${nmz(n.v[0])},\\,${nmz(n.v[1])})$.`,
+          note: `${n.id}, player ${n.p}: child payoffs for the mover are ${n.kids.map(k => solution.values.get(k.n)[n.p - 1]).join(', ')}. Choose “${n.kids[solution.profile[n.id]].a}”; propagate $(${solution.values.get(n).join(', ')})$. ${solution.ties.get(n).length} maximizing action(s) under these continuations.`,
         }))];
-        let S;
-        v.button('new random tree', () => { seed += 1; rebuild(); });
+        const rebuild = () => { P = randomFiniteTree(v.rng(seed.value), depth.value, branching.value); solution = solveFiniteTree(P.root, tie.value); inspector?.reset(); if (S) S.reset(frames()); };
+        v.button('new random tree', () => { seed.set(seed.value % 64 + 1); rebuild(); });
         rebuild();
-        S = v.steps({ frames: frames, still: 3 });
+        inspector = finiteTreeInspector(v, stage, () => P, { onNavigate: () => follow.set(false) });
+        S = v.steps({ frames, still: 3 });
+        let info;
         v.render(() => {
-          const f = S.frame, done = new Set(order.slice(0, f.k).concat([]));
-          const vw = treeView(P); s.setView(vw.x, vw.y);
-          const full = f.k === order.length, path = full ? new Set(bpath(P.root)) : null;
-          drawTree(s, P, {
-            size: P.nl > 16 ? 10.5 : 12.5,
-            edgeColor: (e) => (done.has(e.from) ? (e.from.bi.includes(e.i) ? (path && path.has(e.to) && path.has(e.from) ? 'gold' : 'green') : 'faint') : null),
-            edgeWidth: (e) => (done.has(e.from) && e.from.bi.includes(e.i) ? (path && path.has(e.to) ? 4.5 : 3) : 1.4),
-            labelColor: (e) => (done.has(e.from) && !e.from.bi.includes(e.i) ? 'faint' : 'ink'),
-            nodeRing: (n) => (n === f.cur ? 'gold' : null), values: (n) => done.has(n), size_: 0,
-          });
+          const f = S.frame, evaluated = new Set(solution.order.slice(0, f.k)), visibleValues = new Map([...solution.values].filter(([n]) => !n.kids || evaluated.has(n)));
+          const active = follow.value ? f.cur || P.root : undefined;
+          info = { focus: inspector.draw({ focus: active, values: visibleValues, profile: Object.fromEntries([...evaluated].map(n => [n.id, solution.profile[n.id]])), ties: new Map([...solution.ties].filter(([n]) => evaluated.has(n))) }), evaluated: f.k };
         });
-        v.readout(() => `value of the game at the root: $(${nmz(P.root.v[0])},\\,${nmz(P.root.v[1])})$ after ${order.length} node evaluations (one per decision node: work grows with the size of the tree, not with the number of strategies)`);
+        v.readout(() => `${P.nodes.length} nodes, ${P.leaves.length} terminal histories; branching ${branching.value}, depth ${depth.value}, seed ${seed.value}. Evaluated ${info.evaluated} of ${solution.order.length} decision nodes.\nInspecting ${info.focus.node.id}: ${info.focus.history}. Root payoff for the complete ${tie.value}-tie solution: $(${solution.value.join(', ')})$. This is one solution, not necessarily a unique payoff or profile.`);
       },
     },
     // ------------------------------------------------------------------ 4.3
@@ -133,56 +117,28 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       kind: 'Theorem',
       name: 'Zermelo: chess is determined',
       statement: String.raw`Consider a finite two-player game of perfect information with no chance moves whose outcomes are *win for player 1*, *draw* or *win for player 2* (chess is such a game once the draw rules guarantee that play is finite). Then exactly one of the following holds: player 1 has a strategy that forces a win; player 2 has a strategy that forces a win; or both players have strategies that guarantee at least a draw. The game is **determined**: there is a value of the game, and with best play from the start it is realised.`,
-      idea: String.raw`This is backward induction (game-4.2) applied to the three-valued payoffs $+1, 0, -1$ for player 1. Label each final position by its result and then label every earlier position by what the mover can force: win if some move leads to a position that is lost for the opponent, loss if all moves lead to positions won for the opponent, draw otherwise. Induction on the distance to the end gives every position, in particular the start, one of the three labels. For a game as large as chess the labelling exists but nobody has computed it; for small games it can be computed completely.`,
+      idea: String.raw`Assign terminal histories the fixed player-1 payoffs $+1,0,-1$. At a player-1 node take the maximum of the child values; at a player-2 node take their minimum. Induction on the finite remaining tree proves that each player can guarantee the resulting value against every opposing strategy. A root value $+1$ gives player 1 a winning strategy, $-1$ gives player 2 one, and $0$ gives each a strategy guaranteeing at least a draw. The pictures use alternating moves and values for the next player: a node is winning if some child is losing for the opponent, losing if every child is winning for the opponent, and drawn otherwise. This finite-tree proof is a modern formulation. Zermelo's original argument instead uses sets of continuations and explicitly allows infinite play as a draw.`,
       caption: String.raw`Pick a game; the computer has solved every position reachable from the empty board. Each empty square is coloured by what the player to move gets by playing there: green = forces a win, gold = draw, red = loses against best play. Click squares to play (the other side is played by the computer if the switch is on) and watch the colours change. The bars count all reachable positions by value for the player to move.`,
-      credit: 'Zermelo, 1913 (the finite-tree formulation and induction proof are modern)',
-      scope: String.raw`Finite games of perfect information without chance. Zermelo’s own argument concerned chess; the usual modern proof is by induction as above.`,
+      credit: 'Ernst Zermelo, 1913 (chess); modern finite-tree formulation',
+      scope: String.raw`A finite rooted game tree, two players who prefer their own win to a draw to a loss, observed histories and no chance moves. Modern chess fits only after its termination rules are specified. Zermelo's 1913 paper, pp.501–504, instead permits infinite play as a draw; this widget does not reproduce his continuation sets or proposed move bound. The three small line games are solved exhaustively without symmetry reduction, stopping immediately on a completed line. Undo removes one individual move, including a computer reply. Saved states include the board and the complete undo history.`,
       deps: ['game-4.2'],
-      refs: ['MSZ ch. 1'],
+      refs: ['Zermelo (1913), Proceedings of the Fifth ICM, vol. II, pp.501–504', 'Bonanno (2024), §3.5, Theorem 3.5.2, pp.92–93'],
       tags: ['determinacy', 'chess', 'combinatorial game'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)' },
+      links: { source: 'https://www.mathunion.org/fileadmin/ICM/Proceedings/ICM1912.2/ICM1912.2.ocr.pdf#page=503', textbook: 'https://faculty.econ.ucdavis.edu/faculty/bonanno/PDF/GT_book.pdf#page=92', wikipedia: 'https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)' },
+      verify: false,
       viz(v) {
-        const mkLines = (W, H, K) => {
-          const L = [];
-          for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
-            const cells = []; for (let t = 0; t < K; t++) { const rr = r + dr * t, cc = c + dc * t; if (rr < 0 || rr >= H || cc < 0 || cc >= W) break; cells.push(rr * W + cc); }
-            if (cells.length === K) L.push(cells);
-          }
-          return L;
-        };
-        const GAMES = {
-          ttt: { label: 'tic-tac-toe', W: 3, H: 3, K: 3, mis: false },
-          mis: { label: 'misère tic-tac-toe', W: 3, H: 3, K: 3, mis: true },
-          t34: { label: '3 × 4, three in a row', W: 4, H: 3, K: 3, mis: false },
-        };
-        const cache = {};
-        const setup = (k) => {
-          if (cache[k]) return cache[k];
-          const g = GAMES[k], L = mkLines(g.W, g.H, g.K), N = g.W * g.H;
-          const lineBy = (st, ch) => L.some((l) => l.every((i) => st[i] === ch));
-          const mover = (st) => { let x = 0, o = 0; for (const c of st) { if (c === 'X') x++; else if (c === 'O') o++; } return x === o ? 'X' : 'O'; };
-          const term = (st) => {
-            const m = mover(st), other = m === 'X' ? 'O' : 'X';
-            if (lineBy(st, other)) return g.mis ? 1 : -1;   // the player who just moved completed a line
-            if (!st.includes('.')) return 0;
-            return null;
-          };
-          const memo = new Map();
-          const val = (st) => {
-            if (memo.has(st)) return memo.get(st);
-            const t = term(st); let r;
-            if (t != null) r = t; else { const m = mover(st); r = -1; for (let i = 0; i < N; i++) if (st[i] === '.') { const x = -val(st.slice(0, i) + m + st.slice(i + 1)); if (x > r) r = x; } }
-            memo.set(st, r); return r;
-          };
-          const empty = '.'.repeat(N); val(empty);
-          const counts = [0, 0, 0]; memo.forEach((x) => { counts[x + 1]++; });
-          return (cache[k] = { g, N, term, mover, val, empty, counts, rootVal: memo.get(empty) });
-        };
-        let key = 'ttt', G = setup(key), st = G.empty, comp = true, hist = [];
+        const GAMES = DETERMINACY_GAMES, cache = {};
+        const setup = key => cache[key] || (cache[key] = solveLineGame(GAMES[key]));
+        let key = 'ttt', G = setup(key), st = G.empty, hist = [];
         const sg = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 330, title: 'the board (values for the player to move)' });
         const sb = v.stage({ x: [0.3, 3.7], y: [0, 1], axes: 'box', gutter: true, height: 330, weight: 0.8, yticks: [], xticks: [[1, 'loss'], [2, 'draw'], [3, 'win']], xlabel: 'value for the player to move', title: 'all reachable positions' });
-        v.select('game', Object.keys(GAMES).map((k) => ({ value: k, label: GAMES[k].label })), key, { onChange: (k) => { key = k; G = setup(k); st = G.empty; hist = []; } });
-        const tg = v.toggle('computer plays the other side', true, { onChange: () => {} });
+        const game = v.select('game', Object.keys(GAMES).map((k) => ({ value: k, label: GAMES[k].label })), key, { onChange: (k) => { key = k; G = setup(k); st = G.empty; hist = []; } });
+        const tg = v.toggle('computer replies after your move', true);
+        v.shareState('line-game board and undo history', {
+          get: () => ({ game: key, board: st, history: hist.slice() }),
+          validate: d => !!d && typeof d.game === 'string' && Object.hasOwn(GAMES, d.game) && validLineHistory(setup(d.game), d.board, d.history),
+          set: d => { game.set(d.game); key = d.game; G = setup(key); st = d.board; hist = d.history.slice(); },
+        });
         v.button('new game', () => { st = G.empty; hist = []; });
         v.button('undo', () => { if (hist.length) st = hist.pop(); });
         const play = (i) => { hist.push(st); st = st.slice(0, i) + G.mover(st) + st.slice(i + 1); };
@@ -227,14 +183,17 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       num: '4.4',
       kind: 'Definition',
       name: 'Subgame perfect equilibrium',
-      statement: String.raw`In an extensive game with perfect information (game-4.1), each node $h$ starts a **subgame**: the part of the tree below $h$, with the same payoffs. A strategy profile is a **subgame perfect equilibrium** (SPE) if for *every* subgame the restriction of the profile to it is a Nash equilibrium (game-1.3) of that subgame. Equivalently no player can gain by changing her choices at some node while the others keep to the profile, even at nodes that the profile never reaches. Every SPE is a Nash equilibrium of the whole game; the converse fails.`,
-      idea: String.raw`A Nash equilibrium only tests deviations that change what happens on the path actually played, so it can rest on a *threat* that would be carried out only off the path, where carrying it out hurts the threatener. Requiring equilibrium in each subgame forces every threat to be one the player would really want to execute once there. In finite perfect-information games this selects exactly the profiles that survive backward induction (game-4.2).`,
-      caption: String.raw`Entry game: the entrant may stay out or enter; if she enters, the incumbent fights or accepts. Drag the sliders for the incumbent’s payoff from fighting and the entrant’s loss when fought. The table lists the pure Nash equilibria: green = also subgame perfect, red = Nash only, because it relies on a non-credible threat (dashed red). Click a cell to see its path.`,
-      credit: 'Selten, 1965; definition restated in The Chain Store Paradox, 1974 working paper, §7',
-      deps: ['game-4.2', 'game-1.3'],
-      refs: ['Osborne §5.4', 'MSZ §7.1'],
+      statement: String.raw`In the finite deterministic perfect-information model of game-4.1, each decision node starts a **subgame** containing that node and all its descendants, with the same movers, actions and terminal payoffs. A pure profile is a **subgame perfect equilibrium** (SPE) if its restriction to every subgame, including the whole game, is a Nash equilibrium (game-1.3). Thus no player gains by replacing any of her contingent choices in any subgame while the opponents' complete plans stay fixed. Terminal subgames, if included, impose no conditions. Every SPE is a Nash equilibrium; a Nash equilibrium can fail a proper-subgame test.
+
+For this finite model, it is equivalent to check every single-node deviation: at each decision node its mover cannot improve by changing just that action while retaining the profile's later choices. This equivalence requires a test at every node, including off-path nodes; it does not mean that checking only deviations on the initial path is sufficient.`,
+      idea: String.raw`A root-game Nash test compares whole strategies from the initial history; changing only a decision that remains unreachable cannot change the root payoff. Subgame perfection instead starts the comparison at each history. To prove the single-node criterion, assume that no one-action deviation helps at any node. Take any multi-action deviation and undo a deepest changed decision of the deviator. All later decisions are already prescribed, so the local condition says that undoing this choice cannot lower the deviator's payoff, either from that node or from the starting subgame. Repeat until all changes have been undone. Finiteness makes the reduction terminate, proving that the entire deviation could not improve on the profile. In the entry example, fighting when it pays the incumbent less than acceptance fails its own subgame test, even when the entrant stays out and that choice is off-path. Ties are weak best replies and must all be retained.`,
+      caption: String.raw`The entrant chooses Out or In; after In the incumbent chooses Fight or Accept. The sliders cover every half-unit payoff, including the incumbent's tie at 1 and the entrant's tie at 0. Click any table cell to show its path. Green cells are pure SPE; red cells are pure Nash equilibria that fail a subgame test. Unshaded cells fail Nash. The readout lists every pure equilibrium, including multiple SPE at ties; it does not classify mixed equilibria.`,
+      credit: 'Selten, 1965',
+      deps: ['game-4.1', 'game-1.3'],
+      refs: ['Osborne & Rubinstein (1994), Definition 97.2 and Lemma 98.2; notes pp.114–115', 'Bonanno (2024), Definition 4.4.1'],
       tags: ['subgame perfection', 'credible threat'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Subgame_perfect_equilibrium' },
+      links: { source: 'https://faculty.econ.ucdavis.edu/faculty/bonanno/PDF/GT_book.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Subgame_perfect_equilibrium' },
+      verify: false,
       viz(v) {
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 1.05, title: 'entry game (payoffs: entrant, incumbent)' });
         const M = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 0.95, title: 'strategic form' });
@@ -243,37 +202,35 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
         const sl = v.slider('entrant’s payoff if fought', -3, 0, -1, { step: 0.5 });
         let sel = [1, 1];
         M.onClick((x, y) => { const c = TB.hit(x, y); if (c && c.i >= 0 && c.j >= 0) sel = [c.i, c.j]; });
+        v.shareState('selected entry profile', { get: () => sel.slice(), validate: x => Array.isArray(x) && x.length === 2 && x.every(a => a === 0 || a === 1), set: x => { sel = x.slice(); } });
         let info;
         v.render(() => {
           const f = sf.value, l = sl.value;
-          const root = dec(1, [['Out', leaf(0, 2)], ['In', dec(2, [['Fight', leaf(l, f)], ['Accept', leaf(1, 1)]])]]);
-          const P = prep(root); backward(root);
-          const F = strategicForm(P), ne = pureNash(F.U);
+          const result = entryEquilibria(f, l), P = result.P;
+          const F = strategicForm(P), ne = result.nash;
           // F.S1 order: Out, In ; F.S2: Fight, Accept
-          const spe = entrySPE(f, l);
+          const spe = result.spe;
           const isSPE = (i, j) => spe.some(([a, b]) => a === i && b === j);
           const play = playBeh(P, asBeh(P, F.S1[sel[0]], F.S2[sel[1]])), end = [...play.leafP.keys()][0], onp = ancestors(end);
           T.setView([-1.4, 2.7], [-3.0, 0.8]);
-          const n2 = P.nodes[2], pathSPE = new Set(bpath(P.root));
+          const n2 = P.nodes[2];
           // subgame box
           T.rect(n2.x - 0.9, -2.8, n2.x + 0.9, n2.y + 0.5, { fill: 'purple', fillAlpha: 0.07, color: 'purple', width: 1.5, dash: true });
           T.text('subgame', n2.x + 0.85, -2.75, { align: 'right', baseline: 'bottom', size: 11.5, color: 'purple', weight: 700 });
-          const threat = sel[1] === 0 && f < 1;
           drawTree(T, P, {
             edgeColor: (e) => (onp.has(e.to) && onp.has(e.from) ? 'gold' : (e.from === n2 && e.a === 'Fight' && ne.some(([a, b]) => b === 0 && a === 0) && f < 1 ? 'red' : null)),
-            edgeWidth: (e) => (onp.has(e.to) && onp.has(e.from) ? 4.5 : pathSPE.has(e.to) && pathSPE.has(e.from) ? 3 : 1.6),
-            labelColor: (e) => (pathSPE.has(e.to) && pathSPE.has(e.from) ? 'green' : 'ink'), nodeTag: (n) => (isLeaf(n) ? null : n.p === 1 ? 'entrant' : 'incumbent'),
+            edgeWidth: (e) => (onp.has(e.to) && onp.has(e.from) ? 4.5 : 1.6),
+            nodeTag: (n) => (isLeaf(n) ? null : `P${n.p}`),
           });
-          if (f < 1) T.text('non-credible threat', n2.x - 0.95, -0.85, { align: 'right', size: 11.5, color: 'red', weight: 700 });
           TB.draw({
             data: F.U, fill: (i, j) => (ne.some(([a, b]) => a === i && b === j) ? (isSPE(i, j) ? ['green', 0.32] : ['red', 0.25]) : null), highlight: [[sel[0], sel[1], 'gold']],
           });
-          info = { ne, spe, f, F };
+          info = { ne, spe, f, l, F, selected: sel.slice() };
         });
         v.readout(() => {
-          const { ne, spe, f, F } = info, nameOf = ([i, j]) => `(${['Out', 'In'][i]}, ${['Fight', 'Accept'][j]})`;
-          const sub = f > 1 ? 'Fighting pays the incumbent more than accepting, so the threat is credible and the entrant stays out.' : f === 1 ? 'The incumbent is indifferent between fighting and accepting.' : 'In the subgame the incumbent prefers to accept, so “Fight” is an empty threat.';
-          return `pure Nash equilibria: ${ne.map(nameOf).join(' and ')}; subgame perfect: **${spe.map(nameOf).join(' and ')}**\n${sub}`;
+          const { ne, spe, f, l } = info, nameOf = ([i, j]) => `(${['Out', 'In'][i]}, ${['Fight', 'Accept'][j]})`;
+          const sub = f > 1 ? 'The incumbent strictly prefers Fight.' : f === 1 ? 'The incumbent is indifferent: Fight and Accept are both optimal in its subgame.' : 'The incumbent strictly prefers Accept; an off-path Fight threat is not credible.';
+          return `pure Nash: ${ne.map(nameOf).join('; ')}\npure SPE (${spe.length}): ${spe.map(nameOf).join('; ')}\n${sub} ${l === 0 ? 'Against Fight the entrant is indifferent between Out and In.' : 'Against Fight the entrant strictly prefers Out.'}`;
         });
       },
     },
@@ -282,71 +239,54 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       num: '4.5',
       kind: 'Theorem',
       name: 'Kuhn: perfect-information games have a pure subgame perfect equilibrium',
-      statement: String.raw`Every finite extensive game with perfect information has a subgame perfect equilibrium in pure strategies (game-4.4). One is obtained by backward induction (game-4.2); if no player is ever indifferent between two payoffs at a node, it is the only one. More generally the profiles produced by backward induction, with arbitrary tie-breaking, are exactly the pure subgame perfect equilibria.`,
-      idea: String.raw`Induct on the height of the tree. A game of height $0$ is a single payoff vector. In a game of height $h+1$, solve each immediate subgame by the induction hypothesis, giving payoffs at the children; the mover at the root picks a child that is best for her, and plays on in that subgame as prescribed. No deviation helps in the subgames by hypothesis, and at the root the mover has chosen optimally among the continuation values, so no deviation helps there either. No mixing is needed because each choice is a single optimisation over finitely many numbers.`,
-      caption: String.raw`A random tree with the backward-induction profile. The verifier tests every subgame: for each player it computes the best payoff she could get by changing her own choices (a dynamic programme over her nodes) and compares it with the profile’s payoff. Press “corrupt a choice” to flip one decision to a worse branch: the subgames above it fail. A corrupted choice off the equilibrium path can still leave a Nash equilibrium of the whole game, though not a subgame perfect one. The right plot shows why brute force does not scale.`,
-      credit: 'Kuhn, 1950, Theorem 1 (expanded treatment, 1953)',
-      deps: ['game-4.4'],
-      refs: ['MSZ §4.13', 'Osborne §5.5'],
+      statement: String.raw`Every finite deterministic extensive game with perfect information, nonempty action sets at decision nodes and real terminal payoffs (game-4.1), has a **pure subgame perfect equilibrium** (game-4.4). Backward induction (game-4.2), selecting one maximizing action at each evaluated node, constructs one. Varying tie selections consistently throughout the recursion yields exactly all pure SPE.
+
+Existence does not imply uniqueness of the profile, path or payoff. A sufficient condition for a unique pure SPE is that each player assigns distinct payoffs to every two distinct terminal histories. Ties can allow several pure SPE, but a tie need not create several initial outcomes. The theorem concerns a finite tree, not merely a finite number of stages with infinitely many available actions.`,
+      idea: String.raw`Induct on height. A terminal root has the unique empty profile. Otherwise select a pure SPE in every child subgame by induction. Players other than the root mover cannot choose a different child, and cannot improve inside it. The mover chooses the largest of her finitely many continuation payoffs; even if she also changes later choices, the selected child-subgame equilibrium prevents an improvement there. Thus the assembled profile is Nash in the whole game and in every proper subgame. Conversely, restricting any pure SPE to child subgames gives their pure SPE, and its root action must maximize those prescribed continuation payoffs; induction therefore reconstructs it by backward induction. If each player's payoffs distinguish all terminal histories, induction makes every such maximizing action unique. Infinite action sets can defeat attainment even in one stage: a single player choosing $a\in(0,1)$ with payoff $a$ has no optimal pure strategy. Chance moves and their expected-payoff extension are outside the deterministic model illustrated here.`,
+      caption: String.raw`The complete seeded binary tree is solved, including off-path nodes; the inspector shows one node and its immediate children without compressing dozens of leaf labels. Root/parent/previous/next and child clicks reach every original node. At the inspected decision node, choose action 1 or 2 to edit the complete profile; “corrupt a choice” starts from the computed profile and selects one strictly worse choice, when available. The verifier tests all subgames by allowing each player to change all her own decisions; red rings mark exactly the failing subgames. A failure can leave the root-game Nash test passing; it need not affect every ancestor. Restore returns to the chosen first/last tie solution. The count plot compares all pure profiles with decision-node evaluations, not an empirical runtime benchmark.`,
+      credit: 'Kuhn, 1953 (modern pure-SPE formulation)',
+      deps: ['game-4.2', 'game-4.4'],
+      refs: ['Osborne & Rubinstein (1994), Proposition 99.2 and following uniqueness discussion; notes pp.114–115', 'Bonanno (2024), §§3.2, 4.4'],
       tags: ['subgame perfection', 'existence'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Backward_induction' },
+      links: { source: 'https://faculty.econ.ucdavis.edu/faculty/bonanno/PDF/GT_book.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Backward_induction' },
+      verify: false,
       viz(v) {
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1.35, title: 'a game tree and a pure profile' });
-        const C = v.stage({ x: [1, 6], y: [0, 12], axes: 'box', gutter: true, height: 340, weight: 0.65, xlabel: 'depth of the tree (binary)', ylabel: 'log₁₀ of the count', title: 'strategies explode, the solution does not' });
-        let seed = 3, P, prof, corrupted = null;
-        const depth = v.select('depth', [2, 3, 4, 5].map((d) => ({ value: d, label: String(d) })), 4, { onChange: () => rebuild() });
-        const rebuild = () => {
-          P = prep(randTree(v.rng(seed), depth.value, 2, 0, 5)); backward(P.root);
-          prof = {}; P.nodes.forEach((n) => { if (!isLeaf(n)) prof[n.id] = n.bi[0]; }); corrupted = null;
-        };
-        v.button('new random tree', () => { seed += 1; rebuild(); });
+        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1.1, title: 'inspected node and the current pure profile' });
+        const C = v.stage({ x: [.7, 5.3], y: [-.4, 10.2], axes: 'box', gutter: true, height: 340, weight: .9, xlabel: 'binary-tree depth', ylabel: 'log₁₀ of count', title: 'pure profiles versus decision nodes' });
+        let P, solution, profile, inspector, changed = null;
+        const depth = v.select('depth', [2, 3, 4, 5].map(d => ({ value: d, label: String(d) })), 4, { onChange: () => rebuild() });
+        const seed = v.slider('tree seed', 1, 64, 3, { int: true, onChange: () => rebuild() });
+        const tie = v.select('ties', [{ value: 'first', label: 'first action' }, { value: 'last', label: 'last action' }], 'first', { onChange: () => rebuild() });
+        const restore = () => { profile = { ...solution.profile }; changed = null; };
+        const rebuild = () => { P = randomFiniteTree(v.rng(seed.value), depth.value, 2, 5); solution = solveFiniteTree(P.root, tie.value); restore(); inspector?.reset(); };
+        v.button('new random tree', () => { seed.set(seed.value % 64 + 1); rebuild(); });
+        rebuild(); inspector = finiteTreeInspector(v, T, () => P, { maxNodes: 63 });
+        for (const action of [0, 1]) v.button(`choose action ${action + 1}`, () => { const n = inspector.node; if (n.kids) { profile[n.id] = action; changed = n.id; } });
         v.button('corrupt a choice', () => {
-          const r = v.rng(seed * 31 + (corrupted ? 5 : 1));
-          const cand = P.nodes.filter((n) => !isLeaf(n) && n.kids.some((k, i) => k.n.v[n.p - 1] < n.v[n.p - 1] - 1e-9));
-          if (!cand.length) return;
-          const n = cand[r.int(0, cand.length - 1)];
-          const worse = n.kids.map((k, i) => i).filter((i) => n.kids[i].n.v[n.p - 1] < n.v[n.p - 1] - 1e-9);
-          prof[n.id] = worse[r.int(0, worse.length - 1)]; corrupted = n;
+          restore();
+          const candidates = P.nodes.filter(n => n.kids && n.kids.some(k => solution.values.get(k.n)[n.p - 1] < solution.values.get(n)[n.p - 1]));
+          if (!candidates.length) return;
+          const n = candidates[(seed.value - 1) % candidates.length], a = n.kids.findIndex(k => solution.values.get(k.n)[n.p - 1] < solution.values.get(n)[n.p - 1]);
+          profile[n.id] = a; changed = n.id; inspector.go(n);
         });
-        v.button('restore', () => { P.nodes.forEach((n) => { if (!isLeaf(n)) prof[n.id] = n.bi[0]; }); corrupted = null; });
-        rebuild();
-        const check = () => {
-          let bad = 0, total = 0; const badSet = new Set();
-          P.nodes.forEach((n) => {
-            if (isLeaf(n)) return; total++;
-            const u = profilePay(n, prof);
-            if ([0, 1].some((j) => bestDev(n, j, prof) > u[j] + 1e-9)) { bad++; badSet.add(n); }
-          });
-          const u0 = profilePay(P.root, prof), nashAll = ![0, 1].some((j) => bestDev(P.root, j, prof) > u0[j] + 1e-9);
-          return { bad, total, badSet, nashAll };
-        };
+        v.button('restore profile', restore);
+        v.shareState('edited complete profile', { get: () => P.nodes.filter(n => n.kids).map(n => profile[n.id]),
+          validate: x => Array.isArray(x) && x.length >= 3 && x.length <= 31 && x.every(a => a === 0 || a === 1),
+          set: x => { const nodes = P.nodes.filter(n => n.kids); if (x.length !== nodes.length) throw new Error('Saved profile does not match this tree.'); profile = Object.fromEntries(nodes.map((n, i) => [n.id, x[i]])); changed = null; } });
+        v.legend([{ color: 'red', label: 'number of complete pure profiles' }, { color: 'green', label: 'decision-node evaluations' }]);
         let info;
         v.render(() => {
-          const vw = treeView(P); T.setView(vw.x, vw.y);
-          const ck = check(), pathN = new Set(); { let x = P.root; pathN.add(x); while (!isLeaf(x)) { x = x.kids[prof[x.id]].n; pathN.add(x); } }
-          drawTree(T, P, {
-            size: P.nl > 16 ? 10 : 12, labelEdges: P.nl <= 8,
-            edgeColor: (e) => (prof[e.from.id] === e.i ? (pathN.has(e.to) ? 'gold' : (ck.badSet.has(e.from) ? 'red' : 'green')) : null),
-            edgeWidth: (e) => (prof[e.from.id] === e.i ? (pathN.has(e.to) ? 4.5 : 3) : 1.2),
-            nodeRing: (n) => (ck.badSet.has(n) ? 'red' : n === corrupted ? 'purple' : null),
-          });
-          C.setView([1, 6], [0, 12]);
-          const pts = [1, 2, 3, 4, 5].map((d) => {
-            // binary tree of depth d, players alternate starting with 1: count decision nodes of player 1 and 2
-            let n1 = 0, n2 = 0; for (let k = 0; k < d; k++) { if (k % 2 === 0) n1 += 2 ** k; else n2 += 2 ** k; }
-            return [d, Math.log10(2 ** n1) + Math.log10(2 ** n2), Math.log10(2 ** d - 1)];
-          });
-          C.path(pts.map((p) => [p[0], p[1]]), { color: 'red', width: 2.5 }); pts.forEach((p) => C.dot(p[0], p[1], { r: 4, color: 'red' }));
-          C.path(pts.map((p) => [p[0], p[2]]), { color: 'green', width: 2.5 }); pts.forEach((p) => C.dot(p[0], p[2], { r: 4, color: 'green' }));
-          C.text('strategy profiles (both players)', 1.15, 10.2, { color: 'red', weight: 700, size: 12, align: 'left' });
-          C.text('nodes (work of backward induction)', 5.95, 2.4, { color: 'green', weight: 700, size: 12, align: 'right' });
-          C.vline(depth.value, { color: 'gold', width: 2 });
-          info = { ck, d: depth.value, u: profilePay(P.root, prof) };
+          const check = checkFiniteProfile(P.root, profile), focus = inspector.draw({ values: check.values, profile, badSet: check.badSet });
+          const pts = [1, 2, 3, 4, 5].map(d => [d, binaryTreeCounts(d)]);
+          C.path(pts.map(([d, n]) => [d, n.profilesLog10]), { color: 'red', width: 2.5 });
+          C.path(pts.map(([d, n]) => [d, n.nodesLog10]), { color: 'green', width: 2.5 });
+          pts.forEach(([d, n]) => { C.dot(d, n.profilesLog10, { r: 4, color: 'red' }); C.dot(d, n.nodesLog10, { r: 4, color: 'green' }); });
+          C.vline(depth.value, { color: 'gold', width: 1.5 });
+          info = { check, focus, changed };
         });
         v.readout(() => {
-          const { ck, d, u } = info, nodesDec = P.nodes.filter((n) => !isLeaf(n)).length;
-          const verdict = ck.bad === 0 ? `all ${ck.total} subgames pass: a pure subgame perfect equilibrium` : `${ck.bad} of ${ck.total} subgames fail (red rings); whole game still a Nash equilibrium: ${ck.nashAll ? 'yes (the flaw is off the path)' : 'no'}`;
-          return `${verdict}; payoff $(${nmz(u[0])},\\,${nmz(u[1])})$\n${nodesDec} decision nodes to solve by backward induction; the number of pure profiles in this tree is $2^{${nodesDec}}$ = ${(2 ** nodesDec).toLocaleString('en-US').replace(/,/g, ' ')}`;
+          const { check: ck, focus } = info, decisions = solution.order.length;
+          return `Pure SPE: ${ck.spe ? 'yes' : 'no'}; root-game Nash: ${ck.nash ? 'yes' : 'no'}. ${ck.bad} of ${ck.total} decision-node subgames fail; terminal subgames pass automatically. Current root payoff $(${ck.value.join(', ')})$.\nInspecting ${focus.node.id}: ${focus.history}. ${focus.node.kids ? `Selected action: ${profile[focus.node.id] + 1} (${focus.node.kids[profile[focus.node.id]].a}).` : 'Terminal payoff; no action to edit.'}\nBinary depth ${depth.value}, seed ${seed.value}: ${P.nodes.length} nodes, ${P.leaves.length} terminal histories, ${decisions} decision-node evaluations; $2^{${decisions}}$ complete pure profiles (${(2 ** decisions).toLocaleString('en-US').replace(/,/g, ' ')}). Computed profile uses ${tie.value}-action ties; arbitrary edits are checked separately.`;
         });
       },
     },

@@ -216,13 +216,12 @@ $$\frac{P(|X_1|>yt)}{P(|X_1|>t)}\le Cy^{-\alpha-\delta}\qquad\text{for all }t\ge
       num: '3.8.3a',
       kind: 'Definition',
       name: 'Stable law',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §3.8, p. 191 (definition before Theorem 3.8.8); p. 193, Exercise 3.8.5'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
-      statement: String.raw`A nondegenerate random variable $Y$ has a **stable law** if for every integer $k>0$ there are constants $a_k>0$ and $b_k$ such that, for i.i.d. copies $Y_1,\dots,Y_k$ of $Y$,
+      verify: true,
+      statement: String.raw`A random variable $Y$ has a **stable law** if for every integer $k>0$ there are constants $a_k>0$ and $b_k$ such that, for i.i.d. copies $Y_1,\dots,Y_k$ of $Y$,
 $$\frac{Y_1+\dots+Y_k-b_k}{a_k}\overset d=Y.$$
 Necessarily $a_k=k^{1/\alpha}$ for an index $\alpha\in(0,2]$ (Exercise 3.8.5); $\alpha=2$ is the normal law, $\alpha=1$ with symmetry the Cauchy law.`,
       idea: String.raw`Stability says the shape of the law survives summation; only location and scale change. In terms of characteristic functions, $\varphi(t)^k=e^{itb_k}\varphi(a_kt)$. For the symmetric laws $\varphi(t)=e^{-|t|^\alpha}$, $\varphi(t)^k=e^{-k|t|^\alpha}=\varphi(k^{1/\alpha}t)$, so $a_k=k^{1/\alpha}$ and $b_k=0$. A uniform law fails: a sum of two uniforms is triangular.`,
-      caption: String.raw`Pick a law and $k$. Left: the histogram of $Y$ (accent) and of $(Y_1+\dots+Y_k)/k^{1/\alpha}$ (orange outline), 6000 seeded values each, with the symmetric stable density (green, numerical inversion of $e^{-|t|^\alpha}$). Right: a quantile–quantile plot of the scaled sum against $Y$; stability means the points sit on the diagonal. The uniform law (with the normal scaling $\sqrt k$) bends away from it, and so does a Pareto law, which is only in a domain of attraction.`,
+      caption: String.raw`Pick a law and $k$. Left: the histogram of $Y$ (accent) and of $(Y_1+\dots+Y_k)/k^{1/\alpha}$ (orange outline), 6000 seeded values each, with the exact symmetric stable density (green, computed by inverting $e^{-|t|^\alpha}$). Right: a quantile–quantile plot of the scaled sum against $Y$; stability means the points sit on the diagonal. The uniform law (with the normal scaling $\sqrt k$) bends away from it, and so does a Pareto law, which is only in a domain of attraction.`,
       deps: ['prob-3.3.1a'],
       tags: ['stable laws'],
       viz(v) {
@@ -353,11 +352,10 @@ whose right side converges to $Y_1+\dots+Y_k$ with i.i.d. $Y_j\sim Y$, while $Z_
       num: '3.9.1a',
       kind: 'Definition',
       name: 'Infinitely divisible distribution',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §3.9, pp. 193–196 (definition, examples, Exercises 3.9.1–3.9.3)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       statement: String.raw`A random variable $Z$ (or its law) is **infinitely divisible** if for every $n$ there are i.i.d. $Y_{n,1},\dots,Y_{n,n}$ with $Z\overset d=Y_{n,1}+\dots+Y_{n,n}$; equivalently its characteristic function has an $n$-th root that is again a characteristic function, for every $n$.`,
-      idea: String.raw`Normal, Poisson, gamma, Cauchy and all stable and compound Poisson laws qualify: Poisson$(\lambda)$ is the sum of $n$ Poisson$(\lambda/n)$, gamma$(k)$ of $n$ gamma$(k/n)$. An infinitely divisible characteristic function never vanishes (Exercise 3.9.3): $|\varphi|^{2/n}$ is a characteristic function tending to $1(\varphi\ne0)$, This limit equals $1$ near $0$, so Lévy’s continuity theorem makes it a continuous characteristic function everywhere. A continuous function on $\R$ taking only $0$ and $1$ and equalling $1$ at $0$ must be identically $1$. So a uniform law ($\varphi(t)=\sin t/t$) or any bounded nonconstant law (Exercise 3.9.2) is not infinitely divisible.`,
-      caption: String.raw`Left: the law of $Z$ (accent), the law of one $n$-th piece (orange) and the $n$-fold convolution of the piece, computed numerically (green dots), which rebuilds $Z$. Right: $|\varphi_Z(t)|^{1/n}$ for $n=1,\dots,$ your $n$ (darker = larger). For Poisson and gamma these rise smoothly toward $1$. For the uniform and Bernoulli laws $\varphi$ has zeros, the roots converge to a discontinuous function, so these laws are not infinitely divisible.`,
+      idea: String.raw`Normal, Poisson, gamma, Cauchy and all stable and compound Poisson laws qualify: Poisson$(\lambda)$ is the sum of $n$ Poisson$(\lambda/n)$, gamma$(k)$ of $n$ gamma$(k/n)$. An infinitely divisible characteristic function never vanishes (Exercise 3.9.3): $|\varphi|^{2/n}$ is a characteristic function tending to $1(\varphi\ne0)$, which must be continuous. So a uniform law ($\varphi(t)=\sin t/t$) or any bounded nonconstant law (Exercise 3.9.2) is not infinitely divisible.`,
+      caption: String.raw`Left: the law of $Z$ (accent), the law of one $n$-th piece (orange) and the $n$-fold convolution of the piece, computed numerically (green dots), which rebuilds $Z$. Right: $|\varphi_Z(t)|^{1/n}$ for $n=1,\dots,$ your $n$ (darker = larger). For Poisson and gamma these rise smoothly toward $1$. For the uniform and Bernoulli laws $\varphi$ has zeros, the roots converge to a discontinuous function, and no $n$-th piece exists.`,
       deps: ['prob-3.3.1a'],
       tags: ['infinitely divisible'],
       viz(v) {
@@ -389,7 +387,7 @@ whose right side converges to $Y_1+\dots+Y_k$ with i.i.d. $Y_j\sim Y$, while $Z_
             L.setView(unif ? [-1.6, 1.6] : [-0.6, 1.6], [0, 1.1]);
             if (unif) L.fn((x) => (Math.abs(x) <= 1 ? 0.5 : 0), { domain: [-1.6, 1.6], color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.15 });
             else { L.rect(-0.3, 0, 0.3, 0.5, { fill: 'accent', fillAlpha: 0.6, stroke: false }); L.rect(0.7, 0, 1.3, 0.5, { fill: 'accent', fillAlpha: 0.6, stroke: false }); }
-            cornerIn(L, `not infinitely divisible: φ(π) = 0`, 'tr', { color: 'red', plate: true });
+            cornerIn(L, `no ${n}-fold split: φ(π) = 0`, 'tr', { color: 'red', plate: true });
             info = `$\\varphi_Z(\\pi)=0$, so $Z$ is not infinitely divisible`;
           }
           const f = PHIS[md];

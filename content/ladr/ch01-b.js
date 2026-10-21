@@ -409,7 +409,7 @@ export default {
       statement: String.raw`Let $V_1,\dots,V_m$ be subspaces of $V$. Their *sum* is the set of all vectors obtained by adding one element from each:
 $$V_1+\dots+V_m=\{v_1+\dots+v_m : v_1\in V_1,\dots,v_m\in V_m\}.$$`,
       idea: String.raw`The sum is not the union: the union of two lines through $0$ is a cross, while their sum is the whole plane they span, because adding a vector of one line to a vector of the other reaches every point of that plane. Each $V_k$ sits inside the sum (take the other pieces equal to $0$), and Theorem 1.40 shows the sum is the smallest subspace with that property.`,
-      caption: String.raw`Drag $u$ and $w$ to tilt the subspaces $U=\operatorname{span}(u)$ and $W$ (drag the background to rotate). Gold dots are random sums $u'+w'$ with $u'\in U$, $w'\in W$; press play to watch them accumulate. Two different lines fill a plane (shaded green); a line not contained in a plane and that plane span all of $\R^3$ (the random sums show a finite region of that span). Drag $w$ onto $U$ (it snaps) and the sums collapse back into $U$.`,
+      caption: String.raw`Drag $u$ and $w$ to tilt the subspaces $U=\operatorname{span}(u)$ and $W$ (drag the background to rotate). Gold dots are random sums $u'+w'$ with $u'\in U$, $w'\in W$; press play to watch them accumulate. Two different lines fill a plane (shaded green); a line and a plane fill a solid region — all of $\R^3$. Drag $w$ onto $U$ (it snaps) and the sums collapse back into $U$.`,
       deps: ['ladr-1.33'],
       tags: ['subspaces'],
       viz(v) {

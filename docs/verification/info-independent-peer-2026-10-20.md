@@ -1,0 +1,33 @@
+# Independent INFO prerequisite and entropy bridge peer — 20 October 2026
+
+**Accept the sixteen prerequisite additions in `bd86a7e011b98a7787dcd1dc3d34a447b0326221` and the bounded entropy bridge note in `be2bdb25dbdac006b8e4e08df5fc035891f0431b`.** No historical source or full general ergodic theorem is newly certified. No source flag changed.
+
+Candidate and complete parent were independently archived at `/tmp/atlas-info-independent-peer` and `/tmp/atlas-info-independent-before`. Only the exact amended `content/bridges/entropy.js` was overlaid from the second immutable commit before my strict build. I read the complete fifteen consumer statements/ideas/scopes and actual fourteen distinct target statements/proof ideas. Each added dependency supplies a used step, rather than merely being topically related:
+
+- 1.3 uses interior Taylor with a bounded third derivative. 1.7 and 2.8 use integrable expectation linearity without coordinate independence. 1.10 uses the actual 0/0 l'Hospital theorem, after removing zero masses.
+- 2.3 applies Jensen to the finite probability weights and convex function, with zero entries obtained by limits. 2.4 applies the finite-mean i.i.d. weak law to model log-loss; excluded true support violates its hypotheses. 2.13 uses derivative-sign monotonicity for the binary gap and treats boundary cases by limits.
+- 3.1 uses both the finite-variance weak law and the probability bound on the centered average. 3.10 uses that same weak law under P for bounded finite-alphabet log-likelihood increments; Q is positive on P support, while P need not be positive elsewhere. 3.11 uses bounded monotone conditional entropies, followed by a separately stated Cesàro argument.
+- 3.13 uses detailed balance for the degree law; stationarity and time-average entropy rate do not require non-bipartiteness. 3.14 separates common-channel divergence contraction from convergence to a positive stationary law, the latter using finite irreducibility and aperiodicity plus continuity.
+- 4.4 uses fixed-positive-constant and integer kth-root limits for each finite code, then finite subcodes for the infinite case. 4.14 uses the geometric series for the countably infinite Kraft mass, while direct framing supplies parsing.
+
+## Markov special case of 3.15
+
+For allowed pairs `(i,j)` with `Pij>0`, the pair-chain transition from `(i,j)` to `(j,k)` is `Pjk`. Given any two allowed pairs, irreducibility of P supplies a path from the second endpoint of the first pair to the first endpoint of the target pair, then its final allowed edge. Thus the pair chain is irreducible. The finite chain is positive recurrent. Its proposed stationary mass `mu_i Pij` satisfies the incoming-sum identity `sum_h mu_h Phi Pij = mu_i Pij`. The reward `-log2 Pij` is bounded on the finite allowed set. The actual bounded-function theorem stoch-4.13 therefore yields the almost-sure time-average limit even for periodic chains. For the stationary source, positive mu makes the initial surprisal divided by n vanish. The stationary row-entropy formula identifies the limit. This establishes the explicitly stated Markov special case; it does not establish the general stationary-ergodic theorem from this target alone.
+
+My independent explicit test exhausts **all 144 strongly connected three-state directed support patterns**, including loops and periodic supports. It independently solves the stationary linear equations and checks pair-chain connectivity, row sums, all stationary incoming identities, and reward/rate identity across **840 allowed pair states**. Common versus different kernel and ordinary-entropy-decrease counterexamples also pass. These finite checks support the algebra; the general finite-chain implication above comes from the actual theorem, not a numerical inference. The candidate's separate **13 mathematical groups** also pass when rerun, including its 771 graph cases.
+
+## Preservation and native evidence
+
+`tests/verification-info-independent-peer.mjs <parent-archive> <candidate-archive>` passes: **57 complete written objects and 57 function sources**, every source flag, metadata, old explanation, and preexisting dependency preserved; exactly fifteen append-only explanations and sixteen added edges. It compares non-owned chapter bytes and every other INFO file, including helpers, byte-for-byte. It checks the exact full lists for all changed item/syllabus rows, and **all 154 syllabus rows plus all other syllabus data**. No immutable snapshot assertion is added to default tests.
+
+Direct inventories from the two full archives independently reproduce **9/9/12 → 25/25/28**, unknown targets zero. Fresh strict build: **6684 written / 6890 planned / 450 chapters / 85 collections, zero errors and warnings**. INFO static: **57 items, zero errors and warnings**. Home is 112766 bytes gzip for the combined candidate and bridge snapshot.
+
+I ran all **30 fresh native mounted cases at actual 320px**, fifteen ideas in both themes. Runtime, TeX, blank, prose-scroll and actual math-rectangle checks pass. The probe saves complete ideas and separately captures their final changed paragraphs after native mounting. I personally inspected all **30 fresh changed-paragraph PNGs at readable resolution**; equations and qualifications fit and remain legible in both themes. This is changed-text and native-mount coverage, not a new audit of all unchanged interaction controls.
+
+Only entropy's `info-3.14` step references a changed consumer. My independent explicit bridge probe loaded the actual **strict-built bridge page at 320px in both themes** and checked the exact card text, no TeX errors and no document overflow. I personally inspected both fresh card PNGs. They visibly say the two distributions use the same Markov transition rule, the equilibrium reference is stationary, and ordinary entropy need not rise. This removes the old unsupported “any random process” wording. The source amendment changes only that note; the bridge steps/order/picture are preserved.
+
+## Evidence and scope
+
+Committed `info-independent-peer-evidence.json` hashes all **62 fresh PNGs** (30 complete ideas, 30 changed paragraphs, two bridge cards), the actual bridge source and built index. Pixels are under `/tmp/atlas-info-independent-pixels/`; logs are `/tmp/atlas-info-independent-{build,static,native,math,guard,bridge}.log`. Both native sessions closed browsers and servers normally. No performance benchmark ran.
+
+Only unique peer reports/evidence/explicit tests were added in the assigned checkout. No content, shared runtime, global inventory, source flag or frozen source boundary changed. The coordinator may accept both prerequisite and bridge amendments on this independent review.

@@ -1,6 +1,8 @@
 // Fluid Dynamics — Chapter 4: Potential flow (items 4.1–4.6; later items in ch04-b.js and ch04-c.js)
 import { G0, clamp, TAU, cadd, csub, cmul, cdiv, cconj, cabs, carg, compileComplex, elemVel, elemW1, streamlines, drawLines } from './ch04.shared.js';
 
+import {tubeParameters,tubeLevels,tubeEnergy,tubeInitial,tubeStep,tubePeriod} from './rotation-bernoulli-audit.shared.js';
+
 export default {
   collection: 'fluid',
   chapter: 4,
@@ -163,59 +165,33 @@ and the flow is determined by $\phi$ alone. At a fixed impermeable wall the boun
       num: '4.3',
       kind: 'Theorem',
       name: 'Unsteady Bernoulli equation',
-      statement: String.raw`For irrotational flow of an inviscid fluid of constant density $\rho$ in a conservative gravitational field, with $\mathbf u=\nabla\phi$, Euler's equation integrates everywhere in the fluid (not just along a streamline) to
-$$\frac{\partial\phi}{\partial t}+\frac{|\nabla\phi|^2}{2}+\frac{p}{\rho}+gz=F(t),$$
-with $F(t)$ a function of time only, which can be absorbed into $\phi$. In steady flow this reduces to Bernoulli's theorem (2.9) with the same constant everywhere. For the unsteady flow of a column of fluid through a tube of cross-section $A(s)$, with volume flux $Q(t)$, the difference of $\partial\phi/\partial t$ between the tube endpoints is $\dot Q\int ds/A$.`,
-      idea: String.raw`Write $(\mathbf u\cdot\nabla)\mathbf u=\nabla\tfrac12|\mathbf u|^2-\mathbf u\times\boldsymbol\omega$; irrotationality removes the last term, so Euler's equation (2.8) becomes $\nabla\big(\partial_t\phi+\tfrac12|\nabla\phi|^2+p/\rho+gz\big)=\mathbf 0$. A function with zero gradient is constant in space; the constant may still depend on time. Applied between two free surfaces at atmospheric pressure, the equation is an equation of motion for the whole column.`,
-      credit: 'Unsteady potential-flow Bernoulli equation: Fitzpatrick, §4.13',
-      caption: String.raw`A U-tube holds liquid of total length $L$ (including the bottom link). Displace one level and release: the unsteady Bernoulli equation between the two free surfaces, $I\dot Q+\tfrac12 Q^2(1/A_2^2-1/A_1^2)+g(h_2-h_1)=0$ with $I=\int ds/A$, is integrated numerically (RK4). With equal arms the nonlinear terms cancel and the motion is exactly harmonic at $\omega=\sqrt{2g/L}$, whatever the amplitude: the dashed orange prediction lies on the simulated level. Make the right arm wider or narrower than the left and the $Q^2$ term acts: the oscillation is no longer sinusoidal, and the small-amplitude frequency becomes $\omega^2=g(1/A_1+1/A_2)/I$.`,
-      deps: ['fluid-4.1', 'fluid-2.9', 'mech-4.2'],
-      refs: ['Fitzpatrick Fluid Mechanics, complete §4.13 Irrotational Flow, Eqs.(4.82)–(4.97); opposite velocity-potential sign convention'],
+      statement: String.raw`For inviscid irrotational constant-density flow with a single-valued potential $\mathbf u=\nabla\phi$ on a connected region,
+$$\partial_t\phi+\tfrac12|\nabla\phi|^2+p/\rho+gz=F(t).$$
+The spatial constant may depend on time; replacing $\phi$ by $\phi-\int F(t)\,dt$ sets it to zero without changing velocity. For a fixed slender tube with nearly uniform cross-sectional velocity $u=Q(t)/A(s)$, the acceleration line integral between two instantaneous free-surface positions is $\dot Q\int ds/A(s)$. It is not an extra spatial integral of $\partial_t\phi$ itself.`,
+      idea: String.raw`Write $(\mathbf u\cdot\nabla)\mathbf u=\nabla\tfrac12|\mathbf u|^2-\mathbf u\times\boldsymbol\omega$; irrotationality removes the last term, so Euler's equation (2.8) becomes $\nabla\big(\partial_t\phi+\tfrac12|\nabla\phi|^2+p/\rho+gz\big)=\mathbf 0$. At each fixed time, the zero-derivative criterion (pma-9.19a) makes the bracket constant in space: use it locally on convex balls, then join them by a polygonal path in the connected open fluid region, as the target explains. The constant may still depend on time. Applied between two free surfaces at atmospheric pressure, the equation is an equation of motion for the whole column.`,
+      credit: String.raw`Unsteady Euler/Bernoulli derivation: B.K. and G.H.M., MIT2.25, Fall2013, Unsteady Bernoulli Equation, Eqs.(1)–(3). The unequal-arm energy and full-cycle quadrature here are derived explicitly from that equation.`,
+      verify: false,
+      caption: String.raw`The schematic U-tube has left area $A_1=1\,\mathrm{m^2}$, right area $A_2=aA_1$, bottom-link length $0.5\,\mathrm{m}$ and area $A_1$, and total liquid path length $L$ **at equilibrium**. Thus both rest levels are $h_e=(L-0.5)/2$ and equilibrium inertance is $I_0=h_e/A_1+0.5/A_1+h_e/A_2$. The displacement is a fraction of $h_e\min(1,a)$, keeping both arms wet at both turning points. Bernoulli gives $I(x)\dot Q+\tfrac12Q^2(1/A_2^2-1/A_1^2)+g(h_2-h_1)=0$, with $\dot x=-Q/A_1$. The orange curve is the linearized comparison. For equal arms it is exact within this ideal tube model; for unequal arms both inertance and the velocity-squared term vary. Measured periods use equal-direction crossings over a **full** cycle, since unequal half-cycles differ.`,
+      deps: ['fluid-4.1', 'fluid-2.9', 'pma-9.19a'],
+      refs: ['MIT2.25 (2013), Unsteady Bernoulli Equation, Eqs.(1)–(3)'],
       tags: ['Bernoulli', 'unsteady', 'manometer'],
-      scope: String.raw`Irrotational, inviscid flow with uniform density; a slowly varying tube (flow nearly uniform across each section). The bottom link has length0.5m and the left-arm area; the rest heights are $(L-0.5)/2$. The requested amplitude is limited to90% of the shorter arm’s available displacement, with the actual value shown below, so both liquid levels stay positive. Friction is omitted.`,
-      viz(v) {
-        const L = v.slider('liquid length $L$ (m)', 0.8, 3.2, 1.6, { step: 0.05, onChange: () => S.reset() });
-        const amp = v.slider('initial displacement (m)', 0.05, 0.5, 0.3, { step: 0.01, onChange: () => S.reset() });
-        const ratio = v.slider('area of right arm / left arm', 0.4, 2.5, 1, { step: 0.05, onChange: () => S.reset() });
-        const s = v.stage({ x: [-2.6, 2.6], y: [-0.35, 1.9], equal: true, axes: false, height: 330, weight: 1, title: 'the U-tube' });
-        const h = v.stage({ x: [0, 4], y: [-0.5, 0.5], axes: 'box', gutter: true, height: 330, weight: 1.1, xlabel: 'time $t$ (s)', ylabel: 'left level above rest (m)', title: 'level of the left arm' });
-        const LB = 0.5;
-        const S = v.sim(() => {
-          const a = ratio.value, he = (L.value - LB) / 2, A = Math.min(amp.value, 0.9 * he * Math.min(1, a));
-          return { h1: he + A, Q: 0, t: 0, hist: [[0, A]], he, A, cross: [], last: A };
-        }, (st, dt) => {
-          const a = ratio.value, F = (h1, Q) => { const h2 = ((1 + a) * st.he - h1) / a, I = h1 + LB + h2 / a; return [-Q, (-(G0 * (h2 - h1)) - 0.5 * Q * Q * (1 / (a * a) - 1)) / I]; };
-          const k1 = F(st.h1, st.Q), k2 = F(st.h1 + dt / 2 * k1[0], st.Q + dt / 2 * k1[1]), k3 = F(st.h1 + dt / 2 * k2[0], st.Q + dt / 2 * k2[1]), k4 = F(st.h1 + dt * k3[0], st.Q + dt * k3[1]);
-          st.h1 += dt / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); st.Q += dt / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]); st.t += dt;
-          const z = st.h1 - st.he; if (st.last * z < 0) st.cross.push(st.t - dt * Math.abs(z) / (Math.abs(z) + Math.abs(st.last))); st.last = z;
-          if (Math.round(st.t / dt) % 4 === 0) st.hist.push([st.t, z]);
-        }, { dt: 0.005 });
-        let info = {};
-        v.animate((t) => {
-          const st = S.advance(t), a = ratio.value, he = st.he, h2 = ((1 + a) * he - st.h1) / a;
-          const x1 = -1.1, x2 = 1.1, w1 = 0.5, w2 = 0.5 * a, top = Math.max(1.75, he + 2 * st.A + 0.15);
-          s.setView([-2.6, 2.6], [-0.35, top + 0.15]);
-          const draw = (x, w, hl) => {
-            s.rect(x - w / 2, 0, x + w / 2, hl, { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1 });
-            s.line(x - w / 2, 0, x - w / 2, top, { color: 'ink', width: 2.4 }); s.line(x + w / 2, 0, x + w / 2, top, { color: 'ink', width: 2.4 });
-          };
-          s.rect(x1 - w1 / 2, -0.2, x2 + w2 / 2, 0, { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1 });
-          draw(x1, w1, st.h1); draw(x2, w2, h2);
-          s.line(x1 - w1 / 2, -0.2, x2 + w2 / 2, -0.2, { color: 'ink', width: 2.4 });
-          s.hline(he, { color: 'muted', dash: true, alpha: 0.7 });
-          s.text('rest level', -2.5, he + 0.07, { color: 'muted', align: 'left' });
-          s.arrow(x1 - 0.7, st.h1, x1 - 0.7, he, { color: 'gold', width: 2 });
-          const w0 = Math.sqrt((2 * G0) / L.value);
-          const wl = Math.sqrt((G0 * (1 + 1 / a)) / (he + LB + he / a));
-          h.setView([0, 4], [-1.15 * st.A, 1.15 * st.A]);
-          h.hline(0, { color: 'muted', alpha: 0.6 });
-          h.fn((x) => st.A * Math.cos(wl * x), { color: 'orange', width: 2, dash: true });
-          h.path(st.hist, { color: 'accent', width: 2.6 });
-          const T = st.cross.length >= 2 ? 2 * (st.cross[1] - st.cross[0]) : null;
-          info = { w0, wl, T, Tp: TAU / wl, a, A: st.A };
-        }, { period: 4, still: 3.6 });
-        v.legend([['accent', 'simulated level (unsteady Bernoulli)'], ['orange', '$x_0\\cos\\omega t$, $\\omega^2=g(1/A_1+1/A_2)/I$', { dash: true }]]);
-        v.readout(() => `Actual initial displacement $${v.fix(info.A, 3)}$ m${info.A < amp.value ? ' (limited to keep both arms filled)' : ''}. ${info.a === 1 ? `equal arms: predicted period $2\\pi\\sqrt{L/2g}=${v.fix(TAU / info.w0, 3)}$ s` : `unequal arms: small-amplitude period $2\\pi/\\omega=${v.fix(info.Tp, 3)}$ s`}${info.T !== null ? `, measured $${v.fix(info.T, 3)}$ s` : ''}${info.a === 1 ? ' — independent of the amplitude: the $\\tfrac12u^2$ terms at the two surfaces cancel' : ' — the $Q^2$ term makes the motion anharmonic'}`);
+      scope: String.raw`An ideal quasi-one-dimensional incompressible tube with prescribed fixed section areas and negligible entrance/bend corrections, friction, surface tension and gas pressure differences. The drawing is schematic and its horizontal link is not to length scale. Zero amplitude is stationary and has no measured oscillation period; the displayed natural/first-integral period is a limiting prediction. The controls reset state, history and animation time together.`,
+      links:{primary:'https://ocw.mit.edu/courses/2-25-advanced-fluid-mechanics-fall-2013/1ff7ec3782567cdcedabdfd4b95c1792_MIT2_25F13_Unstea_Bernou.pdf'},
+      viz(v){
+        const reset=()=>{S.reset();v.t=0;};
+        const L=v.slider('equilibrium liquid path length $L$ (m)',.8,3.2,1.6,{step:.05,onChange:reset}),fraction=v.slider('initial displacement / safe geometric limit',0,.9,.5,{step:.01,onChange:reset}),ratio=v.slider('right / left area $a$',.4,2.5,1,{step:.05,onChange:reset});
+        const s=v.stage({x:[-2.5,2.5],y:[-.3,2],equal:true,axes:false,height:330,title:'schematic U-tube; widths proportional to areas'}),h=v.stage({x:[0,4],y:[-.5,.5],axes:'box',gutter:true,height:330,xlabel:'time (s)',ylabel:'left level above rest (m)',title:'actual level and linearized comparison'});
+        const parameters=()=>tubeParameters(L.value,ratio.value,fraction.value),S=v.sim(()=>tubeInitial(parameters()),(st,dt)=>tubeStep(parameters(),st,dt),{dt:.002});let info={};
+        v.animate(t=>{
+          const P=parameters(),st=S.advance(t),[h1,h2]=tubeLevels(P,st.x),x1=-1.1,x2=1.1,w1=.45,w2=.45*P.a,top=P.he+P.amplitude/Math.min(1,P.a)+.2;
+          s.setView([-2.5,2.5],[-.3,Math.max(.6,top+.1)]);h.setView([0,4],[-Math.max(.02,1.1*P.amplitude),Math.max(.02,1.1*P.amplitude)]);
+          const arm=(x,w,level)=>{s.rect(x-w/2,0,x+w/2,level,{fill:'accent',fillAlpha:.5,color:'accent'});s.line(x-w/2,0,x-w/2,top,{color:'ink',width:2});s.line(x+w/2,0,x+w/2,top,{color:'ink',width:2});};
+          s.rect(x1-w1/2,-.2,x2+w2/2,0,{fill:'accent',fillAlpha:.5,color:'accent'});arm(x1,w1,h1);arm(x2,w2,h2);s.line(x1-w1/2,-.2,x2+w2/2,-.2,{color:'ink',width:2});s.hline(P.he,{color:'muted',dash:true});s.text('rest',-2.4,P.he+.06,{color:'muted'});
+          h.hline(0,{color:'faint'});h.fn(time=>P.amplitude*Math.cos(P.omega*time),{color:'orange',dash:true,domain:[0,4]});h.path(st.hist,{color:'accent',width:2.5});
+          const measured=st.cross.length>=3?st.cross[2]-st.cross[0]:null,E=tubeEnergy(P,st.x,st.Q),E0=tubeEnergy(P,P.amplitude,0);info={...P,...st,h1,h2,measured,predicted:tubePeriod(P),energy:E,energy0:E0,relativeEnergy:E0?(E-E0)/E0:0,actualLength:h1+h2+P.bottom};
+        },{period:4,still:3.8});
+        v.legend([['accent','nonlinear Bernoulli solution'],['orange','small-amplitude comparison',{dash:true}]]);
+        v.readout(()=>`At rest: $h_e=${v.fix(info.he,3)}$ m, $I_0=${v.fix(info.I0,4)}$ m$^{-1}$; initial displacement $x_0=${v.fix(info.amplitude,4)}$ m. Current levels $h_1=${v.fix(info.h1,4)}$, $h_2=${v.fix(info.h2,4)}$ m; the total path can vary for unequal areas.\nLinearized period $${v.fix(info.linearPeriod,5)}$ s; finite-amplitude energy-quadrature period $${v.fix(info.predicted,5)}$ s${info.measured===null?(info.amplitude===0?'; zero amplitude: stationary, no measured period':'; waiting for a full measured cycle'):`; full-cycle measured $${v.fix(info.measured,5)}$ s`}. Relative conserved-energy error $${v.sci(info.relativeEnergy,2)}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.4

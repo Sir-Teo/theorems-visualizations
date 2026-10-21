@@ -1,0 +1,34 @@
+[
+  {
+    "file": "bosch-hale1993.pdf",
+    "url": "https://iopscience.iop.org/article/10.1088/0029-5515/33/12/513/pdf",
+    "cache": "/tmp/atlas-worker-three/energy-erratum-evidence/sources/bosch-hale1993.pdf",
+    "bytes": 157093,
+    "sha256": "d8297329c419b69d56212285c5bd59510697983345f4c06555180621c94c6b2b",
+    "scope": "Actual official cover+complete original p1919 read; complete D–T TableVIII column transcribed from pixels, unchanged coefficients and separate Eq16 validity correction checked."
+  },
+  {
+    "file": "bosch-hale1992.pdf",
+    "url": "https://doi.org/10.1088/0029-5515/32/4/I07",
+    "cache": "/tmp/atlas-worker-three/energy-erratum-evidence/sources/bosch-hale1992.pdf",
+    "bytes": 1716723,
+    "sha256": "0770dd18e3c91741cbe6ac8837f8a0ab8e54d4fbcbfca868ba8eaac47ac9e38e",
+    "scope": "Actual cached publisher facsimile from prior legitimate mirror acquisition; original pp624–625 Eqs12–14/TableVII and p628 Eq16 personally compared, p621 cross-section domain checked. Current direct publisher retry returned HTML, not a new source body."
+  },
+  {
+    "file": "lawson1957.pdf",
+    "url": "https://doi.org/10.1088/0370-1301/70/1/303",
+    "cache": "/tmp/atlas-worker-three/energy-erratum-evidence/sources/lawson1957.pdf",
+    "bytes": 281398,
+    "sha256": "d96fbb4a234a1a794843dae123b74d2dfa978dc7fa61bbfff01b48ba1258623c",
+    "scope": "Complete original5page scan from prior mirror acquisition reread; printed7–8 own pixels inspected for retained-product/escaping-product scenarios and zero-conduction limitation. No unavailable1955report claim."
+  },
+  {
+    "file": "wurzel-hsu2022.pdf",
+    "url": "https://arxiv.org/abs/2105.10954v4",
+    "cache": "/tmp/atlas-worker-three/energy-erratum-evidence/sources/wurzel-hsu2022.pdf",
+    "bytes": 3944053,
+    "sha256": "b7b3cdf0087ca3de0bdaff4127ef6cfae9718b4b367cc232264aac928fa4789c",
+    "scope": "Actual complete author manuscript v4,1Jan2022; SecIII pp5–12 read including Eqs7/11/14–17/22/TableIII. Own pixels6/8/11 inspected. Historical experiment-claim sections not certified here."
+  }
+]

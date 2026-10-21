@@ -23,11 +23,9 @@ export const carg = (a) => Math.atan2(a[1], a[0]);
  */
 export function fresnel(n1, n2, th) {
   const si = Math.sin(th), ci = Math.cos(th);
-  // Identical media have no boundary, including the grazing-angle limit.
-  if (n1 === n2) return {rs:[0,0],rp:[0,0],ts:[1,0],tp:[1,0],Rs:0,Rp:0,Ts:1,Tp:1,tir:false,cosT:[ci,0],sinT:si};
-  const s2 = ((n1 / n2) * si) ** 2, critical = Math.abs(s2 - 1) <= 4 * Number.EPSILON;
-  const tir = s2 > 1 && !critical;
-  const cosT = critical ? [0,0] : tir ? [0, Math.sqrt(s2 - 1)] : [Math.sqrt(Math.max(0, 1 - s2)), 0];
+  const s2 = ((n1 / n2) * si) ** 2;
+  const tir = s2 > 1;
+  const cosT = tir ? [0, Math.sqrt(s2 - 1)] : [Math.sqrt(1 - s2), 0];
   const a = [n1 * ci, 0], b = [n2 * cosT[0], n2 * cosT[1]];
   const rs = cdiv([a[0] - b[0], -b[1]], [a[0] + b[0], b[1]]);
   const ts = cdiv([2 * a[0], 0], [a[0] + b[0], b[1]]);
@@ -37,7 +35,7 @@ export function fresnel(n1, n2, th) {
   const Rs = cabs2(rs), Rp = cabs2(rp);
   const k = ci > 1e-12 ? (n2 * cosT[0]) / (n1 * ci) : 0;
   const Ts = tir ? 0 : k * cabs2(ts), Tp = tir ? 0 : k * cabs2(tp);
-  return { rs, rp, ts, tp, Rs, Rp, Ts, Tp, tir, cosT, sinT: critical ? Math.sign(si) : (n1 / n2) * si };
+  return { rs, rp, ts, tp, Rs, Rp, Ts, Tp, tir, cosT, sinT: (n1 / n2) * si };
 }
 
 /** Refractive index of water as a function of vacuum wavelength (nm): Cauchy fit n = A + B/lambda^2 to n(656 nm) = 1.3311 and n(486 nm) = 1.3371 (approximate textbook values). */

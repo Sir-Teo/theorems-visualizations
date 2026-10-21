@@ -1,6 +1,8 @@
 // Geography & Cartography — Chapter 5 (part b): general perspective, conic projections
 import { D2R, R2D, R_MEAN, comma, clamp, PI, ellipse, shoelace, conic, conicBase, conicFrame, conicIndicatrix, landFrame, azMap, azBase } from './ch05.shared.js';
 
+import { conicRange } from './geog-source-audit-world.shared.js';
+
 const secd = (d) => 1 / Math.cos(d * D2R);
 const mean = (a) => a.reduce((s, x) => s + x, 0) / a.length;
 
@@ -57,7 +59,7 @@ $$r = R\,\frac{(P-1)\sin c}{P-\cos c},\qquad \text{azimuth preserved.}$$
 The visible part is the cap $\cos c > 1/P$ for $P>1$ (a viewpoint outside, whose horizon is at $\cos c_h = 1/P$, a fraction $\tfrac12(1-1/P)$ of the globe) and $\cos c > P$ for $-1 \le P < 1$ (a viewpoint inside). The family contains the earlier maps as special cases: $P = 0$ is the **gnomonic** projection ($r = R\tan c$), $P = -1$ is the **stereographic** ($r = 2R\tan\frac c2$), and $P \to \infty$ is the **orthographic** ($r = R\sin c$); between them lie the near-side views from satellites, such as a geostationary one at $P \approx 6.6$. The scale at the centre is always 1; the limb of an outside view is a circle of radius $R\sqrt{(P-1)/(P+1)}$. ($P = 1$, a viewpoint on the surface, is degenerate.)`,
       idea: String.raw`Put the sphere in coordinates with $P_0$ at height 1 on the axis, the tangent plane at height 1 and the viewpoint at height $P$. The ray from $(0,P)$ through the sphere point $(\sin c, \cos c)$ meets the plane at parameter $t = (1-P)/(\cos c - P)$ of the way, so its distance from the axis is $t\sin c$, which is the formula. Setting $P = 0$ gives $\tan c$, $P = -1$ gives $2\tan(c/2)$, and letting $P \to \infty$ the factor $(P-1)/(P-\cos c) \to 1$ leaves $\sin c$ (geog-5.3). The horizon is where the ray is tangent to the sphere, $\cos c_h = 1/P$. So gnomonic (geog-5.1), stereographic and orthographic are three positions of one moving eye.`,
       caption: String.raw`Choose a preset, or move the viewpoint: above the surface (altitude $h$, logarithmic), inside the globe ($P$ from $-1$ to $0.9$), or at infinity. Left: the section through the axis, with the rays from the eye through the surface points (every $15^\circ$) to the picture plane, and the horizon rays. Middle: the map computed from the same law $r(c)$; drag it to turn the globe. Right: $r(c)$ for the current eye (thick) and for the classical azimuthal maps; the current curve passes through them as the eye moves.`,
-      deps: ['geog-5.3', 'geog-5.1', 'vcalc-1.5'],
+      deps: ['geog-5.3', 'geog-5.1'],
       see: ['geog-5.2'],
       refs: ['Snyder §23'],
       tags: ['map projections', 'azimuthal', 'perspective'],
@@ -142,17 +144,19 @@ The visible part is the cap $\cos c > 1/P$ for $P>1$ (a viewpoint outside, whose
       num: '5.7',
       kind: 'Concept',
       name: 'Conic projections and the cone constant',
-      credit: 'spherical equations: Snyder (1987), §16',
+      credit: 'Spherical equidistant conic; technical source: Snyder (1987), §16',
+      verify: false,
       statement: String.raw`A **conic projection** with central meridian $\lambda_0$ and cone constant $n \in (0,1)$ is a map
 $$x = \rho(\varphi)\sin\theta,\qquad y = \rho_0 - \rho(\varphi)\cos\theta,\qquad \theta = n(\lambda-\lambda_0),$$
 for a function $\rho(\varphi)$ that decreases with latitude. Meridians become straight rays from the apex, $\frac{\Delta\theta}{\Delta\lambda} = n$ apart, and parallels become concentric circular arcs; the fan covers the angle $360^\circ n$ for the full $360^\circ$ of longitude. The cone constant is the ratio of the unrolled cone's sector angle to $2\pi$: for a cone tangent along the parallel $\varphi_0$ it is $n = \sin\varphi_0$, which is $0$ for a cylinder ($\varphi_0 \to 0$) and $1$ for the plane over the pole. The scale along a parallel is $k = n\rho/(R\cos\varphi)$. The **equidistant conic** with standard parallels $\varphi_1 \neq \varphi_2$ takes $\rho = R(G - \varphi)$ (true distance along every meridian, $h = 1$) with
 $$n = \frac{\cos\varphi_1 - \cos\varphi_2}{\varphi_2 - \varphi_1},\qquad G = \frac{\cos\varphi_1}{n} + \varphi_1,$$
 so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = \varphi_2$).`,
-      idea: String.raw`Roll a sheet of paper into a cone around the globe, touching along $\varphi_0$. The parallel $\varphi_0$ has length $2\pi R\cos\varphi_0$ and, as a slant circle of the cone, radius $R\cot\varphi_0$ from the apex, so unrolled it subtends $2\pi R\cos\varphi_0/(R\cot\varphi_0) = 2\pi\sin\varphi_0$: this is $n$. Cutting the cone along a meridian and flattening it gives straight meridians fanning out at angle $n\,\Delta\lambda$. For the mathematical equidistant conic map, require both chosen parallels to be drawn at true length, $n\rho_i = R\cos\varphi_i$; combining those conditions with the equidistant meridian law $\rho=R(G-\varphi)$ gives the formula above. The physical secant cone shown in section has a different cone constant; it is an analogy, not the mathematical surface that generates the equidistant conic map. Away from the standard parallels the Tissot indicatrix (geog-3.4) is stretched along the parallels, $k \ne 1$, and distortion is smallest between and near them.`,
+      idea: String.raw`Roll a sheet of paper into a cone around the globe, touching along $\varphi_0$. The parallel $\varphi_0$ has length $2\pi R\cos\varphi_0$ and, as a slant circle of the cone, radius $R\cot\varphi_0$ from the apex, so unrolled it subtends $2\pi R\cos\varphi_0/(R\cot\varphi_0) = 2\pi\sin\varphi_0$: this is $n$. Cutting the cone along a meridian and flattening it gives straight meridians fanning out at angle $n\,\Delta\lambda$. A cone that cuts the globe along two parallels has a cone constant fixed by requiring both parallels to be drawn at true length, $n\rho_i = R\cos\varphi_i$; with equal meridian-distance spacing of parallels this gives the formula above (the section shows the chord version, which differs slightly). Away from the standard parallels the Tissot indicatrix (geog-3.4) is stretched along the parallels, $k \ne 1$, and distortion is smallest between and near them.`,
       caption: String.raw`Move the two standard parallels (set them equal for a tangent cone). Left: a section through the axis, with the cone through the two standard parallels meeting the axis at the apex. Middle: the unrolled equidistant conic map, a fan of angle $360^\circ n$; the indicatrices are green on the standard parallels, red where east–west lengths are stretched, blue where they are shrunk. Right: the parallel scale $k(\varphi)$. Try $\varphi_1 = \varphi_2 = 10^\circ$ (almost a cylinder, narrow fan) and $80^\circ$ (almost a polar plane).`,
+      scope: String.raw`Northern conic case: the controls restrict both standard parallels to 10°–80°N, so 0<n<1. Southern conics require sign conventions; n=0 and n=1 are limiting cylindrical and polar cases with changed formulas. The left section is a physical secant cone; the middle uses the equidistant conic's arc-based cone constant. They coincide only in the tangent limit. Neither projection is generally obtained by a perspective ray construction onto that secant cone.`,
       deps: ['geog-3.4'],
       see: ['geog-4.1'],
-      refs: ['Snyder (1987), §16, pp. 111–115, eqs. (16-1)–(16-5)'],
+      refs: ['Snyder, Map Projections—A Working Manual (1987), §16, pp. 111–114, equations 16-1–16-5'],
       tags: ['map projections', 'conic'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Equidistant_conic_projection' },
       viz(v) {
@@ -183,7 +187,7 @@ so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = 
           if (b - a > 0.5) sA.text(`φ₂ = ${b.toFixed(1)}°`, Qb[0] + 0.08, Qb[1] + 0.1, { size: 11.5, color: 'green', weight: 700, align: 'left', plate: true });
           sA.corner('cone through the standard parallels', 'tl', { color: 'muted', weight: 600, plate: true });
           // ---- fan map
-          const fr = conicFrame(C, fa, fb), xs = fr.map((p) => p[0]), ys = fr.map((p) => p[1]);
+          const fr = conicFrame(C, fa, fb), xs = [0,...fr.map((p) => p[0])], ys = [0,...fr.map((p) => p[1])];
           const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys), mg = 0.04 * Math.max(x1 - x0, y1 - y0);
           sB.setView([x0 - mg, x1 + mg], [y0 - mg, y1 + mg]);
           conicBase(sB, v, C, lon0, fa, fb, { step: 30, pstep: 15 });
@@ -193,6 +197,7 @@ so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = 
           for (const f of [a, b]) { const p = []; for (let l = -180; l <= 180; l += 3) p.push(C.fwd(l * D2R, f * D2R)); sB.path(p, { color: 'green', width: 2, dash: [6, 4] }); }
           sB.corner(`equidistant conic, n = ${C.n.toFixed(3)}`, 'tl', { color: 'muted', weight: 600, plate: true });
           // ---- k(phi)
+          sC.setView([-50,85],conicRange(C));
           sC.hline(1, { color: 'faint', width: 1 });
           sC.fn((f) => C.k(f * D2R), { domain: [-50, 84], color: 'red', width: 2.6 });
           for (const f of [a, b]) sC.vline(f, { color: 'green', dash: [4, 4], width: 1.2 });
@@ -213,9 +218,9 @@ so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = 
       name: 'Lambert conformal conic projection',
       credit: 'J. H. Lambert, 1772',
       statement: String.raw`The **Lambert conformal conic** projection with standard parallels $\varphi_1, \varphi_2$ is the conic map $x = \rho\sin n\Delta\lambda$, $y = \rho_0 - \rho\cos n\Delta\lambda$ with
-$$n = \frac{\ln(\cos\varphi_1/\cos\varphi_2)}{\ln\big(\tan(\frac\pi4 + \frac{\varphi_2}2)/\tan(\frac\pi4 + \frac{\varphi_1}2)\big)},\qquad \rho = R\,F\,\tan^{-n}\Big(\frac\pi4 + \frac\varphi2\Big),\qquad F = \frac{\cos\varphi_1\tan^n(\frac\pi4 + \frac{\varphi_1}2)}{n}$$
+$$\begin{gathered}n = \frac{\ln(\cos\varphi_1/\cos\varphi_2)}{\begin{gathered}\ln\big(\tan(\frac\pi4 + \frac{\varphi_2}2)/\\\tan(\frac\pi4 + \frac{\varphi_1}2)\big)\end{gathered}},\qquad\\ \rho = R\,F\,\tan^{-n}\Big(\frac\pi4 + \frac\varphi2\Big),\qquad\\ F = \frac{\cos\varphi_1\tan^n(\frac\pi4 + \frac{\varphi_1}2)}{n}\end{gathered}$$
 ($n = \sin\varphi_1$ if $\varphi_1 = \varphi_2$). It is **conformal**: the scale is the same in every direction, $h = k = n\rho/(R\cos\varphi)$, which equals 1 on the standard parallels, is below 1 between them and above 1 outside; meridians are straight lines, parallels circular arcs, and circles on the sphere stay (nearly) round. Given a country between latitudes $\varphi_S$ and $\varphi_N$, the worst scale error $\max|k-1|$ depends only on the choice of $\varphi_1, \varphi_2$, and can be made small by putting the standard parallels inside the country.`,
-      idea: String.raw`On a conic map the meridians and parallels are orthogonal, so the map is conformal (geog-3.5) exactly when $h = k$. With $h = -d\rho/(R\,d\varphi)$ and $k = n\rho/(R\cos\varphi)$ this is the differential equation $d\rho/\rho = -n\sec\varphi\,d\varphi$, whose solution is $\rho = F\,e^{-n\psi}$ with $\psi = \ln\tan(\frac\pi4+\frac\varphi2)$ the isometric latitude of Mercator's map (geog-4.2). So Lambert's conic is Mercator's chart bent into a fan: $(\psi,\lambda)\mapsto(F e^{-n\psi}, n\lambda)$ in polar coordinates, the exponential map. The constants $n$ and $F$ are then chosen so that $k(\varphi_1) = k(\varphi_2) = 1$.`,
+      idea: String.raw`On a conic map the meridians and parallels are orthogonal, so the map is conformal (geog-3.5) exactly when $h = k$. With $h = -d\rho/(R\,d\varphi)$ and $k = n\rho/(R\cos\varphi)$ this is the differential equation $d\rho/\rho = -n\sec\varphi\,d\varphi$, whose solution is $\rho = F\,e^{-n\psi}$ with $\psi = \ln\tan(\frac\pi4+\frac\varphi2)$ the isometric latitude of Mercator's map (geog-4.2). So Lambert's conic is Mercator's chart bent into a fan: $(\psi,\lambda)\mapsto(F e^{-n\psi}, n\lambda)$ in polar coordinates, the exponential map. The constants $n$ and $F$ are then chosen so that $k(\varphi_1) = k(\varphi_2) = 1$. Separation of variables (ode 1.3) solves the conformality equation on a chart where $\rho>0$ and $\cos\varphi>0$: integrating $d\rho/\rho=-n\sec\varphi\,d\varphi$ gives $\log\rho=-n\psi+\text{constant}$. Exponentiating yields the radial law; the standard-parallel conditions then determine its constants.`,
       caption: String.raw`Pick a region (its box is rough, not a border), then move the two standard parallels. Indicatrices are circles of radius $k\cdot r_0$, green where $|k-1| < 0.3\%$, red where stretched and blue where shrunk. Right: scale error $(k-1)$ in per cent against latitude, with the region's latitude band shaded. The buttons set the common "one-sixth" rule of thumb (parallels one sixth inside the north and south limits), the minimax choice found by search that minimises the worst error, and the 33°/45° pair that the Wikipedia article cites for US sectional charts.`,
       deps: ['geog-5.7', 'geog-3.5', 'ode-1.3'],
       see: ['geog-4.2', 'geog-5.9'],
@@ -273,11 +278,11 @@ $$n = \frac{\ln(\cos\varphi_1/\cos\varphi_2)}{\ln\big(\tan(\frac\pi4 + \frac{\va
       name: 'Albers equal-area conic projection',
       credit: 'H. C. Albers, 1805',
       statement: String.raw`The **Albers equal-area conic** projection with standard parallels $\varphi_1, \varphi_2$ is the conic map $x = \rho\sin n\Delta\lambda$, $y = \rho_0 - \rho\cos n\Delta\lambda$ with
-$$n = \frac{\sin\varphi_1 + \sin\varphi_2}{2},\qquad \rho = \frac Rn\sqrt{C - 2n\sin\varphi},\qquad C = \cos^2\varphi_1 + 2n\sin\varphi_1 .$$
+$$\begin{gathered}n = \frac{\sin\varphi_1 + \sin\varphi_2}{2},\qquad\\ \rho = \frac Rn\sqrt{C - 2n\sin\varphi},\qquad\\ C = \cos^2\varphi_1 + 2n\sin\varphi_1 .\end{gathered}$$
 Its scales are $k = n\rho/(R\cos\varphi)$ along the parallels and $h = 1/k$ along the meridians, so $hk = 1$: **it preserves areas exactly**, while shapes are distorted away from the standard parallels (where $k = h = 1$). Compared with the Lambert conformal conic on the same two parallels, the two maps agree closely on a mid-latitude region and differ in shape distortion at the edges by about as much as $k^2$ differs from 1.`,
-      idea: String.raw`The area of the zone between latitudes $\varphi$ and $\varphi + d\varphi$ and longitudes $d\lambda$ is $R^2\cos\varphi\,d\varphi\,d\lambda$, while on a conic map the same patch is a sector of area $\rho\,|d\rho|\,d\theta = \rho\,|d\rho|\,n\,d\lambda$. Equal areas (geog-3.6) therefore require $\rho\,d\rho = -(R^2/n)\cos\varphi\,d\varphi$, so $\rho^2 = (2R^2/n)(C' - \sin\varphi)$ for a constant $C'$. Choosing $C' = C/(2n)$ with $C$ as above makes $\rho(\varphi_1) = R\cos\varphi_1/n$ and $\rho(\varphi_2) = R\cos\varphi_2/n$, that is $k = 1$ on both standard parallels (the identity $\cos^2\varphi_1 + \sin^2\varphi_1 - \sin^2\varphi_2 = \cos^2\varphi_2$ does the second). Then $h = 1/k$ follows from the area condition.`,
+      idea: String.raw`The area of the zone between latitudes $\varphi$ and $\varphi + d\varphi$ and longitudes $d\lambda$ is $R^2\cos\varphi\,d\varphi\,d\lambda$, while on a conic map the same patch is a sector of area $\rho\,|d\rho|\,d\theta = \rho\,|d\rho|\,n\,d\lambda$. Equal areas (geog-3.6) therefore require $\rho\,d\rho = -(R^2/n)\cos\varphi\,d\varphi$, so $\rho^2 = (2R^2/n)(C' - \sin\varphi)$ for a constant $C'$. Choosing $C' = C/(2n)$ with $C$ as above makes $\rho(\varphi_1) = R\cos\varphi_1/n$ and $\rho(\varphi_2) = R\cos\varphi_2/n$, that is $k = 1$ on both standard parallels (the identity $\cos^2\varphi_1 + \sin^2\varphi_1 - \sin^2\varphi_2 = \cos^2\varphi_2$ does the second). Then $h = 1/k$ follows from the area condition. The fundamental theorem (pma 6.21) integrates $\rho\,d\rho=-(R^2/n)\cos\varphi\,d\varphi$ to the stated affine relation between $\rho^2$ and $\sin\varphi$, for $n\ne0$ on the chosen conic chart. The standard-parallel conditions select the integration constant; the square root uses the chart's chosen radial branch.`,
       caption: String.raw`Albers (accent outlines, gold land) with Lambert conformal conic on the same parallels (red coastlines and dashed cells) for the same region. Each $5^\circ \times 5^\circ$ cell has its map area measured by the shoelace formula and compared with its true spherical area: right, Albers (green) sits on exactly 1 while the Lambert conic (red) follows $k^2$. Choose a wider region, or move the parallels away from the region, and the two maps separate. The defaults for the US are the pair $29.5^\circ, 45.5^\circ$ used for the USGS contiguous-US Albers map.`,
-      deps: ['geog-5.7', 'geog-3.6'],
+      deps: ['geog-5.7', 'geog-3.6', 'pma-6.21'],
       see: ['geog-5.8'],
       refs: ['Snyder §14'],
       tags: ['map projections', 'equal-area', 'conic'],

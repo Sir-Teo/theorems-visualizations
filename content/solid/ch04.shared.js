@@ -36,8 +36,8 @@ export const rayTresca = (a) => 1 / tresca2(Math.cos(a), Math.sin(a));
  * The numbers Se = 0.5 Su (steel) and Se = 0.3 Su at 5e8 (aluminium) are assumptions of this model.
  */
 export const SN = {
-  steel: { id: 'steel', name: 'illustrative steel', Su: 490, Sy: 355, Se: 245, Nk: 1e6, limit: true, color: 'accent' },
-  al: { id: 'al', name: 'illustrative aluminium', Su: 310, Sy: 276, Se: 93, Nk: 5e8, limit: false, color: 'orange' },
+  steel: { id: 'steel', name: 'steel (S355-like)', Su: 490, Sy: 355, Se: 245, Nk: 1e6, limit: true, color: 'accent' },
+  al: { id: 'al', name: 'aluminium (6061-T6-like)', Su: 310, Sy: 276, Se: 93, Nk: 5e8, limit: false, color: 'orange' },
 };
 export function snSlope(m) { return Math.log10(m.Se / (0.9 * m.Su)) / (Math.log10(m.Nk) - 3); } // negative
 export function snStress(m, N) {

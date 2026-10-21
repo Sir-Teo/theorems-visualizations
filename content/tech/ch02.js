@@ -182,7 +182,7 @@ The same device multiplies force: in a **windlass** or capstan a force on the ri
         const MU = { road: 0.4, earth: 0.45, sand: 0.5 }, Z = { road: 0.0001, earth: 0.002, sand: 0.03 };
         const r = 0.04; // axle radius (m)
         const LANE_C = 0.6, LANE_S = 3.55;
-        const wheelH = A.handle(10.2, LANE_C + 1.0, { color: 'gold', constrain: (x, y) => [10.2, clamp(y, LANE_C + 0.3, LANE_C + 1.8)] });
+        const wheelH = A.handle(10.2, LANE_C + 1.0, { color: 'gold', label: 'wheel size', labelPos: 'e', constrain: (x, y) => [10.2, clamp(y, LANE_C + 0.3, LANE_C + 1.8)] });
         const D_of = () => wheelH.y - LANE_C; // wheel diameter (m): the handle marks the top of the rim
         const forces = () => {
           const W = load.value * 1000 * G, s = surf.value, Dm = D_of();
@@ -224,8 +224,6 @@ The same device multiplies force: in a **windlass** or capstan a force on the ri
           pull(7.4, cy + 0.12, F.cart, 'green');
           A.text('sledge', 11.9, laneS + 0.55, { size: 12, color: 'ink', align: 'right', weight: 600 });
           A.text(`cart, wheels ${v.fix(Dm, 2)} m across`, 11.9, laneC - 0.48, { size: 12, color: 'ink', align: 'right', weight: 600 });
-          // Keep the drag label inside the stage and above both the rim and load.
-          A.text('wheel size', 11.9, Math.max(wheelH.y + 0.3, cy + 0.22 + bh + 0.15), { color: 'gold', math: true, align: 'right', baseline: 'bottom' });
           A.text(`μ = ${v.fix(F.muS, 2)}`, 7.2, laneS - 0.48, { size: 11, color: 'muted', align: 'center' });
           // ---- B: close-up of a wheel
           const Rb = 0.95, rb = 0.16, zb = s === 'sand' ? 0.16 : s === 'earth' ? 0.06 : 0.015;
@@ -254,11 +252,7 @@ The same device multiplies force: in a **windlass** or capstan a force on the ri
           rows.forEach(([lab, f, col], i) => {
             const y = 3.3 - i * 1.15;
             C.rect(0.3, y - 0.35, 0.3 + 0.62 * (f / mx), y + 0.35, { fill: col, fillAlpha: 0.55, stroke: false });
-            const labelStyle = { size: 11.5, color: 'ink', align: 'right', baseline: 'middle' };
-            if (lab === 'sledge, wetted sand') {
-              C.text('sledge,', 0.28, y + 0.14, labelStyle);
-              C.text('wetted sand', 0.28, y - 0.14, labelStyle);
-            } else C.text(lab, 0.28, y, labelStyle);
+            C.text(lab, 0.28, y, { size: 11.5, color: 'ink', align: 'right', baseline: 'middle' });
             C.text(`${v.fmt(f / 1000, 3)} kN · ${Math.max(1, Math.ceil(f / 250))} people`, 0.32 + 0.62 * (f / mx), y, { size: 11, color: 'ink', align: f / mx > 0.6 ? 'right' : 'left', baseline: 'middle', dx: f / mx > 0.6 ? -8 : 4, plate: true });
           });
           drawYears(v, D, [

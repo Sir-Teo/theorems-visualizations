@@ -2,7 +2,6 @@
 // Re-exports the chapter 3 helpers (dated-evidence strip, year formatting, lumps), and adds the physical models
 // of this chapter: the water-wheel power models, the flat-plate sail/blade-element model and the arch thrust line.
 export * from './ch03.shared.js';
-import { lpMin } from '../arch/ch03.shared.js';
 
 export const RHO = 1000; // kg/m³ (water)
 export const G = 9.81;   // m/s²
@@ -104,54 +103,45 @@ export function thrustAt(A, H, yc) {
   }
   return out;
 }
-/** Scan the (H, yc) plane and return {ok, Hmin, Hmax, lines: {min: {H, yc}, max: {H, yc}}, grid}: feasible when every joint's thrust point lies inside [Ri, Re]. */
-function archFeasibleScan(A, nH = 70, nY = 40) {
-  const { Ri, Re } = A;
-  let Hmin = Infinity, Hmax = -Infinity, minP = null, maxP = null, count = 0, best = null;
-  const Hlo = 0.05, Hhi = 3;
-  for (let i = 0; i < nH; i++) {
-    const H = Hlo * Math.pow(Hhi / Hlo, i / (nH - 1));
-    for (let j = 0; j < nY; j++) {
-      const yc = Ri + (Re - Ri) * (j + 0.5) / nY;
-      const p = thrustAt(A, H, yc);
-      let ok = true, viol = 0;
-      for (let k = 0; k < p.length; k++) {
-        const e = Math.max(Ri - p[k], p[k] - Re, 0);
-        if (!(p[k] >= Ri - 1e-9 && p[k] <= Re + 1e-9)) ok = false;
-        if (!(e <= viol)) viol = isFinite(e) ? e : 1e9;
-      }
-      if (!best || viol < best.viol) best = { H, yc, viol };
-      if (ok) { count++; if (H < Hmin) { Hmin = H; minP = { H, yc }; } if (H > Hmax) { Hmax = H; maxP = { H, yc }; } }
-    }
-  }
-  return { ok: count > 0, Hmin, Hmax, min: minP, max: maxP, count, best };
-}
-
-/** Solve the joint inequalities in (H, Q=H*yc), rather than sampling a grid.
- * Each joint bounds Q between two affine functions of H. Every lower bound
- * and upper bound becomes a linear constraint; the architecture chapter’s
- * existing LP solver finds the minimum and maximum admissible H.
- * Geometry uses the intrados radius; published t/R often uses the mean radius.
- */
+/** Exact feasible interval in H and B = H*yc for the discrete voussoir model.
+ * Each joint gives a lower and upper affine bound on B. Every lower bound must
+ * lie below every upper bound; eliminating B leaves a one-dimensional interval.
+ * The diagnostic scan is used only to draw an inadmissible line after failure. */
 export function archFeasible(A, nH = 70, nY = 40) {
   const { Ri, Re, N, dth, Wk, xk, Wtot } = A;
-  const lower = [{ a: Ri, b: 0 }], upper = [{ a: Re, b: 0 }];
+  const lower = [], upper = [];
   let V = 0, M = 0;
-  for (let k = 1; k <= N; k++) {
-    V += Wk[k - 1]; M += Wk[k - 1] * xk[k - 1];
-    const c = Math.cos(k * dth), s = Math.sin(k * dth);
-    lower.push({ a: Ri * c, b: (Ri * V * s - M) / Wtot });
-    upper.push({ a: Re * c, b: (Re * V * s - M) / Wtot });
+  for (let k = 0; k <= N; k++) {
+    if (k) { V += Wk[k - 1]; M += Wk[k - 1] * xk[k - 1]; }
+    const c = Math.cos(k * dth), vs = V * Math.sin(k * dth) / Wtot, m = M / Wtot;
+    lower.push([Ri * c, Ri * vs - m]);
+    upper.push([Re * c, Re * vs - m]);
   }
-  const rows = [[-1, 0]], bounds = [0];
-  for (const l of lower) { rows.push([l.a, -1]); bounds.push(-l.b); }
-  for (const u of upper) { rows.push([-u.a, 1]); bounds.push(u.b); }
-  const lo = lpMin([1, 0], rows, bounds), hi = lpMin([-1, 0], rows, bounds);
-  if (!lo || !hi || !(lo.x[0] > 0) || !(hi.x[0] > 0)) {
-    // A sampled out-of-ring line is only an illustration when no line fits.
-    return { ...archFeasibleScan(A, nH, nY), ok: false, min: null, max: null };
+  let Hmin = 0, Hmax = Infinity, possible = true;
+  for (const [a, b] of lower) for (const [c, d] of upper) {
+    const slope = a - c, rhs = d - b;
+    if (Math.abs(slope) < 1e-13) { if (rhs < -1e-12) possible = false; }
+    else if (slope > 0) Hmax = Math.min(Hmax, rhs / slope);
+    else Hmin = Math.max(Hmin, rhs / slope);
   }
-  const at = result => ({ H: result.x[0], yc: result.x[1] / result.x[0] });
-  const min = at(lo), max = at(hi);
-  return { ok: true, Hmin: min.H, Hmax: max.H, min, max, best: { ...min, viol: 0 } };
+  const point = (H) => {
+    const lo = Math.max(...lower.map(([a, b]) => a * H + b));
+    const hi = Math.min(...upper.map(([a, b]) => a * H + b));
+    return { H, yc: (lo + hi) / (2 * H) };
+  };
+  if (possible && Hmax > 0 && Hmin <= Hmax + 1e-12) {
+    Hmin = Math.max(Hmin, 1e-12);
+    return { ok: true, Hmin, Hmax, min: point(Hmin), max: point(Hmax),
+      middle: point((Hmin + Hmax) / 2) };
+  }
+  let best = null;
+  for (let i = 0; i < nH; i++) {
+    const H = 0.05 * Math.pow(60, i / (nH - 1));
+    for (let j = 0; j < nY; j++) {
+      const yc = Ri + (Re - Ri) * (j + 0.5) / nY;
+      const viol = Math.max(...thrustAt(A, H, yc).map((rho) => Math.max(Ri - rho, rho - Re, 0)));
+      if (!best || viol < best.viol) best = { H, yc, viol };
+    }
+  }
+  return { ok: false, Hmin, Hmax, best };
 }

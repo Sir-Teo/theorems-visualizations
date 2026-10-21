@@ -3,17 +3,6 @@ import { C1, C2, nm, idx, expU, supportEnum, G2, d1, d2, indiff, TRI, triPt, tri
 
 const clamp = (t, a, b) => Math.min(b, Math.max(a, t));
 
-// Palacios-Huerta (2003), p. 402: row = kicker, column = keeper;
-// L = kicker's non-natural side, R = natural side (including centre).
-export const PENALTY_SCORING = [[58.30, 94.97], [92.91, 69.92]];
-export const PENALTY_OBSERVED = { p: .3998, q: .4231 };
-export function penaltyEquilibrium([[a, b], [c, d]]) {
-  const den = a - b - c + d;
-  if (Math.abs(den) < 1e-9) return null;
-  const p = (d - c) / den, q = (d - b) / den;
-  return p > 0 && p < 1 && q > 0 && q < 1 ? { p, q, val: (a * d - b * c) / den } : null;
-}
-
 export default {
   collection: 'game',
   chapter: 2,
@@ -72,27 +61,22 @@ fixed by indifference: $v-c=v\bigl(1-(1-p^*)^{n-1}\bigr)$. The probability that 
       num: '2.8',
       kind: 'Phenomenon',
       name: 'Mixed equilibria in sport: penalty kicks and serves',
-      credit: 'Palacios-Huerta, 2003; Walker & Wooders, 2001',
-      statement: String.raw`A penalty kick can be modeled as a $2\times2$ zero-sum game after grouping directions into the kicker’s natural and non-natural sides: kicker and goalkeeper choose simultaneously, and the payoff to the kicker is the probability $S_{ij}$ of a goal. With $S_{LL},S_{RR}$ (keeper guesses correctly) lower than $S_{LR},S_{RL}$, there is no pure equilibrium and the unique equilibrium mixes so that each player is indifferent (game-2.2); in particular, **the kicker's scoring probability is the same whichever side she aims at**, and so is the goalkeeper's no-goal probability. Palacios-Huerta’s soccer sample does not reject equal success rates or serial independence in the aggregate tests. Walker and Wooders’ tennis data support equal win rates but players switch serving directions too frequently for serial independence. These are qualified empirical findings, not exact equilibrium identities in observed play.`,
-      idea: String.raw`For the zero-sum payoffs $S$, kicker's $p^*=\dfrac{S_{RR}-S_{RL}}{S_{LL}-S_{LR}-S_{RL}+S_{RR}}$ and the keeper's $q^*$ come from the indifference equations; the value of the game is the equalised scoring rate. What makes sport a good test is that stakes are high, the actions are clear, and payoffs (win probability) are naturally measured on a cardinal scale. Observed frequencies need not be exactly the equilibrium ones: a small shift of one player's mixture leaves that player’s payoff unchanged against an equilibrium opponent, so the **success rates** — not the frequencies — are the sharper test, and they are close to equal.`,
-      caption: String.raw`The initial scoring matrix and observed mixtures are from Palacios-Huerta (2003), p. 402, for 1,417 kicks collected September 1995–June 2000. Rows are kicker choices and columns are keeper choices: $S_{LL}=58.30\%$, $S_{LR}=94.97\%$, $S_{RL}=92.91\%$, $S_{RR}=69.92\%$. Here **L means the kicker's non-natural side, R the natural side**, normalized for kicking foot; the paper groups centre choices with the natural side. The initial gold point uses the published observed frequencies: kicker L $39.98\%$, keeper L $42.31\%$. Edit the matrix or drag your mixture, then choose *equilibrium mixture* to equalize the success rates. *Restore published data* returns to the source values. The keeper's success includes any no-goal outcome, including misses.`,
-      scope: String.raw`The pooled empirical two-action model groups centre with the natural side and assumes comparable payoffs after normalizing kicking foot. Pooling, game state and pressure can conceal heterogeneity. Statistical non-rejection does not establish exact equilibrium play.`,
+      credit: 'Ignacio Palacios-Huerta, 2003; numerical table from his expanded 2017 study',
+      statement: String.raw`A penalty kick is a $2\times2$ zero-sum game between kicker and goalkeeper: the kicker aims left or right, the goalkeeper dives left or right at the same moment, and the payoff to the kicker is the probability $S_{ij}$ of a goal. With $S_{LL},S_{RR}$ (keeper guesses correctly) lower than $S_{LR},S_{RL}$, there is no pure equilibrium and the unique equilibrium mixes so that each player is indifferent (game-2.2); in particular, **the kicker's scoring probability is the same whichever side she aims at**, and so is the goalkeeper's save probability. Studies of professional data find that scoring rates by side are statistically very close, and that choices look unpredictable — striking support for the theory, though not perfect: kickers are close to but not exactly at the equilibrium mixture, and some studies reject serial independence in other settings.`,
+      idea: String.raw`For the zero-sum payoffs $S$, kicker's $p^*=\dfrac{S_{RR}-S_{RL}}{S_{LL}-S_{LR}-S_{RL}+S_{RR}}$ and the keeper's $q^*$ come from the indifference equations; the value of the game is the equalised scoring rate. What makes sport a good test is that stakes are high, the actions are clear, and payoffs (win probability) are naturally measured on a cardinal scale. Observed frequencies need not be exactly the equilibrium ones: a small shift of one player's mixture changes nothing for him in equilibrium, so the **success rates** — not the frequencies — are the sharper test, and they are close to equal.`,
+      caption: String.raw`The editable scoring probabilities start from Palacios-Huerta’s expanded sample of **9,017 kicks, September 1995–June 2012**, reported in *Strictly Competitive Strategic Situations* (2017), p. 22: rows are the kicker’s L/R choice and columns the keeper’s L/R choice. These are not the smaller 2003 sample. The gold point starts at the reported empirical mixture (kicker L 38.97%, keeper L 41.17%); drag it to try your own mixture. The green point is the equilibrium computed from the displayed payoffs. The bars compare success rates by action, which become equal at equilibrium.`,
+      scope: String.raw`Holds for the stylised two-action game: it ignores the centre of the goal, the kicker's strong and weak side being tied to foot, game state and pressure, and pooling many kickers.`,
       deps: ['game-2.2'],
-      refs: ['Osborne §4.6'],
+      refs: ['Palacios-Huerta (2017), Economía Industrial 403:19–28, p. 22; https://www.mintur.gob.es/Publicaciones/Publicacionesperiodicas/EconomiaIndustrial/RevistaEconomiaIndustrial/403/PALACIOS%20HUERTA.pdf', 'Osborne §4.6'],
       tags: ['minimax', 'empirical'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Penalty_kick_(association_football)#Game_theory' },
       viz(v) {
-        const M = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'p = P(kicker chooses non-natural L)', ylabel: 'q = P(keeper chooses non-natural L)', title: 'probability of a goal' });
+        const M = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'p = P(kicker aims left)', ylabel: 'q = P(keeper dives left)', title: 'probability of a goal' });
         const Bar = v.stage({ x: [0, 6], y: [0, 100], axes: 'box', gutter: true, height: 340, weight: 1, ylabel: 'per cent', title: 'success rate by choice' });
-        const sLL = v.slider('goal if kicker L, keeper L (%)', 30, 100, PENALTY_SCORING[0][0], { step: 0.01 }), sLR = v.slider('kicker L, keeper R', 30, 100, PENALTY_SCORING[0][1], { step: 0.01 });
-        const sRL = v.slider('kicker R, keeper L', 30, 100, PENALTY_SCORING[1][0], { step: 0.01 }), sRR = v.slider('kicker R, keeper R', 30, 100, PENALTY_SCORING[1][1], { step: 0.01 });
-        const h = M.handle(PENALTY_OBSERVED.p, PENALTY_OBSERVED.q, { color: 'gold', label: 'your mixture', constrain: { x: [0, 1], y: [0, 1] }, r: 8 });
-        const eq = () => penaltyEquilibrium([[sLL.value, sLR.value], [sRL.value, sRR.value]]);
-        v.button('restore published data', () => {
-          [sLL, sLR, sRL, sRR].forEach((s, i) => s.set(PENALTY_SCORING.flat()[i]));
-          h.set(PENALTY_OBSERVED.p, PENALTY_OBSERVED.q);
-        });
-        v.button('equilibrium mixture', () => { const e = eq(); if (e) h.set(e.p, e.q); });
+        const sLL = v.slider('goal if kicker L, keeper L (%)', 30, 100, 59.11, { step: 0.1 }), sLR = v.slider('kicker L, keeper R', 30, 100, 94.10, { step: 0.1 });
+        const sRL = v.slider('kicker R, keeper L', 30, 100, 93.10, { step: 0.1 }), sRR = v.slider('kicker R, keeper R', 30, 100, 71.22, { step: 0.1 });
+        const h = M.handle(0.3897, 0.4117, { color: 'gold', label: 'trial', constrain: { x: [0, 1], y: [0, 1] }, r: 8 });
+        const eq = () => { const a = sLL.value, b = sLR.value, c = sRL.value, d = sRR.value, den = a - b - c + d; if (Math.abs(den) < 1e-9) return null; const p = (d - c) / den, q = (d - b) / den; return p > 0 && p < 1 && q > 0 && q < 1 ? { p, q, val: (a * d - b * c) / den } : null; };
         const S = (p, q) => p * q * sLL.value + p * (1 - q) * sLR.value + (1 - p) * q * sRL.value + (1 - p) * (1 - q) * sRR.value;
         let st = null;
         v.render(() => {
@@ -105,18 +89,15 @@ fixed by indifference: $v-c=v\bigl(1-(1-p^*)^{n-1}\bigr)$. The probability that 
           const gL = p * sLL.value + (1 - p) * sRL.value, gR = p * sLR.value + (1 - p) * sRR.value; // goal % against dive L / dive R
           const bars = [[1, kL, C1, 'kick L'], [2, kR, 'teal', 'kick R'], [4, 100 - gL, C2, 'dive L'], [5, 100 - gR, 'pink', 'dive R']];
           bars.forEach(([x, y, c, t]) => { Bar.rect(x - 0.38, 0, x + 0.38, y, { fill: c, fillAlpha: 0.55, color: c, width: 1.5 }); Bar.text(`${v.fix(y, 1)}`, x, y, { align: 'center', dy: -10, size: 12, weight: 700, color: c }); Bar.text(t, x, 0, { align: 'center', dy: 14, size: 11.5, color: c, weight: 600, baseline: 'top' }); });
-          Bar.text('kicker: goal %', 1.5, 100, { align: 'center', size: 11.5, color: 'muted', dy: 10, baseline: 'top' }); Bar.text('keeper: no-goal %', 4.5, 100, { align: 'center', size: 11.5, color: 'muted', dy: 10, baseline: 'top' });
-          if (e) {
-            Bar.line(.4, e.val, 2.6, e.val, { color: 'green', dash: true, width: 1.5 });
-            Bar.line(3.4, 100 - e.val, 5.6, 100 - e.val, { color: 'green', dash: true, width: 1.5 });
-          }
+          Bar.text('kicker: goal %', 1.5, 100, { align: 'center', size: 11.5, color: 'muted', dy: 10, baseline: 'top' }); Bar.text('keeper: save %', 4.5, 100, { align: 'center', size: 11.5, color: 'muted', dy: 10, baseline: 'top' });
+          if (e) { Bar.hline(e.val, { color: 'green', dash: true, width: 1.5 }); }
           st = { e, p, q, kL, kR, gL, gR };
         });
         v.readout(() => {
           if (!st) return '';
           const { e, p, q, kL, kR, gL, gR } = st;
-          const eqs = e ? `equilibrium: kicker chooses non-natural L with probability **${v.fix(100 * e.p, 2)}%**, keeper chooses it with **${v.fix(100 * e.q, 2)}%**, goal probability **${v.fix(e.val, 2)}%** whichever side is chosen` : 'no completely mixed equilibrium for these numbers; boundary or degenerate equilibria may occur';
-          return `${eqs}\nAt your point $(p,q)=(${v.fix(p, 2)},${v.fix(q, 2)})$: kicking L scores ${v.fix(kL, 1)}%, R ${v.fix(kR, 1)}% (gap ${v.fix(Math.abs(kL - kR), 1)} points); keeper gets no goal ${v.fix(100 - gL, 1)}% choosing L, ${v.fix(100 - gR, 1)}% choosing R · at equilibrium both gaps are $0$ — in the data they are small, within sampling error`;
+          const eqs = e ? `equilibrium: kicker aims left with probability **${v.fix(100 * e.p, 1)}%**, keeper dives left with **${v.fix(100 * e.q, 1)}%**, goal probability **${v.fix(e.val, 1)}%** whichever side is chosen` : 'no completely mixed equilibrium for these numbers: one action is dominant';
+          return `${eqs}\nAt your point $(p,q)=(${v.fix(p, 2)},${v.fix(q, 2)})$: kicking left scores ${v.fix(kL, 1)}%, right ${v.fix(kR, 1)}% (gap ${v.fix(Math.abs(kL - kR), 1)} points); keeper saves ${v.fix(100 - gL, 1)}% diving left, ${v.fix(100 - gR, 1)}% right · at equilibrium both gaps are $0$ — the source tests reported success-rate equality, rather than asserting that these aggregate payoffs describe every individual`;
         });
       },
     },
@@ -131,7 +112,7 @@ $$\sum_{a_{-i}}\mu(a_i,a_{-i})\bigl[u_i(a_i,a_{-i})-u_i(a_i',a_{-i})\bigr]\ \ge\
 These are finitely many linear inequalities in $\mu$, so the set of correlated equilibria is a nonempty convex polytope (a linear-programming feasible set, algo-11.15). Every Nash equilibrium is one (take $\mu$ a product distribution), as is every convex combination of Nash equilibria; but the polytope is generally larger, and can contain outcomes with higher payoffs than any Nash equilibrium.`,
       idea: String.raw`Each obedience inequality says: *conditional on being told $a_i$, following it is a best reply*, with the other players' behaviour computed from $\mu$. A Nash equilibrium satisfies them because the conditional distribution of $a_{-i}$ does not depend on the recommendation. Correlation can do more: in Chicken a traffic light that says "go" to one driver and "stop" to the other, with the third state (both stop) as likely as each of the others, gives each driver $5$, better than the mixed equilibrium's $4\tfrac23$ — and no driver wants to disobey. Nonemptiness is immediate from Nash's theorem (game-2.3).`,
       caption: String.raw`Chicken with Aumann's payoffs (switch to other games). Pick the probability $\mu(\text{both dare})$ with the slider; the triangle then shows all distributions on the other three cells, and the shaded region is where all four obedience inequalities hold. Drag the gold point: the right panel plots the resulting pair of expected payoffs against the polygon of all correlated-equilibrium payoffs, with the Nash payoffs (rings) and their convex hull, which is smaller. Outside the shaded region a red message names the inequality that fails — a player would rather disobey the light.`,
-      deps: ['game-2.3', 'algo-11.15', 'stat-2.1'],
+      deps: ['game-2.3', 'algo-11.15'],
       refs: ['MSZ §8.2'],
       tags: ['correlated equilibrium', 'mediator'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Correlated_equilibrium' },
@@ -210,7 +191,7 @@ These are finitely many linear inequalities in $\mu$, so the set of correlated e
       statement: String.raw`For a finite strategic game and $\varepsilon>0$, an **$\varepsilon$-perturbed game** requires every player to put probability at least $\varepsilon$ on each pure action (players "tremble"). A profile $\sigma$ is a **trembling-hand perfect equilibrium** if it is the limit, as $\varepsilon\downarrow0$, of equilibria $\sigma^\varepsilon$ of the perturbed games $($more generally of a sequence $\varepsilon_k\to0$ with equilibria of $\varepsilon_k$-perturbed games$)$. Every finite game has a perfect equilibrium; every perfect equilibrium is a Nash equilibrium; in a two-player game a Nash equilibrium is perfect iff neither player's strategy is weakly dominated. Perfection therefore rules out equilibria that rely on a weakly dominated action being played "because nobody can lose by it".`,
       idea: String.raw`A weakly dominated action is a best reply only if the opponent plays *exactly* a strategy against which it ties. Once the opponent trembles onto the action where the dominated one does worse, a player strictly loses by using it, so in the perturbed game he must put the minimum $\varepsilon$ on it, and the equilibrium moves away. Existence follows by applying Nash's theorem (game-2.3) to the perturbed games, which are finite-dimensional games on compact convex sets, and passing to a convergent subsequence by compactness.`,
       caption: String.raw`Pick a game and shrink $\varepsilon$ (log scale). Each player is confined to $[\varepsilon,1-\varepsilon]$; the blue and orange steps are the best-reply correspondences within the confined square, and green dots are its equilibria. The right panel follows the equilibria as $\varepsilon\to0$ (horizontal axis, log): $p$ in blue and $q$ in orange. Rings mark the Nash equilibria of the unperturbed game: green if some perturbed equilibria converge to it (perfect), red if none do. In the first game, $(B,R)$ is a Nash equilibrium that uses weakly dominated actions, and it fails.`,
-      deps: ['game-2.3', 'pma-3.6'],
+      deps: ['game-2.3'],
       refs: ['MSZ §7.3'],
       tags: ['refinement', 'perfection'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Trembling_hand_perfect_equilibrium' },
@@ -280,7 +261,7 @@ These are finitely many linear inequalities in $\mu$, so the set of correlated e
       statement: String.raw`Take a finite game and let each player $i$ observe, before choosing, a private payoff shock: her payoff from action $a$ becomes $u_i(a,\cdot)+\varepsilon\,\theta_i^a$, where the $\theta_i^a$ are independent across players and actions with a smooth density, and $\varepsilon>0$ is small. In this game of incomplete information every equilibrium consists of **pure** decision rules: given her shock, a player chooses the action with the highest perturbed expected payoff, and with probability one there is no tie. Harsanyi showed that for **almost every** payoff vector, every mixed equilibrium $\sigma^*$ of the original game is the limit, as $\varepsilon\to0$, of the induced *action frequencies* in such equilibria. A mixed strategy can thus be read as a pure plan that depends on tiny unobserved differences between players.`,
       idea: String.raw`Player $i$'s decision is a threshold rule: choose the first action iff her payoff advantage $D_i$ exceeds minus her shock, so the frequency with which she plays it is $F(D_i/\varepsilon)$, a smoothed version of the best-reply step. The equilibrium is the crossing of these two smooth curves (game-2.4's correspondences, softened). As $\varepsilon\to0$ the curves become the step correspondences, and the crossing must approach a crossing of steps, i.e. a Nash equilibrium (game-2.3): in the interior this means the advantage tends to zero (indifference, game-2.2) at exactly the mixing probabilities, which a generic game's regular equilibria keep. The 'almost every' is genuine: for special payoff vectors such a limit may not exist.`,
       caption: String.raw`A $2\times2$ game with a unique mixed equilibrium. Each player's advantage from the first action is perturbed by a private shock with the chosen distribution (standard deviation one) scaled by $\varepsilon$. Left: the shock density of the row player at the equilibrium belief; the shaded part is where she plays her first action, its area being her mixing probability. Centre: the smoothed best replies, crossing at the induced action frequencies, over the original steps. Right: as $\varepsilon\to0$ the frequencies converge to the mixed equilibrium (dashed). *Draw* 2000 shock pairs: every player used a pure rule, yet the frequencies match.`,
-      deps: ['game-2.3', 'prob-1.2.2a'],
+      deps: ['game-2.3'],
       refs: ['MSZ §9.5'],
       tags: ['purification', 'incomplete information'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Purification_theorem' },

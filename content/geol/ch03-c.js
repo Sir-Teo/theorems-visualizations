@@ -1,28 +1,22 @@
+import mckenziePaper from './mckenzie-paper-item.js';
+import {wilsonState,wilsonTrajectory,wilsonFloorAge} from './wilson-audit.shared.js';
+import {APW_MODEL,gadInclination,apwState} from './paleomag-audit.shared.js';
+import {chosenHeightDensity,heightMoments,driftColumns} from './drift-original-audit.shared.js';
+import {VM_PROFILES,vmProfile} from './magnetic-audit.shared.js';
 // Geology & Geophysics — Chapter 3: Plate tectonics on a sphere (part c: 3.11–3.15)
 //
 // Sources checked / provenance (Oct 2026):
-//   3.11 The apparent-polar-wander paths are a MODEL: a synthetic absolute motion of Eurasia (rotation about a pole at 40° N, 100° E at
-//        0.17°/Myr) and an illustrative opening of the North Atlantic (rotation of North America about a pole at 88° N, 28° E, 38°
-//        in 170 Myr; the real pole and angle are of this order but were not looked up). The geocentric axial dipole relation
-//        tan I = 2 tan λ is standard. Credit to Creer, Irving & Runcorn (1954) and Runcorn (1956) is from memory.
-//   3.12 Wilson, J. T. (1966) "Did the Atlantic close and then re-open?", Nature 211: 676–681 (Crossref-checked). Stage names
-//        (embryonic, young, mature, declining, terminal, suture) follow the usual textbook list with the examples East African
-//        Rift, Red Sea, Atlantic, Pacific, Mediterranean, Himalaya; rates in the sliders are illustrative, not a fit.
-//   3.13 Wegener (1912) Geologische Rundschau 3 (4): 276–292, Crossref-checked; the lecture was given 6 January 1912 in Frankfurt (also
-//        printed in Petermanns Geographische Mitteilungen 58). The paper itself was not read: its arguments are described from the
-//        standard account. The hypsometric mixture is SCHEMATIC, tuned to three summary numbers (land 29.2% of the area, mean land
-//        elevation 0.84 km, mean ocean depth 3.68 km; the last two quoted from memory), not the real ETOPO histogram.
-//   3.14 Vine & Matthews (1963) Nature 199: 947–949: read from a scan. Facts used: survey of H.M.S. Owen, November 1962, over the
-//        Carlsberg Ridge (50 × 40 nautical miles centred on 5°25′ N, 61°45′ E); Fig. 4 models with blocks of effective
-//        susceptibility 0.0027 (0.0053 under the median valley in profiles 2 and 3), T = 0.376 Oe, I = −6°, profile bearing 044° for the
-//        Carlsberg profile, T = 0.48 Oe, I = 65°, bearing 120° (Mid-Atlantic), T = 0.5 Oe, I = 60°, bearing 073° (Pacific); present
-//        declination 356° for Carlsberg. The paper gives no spreading rate or polarity time scale. The exact block top geometry is not tabulated, and magnetic thickness is uncertain by a factor of two; the
-//        declination for the other two profiles is not in the figure caption and is taken as 0°.
-// Verification 2026-10-18: the complete 3-page scan was read. Page 949 DOES specify lower magnetic boundaries of 11 km beneath
-// ridges and 20 km beneath deep ocean; Fig. 4 uses 0.0053 (not 2×0.0027) beneath the median valley. Geometry below is illustrative.
-//   3.15 McKenzie & Parker (1967) Nature 216: 1276–1280 (Crossref-checked). The paper's slip vectors were not read; the "observed"
-//        slip azimuths here are SYNTHETIC: predicted by the MORVEL (DeMets et al. 2010) North America–Pacific pole as quoted in a
-//        course table (48.9° N, 71.7° W, 0.75°/Myr, North America relative to Pacific; not checked against the paper), plus 7° noise.
+//   3.11 Full relevant primary author GAD/APWP developments read; synthetic rotations are chosen,
+//        not a North Atlantic reconstruction. VGP/mean pole, TPW and rotation/nonuniqueness distinguished.
+//   3.12 Complete modern heuristic development/Fig5 of Whitmeyer–Fichter–Pyle2007 read and inspected.
+//        Separately derived exact constant-rate two-flank construction; no original Wilson1966 priority/map claim.
+//   3.13 Full original1912 pp276–292 read, including §II and Figs1–3; historical block model
+//        distinguished from chosen Gaussian mixture and modern wet/dry Airy columns, with no measured-data fit claim.
+//   3.14 Full original Vine–Matthews1963pp947–949 and Figs1–4 read/rendered in the audit.
+//        Exact Fig4 magnetic bearings and .0027/.0053 cgs susceptibilities retained;
+//        flat layer/equal widths are a chosen variant, not the original11/20km Curie-depth geometry.
+//        Original-source distinction, SI conversion and unbounded periodic field documented in the follow-up.
+//   3.15 Full original1276–1280 read; see isolated mckenzie-paper-item and follow-up.
 
 import { D, R_EARTH, V, LL, angDist, bearing, dest, arc, rotMat, rotPts, rotApply, velAt, mod360, wrap180, azDiff, azDiff180, clamp, meanAngle, fitPole, poleMisfit, polarityAt, NORMALS, anomalyProfile, gauss, HYPS, hypsDensity } from './ch03.shared.js';
 
@@ -35,55 +29,34 @@ export default {
       num: '3.11',
       kind: 'Method',
       name: 'Paleomagnetism and apparent polar wander',
-      statement: String.raw`Rocks record the direction of the field at their formation. If the field averaged over some thousands of years is that of a geocentric axial dipole, the inclination $I$ of the remanent magnetization gives the latitude of the rock when it formed, $\tan I=2\tan\lambda$, and its declination points to the geographic pole. The pole computed from a rock of age $t$ is its **paleopole**; a continent's paleopoles of successive ages trace an **apparent polar wander (APW) path**. Because the pole did not move relative to the Earth's spin axis (to first order), the paths of different continents should coincide, and where they do not, the continents moved relative to each other: rotating one continent about the right Euler pole (geol-3.4) makes their paths merge.`,
-      idea: String.raw`A dipole field has a latitude-dependent dip (em-7.17): vertical at the poles, horizontal at the equator, with $\tan I = 2\tan\lambda$. A single measurement therefore gives the distance to the pole, the declination the direction, so the pole's position in the continent's coordinates. If the continent moves, its coordinates turn under a fixed pole: the *apparent* motion of the pole is the inverse of the continent's motion. Two continents with the same history would show the same path; a single paleopole pair does not determine a unique Euler rotation; restoring several coeval poles and geological constraints tests the relative motion.`,
-      caption: String.raw`The globe shows the north pole region with Eurasia, Greenland and North America at their present positions; the two curves are the model paleopaths of the pole (0–200 Ma) in North American (blue) and Eurasian (orange) coordinates. Drag "restore the Atlantic" to rotate North America (and each of its poles by the opening angle of its own age) about the opening pole: at 100% the two paths merge. Choose an age to read the paleolatitude of a site and its inclination on the dipole curve below (the paths are a model, not data).`,
-      deps: ['geol-3.4', 'em-7.17'],
-      refs: ['Turcotte–Schubert ch. 1'],
-      tags: ['paleomagnetism', 'apw', 'dipole'],
-      credit: 'Creer, Irving & Runcorn, 1954; Runcorn 1956 (apparent polar wander paths of Europe and North America)',
-      scope: String.raw`Holds when the time-averaged field is a geocentric axial dipole (a good approximation for the last few hundred Myr), the remanent magnetization is primary and the rocks are not tilted. The paths drawn here are a model, built to show the geometry.`,
-      verify: true,
+      statement: String.raw`For a polarity-normalized geocentric axial dipole, $\tan I=2\tan\lambda$ relates inclination to latitude. A single direction defines a virtual geomagnetic pole; a paleomagnetic pole requires independent records that sufficiently average secular variation. Successive reliable poles define an apparent polar-wander path. Comparing paths in a common reconstruction frame can constrain relative continental motion, subject to magnetization age, polarity, structural corrections and the dipole assumption.`,
+      idea: String.raw`For a chosen dipole vector, its local downward and horizontal components are proportional to $2\sin\lambda$ and $\cos\lambda$; their ratio gives the formula. One continent's path can include true polar wander as well as plate motion. A pole constrains paleolatitude, while axial symmetry leaves paleolongitude undetermined. Even a pair of poles does not by itself determine a unique Euler axis. Mathematically, rotation through $\alpha$ displaces a point at axis-distance $\theta$ by $\delta$, where $\cos\delta=\cos^2\theta+\sin^2\theta\cos\alpha$; pole separation generally differs from rotation angle.`,
+      caption: String.raw`The two paths are constructed from chosen rotations, with no measured paleopoles or fitted North Atlantic reconstruction. The orange pole is a rotated north vector; blue is generated by an additional inverse opening rotation. Restoration applies the corresponding age-specific rotation to each blue point, so the paths merge at 100% by construction. The continent outline and its hollow site use the selected age's single rotation. Blue/orange lower dots report each site's model paleolatitude and inclination; dragging the gold point explores the dipole formula independently.`,
+      deps: ['geol-3.4','em-7.17'],
+      refs: ['Tauxe, Essentials of Paleomagnetism, author chapter2§2.3 and VGP definition§2.4.2: https://pmagpy.github.io/Essentials-JupyterBook/chapter2/', 'Tauxe & Swanson-Hysell, author chapter16 introduction,§16.1 and§16.2.1: https://pmagpy.github.io/Essentials-JupyterBook/chapter16/'],
+      tags: ['paleomagnetism','apw','dipole'],
+      credit: 'Method checked against Tauxe and Tauxe–Swanson-Hysell author treatments; chosen atlas geometry',
+      scope: String.raw`The drawn 0–200 Ma labels and rotations are illustrative, not source data: Eurasian axis 100°E, 40°N at 0.17°/Myr; additional opening axis 28°E, 88°N reaching 38° at 170 Ma. No real opening rate, historical priority or universal averaging duration is asserted. Reliable remanence may require demagnetization, structural corrections and tests for secondary magnetization. This model assumes polarity context and excludes true polar wander; real inference must consider both. Full-path age-specific restoration differs from applying one rigid matrix to the whole path. The constructed zero mismatch is a consistency check, not empirical evidence or a recovered paleolongitude.`,
+      verify: false,
       viz(v) {
-        const NORTH = [0, 90], EAxis = [100, 40], wEU = 0.17, OPEN = [28, 88], TOP = 170, ATOT = 38;
-        const opening = (t) => ATOT * Math.min(t / TOP, 1);
-        const ages = []; for (let t = 0; t <= 200; t += 20) ages.push(t);
-        const pEU = (t) => rotPts(NORTH, EAxis, -wEU * t);
-        const pNA = (t) => rotPts(pEU(t), OPEN, -opening(t));
-        const s = v.stage({ height: 430, full: true });
-        const G = v.globe(s, { projection: 'orthographic', center: [-25, 70], graticule: 15 });
-        const rest = v.slider('restore the Atlantic (%)', 0, 100, 0, { step: 1 });
-        const tsel = v.slider('age of the pole (Ma)', 0, 200, 100, { step: 20 });
-        const inc = v.stage({ x: [-90, 90], y: [-90, 90], axes: 'box', gutter: true, xlabel: 'latitude $\\lambda$ (°)', ylabel: 'inclination $I$ (°)', height: 260, full: false, weight: 0.8, equal: false });
-        const lamH = inc.handle(40, 0, { color: 'gold', constrain: 'x', label: '$\\lambda$' });
-        const SNA = [-100, 40], SEU = [10, 50];
-        const NA = G.landmass('North America'), EU = G.landmass('Eurasia'), GL = G.landmass('Greenland');
-        let info = {};
-        v.render(() => {
-          const f = rest.value / 100, tt = tsel.value;
-          G.draw({ land: false });
-          G.land(null, { fillAlpha: 0.08, alpha: 0.3, color: 'muted', fill: 'muted' });
-          const Mna = rotMat(OPEN, f * opening(tt));
-          G.polygon(rotApply(Mna, NA), { fill: 'blue', fillAlpha: 0.2, color: 'blue', width: 1.4 });
-          G.polygon(EU, { color: 'orange', width: 1.4 });
-          G.polygon(rotApply(Mna, GL), { color: 'blue', width: 1, alpha: 0.7 });
-          const na = ages.map((t) => rotPts(pNA(t), OPEN, f * opening(t))), eu = ages.map(pEU);
-          G.path(eu, { color: 'orange', width: 2.4, geodesic: false }); G.path(na, { color: 'blue', width: 2.4, geodesic: false });
-          ages.forEach((t, i) => { G.dot(eu[i], { r: 3.5, color: 'orange' }); G.dot(na[i], { r: 3.5, color: 'blue' }); if (t % 40 === 0) { G.text(`${t}`, dest(eu[i], 45, 2.2), { size: 10, color: 'orange' }); G.text(`${t}`, dest(na[i], 225, 2.2), { size: 10, color: 'blue' }); } });
-          G.dot(NORTH, { r: 4, color: 'ink', hollow: true });
-          const ia = ages.indexOf(tt); const gap = ia >= 0 ? angDist(na[ia], eu[ia]) : angDist(rotPts(pNA(tt), OPEN, f * opening(tt)), pEU(tt));
-          const pa = rotPts(pNA(tt), OPEN, 0);
-          const latNA = 90 - angDist(SNA, pa), latEU = 90 - angDist(SEU, pEU(tt));
-          G.dot(SNA, { r: 4, color: 'blue', hollow: true }); G.dot(SEU, { r: 4, color: 'orange', hollow: true });
-          inc.fn((x) => Math.atan(2 * Math.tan(x * D)) / D, { color: 'purple', width: 2.2, domain: [-89.9, 89.9] });
-          inc.hline(0, { color: 'grid' }); inc.vline(0, { color: 'grid' });
-          const iNA = Math.atan(2 * Math.tan(latNA * D)) / D, iEU = Math.atan(2 * Math.tan(latEU * D)) / D;
-          inc.dot(latNA, iNA, { r: 5, color: 'blue', label: 'NA site', labelPos: 'se' }); inc.dot(latEU, iEU, { r: 5, color: 'orange', label: 'EU site', labelPos: 'nw' });
-          const lam = lamH.x; lamH.set(lam, Math.atan(2 * Math.tan(lam * D)) / D);
-          info = { gap, open: opening(tt), latNA, latEU, iNA, iEU, lam, f };
+        const P=APW_MODEL,ages=Array.from({length:11},(_,i)=>20*i);
+        const s=v.stage({height:430,full:true}),G=v.globe(s,{projection:'orthographic',center:[-25,70],graticule:15});
+        const rest=v.slider('chosen restoration (%)',0,100,0,{step:1}),tsel=v.slider('chosen age (Ma)',0,200,100,{step:20});
+        const inc=v.stage({x:[-95,95],y:[-95,95],axes:'box',gutter:true,xlabel:'latitude $\\lambda$ (°)',ylabel:'inclination $I$ (°)',height:270,full:false,weight:.8,equal:false});
+        const H=inc.handle(40,gadInclination(40),{color:'gold',label:'$\\lambda$',constrain:(x)=>{const t=Math.max(-90,Math.min(90,x));return[t,gadInclination(t)];}});
+        const NA=G.landmass('North America'),EU=G.landmass('Eurasia'),GL=G.landmass('Greenland');let info={};
+        v.render(()=>{
+          const f=rest.value/100,q=apwState(tsel.value,f),rows=ages.map(t=>apwState(t,f));G.draw({land:false});G.land(null,{fillAlpha:.08,alpha:.3,color:'muted',fill:'muted'});
+          G.polygon(rotApply(q.M,NA),{fill:'blue',fillAlpha:.2,color:'blue',width:1.4});G.polygon(EU,{color:'orange',width:1.4});G.polygon(rotApply(q.M,GL),{color:'blue',width:1,alpha:.7});
+          G.path(rows.map(r=>r.pEU),{color:'orange',width:2.4,geodesic:false});G.path(rows.map(r=>r.shownNA),{color:'blue',width:2.4,geodesic:false});
+          rows.forEach((r,i)=>{G.dot(r.pEU,{r:3.5,color:'orange'});G.dot(r.shownNA,{r:3.5,color:'blue'});if(i%2===0){G.text(`${r.age}`,dest(r.pEU,45,2.2),{size:10,color:'orange'});G.text(`${r.age}`,dest(r.shownNA,225,2.2),{size:10,color:'blue'});}});
+          G.dot(P.north,{r:4,color:'ink',hollow:true});G.dot(q.siteNA,{r:4,color:'blue',hollow:true});G.dot(P.siteEU,{r:4,color:'orange',hollow:true});
+          inc.path(Array.from({length:361},(_,i)=>{const x=-90+i*.5;return[x,gadInclination(x)];}),{color:'purple',width:2.2});inc.hline(0,{color:'grid'});inc.vline(0,{color:'grid'});
+          inc.dot(q.latNA,q.iNA,{r:5,color:'blue',label:'NA site',labelPos:'se'});inc.dot(q.latEU,q.iEU,{r:5,color:'orange',label:'EU site',labelPos:'nw'});
+          const lam=Math.max(-90,Math.min(90,H.x));H.set(lam,gadInclination(lam));info={...q,lam,I:gadInclination(lam),rows};
         });
-        v.legend([['blue', 'North American APW path (0–200 Ma)'], ['orange', 'Eurasian APW path'], ['purple', '$\\tan I=2\\tan\\lambda$']]);
-        v.readout(() => `at ${tsel.value} Ma the two poles are **${v.fix(info.gap, 1)}°** apart (the opening angle at that age is ${v.fix(info.open, 1)}°; after restoring ${v.fix(100 * info.f, 0)}% of it) · paleolatitude of the North American site (100° W, 40° N): **${v.fix(info.latNA, 1)}°**, inclination $${v.fix(info.iNA, 1)}^\\circ$; of the Eurasian site (10° E, 50° N): ${v.fix(info.latEU, 1)}°, inclination $${v.fix(info.iEU, 1)}^\\circ$ · handle: $\\lambda=${v.fix(info.lam, 1)}^\\circ\\Rightarrow I=${v.fix(Math.atan(2 * Math.tan(info.lam * D)) / D, 1)}^\\circ$ (steeper than the field-line slope $\\lambda$).`);
+        v.legend([['blue','constructed NA path/site'],['orange','constructed Eurasian path/site'],['purple','geocentric axial dipole formula']]);
+        v.readout(()=>`At chosen age ${info.age}Ma: model poles **${v.fix(info.gap,2)}° apart**, chosen total opening ${v.fix(info.open,2)}°, applied restoration ${v.fix(info.angle,2)}°. These angles are different observables. Site model paleolatitude/inclination: NA ${v.fix(info.latNA,2)}° / ${v.fix(info.iNA,2)}°; EU ${v.fix(info.latEU,2)}° / ${v.fix(info.iEU,2)}°. Both site/pole coordinates rotate together, preserving their angular distance. Gold handle: latitude ${v.fix(info.lam,2)}°, inclination ${v.fix(info.I,2)}°. No paleolongitude is inferred.`);
       },
     },
     // ───────────────────────────────────────── 3.12
@@ -91,79 +64,42 @@ export default {
       num: '3.12',
       kind: 'Model',
       name: 'The Wilson cycle',
-      statement: String.raw`Ocean basins open and close in a recurring sequence: a continent rifts (embryonic stage: the East African Rift), the rift becomes a young narrow ocean (Red Sea), widens into a mature ocean with passive margins on both sides (Atlantic), starts to consume itself by subduction and begins to shrink (declining: Pacific), narrows to a remnant (terminal: Mediterranean) and finally closes in a continental collision that leaves a mountain belt and a suture (Himalaya). The old suture is a line of weakness where a new rift can start, so the cycle repeats and continents assemble and break apart over hundreds of millions of years.`,
-      idea: String.raw`Mass and area on a sphere are conserved: new oceanic lithosphere produced at ridges must be consumed at trenches over geological time, so an ocean grows while spreading exceeds subduction and shrinks when subduction wins. The width of an ocean basin obeys $\dot w=u-c$, where $u$ is the spreading rate and $c$ the rate at which the plate on one side is consumed; adding the geometry that the ridge itself can be subducted gives the whole life-cycle from the two rates and the time at which subduction begins. The idea that the Atlantic might have closed and re-opened came from the matching of Appalachian–Caledonian fauna (the former Iapetus ocean).`,
-      caption: String.raw`The animation runs the cycle forward in time (about 500 Myr in 14 s; use pause and the restart control). Sky-blue = ocean floor (darker = older), yellow = continents, orange = ridge, red = subducting slab, brown = mountains. Change the spreading and convergence rates or the time subduction starts: with slow subduction the ocean stays open; with fast subduction the ridge itself is consumed. The graph is the ocean width $w(t)$.`,
+      statement: String.raw`The **Wilson cycle** is a heuristic framework linking continental rifting, ocean-basin development, subduction and possible continental collision. It is not a universal fixed sequence or a clock predicting a basin's lifetime. Modern heuristic models include accretion, changing continental crust and multiple collisions. The calculation below isolates one prescribed spreading episode and one later trench; it does not generate a second rift or enforce a global spherical plate network.`,
+      idea: String.raw`Let $a,b$ be widths west/east of a stationary ridge, $u$ its full spreading rate and $c$ the removal rate at the eastern trench. Before the chosen start $T_s$, both flanks grow at $u/2$. Afterwards, while the ridge survives, $\dot a=u/2$ and $\dot b=u/2-c$, so $\dot w=u-c$. If $c>u/2$, the eastern flank eventually vanishes and the ridge reaches the trench. Spreading then stops in this model and the remaining western ocean closes at rate $c$. Thus even $u/2<c<u$ permits eventual closure after an initial interval of continued widening. No local width equation by itself proves conservation of global surface area or lithospheric mass.`,
+      caption: String.raw`Play/pause, restart, or scrub time to inspect the exact piecewise constant-rate solution through $500$ Myr. Yellow blocks are fixed-width schematic continents, blue is surviving ocean floor (darker means older on a fixed $0$–$500$ Myr scale), orange is the ridge and red the trench/slab. Vertical size and slab geometry are exaggerated. The graph includes exact event times, rather than rounding ridge consumption and collision to whole-Myr steps. The picture is a chosen two-block construction, not a reconstruction of any named modern basin.`,
       deps: ['geol-3.3', 'geol-3.10'],
-      refs: ['Press–Siever'],
+      refs: ['Whitmeyer, Fichter & Pyle2007, New directions in Wilson Cycle concepts, Geosphere3:511–526, Modern Heuristic Wilson Cycle and Fig5: https://csmgeo.csm.jmu.edu/geollab/sst/NewDirectionsWilsonCycle-i1553-040X-3-6-511.pdf'],
       tags: ['wilson-cycle', 'supercontinent', 'basins'],
-      credit: 'J. Tuzo Wilson, 1966',
-      scope: String.raw`A one-dimensional kinematic cartoon with constant rates and a single trench; real basins have several margins, changes of rate and oblique motions, and the cycle length varies widely.`,
-      verify: true,
+      credit: 'Modern heuristic framework: Whitmeyer, Fichter & Pyle2007; constant-rate atlas construction separately derived',
+      scope: String.raw`Widths have units km and time Myr, so mm/yr and km/Myr have equal numerical values. Prescribed constant rates and trench-start time are not measurements or a force balance. Only one opening and possible closing episode is shown; automatic rerifting/repetition is not predicted. The source's modern multi-stage heuristic is not reproduced in full. Wilson's original1966 paper was unavailable and no original-priority or original-map review is claimed.`,
+      verify: false,
       viz(v) {
-        const u = v.slider('spreading rate $u$ (mm/yr, full)', 10, 120, 40, { step: 1 });
-        const c = v.slider('subduction rate $c$ (mm/yr)', 10, 150, 50, { step: 1 });
-        const Ts = v.slider('subduction starts (Myr after rifting)', 50, 400, 150, { step: 5 });
-        const PERIOD = 14, TT = 500, W = 1500;
-        const s = v.stage({ x: [-5200, 5200], y: [-640, 330], axes: false, height: 330, full: true });
-        const g = v.stage({ x: [0, TT], y: [0, 7000], axes: 'box', gutter: true, xlabel: 'time since rifting (Myr)', ylabel: 'ocean width (km)', height: 200, full: true });
-        let key = '', traj = [];
-        const run = () => {
-          const k = `${u.value}|${c.value}|${Ts.value}`; if (k === key) return; key = k; traj = [];
-          let a = 0, b = 0, ridge = true, col = false, tcol = null;
-          for (let t = 0; t <= TT; t++) {
-            traj.push({ t, a, b, ridge, col, tcol, sub: t >= Ts.value && !col });
-            if (col) continue;
-            const sub = t >= Ts.value;
-            if (ridge) { a += u.value / 2; b += u.value / 2 - (sub ? c.value : 0); if (b <= 0) { b = 0; ridge = false; } }
-            else { a -= sub ? c.value : 0; if (a <= 0) { a = 0; col = true; tcol = t; } }
-            if (t === 0 && !sub) { /* embryonic stage handled in drawing */ }
-          }
-        };
-        const stageName = (S) => {
-          const w = S.a + S.b;
-          if (S.col) return 'suture: continental collision (Himalaya)';
-          if (w < 150 && S.ridge && !S.sub) return 'embryonic: rift valley (East African Rift)';
-          if (S.ridge && !S.sub && w < 1500) return 'young ocean (Red Sea)';
-          if (S.ridge && !S.sub) return 'mature ocean (Atlantic)';
-          if (S.ridge && S.sub) return 'declining ocean: subduction under way (Pacific)';
-          return w < 2500 ? 'terminal ocean: the ridge is gone (Mediterranean)' : 'declining ocean: the ridge has been subducted';
-        };
-        let info = {};
-        v.animate((t) => {
-          run();
-          const tau = Math.min(TT, Math.max(0, (t / PERIOD) * TT)), S = traj[Math.round(tau)];
-          const xL = -S.a, xR = S.b, w = S.a + S.b;
-          // mantle and lithosphere
-          s.rect(-5200, -640, 5200, -90, { fill: 'orange', fillAlpha: 0.08, stroke: false });
-          s.text('mantle', -4900, -420, { size: 12, color: 'muted' });
-          // continents
-          const cA = { x0: xL - W, x1: xL }, cB = { x0: xR, x1: xR + W };
-          const emb = w < 150 && S.ridge && !S.sub;
-          s.rect(cA.x0, -90, cA.x1, 40, { fill: 'gold', fillAlpha: 0.45, color: 'gold', width: 1.2 });
-          s.rect(cB.x0, -90, cB.x1, 40, { fill: 'gold', fillAlpha: 0.45, color: 'gold', width: 1.2 });
-          // oceanic crust by age (darker = older), both flanks
-          const slices = 36;
-          if (S.a > 0) for (let i = 0; i < slices; i++) { const x0 = xL + (i * S.a) / slices, x1 = xL + ((i + 1) * S.a) / slices; s.rect(x0, -50, x1, -8, { fill: 'blue', fillAlpha: 0.1 + 0.35 * (1 - (i + 0.5) / slices), stroke: false }); }
-          if (S.b > 0) for (let i = 0; i < slices; i++) { const x0 = xR - (i * S.b) / slices, x1 = xR - ((i + 1) * S.b) / slices; s.rect(x1, -50, x0, -8, { fill: 'blue', fillAlpha: 0.1 + 0.35 * (1 - (i + 0.5) / slices), stroke: false }); }
-          if (w > 0) s.rect(xL, -8, xR, 0, { fill: 'blue', fillAlpha: 0.15, stroke: false });
-          // ridge
-          if (S.ridge && w > 0) { s.line(0, -60, 0, 25, { color: 'orange', width: 3 }); s.text('ridge', 0, 55, { size: 12, color: 'orange', align: 'center' }); }
-          if (emb) s.text('rift', 0, 55, { size: 12, color: 'orange', align: 'center' });
-          // subduction under B
-          if (S.sub && w > 0) { const x = xR, pts = [[x, -50], [x + 800, -520], [x + 800 + 45, -520 + 45], [x, -8]]; s.poly(pts, { fill: 'red', fillAlpha: 0.4, color: 'red', width: 1.6 }); s.text('trench', x - 20, 55, { size: 12, color: 'red', align: 'right' }); }
-          // mountains at the suture
-          if (S.col) { const age = tau - S.tcol, h = Math.min(260, 40 + age * 2.5); s.poly([[xR - 700, 40], [xR, 40 + h], [xR + 700, 40]], { fill: 'muted', fillAlpha: 0.4, color: 'muted', width: 1.4 }); s.text('mountain belt', xR, 40 + h + 22, { size: 12, color: 'muted', align: 'center' }); }
-          s.text(`${Math.round(tau)} Myr · ${stageName(S)}`, 0, 300, { size: 13, color: 'ink', align: 'center', math: false });
-          // width graph
-          g.path(traj.map((q) => [q.t, q.a + q.b]), { color: 'accent', width: 2.2 });
-          g.vline(tau, { color: 'gold', width: 1.6 }); g.dot(tau, w, { r: 5, color: 'gold' });
-          g.vline(Ts.value, { color: 'red', dash: true, alpha: 0.6 });
-          const peak = traj.reduce((m, q) => (q.a + q.b > m.w ? { w: q.a + q.b, t: q.t } : m), { w: 0, t: 0 });
-          info = { tau, w, S, peak, close: traj.find((q) => q.col) };
-        }, { period: PERIOD, still: 9.4, autoplay: true });
-        v.legend([['accent', 'ocean width $w(t)$'], ['red', 'subduction starts', { dash: true }], ['gold', 'now']]);
-        v.readout(() => `$\\dot w=u-c$ while the ridge is alive: spreading ${u.value} mm/yr against subduction ${c.value} mm/yr ${c.value > u.value ? '(subduction wins: the ocean shrinks)' : '(spreading wins: it keeps widening)'} · widest ${v.fix(info.peak.w, 0)} km at ${info.peak.t} Myr · ocean width now **${v.fix(info.w, 0)} km** · ${info.close ? 'the continents collide at ' + info.close.tcol + ' Myr' : 'no collision within 500 Myr'} · oldest sea floor ${v.fix(info.S.a / (u.value / 2), 0)} Myr (west side).`);
+        const u=v.slider('full spreading rate u (mm/yr)',10,120,40,{step:1}),c=v.slider('trench removal rate c (mm/yr)',10,150,50,{step:1}),ts=v.slider('trench starts (Myr)',50,400,150,{step:5});
+        const PERIOD=14,TT=500,W=1500;
+        const time=v.slider('time since rifting (Myr)',0,TT,335,{step:1,decimals:1,onChange:x=>{v.pause();v.t=x*PERIOD/TT;}});
+        const s=v.stage({x:[-5200,5200],y:[-640,450],axes:false,height:330,full:true});
+        const g=v.stage({x:[-5,505],y:[-50,7000],axes:'box',gutter:true,xlabel:'time since rifting (Myr)',ylabel:'ocean width (km)',height:230,full:true});let info={};
+        v.animate(t=>{
+          const P={u:u.value,c:c.value,ts:ts.value},tau=Math.max(0,Math.min(TT,t*TT/PERIOD)),S=wilsonState(P,tau),T=wilsonTrajectory(P),xL=-S.a,xR=S.b;
+          if(Math.abs(time.value-tau)>1e-9)time.value=tau;
+          const left=Math.min(...T.rows.map(q=>-q.a-W))-300,right=Math.max(...T.rows.map(q=>q.b+W),...T.rows.map(q=>q.sub?q.b+900:0))+300;
+          const padding=Math.max(300,.06*(right-left));s.setView([left-padding,right+padding],[-640,450]);g.setView([-5,505],[-.04*Math.max(100,T.peak.w),1.1*Math.max(100,T.peak.w)]);
+          s.rect(left-padding,-640,right+padding,-90,{fill:'orange',fillAlpha:.08,stroke:false});
+          s.rect(xL-W,-90,xL,40,{fill:'gold',fillAlpha:.45,color:'gold',width:1.2});s.rect(xR,-90,xR+W,40,{fill:'gold',fillAlpha:.45,color:'gold',width:1.2});
+          const N=36;
+          if(S.a>0)for(let i=0;i<N;i++){const f=(i+.5)/N,age=wilsonFloorAge(S,u.value,'west',f);s.rect(xL+i*S.a/N,-50,xL+(i+1)*S.a/N,-8,{fill:'blue',fillAlpha:.1+.45*age/TT,stroke:false});}
+          if(S.b>0)for(let i=0;i<N;i++){const f=(i+.5)/N,age=wilsonFloorAge(S,u.value,'east',f);s.rect(i*S.b/N,-50,(i+1)*S.b/N,-8,{fill:'blue',fillAlpha:.1+.45*age/TT,stroke:false});}
+          if(S.w>0)s.rect(xL,-8,xR,0,{fill:'blue',fillAlpha:.15,stroke:false});
+          if(S.ridge&&S.w>0){s.line(0,-60,0,25,{color:'orange',width:3});s.text('ridge',0,65,{size:12,color:'orange',align:'center'});}
+          if(S.sub&&S.w>0){s.poly([[xR,-50],[xR+800,-520],[xR+845,-475],[xR,-8]],{fill:'red',fillAlpha:.4,color:'red',width:1.6});s.text('trench',xR+20,65,{size:12,color:'red',align:'left'});}
+          if(S.col){const h=Math.min(260,40+2.5*(tau-S.collisionTime));s.poly([[-700,40],[0,40+h],[700,40]],{fill:'muted',fillAlpha:.4,color:'muted',width:1.4});s.text('mountain belt',0,340,{size:12,color:'muted',align:'center'});}
+          s.text(`${v.fix(tau,1)} Myr · ${S.stage}`,(left+right)/2,410,{size:13,color:'ink',align:'center',math:false});
+          g.path(T.rows.map(q=>[q.t,q.w]),{color:'accent',width:2.2});g.vline(tau,{color:'gold',width:1.6});g.dot(tau,S.w,{r:5,color:'gold'});g.vline(ts.value,{color:'red',dash:true,alpha:.6});
+          for(const event of[T.ridgeTime,T.collisionTime])if(Number.isFinite(event)&&event<=TT)g.dot(event,wilsonState(P,event).w,{r:4,color:'orange'});
+          info={P,tau,S,peak:T.peak,ridgeTime:T.ridgeTime,collisionTime:T.collisionTime};
+        },{period:PERIOD,still:9.4,autoplay:true,once:true});
+        v.legend([['accent','exact ocean width'],['red','prescribed trench start'],['orange','ridge/collision events within view'],['gold','current time']]);
+        v.readout(()=>`Width **${v.fix(info.S.w,1)} km**; current $\\dot w=${v.fix(info.S.dwdt,1)}$ km/Myr. Maximum in shown interval ${v.fix(info.peak.w,1)} km at ${v.fix(info.peak.t,2)} Myr. Ridge reaches trench: ${Number.isFinite(info.ridgeTime)?v.fix(info.ridgeTime,2)+' Myr':'never under these rates'}; collision: ${Number.isFinite(info.collisionTime)?v.fix(info.collisionTime,2)+' Myr':'never under these rates'}${info.collisionTime>TT&&Number.isFinite(info.collisionTime)?' (after the 500 Myr view)':''}. Oldest surviving model floor: ${info.S.oldest==null?'none remains':v.fix(info.S.oldest,1)+' Myr'}. This episode does not predict a new rift.`);
       },
     },
     // ───────────────────────────────────────── 3.13
@@ -171,67 +107,38 @@ export default {
       num: '3.13',
       kind: 'Paper',
       name: 'Die Entstehung der Kontinente',
-      paper: {
-        authors: 'Alfred Wegener',
-        year: 1912,
-        title: 'Die Entstehung der Kontinente',
-        venue: 'Geologische Rundschau 3 (4): 276–292',
-        doi: '10.1007/BF02202896',
-      },
+      paper: {authors:'Alfred Wegener',year:1912,title:'Die Entstehung der Kontinente',venue:'Geologische Rundschau3(4):276–292',doi:'10.1007/BF02202896'},
       introduces: ['geol-3.1'],
-      statement: String.raw`Wegener argued that the continents are not fixed: the Earth's surface has two preferred levels, continental blocks standing near sea level and ocean floors about $4.5$ km lower, instead of the single bell-shaped distribution of heights expected if the crust were one material raised and lowered at random. Two levels mean two kinds of crust, a lighter continental one floating isostatically higher than a denser oceanic one; and since the lighter material floats, the continents can move horizontally across the denser floor. He joined this to the fit of the Atlantic coasts and to matching geology and fossils, and concluded that the continents had been united and have drifted apart.`,
-      idea: String.raw`Before 1912 the standard view was of a cooling, contracting Earth with land bridges that rose and sank to explain the matching fossils. Wegener's geophysical argument (the title of his 1912 lecture series was about the geophysical basis of the evolution of the large features of the Earth's crust) rested on two ingredients: the *bimodal hypsometric curve* (the area-weighted histogram of heights) and isostasy (geol-5.2), by which lighter, thicker continental columns float higher than thinner, denser oceanic ones. Both are quantitatively checked today; the missing piece he could not supply was a mechanism, and his estimates of the drift rate were too fast.`,
-      caption: String.raw`Top: a schematic hypsometric curve (a mixture tuned to the Earth's land fraction, mean land height $0.84$ km and mean ocean depth $3.68$ km, **not** the true ETOPO histogram — see the note in the item) against a single-material alternative with the same mean and spread: only the two-level curve has the observed double peak. Bottom: columns of continental and oceanic crust floating in the mantle; the computed ocean depth must match the abyssal peak. Press "one material" to give the ocean the continent's thickness and density: the ocean basin disappears.`,
-      deps: ['geol-5.2', 'geol-1.5'],
-      refs: [],
-      tags: ['wegener', 'hypsometry', 'isostasy', 'history'],
-      credit: 'Alfred Wegener, 1912',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Alfred_Wegener' },
-      verify: true,
+      statement: String.raw`Wegener's 1912 article proposes horizontal mobility as a working hypothesis, linking Atlantic/geological correspondences to geophysical arguments. On p. 277 he cites preferred surface levels about 700 m above and 4300 m below sea level. In §§II–III he discusses isostasy, lighter continental blocks within heavier material, rifts, geological connections and glaciation. These are his historical arguments, not a deduction that two height peaks alone prove drift. His 100 km-scale continental blocks and sal/sima scheme differ from the modern crust/mantle columns illustrated below.`,
+      idea: String.raw`The paper contrasts several contemporary explanations and calls for tests. Its Fig. 1 sketches a continental margin; Fig. 3 proposes past/present/future hypsographic curves, including a hypothetical initial panthalassa. These sketches are not an ETOPO measurement or a probability histogram. On p. 281 Wegener leaves the cause unsettled, mentioning lunar tides and internal currents. The final section reports uncertain historical longitude comparisons and explicitly awaits better measurements. The modern numerical illustration below checks equal column weights; it does not validate those historical mechanisms, timings or drift rates.`,
+      caption: String.raw`Top: two **chosen Gaussian components**, centred at the paper's 0.7 and −4.3km preferred levels, with weights 0.3/0.7 and standard deviations 0.5/1 km; compare one Gaussian with the same mean/variance. Weights are component weights, not measured land/ocean fractions. Bottom: a separate chosen modern two-crust isostatic model, with continental surface e=0.84 km. Change thickness/density or choose equal columns. If the computed floor rises above sea level, no negative water column is drawn. The height distribution is independent of these sliders and is not a predicted topographic dataset.`,
+      deps: ['geol-5.2','geol-1.5'],
+      refs: ['Wegener1912 full original pp276–292, §§I–IV and Figs1–3: https://archive.org/download/105Wegener/105-Wegener_text.pdf'],
+      tags: ['wegener','hypsometry','isostasy','history'],
+      credit: 'Alfred Wegener1912; chosen modern numerical illustration separately derived',
+      scope: String.raw`The historical preferred levels are approximate statements of the 1912 paper, not current global means. No modern hypsometry, crustal density or thickness dataset is claimed. The mixture has infinite Gaussian tails; the plot shows a finite window. For the chosen modern columns, hydrostatic pressure is proportional to mass per unit area at a compensation level below both Mohos. An exposed floor uses air of negligible density and zero water depth. Equal density alone need not erase relief if crustal thickness differs; the equal-columns option sets both effective thickness and density equal. This calculation neither establishes horizontal mobility nor identifies an Earth-history mechanism.`,
+      links: {doi:'https://doi.org/10.1007/BF02202896'},
+      verify: false,
       viz(v) {
-        const mode = v.select('height distribution', [{ value: 'two', label: 'two kinds of crust (observed shape)' }, { value: 'one', label: 'one material (unimodal)' }], 'two');
-        const tc = v.slider('continental crust thickness $t_c$ (km)', 20, 50, 33, { step: 0.5 }), rc = v.slider('density $\\rho_c$ (g/cm³)', 2.6, 3.0, 2.8, { step: 0.01 });
-        const to = v.slider('oceanic crust thickness $t_o$ (km)', 4, 10, 7, { step: 0.1 }), ro = v.slider('density $\\rho_o$ (g/cm³)', 2.7, 3.1, 2.9, { step: 0.01 });
-        const rm = v.slider('mantle density $\\rho_m$ (g/cm³)', 3.2, 3.4, 3.3, { step: 0.01 });
-        v.button('one material', () => { to.set(tc.value); ro.set(rc.value); });
-        v.button('standard values', () => { tc.set(33); rc.set(2.8); to.set(7); ro.set(2.9); rm.set(3.3); });
-        const h = v.stage({ x: [-11, 9], y: [0, 0.5], axes: 'box', gutter: true, xlabel: 'height above sea level (km)', ylabel: 'share of the Earth\'s area per km', height: 270, full: true });
-        const col = v.stage({ x: [0, 10], y: [-48, 8], axes: false, height: 330, full: true });
-        // moments of the mixture (numerical)
-        let m1 = 0, m2 = 0; const dh = 0.02; for (let x = -12; x < 10; x += dh) { const d = hypsDensity(x) * dh; m1 += x * d; m2 += x * x * d; }
-        const sd = Math.sqrt(m2 - m1 * m1);
-        let info = {};
-        v.render(() => {
-          const E = 0.84, rw = 1.03, d = (rm.value * (tc.value - E) - rc.value * tc.value + ro.value * to.value - rm.value * to.value) / (rm.value - rw);
-          // histogram panel
-          h.vline(0, { color: 'muted', dash: true, alpha: 0.6 }); h.text('sea level', -0.2, 0.47, { size: 11, color: 'muted' });
-          if (mode.value === 'two') h.fn((x) => hypsDensity(x), { color: 'accent', width: 2.2, fill: true, n: 500, domain: [-11, 9] });
-          else h.fn((x) => gauss(x, m1, sd), { color: 'red', width: 2.2, fill: true, domain: [-11, 9] });
-          h.fn((x) => hypsDensity(x), { color: 'faint', width: 1, alpha: mode.value === 'two' ? 0 : 0.7, domain: [-11, 9], n: 300 });
-          h.vline(-d, { color: 'green', width: 2 }); h.text(`predicted depth −${v.fix(d, 1)} km`, -d - 0.2, 0.3, { size: 11, color: 'green', align: 'right' });
-          h.vline(E, { color: 'orange', width: 1.4, dash: true });
-          // columns
-          const x0 = 1, x1 = 4, y0 = 6, y1 = 9;
-          col.rect(x0, -45, x0 + 3, E, { fill: 'orange', fillAlpha: 0.1, stroke: false });
-          col.rect(0, -45, 10, -45.5, { color: 'muted' });
-          col.rect(x0, E - tc.value, x0 + 3, E, { fill: 'gold', fillAlpha: 0.5, color: 'gold' });
-          col.rect(x0, -45, x0 + 3, E - tc.value, { fill: 'orange', fillAlpha: 0.22, stroke: false });
-          col.rect(y0, -d, y0 + 3, 0, { fill: 'blue', fillAlpha: 0.25, color: 'blue' });
-          col.rect(y0, -d - to.value, y0 + 3, -d, { fill: 'purple', fillAlpha: 0.5, color: 'purple' });
-          col.rect(y0, -45, y0 + 3, -d - to.value, { fill: 'orange', fillAlpha: 0.22, stroke: false });
-          col.hline(0, { color: 'muted', dash: true, alpha: 0.6 });
-          col.text(`continent: ${v.fix(E, 2)} km high, crust ${v.fix(tc.value, 0)} km`, x0 + 1.5, 6.5, { size: 11, color: 'gold', align: 'center' });
-          col.text(`ocean floor ${v.fix(d, 1)} km deep`, y0 + 1.5, 6.5, { size: 11, color: 'blue', align: 'center' });
-          col.text('mantle', 5, -30, { size: 12, color: 'muted', align: 'center' });
-          col.text('compensation level: equal weight of every column above this line', 5, -41, { size: 11, color: 'muted', align: 'center' });
-          info = { d, E };
+        const mode=v.select('chosen height distribution',[{value:'two',label:'two Gaussian components'},{value:'one',label:'one Gaussian, same mean/variance'}],'two');
+        const tc=v.slider('continental crust thickness (km)',20,50,33,{step:.5}),rc=v.slider('continental density (g/cm³)',2.6,3,2.8,{step:.01});
+        const to=v.slider('other crust thickness (km)',4,10,7,{step:.1}),ro=v.slider('other crust density (g/cm³)',2.7,3.1,2.9,{step:.01}),rm=v.slider('mantle density (g/cm³)',3.2,3.4,3.3,{step:.01});
+        const eq=v.select('column comparison',[{value:'different',label:'independent columns'},{value:'equal',label:'equal effective thickness and density'}],'different');
+        const h=v.stage({x:[-12,9],y:[0,.4],axes:'box',gutter:true,xlabel:'height above sea level (km)',ylabel:'chosen probability density (1/km)',height:270,full:true});
+        const col=v.stage({x:[0,10],y:[-50,8],axes:false,height:350,full:true});let info={};
+        v.render(()=>{
+          const q=driftColumns({tc:tc.value,rc:rc.value,to:to.value,ro:ro.value,rm:rm.value,equal:eq.value==='equal'}),left=Math.min(-12,q.z-2),right=Math.max(9,q.z+2),n=700;
+          h.setView([left,right],[0,.4]);h.vline(0,{color:'muted',dash:true,alpha:.6});h.path(Array.from({length:n+1},(_,i)=>{const x=left+(right-left)*i/n;return[x,chosenHeightDensity(x,mode.value)];}),{color:mode.value==='two'?'accent':'red',width:2.2});
+          h.vline(q.z,{color:'green',width:2});h.vline(q.e,{color:'orange',width:1.2,dash:true});
+          col.setView([0,10],[-q.H-4,8]);
+          col.rect(1,-q.H,4,q.e-q.tc,{fill:'orange',fillAlpha:.22,stroke:false});col.rect(1,q.e-q.tc,4,q.e,{fill:'gold',fillAlpha:.5,color:'gold'});
+          col.rect(6,-q.H,9,q.z-q.to,{fill:'orange',fillAlpha:.22,stroke:false});col.rect(6,q.z-q.to,9,q.z,{fill:'purple',fillAlpha:.5,color:'purple'});if(q.wet&&q.d>0)col.rect(6,q.z,9,0,{fill:'blue',fillAlpha:.25,color:'blue'});
+          col.hline(0,{color:'muted',dash:true,alpha:.6});col.hline(-q.H,{color:'muted'});
+          col.text(`continent: ${v.fix(q.e,2)}km high`,2.5,5.8,{size:11,color:'gold',align:'center'});col.text(q.wet?`water depth ${v.fix(q.d,2)}km`:`exposed floor +${v.fix(q.z,2)}km`,7.5,5.8,{size:11,color:q.wet?'blue':'purple',align:'center'});
+          col.text(`compensation depth ${v.fix(q.H,1)}km`,5,-q.H-2,{size:11,color:'muted',align:'center'});info={...q,mode:mode.value,left,right};
         });
-        v.legend([['accent', 'schematic two-level hypsometric curve'], ['red', 'single material, same mean and spread'], ['green', 'depth predicted by isostasy'], ['orange', 'mean continental height']]);
-        v.readout(() => {
-          let pk = [-12, 0]; for (let x = -9; x < -2; x += 0.05) if (hypsDensity(x) > pk[1]) pk = [x, hypsDensity(x)];
-          let pl = [0, 0]; for (let x = 0.01; x < 4; x += 0.01) if (hypsDensity(x) > pl[1]) pl = [x, hypsDensity(x)];
-          return `isostatic balance: $d=\\dfrac{\\rho_m(t_c-e)-\\rho_c t_c+\\rho_o t_o-\\rho_m t_o}{\\rho_m-\\rho_w}=$ **${v.fix(info.d, 2)} km** (with $e=0.84$ km) · modes of the schematic curve: land ${v.fix(pl[0], 1)} km and abyssal plain ${v.fix(pk[0], 1)} km, a gap of **${v.fix(pl[0] - pk[0], 1)} km** · mean ocean depth of the mixture ${v.fix(-(m1 * 1) / 0.708 + 0.292 * 0.84 / 0.708, 2)} km (literature value ≈ 3.7 km). ${info.d < 1 ? 'With one material there is no basin: the "ocean" is barely below sea level.' : ''}`;
-        });
+        v.legend([['accent','chosen two-component density'],['red','matched one-component density'],['green','computed floor level'],['orange','chosen continental height'],['gold','continental crust'],['purple','other crust'],['blue','water']]);
+        v.readout(()=>`Floor height **${v.fix(info.z,2)}km**, water depth **${v.fix(info.d,2)}km**. Effective other crust: ${v.fix(info.to,1)}km, ${v.fix(info.ro,2)}g/cm³${info.equal?' (equal-columns option overrides the two other-crust sliders)':''}. ${info.wet?'Wet-floor hydrostatic balance.':'Dry-floor balance: no water above the exposed floor.'} Masses above compensation: ${v.fix(info.continentMass,3)} and ${v.fix(info.otherMass,3)} in density×km; difference $${v.sci(info.residual,2)}$. Chosen mixture mean ${v.fix(heightMoments().mean,2)}km, standard deviation ${v.fix(heightMoments().sd,2)}km. This comparison is independent of the original historical sketch.`);
       },
     },
     // ───────────────────────────────────────── 3.14
@@ -247,121 +154,46 @@ export default {
         doi: '10.1038/199947a0',
       },
       introduces: ['geol-3.2'],
-      statement: String.raw`Vine and Matthews proposed that the linear magnetic anomalies over mid-ocean ridges are produced by sea-floor spreading together with reversals of the Earth's field: new crust is magnetized in the field of its time, and symmetric stripes of alternately normal and reversed blocks, a few tens of kilometres wide, spread from the ridge axis. Computing the field of blocks about $20$ km wide, alternately magnetized, with a more strongly magnetized block under the median valley, they illustrated the essential anomaly shapes over the Carlsberg Ridge (Indian Ocean), the Mid-Atlantic Ridge and the Pacific "grain"; Fig. 4 was not a detailed fit to the observed profiles, and predicted that about half of the oceanic crust is reversely magnetized.`,
-      idea: String.raw`In 1962 H.M.S. Owen surveyed the crest of the Carlsberg Ridge; uniformly normal crust (the usual model, using the bathymetry) gave computed profiles that "bear little resemblance" to the observed ones, and the authors found that part of the crust seemed to be reversed. Combining contemporary ocean-floor spreading models (convection brings new crust up at the ridge), the evidence for periodic reversals of the field (geol-10.4) and thermoremanent magnetization (geol-10.3), they showed that alternating blocks reproduce the amplitude and shape of the anomalies. They gave **no spreading rate and no time scale**: calibrating the stripes to the reversal time scale (and so the spreading rate) came afterwards, with Vine & Wilson (1965) and others. The same idea was reached independently by L. Morley (1963, published 1964).`,
-      caption: String.raw`This is an illustrative block model using the paper's Fig. 4 field intensities, inclinations and track bearings, with effective susceptibilities $0.0027$ c.g.s. and $0.0053$ beneath the ridge median valley. It does not reproduce the observed data or the exact block geometry. The default lower magnetic boundary follows p. 949: 11 km at ridges and 20 km in the deep Pacific; vary its thickness around that choice. Declination is $356^\circ$ at Carlsberg and assumed $0^\circ$ for the other profiles. Without reversals, the finite layer edges and central susceptibility contrast still produce anomalies. The readout converts block width to time at an assumed half-spreading rate.`,
+      statement: String.raw`Vine and Matthews (1963) proposed combining ocean-floor spreading with reversals of the geomagnetic field to explain magnetic lineations. Newly formed crust acquires magnetization, and blocks with alternating directions move away from a ridge. Their Carlsberg Ridge analysis suggested reversed as well as normal magnetization. In Fig. 4 they computed illustrative alternating-block profiles for the Pacific grain, Mid-Atlantic Ridge and Carlsberg Ridge; the article explicitly says these were not detailed fits to the observed profiles. They suggested that some 50% of oceanic crust might be reversed, a historical hypothesis rather than a measured global proportion.`,
+      idea: String.raw`The full original distinguishes observed and calculated profiles (Fig. 3), idealized block models (Fig. 4), and unresolved magnetization/geometry. At the low magnetic latitude of Carlsberg Ridge, a normally magnetized body can produce a negative anomaly above it: anomaly sign is not itself polarity. The article invokes current spreading ideas with a Dietz (1961) citation and field-reversal evidence. It does not calibrate an observed reversal sequence to obtain a spreading rate. Its assumed Curie-depth geometry and uncertain effective susceptibility are part of its 1963 argument, not modern measured constraints.`,
+      caption: String.raw`An atlas flat-layer variant using the original Fig. 4 field strengths, inclinations, **magnetic profile bearings** and effective susceptibilities: 0.0027 cgs, except 0.0053 for the central Atlantic/Carlsberg block. It does not reproduce the original relief or 11/20 km Curie-depth geometry, observed profiles or exact amplitudes. Choose equal block width, layer top/thickness and an assumed half rate. The infinite periodic background is computed by an attenuated Fourier series; the enhanced central block is added separately. Turning reversals off removes the periodic component, while that central contrast remains (and can still produce an anomaly). The strip shows only the visible part of this unbounded model.`,
       deps: ['geol-10.3', 'geol-10.4', 'geol-3.13'],
-      refs: ['Vine & Matthews (1963), Nature 199, 947–949, especially Fig. 4 and p. 949; doi:10.1038/199947a0'],
+      scope: String.raw`Two-dimensional bodies infinite along strike; uniform magnetization parallel or antiparallel to the present field, linear projected total-field anomaly, chosen horizontal layer/equal block widths. Original magnetic bearings are already measured relative to magnetic north; no second declination correction is applied. cgs susceptibility is converted by $\chi_{SI}=4\pi\chi_{cgs}$. The numerical series has256 odd harmonics; the stated control limits make its omitted tail negligible. Width/rate gives an illustrative duration for a noncentral one-sided block. A symmetric central block spans two flanks, so its half-age is width/(2rate). No modern polarity chronology, historical priority beyond this paper, or modern empirical fit is asserted.`,
+      refs: ['Vine & Matthews (1963), Nature199:947–949, full original including Figs1–4 and uncertainty discussion: https://courses.washington.edu/ess502/Vine_Matthews.pdf'],
       tags: ['vine-matthews', 'anomalies', 'history'],
       credit: 'F. J. Vine & D. H. Matthews, 1963',
       links: { doi: 'https://doi.org/10.1038/199947a0' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const PRE = {
-          carl: { name: 'Carlsberg Ridge (Fig. 4, no. 3)', F: 37600, incl: -6, dAng: 356 - 44, ratio: 53 / 27, base: 11 },
-          atl: { name: 'Mid-Atlantic Ridge (no. 2)', F: 48000, incl: 65, dAng: 0 - 120, ratio: 53 / 27, base: 11 },
-          pac: { name: 'Pacific grain (no. 1)', F: 50000, incl: 60, dAng: 0 - 73, ratio: 1, base: 20 },
-        };
+        const PRE = VM_PROFILES;
         const pr = v.select('profile', Object.entries(PRE).map(([k, p]) => ({ value: k, label: p.name })), 'carl');
         const bw = v.slider('block width (km)', 5, 40, 20, { step: 1 });
         const zt = v.slider('depth to the top of the blocks (km)', 1, 6, 2, { step: 0.1 });
-        const th = v.slider('magnetic thickness / default thickness', 0.5, 2, 1, { step: 0.05 });
+        const th = v.slider('thickness of the blocks (km)', 0.5, 4, 2, { step: 0.1 });
         const ku = v.slider('half-spreading rate for the readout (mm/yr)', 5, 40, 15, { step: 1 });
         const rev = v.toggle('reversals (alternating blocks)', true);
         const strip = v.stage({ x: [-100, 100], y: [0, 1], axes: false, height: 110, full: true });
         const prof = v.stage({ x: [-100, 100], y: [-400, 400], axes: 'box', gutter: true, xlabel: 'distance across the ridge (km)', ylabel: 'total-field anomaly (nT = γ)', height: 300, full: true });
         let info = {};
         v.render(() => {
-          const P = PRE[pr.value], w = bw.value, blocks = [];
-          const n = Math.ceil(100 / w) + 1;
-          for (let i = -n; i <= n; i++) {
-            const c = i * w, central = i === 0, pol = !rev.value ? 1 : (Math.abs(i) % 2 === 0 ? 1 : -1);
-            const k = 0.0027 * 4 * Math.PI * (central ? P.ratio : 1);
-            blocks.push({ x0: c - w / 2, x1: c + w / 2, s: pol * k });
-            strip.rect(c - w / 2, 0.1, c + w / 2, 0.9, { fill: pol > 0 ? 'ink' : 'faint', fillAlpha: pol > 0 ? (central ? 0.9 : 0.6) : 0.25, color: 'muted', width: 0.6 });
+          const P = PRE[pr.value], w = bw.value;
+          const n = Math.ceil(100 / w)+1;
+          for(let i=-n;i<=n;i++){
+            const left=Math.max(-100,(i-.5)*w),right=Math.min(100,(i+.5)*w);if(left>=right)continue;
+            const pol=!rev.value||Math.abs(i)%2===0?1:-1;
+            strip.rect(left,.1,right,.9,{fill:pol>0?'ink':'faint',fillAlpha:pol>0?(i===0?.9:.6):.25,color:'muted',width:.6});
           }
-                    const xs = Array.from({ length: 201 }, (_, i) => -100 + i);
-          const ys = anomalyProfile(xs, blocks, { zTop: zt.value, thick: (P.base - zt.value) * th.value, F: P.F, incl: P.incl, dAng: P.dAng });
+          const xs=Array.from({length:1001},(_,i)=>-100+i*.2),ys=vmProfile(xs,pr.value,{width:w,zTop:zt.value,thick:th.value,reversals:rev.value}).values;
           const mx = Math.max(...ys.map(Math.abs)); const yl = Math.max(100, Math.ceil(mx / 100) * 100);
-          prof.setView([-100, 100], [-yl, yl]);
+          prof.setView([-100, 100], [-yl*1.05, yl*1.05]);
           prof.hline(0, { color: 'grid' }); prof.path(xs.map((x, i) => [x, ys[i]]), { color: rev.value ? 'accent' : 'red', width: 2.2 });
-          info = { mx, w, P, base: zt.value + (P.base - zt.value) * th.value, ptp: Math.max(...ys) - Math.min(...ys) };
+          info = { xs,ys,key:pr.value,reversals:rev.value,zTop:zt.value,thick:th.value,mx, w, P, ptp: Math.max(...ys) - Math.min(...ys) };
         });
         v.legend([['ink', 'normal blocks (central block = median valley)'], ['faint', 'reversed blocks'], ['accent', 'computed anomaly (alternating blocks)'], ['red', 'computed anomaly (uniform normal crust)']]);
-        v.readout(() => `${info.P.name}: $T=${v.fix(info.P.F / 1e5, 3)}$ oersted, model magnetic base ${v.fix(info.base, 1)} km, $I=${info.P.incl}^\\circ$ · peak anomaly **${v.fix(info.mx, 0)} γ**, peak-to-peak ${v.fix(info.ptp, 0)} γ · a ${info.w} km block is $${info.w}/${ku.value}=${v.fix(info.w / ku.value, 2)}$ Myr of crust at ${ku.value} mm/yr per side (the Brunhes chron is 0.78 Myr, which at ${ku.value} mm/yr gives a ${v.fix(2 * 0.78 * ku.value, 0)} km central block) — a calibration the 1963 paper did not make.`);
+        v.readout(() => `${info.P.name}: original field $T=${v.fix(info.P.F/1e5,3)}$ oersted, $I=${info.P.incl}^\\circ$, magnetic profile bearing $${info.P.bearing}^\\circ$. Largest sampled absolute model anomaly **${v.fix(info.mx,1)} nT**, sampled peak-to-peak ${v.fix(info.ptp,1)} nT. cgs susceptibility ${info.P.chi}, central ${info.P.centralChi}. ${info.w}  km / ${ku.value}  km/Myr = **${v.fix(info.w/ku.value,2)} Myr** for a one-sided block; a symmetric central width corresponds to ${v.fix(info.w/(2*ku.value),2)} Myr per flank. These are chosen rate conversions, not a 1963 chronological calibration. ${info.reversals?'Periodic alternating background plus the original central contrast.':'No periodic reversal component; only the enhanced central block can remain.'}`);
       },
     },
     // ───────────────────────────────────────── 3.15
-    {
-      num: '3.15',
-      kind: 'Paper',
-      name: 'The North Pacific: an Example of Tectonics on a Sphere',
-      paper: {
-        authors: 'D. P. McKenzie and R. L. Parker',
-        year: 1967,
-        title: 'The North Pacific: an Example of Tectonics on a Sphere',
-        venue: 'Nature 216 (5122): 1276–1280',
-        doi: '10.1038/2161276a0',
-      },
-      introduces: ['geol-3.4'],
-      statement: String.raw`McKenzie and Parker showed that the surface of the Earth could be treated as a mosaic of rigid "paving stones" that move without internal deformation, and that on a sphere the motion of each is a rotation about an Euler pole (geol-3.4). Applying this to the Pacific, they showed that the directions of slip in earthquakes along its northern boundary, from California through Alaska to the Aleutians, are consistent with a single rotation, and that if the map is redrawn in a Mercator projection with the pole as the pole of the projection, the slip vectors on the boundary become parallel and the small circles about the pole become straight horizontal lines.`,
-      idea: String.raw`In 1967 the faults were known (strike-slip on the San Andreas and Queen Charlotte faults, thrusting at the Aleutian trench) and earthquake fault-plane solutions gave slip directions. Rigid motion on a sphere means that the slip vector at each point is tangent to a small circle about one pole, so a single pole must fit all the slip directions along the boundary. A Mercator projection whose "equator" is the great circle $90^\circ$ from the pole turns every small circle about the pole into a straight line parallel to the equator, so the test is simply whether the slip vectors are horizontal. This clean statement of rigid-plate kinematics, written after Wilson's 1965 transform-fault paper, is the precursor of Morgan's (1968) and Le Pichon's (1968) global plate models.`,
-      caption: String.raw`Gold arrows are the slip directions at ten places along the Pacific–North America boundary (synthetic: predicted by a hidden pole plus $7^\circ$ of noise, since the paper's own fault-plane solutions are not reproduced here); purple arrows are the directions predicted by your pole $E$. Drag $E$ on the globe: in the lower map (a Mercator projection about $E$) your predictions are exactly horizontal, and the observed vectors become parallel to them only when $E$ is right. "Best fit" finds the least-squares pole.`,
-      deps: ['geol-3.3', 'geol-3.2', 'geol-3.14', 'mech-10.1'],
-      refs: [],
-      tags: ['mckenzie-parker', 'pacific', 'euler-pole', 'history'],
-      credit: 'D. P. McKenzie & R. L. Parker, 1967',
-      links: { doi: 'https://doi.org/10.1038/2161276a0' },
-      verify: true,
-      viz(v) {
-        const HID = [-71.7, 48.9], OM = -0.75; // Illustrative hidden rotation; not a verified MORVEL estimate
-        const sites = [['Southern California', [-116.5, 33.4]], ['Parkfield', [-120.4, 35.9]], ['Cape Mendocino', [-124.2, 40.4]], ['Queen Charlotte', [-132.5, 53]], ['Fairweather', [-137.5, 58.5]], ['Kodiak', [-152, 57]], ['Shumagin', [-160, 54.2]], ['Unalaska', [-166, 53]], ['Andreanof', [-175, 51.5]], ['Rat Islands', [178, 51.5]]];
-        const rng = v.rng(21), pts = sites.map((q) => q[1]);
-        const obs = pts.map((p) => mod360(velAt(p, HID, OM).az + 7 * rng.normal()));
-        const best = fitPole(pts, obs, [0, 60], 1);
-        const s = v.stage({ height: 400, full: true });
-        const G = v.globe(s, { projection: 'orthographic', center: [-145, 45], graticule: 15 });
-        const E = G.handle(-100, 25, { label: 'E', color: 'purple' });
-        v.button('Best fit', () => E.set(best.pole[0], best.pole[1]));
-        v.button('Reset', () => E.set(-100, 25));
-        const m = v.stage({ x: [-150, 150], y: [-25, 85], equal: true, axes: false, height: 330, full: true, title: 'Mercator projection about the pole $E$' });
-        const NA = G.landmass('North America'), EU = G.landmass('Eurasia'), landRings = [...NA, ...EU];
-        let info = {};
-        v.render(() => {
-          const pole = [E.lon, E.lat], th0 = meanAngle(pts.map((p) => bearing(pole, p)));
-          const proj = (p) => { const d = angDist(p, pole), b = bearing(pole, p), lat = 90 - d; return [wrap180(b - th0), (Math.log(Math.tan(Math.PI / 4 + (clamp(lat, -85, 85) * D) / 2))) / D, d]; };
-          G.draw({ land: false });
-          G.land(null, { fillAlpha: 0.1, alpha: 0.35, color: 'muted', fill: 'muted' });
-          let sq = 0; const res = [];
-          pts.forEach((p, i) => {
-            const pred = velAt(p, pole, -1).az, e = azDiff(pred, obs[i]); sq += e * e; res.push(e);
-            G.smallCircle(pole, angDist(p, pole), { color: 'purple', width: 0.7, alpha: 0.25 });
-            G.arrow(p, dest(p, obs[i], 7), { color: 'gold', width: 2.4 }); G.arrow(p, dest(p, pred, 7), { color: 'purple', width: 1.8 });
-            G.dot(p, { r: 3, color: 'ink' });
-          });
-          G.dot(pole, { r: 4, color: 'purple' });
-          const mx = pts.reduce((a, p) => a + proj(p)[0], 0) / pts.length; m.setView([mx - 110, mx + 110], [-25, 85]);
-          // Mercator about the pole
-          m.hline(0, { color: 'grid' });
-          for (const lat of [0, 15, 30, 45, 60, 75]) { const y = Math.log(Math.tan(Math.PI / 4 + (lat * D) / 2)) / D; m.hline(y, { color: 'grid', alpha: 0.6 }); m.text(`${90 - lat}°`, mx - 108, y + 1.5, { size: 10, color: 'muted' }); }
-          m.text('angular distance from E', mx - 108, 82, { size: 10, color: 'muted' });
-          for (const ring of landRings) {
-            const out = []; let prev = null;
-            for (const p of ring) { const q = proj(p); if (q[2] < 8 || q[2] > 118) { out.push(null); prev = null; continue; } if (prev && Math.abs(q[0] - prev[0]) > 180) out.push(null); out.push([q[0], q[1]]); prev = q; }
-            m.path(out, { color: 'muted', width: 1, alpha: 0.7 });
-          }
-          pts.forEach((p, i) => {
-            const a = proj(p), b = proj(dest(p, obs[i], 7)), c = proj(dest(p, velAt(p, pole, -1).az, 7));
-            const sg = Math.abs(b[0] - a[0]) > 180 ? 0 : 1;
-            m.arrow(a[0], a[1], c[0], c[1], { color: 'purple', width: 1.8, head: 6 });
-            if (sg) m.arrow(a[0], a[1], b[0], b[1], { color: 'gold', width: 2.4, head: 6 });
-            m.dot(a[0], a[1], { r: 3, color: 'ink' });
-          });
-          info = { rms: Math.sqrt(sq / pts.length), res, pole };
-        });
-        v.legend([['gold', 'observed (synthetic) slip direction'], ['purple', 'direction predicted by $E$'], ['muted', 'coastlines']]);
-        v.readout(() => `rms slip-direction misfit **${v.fix(info.rms, 1)}°** for $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$ · least-squares pole $(${v.fix(best.pole[1], 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(best.pole[0]), 1)}^\\circ\\mathrm{${best.pole[0] < 0 ? 'W' : 'E'}})$ with rms ${v.fix(best.rms, 1)}° (noise 7°; the illustrative hidden pole is $48.9^\\circ$N, $71.7^\\circ$W) · the McKenzie–Parker pole itself is not quoted here.`);
-      },
-    },
+    mckenziePaper,
   ],
 };

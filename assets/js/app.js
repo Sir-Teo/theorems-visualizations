@@ -1,23 +1,24 @@
 // Single-page app: hash router, pages, search, theme.
 import { mount, richHTML, inlineHTML, escapeHTML, resetColors } from './viz/core.js';
 import { buildIndex, runSearch, highlight, norm } from './search.js';
-import { decodeCatalog } from './catalog.js';
+import { decodeState, stateURL } from './share-state.js';
 import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, renderChord, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
+if (new URLSearchParams(location.search).get('embed') === '1' && location.hash.startsWith('#/t/')) document.documentElement.classList.add('embed-view');
 document.querySelector('.skip-link').addEventListener('click', (e) => { e.preventDefault(); app.focus(); app.scrollIntoView(); });
 const SITE = 'Ideas, Visualized';
-let G = null;           // atlas state built from data/index.json
+let G = null;           // current atlas state; home.json is upgraded on demand to the complete index
+let homeCatalog = null, catalogFull = false, catalogP = null, homeP = null, searchP = null, searchReady = false;
 let routeVersion = 0;
 const viewIsCurrent = () => { const version = routeVersion; return () => version === routeVersion; };
 let cleanup = null;     // teardown for the current page
 const modCache = new Map();
 
 // ------------------------------------------------------------ data
-async function loadCatalog() {
-  const res = await fetch('data/index.json', { cache: 'no-cache' });
-  const cat = decodeCatalog(await res.json());
-  const byId = new Map(cat.items.map((it) => [it.id, it]));
+function installCatalog(cat) {
+  const planned = cat.planned || [];
+  const byId = new Map([...cat.items, ...planned].map((it) => [it.id, it]));
   const children = new Map(cat.items.map((it) => [it.id, []]));
   for (const it of cat.items) for (const d of it.deps) children.get(d)?.push(it.id);
   const colById = new Map(cat.collections.map((C) => [C.id, C]));
@@ -25,12 +26,32 @@ async function loadCatalog() {
   const fieldById = new Map(cat.fields.map((F) => [F.id, F]));
   // cross-listings: a chapter may list another collection's idea under its own number
   const alias = new Map(cat.collections.flatMap((C) => C.chapters.flatMap((Ch) => (Ch.cross || []).map(([num, to]) => [`${C.id}-${num}`, to]))));
-  G = { ...cat, planned: [], byId, children, colById, colIdx, fieldById, alias };
+  G = { ...cat, planned, byId, children, colById, colIdx, fieldById, alias };
   indexGraph();
   G.edgeCount = cat.items.reduce((s, it) => s + it.deps.length, 0);
   G.live = cat.collections.filter((C) => C.count);
   setAtlas(G);
   buildSearch();
+}
+async function fetchJSON(path) {
+  const res = await fetch(path, { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`Could not load ${path} (${res.status})`);
+  return res.json();
+}
+function ensureHome() {
+  if (homeCatalog) return Promise.resolve(homeCatalog);
+  if (!homeP) homeP = fetchJSON('data/home.json').then(cat => (homeCatalog = cat)).catch(error => { homeP = null; throw error; });
+  return homeP;
+}
+function ensureCatalog() {
+  if (catalogFull) return Promise.resolve();
+  if (!catalogP) catalogP = fetchJSON('data/index.json').then(cat => { installCatalog(cat); catalogFull = true; }).catch(error => { catalogP = null; throw error; });
+  return catalogP;
+}
+async function loadCatalog() {
+  const raw = location.hash.replace(/^#/, '') || '/';
+  if (raw === '/' || raw === 'fields' || raw.startsWith('/?')) { const home = await ensureHome(); if (!catalogFull) installCatalog(home); }
+  else await ensureCatalog();
   buildNav();
 }
 /** order and reverse edges over written + planned items */
@@ -46,33 +67,42 @@ function indexGraph() {
 let plannedP = null;
 /** Planned (not yet written) items live in data/planned.json and are merged into the graph on demand. */
 function ensurePlanned() {
-  if (!plannedP) plannedP = fetch('data/planned.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : { kinds: [], cols: {} })).then((P) => {
+  if (!plannedP) plannedP = ensureCatalog().then(() => fetchJSON('data/planned.json')).then((P) => {
     const list = [];
     for (const C of G.collections) for (const [num, c, k, name, deps, x, y, pa] of P.cols[C.id] || []) list.push({ id: `${C.id}-${num}`, col: C.id, c, num, kind: P.kinds[k], name, deps, x, y, planned: true, ...(pa ? { yr: pa.y, au: pa.a, intro: pa.i } : {}) });
     G.planned = list;
     for (const it of list) G.byId.set(it.id, it);
+    // A collection page can load its details before the planned graph is requested.
+    for (const [col, det] of shardData) applyShard(col, det);
     indexGraph();
   }).catch((e) => { plannedP = null; throw e; });
   return plannedP;
 }
 const shards = new Map();
+const shardData = new Map();
+function applyShard(col, det) {
+  const { _ch, ...rest } = det;
+  for (const [n, sum] of Object.entries(_ch || {})) { const Ch = chapterOf(col, +n); if (Ch) Ch.summary = sum; }
+  for (const [id, d] of Object.entries(rest)) { const it = G.byId.get(id); if (it) Object.assign(it, d); }
+}
 /** Per-collection details (statements, refs, …) are lazy-loaded from data/col/<id>.json. */
 function loadShard(col) {
   if (!shards.has(col)) {
-    shards.set(col, fetch(`data/col/${col}.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : {})).then((det) => {
-      const { _ch, ...rest } = det;
-      for (const [n, sum] of Object.entries(_ch || {})) { const Ch = chapterOf(col, +n); if (Ch) Ch.summary = sum; }
-      for (const [id, d] of Object.entries(rest)) { const it = G.byId.get(id); if (it) Object.assign(it, d); }
+    shards.set(col, fetchJSON(`data/col/${col}.json`).then((det) => {
+      shardData.set(col, det);
+      applyShard(col, det);
     }).catch(() => { shards.delete(col); }));
   }
   return shards.get(col);
 }
 const loadShards = (cols) => Promise.all([...new Set(cols)].map(loadShard));
-let searchDetailsP = null;
-function ensureSearchDetails() {
-  if (!searchDetailsP) searchDetailsP = Promise.all([ensurePlanned(), loadShards(G.live.map(C => C.id))])
-    .then(buildSearch).catch(e => { searchDetailsP = null; throw e; });
-  return searchDetailsP;
+/** Full statement/credit search is requested by an actual query, never by home-page idle work. */
+function ensureSearch() {
+  if (!searchP) searchP = ensurePlanned().then(() => loadShards(G.live.map(C => C.id))).then(() => {
+    if (G.live.some(C => !shardData.has(C.id))) throw new Error('Search details could not load');
+    buildSearch(); searchReady = true;
+  }).catch(error => { searchP = null; throw error; });
+  return searchP;
 }
 const chapterOf = (col, c) => G.colById.get(col)?.chapters.find((C) => C.n === c);
 const chapterLabel = (col, c) => G.colById.get(col)?.chapterLabels?.[c] || `Chapter ${c}`;
@@ -95,7 +125,6 @@ const go = (hash) => { location.hash = hash; };
 const ICON_HAND = '<svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.8-2.4L4.2 15a1.6 1.6 0 0 1 2.5-2L9 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const fieldCols = (F) => G.collections.filter((C) => C.field === F.id);
-const isTheoremLike = (it) => it.kind !== 'Definition';
 function sourceLine(C) {
   const s = C.source || {};
   if (s.type === 'book') return `${escapeHTML(s.author)}, <i>${escapeHTML(s.title)}</i>, ${escapeHTML(s.edition || '')}${s.license ? ` · ${s.url ? `<a href="${escapeHTML(s.url)}" target="_blank" rel="noopener">${escapeHTML(s.license)}</a>` : escapeHTML(s.license)}` : ''}`;
@@ -123,17 +152,14 @@ function buildNav() {
 }
 
 // ------------------------------------------------------------ pages
-function pageHome() {
+async function pageHome() {
+  const isCurrent = viewIsCurrent(), H = await ensureHome();
+  if (!isCurrent()) return;
   setTitle(''); setNav(''); curCol = null;
-  const nViz = G.items.filter((it) => it.viz).length;
-  // the longest chain of reasoning in the whole graph
-  const deepest = G.items.reduce((a, b) => (b.depth > a.depth ? b : a), G.items[0]);
-  const chain = [];
-  for (let cur = deepest; cur; ) { chain.unshift(cur); cur = cur.deps.map((d) => G.byId.get(d)).sort((a, b) => b.depth - a.depth)[0]; }
-  const cited = (it) => (G.children.get(it.id) || []).length;
-  // workhorses: the most-cited results, at most four per collection so every shelf shows up
-  const perCol = new Map();
-  const pillars = G.items.filter(isTheoremLike).sort((a, b) => cited(b) - cited(a) || b.desc - a.desc).filter((it) => { const n = perCol.get(it.col) || 0; if (n >= 4) return false; perCol.set(it.col, n + 1); return true; }).slice(0, 12);
+  const homeById = new Map([...H.items, ...H.planned].map(it => [it.id, it]));
+  const nViz = H.home.vizCount, chain = H.home.chain.map(id => homeById.get(id));
+  const cited = it => H.home.cited[it.id] || 0;
+  const pillars = H.home.pillars.map(id => homeById.get(id));
   const liveFields = G.fields.filter((F) => fieldCols(F).some((C) => C.count));
   const el = h(`<div>
     <section class="wrap hero">
@@ -153,9 +179,9 @@ function pageHome() {
         </div>
       </div>
       <div class="hero-stats">
-        <div><b>${G.items.length.toLocaleString('en')}</b><span>ideas</span></div>
+        <div><b>${H.home.itemCount.toLocaleString('en')}</b><span>ideas</span></div>
         <div><b>${nViz.toLocaleString('en')}</b><span>visualizations</span></div>
-        <div><b>${G.edgeCount.toLocaleString('en')}</b><span>connections</span></div>
+        <div><b>${H.home.edgeCount.toLocaleString('en')}</b><span>connections</span></div>
         <a href="#fields"><b>${G.live.length}</b><span>collections</span></a>
         <a href="#fields"><b>${G.fields.length}</b><span>fields</span></a>
       </div>
@@ -180,7 +206,7 @@ function pageHome() {
     </section>` : ''}
     ${(G.bridges || []).length ? `<section class="wrap">
       <div class="section-title"><h2>Bridges</h2><span class="muted">one idea followed across fields · <a href="#/bridges">all bridges →</a></span></div>
-      <div class="col-grid">${G.bridges.slice(0, 6).map((B) => `<a class="card bridge-card" href="#/bridge/${B.slug}"><h3>${escapeHTML(B.title)}</h3><div class="sum">${inlineHTML(B.blurb || '')}</div><div class="meta">${fieldDots(B)} ${B.steps.length} steps</div></a>`).join('')}</div>
+      <div class="col-grid">${G.bridges.slice(0, 6).map((B) => `<a class="card bridge-card" href="#/bridge/${B.slug}"><h3>${escapeHTML(B.title)}</h3><div class="sum">${inlineHTML(B.blurb || '')}</div><div class="meta">${fieldDots(B, homeById)} ${B.steps.length} steps</div></a>`).join('')}</div>
     </section>` : ''}
     <section class="wrap" id="fields">
       <div class="section-title"><h2>The fields</h2><span class="muted">${G.collections.length} collections across ${G.fields.length} fields · faded shelves are planned</span></div>
@@ -216,12 +242,12 @@ function pageHome() {
   // landmark papers: a compact timeline and a few to open (interactive ones first)
   if (G.paperCount) {
     const host = el.querySelector('#home-ptl'); if (!host?.isConnected) return;
-    const papers = [...G.items.filter(it => it.kind === 'Paper'), ...(G.plannedPapers || [])];
+    const papers = [...H.items, ...H.planned].filter((it) => it.kind === 'Paper');
     const view = new TimelineView(host, G, { items: papers, what: 'papers', fit: true, onOpen: (id) => go(`#/t/${id}`) });
     const prev = cleanup; cleanup = () => { prev?.(); view.destroy(); };
     const pick = [...papers.filter((p) => !p.planned).sort((a, b) => (a.yr ?? 0) - (b.yr ?? 0))];
     const famous = ['info-5.18', 'toc-7.13', 'rel-1.14', 'astro-10.19', 'bioinf-1.13', 'popgen-1.17', 'game-1.11', 'ode-10.15'];
-    for (const id of famous) { const p = papers.find(it => it.id === id); if (p && !pick.includes(p)) pick.push(p); }
+    for (const id of famous) { const p = homeById.get(id); if (p && !pick.includes(p)) pick.push(p); }
     el.querySelector('#home-papers').innerHTML = pick.slice(0, 6).map((p) => `<a class="paper-row${p.planned ? ' planned' : ''}" data-col="${p.col}" href="#/t/${p.id}"><span class="yr">${p.yr ?? ''}</span><span><div class="tt">${inlineHTML(p.name)}</div><div class="au">${escapeHTML(p.au || '')} · ${escapeHTML(G.colById.get(p.col).short)}</div></span><span class="st">${p.planned ? 'planned' : '● interactive'}</span></a>`).join('');
   }
   const chainEl = el.querySelector('#chain');
@@ -433,7 +459,7 @@ async function pagePlanned(it) {
   wireLineage(el, it);
 }
 
-async function pageTheorem(id) {
+async function pageTheorem(id, params = new URLSearchParams()) {
   const isCurrent = viewIsCurrent();
   await ensurePlanned().catch(() => {});
   if (!isCurrent()) return;
@@ -464,7 +490,15 @@ async function pageTheorem(id) {
     ${paperBlock(it)}
     <div class="statement">${richHTML(it.st || '')}${it.scope ? `<div class="scope"><span class="eyebrow">Holds when</span> ${inlineHTML(it.scope)}</div>` : ''}</div>
     <div class="thm-grid">
-      <div class="card viz-card" ${it.viz ? '' : 'hidden'}><div class="viz-caption" id="caption"></div><div id="viz"><div class="viz-placeholder">Loading visualization…</div></div></div>
+      <div class="card viz-card" ${it.viz ? '' : 'hidden'}><div class="viz-caption" id="caption"></div><div id="viz"><div class="viz-placeholder">Loading visualization…</div></div>
+        <details class="viz-share"><summary>Share / embed</summary>
+          <p>Includes controls, 2D handles, 3D camera, proof step and a paused animation time. Other edited data and simulation history are included only when this visualization supports sharing them.</p>
+          <p class="share-adapters"></p>
+          <button class="btn share-create" type="button">Create state link</button>
+          <div class="share-output" hidden><label>Link to this state<input class="share-url" readonly aria-label="Link to this visualization state"></label><button class="btn share-copy" type="button">Copy link</button>
+          <label>Embed in a course page<textarea class="share-embed" readonly rows="3" aria-label="Embed code for this visualization state"></textarea></label><a class="share-preview" target="_blank" rel="noopener">Preview embed ↗</a></div>
+          <p class="share-status" role="status"></p>
+        </details></div>
       <div class="side-grid">
         <div class="card panel"><h2>Why it's true</h2><div class="prose" id="idea"><span class="faint">…</span></div>
           ${it.refs || links.length ? `<div class="refs-inline">${it.refs ? `<span class="eyebrow">Read more</span> ${escapeHTML(it.refs.join(' · '))}` : ''}${links.map(([k, u]) => ` · <a href="${escapeHTML(u)}" target="_blank" rel="noopener">${escapeHTML(k)}</a>`).join('')}</div>` : ''}
@@ -483,8 +517,13 @@ async function pageTheorem(id) {
       ${lineageBlock(it)}
     </div>
     <p class="kbd-hint" style="margin-top:18px">Tip: use ← and → to step through ${escapeHTML(C.short)} in order.</p>
+    <a class="embed-attribution" target="_blank" rel="noopener">Ideas, visualized · Open full explanation ↗</a>
   </div>`);
   app.replaceChildren(el);
+  const fullURL = new URL(location.href); fullURL.searchParams.delete('embed');
+  const fullParams = new URLSearchParams(params); fullParams.delete('embed');
+  fullURL.hash = `/t/${encodeURIComponent(id)}${fullParams.size ? `?${fullParams}` : ''}`;
+  el.querySelector('.embed-attribution').href = fullURL.href;
   wireLineage(el, it);
   // keyboard prev/next
   const onKey = (e) => {
@@ -502,7 +541,30 @@ async function pageTheorem(id) {
     el.querySelector('#idea').innerHTML = richHTML(full.idea || '');
     if (full.viz) {
       el.querySelector('#caption').innerHTML = full.caption ? ICON_HAND + richHTML(full.caption) : '';
-      destroyViz = mount(el.querySelector('#viz'), full.viz);
+      let state = null, stateError = '';
+      const status = el.querySelector('.share-status');
+      if (params.has('s')) {
+        try { const saved = decodeState(params.get('s')); if (saved.item !== id) throw new Error('This saved state belongs to a different idea.'); state = saved; }
+        catch (error) { status.textContent = stateError = `Saved state could not be read: ${error.message}`; el.querySelector('.viz-share').open = true; }
+      }
+      destroyViz = mount(el.querySelector('#viz'), full.viz, { state, onStateError: error => { status.textContent = `Saved state could not be restored: ${error.message}`; el.querySelector('.viz-share').open = true; } });
+      if (stateError) { const notice = document.createElement('div'); notice.className = 'viz-state-notice'; notice.setAttribute('role', 'status'); notice.textContent = stateError; el.querySelector('#viz').prepend(notice); }
+      const custom = destroyViz.stateInfo().custom;
+      el.querySelector('.share-adapters').textContent = custom.length ? `Also includes: ${custom.join(', ')}. Other custom edits and samples are excluded.` : 'Custom graph edits, drawn points, random samples and simulation history are excluded from this link.';
+      el.querySelector('.share-create').addEventListener('click', () => {
+        try {
+          const saved = destroyViz.snapshot(), url = stateURL(location.href, id, saved), embed = stateURL(location.href, id, saved, true);
+          el.querySelector('.share-url').value = url;
+          el.querySelector('.share-embed').value = `<iframe src="${escapeHTML(embed)}" title="${escapeHTML(it.name.replace(/\$/g, ''))}" width="100%" height="640" loading="lazy" style="border:0"></iframe>`;
+          el.querySelector('.share-preview').href = embed; el.querySelector('.share-output').hidden = false;
+          status.textContent = 'State link created. Recreate the link after making further changes.';
+        } catch (error) { status.textContent = error.message; }
+      });
+      el.querySelector('.share-copy').addEventListener('click', async () => {
+        const input = el.querySelector('.share-url');
+        try { await navigator.clipboard.writeText(input.value); status.textContent = 'State link copied.'; }
+        catch { input.focus(); input.select(); status.textContent = 'Link selected. Copy it with your keyboard.'; }
+      });
     }
   } catch (e) {
     console.error(e);
@@ -522,7 +584,11 @@ async function pageMap(params) {
   const apply = async (q, fit) => {
     const version = ++queryVersion;
     if (!q.trim()) { view.setHighlight(null); history.replaceState(null, '', '#/map'); return; }
-    await ensureSearchDetails().catch(() => {});
+    try { await ensureSearch(); }
+    catch {
+      if (isCurrent() && version === queryVersion) host.querySelector('.map-q-n').textContent = 'Search could not load';
+      return;
+    }
     if (!isCurrent() || version !== queryVersion) return;
     const R = runSearch(SIDX, q, G, { limit: 1e6 }); view.setHighlight(new Set(R.all.map((it) => it.id)), { fit });
     history.replaceState(null, '', `#/map?q=${encodeURIComponent(q)}`);
@@ -579,8 +645,8 @@ async function pagePath(id) {
 }
 
 function bridgesOf(id) { return (G.bridges || []).filter((B) => B.steps.some((st) => st.id === id)); }
-function fieldDots(B) {
-  const seq = []; for (const st of B.steps) { const it = G.byId.get(st.id); const f = it && G.colById.get(it.col)?.field; if (f && seq[seq.length - 1] !== f) seq.push(f); }
+function fieldDots(B, lookup = G.byId) {
+  const seq = []; for (const st of B.steps) { const it = lookup.get(st.id); const f = it && G.colById.get(it.col)?.field; if (f && seq[seq.length - 1] !== f) seq.push(f); }
   return `<span class="field-path">${seq.map((f) => `<span class="col-dot" style="--bc:var(--f-${f})" title="${escapeHTML(G.fieldById.get(f).title)}"></span>`).join('<span class="fp-sep"></span>')}</span>`;
 }
 function pageBridges() {
@@ -606,6 +672,7 @@ async function pageBridge(slug) {
     <h1>${escapeHTML(B.title)}</h1>
     <p class="sub">${inlineHTML(B.blurb || '')}</p>
   </div>
+  <div class="bridge-picture-host"></div>
   <ol class="journey">${B.steps.map((st, i) => { const it = G.byId.get(st.id); if (!it) return ''; const C = G.colById.get(it.col); const F = G.fieldById.get(C.field); return `<li class="j-step${it.planned ? ' planned' : ''}" data-col="${it.col}" style="--fc:var(--f-${F.id})">
       <div class="j-rail"><span class="j-num">${i + 1}</span></div>
       <a class="card j-card" href="#/t/${it.id}">
@@ -614,20 +681,26 @@ async function pageBridge(slug) {
         <div class="note">${inlineHTML(st.note || '')}</div>
       </a></li>`; }).join('')}</ol></div>`);
   app.replaceChildren(el);
+  let alive = true, destroyPicture = null;
+  cleanup = () => { alive = false; destroyPicture?.(); };
+  try {
+    const { mountBridgePicture } = await import('./bridge-viz.js');
+    if (!alive) return;
+    destroyPicture = mountBridgePicture(el.querySelector('.bridge-picture-host'), slug, id => { const it = G.byId.get(id); return it ? `${colShort(it.col)} ${displayNum(it)} · ${it.name.replace(/\$/g, '')}` : id; });
+  } catch (error) { if (alive) el.querySelector('.bridge-picture-host').textContent = `Shared picture could not load: ${error.message}`; }
 }
 
 async function pageTimeline(params) {
   const isCurrent = viewIsCurrent();
   setTitle('Timeline'); setNav('timeline'); curCol = null;
   await ensurePlanned().catch(() => {});
-  if (params?.get('q')) await ensureSearchDetails().catch(() => {});
   if (!isCurrent()) return;
   const items = [...G.items, ...G.planned].filter((it) => it.yr != null);
   if (!items.length) { app.replaceChildren(h(`<div class="wrap page-head"><h1>Timeline</h1><p class="sub">No dated ideas yet: items gain a place on the timeline when they carry a <code>credit</code> with a year.</p></div>`)); return; }
   const q = params?.get('q') || '';
   const host = document.createElement('div'); app.replaceChildren(host);
   let hl = null;
-  if (q) { buildSearch(); const R = runSearch(SIDX, q, G, { limit: 1e6 }); hl = new Set(R.all.map((it) => it.id)); }
+  if (q) { await ensureSearch(); if (!isCurrent()) return; const R = runSearch(SIDX, q, G, { limit: 1e6 }); hl = new Set(R.all.map((it) => it.id)); }
   const view = new TimelineView(host, G, { items, highlight: hl, what: q ? `dated ideas · highlighting “${escapeHTML(q)}” (${hl.size})` : 'dated ideas and papers (hollow: planned)', onOpen: (id) => go(`#/t/${id}`) });
   cleanup = () => view.destroy();
 }
@@ -702,16 +775,19 @@ async function route(event) {
   const [path, qs] = raw.split('?');
   const params = new URLSearchParams(qs || '');
   const parts = path.split('/').filter(Boolean);
+  document.documentElement.classList.toggle('embed-view', parts[0] === 't' && (new URLSearchParams(location.search).get('embed') === '1' || params.get('embed') === '1'));
   closeSearch();
+  app.replaceChildren(h('<div class="loading" role="status">Loading…</div>'));
   // old book routes
   if (parts[0] === 'book' && parts[1]) { location.replace(`#/c/${parts.slice(1).join('/')}`); return; }
   try {
-    if (!parts.length) pageHome();
+    if (parts.length) { await ensureCatalog(); if (version !== routeVersion) return; }
+    if (!parts.length) await pageHome();
     else if (parts[0] === 'f' && parts[1]) pageField(parts[1]);
     else if (parts[0] === 'c' && parts.length === 2) await pageCollection(parts[1]);
     else if (parts[0] === 'c' && parts.length === 3) await pageChapter(parts[1], +parts[2]);
-    else if (parts[0] === 't' && parts[1] && G.alias.has(decodeURIComponent(parts[1]))) location.replace(`#/t/${G.alias.get(decodeURIComponent(parts[1]))}`);
-    else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]));
+    else if (parts[0] === 't' && parts[1] && G.alias.has(decodeURIComponent(parts[1]))) location.replace(`#/t/${G.alias.get(decodeURIComponent(parts[1]))}${qs ? `?${qs}` : ''}`);
+    else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]), params);
     else if (parts[0] === 'map') await pageMap(params);
     else if (parts[0] === 'status') pageStatus();
     else if (parts[0] === 'timeline') await pageTimeline(params);
@@ -729,7 +805,6 @@ async function route(event) {
     app.replaceChildren(h(`<div class="wrap page-head"><h1>Something went wrong</h1><p class="sub">${escapeHTML(e.message)}</p></div>`));
   }
   if (version !== routeVersion) return;
-  app.dataset.route = location.hash || '#/';
   if (parts[0] !== 'map' && parts[0] !== 'timeline') window.scrollTo(0, 0);
   if (event?.type === 'hashchange') {
     const focusTarget = parts[0] === 'search' ? app.querySelector('.search-big input') : app;
@@ -775,12 +850,28 @@ function renderSearch() {
 }
 function closeSearch() { sBox.classList.remove('open'); sInput.setAttribute('aria-expanded', 'false'); sInput.removeAttribute('aria-activedescendant'); sHrefs = []; }
 function goSearch(href) { go(href); sInput.value = ''; sInput.blur(); closeSearch(); }
-sInput.addEventListener('input', () => { sSel = 0; renderSearch(); });
-sInput.addEventListener('focus', () => { ensureSearchDetails().then(() => { if (sInput.value.trim() && document.activeElement === sInput) renderSearch(); }).catch(() => {}); if (sInput.value.trim()) renderSearch(); });
+async function updateSearch() {
+  const query = sInput.value;
+  if (!query.trim()) { closeSearch(); return; }
+  if (searchReady) { renderSearch(); return; }
+  sHrefs = []; sSel = 0;
+  sInput.setAttribute('aria-expanded', 'true'); sInput.removeAttribute('aria-activedescendant');
+  sBox.innerHTML = '<div class="sr-item"><span></span><span class="faint">Searching the atlas…</span></div>';
+  sBox.classList.add('open');
+  try {
+    await ensureSearch();
+    if (sInput.value === query && document.activeElement === sInput) renderSearch();
+  } catch {
+    if (sInput.value === query && document.activeElement === sInput) sBox.innerHTML = '<div class="sr-item"><span></span><span class="faint">Search could not load. Try again.</span></div>';
+  }
+}
+sInput.addEventListener('input', () => { sSel = 0; updateSearch(); });
+sInput.addEventListener('focus', updateSearch);
 sInput.addEventListener('keydown', (e) => {
+  if (!searchReady && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); return; }
   if (e.key === 'ArrowDown') { sSel = Math.min(sHrefs.length - 1, sSel + 1); renderSearch(); sBox.querySelector('.sel')?.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
   else if (e.key === 'ArrowUp') { sSel = Math.max(0, sSel - 1); renderSearch(); sBox.querySelector('.sel')?.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
-  else if (e.key === 'Enter') { const href = (e.metaKey || e.ctrlKey) ? searchHref(sInput.value) : sHrefs[sSel]; if (href) goSearch(href); }
+  else if (e.key === 'Enter') { const href = (e.metaKey || e.ctrlKey) ? searchHref(sInput.value) : sHrefs[sSel] || (sInput.value.trim() ? searchHref(sInput.value) : null); if (href) goSearch(href); }
   else if (e.key === 'Escape') { sInput.blur(); closeSearch(); }
 });
 sInput.addEventListener('blur', closeSearch);
@@ -791,10 +882,11 @@ window.addEventListener('keydown', (e) => { if (e.key === '/' && !e.metaKey && !
 /** Full results page: facets, results, and the matches shown on the map and timeline. */
 async function pageSearch(params) {
   const isCurrent = viewIsCurrent();
-  await ensureSearchDetails().catch(() => {});
+  const q = params.get('q') || '';
+  if (q.trim()) await ensureSearch();
+  else await ensurePlanned();
   if (!isCurrent()) return;
   buildSearch();
-  const q = params.get('q') || '';
   setTitle(q ? `Search: ${q}` : 'Search'); setNav(''); curCol = null;
   const R = runSearch(SIDX, q, G, { limit: 100000 });
   const facet = (title, counts, key, label) => { const es = Object.entries(counts).filter(([, n]) => n).sort((a, b) => b[1] - a[1]); return es.length ? `<div class="facet"><div class="eyebrow">${title}</div>${es.map(([k, n]) => `<a class="facet-row" href="${searchHref(`${q} ${key}:${k}`.trim())}"${key === 'field' ? ` data-field="${k}"` : ''}><span>${key === 'field' ? `<span class="col-dot" style="--bc:var(--f-${k})"></span>` : ''}${escapeHTML(label(k))}</span><b>${n.toLocaleString('en')}</b></a>`).join('')}</div>` : ''; };

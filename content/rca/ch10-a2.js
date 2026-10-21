@@ -70,8 +70,8 @@ export default {
       num: '10.8',
       kind: 'Definition',
       name: 'Curves, paths and closed paths',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 10.8, pp. 200–201'],
-      statement: String.raw`A **curve** in a topological space $X$ is a continuous map $\gamma$ of a compact interval $[\alpha,\beta]\subset\R$ with $\alpha<\beta$ into $X$; $[\alpha,\beta]$ is its **parameter interval** and $\gamma^*$ denotes its range. If $\gamma(\alpha)=\gamma(\beta)$, $\gamma$ is a **closed curve**.
+      verify: true,
+      statement: String.raw`A **curve** in a topological space $X$ is a continuous map $\gamma$ of a compact interval $[\alpha,\beta]\subset\R$ into $X$; $[\alpha,\beta]$ is its **parameter interval** and $\gamma^*$ denotes its range. If $\gamma(\alpha)=\gamma(\beta)$, $\gamma$ is a **closed curve**.
 
 A **path** is a curve in the plane that is piecewise continuously differentiable: there are points $\alpha=s_0<s_1<\dots<s_n=\beta$ such that on each $[s_{j-1},s_j]$ the map $\gamma$ has a continuous derivative (one-sided at the ends). The one-sided derivatives at an $s_j$ need not agree. A **closed path** is a path which is a closed curve.`,
       idea: String.raw`Paths are the curves along which $\int f(\gamma(t))\gamma'(t)\,dt$ makes sense with nothing more than Riemann integration: $\gamma'$ is bounded and continuous except at finitely many corners. Polygons, circles and arcs — everything Cauchy's theorem needs — are paths, and $\gamma^*$ is compact, being a continuous image of $[\alpha,\beta]$.`,
@@ -139,7 +139,7 @@ A **path** is a curve in the plane that is piecewise continuously differentiable
       num: '10.9',
       kind: 'Definition',
       name: 'Integration over a path',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 10.8 and special cases 10.9, pp. 201–203'],
+      verify: true,
       statement: String.raw`If $\gamma$ is a path with parameter interval $[\alpha,\beta]$ and $f$ is a continuous complex function on $\gamma^*$, the **integral of $f$ over $\gamma$** is
 $$\int_\gamma f(z)\,dz=\int_\alpha^\beta f(\gamma(t))\,\gamma'(t)\,dt .$$
 It does not change under a $C^1$ reparametrization $\gamma\circ\varphi$ with $\varphi$ an increasing map of an interval onto $[\alpha,\beta]$; reversing the direction changes its sign; and

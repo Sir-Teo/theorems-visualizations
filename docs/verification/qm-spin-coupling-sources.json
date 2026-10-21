@@ -1,0 +1,50 @@
+[
+  {
+    "url": "https://bohr.physics.berkeley.edu/classes/221/notes/spinrot.pdf",
+    "sha256": "7370f02e8e6f0a7100734ee5c6c8c8e09aed9cef82836a03f24667f3af44e426",
+    "read": "Complete \u00a7\u00a77\u20138 pp7\u20139 eq25\u201335; complete \u00a714 pp14\u201316 eq55\u201363",
+    "pagination": "physical PDF page equals printed page"
+  },
+  {
+    "url": "https://bohr.physics.berkeley.edu/classes/221/notes/spinmagf.pdf",
+    "sha256": "6c8a34804997d34b3903614029f7964db00d12c24f238a3e4e1d5ceb823751e8",
+    "read": "Complete \u00a72 pp2\u20134; \u00a74 pp5\u20137 eq16\u201324; \u00a7\u00a75\u20137 pp7\u201310 eq26\u201344",
+    "pagination": "physical PDF page equals printed page"
+  },
+  {
+    "url": "https://bohr.physics.berkeley.edu/classes/221/notes/jjcouple.pdf",
+    "sha256": "f2fcfa81ae9242cc69c5c02cd99433957181bdbbd4f0ba274f1ad54663067df8",
+    "read": "Complete \u00a7\u00a77\u201312 pp8\u201316 eq34\u201361; complete \u00a715 pp17\u201318 eq66\u201368",
+    "pagination": "physical PDF page equals printed page"
+  },
+  {
+    "url": "https://bohr.physics.berkeley.edu/classes/221/notes/wigeck.pdf",
+    "sha256": "73915cf458e9108404b3da5ecaa17e1b06f19b051af1b98153a57f867c94e703",
+    "read": "Complete \u00a72 pp1\u20132; \u00a7\u00a75\u201311 pp8\u201317 eq30\u201369, including full theorem proof",
+    "pagination": "physical PDF page equals printed page"
+  },
+  {
+    "url": "https://bohr.physics.berkeley.edu/classes/221/notes/foldyw.pdf",
+    "sha256": "4e070ed477618b03ba2ecac2bde9a88420ffc38a6a45211f5a1362f07a5b2967",
+    "read": "Complete \u00a7\u00a73\u20136 pp3\u20137 eq3\u201334",
+    "pagination": "physical PDF page equals printed page"
+  },
+  {
+    "url": "https://physicsfaculty.bnu.edu.cn/Public/web/application/faculty/guowenan/QMII/2020lect/precession.pdf",
+    "sha256": "ac1f92e1704f239fd2ce7cb37c1bbdbb1abcf5dfaaa42af7b7cbc002361185ed",
+    "read": "All original paper body, PRL35(1975)1053\u20131055. Physical PDF pages1\u20133; equations1\u20137 and figures1\u20133; rendered/inspected printed1054. Next unrelated article on1055 excluded."
+  },
+  {
+    "url": "https://physics.nist.gov/cuu/Constants/Table/allascii.txt",
+    "sha256": "77fb90e66c40db3e6eb16630bc9c88e4c7c8beddbe5e71be406f2f26e3f67e67",
+    "read": "2022CODATA signed electron g, Bohr magneton/Hz/T, neutron gyromagnetic ratio/magnitude entries"
+  },
+  {
+    "url": "https://dlmf.nist.gov/34.1.E1",
+    "read": "CG/3j phase and square-root relation"
+  },
+  {
+    "url": "https://dlmf.nist.gov/34.2.E4",
+    "read": "Complete factorial sum and admissibility conditions for3j"
+  }
+]

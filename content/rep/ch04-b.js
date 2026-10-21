@@ -1,5 +1,5 @@
 // Representation Theory — Chapter 4: Character tables of small groups (part 2: 4.7–4.12)
-import { TAU, ecol, nm, tableOf, ip, cabs, csub, cmul, cconj, cadd, csc, ctext, cm, cmm, inv, mm, irrepMats, fsIndicator, sqrtCount, formSpace, icosaData, rotClasses, axisAngle, rodrigues, m3v, tr3, PHI, symData, extChars, extTrace, stdMats, moleculeData, displacementChars, projectDisp, pgDecompose, atomPerm, C2V, C3V, elOrder } from './ch04.shared.js';
+import { TAU, ecol, nm, tableOf, ip, cabs, csub, cmul, cconj, cadd, csc, ctext, cm, cmm, inv, mm, irrepMats, fsIndicator, sqrtCount, formSpace, icosaData, rotClasses, axisAngle, rodrigues, m3v, tr3, PHI, symData, extChars, extTrace, stdMats, moleculeData, displacementChars, projectDisp, pgDecompose, atomPerm, C2V, C3V, elOrder, vibrationalDisp, selectionSample, selectionValues } from './ch04.shared.js';
 
 const fmtZ = (z) => ctext(z).replace(/^-0$/, '0');
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
@@ -74,7 +74,7 @@ where $\varphi=\tfrac{1+\sqrt5}2$ is the golden ratio. Here $\chi_3$ is the char
       num: '4.8',
       kind: 'Proposition',
       name: 'Exterior powers of the standard representation of Sₙ',
-      statement: String.raw`Let $V$ be the standard $(n-1)$-dimensional representation of $S_n$ (the sum-zero subspace of the permutation representation $\mathbb C^n$). For each $k=0,1,\dots,n-1$ the exterior power $\Lambda^kV$ is irreducible, i.e. $\langle\chi_{\Lambda^kV},\chi_{\Lambda^kV}\rangle=1$. Its character is read off the generating function $\sum_k\chi_{\Lambda^kV}(g)\,t^k=\det(1+tg\,|\,V)=\prod_{\text{cycles of }g}\frac{1-(-t)^{\ell}}{1+t}$, and these $n$ representations are pairwise non-isomorphic (they are the "hook" representations, partitions $(n-k,1^k)$).`,
+      statement: String.raw`Let $V$ be the standard $(n-1)$-dimensional representation of $S_n$ (the sum-zero subspace of the permutation representation $\mathbb C^n$). For each $k=0,1,\dots,n-1$ the exterior power $\Lambda^kV$ is irreducible, i.e. $\langle\chi_{\Lambda^kV},\chi_{\Lambda^kV}\rangle=1$. Its character is read off the generating function $\sum_k\chi_{\Lambda^kV}(g)\,t^k=\det(1+tg\,|\,V)=\frac{\prod_{\text{cycles of }g}(1-(-t)^{\ell})}{1+t}$, and these $n$ representations are pairwise non-isomorphic (they are the "hook" representations, partitions $(n-k,1^k)$).`,
       idea: String.raw`Since $\mathbb C^n=\mathbf1\oplus V$ we get $\Lambda^k\mathbb C^n=\Lambda^kV\oplus\Lambda^{k-1}V$, and $\Lambda^k\mathbb C^n$ is a permutation-type representation (induced from a sign character of $S_k\times S_{n-k}$) whose character is computed from the cycle type of $g$ via the determinant $\det(1+tP_g)=\prod(1-(-t)^\ell)$. Dividing by $1+t$ gives the characters of $\Lambda^kV$. The computation of $\langle\chi,\chi\rangle$ then reduces to a sum over cycle types weighted by class sizes, and it equals $1$ for every $k$ (the proof in general uses Frobenius reciprocity, Chapter 6); here we simply compute it, for $n\le6$, for every class (3.8).`,
       caption: String.raw`Choose $n\le 6$ and $k$. The bars on the left give $\chi_{\Lambda^kV}$ on every conjugacy class (labelled by cycle type), computed from the product formula; the readout confirms it against the traces of $k\times k$ principal minors of the actual $(n-1)\times(n-1)$ matrices. The bars on the right give $\langle\chi_{\Lambda^kV},\chi_{\Lambda^kV}\rangle$ for all $k$ at once: they are all $1$.`,
       deps: ['rep-3.8', 'rep-1.9'],
@@ -146,7 +146,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
           let mats = ir.mats;
           if (t > 0) { const P = Array.from({ length: d }, (_, i) => Array.from({ length: d }, (_, j) => (i === j ? 1 : 0) + (d > 1 && i === 0 && j === 1 ? t : d === 1 ? 0 : 0))); const Pi = inv(P), Pc = cm(P), Pic = cm(Pi); mats = mats.map((R) => cmm(cmm(Pc, R), Pic)); }
           const all = formSpace(v.M, mats, 'all'), sym = formSpace(v.M, mats, 'sym'), alt = formSpace(v.M, mats, 'alt');
-          const T = tableOf(key), row = T.rows.find((r) => r.tex === ir.tex), isReal = row.vals.every((z) => Math.abs(z[1]) < 1e-9);
+          const T = tableOf(key), row = T.rows.find((r) => r.name === ir.name), isReal = row.vals.every((z) => Math.abs(z[1]) < 1e-9);
           const type = sym.length ? 'real' : alt.length ? 'quaternionic' : 'complex';
           const form = (sym[0] || alt[0] || null);
           return (cache[id] = { ir, all: all.length, sym: sym.length, alt: alt.length, type, form, isReal, nirr: irrepMats(key).length });
@@ -165,7 +165,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
         });
         v.readout(() => {
           const key = gsel.value, r = solve(key, Math.min(idx, irrepMats(key).length - 1), sh.value);
-          const T = tableOf(key), row = T.rows.find((q) => q.tex === r.ir.tex);
+          const T = tableOf(key), row = T.rows.find((q) => q.name === r.ir.name);
           return `$${T.G.tex}$, irreducible ${Math.min(idx, r.nirr - 1) + 1} of ${r.nirr}: $${r.ir.tex}$ of degree ${r.ir.d}. Dimensions of the spaces of invariant forms: all ${r.all}, symmetric ${r.sym}, alternating ${r.alt} — so the type is **${r.type}**. Character real-valued: ${r.isReal ? 'yes' : 'no'}${r.type === 'complex' ? ' (so $V\\not\\cong V^*$)' : ''}.${sh.value > 0 ? ' (Basis changed: the form is different, the verdict is not.)' : ''}`;
         });
       },
@@ -176,12 +176,12 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       kind: 'Theorem',
       name: 'Frobenius–Schur indicator',
       statement: String.raw`For an irreducible character $\chi$ of a finite group $G$ put $\nu(\chi)=\frac1{|G|}\sum_{g\in G}\chi(g^2)$. Then $\nu(\chi)\in\{+1,0,-1\}$, and $\nu(\chi)=+1$, $0$, $-1$ exactly when the representation is of real, complex, quaternionic type (4.9). Moreover $\sum_\chi\nu(\chi)\chi(1)$ equals the number of $g\in G$ with $g^2=e$, and more generally $\sum_\chi\nu(\chi)\chi(g)=\#\{h:h^2=g\}$.`,
-      idea: String.raw`The key identity is $\chi(g^2)=\chi_{S^2V}(g)-\chi_{\Lambda^2V}(g)$ (the eigenvalues of $g$ are $\lambda_i$, those of $g^2$ are $\lambda_i^2$, and $\sum_{i\le j}\lambda_i\lambda_j-\sum_{i<j}\lambda_i\lambda_j=\sum\lambda_i^2$), so $\nu(\chi)=\dim(S^2V)^G-\dim(\Lambda^2V)^G$ (3.3, 3.6). The invariants of $V\otimes V$ are the invariant bilinear forms; by Schur there is at most one, either symmetric ($+1$) or alternating ($-1$), and none exactly when $V\not\cong V^*$ ($0$). The second formula follows by expanding the class function $g\mapsto\#\{h:h^2=g\}$ in the irreducible characters and computing the coefficients $\nu(\chi)$.`,
+      idea: String.raw`The key identity is $\chi(g^2)=\chi_{S^2V}(g)-\chi_{\Lambda^2V}(g)$ (the eigenvalues of $g$ are $\lambda_i$, those of $g^2$ are $\lambda_i^2$, and $\sum_{i\le j}\lambda_i\lambda_j-\sum_{i<j}\lambda_i\lambda_j=\sum\lambda_i^2$), so $\nu(\chi)=\dim(S^2V)^G-\dim(\Lambda^2V)^G$ (3.3, 3.6). Invariant bilinear forms lie in $(V^*\otimes V^*)^G$, whose symmetric and alternating parts have the same invariant dimensions as the dual spaces $S^2V$ and $\Lambda^2V$; by Schur there is at most one, either symmetric ($+1$) or alternating ($-1$), and none exactly when $V\not\cong V^*$ ($0$). The second formula follows by expanding the class function $g\mapsto\#\{h:h^2=g\}$ in the irreducible characters and computing its coefficient at $\chi$: $|G|^{-1}\sum_h\overline{\chi(h^2)}=\overline{\nu(\chi)}=\nu(\chi)$, since the indicator is real.`,
       caption: String.raw`Choose a group. The left bars show $\nu(\chi)=\frac1{|G|}\sum\chi(g^2)$ computed from the character table for each irreducible, coloured by type (green real, red complex, purple quaternionic); a marker records whether the explicit search for invariant bilinear forms of 4.9 reached the same verdict (that search needs matrices, which we have for the irreducibles of the smaller groups). The right bars compare, on each class, the number of square roots $\#\{h:h^2\in C\}/|C|$ counted by brute force with $\sum\nu(\chi)\chi(C)$.`,
       deps: ['rep-4.9', 'rep-3.5'],
-      refs: ['Serre §13.2', 'Fulton–Harris §3.5', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
+      refs: ['Serre §13.2, Propositions 38–39 and Exercise 13.11', 'Etingof et al. §5.1, Theorem 5.1.5'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf#page=101' },
       tags: ['Frobenius–Schur', 'real structure'],
-      credit: 'Finite-group representation theory',
       viz(v) {
         const KEYS = ['Z3', 'Z4', 'S3', 'D4', 'Q8', 'D5', 'A4', 'S4', 'A5', 'S5'];
         const gsel = v.select('group', KEYS.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'Q8');
@@ -196,7 +196,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
           const roots = G.classes.map((c, i) => cnt[i] / c.size);
           const viaChars = G.classes.map((_, i) => T.rows.reduce((s, r, j) => s + nu[j] * r.vals[i][0], 0));
           const found = {};
-          irrepMats(key).forEach((ir) => { const row = T.rows.findIndex((r) => r.tex === ir.tex); const s = formSpace(v.M, ir.mats, 'sym').length, a = formSpace(v.M, ir.mats, 'alt').length; found[row] = s ? 1 : a ? -1 : 0; });
+          irrepMats(key).forEach((ir) => { const row = T.rows.findIndex((r) => r.name === ir.name); const s = formSpace(v.M, ir.mats, 'sym').length, a = formSpace(v.M, ir.mats, 'alt').length; found[row] = s ? 1 : a ? -1 : 0; });
           return (cache[key] = { T, G, nu, roots, viaChars, found, inv: cnt.reduce((s, x, i) => s + (i === 0 ? x : 0), 0) });
         };
         v.render(() => {
@@ -226,14 +226,14 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       num: '4.11',
       kind: 'Theorem',
       name: 'Counting molecular vibrations by symmetry',
-      statement: String.raw`Let a non-linear molecule with $N$ atoms have symmetry group $G$ (its point group). The $3N$ displacement coordinates form a representation $\Gamma_{3N}$ of $G$ whose character is $\chi_{3N}(g)=(\text{number of atoms fixed by }g)\cdot\operatorname{tr}(g)$, where $\operatorname{tr}(g)$ is the trace of $g\in O(3)$. Then the vibrations (normal modes) form the representation $\Gamma_{\mathrm{vib}}=\Gamma_{3N}-\Gamma_{\mathrm{trans}}-\Gamma_{\mathrm{rot}}$, where $\Gamma_{\mathrm{trans}}$ is the representation on vectors $(x,y,z)$ and $\Gamma_{\mathrm{rot}}$ the one on axial vectors ($\chi_{\mathrm{rot}}(g)=\det g\cdot\operatorname{tr}g$). The multiplicity of each irreducible $\Gamma_i$ in $\Gamma_{\mathrm{vib}}$, computed by 3.6, counts copies of that symmetry type; a type of dimension $d_i$ contributes $d_i$ modes per copy (for a non-linear molecule $3N-6$ in all). For example $\Gamma_{\mathrm{vib}}(\mathrm{H_2O})=2A_1\oplus B_1$ and $\Gamma_{\mathrm{vib}}(\mathrm{NH_3})=2A_1\oplus2E$.`,
-      idea: String.raw`A symmetry of the molecule permutes the atoms and rotates or reflects the displacement of each; the trace of the resulting $3N\times3N$ matrix only gets contributions from atoms that stay where they are, each contributing $\operatorname{tr}g$. Because the force constants are invariant under $G$, the Hessian commutes with this representation, so normal modes with distinct frequencies span subrepresentations (Schur, 2.5); the six trivial motions (translations and rotations of the whole molecule) have known characters, and the rest is multiplicity counting with 3.6. The picture illustrates the representation calculation; it does not predict frequencies or force constants.`,
-      caption: String.raw`Choose water ($C_{2v}$) or ammonia ($C_{3v}$). The table is computed from the actual geometry: atoms fixed by each class, the trace of the matrix, and the characters of $\Gamma_{3N}$, translations, rotations; the decomposition appears in the readout. In the picture, a random displacement of the atoms (new random button) is projected onto one irreducible type with the projection formula of 3.12: what remains is a symmetry-adapted displacement of that type. Projecting onto a type that does not occur in $\Gamma_{\mathrm{vib}}$ leaves only a translation or rotation (or zero); types that do occur show what a mode of that symmetry looks like.`,
+      statement: String.raw`Let an isolated, non-linear molecule of $N$ atoms at a stable equilibrium have a finite point group $G$ preserving atom masses. Work in the harmonic approximation. The $3N$ displacement coordinates form a representation $\Gamma_{3N}$ of $G$ whose character is $\chi_{3N}(g)=(\text{number of atoms fixed by }g)\cdot\operatorname{tr}(g)$, where $\operatorname{tr}(g)$ is the trace of $g\in O(3)$. Then the vibrations (normal modes) form the representation $\Gamma_{\mathrm{vib}}=\Gamma_{3N}-\Gamma_{\mathrm{trans}}-\Gamma_{\mathrm{rot}}$, where $\Gamma_{\mathrm{trans}}$ is the representation on vectors $(x,y,z)$ and $\Gamma_{\mathrm{rot}}$ the one on axial vectors ($\chi_{\mathrm{rot}}(g)=\det g\cdot\operatorname{tr}g$). The multiplicity of each irreducible $\Gamma_i$ in $\Gamma_{\mathrm{vib}}$, computed by 3.6, is the number of copies of that symmetry type; a copy of dimension $d_i$ contributes $d_i$ normal coordinates ($3N-6$ coordinates in all). For example $\Gamma_{\mathrm{vib}}(\mathrm{H_2O})=2A_1\oplus B_1$ (water in the $xz$ plane, with $z$ the twofold axis) and $\Gamma_{\mathrm{vib}}(\mathrm{NH_3})=2A_1\oplus2E$.`,
+      idea: String.raw`A symmetry of the molecule permutes the atoms and rotates or reflects the displacement of each; the trace of the resulting $3N\times3N$ matrix only gets contributions from atoms that stay where they are, each contributing $\operatorname{tr}g$. Because the force constants are invariant under $G$, the mass-weighted Hessian commutes with the symmetry action, so each frequency eigenspace is invariant and can be decomposed into irreducibles (Schur, 2.5); the six rigid motions (translations and rotations of the whole molecule) have known characters, and the rest is multiplicity counting with 3.6. For a linear molecule only two independent infinitesimal rotations remain, giving $3N-5$ coordinates; the full axial-vector subtraction above is specific to non-linear molecules. Symmetry classifies modes but does not determine frequencies or separate repeated copies of an irrep.`,
+      caption: String.raw`Choose water ($C_{2v}$) or ammonia ($C_{3v}$). The table computes fixed atoms and displacement, translation, rotation and vibration characters from the geometry. Before projecting a random displacement onto a symmetry type, the picture removes translations and infinitesimal rotations in the mass metric (model mass ratios H:1, N:14, O:16). An absent vibrational type therefore gives zero arrows. A present type gives a symmetry-adapted vibrational displacement; it may combine different frequencies when that type occurs more than once. Frequencies and individual normal modes require a force-constant model. The geometry uses rounded NIST bond lengths and angles; arrow amplitude is illustrative.`,
       deps: ['rep-3.6'],
-      refs: ['Etingof et al., Introduction to Representation Theory, §§4.4–4.5 (derived application)'],
+      refs: ['M. S. Dresselhaus, Applications of Group Theory to the Physics of Solids (2002), §§9.1–9.3, 9.7.1', 'NIST CCCBDB, H2O and NH3 experimental geometries'],
+      links: { source: 'https://web.mit.edu/course/6/6.734j/www/group-full.pdf#page=206' },
       see: ['qchem-8.9'],
       tags: ['molecular vibrations', 'point groups', 'chemistry'],
-      credit: 'Finite-group representation theory',
       viz(v) {
         const mols = { H2O: moleculeData('H2O'), NH3: moleculeData('NH3') };
         let seed = 7, irx = 0;
@@ -241,7 +241,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
         v.button('next irreducible type', () => { irx = (irx + 1) % mols[msel.value].P.irreps.length; });
         v.button('new random displacement', () => { seed += 1; });
         const amp = v.slider('amplitude', 0, 1, 0.8, { step: 0.02 });
-        const Sx = v.stage({ x: [-1.5, 1.5], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 1, title: 'displacement projected onto one type' });
+        const Sx = v.stage({ x: [-1.5, 1.5], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 1, title: 'vibrational displacement of one symmetry type' });
         const sc = v.scene3(Sx, { yaw: 0.5, pitch: 0.25, axis: 0, lim: 1.3, axes: false, hint: true });
         const Stab = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.15 });
         const Tb = v.table(Stab, { square: false, maxCell: 62, cellAspect: 1.3, size: 13, labelSize: 11, margin: 6 });
@@ -254,8 +254,10 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
         v.render(() => {
           const { mol, P, ch, vib } = info(msel.value), ir = P.irreps[Math.min(irx, P.irreps.length - 1)];
           const r = v.rng(seed), u = mol.atoms.map(() => [r.normal(), r.normal(), r.normal()]);
-          const pu = projectDisp(mol, ir, u), a = amp.value * 0.5;
+          const pu = projectDisp(mol, ir, vibrationalDisp(mol,u)), a = amp.value * 0.5;
           const mx = Math.max(1e-9, ...pu.map((d) => Math.hypot(...d)));
+          const extent=1.2*Math.max(1,...mol.atoms.flatMap((at,i)=>[Math.hypot(...at.p),Math.hypot(...at.p.map((x,t)=>x+a*pu[i][t]/mx))]));
+          Sx.setView([-extent,extent],[-extent,extent]);
           sc.begin();
           mol.bonds.forEach(([i, j]) => sc.line(mol.atoms[i].p, mol.atoms[j].p, { color: 'muted', width: 2.5 }));
           mol.atoms.forEach((at, i) => {
@@ -275,7 +277,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
         v.readout(() => {
           const { P, mol, mult } = info(msel.value), ir = P.irreps[Math.min(irx, P.irreps.length - 1)], N = mol.atoms.length;
           const modes = mult.vib.reduce((s, m, i) => s + m * P.irreps[i].d, 0);
-          return `$\\Gamma_{3N}=${irTex(P, mult.disp)}$; $\\Gamma_{\\mathrm{trans}}=${irTex(P, mult.trans)}$; $\\Gamma_{\\mathrm{rot}}=${irTex(P, mult.rot)}$. **$\\Gamma_{\\mathrm{vib}}=${irTex(P, mult.vib)}$**, ${Math.round(modes)} modes ($3N-6=${3 * N - 6}$). Arrows: projection onto $${ir.tex}$, which occurs ${Math.round(mult.vib[P.irreps.indexOf(ir)])}× among the vibrations.`;
+          return `$\\Gamma_{3N}=${irTex(P, mult.disp)}$; $\\Gamma_{\\mathrm{trans}}=${irTex(P, mult.trans)}$; $\\Gamma_{\\mathrm{rot}}=${irTex(P, mult.rot)}$. **$\\Gamma_{\\mathrm{vib}}=${irTex(P, mult.vib)}$**, ${Math.round(modes)} modes ($3N-6=${3 * N - 6}$). Arrows: vibrational projection onto $${ir.tex}$, which occurs ${Math.round(mult.vib[P.irreps.indexOf(ir)])}× among the vibrations.`;
         });
       },
     },
@@ -284,14 +286,14 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       num: '4.12',
       kind: 'Theorem',
       name: 'Selection rules',
-      statement: String.raw`Let $G$ be a symmetry group of a quantum system, $\psi_i,\psi_f$ states transforming according to irreducible representations $\Gamma_i,\Gamma_f$ of $G$, and $V$ an operator (for instance a component of the dipole moment) transforming according to $\Gamma_V$. If the trivial representation does not occur in $\Gamma_f^*\otimes\Gamma_V\otimes\Gamma_i$ — that is, if $\frac1{|G|}\sum_g\overline{\chi_f(g)}\chi_V(g)\chi_i(g)=0$ — then the matrix element $\langle\psi_f|V|\psi_i\rangle$ vanishes: the transition is forbidden. When the trivial representation does occur, the matrix element is allowed (it need not be non-zero for particular states, but is not zero for symmetry reasons).`,
-      idea: String.raw`The number $\langle\psi_f|V|\psi_i\rangle$ is a $G$-invariant pairing, i.e. an invariant linear form on $\Gamma_f^*\otimes\Gamma_V\otimes\Gamma_i$. By Maschke (2.2) and Schur (2.5) a representation with no trivial summand has no non-zero invariant linear form; the multiplicity of the trivial summand is computed from characters by 3.6 and 3.3 (the character of a tensor product is the product of characters).`,
-      caption: String.raw`Choose a point group ($C_{2v}$ or $C_{3v}$) and an operator ($x,y,z$ are dipole components, $xy$ and $x^2+y^2$ quadratic, as in Raman scattering). Rows are initial and columns final symmetry types; green cells are predicted allowed by the character rule, grey cells forbidden. The small number in each cell is a numerical check: we build functions of each type by projecting random functions on a symmetric set of points, and compute the normalised sum $\sum\psi_f V\psi_i$ — it is zero (to rounding) in every forbidden cell. Click a cell to see the products $\chi_f\chi_V\chi_i$ class by class.`,
+      statement: String.raw`Let $G$ be a finite unitary symmetry group of a quantum system, $\psi_i,\psi_f$ states transforming according to irreducible representations $\Gamma_i,\Gamma_f$ of $G$, and $V$ a component of a symmetry-closed operator multiplet transforming according to $\Gamma_V$ (for instance the vector of dipole components). If the trivial representation does not occur in $\Gamma_f^*\otimes\Gamma_V\otimes\Gamma_i$ — that is, if $\frac1{|G|}\sum_g\overline{\chi_f(g)}\chi_V(g)\chi_i(g)=0$ — then the matrix element $\langle\psi_f|V|\psi_i\rangle$ vanishes: the transition is forbidden. When the trivial representation does occur, the matrix element is allowed (it need not be non-zero for particular states, and a particular operator component may still give zero).`,
+      idea: String.raw`The map $(\psi_f^*,V,\psi_i)\mapsto\langle\psi_f|V|\psi_i\rangle$ is a $G$-invariant pairing, i.e. an invariant linear form on $\Gamma_f^*\otimes\Gamma_V\otimes\Gamma_i$. By Maschke (2.2) and Schur (2.5) a representation with no trivial summand has no non-zero invariant linear form; the multiplicity of the trivial summand is computed from characters by 3.6 and 3.3 (the character of a tensor product is the product of characters).`,
+      caption: String.raw`Choose a point group ($C_{2v}$ or $C_{3v}$) and an operator ($x,y,z$ are dipole components, $xy$ and $x^2+y^2$ quadratic, as in Raman scattering). Rows are initial and columns final symmetry types; green cells are predicted allowed by the character rule, grey cells forbidden. The small number in each cell is a numerical check: we build functions of each type by projecting random functions on a symmetric set of points, and compute the normalised sum $\sum\psi_f V\psi_i$ — it is zero (to rounding) in every forbidden cell. The character rule uses the whole symmetry multiplet generated by the chosen polynomial: for $C_{3v}$, $x,y$ span $E$, and $xy$ belongs to the quadratic $E$ pair. A normalized sum on this finite invariant point set illustrates symmetry zeros, not a measured transition strength. Click a cell to see the products $\chi_f\chi_V\chi_i$ class by class.`,
       deps: ['rep-3.6', 'rep-3.3'],
-      refs: ['Etingof et al., Introduction to Representation Theory, §§4.4–4.5 (derived application)'],
+      refs: ['M. S. Dresselhaus, Applications of Group Theory to the Physics of Solids (2002), §§7.5–7.6, 9.8'],
+      links: { source: 'https://web.mit.edu/course/6/6.734j/www/group-full.pdf#page=149' },
       see: ['qchem-8.10', 'qchem-9.2'],
       tags: ['selection rules', 'point groups', 'quantum mechanics'],
-      credit: 'Finite-group representation theory',
       viz(v) {
         const PG = { C2v: C2V, C3v: C3V };
         let sel = [0, 2];
@@ -303,31 +305,9 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
         const cache = {};
         const setup = (key) => {
           if (cache[key]) return cache[key];
-          const P = PG[key], r = v.rng(5);
-          const seeds = Array.from({ length: 4 }, () => [r.normal(), r.normal(), r.normal()]);
-          const X = []; seeds.forEach((s) => P.ops.forEach((o) => X.push(m3v(o.M, s))));
-          const find = (q) => X.findIndex((p) => Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]) < 1e-9);
-          const perm = P.ops.map((o) => X.map((p) => find(m3v(o.M, p))));
-          const permInv = P.ops.map((o) => X.map((p) => find(m3v(o.M.map((_, i) => o.M.map((rr) => rr[i])), p))));
-          const proj = (ir, f) => f.map((_, x) => P.ops.reduce((s, o, g) => s + ir.chi[o.cls] * f[permInv[g][x]], 0) * (ir.d / P.ops.length));
-          const states = P.irreps.map((ir) => { const f = X.map(() => r.normal()); return proj(ir, f); });
-          const ops = { z: X.map((p) => p[2]), x: X.map((p) => p[0]), y: X.map((p) => p[1]), xy: X.map((p) => p[0] * p[1]), r2: X.map((p) => p[0] ** 2 + p[1] ** 2) };
-          const type = {};
-          Object.entries(ops).forEach(([k, f]) => { type[k] = P.irreps.map((ir) => { const q = proj(ir, f); return Math.hypot(...q) > 1e-8 * (1 + Math.hypot(...f)); }); });
-          return (cache[key] = { P, X, states, ops, type });
+          return (cache[key] = selectionSample(PG[key],v.rng(5)));
         };
-        const calc = () => {
-          const { P, states, ops, type } = setup(gsel.value), V = ops[osel.value], tv = type[osel.value], n = P.irreps.length;
-          const prod = (a, b, c) => P.classes.map((_, k) => P.irreps[a].chi[k] * P.irreps[b].chi[k] * c.reduce((s, ir, i) => s + (ir ? P.irreps[i].chi[k] : 0), 0));
-          const allowed = Array.from({ length: n }, () => Array(n).fill(false)), num = Array.from({ length: n }, () => Array(n).fill(0));
-          for (let i = 0; i < n; i++) for (let f = 0; f < n; f++) {
-            allowed[i][f] = tv.some((on, t) => on && P.classes.reduce((s, c, k) => s + c.size * P.irreps[f].chi[k] * P.irreps[t].chi[k] * P.irreps[i].chi[k], 0) / P.ops.length > 1e-9);
-            const si = states[i], sf = states[f], Vsi = si.map((x, t) => x * V[t]);
-            const nrm = Math.hypot(...sf) * Math.hypot(...Vsi) || 1;
-            num[i][f] = Math.abs(sf.reduce((s, x, t) => s + x * Vsi[t], 0)) / nrm;
-          }
-          return { P, allowed, num, tv, n };
-        };
+        const calc = () => selectionValues(setup(gsel.value),osel.value);
         S.onClick((x, y) => { const h = T.hit(x, y); if (h && h.i >= 0 && h.j >= 0) sel = [h.i, h.j]; });
         v.render(() => {
           const { P, allowed, num, tv, n } = calc();
@@ -352,7 +332,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
           const m = P.classes.reduce((s, c, k) => s + c.size * P.irreps[a].chi[k] * P.irreps[b].chi[k] * tv.reduce((q, on, i) => q + (on ? P.irreps[i].chi[k] : 0), 0), 0) / P.ops.length;
           let bad = 0; for (let i = 0; i < n; i++) for (let f = 0; f < n; f++) if (!allowed[i][f] && num[i][f] > 1e-8) bad++;
           const types = P.irreps.filter((_, i) => tv[i]).map((ir) => ir.tex).join('+');
-          return `Operator type: $${types}$. Selected: $${P.irreps[a].tex}\\to ${P.irreps[b].tex}$, multiplicity of the trivial representation in $\\Gamma_f\\otimes\\Gamma_V\\otimes\\Gamma_i$ is $${nm(m, 3)}$, so the transition is **${m > 1e-9 ? 'allowed' : 'forbidden'}**; numerical matrix element ${num[a][b] < 1e-8 ? '$0$' : nm(num[a][b], 3)}. Forbidden cells with a non-zero numerical element: ${bad}.`;
+          return `Operator multiplet type: $${types}$. Selected: $${P.irreps[a].tex}\\to ${P.irreps[b].tex}$, multiplicity of the trivial representation in $\\Gamma_f\\otimes\\Gamma_V\\otimes\\Gamma_i$ is $${nm(m, 3)}$, so the transition is **${m > 1e-9 ? 'allowed' : 'forbidden'}**; numerical matrix element ${num[a][b] < 1e-8 ? '$0$' : nm(num[a][b], 3)}. Forbidden cells with a non-zero numerical element: ${bad}.`;
         });
       },
     },

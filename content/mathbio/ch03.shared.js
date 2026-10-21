@@ -90,14 +90,3 @@ export function lvOrbitPeriod(a, g, s, Tmax = 400, dt = 0.01) {
   const c = crossings(sol.ts, sol.ys.map((p) => p[1]), a, 1);
   return c.length ? c[0] : NaN;
 }
-
-/** Positive offset s on y=a with the same invariant as an arbitrary positive LV state. */
-export function lvSectionOffset(a, g, x, y) {
-  const excess = lvV(a, g, x, y) - lvV(a, g, g, a);
-  if (excess <= 1e-13) return 0;
-  // At (g+s,a), V-Vmin = s-g*log(1+s/g), strictly increasing for s>0.
-  const energy = (s) => s - g * Math.log1p(s / g);
-  let hi = Math.max(g, excess); while (energy(hi) < excess) hi *= 2;
-  let lo = 0; for (let i = 0; i < 70; i++) { const m = (lo + hi) / 2; if (energy(m) < excess) lo = m; else hi = m; }
-  return (lo + hi) / 2;
-}

@@ -2,15 +2,11 @@
 //
 // Real data (Kenneth R. French's Data Library, CRSP; see ch04.shared.js): 4.7 (25 size/book-to-market portfolios and the factors),
 // 4.8 (ten beta-sorted portfolios), 4.10 (momentum factor and ten prior-return portfolios). 4.9, 4.11 and 4.12 are models and
-// reconstructions: 4.9 a simulated universe, 4.11 a calibration whose Mehra–Prescott inputs (1889–1978: premium 6.18%, riskless 0.80%,
-// consumption growth 1.8% with sd 3.6%) were checked in the 1985 original; the lognormal approximation is from Mehra's 2003 retrospective (NBER w9512), 4.12 a modern-notation rebuild of
+// reconstructions: 4.9 a simulated universe, 4.11 historical reference means (original Mehra–Prescott Table I),
+// an explicitly separate lognormal model (Mehra 2003) and Gaussian loss-aversion toy; 4.12 a modern-notation rebuild of
 // Sharpe's Figures 8 and 9 (read from the original article; the paper's scatter is itself schematic).
 import { clamp, pct, fx, sg, pctTicks, data, monthLabel, idxOf, mean, sdev, solveLin, invert, matVec, dot, ols, excess, ann, fanLabels, fmtBig, frontierConsts, frontierSd, frontierWeights, tangency, covRho, quad, rng, BETA_NAMES } from './ch04.shared.js';
-
-export function equityPremiumCalibration(premium, covariance, riskless = .008) {
-  const logGap = Math.log1p(riskless + premium) - Math.log1p(riskless);
-  return { logGap, gamma: logGap / covariance };
-}
+import { PREMIUM_REFERENCE, premiumScenario, prospectValue, prospectHorizon } from './source-audit-factor-premium.js';
 
 export default {
   collection: 'fin',
@@ -21,30 +17,34 @@ export default {
       num: '4.7',
       kind: 'Model',
       name: 'The Fama–French three-factor model',
-      statement: String.raw`Fama and French (1993) add two return factors to the market: **SMB** ("small minus big", the return on a portfolio of small stocks minus one of big stocks) and **HML** ("high minus low", value stocks with a high book-to-market ratio minus growth stocks with a low one). The model is
-$$r_{i}-r_f=\alpha_i+b_i\,(r_M-r_f)+s_i\,\mathrm{SMB}+h_i\,\mathrm{HML}+\varepsilon_i ,$$
-and it is said to *explain* the average returns of a set of test portfolios when the intercepts $\alpha_i$ are all close to zero. The factors are built mechanically from six portfolios sorted two ways on size and book-to-market each June, so they are traded long–short returns, not macroeconomic variables.
+      statement: String.raw`Fama and French (1993) regress monthly excess portfolio returns on the excess market return and two traded long–short returns, **SMB** (small minus big) and **HML** (high minus low book-to-market):
+$$\begin{aligned}r_i-r_f&=\alpha_i+b_i(r_M-r_f)\\&\quad+s_i\,\mathrm{SMB}+h_i\,\mathrm{HML}+\varepsilon_i.\end{aligned}$$
+The pricing hypothesis is that the population intercepts are zero. A fitted regression with an intercept is descriptive; it does not itself establish that hypothesis.
 
-Scope: an empirical asset-pricing model (a multi-factor relative of the APT, fin-4.6) and not a theorem; it uses traded returns associated with characteristics, whose economic explanation (risk, or mispricing) is disputed. The time period matters.`,
-      idea: String.raw`In the CAPM only the market loading should matter, but sorting stocks on size and book-to-market produces a spread of average returns that the market beta does not explain: small value portfolios earn more, and small growth portfolios less, than their betas predict. SMB and HML are returns on portfolios that capture those two dimensions; regressing each of 25 size × value portfolios on the three factors (an APT-style multi-factor regression, fin-4.6) soaks up most of the pattern, because the portfolios differ mainly in their SMB and HML loadings. What remains — the alphas — is much smaller, although some corners (small growth stocks) stay stubbornly negative.`,
-      caption: String.raw`The 25 value-weighted portfolios of the French data library, rows from the **smallest** (top) to the **biggest** size quintile, columns from low (growth) to high (value) book-to-market, 1963 onward. **Left**: the CAPM alpha of each portfolio (annual %, monthly regression on the market). **Right**: the alpha once SMB and HML are added. Switch to **factor loadings** to see where the explanatory power comes from: SMB loadings fall with size, HML loadings rise with book-to-market. Choose the **period**: the pattern is stronger before 1992 than after.`,
-      deps: ['fin-4.6', 'stat-12.2'],
-      refs: ['BKM ch. 10', 'BKM ch. 13'],
+The factors use six value-weighted size × book-to-market portfolios formed each June. Size is split at the NYSE median; book-to-market at the 30th and 70th NYSE percentiles. SMB averages the three small portfolios minus the three big ones. HML averages the two high-book-to-market portfolios minus the two low ones. These are **returns**, while $b_i,s_i,h_i$ are loadings, rather than the stock's size or book-to-market characteristic.
+
+Scope: an empirical model. The original paper studies stocks **and bonds**, with two further bond factors; this page isolates its three stock factors and 25 size × book-to-market stock portfolios. It does not identify why the factors earn their sample average returns.`,
+      idea: String.raw`Portfolios with different SMB and HML loadings share return variation that a market-only regression misses. The heatmaps compare the intercepts left after fitting the market with those left after fitting all three factors. Smaller average absolute alphas can be useful, but in-sample $R^2$ necessarily weakly increases when regressors are added. Neither statistic is a joint pricing test or out-of-sample evidence. The original paper's joint tests also reject its three-factor specification at about the 5% level for the combined stock/bond set, despite its useful fit (section 5.3).`,
+      caption: String.raw`**Empirical data**, not simulations: 25 value-weighted French-library portfolios, July 1963–August 2026, pinned to the 202608 CRSP release. Each row is a size quintile, smallest at the top; columns run from low (growth) to high (value) book-to-market. The 25 portfolios use independent NYSE **quintile** breakpoints, distinct from the factors' 2 × 3 construction. Portfolio monthly returns are rounded to 0.01 percentage point in the embedded data.
+
+**Alphas:** the left/right panels fit CAPM/three factors with an intercept. Numbers are **12 × the monthly intercept**, in percentage points per year, without compounding. **Loadings:** the panels show $s_i$ and $h_i$. Both panels share the symmetric color scale reported below; the scale adapts to the selected window and view. The 1963–1991 window uses today's revised data, so it is not an exact reproduction of the original paper's vintage. The later window refits loadings and intercepts on that same window; it does not apply coefficients estimated before 1992.`,
+      deps: ['fin-4.6'],
+      refs: ['Fama & French (1993), §§2–3 and 5.3', 'French Data Library: factor and 25-portfolio descriptions'],
       tags: ['factor models', 'size', 'value'],
       credit: 'Eugene F. Fama & Kenneth R. French, 1993',
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model', doi: 'https://doi.org/10.1016/0304-405X(93)90023-5' },
       viz(v) {
         const D = data(), n = D.n, K = 25;
-        const per = v.select('period', ['1963–1991', '1992–2026', 'all 1963–2026'], '1963–1991');
+        const per = v.select('period', ['Jul 1963–Dec 1991', 'Jan 1992–Aug 2026', 'Jul 1963–Aug 2026'], 'Jul 1963–Dec 1991');
         const view = v.select('show', ['alphas', 'factor loadings'], 'alphas');
-        const W = 5.6, H = 5.5;
         const mk = (title) => v.stage({ x: [-1.25, 5.1], y: [-0.6, 5.45], equal: true, axes: false, height: 330, weight: 1, minWidth: 270, title });
         const A = mk('CAPM'), B = mk('three-factor model');
         const ex = D.p25.map((p) => excess(p, D.rf));
         const cache = {};
         const regs = (p) => {
           if (cache[p]) return cache[p];
-          const [i0, i1] = p === '1963–1991' ? [0, 342] : p === '1992–2026' ? [342, n] : [0, n];
+          const [i0, i1] = p === 'Jul 1963–Dec 1991' ? [0, 342] : p === 'Jan 1992–Aug 2026' ? [342, n] : [0, n];
           const c = ex.map((y) => ({ c1: ols(y, [D.mkt], i0, i1), c3: ols(y, [D.mkt, D.smb, D.hml], i0, i1) }));
           return (cache[p] = { c, i0, i1 });
         };
@@ -60,22 +60,24 @@ Scope: an empirical asset-pricing model (a multi-factor relative of the APT, fin
         let st = null;
         v.render(() => {
           const { c, i0, i1 } = regs(per.value), loads = view.value === 'factor loadings';
+          const vals = c.flatMap((q) => loads ? [q.c3.b[2], q.c3.b[3]] : [12 * q.c1.b[0], 12 * q.c3.b[0]]);
+          const unit = loads ? 0.25 : 0.02, scale = Math.max(unit, Math.ceil(Math.max(...vals.map(Math.abs)) / unit) * unit);
           let s1 = 0, s3 = 0, r1 = 0, r3 = 0;
           for (let a = 0; a < 5; a++) for (let b = 0; b < 5; b++) {
             const k = a * 5 + b, q = c[k];
             const al1 = 12 * q.c1.b[0], al3 = 12 * q.c3.b[0];
             s1 += Math.abs(al1); s3 += Math.abs(al3); r1 += q.c1.r2; r3 += q.c3.r2;
-            if (!loads) { cell(A, a, b, al1, al1 / 0.06, sg(100 * al1, 1)); cell(B, a, b, al3, al3 / 0.06, sg(100 * al3, 1)); }
-            else { const sl = q.c3.b[2], hl = q.c3.b[3]; cell(A, a, b, sl, sl / 1.2, fx(sl, 2)); cell(B, a, b, hl, hl / 1.2, fx(hl, 2)); }
+            if (!loads) { cell(A, a, b, al1, al1 / scale, sg(100 * al1, 1)); cell(B, a, b, al3, al3 / scale, sg(100 * al3, 1)); }
+            else { const sl = q.c3.b[2], hl = q.c3.b[3]; cell(A, a, b, sl, sl / scale, fx(sl, 2)); cell(B, a, b, hl, hl / scale, fx(hl, 2)); }
           }
-          frame(A, loads ? 'SMB loading' : 'annual alpha, %'); frame(B, loads ? 'HML loading' : 'annual alpha, %');
-          A.setTitle(loads ? 'size loading $s_i$ (three-factor regression)' : 'CAPM alphas (annual %)'); B.setTitle(loads ? 'value loading $h_i$ (three-factor regression)' : 'three-factor alphas (annual %)');
-          st = { s1: s1 / K, s3: s3 / K, r1: r1 / K, r3: r3 / K, i0, i1, tl1: 12 * c[0].c1.b[0], tl3: 12 * c[0].c3.b[0], th1: 12 * c[4].c1.b[0], th3: 12 * c[4].c3.b[0], premS: 12 * mean(D.smb, i0, i1), premH: 12 * mean(D.hml, i0, i1), loads };
+          frame(A, loads ? 'SMB loading' : '12 × monthly α, pp'); frame(B, loads ? 'HML loading' : '12 × monthly α, pp');
+          A.setTitle(loads ? 'size loading $s_i$ (three-factor regression)' : 'CAPM: 12 × monthly alpha (pp)'); B.setTitle(loads ? 'value loading $h_i$ (three-factor regression)' : 'three factors: 12 × monthly alpha (pp)');
+          st = { s1: s1 / K, s3: s3 / K, r1: r1 / K, r3: r3 / K, i0, i1, tl1: 12 * c[0].c1.b[0], tl3: 12 * c[0].c3.b[0], th1: 12 * c[4].c1.b[0], th3: 12 * c[4].c3.b[0], premS: 12 * mean(D.smb, i0, i1), premH: 12 * mean(D.hml, i0, i1), loads, scale };
         });
         v.legend([['blue', 'negative', { area: true }], ['red', 'positive', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
-          return `${monthLabel(st.i0)} – ${monthLabel(st.i1 - 1)}: average |alpha| ${fx(100 * st.s1, 2)}% (CAPM) → ${fx(100 * st.s3, 2)}% (three factors); average $R^2$ ${fx(st.r1, 2)} → ${fx(st.r3, 2)}\nsmall growth: ${sg(100 * st.tl1, 1)}% → ${sg(100 * st.tl3, 1)}%; small value: ${sg(100 * st.th1, 1)}% → ${sg(100 * st.th3, 1)}% a year; factor premia in this window: SMB ${sg(100 * st.premS, 1)}%, HML ${sg(100 * st.premH, 1)}% a year`;
+          return `${monthLabel(st.i0)} – ${monthLabel(st.i1 - 1)}: average |12 × monthly alpha| ${fx(100 * st.s1, 2)} pp (CAPM) → ${fx(100 * st.s3, 2)} pp (three factors); average $R^2$ ${fx(st.r1, 2)} → ${fx(st.r3, 2)}\nsmall growth: ${sg(100 * st.tl1, 1)} → ${sg(100 * st.tl3, 1)} pp; small value: ${sg(100 * st.th1, 1)} → ${sg(100 * st.th3, 1)} pp; factor sample means × 12: SMB ${sg(100 * st.premS, 1)} pp, HML ${sg(100 * st.premH, 1)} pp\ncolor range: ±${st.loads ? fx(st.scale, 2) + ' loading units' : fx(100 * st.scale, 1) + ' pp'}; common to both panels, changes with window/view. In-sample summaries; no joint alpha test is performed.`;
         });
       },
     },
@@ -234,61 +236,72 @@ Scope: a robust empirical regularity in many markets and periods first documente
       num: '4.11',
       kind: 'Phenomenon',
       name: 'The equity premium puzzle',
-      statement: String.raw`Over long samples U.S. stocks have earned much more than short-term bonds: Mehra and Prescott (1985) report for 1889–1978 a real return of 6.98% on the S&P index against 0.80% on a riskless security, a premium of 6.18% a year. In a standard consumption-based model with a representative investor with constant relative risk aversion $\gamma$ and jointly normal log consumption growth and log equity returns, the log expected-return gap equals $\gamma$ times the covariance of consumption growth with the return on equity,
-$$\ln E[R_e]-\ln R_f=\gamma\,\operatorname{Cov}(\Delta c, r_e)\;(\le\gamma\,\sigma_c\sigma_e),$$
-and consumption growth is so smooth ($\sigma_c\approx3.6\%$ a year in their sample) that **matching 6% requires a risk aversion $\gamma$ far above the range of about 10 or less that Mehra and Prescott regarded as reasonable**; and then the same model predicts a log riskless rate $r_f=\ln R_f=-\ln\beta+\gamma\mu_c-\tfrac12\gamma^2\sigma_c^2$ that is much too high at moderate $\gamma$. The puzzle is the combination: a high premium, a low riskless rate, and smooth consumption.
+      statement: String.raw`Mehra and Prescott (1985, Table I) report **arithmetic mean annual real returns** of 6.98% on their S&P composite series and 0.80% on relatively riskless short-term securities over 1889–1978: a difference of 6.18 percentage points. The latter series includes commercial paper before 1920 and is not an observed perfectly riskless real bond. Their original equilibrium calculation uses a two-state Markov consumption process. The plots here use the separate **i.i.d. joint-lognormal illustration** developed in Mehra's 2003 retrospective.
 
-Scope: a statement about a particular class of models and sample; different data sets give premia of 4% to 8% (Mehra, 2003), and many resolutions have been proposed (habits, disaster risk, long-run risk, myopic loss aversion).`,
-      idea: String.raw`Because $\gamma\,\operatorname{Cov}(\Delta c,r_e)$ is small unless either $\gamma$ is large or consumption is much more correlated with stock returns than it is in annual data, a premium of 6% needs $\gamma$ in the tens. That is not just a large number: in the same model a moderate $\gamma$ makes investors want to save so little that the riskless rate would have to be far above the observed 0.8% (the *riskless rate puzzle*, middle panel), while still larger $\gamma$ can drive it negative; whether the fitted value does so depends on the selected covariance. Benartzi and Thaler (1995) propose a behavioural resolution (loss aversion, with its prospect-theory weight on losses relative to gains, combined with frequent evaluation of the portfolio, "myopic loss aversion"; their simulations point to an evaluation period of about a year). The right panel is an independent *stylised* calculation of that idea, not their data or procedure.`,
-      caption: String.raw`**Left**: the premium the model delivers as a function of risk aversion, for equity as a claim on consumption ($\gamma\sigma_c^2$, orange) and for equity with the correlation $\rho$ you choose ($\gamma\rho\sigma_c\sigma_e$, accent), against the log expected-return gap implied by the observed 6.18% arithmetic premium and 0.8% riskless return (green, Mehra–Prescott 1889–1978); the shaded band is $\gamma<10$. The green dot is the $\gamma$ needed. **Middle**: the riskless rate the same $\gamma$ implies (time-discount factor $\beta$ as chosen, mean log consumption growth $\mu_c=1.8\%$ (a rounded teaching calibration)), against the observed 0.8%. **Right**: *myopic loss aversion*, a stylised Gaussian calculation with actual probabilities (omitting the original cumulative probability weights): the prospect-theory value of holding stocks rather than bonds for an evaluation period $h$; with the loss-aversion $\lambda$ and curvature $\alpha$ sliders it crosses zero near one year (about 14 months with the default values). The values $\alpha=0.88$ and $\lambda=2.25$ are the commonly quoted estimates of Tversky and Kahneman (1992); $\rho$ and the 20% stock volatility are not from the Mehra–Prescott table.`,
-      deps: ['behav-1.7', 'behav-2.12'],
-      refs: ['BKM ch. 13'],
+Let $g=\ln(C_{t+1}/C_t)$ and $r_e=\ln R_e$ be jointly normal, and let the representative investor's stochastic discount factor be $m=\beta e^{-\gamma g}$. Applying the normal moment-generating function (prob-2.7.1a) to $E[mR_e]=1$ and $R_f=1/E[m]$ gives
+$$\kappa\equiv\ln E[R_e]-\ln R_f,$$
+$$\kappa=\gamma\operatorname{Cov}(g,r_e)=\gamma\rho\sigma_g\sigma_e,$$
+$$\ln R_f=-\ln\beta+\gamma\mu_g-\tfrac12\gamma^2\sigma_g^2.$$
+For a perpetual unlevered claim on i.i.d. consumption, $r_e$ differs from $g$ by a constant, so $\kappa=\gamma\sigma_g^2$. A positive finite claim price additionally requires $q=\beta E[(C_{t+1}/C_t)^{1-\gamma}]<1$. These identities concern **logs of expected gross returns**; 6.18 percentage points is converted to $\ln(1.0698/1.008)$ before fitting $\gamma$.
+
+Scope: a puzzle for a specified model and historical sample. The chosen correlation and stock log-volatility are scenarios; the general jointly normal asset is not a reconstruction of the original pure-exchange equilibrium.`,
+      idea: String.raw`Smooth consumption makes its covariance with stock returns small. A large premium then requires substantial risk aversion. The same preferences also price the riskless bond, so fitting the premium alone need not fit the riskless rate. The green band marks $0\le\gamma\le10$, the range used in Mehra–Prescott's original model search, rather than a universal bound on preferences.
+
+Benartzi and Thaler (1995) combine loss aversion with frequent evaluation: aggregating gains over a longer evaluation period can make a risky investment more attractive. Their original simulations bootstrap CRSP stock, bond and bill returns and use cumulative probability weights. The right panel instead shows the explicitly specified Gaussian, ordinary-probability teaching model below. Its crossing is a model output, not their estimated evaluation period.`,
+      caption: String.raw`**Left:** log premium $\kappa$ against risk aversion, with your chosen covariance (accent) and an unlevered consumption claim (orange). The dashed target converts your arithmetic premium using the historical 0.80% reference rate. Both fitted $\gamma$ values remain in view. Orange is solid where the perpetual claim has a positive finite price ($q<1$), and dashed where it is only a formal identity; the hollow fit is explicitly classified below. **Middle:** the **simple** riskless rate $R_f-1$; the red dot uses the actual covariance-fitted $\gamma$. Lognormal consumption matches an arithmetic growth mean of 1.8% and the selected growth standard deviation (Mehra 2003's rounded baseline); it uses $\sigma_g^2=\ln[1+(s_C/1.018)^2]$ and $\mu_g=\ln1.018-\sigma_g^2/2$.
+
+**Right:** choose a separate Gaussian gain volatility $s_X$ for $X_h=\pi h+s_X\sqrt h Z$, $Z\sim N(0,1)$, and plot $E[v(X_h)]$, where $v(x)=x^\alpha$ for gains and $-\lambda(-x)^\alpha$ for losses. There is no compounding or probability weighting; this is not a full prospect-theory asset-pricing model. The default $\alpha=0.88$, $\lambda=2.25$ are the value-function parameters used by Benartzi–Thaler (p. 79). A longer evaluation period means looking **less frequently**; it differs from the investor's planning horizon.`,
+      deps: ['behav-1.7', 'behav-2.12', 'prob-1.2.5', 'prob-2.7.1a'],
+      refs: ['Mehra & Prescott (1985), Table I and §§3–4', 'Mehra (2003), NBER w9525, pp. 23–28', 'Benartzi & Thaler (1995), pp. 79–84'],
       tags: ['equity premium', 'risk aversion', 'behavioral finance'],
       credit: 'Rajnish Mehra & Edward C. Prescott, 1985',
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Equity_premium_puzzle', doi: 'https://doi.org/10.1016/0304-3932(85)90061-3' },
       viz(v) {
-        const pS = v.slider('observed premium', 0.02, 0.10, 0.0618, { step: 0.0005, fmt: (x) => pct(x, 2) });
-        const sc = v.slider('consumption volatility $\\sigma_c$', 0.015, 0.06, 0.036, { step: 0.0005, fmt: (x) => pct(x, 1) });
-        const se = v.slider('stock volatility $\\sigma_e$', 0.10, 0.30, 0.20, { step: 0.005, fmt: (x) => pct(x, 0) });
-        const rho = v.slider('correlation $\\rho$ (consumption growth, stock return)', 0.1, 1, 0.3, { step: 0.01 });
+        const pS = v.slider('target arithmetic premium (percentage points)', 0.02, 0.10, 0.0618, { step: 0.0001, fmt: (x) => `${fx(100 * x, 2)} pp` });
+        const sc = v.slider('consumption growth standard deviation $s_C$', 0.015, 0.06, 0.036, { step: 0.0005, fmt: (x) => pct(x, 1) });
+        const se = v.slider('stock log-volatility $\\sigma_e$ (scenario)', 0.10, 0.30, 0.20, { step: 0.005, fmt: (x) => pct(x, 0) });
+        const rho = v.slider('log-growth / log-return correlation $\\rho$', 0.1, 1, 0.3, { step: 0.01 });
         const beta = v.slider('discount factor $\\beta$', 0.9, 1, 0.99, { step: 0.001 });
+        const toySd = v.slider('Gaussian gain volatility $s_X$ (separate toy)', 0.10, 0.30, 0.20, { step: 0.005, fmt: (x) => pct(x, 0) });
         const lam = v.slider('loss aversion $\\lambda$', 1, 4, 2.25, { step: 0.05 });
         const alp = v.slider('curvature $\\alpha$', 0.5, 1, 0.88, { step: 0.01 });
-        const P = v.stage({ x: [0, 60], y: [0, 0.12], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 250, xlabel: 'relative risk aversion $\\gamma$', ylabel: 'log expected-return gap', yticks: pctTicks(0, 0.12, 0.03), title: 'premium implied by the model' });
-        const Rf = v.stage({ x: [0, 60], y: [-0.4, 0.4], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 250, xlabel: 'relative risk aversion $\\gamma$', ylabel: 'riskless rate (log)', title: 'riskless rate implied by the same $\\gamma$' });
-        const M = v.stage({ x: [0.05, 10], y: [-0.1, 0.1], xlog: true, axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 250, xlabel: 'evaluation period $h$ (years)', ylabel: 'prospect value of stocks over bonds', title: 'myopic loss aversion (stylised)' });
-        const MUC = 0.018;
-        const value = (h, pi, s, a, l) => { let t = 0; const N = 600; for (let i = 0; i < N; i++) { const z = -5 + (10 * (i + 0.5)) / N, w = (Math.exp(-z * z / 2) / Math.sqrt(2 * Math.PI)) * (10 / N), x = pi * h + s * Math.sqrt(h) * z; t += w * (x >= 0 ? Math.pow(x, a) : -l * Math.pow(-x, a)); } return t; };
+        const P = v.stage({ x: [-2, 65], y: [-0.01, 0.15], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 270, xlabel: 'relative risk aversion $\\gamma$', ylabel: 'log premium $\\kappa$ (decimal)', title: 'joint-lognormal pricing identities' });
+        const Rf = v.stage({ x: [-2, 65], y: [-1.08, 0.4], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 270, xlabel: 'relative risk aversion $\\gamma$', ylabel: 'simple riskless rate $R_f-1$', title: 'same preferences, riskless bond' });
+        const M = v.stage({ x: [0.035, 14], y: [-0.1, 0.1], xlog: true, axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 270, xlabel: 'evaluation period $h$ (years)', ylabel: 'expected value (toy units)', title: 'Gaussian loss-aversion toy' });
         let st = null;
         v.render(() => {
-          const cov = rho.value * sc.value * se.value, calibration = equityPremiumCalibration(pS.value, cov), observed = calibration.logGap, g1 = calibration.gamma, g2 = observed / (sc.value * sc.value), gmax = Math.max(60, 1.15 * Math.max(g1, g2));
-          P.setView([0, gmax], [0, Math.max(0.12, observed * 1.5)]);
+          const m = premiumScenario({ premium: pS.value, consumptionSd: sc.value, stockLogSd: se.value, rho: rho.value, beta: beta.value });
+          const top = Math.max(m.target, m.maxGamma * m.covariance, m.maxGamma * m.variance);
+          const xrange = [-0.065 * m.maxGamma, 1.065 * m.maxGamma];
+          P.setView(xrange, [-0.07 * top, 1.14 * top]);
           P.vband(0, 10, { color: 'green', alpha: 0.1 });
-          P.text('$\\gamma<10$', 5, Math.max(0.12, pS.value * 1.5) * 0.94, { align: 'center', size: 11.5, color: 'green', weight: 700 });
-          P.line(0, 0, gmax, gmax * cov, { color: 'accent', width: 2.4 }); P.line(0, 0, gmax, gmax * sc.value ** 2, { color: 'orange', width: 2.2 });
-          P.hline(observed, { color: 'green', width: 1.6, dash: true });
-          { P.dot(g1, observed, { r: 6.5, color: 'green' }); P.text(`γ ≈ ${fx(g1, 0)}`, g1, observed, { dx: 8, dy: -12, align: 'left', size: 12, color: 'green', weight: 700 }); }
-          const rfAt = (g) => -Math.log(beta.value) + g * MUC - 0.5 * g * g * sc.value ** 2;
-          const rfCurve = Array.from({ length: 201 }, (_, k) => [gmax * k / 200, rfAt(gmax * k / 200)]);
-          Rf.setView([0, gmax], [Math.min(-.1, ...rfCurve.map(p => p[1])) * 1.1, Math.max(.1, ...rfCurve.map(p => p[1])) * 1.1]);
-          Rf.path(rfCurve, { color: 'accent', width: 2.4 });
-          Rf.hline(Math.log1p(.008), { color: 'green', width: 1.6, dash: true }); Rf.hline(0, { color: 'muted', width: 1 });
+          P.line(0, 0, m.maxGamma, m.maxGamma * m.covariance, { color: 'accent', width: 2.4 });
+          P.line(0, 0, m.maxGamma, m.maxGamma * m.variance, { color: 'orange', width: 1.5, dash: true });
+          const validLo = Math.max(0, m.claimDomain[0]), validHi = Math.min(m.maxGamma, m.claimDomain[1]);
+          if (validHi > validLo) P.line(validLo, validLo * m.variance, validHi, validHi * m.variance, { color: 'orange', width: 2.6 });
+          P.hline(m.target, { color: 'green', width: 1.6, dash: true });
+          P.dot(m.gamma, m.target, { r: 6, color: 'green' });
+          P.dot(m.consumptionGamma, m.target, { r: 5, color: 'orange', hollow: true });
+          const rmax = Math.max(0.1, m.riskless(m.peakGamma), m.riskless(0), PREMIUM_REFERENCE.riskless);
+          Rf.setView(xrange, [-1 - 0.09 * (rmax + 1), rmax + 0.14 * (rmax + 1)]);
+          Rf.path(Array.from({ length: 241 }, (_, k) => { const g = m.maxGamma * k / 240; return [g, m.riskless(g)]; }), { color: 'accent', width: 2.4 });
+          Rf.hline(PREMIUM_REFERENCE.riskless, { color: 'green', width: 1.6, dash: true }); Rf.hline(0, { color: 'muted', width: 1 });
           Rf.vband(0, 10, { color: 'green', alpha: 0.1 });
-          const gm = g1; Rf.dot(gm, rfAt(gm), { r: 6, color: 'red' });
-          Rf.text(`${fx(100 * rfAt(gm), 0)}% at γ = ${fx(gm, 0)}`, gm, rfAt(gm), { dx: -8, dy: -12, align: 'right', size: 11.5, color: 'red', weight: 700 });
-          // myopic loss aversion
-          const pts = [], hs = []; for (let k = 0; k <= 80; k++) { const h = Math.pow(10, Math.log10(0.05) + (k / 80) * (Math.log10(10) - Math.log10(0.05))); hs.push(h); pts.push([h, value(h, pS.value, se.value, alp.value, lam.value)]); }
-          const yy = pts.map((p) => p[1]), mx = Math.max(...yy.map(Math.abs)) * 1.1; M.setView([0.05, 10], [-mx, mx]);
-          M.path(pts, { color: 'accent', width: 2.4 }); M.hline(0, { color: 'muted', width: 1 });
-          let hstar = null; for (let k = 1; k < pts.length; k++) if (pts[k - 1][1] < 0 && pts[k][1] >= 0) { let lo = hs[k - 1], hi = hs[k]; for (let q = 0; q < 40; q++) { const mid = Math.sqrt(lo * hi); if (value(mid, pS.value, se.value, alp.value, lam.value) < 0) lo = mid; else hi = mid; } hstar = Math.sqrt(lo * hi); break; }
-          if (hstar) { M.dot(hstar, 0, { r: 6.5, color: 'green' }); M.text(`${fx(hstar * 12, 0)} months`, hstar, 0, { dx: hstar > 1 ? -8 : 8, dy: 16, align: hstar > 1 ? 'right' : 'left', size: 12, color: 'green', weight: 700 }); }
+          Rf.dot(m.gamma, m.riskless(m.gamma), { r: 6, color: 'red' });
+          const hstar = prospectHorizon(pS.value, toySd.value, alp.value, lam.value);
+          const pts = Array.from({ length: 101 }, (_, k) => { const h = 0.05 * 200 ** (k / 100); return [h, prospectValue(h, pS.value, toySd.value, alp.value, lam.value)]; });
+          const mag = Math.max(1e-6, ...pts.map((p) => Math.abs(p[1]))) * 1.18;
+          M.setView([0.035, 14], [-mag, mag]); M.path(pts, { color: 'accent', width: 2.4 }); M.hline(0, { color: 'muted', width: 1 });
+          if (hstar >= 0.05 && hstar <= 10) M.dot(hstar, 0, { r: 6, color: 'green' });
           M.vline(1, { color: 'muted', width: 1, dash: true });
-          st = { g1, g2, cov, hstar, prem10: 10 * cov, prem10c: 10 * sc.value ** 2, rf10: rfAt(10), rfg: rfAt(g1), observed };
+          st = { ...m, hstar };
         });
-        v.legend([['accent', 'premium with correlation ρ / riskless rate / value of stocks'], ['orange', 'premium if equity were a claim on consumption'], ['green', 'observed values', { dash: true }]]);
+        v.legend([['accent', 'chosen covariance / simple riskless rate / toy value'], ['orange', 'consumption claim: solid admissible, dashed formal extension'], ['green', 'target / historical 0.80% rate; shaded γ ≤ 10', { dash: true }], ['red', 'riskless rate at covariance-fitted γ']]);
         v.readout(() => {
           if (!st) return '';
-          return `the risk aversion needed is γ = ${fx(st.g1, 0)} for your ρ (and ${fx(st.g2, 0)} if equity were a claim on consumption, where the premium is γσ_c²); at γ = 10 the model gives ${pct(st.prem10, 1)} (${pct(st.prem10c, 1)} for the claim on consumption), against a ${pct(st.observed, 2)} log expected-return gap from the ${pct(pS.value, 2)} observed arithmetic premium; this is a lognormal teaching model, not the original two-state Markov calibration\nthe log riskless rate at γ = 10 would be ${pct(st.rf10, 1)} (observed log gross rate 0.797%)\nmyopic loss aversion: stocks beat bonds in prospect value only if portfolios are evaluated at least every ${st.hstar ? fx(st.hstar * 12, 0) + ' months' : 'n/a'} — an investor who looks monthly demands a far larger premium than one who looks every few years`;
+          const htext = st.hstar === 0 ? 'positive throughout 0.05–10 years (no loss aversion: λ = 1)' : st.hstar < 0.05 ? `positive throughout 0.05–10 years; crossing below 0.6 months` : st.hstar > 10 ? `negative throughout 0.05–10 years; crossing beyond 120 months (${fx(12 * st.hstar, 1)} months)` : `zero at ${fx(12 * st.hstar, 1)} months; negative at shorter evaluation periods and positive at longer ones`;
+          return `target ${fx(100 * pS.value, 2)} pp = log premium ${fx(st.target, 5)}; fitted γ = ${fx(st.gamma, 2)} (chosen covariance), ${fx(st.consumptionGamma, 2)} (formal consumption-claim fit: ${st.claimLogDiscount(st.consumptionGamma) < 0 ? 'positive finite price' : 'inadmissible: q ≥ 1'})\nlog consumption mean ${fx(st.logMean, 5)}, log standard deviation ${pct(st.logSd, 3)}; at γ = 10: log premiums ${fx(10 * st.covariance, 5)} / ${fx(10 * st.variance, 5)}, simple riskless rate ${pct(st.riskless(10), 2)}; at fitted γ: ${pct(st.riskless(st.gamma), 2)} (historical reference 0.80%)\nGaussian toy: ${htext}. Evaluation frequency is separate from planning horizon.`;
         });
       },
     },

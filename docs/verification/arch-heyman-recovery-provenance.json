@@ -1,0 +1,100 @@
+{
+  "url": "https://web.archive.org/web/20250311135610id_/https://www.electronicsandbooks.com/edt/manual/Magazine/I/International%20Journal%20of%20Solidstate%20Structures/IJSS_Papers/Vol.01-15/06071106595111108.pdf",
+  "final": "https://web.archive.org/web/20250311135610id_/https://www.electronicsandbooks.com/edt/manual/Magazine/I/International%20Journal%20of%20Solidstate%20Structures/IJSS_Papers/Vol.01-15/06071106595111108.pdf",
+  "status": 200,
+  "contentType": "application/pdf",
+  "bytes": 2136404,
+  "sha256": "dce53c6e4b96f0068f72caed9842d6189635b841f06fde0844fa59dd6258e49a",
+  "magic": "b'%PDF-1.7'",
+  "pages": 43,
+  "metadata": {
+    "/CreationDate": "D:20021001103332Z",
+    "/Creator": "Acrobat 3.0 Capture Plug-in",
+    "/Producer": "Adobe Acrobat 8.12 Paper Capture Plug-in",
+    "/ModDate": "D:20091123164202+03'00'",
+    "/Title": "PII: 0020-7683(66)90018-7"
+  },
+  "sha1Base32": "DXHWWKRKOTDS2SZANOUCTDXNJUQ7DBXI",
+  "matchesPublicCDXDigest": true,
+  "article": {
+    "author": "Jacques Heyman",
+    "title": "The stone skeleton",
+    "journal": "International Journal of Solids and Structures",
+    "year": 1966,
+    "volume": 2,
+    "issue": 2,
+    "doi": "10.1016/0020-7683(66)90018-7",
+    "publisherRecord": "https://www.sciencedirect.com/science/article/pii/0020768366900187",
+    "publisherPagination": "249\u2013256, IN1\u2013IN4,257\u2013264, IN5\u2013IN12,265\u2013279"
+  },
+  "pageMap": [
+    {
+      "pdfPages": [
+        1,
+        8
+      ],
+      "printedTextPages": [
+        249,
+        256
+      ]
+    },
+    {
+      "pdfPages": [
+        9,
+        12
+      ],
+      "publisherPlateLabels": [
+        "IN1",
+        "IN4"
+      ],
+      "printedPlateCaptions": [
+        "Fig.1 Coulomb",
+        "Fig.4 Fr\u00e9zier",
+        "Fig.5 Breymann",
+        "Fig.8 Wilars de Honecort"
+      ]
+    },
+    {
+      "pdfPages": [
+        13,
+        20
+      ],
+      "printedTextPages": [
+        257,
+        264
+      ]
+    },
+    {
+      "pdfPages": [
+        21,
+        28
+      ],
+      "publisherPlateLabels": [
+        "IN5",
+        "IN12"
+      ],
+      "printedPlateCaptions": [
+        "Fig.11 Ungewitter",
+        "Fig.16 St.Denis",
+        "Fig.17 Beauvais",
+        "Fig.18 Amiens",
+        "Figs.19/21 Clermont-Ferrand/Notre Dame Paris",
+        "Fig.23 Lichfield",
+        "Fig.25 Amiens",
+        "Fig.46 Reims"
+      ]
+    },
+    {
+      "pdfPages": [
+        29,
+        43
+      ],
+      "printedTextPages": [
+        265,
+        279
+      ]
+    }
+  ],
+  "scope": "Public archived journal facsimile obtained; identity/page-sequence/43-page render completeness checked. No full source-claim/proof/model audit or source-flag acceptance. Original mirror affiliation and republication permission not independently established.",
+  "evidenceRoot": "/tmp/atlas-worker-two/heyman-original-recovery"
+}

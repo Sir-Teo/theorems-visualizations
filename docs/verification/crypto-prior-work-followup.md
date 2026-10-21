@@ -1,0 +1,11 @@
+# CRYPTO search-work and prior-law closing correction
+
+Separate bounded successor to04c1f51, responding to the independent peer's two touched-proof findings. Only the complete idea fields for1.4 and2.1 change. No formula, dependency, function, source flag, helper, syllabus or model changes.
+
+1.4 now says exhaustive key search gives an upper bound on optimal attack work; another attack may be faster. Its exponential scaling and per-bit doubling explicitly refer to that search's expected work. A correct cipher can even ignore its key and reveal the message, whatever the nominal key-space size, so the key count cannot lower-bound all attacks. The exact uniform-rank expectation paragraph remains intact.
+
+2.1 now separates the universal security property from posterior invariance for one prior. For a full-support prior, posterior invariance for every positive-mass ciphertext forces every message's ciphertext likelihood to coincide. The resulting prior-free likelihood condition gives perfect secrecy for every prior. A restricted-support prior may mask leakage: under a point-mass message prior even identity encryption leaves the prior unchanged, while a two-point uniform prior exposes its leakage. The existing counting-measure conditional-density argument remains intact.
+
+`CRYPTO_PRIOR_WORK_BASELINE=04c1f51_ARCHIVE node tests/verification-crypto-prior-work.mjs` passes a full48-object/48-function comparison with exactly the two literal idea exceptions, all chapter metadata/source bytes outside them and all helper/flag/dependency/whole-syllabus preservation. Independent finite checks include arbitrarily enlarged ignored key spaces, point-mass versus full-support identity-encryption laws, and404 posterior identities for constant likelihood rows including zero prior masses. Strict build and static48-item checks pass with0errors/0warnings; evidence `/tmp/atlas-crypto-prior-work/{baseline,guard-math.log,build.log,static.log}`.
+
+Native browser/pixel verification is deliberately pending the coordinator's capture-window release. No browser job was started during that hold. This commit is ready for immutable independent closing review; it does not itself claim final native acceptance or source closure. Earlier frozen-boundary reports/guards keep their original exact scope.

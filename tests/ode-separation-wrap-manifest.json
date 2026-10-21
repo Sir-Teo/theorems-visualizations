@@ -1,0 +1,7 @@
+{
+  "file": "content/ode/ch01.js",
+  "num": "1.3",
+  "field": "statement",
+  "before": "$$H(x(t)) - H(x_0) = G(t) - G(t_0),\\qquad\\text{i.e.}\\qquad \\int_{x_0}^{x(t)}\\frac{d\\xi}{h(\\xi)} = \\int_{t_0}^{t} g(s)\\,ds,$$",
+  "after": "$$\\begin{gathered}H(x(t)) - H(x_0)\\\\\n= G(t) - G(t_0),\\\\\n\\text{i.e.}\\\\\n\\int_{x_0}^{x(t)}\\frac{d\\xi}{h(\\xi)}\\\\\n= \\int_{t_0}^{t} g(s)\\,ds,\\end{gathered}$$"
+}

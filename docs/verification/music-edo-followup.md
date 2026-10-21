@@ -1,0 +1,30 @@
+# Music7.11/7.12: finite equal-division records and19/31 comparisons
+
+Worker-one candidate after3fddde7. Both source flags remain true for independent coordinator acceptance.7.11 is a newly identified material follow-up: the inherited unflagged statement gave0.0235 as |12log₂(3/2)−7|, although its actual value is0.019550008653874…. This report records that new uncertainty and its bounded repair.7.12 was already queued. Only these two objects, their syllabus rows, isolated EDO helper and unique reference/tests/report are changed; no shared helper, generated data or combined ledger/plan is edited.
+
+## Actual source reading and source limits
+
+Used Benson's complete mathematical §6.2 opening/recurrence/error discussion, printed204–208/PDF218–222, read in the preceding7.10 audit. Used complete §§6.4–6.5, printed217–221/PDF231–235, including the actual19-TET and31-TET ratio/degree tables, the quarter-comma comparison table and the meantone continued-fraction/exercise passages. Directly inspected fresh formula/table images `/tmp/atlas-worker-one/benson-page-{231,233,235}.png`. The actual source is the cached complete2008 author PDF with SHA2566983deabf65460f5bfa01fdf3748963d2a4a8045c3fe8a4c42aa18a477da57a7, from [Benson's author host](https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf).
+
+The sources support the explicit mathematical tables/comparisons. No historical priority/date for Salinas, Woolhouse, Huygens, Rossi, Fokker or an instrument is authenticated. The replacement credit describes the actual author technical exposition and authored computations. The nearest-step formula and finite record assertions are derived and independently certified here rather than attributed to a nonexistent table in the source. Read the actual used7.10 theorem/finite-scope body,7.9 equal-division definition and accepted7.7 exact meantone generator statements.
+
+## Corrections and finite model
+
+7.11 now distinguishes cents error1200|k/n−α| from second-kind error|nα−k|, fixes the12-note value, includes the initial n=3 record when the enumeration starts at3, and reports all strict records through700. Its exact24-note tie with12 is explicit. The visual range remains3–120, all118 points are computed, and the selected target controls actual audio rather than always playing a fifth. No theorem infers a historical choice or perceived quality from the finite ranking.
+
+7.12 uses exact definitions for the nearest steps in12/19/31 equal divisions. It shows all15 declared interval comparisons, signed errors and steps; its finite centered generator chain has exactly n points (the old even12 case drew13). It separates near closure of a meantone generator from exact closure of a coprime equal-division generator, and distinguishes approximation from exact reproduction of rational intervals. The quarter-comma nonclosure proof follows from prime factorization. All displayed maximum chain displacements refer to the actual n plotted exponents, with actual C4-anchored chord registers and frequencies.
+
+The independent generator `tests/verification-music-edo-reference.py` uses Fraction atanh log series and positive rational tail bounds (160 terms), not production logarithms. It certifies nearest numerators/signs for all5 ratios×700 denominators, strict cents-record ordering for all3 selectable targets, the no-earlier-improvement claims before29/41, the24/12 exact rational tie, all15 table entries, and that every plotted error fits the positive logarithmic window. The fixture is `docs/verification/music-edo-reference.json`. Equal reduced rational fractions are treated as exact ties rather than letting different arithmetic orders create false records.
+
+## Fresh verification and inspection
+
+- `python3 tests/verification-music-edo-reference.py`: exact enclosure checks pass; `/tmp/atlas-worker-one/edo-reference.log`.
+- `node --test tests/verification-music-edo.test.mjs`:4/4 pass, every3×698 finite point/record decision, all selectable states,15 comparisons, primitive cycles, actual generator chains, all comparison actions and malformed domains; `/tmp/atlas-worker-one/edo-math.log`.
+- `node scripts/check.mjs music-7.11 music-7.12 --static`:2 items/0 errors/0 warnings; `/tmp/atlas-worker-one/edo-static.log`.
+- `node tests/verification-music-edo.mjs`:12/12 groups at1450/430/320px light/dark, exit0, browser/server closed; `/tmp/atlas-worker-one/edo-native.log`.7.11's wide light group visits all354 target×n states; every other layout visits each target at3,12,24,29,41,53,120 and native Home/End.7.12 checks every offered division and all9 chord/action combinations per layout. Both items check exact-domain saved replay, malformed fractional or unsupported selection fallback, every plotted marker/table row/chain point and complete geometry/text/TeX bounds.
+
+Native AudioBufferSourceNode entry-point interception validates every actual H8 sample, gap, peak, frequency event list, mono/rate/output gain/limiter route, scheduling and stop for all90 actions across the matrix (36 selected-target/pure interval actions and54 chord actions). Audio uses the already-audited H8 synthesis helper without changing it. No audio autoplays, and no human listening or audibility threshold is certified.
+
+Directly inspected fresh7.11 residual panels at320dark and1450light and7.12 error/table/circle panels at320light. All selected endpoints/marker strokes and the complete15-row table are contained and legible; circle labels distinguish pure ratios from the finite generator chain. Other width/theme outputs have the same full native bounds checks and saved PNGs `/tmp/atlas-worker-one/music-edo-7.11-{final,panel0}-WIDTH-THEME.png` and `/tmp/atlas-worker-one/music-edo-7.12-{final,panel0,panel1,panel2}-WIDTH-THEME.png`.
+
+No new production issue appeared in the final native matrix. A reference-generator development error duplicated a Python dict keyword before producing any fixture; the corrected generator produced the independently certified data used by all passing tests. No numerical acceptance tolerance was loosened.

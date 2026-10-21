@@ -1,0 +1,5 @@
+export function orbitalStats(a){let n=0,up=0,down=0,pairs=0,singles=0;for(const c of a){const u=c&1,d=(c>>1)&1;n+=u+d;up+=u;down+=d;if(c===3)pairs++;if(c===1||c===2)singles++;}const Ms=(up-down)/2;return{n,up,down,pairs,singles,Ms,S2:Ms*Ms+singles/2};}
+export function orbitalEnergy(a,delta,K,P){const b=orbitalStats(a);return a.reduce((e,c,o)=>e+(o<3?0:delta)*((c&1)+((c>>1)&1)),0)+P*b.pairs-K*(b.up*(b.up-1)+b.down*(b.down-1))/2;}
+export function orbitalMinimum(n,delta,K,P){let energy=Infinity,arr=null;for(let bits=0;bits<1024;bits++){const a=Array.from({length:5},(_,i)=>(bits>>(2*i))&3);if(orbitalStats(a).n!==n)continue;const e=orbitalEnergy(a,delta,K,P);if(e<energy-1e-12){energy=e;arr=a;}}return{energy,arr,...orbitalStats(arr)};}
+// NIST Handbook energy-level tables (cm−1), precision as published.
+export const HUND_LEVELS={C:{name:'C I',terms:[['³P',0,'accent'],['¹D',10192.66,'orange'],['¹S',21648.02,'purple']],J:[[0,0],[1,16.41671],[2,43.41350]],half:'less than half full: J = 0 is lowest'},O:{name:'O I',terms:[['³P',0,'accent'],['¹D',15867.862,'orange'],['¹S',33792.583,'purple']],J:[[2,0],[1,158.265],[0,226.977]],half:'more than half full: J = 2 is lowest'}};

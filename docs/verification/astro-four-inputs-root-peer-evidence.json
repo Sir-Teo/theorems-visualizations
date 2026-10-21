@@ -1,0 +1,2062 @@
+{
+  "candidate": "d85a30d71782fd55ff3235ad84873515d05ba6cd",
+  "baseline": "700e774",
+  "reviewer": "coordinator-root",
+  "preservation": {
+    "objects": 48,
+    "functions": 48,
+    "syllabusRows": 128,
+    "mapping": {
+      "1.7": "pma-8.10",
+      "2.2": "pma-4.22",
+      "2.5": "pma-5.15",
+      "4.8": "prob-1.1.1a"
+    },
+    "fullLists": [
+      {
+        "num": "1.5",
+        "before": [
+          "astro-1.4"
+        ],
+        "after": [
+          "astro-1.4"
+        ]
+      },
+      {
+        "num": "1.6",
+        "before": [
+          "astro-1.4",
+          "astro-1.5"
+        ],
+        "after": [
+          "astro-1.4",
+          "astro-1.5"
+        ]
+      },
+      {
+        "num": "1.7",
+        "before": [
+          "astro-1.1",
+          "mech-8.11"
+        ],
+        "after": [
+          "astro-1.1",
+          "mech-8.11",
+          "pma-8.10"
+        ]
+      },
+      {
+        "num": "1.8",
+        "before": [
+          "astro-1.1"
+        ],
+        "after": [
+          "astro-1.1"
+        ]
+      },
+      {
+        "num": "1.1",
+        "before": [
+          "mech-8.7",
+          "mech-8.10",
+          "pma-5.11"
+        ],
+        "after": [
+          "mech-8.7",
+          "mech-8.10",
+          "pma-5.11"
+        ]
+      },
+      {
+        "num": "1.2",
+        "before": [
+          "mech-8.7",
+          "mech-3.6"
+        ],
+        "after": [
+          "mech-8.7",
+          "mech-3.6"
+        ]
+      },
+      {
+        "num": "1.3",
+        "before": [
+          "mech-8.8",
+          "mech-8.2",
+          "pma-8.6"
+        ],
+        "after": [
+          "mech-8.8",
+          "mech-8.2",
+          "pma-8.6"
+        ]
+      },
+      {
+        "num": "1.4",
+        "before": [
+          "astro-1.1",
+          "astro-1.3",
+          "waves-1.14"
+        ],
+        "after": [
+          "astro-1.1",
+          "astro-1.3",
+          "waves-1.14"
+        ]
+      },
+      {
+        "num": "2.7",
+        "before": [
+          "astro-1.1",
+          "mech-12.21",
+          "ode-3.5"
+        ],
+        "after": [
+          "astro-1.1",
+          "mech-12.21",
+          "ode-3.5"
+        ]
+      },
+      {
+        "num": "2.8",
+        "before": [
+          "astro-1.1",
+          "mech-4.15",
+          "pma-5.15"
+        ],
+        "after": [
+          "astro-1.1",
+          "mech-4.15",
+          "pma-5.15"
+        ]
+      },
+      {
+        "num": "2.9",
+        "before": [
+          "astro-2.8"
+        ],
+        "after": [
+          "astro-2.8"
+        ]
+      },
+      {
+        "num": "2.10",
+        "before": [
+          "astro-2.8"
+        ],
+        "after": [
+          "astro-2.8"
+        ]
+      },
+      {
+        "num": "2.11",
+        "before": [
+          "astro-1.1",
+          "mech-12.21"
+        ],
+        "after": [
+          "astro-1.1",
+          "mech-12.21"
+        ]
+      },
+      {
+        "num": "2.12",
+        "before": [
+          "astro-2.8",
+          "mech-13.4",
+          "pma-8.6"
+        ],
+        "after": [
+          "astro-2.8",
+          "mech-13.4",
+          "pma-8.6"
+        ]
+      },
+      {
+        "num": "2.1",
+        "before": [
+          "mech-9.12",
+          "mech-9.6",
+          "pma-9.15"
+        ],
+        "after": [
+          "mech-9.12",
+          "mech-9.6",
+          "pma-9.15"
+        ]
+      },
+      {
+        "num": "2.2",
+        "before": [
+          "astro-2.1"
+        ],
+        "after": [
+          "astro-2.1",
+          "pma-4.22"
+        ]
+      },
+      {
+        "num": "2.3",
+        "before": [
+          "mech-9.12",
+          "mech-11.14",
+          "ode-3.5"
+        ],
+        "after": [
+          "mech-9.12",
+          "mech-11.14",
+          "ode-3.5"
+        ]
+      },
+      {
+        "num": "2.4",
+        "before": [
+          "astro-2.3",
+          "astro-2.2",
+          "pma-5.15"
+        ],
+        "after": [
+          "astro-2.3",
+          "astro-2.2",
+          "pma-5.15"
+        ]
+      },
+      {
+        "num": "2.5",
+        "before": [
+          "mech-9.12",
+          "astro-2.2"
+        ],
+        "after": [
+          "mech-9.12",
+          "astro-2.2",
+          "pma-5.15"
+        ]
+      },
+      {
+        "num": "2.6",
+        "before": [
+          "astro-2.1"
+        ],
+        "after": [
+          "astro-2.1"
+        ]
+      },
+      {
+        "num": "3.1",
+        "before": [
+          "mech-9.3",
+          "pma-8.7"
+        ],
+        "after": [
+          "mech-9.3",
+          "pma-8.7"
+        ]
+      },
+      {
+        "num": "3.2",
+        "before": [
+          "mech-9.3",
+          "mech-2.12",
+          "ode-1.3"
+        ],
+        "after": [
+          "mech-9.3",
+          "mech-2.12",
+          "ode-1.3"
+        ]
+      },
+      {
+        "num": "3.3",
+        "before": [
+          "astro-3.2"
+        ],
+        "after": [
+          "astro-3.2"
+        ]
+      },
+      {
+        "num": "3.4",
+        "before": [
+          "astro-3.3",
+          "mech-4.15",
+          "pma-8.10"
+        ],
+        "after": [
+          "astro-3.3",
+          "mech-4.15",
+          "pma-8.10"
+        ]
+      },
+      {
+        "num": "3.5",
+        "before": [
+          "mech-9.3"
+        ],
+        "after": [
+          "mech-9.3"
+        ]
+      },
+      {
+        "num": "3.6",
+        "before": [
+          "astro-3.5",
+          "astro-2.8"
+        ],
+        "after": [
+          "astro-3.5",
+          "astro-2.8"
+        ]
+      },
+      {
+        "num": "3.7",
+        "before": [
+          "astro-3.2",
+          "astro-2.10",
+          "pma-5.15"
+        ],
+        "after": [
+          "astro-3.2",
+          "astro-2.10",
+          "pma-5.15"
+        ]
+      },
+      {
+        "num": "3.8",
+        "before": [
+          "mech-9.7",
+          "fluid-2.2",
+          "pma-5.15"
+        ],
+        "after": [
+          "mech-9.7",
+          "fluid-2.2",
+          "pma-5.15"
+        ]
+      },
+      {
+        "num": "3.9",
+        "before": [
+          "mech-3.13",
+          "thermo-6.15",
+          "pma-6.22"
+        ],
+        "after": [
+          "mech-3.13",
+          "thermo-6.15",
+          "pma-6.22"
+        ]
+      },
+      {
+        "num": "3.10",
+        "before": [
+          "rel-2.10",
+          "astro-1.1",
+          "em-11.6",
+          "ode-1.3"
+        ],
+        "after": [
+          "rel-2.10",
+          "astro-1.1",
+          "em-11.6",
+          "ode-1.3"
+        ]
+      },
+      {
+        "num": "4.7",
+        "before": [
+          "astro-4.4",
+          "thermo-9.1",
+          "ode-1.4"
+        ],
+        "after": [
+          "astro-4.4",
+          "thermo-9.1",
+          "ode-1.4"
+        ]
+      },
+      {
+        "num": "4.8",
+        "before": [
+          "astro-4.7",
+          "qm-8.9",
+          "thermo-6.1"
+        ],
+        "after": [
+          "astro-4.7",
+          "qm-8.9",
+          "thermo-6.1",
+          "prob-1.1.1a"
+        ]
+      },
+      {
+        "num": "4.9",
+        "before": [
+          "astro-4.8",
+          "thermo-8.1",
+          "pma-5.11"
+        ],
+        "after": [
+          "astro-4.8",
+          "thermo-8.1",
+          "pma-5.11"
+        ]
+      },
+      {
+        "num": "4.10",
+        "before": [
+          "astro-4.9",
+          "astro-4.6"
+        ],
+        "after": [
+          "astro-4.9",
+          "astro-4.6"
+        ]
+      },
+      {
+        "num": "4.11",
+        "before": [
+          "astro-4.5",
+          "astro-4.10"
+        ],
+        "after": [
+          "astro-4.5",
+          "astro-4.10"
+        ]
+      },
+      {
+        "num": "4.12",
+        "before": [
+          "astro-1.3",
+          "astro-1.4",
+          "astro-4.11",
+          "ladr-6.61"
+        ],
+        "after": [
+          "astro-1.3",
+          "astro-1.4",
+          "astro-4.11",
+          "ladr-6.61"
+        ]
+      },
+      {
+        "num": "4.1",
+        "before": [
+          "pma-5.15"
+        ],
+        "after": [
+          "pma-5.15"
+        ]
+      },
+      {
+        "num": "4.2",
+        "before": [
+          "astro-4.1"
+        ],
+        "after": [
+          "astro-4.1"
+        ]
+      },
+      {
+        "num": "4.3",
+        "before": [
+          "astro-4.2",
+          "pma-8.6"
+        ],
+        "after": [
+          "astro-4.2",
+          "pma-8.6"
+        ]
+      },
+      {
+        "num": "4.4",
+        "before": [
+          "astro-4.2",
+          "thermo-9.5",
+          "thermo-9.6"
+        ],
+        "after": [
+          "astro-4.2",
+          "thermo-9.5",
+          "thermo-9.6"
+        ]
+      },
+      {
+        "num": "4.5",
+        "before": [
+          "astro-4.4",
+          "astro-4.2",
+          "pma-8.6"
+        ],
+        "after": [
+          "astro-4.4",
+          "astro-4.2",
+          "pma-8.6"
+        ]
+      },
+      {
+        "num": "4.6",
+        "before": [
+          "astro-4.4",
+          "astro-4.3"
+        ],
+        "after": [
+          "astro-4.4",
+          "astro-4.3"
+        ]
+      },
+      {
+        "num": "7.15",
+        "before": [
+          "astro-4.3"
+        ],
+        "after": [
+          "astro-4.3"
+        ]
+      },
+      {
+        "num": "10.19",
+        "before": [
+          "astro-7.13",
+          "astro-4.3",
+          "waves-1.14",
+          "astro-7.15"
+        ],
+        "after": [
+          "astro-7.13",
+          "astro-4.3",
+          "waves-1.14",
+          "astro-7.15"
+        ]
+      },
+      {
+        "num": "10.18",
+        "before": [
+          "rel-8.4",
+          "rel-8.7",
+          "astro-10.3",
+          "rel-8.12"
+        ],
+        "after": [
+          "rel-8.4",
+          "rel-8.7",
+          "astro-10.3",
+          "rel-8.12"
+        ]
+      },
+      {
+        "num": "10.20",
+        "before": [
+          "thermo-9.4"
+        ],
+        "after": [
+          "thermo-9.4"
+        ]
+      },
+      {
+        "num": "10.21",
+        "before": [
+          "astro-8.11",
+          "astro-10.8",
+          "astro-10.10",
+          "astro-10.19",
+          "astro-10.18"
+        ],
+        "after": [
+          "astro-8.11",
+          "astro-10.8",
+          "astro-10.10",
+          "astro-10.19",
+          "astro-10.18"
+        ]
+      },
+      {
+        "num": "10.22",
+        "before": [
+          "astro-8.11",
+          "astro-10.8",
+          "astro-10.10",
+          "astro-10.19",
+          "astro-10.18"
+        ],
+        "after": [
+          "astro-8.11",
+          "astro-10.8",
+          "astro-10.10",
+          "astro-10.19",
+          "astro-10.18"
+        ]
+      }
+    ],
+    "status": "PASS"
+  },
+  "math": {
+    "checks": 487,
+    "groups": [
+      "finite harmonic and areal-weighted quadrupole means",
+      "collision-free connected images and equal-mass critical-value symmetry",
+      "inverse-square Taylor remainder and leading Hill balance",
+      "finite disjoint microstate events and degeneracy ratios"
+    ],
+    "scope": "Independent finite/numerical witnesses and explicit analytic hypotheses; no source closure or native acceptance"
+  },
+  "native": {
+    "browser": "153.0.8010.12",
+    "bounds": [
+      {
+        "theme": "light",
+        "num": "1.7",
+        "kind": "statement",
+        "width": 285,
+        "scroll": 285,
+        "text": "The equatorial bulge of a planet adds to its potential the quadrupole term \u03a62=GMrJ2(Rr)2P2(sin\u2061\u03d5)\\Phi_2 = \\frac{GM}{r}J_2\\big(\\frac{R}{r}\\big)^2 P_2(\\sin\\phi)\u03a62\u200b=rGM\u200bJ2\u200b(rR\u200b)2P2\u200b(sin\u03d5) (J2=1.0826\u00d710\u22123J_2 = 1.0826\\times10^{-3}J2\u200b=1.0826\u00d710\u22123 for the Earth). Averaged over an orbit it leaves aaa, eee and iii unchanged but makes the orbit plane precess about the polar axis at \u03a9\u02d9=\u221232\u2009n\u2009J2(Rp)2cos\u2061i,p=a(1\u2212e2):\\begin{gathered}\\dot\\Omega = -\\frac{3}{2}\\,n\\,J_2\\Big(\\frac{R}{p}\\Big)^2\\cos i,\\\\\\qquad p = a(1-e^2):\\end{gathered}\u03a9\u02d9=\u221223\u200bnJ2\u200b(pR\u200b)2cosi,p=a(1\u2212e2):\u200b the node regresses (moves westward) for prograde orbits, advances for retrograde ones, and stands still for polar orbits. Choosing iii slightly above 90\u221890^\\circ90\u2218 so that \u03a9\u02d9=+360\u2218/yr\\dot\\Omega = +360^\\circ/\\text{yr}\u03a9\u02d9=+360\u2218/yr gives a Sun-synchronous orbit, whose plane keeps a fixed angle to the Sun all year (about 98\u221898^\\circ98\u2218 for altitudes of 600\u2013800 km). The perigee also precesses, at \u03c9\u02d9=34nJ2(R/p)2(5cos\u20612i\u22121)\\dot\\omega = \\frac34 nJ_2(R/p)^2(5\\cos^2 i - 1)\u03c9\u02d9=43\u200bnJ2\u200b(R/p)2(5cos2i\u22121).",
+        "displays": [
+          {
+            "width": 253,
+            "scroll": 253
+          }
+        ],
+        "math": [
+          {
+            "left": 35,
+            "right": 206.90625
+          },
+          {
+            "left": 35,
+            "right": 243.9375
+          },
+          {
+            "left": 264.984375,
+            "right": 274.890625
+          },
+          {
+            "left": 35,
+            "right": 43.734375
+          },
+          {
+            "left": 78.921875,
+            "right": 85.390625
+          },
+          {
+            "left": 35,
+            "right": 288
+          },
+          {
+            "left": 108.828125,
+            "right": 115.296875
+          },
+          {
+            "left": 222.28125,
+            "right": 248.484375
+          },
+          {
+            "left": 68.015625,
+            "right": 183.171875
+          },
+          {
+            "left": 119.28125,
+            "right": 145.484375
+          },
+          {
+            "left": 35,
+            "right": 231.6875
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "light",
+        "num": "1.7",
+        "kind": "statement-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "light",
+        "num": "1.7",
+        "kind": "idea",
+        "width": 288,
+        "scroll": 288,
+        "text": "The bulge exerts a torque on the orbit: averaged over a revolution, the satellite is a ring of mass, and the extra pull of the equatorial bulge tries to twist this ring into the equatorial plane. Like a spinning top under gravity, the orbit\u2019s angular momentum (orbital elements, 1.1) does not tip over but precesses about the polar axis, at a rate proportional to the torque component, hence to cos\u2061i\\cos icosi. The size of the effect follows from perturbation theory of the Kepler orbit; for slightly non-circular orbits the same averaged potential drives the apsidal motion of mech 8.11.The orbit average uses the finite-harmonic orthogonality in pma-8.10. With true anomaly f, the latitude factor is sin\u2061\u03d5=sin\u2061isin\u2061(f+\u03c9)\\sin\\phi=\\sin i\\sin(f+\\omega)sin\u03d5=sinisin(f+\u03c9) and the Kepler time element is proportional to r2\u2009dfr^2\\,dfr2df. Consequently the average of the inverse-cube quadrupole term weights sin\u20612(f+\u03c9)\\sin^2(f+\\omega)sin2(f+\u03c9) by 1+ecos\u2061f1+e\\cos f1+ecosf. Over one revolution its constant term is one half, while the extra cosine-weighted term integrates to zero by orthogonality. This gives the averaged potential an inclination factor 3sin\u20612i/2\u221213\\sin^2 i/2-13sin2i/2\u22121, whose nodal torque supplies the stated cosine factor. This is a first-order perturbative orbit average, not exact instantaneous constancy of the osculating elements.",
+        "displays": [],
+        "math": [
+          {
+            "left": 81.46875,
+            "right": 115.4375
+          },
+          {
+            "left": 31.171875,
+            "right": 209.546875
+          },
+          {
+            "left": 16,
+            "right": 55.6875
+          },
+          {
+            "left": 16,
+            "right": 105.703125
+          },
+          {
+            "left": 131.328125,
+            "right": 213.171875
+          },
+          {
+            "left": 144.703125,
+            "right": 246.234375
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "light",
+        "num": "1.7",
+        "kind": "idea-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "light",
+        "num": "2.2",
+        "kind": "statement",
+        "width": 285,
+        "scroll": 285,
+        "text": "For a given value of the Jacobi constant CJC_JCJ\u200b, the particle can only be where 2\u03a9(x,y,z)\u2265CJ2\\Omega(x, y, z) \\ge C_J2\u03a9(x,y,z)\u2265CJ\u200b, since v2=2\u03a9\u2212CJ\u22650v^2 = 2\\Omega - C_J \\ge 0v2=2\u03a9\u2212CJ\u200b\u22650. The boundary 2\u03a9=CJ2\\Omega = C_J2\u03a9=CJ\u200b is the zero-velocity curve (surface in 3D); the allowed sets are the Hill regions. For the ordered planar list below assume 0<\u03bc<1/20<\\mu<1/20<\u03bc<1/2. In decreasing order of CJC_JCJ\u200b, with CL1>CL2>CL3>CL4=CL5C_{L1} > C_{L2} > C_{L3} > C_{L4} = C_{L5}CL1\u200b>CL2\u200b>CL3\u200b>CL4\u200b=CL5\u200b:\u2022CJ>CL1C_J > C_{L1}CJ\u200b>CL1\u200b: three disjoint regions \u2014 around the primary, around the secondary, and far outside; a collision-free trajectory near one mass stays in that component for as long as its solution exists;\u2022CL2<CJ<CL1C_{L2} < C_J < C_{L1}CL2\u200b<CJ\u200b<CL1\u200b: a neck opens at L1L_1L1\u200b and the two inner regions merge;\u2022CL3<CJ<CL2C_{L3} < C_J < C_{L2}CL3\u200b<CJ\u200b<CL2\u200b: a second neck opens at L2L_2L2\u200b, so escape to infinity becomes possible past the secondary;\u2022CL4<CJ<CL3C_{L4} < C_J < C_{L3}CL4\u200b<CJ\u200b<CL3\u200b: the neck at L3L_3L3\u200b opens and the forbidden zones shrink to two tadpoles around L4L_4L4\u200b, L5L_5L5\u200b;\u2022CJ<CL4C_J < C_{L4}CJ\u200b<CL4\u200b: no planar region is forbidden.",
+        "displays": [],
+        "math": [
+          {
+            "left": 100.890625,
+            "right": 123.734375
+          },
+          {
+            "left": 104.5,
+            "right": 236.390625
+          },
+          {
+            "left": 35,
+            "right": 180.046875
+          },
+          {
+            "left": 109.28125,
+            "right": 179.9375
+          },
+          {
+            "left": 90.9375,
+            "right": 189.546875
+          },
+          {
+            "left": 178.828125,
+            "right": 201.671875
+          },
+          {
+            "left": 35,
+            "right": 283.734375
+          },
+          {
+            "left": 72.796875,
+            "right": 150.375
+          },
+          {
+            "left": 72.796875,
+            "right": 205.109375
+          },
+          {
+            "left": 137.296875,
+            "right": 157.53125
+          },
+          {
+            "left": 72.796875,
+            "right": 205.109375
+          },
+          {
+            "left": 175.8125,
+            "right": 196.046875
+          },
+          {
+            "left": 72.796875,
+            "right": 205.109375
+          },
+          {
+            "left": 90.359375,
+            "right": 110.59375
+          },
+          {
+            "left": 224.90625,
+            "right": 245.140625
+          },
+          {
+            "left": 252.828125,
+            "right": 273.0625
+          },
+          {
+            "left": 72.796875,
+            "right": 150.375
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "light",
+        "num": "2.2",
+        "kind": "statement-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "light",
+        "num": "2.2",
+        "kind": "idea",
+        "width": 288,
+        "scroll": 288,
+        "text": "It follows from the Jacobi integral (2.1) alone: 2\u03a9\u2212CJ2\\Omega - C_J2\u03a9\u2212CJ\u200b is a squared speed. The Lagrange points are the critical points of \u03a9\\Omega\u03a9 (mech 9.12) \u2014 in the orbital plane L1,L2,L3L_1, L_2, L_3L1\u200b,L2\u200b,L3\u200b are saddles and L4,L5L_4, L_5L4\u200b,L5\u200b minima \u2014 and by Morse theory the topology of the sub-level sets of \u22122\u03a9-2\\Omega\u22122\u03a9 changes exactly as CJC_JCJ\u200b passes their values, which is why the necks open there and in that order. The curves bound where the particle may go, not how it moves; they are exact, but give a sufficient condition for confinement only.The confinement step also uses pma-4.22, not just the nonnegative-speed inequality. A collision-free solution has a continuous position map on each connected time interval, so its image is connected. Since every point of that image lies in the allowed set, the trajectory stays in the connected component containing its initial position; it cannot jump across a forbidden gap to another component. This applies while the solution exists. Opening a neck removes that particular topological obstruction, but does not force a trajectory to escape.",
+        "displays": [],
+        "math": [
+          {
+            "left": 63.59375,
+            "right": 130.90625
+          },
+          {
+            "left": 35.796875,
+            "right": 49.0625
+          },
+          {
+            "left": 16,
+            "right": 91.890625
+          },
+          {
+            "left": 209.40625,
+            "right": 257.28125
+          },
+          {
+            "left": 249.78125,
+            "right": 286.515625
+          },
+          {
+            "left": 149.59375,
+            "right": 172.015625
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "light",
+        "num": "2.2",
+        "kind": "idea-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "light",
+        "num": "2.5",
+        "kind": "statement",
+        "width": 285,
+        "scroll": 285,
+        "text": "The Hill sphere of a planet of mass mmm on a near-circular orbit of radius aaa about a star of mass M\u226bmM\\gg mM\u226bm is the region of radius rH=a(m3M)1/3r_H = a\\Big(\\frac{m}{3M}\\Big)^{1/3}rH\u200b=a(3Mm\u200b)1/3 around the planet \u2014 the distance of the Lagrange points L1L_1L1\u200b and L2L_2L2\u200b to leading order in (m/M)1/3(m/M)^{1/3}(m/M)1/3. Inside it the planet\u2019s gravity dominates the tidal pull of the star, and the zero-velocity curve through L1L_1L1\u200b encloses a lobe about the planet of roughly this size. Satellites must orbit well inside: numerically, circular prograde orbits survive out to about 0.5\u2009rH0.5\\,r_H0.5rH\u200b, retrograde ones considerably farther. Earth: rH=1.5\u00d7106r_H = 1.5\\times10^6rH\u200b=1.5\u00d7106 km (the Moon is at 0.26\u2009rH0.26\\,r_H0.26rH\u200b); Jupiter: 0.350.350.35 AU.",
+        "displays": [
+          {
+            "width": 253,
+            "scroll": 253
+          }
+        ],
+        "math": [
+          {
+            "left": 73.828125,
+            "right": 90.265625
+          },
+          {
+            "left": 83.25,
+            "right": 93.15625
+          },
+          {
+            "left": 35,
+            "right": 100.71875
+          },
+          {
+            "left": 35,
+            "right": 288
+          },
+          {
+            "left": 202.96875,
+            "right": 223.203125
+          },
+          {
+            "left": 258.390625,
+            "right": 278.625
+          },
+          {
+            "left": 172.8125,
+            "right": 253.9375
+          },
+          {
+            "left": 97.453125,
+            "right": 117.6875
+          },
+          {
+            "left": 229.625,
+            "right": 277.984375
+          },
+          {
+            "left": 141.484375,
+            "right": 260.75
+          },
+          {
+            "left": 175.921875,
+            "right": 233.640625
+          },
+          {
+            "left": 94.8125,
+            "right": 128.09375
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "light",
+        "num": "2.5",
+        "kind": "statement-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "light",
+        "num": "2.5",
+        "kind": "idea",
+        "width": 288,
+        "scroll": 288,
+        "text": "Near the planet, the restricted problem reduces to Hill\u2019s problem: the planet\u2019s pull Gm/r2Gm/r^2Gm/r2 against the tidal-plus-centrifugal acceleration 3GMr/a33GMr/a^33GMr/a3 of the frame rotating with the planet (mech 9.12). They balance at r3=ma3/3Mr^3 = ma^3/3Mr3=ma3/3M, which is where L1L_1L1\u200b, L2L_2L2\u200b sit; inside the Jacobi lobe through L1L_1L1\u200b (2.2) a particle cannot leave. Lengths scale as rHr_HrH\u200b and times as the orbital period, so in units of rHr_HrH\u200b the picture is the same for every planet. Retrograde satellites are more robust because the Coriolis force on them points inward.The coefficient three in the local balance comes from Taylor theorem pma-5.15. On the star-planet radial line, write the displacement from the planet as x, with \u2223x\u2223\u226aa|x|\\ll a\u2223x\u2223\u226aa, and use n2=GM/a3n^2=GM/a^3n2=GM/a3. Expanding the smooth stellar acceleration about a gives a differential term 2n2x2n^2x2n2x; the centrifugal acceleration adds n2xn^2xn2x. The leading sum is therefore 3n2x3n^2x3n2x, with a remainder of order n2x2/an^2x^2/an2x2/a. Balancing its magnitude with Gm/\u2223x\u22232Gm/|x|^2Gm/\u2223x\u22232 gives the displayed cube-root radius. The expansion excludes the stellar singularity and is only a leading small-mass, near-circular approximation; it does not derive the empirical satellite-survival fractions.",
+        "displays": [],
+        "math": [
+          {
+            "left": 48.171875,
+            "right": 104.046875
+          },
+          {
+            "left": 189.09375,
+            "right": 267.5625
+          },
+          {
+            "left": 16,
+            "right": 267.515625
+          },
+          {
+            "left": 206.1875,
+            "right": 226.046875
+          },
+          {
+            "left": 233.734375,
+            "right": 253.59375
+          },
+          {
+            "left": 237.046875,
+            "right": 256.90625
+          },
+          {
+            "left": 16,
+            "right": 36.90625
+          },
+          {
+            "left": 75.796875,
+            "right": 96.703125
+          },
+          {
+            "left": 136.90625,
+            "right": 195.921875
+          },
+          {
+            "left": 16,
+            "right": 119.359375
+          },
+          {
+            "left": 138.953125,
+            "right": 177.03125
+          },
+          {
+            "left": 144.09375,
+            "right": 172.984375
+          },
+          {
+            "left": 101.90625,
+            "right": 139.984375
+          },
+          {
+            "left": 59.359375,
+            "right": 114.5
+          },
+          {
+            "left": 53.109375,
+            "right": 120.9375
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "light",
+        "num": "2.5",
+        "kind": "idea-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "light",
+        "num": "4.8",
+        "kind": "statement",
+        "width": 285,
+        "scroll": 285,
+        "text": "For atoms in thermal equilibrium at temperature TTT, the numbers of atoms in two bound states bbb and aaa of energies Eb>EaE_b>E_aEb\u200b>Ea\u200b and statistical weights (degeneracies) gb,gag_b,g_agb\u200b,ga\u200b obey NbNa=gbga\u2009e\u2212(Eb\u2212Ea)/kT.\\frac{N_b}{N_a} = \\frac{g_b}{g_a}\\,e^{-(E_b-E_a)/kT}.Na\u200bNb\u200b\u200b=ga\u200bgb\u200b\u200be\u2212(Eb\u200b\u2212Ea\u200b)/kT. For hydrogen, gn=2n2g_n = 2n^2gn\u200b=2n2 and En=\u221213.6\u00a0eV/n2E_n = -13.6\\ \\text{eV}/n^2En\u200b=\u221213.6\u00a0eV/n2, so N2/N1=4\u2009e\u221210.2\u00a0eV/kTN_2/N_1 = 4\\,e^{-10.2\\ \\text{eV}/kT}N2\u200b/N1\u200b=4e\u221210.2\u00a0eV/kT. This ratio is utterly negligible at the Sun's 577257725772 K (\u223c5\u00d710\u22129\\sim 5\\times10^{-9}\u223c5\u00d710\u22129) and is still only \u223c3\u00d710\u22125\\sim3\\times10^{-5}\u223c3\u00d710\u22125 at 10410^4104 K, where kT\u22480.9kT\\approx 0.9kT\u22480.9 eV is still far below the 10.210.210.2 eV needed to reach n=2n=2n=2.Holds when Thermal (LTE) populations of isolated hydrogen atoms; the partition function is truncated at an explicit chosen highest level. The infinite isolated-atom partition diverges; a real plasma needs environment-dependent level dissolution. At the high temperatures shown, the chosen cutoff can matter greatly and the toy does not derive a physical cutoff. Fine/hyperfine structure and interactions are ignored. Populations of the neutral atoms only: ionization is item 4.9.",
+        "displays": [
+          {
+            "width": 253,
+            "scroll": 253
+          }
+        ],
+        "math": [
+          {
+            "left": 145.828125,
+            "right": 159.359375
+          },
+          {
+            "left": 227.140625,
+            "right": 235.171875
+          },
+          {
+            "left": 270.359375,
+            "right": 280.265625
+          },
+          {
+            "left": 118.6875,
+            "right": 185.65625
+          },
+          {
+            "left": 35,
+            "right": 75.5625
+          },
+          {
+            "left": 35,
+            "right": 288
+          },
+          {
+            "left": 140.609375,
+            "right": 211.34375
+          },
+          {
+            "left": 35,
+            "right": 185.5
+          },
+          {
+            "left": 35,
+            "right": 212.15625
+          },
+          {
+            "left": 75.78125,
+            "right": 113.203125
+          },
+          {
+            "left": 138.40625,
+            "right": 226.796875
+          },
+          {
+            "left": 101.09375,
+            "right": 189.484375
+          },
+          {
+            "left": 211.046875,
+            "right": 237.25
+          },
+          {
+            "left": 83.5625,
+            "right": 156.28125
+          },
+          {
+            "left": 109.546875,
+            "right": 142.828125
+          },
+          {
+            "left": 35,
+            "right": 80.53125
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "light",
+        "num": "4.8",
+        "kind": "statement-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "light",
+        "num": "4.8",
+        "kind": "idea",
+        "width": 288,
+        "scroll": 288,
+        "text": "The Boltzmann distribution (thermo 6.1) gives each microstate the probability \u221de\u2212E/kT\\propto e^{-E/kT}\u221de\u2212E/kT; a level with ggg states therefore carries g\u2009e\u2212E/kTg\\,e^{-E/kT}ge\u2212E/kT of it. The hydrogen spectrum (qm 8.9) supplies the energies. The consequence for stellar spectra is sharp: the Balmer lines are absorption lines from n=2n=2n=2, so a star needs enough atoms in n=2n=2n=2 to show them, yet in the Sun there is one such atom per \u223c\u2009\u2063108\\sim\\!10^{8}\u223c108 ground-state atoms, and the Sun's Balmer lines are nonetheless clearly visible: that tension is resolved by the sheer number of hydrogen atoms in the photosphere. The competing effect, ionization, is the next item.Finite additivity in prob-1.1.1a is the step from microstates to an excitation level. At fixed positive temperature, each of the g distinct microstates at energy E has the same normalized Boltzmann probability e\u2212E/(kT)/Ze^{-E/(kT)}/Ze\u2212E/(kT)/Z. These are disjoint events, so the level probability is g\u2009e\u2212E/(kT)/Zg\\,e^{-E/(kT)}/Zge\u2212E/(kT)/Z. Dividing two such level probabilities cancels their common partition function and gives the degeneracy-weighted excitation ratio. Equal energy and a common equilibrium normalization are essential; this is a sum over alternative states, not an independence assumption or a statement about the observed line strength.",
+        "displays": [],
+        "math": [
+          {
+            "left": 100.53125,
+            "right": 172.4375
+          },
+          {
+            "left": 266.84375,
+            "right": 276.265625
+          },
+          {
+            "left": 182.5,
+            "right": 247.484375
+          },
+          {
+            "left": 236.484375,
+            "right": 281.1875
+          },
+          {
+            "left": 247.21875,
+            "right": 291.921875
+          },
+          {
+            "left": 152.390625,
+            "right": 194.453125
+          },
+          {
+            "left": 184.421875,
+            "right": 269.984375
+          },
+          {
+            "left": 115.6875,
+            "right": 213.71875
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "light",
+        "num": "4.8",
+        "kind": "idea-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "dark",
+        "num": "1.7",
+        "kind": "statement",
+        "width": 285,
+        "scroll": 285,
+        "text": "The equatorial bulge of a planet adds to its potential the quadrupole term \u03a62=GMrJ2(Rr)2P2(sin\u2061\u03d5)\\Phi_2 = \\frac{GM}{r}J_2\\big(\\frac{R}{r}\\big)^2 P_2(\\sin\\phi)\u03a62\u200b=rGM\u200bJ2\u200b(rR\u200b)2P2\u200b(sin\u03d5) (J2=1.0826\u00d710\u22123J_2 = 1.0826\\times10^{-3}J2\u200b=1.0826\u00d710\u22123 for the Earth). Averaged over an orbit it leaves aaa, eee and iii unchanged but makes the orbit plane precess about the polar axis at \u03a9\u02d9=\u221232\u2009n\u2009J2(Rp)2cos\u2061i,p=a(1\u2212e2):\\begin{gathered}\\dot\\Omega = -\\frac{3}{2}\\,n\\,J_2\\Big(\\frac{R}{p}\\Big)^2\\cos i,\\\\\\qquad p = a(1-e^2):\\end{gathered}\u03a9\u02d9=\u221223\u200bnJ2\u200b(pR\u200b)2cosi,p=a(1\u2212e2):\u200b the node regresses (moves westward) for prograde orbits, advances for retrograde ones, and stands still for polar orbits. Choosing iii slightly above 90\u221890^\\circ90\u2218 so that \u03a9\u02d9=+360\u2218/yr\\dot\\Omega = +360^\\circ/\\text{yr}\u03a9\u02d9=+360\u2218/yr gives a Sun-synchronous orbit, whose plane keeps a fixed angle to the Sun all year (about 98\u221898^\\circ98\u2218 for altitudes of 600\u2013800 km). The perigee also precesses, at \u03c9\u02d9=34nJ2(R/p)2(5cos\u20612i\u22121)\\dot\\omega = \\frac34 nJ_2(R/p)^2(5\\cos^2 i - 1)\u03c9\u02d9=43\u200bnJ2\u200b(R/p)2(5cos2i\u22121).",
+        "displays": [
+          {
+            "width": 253,
+            "scroll": 253
+          }
+        ],
+        "math": [
+          {
+            "left": 35,
+            "right": 206.90625
+          },
+          {
+            "left": 35,
+            "right": 243.9375
+          },
+          {
+            "left": 264.984375,
+            "right": 274.890625
+          },
+          {
+            "left": 35,
+            "right": 43.734375
+          },
+          {
+            "left": 78.921875,
+            "right": 85.390625
+          },
+          {
+            "left": 35,
+            "right": 288
+          },
+          {
+            "left": 108.828125,
+            "right": 115.296875
+          },
+          {
+            "left": 222.28125,
+            "right": 248.484375
+          },
+          {
+            "left": 68.015625,
+            "right": 183.171875
+          },
+          {
+            "left": 119.28125,
+            "right": 145.484375
+          },
+          {
+            "left": 35,
+            "right": 231.6875
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "dark",
+        "num": "1.7",
+        "kind": "statement-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "dark",
+        "num": "1.7",
+        "kind": "idea",
+        "width": 288,
+        "scroll": 288,
+        "text": "The bulge exerts a torque on the orbit: averaged over a revolution, the satellite is a ring of mass, and the extra pull of the equatorial bulge tries to twist this ring into the equatorial plane. Like a spinning top under gravity, the orbit\u2019s angular momentum (orbital elements, 1.1) does not tip over but precesses about the polar axis, at a rate proportional to the torque component, hence to cos\u2061i\\cos icosi. The size of the effect follows from perturbation theory of the Kepler orbit; for slightly non-circular orbits the same averaged potential drives the apsidal motion of mech 8.11.The orbit average uses the finite-harmonic orthogonality in pma-8.10. With true anomaly f, the latitude factor is sin\u2061\u03d5=sin\u2061isin\u2061(f+\u03c9)\\sin\\phi=\\sin i\\sin(f+\\omega)sin\u03d5=sinisin(f+\u03c9) and the Kepler time element is proportional to r2\u2009dfr^2\\,dfr2df. Consequently the average of the inverse-cube quadrupole term weights sin\u20612(f+\u03c9)\\sin^2(f+\\omega)sin2(f+\u03c9) by 1+ecos\u2061f1+e\\cos f1+ecosf. Over one revolution its constant term is one half, while the extra cosine-weighted term integrates to zero by orthogonality. This gives the averaged potential an inclination factor 3sin\u20612i/2\u221213\\sin^2 i/2-13sin2i/2\u22121, whose nodal torque supplies the stated cosine factor. This is a first-order perturbative orbit average, not exact instantaneous constancy of the osculating elements.",
+        "displays": [],
+        "math": [
+          {
+            "left": 81.46875,
+            "right": 115.4375
+          },
+          {
+            "left": 31.171875,
+            "right": 209.546875
+          },
+          {
+            "left": 16,
+            "right": 55.6875
+          },
+          {
+            "left": 16,
+            "right": 105.703125
+          },
+          {
+            "left": 131.328125,
+            "right": 213.171875
+          },
+          {
+            "left": 144.703125,
+            "right": 246.234375
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "dark",
+        "num": "1.7",
+        "kind": "idea-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "dark",
+        "num": "2.2",
+        "kind": "statement",
+        "width": 285,
+        "scroll": 285,
+        "text": "For a given value of the Jacobi constant CJC_JCJ\u200b, the particle can only be where 2\u03a9(x,y,z)\u2265CJ2\\Omega(x, y, z) \\ge C_J2\u03a9(x,y,z)\u2265CJ\u200b, since v2=2\u03a9\u2212CJ\u22650v^2 = 2\\Omega - C_J \\ge 0v2=2\u03a9\u2212CJ\u200b\u22650. The boundary 2\u03a9=CJ2\\Omega = C_J2\u03a9=CJ\u200b is the zero-velocity curve (surface in 3D); the allowed sets are the Hill regions. For the ordered planar list below assume 0<\u03bc<1/20<\\mu<1/20<\u03bc<1/2. In decreasing order of CJC_JCJ\u200b, with CL1>CL2>CL3>CL4=CL5C_{L1} > C_{L2} > C_{L3} > C_{L4} = C_{L5}CL1\u200b>CL2\u200b>CL3\u200b>CL4\u200b=CL5\u200b:\u2022CJ>CL1C_J > C_{L1}CJ\u200b>CL1\u200b: three disjoint regions \u2014 around the primary, around the secondary, and far outside; a collision-free trajectory near one mass stays in that component for as long as its solution exists;\u2022CL2<CJ<CL1C_{L2} < C_J < C_{L1}CL2\u200b<CJ\u200b<CL1\u200b: a neck opens at L1L_1L1\u200b and the two inner regions merge;\u2022CL3<CJ<CL2C_{L3} < C_J < C_{L2}CL3\u200b<CJ\u200b<CL2\u200b: a second neck opens at L2L_2L2\u200b, so escape to infinity becomes possible past the secondary;\u2022CL4<CJ<CL3C_{L4} < C_J < C_{L3}CL4\u200b<CJ\u200b<CL3\u200b: the neck at L3L_3L3\u200b opens and the forbidden zones shrink to two tadpoles around L4L_4L4\u200b, L5L_5L5\u200b;\u2022CJ<CL4C_J < C_{L4}CJ\u200b<CL4\u200b: no planar region is forbidden.",
+        "displays": [],
+        "math": [
+          {
+            "left": 100.890625,
+            "right": 123.734375
+          },
+          {
+            "left": 104.5,
+            "right": 236.390625
+          },
+          {
+            "left": 35,
+            "right": 180.046875
+          },
+          {
+            "left": 109.28125,
+            "right": 179.9375
+          },
+          {
+            "left": 90.9375,
+            "right": 189.546875
+          },
+          {
+            "left": 178.828125,
+            "right": 201.671875
+          },
+          {
+            "left": 35,
+            "right": 283.734375
+          },
+          {
+            "left": 72.796875,
+            "right": 150.375
+          },
+          {
+            "left": 72.796875,
+            "right": 205.109375
+          },
+          {
+            "left": 137.296875,
+            "right": 157.53125
+          },
+          {
+            "left": 72.796875,
+            "right": 205.109375
+          },
+          {
+            "left": 175.8125,
+            "right": 196.046875
+          },
+          {
+            "left": 72.796875,
+            "right": 205.109375
+          },
+          {
+            "left": 90.359375,
+            "right": 110.59375
+          },
+          {
+            "left": 224.90625,
+            "right": 245.140625
+          },
+          {
+            "left": 252.828125,
+            "right": 273.0625
+          },
+          {
+            "left": 72.796875,
+            "right": 150.375
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "dark",
+        "num": "2.2",
+        "kind": "statement-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "dark",
+        "num": "2.2",
+        "kind": "idea",
+        "width": 288,
+        "scroll": 288,
+        "text": "It follows from the Jacobi integral (2.1) alone: 2\u03a9\u2212CJ2\\Omega - C_J2\u03a9\u2212CJ\u200b is a squared speed. The Lagrange points are the critical points of \u03a9\\Omega\u03a9 (mech 9.12) \u2014 in the orbital plane L1,L2,L3L_1, L_2, L_3L1\u200b,L2\u200b,L3\u200b are saddles and L4,L5L_4, L_5L4\u200b,L5\u200b minima \u2014 and by Morse theory the topology of the sub-level sets of \u22122\u03a9-2\\Omega\u22122\u03a9 changes exactly as CJC_JCJ\u200b passes their values, which is why the necks open there and in that order. The curves bound where the particle may go, not how it moves; they are exact, but give a sufficient condition for confinement only.The confinement step also uses pma-4.22, not just the nonnegative-speed inequality. A collision-free solution has a continuous position map on each connected time interval, so its image is connected. Since every point of that image lies in the allowed set, the trajectory stays in the connected component containing its initial position; it cannot jump across a forbidden gap to another component. This applies while the solution exists. Opening a neck removes that particular topological obstruction, but does not force a trajectory to escape.",
+        "displays": [],
+        "math": [
+          {
+            "left": 63.59375,
+            "right": 130.90625
+          },
+          {
+            "left": 35.796875,
+            "right": 49.0625
+          },
+          {
+            "left": 16,
+            "right": 91.890625
+          },
+          {
+            "left": 209.40625,
+            "right": 257.28125
+          },
+          {
+            "left": 249.78125,
+            "right": 286.515625
+          },
+          {
+            "left": 149.59375,
+            "right": 172.015625
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "dark",
+        "num": "2.2",
+        "kind": "idea-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "dark",
+        "num": "2.5",
+        "kind": "statement",
+        "width": 285,
+        "scroll": 285,
+        "text": "The Hill sphere of a planet of mass mmm on a near-circular orbit of radius aaa about a star of mass M\u226bmM\\gg mM\u226bm is the region of radius rH=a(m3M)1/3r_H = a\\Big(\\frac{m}{3M}\\Big)^{1/3}rH\u200b=a(3Mm\u200b)1/3 around the planet \u2014 the distance of the Lagrange points L1L_1L1\u200b and L2L_2L2\u200b to leading order in (m/M)1/3(m/M)^{1/3}(m/M)1/3. Inside it the planet\u2019s gravity dominates the tidal pull of the star, and the zero-velocity curve through L1L_1L1\u200b encloses a lobe about the planet of roughly this size. Satellites must orbit well inside: numerically, circular prograde orbits survive out to about 0.5\u2009rH0.5\\,r_H0.5rH\u200b, retrograde ones considerably farther. Earth: rH=1.5\u00d7106r_H = 1.5\\times10^6rH\u200b=1.5\u00d7106 km (the Moon is at 0.26\u2009rH0.26\\,r_H0.26rH\u200b); Jupiter: 0.350.350.35 AU.",
+        "displays": [
+          {
+            "width": 253,
+            "scroll": 253
+          }
+        ],
+        "math": [
+          {
+            "left": 73.828125,
+            "right": 90.265625
+          },
+          {
+            "left": 83.25,
+            "right": 93.15625
+          },
+          {
+            "left": 35,
+            "right": 100.71875
+          },
+          {
+            "left": 35,
+            "right": 288
+          },
+          {
+            "left": 202.96875,
+            "right": 223.203125
+          },
+          {
+            "left": 258.390625,
+            "right": 278.625
+          },
+          {
+            "left": 172.8125,
+            "right": 253.9375
+          },
+          {
+            "left": 97.453125,
+            "right": 117.6875
+          },
+          {
+            "left": 229.625,
+            "right": 277.984375
+          },
+          {
+            "left": 141.484375,
+            "right": 260.75
+          },
+          {
+            "left": 175.921875,
+            "right": 233.640625
+          },
+          {
+            "left": 94.8125,
+            "right": 128.09375
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "dark",
+        "num": "2.5",
+        "kind": "statement-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "dark",
+        "num": "2.5",
+        "kind": "idea",
+        "width": 288,
+        "scroll": 288,
+        "text": "Near the planet, the restricted problem reduces to Hill\u2019s problem: the planet\u2019s pull Gm/r2Gm/r^2Gm/r2 against the tidal-plus-centrifugal acceleration 3GMr/a33GMr/a^33GMr/a3 of the frame rotating with the planet (mech 9.12). They balance at r3=ma3/3Mr^3 = ma^3/3Mr3=ma3/3M, which is where L1L_1L1\u200b, L2L_2L2\u200b sit; inside the Jacobi lobe through L1L_1L1\u200b (2.2) a particle cannot leave. Lengths scale as rHr_HrH\u200b and times as the orbital period, so in units of rHr_HrH\u200b the picture is the same for every planet. Retrograde satellites are more robust because the Coriolis force on them points inward.The coefficient three in the local balance comes from Taylor theorem pma-5.15. On the star-planet radial line, write the displacement from the planet as x, with \u2223x\u2223\u226aa|x|\\ll a\u2223x\u2223\u226aa, and use n2=GM/a3n^2=GM/a^3n2=GM/a3. Expanding the smooth stellar acceleration about a gives a differential term 2n2x2n^2x2n2x; the centrifugal acceleration adds n2xn^2xn2x. The leading sum is therefore 3n2x3n^2x3n2x, with a remainder of order n2x2/an^2x^2/an2x2/a. Balancing its magnitude with Gm/\u2223x\u22232Gm/|x|^2Gm/\u2223x\u22232 gives the displayed cube-root radius. The expansion excludes the stellar singularity and is only a leading small-mass, near-circular approximation; it does not derive the empirical satellite-survival fractions.",
+        "displays": [],
+        "math": [
+          {
+            "left": 48.171875,
+            "right": 104.046875
+          },
+          {
+            "left": 189.09375,
+            "right": 267.5625
+          },
+          {
+            "left": 16,
+            "right": 267.515625
+          },
+          {
+            "left": 206.1875,
+            "right": 226.046875
+          },
+          {
+            "left": 233.734375,
+            "right": 253.59375
+          },
+          {
+            "left": 237.046875,
+            "right": 256.90625
+          },
+          {
+            "left": 16,
+            "right": 36.90625
+          },
+          {
+            "left": 75.796875,
+            "right": 96.703125
+          },
+          {
+            "left": 136.90625,
+            "right": 195.921875
+          },
+          {
+            "left": 16,
+            "right": 119.359375
+          },
+          {
+            "left": 138.953125,
+            "right": 177.03125
+          },
+          {
+            "left": 144.09375,
+            "right": 172.984375
+          },
+          {
+            "left": 101.90625,
+            "right": 139.984375
+          },
+          {
+            "left": 59.359375,
+            "right": 114.5
+          },
+          {
+            "left": 53.109375,
+            "right": 120.9375
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "dark",
+        "num": "2.5",
+        "kind": "idea-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "dark",
+        "num": "4.8",
+        "kind": "statement",
+        "width": 285,
+        "scroll": 285,
+        "text": "For atoms in thermal equilibrium at temperature TTT, the numbers of atoms in two bound states bbb and aaa of energies Eb>EaE_b>E_aEb\u200b>Ea\u200b and statistical weights (degeneracies) gb,gag_b,g_agb\u200b,ga\u200b obey NbNa=gbga\u2009e\u2212(Eb\u2212Ea)/kT.\\frac{N_b}{N_a} = \\frac{g_b}{g_a}\\,e^{-(E_b-E_a)/kT}.Na\u200bNb\u200b\u200b=ga\u200bgb\u200b\u200be\u2212(Eb\u200b\u2212Ea\u200b)/kT. For hydrogen, gn=2n2g_n = 2n^2gn\u200b=2n2 and En=\u221213.6\u00a0eV/n2E_n = -13.6\\ \\text{eV}/n^2En\u200b=\u221213.6\u00a0eV/n2, so N2/N1=4\u2009e\u221210.2\u00a0eV/kTN_2/N_1 = 4\\,e^{-10.2\\ \\text{eV}/kT}N2\u200b/N1\u200b=4e\u221210.2\u00a0eV/kT. This ratio is utterly negligible at the Sun's 577257725772 K (\u223c5\u00d710\u22129\\sim 5\\times10^{-9}\u223c5\u00d710\u22129) and is still only \u223c3\u00d710\u22125\\sim3\\times10^{-5}\u223c3\u00d710\u22125 at 10410^4104 K, where kT\u22480.9kT\\approx 0.9kT\u22480.9 eV is still far below the 10.210.210.2 eV needed to reach n=2n=2n=2.Holds when Thermal (LTE) populations of isolated hydrogen atoms; the partition function is truncated at an explicit chosen highest level. The infinite isolated-atom partition diverges; a real plasma needs environment-dependent level dissolution. At the high temperatures shown, the chosen cutoff can matter greatly and the toy does not derive a physical cutoff. Fine/hyperfine structure and interactions are ignored. Populations of the neutral atoms only: ionization is item 4.9.",
+        "displays": [
+          {
+            "width": 253,
+            "scroll": 253
+          }
+        ],
+        "math": [
+          {
+            "left": 145.828125,
+            "right": 159.359375
+          },
+          {
+            "left": 227.140625,
+            "right": 235.171875
+          },
+          {
+            "left": 270.359375,
+            "right": 280.265625
+          },
+          {
+            "left": 118.6875,
+            "right": 185.65625
+          },
+          {
+            "left": 35,
+            "right": 75.5625
+          },
+          {
+            "left": 35,
+            "right": 288
+          },
+          {
+            "left": 140.609375,
+            "right": 211.34375
+          },
+          {
+            "left": 35,
+            "right": 185.5
+          },
+          {
+            "left": 35,
+            "right": 212.15625
+          },
+          {
+            "left": 75.78125,
+            "right": 113.203125
+          },
+          {
+            "left": 138.40625,
+            "right": 226.796875
+          },
+          {
+            "left": 101.09375,
+            "right": 189.484375
+          },
+          {
+            "left": 211.046875,
+            "right": 237.25
+          },
+          {
+            "left": 83.5625,
+            "right": 156.28125
+          },
+          {
+            "left": 109.546875,
+            "right": 142.828125
+          },
+          {
+            "left": 35,
+            "right": 80.53125
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "dark",
+        "num": "4.8",
+        "kind": "statement-text253",
+        "contentWidth": 253,
+        "overflow": []
+      },
+      {
+        "theme": "dark",
+        "num": "4.8",
+        "kind": "idea",
+        "width": 288,
+        "scroll": 288,
+        "text": "The Boltzmann distribution (thermo 6.1) gives each microstate the probability \u221de\u2212E/kT\\propto e^{-E/kT}\u221de\u2212E/kT; a level with ggg states therefore carries g\u2009e\u2212E/kTg\\,e^{-E/kT}ge\u2212E/kT of it. The hydrogen spectrum (qm 8.9) supplies the energies. The consequence for stellar spectra is sharp: the Balmer lines are absorption lines from n=2n=2n=2, so a star needs enough atoms in n=2n=2n=2 to show them, yet in the Sun there is one such atom per \u223c\u2009\u2063108\\sim\\!10^{8}\u223c108 ground-state atoms, and the Sun's Balmer lines are nonetheless clearly visible: that tension is resolved by the sheer number of hydrogen atoms in the photosphere. The competing effect, ionization, is the next item.Finite additivity in prob-1.1.1a is the step from microstates to an excitation level. At fixed positive temperature, each of the g distinct microstates at energy E has the same normalized Boltzmann probability e\u2212E/(kT)/Ze^{-E/(kT)}/Ze\u2212E/(kT)/Z. These are disjoint events, so the level probability is g\u2009e\u2212E/(kT)/Zg\\,e^{-E/(kT)}/Zge\u2212E/(kT)/Z. Dividing two such level probabilities cancels their common partition function and gives the degeneracy-weighted excitation ratio. Equal energy and a common equilibrium normalization are essential; this is a sum over alternative states, not an independence assumption or a statement about the observed line strength.",
+        "displays": [],
+        "math": [
+          {
+            "left": 100.53125,
+            "right": 172.4375
+          },
+          {
+            "left": 266.84375,
+            "right": 276.265625
+          },
+          {
+            "left": 182.5,
+            "right": 247.484375
+          },
+          {
+            "left": 236.484375,
+            "right": 281.1875
+          },
+          {
+            "left": 247.21875,
+            "right": 291.921875
+          },
+          {
+            "left": 152.390625,
+            "right": 194.453125
+          },
+          {
+            "left": 184.421875,
+            "right": 269.984375
+          },
+          {
+            "left": 115.6875,
+            "right": 213.71875
+          }
+        ],
+        "texErrors": 0
+      },
+      {
+        "theme": "dark",
+        "num": "4.8",
+        "kind": "idea-text253",
+        "contentWidth": 253,
+        "overflow": []
+      }
+    ],
+    "issues": []
+  },
+  "counts": {
+    "collection": "astro",
+    "field": "physics",
+    "target": 25,
+    "writtenToWritten": 25,
+    "writtenToKnown": 25,
+    "wholeSyllabus": 25,
+    "publishedShortfall": 0,
+    "unknown": [],
+    "edges": [
+      {
+        "item": "astro-1.7",
+        "prerequisite": "pma-8.10",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-1.1",
+        "prerequisite": "pma-5.11",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-1.3",
+        "prerequisite": "pma-8.6",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-2.7",
+        "prerequisite": "ode-3.5",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-2.8",
+        "prerequisite": "pma-5.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-2.12",
+        "prerequisite": "pma-8.6",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-2.1",
+        "prerequisite": "pma-9.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-2.2",
+        "prerequisite": "pma-4.22",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-2.3",
+        "prerequisite": "ode-3.5",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-2.4",
+        "prerequisite": "pma-5.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-2.5",
+        "prerequisite": "pma-5.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-3.1",
+        "prerequisite": "pma-8.7",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-3.2",
+        "prerequisite": "ode-1.3",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-3.4",
+        "prerequisite": "pma-8.10",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-3.7",
+        "prerequisite": "pma-5.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-3.8",
+        "prerequisite": "pma-5.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-3.9",
+        "prerequisite": "pma-6.22",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-3.10",
+        "prerequisite": "ode-1.3",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-4.7",
+        "prerequisite": "ode-1.4",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-4.8",
+        "prerequisite": "prob-1.1.1a",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-4.9",
+        "prerequisite": "pma-5.11",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-4.12",
+        "prerequisite": "ladr-6.61",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-4.1",
+        "prerequisite": "pma-5.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-4.3",
+        "prerequisite": "pma-8.6",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "astro-4.5",
+        "prerequisite": "pma-8.6",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      }
+    ]
+  },
+  "statementImagesByteIdenticalTo253Views": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "images": [
+    {
+      "name": "1.7-dark-idea-text253.png",
+      "bytes": 110466,
+      "sha256": "cb5d532248a84885c9f28ce459a01b51bb54d66338a0140184c70d78761355a7"
+    },
+    {
+      "name": "1.7-dark-idea.png",
+      "bytes": 105344,
+      "sha256": "00855061b8028531779cdc5fcb8664632ad4ccbbb618dfdb70ac25f09dcaa408"
+    },
+    {
+      "name": "1.7-dark-statement-text253.png",
+      "bytes": 72401,
+      "sha256": "f0747cc1c033d643cf87768aa4d0fc5570ce20536088a0952bcc2781395ba548"
+    },
+    {
+      "name": "1.7-dark-statement.png",
+      "bytes": 72401,
+      "sha256": "f0747cc1c033d643cf87768aa4d0fc5570ce20536088a0952bcc2781395ba548"
+    },
+    {
+      "name": "1.7-light-idea-text253.png",
+      "bytes": 109344,
+      "sha256": "df5124f6003aea31deed498ad193103792c7d70ebc7aaf0ff3b531e340f8e8f8"
+    },
+    {
+      "name": "1.7-light-idea.png",
+      "bytes": 104051,
+      "sha256": "398b2accd89562927926f0b340f6c22a46714a4dba302c5d3e8ccffa625b7ab8"
+    },
+    {
+      "name": "1.7-light-statement-text253.png",
+      "bytes": 72000,
+      "sha256": "abc373f32a4263e84a8cea2f9656a7e1eba346c9365e30ff0d4c33008ffe6db5"
+    },
+    {
+      "name": "1.7-light-statement.png",
+      "bytes": 72000,
+      "sha256": "abc373f32a4263e84a8cea2f9656a7e1eba346c9365e30ff0d4c33008ffe6db5"
+    },
+    {
+      "name": "2.2-dark-idea-text253.png",
+      "bytes": 92897,
+      "sha256": "c8fb7aedc761783a7798ad3ffb85f9cd020cb1675994777b9a4311d2d12d5a0f"
+    },
+    {
+      "name": "2.2-dark-idea.png",
+      "bytes": 90390,
+      "sha256": "1612a8cab7a1ec162b0c32a6806b4c83c4bdf9b10c2c870dabeee70add34c7f0"
+    },
+    {
+      "name": "2.2-dark-statement-text253.png",
+      "bytes": 91713,
+      "sha256": "f600402c26309bf36813ba235eb73487c7921c482a503d78dbdbd265546260e8"
+    },
+    {
+      "name": "2.2-dark-statement.png",
+      "bytes": 91713,
+      "sha256": "f600402c26309bf36813ba235eb73487c7921c482a503d78dbdbd265546260e8"
+    },
+    {
+      "name": "2.2-light-idea-text253.png",
+      "bytes": 92076,
+      "sha256": "28ff4cde5a12412759e0a9812c0433bcbf6a93dee1ca0ea9d3f6d1032d907ec7"
+    },
+    {
+      "name": "2.2-light-idea.png",
+      "bytes": 89351,
+      "sha256": "68183aef907a82a9468c26ae62d595a7c14b5d0332c49eb76133be97c3ac331f"
+    },
+    {
+      "name": "2.2-light-statement-text253.png",
+      "bytes": 91245,
+      "sha256": "f7f25b665b6fd8bddf1f3c4e815ab97c0716d241e44a62afa8c3c1b3aef51d69"
+    },
+    {
+      "name": "2.2-light-statement.png",
+      "bytes": 91245,
+      "sha256": "f7f25b665b6fd8bddf1f3c4e815ab97c0716d241e44a62afa8c3c1b3aef51d69"
+    },
+    {
+      "name": "2.5-dark-idea-text253.png",
+      "bytes": 109561,
+      "sha256": "f1750823a1c736956141385987b946301cb85b9583290c7555774003059d0f54"
+    },
+    {
+      "name": "2.5-dark-idea.png",
+      "bytes": 105114,
+      "sha256": "910cb3c30f6259285cac531f098b23606137a98d8e10ae2395e6fe4d606d32c1"
+    },
+    {
+      "name": "2.5-dark-statement-text253.png",
+      "bytes": 62243,
+      "sha256": "32b4ebee8c3d47d2d500c3e5510569671923d96cb4b939c380195b6ee22285f4"
+    },
+    {
+      "name": "2.5-dark-statement.png",
+      "bytes": 62243,
+      "sha256": "32b4ebee8c3d47d2d500c3e5510569671923d96cb4b939c380195b6ee22285f4"
+    },
+    {
+      "name": "2.5-light-idea-text253.png",
+      "bytes": 108634,
+      "sha256": "dda9ca6d33f4ece5bfbeb92ebe22b95710fb4c1d1238a4fce34a1f64ccff2491"
+    },
+    {
+      "name": "2.5-light-idea.png",
+      "bytes": 103551,
+      "sha256": "9947fa03076043ec8f8d696c9954c1389169e38b98b5f5451851107d72d1567d"
+    },
+    {
+      "name": "2.5-light-statement-text253.png",
+      "bytes": 61956,
+      "sha256": "d32d6d4dc8615d4497ebc5b5f23517d19f042ef15a42881ccc1769ebeef65491"
+    },
+    {
+      "name": "2.5-light-statement.png",
+      "bytes": 61956,
+      "sha256": "d32d6d4dc8615d4497ebc5b5f23517d19f042ef15a42881ccc1769ebeef65491"
+    },
+    {
+      "name": "4.8-dark-idea-text253.png",
+      "bytes": 110030,
+      "sha256": "ab1941e15e6c8a5fbc1a4e8eba5f64b04591b6a8a0de1dbd034f3ec70e029c3a"
+    },
+    {
+      "name": "4.8-dark-idea.png",
+      "bytes": 106006,
+      "sha256": "eff57bce037868747ed6ba10e7df229b19873c1c69b1fd30494fc62cea18565c"
+    },
+    {
+      "name": "4.8-dark-statement-text253.png",
+      "bytes": 83178,
+      "sha256": "4bc6443b0b72562d3f3a588370a34ef3a6de6e5ca37aec5bd15e08d3d2a47109"
+    },
+    {
+      "name": "4.8-dark-statement.png",
+      "bytes": 83178,
+      "sha256": "4bc6443b0b72562d3f3a588370a34ef3a6de6e5ca37aec5bd15e08d3d2a47109"
+    },
+    {
+      "name": "4.8-light-idea-text253.png",
+      "bytes": 109469,
+      "sha256": "02cc1b5f2ed9721e203320b3ab92dc9fb01cbb78e25f4e66d3264ff71822dfe7"
+    },
+    {
+      "name": "4.8-light-idea.png",
+      "bytes": 104544,
+      "sha256": "16e1181cf3e48644c64092b8af0c9d570b27d65222b0a5b69d3dd70997621016"
+    },
+    {
+      "name": "4.8-light-statement-text253.png",
+      "bytes": 84750,
+      "sha256": "2db438313c5af92aea727b9d12ea93487d3f4e33140233670bfdd9a178a5d069"
+    },
+    {
+      "name": "4.8-light-statement.png",
+      "bytes": 84750,
+      "sha256": "2db438313c5af92aea727b9d12ea93487d3f4e33140233670bfdd9a178a5d069"
+    },
+    {
+      "name": "sheet-dark-actual-proof.png",
+      "bytes": 462290,
+      "sha256": "2780673a619c0801f7421e5787ad30d0cdef7a94f7eacfbdc81b7bb6d64f2c1b"
+    },
+    {
+      "name": "sheet-dark-idea.png",
+      "bytes": 481130,
+      "sha256": "c0a11021557aa66baf44d966476d5cc4b5d3aafed8659d20ffb24f8531654b6a"
+    },
+    {
+      "name": "sheet-dark-statement.png",
+      "bytes": 359907,
+      "sha256": "6a14fdd5671af23a082b07ef6ab67e4721cd9395737a6c12bb2e27da55449276"
+    },
+    {
+      "name": "sheet-light-actual-proof.png",
+      "bytes": 461589,
+      "sha256": "02e3847538629f999c0a4751396c6c46acc333440912d32d7a643b81e5b8fd83"
+    },
+    {
+      "name": "sheet-light-idea.png",
+      "bytes": 480708,
+      "sha256": "4384cb8b179eea3b66261325a8b5737b7d3b4c819aafe9d8214883be85259575"
+    },
+    {
+      "name": "sheet-light-statement.png",
+      "bytes": 361478,
+      "sha256": "10e98da332d4c2899483ac05c9dc4e1affacba19b9b77b76f055d1188248f23c"
+    }
+  ],
+  "evidenceRoot": "/tmp/atlas-root-astro-four-peer",
+  "scope": "Independent four-input/scope/equivalent-wrap acceptance, no source closure or full input/runtime certification."
+}

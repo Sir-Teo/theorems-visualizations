@@ -1,0 +1,23 @@
+[
+  {
+    "file": "green2010.pdf",
+    "url": "https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/Green_2010-2_0.pdf",
+    "bytes": 795095,
+    "sha256": "bf061d232aa1c25e6fec5cbf6ea5c3b73727ae91c8138b660f11a0b115634a3c",
+    "readScope": "Actual original13page facsimile; bounded main ancestry estimation and limitations, especially printed721. Not the full SOM or underlying sequences."
+  },
+  {
+    "file": "reich2010.pdf",
+    "url": "https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/2010_Nature_Denisova_Genome_0.pdf",
+    "bytes": 469485,
+    "sha256": "5e9e023d3e78b6dac6d7e8c8a71ee53a17726d310842fe31a49807c0ab4cc533",
+    "readScope": "Actual original8page facsimile; bounded main Melanesian analysis and model limitations, especially1056\u20131057. Supporting information not reanalysed."
+  },
+  {
+    "file": "fu2014.pdf",
+    "url": "https://gwern.net/doc/genetics/selection/natural/human/2014-fu.pdf",
+    "bytes": 1235491,
+    "sha256": "0227fbb9ffcd28c55230ad2ac6a2a7b876f55c7c8a8fbaadb30b555daa879163",
+    "readScope": "Actual original6page journal facsimile; bounded dating, Neanderthal-admixture section and Figs5\u20136/445,448\u2013449. Full SI/sequence data not independently reanalysed."
+  }
+]

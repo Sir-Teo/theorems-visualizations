@@ -1,8 +1,6 @@
 // Stochastic Processes — Chapter 2: Hitting times, absorption and random-walk paths (items 2.1–2.6; 2.7–2.12 in ch02-b.js)
 import { matMul, cumRows, nextState, ringPos, pfmt, edgesOf, rowNormalize, STATE_COL, solveLin, canReach, hitProb, meanHit, simHits, binom } from './ch02.shared.js';
 
-import { HASBRO_JUMPS, snakeLanding } from './snakes.shared.js';
-
 /** The seven-state "maze with a trap" used by 2.1 and 2.2 (state 6 is absorbing). */
 const MAZE = {
   names: ['0', '1', '2', '3', '4', '5', '6'],
@@ -380,32 +378,32 @@ $$D_a=\frac{a}{q-p}-\frac{N}{q-p}\cdot\frac{1-\rho^a}{1-\rho^N}\quad(p\ne\tfrac1
     // ───────────────────────────────────────────────────────────────── 2.6
     {
       num: '2.6', kind: 'Model', name: 'Snakes and ladders as an absorbing chain',
-      statement: String.raw`On a board with squares $1,\dots,100$ a player starts off the board (state $0$), repeatedly rolls a fair die $d\in\{1,\dots,6\}$ and moves from $s$ to $s+d$; if the new square is the foot of a ladder or the head of a snake, the player is carried to its other end (one jump only). Under the **exact-finish** rule a roll that would pass $100$ leaves the player where she is. If $100$ is reachable from every state, the squares then form an absorbing Markov chain with the single absorbing state $100$, and the expected number of turns from square $s$ is $E_s=\big((I-Q)^{-1}\mathbf 1\big)_s$, the solution of $E_{100}=0$ and $E_s=1+\tfrac16\sum_{d=1}^6 E_{g(s,d)}$, where $g(s,d)=s$ on an overshoot and otherwise is the landing square after at most one snake or ladder.`,
-      idea: String.raw`This is 2.3 and 2.5 on a 101-state chain: the system $(I-Q)E=\mathbf 1$ is solved by Gaussian elimination, and $E_0$ is the expected length of a game. There is generally no simple scalar formula because snakes and ladders connect distant squares, but the chain is still finite and absorbing, so the answer exists and is unique as long as the last square stays reachable from everywhere. A game is a path of the chain, so its length is the absorption time, and the histogram of simulated lengths is the distribution of that time, with mean $E_0$.`,
-      caption: String.raw`Squares are shaded by the expected number of turns still to go (deeper orange: longer). **Edit the board:** click a square, then another, to add a ladder (up) or a snake (down) between them; click a jump's first square again (with nothing selected) to remove it. The right panel is the histogram of 20000 simulated games, with the exact mean $E_0$ from the linear system as the gold line. The "classic" board uses the 19 jumps checked against Hasbro’s official A4756 product photographs; its complete instructions supply the off-board start, single jump and exact-finish rules. The board editor can create closed traps, in which case the all-state finite-expectation solve is unavailable. A fair die models an ideal uniform six-sector spinner. Try deleting all snakes, or all ladders, and switch the finishing rule.`,
-      deps: ['stoch-2.5'], refs: ['Hasbro A4756 official instructions (2021), WIN and LET’S PLAY sections; official product photographs (full-board and overhead play views), all 19 jump endpoints; https://consumercare.hasbro.com/en-us/product/chutes-and-ladders-game/1095F835-5056-9047-F548-2F4D0AEF4ACC', 'Levin & Peres, Markov Chains and Mixing Times, 2nd ed., §2.1, eq. (2.4) (first-step equations); §1.5.2 (survival-tail expectation)'], tags: ['absorbing chains', 'board games'],
+      statement: String.raw`On a board with squares $1,\dots,100$ a player starts off the board (state $0$), repeatedly rolls a fair die $d\in\{1,\dots,6\}$ and moves from $s$ to $s+d$; if the new square is the foot of a ladder or the head of a snake, the player is carried to its other end (one jump only). Under the **exact-finish** rule a roll that would pass $100$ leaves the player where she is. The squares then form an absorbing Markov chain with the single absorbing state $100$, and the expected number of turns from square $s$ is $E_s=\big((I-Q)^{-1}\mathbf 1\big)_s$, the solution of $E_{100}=0$, $E_s=1+\tfrac16\sum_{d=1}^6E_{\,\mathrm{jump}(\min\{s+d,\,\cdot\})}$ (with the overshoot rule applied).`,
+      idea: String.raw`This is 2.3 and 2.5 on a 101-state chain: the system $(I-Q)E=\mathbf 1$ is solved by Gaussian elimination, and $E_0$ is the expected length of a game. No closed formula exists because snakes and ladders connect distant squares, but the chain is still finite and absorbing, so the answer exists and is unique as long as the last square stays reachable from everywhere. A game is a path of the chain, so its length is the absorption time, and the histogram of simulated lengths is the distribution of that time, with mean $E_0$.`,
+      caption: String.raw`Squares are shaded by the expected number of turns still to go (deeper orange: longer). **Edit the board:** click a square, then another, to add a ladder (up) or a snake (down) between them; click a jump's first square again (with nothing selected) to remove it. The right panel is the histogram of 20000 simulated games, with the exact mean $E_0$ from the linear system as the gold line. The **course-example** preset follows the 19 jumps listed in Kevin Davis Ross’s *Applied Stochastic Processes*, Appendix C (including the chute from 48 to 26). It is an explicit teaching example, not a claim about every commercial edition; try deleting all snakes, or all ladders, and switch the finishing rule.`,
+      deps: ['stoch-2.5'], refs: ['Kevin Davis Ross, Applied Stochastic Processes, Appendix C; https://bookdown.org/kevin_davisross/applied-stochastic-processes/app-mcmc.html', 'Hasbro, Chutes and Ladders: exact finish rule; https://instructions.hasbro.com/en-us/instruction/chutes-and-ladders-game-retro-series-1978-edition', 'Norris §1.3'], tags: ['absorbing chains', 'board games'],
       viz(v) {
-        const CLASSIC = HASBRO_JUMPS;
+        const CLASSIC = { 1: 38, 4: 14, 9: 31, 21: 42, 28: 84, 36: 44, 51: 67, 71: 91, 80: 100, 16: 6, 48: 26, 49: 11, 56: 53, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 };
         const rule = v.select('finish', [{ value: 'exact', label: 'exact finish' }, { value: 'over', label: 'overshoot wins' }], 'exact', { onChange: () => recompute() });
-        const pre = v.select('board', [{ value: 'classic', label: 'classic' }, { value: 'empty', label: 'no jumps' }, { value: 'ladders', label: 'ladders only' }, { value: 'snakes', label: 'snakes only' }], 'classic', { onChange: () => { jumps = pick(); sel = null; recompute(); } });
+        const pre = v.select('board', [{ value: 'classic', label: 'course example' }, { value: 'empty', label: 'no jumps' }, { value: 'ladders', label: 'ladders only' }, { value: 'snakes', label: 'snakes only' }], 'classic', { onChange: () => { jumps = pick(); sel = null; recompute(); } });
         const s1 = v.stage({ x: [-0.1, 10.1], y: [-0.9, 10.1], axes: false, equal: true, height: 460, title: 'the board (click two squares to add a snake or ladder)' });
         const s2 = v.stage({ x: [0, 200], y: [0, 0.05], axes: 'box', gutter: true, height: 460, xlabel: 'turns to finish', ylabel: 'density', title: 'game length, 20000 simulated games' });
         const pick = () => { const o = {}; for (const [a, b] of Object.entries(CLASSIC)) { if (pre.value === 'classic' || (pre.value === 'ladders' && b > a) || (pre.value === 'snakes' && b < a)) o[a] = b; } return pre.value === 'empty' ? {} : o; };
-        let jumps = pick(), sel = null, E = null, lens = [], meanSim = 0, censored = 0, ok = true;
+        let jumps = pick(), sel = null, E = null, lens = [], meanSim = 0, ok = true;
         const cell = (s) => { const r = Math.floor((s - 1) / 10); let c = (s - 1) % 10; if (r % 2) c = 9 - c; return [c + 0.5, r + 0.5]; };
         const squareAt = (x, y) => { if (y < 0 || y >= 10 || x < 0 || x >= 10) return null; const r = Math.floor(y); let c = Math.floor(x); if (r % 2) c = 9 - c; return r * 10 + c + 1; };
         function recompute() {
           const n = 101, over = rule.value === 'over';
-          const land = (s, d) => snakeLanding(s, d, jumps, over);
+          const land = (s, d) => { let t = s + d; if (t > 100) { if (over) return 100; return s; } return jumps[t] !== undefined && t !== 100 ? jumps[t] : t; };
           const idx = []; for (let s = 0; s < 100; s++) idx.push(s);
           const A = idx.map((s) => idx.map((t) => (s === t ? 1 : 0))), b = idx.map(() => 1);
           idx.forEach((s) => { for (let d = 1; d <= 6; d++) { const t = land(s, d); if (t < 100) A[s][t] -= 1 / 6; } });
           const sol = solveLin(A, b);
           E = sol ? sol.concat([0]) : null; ok = !!sol && sol.every((x) => x > 0 && isFinite(x));
-          lens = []; censored = 0;
+          lens = [];
           if (ok) {
             const R = v.rng(12345);
-            for (let g = 0; g < 20000; g++) { let s = 0, t = 0; while (s < 100 && t < 5000) { s = land(s, 1 + Math.floor(R() * 6)); t++; } if (s < 100) censored++; lens.push(t); }
+            for (let g = 0; g < 20000; g++) { let s = 0, t = 0; while (s < 100 && t < 5000) { s = land(s, 1 + Math.floor(R() * 6)); t++; } lens.push(t); }
             meanSim = lens.reduce((a, c) => a + c, 0) / lens.length;
           }
           v.invalidate();
@@ -443,7 +441,7 @@ $$D_a=\frac{a}{q-p}-\frac{N}{q-p}\cdot\frac{1-\rho^a}{1-\rho^N}\quad(p\ne\tfrac1
           } else s2.text('the last square cannot be reached', 100, 0.02, { color: 'red', size: 16, align: 'center' });
         });
         v.legend([['green', 'ladder', { dot: true }], ['red', 'snake', { dot: true }], ['gold', 'exact $E_0$'], ['accent', 'simulated games', { area: true }]]);
-        v.readout(() => (ok ? `${Object.keys(jumps).length} jumps. Expected game length from the linear system: $E_0=$ **${v.fix(E[0], 2)}** turns; ${censored ? 'mean of capped durations (a lower estimate)' : 'mean of 20000 simulated games'} **${v.fix(meanSim, 2)}**; ${censored} games still unfinished at the 5000-turn cap; median ${v.M.median(lens)}, longest ${Math.max(...lens)} (histogram shows up to 200).\n${sel ? `Selected square ${sel}: click another square to join.` : ''}` : 'Some squares cannot reach the finish: $I-Q$ is singular and their expected times are infinite. The all-state linear system cannot supply a finite mean from every square. Remove a snake.'));
+        v.readout(() => (ok ? `${Object.keys(jumps).length} jumps. Expected game length from the linear system: $E_0=$ **${v.fix(E[0], 2)}** turns; mean of 20000 simulated games **${v.fix(meanSim, 2)}**; median ${v.M.median(lens)}, longest ${Math.max(...lens)} (histogram shows up to 200).\n${sel ? `Selected square ${sel}: click another square to join.` : ''}` : 'The finish cannot be reached from some square: $I-Q$ is singular and $E=\\infty$. Remove a snake.'));
       },
     },
   ],

@@ -755,20 +755,20 @@ Bound orbits ($E<0$, $e<1$) are ellipses with semi-major axis $a = p/(1 - e^2) =
       name: 'Kepler’s third law',
       statement: String.raw`For bound orbits under an inverse-square attraction $F = -k/r^2$, the period depends only on the semi-major axis $a$, not on the eccentricity:
 $$T^2 = \frac{4\pi^2\mu}{k}\,a^3,\qquad\text{for planets}\qquad T^2 = \frac{4\pi^2}{G(M_\odot + m)}\,a^3 .$$
-Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so on a log–log plot of period against semi-major axis they fall on one line of slope $3/2$. For a power-law attraction $F\propto-r^{-n}$, circular orbits obey $T\propto r^{(n+1)/2}$. Homothetic orbits of a fixed shape have the same scaling exponent, but the time-scale factor can depend on shape. The harmonic force ($n=-1$) is another special case: all nondegenerate bound ellipses have the same full orbital period. Generic non-Kepler rosettes have distinct radial and azimuthal time scales and need not return to their initial state after an angle of $2\pi$.`,
+Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so on a log–log plot of period against semi-major axis they fall on one line of slope $3/2$. For a power-law force $F\propto -r^{-n}$ the circular orbits instead obey $T\propto a^{(n+1)/2}$, and eccentric orbits no longer share a single law.`,
       idea: String.raw`By the area law (8.5) the radius sweeps area at the constant rate $\ell/2\mu$, so one period sweeps the whole ellipse: $T = \pi ab\cdot 2\mu/\ell$. For the conic orbit (8.7) the semi-latus rectum $p = b^2/a = \ell^2/\mu k$ gives $\ell = b\sqrt{\mu k/a}$, and therefore $T = 2\pi\sqrt{\mu/k}\;a^{3/2}$: the semi-minor axis cancels, which is why eccentricity drops out. With the reduced mass of 8.2, $\mu/k = 1/G(M + m)$, so Jupiter’s period is about $0.05\%$ shorter than $a^{3/2}$ years.`,
-      caption: String.raw`Left: bodies launched from catalogue perihelion/aphelion distances and integrated numerically in AU and years; choose the inner or outer system. Right: filled points use $T_\theta$, the time from launch until the azimuth first changes by $2\pi$; open points are catalogue periods. At $n=2$ this is the orbital period, and $a_r=(r_{\min}+r_{\max})/2$ is the ellipse's semi-major axis: near-circular Venus and eccentric Halley follow the same Kepler line. Vary $n$ over the displayed range 1.5–2.8: each body retains its launch turning distances, but generic orbits precess. Their first-revolution times can depend on shape and need not be radial periods or full recurrence times.`,
+      caption: String.raw`Left: eleven bodies on orbits integrated numerically from their real perihelion distances and speeds (AU, years, $GM_\odot$ from the built-in constants); pick the inner or outer system. Right, on log–log axes: the measured periods (filled) against the catalogue values (open circles) and the line $T = 2\pi\sqrt{a^3/GM_\odot}$. Halley’s comet ($e = 0.97$) and the circular Venus sit on the same line. Change the force exponent: each body is relaunched so that it keeps its real perihelion and aphelion, but the periods (time to go once around) leave the catalogue — the slope changes, the orbits become rosettes and the eccentric bodies scatter off the line.`,
       deps: ['mech-8.7', 'mech-8.5'],
       refs: ['Taylor §8.6', 'Goldstein §3.8'],
       tags: ['Kepler', 'solar system', 'scaling'],
       credit: 'Kepler, 1619',
-      scope: String.raw`Kepler's formula describes two-body inverse-square motion. The visualization integrates a Sun-only central-force model; the other exponents are comparisons, not solar-system predictions. Its size $a_r$ is half the sum of the numerically observed radial extremes, not the semi-major axis of a non-elliptic rosette. Finite integration and catalogue approximations affect measured values; adding a planet's mass does not account for mutual perturbations. The harmonic-force exception is outside the slider range.`,
+      scope: String.raw`Two-body inverse-square motion; for planets the constant contains $M_\odot + m$, and mutual perturbations shift periods slightly.`,
       viz(v) {
         const C = v.M.CONST, MU = (C.G * C.Msun * C.yr ** 2) / C.au ** 3; // GM☉ in AU³/yr²
         const zoom = v.select('show', [{ value: 'inner', label: 'inner system' }, { value: 'outer', label: 'outer system' }], 'inner');
         const pw = v.slider('force exponent $n$ ($F \\propto -1/r^n$)', 1.5, 2.8, 2, { step: 0.01, onChange: (x) => { if (Math.abs(x - 2) < 0.015 && x !== 2) pw.set(2); } });
         const s = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: false, height: 340, weight: 1 });
-        const g = v.stage({ x: [0.25, 60], y: [0.1, 1500], xlog: true, ylog: true, axes: 'box', height: 340, weight: 1.1, xlabel: 'radial size aᵣ (AU)', ylabel: 'time for first 2π azimuth change (yr)', title: 'Kepler’s third law (log–log)' });
+        const g = v.stage({ x: [0.25, 60], y: [0.1, 1500], xlog: true, ylog: true, axes: 'box', height: 340, weight: 1.1, xlabel: 'semi-major axis a (AU)', ylabel: 'period T (yr)', title: 'Kepler’s third law (log–log)' });
         const cache = memo(); let cur = null;
         const run = () => cache(pw.value, () => {
           const n = pw.value, acc = (r) => -MU / r ** n, U = (r) => (-MU * r ** (1 - n)) / (n - 1);
@@ -821,9 +821,9 @@ Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so 
         v.readout(() => {
           if (!cur || !cur.fit) return '';
           const { D, fit } = cur, n = pw.value, J = D.find((d) => d.B.n === 'Jupiter'), H = D.find((d) => d.B.n === 'Halley'), V = D.find((d) => d.B.n === 'Venus');
-          let out = String.raw`slope of the simulated first-revolution times $= ${v.fix(fit.slope, 4)}$ ($r^2 = ${v.fix(fit.r2, 6)}$)`;
-          if (n === 2) out += String.raw` — Kepler’s $3/2$ · Halley ($e = 0.97$): $T = ${v.fix(H.Tm, 2)}$ yr, Venus ($e = 0.007$): $T/a^{3/2} = ${v.fix(V.Tm / V.am ** 1.5, 5)}$, Halley $T/a^{3/2} = ${v.fix(H.Tm / H.am ** 1.5, 5)}$ yr/AU$^{3/2}$ · Jupiter: catalogue ${v.fix(J.B.T, 3)} yr, Sun-only model ${v.fix(J.Tm, 3)} yr; counting Jupiter’s own mass, $M_\odot + m_J$ (8.2), gives ${v.fix(J.Tm * Math.sqrt(1 / (1 + 9.546e-4)), 3)} yr — remaining differences also reflect perturbations and catalogue/model approximations`;
-          else out += String.raw` vs $(n+1)/2 = ${v.fix((n + 1) / 2, 3)}$ for circular orbits · eccentric bodies now miss the line: Halley’s $T_\theta/a_r^{(n+1)/2}$ differs from Venus’s by ${v.fix(100 * Math.abs(H.Tm / H.am ** ((n + 1) / 2) / (V.Tm / V.am ** ((n + 1) / 2)) - 1), 1)}%`;
+          let out = String.raw`slope of the simulated points $= ${v.fix(fit.slope, 4)}$ ($r^2 = ${v.fix(fit.r2, 6)}$)`;
+          if (n === 2) out += String.raw` — Kepler’s $3/2$ · Halley ($e = 0.97$): $T = ${v.fix(H.Tm, 2)}$ yr, Venus ($e = 0.007$): $T/a^{3/2} = ${v.fix(V.Tm / V.am ** 1.5, 5)}$, Halley $T/a^{3/2} = ${v.fix(H.Tm / H.am ** 1.5, 5)}$ yr/AU$^{3/2}$ · Jupiter: catalogue ${v.fix(J.B.T, 3)} yr, Sun-only model ${v.fix(J.Tm, 3)} yr; counting Jupiter’s own mass, $M_\odot + m_J$ (8.2), gives ${v.fix(J.Tm * Math.sqrt(1 / (1 + 9.546e-4)), 3)} yr — the rest is perturbation by the other planets`;
+          else out += String.raw` vs $(n+1)/2 = ${v.fix((n + 1) / 2, 3)}$ for circular orbits · eccentric bodies now miss the line: Halley’s $T/a^{(n+1)/2}$ differs from Venus’s by ${v.fix(100 * Math.abs(H.Tm / H.am ** ((n + 1) / 2) / (V.Tm / V.am ** ((n + 1) / 2)) - 1), 1)}%`;
           return out;
         });
       },

@@ -22,14 +22,6 @@ export function halfSpaceT(z, tMyr, { Tm = 1300, T0 = 0, kappa = KAPPA } = {}) {
 }
 /** Surface heat flow (W/m²) of the half-space: k (Tm−T0)/√(π κ t). */
 export const halfSpaceQ = (tMyr, { Tm = 1300, T0 = 0, k = 3.138, kappa = KAPPA } = {}) => (tMyr <= 0 ? Infinity : (k * (Tm - T0)) / Math.sqrt(Math.PI * kappa * tMyr * MYR));
-/** Heat-loss integrand after t=u², for a triangular age–area density.
- * Returns watts per sqrt(Myr). Cancelling sqrt(t) analytically preserves the
- * nonzero endpoint at u=0 instead of dropping a Simpson quadrature sample.
- */
-export function ridgeHeatIntegrand(u, { area, maxAge, Tm = 1300, T0 = 0, k = 3.138, kappa = KAPPA }) {
-  const c = k * (Tm - T0) / Math.sqrt(Math.PI * kappa * MYR);
-  return 4 * area * c / maxAge * Math.max(0, 1 - u * u / maxAge);
-}
 /** Subsidence (m) below the ridge-crest level: 2 ρm α (Tm−T0)/(ρm−ρw) √(κ t/π). */
 export const halfSpaceSubs = (tMyr, { Tm = 1300, T0 = 0, alpha = 3e-5, rhoM = 3300, rhoW = 1000, kappa = KAPPA } = {}) =>
   ((2 * rhoM * alpha * (Tm - T0)) / (rhoM - rhoW)) * Math.sqrt((kappa * Math.max(tMyr, 0) * MYR) / Math.PI);

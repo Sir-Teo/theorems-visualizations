@@ -1,0 +1,5 @@
+import test from'node:test';import assert from'node:assert/strict';import epi from'../content/epi/ch02.js';import prob from'../content/prob/ch02.js';
+// Remove only layout commands; retain every mathematical and prose token.
+const tokens=x=>x.replace(/\\(?:begin|end)\{(?:aligned|gathered)\}|\\\\|\\q(?:quad|uad)|&|\s/g,'');
+const cases=[{item:epi.items.find(x=>x.num==='2.2'),formula:String.raw`$$\text{PPV} = P(D\mid +) = \frac{\text{Se}\,p}{\text{Se}\,p + (1-\text{Sp})(1-p)}, \qquad \text{NPV} = P(\bar D\mid -) = \frac{\text{Sp}\,(1-p)}{\text{Sp}\,(1-p) + (1-\text{Se})\,p}.$$`},{item:prob.items.find(x=>x.num==='2.1.1a'),formula:String.raw`$$P(X\in C,\ Y\in D)=P(X\in C)\,P(Y\in D)\quad\text{for all Borel sets } C,D,$$`}];
+test('two narrow prerequisite displays preserve every original mathematical/prose token in order',()=>{for(const{item,formula}of cases){const displays=item.statement.match(/\$\$[\s\S]*?\$\$/g);assert.ok(displays?.length);assert.equal(tokens(displays.join('').replaceAll('$$','')),tokens(formula.replaceAll('$$','')));assert.equal(typeof item.viz,'function');}});

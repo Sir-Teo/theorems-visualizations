@@ -1,9 +1,9 @@
+import {muonSurvival,FRISCH_SMITH} from './rel-source-audit.js';
 // Special & General Relativity — Chapter 1 (second part): items 1.7–1.12
 //
 // Facts checked while writing (Oct 2026): muon rest lifetime 2.1969811 µs and mass 105.6583755 MeV/c² (PDG);
 // Rossi & Hall, Phys. Rev. 59 (1941) 223 (muon decay in flight, Echo Lake vs Denver; proper lifetime ≈ 2.4 µs there, per a secondary summary);
-// Frisch & Smith, Am. J. Phys. 31 (1963) 342 — about 563 muons/h on Mount Washington (~1.9 km) against about 408/h at Cambridge, MA
-// Original Frisch–Smith Table I: means563±10/h and408±9/h; p355 corrected 397/550=.722±.021.
+// Frisch–Smith source review: original Table I p.348 gives means563±10 and 408±9 per hour; 412 is Cambridge run1, paired with 568.
 // FitzGerald 1889 / Lorentz 1892 contraction proposals (Linda Hall Library, secondary); Terrell and Penrose, 1959 (secondary).
 import { gam, toMoving, fromMoving, lightLines, TAU_MU, M_MU, C_KM_US } from './ch01.shared.js';
 
@@ -124,11 +124,13 @@ has the same value in every inertial frame (flat spacetime, without gravity). In
       name: 'Proper time along a worldline',
       credit: 'Minkowski, 1908',
       statement: String.raw`Along a timelike worldline $x(t)$ with $|dx/dt|<c$ the **proper time** between two events on it is
-$$\Delta\tau=\int\sqrt{1-\frac{v(t)^2}{c^2}}\,dt=\frac1c\int\sqrt{c^2\,dt^2-dx^2},$$
+$$\begin{gathered}\Delta\tau=\int\sqrt{1-\frac{v(t)^2}{c^2}}\,dt\\=\frac1c\int\sqrt{c^2\,dt^2-dx^2},\end{gathered}$$
 the time read by a clock carried along the worldline. It is the Minkowski analogue of arc length (pma-6.27) with the sign of $dx^2$ reversed; it has the same value in every inertial frame. Among all timelike worldlines joining two events, the straight (inertial) one has the **largest** proper time.`,
-      idea: String.raw`For a small step the clock is momentarily at rest in a frame where $dx'=0$, so it advances by $d\tau=\sqrt{c^2dt^2-dx^2}/c$, an interval (rel-1.7) divided by $c$ and therefore frame independent. Summing the steps gives the integral, exactly as arc length sums $\sqrt{dx^2+dy^2}$ (pma-6.27). Any detour makes each step $\sqrt{dt^2-dx^2}$ shorter than the straight chord would, because $\sqrt{a^2-b_1^2}+\sqrt{a'^2-b_2^2}\le\sqrt{(a+a')^2-(b_1+b_2)^2}$ — the reversed triangle inequality.`,
+      idea: String.raw`For a small step the clock is momentarily at rest in a frame where $dx'=0$, so it advances by $d\tau=\sqrt{c^2dt^2-dx^2}/c$, an interval (rel-1.7) divided by $c$ and therefore frame independent. Summing the steps gives the integral, exactly as arc length sums $\sqrt{dx^2+dy^2}$ (pma-6.27). Any detour makes each step $\sqrt{dt^2-dx^2}$ shorter than the straight chord would, because $\sqrt{a^2-b_1^2}+\sqrt{a'^2-b_2^2}\le\sqrt{(a+a')^2-(b_1+b_2)^2}$ — the reversed triangle inequality.
+
+For the polygonal paths shown, give each leg weight $\Delta t_i/T$. Jensen (prob 1.6.2) applied to the convex function $-\sqrt{1-z^2}$ for $|z|<1$ bounds the weighted sum of proper-time rates by the rate at the weighted mean velocity. That mean is the fixed endpoint displacement divided by $T$, so the straight leg maximizes proper time. Strict convexity gives equality only when all positive-duration legs have the same velocity.`,
       caption: String.raw`**Drag the interior points** (and the end point) sideways to bend the worldline: the right graph accumulates the wristwatch time $\tau(t)$ against coordinate time and always ends below the straight line's. Drag a point more than one unit of $x$ per unit of $ct$ away from its neighbour and the segment turns red: no clock can follow it.`,
-      deps: ['rel-1.7', 'pma-6.27'],
+      deps: ['rel-1.7', 'pma-6.27', 'prob-1.6.2'],
       refs: ['Taylor–Wheeler §5.6', 'Schutz §1.6'],
       tags: ['proper time', 'worldline', 'arc length'],
       scope: String.raw`The worldline is drawn as a polygon through the handles, so each leg is uniform motion; the integral is exact for it.`,
@@ -275,43 +277,44 @@ the time read by a clock carried along the worldline. It is the Minkowski analog
       num: '1.12',
       kind: 'Phenomenon',
       name: 'Cosmic-ray muons reach the ground',
-      credit: 'Rossi & Hall, 1941; Frisch & Smith, 1963',
-      statement: String.raw`Muons are made high in the atmosphere by cosmic rays and have a mean lifetime $\tau=2.1969811\ \mu$s at rest, so with $c\tau\approx0.66$ km a muon of speed $\beta c\approx c$ would be expected to travel only $\beta c\tau$ on average; yet many reach sea level, some $15$ km below. A muon of total energy $E$ lives $\gamma\tau$ in the Earth's frame, with $\gamma=E/(mc^2)$, so the surviving fraction after a path $d$ is $\exp(-d/(\beta\gamma c\tau))$ instead of $\exp(-d/(\beta c\tau))$. In the muon's frame the same fraction is explained by a contracted atmosphere, of thickness $d/\gamma$.`,
-      idea: String.raw`Time dilation (rel-1.10) stretches the muon's lifetime by $\gamma$ as seen from the ground; length contraction (rel-1.11) shortens the atmosphere by the same $\gamma$ as seen by the muon, and both give the same survival probability $e^{-d/(\gamma\beta c\tau)}$, as the invariance of the interval requires. Rossi and Hall (1941) compared muon counts at two heights in Colorado and found the decay in flight to be slower than the lifetime at rest would allow; Frisch and Smith (1963) measured a second altitude comparison, counting about 563 muons per hour on Mount Washington and about 408 at sea level at Cambridge, Massachusetts (Table I); after accidental-count corrections the paper uses397/550=0.722±0.021.`,
-      caption: String.raw`**Choose the setting and drag the energy slider.** Left: the fraction of muons still alive at each height as they descend from their birth altitude, with the "naive" lifetime (grey) and the dilated one (blue). Right: the same trip in the muon's own frame, where the atmosphere is contracted to $h/\gamma$ and the muon's lifetime is the ordinary one. In the Mount Washington setting the green mark is the paper's background-corrected 397/550 benchmark for1.907km, independent of the adjustable toy model.`,
-      deps: ['rel-1.10', 'rel-1.11', 'ode-1.5'],
-      refs: ['Frisch–Smith1963,complete paper §§III–V,Table I,p355; Rossi–Hall1941 pp223,225,228; PDG2024 muon listing'],
+      credit: 'Frisch & Smith, 1963; PDG2025 evaluated muon constants',
+      statement: String.raw`Muons are made high in the atmosphere by cosmic rays and have a mean lifetime $\tau=2.1969811\ \mu$s at rest, so with $c\tau\approx0.66$ km a muon of speed $\beta c\approx c$ would be expected to travel only $\beta c\tau$ on average; yet relativistic muons can survive paths of many kilometres; the default $15$km path here is illustrative. A muon of total energy $E$ lives $\gamma\tau$ in the Earth's frame, with $\gamma=E/(mc^2)$, so the surviving fraction after a path $d$ is $\exp(-d/(\beta\gamma c\tau))$ instead of $\exp(-d/(\beta c\tau))$. In the muon's frame the same fraction is explained by a contracted atmosphere, of thickness $d/\gamma$.`,
+      idea: String.raw`Time dilation stretches a muon's mean lifetime by $\gamma$ in the ground frame, while length contraction reduces a fixed ground-frame path to $d/\gamma$ in a constant-speed muon frame. Either description gives the same proper elapsed time $d/(\gamma\beta c)$ and survival probability. Frisch and Smith's 1963 experiment selected a speed band on Mount Washington and counted matched stopping-muon populations after descent to Cambridge. Their Table I gives mean hourly decay counts 563±10 and 408±9; 412 is only the first Cambridge run, paired with 568 on the mountain. Their energy-loss and detector-geometry analysis is more detailed than the constant-speed model shown here.`,
+      caption: String.raw`**Choose the setting and drag the energy slider.** Left: the fraction of muons still alive at each height as they descend from the selected starting altitude, with the "naive" lifetime (grey) and the dilated one (blue). Right: the same trip in the muon's own frame, where the atmosphere is contracted to $h/\gamma$ and the muon's lifetime is the ordinary one. In the Mount Washington setting the green mark is the paper’s mean-rate ratio, used as a reference rather than a fit of this model.`,
+      deps: ['rel-1.10', 'rel-1.11'],
+      refs: ['Frisch and Smith, Measurement of the Relativistic Time Dilation Using μ-Mesons, AJP31 (1963),342–355, Table I p.348 and analysis pp.348–354, DOI10.1119/1.1969508', 'Particle Data Group2025 muon listing pp.1–2:105.6583755±0.0000023MeV/c²; mean life2.1969811±0.0000022μs'],
       tags: ['muon', 'time dilation', 'cosmic rays'],
-      scope: String.raw`A single-speed model: energy loss, the spread of production heights and of energies are ignored, and the “15 km” is an illustrative round number, not a measured mean. Frisch–Smith Table I gives 563±10 and408±9 counts/h; p.355 uses corrected 397/550=0.722±0.021 over 1.907km. Their effective prediction 8.4±2 accounts for slowing/geometry; the 8.8±0.8 reported statistical result is not a precision single-speed fit. The preset energy is only an effective-γ illustration.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Experimental_testing_of_time_dilation' },
+      scope: String.raw`Single-speed vertical-path model, neglecting energy loss and production/energy spreads. The15km setting is illustrative. The Mount Washington preset uses the paper's 6255 ft vertical separation (1.906524km) and an illustrative constant $\gamma=8.4$, equal to its effective theoretical factor; it does not reconstruct the trajectory, detector acceptance or energy-loss analysis. The green reference uses the rounded mean rates 408/563 from Table I, not a claimed exact survival probability for the toy population. The paper reports an observed factor 8.8±0.8 (statistical error only; the authors caution that overall error is larger) and a calculated effective factor 8.4±2 with a rough systematic uncertainty. Modern rest lifetime and mass are from the PDG2025 evaluated listing.`,
+      verify: false,
+      links: { 'Full original experiment': 'https://supernovae.in2p3.fr/~llg/Enseignements/Agregation/Relativite/biblio/Frisch-et-Smith--1963--Measurement-of-the-Relativistic-Time-Dilation-Using-Mu-Mesons.pdf', 'PDG evaluated constants': 'https://pdg.lbl.gov/2025/listings/rpp2025-list-muon.pdf' },
       viz(v) {
         const mode = v.select('setting', [{ value: 'atm', label: 'atmosphere, 15 km' }, { value: 'fs', label: 'Mount Washington' }], 'atm', {
-          onChange: () => { if (mode.value === 'fs') { hS.set(1.907); EG.set(.1056583755*8.4); } else { hS.set(15); EG.set(3); } },
+          onChange: () => { if (mode.value === 'fs') { hS.set(FRISCH_SMITH.heightKm); EG.set(FRISCH_SMITH.effectiveGamma*M_MU/1000); } else { hS.set(15); EG.set(3); } },
         });
         const EG = v.slider('muon energy $E$ (GeV)', 0.2, 50, 3, { log: true });
-        const hS = v.slider('height $h$ (km)', 1, 20, 15, { step: .001 });
-        const A = v.stage({ x: [0, 20], y: [1e-12, 1.5], ylog: true, axes: 'box', gutter: true, height: 340, weight: 1.15, minWidth: 320, xlabel: 'height above ground (km)', ylabel: 'surviving fraction', title: 'in the ground frame' });
+        const hS = v.slider('height $h$ (km)', 1, 20, 15, { step: 0.001 });
+        const A = v.stage({ x: [0, 20], y: [1e-17, 1.5], ylog: true, axes: 'box', gutter: true, height: 340, weight: 1.15, minWidth: 320, xlabel: 'height above ground (km)', ylabel: 'surviving fraction', title: 'in the ground frame' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 0.9, minWidth: 280, title: 'in the muon’s frame' });
         let st = {};
         v.render(() => {
-          const E = EG.value / (M_MU / 1000), g = E, b = Math.sqrt(1 - 1 / (g * g)), h = hS.value;
-          const ctau = C_KM_US * TAU_MU, Ln = b * ctau, Ld = b * g * ctau;
+          const model=muonSurvival(EG.value,hS.value),g=model.gamma,b=model.beta,h=hS.value;
+          const ctau = C_KM_US * TAU_MU, Ln = model.naiveLength, Ld = model.dilatedLength;
           const sn = (z) => Math.exp(-(h - z) / Ln), sd = (z) => Math.exp(-(h - z) / Ld);
-          const Z = h;
-          A.fn((z) => Math.max(sn(z), 1e-13), { domain: [0, Z], color: 'muted', width: 2, n: 120 });
+          const Z = h; A.setView([0,h],[Math.max(1e-17,sn(0)*.5),1.5]);
+          A.fn((z) => sn(z), { domain: [0, Z], color: 'muted', width: 2, n: 120 });
           A.fn((z) => sd(z), { domain: [0, Z], color: 'accent', width: 2.6, n: 120 });
-          A.dot(0, sd(0), { r: 6, color: 'accent' }); A.dot(0, Math.max(sn(0), 1e-13), { r: 6, color: 'muted' });
-          if (mode.value === 'fs') A.dot(0,397/550,{r:7,color:'green',label:'paper397/550 (1.907km)', labelPos: 'ne' });
+          A.dot(0, sd(0), { r: 6, color: 'accent' }); A.dot(0, sn(0), { r: 6, color: 'muted' });
+          if (mode.value === 'fs') A.dot(0, 408 / 563, { r: 7, color: 'green', label: 'mean rates 408/563', labelPos: 'ne' });
           // muon frame: lengths in km
-          const bars = [['atmosphere, ground frame', h, 'muted'], ['atmosphere, muon frame ($h/\\gamma$)', h / g, 'accent'], ['mean path in the muon\'s lifetime ($\\beta c\\tau$)', Ln, 'orange']];
+          const bars = [['ground-frame distance h', h, 'muted'], ['muon-frame distance h/γ', h / g, 'accent'], ['βcτ: one proper lifetime', Ln, 'orange']];
           const mx = Math.max(h, Ln) * 1.05;
-          bars.forEach(([lab, len, col], i) => { const y = 0.82 - i * 0.3; B.rect(0.02, y - 0.05, 0.02 + 0.94 * (len / mx), y + 0.05, { fill: col, fillAlpha: 0.5, color: col, width: 1.4 }); B.text(lab + ` = ${v.fix(len, len < 1 ? 3 : 2)} km`, 0.02, y + 0.13, { size: 12, color: 'ink', align: 'left' }); });
+          bars.forEach(([lab, len, col], i) => { const y = 0.82 - i * 0.3; B.rect(0.02, y - 0.05, 0.02 + 0.94 * (len / mx), y + 0.05, { fill: col, fillAlpha: 0.5, color: col, width: 1.4 }); B.text(lab + `: ${v.fix(len, len < 1 ? 3 : 2)} km`, 0.02, y + 0.13, { size: 11, color: 'ink', align: 'left' }); });
           st = { g, b, h, Ln, Ld, sn: sn(0), sd: sd(0) };
         });
         v.legend([['muted', 'without time dilation'], ['accent', 'with time dilation']]);
         v.readout(() => {
           if (!st.g) return '';
-          return String.raw`$E/mc^2=\gamma=${v.fix(st.g, 2)}$, $\beta=${v.fix(st.b, 5)}$. Mean path $\beta c\tau=${v.fix(st.Ln, 3)}$ km without dilation, $\beta\gamma c\tau=${v.fix(st.Ld, 2)}$ km with it. Survival after ${v.fix(st.h, 1)} km: $${v.sci(st.sn, 2)}$ (naive) against $${v.sci(st.sd, 2)}$ (dilated); the muon sees an atmosphere ${v.fix(st.h / st.g, 3)} km thick.` + (mode.value === 'fs' ? String.raw` Paper benchmark at 1.907km: corrected 397/550=$${v.fix(397/550,3)}$ (reported 0.722±0.021); raw Table I means 408±9/563±10 per hour. The effective preset is not a monoenergetic fit.` : '');
+          return String.raw`$E/mc^2=\gamma=${v.fix(st.g, 2)}$, $\beta=${v.fix(st.b, 5)}$. Mean path $\beta c\tau=${v.fix(st.Ln, 3)}$ km without dilation, $\beta\gamma c\tau=${v.fix(st.Ld, 2)}$ km with it. Survival after ${v.fix(st.h, 1)} km: $${v.sci(st.sn, 2)}$ (naive) against $${v.sci(st.sd, 2)}$ (dilated); the muon sees an atmosphere ${v.fix(st.h / st.g, 3)} km thick.` + (mode.value === 'fs' ? String.raw` Observed mean-rate ratio $408/563=${v.fix(408 / 563, 2)}$ (Table I; not a fit of this toy model).` : '');
         });
       },
     },

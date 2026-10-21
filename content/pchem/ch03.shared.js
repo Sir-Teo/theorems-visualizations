@@ -39,8 +39,6 @@ export function debyeCv(t) {
 /** Entropy from Debye heat capacity, S/R, ∫0^T Cv/T dT, with a cached cumulative table per θ. */
 const debyeCache = new Map();
 export function debyeS(theta, T) {
-  if (T <= 0) return 0;
-  if (T / theta < .02) return 4 * Math.PI ** 4 / 5 * R * (T / theta) ** 3;
   let tab = debyeCache.get(theta);
   if (!tab) {
     const Tmax = 320, n = 3200, dT = Tmax / n, S = [0];

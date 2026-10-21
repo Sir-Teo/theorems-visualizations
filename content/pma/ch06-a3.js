@@ -210,7 +210,7 @@ If $f$ is continuous on $[a,b]$, then $\displaystyle\int_a^b f\,d\alpha=\sum_{n=
       idea: String.raw`By comparison the series defining $\alpha$ converges at every $x$, and $\alpha$ is increasing with $\alpha(a)=0$, $\alpha(b)=\sum c_n$. Given $\eps$, pick $N$ with $\sum_{n>N}c_n<\eps$ and split $\alpha=\alpha_1+\alpha_2$ into the first $N$ steps and the tail. By 6.12(e) and 6.15, $\int f\,d\alpha_1=\sum_{n\le N}c_nf(s_n)$, while 6.12(d) bounds $\bigl|\int f\,d\alpha_2\bigr|\le M\eps$ with $M=\sup|f|$.`,
       caption: String.raw`Point masses $c_n=0.4\cdot0.6^{\,n-1}$ sit at the points $s_n$ (stems below the axis); the gold dots are the sampled values $f(s_n)$, sized by mass. With the rationals as $s_n$, $\alpha$ jumps on a dense set, yet the partial sums $\sum_{n\le N}c_nf(s_n)$ (right) run into the band $[L,U]$ computed from a fine partition, inside the error envelope $\pm M\sum_{n>N}c_n$.`,
       deps: ['pma-6.15', 'pma-6.12', 'pma-3.25'],
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 6.16, p. 130'],
+      verify: true,
       tags: ['step function', 'series'],
       viz(v) {
         const a = 0, b = 1, r = 0.6, K = 80;

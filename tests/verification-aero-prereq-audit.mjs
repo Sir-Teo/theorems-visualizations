@@ -1,0 +1,22 @@
+// Explicit independent identities for the AERO prerequisite prose; no production formula imports.
+import assert from 'node:assert/strict';
+const close=(a,b,t=2e-7)=>assert.ok(Math.abs(a-b)<=t*Math.max(1,Math.abs(a),Math.abs(b)),`${a} != ${b}`);
+const derivative=(f,x,h=1e-4)=>(f(x+h)-f(x-h))/(2*h);
+const integral=(f,a,b,n=4000)=>{const h=(b-a)/n;let s=f(a)+f(b);for(let i=1;i<n;i++)s+=(i%2?4:2)*f(a+i*h);return s*h/3;};
+let groups=0;
+// FTC in a positive-temperature layer: log p derivative and integrated hydrostatics.
+for(const lapse of [-.0065,0,.002])for(const H of [100,1000,4000]){const T=288.15,g=9.80665,R=287.05;const logp=h=>Math.log(101325)-(lapse?g/(R*lapse)*Math.log((T+lapse*h)/T):g*h/(R*T));close(derivative(logp,H),-g/(R*(T+lapse*H)),1e-9);close(logp(H)-logp(0),integral(h=>-g/(R*(T+lapse*h)),0,H));}groups++;
+// Exponents in order rho,V,S,mu,a,F; rho,V,S columns span all three dimensions.
+const D=[[1,0,0,1,0,1],[-3,1,2,-1,1,1],[0,-1,0,-1,-1,-2]];
+const det3=m=>m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1])-m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0])+m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);assert.notEqual(det3(D.map(r=>r.slice(0,3))),0);
+for(const v of [[-1,-2,-1,0,0,1],[-1,-1,-.5,1,0,0],[0,-1,0,0,1,0]])for(const r of D)close(r.reduce((s,x,i)=>s+x*v[i],0),0);groups++;
+for(const gamma of [1.1,1.4,1.67])for(const rho of [.1,1,3]){const C=73,p=r=>C*Math.exp(gamma*Math.log(r));close(derivative(p,rho,1e-6),gamma*p(rho)/rho);const R=287,T=p(rho)/(rho*R);close(gamma*p(rho)/rho,gamma*R*T);}groups++;
+for(const ambient of [0,101325]){const upper=x=>ambient+2+3*x*x,lower=x=>ambient+8-x;close(integral(lower,0,1)-integral(upper,0,1),4.5);close(integral(x=>lower(x)-upper(x),0,1),4.5);}groups++;
+// Strength -> control velocity -> normal projection, with independent loop order.
+for(const dim of [2,3])for(let k=1;k<=17;k++){const strengths=[k/7,-.3,1.2],K=Array.from({length:4},(_,i)=>Array.from({length:3},(_,j)=>Array.from({length:dim},(_,d)=>Math.sin(i+2*j+3*d+k))));const normals=Array.from({length:4},(_,i)=>Array.from({length:dim},(_,d)=>Math.cos(i+d)));const velocity=K.map(row=>Array.from({length:dim},(_,d)=>row.reduce((s,v,j)=>s+v[d]*strengths[j],0)));const direct=velocity.map((v,i)=>v.reduce((s,x,d)=>s+x*normals[i][d],0));const A=K.map((row,i)=>row.map(v=>v.reduce((s,x,d)=>s+x*normals[i][d],0)));for(let i=0;i<4;i++)close(direct[i],A[i].reduce((s,x,j)=>s+x*strengths[j],0));}groups++;
+for(const a of [.01,.2,3])for(const b of [.03,1,7]){const L=x=>x/(a+b*x*x),opt=Math.sqrt(a/b);close(derivative(L,opt,1e-6),0,1e-6);for(const x of [.1*opt,.5*opt,2*opt,5*opt])assert.ok(L(x)<L(opt));const D=v=>a*v*v+b/(v*v),vstar=(b/a)**.25;close(derivative(D,vstar,1e-5),0);for(const v of [.3*vstar,2*vstar]){close(D(v)-2*Math.sqrt(a*b),(Math.sqrt(a)*v-Math.sqrt(b)/v)**2);assert.ok(D(v)>D(vstar));}}groups++;
+for(const M of [.1,.5,.95]){const beta=Math.sqrt(1-M*M),phi=(x,y)=>(x*x-beta*beta*y*y)/beta;const x=.7,y=.8,h=.001,xx=(phi(x+h,y)-2*phi(x,y)+phi(x-h,y))/(h*h),yy=(phi(x,y+h)-2*phi(x,y)+phi(x,y-h))/(h*h);close(beta*beta*xx+yy,0);}for(const M of [1.1,2,5]){const beta=Math.sqrt(M*M-1),f=(x,y)=>Math.sin(x-beta*y),x=.2,y=.3;close(derivative(t=>f(t,y),x),Math.cos(x-beta*y));close(derivative(t=>f(x,t),y),-beta*Math.cos(x-beta*y));const h=.0001,xx=(f(x+h,y)-2*f(x,y)+f(x-h,y))/(h*h),yy=(f(x,y+h)-2*f(x,y)+f(x,y-h))/(h*h);close(beta*beta*xx-yy,0,1e-6);}groups++;
+for(const threshold of [.65,.8]){const drag=M=>20*Math.max(0,M-threshold)**4;for(const delta of [-.1,0,.02,.1])close(derivative(drag,threshold+delta,1e-6),delta>0?80*delta**3:0);const offset=(.1/80)**(1/3);close(derivative(drag,threshold+offset,1e-6),.1);}groups++;
+for(const gamma of [1.2,1.4,1.67]){const nu=M=>Math.sqrt((gamma+1)/(gamma-1))*Math.atan(Math.sqrt((gamma-1)/(gamma+1)*(M*M-1)))-Math.atan(Math.sqrt(M*M-1));const slope=M=>Math.sqrt(M*M-1)/(M*(1+(gamma-1)*M*M/2));for(const M of [1.1,2,5])close(derivative(nu,M,1e-5),slope(M));close(nu(3)-nu(1.1),integral(slope,1.1,3));close(nu(1),0);}groups++;
+for(const eps of [.1,.5,1])for(const rho of [.01,.1,1]){const sigma=5.670374419e-8,V=7000,R=.5,k=1.83e-4,q=k*Math.sqrt(rho/R)*V**3,T=(q/(eps*sigma))**.25;close(eps*sigma*T**4,q);close(((k*Math.sqrt(rho/R)*(2*V)**3/(eps*sigma))**.25)/T,2**.75);close(((k*Math.sqrt(4*rho/R)*V**3/(eps*sigma))**.25)/T,4**.125);}groups++;
+console.log(`PASS ${groups} independent AERO mathematical groups; no production helper or snapshot assertions`);

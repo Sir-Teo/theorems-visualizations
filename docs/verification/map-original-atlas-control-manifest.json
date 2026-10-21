@@ -1,0 +1,209 @@
+{
+  "mode": "ORIGINAL edge and scene source bytes; all four frames use original renderer",
+  "sourceSHA256": {
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5"
+  },
+  "exactStreamComparisons": [
+    {
+      "originalOnly": "A0",
+      "priorCapture": "C1",
+      "bytes": 128532480,
+      "exactStreamEqual": true
+    },
+    {
+      "originalOnly": "A1",
+      "priorCapture": "O1",
+      "bytes": 128532480,
+      "exactStreamEqual": true
+    },
+    {
+      "originalOnly": "A2",
+      "priorCapture": "O2",
+      "bytes": 128532480,
+      "exactStreamEqual": true
+    },
+    {
+      "originalOnly": "A3",
+      "priorCapture": "C2",
+      "bytes": 128532480,
+      "exactStreamEqual": true
+    }
+  ],
+  "diagnosticPayloadBytes": 514129920,
+  "protocols": {
+    "tests/verification-map-original-atlas-control.mjs": "da1371fb222b5e2691bbba1069c81c0a4082303a0dbfb152358367dac839196d",
+    "tests/verification-map-original-atlas-images.py": "7bc3c15239abc73aa9fff0e3117d17b2b4a0c456b1a10186562f61651011b2fd"
+  },
+  "captureJSONSHA256": "bf3903d267e0982124608847f243fc34b4f63406cf39cdf3446b59d25da81eea",
+  "rawFiles": {
+    "A0": {
+      "bytes": 128532480,
+      "sha256": "08fd6a441f0f6562e958d18ef88a4765e1f6a59ad7a8f5553faa9826c2b15907",
+      "chunks": 123
+    },
+    "A1": {
+      "bytes": 128532480,
+      "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+      "chunks": 123
+    },
+    "A2": {
+      "bytes": 128532480,
+      "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+      "chunks": 123
+    },
+    "A3": {
+      "bytes": 128532480,
+      "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+      "chunks": 123
+    }
+  },
+  "offlineManifest": {
+    "A0-A1": {
+      "channels": 31327,
+      "pixels": 8929,
+      "max": 121,
+      "bounds": [
+        3128,
+        128,
+        7679,
+        3658
+      ]
+    },
+    "A1-A2": {
+      "channels": 0,
+      "pixels": 0,
+      "max": 0,
+      "bounds": null
+    },
+    "A3-A2": {
+      "channels": 0,
+      "pixels": 0,
+      "max": 0,
+      "bounds": null
+    },
+    "A0-A3": {
+      "channels": 31327,
+      "pixels": 8929,
+      "max": 121,
+      "bounds": [
+        3128,
+        128,
+        7679,
+        3658
+      ]
+    },
+    "A0-A1-actual-crop.png": {
+      "bytes": 14197550,
+      "sha256": "a2b7ad16a4c0e91c6c82167ecc215a7f498432bbf1251e161bf6be1775f73c39"
+    },
+    "A0-A1-difference-crop.png": {
+      "bytes": 65067,
+      "sha256": "ff874879d6e6b42e71db2802c8e759bb9020301a5b40d5b573bbe6475d187484"
+    },
+    "A0-A1-difference-x4.png": {
+      "bytes": 111623,
+      "sha256": "38e542481b2d1b91af60c6fce458156c4bab9f5f1f7ebeae06fceffe9d91fd26"
+    },
+    "A0-A1-reference-crop.png": {
+      "bytes": 14210621,
+      "sha256": "c4681ca743360c3de70ee637373b7c8b64649ecce60eb61efed320500f59dfe1"
+    },
+    "A0-A3-actual-crop.png": {
+      "bytes": 14197550,
+      "sha256": "a2b7ad16a4c0e91c6c82167ecc215a7f498432bbf1251e161bf6be1775f73c39"
+    },
+    "A0-A3-difference-crop.png": {
+      "bytes": 65067,
+      "sha256": "ff874879d6e6b42e71db2802c8e759bb9020301a5b40d5b573bbe6475d187484"
+    },
+    "A0-A3-difference-x4.png": {
+      "bytes": 111623,
+      "sha256": "38e542481b2d1b91af60c6fce458156c4bab9f5f1f7ebeae06fceffe9d91fd26"
+    },
+    "A0-A3-reference-crop.png": {
+      "bytes": 14210621,
+      "sha256": "c4681ca743360c3de70ee637373b7c8b64649ecce60eb61efed320500f59dfe1"
+    },
+    "A0-exact-RGBA.png": {
+      "bytes": 16715582,
+      "sha256": "ab4e993e7503752d5712998ed9308dcf730c2f637fc9fa9ffa73d830c7f6fdbd"
+    },
+    "A0-white-display.png": {
+      "bytes": 14158004,
+      "sha256": "f4209e8a04fe3ff61b7473e7c0765c0bd8176b6a9fd71c060dd883c3b0af2e56"
+    },
+    "A1-A2-difference-x4.png": {
+      "bytes": 93646,
+      "sha256": "d083096684ce042a1a84bf066d6b763acaf727ab697394930f5a5c9d1da6cd8a"
+    },
+    "A1-exact-RGBA.png": {
+      "bytes": 16729428,
+      "sha256": "aa15376d7a3f2acc883b49da2c5311bc12180af45f6dc704eb435d4ef4cbae5b"
+    },
+    "A1-white-display.png": {
+      "bytes": 14169464,
+      "sha256": "6d428727e9e0835e0e2ce21b4fcbb4d461679ef1beea901bb60f4aecc92159c5"
+    },
+    "A2-exact-RGBA.png": {
+      "bytes": 16729428,
+      "sha256": "aa15376d7a3f2acc883b49da2c5311bc12180af45f6dc704eb435d4ef4cbae5b"
+    },
+    "A2-white-display.png": {
+      "bytes": 14169464,
+      "sha256": "6d428727e9e0835e0e2ce21b4fcbb4d461679ef1beea901bb60f4aecc92159c5"
+    },
+    "A3-A2-difference-x4.png": {
+      "bytes": 93646,
+      "sha256": "d083096684ce042a1a84bf066d6b763acaf727ab697394930f5a5c9d1da6cd8a"
+    },
+    "A3-exact-RGBA.png": {
+      "bytes": 16729428,
+      "sha256": "aa15376d7a3f2acc883b49da2c5311bc12180af45f6dc704eb435d4ef4cbae5b"
+    },
+    "A3-white-display.png": {
+      "bytes": 14169464,
+      "sha256": "6d428727e9e0835e0e2ce21b4fcbb4d461679ef1beea901bb60f4aecc92159c5"
+    },
+    "preceding-selected-Canvas.png": {
+      "bytes": 7823633,
+      "sha256": "d34676345d21d517cc594c18731a56154263f7cdb141192ec896bd4f630f2775"
+    },
+    "preceding-selected-third-redraw.png": {
+      "bytes": 11720155,
+      "sha256": "645be0675c4ca78e1326dbfe575e04221ffeb86e3a9c351c8c4d5badb7ebcb72"
+    },
+    "preceding-unselected-Canvas.png": {
+      "bytes": 9476776,
+      "sha256": "7567f5964ff9738e13366159cfa012237ac3fbeac5c08b664cbe6abbfbff18c6"
+    },
+    "preceding-unselected-third-redraw.png": {
+      "bytes": 14524113,
+      "sha256": "c13f5e2128d0ba58d4f291faf5bfe41e9a483b9c1e0fac84229910c73f7b8cdd"
+    }
+  },
+  "viewedCrops": {
+    "A0": {
+      "path": "/tmp/atlas-root-original-atlas-control/A0-text-region.png",
+      "source": "/tmp/atlas-root-original-atlas-control/A0-white-display.png",
+      "rectangle": [
+        5100,
+        3590,
+        6000,
+        3690
+      ],
+      "sha256": "ee2254ccfd4fc80d87e83cc531bef1d70570def0ea3373be90d7c9903309c03b"
+    },
+    "A1": {
+      "path": "/tmp/atlas-root-original-atlas-control/A1-text-region.png",
+      "source": "/tmp/atlas-root-original-atlas-control/A1-white-display.png",
+      "rectangle": [
+        5100,
+        3590,
+        6000,
+        3690
+      ],
+      "sha256": "943c8d7da37d85d77ef970ea01803b72739aa2c60bdaf66f0334ff4ad8a3f80a"
+    }
+  }
+}

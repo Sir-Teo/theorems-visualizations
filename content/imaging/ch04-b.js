@@ -1,8 +1,9 @@
 // Medical Imaging — Chapter 4 (part 2): 4.5 SPECT, 4.6 PET: annihilation coincidence and lines of response, 4.7 PET attenuation correction is path-independent.
 import {
-  clamp, fx, mean, showImage, frame, raster, ellAt, ellProj, makeScan, makeScan360, filterSino, backproject, makeFilter, spectSino, changFactor,
+  clamp, fx, mean, showImage, frame, raster, ellAt, ellProj, makeScan, makeScan360, filterSino, backproject, makeFilter,
   rng32, gauss,
 } from './ch04.shared.js';
+import { spectSinoAudit, changFactorAudit, conjugateCorrectionAudit } from './source-audit-spect.shared.js';
 
 const PI = Math.PI;
 const grey = (t) => { const c = Math.round(255 * clamp(t, 0, 1)); return [c, c, c]; };
@@ -20,15 +21,18 @@ export default {
       num: '4.5',
       kind: 'Concept',
       name: 'SPECT',
-      statement: String.raw`**Single-photon emission computed tomography** rotates a collimated gamma camera around the patient and records, at each angle $\theta$, a planar projection of the tracer distribution $f(x,y)$. Without attenuation each pixel of a projection would be the Radon transform $\int f\,d\ell$ and filtered back-projection (imaging-3.7) would recover $f$. In the body the photons are attenuated on their way to the camera, so a point at depth $\ell$ from the detector contributes $f\,e^{-\int_0^{\ell}\mu\,d\ell'}$ instead: the measured data are the **attenuated Radon transform**. Ignoring this darkens the deep tissue (a "cupping" of uniform regions) and can hide lesions. Corrections include the first-order multiplicative correction of Chang, which divides each pixel by the average attenuation factor over the views, and pre-corrections such as the geometric mean of opposing (conjugate) views.`,
-      idea: String.raw`With attenuation the line integral carries an exponential weight that depends on where on the ray the emitter lies, so projections from opposite sides ($\theta$ and $\theta+\pi$), which are identical for the plain Radon transform, now differ — the data cover $2\pi$ instead of $\pi$. For a point emitter the geometric mean of the two opposite readings is $f\,e^{-\mu T/2}$ with $T$ the total thickness of the ray, independent of the emitter's depth, so only the known body outline is needed to undo it. Chang's correction does the same job after reconstruction by averaging the factors over the angles at each pixel. Both are approximate for extended sources, which is why modern systems measure $\mu$ with CT.`,
-      caption: String.raw`Set the **attenuation coefficient** $\mu$ (0 is the ideal Radon case; 0.153 cm⁻¹ is water at 140 keV, Tc-99m) and choose the **correction**. Panels: the true tracer distribution, the $360^\circ$ attenuated sinogram, the reconstruction and a profile through the uniform background (dashed: truth). With $\mu>0$ and no correction the centre of the body is too dark relative to the rim (and the whole picture loses most of its counts); try each correction and watch the profile flatten.`,
+      statement: String.raw`**Single-photon emission computed tomography** records angular projections of a radioactive tracer. In an ideal parallel-hole model without attenuation, the data are line integrals $\int f\,d\ell$. With attenuation, a source element contributes $f\,e^{-\int_{\text{source}}^{\text{detector}}\mu\,d\ell}$, giving the **attenuated Radon transform**. Opposing views can now differ. Ordinary filtered back-projection ignores this weight and can produce a depressed centre in a uniform body. For a uniform known outline, the first-order **Chang** post-correction divides an uncorrected image by the angular mean transmitted fraction:
+$$f_{\rm Chang}(x,y)\approx\frac{f_{\rm FBP}(x,y)}{\frac1M\sum_{j=1}^M e^{-\mu\ell_j(x,y)}}.$$
+This multiplicative approximation is not an exact inversion for arbitrary extended activity.`,
+      idea: String.raw`For a single point emitter of strength $q$ at depth $d$ on a chord of thickness $T$, opposing readings are $p_1=q e^{-\mu d}$ and $p_2=q e^{-\mu(T-d)}$. Thus $\sqrt{p_1p_2}\,e^{\mu T/2}=q$ independently of depth. An extended distribution adds sources before the geometric mean, so that cancellation no longer applies. For example, a uniform source of density $f$ along a chord gives a corrected reading $2f\sinh(\mu T/2)/\mu$, exceeding its unattenuated integral $fT$ when $\mu>0$. Chang's first-order image correction also leaves residual spatial errors. More accurate reconstruction can include a measured attenuation map directly in the forward model.`,
+      caption: String.raw`Set an **illustrative uniform attenuation coefficient** and choose a correction. The panels show the true activity, 96 projections over $360^\circ$, a filtered back-projection with the chosen approximation and a central profile (dashed: truth). Reconstruction grayscale and profile are normalized by the reconstructed background at $x=\pm0.6$, so inspect the raw reference value as well. The conjugate option corrects paired projection bins before reconstruction; the Chang option averages 36 exit directions and corrects pixels inside the known body outline. Neither option promises an exact profile.`,
       deps: ['imaging-4.3', 'imaging-3.7'],
       tags: ['SPECT', 'attenuation'],
-      refs: ['Prince–Links ch. 9', 'Kak–Slaney §4.2'],
+      refs: ['Kak–Slaney §4.2.1–4.2.2, pp. 135–142', 'Wu et al. (2013), EJNMMI Research 3:7, Eq. 1 (transmitted fraction and post-correction)'],
       credit: 'L.-T. Chang (multiplicative first-order correction), 1978',
-      verify: true,
-      scope: String.raw`Parallel-hole geometry, 96 views over $360^\circ$, uniform attenuation inside the body outline (elliptical, 34 cm × 26 cm in a 40 cm field of view; illustrative size), no scatter, no depth-dependent collimator blur, noise-free data. The value 0.153 cm⁻¹ for water at 140 keV is computed from the chapter-2 attenuation model (NIST XCOM gives 0.1505 cm²/g at 150 keV). The year of Chang's method is quoted from memory and was not checked.`,
+      links: { primary: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC3579699/', book: 'https://www.slaney.org/pct/pct-toc.html', chang: 'https://doi.org/10.1109/TNS.1978.4329385' },
+      verify: false,
+      scope: String.raw`The primary research Methods of Wu et al. explicitly give the angular transmitted-fraction average and voxel division (Eq. 1); its small-animal accuracy results are not transferred to this body-sized example. Kak–Slaney gives the attenuated projection model. Chang's original bibliographic year is verified, but the 1978 article's full text was unavailable and is not claimed as read. This noise-free model uses a 48×48 activity grid, 64 detector bins and a 34 cm × 26 cm uniform elliptical body in a 40 cm field. The default $0.153\,\mathrm{cm^{-1}}$ is illustrative, not a tabulated or clinically calibrated water value. Rays sample piecewise-constant activity and attenuation with exact within-step exponential emission integrals; outline sampling, filtering and angular sampling still introduce error. There is no scatter, collimator blur or instrument sensitivity model.`,
       viz(v) {
         const W = 48, ND = 64, NA = 96, SIZE = 40, EPS = 1e-9;
         const act = raster((x, y) => ellAt(ACT, x, y), W, W, 3), body = raster((x, y) => (ellAt([BODY], x, y) > 0 ? 1 : 0), W, W, 1);
@@ -44,19 +48,19 @@ export default {
         let info = {};
         const compute = (muc, mode) => {
           const key = `${muc.toFixed(4)}|${mode}`; if (cache.has(key)) return cache.get(key);
-          const mb = muc * (SIZE / 2), sino = spectSino(act, body, W, sc, mb);
+          const mb = muc * (SIZE / 2), sino = spectSinoAudit(act, body, W, sc, mb);
           let rec;
           if (mode === 'conj') {
             const s2 = new Float64Array((NA / 2) * ND);
             for (let k = 0; k < NA / 2; k++) for (let j = 0; j < ND; j++) {
               const p1 = sino[k * ND + j], p2 = sino[(k + NA / 2) * ND + (ND - 1 - j)], chord = ellProj([BODY], sc.th[k], sc.sOf(j));
-              s2[k * ND + j] = Math.sqrt(Math.max(p1, 0) * Math.max(p2, 0)) * Math.exp((mb * chord) / 2) * (chord > 0 ? 1 : 0);
+              s2[k * ND + j] = conjugateCorrectionAudit(p1, p2, mb, chord);
             }
             rec = backproject(filterSino(s2, sc180, F), sc180, W, W);
           } else {
             rec = backproject(filterSino(sino, sc, F), sc, W, W);
             if (mode === 'chang') {
-              const ck = mb.toFixed(3); if (!chCache.has(ck)) chCache.set(ck, changFactor(BODY, W, 36, mb));
+              const ck = mb.toFixed(3); if (!chCache.has(ck)) chCache.set(ck, changFactorAudit(BODY, W, 36, mb));
               const cf = chCache.get(ck); for (let i = 0; i < rec.length; i++) rec[i] *= cf[i];
             }
           }
@@ -73,6 +77,8 @@ export default {
           const f1raw = rowAt(rec, 0), edge = Math.max((f1raw(-0.6) + f1raw(0.6)) / 2, EPS), sc1 = 1 / edge;
           showImage(C, rec, W, W, { lo: 0, hi: 3 * edge, id: 'rec', smooth: true, extra: `${mus.value}|${corr.value}` }); frame(C, W, W);
           const f0 = rowAt(act, 0), f1 = (x) => f1raw(x) * sc1;
+          const profile = Array.from({length:201},(_,i)=>f1(-0.84+1.68*i/200)), low=Math.min(0,...profile), high=Math.max(1,...profile), pad=.08*(high-low);
+          D.setView([-0.9,0.9],[low-pad,high+pad]);
           D.fn(f0, { color: 'ink', dash: true, width: 1.6, domain: [-0.84, 0.84], n: 200 });
           D.fn(f1, { color: 'accent', width: 2.4, domain: [-0.84, 0.84], n: 200 });
           const c = f1(0), e = 1, hot = [rowAt(rec, 0.35)(0.35), rowAt(rec, 0.3)(-0.35)];
@@ -90,7 +96,7 @@ export default {
       statement: String.raw`A positron emitted by the tracer stops within a millimetre or so of its birth and annihilates with an electron, producing two $511$ keV photons that leave in almost exactly opposite directions. A ring of detectors that registers two photons within a short **coincidence window** (a few nanoseconds) assigns the event to the straight **line of response** (LOR) joining the two detectors: the positron emitter lies somewhere on that line, with no collimator needed. An LOR with unit normal at angle $\theta$ and signed offset $s$ is one bin of the sinogram $(s,\theta)$, and the number of events in the bin estimates the line integral of the activity along it — the Radon transform again. A point source traces a sinusoid $s=r\cos(\theta-\varphi_0)$. Two unrelated photons that happen to arrive within the window form a **random** coincidence, which adds a smooth false background whose rate grows with the window and with the square of the activity.`,
       idea: String.raw`Back-to-back emission is conservation of momentum: the pair is created essentially at rest, so the two photons carry equal and opposite momenta. Requiring coincidence replaces the lead collimator of 4.4 by "electronic collimation", which is why PET is hundreds of times more sensitive than SPECT at comparable resolution. The sinogram is exactly the one of CT (imaging-3.3) except that the "rays" are labelled after the fact by the detector pair, so every reconstruction method of chapter 3 applies — but with Poisson counts (imaging-4.8). A timing window must be wider than the largest possible difference in flight time, $2R/c$ for a ring of radius $R$, or true events from off-centre are lost; making it wider admits more randoms.`,
       caption: String.raw`Left: the detector ring, a phantom (or **two point sources**: drag the gold and pink handles) and the first LORs. Middle: the sinogram accumulating **N** events — a point source writes a sinusoid, shown dashed. Right: the histogram of arrival-time differences; true pairs are confined to $\pm 2R/c$, randoms are flat. Narrow the **window** until true events from the edge of the ring are cut, or raise the **activity** and watch the randoms background fill the sinogram.`,
-      deps: ['kin-9.7', 'imaging-3.3', 'rel-4.15'],
+      deps: ['kin-9.7', 'imaging-3.3'],
       tags: ['PET', 'coincidence', 'sinogram'],
       refs: ['Prince–Links ch. 9'],
       scope: String.raw`Idealized 2-D ring of 120 detectors of radius $R=40$ cm (an illustrative size, comparable to whole-body scanners), perfectly collinear photons, no positron range, no scatter, no attenuation, no detector blur. The randoms fraction is modelled as $R/T=0.1\,a\,(\tau/6\,\mathrm{ns})$ for relative activity $a$ and window $\tau$ — the correct functional dependence, with an invented scale — and random LORs are drawn uniformly over the ring.`,
@@ -177,12 +183,15 @@ export default {
       num: '4.7',
       kind: 'Concept',
       name: 'PET attenuation correction is path-independent',
-      statement: String.raw`Let the two annihilation photons travel along a line of response $L$ of total length $\ell$, and let the emission point sit at distance $t$ from one end. The probability that photon 1 escapes is $e^{-\int_0^{t}\mu}$ and that photon 2 escapes is $e^{-\int_{t}^{\ell}\mu}$. Both must be detected for the event to count, so the survival probability of the pair is
-$$P_{\rm coinc}=e^{-\int_0^{t}\mu\,d\ell}\;e^{-\int_t^{\ell}\mu\,d\ell}=e^{-\int_L\mu\,d\ell},$$
+      statement: String.raw`Let the two annihilation photons travel along a line of response $L$ of total length $\ell$, and let the emission point sit at distance $t$ from one end. The probability that photon 1 escapes is $e^{-\int_0^{t}\mu}$ and that photon 2 escapes is $e^{-\int_{t}^{\ell}\mu}$. Both must be detected for the event to count. At fixed attenuation, assume the two escape events are independent. With
+$$\tau_1=\int_0^t\mu\,d\ell,\qquad\tau_2=\int_t^\ell\mu\,d\ell,$$
+the pair survival probability is
+$$P_{\rm coinc}=e^{-\tau_1}e^{-\tau_2}=e^{-(\tau_1+\tau_2)},$$
+$$\tau_1+\tau_2=\int_L\mu\,d\ell,$$
 **independent of $t$**: it depends only on the line, not on where along it the annihilation happened. The attenuation correction factor of the LOR is therefore $\mathrm{ACF}=e^{+\int_L\mu\,d\ell}$, obtained from a transmission (or CT) measurement of the line integral of $\mu$ at 511 keV. Single-photon emission has no such property.`,
-      idea: String.raw`The survival probabilities of the two photons are exponentials of path integrals over complementary pieces of the line, and the exponent of a product is the sum of exponents, $\int_0^t+\int_t^\ell=\int_0^\ell$. The depth variable cancels. This is the Beer–Lambert law (imaging-2.2) applied twice, and it is the reason PET is quantitative: one measured number per LOR, a ray sum of $\mu$ as in imaging-3.1, corrects the emission data exactly (for narrow-beam, scatter-free photons), whereas SPECT (4.5) needs the whole $\mu$ map and gets only an approximate correction.`,
+      idea: String.raw`The survival probabilities of the two photons are exponentials of path integrals over complementary pieces of the line, and the exponent of a product is the sum of exponents, $\int_0^t+\int_t^\ell=\int_0^\ell$. The depth variable cancels. This is the Beer–Lambert law (imaging-2.2) applied twice, and it is the reason PET is quantitative: one measured number per LOR, a ray sum of $\mu$ as in imaging-3.1, corrects the emission data exactly (for narrow-beam, scatter-free photons), whereas SPECT (4.5) needs the whole $\mu$ map and gets only an approximate correction. The independence product rule (prob 2.1.1a) is used conditional on a fixed emission point, line of response and attenuation map: in this narrow-beam model the two photons' escape events are independent, so their probabilities multiply. The complementary path integrals then add to the whole-line integral. If a shared random attenuation state is averaged over instead, conditional independence alone does not allow multiplication of the marginal escape probabilities.`,
       caption: String.raw`**Drag the gold annihilation point** anywhere in the body and set the **direction** of the line of response. Right: the survival probability of each photon along the LOR and their product, which is a horizontal line; move the point along the LOR and the product does not change. Switch to **one photon (SPECT-like)** to see the dependence on depth that single-photon imaging suffers. The lower plot gives the attenuation correction factor of every parallel LOR at this angle; the gold dot is the current one.`,
-      deps: ['imaging-4.6', 'imaging-2.2', 'imaging-3.1'],
+      deps: ['imaging-4.6', 'imaging-2.2', 'imaging-3.1', 'prob-2.1.1a'],
       tags: ['PET', 'attenuation correction', 'Beer–Lambert'],
       refs: ['Prince–Links ch. 9'],
       scope: String.raw`Narrow-beam photons: scattered photons are not accounted for (they are removed from the LOR's survival and also contaminate other LORs). Attenuation map (illustrative, at 511 keV): water $0.096\ \mathrm{cm^{-1}}$ (NIST XCOM $\mu/\rho=0.0969$ and $0.0896\ \mathrm{cm^2/g}$ at 0.5 and 0.6 MeV, interpolated); lung and bone are obtained by scaling the water value with assumed densities (0.27 and about 1.8 g/cm³, taking the same mass attenuation coefficient as water), so only orders of magnitude are meaningful. The 40 cm field of view is an illustrative size.`,

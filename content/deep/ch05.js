@@ -2,7 +2,7 @@
 //
 // Items 5.1–5.5 run honest random-network experiments inside the page (no training): the numbers on screen are measured on
 // freshly sampled weights and compared with the mean-field prediction, which is computed by Gauss–Hermite quadrature.
-import { clamp, mnus, memo, PHI, randomDeep, scaleReluRun, gauss1, qStar, corrMap, chi1, rand, hashStr, log10Ticks } from './ch05.shared.js';
+import { clamp, mnus, memo, PHI, randomDeep, gauss1, qStar, corrMap, chi1, rand, hashStr, log10Ticks } from './ch05.shared.js';
 
 /** Counts of values in nb equal bins over [lo, hi] as fractions of n (values outside are dropped). */
 function binFrac(vals, lo, hi, nb, n = vals.length) {
@@ -80,11 +80,13 @@ export default {
       kind: 'Method',
       name: 'Xavier (Glorot) initialization',
       statement: String.raw`Initialize every weight of a layer with $n_{\rm in}$ inputs and $n_{\rm out}$ outputs independently with mean $0$ and variance
-$$\operatorname{Var}(w)=\frac{2}{n_{\rm in}+n_{\rm out}}\qquad(\text{Glorot uniform: } w\sim U[-a,a],\ a=\sqrt{6/(n_{\rm in}+n_{\rm out})}).$$
-For a layer with zero-mean independent weights and an approximately linear activation, $\operatorname{Var}(z_{\rm out})=n_{\rm in}\operatorname{Var}(w)\operatorname{Var}(h_{\rm in})$ going forward and $\operatorname{Var}(\delta_{\rm in})=n_{\rm out}\operatorname{Var}(w)\operatorname{Var}(\delta_{\rm out})$ going backward. Keeping the forward variance constant needs $\operatorname{Var}(w)=1/n_{\rm in}$, keeping the backward variance constant needs $1/n_{\rm out}$; the harmonic compromise above is Xavier's choice, and equals $1/n$ when the layers are square.`,
-      idea: String.raw`The variance of a sum of $n$ independent products is $n$ times the variance of one product, so variance is multiplied by $n\operatorname{Var}(w)$ at every layer; any other value of this factor than 1 turns into an exponential $(n\operatorname{Var}w)^L$ over $L$ layers (5.1). For a tanh unit, which is linear near $0$ with slope 1, preserving the variance of the pre-activations also keeps units out of the saturated tails where $\phi'\approx0$. The derivation assumes small signals; with tanh at scale exactly $1/n$ the variance in fact decays slowly (like $1/l$) because tanh compresses, and the exact balance is the topic of the mean-field analysis in 5.4.`,
+$$\operatorname{Var}(w)=\frac{2}{n_{\rm in}+n_{\rm out}}.$$
+For Glorot uniform initialization, $w\sim U[-a,a]$ with
+$$a=\sqrt{\frac{6}{n_{\rm in}+n_{\rm out}}}.$$
+For centred, equal-variance inputs independent of the layer's zero-mean independent weights, $\operatorname{Var}(z_{\rm out})=n_{\rm in}\operatorname{Var}(w)\operatorname{Var}(h_{\rm in})$ going forward. The analogous independence approximation for backward signals gives $\operatorname{Var}(\delta_{\rm in})=n_{\rm out}\operatorname{Var}(w)\operatorname{Var}(\delta_{\rm out})$ going backward. Keeping the forward variance constant needs $\operatorname{Var}(w)=1/n_{\rm in}$, keeping the backward variance constant needs $1/n_{\rm out}$; the harmonic compromise above is Xavier's choice, and equals $1/n$ when the layers are square.`,
+      idea: String.raw`Write one pre-activation as $z=\sum_i W_iH_i$. If the current weights are mutually independent, zero-mean, have common variance $s^2$, and are independent of the input vector, the products $W_iH_i$ are uncorrelated even when the $H_i$ are correlated. With finite second moments, variance addition for uncorrelated variables (prob-2.2.1) gives $\operatorname{Var}(z)=s^2\sum_i\mathbb E H_i^2$. For centred equal-variance inputs this is $ns^2\operatorname{Var}(H)$, the forward factor used here. The backward calculation uses the analogous independence approximation; dependence between backpropagated signals and weights can invalidate that simplification. Iterating the linear approximation multiplies variance by $(ns^2)^L$. For tanh near zero, preserving the input scale also avoids saturated tails, but tanh compresses: at square-layer Xavier scale the variance actually decays slowly. The nonlinear balance is the mean-field analysis in 5.4.`,
       caption: String.raw`A width-500 random network at initialization with weight variance $c/n$; $c=1$ is Xavier's choice for square layers. Left: histograms of the activations of layers 1, 10 and 50 of one input (fractions of units). Right: their rms against depth on a log scale, with the dashed mean-field prediction. For the linear activation $c=1$ preserves the variance exactly; $c=\tfrac12$ shrinks it by half each layer, $c=2$ doubles it. With tanh, $c<1$ collapses the signal to zero, $c>1$ pushes it into saturation at $\pm1$, and $c=1$ is the slow-decay compromise.`,
-      deps: ["deep-5.1","prob-2.2.1","prob-2.1.13"],
+      deps: ['deep-5.1', 'prob-2.2.1'],
       refs: ['Goodfellow §8.4', 'Prince §7.5'],
       tags: ['initialization', 'variance', 'tanh'],
       credit: 'Glorot & Bengio, 2010',
@@ -132,7 +134,7 @@ $$\operatorname{Var}(z_l)=\tfrac12\,n_{\rm in}\operatorname{Var}(w)\,\operatorna
 The forward signal is preserved by **He initialization**, $\operatorname{Var}(w)=2/n_{\rm in}$ (standard deviation $\sqrt{2/n_{\rm in}}$): in a depth-$L$ network the weight variance $c/n_{\rm in}$ multiplies the signal's variance by $(c/2)^L$. The Xavier choice $c=1$ therefore halves the variance at every layer, a factor $2^{-L}$ in total, and the backward signal behaves in the same way.`,
       idea: String.raw`The only change from the linear computation (5.2) is the factor $\tfrac12$ for the ReLU, which discards half of the units' squared mass; compensating by doubling the weight variance restores a gain of exactly 1 per layer. He et al. used this to train a 30-layer plain rectifier network from scratch, which with the Xavier constant stalled. The result is the zero-order version of the mean-field picture: at $\sigma_w^2=2$ ReLU networks sit on the edge of chaos for all inputs (5.4) because the ReLU is positively homogeneous.`,
       caption: String.raw`The same experiment for ReLU, width 500, 50 layers, three weight variances: Xavier's $1/n$ (red), He's $2/n$ (green) and a custom multiple $c/n$ of your choice (blue). Left: the rms of the activations after each layer on a log scale; the dashed lines are $(c/2)^{l/2}$. Right: the rms of the back-propagated gradient. The Xavier curve loses a factor $\sqrt2$ per layer in both directions, the He curve is flat to within sampling noise.`,
-      deps: ["deep-5.2","prob-1.6.9"],
+      deps: ['deep-5.2'],
       refs: ['Prince §7.5'],
       tags: ['initialization', 'ReLU', 'variance'],
       credit: 'He, Zhang, Ren & Sun, 2015',
@@ -147,8 +149,7 @@ The forward signal is preserved by **He initialization**, $\operatorname{Var}(w)
         const mc = memo(); let info = null;
         v.render(() => {
           const schemes = [['Xavier', 1, 'red'], ['He', 2, 'green'], ['custom', cS.value, 'accent']];
-          const base = mc(seed.v, () => randomDeep({ N, L, act: 'relu', cw: 2, seed: hashStr('h' + seed.v) }));
-          const runs = schemes.map(([, c]) => scaleReluRun(base, c));
+          const runs = schemes.map(([nm, c]) => mc(nm + '|' + c + '|' + seed.v, () => randomDeep({ N, L, act: 'relu', cw: c, seed: hashStr('h' + seed.v) })));
           const all = [];
           runs.forEach((R, i) => { all.push(...R.std, ...R.grad); const c = schemes[i][1]; all.push(((c / 2) ** (L / 2)), ((c / 2) ** (-L / 2))); });
           const yr = decades(all, 3);
@@ -178,7 +179,7 @@ $$c_{l+1}=\frac{\sigma_w^2\,\mathbb E\,\phi(u_1)\phi(u_2)+\sigma_b^2}{q^*},\qqua
 $c=1$ is always a fixed point; it is stable when $\chi_1=\sigma_w^2\,\mathbb E\,\phi'(\sqrt{q^*}z)^2<1$ (the **ordered phase**: all inputs end up perfectly correlated), and unstable when $\chi_1>1$ (the **chaotic phase**: nearby inputs are pushed apart and correlations settle at some $c^*<1$). The **edge of chaos** is $\chi_1=1$; $\chi_1$ is also the factor by which the backward gradient norm squared is multiplied per layer (5.1).`,
       idea: String.raw`In the large-width limit the pre-activations of a layer are jointly Gaussian given the previous layer, so their second moments propagate through a deterministic map; this is the same central-limit argument that makes wide networks Gaussian processes (7.1). The slope of the correlation map at $c=1$ equals $\chi_1$, which says how fast a small difference between two inputs grows or shrinks per layer; the depth over which correlations or perturbations stay informative is $\xi\sim1/|\ln\chi_1|$, diverging at the edge of chaos. Poole et al. and Schoenholz et al. (2016) showed that trainability of very deep networks at initialization is limited to a few multiples of this depth scale.`,
       caption: String.raw`Tanh network, bias variance $\sigma_b^2$ fixed by the second slider. Left: correlation $c_l$ between the pre-activations of two inputs, layer by layer, for a simulated width-500 network (dots) and the mean-field map (line), starting from the correlation you set. Right: the map $c\mapsto c'$ against the diagonal; the staircase follows the iteration. Slide $\sigma_w^2$ from the ordered side ($\chi_1<1$, curve above the diagonal, stairs climb to $c=1$) through the critical value to the chaotic side (the map crosses the diagonal below 1 and the correlation settles there, so inputs are decorrelated).`,
-      deps: ["deep-5.2","prob-3.10.7"],
+      deps: ['deep-5.2'],
       refs: ['Prince §7.5'],
       tags: ['mean field', 'chaos', 'trainability'],
       credit: 'Poole, Lahiri, Raghu, Sohl-Dickstein & Ganguli, 2016; Schoenholz, Gilmer, Ganguli & Sohl-Dickstein, 2017',
@@ -242,9 +243,9 @@ $c=1$ is always a fixed point; it is stable when $\chi_1=\sigma_w^2\,\mathbb E\,
       kind: 'Concept',
       name: 'Dynamical isometry and orthogonal initialization',
       statement: String.raw`Let $J=\partial h_L/\partial h_0$ be the input–output Jacobian of a depth-$L$ network. The network has **dynamical isometry** when all singular values of $J$ (ladr-7.65) are concentrated near 1, so that every direction of the input is transmitted with neither growth nor decay (an isometry has all singular values 1). For a deep **linear** network $J=W_L\cdots W_1$ and the statement is exact. If the $W_l$ are $N\times N$ matrices with i.i.d. $\mathcal N(0,1/N)$ entries, the squared singular values of $J$ have mean 1 but variance growing linearly with depth ($\approx L$ for large $N$), so the log-singular values spread out (like $\sqrt L$ while $L\ll N$, linearly in $L$ beyond) — some directions are amplified and most are crushed. If instead each $W_l$ is a (Haar-random) **orthogonal** matrix, then so is $J$, and every singular value equals 1 at every depth.`,
-      idea: String.raw`A product of independent random matrices has a singular-value spectrum that fans out geometrically with the number of factors, because the logarithms of the singular values perform something like a random walk whose steps do not cancel; orthogonal factors have all singular values exactly 1, and the product of orthogonal matrices is orthogonal. Saxe, McClelland and Ganguli (2014) showed that this gives depth-independent learning times for deep linear networks, and Pennington, Schoenholz and Ganguli (2017) extended the analysis to nonlinear networks with free probability: ReLU networks cannot achieve dynamical isometry, while tanh and sigmoid networks can, if the weights are orthogonal and the gain is tuned to the edge of chaos (5.4).`,
+      idea: String.raw`For the orthogonal branch, the isometry criterion (ladr-7.49) turns $W_l^\top W_l=I$ into preservation of every vector's Euclidean norm. Repeated application gives $\|W_L\cdots W_1v\|=\|v\|$, so the product also has $J^\top J=I$ and all its singular values are 1. This deterministic argument needs no random or Haar-distribution assumption; it applies to the pictured QR factors up to numerical error. The Gaussian branch instead spreads its singular values over many scales. Saxe, McClelland and Ganguli (2014) analysed learning in deep linear networks, and Pennington, Schoenholz and Ganguli (2017) extended the analysis to nonlinear networks with free probability: ReLU networks cannot achieve dynamical isometry in that setting, while suitable orthogonal tanh and sigmoid networks can when their gain is tuned to the edge of chaos (5.4).`,
       caption: String.raw`A product of $L$ random $N\times N$ matrices ($N=40$). Left: all 40 singular values of the product after $k$ factors, $k=1,\dots,64$, on a log scale (decades), for the chosen initialization. Right: histogram of $\log_{10}s$ at the depth set by the slider. Gaussian entries produce a fan that keeps opening with depth (like $\sqrt k$ while $k\ll N$, then linearly, at the Lyapunov exponents of the product); orthogonal matrices (QR of a Gaussian matrix) keep all 40 curves glued to $0$. Switch the initialization to compare.`,
-      deps: ["deep-5.4","ladr-7.65","ladr-7.57"],
+      deps: ['deep-5.4', 'ladr-7.65', 'ladr-7.49'],
       refs: ['Prince §7'],
       tags: ['singular values', 'orthogonal', 'isometry'],
       credit: 'Saxe, McClelland & Ganguli, 2014; Pennington, Schoenholz & Ganguli, 2017',

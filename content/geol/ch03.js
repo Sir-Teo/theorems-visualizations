@@ -1,16 +1,20 @@
 // Geology & Geophysics — Chapter 3: Plate tectonics on a sphere (part a: 3.1–3.5)
 //
 // Sources checked / provenance (Oct 2026):
-//   3.1  Bullard, Everett & Smith (1965), full original read 2026-10-18: Table 1 fit 2 gives Euler pole 42.9° N, 30.1° W,
-//        rotation 57.1°, rms misfit 90 km on the 500-fathom contour (including Niger Delta and Walvis Ridge). The 130-km
-//        value belongs to joining the North and South Atlantic blocks, not this South America–Africa fit. Only coastlines (Natural Earth 110 m) are available here, so the fit is looser than theirs. The fossil
-//        and fold-belt localities are approximate points, placed from memory to illustrate the matches Wegener cited.
-//   3.2  Polarity time scale: Cande & Kent (1995) historical calibration; all normal intervals through 5.9 Ma
-//        checked against the complete WHOI CK95.M table on 2026-10-18 (including Reunion 2.14–2.15 Ma). Credit: Vine & Matthews 1963 (Nature 199: 947–949, Crossref-checked); Morley & Larochelle 1964 independently.
+//   3.1  Full original Wegener1912 and Bullard1965 pp41–51 read. Table 1 row 2 is90 km RMS,
+//        not130km. Simplified shorelines and explicitly constructed markers are not original contour/fossil observations.
+//   3.2  Full original CK95 Table2 normal intervals to5.9Ma read via original3page OCR;
+//        2.140–2.150Ma restored, exact2.581/5.894/6.137 endpoints. Historical1995calibration;
+//        no currentGPTS claim and no Table 3 cryptochrons. Full Vine–Matthews1963original read.
 //   3.3  geometry only; thresholds (20° obliquity) are a convention of this page.
 //   3.4  Euler's theorem is mathematics; all numbers are computed.
 //   3.5  the ridge polyline is a schematic of the South Atlantic and equatorial Mid-Atlantic Ridge placed from memory (transform
 //        offsets omitted); the rate ω is a slider, not a measured value.
+//        Full Morgan1968 kinematic argument pp1961–1963 and Fig2–6 now read; units/frame/projection clarified.
+
+import {BULLARD_FIT,DRIFT_MARKERS,driftDiagnostics} from './drift-original-audit.shared.js';
+import {stripeModel} from './magnetic-audit.shared.js';
+import {velocitySample,maximumSpeed} from './kinematics-audit.shared.js';
 
 import { D, R_EARTH, V, LL, dot, cross, vadd, vscale, vunit, vnorm, angDist, bearing, dest, arc, rotMat, mmul, mapply, rotPts, rotApply, axisAngle, velAt, mod360, wrap180, azDiff, clamp, smallCirc, NORMALS, polarityAt, anomalyProfile, ID3 } from './ch03.shared.js';
 
@@ -35,53 +39,31 @@ export default {
       num: '3.1',
       kind: 'Hypothesis',
       name: 'Continental drift (Wegener)',
-      statement: String.raw`The continents were once joined in a single land mass and have since moved apart horizontally, over distances of thousands of kilometres. The evidence offered for it is geometrical and geological: the facing coasts of the Atlantic fit like torn pieces of paper, and when they are closed, rock belts, fold belts, glacial deposits and fossil land animals and plants that make no sense on opposite sides of an ocean line up across the join. In the form proposed by Wegener (1912), the mechanism was left unspecified — and his own was inadequate — so the hypothesis described *that* the continents moved, not *how*.`,
-      idea: String.raw`The argument is a test by coincidence: if the continents never moved, the fit of coastlines and the matching of unrelated features across the join would both have to be accidents. A rigid rotation of one continent about a single axis (Euler's theorem, mech-10.1) is the minimal motion that could close the gap, so one rotation should bring *all* the matching pairs together at once, and the pairs become a quantitative check. What the hypothesis lacked was a mechanism and a way to measure: it needed the sea-floor evidence of the 1950s–60s, and a fit of the continental *shelf edge* instead of the shoreline, to be accepted.`,
-      caption: String.raw`Slide the Atlantic closed: South America rotates about the purple Euler pole $E$ (start at the pole of Bullard, Everett & Smith, 1965). The three coloured pairs are matching features on the two sides (Paraná and Etendeka flood basalts, the Ventana and Cape fold belts, the Mesosaurus-bearing shales; localities approximate): they approach each other together as one rotation closes the gap. Drag $E$ away from the published pole and watch the coastlines overlap and the pairs part again; the globe also rotates when you drag the sea.`,
-      deps: ['mech-10.1'],
-      refs: ['Bullard, Everett & Smith (1965), The fit of the continents around the Atlantic, §2–4 and Table 1 fit 2; doi:10.1098/rsta.1965.0020'],
+      statement: String.raw`Wegener's 1912 working hypothesis replaced some former land bridges with continents that had split and moved horizontally. He compared Atlantic outlines, geological continuities and fossil/glacial evidence, while explicitly awaiting better position measurements. Bullard, Everett and Smith's 1965 reconstruction later fitted selected submerged continental contours with rigid spherical rotations. Their Table 1 fit 2 moves South America relative to fixed Africa through 57.1° about 42.9°N,30.1°W; its reported RMS misfit is 90 km.`,
+      idea: String.raw`A rigid spherical reconstruction has only one rotation axis and angle. Independent geological matches can therefore test a fit constrained by geometry. Bullard and colleagues compared different contour depths, omissions and fit lengths; their 500-fathom fit 2 includes the Niger Delta and Walvis Ridge, while other rows give other poles and misfits. Their residual measures angular mismatch about the fitted axis, converted to distance near the middle of the fitted line. It is not a global coastline overlap score. They explicitly discuss curve selection and correlated points as obstacles to a simple chance-fit significance test.`,
+      caption: String.raw`Close the Atlantic using the historical fit 2 axis and angle, then drag the purple axis to alter the reconstruction. These are simplified present shorelines, not the original 500-fathom contours. Three coloured marker pairs are **constructed**: their reference endpoints are generated by that same published rotation. Their zero separation at the reference setting illustrates rotation consistency; it supplies no independent fossil or geological evidence. Drag the sea to rotate the view; reset restores the reference axis.`,
+      deps: [],
+      refs: ['Wegener1912, Geologische Rundschau3:276–292, full original: https://archive.org/download/105Wegener/105-Wegener_text.pdf', 'Bullard, Everett & Smith1965, The fit of the continents around the Atlantic, original pp41–51, Table 1p45: https://www.geologie.ens.fr/50years_plate_tectonics/phil-trans-r-soc-lond-a.pdf'],
       tags: ['drift', 'wegener', 'fit'],
-      credit: 'Alfred Wegener, 1912 (lecture 6 January 1912, Frankfurt)',
-      scope: String.raw`A kinematic hypothesis about relative position only. It says nothing about forces, and a closure by coastlines alone (as here) is only an approximation to the closure of the continental shelf edges.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Continental_drift' },
-      verify: true,
+      credit: 'Alfred Wegener1912 working hypothesis; Bullard, Everett & Smith1965 numerical continental fit',
+      scope: String.raw`Historical kinematic argument and chosen rotation illustration. No original contour dataset, fit optimization, uncertainty interval, observed geological-site coordinates or modern plate reconstruction is reproduced. The 90km is the source Table 1 row 2 result, not the three constructed marker separations. A 500-fathom contour is914.4 m below the sea-level datum; its depth is not a uniform shelf-edge definition. Wegener's own geological chronology, forces and historical drift-rate estimates are not adopted as modern measurements.`,
+      links: { doi: 'https://doi.org/10.1007/BF02202896' },
+      verify: false,
       viz(v) {
-        const s = v.stage({ height: 430, full: true });
-        const G = v.globe(s, { projection: 'orthographic', center: [-12, -8], graticule: 30 });
-        const E = G.handle(-30.1, 42.9, { label: 'E', color: 'purple' });
-        const pct = v.slider('closure (% of 57.1° rotation)', 0, 100, 100, { step: 1 });
-        const AF = G.landmass('Africa'), SA = G.landmass('South America');
-        // sample South America on a 1.5° grid (inside the coastline), for the overlap measure
-        const samples = [];
-        for (let la = -56; la <= 13; la += 1.5) for (let lo = -82; lo <= -34; lo += 1.5) if (inRing(lo, la, SA[0])) samples.push([lo, la, Math.cos(la * D)]);
-        const wsum = samples.reduce((a, q) => a + q[2], 0);
-        const pairs = [
-          { name: 'Paraná – Etendeka basalts', a: [-50, -25], b: [14.5, -20], color: 'green' },
-          { name: 'Ventana – Cape fold belt', a: [-62, -38], b: [20, -33.5], color: 'gold' },
-          { name: 'Mesosaurus beds', a: [-57, -32], b: [18, -25], color: 'pink' },
-        ];
-        v.render(() => {
-          const ang = (57.1 * pct.value) / 100, M = rotMat([E.lon, E.lat], ang);
-          G.draw({ land: false });
-          G.land(null, { fillAlpha: 0.08, alpha: 0.3, color: 'muted', fill: 'muted' });
-          G.polygon(AF, { fill: 'orange', fillAlpha: 0.32, color: 'orange', width: 1.4 });
-          for (let a = 0.25; a < 1; a += 0.25) if (a * 100 < pct.value) G.polygon(rotApply(rotMat([E.lon, E.lat], 57.1 * a), SA), { color: 'teal', width: 0.7, alpha: 0.4 });
-          G.polygon(rotApply(M, SA), { fill: 'teal', fillAlpha: 0.32, color: 'teal', width: 1.6 });
-          for (const p of pairs) {
-            const a2 = rotApply(M, p.a);
-            G.path([a2, p.b], { color: p.color, width: 1.4, dash: [3, 3], alpha: 0.85 });
-            G.dot(a2, { r: 5, color: p.color }); G.dot(p.b, { r: 5, color: p.color });
-          }
-          s.corner(`rotation ${v.fix(ang, 1)}°`, 'tl');
+        const s=v.stage({height:430,full:true}),G=v.globe(s,{projection:'orthographic',center:[-12,-8],graticule:30});
+        const E=G.handle(...BULLARD_FIT.pole,{label:'E',color:'purple'}),pct=v.slider('closure (% of 57.1° reference rotation)',0,100,100,{step:1});
+        const AF=G.landmass('Africa'),SA=G.landmass('South America');
+        v.button('Reset reference axis',()=>E.set(...BULLARD_FIT.pole));
+        let info={};
+        v.render(()=>{
+          const q=driftDiagnostics([E.lon,E.lat],pct.value);G.draw({land:false});G.land(null,{fillAlpha:.08,alpha:.3,color:'muted',fill:'muted'});G.polygon(AF,{fill:'orange',fillAlpha:.32,color:'orange',width:1.4});
+          for(let a=.25;a<1;a+=.25)if(a*100<pct.value)G.polygon(rotApply(rotMat(q.pole,BULLARD_FIT.angle*a),SA),{color:'teal',width:.7,alpha:.4});
+          G.polygon(rotApply(q.M,SA),{fill:'teal',fillAlpha:.32,color:'teal',width:1.6});
+          for(const p of DRIFT_MARKERS){const a=rotApply(q.M,p.a);G.path(arc(a,p.b,40),{color:p.color,width:1.4,dash:[3,3],alpha:.85});G.dot(a,{r:5,color:p.color});G.dot(p.b,{r:5,color:p.color,hollow:true});}
+          s.corner(`rotation ${v.fix(q.angle,1)}°`,'tl');info={...q};
         });
-        v.legend([['orange', 'Africa (fixed)'], ['teal', 'South America'], ['green', 'Paraná–Etendeka basalts'], ['gold', 'Ventana–Cape fold belt'], ['pink', 'Mesosaurus beds']]);
-        v.readout(() => {
-          const ang = (57.1 * pct.value) / 100, M = rotMat([E.lon, E.lat], ang);
-          let ov = 0; for (const q of samples) { const r = rotApply(M, [q[0], q[1]]); if (inRing(r[0], r[1], AF[0])) ov += q[2]; }
-          const dists = pairs.map((p) => (angDist(rotApply(M, p.a), p.b) * D * R_EARTH));
-          const m = dists.reduce((a, x) => a + x, 0) / dists.length;
-          return `separations of the three pairs (open ocean at 0%: about 5 000–6 500 km): ${dists.map((d) => Math.round(d).toLocaleString('en-US').replace(/,/g, ' ')).join(' · ')} km (mean **${v.fix(m, 0)} km**) · coastline overlap: **${v.fix((100 * ov) / wsum, 1)}%** of South America · pole $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$. Bullard et al. closed the 500-fathom contours with rms misfit 90 km in Table 1 fit 2 (including the Niger Delta and Walvis Ridge; pole: $42.9^\\circ$N, $30.1^\\circ$W, $57.1^\\circ$).`;
-        });
+        v.legend([['orange','Africa (fixed)'],['teal','South America'],['green','constructed pair 1'],['gold','constructed pair 2'],['pink','constructed pair 3']]);
+        v.readout(()=>`Constructed pair separations: ${info.distances.map(d=>v.fix(d,1)).join(' · ')} km; mean **${v.fix(info.mean,1)} km**. Axis: ${v.fix(info.pole[1],1)}° latitude, ${v.fix(info.pole[0],1)}° east longitude. Historical Table 1 row 2: **90 km RMS**,500/500 fathom contours with Niger Delta/Walvis Ridge included;0.95° RMS about the fitted axis. This is a source result, not a residual calculated from this shoreline drawing.`);
       },
     },
     // ───────────────────────────────────────── 3.2
@@ -89,56 +71,38 @@ export default {
       num: '3.2',
       kind: 'Phenomenon',
       name: 'Seafloor spreading and magnetic stripes',
-      statement: String.raw`Oceanic crust is created at the mid-ocean ridges and carried symmetrically away on both sides. As basalt cools through the Curie temperature it records the direction of the geomagnetic field, which reverses at irregular intervals; so the crust is a tape recording of the reversal history. Measured along a track across a ridge, the total magnetic field shows long linear *stripes* — opposite anomaly contributions from normal and reversed magnetization (their sign and shape depend on field inclination and track direction) — that mirror each other about the ridge axis and whose widths are the polarity-interval durations multiplied by the half-spreading rate: $w = u\,\Delta t$.`,
-      idea: String.raw`The sea floor is built by a conveyor: at distance $x$ from the axis the rock is $x/u$ old, and it carries the polarity the field had when it cooled (thermoremanent magnetization, mat-9.12). The anomaly is the magnetic field of that stripe pattern minus the ambient field, so it is large where the field of a stripe is not cancelled by its neighbours — and it fades when the stripes are narrower than the depth to the magnetic layer, because the field of a thin body spreads out (upward continuation). That is why fast-spreading ridges show clean stripes in the shortest chrons while slow ones blur them, and why the same time scale fits every ocean.`,
-      caption: String.raw`Set the half-spreading rate: the upper strip shows the crust, coloured by polarity and labelled with the main chrons; below is the computed total-field anomaly along a ship track (a block model: each stripe a layer of signed effective susceptibility $\pm0.004$ in c.g.s. units, 2 km thick). Slow the ridge or deepen the layer and the short events (Jaramillo, Olduvai) wash out; switch off reversals and the internal stripe pattern disappears (the finite model still has edge anomalies); tilt the field toward the equator to see how the stripe amplitudes change.`,
+      statement: String.raw`In a steady symmetric spreading model, crust formed at a ridge records alternating geomagnetic polarity and moves away equally on each side. For a constant half-spreading rate $u$, a one-sided polarity interval of duration $\Delta t$ has width $u\Delta t$. The central interval of age $t_B$ occupies both flanks, giving total width $2ut_B$. Magnetic anomaly sign and phase also depend on field direction and geometry; normal polarity need not produce a positive anomaly. This page uses the historical Cande–Kent (1995) chronology, not a current geomagnetic timescale.`,
+      idea: String.raw`The ideal age map is $t=|x|/u$. A finite set of oppositely magnetized prisms turns that chronology into a projected total-field anomaly. Deeper sources attenuate short spatial wavelengths; smoothing the magnetization further suppresses fine structure. At low inclination the profile can reverse sign and become skewed. These effects limit what can be inferred from an isolated anomaly, and a constant-rate symmetric model is an assumption rather than a consequence of the magnetic record alone. Vine and Matthews (1963) supply the original spreading/reversal argument, while the dated intervals here come from the later 1995 calibration.`,
+      caption: String.raw`Choose rate, field inclination, layer depth and Gaussian boundary-blur standard deviation. The strip includes every normal interval in Cande–Kent (1995)Table2 intersecting 0–5.9 Ma, including the formerly omitted 2.140–2.150 Ma interval; Table 3 cryptochrons are excluded. The field uses a chosen 2 km thick flat layer, susceptibility 0.004 cgs and present field 50,000 nT parallel to the profile. Its finite outer edges can still produce a field when reversals are off. Both full flanks and the computed curve are visible. Blur is a normalized discrete Gaussian convolution through at least 4 standard deviations, evaluated on an extended profile rather than holding the endpoint field fixed.`,
       deps: ['geol-3.1', 'mat-9.12'],
-      refs: ['Cande & Kent (1995), revised geomagnetic polarity timescale; WHOI Marine Magnetic Research CK95.M interval table; doi:10.1029/94JB03098', 'Vine & Matthews (1963), Nature 199, 947–949; doi:10.1038/199947a0'],
+      refs: ['Cande & Kent1995, JGR100:6093–6095, original full3page OCR, Table2p6094: https://www.scribd.com/document/829680485/CandeKent1995-GeomagneticPolarityTimescaleLateCretaceousCenozoic', 'Vine & Matthews (1963), full original: https://courses.washington.edu/ess502/Vine_Matthews.pdf'],
       tags: ['spreading', 'magnetism', 'reversals'],
-      credit: 'F. J. Vine & D. H. Matthews, 1963 (and L. W. Morley, independently, 1963–64)',
-      scope: String.raw`Needs a field that reverses and a ridge that spreads in a steady, symmetric way. Anomalies are modelled here as 2-D infinitely long stripes, ignoring seafloor topography, the thinner magnetic layers of slow ridges, and the non-vertical boundaries of real polarity transitions (smoothed with the "boundary width" slider).`,
+      credit: 'Vine & Matthews (1963) spreading/reversal hypothesis; Cande & Kent1995 historical interval calibration. Separate priority claims are not audited here.',
+      scope: String.raw`Chosen2D infinite-strike prisms, linear projected anomaly, constant symmetric rate and a finite 5.9 Ma crustal layer. This is not an empirical fit or a current calibration. Original1995 normal-interval endpoints are retained, while cryptochrons, real topography, changing magnetization/declination and asymmetric spreading are omitted. The sampled field grid has at least 602 points and spacing at most depth/5; finite convolution and sampled maxima are numerical approximations. Displayed reversal widths follow exact age/rate arithmetic even when a very short event is strongly attenuated or visually unresolved.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Vine%E2%80%93Matthews%E2%80%93Morley_hypothesis' },
-      verify: true,
+      verify: false,
       viz(v) {
         const T = 5.9; // Myr covered by the model
         const rate = v.slider('half-spreading rate $u$ (mm/yr)', 5, 80, 25, { step: 1 });
         const incl = v.slider('field inclination $I$ (°)', -90, 90, 60, { step: 1 });
         const depth = v.slider('depth to the magnetic layer (km)', 1, 8, 3, { step: 0.1 });
-        const blur = v.slider('boundary width (km)', 0, 10, 2, { step: 0.5 });
+        const blur = v.slider('Gaussian blur standard deviation (km)', 0, 10, 2, { step: 0.5 });
         const rev = v.toggle('field reverses', true);
         const strip = v.stage({ x: [-100, 100], y: [0, 1], axes: false, height: 120, full: true });
         const prof = v.stage({ x: [-100, 100], y: [-300, 300], axes: 'box', gutter: true, xlabel: 'distance from the ridge axis (km)', ylabel: 'anomaly (nT)', height: 300, full: true });
         let info = {};
         v.render(() => {
-          const u = rate.value, X = T * u, k = 4 * Math.PI * 0.004; // effective susceptibility 0.004 emu, in SI-equivalent factor 4π
-          strip.setView([-X, X], [0, 1]); prof.setView([-X, X], [-300, 300]);
-          // build blocks on both sides from the polarity scale
-          const edges = [0]; for (const [a, b] of NORMALS) { if (a > 0 && a < T) edges.push(a); if (b < T) edges.push(b); }
-          edges.push(T); const ev = [...new Set(edges)].sort((a, b) => a - b);
-          const blocks = [];
-          for (let i = 0; i + 1 < ev.length; i++) {
-            const pol = rev.value ? polarityAt((ev[i] + ev[i + 1]) / 2) : 1;
-            for (const sg of [-1, 1]) blocks.push({ x0: Math.min(sg * ev[i] * u, sg * ev[i + 1] * u), x1: Math.max(sg * ev[i] * u, sg * ev[i + 1] * u), s: pol * k });
-            for (const sg of [-1, 1]) strip.rect(Math.min(sg * ev[i] * u, sg * ev[i + 1] * u), 0.05, Math.max(sg * ev[i] * u, sg * ev[i + 1] * u), 0.78, { fill: pol > 0 ? 'ink' : 'faint', fillAlpha: pol > 0 ? 0.75 : 0.25, color: 'muted', width: 0.5 });
-          }
-          for (const [nm, a, b] of [['Brunhes', 0, 0.78], ['Matuyama', 0.78, 2.581], ['Gauss', 2.581, 3.58], ['Gilbert', 3.58, T]]) for (const sg of [-1, 1]) strip.text(nm, sg * ((a + b) / 2) * u, 0.92, { size: 10.5, color: 'muted', align: 'center' });
-          strip.vline(0, { color: 'orange', width: 1.5 });
-          const n = 260, xs = Array.from({ length: n }, (_, i) => -X + (2 * X * i) / (n - 1));
-          let ys = anomalyProfile(xs, blocks, { zTop: depth.value, thick: 2, F: 50000, incl: incl.value, dAng: 0 });
-          if (blur.value > 0.01) { // Gaussian smoothing = blurred polarity boundaries
-            const dx = xs[1] - xs[0], sg = blur.value / dx, h = Math.ceil(3 * sg), ker = []; let ks = 0;
-            for (let j = -h; j <= h; j++) { const w = Math.exp(-0.5 * (j / sg) ** 2); ker.push(w); ks += w; }
-            ys = ys.map((_, i) => { let a = 0; for (let j = -h; j <= h; j++) { const q = clamp(i + j, 0, n - 1); a += ker[j + h] * ys[q]; } return a / ks; });
-          }
-          prof.hline(0, { color: 'grid' });
-          prof.path(xs.map((x, i) => [x, ys[i]]), { color: 'accent', width: 2 });
-          prof.fn(() => 0, { color: 'faint' });
-          const mx = Math.max(...ys.map(Math.abs));
-          info = { mx, bru: 2 * 0.78 * u, jar: 0.08 * u, X };
-          prof.setView([-X, X], [-Math.max(300, Math.ceil(mx / 100) * 100), Math.max(300, Math.ceil(mx / 100) * 100)]);
+          const model=stripeModel({rate:rate.value,incl:incl.value,depth:depth.value,blur:blur.value,reversals:rev.value}),{X,blocks,xs,ys}=model,u=rate.value;
+          strip.setView([-X,X],[0,1]);
+          for(const block of blocks)strip.rect(block.x0,.05,block.x1,.78,{fill:block.pol>0?'ink':'faint',fillAlpha:block.pol>0?.75:.25,color:'muted',width:.5});
+          for(const[nm,a,b]of[['Brunhes',0,.780],['Matuyama',.780,2.581],['Gauss',2.581,3.580],['Gilbert',3.580,5.894]])for(const sg of[-1,1])strip.text(nm,sg*(a+b)/2*u,.92,{size:10.5,color:'muted',align:'center'});
+          strip.vline(0,{color:'orange',width:1.5});
+          const extent=Math.max(50,model.sampledMaximum*1.08);prof.setView([-X,X],[-extent,extent]);
+          prof.hline(0,{color:'grid'});prof.path(xs.map((x,i)=>[x,ys[i]]),{color:'accent',width:2});
+          info={...model,rate:u,incl:incl.value,depth:depth.value,blur:blur.value,reversals:rev.value};
         });
         v.legend([['ink', 'normal polarity'], ['faint', 'reversed polarity'], ['orange', 'ridge axis'], ['accent', 'computed anomaly']]);
-        v.readout(() => `Brunhes (normal) central stripe: $2\\times0.78\\,\\mathrm{Myr}\\times u=${v.fix(info.bru, 1)}$ km wide; the Jaramillo event (0.08 Myr) is only ${v.fix(info.jar, 1)} km per side, against a layer ${v.fix(depth.value, 1)} km deep · peak anomaly **${v.fix(info.mx, 0)} nT**. Time scale: historical Cande–Kent (1995) values to 5.9 Ma; includes the 2.14–2.15 Ma Reunion interval.`);
+        v.readout(() => `Historical CK95 Brunhes central width $2\\times0.780\\times u=${v.fix(info.brunhes,2)}$km. Jaramillo width ${v.fix(info.jaramillo,3)} km per side; C2r.1n width ${v.fix(info.reunion,3)} km per side. Largest sampled absolute anomaly **${v.fix(info.sampledMaximum,1)} nT**, field-grid spacing ${v.fix(info.dx,3)} km. Chronology is the published1995 Table 2 calibration, not a current GPTS; its Table 3 cryptochrons are excluded. Finite outer layer edges remain when reversals are off.`);
       },
     },
     // ───────────────────────────────────────── 3.3
@@ -147,9 +111,9 @@ export default {
       kind: 'Concept',
       name: 'Plate boundaries: divergent, convergent and transform',
       statement: String.raw`Plate boundaries are classified by how the neighbouring plates move relative to each other across the boundary line. At each point let $\mathbf v$ be the velocity of plate B relative to plate A and $\hat{\mathbf n}$ the unit normal pointing into B. If $\mathbf v\cdot\hat{\mathbf n}>0$ the plates separate (**divergent**: ridges, rifts); if $\mathbf v\cdot\hat{\mathbf n}<0$ they approach (**convergent**: trenches, collision zones); if $\mathbf v\perp\hat{\mathbf n}$ they slide past (**transform**). A single boundary can change type along its length, and most are oblique mixtures.`,
-      idea: String.raw`The classification is the decomposition of the relative-velocity vector into components perpendicular and parallel to the boundary. Since every relative velocity is $\boldsymbol\omega\times\mathbf r$ about an Euler pole (geol-3.4), the pattern along a boundary is fixed by the pole's position: where the boundary is tangent to a small circle about the pole the motion is pure strike-slip; away from that point, one side diverges and the other converges. This is how the San Andreas fault (transform) sits between the Gulf of California (divergent) and the Aleutian trench (convergent).`,
+      idea: String.raw`The classification is the decomposition of the relative-velocity vector into components perpendicular and parallel to the boundary. Since every relative velocity is $\boldsymbol\omega\times\mathbf r$ about an Euler pole (geol-3.4), the pattern along a boundary is fixed by the pole's position: where the boundary is tangent to a small circle about the pole the motion is pure strike-slip; away from that point, one side diverges and the other converges. This is how the San Andreas fault (transform) sits between the Gulf of California (divergent) and the Aleutian trench (convergent). Orthogonal projection onto the unit-normal line (ladr 6.55) gives $(\mathbf v\cdot\hat{\mathbf n})\hat{\mathbf n}$. Subtracting it leaves the boundary-parallel component, so the classification tests the signed normal projection rather than the full relative speed.`,
       caption: String.raw`The boundary is the great-circle arc between the two orange handles; plate B lies to its right. Drag the Euler pole $E$ (or change the rate) and the boundary is recoloured point by point: blue where the plates separate, red where they converge, green where they slide past (obliquity under $20^\circ$). Gold arrows are the motion of each plate relative to the other; the lower graph resolves the velocity into components normal and parallel to the boundary. Move $E$ onto the boundary's great circle to make the whole boundary a ridge or trench.`,
-      deps: ['geol-3.2'],
+      deps: ['geol-3.2', 'ladr-6.55'],
       refs: ['Turcotte–Schubert ch. 1'],
       tags: ['boundaries', 'kinematics'],
       scope: String.raw`Rigid plates meeting at a line; real boundaries are often diffuse zones, and "convergent" may mean subduction or collision depending on the crust involved.`,
@@ -260,21 +224,23 @@ export default {
       num: '3.5',
       kind: 'Proposition',
       name: 'Relative plate velocity v = ω × r',
-      statement: String.raw`If plate B turns relative to plate A with angular velocity $\boldsymbol\omega$ (axis through the Euler pole, displayed rate in degrees per million years, converted to radians per unit time in the vector formula), the relative velocity at the point with position vector $\mathbf r$ is $\mathbf v=\boldsymbol\omega\times\mathbf r$. Its direction is along the small circle about the pole through the point, and its speed is $v=\omega R\sin\Delta$, where $R$ is the Earth's radius and $\Delta$ the angular distance from the pole: it is zero at the pole and its antipode and largest, $\omega R$, on the great circle $90^\circ$ from the pole. At $R=6371$ km, a rate of one degree per million years gives a maximum speed of $111.2$ mm/yr; convert degrees to radians before multiplying by $R$.`,
-      idea: String.raw`This is the velocity of a point of a rigid body rotating about a fixed axis (mech-9.4): $|\boldsymbol\omega\times\mathbf r|=\omega\,|\mathbf r|\sin\Delta$ because the cross product measures the component of $\mathbf r$ perpendicular to the axis, which is the radius of the small circle $R\sin\Delta$. So spreading rates along a ridge are not constant: they grow with distance from the pole. Measuring how the spreading rate varies along a ridge locates the pole.`,
-      caption: String.raw`Drag the Euler pole $E$ and change the rate. Along the schematic South Atlantic ridge, gold arrows show the opening velocity (each plate moves half), and the lower graph plots speed against angular distance from the pole: the dots lie on the curve $\omega R\sin\Delta$. The readout computes $|\boldsymbol\omega\times\mathbf r|$ directly from vectors and compares it with the formula. Place $E$ on the ridge itself to make the speed vanish there.`,
+      statement: String.raw`If plate B turns relative to plate A with angular velocity $\boldsymbol\omega$ in radians per unit time, the relative velocity at position $\mathbf r$ is $\mathbf v=\boldsymbol\omega\times\mathbf r$. With $\omega=|\boldsymbol\omega|$, its speed is $v=\omega R\sin\Delta$, where $\Delta$ is angular distance from the oriented pole. Speed vanishes at both poles and reaches $\omega R$ on their equator. For the chosen spherical radius $R=6371.0088$ km, a rate of $1^\circ$/Myr means $\omega=\pi/(180\cdot10^6)$ rad/yr and maximum speed $111.195$ mm/yr; it is not a uniform speed over the sphere.`,
+      idea: String.raw`Differentiate a rigid rotation of $\mathbf r$ to obtain the cross product. Its magnitude is angular rate times the small-circle radius $R\sin\Delta$. Thus speed increases from $0^\circ$ to $90^\circ$ and decreases from $90^\circ$ to $180^\circ$. This full relative speed differs from the opening component normal to a ridge. Equal half velocities on either side describe a chosen symmetric reference frame, not a geometric requirement or a measured asymmetry.`,
+      caption: String.raw`Drag the pole and choose its rate in degrees/Myr; the calculation converts to radians. Blue dots are the full relative speeds at points of a chosen schematic ridge. Gold glyphs show opposite local tangent directions in a symmetric frame; each glyph's angular length is $0.03^\circ$ per mm/yr of full relative speed, with no minimum-length floor. They are magnified direction glyphs, not finite plate tracks or measured ridge-normal opening. Purple shows the full sine law and its $90^\circ$ circle. “Pole at ridge point” tests the zero-speed limit.`,
       deps: ['geol-3.4', 'mech-9.4'],
-      refs: ['Morgan (1968), Rises, trenches, great faults, and crustal blocks, pp. 1959–1966, Figs. 2–8; doi:10.1029/JB073i006p01959'],
+      refs: ['Morgan (1968), Rises, Trenches, Great Faults, and Crustal Blocks, JGR73:1959–1982, complete kinematic argument pp.1961–1963 and Figs2–6: https://www.mantleplumes.org/WebDocuments/Morgan1968.pdf'],
       tags: ['velocity', 'cross-product', 'spreading'],
-      credit: 'Morgan 1968; Le Pichon 1968 (plate velocities from Euler vectors)',
-      scope: String.raw`Rigid plates on a spherical Earth. The ridge is a schematic polyline (offsets at fracture zones omitted); the rate $\omega$ is a free slider, not the measured opening rate.`,
-      verify: true,
+      credit: 'Spherical plate-kinematic argument checked in Morgan (1968), pp.1961–1963; no separate priority audit is claimed.',
+      scope: String.raw`Instantaneous relative rigid rotation on a chosen spherical Earth. The ridge coordinates and rate are illustrative. No empirical ridge fit is claimed. At or extremely near the rotation axis the tangent direction is unresolved and no direction glyph is drawn; the speed is still computed. The plot covers the full $0$–$180^\circ$ angular range.`,
+      verify: false,
       viz(v) {
         const s = v.stage({ height: 400, full: true });
         const G = v.globe(s, { projection: 'orthographic', center: [-15, 5], graticule: 30 });
         const E = G.handle(-39, 62, { label: 'E', color: 'purple' });
         const om = v.slider('rate $\\omega$ (°/Myr)', 0.05, 1.0, 0.3, { step: 0.01 });
         const ridge = [[-0.5, -54.5], [-13.5, -40], [-13, -30], [-13.5, -20], [-13.5, -10], [-14.5, -2], [-24, 0.5], [-30, 0.5], [-41, 10], [-45, 15]];
+        v.button('Pole at ridge point', () => E.set(ridge[6][0], ridge[6][1]));
+        v.button('Reset pole', () => E.set(-39, 62));
         const pts = []; for (let i = 0; i + 1 < ridge.length; i++) pts.push(...arc(ridge[i], ridge[i + 1], 8).slice(i ? 1 : 0));
         const gr = v.stage({ x: [0, 180], y: [0, 120], axes: 'box', gutter: true, xlabel: 'angular distance $\\Delta$ from the Euler pole (°)', ylabel: 'speed (mm/yr)', height: 250, full: true });
         let info = {};
@@ -286,23 +252,23 @@ export default {
           G.smallCircle(pole, 90, { color: 'purple', width: 1, dash: [5, 5], alpha: 0.5 });
           const rows = [];
           pts.forEach((p, i) => {
-            const vel = velAt(p, pole, w), d = angDist(p, pole);
-            const wv = vscale(V(pole), w * D / 1e6), cr = vnorm(cross(wv, V(p))) * R_EARTH * 1e6, fm = w * D / 1e6 * R_EARTH * 1e6 * Math.sin(d * D);
-            rows.push({ d, sp: vel.speed, cr, fm });
-            if (i % 5 === 2 && vel.speed > 0.5) {
-              const len = Math.max(2, vel.speed / 5);
-              G.arrow(p, dest(p, vel.az, len), { color: 'gold', width: 2 }); G.arrow(p, dest(p, vel.az + 180, len), { color: 'gold', width: 2 });
+            const vel = velocitySample(p,pole,w);
+            rows.push({ d:vel.delta,sp:vel.speed,cr:vel.speed,fm:vel.formula,residual:vel.residual });
+            if (i % 5 === 2 && vel.directionResolved) {
+              const len = .03*vel.speed;
+              G.arrow(p, dest(p, vel.az, len), { color: 'gold', width: 2 });
+              G.arrow(p, dest(p, vel.az + 180, len), { color: 'gold', width: 2 });
             }
           });
           G.dot(pole, { r: 4, color: 'purple' });
-          gr.fn((x) => w * D * R_EARTH * Math.sin(x * D), { domain: [0, 180], color: 'purple', width: 2 });
-          gr.setView([0, 180], [0, Math.max(40, Math.ceil((w * 111.2) / 20) * 20 + 10)]);
+          gr.fn((x) => maximumSpeed(w) * Math.sin(x * D), { domain: [0, 180], color: 'purple', width: 2 });
+          gr.setView([0, 180], [0, Math.max(40, Math.ceil(maximumSpeed(w) / 20) * 20 + 10)]);
           gr.dots(rows.map((r) => [r.d, r.sp]), { r: 3.5, color: 'blue' });
           const dd = Math.max(...rows.map((r) => Math.abs(r.cr - r.fm)));
-          info = { max: Math.max(...rows.map((r) => r.sp)), min: Math.min(...rows.map((r) => r.sp)), dd, w, dmin: Math.min(...rows.map((r) => r.d)), dmax: Math.max(...rows.map((r) => r.d)) };
+          info = { rows,pole,max: Math.max(...rows.map((r) => r.sp)), min: Math.min(...rows.map((r) => r.sp)), dd, w, dmin: Math.min(...rows.map((r) => r.d)), dmax: Math.max(...rows.map((r) => r.d)) };
         });
-        v.legend([['blue', 'schematic ridge'], ['gold', 'opening velocity'], ['purple', '$\\omega R\\sin\\Delta$ and the $90^\\circ$ circle']]);
-        v.readout(() => `$\\omega R=${v.fix(info.w * 111.195, 1)}$ mm/yr is the maximum possible (at $\\Delta=90^\\circ$) · along this ridge ($\\Delta$ from ${v.fix(info.dmin, 0)}° to ${v.fix(info.dmax, 0)}°) the speed runs from **${v.fix(info.min, 1)}** to **${v.fix(info.max, 1)}** mm/yr · $|\\boldsymbol\\omega\\times\\mathbf r|$ from the vectors and $\\omega R\\sin\\Delta$ agree to $${v.sci(Math.max(info.dd, 1e-12), 1)}$ mm/yr.`);
+        v.legend([['blue', 'schematic ridge'], ['gold', 'magnified symmetric direction glyphs'], ['purple', '$\\omega R\\sin\\Delta$ and the $90^\\circ$ circle']]);
+        v.readout(() => `$\\omega R=${v.fix(maximumSpeed(info.w), 1)}$ mm/yr is the maximum possible (at $\\Delta=90^\\circ$) · along this ridge ($\\Delta$ from ${v.fix(info.dmin, 0)}° to ${v.fix(info.dmax, 0)}°) the speed runs from **${v.fix(info.min, 1)}** to **${v.fix(info.max, 1)}** mm/yr · $|\\boldsymbol\\omega\\times\\mathbf r|$ from the vectors and $\\omega R\\sin\\Delta$ have maximum absolute numerical difference $${v.sci(info.dd, 2)}$ mm/yr.`);
       },
     },
   ],

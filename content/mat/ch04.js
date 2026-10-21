@@ -11,6 +11,8 @@ function getBar(m, imp, epsF) {
   return barCache.get(key);
 }
 
+import { honeycombMechanism, clipSegment2 } from './source-audit-elastic-slip.shared.js';
+
 export default {
   collection: 'mat',
   chapter: 4,
@@ -22,10 +24,12 @@ export default {
       num: '4.1',
       kind: 'Concept',
       name: 'Engineering and true stress–strain curves',
-      statement: String.raw`A tensile test pulls a bar and records the force $F$ and the elongation $\Delta L$. The **engineering** quantities divide by the starting geometry, $s=F/A_0$ and $e=\Delta L/L_0$. The **true** quantities divide by the geometry at that moment: $\sigma=F/A$ and $\varepsilon=\ln(L/L_0)=\ln(1+e)$. While the deformation is uniform and the volume is conserved ($AL=A_0L_0$), the two are related by $$\sigma=s\,(1+e),\qquad \varepsilon=\ln(1+e).$$ The engineering curve rises to a maximum (the tensile strength) and then falls as the bar **necks**; the true curve keeps rising to fracture, because the metal in the neck keeps hardening while its cross-section shrinks. The conversion formulas stop being valid at the neck, where the strain is no longer uniform along the gauge length.`,
-      idea: String.raw`Both curves come from one experiment; only the bookkeeping differs. The force is $F=\sigma A=\sigma A_0e^{-\varepsilon}$, so the force is the product of a rising factor, the hardening $\sigma(\varepsilon)$, and a falling one, the thinning $e^{-\varepsilon}$. The engineering curve is $F$ up to a constant and turns over when thinning wins (the Considère condition, 4.4). After that the deformation concentrates in the weakest slice. Here a bar of 41 slices with a 1 % variation in area is pulled with equal force in every slice, and the neck appears on its own at the weakest place: the engineering curve is the average over the whole gauge, while the local true stress and strain belong to the neck.`,
+      statement: String.raw`A tensile test pulls a bar and records the force $F$ and the elongation $\Delta L$. The **engineering** quantities divide by the starting geometry, $s=F/A_0$ and $e=\Delta L/L_0$. The **true** quantities divide by the geometry at that moment: $\sigma=F/A$ and $\varepsilon=\ln(L/L_0)=\ln(1+e)$. While the deformation is uniform and the volume is conserved ($AL=A_0L_0$), the two are related by $$\begin{gathered}\sigma=s\,(1+e),\\\varepsilon=\ln(1+e).\end{gathered}$$ The engineering curve rises to a maximum (the tensile strength) and then falls as the bar **necks**; the true curve keeps rising to fracture, because the metal in the neck keeps hardening while its cross-section shrinks. The conversion formulas stop being valid at the neck, where the strain is no longer uniform along the gauge length.`,
+      idea: String.raw`Both curves come from one experiment; only the bookkeeping differs. The force is $F=\sigma A=\sigma A_0e^{-\varepsilon}$, so the force is the product of a rising factor, the hardening $\sigma(\varepsilon)$, and a falling one, the thinning $e^{-\varepsilon}$. The engineering curve is $F$ up to a constant and turns over when thinning wins (the Considère condition, 4.4). After that the deformation concentrates in the weakest slice. Here a bar of 41 slices with a 1 % variation in area is pulled with equal force in every slice, and the neck appears on its own at the weakest place: the engineering curve is the average over the whole gauge, while the local true stress and strain belong to the neck.
+
+Successive positive length ratios multiply, while the logarithm product law pma 8.6 makes their true-strain increments add. Its derivative $1/L$ gives the infinitesimal measure $dL/L$ and the finite strain $\log(L/L_0)=\log(1+e)$ for $e>-1$. Uniform volume conservation separately supplies $A=A_0/(1+e)$ and hence the stated stress conversion. Logarithmic strain does not restore uniformity after a neck develops; the conversion still needs the geometry hypotheses above.`,
       caption: String.raw`Drag *pull* to stretch the bar to fracture (the colour is local true strain). Left curve: engineering stress against strain (blue), the true curve you would get by applying $\sigma=s(1+e)$ and $\varepsilon=\ln(1+e)$ blindly (orange dashed), and the true stress and strain actually measured in the neck (green). They agree up to the maximum of the engineering curve and part ways after it. Pick a material or change $n$ (hardening), $\sigma_{0.2}$ and the size of the imperfection.`,
-      deps: ['mat-1.2', 'pma-8.6'],
+      deps: ['mat-1.2','pma-8.6'],
       refs: ['Callister §6.3', 'Callister §6.7'],
       tags: ['tensile test', 'stress–strain', 'necking'],
       scope: String.raw`Valid for a ductile metal pulled slowly at constant temperature, with a round bar and a power-law (Hollomon-type) true curve, $\varepsilon=\sigma/E+0.002\,(\sigma/\sigma_{0.2})^{1/n}$. The preset parameter sets are rounded orders of magnitude, not measured data. The neck is a one-dimensional equal-force model (no triaxial stress in the neck, no void growth, fracture imposed at a chosen neck strain); after the force maximum the other slices unload elastically, and the neck is one slice (1/41 of the gauge) wide, sharper than a real neck, which is about a diameter long.`,
@@ -93,22 +97,21 @@ export default {
       num: '4.2',
       kind: 'Law',
       name: 'Hooke’s law and Poisson’s ratio',
-      statement: String.raw`For small strains an isotropic solid responds linearly: a uniaxial stress $\sigma$ produces the axial strain $\varepsilon=\sigma/E$ (Hooke's law, with Young's modulus $E$) and a lateral strain of opposite sign, $$\varepsilon_{\rm lat}=-\nu\,\varepsilon,$$ where $\nu$ is **Poisson's ratio**. Stability of an isotropic elastic solid requires $-1<\nu<\tfrac12$. Most metals have $\nu\approx0.3$, rubber is nearly incompressible ($\nu\to\tfrac12$, volume change $\Delta V/V=(1-2\nu)\varepsilon\to0$), cork is close to $0$, and **auxetic** materials with $\nu<0$ get fatter when stretched.`,
-      idea: String.raw`The linear law is the generalized Hooke's law of solid mechanics (solid-2.7) specialised to one loaded direction; the sign of $\nu$ is a geometric statement about how the microstructure rearranges when the axial dimension changes. In a metal, atoms are pushed together sideways as the bonds along the load are stretched; in a re-entrant honeycomb the stretched ribs hinge outward and the cell opens in both directions. For the honeycomb below, the ribs are treated as rigid with free hinges (the bending-dominated limit), so the cell width $2l\cos\theta$ fixes the angle $\theta$ and with it the height $2(h+l\sin\theta)$: Poisson's ratio is read from the geometry and equals $\cos^2\theta/\big[(h/l+\sin\theta)\sin\theta\big]$ for small strains.`,
-      caption: String.raw`Stretch the block with the strain slider: the dashed outline is the unloaded shape, and the lateral strain is $-\nu$ times the axial one (set $\nu$ by hand or pick a material). Right: a honeycomb of rigid ribs that rotate at hinges. With ribs leaning outward (positive $\theta$, a conventional hexagon) it narrows when stretched; flip $\theta$ negative (re-entrant) and it widens: its Poisson's ratio, measured from the picture, turns negative.`,
+      statement: String.raw`For small strains an isotropic solid responds linearly: a uniaxial stress $\sigma$ produces the axial strain $\varepsilon=\sigma/E$ (Hooke's law, with Young's modulus $E$) and a lateral strain, $$\varepsilon_{\rm lat}=-\nu\,\varepsilon,$$ where $\nu$ is **Poisson's ratio**. Stability of an isotropic elastic solid requires $-1<\nu<\tfrac12$. For $\nu>0$ a uniaxial tension contracts the lateral dimensions; for **auxetic** $\nu<0$ they expand. The infinitesimal volume strain is $(1-2\nu)\varepsilon$; the nearly incompressible limit $\nu\to1/2$ suppresses this first-order change, not every finite-strain volume change of the linear drawing.`,
+      idea: String.raw`The linear law is the generalized Hooke's law of solid mechanics (solid-2.7) specialised to one loaded direction; the sign of $\nu$ is a geometric statement about how the microstructure rearranges when the axial dimension changes. In a metal, atoms are pushed together sideways as the bonds along the load are stretched; in a re-entrant honeycomb the stretched ribs hinge outward and the cell opens in both directions. For the honeycomb below, the ribs are treated as rigid with free hinges (the bending-dominated limit), so the cell width $2l\cos\theta$ fixes the angle $\theta$ and with it the height $2(h+l\sin\theta)$: the tangent Poisson ratio follows by differentiating these dimensions and equals $\cos^2\theta/\big[(h/l+\sin\theta)\sin\theta\big]$ away from the singular flat-rib angle $\theta=0$ and for nonoverlapping cells, $h/l+\sin\theta>0$.`,
+      caption: String.raw`Stretch the block with the strain slider: the dashed outline is the unloaded shape, and the lateral strain is $-\nu$ times the axial one (set $\nu$ by hand or pick a synthetic benchmark). Right: a honeycomb of rigid ribs that rotate at hinges. With ribs leaning outward (positive $\theta$, a conventional hexagon) it narrows when stretched; flip $\theta$ negative (re-entrant) and it widens: its Poisson's ratio, measured from the picture, turns negative.`,
       deps: ['mat-1.2', 'solid-2.7'],
-      refs: ['Roylance, Constitutive Relations, pp1–5 Eqs3–4,8–9'],
+      refs: ['A.F.Bower, Applied Mechanics of Solids, complete §§3.2.1–3.2.2,3.2.5–3.2.7', 'Rigid-rib hinge geometry and admissibility derivation in verification report'],
       tags: ['elasticity', 'Poisson ratio', 'auxetic'],
-      credit: 'R. Hooke, 1678 (ut tensio sic vis); S. D. Poisson, 1820s (lateral contraction); R. S. Lakes, 1987 (first auxetic foam); L. J. Gibson & M. F. Ashby, 1982 (honeycomb mechanics)',
-      scope: String.raw`Linear, isotropic, small strain. The menu uses illustrative isotropic parameters associated with broad material classes; the $\nu$ values are orders of magnitude (rubber $\approx0.49$ rather than exactly $0.5$). The honeycomb is the rigid-rib, free-hinge mechanism: it is exact kinematics but ignores rib bending and stretching, so it shows how the sign of $\nu$ arises rather than a real modulus.`,
+      scope: String.raw`Isotropic small-strain elasticity at a symmetry-preserving reference state, $E>0$ and $-1<\nu<1/2$. Benchmarks are chosen illustrative $(E,\nu)$ pairs, not measured named-material data. Large displayed strains extrapolate the linear law only to show its geometric limitations. The2D rigid-rib mechanism is anisotropic and has zero bending stiffness; the 3D isotropic stability bound does not constrain its directional tangent ratio. Unreachable extensions stop at straight ribs with requested and achieved strains reported; overlapping cells are rejected and a flat-rib tangent is undefined.`,
       viz(v) {
         const MAT = { metal: { nu: 0.3, E: 200, lab: 'metal' }, rubber: { nu: 0.49, E: 0.01, lab: 'rubber' }, cork: { nu: 0.02, E: 0.03, lab: 'cork' }, foam: { nu: -0.7, E: 0.02, lab: 'auxetic foam' } };
-        const mat = v.select('block', [{ value: 'metal', label: 'metal' }, { value: 'rubber', label: 'rubber' }, { value: 'cork', label: 'cork' }, { value: 'foam', label: 'auxetic foam' }, { value: 'free', label: 'free $\\nu$' }], 'metal', { onChange: (id) => { if (MAT[id]) nuS.set(MAT[id].nu); } });
+        const mat = v.select('block', [{ value: 'metal', label: 'metal-like toy' }, { value: 'rubber', label: 'rubber-like toy' }, { value: 'cork', label: 'low-contraction toy' }, { value: 'foam', label: 'auxetic toy' }, { value: 'free', label: 'free $\\nu$' }], 'metal', { onChange: (id) => { if (MAT[id]) nuS.set(MAT[id].nu); } });
         const nuS = v.slider('Poisson ratio $\\nu$', -0.95, 0.495, 0.3, { step: 0.005, decimals: 3 });
         const epsS = v.slider('axial strain $\\varepsilon$', -0.1, 0.25, 0.08, { step: 0.005 });
         const th = v.slider('honeycomb rib angle $\\theta_0$ (°)', -60, 60, -30, { step: 1 });
         const hl = v.slider('rib ratio $h/l$', 0.8, 2.5, 2, { step: 0.05 });
-        const A = v.stage({ x: [-1.9, 2.9], y: [-1.6, 1.6], equal: true, axes: false, height: 330, weight: 1, title: 'a block, stretched' });
+        const A = v.stage({ x: [-2.7, 2.7], y: [-1.6, 1.6], equal: true, axes: false, height: 330, weight: 1, title: 'a block, stretched' });
         const B = v.stage({ x: [-3.2, 5.4], y: [-3.6, 3.6], equal: true, axes: false, height: 330, weight: 1.1, title: 'a honeycomb of rigid ribs and hinges' });
         let info = null;
         // honeycomb of rigid ribs: inclined ribs of length 1 at angle t to the horizontal, vertical ribs of length h
@@ -118,7 +121,7 @@ export default {
           for (let j = -3; j <= 3; j++) for (let m = -3; m <= 3; m++) {
             const cx = 2 * c * m + (j & 1 ? c : 0), cy = j * rowH;
             const P = [[cx - c, cy + h / 2], [cx, cy + h / 2 + sn], [cx + c, cy + h / 2], [cx + c, cy - h / 2], [cx, cy - h / 2 - sn], [cx - c, cy - h / 2]];
-            S.path(P, { close: true, color: col, alpha, width: w });
+            for(let i=0;i<P.length;i++){const seg=clipSegment2(P[i],P[(i+1)%P.length],[S.bounds.x,S.bounds.y]);if(seg.length)S.path(seg,{color:col,alpha,width:w});}
           }
         }
         v.render(() => {
@@ -135,22 +138,16 @@ export default {
           A.text('$\\sigma$', bw * lx + 0.7, 0.18, { color: 'red', size: 15 });
           const dV = lx * ly * ly - 1;
           // honeycomb
-          const t0 = (th.value * Math.PI) / 180, h = hl.value;
-          const c0 = Math.cos(t0), eH = e;
-          const arg = clamp((1 + eH) * c0, -1, 1);
-          const tn = Math.sign(t0 || 1) * Math.acos(arg);
-          drawHoney(B, t0, h, 'muted', 0.35, 1.2);
-          drawHoney(B, tn, h, 'accent', 0.95, 2.2);
-          const X0 = cellXY(t0, h), X1 = cellXY(tn, h), X2 = cellXY(Math.sign(t0 || 1) * Math.acos(clamp(1.0001 * c0, -1, 1)), h);
-          const exH = X1.X / X0.X - 1, eyH = X1.Y / X0.Y - 1;
-          const nuH = Math.abs(X2.X / X0.X - 1) > 1e-9 ? -(X2.Y / X0.Y - 1) / (X2.X / X0.X - 1) : NaN;
-          const nuTh = Math.abs(Math.sin(t0)) < 1e-10 ? NaN : Math.cos(t0) ** 2 / ((h + Math.sin(t0)) * Math.sin(t0));
-          info = { nu, e, dV, nuH, nuTh, exH, eyH, valid: Math.abs(arg) < 1 };
+          const H=honeycombMechanism(th.value,hl.value,e);
+          if(H.valid){drawHoney(B,H.t0,hl.value,'muted',.35,1.2);drawHoney(B,H.tn,hl.value,'accent',.95,2.2);}else B.corner(H.reason,'tl',{color:'red',size:11});
+          info={nu,e,dV,H};
         });
         v.readout(() => {
           if (!info) return '';
-          const { nu, e, dV, nuH, nuTh, valid } = info;
-          return `Block: axial $\\varepsilon=${v.fix(e, 3)}$, lateral $\\varepsilon_{\\rm lat}=${v.fix(-nu * e, 4)}=-\\nu\\varepsilon$ with $\\nu=${v.fix(nu, 3)}$; exact volume change $${v.fix(dV * 100, 2)}\\,\\%$ (small-strain $(1-2\\nu)\\varepsilon=${v.fix((1 - 2 * nu) * e * 100, 2)}\\,\\%$). With $E=${MAT[mat.value] ? MAT[mat.value].E : 'free'}$ GPa, $\\sigma=E\\varepsilon$.\nHoneycomb: width strain $${v.fix(info.exH, 3)}$, height strain $${v.fix(info.eyH, 3)}$, measured at small strain $\\nu=${Number.isFinite(nuH) ? v.fix(nuH, 2) : '–'}$ (the shape change shown is large, so $-\\varepsilon_y/\\varepsilon_x$ here is $${v.fix(-info.eyH / (info.exH || 1e-9), 2)}$); the small-strain formula $\\cos^2\\theta/[(h/l+\\sin\\theta)\\sin\\theta]=${Number.isFinite(nuTh) ? v.fix(nuTh, 2) : '\\text{undefined at the straight configuration}'}$${valid ? '' : '. At this strain the ribs are fully straightened: the mechanism locks.'}`;
+          const {nu,e,dV,H}=info;
+          const block=`Block: axial $\\varepsilon=${v.fix(e,3)}$, lateral $\\varepsilon_{\\rm lat}=${v.fix(-nu*e,4)}$; geometric volume change of this linear extrapolation $${v.fix(dV*100,2)}\\%$, first-order value $${v.fix((1-2*nu)*e*100,2)}\\%$. Chosen $\\nu=${v.fix(nu,3)}$; ${MAT[mat.value]?`$E=${MAT[mat.value].E}$ GPa.`:'Young’s modulus is unspecified for the free ratio.'} Large displayed strains do not validate a finite-strain constitutive law.`;
+          if(!H.valid)return block+'\nHoneycomb: '+H.reason+'. No admissible deformed mechanism shown.';
+          return block+`\nHoneycomb: requested width strain $${v.fix(e,3)}$, achieved $${v.fix(H.ex,3)}$, height strain $${v.fix(H.ey,3)}$. Finite secant ratio $-\\varepsilon_y/\\varepsilon_x$: ${H.finiteRatio===null?'undefined at zero achieved strain':v.fix(H.finiteRatio,3)}; reference tangent ratio: ${H.nu===null?'undefined at flat ribs':v.fix(H.nu,3)}.`+(H.locked?' Requested extension is unreachable: ribs are straight, mechanism locked.':'')+(H.branchAtFlat?' At flat ribs a branch is chosen for compression; there is no unique finite tangent ratio.':'');
         });
       },
     },
@@ -233,7 +230,7 @@ export default {
       statement: String.raw`Pull a ductile bar at constant volume and let $\sigma(\varepsilon)$ be its true stress–strain curve (uniform deformation). The force is $F=\sigma A_0e^{-\varepsilon}$, and it has a maximum exactly where $$\frac{d\sigma}{d\varepsilon}=\sigma.$$ A uniform bar is stable while $d\sigma/d\varepsilon>\sigma$ (hardening beats thinning): a slightly thinner section strains a little more and is then strengthened enough to catch up. Once $d\sigma/d\varepsilon<\sigma$ the thinner section is also the one that carries less force, it keeps straining and deformation localizes into a neck. For a power law $\sigma=K\varepsilon^n$ this happens at the true strain $\varepsilon_u=n$.`,
       idea: String.raw`Differentiate $F=\sigma(\varepsilon)A_0e^{-\varepsilon}$: $dF/d\varepsilon=A_0e^{-\varepsilon}\,(d\sigma/d\varepsilon-\sigma)$, so the force maximum, the end of stable uniform flow and the crossing of the curve of $d\sigma/d\varepsilon$ with $\sigma$ are one and the same. The stability argument: give two sections the same force but a 1 % difference in area; on the rising branch of $F(\varepsilon)$ they settle with a small strain difference, but beyond the maximum no equal-force state exists with both sections hardening: the weak one runs away. The right-hand picture computes that strain difference directly, using the same force balance as the tensile bar of 4.1.`,
       caption: String.raw`Drag the gold handle along the true curve (left): at each strain the slope $d\sigma/d\varepsilon$ is drawn as a segment and compared with $\sigma$. Right: the strain difference $\Delta\varepsilon$ between a slice 1 % thinner and a normal one, carrying the same force, against the strain of the normal slice: small and calm until the Considère strain, then no balanced state exists and the thin spot necks (slightly before $\varepsilon_u$, by an amount that shrinks with the flaw). Choose the hardening law: with Hollomon's $\varepsilon_u=n$, with saturating (Voce) hardening the necking strain depends on the saturation stress, and a non-hardening metal necks at once.`,
-      deps: ['mat-4.1', 'opt-1.4'],
+      deps: ['mat-4.1'],
       refs: ['Callister §6.7'],
       tags: ['necking', 'plastic instability', 'tensile test'],
       credit: 'A. Considère, 1885',

@@ -87,36 +87,19 @@ export function paintSphere(v, s, f, o) {
 import { phaseRGB } from './ch06.shared.js';
 function phaseRGB2(v) { return phaseRGB(v, 90); }
 
-// Gauss-Legendre nodes in cos(theta): avoids the endpoint bias of a theta midpoint grid.
-const quadratures = new Map();
-function polarQuadrature(n) {
-  if (quadratures.has(n)) return quadratures.get(n);
-  const out=[];
-  for(let i=0;i<n;i++){
-    let x=Math.cos(Math.PI*(i+.75)/(n+.5)),d=0;
-    for(let k=0;k<30;k++){
-      let p0=1,p1=x;for(let l=2;l<=n;l++){const p=((2*l-1)*x*p1-(l-1)*p0)/l;p0=p1;p1=p;}
-      d=n*(x*p1-p0)/(x*x-1);const dx=p1/d;x-=dx;if(Math.abs(dx)<2e-15)break;
-    }
-    out.push([Math.acos(x),2/((1-x*x)*d*d)]);
+/** ∫ f(θ, φ) conj(g(θ, φ)) dΩ for complex f, g by midpoint rule in θ and φ. */
+export function sphereIP(f, g, nt = 64, np = 96) {
+  let re = 0, im = 0;
+  for (let i = 0; i < nt; i++) {
+    const th = ((i + 0.5) * Math.PI) / nt, w = Math.sin(th) * (Math.PI / nt) * ((2 * Math.PI) / np);
+    for (let j = 0; j < np; j++) { const ph = ((j + 0.5) * 2 * Math.PI) / np, a = f(th, ph), b = g(th, ph); re += w * (a[0] * b[0] + a[1] * b[1]); im += w * (a[1] * b[0] - a[0] * b[1]); }
   }
-  quadratures.set(n,out);return out;
-}
-/** ∫ f(θ,φ) conj(g(θ,φ)) dΩ by Gauss-Legendre in cosθ and periodic trapezoid in φ. */
-export function sphereIP(f,g,nt=64,np=96){
-  let re=0,im=0;
-  for(const[th,wt]of polarQuadrature(nt))for(let j=0;j<np;j++){
-    const ph=((j+.5)*2*Math.PI)/np,w=wt*2*Math.PI/np,a=f(th,ph),b=g(th,ph);
-    re+=w*(a[0]*b[0]+a[1]*b[1]);im+=w*(a[1]*b[0]-a[0]*b[1]);
-  }
-  return[re,im];
+  return [re, im];
 }
 
 // ------------------------------------------------------------------ Clebsch–Gordan
 /** ⟨j1 m1; j2 m2 | J M⟩ by Racah's formula (Condon–Shortley convention). */
 export function cg(j1, m1, j2, m2, J, M) {
-  const integer=x=>Number.isFinite(x)&&Math.abs(x-Math.round(x))<1e-9;
-  if([j1,j2,J].some(x=>x<0||!integer(2*x))||!integer(j1-m1)||!integer(j2-m2)||!integer(J-M)||!integer(j1+j2-J))return 0;
   if (Math.abs(m1 + m2 - M) > 1e-9 || J < Math.abs(j1 - j2) - 1e-9 || J > j1 + j2 + 1e-9) return 0;
   if (Math.abs(m1) > j1 + 1e-9 || Math.abs(m2) > j2 + 1e-9 || Math.abs(M) > J + 1e-9) return 0;
   const f = (x) => fact(Math.round(x));

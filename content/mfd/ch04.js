@@ -267,7 +267,8 @@ It is a derivation of $C^\infty(M)$, hence a smooth vector field; in coordinates
       idea: String.raw`Each of $X$ and $Y$ is a first-order differential operator, and the second-order parts of $XY$ and $YX$ are both $X^iY^j\partial_{ij}$ (up to the order of the factors), so they cancel in the commutator and what is left is first order: a derivation, i.e. a vector field. The coordinate formula is the product rule applied to $X^i\partial_i(Y^j\partial_jf)-Y^j\partial_j(X^i\partial_if)$, where the mixed second derivatives of $f$ cancel by equality of mixed partials. That is exactly the reason $[\partial_i,\partial_j]=0$.`,
       caption: String.raw`Choose a pair of fields; $X$ (blue), $Y$ (orange) and their bracket (green) are drawn as arrow fields. Drag $p$: the readout evaluates $[X,Y]_p$ from the coordinate formula and, independently, from $X(Yf)-Y(Xf)$ applied to the test function $f=\sin x+\tfrac12y^2+0.3xy$ by differences, and the two agree. The pairs coordinate fields, rotation and dilation have zero bracket; rotation with a translation does not; the last one is nonlinear.`,
       deps: ['mfd-4.1'],
-      refs: ['Nicolaescu, Lectures on the Geometry of Manifolds, §3.1.2, Lemma3.1.10 pp.84–85 and Corollary3.1.13 p.87'],
+      refs: ['Lee, Introduction to Smooth Manifolds, version 3.0 (2000), Lemmas 13.1–13.2'],
+      links: { source: 'https://www.math.colostate.edu/~renzo/teaching/DiffGeo2011/Introduction%20to%20Smooth%20Manifolds%20-%20J.%20Lee.pdf' },
       tags: ['Lie bracket', 'commutator'],
       viz(v) {
         const sel = v.select('pair $(X,Y)$', Object.entries(PAIRS).map(([value, o]) => ({ value, label: o.label })), 'rottr');
@@ -294,7 +295,7 @@ It is a derivation of $C^\infty(M)$, hence a smooth vector field; in coordinates
           const g0 = fg(p.x, p.y);
           st = { Bp, op: XYf - YXf, coord: Bp[0] * g0[0] + Bp[1] * g0[1], exact: P.br(p.x, p.y), note: P.note, XYf, YXf };
         });
-        v.readout(() => `${st.note}.\n$[X,Y]_p=(${f3(v, st.Bp[0])},\\ ${f3(v, st.Bp[1])})$ from the coordinate formula; known exact value $(${f3(v, st.exact[0])},\\ ${f3(v, st.exact[1])})$.\nOn $f$: $X(Yf)=${f3(v, st.XYf)}$, $Y(Xf)=${f3(v, st.YXf)}$, difference $${f3(v, st.op)}$ versus $[X,Y]_pf=${f3(v, st.coord)}$ (agreement to $\\sim10^{-6}$).`);
+        v.readout(() => `${st.note}.\n$[X,Y]_p=(${f3(v, st.Bp[0])},\\ ${f3(v, st.Bp[1])})$ from the coordinate formula; known exact value $(${f3(v, st.exact[0])},\\ ${f3(v, st.exact[1])})$.\nOn $f$: $X(Yf)=${f3(v, st.XYf)}$, $Y(Xf)=${f3(v, st.YXf)}$, difference $${f3(v, st.op)}$ versus $[X,Y]_pf=${f3(v, st.coord)}$ (absolute difference $${v.sci(Math.abs(st.op-st.coord),2)}$ between these finite-difference estimates).`);
       },
     },
   ],

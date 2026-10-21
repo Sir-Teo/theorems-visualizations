@@ -5,6 +5,8 @@ import {
   texC, texMat, blochFrame, sphereOutline, rotate3, dial, sampleIdx, cplx, adj, comm, heig,
 } from './ch07.shared.js';
 
+import {clampUnit,safeAngle,interference,NEUTRON_GAMMA_MAGNITUDE} from './spin-coupling-audit.shared.js';
+
 const S12 = spinOps(0.5);
 const PAULI = { x: SX, y: SY, z: SZ };
 const bloch3 = (v, S, h = 300, yaw = -0.55, pitch = 0.3, title) => { const st = v.stage({ x: [-1.55, 1.55], y: [-1.55, 1.55], equal: true, axes: false, height: h, title }); return { st, sc: v.scene3(st, { axes: false, yaw, pitch }) }; };
@@ -20,14 +22,13 @@ export default {
       num: '7.7',
       kind: 'Definition',
       name: 'Spin ½ and the Pauli matrices',
-      statement: String.raw`A **spin-½** system has a two-dimensional state space $\mathbb C^2$ (spinors $\chi=(\alpha,\beta)^{\mathsf T}$) and spin operators $\mathbf S=\tfrac\hbar2\boldsymbol\sigma$ built from the **Pauli matrices**
+      statement: String.raw`A **spin-½** system has a two-dimensional state space $\mathbb C^2$ (normalized pure-state spinors $\chi=(\alpha,\beta)^{\mathsf T}$, $|\alpha|^2+|\beta|^2=1$) and spin operators $\mathbf S=\tfrac\hbar2\boldsymbol\sigma$ built from the **Pauli matrices**
 $$\sigma_x=\begin{pmatrix}0&1\\1&0\end{pmatrix},\quad \sigma_y=\begin{pmatrix}0&-i\\i&0\end{pmatrix},\quad \sigma_z=\begin{pmatrix}1&0\\0&-1\end{pmatrix}.$$
 They are Hermitian, $\sigma_i^2=I$, $\sigma_i\sigma_j=\delta_{ij}I+i\varepsilon_{ijk}\sigma_k$, so $[S_i,S_j]=i\hbar\varepsilon_{ijk}S_k$ (the $j=\tfrac12$ case of qm-7.3). A measurement of $S_x$, $S_y$ or $S_z$ — or of $\mathbf S\cdot\mathbf n$ along any unit vector — gives only $\pm\hbar/2$, and the probability of $+\hbar/2$ along $\mathbf n$ is $\langle\chi|\tfrac12(I+\boldsymbol\sigma\cdot\mathbf n)|\chi\rangle$.`,
       idea: String.raw`The ladder construction of qm-7.3 with $j=\tfrac12$ leaves exactly two states $m=\pm\tfrac12$; writing $S_\pm$ in that basis gives the Pauli matrices up to the choice of phases. Since $(\boldsymbol\sigma\cdot\mathbf n)^2=I$, its eigenvalues are $\pm1$ for every direction $\mathbf n$: that is the experimental fact of two spots in a Stern–Gerlach apparatus (qm-1.14) whatever the orientation of the magnet. The projectors $\tfrac12(I\pm\boldsymbol\sigma\cdot\mathbf n)$ give the Born probabilities.`,
       caption: String.raw`**Choose the spinor with the two angles** ($\chi=\cos\frac\theta2|{\uparrow}\rangle+e^{i\phi}\sin\frac\theta2|{\downarrow}\rangle$) **and the axis** along which $S$ is measured. The bars compare the exact probabilities $\langle\chi|\Pi_\pm|\chi\rangle$ (outlined) with the frequencies of 600 simulated measurements (filled); the outcome is always $\pm\hbar/2$, never anything in between. **Resample** draws a new batch. The matrices shown are the ones actually used.`,
       deps: ['qm-7.3', 'qm-1.14'],
-      refs: ['Fitzpatrick,QuantumMechanics §10.5–10.6'],
-      credit: 'Pauli spin representation',
+      refs: ['Littlejohn, Physics 221A (2021–22), Notes 12 §§7–8 and 14, equations (25)–(35), (55)–(63): https://bohr.physics.berkeley.edu/classes/221/notes/spinrot.pdf'],
       tags: ['spin', 'Pauli matrices'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Pauli_matrices' },
       viz(v) {
@@ -40,7 +41,7 @@ They are Hermitian, $\sigma_i^2=I$, $\sigma_i\sigma_j=\delta_{ij}I+i\varepsilon_
         v.render(() => {
           const n = [0, 0, 0]; n['xyz'.indexOf(ax.value)] = 1;
           const chi = [[Math.cos(th.value / 2), 0], cscale(cis(ph.value), Math.sin(th.value / 2))], sig = PAULI[ax.value];
-          const Pp = expect(mscale(madd(eye(2), sig), 0.5), chi)[0], Pm = 1 - Pp;
+          const Pp = (clampUnit(2*expect(mscale(madd(eye(2), sig), 0.5), chi)[0]-1)+1)/2, Pm = 1 - Pp;
           const r = v.rng(seed * 7919 + 3), N = 600; let up = 0; for (let k = 0; k < N; k++) if (r() < Pp) up++;
           sc.begin(); sphereOutline(SB, sc); blochFrame(sc);
           sc.line(n.map((x) => -1.2 * x), n.map((x) => 1.2 * x), { color: 'orange', width: 1.6 });
@@ -51,7 +52,7 @@ They are Hermitian, $\sigma_i^2=I$, $\sigma_i\sigma_j=\delta_{ij}I+i\varepsilon_
             SP.rect(x - 0.3, 0, x + 0.3, p, { fill: false, color: 'ink', width: 1.6 });
             SP.text(`${v.fix(f, 3)}`, x, Math.max(f, p) + 0.07, { align: 'center', size: 12 });
           }
-          const sq = mmul(sig, sig), e = [0, 1, 2].map((i) => [0, 1, 2].map((j) => 0));
+          const sq = mmul(sig, sig);
           st = { Pp, up: up / N, comm: fnorm(msub(mmul(PAULI.x, PAULI.y), mscale(PAULI.z, [0, 1]))), sq: fnorm(msub(sq, eye(2))), sig };
         });
         v.legend([['accent', 'simulated $+\\hbar/2$'], ['orange', 'simulated $-\\hbar/2$'], ['ink', 'exact probability', { dash: false }]]);
@@ -69,7 +70,7 @@ Hence $U_{\mathbf n}(2\pi)=-I$: after a full turn the spinor returns multiplied 
       idea: String.raw`The generator of rotations is $\mathbf S/\hbar=\boldsymbol\sigma/2$ (qm-7.6), whose eigenvalues are $\pm\tfrac12$; the exponential therefore contains $e^{\mp i\alpha/2}$, with period $4\pi$ rather than $2\pi$. Since $(\boldsymbol\sigma\cdot\mathbf n)^2=I$ the exponential series sums to the cosine and sine above. A global sign cannot affect any probability, which is why nothing forbids spinors from being "half-valued"; the topological fact behind it is that a loop of rotations by $2\pi$ cannot be shrunk to a point in $SO(3)$ but a loop of $4\pi$ can (Dirac's belt trick).`,
       caption: String.raw`**Drag the rotation angle $\alpha$ from $0$ to $4\pi$** (it starts at $2\pi$) and pick the axis. Left: the Bloch vector $\langle\boldsymbol\sigma\rangle$ goes round once per $2\pi$. Middle: the overlap $\langle\chi_0|\chi(\alpha)\rangle$ of the rotated spinor with the starting one; its real part is $\cos(\alpha/2)$, reaching $-1$ at $2\pi$ and $+1$ at $4\pi$. Right: a ribbon with one end turned by $\alpha$ (a *depiction*, not a simulation): one full twist at $2\pi$ cannot be undone by moving the ribbon, two twists at $4\pi$ can — the belt trick.`,
       deps: ['qm-7.7', 'qm-7.6'],
-      refs: ['Fitzpatrick §10.5–10.6 (spin evolution); Werner etal1975 full experiment still to verify'],
+      refs: ['Sakurai ch. 3'],
       tags: ['spin', 'rotations', 'SU(2)'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Spinor#Overview_and_motivation' },
       viz(v) {
@@ -118,30 +119,30 @@ Hence $U_{\mathbf n}(2\pi)=-I$: after a full turn the spinor returns multiplied 
       num: '7.9',
       kind: 'Phenomenon',
       name: 'Neutron interferometry and 4π symmetry',
-      statement: String.raw`Split a beam of spin-½ particles into two coherent paths, rotate the spin of one path by the angle $\alpha$ about a fixed axis (by letting it precess in a magnetic field) and recombine. For ideal balanced paths with zero relative phase before the spin rotation and no spin-resolved detection, the normalized intensity in one output is
-$$I(\alpha)=\tfrac12\big(1+\operatorname{Re}\langle\chi|U(\alpha)|\chi\rangle\big)=\tfrac12\big(1+\cos\tfrac\alpha2\big),$$
-independent of the incident spin state $\chi$. It repeats with period $4\pi$ in the precession angle, not $2\pi$: at $\alpha=2\pi$ the rotated beam interferes with the opposite sign and the intensity is minimal. Experiments with neutrons in single-crystal interferometers have observed this sign change (Rauch et al. and Werner et al., 1975).`,
-      idea: String.raw`In the field region the spinor evolves by $U(\alpha)=e^{-i\alpha\boldsymbol\sigma\cdot\mathbf n/2}$ (qm-7.8); the other arm leaves it unchanged. The two-path interference rule (waves-6.1) adds the amplitudes before squaring: the output amplitude is $\tfrac12(1+U)\chi$ and the intensity is its squared norm. Since $U=\cos\frac\alpha2-i\sin\frac\alpha2\,\boldsymbol\sigma\cdot\mathbf n$ and $\langle\boldsymbol\sigma\cdot\mathbf n\rangle$ is real, the imaginary part drops out of $\operatorname{Re}\langle U\rangle$, leaving $\cos(\alpha/2)$. A vector precessing classically would give period $2\pi$; the experiment distinguishes the two.`,
-      caption: String.raw`**Turn the magnetic field in one arm** (the precession angle $\alpha=\gamma BL/v$, here for a path of $2$ cm and neutrons of $2000$ m/s — illustrative numbers) and **choose the incident spin direction**. The curve is the quantum prediction $\tfrac12(1+\cos\frac\alpha2)$ computed from the spinor and the matrix $U$; the dashed curve is what a $2\pi$-periodic classical vector would give. Dots are simulated counts ($4000$ neutrons per point), generated by the quantum rule, *not* data from the experiment. Whatever the spin direction, the curve is the same.`,
-      deps: ['qm-7.8', 'waves-6.1'],
-      refs: ['Fitzpatrick §10.5–10.6 (spin evolution); Werner etal1975 full experiment still to verify'],
-      credit: 'Rauch et al.; Werner, Colella, Overhauser & Eagen, 1975',
-      verify: true,
+      statement: String.raw`In an ideal balanced, coherent two-arm interferometer, one arm rotates a spin ½ by $U(\alpha)=e^{-i\alpha\sigma_z/2}$ and the other leaves it unchanged. For normalized incident spinor $\chi$ and residual path phase $\delta$, the probability in one output port is
+$$I_\delta(\alpha)=\left\|\tfrac12(I+e^{i\delta}U(\alpha))\chi\right\|^2=\tfrac12[1+\operatorname{Re}(e^{i\delta}\langle U\rangle)].$$
+At $\delta=0$ this is $\tfrac12(1+\cos(\alpha/2))$, independent of the spin state, and repeats after $4\pi$. For an unpolarized beam, $I_\delta=\tfrac12[1+\cos\delta\cos(\alpha/2)]$. Werner, Colella, Overhauser and Eagen observed the spinor interference effect in a neutron interferometer (1975); their measured counts include instrumental contrast and path phase, rather than the ideal normalization above.`,
+      idea: String.raw`The two path amplitudes add as $(I+e^{i\delta}U)\chi/2$. Writing $U=\cos(\alpha/2)I-i\sin(\alpha/2)\sigma_z$ gives $I_\delta=\tfrac12[1+\cos\delta\cos(\alpha/2)+\langle\sigma_z\rangle\sin\delta\sin(\alpha/2)]$. Averaging opposite incident spins removes the last term. The original experiment used an unpolarized beam and calibrated the residual phase; at $\delta=\pi/2$ its modulation can disappear. The effective field integral includes leakage fields in both paths. These qualifications matter when comparing a physical apparatus with the ideal model.`,
+      caption: String.raw`**Turn the field, choose the incident spin, and set the residual path phase $\delta$.** The illustrative uniform-field model has $L=2$ cm and speed $v=2000$ m/s, with $\alpha=-\gamma_n BL/v=|\gamma_n|BL/v$ because $\gamma_n<0$. The solid curve uses the two complex path amplitudes. Spin independence and a minimum at $2\pi$ hold at $\delta=0$; the unpolarized curve becomes flat at $\delta=\pi/2$. The dashed $\tfrac12(1+\cos\alpha)$ is a **2π-periodic comparison curve**, not a full classical interferometer model. Dots simulate 4000 trials per point using the quantum probability; they are not experimental data.`,
+      deps: ['qm-7.8'],
+      refs: ['Werner et al., Physical Review Letters 35 (1975), 1053–1055, equations (3)–(7), Figures 1–3: https://physicsfaculty.bnu.edu.cn/Public/web/application/faculty/guowenan/QMII/2020lect/precession.pdf', 'NIST, 2022 CODATA neutron gyromagnetic ratio (magnitude): https://physics.nist.gov/cuu/Constants/Table/allascii.txt'],
+      credit: 'Werner, Colella, Overhauser & Eagen, 1975 (experiment)',
       tags: ['spin', 'interferometry', 'neutrons'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Neutron_interferometer' },
       viz(v) {
         const SC = v.stage({ x: [0, 10], y: [-2, 2], axes: false, height: 230, title: 'the interferometer (schematic)', weight: 1.1 });
         const SI = v.stage({ x: [0, 8 * Math.PI], y: [-0.1, 1.15], axes: 'box', gutter: true, height: 230, xlabel: 'precession angle $\\alpha$', xticks: [[0, '0'], [2 * Math.PI, '2π'], [4 * Math.PI, '4π'], [6 * Math.PI, '6π'], [8 * Math.PI, '8π']], ylabel: '$I/I_0$', title: 'output intensity', weight: 1.4 });
-        const gam = 1.832471e8, L = 0.02, vel = 2000, K = gam * L / vel; // rad per tesla
+        const gam = NEUTRON_GAMMA_MAGNITUDE, L = 0.02, vel = 2000, K = gam * L / vel; // rad per tesla
         const B = v.slider('field $B$ in arm II (mT)', 0, (8 * Math.PI) / K * 1e3, (3 * Math.PI) / K * 1e3, { step: 0.01 });
-        const dir = v.select('incident spin', [{ value: 'par', label: 'along $\\mathbf B$' }, { value: 'perp', label: '$\\perp\\mathbf B$' }, { value: 'tilt', label: 'tilted' }], 'perp');
+        const dir = v.select('incident spin', [{ value: 'par', label: 'along $\\mathbf B$' }, { value: 'perp', label: '$\\perp\\mathbf B$' }, { value: 'tilt', label: 'tilted' }, {value:'unpol',label:'unpolarized'}], 'perp');
+        const delta=v.slider('residual path phase $\\delta$',-Math.PI,Math.PI,0,{step:0.01});
+        v.button('zero path phase',()=>delta.set(0));v.button('quarter-turn path phase',()=>delta.set(Math.PI/2));
         const chis = { par: [[1, 0], [0, 0]], perp: [[Math.SQRT1_2, 0], [Math.SQRT1_2, 0]], tilt: [[Math.cos(0.45), 0], cscale(cis(1.2), Math.sin(0.45))] };
-        const Hz = SZ;
+        chis.unpol=null;
         let st = null;
         v.render(() => {
           const alpha = (B.value * 1e-3) * K, chi = chis[dir.value];
-          const U = (a) => propagator(mscale(Hz, 0.5), a);
-          const I = (a) => { const c = mvec(U(a), chi), s = [[(chi[0][0] + c[0][0]) / 2, (chi[0][1] + c[0][1]) / 2], [(chi[1][0] + c[1][0]) / 2, (chi[1][1] + c[1][1]) / 2]]; return cabs2(s[0]) + cabs2(s[1]); };
+          const I = (a) => interference(a,chi,delta.value);
           SI.fn((a) => 0.5 * (1 + Math.cos(a)), { color: 'muted', width: 1.4, dash: [5, 4], n: 300 });
           SI.fn((a) => I(a), { color: 'accent', width: 2.6, n: 300 });
           const r = v.rng(21 + dir.value.length);
@@ -153,14 +154,14 @@ independent of the incident spin state $\chi$. It repeats with period $4\pi$ in 
           SC.path([[2, 0], [4, -1.2], [6, -1.2], [8, 0]], { color: 'muted', width: 1.4 });
           SC.rect(4.4, -1.65, 5.6, -0.75, { fill: 'orange', fillAlpha: 0.25, color: 'orange', width: 1.4 });
           SC.text('B', 5, -1.2, { align: 'center', baseline: 'middle', color: 'orange', math: true, size: 15 });
-          SC.arrow(0.2, 0, 1.6, 0, { color: 'accent', width: 2.4 }); SC.text('χ', 0.9, 0.35, { color: 'accent', math: true, align: 'center', size: 14 });
+          SC.arrow(0.2, 0, 1.6, 0, { color: 'accent', width: 2.4 }); SC.text(dir.value==='unpol'?'ρ':'χ', 0.9, 0.35, { color: 'accent', math: true, align: 'center', size: 14 });
           SC.text('I', 9.4, 0.4, { color: 'gold', math: true, align: 'center', size: 15 });
           SC.dot(9.4, 0, { r: 5, color: 'gold' });
           SC.text('arm I: unchanged', 5, 1.65, { align: 'center', size: 12, color: 'muted' });
           st = { alpha, I: I(alpha) };
         });
-        v.legend([['accent', 'quantum: $\\tfrac12(1+\\cos\\frac\\alpha2)$'], ['muted', 'vector of period $2\\pi$: $\\tfrac12(1+\\cos\\alpha)$', { dash: true }], ['ink', 'simulated counts', { dot: true }]]);
-        v.readout(() => `$\\alpha=${v.fix(st.alpha / Math.PI, 3)}\\pi$ ($=\\gamma BL/v$ with $\\gamma_n=1.832\\times10^{8}\\,\\mathrm{s^{-1}T^{-1}}$): $I/I_0=${v.fix(st.I, 4)}$; one period of the curve is $4\\pi$, i.e. $B=${v.fix((4 * Math.PI) / K * 1e3, 2)}$ mT here (an $\\alpha=2\\pi$ field, $${v.fix((2 * Math.PI) / K * 1e3, 2)}$ mT, gives the *minimum*).`);
+        v.legend([['accent', 'ideal output at the selected path phase'], ['muted', '2π-periodic comparison curve', { dash: true }], ['ink', 'simulated counts', { dot: true }]]);
+        v.readout(() => `$\\alpha=${v.fix(st.alpha/Math.PI,3)}\\pi=-\\gamma_n BL/v$, $\\gamma_n=-${v.sci(gam,8)}\\,\\mathrm{s^{-1}T^{-1}}$; $\\delta=${v.fix(delta.value/Math.PI,3)}\\pi$, $I/I_0=${v.fix(st.I,4)}$.\nThe ideal curve is 4π-periodic (possibly constant); a 4π field interval is ${v.fix(4*Math.PI/K*1e3,2)} mT here. The 2π minimum applies at zero path phase.`);
       },
     },
     // ------------------------------------------------------------------ 7.10
@@ -168,14 +169,13 @@ independent of the incident spin state $\chi$. It repeats with period $4\pi$ in 
       num: '7.10',
       kind: 'Definition',
       name: 'The Bloch sphere',
-      statement: String.raw`Every pure state of a spin ½ (or any two-level system), up to a global phase, is $|\mathbf n\rangle=\cos\tfrac\theta2|{\uparrow}\rangle+e^{i\phi}\sin\tfrac\theta2|{\downarrow}\rangle$, the eigenstate of $\boldsymbol\sigma\cdot\mathbf n$ with eigenvalue $+1$ for the unit vector $\mathbf n=(\sin\theta\cos\phi,\sin\theta\sin\phi,\cos\theta)$. The map state $\mapsto\mathbf n=\langle\boldsymbol\sigma\rangle$ identifies the projective space of $\mathbb C^2$ with the unit sphere (the **Bloch sphere**). Orthogonal states are antipodal points, and
+      statement: String.raw`Every normalized pure state of a spin ½ (or any two-level system), up to a global phase, is $|\mathbf n\rangle=\cos\tfrac\theta2|{\uparrow}\rangle+e^{i\phi}\sin\tfrac\theta2|{\downarrow}\rangle$, the eigenstate of $\boldsymbol\sigma\cdot\mathbf n$ with eigenvalue $+1$ for the unit vector $\mathbf n=(\sin\theta\cos\phi,\sin\theta\sin\phi,\cos\theta)$. The map state $\mapsto\mathbf n=\langle\boldsymbol\sigma\rangle$ identifies the projective space of $\mathbb C^2$ with the unit sphere (the **Bloch sphere**). Orthogonal states are antipodal points, and
 $$|\langle\mathbf m|\mathbf n\rangle|^2=\tfrac12(1+\mathbf m\cdot\mathbf n)=\cos^2\tfrac\gamma2,$$
-where $\gamma$ is the angle between $\mathbf m$ and $\mathbf n$. (For a mixed state the vector lies inside the ball.)`,
-      idea: String.raw`Two complex amplitudes minus normalization and global phase leave two real angles. Expanding $|\mathbf n\rangle\langle\mathbf n|=\tfrac12(I+\boldsymbol\sigma\cdot\mathbf n)$ and using $\operatorname{tr}(\sigma_i\sigma_j)=2\delta_{ij}$ gives $|\langle\mathbf m|\mathbf n\rangle|^2=\operatorname{tr}(\rho_m\rho_n)=\tfrac12(1+\mathbf m\cdot\mathbf n)$. Changing the *relative phase* of the two components moves the point along a parallel of latitude, which is why the sphere is a faithful picture of the global-phase-free state. The sphere is also the Poincaré sphere of polarization optics and provides a geometric description of a two-level quantum state.`,
+where $\gamma$ is the angle between $\mathbf m$ and $\mathbf n$. For a general density matrix $\rho=\tfrac12(I+\mathbf r\cdot\boldsymbol\sigma)$, positivity is equivalent to $|\mathbf r|\le1$; strictly mixed states have $|\mathbf r|<1$.`,
+      idea: String.raw`Two complex amplitudes minus normalization and global phase leave two real angles. Expanding $|\mathbf n\rangle\langle\mathbf n|=\tfrac12(I+\boldsymbol\sigma\cdot\mathbf n)$ and using $\operatorname{tr}(\sigma_i\sigma_j)=2\delta_{ij}$ gives $|\langle\mathbf m|\mathbf n\rangle|^2=\operatorname{tr}(\rho_m\rho_n)=\tfrac12(1+\mathbf m\cdot\mathbf n)$. Changing the *relative phase* of the two components moves the point along a parallel of latitude, which is why the sphere is a faithful picture of the global-phase-free state. The eigenvalues of $\rho$ are $(1\pm|\mathbf r|)/2$, which gives the mixed-state ball.`,
       caption: String.raw`**Drag the gold point** (the state $|\mathbf n\rangle$) and **the purple point** (a measurement axis $\mathbf m$) over the sphere. The panel on the right is the curve $\cos^2(\gamma/2)$ against the angle $\gamma$ between them, with your configuration marked. Read off the spinor of each point, and check that the spinor of the antipode $-\mathbf n$ has zero overlap with $|\mathbf n\rangle$.`,
       deps: ['qm-7.7'],
-      refs: ['Fitzpatrick,QuantumMechanics §10.5–10.6'],
-      credit: 'Pure-state qubit geometry',
+      refs: ['Littlejohn, Physics 221A (2021–22), Notes 12 §14, equations (55)–(63); the overlap and mixed-state extension follow from the Pauli trace identity: https://bohr.physics.berkeley.edu/classes/221/notes/spinrot.pdf'],
       tags: ['spin', 'Bloch sphere', 'qubit'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bloch_sphere' },
       viz(v) {
@@ -183,6 +183,7 @@ where $\gamma$ is the angle between $\mathbf m$ and $\mathbf n$. (For a mixed st
         const SG = v.stage({ x: [0, Math.PI], y: [0, 1.1], axes: 'box', gutter: true, height: 330, xlabel: 'angle $\\gamma$ between $\\mathbf n$ and $\\mathbf m$', xticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']], ylabel: 'probability', title: '$P=\\cos^2(\\gamma/2)$' });
         const hn = sc.handle(snapSphere([0.55, 0.45, 0.7]), { color: 'gold', snap: snapSphere, label: 'n' });
         const hm = sc.handle(snapSphere([-0.2, 0.8, 0.4]), { color: 'purple', snap: snapSphere, label: 'm' });
+        v.button('parallel axes',()=>hm.set(hn.p.slice()));v.button('antipodal axes',()=>hm.set(hn.p.map(x=>-x)));v.button('north / south poles',()=>{hn.set([0,0,1]);hm.set([0,0,-1]);});v.button('reset axes',()=>{hn.set(snapSphere([.55,.45,.7]));hm.set(snapSphere([-.2,.8,.4]));});
         let st = null;
         v.render(() => {
           const n = hn.p, m = hm.p, chiN = stateOf(n), chiM = stateOf(m), anti = stateOf(n.map((x) => -x));
@@ -208,7 +209,7 @@ where $\gamma$ is the angle between $\mathbf m$ and $\mathbf n$. (For a mixed st
       idea: String.raw`This is the generalized Born rule (qm-5.6) applied to the projector $\tfrac12(I+\boldsymbol\sigma\cdot\mathbf m)$ with the Bloch-sphere overlap of qm-7.10: $\langle{+}\mathbf n|\tfrac12(I+\boldsymbol\sigma\cdot\mathbf m)|{+}\mathbf n\rangle=\tfrac12(1+\mathbf n\cdot\mathbf m)=\cos^2\tfrac\theta2$. Projective collapse resets the state to the measured eigenvector, so the next probability depends only on the *new* pair of axes — the spin has no memory of earlier history. Small $\theta$ makes survival likely at each step, which is the idea behind the quantum Zeno effect.`,
       caption: String.raw`**Set the tilt $\theta$ between successive axes.** A single spin is prepared along $z$ and measured along axes $\mathbf m_k$ tilted by $k\theta$ from $z$ (in the $xz$-plane): the sphere shows one walker (gold dots) hopping between $\pm\mathbf m_k$; **New walker** draws another. The right panel counts how many of 800 walkers have answered “$+$” at *every* step up to $k$ (dots) against $\cos^{2k}(\theta/2)$ (curve).`,
       deps: ['qm-7.7', 'qm-5.6'],
-      refs: ['Fitzpatrick,QuantumMechanics §10.5–10.6'],
+      refs: ['Griffiths §4.4'],
       tags: ['spin', 'measurement', 'Born rule'],
       viz(v) {
         const { st: SB, sc } = bloch3(v, null, 330, -0.6, 0.3, 'one walker on the Bloch sphere');
@@ -242,22 +243,23 @@ where $\gamma$ is the angle between $\mathbf m$ and $\mathbf n$. (For a mixed st
       num: '7.12',
       kind: 'Model',
       name: 'Spin precession in a magnetic field',
-      statement: String.raw`A spin ½ with magnetic moment $\boldsymbol\mu=\gamma\mathbf S$ in a uniform field $\mathbf B$ has Hamiltonian $H=-\gamma\,\mathbf S\cdot\mathbf B=\omega_L\,\hat{\mathbf b}\cdot\mathbf S$ with $\omega_L=-\gamma B$ and $\hat{\mathbf b}=\mathbf B/B$. The expectation vector $\langle\mathbf S\rangle$ obeys exactly the classical torque equation
-$$\frac{d\langle\mathbf S\rangle}{dt}=\boldsymbol\omega_L\times\langle\mathbf S\rangle,\qquad\boldsymbol\omega_L=-\gamma\mathbf B,$$
-so it precesses about $\mathbf B$ at the **Larmor frequency** $\omega_L=|\gamma|B$ with fixed length and fixed angle to the field. The state itself returns up to a phase after $2\pi/\omega_L$.`,
+      statement: String.raw`For a spin ½ with $\boldsymbol\mu=\gamma\mathbf S$ in a uniform static field and no other Hamiltonian, $H=-\gamma\mathbf S\cdot\mathbf B=\omega\hat{\mathbf b}\cdot\mathbf S$, where the **signed** rate is $\omega=-\gamma B$. Exactly,
+$$\frac{d\langle\mathbf S\rangle}{dt}=(-\gamma\mathbf B)\times\langle\mathbf S\rangle.$$
+The expectation vector rotates with fixed length and, when nonzero, fixed angle to the field. The nonnegative Larmor angular frequency is $\Omega=|\gamma|B=|\omega|$. For $\Omega>0$ the state is restored up to phase after $2\pi/\Omega$ (aligned states may already be stationary up to phase). At $B=0$ the state is constant and there is no finite precession period.`,
       idea: String.raw`The Heisenberg equation (qm-5.17) $\dot{\mathbf S}=\tfrac i\hbar[H,\mathbf S]$ with $[S_i,S_j]=i\hbar\varepsilon_{ijk}S_k$ gives the torque equation; linear in $\mathbf S$, so it holds for the expectation value with no approximation, whatever the state (Ehrenfest-like exactness). It is the quantum counterpart of a magnetic moment on an angular momentum, whose precession is classical Larmor precession (em-7.20). On the Bloch sphere (qm-7.10) the evolution $e^{-iHt}$ is a rigid rotation about $\hat{\mathbf b}$.`,
-      caption: String.raw`**Set the field direction, the precession rate $\omega$ and the starting direction of the spin.** The left sphere follows $\langle\boldsymbol\sigma\rangle$ computed from the spinor evolved by the $2\times2$ matrix exponential $e^{-iHt}$; the dashed circle is the classical prediction, the rotation of the initial vector about $\mathbf B$. The right panel shows the three components against time. Their difference is shown in the readout: zero up to rounding, for every state.`,
+      caption: String.raw`**Set the field direction, the signed precession rate $\omega$ (including zero) and the starting direction of the spin.** The left sphere follows $\langle\boldsymbol\sigma\rangle$ computed from the spinor evolved by the $2\times2$ matrix exponential $e^{-iHt}$; the muted circle is the classical prediction, the rotation of the initial vector about $\mathbf B$. The right panel shows the three components against time. The readout compares the two calculations. Time is in arbitrary units and $\hbar=1$.`,
       deps: ['qm-7.10', 'em-7.20', 'qm-5.17'],
-      refs: ['Fitzpatrick,QuantumMechanics §10.5–10.6'],
-      credit: 'Spin precession in a uniform field',
+      refs: ['Littlejohn, Physics 221A (2021–22), Notes 14 §§5–7, equations (26)–(44); his positive-electron gamma has the opposite sign from gamma defined by mu=gamma S here: https://bohr.physics.berkeley.edu/classes/221/notes/spinmagf.pdf'],
+      credit: 'Exact uniform-field spin model',
       scope: String.raw`A free spin in a *uniform, static* field; no relaxation and no other degrees of freedom.`,
       tags: ['spin', 'precession', 'Larmor'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Larmor_precession' },
       viz(v) {
         const { st: SB, sc } = bloch3(v, null, 320, -0.5, 0.3, '$\\langle\\boldsymbol\\sigma\\rangle$ in the field');
         const ST = v.stage({ x: [0, 10], y: [-1.15, 1.15], axes: 'box', gutter: true, height: 320, xlabel: 't', title: 'components of $\\langle\\boldsymbol\\sigma\\rangle$' });
-        const bp = v.slider('field polar angle', 0, Math.PI, 0.5, { step: 0.01 }), ba = v.slider('field azimuth', -Math.PI, Math.PI, 0.2, { step: 0.01 }), om = v.slider('$\\omega_L$', 0.2, 2.5, 1, { step: 0.01 });
+        const bp = v.slider('field polar angle', 0, Math.PI, 0.5, { step: 0.01 }), ba = v.slider('field azimuth', -Math.PI, Math.PI, 0.2, { step: 0.01 }), om = v.slider('signed $\\omega$ (rad / time unit)', -2.5, 2.5, 1, { step: 0.01 });
         const sp = v.slider('initial spin polar angle', 0, Math.PI, 1.9, { step: 0.01 });
+        v.button('zero rate',()=>om.set(0));
         let st = null;
         v.animate((t) => {
           const b = [Math.sin(bp.value) * Math.cos(ba.value), Math.sin(bp.value) * Math.sin(ba.value), Math.cos(bp.value)];
@@ -274,10 +276,10 @@ so it precesses about $\mathbf B$ at the **Larmor frequency** $\omega_L=|\gamma|
           for (let c = 0; c < 3; c++) ST.fn((x) => at(x)[c], { color: cols[c], width: 1.8, domain: [0, 10], n: 160 });
           ST.vline(t, { color: 'faint', width: 1.2 });
           for (let c = 0; c < 3; c++) ST.dot(t, r[c], { color: cols[c], r: 4.5 });
-          st = { d: Math.hypot(r[0] - rc[0], r[1] - rc[1], r[2] - rc[2]), len: Math.hypot(...r), ang: Math.acos(dot3(r, b) / Math.hypot(...r)), ang0: Math.acos(dot3(r0, b) / Math.hypot(...r0)), t };
+          st = { d: Math.hypot(r[0] - rc[0], r[1] - rc[1], r[2] - rc[2]), len: Math.hypot(...r), ang: safeAngle(r,b), ang0: safeAngle(r0,b), t };
         }, { period: 10, still: 3.2 });
-        v.legend([['red', '$\\langle\\sigma_x\\rangle$'], ['green', '$\\langle\\sigma_y\\rangle$'], ['accent', '$\\langle\\sigma_z\\rangle$'], ['muted', 'classical cone', { dash: true }], ['orange', '$\\mathbf B$']]);
-        v.readout(() => `$t=${v.fix(st.t, 2)}$, $\\omega_Lt/2\\pi=${v.fix((om.value * st.t) / TAU, 3)}$: quantum $\\langle\\boldsymbol\\sigma\\rangle$ vs classical rotation about $\\mathbf B$: difference $${v.sci(st.d, 1)}$; $|\\langle\\boldsymbol\\sigma\\rangle|=${v.fix(st.len, 6)}$; angle to $\\mathbf B$ $=${v.fix(st.ang, 4)}$ (initial $${v.fix(st.ang0, 4)}$).`);
+        v.legend([['red', '$\\langle\\sigma_x\\rangle$'], ['green', '$\\langle\\sigma_y\\rangle$'], ['accent', '$\\langle\\sigma_z\\rangle$'], ['muted', 'classical cone', { dash: false }], ['orange', '$\\mathbf B$']]);
+        v.readout(() => `$t=${v.fix(st.t, 2)}$, $\\omega_Lt/2\\pi=${v.fix((om.value * st.t) / TAU, 3)}$: quantum $\\langle\\boldsymbol\\sigma\\rangle$ vs classical rotation about $\\mathbf B$: difference $${v.sci(st.d, 1)}$; $|\\langle\\boldsymbol\\sigma\\rangle|=${v.fix(st.len, 6)}$; angle to the selected axis $=${v.fix(st.ang, 4)}$ (initial $${v.fix(st.ang0, 4)}$). ${om.value===0 ? 'Zero rate: stationary state, no finite period; the drawn axis is a reference.' : 'Signed rotation; nonnegative frequency is $|\\omega|$.'}`);
       },
     },
   ],

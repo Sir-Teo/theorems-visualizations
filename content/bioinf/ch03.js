@@ -214,7 +214,7 @@ export default {
       caption: String.raw`Each simulated pair of random protein sequences (Robinson frequencies) is scanned for locally maximal segments; the dots are the average number of segments with score at least $S$ and the solid line is the prediction $Kmne^{-\lambda S}$ with the NCBI constants. The right panel is $\sum q_aq_be^{\lambda s_{ab}}-1$ as a function of $\lambda$: the root is the value where the curve returns to zero. Switch the matrix, or shift every score by a constant, and watch $\lambda$ move. Shift by $+1$ to make the expected score positive: the root disappears and the simulation no longer follows any exponential law. Shorter sequences fall below the line (edge effects).`,
       scope: String.raw`Needs integer scores (a lattice, handled by the same formula with the given $\lambda$), negative mean score and at least one positive score. For *gapped* alignment there is no proof of this law, only extensive empirical evidence; $\lambda$ and $K$ for gapped scoring are fitted by simulation (item 3.6). The constants $K$ quoted are the NCBI BLAST values; $K$ is not computed here, only compared with the simulated value.`,
       credit: 'Karlin & Altschul, 1990',
-      deps: ['bioinf-3.1', 'bioinf-3.3', 'prob-1.6.13', 'prob-2.7.1a'],
+      deps: ['bioinf-3.1', 'bioinf-3.3'],
       refs: ['Durbin ch. 2'],
       tags: ['Karlin–Altschul', 'extreme values', 'Poisson'],
       links: { doi: 'https://doi.org/10.1073/pnas.87.6.2264' },
@@ -284,10 +284,12 @@ export default {
       statement: String.raw`For random sequences of lengths $m,n$ with the Karlin–Altschul parameters $\lambda,K$, the maximal local score $S_{\max}$ is approximately Gumbel distributed:
 $$P(S_{\max}\ge x)\;\approx\;1-\exp\!\big(-K\,mn\,e^{-\lambda x}\big),$$
 a Gumbel law with location $u=\ln(Kmn)/\lambda$ and scale $1/\lambda$. Its mean is $u+\gamma_E/\lambda$ and its standard deviation $\pi/(\lambda\sqrt6)$. In the upper tail $P(S_{\max}\ge x)\approx Kmn\,e^{-\lambda x}$, so $\log P$ is a straight line of slope $-\lambda$.`,
-      idea: String.raw`By item 3.4 the number of segments scoring at least $x$ is Poisson with mean $E(x)=Kmne^{-\lambda x}$, and $S_{\max}<x$ exactly when that number is zero, which has probability $e^{-E(x)}$: this is the Gumbel distribution function. Changing the lengths only changes $E$ by a factor $mn$, so only the location $u$ moves, by $\ln(mn)/\lambda$, and the shape stays fixed. A normal curve has a tail that bends down like $e^{-x^2/2}$, far lighter than the exponential tail of the Gumbel.`,
+      idea: String.raw`By item 3.4 the number of segments scoring at least $x$ is Poisson with mean $E(x)=Kmne^{-\lambda x}$, and $S_{\max}<x$ exactly when that number is zero, which has probability $e^{-E(x)}$: this is the Gumbel distribution function. Changing the lengths only changes $E$ by a factor $mn$, so only the location $u$ moves, by $\ln(mn)/\lambda$, and the shape stays fixed. A normal curve has a tail that bends down like $e^{-x^2/2}$, far lighter than the exponential tail of the Gumbel.
+
+Given the Poisson approximation for the number of high-score exceedances in 3.4, prob-1.6.13 supplies its zero-count probability $e^{-E(x)}$. The event that the maximum is below the score threshold is exactly the event of no threshold exceedance, so substituting the chosen mean gives the displayed approximate distribution. The Poisson zero-count formula is exact for a Poisson variable; its applicability to finite or gapped alignments remains the separate approximation already stated.`,
       caption: String.raw`Histogram of the best score over random sequence pairs (left) and the same data as a log survival plot (right). The green curve is the Gumbel law with the NCBI constants, or with parameters fitted by moments (choose with the selector); the dashed purple curve is a normal law with the same mean and spread. On the log plot the Gumbel tail is the straight line of slope $-\lambda/\ln10$ per score unit, while the normal curve bends away. Change the length: the whole distribution slides by $\ln(mn)/\lambda$ and keeps its shape.`,
       scope: String.raw`Exact asymptotics are proved for ungapped scores. For gapped scores (gaps $11+k$, BLOSUM62) the same form is an empirical law with fitted $\lambda=0.267$, $K=0.041$ (NCBI); at the short lengths used here the sample mean is a little above the prediction, which shows the finite-size error. The BLAST-style length adjustment $\ell$ replaces $m,n$ by $m-\ell,\ n-\ell$ to correct for edge effects.`,
-      deps: ['bioinf-3.4'],
+      deps: ['bioinf-3.4','prob-1.6.13'],
       refs: ['Durbin ch. 2'],
       tags: ['Gumbel', 'extreme values', 'tail'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gumbel_distribution' },

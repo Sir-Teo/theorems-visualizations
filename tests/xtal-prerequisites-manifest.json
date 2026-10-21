@@ -1,0 +1,292 @@
+{
+  "base": "e9f9c49c9efc5279f63d93bf2db9c9f7cf3f8fd7",
+  "field": "chem",
+  "edges": 24,
+  "consumers": 19,
+  "changes": {
+    "1.2": {
+      "file": "content/xtal/ch01.js",
+      "added": [
+        "vcalc-1.4",
+        "ladr-9.49"
+      ],
+      "before": [
+        "xtal-1.1"
+      ],
+      "full": [
+        "xtal-1.1",
+        "vcalc-1.4",
+        "ladr-9.49"
+      ],
+      "note": "The volume input is the scalar-triple-product theorem (vcalc 1.4): for independent cell edges the absolute determinant is the parallelepiped volume. Under the integer basis replacement, determinant multiplicativity (ladr 9.49) gives $|\\det(MA)|=|\\det M|\\,|\\det A|$. This supplies the volume factor used above; the requirement that a primitive change of lattice basis be invertible over the integers is separate from mere invertibility over the reals."
+    },
+    "1.3": {
+      "file": "content/xtal/ch01.js",
+      "added": [
+        "vcalc-1.2"
+      ],
+      "before": [
+        "xtal-1.1"
+      ],
+      "full": [
+        "xtal-1.1",
+        "vcalc-1.2"
+      ],
+      "note": "The dot-product angle formula (vcalc 1.2) makes the independence from growth distances explicit: for nonzero fixed normals, $\\cos\\theta=(\\mathbf n_i\\cdot\\mathbf n_j)/(|\\mathbf n_i||\\mathbf n_j|)$. No face distance $d_i$ occurs. Changing a distance may remove a face from the visible habit, but does not change the angle between corresponding face orientations that remain."
+    },
+    "1.5": {
+      "file": "content/xtal/ch01.js",
+      "added": [
+        "ladr-6.12"
+      ],
+      "before": [
+        "xtal-1.1"
+      ],
+      "full": [
+        "xtal-1.1",
+        "ladr-6.12"
+      ],
+      "note": "Pythagoras (ladr 6.12) applies to the orthogonal horizontal and vertical parts of the centre-to-centre contact vector. Its length is $d$, its horizontal part has length $d/\\sqrt3$, so $h^2=d^2-d^2/3$. This local contact calculation explains the equal layer separation for the allowed stackings; it does not prove the global optimality theorem for all sphere packings."
+    },
+    "1.7": {
+      "file": "content/xtal/ch01-b.js",
+      "added": [
+        "ladr-6.12"
+      ],
+      "before": [
+        "xtal-1.5"
+      ],
+      "full": [
+        "xtal-1.5",
+        "ladr-6.12"
+      ],
+      "note": "The hole radii use Euclidean Pythagoras (ladr 6.12), with mutually perpendicular cubic coordinate components. A face diagonal has length $a\\sqrt2$, while the vector from $(\\tfrac14,\\tfrac14,\\tfrac14)$ to a neighbouring corner has length $a\\sqrt3/4$. Substituting the touching-sphere relation $4r=a\\sqrt2$ gives exactly the two quoted free radii; these are hard-sphere geometric limits."
+    },
+    "1.11": {
+      "file": "content/xtal/ch01-b.js",
+      "added": [
+        "opt-2.3"
+      ],
+      "before": [
+        "xtal-1.1"
+      ],
+      "full": [
+        "xtal-1.1",
+        "opt-2.3"
+      ],
+      "note": "Each expanded nearest-point inequality is a halfspace in the sense of opt 2.3. If two points obey every inequality, their convex combination obeys each linear inequality too, so the intersection is convex. For a full-rank lattice a finite set of relevant lattice vectors bounds this polyhedron; the halfspace argument supplies convexity, while nearest-point coverage and boundary sharing supply the primitive-cell claim."
+    },
+    "2.2": {
+      "file": "content/xtal/ch02.js",
+      "added": [
+        "ladr-8.50"
+      ],
+      "before": [
+        "xtal-2.1",
+        "xtal-1.1"
+      ],
+      "full": [
+        "xtal-2.1",
+        "xtal-1.1",
+        "ladr-8.50"
+      ],
+      "note": "The trace alternative uses basis invariance (ladr 8.50) for the same rotation acting on domain and range. In a lattice basis its matrix has integer entries because it maps basis lattice vectors into the lattice; its trace is therefore an integer. In Cartesian coordinates that trace is $2\\cos\\theta$ in the plane, or $1+2\\cos\\theta$ for a proper rotation in three dimensions. Basis invariance equates these traces and gives the restriction without assuming the lattice basis is orthogonal."
+    },
+    "2.4": {
+      "file": "content/xtal/ch02.js",
+      "added": [
+        "alg-5.20"
+      ],
+      "before": [
+        "xtal-2.2"
+      ],
+      "full": [
+        "xtal-2.2",
+        "alg-5.20"
+      ],
+      "note": "For $n\\ge3$, alg 5.20 counts the $n$ rotations and $n$ reflections of a regular $n$-gon as a dihedral group of order $2n$, exactly the rotation-plus-reflection pattern used here. The one-fold mirror group and the two-fold case are checked directly as orders two and four; the polygon theorem is not applied outside its stated $n\\ge3$ hypothesis. The lattice restriction then selects the permitted values of $n$."
+    },
+    "2.5": {
+      "file": "content/xtal/ch02.js",
+      "added": [
+        "alg-1.15"
+      ],
+      "before": [
+        "xtal-2.1"
+      ],
+      "full": [
+        "xtal-2.1",
+        "alg-1.15"
+      ],
+      "note": "Use associative composition of bijections (alg 1.15) to square the actual glide map: applying $(x,y)\\mapsto(x+g,-y)$ twice gives $(x+2g,y)$. Reflection fixes the parallel translation direction, so the two constituent maps commute in this case. Associativity alone does not make arbitrary isometries commute; a translation perpendicular to the mirror would give a different calculation."
+    },
+    "3.3": {
+      "file": "content/xtal/ch03.js",
+      "added": [
+        "ladr-9.61"
+      ],
+      "before": [
+        "xtal-3.2"
+      ],
+      "full": [
+        "xtal-3.2",
+        "ladr-9.61"
+      ],
+      "note": "The volume-scaling theorem (ladr 9.61) applies to the linear map taking one cell's edge basis to the other: the image parallelepiped has volume $|\\det M|$ times the original. For the fcc conventional-to-primitive edge matrix the absolute determinant is $1/4$, so its primitive volume is $a^3/4$; the bcc value is $a^3/2$. The lattice-point count determines which of these geometrical cells actually generates the lattice."
+    },
+    "3.7": {
+      "file": "content/xtal/ch03-b.js",
+      "added": [
+        "ladr-3.43"
+      ],
+      "before": [
+        "xtal-3.2",
+        "xtal-3.6"
+      ],
+      "full": [
+        "xtal-3.2",
+        "xtal-3.6",
+        "ladr-3.43"
+      ],
+      "note": "Matrix composition (ladr 3.43), in one fixed coordinate basis, supplies the linear part of multiplying affine operations. Applying $(W_2,\\mathbf w_2)$ and then $(W_1,\\mathbf w_1)$ gives linear part $W_1W_2$ and translation $W_1\\mathbf w_2+\\mathbf w_1$. The finite closure computation uses this rule, reducing translations modulo the cell lattice; it checks the supplied generators and does not itself replace the classification of all 230 groups."
+    },
+    "3.8": {
+      "file": "content/xtal/ch03-b.js",
+      "added": [
+        "alg-6.10"
+      ],
+      "before": [
+        "xtal-3.7"
+      ],
+      "full": [
+        "xtal-3.7",
+        "alg-6.10"
+      ],
+      "note": "Apply Lagrange's coset count (alg 6.10) to the finite group of operations modulo primitive lattice translations. For the stabilizer $H$ of a point modulo that lattice, the map $gH\\mapsto g\\mathbf x$ is well defined and bijective onto the orbit: two operations give the same point exactly when their quotient fixes it. Thus the multiplicity is $[G:H]=|G|/|H|$. In a larger conventional cell, the operation count and the distinct orbit points both include its centring copies."
+    },
+    "3.9": {
+      "file": "content/xtal/ch03-b.js",
+      "added": [
+        "geog-5.2"
+      ],
+      "before": [
+        "xtal-3.4"
+      ],
+      "full": [
+        "xtal-3.4",
+        "geog-5.2"
+      ],
+      "note": "The conformality and circle-to-circle result is the stereographic theorem geog 5.2. That item uses a tangent plane; moving the image to the equatorial plane here divides both planar coordinates by two, and choosing the opposite pole only changes the viewing convention. A uniform planar scaling preserves angles and circles. Apply the theorem separately to the stated hemisphere charts; the open-circle convention for the lower hemisphere records which chart was used."
+    },
+    "3.10": {
+      "file": "content/xtal/ch03-b.js",
+      "added": [
+        "rep-2.8",
+        "rep-3.3"
+      ],
+      "before": [
+        "xtal-3.4"
+      ],
+      "full": [
+        "xtal-3.4",
+        "rep-2.8",
+        "rep-3.3"
+      ],
+      "note": "Invariant averaging (rep 2.8) applies to the finite real representation on symmetric polar tensors, $K\\mapsto RKR^{\\mathsf T}$. It proves that the average is a projection onto precisely the symmetry-allowed tensors. The symmetric-square character formula (rep 3.3) gives its trace as $\\tfrac12((\\operatorname{tr}R)^2+\\operatorname{tr}(R^2))$, so averaging that trace gives the dimension quoted above. This counts allowed components, not their measured values or positivity."
+    },
+    "3.12": {
+      "file": "content/xtal/ch03-b.js",
+      "added": [
+        "rep-2.8",
+        "rep-3.3"
+      ],
+      "before": [
+        "xtal-3.10"
+      ],
+      "full": [
+        "xtal-3.10",
+        "rep-2.8",
+        "rep-3.3"
+      ],
+      "note": "The last two indices are symmetric, so the coefficient space is $V\\otimes\\mathrm{Sym}^2V$ for the real polar-vector representation $V$. The tensor-product and symmetric-square character formulas (rep 3.3) give the product of traces used above. Averaging projects onto its invariant subspace (rep 2.8); under inversion this entire odd-rank space changes sign, so its invariant part is zero. A positive allowed dimension permits coefficients but does not force a nonzero material response."
+    },
+    "4.1": {
+      "file": "content/xtal/ch04.js",
+      "added": [
+        "alg-2.10"
+      ],
+      "before": [
+        "xtal-1.2"
+      ],
+      "full": [
+        "xtal-1.2",
+        "alg-2.10"
+      ],
+      "note": "Bézout's gcd identity (alg 2.10), applied successively to the nonzero entries, gives an integer combination of a primitive index triple equal to one. If a real multiple $t(u,v,w)$ has all integer entries, that combination shows $t$ is an integer. Hence there is no lattice point strictly between the origin and the primitive triple on its ray. Zero components are omitted when applying the two-nonzero-integer theorem; a single nonzero component reduces directly to $\\pm1$."
+    },
+    "4.4": {
+      "file": "content/xtal/ch04.js",
+      "added": [
+        "ladr-3.112",
+        "vcalc-2.8"
+      ],
+      "before": [
+        "xtal-4.2"
+      ],
+      "full": [
+        "xtal-4.2",
+        "ladr-3.112",
+        "vcalc-2.8"
+      ],
+      "note": "The reciprocal vectors represent the dual basis functionals (ladr 3.112): $\\mathbf a_j^*\\cdot\\mathbf a_i=\\delta_{ij}$ extracts fractional coordinate $j$. Therefore the Cartesian gradient of the plane functional is $\\mathbf g=\\sum h_j\\mathbf a_j^*$. The level-set normal theorem (vcalc 2.8) applies because the cell is nonsingular and the index triple is nonzero. Here the functional is linear, so its constant gradient makes the neighbouring-level distance exactly $1/|\\mathbf g|$, rather than just a local approximation."
+    },
+    "4.5": {
+      "file": "content/xtal/ch04-b.js",
+      "added": [
+        "ladr-3.21",
+        "vcalc-1.3"
+      ],
+      "before": [
+        "xtal-4.1",
+        "xtal-4.2"
+      ],
+      "full": [
+        "xtal-4.1",
+        "xtal-4.2",
+        "ladr-3.21",
+        "vcalc-1.3"
+      ],
+      "note": "For a nonzero zone direction, the linear functional $\\mathbf h\\mapsto\\mathbf h\\cdot(u,v,w)$ has rank one; rank-nullity (ladr 3.21) makes its real kernel two-dimensional. Two independent members therefore span that plane, and the cross-product theorem (vcalc 1.3) supplies a nonzero normal to both. With integer inputs, solving for the two span coefficients gives rational coefficients, not necessarily integers. These coordinate pairings do not identify direct-space vectors with reciprocal-space normals in an oblique cell."
+    },
+    "4.6": {
+      "file": "content/xtal/ch04-b.js",
+      "added": [
+        "alg-6.10"
+      ],
+      "before": [
+        "xtal-4.2",
+        "xtal-3.4"
+      ],
+      "full": [
+        "xtal-4.2",
+        "xtal-3.4",
+        "alg-6.10"
+      ],
+      "note": "For the finite point group, operations giving the same oriented plane normal form one coset of its stabilizer. The coset count in Lagrange's theorem (alg 6.10) therefore gives the stated multiplicity. Fixing the vector $\\mathbf g$ is the condition here, rather than merely preserving its unoriented line: an operation sending $\\mathbf g$ to $-\\mathbf g$ contributes the opposite indexed plane, not an element of this stabilizer."
+    },
+    "4.7": {
+      "file": "content/xtal/ch04-b.js",
+      "added": [
+        "vcalc-1.2"
+      ],
+      "before": [
+        "xtal-4.4"
+      ],
+      "full": [
+        "xtal-4.4",
+        "vcalc-1.2"
+      ],
+      "note": "Apply the Euclidean dot-product angle and projection formulas (vcalc 1.2) to the actual Cartesian direction vectors and reciprocal normal vectors. Expanding those dot products in their respective bases introduces $G$ and $G^{-1}$; using the coefficient triples as Cartesian arrows would discard that metric. The absolute normal projection gives the sine of the acute line-to-plane angle, with nonzero direction and plane indices required for the denominators."
+    }
+  }
+}

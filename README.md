@@ -30,14 +30,13 @@ No build step is needed in the browser. You need Node ≥ 18.
 
 ```bash
 npm run build        # generate data/ (index, per-collection shards, colours); rerun after editing content/
-npm test             # numerical/source-follow-up regressions and generated-catalog integrity
 npm run serve        # http://localhost:8173
 npm run check        # validate content and run every visualization headless
 node scripts/smoke.mjs   # load every kind of page headless and fail on console errors
 npm run test:ui         # responsive layouts, keyboard/touch input, and navigation regressions
 ```
 
-`npm run check` needs `npm install` (for `playwright-core` and pinned verification KaTeX assets) and a Chromium: it uses
+`npm run check` needs `npm install` (for `playwright-core`) and a Chromium: it uses
 `$CHROME_PATH`, a Playwright browser cache (`$PLAYWRIGHT_BROWSERS_PATH`) or a local Google
 Chrome. Useful forms:
 
@@ -47,53 +46,8 @@ node scripts/check.mjs fa-3.4 --dark      # one result, dark theme
 node scripts/check.mjs physics            # a whole field
 node scripts/check.mjs --changed          # chapters changed relative to origin/main
 node scripts/check.mjs --static           # schema and dependency checks only
-node scripts/check.mjs --fail-on-warnings --report=/tmp/atlas-check.json
-node scripts/check.mjs --modes --still --jobs=2 --timeout=60000 --report=/tmp/atlas-modes.json
-node scripts/check.mjs --modes --still --jobs=2 --timeout=60000 --resume=/tmp/atlas-modes.json --report=/tmp/atlas-modes-resumed.json
-node scripts/verification-status.mjs --check # reconcile source flags with the recorded queue
-node scripts/verification-audit.mjs --check  # structural/dependency/bridge census; --strict also gates cross-field counts
-node scripts/verification-source-evidence.mjs --check # reconcile primary-source dispositions with live flags
-node scripts/verification-prerequisite-evidence.mjs --check # reviewed additions, syllabus mirrors and graph cycles
-node scripts/verification-human-sample.mjs --check # current reproducible 5% sample; human review is separate
-node scripts/verification-human-review-packet.mjs --check # worksheet matches the current sample and sources
-node tests/verification-human-review-packet-browser.mjs # synthetic form persistence/export; grants no human credit
-node tests/verification-followup-browser.mjs # named wave follow-ups, actual inputs in both themes
-node tests/verification-audio.mjs          # native audio sources/signals; does not replace listening
-node scripts/measure-map.mjs              # 60 fps evidence; run without competing CPU-heavy jobs
 node scripts/report.mjs mech              # written / planned per chapter, unresolved references
 ```
-
-The browser checks serve the pinned KaTeX renderer locally, so blocked browser access to
-the CDN cannot silently turn formula checks into plain-text checks. The harness fails if
-the renderer is unavailable. Source-review evidence and remaining master-plan gates are
-tracked in [the verification checkpoint](docs/verification/waves-3-4.md).
-
-Mode sweeps save the default view and individually exercise segmented/toggle alternatives
-visible from that view. Conditional controls need the supplemental native pass recorded
-in the verification checkpoint. Reports
-checkpoint every 25 completed items. Resume reuses only passing items with unchanged
-collection helpers and verification runtime; failures and changed collections run again.
-Use a small worker count when sharing a machine with other browser or OCR jobs. The
-optional timeout accommodates a shared machine; it does not establish redraw performance.
-
-For collections importing another collection's helper, use a fresh report with
-`node scripts/verification-external-browser.mjs tech --modes --still --fail-on-warnings --report=/tmp/tech-modes.json`
-(add `--dark` for the other theme). This guards imported source hashes across the full
-capture run; resume is deliberately unsupported for this supplement. The evidence census
-rejects such collections when external-import evidence is missing or stale.
-
-The bounded conditional-control inventory has its own capture and evidence tools:
-
-```sh
-node tests/verification-conditional-modes-browser.mjs --theme=light --report=/tmp/conditional-light.json
-node tests/verification-conditional-modes-browser.mjs --theme=dark --report=/tmp/conditional-dark.json
-node scripts/verification-conditional-evidence.mjs /tmp/conditional-light.json /tmp/conditional-dark.json --strict
-```
-
-Each capture process uses one browser worker. It follows newly revealed controls and
-restores parent choices; independent sibling combinations and unrestricted continuous
-inputs are outside its scope. Screenshot inspection and actual human review have separate
-evidence. See [coverage and limits](docs/verification/conditional-control-coverage.md).
 
 ## Layout
 
@@ -118,10 +72,14 @@ docs/syllabus.md              how to write a syllabus
 Adding a collection means adding a folder under `content/` with a `collection.js`; no code
 changes are needed.
 
-The generated light index uses lossless dictionary/column transport; consumers call
-`decodeCatalog` from `assets/js/catalog.js` to recover item objects. Tags and statements
-live in collection shards and load when search is used. The home page needs only the
-index, including planned-paper summaries. Strict builds enforce its 300 KB gzip budget.
+The home page loads `data/home.json`, a complete set of home summaries capped at 300 KB
+gzipped by the build. Other routes load the full index when needed. The first nonempty
+search loads written and planned records plus collection details; idle time and empty
+search focus do not download those details.
+
+Use **Share / embed** on an idea's page to capture its controls and native handles in a
+link, or copy an interactive iframe for a course page. The panel explains which custom
+edits are included. Saved animations open paused at the shared time.
 
 ## Deploying
 

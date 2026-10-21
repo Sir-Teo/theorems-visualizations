@@ -318,18 +318,21 @@ export default {
       name: 'Every spanning list contains a basis',
       statement: String.raw`Every spanning list in a vector space can be reduced to a basis of the vector space.`,
       idea: String.raw`Run through the spanning list $v_1,\dots,v_n$ from left to right and delete $v_k$ whenever it lies in the span of the vectors kept before it (for $k=1$: whenever $v_1=0$). A deleted vector was a combination of kept ones, so by the linear dependence lemma 2.19 deleting it leaves the span unchanged, and the final list still spans. No kept vector lies in the span of its predecessors, so by 2.19 again the final list is linearly independent — a basis (2.26).`,
-      caption: String.raw`Five vectors span $\mathbf R^2$. Drag them (a tip snaps onto the line of an earlier vector, and to $0$ near the origin) and step through the sifting: each $v_k$ is tested against the span of the vectors kept so far (shaded); it is struck out if it already lies there, and the gold path shows how it is a combination of the kept ones. Whatever the start, exactly two vectors survive, and they form a basis.`,
+      caption: String.raw`Five editable vectors lie in $\mathbf R^2$. Choose a plane-spanning, collinear or all-zero example, then step through the sifting. The input span can be a plane, a line or $\{0\}$; the exact theorem gives a basis of that span, not necessarily two survivors or a basis of $\mathbf R^2$. Drag tips inside $[-2.5,2.5]\times[-1.6,1.6]$; tips snap to other vector lines and to zero. Vector colors match the named chips; the readout lists every input coordinate. The gold path reconstructs a deleted vector. The plot includes its complete component path. Numerical decisions use distance tolerance $10^{-6}\max(1,\|v_k\|)$; they illustrate the proof and do not certify exact rank near degeneracy.`,
       deps: ['ladr-2.19', 'ladr-2.26'],
+      refs: ['Axler, Linear Algebra Done Right, 4th ed., author revision 16 August 2026, Theorem 2.30, pp. 40–41'],
+      links: { source: 'https://linear.axler.net/LADR4e.pdf#page=54' },
       tags: ['bases'],
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-3.3, 3.3], y: [-2.3, 2.3], equal: true, height: 380, minWidth: 340 });
+        const S = v.stage({ x: [-3.3, 3.3], y: [-2.3, 2.3], equal: true, height: 380, minWidth: 260, full: true });
         const H = [];
         [[0.9, 0.45], [1.8, 0.9], [-0.5, 1.3], [1.4, -1.0], [-1.5, -0.55]].forEach((p, i) => H.push(S.handle(p[0], p[1], {
           color: VC[i],
           constrain: (x, y) => {
+            x = M.clamp(x, -2.5, 2.5); y = M.clamp(y, -1.6, 1.6);
             if (Math.hypot(x, y) < 0.15) return [0, 0];
-            for (let j = 0; j < 5; j++) if (j !== i) { const s = snapLine2([x, y], [H[j].x, H[j].y], 0.13); if (s[0] !== x || s[1] !== y) return s; }
+            for (let j = 0; j < H.length; j++) if (j !== i) { const s = snapLine2([x, y], [H[j].x, H[j].y], 0.13); if (s[0] !== x || s[1] !== y) { const f = Math.min(1, 2.5 / Math.abs(s[0]), 1.6 / Math.abs(s[1])); return s.map(t => t * f); } }
             return [x, y];
           },
         })));
@@ -344,7 +347,7 @@ export default {
         const names = ['v_1', 'v_2', 'v_3', 'v_4', 'v_5'];
         function build() {
           const vs = H.map((h) => to3([h.x, h.y])), kept = [], del = [];
-          const F = [{ k: -1, kept: [], del: [], line: 1, note: 'Start with the spanning list $v_1,\\dots,v_5$ of $\\mathbf R^2$.' }];
+          const F = [{ k: -1, before: [], kept: [], del: [], line: 1, note: 'Start with the spanning list $v_1,\\dots,v_5$ of its own span $V$. Whether $V=\\mathbf R^2$ depends on the input.' }];
           for (let k = 0; k < 5; k++) {
             const before = kept.slice(), B = orth(before.map((j) => vs[j]));
             const inSp = distTo(vs[k], B) <= 1e-6 * Math.max(1, len3(vs[k]));
@@ -352,29 +355,40 @@ export default {
             if (inSp) del.push(k); else kept.push(k);
             const span = ['$\\{0\\}$', `the line $\\operatorname{span}(${before.map((j) => names[j]).join(',')})$`, 'all of $\\mathbf R^2$'][B.length];
             const note = inSp
-              ? (k === 0 || !before.length ? `$v_1 = 0$ lies in $\\operatorname{span}(\\,) = \\{0\\}$: delete it.` : `$v_${k + 1} = ${combTeX(c, before.map((j) => names[j]))}$ lies in ${span}: delete it — the span does not change.`)
+              ? (k === 0 || !before.length ? `$v_${k + 1}$ is numerically zero and lies in $\\operatorname{span}(\\,) = \\{0\\}$: delete it.` : `$v_${k + 1} = ${combTeX(c, before.map((j) => names[j]))}$ lies in ${span}: delete it — the span does not change.`)
               : `$v_${k + 1}$ is not in ${span}: keep it.`;
-            F.push({ k, before, kept: kept.slice(), del: del.slice(), inSp, c, line: inSp ? 4 : 5, note });
+            F.push({ k, before, distance: distTo(vs[k], B), tolerance: 1e-6 * Math.max(1, len3(vs[k])), kept: kept.slice(), del: del.slice(), inSp, c, line: inSp ? 4 : 5, note });
           }
-          F.push({ k: 5, before: kept.slice(), kept: kept.slice(), del: del.slice(), done: true, line: 6, hold: 2, note: `What is left, $${kept.map((j) => names[j]).join(',')}$, still spans $\\mathbf R^2$ and no vector lies in the span of its predecessors: it is a basis.` });
+          F.push({ k: 5, before: kept.slice(), kept: kept.slice(), del: del.slice(), done: true, line: 6, hold: 2, note: `What is left, $${kept.length ? kept.map((j) => names[j]).join(',') : '(\\,)'}$, is the numerical basis candidate for the input span $V$. The exact deletion argument proves the theorem; floating-point tolerances do not certify exact rank.` });
           return F;
         }
         const ST = v.steps({ frames: build, code: CODE, codeTitle: 'Reduce to a basis (proof of 2.30)', speed: 0.9, start: 2 });
+        v.shareState('basis input vectors', { get: () => H.map(h=>[h.x,h.y]),
+          validate: ps => Array.isArray(ps) && ps.length===5 && ps.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)&&Math.abs(p[0])<=2.5&&Math.abs(p[1])<=1.6),
+          set: ps => ps.forEach((p,i)=>{H[i].x=p[0];H[i].y=p[1];}) });
+        const presets = { plane: [[.9,.45],[1.8,.9],[-.5,1.3],[1.4,-1],[-1.5,-.55]], line: [[1,0],[2,0],[-.5,0],[1.4,0],[-1.5,0]], zero: Array.from({length:5},()=>[0,0]) };
+        for (const [key,label] of [['plane','Plane-spanning example'],['line','Collinear example'],['zero','All zero example']]) v.button(label,()=>{presets[key].forEach((p,i)=>{H[i].x=p[0];H[i].y=p[1];});ST.reset(undefined,{at:0});});
         let sig = '', st = null;
         v.legend([['accent', 'span of the vectors kept so far', { area: true }], ['gold', 'the deleted vector as a combination of kept ones', { dash: true }]]);
         v.render(() => {
-          const s = H.map((h) => `${h.x.toFixed(4)},${h.y.toFixed(4)}`).join('|');
-          if (s !== sig) { const first = !sig; sig = s; if (!first) ST.reset(undefined, { at: 'keep' }); }
+          const s = H.map((h) => `${h.x},${h.y}`).join('|');
+          if (s !== sig) { sig = s; ST.reset(undefined, { at: 'keep' }); }
           const f = ST.frame; if (!f.kept) return;
           const vs = H.map((h) => [h.x, h.y]), B = orth(f.before.map((j) => to3(vs[j])));
-          if (B.length === 2) S.rect(-9, -9, 9, 9, { fill: 'accent', fillAlpha: f.done ? 0.05 : 0.08, stroke: false });
+          const extent = [...vs, [0,0]];
+          if (f.c) { let p=[0,0];f.c.forEach((c,i)=>{p=[p[0]+c*vs[f.before[i]][0],p[1]+c*vs[f.before[i]][1]];extent.push(p);}); }
+          if (f.done && f.kept.length===2) {const [a,b]=f.kept.map(i=>vs[i]);extent.push([a[0]+b[0],a[1]+b[1]]);}
+          const x0=Math.min(-2.6,...extent.map(p=>p[0])),x1=Math.max(2.6,...extent.map(p=>p[0])),y0=Math.min(-1.8,...extent.map(p=>p[1])),y1=Math.max(1.8,...extent.map(p=>p[1]));
+          S.setView([x0-.2*(x1-x0),x1+.2*(x1-x0)],[y0-.2*(y1-y0),y1+.2*(y1-y0)]);
+          if (B.length === 2) S.rect(S.bounds.x[0], S.bounds.y[0], S.bounds.x[1], S.bounds.y[1], { fill: 'accent', fillAlpha: f.done ? 0.05 : 0.08, stroke: false });
           else if (B.length === 1) S.line(-8 * B[0][0], -8 * B[0][1], 8 * B[0][0], 8 * B[0][1], { color: 'accent', width: 9, alpha: 0.22 });
           if (f.done && f.kept.length === 2) { const [a, b] = f.kept.map((j) => vs[j]); S.poly([[0, 0], a, [a[0] + b[0], a[1] + b[1]], b], { fill: 'green', fillAlpha: 0.16, color: 'green', width: 1.2, alpha: 0.6 }); }
           if (f.c) { let p = [0, 0]; f.c.forEach((c, i) => { const w = vs[f.before[i]], n = [p[0] + c * w[0], p[1] + c * w[1]]; S.arrow(p[0], p[1], n[0], n[1], { color: 'gold', width: 2.2, dash: [6, 4], head: 9 }); p = n; }); }
           vs.forEach((p, i) => {
+            if (Math.hypot(...p) < 1e-12) return;
             const gone = f.del.includes(i) && i !== f.k, pending = i > f.k && !f.done, cur = i === f.k;
-            if (gone) vec2(S, [0, 0], p, 'faint', names[i], { width: 1.6, dash: [4, 4], head: 7 });
-            else vec2(S, [0, 0], p, VC[i], names[i], { width: cur ? 3.4 : 2.6, alpha: pending ? 0.35 : 1, labelAlpha: pending ? 0.45 : 1 });
+            if (gone) vec2(S, [0, 0], p, 'faint', null, { width: 1.6, dash: [4, 4], head: 7 });
+            else vec2(S, [0, 0], p, VC[i], null, { width: cur ? 3.4 : 2.6, alpha: pending ? 0.35 : 1, labelAlpha: pending ? 0.45 : 1 });
           });
           if (f.k >= 0 && f.k < 5) S.dot(vs[f.k][0], vs[f.k][1], { r: 12, hollow: true, color: f.inSp ? 'red' : 'green', width: 2.6 });
           S.dot(0, 0, { r: 3, color: 'ink' });
@@ -383,7 +397,8 @@ export default {
         });
         v.readout(() => {
           const f = st; if (!f) return '';
-          return `Kept so far: $${f.kept.length ? f.kept.map((j) => names[j]).join(',') : '(\\,)'}$; deleted: $${f.del.length ? f.del.map((j) => names[j]).join(',') : '\\text{none}'}$.` + (f.done ? ` The survivors form a basis of length ${f.kept.length}.` : '');
+          const input = H.map((h,i)=>`$v_${i+1}=(${v.fix(h.x,4)},${v.fix(h.y,4)})$`).join('; ');
+          return `Inputs: ${input}.\nKept so far: $${f.kept.length ? f.kept.map((j) => names[j]).join(',') : '(\\,)'}$; deleted: $${f.del.length ? f.del.map((j) => names[j]).join(',') : '\\text{none}'}$.` + (f.done ? ` Numerical survivor count ${f.kept.length} (a plane/line/zero-space candidate with 2/1/0 survivors). This does not automatically certify that the input spans R².` : '');
         });
       },
     },

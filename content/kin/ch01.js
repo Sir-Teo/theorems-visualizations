@@ -154,9 +154,9 @@ The exponents $m,n$ are the **orders** with respect to A and B (integers, halves
     {
       num: '1.3', kind: 'Definition', name: 'Elementary reactions and molecularity',
       statement: String.raw`An **elementary reaction** is a single molecular event with no intermediates; its **molecularity** is the number of reactant molecules taking part: one (unimolecular, $\mathrm A\to\mathrm P$), two (bimolecular, $\mathrm A+\mathrm B\to\mathrm P$) or, rarely, three (termolecular). For an elementary step, and only for one, the rate law follows from the equation by the **law of mass action**: the rate is $k$ times the product of the reactant concentrations, one factor for each molecule, so the order equals the molecularity. Higher molecularities are not observed because the simultaneous encounter of four or more molecules is vanishingly improbable, and termolecular steps are rare and slow compared with bimolecular ones.`,
-      idea: String.raw`In a dilute gas or solution molecules are placed independently at random, so the chance that one given molecule is in a small region is proportional to the concentration $c$, and the chance that $m$ given molecules meet at once is proportional to $c^m$. The number of $m$-fold encounters per unit volume and time is then $\propto c^{m}$, which is mass action. Each additional molecule required costs another factor of the probability $\sim c\,d^{3}$ of finding a partner within contact distance $d$, which is tiny for dilute systems.`,
+      idea: String.raw`In a dilute gas or solution molecules are placed independently at random, so the chance that one given molecule is in a small region is proportional to the concentration $c$, and the chance that $m$ given molecules meet at once is proportional to $c^m$. The number of $m$-fold encounters per unit volume and time is then $\propto c^{m}$, which is mass action. Each additional molecule required costs another factor of the probability $\sim c\,d^{3}$ of finding a partner within contact distance $d$, which is tiny for dilute systems. The product rule in prob 2.1.1a is the probabilistic input: under the stated independent-placement idealization, simultaneous occupancy events for distinct reactant molecules have probability equal to the product of their individual probabilities. This supplies the concentration factors; it does not derive independence in a dense or correlated fluid.`,
       caption: String.raw`A two-dimensional box of fast molecules (contact distance $d=0.02$ of the box side). Flashes mark unimolecular events (green rings, a molecule reacts with probability $k\,dt$), bimolecular contacts (orange) and termolecular contacts (red). Change the number of molecules: the counted event rate on the right follows $c^1$, $c^2$, $c^3$, and the termolecular events are rare unless you crowd the box. Reacted molecules are replaced, keeping the concentration fixed.`,
-      deps: ['kin-1.2'],
+      deps: ['kin-1.2', 'prob-2.1.1a'],
       refs: ['Houston', 'Steinfeld et al.'],
       tags: ['molecularity', 'mass action'],
       credit: 'Law of mass action: Guldberg & Waage, 1864',
@@ -263,7 +263,7 @@ a straight line in $t$ that reaches zero at $t=[\mathrm A]_0/k$; $k$ has units $
 $$[\mathrm A](t)=[\mathrm A]_0e^{-kt},\qquad \ln[\mathrm A]=\ln[\mathrm A]_0-kt,\qquad t_{1/2}=\frac{\ln2}{k}=\frac{0.693}{k}.$$
 $k$ has units $\mathrm{s^{-1}}$. A plot of $\ln[\mathrm A]$ against $t$ is a straight line of slope $-k$, and the half-life is independent of the initial concentration: after every interval $t_{1/2}$ half of what remains is gone, $[\mathrm A]=[\mathrm A]_0/2^{n}$ after $n$ half-lives. This is the unique order for which the half-life is constant; the mean lifetime is $\tau=1/k$.`,
       idea: String.raw`The equation $[\mathrm A]'=-k[\mathrm A]$ is the linear ODE of ode-1.5 and its solution is the exponential. Taking logarithms linearises it, which is why $\ln[\mathrm A]$ against $t$ is the diagnostic plot; setting $[\mathrm A]=[\mathrm A]_0/2$ gives $t_{1/2}=\ln 2/k$ with no dependence on $[\mathrm A]_0$, since scaling the solution by a constant solves the same equation.`,
-      caption: String.raw`Choose the **real** textbook data (N₂O₅ in CCl₄ at 45 °C) or synthetic data with a reference-rate slider, noise and *Resample*. Both panels show the same data: concentration with the fitted exponential and its half-life ladder, and $\ln[\mathrm A]$ with the least-squares line. Switch the true law to *second order* to break the hypothesis: the logarithm bends and the measured half-lives are no longer equal. The slider sets a first-order reference rate $k_1$; the second-order comparison uses $k_2=k_1/([\mathrm A]_0\ln2)$ with $[\mathrm A]_0=1$ M, so the two true laws have the same initial half-life.`,
+      caption: String.raw`Choose the **real** textbook data (N₂O₅ in CCl₄ at 45 °C) or synthetic data with a rate-constant slider, noise and *Resample*. Both panels show the same data: concentration with the fitted exponential and its half-life ladder, and $\ln[\mathrm A]$ with the least-squares line. Switch the true law to *second order* to break the hypothesis: the logarithm bends and the measured half-lives are no longer equal.`,
       deps: ['kin-1.2', 'pma-8.6', 'ode-1.5'],
       refs: ['Houston', 'Steinfeld et al.'],
       tags: ['first order', 'half-life', 'exponential decay'],
@@ -272,7 +272,7 @@ $k$ has units $\mathrm{s^{-1}}$. A plot of $\ln[\mathrm A]$ against $t$ is a str
       viz(v) {
         const src = v.select('data', [{ value: 'real', label: 'N₂O₅ in CCl₄, 45 °C (textbook)' }, { value: 'syn', label: 'synthetic' }], 'real');
         const truth = v.select('true law (synthetic)', [{ value: 1, label: 'first order' }, { value: 2, label: 'second order' }], 1);
-        const kS = v.slider('reference $k_1$ (s⁻¹)', 0.005, 0.5, 0.05, { log: true });
+        const kS = v.slider('$k$ (s⁻¹)', 0.005, 0.5, 0.05, { log: true });
         const noise = v.slider('noise (relative)', 0, 0.15, 0.04, { step: 0.005 });
         let seed = 3; v.button('Resample', () => { seed++; });
         const sc = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: 'box', gutter: true, xlabel: 't (s)', ylabel: '[A] (M)', title: 'concentration and half-life ladder', weight: 1.1 });
@@ -287,7 +287,7 @@ $k$ has units $\mathrm{s^{-1}}$. A plot of $\ln[\mathrm A]$ against $t$ is a str
             const k = kS.value, ord = +truth.value; c0 = 1;
             const n = 10; T = 4 * Math.LN2 / k; const g = noiser(v, seed * 31 + ord);
             ts = Array.from({ length: n + 1 }, (_, i) => T * i / n * 0.95);
-            // Match the initial half-life, not the initial rate, of the two true laws.
+            // true curve: second order uses the same initial rate k [A]0 (so that half-life t1/2(1) = 1/(k c0) ... matched to first-order ln2/k)
             const k2 = k / Math.LN2 * 1; // second-order constant with equal first half-life ln2/k at c0 = 1
             cs = ts.map((t) => (ord === 1 ? c0 * Math.exp(-k * t) : c0 / (1 + k2 * c0 * t)) * Math.exp(noise.value * g()));
           }
@@ -322,9 +322,9 @@ $k$ has units $\mathrm{s^{-1}}$. A plot of $\ln[\mathrm A]$ against $t$ is a str
       statement: String.raw`If $-d[\mathrm A]/dt=k[\mathrm A]^2$ (a single reactant, or $\mathrm A+\mathrm B$ with equal concentrations) then
 $$\frac1{[\mathrm A]}=\frac1{[\mathrm A]_0}+kt,\qquad t_{1/2}=\frac1{k[\mathrm A]_0},$$
 so $1/[\mathrm A]$ plotted against $t$ is a straight line of slope $k$ (units $\mathrm{M^{-1}s^{-1}}$). The half-life **lengthens** as the reaction proceeds: successive half-lives are $t_{1/2},\,2t_{1/2},\,4t_{1/2},\dots$ and the half-life is inversely proportional to the initial concentration. (Here $k$ is defined through the rate of disappearance of A; for $2\mathrm A\to$ products the IUPAC rate constant $k_v$ with $v=k_v[\mathrm A]^2$ is $k/2$.)`,
-      idea: String.raw`Separating variables, $d[\mathrm A]/[\mathrm A]^2=-k\,dt$ integrates to the reciprocal law. Because the instantaneous rate falls with the square of the concentration, each halving of $[\mathrm A]$ takes twice as long as the last: the decay is a power law $\sim1/(kt)$ rather than an exponential, and its tail is much heavier than the first-order one.`,
+      idea: String.raw`Separating variables, $d[\mathrm A]/[\mathrm A]^2=-k\,dt$ integrates to the reciprocal law. Because the instantaneous rate falls with the square of the concentration, each halving of $[\mathrm A]$ takes twice as long as the last: the decay is a power law $\sim1/(kt)$ rather than an exponential, and its tail is much heavier than the first-order one. On any finite time interval with positive concentration, the antiderivative of $A^{-2}$ is $-A^{-1}$. The fundamental theorem pma 6.21 therefore evaluates the separated integral as $1/A(t)-1/A_0=kt$; the reciprocal formula stays positive for $t\ge0$ when $A_0,k>0$.`,
       caption: String.raw`Real data: the decomposition of NO₂ at 330 °C (textbook). Slide the number of points used for fitting: the second-order straight line in $1/[\mathrm A]$ (green) holds for all of them, while a first-order exponential fitted to the same early points (red) bends away. The grey ladder shows the doubling half-lives.`,
-      deps: ['kin-1.2'],
+      deps: ['kin-1.2', 'pma-6.21'],
       refs: ['Houston', 'Steinfeld et al.'],
       tags: ['second order', 'half-life'],
       credit: 'Bodenstein, 1894–99 (H₂ + I₂ and HI decomposition as the classical second-order examples)',

@@ -1,0 +1,65 @@
+{
+  "baseline": "c65990162cfa0df389f8d83fa0c51739fd442b07",
+  "mapping": [
+    {
+      "num": "1.7",
+      "file": "ch01-b.js",
+      "target": "pma-8.10",
+      "paragraph": "The orbit average uses the finite-harmonic orthogonality in pma-8.10. With true anomaly f, the latitude factor is $\\sin\\phi=\\sin i\\sin(f+\\omega)$ and the Kepler time element is proportional to $r^2\\,df$. Consequently the average of the inverse-cube quadrupole term weights $\\sin^2(f+\\omega)$ by $1+e\\cos f$. Over one revolution its constant term is one half, while the extra cosine-weighted term integrates to zero by orthogonality. This gives the averaged potential an inclination factor $3\\sin^2 i/2-1$, whose nodal torque supplies the stated cosine factor. This is a first-order perturbative orbit average, not exact instantaneous constancy of the osculating elements.",
+      "before": [
+        "astro-1.1",
+        "mech-8.11"
+      ],
+      "after": [
+        "astro-1.1",
+        "mech-8.11",
+        "pma-8.10"
+      ]
+    },
+    {
+      "num": "2.2",
+      "file": "ch02.js",
+      "target": "pma-4.22",
+      "paragraph": "The confinement step also uses pma-4.22, not just the nonnegative-speed inequality. A collision-free solution has a continuous position map on each connected time interval, so its image is connected. Since every point of that image lies in the allowed set, the trajectory stays in the connected component containing its initial position; it cannot jump across a forbidden gap to another component. This applies while the solution exists. Opening a neck removes that particular topological obstruction, but does not force a trajectory to escape.",
+      "before": [
+        "astro-2.1"
+      ],
+      "after": [
+        "astro-2.1",
+        "pma-4.22"
+      ]
+    },
+    {
+      "num": "2.5",
+      "file": "ch02.js",
+      "target": "pma-5.15",
+      "paragraph": "The coefficient three in the local balance comes from Taylor theorem pma-5.15. On the star-planet radial line, write the displacement from the planet as x, with $|x|\\ll a$, and use $n^2=GM/a^3$. Expanding the smooth stellar acceleration about a gives a differential term $2n^2x$; the centrifugal acceleration adds $n^2x$. The leading sum is therefore $3n^2x$, with a remainder of order $n^2x^2/a$. Balancing its magnitude with $Gm/|x|^2$ gives the displayed cube-root radius. The expansion excludes the stellar singularity and is only a leading small-mass, near-circular approximation; it does not derive the empirical satellite-survival fractions.",
+      "before": [
+        "mech-9.12",
+        "astro-2.2"
+      ],
+      "after": [
+        "mech-9.12",
+        "astro-2.2",
+        "pma-5.15"
+      ]
+    },
+    {
+      "num": "4.8",
+      "file": "ch04-b.js",
+      "target": "prob-1.1.1a",
+      "paragraph": "Finite additivity in prob-1.1.1a is the step from microstates to an excitation level. At fixed positive temperature, each of the g distinct microstates at energy E has the same normalized Boltzmann probability $e^{-E/(kT)}/Z$. These are disjoint events, so the level probability is $g\\,e^{-E/(kT)}/Z$. Dividing two such level probabilities cancels their common partition function and gives the degeneracy-weighted excitation ratio. Equal energy and a common equilibrium normalization are essential; this is a sum over alternative states, not an independence assumption or a statement about the observed line strength.",
+      "before": [
+        "astro-4.7",
+        "qm-8.9",
+        "thermo-6.1"
+      ],
+      "after": [
+        "astro-4.7",
+        "qm-8.9",
+        "thermo-6.1",
+        "prob-1.1.1a"
+      ]
+    }
+  ]
+}

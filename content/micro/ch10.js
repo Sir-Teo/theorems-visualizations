@@ -1,14 +1,7 @@
 // Microeconomics — Chapter 10: Market power: monopoly and oligopoly (items 10.1–10.6; 10.7–10.12 in ch10-b.js, 10.13–10.17 in ch10-c.js, 10.18–10.22 in ch10-d.js)
+import {screeningBenefit,screeningOptimum,screeningMenuState} from './source-audit-screening.js';
+import {monopolyWelfareState,finiteDiscriminationState} from './source-audit-monopoly-welfare.js';
 import { clamp, GUIDE, fx, bisect, argmax, slopeLine, plateText, lin, iso, mstage, tag, integ, grid } from './ch10.shared.js';
-
-/** Closed-form welfare benchmarks for the two teaching demand families. */
-export function monopolyWelfare(kind, cost, elasticity = 2) {
-  const linear = kind === 'lin', A = linear ? 12 : 8;
-  const Qc = linear ? A - cost : (A / cost) ** elasticity;
-  const Qm = linear ? (A - cost) / 2 : (A * (1 - 1 / elasticity) / cost) ** elasticity;
-  const surplus = q => linear ? A * q - q * q / 2 - cost * q : A * q ** (1 - 1 / elasticity) / (1 - 1 / elasticity) - cost * q;
-  return { Qc, Qm, surplus, dwl: surplus(Qc) - surplus(Qm) };
-}
 
 export default {
   collection: 'micro',
@@ -156,131 +149,132 @@ Since $MC > 0$ forces $L < 1$, the monopolist always operates where demand is **
     },
     // ------------------------------------------------------------------ 10.4
     {
-      num: '10.4', kind: 'Concept', name: 'Deadweight loss of monopoly',
-      statement: String.raw`A monopolist produces $Q^m$ where $MR = MC$, which is less than the output $Q^c$ at which price equals marginal cost. Relative to the competitive outcome, buyers pay more on the $Q^m$ units sold, a **transfer** from consumers to the firm, and the $Q^c - Q^m$ units that are not produced would have been worth more to buyers than they cost. The **deadweight loss** is the surplus on those units,
-$$DWL = \int_{Q^m}^{Q^c} \bigl(P(Q) - MC(Q)\bigr)\,dQ \;>\; 0 ,$$
-a loss of total surplus that nobody gains in this partial-equilibrium model with no external effects or income effects. With constant marginal cost the transfer is the rectangle $Q^m (P^m - MC)$.`,
-      idea: String.raw`Total surplus, consumer surplus plus profit, is $\int_0^Q (P - MC)\,dQ$ when $Q$ units are made (3.6). It is maximal at $Q^c$, where the integrand changes sign. The monopolist stops at $Q^m < Q^c$ because it sets $MR$, not $P$, equal to $MC$; on each unit between the two, $P > MC$, so each missed unit costs the amount $P - MC$. The price gap on the units still sold only moves surplus from one side to the other. Compare deadweight loss in a taxed market (3.9): there too the loss is the surplus on trades that do not take place.`,
-      caption: String.raw`The blue demand curve, the orange marginal cost and the purple $MR$ curve give the monopoly point (green) and the competitive point (gold). **Slide the marginal cost** and, for the constant-elasticity family, the elasticity. Red triangle: the deadweight loss; green rectangle: the surplus handed from consumers to the firm. Right: total surplus as a function of output; it peaks at $Q^c$ and the vertical gap to the monopoly output is the deadweight loss (the numbers are integrals computed from the curves).`,
-      deps: ['micro-10.2', 'micro-3.9', 'pma-6.21'],
-      refs: ['Mankiw Ch. 15', 'Varian Ch. 25'], tags: ['monopoly', 'welfare'],
-      credit: 'A. C. Harberger, Monopoly and Resource Allocation, American Economic Review (Papers and Proceedings) 44 (2): 77–87, 1954 (empirical welfare-cost study; Fig. 1 p. 78)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Deadweight_loss' },
-      viz(v) {
-        const kind = v.select('demand', [{ value: 'lin', label: 'linear' }, { value: 'iso', label: 'constant elasticity' }], 'lin');
-        const cS = v.slider('marginal cost $c$', 0.5, 5, 2, { step: 0.05 });
-        const eS = v.slider('$|\\varepsilon|$ (constant-elasticity case)', 1.4, 4, 2, { step: 0.05 });
-        const s = mstage(v, { x: [0, 12], y: [0, 12], title: 'monopoly versus competition' });
-        const W = v.stage({ x: [0, 12], y: [0, 40], axes: 'box', gutter: true, xlabel: 'output $Q$', ylabel: 'total surplus', height: 360, title: 'total surplus as output varies', weight: 0.8, minWidth: 250 });
-        v.legend([['accent', 'demand'], ['purple', 'marginal revenue'], ['orange', 'marginal cost'], ['red', 'deadweight loss', { area: true }], ['green', 'transfer to the firm', { area: true }]]);
-        let st = {};
-        v.render(() => {
-          const lin_ = kind.value === 'lin';
-          eS.el.hidden = lin_;
-          const D = lin_ ? lin(12, 1) : iso(8, eS.value), c = cS.value;
-          const exact = monopolyWelfare(kind.value, c, eS.value), { Qm, Qc } = exact;
-          const xm = lin_ ? 12 : Qc * 1.15, ym = lin_ ? 12 : Math.max(8, D.P(Qm) * 1.5);
-          s.setView([0, xm], [0, ym]);
-          const pm = D.P(Qm), dwl = exact.dwl, tr = Qm * (pm - c), q0 = lin_ ? 0 : (8 / ym) ** eS.value;
-          s.rect(0, c, Qm, pm, { fill: 'green', fillAlpha: 0.3, color: 'green', width: 1.2 });
-          s.between(D.P, () => c, Qm, Qc, { fill: 'red', fillAlpha: 0.4 });
-          s.clip(() => {
-            s.fn(D.P, { domain: [Math.max(q0, 0.05), xm], color: 'accent', width: 2.6 });
-            s.fn(D.MR, { domain: [Math.max(q0, 0.05), xm], color: 'purple', width: 2.6 });
-            s.hline(c, { color: 'orange', width: 2.4 });
-          });
-          s.dot(Qm, pm, { r: 7, color: 'green' }); s.dot(Qm, c, { r: 4, color: 'orange' }); s.dot(Qc, c, { r: 7, color: 'gold' });
-          s.tex('Q^m', Qm, 0, { dy: -14, color: 'green' }); s.tex('Q^c', Qc, 0, { dy: -14, color: 'ink' });
-          const Wf = exact.surplus;
-          const Wc = Wf(Qc);
-          W.setView([0, xm], [0, Wc * 1.2]);
-          W.fn(Wf, { domain: [Math.max(q0, 0.05) + 0.01, xm], color: 'ink', width: 2.4 });
-          W.vline(Qm, { color: 'green', width: 1.5, dash: [3, 3] }); W.vline(Qc, { color: 'gold', width: 1.5, dash: [3, 3] });
-          W.dot(Qm, Wf(Qm), { r: 6, color: 'green' }); W.dot(Qc, Wc, { r: 6, color: 'gold' });
-          W.line(0, Wc, xm, Wc, { color: 'muted', width: 1, dash: [3, 3] });
-          st = { Qm, Qc, pm, dwl, tr, gap: Wc - Wf(Qm), c, lin: lin_ };
+      num:'10.4',kind:'Concept',name:'Deadweight loss of monopoly',
+      statement:String.raw`With integrable willingness to pay $P(Q)$, constant marginal cost $c>0$, no fixed cost and no external effects, total surplus is
+$$W(Q)=\int_0^Q P(x)\,dx-cQ.$$
+Suppose demand is differentiable and strictly decreasing, crosses c at a finite quantity, and has an interior single-price profit maximum. Monopoly chooses $MR(Q^m)=c$, whereas the efficient quantity satisfies $P(Q^c)=c$. Thus $Q^m<Q^c$, and
+$$\begin{aligned}
+DWL&=W(Q^c)-W(Q^m)\\
+&=\int_{Q^m}^{Q^c}(P(Q)-c)\,dQ>0.
+\end{aligned}$$
+The rectangle $Q^m(P^m-c)$ is a transfer from consumers to the seller, not an additional loss. The loss measures forgone gains from trade; this unweighted sum of monetary surpluses does not decide how desirable their distribution is.`,
+      idea:String.raw`Increasing output changes total surplus by $P(Q)-c$, so surplus rises up to $Q^c$ and falls thereafter. A single-price seller stops earlier: selling another unit lowers the price on earlier sales, making marginal revenue lower than willingness to pay. On the missing units between $Q^m$ and $Q^c$, value exceeds cost. For linear demand the loss region is a triangle; for a curved demand it is the corresponding curved area. With constant cost, the consumer-surplus reduction equals the seller's transfer plus this loss.`,
+      caption:String.raw`Choose linear demand $P=12-Q$ or constant-elasticity demand $P=8Q^{-1/e}$, $e>1$, and vary cost and elasticity. Both chosen quantities and the whole loss region remain in view, including very large quantities at low cost. The constant-elasticity demand and MR branches continue above the finite price window as $Q\to0$; their omitted high-price parts are included in the exact surplus integral. Right: the complete surplus curve from $Q=0$ through both choices, with its maximum at $Q^c$.`,
+      deps:['micro-10.2','micro-3.6'],refs:['J. Gruber, MIT 14.01SC Lecture 14 (2011), welfare section PDF pp14–15'],tags:['monopoly','welfare'],
+      scope:String.raw`Partial equilibrium with demand as monetary willingness to pay, no income effects or distributional weights, constant cost cQ and no externalities, fixed costs or entry decision. The two explicit demand families have unique interior monopoly and efficient quantities; e>1 makes the isoelastic benefit integral finite at zero.`,
+      verify: false,links:{source:'https://ocw.mit.edu/courses/14-01sc-principles-of-microeconomics-fall-2011/b3a72b11f5f3f988c386979f5038ca94_MIT14_01SCF10_lec14_300k.pdf'},
+      viz(v){
+        const kind=v.select('demand',[{value:'lin',label:'linear'},{value:'iso',label:'constant elasticity'}],'lin');
+        const cost=v.slider('marginal cost $c$',.5,5,2,{step:.05}),elasticity=v.slider('elasticity $e$ (constant-elasticity case)',1.4,4,2,{step:.05});
+        const A=mstage(v,{x:[-1,13],y:[-1,14],title:'monopoly, efficiency and the forgone trades'});
+        const B=v.stage({x:[-1,13],y:[-5,80],axes:'box',gutter:true,xlabel:'quantity $Q$',ylabel:'total surplus $W(Q)$',height:360,title:'exact surplus from zero output',weight:.9,minWidth:250});
+        v.legend([['accent','demand'],['purple','marginal revenue'],['orange','marginal cost'],['green','transfer / monopoly',{area:true}],['red','deadweight loss',{area:true}],['gold','efficient choice',{dot:true}],['ink','total surplus']]);
+        let info={};
+        v.render(()=>{
+          const p=monopolyWelfareState(kind.value,cost.value,elasticity.value);elasticity.el.hidden=p.linear;
+          const xmax=p.linear?12:1.08*p.qc,top=p.linear?12:1.25*p.pm;
+          A.setView([-.06*xmax,1.08*xmax],[-.07*top,1.14*top]);
+          A.rect(0,p.c,p.qm,p.pm,{fill:'green',fillAlpha:.3,color:'green',width:1});
+          A.between(p.demand,()=>p.c,p.qm,p.qc,{fill:'red',fillAlpha:.4});
+          const qlo=p.linear?0:(8/(.97*top))**p.e,mrlo=p.linear?0:(8*p.r/(.97*top))**p.e;
+          A.fn(p.demand,{domain:[qlo,xmax],color:'accent',width:2.6});
+          A.fn(p.marginalRevenue,{domain:[mrlo,p.linear?6:xmax],color:'purple',width:2.5});
+          A.hline(p.c,{color:'orange',width:2.2});A.vline(p.qm,{color:'green',dash:[3,3],width:1});A.vline(p.qc,{color:'gold',dash:[3,3],width:1});
+          A.dot(p.qm,p.pm,{r:6,color:'green'});A.dot(p.qm,p.c,{r:4,color:'orange'});A.dot(p.qc,p.c,{r:6,color:'gold'});
+          B.setView([-.06*xmax,1.08*xmax],[-.07*p.wc,1.15*p.wc]);
+          B.fn(p.welfare,{domain:[0,xmax],color:'ink',width:2.5});B.vline(p.qm,{color:'green',dash:[3,3],width:1});B.vline(p.qc,{color:'gold',dash:[3,3],width:1});
+          B.dot(p.qm,p.wm,{r:6,color:'green'});B.dot(p.qc,p.wc,{r:6,color:'gold'});
+          B.line(p.qm,p.wm,p.qm,p.wc,{color:'red',width:3});B.line(p.qm,p.wc,p.qc,p.wc,{color:'muted',dash:[3,3],width:1});
+          info={...p,xmax,top,qlo,mrlo};
         });
-        v.readout(() => `Monopoly: $Q^m = ${fx(st.Qm)}$, $P^m = ${fx(st.pm)}$. Competition: $Q^c = ${fx(st.Qc)}$, $P^c = ${fx(st.c)}$.\nTransfer $Q^m(P^m - MC) = ${fx(st.tr)}$ (a rectangle). Deadweight loss $\\int_{Q^m}^{Q^c}(P - MC)\\,dQ = ${fx(st.dwl)}$; the drop in total surplus on the right is $${fx(st.gap)}$.${st.lin ? ` Linear demand and constant cost: $\\tfrac12 (P^m - MC)(Q^c - Q^m) = ${fx(0.5 * (st.pm - st.c) * (st.Qc - st.Qm))}$.` : ''}`);
+        v.readout(()=>`Monopoly: $Q^m=${fx(info.qm,3)}$, $P^m=${fx(info.pm,3)}$; efficient: $Q^c=${fx(info.qc,3)}$, price $c=${fx(info.c,3)}$.\nTransfer / monopoly profit $${fx(info.transfer,3)}$, monopoly consumer surplus $${fx(info.cs,3)}$; $W(Q^m)=${fx(info.wm,3)}$, $W(Q^c)=${fx(info.wc,3)}$. Deadweight loss $${fx(info.dwl,3)}$; the consumer-surplus reduction is $${fx(info.competitiveCS-info.cs,3)}$ = transfer + loss. All integrals include the complete interval from zero.`);
       },
     },
     // ------------------------------------------------------------------ 10.5
     {
-      num: '10.5', kind: 'Concept', name: 'First-degree price discrimination',
-      statement: String.raw`A seller who knows each buyer's reservation price and can prevent resale practises **first-degree** (perfect) price discrimination: each unit is sold to the buyer who values it most at exactly that buyer's reservation price, as long as it exceeds marginal cost. Output is then the competitive one, $Q^c$ with $P(Q^c) = MC$, so there is **no deadweight loss**; but all the surplus, $\int_0^{Q^c}(P - MC)\,dQ$, goes to the seller and consumer surplus is zero. A single-price monopolist, by contrast, earns less and leaves a deadweight loss (10.4).`,
-      idea: String.raw`Under a single price, every unit sold at $P^m$ earns marginal revenue equal to its sale price less the revenue lost by cutting the price on earlier units, so the firm stops short. A discriminating seller does not have to cut the price on the earlier units: the price cut applies only to the new buyer, so $MR$ equals the new buyer's price and the demand curve becomes the marginal revenue curve. Setting $MR = MC$ then gives $P = MC$, the efficient output (10.2, 3.6). Efficiency survives, distribution changes completely: what the monopolist captures is the whole consumer surplus.`,
-      caption: String.raw`Each bar is one buyer's reservation price (a staircase approximating the demand curve; more buyers with the slider makes it smoother). **Drag the single price** $p$: buyers whose bar reaches above the line buy. Uniform price: profit (green), unserved buyers whose value exceeds cost (red, the deadweight loss), consumer surplus (blue). **Switch to perfect discrimination**: everyone with value above cost buys at his or her own value, all the bar above the cost line is profit and the red and blue vanish.`,
-      deps: ['micro-10.2', 'micro-3.6'],
-      refs: ['Varian Ch. 26'], tags: ['price discrimination'],
-      credit: 'A. C. Pigou, The Economics of Welfare, 1920 (the classification into first, second and third degree)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Price_discrimination' },
-      viz(v) {
-        const mode = v.select('pricing', [{ value: 'uni', label: 'one price' }, { value: 'pd', label: 'perfect discrimination' }], 'uni');
-        const nS = v.slider('number of buyers', 5, 40, 12, { int: true });
-        const pS = v.slider('single price $p$', 0, 10, 6, { step: 0.05 });
-        const cS = v.slider('marginal cost $c$', 0, 6, 2, { step: 0.05 });
-        const s = v.stage({ x: [0, 40], y: [0, 11], axes: 'box', gutter: true, xlabel: 'buyers, ordered by willingness to pay', ylabel: 'price / value', height: 380, title: 'one bar per buyer' });
-        v.legend([['accent', 'consumer surplus', { area: true }], ['green', 'profit', { area: true }], ['red', 'lost surplus (not served)', { area: true }], ['orange', 'marginal cost'], ['ink', 'single price']]);
-        let st = {};
-        v.render(() => {
-          const n = nS.value, c = cS.value, p = pS.value, pd = mode.value === 'pd';
-          pS.el.hidden = pd;
-          s.setView([0, n + 1], [0, 11]);
-          // reservation values from the linear demand P = 10 − 10 q / N  (buyer i is worth 10 (1 − (i − 0.5)/n))
-          let prof = 0, cs = 0, lost = 0, sold = 0;
-          for (let i = 1; i <= n; i++) {
-            const val = 10 * (1 - (i - 0.5) / (n + 0.5)), pay = pd ? val : p, serve = pd ? val > c : val >= p;
-            if (serve) { prof += pay - c; cs += val - pay; sold++; } else if (val > c) lost += val - c;
-            const col = serve ? 'accent' : 'red';
-            s.rect(i - 0.4, 0, i + 0.4, val, { fill: col, fillAlpha: serve ? 0.25 : 0.2, color: col, width: 1 });
-            if (serve) {
-              if (pay >= c) s.rect(i - 0.4, c, i + 0.4, pay, { fill: 'green', fillAlpha: 0.55, stroke: false });
-              else s.rect(i - 0.4, pay, i + 0.4, c, { fill: 'red', fillAlpha: 0.5, stroke: false });
-            } else if (val > c) s.rect(i - 0.4, c, i + 0.4, val, { fill: 'red', fillAlpha: 0.4, stroke: false });
-          }
-          s.hline(c, { color: 'orange', width: 2.4 });
-          if (!pd) s.hline(p, { color: 'ink', width: 2.2 });
-          st = { prof, cs, lost, sold, n, pd, total: prof + cs };
+      num:'10.5',kind:'Concept',name:'First-degree price discrimination',
+      statement:String.raw`Perfect price discrimination is an ideal in which the seller knows each buyer's willingness to pay, can make individual offers and prevents resale. If each buyer wants at most one unit with value $v_i$, production costs $c$ per unit and indifferent buyers accept, the seller can charge each served buyer $v_i$ and serve every buyer with $v_i\ge c$. Then
+$$\begin{aligned}
+CS&=0,\qquad DWL=0,\\
+\pi=TS^*&=\sum_i\max\{v_i-c,0\}.
+\end{aligned}$$
+With divisible demand, the corresponding efficient quantity satisfies $P(Q^c)=c$ and captured surplus is $\int_0^{Q^c}(P-c)\,dQ$. This is efficiency in the unweighted monetary-surplus sense; buyers retain none of the gains. Equality-value units may be served or omitted without changing surplus.`,
+      idea:String.raw`With an individual offer, lowering the payment for one buyer need not lower anyone else's payment. The seller therefore captures each nonnegative gain $v_i-c$, rather than restricting sales to protect a common price. A buyer offered exactly their value is indifferent, so full extraction uses the stated acceptance convention; an arbitrarily small discount gives strict acceptance and arbitrarily close extraction. Known values, enforceable individual offers and blocked resale are strong assumptions. The best common price remains feasible, so its maximum profit cannot exceed perfect-discrimination profit.`,
+      caption:String.raw`Each unit-width column is one buyer with value $v_i=10[1-(i-1/2)/n]$. Vary buyer count, cost and an experimental common price, or press **best single price** for the exact finite-market optimum. Blue is buyer surplus, green is nonnegative seller margin, and red in the buyer panel shows lost gains on omitted buyers or waste from serving buyers whose value is below cost. A common price below cost can force a loss; it is not the optimizing monopoly policy. Right: signed profit, consumer surplus, actual total, efficient total and loss are exact sums. Perfect discrimination serves all nonnegative-gain buyers and captures the efficient total.`,
+      deps:['micro-10.2','micro-3.6','micro-10.4'],refs:['G. Ellison, MIT 14.271 Lecture 3 (2022), slides 3–5: first-degree discrimination and resale assumptions','S. Ellison, MIT 14.27 Lecture 13 (2014), first-degree section pp1–2'],tags:['price discrimination'],
+      scope:String.raw`One indivisible unit per buyer, known distinct values, zero outside-option surplus, constant cost c per unit, no fixed or administrative cost, no resale and no distributional welfare weights. Indifferent buyers buy; below-cost common prices are deliberate policy experiments. Changing n changes the finite market rather than supplying an exact continuum demand.`,
+      verify: false,links:{source:'https://ocw.mit.edu/courses/14-271-industrial-organization-i-fall-2022/mit14_271_f22_lec3slides.pdf'},
+      viz(v){
+        const mode=v.select('pricing',[{value:'uni',label:'one price'},{value:'pd',label:'perfect discrimination'}],'uni');
+        const count=v.slider('number of buyers',5,40,12,{int:true}),price=v.slider('single price $p$',0,10,6,{step:.05}),cost=v.slider('marginal cost $c$',0,6,2,{step:.05});
+        const A=v.stage({x:[-.5,12.5],y:[-.7,11],axes:'box',gutter:true,xlabel:'buyers in descending value order',ylabel:'price / willingness to pay',height:380,title:'one indivisible unit per buyer',minWidth:250});
+        const B=v.stage({x:[-.65,4.65],y:[-10,60],axes:'box',gutter:true,xlabel:'exact finite-market accounting',ylabel:'monetary surplus',height:380,title:'profit, buyer surplus and efficiency',minWidth:250});
+        v.legend([['accent','consumer surplus',{area:true}],['green','nonnegative seller margin',{area:true}],['red','missed gains / waste',{area:true}],['pink','negative amount (right)',{area:true}],['orange','marginal cost'],['ink','common price'],['gold','actual total'],['teal','efficient total']]);
+        const best=v.button('best single price',()=>price.set(finiteDiscriminationState(count.value,cost.value,price.value).bestPrice));
+        let info={};
+        v.render(()=>{
+          const p=finiteDiscriminationState(count.value,cost.value,price.value,mode.value==='pd');price.el.hidden=p.perfect;best.hidden=p.perfect;
+          A.setView([-.06*p.n,1.06*p.n],[-.7,11.2]);
+          p.buyers.forEach((b,i)=>{
+            A.rect(i,0,i+1,b.value,{fill:'muted',fillAlpha:.12,color:'muted',width:.8});
+            if(b.serve){
+              if(b.pay>=p.c)A.rect(i,p.c,i+1,b.pay,{fill:'green',fillAlpha:.5,stroke:false});
+              if(b.value>b.pay)A.rect(i,b.pay,i+1,b.value,{fill:'accent',fillAlpha:.4,stroke:false});
+              if(b.value<p.c)A.rect(i,b.value,i+1,p.c,{fill:'red',fillAlpha:.45,color:'red',width:.8});
+            }else if(b.value>p.c)A.rect(i,p.c,i+1,b.value,{fill:'red',fillAlpha:.4,color:'red',width:.8});
+          });
+          A.hline(p.c,{color:'orange',width:2.2});if(!p.perfect)A.hline(p.price,{color:'ink',width:2});
+          const values=[p.profit,p.cs,p.total,p.efficient,p.dwl],colors=['green','accent','gold','teal','red'],names=['profit','CS','total','best','DWL'];
+          const scale=Math.max(1,...values.map(Math.abs)),lo=Math.min(-.24*scale,1.3*Math.min(...values)),hi=1.2*Math.max(1,...values),labelY=lo+.055*(hi-lo);
+          B.setView([-.65,4.65],[lo,hi]);B.hline(0,{color:'muted',width:1});
+          values.forEach((y,i)=>{B.rect(i-.3,Math.min(0,y),i+.3,Math.max(0,y),{fill:y<0?'pink':colors[i],fillAlpha:.5,color:y<0?'pink':colors[i],width:1});B.text(names[i],i,labelY,{size:11,align:'center',color:'muted'});});
+          info={...p,accounting:values};
         });
-        v.readout(() => `${st.sold} of ${st.n} buyers served. Profit $${fx(st.prof)}$, consumer surplus $${fx(st.cs)}$, lost surplus (deadweight loss) $${fx(st.lost)}$; total surplus $${fx(st.total)}$ of the possible $${fx(st.total + st.lost)}$.${st.pd ? '\nPerfect discrimination: nothing is lost and the consumers keep nothing.' : ''}`);
+        v.readout(()=>`${info.sold} of ${info.n} buyers served (efficient nonnegative-gain count ${info.efficientSold}). Profit $${fx(info.profit,3)}$, consumer surplus $${fx(info.cs,3)}$, actual total $${fx(info.total,3)}$, efficient total $${fx(info.efficient,3)}$.\nDeadweight loss $${fx(info.dwl,3)}$ = missed gains $${fx(info.missed,3)}$ + waste $${fx(info.waste,3)}$. Exact best common price $${fx(info.bestPrice,4)}$ earns $${fx(info.bestProfit,3)}$; perfect discrimination earns $${fx(info.efficient,3)}$.${info.perfect?' All gains accrue to the seller; no surplus is lost.':info.price<info.c?' This below-cost price is an experiment with a loss, not a profit-maximizing monopoly choice.':''}`);
       },
     },
     // ------------------------------------------------------------------ 10.6
     {
-      num: '10.6', kind: 'Concept', name: 'Second-degree price discrimination',
-      statement: String.raw`When the seller cannot tell high-demand from low-demand buyers, it can offer a **menu of packages** $(Q_L, T_L)$ and $(Q_H, T_H)$ (quantity and total payment) so that each type picks its own. Buyer type $i$ with benefit $V_i(Q)$ gets net surplus $V_i(Q) - T$. The menu must satisfy two **participation** constraints (each type does at least as well as buying nothing) and two **self-selection** constraints (each type prefers its package to the other's). At the optimum the high type gets the efficient quantity, $V_H'(Q_H) = c$; the low type is held to zero surplus and gets an **inefficiently small** package, $V_L'(Q_L) < c$, to make it less attractive to the high type.`,
-      idea: String.raw`The binding constraints are the low type's participation and the high type's temptation to take the low package. Since the high type values quantity more, handing it a rent $(\theta_H - \theta_L)Q_L$ for pretending to be low is unavoidable, and the rent grows with $Q_L$. Trimming $Q_L$ below the efficient size loses a little surplus on the low type (second-order, as marginal benefit equals cost at the efficient size) but cuts the rent given to the high type (first-order). With benefit $V_i(Q) = \theta_i Q - Q^2/2$ and a share $\varphi$ of high types, $Q_H = \theta_H - c$ and $Q_L = \theta_L - c - \tfrac{\varphi}{1-\varphi}(\theta_H - \theta_L)$.`,
-      caption: String.raw`The curves are the two types' **willingness to pay** $V_L(Q)$ (orange) and $V_H(Q)$ (blue) in the plane of quantity and total payment; a package is a point, and each type prefers points below its own curve and closer to it. **Drag the two packages.** The readout ticks or crosses each of the four constraints; profit counts $\varphi$ high and $1-\varphi$ low buyers at unit cost $c$. The hollow dots mark the optimal menu; press **optimal menu** to move the packages there: $Q_H$ is efficient, $Q_L$ is cut below the efficient size (dashed) and both payments sit on the constraints.`,
-      deps: ['micro-10.5'],
-      refs: ['Varian Ch. 26'], tags: ['price discrimination', 'information'],
-      credit: 'M. Mussa & S. Rosen, Monopoly and Product Quality, Journal of Economic Theory 18 (2): 301–317, 1978; E. Maskin & J. Riley, Monopoly with Incomplete Information, RAND Journal of Economics 15 (2): 171–196, 1984',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Price_discrimination#Second-degree_price_discrimination' },
-      viz(v) {
-        const pS = v.slider('share of high type $\\varphi$', 0.1, 0.8, 0.3, { step: 0.01 });
-        const tS = v.slider('low type $\\theta_L$', 3, 8, 6, { step: 0.05 });
-        const TH = 10, c = 2;
-        const s = v.stage({ x: [0, 10.5], y: [0, 52], axes: 'box', gutter: true, xlabel: 'quantity in the package $Q$', ylabel: 'total payment $T$', height: 400, title: 'menu of two packages' });
-        v.legend([['orange', 'low type: $V_L(Q)$'], ['accent', 'high type: $V_H(Q)$'], ['gold', 'low package', { dot: true }], ['green', 'high package', { dot: true }]]);
-        const HL = s.handle(3, 12, { color: 'gold', r: 9, label: 'L', labelPos: 'se' });
-        const HH = s.handle(6, 30, { color: 'green', r: 9, label: 'H', labelPos: 'nw' });
-        let st = {};
-        const V = (th) => (q) => th * q - (q * q) / 2;
-        const opt = () => { const phi = pS.value, th = tS.value, qH = TH - c, qL = Math.max(0, th - c - (phi / (1 - phi)) * (TH - th)); return { qH, qL, TL: V(th)(qL), TH: V(TH)(qH) - (TH - th) * qL }; };
-        const prof = (qL, tL, qH, tH) => (1 - pS.value) * (tL - c * qL) + pS.value * (tH - c * qH);
-        v.button('optimal menu', () => { const o = opt(); HL.set(o.qL, o.TL); HH.set(o.qH, o.TH); });
-        v.render(() => {
-          const th = tS.value, VL = V(th), VH = V(TH), qL = HL.x, tL = HL.y, qH = HH.x, tH = HH.y;
-          const o = opt();
-          s.fn(VL, { domain: [0, 10.5], color: 'orange', width: 2.4 }); s.fn(VH, { domain: [0, 10.5], color: 'accent', width: 2.4 });
-          s.fn((q) => c * q, { domain: [0, 10.5], color: 'muted', width: 1.5, dash: [3, 3] });
-          s.vline(th - c, { color: 'orange', width: 1, dash: [3, 3] });
-          tag(s, 'cost line $T = cQ$', 10.4, 2 * 10.4 - 5, 'muted', { align: 'right' });
-          const sL = VL(qL) - tL, sH = VH(qH) - tH;
-          const okIRL = sL >= -0.05, okIRH = sH >= -0.05, okICL = sL >= VL(qH) - tH - 0.05, okICH = sH >= VH(qL) - tL - 0.05;
-          s.dot(o.qL, o.TL, { r: 5, hollow: true, color: 'orange' }); s.dot(o.qH, o.TH, { r: 5, hollow: true, color: 'accent' });
-          st = { okIRL, okIRH, okICL, okICH, p: prof(qL, tL, qH, tH), po: prof(o.qL, o.TL, o.qH, o.TH), o, qL, qH };
+      num:'10.6',kind:'Model',name:'Second-degree price discrimination',
+      statement:String.raw`A seller with unobservable buyer types can offer the same menu of quantity/payment pairs to everyone. A type must prefer its intended package to buying nothing (**IR**) and to the other package (**IC**). Here $0.1\le\varphi\le0.8$ gives type shares $1-\varphi$ and $\varphi$, benefits are $V_i(Q)=\theta_iQ-Q^2/2$, unit cost is $c=2$, $\theta_H=10$ and $3\le\theta_L\le8$. Resale is blocked, and indifferent buyers choose their intended package. The optimal menu has
+$$\begin{aligned}
+Q_H^*&=8,\\
+Q_L^*&=\max\left\{0,\frac{\theta_L-2-8\varphi}{1-\varphi}\right\}.
+\end{aligned}$$
+Its low payment is $T_L^*=V_L(Q_L^*)$; the high payment is $T_H^*=V_H(8)-(10-\theta_L)Q_L^*$. The low type receives zero surplus. When $Q_L^*>0$, its quantity is below the efficient $\theta_L-2$, so $V_L'(Q_L^*)>c$; the high type retains information rent $(10-\theta_L)Q_L^*$. At $\varphi\ge(\theta_L-2)/8$, the low package becomes $(0,0)$ and that rent is zero.`,
+      idea:String.raw`At an optimum, low participation and the high type's temptation to select the low package bind. These constraints give the stated payments. Substitute them into expected profit: it becomes the sum of two strictly concave quadratic functions of the quantities. The high quantity maximizes total gains for that type. The low quantity trades off gains from low buyers against the extra rent owed to high buyers; its unconstrained optimum must be clipped at zero. The resulting ordered quantities also satisfy low IC and high IR, so this upper bound on profit is attainable. The equality cases use the stated choice rule, rather than strict incentives.`,
+      caption:String.raw`The curves are total benefits. A buyer prefers a **larger vertical gap below its own curve**, not a point closer to it. Drag the gold low-package or green high-package handle, or use the package sliders when handles coincide. Vertical segments show the intended buyer's surplus; purple rings mark the exact optimum. Right: the four actual IR/IC slacks, with negative bars showing failed constraints. **Optimal menu** sets all four package controls; **low-type exclusion boundary** selects the exact share and its zero low package. Assigned profit is implementable only when every constraint holds under the choice rule.`,
+      deps:['micro-10.5'],refs:['Maskin & Riley (1984), RAND Journal of Economics 15:171–196, §2 and finite-type self-selection argument in §3','S. Ellison, MIT 14.27 Lecture 13 (2014), two-type screening pp4–5','G. Ellison, MIT 14.271 Lecture 3 (2022), two-type model slides13–18'],tags:['price discrimination','information'],
+      credit:'E. Maskin & J. Riley, Monopoly with Incomplete Information, RAND Journal of Economics 15 (2):171–196, 1984 (screening framework)',
+      scope:String.raw`An explicit two-type quadratic-benefit model with a known high-type share 0.1–0.8, zero outside utility, nonnegative quantities, constant unit cost, no resale and intended-package choice at indifference. The quadratic benefits are used on the whole displayed range, including beyond their peaks. The plot shows nonnegative payments; the stated optimum is feasible there. This does not assert that every screening problem has the same binding constraints or that low types always buy positive quantities.`,
+      links:{source:'https://ocw.mit.edu/courses/14-27-economics-and-e-commerce-fall-2014/01454b51f87e5907b6097de412687b59_MIT14_27F14_Lec13.pdf',doi:'https://doi.org/10.2307/2555674'},
+      viz(v){
+        const initial=screeningOptimum(.3,6);
+        const share=v.slider('high-type share $\\varphi$',.1,.8,.3,{step:.01,decimals:3}),theta=v.slider('low type $\\theta_L$',3,8,6,{step:.05});
+        const ql=v.slider('low package quantity $Q_L$',0,10,initial.qLow,{step:.05,decimals:3}),tl=v.slider('low package payment $T_L$',0,50,initial.tLow,{step:.05,decimals:3});
+        const qh=v.slider('high package quantity $Q_H$',0,10,initial.qHigh,{step:.05,decimals:3}),th=v.slider('high package payment $T_H$',0,50,initial.tHigh,{step:.05,decimals:3});
+        const A=v.stage({x:[-1,11],y:[-8,56],axes:'box',gutter:true,xlabel:'package quantity $Q$',ylabel:'total payment / benefit',height:400,title:'compare packages using vertical utility gaps',minWidth:250});
+        const B=v.stage({x:[-.65,3.65],y:[-5,5],axes:'box',gutter:true,xticks:[],xlabel:'IR: participation; IC: self-selection',ylabel:'constraint slack',height:400,title:'nonnegative slacks make the menu feasible',minWidth:250});
+        const low=A.handle(initial.qLow,initial.tLow,{color:'gold',r:9,constrain:(x,y)=>[clamp(x,0,10),clamp(y,0,50)],onDrag:h=>{ql.set(h.x);tl.set(h.y);}});
+        const high=A.handle(initial.qHigh,initial.tHigh,{color:'green',r:9,constrain:(x,y)=>[clamp(x,0,10),clamp(y,0,50)],onDrag:h=>{qh.set(h.x);th.set(h.y);}});
+        const place=()=>{const o=screeningOptimum(share.value,theta.value);ql.set(o.qLow);tl.set(o.tLow);qh.set(o.qHigh);th.set(o.tHigh);};
+        v.button('optimal menu',place);v.button('low-type exclusion boundary',()=>{share.set((theta.value-2)/8);place();});
+        v.legend([['orange','low total benefit'],['orange','efficient low quantity',{dash:true}],['accent','high total benefit'],['muted','cost $2Q$'],['gold','your low package / low slacks',{dot:true}],['green','your high package / high slacks',{dot:true}],['purple','optimal menu (hollow)',{dot:true}],['red','failed constraint']]);
+        let info={};
+        v.render(()=>{
+          const p=screeningMenuState(share.value,theta.value,ql.value,tl.value,qh.value,th.value),o=p.optimum;
+          low.set(p.qLow,p.tLow);high.set(p.qHigh,p.tHigh);
+          A.setView([-1,11],[Math.min(-8,screeningBenefit(p.theta,10)-5),56]);
+          A.fn(q=>screeningBenefit(p.theta,q),{domain:[0,10],color:'orange',width:2.5});A.fn(q=>screeningBenefit(10,q),{domain:[0,10],color:'accent',width:2.5});A.fn(q=>2*q,{domain:[0,10],color:'muted',width:1.4,dash:[3,3]});
+          A.vline(o.efficientLow,{color:'orange',width:1,dash:[3,3]});
+          A.line(p.qLow,p.tLow,p.qLow,p.benefitLow,{color:p.uLow>=0?'gold':'red',width:2});A.line(p.qHigh,p.tHigh,p.qHigh,p.benefitHigh,{color:p.uHigh>=0?'green':'red',width:2});
+          A.dot(o.qLow,o.tLow,{r:12,hollow:true,color:'purple'});A.dot(o.qHigh,o.tHigh,{r:12,hollow:true,color:'purple'});
+          const dataLo=Math.min(-1,1.2*Math.min(...p.slacks)),hi=Math.max(2,1.2*Math.max(...p.slacks)),lo=dataLo-.15*(hi-dataLo),labelY=lo+.04*(hi-lo);
+          B.setView([-.65,3.65],[lo,hi]);B.hline(0,{color:'muted',width:1});const names=['IR L','IR H','IC L','IC H'];
+          p.slacks.forEach((s,i)=>{const col=s<0?'red':i%2?'green':'gold';B.rect(i-.3,Math.min(0,s),i+.3,Math.max(0,s),{fill:col,fillAlpha:.5,color:col,width:1});B.text(names[i],i,labelY,{size:11,align:'center',color:'muted'});});
+          info=p;
         });
-        const m = (ok, t) => `${ok ? '✓' : '✗'} ${t}`;
-        v.readout(() => `Constraints: ${m(st.okIRL, 'low participates')}, ${m(st.okIRH, 'high participates')}, ${m(st.okICL, 'low prefers L')}, ${m(st.okICH, 'high prefers H')}.\nProfit of your menu $${fx(st.p)}$ (it is only meaningful when all four hold); optimal menu $Q_H = ${fx(st.o.qH)}$ (efficient), $Q_L = ${fx(st.o.qL)}$ versus efficient $${fx(tS.value - 2)}$, profit $${fx(st.po)}$.`);
+        v.readout(()=>`IR L/H: ${fx(info.slacks[0],6)} / ${fx(info.slacks[1],6)}; IC L/H: ${fx(info.slacks[2],6)} / ${fx(info.slacks[3],6)}. ${info.feasible?'All four hold within numerical precision under intended-package choice.':'At least one constraint fails: the intended assignments are not implementable.'}\nAssigned-menu profit $${fx(info.assignedProfit,6)}$ ${info.feasible?'(implementable under the choice rule)':'(counterfactual assignment only)'}. Exact optimal profit $${fx(info.optimum.profit,6)}$ at $Q_L=${fx(info.optimum.qLow,6)}$, $Q_H=8$.\nOptimal low quantity versus efficient: ${fx(info.optimum.qLow,6)} versus ${fx(info.optimum.efficientLow,6)}; high-type rent $${fx(info.optimum.rentHigh,6)}$. Total-surplus loss relative to full information $${fx(info.optimum.loss,6)}$. ${info.optimum.excluded?'At the optimum the low package is (0,0) and the high-type information rent is zero.':'At the optimum the low type buys a downward-distorted quantity and the high type retains positive information rent.'}`);
       },
     },
   ],

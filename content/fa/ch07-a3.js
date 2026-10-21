@@ -1,7 +1,7 @@
 // Rudin, Functional Analysis — Chapter 7 (part 3): convolution in 𝒮′, Paley–Wiener theorems, Sobolev's lemma
 //
 // Conventions as in part 1: dm(x) = (2π)^{-1/2} dx, f̂(t) = ∫ f(x) e^{-ixt} dm(x).
-// Full second-edition source review is recorded in docs/verification/fa-source-review.md.
+// Numbering recalled, not checked against the book; uncertain items carry `verify: true`.
 
 const RT2PI = Math.sqrt(2 * Math.PI);
 function psi0(x) { const s = 1 - x * x; return s > 0 ? Math.exp(-1 / s) : 0; }
@@ -53,11 +53,14 @@ export default {
       num: '7.19',
       kind: 'Theorem',
       name: 'Convolution with tempered distributions; (u∗φ)^ = φ̂û',
-      statement: String.raw`If $u\in\mathscr S_n'$ and $\varphi\in\mathscr S_n$, define $(u*\varphi)(x)=u(\tau_x\check\varphi)$. Then (a) this function is smooth and $D^\alpha(u*\varphi)=(D^\alpha u)*\varphi=u*(D^\alpha\varphi)$; (b) it has polynomial growth and so is tempered; (c) $(u*\varphi)^\wedge=\widehat\varphi\,\widehat u$; (d) $(u*\varphi)*\psi=u*(\varphi*\psi)$ for every $\psi\in\mathscr S_n$; and (e) $\widehat{\varphi u}=\widehat u*\widehat\varphi$.`,
+      statement: String.raw`If $u\in\mathscr S_n'$ and $\varphi\in\mathscr S_n$, then $u*\varphi$, defined by $(u*\varphi)(x)=u(\tau_x\check\varphi)$, is a $C^\infty$ function of at most polynomial growth (so a tempered distribution), and
+$$(u*\varphi)^\wedge=\hat\varphi\,\hat u .$$
+Moreover $u*(\varphi*\psi)=(u*\varphi)*\psi$ for $\varphi,\psi\in\mathscr S_n$.`,
       idea: String.raw`Smoothness is as in 6.30, now with difference quotients converging in $\mathscr S_n$. Polynomial growth: $|u(\psi)|\le C\|\psi\|_N$, and the $\mathscr S$-norms of $\tau_x\check\varphi$ grow like $(1+|x|^2)^N$. For the transform, test against $\psi\in\mathscr S_n$ and use Fubini on $\int(u*\varphi)\hat\psi$ together with $\hat\psi*\check\varphi=(\psi\,\hat{\check\varphi})^\wedge$ — the convolution theorem 7.8 for Schwartz functions — to move everything onto $u$.`,
       caption: String.raw`$u=\mathrm{p.v.}\frac1x$ (so $u*\varphi$ is a multiple of the Hilbert transform) and $\varphi(x)=e^{-x^2/2\sigma^2}\cos\omega x$. Left: $u*\varphi$ computed directly as a principal-value integral (purple), and computed on the Fourier side — multiply $\hat\varphi$ by $\hat u=-i\sqrt{\pi/2}\,\operatorname{sgn}t$ and invert (green dots). Right: $\hat\varphi$ (blue) and $(u*\varphi)^\wedge/i$ (purple). Note that $u*\varphi$ is smooth but decays only like $1/x$ when $\hat\varphi(0)\ne0$: it is in $\mathscr S_1'$, not in $\mathscr S_1$.`,
       deps: ['fa-7.15', 'fa-7.8', 'fa-6.30'],
       tags: ['tempered distributions', 'convolution', 'Hilbert transform'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const sS = v.slider('width $\\sigma$', 0.3, 2, 0.8, { step: 0.01 });
@@ -88,7 +91,7 @@ export default {
         });
         v.readout(() => {
           const s = st;
-          return `$\\max|$direct$-$Fourier$| = ${v.sci(s.err + 1e-16, 2)}$. Tail: $(u*\\varphi)(10) = ${v.fix(s.x10, 4)}$ vs. $\\hat\\varphi(0)/10 = ${v.fix(s.h0 / 10, 4)}$ — decay like $\\hat\\varphi(0)/x$` + ', with a nonzero leading coefficient for every Gaussian cosine in these controls, so $u*\\varphi\\notin\\mathscr S_1$.';
+          return `$\\max|$direct$-$Fourier$| = ${v.sci(s.err + 1e-16, 2)}$. Tail: $(u*\\varphi)(10) = ${v.fix(s.x10, 4)}$ vs. $\\hat\\varphi(0)/10 = ${v.fix(s.h0 / 10, 4)}$ — decay like $\\hat\\varphi(0)/x$` + (s.h0 < 1e-3 ? ' (here $\\hat\\varphi(0)\\approx0$, so it decays faster).' : ', so $u*\\varphi\\notin\\mathscr S_1$.');
         });
       },
     },
@@ -97,7 +100,7 @@ export default {
       num: '7.22',
       kind: 'Theorem',
       name: 'Paley–Wiener theorem for test functions',
-      credit: 'Paley & Wiener',
+      credit: 'Paley & Wiener, 1934',
       statement: String.raw`(a) If $\varphi\in\mathscr D(\R^n)$ has support in the ball $rB$, then
 $$f(z)=\int_{\R^n}\varphi(t)\,e^{-iz\cdot t}\,dm_n(t)\qquad(z\in\C^n)$$
 is an entire function, and for every $N$ there is $\gamma_N<\infty$ with
@@ -108,6 +111,7 @@ $$|f(z)|\le\gamma_N\,(1+|z|)^{-N}e^{r|\operatorname{Im}z|}\qquad(z\in\C^n).$$
       deps: ['fa-7.7', 'fa-6.2', 'rca-10.14'],
       see: ['rca-19.3'],
       tags: ['Paley–Wiener', 'entire functions', 'Fourier transform'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const F = {
@@ -176,6 +180,7 @@ $$|f(z)|\le\gamma\,(1+|z|)^{N}e^{r|\operatorname{Im}z|}\qquad(z\in\C^n).$$
       deps: ['fa-7.22', 'fa-6.24', 'fa-7.15'],
       see: ['rca-19.3'],
       tags: ['Paley–Wiener', 'distributions', 'entire functions'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const U = {
@@ -206,7 +211,7 @@ $$|f(z)|\le\gamma\,(1+|z|)^{N}e^{r|\operatorname{Im}z|}\qquad(z\in\C^n).$$
           B.path(pts, { color: 'purple', width: 2.2 });
           st = { N: Uk.N, ratio };
         });
-        v.readout(() => `On the sampled finite interval of this line, $\\max_x |\\hat u(x+iy)|\\,e^{-r|y|}/(1+|z|)^{${st.N}} = ${v.fix(st.ratio, 4)}$: bounded, as the theorem says, with $N=${st.N}$ the order of $u$.`);
+        v.readout(() => `On this line $\\sup_x |\\hat u(x+iy)|\\,e^{-r|y|}/(1+|z|)^{${st.N}} = ${v.fix(st.ratio, 4)}$: bounded, as the theorem says, with $N=${st.N}$ the order of $u$.`);
       },
     },
     // ------------------------------------------------------------------ Sobolev
@@ -214,12 +219,15 @@ $$|f(z)|\le\gamma\,(1+|z|)^{N}e^{r|\operatorname{Im}z|}\qquad(z\in\C^n).$$
       num: '7.25',
       kind: 'Theorem',
       name: "Sobolev's lemma",
-      credit: 'Sobolev',
-      statement: String.raw`Let $n,p,r$ be integers with $n>0$, $p\ge0$ and $r>p+n/2$. Suppose $\Omega\subset\mathbb R^n$ is open and the pure coordinate distribution derivatives $\partial_i^k f$ are locally $L^2$ for every $1\le i\le n$ and $0\le k\le r$. Then $f$ agrees almost everywhere with a $C^{(p)}(\Omega)$ function. No mixed-derivative assumption is required. In particular, locally square-integrable distribution derivatives of every order imply a smooth representative.`,
-      idea: String.raw`Localize by a smooth cutoff, obtaining a compactly supported $F$ with each $\partial_i^kF\in L^2$ for $k\le r$. Plancherel yields $\widehat F\in L^2$ and $\xi_i^r\widehat F\in L^2$ for each coordinate. The inequality $(1+|\xi|)^{2r}\le C(1+\sum_i|\xi_i|^{2r})$ therefore gives $(1+|\xi|)^r\widehat F\in L^2$. Cauchy–Schwarz makes $(1+|\xi|)^p\widehat F$ integrable because $2r-2p>n$. Fourier inversion then has $p$ continuous derivatives. The local representatives agree on overlaps because they are continuous and agree almost everywhere.`,
-      caption: String.raw`Left ($n=1$, derivative order $r=1$, output $p=0$): $f(x)=|x|^\beta$. Its derivative is in $L^2$ iff $\beta>\frac12$ or $\beta=0$ (the constant case), and then Cauchy–Schwarz traps the graph inside the envelope $f(0)\pm\|f'\|_2|x|^{1/2}$ (dashed): continuity with Hölder exponent $\frac12$. For $\beta\le\frac12$, except $\beta=0$, the hypothesis fails (the envelope disappears), and for $\beta<0$ continuity really is lost. Right ($n=2$): $f=\log\log(e/|x|)$, truncated at radius $\varepsilon$. Shrink $\varepsilon$: the maximum $\log\log(e/\varepsilon)$ blows up while $\int|\nabla f|^2$ stays below $2\pi$ — $f\in H^1$ but unbounded, because derivative order $r=1$ is not $>n/2=1$.`,
+      credit: 'Sobolev, 1938',
+      statement: String.raw`Suppose $\Omega\subset\R^n$ is open, $p$ and $r$ are integers with $p>r+\frac n2$, and $f\in L^2_{loc}(\Omega)$ is such that its distribution derivatives $D^\alpha f$ belong to $L^2_{loc}(\Omega)$ for all $|\alpha|\le p$. Then $f$ agrees almost everywhere with a function in $C^{(r)}(\Omega)$. In particular, if $D^\alpha f\in L^2_{loc}$ for every $\alpha$, then $f$ is (a.e. equal to) a $C^\infty$ function.`,
+      idea: String.raw`Localise with a cutoff, so $f$ has compact support and $D^\alpha f\in L^2$ for $|\alpha|\le p$. By Plancherel, $(1+|t|)^p\hat f\in L^2$. Cauchy–Schwarz then gives
+$$\int|t|^r|\hat f|\le\Big(\int(1+|t|)^{2p}|\hat f|^2\Big)^{1/2}\Big(\int(1+|t|)^{2r-2p}\Big)^{1/2},$$
+and the last integral is finite exactly when $2p-2r>n$. So $t^\alpha\hat f\in L^1$ for $|\alpha|\le r$, and the inversion formula exhibits $f$ as a $C^{(r)}$ function. The condition $p>n/2$ (for $r=0$) is sharp, as the examples show.`,
+      caption: String.raw`Left ($n=1$, $p=1$): $f(x)=|x|^\beta$. Its derivative is in $L^2$ iff $\beta>\frac12$, and then Cauchy–Schwarz traps the graph inside the envelope $f(0)\pm\|f'\|_2|x|^{1/2}$ (dashed): continuity with Hölder exponent $\frac12$. For $\beta\le\frac12$ the hypothesis fails (the envelope disappears), and for $\beta\le0$ continuity really is lost. Right ($n=2$): $f=\log\log(e/|x|)$, truncated at radius $\varepsilon$. Shrink $\varepsilon$: the maximum $\log\log(e/\varepsilon)$ blows up while $\int|\nabla f|^2$ stays below $2\pi$ — $f\in H^1$ but unbounded, because $p=1$ is not $>n/2=1$.`,
       deps: ['fa-7.9', 'fa-7.7', 'fa-6.32'],
       tags: ['Sobolev', 'regularity', 'Plancherel'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const bS = v.slider('$\\beta$ in $|x|^\\beta$', -0.4, 1.5, 0.75, { step: 0.01 });
@@ -231,13 +239,13 @@ $$|f(z)|\le\gamma\,(1+|z|)^{N}e^{r|\operatorname{Im}z|}\qquad(z\in\C^n).$$
         v.render(() => {
           const b = bS.value, eps = 10 ** eS.value;
           const f = (x) => Math.pow(Math.abs(x), b);
-          const fin = b > 0.5 || b === 0, nd = b === 0 ? 0 : fin ? Math.sqrt(2 * b * b / (2 * b - 1)) : Infinity;
+          const fin = b > 0.5, nd = fin ? Math.sqrt(2 * b * b / (2 * b - 1)) : Infinity;
           L.fn((x) => Math.min(f(x), 3), { color: 'blue', width: 2.6, n: 1200 });
           if (fin) {
-            const f0 = b === 0 ? 1 : 0;
+            const f0 = 0;
             L.fn((x) => f0 + nd * Math.sqrt(Math.abs(x)), { color: 'green', width: 1.6, dash: [6, 4] });
             L.fn((x) => f0 - nd * Math.sqrt(Math.abs(x)), { color: 'green', width: 1.6, dash: [6, 4] });
-            L.between((x) => f0 + nd * Math.sqrt(Math.abs(x)), (x) => f0 - nd * Math.sqrt(Math.abs(x)), -1, 1, { fill: 'green', fillAlpha: 0.06 });
+            L.between((x) => nd * Math.sqrt(Math.abs(x)), (x) => -nd * Math.sqrt(Math.abs(x)), -1, 1, { fill: 'green', fillAlpha: 0.06 });
           }
           L.corner(fin ? `‖f′‖₂ = ${v.fmt(nd, 3)}: f ∈ H¹` : `‖f′‖₂ = ∞: hypothesis fails`, 'tl', { color: fin ? 'green' : 'red', weight: 600 });
           // 2D

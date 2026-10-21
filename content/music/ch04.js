@@ -245,9 +245,9 @@ If moreover $p^{(k)}$ really jumps somewhere, then $|n|^{k+1}|c_n|$ does not ten
 (c) Conversely, if $\sum_n|n|^k|c_n|<\infty$ then $p$ has $k$ continuous derivatives.
 
 On a log–log plot of $|c_n|$ against $n$ the harmonics therefore line up with slope $-(k+1)$, and the slope tells how smooth the waveform is.`,
-      idea: String.raw`Integrate by parts: $c_n(p')=2\pi inf_0\,c_n(p)$ whenever $p$ is continuous, so each continuous derivative buys a factor $1/n$. At the first derivative that jumps, the integration by parts leaves boundary terms: each jump of size $J$ at $t_j$ contributes $J\,e^{-2\pi inf_0t_j}/(2\pi in)$, which is exactly of order $1/n$. Everything left over is $o(1/n)$ by the Riemann–Lebesgue lemma (rca-5.14). For the converse, an absolutely convergent series of continuous functions can be differentiated term by term. In sound: corners are bright. The bowed string's Helmholtz motion (2.10) is a sawtooth with $1/n$ harmonics, a soft-edged flute tone is dark, and any loss that rounds the corners of a waveform dulls the tone above the harmonic where the rounding becomes visible.`,
+      idea: String.raw`Integrate by parts: $c_n(p')=2\pi inf_0\,c_n(p)$ whenever $p$ is continuous, so each continuous derivative buys a factor $1/n$. At the first derivative that jumps, the integration by parts leaves boundary terms: each jump of size $J$ at $t_j$ contributes $J\,e^{-2\pi inf_0t_j}/(2\pi in)$, which is exactly of order $1/n$. Everything left over is $o(1/n)$ by the Riemann–Lebesgue lemma (rca-5.12). For the converse, an absolutely convergent series of continuous functions can be differentiated term by term. In sound: corners are bright. The bowed string's Helmholtz motion (2.10) is a sawtooth with $1/n$ harmonics, a soft-edged flute tone is dark, and any loss that rounds the corners of a waveform dulls the tone above the harmonic where the rounding becomes visible.`,
       caption: String.raw`Pick a wave: square and sawtooth jump, the triangle has corners, the parabolic wave has jumps in curvature only, and the smooth wave is analytic. On the left the wave is blue and its slope $p'$ orange; arrows mark the deltas where $p$ itself jumps. On the right the log–log spectrum, with reference lines of slope −1, −2, −3 and the measured slope written on each octave of $n$. **Round the corners** with the slider: each corner is smeared over a short time, which adds one power of $1/n$, but only above the knee near $n\approx1/(\text{rounding width})$. Below the knee the harmonics still see a sharp corner. Hold the tone and drag the slider to hear the brightness drain away.`,
-      deps: ['music-4.2', 'rca-5.14'],
+      deps: ['music-4.2', 'rca-5.12'],
       see: ['sig-4.8', 'sig-4.12', 'pde-4.9', 'music-2.10', 'music-2.7'],
       refs: ['Benson ch. 2'],
       tags: ['fourier', 'brightness'],
@@ -445,15 +445,15 @@ The **peak** value, and so the crest factor $\max|p|/p_{\rm rms}$, does depend o
       num: '4.5',
       kind: 'Concept',
       name: 'Continuous spectra and the Fourier transform',
-      statement: String.raw`An aperiodic sound has no single global repeating period, although any finite observation can be expanded in a Fourier series of its periodic extension. For an integrable signal $p$, the **Fourier transform** is
+      statement: String.raw`A sound that is not periodic has no Fourier series. Its **Fourier transform**
 $$P(f)=\int_{-\infty}^{\infty}p(t)\,e^{-2\pi ift}\,dt$$
-It describes frequency content on a continuous frequency axis. If both $p$ and $P$ are integrable, inversion recovers $p(t)=\int P(f)e^{2\pi ift}\,df$ almost everywhere and at every continuity point of $p$. For finite-energy signals $p\in L^2$, the transform extends in the $L^2$ sense and $\int|p|^2\,dt=\int|P|^2\,df$ (Plancherel). Typical shapes:
+spreads its content over a continuum of frequencies. When $P$ is integrable the sound is recovered as $p(t)=\int P(f)e^{2\pi ift}\,df$, and in every case the energy is shared out as $\int|p|^2\,dt=\int|P|^2\,df$ (Plancherel). Typical shapes:
 - a sustained periodic tone has a **line spectrum**, lines at $nf_0$ as narrow as the length of the observation allows (the transform of a long stretch of a Fourier series);
-- an isolated causal partial $1_{t\ge0}e^{-t/\tau}e^{2\pi if_kt}$ has a **broadened line**, the Lorentzian $|P(f)|^2\propto1/\big(\tau^{-2}+4\pi^2(f-f_k)^2\big)$ centred at $f_k$. For a real cosine this is the isolated-positive-line approximation when the negative-frequency line is well separated. Its full width at half power is $$\Delta f=\frac1{\pi\tau},$$ so the faster the decay, the broader the line;
-- an ideal impulse has a flat transform; a short physical click approximates this only over frequencies low compared with its inverse duration. A finite white-noise burst has a broad, irregular spectrum; ideal white noise has a flat power spectral density, not a finite-energy Fourier transform.`,
-      idea: String.raw`Window an aperiodic sound for a time $T_{\rm obs}$ and expand the periodic extension in a Fourier series of period $T_{\rm obs}$. As $T_{\rm obs}\to\infty$ the allowed frequencies $k/T_{\rm obs}$ crowd together and the sum becomes the integral (sig-5.1; rca-9.1, rca-9.11). For a decaying partial the integral can be done exactly: $\int_0^\infty e^{-t/\tau}e^{-2\pi i(f-f_k)t}\,dt=1/(\tau^{-1}+2\pi i(f-f_k))$, whose squared modulus falls to half its peak where $2\pi|f-f_k|=1/\tau$. In a plucked string or a struck bar each partial is such a line, and the upper partials, which die faster, are broader. The width is a direct reading of the decay time, that is of the resonator's $Q=f_k/\Delta f$. A sufficiently short click is approximately flat over the displayed band, because its duration is short compared with the periods in that band.`,
-      caption: String.raw`Choose a sound; each spectrum is computed by FFT from the whole 4.096 s synthesized buffer, which is also what Listen plays. A short final fade avoids an abrupt playback cutoff. The organ tone gives lines as narrow as 4 s of listening allows. The guitar pluck and the marimba stroke give lines broadened by their decay, and their higher partials, which die faster, are broader. The woodblock model has three short-lived partials smeared into bumps, the click is approximately flat over the displayed band, and noise gives a broad, irregular spectrum. Drag the decay time $\tau$ (for the plucked and struck sounds): the zoom on the right shows the fundamental's line measured from the sound, the Lorentzian predicted from $\tau$ (dashed), and the half-power width. *Listen* to each.`,
-      deps: ['music-4.2', 'rca-9.1', 'rca-9.11', 'rca-9.13'],
+- a partial that dies away as $e^{-t/\tau}\cos 2\pi f_kt$ has a **broadened line**, the Lorentzian $|P(f)|^2\propto1/\big(\tau^{-2}+4\pi^2(f-f_k)^2\big)$ near $f_k$. Its full width at half power is $$\Delta f=\frac1{\pi\tau},$$ so the faster the decay, the broader the line;
+- a click has a flat, continuous spectrum, and noise a continuous spectrum with no lines at all.`,
+      idea: String.raw`Watch a periodic sound for a time $T_{\rm obs}$ and expand it in a Fourier series of period $T_{\rm obs}$. As $T_{\rm obs}\to\infty$ the allowed frequencies $k/T_{\rm obs}$ crowd together and the sum becomes the integral (sig-5.1; rca-9.1, rca-9.11). For a decaying partial the integral can be done exactly: $\int_0^\infty e^{-t/\tau}e^{-2\pi i(f-f_k)t}\,dt=1/(\tau^{-1}+2\pi i(f-f_k))$, whose squared modulus falls to half its peak where $2\pi|f-f_k|=1/\tau$. In a plucked string or a struck bar each partial is such a line, and the upper partials, which die faster, are broader. The width is a direct reading of the decay time, that is of the resonator's $Q=f_k/\Delta f$. A click contains every frequency in equal measure because it is shorter than any period of interest.`,
+      caption: String.raw`Choose a sound; each spectrum is computed by FFT from the whole 4 s sound. The organ tone gives lines as narrow as 4 s of listening allows. The guitar pluck and the marimba stroke give lines broadened by their decay, and their higher partials, which die faster, are broader. A woodblock is two short-lived partials smeared into bumps, a click is flat, and noise is a continuum. Drag the decay time $\tau$ (for the plucked and struck sounds): the zoom on the right shows the fundamental's line measured from the sound, the Lorentzian predicted from $\tau$ (dashed), and the half-power width. *Listen* to each.`,
+      deps: ['music-4.2', 'rca-9.1', 'rca-9.11'],
       see: ['sig-5.1', 'sig-5.12', 'rca-9.13', 'music-3.11', 'mech-4.7', 'sig-8.11'],
       refs: ['Benson ch. 2', 'Loy II ch. 3'],
       tags: ['fourier transform', 'spectrum'],
@@ -489,9 +489,6 @@ It describes frequency content on a continuous frequency axis. If both $p$ and $
             x.set(buf, t0);
           } else if (sel.value === 'click') { const w = 6; for (let i = 0; i < w; i++) x[t0 + i] = Math.sin((Math.PI * (i + 0.5)) / w) ** 2; }
           else { const n = Math.round(0.4 * SR2), f = Math.round(0.01 * SR2); for (let i = 0; i < n; i++) x[t0 + i] = rnd() * Math.min(1, i / f, (n - i) / f); }
-          // Analyze and play the same buffer, with a 20 ms release at its end.
-          const release = Math.round(0.02 * SR2);
-          for (let i = 0; i < release; i++) x[NF - release + i] *= 0.5 * (1 + Math.cos(Math.PI * i / (release - 1)));
           let mx = 0; for (let i = 0; i < NF; i++) mx = Math.max(mx, Math.abs(x[i])); for (let i = 0; i < NF; i++) x[i] /= mx || 1;
           // whole-sound spectrum
           const re = Float64Array.from(x), im = new Float64Array(NF); M.fft(re, im);
@@ -516,7 +513,7 @@ It describes frequency content on a continuous frequency axis. If both $p$ and $
           D = { x, mag, mm, df, nb, zf, zp, half, lineW, width: lo != null && hi != null ? hi - lo : null, lo, hi, d1 };
           return D;
         };
-        v.soundButton('Listen', (snd) => { const d = make(); snd.samples(Float32Array.from(d.x, (y) => 0.8 * y), SR2, { gain: 0.8 }); });
+        v.soundButton('Listen', (snd) => { const d = make(); snd.samples(Float32Array.from(d.x.subarray(0, Math.round(2.5 * SR2)), (y) => 0.8 * y), SR2, { gain: 0.8 }); });
         v.render(() => {
           const d = make(), S = SND[sel.value];
           // ---- waveform envelope
@@ -550,12 +547,12 @@ It describes frequency content on a continuous frequency axis. If both $p$ and $
           const d = make(), S = SND[sel.value];
           if (S.tau) {
             const pred = 1 / (Math.PI * tS.value), Tobs = NF / SR2 - 0.05;
-            return `${S.name}: fundamental ${S.f1} Hz, decay time $\\tau$ = ${tS.value < 0.1 ? v.fix(tS.value * 1000, 0) + ' ms' : v.fix(tS.value, 2) + ' s'} · measured half-power width ${d.width != null ? v.fix(d.width, 3) : '—'} Hz, predicted $1/\\pi\\tau$ = ${v.fix(pred, 3)} Hz${tS.value > Tobs / 4 ? ` (the ${v.fix(Tobs, 1)} s recording cuts the decay short and adds about $1/T_{\\rm obs}$ of width)` : ''} · quality factor $Q=f_1/\\Delta f$ ≈ ${v.fix(S.f1 / pred, 0)} · ${sel.value === 'guitar' ? 'partial $n$ decays $1+0.12(n-1)$ times faster, so its line is that much broader' : sel.value === 'marimba' ? 'the overtones (×3.98, ×9.85) decay 3 and 7 times faster: broader lines' : 'three short-lived partials: broad bumps'}`;
+            return `${S.name}: fundamental ${S.f1} Hz, decay time $\\tau$ = ${tS.value < 0.1 ? v.fix(tS.value * 1000, 0) + ' ms' : v.fix(tS.value, 2) + ' s'} · measured half-power width ${d.width != null ? v.fix(d.width, 3) : '—'} Hz, predicted $1/\\pi\\tau$ = ${v.fix(pred, 3)} Hz${tS.value > Tobs / 4 ? ` (the ${v.fix(Tobs, 1)} s recording cuts the decay short and adds about $1/T_{\\rm obs}$ of width)` : ''} · quality factor $Q=f_1/\\Delta f$ ≈ ${v.fix(S.f1 / pred, 0)} · ${sel.value === 'guitar' ? 'partial $n$ decays $1+0.12(n-1)$ times faster, so its line is that much broader' : sel.value === 'marimba' ? 'the overtones (×3.98, ×9.85) decay 3 and 7 times faster: broader lines' : 'two short-lived partials: bumps, no pitch-defining lines'}`;
           }
           if (sel.value === 'organ') return `steady organ-like tone on ${S.f1} Hz, held for the whole 4 s: lines of width ${d.width != null ? v.fix(d.width, 2) : '—'} Hz, close to the limit $0.89/T_{\\rm obs}$ = ${v.fix(0.886 / (NF / SR2 - 0.05), 2)} Hz set by the 4 s of observation (see 4.6) · listen longer and the lines get narrower`;
           let s = 0, s2 = 0, n = 0; for (let b = Math.round(100 / d.df); b < d.nb; b += 7) { const x = dB(d.mag[b] / d.mm); s += x; s2 += x * x; n++; }
           const sd = Math.sqrt(Math.max(0, s2 / n - (s / n) ** 2));
-          return sel.value === 'click' ? `a 0.27 ms click: level from 100 Hz to 3 kHz is flat to within ${v.fix(sd, 2)} dB (standard deviation): every frequency at once, none singled out` : `0.4 s of white noise: a continuum with random ripples (standard deviation ${v.fix(sd, 1)} dB across 100 Hz–3 kHz) without the stable harmonic lines of a periodic tone`;
+          return sel.value === 'click' ? `a 0.27 ms click: level from 100 Hz to 3 kHz is flat to within ${v.fix(sd, 2)} dB (standard deviation): every frequency at once, none singled out` : `0.4 s of white noise: a continuum with random ripples (standard deviation ${v.fix(sd, 1)} dB across 100 Hz–3 kHz) but no lines anywhere`;
         });
       },
     },

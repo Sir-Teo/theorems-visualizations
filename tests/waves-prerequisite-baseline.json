@@ -1,0 +1,336 @@
+{
+  "edges": {
+    "1.1": [
+      "pma-5.15"
+    ],
+    "1.6": [
+      "pde-2.5"
+    ],
+    "1.9": [
+      "pma-9.36"
+    ],
+    "2.4": [
+      "pma-8.16"
+    ],
+    "3.4": [
+      "pma-5.10"
+    ],
+    "3.5": [
+      "pma-5.15"
+    ],
+    "3.6": [
+      "pma-8.21",
+      "rca-9.13"
+    ],
+    "3.10": [
+      "ladr-7.31"
+    ],
+    "4.5": [
+      "pma-5.8"
+    ],
+    "4.6": [
+      "pma-5.8"
+    ],
+    "4.12": [
+      "pma-5.8"
+    ],
+    "4.15": [
+      "pma-6.21"
+    ]
+  },
+  "baseline": {
+    "1.9": {
+      "file": "content/waves/ch01-b.js",
+      "idea": "On each side the solution is a d'Alembert sum (1.3) with only outgoing waves added to the incident one. Two conditions hold at the joint: the string does not break, so $y$ is continuous (giving $1+r=\\tau$), and the massless joint feels no net force, so $Ty_x$ is continuous. Using $F=Z\\dot y$ for each travelling wave (1.8), the second condition becomes $Z_1(1-r)=Z_2\\tau$. Solving the two linear equations gives $r$ and $\\tau$. The energy fractions follow from the flux $P=Z\\dot y^{2}$ (1.7): $Z_1r^2+Z_2\\tau^2=Z_1$.",
+      "deps": [
+        "waves-1.8",
+        "waves-1.3"
+      ],
+      "hash": "a6dd575f4dd83a9f35796f7b4d6a5c9bd75b50164d534d37ee08d8bde7542d6b"
+    },
+    "1.10": {
+      "file": "content/waves/ch01-b.js",
+      "hash": "a6eac7b064ab14dd354bc0aadecc70a6b9eb1ab4e6b153cac2252718ea9d04f4"
+    },
+    "1.11": {
+      "file": "content/waves/ch01-b.js",
+      "hash": "762952c8af836f63b0824abd5c9b480a08a08d013ffcb9a6eb045122b3615726"
+    },
+    "1.12": {
+      "file": "content/waves/ch01-b.js",
+      "hash": "220cf457b199a014204f6b879d9f87bfb5fa8312c9e5eacbdcb9da707493ddf4"
+    },
+    "1.13": {
+      "file": "content/waves/ch01-b.js",
+      "hash": "54b4d1699ac63b886c4151fcd101f98fada9b746e5d185f1236865e0d07fd2f4"
+    },
+    "1.14": {
+      "file": "content/waves/ch01-b.js",
+      "hash": "354040bab3c0078aaf79b92eba9c687c56b141c55753d4cbdb17462125fd102e"
+    },
+    "1.15": {
+      "file": "content/waves/ch01-b.js",
+      "hash": "55e0f98f1cce19927a87cf16adb365efe4bc5cc8904743c81f12178b7646c312"
+    },
+    "1.1": {
+      "file": "content/waves/ch01.js",
+      "idea": "Taylor's theorem turns the second difference into a second derivative: $y_{j+1}-2y_j+y_{j-1}=a^2y_{xx}+\\tfrac{a^4}{12}y_{xxxx}+\\cdots$. Dividing by $m=\\mu a$ gives $\\ddot y=(\\kappa a/\\mu)\\,y_{xx}$ plus a correction of relative size $(ka)^2$. That correction is the chain's dispersion relation (mech-11.8) expanded near $k=0$. It vanishes in the limit for every fixed $k$, but a sharp pulse always contains wavenumbers comparable to $1/a$. Those components fall behind and trail ripples after the pulse: the continuum description converges like $1/N^2$ for smooth pulses and much more slowly for kinked or sharp-edged ones.",
+      "deps": [
+        "mech-11.8"
+      ],
+      "allowedFields": [
+        "statement"
+      ],
+      "expectedFields": {
+        "statement": "6122f2fac50c3677c0fb8bfcc8ddc1954cabc34a552db2794db924338d0f854c"
+      },
+      "hash": "c714ef39988e5fda7cf3331de0f172c0bbe6b351020f9d747fd0a5050951985c"
+    },
+    "1.2": {
+      "file": "content/waves/ch01.js",
+      "hash": "938ff2885e3a049bbee28c0d497799a7130d68615a3099235cc69847e79eb667"
+    },
+    "1.3": {
+      "file": "content/waves/ch01.js",
+      "hash": "86b859e85cacd159f844b71ded0da43ec7be08b6602511bd330c62687b7d96e4"
+    },
+    "1.4": {
+      "file": "content/waves/ch01.js",
+      "hash": "d6e0081d400b6aa754a7a81b60d6d5a64d708b73c64a5732f12d264dea351ccf"
+    },
+    "1.5": {
+      "file": "content/waves/ch01.js",
+      "hash": "515f2f576ec68127ac439dbb89034d62f30575b15cab3d23a6cfcd0dc5d42e8e"
+    },
+    "1.6": {
+      "file": "content/waves/ch01.js",
+      "idea": "The wave operator $L u=u_{tt}-c^2u_{xx}$ is linear: $L(au_1+bu_2)=aLu_1+bLu_2$, and initial data add in the same way, so by uniqueness (pde-2.5) the solution for $u_1(0)+u_2(0)$ is $u_1+u_2$. D'Alembert's formula (1.3) makes this concrete: the right-moving parts add, the left-moving parts add, and each moves at $c$ regardless of the other. With a term like $\\beta u_x^2u_x$ the operator is no longer linear: the cross terms $3\\beta(u_{1x}^2u_{2x}+u_{1x}u_{2x}^2)$ appear only where both waves are present, and they are the interaction.",
+      "deps": [
+        "waves-1.3"
+      ],
+      "hash": "8184ef4cd03fa24e972bf2718a92d53c92b8236c6be9c7e93b71bbaa48adbc63"
+    },
+    "1.7": {
+      "file": "content/waves/ch01.js",
+      "hash": "5cb8d914981d6f6f1c9a58e57b6b678ccfe53fa37f565e877c0881167ed0a9b5"
+    },
+    "1.8": {
+      "file": "content/waves/ch01.js",
+      "hash": "21e5c3549fb7272dcb3f3515c7a613c6ef870050d65b5dec37e54d78d28f97d6"
+    },
+    "2.7": {
+      "file": "content/waves/ch02-b.js",
+      "hash": "402124f45331917dd0a6fbbb75dda4d1188e3615a270c2711ffe26b15c334543"
+    },
+    "2.8": {
+      "file": "content/waves/ch02-b.js",
+      "hash": "926fe93991e81d291a0d7112751a398dac4bd701c45ba806f866623233db3e73"
+    },
+    "2.9": {
+      "file": "content/waves/ch02-b.js",
+      "hash": "0b4317d5b0f20133f4eef6b2b7d6ba9e76305b9e75ba7306b1609ce4076d1388"
+    },
+    "2.10": {
+      "file": "content/waves/ch02-b.js",
+      "hash": "d3fb2a6410050e6bc3252df7924dea3c053f6fd6955bf39f61674d6f35b1033b"
+    },
+    "2.11": {
+      "file": "content/waves/ch02-b.js",
+      "hash": "b43ee20f70ae4f83efab300a8fcd5278671e3b05046e27efcdd60a0d8cb23fef"
+    },
+    "2.1": {
+      "file": "content/waves/ch02.js",
+      "hash": "6e4b967feceb59d92c92bea703664c1cef9ba93b4e22f6011ced5bbba0480041"
+    },
+    "2.2": {
+      "file": "content/waves/ch02.js",
+      "hash": "9e4c927685d39c7203ad14d3c5d1a39c75c1eb70d18dd603e8f85a0c1a8f3978"
+    },
+    "2.3": {
+      "file": "content/waves/ch02.js",
+      "hash": "a677f87e8909521e70e5a709e1d8677630ac2ae79adbc02cee22511fd5033235"
+    },
+    "2.4": {
+      "file": "content/waves/ch02.js",
+      "idea": "Kinetic energy is $\\tfrac12\\mu\\int u_t^2\\,dx$ and potential energy (from stretching, 1.7) is $\\tfrac12T\\int u_x^2\\,dx$. Substituting the mode expansion, the orthogonality of $\\sin(n\\pi x/L)$ and of $\\cos(n\\pi x/L)$ on $[0,L]$ kills every cross term, leaving a sum of independent harmonic oscillators with energies $E_n$. Each oscillator conserves its own energy because the modes do not couple in a linear system (2.2). The picture is the same one used for the energy of coupled oscillators in mechanics: normal coordinates diagonalise the energy. Real nonlinearity couples the modes and lets them exchange energy, as in the famous Fermi–Pasta–Ulam–Tsingou computation.",
+      "deps": [
+        "waves-2.3",
+        "waves-1.7"
+      ],
+      "allowedFields": [
+        "statement"
+      ],
+      "expectedFields": {
+        "statement": "57fb401e657834580ea729a37122d08fb47dd3041c0b122c05b4f2b9f22aec9b"
+      },
+      "hash": "13ad30c9d10631d56bf5cf4d85338ecf88e5dbc83c4431dda081f4a1551b6c36"
+    },
+    "2.6": {
+      "file": "content/waves/ch02.js",
+      "hash": "8378bbc085def9293f4725af8b03b87ae6eeeffd64c704c64d02f4f098d3bce3"
+    },
+    "3.8": {
+      "file": "content/waves/ch03-b.js",
+      "hash": "d9c9a30db621ceeb3c4605f1c72997105f5f84119101995ef9eec093f26fd7f4"
+    },
+    "3.9": {
+      "file": "content/waves/ch03-b.js",
+      "hash": "d73490ae264a00611d9d79c31129e5cd5183344f01c0b387cb1ce495337a7dd4"
+    },
+    "3.10": {
+      "file": "content/waves/ch03-b.js",
+      "idea": "The equations of motion of the two kinds of mass couple through the same $k$, so for each $k$ one gets a $2\\times2$ eigenproblem (continuing the single-mass chain of mech-11.8), hence two frequencies. At the zone edge $k=\\pi/a$ the two branches are split by the mass difference: the light and heavy masses can no longer be traded. For a frequency in the gap, the dispersion relation still has solutions, but with complex $k=\\pi/a+i\\kappa$, i.e. spatially decaying waves; they carry no energy away from the driver (the same mathematics as 3.11).",
+      "deps": [
+        "waves-3.3",
+        "mech-11.8"
+      ],
+      "hash": "326253c965928b7224b7ddf9f46ce13a9d8c075bc9822f331502ce8fd47d730c"
+    },
+    "3.11": {
+      "file": "content/waves/ch03-b.js",
+      "hash": "59bf4d7250eab2b3bb09eaa7dcaff5a3dc8c33b518d3a6b4a450a7fcbe43ea37"
+    },
+    "3.12": {
+      "file": "content/waves/ch03-b.js",
+      "hash": "7bb21873943d90afee5d21564d48c12be8a4d72ec7886d580b43a0e3ea608b15"
+    },
+    "3.13": {
+      "file": "content/waves/ch03-b.js",
+      "hash": "ce467831add7b4fb628fbaf850d9f3c1e4bd93e746b83d4e90a6a1d05bde29c8"
+    },
+    "3.14": {
+      "file": "content/waves/ch03-b.js",
+      "hash": "ff7d228bea99445e38556a0f499302a39792e0b33bf0e489caec996894221020"
+    },
+    "3.1": {
+      "file": "content/waves/ch03.js",
+      "hash": "d81574bb692048a049ffeb1be300cb9e8c59a7860b457df06c3608d56fab6c17"
+    },
+    "3.2": {
+      "file": "content/waves/ch03.js",
+      "hash": "7c765a2cc6ce645685b711c7ce4b48d013625531fa4c115c8811e854621725bf"
+    },
+    "3.3": {
+      "file": "content/waves/ch03.js",
+      "hash": "611531d979d1cf03c56cd7986740d01857da70703f01e648c4f4aedc3b6fe13c"
+    },
+    "3.4": {
+      "file": "content/waves/ch03.js",
+      "idea": "Beats (3.1) in space and time: the product-to-sum identity separates a fast carrier from a slow envelope, and the envelope's speed is the ratio of its frequency to its wavenumber, which are the *differences* $\\Delta\\omega$ and $\\Delta k$ of the components. On the dispersion curve (3.3) that ratio is the slope of the chord joining the two points; shrinking the chord gives the tangent. The crest speed is instead the slope of the line from the origin.",
+      "deps": [
+        "waves-3.3",
+        "waves-3.1"
+      ],
+      "hash": "e784f355a03628838ff701bdfeedcbda9cf3aeb955b5931d1f0f199a2886c46e"
+    },
+    "3.5": {
+      "file": "content/waves/ch03.js",
+      "idea": "Write $\\psi=e^{i(k_0x-\\omega_0t)}\\int A\\,e^{i(k-k_0)(x-v_gt)}e^{-i\\frac12\\omega''(k-k_0)^2t-\\dots}dk$ by expanding $\\omega$ about $k_0$. If the neglected terms are small over the band, what remains is the Fourier integral of $A$ evaluated at $x-v_gt$: the initial envelope, translated. The stationary-phase view says the same: the integrand oscillates wildly in $k$ except where the phase $kx-\\omega(k)t$ is stationary, i.e. $x=\\omega'(k)t$, and the main contribution comes from near $k_0$. This uses that a pulse is a continuous superposition of waves (2.9) and the two-wave result (3.4).",
+      "ideaPrefix": "Use $\\kappa=k-k_0$ as the offset. Expanding $\\omega$ about $k_0$ gives $\\psi=e^{i(k_0x-\\omega_0t)}J$, where $J$ integrates $A(k_0+\\kappa)$ times $e^{i\\kappa(x-v_gt)}$ and the remaining phase $e^{-itR(\\kappa)}$. Here $R(\\kappa)=\\tfrac12\\omega''(k_0)\\kappa^2+\\cdots$. If the neglected terms are small over the band, what remains is the Fourier integral of $A$ evaluated at $x-v_gt$: the initial envelope, translated. The stationary-phase view says the same: the integrand oscillates wildly in $k$ except where the phase $kx-\\omega(k)t$ is stationary, i.e. $x=\\omega'(k)t$, and the main contribution comes from near $k_0$. This uses that a pulse is a continuous superposition of waves (2.9) and the two-wave result (3.4).",
+      "deps": [
+        "waves-3.4",
+        "waves-2.9"
+      ],
+      "hash": "ecb6f4ed2d02fdcccc8911d9e71e04c32f8beffc4ed1745e4970b19adadc6fdc"
+    },
+    "3.6": {
+      "file": "content/waves/ch03.js",
+      "idea": "In wavenumber space the pulse is a Gaussian (the Gaussian is its own Fourier transform, fa-7.6), and propagation multiplies each component by the phase $e^{-i\\beta(k-k_0)^2t/2}$. A Gaussian times a quadratic phase is still a Gaussian with complex width $\\sigma_0^2+i\\beta t/2$, which gives both the growth of the width and the chirp: the faster components, which sit at one end of the pulse, drift away from the slower ones. The group velocity (3.5) sets where the pulse is; the curvature $\\beta$ sets how fast it fattens.",
+      "deps": [
+        "waves-3.5",
+        "fa-7.6"
+      ],
+      "hash": "532cc99d7d061e7bb7749843543a3a633d2c919e74e090b78839f2687b3719dc"
+    },
+    "3.7": {
+      "file": "content/waves/ch03.js",
+      "hash": "1eb66ca0b500723db7f77e7216e44004faee319857755e3b762ccaaed4fd1ea1"
+    },
+    "4.9": {
+      "file": "content/waves/ch04-b.js",
+      "hash": "44854197cfceb81ea00771647e747cfc3decf179e2299b7c2fef56becc90d129"
+    },
+    "4.10": {
+      "file": "content/waves/ch04-b.js",
+      "hash": "4a78be67a03c184febe4c8e81d9bcd0710cb2926e7353801a66cbaa3ca326d01"
+    },
+    "4.11": {
+      "file": "content/waves/ch04-b.js",
+      "hash": "1a502b21e1f2ab3ec7dbd47e28b0333b3e0a2483572c6577a358bd7d78b5acc1"
+    },
+    "4.12": {
+      "file": "content/waves/ch04-b.js",
+      "idea": "Snell's law (4.6) applied at each surface with a wavelength-dependent $n$ (3.3, em-11.13) gives the deviation of each colour. For the drop, the deviation as a function of $b$ is stationary at its minimum, so many neighbouring rays leave in nearly the same direction and their combined intensity peaks there (the stationary-deviation ray). Since $D_{\\min}$ depends on $n$, the colours land at slightly different angles: red outermost in the primary bow, innermost in the secondary. The region between the bows is darker (Alexander's band). In this ray order no unwrapped deviation below $D_{\\min}$ occurs. This produces the primary bow’s outer edge and the secondary bow’s inner edge, leaving the region between them comparatively dark. This geometric picture omits the Airy interference that produces the faint supernumerary bows.",
+      "deps": [
+        "waves-4.6",
+        "em-11.13"
+      ],
+      "allowedFields": [
+        "statement"
+      ],
+      "expectedFields": {
+        "statement": "137d2838115232970413add7b421bfe6f45b6c486cf41748e0a404130da47463"
+      },
+      "hash": "1a45a379b41fbb0d4dfb3d7049077e84815bb650f94df2df9b177dd6d23a0d5f"
+    },
+    "4.13": {
+      "file": "content/waves/ch04-b.js",
+      "hash": "9ed3ff794fe8670b205a66514f3f758fb3334943786f42ff618dff1cab2fd7ba"
+    },
+    "4.14": {
+      "file": "content/waves/ch04-b.js",
+      "hash": "68c147087e14235fbbc4cc02ba4d3729f5418b3b1385f3b94097837877c7d92d"
+    },
+    "4.15": {
+      "file": "content/waves/ch04-b.js",
+      "idea": "In a thin slice $dx$ the irradiance (4.2) lost is proportional to the irradiance present, to the number of absorbers per volume and to their absorption cross-section: $dI=-\\alpha I\\,dx$, which integrates to the exponential. Bouguer (1729) found the exponential dependence on thickness, Lambert (1760) stated it as a law of thickness, and Beer (1852) showed the dependence on concentration. A spectrophotometer reads $A$ rather than $I$ because $A$ is proportional to $c$, so a calibration line gives concentrations; stray light $s$ adds a floor to the detected signal, giving $A_{\\rm app}=-\\log_{10}[(T+s)/(1+s)]$, which saturates at $\\log_{10}[(1+s)/s]$ for $s>0$ however dark the sample.",
+      "deps": [
+        "waves-4.2",
+        "em-11.13"
+      ],
+      "hash": "52c077039b214b1ce5f18a4c718f6ecdbc7536ba9dee8b1ab47b47ade39df516"
+    },
+    "4.1": {
+      "file": "content/waves/ch04.js",
+      "hash": "ec1ddbde9d52b0874c42f885da769878a0f3849ff46575ebdede60bdc4639b20"
+    },
+    "4.2": {
+      "file": "content/waves/ch04.js",
+      "hash": "49f7be5b0024770a8429e8a4a72d3ad0c9395dbf181ff323596be07ddce3c761"
+    },
+    "4.3": {
+      "file": "content/waves/ch04.js",
+      "hash": "37f87d2898fb626c2397314702827839576d06a5adc02c238cc0618466e59117"
+    },
+    "4.4": {
+      "file": "content/waves/ch04.js",
+      "hash": "987699708ab5fabc32e91e62a2d857fec9b31e2dae29658c0997be7549ebbab3"
+    },
+    "4.5": {
+      "file": "content/waves/ch04.js",
+      "idea": "With Huygens' principle (4.4): the plane front reaches the mirror point by point, and the wavelet from the first point has spread by $vt$ when the last point is just reached. Since the wavelets stay in the same medium they share one speed, so the common tangent through the contact point and the first wavelet is the mirror image of the incident front: two right triangles with equal hypotenuse and a common side are congruent, giving $\\theta_r=\\theta_i$. The same law follows from Fermat's principle (5.2) as the path of least length.",
+      "deps": [
+        "waves-4.4"
+      ],
+      "hash": "e110473d9491ae1509d8dbd2373a4ad34d9e727b77a4ee47b778b69f2bd6550d"
+    },
+    "4.6": {
+      "file": "content/waves/ch04.js",
+      "idea": "With Huygens’ principle (4.4): the front sweeps along the interface at speed $v_1/\\sin\\theta_1$. In the same time the wavelet from the first contact point reaches radius $v_2t$ in medium 2, so the common tangent through the moving contact point makes $\\sin\\theta_2=v_2t/d$ with the interface, and $\\sin\\theta_1=v_1t/d$; dividing, $\\sin\\theta_1/\\sin\\theta_2=v_1/v_2=n_2/n_1$. Fermat (5.2) gives it as the path of least time, and the phase-matching view is the boundary condition behind the Fresnel equations (4.7).",
+      "deps": [
+        "waves-4.4",
+        "waves-4.3"
+      ],
+      "hash": "1e5ee7b544180fdcef01d164aba2ab5a94dc857d426453a06996f2500bcd8ee1"
+    },
+    "4.7": {
+      "file": "content/waves/ch04.js",
+      "hash": "9261736a3685ee89df86f94e94446c8e9f288725bcfb84431b747e9f1cc310aa"
+    },
+    "4.8": {
+      "file": "content/waves/ch04.js",
+      "hash": "4b8df9b2eb38f8cb8e968fa3018251b6f77d2069778a2c03e60805d80db3f474"
+    }
+  },
+  "syllabusHash": "76df50c7f8799621dc45ec470a47f726bf8822b9c505729902c7ef900660b860"
+}

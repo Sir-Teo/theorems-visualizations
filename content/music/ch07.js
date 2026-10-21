@@ -1,5 +1,9 @@
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (items 7.1–7.6)
+import { wolfModel, wolfPoint, wolfEdgeHit, wolfAudio } from './source-audit-wolf-equal.js';
 import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, M3P, NOTE, sc, fold, circ, ring, cents, gcd, seqCents, chordCents, nearPairs, tuneChain, chainSemi, CHAIN } from './ch07.shared.js';
+import { jiModel, jiAudio } from './source-audit-just-meantone.js';
+
+import { pythagoreanScale, rotationModel, tuningAudio } from './source-audit-pythagorean.js';
 
 const CH = CHAIN;
 
@@ -14,57 +18,47 @@ export default {
       num: '7.1',
       kind: 'Method',
       name: 'Pythagorean tuning',
-      statement: String.raw`Pythagorean tuning builds a scale from two intervals only, the octave $2{:}1$ and the pure fifth $3{:}2$. Start on a note, tune a pure fifth above it, another above that, and so on; after folding every note back into one octave (dividing by 2 as often as needed) each note has a frequency ratio $3^k/2^m$ to the first. Five consecutive notes of the fifth-chain (four fifths) give the pentatonic scale; seven notes, taken from F to B, give the diatonic scale with two kinds of step, the whole tone $9{:}8$ (203.9 ¢) and the semitone or **limma** $256{:}243$ (90.2 ¢). Twelve notes fill the octave with the limma and a larger semitone (the apotome, 113.7 ¢).`,
-      idea: String.raw`Stacking $k$ fifths multiplies a frequency by $(3/2)^k$, which adds $k\cdot701.955$ ¢ on the logarithmic scale of pitch (1.6); folding into the octave is subtraction of multiples of 1200 ¢, so the notes are the points $k\cdot701.955 \bmod 1200$ on a circle. Two consecutive fifths minus an octave make a whole tone $(9/8)$, and the leftover between two tones and a fourth is the limma $(256/243)$. The method is old: Greek theorists built their tetrachords with $9{:}8$ tones and a $256{:}243$ remainder, and medieval European music was tuned this way until pure thirds became desirable (7.5).`,
-      caption: String.raw`The slider stacks pure fifths one at a time; each new note lands on the pitch circle (one turn is one octave) and the gold note is the newest. Start the chain on F to reach the diatonic scale after seven notes, or on C to reach the pentatonic scale after five. Below, the notes laid out within the octave, with the size of each step in cents: tones (T) and limmas (L). Play the scale, or the last fifth added.`,
-      deps: ['music-6.1', 'music-1.6'],
-      see: ['music-2.6', 'music-7.2', 'music-8.1'],
-      refs: ['Benson §5.2 pp. 154–155 (full author-hosted text)'],
+      statement: String.raw`Pythagorean tuning uses exact octaves $2{:}1$ and fifths $3{:}2$. A chain of $n$ notes has $n-1$ fifths: note $k$, starting with $k=0$, has ratio $(3/2)^k$ before octave reduction. Divide by a power of 2 to put each ratio in $[1,2)$. Five consecutive notes give a pentatonic collection; seven, such as F–C–G–D–A–E–B, give a diatonic collection. Its five whole-tone steps have ratio $9/8$ (203.910 ¢), and its two smaller steps, called limmas, have ratio $256/243$ (90.225 ¢).`,
+      idea: String.raw`Two fifths minus one octave give $(3/2)^2/2=9/8$. A fourth minus two whole tones gives $(4/3)/(9/8)^2=256/243$; subtracting a limma from a tone gives the larger semitone or apotome, $(9/8)/(256/243)=2187/2048$ (113.685 ¢). Cents turn multiplication into addition (1.6): the exact fifth is $1200\log_2(3/2)$ cents, approximately 701.955. The rounded decimal is a display value; the construction uses exact ratios.`,
+      caption: String.raw`Choose a starting note and a number of notes, including the start. The circle shows every note and every fifth added; gold is newest. The table sorts the notes within the octave above the chosen start, then adds its closing octave at ratio 2. Each row gives its exact ratio, cents and gap to the next row. Playback uses authored pure sine tones: an ascending scale, or the last pure fifth together. One note has no last fifth.`,
+      deps: ['music-1.6'],
+      see: ['music-6.1', 'music-2.6', 'music-7.2', 'music-8.1'],
+      refs: ['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §§5.2–5.4, pp. 154–158'],
       tags: ['tuning', 'fifths'],
-      credit: 'Greek harmonics (the "Pythagorean" scale, traditionally attributed to Pythagoras and described by Philolaus and in Plato\'s Timaeus)',
-      scope: String.raw`An abstract tuning: every fifth is exactly $3{:}2$. The attribution to Pythagoras himself rests on later tradition; the numerical scale is certainly Greek. Its major third $81/64$ (407.8 ¢) is 21.5 ¢ wider than the pure $5/4$, which is why it was later abandoned for chords.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pythagorean_tuning' },
-      verify: true,
+      credit: 'Tuning construction and terminology: Dave Benson, Music: A Mathematical Offering, 2008 Web version; finite table and playback authored here.',
+      scope: String.raw`Exact abstract ratios, without a claim about an ancient tuning practice or a listener’s consonance ratings. The selected start is the origin: F uses an authored anchor $\mathrm{F4}=(4/3)\,261.6256$ Hz, C uses $\mathrm{C4}=261.6256$ Hz. Pure sine playback has 10-ms end ramps and is uncalibrated. The last-fifth pair keeps ratio $3/2$ and may extend above the displayed octave.`,
+      links: { source: 'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf' },
+      verify: false,
       viz(v) {
-        const NM = ['F', 'C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'C♯', 'G♯', 'D♯', 'A♯', 'E♯'];
         const from = v.select('chain starts at', [{ value: 'F', label: 'F: F C G D A E B …' }, { value: 'C', label: 'C: C G D A E B …' }], 'F');
-        const n = v.slider('fifths stacked (notes in the chain)', 1, 12, 7, { int: true });
-        const s = v.stage({ x: [-1.5, 1.5], y: [-1.42, 1.42], equal: true, axes: false, height: 400, title: 'the pitch circle: one turn is one octave' });
-        const ld = v.stage({ x: [-40, 1240], y: [0, 1], height: 150, axes: false, full: true, title: 'the notes within the octave (cents above C)' });
-        const snd = v.sound();
-        const notes = () => { const k0 = from.value === 'F' ? -1 : 0; return Array.from({ length: n.value }, (_, i) => { const k = k0 + i; return { k, name: NM[k + 1], pc: fold(k * FIFTH) }; }); };
-        const kind = (d) => (Math.abs(d - cents(9 / 8)) < 0.6 ? 'T' : Math.abs(d - cents(256 / 243)) < 0.6 ? 'L' : Math.abs(d - cents(32 / 27)) < 0.6 ? 'T+L' : Math.abs(d - cents(65536 / 59049)) < 0.6 ? 'T+T' : '');
-        const steps = (N) => { const P = N.map((x) => x.pc).sort((a, b) => a - b); return P.map((p, i) => ({ a: p, b: i + 1 < P.length ? P[i + 1] : P[0] + 1200, d: (i + 1 < P.length ? P[i + 1] : P[0] + 1200) - p })); };
-        v.soundButton('play the scale', (sd) => { const P = notes().map((x) => x.pc).sort((a, b) => a - b); sd.samples(seqCents(P.concat([P[0] + 1200]).map((c) => [c]), C4, 0.55, 0.03), SR, { gain: 0.9 }); });
-        v.soundButton('play the last fifth', (sd) => { const N = notes(); if (N.length < 2) return; const p = N[N.length - 2].pc; const b = p > 600 ? p - 1200 : p; sd.samples(chordCents([b, b + FIFTH], C4, 1.6), SR, { gain: 0.9 }); });
+        const n = v.slider('notes in the chain (including the start)', 1, 12, 7, { int: true });
+        const s = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.45], equal: true, axes: false, height: 380, title: 'pure fifths, folded above the selected start' });
+        const table = v.stage({ x: [0, 4.8], y: [-.6, 14.5], height: 430, axes: false, full: true, title: 'ratios and cents above the selected start; gap to next row' });
+        let info;
+        const play = kind => sd => { const a = tuningAudio(from.value, n.value, kind); sd.samples(a.samples, a.sampleRate, { gain: 1 }); };
+        v.soundButton('Play ascending sine scale', play('scale'));
+        const fifth = v.soundButton('Play last pure fifth', play('fifth'));
+        v.button('Stop audio', () => v.sound().stop());
         v.render(() => {
-          const N = notes();
+          const a = pythagoreanScale(from.value, n.value); info=a;
+          fifth.disabled = a.count === 1;
           ring(s, 1, { tick: 100 });
-          N.forEach((x, i) => {
-            if (i) { const a = circ(N[i - 1].pc, 0.97), b = circ(x.pc, 0.97); s.arrow(a[0], a[1], b[0], b[1], { color: 'orange', width: 1.4, alpha: 0.65 }); }
+          a.chain.forEach((p, i) => { if (i) { const q = circ(a.chain[i - 1].cents, .96), r = circ(p.cents, .96); s.arrow(...q, ...r, { color: 'orange', width: 1.2, alpha: .6 }); } });
+          a.chain.forEach((p, i) => { const q = circ(p.cents, 1), r = circ(p.cents, 1.18), last = i === a.count - 1; s.dot(...q, { r: last ? 7 : 5, color: last ? 'gold' : 'accent' }); s.text(p.name, ...r, { size: 12, align: 'center', baseline: 'middle', weight: 600, color: last ? 'gold' : 'ink' }); });
+          s.text(`${a.count} note${a.count === 1 ? '' : 's'}`, 0, .08, { size: 13, align: 'center', baseline: 'middle', plate: true });
+          s.text(`${a.fifths} fifths`, 0, -.13, { size: 12, align: 'center', baseline: 'middle', color: 'muted', plate: true });
+          table.setView([0, 4.8], [-.6, a.count + 1.7]);
+          ['note', 'exact ratio', 'cents', 'next gap (¢)'].forEach((t, i) => table.text(t, [.35, 1.6, 2.9, 4.1][i], a.count + 1.05, { size: 11, weight: 700, align: 'center', baseline: 'middle' }));
+          [...a.order, { name: `${a.start} ↑`, ratio: '2/1', cents: 1200 }].forEach((p, i) => {
+            const y = a.count - i, color = p.k === a.count - 1 ? 'gold' : 'ink';
+            table.text(p.name, .35, y, { size: 12, align: 'center', baseline: 'middle', weight: 600, color });
+            table.text(p.ratio, 1.6, y, { size: 11, align: 'center', baseline: 'middle', color });
+            table.text(v.fix(p.cents, 3), 2.9, y, { size: 11, align: 'center', baseline: 'middle', color });
+            table.text(i < a.count ? v.fix(a.gaps[i].cents, 3) : '—', 4.1, y, { size: 11, align: 'center', baseline: 'middle', color: 'orange' });
           });
-          N.forEach((x, i) => {
-            const p = circ(x.pc, 1), q = circ(x.pc, 1.17), last = i === N.length - 1;
-            s.dot(p[0], p[1], { r: last ? 8 : 6, color: last ? 'gold' : 'accent' });
-            s.text(x.name, q[0], q[1], { size: 12.5, color: last ? 'gold' : 'ink', align: 'center', baseline: 'middle', weight: 600 });
-          });
-          const st = steps(N), pat = st.map((q) => kind(q.d) || v.fix(q.d, 0)).join(' ');
-          s.text(N.length > 1 ? pat : '', 0, 0, { size: 12.5, color: 'muted', align: 'center', baseline: 'middle', plate: true });
-          // ladder
-          ld.line(0, 0.5, 1200, 0.5, { color: 'faint', width: 1.5 });
-          const sorted = N.slice().sort((a, b) => a.pc - b.pc);
-          for (let c = 0; c <= 1200; c += 100) ld.line(c, 0.46, c, 0.54, { color: 'muted', width: 1 });
-          sorted.forEach((x) => { ld.dot(x.pc, 0.5, { r: 5.5, color: 'accent' }); ld.text(x.name, x.pc, 0.76, { size: 12, align: 'center', weight: 600 }); ld.text(v.fix(x.pc, 1), x.pc, 0.22, { size: 9.5, color: 'muted', align: 'center' }); });
-          if (sorted.length) { ld.dot(sorted[0].pc + 1200, 0.5, { r: 5.5, color: 'accent', hollow: true }); }
-          st.forEach((q) => { if (q.d > 40) ld.text(kind(q.d) || v.fix(q.d, 0), (q.a + q.b) / 2, 0.5, { size: 11, color: 'orange', align: 'center', baseline: 'bottom', dy: -7, weight: 700 }); });
         });
-        v.legend([['accent', 'note of the chain'], ['gold', 'newest note'], ['orange', 'fifth added (3:2 = 701.955 ¢)']]);
-        v.readout(() => {
-          const N = notes(), st = steps(N), last = N[N.length - 1];
-          const T = st.filter((q) => kind(q.d) === 'T').length, L = st.filter((q) => kind(q.d) === 'L').length;
-          const e = N.find((x) => x.name === 'E♯'), f = N.find((x) => x.name === 'F');
-          return `${N.length} note${N.length > 1 ? 's' : ''}: newest ${last.name} = $(3/2)^{${last.k}}$ folded = ${v.fix(last.pc, 2)} ¢ above C · steps: ${st.map((q) => v.fix(q.d, 1)).join(', ')} ¢${T || L ? ` (${T} tone${T === 1 ? '' : 's'} of 203.9 ¢, ${L} limma${L === 1 ? '' : 's'} of 90.2 ¢)` : ''}${e && f ? ` · E♯ is ${v.fix(e.pc - f.pc, 2)} ¢ above F: the circle does not close (7.3)` : ''}`;
-        });
+        v.legend([['accent', 'earlier note'], ['gold', 'newest note'], ['orange', 'exact fifth added; table: next gap']]);
+        v.readout(() => { const a = info; return `${a.count} note${a.count === 1 ? '' : 's'}, ${a.fifths} fifth${a.fifths === 1 ? '' : 's'}. Newest ${a.chain.at(-1).name}: ratio ${a.chain.at(-1).ratio}, ${v.fix(a.chain.at(-1).cents, 3)} ¢ above ${a.start}. Exact consecutive gap ratios: ${a.gaps.map(g => g.ratio).join(', ')}. The gaps sum to 1200 ¢ (one octave).${a.count === 1 ? ' Last-fifth playback is disabled until a second note is added.' : ''}`; });
       },
     },
     // ------------------------------------------------------------------ 7.2
@@ -72,50 +66,44 @@ export default {
       num: '7.2',
       kind: 'Theorem',
       name: 'Fifths and octaves never meet',
-      statement: String.raw`There are no integers $k\ge1$ and $m$ with $(3/2)^k = 2^m$. Equivalently, $\log_2(3/2)$ is irrational, no stack of pure fifths ends exactly on a stack of octaves, and the folded notes $1200k\log_2(3/2) \bmod 1200$ ¢ are all different. By Kronecker's theorem (an irrational rotation has a dense orbit) they come arbitrarily close to every point of the octave: continuing the chain of pure fifths forever fills the pitch circle densely. The same holds for any stack of a pure ratio $p/q$ whose logarithm is irrational, such as the pure third $5/4$.`,
-      idea: String.raw`If $(3/2)^k = 2^m$ then $3^k = 2^{m+k}$. The left side is odd and the right side is even for $k\ge1$, a contradiction (this is unique factorization into primes in its simplest form). So the rotation by $\alpha=\log_2(3/2)$ turns on the circle $\R/\Z$ by an irrational amount; the points $k\alpha \bmod 1$ are therefore distinct, and by the pigeonhole principle two of the first $N$ lie within $1/N$ of each other, which gives points arbitrarily near the starting note: taking integer multiples of these arbitrarily small rotations gives arbitrarily fine nets in the circle. The near misses (12, 41, 53 fifths) are where the spiral almost closes, and are explained by continued fractions (7.10).`,
-      caption: String.raw`Left: the spiral of $k$ stacked intervals wrapped around the octave circle (one turn is 1200 ¢; the radius grows with $k$ so the spiral can be followed). Near misses are marked in gold. Right: the distance of the $k$-th note from the starting note, in cents, on a logarithmic scale; every new record low is marked. Slide the number of steps up to 400, and choose the pure third, or the equal-tempered fifth $2^{7/12}$, for which the spiral does close after exactly 12 steps (the hypothesis fails).`,
+      statement: String.raw`There are no integers $k\ge1$ and $m$ with $(3/2)^k=2^m$. Thus $\alpha=\log_2(3/2)$ is irrational, and the exact folded notes $1200\{k\alpha\}$ cents are all distinct. Here $\{x\}=x-\lfloor x\rfloor$. Their infinite forward orbit is dense in the octave: every open pitch interval contains a note. The same conclusion holds for the pure third $5/4$. In contrast, $r=2^{7/12}$ has rational $\log_2 r=7/12$ and an orbit of exactly twelve pitches.`,
+      idea: String.raw`If $(3/2)^k=2^m$, then $3^k=2^{m+k}$. If $m+k\le0$, the right side is at most 1; otherwise it is even. Both cases contradict the odd integer $3^k>1$. The same argument uses $5^k=2^{m+2k}$ for thirds. Equality of two folded notes would give such an equality for their positive index difference.
+
+For density, this authored argument completes the finite near-miss step. Given irrational $\alpha$ and a positive integer $N$, place $0,\{\alpha\},\ldots,\{N\alpha\}$ in $N$ equal bins. Two differ by a nonzero $\delta<1/N$. For some positive $q$, the rotation $q\alpha$ is either $\delta$ or $-\delta$ modulo 1. The forward multiples $0,q\alpha,\ldots,\lfloor1/\delta\rfloor q\alpha$ form a grid around the circle in one direction, with every gap at most $\delta$. Choose $N$ sufficiently large by the Archimedean property (pma-1.20). These forward-orbit points approach every pitch arbitrarily closely. A finite chart alone does not prove this infinite assertion.`,
+      caption: String.raw`Left: every step of the selected finite prefix, at an increasing authored radius; radius is an index, not a frequency. Gold marks every strict record near miss and labels the best. Right: every visible step’s distance to the nearest octave, with gold records and the best labelled. The vertical coordinate is $\log_{10}(1+d)$ for distance $d$ in cents, so exact equal-tempered zeros stay at zero. Integer arithmetic decides pure-ratio records and equalities; cents are displayed numerically.`,
       deps: ['music-7.1', 'pma-1.20'],
       see: ['music-7.10', 'music-7.3', 'music-7.14'],
-      refs: ['Benson §6.2 pp. 204–209 (irrationality and convergents)'],
+      refs: ['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §§5.3–5.4 and §6.2 Lemma 6.2.1'],
       tags: ['irrationality', 'fifths'],
-      credit: 'Greek harmonics (impossibility of dividing the octave into whole tones of 9:8, Euclid, Sectio canonis, and Boethius); Kronecker, 1884 (density)',
-      scope: String.raw`Exact statement about the ratio $3/2$ and about any ratio $r$ with $\log_2 r\notin\Q$. For $r = 2^{7/12}$ (equal temperament) the orbit is finite, with period 12.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pythagorean_comma' },
-      verify: true,
+      credit: 'Irrationality and tuning exposition: Benson, 2008 Web version; density proof and finite comparison authored here.',
+      scope: String.raw`An exact theorem about an infinite orbit, illustrated by at most 400 steps. The proof uses the exact logarithm, not the rounded fifth size 701.955 ¢. The chart gives no empirical pitch-discrimination claim. In equal temperament the primitive period is 12 because 7 and 12 are coprime; the number of completed returns depends on the displayed prefix.`,
+      links: { source: 'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf' },
+      verify: false,
       viz(v) {
-        const C = { fifth: FIFTH, third: M3J, et: 700 };
         const which = v.select('stacked interval', [{ value: 'fifth', label: 'pure fifth 3:2' }, { value: 'third', label: 'pure third 5:4' }, { value: 'et', label: 'tempered fifth 2^(7/12)' }], 'fifth');
-        const N = v.slider('number of steps', 1, 400, 60, { int: true, log: true });
-        const s = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.45], equal: true, axes: false, height: 400, title: 'the spiral on the octave circle' });
-        const e = v.stage({ x: [1, 700], y: [0.01, 700], xlog: true, ylog: true, axes: 'box', gutter: true, height: 400, xlabel: 'steps k', ylabel: 'distance from the start (¢)', title: 'near misses' });
-        const dist = (c, k) => { const f = fold(k * c); return Math.min(f, 1200 - f); };
-        const recs = (c, kmax) => { const out = []; let best = 1e9; for (let k = 1; k <= kmax; k++) { const d = dist(c, k); if (d < best - 1e-7) { best = d; out.push(k); } } return out; };
-        const R = () => recs(C[which.value], 700);
+        const N = v.slider('number of steps', 1, 400, 60, { int: true });
+        const s = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.45], equal: true, axes: false, height: 400, title: 'all selected steps on the octave spiral' });
+        const e = v.stage({ x: [-1, 64], y: [-.13, 2.98], axes: 'box', gutter: true, height: 400, xlabel: 'steps k', ylabel: 'distance (¢)', yticks: [0, 1, 10, 100, 600].map(d => [Math.log10(1 + d), `${d}`]), title: 'nearest-octave distance; log10(1 + d)' });
+        let info;
         v.render(() => {
-          const c = C[which.value], n = N.value, rec = R(), R0 = 0.3, R1 = 1.0;
-          ring(s, 1.12, { tick: 100, len: 0.03 });
-          s.text('start', 0, 1.27, { size: 10.5, color: 'muted', align: 'center' });
-          s.line(0, R0, 0, 1.12, { color: 'faint', dash: [4, 4] });
-          const rad = (k) => R0 + (R1 - R0) * (k / n);
-          if (n <= 120) { const P = []; for (let k = 0; k <= n; k++) { const a = circ(fold(k * c), rad(k)); P.push(a); } s.path(P, { color: 'accent', width: 1, alpha: 0.35 }); }
-          for (let k = 1; k <= n; k++) { const a = circ(fold(k * c), rad(k)); s.dot(a[0], a[1], { r: n > 150 ? 1.6 : 2.6, color: 'accent', alpha: 0.85 }); }
-          const a0 = circ(0, R0); s.dot(a0[0], a0[1], { r: 6, color: 'green' });
-          rec.filter((k) => k <= n && (k >= 5 || which.value === 'third')).forEach((k) => { const a = circ(fold(k * c), rad(k)), q = circ(fold(k * c), rad(k) + 0.16); s.dot(a[0], a[1], { r: 6, color: 'gold' }); s.text(`${k}`, q[0], q[1], { size: 11.5, color: 'gold', align: 'center', baseline: 'middle', weight: 700, plate: true }); });
-          const P = []; for (let k = 1; k <= 700; k++) P.push([k, Math.max(0.01, dist(c, k))]);
-          e.dots(P.filter((p) => p[0] <= n), { r: 2, color: 'accent', alpha: 0.8 });
-          e.dots(P.filter((p) => p[0] > n), { r: 1.4, color: 'faint', alpha: 0.6 });
-          rec.forEach((k) => { const d = Math.max(0.01, dist(c, k)); e.dot(k, d, { r: k <= n ? 5 : 3.5, color: k <= n ? 'gold' : 'faint', hollow: k > n }); if (k <= n && k >= 5 && d > 0.011) e.text(`${k}`, k, d, { size: 10.5, color: 'gold', align: 'left', dx: 6, dy: -7, plate: true, weight: 700 }); });
-          e.vline(n, { color: 'orange', dash: [5, 4] });
+          const a = rotationModel(which.value, N.value); info=a;
+          const radius = k => .28 + .72 * k / a.count;
+          ring(s, 1.14, { tick: 100, len: .025 });
+          s.line(0, .28, 0, 1.14, { color: 'faint', dash: [4, 4] });
+          s.path(a.points.map(p => circ(p.folded, radius(p.k))), { color: 'accent', width: 1, alpha: .3 });
+          a.points.slice(1).forEach(p => s.dot(...circ(p.folded, radius(p.k)), { r: a.count > 150 ? 1.7 : 2.6, color: 'accent', ring: false }));
+          s.dot(0, .28, { r: 5, color: 'green' });
+          s.text('start: 0', 0, -.12, { size: 11, align: 'center', baseline: 'middle', color: 'green', plate: true });
+          a.records.forEach(p => s.dot(...circ(p.folded, radius(p.k)), { r: 5, color: 'gold' }));
+          s.text(`${a.best.k}`, ...circ(a.best.folded, radius(a.best.k) + .15), { size: 12, color: 'gold', align: 'center', baseline: 'middle', weight: 700, plate: true });
+          const span = Math.max(12, a.count); e.setView([-.06 * span, 1.08 * span], [-.13, 2.98]);
+          e.line(0, 0, span, 0, { color: 'faint', width: 1 });
+          a.points.slice(1).forEach(p => e.dot(p.k, Math.log10(1 + p.distance), { r: 2, color: 'accent', ring: false }));
+          a.records.forEach(p => e.dot(p.k, Math.log10(1 + p.distance), { r: 4, color: 'gold' }));
+          e.text(`${a.best.k}`, a.best.k, Math.log10(1 + a.best.distance), { size: 11, color: 'gold', align: a.best.k > .6 * span ? 'right' : 'left', dx: a.best.k > .6 * span ? -7 : 7, dy: -10, weight: 700, plate: true });
         });
-        v.legend([['green', 'start (0 steps)'], ['accent', 'k-th note'], ['gold', 'record near miss']]);
-        const minGap = (c, n) => { const P = Array.from({ length: n + 1 }, (_, i) => fold(i * c)).sort((a, b) => a - b); let g = 1200 - P[n] + P[0]; for (let i = 1; i <= n; i++) g = Math.min(g, P[i] - P[i - 1]); return g; };
-        v.readout(() => {
-          const c = C[which.value], n = N.value, rec = recs(c, n), k = rec[rec.length - 1], d = dist(c, k), m = Math.round((k * c) / 1200);
-          if (which.value === 'et') return `after 12 steps the chain returns exactly to the start (7 octaves = 8400 ¢): $(2^{7/12})^{12}=2^7$, so the orbit is finite with period 12. The theorem does not apply: $2^{7/12}$ is not a ratio of integers, let alone 3/2`;
-          const base = which.value === 'fifth' ? 3 : 5, e = (which.value === 'fifth' ? k : 2 * k) + m;
-          return `${n} steps · closest approach so far at step ${k}: ${v.fix(d, 3)} ¢ from the start, ${m} octave${m === 1 ? '' : 's'} up · here $${base}^{${k}}$ is odd and $2^{${e}}$ is even, so they are never equal · the ${n + 1} notes so far are all distinct, the closest pair ${v.fix(minGap(c, n), 3)} ¢ apart`;
-        });
+        v.legend([['green', 'start (0 steps)'], ['accent', 'every selected step'], ['gold', 'every strict record; best labelled']]);
+        v.readout(() => { const a = info, p = a.best; return `${a.count} steps; ${a.distinct} distinct pitches including the start. Strict record steps: ${a.records.map(p => p.k).join(', ')}. Best: step ${p.k}, ${v.fix(p.distance, 6)} ¢ from the nearest octave (${p.octaves} octaves up, signed error ${v.fix(p.error, 6)} ¢). Closest pair in this prefix: ${v.fix(a.minGap, 6)} ¢.${a.mode === 'et' ? ` Exact primitive period 12; ${a.closures} completed return${a.closures === 1 ? '' : 's'} in this prefix. Zeros are exact, not an error floor.` : ' No exact returns; every plotted distance is positive. Density concerns the infinite continuation.'}`; });
       },
     },
     // ------------------------------------------------------------------ 7.3
@@ -170,125 +158,77 @@ export default {
     },
     // ------------------------------------------------------------------ 7.4
     {
-      num: '7.4',
-      kind: 'Concept',
-      name: 'The wolf fifth',
-      statement: String.raw`A keyboard with twelve notes per octave tuned in Pythagorean fashion can have eleven pure fifths in a chain, but then the twelfth fifth, which closes the circle, is smaller than pure by the whole Pythagorean comma: $701.955-23.46=678.5$ ¢ (ratio $262144/177147$). This out-of-tune interval is the **wolf fifth** (it "howls"). Where it sits is a choice of the tuner: it lies between the two ends of the chain, traditionally between G♯ and E♭. The major thirds that straddle the wolf come out nearly pure ($384.4$ ¢, 2 ¢ flat of 5/4) while all the others are the wide Pythagorean thirds of 407.8 ¢.`,
-      idea: String.raw`The twelve fifths of the circle sum to seven octaves only if each is $700$ ¢. With eleven fifths pure the sum of the twelve falls short of 8400 ¢ by exactly the comma (7.3), and the shortfall must go somewhere: one fifth absorbs it all. A major third is four fifths up less two octaves; if the wolf is one of the four, the third loses one comma, $407.8-23.5=384.4$ ¢, which is why the wolf's neighbours were the useful thirds. Moving the wolf to another position changes which keys are usable, never the existence of the wolf (7.2).`,
-      caption: String.raw`The circle of fifths with the wolf (red) between the two notes chosen by the slider; all other fifths are pure (green). Click a fifth to hear it, or play all twelve in turn around the circle. Below, the twelve major thirds from each note: all are the wide Pythagorean third except the four that contain the wolf (red line: the pure third 5/4). Move the wolf and watch the good thirds move with it.`,
-      deps: ['music-7.3'],
-      see: ['music-7.7', 'music-7.14', 'music-7.8'],
-      refs: ['Benson ch. 5'],
-      tags: ['tuning', 'wolf'],
-      scope: String.raw`Pythagorean tuning with a 12-note chain; the cents are exact. The traditional placement G♯–E♭ keeps the commonly used keys (up to three sharps or flats) free of the wolf; in practice the wolf was also moved to suit a piece. The anchor of the tuning (here the note opposite the wolf) is set to its equal-tempered pitch.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Wolf_interval' },
-      viz(v) {
-        const WOLF = FIFTH - PCOMMA;
-        const w = v.slider('the wolf is the fifth starting on…', 0, 11, 11, { int: true, fmt: (x) => `${CH[x]}–${CH[(x + 1) % 12]}` });
-        const s = v.stage({ x: [-1.5, 1.5], y: [-1.42, 1.42], equal: true, axes: false, height: 380, title: 'the circle of fifths' });
-        const b = v.stage({ x: [-0.6, 11.6], y: [376, 412], axes: 'box', gutter: true, height: 300, xlabel: 'major third built on …', ylabel: 'cents', xticks: [], yticks: [[380, '380'], [386.3, '386.3'], [390, '390'], [400, '400'], [407.8, '407.8']], title: 'the twelve major thirds' });
-        const snd = v.sound();
-        const fifths = () => CH.map((_, i) => (i === w.value ? WOLF : FIFTH));
-        const tune = () => tuneChain(fifths(), w.value, (w.value + 7) % 12, chainSemi((w.value + 7) % 12) * 100);
-        const ang = (j) => ((j - 3) * 30 * Math.PI) / 180;
-        const pt = (j, R = 1) => [R * Math.sin(ang(j)), R * Math.cos(ang(j))];
-        const play = (j) => { const P = tune(), p = P[chainSemi(j)], base = p > 600 ? p - 1200 : p, size = j === w.value ? WOLF : FIFTH; snd.stop(); snd.samples(chordCents([base, base + size], C4, 1.6), SR, { gain: 0.9 }); };
-        s.onClick((x, y) => { const a = Math.atan2(x, y); let best = 0, bd = 9; for (let j = 0; j < 12; j++) { const m = ang(j) + Math.PI / 12; let d = Math.abs(Math.atan2(Math.sin(a - m), Math.cos(a - m))); if (d < bd) { bd = d; best = j; } } play(best); });
-        v.soundButton('play the twelve fifths in turn', (sd) => { const P = tune(), f = fifths(); const ch = []; for (let k = 0; k < 12; k++) { const j = (w.value + 1 + k) % 12, p = P[chainSemi(j)], base = p > 600 ? p - 1200 : p; ch.push([base, base + f[j]]); } sd.samples(seqCents(ch, C4, 0.9, 0.08), SR, { gain: 0.9 }); });
-        v.soundButton('play the wolf', () => play(w.value));
-        v.render(() => {
-          const P = tune(), f = fifths();
-          for (let j = 0; j < 12; j++) {
-            const a = pt(j), c = pt((j + 1) % 12), wolf = j === w.value;
-            s.line(a[0], a[1], c[0], c[1], { color: wolf ? 'red' : 'green', width: wolf ? 4 : 2.2, alpha: wolf ? 0.95 : 0.75 });
-            const m = pt(j + 0.5, 0.78); s.text(v.fix(f[j], 1), m[0], m[1], { size: 10.5, color: wolf ? 'red' : 'muted', align: 'center', baseline: 'middle', plate: true, weight: wolf ? 700 : 400 });
-          }
-          for (let j = 0; j < 12; j++) { const p = pt(j); s.dot(p[0], p[1], { r: 6, color: 'accent' }); const q = pt(j, 1.17); s.text(CH[j], q[0], q[1], { size: 12.5, align: 'center', baseline: 'middle', weight: 600 }); }
-          { const q = pt(w.value + 0.5, 1.32); s.text('wolf', q[0], q[1], { size: 11, color: 'red', align: 'center', baseline: 'middle', weight: 700 }); }
-          for (let r = 0; r < 12; r++) {
-            const t = fold(P[(r + 4) % 12] - P[r] + 0), col = Math.abs(t - M3J) < 4 ? 'green' : t < 400 ? 'red' : 'accent';
-            b.rect(r - 0.38, 376, r + 0.38, t, { fill: col, fillAlpha: 0.55, color: col });
-            b.text(NOTE[r], r, 377.5, { size: 11, align: 'center', baseline: 'bottom', plate: true });
-            b.text(v.fix(t, 1), r, t, { size: 10.5, align: 'center', baseline: 'bottom', dy: -3, color: 'muted' });
-          }
-          b.hline(M3J, { color: 'red', dash: [5, 4] });
+      num:'7.4',kind:'Concept',name:'The wolf fifth',
+      statement:String.raw`In a specified twelve-note Pythagorean cut, eleven fifths have the pure ratio $3/2$. The closing fifth must then have ratio
+$$W=\frac{2^7}{(3/2)^{11}}$$
+$$=\frac{262144}{177147}.$$
+Its size is approximately 678.494990 cents. The ratio between a pure fifth and this closing fifth is the Pythagorean comma $531441/524288$ (7.3), approximately 23.460010 cents. This closing interval is called the wolf fifth in this model.
+
+Eight major thirds have ratio $81/64$; the four crossing the cut have ratio $8192/6561$. Their signed errors from the pure $5/4$ are approximately $+21.506290$ and $-1.953721$ cents, respectively.`,
+      idea:String.raw`Twelve pure fifths exceed seven octaves: $(3/2)^{12}/2^7=531441/524288>1$. Replacing one pure fifth by $W$ removes exactly that excess, and the product of all twelve becomes $2^7$. A sum of 8400 cents alone does not force twelve equal fifths; if they are also required to be equal, each is 700 cents.
+
+A major third follows four consecutive steps of the chain and reduces by two octaves. Without the cut its ratio is $(3/2)^4/4=81/64$. Crossing the cut divides this ratio by the comma, giving $8192/6561$. Exactly four of the twelve starting positions cross a specified edge. These algebraic identities give interval sizes, without deciding which keys are musically usable.`,
+      caption:String.raw`Choose the closing edge and the selected fifth independently. The circle shows the twelve chain positions, with the closing fifth red and the selected edge marked gold; their equally spaced positions are a diagram of chain order, not frequency distances. Click near a visible edge to select and play that pair. The complete table gives every major third, its exact ratio, cents and signed error from $5/4$. The cycle button plays twelve separately registered pairs, starting after the cut and ending on the closing pair.`,
+      deps:['music-7.3'],see:['music-7.7','music-7.14','music-7.8'],
+      refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §§5.3–5.4, pp.155–158; closing-cut and third identities derived here'],tags:['tuning','wolf'],
+      credit:'Pythagorean tuning exposition: Dave Benson, 2008 Web version; movable finite cut, exact arithmetic and synthesis authored here.',
+      scope:String.raw`A mathematical twelve-note model, without a claim about a traditional placement, historical priority, howling or measured key quality. C is fixed at the authored C4 = 261.6256-Hz anchor for every cut; each pair starts at its note in the octave above C4 and ascends by its actual fifth ratio. Exact integer ratios determine the construction; decimal cents and frequencies are numerical display values. Audio is uncalibrated mono 44,100-Hz synthesis, eight sub-Nyquist harmonics with amplitudes $1/h$, pre-output peak bound 0.12 and 10-ms end ramps. The runtime master gain/limiter and device affect output. No listening judgement is certified.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
+      viz(v){
+        const edgeName=x=>{const a=wolfModel(x);return `${a.wolf.from}–${a.wolf.to}`;};
+        const cut=v.slider('closing edge',0,11,11,{int:true,fmt:edgeName}),selected=v.slider('selected edge',0,11,11,{int:true,fmt:edgeName});
+        const A=v.stage({x:[-1.5,1.5],y:[-1.45,1.45],equal:true,axes:false,height:380,minWidth:240,title:'chain order; gold marks the selected fifth'});
+        const B=v.stage({x:[-.15,4.9],y:[-.7,12.5],axes:false,full:true,height:440,minWidth:240,title:'all twelve major thirds; signed error from 5/4'});
+        let info;const play=(action,sd=v.sound())=>{const a=wolfAudio(cut.value,selected.value,action);sd.stop();sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play selected fifth',sd=>play('edge',sd));v.soundButton('Play closing fifth',sd=>play('wolf',sd));v.soundButton('Play twelve separate pairs',sd=>play('cycle',sd));v.button('Stop audio',()=>v.sound().stop());
+        A.onClick((x,y)=>{const j=wolfEdgeHit(x,y);if(j!==null){selected.set(j);play('edge');}});
+        v.render(()=>{
+          const a=wolfModel(cut.value,selected.value);info=a;
+          a.fifths.forEach(f=>{const p=wolfPoint(f.j),q=wolfPoint((f.j+1)%12);A.line(...p,...q,{color:f.wolf?'red':'green',width:f.wolf?4:2.2});if(f.selected)A.dot((p[0]+q[0])/2,(p[1]+q[1])/2,{r:5,ring:false,color:'gold'});});
+          a.nodes.forEach(n=>{const p=n.point;A.dot(...p,{r:5,ring:false,color:'accent'});A.text(n.name,1.2*p[0],1.2*p[1],{size:12,align:'center',baseline:'middle',weight:600});});
+          A.text('selected fifth',0,.18,{size:11,align:'center',baseline:'middle',color:'muted'});A.text(`${a.chosen.from}–${a.chosen.to}`,0,-.02,{size:14,align:'center',baseline:'middle',color:'gold',weight:700});A.text(a.chosen.exact,0,-.22,{size:12,align:'center',baseline:'middle',color:'gold'});
+          ['note','exact ratio','cents','error (¢)'].forEach((t,i)=>B.text(t,[.28,1.5,2.9,4.2][i],11.9,{size:10.5,align:'center',baseline:'middle',weight:700}));
+          a.thirds.forEach((t,j)=>{const y=11-j,col=t.crosses?'purple':'orange';B.text(t.name,.28,y,{size:12,align:'center',baseline:'middle',weight:600});B.text(t.exact,1.5,y,{size:10.5,align:'center',baseline:'middle',color:col});B.text(v.fix(t.cents,3),2.9,y,{size:10.5,align:'center',baseline:'middle'});B.text(`${t.error<0?'−':'+'}${v.fix(Math.abs(t.error),3)}`,4.2,y,{size:10.5,align:'center',baseline:'middle',color:col});});
         });
-        v.legend([['green', 'pure fifth 3:2 (701.96 ¢)'], ['red', 'wolf fifth (678.5 ¢)']]);
-        v.readout(() => {
-          const P = tune(), nt = (j) => CH[j];
-          const bad = []; for (let r = 0; r < 12; r++) { const t = fold(P[(r + 4) % 12] - P[r]); if (t < 400) bad.push(NOTE[r]); }
-          return `wolf: ${nt(w.value)}–${nt((w.value + 1) % 12)} = ${v.fix(WOLF, 2)} ¢ = $3^{12}/2^{19}$ narrower than pure by ${v.fix(PCOMMA, 2)} ¢ · eleven fifths pure; sum of the twelve = ${v.fix(11 * FIFTH + WOLF, 2)} ¢ = 7 octaves · the narrow thirds of ${v.fix(M3P - PCOMMA, 1)} ¢ start on ${bad.join(', ')}; the other eight are ${v.fix(M3P, 1)} ¢`;
-        });
+        v.legend([['green','pure fifth 3/2'],['red','closing fifth 262144/177147'],['gold','selected edge'],['purple','third crosses the cut'],['orange','third avoids the cut']]);
+        v.readout(()=>{const a=info;return `Closing ${a.wolf.from}–${a.wolf.to}: ${a.wolf.exact}, ${v.fix(a.wolf.cents,6)} cents. Pure/closing ratio ${a.comma.exact}; difference ${v.fix(a.comma.cents,6)} cents. Eleven pure fifths and this closing fifth total seven octaves. Selected ${a.chosen.from}–${a.chosen.to}: ${a.chosen.exact}, ${v.fix(a.chosen.cents,6)} cents; actual pair ${a.chosen.frequencies.map(f=>v.fix(f,6)).join(', ')} Hz. Four crossed thirds: ${a.thirds.filter(t=>t.crosses).map(t=>t.name).join(', ')}. C4 remains fixed when the cut moves.`;});
       },
     },
     // ------------------------------------------------------------------ 7.5
     {
-      num: '7.5',
-      kind: 'Method',
-      name: 'Just intonation',
-      statement: String.raw`**Five-limit just intonation** builds every interval from the primes 2, 3 and 5: every note has a ratio $2^a3^b5^c$ to the tonic. Laid out on a lattice with pure fifths $3{:}2$ in one direction and pure major thirds $5{:}4$ in the other, the notes of the just major scale are $1,\ 9/8,\ 5/4,\ 4/3,\ 3/2,\ 5/3,\ 15/8$ (C D E F G A B), and the three main triads on the tonic, subdominant and dominant (C E G, F A C, G B D) are all exactly $4{:}5{:}6$: their partials coincide, so they sound without beats. The price: some intervals of the scale are not what a Pythagorean ear expects (the whole tone $9{:}8$ and the smaller $10{:}9$ both occur), and the scale cannot be transposed (7.6).`,
-      idea: String.raw`A consonant interval is one where partials coincide (6.2); the simplest coincidences are $3{:}2$, $4{:}3$, $5{:}4$, $6{:}5$. Choose the major scale so that the three triads on I, IV and V are $4{:}5{:}6$: this fixes the notes $1,\,5/4,\,3/2$ (I), $4/3,\,5/3,\,2$ (IV) and $3/2,\,15/8,\,9/4$ (V), seven notes in all. In the lattice the I, IV and V triads are the three triangles (upward-pointing) that share corners; the scale has three step sizes: $9/8$ (203.9 ¢), $10/9$ (182.4 ¢) and $16/15$ (111.7 ¢). Compared with equal temperament the thirds of 386.3 ¢ and sixths of 884.4 ¢ are much closer to the ratios of small numbers.`,
-      caption: String.raw`The 5-limit lattice (notes folded into one octave): fifths run to the right, pure major thirds upward. Choose to light the whole just major scale or one triad; click any node to hear that note, or play the chord in just intonation, in equal temperament, or alternately. The readout gives each lit note's offset from equal temperament and the beats of the nearly coincident partials in the equal-tempered chord.`,
-      deps: ['music-7.1', 'music-6.2'],
-      see: ['music-6.1', 'music-7.6', 'music-7.13', 'music-7.15'],
-      refs: ['Benson §5.5 pp. 159–160'],
-      tags: ['just intonation', 'lattice'],
-      credit: 'Ptolemy (the "intense diatonic", 2nd c.); Zarlino, Le istitutioni harmoniche, 1558',
-      scope: String.raw`Tonic-centred 5-limit tuning: the triads on I, IV and V are pure, but the supertonic triad D F A has a mistuned fifth (680.4 ¢, narrower by the syntonic comma) and the scale cannot modulate (7.6). Zarlino's role in making the Ptolemaic scale the standard of just intonation is widely stated but I have not re-checked the dates.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Just_intonation' },
-      verify: true,
-      viz(v) {
-        const SC = [['C', 0, 0], ['D', 2, 0], ['E', 0, 1], ['F', -1, 0], ['G', 1, 0], ['A', -1, 1], ['B', 1, 1]];
-        const TR = { I: ['C', 'E', 'G'], IV: ['F', 'A', 'C'], V: ['G', 'B', 'D'] };
-        const sel = v.select('light up', [{ value: 'scale', label: 'major scale' }, { value: 'I', label: 'I  (C E G)' }, { value: 'IV', label: 'IV  (F A C)' }, { value: 'V', label: 'V  (G B D)' }], 'scale');
-        const s = v.stage({ x: [-3.6, 4.6], y: [-2.6, 3.6], equal: true, axes: false, height: 440, title: 'the 5-limit lattice' });
-        const snd = v.sound();
-        // exact ratio of lattice point (i, j) folded into [1, 2)
-        const ratio = (i, j) => { let p = 1, q = 1; if (i >= 0) { p *= 3 ** i; q *= 2 ** i; } else { p *= 2 ** -i; q *= 3 ** -i; } if (j >= 0) { p *= 5 ** j; q *= 4 ** j; } else { p *= 4 ** -j; q *= 5 ** -j; } while (p >= 2 * q) q *= 2; while (p < q) p *= 2; const g = gcd(p, q); return [p / g, q / g]; };
-        const rc = (i, j) => { const [p, q] = ratio(i, j); return cents(p / q); };
-        const NAMEPOS = Object.fromEntries(SC.map(([n, i, j]) => [n, [i, j]]));
-        const SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-        const lit = () => (sel.value === 'scale' ? SC.map((x) => x[0]) : TR[sel.value]);
-        const chord = () => (sel.value === 'scale' ? null : TR[sel.value]);
-        const cj = (names) => { const c = names.map((n) => rc(...NAMEPOS[n])); const b0 = c[0]; return c.map((x) => { let d = x - b0; while (d < 0) d += 1200; return d; }).sort((a, b) => a - b); };
-        const rootJ = () => (chord() ? rc(...NAMEPOS[chord()[0]]) : 0);
-        const play = (mode) => {
-          const ch = chord();
-          if (!ch) { snd.stop(); snd.samples(seqCents(SC.map(([n, i, j]) => [rc(i, j)]).sort((a, b) => a[0] - b[0]).concat([[1200]]), C4, 0.5, 0.03), SR, { gain: 0.9 }); return; }
-          const bj = rootJ() > 600 ? rootJ() - 1200 : rootJ(), r0 = SEMI[ch[0]] * 100, be = r0 > 600 ? r0 - 1200 : r0;
-          const jj = cj(ch).map((x) => bj + x), ee = ch.map((n) => fold(SEMI[n] * 100 - r0)).sort((a, b) => a - b).map((x) => be + x);
-          snd.stop();
-          snd.samples(seqCents(mode === 'just' ? [jj] : mode === 'et' ? [ee] : [jj, ee, jj, ee], C4, mode === 'alt' ? 1.3 : 2.2, 0.12), SR, { gain: 0.9 });
-        };
-        v.soundButton('play: just', () => play('just'));
-        v.soundButton('play: equal temperament', () => play('et'));
-        v.soundButton('alternate: just, 12-TET', () => play('alt'));
-        s.onClick((x, y) => { const i = Math.round(x), j = Math.round(y); if (Math.abs(x - i) < 0.4 && Math.abs(y - j) < 0.4) { snd.stop(); snd.samples(seqCents([[rc(i, j)]], C4, 1.4, 0), SR, { gain: 0.9 }); } });
-        v.render(() => {
-          const L = lit(), inSet = (i, j) => SC.find((x) => x[1] === i && x[2] === j && L.includes(x[0]));
-          for (let j = -2; j <= 3; j++) for (let i = -3; i <= 4; i++) { if (i < 4) s.line(i, j, i + 1, j, { color: 'faint', width: 1, alpha: 0.5 }); if (j < 3) s.line(i, j, i, j + 1, { color: 'faint', width: 1, alpha: 0.5 }); }
-          if (sel.value !== 'scale') { const P = TR[sel.value].map((n) => NAMEPOS[n]); s.poly(P.map(([i, j]) => [i, j]), { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 1.6 }); }
-          else for (const t of Object.values(TR)) s.poly(t.map((n) => NAMEPOS[n]), { color: 'green', width: 1, alpha: 0.4, fill: 'green', fillAlpha: 0.05 });
-          for (let j = -2; j <= 3; j++) for (let i = -3; i <= 4; i++) {
-            const hit = inSet(i, j), [p, q] = ratio(i, j);
-            s.dot(i, j, { r: hit ? 17 : 11, color: hit ? (sel.value === 'scale' ? 'green' : 'accent') : 'faint', hollow: !hit });
-            s.text(`${p}/${q}`, i, j, { size: hit ? 11 : 9.5, color: hit ? 'ink' : 'muted', align: 'center', baseline: 'middle', weight: hit ? 700 : 400 });
-            if (hit) s.text(hit[0], i, j, { size: 11.5, color: sel.value === 'scale' ? 'green' : 'accent', align: 'center', baseline: 'middle', dy: -26 / 1.3, weight: 700 });
-          }
-          s.text('× 3/2  →', 3.2, -2.35, { size: 11, color: 'muted', align: 'center' }); s.text('× 5/4  ↑', -3.2, 3.35, { size: 11, color: 'muted', align: 'center' });
+      num:'7.5',kind:'Method',name:'Just intonation',
+      statement:String.raw`A five-limit interval is a frequency ratio $2^a3^b5^c$ with integers $a,b,c$. Octave reduction puts a pitch ratio in $[1,2)$. A standard just major scale uses the ordered ratios $1,9/8,5/4,4/3$, then $3/2,5/3,15/8$, followed by the octave $2$. Its I, IV and V triads, voiced upward from their own roots, each have ratios $4{:}5{:}6$. The consecutive scale steps are $9/8$, $10/9$ and $16/15$; they are not equal-sized whole tones and semitones.
+
+This is one fixed tonic-centred collection. It does not make every triad pure: for example D–A has ratio $(5/3)/(9/8)=40/27$, rather than $3/2$. Multiplying all frequencies by one positive factor does transpose the entire collection while preserving every interval.`,
+      idea:String.raw`Start with C–E–G at ratios $1,5/4,3/2$. Pure IV and V triads add F–A–C at $4/3,5/3,2$ and G–B–D at $3/2,15/8,9/4$. Their seven pitch classes give Benson’s just-major table. Horizontal lattice steps multiply by $3/2$, vertical steps by $5/4$, followed by octave reduction (7.1).
+
+For harmonic tones the specifically compared partial frequencies are integer multiples of the played fundamentals (6.2). In a $4{:}5{:}6$ triad, the root’s fifth partial equals the third’s fourth, and the root’s third equals the fifth’s second. These exact coincidences do not say that every partial coincides or that a chord has no beating, roughness or dissonance. The readout compares only these declared pairs using the actual register used in playback.`,
+      caption:String.raw`The authored eight-node patch contains the seven scale notes and one extra ratio $45/32$; the full five-limit lattice is infinite. Choose the scale or one triad to highlight it. Click a visible node to select and play its just ratio, or select it with the single-note control. The table always gives the complete source scale and its closing octave. Just, equal-tempered and alternating playback use distinct frequency lists for both scales and chords, with the same C4 anchor.`,
+      deps:['music-7.1','music-6.2'],see:['music-6.1','music-7.6','music-7.13','music-7.15'],
+      refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §5.5, pp.159–160'],tags:['just intonation','lattice'],
+      credit:'Tuning exposition: Dave Benson, 2008 Web version; finite patch, registers and synthesis authored here.',
+      scope:String.raw`An exact ratio construction, not a claim about an ancient priority, a unique chromatic just scale or measured consonance. The source table is C-relative; F and G chords are voiced upward from F4 and G4, including C5 or D5 when needed. Audio is uncalibrated mono 44,100-Hz synthesis at C4 = 261.6256 Hz, six harmonics with amplitudes proportional to $1/h$, a pre-output peak bound 0.12 and 10-ms end ramps. Output uses the runtime master gain/limiter and the device; no perceived beat or loudness judgement is certified.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify: false,
+      viz(v){
+        const family=v.select('highlight / collection',[{value:'scale',label:'major scale'},{value:'I',label:'I: C E G'},{value:'IV',label:'IV: F A C'},{value:'V',label:'V: G B D'}],'scale');
+        const base=jiModel(),node=v.select('single note',base.nodes.map(p=>({value:p.id,label:p.name==='extra'?'45/32 extra':p.name})),'0,0');
+        const A=v.stage({x:[-1.7,2.7],y:[-.8,1.9],equal:true,axes:false,height:330,minWidth:280,title:'finite five-limit lattice patch'});
+        const B=v.stage({x:[0,4.65],y:[-.6,9.5],axes:false,full:true,height:390,minWidth:280,title:'complete C-major scale and closing octave'});
+        let info;
+        const play=action=>sd=>{const a=jiAudio(family.value,node.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play just collection',play('just'));v.soundButton('Play equal-tempered collection',play('et'));v.soundButton('Alternate just / equal',play('alternate'));v.soundButton('Play selected node',play('node'));v.button('Stop audio',()=>v.sound().stop());
+        A.onClick((x,y)=>{const p=base.nodes.find(p=>Math.hypot(x-p.i,y-p.j)<.36);if(p){node.set(p.id);v.sound().stop();play('node')(v.sound());}});
+        v.render(()=>{
+          const a=jiModel(family.value,node.value);info=a;
+          for(const p of a.nodes){if(p.i<2)A.line(p.i,p.j,p.i+1,p.j,{color:'faint',width:1});if(p.j<1)A.line(p.i,p.j,p.i,p.j+1,{color:'faint',width:1});}
+          const groups=family.value==='scale'?['I','IV','V']:[family.value];groups.forEach(t=>{const tri=jiModel(t).chord;const points=tri.map(p=>{const q=a.scale.find(q=>q.name===p.name);return[q.i,q.j];});A.poly(points,{fill:'green',fillAlpha:.10,color:'green',width:1.1});});
+          for(const p of a.nodes){const hit=a.lit.includes(p.name);if(p.id===node.value)A.dot(p.i,p.j,{r:21,hollow:true,ring:false,color:'gold',width:1.7});A.dot(p.i,p.j,{r:hit?17:14,ring:false,hollow:!hit,color:hit?'green':'muted',width:1});A.text(p.exact,p.i,p.j,{size:10.5,align:'center',baseline:'middle',color:hit?'ink':'muted'});A.text(p.name,p.i,p.j,{size:11,align:'center',baseline:'middle',dy:-25,color:hit?'green':'muted'});}
+          A.text('right: ×3/2; octave folded',.5,-.53,{size:10.5,align:'center',baseline:'middle',color:'muted'});A.text('up: ×5/4; octave folded',.5,1.62,{size:10.5,align:'center',baseline:'middle',color:'muted'});
+          ['note','ratio','cents','offset ¢'].forEach((t,j)=>B.text(t,[.3,1.35,2.65,4.05][j],8.8,{size:11,weight:700,align:'center',baseline:'middle'}));
+          a.table.forEach((p,k)=>{const y=7.8-k,color=a.lit.includes(p.name)?'green':'ink';[p.name,p.exact,v.fix(p.cents,3),`${p.offset<0?'−':'+'}${v.fix(Math.abs(p.offset),2)}`].forEach((t,j)=>B.text(t,[.3,1.35,2.65,4.05][j],y,{size:j===0?12:10.5,align:'center',baseline:'middle',color}));});
         });
-        v.readout(() => {
-          const L = lit(), rows = SC.filter((x) => L.includes(x[0])).map(([n, i, j]) => `${n} ${ratio(i, j).join('/')} (${sc(v, rc(i, j) - SEMI[n] * 100, 1)} ¢)`);
-          let bt = '';
-          const ch = chord();
-          if (ch) {
-            const jc = cj(ch), ec = ch.map((n) => fold(SEMI[n] * 100 - SEMI[ch[0]] * 100)).sort((a, b) => a - b), f0 = C4;
-            const fJ = jc.map((c) => f0 * 2 ** (c / 1200)), fE = ec.map((c) => f0 * 2 ** (c / 1200));
-            const ne = nearPairs(fE, 6, 15).filter((p) => p.d > 0.05).slice(0, 3);
-            bt = ` · just chord ${jc.map((c) => v.fix(c, 1)).join(', ')} ¢: coinciding partials only (${nearPairs(fJ, 6, 0.05).length} pairs, no beating pair) · 12-TET chord ${ec.join(', ')} ¢: beats at ${ne.map((p) => `${v.fix(p.d, 1)} Hz`).join(', ') || 'none below 15 Hz'} (partials ${ne[0] ? ne[0].hi + ' and ' + ne[0].hj : ''}, root at C4)`;
-          }
-          return `offset from 12-TET: ${rows.join(', ')}${bt}`;
-        });
+        v.legend([['green','highlighted collection'],['gold','selected single note']]);
+        v.readout(()=>{const a=info;let pairs='';if(a.chord){const j=a.chord.map(x=>x.hz),e=a.chord.map(x=>x.etHz);pairs=` Actual just frequencies: ${j.map(x=>v.fix(x,6)).join(', ')} Hz; equal-tempered: ${e.map(x=>v.fix(x,6)).join(', ')} Hz. Declared partial separations, root5–third4 / root3–fifth2: just ${v.fix(Math.abs(5*j[0]-4*j[1]),6)} / ${v.fix(Math.abs(3*j[0]-2*j[2]),6)} Hz; equal ${v.fix(Math.abs(5*e[0]-4*e[1]),6)} / ${v.fix(Math.abs(3*e[0]-2*e[2]),6)} Hz. These are frequency differences, not measured roughness.`;}return `Selected node ${a.selected.name}: ${a.selected.exact}, ${v.fix(a.selected.hz,6)} Hz. Complete scale gap ratios: ${a.gaps.map(x=>x.exact).join(', ')}.${pairs}`;});
       },
     },
     // ------------------------------------------------------------------ 7.6

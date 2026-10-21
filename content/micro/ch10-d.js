@@ -1,5 +1,7 @@
 // Microeconomics — Chapter 10: Market power: monopoly and oligopoly — items 10.18–10.22
 import { clamp, fx, bisect, argmax, plateText, bar, lin, mstage, tag, integ, tween } from './ch10.shared.js';
+import { dominantFirmState } from './source-audit-core-fringe.js';
+import { COURNOT_EQUILIBRIUM, cournotProject, cournotState, cournotMany } from './source-audit-cournot.js';
 
 export default {
   collection: 'micro',
@@ -103,41 +105,43 @@ export default {
     // ------------------------------------------------------------------ 10.20
     {
       num: '10.20', kind: 'Model', name: 'Price leadership by a dominant firm',
-      statement: String.raw`A **dominant firm** faces a **competitive fringe** of small price-taking firms with aggregate supply $S_f(p)$ and total demand $D(p)$. The fringe sells whatever it wants at the going price, so the dominant firm faces the **residual demand** $D_r(p) = D(p) - S_f(p)$, which is more price-elastic than market demand where the leader has positive sales. It sets the price $p^*$ at which its marginal revenue from residual demand equals its marginal cost, $MR_r(q_d) = MC_d(q_d)$, and the fringe supplies $S_f(p^*)$ at that price. In the stated downward-demand, upward-fringe-supply model, the price lies between the comparable monopoly and competitive benchmarks: the larger the fringe's supply response, the closer to competitive and the smaller the dominant firm's share.`,
-      idea: String.raw`Each unit the fringe supplies at a given price displaces a unit of the leader's sales, so the residual demand curve is market demand shifted left by the fringe's supply; with $D = a - p$ and $S_f = sp$ the inverse residual demand is $(a - q)/(1+s)$, and the leader behaves as a monopolist on it (10.2), with the elasticity rule (10.3) applied to the residual elasticity, which is larger than the market elasticity because it includes the fringe's response: $|\varepsilon_r| = (|\varepsilon_D| \cdot Q + \varepsilon_S\, S_f)/q_d$ in the usual decomposition. With no fringe ($s = 0$) the model reduces to monopoly; a sufficiently large fringe can serve the whole market below the leader’s marginal cost, leaving the leader inactive.`,
-      caption: String.raw`Market demand $D(p) = 20 - p$ (blue) and fringe supply $S_f(p) = s\,p$ (teal): at every price the **horizontal gap** between them is the leader's residual demand (purple). Its marginal revenue (dashed purple) meets the leader's marginal cost (orange) at the gold point, which fixes the price. The bar at that price splits the market between the fringe (teal) and the leader (orange). **Slide the fringe's size $s$**: with $s = 0$ you get the monopoly point; as the fringe grows the price falls and the leader's share shrinks. Check in the readout that $D(p^*) = q_d + S_f(p^*)$.`,
+      statement: String.raw`A price-setting firm faces a fixed competitive fringe whose price-taking supply is $S_f(p)$. Its nonnegative residual sales are the part of market demand remaining after that supply. This illustration specifies $D(p)=\max(0,20-p)$, $S_f(p)=sp$, and leader cost $C(q)=c_0q+mq^2/2$, with $s,c_0,m\ge0$. For $0\le q\le20$, inverse residual demand is $P_r(q)=(20-q)/(1+s)$, and the unique profit maximum is
+$$q_d^*=\max\!\left\{0,\frac{20-(1+s)c_0}{2+(1+s)m}\right\}.$$
+The market price is $p^*=P_r(q_d^*)$; the fringe sells $sp^*$, and their sum is $20-p^*$. At positive leader output, $MR_r=MC$. At zero output, $MR_r(0)\le MC(0)$ instead: the fringe clears the market at $20/(1+s)$. The equality rule alone misses this corner.`,
+      idea: String.raw`Subtract fringe supply from market demand, then substitute the residual price into revenue. The leader's profit is a strictly concave quadratic in its output, so its derivative identifies the global maximum, clipped at zero. The right panel displays that objective, making both an interior maximum and a zero-output boundary visible.
+
+For this specified family, price lies between the competitive benchmark and the same-cost monopoly benchmark. Larger fringe supply lowers price, but does not always drive leader output to zero: if $c_0=m=0$, output stays10 and its market share approaches one half as $s$ grows without bound. Positive $c_0$ gives exit once $(1+s)c_0\ge20$; with $c_0=0,m>0$, leader output tends to zero only in the limit.`,
+      caption: String.raw`Left: complete market demand, inverse residual demand, residual marginal revenue, leader marginal cost, and fringe supply over prices0–20. The horizontal bands split total sales between fringe (teal) and leader (orange); a zero leader quantity has no orange band. The purple ring marks the residual-demand price and the gold marker lies on residual MR. At exit that gold point is below MC. Right: actual leader profit over every feasible output0–20, with its maximizing quantity marked. **Leader exit boundary** selects equality at zero output; move cost upward to enter the strict exit region.`,
+      scope: String.raw`A static, homogeneous-product teaching model with fixed fringe size, no fixed costs, nonnegative quantities and common prices. Controls offer $0\le s\le4$, $0\le c_0\le8$, $0\le m\le0.5$. The fringe's linear supply is fixed while the leader chooses; dynamic entry is not simulated. The complete fringe curve is shown for $0\le p\le20$ and may extend to quantity80. The competitive benchmark makes the leader price-taking with the same marginal cost and the same fringe; monopoly removes the fringe. Historical market data and original Forchheimer/Stackelberg/Stigler results are not claimed reproduced.`,
       deps: ['micro-10.2', 'micro-8.4'],
-      refs: ['Varian Ch. 28'], tags: ['oligopoly'],
-      credit: 'K. Forchheimer, 1908, a dominant-firm model of partial monopoly; H. von Stackelberg, 1934; G. J. Stigler, 1940 (later developments of the model)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Dominant_firm' },
+      refs: ['Church & Ware (2000), Industrial Organization: A Strategic Approach, static §4.2 pp.124–129 before §4.2.1, equations4.1–4.7 and Figure4.2', 'https://irving.vassar.edu/faculty/gj/FTU/io/literature/church-ware.pdf'], tags: ['oligopoly'],
+      credit: 'Church & Ware, 2000, §4.2 (reviewed modern framework; specified linear model derived here)',
+      verify: false,
+      links: { source: 'https://irving.vassar.edu/faculty/gj/FTU/io/literature/church-ware.pdf' },
       viz(v) {
-        const sS = v.slider('fringe size $s$ ($S_f = s\\,p$)', 0, 4, 1, { step: 0.05 });
-        const cS = v.slider('leader\'s marginal cost at zero $c_0$', 0, 8, 2, { step: 0.05 });
-        const mS = v.slider('rise of leader\'s marginal cost $m$', 0, 0.5, 0.1, { step: 0.01 });
-        const a = 20;
-        const s = mstage(v, { x: [0, 22], y: [0, 22], title: 'market demand, fringe supply and the leader\'s residual demand', height: 400 });
-        v.legend([['accent', 'market demand'], ['teal', 'fringe supply'], ['purple', 'residual demand'], ['purple', 'residual $MR$', { dash: true }], ['orange', 'leader\'s $MC$'], ['gold', 'leader\'s choice', { dot: true }]]);
-        let st = {};
-        v.render(() => {
-          const sf = sS.value, c0 = cS.value, m = mS.value;
-          const Pr = (q) => (a - q) / (1 + sf), MRr = (q) => (a - 2 * q) / (1 + sf), MC = (q) => c0 + m * q;
-          const qd = bisect((q) => MRr(q) - MC(q), 0, a / 2, 60) ?? 0, p = Pr(qd), qf = sf * p, Q = a - p;
-          // monopoly benchmark (no fringe)
-          const qm = bisect((q) => a - 2 * q - MC(q), 0, a / 2, 60) ?? 0, pm = a - qm;
-          s.fn((q) => a - q, { domain: [0, 20], color: 'accent', width: 2.6 });
-          if (sf > 0) s.fn((q) => q / sf, { domain: [0, Math.min(22, 22 * sf)], color: 'teal', width: 2.6 });
-          s.fn(Pr, { domain: [0, a], color: 'purple', width: 2.6 }); s.fn(MRr, { domain: [0, a / 2], color: 'purple', width: 2, dash: [5, 3] });
-          s.fn(MC, { domain: [0, 22], color: 'orange', width: 2.6 });
-          s.rect(0, p - 0.45, qf, p + 0.45, { fill: 'teal', fillAlpha: 0.55, color: 'teal', width: 1 }); s.rect(qf, p - 0.45, Q, p + 0.45, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
-          s.hline(p, { color: 'muted', width: 1, dash: [3, 3] });
-          s.dot(qd, p, { r: 4, color: 'purple' }); s.dot(qd, MC(qd), { r: 7, color: 'gold' });
-          s.dot(Q, p, { r: 5, color: 'accent' });
-          s.dot(qm, pm, { r: 5, color: 'muted', hollow: true });
-          tag(s, 'fringe', qf / 2, p, 'teal', { dy: -14 }); tag(s, 'leader', (qf + Q) / 2, p, 'orange', { dy: -14 }); tag(s, 'monopoly (s = 0)', qm, pm, 'muted', { dy: -12, dx: 36 });
-          st = { p, qd, qf, Q, qm, pm, share: qd / Q, d: a - p };
+        const sf=v.slider('fringe size $s$',0,4,1,{step:.05}),c=v.slider('leader cost intercept $c_0$',0,8,2,{step:.05,decimals:4}),m=v.slider('leader cost slope $m$',0,.5,.1,{step:.01});
+        const A=v.stage({x:[-3,25],y:[-24,24],axes:'box',gutter:true,height:400,xlabel:'quantity (total, fringe or leader)',ylabel:'price / marginal revenue / cost',title:'residual demand and the quantity corner'});
+        const B=v.stage({x:[-2,22],y:[-100,110],axes:'box',gutter:true,height:400,xlabel:'leader output q',ylabel:'leader profit',title:'the global profit maximum'});
+        v.legend([['accent','market demand / total sales'],['teal','fringe supply / fringe band'],['purple','inverse residual demand'],['purple','residual MR',{dash:true}],['orange','leader MC / leader band'],['gold','chosen output on MR / profit'],['muted','monopoly benchmark',{dot:true}]]);
+        v.button('leader exit boundary',()=>{const s=Math.max(2,sf.value);sf.set(s);c.set(20/(1+s));});
+        let info={};
+        v.render(()=>{
+          const p=dominantFirmState(sf.value,c.value,m.value),xmax=Math.max(20,20*p.fringe);
+          A.setView([-.12*xmax,1.12*xmax],[-24,24]);
+          const low=Math.min(0,p.profitAt(20)),high=Math.max(1,p.profit),span=high-low;B.setView([-2,22],[low-.12*span,high+.2*span]);
+          A.fn(q=>20-q,{domain:[0,20],color:'accent',width:2.5});
+          A.curve(t=>[p.fringe*t,t],0,20,{color:'teal',width:2.4});
+          A.fn(p.inverse,{domain:[0,20],color:'purple',width:2.5});A.fn(p.marginalRevenue,{domain:[0,20],color:'purple',width:2,dash:[5,4]});
+          A.fn(p.marginalCost,{domain:[0,20],color:'orange',width:2.5});
+          if(p.fringeQuantity>0)A.rect(0,p.price-.3,p.fringeQuantity,p.price+.3,{fill:'teal',fillAlpha:.4,color:'teal'});
+          if(p.quantity>0)A.rect(p.fringeQuantity,p.price-.3,p.total,p.price+.3,{fill:'orange',fillAlpha:.45,color:'orange'});
+          A.hline(p.price,{color:'muted',dash:[3,4],width:1});
+          A.dot(p.quantity,p.price,{color:'purple',r:11,hollow:true});A.dot(p.quantity,p.mr,{color:'gold',r:7});A.dot(p.total,p.price,{color:'accent',r:5});
+          A.dot(p.monopolyQuantity,p.monopolyPrice,{color:'muted',r:5,hollow:true});
+          B.hline(0,{color:'muted',width:1});B.fn(p.profitAt,{domain:[0,20],color:'accent',width:2.6,n:300});B.dot(p.quantity,p.profit,{color:'gold',r:7});
+          info=p;
         });
-        v.readout(() => `Leader's price $${fx(st.p)}$ (monopoly with no fringe: $${fx(st.pm)}$). Quantities: leader $${fx(st.qd)}$, fringe $${fx(st.qf)}$, total $${fx(st.Q)}$ = $D(p) = ${fx(st.d)}$ ✓. Leader's share $${fx(100 * st.share, 1)}\\%$.`);
+        v.readout(()=>{const p=info;return `Leader output ${fx(p.quantity,7)}, fringe ${fx(p.fringeQuantity,7)}, total ${fx(p.total,7)} = demand ${fx(20-p.price,7)}. Price ${fx(p.price,7)}; leader share ${fx(100*p.share,5)}%.\n$MR_r=${fx(p.mr,7)}$, $MC=${fx(p.mc,7)}$; derivative $MR_r-MC=${fx(p.derivative,9)}$. ${p.active?'Positive output: the derivative is zero.':'Zero output: the derivative is nonpositive; the fringe clears the market.'} Maximum profit ${fx(p.profit,7)}.\nSame-cost competitive price ${fx(p.competitivePrice,7)} ≤ chosen price ${fx(p.price,7)} ≤ no-fringe monopoly price ${fx(p.monopolyPrice,7)}.`;});
       },
     },
     // ------------------------------------------------------------------ 10.21
@@ -188,35 +192,49 @@ export default {
       paper: { authors: 'Augustin Cournot', year: 1838, title: 'Recherches sur les principes mathématiques de la théorie des richesses', venue: 'Paris: L. Hachette', url: 'https://gallica.bnf.fr/ark:/12148/bpt6k6117257c' },
       introduces: ['micro-10.2', 'micro-10.10', 'micro-10.11'],
       credit: 'A. A. Cournot, 1838',
-      statement: String.raw`Cournot's *Recherches* (1838) developed a systematic mathematical treatment of demand and production. It states the demand function $D = F(p)$, treats the **monopolist** who maximizes $pF(p) - \varphi(F(p))$ (chapter 5: the first-order condition equates marginal revenue and marginal cost), and then **competition between producers**: with two owners of mineral springs, each chooses its output taking the other's as given, and the price and quantities are determined by the intersection of two reaction relations (chapter 7). He shows that adding producers lowers the price towards marginal cost and that with a very large number the market approaches **unlimited competition** (chapter 8). In modern terms the book contains the Cournot equilibrium (a Nash equilibrium 110 years before Nash), the monopoly rule MR = MC and the convergence of Cournot oligopoly to competition.`,
-      idea: String.raw`Cournot treats demand as a function of price, takes derivatives, and derives conclusions from the shape of the curves. The step that made the book influential much later was the oligopoly chapter: instead of assuming a rival will charge a price or produce a quantity set by someone else, he lets each producer maximize taking the other's quantity as fixed, which defines intersecting best-response relations; his Fig. 2 illustrates successive replies. Bertrand’s 1883 review criticizes the quantity assumption and proposes price undercutting (10.14). The ideas it introduced here: the monopoly rule (10.2), the duopoly equilibrium (10.10) and the many-firm limit (10.11).`,
-      caption: String.raw`A **reconstruction in modern notation**, not a figure copied from the book: demand $P = a - Q$ (normalized, $a = 1$), zero cost (Cournot's springs). Left: the two reaction curves; **drag the gold start** and press play: the producers respond to each other in turn and the path converges to the crossing (Cournot describes successive reactions and a stepped Fig. 2 in chapter VII §§43–44; this is a modern linear example). Right: the same market with $n$ producers (**slider**): price $a/(n+1)$ and total output $na/(n+1)$, from the monopoly ($n = 1$) towards the competitive limit $P = 0$, $Q = a$.`,
+      verify: false,
+      statement: String.raw`Cournot's *Recherches* (1838) studies monopoly revenue $pF(p)$ and production cost $\varphi(F(p))$ in chapter V §§26–35. Chapter VII §§43–46 considers owners of mineral springs who choose quantities while taking rivals' quantities as fixed; §43 describes successive replies and the dotted staircase in figure 2. These are the source frameworks for the **authored linear specialization** below, with zero cost, nonnegative outputs and profit
+$$\pi_i=q_i(1-q_i-Q_{-i}).$$
+The unique best reply is $R(Q_{-i})=\max\{0,(1-Q_{-i})/2\}$. For $n$ identical firms the unique equilibrium has $q_i=1/(n+1)$, total output $Q=n/(n+1)$ and price $P=1/(n+1)$. Thus $n=1$ gives monopoly output and price $1/2$; as $n\to\infty$, $Q\to1$ and $P\to0$. These formulas are for the specified affine model, rather than a general convergence theorem for nonlinear demand.`,
+      idea: String.raw`Holding rival output $r$ fixed, the quadratic objective has derivative $1-r-2q$ and second derivative $-2$. Its interior maximum satisfies the zero-derivative condition (PMA 5.8); the nonnegative boundary gives the clipped reply. An equilibrium cannot have $Q>1$: any positive producer loses money and could choose zero. At $Q=1$, a positive producer can halve its output to earn $q_i^2/4>0$ instead of zero. Hence $Q<1$, every firm produces positively, and $1-Q-q_i=0$ forces the stated symmetric solution.
+
+For the displayed **duopoly**, start anywhere with $q_1,q_2\ge0$ and $q_1+q_2\le1$. Each reply preserves that triangle. With firm 1 responding first, after $m$ complete two-reply sweeps,
+$$q_2^{(2m)}-\tfrac13=4^{-m}(q_2^{(0)}-\tfrac13).$$
+Firm 1's error is minus twice this error for $m\ge1$. This proves convergence for every displayed start, including the boundary. It concerns alternating duopoly replies; the right panel computes static equilibria and simulates no many-firm adjustment. Cournot's chapter VIII §§50–54 studies unlimited competition under its own marginal-cost assumptions.`,
+      caption: String.raw`Left: an affine reconstruction of the original chapter VII staircase, with both best-reply curves. **Drag the gold start**, or use either output control; increasing one output beyond the available triangle reduces the other. All three boundary vertices are accessible. **Selected reply 0–18** shows each successive response, firm 1 first: the faint full path retains the initial point and all 18 replies; the gold prefix ends at the current point. The green ring marks the exact equilibrium; the equilibrium button sets both start coordinates to $1/3$. Right: select any integer number of firms 1–30. The guides join those 30 discrete equilibria; a purple ring around the price marker shows their coincidence at $n=1$.`,
+      scope: String.raw`Zero production and fixed costs, no capacity constraints, and strategy space $q_i\ge0$. The payoff uses the affine expression $P=1-Q$ even at hypothetical $Q>1$; it is a quadratic teaching extension. The displayed initial triangle keeps every illustrated duopoly price nonnegative and does not restrict a firm's strategy space. Replacing the payoff by $q_i\max(1-Q,0)$ defines a different game: for example, duopoly $(1,1)$ is then a zero-profit equilibrium, but not an equilibrium of the quadratic model. Outputs and prices are dimensionless under the chosen unit intercept and slope. The displayed numerical formulas and contraction proof are derived here, not transcribed source data.`,
       deps: ['micro-2.1', 'pma-5.8'],
-      refs: [], tags: ['oligopoly', 'history'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Antoine_Augustin_Cournot' },
+      refs: ['Cournot (1838), chapter V §§26–35 pp.61–73; chapter VII §§43–49 pp.88–100, especially figure 2 and §46; chapter VIII §§50–54 pp.101–111', 'https://archive.org/download/AugustinCournotRecherches/Augustin%20Cournot%20Recherches.pdf'], tags: ['oligopoly', 'history'],
+      links: { source: 'https://archive.org/download/AugustinCournotRecherches/Augustin%20Cournot%20Recherches.pdf', catalogue: 'https://catalogue.bnf.fr/ark:/12148/cb30280488q' },
       viz(v) {
-        const nS = v.slider('number of producers $n$', 1, 30, 2, { int: true });
-        const a = 1, PER = 7;
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, equal: true, xlabel: 'output of producer 1', ylabel: 'output of producer 2', height: 380, title: 'two proprietors: reaction curves' });
-        const G = v.stage({ x: [1, 30], y: [0, 1], axes: 'box', gutter: true, xlabel: 'number of producers $n$', ylabel: 'price and total output', height: 380, title: 'adding producers', weight: 0.9, minWidth: 260 });
-        v.legend([['accent', 'producer 1\'s reply'], ['orange', 'producer 2\'s reply'], ['green', 'Cournot point', { dot: true }], ['ink', 'price'], ['purple', 'total output']]);
-        const H = s.handle(0.9, 0.05, { color: 'gold', r: 9, label: 'start', labelPos: 'ne', constrain: { x: [0.02, 0.98], y: [0.02, 0.98] } });
-        const eqn = (n) => bisect((q) => a - n * q - q, 0, a, 60); // each: P + qP' = 0 with P = a − nq
-        let st = {};
-        v.animate((t) => {
-          const R = (q) => Math.max(0, (a - q) / 2), steps = Math.min(18, Math.floor((t / PER) * 18 + 1e-9));
-          let q1 = H.x, q2 = H.y; const path = [[q1, q2]];
-          for (let i = 0; i < steps; i++) { if (i % 2 === 0) q1 = R(q2); else q2 = R(q1); path.push([q1, q2]); }
-          const stair = []; path.forEach((p, i) => { stair.push(p); });
-          s.line(0.5, 0, 0, 1, { color: 'accent', width: 2.4 }); s.line(0, 0.5, 1, 0, { color: 'orange', width: 2.4 });
-          s.path(path, { color: 'muted', width: 2 }); path.forEach((p, i) => s.dot(p[0], p[1], { r: i === steps ? 5 : 3, color: 'gold' }));
-          s.dot(a / 3, a / 3, { r: 8, color: 'green' }); tag(s, `$(a/3, a/3)$`, a / 3, a / 3, 'green', { dy: 18, dx: 26 });
-          const n = nS.value, qn = eqn(n);
-          G.fn((k) => a / (k + 1), { domain: [1, 30], color: 'ink', width: 2.6 }); G.fn((k) => (k * a) / (k + 1), { domain: [1, 30], color: 'purple', width: 2.6 });
-          G.dot(n, a - n * qn, { r: 7, color: 'ink' }); G.dot(n, n * qn, { r: 7, color: 'purple' }); G.hline(a, { color: 'muted', width: 1, dash: [3, 3] });
-          st = { n, qn, P: a - n * qn, Q: n * qn, q1, q2, steps };
-        }, { period: PER + 1.5, once: true, still: PER + 1.5 });
-        v.readout(() => `Reply $${st.steps}$ of 18: $(q_1, q_2) = (${fx(st.q1, 3)}, ${fx(st.q2, 3)})$, equilibrium $(a/3, a/3) = (${fx(1 / 3, 3)}, ${fx(1 / 3, 3)})$.\n$n = ${st.n}$ producers (solved from the first-order condition): price $${fx(st.P, 4)}$ (formula $a/(n+1) = ${fx(1 / (st.n + 1), 4)}$), total output $${fx(st.Q, 4)}$ (formula $na/(n+1) = ${fx(st.n / (st.n + 1), 4)}$); the monopoly $(n = 1)$ sells $a/2$ at $a/2$, the limit $n \\to \\infty$ is price $0$ and output $a$. These formulas are the same as the textbook ones: no discrepancy with today's accepted solution.`);
+        const q1=v.slider('initial output $q_1$',0,1,.9,{step:.01,decimals:5,onChange:x=>{if(x+q2.value>1)q2.set(1-x);}});
+        const q2=v.slider('initial output $q_2$',0,1,.05,{step:.01,decimals:5,onChange:y=>{if(q1.value+y>1)q1.set(1-y);}});
+        const step=v.slider('selected reply',0,18,18,{int:true}),nS=v.slider('number of producers $n$',1,30,2,{int:true});
+        const s=v.stage({x:[-.16,1.16],y:[-.16,1.16],axes:'box',gutter:true,equal:true,xlabel:'producer 1 output',ylabel:'producer 2 output',height:400,title:'duopoly: alternating best replies'});
+        const G=v.stage({x:[-2,33],y:[-.14,1.14],axes:'box',gutter:true,xlabel:'integer number of producers n',ylabel:'normalized price / total output',height:400,title:'static equilibria for 1–30 producers',weight:.9,minWidth:260});
+        v.legend([['accent','producer 1 reply'],['orange','producer 2 reply'],['gold','start / selected prefix and current point'],['muted','all 18 replies'],['green','exact duopoly equilibrium',{dot:true}],['ink','price'],['purple','total output']]);
+        const H=s.handle(q1.value,q2.value,{color:'gold',r:9,constrain:cournotProject,onDrag:h=>{q1.set(h.x);q2.set(h.y);}}),eq=COURNOT_EQUILIBRIUM;
+        const all=Array.from({length:30},(_,i)=>cournotMany(i+1));
+        v.button('Start at exact duopoly equilibrium',()=>{q1.set(eq);q2.set(eq);});
+        let info={};
+        v.render(()=>{
+          const state=cournotState([q1.value,q2.value],step.value,nS.value),p=state.point,m=state.many;
+          H.set(...state.start);
+          s.poly([[0,0],[1,0],[0,1]],{fill:'faint',fillAlpha:.24,stroke:false});
+          s.path([[0,0],[1,0],[0,1],[0,0]],{color:'faint',width:1.2});
+          s.path([[.5,0],[0,1]],{color:'accent',width:2.6});s.path([[0,.5],[1,0]],{color:'orange',width:2.6});
+          s.dot(eq,eq,{r:14,color:'green',hollow:true,width:2});
+          s.path(state.path,{color:'muted',width:1.5,dash:[3,4]});
+          s.path(state.path.slice(0,state.selected+1),{color:'gold',width:2.5});
+          state.path.forEach(([x,y])=>s.dot(x,y,{r:2,color:'muted',ring:false}));
+          s.dot(p[0],p[1],{r:5,color:'gold'});
+          tag(s,'$(1/3,1/3)$',.57,.35,'green',{dy:-17});
+          G.path(all.map(p=>[p.n,p.price]),{color:'ink',width:2.6});G.path(all.map(p=>[p.n,p.total]),{color:'purple',width:2.6});
+          G.line(1,1,30,1,{color:'muted',width:1.2,dash:[3,4]});
+          G.dot(m.n,m.total,{r:m.n===1?12:7,color:'purple',hollow:m.n===1,width:2});G.dot(m.n,m.price,{r:7,color:'ink'});
+          info=state;
+        });
+        v.readout(()=>{const p=info,m=p.many;return `Reply ${p.selected} of 18, firm 1 first: current outputs (${fx(p.point[0],8)}, ${fx(p.point[1],8)}), price ${fx(p.price,8)}; profits (${fx(p.profits[0],8)}, ${fx(p.profits[1],8)}). All 19 path points are retained, including the initial point.\nAfter each complete two-reply sweep, producer 2's error from 1/3 is exactly one quarter of its previous error in the real-arithmetic model. This proves the displayed duopoly convergence; reply 18 is a finite state, not an exact equilibrium certificate.\n${m.n} producers: each output ${fx(m.q,8)}, total ${fx(m.total,8)}, price ${fx(m.price,8)}, profit per firm ${fx(m.firmProfit,8)}. These are exact static formulas, with floating-point display; no many-firm adjustment is simulated.`;});
       },
     },
   ],

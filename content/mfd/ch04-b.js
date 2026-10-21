@@ -1,6 +1,6 @@
 // Manifolds & Riemannian Geometry — Chapter 4: Vector fields and flows (items 4.7–4.12; 4.1–4.6 in ch04.js)
 import {
-  PI, TAU, clamp, minus, flowN, flow2, bracket2, PAIRS, DISTS, bracket3, nrm3, cross3, dot3, sub3, sc3, add3,
+  PI, TAU, clamp, minus, flowN, flow2, bracket2, PAIRS, DISTS, bracket3, LIE_FIELDS, lieFunction, lieVector, lieFlow, liePullback, lieExact, lieQuotient, nrm3, cross3, dot3, sub3, sc3, add3,
 } from './ch04.shared.js';
 
 const f3 = (v, x) => minus(v.fix(Math.abs(x) < 5e-5 ? 0 : x, 3));
@@ -18,17 +18,6 @@ function pullback(X, Y, p, t) {
   const q = fl(X, p, t), w = Y(q[0], q[1]);
   return dflow(X, q, -t, w);
 }
-
-// ---- 4.8: fields X for the Lie derivative
-const XS = {
-  rot: { label: 'rotation $(-y,x)$', f: (x, y) => [-y, x] },
-  dil: { label: 'dilation $\\tfrac12(x,y)$', f: (x, y) => [0.5 * x, 0.5 * y] },
-  shear: { label: 'shear $(y,0)$', f: (x, y) => [y, 0] },
-  wave: { label: '$(0.6\\sin y,\\ 0.6\\cos x)$', f: (x, y) => [0.6 * Math.sin(y), 0.6 * Math.cos(x)] },
-};
-const fFun = (x, y) => Math.sin(1.2 * x) * Math.cos(1.1 * y) + 0.15 * x;
-const fGrad = (x, y) => [1.2 * Math.cos(1.2 * x) * Math.cos(1.1 * y) + 0.15, -1.1 * Math.sin(1.2 * x) * Math.sin(1.1 * y)];
-const Y8 = (x, y) => [0.8 * Math.cos(y), 0.8 * Math.sin(x)];
 
 export default {
   collection: 'mfd',
@@ -92,22 +81,23 @@ in any chart. In particular $[X,Y]_p=\tfrac12 c''(0)$ for the curve $c$ (which s
       name: 'Lie derivative',
       statement: String.raw`Let $X$ be a smooth vector field with flow $\theta$ and let $T$ be a smooth function, vector field, or covariant tensor field. The **Lie derivative** of $T$ along $X$ is the rate of change of $T$ when it is dragged back along the flow:
 $$(\mathcal L_XT)_p=\frac{d}{dt}\Big|_{t=0}(\theta_t^*T)_p,$$
-where $\theta_t^*f=f\circ\theta_t$, $(\theta_t^*Y)_p=d(\theta_{-t})_{\theta_t(p)}Y_{\theta_t(p)}$ and $(\theta_t^*g)_p(w,w)=g_{\theta_t(p)}(d\theta_tw,d\theta_tw)$. For functions $\mathcal L_Xf=Xf$. For a metric the derivative vanishes exactly when the flow acts by isometries ($X$ is a Killing field).`,
+where $\theta_t^*f=f\circ\theta_t$, $(\theta_t^*Y)_p=d(\theta_{-t})_{\theta_t(p)}Y_{\theta_t(p)}$ and $(\theta_t^*g)_p(w,w)=g_{\theta_t(p)}(d\theta_tw,d\theta_tw)$. For functions $\mathcal L_Xf=Xf$. For a metric the derivative vanishes exactly when the local flow acts by isometries ($X$ is a Killing field).`,
       idea: String.raw`The definition uses only the flow, so it needs no chart and no extra structure; the price is that one must know how to transport each kind of object. A function is transported by composition. A vector is transported by the differential of the inverse flow (the minus sign, so that the whole assignment is a pull-back along $\theta_t$). A covariant tensor is transported by evaluating on pushed-forward arguments. In each case the dependence on $t$ is smooth because $\theta$ is smooth (4.3), so the derivative at $0$ exists. The three cases are computed in coordinates in 4.9 and in chapters 6 and 8.`,
-      caption: String.raw`Pick the kind of object and the field $X$; the slider $t$ is the flow time of the difference quotient $(\theta_t^*T-T)/t$. Left: the object (contours of $f$; the field $Y$ in blue and its pull-back in orange; or the unit circles of $g$ in blue and of $\theta_t^*g$ in orange). Right: the difference quotient as a heat map or arrow field. It converges to the exact $\mathcal L_XT$ as $t\to0$ (the readout gives the largest deviation over a grid); for the metric and a rotation it is zero for every $t$ in exact arithmetic: a Killing field. The displayed calculation uses numerical flows and finite differences.`,
+      caption: String.raw`Pick the kind of object and the field $X$; the slider $t$ is the flow time of the difference quotient $(\theta_t^*T-T)/t$. Left: the object (contours of $f$; the field $Y$ in blue and its pull-back in orange; or the unit circles of $g$ in blue and of $\theta_t^*g$ in orange). Right: the difference quotient as a heat map or arrow field. It converges to the exact $\mathcal L_XT$ as $t\to0$ (the readout gives the largest deviation over a grid); at $t=0$ the right panel explicitly uses the analytic limiting derivative. For the metric and a rotation the quotient is zero for every nonzero $t$: a Killing field. Heat colors saturate outside the interval $[-2,2]$.`,
       deps: ['mfd-4.3'],
-      refs: ['Nicolaescu, Lectures on the Geometry of Manifolds, §3.1.2 pp.83–87; Exercise4.1.50, p.163 (Killing fields)'],
+      refs: ['Lee, Introduction to Smooth Manifolds, version 3.0 (2000), Theorem 13.6, Proposition 13.11 and Corollary 13.12; Proposition 13.18'],
+      links: { source: 'https://www.math.colostate.edu/~renzo/teaching/DiffGeo2011/Introduction%20to%20Smooth%20Manifolds%20-%20J.%20Lee.pdf' },
       tags: ['Lie derivative', 'pull-back'],
       viz(v) {
         const kind = v.select('object', [{ value: 'f', label: 'function $f$' }, { value: 'Y', label: 'vector field $Y$' }, { value: 'g', label: 'metric $g$' }], 'f');
-        const xs = v.select('field $X$', Object.entries(XS).map(([value, o]) => ({ value, label: o.label })), 'rot');
+        const xs = v.select('field $X$', Object.entries(LIE_FIELDS).map(([value, o]) => ({ value, label: o.label })), 'rot');
         const tS = v.slider('time $t$', -1.2, 1.2, 0.2, { step: 0.01 });
         const aS = v.slider('direction of $w$ (metric)', 0, PI, 0.6, { step: 0.01 });
         const L = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 320, xlabel: 'x', ylabel: 'y', title: 'the object, dragged back along the flow' });
         const R = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 320, xlabel: 'x', ylabel: 'y', title: 'difference quotient $(\\theta_t^*T-T)/t$' });
-        let dev = 0, mx = 0;
+        let dev = 0;
         v.render(() => {
-          const X = XS[xs.value].f, t = tS.value === 0 ? 1e-3 : tS.value, k = kind.value;
+          const X = LIE_FIELDS[xs.value].f, t = tS.value, k = kind.value;
           aS.el.hidden = k !== 'g';
           const w = [Math.cos(aS.value), Math.sin(aS.value)];
           const xk = xs.value;
@@ -118,36 +108,27 @@ where $\theta_t^*f=f\circ\theta_t$, $(\theta_t^*Y)_p=d(\theta_{-t})_{\theta_t(p)
             q = s0; for (let m = 0; m < 25; m++) { q = flow2(X, q, -0.12, 8); if (!q) break; a.push(q); }
             L.clip(() => L.path(a.reverse().concat(b), { color: 'faint', width: 1, alpha: 0.5 }));
           }
-          let quot, exact;
+          const quot=(x,y)=>lieQuotient(xk,k,[x,y],t,w),exact=(x,y)=>lieExact(xk,k,[x,y],w);
           if (k === 'f') {
-            quot = (x, y) => { const q = fl(X, [x, y], t); return (fFun(q[0], q[1]) - fFun(x, y)) / t; };
-            exact = (x, y) => { const g = fGrad(x, y), a = X(x, y); return g[0] * a[0] + g[1] * a[1]; };
-            L.contour((x, y) => fFun(x, y), [-0.9, -0.45, 0, 0.45, 0.9], { color: 'accent', width: 1.4 });
-            L.contour((x, y) => { const q = fl(X, [x, y], t); return fFun(q[0], q[1]); }, [-0.9, -0.45, 0, 0.45, 0.9], { color: 'orange', width: 1.4, alpha: 0.8 });
+            L.contour((x, y) => lieFunction(x, y), [-0.9, -0.45, 0, 0.45, 0.9], { color: 'accent', width: 1.4 });
+            L.contour((x, y) => { const {q}=lieFlow(xk,[x,y],t); return lieFunction(q[0], q[1]); }, [-0.9, -0.45, 0, 0.45, 0.9], { color: 'orange', width: 1.4, alpha: 0.8 });
             R.heat(quot, { range: [-2, 2], cmap: 'diverging', res: 6, key: `f|${xk}|${t.toFixed(3)}` });
             R.contour(exact, [-1.5, -1, -0.5, 0.5, 1, 1.5], { color: 'ink', width: 1, alpha: 0.4 });
-            mx = 2;
           } else if (k === 'Y') {
-            quot = (x, y) => { const a = pullback(X, Y8, [x, y], t), b = Y8(x, y); return [(a[0] - b[0]) / t, (a[1] - b[1]) / t]; };
-            exact = (x, y) => bracket2(X, Y8, x, y);
-            L.field(Y8, { color: 'blue', spacing: 40 });
-            L.field((x, y) => pullback(X, Y8, [x, y], t), { color: 'orange', spacing: 40, alpha: 0.6 });
+            L.field(lieVector, { color: 'blue', spacing: 40 });
+            L.field((x, y) => liePullback(xk,[x,y],t), { color: 'orange', spacing: 40, alpha: 0.6 });
             R.field(quot, { color: 'orange', spacing: 40, normalize: false, scale: 14 });
             R.field(exact, { color: 'green', spacing: 40, normalize: false, scale: 14, alpha: 0.5, width: 3 });
           } else {
-            const q2 = (x, y, ww, tt) => { const d = dflow(X, [x, y], tt, ww); return d[0] * d[0] + d[1] * d[1]; };
-            quot = (x, y) => (q2(x, y, w, t) - 1) / t;
-            exact = (x, y) => { const e = 1e-4, a = X(x + e * w[0], y + e * w[1]), b = X(x - e * w[0], y - e * w[1]), D = [(a[0] - b[0]) / (2 * e), (a[1] - b[1]) / (2 * e)]; return 2 * (w[0] * D[0] + w[1] * D[1]); };
             for (let i = -2; i <= 2; i++) for (let j = -2; j <= 2; j++) {
-              const cx = i * 1.2, cy = j * 1.2, c1 = [], c2 = [];
+              const cx = i * 1.2, cy = j * 1.2, c1 = [], c2 = [],D=lieFlow(xk,[cx,cy],t).D;
               for (let m = 0; m <= 48; m++) {
-                const th = (TAU * m) / 48, u = [Math.cos(th), Math.sin(th)], d = dflow(X, [cx, cy], t, u), r = 1 / Math.max(1e-6, Math.hypot(d[0], d[1]));
+                const th = (TAU * m) / 48, u = [Math.cos(th), Math.sin(th)], d=[D[0][0]*u[0]+D[0][1]*u[1],D[1][0]*u[0]+D[1][1]*u[1]], r = 1 / Math.max(1e-6, Math.hypot(d[0], d[1]));
                 c1.push([cx + 0.42 * u[0], cy + 0.42 * u[1]]); c2.push([cx + 0.42 * r * u[0], cy + 0.42 * r * u[1]]);
               }
-              L.path(c1, { color: 'blue', width: 1.2, alpha: 0.7 }); L.path(c2, { color: 'orange', width: 1.8 });
+              L.path(c1, { color: 'blue', width: 1.2, alpha: 0.7 }); L.clip(()=>L.path(c2, { color: 'orange', width: 1.8 }));
             }
             R.heat(quot, { range: [-2, 2], cmap: 'diverging', res: 6, key: `g|${xk}|${t.toFixed(3)}|${aS.value.toFixed(3)}` });
-            mx = 2;
           }
           let d = 0;
           for (let i = -4; i <= 4; i++) for (let j = -4; j <= 4; j++) {
@@ -159,7 +140,7 @@ where $\theta_t^*f=f\circ\theta_t$, $(\theta_t^*Y)_p=d(\theta_{-t})_{\theta_t(p)
         v.readout(() => {
           const t = tS.value;
           const what = { f: '$\\mathcal L_Xf=Xf$ (colour: quotient; grey contours: exact)', Y: '$\\mathcal L_XY=[X,Y]$ (green: exact; orange arrows: quotient)', g: '$(\\mathcal L_Xg)(w,w)=2g(w,DX\\,w)$ for the Euclidean $g$ and the direction $w$ above' }[kind.value];
-          return `${what}.\nWith $t=${v.fix(t === 0 ? 0.001 : t, t === 0 ? 3 : 2)}$${t === 0 ? ' (the zero slider position uses $t=0.001$)' : ''} the quotient differs from the exact Lie derivative by at most $${v.sci(Math.max(dev, 1e-12), 2)}$ on the grid — the error is proportional to $t$ (first-order difference quotient).` + (kind.value === 'g' && xs.value === 'rot' ? '\nRotation: in exact arithmetic the quotient is $0$ for every $t$; numerical integration and differences introduce a small residual.' : '');
+          return `${what}.\nAt $t=${v.fix(t,2)}$, ${t===0?'the analytic limit is displayed':'the finite-time quotient is displayed'}. Maximum observed deviation on the 81-point grid: $${v.sci(dev,2)}$. For small nonzero $t$, the forward quotient has first-order truncation error, with numerical integration error for the wave field.` + (kind.value === 'g' && xs.value === 'rot' ? '\nRotation: the metric quotient (and its limit) is $0$ for every $t$ — a Killing field.' : '');
         });
       },
     },

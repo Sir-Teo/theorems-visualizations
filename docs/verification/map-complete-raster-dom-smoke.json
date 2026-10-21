@@ -1,0 +1,210 @@
+{
+  "complete": false,
+  "hashes": {
+    "data/index.json": "49b65fb05a860fab028600ff07b84a6e6dd7773b959d38aebea72233b54e68f5",
+    "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "scripts/lib/map-complete-raster-dom-runtime.mjs": "96864a8afe42fc63d034d6df76dd5979bd3066ddbf789fea5cc1c86bfeeff70d",
+    "scripts/lib/map-complete-raster-dom-prototype.mjs": "66ca81f68d462d447cdcc6ff6a235be64be13b0be8d574270b6c50fc8655de74",
+    "scripts/lib/map-complete-raster-dom-fixture.mjs": "7ed446cf7db995d5ddf89d4a0b853d3d801f4459a7b10fc84b1b7ce2842ee1cc"
+  },
+  "browser": "153.0.8010.12",
+  "method": "Whole DOM screenshot versus original _draw with independently matched cache history and direct _paint. No masks or timing.",
+  "results": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "cold",
+      "k": 0.8,
+      "dx": 0,
+      "dy": 0,
+      "audits": [
+        {
+          "copies": 0,
+          "paints": 1,
+          "cache": {
+            "k": 0.8,
+            "tx": 361.97499999999997,
+            "ty": -1642.9250000000002,
+            "pad": 256,
+            "width": 1952,
+            "height": 1444,
+            "lod": 2,
+            "key": "1440|932|1|true|true|math,stats,cs,physics,chem,earth,bio,med,eng,econ,social,arts,humanities||",
+            "hash": "2e0f747f6f0132f68d809be30ce5fb89323011d6fc4c2d4ad83d5bc4840fad7b"
+          },
+          "pixels": 2818688,
+          "promoted": true,
+          "same": true,
+          "transform": "translate(-256px, -256px) scale(1)",
+          "nodes": 13574,
+          "edges": 23218
+        },
+        {
+          "copies": 1,
+          "paints": 1,
+          "cache": {
+            "k": 0.8,
+            "tx": 361.97499999999997,
+            "ty": -1642.9250000000002,
+            "pad": 256,
+            "width": 1952,
+            "height": 1444,
+            "lod": 2,
+            "key": "1440|932|1|true|true|math,stats,cs,physics,chem,earth,bio,med,eng,econ,social,arts,humanities||",
+            "hash": "2e0f747f6f0132f68d809be30ce5fb89323011d6fc4c2d4ad83d5bc4840fad7b"
+          },
+          "pixels": 2818688,
+          "promoted": false,
+          "same": true,
+          "nodes": 13574,
+          "edges": 23218
+        }
+      ],
+      "originalDifference": {
+        "mean": 0,
+        "changed": 0
+      },
+      "directDifference": {
+        "mean": 0.08280082657765062,
+        "changed": 0.0010406731839135272
+      },
+      "baselineDirectDifference": {
+        "mean": 0.08280082657765062,
+        "changed": 0.0010406731839135272
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "fractional-hit",
+      "k": 0.8,
+      "dx": 12.375,
+      "dy": -8.125,
+      "audits": [
+        {
+          "copies": 0,
+          "paints": 0,
+          "cache": {
+            "k": 0.8,
+            "tx": 361.97499999999997,
+            "ty": -1642.9250000000002,
+            "pad": 256,
+            "width": 1952,
+            "height": 1444,
+            "lod": 2,
+            "key": "1440|932|1|true|true|math,stats,cs,physics,chem,earth,bio,med,eng,econ,social,arts,humanities||",
+            "hash": "2e0f747f6f0132f68d809be30ce5fb89323011d6fc4c2d4ad83d5bc4840fad7b"
+          },
+          "pixels": 2818688,
+          "promoted": true,
+          "same": true,
+          "transform": "translate(-244px, -264px) scale(1)",
+          "nodes": 13574,
+          "edges": 23218
+        },
+        {
+          "copies": 1,
+          "paints": 0,
+          "cache": {
+            "k": 0.8,
+            "tx": 361.97499999999997,
+            "ty": -1642.9250000000002,
+            "pad": 256,
+            "width": 1952,
+            "height": 1444,
+            "lod": 2,
+            "key": "1440|932|1|true|true|math,stats,cs,physics,chem,earth,bio,med,eng,econ,social,arts,humanities||",
+            "hash": "2e0f747f6f0132f68d809be30ce5fb89323011d6fc4c2d4ad83d5bc4840fad7b"
+          },
+          "pixels": 2818688,
+          "promoted": false,
+          "same": true,
+          "nodes": 13574,
+          "edges": 23218
+        }
+      ],
+      "originalDifference": {
+        "mean": 0,
+        "changed": 0
+      },
+      "directDifference": {
+        "mean": 1.4574754609759974,
+        "changed": 0.008810205054840248
+      },
+      "baselineDirectDifference": {
+        "mean": 1.4574754609759974,
+        "changed": 0.008810205054840248
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "wide-hit-up",
+      "k": 1.1,
+      "dx": 0,
+      "dy": 0,
+      "audits": [
+        {
+          "copies": 0,
+          "paints": 0,
+          "cache": {
+            "k": 0.8,
+            "tx": 361.97499999999997,
+            "ty": -1642.9250000000002,
+            "pad": 256,
+            "width": 1952,
+            "height": 1444,
+            "lod": 2,
+            "key": "1440|932|1|true|true|math,stats,cs,physics,chem,earth,bio,med,eng,econ,social,arts,humanities||",
+            "hash": "2e0f747f6f0132f68d809be30ce5fb89323011d6fc4c2d4ad83d5bc4840fad7b"
+          },
+          "pixels": 2818688,
+          "promoted": true,
+          "same": true,
+          "transform": "translate(-622px, -527px) scale(1.375)",
+          "nodes": 13574,
+          "edges": 23218
+        },
+        {
+          "copies": 1,
+          "paints": 0,
+          "cache": {
+            "k": 0.8,
+            "tx": 361.97499999999997,
+            "ty": -1642.9250000000002,
+            "pad": 256,
+            "width": 1952,
+            "height": 1444,
+            "lod": 2,
+            "key": "1440|932|1|true|true|math,stats,cs,physics,chem,earth,bio,med,eng,econ,social,arts,humanities||",
+            "hash": "2e0f747f6f0132f68d809be30ce5fb89323011d6fc4c2d4ad83d5bc4840fad7b"
+          },
+          "pixels": 2818688,
+          "promoted": false,
+          "same": true,
+          "nodes": 13574,
+          "edges": 23218
+        }
+      ],
+      "originalDifference": {
+        "mean": 0.10055833730726435,
+        "changed": 0
+      },
+      "directDifference": {
+        "mean": 2.5290062192020346,
+        "changed": 0.019638421951994913
+      },
+      "baselineDirectDifference": {
+        "mean": 2.533012935145446,
+        "changed": 0.019630225719281514
+      }
+    }
+  ]
+}

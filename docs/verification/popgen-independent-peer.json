@@ -1,0 +1,3831 @@
+{
+  "candidate": "35771b8239fb74cce147524a7e1f410ed7320305",
+  "baseline": "f893017643c70994854fa6af773c68606a2be26f",
+  "disposition": "accept prerequisite batch; inherited statement overflow remains",
+  "preservation": {
+    "objects": 62,
+    "functions": 62,
+    "newEdges": 17,
+    "removedAnalogy": 1,
+    "allRawLists": 62,
+    "rowBackfills": 12
+  },
+  "math": {
+    "checks": 11506,
+    "groups": 9,
+    "notes": "SLLN and FTC hypotheses checked analytically; finite witnesses are not limit-theorem proofs"
+  },
+  "native": {
+    "complete": true,
+    "cases": 28,
+    "pictureCount": 56,
+    "changedIdeaPictures": 28,
+    "unchangedStatementPictures": 28,
+    "rows": [
+      {
+        "id": "popgen-1.2",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.2-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 85.3125,
+              "right": 134.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 77.9375,
+              "right": 96.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 232.953125,
+              "right": 260.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 107.890625,
+              "right": 135.4375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.2",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.2-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 154.5625,
+              "right": 164.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 188.296875,
+              "right": 255.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 134.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.8125,
+              "right": 185.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 205.03125,
+              "right": 237.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.75,
+              "right": 209.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 196.5,
+              "right": 259.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 75.734375,
+              "right": 187.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 273.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.953125,
+              "right": 155.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 181.78125,
+              "right": 192.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 80.015625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.3",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.3-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 170.875,
+              "right": 184.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 66.15625,
+              "right": 80.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 52.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 189.1875,
+              "right": 276.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 49.1875,
+              "right": 137.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 140.96875,
+              "right": 234.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 182.59375,
+              "right": 193.4375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.3",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.3-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 82.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 151.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.8125,
+              "right": 135.21875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 166.71875,
+              "right": 206.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 155.796875,
+              "right": 169.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 203.359375,
+              "right": 217.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 266.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 91.28125,
+              "right": 117.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 77.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 83.875,
+              "right": 150.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 79.453125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.9-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 85.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 254.96875,
+              "right": 264.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 109.59375,
+              "right": 171.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 49.1875,
+              "right": 74.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 179.375,
+              "right": 188.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 283.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 201.28125,
+              "right": 226.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 133,
+              "right": 147.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 182.921875,
+              "right": 244.625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.9-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 249.15625,
+              "right": 265.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 86.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 46.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 141.21875,
+              "right": 263.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.5,
+              "right": 227.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 107.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 190.34375,
+              "right": 198.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 189.859375,
+              "right": 198.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 99.140625,
+              "right": 117.125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.10",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.10-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 180.6875,
+              "right": 219.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 246.859375,
+              "right": 263.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.65625,
+              "right": 157.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 293,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 186.59375,
+              "right": 201.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 82.875,
+              "right": 187.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 259.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 128.671875,
+              "right": 224.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 285.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 293.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.96875,
+              "right": 193.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 228.203125,
+              "right": 301.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 302.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 123.46875,
+              "right": 224.859375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.10",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.10-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 121.4375,
+              "right": 193.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 137.75,
+              "right": 203.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 126.953125,
+              "right": 135.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 94.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 139.375,
+              "right": 238.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 213.953125,
+              "right": 230.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 120.484375,
+              "right": 131.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 56.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 121.4375,
+              "right": 135.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 105.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 219.375,
+              "right": 235.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 81.59375,
+              "right": 173.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.16",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.16-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 131.703125,
+              "right": 205.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.671875,
+              "right": 112.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 298.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 93.09375,
+              "right": 232.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 271.984375,
+              "right": 299.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 165.90625,
+              "right": 253.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 263.046875,
+              "right": 290.71875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.16",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.16-light-statement.png",
+        "bounds": {
+          "scroll": 407,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 227.671875,
+              "right": 237.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 241.171875,
+              "right": 259,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 191.734375,
+              "right": 205.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 151.21875,
+              "right": 237.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 391,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 391,
+              "client": 249
+            },
+            {
+              "left": 83.875,
+              "right": 230.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 274.140625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.1",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.1-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 105.15625,
+              "right": 131.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 238.328125,
+              "right": 252.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.59375,
+              "right": 120.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 163.640625,
+              "right": 178.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 270.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 27.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 62.375,
+              "right": 71.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 198.765625,
+              "right": 208.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 115.765625,
+              "right": 132.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37.796875,
+              "right": 63.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.828125,
+              "right": 189.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 253.046875,
+              "right": 300.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 171.796875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.1",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.1-light-statement.png",
+        "bounds": {
+          "scroll": 306,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 130.46875,
+              "right": 146.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 235.125,
+              "right": 260.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 151.859375,
+              "right": 171.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 162.9375,
+              "right": 176.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 277.1875,
+              "right": 283.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 158.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 98.40625,
+              "right": 123.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 290,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 290,
+              "client": 249
+            },
+            {
+              "left": 58.84375,
+              "right": 177.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 268.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.796875,
+              "right": 120.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 154.65625,
+              "right": 179.625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.3",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.3-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 294.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 33.171875,
+              "right": 291.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 82.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 101.625,
+              "right": 267.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 209.53125,
+              "right": 253.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 126.421875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.3",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.3-light-statement.png",
+        "bounds": {
+          "scroll": 594,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 72.84375,
+              "right": 88.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 162.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 578,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 578,
+              "client": 249
+            },
+            {
+              "left": 116.140625,
+              "right": 122.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 275.71875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.9-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 132.5,
+              "right": 142.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 258.75,
+              "right": 269.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.109375,
+              "right": 215.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.53125,
+              "right": 240.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 62,
+              "right": 73.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 217.59375,
+              "right": 237.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.53125,
+              "right": 174.515625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.9-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 238.140625,
+              "right": 248.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 260.3125,
+              "right": 270.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 256.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 126.46875,
+              "right": 135.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 271.515625,
+              "right": 282.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 140.84375,
+              "right": 178.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 206.296875,
+              "right": 253.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 183.171875,
+              "right": 271.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 134.515625,
+              "right": 145.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 108.28125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-3.2",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/3.2-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 298.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 117.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 110.75,
+              "right": 121.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 167.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 49.890625,
+              "right": 104.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.828125,
+              "right": 129.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 248.640625,
+              "right": 274.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 94.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 266.78125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-3.2",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/3.2-light-statement.png",
+        "bounds": {
+          "scroll": 612,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 148.34375,
+              "right": 164.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 183.71875,
+              "right": 196.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 271.890625,
+              "right": 281.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 84.953125,
+              "right": 95.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 129.09375,
+              "right": 138.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 160.40625,
+              "right": 173.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 225.46875,
+              "right": 234.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.078125,
+              "right": 119.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 142.859375,
+              "right": 156.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 596,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 596,
+              "client": 249
+            },
+            {
+              "left": 243.453125,
+              "right": 252.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 45.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 131.984375,
+              "right": 199.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 103.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.640625,
+              "right": 133.484375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-3.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/3.6-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 160,
+              "right": 189.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 34.21875,
+              "right": 44.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 116.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 199.359375,
+              "right": 225.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 141.84375,
+              "right": 235.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 208.59375,
+              "right": 236.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 138.25,
+              "right": 214,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 288.53125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-3.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/3.6-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 138.328125,
+              "right": 166.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 136.9375,
+              "right": 161.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 249.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 256.28125,
+              "right": 266.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.2",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.2-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 252.734375,
+              "right": 293,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 168.125,
+              "right": 238.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 243.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 258.984375,
+              "right": 267.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 33.171875,
+              "right": 281.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 96.3125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.2",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.2-light-statement.png",
+        "bounds": {
+          "scroll": 411,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 99.8125,
+              "right": 138.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 224.921875,
+              "right": 279.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 395,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 395,
+              "client": 249
+            },
+            {
+              "left": 61.125,
+              "right": 141.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 259.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 77.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 140.65625,
+              "right": 227.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 162.578125,
+              "right": 203.296875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.4",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.4-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 246.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 283.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 224.859375,
+              "right": 299.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 265.25,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.4",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.4-light-statement.png",
+        "bounds": {
+          "scroll": 519,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 503,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 503,
+              "client": 249
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.5",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.5-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 158.703125,
+              "right": 282.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 302,
+              "scroll": 284,
+              "client": 284
+            },
+            {
+              "left": 18,
+              "right": 302,
+              "scroll": 284,
+              "client": 284
+            },
+            {
+              "left": 18,
+              "right": 298.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 152.734375,
+              "right": 173.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 235.15625,
+              "right": 271.125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.5",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.5-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 136.390625,
+              "right": 216.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 200.984375,
+              "right": 271.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 145.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 179.9375,
+              "right": 271.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.12",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.12-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 265.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 297.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 221,
+              "right": 234.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 292.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 112.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 92.546875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.12",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.12-light-statement.png",
+        "bounds": {
+          "scroll": 353,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 205.015625,
+              "right": 221.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 59.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 146.4375,
+              "right": 160.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.640625,
+              "right": 177.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 139.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 337,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 337,
+              "client": 249
+            },
+            {
+              "left": 76.5625,
+              "right": 128.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 147.140625,
+              "right": 195.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 229.109375,
+              "right": 280.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 51.9375,
+              "right": 99.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 171.25,
+              "right": 219.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 146.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 280.546875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.2",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.2-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 85.3125,
+              "right": 134.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 77.9375,
+              "right": 96.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 232.953125,
+              "right": 260.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 107.890625,
+              "right": 135.4375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.2",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.2-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 154.5625,
+              "right": 164.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 188.296875,
+              "right": 255.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 134.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.8125,
+              "right": 185.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 205.03125,
+              "right": 237.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.75,
+              "right": 209.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 196.5,
+              "right": 259.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 75.734375,
+              "right": 187.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 273.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.953125,
+              "right": 155.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 181.78125,
+              "right": 192.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 80.015625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.3",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.3-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 170.875,
+              "right": 184.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 66.15625,
+              "right": 80.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 52.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 189.1875,
+              "right": 276.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 49.1875,
+              "right": 137.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 140.96875,
+              "right": 234.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 182.59375,
+              "right": 193.4375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.3",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.3-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 82.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 151.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.8125,
+              "right": 135.21875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 166.71875,
+              "right": 206.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 155.796875,
+              "right": 169.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 203.359375,
+              "right": 217.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 266.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 91.28125,
+              "right": 117.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 77.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 83.875,
+              "right": 150.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 79.453125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.9-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 85.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 254.96875,
+              "right": 264.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 109.59375,
+              "right": 171.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 49.1875,
+              "right": 74.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 179.375,
+              "right": 188.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 283.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 201.28125,
+              "right": 226.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 133,
+              "right": 147.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 182.921875,
+              "right": 244.625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.9-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 249.15625,
+              "right": 265.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 86.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 46.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 141.21875,
+              "right": 263.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.5,
+              "right": 227.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 107.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 190.34375,
+              "right": 198.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 189.859375,
+              "right": 198.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 99.140625,
+              "right": 117.125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.10",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.10-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 180.6875,
+              "right": 219.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 246.859375,
+              "right": 263.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.65625,
+              "right": 157.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 293,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 186.59375,
+              "right": 201.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 82.875,
+              "right": 187.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 259.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 128.671875,
+              "right": 224.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 285.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 293.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.96875,
+              "right": 193.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 228.203125,
+              "right": 301.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 302.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 123.46875,
+              "right": 224.859375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.10",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.10-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 121.4375,
+              "right": 193.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 137.75,
+              "right": 203.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 126.953125,
+              "right": 135.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 94.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 139.375,
+              "right": 238.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 213.953125,
+              "right": 230.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 120.484375,
+              "right": 131.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 56.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 121.4375,
+              "right": 135.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 105.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 219.375,
+              "right": 235.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 81.59375,
+              "right": 173.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.16",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.16-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 131.703125,
+              "right": 205.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.671875,
+              "right": 112.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 298.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 93.09375,
+              "right": 232.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 271.984375,
+              "right": 299.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 165.90625,
+              "right": 253.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 263.046875,
+              "right": 290.71875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-1.16",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/1.16-dark-statement.png",
+        "bounds": {
+          "scroll": 407,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 227.671875,
+              "right": 237.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 241.171875,
+              "right": 259,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 191.734375,
+              "right": 205.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 151.21875,
+              "right": 237.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 391,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 391,
+              "client": 249
+            },
+            {
+              "left": 83.875,
+              "right": 230.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 274.140625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.1",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.1-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 105.15625,
+              "right": 131.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 238.328125,
+              "right": 252.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.59375,
+              "right": 120.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 163.640625,
+              "right": 178.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 270.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 27.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 62.375,
+              "right": 71.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 198.765625,
+              "right": 208.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 115.765625,
+              "right": 132.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37.796875,
+              "right": 63.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.828125,
+              "right": 189.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 253.046875,
+              "right": 300.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 171.796875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.1",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.1-dark-statement.png",
+        "bounds": {
+          "scroll": 306,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 130.46875,
+              "right": 146.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 235.125,
+              "right": 260.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 151.859375,
+              "right": 171.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 162.9375,
+              "right": 176.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 277.1875,
+              "right": 283.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 158.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 98.40625,
+              "right": 123.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 290,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 290,
+              "client": 249
+            },
+            {
+              "left": 58.84375,
+              "right": 177.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 268.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.796875,
+              "right": 120.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 154.65625,
+              "right": 179.625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.3",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.3-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 294.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 33.171875,
+              "right": 291.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 82.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 101.625,
+              "right": 267.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 209.53125,
+              "right": 253.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 126.421875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.3",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.3-dark-statement.png",
+        "bounds": {
+          "scroll": 594,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 72.84375,
+              "right": 88.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 162.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 578,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 578,
+              "client": 249
+            },
+            {
+              "left": 116.140625,
+              "right": 122.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 275.71875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.9-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 132.5,
+              "right": 142.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 258.75,
+              "right": 269.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.109375,
+              "right": 215.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.53125,
+              "right": 240.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 62,
+              "right": 73.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 217.59375,
+              "right": 237.8125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 102.53125,
+              "right": 174.515625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-2.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/2.9-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 238.140625,
+              "right": 248.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 260.3125,
+              "right": 270.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 256.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 126.46875,
+              "right": 135.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 271.515625,
+              "right": 282.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 140.84375,
+              "right": 178.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 206.296875,
+              "right": 253.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 183.171875,
+              "right": 271.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 134.515625,
+              "right": 145.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 108.28125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-3.2",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/3.2-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 298.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 117.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 110.75,
+              "right": 121.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 167.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 49.890625,
+              "right": 104.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.828125,
+              "right": 129.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 248.640625,
+              "right": 274.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 94.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 266.78125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-3.2",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/3.2-dark-statement.png",
+        "bounds": {
+          "scroll": 612,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 148.34375,
+              "right": 164.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 183.71875,
+              "right": 196.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 271.890625,
+              "right": 281.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 84.953125,
+              "right": 95.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 129.09375,
+              "right": 138.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 160.40625,
+              "right": 173.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 225.46875,
+              "right": 234.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.078125,
+              "right": 119.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 142.859375,
+              "right": 156.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 596,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 596,
+              "client": 249
+            },
+            {
+              "left": 243.453125,
+              "right": 252.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 45.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 131.984375,
+              "right": 199.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 103.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.640625,
+              "right": 133.484375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-3.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/3.6-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 160,
+              "right": 189.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 34.21875,
+              "right": 44.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 116.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 199.359375,
+              "right": 225.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 141.84375,
+              "right": 235.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 208.59375,
+              "right": 236.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 138.25,
+              "right": 214,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 288.53125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-3.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/3.6-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 138.328125,
+              "right": 166.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 136.9375,
+              "right": 161.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 249.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 256.28125,
+              "right": 266.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.2",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.2-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 252.734375,
+              "right": 293,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 168.125,
+              "right": 238.015625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 243.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 258.984375,
+              "right": 267.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 33.171875,
+              "right": 281.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 96.3125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.2",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.2-dark-statement.png",
+        "bounds": {
+          "scroll": 411,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 99.8125,
+              "right": 138.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 224.921875,
+              "right": 279.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 395,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 395,
+              "client": 249
+            },
+            {
+              "left": 61.125,
+              "right": 141.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 259.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 77.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 140.65625,
+              "right": 227.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 162.578125,
+              "right": 203.296875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.4",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.4-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 246.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 283.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 224.859375,
+              "right": 299.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 265.25,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.4",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.4-dark-statement.png",
+        "bounds": {
+          "scroll": 519,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 503,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 503,
+              "client": 249
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.5",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.5-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 158.703125,
+              "right": 282.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 302,
+              "scroll": 284,
+              "client": 284
+            },
+            {
+              "left": 18,
+              "right": 302,
+              "scroll": 284,
+              "client": 284
+            },
+            {
+              "left": 18,
+              "right": 298.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 152.734375,
+              "right": 173.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 235.15625,
+              "right": 271.125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.5",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.5-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 136.390625,
+              "right": 216.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 200.984375,
+              "right": 271.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 145.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 179.9375,
+              "right": 271.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.12",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.12-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 265.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 297.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 221,
+              "right": 234.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 292.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 112.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 92.546875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "popgen-4.12",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-map-peer/popgen-independent-native/4.12-dark-statement.png",
+        "bounds": {
+          "scroll": 353,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 205.015625,
+              "right": 221.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 59.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 146.4375,
+              "right": 160.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.640625,
+              "right": 177.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 139.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 337,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 337,
+              "client": 249
+            },
+            {
+              "left": 76.5625,
+              "right": 128.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 147.140625,
+              "right": 195.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 229.109375,
+              "right": 280.921875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 51.9375,
+              "right": 99.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 171.25,
+              "right": 219.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 146.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 280.546875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -7,23 +7,15 @@ const still = () => typeof window !== 'undefined' && !!window.__vizStill;
 const O3 = ozoneProfile(300), SW = ozoneHeating(O3);
 
 // ── a de Saussure hot box: plate + n panes, solved by Newton's method (all temperatures in K) ──────────────────────
-export function solveBox(n, I, eps, hc, U, o = {}) {
+function solveBox(n, I, eps, hc, U, o = {}) {
   const Ta = o.Ta ?? 293, hout = o.hout ?? 10, tg = o.tg ?? 0.9, ap = o.ap ?? 0.95, N = n + 1, S = I * ap * tg ** n;
   const F = (T) => {
-    const r = [], up = [SIG * T[0] ** 4], down = new Array(n + 2);
-    // Non-reflecting grey panes: transmission is 1-eps, emission is eps*sigma*T^4.
-    // Radiation from every pane and the ambient boundary can traverse transparent panes.
-    for (let k = 1; k <= n; k++) up[k] = (1 - eps) * up[k - 1] + eps * SIG * T[k] ** 4;
-    down[n + 1] = SIG * Ta ** 4;
-    for (let k = n; k >= 1; k--) down[k] = (1 - eps) * down[k + 1] + eps * SIG * T[k] ** 4;
-    const upT = n === 0 ? Ta : T[1];
-    r.push(S + down[1] - up[0] - (n === 0 ? hout : hc) * (T[0] - upT) - U * (T[0] - Ta));
+    const r = [], sky = Ta;
+    const upT = n === 0 ? sky : T[1];
+    r.push(S - (SIG * T[0] ** 4 - (n === 0 ? 1 : eps) * SIG * upT ** 4) - (n === 0 ? hout : hc) * (T[0] - upT) - U * (T[0] - Ta));
     for (let k = 1; k <= n; k++) {
-      const lo = T[k - 1], hi = k === n ? Ta : T[k + 1];
-      const conv = hc * (lo - T[k]) + (k === n ? hout : hc) * (hi - T[k]);
-      // A fully transparent, isolated interior pane has no determined equilibrium temperature.
-      // Set its irrelevant temperature to ambient instead of solving a singular equation.
-      r.push(eps === 0 && hc === 0 && (k < n || hout === 0) ? Ta - T[k] : eps * (up[k - 1] + down[k + 1] - 2 * SIG * T[k] ** 4) + conv);
+      const lo = T[k - 1], hi = k === n ? sky : T[k + 1];
+      r.push(eps * SIG * lo ** 4 + eps * SIG * hi ** 4 - 2 * eps * SIG * T[k] ** 4 + hc * (lo - T[k]) + (k === n ? hout : hc) * ((k === n ? Ta : hi) - T[k]));
     }
     return r;
   };
@@ -88,14 +80,14 @@ export default {
       name: 'Températures du globe terrestre et des espaces planétaires',
       paper: { authors: 'J. Fourier', year: 1824, title: 'Remarques générales sur les températures du globe terrestre et des espaces planétaires', venue: 'Annales de Chimie et de Physique 27: 136–167', url: 'https://books.google.com/books?id=1Jg5AAAAcAAJ&pg=PA136' },
       introduces: ['climate-2.1'],
-      statement: String.raw`Fourier distinguished three contributions to terrestrial temperature: solar heating, radiation from surrounding space, and the Earth's remaining internal heat. He also examined how the atmosphere modifies heat exchange. Using de Saussure's glass-covered solar box as an analogy, he distinguished incoming luminous heat from outgoing non-luminous heat and discussed both impeded heat escape and the suppression of air exchange. This was a qualitative account: the paper neither identified a greenhouse gas nor supplied the modern radiative greenhouse equations. Its proposed warm background from planetary space differs from today's understanding.`,
-      idea: String.raw`The hot-box analogy separates radiative transfer from the movement of air. Glass can impede outgoing infrared radiation and also prevent warm air from mixing with the surroundings; the atmosphere transports heat by circulation as well as radiation, so a box is an analogy, not an identical mechanism. The modern layer calculation at the right illustrates partial infrared opacity. Those equations and temperatures are our explanatory model, rather than Fourier's numerical results.`,
-      caption: String.raw`Left: a de Saussure hot box — a dark plate under $n$ glass panes in the Sun; the glass lets sunlight in (gold) but absorbs the "dark heat" (purple), so the plate warms (labels in °C). Middle: the plate temperature against the number of panes, with and without air in the gaps and for several insulation qualities; the dashed line is the boiling point of water. Right: replace the panes by an atmosphere of infrared absorptivity $\varepsilon$ (2.1): this isolates the radiative part of the analogy.`,
-      deps: ['thermo-7.3', 'climate-1.5', 'thermo-9.6', 'thermo-7.5'],
-      refs: ['Fourier (1824), translated by E. Burgess (1837), American Journal of Science 32, pp. 1–4 and 11–13 (de Saussure, luminous/non-luminous heat and air motion)'],
+      statement: String.raw`Fourier asked what fixes the temperature of the Earth and concluded that three things do: the Sun's heat, the heat of space (the cold of the "planetary spaces"), and the **effect of the atmosphere**, which he compared with a glass-covered box. Luminous heat passes through the glass; "dark heat" (infrared) emitted by the warmed ground cannot pass back as easily, so the interior ends up much warmer than the outside air. Fourier argued that the air plays the role of the glass: the temperature of the surface is raised by the atmosphere's partial opacity to the dark heat, and by its ability to hold the heat near the ground. He offered no equation for the effect and did not name a gas; the paper contains the first qualitative statement of what is now called the greenhouse effect.`,
+      idea: String.raw`Before Fourier the surface temperature was explained either by the Sun alone or by a residual heat of the Earth's interior. Fourier showed by comparing the expected heating of a surface by sunlight and by the interior heat (a few hundredths of a degree at the surface, by his conduction theory) that sunlight dominates, but that sunlight alone, with no atmosphere, would leave the planet much colder than observed. He drew on Horace-Bénédict de Saussure's hot-box experiments (1767) to explain the missing warmth. In modern terms: a layer transparent to sunlight and absorbing in the infrared warms the surface (2.1, 1.6), the effect of $\varepsilon$ in the layer model; the interior heat is negligible (about 0.09 W/m²).`,
+      caption: String.raw`Left: a de Saussure hot box — a dark plate under $n$ glass panes in the Sun; the glass lets sunlight in (gold) but absorbs the "dark heat" (purple), so the plate warms (labels in °C). Middle: the plate temperature against the number of panes, with and without air in the gaps and for several insulation qualities; the dashed line is the boiling point of water. Right: replace the panes by an atmosphere of infrared absorptivity $\varepsilon$ (2.1): the planet's surface warms in the same way.`,
+      deps: ['thermo-7.3', 'climate-1.5'],
+      refs: [],
       tags: ['history', 'greenhouse', 'Fourier'],
-      credit: 'Joseph Fourier (1824), read in Burgess’s published 1837 translation; de Saussure hot-box analogy',
-      scope: String.raw`Modern illustrative steady heat balance, not a reconstruction of de Saussure's measurements: grey non-reflecting infrared panes, shortwave transmission 0.9 per pane, absorbing plate, 293 K ambient radiation, chosen gap convection and wall leakage. The planet panel uses a separate fixed absorbed solar flux of 240 W/m². The box also suppresses convection; the mechanisms should not be identified with each other.`,
+      credit: 'Joseph Fourier, 1824 (building on H.-B. de Saussure, 1767)',
+      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Joseph_Fourier' },
       viz(v) {
         const n = v.slider('glass panes $n$', 0, 5, 3, { int: true });
@@ -105,7 +97,7 @@ export default {
         const air = v.toggle('air between the panes (convection and conduction)', true);
         const sA = v.stage({ x: [0, 12], y: [0, 10], axes: false, height: 400, weight: 1.1, minWidth: 290, title: 'a hot box' });
         const sB = v.stage({ x: [-0.5, 5.5], y: [0, 260], axes: 'box', gutter: true, height: 400, weight: 1, minWidth: 270, xlabel: 'number of panes', ylabel: 'plate temperature (°C)', title: 'the plate temperature' });
-        const sC = v.stage({ x: [0, 1], y: [240, 320], axes: 'box', gutter: true, height: 400, weight: 0.9, minWidth: 250, xlabel: 'infrared absorptivity ε', ylabel: 'surface T (K)', title: 'the planet’s version (2.1)' });
+        const sC = v.stage({ x: [0, 1], y: [240, 320], axes: 'box', gutter: true, height: 400, weight: 0.9, minWidth: 250, xlabel: 'infrared absorptivity of the atmosphere ε', ylabel: 'surface T (K)', title: 'the planet’s version (2.1)' });
         let R = null;
         v.render(() => {
           const N = n.value, e = eps.value, hc = air.value ? 3 : 0, S = I.value, u = U.value;
@@ -125,25 +117,24 @@ export default {
           for (const x of [2.2, 3.4, 4.6]) sA.arrow(x, 9.7, x, 1.7, { color: 'gold', width: 2.6 * Math.max(0.35, 0.9 ** N), head: 8 });
           sA.text('sunlight', 1.0, 9.9, { color: 'gold', size: 12, weight: 600, align: 'left', baseline: 'top', dy: -2 });
           for (const x of [6.2, 7.4]) sA.arrow(x, 1.7, x, Math.min(9, 1.7 + (N ? gap * 0.9 : 4)), { color: 'purple', width: 2.6, head: 8, alpha: N ? 0.9 : 0.5 });
-          sA.text(N ? 'infrared absorbed' : 'infrared escapes', 5.4, 9.9, { color: 'purple', size: 12, weight: 600, align: 'left', baseline: 'top', dy: -2 });
+          sA.text(N ? '“dark heat” stopped by the glass' : 'dark heat escapes freely', 5.4, 9.9, { color: 'purple', size: 12, weight: 600, align: 'left', baseline: 'top', dy: -2 });
           // plate temperature against n
           sB.hline(100, { color: 'red', dash: [5, 4], width: 1.4 }); sB.text('boiling water', 5.45, 100, { color: 'red', size: 11.5, align: 'right', baseline: 'bottom', dy: -3 });
           const all = [0, 1, 2, 3, 4, 5].map((k) => solveBox(k, S, e, hc, u)[0] - 273.15);
           const alt = [0, 1, 2, 3, 4, 5].map((k) => solveBox(k, S, e, hc ? 0 : 3, u)[0] - 273.15);
-          sB.setView([-.5, 5.5], [Math.min(0, ...all, ...alt) - 5, Math.max(120, ...all, ...alt) * 1.1]);
           sB.path(alt.map((t, k) => [k, t]), { color: 'muted', width: 1.8, dash: [5, 4] });
           sB.path(all.map((t, k) => [k, t]), { color: 'accent', width: 2.6 });
           all.forEach((t, k) => sB.dot(k, t, { color: k === N ? 'gold' : 'accent', r: k === N ? 8 : 4.5, label: k === N ? `${fx(v, t, 0)} °C` : undefined, labelPos: 'nw' }));
           sB.text(`ambient ${20} °C`, -0.4, 20, { color: 'muted', size: 11, align: 'left', baseline: 'bottom', dy: -3 });
           // planet
-          const Te = (240 / SIG) ** 0.25;
+          const Te = ((S === 1000 ? 240 : 240) / SIG) ** 0.25;
           sC.hline(Te, { color: 'muted', dash: [4, 4] }); sC.text('no atmosphere: $T_e$', 0.98, Te, { color: 'muted', size: 11.5, align: 'right', baseline: 'bottom', dy: -3 });
           sC.fn((x) => Te * (2 / (2 - x)) ** 0.25, { domain: [0, 1], color: 'accent', width: 2.6 });
           sC.dot(e, Te * (2 / (2 - e)) ** 0.25, { color: 'gold', r: 7, label: `${fx(v, Te * (2 / (2 - e)) ** 0.25, 0)} K`, labelPos: e > 0.6 ? 'nw' : 'ne' });
           R = { N, T0: C(0), T1: N ? C(N) : null, bare: C(0) - 0, e, Ts: Te * (2 / (2 - e)) ** 0.25, Te, all };
         });
         v.legend([['accent', 'plate temperature'], ['muted', 'the other gap condition', { dash: true }], ['gold', 'sunlight'], ['purple', '“dark heat”']]);
-        v.readout(() => R && String.raw`${R.N} pane${R.N === 1 ? '' : 's'}: plate **${fx(v, R.T0, 0)} °C**${R.N ? String.raw`, outer pane ${fx(v, R.T1, 0)} °C` : ''} (open to the sky: ${fx(v, R.all[0], 0)} °C; pane transmission and heat losses can offset insulation) · the planetary analogue: $\varepsilon$ = ${fx(v, R.e, 2)} warms the surface from $T_e$ = ${fx(v, R.Te, 0)} K to ${fx(v, R.Ts, 0)} K (Fourier did not compute this number; the observed 288 K needs $\varepsilon \approx 0.78$) · evacuated gaps remove gap convection; the chosen radiation and wall-loss terms remain`);
+        v.readout(() => R && String.raw`${R.N} pane${R.N === 1 ? '' : 's'}: plate **${fx(v, R.T0, 0)} °C**${R.N ? String.raw`, outer pane ${fx(v, R.T1, 0)} °C` : ''} (open to the sky: ${fx(v, R.all[0], 0)} °C; each pane raises it, with diminishing returns) · the planetary analogue: $\varepsilon$ = ${fx(v, R.e, 2)} warms the surface from $T_e$ = ${fx(v, R.Te, 0)} K to ${fx(v, R.Ts, 0)} K (Fourier did not compute this number; the observed 288 K needs $\varepsilon \approx 0.78$) · panes in an *evacuated* box help only through radiation, which is exactly Fourier's point`);
       },
     },
     // ───────────────────────────────────────────────────────────── 2.15

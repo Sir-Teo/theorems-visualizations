@@ -3,6 +3,8 @@ import {
   clamp, tf, stepExact, trace, stepInfo, second, mpOfZeta, fx, TAU, proots, xMark,
 } from './ch04.shared.js';
 
+import { secondOrderValue, secondOrderMetrics } from './ctrl-source-audit.shared.js';
+
 export default {
   collection: 'ctrl',
   chapter: 4,
@@ -163,9 +165,11 @@ For $\zeta=1$ the poles coincide on the negative real axis (critical damping) an
       statement: String.raw`For the standard second-order system with $0<\zeta<1$ (and no zeros or further poles), the peak of the unit step response occurs at $t_p=\pi/\omega_d$ and the peak overshoot is
 $$M_p=\exp\!\Big(-\frac{\pi\zeta}{\sqrt{1-\zeta^2}}\Big),$$
 which depends on $\zeta$ alone: it is the same for every natural frequency $\omega_n$. Multiplying $\omega_n$ by $c$ compresses the whole response by the factor $c$ in time, $y_{c\omega_n}(t)=y_{\omega_n}(ct)$, without changing its shape. The function is decreasing: $M_p\approx 100\,\%$ as $\zeta\to0$, $16\,\%$ near $\zeta=0.5$, $4.6\,\%$ at $\zeta=0.7$ and $0$ at $\zeta=1$.`,
-      idea: String.raw`Differentiating the step response gives $\dot y(t)=\dfrac{\omega_n}{\sqrt{1-\zeta^2}}e^{-\zeta\omega_nt}\sin\omega_dt$, which first vanishes at $\omega_dt=\pi$; substituting $t_p=\pi/\omega_d$ into $y$ gives $1+e^{-\pi\zeta/\sqrt{1-\zeta^2}}$. The scaling statement is the time-scaling property of the Laplace transform (sig-9.6): replacing $s$ by $s/c$ in $G$ replaces $\omega_n$ by $c\omega_n$ and stretches time by $1/c$. Both facts rest on the response formula of ctrl-4.2.`,
+      idea: String.raw`Differentiating the step response gives $\dot y(t)=\dfrac{\omega_n}{\sqrt{1-\zeta^2}}e^{-\zeta\omega_nt}\sin\omega_dt$, which first vanishes at $\omega_dt=\pi$; substituting $t_p=\pi/\omega_d$ into $y$ gives $1+e^{-\pi\zeta/\sqrt{1-\zeta^2}}$. The scaling statement is the time-scaling property of the Laplace transform (sig-9.6): replacing $s$ by $s/c$ in $G$ replaces $\omega_n$ by $c\omega_n$ and stretches time by $1/c$. Both facts rest on the response formula of ctrl-4.2.
+
+The stationary-point theorem pma-5.8 requires any differentiable interior peak to have zero derivative. Here $\dot y$ is positive on $(0,\pi/\omega_d)$ and negative just afterward, so its first positive zero is a maximum; the subsequent positive peaks are smaller because their exponential envelope decays.`,
       caption: String.raw`Pick a damping ratio. Three pole pairs on the same ray (different $\omega_n$, **left**) give three responses of the same height but different speed (**middle**), and all three measured overshoots land on the same point of the curve $M_p(\zeta)$ (**right**). Drag the middle pole pair along the ray, or change the angle with the slider. Then **break the hypothesis**: add a zero. If it scales with $\omega_n$, the shape is still the same for all three, but no longer the formula's; if the zero is fixed, the overshoot depends on $\omega_n$ again.`,
-      deps: ['ctrl-4.2'],
+      deps: ['ctrl-4.2', 'pma-5.8'],
       refs: ['Franklin–Powell §3.4'],
       tags: ['overshoot', 'damping'],
       scope: String.raw`Exact for the pure second-order system; zeros or extra poles change the overshoot (see ctrl-4.5).`,
@@ -220,15 +224,16 @@ which depends on $\zeta$ alone: it is the same for every natural frequency $\ome
       num: '4.4',
       kind: 'Proposition',
       name: 'Specifications as regions of the s-plane',
-      statement: String.raw`For the standard second-order system with poles $s=-\sigma\pm i\omega_d$ ($\sigma=\zeta\omega_n$), the usual specifications translate into pole regions:
-(a) rise time $t_r\lesssim t_r^{\max}$ is suggested by (the rule of thumb $t_r\approx1.8/\omega_n$ is most accurate near $\zeta=0.5$) by $\omega_n\ge\omega_{\min}\approx1.8/t_r^{\max}$: poles *outside* the circle of radius $\omega_{\min}$;
+      statement: String.raw`For the stable, zero-free, unit-DC-gain second-order system $G(s)=\omega_n^2/(s^2+2\zeta\omega_ns+\omega_n^2)$ with $0<\zeta<1$ and poles $s=-\sigma\pm i\omega_d$ ($\sigma=\zeta\omega_n$), the usual specifications translate into pole regions:
+(a) rise time $t_r\lesssim t_r^{\max}$ is estimated by the design rule (a rough moderate-damping approximation; the normalized 10–90 % rise is about $1.638$ at $\zeta=0.5$, and equals $1.8$ near $\zeta=0.577$) using $\omega_n\ge\omega_{\min}\approx1.8/t_r^{\max}$: poles *outside* the circle of radius $\omega_{\min}$;
 (b) overshoot $M_p\le M^{\max}$ is equivalent to $\zeta\ge\zeta_{\min}=-\ln M^{\max}\big/\sqrt{\pi^2+\ln^2M^{\max}}$: poles inside the *wedge* $|\arg(-s)|\le\arccos\zeta_{\min}$;
-(c) settling time $t_s\le t_s^{\max}$ (2 % band) is approximated by $\sigma\ge4/t_s^{\max}$: poles in the *half-plane* $\operatorname{Re}s\le-4/t_s^{\max}$.
-The intersection is an approximate design region, not a guarantee that every measured specification is met. Only (b) is exact for the second-order system; (a) and (c) are standard design rules of thumb.`,
-      idea: String.raw`The overshoot condition is ctrl-4.3 solved for $\zeta$. The decay rate $\sigma$ is the exponent of the envelope in ctrl-4.2, whose error bound is $e^{-\sigma t}/\sqrt{1-\zeta^2}$. A sufficient envelope time is $\ln(50/\sqrt{1-\zeta^2})/\sigma$; replacing its numerator by 4 is only a design approximation, and the rise time is, to a good approximation for moderate damping, inversely proportional to $\omega_n$ by the time scaling of ctrl-4.3. Because the pole location *is* the pair $(\sigma,\omega_d)$, each requirement draws a boundary (a vertical line, a ray, an arc) in the complex plane (sig-9.7 for poles and the pole–zero plot). The design problem is then geometric: put the closed-loop poles in the shaded region.`,
-      caption: String.raw`Set the three limits with the sliders: the **green** region is where a pole pair meets all of them (outside the circle, inside the wedge, left of the line). Drag the **gold** pole: its step response appears on the right with the three limits drawn, and the readout lists the measured values. The readout checks the actual response separately from membership in the approximate region. Near the circle the rise-time rule of thumb $1.8/\omega_n$ is not exact, so a pole just inside can narrowly miss, or one just outside narrowly pass.`,
+(c) settling time $t_s\le t_s^{\max}$ (2 % band) is estimated by the design rule $\sigma\ge4/t_s^{\max}$: poles in the *half-plane* $\operatorname{Re}s\le-4/t_s^{\max}$.
+The intersection meets these design inequalities; it does not guarantee the exact rise and settling specifications. Only (b) is exact for the second-order system; (a) and (c) are standard design rules of thumb.`,
+      idea: String.raw`The overshoot condition is ctrl-4.3 solved for $\zeta$. The decay rate $\sigma$ is the exponent of the envelope in ctrl-4.2, but its envelope has prefactor $1/\sqrt{1-\zeta^2}$. Thus $t_{\rm env}=\ln(50/\sqrt{1-\zeta^2})/\sigma$ is a sufficient 2 % settling bound; $4/\sigma$ drops that prefactor and is only an approximation, and the rise time is, to a good approximation for moderate damping, inversely proportional to $\omega_n$ by the time scaling of ctrl-4.3. Because the pole location *is* the pair $(\sigma,\omega_d)$, each requirement draws a boundary (a vertical line, a ray, an arc) in the complex plane (sig-9.7 for poles and the pole–zero plot). The design problem is then geometric: put the closed-loop poles in the shaded region.`,
+      caption: String.raw`Set the three limits with the sliders: the **green** region is where a pole pair meets the three design inequalities (outside the circle, inside the wedge, left of the line). Drag the **gold** pole: its step response appears on the right with the three limits drawn, and the readout lists the measured values. Compare the design region with the independently evaluated response: the rise and settling inequalities can disagree with the true specifications. The readout solves the actual first 10 %/90 % crossings and the final 2 % band entrance, with no finite-window settling assumption. Drag into the right half-plane to break stability; then no steady-state metrics are assigned.`,
+      verify: false, // source audit awaits integration; 1.8 is explicitly an approximation
       deps: ['ctrl-4.3', 'sig-9.7'],
-      refs: ['Åström–Murray, Feedback Systems (2008), §6.3 pp. 184–185, Eq. (6.25), Table 6.1 (1.8/ωn at ζ=0.5; approximate settling)'],
+      refs: ['Franklin–Powell §3.4', 'Raginsky–Liberzon, ECE486 Lecture 6', 'Bayen, EE C128 Chapter 4, slides 32–38'],
       tags: ['pole regions', 'specifications'],
       scope: String.raw`Exact for overshoot; $t_r\approx1.8/\omega_n$ and $t_s\approx4/\sigma$ are approximations that hold for second-order systems without zeros, and are the standard starting point for higher-order designs.`,
       viz(v) {
@@ -242,7 +247,7 @@ The intersection is an approximate design region, not a guarantee that every mea
         v.render(() => {
           const wmin = 1.8 / trS.value, zmin = (() => { const l = Math.log(mS.value / 100); return -l / Math.sqrt(Math.PI * Math.PI + l * l); })(), sig = 4 / tsS.value;
           const key = [wmin, zmin, sig].join('|');
-          sp.raster((x, y) => (Math.hypot(x, y) >= wmin && -x >= zmin * Math.hypot(x, y) && -x >= sig ? [40, 170, 90, 70] : null), { res: 3, key });
+          sp.raster((x, y) => (Math.hypot(x, y) >= wmin && -x >= zmin * Math.hypot(x, y) && -x >= sig ? v.rgb('green').slice(0, 3).concat(70) : null), { res: 3, key });
           sp.curve((t) => [wmin * Math.cos(t), wmin * Math.sin(t)], Math.PI / 2, (3 * Math.PI) / 2, { color: 'orange', width: 2 });
           const b = Math.acos(zmin);
           sp.path([[0, 0], [-8 * Math.cos(b), 8 * Math.sin(b)]], { color: 'purple', width: 2 }); sp.path([[0, 0], [-8 * Math.cos(b), -8 * Math.sin(b)]], { color: 'purple', width: 2 });
@@ -254,23 +259,27 @@ The intersection is an approximate design region, not a guarantee that every mea
           const px = h.x, py = Math.abs(h.y);
           xMark(sp, px, py, { color: 'gold', r: 6, width: 2.6 }); xMark(sp, px, -py, { color: 'gold', r: 6, width: 2.6 });
           const wn = Math.hypot(px, py), z = -px / wn;
-          const r = stepExact(v.M, second(z, wn), 8, 800); R = { r, wn, z, wmin, zmin, sig, inside: wn >= wmin && z >= zmin && -px >= sig };
-          R.info = stepInfo(r.t, r.y, 1, 0.02);
+          const info = secondOrderMetrics(z, wn), T = info ? Math.max(8, 1.1 * info.ts, tsS.value * 1.1) : 8;
+          const N = Math.min(12000, Math.max(800, Math.ceil(T * wn * 50))), r = { t: [], y: [] };
+          for (let i = 0; i <= N; i++) { const t = T * i / N; r.t.push(t); r.y.push(secondOrderValue(z, wn, t)); }
+          st.setView([0, T], [0, info ? Math.max(1.8, 1.08 * (1 + info.Mp)) : 1.8]);
+          R = { r, wn, z, wmin, zmin, sig, info, inside: wn >= wmin && z >= zmin && -px >= sig };
           st.hband(0.98, 1.02, { color: 'green', alpha: 0.12 });
           st.hline(1 + mS.value / 100, { color: 'purple', width: 1.6, dash: [6, 4] });
           st.vline(tsS.value, { color: 'accent', width: 1.6, dash: [6, 4] });
-                    const i10 = r.y.findIndex((q) => q >= 0.1), t10 = i10 >= 0 ? r.t[i10] : 0;
+          const t10 = info?.t10 ?? 0;
           st.hline(0.9, { color: 'orange', width: 1, alpha: 0.5 }); st.hline(0.1, { color: 'orange', width: 1, alpha: 0.5 });
-          if (R.info.tr !== null) st.measure(t10, 0.3, t10 + R.info.tr, 0.3, `tr = ${fx(R.info.tr, 2)} s`);
+          if (info) st.measure(t10, 0.3, t10 + info.tr, 0.3, `tr = ${fx(info.tr, 2)} s`);
           st.measure(t10, 0.55, t10 + trS.value, 0.55, `tr limit ${trS.value} s`);
-          st.clip(() => trace(st, r.t, r.y, { color: R.inside ? 'green' : 'red', width: 3 }));
+          st.clip(() => trace(st, r.t, r.y, { color: info && info.tr <= trS.value && 100 * info.Mp <= mS.value && info.ts <= tsS.value ? 'green' : 'red', width: 3 }));
         });
-        v.legend([['orange', '$t_r$: outside circle'], ['purple', '$M_p$: inside wedge'], ['accent', '$t_s$: left of line'], ['green', 'allowed region', { area: true }]]);
+        v.legend([['orange', '$t_r$: outside circle'], ['purple', '$M_p$: inside wedge'], ['accent', '$t_s$: left of line'], ['green', 'design-rule region', { area: true }]]);
         v.readout(() => {
           if (!R) return '';
           const I = R.info, ok = (c) => (c ? '✓' : '✗');
-          return `pole: $\\omega_n=${fx(R.wn, 2)}$, $\\zeta=${fx(R.z, 2)}$, $\\sigma=${fx(R.wn * R.z, 2)}$ — **${R.inside ? 'inside' : 'outside'}** the region\n` +
-            `measured: $t_r=${fx(I.tr, 2)}$ s ${ok(I.tr !== null && I.tr <= trS.value)} (limit ${trS.value}) · $M_p=${fx(100 * I.Mp, 1)}\\,\\%$ ${ok(100 * I.Mp <= mS.value + 1e-9)} (limit ${mS.value}) · $t_s=${fx(I.ts, 2)}$ s ${ok(isFinite(I.ts) && I.ts <= tsS.value)} (limit ${tsS.value})`;
+          if (!I) return 'Unstable or undamped pole pair: no settling to a unit steady state. The response is clipped to the plotted vertical window.';
+          return `pole: $\\omega_n=${fx(R.wn, 2)}$, $\\zeta=${fx(R.z, 2)}$, $\\sigma=${fx(R.wn * R.z, 2)}$ — **${R.inside ? 'inside' : 'outside'}** the design-rule region\n` +
+            `exact response: $t_r=${fx(I.tr, 2)}$ s ${ok(I.tr !== null && I.tr <= trS.value)} (limit ${trS.value}) · $M_p=${fx(100 * I.Mp, 1)}\\,\\%$ ${ok(100 * I.Mp <= mS.value + 1e-9)} (limit ${mS.value}) · $t_s=${fx(I.ts, 2)}$ s ${ok(isFinite(I.ts) && I.ts <= tsS.value)} (limit ${tsS.value}); sufficient envelope bound $t_{\\rm env}=${fx(I.envelope, 2)}$ s.`;
         });
       },
     },

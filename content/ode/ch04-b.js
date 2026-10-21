@@ -60,7 +60,7 @@ export default {
       name: 'Sturm–Liouville problems',
       statement: String.raw`A (regular) *Sturm–Liouville problem* on $[0,1]$ consists of the equation
 $$-(p\,u')'+q\,u=\lambda\,w\,u$$
-with $p\in C^1$, $p>0$, $w>0$, with $w$ and $q$ real and continuous on $[0,1]$, together with separated boundary conditions $\cos\alpha\,u(0)-\sin\alpha\,p(0)u'(0)=0$ and $\cos\beta\,u(1)-\sin\beta\,p(1)u'(1)=0$ (Dirichlet: $u=0$; Neumann: $u'=0$). A number $\lambda$ is an *eigenvalue* if there is a nonzero solution (an *eigenfunction*) satisfying both conditions. Equivalently $\tau u=\lambda u$ for $\tau=\frac1w\big(-\frac d{dx}p\frac d{dx}+q\big)$, a symmetric operator in $L^2([0,1];w\,dx)$.`,
+with $p\in C^1$, $p>0$ and $q,w$ real and continuous, with $w>0$, on $[0,1]$, together with separated boundary conditions $\cos\alpha\,u(0)-\sin\alpha\,p(0)u'(0)=0$ and $\cos\beta\,u(1)-\sin\beta\,p(1)u'(1)=0$ (Dirichlet: $u=0$; Neumann: $u'=0$). A number $\lambda$ is an *eigenvalue* if there is a nonzero solution (an *eigenfunction*) satisfying both conditions. Equivalently $\tau u=\lambda u$ for $\tau=\frac1w\big(-\frac d{dx}p\frac d{dx}+q\big)$, a symmetric operator in $L^2([0,1];w\,dx)$.`,
       idea: String.raw`Almost every second-order linear equation can be put into this *self-adjoint* form by multiplying by an integrating factor ($p=e^{\int a_1}$ for $u''+a_1u'+\dots$), and almost every classical equation of mathematical physics (vibrating strings and rods, quantum wells, Bessel and Legendre equations on intervals) is of this kind. The eigenvalue problem is solved here by *shooting*: for each $\lambda$ solve the initial value problem that satisfies the left condition and look for the $\lambda$ at which the right condition also holds (compare 4.6, where this was done by hand).`,
       caption: String.raw`Choose a preset or type your own $p,q,w$ (functions of $x$; $p,w$ must stay positive) and the boundary conditions. The eigenvalues are found by shooting and bisection; the first eigenfunctions are drawn (their eigenvalues are listed under the picture) and the coefficient functions are shown on the right. A heavier right end ($w$ large) lowers the eigenvalues, a stiffer middle ($p$ large) raises them, and Neumann ends allow $\lambda=0$ when $q=0$.`,
       deps: ['ode-4.6'],
@@ -78,14 +78,14 @@ with $p\in C^1$, $p>0$, $w>0$, with $w$ and $q$ real and continuous on $[0,1]$, 
         v.render(() => {
           const pr = SL.prob(); if (!pr) return;
           const k = K.value, bc = SL.bc, eps = slEigenpairs(pr, bc, k);
+          const nrm = Math.max(...eps.map((e) => Math.max(...Array.from(e.u).map(Math.abs))));
+          sE.setView([0, 1], [-1.15 * nrm, 1.15 * nrm]);
           eps.forEach((e, i) => sE.path(nodePts(e.u), { color: cols[i], width: 2.2 }));
           const prof = (A) => Array.from({ length: pr.N / 2 + 1 }, (_, i) => [i / (pr.N / 2), A[4 * i]]);
           let hi = 1; for (let i = 0; i <= pr.N; i++) hi = Math.max(hi, pr.P[2 * i], pr.W[2 * i], Math.abs(pr.Q[2 * i]));
           sC.setView([0, 1], [Math.min(0, pr.minQ) - 0.2, hi * 1.08]);
           sC.path(prof(pr.P), { color: 'accent', width: 2.4 }); sC.path(prof(pr.Q), { color: 'green', width: 2.4 }); sC.path(prof(pr.W), { color: 'orange', width: 2.4 });
           sC.tex('p', 0.04, pr.P[0] + 0.1 * hi, { color: 'accent' }); sC.tex('q', 0.5, pr.Q[pr.N] + 0.06 * hi, { color: 'green' }); sC.tex('w', 0.96, pr.W[2 * pr.N] + 0.06 * hi, { color: 'orange' });
-          const nrm = Math.max(...eps.map((e) => Math.max(...Array.from(e.u).map(Math.abs))));
-          sE.setView([0, 1], [-1.15 * nrm, 1.15 * nrm]);
           info = { lams: eps.map((e) => e.lam), bc, S: pr.S };
         });
         v.legend([['accent', 'first eigenfunction'], ['orange', 'second'], ['green', 'third'], ['purple', 'fourth']]);
@@ -101,17 +101,16 @@ with $p\in C^1$, $p>0$, $w>0$, with $w$ and $q$ real and continuous on $[0,1]$, 
       num: '4.8',
       kind: 'Definition',
       name: 'Green’s function of a boundary value problem',
-      statement: String.raw`For real $p\in C^1$, $p>0$, continuous real $q$, and $Lu=-(pu')'+qu$ with Dirichlet conditions $u(0)=u(1)=0$ such that $0$ is not an eigenvalue, let $u_1,u_2$ be nonzero solutions of $Lu=0$ with $u_1(0)=0$ and $u_2(1)=0$. The *Green's function* is
+      statement: String.raw`For $Lu=-(pu')'+qu$ with Dirichlet conditions $u(0)=u(1)=0$ such that $0$ is not an eigenvalue, let $u_1,u_2$ be nonzero solutions of $Lu=0$ with $u_1(0)=0$ and $u_2(1)=0$. The *Green's function* is
 $$G(x,s)=\frac{u_1(\min(x,s))\,u_2(\max(x,s))}{C},\qquad C=p\,(u_1'u_2-u_1u_2')\ \text{(a nonzero constant)}.$$
 It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditions in $x$, solves $LG(\cdot,s)=0$ away from $x=s$ and has the jump $p\,\partial_xG\big|_{s^-}^{s^+}=-1$ there (a unit point force at $s$). For every continuous $f$ the problem $Lu=f$, $u(0)=u(1)=0$ has the unique solution $u(x)=\int_0^1G(x,s)f(s)\,ds$.`,
       idea: String.raw`Fix $s$ and ask for the solution of $Lu=\delta_s$. To the left of $s$ it must satisfy the left boundary condition, so it is a multiple of $u_1$; to the right a multiple of $u_2$; the two multiples are fixed by continuity at $s$ and by the jump of $pu'$ equal to $-1$, which is where the constant $C$ (the Wronskian of $u_1,u_2$ times $p$, constant by Abel's identity 3.11) enters. Symmetry is visible from the formula. Superposing point forces gives $u=\int G f$: this is variation of constants (3.12) with boundary conditions in place of initial ones.`,
-      caption: String.raw`The blue curve is the displacement $G(\cdot,s)$ of a string (or beam on an elastic foundation, or a tapered string) held at both ends under a unit force at $s$; the dashed orange curve is $G(\cdot,t)$ for a force at $t$. Drag the point $(t,s)$ in the right-hand map of $G(x,s)$: the two heights $G(t,s)$ and $G(s,t)$ (dots) are always equal. Pick a load $f$ to see the solution $\int Gf$ (green) match a direct finite-difference solution of $Lu=f$ (black dashed).`,
+      caption: String.raw`The blue curve is the displacement $G(\cdot,s)$ of a string (with an elastic foundation or variable tension in the other presets) held at both ends under a unit force at $s$; the dashed orange curve is $G(\cdot,t)$ for a force at $t$. Drag the point $(t,s)$ in the right-hand map of $G(x,s)$: the two heights $G(t,s)$ and $G(s,t)$ (dots) are always equal. Pick a load $f$ to see the solution $\int Gf$ (green) match a direct finite-difference solution of $Lu=f$ (black dashed).`,
       deps: ['ode-4.7', 'ode-3.12'],
-      refs: ['Teschl §5.4 pp. 157–160, Eqs. (5.59)–(5.68), Lemma 5.10'],
+      refs: ['Teschl §5.4, equations (5.64)–(5.69), pp. 158–159'],
       tags: ['Green function', 'boundary value problem', 'impulse response'],
-      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Green%27s_function' },
-      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
+      credit: 'Green function construction; presentation follows Teschl §5.4',
+      links: { source: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf#page=169', wikipedia: 'https://en.wikipedia.org/wiki/Green%27s_function' },
       viz(v) {
                 const sA = v.stage({ x: [0, 1], y: [-0.03, 0.34], axes: 'box', gutter: true, height: 330, xlabel: 'x', ylabel: 'G', title: 'response to a unit force', weight: 1.2, minWidth: 290 });
         const sM = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 330, xlabel: 'x', ylabel: 's', title: 'the map of $G(x,s)$', weight: 0.9, minWidth: 250 });
@@ -139,28 +138,31 @@ It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditio
           const B = build(op.value), { N, G, fd } = B, t = H.x, s = H.y;
           let mx = 0; for (let i = 0; i <= 60; i++) mx = Math.max(mx, G(i / 60, 0.5));
           const sc = Math.max(0.05, mx * 1.35);
-          sA.setView([0, 1], [-0.12 * sc, 1.12 * sc]);
           const xs = Array.from({ length: 201 }, (_, i) => i / 200);
+          let lo = -0.12 * sc, hi = 1.12 * sc;
+          let err = null, loaded = null;
+          if (load.value !== 'none') {
+            const f = ldf[load.value], M = 400, uq = (x) => simpson(Array.from({ length: M + 1 }, (_, j) => G(x, j / M) * f(j / M)), 1 / M);
+            const uG = xs.map((x) => [x, uq(x)]), fn = new Float64Array(N + 1); for (let i = 0; i <= N; i++) fn[i] = f(i / N);
+            const ud = fd(fn); let e = 0, un = 0; for (const [x, y] of uG) { e = Math.max(e, Math.abs(y - nodeAt(ud, x))); un = Math.max(un, Math.abs(y)); }
+            loaded = { uG, ud };
+            for (const [, y] of uG) { lo = Math.min(lo, y); hi = Math.max(hi, y); }
+            err = { e, un };
+          }
+          const pad = 0.08 * (hi - lo);
+          sA.setView([0, 1], [lo - pad, hi + pad]);
           sA.path(xs.map((x) => [x, G(x, s)]), { color: 'accent', width: 2.6 });
           sA.path(xs.map((x) => [x, G(x, t)]), { color: 'orange', width: 2.2, dash: [6, 4] });
           sA.arrow(s, -0.1 * sc, s, 0, { color: 'accent', width: 2 }); sA.arrow(t, -0.1 * sc, t, 0, { color: 'orange', width: 2 });
           sA.dot(t, G(t, s), { r: 5, color: 'accent' }); sA.dot(s, G(s, t), { r: 5, color: 'orange', hollow: true });
           sM.raster((x, y) => { const g = G(x, y) / (mx || 1), c = v.ramp(Math.min(1, Math.max(0, g)), 'accent'); return [c[0], c[1], c[2], 1]; }, { res: 3, key: `G${op.value}${v.diverge(1).join()}` });
-          sM.contour((x, y) => G(x, y), 7, { color: 'ink', alpha: 0.35, width: 1 });
+          sM.contour((x, y) => G(x, y), Array.from({ length: 7 }, (_, i) => mx * (i + 1) / 8), { color: 'ink', alpha: 0.35, width: 1 });
           sM.line(0, 0, 1, 1, { color: 'muted', dash: [4, 4], width: 1 });
           sM.dot(s, t, { r: 5, color: 'orange', hollow: true, label: '(s, t)', labelPos: 'sw' });
           // two independent finite-difference impulse responses
           const imp = (pos) => { const f = new Float64Array(N + 1); const i = Math.round(pos * N); f[i] = N; return fd(f); };
           const gts = nodeAt(imp(s), t), gst = nodeAt(imp(t), s);
-          let err = null;
-          if (load.value !== 'none') {
-            const f = ldf[load.value], M = 400, uq = (x) => simpson(Array.from({ length: M + 1 }, (_, j) => G(x, j / M) * f(j / M)), 1 / M);
-            const uG = xs.map((x) => [x, uq(x)]), fn = new Float64Array(N + 1); for (let i = 0; i <= N; i++) fn[i] = f(i / N);
-            const ud = fd(fn); let e = 0, un = 0; for (const [x, y] of uG) { e = Math.max(e, Math.abs(y - nodeAt(ud, x))); un = Math.max(un, Math.abs(y)); }
-            sA.setView([0, 1], [-0.12 * Math.max(sc, un * 1.2), 1.12 * Math.max(sc, un * 1.2)]);
-            sA.path(uG, { color: 'green', width: 3 }); sA.path(xs.map((x) => [x, nodeAt(ud, x)]), { color: 'ink', width: 1.6, dash: [6, 4] });
-            err = { e, un };
-          }
+          if (loaded) { sA.path(loaded.uG, { color: 'green', width: 3 }); sA.path(xs.map(x => [x, nodeAt(loaded.ud, x)]), { color: 'ink', width: 1.6, dash: [6, 4] }); }
           info = { t, s, g1: G(t, s), g2: G(s, t), gts, gst, err, C: B.C };
         });
         v.readout(() => {
@@ -175,15 +177,14 @@ It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditio
       num: '4.9',
       kind: 'Theorem',
       name: 'Regular Sturm–Liouville eigenvalues and eigenfunctions',
-      statement: String.raw`For a regular Sturm–Liouville problem (4.7) the eigenvalues are real and simple and form a sequence $\lambda_1<\lambda_2<\lambda_3<\cdots\to+\infty$ (bounded below). The eigenfunctions $u_n$ can be chosen real; eigenfunctions of different eigenvalues are orthogonal in $L^2([0,1];w\,dx)$, $\int_0^1u_mu_nw\,dx=0$ for $m\ne n$; and (4.10) they form an orthonormal basis of that space. Asymptotically $\lambda_n\sim\big(n\pi/\int_0^1\sqrt{w/p}\,dx\big)^2$.`,
-      idea: String.raw`Self-adjointness does the work: for $\tau u=\lambda u$, $\tau v=\mu v$ integration by parts leaves only boundary terms, which vanish for separated conditions, so $(\lambda-\mu)\int uvw=0$; taking $v=\bar u$ shows $\lambda$ real, and different eigenvalues give orthogonal functions. Simplicity: both solutions of the initial value problem satisfying the left condition are multiples of one function, so the eigenspace is one-dimensional. Existence of infinitely many eigenvalues follows from the Green function (4.8) giving a compact self-adjoint inverse operator, to which the spectral expansion for compact self-adjoint operators applies (fa-12.29 and fa-12.30); the Weyl asymptotics follow from the Prüfer-angle argument behind 4.13.`,
-      caption: String.raw`The first eigenfunctions are computed by shooting (left); the matrix in the middle is $\langle u_i,u_j\rangle_w$ computed by quadrature: ones on the diagonal and zeros (to about $10^{-8}$) elsewhere. Right: $\lambda_n$ divided by the Weyl prediction $(n\pi/S)^2$ approaches $1$. Edit $p,q,w$ or the boundary conditions — the structure survives, only the numbers move.`,
+      statement: String.raw`For a regular Sturm–Liouville problem (4.7) the eigenvalues are real and simple and form a sequence $\lambda_1<\lambda_2<\lambda_3<\cdots\to+\infty$ (bounded below). The eigenfunctions $u_n$ can be chosen real; eigenfunctions of different eigenvalues are orthogonal in $L^2([0,1];w\,dx)$, $\int_0^1u_mu_nw\,dx=0$ for $m\ne n$; and (4.10) they form an orthonormal basis of that space. If in addition $pw\in C^1$, asymptotically $\lambda_n\sim\big(n\pi/\int_0^1\sqrt{w/p}\,dx\big)^2$.`,
+      idea: String.raw`Self-adjointness does the work: for $\tau u=\lambda u$, $\tau v=\mu v$ integration by parts leaves only boundary terms, which vanish for separated conditions, so $(\lambda-\mu)\int uvw=0$; taking $v=\bar u$ shows $\lambda$ real, and different eigenvalues give orthogonal functions. Simplicity: both solutions of the initial value problem satisfying the left condition are multiples of one function, so the eigenspace is one-dimensional. Existence of infinitely many eigenvalues follows from the Green function (4.8) of a shifted operator $\tau-\sigma$, where $\sigma$ is real and outside the spectrum, giving a compact self-adjoint inverse operator, to which the spectral theorem for compact operators applies (fa-12.30); the Weyl asymptotics follow from the Prüfer-angle argument behind 4.13.`,
+      caption: String.raw`The first eigenfunctions are computed by shooting (left); the matrix in the middle is $\langle u_i,u_j\rangle_w$ computed by quadrature: ones on the diagonal and small numerical residuals elsewhere (the measured errors are reported below). Right: $\lambda_n$ divided by the Weyl prediction $(n\pi/S)^2$ approaches $1$. Edit $p,q,w$ or the boundary conditions — the structure survives, only the numbers move.`,
       deps: ['ode-4.8', 'fa-12.30', 'fa-4.25'],
-      refs: ['Teschl §5.4 pp. 158–163, Theorem 5.11 and Lemma 5.12; §5.5 p. 173, Theorem 5.25 (Weyl asymptotics for p,w in C¹)'],
+      refs: ['Teschl §5.4, Lemma 5.10, Theorem 5.11 and Lemma 5.12', 'Teschl §5.5, Theorem 5.25 (Weyl law, with pw continuously differentiable)'],
       tags: ['Sturm–Liouville', 'spectral theorem', 'orthogonality'],
-      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory' },
-      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
+      credit: 'Sturm–Liouville spectral theory; presentation follows Teschl §§5.4–5.5',
+      links: { source: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf#page=171', wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory' },
       viz(v) {
         const sE = v.stage({ x: [0, 1], y: [-2.2, 2.2], axes: 'box', gutter: true, height: 300, xlabel: 'x', ylabel: 'u_n', title: 'eigenfunctions', weight: 1.1, minWidth: 260 });
         const sG = v.stage({ x: [-0.9, 6.15], y: [-0.2, 6.2], aspect: 1, axes: false, title: 'Gram matrix $\\langle u_i,u_j\\rangle_w$', weight: 0.9, minWidth: 250 });
@@ -194,8 +195,9 @@ It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditio
         v.render(() => {
           const pr = SL.prob(); if (!pr) return;
           const bc = SL.bc, M = 12, eps = slEigenpairs(pr, bc, M), K = 6;
-          let nrm = 1; eps.slice(0, K).forEach((e, i) => { sE.path(nodePts(e.u), { color: cols[i], width: 2 }); nrm = Math.max(nrm, ...Array.from(e.u).map(Math.abs)); });
+          const nrm = Math.max(1, ...eps.slice(0, K).flatMap(e => Array.from(e.u).map(Math.abs)));
           sE.setView([0, 1], [-1.15 * nrm, 1.15 * nrm]);
+          eps.slice(0, K).forEach((e, i) => sE.path(nodePts(e.u), { color: cols[i], width: 2 }));
           let off = 0, dev = 0;
           for (let i = 0; i < K; i++) for (let j = 0; j < K; j++) {
             const ip = slInner(pr, eps[i].u, eps[j].u); if (i !== j) off = Math.max(off, Math.abs(ip)); else dev = Math.max(dev, Math.abs(ip - 1));
@@ -203,7 +205,9 @@ It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditio
             sG.text(Math.abs(ip) < 5e-7 ? '0' : v.fix(ip, 3), j + 0.5, 5 - i + 0.5, { size: 11, align: 'center', baseline: 'middle', color: i === j ? 'ink' : 'muted' });
           }
           for (let k = 0; k < K; k++) { sG.text(String(k + 1), k + 0.5, 6.0, { size: 11, align: 'center', color: 'muted' }); sG.text(String(k + 1), -0.1, 5 - k + 0.5, { size: 11, align: 'right', baseline: 'middle', color: 'muted' }); }
-          const ratios = eps.map((e, i) => { const n = i + (bc === 'NN' ? 0 : 1); return [i + 1, e.lam / ((((bc === 'DN' ? n - 0.5 : n) * Math.PI) / pr.S) ** 2)]; }).filter((q) => isFinite(q[1]) && q[1] > 0 || (isFinite(q[1]) && q[1] === 0));
+          const ratios = eps.map((e, i) => [i + 1, e.lam / (((i + 1) * Math.PI / pr.S) ** 2)]);
+          const lo = Math.min(0.4, ...ratios.map(q => q[1])), hi = Math.max(1.6, ...ratios.map(q => q[1]));
+          sW.setView([0, 13], [lo - 0.05 * (hi - lo), hi + 0.05 * (hi - lo)]);
           sW.hline(1, { color: 'green', dash: true, width: 1.4 });
           sW.path(ratios, { color: 'accent', width: 1.6 }); sW.dots(ratios, { r: 4, color: 'accent' });
           let gaps = true; for (let i = 1; i < M; i++) if (!(eps[i].lam > eps[i - 1].lam)) gaps = false;
@@ -223,20 +227,19 @@ It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditio
       name: 'Eigenfunction expansions',
       statement: String.raw`Let $u_1,u_2,\dots$ be the orthonormal eigenfunctions of a regular Sturm–Liouville problem in $L^2([0,1];w\,dx)$. Every $f$ in this space is the $L^2$-limit of its eigenfunction series,
 $$f=\sum_{n\ge1}c_nu_n,\qquad c_n=\int_0^1f\,u_n\,w\,dx,\qquad \|f\|_w^2=\sum_n|c_n|^2\ \ (\text{Parseval}),$$
-i.e. $\big\|f-\sum_{n\le N}c_nu_n\big\|_w\to0$. If $f$ is continuous, piecewise $C^1$ and satisfies any Dirichlet endpoint conditions, the series converges absolutely and uniformly. Derivative conditions at Neumann or Robin endpoints are not required for this form-domain conclusion.`,
-      idea: String.raw`The partial sums are orthogonal projections onto $\operatorname{span}(u_1,\dots,u_N)$, so by Pythagoras $\|f-S_N\|^2=\|f\|^2-\sum_{n\le N}|c_n|^2$ and Bessel's inequality holds. Parseval, i.e. completeness, is the nontrivial part: the eigenfunctions of the compact self-adjoint Green operator (4.8) span the orthogonal complement of its kernel, and the kernel of this inverse is $\{0\}$. If $0$ is an eigenvalue of the differential operator, first use the inverse of a shift $L-z$ with $z$ outside its spectrum; this has the same eigenfunctions. Smoothness controls speed: integrating by parts twice with $\tau u_n=\lambda_nu_n$ gives $c_n=\langle\tau f,u_n\rangle/\lambda_n$, so $c_n$ decays like $n^{-2}$ if $f$ is smooth enough and satisfies the boundary conditions, and much more slowly otherwise.`,
+i.e. $\big\|f-\sum_{n\le N}c_nu_n\big\|_w\to0$. If $f$ is also continuous, piecewise $C^1$ and satisfies the boundary conditions, the series converges absolutely and uniformly.`,
+      idea: String.raw`The partial sums are orthogonal projections onto $\operatorname{span}(u_1,\dots,u_N)$, so by Pythagoras $\|f-S_N\|^2=\|f\|^2-\sum_{n\le N}c_n^2$ and Bessel's inequality holds. Parseval, i.e. completeness, is the nontrivial part: choose a real $\sigma$ outside the spectrum and use the compact self-adjoint resolvent $(\tau-\sigma)^{-1}$ (4.8 applied after shifting). Its kernel is $\{0\}$ because it is an inverse, even when $0$ is an eigenvalue of $\tau$. Its eigenfunctions therefore form a complete basis. Smoothness controls speed: integrating by parts twice with $\tau u_n=\lambda_nu_n$ gives $(\lambda_n-\sigma)c_n=\langle(\tau-\sigma)f,u_n\rangle$, so $c_n=O(n^{-2})$ under the Weyl regularity condition in 4.9 if $f$ is smooth enough and satisfies the boundary conditions, and much more slowly otherwise.`,
       caption: String.raw`Pick a function or draw your own by dragging across the top panel, pick a Sturm–Liouville problem (the classical case $p=w=1$ gives sine or cosine series), and add terms with the slider: the partial sum (orange) approaches $f$ (blue) in mean square. Middle: the coefficients $c_n$. Right: the weighted $L^2$ error against $N$ on a log scale, together with the Parseval value $\sqrt{\|f\|^2-\sum c_n^2}$, which agrees with it. A function that violates the boundary conditions (the parabola with Dirichlet ends is fine; $1$ is not) converges slowly and shows the Gibbs effect near the ends.`,
       deps: ['ode-4.9', 'rca-4.18'],
-      refs: ['Teschl §5.4 pp. 160–163, Theorem 5.11 and Lemma 5.13 (form-domain uniform convergence)'],
+      refs: ['Teschl §5.4, Theorem 5.11 and Lemma 5.13, pp. 160–163'],
       tags: ['eigenfunction expansion', 'Fourier series', 'completeness'],
-      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory#Sturm%E2%80%93Liouville_theory' },
-      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
+      credit: 'Sturm–Liouville eigenfunction expansion; presentation follows Teschl §5.4',
+      links: { source: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf#page=173', wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory#Sturm%E2%80%93Liouville_theory' },
       viz(v) {
         const sF = v.stage({ x: [0, 1], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 300, xlabel: 'x', ylabel: 'f', title: 'function and partial sum (drag to draw)', weight: 1.3, minWidth: 290 });
         const sC = v.stage({ x: [0, 31], y: [-1, 1], axes: 'box', gutter: true, height: 300, xlabel: 'n', ylabel: 'c_n', title: 'coefficients', weight: 0.9, minWidth: 230 });
         const sR = v.stage({ x: [0, 31], y: [1e-3, 3], ylog: true, axes: 'box', gutter: true, height: 300, xlabel: 'N', ylabel: '‖f − S_N‖', title: 'error against $N$', weight: 0.9, minWidth: 230 });
-        const SL = slControls(v, { edit: false, N: 600 });
+        const SL = slControls(v, { edit: false, N: 1200 });
         const fsel = v.select('function', [{ value: 'tent', label: 'tent' }, { value: 'step', label: 'step' }, { value: 'par', label: '$x(1-x)$' }, { value: 'one', label: '$1$' }, { value: 'saw', label: 'sawtooth' }, { value: 'draw', label: 'drawn' }], 'tent');
         const Nn = v.slider('terms $N$', 1, 30, 6, { int: true });
         const FUN = { tent: (x) => (x < 0.5 ? 2 * x : 2 - 2 * x), step: (x) => (x < 0.4 ? 0 : x < 0.75 ? 1 : 0.4), par: (x) => 4 * x * (1 - x), one: () => 1, saw: (x) => 2 * ((3 * x) % 1) - 1 };
@@ -253,7 +256,7 @@ i.e. $\big\|f-\sum_{n\le N}c_nu_n\big\|_w\to0$. If $f$ is continuous, piecewise 
           const pr = SL.prob(); if (!pr) return;
           const bc = SL.bc, N = Nn.value, ep = slEigenpairs(pr, bc, 30), n = pr.N;
           const f = new Float64Array(n + 1), key = fsel.value;
-          for (let i = 0; i <= n; i++) f[i] = key === 'draw' ? drawn[Math.round((i / n) * 200)] : FUN[key](i / n);
+          for (let i = 0; i <= n; i++) f[i] = key === 'draw' ? nodeAt(drawn, i / n) : FUN[key](i / n);
           const c = ep.map((e) => slInner(pr, f, e.u)), ff = slInner(pr, f, f);
           const S = new Float64Array(n + 1); for (let k = 0; k < N; k++) for (let i = 0; i <= n; i++) S[i] += c[k] * ep[k].u[i];
           const errAt = (m) => { const R = new Float64Array(n + 1); for (let i = 0; i <= n; i++) { let s = f[i]; for (let k = 0; k < m; k++) s -= c[k] * ep[k].u[i]; R[i] = s; } return Math.sqrt(slInner(pr, R, R)); };
@@ -262,7 +265,7 @@ i.e. $\big\|f-\sum_{n\le N}c_nu_n\big\|_w\to0$. If $f$ is continuous, piecewise 
           sC.bars(c, { x0: 1, color: (q, i) => (i < N ? 'accent' : 'faint') });
           const errs = [], par = []; let cum = 0;
           for (let m = 0; m <= 30; m++) { if (m > 0) cum += c[m - 1] ** 2; errs.push([m, Math.max(1e-6, errAt(m))]); par.push([m, Math.sqrt(Math.max(1e-12, ff - cum))]); }
-          sR.setView([0, 31], [Math.max(1e-4, Math.min(...errs.slice(1).map((e) => e[1])) / 2), 2 * Math.max(...errs.map((e) => e[1]))]);
+          sR.setView([0, 31], [Math.max(1e-8, Math.min(...errs.slice(1).map((e) => e[1])) / 2), Math.max(1e-5, 2 * Math.max(...errs.map((e) => e[1])))]);
           sR.path(errs.slice(1), { color: 'orange', width: 2.2 }); sR.dots(errs.slice(1), { r: 3, color: 'orange' }); sR.path(par.slice(1), { color: 'green', width: 1.4, dash: [5, 4] });
           sR.vline(N, { color: 'ink', alpha: 0.5, dash: true });
           info = { N, e: errAt(N), pe: par[N][1], ff, cum: c.slice(0, N).reduce((a, q) => a + q * q, 0) };
@@ -270,7 +273,7 @@ i.e. $\big\|f-\sum_{n\le N}c_nu_n\big\|_w\to0$. If $f$ is continuous, piecewise 
         v.readout(() => {
           if (!info) return SL.note;
           const { N, e, pe, ff, cum } = info;
-          return `$N=${N}$: $\\|f\\|_w^2=${v.fix(ff, 5)}$, $\\sum_{n\\le N}c_n^2=${v.fix(cum, 5)}$ (Bessel: never exceeds $\\|f\\|^2$). Error $\\|f-S_N\\|_w=${v.fix(e, 5)}$; Parseval value $\\sqrt{\\|f\\|^2-\\sum c_n^2}=${v.fix(pe, 5)}$.${SL.note ? '\n' + SL.note : ''}`;
+          return `$N=${N}$: $\\|f\\|_w^2=${v.fix(ff, 5)}$, $\\sum_{n\\le N}c_n^2=${v.fix(cum, 5)}$ (Bessel bound, up to numerical quadrature error). Error $\\|f-S_N\\|_w=${v.fix(e, 5)}$; Parseval value $\\sqrt{\\|f\\|^2-\\sum c_n^2}=${v.fix(pe, 5)}$.${SL.note ? '\n' + SL.note : ''}`;
         });
       },
     },

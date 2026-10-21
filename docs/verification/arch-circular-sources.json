@@ -1,0 +1,16 @@
+[
+  {
+    "file": "nikolic-2016-018.pdf",
+    "url": "https://zbornik.gf.uns.ac.rs/doc/NS2016.018.pdf",
+    "bytes": 853744,
+    "sha256": "90e99ccfc73cee3c46874b5f889c56f37ac82277900b7c8fabeabf030845c039",
+    "readScope": "complete pp191–197; equations1–9 pp194–195"
+  },
+  {
+    "file": "nikolic-2016-019.pdf",
+    "url": "https://www.gf.uns.ac.rs/~zbornik/doc/NS2016.019.pdf",
+    "bytes": 1003497,
+    "sha256": "84d6206c84389d02c6f1ebec2b38c8ef7e7bb564762bddf7e6b435d0bba6a25a",
+    "readScope": "complete pp199–210; Fig3a p204, Table2 zero-eccentricity row p207"
+  }
+]

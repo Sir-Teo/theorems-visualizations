@@ -1,0 +1,19 @@
+{
+  "baseline": "c08ce47f98934df38f31ece002417f9cb6ff2fb5",
+  "changes": [
+    {
+      "file": "content/xtal/ch03.js",
+      "num": "3.3",
+      "field": "idea",
+      "before": "so a cell with a smaller volume that still tiles space must have $\\det M=\\pm1$ relative to a primitive cell, and any larger cell has $|\\det M|=k$ points.",
+      "after": "so two primitive cells of the same lattice are related by $\\det M=\\pm1$, while a cell spanned by lattice vectors with $|\\det M|=k$ relative to a primitive basis has $k$ lattice points. Being smaller than a conventional cell alone does not prove that a cell is primitive."
+    },
+    {
+      "file": "content/xtal/ch03-b.js",
+      "num": "3.8",
+      "field": "idea",
+      "before": "a mirror plane fixes the points on it (site symmetry $m$, multiplicity half the general one), an axis fixes the points on it (site symmetry the cyclic group of the axis), an inversion centre fixes itself.",
+      "after": "a point lying only on one mirror has site symmetry $m$ and half the general multiplicity; the proper rotations about an axis fix points on that axis, but mirrors containing the axis can also belong to their stabilizer, so the full site symmetry need not be cyclic. An inversion centre fixes itself."
+    }
+  ]
+}

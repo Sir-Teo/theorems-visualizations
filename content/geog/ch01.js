@@ -214,7 +214,7 @@ $$\vec{OP} = R\,(\cos\varphi\cos\lambda,\ \cos\varphi\sin\lambda,\ \sin\varphi),
 so a degree of latitude is always $\pi R/180 \approx 111.2$ km while a degree of longitude is $(\pi R/180)\cos\varphi$, shrinking to zero at the poles. On the real, slightly flattened Earth $\varphi$ is taken as the geodetic latitude (1.7).`,
       idea: String.raw`Two angles are enough because the axis gives a natural pole and the rotation makes all meridians equivalent; only longitude needs a convention (Greenwich, fixed in 1884). The parallel at latitude $\varphi$ is the circle cut by a plane at height $R\sin\varphi$, so its radius is $R\cos\varphi$, which is why east–west distances shrink with latitude while north–south ones do not. Latitude can be read from the sky (the pole star's altitude, or the noon Sun as in 1.1); longitude is a difference of local times, which is why it was so hard to find at sea (1.9).`,
       caption: String.raw`Drag $P$ (or the globe). The orange meridian and blue parallel through $P$ are drawn with the two arcs that measure $\lambda$ along the equator and $\varphi$ up the meridian; the middle panel shows the same angles in the equatorial and meridian planes, and the strip below plots the length of a degree of longitude against latitude.`,
-      deps: ['geog-1.1', 'vcalc-1.6'],
+      deps: ['geog-1.1'],
       refs: ['Snyder §2'],
       tags: ['coordinates'],
       viz(v) {
@@ -358,13 +358,13 @@ so a degree of latitude is always $\pi R/180 \approx 111.2$ km while a degree of
       kind: 'Proposition',
       name: 'Great-circle distance (haversine formula)',
       statement: String.raw`For points $(\varphi_1, \lambda_1)$ and $(\varphi_2, \lambda_2)$ on a sphere of radius $R$, the central angle $\sigma$ satisfies the spherical law of cosines
-$$\cos\sigma = \sin\varphi_1\sin\varphi_2 + \cos\varphi_1\cos\varphi_2\cos\Delta\lambda,$$
+$$\begin{aligned}\cos\sigma &= \sin\varphi_1\sin\varphi_2\\&\quad+ \cos\varphi_1\cos\varphi_2\cos\Delta\lambda,\end{aligned}$$
 and equivalently the **haversine formula** (with $\operatorname{hav}\theta = \sin^2(\theta/2)$)
-$$\operatorname{hav}\sigma = \operatorname{hav}\Delta\varphi + \cos\varphi_1\cos\varphi_2\operatorname{hav}\Delta\lambda, \qquad d = 2R\arcsin\sqrt{\operatorname{hav}\sigma}.$$
+$$\begin{gathered}\operatorname{hav}\sigma = \operatorname{hav}\Delta\varphi\\+ \cos\varphi_1\cos\varphi_2\operatorname{hav}\Delta\lambda, \\ d = 2R\arcsin\sqrt{\operatorname{hav}\sigma}.\end{gathered}$$
 The two are equal in exact arithmetic, but the haversine form stays accurate in floating point for nearby points, where $\cos\sigma \approx 1$ and $\arccos$ loses digits. With $R = 6371.0$ km either formula differs from the geodesic on the WGS84 ellipsoid by up to about 0.5 % (as computed, for example, by Vincenty's method).`,
-      idea: String.raw`The law of cosines is the dot product $\hat A\cdot\hat B$ of the position vectors of 1.2. Substituting $\cos\theta = 1 - 2\operatorname{hav}\theta$ throughout turns it into the haversine formula, which computes the small quantity $\operatorname{hav}\sigma \approx \sigma^2/4$ directly instead of as $1 - \cos\sigma$, a difference of two nearly equal numbers. Navigators tabulated haversines for exactly this reason; today the same cancellation appears whenever single-precision arithmetic is used. The leftover error is the model's: the Earth is flattened (1.6), and a sphere cannot be right in every direction at once.`,
+      idea: String.raw`The law of cosines is the dot product $\hat A\cdot\hat B$ of the position vectors of 1.2. Substituting $\cos\theta = 1 - 2\operatorname{hav}\theta$ throughout turns it into the haversine formula, which computes the small quantity $\operatorname{hav}\sigma \approx \sigma^2/4$ directly instead of as $1 - \cos\sigma$, a difference of two nearly equal numbers. Navigators tabulated haversines for exactly this reason; today the same cancellation appears whenever single-precision arithmetic is used. The leftover error is the model's: the Earth is flattened (1.6), and a sphere cannot be right in every direction at once. The dot-product angle identity (vcalc 1.2) applied to the two unit position vectors identifies their componentwise product with $\cos\sigma$. Expanding those components gives the spherical cosine formula before the half-angle rearrangement; the radius enters only when angle is converted to arc length.`,
       caption: String.raw`Drag the two cities. The map shows the great circle (green) and the rhumb line (red); the log–log plot scans points along the same course from 1 m to 20,000 km and plots the relative error of each formula against the exact central angle. Switch to single precision and watch the law of cosines collapse for short distances while haversine holds on; the purple curve is the sphere's own error against the ellipsoid, larger than either rounding error in double precision. (Near the antipode, at 20,000 km, haversine loses digits in its turn.)`,
-      deps: ['geog-1.3', 'num-1.4'],
+      deps: ['geog-1.3', 'vcalc-1.2'],
       see: ['geog-1.6'],
       refs: ['Snyder §5'],
       tags: ['geodesics', 'numerics'],

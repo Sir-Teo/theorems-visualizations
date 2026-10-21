@@ -251,7 +251,7 @@ export function lpPolygon(cons, B = 1000) {
 /**
  * max c·x subject to rows [{a, op: '<=' | '>=' | '=', b}] and x ≥ 0, by the dense two-phase tableau method.
  * rule: 'dantzig' (largest coefficient), 'bland' (smallest index), 'greatest' (largest objective increase).
- * Returns {status: 'optimal' | 'unbounded' | 'infeasible', x, value, y (dual values of the rows), pivots: [{enter, leave, x, value}]}.
+ * Returns {status: 'optimal' | 'unbounded' | 'infeasible' | 'iteration-limit' | 'numerical-failure', x, value, y (dual values of the rows), pivots: [{enter, leave, x, value}]}.
  */
 export function simplex(c, rows, o = {}) {
   const n = c.length, m = rows.length, rule = o.rule || 'dantzig', maxIt = o.maxIt ?? 4000;
@@ -267,22 +267,24 @@ export function simplex(c, rows, o = {}) {
   const run = (cost, allowed) => {
     for (let it = 0; it < maxIt; it++) {
       const d = Array(cols).fill(0); for (let j = 0; j < cols; j++) { let s = cost[j]; for (let i = 0; i < m; i++) s -= cost[basis[i]] * T[i][j]; d[j] = s; }
+      if (!d.every(Number.isFinite) || !T.every(row => row.every(Number.isFinite))) return 'numerical-failure';
       let e = -1;
       const ratio = (j) => { let bi = -1, br = Infinity; for (let i = 0; i < m; i++) if (T[i][j] > EPS) { const q = T[i][cols] / T[i][j]; if (q < br - 1e-12 || (Math.abs(q - br) <= 1e-12 && basis[i] < basis[bi])) { br = q; bi = i; } } return [bi, br]; };
       if (rule === 'bland') { for (let j = 0; j < cols; j++) if (allowed(j) && d[j] > 1e-9) { e = j; break; } }
       else if (rule === 'greatest') { let bestG = 1e-12; for (let j = 0; j < cols; j++) if (allowed(j) && d[j] > 1e-9) { const [bi, br] = ratio(j); const g = bi < 0 ? Infinity : d[j] * br; if (g > bestG) { bestG = g; e = j; } } }
       else { let bd = 1e-9; for (let j = 0; j < cols; j++) if (allowed(j) && d[j] > bd) { bd = d[j]; e = j; } }
       if (e < 0) return 'optimal';
-      const [r] = ratio(e); if (r < 0) return 'unbounded';
+      const [r] = ratio(e); if (r < 0) return T.some(row => row[e] > 0) ? 'numerical-failure' : 'unbounded';
       const pv = T[r][e]; for (let j = 0; j <= cols; j++) T[r][j] /= pv;
       for (let i = 0; i < m; i++) if (i !== r && Math.abs(T[i][e]) > 0) { const k = T[i][e]; for (let j = 0; j <= cols; j++) T[i][j] -= k * T[r][j]; }
       const leave = basis[r]; basis[r] = e; pivots.push({ enter: e, leave, x: xNow(), value: c.reduce((s, cj, j) => s + cj * xNow()[j], 0) });
     }
-    return 'iterations';
+    return 'iteration-limit';
   };
   if (art.some((a) => a >= 0)) {
     const c1 = Array(cols).fill(0); art.forEach((a) => { if (a >= 0) c1[a] = -1; });
-    run(c1, () => true);
+    const phase1 = run(c1, () => true);
+    if (phase1 !== 'optimal') return { status: phase1 === 'unbounded' ? 'numerical-failure' : phase1, x: null, value: null, y: null, pivots, phase: 1 };
     if (basis.some((j, i) => isArt(j) && T[i][cols] > 1e-7)) return { status: 'infeasible', x: null, value: NaN, y: null, pivots };
     // drive degenerate artificials out of the basis where possible
     basis.forEach((j, r) => { if (isArt(j)) { const e = T[r].slice(0, cols).findIndex((v, jj) => !isArt(jj) && Math.abs(v) > 1e-9); if (e >= 0) { const pv = T[r][e]; for (let k = 0; k <= cols; k++) T[r][k] /= pv; for (let i = 0; i < m; i++) if (i !== r) { const q = T[i][e]; for (let k = 0; k <= cols; k++) T[i][k] -= q * T[r][k]; } basis[r] = e; } } });
@@ -292,7 +294,7 @@ export function simplex(c, rows, o = {}) {
   const st = run(c2, (j) => !isArt(j));
   const x = xNow(), value = c.reduce((s, cj, j) => s + cj * x[j], 0);
   const y = rows.map((_, i) => { const j = art[i] >= 0 ? art[i] : slack[i]; let d = 0 - c2[j]; for (let r = 0; r < m; r++) d -= c2[basis[r]] * T[r][j]; return sign[i] * -d; });
-  return { status: st === 'iterations' ? 'unbounded' : st, x, value, y, pivots };
+  return { status: st, x, value, y: st === 'optimal' ? y : null, pivots, phase: 2 };
 }
 
 // ------------------------------------------------------------------ drawing helpers (need the runtime object v)

@@ -1,0 +1,833 @@
+{
+  "scope": "Producer prerequisite candidate; statement overflow diagnosed for separate authorized wrap; independent acceptance pending; no source closure",
+  "changes": {
+    "1.4": {
+      "file": "ch01.js",
+      "deps": [
+        "vcalc-1.2"
+      ],
+      "add": " The dot-product angle identity (vcalc 1.2) applied to the two unit position vectors identifies their componentwise product with $\\cos\\sigma$. Expanding those components gives the spherical cosine formula before the half-angle rearrangement; the radius enters only when angle is converted to arc length."
+    },
+    "1.7": {
+      "file": "ch01-b.js",
+      "deps": [
+        "vcalc-2.8"
+      ],
+      "add": " The gradient-normal theorem (vcalc 2.8) applies to the smooth ellipse level set, whose gradient is nonzero for positive semi-axes. Its normal slope is $(z/b^2)/(x/a^2)$, while the radial slope is $z/x$; comparing these directions gives the latitude conversion wherever those slope ratios are defined, with axis points obtained by limits. In the spherical limit $a=b$, all three latitudes coincide; strict separation away from the axes concerns the oblate case $a>b$."
+    },
+    "1.9": {
+      "file": "ch01-b.js",
+      "deps": [
+        "prob-2.2.1"
+      ],
+      "add": " For independent zero-mean daily clock errors with common finite variance $\\sigma^2$, variance additivity (prob 2.2.1) gives variance $n\\sigma^2$ after $n$ days, hence standard deviation $\\sigma\\sqrt n$. A fixed uncorrected daily rate instead contributes $n$ times that rate. The square-root statement is a model of random accumulation, not a guarantee on a particular voyage."
+    },
+    "1.10": {
+      "file": "ch01-b.js",
+      "deps": [
+        "ladr-6.61"
+      ],
+      "add": " At each linearized step, the predicted residual correction lies in the Jacobian's column space. The closest-vector theorem (ladr 6.61) selects its orthogonal projection, minimizing the squared residual norm. Full column rank is additionally needed to recover a unique position-and-clock correction from that projection; this local least-squares fact does not prove global convergence of the nonlinear iteration."
+    },
+    "2.1": {
+      "file": "ch02.js",
+      "deps": [
+        "pma-6.21"
+      ],
+      "add": " Away from the poles, $\\psi'=\\sec\\varphi$, so the fundamental theorem (pma 6.21) evaluates the longitude integral as the difference of endpoint isometric latitudes. The finite-length calculation integrates the northward component separately when $\\cos\\beta\\ne0$; an east–west parallel is the separate limiting course, not a division by zero."
+    },
+    "2.3": {
+      "file": "ch02.js",
+      "deps": [
+        "prob-2.2.1"
+      ],
+      "add": " Apply variance additivity (prob 2.2.1) to each coordinate's independent, zero-mean finite-variance displacement errors. For equal interval variances the coordinate variance grows as $n$, and its standard deviation as $\\sqrt n$. Correlation between intervals adds covariance terms, while a shared bias accumulates coherently; neither is covered by that square-root rule."
+    },
+    "2.5": {
+      "file": "ch02.js",
+      "deps": [
+        "pma-5.5"
+      ],
+      "add": " The chain rule (pma 5.5) makes the relative-angle sensitivity explicit: differentiating $\\log\\sin A$ gives $\\cot A$. Thus a sine-ratio step has first-order log error $\\cot A\\,\\delta A-\\cot C\\,\\delta C$, away from zero sines. Multiplying successive ratios adds these log errors, explaining why skinny triangles can amplify angular uncertainty."
+    },
+    "3.4": {
+      "file": "ch03.js",
+      "deps": [
+        "pma-9.11"
+      ],
+      "add": " Differentiability in pma 9.11 supplies the small remainder uniformly over directions: after dividing displacements by $\\varepsilon$, the image differs from the derivative's circle image by a term tending to zero. The SVD ellipse therefore describes the first-order shape; it need not be the exact image of a finite circle."
+    },
+    "3.5": {
+      "file": "ch03.js",
+      "deps": [
+        "ladr-7.70"
+      ],
+      "add": " The SVD (ladr 7.70) expresses the derivative as orthogonal maps around two positive axis stretches. Equal stretches make it a scalar times an orthogonal map, preserving angles; in the orientation-preserving convention this is a rotation. Unequal stretches send a unit circle to a noncircular ellipse, so some angles change."
+    },
+    "3.6": {
+      "file": "ch03.js",
+      "deps": [
+        "pma-10.9"
+      ],
+      "add": " The integral step is change of variables (pma 10.9) within a smooth one-to-one chart with nonzero Jacobian, away from cuts and singular points. It first applies to continuous compactly supported area densities; approximating a regular patch's indicator by such densities gives its area formula. Injectivity matters: a folded chart would require accounting for multiplicity rather than using this formula unchanged."
+    },
+    "3.7": {
+      "file": "ch03.js",
+      "deps": [
+        "vcalc-1.8"
+      ],
+      "add": " Arc length is the integral of speed (vcalc 1.8). On a regular chart, a derivative that preserves every tangent-vector norm preserves the speed of each $C^1$ curve and therefore its length. This is the missing passage from a unit circular indicatrix to local isometry; it does not assert a globally injective distance-preserving map across cuts."
+    },
+    "4.9": {
+      "file": "ch04.js",
+      "deps": [
+        "pma-5.5"
+      ],
+      "add": " Write the meridian formula as $y=R\\psi(m\\varphi)/m$. For $0<m<1$, the chain rule (pma 5.5) cancels the inner factor $m$ against the outer $1/m$, giving $y_\\varphi=R\\sec(m\\varphi)$. Dividing by the true meridian element $R\\,d\\varphi$ gives the stated scale, finite at the poles for these $m$."
+    },
+    "5.5": {
+      "file": "ch05.js",
+      "deps": [
+        "pma-6.21"
+      ],
+      "add": " Integrate the equal-area differential equation on $0\\le c<\\pi$ using the fundamental theorem (pma 6.21): the change in $r^2/2$ equals the integral of $R^2\\sin c$. The condition $r(0)=0$ fixes the constant, leaving $r^2=2R^2(1-\\cos c)$ and the nonnegative radial branch shown here."
+    },
+    "5.8": {
+      "file": "ch05-b.js",
+      "deps": [
+        "ode-1.3"
+      ],
+      "add": " Separation of variables (ode 1.3) solves the conformality equation on a chart where $\\rho>0$ and $\\cos\\varphi>0$: integrating $d\\rho/\\rho=-n\\sec\\varphi\\,d\\varphi$ gives $\\log\\rho=-n\\psi+\\text{constant}$. Exponentiating yields the radial law; the standard-parallel conditions then determine its constants."
+    },
+    "5.9": {
+      "file": "ch05-b.js",
+      "deps": [
+        "pma-6.21"
+      ],
+      "add": " The fundamental theorem (pma 6.21) integrates $\\rho\\,d\\rho=-(R^2/n)\\cos\\varphi\\,d\\varphi$ to the stated affine relation between $\\rho^2$ and $\\sin\\varphi$, for $n\\ne0$ on the chosen conic chart. The standard-parallel conditions select the integration constant; the square root uses the chart's chosen radial branch."
+    },
+    "6.2": {
+      "file": "ch06.js",
+      "deps": [
+        "pma-5.11"
+      ],
+      "add": " On $-\\pi<t<\\pi$, the derivative of $t+\\sin t$ is strictly positive. The monotonicity theorem and its mean-value proof (pma 5.11) therefore make this function strictly increasing, so two different interior roots are impossible. The zero derivative at the polar endpoints does not invalidate interior uniqueness and does not ensure arbitrary-start Newton convergence."
+    }
+  },
+  "mapping": [
+    {
+      "item": "geog-1.4",
+      "target": "vcalc-1.2"
+    },
+    {
+      "item": "geog-1.7",
+      "target": "vcalc-2.8"
+    },
+    {
+      "item": "geog-1.9",
+      "target": "prob-2.2.1"
+    },
+    {
+      "item": "geog-1.10",
+      "target": "ladr-6.61"
+    },
+    {
+      "item": "geog-2.1",
+      "target": "pma-6.21"
+    },
+    {
+      "item": "geog-2.3",
+      "target": "prob-2.2.1"
+    },
+    {
+      "item": "geog-2.5",
+      "target": "pma-5.5"
+    },
+    {
+      "item": "geog-3.4",
+      "target": "pma-9.11"
+    },
+    {
+      "item": "geog-3.5",
+      "target": "ladr-7.70"
+    },
+    {
+      "item": "geog-3.6",
+      "target": "pma-10.9"
+    },
+    {
+      "item": "geog-3.7",
+      "target": "vcalc-1.8"
+    },
+    {
+      "item": "geog-4.9",
+      "target": "pma-5.5"
+    },
+    {
+      "item": "geog-5.5",
+      "target": "pma-6.21"
+    },
+    {
+      "item": "geog-5.8",
+      "target": "ode-1.3"
+    },
+    {
+      "item": "geog-5.9",
+      "target": "pma-6.21"
+    },
+    {
+      "item": "geog-6.2",
+      "target": "pma-5.11"
+    }
+  ],
+  "counts": {
+    "before": [
+      9,
+      16,
+      19
+    ],
+    "after": [
+      25,
+      32,
+      35
+    ]
+  },
+  "rawListRepair": {
+    "item": "geog-1.10",
+    "syllabusAddedExistingItemDependency": "stat-12.2",
+    "newCrossfieldEdge": false
+  },
+  "guard": {
+    "items": 48,
+    "functions": 48,
+    "exactRawSynchronizedLists": 16,
+    "helpers": "byte-identical",
+    "sourceFlags": "unchanged"
+  },
+  "mathCases": 5600,
+  "native": {
+    "cases": 32,
+    "viewport": 320,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "changedIdeaPictures": 32,
+    "unchangedBuiltStatementPictures": 32,
+    "ideaOverflow": [],
+    "inheritedStatementOverflowIDs": [
+      "geog-1.4",
+      "geog-2.3",
+      "geog-4.9",
+      "geog-5.5",
+      "geog-5.8",
+      "geog-5.9",
+      "geog-6.2"
+    ],
+    "ownPixels": "All64 complete element captures personally inspected; seven original statement displays clip in both themes and are not passed",
+    "builtStatementSHA": "a9e305927bb8b5076b39a09fc3740d5413041523fe540fc23393769296a39a08"
+  },
+  "bridge": {
+    "slug": "map-distortion",
+    "changedStepIDs": [
+      "geog-3.4",
+      "geog-3.6",
+      "geog-3.7"
+    ],
+    "reviewed": "All eight bridge notes remain consistent; no bridge edits"
+  },
+  "strict": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "static": {
+    "items": 48,
+    "errors": 0,
+    "warnings": 0
+  },
+  "logs": [
+    "/tmp/atlas-new-imaging-source/geog-guard.log",
+    "/tmp/atlas-new-imaging-source/geog-math.log",
+    "/tmp/atlas-new-imaging-source/geog-native.log",
+    "/tmp/atlas-new-imaging-source/geog-strict.log",
+    "/tmp/atlas-new-imaging-source/geog-static.log"
+  ],
+  "pictures": [
+    {
+      "id": "geog-1.4",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.4-light-idea.png",
+      "sha256": "3e9a9824ba9dde7304a8dd2f0bc7bd0b14112e33f88bf48604fdcceffcb16b75",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-1.4",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.4-light-statement.png",
+      "sha256": "b2f824898995cba48044d6f54432a4c736998f95a757eb7993623946c1ff0f95",
+      "scroll": 524,
+      "client": 281
+    },
+    {
+      "id": "geog-1.7",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.7-light-idea.png",
+      "sha256": "410e3710c21f46d07f10d9265c1ce52160c8ab2db0b93a8d8e951b892e915508",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-1.7",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.7-light-statement.png",
+      "sha256": "9123c6bcc47125c8dd75e72ac18d2207801e167ccf285164e14cba6f55171f06",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-1.9",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.9-light-idea.png",
+      "sha256": "1bf9ca7f96248cb960b561a6e9ae12521aa777f17e703d820ca3a19c689dd7fc",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-1.9",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.9-light-statement.png",
+      "sha256": "470ba66a94b92a2f69583244f44c13f5e1c53a3b534a1f2559ec39784c69014e",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-1.10",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.10-light-idea.png",
+      "sha256": "ea2c4a5a977444011432fe9fc24ff8b4aa164397629f1dc75bd62f7bee5acd4b",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-1.10",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.10-light-statement.png",
+      "sha256": "52504027c91fd2af273e45a30e9f77add5f4f2acb0de3303d4dcb6ccddbf3912",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-2.1",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.1-light-idea.png",
+      "sha256": "41bbd2a1482a5859ea6217104b6d3d8ed42a34776ef9f2b03a4ca9bc724400a6",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-2.1",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.1-light-statement.png",
+      "sha256": "860f7256bb7a668b7df15937adf836960ab1c1d9d04e8f6a1673d02a6c6ecb23",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-2.3",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.3-light-idea.png",
+      "sha256": "3aa12c1100416cbd335d99dc74694c53fd424acad1a13d6dad34eac9d436f35f",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-2.3",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.3-light-statement.png",
+      "sha256": "841d2d1ec64d7adba80860ed4f3398712c593c55c41976df9c61dc57bb3ac85e",
+      "scroll": 290,
+      "client": 281
+    },
+    {
+      "id": "geog-2.5",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.5-light-idea.png",
+      "sha256": "228360998cd57081e46a44e897fb76be50f180688042e81a31410e4b2a624c86",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-2.5",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.5-light-statement.png",
+      "sha256": "68dc02702fb5c0adbd196fc7bf48d14fe088299247722165dc79a25a7861527a",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-3.4",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.4-light-idea.png",
+      "sha256": "4ffd32a9326ffeb5ac799a2705cbc6661d71cf7a0054b143badede6d37b909f8",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-3.4",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.4-light-statement.png",
+      "sha256": "46e82e2e15e7fbe0425af1d814faff34b03afb87a56f8f38dd149529749c81fc",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-3.5",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.5-light-idea.png",
+      "sha256": "edbc1605201837506b838bf562f3b99e3c4c25034aaa85b8c0c403caa3624f7b",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-3.5",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.5-light-statement.png",
+      "sha256": "6f80a31ad295899f1fc252939b4869644042feeb31928b6a3e8d795e23b5e879",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-3.6",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.6-light-idea.png",
+      "sha256": "9978bda3560fa3f131403570143a2d1c1f60bc6376d487966f3ffb0363d062fd",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-3.6",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.6-light-statement.png",
+      "sha256": "a78877dbcdcebd475756306f4d307584cc1d113a6d3686f230d5a01f8e69e919",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-3.7",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.7-light-idea.png",
+      "sha256": "7cf787391bfd4fbf152f90d70b69ac21f74c41668b22fc4c3eb188afddb95e90",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-3.7",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.7-light-statement.png",
+      "sha256": "c05639564e6704711379f269e89505254ab2afc7ffaf09b58d9086e3586fd108",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-4.9",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/4.9-light-idea.png",
+      "sha256": "d6331f3b8b9cdd1e15653387b6e42e245707080bede2a2b09c2fb53c37a06eef",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-4.9",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/4.9-light-statement.png",
+      "sha256": "69ee845a3e2936ab93738203ea244274c2a6a07e434e3ab67c175d98cd57ed18",
+      "scroll": 310,
+      "client": 281
+    },
+    {
+      "id": "geog-5.5",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.5-light-idea.png",
+      "sha256": "a31223263472916bfc8594a846f4387412840652728aa7ff7082173e52454b11",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-5.5",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.5-light-statement.png",
+      "sha256": "88008c4a73b6964c190b800db8cbb5ecc9a0543ee3766f5f4cc4de42f5ec034c",
+      "scroll": 330,
+      "client": 281
+    },
+    {
+      "id": "geog-5.8",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.8-light-idea.png",
+      "sha256": "fb7a810bb658a501bfbc232cd45a87f690f3eda80701159d2d97c16b3cbd80a0",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-5.8",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.8-light-statement.png",
+      "sha256": "fa8e72541c6b01080d5157af0731a9c5092885a1f374b328cac8b6d0dc558c49",
+      "scroll": 747,
+      "client": 281
+    },
+    {
+      "id": "geog-5.9",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.9-light-idea.png",
+      "sha256": "44482e1d2321240ec86d2e24ed221828be9f3a7aa23ce698ac5eef3d026812e4",
+      "scroll": 285,
+      "client": 284
+    },
+    {
+      "id": "geog-5.9",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.9-light-statement.png",
+      "sha256": "063c0500b2f2a9cbe3fbe629a4c1392617696208024dd043f26c10ebaac89763",
+      "scroll": 593,
+      "client": 281
+    },
+    {
+      "id": "geog-6.2",
+      "theme": "light",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/6.2-light-idea.png",
+      "sha256": "70f95271a1e0fce418b9ec31d9a32016036a3bb61f3179847f9f57c3785223a0",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-6.2",
+      "theme": "light",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/6.2-light-statement.png",
+      "sha256": "7073b6e481373073e89d38beedbc5c94f5881c7f9f4eb3a7f9e79b775ff23122",
+      "scroll": 557,
+      "client": 281
+    },
+    {
+      "id": "geog-1.4",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.4-dark-idea.png",
+      "sha256": "9fd60986fcae03560bdb80238bfa8b8422da985c55db6222c06661e78a0fcc42",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-1.4",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.4-dark-statement.png",
+      "sha256": "66848b448c08909043fa8388932f9479873b696a0983f572b27a56a197ba7faf",
+      "scroll": 524,
+      "client": 281
+    },
+    {
+      "id": "geog-1.7",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.7-dark-idea.png",
+      "sha256": "d3d19d70ecbedcd831f2c2d870b6338ea87aa63592a59407c6cf3c7068cf0f79",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-1.7",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.7-dark-statement.png",
+      "sha256": "1e7e36375b1f4c7abaacc3f53db97cfb2c0d0644168014de13d72df078f81592",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-1.9",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.9-dark-idea.png",
+      "sha256": "3bd9c002250e7ee57277e86d4a1d6e71e9b2b6ab4315c4fd6810221915edce7a",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-1.9",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.9-dark-statement.png",
+      "sha256": "61a1959aa02e0c25304618662ed5ce94b4b2eaf5751206e0a82d463bfbd02988",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-1.10",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.10-dark-idea.png",
+      "sha256": "6102eb770376317e7789cda1c7589d29b1608f58a9b9bae22967c93a74df0e2d",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-1.10",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/1.10-dark-statement.png",
+      "sha256": "037fce86740e30b99b6a57e8dbf25b6a7427f1664ad5faf48efefc1b10cb6dec",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-2.1",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.1-dark-idea.png",
+      "sha256": "3b321e53c525114e180e6070028b829ac21f9f72f4dfbdc60ffe0a28f3f7943e",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-2.1",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.1-dark-statement.png",
+      "sha256": "92540a1e90cb121df36ae4e97447422ca4e34df413f3c0b32a59183223cd6480",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-2.3",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.3-dark-idea.png",
+      "sha256": "1abad81ff33d48a7a564b96ff76b1c1311250afe725794881a1e71c971ebf6d8",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-2.3",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.3-dark-statement.png",
+      "sha256": "ad6be9e9761410b397a5c8f10656d6ca7656bcbfbb08310da3db422c5399d2fc",
+      "scroll": 290,
+      "client": 281
+    },
+    {
+      "id": "geog-2.5",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.5-dark-idea.png",
+      "sha256": "2a1756e09323ad4af03d6233cc0969bb6d58281d5f0f982d16128baa810677f7",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-2.5",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/2.5-dark-statement.png",
+      "sha256": "779389a892ade1d87f4f637674a8e66e80a787db3d4c36e101811883924ee943",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-3.4",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.4-dark-idea.png",
+      "sha256": "b848b02950ac4ef871e241b9126584658fadb8be7ddbbc0ad2e657e5e71cd35e",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-3.4",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.4-dark-statement.png",
+      "sha256": "409d0b141de8b2ba0435088a3df7f4d4b237227405e4e9bb57cdb5cf92027408",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-3.5",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.5-dark-idea.png",
+      "sha256": "6d01607c737ca1bcedce5771e9b67acac5e7ff664da4b8adbd9a727463c4dbfe",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-3.5",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.5-dark-statement.png",
+      "sha256": "10ebb9635f53ebe322dd20be65935ccdb055a85e04ba0f6d80fee1c866dfe798",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-3.6",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.6-dark-idea.png",
+      "sha256": "c75bcc483597a3c47eb92299467a63eb4840b46c48246ab91e8375096ca616c8",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-3.6",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.6-dark-statement.png",
+      "sha256": "9bf67afeca1fa9c7c7e0abc25bfcc58b679cf51f8dd8ca466f859831e68298e6",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-3.7",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.7-dark-idea.png",
+      "sha256": "4efdb2f033cbbdc1eee0f5a9141994476962de61e7106db77adec6dd9bed827d",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-3.7",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/3.7-dark-statement.png",
+      "sha256": "ab84c5c092d6f3b433e7b1900988fb84e33c2f41c80719ce876076f8934f6f03",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-4.9",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/4.9-dark-idea.png",
+      "sha256": "c94a7ebff8e1fa25fa4c5fee137fee8aff96e36b75f717e85dfd425037da9cb8",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-4.9",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/4.9-dark-statement.png",
+      "sha256": "58de3475b0df252c504d33666289306b9ba0c33077643b6a575e2147b1ebc528",
+      "scroll": 310,
+      "client": 281
+    },
+    {
+      "id": "geog-5.5",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.5-dark-idea.png",
+      "sha256": "dc791b44e875150b6845563cfcc22cb424f443afc01cad8ff24502165cec5d79",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-5.5",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.5-dark-statement.png",
+      "sha256": "567a77572f96ad7b78c83a39c74e5d764be1088c3d7afc9861ae9dab053e2e4c",
+      "scroll": 330,
+      "client": 281
+    },
+    {
+      "id": "geog-5.8",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.8-dark-idea.png",
+      "sha256": "b764b84e0e3124278b72275b50b7cc4baf6f4218925edf98906b8c8606fd99af",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-5.8",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.8-dark-statement.png",
+      "sha256": "7db7ef333a054dc1b844bfd7e7eac4ceb2d668135fefeb4fcf335d8bfbe2ea17",
+      "scroll": 747,
+      "client": 281
+    },
+    {
+      "id": "geog-5.9",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.9-dark-idea.png",
+      "sha256": "15ab754de0ecca64eca1881330d9c98319bbb571cb9345804b22ded04ddafdb5",
+      "scroll": 285,
+      "client": 284
+    },
+    {
+      "id": "geog-5.9",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/5.9-dark-statement.png",
+      "sha256": "8230e295f45fe854a1c535fca5d4d09d4b583848d58c50c495a0ceb476a3d23a",
+      "scroll": 593,
+      "client": 281
+    },
+    {
+      "id": "geog-6.2",
+      "theme": "dark",
+      "kind": "idea",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/6.2-dark-idea.png",
+      "sha256": "c9712a42aef602aaddae93fb116b70635953640e5eb91b1154a9d9ef91be2648",
+      "scroll": 284,
+      "client": 284
+    },
+    {
+      "id": "geog-6.2",
+      "theme": "dark",
+      "kind": "statement",
+      "path": "/tmp/atlas-new-imaging-source/geog-native/6.2-dark-statement.png",
+      "sha256": "6dfc506cc1ef9406642ca518c76b710dfc5074c72066462f08181dd0e20c7529",
+      "scroll": 557,
+      "client": 281
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "precisionDigits": 70,
+  "method": "mpmath delay-density integral after d=u^2,14sigma Gaussian tail cutoff; distinct from UI angle-Simpson quadrature",
+  "pulse": [
+    {
+      "n1": "1.48",
+      "n2": "1.46",
+      "L": "1.0",
+      "cone": "20.0",
+      "sigma": "1.0",
+      "x": "0.0",
+      "pulse": "0.09198667971857303780840011156976155128704024767737995132559941619583222"
+    },
+    {
+      "n1": "1.48",
+      "n2": "1.46",
+      "L": "1.0",
+      "cone": "40.0",
+      "sigma": "0.1",
+      "x": "20.0",
+      "pulse": "0.001195587728055843357426744680155039073862358508967669583118864810768191"
+    },
+    {
+      "n1": "1.7",
+      "n2": "1.3",
+      "L": "20.0",
+      "cone": "40.0",
+      "sigma": "0.08493218002880191",
+      "x": "500.0",
+      "pulse": "0.0000488217565259448901678526614931876326540192227995904971247953029931624"
+    },
+    {
+      "n1": "1.48",
+      "n2": "1.46",
+      "L": "0.0",
+      "cone": "40.0",
+      "sigma": "1.0",
+      "x": "0.0",
+      "pulse": "0.3508344602580427977880463017979803900930872067592848619345594972841104"
+    },
+    {
+      "n1": "1.48",
+      "n2": "1.46",
+      "L": "20.0",
+      "cone": "40.0",
+      "sigma": "0.08493218002880191",
+      "x": "1.0",
+      "pulse": "0.001018422688197302150379461248399613110438212777712540134568240713578735"
+    }
+  ],
+  "sources": [
+    {
+      "name": "steck-author",
+      "url": "https://atomoptics.uoregon.edu/~dsteck/teaching/optics/optics-notes.pdf",
+      "sha256": "2ecd596a87669dbab9c0ddc3950c570a114074d313d26ac5aefcd453bf986995",
+      "anchors": "Revision1.8.6,1May2026;physicalPDF=printedpage;full\u00a75.3pp85\u201386,\u00a7\u00a79.1\u20139.3pp153\u2013161,full\u00a710.2pp176\u2013180"
+    },
+    {
+      "name": "tatum",
+      "url": "https://www.astro.uvic.ca/~tatum/goptics/geomop1.pdf",
+      "sha256": "935ccefd7402c19bc3e294469d2a9ed0d959c4ac44fcca1a9351cdbc6b3488ea",
+      "anchors": "physicalPDF=printedpage;full\u00a71.6pp19\u201322 and\u00a71.7pp22\u201331, equations1.6.1\u20135 and1.7.1\u201310"
+    },
+    {
+      "name": "kimerling",
+      "url": "https://ocw.mit.edu/courses/3-46-photonic-materials-and-devices-spring-2006/2229d0701ea240ed993e2a499432519b_3_46l5_waveguide.pdf",
+      "sha256": "78e5ee89b7d4a420643df0755f21ca11ff75ff01aa17b656ff7f2b7c4a4ec171",
+      "anchors": "full5-pagelecturedownloaded;guidance/NA derivationpp1\u20132,coreusesn2inthissource(oppositetotheatlas)"
+    },
+    {
+      "name": "almeida",
+      "url": "https://www.lehigh.edu/imi/teched/OPG/lecture25.pdf",
+      "sha256": "fe0236c2107c9c620565b11f6088ed01b0a8367d098650c5fe6b35b6a146a309",
+      "anchors": "full16-pagelecturedownloaded;readmodal/material/waveguidedispersionpp10\u201315;first-orderdelayonlyatp10,exactmeridionalboundderivedindependently"
+    },
+    {
+      "name": "Fitzpatrick58",
+      "url": "https://farside.ph.utexas.edu/teaching/315/Waveshtml/node58.html",
+      "sha256": "08838b0f1105f955432c5e21fb0b2915bdadc9892e13b178ddc65a36d46d7da1",
+      "anchors": "full\u00a77.8,equations7.40\u201349"
+    },
+    {
+      "name": "Fitzpatrick59",
+      "url": "https://farside.ph.utexas.edu/teaching/315/Waveshtml/node59.html",
+      "sha256": "9bea5042738d516b91f7fe2b887bab59bdef29fdf1f73b4dbee6f7e81dd80877",
+      "anchors": "full\u00a77.9,equations7.50\u2013101"
+    },
+    {
+      "name": "Fitzpatrick60",
+      "url": "https://farside.ph.utexas.edu/teaching/315/Waveshtml/node60.html",
+      "sha256": "46242eeb25861aac754f314ceda41322547e6cd84c05cec676635435ebf6076d",
+      "anchors": "full\u00a77.10,equations7.102\u2013135,Figures7.9\u201312"
+    }
+  ]
+}

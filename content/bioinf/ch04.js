@@ -26,14 +26,15 @@ export default {
       kind: 'Model',
       name: 'Markov chains for sequences: CpG islands',
       statement: String.raw`A first-order Markov chain on the alphabet $\{A,C,G,T\}$ assigns to a sequence $x_1\cdots x_n$ the probability $P(x)=P(x_1)\prod_{i=2}^{n}a_{x_{i-1}x_i}$, where $a_{st}=P(x_i=t\mid x_{i-1}=s)$ and every row of the matrix $(a_{st})$ sums to $1$. From training data the maximum-likelihood estimate is $\hat a_{st}=c_{st}/\sum_{t'}c_{st'}$, with $c_{st}$ the number of times $s$ is followed by $t$. In vertebrate genomes the dinucleotide CG is much rarer than the base composition predicts, except in CpG islands, so one fits two chains, "$+$" for islands and "$-$" for the rest; they differ most in the transition $C\to G$.`,
-      idea: String.raw`Dependence between neighbouring letters is the simplest correlation a sequence model can capture, with $4\times4$ entries (twelve free parameters after row normalisation). CG is depleted outside islands because methylated cytosine in CG tends to mutate to thymine, whereas islands are kept unmethylated and retain CG; so the two classes of sequence have different transition matrices. Counting is the maximum-likelihood fit (stoch-1.1 defines the chain), and by the law of large numbers the estimate converges to the true matrix as the training sequence grows.`,
-      caption: String.raw`The table shows the transition matrix of the island chain ($+$), the non-island chain ($-$), or their log-odds ratio $\beta_{st}=\log_2(a^+_{st}/a^-_{st})$; the gold outline marks $C\to G$. The scatter plot trains a chain on a sequence of length $N$ *simulated from* the chosen model and plots each of the 16 estimated entries against the true one: they fall on the diagonal as $N$ grows. The published matrices are row-normalised to remove three-decimal rounding error; the training sequence is a simulation.`,
-      scope: String.raw`Durbin, Eddy, Krogh & Mitchison (1998), §3.1, p. 50, fit these chains to 48 putative islands and the remaining human sequence, with almost 60 000 nucleotides altogether. Here each printed row is normalised to sum to one (one rounded row sums to 1.001); simulations start with a uniform first base. A first-order chain ignores everything beyond the previous letter, and island boundaries are not part of this model.`,
-      credit: 'Gardiner-Garden & Frommer, 1987 (islands); Durbin et al., 1998 (the two-chain model)',
-      deps: ['bioinf-1.1', 'stoch-1.1', 'stat-3.5'],
-      refs: ['Durbin et al. (1998), §3.1, pp. 47–51; transition matrices p. 50'],
+      idea: String.raw`Dependence between neighbouring letters is a simple sequence correlation: the four rows each have three free probabilities, for twelve transition parameters. CG is depleted outside islands because methylated cytosine in CG tends to mutate to thymine, whereas islands are kept unmethylated and retain CG; so the two classes of sequence have different transition matrices. Counting is the maximum-likelihood fit when the row has a positive count; with no observed transition from a base, every row distribution maximises that likelihood and this simulation uses a uniform row. For these positive matrices, the ergodic law of large numbers gives consistency as training length grows.`,
+      caption: String.raw`The table shows the transition matrix of the island chain ($+$), the non-island chain ($-$), or their log-odds ratio $\beta_{st}=\log_2(a^+_{st}/a^-_{st})$; the gold outline marks $C\to G$. The scatter plot trains a chain on a sequence of length $N$ *simulated from* the chosen model and plots each of the 16 estimated entries against the true one: the estimates concentrate near the diagonal with longer training, although a particular error need not decrease after increasing $N$. The printed probabilities are rounded; the simulation normalises each row to sum to one.`,
+      scope: String.raw`Durbin et al. (1998), §3.1 pp. 47–51, explicitly report 48 putative human CpG islands and almost 60,000 nucleotides in the training data. The two matrices were checked directly on printed p. 50. The island C row sums to 1.001 because of rounding, so its entries here are divided by 1.001; the other rows already sum to one. These are illustrative fitted chains, not universal genome parameters. Simulated sequences start uniformly over the four bases, and a first-order chain has no island-boundary mechanism.`,
+      credit: 'Durbin, Eddy, Krogh & Mitchison, 1998, §3.1 pp. 47–51',
+      verify: false,
+      deps: ['bioinf-1.1', 'stoch-1.1'],
+      refs: ['Durbin et al. (1998) §3.1, pp. 47–51, Eq. (3.1)–(3.3), transition tables p. 50'],
       tags: ['markov chain', 'cpg islands', 'dinucleotides'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/CpG_site', doi: 'https://doi.org/10.1016/0022-2836(87)90689-9' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/CpG_site', source: 'https://www.mcb111.org/w06/durbin_book.pdf' },
       viz(v) {
         const show = v.select('show', [{ value: 'plus', label: '$+$ island' }, { value: 'minus', label: '$-$ background' }, { value: 'beta', label: 'log-odds $\\beta$' }], 'plus');
         const src = v.select('train on', [{ value: 'plus', label: '$+$' }, { value: 'minus', label: '$-$' }], 'plus');
@@ -57,7 +58,9 @@ export default {
             highlight: [[1, 2, 'gold']],
           });
           const E = fit(), TP = src.value === 'plus' ? CPG_PLUS : CPG_MINUS;
-          sS.line(0, 0, 0.5, 0.5, { color: 'muted', dash: true });
+          const bound = Math.max(0.5, ...E.flat(), ...TP.flat()) + 0.05;
+          sS.setView([-0.025, bound], [-0.025, bound]);
+          sS.line(0, 0, bound - 0.015, bound - 0.015, { color: 'muted', dash: true });
           let err = 0;
           for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
             const cg = i === 1 && j === 2; err = Math.max(err, Math.abs(E[i][j] - TP[i][j]));
@@ -68,7 +71,7 @@ export default {
         v.legend([['gold', 'C→G'], ['accent', 'other 15 entries', { dot: true }]]);
         v.readout(() => {
           const pp = stationary(CPG_PLUS), pm = stationary(CPG_MINUS), cgP = pp[1] * CPG_PLUS[1][2], cgM = pm[1] * CPG_MINUS[1][2];
-          return `$a^+_{CG}=${f3(CPG_PLUS[1][2])}$ against $a^-_{CG}=${f3(CPG_MINUS[1][2])}$ (ratio $${fx(CPG_PLUS[1][2] / CPG_MINUS[1][2], 1)}$) · long-run frequency of the dinucleotide CG: $${f3(cgP)}$ inside islands, $${f3(cgM)}$ outside\nsimulated training sequence of $N=${nS.value}$: largest estimation error over the 16 entries is $${f3(info.err)}$ (it shrinks roughly like $1/\\sqrt N$); the true $C\\to G$ entry is $${f3(info.TP[1][2])}$, estimated $${f3(info.E[1][2])}$`;
+          return `$a^+_{CG}=${f3(CPG_PLUS[1][2])}$ against $a^-_{CG}=${f3(CPG_MINUS[1][2])}$ (ratio $${fx(CPG_PLUS[1][2] / CPG_MINUS[1][2], 1)}$) · long-run frequency of the dinucleotide CG: $${f3(cgP)}$ inside islands, $${f3(cgM)}$ outside\nsimulated training sequence of $N=${nS.value}$: largest estimation error over the 16 entries is $${f3(info.err)}$ (typical sampling fluctuations are of order $1/\\sqrt N$); the true $C\\to G$ entry is $${f3(info.TP[1][2])}$, estimated $${f3(info.E[1][2])}$`;
         });
       },
     },
@@ -80,10 +83,12 @@ export default {
       statement: String.raw`Given the two chains of the previous item, score a sequence $x$ by its log-likelihood ratio
 $$S(x)=\log_2\frac{P(x\mid +)}{P(x\mid -)}=\sum_{i=2}^{n}\beta_{x_{i-1}x_i},\qquad \beta_{st}=\log_2\frac{a^+_{st}}{a^-_{st}}$$
 (the first-letter term is dropped). Declaring "island" when $S(x)>\theta$ is the likelihood-ratio test; with equal priors, $\theta=0$ minimises the average error. The score per letter $S/L$ of a window of length $L$ has mean $D(+\Vert-)>0$ under the island chain and $-D(-\Vert+)<0$ under the background chain, so the two classes separate as $L$ grows.`,
-      idea: String.raw`By the Neyman–Pearson lemma the likelihood ratio is the most powerful statistic for a simple-versus-simple test, and the Markov property turns it into a sum over adjacent pairs. Each window is a sum of $L-1$ nearly independent terms, so the score concentrates around $L$ times the relative entropy rate (the law of large numbers) with spread $\sqrt L$: the per-letter histograms of the two classes narrow and pull apart, and the error rate falls roughly exponentially in $L$.`,
+      idea: String.raw`By the Neyman–Pearson lemma the likelihood ratio is the most powerful statistic for a simple-versus-simple test, and the Markov property turns it into a sum over adjacent pairs. Each window is a sum of $L-1$ nearly independent terms, so the score concentrates around $L$ times the relative entropy rate (the law of large numbers) with spread $\sqrt L$: the per-letter histograms of the two classes narrow and pull apart, and the error rate falls roughly exponentially in $L$.
+
+For two fully specified sequence distributions, the Neyman–Pearson lemma stat-6.4 makes a likelihood-ratio threshold most powerful at its attained type-I error, with boundary randomization if an exact discrete size is required. The common initial-letter distribution cancels from this ratio, leaving the transition-log sum. With equal prior probabilities and equal error costs, choosing the larger likelihood also minimizes total error pointwise. These conclusions concern the two specified models, not a composite class of real genomic windows.`,
       caption: String.raw`Windows of length $L$ are simulated from each chain (500 of each; the chains are the published ones, the windows are simulated, not real genome). Histograms show the score per letter; dashed lines are the theoretical means $D(+\Vert-)$ and $-D(-\Vert+)$. Drag the threshold to trade false positives for false negatives, and change $L$ to watch the overlap shrink; the right panel shows the average error at the current threshold for several window lengths.`,
       scope: String.raw`Both classes are modelled as stationary chains with a uniform first letter, and islands are assumed to fill the whole window. Real genomes have island boundaries, window-level heterogeneity and priors far from equal (islands cover only a few per cent of the human genome), so these error rates are a best case.`,
-      deps: ['bioinf-4.1', 'stat-6.4', 'info-2.1'],
+      deps: ['bioinf-4.1','stat-6.4'],
       refs: ['Durbin ch. 3'],
       tags: ['log-odds', 'likelihood ratio', 'classification'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Likelihood-ratio_test' },
@@ -194,11 +199,13 @@ and the probability of the observations alone is the sum of this over all $K^T$ 
       statement: String.raw`For an HMM and an observed sequence $x_1,\dots,x_T$, the most probable state path $\pi^*=\arg\max_\pi P(x,\pi)$ is found in $O(K^2T)$ time. With $V_t(k)$ the probability of the best path ending in state $k$ at time $t$,
 $$V_1(k)=\pi_k e_k(x_1),\qquad V_t(k)=e_k(x_t)\max_{j}V_{t-1}(j)\,a_{jk},$$
 and $P(x,\pi^*)=\max_kV_T(k)$; recording the maximising $j$ at each cell and following these pointers backwards from the best final state recovers $\pi^*$.`,
-      idea: String.raw`Optimal substructure: the best path to $(t,k)$ must pass through some state $j$ at time $t-1$, and the part of the path up to there must itself be the best path ending at $j$ (otherwise swap it for a better one). That makes the lattice a longest-path problem in a DAG (algo-7.2), with weights $\log a_{jk}+\log e_k(x_t)$, and dynamic programming evaluates each of the $KT$ cells once at cost $K$. Working with logarithms (4.12) turns the products into sums.`,
+      idea: String.raw`Optimal substructure: the best path to $(t,k)$ must pass through some state $j$ at time $t-1$, and the part of the path up to there must itself be the best path ending at $j$ (otherwise swap it for a better one). That makes the lattice a longest-path problem in a DAG (algo-7.2), with weights $\log a_{jk}+\log e_k(x_t)$, and dynamic programming evaluates each of the $KT$ cells once at cost $K$. Working with logarithms (4.12) turns the products into sums.
+
+The dynamic-programming correctness argument algo-7.2 is induction over the time layers of this finite lattice. At each cell, every predecessor already has its optimal value, and maximizing over the possible last predecessor gives the correct cell value by the prefix replacement argument. There are $KT$ cells and K predecessor candidates per cell, giving the stated time bound. Zero-probability transitions may be excluded, or assigned log weight $-\infty$, rather than passed to an ordinary real logarithm.`,
       caption: String.raw`Type a sequence of die rolls (digits 1–6, up to 14), then **step** through the lattice of the fair/loaded casino. For the gold cell the two orange cells are the candidates $V_{t-1}(j)+\log_2 a_{jk}$; the larger wins and its arrow is stored. Values are $\log_2$ of probabilities. After the last column the green traceback follows the stored arrows.`,
       scope: String.raw`The model is the casino of 4.5 with $a_{FL}=0.05$, $a_{LF}=0.1$ and $P(6\mid L)=\tfrac12$, started in its stationary distribution. Several paths can tie for the maximum; the traceback shown breaks ties towards the fair state.`,
       credit: 'Viterbi, 1967',
-      deps: ['bioinf-4.3', 'algo-7.2'],
+      deps: ['bioinf-4.3','stoch-14.11','algo-7.2'],
       refs: ['Durbin ch. 3'],
       tags: ['dynamic programming', 'decoding', 'hmm'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Viterbi_algorithm', doi: 'https://doi.org/10.1109/TIT.1967.1054010' },
@@ -252,15 +259,16 @@ and $P(x,\pi^*)=\max_kV_T(k)$; recording the maximising $j$ at each cell and fol
       num: '4.5',
       kind: 'Phenomenon',
       name: 'The occasionally dishonest casino',
-      statement: String.raw`Suppose a casino secretly swaps between a fair die and a loaded die that shows six with probability $\tfrac12$ (and each other face with probability $\tfrac1{10}$). With switching probabilities $0.05$ (fair to loaded) and $0.10$ (loaded to fair), the swaps are invisible, but the observations provide evidence about the hidden path. A Viterbi path maximises the whole-path probability; posterior modes minimise expected errors at individual positions. Both can miss short stretches or be misled by chance rolls: a six is only three times as likely under the loaded die.`,
-      idea: String.raw`Evidence accumulates along a run: each six multiplies the odds of "loaded" by $3$ and each other face by only $0.6$, so a handful of rolls tips the balance, while the persistence of the states (expected run lengths of $20$ and $10$ rolls) says that a state is unlikely to have changed since the last roll. Viterbi (4.4) optimises the whole path; posterior decoding (4.7) optimises each position separately. Neither guarantees agreement with the unobserved truth.`,
-      caption: String.raw`The top strips show the true hidden path, the Viterbi path and the path of posterior probabilities above one half; gold ticks mark rolls of six. Below, the posterior probability of "loaded" at each roll. Change the bias or switching probabilities and compare the observed accuracy with the always-fair baseline. Controls reuse a seeded random stream; Resample chooses a new stream.`,
-      scope: String.raw`The default emissions and switching probabilities are checked against Durbin et al. (1998), p. 54; their decoding examples on pp. 56–60 also show errors. Here the initial die is sampled from the stationary probabilities $(2/3,1/3)$ at the defaults, not from the book’s particular 300-roll sample. Decoding uses known generating parameters; estimation adds uncertainty (4.8), and finite-sample accuracy need not vary monotonically with a control.`,
+      statement: String.raw`Suppose a casino secretly swaps between a fair die and a loaded die that shows six with probability $\tfrac12$ (and each other face with probability $\tfrac1{10}$). With switching probabilities $0.05$ (fair to loaded) and $0.10$ (loaded to fair), the die labels are hidden. A six has likelihood ratio $3$ for loaded versus fair, and another face has ratio $0.6$. Viterbi decoding finds the most probable complete hidden path, whereas marginal posterior decoding minimises expected per-position error under the model; neither guarantees recovery of a particular realised path.`,
+      idea: String.raw`Evidence accumulates along a run: each six multiplies the odds of "loaded" by $3$ and each other face by only $0.6$, so a handful of rolls tips the balance, while the persistence of the states (expected run lengths of $20$ and $10$ rolls) says that a state is unlikely to have changed since the last roll. Viterbi (4.4) maximises the probability of the whole path; posterior decoding (4.7) maximises each position separately; they can disagree, and even the most probable path can miss every loaded run in a finite sample (the book gives such an example on p. 61).`,
+      caption: String.raw`The top strips show the true hidden path, the Viterbi path and the path of posterior probabilities above one half; gold ticks mark rolls of six. Below, the posterior probability of "loaded" at each roll. Change the loaded die's bias or the switching probabilities and compare the realised accuracies with the always-fair baseline. Accuracy can vary nonmonotonically for a particular sample. Resample changes the random seed; other controls reuse that seed with the new parameters.`,
+      scope: String.raw`The default emissions and transition probabilities are exactly those on Durbin et al. (1998) p. 54; decoding and its limitations are developed on pp. 55–61. This simulation starts the hidden chain in its stationary distribution $\pi=(a_{LF},a_{FL})/(a_{LF}+a_{FL})$, an explicit additional choice. Decoding uses known generating parameters. Estimating parameters adds uncertainty, but need not reduce the realised accuracy on every sample.`,
       credit: 'Durbin, Eddy, Krogh & Mitchison, 1998',
+      verify: false,
       deps: ['bioinf-4.4'],
-      refs: ['Durbin et al. (1998), §3.2, pp. 54–60, Figs. 3.5–3.6'],
+      refs: ['Durbin et al. (1998) §3.2, pp. 54–61, Eqs. (3.6)–(3.15), Figs. 3.5–3.7'],
       tags: ['decoding', 'hmm', 'viterbi'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Viterbi_algorithm' },
+      links: { source: 'https://www.mcb111.org/w06/durbin_book.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Viterbi_algorithm' },
       viz(v) {
         const Ts = v.slider('rolls $T$', 50, 500, 300, { int: true, step: 10 });
         const p6 = v.slider('loaded die: $P(6)$', 0.2, 0.9, 0.5, { step: 0.05 });

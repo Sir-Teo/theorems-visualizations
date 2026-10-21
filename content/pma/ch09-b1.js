@@ -196,7 +196,7 @@ export default {
       num: '9.25',
       kind: 'Theorem',
       name: 'Invertible derivative everywhere ⇒ open mapping',
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 9.25, p. 223'],
+      verify: true,
       statement: String.raw`Let $\mathbf f$ be a $\mathscr C'$-mapping of an open set $E\subset\R^n$ into $\R^n$ such that $\mathbf f'(\mathbf x)$ is invertible for every $\mathbf x\in E$. Then $\mathbf f(W)$ is an open subset of $\R^n$ for every open $W\subset E$; in other words, $\mathbf f$ is an open mapping of $E$ into $\R^n$.`,
       idea: String.raw`Take $\mathbf y=\mathbf f(\mathbf x)$ with $\mathbf x\in W$ and apply part (a) of the inverse function theorem (9.24) to $\mathbf f$ restricted to the open set $W$: it yields an open $V\ni\mathbf y$ with $V=\mathbf f(U)\subset\mathbf f(W)$. So every point of $\mathbf f(W)$ is an interior point. The hypothesis is sufficient but not necessary — $z\mapsto z^2$ is open although its Jacobian vanishes at $0$ — yet at a *fold*, where $J_{\mathbf f}$ changes sign and the plane is creased, images of open sets acquire an edge.`,
       caption: String.raw`Drag the open disc $W$ (centre handle, radius slider) and the gold point $\mathbf p\in W$. The right panel shades $\mathbf f(W)$ and draws the largest disc about $\mathbf f(\mathbf p)$ inside it (radius $\rho$); its preimage near $\mathbf p$ is tinted green on the left. For $e^z$ the derivative is invertible everywhere and $\rho>0$ always. For the fold $(x,y)\mapsto(x,y^2)$, drop $\mathbf p$ onto the red line: $\rho=0$, the image contains part of its boundary and is not open.`,

@@ -1,0 +1,43 @@
+{
+  "files": {
+    "2.9": "ch02.js",
+    "3.12": "ch03-b.js",
+    "3.13": "ch03-b.js"
+  },
+  "fixes": {
+    "2.9": {
+      "statement": [
+        [
+          "Any set of at most $n-1$ shares is uniformly distributed on $(\\{0,1\\}^\\ell)^{n-1}$",
+          "For every $0\\le k<n$, any set of $k$ shares is uniformly distributed on $(\\{0,1\\}^\\ell)^k$"
+        ]
+      ],
+      "idea": [
+        [
+          "Missing share $s_j$ is itself $s\\oplus(\\text{XOR of the others})$. Whatever the other shares are, $s_j$ is a one-time-pad encryption of $s$ under the uniform key $\\bigoplus_{i\\neq j}s_i$; by 2.3 its distribution is the same for every secret, and the other $n-2$ shares are uniform and independent of everything. So any $n-1$ shares have the same law for every $s$.",
+          "Correctness follows by XORing all $n$ shares: every sampled share cancels twice, leaving $s$. Privacy concerns the joint law of the observed tuple, not independence of the determined final share from all other shares. The constant-preimage argument below proves the joint law is uniform and independent of the secret, and then covers smaller observed subsets by marginalization."
+        ]
+      ]
+    },
+    "3.12": {
+      "statement": [
+        [
+          "If $F$ were replaced by a truly random function, the first two terms alone would be the exact bound.",
+          "If $F$ were replaced by a truly random function, the first two terms alone give a valid upper bound."
+        ]
+      ]
+    },
+    "3.13": {
+      "idea": [
+        [
+          "and $1-e^{-x}\\ge(1-e^{-1/2})\\,x$ for $x\\le\\tfrac12$.",
+          "For the stated range, $x=q(q-1)/(2N)\\le1$. Concavity gives $1-e^{-x}\\ge(1-e^{-1})x$ on $0\\le x\\le1$, which implies the displayed weaker lower bound."
+        ],
+        [
+          "(3.12, 3.14)",
+          "(3.14)"
+        ]
+      ]
+    }
+  }
+}

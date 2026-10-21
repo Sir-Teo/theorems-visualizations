@@ -6,15 +6,17 @@
 //   (10.1152/ajplegacy.1939.127.1.131); Rall 1967, J. Neurophysiol. 30: 1138–1168 (10.1152/jn.1967.30.5.1138); Schiller, Major, Koester & Schiller 2000,
 //   Nature 404: 285–289 (10.1038/35005094); Polsky, Mel & Schiller 2004, Nat. Neurosci. 7: 621–627 (10.1038/nn1253); Stuart & Sakmann 1994, Nature 367: 69–72
 //   (10.1038/367069a0); Larkum, Zhu & Sakmann 1999, Nature 398: 338–341 (10.1038/18686).
-// - The rule of thumb "about 6 m/s per µm of fibre diameter" for mammalian myelinated fibres is Hursh's (1939) empirical result as commonly quoted; it was not re-read
-//   in the paper and is used only as a comparison (flagged verify). The model's own value (about 4 m/s per µm at 18.5 °C) is computed here.
-// - Model assumptions made on these pages, not data: node length 1 µm, internode length 100 × fibre diameter (adjustable), g-ratio 0.65, one membrane bilayer
-//   per 8.5 nm of sheath thickness (so a 10 µm fibre has about 200 membranes in series), nodal channel densities 30 × the squid values (a node is tiny and in
-//   vertebrates carries a very high density of Na⁺ channels), squid-axon Hodgkin–Huxley kinetics.
+// -4.8 now cites the complete Gerstner author treatment §3.3.2/Eq3.42 for the nodal circuit.
+//   Unread original-experiment/priority and empirical6m/s-per-µm claims have been removed.
+//   Its chosen simulation is explicitly separate from an ideal dimensional-similarity argument:
+//   fixed1µm nodes, integer sheath layers and finite observation can violate exact slope1.
+//   All nodal ionic densities, including leak, are scaled30× with a fixed stated leak reversal.
 // - 4.10: the neuron is a model on this page (passive soma, ten thin branches, squid-HH Na⁺/K⁺ kinetics at 30 °C for the dendritic channels, an AMPA-like
 //   alpha conductance and an NMDA-like two-exponential conductance with the Jahr–Stevens magnesium block); its parameters were tuned to show the effect and do not
 //   fit any recording. The soma does not spike, so somatic depolarisations of tens of mV are only a measure of the dendritic drive.
-import { HH, buildTree, buildMyelinated, myelinatedSpeed, unmyelinatedSpeed, treeSim, lambdaUm } from './ch04.shared.js';
+import { HH, buildTree, treeSim, lambdaUm } from './ch04.shared.js';
+import { uniformAxonAudit, positiveLogFit } from './source-audit-conduction.shared.js';
+import { myelinAudit } from './source-audit-myelin.shared.js';
 
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const RM = 20000;
@@ -38,66 +40,26 @@ export default {
       num: '4.8',
       kind: 'Phenomenon',
       name: 'Myelination and saltatory conduction',
-      statement: String.raw`In myelinated axons the axon is wrapped in a sheath of many membrane layers, interrupted by short bare **nodes of Ranvier** that carry almost all the voltage-gated Na$^+$ channels. The illustrative model chooses an internode length $L=100D$ by default (D is fibre diameter); real ratios vary. The sheath cuts the capacitance and the leak of the internodal membrane by roughly the number of layers, so current entering at one active node charges the next node with little loss, and the impulse **jumps** from node to node (saltatory conduction). For comparable membrane kinetics and families with similar sheath geometry and internode length proportional to diameter, an ideal scaling argument gives approximately $\theta\propto D$ (about 4 m/s per µm in the model below at 18.5 °C; roughly 6 m/s per µm is the empirical figure quoted for mammalian fibres at body temperature), whereas an unmyelinated axon only gives $\theta\propto\sqrt d$ (item 4.7). Thinning the sheath or lengthening internodes can produce conduction failure, depending on the remaining excitability and geometry.`,
-      idea: String.raw`An unmyelinated axon must charge its entire membrane capacitance, along its whole length, at every point of the impulse; myelin reduces internodal capacitance and leak, so the time for a node to charge its neighbour is set by the small nodal capacitance plus the little internodal capacitance and by the axial resistance, which falls as $1/D^2$ while internodal length grows as $D$. Rushton (1951) showed that this makes the speed proportional to the fibre diameter and found that the best ratio of axon to fibre diameter is around 0.6. Early evidence for jumping impulses came from Tasaki (1939, frog) and from Huxley and Stämpfli (1949), who measured longitudinal currents at nodes of single fibres.`,
-      caption: String.raw`Left: an impulse running along a chain of twelve nodes (gold dots) separated by internodes (compartment voltages drawn between them); the animation is slowed to a fixed duration. Change the fibre diameter $D$, the g-ratio (axon diameter / fibre diameter, which fixes how many membranes the sheath has) and the internode ratio $L/D$, or thin or remove the sheath. Right: speed against diameter on log–log axes, myelinated (green, computed for the current settings at seven diameters) against unmyelinated (grey, same total diameter); the ideal diameter scalings have slopes 1 and $\tfrac12$; measured slopes can differ. The speed is measured between nodes 4 and 10 (a failure message means no crossing at node 10 within the simulation window) from the 0 mV crossing times.`,
-      scope: String.raw`Model fibre with squid-type Hodgkin–Huxley channels at 18.5 °C, nodal channel density 30× the squid value, internodes of passive membrane whose capacitance and leak are divided by the number of bilayers, an assumed 8.5 nm per bilayer, node length 1 µm. The absolute speeds, the diameter at which myelin begins to win, and the safety factor are properties of this model, not measurements; linear versus square-root scaling is a conditional idealisation, not an exact identity for every geometry. The fixed 1 µm node length, rounded layer count, finite discretisation and propagation failure can alter the measured slope. Source verification remains open for the quoted 6 m/s per µm mammalian measurement and the historical optimal g-ratio; the complete original Hursh/Rushton papers have not been inspected.`,
+      statement: String.raw`Myelin reduces the capacitance and leak of internodal membrane; active nodes regenerate voltage between the insulated segments. This is **saltatory conduction**. In an ideal family with nodal capacitance/ionic conductance and inter-node axial conductance all proportional to fibre diameter $D$, and node spacing proportional to $D$, corresponding node voltages follow the same time course, giving speed $\theta\propto D$. This conditional scaling differs from the unmyelinated continuous-cable $\sqrt d$ law. Finite nodal resistance, discrete sheath layers, membrane properties and propagation failure can break the ideal similarity; thinning or removing insulation does not universally abolish conduction.`,
+      idea: String.raw`The nodal circuit has $C_n\dot V_n=G_a(V_{n-1}-2V_n+V_{n+1})-I_{{\rm ion},n}$ (Gerstner et al. §3.3.2, Eq.3.42). If all coefficients scale by the same factor $D$, dividing by that factor leaves the dynamics in node index unchanged; with spacing $L\propto D$, spatial velocity then scales as $D$. In the displayed layered approximation, effective internodal capacitance/leak equal the inner membrane values divided by the chosen layer count. For fixed g-ratio and $L/D$, taking layer count proportional to $D$ gives internodal area $\propto D^2$ and effective capacitance $\propto D$. Fixed-length nodes add axial resistance proportional to $D^{-2}$, whereas internodal resistance scales as $D^{-1}$, so exact similarity requires that nodal axial resistance be negligible, as well as ignoring integer rounding.`,
+      caption: String.raw`Left: a chosen twelve-node fibre, with actual compartment-centre voltages and gold nodal markers. Vary nominal outer diameter $D$, inner/outer g-ratio, internode $L/D$, insulation and numerical resolution. Inner axon diameter remains $gD$ even when insulation is removed. Right: seven independently simulated myelinated-model speeds, with gaps where arrival is unresolved by 12 ms; the gold point is the selected diameter. Grey is an ideal unmyelinated $\sqrt D$ reference calibrated by one 476 µm HH cable computation at 18.5 °C, compared at the same nominal outer diameter $D$ rather than inner $gD$. Its seven reference values are a formula, not seven additional cable runs. Reported log slopes describe the resolved finite sample, not a theorem or experimental calibration.`,
+      scope: String.raw`Illustrative nodal/internodal circuit, not a fit to vertebrate fibres:12 nodes of length 1 µm, internodes $L=(L/D)D$, inner diameter$gD$, Ra 35.4 Ω cm, squid-HH kinetics at 18.5 °C. Each node has Cm 1 µF/cm² and all ionic densities 30× HH (Na 3600/K 1080/leak 9 mS/cm²); all leak reversals are fixed at −54.387 mV, with ENa 50/EK −77 mV. Each internode has no Na/K conductance; its capacitance 1 µF/cm² and leak 0.3 mS/cm² are divided by N=max(1,round[(D−gD)/(2×.0085µm)]). “Thin” divides N by10 with rounding/minimum1; “absent” uses1, leaving nodal densities unchanged. This planar series-layer approximation omits periaxonal space and cylindrical-layer radius corrections. A 4000 µA/cm² pulse acts only on the first node for 0.3 ms. Two numerical pairs use 3 internodal compartments/dt 0.0025 ms or 6/dt 0.001 ms; voltage backward-Euler, gates exponential-Euler. Speed uses interpolated upward 0 mV crossings at nodes 4 and 10. Missing arrivals are finite-protocol censoring, not proof of biophysical failure.`,
       deps: ['neuro-4.7'],
       see: ['neuro-4.7', 'neuro-2.3'],
-      refs: ['Gerstner §3.3'],
+      refs: ['Gerstner et al., Neuronal Dynamics §3.3.2, Eq.3.42 (nodal circuit); chosen simulation specified here'],
       tags: ['axon', 'myelin', 'conduction velocity'],
-      credit: 'Tasaki, 1939; Huxley & Stämpfli, 1949; W. A. H. Rushton, 1951 (theory of fibre size)',
-      verify: true,
+      credit: 'Nodal-circuit presentation: Gerstner et al., 2014, §3.3.2',
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Saltatory_conduction' },
       viz(v) {
-        const Dsl = v.slider('fibre diameter $D$', 0.5, 20, 4, { log: true, fmt: (x) => `${v.fmt(x, 3)} µm` });
-        const gsl = v.slider('g-ratio', 0.4, 0.85, 0.65, { step: 0.01 });
-        const rsl = v.slider('internode $L/D$', 20, 300, 100, { step: 5, int: true });
-        const sh = v.select('sheath', [{ value: 'full', label: 'intact' }, { value: 'thin', label: 'thin (÷10)' }, { value: 'none', label: 'absent' }], 'full');
-        const sA = v.stage({ x: [0, 1], y: [-85, 60], axes: 'box', gutter: true, xlabel: 'position along the axon (mm)', ylabel: '$V$ (mV)', height: 300, weight: 1.25 });
-        const sB = v.stage({ x: [0.45, 25], y: [0.4, 150], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'fibre diameter $D$ (µm)', ylabel: 'speed $\\theta$ (m/s)', height: 300, weight: 1 });
-        const DS = [0.5, 1, 2, 4, 8, 16, 24];
-        const unm = {}, mye = {}, movies = {};
-        const opts = (D) => {
-          const base = { g: gsl.value, ratio: rsl.value };
-          if (sh.value === 'none') return { ...base, nbOverride: 1 };
-          if (sh.value === 'thin') return { ...base, nbOverride: Math.max(1, Math.round(buildMyelinated(D, base).nb / 10)) };
-          return base;
-        };
-        const unmSpeed = (d) => (unm[d] ??= unmyelinatedSpeed(d, { T: 18.5 }).speed);
-        const myeKey = () => `${gsl.value}|${rsl.value}|${sh.value}`;
-        const myeSweep = () => (mye[myeKey()] ??= DS.map((D) => [D, myelinatedSpeed(D, opts(D)).speed]));
-        const movie = (D) => {
-          const key = `${D.toFixed(2)}|${myeKey()}`; if (movies[key]) return movies[key];
-          const o = opts(D), r0 = myelinatedSpeed(D, o), M = r0.M, len = r0.xs[r0.xs.length - 1];
-          const ok = isFinite(r0.speed), tEnd = ok ? Math.min(8, 1.5 * (len * 1e-6) / r0.speed * 1e3) : 1.5;
-          const per = Math.max(1, Math.round(tEnd / 0.005 / 110)), r = myelinatedSpeed(D, { ...o, frames: per, tEnd });
-          return (movies[key] = { speed: r0.speed, xs: r0.xs, nodeIdx: r0.nodeIdx, frames: r.sim.frames, ft: r.sim.ft, nb: M.nb, L: M.L, len, ok });
-        };
-        let st = null;
-        v.animate((t) => {
-          const D = Dsl.value, M = movie(D), S = myeSweep();
-          sA.setView([0, M.len / 1000], [-85, 60]);
-          const fi = clamp(Math.round((t / 6) * (M.frames.length - 1)), 0, M.frames.length - 1), F = M.frames[fi];
-          sA.path(Array.from(F, (V, i) => [M.xs[i] / 1000, V]), { color: 'accent', width: 2 });
-          sA.dots(M.nodeIdx.map((i) => [M.xs[i] / 1000, F[i]]), { r: 4, color: 'gold' });
-          sA.text(`t = ${v.fix(M.ft[fi], 3)} ms`, 0.02 * (M.len / 1000), 50, { size: 12, color: 'muted', align: 'left' });
-          sB.path(S.filter((p) => isFinite(p[1])), { color: 'green', width: 2 });
-          sB.dots(S.filter((p) => isFinite(p[1])), { r: 5, color: 'green' });
-          const U = DS.map((d) => [d, unmSpeed(d)]);
-          sB.path(U, { color: 'muted', width: 2 }); sB.dots(U, { r: 4, color: 'muted' });
-          if (M.ok) sB.dot(D, M.speed, { r: 8, color: 'gold' }); else sB.vline(D, { color: 'red', dash: true });
-          // fitted slopes
-          const sl = (P) => { const q = P.filter((p) => isFinite(p[1])); if (q.length < 3) return NaN; const lx = q.map((p) => Math.log(p[0])), ly = q.map((p) => Math.log(p[1])), n = q.length, mx = lx.reduce((a, b) => a + b) / n, my = ly.reduce((a, b) => a + b) / n; let a = 0, b = 0; for (let i = 0; i < n; i++) { a += (lx[i] - mx) * (ly[i] - my); b += (lx[i] - mx) ** 2; } return a / b; };
-          st = { D, speed: M.speed, ok: M.ok, nb: M.nb, L: M.L, slM: sl(S), slU: sl(U), u: unmSpeed(D) };
-        }, { period: 6, still: 2.4 });
-        v.legend([['accent', 'voltage along the fibre'], ['gold', 'nodes of Ranvier; current $D$', { dot: true }], ['green', 'myelinated'], ['muted', 'unmyelinated of the same diameter']]);
-        v.readout(() => {
-          if (!st) return '';
-          const head = st.ok ? String.raw`$D=${v.fmt(st.D, 3)}$ µm: impulse speed $\theta=${v.fix(st.speed, 2)}$ m/s ($${v.fix(st.speed / st.D, 2)}$ m/s per µm), internodes $L=${v.fmt(st.L, 3)}$ µm, sheath of $${st.nb}$ membrane layer${st.nb === 1 ? '' : 's'}; an unmyelinated axon of diameter $D$ runs at $${v.fix(st.u, 2)}$ m/s (ratio $${v.fix(st.speed / st.u, 1)}$)` : String.raw`$D=${v.fmt(st.D, 3)}$ µm with $${st.nb}$ membrane layer${st.nb === 1 ? '' : 's'} in the sheath and internodes $L=${v.fmt(st.L, 3)}$ µm: **no arrival within the simulation window** at node 10`;
-          return head + '\n' + String.raw`log–log slope of speed against diameter over the seven diameters: myelinated ${isFinite(st.slM) ? '$' + v.fix(st.slM, 2) + '$' : 'n/a (no conduction)'} (theory 1), unmyelinated $${v.fix(st.slU, 2)}$ (theory 0.5)`;
-        });
-      },
+        const Dsl=v.slider('nominal outer diameter $D$',.5,20,4,{log:true,fmt:x=>`${v.fmt(x,4)} µm`}),gsl=v.slider('g-ratio',.4,.85,.65,{step:.01}),rsl=v.slider('internode $L/D$',20,300,100,{step:5,int:true}),sh=v.select('insulation',[{value:'full',label:'chosen full layers'},{value:'thin',label:'layers ÷10'},{value:'none',label:'one membrane'}],'full'),res=v.select('resolution',[{value:'coarse',label:'3 internodal / .0025ms'},{value:'fine',label:'6 internodal / .001ms'}],'fine'),sA=v.stage({x:[0,1],y:[-85,60],axes:'box',gutter:true,xlabel:'compartment centre (mm)',ylabel:'V (mV)',height:300,weight:1.25}),sB=v.stage({x:[.45,26],y:[.1,200],xlog:true,ylog:true,axes:'box',gutter:true,xlabel:'nominal outer diameter D (µm)',ylabel:'speed θ (m/s)',height:300,weight:1});
+        const DS=[.5,1,2,4,8,16,24],runs=new Map(),sweeps=new Map(),movies=new Map(),opt=()=>({g:gsl.value,ratio:rsl.value,sheath:sh.value,...(res.value==='fine'?{mInt:6,dt:.001}:{mInt:3,dt:.0025})}),key=()=>`${gsl.value}|${rsl.value}|${sh.value}|${res.value}`,run=D=>{const k=`${D}|${key()}`;if(!runs.has(k))runs.set(k,myelinAudit(D,opt()));return runs.get(k);},sweep=()=>{const k=key();if(!sweeps.has(k))sweeps.set(k,DS.map(D=>[D,run(D).speed]));return sweeps.get(k);};
+        let base=null;const unref=D=>{if(base===null)base=uniformAxonAudit(476,{T:18.5,dx:50,dt:.01}).speed;return base*Math.sqrt(D/476);},movie=D=>{const k=`${D}|${key()}`;if(!movies.has(k)){const r0=run(D),tEnd=r0.arrivals[1]===null?12:Math.min(12,r0.arrivals[1]*1.3+.1),r=myelinAudit(D,{...opt(),tEnd,frames:Math.max(1,Math.round(tEnd/opt().dt/120))});let lo=-85,hi=55;for(const F of r.sim.frames)for(const V of F){lo=Math.min(lo,V);hi=Math.max(hi,V);}movies.set(k,{...r,speed:r0.speed,arrivals:r0.arrivals,lo:lo-2,hi:hi+2});}return movies.get(k);};let st=null;
+        v.animate(t=>{const D=Dsl.value,R=movie(D),M=R.M,S=sweep(),U=DS.map(d=>[d,unref(d)]),fit=positiveLogFit(S),fi=clamp(Math.round(t/6*(R.sim.frames.length-1)),0,R.sim.frames.length-1),F=R.sim.frames[fi];sA.setView([0,M.len/1000],[R.lo,R.hi]);sA.path(Array.from(F,(V,i)=>[M.xs[i]/1000,V]),{color:'accent',width:2});sA.dots(M.nodeIdx.map(i=>[M.xs[i]/1000,F[i]]),{r:4,color:'gold'});sA.text(`t=${v.fix(R.sim.ft[fi],4)}ms`,.02*M.len/1000,R.hi-8,{size:12,color:'muted',align:'left'});
+          const values=[...S.filter(p=>p[1]!==null).map(p=>p[1]),...U.map(p=>p[1]),unref(D),...(R.speed===null?[]:[R.speed])];sB.setView([.45,26],[Math.min(...values)*.7,Math.max(...values)*1.35]);sB.path(S.map(p=>p[1]===null?null:p),{color:'green',width:2});sB.dots(S.filter(p=>p[1]!==null),{r:5,color:'green'});sB.path(U,{color:'muted',width:2});sB.dots(U,{r:3,color:'muted'});if(R.speed!==null)sB.dot(D,R.speed,{r:8,color:'gold'});else sB.vline(D,{color:'red',dash:true});st={D,R,fit,S,fi,u:unref(D)};
+        },{period:6,still:3.6});v.legend([['accent','chosen model voltage'],['gold','nodes / selected D',{dot:true}],['green','resolved myelin-model runs'],['muted','ideal unmyelinated √D reference']]);
+        v.readout(()=>{if(!st)return'';const{D,R,fit,S,fi,u}=st,M=R.M,f=x=>x===null?'unresolved':v.fix(x,6)+'ms';return`Nominal D=${v.fix(D,4)}µm; inner gD=${v.fix(M.d,4)}µm; L=${v.fix(M.L,4)}µm; ${M.nb} chosen series layer(s). ${M.mInt} internodal compartments; dt=${R.dt}ms.`+'\n'+`Nodes4/10 arrivals ${R.arrivals.map(f).join(', ')}; speed ${R.speed===null?'unresolved by 12 ms':v.fix(R.speed,5)+'m/s'}. ${S.filter(p=>p[1]!==null).length}/7 sweep speeds resolved; log slope ${fit?v.fix(fit.slope,6):'unavailable (<3 positive resolved points)'}. No universal slope 1/failure conclusion follows.`+'\n'+`Ideal unmyelinated √D reference=${v.fix(u,5)}m/s, from one 476 µm finite-cable calibration (${v.fix(base,5)}m/s), not an independently simulated point. Nodal leak also 30× with fixed EL=−54.387mV; first-node pulse only. Movie t=${v.fix(R.sim.ft[fi],4)}ms.`;});
+      }
     },
 
     // ------------------------------------------------------------------ 4.9

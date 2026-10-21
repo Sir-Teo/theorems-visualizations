@@ -70,30 +70,22 @@ export function subsetSens(sys, S) {
   for (const r of sys.rows) { const o = out[r.view % S]; for (let m = 0; m < r.idx.length; m++) o[r.idx[m]] += r.val[m]; }
   return out;
 }
-/** One OSEM sub-iteration (S=1 is MLEM), using the exact transpose of the same sparse forward matrix.
- * Requires nonnegative data/response and positive predictions for every positive observed count.
- * A zero-count bin contributes ratio 0, including 0/0; unobserved columns are unchanged. Modifies x. */
+/** One OSEM sub-iteration on subset `sub` of S (S = 1 gives MLEM): x ← x · A_sᵀ(y / A_s x) / A_sᵀ1. Modifies x. */
 export function osemSub(sys, y, x, sub, S, sens) {
   const upd = new Float64Array(sys.N);
   sys.rows.forEach((r, i) => {
     if (r.view % S !== sub) return;
     let d = 0; for (let m = 0; m < r.idx.length; m++) d += r.val[m] * x[r.idx[m]];
-    if (y[i] === 0) return; // Includes an empty ray: its 0/0 term contributes zero.
-    if (!(d > 0)) throw new RangeError('Positive emission count has zero model prediction; initialize its support positively.');
-    const f = y[i] / d;
+    const f = y[i] / Math.max(d, 1e-9);
     for (let m = 0; m < r.idx.length; m++) upd[r.idx[m]] += r.val[m] * f;
   });
   const sn = sens[sub];
-  for (let q = 0; q < sys.N; q++) if (sn[q] > 0) x[q] *= upd[q] / sn[q];
+  for (let q = 0; q < sys.N; q++) if (sn[q] > 1e-12) x[q] *= upd[q] / sn[q];
 }
 /** Poisson log-likelihood Σ (y ln ȳ − ȳ) (the constant −Σ ln y! is dropped). */
 export function logLik(sys, y, x) {
   let L = 0;
-  sys.rows.forEach((r, i) => {
-    let d = 0; for (let m = 0; m < r.idx.length; m++) d += r.val[m] * x[r.idx[m]];
-    if (!(d >= 0)) throw new RangeError('Poisson means must be nonnegative.');
-    L += y[i] === 0 ? -d : d > 0 ? y[i] * Math.log(d) - d : -Infinity;
-  });
+  sys.rows.forEach((r, i) => { let d = 0; for (let m = 0; m < r.idx.length; m++) d += r.val[m] * x[r.idx[m]]; d = Math.max(d, 1e-9); L += y[i] * Math.log(d) - d; });
   return L;
 }
 

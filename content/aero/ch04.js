@@ -1,43 +1,17 @@
+import {sectionAudit,criticalMachAudit,localMachAudit,kornAudit,waveDragAudit,KORN_OFFSET_AUDIT,sweepVectorsAudit} from './source-audit-compressibility.js';
 // Aerospace Engineering — Chapter 4: Compressibility and high-speed flight (items 4.1-4.4; 4.5-4.8 are in ch04-b.js)
 //
-// Sources and what is from memory (Oct 2026). "checked" = confirmed against the cited record during writing.
-//   4.1 Full Glauert1928 original pp113–119 read in the public library scan, IA in.ernet.dli.2015.240251; §3 pp117–119/Eq16 and limitations visually checked.
-//       Karman–Tsien matches full Spreiter–Alksne NACA TN3970 pp16–18, Eqs32–36.
-//       Laitone1951 full one-page original p350, Eq7, read and visually inspected in public IA issue sim_journal-of-the-aerospace-sciences_1951-05_18_5, leaf65.
-//       Both higher corrections remain comparison models; the incompressible Cp comes from this atlas's panel method (chapter 1), not measured data.
-//       Critical pressure coefficient: Cp* = 2/(gamma M^2) [((1 + 0.2 M^2)/1.2)^3.5 - 1], derived from the isentropic relations and recomputed in the readout.
-//   4.2,4.3 Reviewed2026-10-18: Mason Configuration Aerodynamics §§7.2,7.4.3,7.5.2, Eqs7-2–7-9; full Jones NACA TN1033 pp1–7 for normal flow and sweep history.
-//   4.4 Reviewed2026-10-18: full Sheppard ARC R&M3077 §§2.1–2.3.1,4.2; correct Fourier coefficients are those of area slope, not area.
-//       Wing positions keep remaining fuselage area nonnegative; each setting's minimum uses its current volume. See docs/verification/aero-ch04.md.
-
+// Source audit October19,2026: MIT16.100 lectures36–37 (complete notes),
+// Jones NACA TN1033 (original authored analysis), and Mason2006 ch7 relevant sections/equations.
+// Historical priority and unsourced auxiliary correction laws are not asserted.
+// 4.4 preserves its earlier area-rule audit and formula.
 
 import {
-  clamp, DEG, atmo, naca4, panelModel, panelSolve, cpCrit, machFromCp, pgCorr, ktCorr, laitoneCorr, machCritical,
+  DEG, cpCrit, pgCorr,
   LBODY, fusIdeal, wingHump, areaCoeffs, dragOfK, sears,
 } from './ch04.shared.js';
 
 const fx = (x, d = 2) => (Math.abs(x) < 0.5 * 10 ** -d ? 0 : x).toFixed(d).replace('-', '\u2212');
-
-// ═════════════════════════════════════════════════════════════════════ helpers (4.1, 4.2)
-const foilCache = new Map();
-/** Symmetric NACA 00xx section with its panel model (cached). */
-function foil(t) {
-  let o = foilCache.get(t);
-  if (!o) { const pts = naca4(0, 0, t, 70); o = { pts, model: panelModel(pts), t }; foilCache.set(t, o); }
-  return o;
-}
-/** Incompressible Cp at the panel centres for angle of attack alpha (deg): arrays xs, cp (lower surface then upper), plus the suction peak and CL. */
-function cp0Dist(t, alphaDeg) {
-  const f = foil(t), s = panelSolve(f.model, alphaDeg * DEG);
-  let imin = 0; for (let i = 0; i < s.cp.length; i++) if (s.cp[i] < s.cp[imin]) imin = i;
-  return { xs: Array.from(f.model.cx), cps: Array.from(s.cp), cpmin: s.cp[imin], xmin: f.model.cx[imin], cl: s.cl, up: f.model.cy.map((y, i) => y > 0 || i >= f.model.N / 2) };
-}
-const LAWS = { pg: pgCorr, kt: ktCorr, lait: laitoneCorr };
-/** Korn drag-divergence Mach number and Lock wave-drag rise (see header). */
-export const KORN_OFFSET = Math.pow(0.1 / 80, 1 / 3);
-export const mddKorn = (kappa, tc, cl, sweep) => { const c = Math.cos(sweep); return kappa / c - tc / (c * c) - Math.abs(cl) / (10 * c ** 3); };
-export const cdWave = (M, mcrit) => (M > mcrit ? 20 * (M - mcrit) ** 4 : 0);
-const CD0_MODEL = 0.008;
 
 export default {
   collection: 'aero',
@@ -45,184 +19,81 @@ export default {
   title: 'Compressibility and high-speed flight',
   summary: String.raw`As flight speed approaches the speed of sound, air compresses noticeably: pressure coefficients grow, local supersonic regions appear and shock waves bring a steep rise in drag. Simple corrections handle subsonic compressibility, swept wings and the area rule delay the drag rise, and in supersonic flow oblique shocks and expansion fans replace smooth turning. At hypersonic speeds, heating becomes the dominant design problem.`,
   items: [
-    // ───────────────────────────────────────────────────────────────────────────────────── 4.1
+    // ── 4.1: linear small-disturbance model and its sonic diagnostic
     {
-      num: '4.1',
-      kind: 'Model',
-      name: 'Prandtl–Glauert compressibility correction',
-      statement: String.raw`For a thin airfoil at a small angle of attack in subsonic flow at free-stream Mach number $M_\infty<1$, linearised potential-flow theory gives the pressure coefficient and the lift and moment coefficients in terms of their incompressible values (subscript 0):
-$$C_p=\frac{C_{p,0}}{\sqrt{1-M_\infty^2}},\qquad c_l=\frac{c_{l,0}}{\sqrt{1-M_\infty^2}},\qquad c_{l,\alpha}=\frac{2\pi}{\sqrt{1-M_\infty^2}}.$$
-The factor $1/\beta$, $\beta=\sqrt{1-M_\infty^2}$, grows without bound as $M_\infty\to1$, which is where the linearisation fails: the rule is useful up to about $M_\infty\approx0.7$ for thin sections and is not valid in transonic flow.`,
-      idea: String.raw`The linearised potential equation for a small disturbance, $(1-M_\infty^2)\phi_{xx}+\phi_{yy}=0$, becomes Laplace's equation (the incompressible case) after stretching the $y$ coordinate by $\beta$. The disturbance velocity potential of the compressible flow past the original airfoil equals that of an incompressible flow past an airfoil whose thickness and incidence are reduced by the same factor, so the pressure coefficient, which is proportional to the streamwise perturbation $u'/V_\infty=\phi_x/V_\infty$, is $1/\beta$ times the incompressible value for the same shape. It builds on the speed of sound (1.6) and on the incompressible lift curve (2.2).`,
-      caption: String.raw`Left: $-C_p$ round the section (grey incompressible, from the atlas's panel method; blue corrected). The red dashed line is the critical pressure coefficient $C_p^*$: blue above red crosses the predicted sonic threshold, beyond which this linear approximation is invalid. Right: the suction peak against $M_\infty$ for three correction laws (Prandtl–Glauert, Kármán–Tsien and Laitone, the last two as comparison models) and the critical value $-C_p^*(M_\infty)$; their crossing estimates the critical Mach number. Raise $M_\infty$ and watch the Prandtl–Glauert curve race ahead as $M_\infty\to1$, where it can even predict nonpositive absolute pressure.`,
-      deps: ['aero-2.2', 'aero-1.6', 'pde-1.10'],
-      refs: ['Glauert1928, full pp.113–119, §3/Eq.(16); public IA volume in.ernet.dli.2015.240251', 'Spreiter–Alksne, NACA TN3970, pp.16–18, Eqs.(32)–(36)', 'Laitone, New Compressibility Correction for Two-Dimensional Subsonic Flow (1951), J. Aeronaut. Sci.18(5), p.350, Eq.(7); DOI10.2514/8.1951'],
-      tags: ['compressibility', 'subsonic', 'similarity'],
-      scope: String.raw`Small disturbances (thin section, small incidence), subsonic and not near sonic: roughly $M_\infty\lesssim0.7$ and never close to $1$. The incompressible $C_{p,0}$ here is a full panel-method solution for a symmetric NACA 00xx section, so the 'thin' hypothesis is only approximate for the thicker sections; the Kármán–Tsien and Laitone curves are comparison models, and no experimental data are plotted.`,
-      credit: 'H. Glauert, 1928 (Proc. R. Soc. A118,113–119); Ackeret (1925), NACA TM317 p.1, cites an unpublished Göttingen lecture by Prandtl',
-      links: { doi: 'https://doi.org/10.1098/rspa.1928.0039', wikipedia: 'https://en.wikipedia.org/wiki/Prandtl%E2%80%93Glauert_transformation' },
-      viz(v) {
-        const M = v.slider('free-stream Mach number $M_\\infty$', 0.1, 0.95, 0.6, { step: 0.005 });
-        const al = v.slider('angle of attack $\\alpha$ (°)', 0, 8, 3, { step: 0.1 });
-        const tc = v.select('thickness', [{ value: 0.06, label: '6 %' }, { value: 0.09, label: '9 %' }, { value: 0.12, label: '12 %' }, { value: 0.18, label: '18 %' }], 0.12);
-        const A = v.stage({ x: [0, 1], y: [-1, 3], axes: 'box', gutter: true, height: 330, minWidth: 320, xlabel: 'chord $x/c$', ylabel: '$-C_p$', title: 'pressure round the section' });
-        const B = v.stage({ x: [0.2, 1], y: [0, 3], axes: 'box', gutter: true, height: 330, minWidth: 320, xlabel: 'Mach number $M_\\infty$', ylabel: 'suction peak $-C_p$', title: 'when does the flow reach Mach 1?' });
-        let info = {};
-        v.render(() => {
-          const m = M.value, d = cp0Dist(+tc.value, al.value), cpm = d.cpmin, crit = cpCrit(m), pg = d.cps.map((c) => pgCorr(c, m));
-          const top = Math.min(6, Math.max(2.2, -pg.reduce((a, b) => Math.min(a, b), 0) * 1.12));
-          A.setView([0, 1], [-1.0, top]);
-          A.hline(0, { color: 'faint', width: 1 }); A.hline(-crit, { color: 'red', dash: true, width: 1.6 });
-          A.text('$-C_p^*$', 0.985, -crit + 0.1 * top / 3, { color: 'red', size: 11, align: 'right' });
-          A.path(d.xs.map((x, i) => [x, -d.cps[i]]), { color: 'muted', width: 1.8 });
-          A.path(d.xs.map((x, i) => [x, -pg[i]]), { color: 'accent', width: 2.6 });
-          let sup = 0; for (let i = 0; i < pg.length; i++) if (pg[i] < crit) { sup++; A.dot(d.xs[i], -pg[i], { r: 2.6, color: 'orange' }); }
-          const cpPG = pgCorr(cpm, m);
-          // right graph
-          B.setView([0.2, 1], [0, 3]);
-          const ms = []; for (let k = 0; k <= 160; k++) ms.push(0.2 + 0.795 * k / 160);
-          B.fn((x) => -cpCrit(x), { color: 'red', width: 2.2, domain: [0.2, 0.995] });
-          B.fn((x) => -pgCorr(cpm, x), { color: 'accent', width: 2.4, domain: [0.2, 0.995] });
-          B.fn((x) => -ktCorr(cpm, x), { color: 'green', width: 2, domain: [0.2, 0.995] });
-          B.fn((x) => -laitoneCorr(cpm, x), { color: 'purple', width: 2, domain: [0.2, 0.995] });
-          const mc = { pg: machCritical(cpm, pgCorr), kt: machCritical(cpm, ktCorr), lait: machCritical(cpm, laitoneCorr) };
-          if (mc.pg) B.dot(mc.pg, -cpCrit(mc.pg), { r: 5.5, color: 'ink', label: `$M_{cr}=${fx(mc.pg, 3)}$`, labelPos: 'se' });
-          B.vline(m, { color: 'gold', width: 1.6, dash: true });
-          B.dot(m, Math.min(2.95, -cpPG), { r: 5, color: 'gold' });
-          info = { m, d, cpm, cpPG, crit, mc, sup, mloc: machFromCp(cpPG, m), a: al.value };
-        });
-        v.legend([['muted', 'incompressible $C_{p,0}$'], ['accent', 'Prandtl–Glauert'], ['green', 'Kármán–Tsien'], ['purple', 'Laitone'], ['red', 'critical $C_p^*$']]);
-        v.readout(() => {
-          const { m, d, cpm, cpPG, crit, mc, sup, mloc } = info, b = Math.sqrt(1 - m * m);
-          return `$\\beta=\\sqrt{1-M_\\infty^2}=${fx(b, 3)}$, $1/\\beta=${fx(1 / b, 3)}$. Suction peak: $C_{p,0}=${fx(cpm, 3)}$ → $C_p=C_{p,0}/\\beta=${fx(cpPG, 3)}$; critical $C_p^*=${fx(crit, 3)}$. `
-            + (!Number.isFinite(mloc) ? `**Unphysical pressure prediction:** the corrected peak implies nonpositive absolute pressure, so no isentropic local Mach estimate exists. The linear rule has left its regime of validity.`
-              : cpPG < crit ? `**Sonic threshold crossed:** the corrected peak is below $C_p^*$ (local Mach about $${fx(mloc, 2)}$ on the isentropic relation; ${sup} panels), so the linear rule no longer describes the flow.` : `Subcritical (local Mach at the peak about $${fx(mloc, 2)}$).`)
-            + `\n$c_{l,0}=${fx(d.cl, 3)}$ → $c_l=${fx(d.cl / b, 3)}$, lift slope $2\\pi/\\beta=${fx(2 * Math.PI / b, 2)}$ per rad. Critical Mach number: Prandtl–Glauert ${mc.pg ? fx(mc.pg, 3) : '> 0.995'}, Kármán–Tsien ${mc.kt ? fx(mc.kt, 3) : '> 0.995'}, Laitone ${mc.lait ? fx(mc.lait, 3) : '> 0.995'}.`;
-        });
+      num:'4.1',kind:'Model',name:'Prandtl–Glauert compressibility correction',
+      statement:String.raw`For a two-dimensional thin section at small incidence, the linear subsonic small-disturbance model gives $C_p=C_{p,0}/\beta$, with $\beta=\sqrt{1-M_\infty^2}$. Integrating the same pressure correction gives $c_l=c_{l,0}/\beta$ and the thin-airfoil slope $2\pi/\beta$ per radian. This is a local approximation requiring small disturbances and wholly subsonic flow. Its divergence as $M_\infty\to1$ signals failure of the approximation.`,
+      idea:String.raw`The linear equation is $\beta^2\phi_{xx}+\phi_{yy}=0$. Set $\xi=x$, $\eta=\beta y$ and $\Phi=\beta\phi$. Then $\Phi_{\xi\xi}+\Phi_{\eta\eta}=0$, and the flattened boundary condition $\Phi_\eta(x,0)=V_\infty y'(x)$ is unchanged. Thus $\phi_x=\Phi_\xi/\beta$, and $C_p\simeq-2\phi_x/V_\infty$ gives the correction for the same linearized section. Equating its suction peak to the isentropic sonic pressure coefficient estimates the onset of local sonic flow; it does not solve the flow beyond it.
+
+For fixed $0<M_\infty<1$ and twice differentiable potential, apply the multivariable chain rule pma-9.15 twice to $\phi(x,y)=\Phi(x,\beta y)/\beta$. It gives $\phi_{xx}=\Phi_{\xi\xi}/\beta$ and $\phi_{yy}=\beta\Phi_{\eta\eta}$, so the original differential equation is $\beta(\Phi_{\xi\xi}+\Phi_{\eta\eta})=0$. Positivity of $\beta$ permits the division; the transformation degenerates at Mach one.`,
+      caption:String.raw`Left: the incompressible panel calculation and its Prandtl–Glauert correction, with full pressure ranges. The sonic threshold is drawn when it lies in that range; its numerical value is always shown. Right: positive suction magnitude and the sonic threshold on a **log pressure axis**, over the full Mach control range. Their intersection estimates critical Mach. Above that crossing, the extrapolated curve is only a diagnostic of the linear model's failure.`,
+      scope:String.raw`Steady inviscid two-dimensional linear small-disturbance flow. No universal Mach cutoff guarantees validity: thickness, incidence and local acceleration matter. The rounded NACA sections and full incompressible panel solution are a teaching input, not experimental data or a transonic solver. A negative extrapolated static pressure has no isentropic Mach interpretation. The display uses the inspected MIT derivation; no historical priority claim is made.`,
+      deps:['aero-2.2','aero-1.6', 'pma-9.15'],refs:['MIT16.100, lectures36–37, Subsonic Small Disturbance Potential Flow / Critical Mach Number; complete authored notes read 2026-10-19'],links:{source:'https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/pages/lecture-notes/'},tags:['compressibility','subsonic','similarity'],verify: false,
+      viz(v){
+        const M=v.slider('free-stream Mach number $M_\\infty$',.1,.95,.6,{step:.005}),al=v.slider('angle of attack $\\alpha$ (°)',0,8,3,{step:.1}),tc=v.select('thickness',[.06,.09,.12,.18].map(value=>({value,label:`${100*value} %`})),.12);
+        const A=v.stage({x:[-.025,1.025],y:[-2,3],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'chord $x/c$',ylabel:'$-C_p$',title:'linear pressure model'}),B=v.stage({x:[.08,.97],y:[.01,100],ylog:true,axes:'box',gutter:true,height:330,minWidth:300,xlabel:'Mach number $M_\\infty$',ylabel:'positive suction magnitude (log)',title:'sonic-onset estimate'});let info;
+        v.render(()=>{
+          const m=M.value,d=sectionAudit(+tc.value,al.value),beta=Math.sqrt(1-m*m),pg=d.cp.map(c=>c/beta),critical=cpCrit(m),values=[...d.cp,...pg].map(c=>-c),lo=Math.min(-1,...values),hi=Math.max(1,...values),pad=(hi-lo)*.12;
+          A.setView([-.025,1.025],[lo-pad,hi+pad]);A.hline(0,{color:'faint'});A.path(d.xs.map((x,i)=>[x,-d.cp[i]]),{color:'muted',width:1.8});A.path(d.xs.map((x,i)=>[x,-pg[i]]),{color:'accent',width:2.6});
+          const thresholdVisible=-critical>=lo&&-critical<=hi;
+          if(thresholdVisible)A.hline(-critical,{color:'red',dash:true,width:1.6});
+          A.text(thresholdVisible?'sonic threshold shown':'sonic threshold above plot',.02,hi+pad*.35,{color:'red',size:11,align:'left'});
+          const ms=Array.from({length:181},(_,i)=>.1+.85*i/180),peak=ms.map(x=>[x,-pgCorr(d.minimum,x)]),sonic=ms.map(x=>[x,-cpCrit(x)]),all=[...peak,...sonic].map(p=>p[1]),mc=criticalMachAudit(d.minimum),point=-pgCorr(d.minimum,m);
+          B.setView([.08,.97],[Math.min(...all)*.65,Math.max(...all)*1.4]);B.path(peak,{color:'accent',width:2.4});B.path(sonic,{color:'red',width:2});B.dot(mc,-cpCrit(mc),{r:5,color:'ink'});B.vline(m,{color:'gold',dash:true});B.dot(m,point,{r:5,color:'gold'});
+          info={m,d,beta,critical,peak:-point,mc,local:localMachAudit(-point,m),thresholdVisible};
+        });v.legend([['muted','incompressible pressure'],['accent','Prandtl–Glauert'],['red','sonic threshold'],['gold','selected Mach']]);
+        v.readout(()=>`$\\beta=${fx(info.beta,4)}$, $1/\\beta=${fx(1/info.beta,4)}$. Peak $C_{p,0}=${fx(info.d.minimum,4)}$ → $C_p=${fx(info.peak,4)}$; sonic $C_p^*=${fx(info.critical,4)}$. Estimated $M_{cr}=${fx(info.mc,4)}$. ${info.m>=info.mc?'At or beyond estimated sonic onset: extrapolated pressures do not predict an actual supersonic pocket or shock.':'Below estimated sonic onset; the small-disturbance assumption must still hold.'} ${info.local===null?'Extrapolated static pressure is nonpositive: no physical isentropic local Mach.':`Isentropic local-Mach diagnostic: ${fx(info.local,3)}.`} Linear lift $c_{l,0}=${fx(info.d.cl,4)}$ → $c_l=${fx(info.d.cl/info.beta,4)}$.`);
       },
     },
-    // ───────────────────────────────────────────────────────────────────────────────────── 4.2
+    // ── 4.2: two independently labelled engineering estimates
     {
-      num: '4.2',
-      kind: 'Phenomenon',
-      name: 'Critical Mach number and drag divergence',
-      statement: String.raw`As the free-stream Mach number of a lifting airfoil rises, the flow accelerates over the upper surface until, at the **critical Mach number** $M_{cr}$, the local speed first reaches Mach 1 at the suction peak. Above $M_{cr}$ a pocket of supersonic flow grows and ends in a shock wave; the shock and its interaction with the boundary layer add **wave drag**. The drag coefficient stays almost flat until the **drag-divergence Mach number** $M_{dd}$ (conventionally where $\mathrm dC_D/\mathrm dM=0.1$, a little above $M_{cr}$) and then climbs steeply, roughly as $(M-M_{cr})^4$, so thin sections, low lift and 'supercritical' shapes push the divergence to higher Mach numbers.`,
-      idea: String.raw`At $M_{cr}$ the isentropic pressure coefficient at the suction peak equals $C_p^*$, which depends only on $M_\infty$ (4.1). Beyond it, fluid leaving the supersonic pocket must be slowed back to subsonic speed; it does so through a shock, whose entropy rise is the wave drag, and a strong shock can also separate the boundary layer. The drag rise is therefore tied to the size of the supersonic region, which grows very quickly once it exists; the fourth-power form $20(M-M_{cr})^4$ is an empirical fit, not a derivation.`,
-      caption: String.raw`Left: the section at the chosen Mach number; the orange part of the upper surface is supersonic according to the Kármán–Tsien-corrected panel-method pressure (extrapolated beyond $M_{cr}$, so the pocket's extent is only indicative) and the shock is drawn where the pocket ends. Right: a model drag curve — Korn's relation for $M_{dd}$ and Lock's fourth-power rise — together with the critical Mach number from the left-hand picture. Raise the angle of attack or thickness and both move left; choose the supercritical technology factor and the right-hand correlation moves right; the symmetric panel section is unchanged.`,
-      deps: ['aero-4.1'],
-      refs: ['Mason, Configuration Aerodynamics (2006), §§7.2, 7.4.3 and 7.5.2, Eqs. (7-2)–(7-9)'],
-      tags: ['transonic', 'wave drag', 'shock'],
-      scope: String.raw`Two-dimensional sections at transonic speed. The left picture uses a panel method plus a compressibility law (so it is quantitative only up to about $M_{cr}$); the right-hand curve is an engineering correlation (Korn's equation and Lock's wave-drag law as quoted in Mason's text) with an arbitrary round-number base drag $C_{D,0}=0.008$ — it is a model, not a measured polar.`,
-      credit: 'Korn’s relation and Lock’s fourth-power wave-drag rise as quoted in Mason (Configuration Aerodynamics, §7.5.2)',
-      links: { source: 'https://archive.aoe.vt.edu/mason/Mason_f/ConfigAeroTransonics.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Drag-divergence_Mach_number' },
-      viz(v) {
-        const M = v.slider('Mach number $M_\\infty$', 0.5, 1.0, 0.8, { step: 0.005 });
-        const al = v.slider('angle of attack $\\alpha$ (°)', 0, 6, 2, { step: 0.1 });
-        const tc = v.select('thickness', [{ value: 0.06, label: '6 %' }, { value: 0.09, label: '9 %' }, { value: 0.12, label: '12 %' }, { value: 0.15, label: '15 %' }], 0.12);
-        const kap = v.select('section technology', [{ value: 0.87, label: 'conventional $\\kappa=0.87$' }, { value: 0.95, label: 'supercritical $\\kappa=0.95$' }], 0.87);
-        const A = v.stage({ x: [-0.05, 1.05], y: [-0.22, 0.22], equal: true, axes: false, height: 300, minWidth: 340, title: 'supersonic pocket on the upper surface' });
-        const B = v.stage({ x: [0.5, 1.0], y: [0, 0.1], axes: 'box', gutter: true, height: 300, minWidth: 320, xlabel: 'Mach number $M_\\infty$', ylabel: 'drag coefficient $C_D$', title: 'drag divergence (model)' });
-        let info = {};
-        v.render(() => {
-          const t = +tc.value, m = M.value, a = al.value, d = cp0Dist(t, a), f = foil(t);
-          // surface points rotated by alpha (flow along +x): draw the section at incidence
-          const ca = Math.cos(-a * DEG), sa = Math.sin(-a * DEG), rot = ([x, y]) => [(x - 0.25) * ca - y * sa + 0.25, (x - 0.25) * sa + y * ca];
-          const pts = f.pts.map(rot);
-          A.poly(pts, { fill: 'ink', fillAlpha: 0.1, color: 'ink', width: 1.6 });
-          const crit = cpCrit(m), N = f.model.N;
-          // supersonic panels on the upper surface (second half of the traversal) from the Karman-Tsien-corrected Cp
-          const sup = []; let xmaxSup = -1, xminSup = 2;
-          for (let i = 0; i < N; i++) {
-            const isUpper = i >= N / 2 - 1, c = ktCorr(d.cps[i], m);
-            if (isUpper && c < crit) { sup.push(i); xmaxSup = Math.max(xmaxSup, f.model.cx[i]); xminSup = Math.min(xminSup, f.model.cx[i]); }
-          }
-          for (const i of sup) { const p = rot([f.model.cx[i], f.model.cy[i]]); A.dot(p[0], p[1], { r: 3.6, color: 'orange' }); }
-          if (sup.length) {
-            const xs = xmaxSup + 0.02, ys = nacaTop(t, xs), p0 = rot([xs, ys]), p1 = rot([xs + 0.03, ys + 0.1 + 0.06 * (xs - xminSup)]);
-            A.line(p0[0], p0[1], p1[0], p1[1], { color: 'red', width: 3 }); A.text('shock', p1[0] + 0.02, p1[1], { color: 'red', size: 11, align: 'left' });
-          }
-          A.arrow(-0.04, 0.12, 0.12, 0.12, { color: 'accent', width: 2 }); A.text(`$M_\\infty=${fx(m, 3)}$`, 0.0, 0.17, { color: 'accent', size: 12, align: 'left' });
-          // right graph
-          const cl = d.cl, sweep = 0, mdd = mddKorn(+kap.value, t, cl, sweep), mcrit = mdd - KORN_OFFSET;
-          const mcrP = machCritical(d.cpmin, ktCorr);
-          B.setView([0.5, 1.0], [0, 0.1]);
-          const cd = (x) => CD0_MODEL + cdWave(x, mcrit);
-          B.fn(cd, { color: 'accent', width: 2.8, domain: [0.5, 1] });
-          B.vline(mdd, { color: 'green', dash: true, width: 1.5 }); B.text('$M_{dd}$', mdd - 0.005, 0.092, { color: 'green', size: 11, align: 'right' });
-          if (mcrP) { B.vline(mcrP, { color: 'orange', dash: true, width: 1.5 }); B.text('$M_{cr}$', mcrP - 0.005, 0.081, { color: 'orange', size: 11, align: 'right' }); }
-          B.dot(m, Math.min(0.099, cd(m)), { r: 6, color: 'gold' });
-          info = { m, cl, mdd, mcrit, mcrP, cdNow: cd(m), nsup: sup.length, xs: sup.length ? [xminSup, xmaxSup] : null, slope: (cdWave(mdd + 1e-4, mcrit) - cdWave(mdd - 1e-4, mcrit)) / 2e-4 };
-        });
-        v.legend([['accent', 'model $C_D(M)$'], ['orange', 'supersonic / $M_{cr}$'], ['green', 'drag divergence $M_{dd}$'], ['red', 'shock']]);
-        v.readout(() => {
-          const { m, cl, mdd, mcrit, mcrP, cdNow, nsup, xs, slope } = info;
-          return `Section lift $c_l=${fx(cl, 3)}$ (incompressible panel result). Critical Mach number from the suction peak (Kármán–Tsien law): ${mcrP ? '$' + fx(mcrP, 3) + '$' : '> 0.995'}; Korn: $M_{dd}=\\kappa-t/c-c_l/10=${fx(mdd, 3)}$, $M_{crit}=M_{dd}-0.108=${fx(mcrit, 3)}$ (check: the model's $\\mathrm dC_D/\\mathrm dM$ at $M_{dd}$ is $${fx(slope, 3)}$, the conventional 0.1).\n`
-            + (nsup ? `At $M_\\infty=${fx(m, 3)}$ the upper surface is supersonic from $x/c=${fx(xs[0], 2)}$ to $${fx(xs[1], 2)}$, ending in a shock. ` : `At $M_\\infty=${fx(m, 3)}$ no part of the flow is supersonic on the panel-method pressure. `)
-            + `Model drag $C_D=${fx(cdNow, 4)}$ (wave part $${fx(cdNow - CD0_MODEL, 4)}$).`;
-        });
-        // half-thickness of the NACA 00xx section on the upper surface (for placing the shock)
-        function nacaTop(t, x) { return 5 * t * (0.2969 * Math.sqrt(x) - 0.1260 * x - 0.3516 * x * x + 0.2843 * x ** 3 - 0.1036 * x ** 4); }
+      num:'4.2',kind:'Phenomenon',name:'Critical Mach number and drag divergence',
+      statement:String.raw`The critical Mach number marks the first local sonic point. Higher flight Mach commonly produces supersonic regions, shocks and a rapid drag rise, with viscous effects often important. One drag-divergence convention is $dC_D/dM=0.1$. Mason's engineering estimate combines $M_{dd}=\kappa-t/c-c_l/10$ with $C_{Dw}=20\max(0,M-M_{cr,K})^4$, where $M_{cr,K}=M_{dd}-(0.1/80)^{1/3}$. This correlation and a pressure-based estimate of sonic onset need not agree.`,
+      idea:String.raw`Differentiating the chosen fourth-power rise gives $80(M-M_{cr,K})^3$. Setting it to 0.1 yields the displayed offset exactly. Korn's technology factor describes achievable airfoil capability; selecting a higher value here shifts the drag correlation, while leaving the chosen NACA section and its pressure estimate unchanged. Neither calculation locates an actual shock.
+
+Hold the technology factor, thickness and lift coefficient fixed while differentiating this chosen correlation. On the branch $M>M_{cr,K}$, the chain rule pma-5.5 applied to the fourth power of $M-M_{cr,K}$ gives the factor $80(M-M_{cr,K})^3$. Below the threshold the derivative is zero, and the one-sided derivatives agree at the threshold. Solving the positive-branch derivative condition gives the stated offset, not a predicted shock location.`,
+      caption:String.raw`Left: selected NACA section, with panels coloured orange where a **linear pressure extrapolation** crosses the sonic threshold. No shock position is inferred. Right: the complete Korn/Lock drag curve, its own onset and divergence markers, and the separate pressure-based sonic estimate. Change thickness or incidence, then change technology: only the drag estimate responds to technology.`,
+      scope:String.raw`The panel/Prandtl–Glauert calculation is a subsonic diagnostic; its orange markers are not a solved supersonic region. The independent engineering drag correlation uses inspected Mason equations7-3–9 and a chosen base drag0.008. Choosing κ=0.95 does not turn the NACA geometry into a supercritical airfoil. High-Mach extrapolations are displayed for comparison, without experimental or separation predictions.`,
+      credit:'Korn/Lock correlation as derived and discussed by W.H. Mason (2006), §7.4.3 and §7.5.2',deps:['aero-4.1', 'pma-5.5'],refs:['Mason, Configuration Aerodynamics, 2006 ch7 §§7.1–2,7.4.3,7.5.2; complete relevant sections and equations read 2026-10-19'],links:{source:'https://archive.aoe.vt.edu/mason/Mason_f/ConfigAeroTransonics.pdf'},tags:['transonic','wave drag','shock'],verify: false,
+      viz(v){
+        const M=v.slider('Mach number $M_\\infty$',.5,.95,.8,{step:.005}),al=v.slider('angle of attack $\\alpha$ (°)',0,6,2,{step:.1}),tc=v.select('thickness',[.06,.09,.12,.15].map(value=>({value,label:`${100*value} %`})),.12),kap=v.select('correlation technology',[{value:.87,label:'conventional κ=0.87'},{value:.95,label:'supercritical κ=0.95'}],.87);
+        const A=v.stage({x:[-.08,1.08],y:[-.3,.3],equal:true,axes:false,height:300,minWidth:300,title:'linear sonic-threshold diagnostic'}),B=v.stage({x:[.3,1.03],y:[0,.1],axes:'box',gutter:true,height:300,minWidth:300,xlabel:'Mach number $M_\\infty$',ylabel:'chosen-model $C_D$',title:'independent drag correlation'});let info;
+        v.render(()=>{
+          const d=sectionAudit(+tc.value,al.value),m=M.value,a=al.value*DEG,rot=([x,y])=>[(x-.25)*Math.cos(a)+y*Math.sin(a)+.25,-(x-.25)*Math.sin(a)+y*Math.cos(a)],crit=cpCrit(m),indices=d.cp.map((cp,i)=>pgCorr(cp,m)<crit?i:-1).filter(i=>i>=0);
+          A.poly(d.points.map(rot),{fill:'ink',fillAlpha:.1,color:'ink',width:1.6});for(const i of indices){const p=rot([d.xs[i],d.ys[i]]);A.dot(...p,{r:3.2,color:'orange'});}A.arrow(.02,.2,.2,.2,{color:'accent',width:2});A.text('linear estimate only',.03,.25,{color:'muted',size:11,align:'left'});
+          const cl=Math.max(0,d.cl),mdd=kornAudit(+kap.value,+tc.value,cl),mcrit=mdd-KORN_OFFSET_AUDIT,mcrP=criticalMachAudit(d.minimum),xmin=Math.min(.48,mcrit,mcrP)-.04,xmax=1.04,cd=x=>.008+waveDragAudit(x,mcrit),top=cd(1)*1.17;
+          B.setView([xmin,xmax],[-top*.04,top]);B.fn(cd,{domain:[Math.max(.3,xmin+.02),1],color:'accent',width:2.8});
+          for(const[x,color,label,frac]of[[mdd,'green','Korn divergence',.94],[mcrit,'purple','Korn onset',.84],[mcrP,'orange','pressure onset',.74]]){B.vline(x,{color,dash:true,width:1.3});B.text(label,xmin+.02,top*frac,{color,size:10.5,align:'left'});}
+          B.dot(m,cd(m),{r:5,color:'gold'});info={m,cl,mdd,mcrit,mcrP,cd:cd(m),nsup:indices.length,kappa:+kap.value};
+        });v.legend([['accent','Korn/Lock drag'],['orange','pressure diagnostic'],['purple','Korn onset'],['green','Korn divergence']]);
+        v.readout(()=>`Pressure sonic estimate ${fx(info.mcrP,4)}; independent Korn onset ${fx(info.mcrit,4)}, divergence ${fx(info.mdd,4)}. Technology κ=${fx(info.kappa)}; actual chosen section's incompressible $c_l=${fx(info.cl,4)}$. At selected Mach ${fx(info.m,3)}, ${info.nsup} panel estimates cross the sonic threshold; no actual shock is located. Model $C_D=${fx(info.cd,5)}$. Analytic drag slope at divergence: ${fx(80*(info.mdd-info.mcrit)**3,5)}.`);
       },
     },
-    // ───────────────────────────────────────────────────────────────────────────────────── 4.3
+    // ── 4.3: cylindrical-wing normal flow versus the strip correlation
     {
-      num: '4.3',
-      kind: 'Method',
-      name: 'Swept wings delay drag divergence',
-      statement: String.raw`On a wing swept back by the angle $\Lambda$ (long and untapered, away from the root and tips) the free stream $V_\infty$ splits into a component $V_\infty\cos\Lambda$ normal to the leading edge and a component $V_\infty\sin\Lambda$ along it. The spanwise component does not change the pressure on the section, so the airfoil behaves as if it were an unswept one in a stream of Mach number $M_n=M_\infty\cos\Lambda$. The critical and drag-divergence Mach numbers of the swept wing therefore rise by about the factor $1/\cos\Lambda$:
-$$M_{dd}(\Lambda)\approx\frac{M_{dd}(0)}{\cos\Lambda},$$
-at the price of a lower lift-curve slope, a lower usable lift coefficient and more difficult stall and structural behaviour at the tip.`,
-      idea: String.raw`The pressure on an infinite yawed wing depends only on the flow normal to the leading edge, because translating along the wing leaves the flow unchanged ('independence principle', which follows from the symmetry of the potential equation under a shift along the span). A section whose normal Mach number is $M_\infty\cos\Lambda$ reaches Mach 1 only when $M_\infty=M_{cr}/\cos\Lambda$. Real wings do less well: the root and tip disturb the flow, and a section cut parallel to the stream is thinner and carries a smaller lift than the normal section, which is why Korn's relation (4.2) is written with $\cos^2\Lambda$ and $\cos^3\Lambda$ terms.`,
-      caption: String.raw`Left: plan view with the free stream, its normal and spanwise components. Middle: drag-divergence Mach number against sweep, from the cosine rule (dashed) and from Korn's relation, which includes thickness and lift effects (solid). Right: the model drag curve of the unswept wing (grey) and of the swept wing (blue). Increase the sweep to see $M_{dd}$ move right; set the thickness high and the lift coefficient up to see how the cosine rule overstates the gain.`,
-      deps: ['aero-4.2'],
-      refs: ['Jones, Wing Plan Forms for High-Speed Flight, NACA TN1033 (1945), pp. 1–7, Eqs. (1)–(6)', 'Mason, Configuration Aerodynamics (2006), §7.5.2, Eqs. (7-4)–(7-9)'],
-      tags: ['sweep', 'transonic', 'wing design'],
-      scope: String.raw`An infinite yawed wing in inviscid flow, and a correlation for finite wings. The streamwise thickness ratio $t/c$ and lift coefficient used in Korn's relation are the values for the wing section parallel to the flight direction; the drag curves are the same model as in 4.2 (not measured data).`,
-      credit: 'R. T. Jones, NACA TN1033, 1945; A. Busemann’s 1935 work is discussed and cited in that report (reference9).',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Swept_wing' },
-      viz(v) {
-        const sw = v.slider('sweep $\\Lambda$ (°)', 0, 60, 30, { step: 1 });
-        const tcS = v.slider('streamwise thickness $t/c$', 0.06, 0.15, 0.1, { step: 0.005 });
-        const clS = v.slider('lift coefficient $C_L$', 0, 0.8, 0.4, { step: 0.02 });
-        const kap = v.select('section technology', [{ value: 0.87, label: 'conventional' }, { value: 0.95, label: 'supercritical' }], 0.87);
-        const P = v.stage({ x: [-0.6, 0.6], y: [-0.15, 1.05], equal: true, axes: false, height: 320, minWidth: 260, title: 'plan view' });
-        const B = v.stage({ x: [0, 60], y: [0.6, 1.4], axes: 'box', gutter: true, height: 320, minWidth: 290, xlabel: 'sweep $\\Lambda$ (°)', ylabel: '$M_{dd}$', title: 'drag-divergence Mach number' });
-        const C = v.stage({ x: [0.6, 1.1], y: [0, 0.1], axes: 'box', gutter: true, height: 320, minWidth: 290, xlabel: 'flight Mach number $M_\\infty$', ylabel: '$C_D$', title: 'drag rise (model)' });
-        let info = {};
-        v.render(() => {
-          const L = sw.value * DEG, k = +kap.value, t = tcS.value, cl = clS.value, c = Math.cos(L);
-          // plan view: half-span wing from the root at x = 0 (fuselage), swept back
-          const b = 0.55, cr = 0.28, ct = 0.12;
-          const wing = (sgn) => { const root = [0, 0.75], tipLE = [sgn * b, 0.75 - b * Math.tan(L)]; return [root, tipLE, [tipLE[0], tipLE[1] - ct], [0, 0.75 - cr]]; };
-          P.poly([[-0.03, 1.0], [0.03, 1.0], [0.03, 0.05], [0, -0.02], [-0.03, 0.05]], { fill: 'ink', fillAlpha: 0.12, color: 'ink', width: 1.4 });
-          P.poly(wing(1), { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 2 }); P.poly(wing(-1), { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 2 });
-          // free stream from the top (flow goes down the page) with its components at a station on the right wing
-          const px = 0.3, py = 0.75 - px * Math.tan(L) - 0.05;
-          P.arrow(px, py + 0.38, px, py, { color: 'ink', width: 2.2 }); P.text('$V_\\infty$', px + 0.03, py + 0.3, { color: 'ink', size: 12, align: 'left' });
-          const n = [Math.sin(L), -Math.cos(L)];
-          const Vn = 0.38 * c;
-          P.arrow(px, py, px + Vn * n[0], py + Vn * n[1] * 1, { color: 'green', width: 2.2 });
-          P.text('$V_\\infty\\cos\\Lambda$', px + Vn * n[0] + 0.03, py + Vn * n[1], { color: 'green', size: 11, align: 'left' });
-          P.text(`$\\Lambda=${sw.value}^\\circ$`, 0.02, -0.07, { color: 'accent', size: 12, align: 'left' });
-          // middle graph
-          B.setView([0, 60], [0.6, Math.max(1.4, mddKorn(k, t, cl, 0) / Math.cos(60 * DEG) * 1.02)]);
-          const m0 = mddKorn(k, t, cl, 0), ang = (d) => d * DEG;
-          B.fn((d) => m0 / Math.cos(ang(d)), { color: 'orange', dash: true, width: 2, domain: [0, 60] });
-          B.fn((d) => mddKorn(k, t, cl, ang(d)), { color: 'accent', width: 2.8, domain: [0, 60] });
-          B.dot(sw.value, mddKorn(k, t, cl, L), { r: 6, color: 'gold' }); B.vline(sw.value, { color: 'gold', dash: true, width: 1 });
-          // right graph
-          const mdd = mddKorn(k, t, cl, L), mcr = mdd - KORN_OFFSET;
-          C.setView([0.6, 1.1], [0, 0.1]);
-          C.fn((x) => CD0_MODEL + cdWave(x, m0 - KORN_OFFSET), { color: 'muted', width: 2.2, domain: [0.6, 1.1] });
-          C.fn((x) => CD0_MODEL + cdWave(x, mcr), { color: 'accent', width: 2.8, domain: [0.6, 1.1] });
-          C.vline(m0, { color: 'muted', dash: true, width: 1 }); C.vline(mdd, { color: 'accent', dash: true, width: 1.2 });
-          info = { m0, mdd, cosRule: m0 / c, Mn: mdd * c, L };
-        });
-        v.legend([['accent', 'Korn $M_{dd}$ (swept)'], ['orange', 'cosine rule $M_{dd,0}/\\cos\\Lambda$', { dash: true }], ['muted', 'unswept']]);
-        v.readout(() => {
-          const { m0, mdd, cosRule, Mn } = info;
-          return `Unswept: $M_{dd,0}=${fx(m0, 3)}$. Swept ${sw.value}°: Korn gives $M_{dd}=${fx(mdd, 3)}$, the cosine rule $${fx(cosRule, 3)}$ (it overstates the gain by $${fx(cosRule - mdd, 3)}$). The normal Mach number at divergence is $M_{dd}\\cos\\Lambda=${fx(Mn, 3)}$ — the unswept section's $M_{dd}$ would be $${fx(m0, 3)}$, so the normal-flow rule is ${Math.abs(Mn - m0) < 0.02 ? 'nearly' : 'only roughly'} satisfied once thickness and lift are included.`;
-        });
+      num:'4.3',kind:'Method',name:'Swept wings delay drag divergence',
+      statement:String.raw`For an infinite cylindrical wing in inviscid flow, translation along its span does not change the cross-sectional flow. Leading-edge sweep Λ resolves the free stream into normal and spanwise components with magnitudes $V_\infty\cos\Lambda$ and $V_\infty\sin\Lambda$. This suggests a normal-flow Mach estimate $M_n=M_\infty\cos\Lambda$. A separate swept-strip engineering correlation is
+$$M_{dd}=\frac\kappa{\cos\Lambda}-\frac{t/c}{\cos^2\Lambda}-\frac{c_l}{10\cos^3\Lambda}.$$
+The two uses of sweep have different geometric meanings and assumptions.`,
+      idea:String.raw`The vector construction uses orthogonal projection (ladr-6.55). For a unit span direction $\hat{\mathbf s}$ and perpendicular unit normal $\hat{\mathbf n}$, the components are $(\mathbf V\cdot\hat{\mathbf s})\hat{\mathbf s}$ and $(\mathbf V\cdot\hat{\mathbf n})\hat{\mathbf n}$; their sum is $\mathbf V$. Jones's cylindrical-wing analysis uses leading-edge sweep and a normal section. Mason's drag correlation uses half-chord sweep, streamwise thickness and the strip's lift coefficient. Here the same numerical angle is assigned to both for comparison; the drawn tapered wing is schematic, not a strip integration. At fixed thickness and lift, the cosine estimate $M_{dd,0}/\cos\Lambda$ exceeds the correlation by $(t/c)(\sec^2\Lambda-\sec\Lambda)+(c_l/10)(\sec^3\Lambda-\sec\Lambda)$. At high loading, even the correlation's benefit can turn over with increasing sweep.`,
+      caption:String.raw`Left: a schematic swept planform with the actual perpendicular and parallel projections of the downward free-stream vector. The two coloured vectors add to the black vector. Middle: compare the cosine estimate with the Korn strip correlation. Right: complete model drag curves. The assigned sweep can produce values outside ordinary transonic use; they remain explicitly extrapolations.`,
+      scope:String.raw`The normal-flow argument assumes a cylindrical wing away from ends; it is not exact for the finite tapered planform drawn. Sweep reduces lift slope and introduces structural, stall and viscous tradeoffs not computed here. For the Korn calculation, Λ means half-chord sweep rather than the leading-edge angle used for vector geometry. A real tapered wing needs separate geometry and strip integration; setting both angles numerically equal is a teaching comparison. No aircraft prediction or historical priority claim is made.`,
+      credit:'R.T. Jones, NACA TN1033 (March1946, analysis dated June23,1945); Mason2006 §7.5.2 for the separate correlation',deps:['aero-4.2','ladr-6.55'],refs:['Jones, Wing Plan Forms for High-Speed Flight, NACA TN1033, original authored analysis read 2026-10-19','Mason, Configuration Aerodynamics2006, ch7 §7.5.2 equations7-4–9'],links:{primary:'https://ntrs.nasa.gov/api/citations/19930081951/downloads/19930081951.pdf',correlation:'https://archive.aoe.vt.edu/mason/Mason_f/ConfigAeroTransonics.pdf'},tags:['sweep','transonic','wing design'],verify: false,
+      viz(v){
+        const sw=v.slider('assigned sweep $\\Lambda$ (°)',0,60,30,{step:1}),tc=v.slider('streamwise thickness $t/c$',.06,.15,.1,{step:.005}),cl=v.slider('strip lift coefficient $c_l$',0,.8,.4,{step:.02}),kap=v.select('correlation technology',[{value:.87,label:'conventional'},{value:.95,label:'supercritical'}],.87);
+        const P=v.stage({x:[-.72,.72],y:[-.55,1.12],equal:true,axes:false,height:320,minWidth:260,title:'schematic leading-edge sweep'}),B=v.stage({x:[-3,63],y:[.3,2],axes:'box',gutter:true,height:320,minWidth:270,xlabel:'assigned sweep (°)',ylabel:'$M_{dd}$',title:'two different approximations'}),C=v.stage({x:[.55,1.15],y:[0,.1],axes:'box',gutter:true,height:320,minWidth:270,xlabel:'flight Mach number',ylabel:'chosen-model $C_D$',title:'drag correlation, including extrapolation'});let info;
+        v.render(()=>{
+          const L=sw.value*DEG,k=+kap.value,t=tc.value,c=cl.value,m0=kornAudit(k,t,c),mdd=kornAudit(k,t,c,L),vectors=sweepVectorsAudit(L),wing=sgn=>[[0,.75],[sgn*.55,.75-.55*Math.tan(L)],[sgn*.55,.63-.55*Math.tan(L)],[0,.47]];
+          P.poly([[-.03,1],[.03,1],[.03,.05],[0,-.02],[-.03,.05]],{fill:'ink',fillAlpha:.12,color:'ink'});P.poly(wing(1),{fill:'accent',fillAlpha:.2,color:'accent'});P.poly(wing(-1),{fill:'accent',fillAlpha:.2,color:'accent'});
+          const origin=[.3,.75-.3*Math.tan(L)-.05],scale=.38,to=w=>[origin[0]+scale*w[0],origin[1]+scale*w[1]];
+          P.arrow(...origin,...to([0,-1]),{color:'ink',width:3});P.arrow(...origin,...to(vectors.across),{color:'green',width:2});if(sw.value>0)P.arrow(...origin,...to(vectors.along),{color:'purple',width:2});P.line(...to(vectors.across),...to([0,-1]),{color:'purple',dash:true});P.line(...to(vectors.along),...to([0,-1]),{color:'green',dash:true});P.text(`assigned angle ${sw.value}°`,0,1.04,{size:11,color:'accent',align:'center'});
+          const angles=Array.from({length:241},(_,i)=>i/4),cosine=angles.map(x=>[x,m0/Math.cos(x*DEG)]),korn=angles.map(x=>[x,kornAudit(k,t,c,x*DEG)]),all=[...cosine,...korn].map(p=>p[1]),lo=Math.min(...all),hi=Math.max(...all),pad=(hi-lo+.1)*.15;
+          B.setView([-3,63],[lo-pad,hi+pad]);B.path(cosine,{color:'orange',dash:true,width:2});B.path(korn,{color:'accent',width:2.6});B.dot(sw.value,mdd,{r:5,color:'gold'});B.vline(sw.value,{color:'gold',dash:true});
+          const drag0=x=>.008+waveDragAudit(x,m0-KORN_OFFSET_AUDIT),drag=x=>.008+waveDragAudit(x,mdd-KORN_OFFSET_AUDIT),top=Math.max(drag0(1.1),drag(1.1)) *1.15;
+          C.setView([.53,1.17],[-top*.04,top]);C.fn(drag0,{domain:[.55,1.1],color:'muted',width:2});C.fn(drag,{domain:[.55,1.1],color:'accent',width:2.6});if(m0>=.55&&m0<=1.1)C.vline(m0,{color:'muted',dash:true});if(mdd>=.55&&mdd<=1.1)C.vline(mdd,{color:'accent',dash:true});
+          info={m0,mdd,cosine:m0/Math.cos(L),vectors,L,normalMach:mdd*Math.cos(L)};
+        });v.legend([['ink','free stream'],['green','normal component'],['purple','spanwise component'],['accent','Korn correlation'],['orange','cosine estimate'],['muted','unswept drag']]);
+        v.readout(()=>`Korn $M_{dd,0}=${fx(info.m0,4)}$, assigned-sweep $M_{dd}=${fx(info.mdd,4)}$; cosine estimate ${fx(info.cosine,4)}. Difference ${fx(info.cosine-info.mdd,4)}. Unit free-stream projections: normal (${info.vectors.across.map(x=>fx(x,4)).join(', ')}), spanwise (${info.vectors.along.map(x=>fx(x,4)).join(', ')}); sum (0, −1). Normal-Mach diagnostic at correlated divergence: ${fx(info.normalMach,4)}. Same assigned number, distinct leading-edge/half-chord angles; the plot is not a tapered-wing flow solution.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.4
@@ -233,18 +104,18 @@ at the price of a lower lift-curve slope, a lower usable lift coefficient and mo
       statement: String.raw`At transonic and low supersonic speeds the wave drag of a slender aircraft depends mainly on how its **cross-sectional area $S(x)$** is distributed along its length, and hardly on the detailed shape. A wing–body combination has nearly the same zero-lift wave drag as the body of revolution that has the same $S(x)$. To keep the drag low, make the area distribution smooth, like that of the Sears–Haack body, which has the least wave drag for a given length $l$ and volume $V$:
 $$\frac{D_w}{q}=\frac{128\,V^2}{\pi\,l^4}.$$
 Since the wing adds area, the fuselage must be narrowed ('indented') where the wing is, so that the total area has no bump.`,
-      idea: String.raw`In slender-body theory the far field of the body is that of a line source distribution with strength $S'(x)$, and the wave drag is a quadratic form in $S''(x)$ (von Kármán's integral), which can be written in Fourier form with $S'(x(\theta))=\sum a_n\sin n\theta$, $x=\tfrac l2(1-\cos\theta)$, as $D_w/q=\tfrac\pi4\sum n a_n^2$. A sudden bump in $S$ (a wing sitting on a straight fuselage) puts energy into the higher harmonics of the area slope, whose squared coefficients are weighted by $n$; removing the bump by pinching the fuselage cancels those harmonics. At Mach 1 the planes of constant $x$ are the planes that matter, which is why the rule is stated for transonic speeds.`,
-      caption: String.raw`Top: the aircraft seen from above (radial scale exaggerated) and its area distribution. Slide the **indentation** $k$ from 0 (straight fuselage) to 1 (fuselage area reduced by exactly the wing's area): the blue total approaches the smooth ideal, while grey retains the unindented $k=0$ reference. Bottom: wave drag divided by the Sears–Haack minimum at each setting's own volume, against $k$, from the Fourier formula; the dot is your setting. Indentation changes volume as well as shape. Make the wing larger or move it, and see the benefit change.`,
-      deps: ['aero-4.2', 'pma-8.10'],
-      refs: ['Sheppard, ARC R&M 3077 (1957), §§2.1–2.3.1 and 4.2, printed pp. 2–5 and 17', 'Whitcomb, NACA RM L52H08 (1952), pp. 1–12'],
+      idea: String.raw`In slender-body theory the far field of the body is that of a line source distribution with strength $S'(x)$, and the wave drag is a quadratic form in $S''(x)$ (von Kármán's integral), which can be written in Fourier form with $S(\theta)=\sum A_n\sin n\theta$ as $D_w/q=(6\pi/l^2)\sum nA_n^2$ in the units used here. A sudden bump in $S$ (a wing sitting on a straight fuselage) puts energy into the higher harmonics, which cost $n$ times as much as the fundamental; removing the bump by pinching the fuselage cancels those harmonics. At Mach 1 the planes of constant $x$ are the planes that matter, which is why the rule is stated for transonic speeds.`,
+      caption: String.raw`Top: the aircraft seen from above (radial scale exaggerated) and its area distribution. Slide the **indentation** $k$ from 0 (straight fuselage) to 1 (fuselage area reduced by exactly the wing's area) and the grey bump in $S(x)$ flattens into the ideal curve. Bottom: the wave drag, in units of the Sears–Haack minimum for the same volume, against $k$, from the Fourier formula; the dot is your setting. Make the wing larger or move it, and see the benefit change.`,
+      deps: ['aero-4.2'],
+      refs: ['Anderson ch. 5'],
       tags: ['area rule', 'wave drag', 'transonic'],
-      scope: String.raw`Slender bodies at zero lift in transonic and low supersonic flow (the slender-body limit). The wing's cross-sectional-area hump is a smooth $\sin^2$ model and the aircraft is a schematic, not a particular design. Indentation removes volume; each drag ratio uses the minimum at its own current volume, and the wing-position range keeps the remaining fuselage area nonnegative; drag is slender-body wave drag only (no friction, no separation, no lift-dependent drag). For a finite Mach number above 1 the relevant cuts are slanted at the Mach angle, which is not modelled.`,
+      scope: String.raw`Slender bodies at zero lift in transonic and low supersonic flow (the slender-body limit). The wing's cross-sectional-area hump is a smooth $\sin^2$ model and the aircraft is a schematic, not a particular design; drag is slender-body wave drag only (no friction, no separation, no lift-dependent drag). For a finite Mach number above 1 the relevant cuts are slanted at the Mach angle, which is not modelled.`,
       credit: 'R. T. Whitcomb, NACA Langley, 1952 (NACA RM L52H08); slender-body drag formula: von Kármán, Sears and Haack',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Area_rule' },
       viz(v) {
         const kS = v.slider('indentation $k$', 0, 1, 0.5, { step: 0.01 });
         const awS = v.slider('wing area hump $A_w/A_f$', 0.05, 0.6, 0.3, { step: 0.01 });
-        const xwS = v.slider('wing position $x_w/l$', 0.2, 0.54, 0.35, { step: 0.01 });
+        const xwS = v.slider('wing position $x_w/l$', 0.2, 0.6, 0.35, { step: 0.01 });
         const Af = 0.006, ww = 0.4;
         const T = v.stage({ x: [0, 1], y: [-0.4, 0.4], axes: false, height: 220, minWidth: 340, full: true, title: 'top view (radial scale exaggerated)' });
         const S = v.stage({ x: [0, 1], y: [0, Af * 1.35], axes: 'box', gutter: true, height: 240, minWidth: 320, xlabel: 'station $x/l$', ylabel: 'area $S(x)$', title: 'cross-sectional area' });
@@ -265,7 +136,7 @@ Since the wing adds area, the fuselage must be narrowed ('indented') where the w
           const sh = sears(V, LBODY);
           S.fn(sh.S, { color: 'green', dash: true, width: 2, domain: [0, 1] });
           S.fn(tot, { color: 'accent', width: 2.8, domain: [0, 1], fill: true, base: 0 });
-          S.fn((x) => wingHump(x, Aw, xw, ww) + fusIdeal(x, Af), { color: 'muted', width: 1, domain: [0, 1] });
+          S.fn((x) => wingHump(x, Aw, xw, ww) * (1 - k) + fusIdeal(x, Af), { color: 'muted', width: 1, domain: [0, 1] });
           // drag against k
           const dsh = (kk) => { let vv = 0; for (let i = 0; i < 300; i++) { const x = (i + 0.5) / 300; vv += (fusIdeal(x, Af) + (1 - kk) * wingHump(x, Aw, xw, ww)) / 300; } return dragOfK(co, kk) / sears(vv, LBODY).dq; };
           const ks = []; for (let i = 0; i <= 40; i++) ks.push(i / 40);
@@ -278,7 +149,7 @@ Since the wing adds area, the fuselage must be narrowed ('indented') where the w
         v.readout(() => {
           const { dq, dq0, dq1, V, sh, ratio } = info;
           return `Slender-body wave drag $D_w/q=${fx(dq * 1e4, 3)}\\times10^{-4}$ (units of $l^2$); with a straight fuselage ($k=0$) $${fx(dq0 * 1e4, 3)}\\times10^{-4}$, fully indented ($k=1$) $${fx(dq1 * 1e4, 3)}\\times10^{-4}$: a reduction of $${fx(100 * (1 - dq1 / dq0), 1)}\\%$. `
-            + `Current-setting volume $V=${fx(V * 1e3, 3)}\\times10^{-3}\\,l^3$; Sears–Haack minimum $128V^2/(\\pi l^4)=${fx(sh * 1e4, 3)}\\times10^{-4}$, so you are at ${fx(ratio, 3)} times the minimum${Math.abs(ratio - 1) < 0.005 ? ' (at the minimum: the area distribution is the ideal one)' : ''}. Indentation removes volume across the compared settings.`;
+            + `Volume $V=${fx(V * 1e3, 3)}\\times10^{-3}\\,l^3$; Sears–Haack minimum $128V^2/(\\pi l^4)=${fx(sh * 1e4, 3)}\\times10^{-4}$, so you are at ${fx(ratio, 3)} times the minimum${Math.abs(ratio - 1) < 0.005 ? ' (at the minimum: the area distribution is the ideal one)' : ''}.`;
         });
       },
     },

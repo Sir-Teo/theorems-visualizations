@@ -1,0 +1,22 @@
+[
+  {
+    "file": "aiello-wheeler-1995.pdf",
+    "url": "https://gwern.net/doc/algernon/1995-aiello.pdf",
+    "originalDOI": "10.1086/204350",
+    "bytes": 671399,
+    "sha256": "1d1eec610da0725db62136a57e66d42ad222d13e7d7e2ed13bcc7bf304787c8d",
+    "readScope": "Actual original23page article retained; complete main text199\u2013211 and relevant author reply217\u2013218 read. Original Table1p201,Table4/Fig3p204,Fig6/p208 personally inspected. Original1971 organ dataset and1961 Kleiber book not audited; the widget reports Aiello\u2013Wheeler\u2019s historical case/formula."
+  },
+  {
+    "url": "https://humanorigins.si.edu/evidence/human-fossils/species/australopithecus-afarensis",
+    "readScope": "Official museum species description: regular bipedalism, usually<500cm3, retained climbing."
+  },
+  {
+    "url": "https://humanorigins.si.edu/evidence/human-fossils/fossils/al-288-1",
+    "readScope": "Complete relevant official specimen description: Lucy about3.2Ma and walking/climbing anatomy."
+  },
+  {
+    "url": "https://humanorigins.si.edu/evidence/behavior/footprints/laetoli-footprint-trails",
+    "readScope": "Complete relevant official exhibit description: bipedal footprints about3.6Ma. No first-biped priority inferred."
+  }
+]

@@ -1,7 +1,6 @@
-import { hermiteJordan } from './ch10-source.shared.js';
 // Rudin, Functional Analysis — Chapter 10 (part 3): the symbolic (holomorphic functional) calculus
 //
-// Source: full Rudin second-edition sections and proofs reviewed; see verification ledger.
+// Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
 // ---------------------------------------------------------------- complex scalars [re, im] and small complex matrices
 const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
@@ -59,29 +58,26 @@ export default {
       num: '10.22',
       kind: 'Definition',
       name: 'Integrals of A-valued functions along paths',
-      statement: String.raw`If $f$ is a continuous $A$-valued function on a compact Hausdorff space with complex Borel measure $\mu$, its vector integral exists. For each $x\in A$,
-$$x\int f\,d\mu=\int xf\,d\mu,\qquad\left(\int f\,d\mu\right)x=\int fx\,d\mu.$$
-In particular, these identities apply to integration along contours.`,
-      idea: String.raw`Left and right multiplication by a fixed element are bounded linear operators. Apply the defining scalar-functional characterization of the vector integral to either operator, and use separation by the continuous dual.`,
+      statement: String.raw`If $\Gamma$ is a (finite union of) piecewise smooth closed paths in $\C$ and $F$ is a continuous function on $\Gamma^*$ with values in a Banach algebra $A$, the integral $\int_\Gamma F(\lambda)\,d\lambda\in A$ is defined as the limit of the Riemann sums $\sum F(\lambda_k)(\lambda_{k+1}-\lambda_k)$ (equivalently, as the weak integral of 3.26–3.29). It is characterised by
+$$\Lambda\Big(\int_\Gamma F(\lambda)\,d\lambda\Big)=\int_\Gamma\Lambda(F(\lambda))\,d\lambda\qquad(\Lambda\in A^*),$$
+so Cauchy's theorem and formula hold for $A$-valued holomorphic functions, by applying them to every $\Lambda F$.`,
+      idea: String.raw`Continuity on the compact set $\Gamma^*$ makes $F$ uniformly continuous, so the Riemann sums form a Cauchy net in the Banach space $A$. Since $A^*$ separates points (3.4), an element is determined by the numbers $\Lambda(\cdot)$; this is how every scalar statement about contour integrals is transferred to $A$.`,
       deps: ['fa-3.29', 'fa-3.4a', 'fa-10.1'],
       tags: ['Banach algebras', 'vector integrals'],
-      },
+      verify: true,
+    },
     {
-      num: '10.23', kind: 'Definition', name: 'Contours surrounding a compact set',
-      statement: String.raw`For compact $K\subset\Omega\subset\C$ with $\Omega$ open, a surrounding contour is a finite collection of oriented line segments in $\Omega\setminus K$ whose winding number is $1$ on $K$ and $0$ outside $\Omega$. Integration sums the segment integrals. Such contours exist and give the Cauchy formula for every function holomorphic on $\Omega$. Neither the sets nor the contour need be connected.`,
-      idea: String.raw`Cover $K$ by finitely many sufficiently small grid squares contained in $\Omega$ and cancel their shared oriented edges. The remaining edges have the required winding numbers.`,
-      deps: ['rca-13.5'], tags: ['contours', 'functional calculus'], },
-    {
-      num: '10.24',
+      num: '10.23',
       kind: 'Lemma',
       name: 'Cauchy integrals of the resolvent give powers of x',
-      statement: String.raw`Let $x\in A$, $\alpha\notin\sigma(x)$, and let $\Gamma$ surround $\sigma(x)$ in $\C\setminus\{\alpha\}$ as in10.23. For every integer $n$,
-$$\frac1{2\pi i}\int_\Gamma(\alpha-\lambda)^n(\lambda e-x)^{-1}\,d\lambda=(\alpha e-x)^n.$$
-In particular, integrating $\lambda^n$ around the spectrum gives $x^n$ for $n\ge0$.`,
-      idea: String.raw`The resolvent identity gives a recurrence between the integrals for exponents $n$ and $n+1$. The exponent-zero integral is $e$, by the Neumann series on a large circle and contour deformation. The recurrence then works in both directions because $\alpha e-x$ is invertible.`,
-      caption: String.raw`$x$ is a $3\times3$ matrix with eigenvalues $\lambda_1,\lambda_2,\lambda_3$ (drag them) — a similarity hides its triangular form. Drag the contour circle and change its radius and the power $n$. The integral is computed with $192$ nodes, for the displayed nonnegative powers $n=0,\dots,5$. Negative powers of $x$ would additionally require $0\notin\sigma(x)$ and a contour with winding number zero at $0$, as in the shifted statement above. If the circle encloses the whole spectrum, quadrature approximates $x^n$; accuracy deteriorates near an eigenvalue. If it encloses only part of it, you get $x^nP$ instead, where $P$ is the Riesz projection onto the enclosed eigenvalues — the readout reports both comparisons and $\operatorname{tr}P$ = the number enclosed.`,
-      deps: ['fa-10.22', 'fa-10.23', 'fa-10.13'],
+      statement: String.raw`Let $x\in A$, and let $\Gamma$ be a cycle in $\C\setminus\sigma(x)$ with $\operatorname{Ind}_\Gamma(\lambda)=1$ for every $\lambda\in\sigma(x)$. Then
+$$\frac1{2\pi i}\int_\Gamma\lambda^n(\lambda e-x)^{-1}\,d\lambda=x^n\qquad(n=0,1,2,\dots),$$
+and more generally $\frac1{2\pi i}\int_\Gamma(\alpha-\lambda)^n(\lambda e-x)^{-1}d\lambda=(\alpha e-x)^n$ for every integer $n$ and every $\alpha$ outside the region enclosed by $\Gamma$.`,
+      idea: String.raw`On a large circle $|\lambda|=r>\norm x$, expand $(\lambda e-x)^{-1}=\sum_k\lambda^{-k-1}x^k$ and integrate term by term: only $k=n$ survives. Cauchy's theorem (10.22) lets one deform the large circle into $\Gamma$, since the integrand is holomorphic off $\sigma(x)$ and $\Gamma$ winds once around all of it. For negative $n$ one expands around $\alpha$ instead.`,
+      caption: String.raw`$x$ is a $3\times3$ matrix with eigenvalues $\lambda_1,\lambda_2,\lambda_3$ (drag them) — a similarity hides its triangular form. Drag the contour circle and change its radius and the power $n$. The integral is computed with $192$ nodes. If the circle encloses the whole spectrum, the result is $x^n$ to rounding error. If it encloses only part of it, you get $x^nP$ instead, where $P$ is the Riesz projection onto the enclosed eigenvalues — the readout reports both comparisons and $\operatorname{tr}P$ = the number enclosed.`,
+      deps: ['fa-10.22', 'fa-10.13', 'rca-10.35'],
       tags: ['Banach algebras', 'Cauchy integrals'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const nS = v.slider('power $n$', 0, 5, 2, { int: true });
@@ -97,7 +93,7 @@ In particular, integrating $\lambda^n$ around the spectrum gives $x^n$ for $n\ge
           const tooClose = l.some((z) => Math.abs(cabs(csub(z, c)) - r) < 0.05);
           S.circle(c[0], c[1], r, { color: tooClose ? 'red' : 'purple', width: 2.4, fill: 'purple', fillAlpha: 0.06 });
           H.forEach((h, k) => { h.color = inside[k] ? 'red' : 'muted'; });
-          if (tooClose) { S.corner('Γ too near the spectrum for this quadrature', 'tl', { color: 'red', weight: 600 }); st = { bad: true }; return; }
+          if (tooClose) { S.corner('Γ passes through the spectrum', 'tl', { color: 'red', weight: 600 }); st = { bad: true }; return; }
           const I = cauchy((z) => { let p = [1, 0]; for (let k = 0; k < n; k++) p = cmul(p, z); return p; }, X, [[c, r]]);
           const P = cauchy(() => [1, 0], X, [[c, r]]);
           let Xn = ident(3); for (let k = 0; k < n; k++) Xn = mmul(Xn, X);
@@ -106,8 +102,8 @@ In particular, integrating $\lambda^n$ around the spectrum gives $x^n$ for $n\ge
           st = { bad: false, e1, e2, tr, cnt: inside.filter(Boolean).length, n };
         });
         v.readout(() => {
-          const s = st; if (s.bad) return 'Move the contour farther from the eigenvalues.';
-          return `Encloses ${s.cnt} of 3 eigenvalues; $\\operatorname{tr}P = ${v.fix(s.tr[0], 6)}$. Scaled Frobenius errors ($d=\\max(\\|x^{${s.n}}\\|_F,10^{-12})$): $\\|\\tfrac1{2\\pi i}\\oint\\lambda^{${s.n}}R(\\lambda)d\\lambda-x^{${s.n}}\\|_F/d = ${v.sci(s.e1, 1)}$, $\\;\\|\\cdots-x^{${s.n}}P\\|_F/d = ${v.sci(s.e2, 1)}$.`;
+          const s = st; if (s.bad) return 'Move the contour off the eigenvalues.';
+          return `Encloses ${s.cnt} of 3 eigenvalues; $\\operatorname{tr}P = ${v.fix(s.tr[0], 6)}$. Relative errors: $\\|\\tfrac1{2\\pi i}\\oint\\lambda^{${s.n}}R(\\lambda)d\\lambda-x^{${s.n}}\\| = ${v.sci(s.e1 + 1e-17, 1)}$, $\\;\\|\\cdots-x^{${s.n}}P\\| = ${v.sci(s.e2 + 1e-17, 1)}$.`;
         });
       },
     },
@@ -117,20 +113,24 @@ In particular, integrating $\lambda^n$ around the spectrum gives $x^n$ for $n\ge
       name: 'The holomorphic functional calculus f ↦ f̃(x)',
       statement: String.raw`Let $\Omega\subset\C$ be open and $A_\Omega=\{x\in A:\sigma(x)\subset\Omega\}$. For $f\in H(\Omega)$ and $x\in A_\Omega$ define
 $$\tilde f(x)=\frac1{2\pi i}\int_\Gamma f(\lambda)\,(\lambda e-x)^{-1}\,d\lambda ,$$
-where $\Gamma$ is any cycle in $\Omega\setminus\sigma(x)$ with $\operatorname{Ind}_\Gamma(\lambda)=1$ on $\sigma(x)$ and $0$ off $\Omega$. By Cauchy's theorem the value does not depend on $\Gamma$; by10.25 it agrees with $p(x)$ when $f=p$ is a polynomial, and with $(\alpha e-x)^{-1}$ when $f(\lambda)=(\alpha-\lambda)^{-1}$.`,
+where $\Gamma$ is any cycle in $\Omega\setminus\sigma(x)$ with $\operatorname{Ind}_\Gamma(\lambda)=1$ on $\sigma(x)$ and $0$ off $\Omega$. By Cauchy's theorem the value does not depend on $\Gamma$; by 10.23 it agrees with $p(x)$ when $f=p$ is a polynomial, and with $(\alpha e-x)^{-1}$ when $f(\lambda)=(\alpha-\lambda)^{-1}$.`,
       idea: String.raw`The formula is Cauchy's integral formula $f(\mu)=\frac1{2\pi i}\int_\Gamma f(\lambda)(\lambda-\mu)^{-1}d\lambda$ with the scalar $\mu$ replaced by the element $x$. Such cycles always exist (RCA 13.5), and two admissible cycles are homologous in $\Omega\setminus\sigma(x)$, so they give the same integral of the holomorphic $A$-valued integrand.`,
-      deps: ['fa-10.25', 'fa-10.22', 'fa-10.20'],
+      deps: ['fa-10.23', 'fa-10.22', 'rca-10.35'],
       tags: ['Banach algebras', 'functional calculus'],
-      },
+      verify: true,
+    },
     {
       num: '10.27',
       kind: 'Theorem',
-      name: 'The functional calculus is an algebra isomorphism',
-      statement: String.raw`For $A_\Omega=\{x:\sigma(x)\subset\Omega\}$, the collection $H(A_\Omega)=\{\tilde f:f\in H(\Omega)\}$ is a complex algebra. The map $f\mapsto\tilde f$ is an algebra isomorphism onto it. Compact-uniform convergence $f_n\to f$ on $\Omega$ implies $\tilde f_n(x)\to\tilde f(x)$ for each $x\in A_\Omega$. The functions $\lambda\mapsto\lambda$ and $\lambda\mapsto1$ extend to $x\mapsto x$ and $x\mapsto e$.`,
-      idea: String.raw`Continuity: $\norm{\tilde f(x)}\le\frac{\ell(\Gamma)}{2\pi}\max_\Gamma|f|\cdot\max_\Gamma\norm{(\lambda e-x)^{-1}}$. Multiplicativity holds for rational functions with poles off $\Omega$ (they are handled by10.25 and the resolvent identity), and Runge's theorem (RCA 13.9) makes rational functions dense in $H(\Omega)$; continuity extends the identity. Injectivity follows by evaluation at scalar elements: $\tilde f(ae)=f(a)e$.`,
-      caption: String.raw`A $3\times3$ matrix $x$ (drag its eigenvalues); the contour is a union of small circles around the spectrum. Left: the spectrum and the contour. Right: the Taylor polynomials $p_N$ of $e^\lambda$ converge to $e^\lambda$ uniformly on the contour (green, sampled contour error), and correspondingly $p_N(x)\to\widetilde{\exp}(x)$ (purple dots) — continuity of the calculus. The readout checks multiplicativity, $\widetilde{(fg)}(x)=\tilde f(x)\tilde g(x)$, for $f=e^\lambda$ and $g=\sin\lambda$, with all three computed as contour integrals.`,
-      deps: ['fa-10.26', 'fa-10.25', 'rca-13.9'],
+      name: 'The functional calculus is a continuous algebra homomorphism',
+      statement: String.raw`For fixed $x\in A_\Omega$, the map $f\mapsto\tilde f(x)$ is an algebra homomorphism of $H(\Omega)$ into $A$,
+$$\widetilde{(fg)}(x)=\tilde f(x)\,\tilde g(x),\qquad\widetilde{(\alpha f+\beta g)}(x)=\alpha\tilde f(x)+\beta\tilde g(x),$$
+which is continuous: if $f_n\to f$ uniformly on compact subsets of $\Omega$, then $\tilde f_n(x)\to\tilde f(x)$. It is the only such map that sends $1\mapsto e$ and $\lambda\mapsto x$.`,
+      idea: String.raw`Continuity: $\norm{\tilde f(x)}\le\frac{\ell(\Gamma)}{2\pi}\max_\Gamma|f|\cdot\max_\Gamma\norm{(\lambda e-x)^{-1}}$. Multiplicativity holds for rational functions with poles off $\Omega$ (they are handled by 10.23 and the resolvent identity), and Runge's theorem (RCA 13.9) makes rational functions dense in $H(\Omega)$; continuity extends the identity. Uniqueness follows the same way.`,
+      caption: String.raw`A $3\times3$ matrix $x$ (drag its eigenvalues); the contour is a union of small circles around the spectrum. Left: the spectrum and the contour. Right: the Taylor polynomials $p_N$ of $e^\lambda$ converge to $e^\lambda$ uniformly on the contour (green, $\max_\Gamma|p_N-\exp|$), and correspondingly $p_N(x)\to\widetilde{\exp}(x)$ (purple dots) — continuity of the calculus. The readout checks multiplicativity, $\widetilde{(fg)}(x)=\tilde f(x)\tilde g(x)$, for $f=e^\lambda$ and $g=\sin\lambda$, with all three computed as contour integrals.`,
+      deps: ['fa-10.26', 'fa-10.23', 'rca-13.9'],
       tags: ['Banach algebras', 'functional calculus'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const kS = v.slider('non-normal part $k$', 0, 2, 0.8, { step: 0.01 });
@@ -174,8 +174,9 @@ where $\Gamma$ is any cycle in $\Omega\setminus\sigma(x)$ with $\operatorname{In
       idea: String.raw`(a) If $f$ has no zero on $\sigma(x)$, then $1/f$ is holomorphic on a neighbourhood of $\sigma(x)$ and $\widetilde{(1/f)}(x)$ is the inverse, by 10.27. If $f(\alpha)=0$ for some $\alpha\in\sigma(x)$, write $f(\lambda)=(\alpha-\lambda)g(\lambda)$; then $\tilde f(x)=(\alpha e-x)\tilde g(x)=\tilde g(x)(\alpha e-x)$, and a commuting product with a non-invertible factor is not invertible. (b) Apply (a) to $f-\mu$: $\mu\in\sigma(\tilde f(x))$ iff $f-\mu$ vanishes somewhere on $\sigma(x)$.`,
       caption: String.raw`Left: the spectrum of a $3\times3$ matrix $x$ (drag the eigenvalues) and the contour. Right: the predicted spectrum $f(\sigma(x))$ (rings) and the spectrum of $\tilde f(x)$ computed from the contour integral (dots) — they coincide. Choose $f$: $e^\lambda$, $\lambda^2$ (which can merge two eigenvalues), $\sin\lambda$, or $1/(\lambda-c)$ with a pole $c$ you can drag: as $c$ approaches the spectrum, $\tilde f(x)=(x-ce)^{-1}$ blows up, and if $c\in\sigma(x)$ the function is no longer holomorphic on a neighbourhood of $\sigma(x)$.`,
       deps: ['fa-10.27', 'fa-10.13'],
-      see: ['rca-18.9'],
+      see: ['rca-18.5'],
       tags: ['Banach algebras', 'functional calculus', 'spectrum'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const F = {
@@ -227,6 +228,7 @@ $$\tilde h(x)=\tilde g\big(\tilde f(x)\big).$$`,
       caption: String.raw`$x$ is a $2\times2$ matrix with eigenvalues $\lambda_1,\lambda_2$, $f=\exp$ and $g=\operatorname{Log}$, the principal logarithm (cut along $(-\infty,0]$). Left: $\lambda$-plane with the strip $|\operatorname{Im}\lambda|<\pi$; right: the $\mu$-plane with $e^{\sigma(x)}$, the cut, and the contour used for $\operatorname{Log}$. The readout computes $\widetilde{\operatorname{Log}}\big(\widetilde{\exp}(x)\big)$ and $\widetilde{(\operatorname{Log}\circ\exp)}(x)$ separately: they always agree. They equal $x$ only while both eigenvalues stay in the strip — drag one out and $\operatorname{Log}\circ\exp$ becomes $\lambda-2\pi i$ near it.`,
       deps: ['fa-10.28', 'fa-10.27'],
       tags: ['Banach algebras', 'functional calculus'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const L = v.stage({ x: [-2.5, 2.5], y: [-5, 5], equal: true, height: 360, axes: true, title: '$\\lambda$-plane' });
@@ -269,11 +271,12 @@ $$\tilde h(x)=\tilde g\big(\tilde f(x)\big).$$`,
       statement: String.raw`Suppose $x\in A$ and $\sigma(x)$ does not separate $0$ from $\infty$ (that is, $0$ lies in the unbounded component of $\C\setminus\sigma(x)$). Then
 (a) $x^{-1}$ is a limit of polynomials in $x$;
 (b) $x=\exp(y)$ for some $y\in A$ (a logarithm of $x$), and
-(c) $x$ has roots of every order: $x=z^n$ for some $z\in A$, for each positive integer $n$. If $\sigma(x)\subset(0,\infty)$, these roots can be chosen with spectrum in $(0,\infty)$.`,
+(c) $x$ has roots of every order: $x=z^n$ for some $z\in A$, for each $n$.`,
       idea: String.raw`Let $\Omega$ be a simply connected neighbourhood of $\sigma(x)$ not containing $0$ — possible exactly because $0$ is in the unbounded component. On $\Omega$ there is a holomorphic logarithm $\log$, and Runge's theorem approximates $1/\lambda$ by polynomials uniformly near $\sigma(x)$. Then $y=\widetilde{\log}(x)$ satisfies $\exp(y)=x$ by 10.29, and $z=\exp(y/n)$ is an $n$-th root.`,
       caption: String.raw`$A=\ell^1(\Z)$ and $x=\hat x$ a trigonometric polynomial, so $\sigma(x)$ is the closed curve $\hat x(\T)$. Right: the continuous argument of $\hat x(e^{i\theta})$, unwrapped from $\theta=0$ to $2\pi$. It returns to its start exactly when the winding number about $0$ is $0$; then $y=\log|\hat x|+i\arg\hat x$ is a continuous logarithm, and the square root $e^{y/2}$ (dashed) is a closed curve. In a "figure eight" ($c_{-2}$ large compared with $c_1$) $0$ can sit inside a loop with total winding $0$: the theorem's hypothesis fails, yet a logarithm exists — the condition is sufficient, not necessary.`,
       deps: ['fa-10.29', 'fa-10.28', 'rca-13.9'],
       tags: ['Banach algebras', 'logarithms', 'winding number'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const c1S = v.slider('$c_1$ (coefficient of $e^{i\\theta}$)', -1.5, 1.5, 1, { step: 0.01 });
@@ -316,31 +319,25 @@ $$\tilde h(x)=\tilde g\big(\tilde f(x)\big).$$`,
         });
         v.readout(() => {
           const s = st;
-          if (s.onCurve) return 'The sampled curve comes near $0$; move it away before interpreting winding.';
-          const sep = s.separated ? 'The flood-fill sample suggests separation' : 'The flood-fill sample finds a route to infinity';
-          if (s.wind !== 0) return `${sep}; sampled winding number $${s.wind}$. If the curve avoids zero, this forbids a logarithm. ` + (s.wind % 2 ? 'Odd winding also forbids a square root.' : 'Even winding permits a square root: the half-argument curve closes.');
+          if (s.onCurve) return '$0\\in\\sigma(x)$: $x$ is not even invertible.';
+          const sep = s.separated ? '$\\sigma(x)$ separates $0$ from $\\infty$' : '$0$ is in the unbounded component';
+          if (s.wind !== 0) return `${sep}; winding number $${s.wind}$: the argument does not close up, so $x$ has no logarithm and no square root in $\\ell^1(\\Z)$ (the root curve does not close).`;
           return `${sep}; winding number $0$: a continuous logarithm exists, hence $x=\\exp(y)$ and $\\sqrt x=\\exp(y/2)$.` + (s.separated ? ' Here the hypothesis of the theorem fails, but the conclusion still holds.' : '');
         });
       },
     },
     {
-      num: '10.31', kind: 'Theorem', name: 'Polynomial identities reduce the functional calculus',
-      statement: String.raw`Let $P(\lambda)=\prod_j(\lambda-a_j)^{m_j}$ have positive degree $n\ge1$ (distinct roots $a_j$, positive integer multiplicities $m_j$), and suppose $P(x)=0$. Then $\sigma(x)\subset\{a_j\}$. For any $f$ holomorphic on an open neighborhood of these roots, there is a polynomial $Q$ of degree less than $n$ with $f-Q=Pg$ for a holomorphic $g$ on that neighborhood, and $\tilde f(x)=Q(x)$.`,
-      idea: String.raw`Cancel the principal parts of $f/P$ at the roots of $P$. This produces the Hermite interpolation polynomial $Q$, matching derivatives through order $m_j-1$ at $a_j$. The algebra property gives $\tilde f(x)-Q(x)=P(x)\tilde g(x)=0$.`,
-      caption: String.raw`A Jordan block $x=\mu I+kN$, $N^2=0$, satisfies $(x-\mu I)^2=0$. The exact Hermite polynomial for $f=\exp$ is $Q(\lambda)=e^\mu[1+(\lambda-\mu)]$. Compare its action on the draggable vector with a matrix exponential computed by its power series. Switch to values-only interpolation to see why the derivative condition matters when $k\ne0$.`,
-      deps: ['fa-10.27', 'fa-10.28'], tags: ['functional calculus', 'Hermite interpolation'], viz: hermiteJordan,
-    },
-    {
-      num: '10.31a',
-      kind: 'Corollary',
+      num: '10.31',
+      kind: 'Theorem',
       name: 'Disconnected spectrum gives idempotents',
       statement: String.raw`Suppose $x\in A$ and $\sigma(x)\subset\Omega_0\cup\Omega_1$, where $\Omega_0,\Omega_1$ are disjoint open sets that both meet $\sigma(x)$. Let $f=0$ on $\Omega_0$ and $f=1$ on $\Omega_1$. Then $e_1=\tilde f(x)$ satisfies
 $$e_1^2=e_1,\qquad e_1x=xe_1,\qquad e_1\ne0,\ e_1\ne e,$$
 so $A$ contains a nontrivial idempotent commuting with $x$ (the **Riesz projection**), and $\sigma(xe_1)$ relative to $e_1Ae_1$ is $\sigma(x)\cap\Omega_1$.`,
       idea: String.raw`$f$ is holomorphic on $\Omega=\Omega_0\cup\Omega_1$ and $f^2=f$, so $\tilde f(x)^2=\tilde f(x)$ by 10.27; it commutes with $x$ since $\lambda f$ and $f\lambda$ agree. By the spectral mapping theorem $\sigma(e_1)=f(\sigma(x))=\{0,1\}$, so $e_1$ is neither $0$ (spectrum $\{0\}$) nor $e$ (spectrum $\{1\}$).`,
-      caption: String.raw`Exercise17 consequence: a real $2\times2$ matrix with distinct real eigenvalues $\lambda_1,\lambda_2$ (sliders) and eigen-directions at angles $\theta_1,\theta_2$. Bottom: the real axis with the spectrum and the contour circle (drag its centre, set its radius). Top: the plane on which $x$ acts. The Riesz projection $e_1=\frac1{2\pi i}\oint(\lambda e-x)^{-1}d\lambda$ is computed numerically; drag the vector $u$ to see $e_1u$ (green, along the enclosed eigen-direction) and $(e-e_1)u$ (orange) — an oblique projection. Enclose both eigenvalues or none to get $e$ or $0$.`,
+      caption: String.raw`A real $2\times2$ matrix with distinct real eigenvalues $\lambda_1,\lambda_2$ (sliders) and eigen-directions at angles $\theta_1,\theta_2$. Bottom: the real axis with the spectrum and the contour circle (drag its centre, set its radius). Top: the plane on which $x$ acts. The Riesz projection $e_1=\frac1{2\pi i}\oint(\lambda e-x)^{-1}d\lambda$ is computed numerically; drag the vector $u$ to see $e_1u$ (green, along the enclosed eigen-direction) and $(e-e_1)u$ (orange) — an oblique projection. Enclose both eigenvalues or none to get $e$ or $0$.`,
       deps: ['fa-10.28', 'fa-10.27'],
       tags: ['Banach algebras', 'idempotents', 'Riesz projection'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const l1S = v.slider('$\\lambda_1$', -2, 2, -0.8, { step: 0.01 });

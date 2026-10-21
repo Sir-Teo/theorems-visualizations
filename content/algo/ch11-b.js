@@ -1,5 +1,6 @@
 // Algorithms — Chapter 11: Network flow, matching and linear programming (items 11.7–11.13; 11.1–11.6 in ch11.js, 11.14–11.19 in ch11-c.js, 11.21–11.25 in ch11-d.js)
 import { K, ids, plural, clamp, rngOf, sumOf, NETS, num, flowValue, cutCap, minCutBrute, resArcs, findPath, pathBottleneck, pushPath, fordFulkerson, FF_CODE, arcsOf, zeros, netStage, mkNet, loadNet, netIds, drawFlow, ffDraw, rkey, decompose, bipNet, matchingOf, matchBrute, hallBrute, coverBrute, bipNodes, bipRandom, LET, combos, R, TX } from './ch11.shared.js';
+import { irrationalExample, unitMiddleExample, exactAdversarialRun, edmondsKarpAudit, criticalTally, konigCertificate } from './flow-paths-audit.shared.js';
 
 const NET_SELECT = [{ value: 'A', label: 'network A' }, { value: 'B', label: 'B' }, { value: 'C', label: 'C' }];
 const PATHCOL = ['green', 'orange', 'purple', 'teal', 'pink', 'gold'];
@@ -66,23 +67,21 @@ export default {
       kind: 'Proposition',
       name: 'Bad augmenting paths: slow or non-terminating runs',
       statement: String.raw`The augmenting-path method with an unconstrained choice of paths can be very slow, and with irrational capacities it need not terminate.
-(a) In the network with edges $s\to a$, $s\to b$, $a\to t$, $b\to t$ of capacity $C$ and $a\to b$ of capacity $1$, the maximum flow is $2C$, but the paths $s,a,b,t$ and $s,b,a,t$ (the second using the backward residual edge of $a\to b$) can be chosen alternately, each with bottleneck $1$, so $2C$ augmentations are made: a number exponential in the bit length of $C$.
+(a) For a positive integer $C$, in the network with edges $s\to a$, $s\to b$, $a\to t$, $b\to t$ of capacity $C$ and $a\to b$ of capacity $1$, the maximum flow is $2C$, but the paths $s,a,b,t$ and $s,b,a,t$ (the second using the backward residual edge of $a\to b$) can be chosen alternately, each with bottleneck $1$, so $2C$ augmentations are made: a number exponential in the bit length of $C$.
 (b) There is a six-vertex network with real capacities, including $1$ and $(\sqrt5-1)/2$, for which a particular infinite sequence of augmenting paths has flow values converging to a number strictly smaller than the maximum flow.`,
-      idea: String.raw`In (a) the unit middle edge is crossed forwards by one path and "un-crossed" by the next, so each pair of paths adds just two units although two huge edges stay unsaturated. Choosing shortest paths instead needs only two augmentations (11.9). In (b) the bottlenecks form the geometric sequence $r,r^2,r^3,\dots$ with $r^2=1-r$ (so $r^{k}=r^{k+1}+r^{k+2}$): the residual capacities of the three special edges just cycle through $r^k,r^{k+1},0$, forever leaving a path, but the total pushed is the finite sum $1+2\sum_{k\ge1}r^k$.`,
-      caption: String.raw`**Unit middle edge:** slide $C$ and step through; the adversarial rule alternates the two paths of bottleneck 1, so the number of augmentations is $2C$, while **shortest** finishes in two. **Irrational capacities:** the adversarial rule repeats a cycle of paths whose bottlenecks shrink like powers of $r$; after 30 augmentations the flow value (gold) is still short of the limit (red line), which itself is far below the true maximum (green). The run is cut off at 30 augmentations.`,
+      idea: String.raw`In (a), each pair crosses and undoes the unit middle edge, adding two units; shortest paths need two augmentations instead. In (b), let $r=(\sqrt5-1)/2$, so $r^2=1-r$. After the initial unit push, the residual capacities of the special edges (left, middle, right) are $(1,0,r)$. A four-path cycle transforms $(r^{k-1},0,r^k)$ through $(r^{k+1},r^k,0)$, $(r^{k+1},0,r^k)$ and $(0,r^{k+1},r^{k+2})$ to $(r^{k+1},0,r^{k+2})$. The four bottlenecks are $r^k,r^k,r^{k+1},r^{k+1}$. Thus every power occurs twice after the initial 1, and the limit is $1+2\sum_{j\ge1}r^j=3+2r=2+\sqrt5$, strictly below $2M+1=9$ when the six outer capacities are $M=4$. Their limiting loads are at most 2, so their residual capacities stay at least 2 and never obstruct the cycle.`,
+      caption: String.raw`**Unit middle edge:** change $C$ and step through the prescribed alternating paths, or select shortest paths; the completed counts are $2C$ and 2. **Irrational capacities:** the outer capacities are $M=4$. The prescribed cycle pushes $1,r,r,r^2,r^2,\ldots$; the gold values approach the red limit $2+\sqrt5$ below the green maximum 9. The display stops at 30 exact augmentations, while positive residual paths still exist. This finite cutoff illustrates the recurrence; it is not the proof of nontermination.`,
       deps: ['algo-11.5'],
-      refs: ['Erickson §10.4, pp. 333–336'], sourceUrl: 'https://jeffe.cs.illinois.edu/teaching/algorithms/book/Algorithms-JeffE.pdf',
+      refs: ['Erickson §10.4, Figures 10.7–10.8, pp. 334–336 (geometric-sum calculation corrected)', 'Zwick (1995), §2, pp. 166–167 (six vertices, nine edges)'],
+      scope: String.raw`The integer example assumes $C\ge1$. Irrational path choices and residual signs are computed exactly in $\mathbb Q(\sqrt5)$; decimal coordinates and labels are approximations. The pictured nine-edge example is not Zwick’s distinct smallest eight-edge example.`,
       tags: ['flow', 'counterexample'],
-      credit: 'Examples and proof: Erickson, Algorithms, §10.4, pp. 333–336; no priority claim is made here',
+      credit: 'Ford & Fulkerson, Flows in Networks, 1962 (non-termination example); U. Zwick, 1995, §2 (the pictured six-vertex, nine-edge construction)',
       links: { doi: 'https://doi.org/10.1016/0304-3975(95)00022-O' },
       viz(v) {
         const s = netStage(v, { height: 300, weight: 1.3 });
         const chart = v.stage({ x: [0, 31], y: [0, 10], axes: 'box', gutter: true, height: 300, xlabel: 'augmentation', ylabel: 'flow value', weight: 1 });
-        const rr = (Math.sqrt(5) - 1) / 2, M = 2;
-        const SLOW = (C) => ({ pos: { s: [0.9, 3], a: [4.4, 5.1], b: [4.4, 0.9], t: [8.1, 3] }, arcs: [['s', 'a', C], ['s', 'b', C], ['a', 'b', 1], ['a', 't', C], ['b', 't', C]], seq: [['s', 'a', 'b', 't'], ['s', 'b', 'a', 't']], first: null });
-        const ZW = { pos: { s: [0.7, 3], v1: [3.1, 5.2], v2: [3.1, 0.8], v4: [5.8, 5.2], v3: [5.8, 0.8], t: [8.6, 3] },
-          arcs: [['s', 'v1', M], ['s', 'v2', M], ['s', 'v4', M], ['v2', 'v3', 1], ['v4', 'v3', rr], ['v2', 'v1', 1], ['v1', 't', M], ['v3', 't', M], ['v4', 't', M]],
-          seq: [['s', 'v4', 'v3', 'v2', 'v1', 't'], ['s', 'v2', 'v3', 'v4', 't'], ['s', 'v4', 'v3', 'v2', 'v1', 't'], ['s', 'v1', 'v2', 'v3', 't']], first: ['s', 'v2', 'v3', 't'] };
+        const rr = (Math.sqrt(5)-1)/2, ZW=irrationalExample(4);
+        const SLOW=unitMiddleExample;
         const ex = v.select('example', [{ value: 'slow', label: 'unit middle edge' }, { value: 'irr', label: 'irrational capacities' }], 'slow', { onChange: () => { C.el.hidden = ex.value === 'irr'; load(); } });
         const C = v.slider('capacity $C$', 1, 12, 5, { int: true, onChange: () => load() });
         const rule = v.select('path choice', [{ value: 'bad', label: 'adversarial' }, { value: 'bfs', label: 'shortest' }], 'bad', { onChange: () => S.reset({ at: 'start' }) });
@@ -94,39 +93,23 @@ export default {
         function build() {
           const arcs = N.arcs, I = ids(); maxf = fordFulkerson(I, arcs, 's', 't', 'bfs').value;
           if (rule.value === 'bfs') { run = fordFulkerson(I, arcs, 's', 't', 'bfs'); return run.frames; }
-          // adversarial: the prescribed node sequences, resolved to residual arcs, until none applies or 30 augmentations
-          let f = zeros(arcs.length); const frames = [], cap = 30;
-          const mk = (type, extra) => frames.push({ type, f: f.slice(), value: flowValue(arcs, f, 's'), res: resArcs(arcs, f), ...extra });
-          mk('init', { note: 'Start from the zero flow.' });
-          const resolve = (nodes) => { const res = resArcs(arcs, f), p = []; for (let k = 0; k + 1 < nodes.length; k++) { const a = res.find((x) => x.from === nodes[k] && x.to === nodes[k + 1]); if (!a) return null; p.push(a); } return p; };
-          let k = 0;
-          for (; k < (ex.value === 'slow' ? 4 * C.value : cap); k++) {
-            const nodes = k === 0 && N.first ? N.first : N.seq[(N.first ? k - 1 : k) % N.seq.length], p = resolve(nodes);
-            if (!p) break;
-            const b = Math.min(...p.map((r) => r.w));
-            if (b < 1e-12) break;
-            mk('path', { path: p, bottleneck: b, k: k + 1, note: `Augmentation ${k + 1}: the path ${nodes.join('→')} has bottleneck ${num(b, 4)}.` });
-            f = pushPath(f, p, b); mk('push', { path: p, bottleneck: b, k: k + 1, note: `Pushed ${num(b, 4)}: the value is ${num(flowValue(arcs, f, 's'), 4)}.` });
-          }
-          const left = findPath(resArcs(arcs, f), 's', 't', 'bfs');
-          mk('end', { note: left ? `Stopped after ${k} augmentations: an augmenting path still exists (the flow is not maximum, and the process has not ended).` : `No augmenting path is left after ${k} augmentations.` });
-          run = { frames, steps: frames.filter((q) => q.type === 'push'), value: flowValue(arcs, f, 's') };
-          return frames;
+          run=exactAdversarialRun(N,30);
+          return run.frames;
         }
         load();
         S = v.steps({ frames: build, code: FF_CODE, codeTitle: 'Ford–Fulkerson(G, s, t)', speed: 4, still: 8 });
         v.render(() => {
-          const fr = S.frame; ffDraw(G, null, { ...fr, S: fr.type === 'done' ? fr.S : null }, { net: { edgeLabel: (e) => `${num(fr.f[G.edges.indexOf(e)], 3)}/${num(e.w, 3)}` } });
+          const fr = S.frame; ffDraw(G, null, { ...fr, S: fr.type === 'done' ? fr.S : null }, { net: { edgeLabel: (e) => `${num(fr.f[G.edges.indexOf(e)],3)}/${num(e.w,3)}${(fr.path||[]).some(a=>a.i===G.edges.indexOf(e)&&!a.fwd)?' undo':''}`, edgeDash:e=>(fr.path||[]).some(a=>a.i===G.edges.indexOf(e)&&!a.fwd) } });
           const pts = S.frames.filter((q) => q.type === 'push' || q.type === 'init'), shown = pts.filter((q) => S.frames.indexOf(q) <= S.i);
           const lim = ex.value === 'irr' ? 3 + 2 * rr : null, top = Math.max(maxf, 1) * 1.1;
           chart.setView([0, Math.max(pts.length, 6) + 0.5], [0, top]);
           chart.hline(maxf, { color: 'green', dash: true }); if (lim) chart.hline(lim, { color: 'red', dash: true });
           chart.path(shown.map((q, i) => [i, q.value]), { color: 'gold', width: 2.4 }); shown.forEach((q, i) => chart.dot(i, q.value, { r: 3.5, color: 'gold' }));
         });
-        v.legend([['orange', 'augmenting path'], ['gold', 'flow value after each augmentation'], ['green', 'maximum flow', { dash: true }], ['red', 'limit of the endless run', { dash: true }]]);
+        v.legend([['orange', 'augmenting path'], ['gold', 'flow value after each augmentation'], ['green', 'maximum flow', { dash: true }], ['red', 'irrational adversarial limit', { dash: true }], ['muted','dashed edge: used backwards',{dash:true}]]);
         v.readout(() => {
           const n = S.frames.slice(0, S.i + 1).filter((q) => q.type === 'push').length, fr = S.frame;
-          return `Augmentations so far: **${n}** · value **${num(fr.value, 4)}** of maximum **${num(maxf, 2)}**${ex.value === 'slow' ? ` · prediction: ${rule.value === 'bad' ? `$2C=${2 * C.value}$` : '2'} augmentations in total (this run: ${run.steps.length})` : rule.value === 'bad' ? ` · limit of the flow values: $3+2r=${num(3 + 2 * rr, 4)}<${num(maxf, 2)}$, $r=(\\sqrt5-1)/2$` : ''}`;
+          return `Augmentations so far: **${n}** · value **${num(fr.value, 4)}** of maximum **${num(maxf, 2)}**${ex.value === 'slow' ? ` · full trace: ${run.steps.length} augmentations (${rule.value === 'bad' ? `$2C=${2*C.value}$` : 'two shortest paths'})` : rule.value === 'bad' ? ` · limit of the flow values: $3+2r=${num(3 + 2 * rr, 4)}<${num(maxf, 2)}$, $r=(\\sqrt5-1)/2$` : ''}`;
         });
       },
     },
@@ -135,14 +118,15 @@ export default {
       num: '11.9',
       kind: 'Algorithm',
       name: 'Edmonds–Karp: shortest augmenting paths',
-      statement: String.raw`The **Edmonds–Karp algorithm** is the Ford–Fulkerson method with every augmenting path chosen to have the fewest edges (found by breadth-first search in $G_f$). Then (i) the residual distance $\delta_f(s,v)$ of every vertex from $s$ never decreases during the run; (ii) each edge can be a *critical* edge (a bottleneck edge of the augmenting path) at most about $|V|/2$ times; hence there are $O(|V|\,|E|)$ augmentations, and the total time is $O(|V|\,|E|^2)$, whatever the capacities, even real ones.`,
-      idea: String.raw`(i) A push only creates backward edges that run from a vertex at distance $d+1$ to one at distance $d$ (it lies on a shortest path), and such edges can never shorten a distance; so no distance decreases. (ii) When $(u,v)$ is critical it disappears from $G_f$ and has $\delta(v)=\delta(u)+1$. To become critical again it must first reappear, which requires a push along $(v,u)$ when $\delta(u)=\delta(v)+1$; by monotonicity $\delta(u)$ has then grown by at least $2$. Distances are below $|V|$, so each edge is critical $O(|V|)$ times; every augmentation makes some edge critical, which counts $O(|V||E|)$ augmentations. Each costs one BFS, $O(|E|)$.`,
-      caption: String.raw`Step through the augmentations (a random network is a click away). The right panel plots, for every vertex, its distance from $s$ in the residual graph at each augmentation: every curve only goes up, never down. Critical edges (those that fill up) are red on the network, and the readout keeps the largest tally of times any one edge was critical, to compare with the $|V|/2$ bound.`,
+      statement: String.raw`For a finite flow network with nonnegative finite real capacities, the **Edmonds–Karp algorithm** chooses an augmenting path with the fewest residual arcs, using BFS. Residual distances from $s$ never decrease, with unreachable distance $\infty$. Each fixed **oriented residual arc** can be critical (attain the path bottleneck) at most $\lfloor|V|/2\rfloor$ times. There are at most $2|E|$ such arc identities, counting the forward and reverse directions of each original edge, hence $O(|V||E|)$ augmentations and $O(|V||E|^2)$ total time in the standard arithmetic-operation model. The guarantee is independent of capacity magnitudes.`,
+      idea: String.raw`A push removes residual arcs and can introduce only reversals of the chosen shortest path, directed from an old distance $d+1$ back to $d$; an induction along any new shortest path proves distances cannot fall. If $u\to v$ is critical, its residual capacity becomes zero and $d(v)=d(u)+1$. Before that same arc can be critical again, its reverse must carry a later push, when $d'(u)=d'(v)+1$. Monotonicity implies $d'(u)\ge d(u)+2$. At a critical event the tail distance is at most $|V|-2$, so there are at most $\lfloor|V|/2\rfloor$ such events per oriented arc. Every augmentation has a critical arc; counting both residual orientations gives the safe bound $|V||E|$. One BFS and push take $O(|V|+|E|)$ time, or $O(|E|)$ after irrelevant isolated vertices are discarded.`,
+      caption: String.raw`Step through a preset or generate a random network. The chart records the residual graph at augmentation 0 and after each completed push, including the final state. Vertex colors match their distance curves; the marked top row means unreachable ($\infty$), not a finite distance. Critical arcs of the current path are red. The tally counts completed augmentations only and identifies an original edge and its residual orientation; the reverse orientation has its own tally.`,
       deps: ['algo-11.5', 'algo-8.5'],
-      refs: ['Erickson §10.6, Lemmas 10.2–10.3, pp. 341–342'], sourceUrl: 'https://jeffe.cs.illinois.edu/teaching/algorithms/book/Algorithms-JeffE.pdf',
+      refs: ['Erickson §10.6, Lemmas 10.2–10.3, pp. 341–342'],
       tags: ['flow'],
-      credit: 'Algorithm and complete distance/bottleneck proof: Erickson, Algorithms, §10.6, pp. 341–342',
+      credit: 'J. Edmonds & R. M. Karp, 1972; shortest-path heuristic already proposed by Ford & Fulkerson (Erickson §10.6)',
       links: { doi: 'https://doi.org/10.1145/321694.321699' },
+      scope: String.raw`The complexity proof counts exact arithmetic operations, not finite-precision bit costs for arbitrary real inputs. The displayed presets and generated capacities are small integers; numerical tolerances are not used as evidence for the real-capacity theorem.`,
       viz(v) {
         const s = netStage(v, { height: 300, weight: 1.3 });
         const ch = v.stage({ x: [0, 8], y: [0, 7], axes: 'box', gutter: true, height: 300, xlabel: 'augmentation $k$', ylabel: 'distance from $s$ in $G_f$', weight: 1 });
@@ -150,29 +134,29 @@ export default {
         const G = mkNet(v, s, 'A', { draggable: true });
         v.select('network', NET_SELECT, 'A', { onChange: (k) => { key = k; loadNet(G, k); S.reset({ at: 'start' }); } });
         v.button('Random network', () => { seed++; key = `R${seed}`; loadNet(G, key); S.reset({ at: 'start' }); });
-        let run = null, tally = new Map();
+        let run = null;
         const S = v.steps({ frames: () => {
-          run = fordFulkerson(netIds(G), arcsOf(G), 's', 't', 'bfs');
-          tally = new Map(); run.steps.forEach((st, i) => { for (const r of st.path) if (Math.abs(r.w - st.b) < 1e-9) { const kk = `${r.from}→${r.to}`; tally.set(kk, (tally.get(kk) || 0) + 1); } });
+          run = edmondsKarpAudit(netIds(G),arcsOf(G));
           return run.frames;
         }, code: ['f ← 0', 'while G_f has an s–t path:', '    P ← a path with the fewest edges (BFS in G_f)', '    push the bottleneck of P along P', 'return f'], codeTitle: 'Edmonds–Karp(G, s, t)', speed: 1, still: 3 });
         const COL = ['blue', 'orange', 'green', 'purple', 'teal', 'pink', 'gold', 'red'];
         v.render(() => {
-          const fr = S.frame, I = netIds(G), crit = new Set((fr.path || []).filter((r) => Math.abs(r.w - fr.bottleneck) < 1e-9).map((r) => r.i));
-          ffDraw(G, null, fr, { net: { edgeColor: (e) => { const i = G.edges.indexOf(e); return fr.type !== 'done' && crit.has(i) ? 'red' : fr.type !== 'done' && (fr.path || []).some((r) => r.i === i) ? 'orange' : fr.f[i] > 0 ? 'accent' : 'faint'; }, nodeColor: null } });
-          const steps = run.steps, shown = Math.min(steps.length, S.frames.slice(0, S.i + 1).filter((q) => q.type === 'path').length), n = I.length;
-          ch.setView([0.5, Math.max(steps.length, 4) + 0.5], [0, n]);
-          I.filter((x) => x !== 's').forEach((x, j) => {
-            const pts = []; for (let k = 0; k < shown; k++) { const d = steps[k].dist[x]; if (d < Infinity) pts.push([k + 1, d + (j - 2) * 0.03]); }
-            ch.path(pts, { color: COL[j % COL.length], width: 2 }); pts.forEach(([a, b]) => ch.dot(a, b, { r: 3, color: COL[j % COL.length] }));
+          const fr=S.frame,I=netIds(G),other=I.filter(x=>x!=='s'),crit=new Set((fr.path||[]).filter(r=>Math.abs(r.w-fr.bottleneck)<1e-9).map(r=>r.i));
+          ffDraw(G,null,fr,{net:{edgeColor:e=>{const i=G.edges.indexOf(e);return fr.type!=='done'&&crit.has(i)?'red':fr.type!=='done'&&(fr.path||[]).some(r=>r.i===i)?'orange':fr.f[i]>0?'accent':'faint';},edgeDash:e=>(fr.path||[]).some(a=>a.i===G.edges.indexOf(e)&&!a.fwd),nodeColor:id=>id==='s'?'green':COL[other.indexOf(id)%COL.length]}});
+          const done=S.frames.slice(0,S.i+1).filter(q=>q.type==='push').length,n=I.length,hi=Math.max(run.steps.length,4)+.4;
+          ch.setView([0,hi],[0,n+.5]);
+          ch.hline(n,{color:'muted',dash:true});ch.text('$\\infty$ (unreachable)',hi,n,{align:'right',dy:-10,size:11.5,color:'muted'});
+          other.forEach((x,j)=>{
+            const pts=run.states.slice(0,done+1).map((state,k)=>[k,Number.isFinite(state.dist[x])?state.dist[x]:n]);
+            ch.path(pts,{color:COL[j%COL.length],width:2});ch.dots(pts,{r:3,color:COL[j%COL.length]});
           });
         });
-        v.legend([['red', 'critical edge of the current path'], ['orange', 'other edges of the path'], ['accent', 'carries flow']]);
+        v.legend([['red','critical arc of the current path'],['orange','other arcs of the path'],['accent','carries flow'],['muted','dashed: used backwards',{dash:true}]]);
         v.readout(() => {
-          const I = netIds(G), steps = run.steps, shown = Math.min(steps.length, S.frames.slice(0, S.i + 1).filter((q) => q.type === 'path').length);
-          let mono = true; I.forEach((x) => { let last = 0; for (let k = 0; k < shown; k++) { const d = steps[k].dist[x]; if (d < last) mono = false; last = Math.max(last, d); } });
-          const top = [...tally.entries()].sort((a, b) => b[1] - a[1])[0];
-          return `Augmentation ${shown} of ${steps.length} · distances nondecreasing so far: **${mono ? 'yes' : 'NO'}** · most often critical: ${top ? `edge ${top[0]}, **${top[1]}** time${top[1] > 1 ? 's' : ''}` : '—'} (bound ≈ $|V|/2=${I.length / 2}$) · $|V||E|/2=${(I.length * G.edges.length) / 2}$ vs ${steps.length} augmentations`;
+          const I=netIds(G),done=S.frames.slice(0,S.i+1).filter(q=>q.type==='push').length;
+          let mono=true;I.forEach(x=>{for(let k=1;k<=done;k++)if(run.states[k].dist[x]<run.states[k-1].dist[x])mono=false;});
+          const top=criticalTally(run.events,done)[0];
+          return `Completed augmentations: ${done} of ${run.steps.length} · residual distances nondecreasing: **${mono?'yes':'NO'}** · most often critical so far: ${top?`edge ${top.edge+1}, ${top.from}→${top.to} (${top.fwd?'forward':'reverse'}), **${top.count}** time${top.count>1?'s':''}`:'—'} · per oriented-arc bound $\\lfloor|V|/2\\rfloor=${Math.floor(I.length/2)}$ · safe total bound $|V||E|=${I.length*G.edges.length}$ vs ${run.steps.length} augmentations. The final unreachable state is included.`;
         });
       },
     },
@@ -274,16 +258,15 @@ export default {
       num: '11.12',
       kind: 'Theorem',
       name: 'König’s theorem: matchings and vertex covers',
-      statement: String.raw`In a bipartite graph the size of a maximum matching equals the size of a minimum vertex cover:
+      statement: String.raw`In a finite bipartite graph the size of a maximum matching equals the size of a minimum vertex cover:
 $$\nu(H)=\tau(H),$$
 where a **vertex cover** is a set of vertices touching every edge. (In any graph $\nu\le\tau$, since each matched edge needs its own cover vertex; bipartiteness makes this tight. For odd cycles it fails: a triangle has $\nu=1$, $\tau=2$.)`,
-      idea: String.raw`Take a maximum matching $M$ (a maximum flow in the unit network) and let $Z$ be the set of vertices reachable from $s$ in the final residual graph, that is, reachable from the unmatched left vertices by alternating paths. Put $K=(L\setminus Z)\cup(R\cap Z)$. An edge $l r$ with $l\in Z$ and $r\notin Z$ would be an unmatched edge leaving $Z$ with spare capacity — impossible — so every edge is covered. Every vertex of $K$ is matched (otherwise there would be an augmenting path), and no matched edge has both ends in $K$; so $|K|=|M|$. This is the minimum cut of 11.6 read off as vertices: $\min$ cut $=\max$ flow becomes $\tau=\nu$.`,
-      caption: String.raw`Bold green edges are a maximum matching. The red vertices are the König cover $K$ read off the residual reachability set (teal ring: $Z$); every edge touches a red vertex and the count equals the matching size. Click vertices to build **your own** cover: uncovered edges turn into dashed red lines, and you can never get below $|M|$. The readout compares with exhaustive search over all vertex subsets.`,
+      idea: String.raw`For a maximum matching $M$, let $Z$ be reachable from the unmatched left vertices by alternating paths (equivalently, reachable from $s$ in the final unit-flow residual graph), and put $K=(L\setminus Z)\cup(R\cap Z)$. If $l\in Z$ and $lr$ is unmatched, its forward residual arc makes $r\in Z$. If $lr$ is matched and $l\in Z$, then $l$ is not an unmatched starting vertex: the alternating path reaching $l$ arrives from its matched partner $r$, so again $r\in Z$. Thus no edge has $l\in Z,r\notin Z$, and $K$ covers every edge. For each matched edge, either both ends lie in $Z$ or neither does, so exactly one endpoint is in $K$. Every vertex of $K$ is matched: unmatched left vertices belong to $Z$, while a reachable unmatched right vertex would finish an augmenting path. Hence $|K|=|M|$, and every cover needs at least $|M|$ vertices.`,
+      caption: String.raw`Green edges form a maximum matching; red vertices form the König cover $K$, and teal rings mark residual reachability $Z$. Toggle the canonical cover or choose a graph. Click vertices to build your own cover (gold rings); while the selection is nonempty, every uncovered edge becomes dashed red, including matching edges. A valid cover has at least $|M|$ vertices. The readout checks both covers and compares their sizes with exhaustive search.`,
       deps: ['algo-11.10', 'algo-11.6'],
-      refs: ['Erickson Ch. 11', 'König, Graphok és mátrixok, Mat. Fiz. Lapok38 (1931), pp.116–119', 'Egerváry, Matrixok kombinatorius tulajdonságairól, Mat. Fiz. Lapok38 (1931), pp.16–28, especially pp.16–17 and §§1–2'],
+      refs: ['Diestel 6e, Theorem 2.1.1 (König 1931), p. 39; Erickson §11.3, pp. 355–356 (flow/alternating-path correspondence)'],
       tags: ['matching', 'duality'],
-      credit: 'D. König, 1931; J. Egerváry, 1931 (new proof and weighted generalization, explicitly crediting König)',
-      links: { source: 'https://real-j.mtak.hu/7307/1/MTA_MatematikaiEsPhysikaiLapok_38.pdf', translation: 'https://arxiv.org/abs/2009.03780' },
+      credit: 'Dénes König, 1931 (Diestel, Theorem 2.1.1)',
       viz(v) {
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 340 });
         let nL = 5, nR = 5, E = bipPreset('hall').E, seed = 1, mine = new Set();
@@ -295,12 +278,12 @@ where a **vertex cover** is a set of vertices touching every edge. (In any graph
         v.button('Clear my cover', () => { mine = new Set(); });
         let sol = null, Kset = new Set();
         v.render(() => {
-          sol = bipSolve(nL, nR, E);
-          Kset = new Set([...Array(nL).keys()].filter((i) => !sol.ZL.includes(i)).map((i) => `l${i}`).concat(sol.ZR.map((j) => `r${j}`)));
-          const mset = new Set(sol.match.map(([l, r]) => edgeKey(l, r)));
+          sol = konigCertificate(nL,nR,E);
+          Kset = sol.cover;
+          const mset = new Set(sol.matching.map(([l, r]) => edgeKey(l, r)));
           const unc = (e) => !mine.has(String(e.from)) && !mine.has(String(e.to)), eid = (e) => edgeKey(+String(e.from).slice(1), +String(e.to).slice(1));
           G.draw({
-            edgeColor: (e) => (mine.size && unc(e) ? 'red' : mset.has(eid(e)) ? 'green' : 'faint'), edgeWidth: (e) => (mset.has(eid(e)) ? 4.4 : mine.size && unc(e) ? 2.6 : 1.6), edgeDash: (e) => !!mine.size && unc(e) && !mset.has(eid(e)),
+            edgeColor: (e) => (mine.size && unc(e) ? 'red' : mset.has(eid(e)) ? 'green' : 'faint'), edgeWidth: (e) => (mset.has(eid(e)) ? 4.4 : mine.size && unc(e) ? 2.6 : 1.6), edgeDash: (e) => !!mine.size && unc(e),
             nodeFill: (id) => (showK.value && Kset.has(String(id)) ? 'red' : null),
             nodeColor: (id) => (mine.has(String(id)) ? 'gold' : sol.Z.has(String(id)) ? 'teal' : null), nodeRing: (id) => (mine.has(String(id)) ? 'gold' : sol.Z.has(String(id)) ? 'teal' : null),
           });
@@ -308,7 +291,7 @@ where a **vertex cover** is a set of vertices touching every edge. (In any graph
         v.legend([['green', 'maximum matching'], ['red', 'König cover $K$', { dot: true }], ['teal', '$Z$: reachable by alternating paths', { dot: true }], ['gold', 'your cover', { dot: true }]]);
         v.readout(() => {
           const tau = coverBrute(nL, nR, E), cov = E.every(([l, r]) => Kset.has(`l${l}`) || Kset.has(`r${r}`)), myOK = E.every(([l, r]) => mine.has(`l${l}`) || mine.has(`r${r}`));
-          return `$|M|=${sol.match.length}$ · König cover $|K|=${Kset.size}$ covers every edge: ${cov ? '✓' : '✗'} · minimum vertex cover by exhaustive search $\\tau=${tau}$ ${tau === sol.match.length ? '✓' : '✗'}\nYour cover: ${mine.size} vertices, ${myOK ? 'covers all edges' : `**${E.filter(([l, r]) => !mine.has(`l${l}`) && !mine.has(`r${r}`)).length} edges uncovered**`}${myOK && mine.size < sol.match.length ? ' — impossible!' : ''}`;
+          return `$|M|=${sol.matching.length}$ · König cover $|K|=${Kset.size}$ covers every edge: ${cov ? '✓' : '✗'} · minimum vertex cover by exhaustive search $\\tau=${tau}$ ${tau === sol.matching.length ? '✓' : '✗'}\nYour cover: ${mine.size} vertices, ${myOK ? 'covers all edges' : `**${E.filter(([l, r]) => !mine.has(`l${l}`) && !mine.has(`r${r}`)).length} edges uncovered**`}${myOK && mine.size < sol.matching.length ? ' — impossible!' : ''}`;
         });
       },
     },

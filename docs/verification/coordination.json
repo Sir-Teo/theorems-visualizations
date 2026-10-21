@@ -1,0 +1,2839 @@
+{
+  "version": 1,
+  "started": "2026-10-20",
+  "status": "active-new-session-six-workers",
+  "objective": "Clear verification backlog, satisfy wave gates, then author Wave 5. Prioritize speed and quality.",
+  "baseCommit": "dad83c6",
+  "originalCheckout": "/Users/teodev/Developer/theorems-visualizations",
+  "policy": {
+    "originalCheckout": "Preserve pre-existing uncommitted drafts; do not edit original checkout.",
+    "integration": "Coordinator alone integrates commits, edits global ledgers and updates MASTER_PLAN.",
+    "acceptance": "Primary source comparison, independent calculations where applicable, native input and agent screenshot checks; retain all unsupported material claims as flags. Independent peer review before acceptance.",
+    "outputs": "Unique server ports or ephemeral listeners and worker-specific temporary evidence directories. Performance measurements run without competing browser jobs.",
+    "wave5": "Prepared only until verification gates pass; do not relabel pending work as complete."
+  },
+  "coordinator": {
+    "worktree": "/Users/teodev/.codex/worktrees/8510/theorems-visualizations",
+    "branch": "codex/atlas-continuation",
+    "owns": [
+      "Global inventories/queue/MASTER/coordination",
+      "Serial cherry-picks and acceptance records",
+      "Full immutable checkpoints and unrelated gate analysis"
+    ],
+    "current": [
+      "Accepted prerequisite shortfall112;8/64 published collections and4 whole syllabi below target;40 further collections meet25 written inputs. Source queue5 unchanged.",
+      "Latest immutable checkpoint10 on573ea1b passes2199 tests, all six UI groups, strict/static zero errors and warnings.",
+      "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
+      "Private atlas guard passes bounded tiny155/source readiness. First independently reset full-map attempt stopped on unexpected original transfer draw before alternate opened; all raw/history evidence preserved, no timing. Callback provenance under read-only review.",
+      "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
+    ]
+  },
+  "workers": [
+    {
+      "agent": "logic_peer",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
+      "status": "working",
+      "current": "LING genuine prerequisite producer; new oracle source/tiny peer accepted, no full-map rerun",
+      "owns": [
+        "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    },
+    {
+      "agent": "deep_peer",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
+      "status": "working",
+      "current": "CPLX remaining genuine-input followup producer after PL14 root acceptance",
+      "owns": [
+        "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    },
+    {
+      "agent": "arch_source",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
+      "status": "working",
+      "current": "ARCH18 producer final layout/native gates",
+      "owns": [
+        "QINFO content and bounded correctness/metadata successors"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    },
+    {
+      "agent": "imaging_source",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
+      "status": "working",
+      "current": "ART18 genuine prerequisite producer; GAME interior-maximizer closing successor with ctrl",
+      "owns": [
+        "Unique CLIMATE peer evidence; REL producer boundary complete"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    },
+    {
+      "agent": "thermo_prereqs",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
+      "status": "working",
+      "current": "PHARM18 producer final plotting/readout/text preservation/native closure",
+      "owns": [
+        "Unique REL peer evidence; CLIMATE producer boundary complete"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    },
+    {
+      "agent": "ctrl_prereqs",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
+      "status": "working",
+      "current": "GAME independent peer, then authorized NEURO resting-contrast producer; ODE peer accepted",
+      "owns": [
+        "CM producer; GEOG independent peer complete"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    }
+  ],
+  "acceptedBatches": [
+    {
+      "commits": [
+        "8a4b950",
+        "572b203"
+      ],
+      "ids": [
+        "music-7.4",
+        "music-7.9"
+      ],
+      "peer": "worker_three exact-commit source/math/native review",
+      "status": "accepted"
+    },
+    {
+      "commits": [
+        "a281b6d"
+      ],
+      "ids": [
+        "soc-4.5",
+        "soc-4.6"
+      ],
+      "peer": "worker_two exact-commit source/math/native review",
+      "status": "accepted"
+    },
+    {
+      "ids": [
+        "music-7.10",
+        "music-7.8",
+        "game-4.3"
+      ],
+      "peer": "worker_three exact-commit source/proof/math and full native review",
+      "reports": [
+        "game-determinacy-followup.md",
+        "music-continued-followup.md",
+        "music-well-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "94ed9f4",
+        "3fddde7",
+        "4dccc22"
+      ]
+    },
+    {
+      "ids": [
+        "psych-4.4",
+        "psych-4.7"
+      ],
+      "peer": "coordinator original-source/proof/model review, ten math groups and two fresh narrow native groups",
+      "reports": [
+        "psych-pooling-inhibition-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "8a45e55"
+      ]
+    },
+    {
+      "ids": [
+        "psych-3.2",
+        "psych-3.3",
+        "psych-3.4"
+      ],
+      "peer": "worker_one exact-commit primary-source/proof/math and six narrow native groups",
+      "reports": [
+        "psych-scaling-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9895d1a"
+      ]
+    },
+    {
+      "ids": [
+        "music-7.11",
+        "music-7.12"
+      ],
+      "peer": "worker_three exact-commit source/math, certified rational-log generator and two fresh narrow native groups",
+      "reports": [
+        "music-edo-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "7c591b0"
+      ]
+    },
+    {
+      "ids": [
+        "soc-3.1",
+        "soc-4.4"
+      ],
+      "peer": "coordinator original Freeman definitions, NetworkX source, independent Floyd/path-count math and fresh narrow native review",
+      "reports": [
+        "soc-centrality-online-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "7ea7dc1"
+      ]
+    },
+    {
+      "ids": [
+        "game-4.12"
+      ],
+      "peer": "worker_two exact-commit original Sprague source/proof/math and fresh narrow light/dark native matrices",
+      "reports": [
+        "game-nim-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "7c851a0"
+      ]
+    },
+    {
+      "ids": [
+        "music-7.13",
+        "music-7.14"
+      ],
+      "peer": "coordinator exact-commit Benson source/proof review, certified rational-log reference, four math groups and four fresh narrow native matrices",
+      "reports": [
+        "music-circle53-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "0e72fd2"
+      ]
+    },
+    {
+      "ids": [
+        "psych-4.11",
+        "psych-4.12",
+        "psych-4.14"
+      ],
+      "peer": "worker_one exact-commit primary PDF and printed equation review, independent Decimal/complex ODE calculations, six math groups and six fresh narrow native matrices",
+      "reports": [
+        "psych-lightness-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "59a26ed"
+      ]
+    },
+    {
+      "ids": [
+        "psych-4.9",
+        "psych-4.10",
+        "psych-4.13"
+      ],
+      "peer": "worker_three exact-commit primary-source/model review, six math and six fresh narrow native groups plus528 independent checks",
+      "reports": [
+        "psych-patterns-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "c824d76"
+      ]
+    },
+    {
+      "ids": [
+        "qchem-3.13"
+      ],
+      "peer": "worker_two exact-commit complete Russian primary reprint and German-abstract comparison, source hashes, three math groups and fresh narrow light/dark native checks",
+      "reports": [
+        "qchem-source-audit-mendeleev-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "88354b2"
+      ]
+    },
+    {
+      "ids": [
+        "soc-4.7",
+        "soc-4.11"
+      ],
+      "peer": "coordinator exact-commit primary CSN, published Broido and Voitalov definition review, three independent math groups and four fresh narrow native matrices",
+      "reports": [
+        "soc-tails-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "87c3869",
+        "cb9f0ed"
+      ]
+    },
+    {
+      "ids": [
+        "music-7.15",
+        "soc-4.12"
+      ],
+      "peer": "coordinator exact-commit Fokker hosted primary text/table, lattice/kernel proof, five math groups, regenerated Fraction/90-digit reference and fresh narrow dark native matrix",
+      "reports": [
+        "music-periodicity-followup.md",
+        "soc-musiclab-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "e2b5a3c",
+        "7903435"
+      ]
+    },
+    {
+      "ids": [
+        "tech-4.2",
+        "tech-4.3",
+        "tech-5.1"
+      ],
+      "peer": "worker_three independently accepted exact 7aa8cf2 source text and pixels, 3087 extra mathematical cases, six fresh native narrow light/dark groups",
+      "reports": [
+        "tech-water-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "7aa8cf2"
+      ]
+    },
+    {
+      "ids": [
+        "soc-4.16",
+        "soc-4.15",
+        "soc-4.13",
+        "soc-4.14"
+      ],
+      "peer": "coordinator independently read original Broder definitions and region table, exhaustively checked 4165 directed graphs and ran fresh native narrow light/dark cases",
+      "reports": [
+        "soc-bowtie-followup.md",
+        "soc-catalogue-followup.md",
+        "soc-configuration-followup.md",
+        "soc-growth-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "14c47bb",
+        "522b26c",
+        "1511edd",
+        "21bff6e",
+        "eecb09a"
+      ]
+    },
+    {
+      "ids": [
+        "soc-3.7"
+      ],
+      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "reports": [
+        "soc-exchange-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "54ff9a0"
+      ]
+    },
+    {
+      "ids": [
+        "music-8.9",
+        "music-8.10",
+        "music-8.11",
+        "music-8.12",
+        "music-8.13"
+      ],
+      "peer": "worker_three independently accepted exact f5c65dd against Benson text and pixels, exhaustive finite mathematics plus 92840 general-circle cases, ten fresh narrow native groups and actual audio/state/geometry",
+      "reports": [
+        "music-setclass-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "f5c65dd"
+      ]
+    },
+    {
+      "ids": [
+        "tech-4.4",
+        "tech-4.5",
+        "tech-4.12"
+      ],
+      "peer": "coordinator independently compared Vitruvius and Smeaton originals/pixels, authored momentum and bucket mathematics, and six fresh narrow native review groups",
+      "reports": [
+        "tech-power-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "8f1496d"
+      ]
+    },
+    {
+      "ids": [
+        "music-7.16",
+        "music-7.17"
+      ],
+      "peer": "coordinator independently read original Sethares formulas and Figure 5 pixels, regenerated the 90-digit oracle, checked all60 finite control combinations and four fresh native/audio/state groups",
+      "reports": [
+        "music-adaptive-bp-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "7a6bc2e"
+      ]
+    },
+    {
+      "ids": [
+        "tech-4.6",
+        "tech-4.7",
+        "tech-4.10"
+      ],
+      "peer": "worker three independently accepted exact 6a51d2e",
+      "reports": [
+        "docs/verification/tech-mechanisms-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "6a51d2e99e43484b02e487482d3e7ed0549a920e"
+      ]
+    },
+    {
+      "ids": [
+        "music-6.4",
+        "music-6.5"
+      ],
+      "peer": "worker two independently accepted exact 4a240c9",
+      "reports": [
+        "docs/verification/music-roughness-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "4a240c9eaecb7907217f7eb3a090016d5fa3f8bc"
+      ]
+    },
+    {
+      "ids": [
+        "polsci-4.13",
+        "polsci-5.1",
+        "polsci-5.7"
+      ],
+      "peer": "coordinator independently accepted exact 6aa6bbc",
+      "reports": [
+        "docs/verification/polsci-downs-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "6aa6bbcb960efb943b961a58b427b1090759a4f8"
+      ]
+    },
+    {
+      "ids": [
+        "game-4.13"
+      ],
+      "peer": "worker two independently accepted exact 2bf0ae7",
+      "reports": [
+        "docs/verification/game-hypercube-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2bf0ae7"
+      ]
+    },
+    {
+      "ids": [
+        "music-6.6",
+        "music-6.15"
+      ],
+      "peer": "worker three independently accepted exact 90d674e",
+      "reports": [
+        "docs/verification/music-induced-paper-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "90d674e391075d1848cd0ad49b3229f120fd658c"
+      ]
+    },
+    {
+      "ids": [
+        "polsci-4.5"
+      ],
+      "peer": "coordinator independently accepted exact e9de0e4",
+      "reports": [
+        "docs/verification/polsci-plott-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "e9de0e4"
+      ]
+    },
+    {
+      "ids": [
+        "polsci-4.12"
+      ],
+      "peer": "coordinator independently accepted exact e7059d8",
+      "reports": [
+        "docs/verification/polsci-black-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "e7059d884439976550b252ab51ff10a602971a4b"
+      ]
+    },
+    {
+      "ids": [
+        "game-3.10"
+      ],
+      "peer": "worker two independently accepted exact 7d9262c including 0fb6977 after both state findings were repaired",
+      "reports": [
+        "docs/verification/game-blackwell-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "0fb6977",
+        "7d9262c",
+        "b17815f"
+      ]
+    },
+    {
+      "ids": [
+        "tech-4.1",
+        "tech-4.8",
+        "tech-4.9"
+      ],
+      "peer": "worker one independent exact-commit source/math/native review; coordinator metadata review",
+      "reports": [
+        "docs/verification/tech-loads-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "ee8c409",
+        "123e70f",
+        "795c87d",
+        "be623a1"
+      ]
+    },
+    {
+      "ids": [
+        "music-8.14",
+        "music-8.15"
+      ],
+      "peer": "coordinator independent exact-commit source/math/audio/native review",
+      "reports": [
+        "docs/verification/music-fourier-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "860a712",
+        "293a00e"
+      ]
+    },
+    {
+      "ids": [
+        "polsci-4.6",
+        "polsci-4.7"
+      ],
+      "peer": "coordinator independent source/math/native and raw-state review",
+      "reports": [
+        "docs/verification/polsci-chaos-followup.md",
+        "docs/verification/polsci-yolk-followup.md"
+      ],
+      "status": "accepted",
+      "stateFollowups": [
+        "polsci-4.5"
+      ],
+      "commits": [
+        "0ae2f04",
+        "c22c869",
+        "1323d4c"
+      ]
+    },
+    {
+      "ids": [
+        "tech-4.11"
+      ],
+      "peer": "worker one independent exact-commit primary-source/math/native review",
+      "reports": [
+        "docs/verification/tech-sailing-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "5895f07",
+        "d91ba25"
+      ]
+    },
+    {
+      "ids": [
+        "polsci-5.6"
+      ],
+      "peer": "coordinator independent actual-source/math/native review including 2026 correction",
+      "reports": [
+        "docs/verification/polsci-strategic-jury-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2136598",
+        "225d766"
+      ]
+    },
+    {
+      "ids": [
+        "game-4.8"
+      ],
+      "peer": "worker two independent actual-source/math/native review and 81940 belief-state checks",
+      "reports": [
+        "docs/verification/game-chainstore-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "06b1ee4",
+        "571c301"
+      ]
+    },
+    {
+      "ids": [
+        "music-8.5",
+        "music-8.6"
+      ],
+      "peer": "coordinator independent actual-source/math/audio/native review and saved-state repair",
+      "reports": [
+        "docs/verification/music-generated-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "ea19bd4",
+        "2ec687f",
+        "940ad19"
+      ]
+    },
+    {
+      "ids": [
+        "tech-5.4",
+        "tech-5.5",
+        "tech-5.7"
+      ],
+      "peer": "coordinator independent actual-source/math/native review",
+      "reports": [
+        "docs/verification/tech-clockdrives-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "b2c24f0",
+        "5a1988e"
+      ]
+    },
+    {
+      "ids": [
+        "polsci-5.9"
+      ],
+      "peer": "coordinator independent original/author-correction/math/native review and saved-state repair",
+      "reports": [
+        "docs/verification/polsci-swing-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "b464858",
+        "af74bcd",
+        "f9a9406"
+      ]
+    },
+    {
+      "ids": [
+        "music-8.16"
+      ],
+      "peer": "coordinator independent source/math/audio/native review",
+      "reports": [
+        "docs/verification/music-rows-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "5f608d9"
+      ]
+    },
+    {
+      "ids": [
+        "music-8.21"
+      ],
+      "peer": "coordinator exact-commit primary-source, independent whole-course/truth, native input/audio and pixel review",
+      "reports": [
+        "docs/verification/music-ringing-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "f1e656d"
+      ]
+    },
+    {
+      "ids": [
+        "polsci-5.8",
+        "polsci-5.10"
+      ],
+      "peer": "worker_one exact-commit original-source/pixels, independent integer-polynomial, native-state and output-pixel review",
+      "reports": [
+        "docs/verification/polsci-aggregation-followup.md",
+        "docs/verification/polsci-essai-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "ee16fa1",
+        "71e3f45"
+      ]
+    },
+    {
+      "ids": [
+        "tech-5.6",
+        "tech-5.8"
+      ],
+      "peer": "coordinator exact-commit original-source/pixels, independent ODE, native input/replay and geometry review",
+      "reports": [
+        "docs/verification/tech-huygens-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "eed690f"
+      ]
+    },
+    {
+      "ids": [
+        "game-3.9"
+      ],
+      "peer": "worker_two exact-commit original-source/pixels, exact rational inequalities, native-state and output-pixel review; credit-year follow-up independently confirmed",
+      "reports": [
+        "docs/verification/game-blotto-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "5c1739d",
+        "9997e2c",
+        "4f598d4"
+      ]
+    },
+    {
+      "ids": [
+        "ling-4.9",
+        "ling-4.10"
+      ],
+      "peer": "worker_three exact-commit primary-source/pixels, independent corpus and arithmetic, native-state and output-pixel review",
+      "reports": [
+        "docs/verification/ling-language-models-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2c0092b"
+      ]
+    },
+    {
+      "ids": [
+        "tech-5.9",
+        "tech-5.10"
+      ],
+      "peer": "coordinator exact-commit original-source/pixels, independent signed/discrete models and fresh native-state review including reproduced then repaired raw-coordinate finding",
+      "reports": [
+        "docs/verification/tech-longitude-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "4e20348",
+        "61dc46b"
+      ]
+    },
+    {
+      "ids": [
+        "art-4.5",
+        "art-4.14",
+        "art-4.16"
+      ],
+      "peer": "coordinator exact-commit original-source/pixels, official full-data, exact rational/Decimal, native-state and output-pixel review",
+      "reports": [
+        "docs/verification/art-colorimetry-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "45e4ab4"
+      ]
+    },
+    {
+      "ids": [
+        "tech-5.11"
+      ],
+      "peer": "coordinator exact-commit actual-original/owner-source, independent reflection/latitude, native-state and source/output-pixel review",
+      "reports": [
+        "docs/verification/tech-optics-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "ece12ff"
+      ]
+    },
+    {
+      "ids": [
+        "tech-5.2",
+        "tech-5.3"
+      ],
+      "peer": "coordinator exact-commit complete owner-source/pixels, independent geometry/ODE, fresh native-state and output-pixel review",
+      "reports": [
+        "docs/verification/tech-skycompass-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "67c246d"
+      ]
+    },
+    {
+      "ids": [
+        "game-4.11"
+      ],
+      "peer": "worker_one exact-commit original-source/pixels, separate finite-state oracle, fresh native/input/replay and output-pixel review",
+      "reports": [
+        "docs/verification/game-stealing-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "a99dc23"
+      ]
+    },
+    {
+      "ids": [
+        "ling-4.8",
+        "ling-4.14"
+      ],
+      "peer": "worker_two exact-commit complete original-source/pixels, independent corpus and finite-joint oracles, native-state and output-pixel review",
+      "reports": [
+        "docs/verification/ling-shannon-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "62b0eaf"
+      ]
+    },
+    {
+      "ids": [
+        "art-3.2",
+        "art-4.15"
+      ],
+      "peer": "coordinator exact-commit original-source/pixels, independent analytic spectral reference, fresh native-state and output-pixel review",
+      "reports": [
+        "docs/verification/art-spectra-maxwell-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "55c303a"
+      ]
+    },
+    {
+      "ids": [
+        "art-4.12",
+        "art-4.13"
+      ],
+      "peer": "coordinator exact-commit original-source/pixels, independent linear/Simpson and owner-data checks, native-state and output-pixel review",
+      "reports": [
+        "docs/verification/art-perception-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9f38382"
+      ]
+    },
+    {
+      "ids": [
+        "ling-3.8",
+        "ling-3.9"
+      ],
+      "peer": "worker_three exact-commit original/official source-pixels, independent template/copy oracles, fresh native-state and output-pixel review",
+      "reports": [
+        "docs/verification/ling-morphology-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "f0dbec4",
+        "8f301862"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-3.9",
+        "bighist-3.10"
+      ],
+      "peer": "Worker two independently accepted exact 4f6b9c7 after primary-source, math and fresh native/pixel review",
+      "reports": [
+        "docs/verification/bighist-impact-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "4f6b9c7"
+      ]
+    },
+    {
+      "ids": [
+        "arch-3.10",
+        "arch-3.12",
+        "arch-3.13"
+      ],
+      "peer": "Coordinator independently accepted exact e840446 after actual original sources, analytic math and fresh native/output pixels",
+      "reports": [
+        "docs/verification/arch-buttresses-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "e840446",
+        "5b58b7a"
+      ]
+    },
+    {
+      "ids": [
+        "ling-3.10"
+      ],
+      "peer": "Coordinator independently accepted exact e1cfabd after original source population, independent reference and native/output pixel review",
+      "reports": [
+        "docs/verification/ling-irregular-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "e1cfabd"
+      ]
+    },
+    {
+      "ids": [
+        "art-3.3",
+        "art-3.12",
+        "art-3.13"
+      ],
+      "peer": "Worker one independently accepted exact003e624 after original sources, independent optics/color references and fresh actualpixel native review",
+      "reports": [
+        "docs/verification/art-optics-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "003e624",
+        "0042d66"
+      ]
+    },
+    {
+      "ids": [
+        "ling-4.13"
+      ],
+      "peer": "Worker two independently accepted exact9a65687 after original Zipf/Mandelbrot, independent tokenizer/finitefit reference and fresh native/output review",
+      "reports": [
+        "docs/verification/ling-wordstats-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9a65687",
+        "4cf5c25"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-3.8"
+      ],
+      "peer": "Worker three independently accepted exact9ac40db after original metric/lag sources, independent80digit/random/RK4 and fresh native/pixel review",
+      "reports": [
+        "docs/verification/bighist-extinction-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9ac40db"
+      ]
+    },
+    {
+      "ids": [
+        "arch-3.9"
+      ],
+      "peer": "Coordinator independently accepted13fafb8+a9fd590 after actual conditional sources, independent30vertex/dual math and fresh exactDOM/rawstate/nativepixels",
+      "reports": [
+        "docs/verification/arch-buttress-pier-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "13fafb8",
+        "a9fd590",
+        "b9f1e44",
+        "3f23921"
+      ]
+    },
+    {
+      "ids": [
+        "ling-4.12"
+      ],
+      "peer": "coordinator independent actual-source, recount, mathematical and fresh native review",
+      "reports": [
+        "docs/verification/ling-stylometry-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "60af20f"
+      ]
+    },
+    {
+      "ids": [
+        "nla-3.15"
+      ],
+      "peer": "coordinator independently compared actual1947 source, exact rational arithmetic and fresh native/output evidence",
+      "reports": [
+        "docs/verification/nla-original-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "73fe4dc"
+      ]
+    },
+    {
+      "ids": [
+        "arch-3.7"
+      ],
+      "peer": "coordinator independently compared primary annular sources, tangency/quadrature math and fresh native/output evidence",
+      "reports": [
+        "docs/verification/arch-circular-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9d9a64b"
+      ]
+    },
+    {
+      "ids": [
+        "ling-4.6"
+      ],
+      "peer": "coordinator independently compared actual Altmann1980, regenerated complete proxy/fit oracle and fresh native/output evidence",
+      "reports": [
+        "docs/verification/ling-menzerath-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "73e2c4d"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-4.4"
+      ],
+      "peer": "worker one independently read original2005source, regenerated complete reference and checked exact distribution and fresh native/output evidence",
+      "reports": [
+        "docs/verification/bighist-founder-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9285ee1"
+      ]
+    },
+    {
+      "ids": [
+        "arch-4.6"
+      ],
+      "peer": "worker one independently read original Poleni1748, checked exact-Fraction/80digit equilibrium and fresh native/output evidence",
+      "reports": [
+        "docs/verification/arch-poleni-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "987ea53"
+      ]
+    },
+    {
+      "ids": [
+        "mat-3.13"
+      ],
+      "peer": "coordinator independently compared actual Taylor1934, source equations/finite-chain mathematics and fresh native/output evidence",
+      "reports": [
+        "docs/verification/mat-taylor-original-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "3c5ac7e"
+      ]
+    },
+    {
+      "ids": [
+        "geol-3.15"
+      ],
+      "peer": "worker one independently read complete original1967, checked spherical Jacobians and fresh native/output evidence",
+      "reports": [
+        "docs/verification/geol-mckenzie-original-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "d391e35"
+      ]
+    },
+    {
+      "ids": [
+        "ling-3.6"
+      ],
+      "peer": "coordinator independently read WALS/Sapir primary bodies, regenerated source/count reference and checked fresh native/output evidence",
+      "reports": [
+        "docs/verification/ling-typology-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2d6a493"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-3.6"
+      ],
+      "peer": "worker two independently checked actual sources,80digit dense-LU and72extra profile/flux cases plus fresh native/output evidence",
+      "reports": [
+        "docs/verification/bighist-snowball-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9a1c859"
+      ]
+    },
+    {
+      "ids": [
+        "geol-4.10"
+      ],
+      "peer": "coordinator independently verified actual original coefficient conflict, exact abstract-version model, independent mathematics and fresh native/output evidence",
+      "reports": [
+        "docs/verification/geol-hirschmann-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2797d24"
+      ]
+    },
+    {
+      "ids": [
+        "arch-4.7"
+      ],
+      "peer": "worker three independently inspected actual primary source pages, regenerated the 80-digit reference, checked independent shell equilibrium, both fresh 320px native themes and own source/output pixels without findings",
+      "reports": [
+        "docs/verification/arch-pantheon-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "99df40d491d4d4918d6f1911e8321f8679b4b018",
+        "b19544e"
+      ]
+    },
+    {
+      "ids": [
+        "arch-4.8"
+      ],
+      "peer": "worker three independently read actual owner text and checked shell equilibrium, unique root, positive-part band integrals, regenerated 80-digit reference, fresh 320px native themes and own output pixels without findings; source page screenshot access limit recorded explicitly",
+      "reports": [
+        "docs/verification/arch-florence-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "3dac4fa88e301e30223098890eb28867ba912f25",
+        "acc653a"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-3.7"
+      ],
+      "peer": "worker three independently read actual source versions and pixels, verified corrected primary URL, regenerated 80-digit reference, checked independent RK4/Simpson identities, fresh 320px native themes and own output pixels without remaining findings",
+      "reports": [
+        "docs/verification/bighist-cambrian-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "5dc9da6",
+        "4c558b8"
+      ]
+    },
+    {
+      "ids": [
+        "arch-4.9"
+      ],
+      "peer": "worker three independently read original French text and scans, checked analytic surface/plan geometry and independent polar quadrature, regenerated 80-digit reference, fresh 320px native/projection/camera matrices and own source/output pixels without findings",
+      "reports": [
+        "docs/verification/arch-pendentives-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "22ac03ad84002487648c94e90bd59c64ef4710bf",
+        "0b0636a"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-3.1"
+      ],
+      "peer": "coordinator independently read actual original sources and all81table cells, found and confirmed corrected classic beta-ABA transcription, regenerated 65-digit reference, fresh final320px native themes and own source/output pixels without remaining findings",
+      "reports": [
+        "docs/verification/bighist-miller-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "b608940",
+        "f83f8e71",
+        "95ca6fa",
+        "0d648a8"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-4.1"
+      ],
+      "peer": "worker one independently read original source tables and author reply plus official museum bodies, regenerated 80-digit reference and independent 100-digit allometry, fresh narrow native and real pointer-drag replays, own source/output pixels without findings",
+      "reports": [
+        "docs/verification/bighist-hominin-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "d09be99ca46377f6fd8b7fd80c2471d7634fd7a3",
+        "e7334e2"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-3.2"
+      ],
+      "peer": "Worker two independently read bounded actual originals/author bodies and pixels, regenerated683 exact fixtures, added3125 integer-vector and coefficientwise dominance checks, and passed fresh320both-theme native/source-output pixel review after glyph follow-up",
+      "reports": [
+        "docs/verification/bighist-origins-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "97b9fe0b6c285b1ed6660c048eac5c1ee228c550",
+        "62ae619e72eb8533136af985026bf39cb3348d35"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-4.2"
+      ],
+      "peer": "Worker one independently read actual Hays1976/Imbrie1980 bodies and pixels, regenerated80digit reference, checked648 independent insolation integrals/340DFT bins/three2048-step recurrences, and passed fresh320both themes plus nine real pointer drags and own pixels",
+      "reports": [
+        "docs/verification/bighist-orbits-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "dc39238f60ebe2dd62f8d126cb835f86b13c9477"
+      ]
+    },
+    {
+      "ids": [
+        "energy-3.10"
+      ],
+      "peer": "Coordinator independently read actual original1992/1993erratum/Lawson and bounded Wurzel sources/pixels, transcribed27cells, regenerated80digit reference, checked500SI scalings, found and verified intermediate contour correction, and passed fresh320both-theme native plus9pointerdrags/3edited-state replays and own pixels",
+      "reports": [
+        "docs/verification/energy-erratum-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "078e4f835b7fe35140e220d5c5f6c05f88a27307",
+        "7c9ab3c675b0ab2540285022f2cc4f17ebc278b7"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-4.7"
+      ],
+      "peer": "Worker three independently read actual Christian2004/Henrich2004 and prerequisite bodies/pixels, found27rational half-tie errors, verified exactf09b533 correction with independent BigInt26250grid and byte-identical65digit10profile fixtures, and passed fresh320both-theme complete native/replay/own pixels",
+      "reports": [
+        "docs/verification/bighist-learning-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "30f1711",
+        "f09b533"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-3.3"
+      ],
+      "peer": "Worker two independently read actual1977/1990originals, bounded2024dating/methods and NCBIcode tables with ownpixels, regeneratedFractionreference/sourcehashes, added2402cutpointcases, and passed fresh320both-theme native/extra independent raw-selector edits/fullreplay/ownpixels",
+      "reports": [
+        "docs/verification/bighist-luca-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "cedbe66e1fd8f4f3d765d0ab0e78a862557d4158"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-3.4"
+      ],
+      "peer": "Worker three independently read actual2000/2018bodies and bounded2004authorabstract/2014review with own sourcepixels, regenerated100digitreference, checked8050independentroots, and passed fresh320both-theme fullnative/raw40rollbacks/directDOM/sourcegeometry/exactreplay/ownpixels",
+      "reports": [
+        "docs/verification/bighist-goe-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "dea927f6eee36ba41b9f8813e2f38535209f8e6d"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-4.3"
+      ],
+      "peer": "Worker three independently read seven actual primary/official bodies and sourcepixels, checked ashminima/context/fossil/calibrated/modelled/activity distinctions and actual2026version, regenerated80digit36pair reference plus15independentarcintegrals, and passed fresh320both-theme native/realmap-rowclicks/directDOM/raw14rollbacks/exactreplay/ownpixels",
+      "reports": [
+        "docs/verification/bighist-dispersal-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2502b2e4bdb1cfaa1bc2e80668bc52a4c008e5f2"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-4.5"
+      ],
+      "peer": "Worker two independently read actualGreen/Reich/Fu original bodies and pixels, derived stationary finite-window count law and censored exit likelihood, regenerated70digit200window/6profile positive-quadrature reference, checked256tail-positive summaries and passed fresh320both-theme full256native/7actualdrags/40raw/directDOM/reference-independent rawedit/replay/ownpixels",
+      "reports": [
+        "docs/verification/bighist-admixture-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "f15221b317203fb8a401207b106df7e0108ac8a1",
+        "4676d49"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-4.8"
+      ],
+      "peer": "Coordinator independently read actual retained source bodies/figures, verified complete source hashes, regenerated791Fraction references plus2050independent90digit integrals, and passed both320full native/20actualdrags/65raw/source-readout ownpixels; dependency and portabletest findings corrected separately",
+      "reports": [
+        "docs/verification/bighist-megafauna-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "eece4daede958a226f686ecaff6aef8087756476",
+        "73b30d611685e0643b7ff9e6cc2d49fcd647ffdc",
+        "41662ecc3e6d5e1fc3b166e03c42eeacc75c69c2"
+      ]
+    },
+    {
+      "ids": [
+        "bighist-4.6",
+        "robot-3.7"
+      ],
+      "peer": "Independent worker_twoToba and worker_threeROBOT source/math/native/ownpixel acceptance; separate source scopes retained in named peer reports.",
+      "reports": [
+        "docs/verification/bighist-toba-peer.md",
+        "docs/verification/worker-three-robot-denavit-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "29a3e75ca3c58d202ec8090b5c5c73273d59dea6",
+        "659731fd8275c6137a4082c85e0d13ca7f13208c",
+        "f75ac4d5acecf74b386373058706b3d4694276b2"
+      ]
+    },
+    {
+      "ids": [
+        "logic-4.12"
+      ],
+      "peer": "logic_peer independently read complete authorized1930English source and verified exactd2ca3ba with independent math/freshnative/ownpixels",
+      "reports": [
+        "docs/verification/logic-godel-independent-peer-2026-10-20.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "d2ca3bab4e07ea4f23064cc7b04098ccd4e8a5dc",
+        "842051e3b4528cedde166d65d2bff304324babc9"
+      ]
+    },
+    {
+      "ids": [
+        "arch-3.14"
+      ],
+      "peer": "thermo_prereqs independently read43actual original pages and verified exactb33b4e0 source/math/native/ownpixels including decimal boundary correction",
+      "reports": [
+        "docs/verification/arch-heyman-independent-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "65873678fcf45f17a5b3e309f7aa51ef6230eeb3",
+        "b33b4e0434eb28a6425010fc8a6dc3e2f8e43b40",
+        "30ac2c447381a34d348d747d8ff19fd35bc68630"
+      ]
+    }
+  ],
+  "remainingAtStart": {
+    "sourceReviews": 139,
+    "flagshipAccepted": 2,
+    "flagshipTarget": 100,
+    "crossFieldBelow25": 53,
+    "crossFieldTotal": 64,
+    "crossFieldShortfall": 855,
+    "fullMap60fps": "open",
+    "wave5": "prepared-not-started"
+  },
+  "currentPendingSourceReviews": 5,
+  "latestCheckpoint": {
+    "testedContentCommit": "573ea1b7f2b45a4da7ed0d786ad1454e89651bae",
+    "acceptedContentCommit": "573ea1b",
+    "report": "docs/verification/checkpoint-573ea1b.md",
+    "defaultTests": 2199,
+    "uiTests": 6,
+    "testFailures": 0,
+    "testCancelled": 0,
+    "testSkipped": 0,
+    "testDurationSeconds": 103.619883625,
+    "testConcurrency": 2,
+    "strictBuildErrors": 0,
+    "strictBuildWarnings": 0,
+    "staticItems": 6621,
+    "staticErrors": 0,
+    "staticWarnings": 0,
+    "writtenItems": 6684,
+    "plannedItems": 6890,
+    "chapters": 450,
+    "collections": 85,
+    "homeGzipBytes": 113152,
+    "pendingSourceReviews": 5,
+    "acceptedTeamEntriesAtSnapshot": 146,
+    "publishedCrossFieldShortfall": 155,
+    "publishedCollectionsBelowTarget": 10,
+    "nonMathCollections": 64,
+    "wholeSyllabusBelowTarget": 7,
+    "wave5Status": "prepared-unstarted",
+    "wave5Chapters": 80,
+    "wave5NewItems": 1031,
+    "wave5PreservedItems": 2,
+    "map60fps": "open; no benchmark amid competing browser jobs",
+    "flagshipProofCuration": "2/100 alongside-wave work",
+    "evidence": [
+      "/tmp/atlas-continuation/checkpoint10-build.log",
+      "/tmp/atlas-continuation/checkpoint10-tests.log",
+      "/tmp/atlas-continuation/checkpoint10-static.log",
+      "/tmp/atlas-continuation/checkpoint10-queue.log",
+      "/tmp/atlas-continuation/checkpoint10-crossfield-accepted.log"
+    ],
+    "limitations": [
+      "Includes accepted REL/ASTRO final inputs and ECOL/CPLX/SYSBIO after7b90a07, paired source/tiny peer and preserved original-only stopping experiment. Excludes pending NEURO/CM/GAME/PHARM/PL and later ODE phrase correction/oracle successors.",
+      "Frozen BIGHIST3.5 candidate/edge remains unaccepted; default tests do not replace source peer.",
+      "First paired attempt stopped on extra original transfer draw before alternate opened. Numeric direct-Canvas pass does not accept matched history, alternate binding, lifecycle, production or timing."
+    ]
+  },
+  "openStateFindings": [
+    {
+      "id": "deep-5.12-log-thumb",
+      "status": "closed",
+      "owner": "imaging_source",
+      "finding": "Saved/model eta=.002 differs from actual DOM log thumb; c=20 also snaps on inherited400tick grid.",
+      "scope": "Dedicated local synchronization; preserve exact physical model/replay and2sig nativeinput; no shared runtime change.",
+      "peer": "ctrl_prereqs",
+      "peerCommit": "421ca255c0a8f0097ea6cdc321a06aee929f4ed0",
+      "report": "docs/verification/deep512-log-native-peer.md"
+    },
+    {
+      "id": "deep-5.12-coordinate-labels",
+      "status": "closed",
+      "finding": "Coordinateclipping plot has eta*c*sqrt2 bound but inherited legend/readout still eta*c.",
+      "owner": "oldworker_three immutable delivery only; successor does not edit oldtree",
+      "sourceClosure": "None; no commit yet as of lastread ofcodex/atlas-crossfield-psych e57c6a5.",
+      "candidate": "47fa7e8",
+      "producer": "coordinator",
+      "report": "docs/verification/deep-clipping-label-followup.md",
+      "scope": "Oldworkeruncommitteddraft remainsunadopted; successor separatelycommitted2displaylines atopacceptedlogrepair.",
+      "peer": "deep_peer",
+      "peerCommit": "e9788549e911b96c98aeceb95e501f1b4d756e2e",
+      "note": "Successorindependentlycommitted/reviewed; nooldworkeruncommitteddraftacceptance. Do notcherry-picklaterduplicatelabelcommit."
+    },
+    {
+      "id": "algo-5.18-upper-bound-and-retry",
+      "status": "closed",
+      "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
+      "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap.",
+      "commits": [
+        "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
+        "6403925aa8ad190ab3c9eb8714d8a8a61a0a5f60",
+        "608adc8eed7cb1a1d78cee409e6e1857ac6fa0e7"
+      ],
+      "peer": "deep_peer",
+      "report": "docs/verification/algo-perfect-hashing-state-peer.md"
+    },
+    {
+      "id": "imaging-2.9-singular-energies-and-log-dose",
+      "status": "closed",
+      "owner": "ctrl_prereqs",
+      "finding": "Energydomains overlap40–80:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
+      "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent.",
+      "candidate": "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
+      "peer": "arch_source",
+      "report": "docs/verification/imaging-dual-energy-runtime-peer.md",
+      "peerCommit": "aa491ccf7cc43eb325b771afad73883f6ae887c9"
+    },
+    {
+      "id": "neuro-4.6-resting-morphology-contrast",
+      "status": "open-authorized-bounded-producer",
+      "owner": "ctrl_prereqs",
+      "finding": "At before-injection frame, zero voltage uses default ramp origin panel, leaving branches nearly indistinguishable from stage background in both themes.",
+      "evidence": "/tmp/atlas-ctrl-neuro-peer/control-pixels/4.6-{light,dark}-native.png",
+      "scope": "Authorized separate two ramp-origin literals to muted, no simulation/mesh/control/flag/dependency changes. GAME peer priority first; contrast producer not yet started."
+    }
+  ],
+  "stateFollowups": [
+    {
+      "ids": [
+        "tech-4.8",
+        "tech-5.9"
+      ],
+      "status": "closed",
+      "commits": [
+        "61dc46b",
+        "44b9ffd"
+      ],
+      "peer": "coordinator exactd58dcc0 fresh source/model/native review and control-only discrepancy regressions",
+      "report": "docs/verification/tech-longitude-followup.md"
+    },
+    {
+      "id": "arch-3.9-saved-precision",
+      "status": "closed",
+      "candidate": "13fafb8",
+      "correction": "a9fd590",
+      "finding": "Valid raw17digit restoration left actual range DOM rounded while model retained extra digits; near-equality hid disagreement.",
+      "verification": "Fresh directDOM equality, valid15digit replay, both rawcounterexample rejection/exactdefault rollback and320light/dark native/source/output review pass.",
+      "report": "docs/verification/arch-buttress-pier-followup.md"
+    },
+    {
+      "id": "art-optics-tiny-native-roundtrip",
+      "items": [
+        "art-3.3",
+        "art-3.12",
+        "art-3.13"
+      ],
+      "status": "closed",
+      "correction": "0790ac5",
+      "finding": "Some15significant-digit tiny values in native0..12/0..1.2 ranges serialize with fewer significant digits, escaping the current15digit-only raw guard.",
+      "verification": "Independent actual native counterexamples; six math/static3/0/0 and six fresh320 native groups with exactDOM/tiny raw rollback/canonical replay and own pixels pass.",
+      "report": "docs/verification/art-optics-native-roundtrip-followup.md"
+    },
+    {
+      "id": "polsci-5.8-rational-half-ties",
+      "status": "closed",
+      "finding": "Math.round(f*N) disagrees with exact offered thousandth-share rounding in6of96096states, including N25/f.58 and N45/f.7.",
+      "owner": "worker_three",
+      "scope": "Separate runtime correction; accepted source flag remains unchanged.",
+      "evidence": "/tmp/atlas-worker-three/polsci-crossfield-evidence/rounding-consequence.json",
+      "correction": "b5d0bdd61175caadeb1aaebf6325f8dfec0b9775",
+      "report": "docs/verification/polsci-aggregation-rounding-peer.md",
+      "verification": "Worker one independently exhausted96096allocations,576exact rational polynomial masses/tails/moments and both320native/real-pointer/rawreplay/ownpixels; preserved offgrid raster semantics. No new original-source closure counted."
+    },
+    {
+      "ids": [
+        "robot-3.7"
+      ],
+      "status": "accepted",
+      "finding": "Finite huge saved yaw disabled horizontal drag; local bounded raw yaw and real-drag wrap independently verified.",
+      "commits": [
+        "f75ac4d5acecf74b386373058706b3d4694276b2"
+      ],
+      "report": "docs/verification/worker-three-robot-denavit-peer.md",
+      "sourceClosure": "Same3.7original closure, not a second source-review count."
+    },
+    {
+      "ids": [
+        "epi-2.2",
+        "prob-2.1.1a"
+      ],
+      "status": "accepted",
+      "finding": "Independent PHIL prerequisite peer observed unchanged target display formulas clipped at320; exact formulas read, no target-source/math acceptance implied.",
+      "producer": "worker_one",
+      "report": "docs/verification/prerequisite-formula-wrap-peer.md",
+      "commits": [
+        "951b4ed0248aa41ba769d95e882ef1328a45c243"
+      ],
+      "peer": "worker_two",
+      "sourceClosure": "None; both existing source flags unchanged, equivalent statements only."
+    },
+    {
+      "ids": [
+        "mathbio-3.4"
+      ],
+      "status": "accepted",
+      "finding": "Symplectic Euler preserves log-coordinate area, not exact first-integral energy; caption/syllabus and tinyRK4 numerical-reference distinction corrected.",
+      "commits": [
+        "1b5e4d6947f822ed13bf1aa0bc386db2f0f585d0",
+        "4e4a1d7dd7c1b1e13332c9c33f8b8f959d031830"
+      ],
+      "peer": "worker_two",
+      "report": "docs/verification/mathbio-symplectic-energy-peer.md",
+      "sourceClosure": "None;3.14originalsourceflag and all other flags unchanged."
+    },
+    {
+      "id": "deep-5.12-log-thumb",
+      "status": "accepted",
+      "candidate": "d9bb7096a8d21f200aef2b2d96805f8b3cea2af6",
+      "producer": "imaging_source",
+      "report": "docs/verification/deep512-log-native-peer.md",
+      "sourceClosure": "None; separate old-worker label-only correction still pending.",
+      "commits": [
+        "d9bb7096a8d21f200aef2b2d96805f8b3cea2af6",
+        "421ca255c0a8f0097ea6cdc321a06aee929f4ed0"
+      ],
+      "peer": "ctrl_prereqs"
+    },
+    {
+      "id": "deep-5.12-coordinate-labels",
+      "status": "accepted",
+      "commits": [
+        "47fa7e8",
+        "e9788549e911b96c98aeceb95e501f1b4d756e2e"
+      ],
+      "producer": "coordinator",
+      "peer": "deep_peer",
+      "report": "docs/verification/deep-gradient-clipping-label-peer.md",
+      "sourceClosure": "None; unchangednumericalmodel/sourceflag."
+    },
+    {
+      "id": "algo-5.18-upper-bound-and-retry",
+      "status": "accepted",
+      "commits": [
+        "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
+        "6403925aa8ad190ab3c9eb8714d8a8a61a0a5f60",
+        "608adc8eed7cb1a1d78cee409e6e1857ac6fa0e7"
+      ],
+      "producer": "imaging_source",
+      "peer": "deep_peer",
+      "report": "docs/verification/algo-perfect-hashing-state-peer.md",
+      "sourceClosure": "None; existing source flag preserved."
+    },
+    {
+      "id": "imaging-2.9-singular-energies-and-log-dose",
+      "status": "accepted",
+      "commits": [
+        "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
+        "aa491ccf7cc43eb325b771afad73883f6ae887c9"
+      ],
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/imaging-dual-energy-runtime-peer.md",
+      "sourceClosure": "None; no new prerequisite count."
+    },
+    {
+      "id": "ode-1.3-reciprocal-integrability",
+      "status": "accepted-text-and-equivalent-layout",
+      "commits": [
+        "8a753f675c8816904a31bb1b55de185068c0e2f2",
+        "4326c18b833e8498c557842573e2a67613c06e7a",
+        "68bf7c70d25f569e9a1bac2d7b5eeea572b3ac00",
+        "f4e23220704c5ed52c4c3d2d35416a5863ac3050"
+      ],
+      "report": "docs/verification/ode-integrability-independent-peer.md",
+      "scope": "Correct finite one-sided reciprocal-integral possibility of nonuniqueness; preserve theorem/runtime/flags/dependencies. Separate five-row equivalent statement closes inherited clipping. Full66object/function/source guard,271witnesses and6fresh narrow fields pass; root reruns pass. No source closure or prerequisite credit."
+    }
+  ],
+  "acceptedSourceLimitations": [
+    {
+      "id": "geol-4.10",
+      "status": "explicitly scoped; unresolved intended author coefficient",
+      "evidence": "Actual complete original abstract/Table2/paragraph39 independently confirm three incompatible printed versions.",
+      "acceptedClaim": "The illustration uses exactly the identified abstract coefficients with a declared authored closure; no reconciled recommended fit is claimed.",
+      "report": "docs/verification/geol-hirschmann-peer.md"
+    },
+    {
+      "ids": [
+        "bighist-4.6"
+      ],
+      "scope": "ActualRampino/Lanebounded originals, actualAmbrose/Storey/Yostauthorabstractclaims. CompleteAmbrose/Yostbody and independentdating/geneticpipelines not certified; retainedclaims limited accordingly.",
+      "report": "docs/verification/bighist-toba-peer.md"
+    }
+  ],
+  "crossFieldBatches": [
+    {
+      "commit": "f768b456c3e717bb6001d17231ad26758c454430",
+      "collection": "psych",
+      "items": [
+        "psych-2.10",
+        "psych-3.1",
+        "psych-4.4"
+      ],
+      "status": "accepted",
+      "producer": "worker_three",
+      "peer": "coordinator",
+      "report": "docs/verification/psych-crossfield-prerequisites-peer.md",
+      "publishedBefore": 22,
+      "publishedAfter": 25
+    },
+    {
+      "commit": "a27e698fe5562fd29e91211c4a9d86f2e359e43a",
+      "collection": "polsci",
+      "items": [
+        "polsci-4.5",
+        "polsci-4.6",
+        "polsci-4.7",
+        "polsci-5.3",
+        "polsci-5.6",
+        "polsci-5.8"
+      ],
+      "status": "accepted",
+      "producer": "worker_three",
+      "peer": "worker_one",
+      "report": "docs/verification/polsci-crossfield-prerequisites-peer.md",
+      "publishedBefore": 19,
+      "publishedAfter": 25
+    },
+    {
+      "commits": [
+        "6813dada75cd98444e3ff169c13bf0eaa94865ef",
+        "085f57ed880c9028da42cca9d03e362fc9fdc27e"
+      ],
+      "collection": "fluid",
+      "items": [
+        "fluid-1.4",
+        "fluid-2.4",
+        "fluid-2.9",
+        "fluid-3.3",
+        "fluid-4.3"
+      ],
+      "status": "accepted",
+      "producer": "worker_three",
+      "peer": "worker_one",
+      "report": "docs/verification/fluid-crossfield-independent-peer-worker-one.md",
+      "publishedBefore": 20,
+      "publishedAfter": 25,
+      "scopeCorrection": "Separate3.3time-dependentEuler wording; independent A-prime+A-squared pressure residual; no source flag closure."
+    },
+    {
+      "commit": "13e99f65d5ac3aaddc76b1114ab297c10fbafab9",
+      "collection": "phil",
+      "items": [
+        "phil-1.3",
+        "phil-1.5",
+        "phil-1.6",
+        "phil-2.9",
+        "phil-3.1",
+        "phil-4.5"
+      ],
+      "status": "accepted",
+      "producer": "worker_three",
+      "peer": "worker_one",
+      "report": "docs/verification/phil-crossfield-independent-peer-worker-one.md",
+      "publishedBefore": 19,
+      "publishedAfter": 25
+    },
+    {
+      "commits": [
+        "47c466a937528fee41143961a6c25551600b9138",
+        "94742318b79711f95f73d0936381a573c19ccd32"
+      ],
+      "collection": "mathbio",
+      "items": [
+        "mathbio-1.3",
+        "mathbio-1.6",
+        "mathbio-1.7",
+        "mathbio-1.8",
+        "mathbio-2.2",
+        "mathbio-4.2",
+        "mathbio-4.4"
+      ],
+      "status": "accepted",
+      "producer": "worker_three",
+      "peer": "worker_two",
+      "report": "docs/verification/mathbio-crossfield-prerequisites-peer.md",
+      "publishedBefore": 18,
+      "publishedAfter": 25,
+      "corrections": "Rule70sign, relative rabbitmode, complex Jordan factors, sigmoid domains;3.14originalflag unchanged."
+    },
+    {
+      "commits": [
+        "e57c6a5758904c1f08f79c437a2be87a69924471",
+        "35c129fe8858163907402c5a559ddf7473b73a9a"
+      ],
+      "collection": "deep",
+      "items": [
+        "deep-3.1",
+        "deep-3.5",
+        "deep-4.2",
+        "deep-5.2",
+        "deep-5.5",
+        "deep-5.10",
+        "deep-5.12"
+      ],
+      "status": "accepted",
+      "producer": "previous worker_three",
+      "peer": "deep_peer",
+      "report": "docs/verification/deep-crossfield-prerequisites-peer.md",
+      "publishedBefore": 17,
+      "publishedAfter": 25,
+      "sourceClosure": "None; separate5.12label/runtime followups stay open."
+    },
+    {
+      "commit": "3fea5ed16b2c7bc2a08bdccb353a4add425fe817",
+      "collection": "thermo",
+      "items": [
+        "thermo-1.16",
+        "thermo-2.11",
+        "thermo-3.5",
+        "thermo-3.11",
+        "thermo-4.10",
+        "thermo-6.3",
+        "thermo-6.4",
+        "thermo-6.8",
+        "thermo-6.15",
+        "thermo-6.16"
+      ],
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "logic_peer",
+      "report": "docs/verification/thermo-prerequisites-independent-peer-2026-10-20.md",
+      "publishedBefore": 14,
+      "publishedAfter": 25,
+      "bridgeReview": "No changed consumer IDs occur in existing bridge walks; independently checked.",
+      "sourceClosure": "None."
+    },
+    {
+      "commits": [
+        "cdc478caa16e6cfa24c329659e10287973468fd7",
+        "cbd557f0725c6a95253dfc05441c16fedbef8730"
+      ],
+      "collection": "ctrl",
+      "items": [
+        "ctrl-1.5",
+        "ctrl-1.7",
+        "ctrl-1.11",
+        "ctrl-1.12",
+        "ctrl-1.13",
+        "ctrl-2.7",
+        "ctrl-2.8",
+        "ctrl-3.5",
+        "ctrl-3.6",
+        "ctrl-4.3",
+        "ctrl-4.8"
+      ],
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "deep_peer",
+      "report": "docs/verification/ctrl-crossfield-prerequisites-peer.md",
+      "publishedBefore": 13,
+      "publishedAfter": 25,
+      "sourceClosure": "None; bounded prerequisite/bridge prose only."
+    },
+    {
+      "commit": "cabd1be31cd9690a623545dffe6ad88865ad2f1e",
+      "collection": "energy",
+      "items": [
+        "energy-1.10",
+        "energy-2.7",
+        "energy-2.8",
+        "energy-2.9",
+        "energy-2.12",
+        "energy-3.7",
+        "energy-3.8",
+        "energy-4.2",
+        "energy-4.4",
+        "energy-4.7"
+      ],
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "deep_peer",
+      "report": "docs/verification/energy-crossfield-prerequisites-peer.md",
+      "publishedBefore": 14,
+      "publishedAfter": 25,
+      "sourceClosure": "None; unchangedsourceflags.",
+      "bridgeReview": "NoenergyIDs are currentbridge steps; independently checked."
+    },
+    {
+      "commit": "cd37ccc90d940aebf4034703b6e9b7dbbaa4dda6",
+      "collection": "robot",
+      "items": [
+        "robot-1.2",
+        "robot-2.6",
+        "robot-2.9",
+        "robot-2.10",
+        "robot-4.1",
+        "robot-4.2",
+        "robot-4.3",
+        "robot-4.6",
+        "robot-4.8"
+      ],
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "deep_peer",
+      "report": "docs/verification/robot-crossfield-prerequisites-peer.md",
+      "publishedBefore": 15,
+      "publishedAfter": 25,
+      "sourceClosure": "None; unchangedsourceflags.",
+      "bridgeReview": "NochangedconsumerIDs are existingbridgesteps; independentlychecked."
+    },
+    {
+      "commit": "50424bfe669f06c70eb4a14b5948fe60a0989395",
+      "collection": "algo",
+      "items": [
+        "algo-3.3",
+        "algo-3.15",
+        "algo-5.14",
+        "algo-5.18",
+        "algo-5.20",
+        "algo-6.8",
+        "algo-10.19",
+        "algo-11.24"
+      ],
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "deep_peer",
+      "report": "docs/verification/algo-crossfield-prerequisites-peer.md",
+      "publishedBefore": 16,
+      "publishedAfter": 25,
+      "sourceClosure": "None; unchangedsourceflags.",
+      "bridgeReview": "NochangedconsumerIDs are existingbridgesteps; independentlychecked."
+    },
+    {
+      "commit": "d34510512b63cb816e16d9e9c8c97934e4723b3c",
+      "collection": "soc",
+      "items": [
+        "soc-2.4",
+        "soc-2.9",
+        "soc-2.11",
+        "soc-2.14",
+        "soc-3.2",
+        "soc-3.3",
+        "soc-3.4",
+        "soc-3.5"
+      ],
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/soc-crossfield-prerequisite-peer.md",
+      "publishedBefore": 15,
+      "publishedAfter": 26,
+      "shortfallReduction": 10,
+      "edgesAdded": 11,
+      "sourceClosure": "None; unchangedsourceflags.",
+      "bridgeReview": "NochangedconsumerIDis anexistingbridgestep; independentlychecked."
+    },
+    {
+      "commits": [
+        "37ea502c3aede818110e2097c238bfc38e753c6a",
+        "43e7fcc",
+        "f34d5c3"
+      ],
+      "collection": "imaging",
+      "items": [
+        "imaging-1.6",
+        "imaging-2.9",
+        "imaging-3.7",
+        "imaging-3.8",
+        "imaging-3.11",
+        "imaging-3.12",
+        "imaging-4.7"
+      ],
+      "status": "accepted",
+      "producer": "thermo_prereqs; coordinator statement and bridge followups",
+      "peer": "arch_source",
+      "report": "docs/verification/imaging-crossfield-prerequisite-peer.md",
+      "publishedBefore": 17,
+      "publishedAfter": 25,
+      "sourceClosure": "None. Hounsfield3.18 source remains open;2.9 runtime is separate.",
+      "bridgeReview": "Inverse-problems3.8 kernel/Plancherel note independently reviewed."
+    },
+    {
+      "commits": [
+        "5a442ec82caadd1e241c5a70000fa5281b694872",
+        "f1135a6781533903910c8d2b8f4373ccb4a890e9"
+      ],
+      "collection": "waves",
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "deep_peer",
+      "report": "docs/verification/waves-crossfield-prerequisites-peer.md",
+      "publishedBefore": 12,
+      "publishedAfter": 25,
+      "edgesAdded": 13,
+      "sourceClosure": "None; all source flags unchanged.",
+      "bridgeReview": "No changed consumer IDs are existing bridge steps; independently checked."
+    },
+    {
+      "collection": "aero",
+      "commits": [
+        "70998872b4b75de086bfbcbcf5a5f4e52ec456c0",
+        "0d380ea8882132f2fd2b8b1d5a61388683fce59f"
+      ],
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "publishedBefore": 11,
+      "publishedAfter": 25,
+      "report": "docs/verification/aero-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; source flags and numerical functions preserved.",
+      "bridgeReview": "AERO2.5 harmonic step independently reviewed and remains accurate."
+    },
+    {
+      "collection": "demo",
+      "commits": [
+        "5b4798842d57f5f66c1a6cdcbdebeca1d9609c6c",
+        "2a677b2630cd8e8cde1383ff576c57e66c7fe018",
+        "f3d24d912f4ba0a6298605495f593d030db0fa5e"
+      ],
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "publishedBefore": 12,
+      "publishedAfter": 25,
+      "report": "docs/verification/demo-prerequisites-independent-peer.md",
+      "sourceClosure": "None; source flags and numerical functions preserved.",
+      "bridgeReview": "No changed consumer IDs are bridge steps."
+    },
+    {
+      "collection": "geol",
+      "commits": [
+        "48093726065c5fa4a9e3fc065ec6cdd951d58014",
+        "2fcf1881c307c9103fcfbf74eff1d5b99372d4be"
+      ],
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "logic_peer",
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "report": "docs/verification/geol-independent-peer-2026-10-20.md",
+      "sourceClosure": "None; all functions and source flags preserved.",
+      "bridgeReview": "No changed consumers are existing bridge steps."
+    },
+    {
+      "collection": "info",
+      "commits": [
+        "bd86a7e011b98a7787dcd1dc3d34a447b0326221",
+        "be2bdb25dbdac006b8e4e08df5fc035891f0431b",
+        "a8a78482277a8dc984c398e41c0ba4b2ef60c0ca"
+      ],
+      "status": "accepted",
+      "producer": "ctrl_prereqs; coordinator bridge note",
+      "peer": "logic_peer",
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "report": "docs/verification/info-independent-peer-2026-10-20.md",
+      "sourceClosure": "None; functions/source flags preserved.",
+      "bridgeReview": "Entropy3.14 common-kernel/stationary-reference note independently accepted with actual narrow-theme cards."
+    },
+    {
+      "collection": "kin",
+      "commits": [
+        "ba5f1b2f51dd9828cb457f2f266ee508d0550599",
+        "10c9b97cbe0a6bf13602c034749ca900a3bc6e86"
+      ],
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "arch_source",
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "report": "docs/verification/kin-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; source flags/functions/helpers preserved.",
+      "bridgeReview": "No changed consumer IDs are bridge steps.",
+      "syllabusCorrection": "3.4qchem1.8alias canonicalized to existingwrittenqm4.4; no extraedge."
+    },
+    {
+      "collection": "physio",
+      "commits": [
+        "23b0fc2d861beebfb7b11122ea49716ac0c66cf2",
+        "83641504627ab601bd11d0a3ec83f47122d44d5a"
+      ],
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "report": "docs/verification/physio-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all functions/source flags/helpers preserved.",
+      "bridgeReview": "Actual feedback/diffusion narrow cards independently reviewed; unchanged notes accurate.",
+      "syllabusCorrection": "1.3 matches existing written planned first-law pchem10.1; no authored planned proof or extraedge claimed."
+    },
+    {
+      "collection": "geo",
+      "commits": [
+        "41e28718ef13f3c5c8338d689b8407f21ff09b47",
+        "0046dec6794e2d292e56273cfac275af4cf2c017",
+        "d4dd0817c0e5e150d2918c4f633788ecace531d6",
+        "91ad005bfc36bedbcfc69262acec3addff09ccb5"
+      ],
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "deep_peer",
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "report": "docs/verification/geo-prerequisites-independent-peer.md",
+      "sourceClosure": "None; source flags/functions/helpers preserved.",
+      "bridgeReview": "No changed consumers are bridge steps.",
+      "correction": "2.7constant-rotation curl sign negative; independently verified without changing zero-column conclusion."
+    },
+    {
+      "collection": "behav",
+      "commits": [
+        "2afbe7e27409aae87a402cc515291f9e9436e4f8",
+        "19e4c9d9aec714f957834828a7833e29592d8f7f",
+        "3f2b68fd655b0fd6e26a6995b9ad6cad276f97d0"
+      ],
+      "publishedBefore": 11,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "deep_peer",
+      "peer": "imaging_source",
+      "report": "docs/verification/behav-independent-peer.md",
+      "sourceClosure": "None; all functions/helpers/source flags preserved.",
+      "followup": "Four equivalent fields wrapped after inherited320overflow; no bridge IDs."
+    },
+    {
+      "collection": "epi",
+      "commits": [
+        "a13604f7bae12f3718d28fe089c18e4957e790d3",
+        "8eb0cb02810d979f8518c1c58dae877b09106fbf",
+        "b8d4f2e29a8b64f2e595155679b1e7a024e35eb6"
+      ],
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/epi-prerequisites-independent-peer.md",
+      "sourceClosure": "None; all functions/helpers/source flags preserved.",
+      "followup": "Three raw rows synchronized;3.9non-informative censoring qualification independently checked; causality bridge accurate."
+    },
+    {
+      "collection": "bioinf",
+      "commits": [
+        "f893017643c70994854fa6af773c68606a2be26f",
+        "8502d567356e1bd45962629d026a682df2178e85"
+      ],
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/bioinf-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; functions/helpers/flags unchanged.",
+      "bridgeReview": "No changed IDs are existing bridge steps.",
+      "followup": "3.8expectation explicitly requires common valid placements,3.2existingFekete row backfilled,4.12LSEpositiveargument typo corrected."
+    },
+    {
+      "collection": "macro",
+      "commits": [
+        "a7f647f181ee4575efb60253c9ee3f7680661600",
+        "baf0631514059e1699f7124670423c4098928a8b",
+        "16ff6f4919ef80bd00f468cd5651c3f59ad1477f"
+      ],
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/macro-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; functions/helpers/flags preserved.",
+      "bridgeReview": "No changed IDs are bridge steps.",
+      "followup": "Three justified raw row omissions backfilled; signed residual coefficient beta_x distinguished from positive convergence b."
+    },
+    {
+      "collection": "circ",
+      "commits": [
+        "1a6f054a6b1bf6b02af7851f0e0a50be0dfc2118",
+        "f29bbcb3310a654cb63e4156632ae1d693b99483",
+        "56e03b7b9395378837bc90f8765aaaeeb2763865",
+        "20c1dd6d5ce9f716447756792b4a9b9ebaf50624"
+      ],
+      "publishedBefore": 8,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "deep_peer",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/circ-prerequisites-independent-peer.md",
+      "sourceClosure": "None; CIRC4.17original source remains byte-identical and open.",
+      "bridgeReview": "No changed IDs are bridge steps.",
+      "followup": "Three bounded consistency/port/diode statements and two existing raw row omissions independently repaired; no numerical functions/flags changed."
+    },
+    {
+      "collection": "popgen",
+      "commits": [
+        "35771b8239fb74cce147524a7e1f410ed7320305",
+        "090de9f8a298b7972ca64c1a248d37be568ae545",
+        "9890c6e6994913c82002040a441dc2327d70c058",
+        "bc90b274c0382ffde4b184acc62339b42cd92f53"
+      ],
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "producer": "arch_source",
+      "peer": "imaging_source",
+      "report": "docs/verification/popgen-independent-wrap-peer.md",
+      "followup": "Seventeen genuine additions and one removed analogy-only edge, net sixteen. Seven equivalent statement wraps; twelve existing raw row backfills. Full62 objects/functions/flags preserved.",
+      "status": "accepted",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "No affected bridge step."
+    },
+    {
+      "collection": "toc",
+      "commits": [
+        "27e280c4b611ed2191a63a203ddb6987ca9ef17d",
+        "96f0d03f4aa3d3f0f151108c4ae5d92a00860668"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 25,
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/toc-crossfield-prerequisite-peer.md",
+      "followup": "Eighteen genuine inputs; bounded permutation, fragment-boundary and initial partition qualifications, equivalent statement wraps and two existing same-field row backfills. Full51 objects/functions/flags preserved.",
+      "status": "accepted",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "No affected bridge step."
+    },
+    {
+      "collection": "geog",
+      "commits": [
+        "7bcb87d3efad2734933920d067dda3af050f0b55",
+        "295e92fbdf1c57868ce23399656c7d72e8f9ce6d",
+        "df2dfe35a131c3995800fb930b174dee7b7245ae",
+        "7c0fe370b686726a9bcf0ac64effdd44aab9cb5d",
+        "48b26f0d4aa4fb3a705603141ca93c34b4e05f04",
+        "5e19ba532c35d7a2b2ccf255ab9954ec262f8adb"
+      ],
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "producer": "imaging_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/geog-crossfield-prerequisite-peer.md",
+      "followup": "Sixteen genuine inputs; sphere equality and orthogonal-map qualifications, equivalent statement wraps including actual253px inner field, two existing raw row backfills. Full48 objects/functions/flags preserved.",
+      "status": "accepted",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "Existing map-distortion bridge reviewed; no edit required."
+    },
+    {
+      "collection": "rel",
+      "commits": [
+        "f61887e3f2bc1cdb89d63c7670526803aed92a9b",
+        "a818e538a2372b228894d577e9ef13e04d9965e0",
+        "c9e6c00f30022d9702a1059328cb35ab8aa14a3d",
+        "2a887fb5bbb89cb0adad7a7aba037f1c5764460b"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 23,
+      "status": "accepted-bounded-below-target",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/rel-independent-peer-followup.md",
+      "sourceClosure": "None; all57functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge references.",
+      "followup": "Sixteen genuine inputs across12consumers. Unit-normalized four-acceleration coefficient and small-rapidity Newtonian rocket qualifier corrected; three equivalent narrow statement wraps. Full57raw lists match; remaining published shortfall2."
+    },
+    {
+      "collection": "cm",
+      "commits": [
+        "eb35ab8d07c9c2def5436f9fa188aebde0faccc6",
+        "be6788864a0be00a45832950a054adff9f760e01",
+        "775df1461b4bec90abc6cd768f19eac743fbb23c",
+        "f66b5e49fc7a8b1c960d79a41b53e3c36f7594b7"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 16,
+      "status": "accepted-bounded-below-target",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/cm-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all52objects/functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Nine genuine different-field math inputs; initial same-field overcount rejected. Four bounded mass/orbit qualifications and three equivalent wraps. Two existing same-field rows backfilled without credit. Independent1613checks/ownpixels; published shortfall9 remains. Initial peer output-directory typo affected some producer temporary pictures; peer final independent directory and retained producer final/correction/wrap evidence used and disclosed."
+    },
+    {
+      "collection": "climate",
+      "commits": [
+        "0cf13c462023a444e2beadc2178b2ef52125c4e0",
+        "f9fed2ec60515e6af72245e763c6080935c07a0d",
+        "9094a791e98d676a73f4bbdad49e28215b3f044b",
+        "93398ea791be4ed5d5b109ec1a176f622d35c127",
+        "fe2beabe5db72a93dc7f15afd6568df3211d9e15"
+      ],
+      "publishedBefore": 6,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "imaging_source",
+      "report": "docs/verification/climate-independent-peer.md",
+      "sourceClosure": "None; all51functions/flags/helpers preserved; assessment numbers unchanged.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Nineteen genuine inputs across17consumers. Six equivalent statement wraps, two scope citation links moved to exact clickable URLs, false between-blackbody-slopes claim removed. Seventeen full touched raw lists match including three existing same-field backfills; four untouched raw mismatches remain explicitly unendorsed. Independent1205math17groups and freshfullscope/narrowtheme pixels pass."
+    },
+    {
+      "collection": "qinfo",
+      "commits": [
+        "cd06f043a644670bfe7bc15559990ac00abf839b",
+        "ec7867651b18a1fe5776d404ee4e00d82cdd85a6",
+        "b78affd5465fc3ef734f6a2119d6b9e35fe7a410",
+        "84645c9a2883395ffc3f29122631224db81eb929"
+      ],
+      "publishedBefore": 6,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/qinfo-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all32objects/functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Nineteen genuine inputs; bounded Helstrom success/error, POVM/rank, Bell-pair distinction, spectral/square-root reference and independent-interception qualifications. Eight narrow statement layouts including exact4.9notation expansion, followed by grammar-only root successor. Independent16530checks+ownfreshpixels/closingallTeXidentity. Earlier producerfrozenguard certifies ec78676 only; peer closingliteralguard certifiesb78affd."
+    },
+    {
+      "collection": "solid",
+      "commits": [
+        "3d543ac662e32eff55b6f357fbe24dfadae9e100",
+        "fa9287217a4e296ef9223a659951d7be66da1c85",
+        "f427d996c5bfa684210a108dd203803024e12554",
+        "f04b3adae5b5328bbf805d6897ecd510d13c8693",
+        "d5abdb8f2da35322fb16626412badcd2d2a5a0ec"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/solid-independent-peer-followup.md",
+      "sourceClosure": "None; all47functions/flags/helpers/rawlists preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Eighteen genuine different-field math/physics inputs across14consumers. Ideal massless-spring impact scope/stiffness corrected, pureAiry restrictedto no bodyforce, nine equivalentstatementwraps. Independent3677mathassertions and28fresh320both-theme cases/112pictures pass."
+    },
+    {
+      "collection": "pl",
+      "commits": [
+        "c578ef8229f03739ccfa0dddccb5bda09f9929cd",
+        "0e1c0bac7a5053dbfcd76ba6aa7fe4c523dc00e0"
+      ],
+      "publishedBefore": 0,
+      "publishedAfter": 9,
+      "status": "accepted-bounded-below-target",
+      "producer": "logic_peer",
+      "peer": "deep_peer",
+      "report": "docs/verification/pl-prerequisites-independent-peer.md",
+      "sourceClosure": "None; all46functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Nine genuine mathematical logic inputs across8consumers with finite-syntax/fixed-background Curry qualifications. One existingpl2.8rowbackfill noquota. Full115rows and46objects/rawlists,2475independentmathfixtures andfreshcomplete253px/narrowtheme pictures pass;16written shortfall remains."
+    },
+    {
+      "collection": "ml",
+      "commits": [
+        "0026d445591cb294549063f7e85e7afdd6d003c5",
+        "42bc1dae9c318ccf97fd21e6f70f03e07c495c1d",
+        "a8ac4a0d9fec9b2b0d9868d5ba4891bca4f59f00",
+        "2e4291a7a21774038b41b2cef5efd6ba2f42c272",
+        "80a0c234c3296bff35e7439cfa3e4d8491131238"
+      ],
+      "publishedBefore": 0,
+      "publishedAfter": 14,
+      "status": "accepted-bounded-below-target",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/ml-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all25functions/flags/helpers/rawlists preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Fourteen genuine mathfield inputs across12consumers. Atom-safe target-restricted fixedquantile proof inclboundary/empty-positive cases; coordinate atoms qualified, Hoeffding nondegenerate/constant range cases, seven equivalentwraps. Own32877independentchecks andfreshcomplete253px/narrowtheme pictures pass;11written shortfall remains."
+    },
+    {
+      "collection": "astro",
+      "commits": [
+        "d28855802e3b9e69fca532ed0669d886c1547bba",
+        "4005f92f038df335ba3a1dd1b8c75711319780d5",
+        "403942eca09da1ac936453d189a612d8ace83971",
+        "645d60432204b7963d92db519989176b4e4909f8",
+        "4df36d5351ba5c1f5459f6db0ef87983d32a69ff"
+      ],
+      "publishedBefore": 0,
+      "publishedAfter": 21,
+      "status": "accepted-bounded-below-target",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/astro-crossfield-prerequisite-peer.md",
+      "followup": "Twenty-one genuine mathinputs. Ωsign/strictJordanthreshold, orbitalperiod units, retainedquadraticAMD, radiation-adjustedcircularreference andfiveorders prose corrected;12equivalentwraps andoneexistingrowbackfill. Full48objects/functions/flags/helpers/rawlists,5995independentchecks andfresh88fullfieldpixels pass;4shortfall remains.",
+      "sourceClosure": "None; original source flags preserved.",
+      "bridgeReview": "No affected bridge steps."
+    },
+    {
+      "collection": "dist",
+      "commits": [
+        "e3c25b3511ef4d9de191b0e464084675820d0681",
+        "3d08f6beadd24992058d1c34eaf965ce3e6999e5",
+        "4c620b420e7a89c4208cb9c9a22e59a1b1a70ff8",
+        "e9f9c49c9efc5279f63d93bf2db9c9f7cf3f8fd7"
+      ],
+      "publishedBefore": 1,
+      "publishedAfter": 26,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "imaging_source",
+      "report": "docs/verification/dist-independent-peer.md",
+      "followup": "Twenty-five genuine mathinputs across19consumers. ExplicitirLaw/irRun+onevizexceptions: exactmeanvsfiniteCDF, honestcap/tiedsurvivors/noarbitraryleader/censoredUI. Sevenboundedfields, width-dependentColeVishkinrounds andoneequivalentwrap; remaining47objects/functions/flags/helpers/rawlists/sourcebytes preserved. Own589828math+1035recurrencechecks/38natives+nativecontrols/closingpixels;two meaningfuldefaultbehavior regressions pass.",
+      "sourceClosure": "None; original source flags preserved.",
+      "bridgeReview": "No affected bridge steps."
+    },
+    {
+      "collection": "cg",
+      "commits": [
+        "36559492c902de1863658395b742a4adb663eb86",
+        "cf8574946ba35da98d97631647e2a6cbc7b2e417",
+        "83b8105c84a4872a52c8d17f2f57266f505d672c",
+        "c0afdd5f40873a518c9fd46d0670554e40011ef3",
+        "3395bc5c28dafeab12c4dd10ec8f9e6bfabc5dd6",
+        "83cd228e4ec601a4c9c5517a9c80029e5b3ac30e"
+      ],
+      "publishedBefore": 5,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "logic_peer",
+      "peer": "arch_source",
+      "report": "docs/verification/cg-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all38functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Twenty genuine mathinputs across18consumers; shoelacewrap, LPoptimalface/constantobjective andconditionalpredicate/degree-separatedsymbolicperturbation qualifications. Threeexisting samefield rawrows backfillednoquota. Full114rows/rawlists/objects plus104767independentchecks andfreshcomplete253px/narrowtheme pictures pass."
+    },
+    {
+      "collection": "xtal",
+      "commits": [
+        "c08ce47f98934df38f31ece002417f9cb6ff2fb5",
+        "db09d655bed8388fce307ceef61af0e8d40090cf",
+        "199d71f40f98f4ff11613408196c16619495eb62",
+        "b99ea74d4daf72001af464e99e8eb64f9c5b1199",
+        "5882ef67e1ab39adfe2bfb44091daa6466815bc0",
+        "9b1ef96125febe59904cd1f7c065c3594501872d"
+      ],
+      "publishedBefore": 1,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/xtal-independent-peer.md",
+      "sourceClosure": "None; all 34 functions/flags/helpers preserved.",
+      "bridgeReview": "Affected symmetry bridge read and compatible; no bridge edit.",
+      "followup": "24 genuine inputs across 19 consumers: 23 math and one earth field, different from XTAL chemistry. Primitive-cell vs integer-sublattice, noncyclic stabilizer, fixed-set dimensions and oriented-normal scope corrected; six equivalent layout exceptions. All raw lists, full objects and other bytes preserved. 21,555 independent assertions, actual 253px both-theme complete fields and closing caption pixels pass. Root integrated preservation/math and queue rechecks pass."
+    },
+    {
+      "collection": "mat",
+      "commits": [
+        "8ba4a4543155814a581066cc5ea5da9b14114ace",
+        "74a8ddf4d499e8c09d7fae99eddd645b9b00503b",
+        "38d8f8702d65b44f968645b37e6b467ed24c6bae",
+        "6e555f45a1c7247c2d305f6f7cd55f1408ba4337",
+        "95f05d0fc64be0e105ca8c3928852c121cb35749"
+      ],
+      "publishedBefore": 3,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "imaging_source",
+      "report": "docs/verification/mat-independent-peer.md",
+      "sourceClosure": "None; all 42 functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge input.",
+      "followup": "22 genuine inputs across 18 consumers, 21 math and one physics into chemistry. Finite Morse/Boltzmann window, occupied layer density, activation ratio/units, defect prefactors, slip-rank scope and eight equivalent statements corrected. 42 full raw lists, all other source bytes and two justified existing row backfills preserved. Independent 8,537 math plus 24 SI checks, 48 existing tests, fresh full actual narrow-theme fields and closing pixels pass. Root composition preservation/closing and math rechecks pass."
+    },
+    {
+      "collection": "crypto",
+      "commits": [
+        "4ba8813bf271ef95e28d5ffd11a1479996d4c635",
+        "55966c10ac12cdc12b27560e9b276a1d8ead019d",
+        "04c1f51e72aad11d4551c1c34b53733474b40807",
+        "597b1f51fae56ea9ed329e464af246201551e640",
+        "6efed909a9eada0c6ba47ac61ae592b814d523c4",
+        "c65990162cfa0df389f8d83fa0c51739fd442b07"
+      ],
+      "publishedBefore": 1,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/crypto-crossfield-prerequisite-peer.md",
+      "followup": "24 genuine inputs across23 consumers; sharing dimension/privacy, birthday-bound scope/concavity, conjugation, exhaustive-search upper bound and prior quantifiers corrected, eight equivalent wraps. Full48 objects/functions/flags/helpers/154rows,39,007 independent math checks, strict/static and138 personally inspected complete narrow fields pass. Root preservation/math rechecks pass.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "Read, coherent; no bridge edits."
+    },
+    {
+      "collection": "ml",
+      "commits": [
+        "99650b2050ca81b4a28c3a70f1cbe671bd6030a1",
+        "0ffa06b0c3cc85ed97f6c47cc67835238cbb8e91",
+        "2aa0248967951451f28bb84ab30bfb188383533a",
+        "fb5596deaaf9d269128161090ef9f743e2994d0a"
+      ],
+      "publishedBefore": 14,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "logic_peer",
+      "peer": "deep_peer",
+      "report": "docs/verification/ml-probability-independent-peer.md",
+      "followup": "11 direct PROB math inputs across8 consumers; actual independence/product/tower/Markov/fixed-h integrable LLN and explicitly idealized cue-column model uses. Accepted atom-safe/zero-range content retained; one token-equivalent wrap. Full25 objects/functions/flags/helpers/367rows,290 independent checks, strict/static and64 personally read full narrow-theme output PNGs pass. Root peer and eight default math regression groups pass. Private baseline alignment b924349 excluded.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "Read, coherent; no bridge edits."
+    },
+    {
+      "collection": "causal",
+      "commits": [
+        "761e7b53c333ec45496c3631394646dd11f9841e",
+        "e48c3a78986e17c057dcede3da2e42499acafa91",
+        "09af3e1488726b1c1e73edf142885fca7acd4a68",
+        "c55936084492a3c9648a475bd7a1290a8f74babf",
+        "7faa10d9333d3edcb8ca76dc8c17058ae915a0e2",
+        "55e67c19e2acf4f44090fa8124558d2384d401f1"
+      ],
+      "publishedBefore": 2,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/causal-crossfield-prerequisite-peer.md",
+      "followup": "23 genuine inputs across20 consumers; finite-design/blocking/covariance, conditional expectation/propensity, discrete level, regression and control qualifiers, eight equivalent wraps and one justified existing raw row repair. Full48 objects/functions/flags/helpers/96rows,2549 independent math checks, strict/static,80 personal full narrow-theme field captures and six actual bridge cards pass. Root preservation/math rechecks pass.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "Read, coherent; no bridge edits."
+    },
+    {
+      "collection": "rel",
+      "commits": [
+        "e4bf3e16de02c4f91eca693fe426b908bde0ca29",
+        "70b7f3ded1b33004363deb623e5f9c952fef853e",
+        "096ee3fc9b374dfb57ed964e5789ae4db6c8b967",
+        "eea07c0f6fcccfd06ddd71392b19cab7afca72e9"
+      ],
+      "publishedBefore": 23,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "logic_peer",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/rel-two-inputs-independent-peer.md",
+      "sourceClosure": "None; all flags preserved.",
+      "bridgeReview": "No affected bridge IDs.",
+      "followup": "Two direct rank-nullity/product-rule inputs reach25/26/48. Nonnegative accelerometer magnitude versus unchanged signed oscillator/readout explicitly distinguished in statement/idea/caption, zero case retained. Full57objects/functions/helpers/flags/156rows and all rawlists,35,240 independent witnesses, strict/static and30 personally inspected full native/caption/real-signed-input fields pass. Root explicit peer and four default regression groups pass; private baseline alignment excluded."
+    },
+    {
+      "collection": "ecol",
+      "commits": [
+        "cc46d6226931f35919b86cd95609cfb2b521a153",
+        "b82fdceef873aafb947cc89515a67a414419fb89",
+        "668f1d751b9121423555a5a12b43fe71a8cd25e7",
+        "794b8b44a20ebf829aa97cc84581ae270a7a134a",
+        "a88f994cca720945a13786992b21bcbda2f679da"
+      ],
+      "publishedBefore": 3,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "imaging_source",
+      "report": "docs/verification/ecol-independent-peer.md",
+      "followup": "22 genuine inputs/18 consumers,25/25/30. Fifteen bounded stochastic/critical/seed-bank/Jensen text qualifications, five equivalent wraps, capped observed-hit labels and explicit invalid-rate guard/caption. Numerical algorithms/plots unchanged. Full49objects/functions/flags/helpers/116rows,6203 independent math checks plus49existing, strict/static and complete narrow native/caption/valid-invalid-capped controls/personal pixels pass. Root prerequisite/composed/closing and math rechecks pass.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "No affected bridge references."
+    },
+    {
+      "collection": "astro",
+      "commits": [
+        "f83bdc7c5980f85332c6db0f9da6e0daf6f68390",
+        "7e344dc48489c4dfccbc9a9cbec6b99e8446545a",
+        "d85a30d71782fd55ff3235ad84873515d05ba6cd",
+        "d2e3155ea93fe720db941e7cc48b8ccb861c1cac"
+      ],
+      "publishedBefore": 21,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "coordinator-root",
+      "report": "docs/verification/astro-four-inputs-root-peer.md",
+      "followup": "Four direct harmonic-average/connected-image/Taylor/disjoint-event inputs reach25/25/25. Collision-free existence/unequal-mass planar list and one equivalent nodal-rate wrap qualified. Root exact48objects/functions/flags/helpers/128rows,487 independent math witnesses, fresh strict/static and8actualmobile/16production+16controlled253px complete fields/personal images pass. Integrated preservation recheck passes.",
+      "sourceClosure": "None; all source flags preserved.",
+      "bridgeReview": "No affected bridge references."
+    },
+    {
+      "collection": "cplx",
+      "commits": [
+        "e2a5b01870439c48510d7a73cec7f8af3e5b89f5",
+        "3e895f0b6153182a18c5aa402da74d8954a1a49a",
+        "aae2d39fd2e7ffa1fa44fabb2301e76f430e367c",
+        "706360d0"
+      ],
+      "publishedBefore": 3,
+      "publishedAfter": 16,
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "coordinator-root",
+      "report": "docs/verification/cplx-root-peer.md",
+      "followup": "Thirteen genuine inputs across eleven consumers yield16/18/25, still nine published short. Full53objects/functions/helpers/flags/158rows and exact qualification/layout exceptions pass. Root121873 own math assertions, fresh strict/static,22mobile mounts and68 personally inspected full fields pass. Integrated exact guard passes.",
+      "sourceClosure": "None; source flags preserved.",
+      "bridgeReview": "No affected bridge references."
+    },
+    {
+      "collection": "sysbio",
+      "commits": [
+        "3b75bdb0f319f6c0e224ef05aeb3b4038625fbea",
+        "396984289ee345c81043a38bcca0a069317dbb42",
+        "7704645931d8a11daf130aab53351fcec0303ef3",
+        "1dc0c8fa4a47faf1b60e07793e9fc508a656aa20",
+        "b25e82b7c9370ebf95d8ad67ee2ab6a7c1eb56d6"
+      ],
+      "publishedBefore": 2,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/sysbio-independent-peer.md",
+      "followup": "Twenty-three genuine inputs across21consumers yield25/25/29. Full37objects/functions/helpers/flags/85rows and all6equivalent wraps pass. Authorized2.2two saturation expressions and matching label corrected, actual timeTo/trajectories preserved. Separate2.5noisy-modality qualification closes peer counterexample. Independent2215math assertions, actual narrow full fields/controls/captions/bridge cards pass; root integrated preservation/math reruns pass.",
+      "sourceClosure": "None; source flags preserved.",
+      "bridgeReview": "Six touched feedback bridge cards independently inspected; no bridge edit needed."
+    },
+    {
+      "collection": "cm",
+      "commits": [
+        "ced06a3a0aa13939aab609ccd1c3b623fcba7d73",
+        "3e16653b73e3d600e9c9cc23cdef7dff26d7e08c",
+        "0280baae48392b159d36589d6afda99eb5141d08",
+        "2c857d3309b2603ea00813a9c62765772667431c",
+        "3add09e493ec7d97ecf78d57f7095b74898fd520",
+        "8b84a551d58ce59034677405c69e38d7f078c1b3"
+      ],
+      "publishedBefore": 16,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "logic_peer",
+      "peer": "arch_source",
+      "report": "docs/verification/cm-nine-inputs-peer.md",
+      "followup": "Nine genuine math inputs yield25/33/33. Complete52objects/functions/helpers/flags/73rows and full lists pass. Acoustic nullity, ABC peak, exponential collision hazards and high-T asymptote qualified; six equivalent statement wraps. Independent8286 math checks,29 default tests and fresh18native/72completefields+18control images pass; root integrated preservation/math/default reruns pass.",
+      "sourceClosure": "None; flags preserved.",
+      "bridgeReview": "No affected bridges."
+    },
+    {
+      "collection": "neuro",
+      "commits": [
+        "96b45823744b35f2dc86bf84ebd6531a59e750fb",
+        "afe66ce49a3c6551ece2e624bfaa19aca5607573",
+        "ca89abd966e3a6541f65a438937ff331e0e59397",
+        "616cbfa6f04ac219a5b91498d6c471c85cceb3b0",
+        "e30c7c11f555bac15f8072d40bf2e1608e16510c",
+        "6bdf1706ae24d6023350d7891cc6465425ca9a03",
+        "3afd4ef474e41530fb369283c6543104b8064524"
+      ],
+      "publishedBefore": 5,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/neuro-crossfield-prerequisite-independent-peer.md",
+      "followup": "Twenty genuine math inputs across18consumers yield25/29/41. Full36objects/functions/helpers/flags/88rows/lists, two exact required-subset default-test maintenance edits, bounded gating/fold/kernel qualifications, grammar and12equivalent text fields pass. Independent5022 math checks,61 default tests and fresh36native/144fullfields+36actualcontrol images pass; root integrated preservation/math/default reruns pass.",
+      "sourceClosure": "None; flags preserved.",
+      "bridgeReview": "No affected bridges.",
+      "limitation": "Inherited4.6morphology low contrast at frame0 recorded by peer; no exhaustive animation/runtime acceptance."
+    },
+    {
+      "collection": "pl",
+      "commits": [
+        "39d613103324c621d968bd1068d97a63d915be05",
+        "3ebfa9cd832cdb2b4e7be698557a2801db807ab6",
+        "aa5fdb28b2a604807bad5e4a91a783e84b8bcf68",
+        "172c875d1c36e917703f9f01993c3ad4225133d8",
+        "3ececcfc"
+      ],
+      "publishedBefore": 9,
+      "publishedAfter": 23,
+      "status": "accepted",
+      "producer": "deep_peer",
+      "peer": "coordinator-root",
+      "report": "docs/verification/pl-followup-root-peer.md",
+      "followup": "Fourteen direct math inputs across12consumers yield23/23/27, still two published short. Full46objects/functions/helpers/flags/115rows/lists pass; finite-premise/Newman/progress qualifications and exact predecessor wrap. Root1076681 own independent assertions8groups,6 existing default tests, strict/static and56freshstate112fullfields personally inspected pass. Integrated preservation passes.",
+      "sourceClosure": "None; flags unchanged.",
+      "bridgeReview": "No affected bridges."
+    }
+  ],
+  "currentPrerequisiteGate": {
+    "publishedShortfall": 112,
+    "publishedBelow25": 8,
+    "collections": 64,
+    "wholeSyllabusBelow25": 4,
+    "date": "2026-10-20",
+    "acceptedSnapshot": "Forty further collections meet written target; PL14 accepted to23 and CPLX13 to16, both honestly short. Frozen BIGHIST3.5 edge excluded."
+  },
+  "previousSessionWorkers": [
+    {
+      "agent": "worker_one",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-one/theorems-visualizations",
+      "branch": "codex/atlas-worker-one",
+      "collection": "ling",
+      "owns": [
+        "content/ling/**",
+        "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
+        "Only BIGHIST3.1–3.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "current": "ROBOT source/camera and PHIL peer complete; producing separate responsive equation-only correction for epi2.2/prob2.1.1a; hard original-body recovery paused.",
+      "completedCollections": [
+        "music",
+        "ling"
+      ]
+    },
+    {
+      "agent": "worker_two",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-two/theorems-visualizations",
+      "branch": "codex/bighist-extinction",
+      "collection": "arch",
+      "owns": [
+        "content/arch/**",
+        "Only owned architecture syllabus rows, collection-specific reports/helpers/tests"
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "completedCollections": [
+        "psych",
+        "tech"
+      ],
+      "current": "Megafauna4.8andToba4.6accepted; read-only new CIRC/MATHBIO original-body or authorized1936translation locators."
+    },
+    {
+      "agent": "worker_three",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-three/theorems-visualizations",
+      "branch": "codex/atlas-energy-erratum",
+      "collection": "historical source stragglers",
+      "owns": [
+        "content/art/**",
+        "Only owned art syllabus rows, collection-specific reports/helpers/tests",
+        "Only assigned logic/mat/geol/mathbio/pharm/imaging/circ/energy/robot source-straggler objects, matching syllabus rows and unique helpers/tests/reports"
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "current": "ROBOT corrected-yaw peer accepted; PHIL candidate independently reviewed; producing genuine MATHBIOprerequisites with bounded argument corrections, preserving1936flag.",
+      "completedCollections": [
+        "soc",
+        "polsci"
+      ]
+    }
+  ],
+  "restrictedCandidates": [
+    {
+      "id": "bighist-3.5",
+      "candidate": "cb471bc",
+      "status": "frozen-unaccepted",
+      "reason": "Automated worker service rejected independent biology-content source peer; repeated prior attempts remain uncertified.",
+      "boundary": "Do not retry via agent/tool/reframing/new chat. verify flag remains true; one candidate edge excluded from accepted inventory."
+    }
+  ],
+  "mapExperiments": [
+    {
+      "candidate": "93f033a044609e4fe411a9456ae9b2a96333429a",
+      "status": "rejected-for-production",
+      "method": "Matched full Chrome/Apple M1 Metal, current frozen full map,1440x1000,DPR2,light,24frames; all six workers and root held browsers/heavy jobs.",
+      "overviewFPS": {
+        "original": 48.744,
+        "prototype": 50.368
+      },
+      "detailFPS": {
+        "original": 44.016,
+        "prototype": 29.018
+      },
+      "loadedNodes": 13574,
+      "loadedEdges": 23218,
+      "evidence": "/tmp/atlas-map-canvas-compositor-timing-normal-dpr2-light.json",
+      "limitation": "Single bounded controlled run; no universal-device or full-matrix pass. Production graph remains unchanged."
+    },
+    {
+      "candidate": "6fd9268b4032ea38024b54f5a820806bd920d06b",
+      "peer": "fe3d33ef9b895a93f17d3e182d03ea8c1a1b72fb",
+      "status": "accepted-bounded-diagnostic-only",
+      "report": "docs/verification/map-census-independent-peer.md",
+      "loadedNodes": 13574,
+      "loadedEdges": 23258,
+      "method": "Four frozen non-timing stationary draws;453actual GL operation records match151group/tile passes.",
+      "limitation": "No pixel correctness, GPU cost, improvement, production acceptance or60fps claim. Frozen CSS fixture subsequently explicit; all raw counts reproduce."
+    },
+    {
+      "candidate": "700053818c40ec011b4d88ecfcfb26e98af62e5d",
+      "status": "rejected-at-first-fidelity-failure",
+      "report": "docs/verification/map-complete-raster-dom-followup.md",
+      "loadedNodes": 13574,
+      "loadedEdges": 23218,
+      "method": "Correctness-only three-state smoke; exact complete original raster/cache history promoted to DOM. No timing.",
+      "limitation": "Same-LOD ratio1.375 fails retained direct-paint mean bound2/255: candidate2.529006,production2.533013. Later matrix/lifecycle/native checks unrun. Original CSS served bytes not frozen; observed hash disclosed. Production unchanged."
+    },
+    {
+      "candidate": "b5b680b8e1d4645bcf6508d49f8cf9f6d72e999c",
+      "peer": "7da1da8c0743178f5ba25ad9cd86669a1c1c9a0a",
+      "status": "accepted-bounded-diagnostic-only",
+      "report": "docs/verification/map-segment-mesh-census-independent-peer.md",
+      "loadedNodes": 13574,
+      "loadedEdges": 23364,
+      "method": "Frozen68aa4e2 actual-upload conservative enclosure/counts and storage, four states; independent source/membership/corner recount.",
+      "limitation": "No alternate indices submitted, no pixel/performance/production fit claim. Oversized retained CPU membership and selected full-capacity scratch exceed64MB. Exact regenerated membership and bounded scratch remain separate feasibility work."
+    },
+    {
+      "candidate": "acf697eda8a235710428df17c14e431d3183d655",
+      "status": "rejected-at-first-exact-same-scene-image-failure",
+      "report": "docs/verification/map-chunked-indices-followup.md",
+      "loadedNodes": 13574,
+      "loadedEdges": 23364,
+      "method": "Correctness only:8tinyGL,6normal smoke,33lightmatrix states. State33 fractionalpan3840x2092map/DPR2 exactGPU31327channels/max121 difference; no timing.",
+      "limitation": "Original compared GPU/reference arrays and diff not saved; actualPNG thirdredraw and directPNG Canvas are not the failedoracle. Dark/lifecycle/faultmatrix unrun; oversizedDPR2unselected0optimizedtiles.64Mlogicalcurrent62471764/peak63895600pass does not acceptpixels/performance/physicalmemory.",
+      "peer": "bc0a5ddaadb465fcb428411ad13785f7840d1bf4",
+      "followup": "a81c9e7original-onlycontrol +1244b0cindependentpeer reproduceALL4exactframes withoutchunkbinding. SequentialC1/O1conflateddifferenthistories; implementationremainsunaccepted; futureoracle mustmatchcold/warmordinalandtexturehistory."
+    },
+    {
+      "candidate": "781d336d11e136873b173b628d2cd3e7e9c96964",
+      "phaseBoundary": "bc5e18f4d1b6c4799d78f778e7301711e35e78c1",
+      "peer": "9291c8083117622d43a1e7d7235b046fa05af827",
+      "status": "accepted-private-tiny-atlas-correctness-only",
+      "report": "docs/verification/map-atlas-gutter-independent-peer.md",
+      "scope": "52 private cases, exact complete inner GPU bytes and original fresh output, transparent perimeter, stable guarded history, same logical owners/placement/filter/state; independent scaled-title, thick-stroke, cache/oversize/destroy checks. No full-map, context-loss/upload-failure, alternate-binding, production or timing acceptance. Root integrated raw audit and 44 producer models pass; tiny peer used Chromium153; root full-map harness uses system155 matching the earlier installed capture version.",
+      "rootEvidence": "/tmp/atlas-continuation/atlas-gutter-integrated-peer-recheck.json"
+    },
+    {
+      "candidate": "caca8419c844fb395d99954e62eff62fd6d3efd9",
+      "guardCandidate": "781d336d11e136873b173b628d2cd3e7e9c96964",
+      "peer": "a09e53c69c873f58c3ea45f148d6f8dbfca92eb8",
+      "status": "accepted-single-original-guarded-history-diagnostic",
+      "report": "docs/verification/map-guarded-original-history-followup.md",
+      "scope": "Fresh original155 reproduces historical main bytes; guarded four main frames exact stable. Entire observed1672events match except541intended expanded uploads, all main metadata/resources equal. No initialization/upload-content hashes, alternate/direct-Canvas/lifecycle/production/timing acceptance. Browser hold released."
+    },
+    {
+      "candidate": "1309fe4f",
+      "status": "stopped-original-only-transfer-history",
+      "report": "docs/verification/map-paired-first-state-stopped.md",
+      "peer": "Prior tiny/source review0505fa34 only; root explicit raw/transport/resource audit records failure, not full-map acceptance.",
+      "method": "All six workers held browsers/heavy work; one exact frozen checkpoint5 light/DPR2 formerly failing state. Original completed12 synchronous draws and4raw captures; extra transfer event stopped before chunk opened.",
+      "evidence": "/tmp/atlas-root-paired-first-state",
+      "mainSHA256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+      "mainOrdinalsExact": true,
+      "postCaptureEvents": 259,
+      "transportPieces": 495,
+      "limitation": "One unexpected draw plus85 request/upload/returns and2clears retained. Direct-Canvas numeric bound passes but cannot override failed history. No alternate, matrix, lifecycle, production or timing acceptance. All holds released."
+    }
+  ],
+  "accountingSafeguards": [
+    {
+      "candidate": "5ae9794d03b55f10fed54b2741d89fe84150f618",
+      "peer": "7d2d028ce74bb0778e53fd86e3bc65fa27052e2c",
+      "status": "accepted-tooling-only",
+      "report": "docs/verification/cross-field-accounting-independent-peer.md",
+      "scope": "Default CLI preserves explicit exclusions/metadata, fails before writing on stale/unknown/duplicate exclusions; raw stdout never writes. No candidate argument or source content accepted."
+    }
+  ],
+  "mapProtocolReviews": [
+    {
+      "candidate": "a83371d68fe9b62c8c1c2b6919029906e69708e8",
+      "peer": "8da9bf09c7d7f7cf54a89a299054447c9ebc2351",
+      "status": "accepted-read-only-membership-protocol",
+      "report": "docs/verification/map-group-protocol-independent-peer.md",
+      "scope": "Exact saved-coverage ordered membership, borrowed lifetimes, no-eviction reservation, single-composite fallback and bounded MAX chunk models. Separate fixed-chunk report and actual alternate binding/pixels/resources/performance remain pending."
+    },
+    {
+      "candidate": "48e79c1b0ea81ec21707ed685858e80d86ae6350",
+      "followup": "086fff19ecf21e54cbc3fb3e315c5d996df70b34",
+      "peer": "671fc504d8c577e82f8801dc04651cbd158477df",
+      "status": "accepted-read-only-fixed-chunk-protocol",
+      "report": "docs/verification/map-group-protocol-independent-peer.md",
+      "scope": "Bounded fixed32768 index pair under one MAX mask and one style/tile composite; current-tile replay requires live unchanged original snapshot, expired snapshot requires complete original restart/Canvas. No actual binding/pixel/resource/performance acceptance."
+    },
+    {
+      "candidate": "a81c9e70edb1442f7f20d2921cd06dcfc6446943",
+      "peer": "1244b0c640b69015f891ab7403d1294723bd2c0d",
+      "status": "accepted-diagnostic-original-only-history-control",
+      "report": "docs/verification/map-original-control-independent-peer.md",
+      "scope": "Completeoriginaledge/scene bytes, fourrawRGBAstreams128532480byteseach exactlymatchpreviousC1/O1/O2/C2. Originalhistoryinstabilitydemonstrated, specificatlasmechanismunproven; no implementation/lifecycle/performanceacceptance."
+    },
+    {
+      "candidate": "6c45d07947c2074660cb0b9a0e01b3a42bc524b8",
+      "peer": "91c647e270bafbccc03cf64760405cf3183bc79d",
+      "status": "preserved-negative-causal-output-gate",
+      "report": "docs/verification/map-atlas-first-independent-peer.md",
+      "scope": "17actualdirtyperimetertexels+equalinnerglyphbytes butnativeoutputdifference0; all17unreachableatfirstquadphase. No privatefix/fullmatrix/timing; sourcegroundednewphysicalphaseprobe separatelyauthorized."
+    },
+    {
+      "candidate": "ccc73f96f807aefc2d98b2bcc44a9489e0bb88db",
+      "peer": "0505fa343ad6bc0aedf39ec50831ab0752b746f3",
+      "status": "accepted-bounded-tiny-and-source-readiness",
+      "report": "docs/verification/map-paired-tiny-independent-peer.md",
+      "scope": "Symmetric guarded atlas, genuine reset preserving original owners, actual GPU initialization/upload-content observation, bounded state-preserving reads and partial-failure persistence pass independent tiny155 witnesses. Final source readiness includes exact inherited resource/dimension and original stability gates. No full-map or alternate-binding acceptance."
+    }
+  ]
+}

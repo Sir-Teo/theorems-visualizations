@@ -89,7 +89,7 @@ export default {
       num: '11.10',
       kind: 'Theorem',
       name: 'Harmonic functions are locally real parts of holomorphic ones',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 11.10, pp. 235–236'],
+      verify: true,
       statement: String.raw`Let $u$ be a real harmonic function in an open set $\Omega\subset\C$, and let $\bar D(a;R)\subset\Omega$. Then
 (a) in $D(a;R)$, $u$ is the Poisson integral of its values on the circle $|z-a|=R$ (the formula of 11.9);
 (b) $u$ is the real part of a function holomorphic in $D(a;R)$; hence every real harmonic function is locally the real part of a holomorphic function, and $u\in C^\infty(\Omega)$;
@@ -159,7 +159,7 @@ $$\frac{R-r}{R+r}\,u(a)\;\le\;u(z)\;\le\;\frac{R+r}{R-r}\,u(a).$$
 **Harnack's theorem.** Let $\{u_n\}$ be a sequence of harmonic functions in a region $\Omega$.
 (a) If $u_n\to u$ uniformly on compact subsets of $\Omega$, then $u$ is harmonic in $\Omega$.
 (b) If $u_1\le u_2\le u_3\le\cdots$, then either $u_n\to\infty$ uniformly on compact subsets of $\Omega$, or $\{u_n\}$ converges uniformly on compact subsets of $\Omega$ (to a harmonic function, by (a)).`,
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 11.11 and proof, p. 236'],
+      verify: true,
       idea: String.raw`For the inequalities, use the Poisson formula of 11.9 on a slightly smaller disc and the elementary bounds $\frac{R-r}{R+r}\le\frac{R^2-r^2}{R^2-2Rr\cos s+r^2}\le\frac{R+r}{R-r}$ on the kernel; since $u\ge0$ these pass to the integral, whose kernel-free version is $u(a)$ (mean value property). For (a), uniform limits commute with the Poisson integral on each closed disc, so $u$ is a Poisson integral there, hence harmonic (11.5). For (b), apply the inequalities to the nonnegative $u_n-u_1$: on a compact set, the increments $u_n-u_m$ are comparable to their value at a point, so finiteness (or divergence) at one point spreads uniformly; connectedness of $\Omega$ makes the dichotomy global.`,
       caption: String.raw`**Inequalities:** $u=(1-\kappa)+\kappa\,P(z,\zeta)$ is positive harmonic in $U$ with $u(0)=1$. Drag the ring handle and $\zeta$, raise $\kappa$: the graph of $u$ on the ring $|z|=r$ (log scale) stays inside the green band $\big[\frac{1-r}{1+r},\frac{1+r}{1-r}\big]$, and touches both ends when $\kappa=1$ (a point mass). **Monotone sequence:** $u_n=\sum_{k\le n}w_k\,P(z,\zeta_k)$ increases with $n$; on the compact disc $K=\{|z|\le r\}$ its minimum and maximum are pinned to $u_n(0)$ by the Harnack factors — they converge together when $\sum w_k<\infty$ and all go to $\infty$ when $\sum w_k=\infty$.`,
       deps: ['rca-11.9', 'rca-11.10', 'rca-11.4'],

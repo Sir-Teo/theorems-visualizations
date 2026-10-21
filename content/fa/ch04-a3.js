@@ -97,8 +97,8 @@ export default {
       idea: String.raw`If $T-\lambda I$ is a bijection of $X$ onto $X$, its inverse is automatically continuous (2.12), so invertibility is a purely algebraic matter. In finite dimensions one-to-one and onto are equivalent and $\sigma(T)$ is just the set of eigenvalues. In infinite dimensions they separate: $T-\lambda I$ can be one-to-one without being onto, and then $\lambda\in\sigma(T)$ without being an eigenvalue.`,
       caption: String.raw`The plane of $\lambda$'s, shaded by $\log_{10}\|(T-\lambda I)^{-1}\|$ (bright = nearly singular); drag $\lambda$ (it snaps to special points). A $2\times2$ matrix: the resolvent blows up only at the two eigenvalues. $\operatorname{diag}(t_n)$ on $\ell^2$ with $t_n\to0$: each $t_n$ is an eigenvalue, while $0\in\sigma(T)$ is **not** — $T$ is one-to-one there but not onto. The shift $S(x_1,x_2,\dots)=(0,x_1,x_2,\dots)$: $\sigma(S)$ is the closed unit disc, yet $S$ has no eigenvalues at all.`,
       deps: ['fa-4.1', 'fa-2.12'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §4.17, pp. 103–104'],
       tags: ['spectrum', 'eigenvalues'],
+      verify: true,
       viz(v) {
         const { Cx } = v.M;
         const mS = v.select('$T=$', [{ value: 'mat', label: '$2\\times2$ matrix' }, { value: 'diag', label: '$\\operatorname{diag}(t_n)$ on $\\ell^2$' }, { value: 'shift', label: 'shift $S$ on $\\ell^2$' }], 'diag');
@@ -339,8 +339,8 @@ export default {
       caption: String.raw`$X=\R^2$ with an $\ell^p$ norm. Drag the direction handles of the lines $M$ (blue) and $N$ (orange), and the point $x$: it splits as $x=Px+(x-Px)$ along the parallelogram. The right panel plots $\|P\|=\sup_{\|x\|_p=1}\|Px\|_p$ against the angle between $M$ and $N$: it is $1$ when the complement is "perpendicular" (for $p=2$) and blows up as $N$ folds onto $M$.`,
       deps: ['fa-1.6', 'fa-2.15'],
       see: ['rca-4.11'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §4.20, pp. 106'],
       tags: ['complemented subspaces', 'projections'],
+      verify: true,
       viz(v) {
         const pS = v.select('$p=$', [{ value: 1, label: '$1$' }, { value: 2, label: '$2$' }, { value: Infinity, label: '$\\infty$' }], 2);
         const L = v.stage({ x: [-2.1, 2.1], y: [-1.65, 1.65], equal: true, height: 330, ticks: false, title: '$X=M\\oplus N$' });
@@ -403,8 +403,8 @@ export default {
       idea: String.raw`(a) Take a basis $e_1,\dots,e_n$ of $M$ with coordinate functionals $\alpha_i$; they are continuous on the finite-dimensional $M$, so Hahn–Banach (3.6) extends them to $\Lambda_i\in X^*$. Then $N=\bigcap_i\mathscr N(\Lambda_i)$ is closed and $x=\sum\Lambda_i(x)e_i+\big(x-\sum\Lambda_i(x)e_i\big)$ splits $X=M\oplus N$. Different extensions give different complements. (b) Pick $e_1,\dots,e_k$ whose cosets form a basis of $X/M$; their span $N$ is finite-dimensional, hence closed (1.21), and $X=M\oplus N$.`,
       caption: String.raw`$X=\R^3$. (a) $M$ is a line spanned by $e$. The coordinate functional on $M$ has many extensions $\Lambda$ — the slider runs through them — and each kernel $N=\mathscr N(\Lambda)$ (orange plane) is a complement; the gold point $x$ splits as $\Lambda(x)e+(x-\Lambda(x)e)$. (b) $M$ is a plane, of codimension $1$; any vector $e_1\notin M$ spans a complement (orange line). Drag the panel to rotate.`,
       deps: ['fa-4.20', 'fa-3.6', 'fa-1.21'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §4.21, pp. 106'],
       tags: ['complemented subspaces', 'Hahn–Banach'],
+      verify: true,
       viz(v) {
         const mS = v.select('', [{ value: 'a', label: '(a) $\\dim M=1$' }, { value: 'b', label: '(b) $\\dim X/M=1$' }], 'a');
         const tS = v.slider('choice of $\\Lambda$ / of $e_1$', -1.5, 1.5, 0.6, { step: 0.01 });

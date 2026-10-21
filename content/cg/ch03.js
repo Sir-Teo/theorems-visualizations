@@ -1,3 +1,4 @@
+import {auditedDCEL, auditedEars, polygonStatus, diagonalWitness, validDiagonal} from './geometry-source-audit.shared.js';
 // Computational Geometry & Graphics — Chapter 3: Segment intersection and polygons (§§3.1–3.5; §§3.6–3.9 in ch03-b.js)
 import { segInside, cross, hull2, sweepRun, bruteCross, segCross, buildDCEL, voronoiCells, clipConvex, pip, area2, ccwPoly, isSimplePoly, earTrace, convexOverlap } from './ch03.shared.js';
 
@@ -38,9 +39,11 @@ export default {
     {
       num: '3.1', kind: 'Method', name: 'The plane sweep paradigm',
       statement: String.raw`A **plane sweep** moves a vertical line $\ell$ across the plane from left to right and maintains two structures. The **event queue** holds the $x$-positions at which something can change (for segments: their endpoints, processed in order of $x$, ties by $y$). The **status** is the set of objects currently met by $\ell$, kept in a balanced search tree ordered by their $y$-coordinate on $\ell$. Between two consecutive events the combinatorial picture does not change, so the work happens only at events: each one inserts, deletes or reorders $O(1)$ objects at a cost of $O(\log n)$. The method is correct as long as every change of the order along $\ell$ is itself an event.`,
-      idea: String.raw`Two segments that do not cross keep the same above/below relation for as long as both are met by $\ell$, so the order of the status can only change when a segment enters (left endpoint), leaves (right endpoint), or two segments swap — which requires them to cross. A search tree makes each of these updates $O(\log n)$, and a segment can only meet a new neighbour at an event; this is why the sweep needs to look at *adjacent* segments only. The sweep trades a two-dimensional problem for a sorted sequence of one-dimensional updates — the same idea as sorting by angle in 2.6, with the orientation test of 1.2 deciding which segment lies above which.`,
+      idea: String.raw`Two segments that do not cross keep the same above/below relation for as long as both are met by $\ell$, so the order of the status can only change when a segment enters (left endpoint), leaves (right endpoint), or two segments swap — which requires them to cross. A search tree makes each of these updates $O(\log n)$, and a segment can only meet a new neighbour at an event; this is why the sweep needs to look at *adjacent* segments only. The sweep trades a two-dimensional problem for a sorted sequence of one-dimensional updates — the same idea as sorting by angle in 2.6, with the orientation test of 1.2 deciding which segment lies above which.
+
+Between endpoints of two nonvertical segments, each height on the sweep line is an affine continuous function of its horizontal coordinate. If their relative order changed, the difference of those heights would change sign; PMA 4.23 would force a zero in between, hence an intersection event. This proves the claimed invariance of status order on an event-free interval. Endpoint insertions/deletions and coincident or vertical events still need the stated event conventions, rather than following from continuity alone.`,
       caption: String.raw`Step through the events of six segments (use the scrubber to jump). The gold line is the sweep line; the right column is the status, top of $\ell$ upwards, and the queue lists the next events (L = left endpoint, R = right endpoint). Orange dashes mark neighbours that get tested at each event. **Disjoint** segments never change order. Pick **crossing** (or drag endpoints until two segments cross): the sweep only visits endpoints, so the status order silently goes wrong and the picture says so — crossings must be events too, which is exactly what 3.2 adds.`,
-      deps: ['cg-1.3'], refs: ['de Berg §2.1'], tags: ['sweep', 'paradigm'],
+      deps: ['cg-1.3', 'pma-4.23'], refs: ['de Berg §2.1'], tags: ['sweep', 'paradigm'],
       viz(v) {
         const P0 = { disjoint: [[0.5, 1.0, 3.5, 1.8], [1.2, 3.0, 4.6, 2.5], [2.2, 5.6, 5.8, 6.2], [4.0, 4.4, 7.2, 3.4], [6.0, 1.0, 9.3, 1.8], [6.5, 5.2, 9.5, 6.1]],
           crossing: [[0.5, 1.0, 5.5, 3.2], [1.2, 3.6, 4.6, 0.8], [2.2, 5.6, 8.0, 2.4], [4.0, 4.6, 7.2, 1.0], [6.0, 1.0, 9.3, 3.8], [6.5, 5.2, 9.5, 6.1]] };
@@ -157,11 +160,13 @@ export default {
     // ================================================================== 3.3
     {
       num: '3.3', kind: 'Definition', name: 'Doubly connected edge lists',
-      statement: String.raw`A **doubly connected edge list** (DCEL) stores a planar subdivision with one record per **half-edge**. Every undirected edge is split into two directed half-edges, one for each of its sides; a half-edge $h$ stores its **origin** vertex, its **twin** $\operatorname{twin}(h)$ (the opposite half-edge of the same edge), the face $f(h)$ to its left, and the pointers $\operatorname{next}(h)$ and $\operatorname{prev}(h)$ to the following and preceding half-edges on the boundary of $f(h)$. Each vertex stores one outgoing half-edge and each face one half-edge of its boundary. The pointers satisfy $\operatorname{twin}(\operatorname{twin}(h))=h$, $\operatorname{prev}(\operatorname{next}(h))=h$ and $\operatorname{dest}(h)=\operatorname{origin}(\operatorname{next}(h))$, and, for the connected plane graphs illustrated here, each face boundary is a cycle of $\operatorname{next}$. A connected plane graph with $V$ vertices, $E$ edges and $F$ faces (counting the unbounded one) has $2E$ half-edges and $V-E+F=2$.`,
-      idea: String.raw`Orienting each edge both ways gives every face a consistent boundary orientation (counter-clockwise around bounded faces, clockwise around the unbounded one), so "walk around the face" becomes pointer-chasing. To build the $\operatorname{next}$ pointer, sort the outgoing half-edges at each vertex by angle (the orientation test of 1.2 compares directions): after arriving along $h$ at $v$, the face on the left continues along the first outgoing half-edge clockwise from $\operatorname{twin}(h)$. Each face is the orbit of this permutation, so total boundary length is $2E$, and the structure supports reading all edges around a vertex or face in time proportional to their number — what the map overlay of 3.4 needs.`,
+      statement: String.raw`A **doubly connected edge list** (DCEL) stores a planar subdivision with one record per **half-edge**. Every undirected edge is split into two directed half-edges, one for each of its sides; a half-edge $h$ stores its **origin** vertex, its **twin** $\operatorname{twin}(h)$ (the opposite half-edge of the same edge), the face $f(h)$ to its left, and the pointers $\operatorname{next}(h)$ and $\operatorname{prev}(h)$ to the following and preceding half-edges on the boundary of $f(h)$. Each nonisolated vertex stores one outgoing half-edge; a face stores an outer-boundary pointer and a list of inner-boundary pointers, with a null outer pointer for the unbounded face. Isolated vertices need separate records. The pointers satisfy $\operatorname{twin}(\operatorname{twin}(h))=h$, $\operatorname{prev}(\operatorname{next}(h))=h$ and $\operatorname{dest}(h)=\operatorname{origin}(\operatorname{next}(h))$. Each cycle of $\operatorname{next}$ is a boundary walk; a face with holes or a disconnected subdivision can require several boundary cycles. For a connected graph with at least one edge, each face has one boundary walk, which may repeat bridge edges. A connected plane graph with $V$ vertices, $E$ edges and $F$ faces (counting the unbounded one) has $2E$ half-edges and $V-E+F=2$.`,
+      idea: String.raw`Orienting each edge both ways gives every face a consistent boundary orientation (counter-clockwise around bounded faces, clockwise around the unbounded one), so "walk around the face" becomes pointer-chasing. To build the $\operatorname{next}$ pointer, sort the outgoing half-edges at each vertex by angle (the orientation test of 1.2 compares directions): after arriving along $h$ at $v$, the face on the left continues along the first outgoing half-edge clockwise from $\operatorname{twin}(h)$. For the connected graphs shown here, each face is one orbit of this permutation, so total boundary length is $2E$, and the structure supports reading all edges around a vertex or face in time proportional to their number — what the map overlay of 3.4 needs.
+
+The identities for next and prev make next a bijection of the finite set of half-edges. Apply the cycle-decomposition argument of COMB 2.1: following next from any half-edge returns to it, distinct orbits are disjoint, and the orbits partition all $2E$ half-edges. These cycles are boundary walks, with total length $2E$. Identifying one walk with each face uses the connected plane-graph setting specified here; a general face may have several boundary components.`,
       caption: String.raw`**Click a half-edge** (each edge is drawn twice, the two arrows offset to the left of their direction). Gold is the one you picked, orange its twin, green its next, purple its prev, and the blue shading is the face to its left. Press **next** to walk the boundary one half-edge at a time. **faces** colours every boundary cycle. Switch on the **pendant edge**: the vertex of degree one makes a face visit the same edge twice (once on each side). Drag vertices: if two edges cross, it is no longer a plane graph and the DCEL is rejected.`,
-      scope: String.raw`Conventions differ between texts (which side the face is on, which pointers are stored); this follows the convention of de Berg et al.: the face lies to the left of its half-edges. For a general subdivision with disconnected components or holes, a face can have several boundary components and needs additional pointers; the single-boundary representation illustrated here assumes a connected plane graph. The first publication of the structure was not checked.`,
-      deps: ['graph-4.2.9'], refs: ['de Berg §2.2'], tags: ['data structure', 'subdivision'], verify: true,
+      scope: String.raw`Conventions differ between texts (which side the face is on, which pointers are stored); this follows the convention of de Berg et al.: the face lies to the left of its half-edges. The interactive construction is restricted to connected straight-line plane graphs without coincident vertices or edges passing through another vertex. General DCELs also store multiple boundary components and isolated vertices.`,
+      deps: ['comb-2.1'], refs: ['de Berg et al., 3rd ed., §2.2, pp.29–33'], tags: ['data structure', 'subdivision'],
       viz(v) {
         const s = gstage(v, { height: 430, minWidth: 360 });
         const V0 = [[1, 1], [5, 0.8], [9, 1.2], [9.2, 5.8], [5, 6.2], [0.8, 5.6], [3.5, 3.2], [6.5, 3.6], [8.0, 2.3]];
@@ -170,16 +175,16 @@ export default {
         const pend = v.toggle('pendant edge', false);
         const H = V0.map((p, i) => s.handle(p[0], p[1], { color: 'ink', r: 6, label: 'v' + i, labelPos: 'n' }));
         let sel = 6, info = {};
+        s.onClick((x, y) => { if (!info.geo) return; let pick=-1, best=.25; info.geo.forEach((g,i)=>{const dx=g.q[0]-g.p[0],dy=g.q[1]-g.p[1],t=Math.max(0,Math.min(1,((x-g.p[0])*dx+(y-g.p[1])*dy)/(dx*dx+dy*dy||1))),d=Math.hypot(x-g.p[0]-t*dx,y-g.p[1]-t*dy);if(d<best){best=d;pick=i;}});if(pick>=0)sel=pick; });
         v.button('next ▸', () => { if (info.D) sel = info.D.H[sel].next; });
         v.button('twin ⇄', () => { if (info.D) sel = sel ^ 1; });
         const FC = ['blue', 'orange', 'teal', 'purple', 'pink', 'green'];
         v.render(() => {
           const nv = pend.value ? 9 : 8; H[8].visible = pend.value;
           const V = H.slice(0, nv).map((h) => [h.x, h.y]), E = E0.concat(pend.value ? [[7, 8]] : []);
-          let bad = false;
-          for (let i = 0; i < E.length && !bad; i++) for (let j = i + 1; j < E.length; j++) if (segCross(V[E[i][0]], V[E[i][1]], V[E[j][0]], V[E[j][1]])) { bad = true; break; }
-          if (bad) { E.forEach(([a, b]) => s.segment(V[a], V[b], { color: 'red', width: 2.5 })); info = { bad: true }; s.corner('edges cross: not a plane graph', 'tl', { color: 'red', weight: 600 }); return; }
-          const D = buildDCEL(V, E); if (sel >= D.H.length) sel = 0;
+          const checked=auditedDCEL(V,E);
+          if(checked.bad){E.forEach(([a,b])=>s.segment(V[a],V[b],{color:'red',width:2.5}));info={bad:checked.bad};s.corner(checked.bad+': invalid plane embedding','tl',{color:'red',weight:600});return;}
+          const D=checked.D;if(sel>=D.H.length)sel=0;
           const geo = D.H.map((h) => { const a = V[h.origin], b = V[h.dest], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L * 0.16, ny = dx / L * 0.16, c = Math.min(0.3, L * 0.22);
             return { p: [a[0] + nx + (dx / L) * c, a[1] + ny + (dy / L) * c], q: [b[0] + nx - (dx / L) * c, b[1] + ny - (dy / L) * c] }; });
           const hs = D.H[sel], fc = D.faces[hs.face];
@@ -200,9 +205,9 @@ export default {
           if (mode.value === 'faces') D.faces.forEach((f, k) => { if (f.outer) return; const c = f.verts.map((i) => V[i]).reduce((a, p) => [a[0] + p[0] / f.verts.length, a[1] + p[1] / f.verts.length], [0, 0]); s.text('f' + k, c[0], c[1], { size: 14, color: 'ink' }); });
           s.corner(fc.outer ? 'face to the left: f' + hs.face + ' (unbounded)' : 'face to the left: f' + hs.face, 'bl', { color: 'accent', weight: 600 });
           const ok = D.H.every((h, i) => D.H[h.twin].twin === i && D.H[h.next].prev === i && D.H[h.next].origin === h.dest);
-          info = { D, V, E, ok, sel, hs, fc, nf: D.faces.length };
+          info = { D, V, E, geo, ok, sel, hs, fc, nf: D.faces.length };
         });
-        v.readout(() => { if (info.bad) return 'Two edges cross, so this is not a planar subdivision: there is no consistent "left face" and the pointers cannot be defined. Move a vertex back.'; const { D, V, E, hs, fc } = info; const len = fc.edges.length;
+        v.readout(() => { if (info.bad) return `Invalid plane embedding: **${info.bad}**. This drawing needs a vertex split, edge subdivision or separated vertices before the DCEL construction applies.`; const { D, V, E, hs, fc } = info; const len = fc.edges.length;
           return `half-edge $h_{${sel}}$: origin $v_${hs.origin}$ → $v_${hs.dest}$;  twin $h_{${hs.twin}}$,  next $h_{${hs.next}}$,  prev $h_{${hs.prev}}$,  face $f_${hs.face}$ (${fc.outer ? 'unbounded' : 'bounded'}, boundary of ${len} half-edges: ${fc.edges.map((e) => 'h' + e).join(' → ')} → back).\n$V=${V.length}$, $E=${E.length}$, $F=${info.nf}$: $V-E+F=${V.length - E.length + info.nf}$, $2E=${2 * E.length}=\\sum_f(\\text{boundary length})=${D.faces.reduce((a, f) => a + f.edges.length, 0)}$; pointer identities hold for all ${D.H.length} half-edges: ${info.ok ? '**yes**' : 'no'}.`; });
       },
     },
@@ -266,10 +271,12 @@ export default {
     {
       num: '3.5', kind: 'Theorem', name: 'Every simple polygon can be triangulated',
       statement: String.raw`Every simple polygon $P$ with $n\ge3$ vertices can be decomposed into $n-2$ triangles by $n-3$ pairwise non-crossing diagonals (segments joining two vertices and lying inside $P$). More precisely, (i) every simple polygon with $n\ge4$ vertices has a diagonal; (ii) for $n\ge4$ it has at least two non-overlapping **ears** — vertices $v$ whose two neighbours are joined by a diagonal, so that cutting off the triangle $v^-vv^+$ leaves a simple polygon with $n-1$ vertices (**two-ears theorem**). The angle sum then shows that the number of triangles is $n-2$, whatever the triangulation.`,
-      idea: String.raw`Take the lexicographically leftmost vertex $v$ (break equal horizontal coordinates by vertical coordinate), with neighbours $u,w$. This is a strictly convex corner of a simple polygon. If the **closed** triangle $uvw$ contains no other polygon vertex, $uw$ is a diagonal. Otherwise choose another vertex $x$ in that closed triangle farthest from the line $uw$; then $vx$ is a diagonal. Including vertices on $uw$ is essential: an empty open triangle alone does not make $uw$ a valid diagonal when another boundary vertex lies on it. A diagonal splits the polygon into two simple polygons, and induction gives a triangulation. Its dual graph, one node per triangle and one edge per internal diagonal, is a tree; when $n\ge4$ its two leaves give non-overlapping ears. Finally, the interior-angle sum $(n-2)\pi$ equals the sum of the triangle angles, giving exactly $n-2$ triangles.`,
+      idea: String.raw`Take the lowest leftmost vertex $v$, with neighbours $u,w$. If the closed triangle $uvw$ contains no other vertex, $uw$ is an internal diagonal. Otherwise choose a vertex in or on that triangle farthest from the line $uw$; joining it to $v$ gives a diagonal, since an edge crossing that segment would force a vertex still farther from $uw$. The diagonal splits $P$ into simple polygons of sizes $m_1,m_2<n$ with $m_1+m_2=n+2$. Induction triangulates both, with $(m_1-2)+(m_2-2)=n-2$ triangles and $n-3$ diagonals in total. The weak dual of a triangulation is connected, with $n-2$ nodes and $n-3$ edges, hence is a tree. Its two leaves give non-overlapping ears when $n\ge4$.
+
+The weak dual has one vertex per triangle and one edge per internal diagonal. It is connected (a path between triangle interiors crosses a sequence of shared diagonals), and its counts are $n-2$ vertices and $n-3$ edges. GRAPH 1.5.2 therefore makes it a tree. For $n\ge4$ it has at least two vertices, so the longest-path argument of GRAPH 1.5.1a supplies two leaves. A leaf triangle has only one diagonal side and thus two polygon boundary sides: it is an ear. Different leaf triangles have disjoint interiors, giving the two-ear conclusion.`,
       caption: String.raw`**Ear clipping** steps through a triangulation: orange rings are all current ears, the gold dots mark two non-overlapping ears (the two-ears theorem guarantees them whenever $n\ge4$), the gold triangle is the one about to be cut off, green ones are done. **Diagonal lemma** shows the construction of one diagonal from the leftmost vertex. Pick a polygon, **resample** the random one, or drag the vertices: once two edges cross the polygon is no longer simple and the picture says that ear clipping has no guarantee.`,
-      credit: 'G. H. Meisters, 1975 (two ears theorem)',
-      deps: ['cg-1.2', 'top-10.1', 'graph-1.5.1a'], refs: ['Meisters (1975), Polygons Have Ears, pp. 648–651, two-ears proof and triangulation applications', 'de Berg §3.1'], tags: ['polygon', 'triangulation'],
+      credit: 'Two-ears theorem: G. H. Meisters, 1975; triangulation/diagonal proof: de Berg et al., Theorem 3.1',
+      deps: ['cg-1.2', 'top-10.1', 'graph-1.5.2', 'graph-1.5.1a'], refs: ['de Berg et al., 3rd ed., Theorem 3.1, pp.46–47; O’Rourke, Art Gallery Theorems, §1.3'], tags: ['polygon', 'triangulation'],
       viz(v) {
         const s = gstage(v, { height: 400, minWidth: 360 });
         const PRE = {
@@ -288,10 +295,11 @@ export default {
         const pts = () => H.filter((h) => h.visible).map((h) => [h.x, h.y]);
         let simple = true, P = [], T;
         const build = () => {
-          P = ccwPoly(pts()); simple = isSimplePoly(P);
+          P = ccwPoly(pts()); simple = !polygonStatus(P);
           if (!simple) { T = null; return [{ ids: P.map((_, i) => i), ears: [], tris: [], diags: [], bad: true, note: 'Two edges cross or touch: this is **not a simple polygon**, so neither ear clipping nor the theorem applies. Drag the vertices back.' }]; }
-          T = earTrace(P);
-          return T.frames.map((f, i) => ({ ...f, line: f.done ? 6 : 3, note: f.done ? `The last triangle remains: ${T.tris.length} triangles $=n-2$ for $n=${P.length}$.` : `**${f.ears.length} ears** available (gold: two non-overlapping ones, as guaranteed). Clip vertex ${f.ear}: the diagonal ${f.tri[0]}–${f.tri[2]} cuts off a triangle and leaves a simple polygon with ${f.ids.length - 1} vertices.`, vars: { n: f.ids.length, clipped: f.tris.length } }));
+          T = auditedEars(P);
+          if(T.stuck)return[{ids:P.map((_,i)=>i),ears:[],tris:[],bad:true,note:'The numerical construction could not find a valid ear; no triangulation is certified.'}];
+          return T.frames.map((f, i) => ({ ...f, line: f.done ? 5 : 3, note: f.done ? `The last triangle remains: ${T.tris.length} triangles $=n-2$ for $n=${P.length}$.` : `**${f.ears.length} ears** available (gold: two non-overlapping ones, as guaranteed). Clip vertex ${f.ear}: the diagonal ${f.tri[0]}–${f.tri[2]} cuts off a triangle and leaves a simple polygon with ${f.ids.length - 1} vertices.`, vars: { n: f.ids.length, clipped: f.tris.length-(f.done?1:0) } }));
         };
         load();
         S = v.steps({ frames: build, code: ['while the polygon has more than 3 vertices', '  find an ear v  (convex, and v⁻v v⁺ contains no other vertex)', '  output the triangle v⁻ v v⁺', '  remove v;  add the diagonal v⁻v⁺', 'output the last triangle'], codeTitle: 'Ear clipping', speed: 1.4, still: 4 });
@@ -304,19 +312,14 @@ export default {
             s.poly(P, { color: simple ? 'accent' : 'red', fill: 'accent', fillAlpha: 0.08, width: 3 });
             P.forEach((p, i) => s.dot(p[0], p[1], { r: 4.5, color: 'ink' }));
             if (!simple) { dinfo = { bad: true }; return; }
-            const n = P.length; let vi = 0; P.forEach((p, i) => { if (p[0] < P[vi][0] || (p[0] === P[vi][0] && p[1] < P[vi][1])) vi = i; });
-            const u = P[(vi + n - 1) % n], w = P[(vi + 1) % n], c = P[vi];
-            const inside = P.map((p, i) => i).filter((i) => i !== vi && i !== (vi + 1) % n && i !== (vi + n - 1) % n && cross(u, c, P[i]) >= 0 && cross(c, w, P[i]) >= 0 && cross(w, u, P[i]) >= 0);
-            s.poly([u, c, w], { color: 'orange', fill: 'orange', fillAlpha: 0.2, width: 1.5, dash: true });
-            let a, b, kind;
-            if (!inside.length) { a = u; b = w; kind = 'uw'; } else {
-              let best = inside[0], bd = -1; inside.forEach((i) => { const d = Math.abs(cross(u, w, P[i])); if (d > bd) { bd = d; best = i; } });
-              a = c; b = P[best]; kind = 'vx'; inside.forEach((i) => s.dot(P[i][0], P[i][1], { r: 8, color: 'red', hollow: true }));
-            }
+            const witness=diagonalWitness(P),vi=witness.v,u=P[witness.u],w=P[witness.w],c=P[vi],inside=witness.inside;
+            s.poly([u,c,w],{color:'orange',fill:'orange',fillAlpha:.2,width:1.5,dash:true});
+            const a=P[witness.a],b=P[witness.b],kind=witness.kind;
+            inside.forEach(i=>s.dot(P[i][0],P[i][1],{r:8,color:'red',hollow:true}));
             s.segment(a, b, { color: 'green', width: 4 });
             s.dot(c[0], c[1], { r: 8, color: 'gold' }); s.dot(u[0], u[1], { r: 6, color: 'orange' }); s.dot(w[0], w[1], { r: 6, color: 'orange' });
             s.text('v', c[0], c[1], { dx: -12, dy: 10, size: 14, color: 'gold' }); s.text('u', u[0], u[1], { dx: -12, dy: -8, size: 13, color: 'orange' }); s.text('w', w[0], w[1], { dx: -12, dy: 10, size: 13, color: 'orange' });
-            dinfo = { kind, inside: inside.length, ok: segInside(a, b, P) };
+            dinfo = { kind, inside: inside.length, ok: validDiagonal(P,witness.a,witness.b) };
             return;
           }
           const ids = f.ids;
@@ -329,9 +332,9 @@ export default {
           (f.ears || []).forEach((e) => s.dot(P[e][0], P[e][1], { r: 10, color: 'orange', hollow: true }));
           (f.twoEars || []).forEach((e) => s.dot(P[e][0], P[e][1], { r: 6.5, color: 'gold' }));
         });
-        v.readout(() => { if (view.value === 'diag') return dinfo.bad ? 'Not a simple polygon: the lemma does not apply.' : (dinfo.kind === 'uw' ? 'The triangle $uvw$ holds no other vertex, so $uw$ is a diagonal' : `$${dinfo.inside}$ vertices lie inside $uvw$; joining $v$ to the one farthest from $uw$ gives a diagonal`) + `: it lies inside the polygon — **${dinfo.ok ? 'verified' : 'not verified'}** by testing against every edge.`;
+        v.readout(() => { if (view.value === 'diag') return dinfo.bad ? 'Not a simple polygon: the lemma does not apply.' : (dinfo.kind === 'uw' ? 'The triangle $uvw$ holds no other vertex, so $uw$ is a diagonal' : `$${dinfo.inside}$ vertices lie in or on $uvw$; joining $v$ to the one farthest from $uw$ gives a diagonal`) + `: it lies inside the polygon — **${dinfo.ok ? 'verified' : 'not verified'}** by testing against every edge.`;
           const f = S.frame; if (f.bad) return 'Not a simple polygon — the theorem’s hypothesis fails.'; const n = P.length;
-          return `$n=${n}$ vertices, $${f.tris.length}$ triangle${f.tris.length === 1 ? '' : 's'} cut off so far, ${f.ids.length} vertices remain; the full triangulation has $n-2=${n - 2}$ triangles. ` + (T ? `Total triangle area $${v2(T.tris.reduce((a, t) => a + Math.abs(area2(t.map((i) => P[i]))) / 2, 0))}$ vs polygon area $${v2(area2(P) / 2)}$.` : ''); });
+          return `$n=${n}$ vertices, ${f.done?`$${f.tris.length}$ triangles completed`:`$${f.tris.length}$ triangle${f.tris.length === 1 ? '' : 's'} cut off so far, ${f.ids.length} vertices remain`}; the full triangulation has $n-2=${n - 2}$ triangles. ` + (T ? `Total triangle area $${v2(T.tris.reduce((a, t) => a + Math.abs(area2(t.map((i) => P[i]))) / 2, 0))}$ vs polygon area $${v2(area2(P) / 2)}$.` : ''); });
       },
     },
     // @@NEXT

@@ -706,11 +706,15 @@ so there are exactly as many squares as numbers. Galileo (1638) concluded that �
       kind: 'Paradox',
       name: 'Gabriel’s horn: finite volume, infinite area',
       statement: String.raw`Rotate the curve $y = 1/x$, $x\ge1$, about the $x$-axis. The resulting horn has **finite volume** and **infinite surface area**:
-$$V=\pi\int_1^\infty \frac{dx}{x^2}=\pi,\qquad A=2\pi\int_1^\infty \frac1x\sqrt{1+\frac1{x^4}}\,dx \;\ge\; 2\pi\int_1^\infty\frac{dx}{x}=\infty.$$
+$$V=\pi\int_1^\infty \frac{dx}{x^2}=\pi,$$
+$$\begin{aligned}
+A&=2\pi\int_1^\infty \frac1x\sqrt{1+\frac1{x^4}}\,dx \\
+&\ge 2\pi\int_1^\infty\frac{dx}{x}=\infty.
+\end{aligned}$$
 The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, yet its inside surface could never be painted. More generally, for $y = x^{-p}$ the volume is finite exactly when $p>\tfrac12$ and the area exactly when $p>1$.`,
-      idea: String.raw`The volume integrand is $\pi r^2 = \pi x^{-2p}$ and the area integrand is roughly $2\pi r = 2\pi x^{-p}$. These are power functions, so the same test that decides the $p$-series (pma 3.28) decides the integrals: $\int_1^\infty x^{-q}dx$ converges iff $q>1$. When $\tfrac12<p\le1$, the squared radius decays fast enough but the radius itself does not. The painter’s paradox dissolves once one sees that “painting” means a coat of fixed thickness $\varepsilon$, which needs volume about $\varepsilon\cdot A=\infty$, while “filling” lets the paint get thinner than any $\varepsilon$ deep in the horn, where the radius is smaller than $\varepsilon$. A mathematical surface can be covered by a layer of zero thickness, real paint cannot. Torricelli’s 1643 result shocked his contemporaries (Hobbes among them), because an infinitely long solid with finite size seemed to break the rule that the infinite cannot be measured.`,
+      idea: String.raw`The volume integrand is $\pi r^2 = \pi x^{-2p}$ and the area integrand is roughly $2\pi r = 2\pi x^{-p}$. These are power functions, so the same test that decides the $p$-series (pma 3.28) decides the integrals: $\int_1^\infty x^{-q}dx$ converges iff $q>1$. When $\tfrac12<p\le1$, the squared radius decays fast enough but the radius itself does not. The painter’s paradox dissolves once one sees that “painting” means a coat of fixed thickness $\varepsilon$, which needs volume about $\varepsilon\cdot A=\infty$, while “filling” lets the paint get thinner than any $\varepsilon$ deep in the horn, where the radius is smaller than $\varepsilon$. A mathematical surface can be covered by a layer of zero thickness, real paint cannot. Torricelli’s 1643 result shocked his contemporaries (Hobbes among them), because an infinitely long solid with finite size seemed to break the rule that the infinite cannot be measured. For each finite cutoff $L$, the fundamental theorem of calculus (pma-6.21) evaluates the power integral before any infinite limit is taken. For exponent $q\ne1$ use the primitive $x^{1-q}/(1-q)$; for $q=1$ use $\log x$. Applying this on $[1,L]$ and then taking $L\to\infty$ supplies the integral test used here, with $q=2p$ for volume and $q=p$ for the area comparison.`,
       caption: String.raw`Set the length $L$ (log scale) and the exponent $p$. The 3D horn shows the first stretch of the solid (drag to rotate). On the right, the running volume (blue) levels off at its limit while the running area (orange) keeps climbing like $2\pi\ln L$. Lower $p$ below 1 and the area still diverges; raise $p$ above 1 and both converge; lower $p$ to $\tfrac12$ or below and the volume diverges too.`,
-      deps: ['pma-3.28'],
+      deps: ['pma-3.28', 'pma-6.21'],
       refs: ['SEP “Infinity”'],
       credit: 'Evangelista Torricelli, 1643',
       tags: ['infinity', 'integrals', 'convergence'],

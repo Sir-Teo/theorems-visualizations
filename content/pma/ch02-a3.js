@@ -427,7 +427,7 @@ By (a) and (c), $\bar E$ is the smallest closed subset of $X$ containing $E$.`,
       caption: String.raw`$X=\R^2$; the ambient subspace $Y$ is drawn as a thick grey curve and $E\subset Y$ in blue. Drag $p$ along $E$. The disc is the largest $N_r(p)$ whose trace on $Y$ stays in $E$ (green): $E$ is open relative to $Y$. But the disc itself leaves $E$ (red shading), so $E$ is not open in $X$.`,
       deps: ['pma-2.18'],
       tags: ['relative topology', 'open sets'],
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Remark 2.29, pp. 35–36'],
+      verify: true,
       viz(v) {
         const T0 = -0.7, T1 = 2.2; // arc parameters
         const YS = {

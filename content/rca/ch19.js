@@ -62,7 +62,7 @@ export default {
       num: '19.1',
       kind: 'Definition',
       name: 'Holomorphic Fourier transforms; exponential type',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section19.1, pp.371–372'],
+      verify: true,
       statement: String.raw`For a function $F$ on $\R$ put
 $$f(z)=\int_{-\infty}^{\infty}F(t)\,e^{itz}\,dt\qquad(z=x+iy)$$
 at every $z$ where the integral converges absolutely. On the real axis this is the Fourier transform of Chapter 9 in disguise, $f(x)=\sqrt{2\pi}\,\hat F(-x)$. Because $|e^{itz}|=e^{-ty}$, the support of $F$ decides where $f$ is defined:
@@ -70,7 +70,7 @@ at every $z$ where the integral converges absolutely. On the real axis this is t
 (b) if $F\in L^2(0,\infty)$, i.e. $F=0$ on $(-\infty,0)$, then $f$ is holomorphic in the upper half-plane $\Pi^+=\{z:\Im z>0\}$.
 
 An entire function $f$ is of **exponential type** if there are constants $A,C$ with $|f(z)|\le C\,e^{A|z|}$ for all $z\in\C$; it is of exponential type *at most* $A$ if this holds with that $A$. By (a), the transform of a function supported in $[-A,A]$ is of exponential type at most $A$.`,
-      idea: String.raw`The kernel has modulus $|e^{itz}|=e^{-ty}$, so the integral converges absolutely exactly where $|F(t)|e^{-ty}$ is integrable, and on open regions with a common local integrable majorant the integral is holomorphic (combine Fubini with Morera's theorem). Absolute convergence at an isolated boundary point alone does not imply holomorphy there. A compactly supported $F$ never meets weights larger than $e^{A|y|}$, which is the growth bound in (a); on a half-line $(0,\infty)$ the weight $e^{-ty}$ is a help only when $y>0$, and Cauchy–Schwarz handles $F\in L^2$. Theorems 19.2 and 19.3 are the converses: they recover $F$, and its support, from the growth of $f$.`,
+      idea: String.raw`The kernel has modulus $|e^{itz}|=e^{-ty}$, so the integral converges absolutely exactly where $|F(t)|e^{-ty}$ is integrable, and there $f$ is holomorphic (differentiate under the integral sign, or combine Fubini with Morera's theorem). A compactly supported $F$ never meets weights larger than $e^{A|y|}$, which is the growth bound in (a); on a half-line $(0,\infty)$ the weight $e^{-ty}$ is a help only when $y>0$, and Cauchy–Schwarz handles $F\in L^2$. Theorems 19.2 and 19.3 are the converses: they recover $F$, and its support, from the growth of $f$.`,
       caption: String.raw`Pick $F$ and drag $z$ over the phase portrait of $f$ (hue = $\arg f$). The right panel shows $|F(t)|$ and the size of the integrand $|F(t)e^{itz}|=|F(t)|e^{-ty}$ at the current height $y=\Im z$; its area bounds $|f(z)|$. For compactly supported $F$ that area never exceeds $\|F\|_1e^{A|y|}$. For $F$ on a half-line it is finite only above a horizontal line, even though $f$ itself continues further. The Gaussian gives an entire $f$ that grows like $e^{y^2/2}$ — faster than any exponential type allows.`,
       deps: ['rca-9.1', 'rca-10.2'],
       see: ['fa-7.22'],

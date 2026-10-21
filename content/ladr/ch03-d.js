@@ -918,7 +918,7 @@ export default {
 (a) $\dim\operatorname{range}T'=\dim\operatorname{range}T$;
 (b) $\operatorname{range}T'=(\operatorname{null}T)^0$.`,
       idea: String.raw`(a) By 3.21 for $T'$ and 3.111, $\dim\operatorname{range}T'=\dim W-\dim\operatorname{null}T'$, which by 3.128 and 3.125 equals $\dim W-(\dim W-\dim\operatorname{range}T)$. (b) If $\varphi=T'\psi$ then $\varphi(v)=\psi(Tv)=0$ for $v\in\operatorname{null}T$, so $\operatorname{range}T'\subseteq(\operatorname{null}T)^0$. By (a), 3.125 and 3.21 both sides have dimension $\dim V-\dim\operatorname{null}T$, so they are equal.`,
-      caption: String.raw`$T\colon\mathbf R^3\to\mathbf R^2$ with null space the red line. A functional on $\mathbf R^3$ is drawn here as its coefficient vector $(\varphi(e_1),\varphi(e_2),\varphi(e_3))$, so $(\operatorname{null}T)^0$ is the green plane of vectors perpendicular to the red line. Drag $\psi$ on the left: the coefficient vector of $T'\psi$ (green dot) never leaves that plane. Drag the green dot within the displayed region: a producing $\psi$ appears on the left. In rank 1 the null space grows to a plane while the dual range and annihilator shrink to a line. Producing functionals are then nonunique; the reverse drag selects the one of minimum Euclidean coefficient norm. The widget keeps its functional handles away from zero; the theorem includes the zero functional as well.`,
+      caption: String.raw`$T\colon\mathbf R^3\to\mathbf R^2$ with null space the red line. A functional on $\mathbf R^3$ is drawn here as its coefficient vector $(\varphi(e_1),\varphi(e_2),\varphi(e_3))$, so $(\operatorname{null}T)^0$ is the green plane of vectors perpendicular to the red line. Drag $\psi$ on the left: the coefficient vector of $T'\psi$ (green dot) never leaves that plane. Drag the green dot anywhere in the plane: the $\psi$ that produces it appears on the left — every element of $(\operatorname{null}T)^0$ is reached. Rank 1 shrinks both to a line.`,
       deps: ['ladr-3.21', 'ladr-3.111', 'ladr-3.128', 'ladr-3.125'],
       see: ['fa-4.14'],
       tags: ['duality'],
@@ -931,7 +931,7 @@ export default {
         const A2 = [[0.8, 0.45, -0.35], [-0.25, 0.7, 0.6]], A1 = [[0.8, 0.45, -0.35], [0.6, 0.3375, -0.2625]];
         const Am = () => (rSel.value === '2' ? A2 : A1);
         const Ps = fHandle(SW, [0.65, 0.55], 'blue', 'ψ', 0.6);
-        const G = sc.handle([0.3, 0.5, 0.2], { color: 'green', label: "T′ψ", snap: (p) => { const R = orth(Am()), q = projOnto(p, R); return len3(q) < 1e-9 ? mul3(R[0], 0.25) : minLen3(q, 0.25); } });
+        const G = sc.handle([0.3, 0.5, 0.2], { color: 'green', label: "T′ψ", snap: (p) => minLen3(projOnto(p, orth(Am())), 0.25) });
         v.legend([['red', '$\\operatorname{null}T$'], ['green', "$(\\operatorname{null}T)^0$ and $T'\\psi$", { area: true }], ['blue', '$\\psi$']]);
         let st = null;
         v.render(() => {

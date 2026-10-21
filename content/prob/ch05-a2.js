@@ -1,6 +1,10 @@
 // Probability: Theory and Examples (Durrett) — Chapter 5, part A2: §5.3 Recurrence and transience
 import { fr, ringPos, drawChain, nodeAt, runChain, stepper, rhoTo, classes, absorbProb, chain5, CHAIN7, CLS_COL, logInts, logFact } from './ch05-a.shared.js';
 
+import { finiteReturnProbability } from './ch05-foundations.shared.js';
+
+import { lyapunovDrift, lyapunovCertificate, birthDeathP, logBirthDeathScale, birthDeathClassification, zeroSuccessUpper95 } from './ch05-birth-death-audit.shared.js';
+
 const REC = (rho) => rho >= 1 - 1e-9;
 /** Click-to-wire graph on `n` nodes: click a node, then another (or the same) to toggle the edge; rows are uniform on their edges. */
 function wiring(v, S, pos, adj, afterChange) {
@@ -26,20 +30,20 @@ export default {
       num: '5.3.1a',
       kind: 'Definition',
       name: 'Recurrent and transient states',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.3, pp. 281–282; equation (5.3.1)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
-      statement: String.raw`Let $T_y=\inf\{n\ge1:X_n=y\}$ and $\rho_{yy}=P_y(T_y<\infty)$. The state $y$ is **recurrent** if $\rho_{yy}=1$ (the chain started at $y$ returns with probability $1$) and **transient** if $\rho_{yy}<1$. By 5.2.6 a recurrent state is visited infinitely often almost surely, a transient state only finitely often, and, when started at $y$, the number of returns at positive times is geometric on $\{0,1,\dots\}$ with mean $\rho_{yy}/(1-\rho_{yy})$.`,
+      statement: String.raw`Let $T_y=\inf\{n\ge1:X_n=y\}$ and $\rho_{yy}=P_y(T_y<\infty)$. The state $y$ is **recurrent** if $\rho_{yy}=1$ (the chain started at $y$ returns with probability $1$) and **transient** if $\rho_{yy}<1$. By 5.2.6, started from $y$, recurrence means infinitely many returns almost surely and transience means only finitely many. Excluding time zero, the number of returns has distribution $P_y(N(y)=k)=(1-\rho_{yy})\rho_{yy}^k$ for $k\ge0$ when $y$ is transient, with mean $\rho_{yy}/(1-\rho_{yy})$.`,
       idea: String.raw`The dichotomy comes from the formula $P_y(T_y^k<\infty)=\rho_{yy}^k$ of 5.2.6: either the factor is $1$ and the visits never stop, or it is below $1$ and the tail decays geometrically. This is the first example of a *zero-one* behaviour of a chain: for a given state, the number of returns is either almost surely infinite or almost surely finite.`,
-      caption: String.raw`The five-state chain of the previous items: states $0,1,2$ communicate and leak (rate $e$, through state $2$) into the closed pair $\{3,4\}$. Pick $y$ and the leak. Left: nodes are green when $\rho_{yy}=1$ and red when $<1$. Right: the running fraction of seeded runs from $y$ that came back within $300$ steps settles on the exact $\rho_{yy}$ (green line). Slide $e$ down towards $0$: the red states turn green only at exactly $e=0$, where $\{0,1,2\}$ becomes closed; any tiny leak makes all three transient.`,
+      caption: String.raw`The five-state chain of the previous items: states $0,1,2$ communicate and leak (rate $e$, through state $2$) into the closed pair $\{3,4\}$. Pick $y$ and the leak. Left: nodes are green when $\rho_{yy}=1$ and red when $<1$. Right: the running fraction of seeded runs from $y$ that came back within $300$ steps estimates $P_y(T_y\le300)$ (purple line); the green line is the eventual return probability $\rho_{yy}$. The difference is the exact finite-horizon bias, separate from sampling noise. Slide $e$ down towards $0$: the red states turn green only at exactly $e=0$, where $\{0,1,2\}$ becomes closed; any tiny leak makes all three transient.`,
       deps: ['prob-5.2.6'],
       see: ['stoch-3.1'],
       tags: ['markov chains', 'recurrence'],
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., unnumbered recurrence definition and equation (5.3.1), pp. 281–282'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=289' },
       viz(v) {
         const e = v.slider('leak $e$', 0, 0.5, 0.15, { step: 0.01 });
         const yS = v.select('state $y$', ['0', '1', '2', '3', '4'], '2');
         let seed = 1; v.button('Resample', () => { seed++; });
         const G = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 320, title: 'transition diagram' });
-        const R = v.stage({ x: [1, 4000], xlog: true, y: [0, 1], axes: 'box', gutter: true, height: 320, minWidth: 280, xlabel: 'number of runs', title: 'running estimate of $\\rho_{yy}$' });
+        const R = v.stage({ x: [1, 4000], xlog: true, y: [0, 1], axes: 'box', gutter: true, height: 320, minWidth: 280, xlabel: 'number of runs', title: 'return by 300: sampled and exact; eventual return' });
         let key = '', est = null;
         const run = (ee, y, sd) => {
           const k = `${ee}|${y}|${sd}`; if (k === key) return est; key = k;
@@ -53,8 +57,9 @@ export default {
           drawChain(G, P, { pos: ringPos(5, 1.05), fills: rho.map((r) => (REC(r) ? 'green' : 'red')), rings: rho.map((_, k) => k === y), labels: true, minP: 0.02 });
           const est2 = run(ee, y, seed), pts = logInts(1, 4000, 120).map((i) => [i, est2[i - 1]]);
           R.path(pts, { color: 'gold', width: 2 });
+          const finite=finiteReturnProbability(P,y,300).returned;R.hline(finite,{color:'purple',width:1.5});
           R.hline(rho[y], { color: 'green', width: 2, dash: true });
-          info = `$\\rho_{yy}=${fr(rho[y], 4)}$: state $${y}$ is **${REC(rho[y]) ? 'recurrent' : 'transient'}**. After 4000 runs the estimate is $${fr(est2[3999], 3)}$ (truncation at 300 steps biases it down slightly for $\\rho_{yy}$ near 1).\nAll states: ${rho.map((r, k) => `$\\rho_{${k}${k}}=${fr(r, 3)}$`).join(',  ')}`;
+          info = `$\\rho_{yy}=${fr(rho[y], 4)}$: state $${y}$ is **${REC(rho[y]) ? 'recurrent' : 'transient'}**. After 4000 runs the estimate is $${fr(est2[3999], 3)}$ (exact return-by-300 probability $${fr(finite,6)}$; remaining return mass $${fr(Math.max(0,rho[y]-finite),6)}$).\nAll states: ${rho.map((r, k) => `$\\rho_{${k}${k}}=${fr(r, 3)}$`).join(',  ')}`;
         });
         v.readout(() => info);
       },
@@ -133,14 +138,14 @@ so $y$ is recurrent if and only if $\sum_{n}p^n(y,y)=\infty$.`,
       num: '5.3.2a',
       kind: 'Definition',
       name: 'Closed and irreducible sets',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.3, p. 282 (definitions before Theorem 5.3.3)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
-      statement: String.raw`A set $A\subset S$ is **closed** if $x\in A$ and $\rho_{xy}>0$ imply $y\in A$ (equivalently $p(x,y)=0$ for $x\in A$, $y\notin A$): once in $A$ the chain stays in $A$. A set $B$ is **irreducible** if $\rho_{xy}>0$ for all $x,y\in B$ (every state of $B$ can reach every other). The chain is irreducible if $S$ is. The communicating classes of $S$ partition it, and a class is irreducible.`,
-      idea: String.raw`Reachability $x\to y$ is transitive, so "$x\to y$ and $y\to x$" is an equivalence relation whose classes are the irreducible pieces; the classes form a partially ordered set under reachability, and a class is closed exactly when it is a *maximal* element, with no arrow leaving it.`,
-      caption: String.raw`Wire your own transition graph (click a node, then a second node or the same node, to toggle the edge). The communicating classes are recomputed live and coloured; a thick ring marks the nodes of a **closed** class. The readout lists each class with the probability it leaks out per step from its worst state, and says whether the whole chain is irreducible.`,
+      statement: String.raw`A set $A\subset S$ is **closed** if $x\in A$ and $\rho_{xy}>0$ imply $y\in A$ (equivalently $p(x,y)=0$ for $x\in A$, $y\notin A$): once in $A$ the chain stays in $A$. A nonempty set $B$ is **irreducible** if $\rho_{xy}>0$ for all $x,y\in B$ (every state of $B$ can reach every other). The chain is irreducible if $S$ is. Communication uses reachability allowing zero steps on the diagonal, so communicating classes partition $S$. Under the positive-time $\rho$ convention used here, a singleton class with no positive-probability return is not an irreducible set in this definition; every other communicating class is.`,
+      idea: String.raw`Reachability $x\to y$ is transitive, so "$x\to y$ and $y\to x$" is made reflexive by allowing a zero-step path, giving the communicating classes (with the positive-time singleton qualification above); the classes form a partially ordered set under reachability, and a class is closed exactly when it is a *maximal* element, with no arrow leaving it.`,
+      caption: String.raw`Wire your own transition graph (click a node, then a second node or the same node, to toggle the edge). A row with no selected edges is interpreted as an absorbing self-loop. The communicating classes are recomputed live and coloured; a thick ring marks the nodes of a **closed** class. The readout lists each class with the probability it leaks out per step from its worst state, and says whether the whole chain is irreducible.`,
       deps: ['prob-5.1.1a'],
       see: ['stoch-1.5'],
       tags: ['markov chains'],
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., unnumbered closed/irreducible definitions before Theorem 5.3.3, p. 282'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=290' },
       viz(v) {
         const pos = ringPos(6, 1.05), adj = ADJ6();
         v.button('Reset', () => { const A = ADJ6(); adj.forEach((r, i) => r.forEach((_, j) => { adj[i][j] = A[i][j]; })); });
@@ -150,7 +155,7 @@ so $y$ is recurrent if and only if $\sum_{n}p^n(y,y)=\infty$.`,
         v.render(() => {
           const P = W.P(), C = classes(P);
           drawChain(S, P, { pos, fills: C.cls.map((c) => CLS_COL[c % CLS_COL.length]), rings: C.cls.map((c) => C.closed[c]), cur: W.sel, labels: true, minP: 0.02 });
-          const lines = C.list.map((mem, c) => { const leak = Math.max(...mem.map((i) => P[i].reduce((s, p, j) => s + (C.cls[j] !== c ? p : 0), 0))); return `class ${set(mem)}: ${C.closed[c] ? '**closed**' : 'not closed'}, largest exit probability $${fr(leak, 3)}$`; });
+          const lines = C.list.map((mem, c) => { const leak = Math.max(...mem.map((i) => P[i].reduce((s, p, j) => s + (C.cls[j] !== c ? p : 0), 0))); return `class ${set(mem)}: ${C.closed[c] ? '**closed**' : 'not closed'}, largest exit probability $${fr(leak, 3)}$${mem.length===1&&P[mem[0]][mem[0]]===0?'; this singleton has no positive-time return':''}`; });
           info = `${lines.join('\n')}\n${C.list.length === 1 ? 'The chain is **irreducible** (one class, necessarily closed).' : `Not irreducible: ${C.list.length} classes, ${C.closed.filter(Boolean).length} closed.`}`;
         });
         v.readout(() => info);
@@ -241,9 +246,11 @@ so $y$ is recurrent if and only if $\sum_{n}p^n(y,y)=\infty$.`,
 $$E_x\varphi(X_1)\le\varphi(x)\qquad(x\notin F).$$
 Then $X_n$ is recurrent.`,
       idea: String.raw`Stop the chain when it enters $F$: until then $\varphi(X_n)$ is a nonnegative supermartingale, so (4.8.4) the chance that it ever climbs above $M$ is at most $\varphi(x)/M$. A transient chain would leave every finite set for good, hence on the event of never entering $F$ it would have $\varphi(X_n)\to\infty$; that event therefore has probability $\le\varphi(x)/M$ for every $M$, i.e. zero. So $F$ is entered, then again and again, some state of the finite set $F$ is visited infinitely often, and irreducibility makes every state recurrent.`,
-      caption: String.raw`A birth-death chain on $\{0,1,2,\dots\}$ with up-probability $p_x=\frac12+\frac b{x+1}$ ($p_0=1$). Pick $\varphi$ and the outward push $b$: the bars show the drift $E_x\varphi(X_1)-\varphi(x)$ (green if $\le0$, red if positive), and the readout reports the largest $x$ where the drift is positive: the finite set $F=\{0,\dots,x\}$ the criterion needs, or that none was found. For $\varphi=\log(1+x)$ the criterion can succeed for $b$ up to about $1/4$, whereas $\varphi(x)=x$ already fails for every $b>0$ although the chain is then still recurrent for small $b$: the criterion is sufficient, not necessary, and a good $\varphi$ is the art. The right panel is one seeded path.`,
+      caption: String.raw`A birth-death chain on $\{0,1,2,\dots\}$ with up-probability $p_x=\frac12+\frac b{x+1}$ ($p_0=1$). Pick $\varphi$ and the outward push $b$: the bars show the drift $E_x\varphi(X_1)-\varphi(x)$ (green if $\le0$, red if positive), the first 60 states are shown. The readout classifies this particular function using an analytic drift identity or asymptotic expansion, not by extrapolating those bars. For $\varphi=\log(1+x)$ the criterion holds with $F=\{0\}$ exactly when $b\le1/4$, whereas $\varphi(x)=x$ already fails for every $b>0$ although the chain is then still recurrent for small $b$: the criterion is sufficient, not necessary, and a good $\varphi$ is the art. The right panel is one seeded path.`,
       deps: ['prob-4.8.4', 'prob-5.3.2a'],
       tags: ['recurrence', 'lyapunov'],
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., Theorem 5.3.8, p. 285; displayed function checks are independent analytic calculations'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=293' },
       viz(v) {
         const b = v.slider('push outward $b$', 0, 0.6, 0.1, { step: 0.01 });
         const ph = v.select('Lyapunov function $\\varphi$', [{ value: 'x', label: '$x$' }, { value: 'log', label: '$\\log(1+x)$' }, { value: 'sq', label: '$x^2$' }], 'log');
@@ -251,7 +258,6 @@ Then $X_n$ is recurrent.`,
         const XM = 60;
         const D = v.stage({ x: [0, XM], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 320, xlabel: 'state $x$', title: 'drift $E_x\\varphi(X_1)-\\varphi(x)$' });
         const P = v.stage({ x: [0, 3000], y: [0, 30], axes: 'box', gutter: true, height: 320, minWidth: 280, xlabel: 'time $n$', title: 'one seeded path of the chain' });
-        const F = { x: (x) => x, log: (x) => Math.log(1 + x), sq: (x) => x * x };
         let key = '', path = null;
         const sim = (bb, sd) => {
           const k = `${bb}|${sd}`; if (k === key) return path; key = k;
@@ -261,15 +267,14 @@ Then $X_n$ is recurrent.`,
         };
         let info = '';
         v.render(() => {
-          const bb = b.value, f = F[ph.value], drift = (x) => { const p = 0.5 + bb / (x + 1); return p * f(x + 1) + (1 - p) * f(x - 1) - f(x); };
-          let last = -1; for (let x = 1; x <= 400; x++) if (drift(x) > 1e-12) last = x;
+          const bb=b.value,drift=x=>lyapunovDrift(ph.value,bb,x),certificate=lyapunovCertificate(ph.value,bb);
           const vals = Array.from({ length: XM }, (_, i) => drift(i + 1)), mx = Math.max(...vals.map(Math.abs), 1e-6);
           D.setView([0, XM + 1], [-mx * 1.3, mx * 1.3]);
-          vals.forEach((d, i) => D.rect(i + 0.6, 0, i + 1.4, d, { fill: d <= 1e-12 ? 'green' : 'red', fillAlpha: 0.6, stroke: false }));
+          vals.forEach((d, i) => D.rect(i + 0.6, 0, i + 1.4, d, { fill: d <= 0 ? 'green' : 'red', fillAlpha: 0.6, stroke: false }));
           D.hline(0, { color: 'ink' });
           const X = sim(bb, seed); let mxx = 5, z = 0; for (let n = 0; n <= 3000; n++) { mxx = Math.max(mxx, X[n]); if (X[n] === 0) z++; }
           P.setView([0, 3000], [0, mxx * 1.1]); P.path(Array.from({ length: 3001 }, (_, n) => [n, X[n]]), { color: 'accent', width: 1.2 });
-          info = last < 0 ? `Drift $\\le0$ for every $x\\ge1$ checked up to 400: the criterion holds with $F=\\{0\\}$ (so the chain is recurrent). Visits to $0$ in the seeded path: ${z}.` : last >= 400 ? `Drift still positive at $x=400$: the criterion **fails** for this $\\varphi$ (it says nothing about recurrence). Visits to $0$ in the seeded path: ${z}.` : `Drift $\\le0$ for all $x>${last}$: the criterion holds with the finite set $F=\\{0,\\dots,${last}\\}$ (checked to $x=400$), so the chain is recurrent. Visits to $0$ in the seeded path: ${z}.`;
+          info = `${certificate.reason} ${certificate.holds?'The criterion holds with $F=\\{0\\}$, so the chain is recurrent.':'This function does not meet the criterion; that alone does not classify the chain.'} Displayed bars cover only $1\\le x\\le60$. Visits to $0$ in the finite sample path: ${z}.`;
         });
         v.readout(() => info);
       },
@@ -278,7 +283,7 @@ Then $X_n$ is recurrent.`,
       num: '5.3.10',
       kind: 'Theorem',
       name: 'Exit probabilities of birth-and-death chains',
-      statement: String.raw`Let $X_n$ be a birth-and-death chain on the integers with $p(i,i+1)=p_i$, $p(i,i-1)=q_i=1-p_i$, all $p_i\in(0,1)$. Define the scale function $s$ by $s(0)=0$, $s(x+1)-s(x)=\prod_{j=1}^{x}\frac{q_j}{p_j}$ (empty product $1$). For $a<x<b$,
+      statement: String.raw`Let $X_n$ be a birth-and-death chain on $\{0,1,2,\dots\}$, reflected from $0$ to $1$. For $i\ge1$, let $p(i,i+1)=p_i$, $p(i,i-1)=q_i=1-p_i$, with $p_i\in(0,1)$. Define the scale function $s$ by $s(0)=0$, $s(x+1)-s(x)=\prod_{j=1}^{x}\frac{q_j}{p_j}$ (empty product $1$). For $0\le a<x<b$,
 $$P_x(T_a<T_b)=\frac{s(b)-s(x)}{s(b)-s(a)},$$
 where $T_z$ is the hitting time of $z$ (and $s(X_n)$ is a martingale up to the exit time).`,
       idea: String.raw`The recursion $p_x(s(x+1)-s(x))=q_x(s(x)-s(x-1))$ says exactly that $s$ is harmonic: $E_xs(X_1)=s(x)$. So $s(X_{n\wedge T})$ is a bounded martingale up to $T=T_a\wedge T_b$, and optional stopping (4.8.2) gives $s(x)=s(a)P_x(T_a<T_b)+s(b)P_x(T_b<T_a)$, which is the formula once $P_x(T_b<T_a)=1-P_x(T_a<T_b)$.`,
@@ -329,22 +334,24 @@ where $T_z$ is the hitting time of $z$ (and $s(X_n)$ is a martingale up to the e
       num: '5.3.11',
       kind: 'Theorem',
       name: 'Recurrence criterion for birth-and-death chains',
-      statement: String.raw`Let $X_n$ be an irreducible birth-and-death chain on $\{0,1,2,\dots\}$ with up-probabilities $p_x$ and down-probabilities $q_x=1-p_x$ ($q_0=0$). Then $X_n$ is recurrent if and only if
+      statement: String.raw`Let $X_n$ be an irreducible birth-and-death chain on $\{0,1,2,\dots\}$ with up-probabilities $p_x$ and down-probabilities $q_x=1-p_x$, where $p_0=1$ and $0<p_x<1$ for $x\ge1$. Then $X_n$ is recurrent if and only if
 $$\sum_{m=0}^{\infty}\prod_{j=1}^{m}\frac{q_j}{p_j}=\infty.$$`,
-      idea: String.raw`With $s$ the scale function of 5.3.10, the chain started at $0$ reaches level $N$ before returning to $0$ with probability $P_0(T_N<T_0)=p_0/s(N)$. The chain is recurrent exactly when this escape probability tends to $0$ as $N\to\infty$, i.e. when $s(N)=\sum_{m<N}\prod_{j\le m}q_j/p_j\to\infty$. (Reaching ever higher levels without returning is the only way to be transient on a half-line.)`,
-      caption: String.raw`Choose a family of up-probabilities and the parameter $b$. Left: the partial sums $s(M)=\sum_{m<M}\prod_{j\le m}q_j/p_j$ on log-log axes - a curve that keeps rising is divergence. Right: the escape probability $1/s(N)$ of reaching level $N$ before returning to $0$ (orange line), with simulated frequencies (gold; hollow if no run escaped in 3000). With $p_x=\frac12+\frac b{x+1}$ the sum diverges exactly for $b\le\frac14$ (at $b=\frac14$ only like $\log M$); with $p_x=\frac12+\frac b{\sqrt{x+1}}$ any $b>0$ is transient.`,
+      idea: String.raw`With $s$ the scale function of 5.3.10, the chain started at $0$ reaches level $N$ before returning to $0$ with probability $P_0(T_N<T_0)=1/s(N)$, where $T_0$ is the first return at a positive time. The chain is recurrent exactly when this escape probability tends to $0$ as $N\to\infty$, i.e. when $s(N)=\sum_{m<N}\prod_{j\le m}q_j/p_j\to\infty$. (Reaching ever higher levels without returning is the only way to be transient on a half-line.)`,
+      caption: String.raw`Choose a family of up-probabilities and the parameter $b$. Left: the partial sums $s(M)=\sum_{m<M}\prod_{j\le m}q_j/p_j$ shown as $\log_{10}s(M)$ against a logarithmic $M$ axis, so even very large sums remain visible. Finite growth alone does not establish divergence; the readout uses the analytic asymptotics of the selected family. Right: the escape probability $1/s(N)$ of reaching level $N$ before returning to $0$ (orange line), with simulated frequencies (gold; hollow downward markers are exact one-sided 95% upper bounds after zero successes in 3000 runs). With $p_x=\frac12+\frac b{x+1}$ the sum diverges exactly for $b\le\frac14$ (at $b=\frac14$ only like $\log M$); with $p_x=\frac12+\frac b{\sqrt{x+1}}$ any $b>0$ is transient.`,
       deps: ['prob-5.3.10'],
       see: ['stoch-1.10'],
       tags: ['birth-death', 'recurrence'],
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., Theorem 5.3.11 and scale construction, p. 286; family asymptotics are independent calculations'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=294' },
       viz(v) {
         const fam = v.select('family', [{ value: 'inv', label: '$\\frac12+\\frac{b}{x+1}$' }, { value: 'sqrt', label: '$\\frac12+\\frac{b}{\\sqrt{x+1}}$' }, { value: 'const', label: '$\\frac12+b$' }], 'inv');
-        const b = v.slider('parameter $b$', -0.2, 0.5, 0.25, { step: 0.005 });
+        const b = v.slider('parameter $b$', -0.2, 0.45, 0.25, { step: 0.005 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const MM = 10000;
-        const A = v.stage({ x: [1, MM], xlog: true, y: [1, 1e3], ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$M$', title: 'partial sums $s(M)$' });
+        const A = v.stage({ x: [1, MM], xlog: true, y: [0, 3], axes: 'box', gutter: true, height: 320, xlabel: '$M$', ylabel:'$\\log_{10}s(M)$', title: 'logarithm of scale partial sums' });
         const E = v.stage({ x: [1, 64], xlog: true, y: [1e-4, 1], ylog: true, axes: 'box', gutter: true, height: 320, minWidth: 260, xlabel: 'level $N$', title: 'escape probability $P_0(T_N<T_0)=1/s(N)$' });
         let key = '', sim = null;
-        const pOf = (f, bb, x) => Math.min(0.98, Math.max(0.02, f === 'inv' ? 0.5 + bb / (x + 1) : f === 'sqrt' ? 0.5 + bb / Math.sqrt(x + 1) : 0.5 + bb));
+        const pOf = birthDeathP;
         const run = (f, bb, sd) => {
           const k = `${f}|${bb}|${sd}`; if (k === key) return sim; key = k;
           const rg = v.rng(sd * 23 + 1), out = {};
@@ -353,19 +360,16 @@ $$\sum_{m=0}^{\infty}\prod_{j=1}^{m}\frac{q_j}{p_j}=\infty.$$`,
         };
         let info = '';
         v.render(() => {
-          const f = fam.value, bb = b.value, s = new Float64Array(MM + 1); let prod = 1, acc = 0;
-          for (let m = 0; m <= MM; m++) { if (m >= 1) prod *= (1 - pOf(f, bb, m)) / pOf(f, bb, m); acc += prod; s[m + 0] = acc; }
-          // s[m] = sum_{k=0}^{m} prod_k ; partial sum over m < M is s[M-1]
-          const idx = logInts(1, MM, 150), pts = idx.map((M) => [M, Math.max(1, Math.min(1e300, s[M - 1]))]).filter((q) => isFinite(q[1]));
-          A.setView([1, MM], [1, Math.max(10, ...pts.map((q) => q[1])) * 1.5]); A.path(pts, { color: 'accent', width: 2.2 });
-          const sN = (N) => s[N - 1], esc = Array.from({ length: 64 }, (_, i) => [i + 1, Math.max(1e-4, 1 / sN(i + 1))]);
-          E.path(esc, { color: 'orange', width: 2.2 });
-          const sm = run(f, bb, seed);
-          Object.entries(sm).forEach(([N, fr3]) => { E.dot(+N, Math.max(fr3, 1 / 3000), { r: 6, color: 'gold', hollow: fr3 === 0 }); });
-          const r1 = s[99], r2 = s[999], r3 = s[9999], d1 = r2 - r1, d2 = r3 - r2;
-          info = `$s(10^2)=${fr(r1, 2)}$, $s(10^3)=${fr(r2, 2)}$, $s(10^4)=${fr(r3, 2)}$. Gain per decade: $${fr(d1, 2)}$ then $${fr(d2, 2)}$, ratio $${fr(d2 / d1, 2)}$: ${d2 / d1 >= 0.7 ? 'the gain does not shrink - the series diverges (recurrent), even if as slowly as $\\log M$' : 'the gain shrinks fast - the series converges (transient)'}. Escape to level 64: formula $${fr(1 / sN(64), 4)}$, simulated $${fr(sm[64], 4)}$.`;
+          const f=fam.value,bb=b.value,logs=logBirthDeathScale(f,bb,MM),classification=birthDeathClassification(f,bb),idx=logInts(1,MM,150);
+          const pts=idx.map(M=>[M,logs[M]/Math.LN10]);A.setView([1,MM],[0,Math.max(1,...pts.map(q=>q[1]))*1.08]);A.path(pts,{color:'accent',width:2.2});
+          const esc=Array.from({length:64},(_,i)=>[i+1,Math.exp(-logs[i+1])]),sm=run(f,bb,seed),upper=zeroSuccessUpper95(3000),positive=Object.values(sm).filter(x=>x>0),low=Math.min(...esc.map(q=>q[1]),...positive,...(Object.values(sm).some(x=>x===0)?[upper*.05]:[]));
+          E.setView([1,80],[low*.7,1.12]);E.path(esc,{color:'orange',width:2.2});
+          Object.entries(sm).forEach(([N,p])=>{const y=p||upper;E.dot(+N,y,{r:6,color:'gold',hollow:p===0});if(p===0)E.arrow(+N,y,+N,y*.05,{color:'gold',width:1.3,head:5});});
+          info=`Analytic classification: **${classification.recurrent?'recurrent':'transient'}**. ${classification.reason} The plotted finite sums illustrate this conclusion; they do not establish an infinite-series test.
+$\log_{10}s(10^2)=${fr(logs[100]/Math.LN10,3)}$, $\log_{10}s(10^3)=${fr(logs[1000]/Math.LN10,3)}$, $\log_{10}s(10^4)=${fr(logs[10000]/Math.LN10,3)}$.
+Escape to level 64: exact $${v.sci(Math.exp(-logs[64]),3)}$, simulated ${sm[64]?'$'+v.sci(sm[64],3)+'$':'0 successes; one-sided 95% upper bound $'+v.sci(upper,3)+'$'}. Hollow markers show that bound, not a positive observed frequency.`;
         });
-        v.legend([['accent', 'partial sums'], ['orange', 'escape probability'], ['gold', 'simulation', { dot: true }]]);
+        v.legend([['accent', '$\\log_{10}s(M)$'], ['orange', 'escape probability'], ['gold', 'sample frequencies / zero-success 95% bounds', { dot: true }]]);
         v.readout(() => info);
       },
     },

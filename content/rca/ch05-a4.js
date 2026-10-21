@@ -169,7 +169,7 @@ and the supremum is attained. Consequently $X^*$ separates points (if $x\ne y$ s
       caption: String.raw`$X=\R^2$ with the $\ell^p$ norm. Left: each grey segment is a piece of a level set $\{f=1\}$ of a functional on the dual unit sphere, drawn where it touches the ball; the half-planes $\{f\le1\}$ together carve out the unit ball. Drag $x$ (and $y$). Right: the values $f_\varphi(x)$ as $f_\varphi$ runs once around the dual unit sphere; their maximum is exactly $\norm{x}_p$, attained at the green functional, whose level line through $x$ is drawn. The functional that norms $x-y$ separates $x$ from $y$.`,
       deps: ['rca-5.20'],
       see: ['fa-4.3'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Remarks 5.21, p. 108'],
+      verify: true,
       tags: ['duality', 'Hahn–Banach'],
       viz(v) {
         const M = v.M;

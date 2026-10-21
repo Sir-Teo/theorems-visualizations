@@ -1,0 +1,321 @@
+{
+  "baseline": "d85a30d71782fd55ff3235ad84873515d05ba6cd",
+  "mapping": [
+    {
+      "num": "1.3",
+      "file": "ch01.js",
+      "target": "pma-5.15",
+      "paragraph": "The ohmic approximation is the local Taylor expansion pma-5.15, not an exact constant-field law at all voltages. For a twice continuously differentiable channel current near its reversal E, $I(E)=0$ gives $I(E+\\Delta V)=I'(E)\\Delta V+O((\\Delta V)^2)$. Calling the local slope g yields the displayed driving-force relation. The concentrations and channel state are held fixed in taking that derivative; large voltage excursions can reveal the omitted curvature.",
+      "before": [
+        "physio-1.8"
+      ],
+      "after": [
+        "physio-1.8",
+        "pma-5.15"
+      ]
+    },
+    {
+      "num": "1.6",
+      "file": "ch01-b.js",
+      "target": "prob-2.2.1",
+      "paragraph": "At a fixed time under the independent-channel model, let each open-state indicator have success probability p. Its variance is $p(1-p)$ and it is bounded, hence has a finite second moment. The variance-sum theorem prob-2.2.1 removes the cross-covariances between independent channels; division by $N^2$ gives variance $p(1-p)/N$ for the open fraction. Correlated channels would add covariance terms. In a freely evolving membrane their shared voltage can create dependence, so this calculation does not close the nonlinear population mean without further assumptions.",
+      "before": [
+        "neuro-1.4"
+      ],
+      "after": [
+        "neuro-1.4",
+        "prob-2.2.1"
+      ]
+    },
+    {
+      "num": "1.7",
+      "file": "ch01-b.js",
+      "target": "ode-1.4",
+      "paragraph": "During a fixed-voltage clamp the two rates are constants, so the gating equation has the integrating-factor form in ode-1.4: its damping coefficient is $\\alpha+\\beta>0$ and its forcing is alpha. Multiplying by $e^{(\\alpha+\\beta)t}$ and integrating gives the displayed relaxation toward $\\alpha/(\\alpha+\\beta)$. This also recovers the two rates from the equilibrium fraction and time constant. It is exact for the held-voltage rate equation, not for a changing-voltage trajectory with frozen coefficients.",
+      "before": [
+        "neuro-1.6",
+        "pchem-7.4"
+      ],
+      "after": [
+        "neuro-1.6",
+        "pchem-7.4",
+        "ode-1.4"
+      ]
+    },
+    {
+      "num": "2.1",
+      "file": "ch02.js",
+      "target": "prob-2.1.11",
+      "paragraph": "For the independent-subunit interpretation, prob-2.1.11 gives the joint law of the four gate indicators as a product at a fixed time. The conducting event is the single box in which all four indicators equal one, so its probability is $n^4$. Multiplication by the maximal channel-population conductance gives the stated potassium conductance. This mathematical consequence of the chosen independence model does not derive the empirical number of subunits from first principles or establish independence in a real channel.",
+      "before": [
+        "neuro-1.7",
+        "neuro-1.5"
+      ],
+      "after": [
+        "neuro-1.7",
+        "neuro-1.5",
+        "prob-2.1.11"
+      ]
+    },
+    {
+      "num": "2.2",
+      "file": "ch02.js",
+      "target": "prob-2.1.11",
+      "paragraph": "Apply the independent-product law prob-2.1.11 to three activation indicators of open probability m and one availability indicator of probability h. The event in which all four required states hold has probability $m^3h$, which produces the model conductance after multiplication by its maximum. The last coordinate has a different marginal law and time scale; independence does not require identical coordinates. Coupled activation and inactivation need a different joint law, as the scope already notes.",
+      "before": [
+        "neuro-1.7",
+        "neuro-1.5"
+      ],
+      "after": [
+        "neuro-1.7",
+        "neuro-1.5",
+        "prob-2.1.11"
+      ]
+    },
+    {
+      "num": "2.4",
+      "file": "ch02.js",
+      "target": "ode-2.8",
+      "paragraph": "The finite-window continuity qualification follows from parameter dependence ode-2.8. With the removable limits of the analytical HH rates included, the vector field is smooth in state and pulse amplitude on bounded state regions. For a pulse with fixed switching times, compose the smooth flow on each constant-input interval. The resulting voltage traces vary continuously and uniformly on a common finite observation window; the difference of their maxima is bounded by the largest trace difference. A steep response curve is therefore not a finite-time discontinuity. This does not make infinite-time attractor selection or a spike-count detector continuous.",
+      "before": [
+        "neuro-2.3"
+      ],
+      "after": [
+        "neuro-2.3",
+        "ode-2.8"
+      ]
+    },
+    {
+      "num": "3.1",
+      "file": "ch03.js",
+      "target": "ladr-6.61",
+      "paragraph": "The fitted closure consumes the least-distance projection theorem ladr-6.61. Regard the sampled h values as a Euclidean vector and project onto the span of the constant vector and the sampled n values. Orthogonality of the residual gives the least-squares intercept and the coefficient written as minus k. Distinct sampled n values are needed to identify both coefficients, and the implementation declines nearly constant clouds rather than claiming a well-conditioned fit. This minimizes error on that trajectory only; it does not prove that the fitted line is an invariant or attracting manifold.",
+      "before": [
+        "neuro-2.3"
+      ],
+      "after": [
+        "neuro-2.3",
+        "ladr-6.61"
+      ]
+    },
+    {
+      "num": "3.2",
+      "file": "ch03.js",
+      "target": "pma-5.11",
+      "paragraph": "For the chosen $0<b<1$, the stationary equations reduce to $I=(v+a)/b-v+v^3/3$. The derivative of the right side is $1/b-1+v^2>0$. The derivative-sign argument pma-5.11 thus makes it strictly increasing, so it has at most one equilibrium voltage for a fixed input. This justifies the uniqueness part of the stated rest-state example; it does not determine stability or guarantee a relaxation cycle. Other b values need a new equilibrium count.",
+      "before": [
+        "neuro-3.1",
+        "mathbio-6.7",
+        "ode-7.8"
+      ],
+      "after": [
+        "neuro-3.1",
+        "mathbio-6.7",
+        "ode-7.8",
+        "pma-5.11"
+      ]
+    },
+    {
+      "num": "3.3",
+      "file": "ch03.js",
+      "target": "ode-2.6",
+      "paragraph": "Continuous dependence ode-2.6 distinguishes the finite-epsilon quasi-threshold from a jump. The polynomial FHN field is locally Lipschitz; on any common bounded region containing nearby trajectories through a fixed finite observation time it has a finite Lipschitz constant. The theorem bounds their separation by the initial displacement times an exponential factor. Consequently the finite-window maximum voltage is continuous in the launch voltage, although its slope can be very large. The bound is not uniform as the observation time grows or epsilon tends to zero, and it does not remove a genuine saddle separatrix in a different regime.",
+      "before": [
+        "neuro-3.2"
+      ],
+      "after": [
+        "neuro-3.2",
+        "ode-2.6"
+      ]
+    },
+    {
+      "num": "3.4",
+      "file": "ch03.js",
+      "target": "ode-1.8",
+      "paragraph": "The stability calculation for a small normal-form cycle uses the one-dimensional derivative test ode-1.8 on the radial equation, away from the critical parameter itself. In the cubic truncation its nonzero radial equilibrium has $r^2=-\\mu/\\ell_1$ and radial derivative $-2\\mu$. A negative derivative attracts radial perturbations and a positive one repels them. Under the stated nondegeneracy hypotheses the small higher terms preserve that sign on the local branch. The phase direction remains neutral along the periodic orbit; radial attraction is not a theorem about a distant stable firing branch.",
+      "before": [
+        "neuro-3.2",
+        "mathbio-3.12"
+      ],
+      "after": [
+        "neuro-3.2",
+        "mathbio-3.12",
+        "ode-1.8"
+      ]
+    },
+    {
+      "num": "3.5",
+      "file": "ch03.js",
+      "target": "ode-1.3",
+      "paragraph": "The bottleneck estimate is an application of separation ode-1.3 on the positive-velocity side, where $a\\delta+bx^2$ never vanishes. Its reciprocal integrates to the arctangent passage time already displayed. Rescaling $x=\\sqrt{a\\delta/b}\\,u$ supplies the factor $1/\\sqrt{ab\\delta}$, and the fixed cutoff becomes unbounded in u as delta tends to zero. The bounded time outside the bottleneck is a separate global hypothesis. At or below the fold one cannot divide through a zero of the velocity and infer a periodic traversal.",
+      "before": [
+        "neuro-3.2",
+        "ode-8.3"
+      ],
+      "after": [
+        "neuro-3.2",
+        "ode-8.3",
+        "ode-1.3"
+      ]
+    },
+    {
+      "num": "3.6",
+      "file": "ch03-b.js",
+      "target": "ode-3.9",
+      "paragraph": "For the local equilibrium diagnostic, the Jacobian governs a linear perturbation system and ode-3.9 supplies its spectral test. Strictly negative real parts make every solution of that linear system decay; a positive real part gives a growing linear mode. In two dimensions this is equivalent to negative trace and positive determinant for strict linear asymptotic stability. Eigenvalues on the imaginary axis require further information, including Jordan structure for bounded linear motion and nonlinear nondegeneracy for a Hopf theorem. None of these local tests certifies a stable global firing cycle from a finite run.",
+      "before": [
+        "neuro-3.1"
+      ],
+      "after": [
+        "neuro-3.1",
+        "ode-3.9"
+      ]
+    },
+    {
+      "num": "3.7",
+      "file": "ch03-b.js",
+      "target": "pma-5.5",
+      "paragraph": "The coordinate change uses the chain rule pma-5.5 on each finite-voltage chart. From $V=\\tan(\\theta/2)$ one gets $\\dot\\theta=2\\dot V/(1+V^2)$. Substituting $\\dot V=V^2+I$ and the half-angle identities gives $(1-\\cos\\theta)+I(1+\\cos\\theta)$. This last expression extends smoothly to the point theta equals pi, although the original tangent chart does not. The finite-cutoff reset rule and the ideal infinite-cutoff circular flow must still be distinguished.",
+      "before": [
+        "neuro-3.5"
+      ],
+      "after": [
+        "neuro-3.5",
+        "pma-5.5"
+      ]
+    },
+    {
+      "num": "4.1",
+      "file": "ch04.js",
+      "target": "pma-5.15",
+      "paragraph": "The second-difference limit in the derivation uses Taylor theorem pma-5.15 in the spatial coordinate. If voltage has four continuous spatial derivatives near a compartment, expanding its values at x plus or minus h cancels the odd terms and gives $[V(x-h)-2V(x)+V(x+h)]/h^2=V_{xx}(x)+O(h^2)$. This is the local consistency of the axial-current term for a smooth cylindrical segment. It is not by itself a convergence proof for numerical solutions, branch junctions, singular sources or unresolved time steps.",
+      "before": [
+        "neuro-1.2",
+        "pde-1.4"
+      ],
+      "after": [
+        "neuro-1.2",
+        "pde-1.4",
+        "pma-5.15"
+      ]
+    },
+    {
+      "num": "4.3",
+      "file": "ch04.js",
+      "target": "ode-3.13",
+      "paragraph": "The characteristic-equation result ode-3.13 applies with spatial position as the independent variable and a positive constant lambda. The roots of $\\lambda^2r^2-1=0$ are the distinct real values $r=\\pm1/\\lambda$, so the two exponentials span every source-free steady solution. Boundedness at the two infinite ends removes the growing terms; continuity and the current jump then determine the two remaining amplitudes. Finite sealed or clamped ends impose different linear conditions, which select the stated hyperbolic profiles rather than the infinite-cable profile.",
+      "before": [
+        "neuro-4.2"
+      ],
+      "after": [
+        "neuro-4.2",
+        "ode-3.13"
+      ]
+    },
+    {
+      "num": "4.4",
+      "file": "ch04.js",
+      "target": "pde-3.3",
+      "paragraph": "The actual written heat-kernel result pde-3.3 supplies the Gaussian after removing the leak by $V=e^{-T}U$. Its unit spatial mass, positivity and delta initial limit become mass $e^{-T}$ and the same initial impulse after multiplication back by $e^{-T}$. The diffusion coefficient is one in these dimensionless coordinates. This is the whole-line fundamental solution; a finite cable or a branch junction needs its own boundary Green function.",
+      "before": [
+        "neuro-4.1",
+        "mathbio-8.3"
+      ],
+      "after": [
+        "neuro-4.1",
+        "mathbio-8.3",
+        "pde-3.3"
+      ]
+    },
+    {
+      "num": "4.4",
+      "file": "ch04.js",
+      "target": "pde-3.9",
+      "paragraph": "For zero initial voltage and a smooth bounded source with bounded continuous first two spatial derivatives on finite time intervals, Duhamel's result pde-3.9 applies to $U=e^TV$ with source $e^Ts$. Multiplying its heat-kernel integral back by $e^{-T}$ yields the stated causal convolution with G. A point charge is the fundamental-solution initial distribution, or a suitable weak limit of smooth packets; it is not a smooth forcing covered directly by that classical-source hypothesis. Arbitrary nonintegrable sources are not justified by the formula.",
+      "before": [
+        "neuro-4.1",
+        "mathbio-8.3",
+        "pde-3.3"
+      ],
+      "after": [
+        "neuro-4.1",
+        "mathbio-8.3",
+        "pde-3.3",
+        "pde-3.9"
+      ]
+    },
+    {
+      "num": "4.4",
+      "file": "ch04.js",
+      "target": "pma-5.11",
+      "paragraph": "For nonzero X, the peak calculation uses the derivative-sign test pma-5.11, rather than stationarity alone. Multiplying the logarithmic time derivative by the positive factor $4T^2$ leaves $X^2-2T-4T^2$, strictly decreasing for positive T and crossing zero once. Thus G first rises and then falls, giving the stated unique positive peak time. At X equals zero the ideal point-source kernel instead diverges as T decreases to zero; the zero in the peak-time formula is a singular boundary limit, not an attained finite-height maximum.",
+      "before": [
+        "neuro-4.1",
+        "mathbio-8.3",
+        "pde-3.3",
+        "pde-3.9"
+      ],
+      "after": [
+        "neuro-4.1",
+        "mathbio-8.3",
+        "pde-3.3",
+        "pde-3.9",
+        "pma-5.11"
+      ]
+    },
+    {
+      "num": "4.6",
+      "file": "ch04-b.js",
+      "target": "nla-4.10",
+      "paragraph": "Sparse elimination nla-4.10 explains the tree solve's linear cost. The passive backward-Euler matrix is symmetric positive definite: its quadratic form is the sum of positive capacitance/leak terms times $z_i^2$ and nonnegative edge terms $g_{ij}(z_i-z_j)^2$. Eliminating a leaf has only one remaining neighbour, so its Schur update creates no edge between distinct remaining vertices. Repeating leaf-to-root elimination and reversing it for back-substitution therefore uses a fixed amount of work per edge. Loops, nonlinear iterations or a different matrix class need a separate cost and solvability argument.",
+      "before": [
+        "neuro-4.1"
+      ],
+      "after": [
+        "neuro-4.1",
+        "nla-4.10"
+      ]
+    },
+    {
+      "num": "4.7",
+      "file": "ch04-b.js",
+      "target": "pma-9.15",
+      "paragraph": "The square-root similarity uses the chain rule pma-9.15, with time left unchanged. Set $q=\\sqrt{d/d_0}$ and $V_d(x,t)=V_0(x/q,t)$, with the same substitution for every gate. The second spatial derivative gains $q^{-2}$, so the diffusion coefficient satisfies $d/q^2=d_0$; the time derivatives and local ionic kinetics keep their old form. A corresponding wave therefore covers q times the distance in the same time. This requires matching initial/boundary/stimulus geometry and an existing wave, not a proof of propagation or a uniform temperature rescaling.",
+      "before": [
+        "neuro-4.2",
+        "neuro-2.3"
+      ],
+      "after": [
+        "neuro-4.2",
+        "neuro-2.3",
+        "pma-9.15"
+      ]
+    }
+  ],
+  "backfills": {
+    "1.5": [
+      "neuro-1.4",
+      "ctrl-1.8"
+    ],
+    "1.2": [
+      "neuro-1.1",
+      "ode-1.5"
+    ],
+    "1.7": [
+      "neuro-1.6",
+      "pchem-7.4"
+    ]
+  },
+  "oldRows": {
+    "1.5": [
+      "neuro-1.4"
+    ],
+    "1.2": [
+      "neuro-1.1"
+    ],
+    "1.7": [
+      "neuro-1.6",
+      "mathbio-5.1"
+    ]
+  }
+}

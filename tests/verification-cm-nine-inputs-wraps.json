@@ -1,0 +1,34 @@
+{
+  "ch03.js": [
+    [
+      "$$\\omega^2=K\\left(\\frac1m+\\frac1M\\right)\\pm K\\sqrt{\\left(\\frac1m+\\frac1M\\right)^2-\\frac{4\\sin^2(ka/2)}{mM}},$$",
+      "$$\\omega^2=K\\left(S\\pm\\sqrt{S^2-P}\\right),$$\n$$S=\\frac1m+\\frac1M,$$\n$$P=\\frac{4\\sin^2(ka/2)}{mM},$$"
+    ]
+  ],
+  "ch03-b.js": [
+    [
+      "$$\\alpha=\\frac{e^2}{4\\pi\\epsilon_{\\rm vac}\\hbar}\\sqrt{\\frac{m}{2\\hbar\\omega_{LO}}}\\left(\\frac1{\\varepsilon_\\infty}-\\frac1{\\varepsilon_s}\\right),$$",
+      "$$\\begin{aligned}\\alpha={}&\\frac{e^2}{4\\pi\\epsilon_{\\rm vac}\\hbar}\\sqrt{\\frac{m}{2\\hbar\\omega_{LO}}}\\\\&\\times\\left(\\frac1{\\varepsilon_\\infty}-\\frac1{\\varepsilon_s}\\right),\\end{aligned}$$"
+    ],
+    [
+      "$$\\rho_{ph}(T)=A\\left(\\frac T\\Theta\\right)^5\\int_0^{\\Theta/T}\\frac{x^5\\,dx}{(e^x-1)(1-e^{-x})},$$",
+      "$$\\rho_{ph}(T)=A\\left(\\frac T\\Theta\\right)^5 I(\\Theta/T),$$\n$$I(y)=\\int_0^y\\frac{x^5\\,dx}{(e^x-1)(1-e^{-x})},$$"
+    ]
+  ],
+  "ch04.js": [
+    [
+      "$$n_i=\\sqrt{N_cN_v}\\,e^{-E_g/2k_BT},\\qquad N_{c,v}=2\\left(\\frac{m_{e,h}^*k_BT}{2\\pi\\hbar^2}\\right)^{3/2},$$",
+      "$$n_i=\\sqrt{N_cN_v}\\,e^{-E_g/2k_BT},$$\n$$N_{c,v}=2\\left(\\frac{m_{e,h}^*k_BT}{2\\pi\\hbar^2}\\right)^{3/2},$$"
+    ]
+  ],
+  "ch04-b.js": [
+    [
+      "$$J=J_0\\left(e^{eV/k_BT}-1\\right),\\qquad J_0=en_i^2\\left(\\frac{D_p}{L_pN_d}+\\frac{D_n}{L_nN_a}\\right),\\quad L=\\sqrt{D\\tau}.$$",
+      "$$J=J_0\\left(e^{eV/k_BT}-1\\right),$$\n$$J_0=en_i^2\\left(\\frac{D_p}{L_pN_d}+\\frac{D_n}{L_nN_a}\\right),$$\n$$L=\\sqrt{D\\tau}.$$"
+    ],
+    [
+      "$$\\eta_{\\text{int}}=\\frac{Bn^2}{An+Bn^2+Cn^3},\\qquad \\frac{J}{e\\,d}=An+Bn^2+Cn^3,$$",
+      "$$\\eta_{\\text{int}}=\\frac{Bn^2}{An+Bn^2+Cn^3},$$\n$$\\frac{J}{e\\,d}=An+Bn^2+Cn^3,$$"
+    ]
+  ]
+}

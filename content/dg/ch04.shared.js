@@ -156,3 +156,72 @@ export function sliceZ(tris, z0) {
   }
   return segs;
 }
+
+/** Principal-axis family sum L_i x_i² + 2 ell z = k, including lower-dimensional degeneracies. */
+export function classifyQuadric(L,ell,k) {
+ const eps=1e-9,nz=L.map((x,i)=>i).filter(i=>Math.abs(L[i])>eps),rank=nz.length,center=[0,0,Math.abs(L[2])>eps?-ell/L[2]:0],level=k+(Math.abs(L[2])>eps?ell*ell/L[2]:0);
+ let name,mode='mesh';
+ if(Math.abs(L[2])<=eps&&Math.abs(ell)>eps){
+  name=rank===2?(L[0]*L[1]>0?'elliptic paraboloid':'hyperbolic paraboloid'):rank===1?'parabolic cylinder':'plane';
+ }else if(Math.abs(level)<=eps){
+  const definite=nz.every(i=>L[i]>0)||nz.every(i=>L[i]<0);
+  if(rank===3){name=definite?'a single point':'cone';if(definite)mode='point';}
+  else if(rank===2){name=definite?'a line':'two crossing planes';mode=definite?'line':'planes';}
+  else if(rank===1){name='a plane (double)';mode='planes';}
+  else{name='all of space';mode='all';}
+ }else{
+  const positive=nz.filter(i=>L[i]*level>0).length;
+  if(!positive){name='empty set';mode='empty';}
+  else if(rank===3)name=positive===3?'ellipsoid':positive===2?'hyperboloid of one sheet':'hyperboloid of two sheets';
+  else if(rank===2)name=positive===2?'elliptic cylinder':'hyperbolic cylinder';
+  else{name='two parallel planes';mode='planes';}
+ }
+ const planes=[];
+ if(mode==='planes'){
+  if(rank===1){const i=nz[0],a=Math.sqrt(Math.max(0,level/L[i])),n=[0,0,0];n[i]=1;for(const d of a?[a,-a]:[0])planes.push({n:n.slice(),d:d+dot(n,center)});}
+  else{const [i,j]=nz,a=Math.sqrt(Math.abs(L[i])),b=Math.sqrt(Math.abs(L[j]));for(const sign of [-1,1]){const n=[0,0,0];n[i]=a;n[j]=sign*b;planes.push({n,d:dot(n,center)});}}
+ }
+ return {name,mode,center,level,rank,nz,planes};
+}
+/** Finite planar polygon from clipping a plane n.x=d to the display cube. */
+export function planeInBox(n,d,extent=1.8) {
+ const vertices=[];for(let free=0;free<3;free++)if(Math.abs(n[free])>1e-12){const other=[0,1,2].filter(i=>i!==free);for(const a of [-extent,extent])for(const b of [-extent,extent]){const p=[0,0,0];p[other[0]]=a;p[other[1]]=b;p[free]=(d-n[other[0]]*a-n[other[1]]*b)/n[free];if(Math.abs(p[free])<=extent+1e-10&&!vertices.some(q=>len(sub(p,q))<1e-9))vertices.push(p);}}
+ if(vertices.length<3)return [];
+ const center=mul(vertices.reduce((a,p)=>add(a,p),[0,0,0]),1/vertices.length),N=unit(n),u=unit(sub(vertices[0],center)),v=cross(N,u);
+ return vertices.sort((a,b)=>Math.atan2(dot(sub(a,center),v),dot(sub(a,center),u))-Math.atan2(dot(sub(b,center),v),dot(sub(b,center),u)));
+}
+export const genusTwoLevel=(x,y,z)=>(x*x*(1-x*x)-y*y)**2+z*z-.03;
+export const kleinFigureEight=(u,w)=>{const r=2+Math.cos(u/2)*Math.sin(w)-Math.sin(u/2)*Math.sin(2*w);return [.5*r*Math.cos(u),.5*r*Math.sin(u),.5*(Math.sin(u/2)*Math.sin(w)+Math.cos(u/2)*Math.sin(2*w))];};
+/** Signed implicit equations; the negative sublevel is the bounded inside in each embedded example. */
+export function surfaceLevel(key,p) {
+ const [x,y,z]=p;if(key==='sphere')return x*x+y*y+z*z-1;
+ if(key==='torus')return (Math.hypot(x,y)-1.2)**2+z*z-.55**2;
+ return genusTwoLevel(x,y,z);
+}
+export function surfaceNormal(key,p) {
+ const [x,y,z]=p;
+ if(key==='sphere')return unit(p);
+ if(key==='torus'){const r=Math.hypot(x,y);return unit([2*(r-1.2)*x/r,2*(r-1.2)*y/r,2*z]);}
+ const q=x*x*(1-x*x)-y*y;return unit([2*q*(2*x-4*x*x*x),-4*q*y,2*z]);
+}
+/** Analytic +x ray intersections. Tangent contacts are identified rather than counted as crossings. */
+export function surfaceRay(key,Q) {
+ const [qx,y,z]=Q,roots=[];
+ const addSquared=r=>{if(r>=-1e-12){const a=Math.sqrt(Math.max(0,r));roots.push(-a,a);}};
+ if(key==='sphere')addSquared(1-y*y-z*z);
+ else if(key==='torus'){
+  const q=.55**2-z*z;if(q>=-1e-12){const a=Math.sqrt(Math.max(0,q));for(const r of [1.2-a,1.2+a])if(r>=0)addSquared(r*r-y*y);}
+ }else{
+  const q=.03-z*z;if(q>=-1e-12){const a=Math.sqrt(Math.max(0,q));for(const v of [-a,a]){const disc=1-4*(y*y+v);if(disc>=-1e-12){const b=Math.sqrt(Math.max(0,disc));addSquared((1-b)/2);addSquared((1+b)/2);}}}
+ }
+ roots.sort((a,b)=>a-b);const unique=roots.filter((x,i)=>!i||x-roots[i-1]>1e-8),value=surfaceLevel(key,Q),location=Math.abs(value)<1e-9?'on the surface':value<0?'inside':'outside';
+ const hits=unique.filter(x=>x>qx+1e-9).map(x=>{const p=[x,y,z],normal=surfaceNormal(key,p);return {p,normal,tangent:Math.abs(normal[0])<1e-7};});
+ return {hits,location,value};
+}
+/** Clipped segment of p+t*d inside the display cube. */
+export function lineInBox(p,d,extent=1.8) {
+ let lo=-Infinity,hi=Infinity;for(let i=0;i<3;i++){
+  if(Math.abs(d[i])<1e-12){if(Math.abs(p[i])>extent)return [];}
+  else{const a=(-extent-p[i])/d[i],b=(extent-p[i])/d[i];lo=Math.max(lo,Math.min(a,b));hi=Math.min(hi,Math.max(a,b));}
+ }return lo<=hi?[add(p,mul(d,lo)),add(p,mul(d,hi))]:[];
+}

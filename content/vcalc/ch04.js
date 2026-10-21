@@ -1,7 +1,7 @@
 // Vector Calculus — Chapter 4: Multiple integrals
 // Part 1 (4.1–4.6): Riemann sums in the plane, Fubini, general regions, the mean value theorem, the Jacobian and the change of variables formula.
 import {
-  tn, tf, simpson, polyArea, logInts, hills, DEG, TAU,
+  tn, tf, simpson, polyArea, logInts, hills, DEG, TAU, changeMaps, changeIntegral, changeSums, changeBounds,
 } from './ch04.shared.js';
 
 const PI = Math.PI;
@@ -82,7 +82,7 @@ $f$ is **Riemann integrable** on $R$ if $U_n-L_n\to0$; the common limit is the *
           G.text('guide $c/n$', 14, c / 14 * 1.5, { color: 'muted', size: 12 });
           info = { L: T.L[n], U: T.U[n], I: T.I, n };
         });
-        v.readout(() => `$L_n=${tf(info.L, 4)}\\le \\iint f\\,dA\\approx${tf(info.I, 4)}\\le U_n=${tf(info.U, 4)}$\n$n=${info.n}$: gap $U_n-L_n=${tf(info.U - info.L, 4)}$`);
+        v.readout(() => `$L_n=${tf(info.L, 4)}\\le \\iint f\\,dA=${tf(info.I, 4)}\\le U_n=${tf(info.U, 4)}$\n$n=${info.n}$: gap $U_n-L_n=${tf(info.U - info.L, 4)}$`);
       },
     },
 
@@ -366,46 +366,33 @@ where $\mathbf F(u,v)=(x,y)$. In $\R^n$ the same holds with volumes. So the Jaco
       num: '4.6',
       kind: 'Theorem',
       name: 'Change of variables formula',
-      statement: String.raw`Let $\mathbf T:D^*\to D$ be a one-to-one $C^1$ map of an open set $D^*\subset\R^2$ onto $D$, with $\det D\mathbf T\ne0$ everywhere. If $f$ is continuous with compact support contained in $D$, then
+      statement: String.raw`Let $\mathbf T:U\to V$ be a one-to-one, onto $C^1$ map between open subsets of $\R^2$, with $\det D\mathbf T\ne0$ everywhere in $U$. Let $D^*\subset U$ and $D=\mathbf T(D^*)\subset V$ be compact Jordan-measurable sets. For a Riemann-integrable $f$ on $D$,
 $$\iint_D f(x,y)\,dx\,dy=\iint_{D^*} f\bigl(\mathbf T(u,v)\bigr)\,\Bigl|\frac{\partial(x,y)}{\partial(u,v)}\Bigr|\,du\,dv.$$
-The same holds in $\R^n$. Exhaustion extends the identity to nonnegative or absolutely integrable functions; coordinate cuts and boundary sets of measure zero can then be discarded, as for polar coordinates. The absolute value of the Jacobian determinant is essential.`,
-      idea: String.raw`Partition $D^*$ into small rectangles. By 4.5 the image of each is a curved cell whose area is $|J|\,\Delta u\,\Delta v$ up to a relative error that tends to $0$ uniformly. A Riemann sum for $\iint_D f$ built from those image cells is therefore a Riemann sum for the right-hand integrand, and both sides converge. The rigorous compact-support proof (pma-10.9) factors the map locally into primitive coordinate changes and flips, then joins the local formulas with a finite partition of unity. Extension by exhaustion requires integrability; it does not follow merely by allowing the Jacobian to vanish on a null set.`,
-      caption: String.raw`The map is applied to a rectangle in the $(u,v)$ plane (left) giving the curved grid on the right. Raise $n$ to refine the grid. Below, two Riemann sums of $f$ are compared with a reference estimate of the integral over the image (dotted): the one weighted by the Jacobian $|J|\,\Delta u\Delta v$ converges to it, the unweighted sum $\sum f\,\Delta u\Delta v$ does not converge to it. Cell shading is proportional to the Jacobian, i.e. to the true area of each image cell. The reference value is a $400\times400$ Jacobian-weighted sum, a numerical estimate from the same formula rather than an independent exact value.`,
+The same formula holds in $\R^n$. The absolute value accounts for orientation reversal. Polar and spherical formulas with seams or zero Jacobians follow by applying the theorem on regular pieces and passing to limits, with the omitted sets and their images having zero volume.`,
+      idea: String.raw`On a compact subset of $U$, the derivative is uniformly continuous and $|\det D\mathbf T|$ is bounded away from zero. Partition into small rectangles: the image area is $|J|\,\Delta u\,\Delta v$ with a relative error tending uniformly to zero. Injectivity prevents overlapping image cells, so the transformed sums converge to the same integral. Boundary pieces contribute vanishingly because the regions are Jordan measurable and $f$ is bounded. The regularity assumptions apply on a neighborhood of $D^*$; an arbitrary exception set cannot simply be ignored without checking its image and multiplicity.`,
+      caption: String.raw`Choose a map and integrand, then raise $n$ to refine both grids. Green shows the relative error of the sum weighted by $|J|$; red omits the Jacobian. Reference integrals come from exact polynomial or separable antiderivatives. The reversed shear has negative determinant but positive area. Shading uses the Jacobian at each cell midpoint as a local area factor, not the exact area of a finite curved cell. Errors below $10^{-6}$ are shown at the chart floor; the readout reports the actual computed error.`,
       deps: ['vcalc-4.5', 'pma-10.9'],
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorems10.7–10.9, pp.249–253'],
+      refs: ['Toronto MAT237 §4.4, Theorem 1 (author-written course notes)'],
+      links: { source: 'https://www.math.utoronto.ca/courses/mat237y1/20189/notes/Chapter4/S4.4.html' },
       tags: ['change of variables', 'Jacobian', 'Riemann sums'],
       viz(v) {
-        const MAPS = {
-          polar: { label: 'polar', T: (u, w) => [u * Math.cos(w), u * Math.sin(w)], J: (u) => u, u: [0.5, 2], v: [0.2, 2.3] },
-          para: { label: 'parabolic', T: (u, w) => [u * u - w * w, 2 * u * w], J: (u, w) => 4 * (u * u + w * w), u: [0.6, 1.5], v: [0.3, 1.2] },
-          shear: { label: 'linear shear', T: (u, w) => [u + 0.6 * w, 0.8 * w], J: () => 0.8, u: [0, 1.6], v: [0, 1.2] },
-        };
+        const MAPS = changeMaps;
         const sel = v.select('map', Object.entries(MAPS).map(([k, o]) => ({ value: k, label: o.label })), 'polar');
         const fsel = v.select('integrand', [{ value: 'one', label: '$f=1$ (area)' }, { value: 'r2', label: '$f=x^2+y^2+1$' }], 'r2');
         const nS = v.slider('cells per side $n$', 2, 40, 6, { int: true });
         const U = v.stage({ x: [0, 2.6], y: [0, 2.6], equal: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 240, xlabel: 'u', ylabel: 'v', title: '$D^*$: the rectangle' });
         const X = v.stage({ x: [-3, 3], y: [-1, 3.2], equal: true, axes: true, height: 340, weight: 1.1, minWidth: 240, title: '$D$: the image' });
         const E = v.stage({ x: [2, 40], y: [1e-6, 5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 240, xlabel: 'n', title: 'relative error of the sums' });
-        const cache = {};
-        const sums = (key, fk, n) => {
-          const M = MAPS[key], f = fk === 'one' ? () => 1 : (x, y) => x * x + y * y + 1;
-          const [u0, u1] = M.u, [v0, v1] = M.v, du = (u1 - u0) / n, dv = (v1 - v0) / n;
-          let sJ = 0, sN = 0;
-          for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-            const u = u0 + (i + 0.5) * du, w = v0 + (j + 0.5) * dv, p = M.T(u, w), fv = f(p[0], p[1]);
-            sJ += fv * M.J(u, w) * du * dv; sN += fv * du * dv;
-          }
-          return { sJ, sN };
-        };
-        const truth = (key, fk) => { const k = key + fk; return cache[k] || (cache[k] = sums(key, fk, 400).sJ); };
+        const sums = changeSums, truth = changeIntegral;
         let info = {};
         v.render(() => {
           const key = sel.value, M = MAPS[key], n = nS.value, [u0, u1] = M.u, [v0, v1] = M.v;
-          const I = truth(key, fsel.value), s = sums(key, fsel.value, n);
+          const I = truth(key, fsel.value), s = sums(key, fsel.value, n), bounds = changeBounds(key);
+          X.setView(bounds.x, bounds.y);
           const du = (u1 - u0) / n, dv = (v1 - v0) / n;
           for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
             const a = u0 + i * du, b = u0 + (i + 1) * du, c = v0 + j * dv, d = v0 + (j + 1) * dv;
-            const t = Math.min(1, M.J((a + b) / 2, (c + d) / 2) / (key === 'para' ? 7 : key === 'polar' ? 2 : 0.8));
+            const t = Math.min(1, Math.abs(M.J((a + b) / 2, (c + d) / 2)) / (key === 'para' ? 7 : key === 'polar' ? 2 : 0.8));
             const col = v.mix('panel', 'orange', 0.15 + 0.7 * t);
             if (n <= 20) U.poly([[a, c], [b, c], [b, d], [a, d]], { fill: col, fillAlpha: 1, color: 'ink', width: 0.7 });
             else U.poly([[a, c], [b, c], [b, d], [a, d]], { fill: col, fillAlpha: 1, stroke: false });
@@ -422,10 +409,10 @@ The same holds in $\R^n$. Exhaustion extends the identity to nonnegative or abso
           E.path(ns.map((q) => [q, Math.max(rel(sums(key, fsel.value, q).sJ), 1e-6)]), { color: 'green', width: 2 });
           E.path(ns.map((q) => [q, Math.max(rel(sums(key, fsel.value, q).sN), 1e-6)]), { color: 'red', width: 2 });
           E.dot(n, Math.max(rel(s.sJ), 1e-6), { color: 'green', r: 5 }); E.dot(n, Math.max(rel(s.sN), 1e-6), { color: 'red', r: 5 });
-          info = { I, sJ: s.sJ, sN: s.sN, n };
+          info = { I, sJ: s.sJ, sN: s.sN, n, error: rel(s.sJ) };
         });
         v.legend([['green', 'with Jacobian: $\\sum f\\,|J|\\,\\Delta u\\Delta v$'], ['red', 'without: $\\sum f\\,\\Delta u\\Delta v$']]);
-        v.readout(() => `$n=${info.n}$: $\\iint_D f\\,dA\\approx${tf(info.I, 4)}$ ; with $|J|$: $${tf(info.sJ, 4)}$ ; without: $${tf(info.sN, 4)}$`);
+        v.readout(() => `$n=${info.n}$: $\\iint_D f\\,dA=${tf(info.I, 4)}$ ; with $|J|$: $${tf(info.sJ, 4)}$ ; without: $${tf(info.sN, 4)}$ ; weighted relative error $=${v.sci(info.error, 2)}$`);
       },
     },
   ],

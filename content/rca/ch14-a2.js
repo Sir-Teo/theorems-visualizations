@@ -50,14 +50,10 @@ function selfCrossings(P) {
 const supStr = (n) => (n < 0 ? '⁻' : '') + String(Math.abs(n)).split('').map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]).join('');
 const logTicks = (y0, y1) => Array.from({ length: 41 }, (_, i) => i - 20).filter((k) => k >= y0 && k <= y1).map((k) => [k, k === 0 ? '1' : `10${supStr(k)}`]);
 
-import { koebeExample, omittedDiameter } from './univalent-examples.shared.js';
-
 export default {
   collection: 'rca',
   chapter: 14,
   items: [
-    koebeExample,
-    omittedDiameter,
     {
       num: '14.10',
       kind: 'Definition',
@@ -66,7 +62,7 @@ export default {
 $$f(z)=z+\sum_{n=2}^\infty a_nz^n\qquad(z\in U).$$
 The **Koebe function** $k(z)=\dfrac{z}{(1-z)^2}=\sum_{n\ge1}nz^n$ belongs to $\mathscr S$; it maps $U$ onto the plane minus the ray $(-\infty,-\tfrac14]$.`,
       idea: String.raw`Any one-to-one $\varphi\in H(U)$ has $\varphi'(0)\ne0$ (10.33), so $(\varphi-\varphi(0))/\varphi'(0)\in\mathscr S$: the normalization only removes the trivial freedom of translating and rotating–scaling the image. By the Riemann mapping theorem, the members of $\mathscr S$ are exactly the normalized Riemann maps of simply connected regions $\ne\C$. Bieberbach conjectured $|a_n|\le n$ (1916), with equality only for rotations of $k$; de Branges proved it in 1984. The chapter proves the case $n=2$.`,
-      caption: String.raw`Pick a function: the polar grid of $U$ (left) and its image (middle), red omitted rays or omitted-region boundaries for $f\in\mathscr S$, and the coefficients $|a_n|$ against de Branges' bound $n$ (right). The Koebe function meets the bound for every $n$. The last choice $z+z^2$ has $f(0)=0$, $f'(0)=1$ but $f'(-\tfrac12)=0$: it is not one-to-one, and the image circles cross themselves. In that last choice the red dots mark the critical point and its image, which is not an omitted value.`,
+      caption: String.raw`Pick a function: the polar grid of $U$ (left) and its image (middle), the omitted set $\C\setminus f(U)$ in red, and the coefficients $|a_n|$ against de Branges' bound $n$ (right). The Koebe function meets the bound for every $n$. The last choice $z+z^2$ has $f(0)=0$, $f'(0)=1$ but $f'(-\tfrac12)=0$: it is not one-to-one, and the image circles cross themselves.`,
       deps: ['rca-14.7', 'rca-10.33'],
       see: ['rca-14.8'],
       tags: ['univalent functions', 'Koebe function'],
@@ -115,7 +111,7 @@ The **Koebe function** $k(z)=\dfrac{z}{(1-z)^2}=\sum_{n\ge1}nz^n$ belongs to $\m
           B.bars(Array.from({ length: 10 }, (_, i) => F.a(i + 1)), { x0: 1, color: (y, i) => (y > i + 1 + 1e-9 ? 'red' : 'accent'), fillAlpha: 0.75 });
           B.text('|aₙ| = n', 7.6, 9.6, { color: 'green', size: 12, weight: 600, align: 'right' });
           st = { key, cross };
-          v.legend([['teal', 'circles $|z|=r$'], ['purple', 'radii'], ['red', key === 'bad' ? 'critical point and its image' : key === 'id' ? 'boundary of omitted region' : key === 'half' ? 'omitted half-plane boundary and shading' : 'omitted rays']]);
+          v.legend([['teal', 'circles $|z|=r$'], ['purple', 'radii'], ['red', 'omitted set $\\C\\setminus f(U)$']]);
         });
         v.readout(() => {
           const s = st; if (!s) return '';
@@ -131,10 +127,10 @@ The **Koebe function** $k(z)=\dfrac{z}{(1-z)^2}=\sum_{n\ge1}nz^n$ belongs to $\m
       },
     },
     {
-      num: '14.12',
+      num: '14.11',
       kind: 'Theorem',
       name: 'Odd square-root transform: g(z)² = f(z²)',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 14.12(b) and proof, pp. 285–286'],
+      verify: true,
       statement: String.raw`If $f\in\mathscr S$, there is a function $g\in\mathscr S$ with
 $$g(z)^2=f(z^2)\qquad(z\in U).$$
 This $g$ is odd: $g(-z)=-g(z)$.`,
@@ -143,7 +139,7 @@ This $g$ is odd: $g(-z)=-g(z)$.`,
       deps: ['rca-14.10', 'rca-13.11'],
       tags: ['univalent functions', 'square root'],
       viz(v) {
-        // g(z) = z √(h(z²)), h(w) = f(w)/w; for these f, h avoids the negative real axis on U, so the principal root is the holomorphic one
+        // g(z) = z √(h(z²)), h(w) = f(w)/w; for these f, Re h > 0 on U, so the principal root is the holomorphic one
         const FN = {
           koebe: { label: '$\\frac{z}{(1-z)^2}$', f: slitMap(1), view: [[-2.4, 2.4], [-2.2, 2.2]], gview: [[-2.4, 2.4], [-2.2, 2.2]] },
           half: { label: '$\\frac{z}{1-z}$', f: (z) => cdiv(z, [1 - z[0], -z[1]]), view: [[-1.4, 3.4], [-2.4, 2.4]], gview: [[-2.4, 2.4], [-2.4, 2.4]] },
@@ -191,10 +187,11 @@ This $g$ is odd: $g(-z)=-g(z)$.`,
       },
     },
     {
-      num: '14.13',
+      num: '14.12',
       kind: 'Theorem',
       name: 'The area theorem',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 14.13 and complete proof, pp. 286–287 (equivalent exterior-disc coordinates)'],
+      credit: 'Gronwall, 1914',
+      verify: true,
       statement: String.raw`Let $V=\{\zeta:|\zeta|>1\}$ and let $F\in H(V)$ be one-to-one in $V$, with
 $$F(\zeta)=\zeta+\sum_{n=0}^\infty\alpha_n\zeta^{-n}\qquad(\zeta\in V).$$
 Then $\displaystyle\sum_{n=1}^\infty n|\alpha_n|^2\le1$.`,
@@ -250,16 +247,17 @@ Then $\displaystyle\sum_{n=1}^\infty n|\alpha_n|^2\le1$.`,
       },
     },
     {
-      num: '14.14',
+      num: '14.13',
       kind: 'Theorem',
       name: "|a₂| ≤ 2 and Koebe's one-quarter theorem",
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 14.14 and complete proof, p. 288'],
+      credit: 'Bieberbach, 1916',
+      verify: true,
       statement: String.raw`If $f\in\mathscr S$ and $f(z)=z+\sum_{n\ge2}a_nz^n$, then
 (a) $|a_2|\le2$, and
 (b) $f(U)\supset D(0;\tfrac14)$: every $w$ with $|w|<\tfrac14$ is a value of $f$.`,
-      idea: String.raw`(a) Take the odd root $g\in\mathscr S$ of 14.12, $g(z)=z+\tfrac12a_2z^3+\cdots$, and put $F(\zeta)=1/g(1/\zeta)=\zeta-\tfrac12a_2\zeta^{-1}+\cdots$ on $|\zeta|>1$. $F$ is one-to-one, so the area theorem 14.13 gives $|\tfrac12a_2|^2\le1$. (b) If $w\notin f(U)$, then $h=\frac{wf}{w-f}$ is one-to-one (a Möbius map of $f$), holomorphic, normalized, and $h(z)=z+(a_2+\frac1w)z^2+\cdots$, so $h\in\mathscr S$. By (a), $|\tfrac1w|\le|a_2|+|a_2+\tfrac1w|\le4$. The Koebe function, which omits $-\tfrac14$, shows both constants are sharp.`,
+      idea: String.raw`(a) Take the odd root $g\in\mathscr S$ of 14.11, $g(z)=z+\tfrac12a_2z^3+\cdots$, and put $F(\zeta)=1/g(1/\zeta)=\zeta-\tfrac12a_2\zeta^{-1}+\cdots$ on $|\zeta|>1$. $F$ is one-to-one, so the area theorem 14.12 gives $|\tfrac12a_2|^2\le1$. (b) If $w\notin f(U)$, then $h=\frac{wf}{w-f}$ is one-to-one (a Möbius map of $f$), holomorphic, normalized, and $h(z)=z+(a_2+\frac1w)z^2+\cdots$, so $h\in\mathscr S$. By (a), $|\tfrac1w|\le|a_2|+|a_2+\tfrac1w|\le4$. The Koebe function, which omits $-\tfrac14$, shows both constants are sharp.`,
       caption: String.raw`Choose $f\in\mathscr S$ (for the two-slit maps $\frac{z}{1-2z\cos t+z^2}$ move $t$). Left: $f(U)$ with its omitted set in red and the disc $|w|<\frac14$ in green — it always fits. Drag the omitted value $w$ (it stays in the red set). Right: the coefficient plane; $a_2$ and the second coefficient $a_2+\frac1w$ of $h=\frac{wf}{w-f}\in\mathscr S$ both lie in $|c|\le2$, so the gap $|\frac1w|$ is at most $4$.`,
-      deps: ['rca-14.10', 'rca-14.12', 'rca-14.13'],
+      deps: ['rca-14.10', 'rca-14.11', 'rca-14.12'],
       tags: ['univalent functions', 'Koebe quarter theorem', 'Bieberbach'],
       viz(v) {
         const which = v.select('$f$', [{ value: 'slit', label: 'two slits $\\frac{z}{1-2z\\cos t+z^2}$' }, { value: 'sq', label: 'square map' }, { value: 'card', label: '$z+\\frac{z^2}{2}$' }], 'slit');
@@ -333,17 +331,17 @@ Then $\displaystyle\sum_{n=1}^\infty n|\alpha_n|^2\le1$.`,
       },
     },
     {
-      num: '14.14a',
+      num: '14.14',
       kind: 'Theorem',
       name: 'Growth and distortion bounds on 𝒮',
-      refs: ['Editorial supplement, not Rudin Theorem14.14: Introduction to Univalent Functions, spring2015 lecture notes, Theorems5.1–5.3 and complete proofs, pp.17–21, https://integraali.com/courses/univalent_functions/unis2015.pdf'],
+      verify: true,
       statement: String.raw`If $f\in\mathscr S$ and $|z|=r<1$, then
 $$\frac{r}{(1+r)^2}\le|f(z)|\le\frac{r}{(1-r)^2},\qquad \frac{1-r}{(1+r)^3}\le|f'(z)|\le\frac{1+r}{(1-r)^3}.$$
 In particular $\mathscr S$ is uniformly bounded on each compact subset of $U$.`,
-      idea: String.raw`Compose $f$ with a disc automorphism: for $a\in U$ the normalized function $\big(f(\varphi(z))-f(a)\big)/\big((1-|a|^2)f'(a)\big)$, $\varphi(z)=\frac{z+a}{1+\bar az}$, is again in $\mathscr S$. Its second coefficient is $\frac12(1-|a|^2)\frac{f''(a)}{f'(a)}-\bar a$, so $|a_2|\le2$ (14.14) gives $\big|z\frac{f''(z)}{f'(z)}-\frac{2|z|^2}{1-|z|^2}\big|\le\frac{4|z|}{1-|z|^2}$. Integrating this along radii bounds $\log|f'|$, which gives the distortion estimate; integrating $|f'|$ gives the upper growth bound, For the lower growth bound, choose the boundary point of $f(D(0;r))$ closest to0 and lift the straight radial segment to a curve from0 to $|z|=r$. Its image length is at least $\int_0^r(1-t)/(1+t)^3dt=r/(1+r)^2$, by the derivative lower bound and the total radial variation of the lifted curve. Thus every point on the image boundary has at least this modulus. The Koebe function attains all four bounds.`,
+      idea: String.raw`Compose $f$ with a disc automorphism: for $a\in U$ the normalized function $\big(f(\varphi(z))-f(a)\big)/\big((1-|a|^2)f'(a)\big)$, $\varphi(z)=\frac{z+a}{1+\bar az}$, is again in $\mathscr S$. Its second coefficient is $\frac12(1-|a|^2)\frac{f''(a)}{f'(a)}-\bar a$, so $|a_2|\le2$ (14.13) gives $\big|z\frac{f''(z)}{f'(z)}-\frac{2|z|^2}{1-|z|^2}\big|\le\frac{4|z|}{1-|z|^2}$. Integrating this along radii bounds $\log|f'|$, which gives the distortion estimate; integrating $|f'|$ gives the upper growth bound, and the lower one follows from the quarter theorem. The Koebe function attains all four bounds.`,
       caption: String.raw`Pick $f\in\mathscr S$ and drag the radius $r$. Left: the image of the circle $|z|=r$ (thick) must lie in the green annulus $\frac{r}{(1+r)^2}\le|w|\le\frac{r}{(1-r)^2}$. Right: $\max$ and $\min$ of $|f|$ (or $|f'|$) on $|z|=r$, computed on 720 points, inside the band between the bounds (log scale). The Koebe function touches both edges, along $z>0$ and $z<0$.`,
-      deps: ['rca-14.14', 'rca-12.4'],
-      see: ['rca-14.15a'],
+      deps: ['rca-14.13', 'rca-12.4'],
+      see: ['rca-14.15'],
       tags: ['univalent functions', 'distortion'],
       viz(v) {
         const FN = {
@@ -403,14 +401,14 @@ In particular $\mathscr S$ is uniformly bounded on each compact subset of $U$.`,
       },
     },
     {
-      num: '14.15a',
+      num: '14.15',
       kind: 'Theorem',
       name: '𝒮 is compact',
-      refs: ['Editorial supplement, not Rudin Theorem14.15: Introduction to Univalent Functions, spring2015 lecture notes, Corollary5.5 and complete proof, p.22, https://integraali.com/courses/univalent_functions/unis2015.pdf'],
+      verify: true,
       statement: String.raw`$\mathscr S$ is a compact subset of $H(U)$ (topology of uniform convergence on compact sets): every sequence in $\mathscr S$ has a subsequence converging uniformly on compact subsets of $U$, and every such limit belongs to $\mathscr S$.`,
-      idea: String.raw`By the growth bound $|f(z)|\le|z|(1-|z|)^{-2}$ (14.14a), $\mathscr S$ is uniformly bounded on compact sets, hence normal by Montel (14.6). If $f_n\to f$ locally uniformly, then $f(0)=0$ and $f'(0)=\lim f_n'(0)=1$ (10.28), so $f$ is not constant; a locally uniform limit of one-to-one holomorphic functions is either constant or one-to-one (argument principle / Hurwitz, as in the proof of 14.8). So $f\in\mathscr S$. The normalization $f'(0)=1$ is what prevents both escape to $\infty$ and collapse to a constant.`,
-      caption: String.raw`Choose a sequence and move along it. Left: images of the circle $|z|=\frac12$ under $f_1,\dots,f_n$ (older ones fainter), the limit (green) and the growth bound of 14.14a (dashed). Right: $\sup_{|z|\le1/2}|f_n-f|$ (log scale). Two-slit maps converge to the Koebe function; $z+a_nz^2$ with $|a_n|\uparrow\frac12$ converge to $z+\frac12z^2$, still in $\mathscr S$. Dropping the normalization breaks compactness: $z/n$ collapses to the constant $0$, and $nz$ has no convergent subsequence.`,
-      deps: ['rca-14.14a', 'rca-14.6', 'rca-10.28'],
+      idea: String.raw`By the growth bound $|f(z)|\le|z|(1-|z|)^{-2}$ (14.14), $\mathscr S$ is uniformly bounded on compact sets, hence normal by Montel (14.6). If $f_n\to f$ locally uniformly, then $f(0)=0$ and $f'(0)=\lim f_n'(0)=1$ (10.28), so $f$ is not constant; a locally uniform limit of one-to-one holomorphic functions is either constant or one-to-one (argument principle / Hurwitz, as in the proof of 14.8). So $f\in\mathscr S$. The normalization $f'(0)=1$ is what prevents both escape to $\infty$ and collapse to a constant.`,
+      caption: String.raw`Choose a sequence and move along it. Left: images of the circle $|z|=\frac12$ under $f_1,\dots,f_n$ (older ones fainter), the limit (green) and the growth bound of 14.14 (dashed). Right: $\sup_{|z|\le1/2}|f_n-f|$ (log scale). Two-slit maps converge to the Koebe function; $z+a_nz^2$ with $|a_n|\uparrow\frac12$ converge to $z+\frac12z^2$, still in $\mathscr S$. Dropping the normalization breaks compactness: $z/n$ collapses to the constant $0$, and $nz$ has no convergent subsequence.`,
+      deps: ['rca-14.14', 'rca-14.6', 'rca-10.28'],
       see: ['fa-1.45'],
       tags: ['univalent functions', 'compactness', 'normal families'],
       viz(v) {

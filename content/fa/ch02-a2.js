@@ -155,11 +155,11 @@ export default {
       num: '2.9',
       kind: 'Theorem',
       name: 'Uniform boundedness on compact convex sets',
+      verify: true,
       statement: String.raw`Let $X$ and $Y$ be topological vector spaces, $K$ a compact convex set in $X$, and $\Gamma$ a collection of continuous linear mappings of $X$ into $Y$ such that the orbit $\Gamma(x)$ is bounded in $Y$ for every $x\in K$. Then there is a bounded set $B\subset Y$ with $\Lambda(K)\subset B$ for every $\Lambda\in\Gamma$.`,
       idea: String.raw`Fix balanced neighbourhoods with $\overline W+\overline W\subset U$ and put $E=\bigcap_\Lambda\Lambda^{-1}(\overline W)$. Every $x\in K$ lies in some $nE$, so $K=\bigcup_n(K\cap nE)$, a countable union of closed sets. $K$ is compact Hausdorff, so Baire's theorem (2.2(b)) gives $n$, $x_0\in K$ and a balanced $V$ with $K\cap(x_0+V)\subset nE$. Compactness gives $p>1$ with $K\subset x_0+pV$. For $x\in K$ the point $z=(1-p^{-1})x_0+p^{-1}x$ lies in $K$ by **convexity** and in $x_0+V$, so $z\in nE$; then $\Lambda x=p\Lambda z-(p-1)\Lambda x_0\in pn(\overline W+\overline W)\subset pnU$. Convexity cannot be dropped: in $\ell^2$, $K=\{0\}\cup\{e_k/k\}$ is compact, every orbit of $\Lambda_mx=m^2x_m$ on $K$ is bounded, but $\sup_m|\Lambda_m(e_k/k)|=k$ is not bounded on $K$.`,
       caption: String.raw`A picture of the proof in $\R^2$ with five functionals $\Lambda_j$ and $E=\{|\Lambda_j|\le1\}$ (orange: $nE$). Drag $x_0$ inside $K\cap nE$: the largest disc $x_0+V$ whose part in $K$ stays in $nE$ is drawn green, and $p$ is the factor with $K\subset x_0+pV$. Drag $x\in K$: the point $z=x_0+(x-x_0)/p$ lies in the shrunken copy of $K$, hence in $nE$, and the bars confirm $|\Lambda_jx|\le(2p-1)n$. For a non-convex $K$, $z$ can leave $K$ (red), where the hypothesis gives no information.`,
       deps: ['fa-2.2', 'fa-2.1', 'fa-1.6'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §2.9, pp. 46–47'],
       tags: ['uniform boundedness', 'compactness', 'convexity'],
       viz(v) {
         const M = v.M;
@@ -239,10 +239,10 @@ export default {
       num: '2.10',
       kind: 'Definition',
       name: 'Open mappings',
+      verify: true,
       statement: String.raw`Let $S$ and $T$ be topological spaces and $f:S\to T$. $f$ is **open at** $p\in S$ if $f(V)$ contains a neighbourhood of $f(p)$ whenever $V$ is a neighbourhood of $p$; $f$ is **open** if $f(U)$ is open in $T$ for every open $U\subset S$. Thus $f$ is open exactly when it is open at every point. Because vector topologies are translation invariant, a linear map between topological vector spaces is open as soon as it is open at $0$, i.e. as soon as the image of every neighbourhood of $0$ contains a neighbourhood of $0$.`,
       idea: String.raw`Openness is the mirror image of continuity: continuity pulls open sets back to open sets, openness pushes them forward. A continuous bijection is a homeomorphism exactly when it is open, which is why the open mapping theorem yields continuous inverses. For linear $\Lambda$, $\Lambda(x+V)=\Lambda x+\Lambda(V)$, so openness at $0$ propagates to every point.`,
       deps: ['fa-1.6'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §2.10, pp. 47–48'],
       tags: ['open mapping'],
     },
     // ------------------------------------------------------------------ 2.11

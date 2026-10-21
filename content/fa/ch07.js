@@ -70,7 +70,7 @@ export default {
       num: '7.1',
       kind: 'Definition',
       name: 'The Fourier transform on $L^1(\\R^n)$',
-      credit: 'Fourier',
+      credit: 'Fourier, 1822',
       statement: String.raw`Write $m_n$ for Lebesgue measure on $\R^n$ divided by $(2\pi)^{n/2}$, $L^p=L^p(m_n)$, and $e_t(x)=e^{i\,t\cdot x}$ for $t,x\in\R^n$. The **Fourier transform** of $f\in L^1$ is the function
 $$\hat f(t)=\int_{\R^n} f\,e_{-t}\,dm_n=\int_{\R^n}f(x)\,e^{-i\,t\cdot x}\,dm_n(x)\qquad(t\in\R^n).$$
 Convolution is $(f*g)(x)=\int f(x-y)g(y)\,dm_n(y)$, translation is $(\tau_xf)(y)=f(y-x)$, and for a multi-index $\alpha$ one sets $D_\alpha=i^{-|\alpha|}\,\partial^\alpha$, so that $D_\alpha e_t=t^\alpha e_t$.`,
@@ -79,6 +79,7 @@ Convolution is $(f*g)(x)=\int f(x-y)g(y)\,dm_n(y)$, translation is $(\tau_xf)(y)
       deps: [],
       see: ['rca-9.1'],
       tags: ['Fourier transform', 'normalisation'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const A = 1.3, B = 0.55, S1 = 1.15, S2 = 0.42, TH = 0.5, P = [0.95, 0.55], SB = 0.42;
@@ -403,13 +404,14 @@ Equivalently, $P\cdot D_\alpha f$ is bounded on $\R^n$ for every polynomial $P$ 
       num: '7.5',
       kind: 'Theorem',
       name: 'Riemann–Lebesgue: $\\hat f\\in C_0(\\R^n)$ for $f\\in L^1$',
-      credit: 'Riemann & Lebesgue',
+      credit: 'Riemann & Lebesgue, 1854',
       statement: String.raw`If $f\in L^1(\R^n)$, then $\hat f\in C_0(\R^n)$ and $\|\hat f\|_\infty\le\|f\|_1$.`,
       idea: String.raw`The inequality is immediate from $|e_{-t}|=1$. For the rest, choose $g_i\in\mathscr D(\R^n)\subset\mathscr S_n$ with $\|f-g_i\|_1\to0$. By 7.4(d) each $\hat g_i$ lies in $\mathscr S_n\subset C_0(\R^n)$, and the inequality applied to $f-g_i$ gives $\|\hat f-\hat g_i\|_\infty\le\|f-g_i\|_1\to0$. A uniform limit of functions in $C_0$ is in $C_0$.`,
       caption: String.raw`Take $g=f*\rho_\varepsilon$, a Gaussian smoothing of $f$ ($\hat\rho_\varepsilon(t)=e^{-\varepsilon^2t^2/2}$), and shrink $\varepsilon$ (log scale). Top: $f$ and $g$. Bottom: $|\hat f|$ (black) under the bound $\|f\|_1$, and $|\hat g|$ (blue), which dies off like a Gaussian; the orange curve is $|\hat f-\hat g|$, which never rises above the green line $\|f-g\|_1$. So $\hat f$ is a uniform limit of transforms of smooth rapidly decreasing functions. The third $f$ is unbounded and $\hat f$ decays only like $t^{-1/2}$ — still in $C_0$.`,
       deps: ['fa-7.4', 'fa-7.1'],
       see: ['rca-9.6'],
       tags: ['Riemann–Lebesgue', 'Fourier transform'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const FN = {
@@ -487,6 +489,7 @@ Equivalently, $P\cdot D_\alpha f$ is bounded on $\R^n$ for every polynomial $P$ 
       deps: ['fa-7.4', 'fa-7.2'],
       see: ['rca-9.11', 'pma-8.21'],
       tags: ['Gaussian', 'fixed point', 'uncertainty'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const sS = v.slider('$\\sigma$', 0.35, 2.6, 1.6, { step: 0.01 });

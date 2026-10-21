@@ -140,7 +140,7 @@ The factor $1/\sqrt{2\pi}$ is built into $m$ so that the inversion and Planchere
       caption: String.raw`Choose a rule and move its parameter. Left: $f(x)=xe^{1-x}$ on $(0,\infty)$ (dashed) and the new function $g$ (real part blue, imaginary part orange). Right: the curves are the predicted transform from the formula; the gold dots are $\hat g$ computed independently by quadrature of $\int g(x)e^{-ixt}\,dm(x)$. Translation only rotates phases ($|\hat g|=|\hat f|$, dashed), modulation slides the spectrum, and dilating $f$ compresses $\hat f$.`,
       deps: ['rca-9.1', 'rca-8.14', 'rca-8.8', 'rca-1.34'],
       tags: ['Fourier transform', 'convolution'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 9.2 and proof, pp. 179–180'],
+      verify: true,
       viz(v) {
         const MODES = [
           { value: 'a', label: '(a) modulate' }, { value: 'b', label: '(b) translate' }, { value: 'c', label: '(c) convolve' },
@@ -175,7 +175,7 @@ The factor $1/\sqrt{2\pi}$ is built into $m$ so that the inversion and Planchere
           c: () => `g=f*\\chi_{[-a,a]}\\;\\Rightarrow\\;\\hat g=\\hat f\\cdot\\widehat{\\chi_{[-a,a]}}=\\hat f(t)\\,\\sqrt{\\tfrac2\\pi}\\,\\tfrac{\\sin at}{t}`,
           d: () => `g(x)=\\overline{f(-x)}\\;\\Rightarrow\\;\\hat g=\\overline{\\hat f}`,
           e: (p) => `g(x)=f(x/\\lambda)\\;\\Rightarrow\\;\\hat g(t)=${v.fix(p.la, 2)}\\,\\hat f(${v.fix(p.la, 2)}\\,t)`,
-          f: () => `g(x)=-ixf(x)\\;\\Rightarrow\\;\\widehat g=(\\widehat f)'`,
+          f: () => `g(x)=-ixf(x)\\;\\Rightarrow\\;\\hat g=\\hat f\\,'`,
         };
         const XQ0 = -40, XQ1 = 40, DQ = 0.01, NQ = Math.round((XQ1 - XQ0) / DQ);
         const TS = v.M.linspace(-7.8, 7.8, 40);
@@ -313,7 +313,7 @@ $$2\hat f(t)=\int\big[f(x)-f(x-\tfrac{\pi}{t})\big]e^{-ixt}\,dm(x),\qquad |\hat 
 The right side tends to $0$ as $|t|\to\infty$ by the continuity of translation in $L^1$ (9.5).`,
       caption: String.raw`Choose $f$ (the last one is unbounded but integrable) and drag $t$. Top: $f$ and its translate by $\pi/t$, with $|f-f_{\pi/t}|$ shaded. Bottom: $|\hat f(t)|$ (blue, exact formula) under the uniform bound $\norm f_1$ (grey) and under Rudin's bound $\frac12\norm{f-f_{\pi/t}}_1$ (green, by quadrature), which is squeezed to $0$ as the shift $\pi/t$ shrinks.`,
       deps: ['rca-9.5', 'rca-9.1', 'rca-1.34', 'rca-3.16'],
-      see: ['rca-5.14', 'pma-8.12'],
+      see: ['rca-5.12', 'pma-8.12'],
       tags: ['Riemann–Lebesgue', 'C0'],
       viz(v) {
         const FUN = {
@@ -370,7 +370,7 @@ Then $0<H\le1$, $H(\lambda t)\to1$ as $\lambda\to0$, $h_\lambda>0$, and $\int_{-
       caption: String.raw`Move $\lambda$ (log scale) and the radius $\delta$. Left: $H(\lambda t)=e^{-\lambda|t|}$ flattening towards $1$. Right: $h_\lambda$ from the closed form (curve) and from numerically integrating its definition (dots); the shaded part is the mass of $h_\lambda\,dm$ in $|x|<\delta$, which tends to $1$ as $\lambda\to0$ for every fixed $\delta$.`,
       deps: ['rca-9.1'],
       tags: ['approximate identity', 'Poisson kernel'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 9.7, p. 182'],
+      verify: true,
       viz(v) {
         const lam = v.slider('$\\lambda$', 0.05, 4, 0.6, { log: true, decimals: 3 });
         const Ls = v.stage({ x: [-10, 10], y: [-0.14, 1.18], height: 270, xlabel: 't', title: 'frequency: $H(\\lambda t)=e^{-\\lambda|t|}$' });

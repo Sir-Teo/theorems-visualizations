@@ -1,0 +1,7 @@
+const lse=(a,b)=>a===-Infinity?b:b===-Infinity?a:Math.max(a,b)+Math.log1p(Math.exp(-Math.abs(a-b)));
+const softplus=x=>Math.max(0,x)+Math.log1p(Math.exp(-Math.abs(x)));
+export function lotteryStepLogOdds(y,x,d){if(d===1)return y+x;const z=lse(x-softplus(-y),-softplus(y));return y+lse(Math.log1p(-d),Math.log(d)+x-z)-lse(Math.log1p(-d),Math.log(d)-z);}
+export const lotteryShare=y=>y>=0?1/(1+Math.exp(-y)):Math.exp(y)/(1+Math.exp(y));
+export function lotteryGrowth(m,s,d,rho,n=128){if(d===1)return m;const sd=s*Math.sqrt(2*(1-rho));if(sd===0)return Math.log1p(d*Math.expm1(m));let sum=0;const h=16/n;for(let i=0;i<=n;i++){const z=-8+i*h,w=Math.exp(-z*z/2)*(i===0||i===n?.5:1),x=m+sd*z;sum+=w*lse(Math.log1p(-d),Math.log(d)+x);}return sum*h/Math.sqrt(2*Math.PI);}
+export function lotteryOutcome(m,s,d,rho){if(m===0&&(s===0||rho===1))return'neutral';if(d===1&&m===0)return'unbuffered drift';const a=lotteryGrowth(m,s,d,rho),b=lotteryGrowth(-m,s,d,rho),eps=1e-8;return Math.min(Math.abs(a),Math.abs(b))<=eps?'boundary / numerical resolution':a>0&&b>0?'mutual invasion':a>0?'species 1 advantage':b>0?'species 2 advantage':'no mutual invasion';}
+export function wedgeOutcome(rho,kap){const a=1-rho/kap,b=1-rho*kap;if(Math.abs(rho-1)<1e-10&&Math.abs(kap-1)<1e-10)return'neutral continuum';if(Math.min(Math.abs(a),Math.abs(b))<1e-10)return'zero-invasion boundary';return a>0&&b>0?'stable coexistence':a<0&&b<0?'priority effects':a>0?'species 1 excludes species 2':'species 2 excludes species 1';}

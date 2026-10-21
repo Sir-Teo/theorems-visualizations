@@ -1,5 +1,6 @@
 // Condensed Matter Physics — Chapter 3: Lattice vibrations, binding and defects (items 3.1–3.8; 3.9–3.16 in ch03-b.js; 3.7 is a cross-listing)
 import { PI, bose, madelung, ljSums, ljEnergy, phononFreqs } from './ch03.shared.js';
+import { crystalSummary, soundModel } from './cm-source-audit-lattice.js';
 
 export default {
   collection: 'cm',
@@ -58,18 +59,18 @@ The series is only **conditionally convergent**: its value depends on how the si
       num: '3.2',
       kind: 'Model',
       name: 'Van der Waals solids: the Lennard-Jones crystal',
-      credit: 'Lennard-Jones, 1924',
-      statement: String.raw`Noble-gas atoms attract through fluctuating dipoles ($\propto -r^{-6}$, London) and repel at short range; the Lennard-Jones pair potential $\phi(r)=4\varepsilon[(\sigma/r)^{12}-(\sigma/r)^6]$ models both. Summed over a lattice with nearest-neighbour distance $r$, the energy per atom is
+      credit: 'Lennard-Jones pair-potential model',
+      statement: String.raw`Noble-gas atoms attract through fluctuating dipoles ($\propto -r^{-6}$) and repel at short range; the Lennard-Jones pair potential $\phi(r)=4\varepsilon[(\sigma/r)^{12}-(\sigma/r)^6]$ models both. Summed over a lattice with nearest-neighbour distance $r$, the energy per atom is
 $$u(r)=2\varepsilon\left[S_{12}\left(\frac{\sigma}{r}\right)^{12}-S_{6}\left(\frac{\sigma}{r}\right)^{6}\right],\qquad S_n=\sum_{j\ne0}\left(\frac{r}{r_j}\right)^n,$$
-with $S_{12}=12.13,\ S_6=14.45$ for fcc and hcp and $S_{12}=9.11,\ S_6=12.25$ for bcc. The minimum is at $r_0=(2S_{12}/S_6)^{1/6}\sigma\approx1.09\,\sigma$, where $u=-\varepsilon S_6^2/(2S_{12})\approx-8.6\,\varepsilon$ for close-packed structures, which therefore beat bcc.`,
-      idea: String.raw`The $r^{-12}$ sum converges after the first shell (12 neighbours) while the $r^{-6}$ sum receives about 20% beyond the first shell in fcc, so the lattice sums are mostly "number of neighbours": 12 for fcc/hcp against 8 (+6 slightly further) for bcc, and the close-packed structures differ only in the third shell, hence $-8.610\,\varepsilon$ (fcc) against $-8.611\,\varepsilon$ (hcp). Setting $du/dr=0$ gives $r_0$ and $d^2u/dV^2$ gives the bulk modulus $B=V\,d^2u/dV^2\approx 75\,\varepsilon/\sigma^3$ for fcc. The model overestimates the stiffness and binding of real solid argon because it ignores zero-point motion, which is large for light atoms.`,
-      caption: String.raw`The energy per atom against nearest-neighbour distance for the three structures (sums over all neighbours within a radius of 11 spacings plus a continuum tail for $r^{-6}$). Drag the handle along the selected curve: the bars on the right show how much of the energy each shell of neighbours contributes. Compare the minimum with the solid-argon values in the readout.`,
-      scope: String.raw`Pair potential, classical lattice at $T=0$ with no zero-point motion, and no three-body (Axilrod–Teller) forces. Parameters $\varepsilon=0.0104$ eV, $\sigma=3.40$ Å are standard fits to argon; experimental solid argon (near 0 K, Ashcroft–Mermin Table 20.3: $r_0=3.75$ Å, cohesive energy $0.080$ eV per atom, $B\approx2.7$ GPa) differs by the quantum corrections.`,
-      deps: ['xtal-1.5', 'opt-1.4'],
-      refs: ['Ashcroft–Mermin ch. 20', 'Kittel ch. 3'],
+For ideal lattices, $(S_6,S_{12})$ is approximately $(14.45392,12.13188)$ for fcc, $(14.45490,12.13229)$ for hcp and $(12.25367,9.11418)$ for bcc. The minimum is at $r_0=(2S_{12}/S_6)^{1/6}\sigma\approx1.09\,\sigma$, where $u=-\varepsilon S_6^2/(2S_{12})\approx-8.6\,\varepsilon$ for close-packed structures, which therefore beat bcc.`,
+      idea: String.raw`The factor $1/2$ in the energy per atom avoids counting each pair twice. Differentiating the lattice energy gives $r_0$; with volume per atom $V=c r^3$, the bulk modulus at this minimum is $B=Vd^2u/dV^2=-8u_0/V_0$. For fcc this is about $75.2\,\varepsilon/\sigma^3$. The first two neighbour shells of fcc and ideal hcp agree, but subsequent shells differ, so their classical static energies differ slightly: approximately $-8.610\,\varepsilon$ and $-8.611\,\varepsilon$. This energy comparison is restricted to these lattice families and is not a proof of mechanical stability or a real-material phase diagram.`,
+      caption: String.raw`Compare fcc, ideal hcp and bcc. Drag the gold handle along the selected energy curve. The bars show the first eight neighbour shells at that spacing; their labels give the atom counts, and the readout separately gives the contribution from all remaining shells. The energy uses a radius-11 lattice sum with a continuum $r^{-6}$ tail, so displayed values are numerical approximations, not exact infinite sums.`,
+      scope: String.raw`Classical pair-potential lattice at $T=0$, with uniform dilation and fixed structure. Both zero-point motion and many-body forces are omitted. The curves and modulus are in model units: no experimental argon values or material fit are asserted. The continuum tail has a small discretization error; it is adequate for the displayed three-decimal energies but not for high-precision lattice constants.`,
+      deps: ['xtal-1.5'],
+      refs: ['Schwerdtfeger, Burrows & Smits, arXiv:2012.05413, Eqs. (3)–(6), (10)–(13), pp. 4–8'],
       tags: ['van der waals', 'lennard-jones', 'cohesion'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lennard-Jones_potential' },
-      verify: true,
+      verify: false,
       viz(v) {
         const ST = ['fcc', 'hcp', 'bcc'], COL = { fcc: 'accent', hcp: 'green', bcc: 'orange' };
         const sel = v.select('structure', [{ value: 'fcc', label: 'fcc' }, { value: 'hcp', label: 'hcp (ideal $c/a$)' }, { value: 'bcc', label: 'bcc' }], 'fcc');
@@ -81,18 +82,17 @@ with $S_{12}=12.13,\ S_6=14.45$ for fcc and hcp and $S_{12}=9.11,\ S_6=12.25$ fo
           for (const s of ST) { const S = ljSums(s); sE.fn((r) => ljEnergy(S, r), { color: COL[s], width: sel.value === s ? 2.8 : 1.4, alpha: sel.value === s ? 1 : 0.6, domain: [0.97, 1.6] }); }
           sE.hline(0, { color: 'faint', width: 1 });
           const S = ljSums(sel.value), r = h.x; h.set(r, ljEnergy(S, r));
+          sE.setView([0.95,1.6],[-9.8,Math.max(3,...ST.map(s=>ljEnergy(ljSums(s),0.97)*1.08))]);
           sE.vline(Math.pow((2 * S.s12) / S.s6, 1 / 6), { color: COL[sel.value], width: 1, dash: [4, 4], alpha: 0.7 });
-          const sh = S.shells.slice(0, 8);
+          const sh = S.shells.slice(0, 8), vals=sh.map(q=>2*(q.n/q.r2**6/r**12-q.n/q.r2**3/r**6));
+          sS.setView([0.3,8.7],[Math.min(-7,...vals.map(x=>x*1.15)),Math.max(5,...vals.map(x=>x*1.15))]);
           sS.bars(sh.map((q) => 2 * (q.n / q.r2 ** 6 / r ** 12 - q.n / q.r2 ** 3 / r ** 6)), { x0: 1, dx: 1, color: (val) => (val < 0 ? 'green' : 'red') });
           sh.forEach((q, i) => sS.text(`${q.n}`, i + 1, -6.3, { size: 10, color: 'muted', align: 'center' }));
-          sS.text('atoms in shell:', 0.4, -5.6, { size: 10, color: 'muted' });
           sS.hline(0, { color: 'faint', width: 1 });
         });
         v.readout(() => {
-          const S = ljSums(sel.value), r0 = Math.pow((2 * S.s12) / S.s6, 1 / 6), u0 = ljEnergy(S, r0), c = S.vol; // volume per atom = vol r³ (σ³)
-          const uV = (V) => ljEnergy(S, Math.cbrt(V / c)), V0 = c * r0 ** 3, dv = V0 * 1e-3, B = (V0 * (uV(V0 + dv) - 2 * uV(V0) + uV(V0 - dv))) / (dv * dv);
-          const eps = 0.0104, sig = 3.40, GPa = (eps * 1.602176634e-19) / (sig * 1e-10) ** 3 / 1e9;
-          return `${sel.value}: $S_6=${v.fix(S.s6, 3)}$, $S_{12}=${v.fix(S.s12, 3)}$, ${S.nn} nearest neighbours · minimum $r_0=${v.fix(r0, 4)}\\,\\sigma$, $u_0=${v.fix(u0, 3)}\\,\\varepsilon$, $B=${v.fix(B, 1)}\\,\\varepsilon/\\sigma^3$\nWith the argon parameters: $r_0=${v.fix(r0 * sig, 2)}$ Å, $|u_0|=${v.fix(-u0 * eps, 4)}$ eV, $B=${v.fix(B * GPa, 1)}$ GPa — against solid argon (Ashcroft–Mermin Table 20.3) $3.75$ Å, $0.080$ eV, $2.7$ GPa. Currently at $r=${v.fix(h.x, 3)}\\,\\sigma$: $u=${v.fix(ljEnergy(S, h.x), 3)}\\,\\varepsilon$.`;
+          const S=ljSums(sel.value), C=crystalSummary(S,h.x); const {r0,u0,B,remainder}=C;
+          return `${sel.value}: $S_6\\approx${v.fix(S.s6,5)}$, $S_{12}\\approx${v.fix(S.s12,5)}$, ${S.nn} nearest neighbours · minimum $r_0=${v.fix(r0,4)}\\,\\sigma$, $u_0=${v.fix(u0,3)}\\,\\varepsilon$, $B=${v.fix(B,2)}\\,\\varepsilon/\\sigma^3$\nAt $r=${v.fix(h.x,3)}\\,\\sigma$: $u=${v.fix(C.u,3)}\\,\\varepsilon$; beyond the eight displayed shells, including the continuum tail: $${v.fix(remainder,4)}\\,\\varepsilon$ (numerical model).`;
         });
       },
     },
@@ -104,12 +104,16 @@ with $S_{12}=12.13,\ S_6=14.45$ for fcc and hcp and $S_{12}=9.11,\ S_6=12.25$ fo
       name: 'Diatomic chain: acoustic and optical branches',
       credit: 'Born & von Kármán, 1912',
       statement: String.raw`A chain of alternating masses $m$ and $M$ joined by identical springs $K$ (cell length $a$) has normal modes $u_n\propto e^{i(kna-\omega t)}$ whose frequencies solve
-$$\omega^2=K\left(\frac1m+\frac1M\right)\pm K\sqrt{\left(\frac1m+\frac1M\right)^2-\frac{4\sin^2(ka/2)}{mM}},$$
+$$\omega^2=K\left(S\pm\sqrt{S^2-P}\right),$$
+$$S=\frac1m+\frac1M,$$
+$$P=\frac{4\sin^2(ka/2)}{mM},$$
 two **branches** over the zone $|k|\le\pi/a$: the **acoustic** branch with $\omega\to0$ as $k\to0$ (neighbours move together) and the **optical** branch with $\omega(0)=\sqrt{2K(1/m+1/M)}$ (the two sublattices move against each other). At the zone edge the frequencies are $\sqrt{2K/M}$ and $\sqrt{2K/m}$, leaving a **gap** that closes when $m=M$.`,
-      idea: String.raw`With two atoms per cell the Bloch ansatz gives a $2\times2$ eigenproblem for the amplitudes $(U,V)$ on the two sublattices (cm-2.1's band velocity idea applied to a mechanical band). Its two eigenvalues are the two branches; the off-diagonal coupling $2K\cos(ka/2)$ vanishes at the zone edge, where the sublattices decouple and each oscillates at its own frequency $\sqrt{2K/M}$ or $\sqrt{2K/m}$, which opens the gap. The monatomic chain is recovered at $m=M$, where the two branches join into one folded in half (the reduced zone, as in xtal-5.4).`,
+      idea: String.raw`With two atoms per cell the Bloch ansatz gives a $2\times2$ eigenproblem for the amplitudes $(U,V)$ on the two sublattices (cm-2.1's band velocity idea applied to a mechanical band). Its two eigenvalues are the two branches; the off-diagonal coupling $2K\cos(ka/2)$ vanishes at the zone edge, where the sublattices decouple and each oscillates at its own frequency $\sqrt{2K/M}$ or $\sqrt{2K/m}$, which opens the gap. The monatomic chain is recovered at $m=M$, where the two branches join into one folded in half (the reduced zone, as in xtal-5.4).
+
+For $m,M,K>0$, use mass-weighted amplitudes $(\sqrt m\,U,\sqrt M\,V)$ and rephase the two Bloch amplitudes. The resulting dynamical block is real symmetric, with diagonal entries $2K/m$, $2K/M$ and off-diagonal entry $-2K\cos(ka/2)/\sqrt{mM}$. The real spectral theorem (ladr 7.29) supplies an orthonormal eigenbasis in these coordinates; its characteristic polynomial gives the two displayed squared frequencies. The weighting is essential: the unweighted amplitude equations need not form a symmetric matrix when the masses differ.`,
       caption: String.raw`Drag the handle along the selected branch of the dispersion curve (left) and watch the chain (right; displacements drawn transverse and enlarged): on the acoustic branch the light and heavy atoms of a cell move in phase, on the optical branch in antiphase (equal momentum, so the heavy atom moves less). Raise the mass ratio $M/m$ to widen the gap; at $M/m=1$ the gap closes at the zone edge.`,
       scope: String.raw`Nearest-neighbour harmonic springs, one polarization (transverse and longitudinal displacements give the same curves with different $K$); real optical branches in ionic crystals are coupled to light, see cm-3.12.`,
-      deps: ['mech-11.8', 'xtal-5.4', 'ladr-9.51'],
+      deps: ['mech-11.8', 'xtal-5.4', 'ladr-7.29'],
       refs: ['Ashcroft–Mermin ch. 22', 'Kittel ch. 4'],
       tags: ['phonons', 'dispersion', 'optical branch'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Phonon#Lattice_dynamics' },
@@ -156,11 +160,13 @@ two **branches** over the zone $|k|\le\pi/a$: the **acoustic** branch with $\ome
       num: '3.4',
       kind: 'Theorem',
       name: 'Counting phonon branches',
-      statement: String.raw`A three-dimensional crystal with $p$ atoms per primitive cell has exactly $3p$ phonon branches $\omega_s(\mathbf k)$, $s=1,\dots,3p$. Because the crystal is invariant under uniform translation, three of them are **acoustic** ($\omega\to0$ as $\mathbf k\to0$) and the remaining $3(p-1)$ are **optical** ($\omega(0)>0$). A crystal of $N$ cells therefore has $3pN$ normal modes, one for each degree of freedom, and in the zone each branch has exactly $N$ allowed wave vectors.`,
-      idea: String.raw`For each wave vector the equations of motion form a $3p\times3p$ Hermitian dynamical matrix $D(\mathbf k)$, so it has $3p$ real eigenvalues $\omega^2$ (positive for a stable crystal). At $\mathbf k=0$ a rigid translation of all atoms along $x$, $y$ or $z$ stretches no bond and so is a zero-frequency eigenvector: this is the acoustic sum rule, equivalent to $\sum_{j}\Phi_{ij}=0$ and responsible for three zero eigenvalues. Counting the allowed $\mathbf k$ (Born–von Kármán boundary conditions gives $N$ points in the zone, cm-1.6's counting) times $3p$ gives $3pN$.`,
+      statement: String.raw`A three-dimensional crystal with $p$ atoms per primitive cell has exactly $3p$ phonon branches $\omega_s(\mathbf k)$, $s=1,\dots,3p$. Assume harmonic stability and no zero-frequency modes at $\mathbf k=0$ beyond the three rigid translations. Because the crystal is invariant under uniform translation, three of them are **acoustic** ($\omega\to0$ as $\mathbf k\to0$) and the remaining $3(p-1)$ are **optical** ($\omega(0)>0$). A crystal of $N$ cells therefore has $3pN$ normal modes, one for each degree of freedom, and in the zone each branch has exactly $N$ allowed wave vectors.`,
+      idea: String.raw`For each wave vector the equations of motion form a $3p\times3p$ Hermitian dynamical matrix $D(\mathbf k)$, so it has $3p$ real eigenvalues $\omega^2$ (nonnegative for a harmonically stable crystal). At $\mathbf k=0$ a rigid translation of all atoms along $x$, $y$ or $z$ stretches no bond and so is a zero-frequency eigenvector: this is the acoustic sum rule, equivalent to $\sum_{j}\Phi_{ij}=0$ and responsible for three zero eigenvalues. Counting the allowed $\mathbf k$ (Born–von Kármán boundary conditions gives $N$ points in the zone, cm-1.6's counting) times $3p$ gives $3pN$.
+
+At each fixed $\mathbf k$, positive atomic masses allow mass weighting of the harmonic equations. The resulting finite $3p$-dimensional dynamical operator is complex Hermitian, hence normal; the complex spectral theorem (ladr 7.31) gives a complete orthonormal eigenbasis with $3p$ eigenvalues counted with multiplicity. Hermiticity makes those eigenvalues real, and harmonic stability makes them nonnegative. The three rigid translations are independent zero modes at $\mathbf k=0$; the stated absence of additional zero modes is needed to call all remaining branches optical. The already counted $N$ wave vectors then give $3pN$ modes.`,
       caption: String.raw`A model crystal on a cubic cell with $p$ atoms of unequal mass joined by springs with longitudinal and transverse stiffness (bond list from distance, not a fit to any material). **Left:** all $3p$ branches along $\Gamma\to X\to M\to R\to\Gamma$ from numerical diagonalisation. **Right:** a histogram of all $3pN$ frequencies of a $3\times3\times3$ crystal ($N=27$). Raise $p$ and count. Switch on **pin the atoms** (a spring to the substrate on every atom, which destroys translation invariance): the three acoustic branches acquire a gap and no mode has $\omega\to0$.`,
       scope: String.raw`Harmonic, stable crystals. The value $p$ is the number of atoms in the primitive cell; counts of the individual symmetry types of branch (transverse/longitudinal) require the crystal's point group.`,
-      deps: ['cm-3.3', 'mech-11.4', 'ladr-7.12'],
+      deps: ['cm-3.3', 'mech-11.4', 'ladr-7.31'],
       refs: ['Ashcroft–Mermin ch. 22', 'Kittel ch. 4'],
       tags: ['phonons', 'branches', 'counting'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Phonon' },
@@ -206,12 +212,12 @@ two **branches** over the zone $|k|\le\pi/a$: the **acoustic** branch with $\ome
       kind: 'Definition',
       name: 'Phonons',
       statement: String.raw`Quantizing the normal modes of a crystal turns each mode $(\mathbf k,s)$ into a harmonic oscillator with energy levels $\hbar\omega_s(\mathbf k)\left(n+\tfrac12\right)$, $n=0,1,2,\dots$. A **phonon** is one quantum of such an oscillator: an excitation of energy $\hbar\omega$ and crystal momentum $\hbar\mathbf k$ (defined modulo $\hbar\mathbf G$). At temperature $T$ the phonons are bosons with mean occupation of each mode
-$$\bar n_s(\mathbf k)=\frac{1}{e^{\hbar\omega_s(\mathbf k)/k_BT}-1},\qquad U=\sum_{\mathbf k,s}\hbar\omega_s(\mathbf k)\left(\bar n_s(\mathbf k)+\tfrac12\right),$$
+$$\begin{gathered}\bar n_s(\mathbf k)=\frac{1}{e^{\hbar\omega_s(\mathbf k)/k_BT}-1},\\ U=\sum_{\mathbf k,s}\hbar\omega_s(\mathbf k)\left(\bar n_s(\mathbf k)+\tfrac12\right),\end{gathered}$$
 and the number of phonons is not conserved.`,
-      idea: String.raw`In the harmonic approximation the Hamiltonian is a sum of independent oscillators, one per normal mode (cm-3.4), so its eigenstates are products of oscillator number states and the canonical average over each ladder is a geometric series: $P(n)=(1-e^{-x})e^{-nx}$ with $x=\hbar\omega/k_BT$, whose mean is the Bose–Einstein function. A phonon carries crystal momentum only, since the lattice itself can absorb $\hbar\mathbf G$; this is why the "momentum" of a phonon is not conserved in Umklapp collisions.`,
+      idea: String.raw`In the harmonic approximation the Hamiltonian is a sum of independent oscillators, one per normal mode (cm-3.4), so its eigenstates are products of oscillator number states and the canonical average over each ladder is a geometric series: $P(n)=(1-e^{-x})e^{-nx}$ with $x=\hbar\omega/k_BT$, whose mean is the Bose–Einstein function. A phonon carries crystal momentum only, since the lattice itself can absorb $\hbar\mathbf G$; this is why the "momentum" of a phonon is not conserved in Umklapp collisions. For a positive-frequency mode at positive temperature, put $q=e^{-\hbar\omega/k_BT}$, so $0<q<1$. The geometric-series theorem (pma 3.26) normalizes its occupation probabilities by $\sum_{n\ge0}q^n=1/(1-q)$. Summing the nonnegative tails gives the mean $\sum_{j\ge1}q^j=q/(1-q)$, the displayed Bose factor. A zero-frequency rigid translation is outside this oscillator normalization.`,
       caption: String.raw`**Left:** the mean occupation $\bar n$ of every mode of a square-lattice crystal over the Brillouin zone, with $\omega(\mathbf k)=\omega_m\sqrt{\sin^2(k_xa/2)+\sin^2(k_ya/2)}$ (a model acoustic band; brighter = more phonons). Drag the handle to pick a mode and read its energy ladder on the right: the bars give $P(n)$, and the vertical axis is the energy $\hbar\omega(n+\tfrac12)$. Raise $T$ and watch the long-wavelength modes fill first, then the whole zone.`,
       scope: String.raw`Harmonic approximation; anharmonic interactions give phonons a finite lifetime and make their number change in collisions (cm-3.9, cm-3.10). The 2D square-lattice model band is illustrative.`,
-      deps: ['cm-3.4', 'qm-4.1'],
+      deps: ['cm-3.4', 'qm-4.1', 'pma-3.26'],
       refs: ['Ashcroft–Mermin ch. 23', 'Kittel ch. 4'],
       tags: ['phonon', 'bose-einstein', 'quantization'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Phonon' },
@@ -246,24 +252,25 @@ and the number of phonons is not conserved.`,
       num: '3.6',
       kind: 'Phenomenon',
       name: 'Speed of sound from the acoustic branch',
-      statement: String.raw`At long wavelengths the acoustic branch is linear, $\omega=v_sk$, and the slope is the speed of sound. For a monatomic chain of mass $m$, spacing $a$ and spring constant $K$ the dispersion $\omega=2\sqrt{K/m}\,|\sin(ka/2)|$ gives $v_s=a\sqrt{K/m}$. In three dimensions $v_s^2=(\text{elastic modulus})/\rho$ using the appropriate directional elastic modulus for each polarization (the isotropic continuum case), so the "spring constant" can be read off from the measured sound speed: $K=mv_s^2/a^2$.`,
+      statement: String.raw`At long wavelengths the acoustic branch is linear, $\omega=v_sk$, and the slope is the speed of sound. For a monatomic chain of mass $m$, spacing $a$ and spring constant $K$ the dispersion $\omega=2\sqrt{K/m}\,|\sin(ka/2)|$ gives $v_s=a\sqrt{K/m}$. In three dimensions $v_s^2=(\text{elastic modulus})/\rho$ for each polarization, so the "spring constant" can be read off from the measured sound speed: $K=mv_s^2/a^2$.`,
       idea: String.raw`Expanding $\sin(ka/2)\approx ka/2$ gives $\omega\approx a\sqrt{K/m}\,k$, i.e. a non-dispersive wave of velocity $a\sqrt{K/m}$. The group velocity $d\omega/dk=a\sqrt{K/m}\cos(ka/2)$ falls to zero at the zone edge, where the wave is a standing pattern of alternating displacements and carries no energy (Bragg reflection of the lattice wave, compare cm-1.4). A wave only behaves as sound when $ka\ll1$, i.e. when its wavelength spans many atoms.`,
-      caption: String.raw`Choose a metal; the measured longitudinal sound speed (Wikipedia/ASM, see scope) fixes $K=mv_s^2/a^2$ of the chain with that metal's atomic mass and nearest-neighbour distance, and the zone-edge frequency follows. Drag the **zoom** slider to look at a smaller and smaller range of $k$: the curve and its tangent (dashed) become indistinguishable, and the readout gives the relative deviation at the right edge of the window.`,
-      scope: String.raw`Monatomic one-dimensional model with nearest-neighbour springs; the fitted $K$ is the effective stiffness of a row of atoms, not a first-principles bond strength. Longitudinal speeds: aluminium (alloy 1100) $6313$ m/s, copper $4664$ m/s, iron about $5120$ m/s (Wikipedia, "Speed of sound", which does not state whether bulk or rod values); atomic masses and nearest-neighbour distances are standard handbook values (Al 26.98 u, 2.86 Å; Cu 63.55 u, 2.56 Å; Fe 55.85 u, 2.48 Å), quoted from memory.`,
+      caption: String.raw`Set the mass $m$, spacing $a$ and spring constant $K$ in consistent model units: the readout gives $v_s=a\sqrt{K/m}$ and the zone-edge frequency. The plots use normalized axes, so these inputs change the dimensional scales without changing the universal curve. Zoom toward $ka=0$ to compare the acoustic branch with its tangent, and compare phase and group velocities.`,
+      scope: String.raw`Monatomic nearest-neighbour harmonic chain. The model inputs are freely chosen and are not measured properties of aluminium, copper or iron. A real three-dimensional crystal has polarization- and direction-dependent sound speeds determined by its elastic tensor and density; a single fitted chain stiffness cannot reconstruct that tensor.`,
       deps: ['mech-11.8'],
-      refs: ['Ashcroft–Mermin ch. 22', 'Kittel ch. 4'],
+      refs: ['David Tong, Applications of Quantum Mechanics, §4.1.1, Eqs. (4.1)–(4.4), pp. 103–105'],
       tags: ['sound', 'acoustic phonon', 'dispersion'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Speed_of_sound' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const MAT = { Al: { m: 26.98, a: 2.86, vs: 6313 }, Cu: { m: 63.55, a: 2.56, vs: 4664 }, Fe: { m: 55.85, a: 2.48, vs: 5120 } };
-        const sel = v.select('metal', ['Al', 'Cu', 'Fe'], 'Cu');
+        const mass=v.slider('mass $m$ (model units)',0.5,5,1,{step:0.1});
+        const spacing=v.slider('spacing $a$ (model units)',0.5,3,1,{step:0.1});
+        const spring=v.slider('spring constant $K$ (model units)',0.5,8,2,{step:0.1});
         const zoom = v.slider('zoom: range of $ka$ shown', 0.05, PI, PI, { log: true, sig: 2 });
         const sD = v.stage({ x: [0, PI], y: [0, 2.1], axes: 'box', gutter: true, height: 340, xlabel: 'wave number $ka$', ylabel: '$\\omega/\\sqrt{K/m}$', title: 'acoustic branch and its tangent', weight: 1.2 });
         const sV = v.stage({ x: [0, PI], y: [0, 1.1], axes: 'box', gutter: true, height: 340, xlabel: 'wave number $ka$', ylabel: 'velocity$/v_s$', title: 'phase and group velocity', weight: 0.9 });
         v.legend([['accent', '$\\omega(k)$'], ['muted', 'tangent $v_sk$', { dash: true }], ['green', 'group velocity'], ['orange', 'phase velocity']]);
         v.render(() => {
-          const z = zoom.value; sD.setView([0, z], [0, Math.min(2.1, 1.05 * z)]); sV.setView([0, z], [Math.max(0, 1 - 1.3 * (1 - Math.cos(z / 2))) - 0.02, 1.05]);
+          const z = zoom.value; sD.setView([0, z], [0, 1.05 * z]); sV.setView([0, z], [Math.max(0, 1 - 1.3 * (1 - Math.cos(z / 2))) - 0.02, 1.05]);
           sD.fn((x) => 2 * Math.sin(x / 2), { color: 'accent', width: 2.6, domain: [0, z] });
           sD.fn((x) => x, { color: 'muted', width: 1.4, dash: [5, 4], domain: [0, z] });
           sV.fn((x) => Math.cos(x / 2), { color: 'green', width: 2.4, domain: [0, z] });
@@ -271,9 +278,8 @@ and the number of phonons is not conserved.`,
           sV.hline(1, { color: 'faint', width: 1, dash: [3, 4] });
         });
         v.readout(() => {
-          const A = MAT[sel.value], m = A.m * 1.66053907e-27, a = A.a * 1e-10, K = (m * A.vs * A.vs) / (a * a), wmax = 2 * Math.sqrt(K / m), z = zoom.value;
-          const dev = 1 - (2 * Math.sin(z / 2)) / z;
-          return `${sel.value}: $v_s=${A.vs}$ m/s, $m=${A.m}$ u, $a=${A.a}$ Å ⇒ $K=mv_s^2/a^2=${v.fix(K, 1)}$ N/m · zone-edge frequency $2\\sqrt{K/m}=${v.fix(wmax / (2 * PI) / 1e12, 2)}$ THz (chain model)\nwindow $ka\\le${v.fix(z, 2)}$: the curve lies ${v.fix(dev * 100, 2)}% below its tangent at the right edge; group velocity there $=${v.fix(Math.cos(z / 2), 3)}\\,v_s$.`;
+          const A=soundModel(mass.value,spacing.value,spring.value,zoom.value), z=zoom.value;
+          return `Model $m=${v.fix(mass.value,1)}$, $a=${v.fix(spacing.value,1)}$, $K=${v.fix(spring.value,1)}$: $v_s=a\\sqrt{K/m}=${v.fix(A.vs,3)}$ length/time · zone-edge angular frequency $2\\sqrt{K/m}=${v.fix(A.edgeOmega,3)}$ radians/time, cyclic frequency $f=${v.fix(A.edgeOmega/(2*PI),3)}$ cycles/time\nWindow $ka\\le${v.fix(z,3)}$: frequency ${v.fix(A.deviation*100,3)}% below tangent at the right edge; group speed $${v.fix(A.group,4)}\\,v_s$, phase speed $${v.fix(A.phase,4)}\\,v_s$.`;
         });
       },
     },

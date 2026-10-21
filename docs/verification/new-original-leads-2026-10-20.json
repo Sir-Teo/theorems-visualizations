@@ -1,0 +1,131 @@
+{
+  "date": "2026-10-20",
+  "id": "circ-4.17",
+  "newLead": "https://picture.iczhiku.com/resource/ieee/WYkFutIepdZJRBNN.pdf",
+  "discovery": "Ordinary websearch returned apparent indexed first-page original text and title/ISSCC1963page32; this is not complete sourcebody evidence.",
+  "ordinaryGet": {
+    "command": "curl -L --fail --max-time45",
+    "httpStatus": 403,
+    "declaredContentLength": 381,
+    "headers": "/tmp/atlas-continuation/circ-original/headers.txt",
+    "outcome": "NoPDFdownloaded. No sourcepage render or body audit possible."
+  },
+  "accessBoundary": "Stop unchanged route; no authentication/password/preview/access-limit bypass.",
+  "otherLead": {
+    "url": "https://citeseerx.ist.psu.edu/document?doi=1fa234fb2e21418d0d683bd0651ff479a0874866&repid=rep1&type=pdf",
+    "topic": "Hughes1992authorized-reprint possibility in Classic Papers Revisited",
+    "webFetch": "403Forbidden; no actualbody obtained; no sourceclosure."
+  },
+  "status": "All corresponding sourceflags remain open. No acceptance count or model change.",
+  "furtherOrdinarySearches": [
+    {
+      "topic": "MATHBIO1936 Italian original institutional holdings",
+      "queries": [
+        "Giornale Istituto italiano attuari1936 Kolmogoroff archivio digitale",
+        "Kolmogorov lotta esistenza download1936 italiano"
+      ],
+      "results": [
+        {
+          "url": "https://portal.issn.org/resource/ISSN/0390-5780",
+          "scope": "Journal bibliographic record, not article body."
+        },
+        {
+          "url": "https://mathdoc-cfp-pre.u-ga.fr/library/26/etat/?colref=&electronique=&istartswith=&ouvert=false&pcmath=true&periodique__titre__istartswith=Z&pole=&positionne=&vivant=false",
+          "scope": "Institutional holdings list includes journal1930\u20131939; no complete article body obtained."
+        }
+      ],
+      "outcome": "No original body or missing translation pages; no source closure."
+    },
+    {
+      "topic": "PHARM1992 author-hosted/permission reprint and CIRC1963 museum original",
+      "queries": [
+        "Hughes Glass Jacobs1992 filetype:pdf site:duke.edu",
+        "Context-sensitive Half-time Reprinted with permission pdf excluding known failed routes",
+        "Nanowatt logic filetype:pdf site:computerhistory.org"
+      ],
+      "results": [
+        {
+          "url": "https://www.computerhistory.org/siliconengine/complementary-mos-circuit-configuration-is-invented/",
+          "scope": "Museum history and bibliography cite original32\u201333; not a complete original PDF."
+        }
+      ],
+      "outcome": "Search results are citations or secondary textbook figure reprints, not complete requested originals. No source-body download or acceptance; known failed routes not retried."
+    },
+    {
+      "topic": "MATHBIO1936 original-title PDF and institutional catalog search",
+      "queries": [
+        "\"Kolmogoroff\" \"Sulla teoria\" filetype:pdf1936",
+        "\"Giornale\" \"74\u201380\" \"Kolmogorov\" pdf"
+      ],
+      "results": [
+        {
+          "url": "https://www.ihp.fr/sites/default/files/media/downloads/fonds-bernard-bru.pdf",
+          "scope": "Public institutional archive catalog,282pages; ordinaryGET succeeded, pypdf fulltext searched. Volterra references concern later historiography/transparencies; no matching1936article title or originalbody found.",
+          "sha256": "4ac2c138a106baaba64a97d95ed9eb31e82c57c74613ecf610e864afcc732f75",
+          "evidence": "/tmp/atlas-continuation/mathbio-original-catalog/ihp.txt"
+        },
+        {
+          "url": "https://www.pnas.org/doi/full/10.1073/pnas.2017463118",
+          "scope": "Search-indexed bibliographic citation only; not original1936body."
+        }
+      ],
+      "outcome": "No complete original or missing authorized translation pages found; flag/sourceledger unchanged. No access restriction bypass or stopped-route retry."
+    },
+    {
+      "topic": "Further public original-body discovery after checkpoint8",
+      "queries": [
+        "Kolmogoroff Sulla teoria PDF1936",
+        "Hounsfield Description of system filetype:pdf",
+        "Hughes Glass Jacobs1992 334 PDF context sensitive half time",
+        "Wanlass Sah Nanowatt Logic1963 original PDF"
+      ],
+      "results": [
+        {
+          "url": "https://romatrepress.uniroma3.it/wp-content/uploads/2025/09/Mathemata-n.-1-ebook-1.pdf",
+          "scope": "Search-indexed later bibliographic reference to1936article; not original body."
+        },
+        {
+          "url": "https://www.anaesthsoftware.com/en/references.php",
+          "scope": "Ordinary public references page links PHARM download to journals.lww.com; linked webfetch failed, no body obtained. No stopped ASA/CiteSeer route retry."
+        },
+        {
+          "url": "https://machinelibrary.ai/r/10.1109/isscc.1963.1157450",
+          "scope": "Public metadata page links PDF at https://xplorestaging.ieee.org/ielx6/8307/25939/01157450.pdf?arnumber=1157450. One ordinary linked fetch returned418. Stop this route; no original body or acceptance."
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/1539843/",
+          "scope": "Original abstract/metadata already recorded, not the full parameter tables."
+        }
+      ],
+      "outcome": "No source closure, content change or new accepted edge. Only public ordinary links followed, no credentials or access/preview/password bypass. BIGHIST candidate not searched or retried."
+    },
+    {
+      "topic": "New public-title searches after accepted CPLX/SYSBIO and first paired-map stop",
+      "queries": [
+        "Nanowatt Logic original PDF excluding stopped IEEE/image routes",
+        "Hounsfield1973 Description of system original PDF excluding encrypted route",
+        "Kolmogoroff Sulla teoria di Volterra1936original PDF",
+        "Hughes Glass Jacobs1992original author/reprint PDF excluding stopped routes"
+      ],
+      "results": [
+        {
+          "url": "https://pubs.asahq.org/anesthesiology/article-pdf/76/3/334/322974/0000542-199203000-00003.pdf",
+          "scope": "Search service returned an indexed excerpt of printed page336, including figure descriptions and concentration-holding context. This is not a complete source body or parameter-table audit. Known stopped ASA route was not opened/retried."
+        },
+        {
+          "url": "https://device.report/m/63a3e89f3a5c8eab120139b9d7d77afc2a751906fbbee75ca8e65aea07943715",
+          "scope": "Contemporaneous conference news mentions the scheduled complementary MOS paper; not the requested complete1963paper."
+        },
+        {
+          "url": "https://cir.nii.ac.jp/crid/1363107371370267136",
+          "scope": "Hounsfield bibliographic record only, no original body."
+        },
+        {
+          "url": "https://math.ru/lib/files/pdf/Kolmogorov-biblio.pdf",
+          "scope": "Author bibliography identifies1936pages74\u201380, not original article body."
+        }
+      ],
+      "outcome": "No new original-body download or source closure. Search also returned an institutional-library proxy for abstract-only Hounsfield; did not follow a proxy or authenticated route. Encrypted/preview-limited and stopped routes remain stopped. Frozen BIGHIST3.5 was not searched/retried."
+    }
+  ]
+}

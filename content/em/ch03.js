@@ -1,6 +1,8 @@
 // Electromagnetism — Chapter 3: Conductors and boundary-value problems (items 3.1–3.6)
 import { TAU, KV, EPS0, pot, fld, sgnCol, heatPot, levels, quiver, solveLin, sor, resid, samp, drawLines, circ, potL, fldL } from './ch03.shared.js';
 
+import { connectedSpheres } from './electrostatics-audit.shared.js';
+
 export default {
   collection: 'em',
   chapter: 3,
@@ -139,7 +141,7 @@ where $E=\sigma/\varepsilon_0$ is the field just outside. It is the force of the
       idea: String.raw`The field at the surface charge itself is not defined (it jumps by $\sigma/\varepsilon_0$ across the sheet), but the charge on a small patch feels the field of everything *except* that patch. The patch contributes $\mp\sigma/2\varepsilon_0$ on either side (by symmetry and em-3.2), so the rest of the conductor contributes $\sigma/2\varepsilon_0$ on both sides, which is the average of $E_{out}=\sigma/\varepsilon_0$ and $E_{in}=0$. Force per area is $\sigma\cdot\sigma/2\varepsilon_0$. Energy check (em-2.11): the field energy density is $\varepsilon_0E^2/2$, so letting the surface advance by $\delta$ changes the energy by that density times the volume swept.`,
       caption: String.raw`A conducting sphere of radius $R$ with charge $Q$ (left, to scale; arrows show the outward pressure). On the right the energy $U(R)=Q^2/8\pi\varepsilon_0R$ at fixed charge: inflating the sphere by $\delta R$ costs no work from outside, the energy drops by $-U'\,\delta R$, and this equals $(\sigma^2/2\varepsilon_0)\cdot4\pi R^2\,\delta R$ (bars). Push $Q$ up until the surface field reaches the breakdown field of air and the sphere flashes into corona.`,
       scope: String.raw`Applies to any conductor surface in equilibrium. The sphere picture takes isolated conducting sphere in air; the breakdown field $\approx3\times10^6$ V/m is a typical textbook value for dry air (depends on humidity, pressure and surface roughness). The comparison with the soap film's Laplace pressure $4\gamma/R$ uses a typical $\gamma\approx0.025$ N/m.`,
-      deps: ['em-3.2', 'em-2.11', 'fluid-2.7'],
+      deps: ['em-3.2', 'em-2.11'],
       refs: ['Griffiths §2.5', 'Purcell ch. 3'],
       tags: ['pressure', 'energy'],
       viz(v) {
@@ -178,44 +180,37 @@ where $E=\sigma/\varepsilon_0$ is the field just outside. It is the force of the
       num: '3.4',
       kind: 'Phenomenon',
       name: 'Charge crowds at sharp points',
-      statement: String.raw`An exposed sharp tip can enhance a conductor’s surface field. Curvature alone does not determine that field: the whole geometry and nearby charges matter. For two conducting spheres of radii $R_1,R_2$ far apart and joined by a thin wire (a common potential $V$), the charges split as $Q_i\propto R_i$, so
-$$\sigma_i=\frac{Q_i}{4\pi R_i^2}\propto\frac1{R_i},\qquad E_i=\frac{V}{R_i}.$$
-In this approximation the smaller sphere has the larger field.`,
-      idea: String.raw`A sphere of radius $R$ at potential $V$ has $V=kQ/R$ (em-2.6), hence $Q=4\pi\varepsilon_0RV$ and $E=kQ/R^2=V/R$. Joined by a wire, the spheres share $V$ (em-3.1), which forces $Q_i\propto R_i$ and $E_i\propto1/R_i$. This gives a qualitative model for field enhancement at an exposed tip; it is not a local curvature law for arbitrary conductors.`,
-      caption: String.raw`Total charge $Q_{tot}$ is shared between a big sphere ($R_2=8$ cm) and a small one (radius $R_1$ — slide it) connected by a wire. The circle sizes are to scale; the dots on each rim have area growing with the surface charge density; the right panel plots the surface field of the small sphere against its radius with an illustrative air-field threshold as a line. The glow marks crossing that threshold; it is not a discharge calculation.`,
-      scope: String.raw`Spheres far apart so that each sees the other only as a distant charge (to leading order $R_i\ll$ separation). The $3\times10^6$ V/m line is an illustrative threshold, not a corona prediction: gas pressure, geometry and discharge conditions matter. Sphere radii share one drawing scale; centre spacing is compressed and does not represent the far-separated limit.`,
-      credit: String.raw`Two-sphere estimate: Feynman Lectures II, §6–11`,
+      statement: String.raw`Sharp exposed tips often have enhanced surface fields. A useful **leading-order model** is two spheres of radii $R_1,R_2$, very far apart, joined by a wire of negligible capacitance. With fixed total charge $Q$, their common potential and surface fields are approximately
+$$V=\frac{kQ}{R_1+R_2},\qquad Q_i=\frac{QR_i}{R_1+R_2},\qquad E_i=\frac{V}{R_i}.$$
+Thus $E_1/E_2=R_2/R_1$. For a general conductor, the field depends on the whole geometry and external charges; local curvature alone does not determine it.`,
+      idea: String.raw`Ignoring mutual polarization and the wire's charge, each sphere has $V=kQ_i/R_i$. Equal potentials and $Q_1+Q_2=Q$ give the formulas. When the radius control changes at fixed $Q$, the common potential also changes, so the curve must be $E_1(R)=kQ/[R(R+R_2)]$. The inverse-radius ratio compares the two spheres at the same potential within one configuration.`,
+      caption: String.raw`The sphere radii have a common scale; the broken wire omits their very large separation. Rim-dot areas are proportional to the model surface densities. The curve varies $R_1$ at the selected fixed total charge. Gold rings indicate crossing a chosen reference field, not a discharge calculation.`,
+      scope: String.raw`Vacuum electrostatics, leading order as both radii divided by separation tend to zero, neglecting wire capacitance. The $3\times10^6$ V/m reference is an illustrative chosen threshold; this model supplies no air-ionization or corona criterion. Real gas breakdown depends on gas, pressure, geometry and charge transport.`,
+      credit: 'Source treatment: Feynman Lectures II §6–11, two-sphere estimate and its polarization limitation.',
       deps: ['em-3.1', 'em-2.6'],
-      refs: ['Feynman Lectures II, complete §6–11, Eq.(6.35) and two-sphere estimate'],
-      tags: ['lightning rod', 'corona'],
+      refs: ['Feynman II §6–11, Eq. (6.35)'],
+      tags: ['surface field', 'two spheres'],
       viz(v) {
-        const EB = 3e4, R2 = 8;
-        const s = v.stage({ x: [-10, 15], y: [-6, 6], equal: true, height: 300, axes: false, weight: 1.2, title: 'two spheres joined by a wire' });
-        const sE = v.stage({ x: [0.1, 8], y: [1e2, 5e6], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, weight: 0.9, minWidth: 240, xlabel: 'small sphere radius $R_1$ (cm)', ylabel: '$E_1$ (V/cm)', title: 'surface field of the small sphere' });
-        const Rs = v.slider('small radius $R_1$', 0.1, 8, 3, { log: true, fmt: (x) => `${x.toPrecision(2)} cm` });
-        const Qs = v.slider('total charge $Q_{tot}$', 5, 400, 120, { step: 5, fmt: (x) => `${x} nC` });
-        let info = {};
-        v.render(() => {
-          const R1 = Rs.value, Q = Qs.value, Q1 = (Q * R1) / (R1 + R2), Q2 = Q - Q1, Vc = (KV * Q) / (R1 + R2);
-          const E = (R) => (KV * Q) / ((R + R2) * R), E1 = E(R1), over = E1 >= EB;
-          s.circle(-2, 0, R2 * 0.6, { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.2 });
-          const cs = 9;
-          s.circle(cs, 0, Math.max(R1 * 0.6, 0.06), { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.2 });
-          s.path([[-2 + R2 * 0.6, 0], [cs - Math.max(R1 * 0.6, 0.06), 0]], { color: 'faint', width: 1.4, dash: true });
-          if (over) for (let k = 0; k < 3; k++) s.circle(cs, 0, Math.max(R1 * 0.6, 0.06) * (1.3 + 0.35 * k) + 0.2 * k, { fill: 'gold', fillAlpha: 0.2 - 0.05 * k, stroke: false });
-          // surface-density markers: radius of the dot ∝ σ (log-compressed)
-          const dens = (q, R) => q / (4 * Math.PI * R * R);
-          const dm = Math.max(dens(Q1, R1), dens(Q2, R2));
-          const dr = (q, R) => 1.5 + 5 * Math.sqrt(dens(q, R) / dm);
-          for (let k = 0; k < 14; k++) { const a = (TAU * k) / 14; s.dot(-2 + R2 * 0.6 * Math.cos(a), R2 * 0.6 * Math.sin(a), { r: dr(Q2, R2), color: 'red', alpha: 0.6 }); s.dot(cs + Math.max(R1 * 0.6, 0.06) * Math.cos(a), Math.max(R1 * 0.6, 0.06) * Math.sin(a), { r: dr(Q1, R1), color: 'red', alpha: 0.6 }); }
-          s.text(`$R_2=8$ cm`, -2, -5.3, { align: 'center', size: 12, color: 'muted' }); s.text(`$R_1=${R1.toPrecision(2)}$ cm`, cs, -2.8 - R1 * 0.4, { align: 'center', size: 12, color: 'muted' });
-          s.text('to scale ×0.6', 9.2, 5.2, { align: 'right', size: 10, color: 'faint' });
-          sE.fn((R) => E(R), { color: 'accent', width: 2.2, domain: [0.1, 8] });
-          sE.hline(EB, { color: 'red', dash: true }); sE.text('illustrative threshold', 0.13, EB * 1.3, { size: 11, color: 'red' });
-          sE.dot(R1, E1, { r: 6, color: over ? 'gold' : 'green' });
-          info = { Q1, Q2, Vc, E1, E2: E(R2), s1: dens(Q1, R1), s2: dens(Q2, R2), over };
+        const EB=3e4,R2=8;
+        const s=v.stage({x:[-11,11],y:[-6,6],equal:true,height:300,axes:false,weight:1.2,title:'sphere radii to scale; separation omitted'});
+        const sE=v.stage({x:[.1,8],y:[20,1e6],xlog:true,ylog:true,height:300,axes:'box',gutter:true,weight:.9,minWidth:240,xlabel:'small sphere radius $R_1$ (cm)',ylabel:'$E_1$ (V/cm)',title:'fixed total charge'});
+        const Rs=v.slider('small radius $R_1$',.1,8,3,{step:.1,fmt:x=>`${x.toFixed(1)} cm`});
+        const Qs=v.slider('total charge $Q_{tot}$',5,400,120,{step:5,fmt:x=>`${x} nC`});let info={};
+        v.render(()=>{
+          const R1=Rs.value,Q=Qs.value,r=connectedSpheres(Q,R1,R2),over=r.E1>=EB,c1=-5.5,c2=5.5,scale=.5;
+          for(const[c,R,q]of[[c1,R2,r.Q2],[c2,R1,r.Q1]]){
+            s.circle(c,0,R*scale,{color:'ink',width:2,fill:'muted',fillAlpha:.2});
+            const density=q/(4*Math.PI*R*R),maxDensity=r.Q1/(4*Math.PI*R1*R1);
+            for(let k=0;k<14;k++){const a=TAU*k/14;s.dot(c+R*scale*Math.cos(a),R*scale*Math.sin(a),{r:6*Math.sqrt(density/maxDensity),color:'red',alpha:.65});}
+          }
+          s.path([[c1+R2*scale,0],[-.6,0],[-.3,.3],[0,-.3],[.3,.3],[.6,0],[c2-R1*scale,0]],{color:'faint',width:1.4});
+          if(over)for(let k=0;k<3;k++)s.circle(c2,0,R1*scale+.2+k*.2,{fill:'gold',fillAlpha:.15-.03*k,stroke:false});
+          s.text('$R_2=8$ cm',c1,-4.7,{align:'center',size:12,color:'muted'});s.text(`$R_1=${R1.toFixed(1)}$ cm`,c2,-4.7,{align:'center',size:12,color:'muted'});
+          sE.setView([.09,8.8],[Math.min(r.field(8)*.7,EB*.7),Math.max(r.field(.1),EB)*1.6]);
+          sE.fn(r.field,{color:'accent',width:2.2,domain:[.1,8]});sE.hline(EB,{color:'red',dash:true});sE.text('chosen reference',.14,EB*1.15,{size:11,color:'red'});sE.dot(R1,r.E1,{r:6,color:over?'gold':'green'});
+          info={...r,R1,Q,over};
         });
-        v.readout(() => `Common potential $V=${v.fix(info.Vc / 1000, 1)}$ kV. Charges $Q_1=${v.fix(info.Q1, 1)}$ nC, $Q_2=${v.fix(info.Q2, 1)}$ nC (ratio = ratio of radii).\nSurface fields: small sphere $E_1=${v.sci(info.E1 * 100, 3)}$ V/m, big sphere $E_2=${v.sci(info.E2 * 100, 3)}$ V/m, ratio $E_1/E_2=${v.fix(info.E1 / info.E2, 2)}=R_2/R_1$.${info.over ? ' **The small sphere exceeds the illustrative field threshold.**' : ''}`);
+        v.readout(()=>`Common potential $V=${v.fix(info.V/1000,2)}$ kV. Charges $Q_1=${v.fix(info.Q1,2)}$ nC, $Q_2=${v.fix(info.Q2,2)}$ nC.\nSurface fields $E_1=${v.sci(info.E1*100,3)}$ V/m, $E_2=${v.sci(info.E2*100,3)}$ V/m; ratio $E_1/E_2=${v.fix(info.E1/info.E2,2)}=R_2/R_1$. ${info.over?'Above':'Below'} the chosen reference field.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.5

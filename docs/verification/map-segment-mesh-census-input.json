@@ -1,0 +1,25 @@
+{
+  "input": {
+    "sourceCommit": "68aa4e24889ec290d8f90206c4441485389f7e26",
+    "written": 6684,
+    "planned": 6890,
+    "nodes": 13574,
+    "edges": 23364,
+    "fields": 13,
+    "collections": 85,
+    "nodeIDsSHA256": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+    "endpointPairsSHA256": "b74500c3374db3863ffc7824c139bd7b8d2168a774e6c928d54c437f75f96ad5"
+  },
+  "immutableArchiveAdditionalMapSourceHashes": {
+    "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+    "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+    "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+    "assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+    "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+    "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+    "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5"
+  }
+}

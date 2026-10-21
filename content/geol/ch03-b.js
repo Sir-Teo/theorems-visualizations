@@ -1,3 +1,5 @@
+import {subductionCatalogue,slabX} from './subduction-audit.shared.js';
+import {HOTSPOT_SITES,HOTSPOT_ANCHOR,hotspotPosition,hotspotDiagnostics,improveHotspot,hotspotRadialCurve} from './hotspot-audit.shared.js';
 // Geology & Geophysics — Chapter 3: Plate tectonics on a sphere (part b: 3.6–3.10)
 //
 // Sources checked / provenance (Oct 2026):
@@ -8,14 +10,13 @@
 //   3.8  McKenzie & Morgan (1969) Nature 224: 125–133 (Crossref-checked). The velocity-space construction (ridge: perpendicular
 //        bisector of the two plate velocities; transform: the line through them; trench: a line through the overriding plate's
 //        point at any orientation) follows that paper and the standard textbook account; no numbers are taken from it.
-//   3.9  Seamount positions and ages are rounded from memory (Kīlauea 0; Kauaʻi 5.1 Ma; Midway ≈ 27.7 Ma; Koko ≈ 50; Ōjin ≈ 55;
-//        Suiko ≈ 61 (Sharp & Clague 2006 as quoted by the Honolulu Advertiser); Detroit 76–81 Ma depending on the dataset:
-//        Duncan & Keller 2004 mean 75.8 Ma; positions of Suiko and Nintoku from DSDP Leg 55 sites 433/432 in the Sharp & Clague
-//        data table). Treat as ±3 Myr and ±0.5° illustrations. Bend age 47 Ma is the widely quoted value; Sharp & Clague (2006)
-//        put the initiation at about 50 Ma and Niu (2004) proposed 43 Ma. Tarduno et al. (2003) found that the hotspot itself moved
-//        south during the Emperor leg, so the "fixed hotspot" assumption is a model, not a fact.
-//   3.10 the seismicity model is SCHEMATIC (depth law 90 km + 0.11 φ, cap 700 km; sample distribution with a minimum near 300 km
-//        and a peak near 600 km); the 410 and 660 km discontinuities are the standard round values.
+//   3.9 Full Morgan1971 transcription/Tarduno2003 original read. Replaced remembered seamount centres
+//        with three exact ODP197 drill coordinates and original49.15/55.59/75.82Ma ages. Chosen two-stage
+//        bounded local search and anchor/drift remain explicit; no accepted bend age/unique global inversion claim.
+//   3.10 Benioff1949 original pp1837,1844–46,1854–56 and figures4/9 read; USGS author depth explanation read.
+//        Geometry, depth density, age/rate cutoff and horizontal scatter remain explicitly constructed, not empirical laws.
+
+import {velocitySample,faultDiagnostics,fitFaultAxis} from './kinematics-audit.shared.js';
 
 import { D, R_EARTH, V, LL, dot, cross, vadd, vsub, vscale, vnorm, angDist, bearing, dest, arc, rotMat, mmul, mapply, rotPts, rotApply, axisAngle, velAt, velVec, evec, evecToPole, mod360, wrap180, azDiff180, clamp, smallCirc, poleMisfit, fitPole } from './ch03.shared.js';
 
@@ -28,15 +29,15 @@ export default {
       num: '3.6',
       kind: 'Proposition',
       name: 'Transform faults lie on small circles about the Euler pole',
-      statement: String.raw`On a rigid-plate Earth, a transform fault is a boundary along which the plates slide past each other without opening or closing. Since the relative velocity at each point is tangent to the small circle about the Euler pole through that point (geol-3.5), a pure transform must **lie along that small circle**: its trace has azimuth perpendicular to the great circle joining it to the pole. Conversely, the azimuths of a set of transform faults on one ridge determine the pole: it is where the great circles drawn perpendicular to the faults meet, and the faults must all be consistent with a single pole.`,
-      idea: String.raw`If a segment of a boundary were not tangent to the small circle, the relative velocity would have a component across it and the boundary would be opening or closing: it would not be a transform. So the traces of the transforms are streamlines of the velocity field $\boldsymbol\omega\times\mathbf r$, i.e. small circles about $\boldsymbol\omega$. This gives a pole *without* any velocity data and was the key step by which Wilson, Morgan and McKenzie & Parker showed that the Atlantic and Pacific fracture zones are consistent with rigid-plate rotation.`,
-      caption: String.raw`Gold ticks are the observed azimuths of nine transform faults along the schematic ridge (synthetic: generated from a hidden pole with $3^\circ$ of noise). Drag your pole $E$: the thin purple arcs are the small circles about $E$ through each fault, and the bars show how far each fault departs from them. Press "Best fit" for the least-squares pole and compare its misfit with the data's own noise.`,
-      deps: ['geol-3.5'],
-      refs: ['Morgan (1968), Rises, trenches, great faults, and crustal blocks, pp. 1959–1966, Figs. 2–8; doi:10.1029/JB073i006p01959'],
+      statement: String.raw`For nonzero instantaneous rigid relative rotation, a connected smooth pure-transform boundary away from the rotation axis is tangent to $\boldsymbol\omega\times\mathbf r$. Therefore its trace lies on a small circle about that axis: relative velocity has no component across it. At a site $\hat{\mathbf r}_i$ with unoriented unit fault tangent $\mathbf t_i$, a compatible unit axis $\mathbf e$ satisfies $\mathbf e\cdot\mathbf t_i=0$, provided $\mathbf e\times\hat{\mathbf r}_i\ne0$. Independent consistent fault directions can determine an axis, but unoriented traces cannot distinguish its two opposite poles or determine the rate. Degenerate directions need not give a unique axis.`,
+      idea: String.raw`Along a fault tangent, the derivative of $\mathbf e\cdot\hat{\mathbf r}$ is zero, so angular distance to the axis is constant. Conversely, a nonstationary boundary departing from this tangent has opening or closing motion. Great circles perpendicular to exact fault tangents pass through both poles. For noisy observations, this page minimizes the mean squared plane residual $L(\mathbf e)=n^{-1}\sum_i(\mathbf e\cdot\mathbf t_i)^2$ subject to $|\mathbf e|=1$. Its Gram matrix $C=n^{-1}\sum_i\mathbf t_i\mathbf t_i^T$ is symmetric and positive semidefinite; diagonalizing it gives the global minimum as its smallest eigenvalue. A simple smallest eigenvalue selects an axis up to sign. This objective is distinct from angular-azimuth least squares. The real spectral theorem (ladr 7.29) gives an orthonormal eigenbasis for this symmetric Gram matrix. Writing a unit axis in that basis makes $L$ a weighted average of eigenvalues, with squared coordinates as weights. Its minimum is therefore the smallest eigenvalue, and a repeated minimum leaves multiple minimizing axes.`,
+      caption: String.raw`Gold ticks are nine synthetic unoriented fault azimuths at schematic sites, generated from the chosen hidden pole $(60^\circ\mathrm N,37^\circ\mathrm W)$ with independent $3^\circ$ Gaussian perturbations. Drag the purple pole; bars show signed angular residuals modulo $180^\circ$. “Fit axis” minimizes the stated plane residual, while the angular RMS is reported separately. “Opposite pole” demonstrates the same unoriented fit. “Pole at first fault” makes its velocity direction undefined; that residual is omitted, and a full angular RMS is then unavailable.`,
+      deps: ['geol-3.5', 'ladr-7.29'],
+      refs: ['Morgan (1968), JGR73:1959–1982, complete rigid-block/transform argument pp.1961–1964, Figs2–8: https://www.mantleplumes.org/WebDocuments/Morgan1968.pdf'],
       tags: ['transform', 'small-circle', 'fit'],
-      credit: 'J. Tuzo Wilson 1965 (transform faults); Morgan 1968; McKenzie & Parker 1967',
-      scope: String.raw`Rigid plates and steady relative motion over the time the fracture zone was formed. Real fits use bathymetry and satellite gravity and are done in a least-squares sense.`,
-      verify: true,
+      credit: 'Spherical transform construction checked in Morgan (1968), pp.1961–1964. The synthetic plane fit is derived here; no separate historical priority claim.',
+      scope: String.raw`Instantaneous rigid relative motion; finite fracture-zone history requires appropriate time-dependent motion. These are chosen synthetic directions, not bathymetric measurements or a reproduction of Morgan's table. The fit does not estimate rotation rate, slip sense, confidence limits or a global angular-RMS optimum. Eigenvalue gap and numerical eigen-residual describe this chosen plane fit; they are not statistical uncertainty estimates. Axis/site coincidences are not valid directional observations.`,
+      verify: false,
       viz(v) {
         const ridge = [[-0.5, -54.5], [-13.5, -40], [-13, -30], [-13.5, -20], [-13.5, -10], [-14.5, -2], [-24, 0.5], [-30, 0.5], [-41, 10], [-45, 15]];
         const rp = []; for (let i = 0; i + 1 < ridge.length; i++) rp.push(...arc(ridge[i], ridge[i + 1], 10).slice(i ? 1 : 0));
@@ -44,35 +45,38 @@ export default {
         const idx = [8, 18, 28, 38, 48, 60, 70, 80, 90];
         const sites = idx.map((i) => rp[Math.min(i, rp.length - 1)]);
         const azs = sites.map((p) => velAt(p, hidden, 1).az + 3 * rng.normal());
-        const best = fitPole(sites, azs, [0, 60]);
+        const best = fitFaultAxis(sites, azs);
         const s = v.stage({ height: 430, full: true });
         const G = v.globe(s, { projection: 'orthographic', center: [-15, 10], graticule: 30 });
         const E = G.handle(30, 25, { label: 'E', color: 'purple' });
-        v.button('Best fit', () => E.set(best.pole[0], best.pole[1]));
+        v.button('Fit axis', () => E.set(best.pole[0], best.pole[1]));
+        v.button('Opposite pole', () => {const p=LL(vscale(V([E.lon,E.lat]),-1));E.set(p[0],p[1]);});
+        v.button('Pole at first fault', () => E.set(sites[0][0],sites[0][1]));
         v.button('Reset', () => E.set(30, 25));
-        const bars = v.stage({ x: [0.3, 9.7], y: [-90, 90], axes: 'box', gutter: true, xlabel: 'fault number (south to north)', ylabel: 'misfit (°)', height: 200, full: true });
-        let rms = 0, res = [];
+        const bars = v.stage({ x: [0.3, 9.7], y: [-100, 100], axes: 'box', gutter: true, xlabel: 'fault number (south to north)', ylabel: 'misfit (°)', height: 200, full: true });
+        let info = {};
         v.render(() => {
           const pole = [E.lon, E.lat];
           G.draw({ land: false });
           G.land(null, { fillAlpha: 0.1, alpha: 0.35, color: 'muted', fill: 'muted' });
           G.path(rp, { color: 'blue', width: 2.2, geodesic: false, alpha: 0.7 });
-          res = [];
+          const diagnostics=faultDiagnostics(pole,sites,azs);
           sites.forEach((p, i) => {
-            const d = angDist(p, pole), az = velAt(p, pole, 1).az; // small-circle direction about E
-            const e = azDiff180(az, azs[i]); res.push(e);
-            G.smallCircle(pole, d, { color: 'purple', width: 0.8, alpha: 0.3 });
+            const d = angDist(p, pole), velocity=velocitySample(p,pole,1),az=velocity.az;
+            if(velocity.directionResolved)G.smallCircle(pole, d, { color: 'purple', width: 0.8, alpha: 0.3 });
             const a = dest(p, azs[i], 4), b = dest(p, azs[i] + 180, 4); G.path([a, b], { color: 'gold', width: 4 });
-            const a2 = dest(p, az, 7), b2 = dest(p, az + 180, 7); G.path([a2, b2], { color: 'purple', width: 1.6 });
+            if(velocity.directionResolved){const a2 = dest(p, az, 7), b2 = dest(p, az + 180, 7); G.path([a2, b2], { color: 'purple', width: 1.6 });}
             G.dot(p, { r: 3, color: 'ink' });
           });
           G.dot(pole, { r: 4, color: 'purple' });
-          rms = Math.sqrt(res.reduce((a, x) => a + x * x, 0) / res.length);
-          bars.bars(res.map((x) => x), { x0: 1, dx: 1, color: (val) => (Math.abs(val) < 4 ? 'green' : 'red'), });
+          const extent=Math.max(5,...diagnostics.residuals.filter(x=>x!==null).map(x=>Math.abs(x)*1.15));
+          bars.setView([.3,9.7],[-extent,extent]);
+          diagnostics.residuals.forEach((x,i)=>{if(x!==null)bars.rect(i+.7,0,i+1.3,x,{fill:Math.abs(x)<4?'green':'red',fillAlpha:.6,stroke:false});});
+          info={pole,sites,azs,best,...diagnostics};
           bars.hline(0, { color: 'grid' });
         });
-        v.legend([['gold', 'observed fault azimuth'], ['purple', 'small circle about $E$'], ['blue', 'schematic ridge']]);
-        v.readout(() => `rms azimuth misfit **${v.fix(rms, 1)}°** for $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$ · least-squares pole $(${v.fix(best.pole[1], 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(best.pole[0]), 1)}^\\circ\\mathrm{${best.pole[0] < 0 ? 'W' : 'E'}})$ with rms ${v.fix(best.rms, 1)}° (the injected noise is 3°; the hidden pole is $(60^\\circ\\mathrm{N},\\,37^\\circ\\mathrm{W})$) · mean of the misfits ${v.fix(res.reduce((a, x) => a + x, 0) / res.length, 1)}°.`);
+        v.legend([['gold', 'synthetic unoriented fault direction'], ['purple', 'small circle about $E$'], ['blue', 'schematic ridge']]);
+        v.readout(() => `Plane loss $L=${v.fix(info.loss,6)}$ (dimensionless). ${info.rms===null?`Full angular RMS unavailable: ${info.unresolved} axis/site direction unresolved.`:`Full angular RMS **${v.fix(info.rms,2)}°**.`} Fitted northern representative $(${v.fix(best.pole[1],2)}^\\circ\\mathrm N,${v.fix(best.pole[0],2)}^\\circ\\mathrm E)$ and its antipode have the same plane loss ${v.fix(best.loss,6)} and angular RMS ${v.fix(best.rms,2)}°. Smallest eigenvalue gap $${v.sci(best.gap,2)}$; eigen-equation residual $${v.sci(best.eigenResidual,2)}$. These are numerical fit diagnostics, not confidence bounds.`);
       },
     },
     // ───────────────────────────────────────── 3.7
@@ -201,74 +205,32 @@ export default {
     {
       num: '3.9',
       kind: 'Phenomenon',
-      name: 'Hotspot tracks and absolute plate motion',
-      statement: String.raw`A mantle plume that stays (nearly) fixed beneath a moving plate builds a chain of volcanoes whose ages increase away from the active hotspot: each volcano is carried off by the plate and a new one forms above the plume. The chain is a record of the plate's motion relative to the deep mantle — an *absolute* motion, unlike the relative motions between plates. The Hawaiian–Emperor chain bends by about $60^\circ$ near $47$ Ma (some estimates $43$–$50$ Ma), recording a change in the motion of the Pacific plate; fitting two Euler poles to it gives the speed and direction before and after, near $70$–$90$ mm/yr for the Hawaiian leg.`,
-      idea: String.raw`Each seamount of age $t$ was formed at the hotspot $H$ and has since been rotated with its plate: its present position is $R(t)H$, where $R(t)$ is the finite rotation (geol-3.4) accumulated by the plate over time $t$ — a product of one rotation per stage of constant motion. The age of each volcano dates the rotation (radiometric ages, geol-2.7), its distance from $H$ gives the angle, and the direction of the chain gives the pole. Assuming the hotspot is fixed is a hypothesis: palaeomagnetic and other evidence (Tarduno et al., 2003) suggests the Hawaiian hotspot itself moved south during the Emperor leg, which is one of the problems of the fixed-hotspot frame.`,
-      caption: String.raw`Gold dots are seamounts (rounded, approximate ages and positions); the line is the track computed for two stages of motion of the Pacific plate over a fixed plume at Kīlauea. The sliders give the direction and speed of each stage; "Best fit" optimizes all five parameters at the current bend age. Move the bend age, then allow the hotspot to drift south during the Emperor leg and see how the fit changes. The lower graph plots age against distance along the chain: its slope is the speed.`,
-      deps: ['geol-3.5', 'geol-2.7'],
-      refs: ['Turcotte–Schubert ch. 1'],
-      tags: ['hotspot', 'absolute-motion', 'hawaii'],
-      credit: 'J. Tuzo Wilson 1963 (hotspot track); W. J. Morgan 1971 (mantle plumes and fixed hotspots)',
-      scope: String.raw`Assumes a fixed (or at most slowly drifting) plume and a plate moving rigidly in two stages; real tracks show noise from lithospheric structure and plume dynamics, and the oldest Emperor seamounts are subducting.`,
-      verify: true,
+      name: 'Hotspot tracks and plate motion relative to a source',
+      statement: String.raw`If a localized volcanic source stays fixed while a rigid plate moves over it, successively older volcanoes trace motion relative to that source. Treating this as motion relative to the deep mantle adds a fixed-source assumption. Morgan's 1971 letter proposed deep plumes and fixed-source plate tracks. Tarduno and colleagues' 2003 original study found an age-dependent Emperor paleolatitude history inconsistent with hotspot fixity; the bend alone therefore cannot uniquely determine a change in Pacific plate motion.`,
+      idea: String.raw`A volcano formed at age $t$ at source $H(t)$ is now at $R(t)H(t)$, where successive plate stages compose in chronological order. For an old volcano, the older-stage rotation acts first and the younger stage afterward; rotations generally do not commute. Track geometry constrains plate motion relative to the source, while source drift and rotation histories can trade off. Even in a fixed-source circular track, great-circle distance from the anchor is not generally path length, so the age–radial-distance slope is not simply plate speed. Euler's rotation theorem (mech 10.1) supplies each rigid spherical stage and ensures that their product is again a rotation. The product still retains chronological order: rotating about two distinct axes in the reverse order generally changes the present volcano position.`,
+      caption: String.raw`Gold points are three **drill holes**, using official ODP coordinates and original Tarduno (2003) sample ages: Koko 1206A: 49.15 Ma, Nintoku 1205A: 55.59 Ma and Detroit 1203A: 75.82 Ma. They are not remembered volcano-centre positions or a complete chain. The two-stage curve is a chosen illustration referenced to a chosen present source at 155.3°W, 19.4°N. Controls specify initial directions/speeds at that reference point, a common axis distance, stage boundary age and past northward source offset (southward motion toward the present). “Improve fit” performs a bounded local search at the current boundary age/drift, with no global or unique reconstruction claim. The lower plot compares actual/model great-circle distances from the chosen anchor.`,
+      deps: ['geol-3.5','geol-2.7', 'mech-10.1'],
+      refs: ['Morgan (1971), complete original letter transcription: https://www.mantleplumes.org/Morgan (1971).html', 'Tarduno et al. (2003), Science301:1064–1069, full original: https://ftp.soest.hawaii.edu/engels/Stanley/Textbook_update/Science_301/Tarduno-03.pdf', 'ODP197 original coring-summary TableT1 coordinates: https://www.iodp.tamu.edu/publications/197_IR/chap_03/c3_t1.htm ; https://www.iodp.tamu.edu/publications/197_IR/chap_05/c5_t1.htm ; https://www.iodp.tamu.edu/publications/197_IR/chap_06/c6_t1.htm'],
+      tags: ['hotspot','plate-motion','hawaii'],
+      credit: 'Morgan (1971) fixed-source hypothesis; Tarduno et al. (2003) source-motion evidence; ODP197 drill-hole coordinates',
+      scope: String.raw`Chosen two-stage spherical rotations and prescribed source drift, not the original mantle-flow calculation or a complete plate inversion. The original three quoted ages have uncertainties 0.21, 0.25, 0.62 Ma respectively; here point estimates are used with equal spatial weight, not a likelihood or propagated-error fit. The original study's paleomagnetic interpretation includes secular-variation and secondary-magnetization limits. No current accepted bend age, universal speed range, historical Wilson priority or exact hotspot anchor is asserted. A lower geometric RMS for these three sparse samples cannot validate the assumed dynamics or source path. Slider rates are reference-point speeds; the changing source and other track positions can have different speeds.`,
+      verify: false,
       viz(v) {
-        const H0 = [-155.3, 19.4];
-        const obs = [['Kauaʻi', [-159.5, 22.05], 5.1], ['Midway', [-177.4, 28.2], 27.7], ['Koko', [171.6, 35.3], 50], ['Ōjin', [170.6, 38.0], 55], ['Suiko', [170.0, 44.8], 61], ['Detroit', [167.6, 51.3], 76]];
-        const s = v.stage({ height: 400, full: true });
-        const G = v.globe(s, { projection: 'orthographic', center: [-175, 38], graticule: 15, zoom: 1.7 });
-        const az1 = v.slider('Hawaiian leg: direction (°)', 270, 330, 300, { step: 0.5 }), v1 = v.slider('speed (mm/yr)', 30, 140, 80, { step: 1 });
-        const az2 = v.slider('Emperor leg: direction (°)', 320, 390, 350, { step: 0.5 }), v2 = v.slider('speed (mm/yr)', 30, 140, 70, { step: 1 });
-        const dl = v.slider('pole distance $\\Delta$ from Hawaii (°)', 20, 160, 65, { step: 1 });
-        const tb = v.slider('bend age (Ma)', 30, 60, 47, { step: 0.5 });
-        const dr = v.slider('hotspot drifts south during the Emperor leg (°)', 0, 20, 0, { step: 0.5 });
-        const age = v.stage({ x: [0, 6500], y: [0, 90], axes: 'box', gutter: true, xlabel: 'distance along the chain from Kīlauea (km)', ylabel: 'age (Ma)', height: 240, full: true });
-        const params = () => ({ a1: az1.value, w1: v1.value, a2: az2.value, w2: v2.value, d: dl.value, tb: tb.value, dr: dr.value });
-        const posAt = (P, t) => {
-          const mk = (a, w) => { const pole = dest(H0, a - 90, P.d), om = (w / (R_EARTH * Math.sin(P.d * D))) / D; return { pole, om }; };
-          const s1 = mk(P.a1, P.w1), s2 = mk(P.a2, P.w2);
-          const R1 = (x) => rotMat(s1.pole, s1.om * x), R2 = (x) => rotMat(s2.pole, s2.om * x);
-          const frac = clamp((t - P.tb) / (81 - P.tb), 0, 1.2), H = t > P.tb ? dest(H0, 0, P.dr * frac) : H0;
-          return t <= P.tb ? rotApply(R1(t), H) : rotApply(R1(P.tb), rotApply(R2(t - P.tb), H));
-        };
-        const cost = (x, base) => { const P = { ...base, a1: x[0], w1: x[1], a2: x[2], w2: x[3], d: clamp(x[4], 20, 160) }; let q = 0; for (const [, p, t] of obs) { const d = angDist(posAt(P, t), p) * D * R_EARTH; q += d * d; } return Math.sqrt(q / obs.length); };
-        const nm = (f, x0, step) => {
-          const n = x0.length; let P = [x0, ...x0.map((_, i) => { const x = x0.slice(); x[i] += step[i]; return x; })], F = P.map(f);
-          for (let it = 0; it < 900; it++) {
-            const ord = F.map((_, i) => i).sort((a, b) => F[a] - F[b]); P = ord.map((i) => P[i]); F = ord.map((i) => F[i]);
-            const c = P[0].map((_, j) => P.slice(0, n).reduce((a, x) => a + x[j], 0) / n), w = P[n];
-            const xr = c.map((q, j) => q + (q - w[j])), fr = f(xr);
-            if (fr < F[0]) { const xe = c.map((q, j) => q + 2 * (q - w[j])), fe = f(xe); if (fe < fr) { P[n] = xe; F[n] = fe; } else { P[n] = xr; F[n] = fr; } }
-            else if (fr < F[n - 1]) { P[n] = xr; F[n] = fr; }
-            else { const xc = c.map((q, j) => q + 0.5 * (w[j] - q)), fc = f(xc); if (fc < F[n]) { P[n] = xc; F[n] = fc; } else for (let i = 1; i <= n; i++) { P[i] = P[0].map((q, j) => q + 0.5 * (P[i][j] - q)); F[i] = f(P[i]); } }
-          }
-          return P[0];
-        };
-        const fit = () => { const base = params(); const x = nm((z) => cost(z, base), [az1.value, v1.value, az2.value, v2.value, dl.value], [8, 15, 8, 15, 12]); az1.set(clamp(x[0], 270, 330)); v1.set(clamp(x[1], 30, 140)); az2.set(clamp(x[2], 320, 390)); v2.set(clamp(x[3], 30, 140)); dl.set(clamp(x[4], 20, 160)); };
-        let first = true;
-        v.button('Best fit', fit);
-        let info = {};
-        v.render(() => {
-          if (first) { first = false; fit(); }
-          const P = params();
-          G.draw({ land: false });
-          G.land(null, { fillAlpha: 0.12, alpha: 0.35, color: 'muted', fill: 'muted' });
-          const trk = [], dist = []; let cum = 0, prev = null;
-          for (let t = 0; t <= 85; t += 0.5) { const p = posAt(P, t); trk.push(p); if (prev) cum += angDist(prev, p) * D * R_EARTH; dist.push([cum, t]); prev = p; }
-          G.path(trk, { color: 'accent', width: 2.6, geodesic: false });
-          for (let t = 0; t <= 80; t += 10) { const p = posAt(P, t); G.dot(p, { r: 3, color: 'accent' }); G.text(`${t}`, dest(p, 90, 1.7), { size: 10, color: 'accent' }); }
-          const tbp = posAt(P, P.tb); G.dot(tbp, { r: 6, color: 'red', hollow: true });
-          let sq = 0, ds = [];
-          obs.forEach(([n, p, t]) => { const m = posAt(P, t), d = angDist(m, p) * D * R_EARTH; sq += d * d; ds.push(d); G.dot(p, { r: 5, color: 'gold' }); G.text(n, dest(p, 90, 3.2), { size: 10, color: 'ink' }); G.path([m, p], { color: 'red', width: 1.4 }); });
-          G.dot(H0, { r: 5, color: 'orange' });
-          age.setView([0, Math.max(...dist.map((d) => d[0])) * 1.02], [0, 90]);
-          age.path(dist, { color: 'accent', width: 2.2 });
-          age.vline(dist.find((d) => d[1] >= P.tb)?.[0] ?? 0, { color: 'red', dash: true, alpha: 0.7 });
-          obs.forEach(([n, p, t]) => { let c = 0, pr = H0; const tr = []; for (let u = 0; u <= t + 1e-9; u += 0.5) { const q = posAt(P, u); c += angDist(pr, q) * D * R_EARTH; pr = q; } age.dot(c, t, { r: 5, color: 'gold' }); });
-          age.dot(0, 0, { r: 5, color: 'orange' });
-          info = { rms: Math.sqrt(sq / obs.length), ds, P };
+        const Gs=v.stage({height:410,full:true}),G=v.globe(Gs,{projection:'orthographic',center:[-175,38],graticule:15,zoom:1.7});
+        const a1=v.slider('younger-stage direction at reference (°)',270,330,300,{step:.5}),w1=v.slider('reference speed (mm/yr)',30,140,80,{step:1});
+        const a2=v.slider('older-stage direction at reference (°)',320,390,350,{step:.5}),w2=v.slider('reference speed (mm/yr)',30,140,70,{step:1}),d=v.slider('axis distance from reference (°)',20,160,65,{step:1});
+        const tb=v.slider('chosen stage boundary age (Ma)',30,60,47,{step:.5}),dr=v.slider('source north of present at 85 Ma (°)',0,20,0,{step:.5});
+        const age=v.stage({x:[-250,10000],y:[-4,90],axes:'box',gutter:true,xlabel:'great-circle distance from chosen anchor (km)',ylabel:'age (Ma)',height:260,full:true});
+        const params=()=>({a1:a1.value,w1:w1.value,a2:a2.value,w2:w2.value,d:d.value,tb:tb.value,dr:dr.value});let fitResult=null,info={};
+        v.button('Improve fit',()=>{const result=improveHotspot(params()),p=result.P;a1.set(p.a1);w1.set(p.w1);a2.set(p.a2);w2.set(p.w2);d.set(p.d);fitResult=result;});
+        v.render(()=>{const P=params(),q=hotspotDiagnostics(P),curve=hotspotRadialCurve(P),obs=HOTSPOT_SITES.map(s=>[angDist(HOTSPOT_ANCHOR,s.point)*D*R_EARTH,s.age]);G.draw({land:false});G.land(null,{fillAlpha:.12,alpha:.35,color:'muted',fill:'muted'});
+          G.path(Array.from({length:171},(_,i)=>hotspotPosition(P,i/2)),{color:'accent',width:2.6,geodesic:false});for(let t=0;t<=80;t+=10){const p=hotspotPosition(P,t);G.dot(p,{r:3,color:'accent'});G.text(`${t}`,dest(p,90,1.7),{size:10,color:'accent'});}
+          G.dot(hotspotPosition(P,P.tb),{r:6,color:'red',hollow:true});G.dot(HOTSPOT_ANCHOR,{r:5,color:'orange'});
+          HOTSPOT_SITES.forEach(s=>{G.dot(s.point,{r:5,color:'gold'});G.text(s.name,dest(s.point,90,3.2),{size:10,color:'ink'});G.path(arc(hotspotPosition(P,s.age),s.point),{color:'red',width:1.4});});
+          const mx=Math.max(...curve.map(p=>p[0]),...obs.map(p=>p[0])),pad=Math.max(180,.05*mx);age.setView([-pad,mx+pad],[-4,90]);age.path(curve,{color:'accent',width:2.2});for(const p of obs)age.dot(...p,{r:5,color:'gold'});age.dot(0,0,{r:5,color:'orange'});info={...q,P,curve,obs,fitResult};
         });
-        v.legend([['accent', 'model track (ages in Ma)'], ['gold', 'seamounts (approximate)'], ['red', 'misfit; bend age marked ◯']]);
-        v.readout(() => `rms misfit **${v.fix(info.rms, 0)} km** (largest ${v.fix(Math.max(...info.ds), 0)} km) · Hawaiian leg ${v.fix(info.P.w1, 0)} mm/yr toward ${v.fix(info.P.a1, 0)}°, Emperor leg ${v.fix(info.P.w2, 0)} mm/yr toward ${v.fix(mod360(info.P.a2), 0)}° · accepted: bend at about 47 Ma (50 Ma: Sharp & Clague 2006; 43 Ma: Niu 2004), so the plate's direction changed by ${v.fix(Math.abs(azDiff180(info.P.a1, info.P.a2)), 0)}° in this fit.`);
+        v.legend([['accent','chosen model radial distances/track'],['gold','original-age ODP drill holes'],['red','spatial residual; chosen stage boundary'],['orange','chosen present anchor']]);
+        v.readout(()=>`Equal-weight spatial RMS **${v.fix(info.rms,1)}km**; drill-hole residuals ${info.residuals.map(x=>v.fix(x,1)).join(' · ')}km. Source ages ${HOTSPOT_SITES.map(s=>`${s.name}: ${s.age}±${s.ageError}Ma`).join('; ')}. Chosen stage boundary ${v.fix(info.P.tb,1)}Ma, source offset ${v.fix(info.P.dr,1)}° at 85 Ma. ${info.fitResult?'Last local search: '+info.fitResult.evaluations+' objective evaluations; its returned RMS '+v.fix(info.fitResult.rms,1)+'km (later slider edits can change the current result).':'No optimization has run.'} These sparse spatial residuals do not independently distinguish source drift and plate motion.`);
       },
     },
     // ───────────────────────────────────────── 3.10
@@ -276,66 +238,37 @@ export default {
       num: '3.10',
       kind: 'Phenomenon',
       name: 'Subduction zones and Wadati–Benioff zones',
-      statement: String.raw`At convergent margins the denser oceanic plate sinks into the mantle. Earthquakes occur along the descending slab down to about $700$ km — never deeper — in a thin dipping band, the **Wadati–Benioff zone**, whose hypocentres define the position and dip of the slab (typically $30^\circ$–$60^\circ$, steeper in places). The maximum depth of seismicity is greater for older, faster-subducting (colder) slabs, which stay brittle longer; the number of earthquakes with depth is not uniform, with a minimum near $300$ km and a peak near $600$ km.`,
-      idea: String.raw`A slab is a cold sheet that heats by conduction (geol-4.3) as it sinks, over a thermal time that scales with its thickness squared; the faster it descends and the older (thicker, colder) it starts, the farther it penetrates before it warms to the mantle temperature. Brittle failure and the phase transformation of metastable olivine in the cold core account for the earthquakes; in a warm slab they stop earlier. The product of age and vertical descent rate, the *thermal parameter*, therefore ranks how deep a slab remains seismic. The 410 and 660 km discontinuities mark the olivine phase changes that govern the depth distribution.`,
-      caption: String.raw`A cross-section perpendicular to the trench (equal axes): grey dots are earthquakes generated in a schematic slab of the chosen dip, plate age and convergence rate; the dashed line is the aseismic continuation of the slab; the lower graph is the depth histogram of the same events. Change the age or the speed and the seismicity stops at a different depth; the fitted plane through the intermediate and deep events returns the dip you set.`,
-      deps: ['geol-3.3', 'pde-1.4'],
-      refs: ['Stein–Wysession ch. 5', 'Turcotte–Schubert ch. 1'],
+      statement: String.raw`Intermediate and deep earthquake hypocentres trace dipping regions within descending lithospheric slabs: **Wadati–Benioff zones**. Their geometry helps constrain a slab's position, bend and dip, subject to location uncertainty and incomplete sampling. Earthquakes reach roughly $700$ km depth; this approximate range is not an exact universal ceiling. Neither a single straight plane nor a universal depth histogram describes every subduction zone.`,
+      idea: String.raw`Plotting hypocentres in cross-sections reveals the dipping seismic zone. Benioff's 1949 figures contrasted Tonga–Kermadec and South America, including bent geometry and differing depth populations. Modern depths are constrained by seismic travel times, including depth phases. A geometrical fit alone does not identify a failure mechanism, the entire slab boundary or a universal thermal law. The numerical experiment below isolates sampling and fitting in one chosen bent geometry; it does not explain deep earthquakes as ordinary shallow brittle failure.`,
+      caption: String.raw`Grey points are synthetic hypocentres, with chosen horizontal Gaussian scatter of $6$ km standard deviation about an illustrative bent slab. The cross-section has equal distance scales. The solid orange part ends at a chosen model cutoff; dashed continuation extends to $800$ km as a geometrical construction. The lower histogram counts the same plotted depths in $20$ km bins and divides by the actual event count. The red line fits $x$ as a function of depth for events deeper than $100$ km; its dip need not equal the asymptotic slab-dip control.`,
+      deps: ['geol-3.3'],
+      refs: ['Benioff, Seismic evidence for the fault origin of oceanic deeps, GSA Bulletin 60 (1949), 1837–1856, figs.4/9', 'Spence, Sipkin & Choy, Determining the Depth of an Earthquake, USGS, Earthquakes and Volcanoes 21(1),1989'],
       tags: ['subduction', 'seismicity', 'slab'],
-      credit: 'Kiyoo Wadati 1935; Hugo Benioff 1949',
-      scope: String.raw`Schematic: the earthquake population is simulated from a simple depth law, not real catalogue data. Real slabs bend, kink, flatten and even stagnate at 660 km.`,
-      verify: true,
+      credit: 'Hugo Benioff 1949; Spence, Sipkin & Choy 1989',
+      scope: String.raw`No observed catalogue is reproduced. The displayed law $z_{\max}=\min(700,90+0.11\phi)$ km, with $\phi=\text{age}\times\text{rate}\times\sin\delta$, is a chosen demonstration law, not an empirical calibration or natural maximum. Here Myr × mm/yr gives km. The chosen depth density is sampled using a 1024-bin midpoint approximation to its CDF; its shallow decay and deep bump are illustrative. No original Wadati priority paper or modern deep-earthquake mechanism paper is claimed as reviewed.`,
+      verify: false,
       viz(v) {
-        const dip = v.slider('mean slab dip (°)', 15, 80, 45, { step: 1 });
-        const age = v.slider('plate age at the trench (Myr)', 5, 150, 120, { step: 1 });
-        const rate = v.slider('convergence rate (mm/yr)', 10, 120, 90, { step: 1 });
-        const count = v.slider('number of events', 300, 3000, 1200, { step: 100, int: true });
-        const s = v.stage({ x: [-80, 1200], y: [-760, 60], equal: true, axes: 'box', gutter: true, xlabel: 'distance from the trench (km)', ylabel: 'depth (km, down)', height: 420, full: true, yticks: [[0, '0'], [-200, '200'], [-400, '400'], [-600, '600']] });
-        const h = v.stage({ x: [0, 720], y: [0, 1], axes: 'box', gutter: true, xlabel: 'depth (km)', ylabel: 'relative number of events', height: 220, full: true });
-        const slab = (th) => { // slab surface: dip rises from 10° at the trench to th over ~120 km of arc length
-          const pts = []; let x = 0, z = 0; for (let sg = 0; sg <= 2400; sg += 5) { const d = (10 + (th - 10) * (1 - Math.exp(-sg / 120))) * D; pts.push([x, -z, sg]); x += 5 * Math.cos(d); z += 5 * Math.sin(d); } return pts;
-        };
-        let info = {};
-        v.render(() => {
-          const th = dip.value, pts = slab(th), phi = age.value * rate.value * Math.sin(th * D), zmax = Math.min(700, 90 + 0.11 * phi);
-          const rng = v.rng(5);
-          const evs = [];
-          const pd = (z) => { // schematic depth density: shallow exponential + deep bump, tapering to zero at zmax
-            const base = 1.0 * Math.exp(-z / 70) + 0.07 + 0.55 * Math.exp(-0.5 * ((z - 590) / 55) ** 2) * clamp((zmax - 430) / 200, 0, 1);
-            return base * (z <= zmax ? 1 : 0);
-          };
-          let guard = 0; while (evs.length < count.value && guard++ < 60000) {
-            const z = rng() * zmax; if (rng() * 1.3 > pd(z)) continue;
-            let k = 0; while (k < pts.length - 1 && -pts[k][1] < z) k++;
-            const a = pts[Math.max(k - 1, 0)], b = pts[Math.min(k + 1, pts.length - 1)], tx = b[0] - a[0], ty = b[1] - a[1], tn = Math.hypot(tx, ty) || 1;
-            const off = 6 * rng.normal(); // scatter normal to the slab
-            evs.push([pts[k][0] - (ty / tn) * off, pts[k][1] + (tx / tn) * off, z]);
-          }
-          s.hline(0, { color: 'faint' });
-          for (const zz of [410, 660]) { s.hline(-zz, { color: 'muted', dash: true, alpha: 0.6 }); s.text(`${zz} km`, 1170, -zz + 12, { size: 11, color: 'muted', align: 'right' }); }
-          const sl = pts.filter((p) => -p[1] <= 740);
-          s.path(sl.map((p) => [p[0], p[1]]), { color: 'orange', width: 2, dash: [6, 5], alpha: 0.7 });
-          s.path(pts.filter((p) => -p[1] <= zmax).map((p) => [p[0], p[1]]), { color: 'orange', width: 3 });
-          s.dots(evs.map((e) => [e[0], e[1]]), { r: 1.8, color: 'ink', alpha: 0.55 });
-          s.text('trench', 0, 40, { size: 11, color: 'muted', align: 'center' });
-          // regression plane through events deeper than 100 km (x as function of depth)
-          const deep = evs.filter((e) => e[2] > 100); let fitDip = NaN, r2 = 0;
-          if (deep.length > 5) {
-            const n = deep.length, mx = deep.reduce((a, e) => a + e[0], 0) / n, mz = deep.reduce((a, e) => a + e[2], 0) / n;
-            const sxz = deep.reduce((a, e) => a + (e[0] - mx) * (e[2] - mz), 0), szz = deep.reduce((a, e) => a + (e[2] - mz) ** 2, 0), sxx = deep.reduce((a, e) => a + (e[0] - mx) ** 2, 0);
-            const slope = sxz / szz; // dx per dz
-            fitDip = Math.atan2(1, slope) / D; r2 = (sxz * sxz) / (sxx * szz);
-            s.path([[mx - slope * (mz - 100), -100], [mx + slope * (zmax - mz), -zmax]], { color: 'red', width: 1.6 });
-          }
-          // histogram
-          const nb = 36, bins = new Array(nb).fill(0); evs.forEach((e) => { bins[Math.min(nb - 1, Math.floor((e[2] / 720) * nb))]++; });
-          h.setView([0, 720], [0, Math.max(...bins) * 1.1 / Math.max(...bins) || 1]);
-          h.bars(bins.map((b) => b / Math.max(...bins)), { x0: 10, dx: 20, color: 'accent' });
-          h.vline(zmax, { color: 'orange', dash: true });
-          info = { phi, zmax, fitDip, r2, n: evs.length, deepest: Math.max(...evs.map((e) => e[2])) };
+        const dip=v.slider('asymptotic slab dip (°)',15,80,45,{step:1});
+        const age=v.slider('plate age at the trench (Myr)',5,150,120,{step:1});
+        const rate=v.slider('convergence rate (mm/yr)',10,120,90,{step:1});
+        const count=v.slider('number of events',300,3000,1200,{step:100,int:true});
+        const s=v.stage({x:[-80,1200],y:[-830,60],equal:true,axes:'box',gutter:true,xlabel:'distance from the trench (km)',ylabel:'depth (km, down)',height:420,full:true,yticks:[[0,'0'],[-200,'200'],[-400,'400'],[-600,'600'],[-800,'800']]});
+        const h=v.stage({x:[0,720],y:[0,1],axes:'box',gutter:true,xlabel:'depth (km)',ylabel:'fraction of all events / 20 km bin',height:220,full:true});
+        let info={};
+        v.render(()=>{
+          const model=subductionCatalogue({dip:dip.value,age:age.value,rate:rate.value,count:count.value},v.rng(5));
+          s.setView(model.xrange,[-830,60]);s.hline(0,{color:'faint'});
+          const continuation=model.slab.filter(p=>p[1]<800).map(p=>[p[0],-p[1]]);continuation.push([slabX(model.slab,800),-800]);
+          const active=model.slab.filter(p=>p[1]<model.zmax).map(p=>[p[0],-p[1]]);active.push([slabX(model.slab,model.zmax),-model.zmax]);
+          s.path(continuation,{color:'orange',width:2,dash:[6,5],alpha:.7});s.path(active,{color:'orange',width:3});
+          s.dots(model.events.map(e=>[e[0],-e[1]]),{r:1.8,color:'ink',alpha:.55});
+          s.text('trench',0,35,{size:11,color:'muted',align:'center'});
+          if(model.fit)s.path(model.fitPath,{color:'red',width:1.6});
+          h.setView([0,720],[0,1.12*Math.max(...model.probabilities)]);h.bars(model.probabilities,{x0:10,dx:20,color:'accent'});h.vline(model.zmax,{color:'orange',dash:true});
+          info={...model};
         });
-        v.legend([['orange', 'slab (seismic part solid)'], ['ink', 'earthquakes'], ['red', 'fitted plane (events below 100 km)']]);
-        v.readout(() => `thermal parameter $\\phi=\\text{age}\\times\\text{rate}\\times\\sin\\delta=${v.fix(info.phi, 0)}$ km → seismicity cut-off ${v.fix(info.zmax, 0)} km (deepest event ${v.fix(info.deepest, 0)} km, never beyond 700) · least-squares plane dips **${v.fix(info.fitDip, 1)}°** (set: ${dip.value}°; the slab bends, so the plane averages $10$–${dip.value}$^\\circ$ over the depth range, $r^2$ = ${v.fix(info.r2, 2)}).`);
+        v.legend([['orange','chosen slab geometry/cutoff'],['ink','synthetic hypocentres'],['red','OLS line, depth >100 km']]);
+        v.readout(()=>`Chosen $\\phi=${v.fix(info.phi,0)}$ km gives model cutoff ${v.fix(info.zmax,1)} km; deepest plotted event ${v.fix(info.deepest,1)} km. Exactly ${info.n} events; histogram total ${v.fix(info.probabilities.reduce((a,b)=>a+b,0),3)}. ${info.fit?`OLS line dip **${v.fix(info.fit.dip,1)}°**; asymptotic geometry ${dip.value}°; ${info.fit.n} events deeper than 100 km, $r^2=${v.fix(info.fit.r2,3)}$.`:'OLS line unavailable: fewer than six events deeper than 100 km.'} All ages, rates, density and scatter belong to the constructed model.`);
       },
     },
   ],

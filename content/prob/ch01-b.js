@@ -29,12 +29,11 @@ export default {
       name: 'Density function',
       statement: String.raw`A random variable $X$ has **density function** $f$ if its distribution function can be written
 $$F(x)=P(X\le x)=\int_{-\infty}^x f(y)\,dy\qquad\text{for all }x.$$
-A Lebesgue-measurable function $f$ defines a distribution function in this way if and only if $f\ge0$ almost everywhere and $\int f(x)\,dx=1$; one may choose a nonnegative representative. Then $P(a<X\le b)=\int_a^bf(y)\,dy$, and $P(X=x)=\lim_{\eps\to0}\int_{x-\eps}^{x+\eps}f(y)\,dy=0$ for every $x$: the value $f(x)$ is a probability per unit length, not a probability. Example 1.2.3: the uniform distribution on $(0,1)$ has $f=1$ on $(0,1)$ and $f=0$ elsewhere.`,
+A function $f$ defines a distribution function in this way if and only if $f\ge0$ and $\int f(x)\,dx=1$. Then $P(a<X\le b)=\int_a^bf(y)\,dy$, and $P(X=x)=\lim_{\eps\to0}\int_{x-\eps}^{x+\eps}f(y)\,dy=0$ for every $x$: the value $f(x)$ is a probability per unit length, not a probability. Example 1.2.3: the uniform distribution on $(0,1)$ has $f=1$ on $(0,1)$ and $f=0$ elsewhere.`,
       idea: String.raw`Integrating $f$ produces a continuous function that is nondecreasing exactly when $f\ge0$ (almost everywhere), with limit $0$ at $-\infty$ and $\int f$ at $+\infty$. So the conditions of Theorem 1.2.2 hold exactly when $f\ge0$ and $\int f=1$. The probability of an interval, $F(b)-F(a)=\int_a^bf$, is the area under the density over it, and shrinking the interval to a point makes the area vanish. As a heuristic, $f(x)\,dx\approx P(x\le X\le x+dx)$.`,
       caption: String.raw`Type any formula for $f$, or pick a preset. If its integral over $[-4,4]$ is not $1$ it is normalised, and it is flagged if it goes negative. Drag $a$ and $b$: the shaded area under the density equals the rise $F(b)-F(a)$ on the right. The 400 samples (dots), drawn by inverting $F$, land in $(a,b]$ in that proportion. Push $a$ and $b$ together and the probability goes to $0$, even where $f$ is large.`,
       deps: ['prob-1.2.1b'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §1.2, p. 12 (density and Example 1.2.3)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       tags: ['distributions'],
       viz(v) {
         const PRE = [
@@ -260,8 +259,7 @@ Examples: the point mass at $0$, $F=1_{[0,\infty)}$, is discrete (1.2.8); $F=\su
       caption: String.raw`Mix a density (blue), three point masses (red) and the Cantor law (purple) with the sliders; the weights are normalised to sum to $1$. Top: $F$ is the sum of the three coloured bands, the smooth rise, the jumps and the devil's staircase. Bottom: the exact histogram of each part at resolution $3^{-k}$, one strip per part, each scaled to its own maximum (printed). Raise $k$: the blue strip settles down to the density, while the red spikes grow like $3^k$ and the purple dust like $(3/2)^k$, on a set of shrinking length.`,
       deps: ['prob-1.2.2a'],
       see: ['rca-6.7'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §1.2, pp. 13–14 (definitions and Examples 1.2.7–1.2.9); §A.4 (Lebesgue decomposition)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       tags: ['distributions'],
       viz(v) {
         const wa = v.slider('absolutely continuous', 0, 1, 0.45, { step: 0.01 });
@@ -442,8 +440,7 @@ is a σ-field on $\Omega$. It is the smallest σ-field on $\Omega$ that makes $X
       idea: String.raw`The two identities in the proof of Theorem 1.3.1, $\{X\in B^c\}=\{X\in B\}^c$ and $\{X\in\bigcup B_i\}=\bigcup\{X\in B_i\}$, show that preimages of a σ-field form a σ-field. Any σ-field making $X$ measurable must contain every $\{X\in B\}$. When $X$ takes finitely many values, the level sets $\{X=v\}$ are the atoms of $\sigma(X)$, so it has $2^k$ events for $k$ values. A random variable $Y$ is $\sigma(X)$-measurable exactly when it is constant on every level set of $X$, that is, when $Y=f(X)$ for a measurable $f$ (Exercise 1.3.8).`,
       caption: String.raw`$\Omega$ is the unit square with area as $P$, and two "dice" $D_1,D_2\in\{1,\dots,n\}$ are read off the coordinates. Left: $\Omega$ coloured by the value of $X$; the colour classes are the atoms of $\sigma(X)$. Right: a second variable $Y$ with the atom boundaries of $\sigma(X)$ drawn on top. If $Y$ is a function of $X$ it is constant on every atom; otherwise the atoms it splits are hatched in red. Click a point to highlight its atom in both panels.`,
       deps: ['prob-1.2.1a', 'prob-1.1.2a'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §1.3, p. 15, equation (1.3.1); Exercise 1.3.8, p. 18'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       tags: ['random variables', 'sigma-fields'],
       viz(v) {
         const nS = v.slider('faces $n$', 2, 6, 4, { int: true });
@@ -712,8 +709,7 @@ as maps into the extended line $\R^*=[-\infty,\infty]$ with its Borel sets. Cons
       idea: String.raw`Almost sure convergence ignores a null set of outcomes but asks each remaining path $n\mapsto X_n(\omega)$ to settle: for every $\eps>0$ it eventually stays within $\eps$ of its limit. Theorem 1.3.7 makes the set of good $\omega$ an event, so its probability makes sense. Borel's normal number theorem, the first strong law, says that the running fraction of 1s among the binary digits of a uniform $\omega$ tends to $\tfrac12$ for almost every $\omega$, though not for all of them. In contrast, the "typewriter" indicators of dyadic intervals sweeping across $[0,1)$ satisfy $P(X_n\neq0)\to0$, yet converge for no $\omega$ at all.`,
       caption: String.raw`Each line is a path $n\mapsto X_n(\omega)$ for one of 60 random $\omega$ ($n$ on a log scale). A path is green if it stays inside the $\eps$-band around its limit for every $n$ from $N/2$ to $N$, and red otherwise; the strip below places each $\omega$ in $[0,1)$. Binary digit averages converge for almost every $\omega$, and $\omega^n$ converges for every $\omega$ (to $0$, except at $\omega=1$), though paths near $1$ take long to settle. The typewriter sequence converges for none, even though $P(X_n\ne0)\to0$.`,
       deps: ['prob-1.3.7'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §1.3, pp. 16–17 (almost-sure convergence and extended-valued limits)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       tags: ['convergence'],
       viz(v) {
         const mode = v.select('$X_n(\\omega)$', [{ value: 'bin', label: 'fraction of 1s in the first $n$ binary digits' }, { value: 'pow', label: '$\\omega^n$' }, { value: 'tw', label: 'typewriter' }], 'bin');

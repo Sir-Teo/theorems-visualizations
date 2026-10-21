@@ -1,0 +1,128 @@
+{
+  "2.11": {
+    "file": "ch02-b.js",
+    "before": [
+      "cm-2.2",
+      "cm-1.7"
+    ],
+    "after": [
+      "cm-2.2",
+      "cm-1.7",
+      "pma-9.15"
+    ],
+    "new": [
+      "pma-9.15"
+    ],
+    "add": " Along a differentiable trajectory in a smooth band, the chain rule (pma 9.15) gives $dE/dt=\\nabla E\\cdot\\dot{\\mathbf k}$. The magnetic equation makes $\\dot{\\mathbf k}$ perpendicular to $\\nabla E$, so this derivative vanishes. Its component along a fixed magnetic field also vanishes, fixing the plane of the orbit. These are local conservation statements; they do not imply that every resulting contour is closed."
+  },
+  "2.3": {
+    "file": "ch02.js",
+    "before": [
+      "cm-2.2",
+      "ladr-7.29"
+    ],
+    "after": [
+      "cm-2.2",
+      "ladr-7.29",
+      "pma-9.15"
+    ],
+    "new": [
+      "pma-9.15"
+    ],
+    "add": " On a local chart where the band energy is $C^2$, compose the differentiable trajectory $t\\mapsto\\mathbf k(t)$ with each component of $\\nabla E$. The multivariable chain rule (pma 9.15) makes its time derivative the Hessian applied to $\\dot{\\mathbf k}$. Substituting $\\hbar\\dot{\\mathbf k}=\\mathbf F$ gives precisely the inverse-mass acceleration law; it does not require the Hessian to be invertible."
+  },
+  "3.5": {
+    "file": "ch03.js",
+    "before": [
+      "cm-3.4",
+      "qm-4.1"
+    ],
+    "after": [
+      "cm-3.4",
+      "qm-4.1",
+      "pma-3.26"
+    ],
+    "new": [
+      "pma-3.26"
+    ],
+    "add": " For a positive-frequency mode at positive temperature, put $q=e^{-\\hbar\\omega/k_BT}$, so $0<q<1$. The geometric-series theorem (pma 3.26) normalizes its occupation probabilities by $\\sum_{n\\ge0}q^n=1/(1-q)$. Summing the nonnegative tails gives the mean $\\sum_{j\\ge1}q^j=q/(1-q)$, the displayed Bose factor. A zero-frequency rigid translation is outside this oscillator normalization."
+  },
+  "4.5": {
+    "file": "ch04.js",
+    "before": [
+      "cm-4.3",
+      "cm-4.4"
+    ],
+    "after": [
+      "cm-4.3",
+      "cm-4.4",
+      "pma-4.23",
+      "pma-5.11"
+    ],
+    "new": [
+      "pma-4.23",
+      "pma-5.11"
+    ],
+    "add": " At fixed positive temperature, write the charge imbalance as $F(\\mu)=n(\\mu)+N_a-p(\\mu)-N_d^+(\\mu)$. The Fermi occupations make $n$ strictly increase with $\\mu$, while $p$ and the ionized-donor density decrease. The derivative-sign theorem and its mean-value proof (pma 5.11) therefore give strict monotonicity. Continuity and opposite signs at a bracket allow the intermediate value theorem (pma 4.23) to supply a root; strict monotonicity makes it unique and justifies bisection. A numerical search must still obtain such a bracket."
+  },
+  "1.3": {
+    "file": "ch01.js",
+    "before": [
+      "qm-9.7",
+      "xtal-5.5"
+    ],
+    "after": [
+      "qm-9.7",
+      "xtal-5.5",
+      "ladr-7.31"
+    ],
+    "new": [
+      "ladr-7.31"
+    ],
+    "add": " The finite plane-wave Hamiltonian is Hermitian for a real periodic potential, so it is normal. The complex spectral theorem (ladr 7.31) supplies an orthonormal eigenbasis for this matrix problem. In the two-wave block its characteristic equation is $(E-\\varepsilon_1)(E-\\varepsilon_2)-|U|^2=0$; completing the square gives the two branches, including the splitting at degeneracy."
+  },
+  "1.5": {
+    "file": "ch01.js",
+    "before": [
+      "qm-9.9",
+      "xtal-1.1"
+    ],
+    "after": [
+      "qm-9.9",
+      "xtal-1.1",
+      "ladr-7.31"
+    ],
+    "new": [
+      "ladr-7.31"
+    ],
+    "add": " The two-sublattice Hamiltonian is Hermitian, hence normal, even when its off-diagonal hopping amplitude is complex. The complex spectral theorem (ladr 7.31) justifies an orthonormal band basis at each wave vector. Squaring this matrix gives $(\\Delta^2+t^2|f|^2)I$, so its two eigenvalues are the opposite square roots; the sublattice offset therefore opens the gap without changing the state count."
+  },
+  "1.6": {
+    "file": "ch01.js",
+    "before": [
+      "cm-1.2"
+    ],
+    "after": [
+      "cm-1.2",
+      "comb-1.1"
+    ],
+    "new": [
+      "comb-1.1"
+    ],
+    "add": " Choose each residue $m_i$ from $0,\\ldots,N_i-1$. A reciprocal-lattice basis makes different residue triples distinct modulo the reciprocal lattice, and each coordinate has $N_i$ choices regardless of the others. The finite product rule (comb 1.1) therefore counts exactly $N_1N_2N_3=N$ orbital labels in one band; the spin factor is applied only after that count."
+  },
+  "1.10": {
+    "file": "ch01-b.js",
+    "before": [
+      "qm-9.9"
+    ],
+    "after": [
+      "qm-9.9",
+      "pma-3.26"
+    ],
+    "new": [
+      "pma-3.26"
+    ],
+    "add": " For the semi-infinite zero-mode solution, the squared amplitudes have ratio $r^2=(v/w)^2$. The geometric-series theorem (pma 3.26) gives squared norm proportional to $1/(1-r^2)$ for $0\\le r<1$, and divergence for $r\\ge1$. This proves normalizability at this termination, not exact zero energy for a finite chain whose two ends can hybridize."
+  }
+}

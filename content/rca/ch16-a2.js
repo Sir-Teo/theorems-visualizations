@@ -72,7 +72,7 @@ export default {
       num: '16.12',
       kind: 'Definition',
       name: 'One-parameter family of curves',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 16.12, p. 325'],
+      verify: true,
       statement: String.raw`Let $\alpha,\beta$ be points of a topological space $X$, and let $\varphi:I^2\to X$ ($I=[0,1]$) be continuous with
 $$\varphi(0,t)=\alpha,\qquad \varphi(1,t)=\beta\qquad(t\in I).$$
 The curves $\gamma_t(s)=\varphi(s,t)$ ($0\le s\le1$) then form a **one-parameter family** $\{\gamma_t\}$ ($0\le t\le1$) **of curves from $\alpha$ to $\beta$ in $X$**: a deformation of $\gamma_0$ into $\gamma_1$ through curves in $X$ that keeps both end points fixed.`,
@@ -207,7 +207,7 @@ The curves $\gamma_t(s)=\varphi(s,t)$ ($0\le s\le1$) then form a **one-parameter
       num: '16.14',
       kind: 'Lemma',
       name: 'Curves in a simply connected space are joined by a family',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 16.14 and complete proof, p. 326'],
+      verify: true,
       statement: String.raw`Let $\Gamma_0$ and $\Gamma_1$ be curves in a topological space $X$ with the same initial point $\alpha$ and the same end point $\beta$. If $X$ is simply connected, there is a one-parameter family $\{\gamma_t\}$ of curves from $\alpha$ to $\beta$ in $X$ with $\gamma_0=\Gamma_0$ and $\gamma_1=\Gamma_1$.`,
       idea: String.raw`Run $\Gamma_0$ and then $\Gamma_1$ backwards. This closed curve is null-homotopic because $X$ is simply connected. A contraction of a loop can be reparametrised over the square so that the two vertical sides stay at $\alpha$ and $\beta$. For a plane region one can be concrete: a simply connected region is homeomorphic to a convex one (13.11, 14.8), and there the straight-line family $(1-t)\Gamma_0+t\Gamma_1$ works and can be carried back. In a region with a hole the loop can wind around it, and the winding number, a homotopy invariant (10.40), forbids any family.`,
       caption: String.raw`Drag $\alpha$, $\beta$ and the midpoints of $\Gamma_0$ (blue) and $\Gamma_1$ (teal); the slider moves through the family. In the **disc** (convex) the straight-line family works. In the **horseshoe** (simply connected, not convex) a straight-line family need not stay inside, but interpolating in polar coordinates, which is a homeomorphism onto a rectangle, always does. In the **annulus** the same polar family works only if the two curves pass the hole on the same side. Otherwise its end point drifts around the hole (red), and in fact no family exists, because $\Gamma_0$ followed by $\Gamma_1$ backwards winds around the hole.`,

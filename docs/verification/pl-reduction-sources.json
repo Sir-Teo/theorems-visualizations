@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "url": "https://mathstat.dal.ca/~selinger/papers/lambdanotes.pdf",
+      "sha256": "195b3ef0af1086a12a65d83c9f3f9673636290c0f05177fdf7984175c3f439cf",
+      "physicalPdfPages": 120,
+      "anchors": "\u00a7\u00a72.2\u20132.5 pp8\u201313; \u00a74.3 pp25\u201327; \u00a74.4 Lemmas4.7\u20134.9 pp29\u201331; \u00a75.2 Theorem5.1 pp35\u201337 and Lemma5.10 p40; \u00a76.1 Table4 pp46\u201348. Physical PDF page = printed+5. \u00a77 states SN but refers to Proofs and Types for its proof."
+    },
+    {
+      "url": "https://www.paultaylor.eu/stable/prot.pdf",
+      "sha256": "909424159082d3f31d190c20b1a9b4dd39355b527bc1c680fb0aa763913f56dc",
+      "physicalPdfPages": 183,
+      "anchors": "\u00a7\u00a76.1\u20136.3 pp41\u201345 (physical PDF49\u201353): CR1\u20133, abstraction lemma, fundamental substitution proposition and SN corollary; \u00a77.1 pp47 and \u00a77.2 p48 (PDF55\u201356): Bool/Nat extension and full reduction normalization."
+    },
+    {
+      "url": "https://www.cs.cornell.edu/courses/cs6110/2023sp/lectures/lecA.pdf",
+      "sha256": "ca3b05cb868cabd21a0beb976375219babc01ed4457e8434a126d8b7aebfea79",
+      "physicalPdfPages": 5,
+      "anchors": "Author lecture appendix A; TheoremA.6 confluence, PDF4, and bibliographyPDF5. No Takahashi original PDF link found."
+    },
+    {
+      "url": "https://www.cs.cmu.edu/~rwh/courses/chtt/pdfs/tait.pdf",
+      "sha256": "44d108c4b537d58b615935919579d6a25777d307626d6e8c0997c1b89b0ccd40",
+      "physicalPdfPages": 6,
+      "anchors": "Despite its URL basename this is Robert Harper2022 How to (Re)Invent Tait\u2019s Method, 6pages, not Tait1967. It treats deterministic head normalization; it is not used as the proof of full strong normalization."
+    }
+  ],
+  "originalAccessLimits": [
+    "Takahashi1995 original DOI10.1006/inco.1995.1057 and Tait1967 DOI10.2307/2271658 full original articles were not accessed. Retained mathematical statements/proofs and historical method attributions are sourced explicitly to complete author treatments above; unsupported first-invention/date claims were removed."
+  ]
+}

@@ -2,7 +2,8 @@
 //
 // All component values are illustrative. Historical attributions were checked against secondary sources (D. H. Johnson, Proc. IEEE 2003;
 // Wikipedia); where a date or name rests on a secondary source only, the item says so or carries verify: true.
-import { clamp, sI, z0, NETS, geom, mna, drawNet, boxSolve, boxTests, boxRoff, BOX, diodeI, solveNet, gauss } from './ch03.shared.js';
+import { clamp, sI, z0, NETS, geom, mna, drawNet, drawEl, boxSolve, boxTests, boxRoff, BOX, diodeI, solveNet, gauss } from './ch03.shared.js';
+import {CIRCUIT_PORTS,transferExperiment} from './circ-source-audit-networks.shared.js';
 
 export default {
   collection: 'circ',
@@ -16,10 +17,10 @@ export default {
       kind: 'Theorem',
       name: 'Superposition',
       statement: String.raw`In a linear circuit with several independent sources, every branch voltage and branch current is the sum of the responses to each source acting alone, the others being switched off: an ideal voltage source is replaced by a short circuit (its voltage set to $0$), an ideal current source by an open circuit (its current set to $0$). Dependent sources are not switched off; they stay in the circuit. The theorem applies to voltages and currents, never to power, which is quadratic in them.`,
-      idea: String.raw`Node-voltage analysis (2.5) turns the circuit into a linear system $\mathbf G\mathbf v = \mathbf s$ whose right-hand side $\mathbf s$ is a sum of columns, one for each source, and $\mathbf G$ is invertible (2.9). Linearity of the inverse gives $\mathbf v = \sum_k \mathbf G^{-1}\mathbf s_k$, and each term is exactly the solution with only source $k$ present. The argument breaks at once if any element is nonlinear, because then there is no matrix $\mathbf G$ independent of the sources.`,
+      idea: String.raw`Node-voltage analysis (2.5) turns the circuit into a linear system $\mathbf G\mathbf v = \mathbf s$ whose right-hand side $\mathbf s$ is a sum of columns, one for each source, and $\mathbf G$ is invertible (2.9). Linearity of the inverse gives $\mathbf v = \sum_k \mathbf G^{-1}\mathbf s_k$, and each term is exactly the solution with only source $k$ present. The argument breaks at once if any element is nonlinear, because then there is no matrix $\mathbf G$ independent of the sources. The proof of ladr 3.63 establishes that the inverse of a bijective linear map is linear: applying $G$ to $G^{-1}s_1+G^{-1}s_2$ gives $s_1+s_2$, and injectivity identifies this with $G^{-1}(s_1+s_2)$; scalar multiplication is the same argument. This is the precise step behind source superposition. Linear dependent sources remain in the fixed operator, and a singular operator supplies no such unique inverse. Squaring a summed voltage or current introduces cross terms, so the argument does not superpose power.`,
       caption: String.raw`Three independent sources (two voltage sources and one current source) drive a node $X$. The first three bars are the node voltage when each source acts alone (the other two switched off), the fourth stacks them, the fifth is the full circuit. With the resistor in the last branch, the stack and the full solution agree to rounding error. Switch the last branch to a diode and the two no longer match: the diode's response depends on all sources together. The readout also shows that the *power* in the last resistor does not add.`,
       scope: String.raw`Linear circuits only (resistors, capacitors, inductors and dependent sources that are linear in their control variable), with independent sources acting through a unique solution (2.9). Holds for voltages and currents, not for power.`,
-      deps: ['circ-2.5', 'circ-2.9'],
+      deps: ['circ-2.5', 'circ-2.9', 'ladr-3.63'],
       refs: ['Agarwal–Lang §3.5'],
       tags: ['superposition', 'linearity'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Superposition_principle#Applications' },
@@ -251,18 +252,18 @@ export default {
       num: '3.5',
       kind: 'Theorem',
       name: 'Maximum power transfer',
-      statement: String.raw`A linear source with Thévenin voltage $V_{\mathrm{Th}}$ and resistance $R_{\mathrm{Th}} > 0$ drives a load resistor $R_L$ that can be varied. The power delivered to the load, $P_L = V_{\mathrm{Th}}^2 R_L/(R_{\mathrm{Th}}+R_L)^2$, is largest when $R_L = R_{\mathrm{Th}}$, and then equals $P_{\max} = V_{\mathrm{Th}}^2/(4R_{\mathrm{Th}})$. In the equivalent series-source model, the efficiency $\eta_{\mathrm{Th}} = P_L/(V_{\mathrm{Th}}i) = R_L/(R_{\mathrm{Th}}+R_L)$ is exactly $1/2$ there. This need not equal the efficiency of the original multi-source network, whose internal power flows a one-port equivalent does not preserve. The theorem is about adjusting the load; if instead the load is fixed and the source resistance can be changed, the power is greatest at $R_{\mathrm{Th}} = 0$.`,
-      idea: String.raw`Write the current $i = V_{\mathrm{Th}}/(R_{\mathrm{Th}}+R_L)$ (series circuit, 2.3) and $P_L = i^2R_L$. In terms of $\rho = R_L/R_{\mathrm{Th}}$ the power is $P_L/P_{\max} = 4\rho/(1+\rho)^2$, and $(1+\rho)^2 - 4\rho = (1-\rho)^2 \ge 0$, so $P_L \le P_{\max}$ with equality only at $\rho = 1$. By Thévenin's theorem (3.2) any linear network seen from the load's terminals is such a source, so the result applies to all of them.`,
-      caption: String.raw`Move the load: the green curve is the delivered power (as a fraction of its maximum) and the blue curve the efficiency, both against $R_L/R_{\mathrm{Th}}$ on a log axis. The power peaks at $R_L = R_{\mathrm{Th}}$ where the efficiency has only reached $50\%$; for a more efficient but weaker supply you move to the right. Then switch to *vary the source resistance* with the load fixed: the power now rises monotonically as the source resistance goes to zero, so "matching" is not always the goal. The small circuit is solved by the kit and its load power agrees with the formula.`,
-      scope: String.raw`Resistive load and a fixed Thévenin source. The efficiency shown is that of the equivalent ideal voltage source with one series resistance, not necessarily the original network. For a source with reactance the maximum is at the complex conjugate $Z_L = Z_{\mathrm{Th}}^*$ (not treated here). Maximum power is not maximum efficiency (power-line and battery design avoid matching).`,
-      credit: 'attributed to M. H. Jacobi, c. 1840 (secondary sources only)',
-      verify: true,
+      statement: String.raw`A linear source with Thévenin voltage $V_{\mathrm{Th}}$ and resistance $R_{\mathrm{Th}} > 0$ drives a load resistor $R_L$ that can be varied. Assume $V_{\mathrm{Th}}\ne0$ and $R_L>0$. The power delivered to the load, $P_L = V_{\mathrm{Th}}^2 R_L/(R_{\mathrm{Th}}+R_L)^2$, is largest when $R_L = R_{\mathrm{Th}}$, and then equals $P_{\max} = V_{\mathrm{Th}}^2/(4R_{\mathrm{Th}})$. At that point the equivalent-series-circuit power fraction $\eta = P_L/(P_L+P_{R_{\mathrm{Th}}}) = R_L/(R_{\mathrm{Th}}+R_L)$ is exactly $1/2$. The theorem is about adjusting the load; if instead the load is fixed and the source resistance can be changed, the power is greatest at $R_{\mathrm{Th}} = 0$.`,
+      idea: String.raw`Write the current $i = V_{\mathrm{Th}}/(R_{\mathrm{Th}}+R_L)$ (series circuit, 2.3) and $P_L = i^2R_L$. In terms of $\rho = R_L/R_{\mathrm{Th}}$ the power is $P_L/P_{\max} = 4\rho/(1+\rho)^2$, and $(1+\rho)^2 - 4\rho = (1-\rho)^2 \ge 0$, so $P_L \le P_{\max}$ with equality only at $\rho = 1$. By Thévenin's theorem (3.2) any linear network seen from the load's terminals is such a source, so the result applies to all such networks with a well-defined fixed equivalent and positive output resistance. The equivalent resistor loss does not generally equal the loss inside the original network.`,
+      caption: String.raw`Move the load: the green curve is the delivered power (as a fraction of its maximum) and the blue curve the equivalent-circuit power fraction, both against $R_L/R_{\mathrm{Th}}$ on a log axis. The power peaks at $R_L = R_{\mathrm{Th}}$ where that fraction has reached $50\%$; moving right increases that fraction while reducing delivered power. Then switch to *vary the source resistance* with the load fixed: the power now rises monotonically as the source resistance goes to zero, so "matching" is not always the goal. The small circuit is solved by the kit and its load power agrees with the formula.`,
+      scope: String.raw`Resistive load and a fixed Thévenin source. For a source with reactance the maximum is at the complex conjugate $Z_L = Z_{\mathrm{Th}}^*$ (not treated here). The plotted fraction is computed from the equivalent circuit; it is not the overall efficiency of an arbitrary original source network, whose fixed/bias losses need not be encoded by the equivalent.`,
+      credit: 'Classical maximum-power result; derivation checked against Chaniotakis & Cory, MIT6.071 (2006)',
+      verify: false,
       deps: ['circ-3.2', 'circ-2.3'],
-      refs: ['Horowitz–Hill §1.2', 'Agarwal–Lang §3.6'],
+      refs: ['Chaniotakis & Cory, MIT6.071/22.071 (Spring2006), Linear Circuits Analysis, Power Transfer pp20–21, equations1.40–1.46'],
       tags: ['power', 'matching'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Maximum_power_transfer_theorem' },
       viz(v) {
-        const sp = v.stage({ x: [0.01, 100], y: [0, 1.08], xlog: true, axes: 'box', gutter: true, height: 340, weight: 1.35, xlabel: 'ratio $\\rho$', ylabel: 'fraction', title: 'power and efficiency' });
+        const sp = v.stage({ x: [0.01, 100], y: [0, 1.08], xlog: true, axes: 'box', gutter: true, height: 340, weight: 1.35, xlabel: 'ratio $\\rho$', ylabel: 'fraction', title: 'power and equivalent-circuit fraction' });
         const sc = v.stage({ x: [-1.0, 5.2], y: [-0.7, 3.9], equal: true, axes: false, height: 340, weight: 0.8, title: 'the circuit' });
         const C = v.circuit(sc, [
           { type: 'V', id: 'VT', name: 'Vth', value: 10, at: [0, 3, 0, 0] }, { type: 'R', id: 'RT', name: 'Rth', value: 100, at: [0, 3, 2.4, 3] }, { type: 'W', at: [2.4, 3, 4.1, 3] },
@@ -288,7 +289,7 @@ export default {
           if (load) sp.dot(1, 1, { r: 5, color: 'green', hollow: true });
           info = { Rth, RL, pL: res.P('RL'), formula: V.value ** 2 * RL / ((Rth + RL) ** 2), pmax: V.value ** 2 / (4 * Rth), eta: RL / (Rth + RL), load };
         });
-        v.legend([['green', 'power in the load (relative)'], ['accent', 'series-model efficiency $\\eta_{\\mathrm{Th}}$']]);
+        v.legend([['green', 'power in the load (relative)'], ['accent', 'equivalent power fraction $\\eta$']]);
         v.readout(() => {
           if (!info) return '';
           const { Rth, RL, pL, formula, pmax, eta, load } = info;
@@ -302,11 +303,11 @@ export default {
       kind: 'Theorem',
       name: 'Tellegen’s theorem',
       statement: String.raw`Let a lumped network have $b$ branches. Take any set of branch voltages $v_1,\dots,v_b$ that satisfies Kirchhoff's voltage law (2.2) on the graph (they are differences of node potentials), and any set of branch currents $i_1,\dots,i_b$ that satisfies Kirchhoff's current law (2.1) on the same graph, with the same reference directions. Then $\sum_{k=1}^{b} v_k i_k = 0$. The two sets need not come from the same circuit, the same elements or the same time; the theorem uses only the graph. With both sets taken from one circuit it is conservation of power: the power absorbed by all branches sums to zero.`,
-      idea: String.raw`KVL says the voltage vector is $\mathbf v = \mathbf A^{\top}\boldsymbol\varphi$ for node potentials $\boldsymbol\varphi$ (the incidence matrix $\mathbf A$ has rows for nodes, columns for branches). KCL says $\mathbf A\mathbf i = \mathbf 0$. Hence $\mathbf v^{\top}\mathbf i = \boldsymbol\varphi^{\top}\mathbf A\mathbf i = 0$: the voltage vector lies in the row space of $\mathbf A$, the current vector in its null space, and these are orthogonal complements (2.7). No element law was used.`,
+      idea: String.raw`KVL says the voltage vector is $\mathbf v = \mathbf A^{\top}\boldsymbol\varphi$ for node potentials $\boldsymbol\varphi$ (the incidence matrix $\mathbf A$ has rows for nodes, columns for branches). KCL says $\mathbf A\mathbf i = \mathbf 0$. Hence $\mathbf v^{\top}\mathbf i = \boldsymbol\varphi^{\top}\mathbf A\mathbf i = 0$: the voltage vector lies in the row space of $\mathbf A$, the current vector in its null space, and these are orthogonal complements (2.7). No element law was used. The adjoint identity (ladr 7.1), for the real Euclidean node and branch inner products, reads $\langle A i,\varphi\rangle=\langle i,A^\top\varphi\rangle$. The two spaces may have different dimensions. Substituting KCL $Ai=0$ and the KVL representation $v=A^\top\varphi$ gives $\langle i,v\rangle=0$. This is exactly Tellegen's cancellation and uses the same incidence matrix and reference directions for both sets; no resistor law or positivity assumption enters.`,
       caption: String.raw`The graph carries the node potentials of circuit A (colours) and the branch currents of a different circuit B: same graph, different resistors and batteries (use the two seed sliders). The bars are the products $v^A_k i^B_k$ drawn as a waterfall that always returns to zero; the readout shows all four cross sums, including the ordinary power balance $\sum v^A i^A$. Then open the unmetered path: current $\varepsilon$ is fed into one node and taken out of another through a wire that is not on the graph, so the metered currents violate KCL, and the sum equals $\varepsilon(\varphi_s-\varphi_t)$ instead of zero.`,
       scope: String.raw`Any lumped network (linear or not, active or passive, time-varying) as long as the voltage set obeys KVL and the current set obeys KCL on the same oriented graph. The theorem is purely topological.`,
       credit: 'B. D. H. Tellegen, 1952 (Philips Research Reports 7, 259–269)',
-      deps: ['circ-2.1', 'circ-2.2', 'circ-2.7', 'ladr-7.6'],
+      deps: ['circ-2.1', 'circ-2.2', 'circ-2.7', 'ladr-7.1'],
       refs: ['Agarwal–Lang ch. 3'],
       tags: ['tellegen', 'power balance', 'graph'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Tellegen%27s_theorem' },
@@ -364,12 +365,13 @@ export default {
       num: '3.7',
       kind: 'Theorem',
       name: 'Reciprocity theorem',
-      statement: String.raw`Let $N$ be a linear network with all other independent sources suppressed and a unique solution, made only of positive resistors (more generally of reciprocal elements: resistors, capacitors, inductors, ideal transformers, but no dependent sources, gyrators or nonreciprocal devices), with two ports $A$ and $B$. If a current $I$ injected at port $A$ produces the voltage $v_B$ across port $B$, then the same current $I$ injected at port $B$ produces the same voltage $v_A = v_B$ across port $A$. In terms of the transfer resistance: $z_{BA} = z_{AB}$. For the dual experiment, a voltage source at one port and a short-circuit current at the other, the currents are equal.`,
-      idea: String.raw`With node potentials as unknowns, the network equations are $\mathbf G\boldsymbol\varphi = \mathbf i$ with $\mathbf G$ the conductance matrix, which is symmetric for reciprocal elements ($\mathbf G = \mathbf G^{\top}$, 2.8). The transfer resistance from port $A$ (current vector $\mathbf a$) to port $B$ (vector $\mathbf b$) is $\mathbf b^{\top}\mathbf G^{-1}\mathbf a$, which equals $\mathbf a^{\top}\mathbf G^{-1}\mathbf b$ because the inverse of a symmetric matrix is symmetric. Equivalently, it follows from Tellegen's theorem (3.6) applied to the two experiments, whose branch voltages and currents are related by the same element laws.`,
-      caption: String.raw`The same network is measured twice. Experiment 1 (left): inject 1 mA at port $A$ and read the voltage across port $B$. Experiment 2 (right): swap them. Colours are node potentials. For any resistors (re-seed them) the two readings are equal to rounding error. Now turn up the gain $g$ of a dependent source that injects the current $g\,v_A$ at port $B$: one direction of transmission is boosted and the symmetry is lost, since the network equations are no longer symmetric.`,
-      scope: String.raw`Linear, time-invariant, reciprocal networks with a unique solution (for the resistor case, a connected network of positive resistors). Nonreciprocal two-ports can make $z_{AB} \ne z_{BA}$; the controlled source illustrated here generally does so, although dependent sources in an arbitrary equivalent model do not alone prove nonreciprocity. Reciprocal relations of this kind are known in many fields (optics, acoustics, electromagnetism); the circuit form is the lumped special case.`,
+      statement: String.raw`Consider a finite connected network with strictly positive resistors, no internal independent sources, and two consistently oriented ports A and B. The DC solution is unique up to an irrelevant common potential. If current I enters the positive terminal of A and leaves its negative terminal, producing open-circuit voltage $v_B$ across B, then the same oriented current at B produces the same open-circuit voltage $v_A$ across A: $z_{BA}=z_{AB}$. More generally reciprocal linear two-ports satisfy this relation wherever their impedance description exists. With currents defined entering each positive port terminal, reciprocal admittance parameters likewise obey $y_{BA}=y_{AB}$ in the corresponding voltage-drive/short-circuit tests.`,
+      idea: String.raw`With node potentials as unknowns, the network equations are $\mathbf G\boldsymbol\varphi = \mathbf i$ with $\mathbf G$ the conductance matrix, which is symmetric for reciprocal elements ($\mathbf G = \mathbf G^{\top}$, 2.8). The transfer resistance from port $A$ (current vector $\mathbf a$) to port $B$ (vector $\mathbf b$) is $\mathbf b^{\top}\mathbf G^{-1}\mathbf a$, which equals $\mathbf a^{\top}\mathbf G^{-1}\mathbf b$ because the inverse of a symmetric matrix is symmetric. Equivalently, it follows from Tellegen's theorem (3.6) applied to the two experiments, whose branch voltages and currents are related by the same element laws. With one ground chosen, the finite positive-resistor network gives an invertible real symmetric $G$. The inverse-adjoint identity in ladr 7.5 gives $(G^{-1})^\top=(G^\top)^{-1}=G^{-1}$. Transposing the real scalar $b^\top G^{-1}a$ therefore gives $a^\top G^{-1}b$, proving equality of the consistently oriented transfer tests. Invertibility and symmetry are both needed: a singular network has no such inverse, while a nonsymmetric controlled-source matrix is not covered.`,
+      caption: String.raw`The same network is measured twice. Experiment 1 (left): inject 1 mA at port $A$ and read the voltage across port $B$. Experiment 2 (right): swap them. Colours are node potentials; the driven port is a current source and the measured port is open circuit. The orange inset, when present, is a VCCS connected by its labeled B−/B+ terminals; it is offset to avoid suggesting junctions where wires cross. For any resistors (re-seed them) the two readings are equal to rounding error. Now turn up the gain $g$ of a dependent source that injects the current $g\,v_A$ at port $B$: transmission changes and symmetry can be lost, since the network equations are no longer symmetric.`,
+      scope: String.raw`The displayed theorem is for finite positive-resistor networks with well-defined oriented port tests; the linear reciprocal generalization needs existence and uniqueness at the chosen frequency. A dependent source can break reciprocity, but its presence alone does not prove nonreciprocity: controlled-source combinations can also realize a reciprocal network. The plotted single directed VCCS generally breaks symmetry. Singular networks do not have a unique finite transfer experiment. Reciprocal relations of this kind are known in many fields (optics, acoustics, electromagnetism); the circuit form is the lumped special case.`,
+      verify: false,
       deps: ['circ-3.6', 'circ-2.8', 'ladr-7.5'],
-      refs: ['Doyle–Snell, Random Walks and Electric Networks, §1.3.5, pp. 49–51 (bilinear conservation-of-energy identity); symmetric grounded conductance matrix proof given here'],
+      refs: ['MIT6.551/HST714J, Acoustics of Speech and Hearing (14Oct2004), Lecture11, Reciprocity Revisited pp7–8: symmetric admittance and impedance tests; finite resistor proof given here'],
       tags: ['reciprocity', 'symmetry'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Reciprocity_(electrical_networks)' },
       viz(v) {
@@ -378,41 +380,30 @@ export default {
         const sel = v.select('network', ['bridge', 'k4', 'ladder', 'grid3'].map((k) => ({ value: k, label: NETS[k].label })), 'bridge');
         const seed = v.slider('resistor seed', 1, 40, 5, { int: true });
         const gain = v.slider('dependent source gain $g$', -2, 2, 0, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mS` });
-        const PORTS = { bridge: [[0, 1], [2, 3]], k4: [[0, 2], [1, 3]], ladder: [[0, 2], [3, 5]], grid3: [[0, 8], [2, 6]] };
+        const PORTS=CIRCUIT_PORTS;
         let info = null;
         v.render(() => {
           const net = NETS[sel.value], n = net.names.length, P = geom(net), E = net.edges, rng = v.rng(seed.value * 31 + 7);
           const rk = E.map(() => +(0.3 + 2.7 * rng()).toFixed(2)), [A, B] = PORTS[sel.value];
-          const run = (drive, meas) => {
-            const els = E.map(([a, b], k) => ({ t: 'R', a, b, r: rk[k] }));
-            els.push({ t: 'I', a: drive[1], b: drive[0], i: 1 });                       // 1 mA injected at drive[0], returned at drive[1]
-            if (gain.value !== 0) els.push({ t: 'G', a: B[1], b: B[0], cp: A[0], cn: A[1], g: gain.value });
-            const sol = mna(n - 1, els);
-            if (sol.singular) return { singular: true };
-            const v0 = sol.v;
-            return { v: v0, z: v0[meas[0]] - v0[meas[1]] };
-          };
-          const r1 = run(A, B), r2 = run(B, A);
-          if (r1.singular || r2.singular) {
-            sA.corner('No unique DC solution at this gain', 'tl', { color: 'red' });
-            sB.corner('No unique DC solution at this gain', 'tl', { color: 'red' });
-            info = { singular: true }; return;
-          }
+          const result=transferExperiment(net,rk,A,B,gain.value),r1=result.forward,r2=result.reverse;
+          if(!result.ok){[sA,sB].forEach(st=>st.text('No unique finite DC solution',0,0,{color:'red',align:'center'}));info={singular:true};return;}
           [[sA, r1, A, B], [sB, r2, B, A]].forEach(([st, r, d, m]) => {
             const vm = Math.max(1e-9, ...r.v.map(Math.abs));
-            drawNet(st, v, P, E.map(([a, b], k) => ({ a, b, kind: 'R', label: `${rk[k]}` })), { phi: r.v, vmax: vm, nodeR: 8, labelSize: 10 });
+            const els=E.map(([a,b],k)=>({a,b,kind:'R',label:`${rk[k]}`}));
+            drawNet(st, v, P, els, { phi: r.v, vmax: vm, nodeR: 8, labelSize: 10 });
             st.arrow(P[d[0]][0] - 0.16, P[d[0]][1] + 0.1, P[d[0]][0] - 0.03, P[d[0]][1] + 0.02, { color: 'gold', width: 4 });
             st.arrow(P[d[1]][0] + 0.03, P[d[1]][1] - 0.02, P[d[1]][0] + 0.16, P[d[1]][1] - 0.1, { color: 'gold', width: 4 });
             st.text('1 mA in', P[d[0]][0] - 0.15, P[d[0]][1] + 0.16, { size: 11, color: 'gold' });
             st.text('meter +', P[m[0]][0], P[m[0]][1], { size: 10.5, color: 'green', dy: 20, plate: true });
             st.text('meter −', P[m[1]][0], P[m[1]][1], { size: 10.5, color: 'green', dy: 20, plate: true });
+            if(gain.value!==0){drawEl(st,[.67,-.16],[.67,.16],'D',{sym:'arrow',color:'orange',size:.045});st.text('B−',.67,-.19,{size:10,color:'orange',align:'center'});st.text('B+',.67,.19,{size:10,color:'orange',align:'center'});st.text('g v_A',.67,.29,{size:9,color:'orange',align:'center'});}
             st.corner(`reads ${v.fix(r.z, 4)} V`, 'br', { color: 'green', plate: true });
           });
           info = { z1: r1.z, z2: r2.z, g: gain.value };
         });
         v.readout(() => {
           if (!info) return '';
-          if (info.singular) return 'The controlled source makes the DC matrix singular at this gain. Transfer resistance is undefined here; move the gain to obtain a unique solution.';
+          if(info.singular)return 'No unique finite DC solution at this gain; the transfer experiment is undefined.';
           const { z1, z2, g } = info, d = Math.abs(z1 - z2);
           return `$z_{BA} = ${v.fix(z1, 5)}\\ \\mathrm{k}\\Omega$ (drive $A$, read $B$), $z_{AB} = ${v.fix(z2, 5)}\\ \\mathrm{k}\\Omega$ (drive $B$, read $A$); difference $${v.sci(d + 1e-20, 2)}$ k$\\Omega$.\n${g === 0 ? 'All elements are resistors: the conductance matrix is symmetric, so the two readings are equal.' : `The dependent source ($g = ${v.fix(g, 2)}$ mS, controlled by $v_A$, feeding port $B$) adds an asymmetric term: the network is no longer reciprocal.`}`;
         });

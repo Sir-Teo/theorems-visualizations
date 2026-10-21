@@ -16,32 +16,20 @@ export default {
   collection: 'rca',
   chapter: 9,
   items: [
-    {
-      num: '9.18', kind: 'Definition', name: 'Banach algebras',
-      statement: String.raw`A **Banach algebra** is a complex Banach space $A$ with an associative bilinear multiplication satisfying $\|xy\|\le\|x\|\|y\|$ for all $x,y\in A$. Commutativity and a multiplicative identity are additional properties, not part of this definition.`,
-      idea: String.raw`The norm inequality makes multiplication continuous. Completeness then allows convergent series of powers, which is the tool behind the automatic boundedness of complex homomorphisms in 9.21. Convolution in 9.19 supplies a commutative example without a unit; matrix multiplication supplies a noncommutative example with a unit.`,
-      deps: ['rca-5.1'], see: ['rca-9.19', 'rca-18.1'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 9.18, p. 190'],
-    },
-    {
-      num: '9.20', kind: 'Definition', name: 'Complex homomorphisms of a Banach algebra',
-      statement: String.raw`A **complex homomorphism** of a Banach algebra $A$ is a complex-linear functional $\varphi:A\to\mathbb C$ such that $\varphi(xy)=\varphi(x)\varphi(y)$. Continuity is not assumed. The zero functional is allowed; Theorem 9.21 proves automatic boundedness.`,
-      idea: String.raw`A homomorphism respects both the linear and multiplicative structures. Fourier evaluation on the convolution algebra is an example because $\widehat{f*g}(t)=\hat f(t)\hat g(t)$. Its continuity follows from the algebra and completeness, rather than being imposed in the definition.`,
-      deps: ['rca-9.18'], see: ['rca-9.21', 'rca-9.23'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 9.20, p. 191'],
-    },
     // ------------------------------------------------------------------ 9.19
     {
       num: '9.19',
       kind: 'Definition',
-      name: 'The convolution algebra L¹ has no unit',
-      statement: String.raw`With convolution as multiplication and the normalization $dm=dx/\sqrt{2\pi}$, $L^1(\mathbb R)$ is a commutative Banach algebra: $\|f*g\|_1\le\|f\|_1\|g\|_1$, and convolution is bilinear and associative. This algebra has no multiplicative unit. For every real $t$, the Fourier evaluation $f\mapsto\hat f(t)$ preserves multiplication.`,
+      name: 'Banach algebras and complex homomorphisms; L¹ as an algebra',
+      statement: String.raw`A **Banach algebra** is a complex Banach space $A$ carrying an associative multiplication, bilinear in its two factors, such that $\norm{xy}\le\norm x\,\norm y$ for all $x,y\in A$. A **complex homomorphism** of $A$ is a linear functional $\varphi:A\to\C$ (no continuity assumed) with $\varphi(xy)=\varphi(x)\varphi(y)$ for all $x,y$.
+
+With convolution as multiplication, $L^1$ is a commutative Banach algebra, because $\norm{f*g}_1\le\norm f_1\norm g_1$. For every real $t$, $f\mapsto\hat f(t)$ is a complex homomorphism of $L^1$, by 9.2(c).`,
       idea: String.raw`The norm inequality is Fubini–Tonelli applied to $|f(x-y)g(y)|$ (8.14); commutativity and associativity follow from the translation invariance of $m$. $L^1$ has no unit: $f*u=f$ for all $f$ would give $\hat f\hat u=\hat f$, so $\hat u\equiv1$, contradicting $\hat u\in C_0$ (9.6). The kernels $h_\lambda$ replace the missing unit: $f*h_\lambda\to f$ in $L^1$ (9.10) while $\hat h_\lambda=H(\lambda t)\to1$ pointwise but never uniformly.`,
       caption: String.raw`The fixed $f$ changes sign. Choose $g$: Top: $f$, $g$ and the product $f*g$ (exact Gaussian formulas, or the $\theta$-average for $h_\lambda$). Bottom: $|\hat f|$, $|\hat g|$ and $|\widehat{f*g}|=|\hat f||\hat g|$. The readout checks $\norm{f*g}_1\le\norm f_1\norm g_1$ and commutativity. With $g=h_\lambda$, shrinking $\lambda$ makes $f*h_\lambda$ indistinguishable from $f$ — an approximate unit — but $\hat h_\lambda=e^{-\lambda|t|}$ still tends to $0$ at infinity, so no true unit exists.`,
-      deps: ['rca-9.18', 'rca-8.14', 'rca-9.2'],
+      deps: ['rca-8.14', 'rca-9.2'],
       see: ['rca-9.10'],
       tags: ['Banach algebra', 'convolution'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Example 9.19(d), pp. 190–191'],
+      verify: true,
       viz(v) {
         const f = (x) => gam(0.6, -1.2)(x) - 0.7 * gam(0.9, 1.0)(x);
         const fh = (t) => { const a = Math.exp(-0.18 * t * t), b = 0.7 * Math.exp(-0.405 * t * t); return [a * Math.cos(1.2 * t) - b * Math.cos(t), a * Math.sin(1.2 * t) + b * Math.sin(t)]; };
@@ -96,15 +84,15 @@ export default {
     },
     // ------------------------------------------------------------------ 9.20
     {
-      num: '9.21',
+      num: '9.20',
       kind: 'Theorem',
       name: 'Complex homomorphisms have norm at most 1',
       statement: String.raw`If $\varphi$ is a complex homomorphism of a Banach algebra $A$, then $|\varphi(x)|\le\norm x$ for every $x\in A$. In particular $\varphi$ is automatically continuous, with $\norm\varphi\le1$.`,
       idea: String.raw`Suppose $|\varphi(x_0)|>\norm{x_0}$ and put $x=x_0/\varphi(x_0)$, so $\varphi(x)=1$ and $\norm x<1$. Since $\norm{x^n}\le\norm x^n$, the partial sums $s_n=-x-x^2-\cdots-x^n$ form a Cauchy sequence; let $y$ be its limit (completeness). From $x+s_n=xs_{n-1}$ we get $x+y=xy$, and applying $\varphi$ gives $1+\varphi(y)=\varphi(y)$ — impossible. Only the algebraic properties of $\varphi$ are used; continuity comes out as a consequence.`,
       caption: String.raw`Here $A=L^1$ and $x=r\,\gamma_{0.45}(\cdot-1.2)$ is a Gaussian bump with $\norm x_1=r$. Each functional $\varphi(f)=\int f(s)e^{(\sigma-it)s}\,dm(s)$ is multiplicative on rapidly decreasing functions; $\sigma=0$ gives the genuine homomorphisms $f\mapsto\hat f(t)$ (blue curve: all of their values at $x$, inside the disc of radius $\norm x_1$). Make $\sigma>0$: $|\varphi(x)|$ leaves the disc, and the proof's series runs. Top: the normalised powers $x'^{\,n}$ ($x'=x/\varphi(x)$) shrink in $L^1$ (blue), but weighted by $e^{\sigma s}$ they keep mass at least $1$ (red). Right: $\norm{s_N}_1$ converges while $\varphi(s_N)=-N$ diverges — so $\varphi$ cannot be a complex homomorphism of all of $L^1$.`,
-      deps: ['rca-9.18', 'rca-9.20'],
+      deps: ['rca-9.19'],
       tags: ['Banach algebra', 'complex homomorphism'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 9.21 and proof, p. 191'],
+      verify: true,
       viz(v) {
         const w = 0.45, c0 = 1.2;
         const rS = v.slider('$\\|x\\|_1=r$', 0.3, 0.95, 0.7, { step: 0.01 });
@@ -180,16 +168,16 @@ export default {
     },
     // ------------------------------------------------------------------ 9.21
     {
-      num: '9.23',
+      num: '9.21',
       kind: 'Theorem',
       name: 'The complex homomorphisms of L¹ are f ↦ f̂(t)',
       statement: String.raw`For every complex homomorphism $\varphi$ of $L^1$ other than $\varphi=0$ there is a unique real number $t$ such that $\varphi(f)=\hat f(t)$ for all $f\in L^1$. Thus the nonzero complex homomorphisms of the convolution algebra $L^1$ correspond exactly to the points of $\R$.`,
-      idea: String.raw`By 9.21, $\varphi$ is a bounded linear functional, so $\varphi(f)=\int f\beta\,dm$ for some $\beta\in L^\infty$ (6.16). Writing out $\varphi(f*g)=\varphi(f)\varphi(g)$ with Fubini gives $\int g(y)\big[\varphi(f_y)-\beta(y)\varphi(f)\big]\,dm(y)=0$ for all $g$, so $\varphi(f_y)=\beta(y)\varphi(f)$ a.e. Choosing $f$ with $\varphi(f)\ne0$ shows that $\beta$ agrees a.e. with a continuous function (9.5) satisfying $\beta(x+y)=\beta(x)\beta(y)$. A bounded continuous solution with $\beta(0)=1$ is differentiable, solves $\beta'=c\beta$, and boundedness forces $c=-it$: $\beta(x)=e^{-itx}$.`,
+      idea: String.raw`By 9.20, $\varphi$ is a bounded linear functional, so $\varphi(f)=\int f\beta\,dm$ for some $\beta\in L^\infty$ (6.16). Writing out $\varphi(f*g)=\varphi(f)\varphi(g)$ with Fubini gives $\int g(y)\big[\varphi(f_y)-\beta(y)\varphi(f)\big]\,dm(y)=0$ for all $g$, so $\varphi(f_y)=\beta(y)\varphi(f)$ a.e. Choosing $f$ with $\varphi(f)\ne0$ shows that $\beta$ agrees a.e. with a continuous function (9.5) satisfying $\beta(x+y)=\beta(x)\beta(y)$. A bounded continuous solution with $\beta(0)=1$ is differentiable, solves $\beta'=c\beta$, and boundedness forces $c=-it$: $\beta(x)=e^{-itx}$.`,
       caption: String.raw`Choose a weight $\beta\in L^\infty$ and drag the centres of the two test bumps $f$ and $g$ (the bump $f*g$ sits at the sum of the centres). Right: the values $\varphi(f)$, $\varphi(g)$, the product $\varphi(f)\varphi(g)$ and $\varphi(f*g)$, all computed by quadrature of $\int(\cdot)\beta\,dm$. Only for the characters $\beta(x)=e^{-itx}$ do the last two coincide for every placement; $\cos tx$ or a damped character is bounded but not multiplicative, so $f\mapsto\int f\beta\,dm$ is not a complex homomorphism.`,
-      deps: ['rca-9.21', 'rca-6.16', 'rca-9.2', 'rca-9.5', 'rca-8.8'],
+      deps: ['rca-9.20', 'rca-6.16', 'rca-9.2', 'rca-9.5', 'rca-8.8'],
       see: ['fa-11.9'],
       tags: ['Banach algebra', 'characters', 'Fourier transform'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 9.22 and Theorem 9.23, pp. 191–193'],
+      verify: true,
       viz(v) {
         const B = {
           chr: { label: '$e^{-itx}$', b: (x, t) => [Math.cos(t * x), -Math.sin(t * x)] },

@@ -1,0 +1,31 @@
+# Independent WAVES prerequisite peer
+
+Endorse exact **5a442ec82caadd1e241c5a70000fa5281b694872**: thirteen genuinely used prerequisite edges across twelve written WAVES items. Independently archived candidate and exact parent: `/tmp/atlas-new-waves-peer/archive`, `/tmp/atlas-new-waves-peer/baseline`. No historical source obligation or source flag closes through this bounded prerequisite review.
+
+Personally read the actual statements and proof ideas of all ten distinct targets: PMA5.15/9.36/8.16/5.10/8.21/5.8/6.21, PDE2.5, RCA9.13, LADR7.31; then each complete consumer statement, idea, scope, caption and unchanged executable visualization. Concrete uses:
+
+| Consumer → prerequisite | Independent judgment |
+| --- | --- |
+| waves1.1 → pma5.15 | Cubic Taylor polynomials cancel odd terms, giving centered-second-derivative consistency error≤Ba²/12 when the fourth derivative is bounded. It is correctly local, not a sharp-data/arbitrary-time guarantee. Angular frequency is correctly c|k| at leading order. |
+| waves1.6 → pde2.5 | Linearity constructs the sum; energy uniqueness identifies it with the classical solution for the same combined displacement/velocity and stated compatible boundary data. The target's fixed-end, Neumann and decaying whole-line scopes are distinguished from arbitrary nonlinear media. |
+| waves1.9 → pma9.36 | Interface coefficient rows(1,−1),(Z1,Z2) have determinant Z1+Z2>0 at positive impedances, ensuring a unique amplitude pair. Flux conservation follows by substitution, not equality of displacements. |
+| waves2.4 → pma8.16 | Rescaled odd/even extensions turn velocity/slope norms into coefficient-square sums and factorL/2. The new finite-energy condition excludes divergent formal slope series. |
+| waves3.4 → pma5.10 | Continuous/differentiable dispersion on the finite band makes the chord speed an intermediate derivative. Continuity of that derivative gives the shrinking-band limit, without identifying a finite chord exactly with the central tangent. |
+| waves3.5 → pma5.15 | A retained-band second-derivative bound M gives phase remainder≤|t|MΔk²/2. The κ=k−k0 prefix is an equivalent way of writing the original Fourier integrand. This is a controlled local-band approximation, not unrestricted propagation. |
+| waves3.6 → pma8.21 | The real Gaussian integral and its parameter derivative evaluate intensity normalization and second moment, identifying rms width. |
+| waves3.6 → rca9.13 | Unit-modulus spectral propagation preserves the continuum L²norm by Plancherel. Finite periodic FFT limitations are explicitly separate. |
+| waves3.10 → ladr7.31 | At real Bloch k, mass weighting makes the two-dimensional matrix Hermitian/normal, with the displayed conjugate off-diagonals. Its orthonormal eigenmodes produce the two real branches. Complex-k continuation is expressly a separate argument. |
+| waves4.5 → pma5.8 | Varying the interior reflection point gives sinθi−sinθr=0. Positive endpoint heights make the path-length terms strictly convex and establish the unique minimum. |
+| waves4.6 → pma5.8 | Weighted endpoint-to-endpoint optical lengths have stationary derivative n1sinθ1−n2sinθ2, yielding Snell's law in the transparent geometric-optics setting. |
+| waves4.12 → pma5.8 | Differentiating the drop deviation gives the stated stationary condition. New1<n<k+1qualification is precisely the interior-ray condition; derivative changes negative→positive rather than stationarity alone being called a minimum. |
+| waves4.15 → pma6.21 | Positive intensity and constant coefficient allow endpoint logarithms of the separated attenuation integral. A varying coefficient remains inside the path integral. |
+
+## Own guards, math and pixels
+
+Own `peer-guard.mjs` confirms **all54** complete WAVES objects/functions/flags, including every caption/scope, unchanged except the twelve ideas/dependency lists and exactly three reviewed statements1.1/2.4/4.12. Full syllabus differs only in twelve matching dependency rows. All new targets are written. The three statement exceptions are substantive sign/finite-energy/interior-index qualifications plus equivalent line wrapping;3.5changes only its equivalent explanatory prefix, not its statement/model. Own inventory **12/20/27→25/33/40** for written/known/whole, unknown0. Evidence `/tmp/atlas-new-waves-peer/evidence/{guard.log,guard-inventory.json}`. Central reconciliation is the coordinator's action.
+
+Own portable `tests/verification-waves-prerequisites-peer.mjs` passes **1145parameter cases**:137centered-Taylor/signed-chain;131positive-impedance/flux and nonlinear-superposition identities;79independently quadrature-integrated finite-mode Parseval energies;127finite-chord/intermediate-derivative/Taylor-phase bounds;83Gaussian norm/second-moment/width/chirp integrals;149mass-weighted Hermitian characteristic branches;113Fermat reflection/refraction endpoint problems;194interior rainbow stationary/minimum cases;132Beer endpoint logarithms/FTC. These are fresh independent oracles rather than copied producer assertions. Evidence `math.mjs`, `math.log` in that directory.
+
+Fresh strict build passes6684written/6890planned/450chapters/85collections,0errors/0warnings (`build.log`). Full WAVES static passes54items/0errors/0warnings (`static.log`). Own native Chromium at320px uses a private ephemeral port for all twelve exact modules in both themes (**24runs**); no runtime/TeX/blank-canvas failures and actual explanation bounds pass. The three changed statements also receive explicit bounds checks and new captures. Personally inspected all **30changed explanation/statement outputs** in both themes (`contact-{light,dark}-{0,3,6,9}.png`, `contact-statement-{light,dark}.png`, individual PNGs): complete prose and formulas are legible and uncropped. The unchanged3.5statement received an additional passing bounds check. Evidence archive `peer-native.mjs`, evidence `native.log`, `native.json`. This is proportionate changed-text verification; unchanged widgets/replay have no new exhaustive certification.
+
+All15existing bridge narrative files were searched: no waves-* step occurs, so no existing bridge step needs reconciliation for these IDs. No content/source flag/global ledger is edited by this peer. All browser jobs are closed.

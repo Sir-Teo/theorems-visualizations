@@ -1,5 +1,6 @@
+import { fourAges } from './mathbio-source-audit-age.js';
 // Mathematical Biology — Chapter 4: Structured populations (items 4.1–4.7; 4.8–4.14 in ch04-b.js)
-import { SURV, FEC, survivorship, leslie, sumv, dotv, domEig, elSum, elRoot, r0T, project, normalizedProjection, nnClass } from './ch04.shared.js';
+import { SURV, FEC, survivorship, leslie, sumv, dotv, domEig, elSum, elRoot, r0T, project, nnClass } from './ch04.shared.js';
 
 const SURV_OPTS = [{ value: 'I', label: 'Type I (late deaths)' }, { value: 'II', label: 'Type II (constant)' }, { value: 'III', label: 'Type III (early deaths)' }];
 
@@ -23,7 +24,7 @@ export default {
       idea: String.raw`A life table is the age-specific bookkeeping behind every balance law of chapter 1: deaths are encoded in how fast $\ell_x$ falls and births in $m_x$. Survivorship curves are classified as Type I (almost everyone survives until old age), Type II (constant hazard, $\ell_x$ geometric) and Type III (heavy early mortality, as in fish or marine invertebrates). Everything in this chapter is computed from the two columns $\ell_x$ and $m_x$.`,
       scope: String.raw`Female-dominant, single-sex accounting in discrete age classes with a fixed (time-independent) life table. Observed life tables carry sampling error; the cohort below is simulated from a model, not data.`,
       caption: String.raw`A simulated cohort of newborns is followed through the age classes (choose its size, the survivorship type, and how far to follow it). Bars on the left are the observed fraction still alive, the green dots the model $\ell_x$; on the right bars are the observed mean daughters per survivor, dots the model $m_x$. Small cohorts scatter around the curves; resample to see it. The fecundity schedule is a made-up illustration.`,
-      deps: ['stat-2.1'],
+      deps: [],
       tags: ['life table', 'survivorship'],
       refs: ['Edelstein-Keshet ch. 1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Life_table' },
@@ -73,12 +74,13 @@ export default {
       name: 'Leslie matrix model',
       credit: 'Bernardelli 1941; Lewis 1942; Leslie 1945',
       statement: String.raw`Let $n_x(t)$ be the number of females in age class $x$ at census $t$, $x=1,\dots,n$, and $\mathbf n=(n_1,\dots,n_n)^{\mathsf T}$. With fecundities $F_x\ge0$ (daughters per class-$x$ female per step, counted at the next census) and survival probabilities $s_x\in[0,1]$ from class $x$ to $x+1$,
-$$\mathbf n(t+1)=L\,\mathbf n(t),\qquad L=\begin{pmatrix}F_1&F_2&\cdots&F_{n-1}&F_n\\ s_1&0&&&0\\ &s_2&&&\\ &&\ddots&&\\ &&&s_{n-1}&0\end{pmatrix}.$$
+$$\mathbf n(t+1)=L\,\mathbf n(t),$$
+$$\small L=\begin{pmatrix}F_1&F_2&\cdots&F_{n-1}&F_n\\ s_1&0&&&0\\ &s_2&&&\\ &&\ddots&&\\ &&&s_{n-1}&0\end{pmatrix}.$$
 The subdiagonal moves each class up one step (and thins it by $s_x$); the top row refills class 1 from births. Hence $\mathbf n(t)=L^t\mathbf n(0)$.`,
-      idea: String.raw`The model is the discrete balance law of 1.1 resolved by age: deaths act on the subdiagonal, births on the first row, and nothing else happens. Because the dynamics are linear, $L^t$ is the whole solution, and its long-run behaviour is controlled by the eigenvalues of $L$ (4.3, 4.4). With a single class the model collapses to geometric growth $n_{t+1}=F n_t$ (2.1).`,
+      idea: String.raw`The model is the discrete balance law of 1.1 resolved by age: deaths act on the subdiagonal, births on the first row, and nothing else happens. Because the dynamics are linear, $L^t$ is the whole solution, and its long-run behaviour is controlled by the eigenvalues of $L$ (4.3, 4.4). With a single class the model collapses to geometric growth $n_{t+1}=F n_t$ (2.1). The matrix-composition theorem (ladr-3.43), using the same age-class coordinate basis at successive censuses, gives $L^2$ for two updates and $L^t$ for t updates by induction. Each update is linear with the fixed rates stated here; time-varying rates would instead require an ordered product of the different census matrices.`,
       scope: String.raw`A linear, density-independent model with time-independent rates, one sex, and a single census per step. It ignores density dependence, so it predicts unbounded growth or extinction, and it is valid only while the population is far from its resources.`,
       caption: String.raw`Four age classes. Drag the survival and fecundity sliders and the time slider: the pyramid on the left shows $\mathbf n(t)$ (class 1 at the bottom, ghost bars are the previous census) and the right panel plots $\ln N(t)$ for the total population. After a few steps the log-total becomes a straight line of slope $\ln\lambda$ (dashed) while the pyramid keeps one shape.`,
-      deps: ['mathbio-4.1', 'mathbio-2.1'],
+      deps: ['mathbio-4.1', 'mathbio-2.1', 'ladr-3.43'],
       tags: ['Leslie matrix', 'age structure'],
       refs: ['Edelstein-Keshet ch. 1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Leslie_matrix' },
@@ -123,10 +125,10 @@ The subdiagonal moves each class up one step (and thins it by $s_x$); the top ro
 (b) If $A$ is moreover **primitive** ($A^k$ has all entries positive for some $k$; equivalently the cycle lengths of the graph have gcd $1$), then every other eigenvalue has modulus strictly smaller than $\rho(A)$.
 (c) If irreducible with period $h>1$, exactly $h$ eigenvalues lie on the circle $|z|=\rho$, equally spaced.
 In every case $\|A^k\|^{1/k}\to\rho(A)$.`,
-      idea: String.raw`For a positive matrix, Perron's argument finds the largest $\lambda$ for which $A\mathbf x\ge\lambda\mathbf x$ has a nonzero nonnegative solution; positivity of $A$ then forces equality and strictness everywhere, and a second eigenvalue of equal modulus would give an eigenvector with cancellations that positivity forbids. Frobenius extended this to nonnegative matrices by perturbation and by looking at the cycle structure of the graph. The formula $\|A^k\|^{1/k}\to\rho$ is the spectral radius formula (rca-18.9); for chains the same theorem is stoch-4.6.`,
+      idea: String.raw`For a positive matrix, Perron's argument finds the largest $\lambda$ for which $A\mathbf x\ge\lambda\mathbf x$ has a nonzero nonnegative solution; positivity of $A$ then forces equality and strictness everywhere, and a second eigenvalue of equal modulus would give an eigenvector with cancellations that positivity forbids. Frobenius extended this to nonnegative matrices by perturbation and by looking at the cycle structure of the graph. The formula $\|A^k\|^{1/k}\to\rho$ is the spectral radius formula (rca-18.5); for chains the same theorem is stoch-4.6.`,
       scope: String.raw`Finite square matrices with real nonnegative entries. A Leslie matrix with all $s_x>0$ is irreducible iff $F_n>0$, and then primitive iff the gcd of the classes $x$ with $F_x>0$ is $1$.`,
       caption: String.raw`The matrix is $\begin{pmatrix}d&a&3\\0.5&0&0\\0&e&0\end{pmatrix}$ (a three-class Leslie-type matrix with an extra self-loop $d$). Left: its eigenvalues in $\mathbb C$ and the circle $|z|=\rho$. Right: $\|A^k\|_F^{1/k}$ against $k$. Set $a=d=0$ and the matrix is a pure 3-cycle: three eigenvalues sit on the circle and no convergence of shape is possible. Set $e=0$ and it becomes reducible.`,
-      deps: ['mathbio-4.2', 'rca-18.9', 'stoch-4.6'],
+      deps: ['mathbio-4.2', 'rca-18.5', 'stoch-4.6'],
       tags: ['Perron–Frobenius', 'spectrum'],
       refs: ['Edelstein-Keshet ch. 1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Perron%E2%80%93Frobenius_theorem' },
@@ -160,46 +162,31 @@ In every case $\|A^k\|^{1/k}\to\rho(A)$.`,
       num: '4.4',
       kind: 'Theorem',
       name: 'Strong ergodic theorem: convergence to the stable age distribution',
-      credit: 'Lotka 1922 (stable age distribution); Perron–Frobenius proof',
       statement: String.raw`Let $L$ be a primitive Leslie matrix with dominant eigenvalue $\lambda_1>0$, right eigenvector $\mathbf u>0$ and left eigenvector $\mathbf w>0$, normalised so that $\sum u_x=1$. For every nonnegative initial vector $\mathbf n(0)\ne0$,
-$$\frac{\mathbf n(t)}{\lambda_1^{\,t}}\longrightarrow\frac{\mathbf w\cdot\mathbf n(0)}{\mathbf w\cdot\mathbf u}\,\mathbf u,\qquad\text{so}\qquad\frac{\mathbf n(t)}{\sum_x n_x(t)}\to\mathbf u .$$
+$$\frac{\mathbf n(t)}{\lambda_1^{\,t}}\longrightarrow\frac{\mathbf w\cdot\mathbf n(0)}{\mathbf w\cdot\mathbf u}\,\mathbf u,$$
+$$\text{so}\quad\frac{\mathbf n(t)}{\sum_x n_x(t)}\to\mathbf u .$$
 The age distribution tends to the **stable age distribution** $\mathbf u$ whatever the initial one, geometrically fast: the error decays like $(|\lambda_2|/\lambda_1)^t$, up to a polynomial factor if $\lambda_2$ is defective.`,
-      idea: String.raw`Expand $\mathbf n(0)$ in eigenvectors of $L$ (or in the Jordan basis). By 4.3(b) the dominant mode is simple and every other mode is multiplied at each step by a factor of modulus at most $|\lambda_2|<\lambda_1$ relative to the dominant one, so after dividing by $\lambda_1^t$ only the $\mathbf u$ term survives. The coefficient is the left-eigenvector projection $\mathbf w\cdot\mathbf n(0)/\mathbf w\cdot\mathbf u$, which is where reproductive value (4.9) comes from. Without primitivity (a period $h>1$) the shape keeps rotating around a cycle and the theorem fails.`,
-      scope: String.raw`The 1922 original treats continuous age and discusses limitations when fertility changes with population composition; the displayed result is its modern finite-matrix analogue, not a verbatim theorem from that paper. Fixed rates, primitive $L$ (for a Leslie matrix with every class-to-class survival probability strictly positive: $F_n>0$ and the gcd of the lengths $x$ with $F_x>0$ is $1$). Rate of convergence set by the subdominant eigenvalue; complex $\lambda_2$ gives damped age-structure oscillations.`,
-      caption: String.raw`Four age classes. Left: the share of class 1 in the population for four very different starting distributions; the green line is $u_1$. Right: the $\ell^1$ distance to $\mathbf u$ on a log axis, with a dashed line of slope $\ln(|\lambda_2|/\lambda_1)$. Vary $F_3$ and $F_4$ to change the gap; set $F_3=0$ with $F_4>0$ to get period 4. With $F_4=0$ it is reducible; with both fecundities zero every population dies within four steps, so its normalized age distribution ceases to exist.`,
-      deps: ['mathbio-4.3'],
+      idea: String.raw`Complexify the real age-class space and use Jordan form (ladr-8.46). By 4.3(b) the dominant eigenvalue is simple, so its block contributes a multiple of $\lambda_1^t\mathbf u$. Powers of every other Jordan block are finite sums of binomial factors times powers of its eigenvalue. After division by $\lambda_1^t$, these are polynomial factors times a geometrically decaying ratio, since $|\lambda|<\lambda_1$; a zero-eigenvalue nilpotent block eventually vanishes. Thus only the dominant projection survives. Its coefficient is $\mathbf w\cdot\mathbf n(0)/(\mathbf w\cdot\mathbf u)$, which is where reproductive value (4.9) comes from. This also explains the polynomial factor already allowed in the statement's rate estimate. An irreducible matrix of period $h>1$ can retain periodic shapes; some special initial vectors, including the dominant eigenvector itself, still have constant proportions.`,
+      scope: String.raw`Fixed rates, primitive $L$ (for a Leslie matrix with every subdiagonal survival strictly positive: $F_n>0$ and the gcd of the lengths $x$ with $F_x>0$ is $1$). Rate of convergence set by the subdominant eigenvalue; complex $\lambda_2$ gives damped age-structure oscillations.`,
+      caption: String.raw`Four chosen age classes. The four colours start from different age vectors. Left: share of class 1; right: $\ell^1$ distance to the positive eigenvector on a log scale, with distances below $10^{-12}$ displayed at the floor. If both fecundities are positive, the matrix is primitive. With only $F_4>0$ its period is 4; with only $F_3>0$ the reproductive core has period 3 and class 4 is transient. A trajectory ends when the population goes extinct, because its age proportions are then undefined. With both fecundities zero, every population is extinct by census 4. These finite trajectories illustrate the theorem and its hypotheses.`,
+      deps: ['mathbio-4.3', 'ladr-8.46'],
       tags: ['stable age distribution', 'ergodicity'],
-      refs: ['Lotka (1922), PNAS 8:339–345 (continuous-age historical source); modern finite-matrix statement follows from Perron–Frobenius as proved here'],
-      links: { doi: 'https://doi.org/10.1073/pnas.8.11.339' },
+      refs: ['Edelstein-Keshet, Mathematical Models in Biology, ch. 1 problem 20 pp. 35–36; Caswell (2010), background B and §3', 'https://www.demographic-research.org/volumes/vol23/19/23-19.pdf'],
+      verify: false,
       viz(v) {
         const F3 = v.slider('$F_3$', 0, 4, 1.8, { step: 0.05 }), F4 = v.slider('$F_4$', 0, 4, 1.2, { step: 0.05 });
         const s = v.slider('survival $s$', 0.3, 1, 0.8, { step: 0.01 });
         const TT = 40;
-        const P = v.stage({ x: [0, TT], y: [0, 1], height: 320, axes: 'box', gutter: true, xlabel: 'census t', ylabel: 'share in class 1', title: 'share of class 1', minWidth: 280 });
-        const D = v.stage({ x: [0, TT], y: [1e-12, 2], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'census t', ylabel: 'distance to u', title: 'ℓ¹ distance to the stable distribution', minWidth: 280 });
-        const starts = [[1, 0, 0, 0], [0, 0, 0, 1], [0.1, 0.2, 0.3, 0.4], [0.5, 0, 0.5, 0]];
-        const cols = ['accent', 'orange', 'purple', 'teal'];
-        let info = null;
+        const P = v.stage({ x: [-1, TT+1], y: [-.04, 1.04], height: 320, axes: 'box', gutter: true, xlabel: 'census t', ylabel: 'share in class 1', title: 'share of class 1', minWidth: 280 });
+        const D = v.stage({ x: [-1, TT+1], y: [5e-13, 2.2], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'census t', ylabel: 'distance to u (floor 10⁻¹²)', title: 'ℓ¹ distance, where population survives', minWidth: 280 });
+        const cols = ['accent', 'orange', 'purple', 'teal'];let info=null;
         v.render(() => {
-          const A = leslie([0, 0, F3.value, F4.value], [s.value, s.value, s.value]);
-          const cls = nnClass(A), fertile = F3.value + F4.value > 0;
-          const E = fertile ? domEig(A) : { lam: 0, u: null }, ev = fertile ? v.M.eig(A).values : [];
-          const ratio = ev.length > 1 && ev[0].abs() > 0 ? ev[1].abs() / ev[0].abs() : null;
-          const runs = starts.map((n0) => normalizedProjection(A, n0, TT));
-          runs.forEach((r, k) => {
-            P.path(r.map((q, t) => q && [t, q[0]]).filter(Boolean), { color: cols[k], width: 2 });
-            if (E.u) D.path(r.map((q, t) => q && [t, Math.max(1e-12, sumv(q.map((x, i) => Math.abs(x - E.u[i]))))]).filter(Boolean), { color: cols[k], width: 2 });
-          });
-          if (E.u) P.hline(E.u[0], { color: 'green', dash: true, width: 1.5 });
-          if (ratio > 0 && ratio < 1) { const d0 = 1.2; D.path(Array.from({ length: TT + 1 }, (_, t) => [t, d0 * Math.pow(ratio, t)]), { color: 'ink', dash: true, alpha: 0.6 }); }
-          info = { cls, fertile, ratio, lam: E.lam, u: E.u, d: runs.map((r) => E.u && r[TT] ? sumv(r[TT].map((x, i) => Math.abs(x - E.u[i]))) : null) };
+          info=fourAges(F3.value,F4.value,s.value);
+          info.runs.forEach((run,k)=>{const r=run.filter(q=>q.shape);P.path(r.map((q,t)=>[t,q.shape[0]]),{color:cols[k],width:2});if(info.u)D.path(r.map((q,t)=>[t,Math.max(1e-12,q.d)]),{color:cols[k],width:2});});
+          if(info.u)P.hline(info.u[0],{color:'green',dash:true,width:1.5});else D.text('No positive growth eigenvector: extinction',20,1e-5,{align:'center',size:11});
         });
         v.legend([['accent', 'start (1,0,0,0)'], ['orange', 'start (0,0,0,1)'], ['purple', 'start (.1,.2,.3,.4)'], ['teal', 'start (.5,0,.5,0)'], ['green', 'u₁', { dash: true }]]);
-        v.readout(() => {
-          if (!info.fertile) return '**No reproduction**: every population is extinct by t=4; normalized age shares are undefined after extinction.';
-          const classification = info.cls.irreducible ? info.cls.period === 1 ? 'primitive: shape converges' : `imprimitive: period ${info.cls.period}` : 'reducible: the theorem does not apply to all starts';
-          return `$\\lambda_1=${v.fix(info.lam, 4)}$, $|\\lambda_2|/\\lambda_1=${v.fix(info.ratio, 4)}$ → ${classification}.\nPerron age profile $\\mathbf u=(${info.u.map((x) => v.fix(x, 3)).join(',\\ ')})$; distances at $t=${TT}$: ${info.d.map(x => x === null ? 'extinct (share undefined)' : '$' + v.sci(Math.max(x, 1e-16), 2) + '$').join(', ')}.`;
-        });
+        v.readout(()=>`**${info.classification}.** ${info.u?`$\\lambda=${v.fix(info.lam,4)}$; positive eigenvector $u=(${info.u.map(x=>v.fix(x,3)).join(',\\ ')})$.`:'No age proportions after extinction.'} Surviving trajectories at census 40: ${info.runs.filter(r=>r[40].shape).length}/4.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.5
@@ -215,7 +202,7 @@ $$T=\frac{\sum_x x\,\ell_x m_x}{\sum_x \ell_x m_x}.$$
       idea: String.raw`$R_0$ is the factor by which the population multiplies per generation: each newborn is replaced by $R_0$ newborns on average, whatever the timing. $T$ records the timing. Together they give the quick estimate $r\approx\ln R_0/T$ (4.8), and by 4.7 whether the population grows depends only on whether $R_0>1$.`,
       scope: String.raw`Defined for a fixed life table, females only. There are other definitions of "generation time" (mean age of mothers in the stable population, or the time for the population to multiply by $R_0$); the one above is the cohort mean $T_c$.`,
       caption: String.raw`Drag the orange handles to edit the fecundity $m_x$ (left); the green curve shows $\ell_x$ for the chosen survivorship type. The right panel shows $\ell_x m_x$ as bars; its total is $R_0$ and its centre of mass (gold line) is $T$. Notice that $R_0$ is the area, $T$ the balance point.`,
-      deps: ['mathbio-4.1', 'prob-1.6.1a'],
+      deps: ['mathbio-4.1'],
       tags: ['R0', 'generation time'],
       refs: ['Edelstein-Keshet ch. 1'],
       viz(v) {

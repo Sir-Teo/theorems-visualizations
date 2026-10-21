@@ -1,0 +1,5 @@
+# SOLID1.15 bounded inherited qualification
+
+Separate successor to3d543ac replaces exactly two inherited literals. Static extension is W/k, so a more flexible (not stiffer) or longer member has larger extension for fixed material/section/load. The impact formula is exact within the lumped falling mass, massless linear-elastic bar, no-damping model; it is not a universal bound on local stresses when rod inertia/waves, contact or plasticity are present. All formulas, numerical functions, deps, flags, scopes and other source bytes are unchanged by an exact-file guard.
+
+Independent stiffness counterexample and ideal energy-root checks pass. Strict/static47zero errors/warnings. Own fresh actualmain320both-theme1.15proof/statement:four cases/pictures, proof288/288, statement285/285 and display253/253. All four complete pictures personally inspected `/tmp/atlas-new-imaging-source/solid/correction-native/*png`;native.json. Browser/server closed. No source closure or empirical safety certification.

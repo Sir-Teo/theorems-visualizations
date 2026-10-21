@@ -1,3 +1,5 @@
+import perfectHashingItem from './perfect-hashing-item.js';
+
 // Algorithms — Chapter 5: Search trees and hashing (items 5.11–5.20; 5.1–5.10 in ch05.js)
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
@@ -276,9 +278,11 @@ Deletion must leave a "deleted" marker, since emptying a slot would cut the prob
 (b) a successful search for a uniformly chosen stored key makes at most $\dfrac1\alpha\ln\dfrac1{1-\alpha}$ probes in expectation.
 
 Linear probing does worse, about $\frac12\bigl(1+\frac1{(1-\alpha)^2}\bigr)$ and $\frac12\bigl(1+\frac1{1-\alpha}\bigr)$ (Knuth).`,
-      idea: String.raw`(a) The first probe hits an occupied slot with probability $\frac nm=\alpha$; given that, the second hits one of the $n-1$ remaining occupied slots among $m-1$, with probability $\frac{n-1}{m-1}\le\alpha$, and so on. Hence $\Pr[X\ge i]\le\alpha^{i-1}$ and $E[X]=\sum_{i\ge1}\Pr[X\ge i]\le\sum_{i\ge0}\alpha^i=\frac1{1-\alpha}$, a geometric series (pma-3.26). (b) Searching for the $(i+1)$-st inserted key repeats its insertion, which cost at most $\frac{m}{m-i}$; averaging over $i$ gives $\frac1\alpha(H_m-H_{m-n})\le\frac1\alpha\ln\frac1{1-\alpha}$.`,
+      idea: String.raw`(a) The first probe hits an occupied slot with probability $\frac nm=\alpha$; given that, the second hits one of the $n-1$ remaining occupied slots among $m-1$, with probability $\frac{n-1}{m-1}\le\alpha$, and so on. Hence $\Pr[X\ge i]\le\alpha^{i-1}$ and $E[X]=\sum_{i\ge1}\Pr[X\ge i]\le\sum_{i\ge0}\alpha^i=\frac1{1-\alpha}$, a geometric series (pma-3.26). (b) Searching for the $(i+1)$-st inserted key repeats its insertion, which cost at most $\frac{m}{m-i}$; averaging over $i$ gives $\frac1\alpha(H_m-H_{m-n})\le\frac1\alpha\ln\frac1{1-\alpha}$.
+
+The conversion from a probe-count tail to its expectation is the tail-moment formula (prob-2.2.13) with exponent one. For a nonnegative integer count $X$, the integrand $\Pr(X>y)$ is $\Pr(X\ge i)$ on each interval $i-1\le y<i$, apart from endpoints of measure zero. Hence $EX=\sum_{i\ge1}\Pr(X\ge i)$. The uniform-permutation assumption supplies the tail bound; the geometric sum alone would not bound an arbitrary probing rule.`,
       caption: String.raw`Left (log scale): average probes measured while filling a table of 4093 slots to $\alpha = 0.99$ under uniform (random-permutation) probing, double hashing and linear probing, against the formulas. Right: the distribution of probe counts at the chosen $\alpha$, with the geometric law $\alpha^{i-1}(1-\alpha)$ behind the proof's bound $\Pr[X \ge i] \le \alpha^{i-1}$. Linear probing's histogram has the long tail of clustering.`,
-      deps: ['algo-5.13', 'pma-3.26'],
+      deps: ['algo-5.13', 'pma-3.26', 'prob-2.2.13'],
       refs: ['CLRS 4e §11.4'],
       credit: 'Peterson, 1957; Knuth (linear probing), 1963',
       tags: ['hashing'],
@@ -482,79 +486,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
       },
     },
     // ------------------------------------------------------------------ 5.18
-    {
-      num: '5.18',
-      kind: 'Theorem',
-      name: 'Perfect hashing: O(1) worst-case lookups in O(n) space',
-      statement: String.raw`A static set of $n$ keys can be stored in $O(n)$ space so that every lookup takes $O(1)$ time in the worst case (two hash evaluations and two memory probes). The **two-level scheme** of Fredman, Komlós and Szemerédi hashes the keys into $m=n$ buckets with $h$ from a universal family; bucket $j$, holding $b_j$ keys, gets its own table of $b_j^2$ slots and a function $h_j$ from a universal family with no collision among those keys. With $h$ redrawn until $\sum_j b_j^2<4n$ and each $h_j$ redrawn until collision-free, the expected number of draws is constant at both levels, and the expected construction time is $O(n)$.`,
-      idea: String.raw`Into $b^2$ slots, $b$ keys collide with expected count $\binom b2\frac1{b^2}<\frac12$ by universality (5.16), so by Markov's inequality a random $h_j$ is collision-free with probability more than $\frac12$. For the first level, $\sum_j b_j^2=n+2\cdot\#\{\text{colliding pairs}\}$ has expectation at most $n+n(n-1)/m<2n$ when $m=n$ (5.17), so $\Pr[\sum b_j^2\ge4n]<\frac12$. Each level therefore succeeds after fewer than two draws on average.`,
-      caption: String.raw`Each row is a first-level bucket with its $b_j$ keys, and to its right the $b_j^2$-slot second-level table with the keys in place; the note gives how many draws of $h_j$ it took to avoid collisions. Click a key to see its lookup: one probe in each level. Redraw the first-level function and watch $\sum b_j^2$ against the histogram of 3000 draws, whose mean sits near $2n-1$.`,
-      deps: ['algo-5.16', 'algo-5.17', 'prob-1.6.4'],
-      refs: ['Erickson notes: Hashing'],
-      credit: 'Fredman, Komlós & Szemerédi, 1984',
-      tags: ['hashing'],
-      viz(v) {
-        const nS = v.slider('keys $n$', 6, 16, 12, { int: true, onChange: () => { newKeys(); build(); } });
-        const p = PRIME; let r = v.rng(8), keys = [], h1 = null, rows = [], tries1 = 0, look = null;
-        function newKeys() { keys = distinct(r, nS.value, 10, 99); look = null; }
-        function build() {
-          const n = keys.length; tries1 = 0;
-          for (;;) { tries1++; const a = 1 + Math.floor(r() * (p - 1)), b = Math.floor(r() * p); h1 = { a, b, f: uh(a, b, p, n) }; const sz = new Array(n).fill(0); keys.forEach((k) => sz[h1.f(k)]++); if (sz.reduce((s2, x) => s2 + x * x, 0) < 4 * n || tries1 > 50) break; }
-          rows = Array.from({ length: n }, () => ({ keys: [] })); keys.forEach((k) => rows[h1.f(k)].keys.push(k));
-          for (const row of rows) {
-            const b2 = row.keys.length ** 2; row.tries = 0; row.fails = 0;
-            if (!b2) continue;
-            for (;;) { row.tries++; const a = 1 + Math.floor(r() * (p - 1)), b = Math.floor(r() * p), f = uh(a, b, p, b2), slots = new Array(b2).fill(null); let ok = true; for (const k of row.keys) { const s2 = f(k); if (slots[s2] != null) ok = false; slots[s2] = k; } if (ok) { row.slots = slots; row.ab = [a, b]; break; } row.fails++; }
-          }
-        }
-        newKeys(); build();
-        v.button('Redraw first level', () => { build(); look = null; });
-        v.button('New keys', () => { newKeys(); build(); });
-        const s = v.stage({ x: [-4, 30], y: [-0.6, 16], axes: false, height: 380, weight: 1.6, minWidth: 360 });
-        const Q = v.stage({ x: [1, 6], y: [0, 0.5], axes: 'box', height: 380, minWidth: 220, title: '$\\sum_j b_j^2 / n$ over 3000 draws of $h$', xlabel: 'space / n' });
-        s.onClick((x, y) => { const n = rows.length, j = Math.round(n - 1 - y); if (j < 0 || j >= n) return; const row = rows[j]; if (!row.slots) return; const w = cellW(); const i = Math.floor(x / w); if (i >= 0 && i < row.slots.length && row.slots[i] != null) look = row.slots[i]; });
-        const cellW = () => { const mx = Math.max(1, ...rows.map((rw) => rw.keys.length ** 2)); return Math.min(1.6, 21 / mx); };
-        const hcache = new Map(); let info = null;
-        v.render(() => {
-          const n = rows.length, w = cellW();
-          s.setView([-4.2, 29.5], [-0.75, n + 0.2]);
-          const lj = look != null ? h1.f(look) : -1;
-          rows.forEach((row, j) => {
-            const y = n - 1 - j, b = row.keys.length, hot = j === lj;
-            s.rect(-3.9, y - 0.36, -2.9, y + 0.36, { fill: hot ? 'gold' : 'panel', fillAlpha: hot ? 0.35 : 1, color: hot ? 'gold' : 'muted', width: hot ? 2.2 : 1.2 });
-            s.text(String(j), -3.4, y, { align: 'center', size: 10.5, color: 'muted', weight: 700 });
-            s.text(`b=${b}`, -2.0, y, { align: 'center', size: 10.5, color: b > 2 ? 'orange' : 'muted', weight: 700 });
-            if (!b) return;
-            s.arrow(-1.2, y, -0.08, y, { color: hot ? 'gold' : 'muted', width: hot ? 2 : 1.1, head: 6 });
-            row.slots.forEach((k, i) => {
-              const x0 = i * w, isL = k != null && k === look;
-              s.rect(x0, y - 0.34, x0 + w, y + 0.34, { fill: isL ? 'gold' : k != null ? 'accent' : 'panel', fillAlpha: isL ? 0.6 : k != null ? 0.18 : 1, color: k != null ? 'accent' : 'faint', width: 1 });
-              if (k != null && w * s.sx > 16) s.text(String(k), x0 + w / 2, y, { align: 'center', size: clamp(w * s.sx * 0.5, 8, 11.5), weight: 700, halo: false });
-            });
-            s.text(`${plural(b * b, 'slot')} · ${plural(row.tries, 'draw')}`, row.slots.length * w + 0.4, y, { size: 10.5, color: row.tries > 1 ? 'orange' : 'muted' });
-          });
-          // histogram of sum b^2 / n for these keys
-          const key = keys.join(',');
-          if (!hcache.has(key)) { const rr = v.rng(77), vals = []; for (let t = 0; t < 3000; t++) { const f = uh(1 + Math.floor(rr() * (p - 1)), Math.floor(rr() * p), p, n), sz = new Array(n).fill(0); keys.forEach((k) => sz[f(k)]++); vals.push(sz.reduce((s2, x) => s2 + x * x, 0) / n); } hcache.set(key, vals); }
-          const vals = hcache.get(key), cnt = new Map(); vals.forEach((x) => { const k = x.toFixed(4); cnt.set(k, (cnt.get(k) || 0) + 1); });
-          let ym = 0; for (const c of cnt.values()) ym = Math.max(ym, c / vals.length);
-          const srt = vals.slice().sort((a, b) => a - b), xmax = Math.max(5.5, srt[Math.floor(0.998 * srt.length)] + 0.4); Q.setView([0.15, xmax], [-0.07 * ym * 1.15, ym * 1.15]);
-          Q.vband(4, xmax, { color: 'red', alpha: 0.06 });
-          for (const [k, c] of cnt) { const x = +k; Q.rect(x - 0.06, 0, x + 0.06, c / vals.length, { fill: x >= 4 ? 'red' : 'accent', fillAlpha: 0.7, stroke: false }); }
-          const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
-          Q.vline(mean, { color: 'accent', width: 2 }); Q.vline((2 * n - 1) / n, { color: 'green', width: 2, dash: [6, 4] }); Q.vline(4, { color: 'red', width: 1.5 });
-          const cur = rows.reduce((a, rw) => a + rw.keys.length ** 2, 0) / n; Q.dot(cur, ym * 1.05, { r: 5, color: 'gold', label: 'now', labelPos: 'e' });
-          Q.text('retry ≥ 4', 4, ym * 1.08, { dx: 4, size: 11, color: 'red', weight: 700 });
-          info = { n, sum: cur * n, mean, frac4: vals.filter((x) => x >= 4).length / vals.length };
-        });
-        v.legend([['accent', 'stored key', { area: true }], ['gold', 'looked up', { area: true }], ['green', '$E\\sum b_j^2/n = (2n-1)/n$', { dash: true }], ['red', 'redraw region $\\ge 4n$']]);
-        v.readout(() => {
-          const { n, sum, mean, frac4 } = info, draws = rows.reduce((a, rw) => a + rw.tries, 0), used = rows.filter((rw) => rw.keys.length).length;
-          const lk = look != null ? `lookup ${look}: $h(${look}) = ${h1.f(look)}$, then slot $h_{${h1.f(look)}}(${look})$ — **2 probes**, whatever the keys · ` : 'click a key to look it up · ';
-          return lk + `space $\\sum b_j^2 = ${sum}$ ${sum < 4 * n ? '$< 4n$ ✓' : '(≥ 4n: redraw)'} with $n = ${n}$ (mean over draws ${v.fix(mean * n, 1)}, theory $2n-1 = ${2 * n - 1}$; $\\Pr[\\ge 4n] = ${v.fix(frac4, 3)} < \\frac12$ ✓) · first level drawn ${plural(tries1, 'time')}, second level ${draws} draws for ${used} tables`;
-        });
-      },
-    },
+    perfectHashingItem,
     // ------------------------------------------------------------------ 5.19
     {
       num: '5.19',
@@ -605,9 +537,11 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
 (a) the expected total number of nodes (the sum of the tower heights) is $n/(1-p)=O(n)$;
 (b) the number of levels is at most $\log_{1/p}n+O(1)$ in expectation, and $O(\log n)$ with high probability;
 (c) the expected number of steps of a search is at most $\frac{1}{p}\log_{1/p}n+\frac{1}{1-p}+1$; for $p=\frac12$ this is $2\log_2 n+3$.`,
-      idea: String.raw`(a) A tower has $1+\text{Geom}$ height with mean $1/(1-p)$; add over the keys by linearity (3.3). (b) The probability that some key reaches level $\ell$ is at most $np^\ell$ (a union bound), which is small once $\ell>\log_{1/p}n$. (c) **Backward analysis**: retrace the search path from its end. At each node on the way back, the path came from above exactly when the node's tower continues upward — a coin that came up heads with probability $p$ — and from the left otherwise. So climbing one level costs $1/p$ steps in expectation, a geometric series (pma-3.26), and climbing to level $\log_{1/p}n$ costs $\frac1p\log_{1/p}n$; the few levels above add $O(1)$.`,
+      idea: String.raw`(a) A tower has $1+\text{Geom}$ height with mean $1/(1-p)$; add over the keys by linearity (3.3). (b) The probability that some key reaches level $\ell$ is at most $np^\ell$ (a union bound), which is small once $\ell>\log_{1/p}n$. (c) **Backward analysis**: retrace the search path from its end. At each node on the way back, the path came from above exactly when the node's tower continues upward — a coin that came up heads with probability $p$ — and from the left otherwise. So climbing one level costs $1/p$ steps in expectation, a geometric series (pma-3.26), and climbing to level $\log_{1/p}n$ costs $\frac1p\log_{1/p}n$; the few levels above add $O(1)$.
+
+Measure subadditivity (prob-1.1.1) gives the union bound for height: if $A_j$ means that key $j$ receives at least $\ell$ promotions, then $\Pr(\bigcup_{j=1}^n A_j)\le\sum_j\Pr(A_j)=np^\ell$. The union bound itself needs no independence across these events. The promotion model supplies each $p^\ell$; summing the capped tail $\min(1,np^\ell)$ then gives logarithmic expected height and an exponentially decaying upper tail beyond that scale.`,
       caption: String.raw`Top: replay a search backwards. Each step back either climbs (the tower continues: a head, ↑) or moves left (the tower ended: a tail, ←); the coin strip records the flips the path depends on. Bottom: over many random skip lists with $n$ keys and promotion probability $p$, histograms of search steps and of the number of levels, with Pugh's bound and $\log_{1/p} n$. Push $p$ toward 0 or 1 to see the trade-off between levels and steps per level.`,
-      deps: ['algo-5.19', 'algo-3.3', 'pma-3.26'],
+      deps: ['algo-5.19', 'algo-3.3', 'pma-3.26', 'prob-1.1.1'],
       refs: ['Erickson notes: Treaps and Skip Lists'],
       credit: 'William Pugh, 1990',
       tags: ['randomized'],

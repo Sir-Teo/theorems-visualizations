@@ -1,3 +1,4 @@
+import { hybridBias, hybridProbabilities } from './sources.audit.js';
 // Cryptography — Chapter 3: Computational security and pseudorandomness
 import {
   clamp, ent, bits, pixc as pix, mix2, hex, ci95, GENS, GEN_NOTE, genBits, randomBitsFrom, TESTS, testZ, ladder, paintBits,
@@ -23,10 +24,12 @@ export default {
       kind: 'Concept',
       name: 'Concrete versus asymptotic security',
       statement: String.raw`There are two ways to say that a scheme is secure against efficient attackers. **Concrete security:** the scheme is $(t,\varepsilon)$-secure if every adversary running for at most $t$ steps succeeds with probability at most $\varepsilon$ — for a fixed key length, a table of what each amount of work buys. **Asymptotic security:** the key length is a parameter $n$; adversaries are probabilistic algorithms running in time polynomial in $n$, and “secure” means their success probability is a *negligible* function of $n$ (defined in 3.2). The asymptotic statement is a statement about a whole family of concrete ones; it does not say which $n$ to use.`,
-      idea: String.raw`For a scheme whose only attack is exhaustive key search, an adversary that runs for $t$ steps wins with probability about $t/2^n$, so each extra key bit doubles the work needed for a given success probability. Fixing $n$ gives the concrete picture; letting $n$ grow while the adversary’s time is a polynomial $n^c$ gives $\varepsilon(n)=n^c/2^n$, which dips below every threshold and stays there. Asymptotics buy clean theorems (closure under composition, 3.2), concrete bounds buy actual parameter choices.`,
+      idea: String.raw`For a scheme whose only attack is exhaustive key search, an adversary that runs for $t$ steps wins with probability about $t/2^n$, so each extra key bit doubles the work needed for a given success probability. Fixing $n$ gives the concrete picture; letting $n$ grow while the adversary’s time is a polynomial $n^c$ gives $\varepsilon(n)=n^c/2^n$, which dips below every threshold and stays there. Asymptotics buy clean theorems (closure under composition, 3.2), concrete bounds buy actual parameter choices.
+
+The power-versus-exponential limit pma-3.20(d) proves the asymptotic claim in the exhaustive-search example. For any fixed attack exponent c and requested inverse-power threshold $n^{-d}$, multiply the success model $n^c/2^n$ by $n^d$; the result $n^{c+d}/2^n$ tends to zero. It is therefore eventually below one, giving the requested threshold. This proves negligibility in that idealized model, not a concrete safe key length or the absence of other attacks.`,
       caption: String.raw`**Left:** one key length $n$ (slider). The line is the success probability $\varepsilon=\min(1,t/2^n)$ of exhaustive search against running time $t$, both on a $\log_2$ scale; drag the gold handle to set a work budget. Everything left of the red wall has $\varepsilon\le2^{-\tau}$. **Right:** the same adversary as a function of the security parameter, either polynomial time $n^c$ or exponential time $2^{\alpha n}$; the curve leaves the unsafe zone for good only if $\varepsilon(n)$ is negligible. Try $\alpha=1$.`,
       scope: String.raw`An idealised model: the scheme’s *only* attack is exhaustive key search, so $\varepsilon(t)=t/2^n$. The budget values on the picture are illustrations, not claims about any real attacker.`,
-      deps: ['crypto-1.11'],
+      deps: ['crypto-1.11', 'pma-3.20'],
       tags: ['concrete security', 'asymptotics'],
       refs: ['Katz–Lindell §3.1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Provable_security' },
@@ -84,9 +87,11 @@ export default {
       kind: 'Definition',
       name: 'Negligible functions and efficient adversaries',
       statement: String.raw`A function $\mu:\mathbb N\to\mathbb R_{\ge0}$ is **negligible** if for every polynomial $p$ there is $N$ with $\mu(n)<1/p(n)$ for all $n>N$; equivalently $\mu(n)<n^{-c}$ eventually, for every constant $c$. An **efficient** (PPT) adversary is a randomized algorithm whose running time on inputs of size $n$ is bounded by a polynomial in $n$. Negligible functions are closed under addition and under multiplication by any polynomial: if $\mu,\nu$ are negligible and $p$ is a polynomial, then $\mu+\nu$ and $p\cdot\mu$ are negligible. A scheme is secure if every PPT adversary succeeds with at most negligible probability.`,
-      idea: String.raw`To be below $n^{-c}$ for every $c$, a function must decay faster than every fixed power, i.e. $-\log_2\mu(n)$ must grow faster than $c\log_2 n$ for all $c$. Exponentials $2^{-n}$, subexponentials such as $2^{-\sqrt n}$ and quasi-polynomial $n^{-\log n}$ all do; $n^{-10}$ does not (it loses to $n^{-11}$). Closure under polynomial factors is what makes the definition robust: a polynomial number of repetitions of a negligible-probability event is still negligible, so the notion does not depend on the machine model.`,
+      idea: String.raw`To be below $n^{-c}$ for every $c$, a function must decay faster than every fixed power, i.e. $-\log_2\mu(n)$ must grow faster than $c\log_2 n$ for all $c$. Exponentials $2^{-n}$, subexponentials such as $2^{-\sqrt n}$ and quasi-polynomial $n^{-\log n}$ all do; $n^{-10}$ does not (it loses to $n^{-11}$). Closure under polynomial factors is what makes the definition robust: a polynomial number of repetitions of a negligible-probability event is still negligible, so the notion does not depend on the machine model.
+
+The examples use pma-3.20(d), which beats every fixed polynomial by a fixed-base exponential. It immediately handles $n^c2^{-n}$; with $t=\sqrt n$, the expression $n^c2^{-\sqrt n}$ becomes $t^{2c}2^{-t}$ and has the same limit. For $n^{-\log n}$, eventually $\log n$ exceeds any requested exponent. These examples must hold eventually for each fixed exponent; a finite plot alone cannot establish negligibility.`,
       caption: String.raw`The vertical axis is $\log_2$ of each function, the horizontal axis (logarithmic) is $n$. Drag the slider to choose a challenge $n^{-c}$ (the dashed line) and optionally multiply every function by $n^d$. A function is negligible if it ends up below *every* dashed line; the dot marks where each one crosses for good. Try $c=10$ against $n^{-10}$, and raise $c$ to watch $2^{-\sqrt n}$ win only at astronomically large $n$.`,
-      deps: ['crypto-3.1'],
+      deps: ['crypto-3.1', 'pma-3.20'],
       tags: ['negligible', 'definitions'],
       refs: ['Katz–Lindell §3.1'],
       viz(v) {
@@ -210,22 +215,20 @@ export default {
       num: '3.4',
       kind: 'Theorem',
       name: 'Semantic security is equivalent to indistinguishability',
-      statement: String.raw`Let $\Pi$ be a private-key encryption scheme. In the uniform, efficiently sampled auxiliary-input formulation, the following are equivalent. (i) $\Pi$ has indistinguishable encryptions against PPT eavesdroppers (3.3). (ii) For every PPT adversary $\mathcal A$ there is a PPT simulator $\mathcal S$ such that, for every PPT sampler of polynomial-length pairs $(m,z)$ and every polynomial-time target function $f$, the quantity
-$$\bigl|\Pr[\mathcal A(1^n,\mathsf{Enc}_k(m),|m|,z)=f(m,z)]-\Pr[\mathcal S(1^n,|m|,z)=f(m,z)]\bigr|$$
-is negligible in $n$. Both experiments sample a fresh key independently of $(m,z)$; the simulator receives the same auxiliary information $z$ and message length, but no ciphertext. Side information $h(m)$ is included by sampling $z=h(m)$ when $h$ is efficient.`,
-      idea: String.raw`(i)⇒(ii): the simulator generates a fresh key, encrypts a fixed dummy string of length $|m|$, and runs $\mathcal A$ on that ciphertext with the given $z$. If its success differs from the real experiment, sample $(m,z)$, challenge the indistinguishability game with $(m,0^{|m|})$, and test whether $\mathcal A$ outputs $f(m,z)$; this gives an efficient distinguisher. (ii)⇒(i): given an indistinguishability adversary, sample its two messages and internal state, choose a fair bit $b$, and use $m_b$ as the message, with the pair and state as auxiliary information. For distinct messages, the target identifies which message was chosen. The adversary predicts that target from the ciphertext, whereas a simulator seeing the pair but no ciphertext can do no better than $1/2$. Equal-message cases carry no distinguishing advantage and are handled separately. The dummy-encryption simulator belongs to the first direction; the picture illustrates only the special parity-based reduction.`,
-      caption: String.raw`Messages are 8 bits; $f(m)$ is the XOR of the first $w$ bits and the key bits are i.i.d. with $\Pr[k_i=1]=p$ ($p=\frac12$: one-time pad). Eve’s semantic adversary $\mathcal A$ guesses $f(m)$ from $c$ (blue); the simulator $\mathcal S$, who never sees $c$, can only flip a coin (grey). The wrapper $\mathcal D$ uses $\mathcal A$ to win the indistinguishability game (orange). Raise $p$: all three advantages move together, and fall back to $0$ at $p=\tfrac12$ — and the larger $w$, the smaller the leak.`,
-      scope: String.raw`Instance: one-bit function $f$ of an 8-bit message under a biased pad; the idea gives the uniform efficient-sampling reduction. The original paper treats public-key encryption with circuit-based definitions; Goldreich gives the broader nonuniform private-key theorem, which also permits uncomputable auxiliary functions and message ensembles. These quantifier conventions must not be mixed.`,
+      statement: String.raw`For private-key encryption of all bit strings of the supported lengths, **single-ciphertext indistinguishability** against PPT eavesdroppers is equivalent to this computational simulation property. For every PPT adversary $A$ there is a PPT simulator $S$ such that for every PPT sampler of polynomial-length pairs $(m,z)$ and every efficiently computable, polynomial-length function $f$, $$\left|\Pr[A(1^n,\mathsf{Enc}_k(m),|m|,z)=f(m,z)]-\Pr[S(1^n,|m|,z)=f(m,z)]\right|$$ is negligible in $n$. Here $k\leftarrow\mathsf{Gen}(1^n)$ is independent of the sampler, and probabilities include all random coins. The auxiliary information $z$ is given to both algorithms. This is a modern, efficiently sampled formulation of semantic security; it concerns one ciphertext, not repeated use of a key.`,
+      idea: String.raw`IND implies simulation: $S$ generates a fresh key, encrypts a dummy string of the supplied length, and runs $A$ with the same auxiliary information. If replacing the real message by the dummy changes the probability of outputting $f(m,z)$ noticeably, a reduction samples $(m,z)$, submits the real/dummy pair to its IND challenge, and tests whether $A$'s output equals $f(m,z)$. Conversely, an IND adversary selects two equal-length messages and state. Sample one of those messages uniformly, give the pair and state as auxiliary information, and ask for the bit identifying the selected message. With distinct messages the ciphertext adversary has its IND success probability, whereas a simulator without the ciphertext succeeds with probability $1/2$. For equal-message cases the target function and semantic adversary can both return a fixed value; these cases contribute no IND advantage. These reductions explain the equivalence; the diagram below is one special parity example.`,
+      caption: String.raw`Uniform 8-bit messages are encrypted with independent biased pad bits, $\Pr[k_i=1]=p$. The function is the parity of the $w$ least significant bits. The semantic adversary $A$ (blue) and its parity-specific IND wrapper $D$ (orange) have exact excess success $|1-2p|^w/2$; the ciphertext-free simulator $S$ (grey) has exact excess $0$. The sampled bars may be slightly negative and include normal standard-error intervals. At $p=1/2$ all exact excesses vanish.`,
+      scope: String.raw`Instance: one-bit function $f$ of an 8-bit message under a biased pad; the general equivalence is proved by the two reductions in the idea, not by this simulation.`,
       deps: ['crypto-3.3'],
       tags: ['semantic security', 'reductions'],
-      refs: ['Goldwasser–Micali (1984), §5 pp. 282–290, especially Theorem 5.2 (original public-key notion)', 'Goldreich, Foundations of Cryptography, Chapter 5 draft, Definition 5.2.1 pp. 365–367 and Theorem 5.2.5/Propositions 5.2.6–5.2.7 pp. 369–374 (nonuniform version)'],
-      credit: 'Goldwasser & Micali, 1984 (original public-key notions); modern private-key formulation as in Goldreich' ,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Semantic_security' },
+      refs: ['Goldwasser–Micali (1984), §§5.1–5.2, Theorem 5.2, pp. 282–290', 'Boneh–Shoup v0.6, §2.2 (modern IND games); reductions supplied in the text'],
+      credit: 'Goldwasser & Micali, 1984, §5.2 (original public-key semantic notion); modern simulation formulation here',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Semantic_security', 'GM original': 'https://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Encryption/Probabilistic_Encryption.pdf' },
       viz(v) {
         const sD = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, full: true });
-        const sB = v.stage({ x: [0.4, 3.6], y: [0, 0.55], axes: 'box', gutter: true, height: 270, full: true, ylabel: 'advantage over ½' });
+        const sB = v.stage({ x: [0.4, 3.6], y: [-0.06, 0.58], axes: 'box', gutter: true, height: 270, full: true, ylabel: 'advantage over ½' });
         const pS = v.slider('key bias $p=\\Pr[k_i=1]$', 0.5, 1, 0.8, { step: 0.01 });
-        const wS = v.select('$f(m)$ = XOR of the first $w$ bits', [1, 2, 3, 4].map((w) => ({ value: w, label: `$w=${w}$` })), 1);
+        const wS = v.select('$f(m)$ = XOR of the low $w$ bits', [1, 2, 3, 4].map((w) => ({ value: w, label: `$w=${w}$` })), 1);
         let seed = 1; v.button('Resample', () => { seed += 1; });
         const NG = 6000;
         let info = null;
@@ -260,7 +263,8 @@ is negligible in $n$. Both experiments sample a fresh key independently of $(m,z
           P.text('b′ = [A’s guess = f(m₁)]', x0 + cw * 0.88, 70, { size: 11.5, color: 'ink', halo: false });
           const adv = (x) => x / NG - 0.5, e = (q) => ci95(q / NG, NG);
           const vals = [[1, adv(wa), 'accent', e(wa)], [2, adv(ws), 'muted', e(ws)], [3, adv(wd), 'orange', e(wd)]];
-          vals.forEach(([x, y, col, er]) => { sB.rect(x - 0.28, 0, x + 0.28, Math.max(y, 0), { fill: col, fillAlpha: 0.5, color: col, width: 1.2 }); sB.line(x, y - er, x, y + er, { color: 'ink', width: 2 }); sB.text(v.fix(y, 3), x, Math.max(y, 0) + er + 0.04, { size: 11.5, weight: 700, color: col }); });
+          vals.forEach(([x, y, col, er]) => { sB.rect(x - 0.28, Math.min(y, 0), x + 0.28, Math.max(y, 0), { fill: col, fillAlpha: 0.5, color: col, width: 1.2 }); sB.line(x, y - er, x, y + er, { color: 'ink', width: 2 }); sB.text(v.fix(y, 3), x, Math.max(y, 0) + er + 0.04, { size: 11.5, weight: 700, color: col }); });
+          sB.hline(0, { color: 'muted', width: 1 });
           sB.hline(delta, { color: 'green', width: 2, dash: true });
           sB.text(`exact ${v.fix(delta, 3)}`, 3.58, delta + 0.03, { size: 11, color: 'green', align: 'right', weight: 700 });
           sB.setTicks([[1, 'A  (sees c)'], [2, 'S  (sees only |m|)'], [3, 'D  (built from A)']], null);
@@ -276,11 +280,13 @@ is negligible in $n$. Both experiments sample a fresh key independently of $(m,z
       num: '3.5',
       kind: 'Definition',
       name: 'Pseudorandom generators',
-      statement: String.raw`A deterministic polynomial-time algorithm $G:\{0,1\}^n\to\{0,1\}^{\ell(n)}$ with **expansion** $\ell(n)>n$ is a **pseudorandom generator** (PRG) if for every PPT distinguisher $D$ there is a negligible function $\mathsf{negl}$ with $$\Bigl|\Pr_{s\leftarrow\{0,1\}^n}[D(G(s))=1]-\Pr_{r\leftarrow\{0,1\}^{\ell(n)}}[D(r)=1]\Bigr|\le\mathsf{negl}(n).$$ Only $2^n$ of the $2^{\ell(n)}$ strings are outputs of $G$, so an *unbounded* distinguisher always wins (is the string in the range?); pseudorandomness is the claim that no *efficient* test can notice.`,
-      idea: String.raw`Statistical tests are exactly efficient distinguishers: a test that rejects random strings only rarely but rejects outputs of $G$ often is a distinguisher with non-negligible advantage. A generator is therefore refuted by exhibiting a test; it is never *proved* pseudorandom by passing tests, only believed so under an assumption (one-way functions suffice, chapter 6). Passing frequency, runs and autocorrelation tests is easy — linear shift registers do — which is why the definition quantifies over **all** efficient tests.`,
+      statement: String.raw`A deterministic polynomial-time algorithm $G:\{0,1\}^n\to\{0,1\}^{\ell(n)}$ with **expansion** $\ell(n)>n$ is a **pseudorandom generator** (PRG) if for every PPT distinguisher $D$ there is a negligible function $\mathsf{negl}$ with $$\begin{gathered}\\\left|\begin{gathered}\Pr_{s\\\leftarrow\{0,1\}^n}[D(G(s))=1]\\-\Pr_{r\\\leftarrow\{0,1\}^{\ell(n)}}[D(r)=1]\end{gathered}\right|\\\le\mathsf{negl}(n).\end{gathered}$$ Only $2^n$ of the $2^{\ell(n)}$ strings are outputs of $G$, so an *unbounded* distinguisher always wins (is the string in the range?); pseudorandomness is the claim that no *efficient* test can notice.`,
+      idea: String.raw`Statistical tests are exactly efficient distinguishers: a test that rejects random strings only rarely but rejects outputs of $G$ often is a distinguisher with non-negligible advantage. A generator is therefore refuted by exhibiting a test; it is never *proved* pseudorandom by passing tests, only believed so under an assumption (one-way functions suffice, chapter 6). Passing frequency, runs and autocorrelation tests is easy — linear shift registers do — which is why the definition quantifies over **all** efficient tests.
+
+The product count comb-1.1 gives $2^n$ possible seeds and $2^{\ell(n)}$ possible output strings by choosing each bit. A deterministic generator has at most one image per seed, so its range has size at most $2^n$, possibly less if seeds collide. The range-membership test accepts the generator with probability one but a uniform output with probability at most $2^{n-\ell(n)}$. This is a statistical distinction; the definition withholds an efficient membership algorithm.`,
       caption: String.raw`Pick a toy generator and a test. The two bitmaps show $L=2048$ output bits of $G(s)$ (top) and of a truly random string (bottom). The histogram shows the test statistic $z$ over 300 runs of each (values beyond $\pm10$ are drawn at the edge); a test *rejects* when $|z|>2$. The readout gives the distinguisher’s advantage. The LFSR passes three tests and fails the linear-complexity test; each of the other bad generators fails a test you can find.`,
       scope: String.raw`All generators here are toys with a 32-bit seed (so the $2^{32}$-element range could be exhausted); none is a cryptographic generator, and “mixer” is only *statistically* good.`,
-      deps: ['crypto-3.2'],
+      deps: ['crypto-3.2', 'comb-1.1'],
       tags: ['prg', 'pseudorandomness'],
       refs: ['Katz–Lindell §3.3.1', 'Boneh–Shoup ch. 3'],
       credit: 'Blum & Micali, 1984; Yao, 1982',
@@ -448,14 +454,17 @@ is negligible in $n$. Both experiments sample a fresh key independently of $(m,z
       num: '3.8',
       kind: 'Method',
       name: 'The hybrid argument',
-      statement: String.raw`Let $H_0,H_1,\dots,H_\ell$ be distributions (“hybrids”) such that $H_0$ is the real experiment and $H_\ell$ the ideal one, and let $D$ be any distinguisher. Telescoping gives $$\bigl|\Pr[D(H_0)=1]-\Pr[D(H_\ell)=1]\bigr|\le\sum_{i=1}^{\ell}\bigl|\Pr[D(H_{i-1})=1]-\Pr[D(H_i)=1]\bigr|\le\ell\cdot\max_i\bigl|\Pr[D(H_{i-1})=1]-\Pr[D(H_i)=1]\bigr|.$$ If neighbouring hybrids differ only in one component that a *single-component* distinguisher can attack, then an efficient $D$ with advantage $\varepsilon$ yields, by guessing the index $i\in\{1,\dots,\ell\}$ at random, an efficient distinguisher for that component with advantage at least $\varepsilon/\ell$. For polynomial $\ell$, a non-negligible total gap forces a non-negligible gap in a single step.`,
-      idea: String.raw`A large change over $\ell$ steps must be made of at least one step of average size. The triangle inequality bounds the total by the sum of the steps, and the reduction pays a factor $\ell$ for not knowing which step is the big one — the polynomial loss $L=\ell$ of 3.6. For a consistent orientation of the two challenge worlds, a uniformly random index averages the signed neighbour gaps to the endpoint gap divided by $\ell$; the max-gap inequality alone does not justify random-index sampling. The argument needs hybrids that can be *sampled* efficiently with the challenge plugged in as component $i$: that is how the one-component distinguisher is built. It is the engine of multi-message security, of PRG length extension, and of the original security proofs of Goldwasser and Micali (3.15).`,
-      caption: String.raw`Left: the staircase of hybrids; row $i$ has its first $i$ blocks ideal (green, uniform) and the others real (red, biased). The distinguisher $D$ outputs $1$ iff the total number of $1$ bits reaches the threshold $T$. Middle: exact $\Pr[D(H_i)=1]$ (convolution of the blocks). Right: each neighbour gap $|\Delta_i|$; their sum bounds the total drop. Click a row to highlight it. With one weak block all the gap sits in a single step; with many weak blocks each step contributes about $1/\ell$ of it.`,
-      scope: String.raw`Instance: each block is one bit that is Bernoulli$(\tfrac12+\delta_j)$ in the real world, uniform in the ideal one; the probabilities are computed exactly, not sampled.`,
-      deps: ['crypto-3.5'],
+      statement: String.raw`Let $H_0,H_1,\dots,H_\ell$ be distributions (“hybrids”) such that $H_0$ is the real experiment and $H_\ell$ the ideal one, and let $D$ be any distinguisher. Telescoping gives $$\begin{gathered}\\\left|\begin{gathered}\Pr[D(H_0)=1]\\-\Pr[D(H_\ell)=1]\end{gathered}\right|\\\le\sum_{i=1}^{\ell}\\\left|\begin{gathered}\Pr[D(H_{i-1})=1]\\-\Pr[D(H_i)=1]\end{gathered}\right|\\\le\ell\cdot\max_i\\\left|\begin{gathered}\Pr[D(H_{i-1})=1]\\-\Pr[D(H_i)=1]\end{gathered}\right|.\end{gathered}$$ If neighbouring hybrids differ only in one component that a *single-component* distinguisher can attack, with consistently oriented real/ideal challenge embeddings, then an efficient $D$ with advantage $\varepsilon$ yields, by guessing the index $i\in\{1,\dots,\ell\}$ at random, an efficient distinguisher for that component with advantage at least $\varepsilon/\ell$. For polynomial $\ell$, a non-negligible total gap forces a non-negligible gap in a single step.`,
+      idea: String.raw`The signed gaps telescope: $\sum_i(\Pr[D(H_{i-1})=1]-\Pr[D(H_i)=1])=\Pr[D(H_0)=1]-\Pr[D(H_\ell)=1]$. If the challenge can be embedded efficiently at each position with a consistent real/ideal orientation, sampling a uniform index produces a distinguisher whose signed gap is exactly the total signed gap divided by $\ell$; taking its absolute value gives $\varepsilon/\ell$. Merely averaging absolute gaps would not justify that randomized reduction, since signed gaps can cancel. The triangle inequality also guarantees a large individual step. Goldwasser–Micali's Theorem 5.1 uses adjacent message words to reduce a whole-message gap to one encrypted bit.
+
+The triangle inequality pma-1.33(e), applied repeatedly to the real signed neighboring acceptance gaps, gives the displayed sum-of-absolute-gaps bound after telescoping. The separate randomized-index reduction averages signed gaps before taking absolute value, so it additionally needs the consistent challenge orientation stated here. The triangle inequality guarantees a large step but does not by itself construct a uniformly efficient embedding for that step.`,
+      caption: String.raw`Left: the staircase of hybrids; row $i$ has its first $i$ blocks ideal (green, uniform) and the others real (red, biased). The distinguisher $D$ outputs $1$ iff the total number of $1$ bits reaches the threshold $T$. Middle: exact $\Pr[D(H_i)=1]$ (convolution of the blocks). Right: each neighbour gap $|\Delta_i|$; their sum bounds the total drop. Click a row to highlight it. With one weak block only its replacement can change the probability; with many biased blocks the gaps can vary, while their maximum is at least the total divided by $\ell$.`,
+      scope: String.raw`Independent Bernoulli bits: all-block bias is $\delta$; the one-block profile biases only the middle block by $\delta$; growing biases are $\delta(j+1)/\ell$. Thus every real success probability lies in $[1/2,0.95]$. Finite convolutions compute the plotted probabilities up to floating-point rounding. Here the threshold event is monotone, so all signed gaps have the same sign; the method also applies to general efficiently embeddable hybrids.`,
+      deps: ['crypto-3.5', 'pma-1.33'],
       tags: ['hybrid argument', 'proof technique'],
-      refs: ['Goldwasser–Micali (1984), Theorem 5.1 and proof pp. 284–286: hypercube walk and adjacent-message reduction'],
-      credit: 'Used explicitly by Goldwasser & Micali, 1984, Theorem 5.1',
+      refs: ['Goldwasser–Micali (1984), Theorem 5.1, pp. 284–286', 'Boneh–Shoup v0.6, §3.2, Theorem 3.2, pp. 57–59 (hybrid proof)'],
+      credit: 'Goldwasser & Micali, 1984',
+      links: { 'Boneh–Shoup v0.6': 'https://crypto.stanford.edu/~dabo/cryptobook/BonehShoup_0_6.pdf' },
       viz(v) {
         const sM = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, minWidth: 250, weight: 1 });
         const sP = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, minWidth: 250, weight: 1, xlabel: 'hybrid i', ylabel: 'Pr[D(Hᵢ) = 1]' });
@@ -468,14 +477,10 @@ is negligible in $n$. Both experiments sample a fresh key independently of $(m,z
         sP.onClick((x) => { sel = clamp(Math.round(x), 0, lS.value); });
         let info = null;
         v.render(() => {
-          const l = lS.value, d = dS.value, T = Math.min(tS.value, l);
-          const dj = (j) => (prof.value === 'all' ? d : prof.value === 'one' ? (j === Math.floor(l / 2) ? Math.min(0.5, d * 2.2) : 0) : d * 2 * (j + 1) / (l + 1));
-          const pr1 = (i) => { // exact Pr[ones >= T] in H_i
-            let dist = [1];
-            for (let j = 0; j < l; j++) { const p = j < i ? 0.5 : 0.5 + dj(j), nd = new Array(dist.length + 1).fill(0); dist.forEach((q, k) => { nd[k] += q * (1 - p); nd[k + 1] += q * p; }); dist = nd; }
-            let s = 0; for (let k = T; k <= l; k++) s += dist[k] || 0; return s;
-          };
-          const pv = Array.from({ length: l + 1 }, (_, i) => pr1(i));
+          const l = lS.value, d = dS.value;
+          tS.input.max = String(l); if (tS.value > l) tS.set(l);
+          const T = tS.value, dj = (j) => hybridBias(prof.value, d, j, l);
+          const pv = hybridProbabilities(l, d, prof.value, T);
           const gaps = Array.from({ length: l }, (_, i) => Math.abs(pv[i] - pv[i + 1]));
           const tot = Math.abs(pv[0] - pv[l]), sum = gaps.reduce((a, b) => a + b, 0), mx = Math.max(...gaps);
           sel = clamp(sel, 0, l);
@@ -501,7 +506,7 @@ is negligible in $n$. Both experiments sample a fresh key independently of $(m,z
           sG.setView([0.3, l + 0.7], [0, Math.max(0.05, mx * 1.3)]);
           gaps.forEach((g, i) => sG.rect(i + 1 - 0.38, 0, i + 1 + 0.38, g, { fill: i + 1 === sel || i === sel ? 'gold' : 'orange', fillAlpha: 0.55, color: 'orange', width: 1 }));
           sG.hline(tot / l, { color: 'green', width: 1.6, dash: true });
-          info = { tot, sum, mx, l };
+          info = { tot, sum, mx, l, T, pv, gaps };
         });
         v.legend([['red', 'real block (biased)'], ['orange', 'real block (unbiased)'], ['green', 'ideal block'], ['green', 'average gap $\\mathrm{total}/\\ell$', { dash: true }]]);
         v.readout(() => `Total gap $|\\Pr[D(H_0)=1]-\\Pr[D(H_\\ell)=1]|=${v.fix(info.tot, 4)}$ $\\le$ $\\sum_i|\\Delta_i|=${v.fix(info.sum, 4)}$ $\\le$ $\\ell\\max_i|\\Delta_i|=${v.fix(info.l * info.mx, 4)}$. The best single step has gap $${v.fix(info.mx, 4)}$ $\\ge$ total$/\\ell=${v.fix(info.tot / info.l, 4)}$: guessing the index $i$ loses at most the factor $\\ell=${info.l}$.`);

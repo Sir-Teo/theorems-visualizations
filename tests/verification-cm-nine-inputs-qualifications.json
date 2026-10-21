@@ -1,0 +1,10 @@
+[
+  [
+    "independent collision waiting times with positive rates",
+    "independent exponential collision waiting times (constant hazards) with positive rates"
+  ],
+  [
+    "It is **linear** in $T$ for $T\\gtrsim\\Theta/3$ (every phonon is excited, $\\rho\\propto$ phonon number $\\propto T$)",
+    "It crosses toward approximately linear behaviour around $T\\sim\\Theta/3$ and is **asymptotically linear** as $T/\\Theta\\to\\infty$ (the thermally occupied phonon population then scales with $T$)"
+  ]
+]

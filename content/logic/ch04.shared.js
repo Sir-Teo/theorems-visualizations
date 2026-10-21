@@ -374,23 +374,16 @@ function renameApart(f) {
 }
 /** Herbrand universe up to level n as term strings with ASTs. */
 export function herbrandTerms(consts, funcs, level, cap = 400) {
-  let terms = consts.length ? consts.map(c => mk.CONST(c)) : [mk.CONST('a')];
-  for (let l=0;l<level;l++) {
-    const next=[...terms];let capped=false;
-    for(const {name,arity} of funcs){
-      if(!arity)continue;
-      const addTuple=args=>{
-        if(capped)return;
-        if(args.length===arity){
-          const t=mk.FN(name,args);if(next.some(u=>equalAst(u,t)))return;
-          if(next.length>=cap){capped=true;return;}next.push(t);return;
-        }
-        for(const t of terms){addTuple([...args,t]);if(capped)break;}
-      };
-      addTuple([]);if(capped)break;
+  let terms = consts.length ? consts.map((c) => mk.CONST(c)) : [mk.CONST('a')];
+  for (let l = 0; l < level; l++) {
+    const next = [...terms];
+    for (const { name, arity } of funcs) {
+      if (arity === 0) continue;
+      const tuples = [[]];
+      for (let k = 0; k < arity; k++) { const t2 = []; for (const tp of tuples) for (const t of terms) { if (t2.length > cap) break; t2.push([...tp, t]); } tuples.splice(0, tuples.length, ...t2); }
+      for (const tp of tuples) { if (next.length > cap) break; const t = mk.FN(name, tp); if (!next.some((u) => equalAst(u, t))) next.push(t); }
     }
-    terms=next;
-    if(capped){terms.capped=true;return terms;}
+    terms = next;
   }
   return terms;
 }
@@ -431,12 +424,11 @@ export function herbrandStage(sk, level, { cap = 2500 } = {}) {
   const funcs = sk.skolems.filter((s) => s.arity > 0);
   const base = sk.skolems.filter((s) => s.arity === 0).map((s) => s.name);
   const terms = herbrandTerms([...new Set([...consts, ...base])], funcs, level);
-  if(terms.capped)return {sat:null,capped:true,reason:'term limit',instances:0,terms,atoms:0};
   const g = groundInstances(sk, terms, cap);
   if (g.capped) return { sat: null, capped: true, instances: g.total, terms, atoms: 0 };
   const cnf = new Cnf(); g.inst.forEach((f) => cnf.assert(f));
   const r = dpll(cnf.clauses, cnf.names.length, { limit: 4e6 });
-  return { sat: r.aborted ? null : r.sat, capped: !!r.aborted, instances: g.inst.length, terms, atoms: cnf.atoms.size, model: r.model, cnf, aborted: r.aborted };
+  return { sat: r.aborted ? null : r.sat, capped: false, instances: g.inst.length, terms, atoms: cnf.atoms.size, model: r.model, cnf, aborted: r.aborted };
 }
 
 // ---------------------------------------------------------------- Gödel's D_n (prenex ∀*∃* sentence, no function symbols, no equality)

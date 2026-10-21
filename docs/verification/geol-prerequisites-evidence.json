@@ -1,0 +1,225 @@
+{
+  "scope": "Producer candidate awaiting independent immutable review; no source closure",
+  "mapping": [
+    {
+      "item": "geol-1.2",
+      "target": "pde-1.4"
+    },
+    {
+      "item": "geol-2.2",
+      "target": "pma-8.6"
+    },
+    {
+      "item": "geol-2.4",
+      "target": "ode-1.4"
+    },
+    {
+      "item": "geol-2.10",
+      "target": "ode-1.4"
+    },
+    {
+      "item": "geol-3.3",
+      "target": "ladr-6.55"
+    },
+    {
+      "item": "geol-3.6",
+      "target": "ladr-7.29"
+    },
+    {
+      "item": "geol-3.9",
+      "target": "mech-10.1"
+    },
+    {
+      "item": "geol-4.1",
+      "target": "pma-6.21"
+    },
+    {
+      "item": "geol-4.2",
+      "target": "pma-6.21"
+    },
+    {
+      "item": "geol-4.3",
+      "target": "pma-5.5"
+    },
+    {
+      "item": "geol-4.4",
+      "target": "pma-6.22"
+    },
+    {
+      "item": "geol-4.5",
+      "target": "pma-6.20"
+    },
+    {
+      "item": "geol-4.5",
+      "target": "pma-6.19"
+    },
+    {
+      "item": "geol-4.6",
+      "target": "pde-4.1"
+    },
+    {
+      "item": "geol-4.7",
+      "target": "pma-5.8"
+    }
+  ],
+  "counts": {
+    "before": {
+      "writtenToWritten": 10,
+      "writtenToKnown": 21,
+      "wholeSyllabus": 48
+    },
+    "after": {
+      "writtenToWritten": 25,
+      "writtenToKnown": 36,
+      "wholeSyllabus": 63
+    }
+  },
+  "guard": {
+    "items": 48,
+    "functions": 48,
+    "helpers": "byte-identical",
+    "sourceFlags": "unchanged",
+    "moduleText": "byte-identical outside idea/deps",
+    "syllabus": "all 14 expected exact lists plus unchanged other properties",
+    "explicitTemporaryScript": "/tmp/atlas-new-imaging-source/geol-guard.mjs",
+    "allowedFormattingException": "4.2 existing equation split across aligned lines; algebra unchanged"
+  },
+  "checks": {
+    "mathCases": 4800,
+    "nativeCases": 28,
+    "viewportWidth": 320,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "ownPixels": "All 28 complete changed-explanation PNGs personally inspected",
+    "static": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "strict": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "bridges": "No existing bridge steps reference changed IDs"
+  },
+  "logs": [
+    "/tmp/atlas-new-imaging-source/geol-native.log",
+    "/tmp/atlas-new-imaging-source/geol-strict.log",
+    "/tmp/atlas-new-imaging-source/geol-static.log"
+  ],
+  "pictures": [
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-1.2-dark-320.png",
+      "sha256": "bfaef98765e4fa106ba96d7760b93ba7a39bb1e01931a00e80745bf508c18dce"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-1.2-light-320.png",
+      "sha256": "e31260e09cb08c3784e0d12c4a6290633edc4c7b6bcfc964bd5072db47f5e3fb"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-2.10-dark-320.png",
+      "sha256": "24b14e0230ea87068afac82a977caeb0408b3113e1e57ea9a54d0fdedfa59867"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-2.10-light-320.png",
+      "sha256": "b9b90d29162932e22b5842f14fd705861626fdb5fd8c514b509ba9a09091f76b"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-2.2-dark-320.png",
+      "sha256": "5d57c5ba9ed2b540913d864e5cf51c78daf1a07888842d1b81a763d64932c291"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-2.2-light-320.png",
+      "sha256": "57138b585f2d7ea0b930349f8468c8d9ec70e65dcffe69d84358c626c059c946"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-2.4-dark-320.png",
+      "sha256": "919acf3decbf2e7f148c4a7978367962c2776ae659ac06c518b1045024b5f2e6"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-2.4-light-320.png",
+      "sha256": "5ad4c937038545c07a278d6c0d9f7ff8d6f1bc4d7c591a75badc669e867394ac"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-3.3-dark-320.png",
+      "sha256": "3f1b7bb1899daccf16e999c20b869ff89318665ba73ab64ea585325bd4254e3a"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-3.3-light-320.png",
+      "sha256": "406c6e9367278d57281b06cab8702bdca2985c7aa3781738e7a7b02d7953f551"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-3.6-dark-320.png",
+      "sha256": "c3d7098acd790fd43833b03787aa74fb0cbb21e77de799805e9de07a38484a00"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-3.6-light-320.png",
+      "sha256": "00fcf3297fe49790627b15b34d7fba4f7e103f2645c74888cc9f0a00e1cccad8"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-3.9-dark-320.png",
+      "sha256": "d5eb432105ce776217a43d4cb916618370941dec5cca0e36343084bc80c41a76"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-3.9-light-320.png",
+      "sha256": "533b340bff557ca0e9b48f91ccb7279898aa1cd132e0749f2d562fd73cb7ddfa"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.1-dark-320.png",
+      "sha256": "49a4d61cd5c43d8d21f6e716e4c6bf46c531dd380097ee433de68f684bfd548d"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.1-light-320.png",
+      "sha256": "2de6c903770f1dd296ed95817cf83cdd1e89224f13daf3496d31464cee39c05a"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.2-dark-320.png",
+      "sha256": "5ab4dbb46acdd33672f8528a7d548b990e2f79ca3b5e199d88a9b474d04bef60"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.2-light-320.png",
+      "sha256": "cfbb2b41220fb73a162d64df7eeca9bfb909eb54349b0d4cf77854fbff2ce4e5"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.3-dark-320.png",
+      "sha256": "59c679a5b0abcca82e570e6296247d3efc3ce9f474fde19406a0dabc414257b7"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.3-light-320.png",
+      "sha256": "0b9db97e8fe8eee64a83551065930e547b3a189fc3a8763c814a308d2b4789e6"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.4-dark-320.png",
+      "sha256": "53bd7b74f19c96222ac37f909f62c9be8c23819623c48822edd7723df503dcaf"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.4-light-320.png",
+      "sha256": "20468b7903ce0fa6f6b6de68430b737c19e64d4611c229af52cd41d5061aead6"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.5-dark-320.png",
+      "sha256": "30edcb49187782cf63d5422728c64026c296909588c23ac88a18109b5c4fe8b1"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.5-light-320.png",
+      "sha256": "01458682744d23e33c0c4e97750d693afd1e82751ab60598f83052abd08a6377"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.6-dark-320.png",
+      "sha256": "eb083767882ca3880fd066c427c96503164d8a66984d280f83af166d6d4731e4"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.6-light-320.png",
+      "sha256": "b1bd376c48d06618a0c65172438a6ff6fd671599d6b71dc0c6449cb173b728a8"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.7-dark-320.png",
+      "sha256": "0d06d30b44ae18aea558d2f5d31cabb3e9850c83fc16e3c728761f92e71f1d42"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/geol-prerequisites/idea-4.7-light-320.png",
+      "sha256": "36f1a4161b2489662070160835ac7d980e1220c064b8c1a461dc10841b7ce11a"
+    }
+  ]
+}

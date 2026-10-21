@@ -1,6 +1,6 @@
-import { poiseuille } from './vessel-flow.shared.js';
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part a: 4.1–4.5)
 import { clamp, PA_PER_MMHG, RHO_BLOOD, MU_BLOOD } from './ch04.shared.js';
+import { tubeFlow, murrayRadius, murrayCost } from './physio-source-audit-geometry.js';
 
 const SEG = [
   { n: 'arteries', c: 'accent' }, { n: 'arterioles', c: 'orange' }, { n: 'capillaries', c: 'green' }, { n: 'veins', c: 'purple' },
@@ -20,7 +20,9 @@ export default {
       statement: String.raw`For steady flow through a vascular bed, the mean flow $Q$ is proportional to the pressure difference $\Delta P$ between its inlet and outlet, and the constant of proportionality is the reciprocal of the **resistance** $R$:
 $$\Delta P = Q\,R ,\qquad R=\frac{\Delta P}{Q}.$$
 For the whole systemic circulation $\Delta P\approx \text{MAP}-\text{RAP}$ and $Q$ is the cardiac output, so $\text{MAP}\approx \text{CO}\times \text{SVR}+\text{RAP}$. Resistance is a property of the vessels (their geometry) and the blood (its viscosity), not of the flow, but it is defined here as the ratio, whatever the vessels do.`,
-      idea: String.raw`It is the circuit law with pressure in the role of voltage and volume flow in the role of current: the pressure drops along a chain of vessels add up to the total drop, and the same flow passes through each member of a chain (conservation of volume for incompressible blood). The empirical content is that, for a given bed, $\Delta P/Q$ is roughly constant over the working range; where it is not (collapsing veins, vessel distension, non-Newtonian blood) the "resistance" is just a name for the ratio at that operating point. Poiseuille's law (physio-4.2) says what the resistance of a single tube is made of.`,
+      idea: String.raw`It is the circuit law with pressure in the role of voltage and volume flow in the role of current: the pressure drops along a chain of vessels add up to the total drop, and the same flow passes through each member of a chain (conservation of volume for incompressible blood). The empirical content is that, for a given bed, $\Delta P/Q$ is roughly constant over the working range; where it is not (collapsing veins, vessel distension, non-Newtonian blood) the "resistance" is just a name for the ratio at that operating point. Poiseuille's law (physio-4.2) says what the resistance of a single tube is made of.
+
+The constitutive relation in circ-1.4 is the precise circuit analogy: replace voltage drop by pressure drop and current by volume flow. A fixed positive hydraulic resistance then gives the same linear proportionality. As with a non-ohmic electrical element, a varying pressure-to-flow ratio is only an operating-point resistance; the analogy does not establish constant resistance in a distending or collapsing vessel.`,
       caption: String.raw`A chain of four resistances stands for the systemic circulation (large arteries, arterioles, capillaries, veins; the split is a textbook-style illustration). The pressure profile is drawn node by node, each step of height $Q R_i$. Drag the **arteriolar resistance** up: with the heart as a **pressure source** the flow falls and nearly all the drop moves into the arterioles; switch the source to a **flow source** (a pump that delivers a fixed output) and the same change instead raises the arterial pressure, which is how hypertension looks in the model. The readout checks that the four drops add to the total.`,
       scope: String.raw`Mean (time-averaged) pressures and flows only; pulsatility and wave effects are left to the Windkessel and wave items below. The regional split of resistance is illustrative (arterioles carry the largest share in standard textbooks), not a measured dataset.`,
       deps: ['circ-1.4'],
@@ -71,33 +73,34 @@ For the whole systemic circulation $\Delta P\approx \text{MAP}-\text{RAP}$ and $
       num: '4.2',
       kind: 'Law',
       name: 'Poiseuille’s law in blood vessels',
-      statement: String.raw`For steady, laminar flow of a Newtonian fluid of viscosity $\mu$ through a rigid straight tube of radius $r$ and length $L$ under a pressure difference $\Delta P$, the velocity profile is a paraboloid, $u(\rho)=\dfrac{\Delta P}{4\mu L}(r^2-\rho^2)$, the volume flow is
+      statement: String.raw`For steady, laminar flow of a Newtonian fluid of viscosity $\mu$ through a long rigid straight circular tube with no slip at its wall of radius $r$ and length $L$ under a pressure difference $\Delta P$, the velocity profile is a paraboloid, $u(\rho)=\dfrac{\Delta P}{4\mu L}(r^2-\rho^2)$, the volume flow is
 $$Q=\frac{\pi r^4\,\Delta P}{8\mu L},$$
 and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is half the centre-line velocity, and the shear stress at the wall is $\tau_w=\Delta P\,r/(2L)=4\mu Q/(\pi r^3)$.`,
-      idea: String.raw`Balance forces on a cylinder of fluid of radius $\rho$: the pressure force $\pi\rho^2\Delta P$ is carried by viscous shear on its surface, $-\mu u'(\rho)\,2\pi\rho L$. That gives $u'=-\Delta P\rho/(2\mu L)$, and the no-slip condition $u(r)=0$ fixes the parabola. Integrating $u$ over the cross-section, $\int_0^r u\,2\pi\rho\,d\rho$, gives the fourth power: one factor $r^2$ is the area and the other is the square of the distance over which the profile stretches. This is the Hagen–Poiseuille law of the fluid-dynamics collection (fluid-6.8), used here with blood parameters.`,
-      caption: String.raw`Drag the sliders for radius, length, viscosity and driving pressure. The **left** panel shows the tube with the parabolic profile at three stations; the **right** panel plots $u(\rho)$ and marks the mean velocity (always half the peak). The readout computes the flow twice, from the closed formula and by numerically integrating the profile over the cross-section, and they agree. The 3.5 mPa·s blood and 1.2 mPa·s plasma values are illustrative fluid references whose exact physiological conditions still need a source; viscosity varies with temperature, haematocrit and shear. Extreme settings can leave the long, laminar-flow regime.`,
-      scope: String.raw`Holds for steady, fully developed laminar flow in a long rigid straight tube of constant circular cross-section with a Newtonian fluid and no slip. Real arteries are elastic and pulsatile (physio-4.15), and blood is non-Newtonian in small vessels (physio-4.11).`,
-      deps: ['physio-4.1', 'fluid-6.8'],
+      idea: String.raw`Balance forces on a cylinder of fluid of radius $\rho$: the pressure force $\pi\rho^2\Delta P$ is carried by viscous shear on its surface, $-\mu u'(\rho)\,2\pi\rho L$. That gives $u'=-\Delta P\rho/(2\mu L)$, and the no-slip condition $u(r)=0$ fixes the parabola. Integrating $u$ over the cross-section, $\int_0^r u\,2\pi\rho\,d\rho$, gives the fourth power: one factor $r^2$ is the area and the other is the square of the distance over which the profile stretches. This is the Hagen–Poiseuille law of the fluid-dynamics collection (fluid-6.8), used here with blood parameters.
+
+For the stated rigid-tube assumptions, the shear balance fixes the continuous radial derivative of velocity. Apply pma-6.21 from a radius to the no-slip wall to recover the parabola, and again to its continuous annular-flow integrand to obtain the cross-sectional flow. These integrations supply the fourth power of radius; they do not extend the Newtonian steady-flow assumptions to an elastic pulsatile vessel.`,
+      caption: String.raw`Drag the sliders for radius, length, viscosity and driving pressure. The **left** panel shows the tube with the parabolic profile at three stations; the **right** panel plots $u(\rho)$ and marks the mean velocity (always half the peak). The readout computes the flow twice, from the closed formula and by numerically integrating the profile over the cross-section, and they agree. The default viscosity 3.5 mPa·s and density 1060 kg/m³ are chosen model parameters. The readout also gives the formal Reynolds number; large values warn against interpreting this laminar solution as a physical prediction.`,
+      scope: String.raw`Holds for steady, fully developed laminar flow in a long rigid straight tube of constant circular cross-section with a Newtonian fluid and no slip. Real arteries are elastic and pulsatile (physio-4.15), and blood is non-Newtonian in small vessels (physio-4.11). Extreme slider combinations can violate the laminar and long-tube assumptions. A low Reynolds number alone does not establish fully developed flow or validate a blood model.`,
+      deps: ['physio-4.1','fluid-6.8','pma-6.21'],
       see: ['physio-4.3'],
-      refs: ['Keener–Sneyd ch. 11'],
+      refs: ['Keener–Sneyd, author manuscript §11.1, pp. 482–484, equations (11.5)–(11.9)'],
       tags: ['Poiseuille', 'viscosity'],
-      credit: 'J. L. M. Poiseuille (1838–1846) and G. Hagen (1839)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Hagen%E2%80%93Poiseuille_equation' },
-      verify: true,
+      links: { source: 'https://www.math.utah.edu/~keener/books/control.pdf#page=482' },
+      verify: false,
       viz(v) {
         const sr = v.slider('radius $r$', 0.2, 3, 1.5, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mm` });
         const sL = v.slider('length $L$', 1, 20, 10, { step: 0.5, fmt: (x) => `${x} cm` });
         const sm = v.slider('viscosity $\\mu$', 1, 8, 3.5, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} mPa·s` });
         const sP = v.slider('pressure drop $\\Delta P$', 1, 50, 2, { step: 1, fmt: (x) => `${x} mmHg` });
-        const s = v.stage({ x: [0, 10], y: [-3.4, 3.4], height: 280, axes: false, weight: 1.3 });
+        const s = v.stage({ x: [-0.2, 10.2], y: [-3.6, 3.6], height: 280, axes: false, weight: 1.3 });
         const p = v.stage({ x: [-3.2, 3.2], y: [0, 1], height: 280, axes: 'box', gutter: true, xlabel: 'distance from axis ρ (mm)', ylabel: 'velocity u (cm/s)', weight: 1 });
         let o = null;
         v.render(() => {
           const r = sr.value * 1e-3, L = sL.value * 1e-2, mu = sm.value * 1e-3, dP = sP.value * PA_PER_MMHG;
-          const model = poiseuille(r, L, mu, dP), u = model.velocity;
-          const Qf = model.flow;
+          const u = (rho) => (dP / (4 * mu * L)) * (r * r - rho * rho);
+          const model = tubeFlow(r, L, mu, dP, RHO_BLOOD), Qf = model.Q;
           const Qn = v.M.integrate((rho) => u(rho) * 2 * Math.PI * rho, 0, r, 200);
-          o = { Qf, Qn, umax: u(0), tau: (dP * r) / (2 * L), Rr: dP / Qf, reynolds: model.reynolds, aspect: model.aspect };
+          o = { Qf, Qn, ...model };
           const ru = sr.value;
           s.rect(0, -ru - 0.12, 10, ru + 0.12, { fill: 'red', fillAlpha: 0.08, color: 'red', width: 3, radius: 0 });
           s.rect(0, -ru, 10, ru, { fill: 'panel', fillAlpha: 1, stroke: false });
@@ -111,13 +114,13 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
           }
           s.arrow(9.7, -ru, 9.7, ru, { both: true, color: 'muted', head: 6 }); s.text(`diameter 2r = ${v.fix(2 * ru, 2)} mm`, 5, -ru - 0.3, { size: 11, color: 'muted', align: 'center' });
           s.text('P in', 0.1, -ru - 0.3, { size: 11, color: 'muted', align: 'left' });
-          p.setView([-3.2, 3.2], [0, Math.max(o.umax * 100 * 1.15, 1)]);
-          p.fn((x) => (Math.abs(x) <= ru ? u(x * 1e-3) * 100 : NaN), { color: 'accent', width: 2.6, fill: true, fillAlpha: 0.15 });
+          p.setView([-3.2, 3.2], [0, o.umax * 100 * 1.2]);
+          p.fn((x) => u(x * 1e-3) * 100, { domain: [-ru, ru], color: 'accent', width: 2.6, fill: true, fillAlpha: 0.15 });
           p.hline(o.umax * 50, { color: 'orange', dash: [6, 4] });
           p.text('mean = ½ peak', -3.0, o.umax * 50, { size: 11, color: 'orange', align: 'left', baseline: 'bottom', dy: -3 });
           p.dot(0, o.umax * 100, { r: 5, color: 'accent' });
         });
-        v.readout(() => `$Q=\\pi r^4\\Delta P/(8\\mu L)=${v.fix(o.Qf * 1e6, 3)}$ mL/s;  numerical $\\int u\\,dA=${v.fix(o.Qn * 1e6, 3)}$ mL/s\n$u_{\\max}=${v.fix(o.umax * 100, 1)}$ cm/s,  $\\bar u=${v.fix(o.umax * 50, 1)}$ cm/s,  wall shear $\\tau_w=${v.fix(o.tau, 2)}$ Pa,  $R=${v.fix(sP.value / (o.Qf * 6e4), 2)}$ mmHg·min/L · $\\mathrm{Re}=${v.fix(o.reynolds, 0)}$, $L/(2r)=${v.fix(o.aspect, 1)}$${o.reynolds>2000||o.aspect<10?' — these controls exceed the long, laminar-tube regime; values illustrate the formula':''}`);
+        v.readout(() => `$Q=\\pi r^4\\Delta P/(8\\mu L)=${v.fix(o.Qf * 1e6, 3)}$ mL/s;  numerical $\\int u\\,dA=${v.fix(o.Qn * 1e6, 3)}$ mL/s\n$u_{\\max}=${v.fix(o.umax * 100, 1)}$ cm/s,  $\\bar u=${v.fix(o.umax * 50, 1)}$ cm/s,  wall shear $\\tau_w=${v.fix(o.tau, 2)}$ Pa,  $R=${v.fix(sP.value / (o.Qf * 6e4), 2)}$ mmHg·min/L\nformal Reynolds number ${v.fix(o.Re, 0)}; $L/(2r)=${v.fix(sL.value * 10 / (2 * sr.value), 1)}$. ${o.Re >= 2000 ? 'High-Re setting: the laminar model is outside its usual regime.' : 'Check the stated ideal-tube assumptions before using this as a physical prediction.'}`);
       },
     },
     // ------------------------------------------------------------------ 4.3
@@ -126,10 +129,12 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
       kind: 'Phenomenon',
       name: 'Fourth-power sensitivity of flow to vessel radius',
       statement: String.raw`At a fixed driving pressure, the flow through a vessel scales as the fourth power of its radius, $Q\propto r^4$, so a small change in radius makes a large change in flow: $Q/Q_0=(r/r_0)^4$. Narrowing a vessel by 16% (to $0.84\,r_0$) halves the flow, and halving the radius cuts the flow to a sixteenth. Equivalently the resistance goes as $r^{-4}$; because the arterioles are narrow and muscular, small changes in their radius, rather than in the large arteries, are the main means by which the body redistributes blood.`,
-      idea: String.raw`It is Poiseuille's law (physio-4.2) read as a sensitivity: $d\ln Q/d\ln r = 4$ when pressure, length and viscosity stay fixed. On log–log axes the relation is a straight line of slope 4, which is the easiest way to read an exponent off data. The consequence for control is that a few per cent of smooth-muscle shortening in an arteriole is a 10–20% change of its flow, and the same few per cent in the aorta is negligible against the resistance of the whole bed.`,
+      idea: String.raw`It is Poiseuille's law (physio-4.2) read as a sensitivity: $d\ln Q/d\ln r = 4$ when pressure, length and viscosity stay fixed. On log–log axes the relation is a straight line of slope 4, which is the easiest way to read an exponent off data. The consequence for control is that a few per cent of smooth-muscle shortening in an arteriole is a 10–20% change of its flow, and the same few per cent in the aorta is negligible against the resistance of the whole bed.
+
+For positive radius and flow, the chain rule pma-5.5 differentiates $\ln Q=\ln C+4\ln r$ with the driving pressure, length and viscosity held fixed in $C>0$. It gives $d\ln Q/d\ln r=4$, equivalently the local fractional sensitivity $dQ/Q=4\,dr/r$. Finite changes still use the exact fourth-power ratio, not the linearized differential.`,
       caption: String.raw`Drag the handle on the **left** (linear axes) to constrict or dilate the vessel; the same point rides on the **log–log** plot on the right, next to the lines of slope 1, 2 (the area) and 4. The readout fits the slope of the computed curve and lists the constriction that halves flow. Try a 10% constriction, then a 50% one, and compare how much flow you lose.`,
       scope: String.raw`At fixed $\Delta P$ in a rigid, long, laminar-flow tube. In the body the pressure upstream of an arteriole is not held fixed when its flow changes, and passive vessels also distend with pressure, so the measured exponent is a little smaller; the fourth-power law is the starting point, not the full story.`,
-      deps: ['physio-4.2'],
+      deps: ['physio-4.2','pma-5.5'],
       see: ['physio-4.5', 'physio-4.16'],
       refs: ['Guyton–Hall'],
       tags: ['radius', 'arterioles'],
@@ -231,42 +236,39 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
       name: 'Murray’s law of optimal branching',
       statement: String.raw`Suppose a vessel of radius $r$ carrying flow $Q$ costs power both to drive the blood through it, $8\mu Q^2/(\pi r^4)$ per unit length (Poiseuille), and to keep the blood in it, $m\,\pi r^2$ per unit length, with $m$ a metabolic cost per unit volume of blood. The radius that minimises the total is the one with $Q\propto r^3$:
 $$ Q=\frac{\pi}{4}\sqrt{\frac{m}{\mu}}\;r^3 .$$
-At a bifurcation, conservation of flow then gives **Murray's law** $r_0^3=r_1^3+r_2^3$, and the wall shear stress $4\mu Q/(\pi r^3)$ is the same in every vessel of the optimal tree.`,
-      idea: String.raw`The pumping term falls with radius ($r^{-4}$) and the blood-volume term rises ($r^2$), so the sum has an interior minimum; setting the derivative to zero (pma-5.8: an interior extremum has zero derivative) gives $r^6\propto Q^2$. Taking the cube root of that condition on each branch and using $Q_0=Q_1+Q_2$ yields the cubic branching rule. Real trees only approximate it: measured exponents are often found nearer 2–3 in large arteries, which is part of why this is called a principle of minimum work, not an identity.`,
-      caption: String.raw`**Left:** the pumping cost (blue), the blood-volume cost (red) and their sum for a vessel carrying the chosen flow; the minimum is marked and you can drag the radius away from it. **Right:** a parent vessel splits into two daughters sharing flow in the ratio you choose. Their radii follow Murray's cube law; the line widths are drawn to scale. Watch the cubes add to the parent's, the wall shear stress stay equal in all three, and the total cross-sectional area grow.`,
-      scope: String.raw`A model: laminar Poiseuille flow, a metabolic cost proportional to blood volume, a fixed flow in each vessel. Values of $m$ and $Q$ here are illustrative; the law gives ratios of radii, not absolute sizes. Measured branching exponents in real arterial trees differ somewhat from 3 (not checked here), and the exponent in turbulent flow would be 7/3.`,
+If the same positive $m$ and viscosity $\mu$ apply in every branch, conservation of flow at a bifurcation then gives **Murray's law** $r_0^3=r_1^3+r_2^3$, and the wall shear stress $4\mu Q/(\pi r^3)$ is the same in every vessel of the optimal tree.`,
+      idea: String.raw`The pumping term falls with radius ($r^{-4}$) and the blood-volume term rises ($r^2$), so the sum has an interior minimum; setting the derivative to zero (pma-5.8: an interior extremum has zero derivative) gives $r^6\propto Q^2$. Taking the cube root of that condition on each branch and using $Q_0=Q_1+Q_2$ yields the cubic branching rule. The derivative is negative below this radius and positive above it; the cost diverges at both zero and infinite radius, so this is the unique global minimum. At the optimum the volume cost is twice the pumping cost. The branching rule is a deduction from these assumptions, not a measurement of a real tree.`,
+      caption: String.raw`**Left:** the pumping cost (blue), the blood-volume cost (red) and their sum for a vessel carrying the chosen flow, divided by the minimum total cost (logarithmic vertical axis); the minimum is marked and you can drag the radius away from it. **Right:** a parent vessel splits into two daughters sharing flow in the ratio you choose. Their radii follow Murray's cube law; the line widths show relative radii within this schematic, with the parent always drawn 18 pixels wide. Watch the cubes add to the parent's, the wall shear stress stay equal in all three, and the total cross-sectional area grow.`,
+      scope: String.raw`A model: laminar Poiseuille flow, a metabolic cost proportional to blood volume, a fixed flow in each vessel. Values of $m$ and $Q$ here are illustrative; given these values and a viscosity, the model also computes an absolute optimum radius. Murray’s original argument explicitly neglects eddies and intermittent acceleration; his pp. 212–213 discuss different capillary constraints and limitations in the aorta. This illustration does not establish universal physiological optimality.`,
       deps: ['physio-4.2', 'pma-5.8'],
       see: ['physio-4.10'],
-      refs: ['Keener–Sneyd ch. 11'],
+      refs: ['Murray (1926), pp. 209–213, equations (1)–(7)'],
       tags: ['optimality', 'branching'],
+      verify: false,
       credit: 'C. D. Murray, 1926',
       links: { doi: 'https://doi.org/10.1073/pnas.12.3.207' },
       viz(v) {
-        const sQ = v.slider('flow $Q$', 0.1, 50, 5, { log: true, sig: 2, fmt: (x) => `${v.fix(x, 2)} mL/s` });// { step: 0.1, fmt: (x) => `${v.fix(x, 1)} mL/s` });
+        const sQ = v.slider('flow $Q$', 0.1, 50, 5, { step: 0.1, fmt: (x) => `${v.fix(x, 2)} mL/s` });
         const sM = v.slider('metabolic cost $m$', 3e2, 3e4, 1.1e3, { log: true, sig: 2, fmt: (x) => `${v.fix(x / 1e3, 2)}×10³ W/m³` });
         const sF = v.slider('flow share of daughter 1', 0.1, 0.5, 0.5, { step: 0.01 });
-        const a = v.stage({ x: [0.2, 6], y: [0, 100], height: 320, axes: 'box', gutter: true, xlabel: 'radius r (mm)', ylabel: 'power per length (mW/m)', weight: 1 });
+        const a = v.stage({ x: [0.2, 3.15], y: [0.002, 150], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'radius / optimal radius', ylabel: 'cost / minimum total (log)', weight: 1 });
         const b = v.stage({ x: [0, 10], y: [-4, 4], height: 320, axes: false, weight: 1 });
-        const hr = a.handle(1, 0, { color: 'gold', label: 'r', constrain: 'x' });
+        const cost = x => (x ** -4 + 2 * x * x) / 3;
+        const hr = a.handle(1.5, cost(1.5), { color: 'gold', label: 'r / r*', constrain: (x) => { const z = clamp(x, 0.3, 3); return [z, cost(z)]; } });
         const MU = MU_BLOOD;
-        const pump = (r, Q) => (8 * MU * (Q * 1e-6) ** 2) / (Math.PI * (r * 1e-3) ** 4) * 1e3;
-        const vol = (r, m) => m * Math.PI * (r * 1e-3) ** 2 * 1e3;
-        const ropt = (Q, m) => Math.cbrt((4 * Q * 1e-6 * Math.sqrt(MU)) / (Math.PI * Math.sqrt(m))) * 1e3;
-        let o = null, init = false;
+        let o = null;
         v.render(() => {
-          const Q = sQ.value, m = sM.value, ro = ropt(Q, m);
-          if (!init) { hr.set(ro * 1.5, 0); init = true; }
-          const rmax = 3 * ro, tot = pump(ro, Q) + vol(ro, m);
-          a.setView([0.25 * ro, rmax], [0, 2.4 * tot]);
-          const rr = clamp(hr.x, 0.3 * ro, rmax); hr.set(rr, 0);
-          a.fn((r) => pump(r, Q), { color: 'accent', width: 2.2, domain: [0.25 * ro, rmax] });
-          a.fn((r) => vol(r, m), { color: 'red', width: 2.2, domain: [0.25 * ro, rmax] });
-          a.fn((r) => pump(r, Q) + vol(r, m), { color: 'ink', width: 2.8, domain: [0.25 * ro, rmax] });
-          a.vline(ro, { color: 'green', dash: [5, 4] }); a.dot(ro, tot, { r: 7, color: 'green', label: 'optimum', labelPos: 'ne' });
-          a.dot(rr, pump(rr, Q) + vol(rr, m), { r: 6, color: 'gold' });
-          a.text('pumping', rmax * 0.97, 0.06 * tot, { size: 11, color: 'accent', align: 'right' }); a.text('blood volume', rmax * 0.55, vol(rmax * 0.55, m) + 0.2 * tot, { size: 11, color: 'red', align: 'right' });
+          const Q = sQ.value, m = sM.value, ro = murrayRadius(Q * 1e-6, m, MU) * 1e3;
+          const tot = murrayCost(ro * 1e-3, Q * 1e-6, m, MU).total;
+          const z = clamp(hr.x, 0.3, 3), rr = z * ro; hr.set(z, cost(z));
+          a.fn(x => x ** -4 / 3, { color: 'accent', width: 2.2, domain: [0.25, 3] });
+          a.fn(x => 2 * x * x / 3, { color: 'red', width: 2.2, domain: [0.25, 3] });
+          a.fn(cost, { color: 'ink', width: 2.8, domain: [0.25, 3] });
+          a.vline(1, { color: 'green', dash: [5, 4] }); a.dot(1, 1, { r: 7, color: 'green', label: 'optimum', labelPos: 'ne' });
+          a.text('pumping', 2.9, 0.012, { size: 11, color: 'accent', align: 'right' });
+          a.text('blood volume', 2.9, 9, { size: 11, color: 'red', align: 'right' });
           // bifurcation
-          const f = sF.value, r0 = ro, r1 = r0 * Math.cbrt(f), r2 = r0 * Math.cbrt(1 - f), W = 9 / ro;
+          const f = sF.value, r0 = ro, r1 = r0 * Math.cbrt(f), r2 = r0 * Math.cbrt(1 - f);
           const lw = (r) => Math.max(2, 18 * r / ro);
           b.line(0.5, 0, 3.5, 0, { color: 'accent', width: lw(r0) });
           b.line(3.5, 0, 8.5, 2.1, { color: 'green', width: lw(r1) }); b.line(3.5, 0, 8.5, -2.1, { color: 'orange', width: lw(r2) });
@@ -274,9 +276,9 @@ At a bifurcation, conservation of flow then gives **Murray's law** $r_0^3=r_1^3+
           b.text(`r₁ = ${v.fix(r1, 2)}`, 7.4, 2.9, { size: 12, color: 'green', align: 'center', weight: 700 });
           b.text(`r₂ = ${v.fix(r2, 2)}`, 7.4, -2.9, { size: 12, color: 'orange', align: 'center', weight: 700 });
           const tau = (q, r) => (4 * MU * q * 1e-6) / (Math.PI * (r * 1e-3) ** 3);
-          o = { ro, r0, r1, r2, f, Q, t0: tau(Q, r0), t1: tau(f * Q, r1), t2: tau((1 - f) * Q, r2), cur: pump(rr, Q) + vol(rr, m), tot };
+          o = { ro, r0, r1, r2, f, Q, t0: tau(Q, r0), t1: tau(f * Q, r1), t2: tau((1 - f) * Q, r2), cur: cost(z) * tot, tot, rr };
         });
-        v.readout(() => `optimal radius $r^*=${v.fix(o.ro, 3)}$ mm;  your radius costs ${v.fix(100 * (o.cur / o.tot - 1), 1)}% more than the minimum\n$r_1^3+r_2^3=${v.fix(o.r1 ** 3 + o.r2 ** 3, 4)}$ vs $r_0^3=${v.fix(o.r0 ** 3, 4)}$;  wall shear ${v.fix(o.t0, 2)} / ${v.fix(o.t1, 2)} / ${v.fix(o.t2, 2)} Pa;  area ratio $(r_1^2+r_2^2)/r_0^2=${v.fix((o.r1 ** 2 + o.r2 ** 2) / o.r0 ** 2, 3)}$`);
+        v.readout(() => `optimal radius $r^*=${v.fix(o.ro, 3)}$ mm; chosen radius ${v.fix(o.rr, 3)} mm; minimum cost ${v.fix(o.tot * 1e3, 2)} mW/m; your radius costs ${v.fix(100 * (o.cur / o.tot - 1), 1)}% more than the minimum\n$r_1^3+r_2^3=${v.fix(o.r1 ** 3 + o.r2 ** 3, 4)}$ vs $r_0^3=${v.fix(o.r0 ** 3, 4)}$;  wall shear ${v.fix(o.t0, 2)} / ${v.fix(o.t1, 2)} / ${v.fix(o.t2, 2)} Pa;  area ratio $(r_1^2+r_2^2)/r_0^2=${v.fix((o.r1 ** 2 + o.r2 ** 2) / o.r0 ** 2, 3)}$`);
       },
     },
   ],

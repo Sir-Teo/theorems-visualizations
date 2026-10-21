@@ -1,5 +1,8 @@
 // Microeconomics — Chapter 9: General equilibrium and welfare (items 9.1–9.6; 9.7–9.11 in ch09-b.js, 9.12–9.16 in ch09-c.js, 9.17–9.21 in ch09-d.js)
 import { clamp, GUIDE, fx, bisect, plateText, bar, W1, W2, W, pref, levelPts, toBox, market, contractCurve, improvements, improveTrail, boxStage, drawBox, drawA, drawB, drawLens, priceLineBox, slopeSeg, nearestOnPath, pathLength, f2 } from './ch09.shared.js';
+import { coreUtility, coreCurveY, coreAllocationState } from './source-audit-core-fringe.js';
+import { walrasBudgetState, paddedRange } from './source-audit-exchange.js';
+import { efficiencyUtility, efficientCurveY, efficientAllocationState, efficientComplementPolygons, efficiencyIndifference } from './source-audit-efficiency.js';
 
 /** Trader preferences of the box items: Cobb–Douglas with weight `a` on good 1. */
 const cd = (a) => pref('cd', { a });
@@ -16,10 +19,11 @@ export default {
     {
       num: '9.1', kind: 'Model', name: 'Edgeworth box exchange economy',
       statement: String.raw`A **pure exchange economy** has two consumers, $A$ and $B$, and two goods, with fixed totals $\bar x_1 = W_1$ and $\bar x_2 = W_2$. An **allocation** gives $A$ the bundle $(x_1^A, x_2^A)$ and $B$ the bundle $(x_1^B, x_2^B)$; it is **feasible** when nothing is created or wasted,
-$$x_1^A + x_1^B = W_1, \qquad x_2^A + x_2^B = W_2 .$$
-Because $B$'s bundle is determined by $A$'s, the whole set of feasible allocations is the rectangle $[0, W_1] \times [0, W_2]$, the **Edgeworth box**: a point $(x_1, x_2)$ is $A$'s bundle measured from the lower-left corner $O_A$ and, read from the upper-right corner $O_B$, $B$'s bundle $(W_1 - x_1,\, W_2 - x_2)$. The traders start from an **endowment** $\omega = (\omega^A, \omega^B)$, a point of the box. If both have continuous, monotone preferences, the trades they will accept are the allocations that each weakly prefers to $\omega$: the **lens** between $A$'s indifference curve through $\omega$ (measured from $O_A$) and $B$'s (measured from $O_B$). The lens has a non-empty interior exactly when the two marginal rates of substitution differ at $\omega$.`,
-      idea: String.raw`Feasibility is one equation per good, $x^A + x^B = \bar x$, so one point carries two bundles: the box is just the plane of $A$'s bundles with $B$'s axes drawn backwards from the opposite corner. An indifference curve of $B$ that is convex toward $O_B$ therefore looks concave when seen from $O_A$. At a point where the two curves through $\omega$ are tangent, they touch without enclosing anything, so no trade helps both; where their slopes (the marginal rates of substitution of 4.11) differ they cross, and the sliver between them is a set of trades that benefit both. Everything in the chapter, efficiency, the contract curve, the core and equilibrium, is a statement about this one picture.`,
-      caption: String.raw`**Drag the gold endowment point $\omega$** anywhere in the box. Blue curve: $A$'s indifference curve through $\omega$, measured from $O_A$; orange curve: $B$'s, measured from $O_B$; the green lens holds every allocation both traders weakly prefer. Both traders have Cobb–Douglas tastes; the sliders move the weight each places on good 1. Put $\omega$ where the two tangent slopes agree and the lens closes to a line. The readout lists both bundles and the lens as a share of the box.`,
+$$x_1^A + x_1^B = W_1,$$
+$$x_2^A + x_2^B = W_2.$$
+Because $B$'s bundle is determined by $A$'s, the whole set of feasible allocations is the rectangle $[0, W_1] \times [0, W_2]$, the **Edgeworth box**: a point $(x_1, x_2)$ is $A$'s bundle measured from the lower-left corner $O_A$ and, read from the upper-right corner $O_B$, $B$'s bundle $(W_1 - x_1,\, W_2 - x_2)$. The traders start from an **endowment** $\omega = (\omega^A, \omega^B)$, a point of the box. The **weakly preferred lens** is the set of feasible allocations each consumer weakly prefers to $\omega$: the intersection of their two upper contour sets, measured from opposite origins. A **Pareto improvement** additionally makes at least one consumer strictly better off. For the pictured positive Cobb–Douglas tastes and interior endowments, unequal marginal rates of substitution give trades strictly improving both consumers; at exact tangency the weak lens is a singleton. MRS comparisons require differentiability and nonzero marginal utilities, and the global tangency argument uses convex preferences. Other tastes can leave a line of equally preferred allocations at an efficient point (9.3).`,
+      idea: String.raw`Feasibility is one equation per good, $x^A + x^B = \bar x$, so one point carries two bundles: the box is just the plane of $A$'s bundles with $B$'s axes drawn backwards from the opposite corner. In the pictured Cobb–Douglas family, convex upper contour sets and a common supporting tangent prevent a weak-all, strict-one improvement at tangency. Where the two slopes (the marginal rates of substitution of 4.11) differ, a small swap at a rate between them improves both traders. Smoothness justifies the local slope comparison; convex preferences justify its global converse. The weak lens includes indifferent allocations as well as any strict improvements, so a nonempty weak lens alone does not certify inefficiency. The explicit tests and nonsmooth examples of 9.2–9.3 develop those distinctions.`,
+      caption: String.raw`**Drag the gold endowment point $\omega$** within the pictured interior range. Blue curve: $A$'s indifference curve through $\omega$, measured from $O_A$; orange curve: $B$'s, measured from $O_B$. Green raster shading illustrates allocations both weakly prefer. Both traders have Cobb–Douglas tastes; the sliders move each weight on good 1. At exact tangency the weak lens is a singleton. This introductory widget's lens-area readout is a grid estimate and its near-tangency label uses a finite numerical band; neither is an exact efficiency test. Use the explicit sets and gain checks in 9.2–9.3 for that distinction.`,
       deps: ['micro-4.4', 'micro-4.11'],
       see: ['micro-4.6'],
       refs: ['Varian Ch. 32', 'CORE Unit 5'], tags: ['general equilibrium', 'exchange'],
@@ -44,186 +48,150 @@ Because $B$'s bundle is determined by $A$'s, the whole set of feasible allocatio
         });
         v.readout(() => {
           const { x, y, uA, uB, mA, mB, lens } = st;
-          return `$\\omega^A = (${f2(x)}, ${f2(y)})$ and $\\omega^B = (${f2(W1 - x)}, ${f2(W2 - y)})$: the two bundles always add up to the totals $(${W1}, ${W2})$.\nMarginal rates of substitution at $\\omega$: $MRS_A = ${f2(mA)}$, $MRS_B = ${f2(mB)}$. Utilities $u_A = ${f2(uA)}$, $u_B = ${f2(uB)}$. Lens of mutually preferred trades: **${f2(lens * 100, 1)}%** of the box${Math.abs(Math.log(mA / mB)) < 0.02 ? ' (the curves are tangent, so the lens has collapsed: no mutually beneficial trade)' : ''}.`;
+          return `$\\omega^A = (${f2(x)}, ${f2(y)})$ and $\\omega^B = (${f2(W1 - x)}, ${f2(W2 - y)})$: the two bundles always add up to the totals $(${W1}, ${W2})$.\nMarginal rates of substitution at $\\omega$: $MRS_A = ${f2(mA)}$, $MRS_B = ${f2(mB)}$. Utilities $u_A = ${f2(uA)}$, $u_B = ${f2(uB)}$. Sampled weak-lens area estimate: **${f2(lens * 100, 1)}%** of the box${Math.abs(Math.log(mA / mB)) < 0.02 ? ' (within the illustrated near-tangency band; exact efficiency is not inferred)' : ''}.`;
         });
       },
     },
     // ------------------------------------------------------------------ 9.2
     {
       num: '9.2', kind: 'Definition', name: 'Pareto efficiency',
-      statement: String.raw`A feasible allocation is **Pareto efficient** (or Pareto optimal) if there is no other feasible allocation that makes at least one consumer strictly better off without making anyone worse off. An allocation that some other feasible allocation **Pareto dominates** is **Pareto inefficient**; replacing it by the dominating one is a **Pareto improvement**. In the Edgeworth box with strictly monotone preferences, an interior allocation is efficient exactly when the two traders' indifference curves through it are tangent, $MRS_A = MRS_B$, so that the lens of mutually preferred allocations contains no point other than the allocation itself. Efficiency says nothing about fairness: handing one trader the whole box is efficient.`,
-      idea: String.raw`If $MRS_A \ne MRS_B$ the indifference curves cross at the allocation, and the region between them is a set of allocations that both prefer: the trader with the higher MRS values good 1 more, so a swap of a little good 1 for a little good 2 at an intermediate rate helps both. Conversely, when the curves are tangent and convex preferences keep each upper contour set on its own side of the common tangent, the two better-off regions meet only at the allocation. The definition uses only the ordering of bundles, not a size of utility, so it needs none of the interpersonal comparisons that a ranking of efficient allocations would (9.13).`,
-      caption: String.raw`**Drag the gold allocation.** Whenever the green lens has area, the arrow shows a Pareto improvement inside it (the trade that maximises the product of both gains); the short tangent segments show the two marginal rates of substitution. **Trade until efficient** repeats such improvements and leaves the trail. Switch on the contract curve to see where the lens disappears: only on the curve where $MRS_A = MRS_B$.`,
-      deps: ['micro-9.1'],
-      refs: ['Varian Ch. 1', 'Varian Ch. 32'], tags: ['welfare', 'efficiency'],
-      credit: 'Vilfredo Pareto, Manuale di economia politica, 1906 (criterion; the term "Pareto optimum" is later)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pareto_efficiency' },
+      statement: String.raw`A feasible allocation is **Pareto efficient** if no other feasible allocation makes at least one consumer strictly better off without making anyone worse off. A **Pareto improvement** satisfies those weak-all, strict-one inequalities. Efficiency is an ordinal condition and does not rank efficient allocations by fairness.
+
+The picture uses two Cobb–Douglas utilities $u_A=x^a y^{1-a}$ and $u_B=(10-x)^b(10-y)^{1-b}$, with $0<a,b<1$. Their entire efficient set, including the two origins, is
+$$y=f(x)=\frac{10b(1-a)x}{10a(1-b)+(b-a)x}.$$
+The parameter range is $0\le x\le10$.
+At an interior point, this is exactly $MRS_A=MRS_B$. Tangency alone is not sufficient for arbitrary smooth, monotone preferences: convexity is essential to the global argument.`,
+      idea: String.raw`The MRS formula of 4.11 gives $MRS_A=ay/((1-a)x)$ and $MRS_B=b(10-y)/((1-b)(10-x))$; equating them gives $f$. Off that curve, a small swap at a rate strictly between the MRSs improves both traders. On it, a positive weighted sum of the two concave utilities has zero gradient and hence a global maximum, so a Pareto improvement is impossible. The origins are efficient because the trader with everything is already at maximum utility.
+
+For a constructed improvement, restrict attention to $(t,f(t))$. Along this curve $A$'s utility increases and $B$'s decreases. Solve their two current-utility reservation equalities; the midpoint of the resulting interval gives an efficient allocation that improves both when the original point is off the curve. These are two scalar root solves, not repeated grid trades. Without convexity the conclusion fails: for each trader's own utility $x_1^2+x_2^2$, both MRSs equal one at the equal split, yet moving to $(10,0)$ for $A$ and $(0,10)$ for $B$ increases both utilities from $50$ to $100$.`,
+      caption: String.raw`Drag the gold allocation or use its coordinate sliders, including the box boundary. Green shading is a sampled illustration of the weakly preferred lens; it does not decide efficiency. Turn on the purple **efficient curve** to see the explicit equation. A gold ring marks a constructed efficient improvement only when both utility gains are numerically resolved. **Choose efficient allocation** selects the reservation-interval construction and draws the move.`,
+      scope: String.raw`Totals $(10,10)$; $0.15\le a,b\le0.85$; the full closed allocation box. A curve residual of at most $10^{-10}$ is reported as a numerical set match, not as an economic tolerance for efficiency. An off-set point remains off-set even when its candidate gains cannot be resolved above $10^{-12}$ in floating-point arithmetic. At boundary bundles the interior MRS formula is not used. The source supports the Pareto definition; the displayed formula and trade construction are derived here.`,
+      deps: ['micro-9.1', 'micro-4.11'],
+      refs: ['Debreu & Scarf (1963), Pareto definition p.235 and weak-all/strict-one convention pp.238–239', 'https://ucema.edu.ar/~fr05/curso_corto/Debreu-Scarf.pdf'], tags: ['welfare', 'efficiency'],
+      credit: 'Pareto criterion as stated by Debreu & Scarf (1963), p.235; pictured Cobb–Douglas construction derived here',
+      links: { source: 'https://ucema.edu.ar/~fr05/curso_corto/Debreu-Scarf.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Pareto_efficiency' },
       viz(v) {
-        const aS = v.slider('$A$: weight on good 1', 0.15, 0.85, 0.65, { step: 0.01 });
-        const bS = v.slider('$B$: weight on good 1', 0.15, 0.85, 0.3, { step: 0.01 });
-        const cc = v.toggle('show the contract curve', false);
-        const s = boxStage(v, { title: 'Pareto improvements exist inside the lens', height: 420 });
-        v.legend([['accent', 'A’s curve'], ['orange', 'B’s curve'], ['green', 'Pareto improvements (lens)', { area: true }], ['gold', 'allocation / improvement'], ['purple', 'contract curve', { dash: true }]]);
-        const H = s.handle(2.6, 7.4, { color: 'gold', r: 9, label: 'x', labelPos: 'ne', constrain: { x: [0.3, W1 - 0.3], y: [0.3, W2 - 0.3] } });
-        let trail = [];
-        H.onDrag = () => { trail = []; };
-        v.button('Trade until efficient', () => {
-          const FA = cd(aS.value), FB = cd(bS.value);
-          trail = improveTrail(ua(FA), ub(FB), H.x, H.y, 14);
-          const e = trail[trail.length - 1]; H.set(e[0], e[1]);
+        const aS=v.slider('$A$: weight on good 1',.15,.85,.65,{step:.01}),bS=v.slider('$B$: weight on good 1',.15,.85,.3,{step:.01});
+        const tx=v.slider('allocation: good 1 for $A$',0,10,2.6,{step:.05,decimals:7}),ty=v.slider('allocation: good 2 for $A$',0,10,7.4,{step:.05,decimals:7});
+        const cc=v.toggle('show the efficient curve',false),s=boxStage(v,{title:'an explicit efficient set and a constructive trade',height:430});
+        v.legend([['accent','A’s indifference boundary'],['orange','B’s indifference boundary'],['green','sampled weak lens',{area:true}],['gold','allocation / resolved improvement'],['purple','efficient curve',{dash:true}]]);
+        const H=s.handle(tx.value,ty.value,{color:'gold',r:9,constrain:{x:[0,10],y:[0,10]}});
+        let move=null,info={};const current=()=>efficientAllocationState('cd',aS.value,bS.value,tx.value,ty.value);
+        H.onDrag=()=>{tx.set(H.x);ty.set(H.y);move=null;};
+        v.button('Choose efficient allocation',()=>{const p=current();move=p.witness?.resolved?[[p.x,p.y],p.target]:null;tx.set(p.target[0]);ty.set(p.target[1]);});
+        v.render(()=>{
+          H.set(tx.value,ty.value);const p=current(),green=v.rgb('green');drawBox(s,{axes:false});
+          s.raster((x,y)=>x>=0&&x<=10&&y>=0&&y<=10&&efficiencyUtility('cd',p.a,x,y)>=p.uA&&efficiencyUtility('cd',p.b,10-x,10-y)>=p.uB?[green[0],green[1],green[2],55]:null,{key:`eff2|${p.a}|${p.b}|${p.x}|${p.y}|${green}`,res:3});
+          if(cc.value)s.path(Array.from({length:261},(_,i)=>[i/26,efficientCurveY('cd',p.a,p.b,i/26)]),{color:'purple',width:2.4,dash:[6,4]});
+          s.path(efficiencyIndifference('cd',p.a,p.uA),{color:'accent',width:2});s.path(efficiencyIndifference('cd',p.b,p.uB).map(([x,y])=>[10-x,10-y]),{color:'orange',width:2});
+          const witness=p.witness?.resolved?p.witness.point:null;
+          if(witness){const gap=Math.hypot(s.X(p.x)-s.X(witness[0]),s.Y(p.y)-s.Y(witness[1]));s.arrow(p.x,p.y,...witness,{color:'gold',width:1.8});s.dot(...witness,{color:'gold',r:gap<22?14:6,hollow:true});}
+          if(move&&Math.hypot(p.x-move[1][0],p.y-move[1][1])<1e-10){s.arrow(...move[0],...move[1],{color:'gold',width:1.8,dash:[4,3]});s.dot(...move[0],{color:'gold',r:4,hollow:true});}
+          info=p;
         });
-        let st = {};
-        v.render(() => {
-          const FA = cd(aS.value), FB = cd(bS.value), x = H.x, y = H.y;
-          drawBox(s);
-          drawLens(v, s, ua(FA), ub(FB), x, y, `lens2|${aS.value}|${bS.value}`);
-          if (cc.value) s.path(contractCurve(FA, FB), { color: 'purple', width: 2.2, dash: [6, 4] });
-          drawA(s, FA, FA.u(x, y)); drawB(s, FB, FB.u(W1 - x, W2 - y));
-          const mA = FA.mrs(x, y), mB = FB.mrs(W1 - x, W2 - y);
-          slopeSeg(s, x, y, mA, 52, { color: 'accent', width: 2.2, alpha: 0.9 });
-          slopeSeg(s, x, y, mB, 38, { color: 'orange', width: 2.2, alpha: 0.9 });
-          const imp = improvements(ua(FA), ub(FB), x, y, 60);
-          for (let i = 0; i + 1 < trail.length; i++) { s.arrow(trail[i][0], trail[i][1], trail[i + 1][0], trail[i + 1][1], { color: 'gold', width: 1.6, alpha: 0.8 }); s.dot(trail[i][0], trail[i][1], { r: 3.5, color: 'gold' }); }
-          if (!trail.length && imp.best) {
-            const dx = imp.best[0] - x, dy = imp.best[1] - y, L = Math.hypot(s.X(x + dx) - s.X(x), s.Y(y + dy) - s.Y(y));
-            if (L > 14) s.arrow(x, y, imp.best[0], imp.best[1], { color: 'gold', width: 2.4 });
-            s.dot(imp.best[0], imp.best[1], { r: 5, color: 'gold', hollow: true });
-          }
-          const eff = imp.area < 0.001 || Math.abs(Math.log(mA / mB)) < 0.03;
-          s.corner(eff ? 'Pareto efficient: no lens' : 'Pareto inefficient: a lens of improvements', 'tl', { color: eff ? 'green' : 'red', weight: 700, plate: true });
-          st = { mA, mB, imp, eff, ua0: FA.u(x, y), ub0: FB.u(W1 - x, W2 - y), n: trail.length - 1, x, y, FA, FB };
-        });
-        v.readout(() => {
-          const { mA, mB, imp, eff, ua0, ub0, n, x, y, FA, FB } = st;
-          let t = `At the allocation: $MRS_A = ${f2(mA)}$, $MRS_B = ${f2(mB)}$ (ratio ${f2(mA / mB)}); $u_A = ${f2(ua0)}$, $u_B = ${f2(ub0)}$. The lens covers **${f2(imp.area * 100, 1)}%** of the box.`;
-          if (n > 0) t += ` After ${n} improvement${n > 1 ? 's' : ''} both traders are better off: $u_A = ${f2(FA.u(x, y))}$, $u_B = ${f2(FB.u(W1 - x, W2 - y))}$.`;
-          else if (imp.best) t += ` Improving move to $(${f2(imp.best[0])}, ${f2(imp.best[1])})$ gives $u_A = ${f2(FA.u(...imp.best))}$, $u_B = ${f2(FB.u(W1 - imp.best[0], W2 - imp.best[1]))}$.`;
-          return t + (eff ? ' **No improvement exists.**' : '');
+        v.readout(()=>{const p=info,interior=p.x>0&&p.x<10&&p.y>0&&p.y<10;
+          const rates=interior?`Interior MRSs: $A=${f2(p.a*p.y/((1-p.a)*p.x),7)}$, $B=${f2(p.b*(10-p.y)/((1-p.b)*(10-p.x)),7)}$.`:'Boundary allocation: the interior MRS comparison is not used.';
+          return `Allocation $A=(${f2(p.x,7)},${f2(p.y,7)})$, $B=(${f2(10-p.x,7)},${f2(10-p.y,7)})$. Utilities $A=${f2(p.uA,7)}$, $B=${f2(p.uB,7)}$.\n**${p.relation==='off'?'Off the explicit efficient set.':'Matches the explicit efficient set within numerical tolerance.'}** Curve residual $y-f(x)=${v.sci(p.residual,4)}$. ${rates}${p.witness? p.witness.resolved?`\nConstructed efficient improvement $(${p.target.map(q=>f2(q,7)).join(',')})$: utility gains ${p.witness.gains.map(q=>'$'+v.sci(q,4)+'$').join(', ')}.`:'\nThe point is off-set, but the candidate utility gains are below arithmetic resolution.':''} Shading is illustrative and never certifies membership.`;
         });
       },
     },
     // ------------------------------------------------------------------ 9.3
     {
       num: '9.3', kind: 'Definition', name: 'Contract curve',
-      statement: String.raw`The **contract curve** (the **Pareto set**) of an exchange economy is the set of all Pareto-efficient allocations in the Edgeworth box. For smooth, strictly convex, strictly monotone preferences, an interior point of the box is on it exactly when the indifference curves of $A$ and $B$ are tangent,
-$$MRS_A(x^A) = MRS_B(x^B), \qquad x^A + x^B = \bar x,$$
-and the contract curve is a curve running from $O_A$ to $O_B$. With less well-behaved preferences it can be thick or lie on the boundary: for two perfect-complements consumers whose kinks are not aligned it is a **region** of the box, and for two perfect-substitutes consumers with different MRS it runs along the edges of the box.`,
-      idea: String.raw`Efficiency is tangency (9.2), and tangency is one equation in the two unknowns $(x_1, x_2)$, so the solutions form a curve. Starting from $O_A$ the curve climbs because $A$, holding almost nothing, values everything at a very high marginal rate of substitution that must be matched by $B$'s, who holds almost everything. With corners the equation is replaced by a statement about which good each trader is short of: a trader at a kink is happy with any amount of surplus, so a whole wedge of allocations is efficient. With linear indifference curves slopes never change, so the only way to equalise them is to push one trader to a boundary.`,
-      caption: String.raw`Pick the **family of tastes** and move the sliders (each trader's weight on good 1). The purple set is computed from the preferences: by solving $MRS_A = MRS_B$ for smooth tastes, from the kink rays for complements, from the corner solution for substitutes. **Drag the gold test allocation**: its lens vanishes only on the purple set, and the button snaps it to the nearest efficient allocation.`,
+      statement: String.raw`Here **contract curve** means the complete **Pareto set** of feasible allocations, with no endowment reservation constraint. This modern convention differs from Debreu–Scarf's 1963 introduction, which reserves the term for efficient, individually rational allocations; that smaller set is the two-person core of 9.4.
+
+For the pictured smooth families, $u=(a x^\rho+(1-a)y^\rho)^{1/\rho}$ with $\rho=-1.5$, or Cobb–Douglas when $\rho=0$, the entire efficient curve is
+$$y=f_\rho(x)=\frac{10\eta x}{10+(\eta-1)x},\quad0\le x\le10,$$
+$$\eta=\left[\frac{b(1-a)}{a(1-b)}\right]^{1/(1-\rho)}.$$
+For complements $u=\min\{(1-a)x,ay\}$, let $f_A=(1-a)x-ay$ and $f_B=(1-b)(10-x)-b(10-y)$. The efficient set is $\{f_A\ge0,f_B\ge0\}\cup\{f_A\le0,f_B\le0\}$. For substitutes $u=ax+(1-a)y$, it is the bottom/right edges when $a>b$, the left/top edges when $a<b$, and the whole box when $a=b$.`,
+      idea: String.raw`For the smooth families, 4.11 gives $MRS=a(y/x)^{1-\rho}/(1-a)$. Equality produces the displayed curve. These utilities are concave; a positive weighted sum has a stationary global maximum at each interior curve point. Off it, an exchange at a rate between the MRSs improves both. This global convex-preference argument is essential; tangency alone does not establish efficiency.
+
+For complements, the allocations both weakly prefer are exactly the rectangle
+$$x\in\left[\frac{u_A}{1-a},10-\frac{u_B}{1-b}\right],$$
+$$y\in\left[\frac{u_A}{a},10-\frac{u_B}{b}\right].$$
+If either side has zero length, a resource requirement binds, so neither utility can rise without lowering the other. A nontrivial weakly preferred line segment can therefore remain at an efficient allocation: a weak lens need not be a singleton. If both sides have positive length, both utilities can rise. For substitutes with unequal slopes, exchange at an intermediate rate until one of the indicated edges binds; with equal slopes the two utilities sum to a constant, making every allocation efficient.`,
+      caption: String.raw`Select a taste family, then drag the gold allocation or use the full-box coordinate sliders. Purple is the efficient set from the explicit formulas, including its boundary; complementary kink rays are dashed. Green raster shading illustrates weak preference. For complements, the green rectangle boundary also remains visible when it collapses to a line. A gold ring is shown only for a resolved strict improvement. **Choose efficient allocation** uses a reservation-interval, resource-binding, or intermediate-rate construction. It does not claim the nearest point.`,
+      scope: String.raw`Two goods with totals $(10,10)$ and taste parameters $0.15\le a,b\le0.85$. CES uses the common value $\rho=-1.5$; complements use the coefficients $(1-a,a)$ displayed above. Smooth membership uses the coordinate residual; substitutes use distance to the indicated edges; complements use the smaller weak-rectangle side length. Residuals within $10^{-10}$ are numerical set matches. Candidate gains must both exceed $10^{-12}$ to be shown as resolved. These are arithmetic tolerances, not economic bands. Raster pixels never determine the verdict; degeneracies and box endpoints are included.`,
       deps: ['micro-9.2', 'micro-4.11'],
-      refs: ['Varian Ch. 32'], tags: ['welfare', 'exchange'],
-      credit: 'F. Y. Edgeworth, Mathematical Psychics, 1881 (the "contract curve")',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Contract_curve' },
+      refs: ['Debreu & Scarf (1963), Pareto definition and terminology p.235; weak-all/strict-one convention pp.238–239', 'https://ucema.edu.ar/~fr05/curso_corto/Debreu-Scarf.pdf'], tags: ['welfare', 'exchange'],
+      credit: 'Pareto-set definition grounded in Debreu & Scarf (1963); explicit four-family geometry derived here',
+      links: { source: 'https://ucema.edu.ar/~fr05/curso_corto/Debreu-Scarf.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Contract_curve' },
       viz(v) {
-        const fam = v.select('both traders have', [{ value: 'cd', label: 'Cobb–Douglas' }, { value: 'ces', label: 'CES (curvier)' }, { value: 'comp', label: 'perfect complements' }, { value: 'subs', label: 'perfect substitutes' }], 'cd');
-        const aS = v.slider('$A$: weight on good 1', 0.15, 0.85, 0.6, { step: 0.01 });
-        const bS = v.slider('$B$: weight on good 1', 0.15, 0.85, 0.3, { step: 0.01 });
-        const s = boxStage(v, { title: 'the set of efficient allocations', height: 420 });
-        v.legend([['purple', 'efficient allocations (contract curve / region)'], ['accent', 'A’s curve'], ['orange', 'B’s curve'], ['green', 'lens of improvements', { area: true }]]);
-        const H = s.handle(2.5, 7, { color: 'gold', r: 9, label: 'x', labelPos: 'ne', constrain: { x: [0.3, W1 - 0.3], y: [0.3, W2 - 0.3] } });
-        const mk = (k, t) => (k === 'cd' ? pref('cd', { a: t }) : k === 'ces' ? pref('ces', { a: t, r: -1.5 }) : k === 'comp' ? pref('comp', { a: 1 - t, b: t }) : pref('subs', { a: t, b: 1 - t }));
-        /** efficient-set description for the current family */
-        const setOf = () => {
-          const k = fam.value, FA = mk(k, aS.value), FB = mk(k, bS.value);
-          if (k === 'cd' || k === 'ces') return { k, FA, FB, curve: contractCurve(FA, FB) };
-          if (k === 'subs') {
-            const mA = aS.value / (1 - aS.value), mB = bS.value / (1 - bS.value);
-            if (Math.abs(mA - mB) < 0.004) return { k, FA, FB, all: true };
-            return { k, FA, FB, curve: mA > mB ? [[0, 0], [W1, 0], [W1, W2]] : [[0, 0], [0, W2], [W1, W2]] };
-          }
-          return { k, FA, FB, region: true };
-        };
-        // Leontief pair: improvement exists iff each is short of a different good
-        const shortA = (E, x, y) => E.FA.a * x - E.FA.b * y;
-        const shortB = (E, x, y) => E.FB.a * (W1 - x) - E.FB.b * (W2 - y);
-        const effComp = (E, x, y) => !(shortA(E, x, y) < -1e-9 && shortB(E, x, y) > 1e-9) && !(shortA(E, x, y) > 1e-9 && shortB(E, x, y) < -1e-9);
-        const isEff = (E, x, y) => {
-          if (E.all) return true;
-          if (E.region) return effComp(E, x, y);
-          if (E.k === 'subs') return pathDist(E.curve, x, y) < 0.06;
-          return Math.abs(Math.log(E.FA.mrs(x, y) / E.FB.mrs(W1 - x, W2 - y))) < 0.04;
-        };
-        const pathDist = (pts, x, y) => { const q = nearestOnPath(s, pts, x, y); return Math.hypot(q[0] - x, q[1] - y); };
-        v.button('Snap to the efficient set', () => {
-          const E = setOf(); let tgt = null;
-          if (E.curve) tgt = nearestOnPath(s, E.curve, H.x, H.y);
-          else if (E.region) {
-            let bd = Infinity;
-            for (let i = 1; i < 80; i++) for (let j = 1; j < 80; j++) { const px = (W1 * i) / 80, py = (W2 * j) / 80; if (effComp(E, px, py)) { const d = Math.hypot(px - H.x, py - H.y); if (d < bd) { bd = d; tgt = [px, py]; } } }
-          }
-          if (tgt) H.set(clamp(tgt[0], 0.3, W1 - 0.3), clamp(tgt[1], 0.3, W2 - 0.3));
+        const fam=v.select('both traders have',[{value:'cd',label:'Cobb–Douglas'},{value:'ces',label:'CES (ρ = −1.5)'},{value:'comp',label:'perfect complements'},{value:'subs',label:'perfect substitutes'}],'cd');
+        const aS=v.slider('$A$: taste parameter $a$',.15,.85,.6,{step:.01}),bS=v.slider('$B$: taste parameter $b$',.15,.85,.3,{step:.01});
+        const tx=v.slider('allocation: good 1 for $A$',0,10,2.5,{step:.05,decimals:7}),ty=v.slider('allocation: good 2 for $A$',0,10,7,{step:.05,decimals:7});
+        const s=boxStage(v,{title:'the complete efficient set, including its boundary',height:430});
+        v.legend([['purple','efficient curve / region'],['accent','A’s indifference boundary'],['orange','B’s indifference boundary'],['green','weak lens (illustration)',{area:true}],['gold','allocation / resolved improvement']]);
+        const H=s.handle(tx.value,ty.value,{color:'gold',r:9,constrain:{x:[0,10],y:[0,10]}});H.onDrag=()=>{tx.set(H.x);ty.set(H.y);};
+        const current=()=>efficientAllocationState(fam.value,aS.value,bS.value,tx.value,ty.value);let info={};
+        v.button('Choose efficient allocation',()=>{const p=current();tx.set(p.target[0]);ty.set(p.target[1]);});
+        v.render(()=>{
+          H.set(tx.value,ty.value);const p=current(),green=v.rgb('green');drawBox(s,{axes:false});
+          if(p.family==='cd'||p.family==='ces')s.path(Array.from({length:261},(_,i)=>[i/26,efficientCurveY(p.family,p.a,p.b,i/26)]),{color:'purple',width:4});
+          else if(p.family==='comp'){
+            for(const poly of efficientComplementPolygons(p.a,p.b))s.poly(poly,{color:'purple',width:4,fill:'purple',fillAlpha:.18});
+            const ta=Math.min(10/p.a,10/(1-p.a)),tb=Math.min(10/p.b,10/(1-p.b));
+            s.line(0,0,p.a*ta,(1-p.a)*ta,{color:'accent',width:1.4,dash:[4,4]});s.line(10,10,10-p.b*tb,10-(1-p.b)*tb,{color:'orange',width:1.4,dash:[4,4]});
+          }else if(p.a===p.b)s.rect(0,0,10,10,{fill:'purple',fillAlpha:.18,stroke:false});
+          else s.path(p.a>p.b?[[0,0],[10,0],[10,10]]:[[0,0],[0,10],[10,10]],{color:'purple',width:4});
+          s.raster((x,y)=>x>=0&&x<=10&&y>=0&&y<=10&&efficiencyUtility(p.family,p.a,x,y)>=p.uA&&efficiencyUtility(p.family,p.b,10-x,10-y)>=p.uB?[green[0],green[1],green[2],55]:null,{key:`eff3|${p.family}|${p.a}|${p.b}|${p.x}|${p.y}|${green}`,res:3});
+          s.path(efficiencyIndifference(p.family,p.a,p.uA),{color:'accent',width:2});s.path(efficiencyIndifference(p.family,p.b,p.uB).map(([x,y])=>[10-x,10-y]),{color:'orange',width:2});
+          if(p.family==='comp'){const r=p.reservation;s.rect(r.left,r.bottom,r.right,r.top,{color:'green',width:3,dash:[5,3]});}
+          if(p.witness?.resolved){const gap=Math.hypot(s.X(p.x)-s.X(p.target[0]),s.Y(p.y)-s.Y(p.target[1]));s.arrow(p.x,p.y,...p.target,{color:'gold',width:1.8});s.dot(...p.target,{color:'gold',r:gap<22?14:6,hollow:true});}info=p;
         });
-        let st = {};
-        v.render(() => {
-          const E = setOf(), { FA, FB } = E, x = H.x, y = H.y;
-          drawBox(s);
-          // the efficient set
-          if (E.region) {
-            const g = v.rgb('purple');
-            s.raster((px, py) => (px >= 0 && px <= W1 && py >= 0 && py <= W2 && effComp(E, px, py) ? [g[0], g[1], g[2], 90] : null), { key: `eff3|${aS.value}|${bS.value}|${g}`, res: 3 });
-            const kA = (FA.a / FA.b), kB = (FB.a / FB.b);
-            s.clip(() => { s.line(0, 0, W1, kA * W1, { color: 'accent', width: 1.4, dash: [5, 4] }); s.line(W1, W2, W1 - W2 / kB, 0, { color: 'orange', width: 1.4, dash: [5, 4] }); }, [0, W1], [0, W2]);
-          } else if (E.all) { s.rect(0, 0, W1, W2, { fill: 'purple', fillAlpha: 0.2, stroke: false }); }
-          else s.path(E.curve, { color: 'purple', width: 4.2, alpha: 0.95 });
-          drawLens(v, s, ua(FA), ub(FB), x, y, `lens3|${E.k}|${aS.value}|${bS.value}`, { alpha: 0.28 });
-          drawA(s, FA, FA.u(x, y)); drawB(s, FB, FB.u(W1 - x, W2 - y));
-          const eff = isEff(E, x, y), imp = improvements(ua(FA), ub(FB), x, y, 50);
-          s.corner(eff ? 'efficient: on the set' : 'inefficient: a lens exists', 'tl', { color: eff ? 'green' : 'red', weight: 700, plate: true });
-          st = { E, eff, imp, mA: FA.mrs(x, y), mB: FB.mrs(W1 - x, W2 - y) };
-        });
-        v.readout(() => {
-          const { E, eff, imp, mA, mB } = st;
-          const how = E.k === 'cd' || E.k === 'ces' ? `$MRS_A = ${f2(mA)}$, $MRS_B = ${f2(mB)}$: ${eff ? 'equal, so the point is on the curve' : 'unequal, so there is a trade both like'}.`
-            : E.k === 'comp' ? `Each trader has a kink ray (dashed). An allocation is efficient unless one trader is short of good 1 while the other is short of good 2; the efficient region is the wedge between the two rays.`
-              : E.all ? 'Both traders have the same MRS, so every allocation is efficient.' : `With constant MRS the only efficient allocations give the trader with the higher MRS all of the good he or she values most before the other gets any: the edges of the box.`;
-          return `${how} Lens of improvements: **${f2(imp.area * 100, 1)}%** of the box.`;
+        v.readout(()=>{const p=info,how=p.family==='subs'?p.a===p.b?'Equal substitute slopes: every feasible allocation is efficient.':p.a>p.b?'Substitutes: the efficient set is the bottom and right edges.':'Substitutes: the efficient set is the left and top edges.':p.family==='comp'?`Complements: weak-rectangle side lengths ${f2(p.reservation.slack1,9)} and ${f2(p.reservation.slack2,9)}; a zero side prevents any strict gain.`:'Smooth tastes: the displayed equation includes both efficient origins.';
+          return `${how}\nAllocation $A=(${f2(p.x,7)},${f2(p.y,7)})$, $B=(${f2(10-p.x,7)},${f2(10-p.y,7)})$. Utilities $A=${f2(p.uA,7)}$, $B=${f2(p.uB,7)}$. **${p.relation==='all'?'Every allocation is efficient.':p.relation==='off'?'Off the explicit efficient set.':'Matches the explicit efficient set within numerical tolerance.'}** Set residual $${v.sci(p.residual,4)}$.${p.witness?p.witness.resolved?`\nConstructed efficient improvement $(${p.target.map(q=>f2(q,7)).join(',')})$: utility gains ${p.witness.gains.map(q=>'$'+v.sci(q,4)+'$').join(', ')}.`:'\nThe point is off-set, but the candidate utility gains are below arithmetic resolution.':''} The weak lens can contain equally preferred points at an efficient allocation; its raster area is not a membership test.`;
         });
       },
     },
     // ------------------------------------------------------------------ 9.4
     {
       num: '9.4', kind: 'Definition', name: 'Core of an exchange economy',
-      statement: String.raw`Given an endowment $\omega$, using the weak-blocking convention, a coalition $S$ of consumers **blocks** an allocation $x$ if the members can reallocate their own endowments among themselves, $\sum_{i \in S} z^i = \sum_{i \in S} \omega^i$, so that everybody in $S$ weakly and someone strictly prefers $z^i$ to $x^i$. The **core** is the set of feasible allocations that no coalition blocks. In a two-trader economy the coalitions are $\{A\}$, $\{B\}$ and $\{A, B\}$, so the core is the part of the contract curve that both traders weakly prefer to the endowment:
-$$\text{Core} = \{x \text{ Pareto efficient} : u_A(x^A) \ge u_A(\omega^A),\ u_B(x^B) \ge u_B(\omega^B)\}.$$
-Every core allocation is Pareto efficient (the grand coalition cannot block) and individually rational (neither trader blocks alone).`,
-      idea: String.raw`Blocking by a single consumer means refusing to trade: someone who can stay at the endowment will not accept a worse bundle, so the core lies in the lens of 9.1. Blocking by the grand coalition means finding a Pareto improvement, so the core lies on the contract curve of 9.3. The core is the overlap of the two sets, a segment of the curve, and it says how far a bargain can be pushed without relying on any price: it is a prediction about outcomes of free recontracting, Edgeworth's original idea, long before there was a theory of equilibrium prices. Where the endowment sits determines where the segment sits.`,
-      caption: String.raw`**Drag the endowment $\omega$** (gold): the green stretch of the purple contract curve inside the lens is the core and it slides with $\omega$. **Drag the black test allocation** to see why an allocation is not in the core: below the lens one trader would rather stay at $\omega$ (blocked alone); off the contract curve, the pair itself can do better (blocked by both).`,
+      statement: String.raw`A coalition $S$ **blocks** a feasible allocation if it can redistribute its own initial endowments so that every member is weakly better off and at least one is strictly better off. The **core** consists of feasible allocations blocked by no coalition. This is the weak-all, strict-one convention used by Debreu and Scarf (1963).
+
+With two traders the only coalitions are $\{A\}$, $\{B\}$ and $\{A,B\}$. Thus the core is exactly the Pareto-efficient allocations satisfying both reservation constraints:
+$$u_A(x^A)\ge u_A(\omega^A),\qquad u_B(x^B)\ge u_B(\omega^B).$$
+For the pictured Cobb–Douglas utilities $u_A=x^a y^{1-a}$ and $u_B=(10-x)^b(10-y)^{1-b}$, $0<a,b<1$, the efficient curve is
+$$y(x)=\frac{10b(1-a)x}{10a(1-b)+(b-a)x},\quad0\le x\le10.$$
+Its core segment has endpoints where $A$'s and $B$'s respective reservation constraints bind; it can collapse to a single allocation.`,
+      idea: String.raw`A singleton can withdraw its own endowment, so neither trader can receive a worse bundle in the core. The pair can redistribute all resources, so a core allocation must also be Pareto efficient. These are all the coalitions in a two-person economy, making the conditions sufficient as well as necessary.
+
+For the positive Cobb–Douglas bundles, equating the two marginal rates of substitution gives the rational curve above. Along it $A$'s utility rises strictly with $x$ and $B$'s falls strictly. Solving the two reservation equalities therefore gives a closed interval, including both endpoints. For an inefficient test allocation, the same construction using its current utilities finds a feasible allocation that improves both traders; the red witness and utility gains demonstrate the block directly.`,
+      caption: String.raw`Move the gold **endowment** and black **test allocation**, or use their separate sliders when they coincide. Purple is the complete efficient curve; the thick green interval and its endpoint rings are the core. Thin blue/orange curves bound the endowment's individually rational lens. **Lower/upper core endpoint** selects an exact reservation boundary; **project into core** selects the curve at the test point's horizontal coordinate, clipped to the core interval. **Efficient endowment** makes the core collapse to one point. A red witness, when shown, is an actual feasible improvement for the pair.`,
+      scope: String.raw`Two goods with totals $(10,10)$; positive taste weights $0.15\le a,b\le0.85$; positive endowments $0.3\le\omega_1^A,\omega_2^A\le9.7$ and the complementary bundle for $B$. Test allocations range over the entire feasible box. Utilities are model values, not interpersonal welfare measurements. Only numerical precision ($10^{-10}$ in utility or coordinate residuals) is used for computed membership; a percentage difference in marginal rates is not treated as economic efficiency.`,
       deps: ['micro-9.3'],
-      refs: ['Varian Ch. 32'], tags: ['exchange'],
-      credit: 'F. Y. Edgeworth, Mathematical Psychics, 1881, pp. 17–29 (recontracting precursor; modern core definition)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Core_(game_theory)' },
+      refs: ['Debreu & Scarf (1963), introduction and core definition, pp.235–239; competitive allocation argument p.240', 'https://ucema.edu.ar/~fr05/curso_corto/Debreu-Scarf.pdf'], tags: ['exchange'],
+      credit: 'Debreu & Scarf, 1963, §2 (reviewed blocking definition)',
+      verify: false,
+      links: { source: 'https://ucema.edu.ar/~fr05/curso_corto/Debreu-Scarf.pdf' },
       viz(v) {
-        const aS = v.slider('$A$: weight on good 1', 0.15, 0.85, 0.65, { step: 0.01 });
-        const bS = v.slider('$B$: weight on good 1', 0.15, 0.85, 0.3, { step: 0.01 });
-        const s = boxStage(v, { title: 'the core: efficient allocations nobody blocks', height: 420 });
-        v.legend([['purple', 'contract curve'], ['green', 'core (curve ∩ lens)'], ['green', 'lens of ω', { area: true }], ['ink', 'test allocation'], ['gold', 'endowment ω']]);
-        const H = s.handle(3, 7, { color: 'gold', r: 9, label: 'ω', labelPos: 'ne', constrain: { x: [0.3, W1 - 0.3], y: [0.3, W2 - 0.3] } });
-        const T = s.handle(6, 6, { color: 'ink', r: 8, label: 'x', labelPos: 'ne', constrain: { x: [0.2, W1 - 0.2], y: [0.2, W2 - 0.2] } });
-        let st = {};
-        v.render(() => {
-          const FA = cd(aS.value), FB = cd(bS.value), x = H.x, y = H.y, a0 = FA.u(x, y), b0 = FB.u(W1 - x, W2 - y);
-          drawBox(s);
-          drawLens(v, s, ua(FA), ub(FB), x, y, `lens4|${aS.value}|${bS.value}`, { alpha: 0.2 });
-          const cur = contractCurve(FA, FB, 160), core = [];
-          let seg = [];
-          for (const p of cur) { if (FA.u(p[0], p[1]) >= a0 - 1e-9 && FB.u(W1 - p[0], W2 - p[1]) >= b0 - 1e-9) seg.push(p); else if (seg.length) { core.push(seg); seg = []; } }
-          if (seg.length) core.push(seg);
-          s.path(cur, { color: 'purple', width: 2.2, alpha: 0.7 });
-          for (const c of core) { s.path(c, { color: 'green', width: 6 }); }
-          drawA(s, FA, a0, { width: 1.8, alpha: 0.8 }); drawB(s, FB, b0, { width: 1.8, alpha: 0.8 });
-          s.dot(x, y, { r: 6, color: 'gold' });
-          // test allocation
-          const tx = T.x, ty = T.y, ta = FA.u(tx, ty), tb = FB.u(W1 - tx, W2 - ty);
-          const blockA = ta < a0 - 1e-9, blockB = tb < b0 - 1e-9, eff = Math.abs(Math.log(FA.mrs(tx, ty) / FB.mrs(W1 - tx, W2 - ty))) < 0.04;
-          const verdict = blockA && blockB ? 'blocked by A alone and by B alone' : blockA ? 'blocked by A alone: A prefers ω' : blockB ? 'blocked by B alone: B prefers ω' : !eff ? 'blocked by the pair: a Pareto improvement exists' : 'in the core';
-          s.corner(verdict, 'tl', { color: verdict === 'in the core' ? 'green' : 'red', weight: 700, plate: true });
-          const len = core.reduce((t, c) => t + pathLength(c), 0), tot = pathLength(cur);
-          st = { verdict, len, tot, ncore: core.length, a0, b0, ta, tb };
+        const aS=v.slider('$A$: weight on good 1',.15,.85,.65,{step:.01}),bS=v.slider('$B$: weight on good 1',.15,.85,.3,{step:.01});
+        const wx=v.slider('endowment: good 1 for $A$',.3,9.7,3,{step:.05,decimals:4}),wy=v.slider('endowment: good 2 for $A$',.3,9.7,7,{step:.05,decimals:4});
+        const tx=v.slider('test: good 1 for $A$',0,10,6,{step:.05,decimals:4}),ty=v.slider('test: good 2 for $A$',0,10,6,{step:.05,decimals:4});
+        const s=v.stage({x:[-1.5,11.5],y:[-1.5,11.5],axes:'box',gutter:true,height:430,xlabel:'good 1 allocated to A',ylabel:'good 2 allocated to A',title:'the core and a genuine blocking witness'});
+        v.legend([['purple','efficient curve'],['green','core interval / endpoints'],['green','individually rational lens',{area:true}],['accent','A’s reservation boundary'],['orange','B’s reservation boundary'],['gold','endowment'],['ink','test allocation'],['red','pair improvement witness']]);
+        const H=s.handle(3,7,{color:'gold',r:9,constrain:{x:[.3,9.7],y:[.3,9.7]}}),T=s.handle(6,6,{color:'ink',r:8,constrain:{x:[0,10],y:[0,10]}});
+        H.onDrag=()=>{wx.set(H.x);wy.set(H.y);};T.onDrag=()=>{tx.set(T.x);ty.set(T.y);};
+        const current=()=>coreAllocationState(aS.value,bS.value,wx.value,wy.value,tx.value,ty.value),setTest=p=>{tx.set(p[0]);ty.set(p[1]);};
+        v.button('lower core endpoint',()=>setTest(current().lowPoint));v.button('upper core endpoint',()=>setTest(current().highPoint));
+        v.button('project into core',()=>{const p=current(),x=clamp(tx.value,p.lower,p.upper);setTest([x,coreCurveY(aS.value,bS.value,x)]);});
+        v.button('efficient endowment',()=>{wx.set(5);wy.set(coreCurveY(aS.value,bS.value,5));});
+        let info={};
+        v.render(()=>{
+          H.set(wx.value,wy.value);T.set(tx.value,ty.value);const p=current(),y=x=>coreCurveY(p.a,p.b,x),green=v.rgb('green');
+          s.rect(0,0,10,10,{color:'muted',width:1.5});
+          s.raster((x,z)=>x>=0&&x<=10&&z>=0&&z<=10&&coreUtility(p.a,x,z)>=p.reservationA&&coreUtility(p.b,10-x,10-z)>=p.reservationB?[green[0],green[1],green[2],45]:null,{key:`core-lens|${p.a}|${p.b}|${p.wx}|${p.wy}|${green}`,res:3});
+          s.fn(y,{domain:[0,10],color:'purple',width:2.2,n:260});
+          const xa=(p.reservationA/10**(1-p.a))**(1/p.a),xb=(p.reservationB/10**(1-p.b))**(1/p.b);
+          s.curve(t=>{const x=xa*(10/xa)**t;return[x,(p.reservationA/x**p.a)**(1/(1-p.a))];},0,1,{color:'accent',width:1.8,n:240});
+          s.curve(t=>{const x=xb*(10/xb)**t;return[10-x,10-(p.reservationB/x**p.b)**(1/(1-p.b))];},0,1,{color:'orange',width:1.8,n:240});
+          s.fn(y,{domain:[p.lower,p.upper],color:'green',width:6,n:150});
+          const endpointRadius=p.lower===p.upper?14:6;
+          s.dot(...p.lowPoint,{color:'green',r:endpointRadius,hollow:true});if(p.lower!==p.upper)s.dot(...p.highPoint,{color:'green',r:6,hollow:true});
+          if(p.witness?.resolved){const d=Math.hypot(s.X(p.witness.point[0])-s.X(p.x),s.Y(p.witness.point[1])-s.Y(p.y));s.arrow(p.x,p.y,...p.witness.point,{color:'red',width:1.7});s.dot(...p.witness.point,{color:'red',r:d<18?12:5,hollow:true});}
+          info=p;
         });
-        v.readout(() => {
-          const { verdict, len, tot, ncore, a0, b0, ta, tb } = st;
-          return `Core length: **${f2((len / tot) * 100, 0)}%** of the contract curve${ncore ? '' : ' (empty: not possible with convex preferences)'}. Reservation utilities $u_A(\\omega) = ${f2(a0)}$, $u_B(\\omega) = ${f2(b0)}$; test allocation: $u_A = ${f2(ta)}$, $u_B = ${f2(tb)}$, **${verdict}**.`;
-        });
+        v.readout(()=>{const p=info;return `Core interval in good 1: $[${f2(p.lower,7)},${f2(p.upper,7)}]${p.lower===p.upper?'$ (one allocation).':'$.'} Test: **${p.verdict}**.\nReservation utilities: $A=${f2(p.reservationA,7)}$, $B=${f2(p.reservationB,7)}$; test utilities $A=${f2(p.uA,7)}$, $B=${f2(p.uB,7)}$. IR slacks: ${f2(p.slackA,9)}, ${f2(p.slackB,9)}. Curve residual $y-y(x)=${f2(p.residual,9)}$.${p.witness?.resolved?`\nPair witness $(${p.witness.point.map(q=>f2(q,7)).join(',')})$: utility gains ${p.witness.gains.map(q=>'$'+v.sci(q,4)+'$').join(', ')}. The two complementary bundles still sum to $(10,10)$.`:p.witness?'\nThe curve test detects inefficiency, but the candidate utility gains are below arithmetic resolution.':''}`;});
       },
     },
     // ------------------------------------------------------------------ 9.5
@@ -276,42 +244,44 @@ Every core allocation is Pareto efficient (the grand coalition cannot block) and
     // ------------------------------------------------------------------ 9.6
     {
       num: '9.6', kind: 'Proposition', name: 'Walras’ law',
-      statement: String.raw`Suppose every consumer spends his or her whole income, $p \cdot x^i(p) = p \cdot \omega^i$ (this holds if preferences are locally non-satiated). Then for **every strictly positive** price vector $p$, not only equilibrium ones, the value of aggregate excess demand is zero:
-$$p \cdot z(p) = \sum_k p_k\, z_k(p) = 0 .$$
-Consequently, if all markets but one clear at $p$, the last one clears too provided its price is positive; with $n$ goods only $n-1$ markets (and $n-1$ relative prices) are independent. In the two-good box, $p_1 z_1 + p_2 z_2 = 0$, so the excess demands always have opposite signs unless both vanish.`,
-      idea: String.raw`Add up the budget identities. Consumer $i$'s excess demand costs $p \cdot (x^i - \omega^i) = 0$ because the budget is exhausted, and the value of the sum is the sum of the values, so $p \cdot z = \sum_i p\cdot(x^i - \omega^i) = 0$. It is an accounting identity, not an equilibrium condition: it holds out of equilibrium too, and what the market does with the pieces (one good's surplus is another good's shortage) is the whole content. The proof uses non-satiation only to ensure that each budget is spent; a trader with a bliss point who stops buying leaves some income unspent and the identity becomes $p\cdot z \le 0$.`,
-      caption: String.raw`Left: the excess demands $z_1(p)$ and $z_2(p)$ as functions of the relative price $p = p_1/p_2$ (log axis), with the value $p\,z_1 + z_2$ in green; the gold line marks the chosen price. Right: the bars $p\,z_1$ and $z_2$ are mirror images, and their sum is zero at **every** $p$. Where one curve crosses zero, so does the other. Make trader $A$ **satiated** (a bliss point) and the bars stop cancelling at every price where $A$ can afford the bliss bundle and leaves income unspent.`,
+      statement: String.raw`In a finite pure exchange economy, let prices be strictly positive, $p\gg0$, and let consumer $i$ choose a budget-feasible bundle $x^i$ from income $p\cdot\omega^i$. If every consumer exhausts that budget, then the value of aggregate excess demand $z=\sum_i(x^i-\omega^i)$ is zero at every such price, including prices away from equilibrium:
+$$p\cdot z=\sum_k p_kz_k=0.$$
+Local non-satiation ensures budget exhaustion for a maximizing bundle. Consequently, if all but one market clear, the last market clears too. The positive price of the last good matters: at a zero price its excess supply can have zero value without vanishing. With good 2 as numéraire, $p_2=1$ and $p=p_1/p_2>0$, the identity is $p z_1+z_2=0$. More generally, if consumers leave a total amount $U$ of income unspent, budget accounting gives $p\cdot z=-U\le0$.`,
+      idea: String.raw`Add the individual budget identities: the value of a sum of net purchases is the sum of their values. Local non-satiation rules out a maximizing bundle strictly inside the budget, since a sufficiently small improvement would still be affordable. To infer that a remaining excess demand is zero, divide its zero value by its positive price. When a bliss point makes a consumer stop spending, the same accounting calculation still holds, but its right side is minus the unspent income.`,
+      caption: String.raw`The complete curves show both excess demands over $0.1\le p\le10$; their vertical scales include the endpoints. The bars show the two value terms at the selected price. **Clear market 1** selects its exact clearing price. With ordinary Cobb–Douglas tastes the two bars cancel and both markets clear together. Toggle $A$'s **bliss point**: once it is affordable, $A$ leaves income unspent and the sum is its negative. **Bliss affordability boundary** selects $p=2/3$; move one price step either way to cross it. Clearing market 1 then leaves excess supply in market 2. This breaks the budget-exhaustion hypothesis.`,
+      scope: String.raw`A two-good, two-consumer model with totals $(10,10)$, endowments $\omega^A=(7,2)$ and $\omega^B=(3,8)$, and strictly positive prices $(p,1)$. Ordinary utilities are $x^{0.35}y^{0.65}$ for $A$ and $x^{0.6}y^{0.4}$ for $B$. The toggle replaces $A$'s utility by $-[(x-4)^2+(y-4)^2]$, whose unconstrained optimum is $(4,4)$. Quantities and prices are illustrative.`,
       deps: ['micro-9.5'],
-      refs: ['Varian Ch. 32'], tags: ['general equilibrium'],
-      credit: 'Léon Walras, 1874, lesson 17 §§89–93 (budget/exchange identities; modern terminology)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Walras%27s_law' },
+      refs: ['Arrow & Debreu (1954), §§1.3–1.5, especially budget exhaustion §1.4.2 and free goods §1.4.1', 'https://web.stanford.edu/class/msande311/arrow-debreu.pdf', 'Condie, Advanced Microeconomic Theory, §7.2, Proposition 7.1'], tags: ['general equilibrium'],
+      credit: 'Budget-identity formulation; Arrow & Debreu, 1954, §1.4.2',
+      verify: false,
+      links: { source: 'https://web.stanford.edu/class/msande311/arrow-debreu.pdf' },
       viz(v) {
-        const pS = v.slider('relative price $p_1/p_2$', 0.1, 10, 1.4, { log: true, sig: 3 });
+        const pS = v.slider('relative price $p_1/p_2$', .1, 10, 1.4, { log: true, sig: 3 });
         const sat = v.toggle('$A$ is satiated (bliss point at (4, 4))', false);
-        const L = v.stage({ x: [0.1, 10], y: [-9, 9], xlog: true, axes: 'box', gutter: true, height: 350, xlabel: 'relative price p₁/p₂', ylabel: 'excess demand', title: 'excess demands against the price', weight: 1.35 });
-        const R = v.stage({ x: [0.3, 3.7], y: [-9, 9], axes: 'box', gutter: true, height: 350, xlabel: '', ylabel: 'value of excess demand', title: 'bars at the chosen price', weight: 1, xticks: [[1, 'p·z₁'], [2, 'z₂'], [3, 'sum']] });
-        v.legend([['blue', 'z₁(p)'], ['orange', 'z₂(p)'], ['green', 'p·z₁ + z₂'], ['gold', 'chosen price']]);
-        const w = [7, 2];
-        let st = {};
+        const L = v.stage({ x: [.08, 12.5], y: [-10, 60], xlog: true, axes: 'box', gutter: true, height: 370, xlabel: 'relative price p₁/p₂', ylabel: 'excess demand', title: 'complete excess-demand curves', weight: 1.2 });
+        const R = v.stage({ x: [.3, 3.7], y: [-10, 10], axes: 'box', gutter: true, height: 370, ylabel: 'value of excess demand', title: 'value terms at the chosen price', xticks: [[1, 'p·z₁'], [2, 'z₂'], [3, 'sum']] });
+        v.legend([['blue', 'z₁(p)'], ['orange', 'z₂(p)'], ['green', 'p·z₁ + z₂', { dash: true }], ['gold', 'chosen price']]);
+        v.button('clear market 1', () => pS.set(walrasBudgetState(pS.value, sat.value).market1Price));
+        v.button('bliss affordability boundary', () => pS.set(2 / 3));
+        let info = {};
         v.render(() => {
-          const FA = sat.value ? pref('sat', { bx: 4, by: 4 }) : cd(0.35), FB = cd(0.6), M = market(FA, FB, w);
+          const p = walrasBudgetState(pS.value, sat.value), f = q => walrasBudgetState(q, sat.value);
+          const values = [0];
+          for (let i = 0; i <= 240; i++) { const q = .1 * 100 ** (i / 240), a = f(q); values.push(...a.z, a.value); }
+          L.setView([.08, 12.5], paddedRange(values, .13));
+          R.setView([.3, 3.7], paddedRange([0, ...p.valueTerms, p.value], .22));
           L.hline(0, { color: 'muted', width: 1 });
-          L.fn((q) => clamp(M.z(q)[0], -12, 12), { domain: [0.1, 10], color: 'blue', width: 2.6, n: 200 });
-          L.fn((q) => clamp(M.z(q)[1], -12, 12), { domain: [0.1, 10], color: 'orange', width: 2.6, n: 200 });
-          L.fn((q) => { const z = M.z(q); return q * z[0] + z[1]; }, { domain: [0.1, 10], color: 'green', width: 2.4, n: 200, dash: [6, 4] });
-          const p = pS.value, z = M.z(p), val = p * z[0] + z[1];
-          L.vline(p, { color: 'gold', width: 2 });
-          L.dot(p, z[0], { r: 5, color: 'blue' }); L.dot(p, z[1], { r: 5, color: 'orange' });
+          L.fn(q => f(q).z[0], { domain: [.1, 10], color: 'blue', width: 2.6, n: 300 });
+          L.fn(q => f(q).z[1], { domain: [.1, 10], color: 'orange', width: 2.6, n: 300 });
+          L.fn(q => f(q).value, { domain: [.1, 10], color: 'green', width: 2.4, n: 300, dash: [6, 4] });
+          L.vline(p.p, { color: 'gold', width: 1.5 });
+          L.dot(p.p, p.z[0], { r: 5, color: 'blue' }); L.dot(p.p, p.z[1], { r: 5, color: 'orange' });
           R.hline(0, { color: 'muted', width: 1 });
-          bar(R, 1, 0.55, 0, p * z[0], 'blue'); bar(R, 2, 0.55, 0, z[1], 'orange'); bar(R, 3, 0.55, 0, val, Math.abs(val) < 1e-6 ? 'green' : 'red', { fillAlpha: 0.8 });
-          if (Math.abs(val) < 1e-6) R.text('= 0', 3, 0, { dy: -14, size: 12, weight: 700, color: 'green', align: 'center', plate: true });
-          st = { p, z, val, r: M.roots(0.1, 10) };
+          bar(R, 1, .55, 0, p.valueTerms[0], 'blue'); bar(R, 2, .55, 0, p.valueTerms[1], 'orange');
+          bar(R, 3, .55, 0, p.value, p.unspentA > 0 ? 'red' : 'green', { fillAlpha: .8 });
+          info = p;
         });
-        v.readout(() => {
-          const { p, z, val, r } = st;
-          return `At $p = ${f2(p)}$: $z_1 = ${f2(z[0])}$, $z_2 = ${f2(z[1])}$, so $p z_1 + z_2 = ${f2(p * z[0])} ${z[1] < 0 ? '−' : '+'} ${f2(Math.abs(z[1]))} = ${f2(val, 4)}$${Math.abs(val) < 1e-6 ? ': Walras’ law holds' : ': **the law fails** (A does not spend all of his or her income, so some income is left unspent)'}.${r.length ? ` Market 1 clears at $p^* = ${f2(r[0].p, 3)}$; there $z_2 = ${f2(M2(r[0].p, sat.value), 4)}$${Math.abs(M2(r[0].p, sat.value)) < 1e-6 ? ', so market 2 clears too (Walras’ law)' : ': market 2 does **not** clear, because the law fails'}.` : ''}`;
-        });
-        function M2(p, s) { const M = market(s ? pref('sat', { bx: 4, by: 4 }) : cd(0.35), cd(0.6), w); return M.z(p)[1]; }
+        v.readout(() => `At $p=${f2(info.p, 5)}$: $z_1=${f2(info.z[0], 6)}$, $z_2=${f2(info.z[1], 6)}$. Value terms: $p z_1=${f2(info.valueTerms[0], 6)}$, $z_2=${f2(info.valueTerms[1], 6)}$, sum $=${f2(info.value, 6)}$.\nIncome / expenditure: $A$ ${f2(info.incomeA, 6)} / ${f2(info.spendingA, 6)}, $B$ ${f2(info.incomeB, 6)} / ${f2(info.spendingB, 6)}. Unspent income $U=${f2(info.unspentA + info.unspentB, 6)}$, so the sum equals $-U$. ${info.unspentA > 0 ? 'Budget exhaustion fails: the bliss bundle is affordable.' : 'Both budgets are exhausted: Walras’ law holds.'}\nExact market-1 clearing price: $${info.satiated ? '8/7' : '22/23'}$. There $z_2=${f2(walrasBudgetState(info.market1Price, info.satiated).z[1], 6)}$: ${info.satiated ? 'market 2 has excess supply.' : 'both markets clear.'}`);
       },
     },
   ],

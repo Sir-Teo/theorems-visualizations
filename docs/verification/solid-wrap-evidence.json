@@ -1,0 +1,712 @@
+{
+  "prerequisite": "3d543ac662e32eff55b6f357fbe24dfadae9e100",
+  "correction": "fa92872",
+  "disposition": "producer complete; await independent peer",
+  "native": {
+    "complete": true,
+    "cases": 28,
+    "pictures": 56,
+    "rows": [
+      {
+        "num": "1.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.9-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.9-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.10",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.10-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.10",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.10-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.12",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.12-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.12",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.12-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.14",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.14-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.14",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.14-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.15",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.15-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.15",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.15-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.2",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.2-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.2",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.2-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.6-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.6-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.10",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.10-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.10",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.10-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.11",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.11-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.11",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.11-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.12",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.12-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.12",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.12-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.1",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.1-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.1",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.1-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.6-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.6-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.7",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.7-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.7",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.7-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.9-light-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.9-light-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.9-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.9-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.10",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.10-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.10",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.10-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.12",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.12-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.12",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.12-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.14",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.14-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.14",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.14-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "1.15",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.15-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "1.15",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/1.15-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.2",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.2-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.2",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.2-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.6-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.6-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.10",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.10-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.10",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.10-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.11",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.11-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.11",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.11-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "2.12",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.12-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "2.12",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/2.12-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.1",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.1-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.1",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.1-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.6-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.6-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.7",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.7-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.7",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.7-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      },
+      {
+        "num": "3.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.9-dark-idea.png",
+        "client": 288,
+        "scroll": 288,
+        "math": []
+      },
+      {
+        "num": "3.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/solid/wrap-native/3.9-dark-statement.png",
+        "client": 285,
+        "scroll": 285,
+        "math": [
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          },
+          {
+            "client": 253,
+            "scroll": 253
+          }
+        ]
+      }
+    ]
+  }
+}

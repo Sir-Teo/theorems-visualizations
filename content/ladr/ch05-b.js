@@ -1055,6 +1055,7 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
       idea: String.raw`By the fundamental theorem of algebra (4.13) the minimal polynomial of $T$ factors completely as $(z - \lambda_1)\cdots(z - \lambda_m)$ over $\mathbf C$, so 5.44 applies. Concretely the basis can be built one vector at a time: an eigenvector $v_1$ (which exists by 5.19); then an eigenvector of the operator that $T$ induces on what is left (the lower-right block once $v_1$ is the first basis vector), giving $v_2$ with $\operatorname{span}(v_1, v_2)$ invariant; and so on. Over $\mathbf R$ the process can stall, when such a block has no real eigenvalue.`,
       caption: String.raw`Each entry of the complex $3\times3$ matrix is drawn as an arrow in its own small copy of $\mathbf C$ (the circle has radius $|$largest entry$|$). Step through: first an eigenvector $v_1$ is chosen and completed to an orthonormal basis — column 1 becomes $(\lambda_1, 0, 0)$; then an eigenvector of the lower-right $2\times2$ block gives $v_2$ — and the matrix is upper triangular. On the right, the diagonal entries (gold) land on the eigenvalues (rings). **New random $T$** repeats it; switch to a real $T$ whose minimal polynomial has a factor $z^2 + bz + c$ with $b^2 < 4c$, and over $\mathbf R$ the second step is impossible.`,
       deps: ['ladr-5.44', 'ladr-4.13'],
+      verify: true,
       tags: ['triangular'],
       viz(v) {
         const M = v.M;
@@ -1112,7 +1113,6 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
               : `The lower-right $2\\times2$ block has an eigenvalue $\\lambda_2$; its eigenvector gives $v_2$ (and $v_3 \\perp v_1, v_2$). Now $\\operatorname{span}(v_1, v_2)$ is invariant too, and **the matrix is upper triangular**.`,
           ];
           data = { mats: [A, B1, B2], ev, notes, stuck };
-          ST.reset({at: 'keep'}); // refresh notes when the field or random matrix changes
         }
         function phasor(i, j, z, rmax, st) {
           const cx = j + 0.5, cy = 2.5 - i, R = 0.34, zero = cAbs(z) < 1e-9;

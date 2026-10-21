@@ -1,0 +1,740 @@
+{
+  "sourceMetadata": "/tmp/atlas-root-paired-first-state/original/metadata.json",
+  "sourceMetadataSHA256": "c9454a6e45369c17b05283f657928969f772df765832f0845c5d7f154f0abeea",
+  "historyEnd": 5050,
+  "resetAt": 2461,
+  "tailEvents": 259,
+  "tailCounts": {
+    "atlas-clear": 2,
+    "draw-begin": 1,
+    "request-begin": 85,
+    "atlas-upload": 85,
+    "request-end": 85,
+    "draw-end": 1
+  },
+  "tailStart": [
+    {
+      "type": "atlas-clear",
+      "stage": "post-epoch-transfer",
+      "before": {
+        "generation": 4,
+        "x": 1757,
+        "y": 410,
+        "rowHeight": 69,
+        "cacheSize": 85
+      },
+      "after": {
+        "generation": 5,
+        "x": 0,
+        "y": 0,
+        "rowHeight": 0,
+        "cacheSize": 0
+      }
+    },
+    {
+      "type": "draw-begin",
+      "draw": 18,
+      "stage": "post-epoch-transfer"
+    }
+  ],
+  "tailFonts": {
+    "600 32px Inter, system-ui, sans-serif": 1,
+    "600 11px Inter, system-ui, sans-serif": 76,
+    "italic 500 32px Newsreader, serif": 8
+  },
+  "tailUploads": [
+    {
+      "key": "[\"MATHEMATICS\",\"600 32px Inter, system-ui, sans-serif\",\"bottom\",\"left\",\"0.08em\",false,1,2,\"rgba(53,87,212,0.95)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 528,
+      "height": 54,
+      "sha256": "94f418b4f78d5ca7924395b450731e6976d6574f29c9be6e8121211510ccf29b",
+      "bytes": 114048
+    },
+    {
+      "key": "[\"Ch 1\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 48,
+      "height": 23,
+      "sha256": "3419c6f5dfe9375db068c907c1c3e426bbcc2e1a8527ced93cc88a54ac9f4a28",
+      "bytes": 4416
+    },
+    {
+      "key": "[\"2 \u00b7 Existence, uniqueness and dependence on data\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 544,
+      "height": 29,
+      "sha256": "34fea27b5244fea6267bbf1c67ee673455f561536815a6c4e187a498c701962c",
+      "bytes": 63104
+    },
+    {
+      "key": "[\"3 \u00b7 Linear systems and the matrix exponential\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 485,
+      "height": 29,
+      "sha256": "2d3f1fbab0f39b966cb64ffdb3c691f3c961c4c5fc6225b72f6de7ba0a9a29fe",
+      "bytes": 56260
+    },
+    {
+      "key": "[\"Ch 4\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "95d47941f1e26b8fd329bf7c062665f7e88e9f8fe916ba964bb25b22403d3780",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"5 \u00b7 Flows, invariant sets and Lyapunov stability\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 499,
+      "height": 29,
+      "sha256": "92bee3147efc03385d46343c289eb2f1348781e390ada7f32804da4fcd384cd7",
+      "bytes": 57884
+    },
+    {
+      "key": "[\"Ch 6\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "9d53b63ba25a6d62bbb4ed2c0b7b61f290dd9fb6ee80084eb0204300ac276243",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 7\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "32ef6d258688aec9846b87972d6b0eb2c6bf5c925c818d177d1d165dfdbf7478",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"8 \u00b7 Bifurcations\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 165,
+      "height": 24,
+      "sha256": "473f83ba3ff40068bb3023d0624692e952c52ac724a607358e21e4fd744dba06",
+      "bytes": 15840
+    },
+    {
+      "key": "[\"Ch 9\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "4349095b00150ca5124334664b9ee541886ffe4a973a46ec9d093fe3d67c5da0",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"10 \u00b7 Higher-dimensional flows and the Lorenz equations\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 594,
+      "height": 29,
+      "sha256": "873fd6f31feda0e39da4839feaf68ab62e595f0e4687701bb2c6443348f66dbb",
+      "bytes": 68904
+    },
+    {
+      "key": "[\"11 \u00b7 One-dimensional maps\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 288,
+      "height": 29,
+      "sha256": "300fbfa9cbce9accd4bd973477bb216e322b16a79b1da6fe9ded3ce82b25f64f",
+      "bytes": 33408
+    },
+    {
+      "key": "[\"Ch 12\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(3,109,141,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 62,
+      "height": 23,
+      "sha256": "9b750cc64d1a05163a2c72e360bce95aad03ad66853780fbc2e6209eeeae4aa0",
+      "bytes": 5704
+    },
+    {
+      "key": "[\"Ch 1\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 48,
+      "height": 23,
+      "sha256": "e482838cf4f2a9a8fd473a36129cbcb109a9b309afbc56acc24e57e1cb289d77",
+      "bytes": 4416
+    },
+    {
+      "key": "[\"Ch 2\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "11f4ed0b89c9dcd887deb63f1cbecf8c5cca2d4f7027a7ba641203b27f223def",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"Ch 3\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "13721a14231722b56c56a4ba956a3d3bb95c81812cb30162a7bc3bc241ca2d32",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 4\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "d4146eebc8b748121f0e6f3f786fc0a636a0a6cf2e07af9b3a7029b833eec550",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 5\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "9d89ac5f86bba665fe102a62de892c3b4afccdefddbc80f19e2570015f672fc5",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"Ch 6\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "60e90f5dee6a678c99bbeb469c3e4571567472a33e55add2a77cc478cdfb76ac",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 7\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "87f389482e00df04c10f39b2f39bca9e5f034852a60fcf5ddc6328dfd38d056d",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"8 \u00b7 First-order equations, characteristics and shocks\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 560,
+      "height": 29,
+      "sha256": "d447e2504033b7e791e7836c7d8214087e97017636bdb1fb1ded14748c507867",
+      "bytes": 64960
+    },
+    {
+      "key": "[\"Ch 9\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "79b8038a15fc55857844f20558395efaa5360e8f7323910554652fee6f74b514",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"10 \u00b7 Sobolev spaces and weak solutions\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 425,
+      "height": 29,
+      "sha256": "c9473c5b1060fef2c138cb02c62cecc90841b70fc75669249870d3c46ee597f1",
+      "bytes": 49300
+    },
+    {
+      "key": "[\"Ch 11\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 58,
+      "height": 23,
+      "sha256": "c9f26168423ca46da0cd3e2e23d74f1f2c86d7eeee71dab5ae3765a0421f75b0",
+      "bytes": 5336
+    },
+    {
+      "key": "[\"12\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 27,
+      "height": 23,
+      "sha256": "eb3f90b3e7f416309b4f233161229b7283c9e5c97250857ec9b11fa73bbcde0d",
+      "bytes": 2484
+    },
+    {
+      "key": "[\"Ch 13\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(12,113,185,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 63,
+      "height": 23,
+      "sha256": "2dd295359252787b9bcaa2334a5f8073ab25976df78357ea23acedb5ea15d6c5",
+      "bytes": 5796
+    },
+    {
+      "key": "[\"Ch 1\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 48,
+      "height": 23,
+      "sha256": "1a69ab4a0fd38a6c4532dffbd9b612fc94943e1f6c1f37ae4e27976b852f9066",
+      "bytes": 4416
+    },
+    {
+      "key": "[\"2 \u00b7 Differentiating scalar fields\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 323,
+      "height": 29,
+      "sha256": "ce79be472f0b5dd0fb25dfc679b09e2674dc27f3b58370422a2fa461642f4ae1",
+      "bytes": 37468
+    },
+    {
+      "key": "[\"Ch 3\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "ef668da9529259ea438aec801ee7aa31294ee8c7bc3a7dca9e826b499391f5e2",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 4\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "342e17afce9195749b30f9bb15d9d1063744d3ac2774e704f1b6130841f42e0f",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"5 \u00b7 Line integrals and conservative fields\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 433,
+      "height": 29,
+      "sha256": "4a7965330809f82d66c2cb1130b835494c1a9e58f27a109cbf89481a5e3a2217",
+      "bytes": 50228
+    },
+    {
+      "key": "[\"Ch 6\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "c44b5c7dde9d885d455245bfb14b30c944db99de9e02bfac7894e66e7e8671fb",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 7\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "adf87fdee796af87012408870817da91c0c022820ae8a944b3021bb6b31c2f45",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"Ch 8\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "619b0e555e407c98f96c65380b0500a9679cfa98fe33785a81a08e2d41c996ff",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 9\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "cebd4595987935de7a187192c51cc45b6057a8a48bbd2a5fce8ef997b9b9c2f7",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 10\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(17,129,176,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 63,
+      "height": 23,
+      "sha256": "3e56adf4831cec0d1c0c4cb3c5e3d70e5f565bdf1016cb0425ffc17de9332830",
+      "bytes": 5796
+    },
+    {
+      "key": "[\"1 \u00b7 Vector Spaces\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 187,
+      "height": 28,
+      "sha256": "8afca0dd2783190354b9aae23bcef316652e5ce858617c5a900ef5c9d306f949",
+      "bytes": 20944
+    },
+    {
+      "key": "[\"2 \u00b7 Finite-Dimensional Vector Spaces\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 396,
+      "height": 29,
+      "sha256": "321fec277708056a8dc2b5be544df15e1d24a3a70c7e83ff20ebe467cfc883a4",
+      "bytes": 45936
+    },
+    {
+      "key": "[\"3 \u00b7 Linear Maps\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 167,
+      "height": 29,
+      "sha256": "f31317fb9393db172d8e558c2c3cc338265a6f6ca136f6a170cc3a9323dfe256",
+      "bytes": 19372
+    },
+    {
+      "key": "[\"Ch 4\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "54d77d2ec2ceb802cd21ab29d9f7b895b55578fc7b902255e133d22760508643",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"5 \u00b7 Eigenvalues and Eigenvectors\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 355,
+      "height": 29,
+      "sha256": "620a48d1aed395050bcb86008ac41d10fde6f49eb88df2ec8ed9864d046834b9",
+      "bytes": 41180
+    },
+    {
+      "key": "[\"6 \u00b7 Inner Product Spaces\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 265,
+      "height": 28,
+      "sha256": "4a50949444bbcdfe26286d18d24a03b5ca52a54c7e268212d172c7154e18531e",
+      "bytes": 29680
+    },
+    {
+      "key": "[\"7 \u00b7 Operators on Inner Product Spaces\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 409,
+      "height": 28,
+      "sha256": "9c4a00c1624291a3cbfbf3b450d7ad3d9c956106292e03e1a4bd6aa3bdcf1673",
+      "bytes": 45808
+    },
+    {
+      "key": "[\"8 \u00b7 Operators on Complex Vector Spaces\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 435,
+      "height": 28,
+      "sha256": "53a7ccb9aee9678d5bbcd3e7d8050aeabfb5d721fa366f9e6bc3f01b12fa2988",
+      "bytes": 48720
+    },
+    {
+      "key": "[\"9 \u00b7 Multilinear Algebra and Determinants\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(26,98,182,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 433,
+      "height": 29,
+      "sha256": "7a452997b77d86896030d0771aa507514aeec725dd679738f0caac20fbd15010",
+      "bytes": 50228
+    },
+    {
+      "key": "[\"1 \u00b7 Preliminaries\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 170,
+      "height": 24,
+      "sha256": "aa74d6efe633f793166318f9803a82a234fe3a70d552cea59a1e18d2c42d3d81",
+      "bytes": 16320
+    },
+    {
+      "key": "[\"2 \u00b7 The Integers\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 171,
+      "height": 28,
+      "sha256": "07d3d8db13396cdcb996423fe0854329be09f66dafabf6c97394954f8ab1a909",
+      "bytes": 19152
+    },
+    {
+      "key": "[\"Ch 3\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "4d6789503ec57ea23a994f1378e87d92b3888b0ae23395b5313b78baa414e3c2",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"4 \u00b7 Cyclic Groups\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 186,
+      "height": 29,
+      "sha256": "8a3a9bec0c470b6d9326d103f3bae6a774e00cb0323a59c4abd0588a2b02f1dc",
+      "bytes": 21576
+    },
+    {
+      "key": "[\"5 \u00b7 Permutation Groups\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 249,
+      "height": 29,
+      "sha256": "ea4eacf5b9e14ab15e0cb0ba27706b903320ffe9daacc71c3a225d2b17e36a47",
+      "bytes": 28884
+    },
+    {
+      "key": "[\"6 \u00b7 Cosets and Lagrange\u2019s Theorem\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 379,
+      "height": 28,
+      "sha256": "a749f4a20758376baae709e59b785fda5e27e5ba03e51618e44e0bf3f6897c8a",
+      "bytes": 42448
+    },
+    {
+      "key": "[\"Ch 7\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "ecbbcb6708fa159673b952aa916f6702e7548742fe8cab7ad50445b5b5a85007",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"8 \u00b7 Algebraic Coding Theory\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 303,
+      "height": 29,
+      "sha256": "e6b89cd14c8af4f7b05bd72c9d74e6481e98706b635b26c074d3904c3e715c09",
+      "bytes": 35148
+    },
+    {
+      "key": "[\"Ch 9\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "c719ddf28599b5da763dfee9fde61272adc00f320b201c7e64c3ef076bc376a4",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 10\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 63,
+      "height": 23,
+      "sha256": "a67ee4c3cbaf4c7cd32ee4f050b38ebbfe76f50349b3033e39018bfdf30f21c0",
+      "bytes": 5796
+    },
+    {
+      "key": "[\"Ch 11\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 58,
+      "height": 23,
+      "sha256": "a027cc1da32ac77610b243b926ec6198d237eefcd6a798f9af3235c3cde65c2c",
+      "bytes": 5336
+    },
+    {
+      "key": "[\"12 \u00b7 Matrix Groups and Symmetry\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 358,
+      "height": 29,
+      "sha256": "f62dc3d995667693ae7fe9bb6a9bda42957c575ce910c12be0e51aa23245636e",
+      "bytes": 41528
+    },
+    {
+      "key": "[\"Ch 13\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 63,
+      "height": 23,
+      "sha256": "75e136c3188b35b06fa6fbca702b42003e341ade46d4c8a6e987be1d27f14916",
+      "bytes": 5796
+    },
+    {
+      "key": "[\"14 \u00b7 Group Actions\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 198,
+      "height": 29,
+      "sha256": "a99021b3f622b19db5e2dbed89d3b0371e526891ad9734e8037099ef3768d8fe",
+      "bytes": 22968
+    },
+    {
+      "key": "[\"15 \u00b7 The Sylow Theorems\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 270,
+      "height": 28,
+      "sha256": "eca8fed8475791db1dab2f81a0c035db9094729f260221b0362220992b58dc1a",
+      "bytes": 30240
+    },
+    {
+      "key": "[\"16 \u00b7 Rings\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 105,
+      "height": 29,
+      "sha256": "3f76c3d5bb1bfa7175a2e0c7b4f3cd62ac12b3e15cc3d78147d8cdf4b5f27a53",
+      "bytes": 12180
+    },
+    {
+      "key": "[\"17 \u00b7 Polynomials\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 174,
+      "height": 29,
+      "sha256": "171c7871c6f246497cfce9785216b781411d62bf0f3398ef479dcf0bee24d22e",
+      "bytes": 20184
+    },
+    {
+      "key": "[\"18 \u00b7 Integral Domains\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 225,
+      "height": 29,
+      "sha256": "74f3ea034f8b25391bffc7c7bba948f072f7b38449cd9f40962e334661c20ebd",
+      "bytes": 26100
+    },
+    {
+      "key": "[\"19 \u00b7 Lattices and Boolean Algebras\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 369,
+      "height": 29,
+      "sha256": "15f15acb9feb8da17cd929f9d9d47a6cfcd4b9e81bb5e859bf640200c258431f",
+      "bytes": 42804
+    },
+    {
+      "key": "[\"20 \u00b7 Vector Spaces\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 206,
+      "height": 28,
+      "sha256": "3e106b47bcb2f489138794d1dcc91dc2140fd311f9adea70153b7b2390b104e9",
+      "bytes": 23072
+    },
+    {
+      "key": "[\"21 \u00b7 Fields\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 109,
+      "height": 24,
+      "sha256": "7479c881762f7dcdc15adc7a562b78474cd401eea026e9e0864483757bf3e835",
+      "bytes": 10464
+    },
+    {
+      "key": "[\"22 \u00b7 Finite Fields\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 177,
+      "height": 24,
+      "sha256": "27c58fb8776dfe974eeb88991c1e9f3d2908b302c5f522b0e4c0325072b4d4a1",
+      "bytes": 16992
+    },
+    {
+      "key": "[\"23 \u00b7 Galois Theory\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(1,116,174,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 199,
+      "height": 29,
+      "sha256": "c4ce27ed34e9b4edafb38a68c934855afd207eacc2b5870d4690c2f528dfc584",
+      "bytes": 23084
+    },
+    {
+      "key": "[\"Ch 1\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 48,
+      "height": 23,
+      "sha256": "7c2eeb300e4a1125e7d0a7ce936ed3ba10a12026f2da410c2ae7d1763f2e7f45",
+      "bytes": 4416
+    },
+    {
+      "key": "[\"Ch 2\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "a295e184c8618880b28e4e862ad1cd5e5ddc1f4324b0f3befc9a265f5118136f",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"3 \u00b7 Characters\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 154,
+      "height": 23,
+      "sha256": "6805a539e4afe13bcabf057039e282d119e29e282b0ca3b114e2553d69490281",
+      "bytes": 14168
+    },
+    {
+      "key": "[\"4\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.9)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 19,
+      "height": 23,
+      "sha256": "ba0937b17fb3b947044b1ac725cd8d7b186d59878330b83b5063847e34fb95c2",
+      "bytes": 1748
+    },
+    {
+      "key": "[\"Ch 5\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "5e643d733af76702d92f70c59daf7d4020b6edd57f04eda0c53d2280cbeb2506",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"Ch 6\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 54,
+      "height": 23,
+      "sha256": "890068310bba47bf2393a04ee9e9b6fc5042d0f12308e5f401abb5c6ff94f9c0",
+      "bytes": 4968
+    },
+    {
+      "key": "[\"Ch 7\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 53,
+      "height": 23,
+      "sha256": "26a29704bc81a0493a55d0ede5ef3e10504fd88261f27fe75dd509a958aea944",
+      "bytes": 4876
+    },
+    {
+      "key": "[\"8 \u00b7 Compact groups\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 214,
+      "height": 28,
+      "sha256": "8971224f4616a87186b6595dbdb9fd4b82d9b01f0cec92d1d0028df1531f3e02",
+      "bytes": 23968
+    },
+    {
+      "key": "[\"9 \u00b7 Lie algebras and their representations\",\"600 11px Inter, system-ui, sans-serif\",\"top\",\"left\",\"0px\",false,1,2,\"rgba(71,115,207,0.5)\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 439,
+      "height": 29,
+      "sha256": "7dd912b986669a892569cd7786f0b39b445a7ce8d743a9116fa8c7f4f7c0ea15",
+      "bytes": 50924
+    },
+    {
+      "key": "[\"Ordinary Differential Equations & Dynamical Systems\",\"italic 500 32px Newsreader, serif\",\"bottom\",\"left\",\"0px\",false,1,2,\"#036d8d\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 1420,
+      "height": 69,
+      "sha256": "cf39fb48e3d7b2ee787cd72708d93882c9dd9ae169515c72c90b04272136a150",
+      "bytes": 391920
+    },
+    {
+      "key": "[\"Partial Differential Equations\",\"italic 500 32px Newsreader, serif\",\"bottom\",\"left\",\"0px\",false,1,2,\"#0c71b9\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 782,
+      "height": 69,
+      "sha256": "499b71681a93542ba50d4f3d256bff4064f757776c821e3dfff1d35e91da3514",
+      "bytes": 215832
+    },
+    {
+      "key": "[\"Vector Calculus\",\"italic 500 32px Newsreader, serif\",\"bottom\",\"left\",\"0px\",false,1,2,\"#1181b0\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 401,
+      "height": 53,
+      "sha256": "7b81e42d187d724ae8b62c70d3f0a56ba7eb3c8d9e3b45ca34eec805c929e66d",
+      "bytes": 85012
+    },
+    {
+      "key": "[\"Linear Algebra Done Right\",\"italic 500 32px Newsreader, serif\",\"bottom\",\"left\",\"0px\",false,1,2,\"#1a62b6\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 706,
+      "height": 69,
+      "sha256": "438b8bf71804d247949a7f26b3fc36927914f38e6906f2ebb8c2ccf93812c98d",
+      "bytes": 194856
+    },
+    {
+      "key": "[\"Abstract Algebra \u00b7 chapters 1\u201313\",\"italic 500 32px Newsreader, serif\",\"bottom\",\"left\",\"0px\",false,1,2,\"#0174ae\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 860,
+      "height": 69,
+      "sha256": "db3a85374770383fd1ba577c0a2c0c98886553cd6084f5f4a1ebbf53bcfbe044",
+      "bytes": 237360
+    },
+    {
+      "key": "[\"Abstract Algebra \u00b7 chapters 14\u201323\",\"italic 500 32px Newsreader, serif\",\"bottom\",\"left\",\"0px\",false,1,2,\"#0174ae\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 897,
+      "height": 69,
+      "sha256": "838fcc9bdb1e08943f22aa5a7dac7c2858d8fb21b8fb8bd4b7f88424fa88520e",
+      "bytes": 247572
+    },
+    {
+      "key": "[\"Representation Theory\",\"italic 500 32px Newsreader, serif\",\"bottom\",\"left\",\"0px\",false,1,2,\"#4773cf\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 597,
+      "height": 69,
+      "sha256": "e9b10d6eddab40a92028a78457a883657d02e7bcf726091c3f2041939b52da32",
+      "bytes": 164772
+    },
+    {
+      "key": "[\"Topology\",\"italic 500 32px Newsreader, serif\",\"bottom\",\"left\",\"0px\",false,1,2,\"#0666ac\",0,0]",
+      "matchesLastPreEpochUpload": true,
+      "width": 234,
+      "height": 69,
+      "sha256": "4d0f5b20a4a2813abfad96b45e04c9826c5f8e13f6550b422410f82462e2c592",
+      "bytes": 64584
+    }
+  ],
+  "all85UploadContentAndDimensionsUnchanged": true,
+  "resetEvent": [
+    {
+      "type": "fresh-reset-complete",
+      "stage": "explicit-fresh-reset",
+      "width": 2048,
+      "height": 512,
+      "bytes": 52789212,
+      "peak": 52789212,
+      "unchangedOwners": 91
+    }
+  ],
+  "limitations": "Saved trace has no callback stacks or FontFaceSet event records; no specific callback dispatch or changed font-face identity is proven."
+}

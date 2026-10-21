@@ -1,0 +1,6 @@
+export const barnaclePhysiology=h=>1/(1+Math.exp((h-9.3)/.25));
+export const barnacleCompetitor=(h,upper=6,removed=false)=>removed?0:1/(1+Math.exp((h-upper)/.2));
+export const barnacleSurvival=(h,k=4,upper=6,removed=false)=>barnaclePhysiology(h)*Math.exp(-k*barnacleCompetitor(h,upper,removed));
+export function firstSurvivalThreshold(f,threshold=.1){if(f(0)>=threshold)return 0;let prev=0;for(let h=.02;h<=10+1e-9;h+=.02){if(f(h)>=threshold){let a=prev,b=h;for(let i=0;i<40;i++){const m=(a+b)/2;if(f(m)<threshold)a=m;else b=m;}return(a+b)/2;}prev=h;}return null;}
+export function lvInvasions(P){const g1=P.r1*(1-P.a12*P.K2/P.K1),g2=P.r2*(1-P.a21*P.K1/P.K2),boundary=Math.abs(g1)<1e-10||Math.abs(g2)<1e-10;return{g1,g2,boundary,outcome:boundary?'boundary':g1>0&&g2>0?'coexist':g1<0&&g2<0?'priority':g1>0?'one':'two'};}
+export function lvNullclines(P,xmax=90,ymax=230){const line=(a,b,K)=>{const pts=[];const add=(x,y)=>{if(Number.isFinite(x)&&Number.isFinite(y)&&x>=0&&x<=xmax&&y>=0&&y<=ymax&&!pts.some(p=>Math.hypot(p[0]-x,p[1]-y)<1e-8))pts.push([x,y]);};if(b!==0){add(0,K/b);add(xmax,(K-a*xmax)/b);}if(a!==0){add(K/a,0);add((K-b*ymax)/a,ymax);}return pts.slice(0,2);};return[line(1,P.a12,P.K1),line(P.a21,1,P.K2)];}

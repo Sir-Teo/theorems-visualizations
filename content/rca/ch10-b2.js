@@ -138,12 +138,12 @@ export default {
       name: 'Chains and cycles',
       statement: String.raw`If $\gamma_1,\dots,\gamma_n$ are paths in the plane, the *chain* $\Gamma=\gamma_1\dotplus\cdots\dotplus\gamma_n$ is their formal sum: $\Gamma^*=\gamma_1^*\cup\dots\cup\gamma_n^*$, and for $f\in C(\Gamma^*)$
 $$\int_\Gamma f=\sum_{j=1}^n\int_{\gamma_j}f .$$
-Chains are added by concatenating their lists of paths, and $-\Gamma$ is the chain of reversed paths; so integer combinations of paths make sense. A chain that admits a representation with all $\gamma_j$ closed paths is a *cycle*; another representation of the same cycle may use open paths. For a cycle and $\alpha\notin\Gamma^*$,
+Chains are added by concatenating their lists of paths, and $-\Gamma$ is the chain of reversed paths; so integer combinations of paths make sense. A chain in which every $\gamma_j$ is a closed path is a *cycle*. For a cycle and $\alpha\notin\Gamma^*$,
 $$\Ind_\Gamma(\alpha)=\frac1{2\pi i}\int_\Gamma\frac{dz}{z-\alpha}=\sum_j\Ind_{\gamma_j}(\alpha).$$`,
       idea: String.raw`A chain is just bookkeeping: integrals over a chain are defined to be additive, so one can integrate over several closed curves at once — the boundary of an annulus is the outer circle plus the *reversed* inner circle. Because $\Ind_\Gamma$ is the sum of the indices of the pieces, it is again integer-valued, constant on the components of $\C\setminus\Gamma^*$, and $0$ on the unbounded one (10.10).`,
       caption: String.raw`$\Gamma=n_1\gamma_1\dotplus n_2\gamma_2\dotplus n_3\gamma_3$ for three circles (drag their centres and the small radius handles; set the multiplicities with the sliders, negative means reversed). Each region of the plane is shaded and labelled with $\Ind_\Gamma$, which is simply the sum of the multiplicities of the circles surrounding it. The readout checks the probe point $\alpha$ against a numerical contour integral over the whole chain.`,
       deps: ['rca-10.9', 'rca-10.10'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 10.34, pp. 217–218'],
+      verify: true,
       tags: ['cycles', 'index'],
       viz(v) {
         const M = v.M;

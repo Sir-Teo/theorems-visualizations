@@ -1,0 +1,1134 @@
+{
+  "complete": true,
+  "diagnostic": true,
+  "method": "One synchronous isolated GPU scene draw per state; actual GL scissors and coverage bindings compared with source-derived per-style/tile rectangles. Logical operation counts only. Concurrent host/browser work permitted; no durations, FPS, GPU costs, pixel correctness or production acceptance claimed.",
+  "browser": "155.0.8059.85",
+  "hashes": {
+    "data/index": "e30edc52e17812418a9aede80b7842380749c377939762eecc2468eaea20ab42",
+    "data/planned": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "graph": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "map-webgl-scene": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "map-scene-edges": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "map-scene-model": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af"
+  },
+  "results": [
+    {
+      "selected": false,
+      "width": 1440,
+      "height": 932,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 361.59999999999997,
+      "ty": -1642.8000000000002,
+      "nodes": 13574,
+      "edges": 23258,
+      "calls": [
+        {
+          "viewportPixels": 5368320,
+          "mask": [
+            2880,
+            1864
+          ],
+          "scissorCalls": 36,
+          "groups": [
+            {
+              "style": "col:pma",
+              "bounds": [
+                -1080,
+                88,
+                11256,
+                11171
+              ],
+              "width": 0.8,
+              "segments": 57058,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 57058,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:rca",
+              "bounds": [
+                -504,
+                499,
+                9172,
+                11202
+              ],
+              "width": 0.8,
+              "segments": 16832,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 16832,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:fa",
+              "bounds": [
+                -356.80000000000007,
+                1173,
+                7796,
+                10781
+              ],
+              "width": 0.8,
+              "segments": 4576,
+              "tiles": 1,
+              "clearPixels": 5107360,
+              "compositePixels": 5107360,
+              "submittedSegmentInstances": 4576,
+              "rectangle": [
+                140,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:ode",
+              "bounds": [
+                -224,
+                1531,
+                11480,
+                10897
+              ],
+              "width": 0.8,
+              "segments": 10232,
+              "tiles": 1,
+              "clearPixels": 4712192,
+              "compositePixels": 4712192,
+              "submittedSegmentInstances": 10232,
+              "rectangle": [
+                352,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:ladr",
+              "bounds": [
+                -1206.4,
+                1068,
+                10236,
+                10907
+              ],
+              "width": 0.8,
+              "segments": 25519,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 25519,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:mech",
+              "bounds": [
+                -2175,
+                1583,
+                8574.2,
+                4894
+              ],
+              "width": 0.8,
+              "segments": 874,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 874,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:pde",
+              "bounds": [
+                -172.8,
+                1868,
+                5708,
+                10486
+              ],
+              "width": 0.8,
+              "segments": 2925,
+              "tiles": 1,
+              "clearPixels": 4559344,
+              "compositePixels": 4559344,
+              "submittedSegmentInstances": 2925,
+              "rectangle": [
+                434,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:vcalc",
+              "bounds": [
+                -68.8,
+                1889,
+                8852,
+                10560
+              ],
+              "width": 0.8,
+              "segments": 4806,
+              "tiles": 1,
+              "clearPixels": 4248056,
+              "compositePixels": 4248056,
+              "submittedSegmentInstances": 4806,
+              "rectangle": [
+                601,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:alg",
+              "bounds": [
+                0,
+                2973,
+                7916,
+                10181
+              ],
+              "width": 0.8,
+              "segments": 3276,
+              "tiles": 1,
+              "clearPixels": 878445,
+              "compositePixels": 878445,
+              "submittedSegmentInstances": 3276,
+              "rectangle": [
+                711,
+                1459,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:top",
+              "bounds": [
+                192,
+                109,
+                4872,
+                4215
+              ],
+              "width": 0.8,
+              "segments": 1640,
+              "tiles": 1,
+              "clearPixels": 3470768,
+              "compositePixels": 3470768,
+              "submittedSegmentInstances": 1640,
+              "rectangle": [
+                1018,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:prob",
+              "bounds": [
+                -2091.6,
+                752,
+                8099.6,
+                11213
+              ],
+              "width": 0.8,
+              "segments": 7918,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 7918,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:stoch",
+              "bounds": [
+                -2134.8,
+                1383,
+                6878.8,
+                10181
+              ],
+              "width": 0.8,
+              "segments": 928,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 928,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:nt",
+              "bounds": [
+                -1525.2,
+                2688,
+                6941.2,
+                6221
+              ],
+              "width": 0.8,
+              "segments": 294,
+              "tiles": 1,
+              "clearPixels": 2479680,
+              "compositePixels": 2479680,
+              "submittedSegmentInstances": 294,
+              "rectangle": [
+                0,
+                1003,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:comb",
+              "bounds": [
+                -1269.2,
+                2319,
+                5981.2,
+                5526
+              ],
+              "width": 0.8,
+              "segments": 824,
+              "tiles": 1,
+              "clearPixels": 4181760,
+              "compositePixels": 4181760,
+              "submittedSegmentInstances": 824,
+              "rectangle": [
+                0,
+                412,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:algo",
+              "bounds": [
+                160,
+                1457,
+                7948,
+                4915
+              ],
+              "width": 0.8,
+              "segments": 902,
+              "tiles": 1,
+              "clearPixels": 3565832,
+              "compositePixels": 3565832,
+              "submittedSegmentInstances": 902,
+              "rectangle": [
+                967,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:logic",
+              "bounds": [
+                -1990.8,
+                2972,
+                6414.8,
+                5558
+              ],
+              "width": 0.8,
+              "segments": 760,
+              "tiles": 1,
+              "clearPixels": 1172160,
+              "compositePixels": 1172160,
+              "submittedSegmentInstances": 760,
+              "rectangle": [
+                0,
+                1457,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "col:info",
+              "bounds": [
+                224,
+                141,
+                8396,
+                5874
+              ],
+              "width": 0.8,
+              "segments": 1052,
+              "tiles": 1,
+              "clearPixels": 3375704,
+              "compositePixels": 3375704,
+              "submittedSegmentInstances": 1052,
+              "rectangle": [
+                1069,
+                0,
+                2880,
+                1864
+              ]
+            },
+            {
+              "style": "ghost",
+              "bounds": [
+                -4301.400000000001,
+                67,
+                14265.400000000001,
+                11202
+              ],
+              "width": 0.7,
+              "segments": 110850,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 110850,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            }
+          ]
+        }
+      ],
+      "totals": {
+        "activeStyleGroups": 18,
+        "uniqueGroupSegments": 251266,
+        "submittedSegmentInstances": 251266,
+        "clearPixels": 75329541,
+        "compositePixels": 75329541,
+        "tileDraws": 18
+      },
+      "nodeIDsHash": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "edgeIDsHash": "6e78b14642d5411a3575b99eed960f846d26de2688e0ca483a8bc5cf9a74e90c"
+    },
+    {
+      "selected": true,
+      "width": 1440,
+      "height": 932,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 361.59999999999997,
+      "ty": -1642.8000000000002,
+      "nodes": 13574,
+      "edges": 23258,
+      "calls": [
+        {
+          "viewportPixels": 5368320,
+          "mask": [
+            2880,
+            1864
+          ],
+          "scissorCalls": 2,
+          "groups": [
+            {
+              "style": "gray",
+              "bounds": [
+                -4301.400000000001,
+                67,
+                14265.400000000001,
+                11213
+              ],
+              "width": 0.7,
+              "segments": 251266,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 251266,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            }
+          ]
+        },
+        {
+          "viewportPixels": 5368320,
+          "mask": [
+            2880,
+            1864
+          ],
+          "scissorCalls": 4,
+          "groups": [
+            {
+              "style": "up",
+              "bounds": [
+                0,
+                2636,
+                448,
+                2668
+              ],
+              "width": 1,
+              "segments": 207,
+              "tiles": 1,
+              "clearPixels": 59600,
+              "compositePixels": 59600,
+              "submittedSegmentInstances": 207,
+              "rectangle": [
+                709,
+                918,
+                1454,
+                998
+              ]
+            },
+            {
+              "style": "down",
+              "bounds": [
+                -3434.2,
+                109,
+                14038.2,
+                10876
+              ],
+              "width": 1,
+              "segments": 18660,
+              "tiles": 1,
+              "clearPixels": 5368320,
+              "compositePixels": 5368320,
+              "submittedSegmentInstances": 18660,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ]
+            }
+          ]
+        }
+      ],
+      "totals": {
+        "activeStyleGroups": 3,
+        "uniqueGroupSegments": 270133,
+        "submittedSegmentInstances": 270133,
+        "clearPixels": 10796240,
+        "compositePixels": 10796240,
+        "tileDraws": 3
+      },
+      "nodeIDsHash": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "edgeIDsHash": "6e78b14642d5411a3575b99eed960f846d26de2688e0ca483a8bc5cf9a74e90c"
+    },
+    {
+      "selected": false,
+      "width": 3840,
+      "height": 2092,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 1561.6,
+      "ty": -1062.8000000000002,
+      "nodes": 13574,
+      "edges": 23258,
+      "calls": [
+        {
+          "viewportPixels": 32133120,
+          "mask": [
+            4096,
+            1953
+          ],
+          "scissorCalls": 234,
+          "groups": [
+            {
+              "style": "col:pma",
+              "bounds": [
+                -1080,
+                88,
+                11608,
+                11171
+              ],
+              "width": 0.8,
+              "segments": 105114,
+              "tiles": 6,
+              "clearPixels": 26346648,
+              "compositePixels": 26346648,
+              "submittedSegmentInstances": 630684,
+              "rectangle": [
+                1383,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:rca",
+              "bounds": [
+                -504,
+                499,
+                9172,
+                11202
+              ],
+              "width": 0.8,
+              "segments": 27146,
+              "tiles": 6,
+              "clearPixels": 22493184,
+              "compositePixels": 22493184,
+              "submittedSegmentInstances": 162876,
+              "rectangle": [
+                2304,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:fa",
+              "bounds": [
+                -424,
+                1099,
+                7796,
+                10781
+              ],
+              "width": 0.8,
+              "segments": 19016,
+              "tiles": 6,
+              "clearPixels": 21957632,
+              "compositePixels": 21957632,
+              "submittedSegmentInstances": 114096,
+              "rectangle": [
+                2432,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:ode",
+              "bounds": [
+                -224,
+                88,
+                11480,
+                10897
+              ],
+              "width": 0.8,
+              "segments": 12064,
+              "tiles": 6,
+              "clearPixels": 20618752,
+              "compositePixels": 20618752,
+              "submittedSegmentInstances": 72384,
+              "rectangle": [
+                2752,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:ladr",
+              "bounds": [
+                -1206.4,
+                88,
+                11544,
+                10907
+              ],
+              "width": 0.8,
+              "segments": 47725,
+              "tiles": 6,
+              "clearPixels": 27196000,
+              "compositePixels": 27196000,
+              "submittedSegmentInstances": 286350,
+              "rectangle": [
+                1180,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:mech",
+              "bounds": [
+                -2175,
+                1583,
+                8574.2,
+                4894
+              ],
+              "width": 0.8,
+              "segments": 874,
+              "tiles": 6,
+              "clearPixels": 29099520,
+              "compositePixels": 29099520,
+              "submittedSegmentInstances": 5244,
+              "rectangle": [
+                0,
+                395,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:pde",
+              "bounds": [
+                -172.8,
+                1868,
+                5708,
+                10486
+              ],
+              "width": 0.8,
+              "segments": 2925,
+              "tiles": 6,
+              "clearPixels": 16151718,
+              "compositePixels": 16151718,
+              "submittedSegmentInstances": 17550,
+              "rectangle": [
+                2834,
+                851,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:vcalc",
+              "bounds": [
+                -68.8,
+                1889,
+                8852,
+                10560
+              ],
+              "width": 0.8,
+              "segments": 4806,
+              "tiles": 6,
+              "clearPixels": 15440700,
+              "compositePixels": 15440700,
+              "submittedSegmentInstances": 28836,
+              "rectangle": [
+                3001,
+                884,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:alg",
+              "bounds": [
+                0,
+                2973,
+                7916,
+                10181
+              ],
+              "width": 0.8,
+              "segments": 3276,
+              "tiles": 4,
+              "clearPixels": 7150485,
+              "compositePixels": 7150485,
+              "submittedSegmentInstances": 13104,
+              "rectangle": [
+                3111,
+                2619,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:rep",
+              "bounds": [
+                0,
+                3647,
+                6472,
+                9875
+              ],
+              "width": 0.8,
+              "segments": 1596,
+              "tiles": 4,
+              "clearPixels": 2225103,
+              "compositePixels": 2225103,
+              "submittedSegmentInstances": 6384,
+              "rectangle": [
+                3111,
+                3697,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:top",
+              "bounds": [
+                0,
+                109,
+                4872,
+                4278
+              ],
+              "width": 0.8,
+              "segments": 4378,
+              "tiles": 6,
+              "clearPixels": 19116696,
+              "compositePixels": 19116696,
+              "submittedSegmentInstances": 26268,
+              "rectangle": [
+                3111,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:prob",
+              "bounds": [
+                -2091.6,
+                752,
+                8099.6,
+                11213
+              ],
+              "width": 0.8,
+              "segments": 9556,
+              "tiles": 6,
+              "clearPixels": 32133120,
+              "compositePixels": 32133120,
+              "submittedSegmentInstances": 57336,
+              "rectangle": [
+                0,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:stoch",
+              "bounds": [
+                -2134.8,
+                1383,
+                6878.8,
+                10181
+              ],
+              "width": 0.8,
+              "segments": 1932,
+              "tiles": 6,
+              "clearPixels": 31557120,
+              "compositePixels": 31557120,
+              "submittedSegmentInstances": 11592,
+              "rectangle": [
+                0,
+                75,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:nt",
+              "bounds": [
+                -1525.2,
+                2688,
+                6941.2,
+                6221
+              ],
+              "width": 0.8,
+              "segments": 294,
+              "tiles": 4,
+              "clearPixels": 14167210,
+              "compositePixels": 14167210,
+              "submittedSegmentInstances": 1176,
+              "rectangle": [
+                670,
+                2163,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:comb",
+              "bounds": [
+                -1269.2,
+                2298,
+                5981.2,
+                10591
+              ],
+              "width": 0.8,
+              "segments": 2170,
+              "tiles": 6,
+              "clearPixels": 17457000,
+              "compositePixels": 17457000,
+              "submittedSegmentInstances": 13020,
+              "rectangle": [
+                1080,
+                1539,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:algo",
+              "bounds": [
+                160,
+                1457,
+                7948,
+                4915
+              ],
+              "width": 0.8,
+              "segments": 902,
+              "tiles": 6,
+              "clearPixels": 17213183,
+              "compositePixels": 17213183,
+              "submittedSegmentInstances": 5412,
+              "rectangle": [
+                3367,
+                193,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:logic",
+              "bounds": [
+                -1990.8,
+                2972,
+                6414.8,
+                5558
+              ],
+              "width": 0.8,
+              "segments": 760,
+              "tiles": 4,
+              "clearPixels": 12034560,
+              "compositePixels": 12034560,
+              "submittedSegmentInstances": 3040,
+              "rectangle": [
+                0,
+                2617,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:opt",
+              "bounds": [
+                -406.79999999999995,
+                3931,
+                6174.8,
+                4873
+              ],
+              "width": 0.8,
+              "segments": 182,
+              "tiles": 2,
+              "clearPixels": 167040,
+              "compositePixels": 167040,
+              "submittedSegmentInstances": 364,
+              "rectangle": [
+                2460,
+                4152,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:stat",
+              "bounds": [
+                -1207.6,
+                109,
+                11879.6,
+                9865
+              ],
+              "width": 0.8,
+              "segments": 3400,
+              "tiles": 6,
+              "clearPixels": 27200184,
+              "compositePixels": 27200184,
+              "submittedSegmentInstances": 20400,
+              "rectangle": [
+                1179,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:info",
+              "bounds": [
+                224,
+                141,
+                8396,
+                5874
+              ],
+              "width": 0.8,
+              "segments": 1052,
+              "tiles": 6,
+              "clearPixels": 17618824,
+              "compositePixels": 17618824,
+              "submittedSegmentInstances": 6312,
+              "rectangle": [
+                3469,
+                0,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "col:causal",
+              "bounds": [
+                800.4000000000001,
+                1394,
+                10543.6,
+                10886
+              ],
+              "width": 0.8,
+              "segments": 366,
+              "tiles": 3,
+              "clearPixels": 13458588,
+              "compositePixels": 13458588,
+              "submittedSegmentInstances": 1098,
+              "rectangle": [
+                4391,
+                92,
+                7680,
+                4184
+              ]
+            },
+            {
+              "style": "ghost",
+              "bounds": [
+                -4301.400000000001,
+                67,
+                14265.400000000001,
+                11202
+              ],
+              "width": 0.7,
+              "segments": 182705,
+              "tiles": 6,
+              "clearPixels": 32133120,
+              "compositePixels": 32133120,
+              "submittedSegmentInstances": 1096230,
+              "rectangle": [
+                0,
+                0,
+                7680,
+                4184
+              ]
+            }
+          ]
+        }
+      ],
+      "totals": {
+        "activeStyleGroups": 22,
+        "uniqueGroupSegments": 432239,
+        "submittedSegmentInstances": 2579756,
+        "clearPixels": 422936387,
+        "compositePixels": 422936387,
+        "tileDraws": 117
+      },
+      "nodeIDsHash": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "edgeIDsHash": "6e78b14642d5411a3575b99eed960f846d26de2688e0ca483a8bc5cf9a74e90c"
+    },
+    {
+      "selected": true,
+      "width": 3840,
+      "height": 2092,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 1561.6,
+      "ty": -1062.8000000000002,
+      "nodes": 13574,
+      "edges": 23258,
+      "calls": [
+        {
+          "viewportPixels": 32133120,
+          "mask": [
+            4096,
+            1953
+          ],
+          "scissorCalls": 12,
+          "groups": [
+            {
+              "style": "gray",
+              "bounds": [
+                -4301.400000000001,
+                67,
+                14265.400000000001,
+                11213
+              ],
+              "width": 0.7,
+              "segments": 432239,
+              "tiles": 6,
+              "clearPixels": 32133120,
+              "compositePixels": 32133120,
+              "submittedSegmentInstances": 2593434,
+              "rectangle": [
+                0,
+                0,
+                7680,
+                4184
+              ]
+            }
+          ]
+        },
+        {
+          "viewportPixels": 32133120,
+          "mask": [
+            4096,
+            1953
+          ],
+          "scissorCalls": 14,
+          "groups": [
+            {
+              "style": "up",
+              "bounds": [
+                0,
+                2636,
+                448,
+                2668
+              ],
+              "width": 1,
+              "segments": 207,
+              "tiles": 1,
+              "clearPixels": 59600,
+              "compositePixels": 59600,
+              "submittedSegmentInstances": 207,
+              "rectangle": [
+                3109,
+                2078,
+                3854,
+                2158
+              ]
+            },
+            {
+              "style": "down",
+              "bounds": [
+                -3434.2,
+                88,
+                14038.2,
+                10897
+              ],
+              "width": 1,
+              "segments": 44011,
+              "tiles": 6,
+              "clearPixels": 32133120,
+              "compositePixels": 32133120,
+              "submittedSegmentInstances": 264066,
+              "rectangle": [
+                0,
+                0,
+                7680,
+                4184
+              ]
+            }
+          ]
+        }
+      ],
+      "totals": {
+        "activeStyleGroups": 3,
+        "uniqueGroupSegments": 476457,
+        "submittedSegmentInstances": 2857707,
+        "clearPixels": 64325840,
+        "compositePixels": 64325840,
+        "tileDraws": 13
+      },
+      "nodeIDsHash": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "edgeIDsHash": "6e78b14642d5411a3575b99eed960f846d26de2688e0ca483a8bc5cf9a74e90c"
+    }
+  ]
+}

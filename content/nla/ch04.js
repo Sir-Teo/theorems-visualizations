@@ -5,6 +5,7 @@ import {
   nm, nmc, sciT, dot, mv, mm, tp, eye, TAU, fl, flM, flV, hilbert,
   luFactor, luSolveFl, backErr, wilkinsonGrowth, gaussMat, relErr, normV, withSingular, geomSigma,
 } from './ch04.shared.js';
+import {checkedElimination, partialFactors, fullHistogram, fittedExponent, clippedWorstGrowth} from './lu-growth-audit.shared.js';
 
 const median = (a) => { const s = a.slice().sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
 const quant = (a, q) => { const s = a.slice().sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
@@ -24,50 +25,54 @@ export default {
       num: '4.1',
       kind: 'Algorithm',
       name: 'Gaussian elimination as LU factorization',
-      statement: String.raw`For a nonsingular matrix $A$, Gaussian elimination turns $A\in\mathbb R^{n\times n}$ into an upper triangular $U$ by subtracting multiples of row $k$ from the rows below it. Step $k$ uses the multipliers $\ell_{ik}=a^{(k)}_{ik}/a^{(k)}_{kk}$ ($i>k$) and sets
-$$a^{(k+1)}_{ij}=a^{(k)}_{ij}-\ell_{ik}\,a^{(k)}_{kj}\qquad(i,j>k).$$
-Collecting the multipliers in a unit lower triangular $L$ gives $A=LU$, with $L=L_1^{-1}\cdots L_{n-1}^{-1}$ simply the multipliers placed in their columns. The factorization exists (without row exchanges) iff all leading principal minors $\det A_{1:k,1:k}$, $k<n$, are nonzero, and is then unique. The cost is $\sum_k 2(n-k)^2\approx\tfrac23 n^3$ flops; afterwards $Ax=b$ is solved by $Ly=b$, $Ux=y$ at $O(n^2)$ each.`,
-      idea: String.raw`Each elimination step is multiplication by a lower triangular matrix $L_k=I-\ell_k e_k^{\top}$ that differs from the identity in column $k$ only; $L_{n-1}\cdots L_1A=U$. The inverse of $L_k$ just flips the signs of its multipliers, and — the small miracle — the product $L_1^{-1}L_2^{-1}\cdots$ simply collects the columns side by side with no cross terms, so the multipliers can be stored in the zeros they create. The operation count is dominated by the rank-one updates of the shrinking trailing block (the $2(n-k)^2$ flops of step $k$, 1.11).`,
-      caption: String.raw`Step through elimination of a $4\times4$ matrix (a classical textbook example, or a random one). Left: the working matrix; the zeros created by step $k$ are replaced by the multipliers $\ell_{ik}$ (gold), the rows still being reduced are blue. Right: the factors $L$ and $U$ as they stand; at the last step the product $LU$ is compared with $A$. The flop counter is compared with the leading-order $2n^3/3$.`,
+      statement: String.raw`For a **nonsingular** $A\in\mathbb R^{n\times n}$, a factorization $A=LU$ with unit lower triangular $L$ and upper triangular $U$ exists without row exchanges iff every leading principal minor $\det A_{1:k,1:k}$, $k<n$, is nonzero. It is then unique. The nonsingularity hypothesis matters: singular matrices can have nonunique LU factorizations despite zero leading minors.
+
+At step $k$, Gaussian elimination stores $\ell_{ik}=a^{(k)}_{ik}/a^{(k)}_{kk}$ and updates
+$$a^{(k+1)}_{ij}=a^{(k)}_{ij}-\ell_{ik}a^{(k)}_{kj}\qquad(i,j>k).$$
+Counting a division, multiplication and subtraction as one flop each gives $\sum_{m=1}^{n-1}(m+2m^2)=\tfrac23n^3-\tfrac12n^2-\tfrac16n$. Subsequent triangular solves cost $O(n^2)$ each. A zero required pivot stops this division-based algorithm; row exchanges may repair the breakdown (4.3).`,
+      idea: String.raw`For the forward implication, the leading block satisfies $A_{1:k,1:k}=L_{1:k,1:k}U_{1:k,1:k}$. Nonsingularity of $A$ makes every diagonal entry of $U$ nonzero. Conversely, elimination preserves the leading determinants, so their successive ratios give nonzero pivots. The row-operation matrices are $E_k=I-\ell_k e_k^\top$, and $E_{n-1}\cdots E_1A=U$. Their inverse product collects the multiplier columns into $L$. If $LU=\widetilde L\widetilde U$, the matrix $L^{-1}\widetilde L=U\widetilde U^{-1}$ is both unit lower triangular and upper triangular, so it is $I$.
+
+After $k$ completed columns the actual intermediate identity is $A=L_kB_k$: $B_k$ still contains the unreduced trailing block. Only the final $B_k$ is $U$.`,
+      caption: String.raw`Step through a $4\times4$ example, a random integer matrix, or an explicit breakdown. Left: working storage, with completed multiplier columns in gold. Right: $L_k$ and the **whole** remaining matrix $B_k$, including its unreduced entries. Their product is checked at every frame. A zero pivot is shown as a stopped computation, and the exact operation counter includes divisions.`,
       deps: ['nla-1.1', 'nla-1.11'],
+      credit: 'Classical Gaussian elimination; source proof: ALAFF, Theorem 5.2.3.4',
       tags: ['lu', 'elimination'],
-      refs: ['Demmel, Math221 (Fall2009), Lecture4, complete LU existence/uniqueness proof'],
+      refs: ['ALAFF §5.2.3, Theorem 5.2.3.4 (square nonsingular case); Trefethen–Bau Lec. 20'],
+      links: { source: 'https://www.cs.utexas.edu/~flame/laff/alaff-beta/chapter05-lu-factorization-def.html' },
       viz(v) {
-        const kind = v.select('matrix', [{ value: 'tb', label: 'textbook example' }, { value: 'rand', label: 'random' }], 'tb', { onChange: () => S2.reset() });
+        const kind = v.select('matrix', [{ value: 'tb', label: 'textbook example' }, { value: 'rand', label: 'random' }, { value: 'zero', label: 'zero first pivot' }, { value: 'singular', label: 'zero final pivot' }], 'tb', { onChange: () => S2.reset() });
         let seed = 1;
         v.button('Resample', () => { seed++; kind.value = 'rand'; S2.reset(); });
         const n = 4;
-        const getA = () => (kind.value === 'tb' ? TRE : gaussMat(v.rng(seed * 13), n).map((r) => r.map((x) => Math.round(x * 4))));
-        const s1 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'working matrix', minWidth: 300 });
-        const s2 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'factors $L$ and $U$', minWidth: 300 });
+        const getA = () => kind.value === 'tb' ? TRE : kind.value === 'zero' ? [[0,1,0,0],[1,1,0,0],[0,0,1,0],[0,0,0,1]] : kind.value === 'singular' ? [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0]] : gaussMat(v.rng(seed * 13), n).map(r => r.map(x => Math.round(x * 4)));
+        const s1 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'working storage', minWidth: 300 });
+        const s2 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'partial factors $L_k$ and $B_k$', minWidth: 300 });
         const T1 = v.table(s1, { rows: n, cols: n, maxCell: 62, size: 17 });
         const TL = v.table(s2, { rows: n, cols: n, maxCell: 40, size: 14, region: [0, 0, 0.5, 1] });
-        const TU = v.table(s2, { rows: n, cols: n, maxCell: 40, size: 14, region: [0.5, 0, 1, 1] });
-        let Acur = getA(), f = null;
-        const mk = () => { Acur = getA(); f = luFactor(Acur, { pivot: false, record: true }); return f.steps.filter((s) => s.kind !== 'pivot').map((s, idx, arr) => ({ ...s, line: s.k < 0 ? [] : [2, 3, 4], note: s.k < 0 ? String.raw`The matrix $A$. Step $k$ will clear column $k$ below the diagonal.` : String.raw`Step $k=${s.k + 1}$: pivot $a_{${s.k + 1}${s.k + 1}}$; multipliers $\ell_{i${s.k + 1}}=a_{i${s.k + 1}}/a_{${s.k + 1}${s.k + 1}}$ are stored, then rows $i>${s.k + 1}$ lose $\ell_{i${s.k + 1}}\times$ row ${s.k + 1}.` })); };
-        const S2 = v.steps({ frames: mk, still: 3, code: ['for k = 1 … n−1', '  for i = k+1 … n', '    ℓ_ik ← a_ik / a_kk        ▷ store in place of the zero', '    a_i,k+1:n ← a_i,k+1:n − ℓ_ik · a_k,k+1:n', 'return L (below the diagonal) and U (on and above)'] });
+        const TB = v.table(s2, { rows: n, cols: n, maxCell: 40, size: 14, region: [0.5, 0, 1, 1] });
+        let Acur, f;
+        const mk = () => {
+          Acur = getA(); f = checkedElimination(Acur);
+          return f.steps.map(fr => ({...fr,
+            line: fr.kind === 'start' ? [] : fr.kind === 'breakdown' ? [2] : [3,4,5],
+            note: fr.kind === 'start' ? String.raw`Initially $L_0=I$ and $B_0=A$.` : fr.kind === 'breakdown' ? `Stopped: pivot ${fr.k+1} is zero. ${fr.k === n-1 ? 'The final triangular factor is singular.' : 'This algorithm cannot divide by it; try row exchanges.'}` : `Completed ${fr.completed} of ${n-1} elimination columns; ${fr.kind === 'done' ? 'the remaining matrix is U.' : 'the trailing block is still unreduced.'}`
+          }));
+        };
+        const S2 = v.steps({ frames: mk, still: 3, code: ['for k = 1 … n−1', '  if pivot is zero: stop', '  for i = k+1 … n', '    ℓ_ik ← a_ik / a_kk        ▷ store multiplier', '    a_i,k+1:n ← a_i,k+1:n − ℓ_ik · a_k,k+1:n', 'return L and U only after successful completion'] });
         v.render(() => {
-          const fr = S2.frame, W = fr.W, k = fr.k, kf = k === n - 2 ? n - 1 : k;
+          const fr = S2.frame, {W,completed:c,k} = fr;
           if (!W) return;
-          T1.draw({
-            value: (i, j) => W[i][j],
-            fill: (i, j) => (j <= k && i > j ? ['gold', 0.4] : i <= kf ? ['green', 0.14] : i > k && j > k ? ['blue', 0.12] : null),
-            highlight: k >= 0 && k < n - 1 ? [[k, k, 'red']] : [],
-            rowLabels: (i) => `row ${i + 1}`, colLabels: (j) => `${j + 1}`,
-          });
-          const Lc = W.map((r, i) => r.map((x, j) => (i === j ? 1 : j < i && j <= k ? x : 0)));
-          const Uc = W.map((r, i) => r.map((x, j) => (j >= i || i > k + 0 ? (j >= i ? x : 0) : 0)));
-          TL.draw({ value: (i, j) => Lc[i][j], fill: (i, j) => (j < i && j <= k ? ['gold', 0.4] : null), textColor: (i, j) => (j > i ? 'faint' : null) });
-          TU.draw({ value: (i, j) => Uc[i][j], fill: (i, j) => (j >= i && i <= kf ? ['green', 0.14] : j >= i ? ['blue', 0.1] : null), textColor: (i, j) => (j < i ? 'faint' : null) });
+          const {L,B} = partialFactors(fr);
+          T1.draw({ value:(i,j)=>W[i][j], fill:(i,j)=>j<i&&j<c?['gold',0.4]:i<c?['green',0.14]:['blue',0.12], highlight:k>=0?[[k,k,'red']]:[], rowLabels:i=>`row ${i+1}`, colLabels:j=>`${j+1}` });
+          TL.draw({ value:(i,j)=>L[i][j], fill:(i,j)=>j<i&&j<c?['gold',0.4]:null, textColor:(i,j)=>j>i?'faint':null });
+          TB.draw({ value:(i,j)=>B[i][j], fill:(i,j)=>i<c?['green',0.14]:['blue',0.1], textColor:(i,j)=>j<i&&j<c?'faint':null });
         });
         v.readout(() => {
-          const fr = S2.frame; if (!fr.W) return '';
-          const done = fr.k >= n - 2 && fr.kind === 'elim';
-          let fl0 = 0; for (let k = 0; k <= fr.k && fr.kind === 'elim'; k++) fl0 += (n - k - 1) * (1 + 2 * (n - k - 1));
-          const LU = mm(f.L, f.U), err = maxAbsM(sub(LU, Acur));
-          return `Flops so far: **${fl0}** of **${f.flops}** in total (leading order $2n^3/3=${nm((2 * n ** 3) / 3, 1)}$; the lower-order terms matter at $n=4$). ` + (done ? `\nFinished: $\\max|LU-A|=${err < 1e-13 ? '0' : sciT(err)}$, $\\max|\\ell_{ij}|=${nm(f.mult, 2)}$.` : `\nMultipliers are free to be large — nothing bounds them yet (4.2, 4.3).`);
+          const fr = S2.frame;if(!fr.W)return '';
+          const {L,B} = partialFactors(fr),err=maxAbsM(sub(mm(L,B),Acur));
+          return `Flops so far: **${fr.flops}**; completed columns: **${fr.completed}/${n-1}**. Current product residual $\\max|L_kB_k-A|=${sciT(err)}$. ` + (fr.kind === 'breakdown' ? `**Stopped at zero pivot ${fr.k+1}**; no successful nonsingular LU solve is claimed.` : fr.kind === 'done' ? `Finished: $B_k=U$. Total **${f.flops}** flops; leading term $2n^3/3=${nm(2*n**3/3,1)}$.` : 'The right-hand trailing block remains part of the product.');
         });
-        v.legend([['gold', 'multipliers $\\ell_{ik}$'], ['green', 'finished rows of $U$'], ['blue', 'rows still being reduced']]);
+        v.legend([['gold', 'stored multipliers'], ['green', 'completed rows'], ['blue', 'remaining block']]);
       },
     },
     // ------------------------------------------------------------------ 4.2
@@ -283,16 +288,22 @@ Gaussian elimination with partial pivoting performs **no** row exchanges on $W_n
       num: '4.6',
       kind: 'Phenomenon',
       name: 'Gaussian elimination is stable in practice',
-      statement: String.raw`Although the growth factor of partial pivoting can reach $2^{n-1}$ (4.5), in numerical practice it essentially never does. For random matrices with independent standard normal entries the observed growth factor is usually small over the displayed range. Trefethen–Schreiber (1990), §6, report mean growth near $n^{2/3}$ for $n\le1024$ when the largest generated element is divided by the initial distribution’s standard deviation. They explicitly do not assert that exponent as an asymptotic law. Here $\rho$ instead divides by the largest original entry, and the plot reports medians, so its fitted exponent and normalization need not match that result. Why they are so rare is not fully understood: this is one of the "mysteries of Gaussian elimination".`,
-      idea: String.raw`There is no complete theorem. A heuristic: large growth needs a very particular sign and magnitude pattern in many entries *at once*, so that the multipliers stay near $-1$ and the pivoting never intervenes; the set of such matrices has tiny measure, and a small random perturbation of $W_n$ destroys the growth (try it: add noise to the matrix of 4.5 and rerun). Trefethen and Schreiber gave statistical models of the pivoting process together with extensive experiments. The power $2/3$ and its normalization were checked against the original §6 and conclusions; the picture is a separate double-precision simulation.`,
-      caption: String.raw`Left: histogram of $\rho$ for many random Gaussian $n\times n$ matrices (choose $n$), computed in double precision with partial pivoting, with the median marked. Right: median (blue) and 95th percentile (orange) of $\rho$ against $n$ on log–log axes, with the reference lines $n^{1/2}$, $n^{2/3}$ and the worst case $2^{n-1}$, which immediately leaves the picture. Resample to see how little the statistics move.`,
+      statement: String.raw`Partial pivoting has exponential worst cases (4.5), but its growth on sampled Gaussian matrices is usually modest. Define $\rho=\max_{i,j,k}|a_{ij}^{(k)}|/\max_{i,j}|a_{ij}|$, including **all elimination stages**. This picture recomputes $\rho$ in double precision for independent standard-normal entries.
+
+Trefethen–Schreiber's 1990 $n^{2/3}$ observation concerns the **mean of $\rho_\sigma=\max_{i,j,k}|a_{ij}^{(k)}|/\sigma_A$**, not the median of $\rho$. Here $\sigma_A=1$ is the distribution's standard deviation. Their finite-range fit was expressly not claimed as an asymptotic law.`,
+      idea: String.raw`An elimination update changes the trailing block by an outer product. The 1990 statistical model uses the dependencies created by these rank-one updates, rather than treating all multiplier signs as independent. Small multipliers alone do not explain the observations.
+
+This experiment keeps generated matrix entries separate from stored multipliers. The histogram includes every sample. Its median and 95th percentile, and the fitted log–log slope across five sizes, summarize this finite simulation; the dashed powers are comparison guides. Resampling cannot establish a rare-event probability or an asymptotic exponent.
+
+Probabilistic results go beyond these experiments: Urschel's October 2026 preprint, Theorem 1.4, gives a Gaussian-ensemble tail bound for its stated final-factor growth definition. That theorem and this finite double-precision plot have different scopes.`,
+      caption: String.raw`Left: all sampled values of the **all-stage** growth factor $\rho$, with the median marked. Right: median (blue) and 95th percentile (orange) across $n=8,16,32,64,128$; dashed $0.8n^{1/2}$ and $0.8n^{2/3}$ are slope guides, and red is the classical $2^{n-1}$ worst-case bound, clipped at the exact plot boundary. The readout separately reports the sample mean of $\rho_\sigma$ for comparison with the original normalization.`,
       deps: ['nla-4.5'],
       credit: 'L. N. Trefethen & R. S. Schreiber, 1990',
       links: { doi: 'https://doi.org/10.1137/0611023' },
       tags: ['growth-factor', 'random-matrices'],
-      refs: ['Trefethen–Bau Lec. 22', 'Trefethen & Schreiber, SIMAX 11 (1990) 335–360'],
+      refs: ['Trefethen–Schreiber (1990), eqs. (0.2), (6.1)–(6.2), pp. 336, 348–349', 'Urschel, arXiv:2610.06785v1 (2026), definition in §1 and Theorem 1.4'],
       viz(v) {
-        const nsel = v.select('matrix size', [8, 16, 32, 64].map((k) => ({ value: k, label: `$n=${k}$` })), 32);
+        const nsel = v.select('matrix size', [8, 16, 32, 64, 128].map((k) => ({ value: k, label: `$n=${k}$` })), 32);
         let seed = 1;
         v.button('Resample', () => { seed++; });
         const S1 = v.stage({ x: [0, 40], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'growth factor ρ', ylabel: 'number of matrices', title: 'distribution of ρ', minWidth: 300 });
@@ -301,32 +312,30 @@ Gaussian elimination with partial pivoting performs **no** row exchanges on $W_n
         const sample = (n, sd) => {
           const k = `${n}/${sd}`; if (cache[k]) return cache[k];
           const cnt = n <= 32 ? 400 : n <= 64 ? 200 : 60, r = v.rng(sd * 977 + n), out = [];
-          for (let t = 0; t < cnt; t++) out.push(luFactor(gaussMat(r, n), { pivot: true }).rho);
+          for (let t = 0; t < cnt; t++) { const f=checkedElimination(gaussMat(r,n),{pivot:true,record:false}); out.push({rho:f.rho,normalized:f.maxGenerated}); }
           return (cache[k] = out);
         };
         const SIZES = [8, 16, 32, 64, 128];
         let st = null;
         v.render(() => {
-          const n = nsel.value, d = sample(n, seed), md = median(d), hi = Math.max(8, Math.ceil(quant(d, 0.995) * 1.15));
+          const n = nsel.value, data = sample(n,seed), d=data.map(x=>x.rho), md=median(d), h=fullHistogram(d), hi=h.hi;
           S1.setView([0, hi], [0, 1]);
-          const h = v.M.histogram(d, { bins: 28, range: [0, hi] }), mx = Math.max(...h.counts);
+          const mx = Math.max(...h.counts);
           S1.setView([0, hi], [0, mx * 1.15]);
           S1.hist({ edges: h.edges, counts: h.counts }, { color: 'accent', fillAlpha: 0.35 });
           S1.vline(md, { color: 'orange', width: 2 });
           const meds = [], p95 = [];
-          for (const m of SIZES) { const dd = sample(m, seed); meds.push([m, median(dd)]); p95.push([m, quant(dd, 0.95)]); }
+          for (const m of SIZES) { const dd = sample(m,seed).map(x=>x.rho); meds.push([m, median(dd)]); p95.push([m, quant(dd, 0.95)]); }
           S2.path([[6, Math.sqrt(6) * 0.8], [160, Math.sqrt(160) * 0.8]], { color: 'muted', width: 1.2, dash: true });
           S2.path([[6, 6 ** (2 / 3) * 0.8], [160, 160 ** (2 / 3) * 0.8]], { color: 'muted', width: 1.2, dash: true });
-          S2.path(Array.from({ length: 40 }, (_, i) => { const m = 6 + i * 0.5; return [m, 2 ** (m - 1)]; }).filter(([, y]) => y <= 1e3).concat([[11, 1e3]]), { color: 'red', width: 2.4 });
-          S2.text('n^½', 100, 8.5, { color: 'muted', size: 12 }); S2.text('n^⅔', 100, 25, { color: 'muted', size: 12 }); S2.text('2^(n−1)', 9.4, 400, { color: 'red', size: 12 });
+          S2.path(clippedWorstGrowth(), { color: 'red', width: 2.4 });
+          S2.text('0.8 n^½', 100, 8.5, { color: 'muted', size: 12 }); S2.text('0.8 n^⅔', 100, 25, { color: 'muted', size: 12 }); S2.text('2^(n−1)', 9.4, 400, { color: 'red', size: 12 });
           S2.path(p95, { color: 'orange', width: 2 }); S2.dots(p95, { color: 'orange', r: 4 });
           S2.path(meds, { color: 'accent', width: 2 }); S2.dots(meds, { color: 'accent', r: 4 });
-          const lx = meds.map((q) => Math.log(q[0])), ly = meds.map((q) => Math.log(q[1])), mx2 = v.M.mean(lx), my2 = v.M.mean(ly);
-          let a = 0, b = 0; lx.forEach((x, i) => { a += (x - mx2) * (ly[i] - my2); b += (x - mx2) ** 2; });
-          st = { n, md, max: Math.max(...d), slope: a / b, cnt: d.length, big: meds[meds.length - 1] };
+          st = { n, md, max: Math.max(...d), slope: fittedExponent(meds), cnt: d.length, normalized: data.reduce((s,x)=>s+x.normalized,0)/data.length, included: h.counts.reduce((s,x)=>s+x,0) };
         });
-        v.legend([['accent', 'median ρ'], ['orange', '95th percentile'], ['red', 'worst case $2^{n-1}$'], ['muted', '$n^{1/2}$, $n^{2/3}$', { dash: true }]]);
-        v.readout(() => st ? `$n=${st.n}$, ${st.cnt} matrices: median $\\rho=${nm(st.md, 1)}$, largest $\\rho=${nm(st.max, 1)}$, against $2^{n-1}=${st.n > 40 ? sciT(2 ** (st.n - 1)) : nm(2 ** (st.n - 1), 0)}$. Fitted exponent of the median over $n=8,\\dots,128$: $\\rho\\sim n^{${nm(st.slope, 2)}}$.` : '');
+        v.legend([['accent', 'median ρ'], ['orange', '95th percentile'], ['red', 'worst case $2^{n-1}$'], ['muted', '$0.8n^{1/2}$, $0.8n^{2/3}$ (guides)', { dash: true }]]);
+        v.readout(() => st ? String.raw`$n=${st.n}$, **${st.included}/${st.cnt} samples in histogram**: median $\rho=${nm(st.md,2)}$, largest $\rho=${nm(st.max,2)}$, against worst case $2^{n-1}=${st.n>40?sciT(2**(st.n-1)):nm(2**(st.n-1),0)}$. Sample mean $\rho_\sigma=${nm(st.normalized,2)}$ (population $\sigma_A=1$). Finite-range log–log slope of the median across five sizes: **${nm(st.slope,2)}**; this is not an asymptotic exponent.` : '');
       },
     },
   ],

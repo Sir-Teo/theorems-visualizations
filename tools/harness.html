@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Viz harness</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/vendor/google-fonts/fonts.css">
+<link rel="stylesheet" href="../assets/vendor/katex-0.16.11/katex.min.css">
+<script src="../assets/vendor/katex-0.16.11/katex.min.js"></script>
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="../data/atlas.css">
 <style>
@@ -39,8 +39,6 @@
   window.addEventListener('error', (e) => out.errors.push(String(e.error?.stack || e.message)));
   window.addEventListener('unhandledrejection', (e) => out.errors.push(String(e.reason?.stack || e.reason)));
   try {
-    if (!window.katex?.renderToString) throw new Error('KaTeX renderer unavailable; formula verification cannot run. Use scripts/browser.mjs local verification assets.');
-    out.renderer = `KaTeX ${window.katex.version}`;
     if (q.get('w')) document.getElementById('wrap').style.setProperty('--w', q.get('w') + 'px');
     const mod = await import('../' + q.get('file'));
     const ch = mod.default;
@@ -55,14 +53,12 @@
     if (typeof item.viz !== 'function') throw new Error('no viz function');
     // quality instrumentation: count interactive affordances without touching the runtime
     const stats = { handles: 0, drags: 0, clicks: 0, hover: 0, animate: 0, stages: 0 };
-    window.__vizStages = [];
     const wrapStage = (s) => {
-      window.__vizStages.push(s);
       stats.stages++;
       for (const [k, key] of [['handle', 'handles'], ['onDrag', 'drags'], ['onClick', 'clicks']]) if (typeof s[k] === 'function') { const f = s[k].bind(s); s[k] = (...a) => { stats[key]++; return f(...a); }; }
       return s;
     };
-    window.__destroyViz = mount(document.getElementById('viz'), (v) => {
+    mount(document.getElementById('viz'), (v) => {
       for (const k of ['stage', 'stage3d']) { const f = v[k]; v[k] = (o = {}) => { if (o.hover) stats.hover++; return wrapStage(f(o)); }; }
       const an = v.animate; v.animate = (...a) => { stats.animate++; return an(...a); };
       // kits that take their own pointer input (graph editing, onClick/onSelect callbacks) count as clicks
@@ -74,29 +70,18 @@
       return item.viz(v);
     });
     window.__vizStats = stats;
-    // Long statements can put the visualization outside the viewport, where
-    // the runtime correctly skips drawing. Verify a visible, settled layout.
-    await document.fonts.ready;
-    document.getElementById('viz').scrollIntoView({ block: 'start' });
-    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    if (!window.__vizStill) await new Promise((r) => setTimeout(r, +(q.get('wait') || 1500)));
+    await new Promise((r) => setTimeout(r, +(q.get('wait') || 1500)));
     window.dispatchEvent(new Event('vizpause'));
-    if (!window.__vizStill) await new Promise((r) => setTimeout(r, 120));
-    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    // Reuse the same canvas inspection after native mode changes in the checker.
-    window.__inspectCanvases = () => {
-      const blank = [];
-      document.querySelectorAll('#viz canvas').forEach((cv, i) => {
-        if (cv.getClientRects().length === 0 || getComputedStyle(cv).visibility === 'hidden') return;
-        const c = cv.getContext('2d'); const { width: w, height: h } = cv;
-        if (!w || !h) { blank.push(i); return; }
-        const d = c.getImageData(0, 0, w, h).data; let n = 0;
-        for (let k = 3; k < d.length; k += 4 * 37) if (d[k] > 0) n++;
-        if (n < 3) blank.push(i);
-      });
-      return blank;
-    };
-    const blank = window.__inspectCanvases();
+    await new Promise((r) => setTimeout(r, 120));
+    // blank-canvas check: every canvas should contain some non-transparent pixels
+    const blank = [];
+    document.querySelectorAll('#viz canvas').forEach((cv, i) => {
+      if (cv.getClientRects().length === 0 || getComputedStyle(cv).visibility === 'hidden') return; // a stage the viz hides on purpose (display: none)
+      const c = cv.getContext('2d'); const { width: w, height: h } = cv; if (!w || !h) { blank.push(i); return; }
+      const d = c.getImageData(0, 0, w, h).data; let n = 0;
+      for (let k = 3; k < d.length; k += 4 * 37) if (d[k] > 0) n++;
+      if (n < 3) blank.push(i);
+    });
     out.canvases = document.querySelectorAll('#viz canvas').length;
     const st = window.__vizStats || {};
     const controls = document.querySelectorAll('#viz .viz-controls > *').length;

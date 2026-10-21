@@ -1,0 +1,1300 @@
+{
+  "baseline": "91ad005bfc36bedbcfc69262acec3addff09ccb5",
+  "before": {
+    "collection": "circ",
+    "field": "eng",
+    "target": 25,
+    "writtenToWritten": 8,
+    "writtenToKnown": 22,
+    "wholeSyllabus": 40,
+    "publishedShortfall": 17,
+    "unknown": [],
+    "edges": [
+      {
+        "item": "circ-1.8",
+        "prerequisite": "em-6.6",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-1.1",
+        "prerequisite": "em-1.2",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-1.1",
+        "prerequisite": "em-2.3",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-1.1",
+        "prerequisite": "em-6.1",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-1.3",
+        "prerequisite": "em-9.3",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-1.3",
+        "prerequisite": "em-1.2",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-1.4",
+        "prerequisite": "em-6.3",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-1.5",
+        "prerequisite": "em-6.5",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.14",
+        "prerequisite": "em-6.15",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.1",
+        "prerequisite": "em-6.2",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.1",
+        "prerequisite": "em-6.8",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.2",
+        "prerequisite": "em-6.8",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.5",
+        "prerequisite": "pma-9.36",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-3.10",
+        "prerequisite": "em-6.9",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.14",
+        "prerequisite": "mat-9.5",
+        "prerequisiteField": "chem",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.15",
+        "prerequisite": "mat-9.5",
+        "prerequisiteField": "chem",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.15",
+        "prerequisite": "cm-4.7",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.16",
+        "prerequisite": "tech-11.16",
+        "prerequisiteField": "humanities",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.17",
+        "prerequisite": "cm-4.10",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.18",
+        "prerequisite": "tech-11.17",
+        "prerequisiteField": "humanities",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.1",
+        "prerequisite": "cm-4.7",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.4",
+        "prerequisite": "pma-5.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.1",
+        "prerequisite": "pma-5.1",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.1",
+        "prerequisite": "em-3.8",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.2",
+        "prerequisite": "pma-5.1",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.2",
+        "prerequisite": "em-9.15",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-5.3",
+        "prerequisite": "em-2.11",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.3",
+        "prerequisite": "em-9.17",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-5.5",
+        "prerequisite": "ode-1.4",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-6.1",
+        "prerequisite": "mech-4.7",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-6.6",
+        "prerequisite": "mech-4.7",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-6.7",
+        "prerequisite": "ode-3.1",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-7.2",
+        "prerequisite": "pma-8.6",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-7.8",
+        "prerequisite": "mech-4.11",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-7.13",
+        "prerequisite": "em-9.14",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-7.16",
+        "prerequisite": "ode-3.16",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-7.19",
+        "prerequisite": "em-9.3",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-9.2",
+        "prerequisite": "em-11.17",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-9.2",
+        "prerequisite": "pde-2.10",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-10.1",
+        "prerequisite": "pchem-2.6",
+        "prerequisiteField": "chem",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      }
+    ]
+  },
+  "after": {
+    "collection": "circ",
+    "field": "eng",
+    "target": 25,
+    "writtenToWritten": 25,
+    "writtenToKnown": 39,
+    "wholeSyllabus": 57,
+    "publishedShortfall": 0,
+    "unknown": [],
+    "edges": [
+      {
+        "item": "circ-1.8",
+        "prerequisite": "em-6.6",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-1.1",
+        "prerequisite": "em-1.2",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-1.1",
+        "prerequisite": "em-2.3",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-1.1",
+        "prerequisite": "em-6.1",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-1.3",
+        "prerequisite": "em-9.3",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-1.3",
+        "prerequisite": "em-1.2",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-1.4",
+        "prerequisite": "em-6.3",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-1.5",
+        "prerequisite": "em-6.5",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.7",
+        "prerequisite": "ladr-3.21",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-2.8",
+        "prerequisite": "ladr-3.43",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-2.9",
+        "prerequisite": "ladr-3.65",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-2.9",
+        "prerequisite": "ladr-7.38",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-2.14",
+        "prerequisite": "em-6.15",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.1",
+        "prerequisite": "em-6.2",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.1",
+        "prerequisite": "em-6.8",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.2",
+        "prerequisite": "em-6.8",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-2.5",
+        "prerequisite": "pma-9.36",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-3.9",
+        "prerequisite": "ladr-3.43",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-3.10",
+        "prerequisite": "em-6.9",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-3.10",
+        "prerequisite": "ladr-6.12",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-3.1",
+        "prerequisite": "ladr-3.63",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-3.6",
+        "prerequisite": "ladr-7.1",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-3.7",
+        "prerequisite": "ladr-7.5",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.8",
+        "prerequisite": "pma-9.28",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.9",
+        "prerequisite": "logic-2.6",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.12",
+        "prerequisite": "pma-9.17",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.13",
+        "prerequisite": "ode-3.9",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.14",
+        "prerequisite": "mat-9.5",
+        "prerequisiteField": "chem",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.15",
+        "prerequisite": "mat-9.5",
+        "prerequisiteField": "chem",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.15",
+        "prerequisite": "cm-4.7",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.16",
+        "prerequisite": "tech-11.16",
+        "prerequisiteField": "humanities",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.17",
+        "prerequisite": "cm-4.10",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.18",
+        "prerequisite": "tech-11.17",
+        "prerequisiteField": "humanities",
+        "itemWritten": true,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-4.1",
+        "prerequisite": "cm-4.7",
+        "prerequisiteField": "physics",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.1",
+        "prerequisite": "pma-8.6",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.2",
+        "prerequisite": "pma-4.23",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.2",
+        "prerequisite": "pma-5.10",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.4",
+        "prerequisite": "pma-5.15",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-4.5",
+        "prerequisite": "ode-1.4",
+        "prerequisiteField": "math",
+        "itemWritten": true,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.1",
+        "prerequisite": "pma-5.1",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.1",
+        "prerequisite": "em-3.8",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.2",
+        "prerequisite": "pma-5.1",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.2",
+        "prerequisite": "em-9.15",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-5.3",
+        "prerequisite": "em-2.11",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-5.3",
+        "prerequisite": "em-9.17",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-5.5",
+        "prerequisite": "ode-1.4",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-6.1",
+        "prerequisite": "mech-4.7",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-6.6",
+        "prerequisite": "mech-4.7",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-6.7",
+        "prerequisite": "ode-3.1",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-7.2",
+        "prerequisite": "pma-8.6",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-7.8",
+        "prerequisite": "mech-4.11",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-7.13",
+        "prerequisite": "em-9.14",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-7.16",
+        "prerequisite": "ode-3.16",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-7.19",
+        "prerequisite": "em-9.3",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-9.2",
+        "prerequisite": "em-11.17",
+        "prerequisiteField": "physics",
+        "itemWritten": false,
+        "prerequisiteWritten": false
+      },
+      {
+        "item": "circ-9.2",
+        "prerequisite": "pde-2.10",
+        "prerequisiteField": "math",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      },
+      {
+        "item": "circ-10.1",
+        "prerequisite": "pchem-2.6",
+        "prerequisiteField": "chem",
+        "itemWritten": false,
+        "prerequisiteWritten": true
+      }
+    ]
+  },
+  "rawDependencyLists": [
+    {
+      "item": "circ-2.7",
+      "added": [
+        "ladr-3.21"
+      ],
+      "writtenDepsBefore": [
+        "circ-2.1",
+        "circ-2.2"
+      ],
+      "writtenDepsAfter": [
+        "circ-2.1",
+        "circ-2.2",
+        "ladr-3.21"
+      ],
+      "syllabusDepsBefore": [
+        "circ-2.1",
+        "circ-2.2"
+      ],
+      "syllabusDepsAfter": [
+        "circ-2.1",
+        "circ-2.2",
+        "ladr-3.21"
+      ]
+    },
+    {
+      "item": "circ-2.8",
+      "added": [
+        "ladr-3.43"
+      ],
+      "writtenDepsBefore": [
+        "circ-2.5"
+      ],
+      "writtenDepsAfter": [
+        "circ-2.5",
+        "ladr-3.43"
+      ],
+      "syllabusDepsBefore": [
+        "circ-2.5"
+      ],
+      "syllabusDepsAfter": [
+        "circ-2.5",
+        "ladr-3.43"
+      ]
+    },
+    {
+      "item": "circ-2.9",
+      "added": [
+        "ladr-3.65",
+        "ladr-7.38"
+      ],
+      "writtenDepsBefore": [
+        "circ-2.8"
+      ],
+      "writtenDepsAfter": [
+        "circ-2.8",
+        "ladr-3.65",
+        "ladr-7.38"
+      ],
+      "syllabusDepsBefore": [
+        "circ-2.8"
+      ],
+      "syllabusDepsAfter": [
+        "circ-2.8",
+        "ladr-3.65",
+        "ladr-7.38"
+      ]
+    },
+    {
+      "item": "circ-3.1",
+      "added": [
+        "ladr-3.63"
+      ],
+      "writtenDepsBefore": [
+        "circ-2.5",
+        "circ-2.9"
+      ],
+      "writtenDepsAfter": [
+        "circ-2.5",
+        "circ-2.9",
+        "ladr-3.63"
+      ],
+      "syllabusDepsBefore": [
+        "circ-2.5"
+      ],
+      "syllabusDepsAfter": [
+        "circ-2.5",
+        "ladr-3.63"
+      ]
+    },
+    {
+      "item": "circ-3.6",
+      "added": [
+        "ladr-7.1"
+      ],
+      "writtenDepsBefore": [
+        "circ-2.1",
+        "circ-2.2",
+        "circ-2.7"
+      ],
+      "writtenDepsAfter": [
+        "circ-2.1",
+        "circ-2.2",
+        "circ-2.7",
+        "ladr-7.1"
+      ],
+      "syllabusDepsBefore": [
+        "circ-2.1",
+        "circ-2.2",
+        "circ-2.7"
+      ],
+      "syllabusDepsAfter": [
+        "circ-2.1",
+        "circ-2.2",
+        "circ-2.7",
+        "ladr-7.1"
+      ]
+    },
+    {
+      "item": "circ-3.7",
+      "added": [
+        "ladr-7.5"
+      ],
+      "writtenDepsBefore": [
+        "circ-3.6",
+        "circ-2.8"
+      ],
+      "writtenDepsAfter": [
+        "circ-3.6",
+        "circ-2.8",
+        "ladr-7.5"
+      ],
+      "syllabusDepsBefore": [
+        "circ-3.6"
+      ],
+      "syllabusDepsAfter": [
+        "circ-3.6",
+        "ladr-7.5"
+      ]
+    },
+    {
+      "item": "circ-3.9",
+      "added": [
+        "ladr-3.43"
+      ],
+      "writtenDepsBefore": [
+        "circ-3.2",
+        "circ-3.8"
+      ],
+      "writtenDepsAfter": [
+        "circ-3.2",
+        "circ-3.8",
+        "ladr-3.43"
+      ],
+      "syllabusDepsBefore": [
+        "circ-3.2",
+        "circ-3.8"
+      ],
+      "syllabusDepsAfter": [
+        "circ-3.2",
+        "circ-3.8",
+        "ladr-3.43"
+      ]
+    },
+    {
+      "item": "circ-3.10",
+      "added": [
+        "ladr-6.12"
+      ],
+      "writtenDepsBefore": [
+        "circ-2.9",
+        "circ-3.6",
+        "em-6.9"
+      ],
+      "writtenDepsAfter": [
+        "circ-2.9",
+        "circ-3.6",
+        "em-6.9",
+        "ladr-6.12"
+      ],
+      "syllabusDepsBefore": [
+        "circ-2.9",
+        "circ-3.6",
+        "em-6.9"
+      ],
+      "syllabusDepsAfter": [
+        "circ-2.9",
+        "circ-3.6",
+        "em-6.9",
+        "ladr-6.12"
+      ]
+    },
+    {
+      "item": "circ-4.1",
+      "added": [
+        "pma-8.6"
+      ],
+      "writtenDepsBefore": [
+        "circ-1.9",
+        "cm-4.7"
+      ],
+      "writtenDepsAfter": [
+        "circ-1.9",
+        "cm-4.7",
+        "pma-8.6"
+      ],
+      "syllabusDepsBefore": [
+        "circ-1.9",
+        "cm-4.7"
+      ],
+      "syllabusDepsAfter": [
+        "circ-1.9",
+        "cm-4.7",
+        "pma-8.6"
+      ]
+    },
+    {
+      "item": "circ-4.2",
+      "added": [
+        "pma-4.23",
+        "pma-5.10"
+      ],
+      "writtenDepsBefore": [
+        "circ-4.1",
+        "circ-3.2"
+      ],
+      "writtenDepsAfter": [
+        "circ-4.1",
+        "circ-3.2",
+        "pma-4.23",
+        "pma-5.10"
+      ],
+      "syllabusDepsBefore": [
+        "circ-4.1",
+        "circ-3.2"
+      ],
+      "syllabusDepsAfter": [
+        "circ-4.1",
+        "circ-3.2",
+        "pma-4.23",
+        "pma-5.10"
+      ]
+    },
+    {
+      "item": "circ-4.5",
+      "added": [
+        "ode-1.4"
+      ],
+      "writtenDepsBefore": [
+        "circ-4.3"
+      ],
+      "writtenDepsAfter": [
+        "circ-4.3",
+        "ode-1.4"
+      ],
+      "syllabusDepsBefore": [
+        "circ-4.3"
+      ],
+      "syllabusDepsAfter": [
+        "circ-4.3",
+        "ode-1.4"
+      ]
+    },
+    {
+      "item": "circ-4.8",
+      "added": [
+        "pma-9.28"
+      ],
+      "writtenDepsBefore": [
+        "circ-4.7"
+      ],
+      "writtenDepsAfter": [
+        "circ-4.7",
+        "pma-9.28"
+      ],
+      "syllabusDepsBefore": [
+        "circ-4.7"
+      ],
+      "syllabusDepsAfter": [
+        "circ-4.7",
+        "pma-9.28"
+      ]
+    },
+    {
+      "item": "circ-4.9",
+      "added": [
+        "logic-2.6"
+      ],
+      "writtenDepsBefore": [
+        "circ-4.8"
+      ],
+      "writtenDepsAfter": [
+        "circ-4.8",
+        "logic-2.6"
+      ],
+      "syllabusDepsBefore": [
+        "circ-4.8"
+      ],
+      "syllabusDepsAfter": [
+        "circ-4.8",
+        "logic-2.6"
+      ]
+    },
+    {
+      "item": "circ-4.12",
+      "added": [
+        "pma-9.17"
+      ],
+      "writtenDepsBefore": [
+        "circ-4.10",
+        "circ-4.4"
+      ],
+      "writtenDepsAfter": [
+        "circ-4.10",
+        "circ-4.4",
+        "pma-9.17"
+      ],
+      "syllabusDepsBefore": [
+        "circ-4.10",
+        "circ-4.4"
+      ],
+      "syllabusDepsAfter": [
+        "circ-4.10",
+        "circ-4.4",
+        "pma-9.17"
+      ]
+    },
+    {
+      "item": "circ-4.13",
+      "added": [
+        "ode-3.9"
+      ],
+      "writtenDepsBefore": [
+        "circ-4.8",
+        "circ-4.6"
+      ],
+      "writtenDepsAfter": [
+        "circ-4.8",
+        "circ-4.6",
+        "ode-3.9"
+      ],
+      "syllabusDepsBefore": [
+        "circ-4.8",
+        "circ-4.6"
+      ],
+      "syllabusDepsAfter": [
+        "circ-4.8",
+        "circ-4.6",
+        "ode-3.9"
+      ]
+    }
+  ],
+  "ownImages": [
+    {
+      "file": "2.7-dark-idea.png",
+      "sha256": "e82f8aae3e1599fac675c1963b72b5f9982e081fa2750a70c49a736373362a50"
+    },
+    {
+      "file": "2.7-dark-statement.png",
+      "sha256": "41d86415a862ac2f7d1a34df1ca1a8a6c887f4dce9b14bd86f5af7f8b5779a98"
+    },
+    {
+      "file": "2.7-light-idea.png",
+      "sha256": "fd927ce31e37dfb716d26ae182e74d4d502db7d7706c0c410421ef46ad95928e"
+    },
+    {
+      "file": "2.7-light-statement.png",
+      "sha256": "922c2cdc636a99b34126c5cc11333ce5a3132a22bf6080e8d03f1307d4ffce1a"
+    },
+    {
+      "file": "2.8-dark-idea.png",
+      "sha256": "6e5c0f4ae7398d09a7221343b27076f433316a70660edd3a25353c5cb56459f9"
+    },
+    {
+      "file": "2.8-dark-statement.png",
+      "sha256": "2783ce553154d49ecfd1d6b24544e2e6ba1daaeb4a8383b3da0739b4a0f2b7c5"
+    },
+    {
+      "file": "2.8-light-idea.png",
+      "sha256": "0d2ae05e791a2688e943f85b9769d5de1bf8d5ef885b280f9cf17de925e0402c"
+    },
+    {
+      "file": "2.8-light-statement.png",
+      "sha256": "4926ceafc71cd8e24ece300a7e9eda5609b36ff81b01a5aae9d43079386078c6"
+    },
+    {
+      "file": "2.9-dark-idea.png",
+      "sha256": "5b11315d9e47fb3659b7297acc3fd37c02ae9367fc498dfc802a700e305ffc3f"
+    },
+    {
+      "file": "2.9-dark-statement.png",
+      "sha256": "f625a43d934c7b356bcc6689dbf7382c294d1c34a7c2667974cc8c2cf6a3c7ef"
+    },
+    {
+      "file": "2.9-light-idea.png",
+      "sha256": "44d55c6628702cc68e384119e4983dea2cc9f095dae264b7256300b523fdc423"
+    },
+    {
+      "file": "2.9-light-statement.png",
+      "sha256": "1d57f31682ea3842543244e5ae266937c1ca4cc85d65a7dc72ae1bdeccd53e74"
+    },
+    {
+      "file": "3.1-dark-idea.png",
+      "sha256": "c5fa4e2607227b46ded378f085cb0607c2532666f5b4eb05585fe65e269248e8"
+    },
+    {
+      "file": "3.1-dark-statement.png",
+      "sha256": "27fc2f2355143fcd145f43b2bd1959faaeecbc9ef215c15736a9f09535e416b9"
+    },
+    {
+      "file": "3.1-light-idea.png",
+      "sha256": "308e8c7e38b028cd7efb97d0ecf6e75db12d85506a0207fb62b8591a632a63b9"
+    },
+    {
+      "file": "3.1-light-statement.png",
+      "sha256": "9c19e504837f98ffd336d1c41e8a99be0db5efaad1168f3f9b1308cf6df03aa4"
+    },
+    {
+      "file": "3.10-dark-idea.png",
+      "sha256": "bb2fe5d61dff3973e3cf852d9a271b39963e36ff60fdcce7a417af84abc36fdd"
+    },
+    {
+      "file": "3.10-dark-statement.png",
+      "sha256": "07731add7abe69e377311a10f944efc299b53884b16a98622e781a07a8cf85a3"
+    },
+    {
+      "file": "3.10-light-idea.png",
+      "sha256": "646d29db0462607744a3b5333ecc9ca661926f17abdde9c7837ce4288bd3fb3b"
+    },
+    {
+      "file": "3.10-light-statement.png",
+      "sha256": "a90bcfa2e18cc389c4df96bdd20877c38b1546e131a8099b83ca2ccd5c35de15"
+    },
+    {
+      "file": "3.6-dark-idea.png",
+      "sha256": "dbc2f328a65d3303fda86d595f48815764e2b96099975997f4213d06cde2e718"
+    },
+    {
+      "file": "3.6-dark-statement.png",
+      "sha256": "3f5b7bacbafd0ab69c41bd85d35b39caadc31c84f85b4aa3e3aec51f6498cf69"
+    },
+    {
+      "file": "3.6-light-idea.png",
+      "sha256": "5009f9cc55fc94938ea44dd7a1142b3be8ce123cb50d7ae77b5529dda7443801"
+    },
+    {
+      "file": "3.6-light-statement.png",
+      "sha256": "22db94e2f9607e5aac350277fb2898d8705308d9960933407c899ff411bb54f6"
+    },
+    {
+      "file": "3.7-dark-idea.png",
+      "sha256": "49369e167afc63176ccdc32def058110eebd79593cca7e673ed550d257870f59"
+    },
+    {
+      "file": "3.7-dark-statement.png",
+      "sha256": "8e6e81cd00d528cb036a3a04c60b8e7ae7dd293c84249cd84d4f952dbfa1cce3"
+    },
+    {
+      "file": "3.7-light-idea.png",
+      "sha256": "ae328274cd8d3731fcea9c7e8c04e0a7fa5ebb7fc59c4c794a40d5adc2684325"
+    },
+    {
+      "file": "3.7-light-statement.png",
+      "sha256": "a496d843d7d250a0ec8f222e079c4819063be2c7b52c77ad358a1e748f1fa3e9"
+    },
+    {
+      "file": "3.9-dark-idea.png",
+      "sha256": "bb5f42c18bf1bce079e4cbb530eba8b6b3d99af8dc158e1db166a2034c550cb9"
+    },
+    {
+      "file": "3.9-dark-statement.png",
+      "sha256": "cd14746e4b2c25e0d626053ebeb56901c5710d333b0f4f5c3fb3f5a1811da31c"
+    },
+    {
+      "file": "3.9-light-idea.png",
+      "sha256": "2630f4cd99aae22198daa9ecbd04007f03187a1022dbbf467c5f64375393b9cd"
+    },
+    {
+      "file": "3.9-light-statement.png",
+      "sha256": "10c380787d2e19fd10d4f4a4d484f27ddd23bfaca3a81d4b3995a1afafee3392"
+    },
+    {
+      "file": "4.1-dark-idea.png",
+      "sha256": "620a882ee98ff787973826435cd603689b79b3267dd649fbeaab0d9bede22ecb"
+    },
+    {
+      "file": "4.1-dark-statement.png",
+      "sha256": "4a752a5b87a61341253c976d03c27839b8380191a4ed57bade4e81b38d81722e"
+    },
+    {
+      "file": "4.1-light-idea.png",
+      "sha256": "f80f6197a8bf452f33b0a2ab716f5eab263ebc1cb8441841a7e821618360723c"
+    },
+    {
+      "file": "4.1-light-statement.png",
+      "sha256": "f54609d4502930cdc30ffa526e4328bb8445aee5e42e84854e032eb59e2139ff"
+    },
+    {
+      "file": "4.12-dark-idea.png",
+      "sha256": "3bdc8b2b8e1173d1fdef34e33936fa6c03c50b15f1d1670ba8c23601321109d2"
+    },
+    {
+      "file": "4.12-dark-statement.png",
+      "sha256": "44f694178a957ff6c6343c775ae33cd765fa863f687f5fe5014329d9915f2ec7"
+    },
+    {
+      "file": "4.12-light-idea.png",
+      "sha256": "e4702f767abd25a9608a385e04d7d48cdec7dd5d54348c984332632c72cc62b8"
+    },
+    {
+      "file": "4.12-light-statement.png",
+      "sha256": "73ebe44194bf198c8c0d23173e1ce192476e581a0c0aa57c811ee7fc1a337e36"
+    },
+    {
+      "file": "4.13-dark-idea.png",
+      "sha256": "4349c0b4ca89e990d95c87fbbbd05d54cedc3844f331b3d98b60b5da7fb8efb4"
+    },
+    {
+      "file": "4.13-dark-statement.png",
+      "sha256": "9136197f0379fb301b79f5ef9980d9d1da4ba31bf7bcd24444884b8fc64d72ce"
+    },
+    {
+      "file": "4.13-light-idea.png",
+      "sha256": "d33f09b4b01f352ec20955cd4c5edc3562b66d71bc7263478b339b6d0feec289"
+    },
+    {
+      "file": "4.13-light-statement.png",
+      "sha256": "db466ed155834cff00d67e0d1cb371e855e4fdb5bae279ad260c6c1fb7425909"
+    },
+    {
+      "file": "4.2-dark-idea.png",
+      "sha256": "a7c42e638f938561067f43f4023fcd38559af1221fde0b12bfb717bac0d69415"
+    },
+    {
+      "file": "4.2-dark-statement.png",
+      "sha256": "744d64b6a8ccbc4ac51c10dc790644542eb71b2bcc3ce81e1d89f0d753eeb28b"
+    },
+    {
+      "file": "4.2-light-idea.png",
+      "sha256": "154b48779a90a515f18027386f71b45a8390a2a94f20f076034ff6a73cf3c87f"
+    },
+    {
+      "file": "4.2-light-statement.png",
+      "sha256": "bd38d5245939be177bf7621229bb31fa4c88e705ceb2534008b761c9a56421c3"
+    },
+    {
+      "file": "4.5-dark-idea.png",
+      "sha256": "38a242184dcc6b24a92d35e420fbd1f8a53925ab0372f59fe3d0d043a5edb45f"
+    },
+    {
+      "file": "4.5-dark-statement.png",
+      "sha256": "f4f287bfaf2283f55a0fb1abe3f60a89f8c9a9fe3c6c4203777a2ca6e71d1b3b"
+    },
+    {
+      "file": "4.5-light-idea.png",
+      "sha256": "ae8785712d757bd14b2ceaec9638179e645587b93f61cabca5d67dbe22c34d4a"
+    },
+    {
+      "file": "4.5-light-statement.png",
+      "sha256": "73d797548026fca35647f17c06fd665d8f49132c271f7e36dc4569ffa12d783a"
+    },
+    {
+      "file": "4.8-dark-idea.png",
+      "sha256": "231de392475ea15ac255d83d5e44e11a76ba5e0932304c52798d92bac931c085"
+    },
+    {
+      "file": "4.8-dark-statement.png",
+      "sha256": "389fcf4c916e27a0349fd82c8bc47ea44b49559134c48a06f7dc74bfe3503777"
+    },
+    {
+      "file": "4.8-light-idea.png",
+      "sha256": "39c61a3d569517c17d2e765a01a9c74cd94ab413f8ceb7ee342150443e9595dc"
+    },
+    {
+      "file": "4.8-light-statement.png",
+      "sha256": "cd932d4cbd14694bd2a44f4f9f561720cfe9c8ba1523f2e9f35009f6096cc98b"
+    },
+    {
+      "file": "4.9-dark-idea.png",
+      "sha256": "35dd834ad20dff0b522016f0a868718c48db3a3791fecac0ea8aa376bcf80a64"
+    },
+    {
+      "file": "4.9-dark-statement.png",
+      "sha256": "ee5de63611f2c1ac614a1eb3922b0213837f27a4245d599b704303ce2ca8733d"
+    },
+    {
+      "file": "4.9-light-idea.png",
+      "sha256": "1a27ed4aa53d4e28142cedb6a02d66cda02a830bb094b5d12762975842c642ae"
+    },
+    {
+      "file": "4.9-light-statement.png",
+      "sha256": "b027d6497db2e37b105ad946bab929eeba75bce30f883fbd4b4d41bb89163104"
+    }
+  ]
+}

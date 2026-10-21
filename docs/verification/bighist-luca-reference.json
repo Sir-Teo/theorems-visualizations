@@ -1,0 +1,364 @@
+{
+  "cases": [
+    {
+      "clock": "iln",
+      "ageMyr": 3300,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "33/10",
+      "trialX": "-33/10",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "younger",
+      "distanceMyr": 790
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4089,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "4089/1000",
+      "trialX": "-4089/1000",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "younger",
+      "distanceMyr": 1
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4090,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "409/100",
+      "trialX": "-409/100",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4179,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "4179/1000",
+      "trialX": "-4179/1000",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4180,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "209/50",
+      "trialX": "-209/50",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4200,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "21/5",
+      "trialX": "-21/5",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4320,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "108/25",
+      "trialX": "-108/25",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4330,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "433/100",
+      "trialX": "-433/100",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4331,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "4331/1000",
+      "trialX": "-4331/1000",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "older",
+      "distanceMyr": 1
+    },
+    {
+      "clock": "iln",
+      "ageMyr": 4500,
+      "lo": 4090,
+      "hi": 4330,
+      "bodyHi": 4320,
+      "widthMyr": 240,
+      "ageGa": "9/2",
+      "trialX": "-9/2",
+      "bandX": [
+        "-433/100",
+        "-409/100"
+      ],
+      "relation": "older",
+      "distanceMyr": 170
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 3300,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "33/10",
+      "trialX": "-33/10",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "younger",
+      "distanceMyr": 880
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4089,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "4089/1000",
+      "trialX": "-4089/1000",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "younger",
+      "distanceMyr": 91
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4090,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "409/100",
+      "trialX": "-409/100",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "younger",
+      "distanceMyr": 90
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4179,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "4179/1000",
+      "trialX": "-4179/1000",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "younger",
+      "distanceMyr": 1
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4180,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "209/50",
+      "trialX": "-209/50",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4200,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "21/5",
+      "trialX": "-21/5",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4320,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "108/25",
+      "trialX": "-108/25",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4330,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "433/100",
+      "trialX": "-433/100",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "inside",
+      "distanceMyr": 0
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4331,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "4331/1000",
+      "trialX": "-4331/1000",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "older",
+      "distanceMyr": 1
+    },
+    {
+      "clock": "gbm",
+      "ageMyr": 4500,
+      "lo": 4180,
+      "hi": 4330,
+      "bodyHi": 4330,
+      "widthMyr": 150,
+      "ageGa": "9/2",
+      "trialX": "-9/2",
+      "bandX": [
+        "-433/100",
+        "-209/50"
+      ],
+      "relation": "older",
+      "distanceMyr": 170
+    }
+  ],
+  "calibrationBasis": [
+    [
+      4510,
+      10
+    ],
+    [
+      2954,
+      9
+    ]
+  ],
+  "sources": [
+    {
+      "file": "woese1977.pdf",
+      "url": "https://courses.physics.illinois.edu/phys498ebp/sp2020/readings/phylogenetics/WoseAndFox_PNAS_1977.pdf",
+      "bytes": 753365,
+      "sha256": "a86aa75cd1cb2546acc80ff69fc871eede34f09581112d2e5253478167e44234",
+      "readScope": "complete3page original5088–5090; all body and Table1"
+    },
+    {
+      "file": "woese1990-epa.pdf",
+      "url": "https://chemview.epa.gov/chemview/proxy?filename=ncn%2F20211130%2FJ-21-0020%2F2%2F09022526804d01f5_Woese+C+R+et+al+1990.pdf",
+      "bytes": 988380,
+      "sha256": "cce42926bc60d11a88de791176936cd1cb32ea79bd1fa97a121f21f9fa6c3178",
+      "readScope": "complete4page original4576–4579 incl Fig1 and domain proposal"
+    },
+    {
+      "file": "moody2024-pmc.html",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11383801/",
+      "bytes": 332049,
+      "sha256": "5397ce30d9046d1e025c483eb170dae090f3aeca1cd799debaf9f734057b3b0f",
+      "readScope": "dating results/Fig1/caption; calibration, timetree and cross-bracing methods; no SI calibration dossier/raw alignments/pipeline audit"
+    },
+    {
+      "file": "ncbi-genetic-codes.html",
+      "url": "https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi",
+      "bytes": 270447,
+      "sha256": "dca1e4b65a6b184c6d16db815bf853a5aa360bb72d216d9495405a10c0abf2da",
+      "readScope": "official overview and standard/variant code tables only, not all taxonomy assignments"
+    }
+  ]
+}

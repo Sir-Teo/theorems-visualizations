@@ -1,5 +1,10 @@
+import { EDO_TARGETS, edoRecordModel, edoRecordAudio, edoCompareModel, edoCompareAudio } from './source-audit-edo.js';
+import { wellRecipe, wellModel, wellAudio, wellRebalance, wellValid, WELL_RECIPES, WELL_CHAIN } from './source-audit-well.js';
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (part b: items 7.7–7.12)
+import { continuedModel, CF_ALPHA } from './source-audit-continued.js';
+import { equalModel, equalAudio, WE_REFERENCES } from './source-audit-wolf-equal.js';
 import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, NOTE, sc, fold, circ, ring, cents, seqCents, chordCents, nearPairs, tuneFromFifths, CHAIN, chainSemi, ivl, triadC, triadAbs, cfExpand, convs, edoApprox } from './ch07.shared.js';
+import { meantoneModel, meantoneAudio, JM_ET_ALPHA } from './source-audit-just-meantone.js';
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
@@ -9,295 +14,212 @@ export default {
   items: [
     // ------------------------------------------------------------------ 7.7
     {
-      num: '7.7',
-      kind: 'Method',
-      name: 'Quarter-comma meantone',
-      statement: String.raw`**Meantone temperament** narrows every fifth of the chain by the same fraction $\alpha$ of the syntonic comma ($81/80$, 21.506 ¢), so that its size is $701.955-21.506\,\alpha$ ¢. Four such fifths make a major third, $4(701.955-21.506\alpha)-2400 = 386.314 + (1-4\alpha)\,21.506$ ¢. Choose $\alpha=\tfrac14$ (**quarter-comma meantone**): the fifth is $696.578$ ¢ and the major third is exactly the pure $5{:}4$. Then eleven fifths are equal and tempered, the twelfth, closing the circle, is the wolf, now 35.7 ¢ **wider** than a pure fifth ($737.6$ ¢), and the eight major thirds that do not use it are pure, to within rounding in the arithmetic; the four affected thirds are unusable (about 41 ¢ sharp). The minor thirds are 5.4 ¢ narrow of $6/5$ and the fifths 5.4 ¢ narrow of $3/2$. $\alpha=\tfrac13$ makes the minor third pure; $\alpha=(701.955000865\ldots-700)/21.506289597\ldots\approx0.090904$ makes all fifths equal to 700 ¢ and the wolf disappears: twelve-tone equal temperament.`,
-      idea: String.raw`The comma identity of 7.6 says four pure fifths exceed a pure third (plus two octaves) by one syntonic comma. To make that stack of four fifths come out exactly on the pure third, each fifth must give up a quarter of it. The cost is paid elsewhere: the remaining twelfth fifth must close the circle at seven octaves, $8400-11\cdot696.578=737.65$ ¢, and its leftover, the diesis of 41 ¢, ruins the thirds that cross it. At the other end, equal temperament requires $12(f_5-\alpha c_s)=8400$, hence $\alpha=(f_5-700)/c_s=c_P/(12c_s)$, where $f_5$ is the pure fifth and $c_s,c_P$ are the syntonic and Pythagorean commas in cents. This is very close to $1/11$ but not exactly equal to it.`,
-      caption: String.raw`Slide the fraction of the syntonic comma that each fifth gives up (or press a preset). Upper left: the error, in cents from the pure ratio, of the tempered fifth, major third, minor third and the wolf. Upper right: the twelve major thirds, one on each note, as errors from the pure third 5/4 (the four wolf thirds are sharp by a diesis; at 1/4 the rest are pure). Play the triad on the key chosen (with the wolf position G♯–E♭ as tuned traditionally) and the wolf itself; at the 12-TET preset everything becomes equal.`,
-      deps: ['music-7.6', 'music-7.4'],
-      see: ['music-7.12', 'music-7.8', 'music-7.9'],
-      refs: ['Benson §5.12 pp. 176–180; §5.14 pp. 190–191 (eleventh-comma approximation)'],
-      tags: ['meantone', 'temperament'],
-      credit: 'Pietro Aron, 1523 (probable first description); Zarlino, 1571; widely used c. 1500–1700',
-      scope: String.raw`Exact arithmetic for a chain of twelve fifths with the wolf at G♯–E♭. Historical meantone keyboards often had split keys (G♯ and A♭ as separate pitches) to avoid the wolf, which the twelve-note model here does not include. Priority statements about Aron and Zarlino are from secondary sources and should be re-checked.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Quarter-comma_meantone' },
-      verify: true,
-      viz(v) {
-        const al = v.slider('fraction of the syntonic comma taken from each fifth', 0, 0.34, 0.25, { step: 0.001, fmt: (x) => `${v.fix(x, 3)}  (${v.fix(x * SCOMMA, 2)} ¢)` });
-        const key = v.slider('triad on …', 0, 11, 0, { int: true, fmt: (x) => NOTE[x] });
-        const PRE = [['Pythagorean', 0], ['1/4', 0.25], ['1/3', 1 / 3], ['12-TET (≈1/11)', (FIFTH - 700) / SCOMMA]];
-        PRE.forEach(([n, x]) => v.button(n, () => al.set(x)));
-        const eb = v.stage({ x: [-0.6, 3.6], y: [-42, 42], axes: 'box', gutter: true, height: 320, xticks: [[0, 'fifth'], [1, 'major third'], [2, 'minor third'], [3, 'wolf']], yticks: [-40, -20, 0, 20, 40].map((y) => [y, String(y)]), ylabel: 'error from the pure interval (¢)', title: 'intervals of the chain' });
-        const tb = v.stage({ x: [-0.6, 11.6], y: [-8, 48], axes: 'box', gutter: true, height: 320, xticks: [], yticks: [0, 10, 20, 30, 40].map((y) => [y, String(y)]), xlabel: 'major third on … (gold: the triad you play)', ylabel: 'error from 5/4 (¢)', title: 'the twelve major thirds' });
-        const snd = v.sound();
-        const fifth = () => FIFTH - al.value * SCOMMA, wolf = () => 8400 - 11 * fifth();
-        const fifths = () => Array.from({ length: 12 }, (_, i) => (i === 11 ? wolf() : fifth()));
-        const pcs = () => tuneFromFifths(fifths());
-        v.soundButton('play the triad', (sd) => { const P = pcs(); sd.samples(chordCents(triadAbs(P, key.value), C4, 2.0), SR, { gain: 0.9 }); });
-        v.soundButton('play the wolf (G♯–E♭)', (sd) => { const P = pcs(), b = P[8] > 600 ? P[8] - 1200 : P[8]; sd.samples(chordCents([b, b + wolf()], C4, 2.0), SR, { gain: 0.9 }); });
-        v.soundButton('a tempered fifth, then pure', (sd) => sd.samples(seqCents([[0, fifth()], [0, FIFTH]], C4, 1.6, 0.15), SR, { gain: 0.9 }));
-        v.render(() => {
-          const f = fifth(), m3 = 4 * f - 2400, m3m = 2400 - 3 * f, w = wolf();
-          const E = [f - FIFTH, m3 - M3J, m3m - cents(6 / 5), w - FIFTH], col = ['accent', 'orange', 'purple', 'red'];
-          eb.hline(0, { color: 'green', width: 1.6 });
-          E.forEach((e, i) => { eb.rect(i - 0.3, 0, i + 0.3, e, { fill: col[i], fillAlpha: 0.55, color: col[i] }); eb.text(sc(v, e, 2), i, e, { size: 11.5, align: 'center', baseline: e >= 0 ? 'bottom' : 'top', dy: e >= 0 ? -3 : 3, weight: 600, plate: true }); });
-          const P = pcs();
-          tb.hline(0, { color: 'green', width: 1.6 });
-          for (let r = 0; r < 12; r++) {
-            const t = fold(P[(r + 4) % 12] - P[r]) - M3J, c = Math.abs(t) < 2.5 ? 'green' : t > 15 ? 'red' : 'orange';
-            tb.rect(r - 0.38, 0, r + 0.38, t, { fill: c, fillAlpha: 0.55, color: c });
-            tb.text(NOTE[r], r, -1.5, { size: 11, align: 'center', baseline: 'top', plate: true });
-            tb.text(sc(v, t, 1), r, t, { size: 10, align: 'center', baseline: t >= 0 ? 'bottom' : 'top', dy: t >= 0 ? -3 : 3, color: 'muted' });
-          }
-          tb.dot(key.value, -6.5, { r: 6, color: 'gold' });
+      num:'7.7',kind:'Method',name:'Quarter-comma meantone',
+      statement:String.raw`Let $C_s=1200\log_2(81/80)$ be the syntonic comma in cents. A regular meantone fifth with narrowing fraction $\alpha$ has ratio
+$$q=(3/2)(81/80)^{-\alpha}.$$
+Its size is $f=1200\log_2q$. Four regular fifths minus two octaves give a major third of $4f-2400$ cents. At $\alpha=1/4$, $q^4=5$, so that third is exactly $5/4$; $f\approx696.578428$ cents. At $\alpha=1/3$, $q^3=10/3$, so the regular minor third $4/q^3$ is exactly $6/5$.
+
+In the specified twelve-note cut, eleven fifths have ratio $q$ and the closing fifth has ratio $W=2^7/q^{11}$. At quarter comma, $W/q=128/125$: eight major thirds are pure and the four crossing the cut are higher by about 41.058858 cents.
+
+Twelve equal fifths require $f=700$, hence
+$$\alpha_{\rm ET}=\frac{1200\log_2(3/2)-700}{C_s}$$
+which is approximately 0.090903680. It is close to $1/11$, but is not equal to it.`,
+      idea:String.raw`The syntonic comma identity (7.6) gives $(3/2)^4/(5/4)=4(81/80)$. Removing a quarter comma from each of four fifths therefore makes the major third pure. The twelve fifths must multiply to $2^7$; eleven chosen generators determine the closing fifth, rather than forcing all twelve generators to be equal.
+
+Our chain is E♭–B♭–F–C–G–D–A–E–B–F♯–C♯–G♯, with C anchored at ratio 1. The closing step G♯–E♭ is the cut. A major third traverses four steps: eight do not cross the cut and four do. Their difference is $1200\log_2(W/q)$. In quarter comma $q^{12}=125$, proving the diesis ratio $128/125$. In equal temperament $q^{12}=128$, so $W=q$ and the difference vanishes.`,
+      caption:String.raw`The continuous $\alpha$ control covers 0–0.34. Presets use exact Pythagorean, quarter-comma, third-comma and equal-tempered definitions; the separate $1/11$ preset demonstrates its small difference from equal temperament. Left: deviations of the regular fifth, regular major/minor thirds and closing fifth from their pure ratios. Right: every major third in the specified twelve-note cut; gold selects the triad played. The plots include the entire offered range.`,
+      deps:['music-7.6','music-7.5'],see:['music-7.4','music-7.12','music-7.8','music-7.9'],
+      refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §5.12, pp.176–179 and exercise1'],tags:['meantone','temperament'],
+      credit:'Tuning exposition: Dave Benson, 2008 Web version; twelve-note cut, continuous controls and synthesis authored here.',
+      scope:String.raw`A specified mathematical twelve-note model, not a historical priority, keyboard prescription or judgement that a third is unusable. Other cuts and extra enharmonic keys are possible. Preset identities are exact symbolic definitions; general control values and displayed cents are evaluated numerically. At $1/11$, the regular fifth is approximately 699.999884 cents and the closing fifth 700.001280 cents. Audio uses the same authored C4 = 261.6256-Hz, six-harmonic, 44,100-Hz convention as 7.5, with peak bound 0.12 and 10-ms end ramps. The output is uncalibrated and does not certify a perceptual difference.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify: false,
+      viz(v){
+        const alpha=v.slider('syntonic-comma fraction α',0,.34,.25,{step:'any',fmt:x=>x.toPrecision(12)}),key=v.slider('triad root',0,11,0,{int:true,fmt:x=>meantoneModel(.25,x).keyName});
+        [['Pythagorean',0],['1/4',.25],['1/3',1/3],['Exact 12-TET',JM_ET_ALPHA],['1/11 comparison',1/11]].forEach(([label,x])=>v.button(label,()=>alpha.set(x)));
+        const A=v.stage({x:[-.7,3.7],y:[-40,75],axes:'box',gutter:true,height:340,minWidth:280,xticks:[[0,'5th'],[1,'M3'],[2,'m3'],[3,'close 5th']],ylabel:'error from pure (cents)',title:'regular intervals and closing fifth'});
+        const B=v.stage({x:[-35,85],y:[-1.1,12.2],axes:false,full:true,height:430,minWidth:280,title:'all twelve major-third errors (cents)'});
+        let info;const play=action=>sd=>{const a=meantoneAudio(alpha.value,key.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play selected triad',play('triad'));v.soundButton('Play closing fifth',play('closing'));v.soundButton('Regular fifth, then pure',play('compare'));v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{
+          const a=meantoneModel(alpha.value,key.value);info=a;const lo=Math.min(0,...a.errors)-15,hi=Math.max(0,...a.errors)+15;A.setView([-.7,3.7],[lo,hi]);A.line(-.45,0,3.45,0,{color:'muted',width:1});
+          a.errors.forEach((e,j)=>{const col=['accent','orange','purple','red'][j];A.rect(j-.3,0,j+.3,e,{fill:col,fillAlpha:.55,stroke:false});A.text(`${e<0?'−':'+'}${v.fix(Math.abs(e),3)}`,j,e,{size:10.5,align:'center',baseline:e>=0?'bottom':'top',dy:e>=0?-4:4,color:col});});
+          B.text('note',-32,11.7,{size:11,weight:700,align:'left',baseline:'middle'});B.text('third error (¢)',28,11.7,{size:11,weight:700,align:'center',baseline:'middle'});B.line(0,-.3,0,11.3,{color:'muted',width:1});
+          a.thirds.forEach((t,j)=>{const y=11-j,col=t.pure?'green':t.error<0?'purple':'orange';B.text(t.name,-32,y,{size:12,align:'left',baseline:'middle'});if(j===key.value)B.dot(-18,y,{r:4.5,ring:false,color:'gold'});B.rect(0,y-.22,t.error,y+.22,{fill:col,fillAlpha:.65,stroke:false});B.text(`${t.error<0?'−':'+'}${v.fix(Math.abs(t.error),3)}`,80,y,{size:10.5,align:'right',baseline:'middle',color:col});});
         });
-        v.readout(() => {
-          const f = fifth(), m3 = 4 * f - 2400, P = pcs(), k = key.value;
-          return `α = ${v.fix(al.value, 3)} of 81/80: fifth ${v.fix(f, 3)} ¢ (${sc(v, f - FIFTH, 2)} from 3/2) · major third ${v.fix(m3, 2)} ¢ (${sc(v, m3 - M3J, 2)} from 5/4) · minor third ${v.fix(2400 - 3 * f, 2)} ¢ · wolf ${v.fix(wolf(), 2)} ¢ (${sc(v, wolf() - FIFTH, 1)} from pure) · triad on ${NOTE[k]}: third ${v.fix(ivl(P, k, 4), 2)} ¢, fifth ${v.fix(ivl(P, k, 7), 2)} ¢${Math.abs(f - 700) < 1e-9 ? ' · all twelve fifths are now 700 ¢: this is equal temperament' : ''}`;
-        });
+        v.legend([['green','exact pure third at quarter-comma preset'],['purple','below the pure third'],['orange','above the pure third'],['gold','selected root']]);
+        v.readout(()=>{const a=info;return `α=${a.alpha.toPrecision(12)}; ${a.kind==='equal'?'exact 12-TET preset: all twelve fifths are 700 cents':a.kind==='quarter'?'quarter-comma preset: eight exact pure major thirds':a.kind==='third'?'third-comma preset: regular minor third is exactly 6/5':a.kind==='pythagorean'?'Pythagorean generator':'general numerical parameter'}. Regular fifth ${v.fix(a.fifth,9)} cents; closing fifth ${v.fix(a.closing,9)} cents. Regular major / minor third ${v.fix(a.major,9)} / ${v.fix(a.minor,9)} cents. Cut difference ${v.fix(a.delta,9)} cents. Selected ${a.keyName} triad: ${a.triad.map(x=>v.fix(x,6)).join(', ')} Hz; intervals ${a.triadCents.map(x=>v.fix(x,6)).join(', ')} cents. At 1/11 the fifths are close to equal, and are not all 700 cents.`;});
       },
     },
     // ------------------------------------------------------------------ 7.8
     {
-      num: '7.8',
-      kind: 'Method',
-      name: 'Well temperaments',
-      statement: String.raw`A **well temperament** distributes the Pythagorean comma unevenly around the circle of fifths without any wolf: the twelve fifths are tuned to sizes that sum to exactly seven octaves (8400 ¢) but differ from one another. Keys near C get nearly pure thirds and fifths, keys far from C get wider, brighter thirds, and every key is usable, each with its own character. Examples that survive in the literature are Werckmeister III (four fifths narrowed by a quarter of the Pythagorean comma), Kirnberger III (four fifths narrowed by a quarter of the syntonic comma, one by a schisma), and Vallotti in its modern form (six fifths narrowed by a sixth of the Pythagorean comma). Any assignment of narrowings $d_1,\dots,d_{12}$ to the twelve fifths with $\sum d_i=23.46$ ¢ is a closed twelve-note tuning.`,
-      idea: String.raw`The sum constraint is just 7.3: twelve fifths of sizes $701.955-d_i$ close the circle exactly when $\sum d_i$ equals the Pythagorean comma. Given the constraint, the designer chooses where to put the narrowing. A major third is four consecutive fifths less two octaves, so its error from the pure third is the syntonic comma minus the sum of the four narrowings; the temperament determines which keys get the thirds with the least error and which with the most. The "colour of the keys" of the eighteenth-century writers is this variation.`,
-      caption: String.raw`Left: how much each of the twelve fifths is narrowed from pure; drag a bar's top and the others rebalance so the sum stays at one Pythagorean comma, or load a historical tuning. Right: the circle of fifths coloured by the major third of each key (darker red = wider than the pure 5/4); the figures are the third's excess in cents. Play a cadence I–IV–V–I in C and in F♯ and listen to the difference in character.`,
-      deps: ['music-7.7'],
-      see: ['music-7.9', 'music-7.14'],
-      refs: ['Benson §5.13 pp. 181–187 (recipes; historical originals remain unchecked)'],
-      tags: ['temperament', 'keys'],
-      credit: 'A. Werckmeister, Musicalische Temperatur, 1691; J. P. Kirnberger (1770s); F. A. Vallotti (c. 1728, published 1779)',
-      scope: String.raw`Fifth-size recipes as commonly quoted; the Vallotti recipe used here is the modern form (six fifths F–C … E–B narrowed by 1/6 of a Pythagorean comma), which differs slightly from what Vallotti himself described, and Kirnberger's third temperament is taken to have the schisma on F♯–C♯. Werckmeister's and Kirnberger's exact dates and precise recipes should be checked against the historical sources.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Well_temperament' },
-      verify: true,
-      viz(v) {
-        const eq = () => Array(12).fill(PCOMMA / 12), mk = (idx, amt, rest = 0) => { const d = Array(12).fill(0); idx.forEach((i) => { d[i] = amt; }); return d; };
-        const PRESET = {
-          pyth: { n: 'Pythagorean', d: () => { const d = Array(12).fill(0); d[11] = PCOMMA; return d; } },
-          qm: { n: 'quarter-comma meantone', d: () => { const d = Array(12).fill(SCOMMA / 4); d[11] = PCOMMA - 11 * SCOMMA / 4; return d; } },
-          wm3: { n: 'Werckmeister III', d: () => mk([3, 4, 5, 8], PCOMMA / 4) },
-          kb3: { n: 'Kirnberger III', d: () => { const d = mk([3, 4, 5, 6], SCOMMA / 4); d[9] = PCOMMA - SCOMMA; return d; } },
-          val: { n: 'Vallotti (modern)', d: () => mk([2, 3, 4, 5, 6, 7], PCOMMA / 6) },
-          et: { n: 'equal temperament', d: eq },
-        };
-        let d = PRESET.wm3.d(), name = 'wm3';
-        const pre = v.select('tuning', Object.entries(PRESET).map(([k, x]) => ({ value: k, label: x.n })).concat([{ value: 'custom', label: 'custom' }]), 'wm3', { onChange: (k) => { if (k !== 'custom') { d = PRESET[k].d(); name = k; hs.forEach((h, i) => h.set(i, d[i])); v.invalidate(); } } });
-        const kk = v.select('cadence in', [{ value: 0, label: 'C' }, { value: 6, label: 'F♯' }], 0);
-        const bs = v.stage({ x: [-0.6, 11.6], y: [-40, 26], axes: 'box', gutter: true, height: 340, xticks: CHAIN.map((c, i) => [i, c]), yticks: [-40, -20, 0, 10, 20].map((y) => [y, String(y)]), xlabel: 'fifth starting on …', ylabel: 'fifth narrower than pure by (¢)', title: 'drag the tops of the bars' });
-        const wh = v.stage({ x: [-1.5, 1.5], y: [-1.5, 1.5], equal: true, axes: false, height: 340, title: 'major third of each key' });
-        const snd = v.sound();
-        const hs = d.map((x, i) => { const h = bs.handle(i, x, { color: 'gold', r: 7, constrain: (xx, yy) => [i, clamp(yy, -40, 25)] }); h.onDrag = () => { const val = h.y, others = d.reduce((s, q, j) => (j === i ? s : s + q), 0), want = PCOMMA - val; d = d.map((q, j) => (j === i ? val : Math.abs(others) > 0.5 ? (q * want) / others : q + (want - others) / 11)); name = 'custom'; pre.value = 'custom'; v.invalidate(); }; return h; });
-        const fifths = () => d.map((x) => FIFTH - x);
-        const pcs = () => tuneFromFifths(fifths());
-        const third = (P, r) => fold(P[(r + 4) % 12] - P[r]);
-        const play = () => { const P = pcs(), r = kk.value, roots = [r, (r + 5) % 12, (r + 7) % 12, r]; snd.stop(); snd.samples(seqCents(roots.map((x) => triadAbs(P, x)), C4, 1.2, 0.12), SR, { gain: 0.9 }); };
-        v.soundButton('play I–IV–V–I', play);
-        v.render(() => {
-          hs.forEach((h, i) => h.set(i, d[i]));
-          bs.hline(0, { color: 'muted' }); bs.hline(PCOMMA / 12, { color: 'green', dash: [5, 4] });
-          bs.text('equal temperament (1.95 ¢)', -0.5, PCOMMA / 12, { size: 10.5, color: 'green', align: 'left', baseline: 'bottom', dy: -3 });
-          d.forEach((x, i) => { bs.rect(i - 0.3, 0, i + 0.3, x, { fill: x < 0 ? 'red' : 'orange', fillAlpha: 0.45, color: x < 0 ? 'red' : 'orange' }); });
-          const P = pcs();
-          for (let j = 0; j < 12; j++) {
-            const r = chainSemi(j), t = third(P, r) - M3J, a0 = ((j - 3) * 30 - 15) * Math.PI / 180, a1 = a0 + Math.PI / 6, pts = [];
-            for (let q = 0; q <= 6; q++) { const a = a0 + (a1 - a0) * q / 6; pts.push([1.38 * Math.sin(a), 1.38 * Math.cos(a)]); }
-            for (let q = 6; q >= 0; q--) { const a = a0 + (a1 - a0) * q / 6; pts.push([0.72 * Math.sin(a), 0.72 * Math.cos(a)]); }
-            const c = v.ramp(clamp((t + 2) / 24, 0, 1), 'red');
-            wh.poly(pts, { fill: c, fillAlpha: 1, color: 'panel', width: 2 });
-            const am = (a0 + a1) / 2, p = [1.05 * Math.sin(am), 1.05 * Math.cos(am)];
-            wh.text(NOTE[r], p[0], p[1], { size: 13, align: 'center', baseline: 'bottom', weight: 700, color: 'ink' });
-            wh.text(sc(v, t, 1), p[0], p[1], { size: 11, align: 'center', baseline: 'top', dy: 2, color: 'ink' });
-          }
-          wh.text('major thirds re 5/4', 0, 0.12, { size: 11, color: 'muted', align: 'center' });
-          wh.text('circle of fifths, C at the top', 0, -0.12, { size: 10.5, color: 'muted', align: 'center' });
+      num:'7.8',kind:'Method',name:'Well temperaments',
+      statement:String.raw`Write $P=1200\log_2(531441/524288)$ for the Pythagorean comma and $S=1200\log_2(81/80)$ for the syntonic comma. If fifth $i$ is $d_i$ cents narrower than $3/2$, a twelve-fifth chain closes after seven octaves exactly when
+$$\sum_{i=0}^{11}d_i=P.$$
+A negative $d_i$ means a widened fifth. A major third reached through four successive fifths has signed error from $5/4$ equal to
+$$S-(d_i+d_{i+1}+d_{i+2}+d_{i+3}),$$
+with cyclic indices. Closure alone places no bound on individual fifths and does not guarantee musical usability.
+
+Benson's exposition of irregular or well temperaments gives the named recipes compared here: Werckmeister III distributes $P/4$ over C–G, G–D, D–A and B–F♯; Kirnberger III uses $S/4$ over C–G–D–A–E and $P-S$ on F♯–C♯; the displayed Vallotti recipe uses $P/6$ over F–C–G–D–A–E–B. All other fifths in each recipe are pure.`,
+      idea:String.raw`Twelve pure fifths total $8400+P$ cents. Subtracting narrowings with sum $P$ leaves 8400. Four pure fifths minus two octaves give the Pythagorean third $81/64$, which exceeds $5/4$ by $S$; subtracting the four relevant narrowings gives the stated signed error. The table checks this formula for every starting note, including windows crossing the closing edge.
+
+The named recipes are Benson's transcriptions, rather than newly authenticated readings of historical manuscripts. The equal recipe shares $P$ uniformly. The Pythagorean and quarter-comma cuts are contrasting closed examples with a concentrated closing discrepancy. Their inclusion shows why the sum constraint alone is weaker than a claim that every key works equally well.`,
+      caption:String.raw`Drag any gold handle to change one fifth's narrowing. The other eleven receive a common shift, clipped to the declared −40…25-cent bounds, until their total closes the chain. Load a recipe to reset all handles. The complete table gives every fifth and its major-third error. Choose C or F♯ and play the declared upward I–IV–V–I triads; the actual frequencies are printed below.`,
+      deps:['music-7.3','music-7.6','music-7.7'],see:['music-7.9','music-7.14'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §5.13, pp.181–187; named recipes are his technical transcriptions'],tags:['temperament','keys'],
+      credit:'Named recipes as transcribed by Dave Benson; bounded redistribution, comparisons and synthesis authored here.',
+      scope:String.raw`A finite mathematical comparison of explicitly specified recipes, with no claim about historical dates, priority, a composer's preferred tuning or universal key character. The drag bounds are authored constraints, not a definition of well temperament. Exact logarithmic formulas specify closure; binary64 evaluation leaves the displayed residual, which is reported rather than asserted to be zero. The C4 anchor is 261.6256 Hz; each cadence root lies in its C4–C5 octave and the other voices ascend from it. Audio is the same authored 44,100-Hz H8 signal as 7.4/7.9, with amplitudes 1/h, pre-output bound 0.12, 10-ms ramps and zero-sample gaps. Output gain/limiter and device are separate; frequency errors do not measure perceived quality.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
+      viz(v){
+        let d=wellRecipe('werckmeister');
+        const pre=v.select('recipe',[...Object.entries(WELL_RECIPES).map(([value,label])=>({value,label})),{value:'custom',label:'custom'}],'werckmeister',{onChange:k=>{if(k!=='custom'){d=wellRecipe(k);hs.forEach((h,j)=>h.set(j,d[j]));}}});
+        const key=v.select('cadence in',[{value:0,label:'C'},{value:6,label:'F♯'}],0);
+        const A=v.stage({x:[-.8,11.8],y:[-47,32],axes:'box',gutter:true,full:true,height:350,minWidth:240,xlabel:'fifth starting on …',ylabel:'narrower than 3/2 (cents)',xticks:WELL_CHAIN.map((x,j)=>[j,x]),yticks:[-40,-20,0,20],title:'drag a gold handle; all twelve remain bounded'});
+        const B=v.stage({x:[0,1],y:[-.5,12.7],axes:false,full:true,height:440,minWidth:240,title:'all twelve fifths and major-third signed errors (cents)'});
+        const hs=d.map((x,j)=>{const h=A.handle(j,x,{color:'gold',r:6,constrain:(_x,y)=>[j,Math.max(-40,Math.min(25,y))]});h.onDrag=()=>{d=wellRebalance(d,j,h.y);pre.value='custom';hs.forEach((g,i)=>g.set(i,d[i]));};return h;});
+        v.shareState('closing fifth narrowings',{get:()=>({d:[...d],recipe:pre.value}),validate:s=>!!s&&wellValid(s.d)&&(s.recipe==='custom'||Object.hasOwn(WELL_RECIPES,s.recipe)&&wellRecipe(s.recipe).every((x,j)=>Math.abs(x-s.d[j])<1e-9)),set:s=>{d=[...s.d];pre.value=s.recipe;hs.forEach((h,j)=>h.set(j,d[j]));}});
+        let info;v.soundButton('Play declared I–IV–V–I',sd=>{const a=wellAudio(d,key.value);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{
+          const a=wellModel(d,key.value);info=a;hs.forEach((h,j)=>h.set(j,d[j]));A.line(-.4,0,11.4,0,{color:'muted',width:1});
+          a.rows.forEach(r=>A.rect(r.j-.28,0,r.j+.28,r.narrowing,{fill:r.narrowing<0?'purple':'orange',fillAlpha:.5,stroke:false}));
+          [['note',.07],['narrow',.35],['fifth',.65],['M3 error',.95]].forEach(([t,x])=>B.text(t,x,12.05,{size:10.5,align:x===.95?'right':'center',baseline:'middle',weight:700}));
+          a.rows.forEach((r,j)=>{const y=11-j,col=r.error<0?'purple':'orange';B.text(r.name,.07,y,{size:11.5,align:'center',baseline:'middle'});B.text(v.fix(r.narrowing,3),.35,y,{size:10.5,align:'center',baseline:'middle'});B.text(v.fix(r.fifth,3),.65,y,{size:10.5,align:'center',baseline:'middle'});B.text(`${r.error<0?'−':'+'}${v.fix(Math.abs(r.error),3)}`,.95,y,{size:10.5,align:'right',baseline:'middle',color:col});});
         });
-        v.readout(() => {
-          const P = pcs(), s = d.reduce((a, b) => a + b, 0), thirds = Array.from({ length: 12 }, (_, r) => ({ r, t: third(P, r) - M3J })).sort((a, b) => a.t - b.t);
-          return `${name === 'custom' ? 'custom tuning' : PRESET[name].n}: Σ narrowing = ${v.fix(s, 2)} ¢ (the Pythagorean comma ${v.fix(PCOMMA, 2)} ¢); fifths from ${v.fix(FIFTH - Math.max(...d), 1)} to ${v.fix(FIFTH - Math.min(...d), 1)} ¢ · best major third ${NOTE[thirds[0].r]} (${sc(v, thirds[0].t, 1)} ¢ from pure), worst ${NOTE[thirds[11].r]} (${sc(v, thirds[11].t, 1)} ¢) · third in C ${v.fix(third(P, 0), 1)} ¢, in F♯ ${v.fix(third(P, 6), 1)} ¢`;
-        });
+        v.legend([['gold','draggable fifth'],['orange','positive narrowing / third error'],['purple','negative narrowing / third error']]);
+        v.readout(()=>{const a=info;return `Closure residual (binary64): ${a.closureResidual.toExponential(2)} cents; narrowing-sum residual ${a.narrowingResidual.toExponential(2)} cents. Fifth range ${v.fix(a.minFifth,6)}–${v.fix(a.maxFifth,6)} cents. Actual C4-anchored cadence events (Hz): ${a.cadence.map(fs=>fs.map(f=>v.fix(f,4)).join(', ')).join(' → ')}. The signed third error is S minus four narrowings; it is not a quality score.`;});
       },
     },
     // ------------------------------------------------------------------ 7.9
     {
-      num: '7.9',
-      kind: 'Invention',
-      name: 'Twelve-tone equal temperament',
-      statement: String.raw`**Twelve-tone equal temperament** (12-TET) divides the octave into twelve equal steps, each of frequency ratio $2^{1/12}\approx1.05946$ (100 cents), so that all keys sound alike and every interval is the same size wherever it starts. Compared with the just intervals, the fifth ($700$ ¢) is 1.96 ¢ narrow of $3/2$, the major third ($400$ ¢) is 13.7 ¢ wide of $5/4$, the minor third ($300$ ¢) is 15.6 ¢ narrow of $6/5$, and the harmonic seventh (1000 ¢) is 31.2 ¢ wide of $7/4$. Frets of a lute or guitar are placed at lengths $L\,2^{-n/12}$; the "rule of eighteen", cutting off a $1/18$ of the remaining length at each fret, is a good practical approximation.`,
-      idea: String.raw`Making all semitones equal means each is the twelfth root of 2, so twelve of them make exactly the octave and the circle of fifths closes: seven semitones, $2^{7/12}=1.498307$, stand in for the pure fifth, the whole Pythagorean comma being shared out as $23.46/12=1.955$ ¢ per fifth (7.7 with $\alpha=(f_5-700)/c_s\approx1/11$). The thirds and sixths pay for it: four fifths up give 400 ¢ rather than the pure 386.3 ¢. A pure third differs from the equal-tempered one by 13.7 ¢, and the partials that would coincide in a just triad now beat, the 5th harmonic of the root against the 4th of the third at about 10 Hz.`,
-      caption: String.raw`Top: a string of unit length with the twelve frets of equal temperament (blue) and, for the interval you pick, the position of the just fret (green): the gap is the tuning error, in cents and in millimetres on a 650 mm scale. Bottom: the error of every equal-tempered interval from its just ratio. Play the chord in equal temperament, in just intonation, or alternating, and read off the beats of the nearly coincident partials.`,
-      deps: ['music-7.3', 'music-1.6'],
-      see: ['music-7.11', 'music-7.5', 'music-7.7'],
-      refs: ['Benson §5.14 pp. 190–193'],
-      tags: ['equal temperament'],
-      credit: 'Zhu Zaiyu, 1584 (exact calculation); Simon Stevin, c. 1605 (independently, published 1884)',
-      scope: String.raw`Mathematical definition; the claim of historical priority for Zhu Zaiyu is from standard secondary sources (his computation in the Complete Compendium of Music and Pitch, 1584). Stevin's treatise was published only in 1884. Musicians have used slightly unequal tunings for most of the history of keyboards: equal temperament became standard for pianos only in the 19th century.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Equal_temperament' },
-      verify: true,
-      viz(v) {
-        const IV = [[16, 15, 1, 'minor second'], [9, 8, 2, 'major second'], [6, 5, 3, 'minor third'], [5, 4, 4, 'major third'], [4, 3, 5, 'fourth'], [45, 32, 6, 'tritone'], [3, 2, 7, 'fifth'], [8, 5, 8, 'minor sixth'], [5, 3, 9, 'major sixth'], [9, 5, 10, 'minor seventh'], [15, 8, 11, 'major seventh']];
-        const sel = v.select('interval', IV.map((x, i) => ({ value: i, label: x[3] })), 3);
-        const chordSel = v.select('chord', [{ value: 'maj', label: 'major triad' }, { value: 'min', label: 'minor triad' }, { value: 'dom', label: 'dominant 7th (4:5:6:7)' }], 'maj');
-        const fr = v.stage({ x: [-0.02, 0.53], y: [0, 1], height: 210, axes: false, full: true, title: 'the fretboard: distance from the nut, as a fraction of the string (the first octave)' });
-        const eb = v.stage({ x: [0.4, 11.6], y: [-34, 34], axes: 'box', gutter: true, height: 300, full: true, xticks: IV.map((x) => [x[2], x[3].replace('minor ', 'm').replace('major ', 'M').replace('second', '2').replace('third', '3').replace('sixth', '6').replace('seventh', '7')]), yticks: [-30, -15, 0, 15, 30].map((y) => [y, String(y)]), ylabel: '12-TET − just (¢)', title: 'equal-tempered intervals against their just ratios' });
-        const snd = v.sound();
-        const CH = { maj: { et: [0, 400, 700], jt: [0, M3J, FIFTH] }, min: { et: [0, 300, 700], jt: [0, cents(6 / 5), FIFTH] }, dom: { et: [0, 400, 700, 1000], jt: [0, M3J, FIFTH, cents(7 / 4)] } };
-        const play = (m) => { const c = CH[chordSel.value]; snd.stop(); snd.samples(seqCents(m === 'et' ? [c.et] : m === 'jt' ? [c.jt] : [c.jt, c.et, c.jt, c.et], C4, m === 'alt' ? 1.3 : 2.4, 0.12), SR, { gain: 0.9 }); };
-        v.soundButton('play: equal', () => play('et')); v.soundButton('play: just', () => play('jt')); v.soundButton('alternate: just, equal', () => play('alt'));
-        v.render(() => {
-          const [p, q, n, nm] = IV[sel.value], pos = (x) => 1 - 1 / x;
-          fr.line(0, 0.5, 0.53, 0.5, { color: 'faint', width: 3 });
-          for (let k = 0; k <= 12; k++) { const x = 1 - 2 ** (-k / 12); fr.line(x, 0.36, x, 0.64, { color: k === n ? 'accent' : 'muted', width: k === n ? 3 : 1.2 }); fr.text(String(k), x, 0.3, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); }
-          const xj = pos(p / q), xe = 1 - 2 ** (-n / 12);
-          fr.line(xj, 0.5, xj, 0.9, { color: 'green', width: 2.4 }); fr.dot(xj, 0.9, { r: 5, color: 'green' });
-          fr.line(xe, 0.5, xe, 0.76, { color: 'accent', width: 2.4 }); fr.dot(xe, 0.76, { r: 5, color: 'accent' });
-          fr.text(`just ${p}/${q}`, xj, 0.9, { size: 11.5, color: 'green', align: xj > xe ? 'left' : 'right', dx: xj > xe ? 8 : -8, weight: 700 });
-          fr.text(`12-TET fret ${n}`, xe, 0.76, { size: 11.5, color: 'accent', align: xj > xe ? 'right' : 'left', dx: xj > xe ? -8 : 8, weight: 700 });
-          fr.text('nut', 0, 0.68, { size: 10, color: 'muted', align: 'left' }); fr.text('octave: half the string', 0.5, 0.68, { size: 10, color: 'muted', align: 'right' });
-          eb.hline(0, { color: 'green', width: 1.6 });
-          IV.forEach(([pp, qq, nn], i) => { const e = nn * 100 - cents(pp / qq), c = i === sel.value ? 'gold' : e > 0 ? 'orange' : 'accent'; eb.rect(nn - 0.32, 0, nn + 0.32, e, { fill: c, fillAlpha: 0.55, color: c }); eb.text(sc(v, e, 1), nn, e, { size: 10.5, align: 'center', baseline: e >= 0 ? 'bottom' : 'top', dy: e >= 0 ? -3 : 3, plate: true }); });
+      num:'7.9',kind:'Invention',name:'Twelve-tone equal temperament',
+      statement:String.raw`Twelve-tone equal temperament (12-TET) divides an octave into twelve equal frequency ratios. An interval of $n$ semitones has ratio $2^{n/12}$ and size $100n$ cents (1.6). Multiplying every frequency by one positive factor preserves these interval ratios; this statement does not assert identical timbre or perceived quality in every key.
+
+The fifth has ratio $2^{7/12}$, approximately 1.498307077. Each of twelve equal fifths is narrower than $3/2$ by exactly one twelfth of the Pythagorean comma in cents. This equals approximately 1.955001 cents. It is close to one eleventh of the syntonic comma, but is not exactly that fraction.`,
+      idea:String.raw`Twelve semitone steps multiply to 2. Twelve seven-semitone fifths therefore multiply to $2^7$, closing after seven octaves. Their cents deficit from twelve pure fifths is precisely the comma (7.3). A non-octave interval $2^{n/12}$ with $0<n<12$ is irrational: if a reduced rational $p/q$ had twelfth power $2^n$, unique factorization would force $q=1$ and $12$ to divide $n$.
+
+For the ideal fixed string of 2.4, $f_1=(2L)^{-1}\sqrt{T/\mu}$. Holding tension $T$ and mass per length $\mu$ fixed, the remaining vibrating length at semitone $n$ is $L2^{-n/12}$. Distance from the nut is instead $L(1-2^{-n/12})$.
+
+The major triad uses the pure ratios $4{:}5{:}6$ (7.5); the minor comparison uses $10{:}12{:}15$. The harmonic-seventh comparison is $4{:}5{:}6{:}7$, including $7/4$. Benson distinguishes it from a related dominant-seventh construction using $16/9$. For the declared harmonic synthesis (6.2), partials coincide exactly when $h f_i=k f_j$. Integer arithmetic identifies these pairs in the rational chords; the readout then evaluates the corresponding 12-TET frequency separations numerically.`,
+      caption:String.raw`The reference control changes the fret comparison and highlighted table row. Its rational intervals are declared comparison choices, not a unique chromatic just scale; $9/5$ and $7/4$ are separate seventh references. The top diagram includes all thirteen positions $n=0,\ldots,12$, from nut to octave. Blue and green mark the selected equal and rational nut distances. The table gives every reference’s cents and signed 12-TET error. The separate chord control changes playback; it does not follow the fret-reference selection.`,
+      deps:['music-7.3','music-1.6','music-2.4','music-7.5','music-6.2'],see:['music-7.11','music-7.7'],
+      refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §5.14, pp.190–192; §§5.5 and 5.7; ideal-string formula §3.2, pp.89–91'],tags:['equal temperament'],
+      credit:'Mathematical tuning exposition: Dave Benson, 2008 Web version; reference collection, ideal-string diagram and synthesis authored here.',
+      scope:String.raw`An ideal ratio and string model, without a claim about historical priority, a rule-of-eighteen recipe, a real instrument’s fret compensation or measured consonance. The 650-mm scale is an authored distance example. Audio uses C4 = 261.6256 Hz, mono 44,100-Hz synthesis and exactly eight harmonics per voice with amplitudes $1/h$, averaged across voices and divided by $\sum_{h=1}^8 1/h$. The pre-output peak is bounded by 0.12, with 10-ms end ramps; every played harmonic is below Nyquist. The runtime master gain/limiter and device affect output. Exact rational coincidences and numerical frequency differences do not certify perceived beats or roughness.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
+      viz(v){
+        const reference=v.select('fret reference',WE_REFERENCES.map(r=>({value:r.id,label:r.name})), 'M3');
+        const chord=v.select('played chord',[{value:'major',label:'major triad 4:5:6'},{value:'minor',label:'minor triad 10:12:15'},{value:'harmonic7',label:'harmonic seventh 4:5:6:7'}],'major');
+        const A=v.stage({x:[-.03,.54],y:[-.05,1.1],axes:false,full:true,height:245,minWidth:240,title:'ideal string: distance from nut / original length'});
+        const B=v.stage({x:[-.15,4.9],y:[-.7,12.5],axes:false,full:true,height:440,minWidth:240,title:'declared rational references and 12-TET errors'});
+        let info;const play=action=>sd=>{const a=equalAudio(reference.value,chord.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play rational chord',play('just'));v.soundButton('Play equal-tempered chord',play('equal'));v.soundButton('Alternate rational / equal',play('alternate'));v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{
+          const a=equalModel(reference.value,chord.value);info=a;const r=a.row;
+          A.text(`rational ${r.exact}: x/L=${v.fix(r.justPosition,6)}`,.005,.94,{size:11,align:'left',baseline:'middle',color:'green',weight:600});A.text(`12-TET n=${r.n}: x/L=${v.fix(r.etPosition,6)}`,.005,.78,{size:11,align:'left',baseline:'middle',color:'accent',weight:600});
+          A.line(0,.2,.5,.2,{color:'muted',width:2});a.frets.forEach(f=>A.line(f.position,.14,f.position,.34,{color:f.n===r.n?'accent':'faint',width:f.n===r.n?2.4:1.2}));A.line(r.etPosition,.2,r.etPosition,.59,{color:'accent',width:2.4});A.dot(r.etPosition,.59,{r:5,ring:false,color:'accent'});A.line(r.justPosition,.2,r.justPosition,.43,{color:'green',width:2.4});A.dot(r.justPosition,.43,{r:5,ring:false,color:'green'});A.text('nut: n=0',0,.045,{size:10,align:'left',baseline:'middle',color:'muted'});A.text('octave: n=12',.5,.045,{size:10,align:'right',baseline:'middle',color:'muted'});
+          ['ref','ratio','ref (¢)','ET−ref (¢)'].forEach((t,i)=>B.text(t,[.28,1.5,2.9,4.2][i],11.9,{size:10.5,align:'center',baseline:'middle',weight:700}));
+          a.rows.forEach((r,j)=>{const y=11-j,col=r.id===a.reference?'gold':r.error<0?'accent':'orange';B.text(r.id,.28,y,{size:11,align:'center',baseline:'middle',color:col,weight:r.id===a.reference?700:400});B.text(r.exact,1.5,y,{size:10.5,align:'center',baseline:'middle'});B.text(v.fix(r.cents,3),2.9,y,{size:10.5,align:'center',baseline:'middle'});B.text(`${r.error<0?'−':'+'}${v.fix(Math.abs(r.error),3)}`,4.2,y,{size:10.5,align:'center',baseline:'middle',color:col});});
         });
-        v.readout(() => {
-          const [p, q, n, nm] = IV[sel.value], e = n * 100 - cents(p / q), c = CH[chordSel.value], f = c.et.map((x) => C4 * 2 ** (x / 1200)), g = c.jt.map((x) => C4 * 2 ** (x / 1200));
-          const slow = nearPairs(f, 8, 12).filter((x) => x.d > 0.05).slice(0, 3), co = nearPairs(g, 8, 0.05).length;
-          return `${nm}: 12-TET ${n * 100} ¢, just ${p}/${q} = ${v.fix(cents(p / q), 2)} ¢, error ${sc(v, e, 2)} ¢ (the just fret is ${v.fix(Math.abs(1 - 2 ** (-n / 12) - (1 - q / p)) * 650, 1)} mm from the equal one on a 650 mm string) · fret ratio ${v.fix(2 ** (1 / 12), 5)} (rule of 18: ${v.fix(18 / 17, 5)}) · the equal chord's near-coincident partials beat at ${slow.map((x) => `${v.fix(x.d, 1)} Hz`).join(', ') || '—'}; the just chord has ${co} exactly coinciding pairs`;
-        });
+        v.legend([['accent','equal-tempered nut distance / negative error'],['green','selected rational nut distance'],['gold','selected reference row'],['orange','positive error']]);
+        v.readout(()=>{const a=info,r=a.row;return `${r.name}: rational ${r.exact} = ${v.fix(r.cents,6)} cents; 12-TET ${r.etCents} cents; signed error ${r.error<0?'−':'+'}${v.fix(Math.abs(r.error),6)} cents. Nut distances on the authored 650-mm string: rational ${v.fix(650*r.justPosition,6)} mm, equal ${v.fix(650*r.etPosition,6)} mm; separation ${v.fix(r.distanceMm,6)} mm. Actual played rational frequencies ${a.just.map(x=>v.fix(x,6)).join(', ')} Hz; equal ${a.equal.map(x=>v.fix(x,6)).join(', ')} Hz. Exact rational coincidences among played H1–H8: ${a.coincidences.length}. Corresponding numerical equal-tempered separations (voice:partial pairs): ${a.coincidences.map(p=>`${p.i+1}:${p.h}/${p.j+1}:${p.k} = ${v.fix(p.equalSeparation,6)} Hz`).join('; ')}. These are frequency differences, not measured roughness or a perceived-beat certificate.`;});
       },
     },
     // ------------------------------------------------------------------ 7.10
     {
-      num: '7.10',
-      kind: 'Theorem',
-      name: 'Continued fractions give best approximations',
-      statement: String.raw`Let $\alpha$ be irrational with continued fraction $[a_0;a_1,a_2,\dots]$ and convergents $p_k/q_k$. Then for every $k\ge1$ and every pair of integers $p,q$ with $1\le q<q_{k+1}$ one has $|q\alpha-p|\ge|q_k\alpha-p_k|$: the convergent is the best rational approximation (in the sense that $|q\alpha-p|$ is smallest) among all fractions with denominator below the next convergent's. The convergents alternate on the two sides of $\alpha$ and satisfy $\bigl|\alpha-\frac{p_k}{q_k}\bigr|<\frac1{q_kq_{k+1}}$. For $\alpha=\log_2(3/2)=[0;1,1,2,2,3,1,5,2,23,\dots]$ the convergents are $\frac01,\frac11,\frac12,\frac35,\frac7{12},\frac{24}{41},\frac{31}{53},\frac{179}{306},\frac{389}{665},\dots$`,
-      idea: String.raw`The Euclidean algorithm applied to $\alpha$ and $1$ peels off the integer parts $a_k$; the convergents are generated by $p_{k+1}=a_{k+1}p_k+p_{k-1}$ and similarly for $q$, and consecutive convergents satisfy $p_{k+1}q_k-p_kq_{k+1}=\pm1$. Any fraction $p/q$ with $q<q_{k+1}$ lies in the lattice generated by $(q_k,p_k)$ and $(q_{k+1},p_{k+1})$ (a determinant $\pm1$ basis), so it is an integer combination of the two vectors; the combination with a smaller denominator but also a smaller $|q\alpha-p|$ would require coefficients of opposite sign, which the alternating signs forbid. The same fact for the ratio of two commensurable frequencies explains why the denominators 5, 12, 41, 53, 306 of the convergents of $\log_2(3/2)$ are the natural sizes of equal divisions of the octave (7.11).`,
-      caption: String.raw`Each dot is a denominator $q$ (log scale) and the signed error $q\alpha-\mathrm{round}(q\alpha)$ of the nearest numerator; the convergents are the record-setters and fall alternately above (orange) and below (purple) the axis. Step $k$ with the slider to see the next record appear, the shrinking band $\pm|q_k\alpha-p_k|$ and the first denominator $q_{k+1}$ at which it is beaten (nothing earlier lies in the band). The table runs the Euclidean algorithm on $\log_2 1.5$.`,
-      deps: ['music-7.2', 'pma-1.20'],
-      see: ['music-7.11', 'music-7.2'],
-      refs: ['Benson §6.2 pp. 204–209'],
-      tags: ['continued fractions', 'approximation'],
-      credit: 'Huygens (use of convergents for the planetarium, 1680s); Lagrange, 1770 (best-approximation theorem)',
-      scope: String.raw`$\alpha$ irrational (a rational number has a finite expansion). "Best" means smallest $|q\alpha-p|$ (second kind); for the smallest $|\alpha-p/q|$ (first kind) the convergents are still best but some intermediate fractions can also be best, as in 7.11. Priority attributions are from secondary sources.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Continued_fraction' },
-      verify: true,
-      viz(v) {
-        const AL = Math.log2(1.5), a = cfExpand(AL, 11), C = convs(a), Q = C.map((c) => c[1]).slice(1); // q = 1, 2, 5, 12, 41, 53, 306, 665, ...
-        const K = v.slider('convergent k (0 = 1/1)', 0, 7, 4, { int: true });
-        const cl = v.stage({ x: [0.8, 900], y: [-0.5, 0.5], xlog: true, axes: 'box', gutter: true, height: 340, full: true, xlabel: 'denominator q', ylabel: 'qα − nearest integer', xticks: [1, 2, 5, 10, 20, 50, 100, 200, 500].map((x) => [x, String(x)]), title: 'denominators and the signed error of the best numerator' });
-        const tb = v.stage({ x: [0, 1], y: [0, 1], height: 250, axes: false, full: true, title: 'the Euclidean algorithm on log₂(3/2) = 0.5849625…' });
-        const err = (q) => q * AL - Math.round(q * AL);
-        const seq = () => { const out = []; for (let i = 1; i < C.length; i++) out.push(C[i]); return out; };
-        v.render(() => {
-          const S = seq(), k = K.value, cur = S[k], nxt = S[k + 1] || [0, 1e9];
-          const e = Math.abs(cur[1] * AL - cur[0]);
-          cl.hband(-e, e, { color: 'green', alpha: 0.13 });
-          cl.vline(nxt[1], { color: 'orange', dash: [5, 4] }); cl.hline(0, { color: 'muted' });
-          cl.text(`next record at q = ${nxt[1] > 1e8 ? '…' : nxt[1]}`, nxt[1], 0.45, { size: 11, color: 'orange', align: nxt[1] > 300 ? 'right' : 'left', dx: nxt[1] > 300 ? -5 : 5, plate: true });
-          const P = []; for (let q = 1; q <= 900; q++) P.push([q, err(q)]);
-          cl.dots(P, { r: 1.7, color: 'faint', alpha: 0.85 });
-          S.forEach(([p, q], i) => { if (q > 900) return; const sg = err(q) > 0 ? 'orange' : 'purple'; cl.dot(q, err(q), { r: i <= k ? 6 : 3.5, color: i <= k ? sg : 'faint', hollow: i > k }); if (i <= k) cl.text(`${p}/${q}`, q, err(q), { size: 11, color: sg, align: 'center', baseline: err(q) > 0 ? 'bottom' : 'top', dy: err(q) > 0 ? -8 : 8, weight: 700, plate: true }); });
-          const rows = Math.min(a.length, 10);
-          tb.text('k', 0.03, 0.93, { size: 11, color: 'muted', align: 'left' }); tb.text('quotient aₖ', 0.12, 0.93, { size: 11, color: 'muted', align: 'left' }); tb.text('convergent pₖ/qₖ', 0.32, 0.93, { size: 11, color: 'muted', align: 'left' }); tb.text('value', 0.55, 0.93, { size: 11, color: 'muted', align: 'left' }); tb.text('|α − pₖ/qₖ| in cents', 0.75, 0.93, { size: 11, color: 'muted', align: 'left' });
-          for (let i = 0; i < rows; i++) {
-            const y = 0.84 - 0.082 * i, on = i <= k + 1, c = C[i], del = Math.abs(AL - c[0] / c[1]) * 1200;
-            const col = on ? (i === k + 1 ? 'gold' : 'ink') : 'faint';
-            tb.text(String(i), 0.03, y, { size: 12, color: col, align: 'left' }); tb.text(String(a[i]), 0.12, y, { size: 12, color: col, align: 'left' });
-            tb.text(`${c[0]}/${c[1]}`, 0.32, y, { size: 12, color: col, align: 'left', weight: i === k + 1 ? 700 : 400 }); tb.text(v.fix(c[0] / c[1], 6), 0.55, y, { size: 12, color: col, align: 'left' }); tb.text(v.fix(del, 3), 0.75, y, { size: 12, color: col, align: 'left' });
-          }
+      num:'7.10',kind:'Theorem',name:'Continued fractions give best approximations',
+      statement:String.raw`Let $\alpha$ be irrational, with simple continued fraction $[a_0;a_1,a_2,\ldots]$ and convergents $p_k/q_k$. For $k\ge1$, every integer pair $p,q$ with $1\le q<q_{k+1}$ satisfies
+$$|q\alpha-p|\ge|q_k\alpha-p_k|.$$
+Thus “best” here concerns the error $|q\alpha-p|$, called approximation of the second kind. Convergents alternate around $\alpha$ and obey
+$$\left|\alpha-\frac{p_k}{q_k}\right|<\frac{1}{q_kq_{k+1}}.$$
+For $\alpha=\log_2(3/2)$, the expansion starts $[0;1,1,2,2,3,1,5,2,23,\ldots]$, giving $0/1,1/1,1/2,3/5,7/12,24/41,31/53,179/306,389/665,\ldots$.`,
+      idea:String.raw`The integer-part and reciprocal algorithm defines the partial quotients. Starting with $p_{-2}=0,p_{-1}=1,q_{-2}=1,q_{-1}=0$, use $p_k=a_kp_{k-1}+p_{k-2}$ and the same recurrence for $q_k$. Consecutive vectors $(p_k,q_k),(p_{k+1},q_{k+1})$ have determinant $\pm1$, so every integer pair has integer coordinates $A,B$ in this basis.
+
+Write $\varepsilon_j=q_j\alpha-p_j$. The complete-quotient formula shows that consecutive $\varepsilon_j$ have opposite signs, decrease in magnitude, and $|\varepsilon_k|<1/q_{k+1}$. If $A,B$ are nonzero with opposite signs, then $|A\varepsilon_k+B\varepsilon_{k+1}|\ge|\varepsilon_k|$. If they have the same sign, positive denominator below $q_{k+1}$ is impossible. If either coefficient is zero, the denominator constraint or the error bound again excludes a strictly better pair. This proves the stated minimum. The irrationality needed for the musical example is established in 7.2.`,
+      caption:String.raw`Choose convergent index $k=1,\ldots,7$. Every dot uses the nearest integer numerator at a denominator $q=1,\ldots,665$. Green marks the selected convergent; gold marks the next one, which first beats its error. The shaded band is $\pm|q_k\alpha-p_k|$. The complete nine-row table includes the initial $0/1$ and both endpoints used by every offered control state.`,
+      deps:['music-7.2','pma-1.20'],see:['music-7.11','music-7.2'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §6.2, pp.204–208, recurrence and convergent bounds','Ben Lynn, Continued Fractions: Convergence, Stanford author notes, Bounds; determinant-basis argument supplied here'],
+      tags:['continued fractions','approximation'],
+      credit:'Mathematical exposition: Dave Benson and Ben Lynn; finite example and determinant-basis proof written here.',
+      scope:String.raw`The theorem is exact for irrational $\alpha$; it is not a historical priority claim or a claim that a good fifth alone optimizes a musical scale. The displayed example uses binary64 logarithms for a bounded set of denominators. Independent rational log-series enclosures certify its listed partial quotients, nearest numerators, error signs and finite minima. Decimal readouts are rounded. Minimizing $|\alpha-p/q|$ is a different criterion and may also select intermediate fractions.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf',bounds:'https://crypto.stanford.edu/pbc/notes/contfrac/converge.html'},verify:false,
+      viz(v){
+        const K=v.slider('convergent index k',1,7,4,{int:true});
+        const A=v.stage({x:[.5,1000],y:[-.56,.56],xlog:true,axes:'box',gutter:true,full:true,height:350,minWidth:240,xlabel:'denominator q',ylabel:'qα − nearest integer',xticks:[1,2,5,12,41,100,306,665],title:'all denominators through 665; selected and next convergents'});
+        const B=v.stage({x:[0,1],y:[-.2,10],axes:false,full:true,height:350,minWidth:240,title:'partial quotients and convergents; error is |qα − p|'});
+        let info;
+        v.render(()=>{
+          const a=continuedModel(K.value);info=a;
+          A.hband(-a.error,a.error,{color:'green',alpha:.13});A.line(1.1,0,660,0,{color:'muted',width:1});
+          A.dots(a.points.map(x=>[x.q,x.signed]),{r:1.5,color:'faint'});
+          for(const row of a.rows.slice(1))A.dot(row.q,row.q*CF_ALPHA-row.p,{r:3,ring:false,color:row.q*CF_ALPHA-row.p>0?'orange':'purple'});
+          A.dot(a.next.q,a.next.q*CF_ALPHA-a.next.p,{r:6.5,ring:false,color:'gold'});
+          A.dot(a.current.q,a.signed,{r:6.5,ring:false,color:'green'});
+          [['k',.07],['aₖ',.23],['pₖ/qₖ',.53],['|qα−p|',.92]].forEach(([t,x])=>B.text(t,x,9.45,{size:10.5,align:x===.92?'right':'center',baseline:'middle',weight:700}));
+          a.rows.forEach((r,j)=>{const y=8.7-j,col=j===a.k?'green':j===a.k+1?'gold':'ink';B.text(String(j),.07,y,{size:11,align:'center',baseline:'middle',color:col});B.text(String(r.a),.23,y,{size:11,align:'center',baseline:'middle',color:col});B.text(`${r.p}/${r.q}`,.53,y,{size:11,align:'center',baseline:'middle',color:col});B.text(v.fix(r.error,6),.92,y,{size:10.5,align:'right',baseline:'middle',color:col});});
         });
-        v.legend([['orange', 'convergent above α'], ['purple', 'convergent below α'], ['green', 'band: no smaller denominator does better', { area: true }]]);
-        v.readout(() => {
-          const S = seq(), k = K.value, cur = S[k], nxt = S[k + 1] || [0, 1e9], e = Math.abs(cur[1] * AL - cur[0]);
-          let m = Infinity, mq = 0; for (let q = 1; q < nxt[1] && q <= 2000; q++) { const t = Math.abs(err(q)); if (t < m - 1e-12) { m = t; mq = q; } }
-          return `convergent ${cur[0]}/${cur[1]}: $|q\\alpha-p|=${v.fix(e, 5)}$, below $1/q_{k+1}=${nxt[1] > 1e8 ? '0' : v.fix(1 / nxt[1], 5)}$ · smallest $|q\\alpha-\\text{round}|$ over all $q<${nxt[1] > 1e8 ? '∞' : nxt[1]}$ is ${v.fix(m, 5)} at $q=${mq}$ ${mq === cur[1] ? '(the convergent itself)' : ''} · as a fifth: ${cur[1]}-step division, ${v.fix(1200 * cur[0] / cur[1], 2)} ¢ against 701.955 ¢`;
-        });
+        v.legend([['green','selected convergent / error band'],['gold','next convergent'],['orange','nearest numerator below α'],['purple','nearest numerator above α']]);
+        v.readout(()=>{const a=info;return `k=${a.k}: ${a.current.p}/${a.current.q}; |qα−p|=${v.fix(a.error,9)} < 1/${a.next.q}=${v.fix(a.bound,9)}. Exhaustive displayed-domain minimum over 1≤q<${a.next.q}: ${v.fix(a.minimum,9)} at q=${a.minimizer}. Next ${a.next.p}/${a.next.q} has smaller second-kind error. All decimals are rounded evaluations.`;});
       },
     },
     // ------------------------------------------------------------------ 7.11
     {
-      num: '7.11',
-      kind: 'Theorem',
-      name: 'Why twelve: 7/12 is a convergent of log₂(3/2)',
-      statement: String.raw`The best fifth in an $n$-note equal division of the octave is $k$ steps with $k=\mathrm{round}(n\log_2\tfrac32)$, of error $\frac{1200}{n}|n\alpha-k|$ cents, $\alpha=\log_2(3/2)$. As $n$ grows, the divisions that set a new record low of this error are, up to 700 notes, $n=5, 7, 12, 29, 41, 53, 200, 253, 306, 359, 665$ (errors 18.0, 16.2, 1.96, 1.49, 0.48, 0.07, 0.045, 0.021, 0.006, 0.005 ¢ and below), each the denominator of a convergent ($\tfrac35,\tfrac7{12},\tfrac{24}{41},\tfrac{31}{53},\tfrac{179}{306},\tfrac{389}{665}$) or of an intermediate fraction between two of them ($\tfrac47,\tfrac{17}{29}$, …); I have checked the list up to 700 by computer, and the identification of the intermediate ones for the small cases. In particular, 7/12 is a convergent (7.10): no division with fewer than 41 notes has a fifth whose step error $|n\alpha-k|$ is smaller than the 12-note fifth's 0.0235 steps, and no division with fewer than 29 notes has a fifth closer in cents.`,
-      idea: String.raw`Approximating the fifth by $k/n$ of the octave is rational approximation of $\alpha$; the quality measure in steps, $|n\alpha-k|$, is exactly what 7.10 controls, with $q=n$, $p=k$. Its record-setters are the convergents $\frac12,\frac35,\frac7{12},\frac{24}{41},\frac{31}{53}$; the quality measure in cents divides by $n$, $|\alpha-k/n|$, whose records also include intermediate fractions such as $4/7$ and $17/29$ — hence 7 and 29. The larger the next partial quotient, the longer a convergent stays unbeaten: $7/12$ survives until 41 (next quotient 3, $41=3\cdot12+5$), and $31/53$ until 306 (next quotient 5, $306=5\cdot53+41$).`,
-      caption: String.raw`The error of the best fifth in an $n$-note equal division, in cents on a logarithmic axis, for $n$ from 3 to 120; record lows are orange and labelled. Choose the target interval: the fifth (records 5, 7, 12, 29, 41, 53), the major third 5/4 (records 3, 16, 19, 22, 25, 28, …) or the harmonic seventh 7/4. Slide $n$ to read the details of one division and play its fifth against a pure one.`,
-      deps: ['music-7.10', 'music-7.9'],
-      see: ['music-7.12', 'music-7.13', 'music-7.2'],
-      refs: ['Benson ch. 6', 'Sethares ch. 4'],
-      tags: ['equal temperament', 'continued fractions'],
-      scope: String.raw`Mathematical statement about the octave and the fifth 3/2; whether a good fifth alone makes a good tuning depends on the thirds (7.12, 7.13). The listed records were computed by exhaustive search up to $n=700$.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Equal_temperament' },
-      viz(v) {
-        const TG = { fifth: [cents(1.5), '3/2'], third: [M3J, '5/4'], sev: [cents(7 / 4), '7/4'] };
-        const which = v.select('target', [{ value: 'fifth', label: 'fifth 3/2' }, { value: 'third', label: 'major third 5/4' }, { value: 'sev', label: 'harmonic seventh 7/4' }], 'fifth');
-        const n = v.slider('notes per octave n', 3, 120, 12, { int: true });
-        const s = v.stage({ x: [2, 122], y: [0.02, 150], ylog: true, axes: 'box', gutter: true, height: 380, full: true, xlabel: 'notes per octave n', ylabel: 'error of the best step (¢)', xticks: [5, 7, 12, 19, 29, 31, 41, 53, 72, 100].map((x) => [x, String(x)]), title: 'how well n equal steps approximate the target' });
-        const snd = v.sound();
-        const data = () => { const c = TG[which.value][0], out = []; let best = 1e9; for (let m = 3; m <= 120; m++) { const [k, e] = edoApprox(m, c); const a = Math.abs(e); const rec = a < best - 1e-9; if (rec) best = a; out.push({ n: m, k, e, a, rec }); } return out; };
-        v.soundButton('play the n-step fifth', (sd) => { const [k] = edoApprox(n.value, cents(1.5)); sd.samples(chordCents([0, (k * 1200) / n.value], C4, 2.0), SR, { gain: 0.9 }); });
-        v.soundButton('pure fifth', (sd) => sd.samples(chordCents([0, FIFTH], C4, 2.0), SR, { gain: 0.9 }));
-        v.render(() => {
-          const D = data(), f = (x) => Math.max(0.02, x.a);
-          s.dots(D.filter((x) => !x.rec).map((x) => [x.n, f(x)]), { r: 2.8, color: 'accent', alpha: 0.6 });
-          D.filter((x) => x.rec).forEach((x) => { s.dot(x.n, f(x), { r: 6, color: 'orange' }); s.text(String(x.n), x.n, f(x), { size: 11.5, color: 'orange', align: 'center', baseline: 'bottom', dy: -8, weight: 700, plate: true }); });
-          const cur = D[n.value - 3]; s.vline(n.value, { color: 'gold', dash: [5, 4] }); s.dot(n.value, f(cur), { r: 8, color: 'gold', hollow: true });
-        });
-        v.legend([['accent', 'error of n equal steps'], ['orange', 'new record low'], ['gold', 'your n']]);
-        v.readout(() => {
-          const D = data(), cur = D[n.value - 3], recs = D.filter((x) => x.rec).map((x) => x.n), [c, nm] = TG[which.value], k = cur.k;
-          return `n = ${cur.n}: ${nm} is approximated by ${k} steps = ${v.fix((k * 1200) / cur.n, 2)} ¢ (pure ${v.fix(c, 2)} ¢), error ${sc(v, cur.e, 2)} ¢ · ${cur.rec ? 'a new record for n up to this point' : 'not a record: an earlier division was at least as good'} · records for ${nm} up to 120: ${recs.join(', ')}${which.value === 'fifth' ? ` · in steps, $|n\\alpha-k|=${v.fix(Math.abs(cur.n * Math.log2(1.5) - k), 4)}$` : ''}`;
-        });
+      num:'7.11',kind:'Theorem',name:'Why twelve: 7/12 is a convergent of log₂(3/2)',
+      statement:String.raw`For a target ratio $r$ and an $n$-step equal division of the octave, its nearest step is $k=\operatorname{round}(n\alpha)$, where $\alpha=\log_2r$. Its signed error in cents is
+$$1200(k/n-\alpha).$$
+For the fifth $r=3/2$, strict record improvements as $n$ runs from 3 through 700 occur at $3,5,7,12,29,41,53,200,253,306,359,665$. This is a finite computed statement, independently checked with rational bounds on the logarithm.
+
+The convergent $7/12$ has second-kind error $|12\alpha-7|\approx0.019550009$. No positive denominator below 41 has a smaller second-kind error (7.10). For cents error, 12 remains unbeaten until 29; 24 ties 12 because $14/24=7/12$. These are different optimization criteria.`,
+      idea:String.raw`At fixed $n$, minimizing cents error is choosing the integer nearest $n\alpha$. The second-kind error of 7.10 is $|n\alpha-k|$; cents error divides this by $n$ and multiplies by 1200. A fraction can improve the latter without improving the former: $4/7$ is closer to $\alpha$ than $3/5$, but has larger $|n\alpha-k|$.
+
+The record lists here are exhaustive finite searches, not a proof that twelve notes is uniquely optimal or historically inevitable. Continued fractions explain why convergents such as $7/12,24/41,31/53$ recur. The extra cents-record fractions require their own comparison; a good fifth alone gives no assertion about thirds, timbre or perceived quality.`,
+      caption:String.raw`Choose the fifth, major third or harmonic seventh and an integer division $n=3,\ldots,120$. All118 displayed errors are positive and fit the logarithmic axis. Orange marks strict cents records within that range; gold is the selected division. The two audio buttons compare the selected target's actual approximation with its pure ratio, using the same C4 anchor.`,
+      deps:['music-7.10','music-7.9'],see:['music-7.12','music-7.13','music-7.2'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §6.2, pp.204–208; nearest-step and finite-record comparisons derived here'],tags:['equal temperament','continued fractions'],
+      credit:'Tuning and continued-fraction exposition: Dave Benson; bounded record enumeration and synthesis authored here.',
+      scope:String.raw`An exact nearest-integer formula and a finite numerical comparison, not a historical account of the choice of 12 notes. Independent rational log-series bounds certify every nearest step and strict record decision through 700. The visual control stops at 120; its displayed decimals use binary64 evaluation. Audio uses C4=261.6256Hz and the declared H8/44,100-Hz signal of 7.4/7.9; measured audibility is not inferred from the cents error.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
+      viz(v){
+        const target=v.select('target',[{value:'fifth',label:'fifth 3/2'},{value:'major',label:'major third 5/4'},{value:'seventh',label:'harmonic seventh 7/4'}],'fifth'),N=v.slider('notes per octave n',3,120,12,{int:true});
+        const A=v.stage({x:[-3,126],y:[.0001,400],ylog:true,axes:'box',gutter:true,full:true,height:350,minWidth:240,xlabel:'notes per octave n',ylabel:'absolute error (cents)',xticks:[3,12,31,53,80,120],title:'all 118 nearest-step errors; strict cents records in orange'});
+        let info;v.soundButton('Play selected approximation',sd=>{const a=edoRecordAudio(N.value,target.value,'tempered');sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.soundButton('Play pure target',sd=>{const a=edoRecordAudio(N.value,target.value,'pure');sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=edoRecordModel(N.value,target.value);info=a;A.dots(a.points.map(x=>[x.n,Math.abs(x.error)]),{r:2.2,ring:false,color:'accent'});a.points.filter(x=>x.record).forEach(x=>A.dot(x.n,Math.abs(x.error),{r:4.5,ring:false,color:'orange'}));A.dot(a.n,Math.abs(a.current.error),{r:6,ring:false,color:'gold'});});
+        v.legend([['accent','every division 3–120'],['orange','strict cents record from n=3'],['gold','selected division']]);
+        v.readout(()=>{const a=info,x=a.current;return `n=${x.n}: ${x.k} steps approximate ${x.p}/${x.q}; ${v.fix(x.cents,6)} cents, signed error ${x.error<0?'−':'+'}${v.fix(Math.abs(x.error),6)} cents. Second-kind error |nα−k|=${v.fix(x.stepError,9)}. Strict cents records over 3–120: ${a.records.join(', ')}. These compare mathematical intervals, not musical quality.`;});
       },
     },
     // ------------------------------------------------------------------ 7.12
     {
-      num: '7.12',
-      kind: 'Concept',
-      name: '19- and 31-tone equal temperament',
-      statement: String.raw`**19-tone equal temperament** (19-TET, step 63.16 ¢) has a fifth of 694.74 ¢ (7.2 ¢ narrow), a major third of 378.95 ¢ (7.4 ¢ narrow of 5/4) and a minor third of 315.79 ¢ (0.15 ¢ from 6/5): it is very nearly one-third-comma meantone. **31-tone equal temperament** (step 38.71 ¢) has a fifth of 696.77 ¢ (5.2 ¢ narrow), a major third of 387.10 ¢ (0.8 ¢ wide of 5/4) and a harmonic seventh of 967.74 ¢ (1.1 ¢ from 7/4): it is almost exactly quarter-comma meantone (whose fifth is 696.58 ¢, 0.2 ¢ away), and also reproduces 7-limit intervals. Twelve-tone equal temperament, by contrast, mistunes the thirds by 14–16 ¢ and the seventh by 31 ¢. Both 19 and 31 are meantone systems: their chain of fifths generates all their notes, and a closed chain of 19 or 31 fifths replaces the wolf.`,
-      idea: String.raw`If the fifth is narrowed by a fraction $\alpha$ of the syntonic comma (7.7), after $n$ fifths the chain closes only when $n(701.955-21.506\alpha)$ is a whole number of octaves. For $\alpha=1/4$ no integer $n$ closes the chain exactly, but $n=31$ comes close: 31 quarter-comma fifths ($31\times696.578=21593.9$ ¢) fall 6.1 ¢ short of 18 octaves, whereas 12 of them fall 41 ¢ off. Spreading that shortfall over the 31 fifths gives the 31-TET fifth, 0.2 ¢ wider than the quarter-comma fifth, so 31-TET is the closed version of the quarter-comma chain. Likewise 19 third-comma fifths ($19\times694.786=13200.9$ ¢) overshoot 11 octaves by only 0.9 ¢. The seventh harmonic comes out well in 31 because the same chain of fifths happens to reach it with a 1.1 ¢ error.`,
-      caption: String.raw`Left: the errors, from the pure ratios, of the fifth, major and minor third, harmonic seventh and the septimal minor third 7/6 in 12-, 19- and 31-TET. Right: the pitch circle of the selected division (ticks, one per step) with the just ratios marked; the orange dots are the chain of meantone fifths (quarter-comma for 31, third-comma for 19, equal for 12) whose notes the steps reproduce. Play the major triad and the 4:5:6:7 chord in the chosen division, against 12-TET.`,
-      deps: ['music-7.11', 'music-7.7'],
-      see: ['music-7.13', 'music-6.11', 'music-7.17'],
-      refs: ['Benson §§6.4–6.5 pp. 217–221'],
-      tags: ['equal temperament', 'meantone'],
-      credit: '19-TET: Salinas, 1577 (as one-third-comma meantone), Woolhouse, 1835; 31-TET: Huygens, 1691 (Lemme Rossi proposed it in 1666), revival by Fokker, 1950s (31-tone organ, 1951)',
-      scope: String.raw`Exact arithmetic for equal divisions; the historical attributions are from secondary sources. 19-TET's major third is flat and 31-TET's fifth is wider than the quarter-comma fifth by only 0.2 ¢. Neither division reproduces 3/2 as accurately as 12-TET (1.96 ¢ error against 5.2 and 7.2 ¢).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/31_equal_temperament' },
-      verify: true,
-      viz(v) {
-        const EDOS = [12, 19, 31], COL = ['muted', 'accent', 'orange'];
-        const which = v.select('division', EDOS.map((x) => ({ value: x, label: `${x}-TET` })), 31);
-        const IV = [[3, 2, 'fifth'], [5, 4, 'major third'], [6, 5, 'minor third'], [7, 4, 'harm. seventh'], [7, 6, '7/6']];
-        const eb = v.stage({ x: [-0.6, 4.6], y: [-36, 36], axes: 'box', gutter: true, height: 340, xticks: IV.map((x, i) => [i, `${x[0]}/${x[1]}`]), yticks: [-30, -15, 0, 15, 30].map((y) => [y, String(y)]), ylabel: 'error from the pure ratio (¢)', title: 'errors of three equal divisions' });
-        const rg = v.stage({ x: [-1.45, 1.45], y: [-1.4, 1.4], equal: true, axes: false, height: 340, title: 'the pitch circle' });
-        const snd = v.sound();
-        const GEN = { 12: 700, 19: cents(1.5) - SCOMMA / 3, 31: cents(1.5) - SCOMMA / 4 };
-        const steps = (n, r) => edoApprox(n, cents(r))[0];
-        const tri = (n) => [0, (steps(n, 5 / 4) * 1200) / n, (steps(n, 3 / 2) * 1200) / n], sev = (n) => tri(n).concat([(steps(n, 7 / 4) * 1200) / n]);
-        v.soundButton('triad: 12-TET, then this division', (sd) => sd.samples(seqCents([tri(12), tri(which.value)], C4, 1.7, 0.2), SR, { gain: 0.9 }));
-        v.soundButton('4:5:6:7: 12-TET, then this division', (sd) => sd.samples(seqCents([sev(12), sev(which.value)], C4, 1.7, 0.2), SR, { gain: 0.9 }));
-        v.soundButton('4:5:6:7 pure', (sd) => sd.samples(seqCents([[0, M3J, FIFTH, cents(7 / 4)]], C4, 2.0, 0), SR, { gain: 0.9 }));
-        v.render(() => {
-          eb.hline(0, { color: 'green', width: 1.6 });
-          IV.forEach(([p, q], i) => EDOS.forEach((n, j) => { const e = edoApprox(n, cents(p / q))[1], x = i + (j - 1) * 0.27, c = COL[j]; eb.rect(x - 0.12, 0, x + 0.12, e, { fill: c, fillAlpha: n === which.value ? 0.75 : 0.35, color: c }); eb.text(sc(v, e, 1), x, e, { size: 9, align: 'center', baseline: e >= 0 ? 'bottom' : 'top', dy: e >= 0 ? -2 : 2, color: 'muted' }); }));
-          const n = which.value;
-          ring(rg, 1, { tick: 1200 / n, len: 0.05 });
-          for (let c = 0; c < n; c++) { if (n <= 31) { const p = circ((c * 1200) / n, 0.85); rg.dot(p[0], p[1], { r: 2, color: 'faint' }); } }
-          const g = GEN[n], seen = new Set();
-          for (let k = -Math.floor(n / 2); k <= Math.floor(n / 2); k++) { const c = fold(k * g), p = circ(c, 0.74); rg.dot(p[0], p[1], { r: 3.2, color: 'orange' }); }
-          IV.slice(0, 4).forEach(([p, q]) => { const c = cents(p / q), a = circ(c, 1.0), b = circ(c, 1.16); rg.dot(a[0], a[1], { r: 4.5, color: 'green' }); rg.text(`${p}/${q}`, b[0], b[1], { size: 11, color: 'green', align: 'center', baseline: 'middle', weight: 700 }); });
-          rg.text(`${n}-TET`, 0, 0.05, { size: 14, align: 'center', weight: 700 }); rg.text(`step ${v.fix(1200 / n, 2)} ¢`, 0, -0.12, { size: 11, color: 'muted', align: 'center' });
+      num:'7.12',kind:'Concept',name:'19- and 31-tone equal temperament',
+      statement:String.raw`An $n$-tone equal temperament has step ratio $2^{1/n}$ and step size $1200/n$ cents. Its nearest approximation to ratio $r$ uses $k=\operatorname{round}(n\log_2r)$ steps.
+
+For 19-TET, the fifth is 11 steps (694.736842 cents), major third 6 steps (378.947368) and minor third 5 steps (315.789474). For 31-TET these use 18, 10, 8 steps (696.774194,387.096774,309.677419 cents), and 25 steps approximate $7/4$ at 967.741935 cents. All decimals are rounded. The full table includes signed errors for these intervals and $7/6$ in 12-, 19- and 31-TET.
+
+The 19-TET fifth is about 0.0494 cents below the third-comma generator; the 31-TET fifth is about 0.1958 cents above the quarter-comma generator. They approximate these meantone systems rather than equaling them. Their fifth steps generate all pitches because $\gcd(11,19)=\gcd(18,31)=1$.`,
+      idea:String.raw`The quarter-comma generator has ratio $5^{1/4}$ (7.7), hence size $300\log_2 5$ cents. It cannot close after any positive integer number of steps: $5^{m/4}=2^j$ would force $5^m=2^{4j}$, contradicting prime factorization. 31 copies fall short of 18 octaves by about 6.07 cents. Adding that shortfall divided by 31 to each generator gives the exact 31-TET fifth, 18 octave steps out of 31. A similar comparison uses third-comma meantone and 11/19 of an octave.
+
+If a step count $k$ is coprime to $n$, multiplication by $k$ permutes the residues modulo $n$. Thus repeated equal-tempered fifths reach every pitch exactly once before returning. This algebraic closure is distinct from the near closure of the corresponding pure meantone generator.`,
+      caption:String.raw`Select 12, 19 or 31. The first plot compares all five signed interval errors with separate markers for the three divisions; the table lists every step count and error. The pitch circle shows equal-division ticks and a finite centered chain of the corresponding generator, with pure reference ratios in green. Audio compares 12-TET with the selected division for the actual major-triad or harmonic-seventh approximation; a separate button plays the pure 4:5:6:7 chord.`,
+      deps:['music-7.11','music-7.7'],see:['music-7.13','music-6.11','music-7.17'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §§6.4–6.5, pp.217–221; tables and meantone comparison'],tags:['equal temperament','meantone'],
+      credit:'Technical comparison: Dave Benson; finite diagrams, step calculations and synthesis authored here.',
+      scope:String.raw`Exact equal-division definitions with rounded binary64 evaluations and explicit pure-ratio references. Benson's actual 19/31 tables and meantone comparison are used; no Salinas, Woolhouse, Huygens, Rossi or Fokker priority/date claim is certified. Non-octave rational intervals are approximated, not reproduced exactly. The orange chain has exactly n authored consecutive generator exponents centered around 0; its displayed maximum is over that finite set. Audio uses the C4=261.6256-Hz, mono 44,100-Hz H8 contract of 7.4/7.9, with fixed normalization, 0.12 peak bound, 10-ms ramps and 0.1-s exact gaps. Ratios and errors do not measure consonance.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
+      viz(v){
+        const N=v.select('division',[12,19,31].map(value=>({value,label:`${value}-TET`})),31),COL={12:'muted',19:'accent',31:'orange'},ids=Object.keys(EDO_TARGETS);
+        const A=v.stage({x:[-24,43],y:[-.65,4.65],axes:'box',gutter:true,full:true,height:330,minWidth:240,xlabel:'signed error from pure (cents)',yticks:ids.map((id,j)=>[4-j,`${EDO_TARGETS[id][0]}/${EDO_TARGETS[id][1]}`]),title:'all five interval errors in 12-, 19- and 31-TET'});
+        const B=v.stage({x:[0,1],y:[-.4,16.8],axes:false,full:true,height:540,minWidth:240,title:'all15 comparisons: division, ratio, nearest step and error'});
+        const C=v.stage({x:[-1.5,1.5],y:[-1.45,1.45],equal:true,axes:false,height:350,minWidth:240,title:'equal-division ticks and finite generator chain'});
+        let info;for(const[action,label]of[['triad','Triad:12-TET then selected'],['seventh','Harmonic seventh:12-TET then selected'],['pure','Pure4:5:6:7']])v.soundButton(label,sd=>{const a=edoCompareAudio(N.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        const point=(c,r)=>[r*Math.sin(c*Math.PI/600),r*Math.cos(c*Math.PI/600)];
+        v.render(()=>{const a=edoCompareModel(N.value);info=a;A.line(0,-.4,0,4.4,{color:'green',width:1});
+          a.rows.forEach(r=>{const j=ids.indexOf(r.target),offset=([12,19,31].indexOf(r.n)-1)*.17;A.dot(r.error,4-j+offset,{r:r.n===a.n?5:3,ring:false,color:COL[r.n]});});
+          [['N',.06],['ratio',.29],['k',.52],['error(¢)',.95]].forEach(([t,x])=>B.text(t,x,16,{size:10.5,align:x===.95?'right':'center',baseline:'middle',weight:700}));
+          a.rows.forEach((r,j)=>{const y=15-j,col=r.n===a.n?COL[r.n]:'muted';B.text(String(r.n),.06,y,{size:11,align:'center',baseline:'middle',color:col});B.text(`${r.p}/${r.q}`,.29,y,{size:11,align:'center',baseline:'middle',color:col});B.text(String(r.k),.52,y,{size:11,align:'center',baseline:'middle',color:col});B.text(`${r.error<0?'−':'+'}${v.fix(Math.abs(r.error),3)}`,.95,y,{size:10.5,align:'right',baseline:'middle',color:col});});
+          C.circle(0,0,1,{color:'muted',width:1});for(let j=0;j<a.n;j++){C.line(...point(j*1200/a.n,.95),...point(j*1200/a.n,1),{color:'muted',width:1});}a.chain.forEach(x=>C.dot(...point(x.meantone,.76),{r:3,ring:false,color:'orange'}));
+          for(const id of['fifth','major','minor','seventh']){const[p,q]=EDO_TARGETS[id],c=1200*Math.log2(p/q);C.dot(...point(c,1),{r:4,ring:false,color:'green'});C.text(`${p}/${q}`,...point(c,1.19),{size:11,align:'center',baseline:'middle',color:'green'});}
+          C.text(`${a.n}-TET`,0,.06,{size:14,align:'center',baseline:'middle'});C.text(`step ${v.fix(a.step,4)}¢`,0,-.15,{size:11,align:'center',baseline:'middle',color:'muted'});
         });
-        v.legend([['green', 'pure ratio'], ['orange', 'meantone chain of fifths'], ['faint', 'steps of the division']]);
-        v.readout(() => {
-          const n = which.value, g = GEN[n], f = (r) => { const [k, e] = edoApprox(n, cents(r)); return `${k} steps = ${v.fix((k * 1200) / n, 2)} ¢ (${sc(v, e, 2)})`; };
-          const mx = Math.max(...Array.from({ length: n }, (_, i) => { const k = i - Math.floor(n / 2), c = k * g, e = Math.abs(c - (Math.round((c * n) / 1200) * 1200) / n); return e; }));
-          return `${n}-TET: fifth ${f(1.5)} · major third ${f(1.25)} · minor third ${f(1.2)} · seventh ${f(1.75)} · the ${n === 12 ? 'equal 700 ¢' : n === 19 ? 'one-third-comma' : 'quarter-comma'} fifth is ${v.fix(g, 3)} ¢ against the division's ${v.fix((steps(n, 1.5) * 1200) / n, 3)} ¢; along a chain of ${n} fifths the two differ by at most ${v.fix(mx, 1)} ¢`;
-        });
+        v.legend([['muted','12-TET'],['accent','19-TET'],['orange','31-TET / generator chain'],['green','pure reference']]);
+        v.readout(()=>{const a=info;return `${a.n}-TET fifth: ${a.fifth.k}/${a.n} octave = ${v.fix(a.fifth.cents,9)} cents. Comparison generator ${v.fix(a.generator,9)} cents; generator−equal fifth ${v.fix(a.generator-a.fifth.cents,9)} cents. Generator closure error after ${a.n} steps: ${v.fix(a.closureError,6)} cents. Maximum displacement of the displayed ${a.n}-point centered chain: ${v.fix(a.maxChainError,6)} cents. Actual selected triad ${a.triad.map(x=>v.fix(x,6)).join(', ')}Hz; seventh approximation ${a.seventh.map(x=>v.fix(x,6)).join(', ')}Hz. These are mathematical approximations, not a consonance score.`;});
       },
     },
   ],

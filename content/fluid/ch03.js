@@ -1,6 +1,8 @@
 // Fluid Dynamics — Chapter 3: Vorticity, circulation and rotation
 import { G0, clamp, TAU, vortexVel, rk4Vortices, ringPsi, biotSavart, abc, rk4p } from './ch03.shared.js';
 
+import {rankine,rotatingComparison} from './rotation-bernoulli-audit.shared.js';
+
 export default {
   collection: 'fluid',
   chapter: 3,
@@ -138,13 +140,13 @@ does not change with time, $D\Gamma/Dt=0$, however much the loop is stretched, f
       statement: String.raw`For an incompressible fluid of constant density and viscosity $\nu$ the vorticity $\boldsymbol\omega=\nabla\times\mathbf u$ obeys
 $$\frac{D\boldsymbol\omega}{Dt}=(\boldsymbol\omega\cdot\nabla)\mathbf u+\nu\nabla^2\boldsymbol\omega.$$
 Without viscosity the right-hand side is the term $(\boldsymbol\omega\cdot\nabla)\mathbf u$ alone: vorticity is carried by the fluid and in addition lengthened and turned like a material line element. Where the flow stretches a vortex line, $|\boldsymbol\omega|$ grows in proportion to the length, and the tube thins so that its volume, and its circulation $\Gamma=\omega\,\pi R^2$, stay fixed. In two dimensions $\boldsymbol\omega\perp$ the plane and the stretching term vanishes.`,
-      idea: String.raw`Take the curl of Euler's equation (2.8): the pressure and conservative body-force terms are gradients and drop out, and the identity $\mathbf u\cdot\nabla\mathbf u=\nabla(\tfrac12|\mathbf u|^2)-\mathbf u\times\boldsymbol\omega$ turns what is left into the equation above. Compare with a material line element $\delta\mathbf l$, which obeys $D(\delta\mathbf l)/Dt=(\delta\mathbf l\cdot\nabla)\mathbf u$: the same equation, so a vortex line is lengthened exactly as a material line is. Incompressibility ties the cross-section to the length, $A\propto1/L$, hence $\omega\propto L$ and $\omega A$ is conserved, as in the skater who pulls in her arms and spins faster.`,
+      idea: String.raw`Take the curl of Euler's equation (2.8). The curl-grad and div-curl identities (vcalc-3.8) remove the pressure and conservative body-force gradients and give $\nabla\cdot\boldsymbol\omega=0$. Use $\mathbf u\cdot\nabla\mathbf u=\nabla(\tfrac12|\mathbf u|^2)-\mathbf u\times\boldsymbol\omega$. Expanding $\nabla\times(\mathbf u\times\boldsymbol\omega)$ componentwise, with $\nabla\cdot\mathbf u=\nabla\cdot\boldsymbol\omega=0$, leaves the stretching term minus the vorticity advection term; moving advection to the left gives the inviscid equation. Adding constant-viscosity momentum diffusion $\nu\nabla^2\mathbf u$ gives $\nu\nabla^2\boldsymbol\omega$, since curl and the Laplacian commute for sufficiently smooth fields. In the inviscid case, compare with a material line element $\delta\mathbf l$, which obeys $D(\delta\mathbf l)/Dt=(\delta\mathbf l\cdot\nabla)\mathbf u$: the same stretching equation, so a vortex line is lengthened exactly as a material line is. Incompressibility ties the cross-section to the length, $A\propto1/L$, hence $\omega\propto L$ and $\omega A$ is conserved.`,
       caption: String.raw`An axisymmetric straining flow $(u_r,u_z)=(-\tfrac12\varepsilon r,\ \varepsilon z)$ stretches a vortex tube with a core spinning like a solid body (left: side view, right: end view; dots are fluid particles, filled when they are on the near side). Press play: the tube lengthens, its radius shrinks as $e^{-\varepsilon t/2}$, and the spin rate climbs. In the plot, $\omega/\omega_0$ (orange), the length ratio $L/L_0$ (dashed) and $(R_0/R)^2$ (dotted) lie on top of each other, while the circulation $\Gamma=\omega\pi R^2$ is the flat green line. Make $\varepsilon$ negative and the tube is squashed and spins down.`,
-      deps: ['fluid-1.9', 'fluid-2.8', 'vcalc-3.10'],
+      deps: ['fluid-1.9', 'fluid-2.8', 'vcalc-3.8'],
       refs: ['Kundu §5.3', 'Acheson ch. 5'],
       credit: 'Hermann von Helmholtz, 1858 (vortex lines move with the fluid; strength of a tube is fixed)',
       tags: ['vorticity', 'stretching', 'turbulence'],
-      scope: String.raw`Incompressible, inviscid (viscous diffusion of vorticity is neglected here). The straining flow is an exact steady Euler flow with uniform vorticity along the axis, so the picture is a solution, not a sketch.`,
+      scope: String.raw`Incompressible, inviscid (viscous diffusion of vorticity is neglected here). The straining flow is an exact time-dependent Euler flow with uniform vorticity along the axis, so the picture is a solution, not a sketch.`,
       viz(v) {
         const R0 = 0.6, L0 = 1.6, w0 = 2, T = 6;
         const es = v.slider('axial strain rate $\\varepsilon$ (1/s)', -0.3, 0.3, 0.25, { step: 0.01 });
@@ -280,7 +282,7 @@ $$\mathbf u(\mathbf x)=\frac1{4\pi}\int\frac{\boldsymbol\omega(\mathbf x')\times
 For a thin vortex filament $C$ of circulation $\Gamma$ this becomes $\mathbf u(\mathbf x)=\dfrac{\Gamma}{4\pi}\oint_C\dfrac{d\mathbf l'\times(\mathbf x-\mathbf x')}{|\mathbf x-\mathbf x'|^3}$. It is the same formula that gives the magnetic field of a current, with $\boldsymbol\omega$ playing the role of the current density and $\mathbf u$ that of $\mathbf B$; a straight infinite filament gives a swirl of speed $\Gamma/(2\pi r)$, and a circular ring of radius $R$ gives $\Gamma R^2/\big(2(R^2+z^2)^{3/2}\big)$ along its axis.`,
       idea: String.raw`Incompressibility lets one write $\mathbf u=\nabla\times\mathbf A$ with $\nabla\cdot\mathbf A=0$, and then $\boldsymbol\omega=\nabla\times\nabla\times\mathbf A=-\nabla^2\mathbf A$. Each component of $\mathbf A$ solves a Poisson equation whose solution is the convolution of $\boldsymbol\omega$ with the free-space Green's function $1/(4\pi|\mathbf x|)$ (Laplace's equation, 4.2, is the homogeneous case). Taking the curl of the result differentiates $1/|\mathbf x-\mathbf x'|$ and produces the cross-product kernel. So the velocity at a point is a weighted sum over all the vorticity in the flow, falling off as the inverse square of distance.`,
       caption: String.raw`A vortex filament (top view of its section by the plane $y=0$: $\odot$ points toward you, $\otimes$ away) induces the arrows drawn in that plane. Choose a straight line, a ring or a helix, and move the probe: the velocity there is found by adding up the exact contributions of 200 to 600 straight segments of the filament. For the straight line the result is compared with $\Gamma/2\pi r$; for the ring, the on-axis value is compared with the closed formula. Change $\Gamma$, the radius or the pitch and watch the arrows change linearly with $\Gamma$ and fall off with distance. The helix is a finite coil of 24 turns, so only its middle is a good picture of an infinitely long one.`,
-      deps: ['fluid-1.9', 'fluid-1.7', 'pde-1.5'],
+      deps: ['fluid-1.9', 'fluid-1.7'],
       refs: ['Kundu §5.4'],
       tags: ['vorticity', 'Biot–Savart', 'induced velocity'],
       scope: String.raw`Unbounded incompressible flow with vorticity of finite extent. Near a real filament of finite core size the formula diverges logarithmically, so the picture stays outside a distance of a few core radii; inside walls the velocity also needs an irrotational correction.`,
@@ -339,59 +341,41 @@ For a thin vortex filament $C$ of circulation $\Gamma$ this becomes $\mathbf u(\
       kind: 'Model',
       name: 'Rankine vortex',
       statement: String.raw`The Rankine vortex is a steady, axisymmetric swirl with total circulation $\Gamma$ and a core of radius $a$:
-$$u_\theta=\begin{cases}\dfrac{\Gamma r}{2\pi a^2},&r\le a\ \text{(solid-body rotation, } \omega_z=\Gamma/\pi a^2\text{)},\\[2mm]\dfrac{\Gamma}{2\pi r},&r\ge a\ \text{(irrotational)}.\end{cases}$$
-The pressure follows from the radial balance $\partial p/\partial r=\rho u_\theta^2/r$: with $p\to p_\infty$ far away, $p-p_\infty=-\rho\Gamma^2/(8\pi^2r^2)$ outside and $-\rho\big(\Gamma^2/4\pi^2a^2\big)\big(1-r^2/2a^2\big)$ inside, so the pressure is lowest at the axis, lower by $\rho\Gamma^2/(4\pi^2a^2)$. A free surface above the vortex dips by $\Gamma^2/(4\pi^2a^2g)$ at the centre.`,
-      idea: String.raw`Any $u_\theta(r)$ is a steady solution of Euler's equation (2.8) provided the pressure supplies the centripetal force, so the Rankine vortex is the simplest swirl with a finite vorticity core. The inside is a rigidly rotating cylinder of fluid; the outside is the field of a line vortex (the Biot–Savart result of 3.5). The two pieces match in velocity at $r=a$ but not in vorticity, which jumps from $\Gamma/\pi a^2$ to zero. Hydrostatic vertical balance and radial Euler balance give $g\,d\eta/dr=u_\theta^2/r$ on the atmospheric free surface; integrate from infinity. Across the rotating core one cannot assume a common Bernoulli constant on different streamlines.`,
-      caption: String.raw`Left: top view of a vortex in water. Fluid particles (gold) go round faster the nearer they are to the axis in the outer region, but at a constant angular rate inside the core, shown in slow motion. The paddle wheel (red spoke) follows a circular streamline: it spins with the core and stays pointing in one direction outside, even though the water circles the centre. Middle: the velocity profile; drag the handle to change the core radius. Right: the dimple of a free surface above the vortex (water 0.35 m deep). Make $\Gamma$ large or $a$ small and the dimple reaches the floor: an air core forms and the model, which assumes a single connected surface, no longer applies.`,
+$$u_\theta=\begin{cases}\dfrac{\Gamma r}{2\pi a^2},&r\le a,\\[2mm]\dfrac{\Gamma}{2\pi r},&r\ge a.\end{cases}$$
+The core interior $r<a$ rotates as a solid body with $\omega_z=\Gamma/(\pi a^2)$; the exterior $r>a$ is irrotational. At $r=a$ the ideal velocity derivative is undefined unless $\Gamma=0$. The pressure follows from the radial balance $\partial p/\partial r=\rho u_\theta^2/r$: with $p\to p_\infty$ far away, $p-p_\infty=-\rho\Gamma^2/(8\pi^2r^2)$ outside and $-\rho\big(\Gamma^2/4\pi^2a^2\big)\big(1-r^2/2a^2\big)$ inside, so the pressure is lowest at the axis, lower by $\rho\Gamma^2/(4\pi^2a^2)$. A free surface above the vortex dips by $\Gamma^2/(4\pi^2a^2g)$ at the centre.`,
+      idea: String.raw`A purely azimuthal, height-independent swirl satisfies radial Euler balance $\partial_rp=\rho u_\theta^2/r$ and vertical hydrostatic balance $\partial_zp=-\rho g$. Integrate from the far-field reference and impose atmospheric pressure on $z=\eta(r)$: $g\eta'(r)=u_\theta^2/r$. This yields the displayed pressure and surface formulas without assuming a single Bernoulli constant across the rotational core. Velocity is continuous at $a$, while vorticity jumps for nonzero circulation; the ideal derivative at that circle is then not defined. The local infinitesimal fluid spin is half the vorticity. A finite paddle also feels strain and is only a local-rotation illustration.`,
+      caption: String.raw`Choose signed circulation and core radius; drag the velocity-peak handle or the wheel-radius control. Particles use time slowed by a factor of 12. The red spoke shows the signed local fluid spin (half vorticity), not the orientation law of a finite rigid body in shear. For nonzero circulation the core-edge spin is undefined and is labeled. Right: the analytic free-surface prediction with far level 0 and a chosen floor at −0.35 m. The curve is shown in full. Where it predicts a surface at/below the floor, the connected-liquid model is invalid; the red region is an extrapolation, not a computed air core or a surface flattened onto the floor.`,
       deps: ['fluid-1.9', 'fluid-2.9', 'fluid-3.5'],
-      refs: ['OpenFAST OLAF Theory, complete §4.4.6.8.3.1 (Rankine core); pressure and surface height by radial Euler/hydrostatic balance'],
+      refs: ['Lautrup, draft7.5 (2002), §21.2, §21.5, worked problem21.4'],
       tags: ['vortex', 'Rankine', 'free surface'],
-      scope: String.raw`Steady, inviscid, axisymmetric and two-dimensional; The sharp core boundary is an idealization; this does not model radial drainage, viscous diffusion or vortex breakdown. The Rankine profile is documented in OpenFAST’s regularization discussion. The numbers here (water at 1000 kg/m³, $g=9.81$ m/s²) are chosen for illustration.`,
+      verify: false,
+      scope: String.raw`Steady inviscid axisymmetric swirl, no radial or vertical flow, constant density and gravity. The chosen values are $\rho=1000\,\mathrm{kg/m^3}$ and $g=9.81\,\mathrm{m/s^2}$; no water measurement or Rankine original-priority claim is asserted. A viscous vortex needs a smooth core or time dependence. The free-surface continuation is physically applicable only while it stays above the floor; no dry-core/contact-line solution is computed.`,
+      links: {primary:'https://cns.gatech.edu/~predrag/courses/PHYS-4421-02/lautrup/7.5/whirls.pdf'},
       viz(v) {
-        const g = G0, H = 0.35, RM = 0.3;
-        const Gs = v.slider('circulation $\\Gamma$ (m²/s)', 0.05, 1, 0.4, { step: 0.01 });
-        const as = v.slider('core radius $a$ (m)', 0.02, 0.15, 0.06, { step: 0.005 });
-        const ws = v.slider('paddle-wheel radius $r_w$ (m)', 0.01, 0.28, 0.03, { step: 0.005 });
-        const sa = v.stage({ x: [-RM, RM], y: [-RM, RM], equal: true, axes: false, height: 340, weight: 1, title: 'top view' });
-        const sb = v.stage({ x: [0, RM], y: [0, 4], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'radius $r$ (m)', ylabel: '$u_\\theta$ (m/s)', title: 'velocity profile' });
-        const sc = v.stage({ x: [-RM, RM], y: [-0.45, 0.06], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'distance from the axis (m)', ylabel: 'surface height (m)', title: 'free surface above the vortex' });
-        const uth = (r) => { const G = Gs.value, a = as.value; return r <= a ? (G * r) / (TAU * a * a) : G / (TAU * r); };
-        const eta = (r) => { const G = Gs.value, a = as.value, k = (G * G) / (4 * Math.PI * Math.PI * g); return r <= a ? -(k / (a * a)) * (1 - (r * r) / (2 * a * a)) : -(k / 2) / (r * r); };
-        const hd = sb.handle(0.06, 2, { color: 'orange', r: 8, label: 'a', labelPos: 'ne', constrain: (x) => [clamp(x, 0.02, 0.15), 2] });
-        hd.onDrag = () => { as.set(hd.x); };
-        const radii = [0.025, 0.05, 0.08, 0.11, 0.15, 0.19, 0.24, 0.29];
-        let info = {};
-        v.animate((t) => {
-          const G = Gs.value, a = as.value, tt = t / 12, om = G / (Math.PI * a * a);
-          const umax = G / (TAU * a);
-          hd.set(a, umax);
-          sb.setView([0, RM], [0, Math.max(1, 1.25 * umax)]);
-          sa.circle(0, 0, a, { fill: 'orange', fillAlpha: 0.22, color: 'orange', width: 1.6 });
-          for (const r of radii) {
-            sa.circle(0, 0, r, { color: 'faint', width: 1 });
-            for (let k = 0; k < 4; k++) { const th = (k * Math.PI) / 2 + (uth(r) / r) * tt; sa.dot(r * Math.cos(th), r * Math.sin(th), { r: 3.4, color: 'gold' }); }
-          }
-          const rw = ws.value, thw = (uth(rw) / rw) * tt, spin = rw <= a ? (om / 2) * tt : 0;
-          const wx = rw * Math.cos(thw), wy = rw * Math.sin(thw), L = 0.035;
-          sa.line(wx - L * Math.sin(spin), wy + L * Math.cos(spin), wx + L * Math.sin(spin), wy - L * Math.cos(spin), { color: 'ink', width: 2.4 });
-          sa.line(wx - L * Math.cos(spin), wy - L * Math.sin(spin), wx, wy, { color: 'ink', width: 2.4 });
-          sa.line(wx, wy, wx + L * Math.cos(spin), wy + L * Math.sin(spin), { color: 'red', width: 3.4 });
-          sa.dot(wx, wy, { r: 3, color: 'ink' });
-          sa.text('core', 0, a + 0.012, { size: 13, color: 'orange', align: 'center' });
-          sb.fn(uth, { color: 'accent', width: 2.6, domain: [0, RM] });
-          sb.vline(rw, { color: 'red', dash: true, alpha: 0.6 });
-          sb.fn((r) => G / (TAU * r), { color: 'muted', dash: true, domain: [a, RM], width: 1.4 });
-          const e0 = eta(0), air = -e0 > H;
-          sc.rect(-RM, -H, RM, 0.06, { fill: 'panel', color: 'ink', width: 0 });
-          sc.between((x) => Math.max(eta(Math.abs(x)), -H), () => -H, -RM, RM, { fill: 'accent', fillAlpha: 0.3 });
-          sc.fn((x) => Math.max(eta(Math.abs(x)), -H), { color: 'accent', width: 2.6, domain: [-RM, RM], n: 400 });
-          sc.hline(-H, { color: 'ink', width: 2 });
-          sc.vline(a, { color: 'orange', dash: true, alpha: 0.6 }); sc.vline(-a, { color: 'orange', dash: true, alpha: 0.6 });
-          if (air) sc.text('air core: the dimple reaches the floor', 0, -0.05, { size: 14, color: 'red', align: 'center' });
-          info = { umax, om, dp: (1000 * G * G) / (4 * Math.PI * Math.PI * a * a), e0, air, uw: uth(rw), wspin: rw <= a ? om / 2 : 0, rw, a };
-        }, { period: 24, still: 3 });
-        v.legend([['accent', '$u_\\theta(r)$'], ['muted', '$\\Gamma/2\\pi r$ continued inward', { dash: true }], ['orange', 'core, $\\omega\\ne0$']]);
-        v.readout(() => `peak speed $\\Gamma/2\\pi a=${v.fix(info.umax, 2)}$ m/s at $r=a$ · core vorticity $\\Gamma/\\pi a^2=${v.fix(info.om, 1)}$ s$^{-1}$ · pressure at the axis lower by $${v.fix(info.dp / 1000, 2)}$ kPa\nsurface dip at the axis $\\Gamma^2/4\\pi^2a^2g=${v.fix(-info.e0, 3)}$ m${info.air ? ' (**deeper than the water: air core**)' : ''} · wheel at $r=${v.fix(info.rw, 3)}$ m ${info.rw <= info.a ? 'inside' : 'outside'} the core: speed $${v.fix(info.uw, 2)}$ m/s, spin rate $\\omega/2=${v.fix(info.wspin, 2)}$ s$^{-1}$`);
+        const H=.35,RM=.34;
+        const Gs=v.slider('circulation $\\Gamma$ (m²/s)',-1,1,.4,{step:.01}),as=v.slider('core radius $a$ (m)',.02,.15,.06,{step:.005}),ws=v.slider('wheel radius $r_w$ (m)',.01,.28,.03,{step:.005});
+        const sa=v.stage({x:[-RM,RM],y:[-RM,RM],equal:true,axes:false,height:340,title:'top view; slowed time'});
+        const sb=v.stage({x:[0,.3],y:[-4,4],axes:'box',gutter:true,height:340,xlabel:'radius $r$ (m)',ylabel:'signed $u_\\theta$ (m/s)',title:'velocity profile'});
+        const sc=v.stage({x:[-.3,.3],y:[-.45,.06],axes:'box',gutter:true,height:340,xlabel:'distance from axis (m)',ylabel:'surface height (m)',title:'full free-surface prediction'});
+        const hd=sb.handle(.06,1,{color:'orange',r:8,label:'a',labelPos:'ne',constrain:(x)=>[clamp(x,.02,.15),rankine(Gs.value,clamp(x,.02,.15),clamp(x,.02,.15)).u]});hd.onDrag=()=>as.set(hd.x);
+        const radii=[.025,.05,.08,.11,.15,.19,.24,.29];let info={};
+        v.animate(t=>{
+          const G=Gs.value,a=as.value,rw=ws.value,edge=rankine(G,a,a),center=rankine(G,a,0),wheel=rankine(G,a,rw),tt=t/12;
+          hd.set(a,edge.u);const speed=Math.max(.2,1.2*edge.peak);sb.setView([0,.3],[-speed,speed]);sc.setView([-.3,.3],[Math.min(-.42,center.eta*1.12-.03),.06]);
+          sa.circle(0,0,a,{fill:'orange',fillAlpha:.2,color:'orange'});
+          for(const r of radii){sa.circle(0,0,r,{color:'faint'});for(let k=0;k<4;k++){const th=k*Math.PI/2+rankine(G,a,r).orbit*tt;sa.dot(r*Math.cos(th),r*Math.sin(th),{r:3.4,color:'gold'});}}
+          const th=wheel.orbit*tt,wx=rw*Math.cos(th),wy=rw*Math.sin(th),spin=wheel.spin===null?null:wheel.spin*tt,L=.028;
+          if(spin!==null){sa.line(wx-L*Math.cos(spin),wy-L*Math.sin(spin),wx+L*Math.cos(spin),wy+L*Math.sin(spin),{color:'ink',width:2});sa.line(wx,wy,wx+L*Math.sin(spin),wy+L*Math.cos(spin),{color:'red',width:3});}else sa.text('edge: spin undefined',0,-.32,{color:'red',align:'center'});
+          sa.dot(wx,wy,{r:4,color:'red'});sa.text('core',0,a+.014,{color:'orange',align:'center'});
+          sb.fn(r=>rankine(G,a,r).u,{color:'accent',domain:[0,.3],n:400});sb.vline(rw,{color:'red',dash:true});
+          sc.hline(-H,{color:'ink',width:2});sc.hline(0,{color:'muted',dash:true});
+          sc.between(x=>Math.max(rankine(G,a,Math.abs(x)).eta,-H),()=>-H,-.3,.3,{fill:'accent',fillAlpha:.25});
+          sc.fn(x=>rankine(G,a,Math.abs(x)).eta,{color:'accent',domain:[-.3,.3],n:500});
+          if(center.eta<=-H){sc.hband(center.eta,-H,{color:'red',alpha:.08});sc.text('below floor: invalid continuation',0,center.eta*.55,{color:'red',align:'center',size:11});}
+          info={G,a,rw,...wheel,center,edge,invalid:center.eta<=-H,t,tt};
+        },{period:24,still:3});
+        v.legend([['accent','signed velocity / analytic surface'],['orange','core'],['red','wheel / below-floor continuation']]);
+        v.readout(()=>`peak speed $|\\Gamma|/(2\\pi a)=${v.fix(info.edge.peak,3)}$ m/s; core vorticity $${v.fix(info.center.vorticity,3)}$ s$^{-1}$. Axis pressure deficit $${v.fix(-info.center.pressure/1000,3)}$ kPa; surface dip $${v.fix(-info.center.eta,4)}$ m. ${info.invalid?'**Connected-liquid model invalid at/below the floor; air core not solved.**':'Surface remains above the floor.'}\nWheel radius $${v.fix(info.rw,3)}$ m: signed speed $${v.fix(info.u,3)}$ m/s; local spin ${info.spin===null?'undefined at the core edge':`$${v.fix(info.spin,3)}$ s$^{-1}$`}. Physical model time shown $t/12=${v.fix(info.tt,3)}$ s.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 3.7
@@ -662,28 +646,26 @@ so the flow runs along the isobars, with low pressure on its left in the norther
       num: '3.11',
       kind: 'Theorem',
       name: 'Taylor–Proudman theorem',
-      statement: String.raw`Consider the steady, inviscid motion of a homogeneous incompressible fluid in a frame rotating uniformly with angular velocity $\boldsymbol\Omega=\Omega\hat{\mathbf z}$, slow enough that the nonlinear term is negligible ($\mathrm{Ro}\ll1$): $2\boldsymbol\Omega\times\mathbf u=-\nabla p/\rho$. Then the velocity does not vary along the axis of rotation:
-$$\frac{\partial\mathbf u}{\partial z}=\mathbf 0.$$
-All three components are independent of $z$. Between a flat floor and a flat lid this forces $w\equiv0$ and the horizontal flow to be the same at every height, so the fluid moves in rigid vertical columns, and a floor obstacle can produce a Taylor column extending over the depth. The pictured stagnant interior is an idealized choice, not a unique consequence of the theorem.`,
-      idea: String.raw`Take the curl of the balance: the pressure gradient drops out and, using incompressibility, $2(\boldsymbol\Omega\cdot\nabla)\mathbf u=\mathbf 0$ (the same algebra as the vorticity equation, 3.3, with the stretching term as the only survivor). So the flow cannot be stretched along $\boldsymbol\Omega$. Because $\partial_z w=0$ and $w$ vanishes on the floor, $w=0$ throughout. A short obstacle on the floor must therefore be felt as a full-depth cylinder, and the flow goes round that cylinder in every horizontal plane.`,
-      caption: String.raw`A uniform stream $U$ meets a hemispherical obstacle of radius 1 sitting on the floor. Left: horizontal slice at the height $z$ you choose, with integral curves of the horizontal velocity. In the 3D mode these slice curves are not material streamlines, since vertical velocity can be nonzero. Right: the vertical section through the probe (drag the probe in the left panel), coloured by the horizontal speed $|(u,v)|/U$ (blue: slower than the stream, red: faster; the blank interior is the obstacle or the stagnant column). Mode 1 is no rotation, a 3D potential flow (the flow of a sphere, which is exact for the hemisphere on a floor by symmetry): the slice shrinks and the flow relaxes back to uniform as $z$ grows. Mode 2 is the $\mathrm{Ro}\to0$ limit: every slice is the same, the flow circles a cylinder of radius 1 reaching to the top, and the fluid inside is stagnant. Only these two limits are computed; how the picture changes in between (and with the obstacle's height) is not modelled here.`,
+      statement: String.raw`In a uniformly rotating frame, consider steady inviscid homogeneous incompressible flow. Neglect acceleration at leading order: $2\boldsymbol\Omega\times\mathbf u=-\nabla\Pi$, where $\Pi=p/\rho+gz-\tfrac12|\boldsymbol\Omega\times\mathbf r|^2$ includes gravity and centrifugal potential. For $\boldsymbol\Omega=\Omega\hat{\mathbf z}$, $\Omega\ne0$, taking the curl gives
+$$\partial_z\mathbf u=0.$$
+All three components are independent of height in this leading balance. A flat impermeable floor then gives $w=0$ along fluid columns connected to it. An obstacle constrains the flow above it as well. A stagnant Taylor column is one possible selected response; the theorem alone does not determine every velocity or its circulation.`,
+      idea: String.raw`For constant $\boldsymbol\Omega$, $\nabla\times(\boldsymbol\Omega\times\mathbf u)=\boldsymbol\Omega\nabla\cdot\mathbf u-(\boldsymbol\Omega\cdot\nabla)\mathbf u$. Incompressibility and curl of a gradient give the result immediately. Height-independent $w$ vanishes where a column meets a horizontal impermeable boundary. On sloping bottom $z=h(x,y)$, no penetration requires $w=u h_x+v h_y$, so a leading columnar flow follows contours of the bump. Additional initial/boundary selection is needed to fix the flow. The displayed rotating comparison chooses zero flow inside the projected column and the zero-circulation cylinder potential flow outside; it satisfies geostrophic balance with continuous reduced pressure on the column edge.`,
+      caption: String.raw`A hemispherical bump of radius 1 lies on the floor. Compare two selected limiting fields: exact nonrotating potential flow around a sphere, restricted to the upper half-space; and a height-independent cylinder exterior joined to stagnant fluid above the bump. The latter is a leading geostrophic illustration, not an interpolation or a unique prediction from the theorem. Curves follow the horizontal components within the chosen slice; where vertical velocity is nonzero they are not 3D particle trajectories. Drag the probe: solid points are marked **solid** and excluded from the speed spread, while stagnant fluid is actually zero. Colors saturate outside speeds 0.4–1.6 in units of the uniform stream; numeric readouts are unclipped.`,
       deps: ['fluid-3.10', 'fluid-3.3'],
-      refs: ['C. C. Mei, MIT1.63 §7.2, complete2-page derivation, Eqs.(7.2.1)–(7.2.4)'],
-      credit: 'Taylor–Proudman theorem: Mei, MIT1.63, §7.2',
+      refs: ['MIT12.800, Lecture18 §18.2, Eqs.(18.1)–(18.15)', 'MIT Weather in a Tank, Taylor Columns: Theory, Eqs.(1)–(3)'],
+      credit: String.raw`Taylor–Proudman theorem; complete derivations in MIT12.800 Lecture18 §18.2 (2004) and MIT Weather in a Tank, Taylor Columns: Theory.`,
       tags: ['rotation', 'Taylor column', 'geostrophic'],
-      scope: String.raw`Steady (or slowly varying), inviscid, homogeneous fluid with $\mathrm{Ro}\ll1$ and small Ekman number; strictly the columns extend between rigid horizontal boundaries. The comparison uses representative limiting velocity fields; it does not solve the rotating boundary-layer problem or select a unique trapped-column flow.`,
+      verify: false,
+      scope: String.raw`Steady leading geostrophic balance, small advective Rossby number and negligible friction in the interior; slowly varying flow additionally needs its time derivative small compared with Coriolis acceleration. Homogeneous incompressible fluid and constant nonzero rotation vector. The upper/lower boundary geometry and circulation selection matter. The nonrotating hemisphere field obeys no penetration on the plane floor; it is a separate unbounded comparison with no finite lid. Historical priority dates/experimental data are not asserted.`,
+      links: {primary:'https://ocw.mit.edu/courses/12-800-fluid-dynamics-of-the-atmosphere-and-ocean-fall-2004/a23d92d6e97a2f2765c2064939a30b2c_lecture18.pdf'},
       viz(v) {
         const md = v.select('rotation', [{ value: 'none', label: 'no rotation (3D flow)' }, { value: 'fast', label: 'fast rotation, Ro → 0' }], 'none');
         const zs = v.slider('slice height $z$', 0, 3, 0.4, { step: 0.05 });
         const s = v.stage({ x: [-3, 3], y: [-2.4, 2.4], equal: true, axes: 'box', gutter: true, height: 380, weight: 1.1, xlabel: '$x$ (stream direction)', ylabel: '$y$', title: 'horizontal slice' });
         const t = v.stage({ x: [-3, 3], y: [0, 3], axes: 'box', gutter: true, height: 380, weight: 1.1, xlabel: '$x$', ylabel: '$z$', title: 'vertical section at the probe’s $y$' });
         const pr = s.handle(-1.3, 0.5, { color: 'gold', r: 8, label: 'probe', labelPos: 'ne', constrain: { x: [-2.9, 2.9], y: [-2.3, 2.3] } });
-        const vel = (x, y, z) => {
-          if (md.value === 'fast') { const r2 = x * x + y * y; if (r2 < 1) return null; const r4 = r2 * r2; return [1 + (y * y - x * x) / r4, (-2 * x * y) / r4, 0]; }
-          const r2 = x * x + y * y + z * z, r = Math.sqrt(r2); if (r < 1) return null;
-          const r3 = r2 * r, r5 = r3 * r2;
-          return [1 + 1 / (2 * r3) - (3 * x * x) / (2 * r5), (-3 * x * y) / (2 * r5), (-3 * x * z) / (2 * r5)];
-        };
+        const vel=(x,y,z)=>rotatingComparison(md.value,x,y,z).velocity;
+        let info={};
         v.render(() => {
           const z = zs.value, rot = md.value === 'fast';
           // streamlines of the horizontal field in the slice
@@ -691,7 +673,7 @@ All three components are independent of $z$. Between a flat floor and a flat lid
             let x = -3, y = -2.4 + 0.3 * k; const pts = [[x, y]];
             for (let i = 0; i < 400 && x < 3; i++) {
               const f = (a, b) => { const q = vel(a, b, z); return q ? [q[0], q[1]] : null; };
-              const k1 = f(x, y); if (!k1) break; const m1 = Math.hypot(k1[0], k1[1]), d = 0.03 / m1;
+              const k1 = f(x, y); if (!k1) break; const m1 = Math.hypot(k1[0], k1[1]); if(m1<1e-10)break; const d = 0.03 / m1;
               const k2 = f(x + (d / 2) * k1[0], y + (d / 2) * k1[1]); if (!k2) break;
               x += d * k2[0]; y += d * k2[1]; pts.push([x, y]); if (Math.abs(y) > 2.6) break;
             }
@@ -699,7 +681,7 @@ All three components are independent of $z$. Between a flat floor and a flat lid
           }
           const rs = rot ? 1 : (z < 1 ? Math.sqrt(1 - z * z) : 0);
           if (rs > 0) s.circle(0, 0, rs, { fill: rot ? 'orange' : 'muted', fillAlpha: rot ? 0.28 : 0.4, color: rot ? 'orange' : 'ink', width: 2 });
-          if (rot) s.text('stagnant column', 0, 0, { size: 13, color: 'orange', align: 'center' });
+          if (rot) s.text('stagnant column', 0, -.3, { size: 13, color: 'orange', align: 'center' });
           if (rot && z < 1) s.circle(0, 0, Math.sqrt(1 - z * z), { color: 'ink', width: 1, dash: true });
           // vertical section at y = probe.y
           const y0 = pr.y;
@@ -710,12 +692,9 @@ All three components are independent of $z$. Between a flat floor and a flat lid
           if (rot && hr > 0) t.rect(-hr, 0, hr, 3, { fill: 'orange', fillAlpha: 0.28, color: 'orange', width: 1.5 });
           if (!rot && Math.abs(y0) < 1) t.curve((a) => [Math.sqrt(1 - y0 * y0) * Math.cos(a), Math.sqrt(1 - y0 * y0) * Math.sin(a)], 0, Math.PI, { color: 'ink', width: 2 });
           t.axes();
+          const samples=[0,.5,1,2,3].map(z=>({z,...rotatingComparison(md.value,pr.x,pr.y,z)})),speeds=samples.filter(q=>q.velocity).map(q=>Math.hypot(q.velocity[0],q.velocity[1]));info={mode:md.value,x:pr.x,y:pr.y,z,samples,spread:speeds.length?Math.max(...speeds)-Math.min(...speeds):null};
         });
-        v.readout(() => {
-          const heights = [0, 0.5, 1, 2, 3].map((zz) => { const q = vel(pr.x, pr.y, zz); return q ? Math.hypot(q[0], q[1]) : 0; });
-          const spread = Math.max(...heights) - Math.min(...heights);
-          return `horizontal speed $|(u,v)|/U$ at the probe $(x,y)=(${v.fix(pr.x, 2)},${v.fix(pr.y, 2)})$, at heights $z=0,\\,0.5,\\,1,\\,2,\\,3$: ${heights.map((q) => v.fix(q, 3)).join(', ')}\nspread over height: $${v.fix(spread, 4)}$ — ${md.value === 'fast' ? 'zero: $\\partial\\mathbf u/\\partial z=0$, the Taylor–Proudman result' : 'not zero: without rotation the flow varies with height'}`;
-        });
+        v.readout(()=>`Probe $(x,y)=(${v.fix(info.x,2)},${v.fix(info.y,2)})$; horizontal speed at $z=0,0.5,1,2,3$: ${info.samples.map(q=>q.velocity?v.fix(Math.hypot(q.velocity[0],q.velocity[1]),3)+(q.kind==='column'?' (stagnant fluid)':''):'solid').join(', ')}.\nSpread over fluid samples: ${info.spread===null?'no fluid samples':v.fix(info.spread,5)}. ${info.mode==='fast'?'The chosen field is independent of height within each fluid column.':'The separate 3D comparison may vary with height; zero spread can also occur at special positions.'}`);
       },
     },
   ],

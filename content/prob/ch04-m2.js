@@ -1,3 +1,4 @@
+import {criticalPath,criticalSurvival} from './ch04-convergence.audit.js';
 // Probability: Theory and Examples (Durrett) — Chapter 4, part M2: §4.3 branching processes, §4.4 optional stopping, maximal inequalities, L^p convergence
 import { clampN, fr, sciT, walkPath, pts, lawFromPmf, offspringLaw, LAW_OPTS, extinctionProb, survivalSeq, gwPath, totalChildren, meanOf, seOf } from './ch04-m.shared.js';
 
@@ -118,42 +119,42 @@ So extinction is certain and its probability tail decays at least geometrically.
       num: '4.3.11',
       kind: 'Theorem',
       name: 'Critical branching processes die out',
-      statement: String.raw`For a Galton–Watson process starting from one ancestor, $Z_0=1$, if $\mu=1$ and $P(\xi=1)<1$ (the offspring number is not identically $1$), then $Z_n=0$ for all large $n$ almost surely, although $EZ_n=1$ for every $n$. If the offspring variance $\sigma^2$ is finite, the survival probability decays like $P(Z_n>0)\sim 2/(\sigma^2n)$ (the generating-function refinement explained below).`,
-      idea: String.raw`The critical process is a nonnegative martingale, so it converges almost surely. Integer-valued convergence makes it eventually constant, but no positive state can remain unchanged forever when the offspring law is not concentrated at $1$. Thus the eventual value is $0$. For the additional finite-variance asymptotic shown in the picture, let $s_n=P(Z_n>0)$ and $f$ be the offspring generating function. Then $s_{n+1}=1-f(1-s_n)=s_n-\tfrac12\sigma^2s_n^2+o(s_n^2)$. Since $s_n\to0$, $1/s_{n+1}-1/s_n\to\sigma^2/2$, and averaging gives $n s_n\to2/\sigma^2$.`,
+      statement: String.raw`Let $Z_n$ be a Galton–Watson process with $Z_0=1$, independent identically distributed offspring $\xi$, and mean $\mu=E\xi$. If $\mu=1$ and $P(\xi=1)<1$ (the offspring number is not identically $1$), then $Z_n=0$ for all large $n$ almost surely, although $EZ_n=1$ for every $n$. If the offspring variance $\sigma^2$ is finite, the survival probability decays like $P(Z_n>0)\sim 2/(\sigma^2n)$ (a further asymptotic statement, derived below for the three displayed laws).`,
+      idea: String.raw`For $\mu=1$, $Z_n=Z_n/\mu^n$ is a nonnegative martingale, so it converges a.s. (4.2.12). But $Z_n$ takes integer values, so convergence means $Z_n$ is eventually constant. The offspring law is not degenerate at $1$, so from each fixed $k\ge1$ the chain moves with a fixed positive probability; hence it cannot stay at $k\ge1$ forever, and the only possible limit is $0$. The mean stays at $1$ because the rare survivors are large: the conditional mean is $E(Z_n\mid Z_n>0)=1/P(Z_n>0)$. In general, finite variance gives $1-\varphi(1-s)=s-\sigma^2s^2/2+o(s^2)$ as $s\downarrow0$ for the offspring generating function $\varphi$. Together with extinction this yields the inverse-survival increment limit below. For the displayed laws the exact recurrences for $s_n=P(Z_n>0)$ are $s_{n+1}=s_n-s_n^2/2$ (0 or 2), $s_{n+1}=s_n/(1+s_n)$ (geometric), and $s_{n+1}=1-e^{-s_n}$ (Poisson). Since $s_n\to0$, $1/s_{n+1}-1/s_n\to\sigma^2/2$; taking averages gives $ns_n\to2/\sigma^2$.`,
       caption: String.raw`Left: 40 seeded families of a critical process (mean offspring $1$). Almost all drop to $0$ (and stay there); a few survive for a long time and wander at larger sizes. Right, on log-log axes: the exact survival probability $s_n=P(Z_n>0)$ (green), the asymptote $2/(\sigma^2n)$ (orange dashed) and Monte Carlo estimates from 20000 families (gold). Choose the law: the variance $\sigma^2$ is $1$ for Poisson and for "0 or 2", and $2$ for the geometric law. The readout shows that $n\,s_n\to2/\sigma^2$ and that survivors average about $\sigma^2n/2$, which is how the mean stays at $1$.`,
       deps: ['prob-4.3.9', 'prob-4.2.12'],
       tags: ['branching'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.3.11 and proof, p. 231; pgf iteration in §4.3.4 (derived finite-variance survival asymptotic)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, Theorem 4.3.11 and proof, p. 231; explicit generating-function asymptotics derived in the idea.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=239' },
       viz(v) {
         const law = v.select('offspring law (mean 1)', LAW_OPTS, 'poisson');
         const nS = v.slider('generation $n$', 1, 100, 40, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });
         const G = 100, NP = 20000, CK = [1, 2, 3, 5, 8, 12, 20, 30, 50, 80, 100];
         const L = v.stage({ x: [0, G], y: [0, 12], axes: 'box', gutter: true, height: 320, xlabel: '$n$', title: '$Z_n$ for 40 families', weight: 1.2 });
-        const R = v.stage({ x: [1, 300], y: [1e-3, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$n$', title: '$P(Z_n>0)$' });
+        const R = v.stage({ x: [1, 300], y: [1e-3, 2.2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$n$', title: '$P(Z_n>0)$' });
         let cache = null, st = null;
         v.render(() => {
           const key = `${law.value}|${seed}`;
           if (!cache || cache.key !== key) {
             const Lw = offspringLaw(law.value, 1), r = v.rng(seed * 29 + 5), shown = [], alive = CK.map(() => 0), sumZ = new Float64Array(G + 1), nAlive = new Float64Array(G + 1);
             for (let i = 0; i < NP; i++) {
-              const Z = gwPath(r, Lw, 1, G);
+              const Z = criticalPath(r, law.value, G);
               if (i < 40) shown.push(Z);
               CK.forEach((c, j) => { if (Z[c] > 0) alive[j]++; });
               for (let k = 0; k <= G; k++) if (Z[k] > 0) { sumZ[k] += Z[k]; nAlive[k]++; }
             }
-            cache = { key, Lw, shown, alive, sumZ, nAlive, s: survivalSeq(Lw, 300) };
+            cache = { key, Lw, shown, alive, sumZ, nAlive, s: criticalSurvival(law.value, 300) };
           }
           const { Lw, shown, alive, s } = cache, s2 = Lw.var;
           const top = Math.max(6, ...shown.map((Z) => Math.max(...Z))) * 1.1;
-          L.setView([0, G], [0, Math.min(top, 40)]);
+          L.setView([0, G], [0, top]);
           for (const Z of shown) L.path(Array.from(Z, (z, k) => [k, z]), { color: 'accent', width: 1, alpha: 0.5 });
           L.hline(1, { color: 'muted', dash: [4, 4] });
           L.vline(nS.value, { color: 'gold', dash: [4, 4] });
           const ns = Array.from({ length: 300 }, (_, i) => i + 1);
           R.path(ns.map((n) => [n, s[n]]), { color: 'green', width: 2.4 });
-          R.path(ns.map((n) => [n, Math.min(1, 2 / (s2 * n))]), { color: 'orange', width: 1.8, dash: [6, 4] });
+          R.path(ns.map((n) => [n, 2 / (s2 * n)]), { color: 'orange', width: 1.8, dash: [6, 4] });
           R.dots(CK.map((c, j) => [c, alive[j] / NP]).filter(([, y]) => y > 0), { r: 4, color: 'gold' });
           const n = nS.value;
           st = { n, s: s[n], asym: 2 / (s2 * n), sigma2: s2, surv: cache.nAlive[n] ? cache.sumZ[n] / cache.nAlive[n] : NaN, all: cache.sumZ[n] / NP, ns: n * s[n] };
@@ -347,17 +348,17 @@ For a martingale all three are equal; for a supermartingale the inequalities rev
       num: '4.4.2',
       kind: 'Theorem',
       name: 'Doob’s maximal inequality',
-      statement: String.raw`Let $X_m$ be a submartingale, $\bar X_n=\max_{0\le m\le n}X_m$ and $\lambda>0$. Then
+      statement: String.raw`Let $X_m$ be a submartingale, $\bar X_n=\max_{0\le m\le n}X_m^+$ and $\lambda>0$. Then
 $$\lambda\,P(\bar X_n\ge\lambda)\le E\big(X_n;\ \bar X_n\ge\lambda\big)\le EX_n^+ .$$
 For a nonnegative submartingale this strengthens Markov's inequality for $X_n$ to a bound on the whole running maximum.`,
       idea: String.raw`Let $N=\min\{m:X_m\ge\lambda\}\wedge n$, a bounded stopping time. On $A=\{\bar X_n\ge\lambda\}$ we have $X_N\ge\lambda$, and off $A$, $N=n$. By optional stopping (4.4.1) for the submartingale $X$, $EX_n\ge EX_N=E(X_N;A)+E(X_n;A^c)\ge\lambda P(A)+E(X_n;A^c)$. Cancel $E(X_n;A^c)$ to get $\lambda P(A)\le E(X_n;A)$.`,
-      caption: String.raw`Left: 50 seeded paths of the chosen nonnegative submartingale up to time $n$, with the level $\lambda$ (set in units of the process' scale); paths whose running maximum reaches $\lambda$ are red. Right: as $\lambda$ varies, $\lambda P(\bar X_n\ge\lambda)$ (blue) always lies below $E(X_n;\bar X_n\ge\lambda)$ (green), which lies below $EX_n$; the dashed grey curve is Markov's bound for $X_n$ alone, $\lambda P(X_n\ge\lambda)$, which is much smaller than the maximal probability. Estimates use 5000 paths.`,
+      caption: String.raw`Left: 50 seeded paths of the chosen nonnegative submartingale up to time $n$, with the level $\lambda$ (set in units of the process' scale); paths whose running maximum reaches $\lambda$ are red. Right: as $\lambda$ varies, $\lambda P(\bar X_n\ge\lambda)$ (blue) theoretically lies below $E(X_n;\bar X_n\ge\lambda)$ (green), which lies below $EX_n$; the dashed grey curve is the terminal exceedance $\lambda P(X_n\ge\lambda)$, which can be smaller than the corresponding maximum expression. Curves are estimates from 5000 paths and can violate the theoretical inequalities through sampling error. Markov bounds the terminal probability by $EX_n/\lambda$; it does not control the maximum.`,
       deps: ['prob-4.4.1'],
       see: ['stoch-12.8'],
       tags: ['maximal inequalities', 'martingales'],
       credit: 'J. L. Doob',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.4.2 and proof, p. 235'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, Theorem 4.4.2 and proof, p. 235.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=243' },
       viz(v) {
         const proc = v.select('submartingale', [{ value: 'abs', label: '$|S_n|$' }, { value: 'sq', label: '$S_n^2$' }, { value: 'exp', label: '$e^{0.15S_n}/\\cosh^n0.15$' }], 'abs');
         const nS = v.slider('time $n$', 20, 200, 100, { int: true });
@@ -387,7 +388,7 @@ For a nonnegative submartingale this strengthens Markov's inequality for $X_n$ t
           const Bn = (l) => { let c = 0; for (let i = 0; i < NP; i++) if (mx[i] >= l) c += xn[i]; return c / NP; };
           const M = (l) => { let c = 0; for (let i = 0; i < NP; i++) if (xn[i] >= l) c++; return (l * c) / NP; };
           const ys = [A, Bn, M].map((fn) => curve(fn));
-          Q.setView([0, 4], [0, EX * 1.25]);
+          Q.setView([0, 4], [0, Math.max(EX,...ys.flat().map(q=>q[1])) * 1.25]);
           Q.hline(EX, { color: 'muted', dash: [6, 4] });
           Q.path(ys[2], { color: 'muted', width: 1.6, dash: [4, 4] });
           Q.path(ys[1], { color: 'green', width: 2.4 });
@@ -396,7 +397,7 @@ For a nonnegative submartingale this strengthens Markov's inequality for $X_n$ t
           st = { a: A(lam), b: Bn(lam), EX, mk: M(lam), pmax: mx.filter((x) => x >= lam).length / NP };
         });
         v.legend([['accent', '$\\lambda P(\\bar X_n\\ge\\lambda)$'], ['green', '$E(X_n;\\bar X_n\\ge\\lambda)$'], ['muted', '$EX_n$ (flat) and $\\lambda P(X_n\\ge\\lambda)$', { dash: [4, 4] }]]);
-        v.readout(() => st && `At the chosen $\\lambda$: $\\lambda P(\\bar X_n\\ge\\lambda)=${fr(st.a, 3)}\\ \\le\\ E(X_n;\\bar X_n\\ge\\lambda)=${fr(st.b, 3)}\\ \\le\\ EX_n=${fr(st.EX, 3)}$.\n$P(\\bar X_n\\ge\\lambda)=${fr(st.pmax, 3)}$; Markov on $X_n$ alone only gives $\\lambda P(X_n\\ge\\lambda)=${fr(st.mk, 3)}$.`);
+        v.readout(() => st && `5000-path estimates at the chosen $\\lambda$: $\\lambda P(\\bar X_n\\ge\\lambda)\\approx${fr(st.a, 3)},\\ E(X_n;\\bar X_n\\ge\\lambda)\\approx${fr(st.b, 3)},\\ EX_n\\approx${fr(st.EX, 3)}$.\n$P(\\bar X_n\\ge\\lambda)\\approx${fr(st.pmax, 3)}$; the terminal exceedance expression is $\\lambda P(X_n\\ge\\lambda)\\approx${fr(st.mk, 3)}$.`);
       },
     },
     // ======================================================================== 4.4.4
@@ -404,16 +405,16 @@ For a nonnegative submartingale this strengthens Markov's inequality for $X_n$ t
       num: '4.4.4',
       kind: 'Theorem',
       name: 'Doob’s Lᵖ maximal inequality',
-      statement: String.raw`Let $X_m$ be a submartingale and $\bar X_n=\max_{m\le n}X_m^+$. For $1<p<\infty$,
+      statement: String.raw`Let $X_m$ be a submartingale and $\bar X_n=\max_{0\le m\le n}X_m^+$. For $1<p<\infty$,
 $$E\bar X_n^{\,p}\le\Big(\frac p{p-1}\Big)^pE(X_n^+)^p .$$
 The constant $(p/(p-1))^p$ tends to $\infty$ as $p\downarrow1$ (and decreases to $e$ as $p\to\infty$).`,
-      idea: String.raw`Apply the tail-integral formula to $\bar X_n\wedge M$, so every intermediate moment is finite. Doob's inequality and Fubini give $E(\bar X_n\wedge M)^p\le qE[X_n^+(\bar X_n\wedge M)^{p-1}]$, where $q=p/(p-1)$. Hölder bounds the right side by $q\|X_n^+\|_p\|\bar X_n\wedge M\|_p^{p-1}$. If $E(X_n^+)^p=\infty$ the claim is automatic; otherwise divide by the finite truncated norm and then let $M\to\infty$ by monotone convergence. Finite time alone does not ensure finite $p$th moments.`,
-      caption: String.raw`Left, on a log scale and as functions of $p$: $EX_n^p$ (lower, exact), the simulated $E\bar X_n^p$ (middle, 5000 paths) and the bound $(p/(p-1))^pEX_n^p$ (upper). The true expected maximum lies between the other two; the Monte Carlo curve can leave this interval because rare large maxima make its error substantial, especially at large $p$. Right: the constant $(p/(p-1))^p$ (orange) against the observed ratio $E\bar X_n^p/EX_n^p$ (blue). As $p\downarrow1$ the constant blows up but the observed ratio stays moderate: the inequality is far from sharp for this process, though the sharp constant for the class of all submartingales really does diverge as $p\to1$. The exponential martingale has heavy tails in $p$, so large $p$ is at the edge of Monte Carlo accuracy.`,
+      idea: String.raw`Write $E\bar X_n^p=\int_0^\infty p\lambda^{p-1}P(\bar X_n\ge\lambda)\,d\lambda$ (the tail formula, 2.2.13) and apply Doob's inequality 4.4.2 in the form $P(\bar X_n\ge\lambda)\le\lambda^{-1}E(X_n^+;\bar X_n\ge\lambda)$. Fubini turns the integral into $\frac p{p-1}E\big(X_n^+\bar X_n^{\,p-1}\big)$, and Hölder's inequality (1.6.3) with exponents $p$ and $q=p/(p-1)$ bounds it by $q\|X_n^+\|_p\|\bar X_n\|_p^{p-1}$. To justify division, first use $\bar X_n\wedge M$ throughout, which has finite moments. When its norm is positive, divide by its $(p-1)$-st power, then let $M\uparrow\infty$ by monotone convergence; the zero-norm case is immediate. If the terminal $p$-moment is infinite, the displayed extended-real inequality is automatic.`,
+      caption: String.raw`Left, on a log scale and as functions of $p$: $EX_n^p$ (lower, exact), the simulated $E\bar X_n^p$ (middle, 5000 paths) and the bound $(p/(p-1))^pEX_n^p$ (upper). The population maximum moment lies between the other two; a finite Monte Carlo estimate may miss those inequalities. Right: the constant $(p/(p-1))^p$ (orange) against the observed ratio $E\bar X_n^p/EX_n^p$ (blue). As $p\downarrow1$ the constant blows up but the observed ratio stays moderate: the inequality is far from sharp for this process, the bound itself diverges as $p\to1$. The exponential martingale has heavy tails in $p$, so large $p$ is at the edge of Monte Carlo accuracy.`,
       deps: ['prob-4.4.2', 'prob-2.2.13', 'prob-1.6.3'],
       tags: ['maximal inequalities', 'lp'],
       credit: 'J. L. Doob',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.4.4 and truncated-moment proof, pp. 236–237'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, Theorem 4.4.4 and truncation proof, p. 236.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=244' },
       viz(v) {
         const proc = v.select('submartingale', [{ value: 'abs', label: '$|S_n|$' }, { value: 'exp', label: '$e^{0.1S_n}/\\cosh^n0.1$' }], 'abs');
         const nS = v.slider('time $n$', 10, 100, 50, { int: true });
@@ -436,21 +437,21 @@ The constant $(p/(p-1))^p$ tends to $\infty$ as $p\downarrow1$ (and decreases to
           const ps = Array.from({ length: 81 }, (_, i) => 1.05 + (3.95 * i) / 80), q = (p) => p / (p - 1);
           const lhs = (p) => { let s = 0; for (const x of cache.mx) s += x ** p; return s / NP; };
           const A = ps.map((p) => EXp(proc.value, n, p)), B = ps.map(lhs), C = ps.map((p, i) => q(p) ** p * A[i]);
-          const lo = Math.max(1e-3, Math.min(...A) / 2), hi = Math.min(1e30, Math.max(...C) * 2);
+          const lo = Math.max(1e-3, Math.min(...A,...B) / 2), hi = Math.max(...C,...B) * 2;
           P.setView([1, 5], [lo, hi]);
           P.path(ps.map((p, i) => [p, C[i]]), { color: 'orange', width: 2.2 });
           P.path(ps.map((p, i) => [p, B[i]]), { color: 'accent', width: 2.4 });
           P.path(ps.map((p, i) => [p, A[i]]), { color: 'green', width: 2.2 });
           P.vline(pS.value, { color: 'gold', dash: [4, 4] });
-          Q.setView([1, 5], [0, 30]);
-          Q.path(ps.map((p) => [p, Math.min(30, q(p) ** p)]), { color: 'orange', width: 2.2 });
-          Q.path(ps.map((p, i) => [p, Math.min(30, B[i] / A[i])]), { color: 'accent', width: 2.2 });
+          Q.setScale({ylog:true});Q.setView([1, 5], [.5,Math.max(...ps.map(p=>q(p)**p),...B.map((b,i)=>b/A[i]))*1.2]);
+          Q.path(ps.map((p) => [p, q(p) ** p]), { color: 'orange', width: 2.2 });
+          Q.path(ps.map((p, i) => [p, B[i] / A[i]]), { color: 'accent', width: 2.2 });
           Q.vline(pS.value, { color: 'gold', dash: [4, 4] });
           const p = pS.value, a = EXp(proc.value, n, p), b = lhs(p);
           st = { p, a, b, c: q(p) ** p * a, k: q(p) ** p };
         });
         v.legend([['green', '$EX_n^p$'], ['accent', '$E\\bar X_n^p$ (simulated)'], ['orange', '$(p/(p-1))^pEX_n^p$']]);
-        v.readout(() => st && `$p=${fr(st.p, 2)}$: $EX_n^p=${sciT(st.a, 3)}$, $E\\bar X_n^p\\approx${sciT(st.b, 3)}$, bound $${sciT(st.c, 3)}$ with constant $(p/(p-1))^p=${fr(st.k, 2)}$. ${st.b <= st.c ? 'The sample estimate is below the bound.' : 'Monte Carlo error exceeds the margin here.'}`);
+        v.readout(() => st && `$p=${fr(st.p, 2)}$: $EX_n^p=${sciT(st.a, 3)}$, $E\\bar X_n^p\\approx${sciT(st.b, 3)}$, bound $${sciT(st.c, 3)}$ with constant $(p/(p-1))^p=${fr(st.k, 2)}$. ${st.b <= st.c ? 'This estimate is below the theoretical bound.' : 'Monte Carlo error exceeds the margin here.'}`);
       },
     },
     // ======================================================================== 4.4.6

@@ -1,0 +1,5 @@
+// Two-rank hierarchy in Tilman1994 equations3.1–3.2; H=1-D is an explicit atlas extension.
+export function colonizationEquilibrium(c1,c2,m,D){const H=1-D,p1=Math.max(0,H-m/c1),p2=p1>0?Math.max(0,m/c1-c1*H/c2):Math.max(0,H-m/c2);return[p1,p2];}
+export function colonizationCoexistence(c1,c2,m){const rawLo=1-c2*m/(c1*c1),hi=1-m/c1,lo=Math.max(0,rawLo);return{lo,rawLo,hi,includeZero:rawLo<0,empty:hi<=lo};}
+export function colonizationField(c1,c2,m,D,a,b){const H=1-D;return[c1*a*(H-a)-m*a,c2*b*(H-a-b)-m*b-c1*a*b];}
+export function runColonization(c1,c2,m,D,{T=300,dt=.1}={}){const start=Math.min(.05,(1-D)/4),pa=[[0,start]],pb=[[0,start]];let a=start,b=start;const steps=Math.round(T/dt);for(let i=1;i<=steps;i++){const f=(x,y)=>colonizationField(c1,c2,m,D,x,y),k1=f(a,b),k2=f(a+dt*k1[0]/2,b+dt*k1[1]/2),k3=f(a+dt*k2[0]/2,b+dt*k2[1]/2),k4=f(a+dt*k3[0],b+dt*k3[1]);a=Math.max(0,a+dt*(k1[0]+2*k2[0]+2*k3[0]+k4[0])/6);b=Math.max(0,b+dt*(k1[1]+2*k2[1]+2*k3[1]+k4[1])/6);if(i%10===0||i===steps){pa.push([i*dt,a]);pb.push([i*dt,b]);}}return{pa,pb,a,b,start};}

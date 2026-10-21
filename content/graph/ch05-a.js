@@ -5,6 +5,8 @@ import {
   kempe, fiveFrames, triangles, edgeColourWith, maxDeg, crown, grotzsch, gnm, triFreePlanar, planarSpec, isPlanar, randomTriangulation, triangulation, TAU,
 } from './ch05-a.shared.js';
 
+import { vertexBounds, edgeBounds, triangulationCategory, auditedFiveFrames } from './ch05-coloring-audit.shared.js';
+
 // ---------- local helpers ----------
 const spec0 = (sp) => ({ ...sp, nodes: sp.nodes.map((n) => ({ ...n })) });
 /** Palette colour of class c (or null if uncoloured). */
@@ -42,22 +44,25 @@ export default {
     {
       num: '5.1.1a', kind: 'Definition', name: 'Vertex colourings and chromatic number',
       statement: String.raw`A **vertex colouring** of a graph $G=(V,E)$ with colours $\{1,\dots,k\}$ is a map $c\colon V\to\{1,\dots,k\}$ with $c(x)\neq c(y)$ for every edge $xy$ (a *proper* colouring; the colour classes are independent sets). The least $k$ for which such a map exists is the **chromatic number** $\chi(G)$; $G$ is **$k$-colourable** if $\chi(G)\le k$ and **$k$-chromatic** if $\chi(G)=k$.`,
-      idea: String.raw`Colouring is the same as partitioning $V$ into $k$ independent sets, so $\chi(G)=1$ exactly for non-empty edgeless graphs, $\chi(G)=2$ exactly for bipartite graphs with an edge, and every clique $K^r\subseteq G$ forces $\chi(G)\ge r$. Computing $\chi$ in general is hard; for the small graphs here the picture is produced by an exact backtracking search.`,
+      idea: String.raw`Colouring is the same as partitioning $V$ into at most $k$ independent sets, so a nonempty graph has $\chi(G)=1$ exactly when it is edgeless (the empty graph has $\chi=0$), $\chi(G)=2$ exactly for bipartite graphs with an edge, and every clique $K^r\subseteq G$ forces $\chi(G)\ge r$. Computing $\chi$ in general is hard; the picture uses a bounded backtracking search and shows certified lower and upper bounds if the search budget is exhausted.`,
       caption: String.raw`Click a vertex to cycle through the colours (Shift-click goes backwards); an edge whose ends share a colour turns red. Try to use as few colours as you can, then compare with $\chi(G)$ in the readout. Switch on *edit the graph* to add and delete vertices and edges.`,
-      deps: ['graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., Chapter 5 introduction, p. 123'], see: ['comb-9.9'], tags: ['colouring', 'chromatic number'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Graph_coloring' },
+      deps: ['graph-1.1.1a'], refs: ['Diestel, 6th ed. (2025), pp. 123–124 (vertex colouring definition)'], see: ['comb-9.9'], tags: ['colouring', 'chromatic number'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Graph_coloring' },
       viz(v) {
         const s = gstage(v, { height: 340 });
         const G = v.graph(s, { ...PRE5.pet[1](), r: 13, editable: true });
         const col = new Map();
         const start0 = () => { col.clear(); '0,3,2,1,3,1,1,0,0,2'.split(',').forEach((c, i) => col.set(String(i), +c)); };
         start0();
-        const nk = v.slider('colours in the palette', 2, 7, 4, { int: true });
+        const nk = v.slider('colours in the palette', 2, 7, 4, { int: true, onChange: () => { notice = ''; } });
         const edit = v.toggle('edit the graph', false);
-        const sel = v.select('graph', opts(PRE5), 'pet', { onChange: (k) => { loadSpec(G, PRE5[k][1]()); col.clear(); } });
-        const chi = cacheBy((g) => chromatic(ix(g)));
+        const sel = v.select('graph', opts(PRE5), 'pet', { onChange: (k) => { loadSpec(G, PRE5[k][1]()); col.clear(); notice = ''; } });
+        const chi = cacheBy((g) => vertexBounds(ix(g)));
+        let notice = '';
         G.onClick = ({ node, shift, alt }) => {
-          if (edit.value || alt) return false;
+          notice = '';
+          if (edit.value) return false;
+          if (alt) return true;
           if (node) {
             const id = String(node.id), cur = col.has(id) ? col.get(id) : -1, K1 = nk.value;
             const nx = shift ? (cur < 0 ? K1 - 1 : cur - 1) : (cur + 1 >= K1 ? -1 : cur + 1);
@@ -65,11 +70,11 @@ export default {
           }
           return true;
         };
-        v.button('Clear colours', () => col.clear());
-        v.button('Show an optimal colouring', () => { const H = ix(G), r = chromatic(H); col.clear(); if (r.col) H.ids.forEach((id, i) => col.set(String(id), r.col[i])); if (r.k > nk.value) nk.set(Math.min(7, r.k)); });
+        v.button('Clear colours', () => { col.clear(); notice = ''; });
+        v.button('Show a certified colouring', () => { const H = ix(G), r = chi(G); if (r.upper > 7) { notice = `A proper ${r.upper}-colouring was found; this demo palette supports at most 7 colours.`; return; } notice = r.exact ? '' : 'A proper colouring is shown; optimality is unresolved within the search budget.'; nk.set(Math.max(2, nk.value, r.upper)); col.clear(); H.ids.forEach((id, i) => col.set(String(id), r.col[i])); });
         let info = {};
         v.render(() => {
-          for (const id of [...col.keys()]) if (!G.has(id) && !G.has(Number(id))) col.delete(id);
+          for (const id of [...col.keys()]) if ((!G.has(id) && !G.has(Number(id))) || col.get(id) >= nk.value) col.delete(id);
           const H = ix(G), c = colArr(H, col), bad = conflicts(H, c), badE = new Set(bad.map((k) => H.E[k][2]));
           const used = new Set(c.filter((x) => x >= 0)).size, all = c.every((x) => x >= 0);
           info = { used, nbad: bad.length, all, chi: chi(G), n: H.n };
@@ -81,9 +86,9 @@ export default {
         v.legend([['red', 'edge with both ends the same colour']]);
         v.readout(() => {
           const x = info.chi;
-          const chiT = x.exact ? `$\\chi(G)=${x.k}$` : `$\\chi(G)\\ge ${x.k}$`;
+          const chiT = x.exact ? `$\\chi(G)=${x.k}$` : `$${x.lower}\\le\\chi(G)\\le${x.upper}$ (search budget exhausted)`;
           const state = !info.all ? 'some vertices are still uncoloured' : info.nbad ? `${info.nbad} conflicting edge${info.nbad > 1 ? 's' : ''}` : info.used === x.k ? 'proper, and optimal' : `proper with ${info.used} colours — can you use fewer?`;
-          return `colours used: $${info.used}$ · ${chiT}` + '\n' + state;
+          return `colours used: $${info.used}$ · ${chiT}` + '\n' + state + (notice ? '\n' + notice : '');
         });
       },
     },
@@ -91,9 +96,9 @@ export default {
       num: '5.1.1b', kind: 'Definition', name: 'Edge colourings and chromatic index',
       statement: String.raw`An **edge colouring** of $G$ with $k$ colours assigns each edge one of $k$ colours so that edges sharing an end get different colours; the colour classes are matchings. The least such $k$ is the **chromatic index** $\chi'(G)$. Always $\chi'(G)\ge\Delta(G)$, since the edges at a vertex of maximum degree need distinct colours.`,
       idea: String.raw`An edge colouring of $G$ is exactly a vertex colouring of its line graph $L(G)$, so $\chi'(G)=\chi(L(G))$. The inequality $\chi'\ge\Delta$ is local; how far above $\Delta$ the chromatic index can go is settled in §5.3 (König for bipartite graphs, Vizing in general).`,
-      caption: String.raw`Click an edge to cycle through its colours. Two edges of equal colour at a vertex are drawn red and the vertex is ringed. The readout compares your palette with $\Delta$ and the exact value of $\chi'$.`,
-      deps: ['graph-5.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., Chapter 5 introduction, p. 124'], tags: ['edge colouring', 'chromatic index'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Edge_coloring' },
+      caption: String.raw`Click an edge to cycle through its colours. Two edges of equal colour at a vertex are drawn red and the vertex is ringed. The readout compares your palette with $\Delta$ and certified bounds for $\chi'$ (an equality when the search finishes).`,
+      deps: ['graph-5.1.1a'], refs: ['Diestel, 6th ed. (2025), p. 124 (edge colouring definition)'], tags: ['edge colouring', 'chromatic index'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Edge_coloring' },
       viz(v) {
         const P = { k4: ['$K^4$', () => named('complete', 4)], k5: ['$K^5$', () => named('complete', 5)], pet: ['Petersen', () => named('petersen')], k33: ['$K_{3,3}$', () => named('kmn', 3, 3)], cube: ['cube', () => named('cube')], c5: ['$C^5$', () => named('cycle', 5)] };
         const s = gstage(v, { height: 340 });
@@ -101,17 +106,16 @@ export default {
         const col = new Map();
         const start0 = () => { col.clear(); const H0 = ix(G); '1,0,2,3,2,1,1,0,1,3,0,3,4,2,0'.split(',').forEach((c, i) => col.set(keyOf(H0.E[i][2]), +c)); };
         const keyOf = (e) => [K(e.from), K(e.to)].sort().join('|');
-        const nk = v.slider('colours in the palette', 2, 7, 5, { int: true });
+        const nk = v.slider('colours in the palette', 2, 7, 5, { int: true, onChange: () => { notice = ''; } });
         start0();
         const edit = v.toggle('edit the graph', false);
-        v.select('graph', opts(P), 'pet', { onChange: (k) => { loadSpec(G, P[k][1]()); col.clear(); } });
-        const chi1 = cacheBy((g) => {
-          const H = ix(g), D = maxDeg(H); if (!H.m) return { k: 0, exact: true, D };
-          const a = edgeColourWith(H, D); if (a.status === 'yes') return { k: D, exact: true, D, col: a.col, H };
-          const b = edgeColourWith(H, D + 1); return { k: D + 1, exact: a.status === 'no', D, col: b.status === 'yes' ? b.col : null, H };
-        });
+        v.select('graph', opts(P), 'pet', { onChange: (k) => { loadSpec(G, P[k][1]()); col.clear(); notice = ''; } });
+        const chi1 = cacheBy((g) => edgeBounds(ix(g)));
+        let notice = '';
         G.onClick = ({ node, edge, shift, alt }) => {
-          if (edit.value || alt) return false;
+          notice = '';
+          if (edit.value) return false;
+          if (alt) return true;
           if (edge) {
             const kk = keyOf(edge), cur = col.has(kk) ? col.get(kk) : -1, K1 = nk.value;
             const nx = shift ? (cur < 0 ? K1 - 1 : cur - 1) : (cur + 1 >= K1 ? -1 : cur + 1);
@@ -119,10 +123,11 @@ export default {
           }
           return true;
         };
-        v.button('Clear colours', () => col.clear());
-        v.button('Show an optimal colouring', () => { const r = chi1(G); col.clear(); if (r.col) { r.H.E.forEach(([a, b, e], i) => col.set(keyOf(e), r.col[i])); if (r.k > nk.value) nk.set(Math.min(7, r.k)); } });
+        v.button('Clear colours', () => { col.clear(); notice = ''; });
+        v.button('Show a certified colouring', () => { const r = chi1(G); if (r.upper > 7) { notice = `A proper ${r.upper}-edge-colouring was found; this demo palette supports at most 7 colours.`; return; } notice = r.exact ? '' : 'A proper colouring is shown; optimality is unresolved within the search budget.'; nk.set(Math.max(2, nk.value, r.upper)); col.clear(); r.H.E.forEach(([, , e], i) => col.set(keyOf(e), r.col[i])); });
         let info = {};
         v.render(() => {
+          const liveKeys = new Set(G.edges.map(keyOf)); for (const key of col.keys()) if (!liveKeys.has(key) || col.get(key) >= nk.value) col.delete(key);
           const H = ix(G), ec = H.E.map(([, , e]) => (col.has(keyOf(e)) ? col.get(keyOf(e)) : -1));
           const badE = new Set(), badV = new Set();
           for (let u = 0; u < H.n; u++) { const seen = new Map(); for (const [, k] of H.adj[u]) if (ec[k] >= 0) { if (seen.has(ec[k])) { badE.add(H.E[k][2]); badE.add(H.E[seen.get(ec[k])][2]); badV.add(H.ids[u]); } else seen.set(ec[k], k); } }
@@ -137,21 +142,22 @@ export default {
         v.readout(() => {
           const x = info.chi, cls = x.k === info.D ? 'class 1 ($\\chi\'=\\Delta$)' : 'class 2 ($\\chi\'=\\Delta+1$)';
           const state = !info.all ? 'some edges are still uncoloured' : info.bad ? 'conflicts at the ringed vertices' : info.used === x.k ? 'proper, and optimal' : 'proper — can you use fewer colours?';
-          return `$\\Delta=${info.D}$ · colours used $${info.used}$ · $\\chi'(G)${x.exact ? '=' : '\\ge'}${x.k}$ — ${x.exact ? cls : 'search budget exceeded'}` + '\n' + state;
+          const bound = x.exact ? `$\\chi'(G)=${x.k}$ — ${cls}` : `$${x.lower}\\le\\chi'(G)\\le${x.upper}$ — search budget exhausted`;
+          return `$\\Delta=${info.D}$ · colours used $${info.used}$ · ${bound}` + '\n' + state + (notice ? '\n' + notice : '');
         });
       },
     },
     {
       num: '5.1.1', kind: 'Theorem', name: 'Four colour theorem',
-      statement: String.raw`Every planar graph has a proper vertex colouring with at most four colours: $\chi(G)\le 4$ for all planar $G$. Equivalently, the countries of any map in the plane (each connected, meeting along borders of positive length) can be coloured with four colours so that neighbours differ.`,
-      idea: String.raw`Kempe's 1879 attempt reduces the claim to a finite list of configurations, but his handling of the hardest one was flawed. The accepted proofs show that a minimal counterexample must contain one of a list of *reducible* configurations while every plane triangulation contains one of an *unavoidable* set; both lists are checked by computer (Appel and Haken, published 1977; a smaller, cleaner version by Robertson, Sanders, Seymour and Thomas 1997). The picture below does not prove anything: it colours random plane triangulations, the extremal case, and shows the claim empirically.`,
-      caption: String.raw`Resample random plane triangulations and change $n$. With four colours the search always succeeds. Switch to three colours to see how often that fails (the red edges show the best attempt), and read the bar chart: over many samples $\chi$ is $3$ or $4$, never $5$.`,
-      deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.1.1, p. 124; notes pp. 152–153'], see: ['graph-5.1.2', 'geog-7.8'], tags: ['colouring', 'planar'],
-      credit: 'Appel & Haken, 1977 (publication); Robertson, Sanders, Seymour & Thomas, 1997',
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Four_color_theorem' },
+      statement: String.raw`Every planar graph has a proper vertex colouring with at most four colours: $\chi(G)\le 4$ for all planar $G$. Equivalently, the connected countries of a finite polygonal map in the plane (neighbours share a border arc; meeting only at a point does not count) can be coloured with four colours so that neighbours differ.`,
+      idea: String.raw`The computer-assisted proofs use an unavoidable collection of configurations: every plane triangulation contains one. Each configuration is reducible: a colouring of a smaller graph can be extended, ruling out a smallest counterexample. Diestel's notes discuss Appel and Haken's published proof (1977) and the Robertson–Sanders–Seymour–Thomas proof (1997). The samples below illustrate the theorem; neither successful searches nor a histogram prove the universal statement.`,
+      caption: String.raw`Resample plane triangulations from this particular generator and change $n$. Four colours suffice by the theorem; a search that exceeds its budget is reported as unresolved. With three colours, red edges mark conflicts in a heuristic attempt. The chart separates certified 3-chromatic and 4-chromatic samples from unresolved searches; it is not a uniform distribution over planar graphs.`,
+      deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel, 6th ed. (2025), Theorem 5.1.1, p. 124; notes pp. 152–153'], see: ['graph-5.1.2', 'geog-7.8'], tags: ['colouring', 'planar'],
+      credit: 'Appel & Haken (published 1977); Robertson, Sanders, Seymour & Thomas (1997), as discussed in Diestel’s notes',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Four_color_theorem' },
       viz(v) {
         const s = gstage(v, { height: 340, title: 'a random plane triangulation' });
-        const sb = v.stage({ x: [2, 6], y: [0, 100], axes: 'box', gutter: true, height: 340, xlabel: '$\\chi$ of the sampled triangulation', ylabel: '% of 120 samples', xticks: [3, 4, 5], title: 'how many colours do random triangulations need?' });
+        const sb = v.stage({ x: [2, 6], y: [0, 115], axes: 'box', gutter: true, height: 340, xlabel: 'certified search outcome', ylabel: '% of 120 generated samples', xticks: [[3, '3 proved'], [4, '4 proved'], [5, 'unresolved']], title: 'search certificates for this generator' });
         const nS = v.slider('vertices $n$', 4, 22, 12, { int: true });
         const kS = v.select('colours allowed', [{ value: '4', label: '4 colours' }, { value: '3', label: '3 colours' }], '4');
         let seed = 11;
@@ -160,32 +166,32 @@ export default {
         const mkTri = (n, sd, light) => (light ? { n, E: randomTriangulation(n, rng32(sd), 60).E } : triangulation(n, sd));
         function refresh() {
           const key = nS.value + ':' + seed; if (cur.key === key) return;
-          const D = mkTri(nS.value, seed);
+          const D = mkTri(nS.value, seed), H = ix({ nodes: Array.from({ length: D.n }, (_, i) => ({ id: i })), edges: D.E });
           loadSpec(G, { nodes: D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: D.E, layout: 'fit' });
-          const H = ix(G), c4 = colourWith(nbrs(H), 4), c3 = colourWith(nbrs(H), 3);
-          cur = { key, H, c3, c4, att: c3.status === 'yes' ? null : bestAttempt(H, 3, seed) };
+          const c4 = colourWith(nbrs(H), 4), c3 = colourWith(nbrs(H), 3);
+          cur = { key, H, c3, c4, att: c3.status === 'yes' ? null : bestAttempt(H, 3, seed), fallback4: c4.status === 'yes' ? null : bestAttempt(H, 4, seed) };
         }
         function histo() {
           const n = nS.value; if (hist.key === String(n)) return;
           let c = [0, 0, 0];
-          for (let i = 0; i < 120; i++) { const D = mkTri(n, 500 + i, true), H = ix({ nodes: Array.from({ length: D.n }, (_, j) => ({ id: j })), edges: D.E }), a = nbrs(H); const x = colourWith(a, 3, 3e5).status === 'yes' ? 0 : colourWith(a, 4, 3e5).status === 'yes' ? 1 : 2; c[x]++; }
+          for (let i = 0; i < 120; i++) { const D = mkTri(n, 500 + i, true), H = ix({ nodes: Array.from({ length: D.n }, (_, j) => ({ id: j })), edges: D.E }), a = nbrs(H); const three = colourWith(a, 3, 3e5), four = colourWith(a, 4, 3e5); c[triangulationCategory(three, four)]++; }
           hist = { key: String(n), p: c.map((x) => (100 * x) / 120) };
         }
         v.button('Resample', () => { seed += 1; });
         v.render(() => {
           refresh(); histo();
           const three = kS.value === '3', H = cur.H;
-          const col = three ? (cur.c3.status === 'yes' ? cur.c3.col : cur.att.col) : cur.c4.col;
+          const col = three ? (cur.c3.status === 'yes' ? cur.c3.col : cur.att.col) : (cur.c4.status === 'yes' ? cur.c4.col : cur.fallback4.col);
           const bad = new Set(conflicts(H, col).map((k) => H.E[k][2]));
           G.draw({ nodeFill: (id) => COL[col[H.at(id)]], edgeColor: (e) => (bad.has(e) ? 'red' : null), edgeWidth: (e) => (bad.has(e) ? 4.5 : null) });
           sb.bars(hist.p, { x0: 3, dx: 1, color: (val, i) => (i === 2 ? 'red' : i === 1 ? 'orange' : 'accent') });
           [3, 4, 5].forEach((x, i) => sb.text(`${v.fix(hist.p[i], 0)}%`, x, hist.p[i] + 6, { align: 'center', color: 'ink' }));
-          cur.info = { three, nbad: bad.size, m: H.m, n: H.n, k3: cur.c3.status };
+          cur.info = { three, nbad: bad.size, m: H.m, n: H.n, k3: cur.c3.status, k4: cur.c4.status };
         });
-        v.legend([['red', 'conflict (only when 3 colours are not enough)']]);
+        v.legend([['red', 'conflicting edge in the displayed heuristic attempt']]);
         v.readout(() => {
           const i = cur.info; if (!i) return '';
-          const res = !i.three ? 'a proper 4-colouring was found' : i.k3 === 'yes' ? 'this triangulation happens to be 3-colourable' : `no proper 3-colouring exists; the best attempt leaves $${i.nbad}$ conflicting edge${i.nbad > 1 ? 's' : ''}`;
+          const res = !i.three ? (i.k4 === 'yes' ? 'a proper 4-colouring was found' : `4-colour search unresolved; heuristic conflicts: ${i.nbad}`) : i.k3 === 'yes' ? 'a proper 3-colouring was found' : `${i.k3 === 'no' ? 'exhaustive search proves no 3-colouring exists' : '3-colour search unresolved within the budget'}; heuristic conflicts: $${i.nbad}$`;
           return `$n=${i.n}$, $m=3n-6=${i.m}$ · ${res}`;
         });
       },
@@ -193,24 +199,24 @@ export default {
     {
       num: '5.1.2', kind: 'Proposition', name: 'Five colour theorem',
       statement: String.raw`Every planar graph is $5$-colourable.`,
-      idea: String.raw`Induct on $|G|$. A planar graph has a vertex $v$ of degree at most $5$ (from $m\le 3n-6$); colour $G-v$ by induction. If the neighbours of $v$ use at most four colours, give $v$ a free one. Otherwise $v$ has five neighbours $n_1,\dots,n_5$ in cyclic order with colours $1,\dots,5$. Look at the Kempe chain of colours $1,3$ containing $n_1$. If it misses $n_3$, swap its two colours and colour $v$ with $1$. If it reaches $n_3$, it together with $v$ forms a closed curve that separates $n_2$ from $n_4$, so the $2,4$-chain from $n_2$ cannot reach $n_4$: swap that one instead. Kempe's argument for four colours breaks because a degree-$5$ vertex lets two chains be unlinked only when only two colours are involved.`,
+      idea: String.raw`Induct on $|G|$, handling graphs on at most five vertices directly. For $n\ge6$, a planar graph has a vertex $v$ of degree at most $5$ (from $m\le 3n-6$); colour $G-v$ by induction. If the neighbours of $v$ use at most four colours, give $v$ a free one. Otherwise $v$ has five neighbours $n_1,\dots,n_5$ in cyclic order with colours $1,\dots,5$. Look at the Kempe chain of colours $1,3$ containing $n_1$. If it misses $n_3$, swap its two colours and colour $v$ with $1$. If it reaches $n_3$, a simple path in that chain together with the two edges to $v$ forms a closed curve that separates $n_2$ from $n_4$, so the $2,4$-chain from $n_2$ cannot reach $n_4$: swap that one instead. The two chains use disjoint pairs of colours, so their paths cannot cross in the plane embedding; this is the separation step that justifies the second swap.`,
       caption: String.raw`Step through the proof on a random plane triangulation: first vertices of degree $\le5$ are peeled off, then they are re-inserted in reverse order. When all five colours surround a vertex, the Kempe chain (red ring) is swapped. Use *next example with a swap* to find a graph where this happens.`,
-      deps: ['graph-4.2.10', 'graph-5.1.1a', 'graph-4.1.1'], refs: ['Diestel, Graph Theory, 6th ed., Proposition 5.1.2 and first proof, pp. 124–125'], tags: ['colouring', 'Kempe chain', 'planar'],
+      deps: ['graph-4.2.10', 'graph-5.1.1a', 'graph-4.1.1'], refs: ['Diestel, 6th ed. (2025), Proposition 5.1.2 and proof, pp. 124–126; notes p. 152'], tags: ['colouring', 'Kempe chain', 'planar'],
       credit: 'Heawood, 1890 (repairing Kempe, 1879)',
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Five_color_theorem' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Five_color_theorem' },
       viz(v) {
         const s = gstage(v, { height: 360 });
         const nS = v.slider('vertices $n$', 6, 20, 14, { int: true, onChange: () => rebuild() });
-        let seed = 1, swapsInfo = 0;
+        let seed = 1, swapsInfo = 0, searchNote = '';
         const G = v.graph(s, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 10, draggable: false });
-        function build() { return fiveFrames(triangulation(nS.value, seed * 31 + nS.value), seed); }
+        function build() { return auditedFiveFrames(triangulation(nS.value, seed * 31 + nS.value), seed); }
         let B = build(); for (let t = 0; t < 300 && B.swaps === 0; t++) { seed++; B = build(); } swapsInfo = B.swaps;
         loadSpec(G, { nodes: B.D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: B.D.E, layout: 'fit' });
         const swAt = () => { const i = B.frames.findIndex((f) => /^Swap/.test(f.note)); return i >= 0 ? i : 'end'; };
         const S = v.steps({ frames: B.frames, start: swAt(), still: swAt(), speed: 1.3, codePos: 'below', code: ['peel: repeatedly remove a vertex v of degree ≤ 5', 'recolour back in reverse order:', '  if the neighbours of v miss a colour: use it', '  else (5 neighbours, 5 colours): take a Kempe chain', '    n₁→n₃ if it avoids n₃, else n₂→n₄; swap its colours', '  and give v the colour that is now free'], codeTitle: 'Five-colouring proof' });
-        function rebuild() { B = build(); swapsInfo = B.swaps; loadSpec(G, { nodes: B.D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: B.D.E, layout: 'fit' }); S.reset(B.frames, { at: swAt() }); }
+        function rebuild(keepSearch = false) { if (!keepSearch) searchNote = ''; B = build(); swapsInfo = B.swaps; loadSpec(G, { nodes: B.D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: B.D.E, layout: 'fit' }); S.reset(B.frames, { at: swAt() }); }
         v.button('Next example', () => { seed++; rebuild(); });
-        v.button('Next example with a Kempe swap', () => { for (let t = 0; t < 300; t++) { seed++; B = build(); if (B.swaps > 0) break; } rebuild(); });
+        v.button('Next example with a Kempe swap', () => { for (let t = 0; t < 300; t++) { seed++; B = build(); if (B.swaps > 0) break; } searchNote = B.swaps ? '' : 'No swap was found among the next 300 examples at this size.'; rebuild(true); });
         v.render(() => {
           const f = S.frame; if (!f.live) return;
           const dead = []; f.live.forEach((l, i) => { if (!l) dead.push(i); });
@@ -221,17 +227,17 @@ export default {
           });
         });
         v.legend([['gold', 'the vertex being handled', { dot: true }], ['purple', 'its neighbours', { dot: true }], ['red', 'Kempe chain', { dot: true }]]);
-        v.readout(() => `this graph needs ${swapsInfo} Kempe swap${swapsInfo === 1 ? '' : 's'} in the proof`);
+        v.readout(() => `this displayed proof run performs ${swapsInfo} Kempe swap${swapsInfo === 1 ? '' : 's'}` + (searchNote ? '\n' + searchNote : ''));
       },
     },
     {
       num: '5.1.3', kind: 'Theorem', name: 'Grötzsch: triangle-free planar graphs are 3-colourable',
       statement: String.raw`Every planar graph without triangles is $3$-colourable.`,
-      idea: String.raw`The proof (Grötzsch 1959; Thomassen's later argument is much shorter) strengthens the claim so that it can be proved by induction on plane graphs, controlling the colouring of the outer face. Both hypotheses are needed: a planar graph with triangles may need four colours ($K^4$, odd wheels), and a triangle-free graph that is not planar may need four too (the Grötzsch graph, a Mycielski construction on $C^5$).`,
-      caption: String.raw`Pick *random* to sample maximal triangle-free planar graphs and watch a proper 3-colouring appear. The other presets break one hypothesis each: $K^4$ and the wheel are planar but have triangles, the Grötzsch graph is triangle-free but not planar, and both need four colours.`,
-      deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.1.3, p. 126'], tags: ['colouring', 'planar', 'triangle-free'],
+      idea: String.raw`Diestel states Grötzsch's theorem here without a proof and points to Thomassen's 2003 list-colouring proof in the notes. The displayed finite examples illustrate its hypotheses; they do not prove the theorem. Both hypotheses are needed: a planar graph with triangles may need four colours ($K^4$, odd wheels), and a triangle-free graph that is not planar may need four too (the Grötzsch graph, a Mycielski construction on $C^5$).`,
+      caption: String.raw`Pick *random* to sample maximal triangle-free planar graphs and watch a proper 3-colouring appear. Compare examples satisfying or breaking the hypotheses: $K^4$ and the wheel are planar but have triangles, and the Grötzsch graph is triangle-free but not planar. These three counterexamples each need four colours, while the cycle $C^5$ satisfies both hypotheses and needs three.`,
+      deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel, 6th ed. (2025), Theorem 5.1.3, p. 126; notes p. 153'], tags: ['colouring', 'planar', 'triangle-free'],
       credit: 'Grötzsch, 1959',
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Gr%C3%B6tzsch%27s_theorem' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Gr%C3%B6tzsch%27s_theorem' },
       viz(v) {
         const s = gstage(v, { height: 360 });
         const P = { rnd: ['random', null], k4: ['$K^4$', () => named('complete', 4)], w5: ['odd wheel', () => wheel(5)], gro: ['Grötzsch graph', () => grotzsch()], c5: ['$C^5$', () => named('cycle', 5)] };
@@ -250,16 +256,17 @@ export default {
             sp.nodes.forEach((n, i) => { n.label = String(i + 1); });
             loadSpec(G, sp);
             H = ix(sp);
-            const c3 = colourWith(nbrs(H), 3), ch = chromatic(H);
+            const c3 = colourWith(nbrs(H), 3), ch = vertexBounds(H);
             col = c3.status === 'yes' ? c3.col : ch.col;
-            info = { n: H.n, m: H.m, tri: triangles(H), planar: isPlanar(H), chi: ch.k };
+            info = { n: H.n, m: H.m, tri: triangles(H), planar: isPlanar(H), chi: ch };
           }
           G.draw({ nodeFill: (id) => cc(col[H.at(id)]) });
         });
         v.readout(() => {
           const i = info; if (!i) return '';
           const hyp = `${i.planar ? 'planar' : 'not planar'}, ${i.tri ? i.tri + ' triangle' + (i.tri > 1 ? 's' : '') : 'no triangle'}`;
-          const concl = i.planar && !i.tri ? `hypotheses hold, so $\\chi\\le3$ — and indeed $\\chi=${i.chi}$` : `a hypothesis fails; here $\\chi=${i.chi}$`;
+          const bound = i.chi.exact ? `$\\chi=${i.chi.k}$` : `$${i.chi.lower}\\le\\chi\\le${i.chi.upper}$ (search unresolved)`;
+          const concl = i.planar && !i.tri ? `hypotheses hold, so $\\chi\\le3$; computed certificate: ${bound}` : `a hypothesis fails; computed certificate: ${bound}`;
           return `$n=${i.n}$, $m=${i.m}$ · ${hyp}\n${concl}`;
         });
       },
@@ -306,11 +313,10 @@ export default {
     },
     {
       num: '5.2.1a', kind: 'Algorithm', name: 'Greedy colouring and the colouring number',
-      statement: String.raw`**Greedy colouring.** Given an order $v_1,\dots,v_n$ of the vertices, give $v_i$ the least colour not used by its neighbours among $v_1,\dots,v_{i-1}$. It uses at most $\Delta(G)+1$ colours, and in general at most $1+\max_i d_{<}(v_i)$ colours, where $d_<(v_i)$ counts earlier neighbours. The **colouring number** $\operatorname{col}(G)$ is the least $k$ such that some order has every vertex with fewer than $k$ earlier neighbours.`,
-      idea: String.raw`A vertex with $d_<$ earlier neighbours can only be blocked by $d_<$ colours, so colour number $d_<+1$ is always free. The order matters enormously: on a crown graph (bipartite, $\chi=2$) the order $a_1,b_1,a_2,b_2,\dots$ forces $n$ colours, while ordering by repeated deletion of a minimum-degree vertex (smallest-last) achieves $\operatorname{col}(G)$ colours.`,
+      statement: String.raw`**Greedy colouring.** For a nonempty finite graph, given an order $v_1,\dots,v_n$ of the vertices, give $v_i$ the least colour not used by its neighbours among $v_1,\dots,v_{i-1}$. It uses at most $\Delta(G)+1$ colours, and in general at most $1+\max_i d_{<}(v_i)$ colours, where $d_<(v_i)$ counts earlier neighbours. The **colouring number** $\operatorname{col}(G)$ is the least $k$ such that some order has every vertex with fewer than $k$ earlier neighbours.`,
+      idea: String.raw`A vertex with $d_<$ earlier neighbours can only be blocked by $d_<$ colours, so colour number $d_<+1$ is always free. The order matters enormously: on a crown graph (bipartite, $\chi=2$) the order $a_1,b_1,a_2,b_2,\dots$ forces $n$ colours, while reversing a repeated minimum-degree deletion order (smallest-last) guarantees at most $\operatorname{col}(G)$ colours. This upper bound need not be attained: the displayed crown has $\operatorname{col}=5$ but smallest-last greedy uses only two colours.`,
       caption: String.raw`Choose a graph and an order, then step through the greedy algorithm (the small numbers show the order, the gold ring the vertex being coloured). On the crown graph the label order is a bad one: compare with smallest-last. The readout lists $\chi$, $\operatorname{col}(G)$ and $\Delta+1$.`,
-      deps: ['graph-5.1.1a', 'graph-1.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., §5.2, pp. 126–127'], tags: ['greedy', 'colouring number'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
+      deps: ['graph-5.1.1a', 'graph-1.2.1a'], refs: ['Diestel, 6th ed. (2025), pp. 126–127 (greedy algorithm and colouring number)'], tags: ['greedy', 'colouring number'],
       viz(v) {
         const s = gstage(v, { height: 340 });
         const P = { crown: ['crown graph', () => crown(5)], pet: ['Petersen', () => named('petersen')], rnd: ['random', () => gnm(11, 20, rng32(5))], cube: ['cube', () => named('cube')] };
@@ -331,8 +337,8 @@ export default {
           const sp = P[gsel.value][1](); loadSpec(G, sp); H = ix(G);
           const d = degeneracy(H), r = rng32(seed * 13);
           order = osel.value === 'label' ? H.ids.map((_, i) => i) : osel.value === 'random' ? shuffled(H.ids.map((_, i) => i), r) : osel.value === 'sl' ? d.removed.slice().reverse() : H.ids.map((_, i) => i).sort((a, b) => nbrs(H)[b].length - nbrs(H)[a].length);
-          const g = greedyColour(H, order), ch = chromatic(H);
-          sum = { used: g.used, chi: ch.k, col: d.d + 1, D: maxDeg(H) + 1 };
+          const g = greedyColour(H, order), ch = vertexBounds(H);
+          sum = { used: g.used, chi: ch, col: d.d + 1, D: maxDeg(H) + 1 };
           if (S) S.reset(frames(), { at: 'end' });
         }
         H = ix(G); recompute();
@@ -343,17 +349,15 @@ export default {
           const rank = new Map(order.map((u, i) => [H.ids[u], i + 1]));
           G.draw({ nodeFill: (id) => cc(f.col[H.at(id)]), nodeNote: (id) => String(rank.get(id)), nodeRing: (id) => (f.cur >= 0 && H.at(id) === f.cur ? 'gold' : null) });
         });
-        v.readout(() => `greedy used $${sum.used}$ colours · $\\chi(G)=${sum.chi}$ · $\\operatorname{col}(G)=${sum.col}$ · $\\Delta+1=${sum.D}$`);
+        v.readout(() => { const now = new Set(S.frame.col.filter(c => c >= 0)).size, bound = sum.chi.exact ? `$\\chi(G)=${sum.chi.k}$` : `$${sum.chi.lower}\\le\\chi(G)\\le${sum.chi.upper}$`; return `colours used so far $${now}$; complete run uses $${sum.used}$ · ${bound} · $\\operatorname{col}(G)=${sum.col}$ · $\\Delta+1=${sum.D}$`; });
       },
     },
     {
       num: '5.2.2', kind: 'Proposition', name: String.raw`χ ≤ col(G) = max δ(H) + 1`,
-      statement: String.raw`For every graph $G$, $\chi(G)\le \operatorname{col}(G)=1+\max_{H\subseteq G}\delta(H)$, the maximum over all subgraphs $H$ of the minimum degree.`,
-      idea: String.raw`Delete a vertex of least degree again and again. Let $d$ be the largest degree met at the moment of deletion. Re-inserting the vertices in reverse order, each has at most $d$ earlier neighbours, so greedy colouring uses at most $d+1$ colours; hence $\operatorname{col}(G)\le d+1$. Conversely the remaining graph at the first moment a vertex of degree $d$ is deleted has minimum degree $d$, and in any order the last vertex of a subgraph $H$ has $\delta(H)$ earlier neighbours; so $\operatorname{col}(G)\ge\delta(H)+1$ for every $H$.`,
+      statement: String.raw`For every nonempty finite graph $G$, $\chi(G)\le \operatorname{col}(G)=1+\max_{\varnothing\ne H\subseteq G}\delta(H)$, the maximum over all nonempty subgraphs $H$ of the minimum degree.`,
+      idea: String.raw`Delete a vertex of least degree again and again. Let $d$ be the largest degree met at the moment of deletion. Re-inserting the vertices in reverse order, each has at most $d$ earlier neighbours, so greedy colouring uses at most $d+1$ colours; hence $\operatorname{col}(G)\le d+1$. Conversely the remaining graph at the first moment a vertex of degree $d$ is deleted has minimum degree $d$, and in any order the last vertex of a subgraph $H$ has at least $\delta(H)$ earlier neighbours; so $\operatorname{col}(G)\ge\delta(H)+1$ for every $H$.`,
       caption: String.raw`In *peel* mode delete vertices of least degree one at a time (slider) and watch the bar chart of the degrees at deletion; when the remaining graph is the subgraph $H$ with $\delta(H)=d$ it is ringed in green. In *colour back* mode re-insert in reverse order, colouring greedily: never more than $d+1$ colours.`,
-      deps: ['graph-5.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., Proposition 5.2.2 and preceding proof, p. 127'], tags: ['degeneracy', 'colouring number'],
-
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
+      deps: ['graph-5.2.1a'], refs: ['Diestel, 6th ed. (2025), Proposition 5.2.2 and proof, p. 127'], tags: ['degeneracy', 'colouring number'],
       viz(v) {
         const P = {
           rnd: ['random', () => gnm(14, 26, rng32(9))], pet: ['Petersen', () => named('petersen')],
@@ -371,7 +375,7 @@ export default {
           loadSpec(G, P[gsel.value][1]()); H = ix(G); D = degeneracy(H);
           const g = greedyColour(H, D.removed.slice().reverse()); backCol = g.col;
           sb.setView([-0.5, H.n + 0.5], [0, Math.max(...D.mins) + 2]);
-          tS.set(D.coreAt);
+          tS.input.max = String(H.n); tS.set(D.coreAt);
         }
         load();
         v.render(() => {

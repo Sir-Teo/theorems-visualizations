@@ -102,7 +102,7 @@ export function hsv2code(h, s, vv) {
 // ---------------------------------------------------------------- luminous efficiency
 /** Photopic V(l): the y-bar of the fit (the 1931 y-bar is the 1924 V(l) by construction). */
 export const Vphot = (l) => cmf(l)[1];
-/** Scotopic V'(l): a two-sided Gaussian MODEL anchored at the 507 nm peak with chosen illustrative widths, NOT the measured CIE table; official2019 data confirm the506–507nm peak plateau. */
+/** Scotopic V'(l): a two-sided Gaussian MODEL anchored at the 507 nm peak (widths fitted to a handful of remembered table values), NOT the CIE 1951 table. */
 export const Vscot = (l) => { const w = l < 507 ? 45.4 : 35.6; return Math.exp(-0.5 * ((l - 507) / w) ** 2); };
 
 // ---------------------------------------------------------------- metameric spectra

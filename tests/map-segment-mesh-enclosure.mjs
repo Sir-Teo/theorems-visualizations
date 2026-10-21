@@ -1,0 +1,11 @@
+// Small explicit adversarial geometry checks; no browser, GL binding or timing.
+import assert from'node:assert/strict';import{nextFloat32,halfValue,halfInterval,segmentMeshEnclosure,intersectsTile}from'../scripts/lib/map-segment-mesh-enclosure.mjs';
+let cases=0;for(let h=0;h<0x7bff;h+=7){const a=halfValue(h),b=halfValue(h+1);for(const x of[a,(a+b)/2,b])for(const sign of[-1,1]){const v=Math.fround(sign*x),I=halfInterval(v);assert.ok(I&&I[0]<=v&&I[1]>=v);cases++;}}
+assert.equal(nextFloat32(1,1),1+2**-23);assert.equal(nextFloat32(-1,-1),-1-2**-23);assert.equal(intersectsTile(null,{x:0,y:0,width:1,height:1}),true);
+// Independent nominal shader simulation; outward interval additionally covers half endpoint choices.
+for(const dpr of[1,2])for(const cap of['butt','round'])for(const phase of[-.4999,0,.5001])for(const scale of[.01,.8,16])for(const join of[[0,1],[1,0],[9.999,0.0001],[-7.071,7.071]]){
+ const points=new Float32Array([1000,1000,0,.25,1010,1001,10,.5]),joins=new Float32Array([...join,...join]),view={k:scale,tx:-1000*scale+4096/dpr+phase,ty:-1000*scale+1953/dpr-phase,dpr},tile={x:4096,y:1953,width:3584,height:1953},width=cap==='round'?2:.7,box=segmentMeshEnclosure({points,joins,firstPoint:0,width,cap,view,tile});assert.ok(box);
+ for(let end=0;end<2;end++)for(const side of[-1,1]){const J=joins.slice(end*2,end*2+2).map(x=>x),a=halfInterval(J[0]),b=halfInterval(J[1]);for(const jx of a)for(const jy of b){const outer=Math.fround(width/2)+1/Math.fround(dpr),extra=(end?1:-1)*(cap==='round'?outer:1/dpr),x=points[end*4]*Math.fround(scale)+Math.fround(view.tx)+jx*outer*side+jy*extra,y=points[end*4+1]*Math.fround(scale)+Math.fround(view.ty)+jy*outer*side-jx*extra;assert.ok(box[0]<=x*dpr&&box[2]>=x*dpr&&box[1]<=y*dpr&&box[3]>=y*dpr,JSON.stringify({box,x,y}));cases++;}}
+ assert.equal(intersectsTile(box,{x:box[2],y:box[3],width:10,height:10}),true);assert.equal(intersectsTile(box,{x:box[2]+1,y:box[3]+1,width:10,height:10}),false);
+}
+const bad=segmentMeshEnclosure({points:new Float32Array([Infinity,0,0,.25,1,1,1,.5]),joins:new Float32Array([0,1,0,1]),firstPoint:0,width:1,view:{k:1,tx:0,ty:0,dpr:2},tile:{x:0,y:0,width:1,height:1}});assert.equal(bad,null);console.log(`PASS ${cases} half/corner witnesses and cap/phase/tile tests; uncertain bounds include, never reject.`);

@@ -244,7 +244,7 @@ $$f=f^+-f^-,\qquad |f|=f^++f^-.$$`,
       caption: String.raw`Drag the three gold handles to shape an arbitrary $p\ge0$ (bottom). The middle panel shows the competing decomposition $g=f^++p$, $h=f^-+p$: always $g-h=f$, and the gold gap between $g$ and $f^+$ (or $h$ and $f^-$) is exactly $p$, never negative.`,
       deps: ['rca-1.14a'],
       tags: ['positive part'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Proposition in Section 1.15, p. 15'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const f = (x) => 0.9 * Math.sin(2 * Math.PI * x * 1.25 + 0.3) + 0.15;

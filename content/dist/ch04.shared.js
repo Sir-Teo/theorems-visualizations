@@ -101,39 +101,43 @@ export function bakerySpec(n = 3, variant = 'ok', cap = Infinity) {
 /** Dijkstra's 1965 algorithm for n processes, and two naive flag protocols. kind: 'dijkstra' | 'flags' (raise a flag, wait for the others to be down) | 'look' (look, then raise the flag). */
 export function flagSpec(n = 3, kind = 'dijkstra') {
   if (kind === 'dijkstra') {
-    // Li3 reads k, reads b[k], then may write k: these are separate shared-memory
-    // operations in the original note, not an atomic conditional assignment.
+    // One shared-word read OR write per instruction. In particular, b[k]'s
+    // index read, Boolean read and later k assignment are separate actions.
     const prog = [
       { t: 'remainder section', reg: 'R', f: () => 1 },
-      { t: 'Li0: b[i] ← false', reg: 'T', f: (S, i) => { S.sh.b[i] = 0; return 2; } },
-      { t: 'Li1: if k ≠ i then goto Li2 else goto Li4', reg: 'T', f: (S, i) => (S.sh.k !== i ? 3 : 7) },
-      { t: 'Li2: c[i] ← true', reg: 'T', f: (S, i) => { S.sh.c[i] = 1; return 4; } },
-      { t: 'Li3: candidate ← k   // local snapshot', reg: 'T', f: (S, i) => { S.lo[i].candidate = S.sh.k; return 5; } },
-      { t: '    if b[candidate] then continue else goto Li1', reg: 'T', f: (S, i) => { const free = S.sh.b[S.lo[i].candidate]; S.lo[i].candidate = 0; return free ? 6 : 2; } },
-      { t: '    k ← i; goto Li1', reg: 'T', f: (S, i) => { S.sh.k = i; return 2; } },
-      { t: 'Li4: c[i] ← false', reg: 'T', f: (S, i) => { S.sh.c[i] = 0; S.lo[i].j = 0; return 8; } },
-      { t: '    for j ≠ i: if ¬c[j] then goto Li1', reg: 'T', f: (S, i) => { const L = S.lo[i]; if (L.j === i) L.j++; if (L.j >= n) return 9; if (!S.sh.c[L.j]) return 2; L.j++; if (L.j === i) L.j++; return L.j >= n ? 9 : 8; } },
+      { t: 'b[i] ← false', reg: 'T', f: (S,i) => {S.sh.b[i]=0;return 2;} },
+      { t: 'L1: read k; if k ≠ i goto L2 else L4', reg: 'T', f: (S,i) => S.sh.k!==i?3:7 },
+      { t: 'L2: c[i] ← true', reg: 'T', f: (S,i) => {S.sh.c[i]=1;return 4;} },
+      { t: 'L3a: r ← k       // private index r', reg: 'T', f: (S,i) => {S.lo[i].r=S.sh.k;return 5;} },
+      { t: 'L3b: read b[r]; if false goto L1', reg: 'T', f: (S,i) => {const next=S.sh.b[S.lo[i].r]?6:2;S.lo[i].r=0;return next;} },
+      { t: 'L3c: k ← i; goto L1', reg: 'T', f: (S,i) => {S.sh.k=i;return 2;} },
+      { t: 'L4: c[i] ← false; j ← 0', reg: 'T', f: (S,i) => {S.sh.c[i]=0;S.lo[i].j=0;return 8;} },
+      { t: 'for j ≠ i: read c[j]; false → L1', reg: 'T', f: (S,i) => {const L=S.lo[i];if(L.j===i)L.j++;if(L.j>=n){L.j=0;return 9;}if(!S.sh.c[L.j]){L.j=0;return 2;}L.j++;if(L.j===i)L.j++;if(L.j>=n){L.j=0;return 9;}return 8;} },
       { t: 'critical section', reg: 'C', f: () => 10 },
-      { t: 'c[i] ← true', reg: 'E', f: (S, i) => { S.sh.c[i] = 1; return 11; } },
-      { t: 'b[i] ← true', reg: 'E', f: (S, i) => { S.sh.b[i] = 1; return 0; } },
+      { t: 'c[i] ← true', reg: 'E', f: (S,i) => {S.sh.c[i]=1;return 11;} },
+      { t: 'b[i] ← true', reg: 'E', f: (S,i) => {S.sh.b[i]=1;return 0;} },
     ];
-    return mkSpec({ id: `dijkstra-${n}`, n, prog, sh: { b: Array(n).fill(1), c: Array(n).fill(1), k: 0 }, lo: { j: 0, candidate: 0 }, show: (S) => `b = [${S.sh.b}], c = [${S.sh.c}], k = ${S.sh.k}` });
+    return mkSpec({id:`dijkstra-${n}`,n,prog,sh:{b:Array(n).fill(1),c:Array(n).fill(1),k:0},lo:{j:0,r:0},show:S=>`b = [${S.sh.b}], c = [${S.sh.c}], k = ${S.sh.k}`});
   }
-  const others = (S, i, a) => a.every((x, j) => j === i || !x);
+  const scan = (S,i,done,again) => {
+    const L=S.lo[i];if(L.j===i)L.j++;if(L.j>=n){L.j=0;return done;}
+    if(S.sh.f[L.j]){L.j=0;return again;}L.j++;if(L.j===i)L.j++;
+    if(L.j>=n){L.j=0;return done;}return again;
+  };
   const prog = kind === 'flags' ? [
-    { t: 'remainder section', reg: 'R', f: () => 1 },
-    { t: 'flag[i] ← true', reg: 'T', f: (S, i) => { S.sh.f[i] = 1; return 2; } },
-    { t: 'wait until every other flag is down', reg: 'T', f: (S, i) => (others(S, i, S.sh.f) ? 3 : 2) },
-    { t: 'critical section', reg: 'C', f: () => 4 },
-    { t: 'flag[i] ← false', reg: 'E', f: (S, i) => { S.sh.f[i] = 0; return 0; } },
+    {t:'remainder section',reg:'R',f:()=>1},
+    {t:'flag[i] ← true; j ← 0',reg:'T',f:(S,i)=>{S.sh.f[i]=1;S.lo[i].j=0;return 2;}},
+    {t:'scan other flags; one read per step; retry if raised',reg:'T',f:(S,i)=>scan(S,i,3,2)},
+    {t:'critical section',reg:'C',f:()=>4},
+    {t:'flag[i] ← false',reg:'E',f:(S,i)=>{S.sh.f[i]=0;return 0;}},
   ] : [
-    { t: 'remainder section', reg: 'R', f: () => 1 },
-    { t: 'wait until every other flag is down', reg: 'T', f: (S, i) => (others(S, i, S.sh.f) ? 2 : 1) },
-    { t: 'flag[i] ← true', reg: 'T', f: (S, i) => { S.sh.f[i] = 1; return 3; } },
-    { t: 'critical section', reg: 'C', f: () => 4 },
-    { t: 'flag[i] ← false', reg: 'E', f: (S, i) => { S.sh.f[i] = 0; return 0; } },
+    {t:'remainder section',reg:'R',f:()=>1},
+    {t:'scan other flags; one read per step; retry if raised',reg:'T',f:(S,i)=>scan(S,i,2,1)},
+    {t:'flag[i] ← true',reg:'T',f:(S,i)=>{S.sh.f[i]=1;return 3;}},
+    {t:'critical section',reg:'C',f:()=>4},
+    {t:'flag[i] ← false',reg:'E',f:(S,i)=>{S.sh.f[i]=0;return 0;}},
   ];
-  return mkSpec({ id: `${kind}-${n}`, n, prog, sh: { f: Array(n).fill(0) }, show: (S) => `flag = [${S.sh.f}]` });
+  return mkSpec({id:`${kind}-${n}`,n,prog,sh:{f:Array(n).fill(0)},lo:{j:0},show:S=>`flag = [${S.sh.f}]`});
 }
 
 const nCrit = (spec, S) => S.pc.reduce((a, c) => a + (spec.prog[c].reg === 'C' ? 1 : 0), 0);

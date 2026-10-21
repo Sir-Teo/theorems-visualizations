@@ -1,0 +1,28 @@
+import test from 'node:test';import assert from'node:assert/strict';
+import{data,rng}from'../content/fin/ch05.shared.js';
+import{speculationHistorical,monthOrdinal,ordinalMonth,speculationTransition,speculationStationary,speculationHistory,speculationPrice}from'../content/fin/source-audit-speculation.js';
+const close=(a,b,t=2e-10)=>assert.ok(Math.abs(a-b)<=t*Math.max(1,Math.abs(a),Math.abs(b)),`${a} != ${b}`);
+function direct(k,e,mode,N){let up=0,down=0;for(let agent=0;agent<N;agent++){const optimistic=agent<k,reset=mode==='ind'?1:e;if(optimistic)down+=reset/(2*N);else up+=reset/(2*N);for(let peer=0;peer<N;peer++)if(peer!==agent){if(!optimistic&&peer<k)up+=(1-reset)/(N*(N-1));if(optimistic&&peer>=k)down+=(1-reset)/(N*(N-1));}}return{up,down,stay:1-up-down};}
+function stationaryLinear(e,mode,N){const A=Array.from({length:N+1},()=>Array(N+2).fill(0));for(let k=0;k<=N;k++){const q=direct(k,e,mode,N);A[k][k]+=q.stay-1;if(k<N)A[k+1][k]+=q.up;if(k)A[k-1][k]+=q.down;}A[N].fill(1);A[N][N+1]=1;for(let c=0;c<=N;c++){let j=c;for(let i=c+1;i<=N;i++)if(Math.abs(A[i][c])>Math.abs(A[j][c]))j=i;[A[c],A[j]]=[A[j],A[c]];const div=A[c][c];assert.ok(Math.abs(div)>1e-14);for(let v=c;v<=N+1;v++)A[c][v]/=div;for(let i=0;i<=N;i++)if(i!==c){const f=A[i][c];for(let v=c;v<=N+1;v++)A[i][v]-=f*A[c][v];}}return A.map(r=>r[N+1]);}
+test('Monthly source calendar and independent log-compounding verify all historical points and the shared March2000 normalization',()=>{
+ const d=data(),h=speculationHistorical(d),start=monthOrdinal(199301)-monthOrdinal(196307);assert.equal(h.peakYm,200003);assert.equal(h.firstYm,199503);assert.equal(h.lastYm,200303);assert.equal(h.dates.length,157);assert.equal(h.dates[0],199212);assert.equal(h.dates.at(-1),200512);
+ const series=[d.ind[4],d.ind[5],Array.from(d.mkt,(x,i)=>x+d.rf[i])];
+ series.forEach((r,j)=>{let log=0;close(h.wealth[j][0],1);for(let t=1;t<=156;t++){log+=Math.log1p(r[start+t-1]);close(h.wealth[j][t],Math.exp(log));assert.equal(h.dates[t],ordinalMonth(monthOrdinal(199301)+t-1));}assert.equal(h.series[j].points.length,97);h.series[j].points.forEach(([x,y],i)=>{const q=h.peak-60+i;close(x,monthOrdinal(h.dates[q])/12);close(y,100*Math.exp(Math.log(h.wealth[j][q])-Math.log(h.wealth[j][h.peak])));});close(h.series[j].points[60][1],100);});
+ close(h.rise60,5.992221216686337);close(h.change30,-.7953751493722405);assert.ok(Math.max(...h.series[2].points.map(p=>p[1]))>100,'shared-date normalization is different from each individual peak');
+});
+test('All401 log-spaced reset probabilities have stochastic rows, symmetry, detailed balance and the exact beta-binomial moments',()=>{
+ const N=100;for(let i=0;i<=400;i++){const e=.0005*100**(i/400),p=speculationStationary(e,'herd'),a=e*(N-1)/(2*(1-e));close(p.mass.reduce((a,b)=>a+b),1);close(p.mean,.5);close(p.variance,(N+2*a)/(4*N*(2*a+1)));for(let k=0;k<=N;k++){const q=speculationTransition(k,e,'herd');assert.ok(q.up>=0&&q.down>=0&&q.stay>=0);close(q.up+q.down+q.stay,1);close(p.mass[k],p.mass[N-k]);if(k<N)close(p.mass[k]*q.up,p.mass[k+1]*speculationTransition(k+1,e,'herd').down);}}
+ const uniform=speculationStationary(2/101,'herd');uniform.mass.forEach(p=>close(p,1/101));
+ const independent=speculationStationary(.004,'ind');close(independent.variance,.0025);close(independent.above,.000006289575008339427);assert.ok(independent.mass.filter((_,k)=>speculationPrice(k)<95||speculationPrice(k)>105).reduce((a,b)=>a+b)>.36,'95–105 is not a guaranteed independent range');
+});
+test('Explicit labelled-agent enumeration and an independent Gaussian solve confirm the transition matrix and invariant vector',()=>{
+ for(const N of[4,8,100])for(const e of[.0005,.004,.05])for(const mode of['ind','herd']){const p=speculationStationary(e,mode,N),reference=stationaryLinear(e,mode,N);p.mass.forEach((x,k)=>{close(x,reference[k],2e-8);const a=speculationTransition(k,e,mode,N),b=direct(k,e,mode,N);for(const key of['up','down','stay'])close(a[key],b[key]);});}
+});
+test('Independent finite-time distribution propagation confirms the centered second moment without treating a short path as stationary',()=>{
+ const N=8;for(const mode of['ind','herd'])for(const e of[.0005,.004,.05]){const reset=mode==='ind'?1:e,A=1-2*reset/N-2*(1-reset)/(N*(N-1)),B=reset/2+(1-reset)*N/(2*(N-1));let mass=Array(N+1).fill(0);mass[N/2]=1;
+ for(let n=0;n<=200;n++){const variance=mass.reduce((s,p,k)=>s+p*(k/N-.5)**2,0);close(variance,B*(1-A**n)/(1-A)/N**2);const next=Array(N+1).fill(0);mass.forEach((p,k)=>{const q=direct(k,e,mode,N);next[k]+=p*q.stay;if(k<N)next[k+1]+=p*q.up;if(k)next[k-1]+=p*q.down;});mass=next;}}
+});
+test('Both modes at every epsilon corner/default and deterministic reseed show all401 prices within the complete possible range',()=>{
+ const lo=100*Math.exp(-.6),hi=100*Math.exp(.6);for(const mode of['ind','herd'])for(const e of[.0005,.004,.05])for(const seed of[9,10,37]){let count=0;const R=rng(seed),p=speculationHistory(e,mode,()=>{count++;return R();});assert.equal(count,40000);assert.equal(p.counts.length,401);assert.equal(p.prices.length,401);assert.equal(p.counts[0],50);close(p.prices[0],100);p.counts.forEach((k,i)=>{assert.ok(Number.isInteger(k)&&k>=0&&k<=100);close(p.prices[i],speculationPrice(k));assert.ok(p.prices[i]>=lo&&p.prices[i]<=hi);});close(p.minimum,Math.min(...p.prices));close(p.maximum,Math.max(...p.prices));close(p.above,p.prices.slice(1).filter(x=>x>130).length/400);assert.deepEqual(p,speculationHistory(e,mode,rng(seed)));assert.notDeepEqual(p.prices,speculationHistory(e,mode,rng(seed+1)).prices);}
+ assert.deepEqual(speculationHistory(.0005,'ind',rng(9)),speculationHistory(.05,'ind',rng(9)));
+});

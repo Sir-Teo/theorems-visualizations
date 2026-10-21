@@ -7,6 +7,7 @@ import {
   clamp, rand, hashStr, memo, mean, commas, makeDens, RECT, NONE, target, inShape, disagree, drawSample, tightBox, drawShape, drawSample2,
   paintSquare, square, pr, G3, makeEta, drawNoisy, riskTable, gridCounts, gridErm, bestGridRect, bins, quantile, etaRaster,
 } from './ch03.shared.js';
+import { finiteRiskWorld, splitRiskBins, etaLinear, exactBayesRisk, bestCellRule, loss01, generalLossWorlds } from './ch03-foundations-audit.shared.js';
 
 const HID = RECT(0.2, 0.3, 0.8, 0.75);
 /** Sample size that makes the tightest-rectangle learner (2 dimensions) PAC: 4(1-ε/4)^m ≤ δ. */
@@ -23,10 +24,14 @@ export default {
       num: '3.1',
       kind: 'Definition',
       name: 'PAC learnability',
-      statement: String.raw`A hypothesis class $\mathcal H$ is **PAC learnable** if there are a function $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and a learning algorithm $A$ with the following property: for every accuracy $\varepsilon\in(0,1)$ and confidence $\delta\in(0,1)$, for **every** distribution $\mathcal D$ over $\mathcal X$ and **every** labelling function $f:\mathcal X\to\{0,1\}$ for which the realizability assumption holds ($f$ agrees with some member of $\mathcal H$ everywhere), running $A$ on $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples labelled by $f$ returns a hypothesis $h$ that, with probability at least $1-\delta$ over the choice of the sample, satisfies $L_{\mathcal D,f}(h)\le\varepsilon$. The smallest such function is the **sample complexity** of $\mathcal H$. The number $m_{\mathcal H}$ may depend on $\varepsilon$, $\delta$ and $\mathcal H$ but not on $\mathcal D$ or $f$.`,
-      idea: String.raw`The definition is a guarantee in two parts. Accuracy $\varepsilon$ says how close to perfect the output must be (an approximately correct predictor); confidence $\delta$ says how often the sample may be so unlucky that it fails (probably). The quantifier order carries the content: $m_{\mathcal H}$ is fixed first and must then work against an adversary who picks the worst $\mathcal D$ and $f$ afterwards, which is what makes the guarantee distribution-free. For axis-aligned rectangles the tightest-box learner of ml-2.1e's setting is PAC with $m_{\mathcal H}(\varepsilon,\delta)=\lceil\ln(4/\delta)/\ln(1/(1-\varepsilon/4))\rceil\approx4\ln(4/\delta)/\varepsilon$, since the error region is covered by four strips each of mass $\varepsilon/4$ and each is missed by all $m$ examples with probability $(1-\varepsilon/4)^m$.`,
-      caption: String.raw`You are the adversary. Drag the orange handle (the centre of $\mathcal D$), the spread slider, and the two green corners (the hidden rectangle $f$, the learner's class being all rectangles). The learner returns the tightest box around the tasty points of a sample of size $m$. The right panel plays 500 independent rounds and histograms the true error of the output; rounds with error above $\varepsilon$ are red. Press the button to set $m=m_{\mathcal H}(\varepsilon,\delta)$: whatever you do to $\mathcal D$ and $f$, the red fraction stays below $\delta$. Then drag $m$ far below that value and watch the guarantee fail, especially for a thin target in a concentrated $\mathcal D$.`,
-      deps: ["ml-2.1","ml-2.1e","prob-2.1.13"],
+      statement: String.raw`A hypothesis class $\mathcal H$ is **PAC learnable** if there are a function $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and a learning algorithm $A$ with the following property: for every accuracy $\varepsilon\in(0,1)$ and confidence $\delta\in(0,1)$, for **every** distribution $\mathcal D$ over $\mathcal X$ and **every** labelling function $f:\mathcal X\to\{0,1\}$ for which the realizability assumption holds ($f$ agrees with some member of $\mathcal H$ $\mathcal D$-almost surely), running $A$ on $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples labelled by $f$ returns a hypothesis $h$ that, with probability at least $1-\delta$ over the choice of the sample, satisfies $L_{\mathcal D,f}(h)\le\varepsilon$. The smallest such function is the **sample complexity** of $\mathcal H$. The number $m_{\mathcal H}$ may depend on $\varepsilon$, $\delta$ and $\mathcal H$ but not on $\mathcal D$ or $f$.`,
+      idea: String.raw`The definition is a guarantee in two parts. Accuracy $\varepsilon$ says how close to perfect the output must be (an approximately correct predictor); confidence $\delta$ says how often the sample may be so unlucky that it fails (probably). The quantifier order carries the content: $m_{\mathcal H}$ is fixed first and must then work against an adversary who picks the worst $\mathcal D$ and $f$ afterwards, which is what makes the guarantee distribution-free. For axis-aligned rectangles the tightest-box learner of ml-2.1e's setting is PAC with $m_{\mathcal H}(\varepsilon,\delta)=\lceil\ln(4/\delta)/\ln(1/(1-\varepsilon/4))\rceil\approx4\ln(4/\delta)/\varepsilon$. For the strip argument put $q=\varepsilon/4$ and restrict the measure to the target rectangle $R$. If $\mathcal D(R)\le q$, a missed side of mass greater than $q$ is impossible. Otherwise fix, for each of the four oriented coordinates, the first cumulative-mass quantile reaching $q$, including its boundary atom in a witness strip. Its mass is at least $q$. Any strict missed-side strip of mass greater than $q$ contains that fixed witness; the cutoff depends on $R$ and the law, not on the sample. If total missed mass exceeds $\varepsilon$, one of the four sides exceeds $q$, so every example misses its witness. If there are no positive examples, all witnesses are missed. Each such miss event has probability at most $(1-q)^m$, giving the four-event union bound. Coordinate atoms may increase a witness's mass and only improve its miss bound.
+
+Starting from the stated four-strip failure bound, put $q=1-\varepsilon/4\in(0,1)$. The exponential and logarithm properties (pma 8.6) give $q^m=e^{-m\log(1/q)}$ with $\log(1/q)>0$. Therefore $4q^m\le\delta$ is equivalent to $m\ge\log(4/\delta)/\log(1/q)$, explaining the ceiling and the positive denominator in the sample size. This algebra converts the geometric bound; it does not supply the strip argument itself.
+
+For each fixed witness strip in the atom-safe construction above, let $J_i$ indicate that example $i$ misses it. The strip is chosen from the law and target before sampling, so the $J_i$ are independent functions of independent example coordinates, each with mean $1-p_{\mathrm{strip}}$. The nonnegative independent-product identity (PROB 2.1.13) makes the probability of missing that witness on every draw equal to $(1-p_{\mathrm{strip}})^m$. Since its mass is at least $\varepsilon/4$, this is at most $(1-\varepsilon/4)^m$. An atom can make its mass larger; no exact-mass or nonatomic assumption is introduced. This supplies witness survival, separately from the four-event union and logarithmic inversion.`,
+      caption: String.raw`You are the adversary. Drag the orange handle (the centre of $\mathcal D$), the spread slider, and the two green corners (the hidden rectangle $f$, the learner's class being all rectangles). The learner returns the tightest box around the tasty points of a sample of size $m$. The right panel plays 500 independent rounds and histograms the true error of the output; rounds with error above $\varepsilon$ are red. Press the button to set $m=m_{\mathcal H}(\varepsilon,\delta)$: the theorem bounds the underlying failure probability by $\delta$ for each allowed $\mathcal D,f$; a finite observed fraction may cross it. Then drag $m$ far below that value and watch the guarantee fail, especially for a thin target in a concentrated $\mathcal D$.`,
+      deps: ['ml-2.1', 'ml-2.1e', 'pma-8.6', 'prob-2.1.13'],
       refs: ['UML §3.1'],
       credit: 'Leslie G. Valiant, "A theory of the learnable", Communications of the ACM 27(11), 1984',
       tags: ['PAC learning', 'sample complexity'],
@@ -65,7 +70,7 @@ export default {
           info = { bad: errs.filter((x) => x > eps).length / errs.length, m, mH: mRect(eps, delta), delta, eps, LD: disagree(h, T, d) };
         });
         v.legend([['accent', 'error $\\le\\varepsilon$', { area: true }], ['red', 'failed round: error $>\\varepsilon$', { area: true }], ['green', 'hidden rule $f$']]);
-        v.readout(() => info && String.raw`$m_{\mathcal H}(\varepsilon,\delta)=${info.mH}$ for these $(\varepsilon,\delta)$; you play $m=${info.m}$. **Failure rate over 500 rounds: $${pr(info.bad)}$** against $\delta=${info.delta.toFixed(2)}$` + (info.m >= info.mH ? (info.bad <= info.delta ? ' — the PAC guarantee holds, as it must for every $\\mathcal D$ and $f$.' : ' — within sampling noise of the guarantee.') : (info.bad > info.delta ? ' — below $m_{\\mathcal H}$ the guarantee is lost.' : ' — below $m_{\\mathcal H}$ nothing is guaranteed, though this $\\mathcal D,f$ happens to be easy.')) + String.raw` This round: output error $${pr(info.LD)}$.`);
+        v.readout(() => info && String.raw`$m_{\mathcal H}(\varepsilon,\delta)=${info.mH}$ for these $(\varepsilon,\delta)$; you play $m=${info.m}$. **Failure rate over 500 rounds: $${pr(info.bad)}$** against $\delta=${info.delta.toFixed(2)}$` + (info.m >= info.mH ? (info.bad <= info.delta ? ' — the observed fraction is below $\\delta$; this finite batch does not prove the distribution-free guarantee.' : ' — the observed fraction exceeds $\\delta$; finite sampling alone does not decide whether a theoretical bound holds.') : (info.bad > info.delta ? ' — below $m_{\\mathcal H}$ the guarantee is lost.' : ' — below $m_{\\mathcal H}$ nothing is guaranteed, though this $\\mathcal D,f$ happens to be easy.')) + String.raw` This round: output error $${pr(info.LD)}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.2
@@ -134,7 +139,7 @@ $$m_{\mathcal H}(\varepsilon,\delta)\;\le\;\Big\lceil\frac{\log(|\mathcal H|/\de
           info = { H: Hsel, bd, sim, fam, nfail: R.filter((p) => p.find((q) => q[0] === Math.min(bd, mmax)) && p.find((q) => q[0] === Math.min(bd, mmax))[1] > eps).length };
         });
         v.legend([['orange', '$\\ln(|\\mathcal H|/\\delta)/\\varepsilon$'], ['accent', 'thresholds: simulated'], ['purple', 'all labellings: simulated'], ['gold', 'chosen $|\\mathcal H|$', { dash: true }]]);
-        v.readout(() => info && String.raw`$|\mathcal H|=${commas(info.H)}$: the corollary guarantees $m=\lceil\ln(|\mathcal H|/\delta)/\varepsilon\rceil=${info.bd}$ examples; simulation says $${info.sim}$ already give confidence $1-\delta$ (${info.sim <= info.bd ? 'below the bound, as it must' : 'above the bound: Monte Carlo noise'}). Of the 30 runs on the left, $${info.nfail}$ still have a consistent hypothesis with error $>\varepsilon$ at $m=${info.bd}$.`);
+        v.readout(() => info && String.raw`$|\mathcal H|=${commas(info.H)}$: the corollary guarantees $m=\lceil\ln(|\mathcal H|/\delta)/\varepsilon\rceil=${info.bd}$ examples; simulation says $${info.sim}$ already give confidence $1-\delta$ (${info.sim <= info.bd ? 'below the bound in this simulation' : 'above the bound in this simulation; this is a noisy quantile estimate'}). Of the 30 runs on the left, $${info.nfail}$ still have a consistent hypothesis with error $>\varepsilon$ at $m=${info.bd}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.2a
@@ -142,15 +147,17 @@ $$m_{\mathcal H}(\varepsilon,\delta)\;\le\;\Big\lceil\frac{\log(|\mathcal H|/\de
       num: '3.2a',
       kind: 'Definition',
       name: 'Distributions over X × Y; true and empirical risk',
-      statement: String.raw`Drop the labelling function: let $\mathcal D$ be a probability distribution over $\mathcal X\times\mathcal Y$. It can be split into a marginal $\mathcal D_x$ over instances and the conditional law $\mathbb P[y\mid x]$ of the label, so two instances that look identical may carry different labels. The **true risk** of a predictor $h:\mathcal X\to\mathcal Y$ is the probability that it errs on a fresh example,
-$$L_{\mathcal D}(h)=\mathbb P_{(x,y)\sim\mathcal D}[h(x)\neq y]=\mathcal D(\{(x,y):h(x)\neq y\}),$$
+      statement: String.raw`Drop the labelling function: let $\mathcal D$ be a probability distribution over $\mathcal X\times\mathcal Y$. In the usual measurable setting (for example standard Borel domains), it has a marginal $\mathcal D_x$ over instances and a conditional law $\mathbb P[y\mid x]$ of the label, so two instances that look identical may carry different labels. The **true risk** of a predictor $h:\mathcal X\to\mathcal Y$ is the probability that it errs on a fresh example,
+$$\begin{gathered}L_{\mathcal D}(h)=\\\mathbb P_{(x,y)\sim\mathcal D}[h(x)\neq y]\\=\mathcal D(\{(x,y):h(x)\neq y\}),\end{gathered}$$
 and the **empirical risk** on a sample $S=((x_1,y_1),\dots,(x_m,y_m))\sim\mathcal D^m$ is $L_S(h)=|\{i:h(x_i)\neq y_i\}|/m$. When $y=f(x)$ for a function $f$ this is the true error of ml-2.1a.`,
-      idea: String.raw`The realizable model is the special case in which $\mathbb P[y=1\mid x]\in\{0,1\}$. Allowing intermediate values makes the label itself random, which models noisy measurement, missing features or genuine randomness (two fruits with the same colour and softness that taste differently). The risk is still an expectation of the $0$–$1$ error, so $L_S(h)$ is an unbiased average of i.i.d. indicator variables with mean $L_{\mathcal D}(h)$; the definitions of ml-2.1b carry over verbatim, and what changes is that $\inf_hL_{\mathcal D}(h)$ may be strictly positive.`,
+      idea: String.raw`Deterministic labels have $\mathbb P[y=1\mid x]\in\{0,1\}$ almost surely; realizability additionally requires a hypothesis in the chosen class with zero risk. Allowing intermediate values makes the label itself random, which models noisy measurement, missing features or genuine randomness (two fruits with the same colour and softness that taste differently). The risk is still an expectation of the $0$–$1$ error, so $L_S(h)$ is an unbiased average of i.i.d. indicator variables with mean $L_{\mathcal D}(h)$; the definitions of ml-2.1b carry over verbatim, and what changes is that $\inf_hL_{\mathcal D}(h)$ may be strictly positive.
+
+The nonnegative-series integration theorem (rca 1.27), applied to a finite sum with zero terms afterwards, moves the integral through the sum of error indicators. Each indicator has the same integral $L_{\mathcal D}(h)$, so the empirical average has that mean. This unbiasedness needs identical marginals but not independence; independence is needed for the later concentration guarantees.`,
       caption: String.raw`The background is the probability $\eta(x)=\mathbb P[y=1\mid x]$ that a papaya is tasty (green: near 1, pink: near 0, faint: undecided). Choose how the noise enters: flipped labels, or a soft boundary whose width grows with the noise. Drag the blue corners to place a rule $h$, and the grey probe to read $\eta$ at a point. The right panel scores $h$ on 300 samples of size $m$: the empirical risks scatter around the true risk (green), and the true risk of *any* rule stays above the floor of the best possible rule (ink; ml-3.2b), although a lucky sample can show an empirical risk below it. Raise the noise: even the perfect rectangle makes mistakes.`,
-      deps: ["ml-2.1a","prob-4.1.1a","prob-1.6.1"],
-      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §3.2.1, pp.45–46"],
+      deps: ['ml-2.1a', 'rca-1.27'],
+      refs: ['UML §3.2.1, equations (3.1)–(3.2), pp. 45–46'],
       tags: ['noisy labels', 'true risk', 'empirical risk'],
-      scope: String.raw`Illustrative world: $\mathcal D_x$ a product of truncated normals on the unit square and $\eta$ one of the two noise models above; risks are numerical approximations on a $60\times60$ grid (cells counted by their centres), while samples are drawn from the continuous instance distribution.`,
+      scope: String.raw`Illustrative world: a discretized product of truncated normals on the unit square and $\eta$ one of the two noise models above; the simulation is a finite distribution on $60\times60$ cell centers. Cell probabilities come from the displayed density masses and labels are Bernoulli at the centers. All risks and samples use this same finite law; they are not exact integrals for a continuous model.`,
       viz(v) {
         const s = square(v, { height: 400, title: 'papayas with random labels' });
         const sH = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 400, xlabel: 'empirical risk $L_S(h)$', ylabel: 'samples', yticks: [], title: 'the sample sees an estimate' });
@@ -163,19 +170,19 @@ and the **empirical risk** on a sample $S=((x_1,y_1),\dots,(x_m,y_m))\sim\mathca
         let info = null;
         v.render(() => {
           const nu = nuS.value, mode = modeS.value, m = mS.value, eta = makeEta(HID, mode, nu), key = mode + nu.toFixed(3);
-          const T = tab(key, () => riskTable(d, eta)), h = RECT(hA.x, hA.y, hB.x, hB.y);
+          const T = tab(key, () => finiteRiskWorld(d, eta)), h = RECT(hA.x, hA.y, hB.x, hB.y);
           etaRaster(v, s, eta, key);
           drawShape(s, h, { color: 'accent', fill: 'accent', fillAlpha: 0.08 });
-          const S = base(key, () => drawNoisy(d, rand(31), 200, eta));
+          const S = base(key, () => T.draw(rand(31), 200));
           drawSample2(s, S, h, m);
           const LD = T.risk(h), pe = eta(pr0.x, pr0.y);
           s.text(`$\\eta=${pe.toFixed(2)}$`, pr0.x, pr0.y, { dx: -10, dy: 20, align: 'right', size: 12.5, plate: true });
           const vals = strip([key, h.x0, h.y0, h.x1, h.y1, m].map((x) => (typeof x === 'number' ? x.toFixed(3) : x)).join(), () => {
             const r = rand(77), out = [];
-            for (let k = 0; k < 300; k++) { let e = 0; for (let i = 0; i < m; i++) { const p = d.draw(r), lab = r() < eta(p[0], p[1]) ? 1 : 0; if ((inShape(h, p[0], p[1]) ? 1 : 0) !== lab) e++; } out.push(e / m); }
+            for (let k = 0; k < 300; k++) { let e = 0; for (let i = 0; i < m; i++) { const p = T.drawOne(r); if ((inShape(h, p.x, p.y) ? 1 : 0) !== p.label) e++; } out.push(e / m); }
             return out;
           });
-          const sd = Math.sqrt(LD * (1 - LD) / m), hi = clamp(Math.max(LD + 4.5 * sd, 0.12), 0.12, 1), B = bins(vals, 0, hi, 30), top = Math.max(1, ...B.counts) * 1.15;
+          const sd = Math.sqrt(LD * (1 - LD) / m), hi = clamp(Math.max(LD + 4.5 * sd, Math.max(...vals)*1.03, 0.12), 0.12, 1), B = bins(vals, 0, hi, 30), top = Math.max(1, ...B.counts) * 1.15;
           sH.setView([0, hi], [0, top]); sH.hist(B, { color: 'accent', fillAlpha: 0.35 });
           sH.vline(LD, { color: 'green', width: 2.6 }); sH.text('$L_{\\mathcal D}(h)$', LD, top, { color: 'green', dx: 6, dy: 16, size: 13 });
           sH.vline(T.bayes, { color: 'ink', width: 1.8, dash: true }); sH.text('floor', T.bayes, top * 0.85, { dx: -6, align: 'right', size: 12.5 });
@@ -183,7 +190,7 @@ and the **empirical risk** on a sample $S=((x_1,y_1),\dots,(x_m,y_m))\sim\mathca
           info = { LD, LS: ls / m, m, mu: mean(vals), bayes: T.bayes, pe };
         });
         v.legend([['green', 'tasty', { dot: true }], ['pink', 'not tasty', { dot: true }], ['red', 'mistake of $h$', { dot: true }], ['ink', 'best possible risk', { dash: true }]]);
-        v.readout(() => info && String.raw`$L_{\mathcal D}(h)\approx${pr(info.LD)}$ (grid approximation); on this sample of $m=${info.m}$, $L_S(h)=${pr(info.LS)}$; mean over 300 samples $${pr(info.mu)}$. Every predictor’s true risk is at least the Bayes risk $E[\min(\eta,1-\eta)]$, estimated numerically here as $${pr(info.bayes)}$. With irreducible label noise this floor is positive. At the probe $\eta=${pr(info.pe, 2)}$.`);
+        v.readout(() => info && String.raw`$L_{\mathcal D}(h)=${pr(info.LD)}$; on this sample of $m=${info.m}$, $L_S(h)=${pr(info.LS)}$; mean over 300 samples $${pr(info.mu)}$. In this finite world no predictor can have risk below $${pr(info.bayes)}$ (the expected value of $\min(\eta,1-\eta)$), so zero true risk is out of reach when this floor is positive (an empirical sample may still have zero errors). At the probe $\eta=${pr(info.pe, 2)}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.2b
@@ -194,47 +201,46 @@ and the **empirical risk** on a sample $S=((x_1,y_1),\dots,(x_m,y_m))\sim\mathca
       statement: String.raw`Let $\mathcal D$ be a distribution over $\mathcal X\times\{0,1\}$ and put $\eta(x)=\mathbb P[y=1\mid x]$. Among all functions $h:\mathcal X\to\{0,1\}$ (measurable), the **Bayes predictor**
 $$f_{\mathcal D}(x)=\begin{cases}1&\text{if }\eta(x)\ge\tfrac12,\\0&\text{otherwise,}\end{cases}$$
 minimizes the true risk $L_{\mathcal D}$: $L_{\mathcal D}(f_{\mathcal D})\le L_{\mathcal D}(g)$ for every $g$. Its risk is $\mathbb E[\min(\eta(x),1-\eta(x))]$, and for any $g$ the excess is $L_{\mathcal D}(g)-L_{\mathcal D}(f_{\mathcal D})=\mathbb E\big[|2\eta(x)-1|\,\mathbf 1[g(x)\ne f_{\mathcal D}(x)]\big]$.`,
-      idea: String.raw`Condition on the instance. Given $x$, predicting $1$ is wrong with probability $1-\eta(x)$ and predicting $0$ is wrong with probability $\eta(x)$, and the choice made at one point does not influence the error at another. So the risk $\int(\text{conditional error at }x)\,d\mathcal D_x$ is minimized by choosing at every $x$ the smaller conditional error, and choosing the other label at $x$ costs exactly $|2\eta(x)-1|$ extra. No learner can beat $f_{\mathcal D}$, which depends on the unknown $\mathcal D$; it is the target the learner of ml-3.3 approximates within its class.`,
-      caption: String.raw`Top: drag the seven blue handles to shape $\eta(x)=\mathbb P[y=1\mid x]$ ($x$ uniform on $[0,1]$). The coloured strip under the curve is the Bayes rule (green: predict 1, where $\eta\ge\frac12$); the lower strip is your rule, built by **clicking** the 60 cells of the axis to flip its prediction there. Bottom: the pointwise error of your rule (red) against the Bayes rule's $\min(\eta,1-\eta)$ (ink). The red area between them is the excess risk, and it is non-negative whatever you click; it is exactly the integral of $|2\eta-1|$ over the cells where you disagree with Bayes.`,
-      deps: ["ml-3.2a","prob-4.1.13","prob-1.6.1"],
+      idea: String.raw`Condition on the instance. Given $x$, predicting $1$ is wrong with probability $1-\eta(x)$ and predicting $0$ is wrong with probability $\eta(x)$, and the choice made at one point does not influence the error at another. So the risk $\int(\text{conditional error at }x)\,d\mathcal D_x$ is minimized by choosing at every $x$ the smaller conditional error, and choosing the other label at $x$ costs exactly $|2\eta(x)-1|$ extra. No learner can beat $f_{\mathcal D}$, which depends on the unknown $\mathcal D$; it is an unrestricted benchmark. Agnostic learning in ml-3.3 competes with the chosen class and need not approach the Bayes risk if that class is too restrictive.
+
+For every measurable binary predictor, its conditional error is pointwise at least $\min(\eta,1-\eta)$, and the threshold rule attains that lower envelope, including ties. Monotonicity of the nonnegative integral (rca 1.24) turns the pointwise comparison into the risk comparison. The functions lie in $[0,1]$, so all these integrals are finite; optimizing a conditional error point by point is not the same as restricting to a smaller hypothesis class.
+
+Take a measurable chosen version $\eta(X)=\mathbb E[\mathbf1_{\{Y=1\}}\mid\sigma(X)]$ in the conditional-probability setting of the statement. For a fixed measurable binary predictor $h$, the bounded error indicator has conditional expectation $\eta(X)\mathbf1_{\{h(X)=0\}}+(1-\eta(X))\mathbf1_{\{h(X)=1\}}$. The tower identity (PROB 4.1.13) equates its unconditional expectation, the risk, to the expectation of this conditional error. The pointwise lower-envelope comparison and integral monotonicity above then prove Bayes optimality. Versions may differ on null sets; a zero-probability individual $x$ does not define a unique conditional probability from data. Ties and all risks remain bounded.`,
+      caption: String.raw`Top: drag the seven blue handles to shape $\eta(x)=\mathbb P[y=1\mid x]$ ($x$ uniform on $[0,1]$). The lower strip is the pointwise Bayes rule (green where $\eta\ge\frac12$); the upper strip is your rule, built by **clicking** the 60 cells of the axis to flip its prediction there. Bottom: the pointwise error of your rule (red) against the Bayes rule's $\min(\eta,1-\eta)$ (ink). The red area between them is the excess risk, and it is non-negative whatever you click; it is exactly the integral of $|2\eta-1|$ over the cells where you disagree with Bayes.`,
+      deps: ['ml-3.2a', 'rca-1.24', 'prob-4.1.13'],
       see: ['stat-11.2'],
-      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §3.2.1 Bayes predictor, p.46; excess-risk identity derived by conditioning"],
+      refs: ['UML §3.2.1, p. 46; Exercise 3.7, p. 52'],
       tags: ['Bayes optimal', 'regression function'],
-      scope: String.raw`Binary labels and the $0$–$1$ loss; your rule is piecewise constant on 60 cells, while the Bayes rule is drawn pointwise, so a threshold crossing inside a cell leaves a sliver of excess.`,
+      scope: String.raw`Binary labels and $0$–$1$ loss. Risks are integrated exactly for the displayed piecewise-linear conditional probabilities, splitting at every cell, knot and half-probability crossing (up to floating rounding). The best rule on 60 cells can have positive excess over pointwise Bayes.`,
       viz(v) {
         const sA = v.stage({ x: [0, 1], y: [0, 1.05], axes: 'box', gutter: true, height: 300, xlabel: 'instance $x$', ylabel: '$\\eta(x)=\\mathbb P[y=1\\mid x]$', title: 'the conditional law and the two rules' });
         const sB = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, xlabel: 'instance $x$', ylabel: 'conditional error', title: 'pointwise error of your rule' });
         const K = 7, NC = 60, pred = new Uint8Array(NC);
         const init = [0.28, 0.2, 0.55, 0.8, 0.6, 0.3, 0.9];
         const H = init.map((y, i) => sA.handle(i / (K - 1), y, { color: 'accent', constrain: 'y', r: 6 }));
-        const eta = (x) => { const t = clamp(x, 0, 1) * (K - 1), i = Math.min(K - 2, Math.floor(t)), f = t - i; return clamp(H[i].y * (1 - f) + H[i + 1].y * f, 0, 1); };
-        const setBayes = () => { for (let c = 0; c < NC; c++) pred[c] = eta((c + 0.5) / NC) >= 0.5 ? 1 : 0; };
+        const heights = () => H.map(h=>clamp(h.y,0,1));
+        const eta = x => etaLinear(heights(),x);
+        const setBayes = () => { pred.set(bestCellRule(heights(),NC)); };
         setBayes(); pred[3] ^= 1; pred[44] ^= 1; pred[45] ^= 1;
-        v.button('my rule := Bayes rule', () => { setBayes(); });
+        v.button('best rule on 60 cells', () => { setBayes(); });
         v.button('random rule', () => { const r = rand(Math.floor(Math.random() * 1e9)); for (let c = 0; c < NC; c++) pred[c] = r() < 0.5 ? 1 : 0; });
         v.button('flip my rule', () => { for (let c = 0; c < NC; c++) pred[c] ^= 1; });
-        sA.onClick((x, y) => { const c = clamp(Math.floor(x * NC), 0, NC - 1); pred[c] ^= 1; v.invalidate(); });
+        sA.onClick((x, y) => { if(y<0.08||y>0.14)return; const c = clamp(Math.floor(x * NC), 0, NC - 1); pred[c] ^= 1; v.invalidate(); });
         let info = null;
         v.render(() => {
+          H.forEach((h,i)=>h.set(i/(K-1),clamp(h.y,0,1)));
           sA.hline(0.5, { color: 'muted', dash: true, width: 1.2 });
-          const NG = 480, pts = [], eh = [], eb = [], gr = [];
-          let L = 0, Lb = 0, ex = 0;
-          for (let i = 0; i < NG; i++) {
-            const x = (i + 0.5) / NG, e = eta(x), p = pred[Math.floor(x * NC)], bay = e >= 0.5 ? 1 : 0, ce = p ? 1 - e : e, cb = Math.min(e, 1 - e);
-            L += ce / NG; Lb += cb / NG; if (p !== bay) ex += Math.abs(2 * e - 1) / NG;
-            eh.push([x, ce]); eb.push([x, cb]);
-          }
+          const exact = exactBayesRisk(heights(),pred);
+          for(const part of exact.parts)sA.rect(part.x0,0.03,part.x1,0.07,{fill:part.bay?'green':'pink',fillAlpha:.85,stroke:false});
           for (let c = 0; c < NC; c++) {
             const x0 = c / NC, x1 = (c + 1) / NC, bay = eta((c + 0.5) / NC) >= 0.5;
             sA.rect(x0, 0.085, x1, 0.125, { fill: pred[c] ? 'green' : 'pink', fillAlpha: 0.85, stroke: false });
-            sA.rect(x0, 0.03, x1, 0.07, { fill: bay ? 'green' : 'pink', fillAlpha: 0.85, stroke: false });
             if ((pred[c] === 1) !== bay) sA.rect(x0, 0.085, x1, 0.125, { color: 'red', fill: false, width: 1.4 });
           }
           sA.text('Bayes', 0, 0.05, { dx: 4, size: 11, color: 'ink', baseline: 'middle' }); sA.text('yours', 0, 0.105, { dx: 4, size: 11, color: 'ink', baseline: 'middle' });
           sA.fn(eta, { color: 'accent', width: 3, domain: [0, 1] });
-          sB.between((x) => Math.min(eta(x), 1 - eta(x)), (x) => { const e = eta(x), p = pred[Math.min(NC - 1, Math.floor(x * NC))]; return p ? 1 - e : e; }, 0, 1, { fill: 'red', fillAlpha: 0.4, n: 480 });
-          sB.path(eh, { color: 'red', width: 1.6 }); sB.path(eb, { color: 'ink', width: 2.2 });
-          info = { L, Lb, ex };
+          for(const q of exact.parts){const h0=q.p?1-q.e0:q.e0,h1=q.p?1-q.e1:q.e1,b0=q.bay?1-q.e0:q.e0,b1=q.bay?1-q.e1:q.e1;sB.poly([[q.x0,b0],[q.x1,b1],[q.x1,h1],[q.x0,h0]],{fill:'red',fillAlpha:.4,stroke:false});sB.line(q.x0,h0,q.x1,h1,{color:'red',width:1.6});sB.line(q.x0,b0,q.x1,b1,{color:'ink',width:2.2});}
+          info = exact;
         });
         v.legend([['accent', '$\\eta$'], ['ink', 'Bayes error $\\min(\\eta,1-\\eta)$'], ['red', 'your rule: excess', { area: true }]]);
         v.readout(() => info && String.raw`$L_{\mathcal D}(\text{Bayes})=\mathbb E\min(\eta,1-\eta)=${pr(info.Lb)}$; your rule $L_{\mathcal D}=${pr(info.L)}$; excess $${pr(info.L - info.Lb, 4)}$ $\;=\;\int|2\eta-1|\mathbf 1[\text{disagree}]=${pr(info.ex, 4)}$ (the two computations agree, and the excess is never negative).`);
@@ -245,15 +251,16 @@ minimizes the true risk $L_{\mathcal D}$: $L_{\mathcal D}(f_{\mathcal D})\le L_{
       num: '3.3',
       kind: 'Definition',
       name: 'Agnostic PAC learnability',
-      statement: String.raw`A hypothesis class $\mathcal H$ is **agnostic PAC learnable** if there are a function $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and an algorithm $A$ such that for every $\varepsilon,\delta\in(0,1)$ and **every** distribution $\mathcal D$ over $\mathcal X\times\mathcal Y$, running $A$ on $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples from $\mathcal D$ returns $h$ that with probability at least $1-\delta$ satisfies
-$$L_{\mathcal D}(h)\;\le\;\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon.$$
-No realizability is assumed: the learner is only asked to be nearly as good as the best member of the class, however good or bad that is. If $\mathcal D$ is realizable by $\mathcal H$, the minimum is $0$ and the definition reduces to ml-3.1.`,
+      statement: String.raw`A hypothesis class $\mathcal H$ is **agnostic PAC learnable** if there are a function $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and an algorithm $A$ such that for every $\varepsilon,\delta\in(0,1)$ and **every** distribution $\mathcal D$ over $\mathcal X\times\mathcal Y$, running $A$ on $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples from $\mathcal D$ returns $h\in\mathcal H$ that with probability at least $1-\delta$ satisfies
+$$L_{\mathcal D}(h)\;\le\;\min_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon.$$
+No realizability is assumed: the learner is only asked to be nearly as good as the best member of the class, however good or bad that is. If $\mathcal D$ is realizable by $\mathcal H$, the minimum is $0$ and this gives the guarantee in ml-3.1. For a class whose infimum is not attained, replace the displayed minimum by an infimum; the finite class below has a minimum.`,
       idea: String.raw`When labels are noisy or the truth lies outside $\mathcal H$, no learner can promise a small absolute error; the achievable promise is a **relative** one, an excess risk over the benchmark $\min_{\mathcal H}L_{\mathcal D}$. ERM is the natural candidate: if empirical risks of all hypotheses in the class are close to their true risks, the empirical minimizer is within twice that distance of the true minimizer (ml-4.2). The excess risk is always non-negative for an output in $\mathcal H$, so the whole histogram below sits to the right of zero.`,
-      caption: String.raw`The class is all rectangles whose sides lie on a $6\times6$ grid (442 hypotheses, with the empty rule), learned by exact ERM. Choose where the truth lives: a rectangle of the class, a disc or an L-shape (outside the class), and how noisy the labels are. The left square shows one sample, the ERM output (blue) and the best rectangle of the class (green, computed from the exact risks). The right panel plays 400 rounds and histograms the **excess risk** $L_{\mathcal D}(h_S)-\min_{\mathcal H}L_{\mathcal D}$; rounds above $\varepsilon$ are red, and the readout compares their fraction with $\delta$. Even when no rectangle is good (the L-shape), the excess is small: that is what agnostic learning promises.`,
+      caption: String.raw`The class is all rectangles whose sides lie on a $6\times6$ grid (442 hypotheses, with the empty rule), learned by exact ERM. Choose where the truth lives: a rectangle of the class, a disc or an L-shape (outside the class), and how noisy the labels are. The left square shows one sample, the ERM output (blue) and the best rectangle of the class (green, computed from the same finite probability world). The right panel plays 400 rounds and histograms the **excess risk** $L_{\mathcal D}(h_S)-\min_{\mathcal H}L_{\mathcal D}$; rounds above $\varepsilon$ are red, and the readout compares their fraction with $\delta$. The benchmark can be positive while excess risk is small; the PAC definition asks for small excess with high probability once the required sample size is reached.`,
       deps: ['ml-3.1', 'ml-3.2a'],
-      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), Definition3.3, pp.46–47; minimum interpreted as infimum when unattained, per §1.6,p.29"],
+      refs: ['UML Definition 3.3, p. 46; §3.4 bibliographic remarks, p. 50'],
+      credit: 'David Haussler, "Decision theoretic generalizations of the PAC model for neural net and other learning applications", Information and Computation 100(1), 1992 (generalizing Valiant, 1984)',
       tags: ['agnostic PAC', 'excess risk'],
-      scope: String.raw`Finite grid class and the $0$–$1$ loss. The sample size at which the uniform-convergence bound $2\ln(2|\mathcal H|/\delta)/\varepsilon^2$ guarantees the property (derived from Hoeffding's inequality and the union bound; see ml-4.6) is printed for comparison; the simulation needs far fewer examples. The 400-round fraction carries sampling noise.`,
+      scope: String.raw`Finite grid class and the $0$–$1$ loss. The sample size at which the uniform-convergence bound $2\ln(2|\mathcal H|/\delta)/\varepsilon^2$ guarantees the property (derived from Hoeffding's inequality and the union bound; see ml-4.6) is printed for comparison; the simulation needs far fewer examples. The 400-round fraction is an estimate that can lie above or below $\delta$; it does not certify a distribution-free guarantee. Risks and samples use the same 3600-point finite law; at most 400 sample points are drawn, while calculations use the full selected sample.`,
       viz(v) {
         const K = 6;
         const s = square(v, { height: 380, title: 'one sample and its ERM output' });
@@ -269,22 +276,21 @@ No realizability is assumed: the learner is only asked to be nearly as good as t
         let info = null;
         v.render(() => {
           const nu = nuS.value, eps = eS.value, delta = dS.value, m = mS.value, tk = truthS.value, key = tk + nu.toFixed(3);
-          const W = world(key, () => { const eta = makeEta(TG[tk], 'flip', nu), T = riskTable(d, eta); return { eta, T, best: bestGridRect(T, K) }; });
-          const ex = rounds(key + '|' + m, () => { const out = []; for (let i = 0; i < 400; i++) { const S = drawNoisy(d, rand(hashStr('a' + i)), m, W.eta); out.push(W.T.risk(gridErm(gridCounts(S, K)).h) - W.best.risk); } return out; });
+          const W = world(key, () => { const eta = makeEta(TG[tk], 'flip', nu), T = finiteRiskWorld(d, eta); return { eta, T, best: bestGridRect(T, K) }; });
+          const ex = rounds(key + '|' + m, () => { const out = []; for (let i = 0; i < 400; i++) { const S = W.T.draw(rand(hashStr('a' + i)), m); out.push(W.T.risk(gridErm(gridCounts(S, K)).h) - W.best.risk); } return out; });
           etaRaster(v, s, W.eta, key);
-          const S = drawNoisy(d, rand(hashStr('s' + seed + '|' + m)), m, W.eta), h = gridErm(gridCounts(S, K)).h;
+          const S = W.T.draw(rand(hashStr('s' + seed + '|' + m)), m), h = gridErm(gridCounts(S, K)).h;
           drawShape(s, W.best.h, { color: 'green', width: 2.4, dash: true });
           drawShape(s, h, { color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.1 });
           drawSample2(s, S, null, Math.min(m, 400), m > 150 ? 2.6 : 3.8);
-          const hi = clamp(Math.max(eps * 1.8, quantile(ex, 0.99) * 1.1), 0.05, 1), B = bins(ex, 0, hi, 40);
-          const L = { edges: B.edges, counts: B.counts.map((c, i) => (B.edges[i + 1] <= eps + 1e-9 ? c : 0)) }, Rr = { edges: B.edges, counts: B.counts.map((c, i) => (B.edges[i + 1] > eps + 1e-9 ? c : 0)) };
+          const hi = clamp(Math.max(eps * 1.8, Math.max(...ex) * 1.03), 0.05, 1), split=splitRiskBins(ex,eps,0,hi,40), B=split.all, L=split.good, Rr=split.bad;
           const top = Math.max(1, ...B.counts) * 1.15;
           sH.setView([0, hi], [0, top]); sH.hist(L, { color: 'accent', fillAlpha: 0.4 }); sH.hist(Rr, { color: 'red', fillAlpha: 0.55 });
           sH.vline(eps, { color: 'ink', width: 2 }); sH.text('$\\varepsilon$', eps, top, { dx: 6, dy: 14, size: 14 });
           info = { bad: ex.filter((x) => x > eps).length / ex.length, delta, eps, bench: W.best.risk, bayes: W.T.bayes, mean: mean(ex), mUC: Math.ceil((2 * Math.log((2 * 442) / delta)) / (eps * eps)), m, L: W.T.risk(h) };
         });
         v.legend([['accent', 'ERM output $h_S$'], ['green', 'best rectangle of the class', { dash: true }], ['red', 'excess $>\\varepsilon$', { area: true }]]);
-        v.readout(() => info && String.raw`Benchmark $\min_{\mathcal H}L_{\mathcal D}=${pr(info.bench)}$ (Bayes risk $${pr(info.bayes)}$ — the class cannot reach it unless the truth is a rectangle); this sample's $h_S$ has risk $${pr(info.L)}$. Mean excess $${pr(info.mean, 4)}$; **fraction of rounds with excess $>\varepsilon=${info.eps.toFixed(3)}$: $${pr(info.bad)}$** against $\delta=${info.delta.toFixed(2)}$ at $m=${info.m}$. The uniform-convergence guarantee would need $m\ge${commas(info.mUC).replace(/,/g, '{,}')}$.`);
+        v.readout(() => info && String.raw`Benchmark $\min_{\mathcal H}L_{\mathcal D}=${pr(info.bench)}$ (Bayes risk $${pr(info.bayes)}$ — it is a lower bound; this class may have additional approximation error); this sample's $h_S$ has risk $${pr(info.L)}$. Mean excess $${pr(info.mean, 4)}$; **fraction of rounds with excess $>\varepsilon=${info.eps.toFixed(3)}$: $${pr(info.bad)}$** against $\delta=${info.delta.toFixed(2)}$ at $m=${info.m}$. The uniform-convergence guarantee would need $m\ge${commas(info.mUC).replace(/,/g, '{,}')}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.3a
@@ -292,14 +298,14 @@ No realizability is assumed: the learner is only asked to be nearly as good as t
       num: '3.3a',
       kind: 'Definition',
       name: 'Loss functions: 0–1 and squared loss',
-      statement: String.raw`A **loss function** $\ell(h,(x,y))\ge0$ scores a predictor on one example, and the risk is its expectation, $L_{\mathcal D}(h)=\mathbb E_{(x,y)\sim\mathcal D}\,\ell(h,(x,y))$, with empirical counterpart $L_S(h)=\frac1m\sum_{i=1}^m\ell(h,(x_i,y_i))$. Two standard choices:
+      statement: String.raw`A measurable **loss function** $\ell(h,(x,y))\ge0$ scores a predictor on one example, and the risk is its expectation, $L_{\mathcal D}(h)=\mathbb E_{(x,y)\sim\mathcal D}\,\ell(h,(x,y))$, with empirical counterpart $L_S(h)=\frac1m\sum_{i=1}^m\ell(h,(x_i,y_i))$. Two standard choices:
 (a) the **$0$–$1$ loss** $\ell_{0\text{-}1}(h,(x,y))=\mathbf 1[h(x)\ne y]$ for classification, whose risk is the probability of error;
 (b) the **squared loss** $\ell_{\mathrm{sq}}(h,(x,y))=(h(x)-y)^2$ for regression with $\mathcal Y\subseteq\mathbb R$, whose risk is the mean squared error.`,
       idea: String.raw`Both losses are functions of the pair (prediction, truth). The $0$–$1$ loss is flat except for a jump at the truth: it only asks whether the answer is exactly right, and it is the loss of ml-3.2a. For a real-valued target an answer that is almost right should be almost as good as one that is exactly right, which is what the squared loss encodes (and why it is differentiable, a convenience used from chapter 9 on). Moving from one to the other changes nothing in the definition of risk, only the integrand.`,
-      caption: String.raw`Left: for a true value $y$ (drag the orange handle) the loss of a prediction $\hat y$ (drag the blue handle): the $0$–$1$ loss is the step (zero only at $\hat y=y$), the squared loss the parabola. Right: an empirical risk. In *regression* the loss of each point is the squared length of its vertical gap to your line (drag the two handles; "fit" jumps to the least-squares line, the minimizer of $L_S$). In *classification* the line is thresholded at $\frac12$ and the loss is the number of ringed mistakes divided by $m$. Resample to see the risk fluctuate.`,
+      caption: String.raw`Left: for a true value $y$ (drag the orange handle) the loss of a prediction $\hat y$ (drag the blue handle): the $0$–$1$ loss is zero only at $\hat y=y$ and one elsewhere; the squared loss is the parabola. Right: an empirical risk. In *regression* the loss of each point is the squared length of its vertical gap to your line (drag the two handles; "fit" jumps to the least-squares line, the minimizer of $L_S$). In *classification* the line is thresholded at $\frac12$ and the loss is the number of ringed mistakes divided by $m$. Resample to see the empirical risk fluctuate. The one-point $0$–$1$ loss uses strict equality; coordinate labels are rounded.`,
       deps: ['ml-3.2a'],
       see: ['stat-11.1'],
-      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §3.2.2 equations(3.2)–(3.4), pp.47–49"],
+      refs: ['UML §3.2.2, equations (3.3)–(3.4), pp. 48–49'],
       tags: ['loss functions', 'squared loss', '0-1 loss'],
       viz(v) {
         const sL = v.stage({ x: [-0.4, 1.4], y: [0, 1.3], axes: 'box', gutter: true, height: 330, xlabel: 'prediction $\\hat y$', ylabel: 'loss $\\ell(\\hat y,y)$', title: 'two losses for one truth $y$' });
@@ -315,15 +321,18 @@ No realizability is assumed: the learner is only asked to be nearly as good as t
           for (let i = 0; i < M; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) ** 2; }
           const w = sxy / sxx, c = my - w * mx; a.set(0, c); b.set(1, c + w);
         });
+        v.button('prediction := truth',()=>pH.set(yH.x,0));
         let cur = null, info = null;
         v.render(() => {
+          yH.set(clamp(yH.x,-.4,1.4),0);pH.set(clamp(pH.x,-.4,1.4),0);
           const task = taskS.value, y = yH.x, p = pH.x;
+          sL.setView([-.4,1.4],[-.08,Math.max(1.3,(p-y)**2*1.15)]);
           // left: the two losses
-          sL.fn((q) => (q - y) ** 2, { color: 'accent', width: 2.6, domain: [-0.4, 1.4] });
+          sL.clip(()=>sL.fn((q) => (q - y) ** 2, { color: 'accent', width: 2.6, domain: [-0.4, 1.4] }));
           sL.line(-0.4, 1, y - 1e-4, 1, { color: 'orange', width: 2.6 }); sL.line(y + 1e-4, 1, 1.4, 1, { color: 'orange', width: 2.6 });
           sL.dot(y, 0, { r: 5.5, color: 'orange' }); sL.dot(y, 1, { r: 5.5, hollow: true, color: 'orange' });
           sL.vline(p, { color: 'muted', dash: true, width: 1.2 });
-          sL.dot(p, (p - y) ** 2, { r: 5, color: 'accent' }); sL.dot(p, Math.abs(p - y) < 1e-9 ? 0 : 1, { r: 5, color: 'orange' });
+          sL.dot(p, (p - y) ** 2, { r: 5, color: 'accent' }); sL.dot(p, loss01(p,y), { r: 5, color: 'orange' });
           sL.text('$0$–$1$', 1.38, 1, { align: 'right', dy: -10, color: 'orange', size: 13 }); sL.text('squared', 1.15, (1.15 - y) ** 2, { align: 'right', dx: -8, dy: -6, color: 'accent', size: 13 });
           // right: data
           cur = sample([task, seed].join(), () => {
@@ -332,6 +341,8 @@ No realizability is assumed: the learner is only asked to be nearly as good as t
             return { xs, ys };
           });
           const { xs, ys } = cur, line = (x) => a.y + (b.y - a.y) * x;
+          a.set(0,clamp(a.y,-2,3));b.set(1,clamp(b.y,-2,3));
+          sD.setView([0,1],[Math.min(-.25,...ys,a.y,b.y)-.1,Math.max(1.25,...ys,a.y,b.y)+.1]);
           sD.line(0, a.y, 1, b.y, { color: 'accent', width: 2.6 });
           let L = 0;
           if (task === 'reg') {
@@ -342,7 +353,7 @@ No realizability is assumed: the learner is only asked to be nearly as good as t
             for (let i = 0; i < M; i++) { const pr1 = line(xs[i]) >= 0.5 ? 1 : 0, bad = pr1 !== ys[i]; if (bad) { L++; sD.dot(xs[i], ys[i], { r: 10, hollow: true, color: 'red' }); } }
             sD.dots(xs.map((x, i) => [x, ys[i]]), { r: 4.6, color: 'ink' });
           }
-          info = { task, L: L / M, y, p, sq: (p - y) ** 2, z: Math.abs(p - y) < 1e-9 ? 0 : 1 };
+          info = { task, L: L / M, y, p, sq: (p - y) ** 2, z: loss01(p,y) };
         });
         v.legend([['accent', 'squared loss'], ['orange', '$0$–$1$ loss'], ['red', 'vertical gap / mistake']]);
         v.readout(() => info && String.raw`At $\hat y=${v.fix(info.p, 2)}$, $y=${v.fix(info.y, 2)}$: squared loss $${pr(info.sq)}$, $0$–$1$ loss $${info.z}$. ` + (info.task === 'reg' ? String.raw`Empirical risk of your line: $L_S(h)=\frac1m\sum(h(x_i)-y_i)^2=${pr(info.L, 4)}$.` : String.raw`Empirical risk of the thresholded line: $L_S(h)=${pr(info.L)}$ (fraction of ringed points).`));
@@ -353,14 +364,16 @@ No realizability is assumed: the learner is only asked to be nearly as good as t
       num: '3.4',
       kind: 'Definition',
       name: 'Agnostic PAC learnability for general loss functions',
-      statement: String.raw`Let $\mathcal H$ be a hypothesis class, $Z$ an arbitrary domain of examples (for supervised learning $Z=\mathcal X\times\mathcal Y$; for unsupervised tasks just instances), and $\ell:\mathcal H\times Z\to\mathbb R_+$ a loss function. The risk is $L_{\mathcal D}(h)=\mathbb E_{z\sim\mathcal D}\,\ell(h,z)$ for a distribution $\mathcal D$ over $Z$. The class $\mathcal H$ is **agnostic PAC learnable with respect to $(Z,\ell)$** if there are $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and an algorithm $A$ such that for all $\varepsilon,\delta\in(0,1)$ and every distribution $\mathcal D$ over $Z$, a sample of $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples makes$A$ return$h\in\mathcal H$ with
-$$\mathbb P\Big[L_{\mathcal D}(h)\le\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon\Big]\ge1-\delta.$$`,
-      idea: String.raw`Nothing in ml-3.3 used that the loss is $0$–$1$ or that examples are labelled: the definition quantifies a risk, a benchmark and an excess. Replacing $\ell$ gives regression with the squared loss (ml-3.3a), and taking $Z=\mathcal X$ with $\ell(h,x)$ the squared distance from $x$ to the nearest of $k$ centres gives a clustering objective, the $k$-means cost. Whether such classes are learnable now depends on the loss: for finite classes and bounded losses it follows from Hoeffding's inequality (chapter 4), and the three experiments below only illustrate it. With an unbounded loss, as for squared loss on unbounded $\mathcal H$, learnability can fail, which is why the picture bounds the hypotheses.`,
-      caption: String.raw`The same $(\varepsilon,\delta)$ game as before, now with three different risks; switch the task and only the risk (and the picture) changes. **$0$–$1$ loss:** thresholds on a grid, labels flipped with probability $\nu$. **Squared loss:** lines $x\mapsto wx$ with $|w|\le1$ fitted by least squares, targets $y=\mathrm{clip}(0.15+0.7x+\text{noise})$ so the truth is not in the class. **$k$-means loss:** two centres on a grid, $x$ from a two-bump mixture, loss = squared distance to the nearer centre. Left: one sample, ERM output (blue) and the best hypothesis of the class (green). Right: 400 rounds of the excess risk; rounds above $\varepsilon$ are red.`,
-      deps: ['ml-3.3', 'ml-3.3a'],
-      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), Definition3.4 and Remark3.1, p.49; minimum interpreted as infimum when unattained, per §1.6,p.29"],
+      statement: String.raw`Let $\mathcal H$ be a hypothesis class, $Z$ an arbitrary domain of examples (for supervised learning $Z=\mathcal X\times\mathcal Y$; for unsupervised tasks just instances), and $\ell:\mathcal H\times Z\to\mathbb R_+$ a loss measurable in its example argument. The risk is $L_{\mathcal D}(h)=\mathbb E_{z\sim\mathcal D}\,\ell(h,z)$ for a distribution $\mathcal D$ over $Z$. The class $\mathcal H$ is **agnostic PAC learnable with respect to $(Z,\ell)$** if there are $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and an algorithm $A$ such that for all $\varepsilon,\delta\in(0,1)$ and every distribution $\mathcal D$ over $Z$, a sample of $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples makes $A$ return $h\in\mathcal H$ with
+$$\begin{gathered}\mathbb P\Big[L_{\mathcal D}(h)\\\le\min_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon\Big]\ge1-\delta.\end{gathered}$$`,
+      idea: String.raw`Nothing in ml-3.3 used that the loss is $0$–$1$ or that examples are labelled: the definition quantifies a risk, a benchmark and an excess. Replacing $\ell$ gives regression with the squared loss (ml-3.3a), and taking $Z=\mathcal X$ with $\ell(h,x)$ the squared distance from $x$ to the nearest of $k$ centres gives a clustering objective, the $k$-means cost. Whether such classes are learnable now depends on the loss: for finite classes and bounded losses it follows from Hoeffding's inequality (chapter 4), and the three experiments below only illustrate it. Unbounded losses require additional assumptions for finite-sample bounds; bounding hypotheses alone does not bound squared loss if labels or inputs remain unbounded. The pictured inputs, labels and hypotheses are all bounded. Minima below are attained; an unattained benchmark is written as an infimum.
+
+If a measurable loss lies in $[0,B]$ with finite $B$, integral monotonicity and scaling (rca 1.24) give $0\le L_{\mathcal D}(h)\le B$, because the example law has total mass one. This supplies the finite-risk premise for the bounded-loss experiments and their finite-class comparison. It does not bound a squared loss on unrestricted inputs or labels, and does not itself prove concentration.`,
+      caption: String.raw`The same $(\varepsilon,\delta)$ game as before, now with three different risks; switch the task and only the risk (and the picture) changes. **$0$–$1$ loss:** thresholds on a grid, labels flipped with probability $\nu$. **Squared loss:** lines $x\mapsto wx$ with $|w|\le1$ fitted by least squares, targets $y=\mathrm{clip}(0.15+0.7x+\text{noise})$ from a fixed finite 200-by-61 instance/noise law, so samples and risk moments agree. **$k$-means loss:** two centres on a grid, $x$ from a fixed 400-point approximation of a two-bump mixture, loss = squared distance to the nearer centre. Left: one sample, ERM output (blue) and the best hypothesis of the class (green). Right: 400 rounds of the excess risk; rounds above $\varepsilon$ are red.`,
+      deps: ['ml-3.3', 'ml-3.3a', 'rca-1.24'],
+      refs: ['UML Definition 3.4 and Remark 3.1, p. 49'],
       tags: ['general loss', 'agnostic PAC', 'regression', 'k-means'],
-      scope: String.raw`Three small concrete classes with bounded losses; this is an experiment, not a proof of learnability. Risks are computed exactly (thresholds) or by numerical integration (squared and $k$-means losses).`,
+      scope: String.raw`Three small concrete classes with bounded losses; this is an experiment, not a proof of learnability. Threshold risk is analytic for a uniform instance distribution. Squared and $k$-means risks are finite weighted sums for the same laws used to draw data; these approximate the continuous examples. Squared loss is at most 4 here, while the other two losses are at most 1. Histograms classify individual rounds before binning.`,
       viz(v) {
         const s = v.stage({ x: [0, 1], y: [-0.1, 1.1], axes: 'box', gutter: true, height: 360, xlabel: 'instance $x$', title: 'one sample' });
         const sH = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, xlabel: 'excess risk $L_{\\mathcal D}(h_S)-\\min_{\\mathcal H}L_{\\mathcal D}$', ylabel: 'rounds', yticks: [], title: '400 rounds' });
@@ -369,41 +382,7 @@ $$\mathbb P\Big[L_{\mathcal D}(h)\le\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\va
         const dS = v.slider('confidence $\\delta$', 0.02, 0.5, 0.1, { step: 0.01, log: true });
         const mS = v.slider('sample size $m$', 5, 400, 60, { int: true, log: true });
         let seed = 1; v.button('New sample', () => { seed++; });
-        const NU = 0.15, TH = 0.43, GK = 20, Q = 61;
-        const zq = Array.from({ length: Q }, (_, i) => -5 + (10 * i) / (Q - 1)), zw = zq.map((z) => Math.exp(-0.5 * z * z)), zs = zw.reduce((p, q) => p + q, 0);
-        const clipMom = (mu, sg) => { let e1 = 0, e2 = 0; zq.forEach((z, i) => { const y = clamp(mu + sg * z, 0, 1); e1 += y * zw[i] / zs; e2 += y * y * zw[i] / zs; }); return [e1, e2]; };
-        const mom = (() => { let mxx = 0, mxy = 0, myy = 0; const n = 200; for (let i = 0; i < n; i++) { const x = (i + 0.5) / n, [e1, e2] = clipMom(0.15 + 0.7 * x, 0.2); mxx += x * x / n; mxy += x * e1 / n; myy += e2 / n; } return { mxx, mxy, myy }; })();
-        const sqRisk = (w) => mom.mxx * w * w - 2 * mom.mxy * w + mom.myy, wOpt = clamp(mom.mxy / mom.mxx, -1, 1);
-        const gauss = (x, m, sg) => Math.exp(-0.5 * ((x - m) / sg) ** 2) / sg;
-        const dens = (() => { const n = 400, f = []; let tot = 0; for (let i = 0; i < n; i++) { const x = (i + 0.5) / n, q = 0.5 * gauss(x, 0.25, 0.08) + 0.5 * gauss(x, 0.7, 0.1); f.push(q); tot += q; } return f.map((q) => q / tot); })();
-        const pairs = []; for (let i = 0; i <= GK; i++) for (let j = i; j <= GK; j++) pairs.push([i / GK, j / GK]);
-        const kmLoss = (x, c) => Math.min((x - c[0]) ** 2, (x - c[1]) ** 2);
-        const kmRisk = pairs.map((c) => dens.reduce((p, q, i) => p + q * kmLoss((i + 0.5) / 400, c), 0)), kmBest = kmRisk.indexOf(Math.min(...kmRisk));
-        const zoRisk = (t) => NU + (1 - 2 * NU) * Math.abs(t - TH);
-        const draw = (task, r, m) => {
-          const X = [], Y = [];
-          for (let i = 0; i < m; i++) {
-            if (task === 'zo') { const x = r(); X.push(x); Y.push((r() < NU ? 1 : 0) ^ (x >= TH ? 1 : 0)); }
-            else if (task === 'sq') { const x = r(); X.push(x); Y.push(clamp(0.15 + 0.7 * x + r.normal(0, 0.2), 0, 1)); }
-            else { let x; do { x = r() < 0.5 ? r.normal(0.25, 0.08) : r.normal(0.7, 0.1); } while (x < 0 || x > 1); X.push(x); Y.push(0); }
-          }
-          return { X, Y };
-        };
-        // ERM returns the hypothesis; risk(h) its true risk.
-        const erm = (task, S) => {
-          const n = S.X.length;
-          if (task === 'zo') {
-            const P = new Array(GK).fill(0), N = new Array(GK).fill(0); for (let i = 0; i < n; i++) (S.Y[i] ? P : N)[Math.min(GK - 1, Math.floor(S.X[i] * GK))]++;
-            let best = Infinity, bt = 0; for (let t = 0; t <= GK; t++) { let e = 0; for (let c = 0; c < GK; c++) e += c < t ? P[c] : N[c]; if (e < best) { best = e; bt = t; } }
-            return bt / GK;
-          }
-          if (task === 'sq') { let sxy = 0, sxx = 0; for (let i = 0; i < n; i++) { sxy += S.X[i] * S.Y[i]; sxx += S.X[i] ** 2; } return clamp(sxy / sxx, -1, 1); }
-          let best = Infinity, bi = 0; for (let k = 0; k < pairs.length; k++) { let e = 0; for (let i = 0; i < n; i++) e += kmLoss(S.X[i], pairs[k]); if (e < best) { best = e; bi = k; } }
-          return bi;
-        };
-        const risk = (task, h) => (task === 'zo' ? zoRisk(h) : task === 'sq' ? sqRisk(h) : kmRisk[h]);
-        const bench = (task) => (task === 'zo' ? zoRisk(Math.round(TH * GK) / GK) : task === 'sq' ? sqRisk(wOpt) : kmRisk[kmBest]);
-        const bestH = (task) => (task === 'zo' ? Math.round(TH * GK) / GK : task === 'sq' ? wOpt : kmBest);
+        const { dens,pairs,kmBest,draw,erm,risk,bench,bestH }=generalLossWorlds();
         const rounds = memo();
         let info = null;
         v.render(() => {
@@ -426,8 +405,7 @@ $$\mathbb P\Big[L_{\mathcal D}(h)\le\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\va
             for (const c of pairs[kmBest]) s.vline(c, { color: 'green', width: 2.4, dash: true });
             for (const c of pairs[h]) s.vline(c, { color: 'accent', width: 2.6 });
           }
-          const hi = clamp(Math.max(eps * 1.8, quantile(ex, 0.99) * 1.1), 1e-3, 1), B = bins(ex, 0, hi, 40);
-          const L = { edges: B.edges, counts: B.counts.map((c, i) => (B.edges[i + 1] <= eps + 1e-12 ? c : 0)) }, Rr = { edges: B.edges, counts: B.counts.map((c, i) => (B.edges[i + 1] > eps + 1e-12 ? c : 0)) };
+          const hi = Math.max(eps * 1.8, Math.max(...ex) * 1.03, 1e-3), split=splitRiskBins(ex,eps,0,hi,40), B=split.all, L=split.good, Rr=split.bad;
           const top = Math.max(1, ...B.counts) * 1.15;
           sH.setView([0, hi], [0, top]); sH.hist(L, { color: 'accent', fillAlpha: 0.4 }); sH.hist(Rr, { color: 'red', fillAlpha: 0.55 });
           sH.vline(eps, { color: 'ink', width: 2 }); sH.text('$\\varepsilon$', eps, top, { dx: 6, dy: 14, size: 14 });
@@ -442,15 +420,15 @@ $$\mathbb P\Big[L_{\mathcal D}(h)\le\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\va
       num: '3.4a',
       kind: 'Definition',
       name: 'Proper versus representation-independent learning',
-      statement: String.raw`In the definitions of PAC learnability the learner may be restricted in what it outputs. A learner is **proper** if its output $h$ always belongs to the class $\mathcal H$ it competes against, as ERM$_{\mathcal H}$ does. A learner is **representation independent** (also called *improper*) if it may output any predictor $h:\mathcal X\to\mathcal Y$ at all, while its guarantee is still measured against the best member of $\mathcal H$:
-$$L_{\mathcal D}(h)\le\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon\quad\text{with probability}\ge1-\delta.$$
-A class that is learnable by an improper learner need not be learnable properly with the same computational efficiency. For binary classification under the usual measurability assumptions, finite VC dimension permits proper ERM learning, although allowing improper outputs can change computational cost and optimal sample bounds.`,
-      idea: String.raw`The class $\mathcal H$ is only the **yardstick**: it fixes the benchmark $\min_{\mathcal H}L_{\mathcal D}$, not the shape of the answer. An improper learner is therefore allowed to be richer than the class, and when the truth lies outside $\mathcal H$ it can even land below the benchmark; what it may not do is be worse than the benchmark by more than $\varepsilon$. Choosing the output freely matters for computation, since a hard proper-learning problem may become easy once the learner is allowed to answer with a more convenient representation, and for this particular finite-sample comparison, where the cell-majority rule needs more observations per cell. Improperness by itself does not imply a universal statistical penalty.`,
-      caption: String.raw`The yardstick class is the rectangles on a $10\times10$ grid; the truth is chosen below, with label noise. The **proper** learner (blue) returns the ERM rectangle. The **improper** learner (orange cells) returns a rule outside the class: in each of the 100 cells it predicts the majority label of the sample. Left: one sample of size $m$ with both outputs. Right: the excess over the benchmark $\min_{\mathcal H}L_{\mathcal D}$ (zero line) averaged over 30 samples, as the sample size grows. A truth that is a rectangle makes the benchmark unbeatable and the improper learner pays for its richness; an L-shape lets it dip below zero, i.e. do better than every rectangle.`,
+      statement: String.raw`In the definitions of PAC learnability the learner may be restricted in what it outputs. A learner is **proper** if its output $h$ always belongs to the class $\mathcal H$ it competes against, as ERM$_{\mathcal H}$ does. A learner is **representation independent** (also called *improper*) if it may output a hypothesis in a specified larger space $\mathcal H'\supseteq\mathcal H$ on which the same loss is defined, while its guarantee is still measured against the best member of $\mathcal H$:
+$$L_{\mathcal D}(h)\le\min_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon\quad\text{with probability}\ge1-\delta.$$
+Allowing a larger output space changes the learning problem; the definition alone supplies no proper learner with the same computational or sample requirements. For finite classes and bounded loss, proper ERM is statistically learnable by Corollary 4.6.`,
+      idea: String.raw`The class $\mathcal H$ is only the **yardstick**: it fixes the benchmark $\min_{\mathcal H}L_{\mathcal D}$, not the shape of the answer. An improper learner is therefore allowed to be richer than the class, and when the truth lies outside $\mathcal H$ it can even land below the benchmark; the guarantee limits the probability of exceeding the benchmark by more than $\varepsilon$ to $\delta$. Choosing the output freely matters for computation, since a hard proper-learning problem may become easy once the learner is allowed to answer with a more convenient representation, and the particular cell-majority rule below may need more data, but improper learning by itself does not imply a universal sample penalty.`,
+      caption: String.raw`The yardstick class is the rectangles on a $10\times10$ grid; the truth is chosen below, with label noise. The **proper** learner (blue) returns the ERM rectangle. The **improper** learner (orange cells) may return a rule outside the class: in each of the 100 cells it predicts the majority label of the sample. Left: one sample of size $m$ with both outputs. Right: the excess over the benchmark $\min_{\mathcal H}L_{\mathcal D}$ (zero line) averaged over 30 samples, as the sample size grows. A truth that is a rectangle makes the benchmark unbeatable and the improper learner pays for its richness; an L-shape lets it dip below zero, i.e. do better than every rectangle.`,
       deps: ['ml-3.4'],
-      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), Remark3.2, p.49; statistical comparison limited here to binary classification"],
+      refs: ['UML Remark 3.2, p. 49; Corollary 4.6, p. 57'],
       tags: ['proper learning', 'improper learning'],
-      scope: String.raw`Illustrative: the improper rule is a cell-wise majority vote on the $10\times10$ grid (a union of cells); averages over 30 seeded samples per $m$ are noisy by about $\pm0.005$.`,
+      scope: String.raw`Illustrative: the improper rule is a cell-wise majority vote on the $10\times10$ grid (a union of cells); the 30-round averages are noisy estimates without a fixed universal error margin. All risks and samples use the same finite probability law; at most 400 sample points are drawn while calculations use all selected examples.`,
       viz(v) {
         const K = 10;
         const s = square(v, { height: 380, title: 'one sample, two learners' });
@@ -467,15 +445,15 @@ A class that is learnable by an improper learner need not be learnable properly 
         let info = null;
         v.render(() => {
           const nu = nuS.value, tk = truthS.value, m = mS.value, key = tk + nu.toFixed(3);
-          const W = world(key, () => { const eta = makeEta(TG[tk], 'flip', nu), T = riskTable(d, eta); return { eta, T, best: bestGridRect(T, K) }; });
+          const W = world(key, () => { const eta = makeEta(TG[tk], 'flip', nu), T = finiteRiskWorld(d, eta); return { eta, T, best: bestGridRect(T, K) }; });
           const C = curve(key, () => MS.map((mm) => {
             let ep = 0, ei = 0; const R = 30;
-            for (let k = 0; k < R; k++) { const S = drawNoisy(d, rand(hashStr('c' + k + '|' + mm)), mm, W.eta); ep += W.T.risk(gridErm(gridCounts(S, K)).h) - W.best.risk; ei += cellRisk(W.T, cells(S)) - W.best.risk; }
+            for (let k = 0; k < R; k++) { const S = W.T.draw(rand(hashStr('c' + k + '|' + mm)), mm); ep += W.T.risk(gridErm(gridCounts(S, K)).h) - W.best.risk; ei += cellRisk(W.T, cells(S)) - W.best.risk; }
             return [ep / R, ei / R];
           }));
           etaRaster(v, s, W.eta, key);
           for (let i = 1; i < K; i++) { s.line(i / K, 0, i / K, 1, { color: 'grid', width: 1 }); s.line(0, i / K, 1, i / K, { color: 'grid', width: 1 }); }
-          const S = drawNoisy(d, rand(hashStr('o' + seed + '|' + m)), m, W.eta), hp = gridErm(gridCounts(S, K)).h, f = cells(S);
+          const S = W.T.draw(rand(hashStr('o' + seed + '|' + m)), m), hp = gridErm(gridCounts(S, K)).h, f = cells(S);
           for (let a = 0; a < K; a++) for (let b = 0; b < K; b++) if (f(a, b)) s.rect(a / K, b / K, (a + 1) / K, (b + 1) / K, { fill: 'orange', fillAlpha: 0.28, stroke: false });
           drawShape(s, W.best.h, { color: 'green', width: 2.2, dash: true });
           drawShape(s, hp, { color: 'accent', width: 2.8 });

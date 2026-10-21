@@ -1,3 +1,4 @@
+import { positionNet, netTrace, netAutomaton, regexDifference, shortestRejected } from './automata.audit.js';
 // Theory of Computation — Chapter 3: Nondeterminism and regular expressions (items 3.9–3.16; 3.1–3.8 in ch03.js)
 import { subN, EPS, layer, upTo, pen, keypad, nfa, closure, move, hasAcc, nfaRun, nfaAccepts, determinize, dfaAccepts, nfaLang, eqSets, firstDiff, nfaGraph, drawNFA, bendEdges, fitThompson, nfaEdges, dfaEdges, NFAS, PRESETS, R, parseRegex, rx, rxTeX, rxSize, countParts, langSets, langFlat, thompson, nfaToRegex, rxInput, drawLangRows, tt, texName3, setTex, drawBarcode, symbolsOf, onColor, asNFA, deriv, nullable, sAlt, sCat, sStar, key, catAll, altAll, backtrack, nfaWork, tryParse } from './ch03.shared.js';
 
@@ -107,14 +108,16 @@ export default {
       num: '3.10',
       kind: 'Theorem',
       name: 'Arden’s lemma',
-      statement: String.raw`Let $A,B\subseteq\Sigma^*$ be languages. The language equation $X=AX\cup B$ (unknown $X\subseteq\Sigma^*$) always has $A^*B$ as its **least solution**. If $\varepsilon\notin A$ it is the **unique** solution. If $\varepsilon\in A$ the solutions are exactly the languages $X=A^*C$ with $B\subseteq C$; in particular every language $A^*(B\cup D)$ is a solution, so uniqueness holds in this case exactly when $A^*B=\Sigma^*$. Otherwise there are at least two solutions, but the number need not be infinite: over $\Sigma=\{a\}$, $A=\{\varepsilon,a\}$ and $B=\{a\}$ have exactly the two solutions $a^+$ and $a^*$.`,
-      idea: String.raw`Unrolling the equation gives $X=B\cup AB\cup A^2B\cup\cdots\cup A^{k}X$, so every string of $A^*B$ shows up after finitely many unrollings (the iterates $X_0=\varnothing$, $X_{k+1}=AX_k\cup B$ increase to $A^*B$). If $\varepsilon\notin A$ every string of $A^kX$ has length at least $k$, so a solution cannot contain strings that the first $k$ layers do not account for: the tail $A^kX$ disappears from any fixed length, and $X=A^*B$ is forced. If $\varepsilon\in A$ the tail $A^kX$ always contains $X$ itself, which lets one add arbitrary strings $C$ and take $A^*C$.`,
+      statement: String.raw`For arbitrary languages $A,B\subseteq\Sigma^*$, the equation $X=AX\cup B$ has least solution $A^*B$. If $\varepsilon\notin A$, that solution is unique. If $\varepsilon\in A$, its solutions are exactly $X=A^*C$ for languages $C$ containing $B$. Uniqueness can still occur when $A^*B=\Sigma^*$; otherwise there are at least two solutions, but not necessarily infinitely many. For example, $A=\{\varepsilon\}$ and $B=\Sigma^*\setminus\{\varepsilon\}$ give exactly two solutions, $B$ and $\Sigma^*$.`,
+      idea: String.raw`Every solution satisfies $X=\bigcup_{j<k}A^jB\cup A^kX$ for each $k\ge1$, so it contains $A^*B$. The increasing iterates from the empty language converge to this least solution. Without $\varepsilon$ in $A$, every word in $A^kX$ has length at least $k$, which forces equality with the least solution by considering each fixed word length. With $\varepsilon\in A$, one has $AA^*=A^*$, so any $A^*C$ with $B\subseteq C$ is a solution. Conversely a solution is closed under left multiplication by $A$ and equals $A^*X$, giving the stated characterization.
+
+Ordinary induction alg-2.1 justifies the repeated substitution formula for each positive k: substitute $X=AX\cup B$ once more into the last term to extend the finite union by one term. When $\varepsilon\notin A$, every factor from A has positive length. For a fixed word of length m choose $k=m+1$; it cannot belong to $A^kX$, so any occurrence in a solution must lie in one of the finite-union terms. This is the length argument establishing uniqueness.`,
       caption: String.raw`Type $A$ and $B$ (regular expressions over $a,b$). **Left:** the approximations $X_0=\varnothing$, $X_1=B$, $X_2=AB\cup B,\dots$ as a barcode of all strings up to length 7 — new strings of the latest layer in gold, earlier ones blue; the faint outline marks the strings of the limit $A^*B$ not yet reached. **Right:** a candidate solution $X$ (choose $A^*B$, or the larger $A^*(B\cup\{c\})$ for a string $c$ outside $A^*B$) and, beside it, $AX\cup B$ computed from it; strings where the two sides differ are red. Put $\varepsilon$ into $A$ (e.g. $A=a\mid\varepsilon$) and the larger candidate becomes a genuine second solution; without ε it fails.`,
-      deps: ['toc-3.6'],
-      refs: ['Sipser §1.3'],
-      credit: 'D. N. Arden, c. 1960',
-      scope: String.raw`Strings are checked up to length 7, which is exact for the equation (a string of length $\le7$ of $AX$ only involves strings of $X$ of length $\le7$); the attribution to D. N. Arden rests on secondary listings (Wikipedia and a Journal of Symbolic Logic record cite his "Delayed-logic and finite-state machines" in *Theory of Computing Machine Design*, University of Michigan Press, 1960, and a 1961 symposium version with different page numbers) and was not checked against the original.`,
-      verify: true,
+      deps: ['toc-3.6', 'alg-2.1'],
+      refs: ['Alberto Pettorossi, Automata Theory and Formal Languages, §2.6 Theorem 2.6.1 and proof, pp. 56–57'],
+      credit: 'Arden language-equation lemma; proof checked in Pettorossi §2.6 (original chronological priority not asserted)',
+      scope: String.raw`The grid exhausts only words of length at most 7. Truncation computes those coefficients of concatenation exactly, but agreement on that grid does not imply a global equation or universality. The extra word $c$ is found by a whole-automaton search; it may be longer than the grid. Interactive expressions have combined syntax size at most 120; this is a display limit, not a theorem hypothesis. A separate full subset-product check tests the candidate equation and reports any computation cap as unknown. The arbitrary-language theorem follows from the proof, not finite sampling.`,
+      links: { 'Author textbook': 'https://cs.brown.edu/courses/csci1810/fall-2024/resources/ch2_readings/automata_theory_and_formal_languages.pdf' },
       tags: ['regular expressions', 'equations'],
       viz(v) {
         const N = 7, K = 8;
@@ -126,16 +129,19 @@ export default {
         const rs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, weight: 1.15 });
         let K0 = '', D = null;
         const compute = () => {
-          const a = IA.cur(), b = IB.cur(); const ky = IA.inp.value + '|' + IB.inp.value; if (ky === K0) return D;
+          const a = IA.cur(), b = IB.cur(); const ky = JSON.stringify([IA.inp.value, IB.inp.value]); if (ky === K0) return D;
           K0 = ky;
           if (a.error || b.error) return (D = { error: a.error ? 'A: ' + a.error : 'B: ' + b.error });
           const bad = [...symbolsOf(a.ast), ...symbolsOf(b.ast)].find((c) => !AB.includes(c)); if (bad) return (D = { error: 'use only the letters a and b' });
+          if (rxSize(a.ast) + rxSize(b.ast) > 120) return (D = { error: 'Interactive limit: use expressions with combined syntax size at most 120.' });
           const LA = langSets(a.ast, N), LB = langSets(b.ast, N), limit = langSets(R.cat(R.star(a.ast), b.ast), N);
           const X = [Array.from({ length: N + 1 }, () => new Set())]; for (let k = 0; k < K; k++) X.push(lunion(lcat(LA, X[k], N), LB));
-          const all = new Set(); limit.forEach((S) => S.forEach((u) => all.add(u)));
-          let c = null; for (const u of upTo(AB, N)) if (!all.has(u)) { c = u; break; }
+          const leastAst = R.cat(R.star(a.ast), b.ast), reject = shortestRejected(leastAst, AB), c = reject.word;
           const LAs = langSets(R.star(a.ast), N), big = c == null ? null : lcat(LAs, lunion(LB, Array.from({ length: N + 1 }, (_, k) => new Set(k === c.length ? [c] : []))), N);
-          return (D = { LA, LB, limit, X, c, big, eps: nullable(a.ast), a: a.ast, b: b.ast });
+          const wordAst = c == null ? null : [...c].reduce((r, ch) => R.cat(r, R.sym(ch)), R.eps), bigAst = wordAst && R.cat(R.star(a.ast), R.alt(b.ast, wordAst));
+          const equation = ast => regexDifference(thompson(ast).N, R.alt(R.cat(a.ast, ast), b.ast));
+          const equations = { least: equation(leastAst), big: bigAst ? equation(bigAst) : null };
+          return (D = { LA, LB, limit, X, c, big, reject, equations, leastAst, bigAst, eps: nullable(a.ast), a: a.ast, b: b.ast });
         };
         v.render(() => {
           const P = pen(ls, v), Q = pen(rs, v), M = compute();
@@ -172,7 +178,11 @@ export default {
           let viol = 0, first = null; for (let l = 0; l <= N; l++) for (const u of layer(AB, l)) if (Xc[l].has(u) !== rhs[l].has(u)) { viol++; first = first ?? u; }
           const cnt = M.X[k].reduce((a, S) => a + S.size, 0), tot = M.limit.reduce((a, S) => a + S.size, 0);
           let s = `$\\varepsilon\\in A$: **${M.eps ? 'yes' : 'no'}** · $X_{${k}}$ has ${cnt} of the ${tot} strings of $A^*B$ (length ≤ 7) · $X_{${K}}=A^*B$ on these lengths: ${same ? '✓' : '✗'}`;
-          s += cand.value === 'big' && !M.big ? ' · no larger candidate: $A^*B=\\Sigma^*$ here' : ` · candidate solves $X=AX\\cup B$: ${viol === 0 ? '✓ (0 violations)' : `✗ ${viol} string${viol === 1 ? '' : 's'} differ, first $${tt(first)}$`}`;
+          const exact = M.equations[cand.value === 'big' && M.big ? 'big' : 'least'];
+          s += ` · length-7 equation differences: ${viol}`;
+          if (cand.value === 'big' && !M.big) s += M.reject.universal ? ' · no larger solution: the full automaton accepts every word' : ' · no extra word available before the search cap; universality unknown';
+          else s += ` · whole-language equation: ${exact.equal === null ? 'unknown (resource cap)' : exact.equal ? 'holds ✓' : `fails, witness $${tt(exact.witness)}$`}`;
+          if (M.c != null && M.c.length > N) s += ` · extra word c has length ${M.c.length}, beyond the grid`;
           return s;
         });
       },
@@ -393,7 +403,7 @@ export default {
       num: '3.14',
       kind: 'Concept',
       name: 'Lexical analysis with automata',
-      statement: String.raw`A **lexer** (scanner) splits program text into tokens. Each token class is a regular expression $r_1,\dots,r_m$ that does not accept the empty string, listed in priority order. This ensures every successful token advances the scan. The expressions are compiled into one NFA (a new start state with ε-arrows to the NFAs of the $r_i$, 3.7), and then into a DFA by the subset construction (3.3), where each DFA state is labelled with the *first* rule whose accepting state it contains. To scan, run the DFA from the current position and remember the last position at which it was in a labelled state; when the DFA reaches the dead state (or the input ends), cut the token there — the **longest match** — and restart after it, labelled by the rule of that state (ties go to the earlier rule, which is how keywords beat identifiers). If no accepting state was passed, report an error.`,
+      statement: String.raw`A **lexer** (scanner) splits program text into tokens. Each token class is a regular expression $r_1,\dots,r_m$, listed in priority order. The expressions are compiled into one NFA (a new start state with ε-arrows to the NFAs of the $r_i$, 3.7), and then into a DFA by the subset construction (3.3), where each DFA state is labelled with the *first* rule whose accepting state it contains. To scan, run the DFA from the current position and remember the last position at which it was in a labelled state; when the DFA reaches the dead state (or the input ends), cut the token there — the **longest match** — and restart after it, labelled by the rule of that state (ties go to the earlier rule, which is how keywords beat identifiers). If no accepting state was passed, report an error.`,
       idea: String.raw`The DFA keeps all token classes in play at once, each as a set of NFA states, and the subset labelled with the best rule describes the best token ending at the current position; the dead state is the signal that no longer match is possible. Longest match and rule priority are not part of regular languages: they are two extra conventions on top of the automaton, and changing either changes the tokens (reading $\texttt{iffy}$ as the keyword $\texttt{if}$ followed by $\texttt{fy}$, or $\texttt{==}$ as two assignments).`,
       caption: String.raw`Type source text in the toy language (keywords *if*, *else*, *while*; identifiers; numbers; the operators == <= = < +; parentheses; semicolons; spaces). Each token is a coloured chip with its class; **click a token** to see the DFA's path over it (states under the characters, the position of the last accepting state, the lookahead character that killed the run). Switch the rule to **stop at the first accepting state** (no longest match) or turn the **keyword rules off** (keywords then lex as identifiers) and watch the tokens change. The DFA is built live from the regular expressions with the code of 3.7 and 3.3.`,
       deps: ['toc-3.9', 'toc-3.12'],
@@ -495,16 +505,15 @@ export default {
       name: 'Representation of Events in Nerve Nets and Finite Automata',
       paper: { authors: 'S. C. Kleene', year: 1956, title: 'Representation of Events in Nerve Nets and Finite Automata', venue: 'in C. E. Shannon and J. McCarthy (eds.), Automata Studies, Annals of Mathematics Studies 34, Princeton University Press: 3–42', doi: '10.1515/9781400882618-002' },
       introduces: ['toc-1.2', 'toc-3.6', 'toc-3.9'],
-      statement: String.raw`Kleene asked which "events" — sets of input histories — a McCulloch–Pitts **nerve net** (a network of threshold neurons with unit delays) can recognise by firing a designated neuron, and answered it in two directions. He defined the **regular events**: starting from finite events, close under disjunction (union), product (concatenation) and iteration (the star). **Representability:** every regular event is representable by a nerve net (and by a finite automaton). **Converse:** every event representable in a nerve net or a finite automaton is regular (up to the paper's conventions about time and about which neuron's firing counts). In modern terms, regular expressions, finite automata and threshold-neuron nets recognise exactly the same languages — the result later called Kleene's theorem (3.9).`,
-      idea: String.raw`McCulloch and Pitts had proposed nets of idealised threshold neurons; Kleene asked precisely which events (sets of input histories) such a net can represent by the firing of one neuron, and extended the question to arbitrary finite automata, whose cells and states he also defines. Part I of the report treats nerve nets and the "definite events" they can represent, §7 defines the regular events and shows them representable, and Part II (§9) shows that every representable event is regular. The work created the vocabulary of regular events (3.6) and the star operation (1.2), and is where the equivalence (3.9) first appears; it first circulated as RAND memorandum RM-704 in 1951.`,
-      caption: String.raw`**Reconstruction, not Kleene's own net.** The page builds, from the expression you type, a net of threshold neurons with one-tick delays by the position (Glushkov) construction: one neuron for each letter occurrence, firing when its letter is on the input line and a predecessor fired one tick earlier (weights: the letter line has weight equal to the number of predecessors $m$, each predecessor weight 1, threshold $m+1$), a start pulse $S$ and an output neuron $O$. Type a string and step: the gold neurons fired at this tick; the raster on the right is the history. **Click a synapse** (an arrow) to cut it: the net now recognises a different event, which the page reads back as a regular expression by state elimination (3.8) and compares with your expression on all strings up to length 7. The example $(aaa)^*a$ is the event "the time is $\equiv1\pmod 3$" that Kleene writes $(I^3)^*I^0$ in RM-704.`,
+      statement: String.raw`Kleene's 1956 chapter studies input-history **events** represented by a finite automaton's state or by a designated neuron of a McCulloch–Pitts net. Section 7.1 defines regular sets of time-indexed input tables using finite unit sets, union, product and **binary iteration** $E*F=\bigcup_{n\ge0}E^nF$. In §7.3, Theorem 3 constructs a net for each regular event, with a suitable initial internal state and output observed two ticks after the event ends. In §9, Theorem 5 and its corollary prove regularity of events represented by finite automata with fixed initial internal state. These results yield the modern equivalence of regular expressions and finite-state recognition, while the paper's time, initial-table and delay conventions require care.`,
+      idea: String.raw`The chapter's nerve-net argument constructs representations of the regular operations, with timing lemmas to handle short events and fixed observation lag. For the converse, §9 Lemma 7 proves by induction on the number of states that the connecting state strings form a regular set, then translates them into input-table events. This is a different construction from the modern position automaton drawn here. The chapter's opening footnote identifies RAND memorandum RM-704, dated 15 December 1951, as its source. The 1956 published chapter's metadata is retained; its complete retyped text, including §7.3 Theorem 3 and §9 Theorem 5, was examined rather than assuming its numbering matched RM-704.`,
+      caption: String.raw`A modern teaching reconstruction, not Kleene's net: each letter occurrence becomes a threshold neuron. If its original indegree is $m$, its input-letter line has weight $m$, each predecessor weight 1 and its fixed threshold is $m+1$. Thus the right letter and at least one previous firing are required. A start pulse occurs at tick 0; output for a word is observed at tick $|w|+1$. Type a regex/string and step through the raster. Click a drawn predecessor/output synapse to cut or restore it; thresholds remain fixed. The net is read back as a regular expression, with exact automaton comparison and a separate finite barcode check. The preset $(aaa)^*a$ recognizes unary lengths $1\pmod3$; the historical table notation is not presented as a modern unary-star expression.`,
       deps: ['toc-2.1'],
-      refs: [],
+      refs: ['Kleene, Representation of Events in Nerve Nets and Finite Automata (1956), §§7.1,7.3,9, Theorems 3 and 5, Lemma 7; full academic retyping'],
       tags: ['history', 'automata', 'regular expressions'],
       credit: 'S. C. Kleene, RAND report 1951, published 1956',
-      scope: String.raw`The nets drawn here are a modern reconstruction (position construction, with weights chosen by the page), not the construction of the paper. What I checked in the scan of RM-704 (15 December 1951): its section 7.1 defines "regular events" by three operations and lists examples such as $p\equiv1 \bmod 3$ as $(I^3)^*I^0$; Part I treats McCulloch–Pitts nets, Part II finite automata, §7.4 the representability of regular events and §9 the regularity of representable events. The 1956 chapter in Automata Studies was not examined, so notation there may differ.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Kleene%27s_theorem' },
+      scope: String.raw`Verified against the full 1956 chapter in an academic retyping (44 local pages): §7.1 pp.23–26, §7.3 Theorem 3 pp.31–34, §9 Theorem 5/Lemma 7 and corollary pp.37–40. Its first page cites the 1951 report. The modern one-hot input and explicit start pulse differ from the paper's time-indexed table convention, two-tick lag and initial-state construction. Cutting a synapse can leave the language unchanged. The interactive reconstruction has at most 10 operands and syntax size 80 for responsive exact read-back; the theorem is unrestricted. The full read-back automaton is the position NFA, not an arbitrary bounded sample of firing patterns.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Kleene%27s_theorem', 'Full chapter': 'https://www2.fiit.stuba.sk/~kvasnicka/CognitiveScience/2.prednaska/kleene56representation%5B1%5D.pdf' },
       viz(v) {
         let w = 'aaaa', built = '', net = null, cut = new Set(), selT = 0;
         const RI = rxInput(v, { value: '(aaa)*a', presets: [['(aaa)*a (Kleene)', '(aaa)*a'], ['(a|b)*abb', '(a|b)*abb'], ['a*b', 'a*b'], ['(ab)*', '(ab)*'], ['a(a|b)*', 'a(a|b)*']], onPick: () => { cut = new Set(); S.reset({ at: 'end' }); } });
@@ -513,49 +522,11 @@ export default {
         const gs = v.stage({ x: [0, 10], y: [0, 7.2], axes: false, equal: true, height: 300, weight: 1.15 });
         const rs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1 });
         const G = v.graph(gs, { nodes: [], edges: [], layout: 'none', directed: true, r: 17, autoRadius: false, fontSize: 14, draggable: true, edgeFontSize: 11 });
-        function glush(ast) {
-          const pos = [], follow = [];
-          const go = (e) => {
-            if (e.t === 'sym') { const i = pos.length; pos.push(e.c); follow.push(new Set()); return { nl: false, first: [i], last: [i] }; }
-            if (e.t === 'eps') return { nl: true, first: [], last: [] };
-            if (e.t === 'empty') return { nl: false, first: [], last: [] };
-            if (e.t === 'alt') { const a = go(e.l), b = go(e.r); return { nl: a.nl || b.nl, first: [...a.first, ...b.first], last: [...a.last, ...b.last] }; }
-            if (e.t === 'cat') { const a = go(e.l), b = go(e.r); for (const p of a.last) for (const q of b.first) follow[p].add(q); return { nl: a.nl && b.nl, first: a.nl ? [...a.first, ...b.first] : a.first, last: b.nl ? [...b.last, ...a.last] : b.last }; }
-            const a = go(e.e); for (const p of a.last) for (const q of a.first) follow[p].add(q); return { nl: true, first: a.first, last: a.last };
-          };
-          const r = go(ast); const first = new Set(r.first), last = new Set(r.last);
-          const edges = []; // [from, to]
-          for (const i of first) edges.push(['S', 'p' + i]);
-          follow.forEach((F, j) => F.forEach((i) => edges.push(['p' + j, 'p' + i])));
-          for (const j of last) edges.push(['p' + j, 'O']);
-          if (r.nl) edges.push(['S', 'O']);
-          return { pos, edges };
-        }
+        const glush = positionNet;
         const eff = (id) => net.edges.filter(([a, b]) => b === id && !cut.has(a + '>' + b)).map(([a]) => a);
-        function sim(u) {
-          const n = u.length, F = [new Set(['S'])];
-          for (let t = 1; t <= n + 1; t++) {
-            const prev = F[t - 1], cur = new Set();
-            net.pos.forEach((c, i) => { const id = 'p' + i, preds = eff(id), m = preds.length, x = t - 1 < n && u[t - 1] === c ? 1 : 0; const sum = m * x + preds.filter((q) => prev.has(q)).length; if (m > 0 && sum >= m + 1) cur.add(id); });
-            if (eff('O').some((q) => prev.has(q))) cur.add('O');
-            F.push(cur);
-          }
-          return F;
-        }
+        const sim = (u) => netTrace(net, u, cut);
         const accepts = (u) => sim(u)[u.length + 1].has('O');
-        function readOff() { // the net as an automaton on firing patterns, then state elimination
-          const key = (F) => [...F].sort().join(','), ids = new Map(), list = [], delta = {};
-          const add = (F) => { const k = key(F); if (!ids.has(k)) { ids.set(k, 'F' + list.length); list.push({ F, id: 'F' + list.length }); } return ids.get(k); };
-          add(new Set(['S']));
-          for (let h = 0; h < list.length; h++) {
-            const { F, id } = list[h]; delta[id] = {};
-            for (const c of AB) { const nx = new Set(); net.pos.forEach((cc, i) => { const q = 'p' + i, preds = eff(q); if (cc === c && preds.some((p) => F.has(p))) nx.add(q); }); delta[id][c] = [add(nx)]; }
-            if (list.length > 12) return null;
-          }
-          const lastE = new Set(eff('O'));
-          const states = list.map((s, i) => [s.id, 0, 0, [...s.F].some((q) => lastE.has(q)), '$F_{' + i + '}$']);
-          return nfaToRegex(asNFA(nfa(AB, states, 'F0', delta, {})));
-        }
+        const readOff = () => nfaToRegex(netAutomaton(net, cut));
         const layoutNet = () => {
           const nodes = [{ id: 'S', label: 'S', t: 'S' }, ...net.pos.map((c, i) => ({ id: 'p' + i, label: c + i, t: 'p' })), { id: 'O', label: 'O', t: 'O' }];
           G.set({ nodes, edges: net.edges.map(([a, b]) => ({ from: a, to: b, directed: true })) }); G.layout('layered', { rankdir: 'right' });
@@ -575,9 +546,10 @@ export default {
           const res = RI.cur(), P = pen(rs, v);
           if (res.error) { P.sans(res.error, P.W / 2, P.H / 2, { size: 14, color: 'red', weight: 600 }); return; }
           if (!res.ast || ![...symbolsOf(res.ast)].every((c) => AB.includes(c))) { P.sans('use only the letters a and b', P.W / 2, P.H / 2, { size: 14, color: 'red', weight: 600 }); return; }
-          if (built !== RI.inp.value) { built = RI.inp.value; net = glush(res.ast); net.ast = res.ast; layoutNet(); S.reset({ at: 'end' }); }
+          if (rxSize(res.ast) > 80 || countParts(res.ast).operands > 10) { P.sans('Interactive limit: at most 10 operands and syntax size 80.', P.W / 2, P.H / 2, { size: 13, color: 'red' }); return; }
+          if (built !== RI.inp.value) { built = RI.inp.value; net = glush(res.ast); net.ast = res.ast; cut = new Set(); layoutNet(); S.reset({ at: 'end' }); }
           const f = S.frame, t = f.t ?? 0, F = sim(w), cur = F[Math.min(t, F.length - 1)], prev = t > 0 ? F[t - 1] : new Set();
-          const m = (id) => eff(id).length;
+          const m = (id) => net.edges.filter(([a, b]) => b === id).length;
           G.draw({
             nodeLabel: (id, nd) => nd.label, nodeRing: (id) => (id === 'O' ? 'ink' : null),
             nodeFill: (id) => (cur.has(id) ? (id === 'O' ? 'green' : 'gold') : null),
@@ -601,11 +573,11 @@ export default {
         });
         v.legend([['gold', 'neuron fired at this tick', { dot: true }], ['green', 'start pulse / output neuron', { dot: true }], ['red', 'cut synapse']]);
         v.readout(() => {
-          const res = RI.cur(); if (res.error || !net) return '';
+          const res = RI.cur(); if (res.error || !net || built !== RI.inp.value) return 'Enter a valid expression over a and b.';
           const A = new Set(), B = new Set(); for (const u of upTo(AB, 7)) if (accepts(u)) A.add(u);
           const E = langFlat(res.ast, 7), same = eqSets(A, E), fd = same ? null : firstDiff(A, E);
-          const reg = readOff(), txt = reg ? rx(reg) : null;
-          return `$w=${tt(w)}$: output neuron ${accepts(w) ? '**fires**' : 'stays silent'} · event of the net, all strings of length ≤ 7: ${A.size} strings, ${same ? 'identical to $L(r)$ ✓' : `**differs** from $L(r)$ ✗ (first at $${tt(fd ?? '')}$)`} · read back from the net by state elimination: $${reg ? rxTeX(reg).length < 260 ? rxTeX(reg) : `\\text{an expression of size ${rxSize(reg)}, starting }\\mathtt{${rx(reg).slice(0, 40).replace(/[∪]/g, '|')}}\\ldots` : '\\ldots'}$`;
+          const reg = readOff(), txt = reg ? rx(reg) : null, exact = regexDifference(netAutomaton(net, cut), res.ast);
+          return `$w=${tt(w)}$: output neuron ${accepts(w) ? '**fires**' : 'stays silent'} · event of the net, all strings of length ≤ 7: ${A.size} strings, ${same ? 'identical to $L(r)$ ✓' : `**differs** from $L(r)$ ✗ (first at $${tt(fd ?? '')}$)`} · full automaton check: ${exact.equal === null ? 'unknown (resource cap)' : exact.equal ? 'equal ✓' : 'different ✗'} · read back from the net by state elimination: $${reg ? rxTeX(reg).length < 260 ? rxTeX(reg) : `\\text{an expression of size ${rxSize(reg)}, starting }\\mathtt{${rx(reg).slice(0, 40).replace(/[∪]/g, '|')}}\\ldots` : '\\ldots'}$`;
         });
       },
     },

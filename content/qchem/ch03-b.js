@@ -1,6 +1,8 @@
 // Quantum Chemistry & Spectroscopy — Chapter 3, part b: items 3.8–3.13 (3.1–3.7 are in ch03.js)
 import { TAU, HARTREE_EV, SYM, IE, EA, EA_EST, PAULING, RADIUS, groundConfig, madelung, configText, blockOf, slaterGroups, slaterZeff, subN, subL, outermost, EXCEPTIONS } from './ch03.shared.js';
 
+import { orbitalStats, orbitalEnergy, orbitalMinimum, HUND_LEVELS } from './qchem-source-audit-hund.shared.js';
+
 const CM_EV = 8065.543937; // cm⁻¹ per eV (CODATA 2018)
 
 export default {
@@ -12,19 +14,19 @@ export default {
       num: '3.8',
       kind: 'Principle',
       name: 'Hund’s rules',
-      credit: 'Hund, c. 1925',
+      credit: 'Hund’s empirical LS-coupling rules; source: Jeschke, Theory of Magnetism (2019), §2.2.1',
       statement: String.raw`For the terms of one electron configuration (Russell–Saunders coupling, 3.7), the lowest term is found, empirically, by three rules in order:
 (1) the term of greatest spin multiplicity $2S+1$ (greatest $S$) lies lowest;
 (2) among terms of equal $S$, the one with the greatest $L$ lies lowest;
 (3) for the levels $J$ of that term, the lowest $J=|L-S|$ lies lowest if the open subshell is less than half full, the highest $J=L+S$ if it is more than half full.
 In particular, electrons in degenerate orbitals occupy different orbitals with parallel spins before they pair up (chemists' "Hund's rule").`,
-      scope: String.raw`Reliable for the ground term of a ground configuration of light atoms and for the lowest term of a given excited configuration, not for ordering the higher terms. The textbook reason for rule 1 (parallel spins stay apart, so the repulsion is smaller; 3.6) is not the whole story: more careful calculations are reported to attribute much of the effect to the weaker shielding of singly occupied orbitals (this explanation is taken from a secondary source, so this item is flagged for checking).`,
-      idea: String.raw`Exchange in a fixed-orbital model (3.6) can favor parallel spins, but it is not a complete derivation of the empirical rules after orbital relaxation. Rule2 is an empirical term-ordering rule, not a classical claim about electrons meeting on orbits. Rule 3 comes from the sign of the spin–orbit coupling constant, which changes sign at half filling because a nearly full subshell behaves like holes. The same rule decides the high-spin or low-spin ground states of $d^n$ ions when the crystal-field splitting is compared with the pairing cost, as the left panel lets you test.`,
-      caption: String.raw`Left: five $d$ orbitals split by a crystal field $\Delta$ (three low, two high). Choose the number of electrons and the model parameters (pairing cost $P$, exchange gain $K$ per parallel pair, splitting $\Delta$); the diagram shows the arrangement of lowest model energy, and you can **click an orbital** to cycle its occupation (empty, $\uparrow$, $\downarrow$, both) and compare. For $d^4$–$d^7$ the lowest arrangement flips from high spin to low spin as $\Delta$ grows. Right: the measured $2p^2$ (carbon) and $2p^4$ (oxygen) levels from NIST obey rules 1–3.`,
+      scope: String.raw`These are empirical ground-multiplet guidelines in the LS-coupling regime, not a theorem ordering every excited configuration or higher term. Strong spin–orbit coupling, configuration interaction and crystal fields can invalidate this simple ordering. Fixed-orbital exchange gives useful intuition but is not a general proof about fully relaxed atoms. The left panel is a diagonal occupation-energy toy with a chosen parallel-spin-pair gain; it is not a rotationally invariant atomic Hamiltonian and does not derive the three rules.`,
+      idea: String.raw`Within a fixed-orbital approximation, an antisymmetric spatial component can reduce the electron repulsion through exchange. This motivates, but does not prove universally, the largest-spin rule; orbital relaxation and configuration mixing also affect atomic term energies. Rule 2 is an empirical preference among the remaining LS terms. Rule 3 reflects the effective spin–orbit ordering for an electron subshell versus its holes. The octahedral occupation model below illustrates competition between orbital splitting, pairing cost and an imposed parallel-spin gain; its manual product states have a definite $M_S$, but need not have a definite total $S$.`,
+      caption: String.raw`Five spatial $d$ orbitals have three lower and two upper levels split by $\Delta$. Sliders choose electron count and the toy pairing/exchange parameters; any slider resets to one minimum-energy occupation. Click an orbital to cycle empty/up/down/both. A click can change the electron count, so the comparison is recomputed at the **actual** count. The readout gives $M_S$ and $\langle S^2\rangle$ for that determinant, not an unjustified total-spin label; the model can exhibit high/low spin-projection configurations. Right: primary NIST Handbook C I and O I term/ground-term fine-structure levels, in cm$^{-1}$, illustrating the three empirical rules.`,
       deps: ['qchem-3.7', 'qchem-3.6'],
-      refs: ['NIST Basic Atomic Spectroscopic Data, complete C I/O I energy-level tables; microscopic Hund-rule source remains open'],
+      refs: ['Harald Jeschke, Advanced Physics 1/2: Theory of Magnetism (2019), §2.2.1, pp. 13–14', 'NIST Handbook: C I and O I energy-level tables'],
       tags: ['Hund rules', 'high spin', 'term ordering'],
-      verify: true,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hund%27s_rules' },
       viz(v) {
         const M = v.M;
@@ -37,12 +39,11 @@ In particular, electrons in degenerate orbitals occupy different orbitals with p
         const sN = v.stage({ x: [0, 4], y: [0, 1], axes: 'box', gutter: true, height: 380, weight: 1, xticks: [], ylabel: 'energy above the lowest level (cm⁻¹)', title: 'measured levels (NIST)' });
         const XS = [0, 1.1, 2.2, 3.9, 5.0];
         const eps = (o) => (o < 3 ? 0 : dS.value);
-        const energy = (a) => { let e = 0, U = 0, D = 0, pr = 0; a.forEach((c, o) => { const up = c & 1, dn = (c >> 1) & 1; e += eps(o) * (up + dn); U += up; D += dn; if (c === 3) pr++; }); return e + pS.value * pr - kS.value * (U * (U - 1) / 2 + D * (D - 1) / 2); };
-        const best = () => { const n = nS.value; let bE = 1e9, bA = null; for (let i = 0; i < 1024; i++) { const a = [i & 3, (i >> 2) & 3, (i >> 4) & 3, (i >> 6) & 3, (i >> 8) & 3]; const cnt = a.reduce((s, c) => s + (c & 1) + ((c >> 1) & 1), 0); if (cnt !== n) continue; const e = energy(a); if (e < bE - 1e-12) { bE = e; bA = a; } } return bA; };
+        const energy = a => orbitalEnergy(a,dS.value,kS.value,pS.value);
+        const best = (n=nS.value) => orbitalMinimum(n,dS.value,kS.value,pS.value).arr;
         let arr = best();
         sD.onClick((x, y) => { let o = -1, bd = 0.7; XS.forEach((xx, i) => { if (Math.abs(x - xx - 0.45) < bd) { bd = Math.abs(x - xx - 0.45); o = i; } }); if (o >= 0) { arr = arr.slice(); arr[o] = (arr[o] + 1) % 4; } });
-        const NIST = { C: { name: 'C I', terms: [['³P', 0, 'accent'], ['¹D', 10192.66, 'orange'], ['¹S', 21648.02, 'purple']], J: [[0, 0], [1, 16.4167], [2, 43.4135]], half: 'less than half full: lowest J = 0 lowest' },
-          O: { name: 'O I', terms: [['³P', 0, 'accent'], ['¹D', 15867.862, 'orange'], ['¹S', 33792.583, 'purple']], J: [[2, 0], [1, 158.265], [0, 226.977]], half: 'more than half full: highest J = 2 lowest' } };
+        const NIST = HUND_LEVELS;
         let st = null;
         v.render(() => {
           const D = dS.value, a = arr, n = a.reduce((s, c) => s + (c & 1) + ((c >> 1) & 1), 0), E = energy(a), U = a.reduce((s, c) => s + (c & 1), 0), Dn = n - U;
@@ -57,9 +58,9 @@ In particular, electrons in degenerate orbitals occupy different orbitals with p
           });
           sD.text(`Δ = ${v.fix(D, 2)} eV`, 3.35, 0.5 + 0.5 * D * 0.95, { size: 12, color: 'orange', align: 'right', baseline: 'middle' });
           sD.arrow(3.55, 0.5, 3.55, 0.5 + D * 0.95, { color: 'orange', both: true, head: 7 });
-          const bb = best(), Eb = energy(bb);
+          const bb = best(n), Eb = energy(bb);
           const key = (x) => x.join(',');
-          st = { n, E, Eb, S: Math.abs(U - Dn) / 2, Sb: Math.abs(bb.reduce((s, c) => s + (c & 1) - ((c >> 1) & 1), 0)) / 2, same: Math.abs(E - Eb) < 1e-9, bb };
+          st = { n, E, Eb, ...orbitalStats(a), Msb: orbitalStats(bb).Ms, same: Math.abs(E - Eb) < 1e-9, bb };
           // measured
           const d = NIST[el.value], ymax = d.terms[2][1] * 1.13;
           sN.setView([0, 4], [-ymax * 0.04, ymax]);
@@ -70,7 +71,7 @@ In particular, electrons in degenerate orbitals occupy different orbitals with p
           sN.text('levels of ³P (rule 3):', 0.3, ymax * 0.26, { size: 11, color: 'muted' });
         });
         v.legend([['accent', 'occupied orbital (click to change)']]);
-        v.readout(() => { if (!st) return ''; const d = NIST[el.value]; return `$d^{${st.n}}$: your arrangement has model energy ${v.fix(st.E, 2)} eV, spin-projection magnitude $|M_S|=${v.fix(st.S, 1)}$; lowest arrangement ${v.fix(st.Eb, 2)} eV with $|M_S|=${v.fix(st.Sb, 1)}$ ${st.same ? '— you have the ground arrangement' : `— yours is ${v.fix(st.E - st.Eb, 2)} eV higher`}.\nmeasured ${d.name}: $^3P$ (rule 1: triplet lowest) < $^1D$ < $^1S$ (rule 2: larger $L$ lower, $^1D$ before $^1S$); $^3P$ ${d.half} (rule 3). Energies from NIST Basic Atomic Spectroscopic Data, 1 eV = ${v.fix(CM_EV, 0)} cm⁻¹.`; });
+        v.readout(() => { if (!st) return ''; const d = NIST[el.value]; return `$d^{${st.n}}$: your arrangement has model energy ${v.fix(st.E, 2)} eV, spin projection $M_S=${v.fix(st.Ms, 1)}$, $\\langle S^2\\rangle/\\hbar^2=${v.fix(st.S2, 2)}$; lowest same-count arrangement ${v.fix(st.Eb, 2)} eV with $M_S=${v.fix(st.Msb, 1)}$ ${st.same ? '— you have the ground arrangement' : `— yours is ${v.fix(st.E - st.Eb, 2)} eV higher`}.\nmeasured ${d.name}: $^3P$ (rule 1: triplet lowest) < $^1D$ < $^1S$ (rule 2: larger $L$ lower, $^1D$ before $^1S$); $^3P$ ${d.half} (rule 3). Energies from NIST Handbook, 1 eV = ${v.fix(CM_EV, 0)} cm⁻¹.`; });
       },
     },
     // ------------------------------------------------------------------ 3.9
@@ -275,44 +276,44 @@ the energy cost of giving an electron to the atom and the gain from taking one, 
       paper: { authors: 'D. Mendeleev', year: 1869, title: 'Соотношение свойств с атомным весом элементов (The relation of the properties to the atomic weights of the elements)', venue: 'Zhurnal Russkago Khimicheskago Obshchestva 1: 60–77', url: 'https://babel.hathitrust.org/cgi/pt?id=mdp.39015065536586&seq=70' },
       introduces: [],
       credit: 'D. Mendeleev, 1869',
-      statement: String.raw`Mendeleev (1869) arranged the 63 elements then known by atomic weight and chemical similarity and observed that, in this order, properties recur periodically: the families headed by lithium, beryllium, boron, carbon, nitrogen, oxygen and fluorine follow each other, and after each family-by-family sequence of seven the pattern begins again. He concluded that the properties of the elements are a periodic function of their atomic weights, that some weights should be corrected, and that gaps in his table indicate undiscovered elements, of which he marked three near atomic weights 45, 68 and 70.`,
-      scope: String.raw`The table drawn here is the one printed in the German abstract of the paper (Zeitschrift für Chemie 12, 405–406, 1869), as transcribed and translated by Carmen Giunta; I did not see the Russian original, so whether the Russian paper's table is identical in every number is not checked. Atomic weights are his 1869 values (hydrogen = 1), several of them wrong (for instance uranium as 116) and some marked "?" by him. The three "gaps" are interpolations by me, not Mendeleev's calculation; his own 1871 predictions were more detailed (masses 44, 68 and 72 for eka-boron, eka-aluminium and eka-silicon).`,
-      idea: String.raw`Before 1869 chemists had grouped elements by valence and by families of similar properties (triads, and later attempts at “octaves”), but a complete ordering by weight did not exist. Mendeleev wrote the elements on cards, ordered them by weight, and found the same valence sequence returning; where weight order disagreed with chemistry (tellurium, 128?, before iodine, 127) he trusted the chemistry, and where no known element fitted he left a blank. The recurrence is explained a half-century later by the filling of electron shells (3.5): the periodic function is of atomic number, not weight, and its period lengths 2, 8, 8, 18, 18, 32 are the subshell capacities.`,
-      caption: String.raw`The upper panel lists the elements of Mendeleev's 1869 table in order of atomic weight, wrapped at each alkali metal (Li, Na, K, Rb, Cs), coloured by the family (column of his table) and with the elements he queried drawn hollow. The lower panel plots the family number 1–7 against atomic weight. Slide the **weight cut-off** to reveal the table progressively and watch the cycle of 7 return; switch on **fill the gaps** to place the interpolated weights of $\,?{=}45,\ ?{=}68,\ ?{=}70$ and compare with scandium, gallium and germanium. The data are those of the printed table, copied by hand.`,
+      statement: String.raw`Mendeleev's 1869 article, read in its complete1926 reprint, arranges elements by atomic weight and chemical analogy. Its eight conclusions connect the arrangement with valence, anticipate analogues of silicon and aluminium with weights 65–75, and propose correcting some weights. The article and the German abstract both contain four anonymous entries at weights 45, 68, 70 and 180. This historical classification is not a fixed seven-element cycle and is not the modern periodic table.`,
+      scope: String.raw`Verified here: Carmen Giunta's complete translation of the German abstract, Zeitschrift für Chemie 12, 405–406 (1869), including its table and eight comments. The complete Russian article is also read in B. N. Menshutkin's1926 edited reprint, pp.4–20, whose opening identifies the1869 journal pages60–77. This is a reprint, rather than a facsimile of the1869 typesetting. Its table at p.13 differs from Giunta's German-abstract table: Ru is101.4 rather than104.4, and Bi210 has no question mark. The displayed table deliberately retains the German-abstract version; the two versions are not silently conflated. The displayed values and question marks follow the abstract's table, including the joint entry Ni=Co=59. Our weight-sorted reflow is not its original arrangement, whose analogous elements occupy horizontal rows. The interpolation switch is an arithmetic illustration supplied by this atlas, not a reconstruction of Mendeleev's reasoning or later predictions.`,
+      idea: String.raw`The Russian article and the abstract put chemically analogous elements together, compares close weights and increments within families, and uses missing entries to suggest further elements. Its seventh comment proposes changing tellurium's weight from 128 to 123–126; that historical proposal must not be presented as a successful modern correction. The seven colors below identify selected families only: they do not count elements in a universal repeating period. Atomic number, rather than atomic weight, orders the modern periodic system.`,
+      caption: String.raw`Upper panel: a modern weight-sorted reflow of the German abstract's entries, wrapped at Li, Na, K, Rb and Cs. Dashed entries retain printed question marks; the four anonymous entries remain visible. The lower panel plots selected family indices 1–7, an arbitrary color key rather than a measured quantity or a fixed cycle. Move the weight cut-off and toggle **show toy interpolations**: the printed values 45, 68 and 70 are compared with simple arithmetic between neighboring weights. The 45 entry is in the abstract's bottom region, not its boron-family row; it is omitted from the selected-family plot.`,
       deps: ['qchem-3.9'],
-      refs: [],
+      refs: ['Mendeleev,1926 Menshutkin-edited reprint of the complete1869 article, pp.4–20, especially table p.13 and conclusions pp.19–20', 'Mendelejeff, Zeitschrift für Chemie12 (1869),405–406, complete abstract translated by Carmen Giunta'],
       tags: ['Mendeleev', 'periodic law', 'history'],
-      verify: true,
-      links: { giunta: 'https://web.lemoyne.edu/GIUNTA/EA/MENDELEEVann.HTML', wikipedia: 'https://en.wikipedia.org/wiki/Mendeleev%27s_predicted_elements' },
+      verify: false,
+      links: { reprint:'https://ru.djvu.online/file/xty8kYbSpDPfG', giunta: 'https://webserver.lemoyne.edu/~giunta/EA/MENDELEEVann.HTML', wikipedia: 'https://en.wikipedia.org/wiki/Mendeleev%27s_predicted_elements' },
       viz(v) {
-        // Mendeleev's 1869 table, family = column number of the Li…F series (0: other rows). w: printed weight; q: printed with '?'; gap: unnamed '?'.
+        // Mendeleev's 1869 table, family = our selected color index (original analogous families are horizontal). w: printed weight; q: printed with '?'; gap: unnamed '?'.
         const E = [
           ['H', 1, 0], ['Li', 7, 1], ['Be', 9.4, 2], ['B', 11, 3], ['C', 12, 4], ['N', 14, 5], ['O', 16, 6], ['F', 19, 7], ['Na', 23, 1], ['Mg', 24, 2], ['Al', 27.4, 3], ['Si', 28, 4], ['P', 31, 5], ['S', 32, 6], ['Cl', 35.5, 7],
-          ['K', 39, 1], ['Ca', 40, 2], ['Ti', 50, 9], ['V', 51, 9], ['Cr', 52, 9], ['Mn', 55, 9], ['Fe', 56, 9], ['Ni', 59, 9], ['Co', 59, 9], ['Cu', 63.4, 0], ['Zn', 65.2, 2], ['As', 75, 5], ['Se', 79.4, 6], ['Br', 80, 7],
+          ['K', 39, 1], ['Ca', 40, 2], ['Ti', 50, 9], ['V', 51, 9], ['Cr', 52, 9], ['Mn', 55, 9], ['Fe', 56, 9], ['Ni=Co', 59, 9], ['Cu', 63.4, 0], ['Zn', 65.2, 2], ['As', 75, 5], ['Se', 79.4, 6], ['Br', 80, 7],
           ['Rb', 85.4, 1], ['Sr', 87.6, 2], ['Zr', 90, 9], ['Nb', 94, 9], ['Mo', 96, 9], ['Rh', 104.4, 9], ['Ru', 104.4, 9], ['Pd', 106.6, 9], ['Ag', 108, 0], ['Cd', 112, 2], ['Ur', 116, 3], ['Sn', 118, 4], ['Sb', 122, 5], ['Te', 128, 6, 1], ['J', 127, 7],
           ['Cs', 133, 1], ['Ba', 137, 2], ['Ta', 182, 9], ['W', 186, 9], ['Pt', 197.4, 9], ['Ir', 198, 9], ['Os', 199, 9], ['Hg', 200, 0], ['Au', 197, 3, 1], ['Bi', 210, 5, 1], ['Tl', 204, 1], ['Pb', 207, 2],
           ['Ce', 92, 8], ['La', 94, 8], ['Di', 95, 8], ['Th', 118, 8, 1], ['Er', 56, 8, 1], ['Yt', 60, 8, 1], ['In', 75.6, 8, 1],
         ].map(([sym, w, fam, q]) => ({ sym, w, fam, q: !!q }));
-        const GAPS = [{ sym: '?', w: 45, fam: 3, gap: true, id: 0, name: 'Sc', modern: 44.956, who: 'Nilson, 1879' }, { sym: '?', w: 68, fam: 3, gap: true, id: 1, name: 'Ga', modern: 69.723, who: 'Lecoq de Boisbaudran, 1875' }, { sym: '?', w: 70, fam: 4, gap: true, id: 2, name: 'Ge', modern: 72.630, who: '1886' }, { sym: '?', w: 180, fam: 9, gap: true, id: 3, name: null }];
+        const GAPS = [{ sym: '?', w: 45, fam: 8, gap: true, id: 0 }, { sym: '?', w: 68, fam: 3, gap: true, id: 1 }, { sym: '?', w: 70, fam: 4, gap: true, id: 2 }, { sym: '?', w: 180, fam: 9, gap: true, id: 3 }];
         const known = E.filter((e) => e.fam >= 1 && e.fam <= 7 || e.fam === 9 || e.fam === 0 || e.fam === 8).sort((a, b) => a.w - b.w);
         // interpolated predictions: gaps ?68, ?70 spaced evenly between Zn 65.2 and As 75; ?45 between Ca 40 and Ti 50
         const pred = { 0: (40 + 50) / 2, 1: 65.2 + (75 - 65.2) / 3, 2: 65.2 + (2 * (75 - 65.2)) / 3 };
         const cut = v.slider('weight cut-off (hydrogen = 1)', 10, 210, 210, { step: 1 });
-        const fill = v.toggle('fill the gaps with interpolated weights', false);
-        const sT = v.stage({ x: [0, 20], y: [-6.1, 0.2], axes: false, height: 400, full: true, title: 'the elements in order of atomic weight, wrapped at each alkali metal' });
-        const sF = v.stage({ x: [0, 215], y: [0, 8], axes: 'box', gutter: true, height: 300, full: true, xlabel: 'atomic weight (1869)', ylabel: 'family 1 … 7 (Li, Be, B, C, N, O, F)', title: 'periodic recurrence' });
+        const fill = v.toggle('show toy interpolations', false);
+        const sT = v.stage({ x: [0, 20], y: [-6.1, 0.2], axes: false, height: 700, minWidth:240, full: true, title: 'weight-sorted reflow; rows restart at alkalis and wrap to fit' });
+        const sF = v.stage({ x: [0, 215], y: [0, 8], axes: 'box', gutter: true, height: 300, full: true, xlabel: 'atomic weight (1869)', ylabel: 'family 1 … 7 (Li, Be, B, C, N, O, F)', title: 'selected family indices (not a seven-element period)' });
         const FC = [null, 'red', 'orange', 'gold', 'green', 'teal', 'accent', 'purple'];
         let st = null;
         v.render(() => {
           const W = cut.value, f = fill.value;
-          const all = [...E.filter((e) => e.fam !== 9 || true), ...GAPS].sort((a, b) => a.w - b.w);
+          const all = [...E, ...GAPS].sort((a, b) => a.w - b.w);
           // rows start at each alkali metal
-          const starts = ['Li', 'Na', 'K', 'Rb', 'Cs']; let row = 0; const rows = [[]]; // row 0: H
-          all.forEach((e) => { if (e.w > W) return; if (starts.includes(e.sym)) { row++; rows[row] = []; } rows[row].push(e); });
+          const starts = ['Li', 'Na', 'K', 'Rb', 'Cs'], cols=Math.max(4,Math.floor((sT.width||1100)/56)); let row = 0; const rows = [[]];
+          all.forEach((e) => { if (e.w > W) return; if (rows[row].length && (starts.includes(e.sym)||rows[row].length>=cols)) { row++; rows[row] = []; } rows[row].push(e); });
+          sT.setView([0, Math.max(1, ...rows.map(r => r.length))], [-rows.length-.1, 0.2]);
           rows.forEach((r, ri) => r.forEach((e, ci) => {
             const gp = e.gap, fam = e.fam, col = gp ? 'ink' : FC[fam] || 'muted', hollow = gp || e.q;
-            const shown = !gp || f;
-            if (!gp || true) sT.rect(ci + 0.04, -ri - 0.92, ci + 0.96, -ri - 0.04, { color: gp ? (f ? 'gold' : 'faint') : col, fill: hollow ? false : col, fillAlpha: hollow ? 0 : 0.35, width: gp ? 1.8 : 1.1, dash: hollow ? true : undefined });
+            sT.rect(ci + 0.04, -ri - 0.92, ci + 0.96, -ri - 0.04, { color: gp ? (f ? 'gold' : 'faint') : col, fill: hollow ? false : col, fillAlpha: hollow ? 0 : 0.35, width: gp ? 1.8 : 1.1, dash: hollow ? true : undefined });
             sT.text(gp ? '?' : e.sym, ci + 0.5, -ri - 0.38, { size: 12, align: 'center', baseline: 'middle', color: 'ink' });
             const wtxt = gp && f && pred[e.id] != null ? `${v.fix(pred[e.id], 1)}` : gp ? `${e.w}` : `${e.w}${e.q ? '?' : ''}`;
             sT.text(wtxt, ci + 0.5, -ri - 0.72, { size: 9, align: 'center', baseline: 'middle', color: gp && f ? 'gold' : 'muted' });
@@ -322,11 +323,11 @@ the energy cost of giving an electron to the atom and the gain from taking one, 
           const fam = known.filter((e) => e.fam >= 1 && e.fam <= 7 && e.w <= W);
           sF.path(fam.map((e) => [e.w, e.fam]), { color: 'faint', width: 1.2 });
           fam.forEach((e) => { sF.dot(e.w, e.fam, { r: 4.5, color: FC[e.fam], hollow: e.q }); if (e.fam === 1 || e.sym === 'F' || e.sym === 'J') sF.text(e.sym, e.w, e.fam + (e.fam === 1 ? -0.55 : 0.55), { size: 10, color: 'muted', align: 'center' }); });
-          GAPS.filter((g) => g.id < 3 && g.w <= W).forEach((g) => { sF.dot(f ? pred[g.id] : g.w, g.fam, { r: 6, color: f ? 'gold' : 'faint', hollow: true }); sF.text(f ? `${g.name} ${v.fix(pred[g.id], 1)}` : '?', (f ? pred[g.id] : g.w), g.fam + (g.id === 0 ? 0.6 : g.id === 1 ? -0.7 : 0.7), { size: 10, color: f ? 'ink' : 'muted', align: 'center' });});
+          GAPS.filter((g) => g.fam >= 1 && g.fam <= 7 && g.w <= W).forEach((g) => { sF.dot(f ? pred[g.id] : g.w, g.fam, { r: 6, color: f ? 'gold' : 'faint', hollow: true }); sF.text(f ? `toy ${v.fix(pred[g.id], 1)}` : '?', (f ? pred[g.id] : g.w), g.fam + (g.id === 0 ? 0.6 : g.id === 1 ? -0.7 : 0.7), { size: 10, color: f ? 'ink' : 'muted', align: 'center' });});
           st = { n: all.filter((e) => e.w <= W && !e.gap).length };
         });
         v.legend([['red', 'Li family (1)', { dot: true }], ['orange', 'Be (2)', { dot: true }], ['gold', 'B (3)', { dot: true }], ['green', 'C (4)', { dot: true }], ['teal', 'N (5)', { dot: true }], ['accent', 'O (6)', { dot: true }], ['purple', 'F (7)', { dot: true }]]);
-        v.readout(() => { if (!st) return ''; const al = known.filter((e) => e.fam === 1 && e.sym !== 'Tl').map((e) => e.w), dl = al.slice(1).map((w, i) => w - al[i]); return `${st.n} of the 63 elements of the table shown (dashed outline: entries Mendeleev printed with a “?”, a doubtful weight or a doubtful element; ? alone: a gap).\nweights of the alkali metals Li, Na, K, Rb, Cs: ${al.join(', ')}; successive differences ${dl.map((d) => v.fix(d, 1)).join(', ')}: the recurrence interval is about 16 for the first two periods and about 47 afterwards.` + (fill.value ? `\ngaps: $?{=}45\\to${v.fix(pred[0], 1)}$ (modern scandium 44.956, found by Nilson 1879), $?{=}68\\to${v.fix(pred[1], 1)}$ (gallium 69.723, Lecoq de Boisbaudran 1875), $?{=}70\\to${v.fix(pred[2], 1)}$ (germanium 72.630, 1886); Mendeleev's printed values were 45, 68, 70.` : '\nswitch on “fill the gaps” to interpolate the weights of the unknown elements.'); });
+        v.readout(() => { if (!st) return ''; const al = ['Li','Na','K','Rb','Cs'].map(sym => E.find(e => e.sym === sym).w), dl = al.slice(1).map((w,i) => w-al[i]); return `${st.n} of ${E.length} named table entries shown (Ni=Co is one joint entry; this is not a count of distinct modern elements). Four anonymous entries have printed weights 45, 68, 70, 180. Dashed outlines retain historical question marks.\nLi, Na, K, Rb, Cs weights: ${al.join(', ')}; differences: ${dl.map(d => v.fix(d,1)).join(', ')}. Family indices are only a color key.` + (fill.value ? `\nAtlas toy arithmetic: (40+50)/2 = ${v.fix(pred[0],1)}; dividing Zn 65.2 to As 75 into thirds gives ${v.fix(pred[1],1)} and ${v.fix(pred[2],1)}. These are not Mendeleev's calculations; printed entries remain 45, 68, 70, 180.` : '\nToggle “show toy interpolations” to compare printed weights with illustrative arithmetic.'); });
       },
     },
   ],

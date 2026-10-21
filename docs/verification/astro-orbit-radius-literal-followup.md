@@ -1,0 +1,9 @@
+# ASTRO circular reference and radius range correction
+
+This separate successor to `403942eca09da1ac936453d189a612d8ace83971` addresses the independent peer's two bounded findings. It changes exactly **3.10 idea** and **4.5 statement**, with literal substitutions recorded in `tests/astro-orbit-radius-literal-corrections.json`.
+
+The circular Poynting–Robertson reference includes radial radiation pressure: for constant beta<1, specific angular momentum is h=sqrt(GM(1-beta)r). The tangential torque gives hdot=-beta GM h/(c r²), while differentiating the circular relation gives dh/dr=h/(2r). Their quotient is still rdot=-2 beta GM/(cr), so the displayed integrated radial law and every numerical model stay unchanged. The stellar-radius range from 10^-2 to 10^3 solar radii spans five orders of magnitude, correcting “seven”.
+
+The explicit `verification-astro-orbit-radius-literal.mjs` compares all 48 complete objects/functions/flags/dependencies, chapter metadata, all other text and helper bytes, and the entire unchanged syllabus against the immutable parent. It passes; 108 independently computed torque/circular-derivative cancellations and the exponent difference pass. Strict build has 0 errors/0 warnings. The bounded native probe mounts both items and captures all four complete statement/proof fields in each theme at viewport 320 (eight fields); all inner displays fit 253px and all runtime/TeX/blank checks pass. I personally inspected the four changed complete-field pixels, including scope beneath 4.5, in both themes.
+
+Evidence: `/tmp/atlas-new-arch-source/astro-literal-{guard.log,build.log,native.log,native}` and immutable `astro-literal-parent`. No dependency, source flag, executable function, shared helper or global file changes. The independent ASTRO peer must review this successor before combined acceptance.

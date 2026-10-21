@@ -37,17 +37,17 @@ export default {
   items: [
     // ------------------------------------------------------------------ ideals and homomorphisms
     {
-      num: '18.12',
+      num: '18.10',
       kind: 'Definition',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition18.12, p.362'],
       name: 'Ideals and maximal ideals',
       statement: String.raw`Let $A$ be a commutative complex algebra with unit $e$. A subset $J\subset A$ is an **ideal** if $J$ is a linear subspace of $A$ and $xy\in J$ whenever $x\in A$ and $y\in J$. An ideal $J\neq A$ is **proper**, and a **maximal ideal** is a proper ideal that is not contained in any strictly larger proper ideal.
 
-A proper ideal contains no invertible element — if $x\in J$ were invertible, every $y=(yx^{-1})x$ would lie in $J$ — and in particular $e\notin J$. The kernel of a nonzero complex homomorphism (9.20) is always an ideal.`,
+A proper ideal contains no invertible element — if $x\in J$ were invertible, every $y=(yx^{-1})x$ would lie in $J$ — and in particular $e\notin J$. The kernel of a nonzero complex homomorphism (9.19) is always an ideal.`,
       idea: String.raw`Ideals are the kernels of algebra homomorphisms, and maximal ideals will turn out (18.17) to be exactly the kernels of complex homomorphisms. The basic example: in $C(X)$ the functions that vanish on a fixed nonempty closed set $K$ form a proper ideal $J_K$; it is maximal precisely when $K$ is a single point, and every proper closed ideal of $C(X)$ has this form.`,
       caption: String.raw`In $C[0,1]$ drag the ends of the set $K$ (orange). $f$ (blue) vanishes on $K$, so $f\in J_K$; multiply it by *any* $g$ (purple): the product $gf$ (green) still vanishes on $K$, which is the absorbing property of an ideal. The constant $e=1$ does not vanish on $K$, so $J_K$ is proper; collapse $K$ to a point to get a maximal ideal.`,
-      deps: ['rca-18.1', 'rca-9.18'],
+      deps: ['rca-18.1', 'rca-9.19'],
       tags: ['ideals', 'definitions'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-0.03, 1.03], y: [-1.15, 1.6], height: 330, axes: true, xlabel: 't', full: true, xticks: [0.2, 0.4, 0.6, 0.8, 1] });
@@ -82,15 +82,15 @@ A proper ideal contains no invertible element — if $x\in J$ were invertible, e
       },
     },
     {
-      num: '18.13',
+      num: '18.11',
       kind: 'Theorem',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem18.13 and complete proof, p.362'],
       name: 'Every proper ideal lies in a maximal ideal',
-      statement: String.raw`If $A$ is a commutative complex algebra with unit, then every proper ideal of $A$ is contained in a maximal ideal of $A$. If$A$ is also a Banach algebra, every maximal ideal is closed.`,
-      idea: String.raw`Order the proper ideals containing a given $J$ by inclusion. By the Hausdorff maximality theorem (4.21) there is a maximal totally ordered subfamily $\Omega$. The union $M$ of the members of $\Omega$ is an ideal — two elements of $M$ lie in a common member because $\Omega$ is a chain — and it is proper because $e$ belongs to no member. Any proper ideal strictly larger than $M$ could be added to $\Omega$, contradicting maximality; so $M$ is a maximal ideal containing $J$. In the Banach case, the closure of a proper ideal is proper because invertible elements form an open set and no proper ideal contains one. Maximality therefore forces$\overline M=M$.`,
+      statement: String.raw`If $A$ is a commutative complex algebra with unit, then every proper ideal of $A$ is contained in a maximal ideal of $A$.`,
+      idea: String.raw`Order the proper ideals containing a given $J$ by inclusion. By the Hausdorff maximality theorem (4.21) there is a maximal totally ordered subfamily $\Omega$. The union $M$ of the members of $\Omega$ is an ideal — two elements of $M$ lie in a common member because $\Omega$ is a chain — and it is proper because $e$ belongs to no member. Any proper ideal strictly larger than $M$ could be added to $\Omega$, contradicting maximality; so $M$ is a maximal ideal containing $J$.`,
       caption: String.raw`The lattice of all ideals of two small commutative algebras, larger ideals higher up. In $C(X)$ with $X=\{1,2,3,4\}$ every ideal is $J_K=\{f:f|_K=0\}$; each node shows $K$ as filled dots. Click an ideal $J$: the gold path is a maximal chain of proper ideals through it, ending at a maximal ideal (green), and every maximal ideal above $J$ is ringed. The top node $A$ (red) is not proper — no chain may reach it, because $e$ lies in none of its links. In $\C[t]/(t^3)$ the ideals form a single chain with one maximal ideal $(t)$.`,
-      deps: ['rca-18.12', 'rca-4.21', 'rca-18.4'],
+      deps: ['rca-18.10', 'rca-4.21'],
       tags: ['ideals', 'Zorn', 'maximal ideals'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const mode = v.select('algebra', [{ value: 'cx', label: '$C(X)$, $X=\\{1,2,3,4\\}$' }, { value: 'loc', label: '$\\C[t]/(t^3)$' }], 'cx');
@@ -155,17 +155,17 @@ A proper ideal contains no invertible element — if $x\in J$ were invertible, e
       },
     },
     {
-      num: '18.13a',
+      num: '18.12',
       kind: 'Theorem',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem18.13, closure argument in its proof, p.362'],
       name: 'Closures of proper ideals are proper; maximal ideals are closed',
       statement: String.raw`Let $A$ be a commutative Banach algebra.
 (a) If $J$ is a proper ideal of $A$, then its closure $\overline J$ is also a proper ideal.
 (b) Every maximal ideal of $A$ is closed.`,
       idea: String.raw`By 18.3, every $x$ with $\norm{e-x}<1$ is invertible, and a proper ideal contains no invertible element; hence $\norm{e-x}\ge1$ for all $x\in J$, an inequality that survives passage to the closure, so $e\notin\overline J$. Continuity of the algebra operations makes $\overline J$ an ideal. If $M$ is maximal, then $M\subset\overline M$ with $\overline M$ proper forces $\overline M=M$.`,
       caption: String.raw`In $C[0,1]$ let $J$ be the functions that vanish on some neighbourhood of $0$ — a proper ideal that is *not* closed. Shrink $\delta$: $f_\delta=g\varphi_\delta\in J$ (blue, zero on $[0,\delta]$) converges uniformly to $g$ (orange), which vanishes at $0$ only, so $\overline J=\{f:f(0)=0\}$. Yet every member of $J$ stays at distance $\ge1$ from $e$ (green): the green band is the ball $\norm{e-y}<1$ of invertible elements, and $f_\delta(0)=0$ sits on its edge.`,
-      deps: ['rca-18.12', 'rca-18.3'],
+      deps: ['rca-18.10', 'rca-18.3'],
       tags: ['ideals', 'closure'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const sd = v.slider('$\\delta$', 0.004, 0.3, 0.12, { log: true, decimals: 3 });
@@ -205,20 +205,22 @@ A proper ideal contains no invertible element — if $x\in J$ were invertible, e
     {
       num: '18.17',
       kind: 'Theorem',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem18.17 and complete proof, pp.364–365; converse maximal-kernel fact follows from codimension one'],
       name: 'Gelfand: maximal ideals are kernels of homomorphisms',
-      statement: String.raw`Let$A$ be a commutative Banach algebra and$\Delta$ its nonzero complex homomorphisms.
-(a) Every maximal ideal is the kernel of some$h\in\Delta$.
-(b)$\lambda\in\sigma(x)$ iff$h(x)=\lambda$ for some$h\in\Delta$.
-(c)$x$ is invertible iff$h(x)\ne0$ for every$h\in\Delta$.
-(d)$h(x)\in\sigma(x)$ for every$x\in A$ and$h\in\Delta$.
-(e)$|h(x)|\le\rho(x)\le\|x\|$.
-Consequently$\sigma(x)$ is the range of$h\mapsto h(x)$ and$\rho(x)=\sup_{h\in\Delta}|h(x)|$. Conversely every$\ker h$ is maximal, since it has codimension one.`,
-      idea: String.raw`A maximal ideal$M$ is closed by18.13; the quotient$A/M$ is a Banach algebra by18.15 and a field by18.14. Gelfand–Mazur18.7 identifies it with$\C$, proving(a). If$x-\lambda e$ is not invertible, its generated ideal is proper and lies in a maximal ideal; the corresponding$h$ has$h(x)=\lambda$. Conversely an invertible$x-\lambda e$ cannot lie in any homomorphism kernel, proving(b). Statements(c)–(e) follow immediately. Finally$h(e)=1$ implies$A=\ker h\oplus\C e$, so the kernel is maximal.`,
-      caption: String.raw`A concrete commutative Banach algebra: $\ell^1(\Z_8)$, sequences $x_0,\dots,x_7$ under cyclic convolution. Its complex homomorphisms are the eight characters $h_k(x)=\sum_n x_n\omega^{kn}$, $\omega=e^{2\pi i/8}$. Drag the bars of $x$. Right: the points $h_k(x)$ — by(b) they *are* $\sigma(x)$. As long as none is $0$, $x$ has a convolution inverse (bottom). Press the button to push $x$ into the maximal ideal $\ker h_k$: that point moves to $0$, and the inverse ceases to exist.`,
-      deps: ['rca-18.7', 'rca-18.13', 'rca-18.14', 'rca-18.15', 'rca-9.21'],
-      see: ['fa-11.5', 'rca-9.23'],
+      credit: 'Gelfand, 1941',
+      statement: String.raw`Let $A$ be a commutative Banach algebra and $\Delta$ the set of all nonzero complex homomorphisms of $A$.
+(a) Every maximal ideal of $A$ is the kernel of some $h\in\Delta$.
+(b) If $h\in\Delta$, the kernel of $h$ is a maximal ideal of $A$.
+(c) $x\in A$ is invertible in $A$ if and only if $h(x)\neq0$ for every $h\in\Delta$.
+(d) $x\in A$ is invertible in $A$ if and only if $x$ lies in no proper ideal of $A$.
+(e) $\lambda\in\sigma(x)$ if and only if $h(x)=\lambda$ for some $h\in\Delta$.
+
+Writing $\hat x(h)=h(x)$, (e) says that $\sigma(x)$ is the range of the function $\hat x$ on $\Delta$; hence $\rho(x)=\sup_{h\in\Delta}\abs{h(x)}$.`,
+      idea: String.raw`(b): $h(e)=1$, so $A=\ker h\oplus\C e$ and a codimension-one ideal is maximal. (a): a maximal ideal $M$ is closed (18.12), so $A/M$ is a commutative Banach algebra; if $x\notin M$, the ideal $\{ax+y:a\in A,\,y\in M\}$ is strictly larger than $M$, hence all of $A$, so $x+M$ is invertible. Thus $A/M$ is a division algebra, equal to $\C$ by Gelfand–Mazur (18.7), and the quotient map is the required $h$. (d): if $x$ is not invertible, $xA$ is a proper ideal containing it. (c) follows from (a), (b), (d) and 18.11; (e) is (c) applied to $\lambda e-x$.`,
+      caption: String.raw`A concrete commutative Banach algebra: $\ell^1(\Z_8)$, sequences $x_0,\dots,x_7$ under cyclic convolution. Its complex homomorphisms are the eight characters $h_k(x)=\sum_n x_n\omega^{kn}$, $\omega=e^{2\pi i/8}$. Drag the bars of $x$. Right: the points $h_k(x)$ — by (e) they *are* $\sigma(x)$. As long as none is $0$, $x$ has a convolution inverse (bottom). Press the button to push $x$ into the maximal ideal $\ker h_k$: that point moves to $0$, and the inverse ceases to exist.`,
+      deps: ['rca-18.7', 'rca-18.11', 'rca-18.12', 'rca-9.19', 'rca-9.20'],
+      see: ['fa-11.5', 'rca-9.21'],
       tags: ['Gelfand theory', 'maximal ideals', 'complex homomorphisms'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const T = v.stage({ x: [-0.6, 7.6], y: [-1.3, 1.8], height: 300, axes: 'box', xticks: M.range(8), title: '$x\\in\\ell^1(\\Z_8)$ — drag the bars' });
@@ -283,16 +285,17 @@ Consequently$\sigma(x)$ is the range of$h\mapsto h(x)$ and$\rho(x)=\sup_{h\in\De
     {
       num: '18.21',
       kind: 'Theorem',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem18.21 and complete proof, pp.367–368'],
       name: "Wiener's lemma: 1/f has an absolutely convergent Fourier series",
+      credit: 'Wiener, 1932',
       statement: String.raw`Suppose $f$ is a continuous function on the unit circle whose Fourier series converges absolutely,
 $$f(e^{it})=\sum_{n=-\infty}^{\infty}c_ne^{int},\qquad \sum_{n=-\infty}^{\infty}\abs{c_n}<\infty,$$
 and $f(e^{it})\neq0$ for every real $t$. Then $1/f$ also has an absolutely convergent Fourier series.`,
-      idea: String.raw`The functions with absolutely convergent Fourier series form a commutative Banach algebra $W$ under pointwise multiplication, with norm $\norm f=\sum\abs{c_n}$ (multiplication of functions is convolution of coefficient sequences, so $W\cong\ell^1(\Z)$). If $h$ is a complex homomorphism of $W$ and $z(e^{it})=e^{it}$, then $\abs{h(z)}\le\norm z=1$ and $\abs{h(1/z)}\le1$ (9.21), so $h(z)=e^{is}$ for some real $s$; hence $h(e^{int})=e^{ins}$ and, by continuity, $h(f)=f(e^{is})$. Every $h$ is a point evaluation, none of which vanishes at $f$, so $f$ is invertible in $W$ by 18.17(c). Wiener's original proof was a delicate local argument; Gelfand's theory makes it a few lines.`,
+      idea: String.raw`The functions with absolutely convergent Fourier series form a commutative Banach algebra $W$ under pointwise multiplication, with norm $\norm f=\sum\abs{c_n}$ (multiplication of functions is convolution of coefficient sequences, so $W\cong\ell^1(\Z)$). If $h$ is a complex homomorphism of $W$ and $z(e^{it})=e^{it}$, then $\abs{h(z)}\le\norm z=1$ and $\abs{h(1/z)}\le1$ (9.20), so $h(z)=e^{is}$ for some real $s$; hence $h(e^{int})=e^{ins}$ and, by continuity, $h(f)=f(e^{is})$. Every $h$ is a point evaluation, none of which vanishes at $f$, so $f$ is invertible in $W$ by 18.17(c). Wiener's original proof was a delicate local argument; Gelfand's theory makes it a few lines.`,
       caption: String.raw`$f=c+g$, where $g$ has coefficients $\hat g(n)$ of size $1/n^2$ — absolutely summable, but $g$ has a corner, so $f$ is not smooth. Left: the closed curve $f(\T)$, which is $\sigma(f)$ in $W$. Drag the constant term $c$ (moving the whole curve). Right: the Fourier coefficients of $1/f$ on a log scale (green), next to those of $f$ (grey). While $0\notin f(\T)$ they decay like $n^{-2}$ and $\sum\abs{\widehat{(1/f)}(n)}$ is finite — whether or not the curve winds around $0$. Pull the curve onto $0$ and the sum explodes.`,
-      deps: ['rca-18.17', 'rca-9.21', 'rca-4.23', 'rca-4.26'],
-      see: ['rca-9.23'],
+      deps: ['rca-18.17', 'rca-9.20', 'rca-4.23', 'rca-4.26'],
+      see: ['rca-9.21'],
       tags: ['Wiener', 'Fourier series', 'Gelfand theory'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const N = 2048, NC = 30, KAPPA = 0.35;

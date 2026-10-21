@@ -1,5 +1,7 @@
 // Philosophy & Reasoning — Chapter 4: Self-reference and truth (items 4.1–4.5; the rest are in ch04-b.js)
 
+import { liarStatusModel } from './source-audit-liar.js';
+
 export default {
   collection: 'phil',
   chapter: 4,
@@ -11,57 +13,51 @@ export default {
       num: '4.1',
       kind: 'Paradox',
       name: 'The strengthened liar and revenge',
-      statement: String.raw`The **liar** is the sentence $L$: “$L$ is false.” If a sentence is true exactly when what it says is the case, then $L$ is true iff $L$ is false, so $L$ can be neither true nor false in a two-valued semantics. The obvious repair is to let such sentences fall into a **truth-value gap**: $L$ is neither true nor false. But then take the **strengthened liar** $S$: “$S$ is not true.” If $S$ is gappy, it is not true, which is exactly what it says, so it is true. If it is true, it is not true. If it is false, it is true. Every available status, gap included, is refuted. A repair that is made by adding a new status or a new notion (gap, ungrounded, meaningless) tends to generate a new liar that uses that notion: this is **revenge**.`,
-      idea: String.raw`The reasoning uses only the **T-schema** (a sentence is true iff what it says holds) and the fact that the sentence refers to itself. Nothing in the logic is unusual, so something among the schema, self-reference and classical logic has to give: later items of the chapter take each in turn (Tarski restricts the application of truth predicates by language level; Kripke preserves the same semantic value for a sentence and its truth assertion while allowing gaps; dialetheism accepts some contradictions while using a nonexplosive logic). The strengthened liar is the reason why “just call it gappy” is not enough: the strengthened argument uses a total notion of “not true” that includes false and gappy sentences, and that very notion is what $S$ exploits. Kripke explicitly explains why his object language cannot express this total “not true” predicate for its own gappy sentences (1975, pp.714–715).`,
-      caption: String.raw`Choose a sentence and a semantics. Each card assigns the sentence a status (true / false / gap) and compares it with the status of *what the sentence says* under that assignment: an assignment survives only if the two circles have the same colour. With two values, both liars have no surviving card. Allow a gap and the plain liar finds a home in it, but the strengthened liar again has none: switch between the two to see the revenge. The truth-teller shows the opposite problem: too many assignments survive.`,
+      statement: String.raw`For the liar $L$ saying $\neg T(\ulcorner L\urcorner)$, combine self-reference, value-transparent truth $v(T(\ulcorner A\urcorner))=v(A)$, and classical two-valued negation. A stable value would satisfy $v(L)=\neg v(L)$, which neither true nor false satisfies. To compare other conventions, record two independent metalanguage flags $(t,f)$: true only $(1,0)$, false only $(0,1)$, neither $(0,0)$, or both $(1,1)$. In this authored checker, object-language negation swaps the flags, $\neg(t,f)=(f,t)$, so neither and both are unchanged by negation when those statuses are permitted. They are different statuses, not two names for one third value.`,
+      idea: String.raw`A further distinction matters for the **strengthened liar**. The external metalanguage report “not true” classifies whether the truth flag is absent: $E(t,f)=(1-t,t)$. Thus $E$ reports true of neither, but false of both; it is not the object negation just defined. Merely making that external report adds no self-referential sentence. If we explicitly add a self-applicable object operator with this exact $E$ rule and impose $v(S)=E(v(S))$, its truth coordinate would require $t=1-t$, so no listed status works. This illustrates a revenge pressure on that particular enrichment. It does not show that every theory allowing gaps or gluts is inconsistent. Kripke explicitly distinguishes what can be said in a metalanguage from what his partial object-language truth predicate and negation express.`,
+      caption: String.raw`Choose the permitted statuses and compare object-language liar negation, a truth-teller, or the external not-true report. Each row shows an assigned status and the operation's output; dimmed rows are excluded by your status choice. “Fixed” means exact status equality, including both flags. The external report by itself is labeled **report only**. Its separate toggle adds the self-applicable object rule, turning it into a new fixed-status test.`,
       deps: ['logic-1.7'],
-      refs: ['Sainsbury', 'SEP “Liar Paradox”'],
-      credit: 'Kripke, 1975, pp.714–715 (limits of the gap treatment)',
-      scope: String.raw`The ordinary liar uses Kleene-style partial negation; the strengthened liar adds a different, total status test: the claim “I am false” is gappy when the sentence is gappy, while “I am not true” is read with an exclusion negation (true when the sentence is false *or* gappy). Other treatments of the liar exist; this card checks consistency, it does not say which one is right.`,
+      refs: ['Kripke, Outline of a Theory of Truth (1975), pp. 699–701 and 714–715', 'Přenosil, Four-valued logics of truth, non-falsity, exact truth, and material equivalence, arXiv:2111.09978v1 (2021), introduction and §§2.3–2.4'],
+      credit: 'Technical source discussions: Kripke, 1975; Přenosil, 2021',
+      scope: String.raw`Finite authored one-sentence status equations. The four pairs are metalanguage descriptions of truth/falsity support, not probabilities or psychological beliefs. Truth transparency here is equality of semantic statuses; it is not a claim that every material object-language biconditional $T(\ulcorner A\urcorner)\leftrightarrow A$ is itself true under partial valuations. “Fixed” is not classical consistency when both is allowed. The checker supplies no full Kripke fixed-point construction, full four-valued consequence relation, or verdict on all theories of truth. The external $E$ classifier is not silently assumed expressible in the object language; only the explicit enrichment imposes its self-application.`,
       tags: ['liar', 'truth', 'revenge'],
-      links: { sep: 'https://plato.stanford.edu/entries/liar-paradox/' },
+      links: { source: 'http://thatmarcusfamily.org/philosophy/Course_Websites/Readings/Kripke%20-%20Outline%20of%20a%20Theory%20of%20Truth.pdf', technical: 'https://arxiv.org/abs/2111.09978v1' },
+      verify: false,
       viz(v) {
-        const sent = v.select('sentence', [{ value: 'L', label: 'liar' }, { value: 'S', label: 'strengthened liar' }, { value: 'T', label: 'truth-teller' }], 'L');
-        const sem = v.select('semantics', [{ value: '2', label: 'two values' }, { value: '3', label: 'with a gap' }], '2');
-        const COLS = ['T', 'F', 'G'];
-        const NAME = { T: 'true', F: 'false', G: 'gap' };
-        const SAY = { L: '“This sentence is false.”', S: '“This sentence is not true.”', T: '“This sentence is true.”' };
-        // the value of what the sentence says, if the sentence itself has value x
-        const claim = (k, x) => {
-          if (k === 'L') return x === 'T' ? 'F' : x === 'F' ? 'T' : 'G';
-          if (k === 'S') return x === 'T' ? 'F' : 'T';
-          return x;
-        };
-        const COL = { T: 'green', F: 'red', G: 'muted' };
-        const s = v.stage({ x: [0, 12], y: [0, 8.2], axes: false, height: 350, full: true });
-        let ok = [];
+        const sentence = v.select('operation', [{ value: 'liar', label: 'object liar ¬T(L)' }, { value: 'teller', label: 'truth-teller T(U)' }, { value: 'external', label: 'external not-true report E' }], 'liar');
+        const domain = v.select('permitted statuses', [{ value: 'classical', label: 'true / false only' }, { value: 'gap', label: 'also neither' }, { value: 'glut', label: 'also both' }, { value: 'four', label: 'neither and both' }], 'classical');
+        const enrich = v.toggle('add E as a self-applicable object rule', false);
+        const s = v.stage({ x: [0, 12], y: [0, 10.9], axes: false, height: 420, full: true, title: 'Authored status-equation checker' });
+        const code = { 1: 'T', 2: 'F', 0: 'N', 3: 'B' }, name = { 1: 'true only', 2: 'false only', 0: 'neither', 3: 'both' }, color = { 1: 'green', 2: 'red', 0: 'muted', 3: 'purple' };
+        let st;
         v.render(() => {
-          const k = sent.value, three = sem.value === '3';
-          ok = [];
-          s.text(SAY[k], 6, 7.7, { align: 'center', size: 16, color: 'ink', weight: 600 });
-          COLS.forEach((x, i) => {
-            const x0 = i * 4 + 0.25, x1 = x0 + 3.5, xc = (x0 + x1) / 2, off = x === 'G' && !three;
-            const c = claim(k, x), good = c === x && !off;
-            if (good) ok.push(x);
-            s.rect(x0, 0.5, x1, 6.9, { fill: off ? 'faint' : good ? 'green' : 'red', fillAlpha: off ? 0.05 : 0.09, color: off ? 'faint' : good ? 'green' : 'red', width: off ? 1 : 2, radius: 10, dash: off ? [5, 4] : null });
-            s.text(`Suppose it is ${NAME[x]}`, xc, 6.3, { align: 'center', size: 14, weight: 700, color: off ? 'faint' : 'ink' });
-            if (off) { s.text('no gaps allowed', xc, 3.7, { align: 'center', size: 13, color: 'faint' }); return; }
-            s.dot(xc - 0.9, 4.4, { r: 22, color: COL[x], fill: COL[x] });
-            s.dot(xc + 0.9, 4.4, { r: 22, color: COL[c], fill: COL[c] });
-            s.text(x === 'G' ? 'gap' : x === 'T' ? 'true' : 'false', xc - 0.9, 4.4, { align: 'center', baseline: 'middle', size: 12, color: 'panel', weight: 700, halo: false });
-            s.text(c === 'G' ? 'gap' : c === 'T' ? 'true' : 'false', xc + 0.9, 4.4, { align: 'center', baseline: 'middle', size: 12, color: 'panel', weight: 700, halo: false });
-            s.arrow(xc - 0.45, 4.4, xc + 0.45, 4.4, { color: 'ink', width: 2 });
-            s.text('its status', xc - 0.9, 3.45, { align: 'center', size: 11.5, color: 'muted' });
-            s.text('status of its claim', xc + 0.9, 3.45, { align: 'center', size: 11.5, color: 'muted' });
-            s.text(good ? '✓ consistent' : '✗ clash', xc, 1.9, { align: 'center', size: 16, weight: 700, color: good ? 'green' : 'red' });
-            s.text(good ? 'status = status of its claim' : 'status ≠ status of its claim', xc, 1.15, { align: 'center', size: 12, color: 'muted' });
+          const model = liarStatusModel(sentence.value, domain.value, enrich.value);
+          enrich.el.hidden = sentence.value !== 'external';
+          const title = sentence.value === 'liar' ? 'Object rule: L has status of ¬T(L)' : sentence.value === 'teller' ? 'Object rule: U has status of T(U)' : model.compared ? 'Added self-rule: S has status of E(S)' : 'External report E: no self-equation';
+          s.text(title, 6, 10.4, { align: 'center', baseline: 'middle', size: 12, color: 'ink' });
+          for (const [label, x] of [['assigned (t,f)', 2.3], ['output (t,f)', 6.8], ['check', 10.1]]) s.text(label, x, 9.6, { align: 'center', baseline: 'middle', size: 11.5, color: 'muted' });
+          model.rows.forEach((row, i) => {
+            const y = 8.5 - 2 * i, fixed = model.compared && row.allowed && row.equal, ink = row.allowed ? 'ink' : 'muted';
+            s.rect(.3, y - .67, 11.7, y + .67, { fill: fixed ? 'green' : 'faint', fillAlpha: fixed ? .1 : .04, color: row.allowed ? 'muted' : 'faint', width: 1 });
+            const badge = (status, x, bits, px) => {
+              s.dot(x, y, { r: 14, hollow: true, color: row.allowed ? color[status] : 'faint', width: 1.8 });
+              s.text(code[status], x, y, { align: 'center', baseline: 'middle', size: 12, weight: 700, color: ink, halo: false });
+              s.text(`(${bits[0]},${bits[1]})`, px, y, { align: 'center', baseline: 'middle', size: 12, color: ink });
+            };
+            badge(row.input, 1.1, row.bits, 2.7); badge(row.output, 5.5, row.outputBits, 7.1);
+            s.text('→', 4.25, y, { align: 'center', baseline: 'middle', size: 16, color: ink });
+            s.text(!row.allowed ? 'excluded' : !model.compared ? 'report' : fixed ? 'fixed' : 'changes', 10.1, y, { align: 'center', baseline: 'middle', size: 11.5, weight: fixed ? 700 : 400, color: fixed ? 'green' : ink });
           });
+          s.text('T: true only   F: false only', 6, 1.1, { align: 'center', baseline: 'middle', size: 11, color: 'muted' });
+          s.text('N: neither   B: both', 6, .55, { align: 'center', baseline: 'middle', size: 11, color: 'muted' });
+          st = model;
         });
-        v.legend([['green', 'true', { dot: true }], ['red', 'false', { dot: true }], ['muted', 'gap', { dot: true }]]);
+        v.legend([['green', 'truth only'], ['red', 'falsity only'], ['muted', 'neither'], ['purple', 'both']]);
         v.readout(() => {
-          const k = sent.value;
-          if (!ok.length) return `**No assignment survives** (${k === 'S' && sem.value === '3' ? 'the gap was the escape for the plain liar, but “not true” is true of a gappy sentence: this is revenge' : 'every status is refuted'}).`;
-          return `Surviving assignments: **${ok.map((x) => NAME[x]).join(', ')}**.${ok.length > 1 ? ' More than one is consistent, so nothing fixes the status.' : ' The sentence has a stable status here.'}`;
+          const pairs = st.rows.filter(r => r.allowed).map(r => `${code[r.input]} → ${code[r.output]}`).join('; ');
+          if (!st.compared) return `External classifications: **${pairs}**. This is a metalanguage report, so **no self-equation is imposed** and no fixed-status requirement applies. At N, object negation would remain N, while E reports T. At B, object negation remains B, while E reports F. The toggle adds a new object-language operator and self-rule.`;
+          const result = st.fixed.length ? `Fixed statuses: **${st.fixed.map(x => name[x]).join(', ')}**.` : '**No permitted fixed status** for this specified self-rule.';
+          return `${result} Mappings: ${pairs}. ${st.sentence === 'external' ? 'The added E rule requires a truth flag equal to its Boolean complement. This failure belongs to that explicit enrichment.' : st.sentence === 'teller' ? 'Value transparency alone leaves every permitted status fixed for this one truth-teller.' : 'Object negation fixes exactly the equal-flag pairs, neither and both, when permitted.'} A fixed both-status is not a claim of classical consistency; these finite checks do not construct a full language or its semantic fixed point.`;
         });
       },
     },
@@ -328,9 +324,9 @@ export default {
       kind: 'Paradox',
       name: 'Curry’s paradox',
       statement: String.raw`Let $F$ be any sentence, however absurd, and let $C$ be a sentence that says: “If $C$ is true, then $F$.” (Self-reference of this kind is available in any theory strong enough to code its own syntax, or in naive truth theory with the T-schema.) Then $F$ can be proved by the following steps, which use only modus ponens, conditional proof, and the freedom to use an assumption twice (**contraction**): assume $C$; then what $C$ says holds, so $C\to F$; by modus ponens, $F$. Discharging the assumption gives $C\to F$, which is $C$; applying modus ponens to $C$ and $C\to F$ gives $F$. Since $F$ was arbitrary, the theory proves everything. No negation appears anywhere in the argument.`,
-      idea: String.raw`Curry’s paradox matters because it blocks the dialetheist’s way out. Paraconsistent logics with a naive truth predicate disarm explosion by weakening the rules for negation, but Curry’s argument never touches negation: it needs the T-schema (to move between $C$ and $C\to F$), modus ponens, conditional proof, and contraction. So a theory of naive truth must give up one of *those*: most proposals give up contraction (used where the assumption $C$ is used twice, once as a premise and once to derive $C\to F$) or the conditional-proof step. For the classical material conditional, the argument shows more simply that there is no consistent truth-value for $C$ when $F$ is false.`,
+      idea: String.raw`Curry’s paradox matters because it blocks the dialetheist’s way out. Paraconsistent logics with a naive truth predicate disarm explosion by weakening the rules for negation, but Curry’s argument never touches negation: it needs the T-schema (to move between $C$ and $C\to F$), modus ponens, conditional proof, and contraction. So a theory of naive truth must give up one of *those*: most proposals give up contraction (used where the assumption $C$ is used twice, once as a premise and once to derive $C\to F$) or the conditional-proof step. For the classical material conditional, the argument shows more simply that there is no consistent truth-value for $C$ when $F$ is false. The discharge line is the forward direction of the deduction theorem (logic-4.2): derive F from a fixed background $\Gamma$ together with C, then derive $C\to F$ from $\Gamma$ alone. Here the background includes the chosen naive-truth instances and the inference uses the classical calculus with contraction available. When contraction is blocked, the displayed subderivation of F has already failed, so this classical theorem does not license skipping that obstruction.`,
       caption: String.raw`Step through the derivation (the ◀ ▶ buttons or the scrubber) and see which earlier lines each line uses; the badge counts how many times the assumption $C$ is used. Pick a consequent $F$ (all of them get proved!). Turn off **contraction** and the derivation stops at the line that needs $C$ twice. The small panel below tests whether the classical material conditional could give $C$ a truth value at all: with a false $F$ no value works, which is the liar again, while a true $F$ has a harmless solution.`,
-      deps: ['phil-4.1', 'logic-4.2', 'logic-4.1'],
+      deps: ['phil-4.1', 'logic-4.2'],
       refs: ['SEP “Curry’s Paradox”'],
       credit: 'Haskell B. Curry, “The inconsistency of certain formal logics”, J. Symbolic Logic 7 (1942) 115–117 (the name “Curry’s paradox” seems to be later)',
       scope: String.raw`Applies to any theory with an unrestricted T-schema (or an equivalent self-referential conditional), modus ponens, conditional proof and contraction. It is not a feature of classical set theory with restricted comprehension.`,

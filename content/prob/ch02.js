@@ -43,10 +43,13 @@ export default {
       num: '2.1.1a',
       kind: 'Definition',
       name: 'Independence of events, variables and σ-fields',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §2.1, pp. 43–45 (independence definitions and Theorems 2.1.1–2.1.3)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       statement: String.raw`Two events $A,B$ are **independent** if $P(A\cap B)=P(A)P(B)$. Two random variables $X,Y$ are independent if
-$$P(X\in C,\ Y\in D)=P(X\in C)\,P(Y\in D)\quad\text{for all Borel sets } C,D,$$
+$$\begin{gathered}
+P(X\in C,\ Y\in D)\\
+=P(X\in C)\,P(Y\in D)\\
+\text{for all Borel sets } C,D,
+\end{gathered}$$
 that is, every event fixed by $X$ is independent of every event fixed by $Y$. Two σ-fields $\mathcal F,\mathcal G$ are independent if every $A\in\mathcal F$ is independent of every $B\in\mathcal G$.
 
 For several objects the order is reversed, starting from σ-fields. $\mathcal F_1,\dots,\mathcal F_n$ are independent if $P(A_1\cap\dots\cap A_n)=\prod_iP(A_i)$ whenever $A_i\in\mathcal F_i$. Random variables $X_1,\dots,X_n$ are independent if $P(X_1\in B_1,\dots,X_n\in B_n)=\prod_iP(X_i\in B_i)$ for all Borel $B_i$. Events $A_1,\dots,A_n$ are independent if $P(\bigcap_{i\in I}A_i)=\prod_{i\in I}P(A_i)$ for **every** $I\subset\{1,\dots,n\}$. An infinite family is independent when each of its finite subfamilies is.`,
@@ -280,8 +283,7 @@ For several objects the order is reversed, starting from σ-fields. $\mathcal F_
       num: '2.1.3a',
       kind: 'Definition',
       name: 'Pairwise independence',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §2.1, p. 45 (pairwise independence and Example 2.1.4)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       statement: String.raw`Events $A_1,\dots,A_n$ are **pairwise independent** if $P(A_i\cap A_j)=P(A_i)P(A_j)$ for all $i\ne j$; random variables are pairwise independent if each pair is independent. Independent events are pairwise independent, but not conversely. For example, let $X_1,X_2,X_3$ be independent fair bits and put $A_1=\{X_2=X_3\}$, $A_2=\{X_3=X_1\}$, $A_3=\{X_1=X_2\}$. Each pair meets in $\{X_1=X_2=X_3\}$, of probability $1/4=P(A_i)P(A_j)$, yet $P(A_1\cap A_2\cap A_3)=1/4\ne1/8$.`,
       idea: String.raw`Pairwise independence only constrains the two-dimensional marginals, while independence fixes the whole joint law. A third variable that is a function of the first two (an XOR, an equality indicator, $X+nY \bmod K$ for a prime $K$) can have every pair look independent while the three together are completely determined. Pairwise independence is still enough for anything that only uses second moments, such as Theorem 2.2.1 and the $L^2$ weak law.`,
       caption: String.raw`Pick an example and a pair. Left: the seeded frequency table of that pair from $3000$ draws (exact probabilities in the corner of each cell); every cell sits at the product of the marginals. Right: the full triple table. Rows are the values of the chosen pair, columns the value of the third variable. Red cells are **impossible** even though their product of marginals is positive: given two of the variables, the third is determined.`,
@@ -381,8 +383,7 @@ since a subfamily $I$ is obtained by taking $A_i=\Omega$ for $i\notin I$.`,
       num: '2.1.5a',
       kind: 'Definition',
       name: 'π-systems and λ-systems',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §2.1.1, pp. 46–47 (pi-system and lambda-system definitions)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      verify: true,
       statement: String.raw`A collection $\mathcal A$ of subsets of $\Omega$ is a **π-system** if it is closed under intersection: $A,B\in\mathcal A$ implies $A\cap B\in\mathcal A$. A collection $\mathcal L$ is a **λ-system** if
 
 (i) $\Omega\in\mathcal L$;

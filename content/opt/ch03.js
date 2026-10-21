@@ -18,30 +18,6 @@ const P1 = [
 ];
 const fmt = (v, x, d = 3) => v.fix(Math.abs(x) < 0.5 * 10 ** -d ? 0 : x, d);
 
-/** Exact input ranges on the displayed convex domain [-3,3], for item 3.6. */
-export const convexOperationInputs = {
-  sq: { label: '$x^2/2$', f: (x) => (x * x) / 2, convex: true, range: [0, 4.5] },
-  abs: { label: '$|x-1|$', f: (x) => Math.abs(x - 1), convex: true, range: [0, 4] },
-  exp: { label: '$e^{x/1.5}$', f: (x) => Math.exp(x / 1.5), convex: true, range: [Math.exp(-2), Math.exp(2)] },
-  conc: { label: 'concave $2-x^2/3$', f: (x) => 2 - (x * x) / 3, convex: false, range: [-1, 2] },
-};
-export const convexOperationOuters = {
-  exp: (t) => Math.exp(t / 2),
-  sq: (t) => t * t,
-  sqrt: (t) => Math.sqrt(Math.max(0, t + 3)),
-};
-/** Sufficient convex/nondecreasing composition rule; failure gives no conclusion. */
-export function convexCompositionRule(inner, outer) {
-  const input = convexOperationInputs[inner];
-  if (!input || !convexOperationOuters[outer]) throw new RangeError('Unknown composition choice');
-  if (!input.convex) return { applies: false, why: '$f_1$ is not convex: this sufficient rule gives no conclusion' };
-  if (outer === 'sqrt') return { applies: false, why: '$g$ is concave on the displayed range: this sufficient rule gives no conclusion' };
-  if (outer === 'sq' && input.range[0] < 0) return { applies: false, why: '$t^2$ is not nondecreasing on the range of $f_1$: this sufficient rule gives no conclusion' };
-  return { applies: true, why: outer === 'sq'
-    ? '$t^2$ is convex and nondecreasing on the **nonnegative range** of convex $f_1$: the composition rule applies'
-    : '$g$ is convex and nondecreasing and $f_1$ is convex: the composition rule applies' };
-}
-
 export default {
   collection: 'opt',
   chapter: 3,
@@ -101,7 +77,7 @@ export default {
         v.readout(() => {
           const { ct, ep, ex, ok } = info;
           const verdict = ct.bad === 0 && ep.bad === 0 ? 'no chord breaks: consistent with **convex**' : '**not convex**: some chords lie below the graph';
-          return `Chord $[a,b]$: ${ok ? 'the graph stays below it' : `the graph pokes above it by up to $${fmt(v, ex)}$`}.\nSampled chord inequalities violated (function test): **${ct.bad}** of ${ct.tested}; epigraph chords leaving the epigraph: **${ep.bad}** of ${ep.tested} (${verdict}).`;
+          return `Chord $[a,b]$: ${ok ? 'the graph stays below it' : `the graph pokes above it by up to $${fmt(v, ex)}$`}.\nRandom chords above the graph (function test): **${ct.bad}** of ${ct.tested}; epigraph chords leaving the epigraph: **${ep.bad}** of ${ep.tested} (${verdict}).`;
         });
       },
     },
@@ -177,7 +153,7 @@ the tangent plane at any point is a global underestimator. In particular, if $f$
       name: 'Second-order condition: positive semidefinite Hessian',
       statement: String.raw`Let $f$ be twice continuously differentiable on an open convex set $C\subseteq\R^n$. Then $f$ is convex on $C$ if and only if $\nabla^2f(x)\succeq0$ for every $x\in C$, i.e. every eigenvalue of the Hessian is nonnegative. If $\nabla^2f(x)\succ0$ for all $x\in C$, then $f$ is strictly convex (the converse fails: $x^4$ is strictly convex with $f''(0)=0$). For a function of one variable the condition is $f''\ge0$.`,
       idea: String.raw`Restrict $f$ to a line, $\varphi(t)=f(x+tv)$: convexity of $f$ is convexity of every such $\varphi$, and $\varphi''(t)=v^{\mathsf T}\nabla^2f(x+tv)\,v$. A twice differentiable function of one variable is convex exactly when its derivative is nondecreasing, i.e. $\varphi''\ge0$ (by the first-order condition opt-3.2 or the mean value theorem). So convexity holds iff $v^{\mathsf T}\nabla^2f(x)v\ge0$ for all $x$ and all directions $v$, which is positive semidefiniteness (ladr-7.38 characterizes positive operators by their eigenvalues).`,
-      caption: String.raw`The colour is the **smallest Hessian eigenvalue** $\lambda_{\min}(\nabla^2f)$ at each point, computed numerically: blue is positive (locally convex), red negative. Pick an example or type your own $f(x,y)$. Drag $p$: its eigen-directions are drawn, and the right panel shows $f$ along each of them with the parabola of curvature $\lambda_i$. The theorem says the chord test must pass exactly when no red appears: the number of violated sampled chord inequalities (on the window) is reported beside the fraction of red area.`,
+      caption: String.raw`The colour is the **smallest Hessian eigenvalue** $\lambda_{\min}(\nabla^2f)$ at each point, computed numerically: blue is positive (locally convex), red negative. Pick an example or type your own $f(x,y)$. Drag $p$: its eigen-directions are drawn, and the right panel shows $f$ along each of them with the parabola of curvature $\lambda_i$. The theorem says the chord test must pass exactly when no red appears: the count of random chords above the graph (on the window) is reported beside the fraction of red area.`,
       deps: ['opt-3.2', 'ladr-7.38'],
       refs: ['Boyd–Vandenberghe §3.1'],
       tags: ['Hessian', 'second-order condition'],
@@ -227,7 +203,7 @@ the tangent plane at any point is a global underestimator. In particular, if $f$
         v.legend([['orange', 'along $v_1$ ($\\lambda_{\\min}$)'], ['teal', 'along $v_2$ ($\\lambda_{\\max}$)'], ['ink', 'dashed: $\\tfrac12\\lambda t^2$ model', { dash: true }]]);
         v.readout(() => {
           const { E, sc } = info;
-          return `At $p$: $\\lambda_{\\min}=${fmt(v, E.l1)}$, $\\lambda_{\\max}=${fmt(v, E.l2)}$ (${E.l1 >= 0 ? 'positive semidefinite here' : 'indefinite here'}). On the window, $\\min\\lambda_{\\min}=${fmt(v, sc.mn)}$ and **${v.fix(100 * sc.frac, 0)}%** of the area is red.\nSampled chord inequalities violated: **${sc.ct.bad}** of ${sc.ct.tested} — ${sc.ct.bad === 0 && sc.frac === 0 ? 'convex on the window, as the theorem says' : sc.ct.bad > 0 && sc.frac > 0 ? 'not convex, as the red region predicts' : 'compare with the red area'}.`;
+          return `At $p$: $\\lambda_{\\min}=${fmt(v, E.l1)}$, $\\lambda_{\\max}=${fmt(v, E.l2)}$ (${E.l1 >= 0 ? 'positive semidefinite here' : 'indefinite here'}). On the window, $\\min\\lambda_{\\min}=${fmt(v, sc.mn)}$ and **${v.fix(100 * sc.frac, 0)}%** of the area is red.\nRandom chords above the graph: **${sc.ct.bad}** of ${sc.ct.tested} — ${sc.ct.bad === 0 && sc.frac === 0 ? 'convex on the window, as the theorem says' : sc.ct.bad > 0 && sc.frac > 0 ? 'not convex, as the red region predicts' : 'compare with the red area'}.`;
         });
       },
     },
@@ -344,7 +320,7 @@ More generally $f(\mathbb E\,X)\le\mathbb E f(X)$ for a random variable $X$ with
         v.readout(() => {
           const { cur, fl } = info;
           const f3 = fl.fct.bad === 0;
-          return `Sublevel set at $\\alpha$: ${cur.m < 12 ? 'empty or too small to test' : cur.bad === 0 ? '**convex** (no chord leaves it)' : `**not convex**: ${cur.bad} of ${cur.tested} chords leave it`}. Across 12 levels (${fl.tot} of them non-empty), **${fl.ok}** sublevel sets are convex.\nChord test on $f$ itself: **${fl.fct.bad}** of ${fl.fct.tested} sampled chord inequalities violated — ${f3 ? '$f$ is convex, so every sublevel set had to pass' : fl.ok === fl.tot ? '$f$ is **not** convex although every sublevel set is: the converse fails' : '$f$ is not convex'}.`;
+          return `Sublevel set at $\\alpha$: ${cur.m < 12 ? 'empty or too small to test' : cur.bad === 0 ? '**convex** (no chord leaves it)' : `**not convex**: ${cur.bad} of ${cur.tested} chords leave it`}. Across 12 levels (${fl.tot} of them non-empty), **${fl.ok}** sublevel sets are convex.\nChord test on $f$ itself: **${fl.fct.bad}** of ${fl.fct.tested} chords above the graph — ${f3 ? '$f$ is convex, so every sublevel set had to pass' : fl.ok === fl.tot ? '$f$ is **not** convex although every sublevel set is: the converse fails' : '$f$ is not convex'}.`;
         });
       },
     },
@@ -353,15 +329,20 @@ More generally $f(\mathbb E\,X)\le\mathbb E f(X)$ for a random variable $X$ with
       num: '3.6',
       kind: 'Theorem',
       name: 'Operations that preserve convex functions',
-      statement: String.raw`Let $f,f_1,f_2,\dots$ be convex. Then the following are convex: (a) nonnegative combinations $\alpha_1f_1+\alpha_2f_2$ with $\alpha_i\ge0$; (b) the pointwise maximum $\max(f_1,f_2)$ and more generally the pointwise supremum $\sup_{a\in\mathcal A}f_a$ of any family (finite where it is finite); (c) the composition with an affine map, $x\mapsto f(Ax+b)$; (d) the composition $g\circ f$ with $g$ convex and nondecreasing on an interval containing the range of $f$, and $f$ convex (scalar $f$). In general $-f$, differences $f_1-f_2$, minima $\min(f_1,f_2)$ and compositions with a decreasing or non-monotone $g$ need not be convex.`,
+      statement: String.raw`Let $f,f_1,f_2,\dots$ be convex. Then the following are convex: (a) nonnegative combinations $\alpha_1f_1+\alpha_2f_2$ with $\alpha_i\ge0$; (b) the pointwise maximum $\max(f_1,f_2)$ and more generally the pointwise supremum $\sup_{a\in\mathcal A}f_a$ of any family (finite where it is finite); (c) the composition with an affine map, $x\mapsto f(Ax+b)$; (d) the composition $g\circ f$ with $g$ convex and nondecreasing and $f$ convex (scalar $f$). In general $-f$, differences $f_1-f_2$, minima $\min(f_1,f_2)$ and compositions with a decreasing or non-monotone $g$ need not be convex.`,
       idea: String.raw`Each rule is a one-line check of the chord inequality (opt-3.1). For (a), add the inequalities. For (b), apply the chord inequality to each $f_a$ and then take the supremum on both sides. For (c), $x\mapsto Ax+b$ commutes with convex combinations. For (d), $g(f(\theta x+(1-\theta)y))\le g(\theta f(x)+(1-\theta)f(y))\le\theta g(f(x))+(1-\theta)g(f(y))$, using first that $g$ is nondecreasing and then that it is convex. Sublevel sets and epigraphs give the same results geometrically: the epigraph of a maximum is an intersection of epigraphs (opt-2.5).`,
-      caption: String.raw`Choose $f_1,f_2$ (including a concave one) and an operation. The dashed graphs are the inputs, the heavy curve is the result, and a chord test of 1500 chords is run on **each** of them; the readout states whether the rule's hypotheses hold and whether the test agrees. Slide the weights $\alpha,\beta$ negative, take a **minimum**, or compose with a non-monotone $g$, and the conclusion can fail. The composition rule only needs $g$ to be convex and nondecreasing on the range of $f_1$. *Supremum of tangents* draws the tangent lines of $f_1$ at $m$ points and their maximum: a convex piecewise-linear function that hugs $f_1$ from below.`,
+      caption: String.raw`Choose $f_1,f_2$ (including a concave one) and an operation. The dashed graphs are the inputs, the heavy curve is the result, and a chord test of 1500 chords is run on **each** of them; the readout states whether the rule's hypotheses hold and whether the test agrees. Slide the weights $\alpha,\beta$ negative, take a **minimum**, or compose with a non-monotone $g$, and the conclusion fails. *Supremum of tangents* draws the tangent lines of $f_1$ at $m$ points and their maximum: a convex piecewise-linear function that hugs $f_1$ from below.`,
       deps: ['opt-3.1'],
       refs: ['Boyd–Vandenberghe §3.2'],
       tags: ['composition', 'pointwise maximum'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Convex_function#Operations_that_preserve_convexity' },
       viz(v) {
-        const BASE = convexOperationInputs;
+        const BASE = {
+          sq: { label: '$x^2/2$', f: (x) => (x * x) / 2 },
+          abs: { label: '$|x-1|$', f: (x) => Math.abs(x - 1) },
+          exp: { label: '$e^{x/1.5}$', f: (x) => Math.exp(x / 1.5) },
+          conc: { label: 'concave $2-x^2/3$', f: (x) => 2 - (x * x) / 3 },
+        };
         const opts = Object.entries(BASE).map(([k, o]) => ({ value: k, label: o.label }));
         const s1 = v.select('$f_1$', opts, 'sq'), s2 = v.select('$f_2$', opts, 'abs');
         const op = v.select('operation', [
@@ -378,7 +359,7 @@ More generally $f(\mathbb E\,X)\le\mathbb E f(X)$ for a random variable $X$ with
           const f1 = BASE[s1.value].f, f2 = BASE[s2.value].f, o = op.value;
           alpha.el.hidden = beta.el.hidden = o !== 'sum'; s2.el && (s2.el.hidden = o === 'aff' || o === 'tan' || o === 'comp');
           aS.el.hidden = bS.el.hidden = o !== 'aff'; mS.el.hidden = o !== 'tan'; gS.el.hidden = o !== 'comp';
-          const g = convexOperationOuters[gS.value];
+          const g = { exp: (t) => Math.exp(t / 2), sq: (t) => t * t, sqrt: (t) => Math.sqrt(Math.max(0, t + 3)) }[gS.value];
           let h, hyp, rule;
           if (o === 'sum') { h = (x) => alpha.value * f1(x) + beta.value * f2(x); hyp = alpha.value >= 0 && beta.value >= 0; rule = 'nonnegative weights'; }
           else if (o === 'max') { h = (x) => Math.max(f1(x), f2(x)); hyp = null; rule = 'maximum'; }
@@ -402,15 +383,12 @@ More generally $f(\mathbb E\,X)\le\mathbb E f(X)$ for a random variable $X$ with
           else if (o === 'min') { applies = false; why = 'no rule: a minimum of convex functions is generally not convex'; }
           else if (o === 'aff') { applies = conv1; why = conv1 ? '$f_1$ convex: convex after an affine change of variable' : '$f_1$ not convex: no conclusion'; }
           else if (o === 'tan') { applies = conv1; why = 'a maximum of affine (hence convex) functions, always convex'; applies = true; }
-          else { ({ applies, why } = convexCompositionRule(s1.value, gS.value)); }
+          else { const gc = { exp: true, sq: false, sqrt: false }[gS.value]; applies = conv1 && gc; why = !conv1 ? '$f_1$ not convex: no conclusion' : gS.value === 'exp' ? '$g$ convex and nondecreasing, $f_1$ convex: the rule applies' : gS.value === 'sq' ? '$t^2$ is convex but **decreasing** for $t<0$ ($f_1$ takes negative values here): rule does not apply' : '$g$ is concave: rule does not apply'; }
           info = { ch, applies, why, rule };
         });
         v.readout(() => {
           const { ch, applies, why } = info;
-          const conclusion = ch.bad > 0 ? 'not convex: a sampled chord violates convexity'
-            : applies ? 'convex by the stated rule; no sampled violations'
-              : 'no sampled violations; the sufficient rule gives no conclusion';
-          return `${why}.\nChord test on the result: **${ch.bad}** of ${ch.tested} sampled chord inequalities violated — ${conclusion}${applies && ch.bad > 0 ? ' (unexpected: the hypotheses of the rule hold, so check the inputs)' : ''}.`;
+          return `${why}.\nChord test on the result: **${ch.bad}** of ${ch.tested} chords above the graph — ${ch.bad === 0 ? 'convex' : 'not convex'}${applies && ch.bad > 0 ? ' (unexpected: the hypotheses of the rule hold, so check the inputs)' : !applies && ch.bad === 0 ? ' (the rule does not apply, but the result happens to be convex for these inputs)' : ''}.`;
         });
       },
     },

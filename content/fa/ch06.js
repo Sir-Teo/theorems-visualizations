@@ -546,10 +546,11 @@ Restricted to any $\mathscr D_K$, these norms induce the Fréchet topology $\tau
       kind: 'Corollary',
       name: 'Differential operators are continuous on 𝒟(Ω)',
       statement: String.raw`For every multi-index $\alpha$, the differential operator $D^\alpha$ is a continuous linear map of $\mathscr D(\Omega)$ into $\mathscr D(\Omega)$.`,
-      idea: String.raw`$D^\alpha$ maps each $\mathscr D_K$ into itself (it cannot enlarge supports), and there $\|D^\alpha\varphi\|_N\le\|\varphi\|_{N+|\alpha|}$, so $D^\alpha:\mathscr D_K\to\mathscr D_K\subset\mathscr D(\Omega)$ is continuous (6.5(b)). Criterion (d) of 6.6 finishes the proof. For $|\alpha|>0$, note the index shift: differentiation is not bounded when domain and range both use the same single norm $\|\cdot\|_N$.`,
+      idea: String.raw`$D^\alpha$ maps each $\mathscr D_K$ into itself (it cannot enlarge supports), and there $\|D^\alpha\varphi\|_N\le\|\varphi\|_{N+|\alpha|}$, so $D^\alpha:\mathscr D_K\to\mathscr D_K\subset\mathscr D(\Omega)$ is continuous (6.5(b)). Criterion (d) of 6.6 finishes the proof. Note the index shift: $D^\alpha$ is *not* continuous for any single norm $\|\cdot\|_N$.`,
       caption: String.raw`$\Omega=(-2,2)^2$, $\varphi(x,y)=\psi\big(\tfrac{x-a}{r_1}\big)\cos(\omega(x-a))\,\psi\big(\tfrac{y-b}{r_2}\big)$. Drag the centre and the corner of the support rectangle $K$, pick $\alpha$, raise the frequency $\omega$. $D^\alpha\varphi$ keeps its support in $K$; the bars confirm $\|D^\alpha\varphi\|_N\le\|\varphi\|_{N+|\alpha|}$ for every $N$, while the ratio $\|D^\alpha\varphi\|_0/\|\varphi\|_0$ grows without bound as $\omega\to\infty$.`,
       deps: ['fa-6.6', 'fa-1.46', 'fa-6.5'],
       tags: ['test functions', 'differential operators'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const AL = [[1, 0], [0, 1], [1, 1], [2, 0], [0, 2], [2, 1]];
@@ -603,7 +604,7 @@ Restricted to any $\mathscr D_K$, these norms induce the Fréchet topology $\tau
       num: '6.7',
       kind: 'Definition',
       name: 'Distributions',
-      credit: 'L. Schwartz',
+      credit: 'L. Schwartz, 1945',
       statement: String.raw`A **distribution** in $\Omega$ is a linear functional on $\mathscr D(\Omega)$ that is continuous for the topology $\tau$. The space of all distributions in $\Omega$ is denoted $\mathscr D'(\Omega)$.`,
       idea: String.raw`A distribution is known only through its action on test functions. By 6.6, continuity can be tested on sequences or on each $\mathscr D_K$ separately, which makes membership in $\mathscr D'(\Omega)$ easy to verify (6.8). Locally integrable functions and measures are distributions (6.11), but so are objects like $\delta'$ and the principal value of $1/x$, which are not functions at all.`,
       caption: String.raw`Choose a distribution on $\R$ and drag the test function $\varphi$ (its peak) or change its width. The top panel shows what $\Lambda$ "does" with $\varphi$ — evaluate it, minus its slope, integrate it over $(0,\infty)$, take the cancelling principal-value integral against $1/x$, or sum it over $\Z$. Bottom: the value $\Lambda(\varphi_c)$ for every translate $\varphi_c=\varphi(\cdot-c)$, with the current position marked.`,

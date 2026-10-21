@@ -137,14 +137,8 @@ The bond-enthalpy estimate is rough (typically within about 10–20 kJ/mol) sinc
           const lo = Math.min(...all), hi = Math.max(...all), pad = (hi - lo) * 0.15 + 30;
           s.setView([0.4, bars.length + 2.6], [lo - pad, hi + pad]);
           s.setTicks(bars.map((b, i) => [i + 1, b.lab]).concat([[bars.length + 1.6, 'result']]), null);
-          // Separate the two level annotations in screen space when large bond
-          // energies compress the near-zero reaction target (notably ammonia).
-          const levelGap = Math.abs(s.Y(target) - s.Y(0)), closeLevels = levelGap < 60;
-          const side = target <= 0 ? 1 : -1;
-          const baselineDy = closeLevels ? side * (levelGap + 18) : 12;
-          const targetDy = closeLevels ? -side * (levelGap + 18) : -10;
           s.hline(0, { color: 'muted', width: 1 });
-          s.text(isBH ? 'elements in their standard states' : 'reactants (isolated molecules)', 0.45, 0, { size: 11, align: 'left', color: 'muted', dy: baselineDy, plate: true });
+          s.text(isBH ? 'elements in their standard states' : 'reactants (isolated molecules)', 0.45, 0, { size: 11, align: 'left', color: 'muted', dy: 12 });
           bars.slice(0, nShow).forEach((b) => {
             s.rect(b.i + 0.65, b.a, b.i + 1.35, b.b, { fill: b.col, fillAlpha: 0.6, color: b.col });
             s.text(`${b.d >= 0 ? '+' : '−'}${Math.abs(b.d).toFixed(0)}`, b.i + 1, b.b, { dy: b.d >= 0 ? -10 : 12, size: 12 });
@@ -153,7 +147,7 @@ The bond-enthalpy estimate is rough (typically within about 10–20 kJ/mol) sinc
           const end = nShow ? bars[nShow - 1].b : 0;
           const full = nShow === bars.length;
           s.hline(target, { color: 'ink', width: 1.4, dash: true });
-          s.text(isBH ? `measured $\\Delta_fH$ = −${Math.abs(target).toFixed(1)}` : `exact $\\Delta_rH$ from tables = ${target < 0 ? '−' : ''}${Math.abs(target).toFixed(1)}`, 0.45, target, { align: 'left', size: 12, dy: targetDy, plate: true });
+          s.text(isBH ? `measured $\\Delta_fH$ = −${Math.abs(target).toFixed(1)}` : `exact $\\Delta_rH$ from tables = ${target < 0 ? '−' : ''}${Math.abs(target).toFixed(1)}`, 0.45, target, { align: 'left', size: 12, dy: -10 });
           if (full) {
             s.rect(bars.length + 1.25, 0, bars.length + 1.95, end, { fill: 'accent', fillAlpha: 0.5, color: 'accent' });
             s.text(`${end >= 0 ? '+' : '−'}${Math.abs(end).toFixed(0)}`, bars.length + 1.6, end, { dy: end >= 0 ? -10 : 12, size: 12 });

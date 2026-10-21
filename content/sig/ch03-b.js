@@ -16,35 +16,6 @@ function kerRespC(K, xc, t, n = 500) {
   return [re, im];
 }
 
-/** Causal moving average followed by the one-pole recursion, initially at rest. */
-export function movingAverageFeedback(x, a, m) {
-  const y = new Array(x.length).fill(0);
-  for (let n = 0; n < x.length; n++) {
-    let value = 0;
-    for (let k = 0; k < m; k++) value += (x[n - k] ?? 0) / m;
-    y[n] = value + a * (y[n - 1] ?? 0);
-  }
-  return y;
-}
-
-/** Full impulse-response mass and truncation tail, not a finite-window estimate. */
-export function movingAverageFeedbackSummary(a, m, length) {
-  const finite = a === 0 || (a === -1 && m % 2 === 0);
-  const supportEnd = a === 0 ? m - 1 : finite ? m - 2 : Infinity;
-  const impulse = Array(m).fill(0); impulse[0] = 1;
-  const head = movingAverageFeedback(impulse, a, m);
-  if (finite) return {finite, stable: true, supportEnd,
-    mass: head.reduce((sum, x) => sum + Math.abs(x), 0),
-    tail: head.slice(length).reduce((sum, x) => sum + Math.abs(x), 0)};
-  if (Math.abs(a) >= 1) return {finite, stable: false, supportEnd, mass: Infinity, tail: Infinity};
-  const start = m - 1, ratio = Math.abs(a), amplitude = Math.abs(head[start]);
-  const mass = head.slice(0, start).reduce((sum, x) => sum + Math.abs(x), 0) + amplitude / (1 - ratio);
-  const tail = length <= start
-    ? head.slice(length, start).reduce((sum, x) => sum + Math.abs(x), 0) + amplitude / (1 - ratio)
-    : amplitude * ratio ** (length - start) / (1 - ratio);
-  return {finite, stable: true, supportEnd, mass, tail};
-}
-
 export default {
   collection: 'sig',
   chapter: 3,
@@ -226,11 +197,10 @@ the same exponential multiplied by the complex number $H(s)$. In discrete time, 
       num: '3.12',
       kind: 'Definition',
       name: 'FIR and IIR systems',
-      statement: String.raw`A discrete-time LTI system is **FIR** (finite impulse response) if $h[n]=0$ outside a finite set of indices; it is **IIR** if $h$ has infinite support. A causal FIR system can be realized without feedback as $y[n]=\sum_{k=0}^{M-1}b_kx[n-k]$ and is always BIBO stable, since $\sum|h|$ is finite. Feedback often gives an IIR response, but exact pole–zero cancellation can give an FIR input–output map even in a recursive realization. For example, the initially resting recursion $y[n]=a\,y[n-1]+x[n]$ has $h[n]=a^n$ for $n\ge0$ and is stable exactly when $|a|<1$; at $a=0$ it is FIR.`,
-      idea: String.raw`Run the difference equation on $\delta[n]$ (sig-3.1). In the displayed moving-average recursion, $h[n]=M^{-1}\sum_{j=0}^{n}a^j$ for $0\le n<M$, and $h[n]=a^{n-M+1}h[M-1]$ afterwards. Thus a nonzero terminal coefficient produces a geometric tail. At $a=-1$ and even $M$, however, $h[M-1]=0$: the alternating terms cancel and the response stops, despite feedback. For a stable geometric tail the exact discarded mass after $L$ taps is obtained by summing a geometric series; a bounded input then has truncation error at most $\|x\|_\infty\sum_{n\ge L}|h[n]|$. Without cancellation, $|a|\ge1$ makes that mass diverge.`,
-      caption: String.raw`Choose the moving-average length $M$ and switch feedback on or off with coefficient $a$. Top: the computed impulse response, with its $L$-tap truncation (hollow orange rings). Bottom: a noisy price-like series filtered by each. Usually feedback makes the response continue indefinitely; try **even $M$ and $a=-1$** for exact cancellation and a finite response. The readout distinguishes the full tail mass from the measured output difference on this particular series.`,
-      scope: String.raw`Causal systems initially at rest. BIBO stability describes the zero-state input–output map. Exact cancellation at $a=-1$ does not make the recursive realization internally asymptotically stable: an initial-state or arithmetic error can leave an alternating mode. The panels show finite time windows and label clipping when curves exceed their limits.`,
-      deps: ['sig-2.10', 'sig-3.1', 'sig-3.6'],
+      statement: String.raw`A discrete-time LTI system is **FIR** (finite impulse response) if $h[n]=0$ outside a finite set of indices, i.e. $y[n]=\sum_{k=0}^{M-1}b_kx[n-k]$, with no feedback; it is **IIR** (infinite impulse response) if $h$ has infinite support, as happens for recursive equations $y[n]=a\,y[n-1]+\sum_kb_kx[n-k]$. An FIR system is always BIBO stable ($\sum|h|$ is a finite sum). The recursive system with $b_0=1$ and $b_k=0$ otherwise has $h[n]=a^n$ for $n\ge0$ and is stable exactly when $|a|<1$.`,
+      idea: String.raw`Run the difference equation on $\delta[n]$ (sig-3.1): without feedback the input sample leaves the delay line after $M$ steps and $h$ stops, while with feedback the output is fed back into the sum, so an impulse keeps echoing, each echo scaled by $a$ (the equations of sig-2.10 are the first examples). A decaying IIR response can be cut off after $L$ taps with an error of order $|a|^L$, which is how IIR filters are approximated by FIR ones; but a response with $|a|\ge1$ cannot be truncated without changing the system, and it is unstable.`,
+      caption: String.raw`Choose the number of taps $M$ of the moving-average part and switch the feedback on or off with a coefficient $a$. Top: $h[n]$ (stems) from running the equation on an impulse, with the FIR truncation to $L$ taps (hollow rings, orange). Bottom: a noisy price-like series filtered by the recursive system and by its $L$-tap truncation. With feedback off, $h$ stops by itself; with feedback on, it rings on forever.`,
+      deps: ['sig-2.10', 'sig-3.1'],
       refs: ['Oppenheim–Willsky §2.4'],
       tags: ['FIR', 'IIR'],
       viz(v) {
@@ -242,7 +212,7 @@ the same exponential multiplied by the complex number $H(s)$. In discrete time, 
         const rng = v.rng(7); const price = []; { let p = 0; for (let n = 0; n < NP; n++) { p += rng.normal() * 0.35 + 0.02; price.push(p + 0.45 * Math.sin(n / 7)); } }
         const A = v.stage({ x: [-1, NH], y: [-1.2, 1.2], axes: 'box', gutter: true, xlabel: 'n', full: true, height: 190, title: 'impulse response $h[n]$' });
         const B = v.stage({ x: [0, NP - 1], y: [-1, 1], axes: 'box', gutter: true, xlabel: 'n', full: true, height: 210, title: 'noisy series through the recursive system and its truncation' });
-        const run = movingAverageFeedback;
+        const run = (x, aa, m) => { const y = new Array(x.length).fill(0); for (let n = 0; n < x.length; n++) { let s = 0; for (let k = 0; k < m; k++) s += (x[n - k] ?? 0) / m; y[n] = s + aa * (y[n - 1] ?? 0); } return y; };
         let info = null;
         v.render(() => {
           const m = M.value, aa = fb.value ? a.value : 0, l = L.value;
@@ -257,23 +227,13 @@ the same exponential multiplied by the complex number $H(s)$. In discrete time, 
           let ym = 1; for (let n = 0; n < NP; n++) ym = Math.max(ym, Math.abs(price[n]) * 1.1, Math.abs(y[n]) * 1.1);
           ym = Math.min(ym, 40); B.setView(null, [-ym, ym]); B.hline(0, { color: 'faint', width: 1 });
           B.clip(() => { B.path(price.map((q, n) => [n, q]), { color: 'muted', width: 1.2, alpha: 0.8 }); B.path(y.map((q, n) => [n, q]), { color: 'accent', width: 2.4 }); B.path(yl.map((q, n) => [n, q]), { color: 'orange', width: 1.6, dash: [5, 4] }); });
-          const summary = movingAverageFeedbackSummary(aa, m, l);
-          info = { ...summary, aa, m, l, ylErr: arrDiff(y, yl),
-            bound: Math.max(...price.map(Math.abs)) * summary.tail,
-            clipped: h.slice(0, NH).some(x => Math.abs(x) > top) || y.some(x => Math.abs(x) > ym) };
+          let nz = 0; for (let n = 0; n < 400; n++) if (Math.abs(h[n]) > 1e-12) nz = n + 1;
+          let sum = 0; for (let n = 0; n < 400; n++) sum += Math.abs(h[n]);
+          let tail = 0; for (let n = l; n < 400; n++) tail += Math.abs(h[n]);
+          info = { nz, sum, tail, aa, m, l, ylErr: arrDiff(y, yl) };
         });
         v.legend([['accent', '$h$ / recursive output'], ['orange', 'truncation to $L$ taps', { dot: true }], ['muted', 'input series']]);
-        v.readout(() => {
-          const classification = info.finite
-            ? info.aa === 0
-              ? `**FIR**: feedback coefficient zero; $h[n]=1/${info.m}$ for $0\\le n<${info.m}$.`
-              : `**FIR despite feedback**: $a=-1$ and even $M=${info.m}$ cancel the pole; $h[n]=1/${info.m}$ at even indices $0\\le n\\le${info.supportEnd}$ and zero elsewhere.`
-            : `**IIR**: after $n=${info.m - 1}$ the nonzero tail is multiplied by $a=${v.fix(info.aa, 2)}$ each step.`;
-          const mass = info.stable
-            ? `Stable: full $\\sum|h|=${num(info.mass, true)}$; discarded mass beyond $L=${info.l}$ is $${num(info.tail, true)}$. Exact-arithmetic input-supremum bound: $${num(info.bound, true)}$; measured maximum output difference on this series (including roundoff): $${num(info.ylErr, true)}$.`
-            : `**Unstable**: full $\\sum|h|$ and every discarded infinite tail diverge. The finite-series maximum output difference is $${num(info.ylErr, true)}$.`;
-          return `${classification} ${mass}${info.clipped ? ' The plotted curves are clipped at the panel limits.' : ''}`;
-        });
+        v.readout(() => (info.aa === 0 ? `**FIR**: $h[n]=\\tfrac1{${info.m}}$ for $0\\le n<${info.m}$ and $0$ afterwards; last nonzero tap $n=${info.nz - 1}$; $\\sum|h|=${v.fix(info.sum, 3)}$ (finite, so stable). The truncation to $L=${info.l}$ taps is ${info.l >= info.m ? 'exact (it keeps every nonzero tap)' : 'lossy'}.` : `**IIR**: $h[n]$ is nonzero for every $n\\ge${info.m - 1}$; its tail decays by the factor $a=${v.fix(info.aa, 2)}$ per sample${Math.abs(info.aa) >= 1 ? ' — not decaying: $\\sum|h|$ diverges, **unstable**' : `, $\\sum|h|\\approx${v.fix(info.sum, 3)}$ (stable)`}. Cutting after $L=${info.l}$ taps discards a tail of total size $${num(info.tail, true)}$ and changes the output by at most $${num(info.ylErr, true)}$ on this series.`));
       },
     },
     // ------------------------------------------------------------------ 3.13

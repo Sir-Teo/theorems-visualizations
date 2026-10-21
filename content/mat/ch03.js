@@ -1,6 +1,8 @@
 // Materials Science — Chapter 3: Dislocations and plastic deformation (part 1: items 3.1–3.6)
 import { edgeCrystal, edgeU, edgeCompress, screwUz, walkSteps, slipSystems, schmid, dir3, planeFamily, permSigns } from './ch03.shared.js';
 
+import { rigidSlipRatio, sampledPNRatio, wideCoreLogProxy } from './source-audit-elastic-slip.shared.js';
+
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const sgnStr = (a) => a.map((x) => (x < 0 ? '\u0305' + Math.abs(x) : String(x))).join(''); // bar over negative index
 
@@ -22,23 +24,24 @@ export default {
       num: '3.1',
       kind: 'Paradox',
       name: 'Theoretical shear strength versus real strength',
-      statement: String.raw`If one atomic plane were slid rigidly over its neighbour in a perfect crystal, every bond across the plane would have to be stretched together. The restoring stress is periodic in the slip $s$ (period $b$, the spacing of atoms along the row) and for small $s$ it is Hooke's law $\tau=Gs/a$, with $a$ the plane spacing. Approximating it by $\tau=\tau_{\max}\sin(2\pi s/b)$ gives the **ideal shear strength** $\tau_{\max}=\dfrac{G}{2\pi}\dfrac{b}{a}\approx\dfrac{G}{6}$ (Frenkel, 1926). Refined calculations can give roughly $G/30$. Actual single-crystal shear strengths vary strongly with structure and defects; Lubliner summarizes orders $10^{-5}$ to $10^{-3}\,G$, well below this ideal estimate.`,
-      idea: String.raw`The paradox disappears when slip does not happen all at once. If the slipped part of a plane ends in a line defect, a **dislocation** (3.2), the atoms near its core are the only ones out of registry, and moving the slipped region forward by one atom spacing needs only a small rearrangement of a few bonds (a row of people shifting a rug by making a wrinkle and moving the wrinkle). Peierls and Nabarro's calculation of the stress needed to push such a core across the lattice gives $\tau_P\simeq \dfrac{2G}{1-\nu}\exp\!\big(-\tfrac{2\pi a}{(1-\nu)b}\big)$, exponentially smaller than the rigid-slip value because the core is wide. Taylor, Orowan and Polanyi proposed the dislocation as the carrier of slip in 1934 for exactly this reason (3.13).`,
-      caption: String.raw`Left: two atomic planes in side view; drag the dot on the stress curve (middle) to slide the top plane rigidly, and watch the whole plane strain at once. Switch to *a dislocation moving* and drag the orange handle: the plane is slipped to its left and not to its right, and only a few atoms (gold dots on the curve) sit near the stress peak. Bottom: the strengths on a log scale; change the plane spacing $a/b$, and the measured critical stress and $G$ (defaults are illustrative, a copper-like soft crystal) to see how far above reality the rigid-slip value lies.`,
+      statement: String.raw`Rigidly sliding one perfect atomic plane over another requires collective registry changes. In a sinusoidal model of period $b$ and plane spacing $a$,
+$$\tau(s)=\tau_{\max}\sin(2\pi s/b),\qquad\tau_{\max}=\frac{Gb}{2\pi a},$$
+by matching the small-slip slope to $\tau=Gs/a$. If $a\approx b$, this is about $G/6$. Dislocation motion instead advances a localized registry transition and can require much smaller stress. This rigid-slip estimate is a model value, **not a universal upper bound on macroscopic strength**; spontaneous defect nucleation and the actual interatomic potential matter.`,
+      idea: String.raw`Moving a localized transition changes the registry near its core rather than throughout a whole plane. The arctangent disregistry profile below uses half-width $\zeta=a/[2(1-\nu)]$ for an assumed sinusoidal interface and an isotropic edge dislocation. The comparison bar uses the exact sampled-interface barrier maximum of Joós–Duesbery1997, Eqs.(15)–(16), with row period $a'=b$, not the old exponentially smaller formula that treats the two half-crystals' misfit energies separately. In the wide-core limit this model gives $\tau_P/G\sim(1-\nu)^{-1}e^{-2\pi\zeta/b}$.`,
+      caption: String.raw`Left: two atomic planes in side view; drag the dot on the stress curve (middle) to slide the top plane rigidly, and watch the whole plane strain at once. Switch to *a dislocation moving* and drag the orange handle: the plane is slipped to its left and not to its right, and only a few atoms (gold dots on the curve) sit near the stress peak. Bottom: the strengths on a log scale; change the plane spacing $a/b$, and a **chosen comparison stress** and $G$ (synthetic controls, not a named material measurement) to compare the model predictions with that chosen level.`,
       deps: ['mat-1.2', 'cm-3.16'],
-      refs: ['Lubliner, Plasticity Theory, §2.2.1 pp93–94 and §2.2.2 p97; Roylance, Dislocation Basis of Yield and Creep, pp1–3'],
+      refs: ['Kauffmann–Heilmaier, KIT Plasticity,14February2022, pp20,23–24', 'Joós–Duesbery1997, original author-uploaded paper, complete derivation Eqs.(2)–(16),(24)'],
       tags: ['dislocations', 'strength', 'paradox'],
-      credit: 'J. Frenkel, 1926 (ideal shear strength); R. Peierls 1940 and F. R. N. Nabarro 1947 (core width and lattice friction)',
-      scope: String.raw`The sinusoidal law is Frenkel's model; the Peierls–Nabarro stress is an order-of-magnitude estimate that depends exponentially on the core width. The "measured" bar is a slider (default 1 MPa with $G=45$ GPa, a copper-like value, not a measurement of a particular crystal); the empirical orders of magnitude are those summarized by Lubliner, not bounds on every crystal.`,
+      scope: String.raw`Prescribed sinusoidal interface, isotropic elasticity with $\nu=0.3$, and one row period $a'=b$. The core-profile and sampled-barrier approximations do not solve a specific material potential, sources, obstacles or finite-temperature motion. The comparison stress is a freely chosen slider. No universal measured stress range or copper calibration is asserted.`,
       viz(v) {
         const NU = 0.3;
         const mode = v.select('slip by', [{ value: 'rigid', label: 'a whole plane at once' }, { value: 'disl', label: 'one dislocation moving' }], 'rigid');
         const rs = v.slider('plane spacing / row spacing  $a/b$', 0.5, 1.4, 0.82, { step: 0.01 });
         const Gs = v.slider('shear modulus $G$ (GPa)', 10, 100, 45, { step: 1 });
-        const Cs = v.slider('measured critical shear stress (MPa)', 0.05, 100, 1, { log: true, decimals: 2 });
-        const A = v.stage({ x: [-1.3, 9.3], y: [-0.8, 2.0], equal: true, axes: false, height: 270, weight: 1.55, title: 'two atomic planes, side view' });
+        const Cs = v.slider('chosen comparison shear stress (MPa)', 0.05, 100, 1, { log: true, decimals: 2 });
+        const A = v.stage({ x: [-1.3, 9.3], y: [-0.8, 3.0], equal: true, axes: false, height: 270, weight: 1.55, title: 'two atomic planes, side view' });
         const B = v.stage({ x: [0, 1], y: [-0.34, 0.34], axes: 'box', gutter: true, height: 270, weight: 1, xlabel: 'slip  $s/b$', ylabel: 'shear stress  $\\tau/G$', title: 'stress against slip' });
-        const C = v.stage({ x: [1e-6, 1], y: [0, 3.6], xlog: true, axes: 'box', gutter: true, height: 210, full: true, xlabel: 'shear strength  $\\tau/G$ (log scale)', yticks: [], title: 'three strengths of the same crystal' });
+        const C = v.stage({ x: [1e-6, 1], y: [0, 3.6], xlog: true, axes: 'box', gutter: true, height: 210, full: true, xlabel: 'shear strength  $\\tau/G$ (log scale)', yticks: [], title: 'two model stresses and a chosen comparison' });
         const tau = (x) => Math.sin(2 * Math.PI * x) / (2 * Math.PI * rs.value);
         const hs = B.handle(0.2, tau(0.2), { color: 'accent', constrain: (x) => { const xx = clamp(x, 0, 1); return [xx, tau(xx)]; } });
         const hd = A.handle(4.5, 1.4, { color: 'orange', constrain: 'x' });
@@ -63,23 +66,24 @@ export default {
           if (disl) {
             A.vline(hd.x, { color: 'orange', dash: true, alpha: 0.6 });
             A.text('slipped', Math.max(hd.x - 1.2, -0.4), r + 1.15, { color: 'muted', size: 12 });
-            A.text('not yet slipped', Math.min(hd.x + 1.2, 8.3), r + 1.15, { color: 'muted', size: 12 });
+            A.text('unslipped', Math.min(hd.x + 1.2, 8.3), r + 1.15, { color: 'muted', size: 12 });
           }
           B.fn(tau, { domain: [0, 1], color: 'ink', width: 2 });
           B.hline(0, { color: 'grid' });
           for (const s of shifts) B.dot(s, tau(s), { r: disl ? 4 : 0, color: 'gold', fill: 'gold' });
           // strengths
-          const ideal = 1 / (2 * Math.PI * r), pn = (2 / (1 - NU)) * Math.exp((-2 * Math.PI * r) / (1 - NU)), meas = Cs.value / (Gs.value * 1000);
-          const rows = [[ideal, 'rigid slip of a whole plane (Frenkel)', 'red', 2.75], [pn, 'dislocation moving (Peierls–Nabarro estimate)', 'orange', 1.55], [meas, 'measured critical stress (slider)', 'green', 0.35]];
+          const ideal = rigidSlipRatio(r), pn = sampledPNRatio(r,NU), meas = Cs.value / (Gs.value * 1000);
+          C.setView([Math.min(1e-6,meas/2),1],[0,3.6]);
+          const rows = [[ideal, 'rigid slip of a whole plane (Frenkel)', 'red', 2.75], [pn, 'sampled sinusoidal interface (PN toy)', 'orange', 1.55], [meas, 'chosen comparison stress (slider)', 'green', 0.35]];
           for (const [val, lab, col, y0] of rows) {
-            C.rect(1e-6, y0, Math.max(val, 1.0001e-6), y0 + 0.7, { fill: col, fillAlpha: 0.35, color: col });
-            C.text(lab + '   ' + (val >= 0.01 ? v.fmt(val, 2) : val.toExponential(1).replace('e-', '×10⁻')), 1.6e-6, y0 + 0.35, { color: 'ink', size: 12, align: 'left', plate: true });
+            C.rect(C.bounds.x[0], y0, val, y0 + 0.7, { fill: col, fillAlpha: 0.35, color: col });
+            C.text(lab + '   $' + v.sci(val,2) + '$', C.bounds.x[0]*1.3, y0 + 0.35, { color: 'ink', size: 12, align: 'left', plate: true });
           }
         });
         v.readout(() => {
-          const r = rs.value, G = Gs.value, ideal = 1 / (2 * Math.PI * r), pn = (2 / (1 - NU)) * Math.exp((-2 * Math.PI * r) / (1 - NU)), meas = Cs.value / (G * 1000);
+          const r = rs.value, G = Gs.value, ideal = rigidSlipRatio(r), pn = sampledPNRatio(r,NU), meas = Cs.value / (G * 1000);
           const off = shifts.filter((s) => s > 0.1 && s < 0.9).length;
-          return `$\\tau_{\\max}=\\dfrac{G}{2\\pi}\\dfrac{b}{a}=${v.fix(ideal, 3)}\\,G$ (= $G/${v.fix(1 / ideal, 1)}$, ${v.fix(ideal * G, 1)} GPa).  Peierls–Nabarro: $${v.sci(pn, 2)}\\,G$ (${v.fix(pn * G * 1000, 1)} MPa).  Measured: $${v.sci(meas, 2)}\\,G$ = $G/${v.fmt(1 / meas, 3)}$.\nRigid slip is ${v.fmt(ideal / meas, 2)} times stronger than the measured crystal. Atoms out of registry (between 0.1 and 0.9 of a lattice step): ${off} of 9 in this strip.`;
+          return `$\\tau_{\\max}=\\dfrac{G}{2\\pi}\\dfrac{b}{a}=${v.fix(ideal, 3)}\\,G$ (= $G/${v.fix(1 / ideal, 1)}$, ${v.fix(ideal * G, 1)} GPa).  Sampled-interface model: $${v.sci(pn, 2)}\\,G$ (${v.fix(pn * G * 1000, 1)} MPa).  Chosen comparison: $${v.sci(meas, 2)}\\,G$ = $G/${v.fmt(1 / meas, 3)}$.\nRigid slip is ${v.fmt(ideal / meas, 2)} times stronger than the chosen comparison stress. Atoms out of registry (between 0.1 and 0.9 of a lattice step): ${off} of 9 in this strip.`;
         });
       },
     },
@@ -91,7 +95,7 @@ export default {
       statement: String.raw`A **dislocation** is a line defect that bounds a region of a crystal that has slipped by a lattice vector $\mathbf b$ from a region that has not. If $\mathbf b$ is perpendicular to the dislocation line, it is an **edge** dislocation: the lattice looks like an extra half-plane of atoms ending at the line, with compressed lattice on its side and stretched lattice on the other. If $\mathbf b$ is parallel to the line it is a **screw** dislocation: the lattice planes perpendicular to the line are joined into a single helical ramp, so that circling the line once climbs one plane. In general a dislocation line is curved and has mixed character; $\mathbf b$ stays the same all along it.`,
       idea: String.raw`Cut the crystal along a half-plane ending on the line, displace the two faces relative to each other by a lattice vector, and glue them back: the atoms far from the line again sit on perfect lattice sites, and only a thin tube around the line is distorted. This is Volterra's construction, and its elastic field follows from the displacement $u\propto\theta$ (screw) or from the plane-strain solution (edge). Here the displacement field of the isotropic-elasticity solution is applied to a square array of atoms (so the lattice, the extra half-plane and the strain colours are a real calculation, not a sketch). Because $\mathbf b$ is a lattice vector, the stored distortion costs only elastic energy (3.6).`,
       caption: String.raw`Drag the red core marker (it snaps between atoms). In *edge* mode the extra half-plane enters from the top; atoms are coloured by the hydrostatic part of the strain (squeezed above the core, stretched below) and the few atoms that do not have four neighbours are marked as the core. In *screw* mode the atoms are shown from along the line, each dot sized and coloured by its out-of-plane displacement (red up, blue down, the dashed line is where the slipped region ends); the right panel unrolls a loop around the line and shows that every turn climbs one lattice step (drag the gold handle).`,
-      deps: ['xtal-1.1', 'solid-2.9'],
+      deps: ['xtal-1.1'],
       refs: ['Callister §4.5'],
       tags: ['dislocations', 'line defects', 'crystal structure'],
       scope: String.raw`Displacements use isotropic linear elasticity (Poisson ratio adjustable), valid away from the core; the core itself is only drawn schematically (a real core relaxes with the atomic potential).`,
@@ -229,20 +233,20 @@ export default {
       num: '3.4',
       kind: 'Concept',
       name: 'Slip systems',
-      statement: String.raw`Dislocations glide most easily on the **close-packed planes** and along the **close-packed directions** of a crystal, because a dislocation's energy $\propto b^2$ (3.6) is smallest there and the lattice friction is smallest where planes are widely spaced and $b$ is short. A **slip system** is a plane and a direction in it: fcc metals slip on $\{111\}\langle110\rangle$ (4 planes $\times$ 3 directions $=12$ systems); bcc metals on $\{110\}\langle111\rangle$ (12), with other possible families $\{112\}\langle111\rangle$ (12) and $\{123\}\langle111\rangle$ (24); hcp metals have only 3 close-packed basal systems and need prismatic or pyramidal slip for more. How many easy systems a metal has controls its ductility.`,
-      idea: String.raw`The slip systems are found by listing the planes of the densest family and all the close-packed directions that lie in them; the count follows from symmetry, and the system's resistance from the width of the dislocation core: in the Peierls–Nabarro estimate (3.1) the stress is smaller the larger the spacing $d$ of the slip planes relative to $b$, so the dense families win (planar and linear densities, 1.6). fcc has many equivalent dense systems, so some are always well oriented and fcc metals are ductile; hcp metals with only the basal plane have a strongly anisotropic response.`,
-      caption: String.raw`Pick a structure and step through its slip systems (or drag the slider): the plane is drawn in the unit cell with the slip direction as an arrow, and the atoms on it in gold. The bar chart ranks the slip families by the lattice friction of the simplest Peierls–Nabarro estimate, $\tau_P\propto\exp\!\big(-2\pi d/((1-\nu)b)\big)$, relative to the easiest family (so the observed family has no bar): for fcc the unobserved $\{100\}$ and $\{110\}$ families are one to two orders of magnitude harder; for hcp move the $c/a$ slider and watch basal and prismatic slip swap places.`,
-      deps: ['mat-3.3', 'mat-1.6', 'xtal-4.5'],
-      refs: ['Ghosh, NPTEL Deformation of Pure Metals II, Lecture9 pp3–5; MTEX official Slip Systems definitions; Lubliner §2.2.2 p97'],
+      statement: String.raw`A **slip system** combines a plane with a direction lying in it. Dense planes and short lattice translations are common candidates, because a dislocation's energy $\propto b^2$ (3.6) is smallest there and the lattice friction is smallest where planes are widely spaced and $b$ is short. For example fcc metals slip on $\{111\}\langle110\rangle$ (4 planes $\times$ 3 directions $=12$ systems); bcc metals on $\{110\}\langle111\rangle$ (12), and also, depending on temperature, stress and material, on $\{112\}\langle111\rangle$ (12) and $\{123\}\langle111\rangle$ (24); hcp metals have only 3 close-packed basal systems and need prismatic or pyramidal slip for more. Accessible slip modes influence ductility; counts alone do not predict it. Bcc has no truly close-packed planes, and real core structures and non-Schmid effects are important.`,
+      idea: String.raw`The slip systems are found by listing the planes of the densest family and all the close-packed directions that lie in them; the count follows from symmetry. The optional geometric index only illustrates a possible core-width trend: in the Peierls–Nabarro estimate (3.1) the stress is smaller the larger the spacing $d$ of the slip planes relative to $b$, assuming the same elastic/interface parameters (planar and linear densities, 1.6). This is not a material-specific resistance calculation. Many geometric systems give options for accommodating strain, while basal-only slip is strongly anisotropic. Actual ductility depends on which modes activate and on defects, microstructure and loading.`,
+      caption: String.raw`Pick a structure and step through its slip systems (or drag the slider): the plane is drawn in the unit cell with the slip direction as an arrow, and the atoms on it in gold. The bar chart ranks the slip families by a **geometric wide-core index**, proportional to $\exp[-\pi d/((1-\nu)b)]$, relative to the easiest family (the minimum index has a zero logarithmic bar): for fcc compare the usual $\{111\}$ family with two other geometric candidates; for hcp move the $c/a$ slider and watch the index change; it does not determine the actual easiest system.`,
+      deps: ['mat-3.3', 'mat-1.6'],
+      refs: ['Lubliner, Plasticity Theory, complete §2.2.1 pp90–94', 'Bower, Applied Mechanics of Solids, §3.12.2 slip-system treatment', 'Joós–Duesbery1997 Eq.(24), geometric assumptions explicitly stated'],
       tags: ['slip systems', 'ductility', 'crystal structure'],
-      scope: String.raw`Cubic system counts are enumerated from symmetry and the zone law (xtal-4.5). HCP basal and prismatic families each have three geometric systems; the first-order pyramidal $\langle c+a\rangle$ family has six unoriented plane normals and two compatible directions per plane, giving twelve. These are geometric candidates, not a prediction of the active families. The spacing-only Peierls index uses isotropic $\nu=0.3$ and cannot establish material-specific critical stresses or ductility.`,
+      scope: String.raw`Cubic unoriented systems are enumerated, identifying opposite plane normals and opposite slip directions. Hcp sketches show representative basal, prismatic and first-order pyramidal $\langle c+a\rangle$ systems. Their counts3,3,12 are geometric possibilities, not equally activated modes. The displayed index assumes $a'=b$, $\zeta=d/[2(1-\nu)]$, $\nu=0.3$ in the wide-core asymptote of Joós–Duesbery; actual cores, interface barriers, row periods and CRSS differ. No metal-by-metal slip ranking is inferred.`,
       viz(v) {
         const NU = 0.3, S2 = Math.SQRT2, S3 = Math.sqrt(3);
         const FAM = {
           fcc: [
             { name: '{111}⟨110⟩', p: [1, 1, 1], d: [1, 1, 0], dob: (1 / S3) / (S2 / 2) },
-            { name: '{100}⟨110⟩ (not a standard family)', p: [1, 0, 0], d: [1, 1, 0], dob: 0.5 / (S2 / 2), extra: true },
-            { name: '{110}⟨110⟩ (not a standard family)', p: [1, 1, 0], d: [1, 1, 0], dob: (1 / (2 * S2)) / (S2 / 2), extra: true },
+            { name: '{100}⟨110⟩ (comparison)', p: [1, 0, 0], d: [1, 1, 0], dob: 0.5 / (S2 / 2), extra: true },
+            { name: '{110}⟨110⟩ (comparison)', p: [1, 1, 0], d: [1, 1, 0], dob: (1 / (2 * S2)) / (S2 / 2), extra: true },
           ],
           bcc: [
             { name: '{110}⟨111⟩', p: [1, 1, 0], d: [1, 1, 1], dob: (1 / S2) / (S3 / 2) },
@@ -255,10 +259,10 @@ export default {
         const idx = v.slider('system number', 1, 12, 1, { int: true });
         const cas = v.slider('hcp  $c/a$', 1.4, 1.95, 1.633, { step: 0.001 });
         const hexFam = v.select('hcp family', [{ value: 'basal', label: 'basal' }, { value: 'prism', label: 'prismatic' }, { value: 'pyr', label: 'pyramidal ⟨c+a⟩' }], 'basal');
-        const S3d = v.stage({ x: [-1.5, 1.5], y: [-1.3, 1.4], equal: true, axes: false, height: 400, weight: 1.2, title: 'slip plane and direction in the unit cell' });
-        const sc = v.scene3(S3d, { yaw: -0.15, pitch: 0.45, axes: false, hint: true });
-        const R = v.stage({ x: [0, 3.6], y: [0, 5], axes: 'box', gutter: true, height: 400, weight: 0.9, minWidth: 260, xlabel: 'Peierls stress relative to the easiest family, $\\log_{10}$', yticks: [], title: 'spacing-only friction index (qualitative)' });
-        const lgP = (dOverB) => (-2 * Math.PI * dOverB) / ((1 - NU) * Math.LN10); // log10 of the Peierls stress, up to a common factor
+        const S3d = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 400, weight: 1.2, title: 'slip plane and direction in the unit cell' });
+        const sc = v.scene3(S3d, { yaw: -0.55, pitch: 0.45, axes: false, hint: true });
+        const R = v.stage({ x: [0, 3.6], y: [0, 5], axes: 'box', gutter: true, height: 400, weight: 0.9, minWidth: 260, xlabel: 'relative geometric index (log₁₀)', yticks: [], title: 'geometric index: same interface assumptions' });
+        const lgP = (dOverB) => wideCoreLogProxy(dOverB,NU); // log10 of the Peierls stress, up to a common factor
         const cubeV = []; for (let i = 0; i < 8; i++) cubeV.push([(i & 1), ((i >> 1) & 1), ((i >> 2) & 1)]);
         const cubeE = []; for (let i = 0; i < 8; i++) for (let b = 0; b < 3; b++) if (!((i >> b) & 1)) cubeE.push([i, i | (1 << b)]);
         const latt = (s) => { const o = cubeV.map((p) => [...p]); if (s === 'bcc') o.push([0.5, 0.5, 0.5]); else o.push([0.5, 0.5, 0], [0.5, 0.5, 1], [0.5, 0, 0.5], [0.5, 1, 0.5], [0, 0.5, 0.5], [1, 0.5, 0.5]); return o; };
@@ -287,6 +291,7 @@ export default {
           let fams;
           if (cubic) {
             const list = FAM[s].filter((f) => !f.extra).flatMap((f) => f.list);
+            if(+idx.input.max!==list.length){idx.input.max=list.length;idx.set(clamp(idx.value,1,list.length));}
             const kk = clamp(idx.value - 1, 0, list.length - 1), q = list[kk];
             for (const [a, b] of cubeE) sc.line(cubeV[a].map((x) => x - 0.5), cubeV[b].map((x) => x - 0.5), { color: 'ink', alpha: 0.4, width: 1.2 });
             const P0 = latt(s); let best = null, ba = -1;
@@ -317,18 +322,18 @@ export default {
           rows = fams.map((f) => ({ ...f, lg: lgP(f.dob) - lmin }));
           hexBest = rows.find((r) => r.lg < 1e-9).name;
           rows.forEach((r, i) => {
-            const y0 = 3.6 - 1.25 * i, w = Math.max(r.lg, 0.03), col = r.lg < 1e-9 ? 'green' : r.extra ? 'muted' : 'accent';
+            const y0 = 3.6 - 1.25 * i, w = r.lg, col = r.lg < 1e-9 ? 'green' : r.extra ? 'muted' : 'accent';
             R.rect(0, y0, w, y0 + 0.8, { fill: col, fillAlpha: 0.33, color: col });
             R.text(`${r.name}: ${r.count} systems,  d/b = ${v.fix(r.dob, 2)}`, 0.05, y0 + 1.02, { color: 'ink', size: 11, align: 'left' });
-            R.text(r.lg < 1e-9 ? 'easiest' : `× ${v.fmt(10 ** r.lg, 2)} harder`, w + 0.06, y0 + 0.4, { color: 'ink', size: 11, align: 'left' });
+            R.text(r.lg < 1e-9 ? 'minimum index' : `× ${v.fmt(10 ** r.lg, 2)} larger index`, w + 0.06, y0 + 0.4, { color: 'ink', size: 11, align: 'left' });
           });
-          R.corner('$\\tau_P\\propto\\exp(-2\\pi d/((1-\\nu)b))$, $\\nu=0.3$', 'br', { color: 'muted', size: 11 });
+          R.corner('wide-core index only; no material CRSS prediction', 'br', { color: 'muted', size: 11 });
         });
         v.readout(() => {
           const s = st.value;
-          if (s === 'hcp') return `**hcp:** basal slip has only 3 systems (2 independent, 3.9), prismatic adds 3 more ⟨a⟩ systems, and ⟨c+a⟩ pyramidal slip is needed to deform along the c axis. At $c/a=${v.fix(cas.value, 3)}$ the crude index ranks **${hexBest}** slip easiest (basal and prismatic cross at $c/a=\\sqrt3\\approx1.73$).`;
+          if (s === 'hcp') return `**hcp:** basal slip has only 3 systems (2 independent, 3.9), prismatic adds 3 more ⟨a⟩ systems, and ⟨c+a⟩ pyramidal slip is needed to deform along the c axis. At $c/a=${v.fix(cas.value, 3)}$ the geometric index is smallest for **${hexBest}** (basal and prismatic cross at $c/a=\\sqrt3\\approx1.73$).`;
           const n = FAM[s].filter((f) => !f.extra).reduce((a, f) => a + f.list.length, 0);
-          return `**${s}:** ${n} geometric candidate systems found by enumerating the plane family and the close-packed directions lying in each plane (${FAM[s].filter((f) => !f.extra).map((f) => `${f.list.length} for ${f.name}`).join(', ')}). The spacing-only index assigns the lowest friction to the family with the largest spacing relative to $b$; it is not an experimental activation criterion.`;
+          return `**${s}:** ${n} geometric candidate systems found by enumerating the plane family and the close-packed directions lying in each plane (${FAM[s].filter((f) => !f.extra).map((f) => `${f.list.length} for ${f.name}`).join(', ')}). The lowest index uses the same assumed interface parameters; it is not measured lattice friction.`;
         });
       },
     },
@@ -338,9 +343,11 @@ export default {
       kind: 'Law',
       name: 'Schmid’s law and critical resolved shear stress',
       statement: String.raw`A single crystal under a uniaxial stress $\sigma$ yields when the shear stress resolved on some slip system, $\tau_R=\sigma\cos\phi\cos\lambda$, reaches a material constant, the **critical resolved shear stress** $\tau_c$. Here $\phi$ is the angle between the tensile axis and the slip-plane normal and $\lambda$ the angle between the tensile axis and the slip direction; $m=\cos\phi\cos\lambda\le\tfrac12$ is the **Schmid factor**. Slip starts on the system with the largest $m$, so the tensile yield stress is $\sigma_y=\tau_c/m_{\max}$, between $2\tau_c$ (best orientation) and infinity (when no system is stressed).`,
-      idea: String.raw`The driving force on a dislocation gliding in a slip system is the shear stress acting on that plane in that direction (the Peach–Koehler force, per unit length $\tau_R b$), and the resistance of the lattice and of obstacles on that system does not depend on the loading axis; so slip starts where the resolved stress first reaches the critical value. The geometry is vector algebra: the resolved shear stress is $\sigma(\hat t\cdot\hat n)(\hat t\cdot\hat d)$ for a unit tensile axis $\hat t$. $\cos\phi\cos\lambda\le\tfrac12$ because $\cos\phi\cos\lambda=\tfrac12[\cos(\phi-\lambda)+\cos(\phi+\lambda)]$ and $\phi+\lambda\ge 90^\circ$ when $\hat n\perp\hat d$.`,
+      idea: String.raw`The driving force on a dislocation gliding in a slip system is the shear stress acting on that plane in that direction (the Peach–Koehler force, per unit length $\tau_R b$), and the resistance of the lattice and of obstacles on that system does not depend on the loading axis; so slip starts where the resolved stress first reaches the critical value. The geometry is vector algebra: the resolved shear stress is $\sigma(\hat t\cdot\hat n)(\hat t\cdot\hat d)$ for a unit tensile axis $\hat t$. $\cos\phi\cos\lambda\le\tfrac12$ because $\cos\phi\cos\lambda=\tfrac12[\cos(\phi-\lambda)+\cos(\phi+\lambda)]$ and $\phi+\lambda\ge 90^\circ$ when $\hat n\perp\hat d$.
+
+Successive orthogonal decompositions (ladr 6.13) resolve the unit tensile axis into its components a and b along the orthogonal unit slip normal and slip direction, plus a perpendicular residual. Thus $a^2+b^2\le1$, and $2|ab|\le a^2+b^2\le1$. This proves the Schmid bound in magnitude and locates its equality at equal-magnitude components with no residual. The stress required for slip still uses the stipulated common critical resolved shear stress; projection geometry alone does not establish that constitutive assumption.`,
       caption: String.raw`Drag the tensile axis (white-and-gold handle) inside the standard stereographic triangle; the colour is the yield stress $\sigma_y/\tau_c=1/m_{\max}$ for every orientation. The bars show the Schmid factor of each of the 12 systems for the current axis; raise the applied stress and the systems with $\sigma m\ge\tau_c$ turn green: the first to do so is the primary system, and where two tie (on the boundaries of the triangle and its corners) several operate at once.`,
-      deps: ['mat-3.4', 'solid-2.2'],
+      deps: ['mat-3.4','ladr-6.13'],
       refs: ['Callister §7.5'],
       tags: ['Schmid factor', 'yield', 'single crystal'],
       credit: 'E. Schmid and W. Boas (Kristallplastizität, 1935)',
@@ -399,10 +406,12 @@ export default {
       num: '3.6',
       kind: 'Proposition',
       name: 'Dislocation strain energy ∝ Gb²',
-      statement: String.raw`In isotropic linear elasticity the strain energy stored per unit length of a straight dislocation, between the core radius $r_0$ and an outer radius $R$, is $$W=\frac{Gb^2}{4\pi(1-\nu)}\ln\frac{R}{r_0}\ \ (\text{edge}),\qquad W=\frac{Gb^2}{4\pi}\ln\frac{R}{r_0}\ \ (\text{screw}).$$ It grows only logarithmically with the size of the region but quadratically with $|\mathbf b|$, so $W\approx\tfrac12Gb^2$ to $Gb^2$ is the usual rule of thumb. Consequently a dislocation line behaves as if it had a **line tension** $T\approx\tfrac12Gb^2$, and a dislocation of Burgers vector $\mathbf b_1$ lowers its energy by splitting into $\mathbf b_2+\mathbf b_3=\mathbf b_1$ whenever $b_2^2+b_3^2<b_1^2$ (Frank's rule).`,
-      idea: String.raw`Around the line the strain falls like $b/(2\pi r)$ so the energy density $\tfrac12 G\epsilon^2$ falls like $b^2/r^2$; integrating over rings of area $2\pi r\,dr$ gives $\int dr/r=\ln(R/r_0)$ and the prefactor $Gb^2$. The edge line's extra $1/(1-\nu)$ comes from its additional normal-stress components. Since $b$ is fixed by the lattice, the shortest lattice vectors give the cheapest dislocations (3.4), and a line segment lowers its energy by shortening, which is the origin of its line tension and of the bowing in 3.7.`,
+      statement: String.raw`In isotropic linear elasticity the strain energy stored per unit length of a straight dislocation, between the core radius $r_0$ and an outer radius $R$, is $$\begin{gathered}W=\frac{Gb^2}{4\pi(1-\nu)}\ln\frac{R}{r_0}\\(\text{edge}),\\W=\frac{Gb^2}{4\pi}\ln\frac{R}{r_0}\\(\text{screw}).\end{gathered}$$ It grows only logarithmically with the size of the region but quadratically with $|\mathbf b|$, so $W\approx\tfrac12Gb^2$ to $Gb^2$ is the usual rule of thumb. Consequently a dislocation line behaves as if it had a **line tension** $T\approx\tfrac12Gb^2$, and with a common elastic prefactor, the sum of two non-interacting line-energy estimates for $\mathbf b_2+\mathbf b_3=\mathbf b_1$ is smaller when $b_2^2+b_3^2<b_1^2$ (Frank's rule). This comparison omits core, stacking-fault and interaction energies; it does not by itself establish that every such split lowers the total energy.`,
+      idea: String.raw`Around the line the strain falls like $b/(2\pi r)$ so the energy density $\tfrac12 G\epsilon^2$ falls like $b^2/r^2$; integrating over rings of area $2\pi r\,dr$ gives $\int dr/r=\ln(R/r_0)$ and the prefactor $Gb^2$. The edge line's extra $1/(1-\nu)$ comes from its additional normal-stress components. Since $b$ is fixed by the lattice, the shortest lattice vectors give the cheapest dislocations (3.4), and a line segment lowers its energy by shortening, which is the origin of its line tension and of the bowing in 3.7.
+
+The logarithm in pma 8.6 has derivative $1/r$ for positive r. With finite cutoffs $0<r_0<R$, the fundamental theorem (pma 6.21) therefore evaluates the radial elastic-energy integral as $\log R-\log r_0=\log(R/r_0)$. The cutoffs make the integral finite; sending either endpoint to a singular limit is a separate operation. This supplies the logarithmic size dependence of the stated straight-line continuum estimate, not its core energy, universal line tension or the total energetic favorability of every possible split.`,
       caption: String.raw`Left: energy per atomic length against the outer radius (log axis) for edge and screw, with copper-like $G$ and $b$ (adjustable). Right: the Burgers vector $\mathbf b_1$ (blue) split into $\mathbf b_2$ (drag the orange handle) and $\mathbf b_3=\mathbf b_1-\mathbf b_2$: when the handle is inside the green disc (the circle on $\mathbf b_1$ as diameter) the right angle between $\mathbf b_2$ and $\mathbf b_3$ is exceeded and the pair has lower energy $\propto b_2^2+b_3^2<b_1^2$.`,
-      deps: ['mat-3.3', 'vcalc-4.7'],
+      deps: ['mat-3.3','pma-8.6','pma-6.21'],
       refs: ['Callister §7.3'],
       tags: ['dislocation energy', 'line tension', 'Frank rule'],
       scope: String.raw`Isotropic elasticity, a straight infinite line; the logarithm needs a core cutoff $r_0\approx b$ to $4b$ (the core's non-linear energy is not included) and an outer cutoff $R$ set by the spacing of other dislocations or the crystal size. The default $G=45$ GPa for copper agrees with a handbook value near 44.7 GPa; $b=a/\sqrt2$ with $a=0.3615$ nm.`,

@@ -9,9 +9,11 @@
 // exponential-time machine and the tableau itself plays the role of the guessed circuit; it is a model of the argument,
 // not of an actual EXP computation.
 import {
-  clamp, big, dpll, randomCNF, restrictCNF, hash32, newC, addIn, addG, foldC, evalC, sizeC, depthC, layoutC, drawC,
-  caRun, caStep, prefixNet, runPrefix, parseBool, evalAst, truthTable, minFormulas3, mask3, astText, leafCount,
+  clamp, big, dpll, randomCNF, hash32, newC, addIn, addG, foldC, evalC, sizeC, depthC, layoutC, drawC,
+  caRun, prefixNet, runPrefix, parseBool, evalAst, truthTable, minFormulas3, mask3, astText, leafCount,
 } from './ch04.shared.js';
+
+import {shallowMetrics, satWitness, tableauViolations, formulaWalk, squaredReachability} from './circuit-source-audit.shared.js';
 
 const CA_RULES = [30, 90, 110, 184];
 
@@ -89,18 +91,18 @@ export default {
       num: '4.8',
       kind: 'Theorem',
       name: 'Karp–Lipton theorem',
-      statement: String.raw`If $\mathrm{NP}\subseteq\mathrm{P/poly}$ (equivalently, SAT has polynomial-size circuits), then the polynomial hierarchy collapses to its second level: $\mathrm{PH}=\Sigma_2^{\mathsf p}=\Pi_2^{\mathsf p}$. The proof below uses a guessed witness circuit and verifies its outputs, avoiding any need to certify that the circuit decides SAT correctly on all formulas.`,
-      idea: String.raw`Take $L\in\Pi_2^{\mathsf p}$: $x\in L\iff\forall u\,\exists v\;\psi(x,u,v)$. For each $u$ the inner statement asks whether the formula $\varphi_{x,u}(v)=\psi(x,u,v)$ is satisfiable. If SAT has small circuits, a Σ₂ machine can **guess** a circuit $C$ for SAT at the right length and then check, for all $u$, that $C$ accepts $\varphi_{x,u}$. A guessed $C$ may be wrong, so the machine does not trust its answers: it uses the standard **self-reduction** (fix $v_1$, ask $C$ whether the rest is satisfiable, …) to extract an assignment $v$ and verifies $\psi(x,u,v)=1$ directly. Acceptance therefore always implies a real witness, and an honest $C$ makes it accept. This is the sentence $\exists C\,\forall u\,[\dots]$, i.e. $\Pi_2\subseteq\Sigma_2$, and by 3.6 the hierarchy collapses.`,
-      caption: String.raw`A random 3-CNF on 8 variables stands in for $\varphi_{x,u}$. **Step** through the self-reduction: the oracle $C$ is queried on the formula with $x_1,\dots,x_{i}$ fixed. Choose a perfect $C$, one that errs on a fraction $\rho$ of formulas (red rows: its answer differs from the truth), or one that always says SAT. The last step checks the extracted assignment against every clause. Right: 200 random formulas through the same verifier. The bar “UNSAT ✓” (an unsatisfiable formula accepted) is **always 0**: a bad $C$ can only cost completeness (honest bars turn into rejects), never soundness.`,
+      statement: String.raw`If $\mathrm{NP}\subseteq\mathrm{P/poly}$ (equivalently, SAT has polynomial-size circuits), then the polynomial hierarchy collapses to its second level: $\mathrm{PH}=\Sigma_2^{\mathsf p}=\Pi_2^{\mathsf p}$. Karp and Lipton obtained a collapse to a low level; the second-level form quoted here is credited to Sipser.`,
+      idea: String.raw`Take a $\Pi_2^{\mathsf p}$ sentence $\forall u\,\exists v\;\psi(x,u,v)$ with a polynomial-time predicate. Convert the inner witness test to SAT by the polynomial Cook–Levin reduction. Under the hypothesis, a polynomial-size circuit $W_x$ can return a witness for every $u$: use SAT self-reduction, bundling the circuits for all polynomially many query lengths (or padding queries to one length). A $\Sigma_2$ machine guesses $W$ and checks $\forall u\;\psi(x,u,W(u))=1$. A bad guess cannot manufacture a witness for a false inner statement; a correct circuit supplies witnesses whenever they exist. Thus $\Pi_2\subseteq\Sigma_2$, and the hierarchy collapses. In the finite demo the oracle is a DPLL-based simulation, not an exhibited polynomial-size circuit family.`,
+      caption: String.raw`A random 3-CNF on 8 variables stands in for $\varphi_{x,u}$. **Step** through the self-reduction: the oracle $C$ is queried on the formula with $x_1,\dots,x_{i}$ fixed. Choose a perfect $C$, one whose answers are flipped by a deterministic hash at threshold $\rho$ (red rows: its answer differs from the truth), or one that always says SAT. The last step checks the extracted assignment against every clause. Right: 200 random formulas through the same verifier. The bar “UNSAT ✓” (an unsatisfiable formula accepted) is **always 0**: a bad $C$ can reject satisfiable instances, but accepting still requires a valid assignment. The hash threshold is not a certified error fraction over all formulas; these 200 samples illustrate the verifier.`,
       deps: ['cplx-4.4', 'cplx-3.6', 'cplx-3.4'],
-      refs: ['Arora–Barak, January 2007 web draft, §6.2, Theorem 6.13, pp. 106–107'], sourceUrl: 'https://theory.cs.princeton.edu/complexity/book.pdf',
-      credit: 'Mathematical presentation: Arora–Barak, Computational Complexity, author web draft dated January 8, 2007; optional historical priority annotations omitted',
-      links: { doi: 'https://doi.org/10.1145/800141.804678' },
+      refs: ['Arora–Barak, 2007 draft, Theorem 6.19; Karp–Lipton (1982), §5 and Theorem 6.1'],
+      credit: 'Karp & Lipton, 1980 (collapse of PH from NP ⊆ P/poly; the Σ₂ version credited to M. Sipser)',
+      links: { doi: 'https://doi.org/10.1145/800141.804678', source: 'https://doi.org/10.5169/seals-52237' },
       tags: ['polynomial hierarchy', 'self-reducibility', 'advice'],
       viz(v) {
         const NV = 8; let seed = 11, model = null; const trial = new Map();
         const mS = v.slider('clauses $m$', 12, 40, 30, { int: true, onChange: () => refresh() });
-        const mode = v.select('circuit $C$', [{ value: 'honest', label: 'perfect' }, { value: 'liar', label: 'errs on a fraction ρ' }, { value: 'yes', label: 'always says SAT' }], 'liar', { onChange: () => refresh() });
+        const mode = v.select('circuit $C$', [{ value: 'honest', label: 'perfect' }, { value: 'liar', label: 'hash-flipped answers' }, { value: 'yes', label: 'always says SAT' }], 'liar', { onChange: () => refresh() });
         const rho = v.slider('error rate $\\rho$', 0, 0.5, 0.05, { step: 0.05, onChange: () => refresh() });
         v.button('New formula', () => { seed += 1; refresh(); });
         const mk = (sd, cl) => {
@@ -111,19 +113,7 @@ export default {
             if (mode.value === 'liar' && hash32(JSON.stringify(c) + sd) % 1000 < rho.value * 1000) return { ans: !t, truth: t };
             return { ans: t, truth: t };
           };
-          const frames = [], asg = new Map(), root = oracle(cl);
-          frames.push({ kind: 'root', ans: root.ans, truth: root.truth, asg: new Map(asg) });
-          let accepted = false;
-          if (root.ans) {
-            for (let i = 1; i <= NV; i++) {
-              const t0 = new Map(asg); t0.set(i, 0);
-              const q = oracle(restrictCNF(cl, t0)), bit = q.ans ? 0 : 1;
-              asg.set(i, bit); frames.push({ kind: 'step', i, ans: q.ans, truth: q.truth, bit, asg: new Map(asg) });
-            }
-            const bad = cl.filter((c) => !c.some((l) => (asg.get(Math.abs(l)) === 1) === (l > 0))).length;
-            accepted = bad === 0; frames.push({ kind: 'final', bad, ok: accepted, asg: new Map(asg) });
-          } else frames.push({ kind: 'final', bad: -1, ok: false, asg: new Map() });
-          return { frames, accepted, truth: truth(cl), cl };
+          return { ...satWitness(NV, cl, oracle), truth: truth(cl), cl };
         };
         const refresh = () => { trial.clear(); model = mk(seed, randomCNF(v.rng(seed), NV, mS.value, 3)); if (S) S.reset(model.frames, { at: 'start' }); };
         let S = null;
@@ -174,12 +164,13 @@ export default {
       num: '4.9',
       kind: 'Theorem',
       name: 'Meyer’s theorem: EXP ⊆ P/poly implies EXP = Σ₂',
-      statement: String.raw`If $\mathrm{EXP}\subseteq\mathrm{P/poly}$, then $\mathrm{EXP}=\Sigma_2^{\mathsf p}$ (and hence $\mathrm{EXP}=\Pi_2^{\mathsf p}=\mathrm{PH}$). Since the time hierarchy theorem gives $\mathrm P\ne\mathrm{EXP}$ and PH is contained in PSPACE, the conclusion would put $\mathrm{EXP}$ below PH's second level; combined with 4.8 it shows that exponential time having small circuits is very unlikely.`,
-      idea: String.raw`Let $M$ decide $L\in\mathrm{EXP}$ in time $2^{p(n)}$ and let $\mathrm{Tab}(x,t,j)$ be the symbol in cell $j$ at time $t$ of its run on $x$ (a language in EXP). By hypothesis it has circuits of polynomial size. A Σ₂ machine **guesses** such a circuit $C$ and then asks, with a universal quantifier over all addresses $(t,j)$, that (i) row 0 of $C$ is the input $x$, (ii) every cell $C(t+1,j)$ agrees with the transition rule applied to $C(t,j-1),C(t,j),C(t,j+1)$, and (iii) the designated final-state cell says "accept". Pad the deterministic machine with absorbing halting states and use a sufficiently large, fixed finite tape window with fixed boundary cells. The $\forall$ ranges over exponentially many addresses but each address is a polynomial-length string and each check takes polynomial time. A circuit passing all local checks is forced, row by row, to be the true tableau, so the machine accepts exactly when $M$ does.`,
-      caption: String.raw`A stand-in for an exponential computation: an elementary cellular automaton run for $T$ steps on $2^w$ cells from a single 1 (the “input”). The grid is the **guessed tableau**; the Σ₂ machine's $\forall$ sweeps over every window $(t,j)$ — the sweeping frame is one check, three parents above, one child below. **Click cells to forge the guess**: red cells are windows that break the rule (or a row 0 different from the input). One local check always catches a lie. Readout: the number of windows is $T\cdot2^w$ — exponential in the address length — while each check is one rule lookup. (Model: a real EXP machine has a Turing tableau and the guess is a *circuit*, not a table.)`,
+      statement: String.raw`If $\mathrm{EXP}\subseteq\mathrm{P/poly}$, then $\mathrm{EXP}=\Sigma_2^{\mathsf p}$ and hence $\mathrm{EXP}=\Pi_2^{\mathsf p}=\mathrm{PH}$. This is a conditional collapse to the second level. It would also imply $\mathrm P\ne\mathrm{NP}$: otherwise PH collapses to P and the displayed equality contradicts the deterministic time hierarchy $\mathrm P\ne\mathrm{EXP}$. No unconditional circuit lower bound for EXP follows from this argument.`,
+      idea: String.raw`Choose a deterministic single-tape machine for $L\in\mathrm{EXP}$, with polynomial overhead in its running time, a padded time bound $T=2^{p(n)}$, fixed blank boundary cells, and a designated output cell. Arrange that it halts in a stationary accepting/rejecting configuration and retains its output until time $T$. The language asking for one encoded tableau-symbol bit $\mathrm{Tab}(x,t,j,b)$ is in EXP, so the hypothesis gives polynomial-size circuits in the combined, polynomial-length address. Hard-wire $x$ and guess a circuit $C(t,j,b)$. Universally check the initial row, every valid local transition window, boundary encodings, and acceptance at the designated final output. Invalid addresses are ignored. Each address has polynomial length; each check takes polynomial time. The initial row and deterministic local rule force the unique true tableau. Hence the guess is sound, and a true accepting tableau has a small circuit by hypothesis; $L\in\Sigma_2$. The reverse inclusion $\Sigma_2\subseteq\mathrm{EXP}$ follows by enumerating the polynomial-length quantifiers.`,
+      caption: String.raw`A stand-in for an exponential computation: an elementary cellular automaton with periodic boundaries, run for $T$ steps on $2^w$ cells from a single 1 (the “input”). The grid is the **guessed tableau**; the Σ₂ machine's $\forall$ sweeps over every window $(t,j)$ — the sweeping frame is one check, three parents above, one child below. **Click cells to forge the guess**: red cells are windows that break the rule (or a row 0 different from the input). Every altered complete tableau violates at least one initial or transition constraint; a single sampled window need not catch it. Readout: there are $T\cdot2^w$ transition windows plus $2^w$ initial-row constraints — exponential in the address length — while each check is one rule lookup. (Model: a real EXP machine has a Turing tableau and the guess is a *circuit*, not a table.)`,
       deps: ['cplx-4.8', 'cplx-4.5', 'cplx-3.5'],
-      refs: ['Arora–Barak, January 2007 web draft, Theorem 6.14, p. 107; Exercise 3, p. 113 (statement; tableau proof expanded here)'], sourceUrl: 'https://theory.cs.princeton.edu/complexity/book.pdf',
-      credit: 'Mathematical presentation: Arora–Barak, Computational Complexity, author web draft dated January 8, 2007; optional historical priority annotations omitted',
+      refs: ['Karp–Lipton (1982), Theorem 6.6, p. 207; Arora–Barak (2007 draft), Theorem 6.20'],
+      credit: 'A. R. Meyer; original proof in Karp–Lipton (1982), Theorem 6.6, p. 207; tableau presentation: Arora–Barak Theorem 6.20',
+      links: { source: 'https://doi.org/10.5169/seals-52237' },
       tags: ['non-uniformity', 'EXP', 'hierarchy collapse'],
       viz(v) {
         const rule = v.select('rule', CA_RULES.map((r) => ({ value: r, label: String(r) })), 110, { onChange: () => reset() });
@@ -196,12 +187,7 @@ export default {
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, weight: 1, minWidth: 320, full: true, title: 'the guessed tableau (time downward) and the ∀ sweep' });
         let geo = null;
         A.onClick((px, py) => { if (!geo) return; const j = Math.floor((px - geo.x0) / geo.cw), t = Math.floor((geo.y0 - py) / geo.ch); if (t >= 0 && t < guess.length && j >= 0 && j < guess[0].length) guess[t][j] ^= 1; });
-        const violations = () => {
-          const W = guess[0].length, bad = [];
-          for (let j = 0; j < W; j++) if (guess[0][j] !== init[j]) bad.push([0, j]);
-          for (let t = 0; t < guess.length - 1; t++) { const nx = caStep(guess[t], rule.value); for (let j = 0; j < W; j++) if (nx[j] !== guess[t + 1][j]) bad.push([t + 1, j]); }
-          return bad;
-        };
+        const violations = () => tableauViolations(guess, init, rule.value);
         v.animate((time) => {
           const W = guess[0].length, T = guess.length, cw = 0.98 / W, ch = Math.min(0.98 / T, cw * 1.25), x0 = 0.01, y0 = 0.99;
           geo = { cw, ch, x0, y0 };
@@ -217,7 +203,7 @@ export default {
         }, { period: 12, still: 3 });
         v.readout(() => {
           const bad = violations(), W = guess[0].length, T = guess.length - 1;
-          return `Windows to check: $T\\cdot2^w=${T}\\cdot${W}=${T * W}$ (one per address $(t,j)$), each a lookup in rule ${rule.value}.\n${bad.length ? `**${bad.length} violated window(s)**; first at $(t,j)=(${bad[0][0]},${bad[0][1]})$: this guess is rejected.` : 'No window is violated: the guess is the true tableau, forced row by row from the input.'}`;
+          return `Transition windows: $T\\cdot2^w=${T}\\cdot${W}=${T * W}$; initial-row constraints: ${W}; total ${W * (T + 1)}. Each transition is a lookup in rule ${rule.value}. This toy checks consistency, not an accepting EXP computation or a polynomial-size certificate.\n${bad.length ? `**${bad.length} violated window(s)**; first at $(t,j)=(${bad[0][0]},${bad[0][1]})$: this guess is rejected.` : 'No window is violated: the guess is the true tableau, forced row by row from the input.'}`;
         });
       },
     },
@@ -226,12 +212,12 @@ export default {
       num: '4.10',
       kind: 'Definition',
       name: 'NC and AC: shallow circuits',
-      statement: String.raw`For $i\ge0$, $\mathrm{NC}^i$ is the class of languages decided by families of circuits of polynomial size and depth $O(\log^i n)$ with gates $\wedge,\vee,\neg$ of fan-in at most 2 (uniform, e.g. by a log-space machine); $\mathrm{AC}^i$ is the same with unbounded fan-in $\wedge$ and $\vee$. Then $\mathrm{NC}=\bigcup_i\mathrm{NC}^i=\bigcup_i\mathrm{AC}^i$ and $\mathrm{NC}^i\subseteq\mathrm{AC}^i\subseteq\mathrm{NC}^{i+1}$. Depth models parallel time, size models the number of processors.`,
-      idea: String.raw`With fan-in 2, a gate sees two inputs, so a function that depends on all $n$ inputs needs depth $\ge\log_2 n$: the NC hierarchy starts at logarithmic depth. A fan-in-$k$ gate can be replaced by a balanced tree of $k-1$ fan-in-2 gates of depth $\lceil\log_2k\rceil$, which gives $\mathrm{AC}^i\subseteq\mathrm{NC}^{i+1}$. The same function can have very different depth depending on how it is wired: AND is a single gate or a chain or a tree; parity is a tree of XORs of depth $\log n$ but, with only $\wedge,\vee,\neg$ of unbounded fan-in and constant depth, needs exponential size (10.10).`,
-      caption: String.raw`Choose a function and a wiring. The circuit is drawn with inputs on top; the readout gives size and depth. The **chain** has depth $n-1$ (sequential), the balanced **tree** depth $\lceil\log_2 n\rceil$ (NC¹), and a single **unbounded fan-in** gate computes AND or OR at depth 1 (AC⁰). For parity the unbounded-fan-in option is a depth-2 DNF with $2^{n-1}$ terms: its size is quoted, not drawn. Right: depth against $n$ for the three wirings on a log scale.`,
+      statement: String.raw`For $i\ge0$, $\mathrm{NC}^i$ is the class of languages decided by families of circuits of polynomial size and depth $O(\log^i n)$ with gates $\wedge,\vee,\neg$ of fan-in at most 2 (here **log-space uniform**: one transducer on $1^n$ prints $C_n$ using $O(\log n)$ work space); $\mathrm{AC}^i$ is the same with unbounded fan-in $\wedge$ and $\vee$. Then $\mathrm{NC}=\bigcup_i\mathrm{NC}^i=\bigcup_i\mathrm{AC}^i$ and $\mathrm{NC}^i\subseteq\mathrm{AC}^i\subseteq\mathrm{NC}^{i+1}$. Depth is parallel gate delay; size is the total gate count, and one processor per gate gives a parallel simulation. Stronger uniformity conventions can differ at NC¹; this item uses the stated log-space convention.`,
+      idea: String.raw`A bounded-fan-in output at depth $d$ can depend on at most $2^d$ inputs. Thus a function depending on every input needs $d\ge\lceil\log_2n\rceil$; NC⁰ still exists, but its outputs have constant support. Replace a fan-in-$k$ AND/OR by a balanced binary tree of $k-1$ gates and depth $\lceil\log_2k\rceil$, giving $\mathrm{AC}^i\subseteq\mathrm{NC}^{i+1}$ while preserving polynomial size and log-space uniformity. Parity has a binary XOR tree; each XOR is expanded here into four AND/OR/NOT gates of depth 3. No fixed-depth polynomial-size family of unbounded-fan-in AND/OR/NOT circuits computes parity: $\mathrm{PARITY}\notin\mathrm{AC}^0$ (10.10).`,
+      caption: String.raw`Choose AND, OR or parity and a chain, balanced tree or unbounded-fan-in design. All drawn gates are actual AND/OR/NOT gates. For AND/OR the chain depth is $n-1$, the balanced tree depth $\lceil\log_2n\rceil$, and the flat gate depth 1. For parity, expanding XOR gives depths three times as large. The flat parity DNF is quoted rather than drawn: $2^{n-1}$ terms, two AND/OR layers and a shared input-NOT layer, for total depth 3. Counts include NOT gates and exclude input wires.`,
       deps: ['cplx-4.1'],
-      refs: ['Arora–Barak, January 2007 web draft, §6.5.1, Definitions 6.21–6.22 and discussion, pp. 109–110'], sourceUrl: 'https://theory.cs.princeton.edu/complexity/book.pdf',
-      credit: 'Mathematical presentation: Arora–Barak, Computational Complexity, author web draft dated January 8, 2007; optional historical priority annotations omitted',
+      refs: ['Arora–Barak (2007 draft), Definitions 6.24–6.25; Arora–Barak (2006 draft), Theorem 14.1; Cook (1985), §2 and Proposition 4.7'],
+      credit: 'Log-space-uniform convention: Arora–Barak Definitions 6.24–6.25; Cook (1985), §§2 and 4, distinguishes stronger uniformity at NC¹; “NC” honors Nick Pippenger',
       links: { doi: 'https://doi.org/10.1016/S0019-9958(85)80041-3' },
       tags: ['NC', 'AC', 'depth', 'parallel computation'],
       viz(v) {
@@ -239,18 +225,14 @@ export default {
         const design = v.select('wiring', [{ value: 'chain', label: 'chain' }, { value: 'tree', label: 'balanced tree' }, { value: 'flat', label: 'unbounded fan-in' }], 'tree');
         const nS = v.slider('inputs $n$', 2, 32, 12, { int: true });
         const A = v.stage({ x: [-0.02, 1.02], y: [-0.02, 1.02], axes: false, height: 380, weight: 1.5, minWidth: 320, title: 'the circuit (inputs on top)' });
-        const B = v.stage({ x: [2, 64], y: [0.8, 80], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 250, xlabel: 'n', ylabel: 'depth', title: 'depth of each wiring' });
-        v.legend([['red', 'chain  n−1'], ['accent', 'tree  ⌈log₂ n⌉'], ['green', 'unbounded fan-in  1']]);
-        const build = (n) => {
-          const C = newC(), ins = []; for (let i = 0; i < n; i++) ins.push(addIn(C, `x${i + 1}`));
-          const t = fn.value === 'xor' ? 'xor' : fn.value;
-          C.outs = [foldC(C, t, ins, design.value)]; return C;
-        };
+        const B = v.stage({ x: [2, 64], y: [0.8, 210], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 250, xlabel: 'n', ylabel: 'depth', title: 'depth of each wiring' });
+        v.legend([['red', 'chain (XOR expanded for parity)'], ['accent', 'balanced tree (XOR expanded for parity)'], ['green', 'flat AND/OR, or parity DNF']]);
+        const model = () => shallowMetrics(nS.value, fn.value, design.value);
         v.render(() => {
-          const n = nS.value, C = build(n);
+          const n = nS.value, R = model(), C = R.C;
           const dpDNF = fn.value === 'xor' && design.value === 'flat';
           if (dpDNF) {
-            A.text(`parity with unbounded fan-in ∧/∨ gates at depth 2:`, 0.5, 0.62, { align: 'center', size: 14 });
+            A.text(`parity DNF: 2 AND/OR layers + shared input NOT layer`, 0.5, 0.62, { align: 'center', size: 14 });
             A.text(`a DNF with 2^${n - 1} = ${big(2 ** (n - 1))} terms of ${n} literals each`, 0.5, 0.5, { align: 'center', size: 14, color: 'red', weight: 700 });
             A.text('(a single ⊕ gate of fan-in n is not an AC gate)', 0.5, 0.38, { align: 'center', size: 12, color: 'muted' });
           } else {
@@ -259,16 +241,16 @@ export default {
             const [ox, oy] = lay.pos[C.outs[0]]; A.text('out', ox, oy, { dx: 26, align: 'center', size: 11, color: 'accent', weight: 700 });
           }
           const pts = (f) => { const a = []; for (let k = 2; k <= 64; k++) a.push([k, f(k)]); return a; };
-          B.path(pts((k) => k - 1), { color: 'red', width: 2.2 }); B.path(pts((k) => Math.ceil(Math.log2(k))), { color: 'accent', width: 2.2 }); B.path(pts(() => 1), { color: 'green', width: 2.2 });
-          const d = design.value === 'chain' ? n - 1 : design.value === 'tree' ? Math.ceil(Math.log2(n)) : (dpDNF ? 2 : 1);
+          const factor = fn.value === 'xor' ? 3 : 1;
+          B.path(pts(k => factor * (k - 1)), { color: 'red', width: 2.2 }); B.path(pts(k => factor * Math.ceil(Math.log2(k))), { color: 'accent', width: 2.2 }); B.path(pts(() => fn.value === 'xor' ? 3 : 1), { color: 'green', width: 2.2 });
+          const d = R.depth;
           B.dot(n, d, { r: 6, color: 'gold' });
         });
         v.readout(() => {
-          const n = nS.value, flatP = fn.value === 'xor' && design.value === 'flat';
-          if (flatP) return `Depth 2, size $2^{${n - 1}}+1=${big(2 ** (n - 1) + 1)}$: constant depth is possible only with exponentially many gates for parity.`;
-          const C = build(n), bin = depthC(C, true);
-          const cls = design.value === 'chain' ? 'depth $n-1$: sequential, polynomial depth' : design.value === 'tree' ? `depth $\\lceil\\log_2 ${n}\\rceil=${bin}$: this is an $\\mathrm{NC}^1$ circuit` : `depth 1 (unbounded fan-in): an $\\mathrm{AC}^0$ circuit; replaced by fan-in-2 gates its depth is ${bin}`;
-          return `size $=${sizeC(C, true)}$ fan-in-2 gates; ${cls}.`;
+          const n = nS.value, R = model();
+          if (!R.C) return `Parity DNF: ${R.terms} terms, ${n} input NOT gates, 1 output OR: **size ${big(R.size)}, total depth 3** (two AND/OR layers). This quoted exponential construction is not drawn.`;
+          const cls = design.value === 'flat' ? 'AC⁰' : design.value === 'tree' ? 'NC¹' : 'polynomial depth';
+          return `**Size ${R.size}, depth ${R.depth}** over AND/OR/NOT (${cls}). Replacing unbounded gates by binary trees: size ${R.binarySize}, depth ${R.binaryDepth}. ${fn.value === 'xor' ? 'Each XOR is expanded into four gates, depth 3; no XOR primitive is counted.' : 'Input wires are not gates.'}`;
         });
       },
     },
@@ -278,11 +260,13 @@ export default {
       kind: 'Algorithm',
       name: 'Parallel prefix: addition in logarithmic depth',
       statement: String.raw`Two $n$-bit numbers can be added by a circuit of depth $O(\log n)$ and size $O(n\log n)$ (even $O(n)$ with a more careful network). Write $g_i=a_ib_i$ (the position *generates* a carry) and $p_i=a_i\oplus b_i$ (it *propagates* one); a pair $(g,p)$ stands for a block, and two adjacent blocks combine by $(g,p)\circ(g',p')=(g\vee(p\wedge g'),\,p\wedge p')$, with the higher block on the left. The carry into position $i+1$ is the $g$-component of the combined block $[0,i]$. Because $\circ$ is associative, all prefix blocks $[0,i]$ can be computed by a tree-like network of depth $\lceil\log_2n\rceil$; the sum bits are then $s_i=p_i\oplus c_i$. Ripple-carry addition needs depth $\Theta(n)$.`,
-      idea: String.raw`The slow part of schoolbook addition is the carry, which seems to pass left to right one position at a time. But "carry out of a block" depends only on the block's pair $(g,p)$, and the combination of two blocks is a constant-size operation. Associativity lets us combine blocks in any bracketing, so the left-to-right chain can be replaced by a balanced scan: in round $\ell$ each position combines with the block $2^{\ell-1}$ places to its right (Kogge–Stone), or the network recurses on halves (Sklansky). After $\lceil\log_2n\rceil$ rounds every position holds the generate/propagate pair of its whole prefix. The same idea computes prefix sums, running maxima and any associative scan in logarithmic parallel time.`,
-      caption: String.raw`Choose a network and the bit-width, then set $a$ and $b$. Each **row** is one round of combining; a segment ends in the cell that receives the block from its left neighbour (green = block generates a carry). The bottom shows the carries and the sum, checked against ordinary addition. **Ripple** is a chain of $n-1$ rounds; **Kogge–Stone** and **Sklansky** take $\lceil\log_2n\rceil$. Right: depth of each network against $n$ — one is a straight line, the others a logarithm.`,
-      deps: ["cplx-4.10","logic-2.8"],
-      refs: ['Arora–Barak, January 2007 web draft, Example 6.19, p. 109', 'Blelloch, Prefix Sums and Their Applications, §1.2, Theorem 1.1 and full proof, pp. 39–44'], sourceUrl: 'https://theory.cs.princeton.edu/complexity/book.pdf',
-      credit: 'Carry-lookahead parallel addition: Arora–Barak, January 2007 web draft, Example 6.19, p. 109; the displayed scan networks implement the associative carry operator; Blelloch §1.2 proves the work-efficient up-sweep/down-sweep construction giving the linear-size alternative',
+      idea: String.raw`The carry appears to move sequentially, but each block defines the affine Boolean map $c\mapsto g\vee(p\wedge c)$. Composing these maps gives the associative pair operation in the statement. In the pictured order, bit 0 is on the left: round $\ell$ of recursive doubling combines position $i$ with the less-significant block ending at $i-2^{\ell-1}$, to its left. Sklansky instead broadcasts the lower half-block to the upper half. These are bounded-fan-in prefix networks with unrestricted fan-out. One combine cell is two AND gates and one OR, with constant Boolean depth; rounds are not individual Boolean gate levels. Initialization and final XORs add constant depth. Ladner–Fischer prove that a more careful prefix circuit achieves linear size and logarithmic depth.
+
+The associativity transferred from alg-1.15 is composition of maps $\{0,1\}\to\{0,1\}$. A valid carry pair has $g\wedge p=0$, giving exactly one of the three distinct maps: constant zero, identity or constant one. Combining adjacent valid pairs stays in this set and represents the composition in the stated high-to-low order. Since this representation is one-to-one on valid pairs, associativity of composition gives associativity of their pair operation, which permits the balanced prefix regrouping.`,
+      caption: String.raw`Choose a network and the bit-width, then set $a$ and $b$. Each **row** is one round of combining; a segment ends in the cell that receives the block from its left neighbour (green = block generates a carry). The bottom shows the carries, the $n$ low sum bits and the final carry-out, checked against ordinary addition. Values of $a,b$ are reduced modulo $2^n$ when the width is smaller than 16. **Ripple** is a chain of $n-1$ rounds; **Kogge–Stone** and **Sklansky** take $\lceil\log_2n\rceil$. Right: combine-round depth against $n$. These are modern prefix schematics of the named designs, not reproductions of the original circuit drawings.`,
+      deps: ['cplx-4.10', 'alg-1.15'],
+      refs: ['Ladner–Fischer (1980), §§2 and 4; Kogge–Stone (1973), Algorithm A; Sklansky (1960)'],
+      credit: 'Kogge–Stone (1973), recursive doubling; Sklansky (1960), conditional-sum network; Ladner–Fischer (1980), §2, pp. 832–835, and §4, linear-size logarithmic-depth prefix/addition circuits',
       links: { doi: 'https://doi.org/10.1145/322217.322232' },
       tags: ['parallel prefix', 'addition', 'NC'],
       viz(v) {
@@ -316,6 +300,7 @@ export default {
             A.text(`c${i}=${R.carry[i]}`, i, -0.4, { align: 'center', size: 10, color: R.carry[i] ? 'green' : 'muted' });
             A.text(`s${i}=${R.sum[i]}`, i, -1.1, { align: 'center', size: 10, weight: 700, color: R.sum[i] ? 'green' : 'ink' });
           }
+          A.text(`carry out c${n}=${R.cout}`, Math.max(n, 6) / 2 - 0.5, 16.8, { align: 'center', size: 11, color: R.cout ? 'green' : 'muted' });
           const pts = (f) => { const q = []; for (let k = 2; k <= 32; k++) q.push([k, f(k)]); return q; };
           B.path(pts((k) => k - 1), { color: 'red', width: 2.2 }); B.path(pts((k) => Math.ceil(Math.log2(k))), { color: 'accent', width: 2.6 }); B.path(pts((k) => Math.ceil(Math.log2(k))), { color: 'green', width: 1.6, dash: true });
           B.dot(n, L, { r: 6, color: 'gold' });
@@ -323,7 +308,7 @@ export default {
         v.readout(() => {
           const n = nS.value, a = aS.value & ((1 << n) - 1), b = bS.value & ((1 << n) - 1), R = runPrefix(bitsOf(a, n), bitsOf(b, n), kind.value);
           const s = R.sum.reduce((t, x, i) => t + x * 2 ** i, 0) + R.cout * 2 ** n;
-          return `$a=${a}$, $b=${b}$ (low ${n} bits): network sum $=${s}$ ${s === a + b ? `$=a+b$ ✓` : '≠ a+b ✗'}. Depth ${R.net.length} rounds, ${R.nodes} combine cells.`;
+          return `$a=${a}$, $b=${b}$ (low ${n} bits): network sum $=${s}$ ${s === a + b ? `$=a+b$ ✓` : '≠ a+b ✗'}. Prefix depth ${R.net.length} combine rounds, ${R.nodes} combine cells (3 Boolean gates each before optimization); final carry-out $c_{${n}}=${R.cout}$. Initialization and final sum XORs are additional constant-depth gates.`;
         });
       },
     },
@@ -392,14 +377,13 @@ export default {
       num: '4.13',
       kind: 'Theorem',
       name: 'NC¹ ⊆ L ⊆ NL ⊆ NC²',
-      statement: String.raw`$\mathrm{NC}^1\subseteq\mathrm L\subseteq\mathrm{NL}\subseteq\mathrm{NC}^2$ (for log-space uniform circuit families). The first inclusion: a depth-$O(\log n)$ circuit (of fan-in 2) can be evaluated depth-first by a log-space machine that keeps only a path of $O(\log n)$ bits. The middle inclusion is trivial. The last: directed reachability, which is NL-complete (toc-14.12), is computed by $\lceil\log_2n\rceil$ Boolean matrix squarings, each a circuit of depth $O(\log n)$, hence by a circuit of depth $O(\log^2n)$ and polynomial size.`,
-      idea: String.raw`For $\mathrm{NC}^1\subseteq\mathrm L$ unroll the fan-in-2 circuit into a formula of polynomial size. Store a root-to-current-node path of $O(\log n)$ left/right bits, together with one partial-result bit per open ancestor. Recompute the current gate address by replaying this path from the output gate, querying the log-space circuit generator for each wire; its $O(\log n)$ workspace is reused. Storing a gate address at every recursion level would instead cost $O(\log^2 n)$ space. For $\mathrm{NL}\subseteq\mathrm{NC}^2$ let $M$ be the adjacency matrix (with the diagonal set to 1). Then $(M^2)_{ij}=\bigvee_k M_{ik}\wedge M_{kj}$ says "there is a path of length $\le2$", and $\lceil\log_2n\rceil$ squarings give paths of length up to $n$. A matrix product is an AND layer plus an OR tree of depth $\log n$, so the whole computation has depth $\log n\cdot\log n$.`,
-      caption: String.raw`**Left:** a balanced formula of depth $d$ evaluated depth-first. Step through: the walker's only memory is the path from the root (orange) and one bit per open ancestor; the readout counts those bits, never more than $d=\log_2(\text{size})$. **Right:** reachability by squaring. **Click a cell** of the adjacency matrix to add or remove an edge; the slider squares $M$: after $k$ rounds $M^{(k)}$ records which nodes are joined by a path of length $\le2^k$. The target pair $(0,7)$ is outlined.`,
+      statement: String.raw`$\mathrm{NC}^1\subseteq\mathrm L\subseteq\mathrm{NL}\subseteq\mathrm{NC}^2$ (for log-space uniform circuit families). The first inclusion: a depth-$O(\log n)$ circuit (of fan-in 2) can be evaluated depth-first by a log-space machine using $O(\log n)$ bits for path/status information, temporary addresses and uniformity generation. The middle inclusion is trivial. The last: directed reachability, which is NL-complete (toc-14.12), is computed by $\lceil\log_2n\rceil$ Boolean matrix squarings, each a circuit of depth $O(\log n)$, hence by a circuit of depth $O(\log^2n)$ and polynomial size.`,
+      idea: String.raw`For $\mathrm{NC}^1\subseteq\mathrm L$, unfold the circuit into a binary formula of depth $d=O(\log n)$ without storing that formula. Keep one branch bit and at most one saved left-child value per level, plus traversal state and counters. Recover the current gate address by replaying the root path through the log-space uniformity generator; storing an address at every ancestor would incorrectly cost $O(\log^2n)$ space. Temporary address and generator workspace use another $O(\log n)$ bits. For $\mathrm{NL}\subseteq\mathrm{NC}^2$, use the polynomial-size configuration graph of an $O(\log n)$-space machine; its local transition predicates have shallow uniform circuits. Add identity edges. Squaring computes paths of length at most $2^k$. For $N$ configurations, $\lceil\log_2(N-1)\rceil$ squarings suffice: a reachable pair has a simple path of at most $N-1$ edges. Each product uses an AND layer and balanced fan-in-2 OR trees of depth $\lceil\log_2N\rceil$, and size $O(N^3)$. This directly builds a uniform polynomial-size depth-$O(\log^2n)$ circuit for every NL language.`,
+      caption: String.raw`Left: step through a depth-$d$ formula. The control record uses a branch path and saved left values, not a stack of gate addresses. The bit count includes traversal state and counters; the readout separately budgets a temporary gate address. The complete node table and colored history are animation data, not the log-space machine’s workspace. XOR is a constant-size abbreviation here. Right: click a matrix cell to toggle the underlying edge; green derived reachability may remain after removing an edge if another path exists. Diagonal identity entries are always included. After $k$ squarings the matrix records paths of length at most $2^k$.`,
       deps: ['cplx-4.10', 'toc-14.12'],
-      refs: ['Arora–Barak ch. 6'],
-      credit: 'A. Borodin, 1977 (“On relating time and space to size and depth”, SIAM J. Comput. 6: 733–744); squaring for reachability is the idea of Savitch, 1970',
+      refs: ['Borodin (1977), Theorems 2 and 4, Lemma 1; Arora–Barak (2007 draft), Exercises 6.12 and 6.14'],
+      credit: 'Allan Borodin (1977), Theorem 2, pp. 734–735, and Lemma 1/Theorem 4, p. 738; the path/status evaluation trick there is credited to S. Cook',
       links: { doi: 'https://doi.org/10.1137/0206054' },
-      verify: true,
       tags: ['NC', 'log space', 'reachability'],
       viz(v) {
         const dS = v.slider('formula depth $d$', 1, 4, 3, { int: true, onChange: () => rebuild() });
@@ -413,18 +397,8 @@ export default {
           const d = dS.value, nodes = {};
           const val = (k) => { if (k >= 2 ** d) return nodes[k] = { leaf: true, v: (hash32(`${seed},${k}`) >> 5) & 1 }.v; const n = { op: OP[hash32(`o${seed},${k}`) % 3] }; n.v = f2[n.op](val(2 * k), val(2 * k + 1)); nodes[k] = n; return n.v; };
           val(1);
-          const E = [];
-          const dfs = (k, stack) => {
-            E.push({ k, act: 'enter', stack: stack.slice() });
-            if (k >= 2 ** d) { E.push({ k, act: 'exit', v: nodes[k], stack: stack.slice() }); return; }
-            dfs(2 * k, stack.concat([[k, null]]));
-            const lv = nodes[2 * k].v ?? nodes[2 * k];
-            E.push({ k, act: 'mid', stack: stack.concat([[k, typeof lv === 'number' ? lv : lv]]) });
-            dfs(2 * k + 1, stack.concat([[k, typeof lv === 'number' ? lv : lv]]));
-            E.push({ k, act: 'exit', stack: stack.slice() });
-          };
-          dfs(1, []);
-          tree = { d, nodes }; ev = E.map((e, i) => ({ ...e, i }));
+          const walk = formulaWalk(nodes, d);
+          tree = { d, nodes, walk }; ev = walk.frames;
           if (S) S.reset(ev, { at: 'start' });
         }
         rebuild();
@@ -432,9 +406,8 @@ export default {
         const T = v.stage({ x: [0, 1], y: [-0.1, 1.05], axes: false, height: 380, weight: 1.3, minWidth: 300, title: 'NC¹ ⊆ L: depth-first evaluation with a short stack' });
         const M = v.stage({ x: [-1.4, 8.2], y: [-1.4, 9.1], axes: false, equal: true, height: 380, weight: 1, minWidth: 280, title: 'NL ⊆ NC²: reachability by squaring' });
         M.onClick((px, py) => { const j = Math.floor(px), i = 7 - Math.floor(py); if (i >= 0 && i < N && j >= 0 && j < N && i !== j) A0[i][j] ^= 1; });
-        const closure = (k) => { let P = A0.map((r, i) => r.map((x, j) => (i === j ? 1 : x))); for (let q = 0; q < k; q++) P = P.map((_, i) => P[i].map((__, j) => { for (let m = 0; m < N; m++) if (P[i][m] && P[m][j]) return 1; return 0; })); return P; };
+        const closure = k => squaredReachability(A0, k);
         const pos = (k) => { const l = Math.floor(Math.log2(k)), i = k - 2 ** l; return [(i + 0.5) / 2 ** l, 1 - l / (tree.d + 0.35) * 0.95]; };
-        const computed = new Set();
         v.render(() => {
           const d = tree.d, cur = ev[Math.min(S.i, ev.length - 1)], done = new Set(), stack = new Set(cur.stack.map((q) => q[0]));
           for (let q = 0; q <= S.i; q++) if (ev[q].act === 'exit') done.add(ev[q].k);
@@ -445,7 +418,6 @@ export default {
             const txt = k >= 2 ** d ? (isDone || k === cur.k ? String(vv) : '?') : GL[n.op];
             T.text(txt, x, y, { align: 'center', baseline: 'middle', size: 12, color: 'ink' });
           }
-          const mem = cur.stack.length + 1;
           T.text(`stack: ${cur.stack.length ? cur.stack.map((q) => `${GL[tree.nodes[q[0]].op]}${q[1] == null ? '·' : q[1]}`).join(' ') : '(empty)'}`, 0.02, -0.06, { size: 11, color: 'muted', baseline: 'middle' });
           // reachability
           const P = closure(kS.value);
@@ -457,11 +429,11 @@ export default {
           for (let i = 0; i < N; i++) { M.text(String(i), -0.5, 7 - i + 0.5, { align: 'center', baseline: 'middle', size: 11, color: 'muted' }); M.text(String(i), i + 0.5, 8.45, { align: 'center', baseline: 'middle', size: 11, color: 'muted' }); }
           M.text('from (rows) → to (columns)', 4, -0.8, { align: 'center', size: 11, color: 'muted' });
         });
-        v.legend([['accent', 'original edge / loop'], ['green', 'path of length ≤ 2ᵏ']]);
+        v.legend([['accent', 'original edge (identity loops green)'], ['green', 'path of length ≤ 2ᵏ']]);
         v.readout(() => {
           const cur = ev[Math.min(S.i, ev.length - 1)], d = tree.d, P = closure(kS.value);
           const need = Math.ceil(Math.log2(N - 1));
-          return `Walker memory now: path of ${cur.stack.length} entries + current node ≤ $d+1=${d + 1}$ bits for a formula of ${2 ** d} leaves ($\\log_2=${d}$).\nAfter $k=${kS.value}$ squarings the pair $(0,7)$ is ${P[0][7] ? '**joined**' : '**not yet joined**'} by a path of length $\\le${2 ** kS.value}$; ${need} squarings always suffice for $N=8$, each of depth $\\lceil\\log_2 8\\rceil+1$ (one AND layer, an OR tree of fan-in 8), total depth $\\approx${need * 4}$.`;
+          return `Control record now: ${cur.bits} bits (branch path, saved values, value/phase and counters); plus at most ${d + 1} bits for a recomputed gate address. Across this run: at most ${tree.walk.maxBits + d + 1} bits in this model, before uniformity-generator workspace. Formula: ${2 ** d} leaves, depth ${d}; full animation history is excluded.${S.i === ev.length - 1 ? ` Completed traversal output: **${tree.walk.value}**.` : ''}\nAfter $k=${kS.value}$ squarings the pair $(0,7)$ is ${P[0][7] ? '**joined**' : '**not yet joined**'} by a path of length $\\le${2 ** kS.value}$; ${need} squarings always suffice for $N=8$, each of depth $\\lceil\\log_2 8\\rceil+1$ (one AND layer, a fan-in-2 OR tree with 8 leaves), product depth ${need * 4}, excluding the configuration-graph construction.`;
         });
       },
     },

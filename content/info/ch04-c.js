@@ -3,11 +3,12 @@
 // Credits checked Oct 2026 against Crossref: Ziv & Lempel, IEEE Trans. IT 23 (3): 337–343 (1977) [abstract wording checked
 // on IEEE Xplore]; Ziv & Lempel, IEEE Trans. IT 24 (5): 530–536 (1978); Elias, IEEE Trans. IT 21 (2): 194–203 (1975).
 // Knuth & Yao, "The complexity of nonuniform random number generation", in Algorithms and Complexity (Academic Press, 1976),
-// pp. 357–428 (page range from two secondary citations). Kolmogorov 1965, Solomonoff 1964 and Chaitin 1966 from memory (verify).
-// Compressors in 4.13, 4.16 and 4.17 are small, honest implementations (LZ78 with a log-pointer code, an adaptive
-// Krichevsky–Trofimov code length, LZ77 with fixed-width triples): they give upper bounds, not the best possible lengths.
+// pp. 357–428 (page range from two secondary citations). Item 4.16 uses Grünwald–Vitányi's author chapter (2007).
+// Compressor examples include toy LZ formats and a fractional KT model loss.
+// Item 4.16 distinguishes emitted prefix bits, a constructive bound and unknown decoder constants.
 
 import { clamp, sum, H, h2, hashStr, LET, barEd, resizeP, lz78, lz78Bits, ktBits, markovRate, markovBits, bitsStr, mono, pw2, log2, commas } from './ch04.shared.js';
+import { complexityPlotData } from './complexity-audit.shared.js';
 
 const COL = ['accent', 'orange', 'teal', 'purple', 'pink', 'gold', 'green'];
 const lgx = (x) => Math.floor(Math.log2(x) + 1e-12);
@@ -108,7 +109,9 @@ so one scheme is asymptotically optimal for all such sources at once, although t
 **Elias delta code** $\delta(n)$: $\gamma(L+1)$ followed by the $L$ digits of $n$ after its leading 1; length $L+2\lfloor\log_2(L+1)\rfloor+1$.
 
 Both are prefix codes for all positive integers at once (no bound on $n$ is needed), and $\sum_{n\ge1}2^{-|\gamma(n)|}=1$. They are universal codes: for any decreasing probability law on the integers the expected length is within a constant factor ($\gamma$) or $1+o(1)$ factor ($\delta$ with $H\to\infty$) of the entropy.`,
-      idea: String.raw`A plain binary number is not self-delimiting: the decoder does not know where it stops. The gamma code fixes this by announcing the length first, in unary: $L$ zeros tell how many digits follow the first 1. That spends about $\log n$ bits on the number and another $\log n$ on its length. The delta code announces the length $L+1$ itself with the gamma code, which needs only $2\log\log n$ bits, so the total is $\log n+2\log\log n+O(1)$. Kraft's inequality (4.3) confirms the codes are prefix codes: $\gamma$ uses $2^L$ codewords of length $2L+1$ for each $L$, so $\sum_n2^{-|\gamma(n)|}=\sum_L2^L2^{-2L-1}=1$.`,
+      idea: String.raw`A plain binary number is not self-delimiting: the decoder does not know where it stops. The gamma code fixes this by announcing the length first, in unary: $L$ zeros tell how many digits follow the first 1. That spends about $\log n$ bits on the number and another $\log n$ on its length. The delta code announces the length $L+1$ itself with the gamma code, which needs only $2\log\log n$ bits, so the total is $\log n+2\log\log n+O(1)$. Kraft's inequality (4.3) confirms the codes are prefix codes: $\gamma$ uses $2^L$ codewords of length $2L+1$ for each $L$, so $\sum_n2^{-|\gamma(n)|}=\sum_L2^L2^{-2L-1}=1$.
+
+The gamma-code Kraft sum groups the $2^L$ integers with binary length $L+1$, each of code length $2L+1$. Their total contribution is $2^{-L-1}$. The geometric-series theorem pma-3.26 at ratio $1/2$ gives the full sum $1$ as $L$ runs from zero to infinity; its finite partial sum is $1-2^{-K-1}$ through level $K$. This checks the countably infinite Kraft mass, while the unary length field supplies the direct parsing argument.`,
       caption: String.raw`Choose an integer $n$ (log slider) and a code: its codeword is drawn with the unary length prefix in orange and the binary digits in blue. In the second box type several integers: their concatenated gamma/delta codewords form one bit stream with no separators, and the decoder reads it back, cutting it uniquely. Right: the codeword length against $n$ (log axis) for gamma, delta and plain binary; the gap above $\log_2n$ is the price of not knowing the size in advance.`,
       deps: ['info-4.3', 'pma-3.26'],
       refs: ['MacKay ch. 7'],
@@ -239,58 +242,44 @@ with $E=H(p)$ exactly when all $p_i$ are powers of $\frac12$. No scheme using fa
       num: '4.16',
       kind: 'Theorem',
       name: 'Kolmogorov complexity and entropy',
-      statement: String.raw`Let $K(x\mid n)$ be the prefix Kolmogorov complexity of a binary string $x$ of known length $n$ (the length of the shortest program for a fixed universal prefix computer that prints $x$, with $n$ supplied as auxiliary input), and let $X_1,\dots,X_n$ be i.i.d. Bernoulli($p$) (more generally, i.i.d. on a finite alphabet $\mathcal X$) with entropy $H(p)$. Then
-$$H(X^n)\ \le\ \mathbb E\,K(X^n\mid n)\ \le\ H(X^n)+|\mathcal X|\log_2n+c,$$
-and therefore $\dfrac1n\mathbb E\,K(X^n\mid n)\longrightarrow H(p)$. The expected description length per symbol of a random string is the entropy, even though $K$ of an individual string cannot be computed.`,
-      idea: String.raw`Program lengths form a prefix-free set, so $\mathbb E K\ge H$ by the source coding bound (4.5). For the upper bound, describe $X^n$ by its type (the first $|\mathcal X|-1$ symbol counts, at most $(|\mathcal X|-1)\lceil\log_2(n+1)\rceil$ bits) and then its index in the type class, at most $nH(\hat p)+1$ bits for empirical law $\hat p$ (3.7). This bound holds for every string, including atypical ones. Concavity gives $\mathbb E H(\hat p)\le H(p)$, so averaging yields $nH(p)+O(\log n)$ without dropping a tail of rare strings. A real compressor gives a computable **upper bound** on $K$, up to an additive constant for the decompressor; the true $K$ can be much smaller when a string has hidden structure.`,
-      caption: String.raw`For a biased coin with $P(1)=p$ the graph shows, for $p$ on a grid, the ideal or approximate description rate of one random string of length $n$ under two computable models: Krichevsky–Trofimov prediction (orange) and an LZ78 phrase-length estimate (purple). A fully specified terminated encoding built from either model, plus the fixed decoding-program overhead, bounds $K/n$; the plotted rates omit that overhead and termination rounding. The KT model hugs the entropy curve $h(p)$ (green) from $n$ in the hundreds, while LZ78 lies well above it and approaches it only slowly. Choose “pseudorandom” to feed the compressors the output of a tiny deterministic generator: it looks like a biased coin to them, but its true complexity is only the length of the generator, a constant, so the bound is far from tight. The right panel follows one value of $p$ as $n$ grows.`,
-      deps: ['toc-11.11', 'info-3.1', 'prob-1.6.2'],
-      refs: ['Cover–Thomas 2nd ed. §14.3 pp. 473–475, Lemma 14.3.1, Theorem 14.3.1 and Eqs. (14.26)–(14.35)'],
+      statement: String.raw`Fix a universal **conditional prefix machine** and a known finite alphabet $\mathcal X$ of size $m$. Let $K(x\mid n)$ be the length of its shortest self-delimiting program that prints $x$, with $n$ supplied for free. For $n\ge1$ i.i.d. symbols $X_1,\dots,X_n$ with any law $P$ on $\mathcal X$, there is a constant $c$ depending on the machine and fixed alphabet, but not on $n$ or $P$, such that
+$$nH(P)\;\le\;\mathbb E\,K(X^n\mid n)\;\le\;nH(P)+m\lceil\log_2(n+1)\rceil+1+c.$$
+Consequently $\mathbb E K(X^n\mid n)/n\to H(P)$. This is an **expectation** theorem, not a pointwise complexity estimate for each string. The alphabet and its representation are fixed; for a binary source $H(P)=h(p)$.`,
+      idea: String.raw`For fixed $n$, shortest prefix programs for different outputs form a prefix code, so the source-coding inequality gives the lower bound. For the upper bound, encode all $m$ type counts in $m\lceil\log_2(n+1)\rceil$ bits, followed by the string's rank among the $M_T$ strings of its type in $\lceil\log_2M_T\rceil$ bits (zero if $M_T=1$). Given $n$, the count field has fixed length and fixes the rank-field length, so this is a conditional prefix code. Every positive-probability type is uniform under an i.i.d. law; hence $\mathbb E\log_2M_T=H(X^n\mid T)\le H(X^n)=nH(P)$. A fixed decoder contributes $c$, giving the bound without a typical-sequence assumption or knowledge of $P$. A compressor yields $K(x\mid n)\le\ell(x)+c_{\rm decoder}$ only when its description is conditionally prefix-decodable; the decoder constant is generally unknown.`,
+      caption: String.raw`Choose a length and a followed coin bias, switch between two **seeded simulations**, and press Resample to change the seed. The left panel uses one string at each bias; the right panel uses prefixes of one string at the followed bias. Green is the ideal i.i.d. entropy. Orange is a constructive prefix-length bound for the add-half (KT) predictive distribution $Q$: $\lceil-\log_2Q(x)\rceil+1$, computed with exact integer rounding; these KT codewords are not emitted here. Purple is the actual bit length of a custom binary LZ78 parent/symbol pair code, decoded with $n$ known. Finite curves can lie above or below entropy; only the theorem concerns an ideal i.i.d. expectation.`,
+      deps: ['toc-11.11', 'info-3.1'],
+      refs: ['Grünwald–Vitányi, Algorithmic Information Theory (2007), Definition 6, p. 16; Theorem 10, p. 21 (computable distributions); elementary conditional type-class adaptation above'],
       tags: ['Kolmogorov complexity', 'entropy'],
-      credit: 'A. N. Kolmogorov, 1965 (Problems of Information Transmission 1 (1)); independently R. Solomonoff, 1964 and G. Chaitin, 1966; the entropy relation is Cover & Thomas, Thm 14.3.1',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Kolmogorov_complexity' },
+      credit: 'Origins of algorithmic complexity: R. J. Solomonoff (1964), A. N. Kolmogorov (1965), G. J. Chaitin (1966); see Grünwald–Vitányi (2007), §1',
+      scope: String.raw`The stated finite-alphabet conditional bound is derived by the displayed type-class code; it does not require computability of $P$. The source's Theorem 10 instead states the unconditional computable-distribution bound with overhead $K(P)+O(1)$. In the illustration, KT's fractional ideal loss is not an emitted code length. Its displayed integer bound uses a Shannon–Fano–Elias midpoint prefix construction; LZ78 emits real bit pairs and stops after the known $n$ decoded symbols. Each gives an upper bound on $K$ only after its own fixed decoder constant is added. Both browser generators are deterministic: with fixed bias, algorithm and seed, their prefixes have $K(x^n\mid n)\le C$ for an unspecified constant. Neither curve estimates actual $K$, and no numerical value is assigned to $C$.`,
+      links: { source: 'https://homepages.cwi.nl/~pdg/ftp/HPI.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Kolmogorov_complexity' },
       viz(v) {
-        const nS = v.slider('length $n$', 100, 20000, 4000, { int: true, log: true });
-        const pS = v.slider('followed value $p$', 0.02, 0.5, 0.15, { step: 0.01 });
-        const src = v.select('string comes from', [{ value: 'coin', label: 'random coin flips' }, { value: 'prng', label: 'pseudorandom generator' }], 'coin');
+        const nS = v.slider('length $n$', 100, 20000, 4000, { int: true, step:100 });
+        const pS = v.slider('followed bias $p$', 0.02, 0.5, 0.15, { step: 0.01 });
+        const src = v.select('seeded generator', [{ value: 'coin', label: 'coin-model simulation' }, { value: 'prng', label: 'xorshift simulation' }], 'coin');
         let seed = 9; v.button('Resample', () => { seed++; });
-        const s1 = v.stage({ x: [0, 0.52], y: [0, 1.5], height: 290, axes: 'box', gutter: true, xlabel: 'p = P(1)', ylabel: 'bits per symbol', title: 'compressed length per symbol, one string per $p$', minWidth: 320 });
-        const s2 = v.stage({ x: [100, 20000], y: [0, 1.5], xlog: true, height: 290, axes: 'box', gutter: true, xlabel: 'n', ylabel: 'bits per symbol', title: 'one value of $p$ as $n$ grows', minWidth: 320 });
-        const gen = (n, p, mode, key) => {
-          const x = new Uint8Array(n);
-          if (mode === 'coin') { const r = v.rng(hashStr(key)); for (let i = 0; i < n; i++) x[i] = r() < p ? 1 : 0; }
-          else { let s = 2463534242 >>> 0; for (let i = 0; i < n; i++) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; x[i] = s / 4294967296 < p ? 1 : 0; } }
-          return x;
-        };
-        const lzRate = (x) => { const P = lz78(x); return lz78Bits(P.length, 2) / x.length; };
-        let cache = null, info = {};
+        const s1 = v.stage({ x: [0, 0.52], y: [0, 1.5], height: 310, axes: 'box', gutter: true, xlabel: 'bias p', ylabel: 'bits per symbol', title: 'description lengths, one string per bias', minWidth: 320 });
+        const s2 = v.stage({ x: [100, 20000], y: [0, 1.5], xlog: true, height: 310, axes: 'box', gutter: true, xlabel: 'known length n', ylabel: 'bits per symbol', title: 'prefixes at the followed bias', minWidth: 320 });
+        let cache = null, info = null;
         v.render(() => {
-          const n = nS.value, mode = src.value, pf = pS.value;
-          const key = `${n}|${mode}|${seed}`;
-          if (!cache || cache.key !== key) {
-            const pts = [];
-            for (let i = 0; i < 25; i++) { const p = 0.02 + (0.48 * i) / 24, x = gen(n, p, mode, `${key}|${i}`); pts.push({ p, kt: ktBits(x) / n, lz: lzRate(x) }); }
-            cache = { key, pts };
+          const n = nS.value, p = pS.value, mode = src.value, key = `${n}|${p}|${mode}|${seed}`;
+          if (!cache || cache.key !== key) cache = {key,...complexityPlotData(n,p,mode,seed)};
+          const high1 = Math.max(1.05,...cache.grid.flatMap(q => [q.kt,q.lz]))*1.08;
+          const high2 = Math.max(1.05,...cache.curve.flatMap(q => [q.kt,q.lz]))*1.08;
+          s1.setView([0,.52],[0,high1]); s2.setView([100,20000],[0,high2]);
+          s1.path(Array.from({length:53},(_,i) => [i/100,h2(i/100)]),{color:'green',width:2.2});
+          for (const [field,color] of [['kt','orange'],['lz','purple']]) {
+            const grid = cache.grid.map(q => [q.p,q[field]]), curve = cache.curve.map(q => [q.n,q[field]]);
+            s1.path(grid,{color,width:1.5,alpha:.8}); s1.dots(grid,{color,r:3.5});
+            s2.path(curve,{color,width:2});
+            s2.dot(n,cache.selected[field],{color,r:4.5});
           }
-          s1.path(Array.from({ length: 53 }, (_, i) => [i / 100, h2(i / 100)]), { color: 'green', width: 2.2 });
-          s1.path(cache.pts.map((q) => [q.p, q.lz]), { color: 'purple', width: 1.4, alpha: 0.7 }); cache.pts.forEach((q) => s1.dot(q.p, q.lz, { r: 3.5, color: 'purple' }));
-          s1.path(cache.pts.map((q) => [q.p, q.kt]), { color: 'orange', width: 1.4, alpha: 0.7 }); cache.pts.forEach((q) => s1.dot(q.p, q.kt, { r: 3.5, color: 'orange' }));
-          if (mode === 'prng') { s1.hline(260 / n, { color: 'red', dash: true, width: 1.6 }); s1.text('illustrative generator-program rate', 0.51, 260 / n, { align: 'right', dy: -10, size: 11, color: 'red' }); }
-          s1.vline(pf, { color: 'faint', dash: true });
-          // convergence for p
-          const NN = 20000, x = gen(NN, pf, mode, `${mode}|${seed}|${pf}`), P = lz78(x), kt = [], lz = [];
-          let L = 0, n0 = 0, n1 = 0, j = 0; const marks = new Set(); for (let e = 0; e <= 40; e++) marks.add(Math.round(100 * Math.pow(200, e / 40)));
-          for (let i = 0; i < NN; i++) { const b = x[i], q1 = (n1 + 0.5) / (n0 + n1 + 1); L -= log2(b ? q1 : 1 - q1); if (b) n1++; else n0++; if (marks.has(i + 1)) { while (j < P.length && P[j].to <= i + 1) j++; kt.push([i + 1, L / (i + 1)]); lz.push([i + 1, lz78Bits(j + 1, 2) / (i + 1)]); } }
-          s2.hline(h2(pf), { color: 'green', width: 2.2 });
-          s2.path(lz, { color: 'purple', width: 2 }); s2.path(kt, { color: 'orange', width: 2 });
-          if (mode === 'prng') s2.path(kt.map(([m]) => [m, 260 / m]), { color: 'red', dash: true, width: 1.6 });
-          s2.vline(n, { color: 'faint', dash: true });
-          const q = cache.pts.reduce((b, c) => (Math.abs(c.p - pf) < Math.abs(b.p - pf) ? c : b));
-          info = { h: h2(pf), kt: kt[kt.length - 1][1], lz: lz[lz.length - 1][1], mode, n };
+          s1.vline(p,{color:'faint',dash:true}); s2.vline(n,{color:'faint',dash:true});
+          s2.hline(h2(p),{color:'green',width:2.2});
+          info = {n,p,h:h2(p),...cache.selected,seed};
         });
-        v.legend([['green', 'entropy $h(p)$'], ['orange', 'adaptive arithmetic coder (KT)'], ['purple', 'LZ78']]);
-        v.readout(() => `At $p=${v.fix(pS.value, 2)}$ the entropy is $h(p)=${v.fix(info.h, 3)}$ bits/symbol; after $20000$ symbols the arithmetic coder uses $${v.fix(info.kt, 3)}$ and LZ78 $${v.fix(info.lz, 3)}$ (model code-length rates; prefix termination and a fixed decoder overhead are needed for literal bounds on $K/n$; LZ78 converges more slowly).` + (info.mode === 'prng' ? ' The generator has a short program, so the true $K/n\\to0$ although both compressors stay near $h(p)$: they cannot see the structure.' : ''));
+        v.legend([['green','ideal i.i.d. entropy $h(p)$'],['orange','KT constructive prefix bound'],['purple','emitted LZ78 pair bits']]);
+        v.readout(() => info && String.raw`At $p=${v.fix(info.p,2)}$ and $n=${info.n}$: entropy $h(p)=${v.fix(info.h,3)}$; KT ideal loss $${v.fix(info.ideal,3)}$, constructive prefix bound $${v.fix(info.kt,3)}$, emitted LZ78 length $${v.fix(info.lz,3)}$ bits/symbol. Seed ${info.seed}. To bound $K/n$, add each decoder's unknown constant divided by $n$. Both plotted sources are seeded; fixed settings have a constant-size conditional generator description, whose size is not measured here.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.17

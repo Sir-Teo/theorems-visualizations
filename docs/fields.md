@@ -6,26 +6,6 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Everywhere
 
-For nonclosed motion, distinguish time for an angular sweep, radial period
-and full state recurrence. A radial-extrema size proxy is not automatically
-the semi-major axis of an ellipse. Check exceptional force laws before
-making claims about every other exponent.
-
-Observation controls should follow the calculated visibility condition,
-including near-horizon exceptions. Distinguish a nearby star from a celestial
-pole, an epoch-specific constant from a current ephemeris, and a schematic
-exaggeration from the quantity used in the readout.
-
-When labels are noisy, distinguish population loss against fresh noisy labels
-from disagreement with a clean latent rule. A noisy finite sample can still
-have zero training loss. Optimization controls must handle empty optima as
-well as nonempty solutions.
-
-A model-specific contribution is not a universal historical explanation.
-Check comparative claims against every available population and endpoint.
-Distinguish age-schedule replacement from causal intervention, and disclose
-open-ended age groups that a replacement control retains.
-
 - **The picture must be about this idea and must let the reader test it.** In every field there
   is an equivalent of "break a hypothesis and watch the conclusion fail". Find it and put it on a
   control.
@@ -35,11 +15,6 @@ open-ended age groups that a replacement control retains.
 - **Kinds.** Use the most honest kind (see docs/syllabus.md). The statement of a `Law`, `Model`
   or `Principle` should include the regime where it holds, either in the statement or in the
   optional `scope` field (rendered as "Holds when …").
-- **Historical reconstructions.** Cite the original passage and the later decipherment
-  or interpretation separately. Publication dates need not date the underlying discovery.
-  Distinguish a recomputed anagram from a transcription, a sampled continuous curve
-  from an equilibrated finite-link chain, and numerical feasibility from a real
-  structure's safety.
 - **Optional fields** shown on the page: `refs` (where to read more, e.g. `['Taylor §7.3']`),
   `credit` (who and when, e.g. `'Noether, 1918'`), `links` (`{ wikipedia: 'https://…' }`),
   `scope` (see above).
@@ -48,50 +23,9 @@ open-ended age groups that a replacement control retains.
   dimensionless sliders (ratios, multiples of a natural scale) when the absolute scale does not
   matter.
 
+- **Prerequisites are used inputs, not analogies.** Read the target proof and identify its step in the consumer, including hypotheses. Put a useful comparison in related links when it does not supply the argument. Synchronize complete raw dependency lists in the item and syllabus. Count field differences from actual collection metadata through the inventory helper; a topic name or folder prefix does not establish its field. For example, PROB belongs to mathematics while STAT belongs to statistics in this atlas.
+
 ## Mathematics (book-anchored and curated)
-
-State field characteristic and stochastic initial conditions locally. Apply
-prime-power cyclicity only in its valid cases. A numerical proximity guard
-is not an exact singularity test. Projection fallbacks must remain in the
-claimed subspace, including when the projected vector vanishes. Label
-scaled norms with their actual normalization and any denominator floor.
-
-Check an iterative formula at its declared initial index. Report a numerical
-maximum as a grid maximum, and distinguish finite-time quadrature values
-from an exact infinite-time limit.
-
-A zero functional has kernel the entire space and cannot define two distinct
-strip boundaries. Exclude a zero denominator from quotient-norm ratios and
-make boundary cases reachable in controls. Unequal deficiency indices mean
-no self-adjoint extension; additional boundary conditions cannot fix them.
-
-For series solutions, propagate recurrence failure into the display: an
-obstructed coefficient sequence is not a solution. Repeated roots can need
-a logarithmic partner. Distinguish a complex modulus from its oscillating
-real and imaginary components when interpreting log-amplitude slopes.
-
-Check zero vectors, zero-dimensional spaces and singular matrices before
-claiming rank one, a positive exponent or a positive determinant. State the
-field when a real quadratic-form counterexample fails over complex scalars.
-
-When an error estimate bounds a squared norm, choose the measure tolerance
-at the square of the desired norm error. Distinguish finite-stage set proxies
-from their limits and sampled maxima from certified suprema.
-
-Distinguish functions from almost-everywhere equivalence classes. Point
-evaluation may be undefined on a class, while evaluation on a continuous
-subspace is defined but unbounded. Scope local-average limits to continuity
-or Lebesgue points; distinguish exact identities from quadrature readouts.
-
-In complex function algebras, use conjugate squares for positivity. State when
-a drawing uses real-valued generators. A sampled positive minimum does not
-certify invertibility; supply a bound or an exact zero argument, including
-known zeros between sample points.
-
-Separate a finite search budget from unrestricted mathematical reachability.
-A bounded-length front need not be open; local extension can increase the
-budget. Use actual region clearance for claimed inscribed balls, and label
-grid connectivity or path lengths as numerical approximations.
 
 As in AUTHORING.md. Book-anchored collections (`pma`, `rca`, `fa`, `ladr`, …) use the book's
 numbering exactly. For linear algebra, work in ℝ² and ℝ³ with draggable vectors and matrices
@@ -99,37 +33,8 @@ you can edit by dragging the images of basis vectors; use the n×n routines in `
 SVD, QR, …) rather than hand-rolled ones, and show the invariant the theorem talks about (a span,
 an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
-Keep quantifiers and degenerate cases explicit: one example or one parameter value does
-not establish an every-state claim; zero vectors, coincident subspaces and ill-typed terms
-may change the conclusion. Distinguish pointwise properties of representatives from
-almost-everywhere norms, and coordinate changes within a fixed dimension from arbitrary
-maps between dimensions (agent sample statement/hypothesis review).
-For remainder algorithms, test an exact first division and define whether the initial
-divisor counts as the last nonzero remainder. A deliberately empty initial table and
-subpixel geometric examples should be explained rather than treated as render failures.
-For grid searches, label the grid optimum and residual separately from an exact solution.
-No feasible grid points does not establish an empty feasible set, and a rounded grid
-optimizer can have positive slack while the exact constraint is active.
-Lifting a solution of a polynomial congruence does not automatically preserve or
-increase multiplicative order. Primitive-root lifts need a representative with the
-right first nonzero prime-power term and a separate order argument.
-Determine quadrature rates from the actual transformed integrand. Adapting coordinates
-to a boundary can leave a square-root endpoint: the cylindrical ball midpoint sum has
-an N^(-3/2) rate, while its smooth spherical counterpart has an N^(-2) rate.
-
-For gauges, distinguish a minimum from an infimum and state whether the set
-contains its boundary. Check the origin before normalizing a ray. A labelled
-tangent shape must actually be tangent; a coarse ray search must not turn a
-small interior region into a false nonabsorbing example.
-
 ## Physics & astronomy, Earth & environment, engineering
 
-- Distinguish a classical differential law from its weak formulation: integrable
-  densities alone do not supply classical derivatives at every point. Label sampled
-  normalization scales and log-plot floors, and keep a cleared zero-field state visible.
-- Keep comparison curves at their labelled reference setting. A curve labelled
-  unindented must use zero indentation, and drag comparisons should state when
-  changing shape also changes the body's volume.
 - **Deps** are derivational: the derivation starts from that law or uses that theorem. A law
   taken as a postulate (Newton's second law, Maxwell's equations) may have only mathematical
   deps, or none.
@@ -140,23 +45,10 @@ small interior region into a false nonabsorbing example.
   for dissipative systems. Show phase space next to real space when it helps.
 - Show conserved quantities live (energy, momentum, angular momentum) and the quantity the law
   predicts beside the measured one (period vs amplitude, orbit period vs semi-major axis³ᐟ²).
-- Keep an assessed response, a simplified model and an elementary limiting estimate distinct.
-  For example, the black-body slope at an effective emission temperature does not by itself
-  give the assessed atmospheric Planck response. Check numerical comparisons in the explanation
-  as carefully as values in the simulation (agent sample finding: climate 3.4).
-- Classify a filter by its actual impulse response: feedback can have exact pole–zero
-  cancellation. A finite plotted or summed window cannot establish stability or the full
-  truncation error; use an analytic tail bound where available and distinguish zero-state
-  behavior from internal stability (agent sample finding: sig 3.12).
 
-- In parcel models, distinguish pressure adjustment from linearized buoyancy.
-  Density-gradient formulas need their compressibility or Boussinesq assumptions.
-  Sample nonlinear reference curves through the plotted interval, and check axis
-  ranges at inversions as well as ordinary lapse rates.
-
-- State the Fourier sign convention and check time advances against an actual
-  shifted causal response. Measure the resulting pre-zero signal and reconstruction
-  error; a conditional label alone does not establish a counter-example.
+- An equation count does not prove existence or uniqueness for arbitrary element laws. For network models, test coefficient and augmented ranks or establish the actual positivity/invertibility hypotheses; conflicting ideal sources can make a structurally balanced system inconsistent.
+- State the dimensionless quantity that must be small for an approximation. A small factor alone can fail when multiplied by a large interval or logarithm: the Newtonian rocket approximation requires small final rapidity, not only small exhaust speed. Check normalization and units when passing between a unit direction, four-velocity and four-acceleration. See the [REL peer](verification/rel-independent-peer-followup.md).
+- Distinguish signed response coefficients from positive measured magnitudes. At a band extremum strict Hessian signs need nondegeneracy; a quartic minimum can have a zero Hessian. A positive orbit period uses the absolute area derivative and the gradient projected into the orbit plane. See the [CM peer](verification/cm-crossfield-prerequisite-peer.md).
 
 ## Statistics & data science
 
@@ -172,31 +64,10 @@ small interior region into a false nonabsorbing example.
   mixture, Kolmogorov …) rather than hand-rolled laws.
 - Machine learning items train on data the reader places (click to add points) and show the
   generalization gap against the bound.
-
-For continuous covariates, state positivity under the target distribution almost
-everywhere. Distinguish population zeros from sparse empirical bins; restricting
-observed overlap changes the target and does not by itself remove model or
-sampling error. Compare an estimator with the truth for its own target group.
+- State the censoring/intensity assumptions behind event-count and observed-time identities. Informative censoring can invalidate a baseline constant-hazard interpretation; it is not covered by “whatever the censoring.” See the [independent EPI counterexample](verification/epi-prerequisites-independent-peer.md).
+- Atomless multivariate laws can still have atoms in a coordinate marginal (a continuous distribution on a vertical line is an example). Quantile witnesses for sampling bounds must be fixed independently of the sample, include boundary atoms and use the measure actually restricted to the target set. See the [ML peer](verification/ml-crossfield-prerequisite-peer.md).
 
 ## Computer science
-
-Differentiate displayed optimization objectives independently when validating
-Newton steps; a plausible path does not establish stationarity. Test a case
-with a closed-form optimizer and distinguish ideal arithmetic geometry from
-finite-precision complexity guarantees.
-
-Say which variables a probability guarantee is uniform over. A bound at one
-fixed sample size does not automatically cover an entire curve, repeated runs
-or a sample-dependent hypothesis class. Match summary grid sizes to labels.
-
-Match integer recursion trees to rounded recurrences. Separate exact operation
-counts from asymptotic leading terms, and count leaf rows separately from edge
-depth. A sufficient balance condition need not be necessary.
-
-For cryptographic experiments, state the sampled keys, nonce/counter distribution,
-output position and whether diffusion is measured before feedforward. Match
-the cipher variant to its specification. A finite bias threshold or avalanche
-measurement does not establish indistinguishability.
 
 - **Algorithms run on input the reader can edit**: drag graph nodes and edit weights
   (`v.graph(stage, …)` with `editable`), shuffle or type an array, draw points. Use the
@@ -207,23 +78,11 @@ measurement does not establish indistinguishability.
   analysis, the cut certifying a max flow.
 - **Break it**: negative edge weights for Dijkstra, a non-matroid for greedy, adversarial input
   for quicksort, a bad hash function, a graph with a cycle for topological sort.
-- **Count the displayed candidates**: a type-checker panel must include the computed
-  higher-order type before claiming a matching candidate. After erasing annotations,
-  distinguish a ground principal type (one type) from a principal type containing
-  variables (infinitely many instances). Test edited literals as well as abstractions.
 - Kinds: `Algorithm` (statement = what it computes plus its guarantee), `Theorem` for
   correctness/optimality/lower bounds, `Concept`, `Method`.
 
 ## Chemistry & materials
 
-- Separate a restricted trial family's energy error from correlation energy,
-  which uses the fully optimized Hartree–Fock reference. A variational upper
-  bound above a dissociation threshold fails to prove binding; it cannot
-  prove nonbinding.
-- A general electron wavefunction is a spatial spinor; product spatial/spin states
-  are special cases. Angular-momentum projection counts describe measurement outcomes,
-  not a set of definite three-dimensional vector directions.
-  Distinguish angular amplitude |Y| from probability density |Y|².
 - **Molecular and quantitative**: particles in a box (`v.mol` kit) whose measured pressure,
   speeds or reaction counts are compared with the macroscopic law; real constants (`v.M.CONST`,
   SI via `v.M.si`) and real substance data (van der Waals a, b; heats of formation) with sources
@@ -234,10 +93,6 @@ measurement does not establish indistinguishability.
   changes rates but not the equilibrium.
 - Spectra and orbitals: use `v.M.schrodinger1D` for 1D models, `v.M.wavelengthRGB` for colours;
   3D shapes through `v.scene3`.
-- In crystallography, separate lattice-plane geometry from empirical facet selection.
-  Rational staircase slopes imply a repeating pattern, not identical terraces; a finite
-  denominator search cannot certify irrationality. Check presets at every cell-aspect-ratio
-  endpoint (agent sample finding: xtal 1.4).
 
 ## Biology
 
@@ -249,16 +104,8 @@ measurement does not establish indistinguishability.
 - **Break it**: small N (drift), non-random mating, selection, migration, delays, stochasticity.
 - Sequences and trees: alignments as DP tables (`v.table`), phylogenies with the `tree` kit,
   genealogies backwards in time (coalescent).
-- Equal seed weight means equal hit chance per valid placement, not equal expected
-  hits in a fixed-length region. Account for span via `(L − span + 1) p^weight`,
-  and test same-weight randomizers at the minimum and maximum editable weights.
 
 ## Medicine & health
-
-- State identification assumptions before equating an adjusted association to a
-  causal effect. Distinguish a direct-effect control from a total-effect target.
-  Neutral causal links can remove numerical bias; a small display difference
-  is a tolerance, not proof of exact absence of bias.
 
 - **A simulated population the reader controls**: cohorts on lifelines (Lexis-style), with
   prevalence, risk and rates measured live and compared with the formulas; icon arrays of 100 or
@@ -285,6 +132,23 @@ measurement does not establish indistinguishability.
 - State models as models. "Comparative advantage" is a `Principle` (or a `Theorem` in a precise
   two-good Ricardian setting); "supply and demand" is a `Model`; "Giffen good" is a
   `Phenomenon`. Avoid presenting contested empirical claims as laws; say what the model assumes.
+- Keep historical observations separate from authored simulations. Identify the actual sample,
+  benchmark, units, time aggregation and horizon cohorts. Arithmetic return sums, compounded
+  wealth, population identities and finite-sample statistics answer different questions; a
+  residual or fitted parameter alone does not identify a causal effect. See the
+  [event-study and fund audit](verification/fin-events-funds-followup.md).
+- Match demographic numerators and exposure denominators by age, period and marital status.
+  Distinguish an adjusted reference schedule from an observed population or a biological bound,
+  and distinguish hypothetical marital allocations from measured data. Survival weighting in
+  net reproduction concerns the prospective mother's survival to childbearing. See the
+  [reproduction](verification/demo-reproduction-followup.md) and
+  [fertility-index](verification/demo-fertility-indices-followup.md) audits.
+- State the whole family a behavioral axiom constrains: checking one pair of alternatives does
+  not establish menu-wide independence. Include singleton menus and describe empty menus
+  honestly. In games, retain weak best replies at ties, distinguish a computed certificate from
+  an exact theorem, and state the update timing and convergence target. See the
+  [choice-axiom](verification/psych-luce-followup.md) and
+  [minimax/learning](verification/game-minimax-followup.md) audits.
 
 ## Arts, music & design
 
@@ -294,14 +158,6 @@ measurement does not establish indistinguishability.
 - Music theory items about structure (scales, chords, rhythm) use pitch-class clocks, the
   Tonnetz, piano rolls and necklaces; acoustics items use honest physics (standing waves solved,
   spectra computed by FFT).
-- Check the actual cyclic interval word before an adjacency argument: the diatonic
-  TTSTTTS word has no adjacent semitone pair. Fix a tonic when comparing parallel
-  modal collections as windows on the line of fifths.
-- Analyze the same sample buffer that the Listen control plays, and handle finite-window
-  releases explicitly. A finite click or noise burst need not have a perfectly flat spectrum;
-  distinguish these from ideal impulses and white-noise power spectra. State the integrability
-  or finite-energy assumptions when invoking Fourier inversion or Plancherel (agent sample
-  finding: music 4.5). Signal checks do not establish subjective listening quality.
 - Visual-art items use real optics and colour science (perspective projection computed, colour
   converted through actual colour spaces).
 - **Break it**: inharmonic partials, a different temperament, a vanishing point moved off the
@@ -309,13 +165,6 @@ measurement does not establish indistinguishability.
 
 ## Humanities
 
-- In articulatory models, label chosen turbulence and voicing thresholds as model
-  parameters. A pipe-flow Reynolds threshold does not classify every speech jet.
-  Test the actual noise gate below onset and across its transition; this runtime's
-  `smoothstep` takes one normalized argument, not two edges and a value.
-- In social-network experiments, distinguish found acquaintance chains from graph
-  shortest paths. Forwarding one folder to one chosen acquaintance is local routing;
-  breadth-first search explores neighbours in successive distance layers.
 - **Deps** in the history of technology are *enabling* dependencies: what an invention needed to
   exist (the printing press needs movable type, ink, paper and the screw press), plus the
   physics that explains how it works. Give `credit` with inventor and approximate date.
@@ -325,4 +174,11 @@ measurement does not establish indistinguishability.
 - Philosophy items are made concrete through decision problems, probability puzzles and models
   (the two-envelope paradox simulated, Bayesian confirmation computed). Present arguments fairly;
   where philosophers disagree, say so.
+- Specify the quantified domain, information available at each time, and permitted updates.
+  An outside-domain witness or an added no-exam outcome changes a premise; it does not fulfill
+  the original unrestricted claim. Editing a prior is different from conditioning that same
+  prior on an observation. A finite model should state which formulation it illustrates and
+  which semantic or epistemic assumptions it leaves outside its scope. See the
+  [barber](verification/phil-barber-followup.md) and
+  [surprise-examination](verification/phil-surprise-followup.md) audits.
 - Linguistics items work on real text and sound (Zipf's law on a passage, formant vowel charts).

@@ -7,7 +7,7 @@
 //   clouds +0.42 (−0.10 to +0.94); biogeophysical and non-CO2 biogeochemical −0.01; net −1.16 (−1.81 to −0.51).
 //   Water vapour alone 1.77 ± 0.20 (CMIP5/6, one s.d.), constant-RH lapse rate LR* −0.10 ± 0.07, Clausius–Clapeyron 1.36 ± 0.04.
 //   Arctic amplification ranges from a factor two to four in ESM projections of 21st-century warming (§7.4.4).
-import { GRID, esat, opticalDepths, longwave, BASE, lw } from './ch03.shared.js';
+import { GRID, esat, opticalDepths, longwave, BASE, Phi, PhiInv } from './ch03.shared.js';
 export * from './ch03.shared.js';
 
 export const AR6 = { planck: -3.22, wvlr: 1.30, albedo: 0.35, cloud: 0.42, other: -0.01, net: -1.16, wv: 1.77, lrStar: -0.10 };
@@ -83,42 +83,20 @@ export function pAtT(T, Tw) {
   return Tw > T[0] ? pm[0] : null;
 }
 
-/** Finite-volume steady warming on equal-area cells x=sin(latitude), with zero boundary flux.
- * The positive-definite restoring operator is also the stability condition for C dT/dt=F-A T.
- * An indefinite operator can have an algebraic solution without a stable climate equilibrium.
- */
-export function latitudeResponse(lam, D, F) {
-  const n = lam.length, a = [], b = [], c = [], rhs = [];
-  let pivot = 0, stable = true;
-  for (let j = 0; j < n; j++) {
-    const xl = j / n, xr = (j + 1) / n;
-    const left = j === 0 ? 0 : (1 - xl * xl) * D * n * n;
-    const right = j === n - 1 ? 0 : (1 - xr * xr) * D * n * n;
-    a.push(-left); b.push(left + right + lam[j]); c.push(-right); rhs.push(F);
-    pivot = j === 0 ? b[j] : b[j] - a[j] * a[j] / pivot;
-    if (!(pivot > 1e-12)) stable = false;
-  }
-  if (!stable) return { stable: false, dT: null, gmean: null, arctic: null, ratio: null };
-  const dT = tridiag(a, b, c, rhs), gmean = dT.reduce((s, t) => s + t, 0) / n;
-  const edge = Math.sin(70 * Math.PI / 180);
-  let sum = 0, area = 0;
-  for (let j = 0; j < n; j++) {
-    const w = Math.max(0, (j + 1) / n - Math.max(j / n, edge));
-    sum += w * dT[j]; area += w;
-  }
-  const arctic = sum / area;
-  return { stable: true, dT, gmean, arctic, ratio: arctic / gmean };
-}
-
-/** Central derivatives of OLR with fixed other coordinates; moisture coordinate is ln q. */
-export function columnKernels(c) {
-  const KT = [], KQ = [];
-  for (let i = 0; i < GRID.N; i++) {
-    const plus = c.T.slice(), minus = c.T.slice(); plus[i] += .5; minus[i] -= .5;
-    KT.push(lw(plus, c.Ts, 280, c.q).olr - lw(minus, c.Ts, 280, c.q).olr);
-    const qplus = c.q.slice(), qminus = c.q.slice(); qplus[i] *= Math.exp(.05); qminus[i] *= Math.exp(-.05);
-    KQ.push((lw(c.T, c.Ts, 280, qplus).olr - lw(c.T, c.Ts, 280, qminus).olr) / .1);
-  }
-  const KTs = lw(c.T, c.Ts + .5, 280, c.q).olr - lw(c.T, c.Ts - .5, 280, c.q).olr;
-  return { KT, KQ, KTs, base: lw(c.T, c.Ts, 280, c.q).olr };
+/** Roe–Baker transform conditioned on the stable branch f < 1.
+ * The discarded probability is returned separately; histogram mass beyond the
+ * displayed window must not be renormalized into the visible bars. */
+export function stableFeedbackLaw(mu, sigma, dT0) {
+  if (!(sigma > 0 && dT0 > 0)) throw new RangeError('Positive uncertainty and no-feedback warming required');
+  const stable = Phi((1 - mu) / sigma);
+  const pf = (f) => Math.exp(-0.5 * ((f - mu) / sigma) ** 2) / (sigma * Math.sqrt(2 * Math.PI));
+  const cdf = (s) => s <= 0 ? 0 : Math.min(1, Phi((1 - dT0 / s - mu) / sigma) / stable);
+  const quantile = (p) => {
+    if (p <= 0) return 0;
+    if (p >= 1) return Infinity;
+    return dT0 / (1 - mu - sigma * PhiInv(p * stable));
+  };
+  return { stable, runaway: 1 - stable, cdf, quantile,
+    density: (s) => s <= 0 ? 0 : (dT0 / (s * s)) * pf(1 - dT0 / s) / stable,
+    exceedance: (s) => Math.max(0, 1 - cdf(s)) };
 }

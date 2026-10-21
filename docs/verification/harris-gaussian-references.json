@@ -1,0 +1,54 @@
+{
+  "precisionDigits": 70,
+  "method": "mpmath adaptive quadrature of absolute Gaussian density difference, split at independently solved polynomial crossings",
+  "rows": [
+    {
+      "mean": 0.0,
+      "variance": 1.0,
+      "stationaryVariance": 1.0,
+      "tv": "0.0"
+    },
+    {
+      "mean": 0.3,
+      "variance": 0.25,
+      "stationaryVariance": 1.0,
+      "tv": "0.3479326763029828859470150885368093607861177379131911702969481940127764"
+    },
+    {
+      "mean": 3.0,
+      "variance": 1.0,
+      "stationaryVariance": 1.0,
+      "tv": "0.8663855974622838679910119180402278409542096286775571151874245313342223"
+    },
+    {
+      "mean": 12.0,
+      "variance": 0.1,
+      "stationaryVariance": 1.0,
+      "tv": "0.9999999999999999999330481580330944790616882962805945253889001270925695"
+    },
+    {
+      "mean": -6.0,
+      "variance": 4.0,
+      "stationaryVariance": 1.0,
+      "tv": "0.9574128317177068141936908042603253582877493087928331509232248201419077"
+    },
+    {
+      "mean": 0.0,
+      "variance": 9.0,
+      "stationaryVariance": 1.0,
+      "tv": "0.4843279965316994324467501136169671890747724972595598923675671811494182"
+    },
+    {
+      "mean": 0.01,
+      "variance": 0.9999,
+      "stationaryVariance": 1.0,
+      "tv": "0.00398955579075895695543148200423434223275091961880428380760255853012152"
+    },
+    {
+      "mean": 2.570243131302067,
+      "variance": 10.087021801179347,
+      "stationaryVariance": 10.256410256410257,
+      "tv": "0.3130306100386856796314966773487951418259611493759924978874955280193111"
+    }
+  ]
+}

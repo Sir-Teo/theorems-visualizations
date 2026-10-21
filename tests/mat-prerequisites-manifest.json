@@ -1,0 +1,249 @@
+{
+  "entries": [
+    {
+      "num": "1.1",
+      "file": "content/mat/ch01.js",
+      "added": [
+        "mech-3.3",
+        "pma-5.8"
+      ],
+      "expectedDeps": [
+        "qchem-5.2",
+        "mech-3.3",
+        "pma-5.8"
+      ],
+      "append": "In each prescribed smooth pair-potential model, conservative work is minus the potential difference (mech 3.3); its infinitesimal form is the stated force $F=-U\\prime(r)$. The interior well minimum has zero derivative by pma 5.8, so it is a zero-force separation. The chosen potential shape and positive curvature identify the stable well; stationarity alone would not distinguish it from a maximum. These mechanics steps concern the model curve, not a proof of the empirical melting-point trend or a many-body bonding theory."
+    },
+    {
+      "num": "1.2",
+      "file": "content/mat/ch01.js",
+      "added": [
+        "pma-5.15"
+      ],
+      "expectedDeps": [
+        "mat-1.1",
+        "qchem-5.2",
+        "pma-5.15"
+      ],
+      "append": "For the smooth Morse potential at its nondegenerate minimum, Taylor's theorem (pma 5.15) gives $U(r_0+\\xi)=U(r_0)+U\\prime(r_0)\\xi+U\\prime\\prime(r_0)\\xi^2/2+O(\\xi^3)$ locally. The linear term vanishes and $U\\prime\\prime(r_0)>0$. Applying the same theorem to $U\\prime$ gives the restoring force $-k\\xi+O(\\xi^2)$. Thus Hooke's law is a local approximation with a remainder, not an assertion of harmonic response through the force maximum or of a nonzero modulus at every possible flat potential minimum."
+    },
+    {
+      "num": "1.3",
+      "file": "content/mat/ch01.js",
+      "added": [
+        "prob-4.1.1a"
+      ],
+      "expectedDeps": [
+        "mat-1.1",
+        "qchem-5.12",
+        "cm-3.9",
+        "prob-4.1.1a"
+      ],
+      "append": "The numerical mean uses a finite interval of bond lengths with positive Boltzmann weight. On any larger finite reference interval, this weight can first be normalized to a probability density. Conditional expectation on the displayed interval (the partition case of prob 4.1.1a) is then the ratio of the weighted first moment to the interval's probability; the reference normalization cancels. Bond length is bounded there, so integrability holds. This justifies the widget's truncated average, not a normalized full-line distribution for an unconfined Morse bond and not the local cubic perturbation formula at arbitrary temperature."
+    },
+    {
+      "num": "1.5",
+      "file": "content/mat/ch01.js",
+      "added": [
+        "ladr-6.14"
+      ],
+      "expectedDeps": [
+        "xtal-3.11",
+        "ladr-6.14"
+      ],
+      "append": "Set $x_i=n_i^2$, so $x_i\\ge0$ and $\\sum_i x_i=1$. Cauchy–Schwarz (ladr 6.14), applied to $(x_1,x_2,x_3)$ and $(1,1,1)$, gives $\\sum_i x_i^2\\ge1/3$. Therefore $q=x_1x_2+x_2x_3+x_3x_1=(1-\\sum_i x_i^2)/2$ lies between zero and one third. Equality occurs on a cube axis and a body diagonal respectively. Since the displayed reciprocal modulus is affine in q, positive elastic compliance puts its directional extrema there; when that coefficient vanishes, it is isotropic. This bounds the given cubic formula rather than deriving arbitrary crystal constitutive data."
+    },
+    {
+      "num": "1.6",
+      "file": "content/mat/ch01.js",
+      "added": [
+        "vcalc-1.3"
+      ],
+      "expectedDeps": [
+        "xtal-4.2",
+        "xtal-1.5",
+        "vcalc-1.3"
+      ],
+      "append": "For two primitive translation vectors in the chosen planar atom net, vcalc 1.3 identifies the cell area with the magnitude of their cross product. One lattice point belongs to a primitive cell, so its reciprocal area is the planar density. For fcc (111), primitive in-plane vectors $a(1,-1,0)/2$ and $a(1,0,-1)/2$ have cross-product area $\\sqrt3a^2/4$, yielding the stated $4/(\\sqrt3a^2)$. This area calculation is local to the specified atomic net; it does not by itself establish a general density-times-crystallographic-spacing identity."
+    },
+    {
+      "num": "1.7",
+      "file": "content/mat/ch01.js",
+      "added": [
+        "pma-8.6"
+      ],
+      "expectedDeps": [
+        "mat-1.2",
+        "pma-8.6"
+      ],
+      "append": "Positive density, modulus and performance index permit the logarithm laws of pma 8.6. Writing $M=E^{1/p}/\\rho$ gives $\\log E=p\\log\\rho+p\\log M$, so a constant index is the displayed straight line. Strict increase of log preserves the ordering of candidate indices when the selection line moves. This is an algebraic consequence of the assumed stiffness-limited geometry; a straight line on the chart does not validate a strength, cost or damage constraint absent from that model."
+    },
+    {
+      "num": "2.1",
+      "file": "content/mat/ch02.js",
+      "added": [
+        "comb-1.6",
+        "pma-5.8"
+      ],
+      "expectedDeps": [
+        "pchem-9.1",
+        "pchem-3.10",
+        "comb-1.6",
+        "pma-5.8"
+      ],
+      "append": "The vacancy microstate count is exactly the binomial coefficient in comb 1.6: select n empty sites from N distinguishable sites. Differentiation is applied only after the thermodynamic, large-population Stirling approximation replaces that discrete count by a smooth free energy. Its positive interior minimum obeys pma 5.8; the dilute approximation gives $Q_v-TS_f+k_BT\\log(n/N)=0$, with positive curvature $k_BT/n$. Solving yields the stated dilute fraction. This is not an exact stationary-point calculation on an integer count or a guarantee that the minimizing count of every small finite crystal is nonzero."
+    },
+    {
+      "num": "2.2",
+      "file": "content/mat/ch02.js",
+      "added": [
+        "comb-1.1"
+      ],
+      "expectedDeps": [
+        "mat-2.1",
+        "xtal-1.9",
+        "comb-1.1"
+      ],
+      "append": "For a dilute ideal placement model, the choices of vacancy sites and partner sites form a Cartesian product. The product rule (comb 1.1) multiplies their counts: for Schottky pairs $\\binom Nn^2$, and for Frenkel pairs $\\binom Nn\\binom{N_i}n$. Their logarithms therefore add in the configurational entropy. The equal partner populations make the dilute mass-action product a square and produce the half activation exponent. This counting assumes noninteracting placements and fixed site populations; it does not compare two mechanisms while silently discarding different site-count or entropy prefactors."
+    },
+    {
+      "num": "2.5",
+      "file": "content/mat/ch02.js",
+      "added": [
+        "prob-2.2.1"
+      ],
+      "expectedDeps": [
+        "mat-2.1",
+        "mat-2.4",
+        "prob-2.2.1"
+      ],
+      "append": "For an ideal unbiased walk with fixed n jumps of length a, finite-variance uncorrelated coordinate increments satisfy variance additivity (prob 2.2.1). Isotropy gives variance $na^2/d$ in each of d dimensions, hence total mean-square displacement $na^2$. With mean jump count $\\Gamma t$, comparison with $2dDt$ gives $D=\\Gamma a^2/(2d)$: one sixth in three dimensions, one fourth for a square-lattice drawing. Vacancy return correlations violate the uncorrelated-step hypothesis and require the separate correlation correction mentioned above; the ideal variance argument does not remove it."
+    },
+    {
+      "num": "2.6",
+      "file": "content/mat/ch02.js",
+      "added": [
+        "pde-3.8"
+      ],
+      "expectedDeps": [
+        "pchem-10.2",
+        "mat-2.5",
+        "pde-3.8"
+      ],
+      "append": "Subtract the fixed surface value and apply the odd-reflection half-line heat construction pde 3.8 with diffusivity D. The initial datum on the positive half-line is the constant $C_0-C_s$; convolution of its odd extension with the heat kernel gives $(C_0-C_s)\\operatorname{erf}(x/(2\\sqrt{Dt}))$. Adding back $C_s$ yields the displayed profile. The instantaneous surface step is incompatible with corner continuity at $x=t=0$; the formula concerns $x\\ge0,t>0$ and the initial limit at each $x>0$. Constant D and the semi-infinite geometry remain essential."
+    },
+    {
+      "num": "2.7",
+      "file": "content/mat/ch02.js",
+      "added": [
+        "pma-8.6"
+      ],
+      "expectedDeps": [
+        "mat-2.5",
+        "kin-2.1",
+        "pma-8.6"
+      ],
+      "append": "With positive $D_0,T$ and fixed activation parameters, the inverse-exponential and product laws pma 8.6 give $\\log D=\\log D_0-Q/(RT)$. This is the exact affine dependence on reciprocal temperature used by the plot. For two temperatures the same laws give the diffusivity ratio without estimating a numerical slope from the picture. The line interpretation holds for the chosen single mechanism; adding mechanisms or changing phase does not preserve one constant activation slope."
+    },
+    {
+      "num": "2.8",
+      "file": "content/mat/ch02.js",
+      "added": [
+        "pma-5.15"
+      ],
+      "expectedDeps": [
+        "mat-2.6",
+        "pchem-10.3",
+        "pma-5.15"
+      ],
+      "append": "Taylor's theorem (pma 5.15) applies to $f(T)=1/T$ on any closed positive-temperature interval joining $T$ and $T+\\Delta T$. It gives $f(T+\\Delta T)=1/T-\\Delta T/T^2+(\\Delta T)^2/\\xi^3$ for an intermediate positive xi. Substitution in the exact logarithm of the treatment-time ratio gives the stated first-order exponent and its quadratic remainder. The approximation requires a sufficiently small temperature step relative to T; the exact exponential ratio is the comparison for finite steps."
+    },
+    {
+      "num": "2.11",
+      "file": "content/mat/ch02.js",
+      "added": [
+        "prob-1.2.5"
+      ],
+      "expectedDeps": [
+        "mat-2.6",
+        "prob-1.2.5"
+      ],
+      "append": "The normalization proved for the standard normal density (prob 1.2.5), followed by scaling and its even symmetry, gives $\\int_0^\\infty e^{-x^2/(4Dt)}dx=\\sqrt{\\pi Dt}$. The drive-in Gaussian therefore integrates to Q on the half-line, as required by the no-flux surface and fixed dose. This checks its amplitude, not merely its width. Its use as the late drive-in approximation still requires $D_2t_2\\gg D_1t_1$ and the constant-diffusivity hypotheses; it does not make every finite pre-deposition profile exactly Gaussian."
+    },
+    {
+      "num": "3.5",
+      "file": "content/mat/ch03.js",
+      "added": [
+        "ladr-6.13"
+      ],
+      "expectedDeps": [
+        "mat-3.4",
+        "ladr-6.13"
+      ],
+      "append": "Successive orthogonal decompositions (ladr 6.13) resolve the unit tensile axis into its components a and b along the orthogonal unit slip normal and slip direction, plus a perpendicular residual. Thus $a^2+b^2\\le1$, and $2|ab|\\le a^2+b^2\\le1$. This proves the Schmid bound in magnitude and locates its equality at equal-magnitude components with no residual. The stress required for slip still uses the stipulated common critical resolved shear stress; projection geometry alone does not establish that constitutive assumption."
+    },
+    {
+      "num": "3.6",
+      "file": "content/mat/ch03.js",
+      "added": [
+        "pma-8.6",
+        "pma-6.21"
+      ],
+      "expectedDeps": [
+        "mat-3.3",
+        "pma-8.6",
+        "pma-6.21"
+      ],
+      "append": "The logarithm in pma 8.6 has derivative $1/r$ for positive r. With finite cutoffs $0<r_0<R$, the fundamental theorem (pma 6.21) therefore evaluates the radial elastic-energy integral as $\\log R-\\log r_0=\\log(R/r_0)$. The cutoffs make the integral finite; sending either endpoint to a singular limit is a separate operation. This supplies the logarithmic size dependence of the stated straight-line continuum estimate, not its core energy, universal line tension or the total energetic favorability of every possible split."
+    },
+    {
+      "num": "3.9",
+      "file": "content/mat/ch03-b.js",
+      "added": [
+        "ladr-3.21",
+        "ladr-6.70"
+      ],
+      "expectedDeps": [
+        "mat-3.4",
+        "ladr-3.21",
+        "ladr-6.70"
+      ],
+      "append": "Symmetric three-by-three tensors have six independent entries, and trace is a surjective linear functional onto the scalars. Rank-nullity (ladr 3.21) makes its zero-trace kernel five-dimensional. The slip tensors lie in this kernel because their normal and direction are orthogonal. In the widget's orthonormal five-coordinate representation, the pseudoinverse theorem ladr 6.70 gives the closest attainable strain and, among its shear representations, the minimum-norm one. Numerical rank/pseudoinverse use finite precision. Full span is a kinematic condition, not sufficient evidence of ductility when activation stresses, sign constraints or other mechanisms matter."
+    },
+    {
+      "num": "3.12",
+      "file": "content/mat/ch03-c.js",
+      "added": [
+        "pma-5.8"
+      ],
+      "expectedDeps": [
+        "mat-3.6",
+        "xtal-1.5",
+        "pma-5.8"
+      ],
+      "append": "For positive separation and the stated positive constants, $U(d)=-C\\log(d/d_0)+\\gamma_{\\rm SF}d$ is smooth. An interior minimizing separation must satisfy $U\\prime(d)=0$ by pma 5.8, giving $d=C/\\gamma_{\\rm SF}$. Here $U\\prime\\prime=C/d^2>0$ everywhere, and the endpoint energies diverge, so this stationary point is the unique minimum of this isolated model. These checks establish more than stationarity; omitted core, anisotropy, applied stress and finite-grain effects remain outside the estimate."
+    },
+    {
+      "num": "4.1",
+      "file": "content/mat/ch04.js",
+      "added": [
+        "pma-8.6"
+      ],
+      "expectedDeps": [
+        "mat-1.2",
+        "pma-8.6"
+      ],
+      "append": "Successive positive length ratios multiply, while the logarithm product law pma 8.6 makes their true-strain increments add. Its derivative $1/L$ gives the infinitesimal measure $dL/L$ and the finite strain $\\log(L/L_0)=\\log(1+e)$ for $e>-1$. Uniform volume conservation separately supplies $A=A_0/(1+e)$ and hence the stated stress conversion. Logarithmic strain does not restore uniformity after a neck develops; the conversion still needs the geometry hypotheses above."
+    }
+  ],
+  "rowRepairs": {
+    "2.9": [
+      "mat-2.5",
+      "mat-2.6"
+    ],
+    "4.11": [
+      "mat-4.3",
+      "mat-4.5"
+    ]
+  }
+}

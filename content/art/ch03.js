@@ -1,3 +1,5 @@
+import{newtonCircleConcept}from'./source-audit-optics-items.js';
+import{spectralItem}from'./source-audit-spectra.js';
 // Visual Art & Color — Chapter 3: Light, spectra and colour mixing (items 3.1–3.7; 3.8–3.13 are in ch03-b.js)
 import { cmf, cmfT, specRGB, rgbOf, spdXYZ, xyOf, xyz2lin, lin2srgb, planck, bbXYZ, gauss, sigm, nBK7, nWater, specBars, drawChromaticity, SRGB, LOCUS, dominant, NEWTON, circPt, arcCentroid, newtonMix, arcAt, mixXYZ, rad, deg } from './ch03.shared.js';
 
@@ -140,183 +142,10 @@ For a prism of apex angle $A$ the deviation of a ray with incidence angle $i$ is
         v.readout(() => `$n(400\\,\\text{nm})=${v.fix(info.n4, 4)}$, $n(700\\,\\text{nm})=${v.fix(info.n7, 4)}$ · the 550 nm ray is deviated by $${v.fix(Math.abs(info.dev), 2)}^\\circ$ (minimum deviation needs incidence $${v.fix(info.im, 1)}^\\circ$, i.e. $D_{\\min}=2i-A=${v.fix(2 * info.im - Aang.value, 2)}^\\circ$)\nangle between the 400 nm and 700 nm rays leaving the ${second.value ? 'last prism' : 'prism'}: $${v.fix(Math.abs(info.spread), 4)}^\\circ$ · vertical separation of the two on the screen: $${v.fix(info.width, 3)}$ (beam width $0.5$)`);
       },
     },
-    // ------------------------------------------------------------------ 3.2
-    {
-      num: '3.2',
-      kind: 'Concept',
-      name: 'Spectral power distributions',
-      credit: 'CIE 1931 standard observer; Wyman, Sloan & Shirley, 2013 (analytic fit used here)',
-      statement: String.raw`A light is described by its **spectral power distribution** $S(\lambda)$: the power it carries per unit wavelength, over the visible range $380$–$780$ nm. The eye reduces this whole curve to three numbers, the responses of its three cone types, and the standard way to compute them is to integrate against the CIE colour-matching functions:
-$$X=\int S\,\bar x\,d\lambda,\qquad Y=\int S\,\bar y\,d\lambda,\qquad Z=\int S\,\bar z\,d\lambda .$$
-Two lights with different $S$ but the same $(X,Y,Z)$ look identical (metamers); a light with a narrow line or a smooth hump can be as bright and as white as another one with a completely different curve.`,
-      idea: String.raw`A spectrum is a point in an infinite-dimensional space, vision keeps only three linear functionals of it, and so the map from spectra to perceived colour has a huge kernel: that is the whole reason three primaries can imitate any colour (art-3.5). The colour a surface shows depends on the light as much as on the surface, because the reflected spectrum is the product $S(\lambda)R(\lambda)$: a lamp lacking the wavelengths a pigment reflects makes it look dark.`,
-      caption: String.raw`Choose a lamp: the curve is its spectrum, each bar tinted with the colour of its own wavelength. The swatches on the right are what a camera with fixed white balance would record for a white card and four coloured cards lit by that lamp. Compare the LED with sunlight: very different curves, almost the same white. Switch on “eye adapts” to rescale the lamp’s white to daylight white, as the visual system roughly does; the sodium lamp stays nearly monochromatic and cannot be rescued.`,
-      deps: ['art-3.1'],
-      refs: ['Fairchild ch. 3'],
-      tags: ['spectrum', 'colorimetry', 'metamerism'],
-      scope: String.raw`The curves are models, not measurements: the sun is a $5772$ K black body (the IAU nominal solar effective temperature), the incandescent lamp a $2856$ K black body (CIE illuminant A), the LED a blue Gaussian plus a broad phosphor Gaussian of generic shape, sodium its two D lines at $588.995$ and $589.592$ nm with intensities $2:1$. The card reflectances are smooth model curves. Colours use the standard-observer fit of the colour-matching functions and the sRGB primaries.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Spectral_power_distribution' },
-      viz(v) {
-        const SRC = {
-          sun: { f: (l) => planck(l, 5772), lines: null, label: 'sunlight (5772 K black body)' },
-          tung: { f: (l) => planck(l, 2856), lines: null, label: 'incandescent lamp (2856 K black body)' },
-          led: { f: (l) => 1.8 * gauss(l, 450, 22) + gauss(l, 570, 120), lines: null, label: 'white LED (blue pump + phosphor, model)' },
-          na: { f: () => 0, lines: [[588.995, 1], [589.592, 0.5]], label: 'sodium lamp (D lines)' },
-          eq: { f: () => 1, lines: null, label: 'equal-energy spectrum (CIE illuminant E)' },
-        };
-        const sel = v.select('light source', [{ value: 'sun', label: 'sunlight' }, { value: 'tung', label: 'incandescent' }, { value: 'led', label: 'white LED' }, { value: 'na', label: 'sodium lamp' }, { value: 'eq', label: 'equal energy' }], 'sun');
-        const adapt = v.toggle('eye adapts to the lamp’s white', false);
-        const S1 = v.stage({ x: [380, 780], y: [0, 1.18], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'relative power', height: 330, weight: 1.35, title: 'spectral power distribution $S(\\lambda)$' });
-        const S2 = v.stage({ x: [0, 6.4], y: [0, 3.9], axes: false, equal: true, height: 330, weight: 0.85, minWidth: 250, title: 'the lamp, and cards lit by it' });
-        const cards = [
-          { name: 'white', R: () => 0.9 },
-          { name: 'red', R: (l) => 0.05 + 0.85 * sigm((l - 595) / 10) },
-          { name: 'green', R: (l) => 0.05 + 0.55 * gauss(l, 540, 80) },
-          { name: 'blue', R: (l) => 0.05 + 0.6 * gauss(l, 450, 70) },
-          { name: 'yellow', R: (l) => 0.05 + 0.85 * sigm((l - 515) / 12) },
-        ];
-        const xyzOf = (src, R) => {
-          const c = spdXYZ((l) => src.f(l) * R(l), 5);
-          if (src.lines) for (const [l, p] of src.lines) { const m = cmf(l), r = R(l); c[0] += 4 * p * r * m[0]; c[1] += 4 * p * r * m[1]; c[2] += 4 * p * r * m[2]; }
-          return c;
-        };
-        const HPE = [[0.4002, 0.7076, -0.0808], [-0.2263, 1.1653, 0.0457], [0, 0, 0.9182]], HI = v.M.inverse(HPE), D65 = [0.9505, 1, 1.089];
-        const adaptXYZ = (c, w) => { const a = v.M.matVec(HPE, w), b = v.M.matVec(HPE, D65), q = v.M.matVec(HPE, c); return v.M.matVec(HI, q.map((u, i) => (u * b[i]) / a[i])); };
-        let info = {};
-        v.render(() => {
-          const src = SRC[sel.value], w = xyzOf(src, () => 1), Yw = w[1];
-          let fmax = 0;
-          const f = (l) => src.f(l);
-          for (let l = 380; l <= 780; l += 2) fmax = Math.max(fmax, f(l));
-          if (src.lines) {
-            for (const [l, p] of src.lines) { S1.line(l, 0, l, p, { color: specRGB(l, 0.55), width: 4 }); }
-            S1.text('two lines, 589.0 and 589.6 nm', 610, 0.9, { align: 'left', size: 11, color: 'muted' });
-          } else {
-            specBars(S1, (l) => f(l) / fmax, 380, 780, 2, { alpha: 0.85 });
-            S1.fn((l) => f(l) / fmax, { color: 'ink', width: 1.6, domain: [380, 780] });
-          }
-          S1.text(src.label, 384, 1.1, { align: 'left', size: 12, color: 'ink' });
-          // swatches
-          const paint = (R, x0, y0, x1, y1, nm) => {
-            let c = xyzOf(src, R).map((u) => u / Yw);
-            if (adapt.value) c = adaptXYZ(c, w.map((u) => u / Yw));
-            const rgb = rgbOf(c.map((u) => u * 0.8));
-            S2.rect(x0, y0, x1, y1, { fill: rgb, stroke: false, fillAlpha: 1, radius: 8 });
-            S2.text(nm, (x0 + x1) / 2, y0 - 0.08, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
-            return c;
-          };
-          const c0 = paint(() => 1, 0.1, 1.9, 3.2, 3.6, 'white card');
-          cards.slice(1).forEach((cd, i) => paint(cd.R, 0.1 + i * 1.6, 0.45, 0.1 + i * 1.6 + 1.4, 1.5, cd.name));
-          const sun = xyOf(xyzOf(SRC.sun, () => 1)), me = xyOf(w);
-          info = { xy: me, dsun: Math.hypot(me[0] - sun[0], me[1] - sun[1]), Yw, clip: rgbOf(w.map((u) => (u / Yw) * 0.8)).clip };
-        });
-        v.legend([['ink', 'spectrum'], ['accent', 'bars: colour of each wavelength']]);
-        v.readout(() => `chromaticity of the lamp: $x=${v.fix(info.xy[0], 4)},\\ y=${v.fix(info.xy[1], 4)}$ · distance from sunlight in the $xy$ plane: $${v.fix(info.dsun, 4)}$${sel.value !== 'sun' && info.dsun < 0.02 ? ' (almost the same colour as sunlight, from a different curve)' : ''}${info.clip > 0.02 ? ' · this colour lies outside the sRGB gamut and is shown desaturated' : ''}\nthe display colour of each card is the integral $\\int S(\\lambda)R(\\lambda)\\,\\bar c(\\lambda)\\,d\\lambda$, scaled by the lamp’s own $Y$`);
-      },
-    },
-    // ------------------------------------------------------------------ 3.3
-    {
-      num: '3.3',
-      kind: 'Concept',
-      name: 'Newton’s colour circle and centre-of-gravity mixing',
-      credit: 'Isaac Newton, Opticks, 1704 (Book I, Part II, Prop. VI)',
-      statement: String.raw`Newton arranges the spectral colours around a circle (red, orange, yellow, green, blue, indigo, violet, with the purples closing the gap between violet and red). To find the colour of a mixture of lights, put at the centre of gravity of each colour’s arc a weight equal to the amount of that colour in the mixture, and find the centre of gravity $Z$ of all the weights. The direction of $Z$ from the centre $O$ gives the **hue** of the mixture and the ratio $|OZ|/R$ its **fullness**; a mixture whose $Z$ is at the centre is white.
-
-The rule is exact in one respect, that mixing is a weighted average: the colour of a mixture lies on the segment between the colours mixed, in proportion to their amounts. It is only a rough guide in another: the circle is a diagram, and the true mixing space is the chromaticity diagram, whose colour-wheel is not a circle with equal-weight centres.`,
-      idea: String.raw`Light adds linearly, so the response of the eye to a mixture is the weighted sum of its responses to the parts; in the chromaticity plane that is a weighted average of points. Newton’s circle is a hand-drawn version of that plane in which the spectrum is bent into a ring, and its centre stands for white. The picture is qualitative: the true spectral locus is not a circle and the weights $X+Y+Z$ that make the average exact are not equal for equal powers, which is why the comparison panel disagrees with the circle by a visible amount.`,
-      caption: String.raw`Drag the seven sliders (amounts of each spectral colour). The coloured ring is Newton’s circle with his arc proportions; the gold point $Z$ is the centre of gravity of the weights placed at the arcs’ own centres of gravity, and the line $OZ$ extended hits the rim at the hue. On the right, the chromaticity diagram compares Newton’s prediction (open ring) with the true mixture of lights at the same wavelengths (gold dot). Try the presets: Newton’s own example, a red–green–violet mixture balanced so that $Z=O$, and an orange–blue pair.`,
-      deps: ['art-3.1', 'mech-2.3'],
-      refs: ['Kemp ch. 7'],
-      tags: ['Newton', 'colour circle', 'mixing'],
-      scope: String.raw`Newton’s arc lengths are the proportions printed in the Opticks; the wavelength attached to each colour name is a conventional mid-band value (660, 607, 577, 532, 482, 452, 420 nm), not Newton’s. The “true mixture” assumes the weights are radiant powers of monochromatic lights at those wavelengths and uses the standard-observer fit of the colour-matching functions.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Color_wheel' },
-      viz(v) {
-        const names = NEWTON.arcs.map((a) => a.name);
-        const sl = names.map((nm, i) => v.slider(nm, 0, 12, [10, 6, 5, 3, 2, 1, 1][i], { step: 0.1 }));
-        const set = (a) => a.forEach((x, i) => sl[i].set(x));
-        v.button('Newton’s example', () => set([10, 6, 5, 3, 2, 1, 1]));
-        v.button('red + green + violet, balanced', () => {
-          // barycentric weights placing Z at the centre of the circle
-          const P = [0, 3, 6].map(arcCentroid), Mx = [[P[0][0], P[1][0], P[2][0]], [P[0][1], P[1][1], P[2][1]], [1, 1, 1]], w = v.M.solve(Mx, [0, 0, 1]);
-          const k = 6 / Math.max(...w); set([w[0] * k, 0, 0, w[1] * k, 0, 0, w[2] * k]);
-        });
-        v.button('all seven equal', () => set([4, 4, 4, 4, 4, 4, 4]));
-        v.button('orange + blue', () => set([0, 6, 0, 0, 6, 0, 0]));
-        const C = v.stage({ x: [-1.45, 1.45], y: [-1.4, 1.4], equal: true, axes: false, height: 400, weight: 1, title: 'Newton’s circle' });
-        const X = v.stage({ x: [0.0, 0.8], y: [0.0, 0.9], equal: true, axes: false, height: 400, weight: 1, title: 'the same mixture on the chromaticity diagram' });
-        const centres = NEWTON.arcs.map((a) => (a.a0 + a.a1) / 2);
-        const hueXY = (ang) => {
-          // piecewise interpolation of the wavelengths of the arc centres; across the red–violet seam the hue is a purple
-          const A = NEWTON.arcs, cc = centres.map((c, i) => [c, A[i].rep]);
-          const ext = [[cc[6][0] - 2 * Math.PI, A[6].rep, 6], ...cc.map((c, i) => [c[0], c[1], i]), [cc[0][0] + 2 * Math.PI, A[0].rep, 0]];
-          for (let j = 0; j + 1 < ext.length; j++) {
-            const a = ext[j], b = ext[j + 1];
-            if (ang >= a[0] && ang <= b[0]) {
-              const u = (ang - a[0]) / (b[0] - a[0]);
-              if (j === 0 || j === ext.length - 2) { // purple seam: mix of violet and red lights of equal luminance
-                const ca = cmf(420), cb = cmf(660), na = ca[1] ? ca.map((q) => q / ca[1]) : ca, nb = cb.map((q) => q / cb[1]);
-                const uu = j === 0 ? u : u, m = [0, 1, 2].map((q) => (j === 0 ? (1 - uu) * na[q] + uu * nb[q] : (1 - uu) * nb[q] + uu * na[q]));
-                return xyOf(j === 0 ? m : m);
-              }
-              const l = a[1] + u * (b[1] - a[1]); return xyOf(cmf(l));
-            }
-          }
-          return [1 / 3, 1 / 3];
-        };
-        let info = {};
-        v.render(() => {
-          const wts = sl.map((s) => s.value), mx = newtonMix(wts);
-          // the ring
-          C.circle(0, 0, 1, { color: 'faint', width: 1 });
-          for (const A of NEWTON.arcs) {
-            const NST = 16;
-            for (let k = 0; k < NST; k++) {
-              const t0 = A.a0 + (A.w * k) / NST, t1 = A.a0 + (A.w * (k + 1)) / NST + 0.004, l = Math.min(660, Math.max(430, A.l0 + ((A.l1 - A.l0) * (k + 0.5)) / NST));
-              C.poly([circPt(t0, 0.9), circPt(t1, 0.9), circPt(t1, 1.0), circPt(t0, 1.0)], { fill: specRGB(l, 0.5), stroke: false, fillAlpha: 1 });
-            }
-          }
-          NEWTON.arcs.forEach((A, i) => {
-            const p = circPt(A.a0, 1.0), q = circPt(A.a0, 1.07), m = circPt((A.a0 + A.a1) / 2, 1.3);
-            C.line(p[0], p[1], q[0], q[1], { color: 'muted', width: 1 });
-            C.text(A.letter, ...circPt(A.a0, 1.13), { size: 11, color: 'muted', align: 'center', baseline: 'middle' });
-            C.text(A.name, m[0], m[1], { size: 11, color: 'muted', align: 'center', baseline: 'middle' });
-          });
-          // weights at the arcs' centres of gravity (area proportional to the amount)
-          const tot = wts.reduce((a, b) => a + b, 0) || 1;
-          wts.forEach((w, i) => {
-            if (w <= 0) return;
-            const c = arcCentroid(i), r = 0.075 * Math.sqrt(w);
-            C.circle(c[0], c[1], r, { fill: specRGB(NEWTON.arcs[i].rep, 0.5), fillAlpha: 0.75, color: 'ink', width: 1 });
-          });
-          if (mx.sw > 0) {
-            const Y = circPt(mx.ang, 1), hue = hueXY(mx.ang);
-            C.line(0, 0, Y[0], Y[1], { color: 'ink', width: 1.2, dash: [5, 4], alpha: 0.7 });
-            C.line(0, 0, mx.Z[0], mx.Z[1], { color: 'ink', width: 2.6 });
-            C.dot(Y[0], Y[1], { r: 5, hollow: true, color: 'ink', label: 'Y', labelPos: 'n' });
-            C.dot(mx.Z[0], mx.Z[1], { r: 6.5, color: 'gold', label: 'Z', labelPos: 'ne' });
-          }
-          C.dot(0, 0, { r: 3.5, color: 'ink', label: 'O', labelPos: 'sw' });
-          // chromaticity comparison
-          X.setView([-0.02, 0.8], [-0.02, 0.9]);
-          drawChromaticity(X, v, { ticks: [460, 500, 540, 580, 620] });
-          const Wp = [1 / 3, 1 / 3], mixc = mixXYZ(wts), xyMix = mx.sw > 0 ? xyOf(mixc) : Wp;
-          let pred = Wp;
-          if (mx.sw > 0) { const h = hueXY(mx.ang); pred = [Wp[0] + mx.full * (h[0] - Wp[0]), Wp[1] + mx.full * (h[1] - Wp[1])]; }
-          X.dot(Wp[0], Wp[1], { r: 3.5, color: 'ink', label: 'white', labelPos: 'sw' });
-          X.dot(pred[0], pred[1], { r: 8, hollow: true, color: 'ink', label: 'Newton', labelPos: 'nw' });
-          X.dot(xyMix[0], xyMix[1], { r: 6, color: 'gold', label: 'light mixture', labelPos: 'se' });
-          const dm = dominant(xyMix[0], xyMix[1]), at = arcAt(mx.ang);
-          info = { mx, pred, xyMix, dm, at, dist: Math.hypot(pred[0] - xyMix[0], pred[1] - xyMix[1]) };
-        });
-        v.legend([['gold', '$Z$, the centre of gravity, and the true mixture'], ['ink', 'Newton’s predicted colour (ring) and the rule $OZ$']]);
-        v.readout(() => {
-          if (info.mx.sw <= 0) return 'all weights are zero: no light, no colour';
-          const A = NEWTON.arcs[info.at.i];
-          const purple = info.mx.ang > centres[6] || info.mx.ang < centres[0] ? ' (in the purple gap between violet and red)' : '';
-          return `Newton’s rule: hue in the ${A.name} arc, ${v.fix(100 * info.at.u, 0)}% of the way from ${A.letter} to ${NEWTON.arcs[(info.at.i + 1) % 7].letter}${purple}; fullness $|OZ|/R=${v.fix(info.mx.full, 3)}$\nmixture of the lights themselves: $x=${v.fix(info.xyMix[0], 3)},\\ y=${v.fix(info.xyMix[1], 3)}$, ${info.dm.l ? `${info.dm.purple ? 'complementary' : 'dominant'} wavelength $${v.fix(info.dm.l, 0)}$ nm, purity $${v.fix(info.dm.purity, 2)}$` : 'white'}; Newton’s prediction and the true mixture are $${v.fix(info.dist, 3)}$ apart in $xy$`;
-        });
-      },
-    },
+    // Source-audited spectra 3.2
+    spectralItem,
+    // Source-audited optics 3.3
+    newtonCircleConcept,
     // ------------------------------------------------------------------ 3.4
     {
       num: '3.4',
@@ -328,7 +157,7 @@ The rule is exact in one respect, that mixing is a weighted average: the colour 
 $\psi(b)$ has a **maximum**, $\psi_{\max}$, where $\cos^2 i=(n^2-1)/3$: rays near it leave in nearly the same direction, so the light piles up in a bright ring at $\psi_{\max}$ and the sky is dark outside it. Because $n$ is larger for blue than for red, $\psi_{\max}$ is about $42.4^\circ$ for red and $40.6^\circ$ for violet, giving a bow with red outside. For $k=2$ the extremum is a minimum near $51^\circ$ and the order of colours is reversed (secondary bow).`,
       idea: String.raw`Snell’s law (mech-5.2) turns the family of parallel rays into a map $b\mapsto\psi$; light is concentrated where that map has a stationary point, since $\psi$ changes least there. That is a fold caustic of the ray bundle, and it is why a rainbow is a thin ring and not a disc. Descartes found the 42° ring by tracing rays through a large water-filled sphere and computing; Newton’s prism result (art-3.1) supplied the missing step, that each colour has its own $n$ and therefore its own ring.`,
       caption: String.raw`Drag the incoming ray (the handle on the left) up and down: the path through the drop is traced with Snell’s law, and the point on the curve at the right marks the angle $\psi$ at which an observer sees it. The curve flattens at its maximum: many rays share almost one direction. Move the wavelength slider to see the maximum move; switch to the secondary bow; raise the sun to watch the bow sink below the horizon (the primary bow is invisible when the sun is higher than about $42^\circ$).`,
-      deps: ['art-3.1', 'mech-5.2', 'pma-5.8'],
+      deps: ['art-3.1', 'mech-5.2'],
       refs: ['Kemp ch. 6'],
       tags: ['rainbow', 'Descartes', 'refraction'],
       scope: String.raw`Geometric optics for a single spherical drop (no diffraction, so no supernumerary bows and no brightness estimate) with the refractive index of pure water at $20^\circ$C (Daimon–Masumura 2007 fit); real bows are broadened by the finite size of the sun ($0.53^\circ$) and by the drop-size distribution.`,
@@ -502,7 +331,7 @@ $$S_{\text{out}}(\lambda)=S_{\text{in}}(\lambda)\,T_1(\lambda)\,T_2(\lambda)\cdo
 the **product** of the transmittances, in whatever order the filters are stacked. For an absorbing medium of thickness (or density) $d$ the transmittance is $T^{\,d}$, so doubling the layer squares it. A product of numbers at most 1 never exceeds any of its factors: filtering only removes light, and a pair of filters that overlap in no wavelength passes none.`,
       idea: String.raw`Each wavelength is attenuated independently of the others, and attenuations compose by multiplication since a layer removes a fixed fraction of what reaches it (the Beer–Lambert law). That is why the subtractive primaries are the colours that remove one third of the spectrum each: cyan removes red, magenta removes green, yellow removes blue, so that any pair leaves one third (cyan × yellow leaves green) and all three leave almost nothing. The additive primaries (red, green, blue filters) are poor subtractive primaries because each removes two thirds of the spectrum, and a pair of them already kills everything.`,
       caption: String.raw`Daylight-like light passes through up to three filters. The three coloured curves are the transmittances raised to the densities set by the sliders; the heavy black curve is their product, and the coloured bars below show the spectrum that actually comes out. The row of swatches shows the colour after each filter alone and after the stack. Choose the cyan–magenta–yellow set and try pairs; then switch to the red–green–blue filters and stack two of them.`,
-      deps: ['art-3.2', 'waves-4.15'],
+      deps: ['art-3.2'],
       refs: ['Fairchild ch. 3'],
       tags: ['subtractive', 'filters', 'Beer–Lambert'],
       scope: String.raw`Non-fluorescent, non-scattering absorbing filters in series, with no interreflection between layers. The filter curves are smooth model curves of the usual shapes, not measurements of any dye; the light is a $6504$ K black body standing in for daylight.`,

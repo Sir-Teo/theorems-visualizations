@@ -1,3 +1,4 @@
+import { buchiExamples, buchiWord, trafficProduct, trafficProperties } from './automata.audit.js';
 // Theory of Computation — Chapter 4, part 3: robustness of the regular languages (4.10–4.13)
 import { pen, keypad, dfa, nfa, texName, dfaGraph, drawDFA, nfaGraph, drawNFA, tt, isPrimeN, PAL, XYZ, upTo } from './ch04.shared.js';
 
@@ -90,9 +91,11 @@ export default {
       kind: 'Theorem',
       name: 'Two-way automata recognize only regular languages',
       statement: String.raw`A **two-way DFA** reads the tape $\vdash w\dashv$ with a head that, in each step, changes state according to the current state and symbol and moves one cell **left or right**; it accepts when it enters its accepting state, and may revisit cells arbitrarily often. The languages accepted by two-way DFAs (and by two-way NFAs) are exactly the regular languages: every two-way automaton with $n$ states can be simulated by a one-way DFA, at the price of a possibly exponentially larger state set.`,
-      idea: String.raw`Look at the boundary between two adjacent cells: the **crossing sequence** records the states in which the head crosses it, alternately to the right and to the left. In a halting deterministic run no state occurs twice in the same direction at the same boundary (the run would loop), so a crossing sequence has length $\le2|Q|$ and there are finitely many. If the crossing sequences at two boundaries are **equal**, the part of the tape between them can be cut out or repeated without changing the outcome, because the left side only sees the same conversation from the right. Hence two prefixes with the same behaviour table are indistinguishable by every suffix, the Myhill–Nerode relation (4.4) has finite index and 4.5 applies.`,
+      idea: String.raw`Look at the boundary between two adjacent cells: the **crossing sequence** records the states in which the head crosses it, alternately to the right and to the left. In a halting deterministic run no state occurs twice in the same direction at the same boundary (the run would loop), so a crossing sequence has length $\le2|Q|$ and there are finitely many. If the crossing sequences at two boundaries are **equal**, the part of the tape between them can be cut out or repeated without changing the outcome, because the left side only sees the same conversation from the right. Hence two prefixes with the same behaviour table are indistinguishable by every suffix, the Myhill–Nerode relation (4.4) has finite index and 4.5 applies.
+
+In the stated halting deterministic crossing-sequence argument, record the direction together with each of at most 2n crossing states. The product and sum rules comb-1.1 bound the possible records by $\sum_{j=0}^{2n}(2n)^j$, a finite number. With finitely many boundary entry and exit cases, only finitely many such behaviour tables are possible. This supplies the finite-counting step of that simulation argument; it is not an optimal state bound or by itself the nondeterministic construction.`,
       caption: String.raw`Pick a two-way machine and type an input. The diagram plots the head's journey (time runs downwards, one row per step) and, under every cell boundary, the **crossing sequence** (→ = crossing to the right, ← = to the left). Choose two boundaries with the sliders (or press *find an equal pair*): when their sequences coincide the string between them can be deleted or doubled and the verdict is the same; when they differ it can change. The readout counts the crossing sequences over all inputs of length $\le7$ — a small finite set.`,
-      deps: ['toc-4.5', 'toc-2.1'],
+      deps: ['toc-4.5', 'toc-2.1', 'comb-1.1'],
       refs: ['Sipser §1.4'],
       credit: 'Rabin & Scott, 1959; Shepherdson, 1959',
       scope: String.raw`Shepherdson's paper (IBM J. Res. Dev. 3(2), 198–200, 1959) and Rabin–Scott (same issue, 114–125) were checked against Crossref; the crossing-sequence argument is the classical textbook presentation, not attributed here.`,
@@ -194,22 +197,17 @@ export default {
       num: '4.12',
       kind: 'Definition',
       name: 'Büchi automata and ω-regular languages',
-      statement: String.raw`A **Büchi automaton** is a finite automaton $B=(Q,\Sigma,\delta,q_0,F)$ (nondeterministic, $\delta:Q\times\Sigma\to\mathcal P(Q)$) that reads **infinite** words $\alpha=\alpha_0\alpha_1\alpha_2\cdots\in\Sigma^\omega$. A *run* is an infinite sequence $r_0r_1r_2\cdots$ with $r_0=q_0$ and $r_{i+1}\in\delta(r_i,\alpha_i)$; it is **accepting** if some state of $F$ occurs in it infinitely often. $L_\omega(B)$ is the set of words with an accepting run, and a language of infinite words is **ω-regular** if some Büchi automaton accepts it (equivalently, if it is a finite union of sets $UV^\omega$ with $U,V$ regular). For an ultimately periodic word $\alpha=uv^\omega$ acceptance is decidable by looking for an accepting state on a reachable cycle.`,
-      idea: String.raw`Finite state space plus infinite time: an infinite run visits some states infinitely often, but need not eventually repeat one cycle. In a finite graph, existence of an accepting run is equivalent to existence of an accepting lasso; this does not say that every accepting run is ultimately periodic. For the word $uv^\omega$, pair every state with the position inside $uv$ (the *product* of $B$ with the little cycle of the word): $B$ accepts $uv^\omega$ iff a node $(q,k)$ with $q\in F$ is reachable from $(q_0,0)$ and lies on a cycle. Deterministic Büchi automata are strictly weaker than nondeterministic ones (the language "finitely many $a$" needs the guess), which is why $\delta$ is nondeterministic here.`,
+      statement: String.raw`A **Büchi automaton** is a finite automaton $B=(Q,\Sigma,\delta,q_0,F)$ (nondeterministic, $\delta:Q\times\Sigma\to\mathcal P(Q)$) that reads **infinite** words $\alpha=\alpha_0\alpha_1\alpha_2\cdots\in\Sigma^\omega$. A *run* is an infinite sequence $r_0r_1r_2\cdots$ with $r_0=q_0$ and $r_{i+1}\in\delta(r_i,\alpha_i)$; it is **accepting** if some state of $F$ occurs in it infinitely often. $L_\omega(B)$ is the set of words with an accepting run, and a language of infinite words is **ω-regular** if some Büchi automaton accepts it (equivalently, if it is a finite union of sets $UV^\omega$ with $U\subseteq\Sigma^*$ and $V\subseteq\Sigma^+$ regular). For an ultimately periodic word $\alpha=uv^\omega$ with $v\ne\varepsilon$ acceptance is decidable by looking for an accepting state on a reachable cycle.`,
+      idea: String.raw`An arbitrary infinite run need not become periodic or settle onto a single cycle. The finite-graph lasso criterion is an **existence** statement: an accepting run has a recurrent accepting state, so a reachable nonempty cycle through it can be repeated to give an accepting witness. For the fixed ultimately periodic input $uv^\omega$ with $v\ne\varepsilon$, apply this criterion to pairs (automaton state, position in the stem/loop). That product preserves the required input letters. Reachable strongly connected components find a witness; an accepting singleton needs a self-loop. The demonstration is exact for each supplied ultimately periodic word, and does not infer arbitrary-word acceptance from a finite trace. For the finite-union characterization, let $U_q$ be labels of finite paths from the start to an accepting state $q$, and $V_q$ labels of nonempty loops from $q$ back to itself; these languages are regular and $L_\omega(B)=\bigcup_{q\in F}U_qV_q^\omega$. Nondeterministic Büchi automata recognize finitely many $a$ by guessing the final $a$ has passed. A deterministic one cannot: after each finite prefix followed by another $a$, its accepting run on an all-$b$ continuation must reach an accepting state after some positive number of $b$s. Repeating these choices constructs an accepted word with infinitely many $a$s, a contradiction.`,
       caption: String.raw`Choose a Büchi automaton and type the stem $u$ and the loop $v$ (the word is $uvvv\cdots$). Right: the run unrolled in time — a dot for every state the automaton can be in after reading $t$ letters, accepting states with a double ring; the gold path is a witness lasso (stem then loop) on which an accepting state recurs. The readout says whether such a lasso exists. Try *finitely many a*: it accepts $\mathtt{b}(\mathtt{ab})^\omega$ never, but $\mathtt{a}\,\mathtt{b}^\omega$ yes — only the guess "from now on only $b$" works.`,
       deps: ['toc-3.1'],
-      refs: ['Sipser §1.2'],
-      credit: 'J. R. Büchi, 1962 (paper presented at the 1960 congress)',
-      scope: String.raw`Büchi's paper appeared in the proceedings of the 1960 International Congress for Logic, Methodology and Philosophy of Science (Stanford University Press, 1962, pp. 1–11); page numbers were taken from secondary bibliographies.`,
-      verify: true,
+      refs: ['Vardi–Wilke, Automata: From Logics to Algorithms (2007), §2.1 pp. 651–653, Büchi definition and emptiness, §2.2/§2.3 nondeterminism', 'The UV^ω characterization follows by splitting an accepting run at recurring accepting-state visits'],
+      credit: 'Büchi automata; precise treatment after Vardi & Wilke, Automata: From Logics to Algorithms (2007)',
+      scope: String.raw`Author treatment: Vardi–Wilke §2.1, rather than the unrelated Sipser finite-automaton pointer or uninspected original pagination. The entered word must use only a,b and have a nonempty loop; invalid text is reported instead of silently deleting symbols or replacing the loop with a. For responsiveness the entered stem and loop have combined display limit 256; the theorem has no such limit. The time diagram displays at most 16 input steps, while exact SCC acceptance uses the whole finite stem/loop product. The both-infinitely-often example uses three states and requires both letters in the recurring input.`,
       tags: ['Büchi automata', 'ω-regular', 'infinite words'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/B%C3%BCchi_automaton' },
+      links: { 'Full author treatment': 'https://www.cs.rice.edu/~vardi/papers/wal07.pdf' },
       viz(v) {
-        const AUT = {
-          inf: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 0], ['q1', 7.5, 3.5, 1]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q0' } }, {}, { name: 'infinitely many a', loops: { q0: 270, q1: 90 } }),
-          fin: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 0], ['q1', 7.5, 3.5, 1]], 'q0', { q0: { a: 'q0', b: ['q0', 'q1'] }, q1: { b: 'q1' } }, {}, { name: 'finitely many a', loops: { q0: 270, q1: 90 } }),
-          both: () => nfa(['a', 'b'], [['q0', 2.5, 3.5, 1], ['q1', 7.5, 3.5, 0]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q0' } }, {}, { name: 'a and b both infinitely often', loops: { q0: 270, q1: 90 } }),
-        };
+        const AUT = Object.fromEntries(Object.keys(buchiExamples()).map(k => [k, () => buchiExamples()[k]]));
         const sel = v.select('automaton', [{ value: 'inf', label: 'infinitely many a (deterministic)' }, { value: 'fin', label: 'finitely many a (needs a guess)' }, { value: 'both', label: 'a and b infinitely often' }], 'inf', { onChange: () => { N = AUT[sel.value](); G.sync(N); } });
         let u = 'b', w2 = 'ab', which = 'u';
         const ui = v.input('stem $u$', u, { width: 90, onChange: () => {} }), vi = v.input('loop $v$', w2, { width: 90 });
@@ -218,28 +216,12 @@ export default {
         let N = AUT.inf();
         const G = nfaGraph(v, gs, N, { r: 20, texSize: 16 });
         const clean = (s) => s.replace(/[^ab]/g, '');
-        function analyse(N, uu, vv) {
-          const w = uu + vv, n = w.length, nu = uu.length, key = (q, k) => q + '@' + k, nxt = (k) => (k + 1 === n ? nu : k + 1);
-          const succ = (kk) => { const [q, k] = kk.split('@'); return (N.delta[q]?.[w[+k]] || []).map((t) => key(t, nxt(+k))); };
-          const start = key(N.start, 0), par = new Map([[start, null]]), order = [start];
-          for (let h = 0; h < order.length; h++) for (const t of succ(order[h])) if (!par.has(t)) { par.set(t, order[h]); order.push(t); }
-          const acc = (kk) => N.states.find((s) => s.id === kk.split('@')[0]).acc;
-          for (const x of order) {
-            if (!acc(x)) continue;
-            const p2 = new Map(), qu = []; for (const t of succ(x)) if (!p2.has(t)) { p2.set(t, x); qu.push(t); }
-            for (let h = 0; h < qu.length && !p2.has(x); h++) for (const t of succ(qu[h])) if (!p2.has(t)) { p2.set(t, qu[h]); qu.push(t); }
-            if (p2.has(x)) {
-              const stem = []; let c = x; while (c !== null) { stem.push(c); c = par.get(c); } stem.reverse();
-              const back = [x]; c = p2.get(x); while (c !== x) { back.push(c); c = p2.get(c); } back.push(x);
-              const toQ = (kk) => [kk.split('@')[0], +kk.split('@')[1]];
-              return { ok: true, stem: stem.map(toQ), cycle: back.reverse().map(toQ), reach: order.length };
-            }
-          }
-          return { ok: false, reach: order.length };
-        }
+        const analyse = buchiWord;
         let info = null;
         v.render(() => {
-          const uu = clean(ui.value), vv = clean(vi.value) || 'a', nu = uu.length, nv = vv.length;
+          const uu = ui.value, vv = vi.value, nu = uu.length, nv = vv.length;
+          if (nu + nv > 256) { info = { error: 'Display limit: use a stem and loop with combined length at most 256.' }; const P = pen(ts, v); P.sans(info.error, P.W / 2, 100, { size: 12, color: 'red' }); return; }
+          if (!/^[ab]*$/.test(uu) || !/^[ab]+$/.test(vv)) { info = { error: 'Use only a and b; the loop must contain at least one letter.' }; const P = pen(ts, v); P.sans(info.error, P.W / 2, 100, { size: 12, color: 'red' }); return; }
           const A = analyse(N, uu, vv), T = Math.min(16, nu + 4 * nv), letter = (t) => (t < nu ? uu[t] : vv[(t - nu) % nv]);
           // witness unrolled
           const seq = []; if (A.ok) { seq.push(...A.stem.map((x) => x[0])); while (seq.length <= T) for (let i = 1; i < A.cycle.length; i++) seq.push(A.cycle[i][0]); }
@@ -262,12 +244,12 @@ export default {
           }));
           const yw = rowY(nq - 1) + 38;
           for (let t = 0; t < T; t++) { const inU = t < nu, col = inU ? XYZ.x : (Math.floor((t - nu) / nv) % 2 ? 'gold' : XYZ.y); P.box(x0 + t * cw + cw / 2 - 12, yw, 24, 24, { r: 4, fill: col, alpha: 0.25, stroke: col }); P.text(letter(t), x0 + t * cw + cw / 2, yw + 12, { size: 14, weight: 600 }); }
-          P.sans('u', x0 + (nu * cw) / 2 - 12, yw + 40, { size: 11.5, weight: 700, color: XYZ.x }); P.sans('v v v …  ↺', x0 + nu * cw + (nv * cw) / 2 + 20, yw + 40, { size: 11.5, weight: 700, color: XYZ.y });
+          if (nu > 0) P.sans(nu > T ? 'u (continues beyond view)' : 'u', x0 + Math.min(nu, T) * cw / 2, yw + 40, { size: 11.5, weight: 700, color: XYZ.x }); if (nu < T) P.sans('v v v … ↺', x0 + (nu + (T - nu) / 2) * cw, yw + 40, { size: 11.5, weight: 700, color: XYZ.y });
           info = { ...A, T, nu, nv, uu, vv };
         });
         v.legend([['gold', 'witness lasso (stem)', { dot: true }], ['green', 'states on the recurring loop', { dot: true }], ['ink', 'double ring = accepting state', { dot: true }]]);
         v.readout(() => {
-          const I = info, wd = `${I.uu || 'ε'}(${I.vv})^ω`;
+          const I = info; if (I.error) return I.error; const wd = `${I.uu || 'ε'}(${I.vv})^ω`;
           if (!I.ok) return `$${I.uu ? tex(I.uu) : ''}(${tex(I.vv)})^\\omega$ is **rejected**: of the ${I.reach} reachable pairs (state, position in the word) none is accepting *and* on a cycle.`;
           return `$${I.uu ? tex(I.uu) : ''}(${tex(I.vv)})^\\omega$ is **accepted**: after the stem the run enters the loop $${I.cycle.slice(0, 5).map((x) => x[0]).join('\\to ')}${I.cycle.length > 5 ? '\\to\\cdots' : ''}$, which contains an accepting state, so it recurs forever. (${I.reach} reachable (state, position) pairs.)`;
         });
@@ -278,55 +260,25 @@ export default {
       num: '4.13',
       kind: 'Method',
       name: 'Model checking with automata',
-      statement: String.raw`To check that a finite-state system $S$ satisfies an **LTL property** $\varphi$ of its infinite behaviours: (1) view $S$ as a Büchi automaton whose language $L_\omega(S)$ is the set of its infinite runs (all states accepting); (2) build a Büchi automaton $B_{\neg\varphi}$ for the *negation* of the property; (3) form the product $S\times B_{\neg\varphi}$ (as in the product construction 2.6); (4) test it for **emptiness**: $S\models\varphi$ iff there is no reachable accepting state that lies on a cycle (2.7). A nonempty product yields a **counterexample** — a lasso $uv^\omega$, a finite stem and a loop, which is a behaviour of $S$ violating $\varphi$.`,
-      idea: String.raw`$S$ violates $\varphi$ exactly when some run of $S$ satisfies $\neg\varphi$, i.e. when $L_\omega(S)\cap L_\omega(B_{\neg\varphi})\ne\varnothing$. The product accepts that intersection (the two automata move in lockstep on the labels of the system's states), so the question becomes emptiness of a Büchi automaton, which in a finite graph means: is an accepting node reachable from the start *and* on a cycle? Reachability and cycle search are linear in the size of the product (2.7), and the path found is the counterexample. The price is that $B_{\neg\varphi}$ can be exponentially larger than the formula $\varphi$.`,
-      caption: String.raw`Left: a traffic-light controller (each state shows the north–south and east–west lights). Right: its product with the automaton for the **negated** property, laid out with one column per controller state and one row per automaton state; reachable nodes are solid, an accepting product state has a double ring. Choose a property and **introduce a bug**: the emptiness search finds a violating lasso, highlighted in gold on both diagrams, and the slider replays the counterexample step by step. With the correct controller the product is empty.`,
+      statement: String.raw`To check that a finite-state system $S$ satisfies a property $\varphi$ specified in LTL (or otherwise having a Büchi-recognizable negation): (1) view $S$ as a Büchi automaton whose language $L_\omega(S)$ is the set of its infinite state-label traces (all states accepting); (2) build a Büchi automaton $B_{\neg\varphi}$ for the *negation* of the property; (3) form the product $S\times B_{\neg\varphi}$ (as in the product construction 2.6); (4) test it for **emptiness**: $S\models\varphi$ iff there is no reachable accepting state that lies on a cycle (2.7). A nonempty product yields a **counterexample** — a lasso $uv^\omega$, a finite stem and a loop, which is a behaviour of $S$ violating $\varphi$.`,
+      idea: String.raw`$S$ violates $\varphi$ exactly when some run of $S$ satisfies $\neg\varphi$, i.e. when $L_\omega(S)\cap L_\omega(B_{\neg\varphi})\ne\varnothing$. The product accepts that intersection (the two automata move in lockstep on the labels of the system's states), so the question becomes emptiness of a Büchi automaton, which in a finite graph means: is an accepting node reachable from the start *and* on a cycle? Reachability and cycle search are linear in the size of the product (2.7), and the path found is the counterexample. For LTL, $B_{\neg\varphi}$ can be exponentially larger than the formula $\varphi$.`,
+      caption: String.raw`Left: a traffic-light controller (each state shows the north–south and east–west lights). Right: its product with the automaton for the **negated** property, laid out with one column per controller state and one row per automaton state; reachable nodes are solid, an accepting product state has a double ring. Choose a property and **introduce a bug**: the emptiness search finds a violating lasso, highlighted in gold on both diagrams, and the slider replays the counterexample step by step. With the correct controller the product is empty for both chosen properties; a bug may affect only one of them.`,
       deps: ['toc-4.12', 'toc-2.7', 'toc-2.6'],
-      refs: ['Vardi–Wolper, author preprint §§2–3.1, pp. 3–5; Appendix B, pp. 1–3'], sourceUrl: 'https://www.cs.rice.edu/~vardi/papers/lics86.pdf',
-      credit: 'M. Y. Vardi & P. Wolper, An Automata-Theoretic Approach to Automatic Program Verification, author preprint, August 15, 1985, §§2–3.1 and Appendix B',
-      scope: String.raw`Finite-state systems with a total transition relation and LTL formulas over state labels. A deadlock can be modeled by an explicit self-loop if infinite stuttering is the intended semantics. The controller and two properties are page-made illustrations. Read against the complete Vardi–Wolper author preprint dated August 15, 1985: §2 (Büchi acceptance and LTL translation), §3.1 (product and emptiness reduction), Appendix B (full translation construction). This is the preprint of the work published at LICS 1986; publication priority for other model-checking approaches is not claimed.`,
+      refs: ['Vardi–Wilke, Automata: From Logics to Algorithms (2007), §2.1 pp. 652–653, §4.4 Theorem 4.11 and proof p. 707'],
+      credit: 'Automata-theoretic model checking; author treatment by Vardi & Wilke (2007), §4.4',
+      scope: String.raw`Original toy controller and explicit negation monitors, not data from a historical case study. System state labels are consumed once, including the initial state; all infinite controller paths are considered with **no fairness assumption**. A reachable accepting SCC with a genuine cycle gives a witness. The implementation now uses a linear SCC search plus witness extraction, not a fresh graph search from every accepting node. A bug irrelevant to the chosen property need not produce a counterexample. The replay input is bounded by the actual witness window and disabled when the product is empty.`,
+      links: { 'Full author treatment': 'https://www.cs.rice.edu/~vardi/papers/wal07.pdf' },
       tags: ['model checking', 'Büchi automata', 'emptiness'],
       viz(v) {
         const LIGHT = { G: 'green', Y: 'gold', R: 'red' };
-        const BASE = [['G', 'R'], ['Y', 'R'], ['R', 'R'], ['R', 'G'], ['R', 'Y'], ['R', 'R']];
-        const system = (bug) => {
-          const st = BASE.map((l, i) => ({ id: 's' + i, ns: l[0], ew: l[1] }));
-          const E = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]];
-          let edges = E.map(([a, b]) => ({ from: 's' + a, to: 's' + b, bug: false }));
-          if (bug === 'both') { st.push({ id: 's6', ns: 'G', ew: 'G' }); edges = edges.filter((e) => !(e.from === 's5' && e.to === 's0')); edges.push({ from: 's5', to: 's6', bug: true }, { from: 's6', to: 's1', bug: true }); }
-          if (bug === 'stall') edges.push({ from: 's2', to: 's2', bug: true });
-          return { st, edges };
-        };
-        const PROP = {
-          safe: { name: 'never both green', cls: (s) => (s.ns === 'G' && s.ew === 'G' ? 'bg' : 'ok'), states: ['m0', 'm1'], acc: ['m1'], d: { m0: { ok: ['m0'], bg: ['m1'] }, m1: { ok: ['m1'], bg: ['m1'] } }, neg: 'F (both green)' },
-          live: { name: 'north–south is green infinitely often', cls: (s) => (s.ns === 'G' ? 'g' : 'n'), states: ['m0', 'm1'], acc: ['m1'], d: { m0: { g: ['m0'], n: ['m0', 'm1'] }, m1: { n: ['m1'] } }, neg: 'F G (¬ NS green)' },
-        };
+        const PROP = trafficProperties;
         const prop = v.select('property $\\varphi$', [{ value: 'safe', label: 'never both green' }, { value: 'live', label: 'north–south green infinitely often' }], 'safe');
         const bug = v.select('controller', [{ value: 'none', label: 'correct' }, { value: 'both', label: 'bug: both green' }, { value: 'stall', label: 'bug: may stall in all-red' }], 'both');
         const stS = v.slider('replay the counterexample', 0, 12, 0, { int: true });
         const ss = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1, minWidth: 340 });
         const ps = v.stage({ x: [0, 10], y: [0, 5], axes: false, height: 340, weight: 1.2, minWidth: 380 });
         const PG = v.graph(ps, { nodes: [], edges: [], layout: 'none', directed: true, r: 15, autoRadius: false, texSize: 11, draggable: false, edgeFontSize: 10 });
-        const compute = () => {
-          const S = system(bug.value), PR = PROP[prop.value], ids = S.st.map((s) => s.id), byId = Object.fromEntries(S.st.map((s) => [s.id, s]));
-          const nodes = []; for (const s of S.st) for (const m of PR.states) nodes.push(s.id + '|' + m);
-          const succ = {}; for (const n of nodes) succ[n] = [];
-          const inits = PR.d.m0[PR.cls(S.st[0])].map((m) => 's0|' + m);
-          for (const e of S.edges) for (const m of PR.states) { const nx = (PR.d[m]?.[PR.cls(byId[e.to])] || []); for (const m2 of nx) succ[e.from + '|' + m].push(e.to + '|' + m2); }
-          const par = new Map(), order = []; for (const i of inits) { par.set(i, null); order.push(i); }
-          for (let h = 0; h < order.length; h++) for (const t of succ[order[h]]) if (!par.has(t)) { par.set(t, order[h]); order.push(t); }
-          let lasso = null;
-          for (const x of order) {
-            if (!PR.acc.includes(x.split('|')[1])) continue;
-            const p2 = new Map(), qu = []; for (const t of succ[x]) if (!p2.has(t)) { p2.set(t, x); qu.push(t); }
-            for (let h = 0; h < qu.length && !p2.has(x); h++) for (const t of succ[qu[h]]) if (!p2.has(t)) { p2.set(t, qu[h]); qu.push(t); }
-            if (p2.has(x)) {
-              const stem = []; let c = x; while (c !== null) { stem.push(c); c = par.get(c); } stem.reverse();
-              const cyc = []; c = p2.get(x); while (c !== x) { cyc.push(c); c = p2.get(c); } cyc.reverse(); lasso = { stem, cycle: [x, ...cyc.filter((y) => y !== x), x] }; break;
-            }
-          }
-          return { S, PR, ids, nodes, succ, order: new Set(order), lasso };
-        };
+        const compute = () => trafficProduct(bug.value, prop.value);
         let C = compute(), key = '';
         let info = null;
         v.render(() => {
@@ -334,7 +286,8 @@ export default {
           const { S, PR, lasso } = C, P = pen(ss, v), n = S.st.length;
           // replay sequence of system states
           const seq = lasso ? [...lasso.stem.slice(0, -1), ...Array(8).fill(lasso.cycle.slice(0, -1)).flat()].slice(0, 13) : [];
-          const cur = lasso ? seq[Math.min(stS.value, seq.length - 1)] : null, curSys = cur ? cur.split('|')[0] : null;
+          stS.input.max = String(Math.max(0, seq.length - 1)); stS.input.disabled = !lasso; if (stS.value > +stS.input.max) stS.set(+stS.input.max);
+          const cur = lasso ? seq[stS.value] : null, curSys = cur ? cur.split('|')[0] : null;
           const inLasso = (id) => lasso && (lasso.stem.concat(lasso.cycle)).some((x) => x.split('|')[0] === id);
           const cx = P.W / 2, cy = P.H / 2 - 4, rx = P.W * 0.34, ry = P.H * 0.31;
           const pos = {}; S.st.forEach((s, i) => { if (s.id === 's6') pos[s.id] = [cx, cy]; else { const a = -Math.PI / 2 + (2 * Math.PI * i) / 6; pos[s.id] = [cx + rx * Math.cos(a), cy + ry * Math.sin(a)]; } });
@@ -352,7 +305,7 @@ export default {
             P.sans('NS', x - 11, y + 8, { size: 9, color: 'muted' }); P.sans('EW', x + 11, y + 8, { size: 9, color: 'muted' });
             P.text(s.id, x, y + 18, { size: 9.5, color: 'faint' });
           });
-          ss.setTitle(`controller${bug.value === 'none' ? '' : ' (with bug: dashed red arrows)'}`);
+          ss.setTitle(`controller${bug.value === 'none' ? '' : ' (bug injected)'}`);
           // product graph
           const colX = (id) => 0.9 + (S.st.findIndex((s) => s.id === id)) * (8.2 / Math.max(n - 1, 1)), rowY = (m) => (m === 'm0' ? 3.4 : 1.2);
           const nodes = C.nodes.map((id) => { const [s, m] = id.split('|'); return { id, x: colX(s), y: rowY(m), label: `$${s.slice(1)},${m.slice(1)}$` }; });

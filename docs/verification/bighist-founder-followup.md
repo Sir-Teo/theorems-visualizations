@@ -1,0 +1,23 @@
+# BIGHIST4.4: source-scoped founder chains and saved randomness
+
+Candidate retains verify:true pending independent peer acceptance. Only4.4, its isolated helper/item, corresponding syllabus row and uniquely named evidence files change. Byte guards preserve every unowned chapter helper/4.1–4.3 object and all other syllabus rows; shared runtime/math bytes remain unchanged.
+
+## Actual original source
+
+Read the complete original Ramachandran et al.2005 PNAS102:15942–15947 from the author-hosted [actual paper](https://web.stanford.edu/group/rosenberglab/papers/RamachandranEtAl2005-PNAS.pdf), `/tmp/atlas-coordinator/sources/bighist/ramachandran2005.pdf`,551936bytes, SHA256 `6efa722080065c8a2731e8801b2d5991e4f7c47b6a2b5b29b48bdf3fd5c82396`. Personally inspected actual source15946Figure4A/B, Equation8 andFigure5 pixels. Source population1027individuals/53populations/783microsatellite loci, reported Figure4A fit H=.7682−6.52e−6d and R²=.7630 agree exactly. The source's multiallelic human observations and mutation/growth/drift simulation are explicitly distinguished from this authored biallelic, bottleneck-only illustration. Support for an African expansion is conditional, not a proof of unique history or precise geography. Unread historical Mayr-priority and an unsupported numerical causal-share assertion are omitted rather than certified.
+
+The model's binomial conditional moments imply E[Hnext|p]=(1−1/(2N))H, hence the geometric conditional expectation. Near-linearity requires cumulative k/(2N)≪1, not merely small loss per step. Individual paths and their finite20-chain mean need not decrease monotonically. The actual prerequisite popgen2.3 argument was read and added to chapter/syllabus dependencies, with existing2.1/2.9 statements checked. No source distance/year scale is assigned to the steps.
+
+## Model and saved behavior
+
+Preserves400biallelic loci and20chains. The initial U-shaped law is explicitly authored; each chain gets an independent deterministic stream. Extending the step count preserves every existing prefix. All three integer controls validate raw state before constraints. A registered bounded seed0..9999 and Resample wrap preserve all randomness exactly; the old unregistered button counter did not. Full curve/baseline margins include every chain and both complete10-bin histograms, including exact0/1. The displayed fixed/lost percentage uses exact endpoint frequencies, and initial fixation is correctly0%.
+
+## Checks
+
+Four mathematical groups PASS, `/tmp/atlas-coordinator/bighist-founder-math.log`. Independent Python32bit PRNG/Bernoulli loops and exact-rational post-sampling diversity check three complete cases including N2/K24 and N200/K3; every400×20integer final locus count hashes identically and every diversity frame agrees. An80digit conditional-expectation oracle, exhaustive16outcomes for four sampled gene copies at five probabilities, cumulative-loss counterexample, prefix preservation, all histogram statistics and strict domains pass. Committed reference is independently reproducible with `tests/verification-bighist-founder-reference.py`; logs and fixture are included. Binary multiply-back checks allow one rounding unit, while full final integer-count hashes remain exact.
+
+All six fresh native1450/430/320×light/dark groups PASS, logs `bighist-founder-native-{light,dark}.log`. Every group checks all8000final locus states,22full curves,20bins, all eight control corners, native keys, Resample, independent edited seed/step replay, chain-prefix extension and15malformed raw snapshots with exact whole-default rollback. Numeric DOM is compared directly with registered/model values. Full marker/stroke/text/TeX/page bounds pass. Personally inspected own fresh320light strong-drift curve and320dark high-N histogram/resampled full page pixels; conditional expectation, finite mean, source-versus-model distinction, controls/readout and all data remain readable and contained. Images are in `/tmp/atlas-coordinator/bighist-founder/`.
+
+Isolated full strict build6684written/6890planned/450chapters/85collections,0errors/warnings, home112720bytes gzip; focused static1/0/0 PASS. Logs `bighist-founder-{build,static}.log`, immutable-content scratch `/tmp/atlas-coordinator/bighist-founder-build`. Generated outputs remain outside the worktree. No audio/drag/custom opaque state is present. Independent peer acceptance remains required before clearing the source flag.
+
+Independent worker-one acceptance of exact9285ee1: [peer report](bighist-founder-peer.md). All source/hash/reference/math/extra exact-distribution/native/output checks pass; no findings.

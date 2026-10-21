@@ -1,9 +1,10 @@
 // Medical Imaging — Chapter 3 (part 3): 3.11 ART (Kaczmarz), 3.12 SIRT and SART, 3.13 Hounsfield units, 3.14 CT artifacts (cupping, metal streaks).
 import {
   clamp, fx, mean, sd, showImage, frame, raster, ellAt, ellProj, slEllipses, makeScan, sinoEll, fbp, filterSino, backproject, makeFilter, rmse, rms,
-  buildSystem, forward, artSweep, spreadOrder, sirtStep, sartSweep, rng32, gauss, noiseField, poissonFrom,
+  forward, artSweep, spreadOrder, sirtStep, sartSweep, rng32, gauss, noiseField, poissonFrom,
   MATS, mu, tubeSpectrum,
 } from './ch03.shared.js';
+import { exactPixelSystemAudit, kaczmarzPathAudit, squareExtentAudit, equationSegmentAudit } from './source-audit-algebraic.shared.js';
 
 const PI = Math.PI;
 const lin = (a, b, n) => Array.from({ length: n }, (_, i) => a + ((b - a) * i) / (n - 1));
@@ -13,7 +14,7 @@ const NS = 24;
 let SYS = null;
 function problem() {
   if (!SYS) {
-    const E = slEllipses(0.9), sys = buildSystem(NS, 18, 36, 1.42), x0 = raster((x, y) => ellAt(E, x, y), NS, NS, 3), b0 = forward(sys, x0);
+    const E = slEllipses(0.9), sys = exactPixelSystemAudit(NS, 18, 36, 1.42), x0 = raster((x, y) => ellAt(E, x, y), NS, NS, 3), b0 = forward(sys, x0);
     SYS = { sys, x0, b0, E, order: spreadOrder(sys), seq: sys.rows.map((_, i) => i) };
   }
   return SYS;
@@ -29,17 +30,24 @@ export default {
       num: '3.11',
       kind: 'Algorithm',
       name: 'Algebraic reconstruction technique (Kaczmarz)',
-      statement: String.raw`Discretise the object into pixels, $\mu=(\mu_1,\dots,\mu_n)$, so that each measured ray sum is a linear equation $\mathbf a_i\cdot\mu=b_i$ ($a_{ij}$ = length of ray $i$ in pixel $j$). The **algebraic reconstruction technique** (ART, Kaczmarz's method) sweeps through the equations, and for each one projects the current estimate onto its hyperplane:
-$$\mu^{(k+1)}=\mu^{(k)}+\lambda\,\frac{b_i-\mathbf a_i\cdot\mu^{(k)}}{\|\mathbf a_i\|^2}\,\mathbf a_i ,\qquad i=k \bmod m,\ 0<\lambda<2 .$$
-For a consistent system the iterates converge to the solution closest to the starting point; for an inconsistent system there is no common solution, and cyclic row updates generally approach row-dependent limits rather than one solution. Early stopping can give a better reconstruction than fitting noisy data indefinitely.`,
-      idea: String.raw`Each equation says the solution lies on a hyperplane; the orthogonal projection onto that hyperplane never increases the distance to any point on it, in particular to the true solution $\mu^*$, so $\|\mu^{(k)}-\mu^*\|$ is non-increasing (Fejér monotonicity) — and decreases whenever the current estimate violates the equation. The speed depends on the angles between consecutive hyperplanes: nearly orthogonal ones converge in one step, nearly parallel ones zig-zag slowly, which is why ART visits rays from far-apart views in turn. This is the simplest case of the iterative methods Hounsfield's first scanner used (3.18); it needs no filter and handles any ray geometry, but each ray is revisited many times.`,
-      caption: String.raw`**Left, two unknowns:** the lines are three equations $\mathbf a_i\cdot x=b_i$; drag the green point (true solution) and the gold start point and watch the projections zig-zag in. With **nearly parallel** equations the path crawls; add **data noise** and the iterates stop converging and circulate in a small triangle. **Middle and right, a real image:** 24×24 pixels, 18 views, 36 rays each; the slider shows the image after $k$ sweeps over all 648 rays and the error curve; with noise the error first falls and then grows again (semi-convergence).`,
-      deps: ['imaging-3.1', 'ladr-6.13'],
+      statement: String.raw`Let $A\mu=b$ be a finite real system with nonzero rows $\mathbf a_i$. Cyclic **ART (Kaczmarz)** uses the relaxed row update
+Take $i=k\bmod m$ and fixed $0<\lambda<2$. Using the row residual and increment,
+$$\begin{aligned}
+r_i^{(k)}&=b_i-\mathbf a_i\cdot\mu^{(k)},\\
+\Delta\mu^{(k)}&=\lambda\,\frac{r_i^{(k)}}{\|\mathbf a_i\|^2}\,\mathbf a_i,\\
+\mu^{(k+1)}&=\mu^{(k)}+\Delta\mu^{(k)}.
+\end{aligned}$$
+At $\lambda=1$ this is the orthogonal projection onto the equation's hyperplane; otherwise it is a relaxed projection. With fixed relaxation and every row visited cyclically, a **consistent** system converges to the solution closest in Euclidean norm to the starting point. For an inconsistent system there is no common solution: different row phases can approach different limits. An end-of-sweep sequence may converge even though the individual row iterates do not. Early stopping can reduce reconstruction error for a particular noisy problem; it has no universal optimality guarantee.`,
+      idea: String.raw`For any solution $z$ of a consistent system, put $r_i=b_i-\mathbf a_i\cdot x$. One update gives
+$$\begin{aligned}\|x^+-z\|^2&=\|x-z\|^2\\&\quad-\lambda(2-\lambda)\frac{r_i^2}{\|\mathbf a_i\|^2}.\end{aligned}$$
+Thus distances to every solution decrease or stay fixed. Summing this identity makes successive corrections tend to zero; cyclic visitation then makes every row residual tend to zero. Boundedness gives a solution cluster point, and the same distance identity forces convergence to it. Every correction lies in the row space, so the null-space component of the start is preserved: the limit is its closest solution. For mutually orthogonal independent rows, $\lambda=1$ reaches that solution in one complete pass, not one row step. Row order and angles affect speed; no filter or positivity projection is used here. The projection definition (ladr 6.55) gives the normal-line component explicitly: projecting $x-z$ onto $\operatorname{span}(a_i)$ gives $[a_i\cdot(x-z)/\|a_i\|^2]a_i$ for any solution $z$ of that row. Subtracting this component at $\lambda=1$ leaves a vector perpendicular to $a_i$, hence a point on the row hyperplane. This proves that one ART step projects onto one equation; it does not solve all rows at once.`,
+      caption: String.raw`**Left:** drag the green noise-free reference and gold start; the three equations coincide at the reference only when noise is zero. The complete relaxed path and equation lines remain in view, including overrelaxed excursions. **Image:** a chosen synthetic 24×24 phantom, with 18 views and 36 point rays per view. The sweep slider selects one of 21 stored images (zero start through 20 sweeps); the error curve measures unwindowed RMS distance to the planted phantom. The reported best sweep is only the best of this finite experiment. Noise is seeded additive Gaussian data error, not patient measurements.`,
+      deps: ['imaging-3.1', 'ladr-6.55'],
       tags: ['ART', 'Kaczmarz', 'iterative reconstruction'],
-      refs: ['Kak–Slaney §7.1, pp. 277–281, Eqs. (4), (12)', 'Kak–Slaney §7.2'],
-      credit: 'S. Kaczmarz, 1937; R. Gordon, R. Bender & G. Herman (ART for tomography), 1970',
-      verify: true,
-      scope: String.raw`Linear model with exact ray weights approximated by marching along each ray (the same matrix generates the data and is used for reconstruction — an "inverse crime" that makes the noise-free case converge exactly); convergence for consistent systems for $0<\lambda<2$; with noise only semi-convergence. The 2-D picture is a toy with three equations.`,
+      refs: ['Kak–Slaney §7.1, pp.276–282, Eqs.4–12', 'Censor–Eggermont–Gordon (1983), §§1–3'],
+      credit: 'Algorithm presentation: Kak & Slaney, chapter 7; relaxed/inconsistent analysis: Censor, Eggermont & Gordon (1983)',
+      verify: false,
+      scope: String.raw`Chosen piecewise-constant pixels on $[-1,1]^2$ and exact line/pixel intersection lengths (up to floating-point arithmetic); no ray marching, bilinear basis, finite beam width or clinical acquisition. The same discrete matrix creates the noise-free data and reconstructs them: consistency does not imply a unique image or exact recovery of the planted phantom. Empty rays are skipped; any noise on them cannot be fitted. Image noise has standard deviation (noise control) × mean noiseless ray sum, with fixed seed11. The left panel instead uses a fixed three-component perturbation scaled by 40 × that control. Image display clips to $[-.05,.45]$; RMS calculations do not. The consistent-system proof above is exact finite-dimensional mathematics; finite pictures do not prove convergence.`,
       viz(v) {
         const P = problem();
         const L = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: true, height: 300, title: 'Two unknowns, three equations', minWidth: 250 });
@@ -51,7 +59,7 @@ For a consistent system the iterates converge to the solution closest to the sta
         const nz = v.slider('data noise', 0, 0.15, 0.02, { step: 0.005 });
         const sw = v.slider('sweeps $k$', 0, 20, 5, { step: 1, int: true });
         const ord = v.select('ray order (image)', [{ value: 'spread', label: 'spread-out views' }, { value: 'seq', label: 'view by view' }], 'spread');
-        const hT = L.handle(0.8, 0.6, { color: 'green', r: 8, label: 'truth' }), h0 = L.handle(-1.6, -1.4, { color: 'gold', r: 8, label: 'start' });
+        const hT = L.handle(0.8, 0.6, { color: 'green', r: 8 }), h0 = L.handle(-1.6, -1.4, { color: 'gold', r: 8 });
         const ANG = { spread: [20, 80, 140], near: [20, 38, 56] }, E0 = [0.5, -0.4, 0.35];
         let hist = null, hkey = '';
         const histOf = (l, n, o) => {
@@ -66,9 +74,10 @@ For a consistent system the iterates converge to the solution closest to the sta
           const al = ANG[geo.value].map((d) => (d * PI) / 180), nrm = al.map((a) => [Math.cos(a), Math.sin(a)]);
           const bb = nrm.map((n, i) => n[0] * hT.x + n[1] * hT.y + 40 * nz.value * E0[i] * 1.0);
           const cols = ['accent', 'orange', 'purple'];
-          nrm.forEach((n, i) => { const t = [-n[1], n[0]]; L.segment([n[0] * bb[i] - 6 * t[0], n[1] * bb[i] - 6 * t[1]], [n[0] * bb[i] + 6 * t[0], n[1] * bb[i] + 6 * t[1]], { color: cols[i], width: 2 }); });
-          let x = [h0.x, h0.y]; const path = [[x[0], x[1]]];
-          for (let k = 0; k < steps.value; k++) { const i = k % 3, r = bb[i] - (nrm[i][0] * x[0] + nrm[i][1] * x[1]); x = [x[0] + lam.value * r * nrm[i][0], x[1] + lam.value * r * nrm[i][1]]; path.push([x[0], x[1]]); }
+          const path = kaczmarzPathAudit(nrm, bb, [h0.x, h0.y], steps.value, lam.value), x = path[path.length - 1];
+          const bounds = squareExtentAudit([...path, [hT.x, hT.y], ...nrm.map((n, i) => n.map(q => q * bb[i]))]);
+          L.setView(bounds.x, bounds.y);
+          nrm.forEach((n, i) => { const ends = equationSegmentAudit(n, bb[i], bounds); if (ends) L.segment(ends[0], ends[1], { color: cols[i], width: 2 }); });
           L.path(path, { color: 'gold', width: 1.8 });
           L.dots(path, { r: 3, color: 'gold' });
           L.dot(x[0], x[1], { r: 5, color: 'red' });
@@ -80,8 +89,8 @@ For a consistent system the iterates converge to the solution closest to the sta
           Ce.dot(k, H.errs[k], { r: 7, color: 'gold' });
           st = { d: Math.hypot(x[0] - hT.x, x[1] - hT.y), e: H.errs[k], emin: Math.min(...H.errs), kmin: H.errs.indexOf(Math.min(...H.errs)), path };
         });
-        v.legend([['accent', 'equation 1 / error'], ['orange', 'equation 2'], ['purple', 'equation 3'], ['gold', 'ART path']]);
-        v.readout(() => st ? `Two unknowns: after ${steps.value} projections the iterate is at distance $${fx(st.d, 3)}$ from the true solution (it can only decrease for consistent data; with noise it stops near the triangle of the three lines).\nImage: after ${sw.value} sweeps RMS error $${fx(st.e, 4)}$; the best sweep is $${st.kmin}$ with $${fx(st.emin, 4)}$${nz.value > 0.05 ? ' — noisy data: iterating beyond that makes the image worse.' : '.'}` : '');
+        v.legend([['accent', 'equation 1 / error'], ['orange', 'equation 2'], ['purple', 'equation 3'], ['gold', 'start / ART path'], ['green', 'noise-free reference']]);
+        v.readout(() => st ? `Two unknowns: distance to the noise-free reference after ${steps.value} row steps is $${fx(st.d, 3)}$. ${nz.value === 0 ? 'The consistent-system distance cannot increase for these relaxation values.' : 'Perturbed equations need not pass through the reference; no monotone-distance guarantee applies.'}\nImage: after ${sw.value} sweeps RMS error $${fx(st.e, 4)}$; best among stored sweeps 0–20 is $${st.kmin}$ with $${fx(st.emin, 4)}$. ${P.sys.rows.filter(r => r.ss === 0).length} empty rays are skipped. Seed11; no positivity projection; display saturation only.` : '');
       },
     },
 
@@ -90,17 +99,21 @@ For a consistent system the iterates converge to the solution closest to the sta
       num: '3.12',
       kind: 'Algorithm',
       name: 'SIRT and SART',
-      statement: String.raw`Two variants of ART use many rays per update. **SIRT** (simultaneous iterative reconstruction technique) computes the corrections from *all* rays with the current image and applies their average at once,
-$$\mu^{(k+1)}=\mu^{(k)}+\lambda\,C\,A^{T}R\,(b-A\mu^{(k)}),\quad R=\operatorname{diag}\!\big(1/\textstyle\sum_j a_{ij}\big),\ C=\operatorname{diag}\!\big(1/\textstyle\sum_i a_{ij}\big).$$
-**SART** (simultaneous algebraic reconstruction technique) updates after each *view*: all rays of one view are corrected together with weights $a_{ij}$, then the next view uses the updated image. For nonnegative ray weights and positive active row/column sums, this SIRT normalization converges to a weighted least-squares solution when $0<\lambda<2$. Its slower updates can delay noise amplification, but early stopping is still needed for ill-conditioned noisy data. ART and SART often start faster in the example; SART with a bilinear/area-weighted ray model yields smoother images than ART.`,
-      idea: String.raw`ART (imaging-3.11) takes one projection per ray, and the single-ray noise goes straight into the image, giving salt-and-pepper streaks. Averaging the corrections of all rays through a pixel before applying them (SIRT: a Landweber/Jacobi-type iteration on the normal equations, with diagonal scaling that makes it a convergent gradient method) or of all rays of a view (SART: a block-Kaczmarz step) averages the noise out at the cost of speed. The three methods trace the same trade-off as the filter windows (3.8): fast and sharp but noisy, versus slow and smooth.`,
-      caption: String.raw`The same 24×24 problem as 3.11 (18 views, 36 rays) reconstructed by all three methods; drag the **iteration** slider and compare the three images and the error curves, with and without **data noise**. SART gets near its best image in a few iterations; SIRT takes tens. Raise the noise to about 0.12: ART and SART's error turns up after a few sweeps (semi-convergence) while SIRT's keeps falling for longer. The relaxation $\lambda$ scales every step.`,
-      deps: ['imaging-3.11', 'opt-1.6'],
+      statement: String.raw`For a nonnegative matrix $A$, define positive row sums $r_i=\sum_j a_{ij}$ and column sums $c_j=\sum_i a_{ij}$. This **normalized SIRT** variant updates all rays together:
+Here $R_{ii}=1/r_i$ and $C_{jj}=1/c_j$. Write the increment separately:
+$$\Delta\mu^{(k)}=\lambda C A^T R(b-A\mu^{(k)}),$$
+$$\mu^{(k+1)}=\mu^{(k)}+\Delta\mu^{(k)}.$$
+Zero rows are omitted and unobserved columns are held fixed. For fixed $0<\lambda<2$, the observed components converge to a minimizer of $\|R^{1/2}(A\mu-b)\|^2$, closest to the start in the $C^{-1}$ norm. This is **weighted**, generally not ordinary, least squares. **SART** applies the same normalized formula to one view at a time, recomputing column sums within each view. A sweep visits every view. Neither averaging nor convergence to least squares guarantees removal of noise or a universal speed ranking.`,
+      idea: String.raw`The normalization gives a direct convergence proof for the stated SIRT variant. Set $B=R^{1/2}AC^{1/2}$ and $y=C^{-1/2}\mu$. Weighted Cauchy–Schwarz yields
+$$\|Bz\|^2\le\sum_i\sum_j a_{ij}z_j^2/c_j=\|z\|^2.$$
+The update becomes $y^+=y+\lambda B^T(R^{1/2}b-By)$. Each positive singular mode contracts by $1-\lambda\sigma^2\in(-1,1)$, while null components remain fixed, proving the weighted least-squares claim. Small singular values make some modes slow and can amplify noise in the limit. SART's view blocks use updated images between views; this SIRT proof does not assert that an inconsistent cyclic SART run has the same limit. Kak–Slaney Eq.32 supplies the view-wise normalization, but the illustration deliberately omits their bilinear basis and longitudinal Hamming weighting. The singular value decomposition (ladr 7.70) supplies the orthonormal input/output modes of the normalized matrix $B$. Its right singular vector of positive singular value $\sigma$ is an eigenvector of $B^TB$ with eigenvalue $\sigma^2$, so the corresponding SIRT error coefficient is multiplied by $1-\lambda\sigma^2$. Together with the proved bound $\|B\|\le1$, this contracts every observed mode for $0<\lambda<2$ while preserving null-space components; it makes no corresponding convergence claim for inconsistent view-wise SART.`,
+      caption: String.raw`All three methods reconstruct the same chosen 24×24 phantom from the same 18-view, 36-ray-per-view matrix and one common seeded noise realization. One displayed iteration means one complete ART ray sweep, one all-ray SIRT update, or one 18-view SART sweep; these are not identical computational work units. Compare the measured RMS curves as noise and relaxation change. Each reported best iterate is restricted to the displayed 1–30 range, not a theoretical stopping rule. No method's error is guaranteed to turn upward or decrease monotonically.`,
+      deps: ['imaging-3.11', 'ladr-7.70'],
       tags: ['SIRT', 'SART', 'iterative reconstruction'],
-      refs: ['Kak–Slaney §7.3', 'Kak–Slaney §7.4'],
-      credit: 'SIRT: Gilbert, 1972; SART: Andersen & Kak, 1984',
-      verify: true,
-      scope: String.raw`Small linear problem with the ray-marching weight model; the speed ranking and semi-convergence depend on the geometry, noise level and $\lambda$ (SIRT's step is the plain diagonally-scaled one without an optimised $\lambda$). The numbers here compare the methods on one phantom, not in general. The SART panel uses a normalized block update with the same pixel/ray-marching matrix as the other panels; it does not reproduce the original paper's bilinear forward model and longitudinal Hamming weighting.`,
+      refs: ['Kak–Slaney §7.3, p.284', 'Kak–Slaney §7.4, pp.285–292, especially Eq.32'],
+      credit: 'Algorithm presentations and view-block normalization: Kak & Slaney, chapter 7; SIRT convergence follows the explicit singular-mode proof above',
+      verify: false,
+      scope: String.raw`Same exact point-ray/piecewise-constant discrete operator as 3.11; seed5 is fixed, and Gaussian standard deviation is the noise control times the mean noiseless ray sum. Zero rows and unobserved pixels contribute no update. No nonnegativity constraint, regularization penalty, bilinear ray model or longitudinal window is applied. Images deliberately saturate outside $[-.05,.45]$, but RMS uses unwindowed values. Error curves assess this phantom and finite run, not clinical quality, general algorithm ordering, or a proof of semi-convergence.`,
       viz(v) {
         const P = problem();
         const it = v.slider('iterations $k$', 1, 30, 6, { step: 1, int: true });
@@ -131,7 +144,7 @@ $$\mu^{(k+1)}=\mu^{(k)}+\lambda\,C\,A^{T}R\,(b-A\mu^{(k)}),\quad R=\operatorname
           st = { e: ['art', 'sirt', 'sart'].map((a) => H.errs[a][k]), best: ['art', 'sirt', 'sart'].map((a) => { const m = Math.min(...H.errs[a]); return [m, H.errs[a].indexOf(m) + 1]; }) };
         });
         v.legend([['red', 'ART'], ['accent', 'SIRT'], ['green', 'SART']]);
-        v.readout(() => st ? `Iteration ${it.value}: RMS error ART $${fx(st.e[0], 4)}$, SIRT $${fx(st.e[1], 4)}$, SART $${fx(st.e[2], 4)}$.\nBest over 30 iterations: ART $${fx(st.best[0][0], 4)}$ (at ${st.best[0][1]}), SIRT $${fx(st.best[1][0], 4)}$ (at ${st.best[1][1]}), SART $${fx(st.best[2][0], 4)}$ (at ${st.best[2][1]}). (Phantom RMS $${fx(rms(P.x0), 3)}$.)` : '');
+        v.readout(() => st ? `Iteration ${it.value}: RMS error ART $${fx(st.e[0], 4)}$, SIRT $${fx(st.e[1], 4)}$, SART $${fx(st.e[2], 4)}$.\nBest among stored iterations 1–30: ART $${fx(st.best[0][0], 4)}$ (at ${st.best[0][1]}), SIRT $${fx(st.best[1][0], 4)}$ (at ${st.best[1][1]}), SART $${fx(st.best[2][0], 4)}$ (at ${st.best[2][1]}). (Phantom RMS $${fx(rms(P.x0), 3)}$; seed5, no positivity projection; display saturation only.)` : '');
       },
     },
 

@@ -23,15 +23,14 @@ function make(o) {
   return { ...o, dHsub, pv, ps, Tm };
 }
 export const SUBST = {
-  water: make({ key: 'water', name: 'water', Tt: 273.16, pt: 0.00611657, Tc: 647.096, pc: 220.64, T3: 373.124, p3: ATM, dHsub: 51.06e3, slope: -135, curv: (251.165 - 273.16 + (2085.66 - .00611657) / 135) / (2085.66 - .00611657) ** 2, pmaxMelt: 2085.66, T: [200, 700], p: [1e-4, 1e4] }),
+  water: make({ key: 'water', name: 'water', Tt: 273.16, pt: 0.00611657, Tc: 647.096, pc: 220.64, T3: 373.124, p3: ATM, dHsub: 51.06e3, slope: -135, curv: -1.46e-6, pmaxMelt: 2099, T: [200, 700], p: [1e-4, 1e4] }),
   co2: make({ key: 'co2', name: 'CO₂', Tt: 216.58, pt: 5.185, Tc: 304.13, pc: 73.77, T3: 273.15, p3: 34.85, Tsub: 194.69, slope: 45.7, pmaxMelt: 4000, T: [150, 400], p: [0.01, 4000] }),
 };
 
 /** Phase of a state (T, p in bar): 'solid' | 'liquid' | 'gas' | 'sc' (supercritical fluid). */
 export function phaseOf(S, T, p) {
   if (p < S.pt) return p > S.ps(T) ? 'solid' : 'gas';
-  if (p > S.pmaxMelt && T < S.Tc) return 'unmodelled';
-  if (T < S.Tm(p)) return 'solid';
+  if (T < S.Tm(Math.min(p, S.pmaxMelt))) return 'solid';
   if (T >= S.Tc) return p > S.pc ? 'sc' : 'gas';
   if (p >= S.pc) return 'liquid';
   return p > S.pv(T) ? 'liquid' : 'gas';
@@ -43,33 +42,6 @@ export const antoineW = (T) => Math.pow(10, 4.6543 - 1435.264 / (T - 64.848));
 export const pAlt = (h) => ATM * Math.pow(1 - 2.25577e-5 * h, 5.25588);
 /** IAPWS R1-76 surface tension of water (N/m), T in K. */
 export const gammaWater = (T) => { const t = 1 - T / 647.096; return 0.2358 * Math.pow(t, 1.256) * (1 - 0.625 * t); };
-
-/** Schematic Kelvin coarsening: Euler steps in r³ conserve liquid volume.
- * Limit each step to the first disappearing drop; the rate has arbitrary units. */
-export function ripeningStep(radii, a, dt) {
-  const volume = radii.map(r => r ** 3), total = volume.reduce((s, x) => s + x, 0);
-  let left = dt;
-  for (let iter = 0; left > 1e-14 && iter <= radii.length; iter++) {
-    const r = volume.map(Math.cbrt), live = r.map((x, i) => x > 0 ? i : -1).filter(i => i >= 0);
-    if (live.length <= 1) break;
-    // A remnant below roundoff in the plotted nanometre volumes has no resolved size.
-    for (const i of live) if (r[i] < 1e-6) volume[i] = 0;
-    const active = live.filter(i => volume[i] > 0);
-    if (active.length !== live.length) { const j = volume.indexOf(Math.max(...volume)); volume[j] += total - volume.reduce((s, x) => s + x, 0); continue; }
-    const e = r.map(x => x > 0 ? Math.exp(a / x) : 0);
-    const saturation = active.reduce((s, i) => s + r[i] * e[i], 0) / active.reduce((s, i) => s + r[i], 0);
-    const dv = r.map((x, i) => 450 * x * (saturation - e[i]));
-    let h = left, hit = -1;
-    for (const i of active) if (dv[i] < 0 && -volume[i] / dv[i] <= h) { h = -volume[i] / dv[i]; hit = i; }
-    for (const i of active) volume[i] = Math.max(0, volume[i] + h * dv[i]);
-    if (hit >= 0) volume[hit] = 0;
-    const j = volume.indexOf(Math.max(...volume)); volume[j] += total - volume.reduce((s, x) => s + x, 0);
-    left -= h;
-  }
-  const r = volume.map(Math.cbrt), live = r.filter(x => x > 0);
-  const saturation = live.length ? live.reduce((s, x) => s + x * Math.exp(a / x), 0) / live.reduce((s, x) => s + x, 0) : 1;
-  return { r, S: saturation };
-}
 
 // ---- reduced van der Waals fluid ---------------------------------------------------------------------------
 /** Reduced volumes (ascending) at reduced T, p. */

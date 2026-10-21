@@ -1,0 +1,2032 @@
+{
+  "objects": 38,
+  "functions": 38,
+  "rows": 114,
+  "changedRows": 3,
+  "rawItems": [
+    {
+      "num": "1.7",
+      "deps": [
+        "cg-1.2"
+      ]
+    },
+    {
+      "num": "1.8",
+      "deps": [
+        "cg-1.7"
+      ]
+    },
+    {
+      "num": "1.9",
+      "deps": [
+        "cg-1.7",
+        "pma-4.9"
+      ]
+    },
+    {
+      "num": "1.1",
+      "deps": []
+    },
+    {
+      "num": "1.2",
+      "deps": [
+        "cg-1.1",
+        "rca-2.23",
+        "ladr-9.43"
+      ]
+    },
+    {
+      "num": "1.3",
+      "deps": [
+        "cg-1.2",
+        "pma-4.23"
+      ]
+    },
+    {
+      "num": "1.4",
+      "deps": [
+        "cg-1.2",
+        "pma-10.45"
+      ]
+    },
+    {
+      "num": "1.5",
+      "deps": [
+        "cg-1.3",
+        "top-10.1"
+      ]
+    },
+    {
+      "num": "1.6",
+      "deps": [
+        "cg-1.1",
+        "ladr-3.65"
+      ]
+    },
+    {
+      "num": "2.8",
+      "deps": [
+        "cg-2.6",
+        "cplx-10.14",
+        "algo-3.12"
+      ]
+    },
+    {
+      "num": "2.9",
+      "deps": [
+        "cg-2.5",
+        "cg-2.6",
+        "pma-3.26"
+      ]
+    },
+    {
+      "num": "2.10",
+      "deps": [
+        "cg-2.1",
+        "prob-2.1.1a",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "num": "2.11",
+      "deps": [
+        "cg-2.6",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "num": "2.12",
+      "deps": [
+        "cg-2.11",
+        "top-10.9",
+        "comb-1.4"
+      ]
+    },
+    {
+      "num": "2.1",
+      "deps": [
+        "pma-2.17",
+        "fa-3.19",
+        "cg-1.2"
+      ]
+    },
+    {
+      "num": "2.3",
+      "deps": [
+        "cg-2.1",
+        "ladr-3.26"
+      ]
+    },
+    {
+      "num": "2.4",
+      "deps": [
+        "cg-2.3",
+        "pma-2.36"
+      ]
+    },
+    {
+      "num": "2.5",
+      "deps": [
+        "cg-2.1",
+        "cg-1.2"
+      ]
+    },
+    {
+      "num": "2.6",
+      "deps": [
+        "cg-2.5"
+      ]
+    },
+    {
+      "num": "2.7",
+      "deps": [
+        "cg-2.5"
+      ]
+    },
+    {
+      "num": "3.6",
+      "deps": [
+        "cg-3.5",
+        "comb-1.2"
+      ]
+    },
+    {
+      "num": "3.7",
+      "deps": [
+        "cg-3.5",
+        "cg-3.1"
+      ]
+    },
+    {
+      "num": "3.8",
+      "deps": [
+        "cg-2.1"
+      ]
+    },
+    {
+      "num": "3.9",
+      "deps": [
+        "cg-3.8",
+        "algo-9.8",
+        "ladr-6.17"
+      ]
+    },
+    {
+      "num": "3.1",
+      "deps": [
+        "cg-1.3",
+        "pma-4.23"
+      ]
+    },
+    {
+      "num": "3.2",
+      "deps": [
+        "cg-3.1"
+      ]
+    },
+    {
+      "num": "3.3",
+      "deps": [
+        "comb-2.1"
+      ]
+    },
+    {
+      "num": "3.4",
+      "deps": [
+        "cg-3.2",
+        "cg-3.3"
+      ]
+    },
+    {
+      "num": "3.5",
+      "deps": [
+        "cg-1.2",
+        "top-10.1",
+        "graph-1.5.2",
+        "graph-1.5.1a"
+      ]
+    },
+    {
+      "num": "4.6",
+      "deps": [
+        "cg-1.1"
+      ]
+    },
+    {
+      "num": "4.7",
+      "deps": [
+        "cg-4.6"
+      ]
+    },
+    {
+      "num": "4.8",
+      "deps": [
+        "cg-4.7"
+      ]
+    },
+    {
+      "num": "4.9",
+      "deps": [
+        "cg-4.6",
+        "cg-1.2",
+        "cplx-12.6"
+      ]
+    },
+    {
+      "num": "4.1",
+      "deps": [
+        "cg-2.1",
+        "cg-2.4"
+      ]
+    },
+    {
+      "num": "4.2",
+      "deps": [
+        "cg-4.1",
+        "fa-3.24",
+        "algo-11.15",
+        "ladr-3.21"
+      ]
+    },
+    {
+      "num": "4.3",
+      "deps": [
+        "cg-4.2"
+      ]
+    },
+    {
+      "num": "4.4",
+      "deps": [
+        "cg-4.3",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "num": "4.5",
+      "deps": [
+        "cg-4.4",
+        "pma-4.16"
+      ]
+    }
+  ],
+  "rawRows": [
+    {
+      "num": "1.1",
+      "beforeDeps": [],
+      "afterDeps": []
+    },
+    {
+      "num": "1.2",
+      "beforeDeps": [
+        "cg-1.1",
+        "rca-2.23",
+        "ladr-9.43"
+      ],
+      "afterDeps": [
+        "cg-1.1",
+        "rca-2.23",
+        "ladr-9.43"
+      ]
+    },
+    {
+      "num": "1.3",
+      "beforeDeps": [
+        "cg-1.2",
+        "pma-4.23"
+      ],
+      "afterDeps": [
+        "cg-1.2",
+        "pma-4.23"
+      ]
+    },
+    {
+      "num": "1.4",
+      "beforeDeps": [
+        "cg-1.2",
+        "pma-10.45"
+      ],
+      "afterDeps": [
+        "cg-1.2",
+        "pma-10.45"
+      ]
+    },
+    {
+      "num": "1.5",
+      "beforeDeps": [
+        "cg-1.3",
+        "top-10.1"
+      ],
+      "afterDeps": [
+        "cg-1.3",
+        "top-10.1"
+      ]
+    },
+    {
+      "num": "1.6",
+      "beforeDeps": [
+        "cg-1.1",
+        "ladr-3.65"
+      ],
+      "afterDeps": [
+        "cg-1.1",
+        "ladr-3.65"
+      ]
+    },
+    {
+      "num": "1.7",
+      "beforeDeps": [
+        "cg-1.2"
+      ],
+      "afterDeps": [
+        "cg-1.2"
+      ]
+    },
+    {
+      "num": "1.8",
+      "beforeDeps": [
+        "cg-1.7"
+      ],
+      "afterDeps": [
+        "cg-1.7"
+      ]
+    },
+    {
+      "num": "1.9",
+      "beforeDeps": [
+        "cg-1.7",
+        "pma-4.9"
+      ],
+      "afterDeps": [
+        "cg-1.7",
+        "pma-4.9"
+      ]
+    },
+    {
+      "num": "2.1",
+      "beforeDeps": [
+        "pma-2.17",
+        "fa-3.19"
+      ],
+      "afterDeps": [
+        "pma-2.17",
+        "fa-3.19",
+        "cg-1.2"
+      ]
+    },
+    {
+      "num": "2.2"
+    },
+    {
+      "num": "2.3",
+      "beforeDeps": [
+        "cg-2.1",
+        "ladr-3.26"
+      ],
+      "afterDeps": [
+        "cg-2.1",
+        "ladr-3.26"
+      ]
+    },
+    {
+      "num": "2.4",
+      "beforeDeps": [
+        "cg-2.3",
+        "pma-2.36"
+      ],
+      "afterDeps": [
+        "cg-2.3",
+        "pma-2.36"
+      ]
+    },
+    {
+      "num": "2.5",
+      "beforeDeps": [
+        "cg-2.1",
+        "cg-1.2"
+      ],
+      "afterDeps": [
+        "cg-2.1",
+        "cg-1.2"
+      ]
+    },
+    {
+      "num": "2.6",
+      "beforeDeps": [
+        "cg-2.5"
+      ],
+      "afterDeps": [
+        "cg-2.5"
+      ]
+    },
+    {
+      "num": "2.7",
+      "beforeDeps": [
+        "cg-2.5"
+      ],
+      "afterDeps": [
+        "cg-2.5"
+      ]
+    },
+    {
+      "num": "2.8",
+      "beforeDeps": [
+        "cg-2.6",
+        "cplx-10.14",
+        "algo-3.12"
+      ],
+      "afterDeps": [
+        "cg-2.6",
+        "cplx-10.14",
+        "algo-3.12"
+      ]
+    },
+    {
+      "num": "2.9",
+      "beforeDeps": [
+        "cg-2.5",
+        "cg-2.6",
+        "pma-3.26"
+      ],
+      "afterDeps": [
+        "cg-2.5",
+        "cg-2.6",
+        "pma-3.26"
+      ]
+    },
+    {
+      "num": "2.10",
+      "beforeDeps": [
+        "cg-2.1",
+        "prob-2.1.1a",
+        "prob-1.6.1"
+      ],
+      "afterDeps": [
+        "cg-2.1",
+        "prob-2.1.1a",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "num": "2.11",
+      "beforeDeps": [
+        "cg-2.6",
+        "prob-1.6.1"
+      ],
+      "afterDeps": [
+        "cg-2.6",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "num": "2.12",
+      "beforeDeps": [
+        "cg-2.11",
+        "top-10.9",
+        "comb-1.4"
+      ],
+      "afterDeps": [
+        "cg-2.11",
+        "top-10.9",
+        "comb-1.4"
+      ]
+    },
+    {
+      "num": "3.1",
+      "beforeDeps": [
+        "cg-1.3",
+        "pma-4.23"
+      ],
+      "afterDeps": [
+        "cg-1.3",
+        "pma-4.23"
+      ]
+    },
+    {
+      "num": "3.2",
+      "beforeDeps": [
+        "cg-3.1"
+      ],
+      "afterDeps": [
+        "cg-3.1"
+      ]
+    },
+    {
+      "num": "3.3",
+      "beforeDeps": [
+        "comb-2.1"
+      ],
+      "afterDeps": [
+        "comb-2.1"
+      ]
+    },
+    {
+      "num": "3.4",
+      "beforeDeps": [
+        "cg-3.2",
+        "cg-3.3"
+      ],
+      "afterDeps": [
+        "cg-3.2",
+        "cg-3.3"
+      ]
+    },
+    {
+      "num": "3.5",
+      "beforeDeps": [
+        "cg-1.2",
+        "top-10.1",
+        "graph-1.5.2",
+        "graph-1.5.1a"
+      ],
+      "afterDeps": [
+        "cg-1.2",
+        "top-10.1",
+        "graph-1.5.2",
+        "graph-1.5.1a"
+      ]
+    },
+    {
+      "num": "3.6",
+      "beforeDeps": [
+        "cg-3.5",
+        "comb-1.2"
+      ],
+      "afterDeps": [
+        "cg-3.5",
+        "comb-1.2"
+      ]
+    },
+    {
+      "num": "3.7",
+      "beforeDeps": [
+        "cg-3.5",
+        "cg-3.1"
+      ],
+      "afterDeps": [
+        "cg-3.5",
+        "cg-3.1"
+      ]
+    },
+    {
+      "num": "3.8",
+      "beforeDeps": [
+        "cg-2.1"
+      ],
+      "afterDeps": [
+        "cg-2.1"
+      ]
+    },
+    {
+      "num": "3.9",
+      "beforeDeps": [
+        "cg-3.8",
+        "algo-9.8",
+        "ladr-6.17"
+      ],
+      "afterDeps": [
+        "cg-3.8",
+        "algo-9.8",
+        "ladr-6.17"
+      ]
+    },
+    {
+      "num": "4.1",
+      "beforeDeps": [
+        "cg-2.1"
+      ],
+      "afterDeps": [
+        "cg-2.1",
+        "cg-2.4"
+      ]
+    },
+    {
+      "num": "4.2",
+      "beforeDeps": [
+        "cg-4.1",
+        "fa-3.24",
+        "algo-11.15",
+        "ladr-3.21"
+      ],
+      "afterDeps": [
+        "cg-4.1",
+        "fa-3.24",
+        "algo-11.15",
+        "ladr-3.21"
+      ]
+    },
+    {
+      "num": "4.3",
+      "beforeDeps": [
+        "cg-4.2"
+      ],
+      "afterDeps": [
+        "cg-4.2"
+      ]
+    },
+    {
+      "num": "4.4",
+      "beforeDeps": [
+        "cg-4.3",
+        "prob-1.6.1"
+      ],
+      "afterDeps": [
+        "cg-4.3",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "num": "4.5",
+      "beforeDeps": [
+        "cg-4.4",
+        "pma-4.16"
+      ],
+      "afterDeps": [
+        "cg-4.4",
+        "pma-4.16"
+      ]
+    },
+    {
+      "num": "4.6",
+      "beforeDeps": [
+        "cg-1.1"
+      ],
+      "afterDeps": [
+        "cg-1.1"
+      ]
+    },
+    {
+      "num": "4.7",
+      "beforeDeps": [
+        "cg-4.6"
+      ],
+      "afterDeps": [
+        "cg-4.6"
+      ]
+    },
+    {
+      "num": "4.8",
+      "beforeDeps": [
+        "cg-4.7"
+      ],
+      "afterDeps": [
+        "cg-4.7"
+      ]
+    },
+    {
+      "num": "4.9",
+      "beforeDeps": [
+        "cg-4.6",
+        "cplx-12.6"
+      ],
+      "afterDeps": [
+        "cg-4.6",
+        "cg-1.2",
+        "cplx-12.6"
+      ]
+    },
+    {
+      "num": "5.1",
+      "beforeDeps": [
+        "cg-1.1"
+      ],
+      "afterDeps": [
+        "cg-1.1"
+      ]
+    },
+    {
+      "num": "5.2",
+      "beforeDeps": [
+        "cg-5.1",
+        "cg-2.12"
+      ],
+      "afterDeps": [
+        "cg-5.1",
+        "cg-2.12"
+      ]
+    },
+    {
+      "num": "5.3",
+      "beforeDeps": [
+        "cg-5.1",
+        "cg-3.1"
+      ],
+      "afterDeps": [
+        "cg-5.1",
+        "cg-3.1"
+      ]
+    },
+    {
+      "num": "5.4",
+      "beforeDeps": [
+        "cg-3.5"
+      ],
+      "afterDeps": [
+        "cg-3.5"
+      ]
+    },
+    {
+      "num": "5.5",
+      "beforeDeps": [
+        "cg-5.4"
+      ],
+      "afterDeps": [
+        "cg-5.4"
+      ]
+    },
+    {
+      "num": "5.6",
+      "beforeDeps": [
+        "cg-5.5",
+        "cg-5.1"
+      ],
+      "afterDeps": [
+        "cg-5.5",
+        "cg-5.1"
+      ]
+    },
+    {
+      "num": "5.7",
+      "beforeDeps": [
+        "cg-5.5"
+      ],
+      "afterDeps": [
+        "cg-5.5"
+      ]
+    },
+    {
+      "num": "5.8",
+      "beforeDeps": [
+        "cg-5.7"
+      ],
+      "afterDeps": [
+        "cg-5.7"
+      ]
+    },
+    {
+      "num": "5.9",
+      "beforeDeps": [
+        "cg-5.8",
+        "cg-4.4"
+      ],
+      "afterDeps": [
+        "cg-5.8",
+        "cg-4.4"
+      ]
+    },
+    {
+      "num": "5.10",
+      "beforeDeps": [
+        "cg-5.5",
+        "cg-2.11"
+      ],
+      "afterDeps": [
+        "cg-5.5",
+        "cg-2.11"
+      ]
+    },
+    {
+      "num": "5.11",
+      "beforeDeps": [
+        "cg-5.5",
+        "algo-10.13"
+      ],
+      "afterDeps": [
+        "cg-5.5",
+        "algo-10.13"
+      ]
+    },
+    {
+      "num": "5.12",
+      "beforeDeps": [
+        "cg-5.1"
+      ],
+      "afterDeps": [
+        "cg-5.1"
+      ]
+    },
+    {
+      "num": "5.13",
+      "beforeDeps": [
+        "cg-5.1",
+        "info-7.8"
+      ],
+      "afterDeps": [
+        "cg-5.1",
+        "info-7.8"
+      ]
+    },
+    {
+      "num": "5.14",
+      "beforeDeps": [
+        "cg-5.5"
+      ],
+      "afterDeps": [
+        "cg-5.5"
+      ]
+    },
+    {
+      "num": "6.1",
+      "beforeDeps": [
+        "cg-1.1"
+      ],
+      "afterDeps": [
+        "cg-1.1"
+      ]
+    },
+    {
+      "num": "6.2",
+      "beforeDeps": [
+        "cg-6.1"
+      ],
+      "afterDeps": [
+        "cg-6.1"
+      ]
+    },
+    {
+      "num": "6.3",
+      "beforeDeps": [
+        "cg-3.3",
+        "cg-4.4"
+      ],
+      "afterDeps": [
+        "cg-3.3",
+        "cg-4.4"
+      ]
+    },
+    {
+      "num": "6.4",
+      "beforeDeps": [],
+      "afterDeps": []
+    },
+    {
+      "num": "6.5",
+      "beforeDeps": [
+        "cg-1.2"
+      ],
+      "afterDeps": [
+        "cg-1.2"
+      ]
+    },
+    {
+      "num": "6.6",
+      "beforeDeps": [
+        "cg-6.1"
+      ],
+      "afterDeps": [
+        "cg-6.1"
+      ]
+    },
+    {
+      "num": "6.7",
+      "beforeDeps": [
+        "cg-6.1"
+      ],
+      "afterDeps": [
+        "cg-6.1"
+      ]
+    },
+    {
+      "num": "6.8",
+      "beforeDeps": [
+        "cg-6.1"
+      ],
+      "afterDeps": [
+        "cg-6.1"
+      ]
+    },
+    {
+      "num": "7.1",
+      "beforeDeps": [
+        "pma-5.16"
+      ],
+      "afterDeps": [
+        "pma-5.16"
+      ]
+    },
+    {
+      "num": "7.2"
+    },
+    {
+      "num": "7.3",
+      "beforeDeps": [
+        "cg-7.2",
+        "cg-1.1"
+      ],
+      "afterDeps": [
+        "cg-7.2",
+        "cg-1.1"
+      ]
+    },
+    {
+      "num": "7.4",
+      "beforeDeps": [
+        "cg-7.3",
+        "cg-2.1"
+      ],
+      "afterDeps": [
+        "cg-7.3",
+        "cg-2.1"
+      ]
+    },
+    {
+      "num": "7.5",
+      "beforeDeps": [
+        "cg-7.3"
+      ],
+      "afterDeps": [
+        "cg-7.3"
+      ]
+    },
+    {
+      "num": "7.6",
+      "beforeDeps": [
+        "cg-7.3"
+      ],
+      "afterDeps": [
+        "cg-7.3"
+      ]
+    },
+    {
+      "num": "7.7",
+      "beforeDeps": [
+        "cg-7.3",
+        "cg-7.1"
+      ],
+      "afterDeps": [
+        "cg-7.3",
+        "cg-7.1"
+      ]
+    },
+    {
+      "num": "7.8",
+      "beforeDeps": [
+        "cg-7.3"
+      ],
+      "afterDeps": [
+        "cg-7.3"
+      ]
+    },
+    {
+      "num": "7.9",
+      "beforeDeps": [
+        "cg-7.3"
+      ],
+      "afterDeps": [
+        "cg-7.3"
+      ]
+    },
+    {
+      "num": "7.10",
+      "beforeDeps": [
+        "cg-7.5",
+        "cg-3.3"
+      ],
+      "afterDeps": [
+        "cg-7.5",
+        "cg-3.3"
+      ]
+    },
+    {
+      "num": "8.1",
+      "beforeDeps": [
+        "cg-1.1"
+      ],
+      "afterDeps": [
+        "cg-1.1"
+      ]
+    },
+    {
+      "num": "8.2",
+      "beforeDeps": [
+        "cg-8.1"
+      ],
+      "afterDeps": [
+        "cg-8.1"
+      ]
+    },
+    {
+      "num": "8.3",
+      "beforeDeps": [
+        "cg-8.1"
+      ],
+      "afterDeps": [
+        "cg-8.1"
+      ]
+    },
+    {
+      "num": "8.4",
+      "beforeDeps": [
+        "cg-8.3",
+        "cg-1.3"
+      ],
+      "afterDeps": [
+        "cg-8.3",
+        "cg-1.3"
+      ]
+    },
+    {
+      "num": "8.5",
+      "beforeDeps": [
+        "cg-1.2",
+        "cg-1.6"
+      ],
+      "afterDeps": [
+        "cg-1.2",
+        "cg-1.6"
+      ]
+    },
+    {
+      "num": "8.6",
+      "beforeDeps": [
+        "cg-8.5"
+      ],
+      "afterDeps": [
+        "cg-8.5"
+      ]
+    },
+    {
+      "num": "8.7"
+    },
+    {
+      "num": "8.8",
+      "beforeDeps": [
+        "pma-1.24",
+        "cg-8.7"
+      ],
+      "afterDeps": [
+        "pma-1.24",
+        "cg-8.7"
+      ]
+    },
+    {
+      "num": "8.9",
+      "beforeDeps": [
+        "cg-8.8"
+      ],
+      "afterDeps": [
+        "cg-8.8"
+      ]
+    },
+    {
+      "num": "8.10",
+      "beforeDeps": [
+        "cg-8.3"
+      ],
+      "afterDeps": [
+        "cg-8.3"
+      ]
+    },
+    {
+      "num": "9.1",
+      "beforeDeps": [
+        "rca-9.13",
+        "sig-7.3"
+      ],
+      "afterDeps": [
+        "rca-9.13",
+        "sig-7.3"
+      ]
+    },
+    {
+      "num": "9.2",
+      "beforeDeps": [
+        "cg-9.1",
+        "sig-7.5"
+      ],
+      "afterDeps": [
+        "cg-9.1",
+        "sig-7.5"
+      ]
+    },
+    {
+      "num": "9.3",
+      "beforeDeps": [
+        "cg-9.2"
+      ],
+      "afterDeps": [
+        "cg-9.2"
+      ]
+    },
+    {
+      "num": "9.4",
+      "beforeDeps": [
+        "cg-9.3"
+      ],
+      "afterDeps": [
+        "cg-9.3"
+      ]
+    },
+    {
+      "num": "9.5",
+      "beforeDeps": [
+        "cg-4.8"
+      ],
+      "afterDeps": [
+        "cg-4.8"
+      ]
+    },
+    {
+      "num": "9.6",
+      "beforeDeps": [
+        "cg-9.5"
+      ],
+      "afterDeps": [
+        "cg-9.5"
+      ]
+    },
+    {
+      "num": "9.7",
+      "beforeDeps": [
+        "cg-9.4"
+      ],
+      "afterDeps": [
+        "cg-9.4"
+      ]
+    },
+    {
+      "num": "9.8",
+      "beforeDeps": [
+        "cg-9.1",
+        "sig-7.4"
+      ],
+      "afterDeps": [
+        "cg-9.1",
+        "sig-7.4"
+      ]
+    },
+    {
+      "num": "9.9",
+      "beforeDeps": [
+        "cg-9.2",
+        "cg-9.8"
+      ],
+      "afterDeps": [
+        "cg-9.2",
+        "cg-9.8"
+      ]
+    },
+    {
+      "num": "9.10",
+      "beforeDeps": [],
+      "afterDeps": []
+    },
+    {
+      "num": "10.1",
+      "beforeDeps": [],
+      "afterDeps": []
+    },
+    {
+      "num": "10.2",
+      "beforeDeps": [
+        "cg-10.1"
+      ],
+      "afterDeps": [
+        "cg-10.1"
+      ]
+    },
+    {
+      "num": "10.3",
+      "beforeDeps": [
+        "cg-10.1"
+      ],
+      "afterDeps": [
+        "cg-10.1"
+      ]
+    },
+    {
+      "num": "10.4",
+      "beforeDeps": [
+        "cg-10.3"
+      ],
+      "afterDeps": [
+        "cg-10.3"
+      ]
+    },
+    {
+      "num": "10.5",
+      "beforeDeps": [
+        "cg-10.3",
+        "waves-4.7"
+      ],
+      "afterDeps": [
+        "cg-10.3",
+        "waves-4.7"
+      ]
+    },
+    {
+      "num": "10.6",
+      "beforeDeps": [
+        "cg-10.5"
+      ],
+      "afterDeps": [
+        "cg-10.5"
+      ]
+    },
+    {
+      "num": "10.7"
+    },
+    {
+      "num": "10.8",
+      "beforeDeps": [
+        "cg-10.7"
+      ],
+      "afterDeps": [
+        "cg-10.7"
+      ]
+    },
+    {
+      "num": "10.9",
+      "beforeDeps": [
+        "cg-10.8"
+      ],
+      "afterDeps": [
+        "cg-10.8"
+      ]
+    },
+    {
+      "num": "10.10"
+    },
+    {
+      "num": "10.11",
+      "beforeDeps": [
+        "cg-10.10"
+      ],
+      "afterDeps": [
+        "cg-10.10"
+      ]
+    },
+    {
+      "num": "10.12",
+      "beforeDeps": [
+        "cg-10.7"
+      ],
+      "afterDeps": [
+        "cg-10.7"
+      ]
+    },
+    {
+      "num": "11.1",
+      "beforeDeps": [
+        "cg-1.6"
+      ],
+      "afterDeps": [
+        "cg-1.6"
+      ]
+    },
+    {
+      "num": "11.2",
+      "beforeDeps": [
+        "cg-11.1",
+        "cg-10.5"
+      ],
+      "afterDeps": [
+        "cg-11.1",
+        "cg-10.5"
+      ]
+    },
+    {
+      "num": "11.3",
+      "beforeDeps": [
+        "cg-10.3",
+        "cg-10.2"
+      ],
+      "afterDeps": [
+        "cg-10.3",
+        "cg-10.2"
+      ]
+    },
+    {
+      "num": "11.4",
+      "beforeDeps": [
+        "cg-11.3",
+        "pma-9.23",
+        "pma-3.26"
+      ],
+      "afterDeps": [
+        "cg-11.3",
+        "pma-9.23",
+        "pma-3.26"
+      ]
+    },
+    {
+      "num": "11.5",
+      "beforeDeps": [
+        "cg-11.4",
+        "cg-10.10",
+        "cg-10.12"
+      ],
+      "afterDeps": [
+        "cg-11.4",
+        "cg-10.10",
+        "cg-10.12"
+      ]
+    },
+    {
+      "num": "11.6",
+      "beforeDeps": [
+        "cg-11.5",
+        "cg-10.11"
+      ],
+      "afterDeps": [
+        "cg-11.5",
+        "cg-10.11"
+      ]
+    },
+    {
+      "num": "11.7",
+      "beforeDeps": [
+        "cg-11.3"
+      ],
+      "afterDeps": [
+        "cg-11.3"
+      ]
+    },
+    {
+      "num": "11.8",
+      "beforeDeps": [
+        "cg-10.1"
+      ],
+      "afterDeps": [
+        "cg-10.1"
+      ]
+    },
+    {
+      "num": "11.9",
+      "beforeDeps": [
+        "cg-11.8",
+        "cg-11.3"
+      ],
+      "afterDeps": [
+        "cg-11.8",
+        "cg-11.3"
+      ]
+    },
+    {
+      "num": "11.10",
+      "beforeDeps": [
+        "cg-11.5"
+      ],
+      "afterDeps": [
+        "cg-11.5"
+      ]
+    },
+    {
+      "num": "11.11",
+      "beforeDeps": [
+        "cg-10.1",
+        "cg-10.3",
+        "cg-11.2",
+        "stat-9.1"
+      ],
+      "afterDeps": [
+        "cg-10.1",
+        "cg-10.3",
+        "cg-11.2",
+        "stat-9.1"
+      ]
+    }
+  ],
+  "inventories": [
+    {
+      "collection": "cg",
+      "field": "cs",
+      "target": 25,
+      "writtenToWritten": 25,
+      "writtenToKnown": 28,
+      "wholeSyllabus": 44,
+      "publishedShortfall": 0,
+      "unknown": [],
+      "edges": [
+        {
+          "item": "cg-1.9",
+          "prerequisite": "pma-4.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.2",
+          "prerequisite": "rca-2.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.2",
+          "prerequisite": "ladr-9.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.3",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.4",
+          "prerequisite": "pma-10.45",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.5",
+          "prerequisite": "top-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-1.6",
+          "prerequisite": "ladr-3.65",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.9",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.10",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.10",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.11",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.12",
+          "prerequisite": "top-10.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-2.12",
+          "prerequisite": "comb-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.1",
+          "prerequisite": "pma-2.17",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.1",
+          "prerequisite": "fa-3.19",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.3",
+          "prerequisite": "ladr-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.4",
+          "prerequisite": "pma-2.36",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.6",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.9",
+          "prerequisite": "ladr-6.17",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.1",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.3",
+          "prerequisite": "comb-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.5",
+          "prerequisite": "top-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-3.5",
+          "prerequisite": "graph-1.5.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.5",
+          "prerequisite": "graph-1.5.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.2",
+          "prerequisite": "fa-3.24",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.2",
+          "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.4",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.5",
+          "prerequisite": "pma-4.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-7.1",
+          "prerequisite": "pma-5.16",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-7.3",
+          "prerequisite": "num-4.2",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-8.8",
+          "prerequisite": "pma-1.24",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-8.8",
+          "prerequisite": "robot-2.4",
+          "prerequisiteField": "eng",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-9.1",
+          "prerequisite": "rca-9.13",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-9.1",
+          "prerequisite": "sig-7.3",
+          "prerequisiteField": "eng",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-9.2",
+          "prerequisite": "sig-7.5",
+          "prerequisiteField": "eng",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-9.8",
+          "prerequisite": "sig-7.4",
+          "prerequisiteField": "eng",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-10.5",
+          "prerequisite": "waves-4.7",
+          "prerequisiteField": "physics",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-10.8",
+          "prerequisite": "stat-9.1",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-10.11",
+          "prerequisite": "stat-10.16",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-10.12",
+          "prerequisite": "stat-9.1",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-11.4",
+          "prerequisite": "pma-9.23",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-11.4",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-11.5",
+          "prerequisite": "stat-10.16",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-11.11",
+          "prerequisite": "stat-9.1",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        }
+      ]
+    },
+    {
+      "collection": "cg",
+      "field": "cs",
+      "target": 25,
+      "writtenToWritten": 25,
+      "writtenToKnown": 28,
+      "wholeSyllabus": 44,
+      "publishedShortfall": 0,
+      "unknown": [],
+      "edges": [
+        {
+          "item": "cg-1.9",
+          "prerequisite": "pma-4.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.2",
+          "prerequisite": "rca-2.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.2",
+          "prerequisite": "ladr-9.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.3",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.4",
+          "prerequisite": "pma-10.45",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-1.5",
+          "prerequisite": "top-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-1.6",
+          "prerequisite": "ladr-3.65",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.9",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.10",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.10",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.11",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.12",
+          "prerequisite": "top-10.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-2.12",
+          "prerequisite": "comb-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.1",
+          "prerequisite": "pma-2.17",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.1",
+          "prerequisite": "fa-3.19",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.3",
+          "prerequisite": "ladr-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-2.4",
+          "prerequisite": "pma-2.36",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.6",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.9",
+          "prerequisite": "ladr-6.17",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.1",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.3",
+          "prerequisite": "comb-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.5",
+          "prerequisite": "top-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-3.5",
+          "prerequisite": "graph-1.5.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-3.5",
+          "prerequisite": "graph-1.5.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.2",
+          "prerequisite": "fa-3.24",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.2",
+          "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.4",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-4.5",
+          "prerequisite": "pma-4.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-7.1",
+          "prerequisite": "pma-5.16",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-7.3",
+          "prerequisite": "num-4.2",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-8.8",
+          "prerequisite": "pma-1.24",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-8.8",
+          "prerequisite": "robot-2.4",
+          "prerequisiteField": "eng",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-9.1",
+          "prerequisite": "rca-9.13",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-9.1",
+          "prerequisite": "sig-7.3",
+          "prerequisiteField": "eng",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-9.2",
+          "prerequisite": "sig-7.5",
+          "prerequisiteField": "eng",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-9.8",
+          "prerequisite": "sig-7.4",
+          "prerequisiteField": "eng",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-10.5",
+          "prerequisite": "waves-4.7",
+          "prerequisiteField": "physics",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-10.8",
+          "prerequisite": "stat-9.1",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-10.11",
+          "prerequisite": "stat-10.16",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-10.12",
+          "prerequisite": "stat-9.1",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-11.4",
+          "prerequisite": "pma-9.23",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-11.4",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cg-11.5",
+          "prerequisite": "stat-10.16",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "cg-11.11",
+          "prerequisite": "stat-9.1",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        }
+      ]
+    }
+  ],
+  "status": "PASS"
+}

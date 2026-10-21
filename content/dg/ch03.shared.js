@@ -182,3 +182,15 @@ export function widthCurve(w, r3 = 0, r5 = 0, r7 = 0, m = 720) {
 }
 /** Rotate points by φ about the origin. */
 export const rotPts = (P, phi) => { const c = Math.cos(phi), s = Math.sin(phi); return P.map((p) => [c * p[0] - s * p[1], s * p[0] + c * p[1]]); };
+
+/** Exact harmonic derivatives of the knot/unknot illustration families. */
+export function knotCurveData(kind,e,t) {
+ const terms=kind==='tre'?[[2,1.3,1.3,0],[5,.15,.15,0],[1,.15,-.15,0],[3,0,0,e]]:[[1,1.3,1.3,0],[kind==='unk'?2:6,0,0,e]];
+ const p=[0,0,0],d1=[0,0,0],d2=[0,0,0];
+ for(const [n,a,b,c] of terms){const co=Math.cos(n*t),si=Math.sin(n*t);p[0]+=a*co;p[1]+=b*si;p[2]+=c*si;d1[0]-=n*a*si;d1[1]+=n*b*co;d1[2]+=n*c*co;d2[0]-=n*n*a*co;d2[1]-=n*n*b*si;d2[2]-=n*n*c*si;}
+ return {p,d1,d2};
+}
+/** Periodic quadrature of |r' × r''|/|r'|²; this is a numerical approximation. */
+export function knotTotalCurvature(kind,e,N=1440) {
+ let total=0;for(let i=0;i<N;i++){const {d1:a,d2:b}=knotCurveData(kind,e,TAU*i/N),cr=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];total+=Math.hypot(...cr)/(a[0]*a[0]+a[1]*a[1]+a[2]*a[2]);}return total*TAU/N;
+}

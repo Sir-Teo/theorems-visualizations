@@ -54,14 +54,15 @@ export default {
     {
       num: '18.7',
       kind: 'Theorem',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem18.7 and complete proof, pp.359–360'],
       name: 'Gelfand–Mazur theorem',
+      credit: 'Gelfand & Mazur, 1938',
       statement: String.raw`If $A$ is a Banach algebra in which every nonzero element is invertible, then every $x\in A$ is a scalar multiple of the unit, $x=\lambda e$ for a unique $\lambda\in\C$. Thus $\lambda\mapsto\lambda e$ is an isometric isomorphism of $\C$ onto $A$.`,
-      idea: String.raw`Take $x\in A$. By 18.6 its spectrum contains some $\lambda$, so $\lambda e-x$ is not invertible; by hypothesis the only non-invertible element is $0$, hence $x=\lambda e$. Since $\norm{\lambda e}=\abs\lambda$, the map is an isometry. The complex scalars are essential: the quaternions form a *real* Banach algebra in which every nonzero element is invertible, yet they are not $\R$ — over $\R$ spectra can be empty, because nothing like Liouville's theorem is available.`,
+      idea: String.raw`Take $x\in A$. By 18.5 its spectrum contains some $\lambda$, so $\lambda e-x$ is not invertible; by hypothesis the only non-invertible element is $0$, hence $x=\lambda e$. Since $\norm{\lambda e}=\abs\lambda$, the map is an isometry. The complex scalars are essential: the quaternions form a *real* Banach algebra in which every nonzero element is invertible, yet they are not $\R$ — over $\R$ spectra can be empty, because nothing like Liouville's theorem is available.`,
       caption: String.raw`Pick an algebra and drag the element's data. The right panel shows $\norm{(\lambda e-x)^{-1}}$ for $\lambda$ on the dashed line. In $\C$ the spectrum is the single point $a$ and $ae-x=0$. In $\C^2$ and $M_2(\C)$ the resolvent still blows up somewhere, but $ae-x$ is a *nonzero* non-invertible element, so these are not division algebras. In the quaternions $\mathbb H$ (real scalars only) $\lambda-q$ is invertible for every real $\lambda$: the resolvent stays bounded, the spectrum is empty, and $\mathbb H\neq\R$.`,
-      deps: ['rca-18.6', 'rca-18.1a'],
+      deps: ['rca-18.5', 'rca-18.2'],
       see: ['fa-10.14'],
       tags: ['Gelfand–Mazur', 'spectrum', 'division algebras'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const ALG = {
@@ -139,15 +140,15 @@ export default {
       },
     },
     {
-      num: '18.10a',
+      num: '18.8',
       kind: 'Lemma',
-      refs: ['Rudin, Functional Analysis, 2nd ed., Lemma10.16 and complete proof, p.256; editorial supplement to RCA18.10'],
       name: 'Open V ⊂ W with no boundary in W is a union of components',
       statement: String.raw`Let $V$ and $W$ be open subsets of a topological space $X$ with $V\subset W$. If no boundary point of $V$ lies in $W$, then $V$ is a union of components of $W$.`,
-      idea: String.raw`Let $\Omega$ be a component of $W$ that meets $V$. Inside $\Omega$ the closure of $V$ adds nothing, because $\Omega\subset W$ contains no boundary point of $V$; so $\Omega\cap V$ and $\Omega\setminus V=\Omega\setminus\overline V$ are both open. A connected set cannot split into two disjoint open pieces, and the first is nonempty, so $\Omega\subset V$. The lemma is used in the editorial18.10b with $W$ and $V$ the complements of two spectra.`,
+      idea: String.raw`Let $\Omega$ be a component of $W$ that meets $V$. Inside $\Omega$ the closure of $V$ adds nothing, because $\Omega\subset W$ contains no boundary point of $V$; so $\Omega\cap V$ and $\Omega\setminus V=\Omega\setminus\overline V$ are both open. A connected set cannot split into two disjoint open pieces, and the first is nonempty, so $\Omega\subset V$. The lemma is used in 18.9 with $W$ and $V$ the complements of two spectra.`,
       caption: String.raw`$W$ (light blue) has three components; $V=W\cap D$ (dark blue) for the disc $D$ you can drag and resize. Red arcs are boundary points of $V$ that lie *in* $W$. Whenever there are none, each component is either swallowed by $D$ or missed by it (green or grey outline), and $V$ is a union of components — as the lemma says.`,
       deps: ['pma-2.45'],
       tags: ['connectedness', 'topology'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-3.2, 3.2], y: [-1.9, 1.9], equal: true, height: 360, axes: false });
@@ -199,16 +200,16 @@ export default {
       },
     },
     {
-      num: '18.10b',
+      num: '18.9',
       kind: 'Theorem',
-      refs: ['Rudin, Functional Analysis, 2nd ed., Theorem10.18(b) and complete proof, pp.256–257; RCA18.10(b) and Example18.11, pp.361–362; editorial supplement'],
       name: 'Spectrum in a closed subalgebra: holes may be filled',
       statement: String.raw`Let $A$ be a closed subalgebra of a Banach algebra $B$ that contains the unit of $B$, and let $x\in A$. Write $\sigma_A(x)$ and $\sigma_B(x)$ for the spectra of $x$ relative to $A$ and to $B$. Then $\sigma_B(x)\subset\sigma_A(x)$, and $\sigma_A(x)$ is the union of $\sigma_B(x)$ and a (possibly empty) collection of *bounded* components of $\C\setminus\sigma_B(x)$. In particular $\partial\sigma_A(x)\subset\sigma_B(x)$, and $\sigma_A(x)=\sigma_B(x)$ whenever $\C\setminus\sigma_B(x)$ is connected.`,
-      idea: String.raw`An inverse in $A$ is an inverse in $B$, so $\sigma_B(x)\subset\sigma_A(x)$. Put $W=\C\setminus\sigma_B(x)$ and $V=\C\setminus\sigma_A(x)\subset W$. If $\lambda\in W$ were a boundary point of $V$, pick $\lambda_n\in V$ with $\lambda_n\to\lambda$; by continuity of inversion in $B$ (18.4) the inverses $(\lambda_ne-x)^{-1}\in A$ converge to $(\lambda e-x)^{-1}$, which lies in $A$ because $A$ is closed — so $\lambda\in V$, impossible for a boundary point of an open set. By18.10a, $V$ is a union of components of $W$; it contains all $\lambda$ with $\abs\lambda>\norm x$ (18.3), hence the unbounded component.`,
+      idea: String.raw`An inverse in $A$ is an inverse in $B$, so $\sigma_B(x)\subset\sigma_A(x)$. Put $W=\C\setminus\sigma_B(x)$ and $V=\C\setminus\sigma_A(x)\subset W$. If $\lambda\in W$ were a boundary point of $V$, pick $\lambda_n\in V$ with $\lambda_n\to\lambda$; by continuity of inversion in $B$ (18.4) the inverses $(\lambda_ne-x)^{-1}\in A$ converge to $(\lambda e-x)^{-1}$, which lies in $A$ because $A$ is closed — so $\lambda\in V$, impossible for a boundary point of an open set. By 18.8, $V$ is a union of components of $W$; it contains all $\lambda$ with $\abs\lambda>\norm x$ (18.3), hence the unbounded component.`,
       caption: String.raw`$B=C(\T)$ and $A$ = the closure of the polynomials in $z$ (the disc algebra, viewed on $\T$). For $f\in A$: $\sigma_B(f)=f(\T)$ (blue curve), while $\lambda e-f$ is invertible in $A$ only if $f-\lambda$ has no zero in the closed disc, so $\sigma_A(f)=f(\overline U)$. Left: the components of $\C\setminus f(\T)$ with winding number $\geq1$ are filled (orange, darker = larger index); they are exactly the holes $\sigma_A$ adds. Drag $\lambda$: right, the phase portrait of $f-\lambda$ on $\overline U$ shows its zeros (red), whose number is $\Ind_{f(\T)}(\lambda)$.`,
-      deps: ['rca-18.10a', 'rca-18.4', 'rca-18.3', 'rca-18.1a'],
+      deps: ['rca-18.8', 'rca-18.4', 'rca-18.3', 'rca-18.2'],
       see: ['rca-10.10'],
       tags: ['spectrum', 'subalgebras', 'disc algebra'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const FN = {

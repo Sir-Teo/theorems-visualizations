@@ -419,8 +419,10 @@ Any other unit-speed curve with the same curvature function is obtained from thi
       idea: String.raw`Integrating $\theta' = \kappa$ and then $\beta' = (\cos\theta,\sin\theta)$ (pma-6.21) constructs the curve and shows that the curvature is what was prescribed. For uniqueness, two unit-speed curves with the same $\kappa$ have tangent angles differing by a constant $\theta_0$; rotating one by $\theta_0$ makes the angles equal, hence the velocities equal, hence the curves equal after a translation.`,
       caption: String.raw`Drag the six gold handles in the right panel to draw the curvature $\kappa(s)$; the curve on the left is rebuilt live by integrating twice. Slide the constant $c$ added to $\kappa$: with $\kappa \equiv 0$ the curve is a straight line, and adding a constant bends it into a circle; a rising $\kappa$ gives a spiral that tightens. Drag the start point and the initial angle: the shape never changes, only its position, because $\kappa$ already says everything. The readout recovers $\kappa$ from the turning of the rebuilt polygon.`,
       deps: ['dg-1.4', 'pma-6.21'],
-      refs: ['do Carmo, §4-4 Lemma1, p.253 (tangent-angle lift); Rudin PMA Theorem6.21; integration proof given here'],
+      refs: ['Pressley Ch. 2'],
       tags: ['curvature', 'rigid motion', 'integration'],
+      credit: 'Euler (describing a plane curve by curvature as a function of arc length, 18th c.); the term "intrinsic equation": Whewell, 1849; modern form for space curves: Bonnet, 1848 (attributions as commonly given, not traced to a primary source here)',
+      verify: true,
       viz(v) {
         const L = 10, xs = [0, 2, 4, 6, 8, 10];
         const presets = {

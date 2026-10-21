@@ -45,7 +45,7 @@ export function target(kind, rect) {
 export function inShape(h, x, y) {
   switch (h.t) {
     case 'rect': return x >= h.x0 && x <= h.x1 && y >= h.y0 && y <= h.y1;
-    case 'disc': return (x - h.cx) ** 2 + (y - h.cy) ** 2 <= (h.r2 ?? h.r * h.r);
+    case 'disc': return (x - h.cx) ** 2 + (y - h.cy) ** 2 <= h.r * h.r;
     case 'L': return inShape(h.a, x, y) || inShape(h.b, x, y);
     default: return false; // 'none' and 'finite' (a finite set has no area)
   }
@@ -95,13 +95,12 @@ export function ermRect(S) {
   const xs = Array.from(new Set(Array.from(X))).sort((a, b) => a - b);
   let best = 0, R = NONE;
   for (let a = 0; a < xs.length; a++) for (let b = a; b < xs.length; b++) {
-    let run = 0, startY = 0;
-    // A horizontal boundary cannot separate points with exactly the same y.
-    for (let k = 0; k < m;) {
-      const y = Y[ord[k]]; let weight = 0;
-      while (k < m && Y[ord[k]] === y) { const i = ord[k++]; if (X[i] >= xs[a] && X[i] <= xs[b]) weight += L[i] ? 1 : -1; }
-      if (run <= 0) { run = weight; startY = y; } else run += weight;
-      if (run > best) { best = run; R = RECT(xs[a], startY, xs[b], y); }
+    let run = 0, start = -1;
+    for (let k = 0; k < m; k++) {
+      const i = ord[k]; if (X[i] < xs[a] || X[i] > xs[b]) continue;
+      const w = L[i] ? 1 : -1;
+      if (run <= 0) { run = w; start = k; } else run += w;
+      if (run > best) { best = run; R = RECT(xs[a], Y[ord[start]], xs[b], Y[i]); }
     }
   }
   return R;
@@ -127,14 +126,12 @@ export function ermDisc(S) {
   let best = 0, R = NONE; const idx = new Array(m), dd = new Float64Array(m);
   for (let a = 0; a <= 16; a++) for (let b = 0; b <= 16; b++) {
     const cx = a / 16, cy = b / 16;
-    for (let i = 0; i < m; i++) { dd[i] = (X[i] - cx)**2+(Y[i]-cy)**2; idx[i] = i; }
+    for (let i = 0; i < m; i++) { dd[i] = Math.hypot(X[i] - cx, Y[i] - cy); idx[i] = i; }
     idx.sort((p, q) => dd[p] - dd[q]);
     let g = 0;
-    for (let k = 0; k < m;) {
-      const radius = dd[idx[k]];
-      // An inclusive disc contains an entire distance level, including ties.
-      while (k < m && dd[idx[k]] === radius) { g += L[idx[k]] ? 1 : -1; k++; }
-      if (g > best) { best = g; R = {...DISC(cx, cy, Math.sqrt(radius)),r2:radius}; }
+    for (let k = 0; k < m; k++) {
+      g += L[idx[k]] ? 1 : -1;
+      if (g > best) { best = g; R = DISC(cx, cy, k + 1 < m ? (dd[idx[k]] + dd[idx[k + 1]]) / 2 : dd[idx[k]] + 0.01); }
     }
   }
   return R;

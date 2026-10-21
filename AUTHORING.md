@@ -194,6 +194,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.button(label, fn)` | e.g. “Resample”, “Step”. |
 | `v.sound()`, `v.soundButton(label, fn)` | audio controller / a speaker button that calls `fn(sound)` — see *Audio* below. |
 | `v.onCleanup(fn)` | run `fn` when the viz is destroyed (clear your own `setInterval`s, observers…). |
+| `v.shareState(key, {get, set, validate?})` | register opaque custom data for share links; see *Shareable state* below. |
 | `ctl.el.hidden = true` | every control exposes its element as `.el` (a button *is* its element): hide controls that do nothing in the current mode. |
 | `v.readout(fn)` | live rich text under the panels (TeX allowed); recomputed after each draw. A `\n` in the string starts a new line. |
 | `v.legend([[color, label], [color, label, {dash, dot, area}]])` | legend row (call once, or inside render if it changes). |
@@ -202,6 +203,42 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.color(name, alpha)` | palette colour as CSS string. `v.rgb(name)` → `[r,g,b,a]`; `v.mix(a, b, t)`. |
 | `v.M` | math library (below). `v.Cx`, `v.cx(re, im)` complex numbers. `v.rng(seed)` seeded RNG. |
 | `v.fmt(x, digits)` / `v.fix(x, decimals)` | number formatting with a real minus sign (plain text). `v.sci(x, digits)` gives TeX (`1.2\times10^{-5}`) for use inside `$…$`. |
+
+### Shareable state
+
+The item page's **Share / embed** panel creates `#/t/<id>?s=…` links and an iframe with
+`?embed=1`. Core slider, toggle, segmented-choice and formula values are read from the runtime,
+not scraped from the DOM. Native 2D handles, native Stage3D cameras, proof-step indices and the
+animation clock are included. Opening a state pauses playback. Controls replay `onChange`;
+handles replay their constraint and `onDrag` callbacks before the first draw. Create controls
+and handles once, in a stable order, with stable labels. Changed component inventories and
+select options are rejected rather than applied to a different control.
+
+**Opaque state needs an adapter.** Edited graph nodes/edges, freehand points, random samples,
+button counters, custom-kit handles/cameras and simulation histories are not automatically
+reconstructible from controls. The sharing panel says so. Register the data that determines
+the picture, including seeds or samples when relevant:
+
+```js
+const G = v.graph(stage, { nodes, edges, editable: true });
+v.shareState('edited network', {
+  get: () => ({
+    nodes: G.nodes.map(({ id, x, y }) => ({ id, x, y })),
+    edges: G.edges.map(({ from, to }) => ({ from, to })),
+  }),
+  validate: data => Array.isArray(data.nodes) && Array.isArray(data.edges),
+  set: data => G.set({ ...data, layout: 'none' }),
+});
+```
+
+Use a unique, stable key and validate your data's actual mathematical constraints (the small
+example above only checks its shape). Adapters run after controls and handles and before the
+camera, clock and proof step are restored; update any dependent caches in `set`. The snapshot
+is copied, so later edits do not change an existing link. Values must be finite numbers,
+booleans, text, arrays or plain objects; convert typed arrays explicitly. Functions, audio,
+pointer hover and external resources are not serialized. The versioned codec limits decoded
+state to 18,000 UTF-8 bytes and rejects malformed or oversized links. Links are tied to one
+item. A bad link reports the problem while leaving the visualization available.
 
 ### Stage options
 
@@ -409,6 +446,10 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 - Stage text: `$…$` goes through KaTeX; prices like "$5 and $10" stay plain. Axis tick labels are plain text (use Unicode superscripts, `M.pow10Text`). `s.tex` takes raw LaTeX **without** `$`. In canvas text a bare `$` is fine and `\$` prints the backslash (rich text/captions are the opposite: write `\$`). There is no monospace option and no multiline text — wrap by hand.
 - Palette `ink` turns light in dark mode; use fixed RGB arrays for things that must stay dark (charcoal, soot).
 - Stages have a minimum height of about 200 px, so thin strips come out tall. `equal: true` with a gutter widens the window beyond the requested range — drop `equal` where exact counting matters.
+- Check complete strokes, hollow-marker rings, handle hover halos and label backing plates at narrow widths. A glyph fitting inside the stage does not establish that its plate leaves neighboring labels visible. Wait for fonts and split long displayed equations when necessary.
+- Verify statements and ideas on the actual strict-built page at 320px in both themes. Check each KaTeX display’s inner scroll width as well as its container, after fonts load. A fixed-width harness can pass while a narrower production card clips the same equation; use equivalent line breaks at that actual width.
+- Include the complete scope block in that check. Rich text does not parse Markdown links or raw HTML: put short source labels/pages in prose and exact external URLs in the item’s `links` map, which the detail page renders as clickable links. A literal long URL can overflow even when every equation fits.
+- For pixel-comparison failures, persist the exact compared candidate and reference pixels plus a difference image before asserting or closing the browser. Record the actual view/control/moving state. A later redraw screenshot or a reference from a different renderer cannot locate the failed oracle’s differences.
 
 **Controls and state**
 - `v.readout(fn)` must be registered **once**, outside `v.render`; calling it inside the render loops forever. Set a variable in render and read it in the readout.
@@ -417,17 +458,29 @@ Each of these cost somebody an hour. They are about the runtime as it is today.
 - Hiding a stage: set `stage.el.style.display = 'none'` (`el.hidden` does not work on a flex `.stage`). The checker ignores hidden stages. Clicking a handle never fires `onClick`; selecting by dragging works.
 - `v.animate` has one clock per viz and its period is fixed at registration. For button-triggered motions use your own `requestAnimationFrame` loop, cleaned up with `onCleanup`, and jump to the end under `window.__vizStill`. Do not call `v.restart()` on the first frame. Screenshots without `--still` are taken ~1.5 s into an animation; set a `still` frame with a meaningful state.
 - Heavy computation: spread it over frames with a `setTimeout` loop that calls `v.invalidate()`; `s.dots` is slow above ~10⁴ points (draw squares directly on `s.ctx`).
+- Match slider domains to the model: use `step: 'any'` for continuous values, or reject unsupported raw saved ticks locally before the setter runs for a discrete model. Compare the actual numeric DOM value directly with the registered/model value; for logarithmic controls compare against its declared log transform within browser serialization precision. Comparing two sanitized native ranges can hide a step/model mismatch. Keep exact saved/model values and test off-grid raw restores as well as valid edited replay. Do not round the mathematics or change shared replay behavior to make a test pass.
+- If an offered rational share is converted to an integer count, compute the declared rounding from its integer tick numerator and denominator. Binary multiplication can put a positive half tie below its exact value: `.35 * 90` and `.7 * 45` round to31 instead of32. Exhaust the finite offered tick/count grid with an independent integer oracle. Preserve separately declared continuous inputs rather than snapping them onto that grid. See the accepted [learning](docs/verification/bighist-learning-peer.md) and [aggregation](docs/verification/polsci-aggregation-rounding-peer.md) corrections.
+- A handle's drag constraint can silently clamp a restored point. Validate raw saved coordinates before that constraint, including the actual finite/grid domain and any consistency with a saved control. Invalid states must notify and reset; test every handle separately.
+- The current logarithmic slider sets its own native step even when passed `step: 'any'`. If an instance requires continuous log input, set its native step explicitly, resynchronize its value, and check actual Home/End endpoints plus off-grid replay. Browser exponent serialization can otherwise change an exact endpoint.
+
+- Offscreen visualizations pause rendering. Before a state screenshot, bring the visualization into view, wait for fonts and a fresh frame, and assert model/control/readout agreement. A full-page screenshot can otherwise combine fresh controls with an old canvas.
+- Check complete contour strokes at intermediate native states, including pointer drags. Filtering only centre coordinates at the current view boundary can crop a round cap or join. An actual pixel inset of at least half the stroke width keeps a straight segment inside the convex plot rectangle; independently reconstruct bounds from data coordinates. See the accepted [fusion contour counterexample](docs/verification/energy-erratum-peer.md).
 
 **Numerics and data**
 - `rng.shuffle` returns a **copy**. `v.rng` gives 32-bit uniforms: build 53-bit values from two draws when summing many terms. `M.bisect(f, a, b, tol)` takes a number, not an options object. `M.smoothstep` has one argument. `M.solve` inverts the matrix — write a banded/dense solver for big systems.
 - `M.eigC` does **not** return orthogonal eigenvectors for repeated eigenvalues: use `M.eigH` for Hermitian matrices. `M.eigSym` fixes only the sign of each vector's largest component (it flips across a degeneracy).
 - Root finders that scan for sign changes must test every grid point (a root exactly on a grid point is easy to miss).
+- A fixed iteration budget does not establish equilibrium. Check the stated equation's residual at offered control extremes, expose nonconvergence, and do not hide invalid returned values by clipping the drawing.
 - On log axes a zero error cannot be drawn: clip to a floor (~10⁻¹⁷) and say so.
+- For tiny widths around a nonzero centre, forming absolute endpoints can lose the width before evaluation. Evaluate a ramp in centred coordinates, such as `0.5 + (x - centre) / width`, and handle width zero explicitly. Test sub-ULP widths and independent midpoint values.
+- Array `some` and `every` skip missing indices. Validate dense own indices before generating samples from a declared finite event list; include sparse outer and inner arrays in malformed-input checks.
 
 **3D**
 - `stage3d` has no handles, no click hit-testing and no sphere/surface primitives; `v.scene3` has handles (to planes or lines through the origin), polygons and dots but no hidden-line removal, tubes, sphere shading or box clipping. Build surfaces from polygons (`patch`/`planePatch` helpers exist in `content/vcalc/ch01.shared.js`), draw far-side curves faintly, and sync the yaw/pitch of two scenes by hand.
 
 **Content discipline**
 - The syllabus decides which items exist, their numbers, kinds and deps. If your brief and the syllabus disagree, build the syllabus.
+- After changing prerequisites, parse each changed item and its syllabus row and compare their complete expected dependency lists, including multiline rows. Removing newly added IDs and comparing the remainder cannot detect an omitted addition. Preserve immutable object/function snapshots as explicit review utilities rather than lasting default tests.
 - A chapter's `chNN.shared.js` may import its own chapter's helpers; other chapters of the same collection may re-export from it (`export * from './ch01.shared.js'` works); never import across collections — copy.
 - Say in the item what is illustrative, what is from memory, and what is a secondary source. Recompute printed numbers (the Pearson, Rabin and Patriot items each found real slips that way).
+- A numerical coordinate distance or a display proxy does not establish a perceptual threshold. State the observer, conditions and source for a perception claim; keep authored model calculations distinct from measured brightness, visibility or structural safety.

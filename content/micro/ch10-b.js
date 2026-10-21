@@ -1,5 +1,6 @@
 // Microeconomics — Chapter 10: Market power: monopoly and oligopoly — items 10.7–10.12
 import { clamp, GUIDE, fx, bisect, argmax, plateText, bar, lin, iso, mstage, tag, integ, tween, polyArea } from './ch10.shared.js';
+import {discriminationState,entryState,cournotAdjustment,cournotPotential} from './source-audit-market-power.js';
 
 export default {
   collection: 'micro',
@@ -7,55 +8,40 @@ export default {
   items: [
     // ------------------------------------------------------------------ 10.7
     {
-      num: '10.7', kind: 'Concept', name: 'Third-degree price discrimination',
-      statement: String.raw`A monopolist that can identify two groups of buyers (students and adults, domestic and foreign) and prevent resale charges each group its own price. With marginal cost $MC(Q)$ for total output $Q = q_1 + q_2$, at an interior optimum serving both markets, **marginal revenue is equal in the two markets and equal to marginal cost**,
-$$MR_1(q_1) = MR_2(q_2) = MC(q_1 + q_2),$$
-so by the inverse-elasticity rule (10.3) the group with the **less elastic** demand pays the **higher** price: $P_i\,(1 - 1/|\varepsilon_i|) = MC$ for both. Compared with the best single price the firm's profit is never lower. Total output can go up or down; with linear demands, constant marginal cost and both markets served it is unchanged.`,
-      idea: String.raw`If $MR_1 > MR_2$, shifting a unit of sales from market 2 to market 1 raises revenue at no change in cost, so at an optimum the two marginal revenues are equal, and equal to $MC$ of the total. The elasticity rule (10.3) applied to each market then makes the prices differ exactly when the elasticities do. A single price is one feasible policy of the discriminating firm (set $P_1 = P_2$), so discrimination cannot lower the maximum profit. An unserved market instead has marginal revenue at zero no greater than marginal cost. For linear demands the two markets' quantities move in opposite directions and cancel in the total; welfare falls with discrimination when total output does not rise, since the same output is split inefficiently between buyers who value it differently.`,
-      caption: String.raw`Market 1 (left) has demand $P = 16 - q_1$, market 2 (right) has intercept and slope you choose; the horizontal line is the common marginal cost level at the optimum (separate prices) or the single price. **Change the steepness of market 2** and see its price move away from market 1's whenever the elasticities at the optimum differ. The **one price** toggle replaces the two prices by the best uniform one: compare profit, output, and total surplus in the readout.`,
-      deps: ['micro-10.3'],
-      refs: ['Varian Ch. 26', 'Mankiw Ch. 15'], tags: ['price discrimination'],
-      credit: 'A. C. Pigou, The Economics of Welfare, 1920 (the classification into first, second and third degree)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Price_discrimination#Third-degree_price_discrimination' },
-      viz(v) {
-        const mode = v.select('pricing', [{ value: 'disc', label: 'separate prices' }, { value: 'uni', label: 'one price' }], 'disc');
-        const a2 = v.slider('market 2 intercept $a_2$', 8, 20, 12, { step: 0.1 });
-        const b2 = v.slider('market 2 slope $b_2$', 0.5, 3, 1.5, { step: 0.05 });
-        const cS = v.slider('marginal cost $c$', 0, 6, 2, { step: 0.05 });
-        const mS = v.slider('rise of marginal cost $m$', 0, 0.5, 0.1, { step: 0.01 });
-        const S1 = mstage(v, { x: [0, 16], y: [0, 20], title: 'market 1: $P = 16 - q_1$', weight: 1 });
-        const S2 = mstage(v, { x: [0, 16], y: [0, 20], title: 'market 2', weight: 1 });
-        v.legend([['accent', 'demand'], ['purple', 'marginal revenue'], ['orange', 'common level of $MR$ = $MC$ (or the single price)'], ['green', 'consumer surplus', { area: true }], ['gold', 'chosen point', { dot: true }]]);
-        let st = {};
-        v.render(() => {
-          const M = [lin(16, 1), lin(a2.value, b2.value)], c = cS.value, m = mS.value;
-          const C = (Q) => c * Q + (m * Q * Q) / 2;
-          const qOf = (lam) => M.map((d) => Math.max(0, (d.a - lam) / (2 * d.b)));
-          const lam = bisect((l) => c + m * qOf(l).reduce((x, y) => x + y, 0) - l, 0, 25, 70) ?? c;
-          const qd = qOf(lam), pd = qd.map((q, i) => M[i].P(q));
-          const profU = (p) => { const Q = M.reduce((s_, d) => s_ + d.D(p), 0); return p * Q - C(Q); };
-          const pu = argmax(profU, 0, 20, 100).x, qu = M.map((d) => d.D(pu));
-          const uni = mode.value === 'uni';
-          const q = uni ? qu : qd, p = uni ? [pu, pu] : pd;
-          [S1, S2].forEach((S, i) => {
-            const d = M[i];
-            S.poly([[0, d.a], [q[i], p[i]], [0, p[i]]], { fill: 'green', fillAlpha: 0.22, stroke: false });
-            S.fn(d.P, { domain: [0, d.a / d.b], color: 'accent', width: 2.6 });
-            S.fn(d.MR, { domain: [0, d.a / (2 * d.b)], color: 'purple', width: 2.4 });
-            if (!uni) S.hline(lam, { color: 'orange', width: 2.2 });
-            S.hline(p[i], { color: uni ? 'orange' : 'muted', width: uni ? 2.4 : 1, dash: uni ? false : [3, 3] });
-            S.vline(q[i], { color: 'muted', width: 1, dash: [3, 3] });
-            S.dot(q[i], p[i], { r: 7, color: 'gold' });
-            tag(S, `$P = ${fx(p[i])}$`, 15.6, p[i], 'ink', { align: 'right', dy: -12 });
+      num:'10.7',kind:'Concept',name:'Third-degree price discrimination',
+      statement:String.raw`A seller can charge observable buyer groups different prices when the markets are separable and resale is prevented. For independent inverse demands $P_i(q_i)$ and a common production cost $C(Q)$, $Q=\sum_iq_i$, an interior profit optimum satisfies
+$$MR_i(q_i)=C'(Q).$$
+A market with zero sales instead satisfies $MR_i(0)\le C'(Q)$. In an active market the equivalent elasticity condition is $P_i(1-1/|\varepsilon_i|)=MC$. With **positive** common marginal cost this ranks a higher optimal price with a lower absolute demand elasticity. At $MC=0$ that ranking is degenerate: active markets have unit elasticity and can have different prices.
+
+Allowing separate prices cannot reduce the seller's maximum profit because a uniform price remains feasible. Output and total surplus need not move with profit. For linear demands and constant marginal cost, total output is unchanged **when both markets are served under both policies**; discrimination then weakly reduces total surplus through a less efficient allocation of the same output.`,
+      idea:String.raw`Transfer a small amount of output between two active markets while holding total production fixed: revenue rises if it moves toward the higher marginal revenue. Expand total output until the common marginal revenue equals marginal cost. Nonnegative sales require the corresponding inequality at a closed market. Under a single price, aggregate demand has kinks where a market stops buying; compare the optimum in every active-market interval and at each kink. A zero-sales market has no finite point elasticity to report. With constant cost, changing a linear demand's slope changes its quantity but its separate-price optimum is $(a_i+c)/2$; slope alone does not determine a price difference.`,
+      caption:String.raw`Compare separate prices with the exact best uniform price for $P_1=16-q_1$, $P_2=a_2-b_2q_2$ and $C(Q)=cQ+mQ^2/2$. Each panel includes the complete demand and nonnegative marginal-revenue branch. Green area is consumer surplus. Orange is the common optimal marginal cost under separate prices or the posted uniform price. A closed market is identified explicitly; its choke-price marker does not mean an active transaction. Compare profit, output and total surplus in the readout.`,
+      deps:['micro-10.3'],refs:['S. Ellison, MIT 14.27 Lecture 13 (2014), third-degree section p3','R. Schmalensee, MIT Sloan WP1095-80 (1980), output/welfare results and market-exclusion qualification'],tags:['price discrimination'],
+      scope:String.raw`Two independent linear markets, observable groups, no resale or cross-price effects, one cost C(Q)=cQ+mQ²/2 and nonnegative sales. Surplus is the integral of willingness to pay less production cost, with no distributional weights or income effects. No legal or empirical claim is inferred.`,
+      verify: false,
+      links:{source:'https://ocw.mit.edu/courses/14-27-economics-and-e-commerce-fall-2014/01454b51f87e5907b6097de412687b59_MIT14_27F14_Lec13.pdf'},
+      viz(v){
+        const mode=v.select('pricing',[{value:'disc',label:'separate prices'},{value:'uni',label:'one price'}],'disc');
+        const a2=v.slider('market 2 intercept $a_2$',8,20,12,{step:.1}),b2=v.slider('market 2 slope $b_2$',.5,3,1.5,{step:.05}),cost=v.slider('marginal-cost intercept $c$',0,6,2,{step:.05}),rise=v.slider('marginal-cost slope $m$',0,.5,.1,{step:.01});
+        const stages=[1,2].map(i=>v.stage({x:[-1,18],y:[-1,23],axes:'box',gutter:true,height:360,xlabel:`market ${i} output`,ylabel:'price / marginal revenue',title:`market ${i}`}));
+        let info;
+        v.render(()=>{
+          const p=discriminationState(a2.value,b2.value,cost.value,rise.value,mode.value==='uni');
+          stages.forEach((S,i)=>{
+            const d=p.markets[i],q=p.q[i],price=p.p[i],end=d.a/d.b;
+            const top=Math.max(d.a,p.uniform?p.uniformPrice:p.lambda);S.setView([-.06*end,1.08*end],[-.07*top,1.14*top]);S.setTitle(`market ${i+1}: P = ${fx(d.a,1)} − ${fx(d.b,2)}q`);
+            S.fn(x=>d.a-d.b*x,{domain:[0,end],color:'accent',width:2.7});S.fn(x=>d.a-2*d.b*x,{domain:[0,end/2],color:'purple',width:2.4});
+            if(q>1e-12){S.poly([[0,d.a],[q,price],[0,price]],{fill:'green',fillAlpha:.2,stroke:false});S.dot(q,price,{color:'gold',r:7});}
+            else S.dot(0,d.a,{color:'muted',r:6,hollow:true});
+            S.hline(p.uniform?p.uniformPrice:p.lambda,{color:'orange',width:2});S.vline(q,{color:'muted',dash:true});
           });
-          S2.setTitle(`market 2: $P = ${fx(a2.value, 1)} - ${fx(b2.value, 2)}\\,q_2$`);
-          const Q = q[0] + q[1], profit = p[0] * q[0] + p[1] * q[1] - C(Q), cs = M.reduce((s_, d, i) => s_ + 0.5 * q[i] * (d.a - p[i]), 0);
-          const eps = q.map((qi, i) => (qi > 0 ? M[i].eps(qi) : NaN));
-          const Qu = qu[0] + qu[1], profitU = pu * Qu - C(Qu), csU = M.reduce((s_, d, i) => s_ + 0.5 * qu[i] * (d.a - pu), 0);
-          const Qd = qd[0] + qd[1], profitD = pd[0] * qd[0] + pd[1] * qd[1] - C(Qd), csD = M.reduce((s_, d, i) => s_ + 0.5 * qd[i] * (d.a - pd[i]), 0);
-          st = { q, p, Q, profit, cs, eps, lam, MR: [M[0].MR(q[0]), M[1].MR(q[1])], mc: c + m * Q, uni, profitU, profitD, wU: profitU + csU, wD: profitD + csD, Qu, Qd };
+          info=p;
         });
-        v.readout(() => `Prices $${fx(st.p[0])}$ and $${fx(st.p[1])}$, elasticities $|\\varepsilon_1| = ${Number.isFinite(st.eps[0]) ? fx(-st.eps[0], 2) : 'unserved'}$, $|\\varepsilon_2| = ${Number.isFinite(st.eps[1]) ? fx(-st.eps[1], 2) : 'unserved'}$ (the higher price is in the less elastic market). $MR_1 = ${fx(st.MR[0])}$, $MR_2 = ${fx(st.MR[1])}$, $MC = ${fx(st.mc)}$.\nSeparate prices: profit $${fx(st.profitD)}$, output $${fx(st.Qd)}$, total surplus $${fx(st.wD)}$. One price: profit $${fx(st.profitU)}$, output $${fx(st.Qu)}$, total surplus $${fx(st.wU)}$.`);
+        v.legend([['accent','demand'],['purple','marginal revenue'],['orange','optimal MC / uniform price'],['green','consumer surplus'],['gold','active outcome'],['muted','closed market’s choke point']]);
+        v.readout(()=>{
+          const e=i=>info.elasticity[i]===null?'undefined (no sales)':fx(info.elasticity[i],3);
+          return String.raw`${info.uniform?'Uniform posted price':'Separate active prices'}: $${fx(info.p[0],3)}$ and $${fx(info.p[1],3)}$; outputs $(${fx(info.q[0],3)},${fx(info.q[1],3)})$. ${info.q.some(q=>q<1e-12)?'A zero-sales market is closed; its choke price is not a transacted separate price.':''} Elasticities $|\varepsilon_1|$: ${e(0)}; $|\varepsilon_2|$: ${e(1)}. Marginal revenues $(${fx(info.mr[0],3)},${fx(info.mr[1],3)})$; actual $MC=${fx(info.mc,3)}$. ${info.uniform?'The separate-price MR/MC and elasticity-ranking conditions do not apply to this uniform policy.':info.mc===0?'At zero marginal cost, active elasticities are one; different prices need not imply different elasticities.':'Each active marginal revenue equals common MC; a closed market satisfies the inequality.'} Separate prices: profit $${fx(info.separate.profit,3)}$, output $${fx(info.separate.Q,3)}$, total surplus $${fx(info.separate.welfare,3)}$. One price: profit $${fx(info.one.profit,3)}$, output $${fx(info.one.Q,3)}$, total surplus $${fx(info.one.welfare,3)}$.`;
+        });
       },
     },
     // ------------------------------------------------------------------ 10.8
@@ -106,47 +92,38 @@ so by the inverse-elasticity rule (10.3) the group with the **less elastic** dem
     },
     // ------------------------------------------------------------------ 10.9
     {
-      num: '10.9', kind: 'Model', name: 'Monopolistic competition',
-      statement: String.raw`In **monopolistic competition** many firms sell differentiated products and each faces a downward-sloping demand curve, so each prices above marginal cost, but entry is free. Entry shifts every firm's demand curve inward until profit is zero: the demand curve is **tangent to average cost** at the firm's chosen output. In that long-run equilibrium (i) $P > MC$: a markup remains and the outcome is not efficient in the price-equals-marginal-cost sense; (ii) $P = AC$: profit is zero; and (iii) output is **below** the minimum-efficient scale where $AC$ is lowest (**excess capacity**), because the tangency is on the falling part of $AC$.`,
-      idea: String.raw`Each firm is a monopolist on its own demand curve (10.2), so it produces where $MR = MC$ and earns profit $(P - AC)Q$ there. A positive profit invites entry of new varieties, which draws customers away and shifts each firm's demand curve in; a loss drives exit. The process stops when the best the firm can do is break even (zero long-run profit, 8.8). Since the demand curve is downward sloping it can touch $AC$ only where $AC$ is also falling, hence the tangency to the left of the minimum. Whether the variety gained is worth the markup and the excess capacity is a further question.`,
-      caption: String.raw`Each firm's demand is $P = c + (A - c)/n - bQ$ (an illustrative parametrization: more varieties $n$ shift demand inward), with a U-shaped average cost. **Slide $n$** or press **let firms enter**: the blue demand curve falls until it just touches the teal average-cost curve (the green profit rectangle shrinks to nothing). At the end output (gold) is smaller than the output at minimum $AC$ (grey marker): the gap is the excess capacity, and the price stays above $MC$. Right: profit as a function of $n$.`,
-      deps: ['micro-10.2', 'micro-8.8'],
-      refs: ['Mankiw Ch. 16', 'Varian Ch. 26'], tags: ['competition', 'entry'],
-      credit: 'E. H. Chamberlin, The Theory of Monopolistic Competition, 1933; J. Robinson, The Economics of Imperfect Competition, 1933',
-      verify: true,
-      scope: String.raw`A stylized Chamberlinian "large group" model with symmetric firms; the way demand shrinks with $n$ is assumed, not derived from preferences (see Dixit–Stiglitz-type models for that).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Monopolistic_competition' },
-      viz(v) {
-        const nS = v.slider('number of varieties $n$', 1, 8, 2, { step: 0.01 });
-        const A = 42, c = 2, b = 1, m = 0.5, F = 16;
-        const s = mstage(v, { x: [0, 14], y: [0, 44], title: 'one firm\'s demand as rivals enter', height: 380 });
-        const G = v.stage({ x: [1, 8], y: [-60, 130], axes: 'box', gutter: true, xlabel: 'number of varieties $n$', ylabel: 'profit per firm', height: 380, title: 'profit and entry', weight: 0.7, minWidth: 240 });
-        v.legend([['accent', 'demand'], ['purple', 'marginal revenue'], ['orange', 'marginal cost'], ['teal', 'average cost'], ['green', 'profit', { area: true }], ['gold', 'output', { dot: true }]]);
-        const aOf = (n) => c + (A - c) / n;
-        const best = (n) => { const a = aOf(n), q = (a - c) / (2 * b + m), pi = (a - c) * q - (b + m / 2) * q * q - F; return { q, pi, p: a - b * q }; };
-        const nStar = bisect((n) => best(n).pi, 1, 12, 60) ?? 1;
-        let stop = () => {};
-        v.button('let firms enter', () => { stop(); const n0 = nS.value; stop = tween(v, 3200, (u) => nS.set(n0 + (nStar - n0) * (1 - (1 - u) ** 2))); });
-        let st = {};
-        v.render(() => {
-          const n = nS.value, a = aOf(n), AC = (q) => F / q + c + (m * q) / 2, MC = (q) => c + m * q, o = best(n), qmin = Math.sqrt((2 * F) / m);
-          s.fn((q) => aOf(1) - b * q, { domain: [0, 14], color: 'accent', width: 1.4, alpha: 0.3, dash: true });
-          s.fn(AC, { domain: [1.2, 14], color: 'teal', width: 2.6 });
-          s.fn(MC, { domain: [0, 14], color: 'orange', width: 2.4 });
-          s.rect(0, Math.min(o.p, AC(o.q)), o.q, Math.max(o.p, AC(o.q)), { fill: o.pi >= 0 ? 'green' : 'red', fillAlpha: 0.3, color: o.pi >= 0 ? 'green' : 'red', width: 1.2 });
-          s.fn((q) => a - b * q, { domain: [0, Math.min(14, a / b)], color: 'accent', width: 2.8 });
-          s.fn((q) => a - 2 * b * q, { domain: [0, Math.min(14, a / (2 * b))], color: 'purple', width: 2.4 });
-          s.vline(qmin, { color: 'muted', width: 1, dash: [3, 3] }); s.dot(qmin, AC(qmin), { r: 5, color: 'muted' });
-          tag(s, 'min AC', qmin, AC(qmin), 'muted', { dy: 16 });
-          s.dot(o.q, o.p, { r: 8, color: 'gold' });
-          if (o.q < qmin) s.measure(o.q, 1.5, qmin, 1.5, 'excess capacity');
-          const prof = (x) => best(x).pi;
-          G.fn(prof, { domain: [1, 8], color: 'ink', width: 2.4 }); G.hline(0, { color: 'muted', width: 1 });
-          G.dot(n, o.pi, { r: 7, color: 'gold' }); G.dot(nStar, 0, { r: 6, color: 'green' });
-          tag(G, 'zero profit', nStar, 0, 'green', { dy: -16 });
-          st = { n, o, qmin, ac: AC(o.q), mc: MC(o.q) };
+      num:'10.9',kind:'Model',name:'Monopolistic competition',
+      statement:String.raw`In the standard symmetric large-group picture of monopolistic competition, differentiated products give each firm a downward-sloping perceived demand. At an interior long-run zero-profit point, profit maximization gives $MR=MC$ while zero economic profit gives $P=AC$. The demand curve is tangent to average cost. With strictly downward-sloping demand the tangency lies on the falling part of $AC$, so output is below the minimum-average-cost scale and $P>MC$.
+
+The visualization specifies an illustrative family
+$$\begin{aligned}P(q;n)&=2+40/n-q,\\C(q)&=16+2q+q^2/4.\end{aligned}$$
+Here $n$ is a **continuous entry index** controlling the demand shift, rather than an exact integer count derived from consumer preferences. The interior optimum is $q=16/n$, profit is $320/n^2-16$, and the zero-profit index is $n^*=\sqrt{20}$.`,
+      idea:String.raw`For each fixed perceived demand, maximize revenue less cost. A positive economic profit suggests entry; a loss suggests exit. This model assumes how that adjustment shifts demand, without supplying an entry game or a convergence law. At $n^*$, zero profit makes demand meet average cost at the chosen output, and $MR=MC$ makes their slopes equal. In this example $q^*=\sqrt{12.8}$, while minimum $AC$ occurs at $q=8$; the gap and markup remain despite zero economic profit. The model does not measure whether consumers' gain from variety offsets these distortions.`,
+      caption:String.raw`Move the continuous entry index or use **zero-profit entry index** for its exact value. The left panel shows the complete nonnegative demand and marginal-revenue branches, marginal cost, the visible average-cost curve and the profit/loss rectangle. The divergent $AC$ branch as $q\to0$ continues above the window. The right panel includes the complete profit curve for n=1–8; the n=1 optimum and profit are fully in view. The capacity-gap bracket appears when chosen output is below the minimum-AC scale.`,
+      deps:['micro-10.2','micro-8.8'],refs:['Shapiro, MacDonald & Greenlaw, OpenStax Principles of Microeconomics 3e §10.1: perceived demand, entry/exit and long-run efficiency'],tags:['competition','entry'],
+      scope:String.raw`A specified linear perceived-demand family with quadratic variable cost, fixed cost 16 and a continuous demand-shift index n∈[1,8]. This is a diagrammatic large-group approximation, not an integer-entry equilibrium, a demand system derived from preferences or a dynamic entry mechanism.`,
+      verify: false,
+      links:{source:'https://openstax.org/books/principles-microeconomics-3e/pages/10-1-monopolistic-competition'},
+      viz(v){
+        const index=v.slider('continuous entry index $n$',1,8,2,{step:.01});
+        v.button('zero-profit entry index',()=>index.set(Math.sqrt(20)));
+        const A=v.stage({x:[-1,45],y:[-2,48],axes:'box',gutter:true,height:380,xlabel:'output per firm q',ylabel:'price / cost',title:'perceived demand and the zero-profit tangency'});
+        const B=v.stage({x:[.6,8.4],y:[-45,340],axes:'box',gutter:true,height:380,xlabel:'continuous entry index n',ylabel:'profit per firm',title:'profit under the assumed demand shift'});
+        let info;
+        v.render(()=>{
+          const p=entryState(index.value),xmax=Math.max(1.25*p.qMin,1.06*p.a),top=1.15*Math.max(p.a,p.averageCost,p.mc(xmax)),target=.96*top,z=target-p.c;
+          const qlo=2*p.F/(z+Math.sqrt(z*z-2*p.m*p.F));
+          A.setView([-.06*xmax,1.08*xmax],[-.06*top,top]);
+          A.fn(q=>p.a-q,{domain:[0,p.a],color:'accent',width:2.7});A.fn(q=>p.a-2*q,{domain:[0,p.a/2],color:'purple',width:2.3});
+          A.fn(p.mc,{domain:[0,xmax],color:'orange',width:2.3});A.fn(p.ac,{domain:[qlo,xmax],color:'teal',width:2.7});
+          A.rect(0,Math.min(p.p,p.averageCost),p.q,Math.max(p.p,p.averageCost),{fill:p.profit>=0?'green':'red',fillAlpha:.22,stroke:false});
+          A.vline(p.qMin,{color:'muted',dash:true});A.dot(p.qMin,p.ac(p.qMin),{color:'muted',r:5});A.dot(p.q,p.p,{color:'gold',r:7});
+          if(p.q<p.qMin-.01)A.measure(p.q,.07*top,p.qMin,.07*top,'capacity gap',{color:'muted',size:11});
+          B.hline(0,{color:'muted'});B.fn(n=>entryState(n).profit,{domain:[1,8],color:'ink',width:2.7});B.dot(p.nStar,0,{color:'green',r:6,hollow:true});B.dot(p.n,p.profit,{color:'gold',r:5});
+          info={...p,qlo,xmax,top};
         });
-        v.readout(() => `$n = ${fx(st.n)}$: output $${fx(st.o.q)}$, price $${fx(st.o.p)}$, average cost $${fx(st.ac)}$, profit per firm $${fx(st.o.pi)}$. Free entry stops at $n^* = ${fx(nStar, 3)}$ (profit zero).\nMarkup $(P - MC)/P = ${fx((st.o.p - st.mc) / st.o.p, 3)}$. Output at minimum $AC$ is $${fx(st.qmin)}$, so the gap (excess capacity) is $${fx(Math.max(0, st.qmin - st.o.q))}$.`);
+        v.legend([['accent','perceived demand'],['purple','marginal revenue'],['orange','marginal cost'],['teal','average cost'],['green','profit / zero-profit index'],['red','loss'],['muted','minimum-AC scale'],['gold','chosen outcome']]);
+        v.readout(()=>String.raw`$n=${fx(info.n,6)}$: $q=${fx(info.q,6)}$, $P=${fx(info.p,6)}$, $AC=${fx(info.averageCost,6)}$, $MC=${fx(info.marginalCost,6)}$, profit $${fx(info.profit,6)}$. Zero-profit index $n^*=\sqrt{20}=${fx(info.nStar,6)}$; current markup $(P-MC)/P=${fx((info.p-info.marginalCost)/info.p,4)}$. Minimum-AC output is $8$; current gap $${fx(Math.max(0,8-info.q),6)}$. ${info.n<info.nStar-1e-9?'Positive profit: the illustrative adjustment calls for entry.':info.n>info.nStar+1e-9?'A loss: the illustrative adjustment calls for exit.':'Zero-profit tangency; output remains below the minimum-AC scale.'}`);
       },
     },
     // ------------------------------------------------------------------ 10.10
@@ -231,42 +208,42 @@ where $\varepsilon$ is the market demand elasticity at the equilibrium. As $n \t
     },
     // ------------------------------------------------------------------ 10.12
     {
-      num: '10.12', kind: 'Proposition', name: 'Stability of Cournot adjustment',
-      statement: String.raw`Suppose firms adjust quantities by **best replies** to what the others produced last: $q_i^{t+1} = R_i(q_{-i}^{\,t})$. With linear demand $P = a - bQ$ and equal constant costs, $R_i = \dfrac{a - c - b\sum_{j \ne i} q_j}{2b}$. For **two firms** the map is a contraction (a simultaneous round contracts the maximum coordinate error by at most $\tfrac12$; a full alternating sweep contracts the updated scalar coordinate by $\tfrac14$), so adjustment, whether alternating or simultaneous, converges to the Cournot equilibrium. With **simultaneous** adjustment by $n$ firms the deviation of total output from equilibrium is multiplied by $-(n-1)/2$ at each step, in the interior linearization, the transverse eigenvalues are $1/2$ and the aggregate eigenvalue is $-(n-1)/2$, so local asymptotic stability holds exactly when $n < 3$: for $n = 3$ the deviation oscillates without shrinking and for $n \ge 4$ it grows (until quantities hit zero). With **sequential** adjustment (firms move one at a time) the process converges for every $n$.`,
-      idea: String.raw`For two firms the composite map $q_1 \mapsto R_1(R_2(q_1))$ has slope $\tfrac12 \cdot \tfrac12 = \tfrac14$ in absolute value, and the simultaneous map has maximum-norm factor $\tfrac12$, so the contraction principle (pma-9.23) gives a unique fixed point, the equilibrium, that every start converges to. For $n$ firms moving simultaneously, symmetrical deviations $x_i = q_i - q^*$ obey $x_i^{t+1} = -\tfrac12\sum_{j\ne i} x_j^{t}$, and for equal deviations the factor is $-(n-1)/2$, which has modulus $\ge 1$ once $n \ge 3$. Interior sequential updates are Gauss–Seidel for the system matrix $I+\mathbf1\mathbf1^T$: its eigenvalues are $1$ and $n+1$, so it is positive definite (ladr-7.38). With nonnegative output constraints they are cyclic coordinate minimization of its strictly convex quadratic, which also converges.`,
-      caption: String.raw`**Drag the gold start** (firm 1 starts at its $x$, all other firms at its $y$); choose **simultaneous** or **one at a time**, and the number of firms $n$. Left: the path of $(q_1, q_2)$ in the output plane (for $n = 2$ with both reaction lines: the path staircases into the crossing). Right: total output over 24 rounds against its equilibrium value. Simultaneous play with $n = 2$ spirals in; with $n = 3$ it cycles; with $n \ge 4$ interior deviations grow until zero-output truncation matters; one at a time converges for any $n$. The readout reports the measured shrink factor per round.`,
-      deps: ['micro-10.10', 'pma-9.23', 'ode-11.2', 'ladr-7.38'],
-      refs: ['Varian Ch. 28'], tags: ['oligopoly', 'stability'],
-      credit: 'R. D. Theocharis, On the Stability of the Cournot Solution on the Oligopoly Problem, Review of Economic Studies 27 (2): 133–134, 1960',
-      verify: true,
-      scope: String.raw`Linear demand, identical constant marginal costs, and naive best-reply (Cournot) dynamics with quantities truncated at zero. Other cost or demand shapes change the thresholds.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cournot_competition' },
-      viz(v) {
-        const mode = v.select('adjustment', [{ value: 'sim', label: 'simultaneous' }, { value: 'seq', label: 'one at a time' }], 'sim');
-        const nS = v.slider('number of firms $n$', 2, 6, 2, { int: true });
-        const a = 12, b = 1, c = 2, T = 24;
-        const s = v.stage({ x: [0, 10], y: [0, 10], axes: 'box', gutter: true, equal: true, xlabel: '$q_1$', ylabel: '$q_2$', height: 400, title: 'path of firms 1 and 2' });
-        const G = v.stage({ x: [0, T], y: [0, 32], axes: 'box', gutter: true, xlabel: 'round $t$', ylabel: 'total output $Q_t$', height: 400, title: 'total output', weight: 0.9, minWidth: 250 });
-        v.legend([['accent', 'path'], ['orange', 'reaction lines (n = 2)'], ['green', 'equilibrium', { dot: true }], ['gold', 'start', { dot: true }]]);
-        const H = s.handle(8, 1, { color: 'gold', r: 9, label: 'start', labelPos: 'ne', constrain: { x: [0.05, 9.9], y: [0.05, 9.9] } });
-        const stepSim = (q) => { const S_ = q.reduce((x, y) => x + y, 0); return q.map((qi) => Math.max(0, (a - c - b * (S_ - qi)) / (2 * b))); };
-        const stepSeq = (q) => { const r = q.slice(); for (let i = 0; i < r.length; i++) { const o = r.reduce((x, y) => x + y, 0) - r[i]; r[i] = Math.max(0, (a - c - b * o) / (2 * b)); } return r; };
-        let st = {};
-        v.render(() => {
-          const n = nS.value, sim = mode.value === 'sim', qs = (a - c) / ((n + 1) * b), Qs = n * qs;
-          let q = [H.x, ...Array(n - 1).fill(H.y)]; const path = [q.slice(0, 2)], tot = [q.reduce((x, y) => x + y, 0)];
-          for (let t = 0; t < T; t++) { q = sim ? stepSim(q) : stepSeq(q); path.push(q.slice(0, 2)); tot.push(q.reduce((x, y) => x + y, 0)); }
-          if (n === 2) { s.line((a - c) / (2 * b), 0, 0, a - c, { color: 'orange', width: 2.2 }); s.line(0, (a - c) / (2 * b), (a - c), 0, { color: 'orange', width: 2.2 }); }
-          s.path(sim || n > 2 ? path : (() => { const r = []; path.forEach((p, i) => { r.push(p); if (i + 1 < path.length) r.push([path[i + 1][0], p[1]]); }); return r; })(), { color: 'accent', width: 2 });
-          path.forEach((p, i) => s.dot(p[0], p[1], { r: i === 0 ? 5 : 3, color: i === 0 ? 'gold' : 'accent' }));
-          s.dot(qs, qs, { r: 8, color: 'green' });
-          G.hline(Qs, { color: 'green', width: 2 });
-          G.path(tot.map((y, i) => [i, y]), { color: 'accent', width: 2.2 }); G.dots(tot.map((y, i) => [i, y]), { r: 3, color: 'accent' });
-          const dev = tot.map((y) => y - Qs); let ratio = NaN; for (let t = 2; t < 8; t++) if (Math.abs(dev[t]) > 1e-6 && Math.abs(dev[t + 1]) < 1e5) { ratio = dev[t + 1] / dev[t]; break; }
-          st = { n, sim, ratio, theory: -(n - 1) / 2, end: Math.abs(dev[T]), Qs };
+      num:'10.12',kind:'Proposition',name:'Stability of Cournot adjustment',
+      statement:String.raw`For linear inverse demand, constant equal costs and nonnegative output, the naive quantity reply is
+$$R_i(q_{-i})=\max\left\{0,\frac{a-c-b\sum_{j\ne i}q_j}{2b}\right\}.$$
+Under simultaneous updates the duopoly map is a contraction with factor at most $1/2$ in the maximum norm. Near an interior symmetric equilibrium with $n$ firms, its Jacobian has eigenvalues $1/2$ for redistributions whose total is zero, and $-(n-1)/2$ for the common-output direction. Thus the interior equilibrium is locally asymptotically stable for n=2, neutral in the common direction for n=3, and unstable in that direction for n≥4.
+
+These are local interior conclusions. Exact zero-total-deviation starts can converge even for n≥3. Once nonnegative-output constraints bind, the linear multiplier no longer applies; outputs are bounded after the first update. **Cyclic sequential** exact replies converge to the unique equilibrium for this specified linear game, including the nonnegative constraints.`,
+      idea:String.raw`While every reply is strictly positive, deviations obey $x_i^{t+1}=-\frac12\sum_{j\ne i}x_j^t$. Summing gives the common-output multiplier, and a zero-sum vector is instead multiplied by $1/2$. For duopoly, max(0,·) preserves the global Lipschitz bound. For sequential updates write $s=(a-c)/b$ and minimize
+$$\begin{aligned}f(q)={}&\tfrac12\left(\sum_iq_i\right)^2+\tfrac12\sum_iq_i^2\\&-s\sum_iq_i,\qquad q_i\ge0.\end{aligned}$$
+An exact reply minimizes one coordinate of f. Its Hessian is $I+\mathbf1\mathbf1^T$, which is positive definite, so f has bounded sublevel sets and a unique minimum. Cyclic coordinate minimization converges to that minimum. This is a property of the specified adjustment rule and costs; a finite plotted trajectory is not itself a proof of convergence.`,
+      caption:String.raw`Set n and the initial quantities of firm 1 and the other firms. Compare simultaneous updates with one complete cyclic sweep per round. The left panel shows the first two quantities (a projection when n>2), including intermediate sequential updates. The right panel contains the full total-output trajectory for 24 rounds, including every actual start. **Equilibrium start** checks a fixed point; **balanced perturbation** gives zero aggregate deviation and exposes the stable redistribution direction. The readout uses the full vector's distance from equilibrium and reports a multiplier only for a strictly interior transition with nonzero aggregate deviation.`,
+      deps:['micro-10.10','pma-9.23'],refs:['Hommes, Ochea & Tuinstra (2018), Dynamic Games and Applications8:822–843, §2 and Appendix proof of Proposition1','P. Tseng (2001), JOTA109:475–494, §2, Lemma3.1 and Theorem4.1(a): cyclic coordinate minimization'],tags:['oligopoly','stability'],
+      scope:String.raw`A naive best-reply learning model with a=12,b=1,c=2, finite n and nonnegative quantities. Simultaneous local multipliers apply only in the strictly positive interior. Sequential means a fixed cyclic order with exact replies; it is not a claim about arbitrary asynchronous, delayed or stochastic learning. The plot shows24 rounds, not empirical adjustment.`,
+      verify: false,
+      links:{source:'https://link.springer.com/article/10.1007/s13235-018-0238-x'},
+      viz(v){
+        const mode=v.select('adjustment',[{value:'sim',label:'simultaneous'},{value:'seq',label:'cyclic sequential'}],'sim');
+        const count=v.slider('number of firms $n$',2,6,2,{int:true}),first=v.slider('initial output of firm 1',0,10,8,{step:.05}),others=v.slider('initial output of every other firm',0,10,1,{step:.05});
+        v.button('equilibrium start',()=>{const q=10/(count.value+1);first.set(q);others.set(q);});
+        v.button('balanced perturbation',()=>{const q=10/(count.value+1);first.set(q+.5);others.set(q-.5/(count.value-1));});
+        const A=v.stage({x:[-.65,10.65],y:[-.65,10.65],axes:'box',gutter:true,height:380,xlabel:'firm 1 output q₁',ylabel:'firm 2 output q₂',title:'first two quantities: full projected path'});
+        const B=v.stage({x:[-1,25],y:[-4,70],axes:'box',gutter:true,height:380,xlabel:'complete update round t',ylabel:'total output Qₜ',title:'full trajectory and equilibrium total'});
+        let info;
+        v.render(()=>{
+          const p=cournotAdjustment(count.value,first.value,others.value,mode.value==='seq');
+          if(p.n===2){A.path([[5,0],[0,10]],{color:'orange',width:2});A.path([[0,5],[10,0]],{color:'orange',width:2});}
+          const full=p.sequential?[p.states[0],...p.updates]:p.states;
+          A.path(full.map(q=>q.slice(0,2)),{color:'accent',width:2});A.dots(p.states.map(q=>q.slice(0,2)),{color:'accent',r:3});
+          A.dot(p.equilibrium,p.equilibrium,{color:'green',r:8,hollow:true});A.dot(p.first,p.others,{color:'gold',r:5});
+          const top=Math.max(1,p.totalEquilibrium,...p.totals);B.setView([-1,25],[-.08*top,1.14*top]);
+          B.hline(p.totalEquilibrium,{color:'green',width:2});B.path(p.totals.map((Q,t)=>[t,Q]),{color:'accent',width:2.4});B.dots(p.totals.map((Q,t)=>[t,Q]),{color:'accent',r:3});
+          info=p;
         });
-        v.readout(() => `$n = ${st.n}$, equilibrium total $${fx(st.Qs)}$. Measured factor per round: $${Number.isNaN(st.ratio) ? '—' : fx(st.ratio, 3)}$${st.sim ? `; the derivation predicts $-(n-1)/2 = ${fx(st.theory, 2)}$ for the deviation of total output while all quantities stay positive` : ' (one round = every firm moves once)'}.\nAfter 24 rounds the distance from equilibrium is $${fx(st.end, 4)}$: ${st.end < 0.01 ? 'converged.' : 'has not reached the displayed tolerance in 24 rounds.'}`);
+        v.legend([['accent','trajectory / complete-round points'],['orange','duopoly replies'],['green','equilibrium'],['gold','initial quantities']]);
+        v.readout(()=>String.raw`$n=${info.n}$: equilibrium output per firm $${fx(info.equilibrium,6)}$, total $${fx(info.totalEquilibrium,6)}$. Initial total $${fx(info.totals[0],6)}$; after 24 rounds total $${fx(info.totals.at(-1),6)}$, full-vector distance $${fx(info.norms.at(-1),6)}$. ${info.sequential?'Each round is one exact cyclic sweep; convergence follows from the strictly convex potential, not from the finite trace.':info.ratio===null?'No valid nonzero interior total-deviation ratio in this trace.':`Interior transition ${info.ratioAt}→${info.ratioAt+1}: measured total-deviation factor $${fx(info.ratio,6)}$, predicted $${fx(info.theory,6)}$.`} ${info.clipped.some(Boolean)?'At least one reply meets the zero-output boundary; the interior multiplier does not describe those transitions.':'All displayed transitions stay strictly interior.'}`);
       },
     },
+
   ],
 };

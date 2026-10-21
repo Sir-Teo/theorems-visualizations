@@ -1,0 +1,199 @@
+{
+  "scope": "Producer evidence; independent peer acceptance pending; no source closure",
+  "mapping": [
+    {
+      "item": "demo-1.4",
+      "target": "pma-8.6"
+    },
+    {
+      "item": "demo-1.6",
+      "target": "ladr-3.11"
+    },
+    {
+      "item": "demo-2.8",
+      "target": "prob-4.1.1a"
+    },
+    {
+      "item": "demo-2.10",
+      "target": "pma-6.12"
+    },
+    {
+      "item": "demo-2.11",
+      "target": "prob-2.1.1a"
+    },
+    {
+      "item": "demo-3.3",
+      "target": "prob-4.1.1a"
+    },
+    {
+      "item": "demo-3.6",
+      "target": "ladr-7.70"
+    },
+    {
+      "item": "demo-4.2",
+      "target": "pma-6.1"
+    },
+    {
+      "item": "demo-4.7",
+      "target": "pma-8.6"
+    },
+    {
+      "item": "demo-4.8",
+      "target": "pma-8.6"
+    },
+    {
+      "item": "demo-4.8",
+      "target": "ladr-6.61"
+    },
+    {
+      "item": "demo-4.10",
+      "target": "prob-1.6.9a"
+    },
+    {
+      "item": "demo-3.14",
+      "target": "prob-2.2.1"
+    }
+  ],
+  "counts": {
+    "before": {
+      "writtenToWritten": 12,
+      "writtenToKnown": 13,
+      "wholeSyllabus": 24
+    },
+    "after": {
+      "writtenToWritten": 25,
+      "writtenToKnown": 26,
+      "wholeSyllabus": 37
+    }
+  },
+  "guard": {
+    "items": 50,
+    "functions": 50,
+    "sourceFlagsUnchanged": true,
+    "helperFilesByteIdentical": true,
+    "script": "/tmp/atlas-new-imaging-source/demo-guard.mjs"
+  },
+  "checks": {
+    "mathCases": 4179,
+    "nativeCases": 24,
+    "width": 320,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "static": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "strict": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "ownPixels": "All 24 changed-explanation PNGs personally inspected; complete, legible, no clipping or overflow",
+    "bridgeConsumers": "No existing bridge steps reference any changed DEMO ID"
+  },
+  "logs": [
+    "/tmp/atlas-new-imaging-source/demo-native.log",
+    "/tmp/atlas-new-imaging-source/demo-strict.log",
+    "/tmp/atlas-new-imaging-source/demo-static.log",
+    "/tmp/atlas-new-imaging-source/demo-static-3.14.log"
+  ],
+  "pictures": [
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-1.4-dark-320.png",
+      "sha256": "a29ea77a57a765b4e6a110347b6c37d9503a582025b9c822821a5fe0ac59bf6e"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-1.4-light-320.png",
+      "sha256": "e31e167f5e4f7211bd6ac746b1bb59adc458887837524302b3144354be442dd5"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-1.6-dark-320.png",
+      "sha256": "33cbde8162c0cc6bd23a3402ae534b0279849002ed9f95f879eb5aedc09b9fe2"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-1.6-light-320.png",
+      "sha256": "28b3d825d9a4c26437f3bbe4c6b0de0de1756f3b2e848f61d29983a22d3599da"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-2.10-dark-320.png",
+      "sha256": "84bec6b277119ebdb7820ce6563ad48f67f1e737d6054f0f50d6c0f016c7d191"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-2.10-light-320.png",
+      "sha256": "df68cbed83e3ca35def15bf68e608bab28b7aeada58be9db9453e3da7d2132f4"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-2.11-dark-320.png",
+      "sha256": "6ae806bd3d8e484a3725dca8b11c1df1337345eeb5f9931101e55962efba90c1"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-2.11-light-320.png",
+      "sha256": "57d1ae1c4333ad375e4700c873251791e36cafd44d1bfbef8b52495b8d587235"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-2.8-dark-320.png",
+      "sha256": "e9fd40050424f3574c36f0f32805425c80e02243b72c857e80466532eb8da34c"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-2.8-light-320.png",
+      "sha256": "79792bd21e1b51471abde3ee33bd9669250d36f43b7b8d9970c67132e1715ba3"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-3.14-dark-320.png",
+      "sha256": "946febc00ffd11f6ebd0a88bc806a889c9a6104eeb44926085c029eb2c86c616"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-3.14-light-320.png",
+      "sha256": "c66e3d92f7dc9fc9815f76011256663e9579f8e160ce103d2fecf4153c5a88e1"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-3.3-dark-320.png",
+      "sha256": "39b28dd0dec5f49695c82094a6e5ed497817b3e938ac88c198e8182131789177"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-3.3-light-320.png",
+      "sha256": "866a91224191f4a08f34eebfa9f98eb1ea053f74bb08e4afeb596def779b6b09"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-3.6-dark-320.png",
+      "sha256": "9647645112668a25afd316bc3c25c05d6cc4bb5c6c506636b9e4f1a63af66ff9"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-3.6-light-320.png",
+      "sha256": "811897bf340451d036d050ac8133ceb36aa9ad645640851d1f1fbed2497de5c3"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-4.10-dark-320.png",
+      "sha256": "f2801f88cbf26c0d1f69de3a452e5210a341b8f82c6626807d5d7eb3efa0a475"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-4.10-light-320.png",
+      "sha256": "1d5e1b8aff6abdba1d27f8e0f2a1651eb51003077b0bde7b63307a9b366424ab"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-4.2-dark-320.png",
+      "sha256": "cf43243e16239b5b456063c12225e525b693d0bf004dd22b86adb002cee2476c"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-4.2-light-320.png",
+      "sha256": "38fbd009ee217327cc2419d79a40a3ed303151509af8b0ad9f3fdd1612e0543e"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-4.7-dark-320.png",
+      "sha256": "2506030886288ea0fdc0d1ce926d3772f3e1b72317d5db2379ac32dc83f58216"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-4.7-light-320.png",
+      "sha256": "e310e315cc527d53c13fc0bff863422cc241df4d7ea002b6f32a6531ee510566"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-4.8-dark-320.png",
+      "sha256": "93f279726eb9993421bac0fc5ca4145101821ab1d28dbfbe3fefad1c4b9866cf"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/demo-prerequisites/idea-4.8-light-320.png",
+      "sha256": "84c69c9692d908f25ec89df6d861a63a7aa84162275ea7dbc9d56f6c212a0be3"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {inclusiveHistogram, exactChoose} from './ch04-exchangeability.shared.js';
 // Probability: Theory and Examples (Durrett) — Chapter 4, part Z3: optional stopping and random-walk applications (§4.8.3-4.8.9, 4.9.1)
 import { clampN, cornerIn, DFUN, dfunOpts, dyadicTable, dyadAt, DL, srw, ruinDP, logChoose, fr } from './ch04-z.shared.js';
 
@@ -114,7 +115,7 @@ $$EX_N\ \le\ EX_0 .$$`,
       num: '4.8.5',
       kind: 'Theorem',
       name: 'Optional stopping with bounded increments and EN < ∞',
-      statement: String.raw`Let $X_n$ be a martingale (submartingale) with $|X_{n+1}-X_n|\le K$ a.s., and let $N$ be a stopping time for the natural filtration $\mathcal F_n=\sigma(\xi_1,\dots,\xi_n)$, with $EN<\infty$. Then $X_N$ is integrable and $EX_N=EX_0$ ($EX_N\ge EX_0$).`,
+      statement: String.raw`Let $X_n$ be a martingale (submartingale) with $|X_{n+1}-X_n|\le K$ a.s., and let $N$ be a stopping time for $\mathcal F_n=\sigma(\xi_1,\dots,\xi_n)$ with $EN<\infty$. Then $X_N$ is integrable and $EX_N=EX_0$ ($EX_N\ge EX_0$).`,
       idea: String.raw`Write $|X_{N\wedge n}-X_0|\le\sum_{k\le N}|X_k-X_{k-1}|\le KN$, which is integrable. So $X_{N\wedge n}$ is dominated by $|X_0|+KN$ and converges to $X_N$; dominated convergence (1.6.7) passes the identity $EX_{N\wedge n}=EX_0$ (4.4.1) to the limit. If $EN=\infty$, the dominating bound disappears and the identity can fail.`,
       caption: String.raw`Walk with mean-zero bounded steps (coin $\pm1$, or $-1$ w.p. $\frac23$ and $+2$ w.p. $\frac13$, which overshoots the upper barrier), stopped when leaving $(-a,b)$; tick "no lower barrier" to stop only at $\ge b$. Left (log–log): the tail $P(N>n)$ from 3000 runs; $EN$ is finite for a two-sided exit (exponential tail) and infinite without the lower barrier (tail $\sim n^{-1/2}$, straight line of slope $-\frac12$). Right: running average of $X_{N\wedge3000}$ over the runs (blue) approaching $EX_0=0$ and of $X_N$ over the runs that finished (orange): the two agree when $EN<\infty$; without the lower barrier the finished runs all have $X_N\ge b$ while the capped runs sit far below.`,
       deps: ['prob-4.4.1', 'prob-1.6.7'],
@@ -151,44 +152,42 @@ $$EX_N\ \le\ EX_0 .$$`,
       num: '4.8.6',
       kind: 'Theorem',
       name: 'Wald’s equation via optional stopping',
-      statement: String.raw`Let $\xi_1,\xi_2,\dots$ be i.i.d. with $E|\xi_1|<\infty$ and mean $\mu$, $S_n=\xi_1+\dots+\xi_n$, and let $N$ be a stopping time for the natural filtration $\mathcal F_n=\sigma(\xi_1,\dots,\xi_n)$, with $EN<\infty$. Then
+      statement: String.raw`Let $\xi_1,\xi_2,\dots$ be i.i.d. with $E|\xi_1|<\infty$ and mean $\mu$, $S_n=\xi_1+\dots+\xi_n$, and let $N$ be a stopping time for $\mathcal F_n=\sigma(\xi_1,\dots,\xi_n)$ with $EN<\infty$. Then
 $$E S_N=\mu\,EN .$$`,
       idea: String.raw`$M_n=S_n-n\mu$ is a martingale. Its increments are not bounded, but the argument of 4.8.5 only needs a dominating integrable variable: $|M_{N\wedge n}|\le\sum_{k\le N}|\xi_k-\mu|$, and since $\{N\ge k\}\in\mathcal F_{k-1}$ is independent of $\xi_k$, $E\sum_{k\le N}|\xi_k-\mu|=EN\cdot E|\xi_1-\mu|<\infty$. Dominated convergence (1.6.7) then gives $EM_N=EM_0=0$, i.e. $ES_N=\mu\,EN$.`,
-      caption: String.raw`Stop the walk at the first $n$ with $S_n\ge L$, capped at $T=2000$ steps (so $N\wedge T$ is bounded and Wald's identity holds exactly for it). Step law: exponential ($\mu=1$), uniform on $(-1,3)$ ($\mu=1$) or normal with mean $\mu$ (slider). Left: histogram of the stopped value $S_N$: it overshoots $L$. Right: $ES_{N\wedge T}$ and $\mu\,E(N\wedge T)$ from 6000 seeded runs, with 95% whiskers: equal within noise. Slide the normal's $\mu$ to $0$ or below: $N$ is often capped (and $EN=\infty$ without the cap), yet the capped identity still holds.`,
+      caption: String.raw`Stop the walk at the first $n$ with $S_n\ge L$, capped at $T=2000$ steps (so $N\wedge T$ is bounded and Wald's identity holds exactly for it). Step law: exponential ($\mu=1$), uniform on $(-1,3)$ ($\mu=1$) or normal with mean $\mu$ (slider). Left: histogram of $S_{N\wedge T}$, including every capped and completed run; completed runs overshoot $L$. Right: $ES_{N\wedge T}$ and $\mu\,E(N\wedge T)$ from 6000 seeded runs, with approximate 95% Monte Carlo whiskers. Both estimates use the same runs; the readout also reports their paired difference and its standard error. Slide the normal's $\mu$ to $0$ or below: $N$ is often capped (and $EN=\infty$ without the cap), yet the capped identity still holds.`,
       deps: ['prob-4.8.5'],
       see: ['prob-2.6.2', 'stoch-12.5'],
       tags: ['optional stopping', 'random walk'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.8.6 and proof, p. 257; Theorem 4.8.5, pp. 256–257'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (2019), Theorem 4.8.6 and §4.8.1, p. 257'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const law = v.select('steps', [{ value: 'exp', label: 'exponential(1)' }, { value: 'unif', label: 'uniform$(-1,3)$' }, { value: 'norm', label: 'normal$(\\mu,1)$' }], 'exp');
         const muS = v.slider('$\\mu$', -0.3, 1.5, 0.5, { step: 0.05 });
         const LS = v.slider('level $L$', 1, 30, 10, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });
-        const A = v.stage({ x: [0, 40], y: [0, 1], height: 320, axes: 'box', gutter: true, xlabel: '$S_N$', title: 'stopped value (overshoot)' });
+        const A = v.stage({ x: [0, 40], y: [0, 1], height: 320, axes: 'box', gutter: true, xlabel: '$S_{N\\wedge T}$', title: 'capped stopped value (all runs)' });
         const B = v.stage({ x: [0.3, 2.7], y: [0, 1], height: 320, axes: 'box', gutter: true, title: 'the two sides of Wald', xticks: [] });
         let st = null;
         v.render(() => {
           muS.el.hidden = law.value !== 'norm';
           const k = law.value, mu = k === 'norm' ? muS.value : 1, L = LS.value, T = 2000, K = 6000, r = v.rng(seed * 12007 + 5);
           const draw = k === 'exp' ? () => -Math.log(1 - r()) : k === 'unif' ? () => -1 + 4 * r() : () => mu + r.normal();
-          let sS = 0, sS2 = 0, sN = 0, sN2 = 0, cap = 0; const vals = [];
-          for (let j = 0; j < K; j++) { let s = 0, n = 0; while (s < L && n < T) { s += draw(); n++; } if (s < L) cap++; sS += s; sS2 += s * s; sN += n; sN2 += n * n; vals.push(s); }
+          let sS = 0, sS2 = 0, sN = 0, sN2 = 0, cap = 0, sD=0,sD2=0; const vals = [];
+          for (let j = 0; j < K; j++) { let s = 0, n = 0; while (s < L && n < T) { s += draw(); n++; } if (s < L) cap++; sS += s; sS2 += s * s; sN += n; sN2 += n * n; const d=s-mu*n;sD+=d;sD2+=d*d;vals.push(s); }
           const mS = sS / K, seS = Math.sqrt(Math.max(0, sS2 / K - mS * mS) / K), mN = sN / K, seN = Math.sqrt(Math.max(0, sN2 / K - mN * mN) / K);
-          const lo = Math.min(...vals), hi = Math.max(...vals), a0 = Math.min(L - 3, lo), b0 = Math.max(L + 6, Math.min(hi, L + 15));
-          const bins = 40, E = Array.from({ length: bins + 1 }, (_, i) => a0 + ((b0 - a0) * i) / bins), cnt = new Float64Array(bins);
-          for (const x of vals) { const q = Math.floor(((x - a0) / (b0 - a0)) * bins); if (q >= 0 && q < bins) cnt[q]++; }
-          const dens = Array.from(cnt, (c) => c / (K * ((b0 - a0) / bins)));
-          A.setView([a0, b0], [0, Math.max(...dens) * 1.15]);
-          A.hist({ edges: E, counts: Array.from(cnt), density: dens }, { density: true, color: 'accent', fillAlpha: 0.3 });
+          const lo = Math.min(...vals), hi = Math.max(...vals), padding=Math.max(.01,(hi-lo)*.01), a0=Math.min(lo,L)-padding,b0=Math.max(hi,L)+padding;
+          const histogram=inclusiveHistogram(vals,a0,b0,40);
+          A.setView([a0,b0],[0,Math.max(...histogram.density)*1.15]);
+          A.hist(histogram,{density:true,color:'accent',fillAlpha:.3});
           A.vline(L, { color: 'red', dash: [5, 4], width: 1.6 });
-          const top = Math.max(mS, mu * mN) * 1.25 + 0.5, bot = Math.min(0, mS, mu * mN) * 1.2;
+          const endpoints=[0,mS-1.96*seS,mS+1.96*seS,mu*mN-1.96*Math.abs(mu)*seN,mu*mN+1.96*Math.abs(mu)*seN], span=Math.max(...endpoints)-Math.min(...endpoints),top=Math.max(...endpoints)+.12*Math.max(1,span),bot=Math.min(...endpoints)-.12*Math.max(1,span);
           B.setView([0.3, 2.7], [bot, top]);
           barsSE(B, [{ label: '$ES_{N\\wedge T}$', val: mS, se: seS, color: 'accent' }, { label: '$\\mu\\,E(N\\wedge T)$', val: mu * mN, se: Math.abs(mu) * seN, color: 'orange' }], v);
-          st = { mS, seS, rhs: mu * mN, seR: Math.abs(mu) * seN, mN, cap: cap / K, mu };
+          st = { mS, seS, rhs: mu * mN, seR: Math.abs(mu) * seN, mN, cap: cap / K, mu, difference:sD/K,pairedSe:Math.sqrt(Math.max(0,sD2/K-(sD/K)**2)/K) };
         });
         v.legend([['accent', '$ES_{N\\wedge T}$'], ['orange', '$\\mu E(N\\wedge T)$'], ['red', 'level $L$', { dash: true }]]);
-        v.readout(() => st && `$\\mu=${v.fix(st.mu, 2)}$: $E(N\\wedge T)=${v.fix(st.mN, 2)}$; $ES_{N\\wedge T}=${v.fix(st.mS, 3)}\\pm${v.fix(1.96 * st.seS, 3)}$ and $\\mu E(N\\wedge T)=${v.fix(st.rhs, 3)}\\pm${v.fix(1.96 * st.seR, 3)}$. ${v.fix(100 * st.cap, 1)}% of runs reach the cap.`);
+        v.readout(() => st && `$\\mu=${v.fix(st.mu, 2)}$: $E(N\\wedge T)=${v.fix(st.mN, 2)}$; $ES_{N\\wedge T}=${v.fix(st.mS, 3)}\\pm${v.fix(1.96 * st.seS, 3)}$ and $\\mu E(N\\wedge T)=${v.fix(st.rhs, 3)}\\pm${v.fix(1.96 * st.seR, 3)}$. ${v.fix(100 * st.cap, 1)}% remain below the barrier at the cap. Paired difference $${v.fix(st.difference,3)}$ (standard error $${v.fix(st.pairedSe,3)}$).`);
       },
     },
     {
@@ -318,14 +317,14 @@ If $p>\frac12$ and $T_b$ is the hitting time of $b$ (no lower barrier), $E_xT_b=
       num: '4.9.1',
       kind: 'Theorem',
       name: 'Reflection principle (path counting)',
-      statement: String.raw`Let $x,y$ be positive integers. The number of paths of the simple walk from $(0,x)$ to $(n,y)$ that touch $0$ equals the number of all paths from $(0,-x)$ to $(n,y)$:
+      statement: String.raw`Let $x,y$ be positive integers and $n\ge0$ an integer. The number of nearest-neighbor paths of the simple walk from $(0,x)$ to $(n,y)$ that touch $0$ equals the number of all paths from $(0,-x)$ to $(n,y)$:
 $$\#\{\text{paths }x\to y\text{ in }n\text{ steps touching }0\}=\binom{n}{\frac{n+y+x}{2}} .$$
-The coefficient is $0$ when its lower argument is not an integer in $[0,n]$.
+The binomial coefficient is zero when its lower argument is not an integer in $[0,n]$.
 Consequently, for the symmetric walk, $P_x(S_n=y,\ \min_{k\le n}S_k\le0)=P_x(S_n=-y)$ (for $y>0$).`,
       idea: String.raw`Reflect the initial segment of a touching path, up to its first visit to $0$, across the line $y=0$. This maps touching paths from $x$ to $y$ bijectively onto paths from $-x$ to $y$: every path from $-x$ to $y>0$ must cross $0$, and reflecting back up to its first crossing returns the original. The number of up-steps in a path from $-x$ to $y$ is $(n+y+x)/2$, giving the binomial coefficient.`,
-      caption: String.raw`Set $n$, the start $x$ and the endpoint $y$. All $\binom{n}{(n+y-x)/2}$ paths are enumerated; the ones touching $0$ are listed. Choose one with the slider "touching path #": red is the path, the dashed blue path is its reflection up to the first zero (dot), which starts at $-x$. Right: the counts: all paths $x\to y$, those touching $0$ (enumerated), and the number of paths from $-x$ to $y$ (formula): the last two bars are equal for every $(n,x,y)$.`,
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.9.1 and proof, p. 263'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      caption: String.raw`Set $n$, the start $x$ and the endpoint $y$. All $\binom{n}{(n+y-x)/2}$ paths are enumerated; the ones touching $0$ are listed. Choose one with the slider "touching path index" (clamped to the available index range): red is the path, the dashed blue path is its reflection up to the first zero (dot), which starts at $-x$. Right: the counts: all paths $x\to y$, those touching $0$ (enumerated), and the number of paths from $-x$ to $y$ (formula): the last two bars are equal for every $(n,x,y)$.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (2019), Theorem 4.9.1, p. 263'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       deps: [],
       see: ['comb-5.2', 'stoch-2.10'],
       tags: ['random walk', 'combinatorics'],
@@ -333,17 +332,16 @@ Consequently, for the symmetric walk, $P_x(S_n=y,\ \min_{k\le n}S_k\le0)=P_x(S_n
         const nS = v.slider('$n$', 4, 16, 12, { int: true });
         const xS = v.slider('start $x$', 1, 5, 2, { int: true });
         const yS = v.slider('end $y$', 1, 10, 2, { int: true });
-        const kS = v.slider('touching path #', 0, 100, 0, { int: true });
+        const kS = v.slider('touching path index', 0, 12869, 0, { int: true });
         const A = v.stage({ x: [0, 16], y: [-6, 8], height: 340, weight: 1.3, axes: 'box', gutter: true, xlabel: '$k$', title: 'a touching path and its reflection' });
         const B = v.stage({ x: [0.4, 3.6], y: [0, 1], height: 340, axes: 'box', gutter: true, title: 'counts', xticks: [] });
         let st = null;
         v.render(() => {
-          const n = nS.value, x = xS.value; let y = yS.value;
-          if ((n + y - x) % 2 !== 0) y += 1; yS.set(y);
+          const n=nS.value,x=xS.value,y=yS.value;
           const ups = (n + y - x) / 2;
-          A.setView([0, n], [-Math.max(x, 3) - 2, Math.max(x, y, 4) + 3]);
+          const envelope=(n+x+y)/2+1; A.setView([0,n],[-envelope,envelope]);
           A.hline(0, { color: 'ink', width: 1.8 });
-          if (ups < 0 || ups > n) { st = { bad: true }; return; }
+          if (!Number.isInteger(ups)||ups<0||ups>n) {kS.el.hidden=true;B.setView([.4,3.6],[0,1]);B.text('No paths: parity or reach fails',2,.5,{align:'center',color:'muted'});st={bad:true};return;}
           const touching = []; let total = 0;
           for (let m = 0; m < 1 << n; m++) {
             let pc = 0, t = m; while (t) { pc += t & 1; t >>= 1; } if (pc !== ups) continue; total++;
@@ -359,14 +357,14 @@ Consequently, for the symmetric walk, $P_x(S_n=y,\ \min_{k\le n}S_k\le0)=P_x(S_n
             A.path(refl, { color: 'blue', width: 2.4, dash: [6, 4] }); A.path(pts, { color: 'red', width: 2.6 }); A.dot(first, 0, { color: 'gold', r: 6 });
             A.dot(0, x, { color: 'red', r: 4, label: 'x', labelPos: 'ne' }); A.dot(0, -x, { color: 'blue', r: 4 }); A.dot(n, y, { color: 'ink', r: 5 });
           }
-          const refCount = Math.exp(logChoose(n, (n + y + x) / 2)), cnts = [total, touching.length, refCount];
-          const top = Math.max(...cnts) * 1.15; B.setView([0.4, 3.6], [0, top]);
+          const refCount = exactChoose(n, (n + y + x) / 2), cnts = [total, touching.length, refCount];
+          const top = Math.max(1,...cnts) * 1.15; B.setView([0.4, 3.6], [0, top]);
           ['accent', 'red', 'blue'].forEach((c, i) => { B.rect(i + 0.62, 0, i + 1.38, cnts[i], { fill: c, fillAlpha: 0.4, color: c, width: 1.5 }); B.text(String(Math.round(cnts[i])), i + 1, cnts[i], { size: 13, baseline: 'bottom', dy: -4 }); });
           B.tex('\\text{all }x\\to y', 1, 0, { size: 13, dy: -16 }); B.tex('\\text{touching }0', 2, 0, { size: 13, dy: -16 }); B.tex('-x\\to y', 3, 0, { size: 13, dy: -16 });
-          st = { n, x, y, total, touch: touching.length, ref: Math.round(refCount) };
+          st = {n,x,y,total,touch:touching.length,ref:refCount,idx};
         });
         v.legend([['red', 'touching path'], ['blue', 'reflected up to first zero', { dash: true }], ['gold', 'first zero']]);
-        v.readout(() => st && (st.bad ? 'No such path: $y$ is out of reach in $n$ steps.' : `$n=${st.n}$, $x=${st.x}$, $y=${st.y}$: ${st.total} paths in all, ${st.touch} touch $0$, and $\\binom{${st.n}}{${(st.n + st.y + st.x) / 2}}=${st.ref}$ paths go from $-x$ to $y$. Equal: ${st.touch === st.ref}.`));
+        v.readout(() => st && (st.bad ? 'No such path: the selected parity or distance is incompatible with nearest-neighbor steps.' : `$n=${st.n}$, $x=${st.x}$, $y=${st.y}$: ${st.total} paths in all, ${st.touch} touch $0$, and $\\binom{${st.n}}{${(st.n + st.y + st.x) / 2}}=${st.ref}$ paths go from $-x$ to $y$. Equal: ${st.touch === st.ref}. ${st.idx>=0?`Displayed touching path index ${st.idx} of ${st.touch-1}.`:'No touching paths.'}`));
       },
     },
   ],

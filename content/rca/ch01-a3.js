@@ -40,7 +40,7 @@ Consequently (with 1.14 and 1.17) sums and products of measurable functions $X\t
       caption: String.raw`The product $a_nb_n$ is the area of the rectangle $[0,a_n]\times[0,b_n]$. Slide $n$ and compare the cases: when both sequences increase, the areas converge to $ab$ — including $0\cdot\infty=0$, where the rectangle never gets any width. The last case drops monotonicity ($a_n=\frac{1.5}n$ decreases) and the products stay at $0.9\ne 0\cdot\infty$.`,
       deps: ['rca-1.13'],
       tags: ['extended reals'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 1.22, pp. 18–19'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const C = {
@@ -154,11 +154,11 @@ the supremum over all measurable simple $s$ with $0\le s\le f$. (For simple $f$ 
 (d) if $f(x)=0$ for all $x\in E$, then $\int_E f\,d\mu=0$, even if $\mu(E)=\infty$;
 (e) if $\mu(E)=0$, then $\int_E f\,d\mu=0$, even if $f(x)=\infty$ for every $x\in E$;
 (f) if $f\ge0$, then $\int_E f\,d\mu=\int_X\chi_Ef\,d\mu$.`,
-      idea: String.raw`Each item is read off the definition 1.23: (a) every simple $s\le f$ is also $\le g$; (b) $\mu(A_i\cap A)\le\mu(A_i\cap B)$; (c) for $c>0$, scaling by $c$ bijects the simple functions below $f$ with those below $cf$; for $c=0$, both integrals are zero by $0\cdot\infty=0$; (d) and (e) because each simple-function contribution has zero value or zero measure; (f) simple functions below $\chi_Ef$ vanish off $E$.`,
+      idea: String.raw`Each item is read off the definition 1.23: (a) every simple $s\le f$ is also $\le g$; (b) $\mu(A_i\cap A)\le\mu(A_i\cap B)$; (c) $s\le f$ iff $cs\le cf$; (d) and (e) because every term $\alpha_i\mu(A_i\cap E)$ of a simple integral has $\alpha_i=0$, respectively $\mu(A_i\cap E)=0$, and $0\cdot\infty=0$; (f) simple functions below $\chi_Ef$ vanish off $E$.`,
       caption: String.raw`Three pictures. (a),(b): drag the ends of $A$ inside the fixed set $B$ — the shaded integrals are nested. (c): drag the handle to rescale $f$; the area scales by exactly $c$. (d),(e): on $X=[0,\infty)$, $f$ vanishes on the infinite-measure set $E=[3,\infty)$ and is $+\infty$ at the single point $p$, yet both contribute $0$.`,
       deps: ['rca-1.23'],
       tags: ['integral'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Propositions 1.24(a)–(f), pp. 19–20'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const mode = v.select('', [{ value: 'ab', label: '(a), (b) monotonicity' }, { value: 'c', label: '(c) scaling' }, { value: 'de', label: '(d), (e) $0\\cdot\\infty=0$' }], 'ab');

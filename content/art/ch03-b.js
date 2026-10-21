@@ -1,3 +1,4 @@
+import{opticksPaper,goethePaper}from'./source-audit-optics-items.js';
 // Visual Art & Color — Chapter 3: Light, spectra and colour mixing (items 3.8–3.13; 3.1–3.7 are in ch03.js)
 import { cmf, cmfT, specRGB, rgbOf, spdXYZ, xyOf, xyz2lin, lin2srgb, planck, bbXYZ, gauss, sigm, nBK7, specBars, drawChromaticity, dominant, LOCUS, rayleighTau, airmassKY, stackR, NEWTON, circPt, arcCentroid, newtonMix, arcAt, mixXYZ, prismXYZ, prismShift, rad, deg } from './ch03.shared.js';
 
@@ -264,135 +265,9 @@ Goethe took the boundary of light and dark to be the origin of colour. Newton’
           : `${info.wide ? `$w>\\Delta$: fringes at the edges (left ${colourName(info.edgeA)}, right ${colourName(info.edgeB)}), and the stripe’s middle is ${colourName(info.cen)}` : `$w<\\Delta$ (the fringes overlap): the middle of the ${prof.value} stripe is ${colourName(info.cen)}`}${info.cen.l ? ` (${info.cen.purple ? 'complementary ' : ''}dominant wavelength ${v.fix(info.cen.l, 0)} nm)` : ''}`);
       },
     },
-    // ------------------------------------------------------------------ 3.12
-    {
-      num: '3.12',
-      kind: 'Paper',
-      name: 'Opticks',
-      paper: { authors: 'Isaac Newton', year: 1704, title: 'Opticks: or, a Treatise of the Reflexions, Refractions, Inflexions and Colours of Light',
-               venue: 'London: Sam. Smith and Benj. Walford, 1704; the colour circle is Book I, Part II, Prop. VI', url: 'https://archive.org/details/opticksortreatis00newt' },
-      introduces: ['art-3.3'],
-      credit: 'Isaac Newton, 1704',
-      statement: String.raw`Book I, Part II, Proposition VI, Problem II of the Opticks sets the problem “in a mixture of primary colours, the quantity and quality of each being given, to know the colour of the compound”, and solves it with a diagram. A circle is divided into seven arcs, named from red to violet, whose lengths are proportional to the numbers $\tfrac19,\tfrac1{16},\tfrac1{10},\tfrac19,\tfrac1{16},\tfrac1{16},\tfrac19$, which Newton takes from the seven intervals of the musical octave; circles proportional to the number of rays of each colour are placed at the centres of gravity of their arcs, and the common centre of gravity $Z$ of those circles is found. The line from the centre $O$ through $Z$ meets the circumference at $Y$, which shows the hue of the compound, and $OZ$ measures its fullness, its distance from whiteness.
-
-Newton adds the caveats himself: two opposite colours mixed equally make a faint colour, not a perfect white; a mixture whose $Z$ falls near the line $OD$ is a purple; he had not found how to make white from fewer than about four or five colours. He gives a worked example: violet 1, indigo 1, blue 2, green 3, yellow 5, orange 6, red 10, whose $Y$ lies between $E$ and $F$, nearer to $E$, with $OZ$ a little less than half of $OY$, an orange verging a little toward red, with a little less than half the intensity of the full orange.`,
-      idea: String.raw`Before the Opticks colour was thought of as a mixture of light and dark, or as a modification of white light by the medium; Newton’s experiments with prisms (art-3.1) had made colours physical, rays of definite refrangibility, and this proposition turns that into a calculus: mixing is addition of rays, and addition of rays is a weighted average on a circle. He chooses the circle as a map of the colours because the red and violet ends are neighbours in the purples, and the arc lengths through the analogy with the musical scale (a numerological idea from his time, not a measurement). The idea that mixing is an average of weights is what later became Grassmann’s laws and the chromaticity diagram (art-3.5), but the circle itself is only approximate: the seven names, the arc lengths and the rule that every colour has an exact opposite are conventions, not results.`,
-      caption: String.raw`Newton’s Fig. 11, rebuilt. Use the step selector to draw it as he describes: the seven arcs (their lengths are the printed fractions, compared with the monochord intervals on the right), the centres of gravity $p,q,r,s,t,u,x$, the circles proportional to the numbers of rays, and finally $Z$ and $Y$. The sliders start at his worked example; the readout compares his reading with the rule and with a modern calculation of the same mixture of narrow-band lights.`,
-      deps: ['art-3.1'],
-      refs: [],
-      tags: ['Newton', 'Opticks', 'colour circle'],
-      scope: String.raw`The arc proportions are the numbers printed in the Opticks text as I read it from a public-domain transcription (Project Gutenberg), not checked against the 1704 print. The wavelength attached to each colour name in the modern comparison (660, 607, 577, 532, 482, 452, 420 nm) is a conventional mid-band choice, not Newton’s.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Opticks' },
-      viz(v) {
-        const step = v.select('construction', [{ value: 1, label: '1 the arcs' }, { value: 2, label: '2 centres of gravity' }, { value: 3, label: '3 circles of rays' }, { value: 4, label: '4 Z and Y' }], 4);
-        const ex = [10, 6, 5, 3, 2, 1, 1];
-        const sl = NEWTON.arcs.map((a, i) => v.slider(a.name, 0, 12, ex[i], { step: 0.1 }));
-        v.button('Newton’s example', () => sl.forEach((s, i) => s.set(ex[i])));
-        const C = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.45], equal: true, axes: false, height: 400, weight: 1.05, title: 'Fig. 11: the circle ADF' });
-        const Mo = v.stage({ x: [0, 1.5], y: [-0.4, 8.2], axes: false, height: 400, weight: 0.8, minWidth: 250, title: 'the monochord: lengths of the eight notes' });
-        const LET = ['p', 'q', 'r', 's', 't', 'u', 'x'];
-        const strings = [[1, '1', 'sol'], [8 / 9, '8/9', 'la'], [5 / 6, '5/6', 'fa'], [3 / 4, '3/4', 'sol'], [2 / 3, '2/3', 'la'], [3 / 5, '3/5', 'mi'], [9 / 16, '9/16', 'fa'], [1 / 2, '1/2', 'sol']];
-        const printed = ['1/9', '1/16', '1/10', '1/9', '1/16', '1/16', '1/9'];
-        const derived = [1, 2, 3, 4, 5, 6, 7].map((k) => { const q = strings[k - 1][0] / strings[k][0], num = Math.round(1 / (q - 1)) + 1; return `1/${num}`; });
-        let info = {};
-        v.render(() => {
-          const wts = sl.map((s) => s.value), mx = newtonMix(wts), st = step.value;
-          C.circle(0, 0, 1, { color: 'ink', width: 1.6 });
-          for (const A of NEWTON.arcs) {
-            const NST = 14;
-            for (let k = 0; k < NST; k++) {
-              const t0 = A.a0 + (A.w * k) / NST, t1 = A.a0 + (A.w * (k + 1)) / NST + 0.004, l = Math.min(660, Math.max(430, A.l0 + ((A.l1 - A.l0) * (k + 0.5)) / NST));
-              C.poly([circPt(t0, 0.93), circPt(t1, 0.93), circPt(t1, 1.0), circPt(t0, 1.0)], { fill: specRGB(l, 0.5), stroke: false, fillAlpha: 1 });
-            }
-            const q = circPt(A.a0, 1.0), q2 = circPt(A.a0, 1.06);
-            C.line(q[0], q[1], q2[0], q2[1], { color: 'ink', width: 1 });
-            C.text(A.letter, ...circPt(A.a0, 1.14), { size: 13, color: 'ink', align: 'center', baseline: 'middle', math: true });
-            C.text(`${A.name}`, ...circPt((A.a0 + A.a1) / 2, 1.3), { size: 10.5, color: 'muted', align: 'center', baseline: 'middle' });
-          }
-          C.line(0, 0, 0, 1, { color: 'muted', width: 1, dash: [3, 4] });
-          C.dot(0, 0, { r: 3.5, color: 'ink', label: 'O', labelPos: 'sw' });
-          if (st >= 2) NEWTON.arcs.forEach((A, i) => { const c = arcCentroid(i); C.dot(c[0], c[1], { r: 3, color: 'ink' }); if (st === 2) C.text(LET[i], c[0] * 0.86, c[1] * 0.86, { size: 13, color: 'ink', align: 'center', baseline: 'middle', math: true }); });
-          if (st >= 3) wts.forEach((wv, i) => { if (wv <= 0) return; const c = arcCentroid(i), r = 0.075 * Math.sqrt(wv); C.circle(c[0], c[1], r, { fill: specRGB(NEWTON.arcs[i].rep, 0.5), fillAlpha: 0.7, color: 'ink', width: 1 }); C.text(LET[i], c[0] * 0.72, c[1] * 0.72, { size: 12, color: 'ink', align: 'center', baseline: 'middle', math: true }); });
-          if (st >= 4 && mx.sw > 0) {
-            const Y = circPt(mx.ang, 1);
-            C.line(0, 0, Y[0], Y[1], { color: 'ink', width: 1.4, dash: [5, 4] });
-            C.line(0, 0, mx.Z[0], mx.Z[1], { color: 'ink', width: 2.8 });
-            C.dot(Y[0], Y[1], { r: 5, hollow: true, color: 'ink', label: 'Y', labelPos: 'n' });
-            C.dot(mx.Z[0], mx.Z[1], { r: 6.5, color: 'gold', label: 'Z', labelPos: 'ne' });
-          }
-          // the monochord
-          strings.forEach(([len, fr, nm], i) => {
-            const y = 7.5 - i;
-            Mo.line(0.05, y, 0.05 + 0.9 * len, y, { color: 'accent', width: 5, alpha: 0.85 });
-            Mo.text(`${nm}  ${fr}`, 1.0, y, { size: 11, color: 'ink', align: 'left', baseline: 'middle' });
-          });
-          for (let k = 0; k < 7; k++) { const y = 7.0 - k; Mo.text(`arc ${NEWTON.arcs[k].letter}${NEWTON.arcs[(k + 1) % 7].letter}: printed ${printed[k]}`, 1.45, y, { size: 10.5, color: printed[k] === derived[k] ? 'muted' : 'red', align: 'right', baseline: 'middle' }); }
-          Mo.text('the fifth arc: printed 1/16, lengths 3/4 : 2/3 give 1/10', 1.45, -0.2, { size: 10, color: 'red', align: 'right' });
-          const at = arcAt(mx.ang), xyM = mx.sw > 0 ? xyOf(mixXYZ(wts)) : [1 / 3, 1 / 3];
-          info = { mx, at, dm: dominant(xyM[0], xyM[1]), ex: wts.every((q, i) => Math.abs(q - ex[i]) < 1e-9), OY: 1 };
-        });
-        v.legend([['ink', 'circle, centres of gravity, $OZ$ and $OY$'], ['gold', '$Z$']]);
-        v.readout(() => {
-          const A = NEWTON.arcs[info.at.i];
-          return `rule applied: $Y$ is ${v.fix(100 * info.at.u, 0)}% of the way through the ${A.name} arc (${A.letter} → ${NEWTON.arcs[(info.at.i + 1) % 7].letter}), $|OZ|/|OY|=${v.fix(info.mx.full, 3)}$${info.ex ? '\nNewton’s reading of this example: $Y$ between $E$ and $F$, nearer $E$ (here ' + v.fix(100 * info.at.u, 0) + '% of the way: nearer $E$ ✓); $OZ$ “a little less than one half” of $OY$ (here ' + v.fix(info.mx.full, 2) + ')' : ''}\nmodern calculation for narrow-band lights at the conventional wavelengths: ${info.dm.l ? `${info.dm.purple ? 'complementary' : 'dominant'} wavelength ${v.fix(info.dm.l, 0)} nm (${colourName(info.dm)}), excitation purity ${v.fix(info.dm.purity, 2)}` : 'white'}`;
-        });
-      },
-    },
-    // ------------------------------------------------------------------ 3.13
-    {
-      num: '3.13',
-      kind: 'Paper',
-      name: 'Zur Farbenlehre (Theory of Colours)',
-      paper: { authors: 'Johann Wolfgang von Goethe', year: 1810, title: 'Zur Farbenlehre',
-               venue: 'Tübingen: J. G. Cotta, 1810 (2 vols. and an atlas of plates)', url: 'https://archive.org/details/ZurFarbenlehre00GoetA' },
-      introduces: ['art-3.11'],
-      credit: 'Johann Wolfgang von Goethe, 1810',
-      statement: String.raw`Goethe’s *Zur Farbenlehre* (1810) rejects Newton’s conclusion that white light is a mixture of coloured rays, and builds a theory of colour on observation with the prism and on the experience of the eye. Its centre is the prism experiment with cards: seen through a prism, a white area on a dark ground is not coloured in its interior but shows coloured edges, yellow and red at one boundary, blue and violet at the other; the colours widen as the card is moved away from the prism, until the fringes of a narrow white stripe meet and overlap into green; and a narrow dark stripe on a white ground gives the opposite, a purple. Goethe concluded that colours arise at the boundary of light and dark, in a turbid or displaced medium, and not in the light itself.
-
-In modern terms the observations are right and the explanation is Newton’s: a prism displaces the images of the different wavelengths by different amounts, and the colour at each point is the sum of those images that land there. That is what the calculation below does with the dispersion of a real glass.`,
-      idea: String.raw`In 1791 Goethe borrowed a prism to look at a wall and saw colour only where the wall met a dark edge, which contradicted what he had read of Newton’s experiments, where light enters through a small hole and the spectrum is seen at a distance. His book collects the observations in orderly series, with a systematic chapter on edge phenomena, and sets them against Newton’s account (art-3.12), which he attacked at length; it also contains his sensory-moral theory of colour effects, which is of a different kind and still of interest to painters. The new idea he introduced here, the edge colours as a primary phenomenon (art-3.11), is not in conflict with the physics: it is its first-order consequence for extended scenes, and Newton’s own diagram can be used to predict where the fringes overlap.`,
-      caption: String.raw`Two cards, a black one with a white stripe (above) and a white one with a black stripe (below), as in Goethe’s experiments, seen through a prism. Move the card away (the distance slider: the fringes grow in proportion to the distance) or narrow the stripe: the white stripe turns green in the middle, the black one purple-violet. Switch on Newton’s account to see each colour’s own displaced image under the card; switch the prism off to see the cards as they are. This is a model calculation with the dispersion of N-BK7 glass, not a reproduction of Goethe’s plates.`,
-      deps: ['art-3.1', 'art-3.12'],
-      refs: [],
-      tags: ['Goethe', 'colour theory', 'prism'],
-      scope: String.raw`Linear model of a thin prism and equal-energy lighting, as in art-3.11. What Goethe reported (yellow-red and blue-violet edges, green from a narrowed white stripe, purple from a narrowed dark one, the growth of the fringes with distance) is taken from secondary descriptions of the experiments, not checked against the 1810 text.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Theory_of_Colours' },
-      viz(v) {
-        const w = v.slider('stripe width $w$ (on the card)', 0.1, 2.5, 0.2, { step: 0.01 });
-        const dist = v.slider('distance of the cards from the prism', 1, 12, 5, { step: 0.05 });
-        const off = v.toggle('prism removed', false);
-        const nwt = v.toggle('show Newton’s account', true);
-        const A = v.stage({ x: [-5, 5], y: [0, 2.2], axes: false, height: 210, weight: 1, title: 'the two cards, seen directly' });
-        const B = v.stage({ x: [-5, 5], y: [0, 2.2], axes: false, height: 210, weight: 1, title: 'the same cards through the prism' });
-        const Nw = v.stage({ x: [-5, 5], y: [0, 14], axes: false, height: 230, full: true, title: 'Newton’s account: the images in eight colours (upper block: black card, white stripe; lower block: white card, black stripe)' });
-        const P1 = (x) => (Math.abs(x) <= w.value / 2 ? 1 : 0), P2 = (x) => (Math.abs(x) <= 4.2 && Math.abs(x) > w.value / 2 ? 1 : 0);
-        const wl = xyz2lin(prismXYZ(() => 1, 0, 0, 1));
-        const show = (c) => { let l = xyz2lin(c).map((u, i) => Math.max(0, u / wl[i])); const m = Math.max(...l); if (m > 1) l = l.map((u) => u / m); return lin2srgb(l); };
-        let info = {};
-        v.render(() => {
-          Nw.el.style.display = nwt.value ? '' : 'none';
-          const D = off.value ? 0 : 0.1 * dist.value, N = 200, dx = 10 / N, lams = [700, 650, 600, 550, 500, 460, 430, 400];
-          const wall = [26, 26, 32];
-          for (let k = 0; k < N; k++) {
-            const x = -5 + (k + 0.5) * dx;
-            A.rect(-5 + k * dx, 1.2, -5 + (k + 1) * dx + 0.003, 2.1, { fill: P1(x) ? [240, 240, 240] : Math.abs(x) <= 4.2 ? [10, 10, 12] : wall, stroke: false, fillAlpha: 1 });
-            A.rect(-5 + k * dx, 0.1, -5 + (k + 1) * dx + 0.003, 1.0, { fill: P2(x) ? [240, 240, 240] : wall, stroke: false, fillAlpha: 1 });
-            B.rect(-5 + k * dx, 1.2, -5 + (k + 1) * dx + 0.003, 2.1, { fill: D === 0 ? (P1(x) ? [240, 240, 240] : [10, 10, 12]) : show(prismXYZ(P1, x, D, 1)), stroke: false, fillAlpha: 1 });
-            B.rect(-5 + k * dx, 0.1, -5 + (k + 1) * dx + 0.003, 1.0, { fill: D === 0 ? (P2(x) ? [240, 240, 240] : wall) : show(prismXYZ(P2, x, D, 1)), stroke: false, fillAlpha: 1 });
-          }
-          if (nwt.value) lams.forEach((l, i) => {
-            const sh = D * prismShift(l), col = specRGB(l, 0.5);
-            const y1 = 13 - i * 0.8, y2 = 6 - i * 0.8;
-            Nw.line(-5, y1, 5, y1, { color: 'faint', width: 0.5, alpha: 0.5 }); Nw.line(-5, y2, 5, y2, { color: 'faint', width: 0.5, alpha: 0.5 });
-            Nw.line(-w.value / 2 + sh, y1, w.value / 2 + sh, y1, { color: col, width: 8, alpha: 0.95 });
-            for (const [a, b] of [[-4.2, -w.value / 2], [w.value / 2, 4.2]]) Nw.line(a + sh, y2, b + sh, y2, { color: col, width: 8, alpha: 0.95 });
-          });
-          const c1 = prismXYZ(P1, 0, D, 1), c2 = prismXYZ(P2, 0, D, 1);
-          info = { D, d1: xyzToDom(c1), d2: xyzToDom(c2), narrow: w.value < D };
-        });
-        v.legend([['accent', 'cards and their images']]);
-        v.readout(() => info.D === 0 ? 'no prism: white stripe on black and black stripe on white, no colour anywhere' : `fringe width $\\Delta=${v.fix(info.D, 2)}$ card units (it grows with the distance), stripe width $${v.fix(w.value, 2)}$: ${info.narrow ? 'the fringes overlap' : 'the fringes are separate and the middle keeps its own colour'}\nmiddle of the white stripe: ${colourName(info.d1)}${info.d1.l ? ` (dominant ${v.fix(info.d1.l, 0)} nm)` : ''} · middle of the black stripe: ${colourName(info.d2)}${info.d2.l ? ` (${info.d2.purple ? 'complementary ' : ''}${v.fix(info.d2.l, 0)} nm)` : ''} · Goethe reported green and purple for the narrow stripes`);
-      },
-    },
+    // Source-audited optics 3.12
+    opticksPaper,
+    // Source-audited optics 3.13
+    goethePaper,
   ],
 };

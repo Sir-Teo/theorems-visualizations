@@ -89,22 +89,11 @@ export function guessDistribution(model, syms, k) {
   for (let i = 0; i < syms.length; i++) { const ord = guessOrder(model, Array.from(syms.subarray(Math.max(0, i - k), i)), k); q[ord.indexOf(syms[i])]++; }
   return q.map((x) => x / syms.length);
 }
-/** Shannon eq. 17: the lower bound requires ideal probability-ranked guesses. Input is guess-number frequencies q[0..26] (q[i] = freq. of guess number i+1). */
+/** Shannon's bounds (his eq. 17) from guess-number frequencies q[0..26] (q[i] = freq. of guess number i+1). */
 export function shannonBounds(q) {
   let up = 0, lo = 0;
   for (let i = 0; i < q.length; i++) { if (q[i] > 0) up -= q[i] * log2(q[i]); lo += (i + 1) * (q[i] - (q[i + 1] || 0)) * log2(i + 1); }
   return { upper: up, lower: lo };
-}
-/** Exact ideal-predictor guess profile of the empirical order-k conditional source, not a held-out predictor. */
-export function idealGuessProfile(model, k) {
-  const c = model.counts[k], q = new Array(27).fill(0); let total = 0, entropy = 0;
-  for (let j = 0; j < c.length; j += 27) {
-    const row = Array.from(c.subarray(j, j + 27)).sort((a, b) => b - a), mass = row.reduce((a, b) => a + b, 0);
-    if (!mass) continue;
-    total += mass;
-    row.forEach((x, i) => { q[i] += x; if (x) entropy -= x * Math.log2(x / mass); });
-  }
-  return { q: q.map((x) => x / total), entropy: entropy / total };
 }
 /** N-gram letter entropies F1, F2, F3 (bits per letter, 27 symbols) estimated from a symbol sequence. */
 export function letterEntropies(syms) {
@@ -120,46 +109,53 @@ export function letterEntropies(syms) {
 export function wordModel(tokens, maxN = 4) {
   const cnt = new Map(); for (const w of tokens) cnt.set(w, (cnt.get(w) || 0) + 1);
   const toks = tokens.map((w) => (cnt.get(w) === 1 ? '<unk>' : w));
-  const vocab = new Set([...toks, '<unk>']); const grams = [], contexts = [];
-  for (let n = 1; n <= maxN; n++) {
-    const m = new Map(), totals = new Map();
-    for (let i = n - 1; i < toks.length; i++) {
-      const h = toks.slice(i - n + 1, i).join(' '), k = (h ? h + ' ' : '') + toks[i];
-      m.set(k, (m.get(k) || 0) + 1); totals.set(h, (totals.get(h) || 0) + 1);
-    }
-    grams.push(m); contexts.push(totals);
-  }
-  return { toks, vocab, V: vocab.size, N: toks.length, grams, contexts, maxN };
+  const vocab = new Set(toks); const grams = [];
+  for (let n = 1; n <= maxN; n++) { const m = new Map(); for (let i = n - 1; i < toks.length; i++) { const k = toks.slice(i - n + 1, i + 1).join(' '); m.set(k, (m.get(k) || 0) + 1); } grams.push(m); }
+  return { toks, vocab, V: vocab.size, N: toks.length, grams, maxN };
 }
 const hist = (t, i, len) => t.slice(Math.max(0, i - len), i);
-/** Normalized next-word probability; only contexts with a recorded successor count in the denominator. */
+/** Probability of t[i] given the previous words under order n, mode 'add' (add-lambda) or 'interp' (fixed-weight linear interpolation). */
 export function wordProb(M, t, i, n, mode, lam) {
-  n = Math.min(n, M.maxN, i + 1);
-  const w = M.vocab.has(t[i]) ? t[i] : '<unk>';
-  const row = (o) => {
-    const h = hist(t, i, o - 1).map((x) => M.vocab.has(x) ? x : '<unk>').join(' ');
-    return [M.grams[o - 1].get((h ? h + ' ' : '') + w) || 0, M.contexts[o - 1].get(h) || 0];
-  };
   if (mode === 'add') {
-    const [c, ch] = row(n), d = ch + lam * M.V;
-    return d ? (c + lam) / d : 0;
+    const h = hist(t, i, n - 1).join(' '), c = M.grams[n - 1].get((h ? h + ' ' : '') + t[i]) || 0, ch = n === 1 ? M.N : (M.grams[n - 2].get(h) || 0);
+    return (c + lam) / (ch + lam * M.V);
   }
-  const base = [0.02, 0.2, 0.3, 0.3, 0.3]; let p = base[0] / M.V, wsum = base[0];
-  for (let o = 1; o <= n; o++) { const [c, ch] = row(o); if (ch) { p += base[o] * c / ch; wsum += base[o]; } }
+  const base = [0.02, 0.2, 0.3, 0.3, 0.3].slice(0, n + 1); let p = 0, wsum = 0;
+  for (let o = 0; o <= n; o++) {
+    let pm; if (o === 0) pm = 1 / M.V; else {
+      const h = hist(t, i, o - 1).join(' '), ch = o === 1 ? M.N : (M.grams[o - 2].get(h) || 0);
+      if (!ch) continue; pm = (M.grams[o - 1].get((h ? h + ' ' : '') + t[i]) || 0) / ch;
+    }
+    p += base[o] * pm; wsum += base[o];
+  }
   return p / wsum;
 }
 export function perplexity(M, test, n, mode, lam) {
   const t = test.map((w) => (M.vocab.has(w) ? w : '<unk>')); let s = 0;
-  for (let i = 0; i < t.length; i++) { const p = wordProb(M, t, i, n, mode, lam); if (!p) return Infinity; s -= Math.log2(p); }
-  return t.length ? Math.pow(2, s / t.length) : NaN;
+  for (let i = 0; i < t.length; i++) s -= Math.log2(Math.max(1e-300, wordProb(M, t, i, n, mode, lam)));
+  return Math.pow(2, s / t.length);
 }
-/** Sample the same smoothed distribution used for perplexity, including the explicit unknown token. */
-export function generateWords(M, n, len, r, mode = 'interp', lam = 0.05) {
-  const out = [], vocab = [...M.vocab];
+/** Sample `len` words from the order-n model, backing off to shorter contexts when the context was never seen; r() uniform. */
+export function generateWords(M, n, len, r) {
+  const out = []; const nextOf = new Map();
+  const g = M.grams[n - 1]; // build successor lists lazily per context
+  const succ = (h, order) => {
+    const key = order + '|' + h; if (nextOf.has(key)) return nextOf.get(key);
+    const m = M.grams[order - 1]; const lst = []; const pre = h ? h + ' ' : '';
+    if (order === 1) for (const [w, c] of m) lst.push([w, c]);
+    else { const prefix = pre; for (const [k, c] of m) if (k.startsWith(prefix) && k.indexOf(' ', prefix.length) < 0) lst.push([k.slice(prefix.length), c]); }
+    nextOf.set(key, lst); return lst;
+  };
+  void g;
   for (let i = 0; i < len; i++) {
-    let u = r(), chosen = vocab[vocab.length - 1];
-    for (const w of vocab) { if ((u -= wordProb(M, [...out, w], i, n, mode, lam)) <= 0) { chosen = w; break; } }
-    out.push(chosen);
+    let w = null;
+    for (let o = n; o >= 1 && !w; o--) {
+      const h = out.slice(Math.max(0, out.length - (o - 1))).join(' ');
+      if (out.length < o - 1) continue;
+      const lst = succ(h, o).filter(([x]) => x !== '<unk>'); const tot = lst.reduce((s, [, c]) => s + c, 0);
+      if (!tot) continue; let u = r() * tot; for (const [x, c] of lst) { u -= c; if (u <= 0) { w = x; break; } } w = w || lst[lst.length - 1][0];
+    }
+    out.push(w || 'the');
   }
   return out;
 }

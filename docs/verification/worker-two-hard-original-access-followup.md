@@ -1,0 +1,23 @@
+# Two outstanding original bodies: bounded access follow-up
+
+Neither MATHBIO3.14's Kolmogorov 1936 source nor CIRC4.17's Wanlass–Sah 1963 source is closed by this investigation. It makes no content, prerequisite, model, flag or global-ledger change. The prior original-access reports were read before looking for new legitimate locators. Own responses, bibliographic records, PDFs and actual rendered pixels are retained under `/tmp/atlas-worker-two/hard-original-sources/`; `checkpoint.md` records the investigation boundaries.
+
+## Kolmogorov: two pages of an authorized translation
+
+The newly located publisher chapter is A. N. Kolmogoroff, “On Volterra's theory of the struggle for existence,” in Scudo–Ziegler's *The Golden Age of Theoretical Ecology* (1978), pp.287–292, [DOI10.1007/978-3-642-50151-7_13](https://doi.org/10.1007/978-3-642-50151-7_13). This is a six-page translation locator, distinct from the expanded 1972 paper in the selected works. The actual Crossref record is saved as `kolmogorov1978-crossref.json`.
+
+The ordinary public [Springer preview](https://page-one.springer.com/pdf/preview/10.1007/978-3-642-50151-7_13) supplies exactly two pages, printed287–288. `kolmogorov1978-preview.pdf` is273,154bytes, SHA256 `027c54ad0229813203880faa1c834090fee4b261e7f7dc662dd6466e3e2f2c1d`; its provenance JSON, extracted text and both PNGs are retained. Both actual page images were personally inspected. They give the differential-equation setup and qualitative hypotheses, including radial-direction derivatives dK1/dS<0 and dK2/dS>0, cross/own-predator derivatives and boundary thresholds with C<B. The remaining pages289–292 and conclusion are absent, so this partial body cannot certify the gallery's complete sufficient-condition package or historical attribution.
+
+The ordinary full publisher chapter-PDF request returns subscription HTML. An exact public archived-PDF index query returned an empty list. The authorized Google Books reader for bookID86LoCAAAQBAJ also showed287–288, with an explicit unavailable/viewing-limit boundary afterward; the research tab was closed there. Internet Archive title lookup found two book records; inspected metadata marks the body PDF/OCR/images private or access-restricted. No private body or alternate-session viewing-limit workaround was requested.
+
+## Wanlass–Sah: complete reprint locator, no reprint body
+
+A new authorized reprint locator is “Nanowatt Logic Using Field-Effect Metal-Oxide Semiconductor Triodes,” in Sze's *Semiconductor Devices: Pioneering Papers* (1991), pp.637–638, [DOI10.1142/9789814503464_0081](https://doi.org/10.1142/9789814503464_0081). Its actual Crossref record, saved as `wanlass1991-crossref.json`, confirms the authors, two-page span and ISBNs9789810202095/9789814503464. The normal publisher PDF request returned403, and its exact public archived-PDF index query returned no copy. A public ISBN-metadata API request returned429 and was stopped. This is bibliographic evidence of a reprint, not a read reprint.
+
+A separately indexed PDF locator at `picture.iczhiku.com/resource/ieee/WYkFutIepdZJRBNN.pdf` returned a381-byte XML403 AccessDenied response, saved as such. Its exact public archive index was empty. No alternate bucket hostname, access-control request or authentication workaround was attempted.
+
+An actual supporting author account, Sah's 1988 [“Evolution of the MOS Transistor”](https://www.dejazzer.com/ece723/resources/Evolution_of_the_MOS_transistor.pdf), is available as a complete47-page public teaching copy: `sah-mos-evolution.pdf`,4,581,668bytes, SHA256 `cb0db46b3bc6f6180d43c3631fd6f72547d7d00ed5eb384612a0381d0140d84d`. Reading was bounded to its introduction and relevant printed1295–1296/PDF16–17 plus bibliographic lookup. Own actual pixels for the two relevant pages were inspected. Its Figure7 explicitly combines two figures from the1963 extended abstract; it does not reproduce the complete two-page text. The retrospective is therefore not substituted for the original-body obligation.
+
+The account identifies another legitimate original-draft locator, Wanlass–Sah, Fairchild Technical Report98, January23,1963, with the title ending “(MOSTs)” (reference91). Exact report/title searches and the actual Computer History Museum bibliography lead to records and the IEEE abstract locator, not a retrieved report body. No complete draft was obtained. The later1964 Moore–Sah–Wanlass chapter is a different paper and is not treated as the1963 original.
+
+The remaining useful prerequisite for either source closure is an openly available complete original or legitimate complete reprint that can actually be read. Partial previews, later summaries, reproduced figures and catalog records do not satisfy that requirement.

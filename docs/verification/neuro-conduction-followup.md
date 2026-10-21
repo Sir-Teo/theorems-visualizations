@@ -1,0 +1,29 @@
+# Neuroscience unmyelinated conduction source follow-up
+
+Ready for central integration: **neuro-4.7**, still source-flagged until coordinator integration. Narrow adjacent4.5 qualifications add no closure count. The completed4.6 changes and dependencies are preserved.
+
+## Primary source actually read
+
+Hodgkin & Huxley1952, [full original45-page scan](https://isn.ucsd.edu/courses/beng207/reading/Hodgkin_Huxley_1952_jp.pdf). Read the complete relevant propagation development and numerical procedure, printed522–524, Eqs.27–33; results and benchmark through printed528, Eq.34/Fig.15; surrounding membrane-equation/rate/temperature discussion printed519 and membrane-versus-propagated comparisons printed525–527. Printed528 is physical PDF29 and was rendered and visually inspected. It directly states radius238µm (diameter476µm), Ra35.4Ωcm, Cm1µF/cm², K10.47ms⁻¹, calculated18.8m/s and measured21.2m/s at18.5°C. The equation gives18.7605m/s before rounding. The atlas's current finite-cable measurement is kept separate from this original benchmark; the entire45-page paper is available, but reading every unrelated section is not claimed.
+
+Local PDF `/tmp/atlas-neuro-hh1952.pdf`, SHA256 `29b26736b92fe03f7b84fed03e66b5c66656cda5b59b1ae236d8830a30e93310`; text `/tmp/atlas-neuro-hh1952.txt`; source render `/tmp/atlas-neuro-hh-propagation.png`.
+
+Complete [Gerstner et al. §3.3](https://neuronaldynamics.epfl.ch/online/Ch3.S3.html), both unmyelinated and myelinated sections with equations/captions, was also read. Saved HTML SHA256 `f9bd870f38e118b67839456c2adebe46c490591513ce70681dc70f966d816f2e`. Its unmyelinated travelling-front example has apparent typographical issues in the displayed speed/capacitance and resistance-scaling text; those formulas were not copied. The retained square-root derivation instead follows directly from the original1952 continuous cable equation by x→x√(d/d0), with fixed local membrane dynamics and corresponding propagating waves. The original1954 Hodgkin note was not read, and its former specific attribution was removed, together with unsupported evolutionary anecdotes.
+
+## Corrections
+
+- The exact similarity law explicitly requires fixed membrane/axial properties and corresponding travelling waves, without dominating launch/boundary effects. At fixed length, fourfold diameter gives16fold axoplasm volume. The axial-current argument now uses total current∝d² versus membrane area/capacitance per length∝d, avoiding the former inconsistent diameter cancellation.
+- New scoped `source-audit-conduction.shared.js` uses actual compartment centres and spatially interpolated virtual probes exactly1.0/2.4cm from the start. Temporal0mV crossings are interpolated within integration steps, replacing quantized threshold times and a half-cell position error.
+- All diameters receive the same500µA/cm² pulse on the physical first1mm for0.5ms. Backward-Euler voltage/exponential gate splitting has paired controls dx100µm/dt.02ms or dx50µm/dt.01ms. T changes only gating rates, not the entire voltage timescale. Nominal initial−65mV and chosen ELeak−54.387mV are explicit.
+- Missing arrivals return null/unresolved by80ms, not a biological failure verdict. Seven independently simulated finite-cable speeds yield a fit whose slope can differ from.5. A fitted4^slope is labelled as a fit prediction, not an additional measurement at4d. The slope1 guide is only a geometric reference, not an assertion that every myelin model has that slope. Views include the actual movie voltages, selected speed and both guides; full-precision diameter cache keys preserve the selected value.
+- Adjacent4.5: unequal electrotonic terminal lengths do not guarantee input-admittance equivalence merely because Σdᵢ³ᐟ²=d₀³ᐟ². The test gives two daughter lengths.2/1.2 with equal3/2 conductance halves: their load is½(tanh.2+tanh1.2), differing from tanh.7 by>.08; after a parent length.3, input admittance still differs by>.04 in units of G∞. Also made uniform Cm explicit for the transient equivalent-cylinder claim. No original Rall historical-priority audit or new queue closure is asserted.
+
+## Independent math and real controls
+
+`tests/reference-neuro-conduction.py` independently assembles the full semidiscrete HH chain and solves it with SciPy BDF, sparse finite-difference Jacobian, tight tolerances and an exact split at the pulse edge. Three cases cover d10/476 and T6.3/18.5; physical virtual probes and continuous root events are independent of the JavaScript time stepper. Fixture `tests/fixtures/neuro-conduction-reference.json`.
+
+`node --test tests/verification-neuro-conduction.test.mjs`: **6/6 groups pass**. Original Eq.34 units/rounding, virtual-probe interpolation, complete finite arrival times, missing-arrival handling, all four seven-diameter sweeps and the adjacent4.5 load counterexample are checked. Against the independent semidiscrete references, worst arrival error.1544→.0706→.0337ms and relative speed error<1.7%→.8%→.4% atdt.02/.01/.005ms (fixed dx100µm). These are observed numerical errors, not certified uniform bounds. Fine-grid fitted slopes are.501283 at6.3°C and.500420 at18.5°C; the selected476µm/18.5°C run gives18.59110m/s, distinct from the original18.8 benchmark.
+
+`node tests/verification-neuro-conduction.mjs`: **2/2 actual light/dark groups pass**. Both temperatures×both resolution selectors×diameter endpoints, finite probe counts, seven dots, exact cell centres, full plot/guide extents, and actual play/pause/restart are checked. No JavaScript/TeX errors. Screenshots `/tmp/atlas-neuro-conduction-{reference,large}-{light,dark}.png`; reference/dark visually inspected.
+
+Final scoped static check: **3 items(4.5/4.6/4.7),0 errors,0 warnings**; whitespace clean. Original4.7 prerequisites neuro-4.2/neuro-2.3 and other chapter dependencies preserved. Existing shared helpers untouched. Source flag remains true for coordinator integration; Wave5 remains pending.

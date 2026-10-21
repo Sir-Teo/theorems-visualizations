@@ -1,12 +1,13 @@
 // Solid Mechanics & Structures — Chapter 4, part b (items 4.6–4.10): residual stress, fatigue (S–N, Miner, Goodman), plastic collapse
 //
-// The fatigue pictures use the illustrative S–N model of ch04.shared.js (a straight line on log–log axes between 0.9 Su at 10^3 cycles and
-// the endurance strength Se; Se = 0.5 Su for steel at 10^6 cycles, 0.3 Su at 5·10^8 cycles for aluminium): a textbook idealisation, not test data;
-// scatter is a seeded log-normal model. Credits checked: Miner 1945 (Crossref 10.1115/1.4009458), Drucker–Greenberg–Prager 1951 (AMS review record).
-// From memory (flagged verify): Wöhler 1850s–70, Basquin 1910, Palmgren 1924, Goodman 1899 (Wikipedia: book "Mechanics Applied to Engineering"),
-// Gerber, Soderberg, Gvozdev, Kazinczy, Marco–Starkey (the nonlinear damage model of 4.8 is a generic illustration with invented exponents).
+// Fatigue forms reviewed against the COMSOL Fatigue Module 6.3 authored implementation documentation.
+// All fatigue strengths and simulated scatter here are chosen illustrations, not fitted alloy data.
+// Limit theorems are reviewed against the authored Bower derivations (4.10).
 
-import { num as num0, rad, SN, snStress, snLife, cyc, curveOf } from './ch04.shared.js';
+import {collapseStatic,collapseMechanism} from './source-audit-collapse.js';
+
+import { num as num0, rad, SN, cyc, curveOf } from './ch04.shared.js';
+import {fatigueSlope,fatigueStress,fatigueLife,fatigueBatch,minerBlocks,meanStressBoundary,meanStressState} from './source-audit-fatigue.js';
 
 const num = (x, d = 1) => num0(x, d).replace('-', '−');
 void curveOf;
@@ -23,7 +24,7 @@ export default {
       statement: String.raw`Let a structure in which different parts are forced to deform together (a statically indeterminate set of bars, a beam, a plate with a hole) be loaded so that some parts yield and others stay elastic, and then be completely unloaded. Unloading is elastic and linear (4.5), so the stresses after unloading are the stresses at the peak load **minus** the purely elastic response to the same load. They do not vanish: the **residual stresses** form a self-equilibrated field (zero resultant force and moment), and they are opposite in sign to the plastic strains that caused them: the parts that yielded in tension are left in compression, the elastic parts in tension.`,
       idea: String.raw`Compatibility (1.10) forces all bars to share one strain, and equilibrium fixes the total force. Beyond first yield the bars that yielded carry the constant force $\sigma_yA$ and the elastic ones carry the rest. On unloading every bar recovers along a line of slope $E$ (4.5) by the *same* strain, so the stress drop is the same in all bars of equal stiffness, but they started from different stresses; the differences remain. As long as no bar yields again in reverse, residual $=$ peak $-$ elastic solution, and the sum of the forces is still zero.`,
       caption: String.raw`Three bars of equal area and stiffness connect two rigid plates; the two outer bars yield at $250$ MPa and the centre bar (a stronger alloy) at $450$ MPa. Pull to a peak strain (in units of the outer bars' yield strain) and then reduce the load with the second slider: at $0\%$ load the bars are left with locked-in stresses although nothing pulls on them (blue tension, red compression). The plot shows each bar's path in the $\sigma$–$\varepsilon$ plane. Pull to less than $\varepsilon_y$ and nothing is left over; pull far enough and the centre bar yields too and the residual stresses change again.`,
-      deps: ['solid-4.5','solid-1.10','solid-8.3','mech-6.4'],
+      deps: ['solid-4.5', 'solid-1.10'],
       refs: ['Gere–Goodno §2.12'],
       tags: ['plasticity', 'residual stress'],
       scope: String.raw`Rate-independent elastic–perfectly plastic bars with a common Young's modulus, small strains, no reverse yielding unless the plot shows it. The syllabus sketch (three bars of unequal length) is replaced by three equal-length bars of different strength: the mechanism (an elastic part forced to carry the unloading of a plastically deformed part) is the same.`,
@@ -83,55 +84,41 @@ export default {
       num: '4.7',
       kind: 'Phenomenon',
       name: 'Fatigue: S–N curves and the endurance limit',
-      statement: String.raw`A metal part subjected to a repeated stress of amplitude $S$ well below its yield strength can still fail after $N$ cycles. Plotted as stress amplitude $S$ against the number of cycles to failure $N$ (the **S–N** or Wöhler curve), the data fall on a falling curve that is nearly straight on log–log axes (Basquin's law $S=S_f'(2N)^b$). Some steels show an approximately flat regime near $10^6$–$10^7$ cycles at the **endurance limit** $S_e$: below it, the idealized model predicts unlimited life; a finite run-out test does not prove this. Most non-ferrous metals, aluminium among them, show no such limit, and are quoted by their **fatigue strength** at a stated number of cycles (often $5\times10^8$). The scatter in life at fixed amplitude can be large; the example uses an explicitly chosen log-life spread.`,
-      idea: String.raw`Cyclic slip builds persistent bands, from which microcracks start at the surface and grow a little every cycle until the remaining section fails in one overload. A high stress amplitude produces a crack in a few cycles, a lower one takes many orders of magnitude longer. Under some conditions small fatigue cracks can arrest; an endurance plateau is an empirical idealization rather than a universal guarantee for steel. The life depends on the stress amplitude, not on the peak stress alone, as Wöhler found with railway axles in the nineteenth century.`,
-      caption: String.raw`Choose the material and move the amplitude slider: the dots are ten simulated specimens tested at that amplitude (seeded log-normal scatter, **model data**, press Resample for another batch). For steel the amplitude can be pushed below the endurance limit, and the hollow dots at $10^7$ cycles are run-outs (the test is stopped without failure). For aluminium the curve keeps falling. On the right, the fully reversed load history of one test.`,
+      statement: String.raw`An S–N curve relates constant stress amplitude $S=(\sigma_{\max}-\sigma_{\min})/2$ to cycles to fatigue failure. In the high-cycle regime, a Basquin model is $S=\sigma_f'(2N)^b$, with $b<0$: $N$ counts full cycles, while $2N$ counts reversals. A straight segment on log–log axes can be joined to a horizontal endurance plateau. Other idealisations keep decreasing. These are models for specified loading and material conditions, rather than a guarantee that any metal below a particular amplitude lasts forever.`,
+      idea: String.raw`On a power-law segment, reducing the amplitude multiplies the predicted life. The slope and an anchor determine that multiplier. A plateau instead assigns no finite fatigue life below its threshold within the idealised model. In an actual test, surviving to a stopping time is a **run-out**: an observation censored at that time, not a measured failure life or proof of unlimited life. Stresses above the top of the supplied high-cycle curve need another model; this picture leaves that life undefined.`,
+      caption: String.raw`Choose a material-like parameter set and a stress amplitude. The dots are ten **artificial specimens**, with a chosen normal scatter of $0.25$ decades in log life; Resample changes the seeded draw. Hollow dots and arrows denote tests stopped at $10^7$ cycles for the steel-like set or $10^9$ for the aluminium-like set, including late simulated lives for either set. Above the curve's top stress there is no life estimate or simulated batch. The right panel shows the fully reversed cycle, $\sigma=S\sin(2\pi t)$.`,
       deps: ['solid-1.3'],
-      refs: ['Roylance, MIT Fatigue, pp.1–4; GeorgiaTech primary Ni-fatigue dissertation, §4.2, Eq.(4.1), p.62'],
+      refs: ['COMSOL Fatigue Module 6.3, Stress Life Models; Cycle Cutoff', 'NIST/SEMATECH e-Handbook §8.1.3.1, Type I right censoring'],
       tags: ['fatigue', 'S-N curve'],
-      scope: String.raw`High-cycle fatigue of smooth specimens under fully reversed stress ($R=-1$). The curves are an illustrative idealisation: $S=0.9S_u$ at $10^3$ cycles, $S_e=0.5S_u$ at $10^6$ cycles for steel ($S_u=490$ MPa), $0.3S_u$ at $5\times10^8$ cycles for aluminium ($S_u=310$ MPa); real curves depend on surface, size, temperature and environment.`,
-      credit: 'Wöhler stress–life curves and the Basquin power-law model',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/S-N_curve' },
+      scope: String.raw`Uniaxial, fully reversed loading ($R=-1$); chosen smooth-specimen models, not measurements or a fit to a named alloy. Both curves pass through $(10^3,0.9S_u)$ and $(N_k,S_e)$. The steel-like set uses $S_u=490$ MPa, $S_e=245$ MPa, $N_k=10^6$ and a plateau. The aluminium-like set uses $S_u=310$ MPa, $S_e=93$ MPa, $N_k=5\times10^8$ and a continuing power law. The stress-life construction does not evaluate plastic deformation; a chosen curve value is not evidence of elastic behaviour at that stress. The scatter is chosen for demonstration and does not quantify reliability.`,
+      verify: false,
+      links: { source: 'https://doc.comsol.com/6.3/doc/com.comsol.help.fatigue/fatigue_ug_sme.4.20.html', wikipedia: 'https://en.wikipedia.org/wiki/S-N_curve' },
       viz(v) {
-        const mat = v.select('material', [{ value: 'steel', label: 'steel' }, { value: 'al', label: 'aluminium' }], 'steel');
-        const Sa = v.slider('stress amplitude $S$ (MPa)', 80, 440, 300, { step: 1 });
-        let seed = 7;
-        v.button('Resample', () => { seed++; });
-        const A = v.stage({ x: [1e3, 1e9], y: [0, 480], xlog: true, axes: 'box', gutter: true, height: 380, xlabel: 'cycles to failure N', ylabel: 'stress amplitude S (MPa)', title: 'S–N curve and ten simulated tests' });
-        const B = v.stage({ x: [0, 4], y: [-480, 480], axes: 'box', gutter: true, height: 380, xlabel: 'time (cycles)', ylabel: 'σ (MPa)', title: 'the load history', xticks: [0, 1, 2, 3, 4] });
-        v.legend([['accent', 'S–N curve'], ['gold', 'failed specimen', { dot: true }], ['muted', 'run-out (no failure)', { dot: true }]]);
-        const tests = (m, S) => {
-          const r = v.rng(seed * 1000 + Math.round(S)), Nm = snLife(m, S), out = [];
-          for (let i = 0; i < 10; i++) {
-            const z = r.normal(), n = Number.isFinite(Nm) ? 10 ** (Math.log10(Nm) + 0.25 * z) : Infinity;
-            const stop=m.limit?1e7:1e9;out.push(n>stop?{N:stop,run:true}:{N:n,run:false});
-          }
-          return { Nm, out };
-        };
-        v.render(() => {
-          const m = SN[mat.value], S = Sa.value;
-          const sample=tests(m,S);A.setView([Math.min(1e3,...sample.out.map(o=>o.N))*.8,1.3e9],[0,480]);
-          A.fn((N) => snStress(m, N), { color: m.color, width: 3, domain: [1e3, 1e9], n: 400 });
-          if (m.limit) { A.hline(m.Se, { color: 'muted', width: 1, dash: [5, 4] }); A.text(`endurance limit S_e = ${m.Se} MPa`, 8e8, m.Se + 14, { size: 12, color: 'muted', align: 'right' }); }
-          else { A.dot(m.Nk, m.Se, { r: 4, color: 'muted', hollow: true }); A.text('strength at 5·10⁸ cycles', 4e8, m.Se - 28, { size: 12, color: 'muted', align: 'right' }); }
-          A.hline(S, { color: 'gold', width: 1.2, dash: [4, 4] });
-          const t = tests(m, S);
-          t.out.forEach((o, i) => {
-            const y = S + (i % 2 ? 1 : -1) * 0; // all on the amplitude line
-            A.dot(o.N, y, { r: 5.5, color: o.run ? 'muted' : 'gold', hollow: o.run });
-            if (o.run) A.arrow(o.N * 1.2, y, o.N * 5, y, { color: 'muted', width: 1.4, head: 6 });
-          });
-          A.vline(1e3, { color: 'faint', width: 1 });
-          // waveform
-          const Ss = Math.min(S, 470);
-          B.fn((x) => Ss * Math.sin(2 * Math.PI * x), { color: 'gold', width: 2.4, domain: [0, 4], n: 200 });
-          B.hline(m.Se, { color: 'muted', width: 1, dash: [5, 4] }); B.hline(-m.Se, { color: 'muted', width: 1, dash: [5, 4] });
-          B.text(m.limit?'±S_e':'±S(N_k)', 3.95, m.Se + 24, { size: 12, color: 'muted', align: 'right' });
+        const mat = v.select('chosen parameter set', [{value:'steel',label:'steel-like'}, {value:'al',label:'aluminium-like'}], 'steel');
+        const Sa = v.slider('stress amplitude $S$ (MPa)',80,440,300,{step:1});
+        let seed=7, info;
+        v.button('Resample',()=>{seed++;});
+        const A=v.stage({x:[500,2e9],y:[0,480],xlog:true,axes:'box',gutter:true,height:380,xlabel:'cycles N',ylabel:'stress amplitude S (MPa)',title:'chosen S–N model and artificial specimens'});
+        const B=v.stage({x:[0,4],y:[-480,480],axes:'box',gutter:true,height:380,xlabel:'time (cycles)',ylabel:'σ (MPa)',title:'fully reversed loading',xticks:[0,1,2,3,4]});
+        v.legend([['accent','chosen S–N curve'],['gold','simulated failure',{dot:true}],['muted','run-out at test stop',{dot:true}]]);
+        const batch=()=>{const m=SN[mat.value],r=v.rng(seed*1000+Math.round(Sa.value));return fatigueBatch(m,Sa.value,Array.from({length:10},()=>r.normal()),m.limit?1e7:1e9);};
+        v.render(()=>{
+          const m=SN[mat.value],S=Sa.value,t=batch();
+          const minimum=Math.min(500,...t.specimens.map(o=>o.N*.7));
+          A.setView([minimum,2e9],[0,480]);
+          A.fn(N=>fatigueStress(m,N),{color:'accent',width:3,domain:[1e3,1e9],n:400});
+          if(m.limit){A.hline(m.Se,{color:'muted',width:1,dash:[5,4]});A.text(`chosen plateau ${m.Se} MPa`,8e8,m.Se+14,{size:12,color:'muted',align:'right'});}
+          else {A.dot(m.Nk,m.Se,{r:4,color:'muted',hollow:true});A.text('chosen anchor at 5·10⁸ cycles',4e8,m.Se-28,{size:12,color:'muted',align:'right'});}
+          A.hline(S,{color:'gold',width:1.2,dash:[4,4]});
+          t.specimens.forEach(o=>{A.dot(o.N,S,{r:5.5,color:o.censored?'muted':'gold',hollow:o.censored});if(o.censored)A.arrow(o.N*1.08,S,o.N*1.45,S,{color:'muted',width:1.4,head:6});});
+          if(t.kind==='outside')A.text('above supplied curve: life undefined',2e4,450,{size:12,color:'red',align:'left'});
+          B.fn(x=>S*Math.sin(2*Math.PI*x),{color:'gold',width:2.4,domain:[0,4],n:240});
+          info={material:mat.value,amplitude:S,...t};
         });
-        v.readout(() => {
-          const m = SN[mat.value], S = Sa.value, N = snLife(m, S), t = tests(m, S), ru = t.out.filter((o) => o.run).length;
-          const f = t.out.filter((o) => !o.run).map((o) => o.N);
-          return `${m.name}, $S=${S}$ MPa ($${num((100 * S) / m.Su, 0)}\\,\\%$ of $S_u=${m.Su}$): ${Number.isFinite(N) ? `median life $N\\approx${cyc(N)}$ cycles` : `**below the endurance limit** $S_e=${m.Se}$ MPa: unlimited life in this idealized model`}. · Batch: ${f.length} failed${f.length ? ` (shortest $${cyc(Math.min(...f))}$, longest $${cyc(Math.max(...f))}$)` : ''}, ${ru} run-out${ru === 1 ? '' : 's'}. · The curve is a straight line in $\\log S$–$\\log N$: each factor 10 in life costs a factor $${num(10 ** (-Math.log10(snStress(m, 1e5) / snStress(m, 1e4))), 3)}$ in strength between $10^4$ and $10^5$ cycles.${S>m.Sy ? " Above model yield strength: high-cycle extrapolation, not a calibrated prediction." : ""}`;
+        v.readout(()=>{
+          const m=SN[mat.value],t=batch(),failed=t.specimens.filter(o=>!o.censored),run=t.specimens.length-failed.length;
+          const life=t.kind==='outside'?`**life undefined** above the supplied top stress $0.9S_u=${num(.9*m.Su,0)}$ MPa`:t.kind==='plateau'?`no finite fatigue failure assigned by the chosen plateau ($S_e=${m.Se}$ MPa)`:`chosen median life $N=${cyc(t.N)}$ cycles`;
+          return `$S=${Sa.value}$ MPa: ${life}. ${t.specimens.length?`Artificial batch: ${failed.length} simulated failures, ${run} run-outs; stop $N=${cyc(t.stop)}$ cycles. `:''}A run-out records survival only to the stopping time. Power-law slope $b=${num(fatigueSlope(m),4)}$; neither the parameters nor the scatter are test data.`;
         });
       },
     },
@@ -140,56 +127,47 @@ export default {
       num: '4.8',
       kind: 'Law',
       name: 'Miner’s rule for cumulative damage',
-      statement: String.raw`A part is loaded in blocks, $n_i$ cycles at stress amplitude $S_i$, and an S–N curve (4.7) says that constant amplitude $S_i$ would cause failure after $N_i$ cycles. **Miner's rule** assumes that each block uses up the fraction $n_i/N_i$ of the part's life independently of the order, and that failure occurs when the fractions add to one:
-$$D=\sum_i\frac{n_i}{N_i}=1 .$$
-Amplitudes at or below the endurance limit contribute no damage in the simplest form of the rule. The rule is linear and independent of sequence. Real damage can depend on sequence, overloads and evolving cracks; the nonlinear comparison below is invented to illustrate that limitation, not a measured uncertainty range.`,
-      idea: String.raw`The rule treats damage as a conserved quantity, like a fuel gauge: a cycle at amplitude $S_i$ always spends $1/N_i$ of it, whatever the history. It is exact if the damage per cycle depends only on the present amplitude; real crack growth is not like that, because a crack started at a high amplitude has already grown and then the low amplitude cycles propagate it further (that is why high-first sequences fail early), while overloads can retard growth later. Despite this, the rule is the standard first estimate for variable-amplitude fatigue, and it makes load spectra countable (4.7).`,
-      caption: String.raw`Two amplitudes (high $S_h$ and low $S_l$) are applied in blocks; the first high block has $aN_h$ cycles and the first low block has $(1-a)N_l$ cycles. In the linear limit these are matching cycle counts in either order. Left: damage against cycles (log axis) for the order high→low (red) and low→high (blue). With the nonlinear option off, both reach $D=1$ exactly (Miner). With it on, damage follows $D=(n/N)^{x}$ with an exponent that grows with $N$: a generic **illustrative model** with invented exponents, not fitted to data. Right: the Miner sum $\sum n_i/N_i$ at failure for each reference fraction $a$: below one for high-first, above one for low-first, and equal to one everywhere under the linear rule.`,
+      statement: String.raw`For cycle bins containing $n_i$ cycles at amplitudes with constant-amplitude lives $N_i$, the linear Palmgren–Miner model assigns
+$$D=\sum_i n_i/N_i.$$
+Its fatigue threshold is $D=1$. Reordering **the same cycles** leaves this sum unchanged. A bin assigned unlimited life by an idealised endurance plateau contributes zero; a bin outside the supplied S–N range has undefined damage rather than an invented life estimate.`,
+      idea: String.raw`Each cycle at amplitude $S_i$ contributes the fixed increment $1/N_i$. Adding these increments gives the same final sum after any permutation. The trajectory against elapsed cycles can change because the increment differs between amplitudes, and the first crossing of $D=1$ can occur at a different time. That does not make the final sum sequence-dependent. The rule omits experimentally observed history effects; it is an accounting model, not a crack-growth simulation.`,
+      caption: String.raw`The two amplitudes are called A and B, so they can cross or be equal. Share $f$ allocates the planned damage to A; total usage $q$ fixes cycle counts $n_A=qfN_A$ and $n_B=q(1-f)N_B$. **Both orders use these identical counts.** Left: the two accumulated-damage histories. Right: the same contributions stacked in each order. The complete planned history is shown even past the model threshold; a dot marks its first crossing when reached. Set $q<1$, $q=1$, or $q>1$ to compare cases.`,
       deps: ['solid-4.7'],
-      refs: ['Roylance, MIT Fatigue, pp.4–6, Miner Eq.(1)'],
-      tags: ['fatigue', 'damage'],
-      credit: 'Linear cumulative-damage model',
-      scope: String.raw`Variable-amplitude loading at stresses above the endurance limit, crack initiation dominated life; ignores sequence, mean-stress and overload effects, so its accuracy depends on the material and load history. Historical priority is not asserted here. S–N values are the illustrative steel curve of 4.7.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Fatigue_(material)#Miner%27s_rule' },
+      refs: ['COMSOL Fatigue Module 6.3, Cumulative Damage Model, equation (3-3)'],
+      tags: ['fatigue','damage'],
+      scope: String.raw`Two fully reversed, constant-amplitude blocks on the finite-life branch of the chosen steel-like S–N model in 4.7. Fractional cycle counts make the accounting continuous. This demonstration uses no nonlinear history law and gives no empirical uncertainty bound. The simple sum does not represent mean-stress changes, overload interactions, or crack evolution.`,
+      verify: false,
+      links: {source:'https://doc.comsol.com/6.3/doc/com.comsol.help.fatigue/fatigue_ug_sme.4.25.html',wikipedia:'https://en.wikipedia.org/wiki/Fatigue_(material)#Miner%27s_rule'},
       viz(v) {
-        const m = SN.steel;
-        const Sh = v.slider('high amplitude $S_h$ (MPa)', 300,440,380,{step:1,onChange:x=>{if(Sl.value>x)Sl.set(x)}});
-        const Sl = v.slider('low amplitude $S_l$', 260,380,290,{step:1,onChange:x=>{if(Sh.value<x)Sh.set(x)}});
-        const a = v.slider('high-block cycle fraction $a$ (linear reference)', 0.02, 0.98, 0.5, { step: 0.01 });
-        const nl = v.toggle('nonlinear damage (illustrative)', true);
-        const A = v.stage({ x: [10, 1e6], y: [0, 1.15], xlog: true, axes: 'box', gutter: true, height: 380, xlabel: 'cycles n', ylabel: 'damage D', title: 'damage against cycles for the two orders' });
-        const B = v.stage({ x: [0, 1], y: [0.4, 1.8], axes: 'box', gutter: true, height: 380, xlabel:'reference high-block cycle fraction a', ylabel: 'Miner sum Σ n/N at failure', title: 'sum of cycle ratios at failure' });
-        v.legend([['red', 'high → low'], ['accent', 'low → high'], ['muted', 'Miner: D = Σ n/N = 1', { dash: true }]]);
-        const xp = (N) => (nl.value ? Math.min(1.2, Math.max(0.4, 0.5 + 0.12 * (Math.log10(N) - 2))) : 1);
-        // two-block failure: first level P (N1), second Q (N2), D after first block = a
-        const seq = (N1, N2, aa) => {
-          const x1=xp(N1),x2=xp(N2),r1=aa,r2=1-aa**(x1/x2);
-          return { x1, x2, n1: r1 * N1, n2: r2 * N2, sum: r1 + r2 };
-        };
-        const Nh = () => snLife(m, Sh.value), Nl = () => snLife(m, Sl.value);
-        v.render(() => {
-          const hi = Sh.value, N1h = snLife(m, hi), N2l = snLife(m, Sl.value);
-          A.hline(1, { color: 'muted', width: 1.2, dash: [5, 4] });
-          const path=(N1,N2,share,col)=>{
-            const q=seq(N1,N2,share),pts=[];
-            for (let i = 0; i <= 60; i++) { const n = Math.max(.001,q.n1/1000)*(q.n1/Math.max(.001,q.n1/1000))**(i/60); pts.push([n, (n / N1) ** q.x1]); }
-            const r0=share**(q.x1/q.x2);
-            for (let i = 0; i <= 80; i++) { const n2 = (q.n2 * i) / 80; pts.push([q.n1 + n2, Math.min(1, (n2 / N2 + r0) ** q.x2)]); }
-            A.path(pts, { color: col, width: 2.8 });
-            A.dot(q.n1 + q.n2, 1, { r: 6, color: col });
-            A.dot(q.n1,share**q.x1, { r: 4.5, color: col, hollow: true });
-            return q;
-          };
-          A.setView([.9*Math.min(a.value*N1h,(1-a.value)*N2l)/1000,Math.max(N1h,N2l)*1.15],[0,1.15]);path(N1h,N2l,a.value,'red');path(N2l,N1h,1-a.value,'accent');
-          B.hline(1, { color: 'muted', width: 1.4, dash: [5, 4] });
-          B.fn((x) => seq(N1h, N2l, x).sum, { color: 'red', width: 2.6, domain: [0.02, 0.98], n: 97 });
-          B.fn((x) => seq(N2l,N1h,1-x).sum, { color: 'accent', width: 2.6, domain: [0.02, 0.98], n: 97 });
-          B.vline(a.value, { color: 'gold', width: 1.2, dash: [4, 4] });
-          B.dot(a.value, seq(N1h, N2l, a.value).sum, { r: 6, color: 'red' }); B.dot(a.value, seq(N2l,N1h,1-a.value).sum, { r: 6, color: 'accent' });
+        const Sa=v.slider('block A amplitude $S_A$ (MPa)',260,440,380,{step:1});
+        const Sb=v.slider('block B amplitude $S_B$ (MPa)',260,440,290,{step:1});
+        const share=v.slider('share $f$ allocated to A',0,1,.5,{step:.01});
+        const usage=v.slider('total planned usage $q$',0,1.8,1,{step:.01});
+        const A=v.stage({x:[0,1e6],y:[-.06,1.95],axes:'box',gutter:true,height:380,xlabel:'elapsed cycles n',ylabel:'accumulated Miner damage D',title:'the same cycle blocks in two orders'});
+        const B=v.stage({x:[-.35,2.35],y:[-.06,1.95],axes:'box',gutter:true,height:380,xlabel:'order',ylabel:'damage contribution',title:'identical final sum',xticks:[[.5,'A → B'],[1.5,'B → A']]});
+        v.legend([['red','block A'],['accent','block B'],['muted','threshold D = 1',{dash:true}]]);
+        let info;
+        v.render(()=>{
+          const NA=fatigueLife(SN.steel,Sa.value).N,NB=fatigueLife(SN.steel,Sb.value).N,q=minerBlocks(NA,NB,share.value,usage.value);
+          A.setView([0,Math.max(1,q.ab.total)*1.08],[-.06,1.95]);
+          const tick=n=>n>=1e5?`${num(n/1e5,1)}×10⁵`:n>=1e3?`${num(n/1e3,1)}k`:num(n,1);
+          A.setTicks(q.ab.total>0?[0,.25,.5,.75,1].map(f=>[f*q.ab.total,tick(f*q.ab.total)]):[[0,'0']]);
+          A.hline(1,{color:'muted',width:1.2,dash:[5,4]});B.hline(1,{color:'muted',width:1.2,dash:[5,4]});
+          [q.ab,q.ba].forEach((seq,i)=>{
+            seq.blocks.forEach((block,j)=>{
+              const color=block.key==='A'?'red':'accent';
+              A.line(...seq.points[j],...seq.points[j+1],{color,width:i?1.7:3.5,dash:i?[5,4]:undefined});
+              B.rect(.16+i,block.before,.84+i,block.before+block.increment,{color,width:1.2,fill:color,fillAlpha:.45});
+            });
+            if(seq.crossing!==null)A.dot(seq.crossing,1,{r:i?4.5:7,color:i?'accent':'red',hollow:!!i});
+            B.text(`D = ${num(seq.damage,2)}`,.5+i,seq.damage+.055,{size:12,color:'ink',align:'center'});
+          });
+          A.text('solid A → B; dashed B → A',Math.max(1,q.ab.total)*.97,1.85,{size:12,color:'muted',align:'right'});
+          info={amplitudeA:Sa.value,amplitudeB:Sb.value,share:share.value,usage:usage.value,NA,NB,...q};
         });
-        v.readout(() => {
-          const hi = snLife(m, Sh.value), lo = snLife(m, Sl.value), q1 = seq(hi, lo, a.value), q2=seq(lo,hi,1-a.value);
-          return `$N_h=${cyc(hi)}$, $N_l=${cyc(lo)}$ cycles. · High→low: $n_h=${cyc(q1.n1)}$, then $n_l=${cyc(q1.n2)}$; $\\sum n/N=${num(q1.sum, 3)}$. · Low→high: $n_l=${cyc(q2.n1)}$, then $n_h=${cyc(q2.n2)}$; $\\sum n/N=${num(q2.sum, 3)}$. · Total life: ${num((q1.n1 + q1.n2) / 1, 0)} against ${num(q2.n1 + q2.n2, 0)} cycles (linear-limit cycle counts match between the orders).${nl.value ? '' : ' Linear rule: both sums are exactly 1.'}`;
+        v.readout(()=>{
+          const {NA,NB,nA,nB,ab,ba}=info,fmt=n=>n===null?'not reached':`$n=${cyc(n)}$ cycles`;
+          return `$N_A=${cyc(NA)}$, $N_B=${cyc(NB)}$; **the same blocks in both orders:** $n_A=${cyc(nA)}$, $n_B=${cyc(nB)}$ cycles. Final usage: A→B $D=${num(ab.damage,3)}$, B→A $D=${num(ba.damage,3)}$; planned duration $${cyc(ab.total)}$ cycles. First $D=1$ crossing: A→B ${fmt(ab.crossing)}; B→A ${fmt(ba.crossing)}. ${usage.value>1?'The remaining planned cycles are an accounting extension beyond the model threshold.':'Reordering changes the path, while the final sum stays equal.'}`;
         });
       },
     },
@@ -198,48 +176,49 @@ Amplitudes at or below the endurance limit contribute no damage in the simplest 
       num: '4.9',
       kind: 'Law',
       name: 'Goodman relation for mean stress',
-      statement: String.raw`Fatigue strength falls when the cycle has a tensile mean stress. For a stress that oscillates with amplitude $\sigma_a$ about the mean $\sigma_m$ (so $\sigma_{\max,\min}=\sigma_m\pm\sigma_a$), the **Goodman relation** takes the safe boundary to be the straight line joining the fully reversed endurance limit $S_e$ on the $\sigma_a$-axis to the ultimate strength $S_u$ on the $\sigma_m$-axis:
-$$\frac{\sigma_a}{S_e}+\frac{\sigma_m}{S_u}=\frac1n,$$
-$n$ being the factor of safety for a load line through the origin. Variants replace the line by Gerber's parabola $\frac{\sigma_a}{S_e}+\big(\frac{\sigma_m}{S_u}\big)^2=1$ or by Soderberg's line to the yield strength $S_y$. Compressive mean stress is usually left at $\sigma_a=S_e$, and symmetric tension/compression yielding is checked separately by $\max(|\sigma_{\max}|,|\sigma_{\min}|)=|\sigma_m|+\sigma_a\le S_y$.`,
-      idea: String.raw`A tensile mean stress opens the microcracks of 4.7 and speeds their growth, so less alternating stress is tolerable; at the extreme $\sigma_a=0$ the part is simply loaded statically to its strength. The straight line is the simplest interpolation between these two experimentally anchored points. Test data for ductile metals tend to lie between the Goodman line (conservative) and the Gerber parabola (closer to the data), and Soderberg's line is more conservative still.`,
-      caption: String.raw`Drag the gold operating point in the $(\sigma_m,\sigma_a)$ plane: the point is safe if it lies under the Goodman line and under the symmetric yield boundary $\sigma_a+|\sigma_m|=S_y$. The dashed ray is the load line through the origin; where it meets each boundary gives that criterion's safety factor. The right panel shows the stress cycle your point stands for. Values for $S_e$ are the model values of 4.7 ($S_e=0.5S_u$ for steel; $0.3S_u$ for aluminium, taken at $5\times10^8$ cycles).`,
+      statement: String.raw`For a uniaxial stress cycle, $\sigma_m=(\sigma_{\max}+\sigma_{\min})/2$ and $\sigma_a=(\sigma_{\max}-\sigma_{\min})/2\ge0$. At a specified fatigue life, a Goodman interaction joins the fully reversed strength $S_e$ to the ultimate tensile strength $S_u$:
+$$\sigma_a/S_e+\sigma_m/S_u=1\qquad(\sigma_m\ge0).$$
+Gerber uses $\sigma_a/S_e+(\sigma_m/S_u)^2=1$; Soderberg replaces $S_u$ by $S_y$. Along a proportional load ray, the safety factor $n$ is the positive multiplier taking $(\sigma_m,\sigma_a)$ to the selected boundary. A separate, symmetric uniaxial yield check is $|\sigma_m|+\sigma_a\le S_y$.`,
+      idea: String.raw`The interactions specify different shapes for the allowable alternating strength as tensile mean stress increases. Substituting $(n\sigma_m,n\sigma_a)$ into a boundary gives its ray multiplier; Gerber requires solving a quadratic, not the reciprocal of its unscaled interaction value. Here compressive mean stress receives **no fatigue benefit**: all three curves use the flat level $S_e$ for $\sigma_m\le0$. This is a chosen extension. Yielding can still occur at the compressive end of such a cycle.`,
+      caption: String.raw`Drag the operating point in the mean–amplitude plane. Green means it satisfies the **chosen Goodman and symmetric yield conditions**; red means it exceeds at least one. This is not a verified safe design. The red boundary includes tensile and compressive yielding. Toggles add the Gerber and Soderberg comparisons. The right panel expands to contain the complete stress cycle, with both yield limits. All material-like strengths are chosen values from 4.7; the aluminium-like $S_e$ is a finite-life reference at $5\times10^8$ cycles.`,
       deps: ['solid-4.7'],
-      refs: ['Roylance, MIT Fatigue, p.4 Goodman diagram; RamaMachineDesign lectures29–30, pp.142–148'],
-      tags: ['fatigue', 'mean stress'],
-      credit: 'Goodman/Gerber/Soderberg mean-stress models',
-      scope: String.raw`Ductile metals under uniaxial high-cycle fatigue, load line with constant ratio $\sigma_a/\sigma_m$. Goodman's line is a conservative design rule, not a law of nature. Model material constants are illustrative. No beneficial compressive mean-stress correction is assumed; symmetric yielding is checked at both peaks.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Goodman_relation' },
+      refs: ['COMSOL Fatigue Module 6.3, Mean Stress Correction'],
+      tags: ['fatigue','mean stress'],
+      scope: String.raw`Chosen uniaxial high-cycle interaction models, proportional scaling of mean and amplitude, equal tensile/compressive yield strengths, and no benefit from negative mean stress. No alloy-specific fit, scatter allowance, measured accuracy ranking, multiaxial fatigue criterion, or historical priority claim is supplied. At zero load the ray factors are unbounded.`,
+      verify: false,
+      links: {source:'https://doc.comsol.com/6.3/doc/com.comsol.help.fatigue/fatigue_ug_sme.4.28.html',wikipedia:'https://en.wikipedia.org/wiki/Goodman_relation'},
       viz(v) {
-        const mat = v.select('material', [{ value: 'steel', label: 'steel' }, { value: 'al', label: 'aluminium' }], 'steel');
-        const showG = v.toggle('Gerber parabola', true), showS = v.toggle('Soderberg line', false);
-        const A = v.stage({ x: [-200, 560], y: [0, 300], axes: 'box', gutter: true, height: 380, xlabel: 'mean stress σm (MPa)', ylabel: 'alternating stress σa (MPa)', title: 'Haigh diagram' });
-        const B = v.stage({ x: [0, 3], y: [-520, 520], axes: 'box', gutter: true, height: 380, xlabel: 'time (cycles)', ylabel: 'σ (MPa)', title: 'the stress cycle', xticks: [0, 1, 2, 3] });
-        const H = A.handle(180, 90, { color: 'gold', r: 8, constrain: (x, y) => [Math.max(-200, Math.min(560, x)), Math.max(0, Math.min(300, y))] });
-        v.legend([['accent', 'Goodman'], ['purple', 'Gerber'], ['teal', 'Soderberg'], ['red','yield |σm| + σa = Sy']]);
-        const mm = () => SN[mat.value];
-        const good = (m, sm) => (sm <= 0 ? m.Se : Math.max(0, m.Se * (1 - sm / m.Su)));
-        v.render(() => {
-          const m = mm(), sm = H.x, sa = H.y;
-          A.fn((x) => good(m, x), { color: 'accent', width: 3, domain: [-200, m.Su], n: 120, fill: true, base: 0 });
-          A.hline(m.Se, { color: 'faint', width: 1, dash: [4, 4] });
-          if (showG.value) A.fn((x) => (x <= 0 ? m.Se : Math.max(0, m.Se * (1 - (x / m.Su) ** 2))), { color: 'purple', width: 2.2, domain: [-200, m.Su], n: 160 });
-          if (showS.value) A.fn((x) => (x <= 0 ? m.Se : Math.max(0, m.Se * (1 - x / m.Sy))), { color: 'teal', width: 2.2, domain: [-200, m.Sy], n: 100 });
-          A.path([[-200,m.Sy-200],[0,m.Sy],[m.Sy,0]],{color:'red',width:2.2});
-          A.line(0, 0, sm * 1.5 + 0, sa * 1.5, { color: 'muted', width: 1.2, dash: [4, 4] });
-          const safe=sa<=good(m,sm)&&sa+Math.abs(sm)<=m.Sy;B.setView([0,3],[Math.min(-520,1.12*(sm-sa)),Math.max(520,1.12*(sm+sa))]);
-          A.dot(sm, sa, { r: 7, color: safe ? 'green' : 'red' });
-          A.text('Su', m.Su, 14, { size: 12, color: 'muted', align: 'center' }); A.text(`S_e = ${m.Se}`, -190, m.Se + 14, { size: 12, color: 'muted', align: 'left' });
-          B.fn((x) => sm + sa * Math.sin(2 * Math.PI * x), { color: 'gold', width: 2.4, domain: [0, 3], n: 200 });
-          B.hline(sm, { color: 'muted', width: 1, dash: [4, 4] }); B.hline(0, { color: 'faint', width: 1 });
-          B.hline(m.Sy, { color: 'red', width: 1, dash: [5, 4] });
+        const mat=v.select('chosen parameter set',[{value:'steel',label:'steel-like'},{value:'al',label:'aluminium-like'}],'steel');
+        const showG=v.toggle('Gerber parabola',true),showS=v.toggle('Soderberg line',false);
+        const A=v.stage({x:[-230,590],y:[-20,330],axes:'box',gutter:true,height:380,xlabel:'mean stress σm (MPa)',ylabel:'alternating stress σa (MPa)',title:'chosen mean-stress interactions'});
+        const B=v.stage({x:[0,3],y:[-520,520],axes:'box',gutter:true,height:380,xlabel:'time (cycles)',ylabel:'σ (MPa)',title:'the complete stress cycle',xticks:[0,1,2,3]});
+        const H=A.handle(180,90,{color:'gold',r:8,constrain:(x,y)=>[Math.max(-200,Math.min(560,x)),Math.max(0,Math.min(300,y))]});
+        v.button('Zero load',()=>H.set(0,0));
+        v.legend([['accent','Goodman'],['purple','Gerber'],['teal','Soderberg'],['red','symmetric yield |σ| = Sy']]);
+        let info;
+        v.render(()=>{
+          const m=SN[mat.value],sm=H.x,sa=H.y,p=meanStressState(m,sm,sa);
+          A.fn(x=>meanStressBoundary(m,x),{color:'accent',width:3,domain:[-200,m.Su],n:160,fill:true,base:0});
+          if(showG.value)A.fn(x=>meanStressBoundary(m,x,'gerber'),{color:'purple',width:2.2,domain:[-200,m.Su],n:160});
+          if(showS.value)A.fn(x=>meanStressBoundary(m,x,'soderberg'),{color:'teal',width:2.2,domain:[-200,m.Sy],n:160});
+          // Clip the two finite yield segments to the displayed amplitude window.
+          const left=Math.max(-200,-m.Sy),negRight=Math.min(0,300-m.Sy),posLeft=Math.max(0,m.Sy-300);
+          if(left<=negRight)A.line(left,m.Sy+left,negRight,m.Sy+negRight,{color:'red',width:2.2});
+          A.line(posLeft,m.Sy-posLeft,m.Sy,0,{color:'red',width:2.2});
+          if(sm!==0||sa!==0){const ray=Math.min(sm>0?560/sm:sm<0?-200/sm:Infinity,sa>0?300/sa:Infinity);A.line(0,0,sm*ray,sa*ray,{color:'muted',width:1.2,dash:[4,4]});}
+          H.color=p.admitted?'green':'red';
+          A.text(`S_e = ${m.Se}`,-190,m.Se+14,{size:12,color:'muted',align:'left'});
+          A.text('Su',m.Su,14,{size:12,color:'muted',align:'center'});
+          const pad=Math.max(25,.08*(p.maximum-p.minimum));
+          B.setView([0,3],[Math.min(-m.Sy-25,p.minimum-pad),Math.max(m.Sy+25,p.maximum+pad)]);
+          B.fn(x=>sm+sa*Math.sin(2*Math.PI*x),{color:'gold',width:2.4,domain:[0,3],n:240});
+          B.hline(sm,{color:'muted',width:1,dash:[4,4]});B.hline(0,{color:'faint',width:1});
+          B.hline(m.Sy,{color:'red',width:1,dash:[5,4]});B.hline(-m.Sy,{color:'red',width:1,dash:[5,4]});
+          info={material:mat.value,...p};
         });
-        v.readout(() => {
-          const m = mm(), sm = H.x, sa = H.y, mx = sm + sa, mn = sm - sa;
-          const nG=1/(sa/m.Se+Math.max(sm,0)/m.Su);
-          const qa = (sm / m.Su) ** 2, qb = sa / m.Se, nGe = sm > 0 ? (2/(qb+Math.sqrt(qb*qb+4*qa))) : nG;
-          const nY=m.Sy/(Math.abs(sm)+sa);
-          const f = (x) => (Number.isFinite(x) ? num(x, 2) : '∞');
-          return `$\\sigma_m=${num(sm, 0)}$, $\\sigma_a=${num(sa, 0)}$ MPa → $\\sigma_{\\max}=${num(mx, 0)}$, $\\sigma_{\\min}=${num(mn, 0)}$, $R=${mx !== 0 ? num(mn / mx, 2) : '—'}$. · Safety factors: Goodman $n=${f(nG)}$, Gerber $n=${f(nGe)}$ (where the same ray meets the parabola), yield $n_y=${f(nY)}$ → **${Math.min(nG, nY) >= 1 ? 'safe' : 'unsafe'}** by Goodman and yield. · Goodman line: $\\sigma_a=S_e(1-\\sigma_m/S_u)$ with $S_e=${m.Se}$, $S_u=${m.Su}$, $S_y=${m.Sy}$ MPa.`;
+        v.readout(()=>{
+          const p=info,f=x=>Number.isFinite(x)?num(x,2):'\\infty';
+          return String.raw`$\sigma_m=${num(p.mean,0)}$, $\sigma_a=${num(p.amplitude,0)}$ MPa; $\sigma_{\max}=${num(p.maximum,0)}$, $\sigma_{\min}=${num(p.minimum,0)}$ MPa. Ray multipliers: Goodman $n=${f(p.goodman)}$, Gerber $n=${f(p.gerber)}$, Soderberg $n=${f(p.soderberg)}$, symmetric yield $n_y=${f(p.yieldFactor)}$. **${p.admitted?'Within':'Outside'} the chosen Goodman and yield bounds.** Negative mean receives no fatigue benefit in this illustration. Factors describe these models, not measured reliability.`;
         });
       },
     },
@@ -248,36 +227,34 @@ $n$ being the factor of safety for a load line through the origin. Variants repl
       num: '4.10',
       kind: 'Theorem',
       name: 'Plastic collapse: lower- and upper-bound theorems',
-      statement: String.raw`Consider a structure of elastic–perfectly plastic material (4.5) under proportional loading $\lambda\mathbf P_0$, with true collapse load factor $\lambda_c$ (the load at which it deforms without limit). Then:
-(a) **Lower bound (static theorem).** If there is a stress field (or bending-moment distribution) that is in equilibrium with $\lambda\mathbf P_0$ and violates the yield condition nowhere, then $\lambda\le\lambda_c$: the structure certainly carries $\lambda\mathbf P_0$.
-(b) **Upper bound (kinematic theorem).** If there is a mechanism (a pattern of hinges and rigid motions) for which the work of $\lambda\mathbf P_0$ equals the energy dissipated in the hinges, then $\lambda\ge\lambda_c$: the structure certainly cannot carry more.
-(c) When one admissible field and one mechanism give the same $\lambda$, that is the collapse load. The result is stated for small displacements, a convex yield condition and associated flow (maximum plastic dissipation); the example drawn is a beam fixed at both ends with a point load at mid-span, with plastic moment $M_p$.`,
-      idea: String.raw`For (a), compare the equilibrium field with the true collapse state: the difference of the two stress fields is in equilibrium with a load difference, and the virtual-work principle (solid-8.3, the static case of mech-6.4) together with the fact that the real field is at yield in the hinges gives $\lambda\le\lambda_c$. For (b), the work of the real, yielded state on the mechanism cannot exceed the maximum dissipation allowed by the yield condition, which the mechanism's hinges attain. For the fixed-ended beam, equilibrium gives $M_C+\tfrac12(M_A+M_B)=PL/4$ (with end moments counted hogging), and each moment is at most $M_p$ in size; the mechanism with hinges at the ends and the centre gives $P\,\tfrac L2\theta=M_p(\theta+2\theta+\theta)$. Both give $8M_p/L$. Statically indeterminate structures (1.10) show the point: collapse needs several hinges, and not the first one.`,
-      caption: String.raw`**Left (lower bound):** choose the end moments $m_A,m_B$ (hogging) with the sliders; the moment diagram stays inside the plastic band $\pm M_p$ and the largest load it can carry in equilibrium is shown. **Middle (upper bound):** drag the interior hinge along the span; the beam rotates about the end hinges and the hinge you placed, and the work balance gives a load that is never below the collapse load. **Right:** the bounds squeezed on one line: the lower one climbs as you raise the end moments to $M_p$, the upper one falls as the middle hinge moves to mid-span, and both meet at $8M_p/L$.`,
-      deps: ['solid-4.5','solid-1.10','solid-8.3','mech-6.4'],
-      refs: ['Bower, Applied Mechanics of Solids §§6.2.1–6.2.5, complete bounding-theorem derivations'],
+      statement: String.raw`Consider a small-displacement, perfectly plastic structure with a convex yield set and an **associated flow rule** (maximum plastic dissipation), under proportional loading $\lambda\mathbf P_0$, with true collapse load factor $\lambda_c$ (the load at which it deforms without limit). Then:
+(a) **Lower bound (static theorem).** If there is a stress field (or bending-moment distribution) that is in equilibrium with $\lambda\mathbf P_0$ and violates the yield condition nowhere, then $\lambda\le\lambda_c$: this is a lower estimate of the ideal collapse factor.
+(b) **Upper bound (kinematic theorem).** For any kinematically admissible velocity mechanism with positive reference-load work $W_0$, its full plastic dissipation $D$ gives $\lambda_U=D/W_0\ge\lambda_c$. Every dissipating region or hinge must be included; this is an upper estimate of ideal collapse capacity.
+(c) When one admissible field and one mechanism give the same $\lambda$, that is the collapse load. The result is stated for small displacements and a convex yield condition; the example drawn is a beam fixed at both ends with a point load at mid-span, with plastic moment $M_p$.`,
+      idea: String.raw`Associated flow places the plastic strain-rate vector in the outward normal cone of the convex yield set. The supporting-hyperplane inequality (opt-2.8) then gives $(\sigma^*-\widehat\sigma):\dot\varepsilon^p\ge0$ for every stress $\widehat\sigma$ at or below yield and the actual yielding stress $\sigma^*$. Integrating this maximum-dissipation inequality and using equilibrium/virtual work supplies the two bounds. Convexity alone would not specify that flow rule.
+
+For the displayed beam, a linear moment diagram obeys $M_C+(m_A+m_B)/2=PL/4$, with hogging end magnitudes $m_A,m_B$. Keeping all three moments within $\pm M_p$ gives a static lower certificate. A unit-deflection triangular mechanism with a hinge at $x$ dissipates $2M_p(1/x+1/(L-x))$; divide by the deflection at the actual midspan load. The result is $4M_p/\min(x,L-x)$. At $m_A=m_B=M_p$ and $x=L/2$, both certificates give $8M_p/L$.`,
+      caption: String.raw`**Left (lower bound):** choose the end moments $m_A,m_B$ (hogging) with the sliders; the moment diagram stays inside the plastic band $\pm M_p$ and the largest load it can carry in equilibrium is shown. **Middle (upper bound):** drag the gold hinge horizontally along the span; the beam rotates about the end hinges and the hinge you placed, and the work balance gives a load that is never below the collapse load. **Last panel:** the bounds on one line: the lower one climbs as you raise the end moments to $M_p$, the upper one falls as the middle hinge moves to mid-span, and both meet at $8M_p/L$.`,
+      deps: ['solid-4.5', 'solid-1.10', 'solid-2.4', 'opt-2.8'],
+      refs: ['A. F. Bower, Applied Mechanics of Solids, §§6.3.1–6.3.3 and6.3.5: dissipation and complete upper/lower-bound derivations; read2026-10-19', 'Supporting-hyperplane argument applied here to a convex yield set; beam certificates derived independently'],
       tags: ['plasticity', 'limit analysis'],
-      credit: 'Plastic limit-analysis bounds',
-      scope: String.raw`Rigid- or elastic–perfectly plastic structures, small displacements, proportional loading, no instability or fracture. For beams, the yield condition is $|M|\le M_p$. Associated flow and maximum plastic dissipation are required. The beam example uses a symmetric moment capacity; no unverified historical priority is asserted.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Plastic_analysis' },
+      verify: false,
+      scope: String.raw`Rigid- or elastic–perfectly plastic response with a convex yield set, associated flow/maximum dissipation, proportional loading, positive reference-load work, fixed support conditions and small displacements. No strain softening, buckling, fracture or geometric instability. The beam has constant symmetric moment capacity $|M|\le M_p$, with axial/shear failure excluded. Finite deflections in the picture only display an infinitesimal mechanism shape; work uses its velocity slopes. Chosen $M_p=100$ kN·m and $L=6$ m are teaching inputs.`,
+      links: {source:'https://solidmechanics.org/Text/Chapter6_3/Chapter6_3.php'},
       viz(v) {
         const Mp = 100, L = 6, Pc = (8 * Mp) / L; // kN·m, m, kN
         const mA = v.slider('end moment $m_A$ (kN·m, hogging)', -100, 100, 0, { step: 1 });
-        const mB = v.slider('end moment $m_B$', -100, 100, 0, { step: 1 });
-        const A = v.stage({ x: [0, L], y: [-135, 135], axes: 'box', gutter: true, height: 340, xlabel: 'x (m)', ylabel: 'M (kN·m, sagging +)', title: 'a safe moment diagram (lower bound)' });
+        const mB = v.slider('end moment $m_B$ (kN·m, hogging)', -100, 100, 0, { step: 1 });
+        const A = v.stage({ x: [-.5, L+.5], y: [-135, 135], axes: 'box', gutter: true, height: 340, xlabel: 'x (m)', ylabel: 'M (kN·m, sagging +)', title: 'a safe moment diagram (lower bound)' });
         const B = v.stage({ x: [-0.4, L + 0.4], y: [-1.5, 2.4], equal: true, axes: false, height: 340, title: 'a collapse mechanism (upper bound)' });
         const C = v.stage({ x: [0, 2.2 * Pc], y: [0, 1], axes: 'box', gutter: true, height: 190, xlabel: 'load P (kN)', title: 'the bounds on the collapse load', full: true });
-        const Hh = B.handle(L / 4, 0, { color: 'gold', r: 8, constrain: { x: [0.4, L - 0.4], y: [0, 0] } });
+        const Hh = B.handle(L / 4, -.9, { color: 'gold', r: 8, constrain: { x: [0.4, L - 0.4], y: [-.9, -.9] } });
         v.legend([['green', 'lower bound'], ['red', 'upper bound'], ['ink', 'collapse load 8Mp/L']]);
-        const lower = () => (4 * (Mp + (mA.value + mB.value) / 2)) / L;
-        const upper = (x) => {
-          // unit deflection at the interior hinge; rotations θA = 1/x, θB = 1/(L−x), θx = θA+θB; load point at L/2
-          const tA = 1 / x, tB = 1 / (L - x), W = Mp * (tA + tB + tA + tB);
-          const dL = L / 2 <= x ? (L / 2) / x : (L - L / 2) / (L - x);
-          return { P: W / dL, tA, tB, dL };
-        };
+        const lower=()=>collapseStatic(Mp,L,mA.value,mB.value).load;
+        const upper=x=>{const u=collapseMechanism(Mp,L,x);return{...u,P:u.load};};
+        v.button('match both bounds',()=>{mA.set(Mp);mB.set(Mp);Hh.set(L/2,-.9);});
         v.render(() => {
-          const x = Hh.x, u = upper(x), Pl = lower();C.setView([0,Math.max(2.2*Pc,1.08*u.P)],[0,1]);
+          const x = Hh.x, u = upper(x), Pl = lower();
           // moment diagram for the load Pl
           const M0 = -mA.value, M1 = Pl * L / 4 - (mA.value + mB.value) / 2, M2 = -mB.value; // end, centre (sagging), end
           A.rect(0, -Mp, L, Mp, { color: 'orange', width: 1.2, fill: 'orange', fillAlpha: 0.07 });
@@ -287,7 +264,7 @@ $n$ being the factor of safety for a load line through the origin. Variants repl
           A.dots([[0, M0], [L / 2, M1], [L, M2]], { r: 5, color: 'green' });
           A.text(`P = ${num(Pl, 1)} kN`, L / 2, 118, { size: 12, color: 'green', align: 'center' });
           // mechanism
-          const s = 0.9, xh = x, defl = (t) => (t <= xh ? (t / xh) * s : ((L - t) / (L - xh)) * s);
+          const s = -0.9, xh = x, defl = (t) => (t <= xh ? (t / xh) * s : ((L - t) / (L - xh)) * s);
           B.line(0, 0, L, 0, { color: 'faint', width: 1.2, dash: [4, 4] });
           B.path([[0, 0], [xh, s], [L, 0]], { color: 'red', width: 4 });
           B.dot(0, 0, { r: 7, color: 'red' }); B.dot(L, 0, { r: 7, color: 'red' }); B.dot(xh, s, { r: 7, color: 'red' });
@@ -296,10 +273,12 @@ $n$ being the factor of safety for a load line through the origin. Variants repl
           B.dot(L / 2, defl(L / 2), { r: 4, color: 'ink' }); B.text(`P = ${num(u.P, 1)} kN`, L / 2 + 0.2, defl(L / 2) + 1.2, { size: 12, color: 'red', align: 'left' });
           B.rect(-0.1, -1.1, 0.0, 1.0, { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.4 }); B.rect(L, -1.1, L + 0.1, 1.0, { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.4 });
           // bounds
+          const meet=Math.abs(u.P-Pl)<1e-6*Pc;C.setView([-.08*u.P,(meet?1.3:1.12)*u.P],[0,1]);
           C.rect(Pl, 0.35, u.P, 0.65, { color: 'orange', width: 1, fill: 'orange', fillAlpha: 0.2 });
           C.line(Pc, 0.2, Pc, 0.8, { color: 'ink', width: 2 });
-          C.dot(Pl, 0.5, { r: 8, color: 'green' }); C.dot(u.P, 0.5, { r: 8, color: 'red' });
-          C.text('lower', Pl, 0.9, { size: 12, color: 'green', align: 'center' }); C.text('upper', u.P, 0.9, { size: 12, color: 'red', align: 'center' });
+          C.dot(Pl,0.5,{r:meet?9:8,color:'green',hollow:meet,width:2});C.dot(u.P,0.5,{r:meet?5:8,color:'red'});
+          if(meet)C.text('lower = upper',Pc,.9,{size:12,color:'ink',align:'center'});
+          else{C.text('lower',Pl,.9,{size:12,color:'green',align:'left'});C.text('upper',u.P,.9,{size:12,color:'red',align:'right'});}
           C.text('8Mp/L', Pc, 0.08, { size: 12, color: 'ink', align: 'center' });
         });
         v.readout(() => {

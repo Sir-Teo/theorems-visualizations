@@ -25,14 +25,6 @@ import { clamp, inside, num, pct, card, binomPmf, reservation, satisficeValue, s
 
 const GUIDE = { color: 'muted', width: 1, dash: [4, 4] };
 
-/** Shared normal skill plus independent normal luck in each season; both scores have variance one. */
-export function gaussianRegressionLeague(luckShare, count, rng) {
-  return Array.from({ length: count }, () => {
-    const skill = rng.normal() * Math.sqrt(1 - luckShare);
-    return [skill + rng.normal() * Math.sqrt(luckShare), skill + rng.normal() * Math.sqrt(luckShare)];
-  });
-}
-
 /** Proportion of hits immediately after k consecutive hits within one sequence (null if undefined). */
 function propAfter(seq, k) {
   let a = 0, b = 0;
@@ -140,10 +132,10 @@ export default {
     // ------------------------------------------------------------------ 3.12
     {
       num: '3.12', kind: 'Phenomenon', name: 'Regression to the mean mistaken for causation',
-      statement: String.raw`Selecting unusually high or low outcomes partly produced by transient luck can create **regression to the mean** on a later measurement, even if nothing changes. In the **jointly normal model shown here**, standardized scores with correlation $\rho$ satisfy $E[X_2\mid X_1=x]=\rho x$ (stat-1.19). Correlation alone does not imply this conditional-mean formula for arbitrary score distributions; it specifies the best linear predictor. People can mistake the return toward the mean for a causal effect: flight instructors concluded that praise after a good landing makes cadets worse and harsh criticism after a bad one makes them better (Kahneman's experience in the Israeli air force); athletes on a magazine cover "suffer a jinx"; a treatment given to the sickest patients appears to work even without an effect.`,
-      idea: String.raw`In this simulation, a season's standardized performance is $X_j=S+L_j$, with mutually independent, mean-zero **normal** skill $S$ of variance $1-\ell$ and luck $L_1,L_2$ of variance $\ell$. Skill persists and luck is redrawn, so both scores have variance one and their covariance is $1-\ell$. The Gaussian conditional-mean formula gives $E[X_2\mid X_1=x]=(1-\ell)x$. Thus the conditional expected average of athletes selected on their season-1 scores is $(1-\ell)$ times their season-1 average; a finite league's realized season-2 average fluctuates around that prediction. Uncorrelated residuals alone would establish only a linear prediction, not the exact conditional mean. No feedback, pressure or change in skill is built into this model. A comparison group selected the same way but not treated is needed to assess an actual treatment effect.`,
-      caption: String.raw`Answer the instructors' question first. Each dot is one of 400 athletes with normal skill and independent normal luck: season 1 across, season 2 up. The top performers of season 1 (gold) are selected for the "cover". Purple shows their conditional expected season-2 average; red shows the finite sample's realized average. Every athlete's skill is unchanged. Set luck to 0 and both scores coincide; at luck 1 the conditional prediction is the population mean, while a new league's observed mean can fall on either side of it.`,
-      deps: ['stat-12.9', 'stat-1.19'], refs: ['Kahneman ch. 17'], tags: ['regression to the mean', 'causation', 'luck'],
+      statement: String.raw`When an outcome depends partly on luck, units selected for extreme results in one period will on average be less extreme in the next, even if nothing changes: **regression to the mean**. With standardized scores and a correlation $\rho$ between periods, the expected second score of a unit that scored $x$ is $\rho x$. People rarely expect this and invent causes for it: flight instructors concluded that praise after a good landing makes cadets worse and harsh criticism after a bad one makes them better (Kahneman's experience in the Israeli air force); athletes on a magazine cover "suffer a jinx"; a treatment given to the sickest patients "works" because they would have improved anyway. The drop is larger the larger the share of luck in the outcome.`,
+      idea: String.raw`Write a season's performance as skill plus luck, independent, with luck accounting for a fraction $\ell$ of the variance. The best performers of season 1 are disproportionately those whose luck was good; their skill persists but their luck is redrawn, so their expected season-2 score is $(1-\ell)$ times their season-1 score (stat-12.9): the regression slope equals the correlation. Nothing about feedback, pressure or jinxes is needed. Kahneman's lesson: the instructors were "rewarded" for punishment and "punished" for reward by chance alone. The proper control is a comparison group selected the same way but not treated.`,
+      caption: String.raw`Answer the instructors' question first. Then set the share of luck in performance. Each dot is one of 400 simulated athletes: season 1 across, season 2 up. The top performers of season 1 (gold) are selected for the "cover"; their season-2 average falls back by the amount the regression line (slope = $1-\ell$, purple) predicts, although every athlete's skill is unchanged. Set luck to 0 and the jinx disappears; set it high and the cover stars collapse to the average.`,
+      deps: ['stat-12.9'], refs: ['Kahneman ch. 17'], tags: ['regression to the mean', 'causation', 'luck'],
       credit: 'Galton, 1886; Kahneman, 1970s (flight instructors)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Regression_toward_the_mean' },
       viz(v) {
@@ -160,7 +152,8 @@ export default {
         v.render(() => {
           C.text('What should the instructors conclude?', 50, 16, { align: 'center', size: 12.5, weight: 600 });
           R.forEach((r, i) => card(C, r, { lines: [LAB[i]], chosen: ans === i, dim: ans != null && ans !== i }));
-          const l = lS.value, pts = gaussianRegressionLeague(l, 400, v.rng(seed));
+          const l = lS.value, r = v.rng(seed), N = 400, pts = [];
+          for (let i = 0; i < N; i++) { const sk = r.normal() * Math.sqrt(1 - l); pts.push([sk + r.normal() * Math.sqrt(l), sk + r.normal() * Math.sqrt(l)]); }
           const idx = pts.map((_, i) => i).sort((a, b) => pts[b][0] - pts[a][0]).slice(0, kS.value), top = new Set(idx);
           S.dots(pts.filter((_, i) => !top.has(i)).map((p) => p.map((z) => clamp(z, -3.45, 3.45))), { r: 2.6, color: 'muted', alpha: 0.6 });
           S.line(-3.5, -3.5, 3.5, 3.5, { color: 'faint', width: 1, dash: [4, 4] });
@@ -169,33 +162,25 @@ export default {
           const m1 = idx.reduce((s, i) => s + pts[i][0], 0) / idx.length, m2 = idx.reduce((s, i) => s + pts[i][1], 0) / idx.length;
           S.dot(m1, m2, { r: 7, color: 'red' }); S.arrow(m1, m1, m1, m2 + (m1 > m2 ? 0.12 : -0.12), { color: 'red', width: 2, head: 9 });
           S.text('slope 1 − ℓ', -3.3, -3.3 * (1 - l), { dx: 4, dy: -12, align: 'left', size: 11, weight: 700, color: 'purple' });
-          const bars = [['season 1', m1, 'gold'], ['season 2', m2, 'red'], ['conditional mean', (1 - l) * m1, 'purple']];
-          const xmin = Math.min(-0.25, m2 * 1.15), xmax = Math.max(3, m1 * 1.15);
-          const barX = x => 0.45 + 0.4 * (x - xmin) / (xmax - xmin), zero = barX(0);
-          B.line(zero, 0.2, zero, 2.7, { color: 'muted', width: 1 });
-          bars.forEach(([label, value, color], i) => {
-            const y = 2.3 - 0.8 * i, end = barX(value);
-            B.text(label, 0.43, y, { align: 'right', size: 11.5 });
-            B.rect(Math.min(zero, end), y - 0.23, Math.max(zero, end), y + 0.23, { fill: color, fillAlpha: 0.75, stroke: false });
-            B.text(v.fix(value, 2), 0.88, y, { align: 'left', size: 11.5, weight: 700, color });
-          });
+          hbars(B, [{ label: 'season 1', value: m1, color: 'gold', note: v.fix(m1, 2) }, { label: 'season 2', value: Math.max(0, m2), color: 'red', note: v.fix(m2, 2) }, { label: 'predicted (1 − ℓ)×', value: (1 - l) * m1, color: 'purple', note: v.fix((1 - l) * m1, 2) }],
+            { x0: 0.36, x1: 0.82, yTop: 2.7, rowH: 0.8, max: Math.max(3, m1 * 1.05), size: 11.5 });
           st = { m1, m2, l };
         });
         v.readout(() => {
           const { m1, m2, l } = st; if (m1 == null) return '';
           const you = ans == null ? 'Answer the instructors’ question first. ' : ans === 1 ? 'Right: chance alone produces the pattern. ' : 'That is the instructors’ mistake: chance alone produces the pattern. ';
-          return you + `In this normal skill-plus-luck model, ℓ = ${v.fix(l, 2)}: the top ${kS.value} averaged **${v.fix(m1, 2)}** in season 1 and **${v.fix(m2, 2)}** in season 2. Their conditional expected season-2 average is $(1-\\ell)\\times${v.fix(m1, 2)} = ${v.fix((1 - l) * m1, 2)}$; the observed change is ${v.fix(m2 - m1, 2)} standard deviations, with no change in anyone's skill.`;
+          return you + `With ℓ = ${v.fix(l, 2)} the top ${kS.value} averaged **${v.fix(m1, 2)}** in season 1 and **${v.fix(m2, 2)}** in season 2 (prediction $(1-\\ell)\\times${v.fix(m1, 2)} = ${v.fix((1 - l) * m1, 2)}$): a drop of ${v.fix(m1 - m2, 2)} standard deviations with no change in anyone's skill.`;
         });
       },
     },
     // ------------------------------------------------------------------ 3.13
     {
       num: '3.13', kind: 'Phenomenon', name: 'Overconfidence and calibration',
-      statement: String.raw`A judge is **calibrated** if events assigned probability $q$ happen a fraction $q$ of the time: if $Y$ is the outcome indicator and $Q$ the reported probability, calibration means $P(Y=1\mid Q)=Q$ almost surely; for interval estimates, $90\%$ confidence intervals should contain the truth 9 times in 10. People's intervals are much too narrow: in the studies Tversky and Kahneman (1974) summarized, the true value fell outside subjects' 98% intervals (between their 1st and 99th percentiles) about 30% of the time instead of 2%, for naive and expert subjects alike and despite incentives through proper scoring rules. This **overprecision** is the most robust form of overconfidence; the others are overestimating one's own performance and overplacement (believing oneself better than others).`,
+      statement: String.raw`A judge is **calibrated** if events assigned probability $q$ happen a fraction $q$ of the time; for interval estimates, $90\%$ confidence intervals should contain the truth 9 times in 10. People's intervals are much too narrow: in the studies Tversky and Kahneman (1974) summarized, the true value fell outside subjects' 98% intervals (between their 1st and 99th percentiles) about 30% of the time instead of 2%, for naive and expert subjects alike and despite incentives through proper scoring rules. This **overprecision** is the most robust form of overconfidence; the others are overestimating one's own performance and overplacement (believing oneself better than others).`,
       scope: String.raw`Overprecision is robust for interval estimates of quantities. Overestimation and overplacement depend on task difficulty: people overestimate themselves on hard tasks and underestimate on easy ones (the hard–easy effect). Calibration improves with fast, clear feedback, as in weather forecasting.`,
-      idea: String.raw`Interval estimates are typically made by anchoring on a best guess and adjusting outward (behav-3.4); the adjustment is insufficient, so the intervals are too tight. People also fail to imagine how their knowledge could be wrong. A good check is to count: for $n$ **independent** intervals, each with coverage 90%, the number of hits is $\text{Bin}(n,0.9)$, so with 10 questions 9 or 10 hits is typical and 6 or fewer happens with probability under 2%. Marginal 90% coverage alone does not imply a binomial hit count: errors across questions can be correlated.`,
-      caption: String.raw`For each of the ten questions, drag the two handles to make an interval you are 90% sure contains the true value, then press **lock in** to see the answer (green inside, red outside). Move between questions with the buttons. The right panel counts your hits against the binomial distribution of hits under an ideal independent-90%-coverage model. The fixed quiz can have correlated errors; its displayed tail probability is a model comparison, not a diagnostic test of your calibration.`,
-      deps: ['stat-2.1', 'prob-2.1.1a'], refs: ['W&K ch. 4'], tags: ['overconfidence', 'calibration', 'probability'],
+      idea: String.raw`Interval estimates are typically made by anchoring on a best guess and adjusting outward (behav-3.4); the adjustment is insufficient, so the intervals are too tight. People also fail to imagine how their knowledge could be wrong. A good check is to count: for $n$ well-calibrated 90% intervals the number of hits is $\text{Bin}(n,0.9)$, so with 10 questions 9 or 10 hits is typical and 6 or fewer happens with probability under 2%.`,
+      caption: String.raw`For each of the ten questions, drag the two handles to make an interval you are 90% sure contains the true value, then press **lock in** to see the answer (green inside, red outside). Move between questions with the buttons. The right panel counts your hits against the binomial distribution of hits for a calibrated judge who has answered the same number of questions; most people land far to the left.`,
+      deps: [], refs: ['W&K ch. 4'], tags: ['overconfidence', 'calibration', 'probability'],
       see: ['behav-3.4', 'behav-3.14'],
       credit: 'Alpert & Raiffa, 1969 (published 1982); Lichtenstein, Fischhoff & Phillips, 1982',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Overconfidence_effect' },
@@ -205,8 +190,8 @@ export default {
           ['bones in an adult human skeleton', 206, 50, 500], ['member states of the United Nations', 193, 50, 300], ['speed of sound in air at 20 °C (m/s)', 343, 100, 1000],
           ['keys on a standard piano', 88, 40, 150], ['year the Magna Carta was sealed', 1215, 800, 1600], ['mean diameter of the Earth (km)', 12742, 2000, 40000], ['melting point of iron (°C)', 1538, 300, 4000]];
         let q = 0; const iv = Qs.map(([, , lo, hi]) => [lo + 0.35 * (hi - lo), lo + 0.55 * (hi - lo)]), locked = Qs.map(() => false), touched = Qs.map(() => false);
-        const S = v.stage({ x: [0, 1], y: [0.15, 1], axes: false, height: 190, full: true });
-        const B = v.stage({ x: [-0.5, 10.5], y: [0, 0.5], axes: 'box', gutter: true, height: 250, weight: 1.2, xlabel: 'hits among locked-in intervals', ylabel: 'probability', title: 'your hits vs independent 90% coverage' });
+        const S = v.stage({ x: [0, 1], y: [0.15, 1], axes: false, height: 170, full: true });
+        const B = v.stage({ x: [-0.5, 10.5], y: [0, 0.5], axes: 'box', gutter: true, height: 250, weight: 1.2, xlabel: 'hits among locked-in intervals', ylabel: 'probability', title: 'your hits vs a calibrated judge' });
         const T = v.stage({ x: [0, 1], y: [0, 10], axes: false, height: 250, title: 'your ten intervals (scaled to each question’s range)' });
         const X0 = 0.06, X1 = 0.94, toX = (val) => X0 + ((val - Qs[q][2]) / (Qs[q][3] - Qs[q][2])) * (X1 - X0), fromX = (x) => Qs[q][2] + ((clamp(x, X0, X1) - X0) / (X1 - X0)) * (Qs[q][3] - Qs[q][2]);
         const hL = S.handle(toX(iv[0][0]), 0.45, { color: 'blue', constrain: (x) => [clamp(x, X0, X1), 0.45], label: 'low', labelPos: 's' });
@@ -228,7 +213,7 @@ export default {
           const hit = tru >= a && tru <= b;
           S.rect(toX(a), 0.4, toX(b), 0.5, { fill: locked[q] ? (hit ? 'green' : 'red') : 'blue', fillAlpha: 0.35, stroke: false });
           S.text(`your 90% interval: ${fmtv(a)} to ${fmtv(b)}${touched[q] ? '' : ' (drag the handles)'}`, 0.5, 0.7, { align: 'center', size: 12.5, color: 'blue', weight: 600 });
-          if (locked[q]) { S.line(toX(tru), 0.36, toX(tru), 0.6, { color: hit ? 'green' : 'red', width: 2.5 }); S.text(`true: ${fmtv(tru)}`, toX(tru), 0.62, { align: 'center', size: 12, weight: 700, color: hit ? 'green' : 'red' }); }
+          if (locked[q]) { S.line(toX(tru), 0.36, toX(tru), 0.6, { color: hit ? 'green' : 'red', width: 2.5 }); S.text(`true: ${fmtv(tru)}`, toX(tru), 0.62, { dy: -6, align: 'center', size: 12, weight: 700, color: hit ? 'green' : 'red' }); }
           // overview
           Qs.forEach(([, t, l0, h0], i) => {
             const y = 9.5 - i, s = (x) => 0.12 + 0.84 * ((x - l0) / (h0 - l0)), [aa, bb] = [Math.min(...iv[i]), Math.max(...iv[i])], ok = t >= aa && t <= bb;
@@ -241,14 +226,14 @@ export default {
           let ymax = 0; const pb = []; for (let k = 0; k <= n; k++) { pb.push(binomPmf(n, k, 0.9)); ymax = Math.max(ymax, pb[k]); }
           B.setView([-0.5, 10.5], [0, n ? Math.max(0.3, ymax * 1.2) : 0.5]);
           if (n) { pb.forEach((p, k) => B.rect(k - 0.38, 0, k + 0.38, p, { fill: k === hits ? 'red' : 'green', fillAlpha: k === hits ? 0.9 : 0.45, stroke: false })); B.text(`you: ${hits} of ${n}`, hits, ymax * 1.12, { align: 'center', size: 11.5, weight: 700, color: 'red' }); }
-          else { const p10 = []; for (let k = 0; k <= 10; k++) p10.push(binomPmf(10, k, 0.9)); B.setView([-0.5, 10.5], [0, 0.5]); p10.forEach((p, k) => B.rect(k - 0.38, 0, k + 0.38, p, { fill: 'green', fillAlpha: 0.3, stroke: false })); B.text('independent 90% coverage, 10 questions', 0.2, 0.42, { size: 11.5, weight: 600, color: 'green' }); B.text('lock in intervals to add yours', 0.2, 0.37, { size: 11, color: 'muted' }); }
+          else { const p10 = []; for (let k = 0; k <= 10; k++) p10.push(binomPmf(10, k, 0.9)); B.setView([-0.5, 10.5], [0, 0.5]); p10.forEach((p, k) => B.rect(k - 0.38, 0, k + 0.38, p, { fill: 'green', fillAlpha: 0.3, stroke: false })); B.text('a calibrated judge, 10 questions', 0.2, 0.42, { size: 11.5, weight: 600, color: 'green' }); B.text('lock in intervals to add yours', 0.2, 0.37, { size: 11, color: 'muted' }); }
           let cdf = 0; for (let k = 0; k <= hits; k++) cdf += pb[k] || 0;
           st = { n, hits, cdf };
         });
         v.readout(() => {
           const { n, hits, cdf } = st; if (n == null) return '';
-          if (!n) return 'Set an interval and lock it in to start. The bars assume independent intervals with 90% coverage; in the studies Tversky and Kahneman (1974) summarized, 98% intervals missed about 30% of the time.';
-          return `Hit rate **${hits} of ${n}** (${pct(hits / n)}) against the 90% you intended. Under independent 90% coverage, P(at most ${hits} hits in ${n}) ${cdf < 0.001 ? '< 0.001' : '= ' + v.fix(cdf, 3)}${cdf < 0.05 ? ' — a small lower tail under this model.' : '.'} Correlated errors can change this benchmark; the fixed quiz does not diagnose calibration. In the studies Tversky and Kahneman (1974) summarized, 98% intervals missed the truth about 30% of the time.`;
+          if (!n) return 'Set an interval and lock it in to start. A calibrated judge’s 90% intervals catch the truth 9 times in 10; in the studies Tversky and Kahneman (1974) summarized, 98% intervals missed about 30% of the time.';
+          return `Hit rate **${hits} of ${n}** (${pct(hits / n)}) against the 90% you intended. For a calibrated judge, P(at most ${hits} hits in ${n}) = ${v.fix(cdf, 3)}${cdf < 0.05 ? ' — **overprecision**: your intervals are too narrow.' : '.'} In the studies Tversky and Kahneman (1974) summarized, 98% intervals missed the truth about 30% of the time.`;
         });
       },
     },
@@ -456,7 +441,7 @@ export default {
       idea: String.raw`A heuristic trades bias for variance. Regression estimates one weight per cue and, from a small training sample, those weights are noisy, so its out-of-sample accuracy falls well below its in-sample fit. Take-the-best estimates only an ordering of the cues, which is learned reliably from few examples; in environments where each cue outweighs all lower cues combined, the ordering is all that matters. This is the ecological-rationality answer to the biases programme: a shortcut is not an error if it is matched to the environment (behav-3.1).`,
       caption: String.raw`Top: two cities of a simulated 83-city world whose nine cues are generated to mimic Gigerenzer and Goldstein's Table 1 (the validities actually realized are computed and shown in the header). Click the city you think is larger; take-the-best's search is highlighted: it checks the cues from left to right and stops at the first column where the cities differ. Bottom: accuracy on held-out pairs as the training set grows, averaged over 12 random splits, for take-the-best, tallying and multiple regression; the dotted line is regression's fit to its own training data.`,
       deps: ['behav-3.1'], refs: ['W&K ch. 4'], tags: ['heuristics', 'ecological rationality', 'prediction'],
-      see: ['behav-3.19', 'stat-3.2'],
+      see: ['behav-3.19'],
       credit: 'Gigerenzer & Goldstein, 1996',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Take-the-best_heuristic' },
       viz(v) {

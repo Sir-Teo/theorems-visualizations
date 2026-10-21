@@ -1,7 +1,7 @@
 // Rudin, Functional Analysis — Chapter 7 (part 2): Plancherel and tempered distributions
 //
 // Conventions as in part 1: dm(x) = (2π)^{-1/2} dx, f̂(t) = ∫ f(x) e^{-ixt} dm(x); a function g is identified with the
-// distribution φ ↦ ∫ g φ dm. Full second-edition source review is recorded in docs/verification/fa-source-review.md.
+// distribution φ ↦ ∫ g φ dm. Numbering recalled, not checked against the book; uncertain items carry `verify: true`.
 
 const RT2PI = Math.sqrt(2 * Math.PI);
 /** Trapezoid rule on [a, b] with n panels. */
@@ -64,6 +64,7 @@ $$(f*g)^\wedge=\hat f\,\hat g,\qquad(fg)^\wedge=\hat f*\hat g .$$`,
       caption: String.raw`$f(x)=e^{-ax^2/2}e^{ibx}$ and $g(x)=\operatorname{sech}x$, both in $\mathscr S_1$, with known transforms $\hat f(t)=a^{-1/2}e^{-(t-b)^2/2a}$ and $\hat g(t)=\sqrt{\pi/2}\,\operatorname{sech}(\pi t/2)$. Left: $\operatorname{Re}f$, $g$ and the product $\operatorname{Re}(fg)$. Right: the transform of the product computed by quadrature in $x$ (purple line), against the convolution $\hat f*\hat g$ computed by quadrature in $t$ (green dots). Change the width and the modulation: the two computations agree.`,
       deps: ['fa-7.7', 'fa-7.4', 'fa-7.2'],
       tags: ['Fourier transform', 'Schwartz space', 'convolution'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const aS = v.slider('width parameter $a$', 0.15, 3, 0.6, { step: 0.01 });
@@ -99,15 +100,16 @@ $$(f*g)^\wedge=\hat f\,\hat g,\qquad(fg)^\wedge=\hat f*\hat g .$$`,
       num: '7.9',
       kind: 'Theorem',
       name: 'The Plancherel theorem',
-      credit: 'Plancherel',
+      credit: 'Plancherel, 1910',
       statement: String.raw`There is a linear isometry $\Psi$ of $L^2(\R^n)$ onto $L^2(\R^n)$, uniquely determined by
 $$\Psi f=\hat f\qquad(f\in\mathscr S_n).$$
 It satisfies $\langle\Psi f,\Psi g\rangle=\langle f,g\rangle$, agrees with the Fourier transform on $L^1\cap L^2$, and $\Psi f$ is the $L^2$-limit of the truncated transforms $\int_{|x|\le A}f\,e_{-t}\,dm_n$ as $A\to\infty$.`,
       idea: String.raw`For $f,g\in\mathscr S_n$, the inversion theorem and Fubini give $\int f\bar g\,dm_n=\int\hat f\,\bar{\hat g}\,dm_n$: the transform is an isometry of $\mathscr S_n$ in the $L^2$ norm. Since $\mathscr S_n$ is dense in $L^2$, it extends uniquely to an isometry $\Psi$ of $L^2$ into $L^2$; its range is closed and contains $\mathscr S_n$, hence is all of $L^2$. For $f\in L^1\cap L^2$, approximating by Schwartz functions in both norms shows $\Psi f=\hat f$.`,
-      caption: String.raw`Two functions in $L^2$ but not in $L^1$: $\operatorname{sinc}x=\frac{\sin x}{x}$, whose transform is the box $\sqrt{\pi/2}\,1_{[-1,1]}$, and $\frac1{1+ix}$, whose transform is $\sqrt{2\pi}\,e^{t}$ for $t<0$ and $0$ for $t>0$. The integral defining $\hat f$ does not converge absolutely, so truncate it to $|x|\le A$ (left, shaded). Right: the truncated transforms (purple) overshoot at the jumps — Gibbs — and never converge uniformly, but they converge in $L^2$ to $\Psi f$ (green). Bottom: a sampled $L^2$ error restricted to $|t|\le8$ against $A$; the readout checks $\|\Psi f\|_2=\|f\|_2$.`,
+      caption: String.raw`Two functions in $L^2$ but not in $L^1$: $\operatorname{sinc}x=\frac{\sin x}{x}$, whose transform is the box $\sqrt{\pi/2}\,1_{[-1,1]}$, and $\frac1{1+ix}$, whose transform is $\sqrt{2\pi}\,e^{t}$ for $t<0$ and $0$ for $t>0$. The integral defining $\hat f$ does not converge absolutely, so truncate it to $|x|\le A$ (left, shaded). Right: the truncated transforms (purple) overshoot at the jumps — Gibbs — and never converge uniformly, but they converge in $L^2$ to $\Psi f$ (green). Bottom: $\|\varphi_A-\Psi f\|_2$ against $A$; the readout checks $\|\Psi f\|_2=\|f\|_2$.`,
       deps: ['fa-7.7', 'fa-7.8', 'fa-7.4'],
       see: ['rca-9.13'],
       tags: ['Fourier transform', 'Plancherel', 'L2'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const F = {
@@ -119,7 +121,7 @@ It satisfies $\langle\Psi f,\Psi g\rangle=\langle f,g\rangle$, agrees with the F
         const AS = v.slider('truncation $A$', 0, 1.6, 0.9, { step: 0.01, fmt: (x) => `A = ${v.fmt(10 ** x, 3)}` });
         const Lx = v.stage({ x: [-25, 25], y: [-0.7, 1.15], height: 230, axes: true, title: '$f$ and the window $|x|\\le A$' });
         const Rt = v.stage({ x: [-3.5, 3.5], y: [-0.4, 2.9], height: 230, axes: true, title: 'truncated transforms $\\varphi_A$ and $\\Psi f$' });
-        const B = v.stage({ x: [0, 1.6], y: [-2, 0.5], height: 170, full: true, axes: 'box', xticks: [[0, '1'], [1, '10'], [1.6, '40']], xlabel: 'A', title: 'sampled $L^2$ error on $|t|\\le8$ against $A$ (log–log)' });
+        const B = v.stage({ x: [0, 1.6], y: [-2, 0.5], height: 170, full: true, axes: 'box', xticks: [[0, '1'], [1, '10'], [1.6, '40']], xlabel: 'A', title: '$\\|\\varphi_A-\\Psi f\\|_2$ against $A$ (log–log)' });
         const ts = M.linspace(-8, 8, 401), dt = ts[1] - ts[0];
         const AK = M.linspace(0, 1.6, 17).map((l) => 10 ** l);
         // for 1/(1+ix): all truncations at once, by one cumulative trapezoid pass per t
@@ -163,7 +165,7 @@ It satisfies $\langle\Psi f,\Psi g\rangle=\langle f,g\rangle$, agrees with the F
         });
         v.readout(() => {
           const s = st;
-          return `$A=${v.fix(s.A, 2)}$: $\\|\\varphi_A-\\Psi f\\|_{L^2([-8,8])} \\approx ${v.fix(s.e, 4)}$, overshoot $\\max\\varphi_A/\\max\\Psi f = ${v.fix(s.over, 3)}$ (it does not tend to $1$). Energies: $\\|f\\|_2 = (\\pi/2)^{1/4} = ${v.fix(s.nf, 4)}$, $\\|\\Psi f\\|_2 = ${v.fix(s.nHat, 4)}$ (on $|t|\\le8$).`;
+          return `$A=${v.fix(s.A, 2)}$: $\\|\\varphi_A-\\Psi f\\|_2 = ${v.fix(s.e, 4)}$, overshoot $\\max\\varphi_A/\\max\\Psi f = ${v.fix(s.over, 3)}$ (it does not tend to $1$). Energies: $\\|f\\|_2 = (\\pi/2)^{1/4} = ${v.fix(s.nf, 4)}$, $\\|\\Psi f\\|_2 = ${v.fix(s.nHat, 4)}$ (on $|t|\\le8$).`;
         });
       },
     },
@@ -177,6 +179,7 @@ It satisfies $\langle\Psi f,\Psi g\rangle=\langle f,g\rangle$, agrees with the F
       caption: String.raw`Cut $f$ off smoothly outside $|x|\le R$ (green) and measure the error $f-f\chi_R$ (red) in the $\mathscr S$-norms $\|h\|_N=\max_{k\le N}\sup(1+x^2)^N|h^{(k)}|$. Bottom: these norms against $R$. For Schwartz functions they collapse fast for every $N$ — this is the density of $\mathscr D$ in $\mathscr S$. For $1/(1+x^2)$, which is not in $\mathscr S_1$, only $N=0$ goes to zero: with the weight $(1+x^2)$ the tail never becomes small.`,
       deps: ['fa-7.3', 'fa-7.4', 'fa-6.3'],
       tags: ['Schwartz space', 'density', 'tempered distributions'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const F = {
@@ -229,7 +232,7 @@ It satisfies $\langle\Psi f,\Psi g\rangle=\langle f,g\rangle$, agrees with the F
         });
         v.readout(() => {
           const s = st;
-          return `$\\|f-f\\chi_R\\|_0 = ${v.sci(s.cur[0] + 1e-300, 2)}$, $\\;\\|\\cdot\\|_1 = ${v.sci(s.cur[1] + 1e-300, 2)}$, $\\;\\|\\cdot\\|_2 = ${v.sci(s.cur[2] + 1e-300, 2)}$` + (s.key === 'rat' ? ' — for this rational function the order-one weighted norm stays bounded away from zero, while the true order-two weighted norm is infinite; its displayed finite-window value is only a sample. Thus $f\\notin\\mathscr S_1$.' : ' — all tend to $0$.');
+          return `$\\|f-f\\chi_R\\|_0 = ${v.sci(s.cur[0] + 1e-300, 2)}$, $\\;\\|\\cdot\\|_1 = ${v.sci(s.cur[1] + 1e-300, 2)}$, $\\;\\|\\cdot\\|_2 = ${v.sci(s.cur[2] + 1e-300, 2)}$` + (s.key === 'rat' ? ' — the weighted norms stay of size $1$: $f\\notin\\mathscr S_1$, so it is not a limit of test functions there.' : ' — all tend to $0$.');
         });
       },
     },
@@ -239,9 +242,10 @@ It satisfies $\langle\Psi f,\Psi g\rangle=\langle f,g\rangle$, agrees with the F
       name: 'Tempered distributions',
       statement: String.raw`A **tempered distribution** is a continuous linear functional on $\mathscr S_n$; their space is $\mathscr S_n'$. By 7.10 these are exactly the distributions $u\in\mathscr D'(\R^n)$ that extend continuously to $\mathscr S_n$, i.e. that satisfy an estimate $|u(\varphi)|\le C\|\varphi\|_N$ for one $N$ and all $\varphi\in\mathscr D(\R^n)$. Examples: distributions with compact support; functions $f$ with $\int(1+|x|^2)^{-N}|f|\,dm_n<\infty$ for some $N$ (e.g. every $f\in L^p$, $1\le p\le\infty$, and every polynomial); measures of polynomial growth; and all derivatives of these.`,
       idea: String.raw`"Tempered" means: of at most polynomial growth, in a weak sense. $e^x$ is a distribution on $\R$ but not tempered — pairing it with Gaussians centred far out produces exponentially large values, which no polynomial weight can control. Yet $e^x\cos(e^x)$, just as large, *is* tempered: it is the derivative of the bounded function $\sin(e^x)$.`,
-      caption: String.raw`Probe a candidate $u$ with the Schwartz functions $\varphi_c(x)=e^{-2(x-c)^2}$ moving off to infinity; the seminorms $\|\varphi_c\|_N$ grow only like $c^{2N}$, so for a tempered $u$, $|u(\varphi_c)|$ grows at most polynomially. Bottom, on log–log axes: $|u(\varphi_c)|$ against $1+c$, with reference slopes $1,2,3,4$. Polynomials approach their fixed growth slopes and logarithms grow more slowly; $e^x$ bends upward past every slope — not tempered — while the wildly oscillating $e^x\cos e^x$ collapses: oscillation cancels growth.`,
+      caption: String.raw`Probe a candidate $u$ with the Schwartz functions $\varphi_c(x)=e^{-2(x-c)^2}$ moving off to infinity; the seminorms $\|\varphi_c\|_N$ grow only like $c^{2N}$, so for a tempered $u$, $|u(\varphi_c)|$ grows at most polynomially. Bottom, on log–log axes: $|u(\varphi_c)|$ against $1+c$, with reference slopes $1,2,3,4$. Polynomials and logarithms give straight lines; $e^x$ bends upward past every slope — not tempered — while the wildly oscillating $e^x\cos e^x$ collapses: oscillation cancels growth.`,
       deps: ['fa-7.10', 'fa-6.7'],
       tags: ['tempered distributions', 'Schwartz space'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const U = {
@@ -255,12 +259,12 @@ It satisfies $\langle\Psi f,\Psi g\rangle=\langle f,g\rangle$, agrees with the F
         const top = v.stage({ x: [-1, 7], y: [-3, 3], height: 210, full: true, axes: true, title: '$u$ (purple, scaled to fit) and the probe $\\varphi_c$ (blue)' });
         const bot = v.stage({ x: [0, Math.log10(31)], y: [-6, 14], height: 260, full: true, axes: 'box', xlabel: '1+c', xticks: [[0, '1'], [Math.log10(2), '2'], [Math.log10(5), '5'], [1, '10'], [Math.log10(31), '31']], title: '$|u(\\varphi_c)|$ against $1+c$ (log–log); dashed: slopes $1,\\dots,4$' });
         const pair = (key, c) => {
-          if (key === 'exp') return Math.exp(c + 1 / 8) / 2;
-          if (key === 'poly') return trap((x) => x ** 3 * Math.exp(-2 * (x - c) ** 2), c - 5, c + 5, 400) / RT2PI;
-          if (key === 'log') return trap((x) => Math.log(Math.abs(x) + 1e-12) * Math.exp(-2 * (x - c) ** 2), c - 5, c + 5, 2000) / RT2PI;
+          if (key === 'exp') return Math.exp(c + 1 / 8) * Math.sqrt(Math.PI / 2);
+          if (key === 'poly') return trap((x) => x ** 3 * Math.exp(-2 * (x - c) ** 2), c - 5, c + 5, 400);
+          if (key === 'log') return trap((x) => Math.log(Math.abs(x) + 1e-12) * Math.exp(-2 * (x - c) ** 2), c - 5, c + 5, 2000);
           // e^x cos(e^x) dx = cos(s) ds with s = e^x
           const lo = Math.exp(c - 4.5), hi = Math.exp(c + 4.5), n = Math.min(400000, Math.ceil((hi - lo) * 4) + 400);
-          return simpson((s) => Math.cos(s) * Math.exp(-2 * (Math.log(s) - c) ** 2), lo, hi, n) / RT2PI;
+          return simpson((s) => Math.cos(s) * Math.exp(-2 * (Math.log(s) - c) ** 2), lo, hi, n);
         };
         const cache = new Map();
         const curve = (key) => {
@@ -305,6 +309,7 @@ Since $\varphi\mapsto\hat\varphi$ is a continuous linear map of $\mathscr S_n$ o
       idea: String.raw`The definition is forced by the "multiplication formula" $\int\hat f\varphi\,dm_n=\int f\hat\varphi\,dm_n$ for $f\in L^1$ (Fubini): if $u$ is a function, $\hat u$ is its ordinary transform. It cannot be made on all of $\mathscr D'$, because $\hat\varphi$ of a test function is never a test function (unless $\varphi=0$) — this is why $\mathscr S_n$, not $\mathscr D$, is the right space of test functions here.`,
       deps: ['fa-7.11', 'fa-7.7'],
       tags: ['tempered distributions', 'Fourier transform'],
+      verify: true,
     },
     {
       num: '7.15',
@@ -317,6 +322,7 @@ where $D_\alpha=i^{-|\alpha|}\partial^\alpha$. For example $\hat\delta=1$, $\hat
       caption: String.raw`A table of transform pairs, each checked from the definition. Choose $u$ (left, in $x$) and a Gaussian test function $\varphi$ in $t$ (right; drag its centre, set its width). The left panel also shows $\hat\varphi$, the function that $u$ actually gets applied to. The readout compares $u(\hat\varphi)$, computed by quadrature, with the claimed $\hat u$ applied to $\varphi$ — a constant, a point mass, $i\delta'$, a principal value or a shifted $\delta$.`,
       deps: ['fa-7.14', 'fa-7.7', 'fa-7.4'],
       tags: ['tempered distributions', 'Fourier transform'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const U = {

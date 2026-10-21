@@ -1,0 +1,22 @@
+# Climate energy-balance source follow-up
+
+Ready for independent integration: **climate-4.1, climate-4.4**. Their `verify:true` flags remain for root to clear with the queue after independent review. Adjacent 4.2/4.3 are the next owned subset, currently unchanged.
+
+## Sources and scope
+
+Official [IPCC AR6 WG1 Chapter7](https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_Chapter07.pdf), 132 PDF pages; local `/tmp/atlas-climate-ar6-ch7.pdf`; SHA256 `470d2662fdd212421617a32c684e8106a4221a7235bdfff40a278eff02febfa9`. Relevant complete treatments read: Box7.1 pp.931–933 (energy-balance sign/equilibrium definitions), §7.4.1 pp.967–968 (decomposition/limitations), §7.4.2.1 pp.968–969 (Planck), §7.4.2.3 pp.970–971 (surface/planetary albedo and assessed effect), §7.4.2.7 pp.977–978 and Table7.10 p.978 (assessment). PDF page = printed page−922. Table and albedo p.971 rendered and visually inspected. Also read §7.4.2.2 for upcoming radiative subset; this report does not claim the entire 132-page chapter read.
+
+The assessment itself is the primary source for its assessed values, not a reconstruction of the historical original papers it cites. Removed unverified Black/Hansen/Croll priority credits from these routine algebra/phenomenon items. Historical original-paper verification is not implied.
+
+## Corrections
+
+4.1 retains the already corrected separation of continuous stability (`f<1`) from iterative geometric convergence (`|f|<1`). Rewords the series as algebraic iteration rather than physical time integration. All actual rounds, including explosive `f=1.3,n=30`, determine the plot range. Stable selected gain is fully shown, rather than capped at12; finite gain-curve display cutoff moves above it. AR6 feedback components and net check: 1.30+.35+.42−.01=2.06; restoring3.22−2.06=1.16; gain3.22/1.16≈2.776. The exactly unit feedback case now says increments do not decay rather than falsely saying every increment increases.
+
+4.4 fixes the missing minus sign in `ASR'`, distinguishes surface and effective planetary albedo and removes the claim that instability necessarily selects a Snowball state. Removes the misleading smooth saddle-node guarantee for a clipped ice law and the false≈.035 threshold; actual local slope threshold at288K is≈.0274. Every equilibrium is now retained with its actual stability, instead of choosing one as an outcome without initial history. Piecewise quartic roots split at ice-law corners and the interior derivative zero, then bisect monotone intervals; tangent roots are retained. The old0.25K sign scan missed narrow root pairs (e.g. k=.056,F=−6 gives roots289.75837 and289.76277K) and could not detect tangencies. The branch plot is parametrized by temperature rather than repeatedly root-searching coarse forcing steps. Forcing axes cover the actual +12 slider maximum, and equilibrium/current-state points have margins. Chosen effective albedos and ice response are explicitly illustrative, not inferred surface reflectances or a climate tipping-point prediction.
+
+## Verification
+
+- `node --test tests/verification-climate-source-audit-energy.test.mjs`: **4 groups pass**: direct power sums/stability over48 configurations;992 ice response/forcing cases with residuals and independent3000-interval scan where root separation permits; an interior tangent case missed by sign-only searches; exact constant-albedo branch, derivative sign and two-stable-state scenario. A finite grid cannot certify all roots; piecewise monotonicity gives exhaustive partitioning and the tests explicitly recognize grid-missed narrow pairs.
+- `node tests/verification-climate-source-audit-energy.mjs`: **4 native light/dark groups pass**, gain8 actual slider corners plus exact AR6 button and179 keyboard steps to f=.99; ice4 forcing/response corners plus actual AR6 button. Full bar/curve/dot extent assertions and independent equilibrium residuals. No runtime/TeX/blank-canvas errors. Tiny caption/readout wording corrections after final run do not affect calculations.
+- All4 `/tmp/atlas-climate-energy-{4.1,4.4}-{light,dark}.png` inspected: stable large gain visible, no corner clipping, distinct cold/warm branches and full readouts. Final gain/ice lightdark screenshots are retained; labels in screenshots differ only by subsequent wording removal of an unused ice-edge promise and replacement of “runaway” with “unstable”.
+- Scoped diff whitespace check clean. No central files, shared helpers, package changes or global build. Wave5 remains gated.

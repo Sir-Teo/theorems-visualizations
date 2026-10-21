@@ -1,0 +1,5 @@
+# NEURO existing dependency assertions
+
+Coordinator explicitly authorized this separate test-only maintenance after the first full NEURO run passed59of61tests. The two failing assertions in `verification-neuro-compartments.test.mjs` and `verification-neuro-conduction.test.mjs` matched exact historical dependency-array strings. Legitimate direct additions nla4.10 and pma9.15 caused those strings to stop matching. All substantive numerical, mathematical, source, scope and neighbouring-model assertions passed.
+
+The checks now parse the actual raw dependency array and require each original prerequisite via inclusion. They continue to fail if an essential original input is removed, while allowing independently reviewed legitimate additions. Every other assertion and test is unchanged. The focused12tests pass. Original failure evidence is `/tmp/atlas-new-arch-source/neuro-prereqs/existing-tests.log`; focused rerun is `test-maintenance.log`. This explicit maintenance does not snapshot complete historical objects/review flags in default tests or change content/runtime.

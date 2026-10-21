@@ -106,21 +106,20 @@ export function sphereMid(R, phi1, m) { return Array.from({ length: m + 1 }, (_,
  * Load model for a groin (cross) vault of semicircular profile (radius R, bay 2R x 2R), shell thickness t, unit weight
  * gamma, and the barrel vault of the same radius and thickness. Idealisation: each web is cut into slices that lean on
  * the groin, so the whole weight of the web reaches the groin ribs, which carry it to the four corner piers.
- * Groin vertical loads are integrated from the upper-envelope surface. Their horizontal web reactions are omitted; the diagonal thrust is only the corresponding vertical-load arch surrogate.
+ * Everything is computed by numerical integration of the surface weight along the groin (not from a closed form).
  */
 export function crossVault(R, t, gamma, n = 400) {
-  // Vertical-load surrogate: each web strip spans between x=-s and x=s.
-  // Its arc length is 2R asin(s/R); each end receives half, and two webs meet at a groin.
-  // Horizontal web-arch reactions are omitted, so this is not a full vault equilibrium solution.
-  const q = (s) => 2 * gamma * t * R * Math.asin(Math.min(1, Math.abs(s) / R));
+  // load per unit plan length s along one diagonal (s = x = y from the centre): two webs meet there,
+  // each slice (x from s to R) of the web weighs gamma t R acos(s/R) per unit width
+  const q = (s) => 2 * gamma * t * R * Math.acos(Math.min(1, Math.abs(s) / R));
   let Wd = 0, M0 = 0;
-  for (let i = 0; i < n; i++) { const s = (R * (i + 0.5)) / n; Wd += 2 * q(s) * (R / n); M0 += q(s) * Math.SQRT2 * (R - s) * (R / n); }
+  for (let i = 0; i < n; i++) { const s = (R * (i + 0.5)) / n; Wd += 2 * q(s) * (R / n); M0 += q(s) * Math.SQRT2 * s * (R / n); }
   const Wgroin = 2 * Wd; // two diagonals
   // diagonal arch: semi-ellipse of half-span sqrt2 R and rise R; thrust through the crown at the arch axis (H = M0 / rise)
   const Hd = M0 / R;
   // barrel of the same radius over the same square (length 2R)
-  // Crown moment about the springing: integral of (R-x) times the surface load, not x.
-  const Hb = gamma * t * R * (Math.PI / 2 - 1), Wb = gamma * t * Math.PI * R * 2 * R;
+  let m0 = 0; for (let i = 0; i < n; i++) { const x = (R * (i + 0.5)) / n; m0 += gamma * t * R / Math.sqrt(R * R - x * x) * x * (R / n); }
+  const Hb = m0 / R, Wb = gamma * t * Math.PI * R * 2 * R;
   return { Wgroin, Wbarrel: Wb, pier: Wgroin / 4, Hd, Hbarrel: Hb, Hbarrel_bay: Hb * 2 * R, q };
 }
 
@@ -132,8 +131,7 @@ export function crossVault(R, t, gamma, n = 400) {
  * is q = F / (plan length). Vertical equilibrium of an interior node i, with downward load p_i, reads
  *   sum_j q_ij (z_i - z_j) = p_i,
  * a linear system for the heights z given the force densities and the heights of the boundary nodes (the supports).
- *   Fr(y), Fc(x): force of the row at y / column at x; Fd(u): diagonal force at normalized offset
- *   u = (x -/+ y)/2 in [-1,1] (physical perpendicular offset divided by sqrt2; null: no diagonals).
+ *   Fr(y), Fc(x): force of the row at y / column at x;  Fd(u): force of a diagonal line, u = (x -/+ y)/sqrt2 (null: no diagonals)
  *   p(i, j): downward load of node (i, j);  zb(i, j): support height of a boundary node.
  * Returns {z (n x n), q-edge list, reactions Hx, Hy per boundary node: horizontal thrust vectors}.
  */
@@ -146,8 +144,8 @@ export function tnaSolve(n, Fr, Fc, Fd, p, zb) {
     // i = index in x, j = index in y
     if (i + 1 < n) add(i, j, i + 1, j, Fr(X(j)), 'r');
     if (j + 1 < n) add(i, j, i, j + 1, Fc(X(i)), 'c');
-    if (Fd && i + 1 < n && j + 1 < n) add(i, j, i + 1, j + 1, Fd((X(i) - X(j)) / 2), 'd');
-    if (Fd && i + 1 < n && j - 1 >= 0) add(i, j, i + 1, j - 1, Fd((X(i) + X(j)) / 2), 'e');
+    if (Fd && i + 1 < n && j + 1 < n) add(i, j, i + 1, j + 1, Fd((X(i) - X(j)) / Math.SQRT2), 'd');
+    if (Fd && i + 1 < n && j - 1 >= 0) add(i, j, i + 1, j - 1, Fd((X(i) + X(j)) / Math.SQRT2), 'e');
   }
   const A = Array.from({ length: m }, () => new Float64Array(m)), b = new Float64Array(m);
   for (let i = 1; i < n - 1; i++) for (let j = 1; j < n - 1; j++) b[idx.get(i * n + j)] = p(i, j);

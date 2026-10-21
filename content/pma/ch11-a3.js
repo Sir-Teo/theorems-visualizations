@@ -228,14 +228,14 @@ Immediate properties (Rudin's Remarks 11.23): a bounded measurable $f$ on a set 
       num: '11.24a',
       kind: 'Corollary',
       name: 'Sets of measure zero do not affect integrals',
-      statement: String.raw`Let $A,B\in\mathfrak M$, $B\subset A$ and $\mu(A-B)=0$. If $f$ is measurable and nonnegative on $A$, or $f$ is integrable on $A$, then $\int_Af\,d\mu=\int_Bf\,d\mu$.
+      statement: String.raw`If $A\in\mathfrak M$, $B\subset A$ and $\mu(A-B)=0$, then $\int_Af\,d\mu=\int_Bf\,d\mu$.
 
-Consequently measurable functions that agree almost everywhere — off a set of measure zero — have the same integral over every measurable set where their integrals are defined (Rudin's Remarks 11.25).`,
-      idea: String.raw`$A$ is the disjoint union of $B$ and $A-B$, so by 11.24 $\int_Af=\int_Bf+\int_{A-B}f$. For nonnegative $f$, every simple function below it has integral zero on the null set. For integrable $f$, apply this argument separately to the positive and negative parts.`,
+Consequently functions that agree almost everywhere — off a set of measure zero — have the same integral over every measurable set (Rudin's Remarks 11.25).`,
+      idea: String.raw`$A$ is the disjoint union of $B$ and $A-B$, so by 11.24 $\int_Af=\int_Bf+\int_{A-B}f$, and an integral over a set of measure zero vanishes (every simple function below $f$ has $I_{A-B}(s)=0$).`,
       caption: String.raw`$A=[0,1]$ and $B=A-N$. Shaded red is $\int_{N_n}f$ over the stage-$n$ approximation $N_n\supset N$. For a finite set or the middle-thirds Cantor set it tends to $0$, so $\int_Bf=\int_Af$ — even though the Cantor set is uncountable. For the fat Cantor set, $m(N)=\frac12$, the hypothesis fails and removing $N$ changes the integral.`,
       deps: ['pma-11.24'],
       see: ['rca-1.35', 'rca-1.39'],
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 11.24 and corollary, pp. 315–317; Remarks 11.25'],
+      verify: true,
       tags: ['integration', 'null sets'],
       viz(v) {
         const M = v.M;

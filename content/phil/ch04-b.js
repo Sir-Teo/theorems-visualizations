@@ -1,5 +1,8 @@
 // Philosophy & Reasoning — Chapter 4 (part b): items 4.6–4.10
 
+import { surprisePrior, removeLatestExam } from './source-audit-surprise.js';
+import { barberDiagonal, matchBarberOffDiagonal, outsideBarberWitness } from './source-audit-barber.js';
+
 export default {
   collection: 'phil',
   chapter: 4,
@@ -80,77 +83,76 @@ export default {
       num: '4.7',
       kind: 'Paradox',
       name: 'The barber and Russell’s paradox',
-      statement: String.raw`In a village, a barber shaves **exactly those villagers who do not shave themselves**. Does the barber shave himself? If he does, he is shaved by someone who shaves only non-self-shavers, so he does not. If he does not, then he is a non-self-shaver and is shaved by the barber, himself. So there is no such barber *in the village*: the description is contradictory, not paradoxical in the strict sense. The set-theoretic version is the real paradox: $R=\{x : x\notin x\}$ satisfies $R\in R \iff R\notin R$ (logic 1.6), and naive comprehension says $R$ exists. The barber argument is a diagonal argument on the relation “shaves”, and Russell’s paradox on the relation “$\in$”.`,
-      idea: String.raw`Write the shaving relation as a square table of 0s and 1s, row $i$ recording whom villager $i$ shaves. The condition on the barber $b$ says that row $b$ is the table’s diagonal with every entry flipped. That cannot hold at the diagonal entry $(b,b)$, where the row and its flipped diagonal must disagree. So no row of *any* such table can equal the flipped diagonal, whatever the table is. For the barber the way out is easy: he does not exist, or lives outside the village. For sets, the corresponding escape means that $R$ is not a set, and naive comprehension must be restricted (Zermelo–Fraenkel, type theory).`,
-      caption: String.raw`Row $i$ shows whom villager $i$ shaves (click cells to flip them). The grey row under the table is the flipped diagonal, the pattern the barber's row would need. Choose the barber $b$ and press **Make row $b$ obey the rule**: every entry is set to match except the cell on the diagonal, which cannot match whatever you put in it. Switch **barber lives outside the village** and the difficulty disappears: the barber has his own row below the table, and it matches the flipped diagonal everywhere.`,
+      statement: String.raw`Let $V$ be a nonempty domain of villagers and let $A(i,j)$ mean that $i$ shaves $j$. An internal barber would be a $b\in V$ satisfying $A(b,x)\iff\neg A(x,x)$ for every $x\in V$. Substituting $x=b$ gives $A(b,b)\iff\neg A(b,b)$, impossible for a classical two-valued relation. Thus no such villager exists. Russell's set argument adds an existence assumption: unrestricted comprehension would supply a set $R$ such that $x\in R\iff x\notin x$ for every set $x$. Taking $x=R$ yields $R\in R\iff R\notin R$, so that comprehension principle is inconsistent (logic 1.6).`,
+      idea: String.raw`In a square binary table, the required row is the complement of the diagonal: $t_j=1-A(j,j)$. Every actual row $b$ differs from it at column $b$, regardless of all other entries. Repairing the off-diagonal cells leaves exactly this unavoidable disagreement. An outside barber changes a hypothesis: add a person $o\notin V$ and define $A(o,x)=t_x$ for villagers $x\in V$ only. This is consistent because the rule does not constrain $A(o,o)$. If its quantified domain is enlarged to include $o$, the same contradiction returns. The finite construction is an analogy for a restricted domain, not a set satisfying unrestricted comprehension.`,
+      caption: String.raw`Click a square to change who shaves whom. Gold outlines mark self-shaving cells; orange identifies the chosen row. **Match off-diagonal cells** repairs every entry of that row except its diagonal. **Flip chosen diagonal** changes that cell, but also changes the required entry below it, so they still disagree. Switch to an outside barber to display a constructed row that matches the flipped diagonal over villagers only. The barber selector follows the current number of villagers.`,
       deps: ['logic-1.6'],
-      refs: ['Sainsbury', 'SEP “Russell’s Paradox”'],
-      credit: 'Russell, The Philosophy of Logical Atomism (1918), lecture VII: the barber illustration is explicitly described as having been suggested to him',
-      scope: String.raw`The table is finite; Russell’s paradox applies to sets with unrestricted comprehension, and the argument is the same for any binary relation $R$ with the rule “$b$ is related to exactly those $x$ not related to themselves”.`,
+      refs: ['Russell, The Principles of Mathematics (1903), §§100–106; Klement corrected transcription v0.21', 'Russell, The Philosophy of Logical Atomism, lecture 7 (1918; published 1919), class contradiction and barber illustration'],
+      credit: 'Russell, 1903; barber illustration discussed in his 1918 lecture 7 (published 1919)',
+      scope: String.raw`This is a finite authored binary relation, with classical truth values 0/1 and the barber included in the quantified domain only in the internal case. It does not model set membership, class axioms, or the full universe of sets. The outside row is recomputed from the villagers' diagonal and is not editable; clicks edit the square village relation. Source texts are Klement's corrected transcription of the 1903 printing, rather than a facsimile, and the Russell Society's online lecture transcription.`,
       tags: ['paradox', 'sets', 'diagonal'],
-      links: { sep: 'https://plato.stanford.edu/entries/russell-paradox/' },
+      links: { source: 'https://people.umass.edu/klement/pom/pom.txt', lecture: 'https://users.drew.edu/~jlenz/br-logical-atomism7.html' },
+      verify: false,
       viz(v) {
-        const nS = v.slider('villagers', 3, 7, 5, { int: true });
-        const bS = v.slider('barber $b$', 1, 7, 3, { int: true });
-        const out = v.toggle('barber lives outside the village', false);
-        let seed = 3, M = [];
-        const fill = () => { const r = v.rng(seed); M = Array.from({ length: 7 }, () => Array.from({ length: 7 }, () => (r() < 0.4 ? 1 : 0))); };
-        fill();
-        v.button('Randomize', () => { seed += 7; fill(); });
-        v.button('Make row $b$ obey the rule', () => { const n = nS.value, b = Math.min(bS.value, n) - 1; for (let j = 0; j < n; j++) if (j !== b) M[b][j] = 1 - M[j][j]; });
-        const s = v.stage({ x: [0, 12], y: [0, 10.6], equal: true, axes: false, height: 400, full: true });
-        let hits = [];
+        let barber;
+        const nS = v.slider('villagers n', 3, 7, 5, { int: true, onChange: n => {
+          barber.input.max = String(n); if (barber.value > n) barber.set(n);
+        } });
+        barber = v.slider('chosen villager b', 1, 7, 3, { int: true });
+        const outside = v.toggle('barber outside the villagers', false);
+        let seed = 3, matrix;
+        const randomize = () => { const random = v.rng(seed); matrix = Array.from({ length: 7 }, () => Array.from({ length: 7 }, () => random() < .4 ? 1 : 0)); };
+        randomize();
+        v.button('Randomize village relation', () => { seed += 7; randomize(); });
+        const repair = v.button('Match off-diagonal cells', () => { matrix = matchBarberOffDiagonal(matrix, nS.value, barber.value - 1); });
+        const flip = v.button('Flip chosen diagonal', () => { const b = barber.value - 1; matrix[b][b] = 1 - matrix[b][b]; });
+        const s = v.stage({ x: [.25, 8.95], y: [-3.3, 9.5], equal: true, axes: false, height: 460, full: true, title: 'Village relation: row shaves column' });
         s.onClick((x, y) => {
-          const n = nS.value;
-          const j = Math.floor(x - 3), i = Math.floor(9.4 - y);
-          if (i >= 0 && i < n && j >= 0 && j < n) M[i][j] = 1 - M[i][j];
+          const n = nS.value, j = Math.floor(x - 1.2), i = Math.floor(n + 1.2 - y);
+          if (i >= 0 && i < n && j >= 0 && j < n) matrix[i][j] = 1 - matrix[i][j];
         });
-        let info = {};
+        let st;
         v.render(() => {
-          const n = nS.value, b = Math.min(bS.value, n) - 1, o = out.value;
-          bS.el.hidden = o;
-          s.text('whom villager shaves →', 3, 10.1, { size: 12, color: 'muted' });
-          for (let j = 0; j < n; j++) s.text(`${j + 1}`, 3.5 + j, 9.75, { align: 'center', size: 12, weight: 600, color: 'muted' });
-          const target = Array.from({ length: n }, (_, j) => 1 - M[j][j]);
+          const n = nS.value;
+          // Also synchronize restored states; the displayed/actual value and native End agree.
+          barber.input.max = String(n); if (barber.value > n) barber.value = n;
+          const b = barber.value - 1, out = outside.value, analysis = barberDiagonal(matrix, n, b), witness = outsideBarberWitness(matrix, n);
+          barber.el.hidden = out; repair.disabled = out; flip.disabled = out;
+          s.setView([.25, n + 1.95], [-3.3, n + 2.5]);
+          const mid = 1.2 + n / 2;
+          s.text('recipient (column)', mid, n + 2.0, { align: 'center', baseline: 'middle', size: 12, color: 'muted' });
+          s.text('i', .85, n + 1.5, { align: 'center', baseline: 'middle', size: 12, color: 'muted' });
+          for (let j = 0; j < n; j++) s.text(String(j + 1), 1.7 + j, n + 1.5, { align: 'center', baseline: 'middle', size: 12, color: 'muted' });
           for (let i = 0; i < n; i++) {
-            const y = 9.4 - i, isB = !o && i === b;
-            s.text(`${i + 1}`, 2.65, y - 0.5, { align: 'center', baseline: 'middle', size: 12, weight: 600, color: isB ? 'orange' : 'muted' });
-            if (isB) s.rect(2.9, y - 1, 3 + n + 0.1, y, { fill: 'orange', fillAlpha: 0.1, color: 'orange', width: 1.5, radius: 3 });
+            const top = n + 1.2 - i, chosen = !out && i === b;
+            s.text(String(i + 1), .85, top - .5, { align: 'center', baseline: 'middle', size: 12, weight: chosen ? 700 : 400, color: chosen ? 'orange' : 'muted' });
+            if (chosen) s.rect(1.12, top - 1, n + 1.28, top, { fill: 'orange', fillAlpha: .08, color: 'orange', width: 1.5 });
             for (let j = 0; j < n; j++) {
-              const diag = i === j;
-              s.rect(3 + j + 0.05, y - 0.95, 3 + j + 0.95, y - 0.05, { fill: M[i][j] ? 'accent' : 'faint', fillAlpha: M[i][j] ? 0.55 : 0.08, color: diag ? 'gold' : 'faint', width: diag ? 2.2 : 0.6, radius: 3 });
-              s.text(M[i][j] ? '1' : '0', 3.5 + j, y - 0.5, { align: 'center', baseline: 'middle', size: 12.5, color: M[i][j] ? 'ink' : 'muted', weight: 600 });
+              const value = matrix[i][j], diag = i === j;
+              s.rect(1.25 + j, top - .95, 2.15 + j, top - .05, { fill: value ? 'accent' : 'faint', fillAlpha: value ? .55 : .08, color: diag ? 'gold' : 'faint', width: diag ? 2.2 : .6 });
+              s.text(String(value), 1.7 + j, top - .5, { align: 'center', baseline: 'middle', size: 12.5, weight: 600, color: value ? 'ink' : 'muted', halo: false });
             }
           }
-          const yT = 9.4 - n - 0.45;
-          s.text('flipped diagonal', 2.8, yT - 0.5, { align: 'right', baseline: 'middle', size: 11, color: 'muted' });
+          s.text('flipped diagonal (required)', mid, .7, { align: 'center', baseline: 'middle', size: 12, color: 'muted' });
           for (let j = 0; j < n; j++) {
-            s.rect(3 + j + 0.05, yT - 0.95, 3 + j + 0.95, yT - 0.05, { fill: 'muted', fillAlpha: target[j] ? 0.4 : 0.06, color: 'muted', width: 0.6, radius: 3 });
-            s.text(target[j] ? '1' : '0', 3.5 + j, yT - 0.5, { align: 'center', baseline: 'middle', size: 12.5, color: 'muted', weight: 600 });
+            const clash = !out && analysis.mismatches.includes(j), value = analysis.target[j];
+            s.rect(1.25 + j, -.75, 2.15 + j, .15, { fill: 'muted', fillAlpha: value ? .4 : .06, color: clash ? 'red' : 'muted', width: clash ? 2.2 : .6 });
+            s.text(String(value), 1.7 + j, -.3, { align: 'center', baseline: 'middle', size: 12.5, color: clash ? 'red' : 'muted', weight: 600, halo: false });
           }
-          hits = [];
-          if (o) {
-            const yB = yT - 1.2;
-            s.text('barber (outside)', 2.8, yB - 0.5, { align: 'right', baseline: 'middle', size: 11, color: 'orange' });
+          if (out) {
+            s.text('outside witness (villagers only)', mid, -1.3, { align: 'center', baseline: 'middle', size: 12, color: 'orange' });
             for (let j = 0; j < n; j++) {
-              s.rect(3 + j + 0.05, yB - 0.95, 3 + j + 0.95, yB - 0.05, { fill: 'orange', fillAlpha: target[j] ? 0.45 : 0.08, color: 'orange', width: 1, radius: 3 });
-              s.text(target[j] ? '1' : '0', 3.5 + j, yB - 0.5, { align: 'center', baseline: 'middle', size: 12.5, color: 'ink', weight: 600 });
-            }
-            s.text('matches everywhere ✓', 3 + n + 0.4, yB - 0.5, { baseline: 'middle', size: 12.5, color: 'green', weight: 700 });
-          } else {
-            for (let j = 0; j < n; j++) if (M[b][j] !== target[j]) hits.push(j);
-            for (const j of hits) {
-              s.text('✗', 3.5 + j, yT - 1.45, { align: 'center', size: 15, weight: 700, color: 'red' });
-              s.rect(3 + j + 0.05, 9.4 - b - 0.95, 3 + j + 0.95, 9.4 - b - 0.05, { color: 'red', width: 2.2, fill: false, radius: 3 });
+              const value = witness[n][j];
+              s.rect(1.25 + j, -2.75, 2.15 + j, -1.85, { fill: 'orange', fillAlpha: value ? .45 : .08, color: 'orange', width: 1 });
+              s.text(String(value), 1.7 + j, -2.3, { align: 'center', baseline: 'middle', size: 12.5, color: 'ink', weight: 600, halo: false });
             }
           }
-          info = { n, b, o, hits };
+          st = { n, b, outside: out, matrix: matrix.map(row => [...row]), analysis, witness };
         });
-        v.legend([['gold', 'diagonal: does $i$ shave $i$?', {}], ['orange', 'the barber’s row', {}]]);
+        v.legend([['gold', 'self-shaving diagonal'], ['orange', 'chosen internal row / outside witness'], ['red', 'required entry disagrees with chosen row']]);
         v.readout(() => {
-          const { n, b, o, hits } = info;
-          if (o) return 'The barber is not one of the villagers, so no diagonal entry is involved: he can shave exactly the villagers who do not shave themselves. Such a barber is consistent; the set-theoretic analogue would be a **class** that is not a member of the universe it ranges over.';
-          return hits.length === 0 ? 'Row $b$ equals the flipped diagonal.' : `Row ${b + 1} differs from the flipped diagonal in column${hits.length > 1 ? 's' : ''} ${hits.map((j) => j + 1).join(', ')}${hits.includes(b) ? `, **including the diagonal cell (${b + 1}, ${b + 1})**: if he shaves himself he shouldn’t, and if he doesn’t he should` : ''}. Try as you may, the cell $(b,b)$ always disagrees.`;
+          if (st.outside) return `Outside witness: all **${st.n}** required entries match over villagers. The rule omits the outside barber himself. Here his own self-entry is 0; extending the rule to him would demand 1, so it would fail. This constructs a relation on ${st.n + 1} people with a rule restricted to ${st.n} villagers, not a set satisfying unrestricted comprehension.`;
+          return `Chosen villager **${st.b + 1} of ${st.n}**: mismatch columns **${st.analysis.mismatches.map(j => j + 1).join(', ')}**. At the unavoidable diagonal cell (${st.b + 1},${st.b + 1}), actual **${st.analysis.self}**, required **${st.analysis.requiredSelf}**. Off-diagonal repair leaves exactly this one mismatch. Flipping the diagonal reverses both values and never makes them equal.`;
         });
       },
     },
@@ -159,48 +161,58 @@ export default {
       num: '4.8',
       kind: 'Paradox',
       name: 'The surprise examination',
-      statement: String.raw`A teacher announces on Friday that there will be an exam next week, on one of the school days, and that it will be a surprise: on the morning of the exam day the students will not know that the exam is that day. The students reason backwards. It cannot be on the last day, since if it had not happened by then they would know on that morning it must be today. With the last day excluded, the same argument rules out the day before it, and so on back to the first day: no exam is possible. Yet the exam is given on, say, Wednesday, and the students are surprised.`,
-      idea: String.raw`The students’ argument assumes that they know the announcement is true *and* can use it, including its surprise clause, as a premise when reasoning about what they would know on later mornings; the last step of the elimination only works if they know on Thursday evening that the announcement still holds, which is exactly what the argument is trying to show it can’t. A precise model separates the two readings. If the teacher picks the exam day at random, the students’ credence on each morning that the exam is today (given none yet) is the *hazard rate* $h_d=p_d/\sum_{j\ge d}p_j$. The last day with $p_d>0$ always has $h=1$: a strictly positive probability of an exam on the last possible day makes that exam a non-surprise. So no distribution can guarantee surprise whatever happens, but the students’ elimination of earlier days does not follow from this. Kritchman and Raz (2010, pp.5–7) give a separate formal reconstruction using provability and consistency: internally proving consistency is the step blocked by Gödel’s second incompleteness theorem. The hazard model here is not their proof.`,
-      caption: String.raw`Drag the five bars to choose the teacher’s plan (relative weights of the exam day). The second panel shows, for each day, the students’ credence $h_d$ on that morning that the exam is today given that it hasn't happened yet; a bar is red when it reaches $1$ (no surprise: the exam can't be a surprise on that day). Press **Teacher repairs** to zero the last day that is a non-surprise; repeat and watch the whole plan collapse, the students’ backward induction as a game. The readout gives the chance that the exam is a complete non-surprise.`,
-      deps: ['phil-4.1', 'stat-2.1'],
-      refs: ['Sainsbury ch. 5', 'SEP “Epistemic Paradoxes”'],
-      credit: 'S. Kritchman & R. Raz, Notices AMS 57 (2010), pp.1454–1458',
-      scope: String.raw`The hazard-rate picture is one reconstruction (a probabilistic reading of "surprise" as credence below 1), not the only analysis; the epistemic and game-theoretic treatments disagree about what the students may assume. The five-day week is a modelling choice.`,
+      statement: String.raw`A teacher announces one examination during a five-day week and claims that, on the morning before it is given, the students will not know it is due that day. The familiar argument first excludes the last day, then tries to exclude each preceding day; yet an earlier exam seems capable of surprising the class. The inference depends on what counts as knowing, which assumptions remain available, and what the announcement itself asserts. Chow distinguishes several logical and epistemic formulations rather than one unqualified argument. The illustration below fixes a narrower probability model: a public prior over exam days $1,\ldots,5$ and an optional no-exam outcome $\varnothing$. On morning $d$, before that day's exam could occur, the only new observation is no earlier exam, $E_d=\{d,\ldots,5,\varnothing\}$. For $P(E_d)>0$, the probability of an exam today is $h_d=p_d/P(E_d)$.`,
+      idea: String.raw`In this finite model, “certain today” means every positive-weight outcome compatible with $E_d$ is an exam on day $d$. If an exam is guaranteed ($p_\varnothing=0$), the latest supported day $L$ has $h_L=1$. Thus no nonempty finite prior both guarantees an exam and makes it uncertain on every day when it can occur, under this specified information rule. Positive no-exam weight permits $h_d<1$ on every supported exam day, by relaxing the guarantee of an exam. Removing the latest day then renormalizing changes the public prior; it is not a deduction that the same unchanged announcement excludes every day. This calculation does not resolve the self-referential knowledge or provability versions.`,
+      caption: String.raw`Set six nonnegative relative weights and step through the mornings, conditioning on no earlier exam. Blue bars show the public prior; the second panel shows the posterior, with today's bar outlined in orange and no-exam mass in purple. Zero-weight outcomes are excluded from the model's possibilities. **Remove latest exam day** edits the prior before the week; compare an exam-guaranteed prior with one that allows no exam. An all-zero setting is an undefined distribution, and a zero-probability morning history has no posterior.`,
+      deps: ['phil-1.1', 'prob-4.1.1a'],
+      see: ['phil-4.1'],
+      refs: ['Chow, The Surprise Examination or Unexpected Hanging Paradox, American Mathematical Monthly 105 (1998), 41–51; author preprint arXiv:math/9903160v2 (2000), §§1–4'],
+      credit: 'Formalization discussion: Timothy Y. Chow, 1998 (author preprint v2, 2000)',
+      scope: String.raw`Authored finite probability model, with at most one exam and a fixed public prior. The learner knows that prior, remembers the absence of earlier exams, and receives no other information before the selected morning. “Certain” uses positive support, not a rounded probability or a psychological-surprise score; it is not a general theory equating belief and knowledge. The prior is supplied independently: the model does not condition on the truth of a self-referential promise of surprise. With no-exam weight zero, it represents the exam-occurs premise and tests the additional uncertainty condition. With positive no-exam weight, that premise has explicitly changed. The weight and day controls explore hypothetical settings, not historical student beliefs.`,
       tags: ['paradox', 'knowledge', 'backward induction'],
-      links: { sep: 'https://plato.stanford.edu/entries/epistemic-paradoxes/' },
+      links: { source: 'https://arxiv.org/abs/math/9903160v2', paper: 'https://courses.csail.mit.edu/6.042/spring15/surprise-paradox.pdf' },
+      verify: false,
       viz(v) {
-        const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], N = 5;
-        const P = v.stage({ x: [0.3, 5.7], y: [0, 1.08], axes: 'box', gutter: true, height: 300, title: 'the teacher’s plan: weight of each exam day', xticks: DAYS.map((d, i) => [i + 1, d]), yticks: [0, 0.5, 1], weight: 1 });
-        const H = v.stage({ x: [0.3, 5.7], y: [0, 1.08], axes: 'box', gutter: true, height: 300, title: 'the students’ credence $h_d$ that it is today', xticks: DAYS.map((d, i) => [i + 1, d]), yticks: [0, 0.5, 1], weight: 1 });
-        const hs = DAYS.map((_, i) => P.handle(i + 1, 0.8, { color: 'blue', r: 8, constrain: { x: [i + 1, i + 1], y: [0, 1] } }));
-        const snap = (h) => { if (h.y < 0.04) h.set(h.x, 0); };
-        hs.forEach((h) => { h.onDrag = () => snap(h); });
-        v.button('Teacher repairs', () => {
-          for (let i = N - 1; i >= 0; i--) if (hs[i].y > 0.001) { hs[i].set(hs[i].x, 0); break; }
-        });
-        v.button('Uniform', () => hs.forEach((h) => h.set(h.x, 0.8)));
-        let info = {};
+        const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'none'];
+        const weights = labels.map((name, i) => v.slider(`${name} relative weight`, 0, 20, i === 5 ? 0 : 1, { int: true }));
+        const morning = v.slider('morning d', 1, 5, 1, { int: true });
+        const previous = v.button('Previous morning', () => morning.set(Math.max(1, morning.value - 1)));
+        const next = v.button('Next morning', () => morning.set(Math.min(5, morning.value + 1)));
+        v.button('Remove latest exam day', () => removeLatestExam(weights.map(w => w.value)).forEach((w, i) => weights[i].set(w)));
+        const preset = values => () => { weights.forEach((w, i) => w.set(values[i])); morning.set(1); };
+        v.button('Uniform exams, guaranteed', preset([1, 1, 1, 1, 1, 0]));
+        v.button('Include no-exam possibility', preset([1, 1, 1, 1, 1, 1]));
+        v.button('All weights zero', preset([0, 0, 0, 0, 0, 0]));
+        const options = { x: [.35, 6.65], y: [-.07, 1.23], axes: 'box', gutter: true, height: 320, ylabel: 'probability', xticks: labels.map((name, i) => [i + 1, name]), yticks: [0, .5, 1] };
+        const prior = v.stage({ ...options, title: 'Public prior before the week' });
+        const posterior = v.stage({ ...options, title: 'After observing no earlier exam' });
+        let st;
         v.render(() => {
-          const w = hs.map((h) => Math.max(0, h.y)), tot = w.reduce((a, b) => a + b, 0);
-          const p = w.map((x) => (tot > 0 ? x / tot : 0));
-          const tail = [];
-          for (let d = N - 1, acc = 0; d >= 0; d--) { acc += p[d]; tail[d] = acc; }
-          const h = p.map((x, d) => (tail[d] > 1e-9 ? x / tail[d] : 0));
-          let last = -1; for (let d = 0; d < N; d++) if (p[d] > 1e-9) last = d;
-          for (let d = 0; d < N; d++) {
-            P.rect(d + 0.65, 0, d + 1.35, w[d], { fill: 'blue', fillAlpha: 0.3, color: 'blue', width: 1 });
-            P.text(tot > 0 ? `${Math.round(100 * p[d])}%` : '', d + 1, w[d] + 0.06, { align: 'center', size: 11.5, color: 'muted' });
-            const bad = d === last;
-            if (p[d] > 1e-9 || d > last) H.rect(d + 0.65, 0, d + 1.35, p[d] > 1e-9 ? h[d] : 0, { fill: bad ? 'red' : 'green', fillAlpha: 0.4, color: bad ? 'red' : 'green', width: 1.2 });
-            if (p[d] > 1e-9) H.text(h[d] >= 0.9995 ? '1: no surprise' : v.fix(h[d], 2), d + 1, h[d] + 0.05, { align: 'center', size: 11, color: bad ? 'red' : 'muted', weight: bad ? 700 : 400 });
-          }
-          const sur = p.reduce((a, x, d) => a + x * (1 - h[d]), 0);
-          info = { tot, last, plast: last >= 0 ? p[last] : 0, sur };
+          const values = weights.map(w => w.value), d = morning.value, model = surprisePrior(values, d);
+          previous.disabled = d === 1; next.disabled = d === 5;
+          const draw = (stage, probabilities, conditional) => {
+            if (!probabilities) {
+              stage.text(conditional && model.prior ? 'history has zero probability' : 'all weights are zero', 3.5, .68, { align: 'center', size: 12, color: 'muted' });
+              stage.text(conditional ? 'posterior undefined' : 'prior undefined', 3.5, .48, { align: 'center', size: 12, color: 'muted' });
+              return;
+            }
+            probabilities.forEach((p, i) => {
+              const color = i === 5 ? 'purple' : conditional && i < d - 1 ? 'muted' : 'accent';
+              stage.rect(i + .66, 0, i + 1.34, p, { fill: color, fillAlpha: .4, color: conditional && i === d - 1 ? 'orange' : color, width: conditional && i === d - 1 ? 2 : 1.2 });
+              stage.text(v.fix(p, 3), i + 1, p + .045, { align: 'center', baseline: 'bottom', size: 11, color: 'ink' });
+            });
+          };
+          draw(prior, model.prior, false); draw(posterior, model.posterior, true);
+          st = { weights: values, morning: d, model };
         });
+        v.legend([['accent', 'exam-day probability', { area: true }], ['purple', 'no exam this week', { area: true }], ['orange', 'selected morning’s outcome']]);
         v.readout(() => {
-          const { tot, last, plast, sur } = info;
-          if (tot <= 0 || last < 0) return 'The plan is empty: **no day is possible**, which is where the students’ argument says the teacher ends up. Raise a bar to give the teacher a plan again.';
-          return `The last possible day is **${DAYS[last]}**, where the students’ credence reaches 1: with probability **${Math.round(100 * plast)}%** the exam is a complete non-surprise. Expected surprise (1 − credence on the morning): ${v.fix(sur, 2)}. To rule out non-surprises the teacher has to remove ${DAYS[last]}, and then the new last day has the same problem.`;
+          const q = st.model, name = labels[st.morning - 1];
+          if (!q.prior) return 'All weights are zero: **no probability distribution is defined**. This is an invalid model setting, not a conclusion that the original announcement is contradictory.';
+          const premise = q.guaranteesExam ? 'Exam guaranteed in this prior.' : `No exam has probability **${v.fix(q.prior[5], 4)}**; the exam-occurs premise is relaxed.`;
+          const tail = `Before-week probability that an exam occurs on a day when it is already certain that morning: **${v.fix(q.certaintyMass, 4)}**. Removing a day edits this prior; it does not reveal information about the old plan.`;
+          if (!q.posterior) return `${premise}\n${name} morning, no earlier exam: this history has probability **0**. The posterior and today's conditional probability are **undefined**, rather than zero.\n${tail}`;
+          return `${premise}\n${name} morning, no earlier exam: history probability **${v.fix(q.historyMass, 4)}**; $h_d$ = **${v.fix(q.today, 4)}**. Certain today in this model? **${q.certainToday ? 'yes' : 'no'}**.\n${tail}`;
         });
       },
     },

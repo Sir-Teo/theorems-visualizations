@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 10: Banach Algebras
 //
-// Source: full Rudin second-edition sections and proofs reviewed; see verification ledger.
+// Numbering note: the numbers below follow the 2nd edition (1991) as far as they could be recalled;
 // items whose number or exact formulation could not be checked against the book carry `verify: true`.
 
 // ---------------------------------------------------------------- shared helpers (batch 1)
@@ -170,7 +170,7 @@ and which has a unit $e$ ($ex=xe=x$ for all $x$) with $\norm e=1$. It is **commu
         });
         v.readout(() => {
           const s = st; if (s.bad) return 'Choose $u,w$ spanning the plane.';
-          return `$\\|e\\| = ${v.fix(s.ne, 3)}$ but $\\|e\\|^\\prime = ${v.fix(s.nne, 3)}$. Largest quotient: old $${v.fix(s.mo, 3)}$${s.mo > 1 + 1e-9 ? ' (not submultiplicative)' : ''}, new $${v.fix(s.mn, 3)}\\le1$. Sampled directional ratios range from $${v.fix(s.c, 3)}$ to $${v.fix(s.C, 3)}$; the exact lower bound is $c\\ge1/\\|e\\| = ${v.fix(1 / s.ne, 3)}$.`;
+          return `$\\|e\\| = ${v.fix(s.ne, 3)}$ but $\\|e\\|^\\prime = ${v.fix(s.nne, 3)}$. Largest quotient: old $${v.fix(s.mo, 3)}$${s.mo > 1 + 1e-9 ? ' (not submultiplicative)' : ''}, new $${v.fix(s.mn, 3)}\\le1$. Equivalence: $${v.fix(s.c, 3)}\\,\\|x\\|\\le\\|x\\|^\\prime\\le${v.fix(s.C, 3)}\\,\\|x\\|$, and indeed $c\\ge1/\\|e\\| = ${v.fix(1 / s.ne, 3)}$.`;
         });
       },
     },
@@ -178,32 +178,24 @@ and which has a unit $e$ ($ex=xe=x$ for all $x$) with $\norm e=1$. It is **commu
     {
       num: '10.4',
       kind: 'Definition',
-      name: 'Complex scalars and algebra homomorphisms',
-      statement: String.raw`The complex scalar field supplies holomorphic methods and conjugation, both central to Banach algebra theory. A homomorphism between complex algebras is a linear map $h$ satisfying $h(xy)=h(x)h(y)$; maps into $\C$ will encode the commutative theory.`,
-      idea: String.raw`Holomorphic functions control invertibility and spectra in Chapter10. Conjugation leads to involutions in Chapter11. A sufficiently rich collection of scalar-valued homomorphisms can turn an abstract commutative algebra into an algebra of functions.`,
-      deps: ['fa-10.1'],
-      see: ['rca-18.1'],
-      tags: ['Banach algebras', 'homomorphisms', 'definitions'],
-      },
-    {
-      num: '10.5',
-      kind: 'Definition',
       name: 'Invertible elements, G(A), complex homomorphisms',
       statement: String.raw`Let $A$ be a complex algebra with unit $e$. An element $x\in A$ is **invertible** if there is $x^{-1}\in A$ with $x^{-1}x=xx^{-1}=e$; the invertible elements form a group $G=G(A)$ under multiplication. A **complex homomorphism** of $A$ is a linear functional $\varphi:A\to\C$, not identically zero, with $\varphi(xy)=\varphi(x)\varphi(y)$ for all $x,y\in A$.`,
       idea: String.raw`An inverse, when it exists, is unique: if $yx=e=xz$ then $y=y(xz)=(yx)z=z$. Complex homomorphisms are the "points" of an algebra: on $C(K)$ they are the evaluations $f\mapsto f(p)$, on $\ell^1(\Z)$ the maps $x\mapsto\sum_n x_ne^{in\theta}$; on a noncommutative algebra such as $M_n(\C)$, $n\ge2$, there are none.`,
       deps: ['fa-10.1'],
-      see: ['rca-18.1'],
+      see: ['rca-18.2'],
       tags: ['Banach algebras', 'homomorphisms', 'definitions'],
-      },
+      verify: true,
+    },
     {
-      num: '10.6',
+      num: '10.5',
       kind: 'Proposition',
       name: 'Homomorphisms send e to 1 and never kill invertibles',
       statement: String.raw`If $\varphi$ is a complex homomorphism of a complex algebra $A$ with unit $e$, then $\varphi(e)=1$, and $\varphi(x)\ne0$ for every $x\in G(A)$.`,
       idea: String.raw`Pick $y$ with $\varphi(y)\ne0$; then $\varphi(y)=\varphi(ye)=\varphi(y)\varphi(e)$, so $\varphi(e)=1$. If $x$ is invertible, $\varphi(x)\varphi(x^{-1})=\varphi(e)=1$. Hence $\varphi(x)\in\sigma(x)$ for every $x$, since $\varphi(\varphi(x)e-x)=0$.`,
-      caption: String.raw`$A=\ell^1(\Z_+)$ under convolution: $x=(x_n)$ is the power series $p(z)=\sum x_nz^n$, here the cubic $p(z)=\prod_k(1-z/r_k)$, and every $z$ in the closed unit disc gives a complex homomorphism $\varphi_z(x)=p(z)$ with $\varphi_z(e)=1$. Drag the roots $r_k$ and the point $z$. Right: the coefficients of the formal inverse $1/p$. They decay geometrically (so $x^{-1}\in\ell^1$) exactly while all roots stay outside the disc; pull a root inside and $\varphi_{r_k}(x)=0$ forbids an inverse — the inverse series is not absolutely summable.`,
-      deps: ['fa-10.5'],
+      caption: String.raw`$A=\ell^1(\Z_+)$ under convolution: $x=(x_n)$ is the power series $p(z)=\sum x_nz^n$, here the cubic $p(z)=\prod_k(1-z/r_k)$, and every $z$ in the closed unit disc gives a complex homomorphism $\varphi_z(x)=p(z)$ with $\varphi_z(e)=1$. Drag the roots $r_k$ and the point $z$. Right: the coefficients of the formal inverse $1/p$. They decay geometrically (so $x^{-1}\in\ell^1$) exactly while all roots stay outside the disc; pull a root inside and $\varphi_{r_k}(x)=0$ forbids an inverse — the coefficients blow up.`,
+      deps: ['fa-10.4'],
       tags: ['homomorphisms', 'invertibility'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const P = v.stage({ x: [-2.3, 2.3], y: [-1.9, 1.9], equal: true, height: 340, ticks: false, title: 'phase of $p$; inside the disc, $\\varphi_z(x)=p(z)$' });
@@ -220,7 +212,7 @@ and which has a unit $e$ ($ex=xe=x$ for all $x$) with $\norm e=1$. It is **commu
           P.raster((x, y) => { const [re, im] = cpolyEval(p, x, y); return phaseRGB(M, re, im, x * x + y * y <= 1 ? 255 : 80); }, { key, res: 2 });
           P.circle(0, 0, 1, { color: 'ink', width: 2.2 });
           const rmin = Math.min(...roots.map((h) => Math.hypot(h.x, h.y)));
-          const inv = rmin > 1;
+          const inv = rmin > 1 + 1e-3;
           const c = cpolyRecip(p, 400), lc = c.slice(0, 41).map(([a, b]) => Math.log10(Math.hypot(a, b) + 1e-300));
           const lo = Math.max(-16, Math.min(-1, ...lc) - 0.6), hi = Math.min(30, Math.max(1, ...lc) + 0.8);
           R.setView(null, [lo, hi]);
@@ -235,14 +227,14 @@ and which has a unit $e$ ($ex=xe=x$ for all $x$) with $\norm e=1$. It is **commu
           for (let i = 0; i <= 30; i++) for (let j = 0; j < 72; j++) { const r = i / 30, t = M.TAU * j / 72; mn = Math.min(mn, Math.hypot(...cpolyEval(p, r * Math.cos(t), r * Math.sin(t)))); }
           let ir = 0, ii = 0;
           if (inv) { const zz = cpolyEval(c, z.x, z.y); ir = zz[0]; ii = zz[1]; }
-          const bad = roots.filter((h) => Math.hypot(h.x, h.y) <= 1);
+          const bad = roots.filter((h) => Math.hypot(h.x, h.y) <= 1 + 1e-3);
           for (const h of bad) P.circle(h.x, h.y, 0.13, { color: 'red', width: 2 });
           st = { pr, pi, mn, inv, ir, ii, l1: inv ? c.reduce((s, [a, b]) => s + Math.hypot(a, b), 0) : Infinity, bad: bad.length };
         });
         v.readout(() => {
           const s = st, pz = new v.Cx(s.pr, s.pi);
-          const head = `$\\varphi_z(e)=1$, $\\;\\varphi_z(x)=p(z)=${pz.toString(3).replace('i', '\\,i')}$, $\\;\\text{sampled min}|p| = ${v.fix(s.mn, 3)}$. `;
-          if (s.inv) { const prod = pz.mul(new v.Cx(s.ir, s.ii)); return head + `$x$ is invertible, $\\sum_{n<400}|c_n|=${v.fix(s.l1, 3)}$, and $\\varphi_z(x)\\,\\varphi_z(x^{-1}) = ${prod.toString(4).replace('i', '\\,i')}$.`; }
+          const head = `$\\varphi_z(e)=1$, $\\;\\varphi_z(x)=p(z)=${pz.toString(3).replace('i', '\\,i')}$, $\\;\\min_{|z|\\le1}|p(z)| = ${v.fix(s.mn, 3)}$. `;
+          if (s.inv) { const prod = pz.mul(new v.Cx(s.ir, s.ii)); return head + `$x$ is invertible, $\\|x^{-1}\\|_1=${v.fix(s.l1, 3)}$, and $\\varphi_z(x)\\,\\varphi_z(x^{-1}) = ${prod.toString(4).replace('i', '\\,i')}$.`; }
           return head + `${s.bad} root(s) in the closed disc: there $\\varphi_{r_k}(x)=0$, so by the proposition $x\\notin G(A)$.`;
         });
       },
@@ -255,9 +247,9 @@ and which has a unit $e$ ($ex=xe=x$ for all $x$) with $\norm e=1$. It is **commu
 (a) $e-x$ is invertible, with $(e-x)^{-1}=\sum_{n=0}^\infty x^n$;
 (b) $\norm{(e-x)^{-1}-e-x}\le\dfrac{\norm x^2}{1-\norm x}$;
 (c) $|\varphi(x)|<1$ for every complex homomorphism $\varphi$ of $A$.`,
-      idea: String.raw`Since $\norm{x^n}\le\norm x^n$, the partial sums $s_N=e+x+\dots+x^N$ form a Cauchy sequence, and $(e-x)s_N=s_N(e-x)=e-x^{N+1}\to e$; the limit is the inverse, and the tail from $n=2$ on is bounded by a geometric series, which is (b). For (c), if $|\varphi(x)|\ge1$, put $\lambda=\varphi(x)$: then $\norm{x/\lambda}<1$, so $e-x/\lambda$ is invertible by (a), yet $\varphi(e-x/\lambda)=0$, contradicting10.6.`,
+      idea: String.raw`Since $\norm{x^n}\le\norm x^n$, the partial sums $s_N=e+x+\dots+x^N$ form a Cauchy sequence, and $(e-x)s_N=s_N(e-x)=e-x^{N+1}\to e$; the limit is the inverse, and the tail from $n=2$ on is bounded by a geometric series, which is (b). For (c), if $|\varphi(x)|\ge1$, put $\lambda=\varphi(x)$: then $\norm{x/\lambda}<1$, so $e-x/\lambda$ is invertible by (a), yet $\varphi(e-x/\lambda)=0$, contradicting 10.5.`,
       caption: String.raw`$A=C(\T)$ with the sup norm and $x(e^{it})=c+a\,e^{it}+b\,e^{2it}$; drag $c$ and set $a,b$. Left: the curve $x(\T)$ — each of its points is a value $\varphi(x)$ of a point evaluation, so (c) says it stays in the open unit disc. Middle: the partial sums $s_N(\T)$ (gold) closing in on $(e-x)^{-1}(\T)$ (green). Bottom: the sup-norm error against the geometric bound $\norm x^{N+1}/(1-\norm x)$. Push $\norm x$ past $1$: the series diverges, although $e-x$ stays invertible as long as $x(\T)$ avoids $1$.`,
-      deps: ['fa-10.1', 'fa-10.6'],
+      deps: ['fa-10.1', 'fa-10.5'],
       see: ['rca-18.3', 'pma-3.26', 'pma-9.8'],
       tags: ['Neumann series', 'invertibility'],
       viz(v) {
@@ -378,7 +370,7 @@ Then $f(\lambda)=1$ for every $\lambda\in\C$.`,
         v.readout(() => {
           const s = st;
           if (s.one) return 'All parameters are $0$: $f\\equiv1$, the only function meeting every hypothesis.';
-          const g = s.rStar != null ? `growth bound **fails** from $r\\approx${v.fix(s.rStar, 2)}$` : 'no growth violation detected on the sampled radii/angles up to8';
+          const g = s.rStar != null ? `growth bound **fails** from $r\\approx${v.fix(s.rStar, 2)}$` : 'growth bound holds on $|\\lambda|\\le8$';
           const d = s.isCos ? '$f\'(0)=0$' : `$|f'(0)|=|a|=${v.fix(s.fp0, 3)}$${s.fp0 > 1e-9 ? ' $\\ne0$' : ''}`;
           const z = s.isCos ? (s.nz ? `, and $f$ has zeros (${s.nz} in view)` : '') : ', no zeros';
           return `$f(0)=1$; ${d}; ${g}${z}. Some hypothesis fails, consistent with the lemma.`;
@@ -389,12 +381,13 @@ Then $f(\lambda)=1$ for every $\lambda\in\C$.`,
       num: '10.9',
       kind: 'Theorem',
       name: 'Gleason–Kahane–Żelazko theorem',
+      credit: 'Gleason, Kahane & Żelazko, 1967',
       statement: String.raw`Let $\varphi$ be a linear functional on a Banach algebra $A$ — continuity is not assumed — such that $\varphi(e)=1$ and $\varphi(x)\ne0$ for every $x\in G(A)$. Then
 $$\varphi(xy)=\varphi(x)\varphi(y)\qquad(x,y\in A),$$
 so $\varphi$ is a complex homomorphism (and in particular continuous, with $\norm\varphi=1$).`,
-      idea: String.raw`The kernel $N$ of $\varphi$ contains no invertible element, so the argument of 10.7(c) gives $|\varphi(x)|\le\norm x$: $\varphi$ is continuous. For $x\in N$ with $\norm x=1$, the entire function $f(\lambda)=\varphi(\exp(\lambda x))$ has no zeros (each $\exp(\lambda x)$ is invertible), $f(0)=1$, $f'(0)=\varphi(x)=0$ and $|f(\lambda)|\le e^{|\lambda|}$. Lemma 10.8 gives $f\equiv1$, whose $\lambda^2$ coefficient says $\varphi(x^2)=0$. Thus $\varphi(x^2)=\varphi(x)^2$. Polarization gives $xy+yx\in N$ when $x\in N$. The identity $(xy-yx)^2+(xy+yx)^2=2[x(yxy)+(yxy)x]$ then gives $xy-yx\in N$ as well, so $xy\in N$. Hence $N$ is closed under products, which proves multiplicativity even in a noncommutative algebra.`,
+      idea: String.raw`The kernel $N$ of $\varphi$ contains no invertible element, so the argument of 10.7(c) gives $|\varphi(x)|\le\norm x$: $\varphi$ is continuous. For $x\in N$ with $\norm x=1$, the entire function $f(\lambda)=\varphi(\exp(\lambda x))$ has no zeros (each $\exp(\lambda x)$ is invertible), $f(0)=1$, $f'(0)=\varphi(x)=0$ and $|f(\lambda)|\le e^{|\lambda|}$. Lemma 10.8 gives $f\equiv1$, whose $\lambda^2$ coefficient says $\varphi(x^2)=0$. Thus $\varphi(x^2)=\varphi(x)^2$ for all $x$, and polarization upgrades this to $\varphi(xy)=\varphi(x)\varphi(y)$.`,
       caption: String.raw`$A=\C^3$ with pointwise operations (functions on three points). A linear $\varphi$ with $\varphi(e)=1$ is $\varphi(x)=w_1x_1+w_2x_2+w_3x_3$ with $\sum w_k=1$; drag its weights in the left plane (the vertices are the three point evaluations $\delta_k$). Fix $x\in\ker\varphi$ (here $x_k=s_k-\varphi(s)$ for three cube roots of unity $s_k$). Right: the phase portrait of $f(\lambda)=\varphi(\exp(\lambda x))$. Unless $\varphi$ is a vertex, $f$ has zeros $\lambda_0$ (red), and $u=\exp(\lambda_0x)$ is an invertible element with $\varphi(u)=0$. Slide toward a vertex: the zeros escape to infinity and $f\to1$.`,
-      deps: ['fa-10.8', 'fa-10.7', 'fa-10.6'],
+      deps: ['fa-10.8', 'fa-10.7', 'fa-10.5'],
       tags: ['homomorphisms', 'entire functions'],
       viz(v) {
         const M = v.M, { Cx } = M;

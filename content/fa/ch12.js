@@ -60,6 +60,7 @@ export default {
       num: '12.1',
       kind: 'Definition',
       name: 'Inner product spaces and Hilbert spaces',
+      credit: 'von Neumann, 1929',
       statement: String.raw`A complex vector space $H$ is an **inner product space** if to every ordered pair $x,y\in H$ there is assigned a complex number $(x,y)$ such that $(y,x)=\overline{(x,y)}$, $(x+y,z)=(x,z)+(y,z)$, $(\alpha x,y)=\alpha(x,y)$, $(x,x)\ge0$, and $(x,x)=0$ only for $x=0$.
 
 Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,\|y\|$. If $H$ is complete in this norm it is a **Hilbert space**. Two vectors are orthogonal, $x\perp y$, when $(x,y)=0$; $M^\perp$ is the set of vectors orthogonal to every vector of $M$.`,
@@ -68,7 +69,7 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
       deps: ['fa-1.2'],
       see: ['rca-4.1', 'rca-4.4'],
       tags: ['Hilbert space', 'inner product'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.1 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const PV = { 1: 1, 1.5: 1.5, 2: 2, 4: 4, inf: Infinity };
@@ -112,16 +113,18 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
       },
     },
     {
-      num: '12.3',
+      num: '12.2',
       kind: 'Theorem',
-      name: 'A closed convex set has a unique minimum-norm point',
-      statement: String.raw`Every nonempty closed convex subset $E$ of a complex Hilbert space $H$ contains exactly one point of least norm. Applying this to $E-x$ also gives a unique nearest point of $E$ to any $x\in H$.`,
-      idea: String.raw`Take $x_n\in E$ with $\|x_n\|\to d=\inf_E\|\cdot\|$. The parallelogram law applied to $x_n,x_m$ and convexity ($\tfrac12(x_n+x_m)\in E$) give $\|x_n-x_m\|^2\le 2\|x_n\|^2+2\|x_m\|^2-4d^2\to0$; completeness gives a limit, and the same inequality gives uniqueness. Applying the same argument to a translate gives the nearest-point assertion.`,
+      name: 'Closest points and orthogonal decomposition',
+      statement: String.raw`Let $H$ be a Hilbert space.
+(a) Every nonempty closed convex set $E\subset H$ contains a unique element of smallest norm; consequently every $x\in H$ has a unique closest point in $E$.
+(b) If $M$ is a closed subspace of $H$, then $H=M\oplus M^\perp$: each $x$ is uniquely $x=Px+(x-Px)$ with $Px\in M$, $x-Px\in M^\perp$, and $Px$ is the point of $M$ nearest to $x$. The map $P$ is the orthogonal projection of $H$ onto $M$, and $\|x\|^2=\|Px\|^2+\|x-Px\|^2$.`,
+      idea: String.raw`For (a), take $x_n\in E$ with $\|x_n\|\to d=\inf_E\|\cdot\|$. The parallelogram law applied to $x_n,x_m$ and convexity ($\tfrac12(x_n+x_m)\in E$) give $\|x_n-x_m\|^2\le 2\|x_n\|^2+2\|x_m\|^2-4d^2\to0$; completeness gives a limit, and the same inequality gives uniqueness. For (b), apply (a) to $x-M$; a first-variation argument shows the minimiser's error is orthogonal to $M$.`,
       caption: String.raw`$H=L^2[0,1]$. In **subspace** mode $M$ = polynomials of degree $<n$: the blue curve is the nearest point $Px$, and the bars show that the error $x-Px$ is orthogonal to the first $n$ Legendre polynomials (red bars vanish) but not to the next ones. In **convex** mode $E=\{f:|f|\le c\}$ and the nearest point is the clipped function; the lower panel shows that moving from it toward another member of $E$ only increases the distance.`,
-      deps: ['fa-12.1','pma-3.11'],
+      deps: ['fa-12.1'],
       see: ['rca-4.10', 'rca-4.11'],
       tags: ['Hilbert space', 'projections', 'convexity'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.3 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const G = l2Grid(600);
@@ -191,17 +194,17 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
       },
     },
     {
-      num: '12.5',
+      num: '12.3',
       kind: 'Theorem',
       name: 'Riesz representation: H* is H',
+      credit: 'F. Riesz & Fréchet, 1907',
       statement: String.raw`For each $y\in H$ the functional $\Lambda_y x=(x,y)$ is bounded with $\|\Lambda_y\|=\|y\|$. Conversely every bounded linear functional $\Lambda$ on $H$ equals $\Lambda_y$ for exactly one $y\in H$. The map $y\mapsto\Lambda_y$ is thus a conjugate-linear isometry of $H$ onto $H^*$.`,
       idea: String.raw`Schwarz gives $\|\Lambda_y\|\le\|y\|$ and $x=y$ gives equality. For the converse, if $\Lambda\ne0$ its null space $N$ is a closed proper subspace, so by the orthogonal decomposition there is a unit vector $z\perp N$. Since $(\Lambda x)z-(\Lambda z)x\in N$, taking inner products with $z$ yields $\Lambda x=(x,y)$ with $y=\overline{\Lambda z}\,z$.`,
-      caption: String.raw`$H=L^2[0,1]$ (real-valued, for the picture). Choose a functional and watch its representer $y$ (green). The function $x$ splits as a multiple of $y$ plus a part $z$ in the null space of $\Lambda$; the readout compares numerical estimates of $\Lambda x=(x,y)$ and $\Lambda z=0$. For the local average, shrink $h$: $\|\Lambda\|=\|y\|=1/\sqrt{2h}$ blows up, while each fixed-width average remains bounded. Point evaluation is not defined on $L^2$ equivalence classes; even on continuous functions with the $L^2$ norm it is unbounded, so it has no bounded extension to $L^2$ and no representer there.`,
-      scope: String.raw`The plotted $x$ is continuous. Its local averages tend to $x(a)$; for arbitrary $L^2$ representatives this is only an almost-everywhere Lebesgue-point assertion. Changing one point does not change an $L^2$ class. Continuous tents of height 1 and half-width $\varepsilon$ at $a$ have norm $\sqrt{2\varepsilon/3}\to0$, ruling out bounded evaluation even on the continuous subspace. The finite grid and quadrature checks in the picture are approximations; tall boxes are marked off scale.`,
-      deps: ['fa-12.4','fa-12.2'],
+      caption: String.raw`$H=L^2[0,1]$ (real-valued, for the picture). Choose a functional and watch its representer $y$ (green). The function $x$ splits as a multiple of $y$ plus a part $z$ in the null space of $\Lambda$; the readout checks $\Lambda x=(x,y)$ and $\Lambda z=0$. For the local average, shrink $h$: $\|\Lambda\|=\|y\|=1/\sqrt{2h}$ blows up, which is why evaluation at a point has no representer in $L^2$.`,
+      deps: ['fa-12.2'],
       see: ['rca-4.12'],
       tags: ['Hilbert space', 'duality'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.5 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const G = l2Grid(800);
@@ -242,20 +245,23 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
           st = { lam, ip: G.ip(X, Y), lamZ, ny: Math.sqrt(ny2), mode, h };
           v.legend([['ink', '$x$'], ['green', 'representer $y$', { area: true }], ['orange', '$z = x-\\frac{\\Lambda x}{\\|y\\|^2}\\,y\\in\\mathscr N(\\Lambda)$', { dash: true }]]);
         });
-        v.readout(() => `$\\Lambda x = ${v.fix(st.lam, 4)}$, $\\;(x,y)_{\\rm grid}\\approx${v.fix(st.ip, 4)}$, $\\;(\\Lambda z)_{\\rm quad}\\approx${v.fix(st.lamZ + 0, 4)}$, $\\;\\|\\Lambda\\| = \\|y\\| = ${v.fix(st.ny, 3)}$` + (st.mode === 'avg' ? ` $=1/\\sqrt{2h}\\to\\infty$ as $h\\to0$: evaluation on continuous functions is unbounded in the $L^2$ norm.` : '.'));
+        v.readout(() => `$\\Lambda x = ${v.fix(st.lam, 4)}$, $\\;(x,y) = ${v.fix(st.ip, 4)}$, $\\;\\Lambda z = ${v.fix(st.lamZ + 0, 4)}$, $\\;\\|\\Lambda\\| = \\|y\\| = ${v.fix(st.ny, 3)}$` + (st.mode === 'avg' ? ` $=1/\\sqrt{2h}\\to\\infty$ as $h\\to0$: $x\\mapsto x(a)$ is not bounded on $L^2$.` : '.'));
       },
     },
     {
-      num: '12.6',
+      num: '12.4',
       kind: 'Theorem',
-      name: 'Orthogonal series: weak and norm convergence agree',
-      statement: String.raw`Let $(x_n)$ be pairwise orthogonal vectors in a Hilbert space. The following are equivalent: $\sum_nx_n$ converges in norm; $\sum_n\|x_n\|^2<\infty$; and $\sum_n(x_n,y)$ converges for every $y\in H$. Thus weak convergence and norm convergence of the partial sums agree for an orthogonal series.`,
-      idea: String.raw`Orthogonality gives $\|\sum_{j=n}^m x_j\|^2=\sum_{j=n}^m\|x_j\|^2$, so square summability makes partial sums Cauchy and hence convergent. Norm convergence implies weak convergence by Schwarz. Conversely apply Banach–Steinhaus to the functionals $y\mapsto(y,\sum_{j=1}^n x_j)$: weak convergence bounds their norms, which are the square roots of the partial energy sums. The Haar example illustrates this with $x_j=(f,u_j)u_j$; completeness of the Haar family is an additional fact, not the statement of this numbered theorem.`,
+      name: 'Orthonormal bases and Parseval’s identity',
+      credit: 'Parseval, 1799',
+      statement: String.raw`Every orthonormal set in $H$ is contained in a maximal one. If $\{u_\alpha\}_{\alpha\in A}$ is a maximal orthonormal set (an orthonormal basis), then for every $x\in H$
+$$x=\sum_\alpha (x,u_\alpha)\,u_\alpha\qquad\text{and}\qquad \|x\|^2=\sum_\alpha|(x,u_\alpha)|^2,$$
+only countably many coefficients being nonzero; $x\mapsto\{(x,u_\alpha)\}$ is an isometry of $H$ onto $\ell^2(A)$.`,
+      idea: String.raw`Zorn's (or Hausdorff's) maximality principle produces a maximal orthonormal set. For any finite set $F$ of indices, the projection onto $\operatorname{span}\{u_\alpha:\alpha\in F\}$ is $\sum_F(x,u_\alpha)u_\alpha$, which gives Bessel's inequality $\sum|(x,u_\alpha)|^2\le\|x\|^2$; the series therefore converges, and $x$ minus its sum is orthogonal to every $u_\alpha$, hence $0$ by maximality.`,
       caption: String.raw`The Haar system is an orthonormal basis of $L^2[0,1]$. Increase the number $n$ of basis vectors used: the blue step function is the projection of $f$ onto their span, the bars are $|(f,u_k)|^2$, and the green running total climbs to $\|f\|^2$ (Bessel's inequality becoming Parseval's identity).`,
-      deps: ['fa-12.2','fa-2.5','fa-12.5'],
+      deps: ['fa-12.2'],
       see: ['rca-4.18', 'rca-4.22'],
       tags: ['Hilbert space', 'orthonormal bases'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.6 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const NG = 4096, ts = M.range(NG).map((i) => (i + 0.5) / NG);
@@ -318,7 +324,7 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
       caption: String.raw`Left: real vectors $x$ on the unit circle, with $Tx$ and its component along $x$, whose signed length is $(Tx,x)$. Right: the numerical range $W(T)=\{(Tz,z):z\in\C^2,\|z\|=1\}$ (shaded ellipse, gold samples); real vectors only reach the blue segment. Turn the phase $\varphi$ of the second coordinate of $z$ to leave the real line. For the rotation $J$ the blue segment is the single point $0$, but $W(J)=[-i,i]$ — complex vectors detect $J\ne0$.`,
       deps: ['fa-12.1'],
       tags: ['operators', 'numerical range'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.7 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const TS = {
@@ -378,7 +384,7 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
       caption: String.raw`The four terms $\tfrac14 i^k(T(x+i^ky),x+i^ky)$ are drawn head to tail in $\C$; their sum is $(Tx,y)$. The red chain does the same for $S=T+cJ$. Because $x,y$ are real, the terms $k=0,2$ (real vectors) agree for $S$ and $T$; the difference comes only from the complex vectors $x\pm iy$. Set $c=0$ and the chains coincide.`,
       deps: ['fa-12.7'],
       tags: ['operators', 'polarization'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.7a (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const cS = v.slider('$c$ in $S=T+cJ$', -1, 1, 0.55, { step: 0.01 });
@@ -434,9 +440,9 @@ $$f(x,y)=(x,Sy)\qquad(x,y\in H),$$
 and $\|S\|=M$.`,
       idea: String.raw`For fixed $y$, $x\mapsto f(x,y)$ is a bounded linear functional, so by the Riesz representation it equals $(x,Sy)$ for a unique vector $Sy$. Uniqueness and the sesquilinearity of $f$ force $y\mapsto Sy$ to be linear, and $|(x,Sy)|\le M\|x\|\|y\|$ gives $\|S\|\le M$; the reverse inequality is Schwarz.`,
       caption: String.raw`A real picture of the statement, on $\R^2$. Drag $y$: the faint parallel lines are the level sets of the functional $x\mapsto f(x,y)$, and the green arrow is its Riesz representer $Sy$, perpendicular to them. As $y$ runs over the unit circle, $Sy$ traces the orange ellipse — the image of the circle under one linear map $S$ — whose long semi-axis is $\|S\|=M$. Drag the probe $x$ to check $f(x,y)=(x,Sy)$.`,
-      deps: ['fa-12.5'],
+      deps: ['fa-12.3'],
       tags: ['operators', 'sesquilinear forms'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.8 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const FORMS = {
@@ -490,7 +496,7 @@ The map $T\mapsto T^*$ is an involution on $B(H)$: $(S+T)^*=S^*+T^*$, $(\alpha T
       deps: ['fa-12.8', 'fa-4.10'],
       see: ['fa-11.14'],
       tags: ['adjoint', 'B*-algebras'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §12.9 (full statement and proof inspected)'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const L = v.stage({ x: [-2.1, 2.1], y: [-2, 2], equal: true, height: 360, title: 'the defining identity $(Tx,y)=(x,T^*y)$' });

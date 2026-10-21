@@ -1,3 +1,4 @@
+import {ellipseFourier,relaxFourier} from './electrostatic.audit.js';
 // Electromagnetism — Chapter 3, part d: items 3.20–3.22 (reciprocity, Green's function, Thomson's theorem)
 import { TAU, KV, EPS0, pot, fld, sgnCol, heatPot, levels, solveLin, drawLines, circ } from './ch03.shared.js';
 
@@ -125,59 +126,37 @@ For the disc of radius $R$ in the plane, $G=\frac1{2\pi}\Bigl[\ln\frac{R\,|\math
       name: 'Thomson’s theorem',
       statement: String.raw`Among all ways of distributing a given total charge $Q$ over the surface of an isolated conductor (or a given charge on each of several conductors), the electrostatic field energy $W=\tfrac{\varepsilon_0}{2}\int E^2\,d\tau$ is smallest for the equilibrium distribution, the one for which the conductor is an equipotential.`,
       idea: String.raw`Write any trial distribution as the equilibrium one plus a change $\delta\sigma$ with zero total charge. The energy is a quadratic form in the charges, $W=\tfrac12\int\sigma V\,da$, so $W_{trial}=W_{eq}+\int\delta\sigma\,V_{eq}\,da+W[\delta\sigma]$. Because $V_{eq}$ is constant on the conductor and $\int\delta\sigma=0$, the linear term vanishes, and $W[\delta\sigma]=\tfrac{\varepsilon_0}{2}\int|\mathbf E_{\delta}|^2d\tau>0$ (the field energy of a nonzero charge distribution, em-2.11). So $W_{trial}>W_{eq}$ unless $\delta\sigma=0$, which is also the second uniqueness theorem (em-3.6). Equivalently, charges on a conductor slide until they can lower the energy no more.`,
-      caption: String.raw`An infinitely long conducting cylinder of elliptical cross-section holds charge $\lambda$ per unit length, which is modelled by 48 charged strips round the rim (bars outside the rim: the green ghost is the equilibrium density, red the trial one). The four sliders smear the charge in the shapes $\cos(k\cdot\text{angle round the rim})$; the excess energy readout is nonnegative, and so is the spread of the potential over the surface. Press **slide the charge** to let it flow downhill: it relaxes into the equilibrium, crowding at the ends of the ellipse, and the energy drops to its minimum.`,
-      scope: String.raw`Two-dimensional (log potential), a strip charge model: the energy is $\tfrac12\sum\lambda_i\lambda_jA_{ij}$ with $A_{ij}=-\ln d_{ij}$ and the midpoint potential self-term of a uniform straight strip, $-\ln(\ell/2)+1$. This symmetric midpoint model approximates the continuous boundary integral; its diagonal is not the double-averaged strip energy. Its quadratic form is positive on the zero-total subspace for the displayed aspect-ratio range (independently checked). A net line charge has divergent absolute field energy at infinity, so only finite energy differences are compared, in kernel units $\lambda^2/(2\pi\varepsilon_0)$; no absolute 2D energy minimum is asserted.`,
-      credit: 'Thomson’s minimum-energy theorem; quadratic proof from Feynman II, §8–5',
+      caption: String.raw`A conducting elliptic cylinder carries fixed total line charge. The smooth trial density is the equilibrium density multiplied by $1+\sum_{k=1}^4 a_k\cos k\theta$, with eccentric angle $\theta$ and $a_k=0.8$ times the slider values. Forty-eight bars sample these continuous densities, rather than representing point charges or finite strips. Signed densities are allowed. The plot uses density per physical arc length, relative to its perimeter average. Press slide the charge: each Fourier coefficient decays, lowering the exact energy difference and surface-potential spread.`,
+      scope: String.raw`The theorem concerns finite-energy three-dimensional charge distributions, with each isolated conductor’s charge fixed. This illustration instead uses the two-dimensional logarithmic kernel of an infinite elliptic cylinder; its absolute energy diverges, so only the finite energy difference at fixed total line charge is reported, in units $\lambda^2/(2\pi\varepsilon_0)$. For $c=(a+b)/2$, $t=(a-b)/(a+b)$, the exact kernel factorization yields $\Delta W=\sum_{k=1}^4a_k^2(1+t^k)/(8k)$ and angular RMS potential spread $[\sum_k a_k^2(1+t^k)^2/(8k^2)]^{1/2}$ in units $\lambda/(2\pi\varepsilon_0)$. Perimeter normalization alone uses numerical quadrature.`,
+      credit: 'Thomson minimum-energy theorem; modern proof by Fiolhais, Essén and Gouveia (2016)',
+      verify: false,
+      links: { 'Modern original proof': 'https://doi.org/10.1016/j.physleta.2016.06.039' },
       deps: ['em-3.6', 'em-2.11'],
-      refs: ['Feynman Lectures II, complete §8–5, Eqs.(8.27)–(8.35); fixed-charge quadratic expansion given here'],
+      refs: ['Fiolhais, Essén and Gouveia, A variational proof of Thomson’s theorem, Physics Letters A380 (2016),2703–2705, §2 Eqs.1–12, DOI10.1016/j.physleta.2016.06.039', 'Fitzpatrick, Classical Electromagnetism, §2.6 field-energy identity; ellipse log-kernel factorization supplied here'],
       tags: ['energy', 'variational'],
       viz(v) {
-        const Mn = 48, a = 3;
-        const s = v.stage({ x: [-5, 5], y: [-3.6, 3.6], equal: true, height: 340, axes: false, weight: 1.2, title: 'charge on the rim of a conducting ellipse' });
-        const sL = v.stage({ x: [0, 1], y: [0, 1], height: 340, axes: 'box', gutter: true, weight: 0.85, minWidth: 240, xlabel: 'position round the rim (fraction of perimeter)', ylabel: 'density $\\lambda$ (× average)', title: 'charge density' });
-        const bs = v.slider('ellipse $b/a$', 0.2, 1, 0.45, { step: 0.01, onChange: () => { setup(); reset(); } });
-        const cs = [1, 2, 3, 4].map((k) => v.slider(`smear $\\cos${k}\\theta$`, -1, 1, k === 1 ? 0.7 : k === 2 ? -0.5 : 0, { step: 0.05, onChange: () => reset() }));
-        let nodes = [], A, lamEq = [], lam = [], Weq = 0, raf = 0, running = false, steps = 0;
-        const setup = () => {
-          const b = a * bs.value, T = 4000, P = [[a, 0]]; let L = [0];
-          for (let i = 1; i <= T; i++) { const t = (TAU * i) / T, p = [a * Math.cos(t), b * Math.sin(t)]; L.push(L[i - 1] + Math.hypot(p[0] - P[i - 1][0], p[1] - P[i - 1][1])); P.push(p); }
-          const per = L[T]; nodes = []; let j = 0;
-          for (let i = 0; i < Mn; i++) { const target = ((i + 0.5) / Mn) * per; while (L[j + 1] < target) j++; const f = (target - L[j]) / (L[j + 1] - L[j]); nodes.push([P[j][0] + f * (P[j + 1][0] - P[j][0]), P[j][1] + f * (P[j + 1][1] - P[j][1])]); }
-          const l = per / Mn; A = Array.from({ length: Mn }, (_, i) => Array.from({ length: Mn }, (_, k) => (i === k ? -Math.log(l / 2) + 1 : -Math.log(Math.hypot(nodes[i][0] - nodes[k][0], nodes[i][1] - nodes[k][1]))))); // 
-          const Bm = Array.from({ length: Mn + 1 }, (_, i) => Array.from({ length: Mn + 1 }, (_, k) => (i < Mn && k < Mn ? A[i][k] : i === Mn && k === Mn ? 0 : 1)));
-          const rhs = new Array(Mn + 1).fill(0); rhs[Mn] = 1; lamEq = solveLin(Bm, rhs).slice(0, Mn);
-          Weq = energy(lamEq);
-        };
-        const Av = (x) => A.map((row) => row.reduce((t, a2, k) => t + a2 * x[k], 0));
-        const energy = (x) => 0.5 * x.reduce((t, xi, i) => t + xi * Av(x)[i], 0);
-        const energyFast = (x) => { const g = Av(x); return 0.5 * x.reduce((t, xi, i) => t + xi * g[i], 0); };
-        const trial = () => lamEq.map((l0, i) => l0 + cs.reduce((t, c, k) => t + (0.8 / Mn) * c.value * Math.cos(((k + 1) * TAU * (i + 0.5)) / Mn), 0));
-        const reset = () => { lam = trial(); steps = 0; };
-        const eta = () => 0.9 / Math.max(...A.map((r) => r.reduce((t, x) => t + Math.abs(x), 0)));
-        const relax = (n) => { const e = eta(); for (let it = 0; it < n; it++) { const g = Av(lam), m = g.reduce((t, x) => t + x, 0) / Mn; for (let i = 0; i < Mn; i++) lam[i] -= e * (g[i] - m); steps++; } };
-        setup(); reset();
-        if (typeof window !== 'undefined' && window.__vizStill) relax(150);
-        const tick = () => { if (!running) return; relax(40); v.invalidate(); raf = requestAnimationFrame(tick); };
-        v.button('slide the charge', () => { running = !running; if (running) raf = requestAnimationFrame(tick); });
-        v.button('reset', () => { running = false; reset(); });
-        v.onCleanup(() => { running = false; cancelAnimationFrame(raf); });
-        let info = {};
-        v.render(() => {
-          const b = a * bs.value;
-          s.path(Array.from({ length: 121 }, (_, k) => [a * Math.cos((TAU * k) / 120), b * Math.sin((TAU * k) / 120)]), { color: 'ink', width: 2.2, close: true, fill: 'muted', fillAlpha: 0.2 });
-          const mean = 1 / Mn, mx = Math.max(...lam, ...lamEq);
-          nodes.forEach((p, i) => {
-            const n = [p[0] / (a * a), p[1] / (b * b)], m = Math.hypot(n[0], n[1]), u = [n[0] / m, n[1] / m], L1 = (1.5 * lamEq[i]) / mx, L2 = (1.5 * lam[i]) / mx;
-            s.segment([p[0], p[1]], [p[0] + u[0] * L1, p[1] + u[1] * L1], { color: 'green', width: 5, alpha: 0.28 });
-            s.segment([p[0] + u[0] * 0.02, p[1] + u[1] * 0.02], [p[0] + u[0] * L2, p[1] + u[1] * L2], { color: 'red', width: 2.2, alpha: 0.9 });
-          });
-          const Vi = Av(lam), Vm = Vi.reduce((t, x) => t + x, 0) / Mn, sd = Math.sqrt(Vi.reduce((t, x) => t + (x - Vm) ** 2, 0) / Mn), W = energyFast(lam);
-          sL.setView([0, 1], [Math.min(0, ...lam, ...lamEq) / mean * 1.1, Math.max(mx / mean, 2) * 1.1]);
-          sL.path(lamEq.map((l, i) => [(i + 0.5) / Mn, l / mean]), { color: 'green', width: 2.2, dash: true }); sL.path(lam.map((l, i) => [(i + 0.5) / Mn, l / mean]), { color: 'red', width: 2.2 }); sL.hline(1, { color: 'faint' });
-          info = { dW: W - Weq, sd, steps, W, Weq, neg: Math.min(...lam) < 0 };
+        const s=v.stage({x:[-5,5],y:[-5,5],equal:true,height:340,axes:false,weight:1.2,title:'continuous charge density on an ellipse'});
+        const p=v.stage({x:[0,1],y:[-1,3],height:340,axes:'box',gutter:true,weight:.85,minWidth:240,xlabel:'eccentric angle θ / 2π',ylabel:'arc-length density / perimeter average',title:'physical surface density'});
+        let coeffs=[.7,-.5,0,0],steps=0,running=false,raf=0;
+        const bs=v.slider('ellipse $b/a$',.2,1,.45,{step:.01,onChange:()=>reset()});
+        const cs=[1,2,3,4].map((k)=>v.slider(`initial smear $\\cos${k}\\theta$`,-1,1,coeffs[k-1],{step:.05,onChange:()=>reset()}));
+        function reset(){running=false;coeffs=cs.map(c=>c.value);steps=0;}
+        const relax=n=>{coeffs=relaxFourier(coeffs,bs.value,n);steps+=n;};
+        const tick=()=>{if(!running)return;relax(4);v.invalidate();raf=requestAnimationFrame(tick);};
+        v.button('slide the charge',()=>{running=!running;if(running)raf=requestAnimationFrame(tick);});
+        v.button('reset',()=>reset());v.onCleanup(()=>{running=false;cancelAnimationFrame(raf);});
+        let info={};
+        v.render(()=>{
+          const M=ellipseFourier(bs.value,coeffs),a=M.a,b=M.b,mx=Math.max(...M.nodes.flatMap(n=>[Math.abs(n.eq),Math.abs(n.trial)]),1);
+          s.path(Array.from({length:161},(_,k)=>[a*Math.cos(TAU*k/160),b*Math.sin(TAU*k/160)]),{color:'ink',width:2.2,close:true,fill:'muted',fillAlpha:.2});
+          for(const n of M.nodes){const ux=n.x/(a*a),uy=n.y/(b*b),u=Math.hypot(ux,uy);for(const [d,col,width,alpha]of[[n.eq,'green',5,.28],[n.trial,'red',2.2,.9]])s.segment([n.x,n.y],[n.x+ux/u*1.5*d/mx,n.y+uy/u*1.5*d/mx],{color:col,width,alpha});}
+          const ymin=Math.min(0,...M.nodes.map(n=>n.trial));p.setView([0,1],[ymin<0?ymin*1.15:0,Math.max(mx,2)*1.15]);
+          const closed=fn=>M.nodes.map((n,i)=>[(i+.5)/M.nodes.length,fn(n)]);
+          p.path(closed(n=>n.eq),{color:'green',width:2.2,dash:true});p.path(closed(n=>n.trial),{color:'red',width:2.2});p.hline(1,{color:'faint'});
+          info={dW:M.dW,sd:M.spread,steps,negative:ymin<0,coeffs:coeffs.slice(),ratio:bs.value};
         });
-        v.legend([['green', 'equilibrium density'], ['red', 'trial density']]);
-        v.readout(() => `Excess energy $W-W_{eq}=${v.sci(info.dW, 3)}$ in kernel units $\\lambda^2/(2\\pi\\varepsilon_0)$. Surface-potential RMS spread $${v.sci(info.sd, 3)}$ in units $\\lambda/(2\\pi\\varepsilon_0)$. Both vanish at equilibrium up to numerical roundoff.${info.steps ? ` After ${info.steps} sliding steps.` : ''}${info.neg ? ' (The trial density is negative somewhere: allowed when only total charge is fixed.)' : ''}`);
+        v.legend([['green','equilibrium density'],['red','trial density']]);
+        v.readout(()=>`Energy above equilibrium: $\\Delta W=${v.sci(info.dW,4)}$ in units $\\lambda^2/(2\\pi\\varepsilon_0)$ per unit length. Angular RMS surface-potential variation: $${v.sci(info.sd,4)}$ in units $\\lambda/(2\\pi\\varepsilon_0)$. Both are zero exactly when all four perturbation coefficients vanish. After ${info.steps} coefficient-relaxation steps.${info.negative?' Signed trial density: negative on part of the rim; total charge remains fixed.':''}`);
       },
     },
   ],

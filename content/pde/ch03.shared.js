@@ -33,6 +33,97 @@ export function logErfc(z) {
 /** The heat kernel G(x, t) = (4πkt)^{-1/2} exp(-x²/(4kt)). */
 export function G(x, t, k = 1) { return Math.exp(-(x * x) / (4 * k * t)) / Math.sqrt(4 * Math.PI * k * t); }
 
+// Heat-ball quadrature: a=b² removes the a^(3/2) endpoint singularity.
+let heatBallRules;
+export function heatBallAverage(u, x, t, r) {
+  heatBallRules ||= [gaussLegendre(80), gaussLegendre(48)];
+  const [B, Z] = heatBallRules, tmax = r * r / (4 * Math.PI), nodes = [], bmax = 10;
+  let avg = 0;
+  for (let i = 0; i < B.xs.length; i++) {
+    const b = bmax * (B.xs[i] + 1) / 2, tau = tmax * Math.exp(-b * b), half = Math.sqrt(2 * tau) * b;
+    // Combine the Jacobian with the weight before evaluation, avoiding division by tiny tau².
+    const scale = Math.sqrt(2 * tau) * b ** 4 * bmax * B.ws[i] / (2 * r);
+    let inner = 0;
+    for (let j = 0; j < Z.xs.length; j++) inner += Z.ws[j] * Z.xs[j] ** 2 * u(x + half * Z.xs[j], t - tau);
+    const w = scale * inner; avg += w; nodes.push({tau, w});
+  }
+  return {avg, nodes, tmax};
+}
+export function heatBallHalfWidth(tau, r) {
+  const q = r * r / (4 * Math.PI * tau);
+  return tau > 0 && q > 1 ? Math.sqrt(2 * tau * Math.log(q)) : 0;
+}
+
+const TY_RHO = [.05, .1, .15, .2, .3, .4, .55, .7];
+const tyTrig = new Map();
+/** Upper bound on log |exp(-z^-alpha)| for |z-t|<=rho*t, principal branch, rho<1. */
+export function tyCircleLogBound(alpha, t, rho) {
+  const c = Math.cos(alpha * Math.asin(rho));
+  return -c * Math.pow(t * (c >= 0 ? 1 + rho : 1 - rho), -alpha);
+}
+/** Taylor coefficients g^(k)(t)/k!: circular Cauchy quadrature with analytic alias bounds and estimated roundoff. */
+export function tyDerivs(alpha, t, K = 100, M = 512) {
+  const key = `${K}/${M}`;
+  if (!tyTrig.has(key)) {
+    const C = [], S = [];
+    for (let k = 0; k <= K + 1; k++) { C.push(Float64Array.from({length: M}, (_, j) => Math.cos(2 * Math.PI * k * j / M))); S.push(Float64Array.from({length: M}, (_, j) => Math.sin(2 * Math.PI * k * j / M))); }
+    tyTrig.set(key, {C, S});
+  }
+  const {C, S} = tyTrig.get(key), circles = TY_RHO.map(rho => {
+    const r = rho * t, re = new Float64Array(M), im = new Float64Array(M);
+    for (let j = 0; j < M; j++) {
+      const theta = 2 * Math.PI * j / M, zr = t + r * Math.cos(theta), zi = r * Math.sin(theta), q = Math.pow(Math.hypot(zr, zi), -alpha), angle = alpha * Math.atan2(zi, zr);
+      const a = Math.exp(-q * Math.cos(angle)), phase = q * Math.sin(angle);
+      re[j] = a * Math.cos(phase); im[j] = a * Math.sin(phase);
+    }
+    const outer = (1 + rho) / 2, ratio = (rho / outer) ** M;
+    return {r, rho, re, im, logM: tyCircleLogBound(alpha, t, rho), outerR: outer * t, aliasLog: tyCircleLogBound(alpha, t, outer) + Math.log(ratio) - Math.log1p(-ratio)};
+  });
+  const d = new Float64Array(K + 2), err = new Float64Array(K + 2);
+  for (let k = 0; k <= K + 1; k++) {
+    let best = Infinity;
+    for (const c of circles) {
+      const logRound = c.logM - k * Math.log(c.r) + Math.log(64 * Number.EPSILON * (1 + M + k + Math.pow(t * (1 - c.rho), -alpha)));
+      const error = Math.exp(logRound) + Math.exp(c.aliasLog - k * Math.log(c.outerR));
+      if (!(error < best)) continue;
+      let sum = 0, correction = 0;
+      for (let j = 0; j < M; j++) { const term = (c.re[j] * C[k][j] + c.im[j] * S[k][j]) - correction, next = sum + term; correction = (next - sum) - term; sum = next; }
+      const value = sum / M / Math.pow(c.r, k);
+      if (!Number.isFinite(value)) continue;
+      d[k] = value; err[k] = error; best = error;
+    }
+    if (!Number.isFinite(best)) { d[k] = NaN; err[k] = Infinity; }
+  }
+  // Avoid an unnecessary contour approximation of the known zeroth coefficient.
+  d[0] = Math.exp(-Math.pow(t, -alpha));
+  err[0] = 8 * Number.EPSILON * (1 + Math.pow(t, -alpha)) * d[0];
+  return {d, err, K, circles, alpha, t};
+}
+/** Evaluate u (shift=0), or its termwise time derivative (shift=1); error is an estimate, not an interval certificate. */
+export function tyEval(D, x, shift = 0) {
+  const K = D.K - shift;
+  let sum = 0, correction = 0, error = 0, absSum = 0, weight = 1;
+  for (let k = 0; k <= K; k++) {
+    if (k) weight *= (k + shift) * x * x / (2 * k * (2 * k - 1));
+    if (!weight) continue;
+    const value = D.d[k + shift] * weight, term = value - correction, next = sum + term;
+    correction = (next - sum) - term; sum = next;
+    error += D.err[k + shift] * Math.abs(weight); absSum += Math.abs(value);
+  }
+  // Bound the entire omitted series with Cauchy's coefficient bound and its decreasing term ratio.
+  let tail = x === 0 ? 0 : Infinity;
+  if (x !== 0) for (const c of D.circles) {
+    const k = K + 1, ratio = (k + shift + 1) * x * x / (c.r * (2 * k + 2) * (2 * k + 1));
+    if (ratio >= 1) continue;
+    let logB = c.logM + k * Math.log(x * x) - (k + shift) * Math.log(c.r);
+    for (let j = 2; j <= k + shift; j++) logB += Math.log(j);
+    for (let j = 2; j <= 2 * k; j++) logB -= Math.log(j);
+    tail = Math.min(tail, Math.exp(logB - Math.log1p(-ratio)));
+  }
+  return {u: sum, err: error + tail + 4 * Number.EPSILON * absSum, tail};
+}
+export const tyOK = r => Number.isFinite(r.u) && Number.isFinite(r.err) && r.err < 1e-4 * Math.abs(r.u);
+
 /** log10 of u(x,t) = ½[erf((x+a)/(2√kt)) − erf((x−a)/(2√kt))]: the solution from the indicator of [−a, a], valid down to 10^{-10^5}. */
 export function log10Box(x, t, a, k = 1) {
   const s = 2 * Math.sqrt(k * t), x0 = Math.abs(x);

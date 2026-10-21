@@ -100,7 +100,7 @@ export default {
         { num: '3.7', kind: 'Definition', name: 'Immersed submanifolds and the dense winding of the torus', deps: ['mfd-3.2'], refs: ['Lee SM Ch. 5'],
           pic: 'A line of irrational slope winds around the torus without closing up and comes arbitrarily close to every point — an injective immersion whose image is dense, not an embedded submanifold.' },
         { num: '3.8', kind: 'Theorem', name: 'Sard’s theorem', deps: ['mfd-3.1', 'rca-2.20'], refs: ['Lee SM Ch. 6'],
-          pic: 'Critical points of a smooth height function can include curves, dots or regions; their critical values have measure zero. Finite-grid value bands are compared as the gradient tolerance shrinks.' },
+          pic: 'Critical points of a height function on a landscape form curves and dots, yet their values cover a set of measure zero on the axis, read out as total covered length.' },
         { num: '3.9', kind: 'Theorem', name: 'Whitney embedding theorem', deps: ['mfd-3.8', 'mfd-1.10'], refs: ['Lee SM Ch. 6'], see: ['top-6.7'],
           pic: 'The Klein bottle immerses in ℝ³ but embeds in ℝ⁴: rotate a 4D projection with the fourth coordinate shown as colour and watch the self-intersection circle separate.' },
         { num: '3.10', kind: 'Theorem', name: 'Whitney approximation theorem', deps: ['mfd-1.10'], refs: ['Lee SM Ch. 6'],

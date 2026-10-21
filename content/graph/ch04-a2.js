@@ -1,3 +1,4 @@
+import {checkedPlaneState,checkedPlaneGuard,triangulateAttempt} from './ch04-plane-audit.shared.js';
 // Graph Theory (Diestel) — Chapter 4, part A2 (§4.2, second half: forests, face boundaries, triangulations, Euler's formula)
 import {
   K, gstage, FILLS, crossPairs, faceStruct, innerPoint, paintFaces, markCross, planeOf, planeState, planeGuard, loadG, planeSpec, pgSpec,
@@ -216,17 +217,16 @@ export default {
     {
       num: '4.2.7a', kind: 'Definition', name: 'Maximally plane graphs and plane triangulations',
       statement: String.raw`A plane graph $G$ is **maximally plane** (or maximal) if no new edge can be added to it, on the same vertex set, so that the result is still a plane graph. A plane graph is a **plane triangulation** if every face, the outer face included, is bounded by a triangle.`,
-      idea: String.raw`"Maximal" is about the drawing: edges may be drawn as arbitrary polygonal arcs, so an edge can be added whenever two non-adjacent vertices lie on a common face, even if the straight segment between them would leave the face. A triangulation has nothing to add, since any two vertices on a common face are already adjacent. Proposition 4.2.8 shows the converse for graphs of order at least three.`,
-      caption: String.raw`Choose a plane graph and press **add an edge**: the app finds two non-adjacent vertices on a common face and draws a new arc through that face (bending if the straight segment is blocked). Face lengths are printed inside the faces: triangles are green, longer faces orange. Keep adding until every face is a triangle, and no more edge fits.`,
-      deps: ['graph-4.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.2, pp. 99–100; Proposition 4.2.8'], tags: ['maximal plane graph', 'triangulation'],
-      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
+      idea: String.raw`"Maximal" is about the drawing: edges may be drawn as arbitrary polygonal arcs, so an edge can be added whenever two non-adjacent vertices lie on a common face, even if the straight segment between them would leave the face. A triangulation has nothing to add, since any two vertices on a common face are already adjacent. For graphs with at least three vertices, Proposition 4.2.8 shows the converse. Graphs with one or two vertices may be maximal without being triangulations.`,
+      caption: String.raw`Choose a plane graph and press **add an edge**: the app finds two non-adjacent vertices on a common face and draws a new arc through that face (bending if the straight segment is blocked). Face lengths are printed inside the faces: triangles are green, longer faces orange. Keep adding towards a triangulation. The finite-clearance router can fail to find an arc; this is reported separately from the exact cofacial candidate count and does not certify maximality.`,
+      deps: ['graph-4.2.1a'], refs: ['Diestel, Graph Theory, sixth-edition author preview (2025), unnumbered definitions before Proposition 4.2.8, p.100'], tags: ['maximal plane graph', 'triangulation'], links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
-        let name = 'ring6', pg = PGS.ring6(), last = -1;
-        const sel = v.select('', [{ value: 'ring6', label: 'hexagon' }, { value: 'cube', label: 'cube' }, { value: 'fan', label: 'pentagon' }, { value: 'path7', label: 'path' }, { value: 'nested', label: 'triangle around square' }], 'ring6', { onChange: () => { name = sel.value; pg = PGS[name](); last = -1; } });
+        let name='ring6',pg=PGS.ring6(),last=-1,routing='';
+        const sel = v.select('', [{ value: 'ring6', label: 'hexagon' }, { value: 'cube', label: 'cube' }, { value: 'fan', label: 'pentagon' }, { value: 'path7', label: 'path' }, { value: 'nested', label: 'triangle around square' }], 'ring6', { onChange: () => { name = sel.value; pg = PGS[name](); last = -1;routing=''; } });
         const s = gstage(v, { height: 360 });
-        v.button('add an edge', () => { const r = pgAddOne(pg, (c) => c.slice(0, 3)); last = r ? r.k : last; });
-        v.button('saturate', () => { saturate(pg); last = -1; });
-        v.button('reset', () => { pg = PGS[name](); last = -1; });
+        v.button('add an edge', () => { const r=pgAddOne(pg);last=r?r.k:last;routing=r?'':pgAddable(pg,pgFaces(pg)).length?'Numerical router found no admissible route; cofacial pairs remain.':''; });
+        v.button('saturate', () => { const result=triangulateAttempt(pg);last=-1;routing=result.remaining?'Numerical routing stopped with cofacial pairs still available.':''; });
+        v.button('reset', () => { pg = PGS[name](); last = -1;routing=''; });
         let info = null;
         v.render(() => {
           const F = pgFaces(pg), add = pgAddable(pg, F);
@@ -236,13 +236,13 @@ export default {
           info = { n: pg.P.length, m: pg.E.length, l: lens.length, nontri: lens.filter((x) => x !== 3).length, add: add.length, tri };
         });
         v.legend([['green', 'triangular face', { area: true }], ['orange', 'longer face', { area: true }], ['gold', 'edge just added']]);
-        v.readout(() => (info ? `$n=${info.n}$, $m=${info.m}$, ${info.l} faces, **${info.nontri}** not triangles · pairs that can still be joined: **${info.add}** · ${info.add === 0 ? 'maximally plane' : 'not maximal'}, ${info.tri ? 'a triangulation' : 'not a triangulation'}${(info.add === 0) === info.tri ? ' ✓' : ''}` : ''));
+        v.readout(() => (info ? `${routing?routing+' · ':''}$n=${info.n}$, $m=${info.m}$, ${info.l} faces, **${info.nontri}** not triangles · pairs that can still be joined: **${info.add}** · ${info.add === 0 ? 'maximally plane' : 'not maximal'}, ${info.tri ? 'a triangulation' : 'not a triangulation'}${(info.add === 0) === info.tri ? ' ✓' : ''}` : ''));
       },
     },
     {
       num: '4.2.8', kind: 'Proposition', name: 'Maximally plane graphs are the plane triangulations',
       statement: String.raw`A plane graph with at least three vertices is maximally plane if and only if it is a plane triangulation.`,
-      idea: String.raw`If all faces are triangles, a new edge would run through a face and join two vertices of its boundary; these are already adjacent, so nothing can be added. Conversely, let $G$ be maximal and $f$ a face with boundary $H$. Any two vertices of $H$ could be joined through $f$, so they are adjacent in $G$ and $G[H]$ is complete, $K^n$. $H$ contains a cycle (else $f$ would be the whole plane by Proposition 4.2.4). If $n\ge4$, take a 4-cycle $v_1v_2v_3v_4$ in it: through $f$ the vertices $v_1,v_3$ and $v_2,v_4$ are linkable, which Lemma 4.1.2 (ii) forbids for the two disjoint diagonals. So $n\le3$ and $H=K^3$.`,
+      idea: String.raw`If all faces are triangles, a new edge would run through a face and join two vertices of its boundary; these are already adjacent, so nothing can be added. Conversely, let $G$ be maximal and $f$ a face with boundary $H$. Any two vertices of $H$ could be joined through $f$, so they are adjacent in $G$ and $G[H]$ is complete, $K^n$. If $H$ were a forest, it would have only the face $f$, so $f\cup H=\R^2$ and hence $G=H$. But maximality makes $G[H]$ complete; with $G=H$ and at least three vertices this contradicts being a forest. Thus $H$ contains a cycle. If $n\ge4$, take a 4-cycle $v_1v_2v_3v_4$ in the complete graph $G[H]$: through $f$ the vertices $v_1,v_3$ and $v_2,v_4$ are linkable, which Lemma 4.1.2 (ii) forbids for the two disjoint diagonals. So $n\le3$ and $H=K^3$.`,
       caption: String.raw`Click two vertices. If they lie on a common face and are not adjacent, a new edge is drawn through that face. If not, the straight attempt is shown dashed and red with the edges it is forced to cross. **find a chord** points at a face of length $\ge4$ and the pair that can be joined there. A triangulation (try the octahedron) accepts no edge at all.`,
       deps: ['graph-4.2.1a', 'graph-4.2.7a', 'graph-4.1.2', 'graph-4.2.4'], refs: ['Diestel §4.2'], tags: ['maximal plane graph', 'triangulation'],
       viz(v) {
@@ -277,25 +277,25 @@ export default {
     },
     {
       num: '4.2.9', kind: 'Theorem', name: 'Euler’s formula n − m + ℓ = 2',
-      statement: String.raw`Let $G$ be a connected plane graph with $n$ vertices, $m$ edges and $\ell$ faces. Then $$n-m+\ell=2.$$`,
+      statement: String.raw`Let $G$ be a nonempty connected finite plane graph with $n$ vertices, $m$ edges and $\ell$ faces. Then $$n-m+\ell=2.$$`,
       idea: String.raw`Induct on $m$. For $m=n-1$ the graph is a tree, which has $\ell=1$ face (Proposition 4.2.4), and $n-(n-1)+1=2$. Otherwise some edge $e$ lies on a cycle; by Lemma 4.2.2 it borders exactly two faces $f_1,f_2$. In $G-e$ these two merge into one face and all other faces stay faces, so $G-e$ has one edge and one face fewer, and $n-m+\ell$ does not change.`,
-      caption: String.raw`Edit a connected plane graph or pick one. The counters $n,m,\ell$ always give $2$. The gold edge, with its two faces tinted blue and orange, is the next one the proof deletes; **delete it** and watch $m$ and $\ell$ fall together until a tree is left. Disconnect the graph and the sum becomes $1+c$.`,
-      deps: ['graph-1.5.1', 'graph-1.5.2', 'graph-4.2.4', 'graph-4.2.2'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.2.9 and proof, p. 101'], see: ['top-10.9', 'top-11.17'], tags: ['Euler formula', 'faces'],
-      credit: 'Euler, 1752 (as credited in Diestel)',  links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Planar_graph' },
+      caption: String.raw`Edit a plane graph or pick one. While it stays connected and nonempty, the counters give $n-m+\ell=2$. The gold edge, with its two faces tinted blue and orange, is the next one the proof deletes; **delete it** and watch $m$ and $\ell$ fall together until a tree is left. Disconnect the graph and the sum becomes $1+c$.`,
+      deps: ['graph-1.5.1', 'graph-1.5.2', 'graph-4.2.4', 'graph-4.2.2'], refs: ['Diestel, Graph Theory, sixth-edition author preview (2025), Theorem 4.2.9 and proof, pp.101–102'], see: ['top-10.9', 'top-11.17'], tags: ['Euler formula', 'faces'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const PRE = { cube: () => pgSpec(PGS.cube()), octa: () => pgSpec(PGS.octa()), house: () => planeSpec({ a: [2, 1], b: [7, 1], c: [7, 4], d: [4.5, 5.4], e: [2, 4], f: [4.5, 3.0] }, 'ab bc cd de ea af bf cf df') };
         const sel = v.select('', [{ value: 'house', label: 'house' }, { value: 'cube', label: 'cube' }, { value: 'octa', label: 'octahedron' }], 'house', { onChange: () => { loadG(G, PRE[sel.value]()); guard.reset(); log.length = 0; } });
         const s = gstage(v, { height: 350 });
         const G = v.graph(s, { ...PRE.house(), r: 10, editable: true });
-        const st = { msg: '' }; const guard = planeGuard(G, st, () => { log.length = 0; });
+        const st = { msg: '' }; const guard = checkedPlaneGuard(G, st, () => { log.length = 0; });
         const log = [];
         const nextEdge = (ps) => { for (let k = 0; k < ps.E.length; k++) if (!isBridge(ps.F, k)) return k; return -1; };
-        v.button('delete the gold edge', () => { const ps = planeState(G); if (ps.bad.length || !ps.F) return; const k = nextEdge(ps); if (k >= 0) { G.removeEdge(ps.eo[k]); log.push(1); } });
+        v.button('delete the gold edge', () => { const ps = checkedPlaneState(G); if (ps.bad.length || !ps.F) return; const k = nextEdge(ps); if (k >= 0) { G.removeEdge(ps.eo[k]); log.push(1); } });
         v.button('reset', () => { loadG(G, PRE[sel.value]()); guard.reset(); log.length = 0; });
         let info = null;
         v.render(() => {
-          const ps = planeState(G);
-          if (ps.bad.length) { markCross(s, ps.bad); G.draw({}); return; }
+          const ps = checkedPlaneState(G);
+          if (ps.bad.length) { info=null;markCross(s, ps.bad); G.draw({}); return; }
           const F = ps.F, k = nextEdge(ps);
           paintFaces(s, F, { colorOf: (i) => (k >= 0 ? (i === F.faceOfHe[2 * k] ? 'blue' : i === F.faceOfHe[2 * k + 1] ? 'orange' : null) : i ? FILLS[(i - 1) % 8] : null), alpha: 0.3, outerAlpha: 0.18 });
           G.draw({ edgeColor: (e) => (k >= 0 && ps.eo[k] === e ? 'gold' : null), edgeWidth: (e) => (k >= 0 && ps.eo[k] === e ? 5 : 2.2) });
@@ -303,12 +303,12 @@ export default {
           info = { n: ps.P.length, m: ps.E.length, l: F.faces.length, c: F.comps, steps: log.length, tree: k < 0 };
         });
         v.legend([['blue', 'face left of the gold edge', { area: true }], ['orange', 'face right of it', { area: true }], ['gold', 'next edge to delete']]);
-        v.readout(() => (info ? `$n=${info.n}$, $m=${info.m}$, $\\ell=${info.l}$ → $n-m+\\ell=\\mathbf{${info.n - info.m + info.l}}$ ${info.c === 1 ? (info.n - info.m + info.l === 2 ? '✓' : '✗') : `(the graph has ${info.c} components: $=1+c=${1 + info.c}$)`}${info.tree ? ' · no edge on a cycle is left: a tree/forest, $\\ell=1$' : ''} · edges deleted: ${info.steps}` : ''));
+        v.readout(() => (info ? `${st.msg?st.msg+' · ':''}$n=${info.n}$, $m=${info.m}$, $\\ell=${info.l}$ → $n-m+\\ell=\\mathbf{${info.n - info.m + info.l}}$ ${info.c === 1 ? (info.n - info.m + info.l === 2 ? '✓' : '✗') : `(the graph has ${info.c} components: $=1+c=${1 + info.c}$)`}${info.tree ? ' · no edge on a cycle is left: a tree/forest, $\\ell=1$' : ''} · edges deleted: ${info.steps}` : ''));
       },
     },
     {
       num: '4.2.10', kind: 'Corollary', name: 'A plane graph has at most 3n − 6 edges',
-      statement: String.raw`A simple plane graph with $n\ge3$ vertices has at most $3n-6$ edges. Every plane triangulation with $n$ vertices has exactly $3n-6$ edges.`,
+      statement: String.raw`A plane graph with $n\ge3$ vertices has at most $3n-6$ edges. Every plane triangulation with $n$ vertices has exactly $3n-6$ edges.`,
       idea: String.raw`By Proposition 4.2.8 it is enough to count the triangulations, since every plane graph extends to a maximal one. In a triangulation each face has three edges and each edge lies on exactly two faces (Lemma 4.2.2), so $2m=3\ell$. Replace $\ell$ by $2m/3$ in Euler's formula: $n-m+2m/3=2$, which gives $m=3n-6$.`,
       caption: String.raw`Choose $n$ and press **new points**. The graph starts as a plane path through $n$ points; **add an edge** or **saturate** inserts edges through faces (arcs may bend). The right panel plots $m$ against $n$: the green line is $3n-6$, and no plane graph reaches the red region. Saturation always stops exactly on the line. The red dot is $K^5$ ($n=5$, $m=10$).`,
       deps: ['graph-4.2.9', 'graph-4.2.8', 'graph-4.2.2'], refs: ['Diestel §4.2'], tags: ['edge bound', 'triangulation'],

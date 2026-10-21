@@ -51,7 +51,7 @@ export default {
     // ------------------------------------------------------------------ 4.1
     {
       num: '4.1',
-      kind: 'Theorem',
+      kind: 'Definition',
       name: 'Bounded operators and the normed dual',
       statement: String.raw`For normed spaces $X$ and $Y$, $\mathscr B(X,Y)$ is the vector space of all bounded linear maps $T:X\to Y$ (bounded = continuous for linear maps), normed by
 $$\|T\|=\sup\{\|Tx\|:\ x\in X,\ \|x\|\le1\},$$
@@ -60,8 +60,8 @@ so that $\|Tx\|\le\|T\|\,\|x\|$ for every $x$. With this norm $\mathscr B(X,Y)$ 
       caption: String.raw`$T$ is a $2\times2$ matrix from $X=(\R^2,\|\cdot\|_p)$ to $Y=(\R^2,\|\cdot\|_r)$; drag its columns $Te_1,Te_2$ and pick the two norms. The blue region on the right is $T(B_X)$; the green ball is $\|T\|\,B_Y$, the smallest $Y$-ball containing it, and it touches at $Tx_0$. Drag $x$ around the unit sphere of $X$: $\|Tx\|_r$ never exceeds $\|T\|$. The readout checks the numerical supremum against closed forms where they exist.`,
       deps: ['fa-1.2'],
       see: ['rca-5.2', 'fa-3.1'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §4.1, pp. 92–93'],
       tags: ['operator norm', 'Banach spaces', 'duality'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const PS = [{ value: 1, label: '$1$' }, { value: 2, label: '$2$' }, { value: 4, label: '$4$' }, { value: Infinity, label: '$\\infty$' }];
@@ -202,7 +202,7 @@ so that $\|Tx\|\le\|T\|\,\|x\|$ for every $x$. With this norm $\mathscr B(X,Y)$ 
 $$M^\perp=\{x^*\in X^*:\ \langle x,x^*\rangle=0\ \text{for all } x\in M\},\qquad {}^\perp\!N=\{x\in X:\ \langle x,x^*\rangle=0\ \text{for all } x^*\in N\}.$$
 $M^\perp$ is a subspace of $X^*$ that is closed in the norm and even in the weak$^*$-topology; $\,{}^\perp\!N$ is a norm-closed subspace of $X$.`,
       idea: String.raw`$M^\perp=\bigcap_{x\in M}\{x^*:\langle x,x^*\rangle=0\}$ is an intersection of kernels of the maps $x^*\mapsto\langle x,x^*\rangle$, which are weak$^*$-continuous by definition (3.14) and hence norm-continuous; likewise $\,{}^\perp\!N$ is an intersection of kernels of the continuous $x^*\in N$. In a Hilbert space, after identifying $H^*$ with $H$, $M^\perp$ is the orthogonal complement — but in general it lives in the *dual*.`,
-      caption: String.raw`$X=\R^3$ and $X^*=\R^3$ with the pairing $\langle x,x^*\rangle=\sum x_ix_i^*$; drag either panel to rotate. Turn and tilt the subspace $M$ (a line or a plane). On the right $M^\perp$ is drawn in $X^*$ — in these coordinates it is the orthogonal complement of the faint ghost of $M$. The widget selects nonzero $x^*\in M^\perp$; its kernel is a plane containing $M$. The zero functional also belongs to the annihilator, but its kernel is all of $X$. Slide through the displayed nonzero choices.`,
+      caption: String.raw`$X=\R^3$ and $X^*=\R^3$ with the pairing $\langle x,x^*\rangle=\sum x_ix_i^*$; drag either panel to rotate. Turn and tilt the subspace $M$ (a line or a plane). On the right $M^\perp$ is drawn in $X^*$ — in these coordinates it is the orthogonal complement of the faint ghost of $M$. Each $x^*\in M^\perp$ shows up on the left through its kernel, a plane that contains $M$; slide through the choices.`,
       deps: ['fa-4.1', 'fa-3.14'],
       see: ['rca-4.9'],
       tags: ['annihilators', 'duality'],
@@ -326,7 +326,7 @@ In particular $M$ is dense in $X$ if and only if $M^\perp=\{0\}$, and $N$ is wea
 (a) By the Hahn–Banach theorem every $m^*\in M^*$ extends to some $x^*\in X^*$. Setting $\sigma m^*=x^*+M^\perp$ defines an isometric isomorphism $\sigma$ of $M^*$ onto $X^*/M^\perp$.
 (b) Let $\pi:X\to X/M$ be the quotient map and $Y=X/M$. For $y^*\in Y^*$ put $\tau y^*=y^*\pi$. Then $\tau$ is an isometric isomorphism of $Y^*$ onto $M^\perp$.`,
       idea: String.raw`(a) Two extensions of $m^*$ differ by an element of $M^\perp$, so $\sigma$ is well defined, linear and onto (restrict any $x^*$ to $M$). Every extension has norm $\ge\|m^*\|$, and a norm-preserving one exists (3.3), so the quotient norm $\inf\{\|x^*+z^*\|:z^*\in M^\perp\}$ equals $\|m^*\|$. (b) $y^*\pi$ vanishes on $M$; conversely every $x^*\in M^\perp$ factors through $\pi$. Since $\pi$ maps the open unit ball of $X$ onto that of $X/M$, $\|y^*\pi\|=\|y^*\|$.`,
-      caption: String.raw`$X=(\R^2,\|\cdot\|_p)$ with dual norm $\|\cdot\|_q$; turn the line $M$. **(a)** Choose $m^*$ on $M$. All its extensions form the green line $x^*+M^\perp$ in $X^*$ (parallel to $M^\perp$, dashed); drag along it — the norm is never below $\|m^*\|$, and the smallest one (where the coset meets $\|m^*\|B^*$) is the Hahn–Banach extension. **(b)** The unit ball of $X/M$ pulled back to $X$ is the orange strip $M+B$. A functional $x^*\in M^\perp$ (drag it) is constant along $M$, so it defines $y^*$ on $X/M$; for $x^*\ne0$ the strip lies exactly between its level lines $\langle\cdot,x^*\rangle=\pm\|x^*\|_q$ (green), i.e. $\|y^*\|=\|x^*\|_q$. For $x^*=0$ both functionals are zero and these level sets are all of $X$, not strip boundaries. Drag $x$ to test one coset; the norm ratio is used only for a nonzero quotient class. The point $x$ snaps to $M$ nearby, and the annihilator handle snaps to zero nearby.`,
+      caption: String.raw`$X=(\R^2,\|\cdot\|_p)$ with dual norm $\|\cdot\|_q$; turn the line $M$. **(a)** Choose $m^*$ on $M$. All its extensions form the green line $x^*+M^\perp$ in $X^*$ (parallel to $M^\perp$, dashed); drag along it — the norm is never below $\|m^*\|$, and the smallest one (where the coset touches $\|m^*\|B^*$) is the Hahn–Banach extension. **(b)** The unit ball of $X/M$ pulled back to $X$ is the orange strip $M+B$. A functional $x^*\in M^\perp$ (drag it) is constant along $M$, so it defines $y^*$ on $X/M$; the strip lies exactly between its level lines $\langle\cdot,x^*\rangle=\pm\|x^*\|_q$ (green), i.e. $\|y^*\|=\|x^*\|_q$. Drag $x$ to test one coset.`,
       deps: ['fa-4.6', 'fa-3.3', 'fa-4.3'],
       see: ['rca-5.16'],
       tags: ['duality', 'quotient spaces', 'annihilators'],
@@ -340,11 +340,8 @@ In particular $M$ is dense in $X$ if and only if $M^\perp=\{0\}$, and $N$ is wea
         let geo = null;
         const onLine = (P, d) => (x, y) => { const t = (x - P[0]) * d[0] + (y - P[1]) * d[1]; return [P[0] + t * d[0], P[1] + t * d[1]]; };
         const ext = R.handle(0.3, 0.8, { color: 'green', label: 'x*', constrain: (x, y) => (geo ? onLine(geo.P0, geo.w)(x, y) : [x, y]) });
-        const ann = R.handle(-0.5, 0.82, { color: 'green', label: 'x*', constrain: (x, y) => (Math.hypot(x,y)<0.04 ? [0,0] : geo ? onLine([0, 0], geo.w)(x, y) : [x, y]) });
-        const xh = L.handle(0.9, -0.9, { color: 'accent', label: 'x', constrain: (x,y) => {
-          if (!geo || Math.abs(x*geo.d[1]-y*geo.d[0])>=0.04) return [x,y];
-          const t=x*geo.d[0]+y*geo.d[1]; return [t*geo.d[0],t*geo.d[1]];
-        } });
+        const ann = R.handle(-0.5, 0.82, { color: 'green', label: 'x*', constrain: (x, y) => (geo ? onLine([0, 0], geo.w)(x, y) : [x, y]) });
+        const xh = L.handle(0.9, -0.9, { color: 'accent', label: 'x' });
         let st = {}, lastKey = '';
         v.render(() => {
           const p = pS.value, q = conj(p), th = ang.value * Math.PI / 180;
@@ -355,7 +352,7 @@ In particular $M$ is dense in $X$ if and only if $M^\perp=\{0\}$, and $N$ is wea
           cS.el.style.opacity = isA ? 1 : 0.4;
           // coset {x* : <u, x*> = c}: base point P0 = c u/|u|²
           const c = cS.value, uu = dot2(u, u), P0 = [c * u[0] / uu, c * u[1] / uu];
-          geo = { P0, w, d };
+          geo = { P0, w };
           const key = `${mode.value}|${p}|${ang.value}|${c}`;
           if (key !== lastKey) { // re-snap handles onto their lines
             const e = onLine(P0, w)(ext.x, ext.y); ext.x = e[0]; ext.y = e[1];
@@ -416,8 +413,7 @@ In particular $M$ is dense in $X$ if and only if $M^\perp=\{0\}$, and $N$ is wea
         v.readout(() => {
           const s = st;
           if (s.isA) return `$\\|m^*\\| = ${v.fix(s.mn, 4)}$; $\\;$ this extension: $\\|x^*\\|_{${pTeX(s.q)}} = ${v.fix(s.nq, 4)}\\ge\\|m^*\\|$; $\\;$ quotient norm $\\|\\sigma m^*\\| = \\min_{z^*\\in M^\\perp}\\|x^*+z^*\\|_{${pTeX(s.q)}} = ${v.fix(s.nm, 4)}$.`;
-          if (s.dm <= 1e-9) return `$\\pi x=0$ to numerical tolerance: $\\operatorname{dist}_{${pTeX(s.p)}}(x,M)\\approx0$ and $y^*(\\pi x)\\approx0$. The ratio $|y^*(\\pi x)|/\\|\\pi x\\|$ is undefined at the zero class. The norm identity still gives $\\|y^*\\|=\\|x^*\\|_{${pTeX(s.q)}}=${v.fix(s.nq,4)}$.`;
-          return `$\\|\\pi x\\| = \\operatorname{dist}_{${pTeX(s.p)}}(x,M) = ${v.fix(s.dm, 4)}$, $\\;\\langle x,x^*\\rangle = ${v.fix(s.val, 4)}$, so $|y^*(\\pi x)|/\\|\\pi x\\| = ${v.fix(s.ratio, 4)}$ $=\\|y^*\\|$ $= \\|x^*\\|_{${pTeX(s.q)}} = ${v.fix(s.nq, 4)}$ ($Y=X/M$ is one-dimensional here).`;
+          return `$\\|\\pi x\\| = \\operatorname{dist}_{${pTeX(s.p)}}(x,M) = ${v.fix(s.dm, 4)}$, $\\;\\langle x,x^*\\rangle = ${v.fix(s.val, 4)}$, so $|y^*(\\pi x)|/\\|\\pi x\\| = ${isFinite(s.ratio) ? v.fix(s.ratio, 4) : '—'}$ $=\\|y^*\\|$ $= \\|x^*\\|_{${pTeX(s.q)}} = ${v.fix(s.nq, 4)}$ ($Y=X/M$ is one-dimensional here).`;
         });
       },
     },

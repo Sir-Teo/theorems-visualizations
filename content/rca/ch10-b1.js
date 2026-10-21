@@ -201,7 +201,7 @@ For example $z^j\to0$ uniformly on compact subsets of the unit disc $U$, althoug
       idea: String.raw`Every compact $K\subset U$ lies in a closed disc $\{|z|\le\rho\}$ with $\rho<1$, where $\sup|z^j|=\rho^j\to0$. But $\sup_U|z^j|=1$ for all $j$: points near the boundary circle converge ever more slowly, and $N(K,\eps)\approx\log\eps/\log\rho$ blows up as $K$ swells toward $\partial U$. This mode of convergence is exactly what holomorphic limits require (10.28): it is local, so it does not care how badly things behave near $\partial\Omega$.`,
       caption: String.raw`Left: the error $|f_n(z)-f(z)|$ on the unit disc $U$ (bright = large), with the compact disc $K=\{|z|\le\rho\}$ in orange. Right: $\sup_K|f_n-f|$ against $n$ (dots) and the $\eps$-band. Enlarge $K$ toward the unit circle and $N(K,\eps)$ runs away, while $\sup_U|f_n-f|$ (red) never drops below $1$.`,
       deps: ['rca-10.2'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 10.27, pp. 213–214'],
+      verify: true,
       tags: ['uniform convergence', 'compactness'],
       viz(v) {
         const M = v.M;
@@ -353,7 +353,7 @@ For example $z^j\to0$ uniformly on compact subsets of the unit disc $U$, althoug
       idea: String.raw`Apply 10.28 to $\{f_j'\}$, which converges to $f'$ uniformly on compact subsets, then to $\{f_j''\}$, and so on by induction. Nothing like this is true for real variables: $\sin(j^2x)/j\to0$ uniformly on $\R$ while its derivative $j\cos(j^2x)$ diverges. The complex hypothesis is stronger than it looks — uniform convergence on compact sets of an *open* subset of $\C$ — and the real counterexample violates it, because $\sin(j^2z)/j$ is enormous just off the real axis.`,
       caption: String.raw`In $\C$: $f_j(z)=(1+z/j)^j\to e^z$; the left panel is the phase portrait of $f_j^{(k)}$ (its zero of order $j-k$ sits at $z=-j$), the right panel shows $\sup_{|z|\le1.5}|f_j^{(k)}-e^z|$ for $k=0,\dots,4$, all tending to $0$. In $\R$: $g_j(x)=\sin(j^2x)/j$ is uniformly small on $[-\pi,\pi]$, but its derivatives are not — and neither is $g_j$ itself on the tiny disc $|z|\le0.05$ (left: $\log_{10}|g_j|$ on a thin strip around the real axis).`,
       deps: ['rca-10.28'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Corollary to Theorem 10.28, p. 214'],
+      verify: true,
       tags: ['uniform convergence', 'derivatives'],
       viz(v) {
         const M = v.M, { Cx } = M;
@@ -670,7 +670,7 @@ Consequently $f$ maps $V\setminus\{z_0\}$ exactly $m$-to-one onto the punctured 
       caption: String.raw`$f(z)=z+cz^2$ on the unit disc $U$; its only critical point is $z^*=-1/(2c)$. While $|c|\le\frac12$, $z^*$ lies outside $U$, the image boundary $f(\partial U)$ is a simple curve and the gold point $w$ has one preimage $\psi(w)$. Push $|c|$ past $\frac12$: $z^*$ enters $U$, the image folds over itself, and the red points $z^*\pm d$ have the same image — $f$ stops being one-to-one exactly when $f'$ acquires a zero.`,
       deps: ['rca-10.32', 'rca-10.30'],
       see: ['pma-9.24'],
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 10.33 and proof, p. 217'],
+      verify: true,
       tags: ['univalent', 'conformal'],
       viz(v) {
         const M = v.M, { Cx, TAU } = M;

@@ -7,15 +7,15 @@
 //   Kirby & Herrnstein 1995 (Psychological Science 6(2): 83–89), Green, Fristoe & Myerson 1994 (Psychonomic Bulletin & Review 1(3):
 //   383–389), Frederick, Loewenstein & O'Donoghue 2002 (J. Economic Literature 40(2): 351–401). Their content is described
 //   from memory and abstracts, not re-read, except as stated below.
-// - Thaler1981 complete original pp201–207: Table2C uses15→20/50/100 at1month/1year/10years.
-//   Loewenstein & Prelec1992 complete original: §II pp574–577, §III pp578–585, equation15 and its history p580.
-//   Earlier secondary-source annual60 was from Table2A and has been removed from the Table2C series.
+// - For 5.3, read the complete original Thaler 1981 article transcription (public Scribd text, not a PDF),
+//   §§1–5, Tables 1–2 and references; form C's $15 row is 20/50/100 at 1 month/1 year/10 years.
+//   Independently read Loewenstein–Prelec 1992 §§II/III.1 in the CMU-authored PDF, including their credit note.
+//   The simple hyperbola credit is attributed through that authored note; no reading of the earlier originals is claimed.
 // - Everything labelled "model" (the sliders, the reward pairs in 5.2 and 5.4, the task in 5.6) is an illustration computed for this page.
 import { clamp, num, pct, usdC, usdR, dExp, dHyp, dQH, fx } from './ch05.shared.js';
+import { THALER_FORM_C, hyperbolicDiscount, hyperbolicAverageRate, hyperbolicFitError, fitThalerHyperbola } from './source-audit-discounting.js';
 
 const GUIDE = { color: 'muted', width: 1, dash: [4, 4] };
-
-export const THALER_DELAY_CHOICES = Object.freeze([[1 / 12, 20], [1, 50], [10, 100]].map(row => Object.freeze(row)));
 
 export default {
   collection: 'behav',
@@ -105,50 +105,54 @@ export default {
     // ------------------------------------------------------------------ 5.3
     {
       num: '5.3', kind: 'Model', name: 'Hyperbolic discounting',
-      statement: String.raw`**Hyperbolic discounting** replaces $\delta^t$ by $D(t)=\dfrac{1}{1+kt}$ (the simple hyperbola; Loewenstein and Prelec, 1992, derive the generalised form $(1+\alpha t)^{-\gamma/\alpha}$ and credit Harvey, 1986, with its definition). The per-period discount rate $-D'(t)/D(t)=k/(1+kt)$ is **not constant**: it is $k$ for immediate delays and falls toward zero for distant ones, whereas an exponential has the same rate at every horizon. Experiments that ask for the amount $X$ that makes a person indifferent between \$15 now and \$$X$ after a delay $t$ find implied rates $\ln(X/15)/t$ that fall steeply as $t$ grows (for example about 345% a year for one month against about 19% a year for ten years in Thaler's 1981 questions).`,
-      scope: String.raw`A descriptive declining-rate curve. The displayed original Thaler data concern hypothetical monetary questions over delays of one month to ten years; their size is sensitive to the question format. The hyperbola is one of several declining-rate forms.`,
-      idea: String.raw`If the rate of discounting declines with the delay, a given extra wait costs less far in the future than near the present, as illustrated by Thaler’s hypothetical monetary questions. Mathematically the hyperbola is the discount function you get by averaging exponentials over an exponentially distributed nonnegative rate with mean $k$ (a specific mixture of impatiences) and it has a fatter tail than any single exponential matched to the same one-year value.`,
-      caption: String.raw`Drag the **gold point** (the value of waiting one year) to set $k$ and compare the hyperbola with the exponential that has the **same one-year value**: the hyperbola falls faster at first and slower later. The right panel plots the **average discount rate** $-\ln D(t)/t$ against the delay on log axes: the exponential is a flat line, the hyperbola a falling one. The **dots** are Thaler's implied rates; **Fit k** fits their logarithmic implied rates by least squares (it need not pass through every point).`,
-      deps: ['behav-5.1', 'prob-1.2.4'], refs: ['W&K ch. 8'], tags: ['discounting', 'hyperbolic'],
-      credit: 'Thaler, 1981; Loewenstein & Prelec, 1992',
+      statement: String.raw`The simple **hyperbolic discount function** is $D(t)=1/(1+kt)$, $k>0$, $t\ge0$. Its **instantaneous** discount rate is
+$$-D'(t)/D(t)=k/(1+kt),$$
+while its **average continuously compounded** rate from now to $t>0$ is
+$$\begin{aligned}\bar r(t)&=-\ln D(t)/t\\&=\ln(1+kt)/t.\end{aligned}$$
+Both decline with delay. An exponential $e^{-\rho t}$ has constant instantaneous and average rates. Loewenstein and Prelec (1992, p. 580) credit this simple form to Herrnstein (1981), investigated further by Mazur (1987); their generalized hyperbola has earlier work by Harvey (1986) and Prelec (1989).
+
+Thaler's 1981 **Table 2, form C, \$15 row** gives median later amounts of \$20 after one month, \$50 after one year and \$100 after ten years. The money-equivalent rates $\ln(X/15)/t$ are about 345%, 120% and 19% per year. These are continuously compounded rates, under a linear-money conversion, not effective annual interest rates or direct estimates of a utility discount function.`,
+      scope: String.raw`Thaler's original study used hypothetical bank-lottery questions with about twenty usable responses per questionnaire form from University of Oregon students. Subjects were asked to assume no payment risk. The plotted medians all belong to form C; they are not one individual's observed discount curve. A declining-rate hyperbola is a descriptive model, and the fit below is an approximate grid fit under its stated loss function.`,
+      idea: String.raw`Matching the one-year values sets $\rho=\ln(1+k)$. Concavity of $\ln(1+kt)$ gives $D_{\rm hyp}(t)<e^{-\rho t}$ for $0<t<1$, and the reverse for $t>1$: the matched curves cross at one year.
+
+A specific mixture also produces this hyperbola: if exponential rates $R$ have an **exponential distribution with mean $k$** (prob-1.2.4, density $k^{-1}e^{-r/k}$), then
+$$\begin{aligned}E[e^{-Rt}]&=\int_0^\infty e^{-rt}\,k^{-1}e^{-r/k}\,dr\\&=\frac1{1+kt}.\end{aligned}$$
+An arbitrary distribution of rates produces a Laplace transform, which need not have this form. To evaluate the rate mixture rigorously, fix $M<\infty$ and write $c=t+1/k>0$. The continuous integrand has antiderivative $-e^{-cr}/(kc)$, so the fundamental theorem of calculus (pma-6.21) gives $\int_0^M k^{-1}e^{-cr}\,dr=(1-e^{-cM})/(kc)$. Taking $M\to\infty$ evaluates the improper integral as $1/(kc)=1/(1+kt)$. Positivity of $k$ and $t\ge0$ ensure convergence, including $t=0$, where the value is one.`,
+      caption: String.raw`Drag the **gold handle** vertically at one year, or change $k$, to compare discount functions with the same one-year value. The handle respects exactly the slider's $k\in[0.2,20]$ range. Toggle the left delay axis between linear and log scales. The right panel uses log delay/rate axes and plots **average** rates, rather than the instantaneous derivative rate. Green dots are the coherent form-C medians.
+
+**Fit k** searches 601 logarithmically spaced candidates in [0.2,20] and minimizes the sum of **squared log average-rate residuals**. It need not pass through all three points; the readout reports its actual objective and predictions.`,
+      deps: ['behav-5.1', 'prob-1.2.4', 'pma-6.21'], refs: ['Thaler (1981), §§2–3 and Table 2 form C', 'Loewenstein & Prelec (1992), §III.1, pp. 579–581'], tags: ['discounting', 'hyperbolic'],
+      credit: 'Simple form: Herrnstein, 1981, and Mazur, 1987 (as credited by Loewenstein–Prelec); Thaler data, 1981',
       links: { doi: 'https://doi.org/10.1016/0165-1765(81)90067-7', wikipedia: 'https://en.wikipedia.org/wiki/Hyperbolic_discounting' },
+      verify: false,
       viz(v) {
         const kS = v.slider('hyperbola parameter $k$ (per year)', 0.2, 20, 4.8, { log: true, sig: 3 });
         const logs = v.toggle('log axes for the delay (left panel)', false);
-        const fit = v.button('Fit k to Thaler’s three points', () => {
-          let best = [1e9, 1];
-          for (let i = 0; i <= 600; i++) {
-            const k = Math.exp(Math.log(0.2) + (Math.log(100) * i) / 600);
-            const e = THALER.reduce((s, [t, , rho]) => s + Math.pow(Math.log(Math.log(1 + k * t) / t) - Math.log(rho), 2), 0);
-            if (e < best[0]) best = [e, k];
-          }
-          kS.set(best[1]);
-        });
-        const THALER = THALER_DELAY_CHOICES.map(([t, amount]) => [t, amount, Math.log(amount / 15) / t]);
-        const A = v.stage({ x: [0, 10], y: [0, 1.02], axes: 'box', gutter: true, height: 330, xlabel: 'delay t (years)', ylabel: 'D(t)', title: 'same one-year value, different shapes' });
-        const B = v.stage({ x: [0.05, 20], y: [0.05, 8], axes: 'box', gutter: true, xlog: true, ylog: true, height: 330, xlabel: 'delay t (years)', ylabel: 'average rate −ln D(t)/t  (1 = 100% a year)', title: 'implied discount rate falls with delay' });
-        const hk = A.handle(1, 0.17, { color: 'gold', r: 8, constrain: (x, y) => [1, clamp(y, 0.03, 0.9)] });
-        hk.onDrag = () => { kS.set(clamp(1 / hk.y - 1, 0.2, 20)); };
-        v.legend([['red', 'hyperbola 1/(1+kt)'], ['blue', 'exponential, same value at 1 year'], ['green', 'Thaler 1981 implied rates', { dot: true }]]);
+        v.button('Fit k: 601-point log grid', () => kS.set(fitThalerHyperbola().k));
+        const A = v.stage({ x: [-0.35, 10.5], y: [-0.1, 1.15], axes: 'box', gutter: true, height: 340, xlabel: 'delay t (years)', ylabel: 'discount factor D(t)', title: 'same one-year value, different shapes' });
+        const B = v.stage({ x: [0.035, 28], y: [0.04, 20], axes: 'box', gutter: true, xlog: true, ylog: true, height: 340, xlabel: 'delay t (years)', ylabel: 'average rate (1 = 100% per year)', title: 'average rates: model and form-C medians' });
+        const hk = A.handle(1, 1 / 5.8, { color: 'gold', r: 8, constrain: (x, y) => [1, clamp(y, 1 / 21, 1 / 1.2)] });
+        hk.onDrag = () => kS.set(clamp(1 / hk.y - 1, 0.2, 20));
+        v.legend([['red', 'hyperbola 1/(1+kt)'], ['blue', 'exponential, same value at 1 year'], ['green', 'Thaler 1981 form C, \$15 row', { dot: true }]]);
         v.render(() => {
-          const k = kS.value, rho = Math.log(1 + k);
-          A.setView(logs.value ? [0.05, 10] : [0, 10], [0, 1.02]);
-          A.setScale({ xlog: logs.value });
-          A.fn((t) => dHyp(k, t), { color: 'red', width: 2.6 });
-          A.fn((t) => Math.exp(-rho * t), { color: 'blue', width: 2.6 });
-          hk.set(1, dHyp(k, 1));
-          A.text('1/(1+k) = ' + (1 / (1 + k)).toFixed(3), 1, 1 / (1 + k), { dx: 12, dy: -12, size: 11.5, weight: 700, color: 'ink', plate: true });
+          const k = kS.value, rho = Math.log1p(k), xmin = logs.value ? 0.05 : 0;
+          A.setView(logs.value ? [0.035, 14] : [-0.35, 10.5], [-0.1, 1.15]); A.setScale({ xlog: logs.value });
+          A.fn(t => hyperbolicDiscount(k, t), { color: 'red', width: 2.6, domain: [xmin, 10] });
+          A.fn(t => Math.exp(-rho * t), { color: 'blue', width: 2.6, domain: [xmin, 10] });
+          hk.set(1, hyperbolicDiscount(k, 1));
+          A.text('D(1) = ' + hk.y.toFixed(3), 1, hk.y, { dx: 12, dy: -12, size: 11.5, weight: 700, color: 'ink', plate: true });
+          const rates = [hyperbolicAverageRate(k, 0.05), hyperbolicAverageRate(k, 20), rho, ...THALER_FORM_C.map(p => p.rate)];
+          B.setView([0.035, 28], [Math.min(...rates) * 0.55, Math.max(...rates) * 1.65]);
           B.hline(rho, { color: 'blue', width: 2.4 });
-          B.fn((t) => Math.log(1 + k * t) / t, { color: 'red', width: 2.6 });
-          THALER.forEach(([t, X, r]) => {
-            B.dot(t, r, { r: 6, color: 'green' });
-            B.text('15 → ' + X, t, r, t > 5 ? { dx: -10, dy: -4, align: 'right', size: 11, color: 'green', weight: 700, plate: true } : t < 0.5 ? { dx: 10, dy: -12, size: 11, color: 'green', weight: 700 } : { dx: 10, dy: 14, size: 11, color: 'green', weight: 700, plate: true });
+          B.fn(t => hyperbolicAverageRate(k, t), { color: 'red', width: 2.6, domain: [0.05, 20] });
+          THALER_FORM_C.forEach(({ t, later, rate }) => {
+            B.dot(t, rate, { r: 6, color: 'green' });
+            B.text('15 → ' + later, t, rate, t > 5 ? { dx: -10, dy: -4, align: 'right', size: 11, color: 'green', weight: 700, plate: true } : t < 0.5 ? { dx: 10, dy: 16, size: 11, color: 'green', weight: 700 } : { dx: 10, dy: 14, size: 11, color: 'green', weight: 700, plate: true });
           });
         });
         v.readout(() => {
-          const k = kS.value, rho = Math.log(1 + k);
-          const rows = THALER.map(([t, , r]) => `${(100 * r).toFixed(0)}% (data) / ${(100 * Math.log(1 + k * t) / t).toFixed(0)}% (hyperbola) / ${(100 * rho).toFixed(0)}% (exponential)`);
-          return `Value of \\$1 in one year: ${(1 / (1 + k)).toFixed(3)} for both curves. Average rate at 1 month, 1 year, 10 years — data / hyperbola / exponential:\n1 month: ${rows[0]}\n1 year: ${rows[1]}\n10 years: ${rows[2]}`;
+          const k = kS.value, rho = Math.log1p(k), rows = THALER_FORM_C.map(({ t, later, rate }) => `15 → ${later}: ${(100 * rate).toFixed(1)}% median-implied / ${(100 * hyperbolicAverageRate(k, t)).toFixed(1)}% hyperbola / ${(100 * rho).toFixed(1)}% exponential`);
+          return `D(1) = ${(1 / (1 + k)).toFixed(5)} for both curves; k = ${k.toFixed(5)}. Squared log-rate residual sum = ${hyperbolicFitError(k).toFixed(6)} (601 candidate grid; not an exact interpolation).\nForm C, one month / one year / ten years:\n${rows.join('\n')}`;
         });
       },
     },

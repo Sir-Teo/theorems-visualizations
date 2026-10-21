@@ -140,7 +140,7 @@ export default {
       idea: String.raw`Taking logarithms turns the exponential $C_0e^{-kt}$ into the line $\ln C_0-kt$ (2.1), so least squares applies. In ordinary regression the slope's standard error is $\sigma/\sqrt{\sum(t_i-\bar t)^2}$, which is why samples far apart in time carry most of the information and why dropping the late ones widens the interval most. The method also assumes noise that is multiplicative (a constant percentage error), which is what makes it additive after the logarithm; the lognormal noise used here has that property.`,
       caption: String.raw`Eleven blood samples of a drug with true half-life 5 h (dashed green line) are generated with lognormal assay noise. The accent line is the least-squares fit; its shaded band is the 95 % interval for the slope. Choose whether to **keep the earliest or the latest** $n$ samples and slide $n$: the right panel plots the estimated half-life with its 95 % interval for every $n$ (current one in gold). **New sample** draws fresh noise. Samples under the assay limit of 0.1 mg/L (hollow) are not reported, as in a real assay.`,
       scope: String.raw`Requires that all samples lie on one exponential phase after distribution is complete, and noise that is proportional to the concentration; a curved profile or additive noise biases the fit.`,
-      deps: ['pharm-2.1', 'opt-1.6', 'stat-1.10'],
+      deps: ['pharm-2.1'],
       refs: ['Rowland–Tozer'],
       tags: ['regression', 'half-life'],
       viz(v) {
@@ -216,7 +216,7 @@ export default {
       idea: String.raw`The mass balance $A'=R-kA$ has a constant source and a loss proportional to the amount, so $A$ approaches the point where the two cancel, $A_{ss}=R/k$, and the gap to the plateau decays like $e^{-kt}$ (2.1). In concentration terms $C_{ss}=A_{ss}/V=R/\mathrm{CL}$: the plateau depends on rate and clearance only, not on volume. Once the input is off the equation is the bolus decay of 2.1 started from $C(T)$. Subtracting, $C_{ss}-C_{\text{rise}}(t)=C_{ss}e^{-kt}$ is exactly the decline from the plateau, which is the mirror symmetry.`,
       caption: String.raw`Left: concentration under an infusion of rate $R$ that **stops after the chosen number of half-lives**. The dashed curve is $C_{ss}$ minus the rise, shifted to the stop time: it lies on the decline when the infusion ran long enough to reach the plateau. Right: the **balance of flows**, input rate $R$ (flat) against elimination rate $\mathrm{CL}\cdot C(t)$; the plateau is where they meet, and the shaded gap is the drug still accumulating. The curve comes from RK4 on $A'=R-kA$; the readout compares it with the formula.`,
       scope: String.raw`One compartment, first-order elimination, constant infusion into the blood. A real infusion pump holds the rate only on average, and with several compartments the rise has several time scales.`,
-      deps: ['pharm-2.2', 'ode-1.4'],
+      deps: ['pharm-2.2'],
       refs: ['Rowland–Tozer'],
       tags: ['infusion', 'steady state'],
       viz(v) {

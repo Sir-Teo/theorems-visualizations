@@ -40,27 +40,3 @@ export const SEL_PRESETS = [
   { value: 'over', label: 'heterozygote advantage', w: [0.9, 1.0, 0.8] },
   { value: 'under', label: 'heterozygote disadvantage', w: [1.0, 0.85, 0.95] },
 ];
-
-/** Marginal fitnesses and mean fitness for a one-locus k-allele fitness/payoff matrix. */
-export function alleleFitness(p, W) {
-  const marginal = W.map(row => row.reduce((sum, w, j) => sum + w * p[j], 0));
-  return {marginal, mean: p.reduce((sum, pi, i) => sum + pi * marginal[i], 0)};
-}
-/** Exact random-mating viability update; requires nonnegative W and positive mean fitness. */
-export function alleleSelectionStep(p, W) {
-  const {marginal, mean} = alleleFitness(p, W);
-  return p.map((pi, i) => pi * marginal[i] / mean);
-}
-
-/** Arithmetic mean and almost-sure log-growth rate for the displayed two-environment haploid model. */
-export function fitnessLogGrowth(a, b, probability) {
-  const A = probability * a + (1 - probability) * b;
-  const logG = probability * Math.log(a) + (1 - probability) * Math.log(b);
-  return {A, logG, G: Math.exp(logG), varianceLog: probability * (1 - probability) * Math.log(a / b) ** 2};
-}
-
-/** Chosen haploid life cycle: viability selection, sensitive replacement migration, then S→R mutation. */
-export function resistanceFractions(R,S,c,d,mu,m,on=true){const w=(1-c)*R+(1-(on?d:0))*S,r=(1-m)*(1-c)*R/w,s=(1-m)*(1-(on?d:0))*S/w+m;return[r+mu*s,(1-mu)*s];}
-export function resistanceStep(p,c,d,mu,m,on=true){return resistanceFractions(p,1-p,c,d,mu,m,on)[0];}
-/** Stable mutation–selection–influx equilibrium before treatment; cancellation-safe quadratic root. */
-export function resistanceBalance(c,mu,m){const B=1+mu*c-(1-mu)*(1-m)*(1-c);return 2*mu/(B+Math.sqrt(Math.max(0,B*B-4*c*mu)));}

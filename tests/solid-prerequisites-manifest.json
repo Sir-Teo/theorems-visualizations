@@ -1,0 +1,185 @@
+[
+  {
+    "num": "1.9",
+    "file": "content/solid/ch01-b.js",
+    "added": [
+      "pma-6.21",
+      "pma-6.12"
+    ],
+    "expectedDeps": [
+      "solid-1.4",
+      "pma-6.21",
+      "pma-6.12"
+    ],
+    "append": "For a smooth axial displacement, strain is its derivative. The fundamental theorem (pma 6.21) turns the integral of $N/(EA)$ into the displacement difference, assuming positive stiffness and an integrable strain. At finitely many material or load jumps, interval additivity (pma 6.12) joins the continuous pieces and gives the stated stepped-bar sum. Compatibility keeps displacement continuous at the joints; a jump in material properties need not make strain continuous."
+  },
+  {
+    "num": "1.10",
+    "file": "content/solid/ch01-b.js",
+    "added": [
+      "ladr-3.65"
+    ],
+    "expectedDeps": [
+      "solid-1.9",
+      "ladr-3.65"
+    ],
+    "append": "The equilibrium and compatibility equations define a linear map on the two member forces. In its homogeneous system, $F_2=-F_1$ and $(f_1+f_2)F_1=0$. Positive member flexibilities make its kernel zero, so the finite-dimensional injectivity criterion (ladr 3.65) gives a unique force pair for every applied load. This justifies the intersection used above; zero stiffness or a mechanism would require a separate solvability check."
+  },
+  {
+    "num": "1.12",
+    "file": "content/solid/ch01-b.js",
+    "added": [
+      "pma-5.8"
+    ],
+    "expectedDeps": [
+      "solid-1.1",
+      "solid-1.6",
+      "pma-5.8"
+    ],
+    "append": "Under the stated positive axial tension, the shear on a rotated plane is the smooth function $(\\sigma/2)\\sin2\\theta$. Interior extrema obey the stationary-point condition pma 5.8: its derivative $\\sigma\\cos2\\theta$ vanishes. Checking those points and the endpoints of a half-turn gives maximum shear magnitude $\\sigma/2$ at the bisecting planes. Stationarity alone would not distinguish a maximum from a minimum."
+  },
+  {
+    "num": "1.14",
+    "file": "content/solid/ch01-b.js",
+    "added": [
+      "mech-3.1",
+      "pma-6.21"
+    ],
+    "expectedDeps": [
+      "solid-1.9",
+      "mech-3.1",
+      "pma-6.21"
+    ],
+    "append": "The work definition mech 3.1 reduces here to the axial integral of force against end displacement. For quasistatic elastic loading the stored work is this integral, and pma 6.21 evaluates the antiderivative $k\\delta^2/2$ of the linear restoring force. It produces the factor one half rather than the final force times the whole travel. Identifying this work with recoverable energy uses the elastic, nondissipative loading assumption, not just integration."
+  },
+  {
+    "num": "1.15",
+    "file": "content/solid/ch01-b.js",
+    "added": [
+      "mech-3.6"
+    ],
+    "expectedDeps": [
+      "solid-1.14",
+      "mech-3.6"
+    ],
+    "append": "In the ideal lumped mass and massless linear-spring model, gravity and the spring are conservative. Mechanical-energy conservation mech 3.6 equates gravitational energy released to stored elastic energy at the turning point, where the mass has zero speed. Solving that balance gives the displayed positive root. This calculation concerns the ideal model's extension and uniform bar stress, not a proof of a local-stress bound for a rod with wave propagation, contact effects or plasticity."
+  },
+  {
+    "num": "2.2",
+    "file": "content/solid/ch02.js",
+    "added": [
+      "ladr-6.13"
+    ],
+    "expectedDeps": [
+      "solid-2.1",
+      "ladr-6.13"
+    ],
+    "append": "Apply the orthogonal decomposition ladr 6.13 to the traction vector and the unit normal in ordinary Euclidean space. The projection coefficient is $\\mathbf t\\cdot\\mathbf n=\\sigma_n$, so the residual $\\mathbf t-\\sigma_n\\mathbf n$ is tangential. Orthogonality then gives the displayed sum of squared normal and shear components. This decomposition classifies an already computed traction; it does not supply the constitutive law."
+  },
+  {
+    "num": "2.6",
+    "file": "content/solid/ch02.js",
+    "added": [
+      "pma-9.41a"
+    ],
+    "expectedDeps": [
+      "solid-2.5",
+      "pma-9.41a"
+    ],
+    "append": "For a smooth displacement field, the equality of mixed partials pma 9.41a permits successive coordinate derivatives to commute. Substituting the symmetric displacement gradient into the compatibility combination makes every term cancel in pairs. This proves necessity in the smooth setting. The converse still needs the path-independence and topological argument stated above; commuting derivatives alone does not construct a global displacement on a region with holes."
+  },
+  {
+    "num": "2.10",
+    "file": "content/solid/ch02-b.js",
+    "added": [
+      "pma-5.5"
+    ],
+    "expectedDeps": [
+      "solid-2.8",
+      "pma-5.5"
+    ],
+    "append": "For positive cell width and height away from a stationary width, use the rib angle as a smooth parameter. The chain rule pma 5.5 converts the angle derivatives of $x=2L\\cos\\theta$ and $y=H+L\\sin\\theta$ into $dy/dx$. Forming the infinitesimal strain ratio $-(dy/y)/(dx/x)$ yields the displayed Poisson ratio. At $\\sin\\theta=0$ the width derivative vanishes, so that ratio is singular rather than a finite material constant."
+  },
+  {
+    "num": "2.11",
+    "file": "content/solid/ch02-b.js",
+    "added": [
+      "pma-9.41a",
+      "pma-10.51"
+    ],
+    "expectedDeps": [
+      "solid-2.4",
+      "solid-2.7",
+      "pma-9.41a",
+      "pma-10.51"
+    ],
+    "append": "For smooth displacement and constant Lam\u00e9 coefficients, commuting the mixed coordinate derivatives (pma 9.41a) collects the constitutive substitution into the vector Laplacian and gradient of divergence. For its integrated form, apply the divergence theorem pma 10.51 to the vector field with components $\\sigma_{ij}v_i$ for a smooth test displacement. The boundary term is traction dotted with the test displacement. This explains the weak-form step; the displayed finite-element solution remains a discrete approximation."
+  },
+  {
+    "num": "2.12",
+    "file": "content/solid/ch02-b.js",
+    "added": [
+      "pma-9.41a"
+    ],
+    "expectedDeps": [
+      "solid-2.9",
+      "solid-2.6",
+      "solid-2.4",
+      "pma-9.41a"
+    ],
+    "append": "For a sufficiently smooth potential, equality of mixed partials pma 9.41a makes the third-derivative terms in each equilibrium equation cancel. Applied again after constitutive substitution into compatibility, it combines the mixed fourth derivatives into the displayed biharmonic operator. These differentiations are local smooth identities; the separate simply-connected-domain condition is needed when reconstructing a globally single-valued displacement."
+  },
+  {
+    "num": "3.1",
+    "file": "content/solid/ch03.js",
+    "added": [
+      "ladr-3.84"
+    ],
+    "expectedDeps": [
+      "solid-2.9",
+      "ladr-3.84"
+    ],
+    "append": "The change-of-basis formula ladr 3.84 applies to the linear traction map. For orthonormal axes the inverse coordinate matrix is its transpose, giving the stated orthogonal conjugation of the stress matrix. Taking its entries yields the two-angle component formulas. The symmetric-stress hypothesis is supplied by angular-momentum balance, not by the change-of-basis theorem; rotating coordinates does not change the physical traction."
+  },
+  {
+    "num": "3.6",
+    "file": "content/solid/ch03.js",
+    "added": [
+      "ladr-9.52"
+    ],
+    "expectedDeps": [
+      "solid-3.2",
+      "ladr-9.52"
+    ],
+    "append": "Apply determinant similarity invariance ladr 9.52 to $zI-\\boldsymbol\\sigma$ under an orthogonal change of axes. Its determinant, hence every coefficient of the characteristic polynomial, is unchanged for every scalar z. This supplies the claimed invariance of all three coefficients at once. The hydrostatic/deviatoric split then subtracts the invariant mean stress; the argument concerns a coordinate change, not a change in loading."
+  },
+  {
+    "num": "3.7",
+    "file": "content/solid/ch03.js",
+    "added": [
+      "ladr-3.65"
+    ],
+    "expectedDeps": [
+      "solid-2.5",
+      "solid-3.1",
+      "ladr-3.65"
+    ],
+    "append": "For the specified rectangular rosette, a zero reading at zero and ninety degrees forces $\\varepsilon_x=\\varepsilon_y=0$; the zero forty-five-degree reading then forces $\\gamma_{xy}=0$. The three-reading linear map therefore has zero kernel and is invertible by ladr 3.65, justifying unique recovery of the three strain components. Three arbitrary gauge angles need their own rank check; merely counting three gauges is not sufficient."
+  },
+  {
+    "num": "3.9",
+    "file": "content/solid/ch03.js",
+    "added": [
+      "ode-3.13",
+      "pma-6.21"
+    ],
+    "expectedDeps": [
+      "solid-3.8",
+      "solid-2.4",
+      "solid-2.7",
+      "ode-3.13",
+      "pma-6.21"
+    ],
+    "append": "On a positive-radius interval, put $t=\\log r$ and $u(r)=y(t)$. The displacement equation becomes $y\\prime\\prime-y=0$, whose distinct characteristic roots $+1,-1$ give its full solution space by ode 3.13. Transforming back yields $Cr+D/r$. Separately, pma 6.21 integrates $(r\\sigma_r)\\prime=\\sigma_\\theta$ between the two surfaces, producing the stated resultant check from the pressure boundary values. Both steps use the fixed linear-elastic axisymmetric model."
+  }
+]

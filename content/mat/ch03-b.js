@@ -57,48 +57,7 @@ function pinch(st) {
   return false;
 }
 
-// ── 2D discrete edge-dislocation ensemble (3.8) ───────────────────────────────────────────────────────────────────────
-// N edge dislocations (signs ±1) on glide planes y = k·H of a periodic unit box, interaction force per length
-// F_x = s_i s_j x (x² − y²)/(x² + y²)² (units G b²/(2π(1−ν)) per length), nearest image; applied force s_i τ̃; overdamped glide.
-const H = 0.01, RC = 0.015, NU8 = 0.3;
-function dddTest(N, seed, rng) {
-  const r = v8rng(seed);
-  let x = [], y = [], s = [], id = [];
-  for (let i = 0; i < N; i++) { x.push(r()); y.push(Math.floor(r() * 100) * H); s.push(i % 2 ? 1 : -1); id.push(i); }
-  const disp = new Float64Array(N);
-  const wrap = (d) => d - Math.round(d);
-  const forces = (tau) => {
-    const n = x.length, F = new Float64Array(n);
-    for (let i = 0; i < n; i++) F[i] = s[i] * tau;
-    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
-      const dx = wrap(x[i] - x[j]), dy = wrap(y[i] - y[j]), r2 = dx * dx + dy * dy + 1e-12, f = (s[i] * s[j] * dx * (dx * dx - dy * dy)) / (r2 * r2);
-      F[i] += f; F[j] -= f;
-    }
-    return F;
-  };
-  const annihilate = () => {
-    for (let i = 0; i < x.length; i++) for (let j = i + 1; j < x.length; j++) {
-      if (s[i] !== s[j] && Math.abs(y[i] - y[j]) < 1e-9 && Math.abs(wrap(x[i] - x[j])) < RC) { for (const k of [j, i]) { x.splice(k, 1); y.splice(k, 1); s.splice(k, 1); id.splice(k, 1); } return true; }
-    }
-    return false;
-  };
-  const step = (tau, dt, dmax, track) => { const F = forces(tau); for (let i = 0; i < x.length; i++) { const d = clamp(F[i] * dt, -dmax, dmax); if (track) disp[id[i]] += d; x[i] = (x[i] + d + 1) % 1; } while (annihilate()); };
-  const init = { x: [...x], y: [...y], s: [...s] };
-  for (let k = 0; k < 1200; k++) step(0, 4e-5, 0.003);
-  const n0 = x.length, ell = 1 / Math.sqrt(Math.max(1, n0)), relaxed = { x: [...x], y: [...y], s: [...s] };
-  const tmax = 2.2 * Math.sqrt(n0) + 1, nst = 1600, curve = []; let flow = null;
-  for (let k = 1; k <= nst; k++) {
-    const tau = (tmax * k) / nst;
-    step(tau, 4e-5, 0.003, true);
-    let P = 0; for (let i = 0; i < x.length; i++) P += s[i] * disp[id[i]];
-    P /= Math.max(1, x.length) * ell; // mean displacement in units of the spacing
-    if (k % 8 === 0) curve.push([tau, P]);
-    if (flow === null && P >= 0.25) flow = tau;
-  }
-  return { n0, flow, curve, init, relaxed, final: { x: [...x], y: [...y], s: [...s] }, ell, tmax };
-}
-function v8rng(seed) { let a = (seed * 2654435761) >>> 0; return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
-const alphaOf = (flow, n0) => flow / (2 * Math.PI * (1 - NU8) * Math.sqrt(n0)); // τ_a / (G b √ρ) for unit box: ρ = n0
+import { hardeningProtocol, stressUnits, densityFit } from './source-audit-hardening.shared.js';
 
 export default {
   collection: 'mat',
@@ -112,7 +71,7 @@ export default {
       statement: String.raw`A dislocation segment of length $L$ pinned at both ends (by forest dislocations, precipitates, or where it leaves the slip plane) bows out under a resolved shear stress $\tau$ like a string with line tension $T\approx\tfrac12Gb^2$: the force per unit length $\tau b$ is balanced by $T/R$, so the arc has radius $R=\dfrac{Gb}{2\tau}$. The bow grows until it is a semicircle ($R=L/2$) at $\tau_c\approx\dfrac{Gb}{L}$; beyond that no equilibrium exists. The arms then sweep round the pins, meet behind them, annihilate where they touch, and release a closed **dislocation loop** while the original segment is restored, ready to repeat. One source therefore multiplies dislocations indefinitely at a stress $\tau_c\propto 1/L$.`,
       idea: String.raw`For $\tau<\tau_c$ the shape is the circular arc of radius $T/(\tau b)$ through the two pins, whose height grows with $\tau$ and is largest ($L/2$) for the semicircle; past that, a larger arc through the pins has a larger radius of curvature and so a weaker restoring tension, so the bow runs away (an instability of the same kind as Euler buckling). The two arms that wrap around the pins have opposite line directions where they meet, so their Burgers vectors cancel and they reconnect (3.6 gives the line tension; 3.3 why opposite arms cancel). The simulation below discretises the line, advances each node by the net force $T\kappa+\tau b$ (overdamped), and cuts and rejoins the line wherever two arms cross.`,
       caption: String.raw`The animation starts from the straight segment and applies the stress; drag the stress slider to set $\tau/\tau_c$ (the run restarts). Below $\tau_c$ the segment settles on the dashed analytic arc; above it the arms wrap around the pins and release loop after loop. The right panel compares the simulated steady bow height with the analytic $h(\tau)$ and shows that no steady state exists beyond $\tau_c$. The pin spacing $L$ sets the absolute stress $\tau_c=Gb/L$ (copper-like $G$, $b$).`,
-      deps: ['mat-3.6', 'vcalc-1.9'],
+      deps: ['mat-3.6'],
       refs: ['Callister §7.3'],
       tags: ['dislocation multiplication', 'line tension', 'plasticity'],
       credit: 'F. C. Frank and W. T. Read, 1950 (building on Orowan\'s earlier bow-out argument)',
@@ -169,53 +128,52 @@ export default {
     {
       num: '3.8',
       kind: 'Law',
-      name: 'Taylor hardening: σ ∝ √ρ',
-      statement: String.raw`The flow stress of a crystal that has been plastically deformed rises with the density $\rho$ (line length per volume) of dislocations it contains: $$\tau=\tau_0+\alpha\,G\,b\sqrt{\rho},$$ where $\tau_0$ is the lattice friction stress and $\alpha$ is a dimensionless constant typically of order $0.3$ to $0.6$ in the examples summarized by Roylance; its value depends on how the dislocations are arranged. Equivalently, the stress needed to push a dislocation past its neighbours is $\sim Gb/\ell$ with $\ell=1/\sqrt\rho$ their mean spacing, and a tensile flow stress follows by multiplying by a Taylor factor $M\approx3$ for polycrystals.`,
-      idea: String.raw`Dislocations feel the long-range elastic stress of every other one: at distance $r$ a neighbour exerts a stress of order $Gb/(2\pi(1-\nu)\,r)$ (3.6), so a dislocation must be pushed with $\tau\sim Gb/\ell$ to pass its neighbours (to bow between them as in 3.7, or to unlock from dipoles). The only length available in a population of density $\rho$ is $\ell=\rho^{-1/2}$, so by dimensional analysis the stress is a multiple of $Gb\sqrt\rho$; the constant $\alpha$ hides the geometry of the arrangement. The numerical experiment here is a two-dimensional ensemble of edge dislocations of both signs gliding on random planes: its yield stress is measured, not assumed.`,
-      caption: String.raw`Choose the number $N$ of dislocations in the unit box (their density is $\rho=N$ in box units), press *Run stress test*: the ensemble relaxes (opposite signs annihilate), then the applied stress is ramped up while the mean glide displacement is recorded; "flow" is defined as the stress at which dislocations have moved on average a quarter of their spacing. *Density sweep* repeats this for several $N$ and seeds and plots flow stress against $\sqrt\rho$: a straight line through the origin has slope $\alpha$.`,
+      name: 'Taylor hardening relation',
+      statement: String.raw`The **Taylor hardening relation** is an approximate constitutive description of a dislocation contribution to flow resistance: $$\tau\simeq\tau_0+\alpha Gb\sqrt\rho.$$ Here G is the shear modulus, b the Burgers-vector magnitude, ρ the relevant dislocation line length per volume, and α an arrangement-dependent coefficient. It is not a universal theorem that total density alone fixes flow stress: slip-system interactions, mobile versus forest populations and loading rate can matter. This entry uses the modern author treatment of Akhondzadeh et al. (2020), §§3.2–3.3.`,
+      idea: String.raw`If representative obstacle spacing ℓ scales as ρ⁻¹/² and the stress scale to move a pinned link is Gb/ℓ, then its contribution scales as Gb√ρ. This is a conditional length-scale argument, not a derivation of a universal α. The numerical experiment below has only parallel straight edges, nearest-image pair forces, a fixed glide-plane grid and an imposed finite ramp; these supply extra length and time scales. Its response stress need not obey Taylor scaling, and does not implement the full 3D model or data of the cited paper.`,
+      caption: String.raw`Run the finite protocol for a selected initial N and seed: 1200 zero-stress preparation steps, then 1600 ramp steps at Δt=4×10⁻⁵, each displacement limited to 0.003 box lengths. Opposite signs on the same plane annihilate within 0.015. The response criterion is P=ΣsᵢΔxᵢ/(N₀ℓ₀)≥1/4, where N₀ survives preparation and ℓ₀=1/√N₀. The sum retains all signed glide during the ramp, including contributions before annihilation. It is not the mean absolute displacement. Half-step repeats both durations with twice as many steps. Censored open points mark the maximum tested stress; the fit excludes them. Re-running the same configuration replaces its point.`,
       deps: ['mat-3.7'],
-      refs: ['Roylance, Dislocation Basis of Yield and Creep, pp8–10, Eq6; Cambridge DoITPoMS, Forest Hardening'],
+      refs: ['Akhondzadeh, Sills, Bertin, Cai (2020), §§3.2–3.3, Eqs.(3)–(8), arXiv:2006.08847v1', 'Föll, Defects in Crystals §§5.2.2, 5.2.5'],
       tags: ['work hardening', 'dislocation density', 'Taylor'],
-      credit: 'G. I. Taylor, 1934',
-      scope: String.raw`This is a 2D model: straight edge dislocations of $\pm b$ on parallel glide planes spaced $0.01$ apart (the unit box), periodic with nearest-image forces, overdamped, without sources, obstacles or climb; $\nu=0.3$. The flow criterion (mean displacement of a quarter spacing) is my own definition, so the fitted $\alpha$ is a property of this model, not a prediction for a real metal; Roylance reports about $0.3$ to $0.6$ across selected materials, rather than a universal interval.`,
+      scope: String.raw`Finite 2D toy, synthetic unit box, ν=.3, nearest-image torus rather than the true periodic elastic Green function. There is no source multiplication, junction network, climb or material calibration. The initial signs balance for even N; odd N has one extra sign, permitted only within this toy. The finite preparation residual is reported, without claiming equilibrium or convergence. P is cumulative signed slip normalized by the prepared population, not a static yield definition. Fitting through the origin imposes zero intercept on uncensored finite-protocol samples; no √ρ agreement or representative real-metal coefficient is guaranteed. Primary basis: Akhondzadeh et al., arXiv:2006.08847v1, complete §§3.2–3.3 pp7–11, Eqs.(3)–(8); Föll§§5.2.2,5.2.5 for the isotropic edge pair force. The actual1934 original remains a separate review.`,
       viz(v) {
         const Ns = v.slider('number of dislocations $N$', 10, 100, 50, { int: true });
-        let seed = 7, res = null; const sweep = [];
-        const A = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 400, weight: 1.1, title: 'dislocations on their glide planes (unit box)' });
-        const B = v.stage({ x: [0, 14], y: [0, 4], axes: 'box', gutter: true, height: 400, weight: 1, minWidth: 270, xlabel: '$\\sqrt\\rho$  (box units)', ylabel: '$\\tau/(Gb)$ × box length', title: 'flow stress against √density' });
-        let timer = null; v.onCleanup(() => clearTimeout(timer));
-        const run = () => { res = dddTest(Ns.value, seed, null); if (res.flow != null) { const k = sweep.findIndex((q) => q.n === res.n0 && q.seed === seed); const row = { n: res.n0, y: res.flow / (2 * Math.PI * (1 - NU8)), seed }; if (k < 0) sweep.push(row); } };
-        v.button('Run stress test', () => { run(); });
-        v.button('New random ensemble', () => { seed++; run(); });
-        const sweepRun = (ns, nseed) => {
-          const todo = []; for (const n of ns) for (let k = 0; k < nseed; k++) todo.push([n, 100 + k + n]);
-          const loop = () => { const q = todo.shift(); if (!q) return; const r = dddTest(q[0], q[1], null); if (r.flow != null) sweep.push({ n: r.n0, y: r.flow / (2 * Math.PI * (1 - NU8)), seed: q[1] }); v.invalidate(); timer = setTimeout(loop, 5); };
-          loop();
+        const protocol = v.select('finite timestep', [{value:1,label:'base Δt'}, {value:2,label:'half Δt, twice the steps'}], 1);
+        let seed = 7, res = null, done = 0, total = 0, timer = null, generation = 0;
+        const sweep = [], A = v.stage({ x: [-.035, 1.035], y: [-.04, 1.04], equal: true, axes: false, height: 400, weight: 1.1, title: 'finite ensemble after stress ramp (unit box)' });
+        const B = v.stage({ x: [0, 11], y: [0, 4], axes: 'box', gutter: {l:72}, height: 400, weight: 1, minWidth: 270, xlabel: '√ρ₀ (inverse box length)', ylabel: 'response stress × L / (Gb)', title: 'finite response criterion, not static yield' });
+        const cancel = () => { generation++; clearTimeout(timer); total = 0; };
+        v.onCleanup(cancel);
+        const save = (r,N,sd,refinement) => {
+          const key = `${N}/${sd}/${refinement}`, row = {key,n:r.n0,y:stressUnits(r.flow??r.tmax),censored:r.flow===null};
+          const k=sweep.findIndex(p=>p.key===key);if(k<0)sweep.push(row);else sweep[k]=row;
         };
-        v.button('Density sweep (N = 12…100)', () => sweepRun([12, 20, 30, 45, 65, 100], 3));
-        timer = setTimeout(() => { run(); v.invalidate(); timer = setTimeout(() => sweepRun([12, 20, 30, 45, 65, 90], 2), 20); }, 10);
-        const fit = () => { if (sweep.length < 2) return null; const xs = sweep.map((p) => Math.sqrt(p.n)), ys = sweep.map((p) => p.y); const al = xs.reduce((a, x, i) => a + x * ys[i], 0) / xs.reduce((a, x) => a + x * x, 0); const lr = v.M.linreg(xs.map(Math.log), ys.map(Math.log)); return { al, exp: lr.slope, r2: lr.r2 }; };
-        v.render(() => {
-          for (let k = 0; k <= 100; k += 10) A.hline(k * H, { color: 'grid', alpha: 0.35 });
-          const cfg = res ? res.final : null;
-          if (cfg) for (let i = 0; i < cfg.x.length; i++) {
-            const c = cfg.s[i] > 0 ? 'red' : 'blue', u = cfg.s[i] > 0 ? 1 : -1, px = cfg.x[i], py = cfg.y[i], w = 0.014;
-            A.line(px - w, py, px + w, py, { color: c, width: 2 }); A.line(px, py, px, py + u * 0.025, { color: c, width: 2 });
-          }
-          if (res && res.relaxed) for (let i = 0; i < res.relaxed.x.length; i++) A.dot(res.relaxed.x[i], res.relaxed.y[i], { r: 2.5, color: 'muted', fill: 'muted', alpha: 0.5 });
-          A.corner('coloured ⊥ = after the test, grey dots = relaxed start; red +b, blue −b', 'bl', { color: 'muted', size: 10.5 });
-          const f = fit();
-          B.setView([0, 11], [0, 4]);
-          if (f) B.fn((x) => f.al * x, { color: 'green', width: 2, domain: [0, 11] });
-          for (const p of sweep) B.dot(Math.sqrt(p.n), p.y, { r: 4, color: p.you ? 'gold' : 'accent', fill: p.you ? 'gold' : 'accent', alpha: 0.9 });
-          if (res && res.flow != null) B.dot(Math.sqrt(res.n0), res.flow / (2 * Math.PI * (1 - NU8)), { r: 8, color: 'orange', hollow: true, width: 2 });
+        const run = () => {cancel();res=hardeningProtocol(Ns.value,seed,{refinement:+protocol.value});save(res,Ns.value,seed,+protocol.value);};
+        v.button('Run stress test', run);
+        v.button('New random ensemble', () => {seed++;run();});
+        v.button('Density sweep (N = 12…100)', () => {
+          cancel();const own=generation,refinement=+protocol.value,todo=[];for(const N of[12,20,30,45,65,100])for(let j=0;j<3;j++)todo.push([N,100+j+N]);done=0;total=todo.length;
+          const loop=()=>{if(generation!==own)return;const p=todo.shift();if(!p)return;const r=hardeningProtocol(p[0],p[1],{refinement});save(r,p[0],p[1],refinement);done++;v.invalidate();if(todo.length)timer=setTimeout(loop,5);};loop();
         });
-        v.legend([['orange', 'this ensemble'], ['accent', 'runs (sweep and tests)'], ['green', 'fit through the origin: slope $\\alpha$']]);
+        run();
+        v.render(() => {
+          for(let k=0;k<=100;k+=10)A.hline(k*.01,{color:'grid',alpha:.35});
+          for(let i=0;i<res.final.x.length;i++){const x=res.final.x[i],y=res.final.y[i],s=res.final.s[i],color=s>0?'red':'blue';A.line(x-.014,y,x+.014,y,{color,width:2});A.line(x,y,x,y+s*.025,{color,width:2});}
+          for(let i=0;i<res.relaxed.x.length;i++)A.dot(res.relaxed.x[i],res.relaxed.y[i],{r:2.5,color:'muted',fill:'muted',alpha:.5});
+          A.corner('coloured: final; grey: after finite preparation', 'bl', {color:'muted',size:10});
+          const f=densityFit(sweep),xmax=Math.max(11,...sweep.map(p=>Math.sqrt(p.n)*1.1)),ymax=Math.max(1,...sweep.map(p=>p.y*1.2),f?f.alpha*xmax*1.1:0);
+          B.setView([0,xmax],[0,ymax]);if(f)B.fn(x=>f.alpha*x,{color:'green',width:2,domain:[0,xmax]});
+          for(const p of sweep)B.dot(Math.sqrt(p.n),p.y,{r:4,color:p.censored?'red':'accent',fill:p.censored?undefined:'accent',hollow:p.censored,width:2});
+          B.dot(Math.sqrt(res.n0),stressUnits(res.flow??res.tmax),{r:8,color:'orange',hollow:true,width:2});
+        });
+        v.legend([['orange','current protocol'],['accent','criterion crossed'],['red','censored at ramp maximum'],['green','uncensored fit through origin']]);
         v.readout(() => {
-          const f = fit();
-          let s = res ? (res.flow != null ? `This ensemble: ${res.n0} dislocations survive relaxation; flow at $\\tilde\\tau=${v.fix(res.flow, 2)}$, i.e. $\\alpha=\\tau/(Gb\\sqrt\\rho)=${v.fix(alphaOf(res.flow, res.n0), 3)}$.` : `This ensemble did not reach the flow criterion before the end of the ramp.`) : 'Computing…';
-          if (f) s += `\nSweep (${sweep.length} runs): fit through the origin $\\alpha=${v.fix(f.al, 3)}$; log–log slope of $\\tau$ against $\\rho$ (should be $\\tfrac12$ for Taylor's law): $${v.fix(f.exp / 2, 2)}$ (read as exponent of $\\rho$).`;
-          return s;
+          const f=densityFit(sweep);let text=`Seed ${seed}, prepared population ${res.n0}, final ${res.final.x.length}; preparation max force residual=${v.sci(res.residual,2)} (no equilibrium certificate). `;
+          text+=res.status==='empty'?'No surviving population: no response threshold.':res.flow===null?`Criterion not reached by dimensionless stress ${v.fix(res.tmax,3)}: right-censored.`:`Signed-slip criterion P≥1/4 first crossed at dimensionless stress ${v.fix(res.flow,3)}. Model α=${v.fix(stressUnits(res.flow)/Math.sqrt(res.n0),3)}.`;
+          text+=` Δt=${v.fix(4e-5/res.refinement,6)}; preparation/ramp durations .048/.064; this is a finite protocol, not measured yield.`;
+          if(total)text+=`\nDensity sweep ${done}/${total}${done===total?' complete':''}.`;
+          if(f)text+=`\n${f.count} uncensored runs, ${f.censored} censored: imposed-zero-intercept slope α=${v.fix(f.alpha,3)}; fitted exponent of ρ₀=${f.exponent===null?'unidentified (one distinct density)':v.fix(f.exponent,3)}. No required agreement with 1/2.`;
+          return text;
         });
       },
     },
@@ -225,9 +183,11 @@ export default {
       kind: 'Principle',
       name: 'Von Mises criterion: five independent slip systems',
       statement: String.raw`Plastic flow conserves volume, so the shape change of a grain is a symmetric traceless strain tensor, which has **five** independent components. Slip on a system with unit plane normal $\hat n$ and direction $\hat b$ produces the strain $\boldsymbol\varepsilon^{(\alpha)}=\tfrac12(\hat b\otimes\hat n+\hat n\otimes\hat b)\,\gamma_\alpha$. A grain can therefore accept an arbitrary shape change by slip alone only if its active slip systems contain **five linearly independent** strains; otherwise some shape changes cannot be accommodated, and neighbouring grains in a polycrystal cannot stay in contact without cracking or without a further mechanism (twinning, other slip systems, grain-boundary sliding).`,
-      idea: String.raw`Count the dimension of the span of the tensors $\boldsymbol\varepsilon^{(\alpha)}$ in the 5-dimensional space of deviatoric strains. For fcc $\{111\}\langle110\rangle$ the 12 systems span all five dimensions, as do the 12 bcc $\{110\}\langle111\rangle$ systems, so these metals are ductile as polycrystals. Basal slip in hcp has only two independent systems, prismatic slip adds two more but all $\langle a\rangle$ slip has no component of strain along the $c$ axis, so four in all; only $\langle c+a\rangle$ slip (or twinning) supplies the fifth, and its large critical stress is why Mg and Zn are brittle at low temperature. The rank here is computed from the actual crystal geometry.`,
+      idea: String.raw`Count the dimension of the span of the tensors $\boldsymbol\varepsilon^{(\alpha)}$ in the 5-dimensional space of deviatoric strains. For fcc $\{111\}\langle110\rangle$ the 12 systems span all five dimensions, as do the 12 bcc $\{110\}\langle111\rangle$ systems, meeting this kinematic span condition. Their actual polycrystal ductility also requires sufficiently accessible slip and compatible mechanisms; rank alone does not establish it. Basal slip in hcp has only two independent systems, prismatic slip adds two more but all $\langle a\rangle$ slip has no component of strain along the $c$ axis, so four in all; only $\langle c+a\rangle$ slip (or twinning) supplies the fifth, and its large critical stress is why Mg and Zn are brittle at low temperature. The rank here is computed from the actual crystal geometry.
+
+Symmetric three-by-three tensors have six independent entries, and trace is a surjective linear functional onto the scalars. Rank-nullity (ladr 3.21) makes its zero-trace kernel five-dimensional. The slip tensors lie in this kernel because their normal and direction are orthogonal. In the widget's orthonormal five-coordinate representation, the pseudoinverse theorem ladr 6.70 gives the closest attainable strain and, among its shear representations, the minimum-norm one. Numerical rank/pseudoinverse use finite precision. Full span is a kinematic condition, not sufficient evidence of ductility when activation stresses, sign constraints or other mechanisms matter.`,
       caption: String.raw`Choose a crystal and the slip families it can use, then a required shape change (a seeded random one, or a stretch along the $c$ axis). Dashed red is the cube of the grain after the requested strain; solid green is the closest shape the active systems can make (least-squares combination of their strains). When the rank is below 5 the shapes differ for most requested changes, and the readout gives the unaccommodated part: that mismatch is what opens at grain boundaries. The bars are the minimum-norm shear amounts $\gamma_\alpha$.`,
-      deps: ['mat-3.4', 'ladr-3.21'],
+      deps: ['mat-3.4','ladr-3.21','ladr-6.70'],
       refs: ['Callister §7.6'],
       tags: ['von Mises', 'ductility', 'polycrystal'],
       credit: 'R. von Mises, 1928 (Z. angew. Math. Mech. 8, 161; independent systems), applied to polycrystals by G. I. Taylor',
@@ -366,5 +326,3 @@ export default {
     },
   ],
 };
-
-export { dddTest, alphaOf };

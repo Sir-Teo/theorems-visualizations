@@ -1,0 +1,3437 @@
+{
+  "complete": true,
+  "diagnostic": true,
+  "method": "Actual uploaded Float32 arrays and exact cached group index arrays retained for count-only analysis. Original draws/bindings/shaders unchanged. No durations or performance claim.",
+  "checkpoint": "/tmp/atlas-continuation/checkpoint5",
+  "hashes": {
+    "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+    "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+    "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+    "scripts/audit-map-segment-mesh-census.mjs": "0de85c966866f643fe21ef3c44860fddf95881ef8a1b997d100c4ae9ea265f31",
+    "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+    "tests/map-segment-mesh-enclosure.mjs": "7f43ec5d1acb047c9f7031e291bd092d2f8b541de9df8ed0a488389aa068cd68"
+  },
+  "browser": "155.0.8059.85",
+  "results": [
+    {
+      "selected": false,
+      "width": 1440,
+      "height": 932,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 361.59999999999997,
+      "ty": -1642.8000000000002,
+      "nodes": 13574,
+      "edges": 23364,
+      "models": [
+        {
+          "scale": 0.5,
+          "points": 444859,
+          "segments": 421495,
+          "pointsSnapshotBytes": 7127040,
+          "joinsSnapshotBytes": 3563520,
+          "packedXYBytes": 3558872
+        },
+        {
+          "scale": 4,
+          "points": 1161473,
+          "segments": 1138109,
+          "pointsSnapshotBytes": 18595840,
+          "joinsSnapshotBytes": 9297920,
+          "packedXYBytes": 9291784
+        },
+        {
+          "scale": 0.5,
+          "points": 38667,
+          "segments": 37911,
+          "pointsSnapshotBytes": 622592,
+          "joinsSnapshotBytes": 311296,
+          "packedXYBytes": 309336
+        }
+      ],
+      "originalResources": {
+        "logicalRetainedBytes": 49552336,
+        "logicalPeakBytes": 49552336,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1080272,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 5368320,
+          "nodeAndFlagTextures": 243200
+        },
+        "componentSum": 49552336,
+        "primaryDrawingBufferBytes": 21473280,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 5368320,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 86,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+      },
+      "diagnosticCapturedCPUBytes": 40598480,
+      "rows": [
+        {
+          "style": "col:pma",
+          "segments": 68378,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 2464,
+              "samples": 3
+            }
+          ],
+          "boundTests": 68378,
+          "tileIntersectionTests": 68378,
+          "uncertain": 0,
+          "filteredFromEveryTile": 65914,
+          "submittedBefore": 68378,
+          "retainedInstances": 2464,
+          "removedInstances": 65914,
+          "persistentGroupGPUIndexBytes": 273512,
+          "maxTileScratchBytes": 9856
+        },
+        {
+          "style": "col:rca",
+          "segments": 17110,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 209,
+              "samples": 3
+            }
+          ],
+          "boundTests": 17110,
+          "tileIntersectionTests": 17110,
+          "uncertain": 0,
+          "filteredFromEveryTile": 16901,
+          "submittedBefore": 17110,
+          "retainedInstances": 209,
+          "removedInstances": 16901,
+          "persistentGroupGPUIndexBytes": 68440,
+          "maxTileScratchBytes": 836
+        },
+        {
+          "style": "col:fa",
+          "segments": 4576,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 140,
+                "y": 0,
+                "width": 2740,
+                "height": 1864
+              },
+              "retained": 42,
+              "samples": 3
+            }
+          ],
+          "boundTests": 4576,
+          "tileIntersectionTests": 4576,
+          "uncertain": 0,
+          "filteredFromEveryTile": 4534,
+          "submittedBefore": 4576,
+          "retainedInstances": 42,
+          "removedInstances": 4534,
+          "persistentGroupGPUIndexBytes": 18304,
+          "maxTileScratchBytes": 168
+        },
+        {
+          "style": "col:ode",
+          "segments": 11132,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 352,
+                "y": 0,
+                "width": 2528,
+                "height": 1864
+              },
+              "retained": 272,
+              "samples": 3
+            }
+          ],
+          "boundTests": 11132,
+          "tileIntersectionTests": 11132,
+          "uncertain": 0,
+          "filteredFromEveryTile": 10860,
+          "submittedBefore": 11132,
+          "retainedInstances": 272,
+          "removedInstances": 10860,
+          "persistentGroupGPUIndexBytes": 44528,
+          "maxTileScratchBytes": 1088
+        },
+        {
+          "style": "col:ladr",
+          "segments": 25989,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 10387,
+              "samples": 3
+            }
+          ],
+          "boundTests": 25989,
+          "tileIntersectionTests": 25989,
+          "uncertain": 0,
+          "filteredFromEveryTile": 15602,
+          "submittedBefore": 25989,
+          "retainedInstances": 10387,
+          "removedInstances": 15602,
+          "persistentGroupGPUIndexBytes": 103956,
+          "maxTileScratchBytes": 41548
+        },
+        {
+          "style": "col:mech",
+          "segments": 874,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 118,
+              "samples": 3
+            }
+          ],
+          "boundTests": 874,
+          "tileIntersectionTests": 874,
+          "uncertain": 0,
+          "filteredFromEveryTile": 756,
+          "submittedBefore": 874,
+          "retainedInstances": 118,
+          "removedInstances": 756,
+          "persistentGroupGPUIndexBytes": 3496,
+          "maxTileScratchBytes": 472
+        },
+        {
+          "style": "col:pde",
+          "segments": 3043,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 434,
+                "y": 0,
+                "width": 2446,
+                "height": 1864
+              },
+              "retained": 235,
+              "samples": 3
+            }
+          ],
+          "boundTests": 3043,
+          "tileIntersectionTests": 3043,
+          "uncertain": 0,
+          "filteredFromEveryTile": 2808,
+          "submittedBefore": 3043,
+          "retainedInstances": 235,
+          "removedInstances": 2808,
+          "persistentGroupGPUIndexBytes": 12172,
+          "maxTileScratchBytes": 940
+        },
+        {
+          "style": "col:vcalc",
+          "segments": 5010,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 526,
+                "y": 0,
+                "width": 2354,
+                "height": 1864
+              },
+              "retained": 2143,
+              "samples": 3
+            }
+          ],
+          "boundTests": 5010,
+          "tileIntersectionTests": 5010,
+          "uncertain": 0,
+          "filteredFromEveryTile": 2867,
+          "submittedBefore": 5010,
+          "retainedInstances": 2143,
+          "removedInstances": 2867,
+          "persistentGroupGPUIndexBytes": 20040,
+          "maxTileScratchBytes": 8572
+        },
+        {
+          "style": "col:alg",
+          "segments": 3276,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 711,
+                "y": 1459,
+                "width": 2169,
+                "height": 405
+              },
+              "retained": 2804,
+              "samples": 3
+            }
+          ],
+          "boundTests": 3276,
+          "tileIntersectionTests": 3276,
+          "uncertain": 0,
+          "filteredFromEveryTile": 472,
+          "submittedBefore": 3276,
+          "retainedInstances": 2804,
+          "removedInstances": 472,
+          "persistentGroupGPUIndexBytes": 13104,
+          "maxTileScratchBytes": 11216
+        },
+        {
+          "style": "col:top",
+          "segments": 1640,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 1018,
+                "y": 0,
+                "width": 1862,
+                "height": 1864
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 1640,
+          "tileIntersectionTests": 1640,
+          "uncertain": 0,
+          "filteredFromEveryTile": 1640,
+          "submittedBefore": 1640,
+          "retainedInstances": 0,
+          "removedInstances": 1640,
+          "persistentGroupGPUIndexBytes": 6560,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:prob",
+          "segments": 12524,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 12524,
+          "tileIntersectionTests": 12524,
+          "uncertain": 0,
+          "filteredFromEveryTile": 12524,
+          "submittedBefore": 12524,
+          "retainedInstances": 0,
+          "removedInstances": 12524,
+          "persistentGroupGPUIndexBytes": 50096,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:stoch",
+          "segments": 1834,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 1834,
+          "tileIntersectionTests": 1834,
+          "uncertain": 0,
+          "filteredFromEveryTile": 1834,
+          "submittedBefore": 1834,
+          "retainedInstances": 0,
+          "removedInstances": 1834,
+          "persistentGroupGPUIndexBytes": 7336,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:nt",
+          "segments": 294,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 1003,
+                "width": 2880,
+                "height": 861
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 294,
+          "tileIntersectionTests": 294,
+          "uncertain": 0,
+          "filteredFromEveryTile": 294,
+          "submittedBefore": 294,
+          "retainedInstances": 0,
+          "removedInstances": 294,
+          "persistentGroupGPUIndexBytes": 1176,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:comb",
+          "segments": 824,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 412,
+                "width": 2880,
+                "height": 1452
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 824,
+          "tileIntersectionTests": 824,
+          "uncertain": 0,
+          "filteredFromEveryTile": 824,
+          "submittedBefore": 824,
+          "retainedInstances": 0,
+          "removedInstances": 824,
+          "persistentGroupGPUIndexBytes": 3296,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:algo",
+          "segments": 902,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 967,
+                "y": 0,
+                "width": 1913,
+                "height": 1864
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 902,
+          "tileIntersectionTests": 902,
+          "uncertain": 0,
+          "filteredFromEveryTile": 902,
+          "submittedBefore": 902,
+          "retainedInstances": 0,
+          "removedInstances": 902,
+          "persistentGroupGPUIndexBytes": 3608,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:logic",
+          "segments": 760,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 1457,
+                "width": 2880,
+                "height": 407
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 760,
+          "tileIntersectionTests": 760,
+          "uncertain": 0,
+          "filteredFromEveryTile": 760,
+          "submittedBefore": 760,
+          "retainedInstances": 0,
+          "removedInstances": 760,
+          "persistentGroupGPUIndexBytes": 3040,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:info",
+          "segments": 1052,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 7.1683620335534215,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 1069,
+                "y": 0,
+                "width": 1811,
+                "height": 1864
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 1052,
+          "tileIntersectionTests": 1052,
+          "uncertain": 0,
+          "filteredFromEveryTile": 1052,
+          "submittedBefore": 1052,
+          "retainedInstances": 0,
+          "removedInstances": 1052,
+          "persistentGroupGPUIndexBytes": 4208,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "ghost",
+          "segments": 110850,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.7,
+          "J": 3.982421875,
+          "radiusCSS": 6.770119751105085,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 5653,
+              "samples": 3
+            }
+          ],
+          "boundTests": 110850,
+          "tileIntersectionTests": 110850,
+          "uncertain": 0,
+          "filteredFromEveryTile": 105197,
+          "submittedBefore": 110850,
+          "retainedInstances": 5653,
+          "removedInstances": 105197,
+          "persistentGroupGPUIndexBytes": 443400,
+          "maxTileScratchBytes": 22612
+        }
+      ],
+      "intervalCornerSamples": 54,
+      "totals": {
+        "groups": 18,
+        "boundTests": 270068,
+        "tileIntersectionTests": 270068,
+        "submittedBefore": 270068,
+        "retainedInstances": 24327,
+        "removedInstances": 245741,
+        "membershipCopyBytes": 1080272,
+        "allTileGPUIndicesBytes": 97308,
+        "maxReusableScratchBytes": 41548,
+        "activePackedXYBytes": 9291784,
+        "combinedGPUPlusXYPlusTwoScratch": 58927216,
+        "combinedPlusMembershipCopy": 60007488
+      }
+    },
+    {
+      "selected": true,
+      "width": 1440,
+      "height": 932,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 361.59999999999997,
+      "ty": -1642.8000000000002,
+      "nodes": 13574,
+      "edges": 23364,
+      "models": [
+        {
+          "scale": 0.5,
+          "points": 444859,
+          "segments": 421495,
+          "pointsSnapshotBytes": 7127040,
+          "joinsSnapshotBytes": 3563520,
+          "packedXYBytes": 3558872
+        },
+        {
+          "scale": 4,
+          "points": 1161473,
+          "segments": 1138109,
+          "pointsSnapshotBytes": 18595840,
+          "joinsSnapshotBytes": 9297920,
+          "packedXYBytes": 9291784
+        },
+        {
+          "scale": 0.5,
+          "points": 38667,
+          "segments": 37911,
+          "pointsSnapshotBytes": 622592,
+          "joinsSnapshotBytes": 311296,
+          "packedXYBytes": 309336
+        }
+      ],
+      "originalResources": {
+        "logicalRetainedBytes": 49631100,
+        "logicalPeakBytes": 49631100,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1159036,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 5368320,
+          "nodeAndFlagTextures": 243200
+        },
+        "componentSum": 49631100,
+        "primaryDrawingBufferBytes": 21473280,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 5368320,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 3,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+      },
+      "diagnosticCapturedCPUBytes": 40677244,
+      "rows": [
+        {
+          "style": "gray",
+          "segments": 270068,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 0.7,
+          "J": 3.982421875,
+          "radiusCSS": 6.770119751105085,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 24309,
+              "samples": 3
+            }
+          ],
+          "boundTests": 270068,
+          "tileIntersectionTests": 270068,
+          "uncertain": 0,
+          "filteredFromEveryTile": 245759,
+          "submittedBefore": 270068,
+          "retainedInstances": 24309,
+          "removedInstances": 245759,
+          "persistentGroupGPUIndexBytes": 1080272,
+          "maxTileScratchBytes": 97236
+        },
+        {
+          "style": "up",
+          "segments": 207,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 1,
+          "J": 3.982421875,
+          "radiusCSS": 7.9648465984500945,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 709,
+                "y": 918,
+                "width": 745,
+                "height": 80
+              },
+              "retained": 207,
+              "samples": 3
+            }
+          ],
+          "boundTests": 207,
+          "tileIntersectionTests": 207,
+          "uncertain": 0,
+          "filteredFromEveryTile": 0,
+          "submittedBefore": 207,
+          "retainedInstances": 207,
+          "removedInstances": 0,
+          "persistentGroupGPUIndexBytes": 828,
+          "maxTileScratchBytes": 828
+        },
+        {
+          "style": "down",
+          "segments": 19484,
+          "modelScale": 4,
+          "cap": "round",
+          "width": 1,
+          "J": 3.982421875,
+          "radiusCSS": 7.9648465984500945,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 2880,
+              "height": 1864,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 2880,
+                "height": 1864
+              },
+              "retained": 2261,
+              "samples": 3
+            }
+          ],
+          "boundTests": 19484,
+          "tileIntersectionTests": 19484,
+          "uncertain": 0,
+          "filteredFromEveryTile": 17223,
+          "submittedBefore": 19484,
+          "retainedInstances": 2261,
+          "removedInstances": 17223,
+          "persistentGroupGPUIndexBytes": 77936,
+          "maxTileScratchBytes": 9044
+        }
+      ],
+      "intervalCornerSamples": 9,
+      "totals": {
+        "groups": 3,
+        "boundTests": 289759,
+        "tileIntersectionTests": 289759,
+        "submittedBefore": 289759,
+        "retainedInstances": 26777,
+        "removedInstances": 262982,
+        "membershipCopyBytes": 1159036,
+        "allTileGPUIndicesBytes": 107108,
+        "maxReusableScratchBytes": 97236,
+        "activePackedXYBytes": 9291784,
+        "combinedGPUPlusXYPlusTwoScratch": 59117356,
+        "combinedPlusMembershipCopy": 60276392
+      }
+    },
+    {
+      "selected": false,
+      "width": 3840,
+      "height": 2092,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 1561.6,
+      "ty": -1062.8000000000002,
+      "nodes": 13574,
+      "edges": 23364,
+      "models": [
+        {
+          "scale": 0.5,
+          "points": 444859,
+          "segments": 421495,
+          "pointsSnapshotBytes": 7127040,
+          "joinsSnapshotBytes": 3563520,
+          "packedXYBytes": 3558872
+        },
+        {
+          "scale": 4,
+          "points": 1161473,
+          "segments": 1138109,
+          "pointsSnapshotBytes": 18595840,
+          "joinsSnapshotBytes": 9297920,
+          "packedXYBytes": 9291784
+        },
+        {
+          "scale": 0.5,
+          "points": 38667,
+          "segments": 37911,
+          "pointsSnapshotBytes": 622592,
+          "joinsSnapshotBytes": 311296,
+          "packedXYBytes": 309336
+        }
+      ],
+      "originalResources": {
+        "logicalRetainedBytes": 52913740,
+        "logicalPeakBytes": 52913740,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1810508,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 7999488,
+          "nodeAndFlagTextures": 243200
+        },
+        "componentSum": 52913740,
+        "primaryDrawingBufferBytes": 128532480,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 7999488,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 86,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+      },
+      "diagnosticCapturedCPUBytes": 41328716,
+      "rows": [
+        {
+          "style": "col:pma",
+          "segments": 117480,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1383,
+                "y": 0,
+                "width": 2713,
+                "height": 1953
+              },
+              "retained": 4185,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 3769,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1383,
+                "y": 1953,
+                "width": 2713,
+                "height": 1953
+              },
+              "retained": 503,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 1365,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1383,
+                "y": 3906,
+                "width": 2713,
+                "height": 278
+              },
+              "retained": 171,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 253,
+              "samples": 3
+            }
+          ],
+          "boundTests": 117480,
+          "tileIntersectionTests": 704880,
+          "uncertain": 0,
+          "filteredFromEveryTile": 107667,
+          "submittedBefore": 704880,
+          "retainedInstances": 10246,
+          "removedInstances": 694634,
+          "persistentGroupGPUIndexBytes": 469920,
+          "maxTileScratchBytes": 16740
+        },
+        {
+          "style": "col:rca",
+          "segments": 27424,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2304,
+                "y": 0,
+                "width": 1792,
+                "height": 1953
+              },
+              "retained": 327,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 1608,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2304,
+                "y": 1953,
+                "width": 1792,
+                "height": 1953
+              },
+              "retained": 113,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 285,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2304,
+                "y": 3906,
+                "width": 1792,
+                "height": 278
+              },
+              "retained": 14,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 45,
+              "samples": 3
+            }
+          ],
+          "boundTests": 27424,
+          "tileIntersectionTests": 164544,
+          "uncertain": 0,
+          "filteredFromEveryTile": 25111,
+          "submittedBefore": 164544,
+          "retainedInstances": 2392,
+          "removedInstances": 162152,
+          "persistentGroupGPUIndexBytes": 109696,
+          "maxTileScratchBytes": 6432
+        },
+        {
+          "style": "col:fa",
+          "segments": 19016,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2432,
+                "y": 0,
+                "width": 1664,
+                "height": 1953
+              },
+              "retained": 141,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 1463,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2432,
+                "y": 1953,
+                "width": 1664,
+                "height": 1953
+              },
+              "retained": 3,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 156,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2432,
+                "y": 3906,
+                "width": 1664,
+                "height": 278
+              },
+              "retained": 2,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 36,
+              "samples": 3
+            }
+          ],
+          "boundTests": 19016,
+          "tileIntersectionTests": 114096,
+          "uncertain": 0,
+          "filteredFromEveryTile": 17256,
+          "submittedBefore": 114096,
+          "retainedInstances": 1801,
+          "removedInstances": 112295,
+          "persistentGroupGPUIndexBytes": 76064,
+          "maxTileScratchBytes": 5852
+        },
+        {
+          "style": "col:ode",
+          "segments": 12964,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2752,
+                "y": 0,
+                "width": 1344,
+                "height": 1953
+              },
+              "retained": 2251,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 3318,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2752,
+                "y": 1953,
+                "width": 1344,
+                "height": 1953
+              },
+              "retained": 70,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 641,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2752,
+                "y": 3906,
+                "width": 1344,
+                "height": 278
+              },
+              "retained": 5,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 35,
+              "samples": 3
+            }
+          ],
+          "boundTests": 12964,
+          "tileIntersectionTests": 77784,
+          "uncertain": 0,
+          "filteredFromEveryTile": 6820,
+          "submittedBefore": 77784,
+          "retainedInstances": 6320,
+          "removedInstances": 71464,
+          "persistentGroupGPUIndexBytes": 51856,
+          "maxTileScratchBytes": 13272
+        },
+        {
+          "style": "col:ladr",
+          "segments": 48419,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1180,
+                "y": 0,
+                "width": 2916,
+                "height": 1953
+              },
+              "retained": 461,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 892,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1180,
+                "y": 1953,
+                "width": 2916,
+                "height": 1953
+              },
+              "retained": 2423,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 25348,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1180,
+                "y": 3906,
+                "width": 2916,
+                "height": 278
+              },
+              "retained": 16,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 115,
+              "samples": 3
+            }
+          ],
+          "boundTests": 48419,
+          "tileIntersectionTests": 290514,
+          "uncertain": 0,
+          "filteredFromEveryTile": 19740,
+          "submittedBefore": 290514,
+          "retainedInstances": 29255,
+          "removedInstances": 261259,
+          "persistentGroupGPUIndexBytes": 193676,
+          "maxTileScratchBytes": 101392
+        },
+        {
+          "style": "col:mech",
+          "segments": 874,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 395,
+                "width": 4096,
+                "height": 1558
+              },
+              "retained": 313,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 395,
+                "width": 3584,
+                "height": 1558
+              },
+              "retained": 79,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 1953,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 55,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 3906,
+                "width": 4096,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 874,
+          "tileIntersectionTests": 5244,
+          "uncertain": 0,
+          "filteredFromEveryTile": 440,
+          "submittedBefore": 5244,
+          "retainedInstances": 447,
+          "removedInstances": 4797,
+          "persistentGroupGPUIndexBytes": 3496,
+          "maxTileScratchBytes": 1252
+        },
+        {
+          "style": "col:pde",
+          "segments": 3043,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2834,
+                "y": 851,
+                "width": 1262,
+                "height": 1102
+              },
+              "retained": 1539,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 851,
+                "width": 3584,
+                "height": 1102
+              },
+              "retained": 283,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2834,
+                "y": 1953,
+                "width": 1262,
+                "height": 1953
+              },
+              "retained": 71,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 211,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2834,
+                "y": 3906,
+                "width": 1262,
+                "height": 278
+              },
+              "retained": 10,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 7,
+              "samples": 3
+            }
+          ],
+          "boundTests": 3043,
+          "tileIntersectionTests": 18258,
+          "uncertain": 0,
+          "filteredFromEveryTile": 960,
+          "submittedBefore": 18258,
+          "retainedInstances": 2121,
+          "removedInstances": 16137,
+          "persistentGroupGPUIndexBytes": 12172,
+          "maxTileScratchBytes": 6156
+        },
+        {
+          "style": "col:vcalc",
+          "segments": 5010,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2926,
+                "y": 884,
+                "width": 1170,
+                "height": 1069
+              },
+              "retained": 1690,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 884,
+                "width": 3584,
+                "height": 1069
+              },
+              "retained": 483,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2926,
+                "y": 1953,
+                "width": 1170,
+                "height": 1953
+              },
+              "retained": 96,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 629,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 2926,
+                "y": 3906,
+                "width": 1170,
+                "height": 278
+              },
+              "retained": 12,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 20,
+              "samples": 3
+            }
+          ],
+          "boundTests": 5010,
+          "tileIntersectionTests": 30060,
+          "uncertain": 0,
+          "filteredFromEveryTile": 2165,
+          "submittedBefore": 30060,
+          "retainedInstances": 2930,
+          "removedInstances": 27130,
+          "persistentGroupGPUIndexBytes": 20040,
+          "maxTileScratchBytes": 6760
+        },
+        {
+          "style": "col:alg",
+          "segments": 3276,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3111,
+                "y": 2619,
+                "width": 985,
+                "height": 1287
+              },
+              "retained": 1485,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 2619,
+                "width": 3584,
+                "height": 1287
+              },
+              "retained": 1599,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3111,
+                "y": 3906,
+                "width": 985,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 15,
+              "samples": 3
+            }
+          ],
+          "boundTests": 3276,
+          "tileIntersectionTests": 13104,
+          "uncertain": 0,
+          "filteredFromEveryTile": 252,
+          "submittedBefore": 13104,
+          "retainedInstances": 3099,
+          "removedInstances": 10005,
+          "persistentGroupGPUIndexBytes": 13104,
+          "maxTileScratchBytes": 6396
+        },
+        {
+          "style": "col:rep",
+          "segments": 1596,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3111,
+                "y": 3697,
+                "width": 985,
+                "height": 209
+              },
+              "retained": 1121,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3697,
+                "width": 3584,
+                "height": 209
+              },
+              "retained": 88,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3111,
+                "y": 3906,
+                "width": 985,
+                "height": 278
+              },
+              "retained": 297,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 74,
+              "samples": 3
+            }
+          ],
+          "boundTests": 1596,
+          "tileIntersectionTests": 6384,
+          "uncertain": 0,
+          "filteredFromEveryTile": 289,
+          "submittedBefore": 6384,
+          "retainedInstances": 1580,
+          "removedInstances": 4804,
+          "persistentGroupGPUIndexBytes": 6384,
+          "maxTileScratchBytes": 4484
+        },
+        {
+          "style": "col:top",
+          "segments": 4378,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3111,
+                "y": 0,
+                "width": 985,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 148,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3111,
+                "y": 1953,
+                "width": 985,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 355,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3111,
+                "y": 3906,
+                "width": 985,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 103,
+              "samples": 3
+            }
+          ],
+          "boundTests": 4378,
+          "tileIntersectionTests": 26268,
+          "uncertain": 0,
+          "filteredFromEveryTile": 3792,
+          "submittedBefore": 26268,
+          "retainedInstances": 606,
+          "removedInstances": 25662,
+          "persistentGroupGPUIndexBytes": 17512,
+          "maxTileScratchBytes": 1420
+        },
+        {
+          "style": "col:prob",
+          "segments": 14162,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 1953,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 181,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 3906,
+                "width": 4096,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 80,
+              "samples": 3
+            }
+          ],
+          "boundTests": 14162,
+          "tileIntersectionTests": 84972,
+          "uncertain": 0,
+          "filteredFromEveryTile": 13921,
+          "submittedBefore": 84972,
+          "retainedInstances": 261,
+          "removedInstances": 84711,
+          "persistentGroupGPUIndexBytes": 56648,
+          "maxTileScratchBytes": 724
+        },
+        {
+          "style": "col:stoch",
+          "segments": 2838,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 57,
+                "width": 4096,
+                "height": 1896
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 57,
+                "width": 3584,
+                "height": 1896
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 1953,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 22,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 3906,
+                "width": 4096,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 14,
+              "samples": 3
+            }
+          ],
+          "boundTests": 2838,
+          "tileIntersectionTests": 17028,
+          "uncertain": 0,
+          "filteredFromEveryTile": 2809,
+          "submittedBefore": 17028,
+          "retainedInstances": 36,
+          "removedInstances": 16992,
+          "persistentGroupGPUIndexBytes": 11352,
+          "maxTileScratchBytes": 88
+        },
+        {
+          "style": "col:nt",
+          "segments": 294,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 670,
+                "y": 2163,
+                "width": 3426,
+                "height": 1743
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 2163,
+                "width": 3584,
+                "height": 1743
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 670,
+                "y": 3906,
+                "width": 3426,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 294,
+          "tileIntersectionTests": 1176,
+          "uncertain": 0,
+          "filteredFromEveryTile": 294,
+          "submittedBefore": 1176,
+          "retainedInstances": 0,
+          "removedInstances": 1176,
+          "persistentGroupGPUIndexBytes": 1176,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:comb",
+          "segments": 2170,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1080,
+                "y": 1539,
+                "width": 3016,
+                "height": 414
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1539,
+                "width": 3584,
+                "height": 414
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1080,
+                "y": 1953,
+                "width": 3016,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 13,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1080,
+                "y": 3906,
+                "width": 3016,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 11,
+              "samples": 3
+            }
+          ],
+          "boundTests": 2170,
+          "tileIntersectionTests": 13020,
+          "uncertain": 0,
+          "filteredFromEveryTile": 2151,
+          "submittedBefore": 13020,
+          "retainedInstances": 24,
+          "removedInstances": 12996,
+          "persistentGroupGPUIndexBytes": 8680,
+          "maxTileScratchBytes": 52
+        },
+        {
+          "style": "col:algo",
+          "segments": 902,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3367,
+                "y": 193,
+                "width": 729,
+                "height": 1760
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 193,
+                "width": 3584,
+                "height": 1760
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3367,
+                "y": 1953,
+                "width": 729,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 31,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3367,
+                "y": 3906,
+                "width": 729,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 19,
+              "samples": 3
+            }
+          ],
+          "boundTests": 902,
+          "tileIntersectionTests": 5412,
+          "uncertain": 0,
+          "filteredFromEveryTile": 856,
+          "submittedBefore": 5412,
+          "retainedInstances": 50,
+          "removedInstances": 5362,
+          "persistentGroupGPUIndexBytes": 3608,
+          "maxTileScratchBytes": 124
+        },
+        {
+          "style": "col:logic",
+          "segments": 760,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 2617,
+                "width": 4096,
+                "height": 1289
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 2617,
+                "width": 3584,
+                "height": 1289
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 3906,
+                "width": 4096,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 5,
+              "samples": 3
+            }
+          ],
+          "boundTests": 760,
+          "tileIntersectionTests": 3040,
+          "uncertain": 0,
+          "filteredFromEveryTile": 755,
+          "submittedBefore": 3040,
+          "retainedInstances": 5,
+          "removedInstances": 3035,
+          "persistentGroupGPUIndexBytes": 3040,
+          "maxTileScratchBytes": 20
+        },
+        {
+          "style": "col:opt",
+          "segments": 498,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 975,
+                "y": 4152,
+                "width": 3121,
+                "height": 32
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 4152,
+                "width": 3584,
+                "height": 32
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 498,
+          "tileIntersectionTests": 996,
+          "uncertain": 0,
+          "filteredFromEveryTile": 498,
+          "submittedBefore": 996,
+          "retainedInstances": 0,
+          "removedInstances": 996,
+          "persistentGroupGPUIndexBytes": 1992,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:stat",
+          "segments": 3400,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1179,
+                "y": 0,
+                "width": 2917,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1179,
+                "y": 1953,
+                "width": 2917,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 1179,
+                "y": 3906,
+                "width": 2917,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 3400,
+          "tileIntersectionTests": 20400,
+          "uncertain": 0,
+          "filteredFromEveryTile": 3400,
+          "submittedBefore": 20400,
+          "retainedInstances": 0,
+          "removedInstances": 20400,
+          "persistentGroupGPUIndexBytes": 13600,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:info",
+          "segments": 1052,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3469,
+                "y": 0,
+                "width": 627,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3469,
+                "y": 1953,
+                "width": 627,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3469,
+                "y": 3906,
+                "width": 627,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 1052,
+          "tileIntersectionTests": 6312,
+          "uncertain": 0,
+          "filteredFromEveryTile": 1052,
+          "submittedBefore": 6312,
+          "retainedInstances": 0,
+          "removedInstances": 6312,
+          "persistentGroupGPUIndexBytes": 4208,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "col:causal",
+          "segments": 366,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.8,
+          "J": 3.982421875,
+          "radiusCSS": 5.575392903760076,
+          "tiles": [
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4391,
+                "y": 92,
+                "width": 3289,
+                "height": 1861
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4391,
+                "y": 1953,
+                "width": 3289,
+                "height": 1953
+              },
+              "retained": 0,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4391,
+                "y": 3906,
+                "width": 3289,
+                "height": 278
+              },
+              "retained": 0,
+              "samples": 3
+            }
+          ],
+          "boundTests": 366,
+          "tileIntersectionTests": 1098,
+          "uncertain": 0,
+          "filteredFromEveryTile": 366,
+          "submittedBefore": 1098,
+          "retainedInstances": 0,
+          "removedInstances": 1098,
+          "persistentGroupGPUIndexBytes": 1464,
+          "maxTileScratchBytes": 0
+        },
+        {
+          "style": "ghost",
+          "segments": 182705,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.7,
+          "J": 3.982421875,
+          "radiusCSS": 5.376271762535907,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 1955,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 26492,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 1953,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 2752,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 19301,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 3906,
+                "width": 4096,
+                "height": 278
+              },
+              "retained": 20,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 1093,
+              "samples": 3
+            }
+          ],
+          "boundTests": 182705,
+          "tileIntersectionTests": 1096230,
+          "uncertain": 0,
+          "filteredFromEveryTile": 132185,
+          "submittedBefore": 1096230,
+          "retainedInstances": 51613,
+          "removedInstances": 1044617,
+          "persistentGroupGPUIndexBytes": 730820,
+          "maxTileScratchBytes": 105968
+        }
+      ],
+      "intervalCornerSamples": 351,
+      "totals": {
+        "groups": 22,
+        "boundTests": 452627,
+        "tileIntersectionTests": 2700820,
+        "submittedBefore": 2700820,
+        "retainedInstances": 112786,
+        "removedInstances": 2588034,
+        "membershipCopyBytes": 1810508,
+        "allTileGPUIndicesBytes": 451144,
+        "maxReusableScratchBytes": 105968,
+        "activePackedXYBytes": 9291784,
+        "combinedGPUPlusXYPlusTwoScratch": 62417460,
+        "combinedPlusMembershipCopy": 64227968
+      }
+    },
+    {
+      "selected": true,
+      "width": 3840,
+      "height": 2092,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 1561.6,
+      "ty": -1062.8000000000002,
+      "nodes": 13574,
+      "edges": 23364,
+      "models": [
+        {
+          "scale": 0.5,
+          "points": 444859,
+          "segments": 421495,
+          "pointsSnapshotBytes": 7127040,
+          "joinsSnapshotBytes": 3563520,
+          "packedXYBytes": 3558872
+        },
+        {
+          "scale": 4,
+          "points": 1161473,
+          "segments": 1138109,
+          "pointsSnapshotBytes": 18595840,
+          "joinsSnapshotBytes": 9297920,
+          "packedXYBytes": 9291784
+        },
+        {
+          "scale": 0.5,
+          "points": 38667,
+          "segments": 37911,
+          "pointsSnapshotBytes": 622592,
+          "joinsSnapshotBytes": 311296,
+          "packedXYBytes": 309336
+        }
+      ],
+      "originalResources": {
+        "logicalRetainedBytes": 53094804,
+        "logicalPeakBytes": 53094804,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1991572,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 7999488,
+          "nodeAndFlagTextures": 243200
+        },
+        "componentSum": 53094804,
+        "primaryDrawingBufferBytes": 128532480,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 7999488,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 3,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+      },
+      "diagnosticCapturedCPUBytes": 41509780,
+      "rows": [
+        {
+          "style": "gray",
+          "segments": 452627,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 0.7,
+          "J": 3.982421875,
+          "radiusCSS": 5.376271762535907,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 12859,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 38523,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 1953,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 8635,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 50271,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 3906,
+                "width": 4096,
+                "height": 278
+              },
+              "retained": 542,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 1925,
+              "samples": 3
+            }
+          ],
+          "boundTests": 452627,
+          "tileIntersectionTests": 2715762,
+          "uncertain": 0,
+          "filteredFromEveryTile": 342786,
+          "submittedBefore": 2715762,
+          "retainedInstances": 112755,
+          "removedInstances": 2603007,
+          "persistentGroupGPUIndexBytes": 1810508,
+          "maxTileScratchBytes": 201084
+        },
+        {
+          "style": "up",
+          "segments": 207,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 1,
+          "J": 3.982421875,
+          "radiusCSS": 5.973635186208412,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 3109,
+                "y": 2078,
+                "width": 745,
+                "height": 80
+              },
+              "retained": 207,
+              "samples": 3
+            }
+          ],
+          "boundTests": 207,
+          "tileIntersectionTests": 207,
+          "uncertain": 0,
+          "filteredFromEveryTile": 0,
+          "submittedBefore": 207,
+          "retainedInstances": 207,
+          "removedInstances": 0,
+          "persistentGroupGPUIndexBytes": 828,
+          "maxTileScratchBytes": 828
+        },
+        {
+          "style": "down",
+          "segments": 45059,
+          "modelScale": 4,
+          "cap": "butt",
+          "width": 1,
+          "J": 3.982421875,
+          "radiusCSS": 5.973635186208412,
+          "tiles": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 0,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 851,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 0,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 0,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 4645,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 1953,
+                "width": 4096,
+                "height": 1953
+              },
+              "retained": 436,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 1953,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 1953,
+                "width": 3584,
+                "height": 1953
+              },
+              "retained": 13066,
+              "samples": 3
+            },
+            {
+              "x": 0,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 0,
+                "y": 3906,
+                "width": 4096,
+                "height": 278
+              },
+              "retained": 40,
+              "samples": 3
+            },
+            {
+              "x": 4096,
+              "y": 3906,
+              "width": 4096,
+              "height": 1953,
+              "clip": {
+                "x": 4096,
+                "y": 3906,
+                "width": 3584,
+                "height": 278
+              },
+              "retained": 171,
+              "samples": 3
+            }
+          ],
+          "boundTests": 45059,
+          "tileIntersectionTests": 270354,
+          "uncertain": 0,
+          "filteredFromEveryTile": 26209,
+          "submittedBefore": 270354,
+          "retainedInstances": 19209,
+          "removedInstances": 251145,
+          "persistentGroupGPUIndexBytes": 180236,
+          "maxTileScratchBytes": 52264
+        }
+      ],
+      "intervalCornerSamples": 39,
+      "totals": {
+        "groups": 3,
+        "boundTests": 497893,
+        "tileIntersectionTests": 2986323,
+        "submittedBefore": 2986323,
+        "retainedInstances": 132171,
+        "removedInstances": 2854152,
+        "membershipCopyBytes": 1991572,
+        "allTileGPUIndicesBytes": 528684,
+        "maxReusableScratchBytes": 201084,
+        "activePackedXYBytes": 9291784,
+        "combinedGPUPlusXYPlusTwoScratch": 62788756,
+        "combinedPlusMembershipCopy": 64780328
+      }
+    }
+  ]
+}

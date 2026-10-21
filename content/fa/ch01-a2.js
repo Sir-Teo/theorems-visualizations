@@ -433,7 +433,7 @@ export default {
       idea: String.raw`Each map $z\mapsto z_ke_k$ is continuous because scalar multiplication is continuous and $z\mapsto z_k$ is; $f$ is their sum, and addition is continuous. In a normed space one even gets the explicit bound $\norm{f(z)-f(w)}\le\sum\abs{z_k-w_k}\norm{e_k}\le\abs{z-w}\big(\sum\norm{e_k}^2\big)^{1/2}$.`,
       caption: String.raw`Take $X=C[0,1]$ with the sup norm and two fixed functions $e_1,e_2$ (choose a pair); real coefficients are used for the picture. Drag $z$ in the coefficient plane and shrink the disc of radius $\delta$ around it: every $f(w)$ with $\abs{w-z}\le\delta$ (faint curves on the right) stays in the orange band $f(z)\pm\delta(\norm{e_1}^2+\norm{e_2}^2)^{1/2}$.`,
       deps: ['fa-1.6'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.20, pp. 16'],
+      verify: true,
       tags: ['finite dimension', 'continuity'],
       viz(v) {
         const PAIRS = {

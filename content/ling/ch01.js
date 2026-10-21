@@ -5,11 +5,6 @@
 // through digital resonators (Klatt's cascade formant synthesizer, 1980) and played on a click.
 const SR = 16000; // synthesis sample rate (Hz): speech needs little above 7 kHz
 const C_TRACT = 35000; // speed of sound in the warm, humid air of the vocal tract (cm/s)
-/** Illustrative turbulence onset, smoothly rising from Re_c to 1.6 Re_c. */
-export function articulationTurbulenceGain(reynolds, threshold = 1800) {
-  const t = Math.max(0, Math.min(1, (reynolds - threshold) / (0.6 * threshold)));
-  return t * t * (3 - 2 * t);
-}
 /** Deterministic white noise in [−1, 1] (mulberry32), so pictures are reproducible. */
 function noiseGen(seed) {
   let a = seed >>> 0 || 1;
@@ -517,7 +512,7 @@ $$P(f)=S(f)\,T(f)\,R(f),\qquad\text{i.e.}\qquad L_P(f)=L_S(f)+L_T(f)+L_R(f)\ \ \
 of the source spectrum $S$ (lines at the harmonics $k f_0$ of the voice, falling about 12 dB per octave, or a flat noise continuum), the tract's transfer function $T$ (peaks at the formants) and the radiation characteristic $R$ (rising about 6 dB per octave). The larynx and the articulators work independently: the vocal folds set pitch and voice quality, the tongue, lips and jaw set the formants.`,
       idea: String.raw`Because the tract filters linearly, convolution in time becomes multiplication in frequency, so each harmonic of the source is simply scaled by the gain of the filter at its frequency. A periodic source has a line spectrum (its Fourier series), so voiced speech is a picket fence of harmonics whose heights trace the filter's resonance curve, while a noise source gives a continuous spectrum with the same peaks. The idea goes back to Johannes Müller's experiments with excised larynges in the 1830s; Chiba and Kajiyama (1941) computed the tract's resonances, and Gunnar Fant's *Acoustic Theory of Speech Production* (1960) made source × filter the standard model; the formant model of timbre is music-4.10.`,
       caption: String.raw`Drag the **F1**, **F2**, **F3** handles on the middle panel to reshape the filter, or pick a preset. The left panel is the source, the right one the output: every harmonic of the output is the source harmonic raised by the filter's gain at that frequency, and the readout checks this against the spectrum of the waveform actually synthesized (time domain, then FFT). Change the pitch: the harmonics slide, the envelope stays. Switch the source to **whisper**: the harmonics vanish but the formant peaks (and the vowel) remain. *Source alone* plays the buzz before the tract shapes it. (The lip radiation is folded into the source here.)`,
-      deps: ['music-4.10', 'sig-3.10', 'sig-4.1'],
+      deps: ['music-4.10'],
       refs: ['Ladefoged & Johnson', 'Jurafsky & Martin ch. 15'],
       tags: ['source-filter', 'acoustics'],
       credit: 'J. Müller 1830s; T. Chiba & M. Kajiyama 1941; G. Fant 1960',
@@ -817,11 +812,10 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
       num: '1.4',
       kind: 'Concept',
       name: 'Manner of articulation',
-      statement: String.raw`The **manner of articulation** describes how the articulators obstruct and release the airstream. A **stop** has a complete oral closure; pressure can build behind it and release can make a burst, though stops can also be unreleased. A **nasal** combines oral closure with a lowered velum so air exits through the nose. A **fricative** has a constriction producing audible turbulent noise; an **approximant** changes resonances without comparable friction noise. Vowels are produced with relatively open vocal-tract configurations. An **affricate** combines a stop closure with a fricative release. Trills, taps and lateral airflow provide further distinctions. Aerodynamics contributes to these sounds: $\mathrm{Re}=uD/\nu$ compares inertial and viscous effects, with speed $u$, characteristic constriction dimension $D$ and kinematic viscosity $\nu$. There is no universal Reynolds threshold that classifies all speech constrictions.`,
-      idea: String.raw`Use a quasi-steady, constant-density model with glottal and oral orifices in series. Continuity (fluid-1.5) gives the same volume flow $U$ through both. Adopt the Bernoulli pressure–speed relation (fluid-2.9) with unit discharge coefficients: each orifice of area $A$ has pressure drop $\tfrac12\rho(U/A)^2$. Adding the drops to the lung pressure $P_s$ gives $P_{oral}=P_sA_g^2/(A_g^2+A_c^2)$ and oral jet speed $u=\sqrt{2P_{oral}/\rho}$. With no nasal outlet, steady oral closure stops flow and equalizes mouth and lung pressure; real voiced stops can retain voicing transiently before pressure equalizes. A nasal outlet relieves that pressure and can sustain voicing during an exhalation. The picture uses a chosen smooth turbulence onset and an acoustic-power proxy proportional to $u^3A^{1/2}$, calibrated illustratively rather than fitted to speech recordings. Place (ling-1.3), jet geometry and downstream obstacles also affect the sound.`,
-      caption: String.raw`Slide the constriction area from **closed** to wide open. The schematic air parcels speed up through narrow passages; red shading represents pressure. The gauges compute the model pressures, Reynolds number and noise proxy. The displayed manner and [aCa] synthesis are qualitative model classifications, with a chosen turbulence onset at Re = 1800, not measurements or a universal speech criterion. Lower the velum for a nasal outlet, and switch voicing off to change the glottal opening. *Listen* plays the synthesis shown in the spectrogram.`,
-      scope: String.raw`Illustrative quasi-steady, incompressible orifice and formant-synthesis model. Geometry, lung pressure, discharge coefficients, voicing/noise thresholds and relative noise calibration are chosen parameters. The equivalent circular diameter used for Re does not reproduce every slit-shaped speech jet. The model does not simulate transient stop pressure, actual vocal-fold mechanics, affricate release or a speaker's recorded articulation.`,
-      deps: ['ling-1.3', 'fluid-1.5', 'fluid-2.9'],
+      statement: String.raw`The **manner of articulation** is how narrow a constriction is and how the air gets past it. In a **stop** (plosive) the oral tract is completely closed, pressure builds up behind the closure, and its release makes a burst; in a **nasal** the oral tract is also closed but the velum is lowered, so air flows out through the nose; in a **fricative** the gap is so narrow that the airflow through it becomes turbulent and hisses; in an **approximant** the articulators come close enough to change the resonances but not to make turbulence; a **vowel** has the most open tract. Trills (repeated vibration of an articulator in the airstream), taps (one fast contact) and laterals (air escaping past the sides of the tongue) complete the list. Whether a constriction is a fricative is decided by aerodynamics: the flow through it turns turbulent when its Reynolds number $\mathrm{Re}=uD/\nu$ exceeds roughly 1800, where $u$ is the air speed in the constriction, $D$ its width and $\nu$ the kinematic viscosity of air.`,
+      idea: String.raw`Treat the larynx and the oral constriction as two orifices in series fed by the lungs at pressure $P_s$. Each orifice of area $A$ passing volume flow $U$ costs a pressure drop $\tfrac12\rho\,(U/A)^2$ (Bernoulli), so the pressure in the mouth is $P_{oral}=P_s\,A_g^2/(A_g^2+A_c^2)$ and the jet speed in the constriction is $u=\sqrt{2P_{oral}/\rho}$. Closing the mouth ($A_c\to0$) stops the flow and raises $P_{oral}$ to $P_s$, which also stops voicing, since the vocal folds need a pressure drop of a couple of cm H₂O across them; opening the nasal port relieves the pressure, which is why nasals can be voiced indefinitely. Narrowing the constriction raises $u$ until the jet becomes turbulent, and the noise it radiates grows steeply, roughly as $u^3A^{1/2}$ (Stevens), so fricatives sit in a narrow band of areas around 0.05–0.2 cm². Place is the other dimension (ling-1.3).`,
+      caption: String.raw`Slide the constriction area from **closed** to wide open (it sits at the alveolar ridge, so the sounds run [t]/[d] → [s]/[z] → [ɹ] → [a]). The animation shows air parcels from the lungs: they speed up through narrow passages, swirl when the flow turns turbulent, and stop when the tract is closed, while the red shading is the air pressure. The gauges compute the pressures, the Reynolds number and the radiated noise level; the manner is read off them, not looked up. Lower the velum to make a nasal, and switch voicing off to see why voiceless fricatives hiss louder. *Listen* plays [aCa] synthesized with these settings, shown in the spectrogram.`,
+      deps: ['ling-1.3'],
       refs: ['Ladefoged & Johnson'],
       tags: ['consonants', 'aerodynamics'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Manner_of_articulation' },
@@ -841,7 +835,7 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
           const U = Aeff > 0 ? (Math.sqrt((2 * PS) / RHO) * Ag * Aeff * 1e-4) / Math.sqrt(Ag * Ag + Aeff * Aeff) : 0;
           const uc = Ac > 0 ? Math.sqrt((2 * Po) / RHO) : 0, D = Math.sqrt((4 * Ac * 1e-4) / Math.PI), Re = (uc * D) / NU, dPg = PS - Po;
           const gv = voi.value ? clampN((dPg - 200) / 300, 0, 1) : 0;
-          const Ln = Ac > 0 ? 30 * Math.log10(Math.max(uc, 1e-3)) + 5 * Math.log10(Ac) - 41.4 : -99, turb = articulationTurbulenceGain(Re, REC), gn = turb * Math.pow(10, Ln / 20);
+          const Ln = Ac > 0 ? 30 * Math.log10(Math.max(uc, 1e-3)) + 5 * Math.log10(Ac) - 41.4 : -99, turb = M.smoothstep(REC, 1.6 * REC, Re), gn = turb * Math.pow(10, Ln / 20);
           // the open glottis is itself a narrowing: voiceless sounds get aspiration noise from it ([h])
           const ug = Math.sqrt((2 * dPg) / RHO), Lg = voi.value ? -99 : 30 * Math.log10(Math.max(ug, 1e-3)) + 5 * Math.log10(Ag) - 41.4 - 8, gh = voi.value || Ac === 0 ? 0 : Math.pow(10, Lg / 20);
           let F = null;
@@ -940,9 +934,9 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
           bar(0, 'pressure in the mouth', a.Po / PS, 'red', [], `${v.fix(a.Po / CMH2O, 1)} cm H₂O`);
           bar(1, 'pressure drop across the glottis', a.dPg / PS, a.dPg > 200 ? 'green' : 'red', [[200 / PS, 'voicing needs ≈ 2']], `${v.fix(a.dPg / CMH2O, 1)} cm H₂O`);
           const lr = (x) => (Math.log10(Math.max(x, 10)) - 1) / 4;
-          bar(2, 'Reynolds number in the constriction', lr(a.Re), a.Re > REC ? 'orange' : 'accent', [[lr(REC), 'model onset: 1800']], a.Ac ? Math.round(a.Re).toLocaleString('en-US') : '—');
-          const nl = Math.max(a.Ln + 20 * Math.log10(Math.max(1e-6, articulationTurbulenceGain(a.Re, REC))), -60);
-          bar(3, 'model noise proxy, re [s]', (nl + 60) / 66, 'orange', [[50 / 66, '−10 dB']], a.Ac && a.Re > REC ? `${Math.round(nl) === 0 ? '0' : v.fix(nl, 0)} dB` : 'none');
+          bar(2, 'Reynolds number in the constriction', lr(a.Re), a.Re > REC ? 'orange' : 'accent', [[lr(REC), 'turbulent above ≈ 1800']], a.Ac ? Math.round(a.Re).toLocaleString('en-US') : '—');
+          const nl = Math.max(a.Ln + 20 * Math.log10(Math.max(1e-6, M.smoothstep(REC, 1.6 * REC, a.Re))), -60);
+          bar(3, 'turbulence noise, re [s]', (nl + 60) / 66, 'orange', [[50 / 66, '−10 dB']], a.Ac && a.Re > REC ? `${Math.round(nl) === 0 ? '0' : v.fix(nl, 0)} dB` : 'none');
           // ---- spectrogram of [aCa]
           sg.setView([0, S.dur], [0, 7000]);
           drawSpec(sg, S.S, v.rgb('ink'), { key: S.key, range: 48 });

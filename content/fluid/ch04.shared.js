@@ -185,12 +185,10 @@ export function joukBody({ zeta0 = [0, 0], c = 1, round = 0.2, U = 1, alpha = 0,
   const P = { zeta0, c, R, U, alpha, G, zOf, dz, Wz, vel, surf };
   /** Pressure force (per unit density) by integrating p over the body: returns {Fx, Fy, cp[]}. */
   P.pressureForce = (n = 1440) => {
-    let Fx = 0, Fy = 0; const cp = [];
+    const zt = surf(n), z = zt.map(zOf); let Fx = 0, Fy = 0; const cp = [];
     for (let k = 0; k < n; k++) {
-      const th = TAU * (k + 0.5) / n, zt = cadd(zeta0, cpolar(R, th)), q = vel(zt);
-      // Integrate the analytic boundary differential, avoiding polygon-chord bias.
-      const d = cmul(dz(zt), cpolar(R * TAU / n, th + Math.PI / 2));
-      const p = 0.5 * (U * U - (q[0] * q[0] + q[1] * q[1])), dx = d[0], dy = d[1];
+      const a = z[k], b = z[(k + 1) % n], q = vel(cadd(zeta0, cpolar(R, (TAU * (k + 0.5)) / n)));
+      const p = 0.5 * (U * U - (q[0] * q[0] + q[1] * q[1])), dx = b[0] - a[0], dy = b[1] - a[1];
       Fx += -p * dy; Fy += p * dx;
       cp.push(1 - (q[0] * q[0] + q[1] * q[1]) / (U * U));
     }

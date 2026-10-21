@@ -1,0 +1,795 @@
+{
+  "unguarded": {
+    "mode": "unguarded",
+    "browser": "155.0.8059.85",
+    "raw": {
+      "pre-unselected-A": {
+        "bytes": 128532480,
+        "sha256": "6d4e7a55f6b0970a7adcad136c09788629f5acc3e89e6df28aa2fc02a7abbc0b",
+        "chunks": 123
+      },
+      "pre-unselected-B": {
+        "bytes": 128532480,
+        "sha256": "6d4e7a55f6b0970a7adcad136c09788629f5acc3e89e6df28aa2fc02a7abbc0b",
+        "chunks": 123
+      },
+      "pre-selected-A": {
+        "bytes": 128532480,
+        "sha256": "e59ff59cbaad9f81b710d4253f4cc3ad84713f22efe45cfe131dbd0b16a23844",
+        "chunks": 123
+      },
+      "pre-selected-B": {
+        "bytes": 128532480,
+        "sha256": "e59ff59cbaad9f81b710d4253f4cc3ad84713f22efe45cfe131dbd0b16a23844",
+        "chunks": 123
+      },
+      "A0": {
+        "bytes": 128532480,
+        "sha256": "08fd6a441f0f6562e958d18ef88a4765e1f6a59ad7a8f5553faa9826c2b15907",
+        "chunks": 123
+      },
+      "A1": {
+        "bytes": 128532480,
+        "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+        "chunks": 123
+      },
+      "A2": {
+        "bytes": 128532480,
+        "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+        "chunks": 123
+      },
+      "A3": {
+        "bytes": 128532480,
+        "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+        "chunks": 123
+      }
+    },
+    "comparisons": {
+      "pre-unselected-A-pre-unselected-B": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "pre-selected-A-pre-selected-B": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A0-A1": {
+        "channels": 31327,
+        "pixels": 8929,
+        "max": 121,
+        "bounds": [
+          3128,
+          128,
+          7679,
+          3658
+        ],
+        "comparedBytes": 128532480
+      },
+      "A1-A2": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A3-A2": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A0-A3": {
+        "channels": 31327,
+        "pixels": 8929,
+        "max": 121,
+        "bounds": [
+          3128,
+          128,
+          7679,
+          3658
+        ],
+        "comparedBytes": 128532480
+      }
+    },
+    "historicalByteComparisons": {
+      "A0": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A1": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A2": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A3": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      }
+    },
+    "sources": {
+      "assets/js/map-scene-edges.js": {
+        "frozenOriginalSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+        "servedSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262"
+      },
+      "assets/js/map-webgl-scene.js": {
+        "frozenOriginalSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+        "servedSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5"
+      },
+      "assets/js/map-scene-text.js": {
+        "frozenOriginalSHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+        "servedSHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed"
+      }
+    },
+    "draws": [
+      {
+        "type": "draw-begin",
+        "draw": 1,
+        "stage": "pre-unselected-0",
+        "generation": 4,
+        "cacheSize": 45,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 1,
+        "stage": "pre-unselected-0",
+        "result": true,
+        "generation": 5,
+        "cacheSize": 7,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 2,
+        "stage": "pre-unselected-1",
+        "generation": 5,
+        "cacheSize": 7,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 2,
+        "stage": "pre-unselected-1",
+        "result": true,
+        "generation": 5,
+        "cacheSize": 94,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 3,
+        "stage": "pre-unselected-third",
+        "generation": 5,
+        "cacheSize": 94,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 3,
+        "stage": "pre-unselected-third",
+        "result": true,
+        "generation": 5,
+        "cacheSize": 94,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 4,
+        "stage": "pre-selected-0",
+        "generation": 5,
+        "cacheSize": 94,
+        "status": "direct reference"
+      },
+      {
+        "type": "draw-end",
+        "draw": 4,
+        "stage": "pre-selected-0",
+        "result": true,
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 5,
+        "stage": "pre-selected-1",
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 5,
+        "stage": "pre-selected-1",
+        "result": true,
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 6,
+        "stage": "pre-selected-third",
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 6,
+        "stage": "pre-selected-third",
+        "result": true,
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 7,
+        "stage": "pre-selected-transfer",
+        "generation": 7,
+        "cacheSize": 0,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 7,
+        "stage": "pre-selected-transfer",
+        "result": true,
+        "generation": 7,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 8,
+        "stage": "pre-selected-transfer",
+        "generation": 7,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 8,
+        "stage": "pre-selected-transfer",
+        "result": true,
+        "generation": 7,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 9,
+        "stage": "A0",
+        "generation": 7,
+        "cacheSize": 96,
+        "status": "direct reference"
+      },
+      {
+        "type": "draw-end",
+        "draw": 9,
+        "stage": "A0",
+        "result": true,
+        "generation": 9,
+        "cacheSize": 2,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 10,
+        "stage": "A1",
+        "generation": 9,
+        "cacheSize": 2,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 10,
+        "stage": "A1",
+        "result": true,
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 11,
+        "stage": "A2",
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 11,
+        "stage": "A2",
+        "result": true,
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 12,
+        "stage": "A3",
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 12,
+        "stage": "A3",
+        "result": true,
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      }
+    ],
+    "eventCounts": {
+      "draw-begin": 12,
+      "upload": 541,
+      "request": 1102,
+      "clear": 5,
+      "draw-end": 12
+    },
+    "traceSerializedBytes": 958092,
+    "postCaptureEvents": 0,
+    "rawDiskBytes": 1028259840,
+    "mainCoexistingDiagnosticBytes": 514129920,
+    "status": "PASS",
+    "limits": "No browser, upload content hash, later alternate-binding acceptance, or physical-memory claim."
+  },
+  "guarded": {
+    "mode": "guarded",
+    "browser": "155.0.8059.85",
+    "raw": {
+      "pre-unselected-A": {
+        "bytes": 128532480,
+        "sha256": "6d4e7a55f6b0970a7adcad136c09788629f5acc3e89e6df28aa2fc02a7abbc0b",
+        "chunks": 123
+      },
+      "pre-unselected-B": {
+        "bytes": 128532480,
+        "sha256": "6d4e7a55f6b0970a7adcad136c09788629f5acc3e89e6df28aa2fc02a7abbc0b",
+        "chunks": 123
+      },
+      "pre-selected-A": {
+        "bytes": 128532480,
+        "sha256": "e59ff59cbaad9f81b710d4253f4cc3ad84713f22efe45cfe131dbd0b16a23844",
+        "chunks": 123
+      },
+      "pre-selected-B": {
+        "bytes": 128532480,
+        "sha256": "e59ff59cbaad9f81b710d4253f4cc3ad84713f22efe45cfe131dbd0b16a23844",
+        "chunks": 123
+      },
+      "A0": {
+        "bytes": 128532480,
+        "sha256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+        "chunks": 123
+      },
+      "A1": {
+        "bytes": 128532480,
+        "sha256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+        "chunks": 123
+      },
+      "A2": {
+        "bytes": 128532480,
+        "sha256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+        "chunks": 123
+      },
+      "A3": {
+        "bytes": 128532480,
+        "sha256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+        "chunks": 123
+      }
+    },
+    "comparisons": {
+      "pre-unselected-A-pre-unselected-B": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "pre-selected-A-pre-selected-B": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A0-A1": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A1-A2": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A3-A2": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      },
+      "A0-A3": {
+        "channels": 0,
+        "pixels": 0,
+        "max": 0,
+        "bounds": null,
+        "comparedBytes": 128532480
+      }
+    },
+    "historicalByteComparisons": {
+      "A0": {
+        "channels": 8664,
+        "pixels": 2507,
+        "max": 111,
+        "bounds": [
+          3128,
+          128,
+          7569,
+          3658
+        ],
+        "comparedBytes": 128532480
+      },
+      "A1": {
+        "channels": 26261,
+        "pixels": 7576,
+        "max": 121,
+        "bounds": [
+          3128,
+          128,
+          7679,
+          3658
+        ],
+        "comparedBytes": 128532480
+      },
+      "A2": {
+        "channels": 26261,
+        "pixels": 7576,
+        "max": 121,
+        "bounds": [
+          3128,
+          128,
+          7679,
+          3658
+        ],
+        "comparedBytes": 128532480
+      },
+      "A3": {
+        "channels": 26261,
+        "pixels": 7576,
+        "max": 121,
+        "bounds": [
+          3128,
+          128,
+          7679,
+          3658
+        ],
+        "comparedBytes": 128532480
+      }
+    },
+    "sources": {
+      "assets/js/map-scene-edges.js": {
+        "frozenOriginalSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+        "servedSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262"
+      },
+      "assets/js/map-webgl-scene.js": {
+        "frozenOriginalSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+        "servedSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5"
+      },
+      "assets/js/map-scene-text.js": {
+        "frozenOriginalSHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+        "servedSHA256": "cf80b84fb67aaf0abc042da6dca73570e12c6bd57c8d1daa8f65328cf9781e62"
+      }
+    },
+    "draws": [
+      {
+        "type": "draw-begin",
+        "draw": 1,
+        "stage": "pre-unselected-0",
+        "generation": 4,
+        "cacheSize": 45,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 1,
+        "stage": "pre-unselected-0",
+        "result": true,
+        "generation": 5,
+        "cacheSize": 7,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 2,
+        "stage": "pre-unselected-1",
+        "generation": 5,
+        "cacheSize": 7,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 2,
+        "stage": "pre-unselected-1",
+        "result": true,
+        "generation": 5,
+        "cacheSize": 94,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 3,
+        "stage": "pre-unselected-third",
+        "generation": 5,
+        "cacheSize": 94,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 3,
+        "stage": "pre-unselected-third",
+        "result": true,
+        "generation": 5,
+        "cacheSize": 94,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 4,
+        "stage": "pre-selected-0",
+        "generation": 5,
+        "cacheSize": 94,
+        "status": "direct reference"
+      },
+      {
+        "type": "draw-end",
+        "draw": 4,
+        "stage": "pre-selected-0",
+        "result": true,
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 5,
+        "stage": "pre-selected-1",
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 5,
+        "stage": "pre-selected-1",
+        "result": true,
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 6,
+        "stage": "pre-selected-third",
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 6,
+        "stage": "pre-selected-third",
+        "result": true,
+        "generation": 6,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 7,
+        "stage": "pre-selected-transfer",
+        "generation": 7,
+        "cacheSize": 0,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 7,
+        "stage": "pre-selected-transfer",
+        "result": true,
+        "generation": 7,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 8,
+        "stage": "pre-selected-transfer",
+        "generation": 7,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 8,
+        "stage": "pre-selected-transfer",
+        "result": true,
+        "generation": 7,
+        "cacheSize": 96,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 9,
+        "stage": "A0",
+        "generation": 7,
+        "cacheSize": 96,
+        "status": "direct reference"
+      },
+      {
+        "type": "draw-end",
+        "draw": 9,
+        "stage": "A0",
+        "result": true,
+        "generation": 9,
+        "cacheSize": 2,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 10,
+        "stage": "A1",
+        "generation": 9,
+        "cacheSize": 2,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 10,
+        "stage": "A1",
+        "result": true,
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 11,
+        "stage": "A2",
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 11,
+        "stage": "A2",
+        "result": true,
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 12,
+        "stage": "A3",
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      },
+      {
+        "type": "draw-end",
+        "draw": 12,
+        "stage": "A3",
+        "result": true,
+        "generation": 9,
+        "cacheSize": 85,
+        "status": "ready"
+      }
+    ],
+    "eventCounts": {
+      "draw-begin": 12,
+      "upload": 541,
+      "request": 1102,
+      "clear": 5,
+      "draw-end": 12
+    },
+    "traceSerializedBytes": 958092,
+    "postCaptureEvents": 0,
+    "rawDiskBytes": 1028259840,
+    "mainCoexistingDiagnosticBytes": 514129920,
+    "status": "PASS",
+    "limits": "No browser, upload content hash, later alternate-binding acceptance, or physical-memory claim."
+  },
+  "pairedHistory": {
+    "observedEvents": 1672,
+    "identicalNonUploadEvents": 1131,
+    "exactlyExpandedUploads": 541,
+    "identicalMainFrameMetadata": true,
+    "initializationAndContentHashLimitation": true,
+    "guardedVsHistorical": {
+      "A0": {
+        "channels": 8664,
+        "pixels": 2507,
+        "max": 111,
+        "bounds": [
+          3128,
+          128,
+          7569,
+          3658
+        ],
+        "comparedBytes": 128532480
+      },
+      "A1": {
+        "channels": 26261,
+        "pixels": 7576,
+        "max": 121,
+        "bounds": [
+          3128,
+          128,
+          7679,
+          3658
+        ],
+        "comparedBytes": 128532480
+      },
+      "A2": {
+        "channels": 26261,
+        "pixels": 7576,
+        "max": 121,
+        "bounds": [
+          3128,
+          128,
+          7679,
+          3658
+        ],
+        "comparedBytes": 128532480
+      },
+      "A3": {
+        "channels": 26261,
+        "pixels": 7576,
+        "max": 121,
+        "bounds": [
+          3128,
+          128,
+          7679,
+          3658
+        ],
+        "comparedBytes": 128532480
+      }
+    }
+  }
+}

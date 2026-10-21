@@ -1,6 +1,8 @@
 // Algorithms — Chapter 10: Greedy algorithms, spanning trees and matroids (items 10.17–10.22; 10.1–10.8 in ch10.js, 10.9–10.16 in ch10-b.js)
 import { K, ids, plural, clamp, fmt, rngOf, sumOf, huffman, entropy, shannonFano, textFreqs, bruteCodeLengths, R, TX, LN, blob, eKey, UF, ranked, wOf, totalW, mstBrute, kruskalTrace, primTrace, boruvkaTrace, MST_POS, MST_EDGES, nodesFrom, COMPC, popc, bitsOf, sysGraphic, sysLinear, sysUniform, sysMatching, allIndep, matroidTest, greedyIndep, bestIndep } from './ch10.shared.js';
 
+import {exchangeCounterexample} from './greedy-audit.shared.js';
+
 const r2 = (x) => String(Math.round(x * 1000) / 1000).replace('-', '−');
 
 // ---------------------------------------------------------------- 10.17 graphs for Borůvka
@@ -124,7 +126,7 @@ export default {
       statement: String.raw`**Problem.** Given $n$ points with pairwise distances $d$ and an integer $k$, split them into $k$ nonempty clusters so as to maximise the **spacing**: the smallest distance between two points in different clusters. **Algorithm (single linkage).** Compute a minimum spanning tree of the complete graph with edge weights $d$ and delete its $k-1$ heaviest edges; the $k$ components are the clusters. Equivalently, run Kruskal's algorithm (10.15) and stop when $k$ components remain. This clustering has the maximum spacing among all $k$-clusterings, and its spacing equals the weight of the lightest deleted edge.`,
       idea: String.raw`Kruskal's algorithm merges the globally closest pair that is not yet in one cluster, so stopping it at $k$ components means every merged pair was closer than the next distance $d^*$ the algorithm would have used. Hence the clusters it returns are separated by distance at least $d^*$ (any pair in different clusters was examined later, so is at least as far), and the spacing is exactly $d^*$. Any other $k$-clustering must separate two points that Kruskal had already joined by a path of edges each of length at most $d^*$; along that path some edge crosses between clusters of the other clustering, so its spacing is at most $d^*$. This is the cut property (10.13) in disguise: single linkage is the one clustering rule for which a greedy method is provably optimal.`,
       caption: String.raw`**Drag the ten points** and choose $k$. The thin lines are the MST of all points; the $k-1$ heaviest edges (red, dashed) are deleted and the components get their own colours. The gold segment is the spacing, the closest pair in different clusters. The bars list the MST edge lengths in decreasing order: the gap after the $(k-1)$-st bar is the spacing. The readout checks the result against an exhaustive search over all clusterings of the ten points into $k$ nonempty groups.`,
-      deps: ['algo-10.15', 'graph-1.5.2'],
+      deps: ['algo-10.15'],
       refs: ['KT §4.7'],
       tags: ['mst', 'clustering'],
       credit: 'Gower & Ross, 1969 (single linkage and the minimum spanning tree)',
@@ -181,9 +183,11 @@ export default {
       kind: 'Definition',
       name: 'Matroids',
       statement: String.raw`A **matroid** is a pair $M=(E,\mathcal I)$ of a finite ground set $E$ and a family $\mathcal I$ of subsets of $E$, the **independent sets**, such that: (i) $\emptyset\in\mathcal I$; (ii) *hereditary*: if $B\in\mathcal I$ and $A\subseteq B$ then $A\in\mathcal I$; (iii) *exchange*: if $A,B\in\mathcal I$ and $|A|<|B|$, then there is an element $x\in B\setminus A$ with $A\cup\{x\}\in\mathcal I$. Examples: the **graphic matroid** of a graph (independent sets = edge sets with no cycle, so the bases are the spanning trees), the **linear matroid** of a family of vectors (independent = linearly independent), and the **uniform matroid** $U_{k,n}$ (independent = at most $k$ of $n$ elements). Matchings in a graph do *not* form a matroid in general. All maximal independent sets (**bases**) of a matroid have the same size, its rank.`,
-      idea: String.raw`The exchange axiom is the abstract common core of two familiar facts: in linear algebra, a smaller independent set can always be grown with a vector of a larger one (Steinitz exchange), and in graphs, a smaller forest can always be grown with an edge of a larger forest, because the larger one has fewer components. Whitney introduced matroids in 1935 as an abstraction of linear independence in vector spaces and graphs. Axiom (iii) forces all bases to have the same size: a maximal independent set that was smaller than another independent set could be extended from it, contradicting maximality. The point of the definition for algorithms is the theorem 10.20: for a hereditary family, the greedy algorithm finds a maximum-weight independent set for every weighting exactly when the exchange axiom holds.`,
+      idea: String.raw`The exchange axiom is the abstract common core of two familiar facts: in linear algebra, a smaller independent set can always be grown with a vector of a larger one (Steinitz exchange), and in graphs, a smaller forest can always be grown with an edge of a larger forest, because the larger one has fewer components. Whitney introduced matroids in 1935 as an abstraction of linear independence in vector spaces and graphs. Axiom (iii) forces all bases to have the same size: a maximal independent set that was smaller than another independent set could be extended from it, contradicting maximality. The point of the definition for algorithms is the theorem 10.20: for a hereditary family, the greedy algorithm finds a maximum-weight independent set for every weighting exactly when the exchange axiom holds.
+
+The linear example's exchange property follows from the independent-list versus spanning-list bound (ladr-2.22). If no vector of $B\setminus A$ extended independent $A$, every vector of $B$ would lie in $\operatorname{span}A$. In that space the list $A$ spans, while $B$ is independent and longer, contradicting the bound. This argument permits repeated or zero vectors in the ground family; independent sets themselves still cannot contain a linear dependence.`,
       caption: String.raw`Pick a system and **click elements** to put them into $A$ (blue) or $B$ (orange), switching between the two with the selector. The readout tests independence of each and, when $|A|<|B|$, lists the elements of $B$ that extend $A$ (green rings); a red message means the exchange axiom fails for this pair. In the vector system you can **drag the arrow tips** (they snap to whole numbers, so parallelism is exact); the last line tests the axioms over every pair of independent sets. For the matchings of $C_5$, **show a failing pair** fills in a witness.`,
-      deps: ['algo-10.12'],
+      deps: ['algo-10.12', 'ladr-2.22'],
       refs: ['Erickson notes: Matroids'],
       tags: ['matroids'],
       credit: 'H. Whitney, 1935',
@@ -223,18 +227,21 @@ export default {
       num: '10.20',
       kind: 'Theorem',
       name: 'Greedy is optimal exactly on matroids (Rado–Edmonds)',
-      statement: String.raw`Let $(E,\mathcal I)$ be a hereditary family ($\emptyset\in\mathcal I$, closed under subsets) and $w:E\to\mathbb R_{\ge0}$ a weighting. The **greedy algorithm** scans the elements in order of decreasing weight and keeps an element whenever the set kept so far stays independent. **Theorem.** The greedy algorithm returns a maximum-weight independent set *for every weighting $w$ if and only if $(E,\mathcal I)$ is a matroid* (exchange axiom, 10.19). In particular on a matroid it is optimal for all nonnegative weights and finds a maximum-weight basis. For arbitrary real weights the same scan is optimal for the basis problem; to maximize over all independent sets, omit negative-weight elements. Applied to the graphic matroid with weights $W-w(e)$ for a large constant $W$, it gives Kruskal's algorithm.`,
-      idea: String.raw`(⇐) Exchange argument (10.3). Let $G=\{g_1,\dots,g_k\}$ be the greedy set in the order chosen and $O=\{o_1,\dots,o_\ell\}$ any independent set, both sorted by decreasing weight. Greedy gets $\ell\le k$ from the exchange axiom (otherwise some element of $O$ could extend the final greedy set), and one shows $w(g_i)\ge w(o_i)$ for all $i$ by contradiction: if $w(g_i)<w(o_i)$, then $\{g_1..g_{i-1}\}$ is smaller than $\{o_1..o_i\}$, so some $o_j$ with $j\le i$ extends it; but $o_j$ weighs more than $g_i$, so greedy would have taken it before $g_i$. (⇒) If the exchange axiom fails for independent $A,B$ with $|A|<|B|$ and no element of $B\setminus A$ extending $A$, put weight just above $M$ on $A$, weight $M$ on $B\setminus A$ and $0$ elsewhere, with $M>|A|$. Greedy takes all of $A$ first and then nothing from $B\setminus A$, getting about $|A|(M+1)$, while $B$ is worth at least $|B|M\ge(|A|+1)M>|A|(M+1)$.`,
-      caption: String.raw`Pick a system and **drag the bar tops** to set the element weights. The greedy order and its decisions appear on the picture (green = kept, with its rank; red = rejected because it would create a dependent set), and the right chart compares greedy's total with the exhaustive best independent set. On the three matroids greedy always ties; on the matchings of $C_5$ press **make greedy lose**, which builds the weights from a failed exchange as in the proof. The last line tries 300 random weightings.`,
+      statement: String.raw`Let $E$ be finite and $\mathcal I$ a nonempty hereditary family of its subsets. Greedy scans elements in nonincreasing order of a **nonnegative** weight function $w:E\to\mathbb R_{\ge0}$ and adds an element whenever independence is preserved. It returns a maximum-weight independent set for every such weighting if and only if $(E,\mathcal I)$ is a matroid. On a matroid it also returns a maximum-weight basis. For arbitrary real weights, the basis claim remains valid, while independent-set maximization requires skipping negative-weight elements. On the graphic matroid of a connected graph, weights $W-w(e)\ge0$ turn this into minimum-spanning-tree Kruskal.`,
+      idea: String.raw`For a matroid, let $G=\{g_1,\dots,g_k\}$ be greedy's choices and $O=\{o_1,\dots,o_\ell\}$ any independent set, ordered by decreasing weight. Exchange gives $\ell\le k$. If $w(g_i)<w(o_i)$ for $i\le\ell$, exchange between $G_{i-1}$ and $\{o_1,\dots,o_i\}$ supplies an element outside $G_{i-1}$ extending it and heavier than $g_i$. Heredity means it was also feasible with the earlier, smaller greedy set when first scanned, so it could not have been rejected. Hence $w(g_i)\ge w(o_i)$. Nonnegative remaining weights give $w(G)\ge w(O)$. For bases, $k=\ell$ and no sign restriction is needed.
+
+Conversely, if exchange fails for independent $A,B$ with $a=|A|<|B|$, assign weight $a+2$ to $A$, $a+1$ to $B\setminus A$ and zero elsewhere. Greedy takes $A$ first and cannot take any positive-weight element of $B\setminus A$, so its weight is $a(a+2)$. But $w(B)\ge(a+1)^2>a(a+2)$. Zero-weight additions cannot repair the gap. This is the explicit counterexample made by the button.`,
+      caption: String.raw`Choose a system and drag the bar tops to set nonnegative integer weights. Green elements are kept by greedy, red elements are rejected, and gold marks one exhaustive optimum. The bars compare actual totals. On matchings of $C_5$, **make greedy lose** builds weights from a failed exchange. A complete subset/exchange check certifies the displayed finite system; the separate 300 seeded random-weight trials are illustrations, not a proof for all weights. In the vector example, zero vectors are loops and parallel vectors cannot both be kept.`,
       deps: ['algo-10.19', 'algo-10.3'],
-      refs: ['Erickson, Algorithms supplement E: Matroids (2018), pp. 1–4, Theorems E.1 and E.2 and complete exchange/counterweight proofs'],
+      refs: ['Jeff Erickson, Matroids notes (2018), §E.1, Theorems E.1–E.2 pp.3–4', 'Luca Ferrari (2013), Greedy algorithms and poset matroids, Theorem 1.1 p.3 (Edmonds–Rado naming)'],
       tags: ['matroids', 'greedy'],
-      credit: 'Rado–Edmonds characterization; proof as in Erickson, Matroids, Theorems E.1–E.2',
+      credit: 'Rado–Edmonds characterization; proof source: Erickson (2018), Theorems E.1–E.2',
+      scope: 'Finite nonempty hereditary systems and nonnegative weights for independent-set optimization. The display checks all subsets of systems of at most six elements, with exact integer graph/vector oracles. Its random trials cover only the stated finite sample.',
+      links: { source: 'https://jeffe.cs.illinois.edu/teaching/algorithms/notes/E-matroids.pdf' },
       viz(v) {
         const lose = () => {
-          const t = matroidTest(makeSys(kind.value, vecs()));
-          if (t.witness) { const { A, B } = t.witness, M = popc(A) + 2; for (let i = 0; i < 6; i++) W[i].set(i + 1, i >= 5 ? 0 : (A >> i & 1) ? M + 1 : (B >> i & 1) ? M : 0); }
-          else v.invalidate();
+          const counter=exchangeCounterexample(makeSys(kind.value,vecs()));
+          if(counter)W.forEach((h,i)=>h.set(i+1,counter.weights[i]??0));else v.invalidate();
         };
         const kind = v.select('system', SYSOPTS, 'graphic', { onChange: () => { W.forEach((h, i) => h.set(i + 1, [5, 3, 4, 2, 6, 1][i])); vh.forEach((h) => { h.visible = kind.value === 'linear'; }); if (kind.value === 'matching') lose(); } });
         v.button('make greedy lose', lose);
@@ -245,7 +252,7 @@ export default {
         const vh = V0.map(([x, y]) => { const h = s.handle(x, y, { color: 'accent', r: 7, constrain: (X, Y) => [clamp(Math.round(X), -4, 4), clamp(Math.round(Y), -3, 3)] }); h.visible = false; return h; });
         const vecs = () => vh.map((h) => [Math.round(h.x), Math.round(h.y)]);
         const W = [5, 3, 4, 2, 6, 1].map((w, i) => ws.handle(i + 1, w, { color: 'blue', r: 8, constrain: (x, y) => [i + 1, clamp(Math.round(y), 0, 10)] }));
-        let info = null;
+        let info = null,randomCache=null;
         v.render(() => {
           const k = kind.value, sys = makeSys(k, vecs()), n = sys.n, w = W.slice(0, n).map((h) => Math.round(h.y));
           const g = greedyIndep(sys, w), best = bestIndep(sys, w), rank = new Map(); let c = 0; for (const t of g.trace) if (t.ok) rank.set(t.i, ++c);
@@ -256,15 +263,19 @@ export default {
           ws.setView([0, n + 1], [0, 11.5]); ws.setTicks(Array.from({ length: n }, (_, i) => i + 1), null);
           for (let i = 0; i < n; i++) { const cc = rank.has(i) ? 'green' : rej.has(i) ? 'red' : 'blue'; ws.rect(i + 0.7, 0, i + 1.3, w[i], { fill: cc, fillAlpha: 0.5, color: cc, width: 1.4 }); ws.text(rank.has(i) ? `#${rank.get(i)}` : rej.has(i) ? '✗' : '', i + 1, w[i] + 0.8, { align: 'center', size: 12, weight: 700, color: cc }); }
           ws.corner(`greedy ${g.weight}   best ${best.weight}`, 'tr', { color: g.weight === best.weight ? 'green' : 'red', weight: 700, plate: true });
-          // random weightings
-          const r = rngOf(4242); let lose = 0; for (let t = 0; t < 300; t++) { const ww = Array.from({ length: n }, () => Math.floor(r() * 10)); if (greedyIndep(sys, ww).weight !== bestIndep(sys, ww).weight) lose++; }
-          info = { g, best, lose, n, k, order: g.ord, w };
+          const key=k+'|'+JSON.stringify(vecs());
+          if(randomCache?.key!==key){
+            const r=rngOf(4242);let lose=0;
+            for(let t=0;t<300;t++){const ww=Array.from({length:n},()=>Math.floor(r()*10));if(greedyIndep(sys,ww).weight!==bestIndep(sys,ww).weight)lose++;}
+            const test=matroidTest(sys);randomCache={key,lose,certified:test.nonempty&&test.hereditary&&test.exchange,witness:test.witness};
+          }
+          info={g,best,lose:randomCache.lose,certified:randomCache.certified,witness:randomCache.witness,n,k,order:g.ord,w};
         });
         v.legend([['green', 'kept by greedy (rank)'], ['red', 'rejected: would be dependent'], ['gold', 'a best independent set (glow)']]);
         v.readout(() => {
           if (!info) return '';
-          const { g, best, lose, order, w, n } = info, eq = g.weight === best.weight;
-          return `greedy scans ${order.map((i) => `${i + 1}(${w[i]})`).join(' ')} and keeps ${maskStr(g.mask, n)}, weight ${g.weight} · exhaustive best independent set: weight ${best.weight} ${maskStr(best.mask, n)} · ${eq ? 'greedy is optimal for these weights ✓' : '**greedy is not optimal for these weights**'}\non 300 random weightings greedy loses on ${lose}${lose === 0 ? ' — as the theorem says it must on a matroid ✓' : ' of them: not a matroid, so some weighting beats greed'}`;
+          const {g,best,lose,order,w,n,certified}=info,eq=g.weight===best.weight;
+          return `Greedy scans ${order.map(i=>`${i+1}(${w[i]})`).join(' ')} and keeps ${maskStr(g.mask,n)}, weight ${g.weight}. Exhaustive optimum: ${best.weight} on ${maskStr(best.mask,n)}; ${eq?'greedy is optimal for these weights ✓':'**greedy is not optimal for these weights**'}. Complete subset/exchange check: **${certified?'matroid':'exchange fails'}**. Separate seeded trials: ${lose}/300 losses. These finite weight trials alone do not prove a universal claim.`;
         });
       },
     },

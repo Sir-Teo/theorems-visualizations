@@ -1,0 +1,3 @@
+import{mna}from'./ch03.shared.js';
+export const CIRCUIT_PORTS={bridge:[[0,1],[2,3]],k4:[[0,2],[1,3]],ladder:[[0,2],[3,5]],grid3:[[0,8],[2,6]]};
+export function transferExperiment(net,resistors,A,B,gain){const base=net.edges.map(([a,b],k)=>({t:'R',a,b,r:resistors[k]}));if(gain!==0)base.push({t:'G',a:B[1],b:B[0],cp:A[0],cn:A[1],g:gain});const run=(drive,meas)=>{const q=mna(net.names.length-1,[...base,{t:'I',a:drive[1],b:drive[0],i:1}]);if(q.singular||!q.v.every(Number.isFinite))return{ok:false};return{ok:true,v:q.v,z:q.v[meas[0]]-q.v[meas[1]]};};const forward=run(A,B),reverse=run(B,A);return{ok:forward.ok&&reverse.ok,forward,reverse};}

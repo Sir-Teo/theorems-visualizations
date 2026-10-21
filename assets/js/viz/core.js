@@ -2,6 +2,7 @@
 // `mount()` below; see AUTHORING.md for the full reference and examples.
 import * as M from './math.js';
 import { KITS } from './kits/index.js';
+import { StateRegistry } from '../share-state.js';
 
 // ------------------------------------------------------------------ colours
 const NAMES = ['ink', 'muted', 'faint', 'grid', 'bg', 'panel', 'accent', 'blue', 'red', 'green', 'orange', 'purple', 'teal', 'pink', 'gold', 'gray', 'pma', 'rca', 'fa'];
@@ -855,6 +856,11 @@ class Stage {
     const hd = { x, y, color: st.color || 'accent', r: st.r ?? 7, label: st.label, labelPos: st.labelPos, constrain: st.constrain, onDrag: st.onDrag, visible: true, dragging: false, hover: false };
     hd.set = (nx, ny) => { if (hd.x === nx && hd.y === ny) return; hd.x = nx; hd.y = ny; if (!this.rt._inFrame) this.rt.invalidate(); }; // safe inside render
     this.handles.push(hd);
+    this.rt.state.register('handle', `${this.rt.stages.indexOf(this)}:${this.handles.length - 1}`, {
+      order: 10,
+      get: () => [hd.x, hd.y], valid: p => Array.isArray(p) && p.length === 2 && p.every(Number.isFinite),
+      set: p => { hd.set(...p); const [nx, ny] = this._constrain(hd, ...p, false); hd.set(nx, ny); hd.onDrag?.(hd); },
+    });
     this.canvas.style.touchAction = 'none';
     return hd;
   }
@@ -876,13 +882,13 @@ class Stage {
     for (const hd of this.handles) { if (hd.visible === false) continue; const d = Math.hypot(this.X(hd.x) - px, this.Y(hd.y) - py); if (d <= bd + hd.r * 0.5) { bd = d; best = hd; } }
     return best;
   }
-  _constrain(hd, x, y) {
+  _constrain(hd, x, y, clampView = true) {
     const k = hd.constrain;
     if (typeof k === 'function') { const r = k(x, y); if (r) [x, y] = r; }
     else if (k === 'x') y = hd.y;
     else if (k === 'y') x = hd.x;
     else if (k && typeof k === 'object') { if (k.x) x = M.clamp(x, k.x[0], k.x[1]); if (k.y) y = M.clamp(y, k.y[0], k.y[1]); }
-    x = M.clamp(x, this.xr[0], this.xr[1]); y = M.clamp(y, this.yr[0], this.yr[1]);
+    if (clampView) { x = M.clamp(x, this.xr[0], this.xr[1]); y = M.clamp(y, this.yr[0], this.yr[1]); }
     return [x, y];
   }
   _bind() {
@@ -935,6 +941,12 @@ class Stage3D {
     this.rt = rt;
     const o = this.o = Object.assign({ height: 380, range: 1.6, yaw: -0.65, pitch: 0.42, zoom: 1, persp: 7, axes: true, axisLength: null, labels: ['x', 'y', 'z'], title: null, weight: 1, minWidth: 280, drag: true }, opts);
     this.yaw = o.yaw; this.pitch = o.pitch; this.zoom = o.zoom;
+    rt.state.register('camera', String(rt.stages.length), {
+      order: 30,
+      get: () => [this.yaw, this.pitch, this.zoom],
+      valid: p => Array.isArray(p) && p.length === 3 && p.every(Number.isFinite) && Math.abs(p[0]) <= 1e6 && Math.abs(p[1]) <= Math.PI / 2 && p[2] > 0 && p[2] <= 1e4,
+      set: ([yaw, pitch, zoom]) => { this.yaw = yaw; this.pitch = pitch; this.zoom = zoom; },
+    });
     this.el = h('div', 'stage stage-3d');
     this.el.style.flex = o.full ? '1 1 100%' : `${o.weight} 1 ${o.minWidth}px`;
     if (o.title) { const t = h('div', 'stage-title'); t.innerHTML = inlineHTML(o.title); this.el.append(t); }
@@ -1241,7 +1253,9 @@ function makeSlider(rt, label, min, max, value, o = {}) {
   const log = !!o.log;
   const toInput = (x) => log ? Math.log10(x) : x, fromInput = (u) => log ? Math.pow(10, u) : u;
   input.min = toInput(min); input.max = toInput(max);
-  input.step = log ? (toInput(max) - toInput(min)) / 400 : (o.step ?? (o.int ? 1 : (max - min) / 200));
+  // Keep the final log tick inside the browser's floating-point step grid.
+  // An exactly divided span can otherwise sanitize End to tick399 instead of400.
+  input.step = log ? (toInput(max) - toInput(min)) / 400 * (1 - 1e-9) : (o.step ?? (o.int ? 1 : (max - min) / 200));
   input.value = toInput(value);
   input.setAttribute('aria-label', label.replace(/\$/g, ''));
   const out = h('output', 'ctl-value');
@@ -1258,8 +1272,16 @@ function makeSlider(rt, label, min, max, value, o = {}) {
     set(x) { cur = x; input.value = toInput(x); sync(); rt.invalidate(); },
   };
   const sync = () => { out.textContent = format(ctl.value); input.setAttribute('aria-valuetext', out.textContent); };
-  input.addEventListener('input', () => { const x = fromInput(+input.value); cur = log ? roundSig(x, o.sig ?? 3) : x; sync(); o.onChange?.(ctl.value); rt.invalidate(); });
+  input.addEventListener('input', () => {
+    const u = +input.value, x = fromInput(u), halfStep = +input.step / 2;
+    cur = log ? (u <= +input.min + halfStep ? min : u >= +input.max - halfStep ? max : M.clamp(roundSig(x, o.sig ?? 3), min, max)) : x;
+    sync(); o.onChange?.(ctl.value); rt.invalidate();
+  });
   sync(); el.append(lab, input, out);
+  rt.state.register('slider', label, { get: () => ctl.value,
+    valid: x => Number.isFinite(x) && x >= min && x <= max && (!o.int || Number.isInteger(x)),
+    set: x => { if (x !== ctl.value) { ctl.set(x); o.onChange?.(ctl.value); } },
+  });
   return ctl;
 }
 function makeToggle(rt, label, value, o = {}) {
@@ -1268,7 +1290,9 @@ function makeToggle(rt, label, value, o = {}) {
   const knob = h('span', 'switch-track'); const txt = h('span', 'ctl-label'); txt.innerHTML = inlineHTML(label);
   lab.append(input, knob, txt); el.append(lab);
   input.addEventListener('change', () => { o.onChange?.(input.checked); rt.invalidate(); });
-  return { el, get value() { return input.checked; }, set value(v) { input.checked = !!v; }, set(v) { input.checked = !!v; rt.invalidate(); } };
+  const ctl = { el, get value() { return input.checked; }, set value(v) { input.checked = !!v; }, set(v) { input.checked = !!v; rt.invalidate(); } };
+  rt.state.register('toggle', label, { get: () => ctl.value, valid: x => typeof x === 'boolean', set: x => { if (x !== ctl.value) { ctl.set(x); o.onChange?.(x); } } });
+  return ctl;
 }
 /** Text field; with o.vars it compiles a formula (M.compileExpr) and exposes .fn, showing parse errors inline. */
 function makeInput(rt, label, value = '', o = {}) {
@@ -1288,8 +1312,13 @@ function makeInput(rt, label, value = '', o = {}) {
   let t = 0;
   input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { cur = input.value; if (compile(cur)) { o.onChange?.(cur, fn); rt.invalidate(); } }, 160); });
   input.addEventListener('keydown', (e) => e.stopPropagation()); // keep typing out of keyboard shortcuts
-  return { el, get value() { return cur; }, get fn() { return fn; }, get error() { return error; },
+  const ctl = { el, get value() { return cur; }, get fn() { return fn; }, get error() { return error; },
     set(v) { input.value = cur = String(v); compile(cur); rt.invalidate(); } };
+  rt.state.register('input', label, { get: () => ctl.value, valid: x => typeof x === 'string' && x.length <= 4096 && (!o.vars || !!M.compileExpr(x, o.vars).f),
+    set: x => { if (x !== ctl.value) { ctl.set(x); o.onChange?.(ctl.value, ctl.fn); } },
+  });
+  rt.cleanups.push(() => clearTimeout(t));
+  return ctl;
 }
 function makeSelect(rt, label, options, value, o = {}) {
   const el = controlBox(rt, 'ctl-select');
@@ -1305,7 +1334,12 @@ function makeSelect(rt, label, options, value, o = {}) {
     b.addEventListener('click', () => { cur = op.value; sync(); o.onChange?.(cur); rt.invalidate(); });
     btns.push(b); seg.append(b);
   });
-  sync(); return ctl;
+  sync();
+  rt.state.register('select', label, { get: () => [opts.findIndex(op => op.value === ctl.value), opts.map(op => String(op.label))],
+    valid: x => Array.isArray(x) && x.length === 2 && Number.isInteger(x[0]) && x[0] >= 0 && x[0] < opts.length && JSON.stringify(x[1]) === JSON.stringify(opts.map(op => String(op.label))),
+    set: x => ctl.set(opts[x[0]].value, { fire: true }),
+  });
+  return ctl;
 }
 function makeButton(rt, label, fn) {
   const b = h('button', 'btn ctl-button'); b.type = 'button'; b.innerHTML = inlineHTML(label);
@@ -1323,6 +1357,13 @@ class Runtime {
     this.readoutEl = h('div', 'viz-readout');
     host.append(this.stagesEl, this.legendEl, this.controlsEl, this.readoutEl);
     this.stages = []; this.draws = []; this.anim = null; this.t = 0; this.playing = false; this.visible = true; this.dirty = true;
+    this.state = new StateRegistry(); this.customState = [];
+    this.state.register('clock', '', {
+      order: 40,
+      get: () => this.anim ? this.t : null,
+      valid: x => this.anim ? Number.isFinite(x) && x >= 0 && x <= 1e7 : x === null,
+      set: x => { if (this.anim) { this.t = x; this.playing = false; this.last = 0; this._syncPlay(); } },
+    });
     this.cleanups = []; this.readoutFn = null; this.raf = 0; this.last = 0; this.dead = false;
     this.loop = this.loop.bind(this);
     this.ro = new ResizeObserver(() => {
@@ -1334,6 +1375,9 @@ class Runtime {
     this.io.observe(host);
     this.onTheme = () => { this.invalidate(); };
     window.addEventListener('themechange', this.onTheme);
+    this.onFonts = () => { if (!this.dead) this.invalidate(); };
+    document.fonts?.ready.then(this.onFonts);
+    document.fonts?.addEventListener('loadingdone', this.onFonts);
     this.onPause = () => { if (this.anim) { this.playing = false; this._syncPlay(); this.invalidate(); } };
     window.addEventListener('vizpause', this.onPause);
     this.api = this.makeApi();
@@ -1390,6 +1434,7 @@ class Runtime {
   destroy() {
     this.dead = true; cancelAnimationFrame(this.raf); cancelAnimationFrame(this._rz); this.ro.disconnect(); this.io.disconnect();
     window.removeEventListener('themechange', this.onTheme); window.removeEventListener('vizpause', this.onPause);
+    document.fonts?.removeEventListener('loadingdone', this.onFonts);
     for (const f of this.cleanups) { try { f(); } catch { /* ignore */ } }
   }
   makeApi() {
@@ -1465,11 +1510,25 @@ class Runtime {
       diverge: (t, neg = 'blue', pos = 'red') => (t < 0 ? themeRamp(-t, neg, 'panel') : themeRamp(t, pos, 'panel')),
       mix,
       onCleanup: (f) => rt.cleanups.push(f),
+      /** Register opaque data (edited graphs, samples, custom simulation state) for share links. */
+      shareState(key, adapter) {
+        if (typeof key !== 'string' || !key || !adapter || typeof adapter.get !== 'function' || typeof adapter.set !== 'function') throw new Error('shareState needs a stable key and get/set functions.');
+        rt.customState.push(key);
+        rt.state.register('custom', key, { order: 20, get: adapter.get, valid: adapter.validate || (() => true), set: adapter.set });
+      },
       M, Cx: M.Cx, cx: M.cx, rng: M.rng, fmt: M.fmt, fix: M.fix, sci: M.sci,
       tex: katexHTML,
     };
     // add-on kits (assets/js/viz/kits): each is make(api, rt, ...args)
-    for (const [name, make] of Object.entries(KITS)) api[name] = Object.assign((...args) => make(api, rt, ...args), make);
+    for (const [name, make] of Object.entries(KITS)) api[name] = Object.assign((...args) => {
+      const kit = make(api, rt, ...args);
+      if (name === 'steps') rt.state.register('steps', '', {
+        order: 50, get: () => [kit.i, kit.n],
+        valid: x => Array.isArray(x) && x.length === 2 && x.every(Number.isInteger) && x[1] >= 0 && x[1] <= 1e6 && x[0] >= 0 && x[0] < Math.max(1, x[1]),
+        set: ([i, n]) => { if (n !== kit.n) throw new Error('The saved proof steps no longer match.'); kit.pause(); kit.set(i); },
+      });
+      return kit;
+    }, make);
     return api;
   }
 }
@@ -1478,9 +1537,27 @@ class Runtime {
  * Mount a visualization into `host`. Returns a destroy() function.
  * `vizFn(v)` sets up stages/controls and registers render/animate callbacks.
  */
-export function mount(host, vizFn) {
-  const rt = new Runtime(host);
-  try { vizFn(rt.api); } catch (e) { rt.fail(e); }
+export function mount(host, vizFn, options = {}) {
+  const setup = () => {
+    const instance = new Runtime(host);
+    try { vizFn(instance.api); } catch (error) { instance.fail(error); }
+    return instance;
+  };
+  let rt = setup();
+  if (options.state && !rt.dead) {
+    try { rt.state.restore(options.state); }
+    catch (error) {
+      // A dependent adapter can reject only after control callbacks run. Discard every
+      // partially replayed runtime, including its timers/listeners, and mount fresh defaults.
+      rt.destroy(); rt = setup();
+      const notice = h('div', 'viz-state-notice'); notice.setAttribute('role', 'status');
+      notice.textContent = `Saved state could not be restored: ${error.message}`; host.prepend(notice);
+      options.onStateError?.(error);
+    }
+  }
   rt.invalidate();
-  return () => rt.destroy();
+  const destroy = () => rt.destroy();
+  destroy.snapshot = () => rt.state.capture();
+  destroy.stateInfo = () => ({ custom: [...rt.customState] });
+  return destroy;
 }

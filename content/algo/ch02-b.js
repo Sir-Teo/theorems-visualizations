@@ -284,7 +284,7 @@ so $S(m)=\Theta(m\lg m)$ by the master theorem and $T(n)=\Theta(\lg n\,\lg\lg n)
       statement: String.raw`Let $a_n=c_1a_{n-1}+c_2a_{n-2}$ for $n\ge 2$, with $c_2\ne 0$, and let $r_1,r_2$ be the roots of the **characteristic polynomial** $x^2-c_1x-c_2$. If $r_1\ne r_2$, then $a_n=\alpha r_1^{\,n}+\beta r_2^{\,n}$; if $r_1=r_2=r$, then $a_n=(\alpha+\beta n)r^n$; the constants are fixed by $a_0,a_1$. Consequently, if one root strictly dominates, $|r_1|>|r_2|$, and $\alpha\ne0$, then $a_{n+1}/a_n\to r_1$ and $a_n=\Theta(|r_1|^n)$. For Fibonacci numbers, $r_{1,2}=(1\pm\sqrt5)/2$, giving Binet's formula $F_n=(\varphi^n-\bar\varphi^{\,n})/\sqrt5$. The same holds for order $k$ with $k$ roots (and powers of $n$ for repeated roots).`,
       idea: String.raw`Solutions form a 2-dimensional vector space (each is determined by $a_0,a_1$). Trying $a_n=x^n$ shows that $x^n$ is a solution exactly when $x^2=c_1x+c_2$, so for distinct roots $r_1^n$ and $r_2^n$ give a basis; for a double root, $nr^n$ is a second solution. Fitting $a_0,a_1$ fixes $\alpha,\beta$, which can be checked by substitution (2.5). The dominant root wins because $(r_2/r_1)^n\to0$ (a geometric sequence).`,
       caption: String.raw`Set $c_1,c_2$ and the initial values. Left: the roots of $x^2=c_1x+c_2$ in the complex plane with the unit circle. Right: the ratio $a_{n+1}/a_n$, which homes in on the dominant root (green line). Make the discriminant negative, or set $c_1=0$, so that $|r_1|=|r_2|$: the ratio never settles.`,
-      deps: ['algo-2.4', 'algo-2.5', 'pma-3.20'],
+      deps: ['algo-2.4', 'algo-2.5'],
       refs: ['Erickson notes: Solving Recurrences'],
       credit: 'de Moivre, 1730; Binet, 1843',
       tags: ['recurrences'],

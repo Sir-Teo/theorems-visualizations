@@ -1,6 +1,8 @@
 // Thermodynamics & Statistical Mechanics — Chapter 6 (part b): solids and molecules, equipartition, Maxwell, ensembles, magnetism
 import { clamp, lerp, KB, NA, HP, AMU, lnEin, lnFac, canon, geomDraw, cEin, gauss, tRamp, pick, hsGas, drawGas, runBudget, simClock } from './ch06.shared.js';
 
+import { molecularParts, MOLECULES, C2, microTemperature, canonicalTemperature, temperatureDifference, temperatureAsymptote, unitDirection } from './thermodynamic-limits-source-audit.shared.js';
+
 // ---------- helpers for this file ----------
 const fix = (x, d = 3) => (x < 0 ? '−' : '') + Math.abs(x).toFixed(d);
 const Rg = 8.314462618; // J/(mol K), CODATA 2018
@@ -72,16 +74,17 @@ It tends to the classical value $3Nk$ for $T\gg\theta_E$, and falls to zero as $
     // ------------------------------------------------------------------ 6.12
     {
       num: '6.12', kind: 'Theorem', name: 'Equipartition theorem',
-      statement: String.raw`For a classical system in the canonical ensemble with Hamiltonian $H$, a normalizable Boltzmann weight and vanishing integration-by-parts boundary terms, the phase-space coordinates $\xi_i,\xi_j$,
+      statement: String.raw`For a classical system in the canonical ensemble with Hamiltonian $H$ and Cartesian canonical phase-space coordinates $\xi_i,\xi_j$.
+Assume a finite partition function, flat Liouville measure, integrable derivatives, and vanishing integrated boundary term $\xi_i e^{-\beta H}$ in $\xi_j$. Then
 $$\Bigl\langle \xi_i\,\frac{\partial H}{\partial\xi_j}\Bigr\rangle=\delta_{ij}\,kT.$$
-In particular every degree of freedom that enters the energy **quadratically**, $E=\frac12a\xi^2$, has mean energy $\frac12kT$: a free particle has $\frac32kT$ of kinetic energy, a harmonic oscillator $kT$ (kinetic plus potential), an $N$-atom ideal gas $\frac f2NkT$ with $f$ quadratic terms. A term $|\xi|^s$ has mean $kT/s$.`,
-      idea: String.raw`Integrate by parts in $\xi_j$ over the Boltzmann weight: $\int\xi_i\,\partial_jH\,e^{-\beta H}=-\frac1\beta\int\xi_i\,\partial_je^{-\beta H}=\frac1\beta\delta_{ij}\int e^{-\beta H}$, the boundary terms vanishing because $e^{-\beta H}\to0$ (this uses the Gaussian integral, pma-8.21, in the quadratic case). For $E=\frac12a\xi^2$ one has $\xi\,\partial_\xi E=2E$, hence $\langle E\rangle=\frac12kT$. It is a classical result: it needs the energy levels to be so close compared with $kT$ that sums are integrals; when they are not the mode freezes out (6.14).`,
+In particular every independent separable coordinate that enters the energy **quadratically**, $E=\frac12a\xi^2$, has mean energy $\frac12kT$: a free particle has $\frac32kT$ of kinetic energy, a harmonic oscillator $kT$ (kinetic plus potential), an $N$-atom ideal gas $\frac f2NkT$ with $f$ quadratic terms. A separable term $a|\xi|^s$ on the full real line, with $a,s>0$, has mean $kT/s$.`,
+      idea: String.raw`Integrate by parts in $\xi_j$ over the Boltzmann weight: $\int\xi_i\,\partial_jH\,e^{-\beta H}=-\frac1\beta\int\xi_i\,\partial_je^{-\beta H}=\frac1\beta\delta_{ij}\int e^{-\beta H}$, the boundary terms vanishing by the stated boundary hypothesis (this uses the Gaussian integral, pma-8.21, in the quadratic case). For $E=\frac12a\xi^2$ one has $\xi\,\partial_\xi E=2E$, hence $\langle E\rangle=\frac12kT$. It is a classical result: it needs the energy levels to be so close compared with $kT$ that sums are integrals; when they are not the mode freezes out (6.14).`,
       caption: String.raw`Five Monte Carlo ensembles of 600 copies each start **cold** ($E=0$) and exchange energy with a bath at $kT=1$ (Metropolis steps; time = sweeps). Each line is the average energy per copy: a free particle $p^2/2$ (→ ½), a classical oscillator $(p^2+x^2)/2$ (→ 1), a quartic well $x^4$ (→ ¼), an ultra-relativistic $|p|$ (→ 1; equipartition is *not* "½ per degree of freedom"), and a **quantum oscillator** whose level spacing $\hbar\omega/kT$ you set: for large spacing its energy above the zero-point stays frozen near zero.`,
-      deps: ['thermo-6.1', 'pma-8.21'], refs: ["Tong §2.2.1; integration-by-parts derivation"], tags: ['equipartition', 'classical limit'],
-      credit: 'Classical equipartition theorem',
-      scope: String.raw`Classical statistical mechanics: every quadratic mode has $\frac12kT$ only if its level spacing is $\ll kT$ and the mode is in equilibrium. Fails for stiff modes (freezing out) and for degrees of freedom with a hard cutoff.`,
+      deps: ['thermo-6.1', 'pma-8.21'], refs: ['Sigrist §1.3.2, Eqs. (1.68)–(1.71)', 'Arovas §4.8.2'], tags: ['equipartition', 'classical limit'],
+      credit: 'Equipartition; proof: Sigrist (ETH 2013) §1.3.2, Eqs. (1.68)–(1.71)', verify: false,
+      scope: String.raw`Classical statistical mechanics: every quadratic mode has $\frac12kT$ only if its level spacing is $\ll kT$ and the mode is in equilibrium. The coordinate identity need not hold for hard-wall positions, periodic angles or a coordinate change with a nonconstant Jacobian. The plotted Metropolis ensembles are finite sampling illustrations, not proofs; all five examples are one-dimensional (the oscillator has one position and one momentum).`,
       viz(v) {
-        const Y = v.slider('quantum oscillator: $\\hbar\\omega/kT$', 0.1, 8, 4, { step: 0.1, onChange: () => S.reset() });
+        const Y = v.slider('quantum oscillator: $\\hbar\\omega/kT$', 0.1, 8, 4, { step: 0.1, onChange: () => { S.reset(); v.restart(); } });
         const M = 600, rng = v.rng(17);
         const names = ['free $p^2/2$', 'oscillator', 'quartic $x^4$', 'ultra-rel. $|p|$', 'quantum osc.'];
         const cols = ['accent', 'green', 'orange', 'purple', 'red'];
@@ -167,19 +170,14 @@ independent of the element: $3$ quadratic kinetic plus $3$ quadratic potential t
     // ------------------------------------------------------------------ 6.14
     {
       num: '6.14', kind: 'Phenomenon', name: 'Freezing out of degrees of freedom',
-      statement: String.raw`A degree of freedom with a spacing $\Delta$ between its levels contributes to the heat capacity only when $kT\gtrsim\Delta$. For a diatomic gas the heat capacity $C_V/(Nk)$ therefore climbs in steps, $\frac32\to\frac52\to\frac72$, as classical translation, rotation ($kT\gtrsim\hbar^2/2I$, $\theta_{\rm rot}=87.5$ K for H$_2$, $2.9$ K for N$_2$) and vibration ($kT\gtrsim\hbar\omega$, $\theta_{\rm vib}\approx6300$ K for H$_2$, $3400$ K for N$_2$) are each unfrozen in turn. At room temperature most diatomic gases show $\frac52k$.`,
-      idea: String.raw`Equipartition (6.12) counts a mode as $\frac12kT$ only if its energy levels are dense on the scale $kT$. The rigid-rotor energies are $k\theta_{\rm rot}J(J+1)$, with unequal successive gaps, while the harmonic vibrational energies are $k\theta_{\rm vib}(v+\frac12)$, with constant spacing; at sufficiently low $T$ the Boltzmann factors for the accessible excitation gaps (6.1) keeps the molecule in its ground state, and the mode contributes nothing. The curves use finite partition sums for approximate spectra: a rigid rotor (with nuclear-spin weights for the homonuclear molecules) and an anharmonic oscillator with the tabulated $\omega_e$, $\omega_ex_e$.`,
-      caption: String.raw`Choose the gas and **move the temperature**. The blue curve is $C_V/k$ computed from the partition functions of translation (exactly $\frac32$), rotation and vibration; the right-hand panel stacks the three contributions at the chosen $T$. Gold dots are $C_P/R-1$ from the NIST–JANAF reference tables (ideal gas, 1 bar); the H$_2$ reference is ortho–para equilibrium, including when the blue curve shows a frozen 3:1 mixture. For H$_2$ compare the **equilibrium** mixture of ortho and para with the metastable **normal** 3:1 mixture: the rotational step differs between 50 and 200 K (the overshoot near 50 K in the equilibrium curve comes from para–ortho conversion).`,
-      deps: ['thermo-6.12', 'qm-8.14', 'qm-4.3'], refs: ["Tong §§2.4, 3.4","NIST Chemistry WebBook diatomic constants; JANAF H-050 and N-023"], tags: ['heat capacity', 'quantization', 'molecules'],
-      credit: 'Quantum rotational and vibrational freeze-out',
-      scope: String.raw`Ideal-gas, rigid-rotor / anharmonic-oscillator model with spectroscopic constants from the NIST Chemistry WebBook (H$_2$: $B_e=60.853$, $\omega_e=4401.213$, $\omega_ex_e=121.336$ cm$^{-1}$; N$_2$: $B_e=1.998241$, $\omega_e=2358.57$, $\omega_ex_e=14.324$ cm$^{-1}$); 140 rigid-rotor levels and 14 H$_2$ / 40 N$_2$ approximate vibrational levels, no rotation–vibration coupling, centrifugal distortion or dissociation. The truncated spectra are a model, not a precision reproduction of JANAF. Heat-capacity data: NIST–JANAF Thermochemical Tables (janaf.nist.gov), fetched Oct 2026.`,
+      statement: String.raw`A gapped excitation contributes exponentially little heat capacity when $kT$ is well below its first accessible gap. In a dilute diatomic gas, approximate classical windows give $C_V/(Nk)\approx\frac32,\frac52,\frac72$ as translational, rotational and vibrational excitations become available. These are crossover regimes, not sharp thresholds or a literal infinite-temperature limit for intact molecules. Translation contributes $\frac32$ only in its classical continuum regime. Rotational energies are $k\theta_rJ(J+1)$, with nonuniform gaps, whereas a harmonic vibrational ladder has gap $k\theta_v$. Nuclear-spin restrictions can change the first accessible rotational gap.`,
+      idea: String.raw`For each model spectrum, $C/k=\operatorname{Var}(E/k)/T^2$ follows by differentiating its canonical partition function. The rotor includes degeneracy $2J+1$ and nuclear-spin weights: H$_2$ even/odd $J$ have weights 1/3, while $^{14}$N$_2$ has 6/3. Equilibrium H$_2$ can exchange these populations; normal H$_2$ instead keeps 1/4 para and 3/4 ortho and averages their separate heat capacities. Vibration uses $E_v/k=(hc/k)[\omega_ev-\omega_ex_e(v^2+v)]$ only on the chosen finite increasing branch $v+\frac12<\omega_e/(2\omega_ex_e)$. This truncated spectroscopic approximation, chosen at its turning point, is not a complete molecular spectrum.`,
+      caption: String.raw`Choose the gas and **move the temperature**. Blue: classical translation plus the weighted rigid rotor and finite increasing-branch vibrational approximation; the right panel stacks them. Gold: NIST–JANAF $C_P/R-1$ at standard pressure 0.1 MPa, an equilibrium ideal-gas reference rather than a fit. Normal H$_2$ is a fixed 3:1 mixture, so its curve is not an equilibrium-hydrogen prediction.`,
+      deps: ['thermo-6.12', 'qm-8.14', 'qm-4.3'], refs: ['Arovas §§4.10.4–4.10.7, Eqs. (4.270)–(4.277)', 'Tong §3.4', 'NIST WebBook diatomic constants; NIST–JANAF H-050, N-023'], tags: ['heat capacity', 'quantization', 'molecules'],
+      credit: 'Canonical molecular models: Arovas §4.10; spectra and thermochemical reference: NIST', verify: false,
+      scope: String.raw`Ideal-gas, rigid-rotor / anharmonic-oscillator model with spectroscopic constants from the NIST Chemistry WebBook (H$_2$: $B_e=60.853$, $\omega_e=4401.213$, $\omega_ex_e=121.336$ cm$^{-1}$; N$_2$: $B_e=1.998241$, $\omega_e=2358.57$, $\omega_ex_e=14.324$ cm$^{-1}$); uses $B_e$, not a fitted $B_0$; omits centrifugal distortion, rotation–vibration coupling, dissociation and electronic excitation. No bound on physical model error is claimed. The rotor summation stops beyond $E/kT>55$ (numerically checked against 100); vibration has 18 H$_2$ or 82 N$_2$ retained model levels. The finite vibrational model does not tend to equipartition as $T\to\infty$. Heat-capacity data: NIST–JANAF Thermochemical Tables (janaf.nist.gov), fetched Oct 2026.`,
       viz(v) {
-        const C2 = 1.438777; // hc/k in cm K
-        const GAS = {
-          h2e: { B: 60.853, we: 4401.213, wx: 121.336, nu: 'H2eq', label: 'H₂ equilibrium' },
-          h2n: { B: 60.853, we: 4401.213, wx: 121.336, nu: 'H2norm', label: 'H₂ normal (3:1)' },
-          n2: { B: 1.998241, we: 2358.57, wx: 14.324, nu: 'N2', label: 'N₂' },
-        };
+        const GAS = { h2e:{...MOLECULES.h2e,label:'H₂ equilibrium'}, h2n:{...MOLECULES.h2n,label:'H₂ normal (3:1)'}, n2:{...MOLECULES.n2,label:'¹⁴N₂'} };
         const JAN = {
           h2: [[100, 28.154], [200, 27.447], [298.15, 28.836], [500, 29.26], [1000, 30.205], [1500, 32.298], [2000, 34.28], [3000, 37.087]],
           n2: [[100, 29.104], [200, 29.107], [298.15, 29.124], [500, 29.58], [1000, 32.697], [1500, 34.843], [2000, 35.971], [3000, 37.03]],
@@ -187,25 +185,7 @@ independent of the element: $3$ quadratic kinetic plus $3$ quadratic potential t
         const gas = v.select('gas', Object.entries(GAS).map(([value, q]) => ({ value, label: q.label })), 'h2e');
         const kT = v.slider('temperature $T$ (K)', 10, 4000, 300, { log: true, sig: 3 });
         const cache = new Map();
-        const rotLevels = (g, par) => {
-          const th = C2 * g.B, out = [];
-          for (let J = 0; J < 140; J++) {
-            if (par === 'even' && J % 2) continue; if (par === 'odd' && J % 2 === 0) continue;
-            const w = (2 * J + 1) * (g.nu === 'H2eq' ? (J % 2 ? 3 : 1) : g.nu === 'N2' ? (J % 2 ? 3 : 6) : 1);
-            out.push({ E: th * J * (J + 1), g: w });
-          }
-          return out;
-        };
-        const vibLevels = (g) => { const G0 = 0.5 * g.we - 0.25 * g.wx, out = []; for (let n = 0; n < (g.we / (2 * g.wx) > 40 ? 40 : 14); n++) out.push({ E: C2 * ((g.we * (n + 0.5) - g.wx * (n + 0.5) ** 2) - G0), g: 1 }); return out; };
-        const parts = (key, T) => {
-          const ck = key + '|' + T; if (cache.has(ck)) return cache.get(ck);
-          const g = GAS[key], b = 1 / T;
-          let rot;
-          if (g.nu === 'H2norm') rot = 0.25 * canon(rotLevels(g, 'even'), b).C + 0.75 * canon(rotLevels(g, 'odd'), b).C;
-          else rot = canon(rotLevels(g), b).C;
-          const vib = canon(vibLevels(g), b).C, out = { tr: 1.5, rot, vib, tot: 1.5 + rot + vib };
-          cache.set(ck, out); return out;
-        };
+        const parts = (key,T) => { const ck=key+'|'+T; if(!cache.has(ck))cache.set(ck,molecularParts(key,T));return cache.get(ck); };
         const sa = v.stage({ x: [10, 4000], xlog: true, y: [1.2, 3.8], axes: 'box', gutter: true, height: 300, xlabel: '$T$ (K)', ylabel: '$C_V/k$ per molecule', title: 'heat capacity of a diatomic gas', weight: 1.4 });
         const sb = v.stage({ x: [0, 1], y: [0, 4], axes: 'box', gutter: true, height: 300, weight: 0.5, minWidth: 150, ylabel: '$C_V/k$', title: 'contributions', xticks: [] });
         let st = null;
@@ -221,7 +201,7 @@ independent of the element: $3$ quadratic kinetic plus $3$ quadratic potential t
           [['tr', 'blue'], ['rot', 'orange'], ['vib', 'green']].forEach(([k, c]) => { sb.rect(0.25, y0, 0.75, y0 + p[k], { fill: c, fillAlpha: 0.65, color: c, width: 1 }); y0 += p[k]; });
           st = { T, p, key };
         });
-        v.legend([['accent', 'model (partition functions)'], ['gold', 'JANAF reference $C_P/R-1$', { dot: true }], ['blue', 'translation', { area: true }], ['orange', 'rotation', { area: true }], ['green', 'vibration', { area: true }]]);
+        v.legend([['accent', 'model (partition functions)'], ['gold', 'NIST–JANAF $C_P/R-1$', { dot: true }], ['blue', 'translation', { area: true }], ['orange', 'rotation', { area: true }], ['green', 'vibration', { area: true }]]);
         v.readout(() => st && `$T=${fix(st.T, 0)}$ K: $C_V/k=${fix(st.p.tot, 3)}$ = ${fix(st.p.tr, 3)} (translation) + ${fix(st.p.rot, 3)} (rotation) + ${fix(st.p.vib, 3)} (vibration) · rotational $\\theta=${fix(C2 * GAS[st.key].B, 1)}$ K, vibrational $\\theta=${fix(C2 * GAS[st.key].we, 0)}$ K`);
       },
     },
@@ -231,9 +211,9 @@ independent of the element: $3$ quadratic kinetic plus $3$ quadratic potential t
       statement: String.raw`In a dilute classical gas of molecules of mass $m$ at temperature $T$, each velocity component is Gaussian and independent, so the speed $v=|\mathbf v|$ has density
 $$f(v)=4\pi\Bigl(\frac{m}{2\pi kT}\Bigr)^{3/2}v^2e^{-mv^2/2kT},$$
 with most probable speed $v_{\rm mp}=\sqrt{2kT/m}$, mean speed $\bar v=\sqrt{8kT/\pi m}=\tfrac{2}{\sqrt\pi}v_{\rm mp}$ and rms speed $v_{\rm rms}=\sqrt{3kT/m}$.`,
-      idea: String.raw`The energy of a molecule is $\frac12mv^2$ plus other terms that do not involve $\mathbf v$, so the Boltzmann factor (6.1) makes $\mathbf v$ Gaussian with variance $kT/m$ in each component (the equipartition value, 6.12). The speed density is that Gaussian integrated over a shell of area $4\pi v^2$: a rising $v^2$ (more phase space) times a falling exponential (Boltzmann factor). Maxwell obtained the same law in 1860 from the demand that the components be independent and the distribution isotropic; collisions are what drive a gas to it.`,
+      idea: String.raw`The energy of a molecule is $\frac12mv^2$ plus other terms that do not involve $\mathbf v$, so the Boltzmann factor (6.1) makes $\mathbf v$ Gaussian with variance $kT/m$ in each component (the equipartition value, 6.12). The speed density is that Gaussian integrated over a shell of area $4\pi v^2$: a rising $v^2$ (more phase space) times a falling exponential (Boltzmann factor). Maxwell obtained the same law in 1860 from the demand that the components be independent and the distribution isotropic; collisions are what drive a gas to it. The Gaussian integral (pma 8.21), after scaling $x=\sqrt{m/(2kT)}\,v_x$, normalizes each component with factor $\sqrt{m/(2\pi kT)}$. Multiplying the three component factors and then the shell area $4\pi v^2$ produces the displayed normalized speed density, including its prefactor.`,
       caption: String.raw`An **exact hard-sphere gas** (400 molecules) starts in an artificial state of your choice (all with the same speed, two speeds, or a beam along $x$). Bars show the speed histogram averaged over the last few time units and the curve is the Maxwell law for the **measured** kinetic energy. Within ten or so collisions per molecule the histogram relaxes onto the Maxwell curve, the component distribution (right) becomes Gaussian, and the three marked speeds fall in the ratio $1:1.128:1.225$.`,
-      deps: ['thermo-6.1', 'thermo-6.12', 'vcalc-4.7'], refs: ['Schroeder §6.4'], tags: ['kinetic theory', 'speed distribution'],
+      deps: ['thermo-6.1', 'thermo-6.12', 'pma-8.21'], refs: ['Schroeder §6.4'], tags: ['kinetic theory', 'speed distribution'],
       credit: 'Maxwell, 1860; Boltzmann, 1868',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Maxwell%E2%80%93Boltzmann_distribution' },
       scope: String.raw`A classical dilute gas in equilibrium; for $\mathrm N_2$ at 300 K, $v_{\rm mp}\approx422$ m/s, $\bar v\approx476$ m/s and $v_{\rm rms}\approx517$ m/s. Here units are $m=\sigma=k=1$.`,
@@ -290,15 +270,15 @@ with most probable speed $v_{\rm mp}=\sqrt{2kT/m}$, mean speed $\bar v=\sqrt{8kT
     // ------------------------------------------------------------------ 6.16
     {
       num: '6.16', kind: 'Model', name: 'Classical ideal gas in the canonical ensemble',
-      statement: String.raw`For $N$ indistinguishable non-interacting atoms of mass $m$ in a volume $V$ at temperature $T$,
+      statement: String.raw`In the dilute classical continuum regime, for $N$ indistinguishable non-interacting monatomic atoms of mass $m$ in a volume $V$ at temperature $T$,
 $$Z=\frac{Z_1^N}{N!},\qquad Z_1=\frac{V}{\lambda^3},\qquad\lambda=\frac{h}{\sqrt{2\pi mkT}}.$$
-Using Stirling’s approximation for large $N$, $F=-kT\ln Z\approx-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial F/\partial V=NkT/V$, $U=\frac32NkT$ and the **Sackur–Tetrode** entropy $S=Nk\bigl[\ln\frac{V}{N\lambda^3}+\frac52\bigr]$. Valid when $n\lambda^3\ll1$.`,
-      idea: String.raw`Independent atoms give a product of single-atom sums (6.8); the single-atom sum is the phase-space integral $\int d^3x\,d^3p\,e^{-p^2/2mkT}/h^3=V/\lambda^3$ (a Gaussian integral). The $1/N!$ corrects for the indistinguishability of identical atoms, which is what restores extensivity of $S$ (Gibbs paradox, 5.12); with Stirling's formula $\ln N!\approx N\ln N-N$ it produces $V/N$ inside the logarithm. The constant $h$ is the only trace of quantum mechanics.`,
-      caption: String.raw`**Pick a gas and the conditions.** Left: the Sackur–Tetrode entropy per atom against $T$ at the chosen pressure; the red dot is the standard molar entropy at $298.15$ K, $1$ bar, from the NIST WebBook. Middle: $F/NkT=\ln n\lambda^3-1$ against $\ln n\lambda^3$; the shaded region $n\lambda^3\gtrsim1$ is where the classical formula fails. Right: the pieces of $\ln Z$ for $N$ atoms.`,
-      deps: ['thermo-6.8', 'thermo-5.12'], refs: ["Tong §§2.1–2.2.3, Eqs. (2.1), (2.12)–(2.13)","NIST Chemistry WebBook: noble-gas CODATA entropy reviews"], tags: ['ideal gas', 'partition function', 'Sackur–Tetrode'],
-      credit: 'Classical ideal-gas partition function',
+Using leading Stirling order for $N\gg1$, $F=-kT\ln Z\simeq-NkT\bigl[\ln\frac{V}{N\lambda^3}+1\bigr]$, whence $P=-\partial F/\partial V=NkT/V$, $U=\frac32NkT$ and the **Sackur–Tetrode** entropy $S=Nk\bigl[\ln\frac{V}{N\lambda^3}+\frac52\bigr]$. Valid when $n\lambda^3\ll1$.`,
+      idea: String.raw`Independent atoms give a product of single-atom sums (6.8); the single-atom sum is the phase-space integral $\int d^3x\,d^3p\,e^{-p^2/2mkT}/h^3=V/\lambda^3$ (a Gaussian integral). The $1/N!$ corrects for the indistinguishability of identical atoms, which is what restores extensivity of $S$ (Gibbs paradox, 5.12); with Stirling's formula $\ln N!\approx N\ln N-N$ it produces $V/N$ inside the logarithm. The constant $h$ is the only trace of quantum mechanics. The Gaussian integral (pma 8.21) evaluates each momentum factor as $\sqrt{2\pi mkT}$, so the three factors give $V(2\pi mkT)^{3/2}/h^3=V/\lambda^3$. Stirling's formula (pma 8.22) then gives $\ln N!=N\ln N-N+O(\ln N)$: the exact finite-$N$ partition function remains unchanged, while the familiar extensive entropy drops this subextensive correction.`,
+      caption: String.raw`**Pick a gas and the conditions.** Left: the Sackur–Tetrode entropy per atom against $T$ at the chosen pressure; the red dot is the standard molar entropy at $298.15$ K, $1$ bar, from the NIST WebBook; the gold dot is the chosen state. Middle: $F/NkT=\ln n\lambda^3-1$ against $\ln n\lambda^3$; the shaded region $n\lambda^3\gtrsim1$ is where the classical formula fails. Right: the pieces of $\ln Z$ for $N=1000$, keeping $\ln N!$ without the leading Stirling approximation. Its finite-$N$ entropy differs slightly from the left curve.`,
+      deps: ['thermo-6.8', 'thermo-5.12', 'pma-8.21', 'pma-8.22'], refs: ['Tong §§2.1–2.2.3, Eqs. (2.12)–(2.13)', 'NIST WebBook noble-gas review entropies'], tags: ['ideal gas', 'partition function', 'Sackur–Tetrode'],
+      credit: 'Canonical ideal gas: Tong §2.2.3, Eqs. (2.12)–(2.13)', verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sackur%E2%80%93Tetrode_equation' },
-      scope: String.raw`Monatomic gas with no internal structure (noble gases) and $n\lambda^3\ll1$; the standard entropies are the CODATA key values quoted in the NIST WebBook.`,
+      scope: String.raw`Monatomic gas with negligible internal excitation, thermal wavelength small compared with container dimensions, fixed $N$ and $N\gg1$ for the displayed $F,S$ formulas and $n\lambda^3\ll1$; the standard entropies are the CODATA key values quoted in the NIST WebBook.`,
       viz(v) {
         const NOB = { He: { m: 4.002602, S: 126.153 }, Ne: { m: 20.1797, S: 146.328 }, Ar: { m: 39.948, S: 154.846 }, Kr: { m: 83.798, S: 164.085 }, Xe: { m: 131.293, S: 169.685 } };
         const gas = v.select('gas', Object.keys(NOB), 'Ar');
@@ -312,17 +292,18 @@ Using Stirling’s approximation for large $N$, $F=-kT\ln Z\approx-NkT\bigl[\ln\
         let st = null;
         v.render(() => {
           const g = NOB[gas.value], T = Ts.value, P = Pp.value * 1e5, m = g.m;
+          const sy=[sST(m,5,P),sST(m,2000,P),sST(m,5,1e5),sST(m,2000,1e5),g.S/Rg];
+          sa.setView([5,2000],[Math.min(-2,...sy)-1,Math.max(25,...sy)+1]);
           sa.fn((t) => sST(m, t, P), { color: 'accent', width: 2.4, n: 160, domain: [5, 2000] });
-          sa.setView([5, 2000], [-2, 25]);
           sa.fn((t) => sST(m, t, 1e5), { color: 'muted', width: 1.4, dash: true, n: 160 });
           const Smol = g.S / Rg; sa.dot(298.15, Smol, { r: 6, color: 'red' });
           sa.dot(T, sST(m, T, P), { r: 6, color: 'gold' }); sa.vline(T, { color: 'faint', dash: true });
           const n = P / (KB * T), nl3 = Math.log(n * lam(m, T) ** 3);
-          const x0 = Math.min(-18, nl3 - 1), x1 = Math.max(3, nl3 + 1);
-          sb.setView([x0, x1], [x0 - 2, x1]);
+          const x0 = Math.min(-18,nl3-1), x1 = Math.max(3,nl3+1);
+          sb.setView([x0,x1],[x0-2,x1]);
+          sb.rect(0, x0-2, x1, x1, { fill: 'red', fillAlpha: 0.12, stroke: false });
           sb.fn((x) => x - 1, { color: 'accent', width: 2.4, domain: [x0, x1] });
-          sb.rect(0, x0 - 2, x1, x1, { fill: 'red', fillAlpha: 0.12, stroke: false });
-          sb.text('quantum:  $n\\lambda^3\\gtrsim1$', 2.9, 1.2, { size: 11, color: 'red', align: 'right' });
+          sb.text('quantum: $n\\lambda^3\\gtrsim1$', x1-.1, x1-.8, { size: 11, color: 'red', align: 'right' });
           sb.dot(nl3, nl3 - 1, { r: 6, color: 'gold' });
           const Nn = 1e3, V = Nn / n, lnZ1N = Nn * Math.log(V / lam(m, T) ** 3), lnNf = lnFac(Nn);
           const vals = [lnZ1N / Nn, -lnNf / Nn, (lnZ1N - lnNf) / Nn], cols = ['accent', 'orange', 'green'];
@@ -343,40 +324,41 @@ Using Stirling’s approximation for large $N$, $F=-kT\ln Z\approx-NkT\bigl[\ln\
     // ------------------------------------------------------------------ 6.17
     {
       num: '6.17', kind: 'Theorem', name: 'Equivalence of ensembles',
-      statement: String.raw`For a large system with short-range interactions the microcanonical ensemble (fixed $U$) and the canonical ensemble (fixed $T$) give the same thermodynamics: if $U=\langle E\rangle_T$ then the entropy per particle and the temperature computed either way agree in the thermodynamic limit in a regular stable phase. Gaussian saddle-point entropy corrections can be $O(\ln N/N)$ per particle, while canonical relative energy fluctuations are $O(N^{-1/2})$ when heat capacity is extensive. Small systems and phase coexistence require separate treatment.`,
-      idea: String.raw`The canonical probability of energy $E$ is $\Omega(E)e^{-\beta E}/Z$, the product of a rapidly rising and a rapidly falling function, whose peak has width $\sqrt{kT^2C_V}$ (6.4), a relative width $N^{-1/2}$. Since the sharp peak sits where $\partial S/\partial U=1/T$ (5.4, 5.8), the canonical $\ln Z=\max_E[S/k-\beta E]$ up to $O(\ln N)$ terms: $F$ is the Legendre transform of $S$, and energy fluctuations do not matter for extensive quantities. This is a thermodynamic-limit statement. Nonconcave limiting entropy can give inequivalence (notably for some long-range systems); coexistence and linear segments require more care than a single Gaussian saddle.`,
-      caption: String.raw`The system is $N$ quantum oscillators (an Einstein solid) with $q$ quanta, mean $u=q/N$ quanta per oscillator. Left: the **canonical** energy distribution (bars) against the **microcanonical** delta spike at fixed $q$ (green); **change $N$** to see their relative width shrink; the plotted absolute width still grows. Right: the relative disagreement between the microcanonical temperature $\partial S/\partial U$ and the canonical $T$ at the same $U$, against $N$: it falls as $1/N$.`,
-      deps: ['thermo-6.4', 'thermo-5.4'], refs: ["Tong §1.3.3: microcanonical vs canonical ensembles"], tags: ['ensembles', 'thermodynamic limit'],
-      credit: 'Thermodynamic-limit equivalence',
-      scope: String.raw`For systems with short-range interactions and a concave entropy; long-range interactions (gravitating systems) and first-order transitions in finite systems can break equivalence.`,
+      statement: String.raw`In the thermodynamic limit, assume a well-defined large-deviation entropy density $s(u)$ and canonical free energy. The canonical free energy is the Legendre–Fenchel transform $\varphi(\beta)=\inf_u[\beta u-s(u)]$. Thermodynamic equivalence at energy $u$ requires $s(u)$ to equal its concave envelope there; a supporting line identifies canonical equilibrium energies. With a smooth strictly concave entropy and a unique regular saddle, canonical energy concentrates at a single $u$, often with relative width $O(N^{-1/2})$ away from critical points. Neither that rate nor finite-size $O(1/N)$ entropy agreement is universal.`,
+      idea: String.raw`The canonical energy probability is proportional to $\Omega_N(E)e^{-\beta E}$. Its large-deviation rate is $J_\beta(u)=\beta u-s(u)-\varphi(\beta)$. Zeros identify equilibrium energies; a unique nondegenerate minimum gives Gaussian concentration. A nonconcave entropy can prevent equivalence; an affine segment can give coexistence and multiple energies even while thermodynamic Legendre duality holds. For the plotted $N$ oscillators, $\Omega_N(q)=\binom{q+N-1}{q}$ exactly. The finite backward-difference definition $1/T_{\rm micro}=\ln[\Omega_N(q)/\Omega_N(q-1)]$ is explicit here, and its relative temperature discrepancy is $O(1/N)$; Stirling gives entropy-density discrepancy $O(\ln N/N)$.`,
+      caption: String.raw`For $N\ge2$ oscillators and fixed mean quanta per oscillator, bars plot the canonical energy **per oscillator**, on a common horizontal scale as $N$ changes. Height is probability divided by bin width $1/N$, not probability; omitted tails are unconditioned. Green marks the fixed microcanonical energy density. The right panel compares the backward-difference temperature to the matching canonical temperature. The orange curve is this model's leading $A(u)/N$ asymptote.`,
+      deps: ['thermo-6.4', 'thermo-5.4'], refs: ['Touchette (2015) §III, Eqs. (21)–(29), Propositions 2–4'], tags: ['ensembles', 'thermodynamic limit'],
+      credit: 'Ensemble equivalence: Touchette, J. Stat. Phys. 159, 987–1016 (2015)', verify: false,
+      scope: String.raw`Thermodynamic, macrostate and measure equivalence are distinct. The supporting-line statement assumes the stated limiting functions; concentration needs further uniqueness and regularity. The oscillator example is exactly solvable and uses $k=\varepsilon=1$. It illustrates a specific finite-size convention, not a universal finite-size theorem.`,
       viz(v) {
-        const Ns = v.slider('oscillators $N$', 1, 1000, 20, { int: true, log: true });
+        const Ns = v.slider('oscillators $N$', 2, 1000, 20, { int: true });
         const us = v.slider('quanta per oscillator $u=q/N$', 0.2, 4, 1.5, { step: 0.05 });
-        const sa = v.stage({ x: [0, 100], y: [0, 1], axes: 'box', gutter: true, height: 290, xlabel: 'energy $q$ (quanta)', ylabel: 'probability', title: 'canonical vs microcanonical energy', weight: 1.2 });
-        const sb = v.stage({ x: [1, 1000], xlog: true, y: [1e-4, 1], ylog: true, axes: 'box', gutter: true, height: 290, xlabel: '$N$', ylabel: '$|T_{\\rm micro}-T_{\\rm can}|/T$', title: 'temperatures at equal energy', weight: 1 });
-        const Tmic = (N, q) => 1 / Math.log((q + N - 1) / q);   // exact: Ω(q)/Ω(q−1) = (q+N−1)/q
+        const sa = v.stage({ x: [0, 100], y: [0, 1], axes: 'box', gutter: true, height: 290, xlabel: 'energy per oscillator $q/N$', ylabel: 'probability / bin width', title: 'canonical vs microcanonical energy', weight: 1.2 });
+        const sb = v.stage({ x: [2, 1000], xlog: true, y: [1e-4, 1], ylog: true, axes: 'box', gutter: true, height: 290, xlabel: '$N$', ylabel: '$|T_{\\rm micro}-T_{\\rm can}|/T$', title: 'temperatures at equal energy', weight: 1 });
+        const Tmic = microTemperature;
         let st = null;
         v.render(() => {
           const N = Ns.value, u = us.value, q = Math.max(1, Math.round(u * N)), uq = q / N;
-          const x = uq / (1 + uq), Tc = 1 / Math.log(1 + 1 / uq);
+          const x = uq / (1 + uq), Tc = canonicalTemperature(N,q);
           const lnP = (k) => lnEin(N, k) + k * Math.log(x) + N * Math.log(1 - x);
           const sd = Math.sqrt(N * x / (1 - x) ** 2), lo = Math.max(0, Math.floor(q - 4.5 * sd)), hi = Math.ceil(q + 4.5 * sd);
           const ks = []; for (let k = lo; k <= hi; k++) ks.push(k);
           const P = ks.map((k) => Math.exp(lnP(k)));
-          sa.setView([lo - 0.5, hi + 0.5], [0, Math.max(...P) * 1.25]);
-          ks.forEach((k, i) => sa.rect(k - 0.4, 0, k + 0.4, P[i], { fill: 'accent', fillAlpha: 0.6, color: 'accent', width: 1 }));
-          sa.vline(q, { color: 'green', width: 2.4 });
-          sa.text('microcanonical: $q$ fixed', q, Math.max(...P) * 1.18, { size: 11, color: 'green', dx: 8 });
-          const df = (n) => { const qq = Math.max(1, Math.round(u * n)), uu = qq / n; return Math.abs(Tmic(n, qq) - 1 / Math.log(1 + 1 / uu)) / (1 / Math.log(1 + 1 / uu)); };
+          sa.setView([-.5,20], [0, N*Math.max(...P)*1.25]);
+          ks.forEach((k, i) => sa.rect((k-.5)/N, 0, (k+.5)/N, N*P[i], { fill: 'accent', fillAlpha: 0.6, color: 'accent', width: 1 }));
+          sa.vline(uq, { color: 'green', width: 2.4 });
+          sa.text('microcanonical: $q/N$ fixed', uq, N*Math.max(...P) * 1.18, { size: 11, color: 'green', dx: 8 });
+          const df = (n) => { const qq = Math.max(1, Math.round(u * n)), uu = qq / n; return temperatureDifference(n,qq); };
           const pts = []; for (let n = 2; n <= 1000; n = Math.ceil(n * 1.25 + 0.01)) pts.push([n, df(n)]);
+          if(pts.at(-1)[0]!==1000)pts.push([1000,df(1000)]);
           sb.path(pts, { color: 'accent', width: 1.8 }); sb.dots(pts, { r: 3, color: 'accent' });
-          sb.fn((n) => 0.5 / n, { color: 'orange', dash: true, width: 1.6 });
-          const d = N > 1 ? df(N) : null; if (d !== null) sb.dot(N, d, { r: 6, color: 'gold' });
+          sb.fn((n) => temperatureAsymptote(u) / n, { color: 'orange', dash: true, width: 1.6 });
+          const d = df(N); sb.dot(N, d, { r: 6, color: 'gold' });
           const smic = lnEin(N, q) / N, scan = (1 + uq) * Math.log(1 + uq) - uq * Math.log(uq);
-          st = { q, Tc, Tm: N > 1 ? Tmic(N, q) : null, d, sd, rel: sd / q, smic, scan, N };
+          st = { q, Tc, Tm: Tmic(N, q), d, sd, rel: sd / q, smic, scan, N, mass:P.reduce((a,b)=>a+b,0) };
         });
-        v.legend([['accent', 'canonical $P(q)$ / computed difference'], ['green', 'microcanonical'], ['orange', '$1/2N$ (guide)', { dash: true }]]);
-        v.readout(() => st && `$N=${st.N}$, $q=${st.q}$ · $kT_{\\rm micro}=${st.Tm === null ? '\\text{undefined (flat }\\Omega\\text{)}' : fix(st.Tm, 4)}\\,\\varepsilon$ vs $kT_{\\rm can}=${fix(st.Tc, 4)}\\,\\varepsilon$ (relative difference ${st.d === null ? 'undefined for N=1' : fix(100 * st.d, 2) + ' %'}) · entropy per oscillator $s_{\\rm micro}=${fix(st.smic, 4)}$ vs Legendre transform of $\\ln Z$: ${fix(st.scan, 4)} · canonical energy width ${fix(100 * st.rel, 1)} % of $q$`);
+        v.legend([['accent', 'canonical density / computed difference'], ['green', 'microcanonical'], ['orange', '$A(u)/N$ (asymptote)', { dash: true }]]);
+        v.readout(() => st && `$N=${st.N}$, $q=${st.q}$ · $kT_{\\rm micro}=${fix(st.Tm, 4)}\\,\\varepsilon$ vs $kT_{\\rm can}=${fix(st.Tc, 4)}\\,\\varepsilon$ (relative difference ${fix(100 * st.d, 2)} %) · entropy per oscillator $s_{\\rm micro}=${fix(st.smic, 4)}$ vs Legendre transform of $\\ln Z$: ${fix(st.scan, 4)} · canonical energy width ${fix(100 * st.rel, 1)} % of $q$ · shown unconditional mass ${fix(st.mass,5)} · entropy-density correction scales as $\\ln N/N$`);
       },
     },
     // ------------------------------------------------------------------ 6.18
@@ -433,17 +415,17 @@ Using Stirling’s approximation for large $N$, $F=-kT\ln Z\approx-NkT\bigl[\ln\
     // ------------------------------------------------------------------ 6.19
     {
       num: '6.19', kind: 'Definition', name: 'Thermal density operator',
-      statement: String.raw`A quantum system with Hamiltonian $H$ in equilibrium with a bath at temperature $T$ is described by the **thermal density operator**
+      statement: String.raw`A fixed-particle-number quantum system weakly coupled to a bath at $T>0$, with Hamiltonian $H$ and finite partition function $Z$ is described by the **thermal density operator**
 $$\hat\rho=\frac{e^{-\beta\hat H}}{Z},\qquad Z=\operatorname{tr}e^{-\beta\hat H},$$
-so that $\langle A\rangle=\operatorname{tr}(\hat\rho A)$. It is diagonal in the energy basis with the Boltzmann populations. For a finite-dimensional system with at least two states and $0<T<\infty$, it is a mixed state with purity $\operatorname{tr}\hat\rho^2<1$ and von Neumann entropy $S=-k\operatorname{tr}\hat\rho\ln\hat\rho$ equal to the Gibbs entropy of those populations.`,
-      idea: String.raw`In the eigenbasis of $H$ the operator is $\operatorname{diag}(e^{-\beta E_n})/Z$, exactly the Boltzmann law (6.1) now read as a statement about a quantum state: the ensemble is a classical mixture of energy eigenstates, not a superposition. Its coherences vanish in the energy basis but do not vanish in other bases (for a spin in a field they are the transverse components of the Bloch vector). As $T\to0$ it tends to the normalized projector onto the ground eigenspace (pure only for a nondegenerate ground state). For a finite Hilbert space of dimension $d$, $T\to\infty$ gives the maximally mixed state $\hat 1/d$.`,
+so that $\langle A\rangle=\operatorname{tr}(\hat\rho A)$. It is diagonal in the energy basis with the Boltzmann populations. When the Hilbert space has at least two accessible states it is mixed, with purity $\operatorname{tr}\hat\rho^2<1$ and von Neumann entropy $S=-k\operatorname{tr}\hat\rho\ln\hat\rho$ equal to the Gibbs entropy of those populations.`,
+      idea: String.raw`In the eigenbasis of $H$ the operator is $\operatorname{diag}(e^{-\beta E_n})/Z$, exactly the Boltzmann law (6.1) now read as a statement about a quantum state: the ensemble is a classical mixture of energy eigenstates, not a superposition. Its coherences vanish in the energy basis but may be nonzero in other bases (for a spin in a field they are the transverse components of the Bloch vector). For an isolated ground eigenspace of degeneracy $g_0$, as $T\to0^+$ it tends to $\Pi_0/g_0$, with purity $1/g_0$ and entropy $k\ln g_0$; it is pure only for $g_0=1$. For a finite $d$-dimensional Hilbert space, as $T\to\infty$ it tends to $\hat 1/d$. This infinite-temperature normalized identity does not exist in infinite dimension.`,
       caption: String.raw`A spin-$\frac12$ with $H=\frac\Delta2\,\hat{\mathbf n}\cdot\boldsymbol\sigma$. **Drag the orange handle** to turn the field direction $\hat{\mathbf n}$ (in the $x$–$z$ plane of the Bloch sphere) and move $kT$. The thermal state is the Bloch vector $\mathbf r=-\tanh(\Delta/2kT)\,\hat{\mathbf n}$: it points at the ground state and shrinks toward the centre (the fully mixed state) as the temperature rises. Right: its length, the purity and the entropy against $kT$; the readout checks the exponential against a direct diagonalization.`,
-      deps: ['thermo-6.2', 'qm-14.3'], refs: ["Tong §1.3.1, Eq. (1.24); §1.3.3"], tags: ['density matrix', 'quantum statistics'],
-      credit: 'Canonical density operator',
+      deps: ['thermo-6.2', 'qm-14.3'], refs: ['Tong §§1.3.1, 1.3.3, Eqs. (1.24), (1.30)'], tags: ['density matrix', 'quantum statistics'],
+      credit: 'Quantum canonical state: Tong §§1.3.1–1.3.3', verify: false,
       viz(v) {
         const kT = v.slider('$kT/\\Delta$', 0.05, 5, 0.5, { log: true, sig: 2 });
         const sa = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 310, weight: 1, title: 'Bloch disc ($x$–$z$ plane)' });
-        const h = sa.handle(0.6, 0.8, { color: 'orange', r: 7, constrain: (x, y) => { const n = Math.hypot(x, y) || 1; return [x / n, y / n]; } });
+        const h = sa.handle(0.6, 0.8, { color: 'orange', r: 7, constrain: (x, y) => { return unitDirection(x,y,[h.x,h.y]); } });
         const sb = v.stage({ x: [0.05, 5], xlog: true, y: [0, 1.05], axes: 'box', gutter: true, height: 310, xlabel: '$kT/\\Delta$', ylabel: '', title: 'length, purity, entropy', weight: 1.1 });
         let st = null;
         v.render(() => {

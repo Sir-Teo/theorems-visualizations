@@ -1,7 +1,9 @@
 // Political Science & Social Choice — Chapter 4: Spatial models and the median voter
+import {strictSpatialHandle,spatialPoint} from './source-audit-spatial-state.js';
+import {yolkConcept} from './source-audit-yolk.js';
+import {chaosTheorem} from './source-audit-chaos.js';
+import {plottModel,PLOTT_BASE} from './source-audit-plott.js';
 import { CC, sum, range, clamp, txt, rr, chip, Phi, phi, median, mean, pct, dist2, votesFor, beats, yolk, medianLines, tournament, coverage, sophisticated, chaosPath, mixGrid, binX, gridMedian, gridMean, LINE } from './ch04.shared.js';
-
-import { maxOpenHalfplane } from './verification-models.js';
 
 // ---------- local helpers (items 4.1-4.7; the rest are in ch04-b.js)
 const LET = 'ABCDEFGHIJ';
@@ -381,198 +383,35 @@ In model (a) below, two candidates with ideal points $a < b$ choose platforms $x
       },
     },
 
-    // ───────────────────────────────────────────────────────────── 4.5
+    // ------------------------------------------------------------------ 4.5
     {
-      num: '4.5',
-      kind: 'Theorem',
-      name: 'Plott’s symmetry condition',
-      statement: String.raw`Let an odd number $n$ of voters have **Euclidean preferences** in the plane: voter $i$ has an ideal point $p_i \in \mathbb{R}^2$ and prefers the point nearer to $p_i$. A point $x^*$ is a **majority-rule equilibrium** (a Condorcet winner) if no point $y$ is preferred to $x^*$ by a strict majority. When **exactly one voter** has ideal point $x^*$, it is an equilibrium **if and only if** the other ideal points satisfy Plott's pairing condition: $x^*$ is the ideal point of one voter, and the remaining $n - 1$ voters split into pairs whose ideal points lie on opposite sides of $x^*$ on a common line through $x^*$.
+      num:'4.5',kind:'Theorem',name:'Plott’s symmetry condition',
+      statement:String.raw`Let an odd number n of voters have Euclidean preferences over the full plane: voter i strictly prefers policies closer to her ideal point pᵢ. Indifferent voters do not support a change. A policy q is unbeaten by a strict majority if and only if every open half-plane with boundary through q contains at most (n−1)/2 ideal points.
 
-In full generality, allowing several voters at the same ideal point, the equivalent criterion is that every line through $x^*$ has at most $(n-1)/2$ ideal points strictly on each side: $x^*$ is a median in every direction. Plott's symmetry is a knife-edge: perturb one voter generically and the equilibrium is gone, so with generic ideal points in two dimensions a majority-rule equilibrium does not exist.`,
-      idea: String.raw`**Sufficiency.** If $x^*$ is a median in every direction and $y \ne x^*$, the voters who prefer $y$ to $x^*$ are those strictly nearer to $y$, which lie in the open half-plane beyond the perpendicular bisector of $x^*$ and $y$. That half-plane is contained in an open half-plane bounded by the parallel line through $x^*$, which holds at most $(n-1)/2$ ideal points by the median property. So at most $(n-1)/2$ voters prefer $y$, which is not a majority, and $x^*$ is never beaten. **Necessity.** If an open half-plane through $x^*$ contains a majority, a sufficiently small move into it strictly improves all their distances. Thus the half-plane criterion is necessary. With exactly one voter at $x^*$, rotate a line about it: the count of ideal points on its left changes by one each time it sweeps past an ideal point, yet it must stay equal to $(n-1)/2$ throughout, so each ideal point passed on one side must be matched by one passed on the other at the opposite angle; the voter left over has no partner and must sit at $x^*$. On a line (polsci-4.2) a median always exists; in the plane the condition fails as soon as the pairs stop being exactly antipodal.`,
-      caption: String.raw`Seven possible voters; pick $n$ and drag any ideal point. The orange shading is the **winset** of the gold status quo $q$: the points that a majority prefers to $q$. A Condorcet winner exists exactly when some point has an empty winset. Start from the symmetric arrangement (voter 1 at the centre, the others paired through it) and the winset of the centre is empty; press **nudge** (or drag a voter off the line) and a small lens appears around it: the **yolk** circle (gold ring) is the smallest circle meeting every median line, and its radius is zero exactly when Plott's symmetry holds.`,
-      deps: ['polsci-4.2', 'opt-2.3'],
-      see: ['polsci-4.6', 'polsci-4.7'],
-      refs: ['Shepsle: spatial model', 'Plott (1967), American Economic Review 57: 787–806'],
-      tags: ['spatial voting', 'majority-rule equilibrium'],
-      credit: 'Charles R. Plott, 1967',
-      scope: String.raw`Euclidean preferences (circular indifference curves), an odd number of voters and a policy space of dimension two or more. For other utility shapes the symmetry conditions differ. The necessity half of the statement is established here for the Euclidean case by the rotating-line argument; Plott’s original §II B–C and Appendix Theorem2 state necessity and sufficiency under the exactly-one-maximum qualification. Coincident ideals need the more general half-plane criterion; antipodal pairing is then not necessary. The yolk ring is a numerical approximation, while equilibrium existence is checked from half-plane counts at every voter ideal (tolerance10⁻⁹).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Median_voter_theorem' },
-      viz(v) {
-        const S = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: false, height: 440, full: true, title: 'ideal points in a plane, winset of the status quo, and the yolk' });
-        const nS = v.select('voters', [{ value: 3, label: '3' }, { value: 5, label: '5' }, { value: 7, label: '7' }], 5, { onChange: () => symmetrize(true) });
-        const BASE = [[0.2, 0.1], [1.6, 0.9], [-0.5, 1.8], [1.4, -1.6], [2.0, -0.6]];
-        const pairs = [[1, 2], [3, 4], [5, 6]];
-        const BASE2 = [[0.2, 0.1], [1.6, 0.9], [-1.2, -0.7], [-0.5, 1.8], [1.4, -1.6], [2.0, -0.6], [-1.6, 0.8]];
-        const H = BASE2.map((p, i) => S.handle(p[0], p[1], { color: CC[i % 5], r: 9, label: `${i + 1}`, labelPos: 'n' }));
-        H.forEach((h, i) => { h.visible = i < 5; });
-        const Q = S.handle(-2.0, 1.7, { color: 'gold', r: 8, label: 'q', labelPos: 'n' });
-        function symmetrize(reset) {
-          const p0 = [H[0].x, H[0].y];
-          if (reset) BASE2.forEach((p, i) => H[i].set(p[0], p[1]));
-          pairs.forEach(([a, b]) => { H[b].set(2 * p0[0] - H[a].x, 2 * p0[1] - H[a].y); });
-        }
-        symmetrize(true);
-        v.button('make symmetric', () => symmetrize(false));
-        v.button('nudge voter 3', () => { H[2].set(H[2].x + 0.3, H[2].y + 0.22); });
-        v.button('reset', () => symmetrize(true));
-        let info = null;
-        v.render(() => {
-          const n = nS.value, V = range(n).map((i) => [H[i].x, H[i].y]);
-          H.forEach((h, i) => { h.visible = i < n; });
-          const q = [Q.x, Q.y], key = V.map((p) => p[0].toFixed(3) + p[1].toFixed(3)).join('|') + q.map((x) => x.toFixed(3)).join(',');
-          const ws = v.ramp(0.45, 'orange');
-          S.raster((x, y) => (votesFor(V, [x, y], q) > n / 2 ? ws : null), { res: 3, key: `ws${key}` });
-          const yk = yolk(V);
-          // median lines through pairs of ideal points
-          yk.lines.filter((l) => l.pair).forEach((l) => { const tx = -l.ny, ty = l.nx, bx = l.nx * l.b, by = l.ny * l.b; S.line(bx - 9 * tx, by - 9 * ty, bx + 9 * tx, by + 9 * ty, { color: 'muted', alpha: 0.35, width: 1 }); });
-          S.circle(yk.x, yk.y, Math.max(yk.r, 0.001), { color: 'gold', width: 2.4, fill: yk.r > 0.002 ? 'gold' : undefined, fillAlpha: 0.2 });
-          const winner = V.findIndex(p=>maxOpenHalfplane(V,p)<=Math.floor(n/2)), eq = winner>=0; const center = eq ? V[winner] : [yk.x,yk.y];
-          V.forEach((p, i) => S.dot(p[0], p[1], { r: 8.5, color: CC[i % 5] }));
-          if (eq) { S.dot(center[0], center[1], { r: 13, hollow: true, color: 'green' }); S.text('equilibrium', center[0], center[1] - 0.42, { color: 'green', size: 12, weight: 700 }); }
-          // area of the winset of q and of the centre of the yolk
-          const cnt = (c) => { let k = 0, tot = 0; for (let i = 0; i < 48; i++) for (let j = 0; j < 48; j++) { const y = [-3.2 + (6.4 * (i + 0.5)) / 48, -3.2 + (6.4 * (j + 0.5)) / 48]; tot++; if (votesFor(V, y, c) > n / 2) k++; } return k / tot; };
-          const angs = pairs.slice(0, (n - 1) / 2).map(([a, b]) => {
-            const u = [V[a][0] - V[0][0], V[a][1] - V[0][1]], w = [V[b][0] - V[0][0], V[b][1] - V[0][1]];
-            const cs = (u[0] * w[0] + u[1] * w[1]) / (Math.hypot(...u) * Math.hypot(...w) || 1);
-            return 180 - (Math.acos(clamp(cs, -1, 1)) * 180) / Math.PI;
-          });
-          info = { n, r: yk.r, c: [yk.x, yk.y], wq: cnt(q), wc: cnt(center), angs, eq, winner };
-        });
-        v.legend([['orange', 'winset of $q$', { area: true }], ['gold', 'yolk'], ['muted', 'lines through pairs of ideal points']]);
-        v.readout(() => {
-          const { n, r, wq, wc, angs, eq, winner } = info;
-          const head = eq
-            ? `Approximate yolk radius **${v.fix(r, 3)}**: half-plane counts certify a majority-rule equilibrium at voter ${winner+1}’s ideal, and **no point beats it** (the winset of the centre covers ${v.fix(100 * wc, 1)}% of the window).`
-            : `Approximate yolk radius **${v.fix(r, 3)}**: half-plane counts find no equilibrium at any voter ideal. Any point can be beaten; even the best candidate, the yolk's centre, has a winset covering ${v.fix(100 * wc, 1)}% of the window.`;
-          return `${head}\nWinset of $q$: ${v.fix(100 * wq, 1)}% of the window. Deviation of the ${(n - 1) / 2} pair${n > 3 ? 's' : ''} from exact opposition through voter 1: ${angs.map((a) => v.fix(a, 1) + '°').join(', ')}.`;
-        });
+If exactly one voter's ideal is q, this is equivalent to pairing all the other ideals on opposite rays through q. Their distances from q need not agree. The one-voter qualification matters when ideal points coincide. Plott's original paper (1967, pp.788–791) studies local gradient conditions, explicitly qualifying the one-maximum case; the global Euclidean half-plane formulation and proof here are a specialization.`,
+      idea:String.raw`The squared-norm expansion in vcalc-1.2 applies to the policy plane by setting the third coordinate to zero. It shows that a voter prefers y to q precisely when $(p_i-q)\cdot(y-q)>\|y-q\|^2/2$. Such voters belong to the open half-plane with positive dot product against y−q. Thus the half-plane bound suffices. Conversely, if a direction has a strict majority of positive dot products, a sufficiently small step in that direction beats q.
+
+When q is not any ideal point, a generic line through it splits the odd electorate into unequal parts; one open side has a majority. Hence every equilibrium is an ideal point. If exactly one voter is at q, the remaining even electorate must split equally across every generic line. Rotating the boundary then forces equal numbers on opposite rays, which can be paired. Additional voters at q can prevent a majority without this pairing, so that case uses the general half-plane test.`,
+      caption:String.raw`Drag ideals and the gold status quo q; inputs snap to an eighth-unit grid inside the stated square. Choose 3,5 or7 voters, or load a symmetric, broken-pair or coincident-majority preset. The left panel contains every ideal; the right panel zooms around q and a certified winning proposal when one exists. Orange is a sampled winset, whose visible pixels do not determine the equilibrium verdict. The exact finite direction test does.`,
+      scope:String.raw`Odd electorate, Euclidean distance preferences, full continuous policy plane and no strategic voting. Input coordinates lie on a bounded1/8 grid, allowing all orientation/dot signs to be exact integers. The half-plane test enumerates every angular sector, including rays and coincidences, then tests every distinct ideal as a possible equilibrium. Its verdict is independent of raster resolution and a numerical yolk minimizer. The constructed winning proposal is evaluated by the actual strict distance inequalities. This is not a certification of arbitrary utility gradients, constrained policy spaces, the general Plott paper or a negotiation dynamic.`,
+      deps:['polsci-4.2','vcalc-1.2'],see:['polsci-4.6','polsci-4.7'],refs:['Plott (1967), AER57:787–806, pp.788–791, unrestricted local conditions and one-maximum qualification; Euclidean specialization derived here'],tags:['spatial voting','majority-rule equilibrium'],credit:'Original local symmetry analysis: Charles R.Plott,1967; exact Euclidean half-plane comparison authored here.',links:{source:'https://authors.library.caltech.edu/records/rzmbm-kft47'},verify:false,
+      viz(v){
+        const S=v.stage({x:[-2.6,2.6],y:[-2.6,2.6],axes:false,equal:true,height:360,title:'all ideals and status quo q'}),Z=v.stage({x:[-.5,.5],y:[-.5,.5],axes:false,equal:true,height:360,title:'local winset and an actual winning proposal'});
+        const snap=(x,y)=>[x,y].map(t=>Math.round(Math.max(-2,Math.min(2,t))*8)/8),n=v.select('voters',[3,5,7].map(value=>({value,label:String(value)})),5,{onChange:()=>reset('symmetric')}),H=PLOTT_BASE.map((p,i)=>S.handle(...p,{color:'accent',r:5,constrain:snap})),Q=S.handle(0,0,{color:'gold',r:7,constrain:snap});H.forEach((h,i)=>strictSpatialHandle(h,p=>spatialPoint(p,2),`ideal${i+1}`));strictSpatialHandle(Q,p=>spatialPoint(p,2),'status quo');
+        function reset(mode){PLOTT_BASE.forEach((p,i)=>H[i].set(...p));Q.set(0,0);if(mode==='broken')H[2].set(-1.5,-.25);if(mode==='coincident')for(let i=0;i<=(n.value-1)/2;i++)H[i].set(0,0);}
+        v.button('Symmetric preset',()=>reset('symmetric'));v.button('Break first pair',()=>reset('broken'));v.button('Coincident majority',()=>reset('coincident'));let info;
+        v.render(()=>{H.forEach((h,i)=>h.visible=i<n.value);const p=plottModel(H.slice(0,n.value).map(h=>[h.x,h.y]),[Q.x,Q.y]),dy=p.test.witness?p.test.witness.map((x,i)=>x-p.q[i]):[.25,.25],zoom=Math.max(.1,1.5*Math.max(...dy.map(Math.abs))+.03),color=v.ramp(.45,'orange'),wins=(x,y)=>p.V.filter(a=>(a[0]-x)**2+(a[1]-y)**2<(a[0]-p.q[0])**2+(a[1]-p.q[1])**2).length>p.test.limit;
+          S.setView([-p.R,p.R],[-p.R,p.R]);Z.setView([p.q[0]-zoom,p.q[0]+zoom],[p.q[1]-zoom,p.q[1]+zoom]);const key=JSON.stringify([p.V,p.q]);S.raster((x,y)=>wins(x,y)?color:null,{res:3,key:'global'+key});Z.raster((x,y)=>wins(x,y)?color:null,{res:2,key:'local'+key+'|'+zoom});for(const e of p.candidates)S.text(String(e.indices[0]+1)+(e.indices.length>1?'×'+e.indices.length:''),e.point[0]-.1,e.point[1]+.25,{align:'center',baseline:'bottom',size:11,color:'ink'});S.text('q',...p.q.map((x,i)=>i?x-.25:x),{align:'center',baseline:'top',size:12,color:'gold'});for(const e of p.equilibria)S.dot(...e.point,{color:'green',r:11,hollow:true,width:1.5});Z.dot(...p.q,{color:'gold',r:6});if(p.test.witness){Z.dot(...p.test.witness,{color:'red',r:5});Z.text('winning y',p.test.witness[0],p.test.witness[1]+.12*zoom,{color:'red',align:'center',baseline:'bottom',size:11});}info=p;});
+        v.legend([['accent','voter ideals'],['gold','status quo q',{dot:true}],['green','exact equilibrium',{dot:true}],['orange','sampled winset'],['red','winning proposal',{dot:true}]]);
+        v.readout(()=>{const p=info;return `At q=(${p.q.join(', ')}), maximum open-half-plane count ${p.test.maximum}; majority requires ${p.test.limit+1}. ${p.test.stable?'No point in the plane beats q.':`Constructed y=(${p.test.witness.map(x=>v.fix(x,9)).join(', ')}); actual strict supporters ${p.test.votes.map(i=>i+1).join(', ')} (${p.test.votes.length} votes).`}\nAll ${p.candidates.length} distinct ideal candidates tested: ${p.equilibria.length?`equilibrium at (${p.equilibria[0].point.join(', ')})`:'no equilibrium in the full plane'}. ${p.candidates.some(e=>e.indices.length>1)?'Coincident ideals present: the general half-plane condition is used.':'Ideals are distinct.'} Raster pixels are sampled and are not a proof of an empty winset.`;});
       },
     },
 
-    // ───────────────────────────────────────────────────────────── 4.6
-    {
-      num: '4.6',
-      kind: 'Theorem',
-      name: 'McKelvey’s chaos theorem',
-      statement: String.raw`Let $n \ge 3$ voters have Euclidean preferences over a policy space $\mathbb{R}^k$ with $k \ge 2$, and suppose the ideal points do **not** satisfy Plott's symmetry condition (polsci-4.5), so that no majority-rule equilibrium exists. Then the **majority preference relation is intransitive everywhere**: for **any** two points $a$ and $b$ there is a finite sequence $a = x_0, x_1, \dots, x_K = b$ in which, at every step, a strict majority prefers $x_{j+1}$ to $x_j$. A setter who controls the order of votes can therefore steer the committee from any status quo to any outcome whatever, including points that every voter prefers $a$ to.
+    // Source-audited bounded chain 4.6
+    chaosTheorem,
 
-For voters with Euclidean preferences the general result is due to McKelvey; Schofield extended it to a larger class of utility functions.`,
-      idea: String.raw`Without Plott symmetry (polsci-4.5) the winset $W(x)$ of every point $x$ is nonempty, and McKelvey shows that majority-preferred moves can be chained so that they carry the committee farther and farther from the voters' ideal points. A point far enough away is worse for every voter than every point in a bounded region around them, so from such a far point a single vote leads straight to the target $b$. The chain is therefore an outward path from $a$ followed by one step in. Each step is an honest pairwise vote won by two of three voters, so Condorcet's paradox (polsci-2.1) is not a local accident but global, and agenda control (polsci-2.8) has no limit.`,
-      caption: String.raw`Three voters (coloured dots) with Euclidean preferences, a status quo $S$ (gold) and a target $T$ (green); drag any of them. The page searches a $50\times50$ grid of policies, plus $S$ and $T$ themselves, for the shortest chain of moves each of which wins a 2–1 majority, and draws it with numbered arrows. The orange area is the winset of $S$, the shaded triangle the voters' Pareto set. With the asymmetric preset the chain leaves the triangle and arrives at $T$ in a few votes. With the **symmetric** preset (voter 1 at the midpoint of 2 and 3) the search finds no chain: the reachable set stays small.`,
-      deps: ['polsci-4.5', 'polsci-2.8'],
-      see: ['polsci-4.7', 'polsci-4.10'],
-      refs: ['Shepsle: agenda power', 'McKelvey (1976), Journal of Economic Theory 12: 472–482', 'McKelvey (1979), Econometrica 47: 1085–1112'],
-      tags: ['chaos theorem', 'agenda control'],
-      credit: 'Richard D. McKelvey, 1976 (general version 1979)',
-      scope: String.raw`Euclidean preferences, three or more voters and at least two policy dimensions, without Plott symmetry. The chain shown is found on a grid, so it is a valid chain of exact pairwise votes but not the shortest possible chain in the continuum.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/McKelvey%E2%80%93Schofield_chaos_theorem' },
-      viz(v) {
-        const R = 4.4;
-        const S = v.stage({ x: [-R, R], y: [-R, R], equal: true, axes: false, height: 560, full: true, title: 'a chain of majority votes from the status quo S to the target T' });
-        const PRE = {
-          asym: [[-1.0, -0.6], [1.2, -0.5], [0.1, 1.4]],
-          sym: [[0.3, 0.2], [1.4, 0.9], [-0.8, -0.5]],
-        };
-        const hs = PRE.asym.map((p, i) => S.handle(p[0], p[1], { color: CC[i], r: 10, label: `${i + 1}`, labelPos: 'n', constrain: { x: [-R + 0.2, R - 0.2], y: [-R + 0.2, R - 0.2] } }));
-        const Sh = S.handle(0.2, 0.0, { color: 'gold', r: 9, label: 'S', labelPos: 'n', constrain: { x: [-R + 0.2, R - 0.2], y: [-R + 0.2, R - 0.2] } });
-        const Th = S.handle(3.1, -2.8, { color: 'green', r: 9, label: 'T', labelPos: 'n', constrain: { x: [-R + 0.2, R - 0.2], y: [-R + 0.2, R - 0.2] } });
-        const pre = v.select('voters', [{ value: 'asym', label: 'generic (no symmetry)' }, { value: 'sym', label: 'Plott-symmetric' }], 'asym', { onChange: () => PRE[pre.value].forEach((p, i) => hs[i].set(p[0], p[1])) });
-        let cache = { key: '', res: null };
-        const distTri = (p, V) => {
-          const inside = (() => { const s = V.map((a, i) => { const b = V[(i + 1) % 3]; return (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]); }); return s.every((x) => x >= 0) || s.every((x) => x <= 0); })();
-          if (inside) return 0;
-          return Math.min(...V.map((a, i) => { const b = V[(i + 1) % 3], dx = b[0] - a[0], dy = b[1] - a[1], t = clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy), 0, 1); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); }));
-        };
-        let info = null;
-        v.render(() => {
-          const V = hs.map((h) => [h.x, h.y]), s0 = [Sh.x, Sh.y], t0 = [Th.x, Th.y];
-          const key = [...V, s0, t0].map((p) => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join('|');
-          if (cache.key !== key) cache = { key, res: chaosPath(V, s0, t0, { G: 50, R }) };
-          const res = cache.res, ws = v.ramp(0.4, 'orange');
-          S.raster((x, y) => (votesFor(V, [x, y], s0) >= 2 ? ws : null), { res: 3, key: `w${key}` });
-          S.poly(V, { fill: 'ink', fillAlpha: 0.07, color: 'muted', width: 1.2, dash: true });
-          if (res.ok) {
-            res.path.forEach((p, k) => {
-              if (k === 0) return;
-              const a = res.path[k - 1];
-              S.arrow(a[0], a[1], p[0], p[1], { color: 'purple', width: 2 });
-            });
-            res.path.forEach((p, k) => { if (k > 0 && k < res.path.length - 1) S.dot(p[0], p[1], { r: 5, color: 'purple' }); });
-            res.path.forEach((p, k) => { if (k > 0) S.text(String(k), (p[0] + res.path[k - 1][0]) / 2 + 0.2, (p[1] + res.path[k - 1][1]) / 2 + 0.2, { size: 12, weight: 700, color: 'purple' }); });
-          }
-          V.forEach((p, i) => S.dot(p[0], p[1], { r: 9, color: CC[i] }));
-          const steps = res.ok ? res.path.slice(1).map((p, k) => { const a = res.path[k]; return range(3).filter((i) => dist2(V[i], p) < dist2(V[i], a)).map((i) => i + 1); }) : [];
-          const out = res.ok ? Math.max(...res.path.map((p) => distTri(p, V))) : 0;
-          info = { res, steps, out };
-        });
-        v.legend([['purple', 'chain of majority-preferred moves'], ['orange', 'winset of $S$', { area: true }], ['muted', 'Pareto triangle']]);
-        v.readout(() => {
-          const { res, steps, out } = info;
-          if (!res.ok) return `No chain from $S$ to $T$ exists on the search grid (${res.nodes} policies reachable from $S$ were explored). With this arrangement of ideal points no sequence of majority votes escapes the neighbourhood of the voters.`;
-          const lst = steps.map((w, k) => `${k + 1}: voters ${w.join(' & ')}`).join(' · ');
-          return `**${steps.length} votes** take the committee from $S$ to $T$, each won ${steps.every((w) => w.length === 2) ? '2–1' : 'by a majority'} (${lst}). The chain wanders up to ${v.fix(out, 1)} units outside the dashed Pareto triangle.`;
-        });
-      },
-    },
+    // Source-audited triangle and finite covering 4.7
+    yolkConcept,
 
-    // ───────────────────────────────────────────────────────────── 4.7
-    {
-      num: '4.7',
-      kind: 'Concept',
-      name: 'The uncovered set and the yolk',
-      statement: String.raw`When no point beats all others (polsci-4.5), two sets locate the "center" of a majority-rule electorate. For an odd number of voters with ideal points $p_1, \dots, p_n$ in the plane:
-
-(a) a **median line** is a line with at most $(n-1)/2$ ideal points strictly on each side; the **yolk** is the smallest circle that meets every median line, with centre $c$ and radius $r$. Its radius is $0$ exactly when a majority-rule equilibrium exists.
-
-(b) A point $x$ **covers** $y$ if a majority prefers $x$ to $y$ and $x$ beats every point that $y$ beats. The **uncovered set** is the set of points covered by no point. It contains the outcome of sophisticated voting on any amendment agenda over the points considered, and, by a theorem of McKelvey, it lies within distance $4r$ of the yolk's centre; in practice it is usually much smaller than that bound.`,
-      idea: String.raw`If $x$ covers $y$, any point that would defeat $x$ also defeats $y$ — so $y$ is never the last survivor of an agenda that could have been won by $x$ — and the tournament of pairwise majorities, although cyclic, leaves only the uncovered points. With a fixed order of votes the sophisticated voters work backward from the last pair, and what they leave standing cannot be covered (Shepsle and Weingast). The yolk measures how far the profile is from Plott symmetry: its radius is the largest distance by which the median lines miss each other. Chaos (polsci-4.6) means every point can be reached, but not every point can be reached by a sophisticated agenda: those that can all sit in the uncovered set, which hugs the yolk.`,
-      caption: String.raw`Drag the ideal points (coloured dots). The gold ring is the **yolk** (computed from the median lines through pairs of ideal points) and the green cells are the **uncovered set** of the $28\times 28$ grid of policies; a dashed circle shows McKelvey's bound of radius $4r$ around the yolk centre. The tiny purple dots are the outcomes of random agendas that put every grid point to a vote in a random order, with voters looking ahead (sophisticated voting). They land inside the green region every time. Make the voters symmetric about voter 1 and both shrink to a single point, the majority-rule equilibrium.`,
-      deps: ['polsci-4.6'],
-      see: ['polsci-4.10', 'polsci-4.5'],
-      refs: ['Shepsle: spatial model', 'Miller (1980), AJPS 24: 68–96', 'Shepsle & Weingast (1984), AJPS 28: 49–74', 'McKelvey (1986), AJPS 30: 283–314'],
-      tags: ['yolk', 'uncovered set'],
-      credit: 'Miller, 1980; Ferejohn, McKelvey & Packel, 1984; McKelvey, 1986',
-      scope: String.raw`Euclidean preferences and an odd number of voters in two dimensions; the uncovered set is computed on a finite grid, so its boundary is only approximate.`,
-      viz(v) {
-        const L = 3.2, G = 28;
-        const S = v.stage({ x: [-L, L], y: [-L, L], equal: true, axes: false, height: 470, full: true, title: 'ideal points, yolk, uncovered set and sophisticated agenda outcomes' });
-        const nS = v.select('voters', [{ value: 3, label: '3' }, { value: 5, label: '5' }, { value: 7, label: '7' }], 5, { onChange: () => reset() });
-        const BASE = [[-1.6, 0.4], [0.1, 1.7], [1.5, 0.2], [0.4, -1.5], [-0.6, -0.6], [1.0, 1.2], [-1.2, -1.5]];
-        const H = BASE.map((p, i) => S.handle(p[0], p[1], { color: CC[i % 5], r: 9, label: `${i + 1}`, labelPos: 'n' }));
-        let seed = 7;
-        function reset() { BASE.forEach((p, i) => H[i].set(p[0], p[1])); }
-        v.button('make symmetric', () => { const p0 = [H[0].x, H[0].y]; [[1, 2], [3, 4], [5, 6]].forEach(([a, b]) => H[b].set(2 * p0[0] - H[a].x, 2 * p0[1] - H[a].y)); });
-        v.button('new random agendas', () => { seed += 1; });
-        v.button('reset', reset);
-        let info = null;
-        v.render(() => {
-          const n = nS.value, V = range(n).map((i) => [H[i].x, H[i].y]);
-          H.forEach((h, i) => { h.visible = i < n; });
-          const T = tournament(V, -L, L, G), C = coverage(T), yk = yolk(V);
-          const cw = (2 * L) / (G - 1);
-          for (let k = 0; k < T.N; k++) if (!C.covered[k]) S.rect(T.pts[2 * k] - cw / 2, T.pts[2 * k + 1] - cw / 2, T.pts[2 * k] + cw / 2, T.pts[2 * k + 1] + cw / 2, { fill: 'green', fillAlpha: 0.5, stroke: false });
-          S.circle(yk.x, yk.y, 4 * Math.max(yk.r, 0.0001), { color: 'muted', dash: true, width: 1.2 });
-          S.circle(yk.x, yk.y, Math.max(yk.r, 0.001), { color: 'gold', width: 2.6, fill: 'gold', fillAlpha: 0.2 });
-          S.dot(yk.x, yk.y, { r: 3, color: 'gold' });
-          // sophisticated outcomes of random complete amendment agendas
-          const rng = v.rng(seed), K = 120, order = range(T.N), hit = new Map();
-          let inside = 0;
-          for (let a = 0; a < K; a++) {
-            for (let i = T.N - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t; }
-            const w = sophisticated(T, order); hit.set(w, (hit.get(w) || 0) + 1); if (!C.covered[w]) inside++;
-          }
-          hit.forEach((c, w) => S.dot(T.pts[2 * w], T.pts[2 * w + 1], { r: 2.5 + Math.min(5, c * 0.25), color: 'purple', alpha: 0.85 }));
-          V.forEach((p, i) => S.dot(p[0], p[1], { r: 8.5, color: CC[i % 5] }));
-          let dmax = 0; for (let k = 0; k < T.N; k++) if (!C.covered[k]) dmax = Math.max(dmax, Math.hypot(T.pts[2 * k] - yk.x, T.pts[2 * k + 1] - yk.y));
-          info = { n, yk, unc: C.unc, N: T.N, K, inside, dmax, outcomes: hit.size };
-        });
-        v.legend([['gold', 'yolk'], ['green', 'uncovered set (grid)', { area: true }], ['purple', 'sophisticated outcomes', { dot: true }], ['muted', 'radius $4r$']]);
-        v.readout(() => {
-          const { yk, unc, N, K, inside, dmax, outcomes } = info;
-          return `Yolk radius $r=${v.fix(yk.r, 3)}$ at $(${v.fix(yk.x, 2)}, ${v.fix(yk.y, 2)})$. Uncovered set: **${unc}** of ${N} grid points (${v.fix((100 * unc) / N, 1)}%), the farthest ${v.fix(dmax, 2)} from the yolk centre (McKelvey's bound $4r=${v.fix(4 * yk.r, 2)}$, up to grid resolution ${v.fix((2 * 3.2) / 27, 2)}). Of ${K} random complete agendas, **${inside}** end inside the uncovered set, in ${outcomes} different places.`;
-        });
-      },
-    },
   ],
 };

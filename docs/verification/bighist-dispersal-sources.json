@@ -1,0 +1,58 @@
+[
+  {
+    "file": "hublin-2017.pdf",
+    "url": "https://www.eva.mpg.de/fileadmin/content_files/human_evolution/Homo_Sapiens_presskit/nature22336_Hublin.pdf",
+    "doi": "10.1038/nature22336",
+    "bytes": 10386203,
+    "sha256": "ce89d4268bdb4020ec32ce03204a3c9769f5fa0ebec337061816dbcf5167c929",
+    "readScope": "Original author-institution proof: main PDF1–3 read; morphology and pan-African interpretation, actual PDF3 pixels inspected. Not all Methods, supplementary analyses or cited originals audited."
+  },
+  {
+    "file": "richter-2017.pdf",
+    "url": "https://www.eva.mpg.de/fileadmin/content_files/human_evolution/Homo_Sapiens_presskit/nature22335_McPherron.pdf",
+    "doi": "10.1038/nature22335",
+    "bytes": 16089399,
+    "sha256": "9b6e993e5f79f0445a63f93293f1c6b12b90e342c7a6d35997900c41c5326fc2",
+    "readScope": "Original author-institution proof: main PDF1–4 read; actual Table1 PDF3 inspected. Layer7 total1sigma315±34kyr, not direct fossil-age confidence distribution. All raw lab reanalysis/supplements not certified."
+  },
+  {
+    "file": "vidal-2022.pdf",
+    "url": "https://www.nature.com/articles/s41586-021-04275-8.pdf",
+    "doi": "10.1038/s41586-021-04275-8",
+    "bytes": 6829579,
+    "sha256": "5a4c79c8dc4631eca86951e504cc6e9e88bd27fff87875fb78bc91b4f59a52f9",
+    "readScope": "Original publisher full text: main579–583 and dating Methods read; actual580stratigraphy/581age pixels inspected. Used manuscript233±22kyr(2sigma), distinct calibration alternative234±22 acknowledged in Methods. No independent raw argon reanalysis."
+  },
+  {
+    "file": "hershkovitz-2018-original.pdf",
+    "url": "https://web.archive.org/web/20240714142737id_/https://homepage.univie.ac.at/viktoria.krenn/publications/2018.Hershkovitz.et.al.Oldest.Human.outside.of.Africa.pdf",
+    "doi": "10.1126/science.aap8369",
+    "bytes": 2678375,
+    "sha256": "12427ac137d6b8f3c8141c5b982f1d211305dcdd4d117aa3605753c6587e8935",
+    "readScope": "Archived original public author PDF from observed CDX200application/pdf record. All four main pages456–459 read, actualFig2B/caption inspected. SI and later2018Comment/Reply not certified; inferred177–194 retained as this study’s claim, no current-priority statement."
+  },
+  {
+    "file": "fu-2014.pdf",
+    "url": "https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/2014_Fu_Nature_UstIshim_1.pdf",
+    "doi": "10.1038/nature13810",
+    "bytes": 966270,
+    "sha256": "b646ed452bb0ff46075779e625b6eaa7f8287cf492a6d9b1da27d30941d11ebc",
+    "readScope": "Original author-institution PDF, p445 complete dating/recovery/morphology section read and actual pixels inspected. Genetics sections/SI not independently audited. Combined43,210–46,880calBP95.4%; exact find locality unclear."
+  },
+  {
+    "file": "clarkson-2017.pdf",
+    "url": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/cc073119-2f9f-4379-854d-13ea614fd415/content",
+    "doi": "10.1038/nature22968",
+    "bytes": 5388993,
+    "sha256": "d76d32b1b7dac17615135f7832426575e02980b7347ba7f7316c5bbe76992a04",
+    "readScope": "Institutional accepted manuscript, complete main lines1–212 read, original PDF5 date/model paragraph pixels inspected.65.0±5.7kyr total systematic95.4%, alternative±3.7 excludes systematic at same95.4%.120page supplement/raw lab model not all audited."
+  },
+  {
+    "file": "usgs-whitesands-2025.pdf",
+    "url": "https://pubs.usgs.gov/fs/2025/3046/fs20253046.pdf",
+    "doi": "10.3133/fs20253046",
+    "bytes": 1670594,
+    "sha256": "e976374dc9c1fe23ecd94fc7396e78eb9bd7ac4a296db8422da0e6e13e3f0d22",
+    "readScope": "Complete four-page official coauthor fact sheet read; actual first-page date and third-page footprint horizons inspected. Number2025–3046, actual publicationMay2026.23–21kyr is approximateTH2–6activity interval. Original2021/2023articles/raw data not claimed read or reproduced."
+  }
+]

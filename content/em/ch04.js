@@ -239,26 +239,26 @@ The $\ell=2$ term of the potential is $V_2=\dfrac1{4\pi\varepsilon_0}\dfrac{1}{2
 $$V(r,\theta,\varphi)=\frac1{\varepsilon_0}\sum_{\ell=0}^\infty\sum_{m=-\ell}^{\ell}\frac1{2\ell+1}\,\frac{q_{\ell m}}{r^{\ell+1}}\,Y_{\ell m}(\theta,\varphi),\qquad q_{\ell m}=\int r'^{\,\ell}\,Y_{\ell m}(\theta',\varphi')\,\rho(\mathbf r')\,d\tau',$$
 with $Y_{\ell m}$ the orthonormal real spherical harmonics. The $2\ell+1$ numbers $q_{\ell m}$ are the multipole moments of order $\ell$. Rotating the charge system mixes the $q_{\ell m}$ with the same $\ell$ among themselves and leaves $\sum_mq_{\ell m}^2$ unchanged.`,
       idea: String.raw`The addition theorem for spherical harmonics, $P_\ell(\cos\alpha)=\frac{4\pi}{2\ell+1}\sum_mY_{\ell m}(\theta,\varphi)Y_{\ell m}(\theta',\varphi')$, splits the Legendre term of em-4.1 into a product of a function of the field point and a function of the source point; the latter integrates to $q_{\ell m}$. A rotation acts on the $2\ell+1$ harmonics of one $\ell$ by an orthogonal matrix (the harmonics of a given $\ell$ form an invariant subspace, as in the separation of variables of em-3.15), so the length of the vector $(q_{\ell,-\ell},\dots,q_{\ell\ell})$ cannot change.`,
-      caption: String.raw`Six charges in space (left: 3D view of the cluster, drag to rotate the view; the gold arrow is the probe direction) are rotated rigidly with the two sliders (about $z$, then about $y$). The bars show the real moments $q_{\ell m}$ for $\ell=0\ldots3$, $m=-\ell\ldots\ell$ (left to right within each group); the right-hand panel the power $\sum_mq_{\ell m}^2$ of each order. Rotating shuffles the heights within every group but leaves $q_{00}$ and the power bars exactly fixed. The readout compares the exact potential at the probe point with the expansion cut at $\ell\le L$.`,
-      scope: String.raw`Valid outside a sphere containing all of the charge. The harmonics are real orthonormal ($\cos m\varphi$ for $m>0$, $\sin|m|\varphi$ for $m<0$, no Condon–Shortley phase), so the individual coefficients differ from those in the complex orthonormal basis by a unitary change of basis, while the power per order is exactly the same when both bases are orthonormal. The rotation here is of the charges, with the field point fixed.`,
-      credit: 'Orthonormal multipole expansion: Fitzpatrick, Classical Electromagnetism, §§3.3–3.6; real sine/cosine basis used here',
+      caption: String.raw`Six charges in space (left: 3D view of the cluster, drag to rotate the view; the gold arrow is the probe direction) are rotated rigidly with the two sliders (about $z$, then about $y$). The bars show the real moments $q_{\ell m}$ for $\ell=0\ldots3$, $m=-\ell\ldots\ell$ (left to right within each group); the right-hand panel the squared moment norm $\sum_mq_{\ell m}^2$ of each order. Rotating shuffles the heights within every group but leaves $q_{00}$ and the norm bars fixed up to floating-point rounding. The readout compares the exact potential at the probe point with the expansion cut at $\ell\le L$.`,
+      scope: String.raw`Valid at field radii strictly larger than every source radius. The real basis is orthonormal, with cosine/sine partners and no Condon–Shortley phase. Relative to an orthonormal complex basis, the change is unitary: $\sum_m|q_{\ell m}|^2$ is exactly the same, not merely equal up to normalization factors. Each degree has units nC·cm$^\ell$; its squared norm is not radiative power and norms of different degrees carry different units. The charges rotate while the probe remains fixed. Every component is bounded by its invariant degree norm, so all rotations fit the axes.`,
+      credit: 'Spherical-harmonic addition theorem and multipole expansion; source after Fitzpatrick',
+      verify: false,
+      links: { 'Full author text': 'https://farside.ph.utexas.edu/teaching/jk1/Electromagnetism.pdf' },
       deps: ['em-4.1', 'em-3.15'],
-      refs: ['Fitzpatrick, Classical Electromagnetism (2014), pp. 50–55, Eqs. (3.17)–(3.59); real basis obtained by orthonormal sine/cosine combinations'],
+      refs: ['Fitzpatrick, Classical Electromagnetism, §3.3 Eqs.3.17–3.30 pp.50–51, §3.6 Eqs.3.48–3.51 pp.53–54; orthonormal real-basis change supplied here'],
       tags: ['spherical harmonics', 'moments'],
       viz(v) {
         const base = [[0.6, 0.2, 0.3, 2], [-0.5, 0.4, -0.2, -1], [0.1, -0.7, 0.5, 1.5], [-0.3, -0.2, -0.7, -1.2], [0.7, -0.4, -0.5, 0.8], [-0.4, 0.6, 0.6, -0.6]];
         const s3 = v.stage3d({ range: 1.3, height: 330, yaw: -0.7, pitch: 0.35, axes: false, weight: 0.8, minWidth: 240, title: 'the cluster (rotated)' });
-        const sB = v.stage({ x: [-0.5, 17.3], y: [-1, 1], height: 330, axes: 'box', gutter: true, weight: 1.1, minWidth: 280, xlabel: '$\\ell=0\\ldots3$, each group $m=-\\ell\\ldots\\ell$', ylabel: '$q_{\\ell m}$', xticks: [], title: 'moments $q_{\\ell m}$' });
-        const sW = v.stage({ x: [-0.6, 3.6], y: [0, 1], height: 330, axes: 'box', gutter: true, weight: 0.6, minWidth: 200, xlabel: 'order $\\ell$', ylabel: '$\\sum_mq_{\\ell m}^2$', xticks: [0, 1, 2, 3], title: 'power per order'  });
+        const sB = v.stage({ x: [-0.5, 17.3], y: [-1, 1], height: 330, axes: 'box', gutter: true, weight: 1.1, minWidth: 280, xlabel: '$m=-\\ell,\\ldots,\\ell$ in each group', ylabel: '$q_{\\ell m}$', xticks: [], title: 'moments $q_{\\ell m}$' });
+        const sW = v.stage({ x: [-0.6, 3.6], y: [0, 1], height: 330, axes: 'box', gutter: true, weight: 0.6, minWidth: 200, xlabel: 'order $\\ell$', ylabel: '$\\sum_mq_{\\ell m}^2$', xticks: [0, 1, 2, 3], title: 'squared moment norm per order'  });
         const az = v.slider('rotate about $z$', 0, 360, 0, { step: 1, fmt: (x) => `${x}°` }), tilt = v.slider('rotate about $y$', 0, 180, 0, { step: 1, fmt: (x) => `${x}°` });
         const Ls = v.slider('keep orders $\\ell\\le L$', 0, 3, 2, { int: true });
         const pn = [3, 2, 4], pn_r = Math.hypot(...pn), cols = ['ink', 'orange', 'green', 'purple'];
         const pos = []; { let x = 0; for (let l = 0; l <= 3; l++) { for (let m = -l; m <= l; m++) pos.push([l, m, x++]); x += 0.6; } }
         const mk = (a, b) => base.map(([x, y, z, q]) => { const p = rot3([x, y, z], a, b); return { x: p[0], y: p[1], z: p[2], q }; });
-        // vertical scale: largest |q_lm| over a sweep of rotations
-        let ymax = 0; for (let ia = 0; ia < 8; ia++) for (let ib = 0; ib < 5; ib++) { const cl = mk((ia * Math.PI) / 4, (ib * Math.PI) / 4); for (const [l, m] of pos) ymax = Math.max(ymax, Math.abs(qlm(cl, l, m))); }
-        ymax *= 1.15;
         const P0 = []; { const cl = mk(0, 0); for (let l = 0; l <= 3; l++) { let t = 0; for (let m = -l; m <= l; m++) t += qlm(cl, l, m) ** 2; P0.push(t); } }
+        const ymax=Math.max(...P0.map(Math.sqrt))*1.15;
         let info = {};
         v.render(() => {
           const a = (az.value * Math.PI) / 180, b = (tilt.value * Math.PI) / 180, cl = mk(a, b), L = Ls.value;
@@ -267,7 +267,7 @@ with $Y_{\ell m}$ the orthonormal real spherical harmonics. The $2\ell+1$ number
           s3.arrow([0, 0, 0], [(pn[0] / pn_r) * 1.25, (pn[1] / pn_r) * 1.25, (pn[2] / pn_r) * 1.25], { color: 'gold', width: 2.6 });
           sB.setView([-0.5, 17.3], [-ymax, ymax]);
           for (const [l, m, x] of pos) { const q = qlm(cl, l, m); sB.rect(x - 0.4, 0, x + 0.4, q, { color: cols[l], fill: cols[l], fillAlpha: 0.5 }); }
-          for (let l = 0; l <= 3; l++) { const xs = pos.filter((p) => p[0] === l).map((p) => p[2]); sB.tex(`\\ell=${l}`, (xs[0] + xs[xs.length - 1]) / 2, ymax * 0.9, { color: cols[l], size: 13, align: 'center' }); }
+          for (let l = 0; l <= 3; l++) { const xs = pos.filter((p) => p[0] === l).map((p) => p[2]); sB.tex(`${l}`, (xs[0] + xs[xs.length - 1]) / 2, ymax * 0.9, { color: cols[l], size: 13, align: 'center' }); }
           sB.hline(0, { color: 'faint' });
           const pw = [], pm = Math.max(...P0);
           sW.setView([-0.6, 3.6], [0, pm * 1.25]);
@@ -275,7 +275,7 @@ with $Y_{\ell m}$ the orthonormal real spherical harmonics. The $2\ell+1$ number
           let V = 0; for (let l = 0; l <= L; l++) { let t = 0; for (let m = -l; m <= l; m++) t += qlm(cl, l, m) * realY(l, m, ...pn); V += ((4 * Math.PI) / (2 * l + 1)) * t / Math.pow(pn_r, l + 1); }
           info = { Vex: pot(cl, ...pn.slice(0, 2), pn[2]), Vl: KV * V, pw, L };
         });
-        v.readout(() => `Exact potential at the probe point $(3,2,4)$ cm: $${v.fix(info.Vex, 3)}$ V.  Expansion with $\\ell\\le${info.L}$: $${v.fix(info.Vl, 3)}$ V (error ${v.sci(Math.abs(info.Vex - info.Vl) / Math.abs(info.Vex) + 1e-16, 2).replace(/^/, '$')}$).\nPower per order $\\sum_mq_{\\ell m}^2$: ${info.pw.map((x) => `$${v.fix(x, 3)}$`).join(', ')} for $\\ell=0,1,2,3$ — unchanged by rotation.`);
+        v.readout(() => `Exact potential at the probe point $(3,2,4)$ cm: $${v.fix(info.Vex, 3)}$ V.  Expansion with $\\ell\\le${info.L}$: $${v.fix(info.Vl, 3)}$ V (error ${v.sci(Math.abs(info.Vex - info.Vl) / Math.abs(info.Vex) + 1e-16, 2).replace(/^/, '$')}$).\nSquared moment norm per order $\\sum_mq_{\\ell m}^2$: ${info.pw.map((x) => `$${v.fix(x, 3)}$`).join(', ')} for $\\ell=0,1,2,3$ — unchanged by rotation.`);
       },
     },
   ],

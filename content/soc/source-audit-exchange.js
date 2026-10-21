@@ -1,0 +1,11 @@
+// Unit-edge, one-exchange fixtures; exact specified outcomes, not an iterative graph solver.
+const FIXTURES={
+ p2:{label:'2-node path',pos:[[-.6,0],[.6,0]],edges:[[0,1]],match:[[0,1]],target:[.5,.5]},
+ p3:{label:'3-node path',pos:[[-1,0],[0,0],[1,0]],edges:[[0,1],[1,2]],match:[[0,1]],target:[0,1,0]},
+ p4:{label:'4-node path',pos:[[-1.05,0],[-.35,0],[.35,0],[1.05,0]],edges:[[0,1],[1,2],[2,3]],match:[[0,1],[2,3]],target:[1/3,2/3,2/3,1/3]},
+ p5:{label:'5-node path',pos:[[-1.05,0],[-.525,0],[0,0],[.525,0],[1.05,0]],edges:[[0,1],[1,2],[2,3],[3,4]],match:[[0,1],[3,4]],target:[0,1,0,1,0]},
+ stem:{label:'stem graph',pos:[[-1,0],[-.25,0],[.65,.6],[.65,-.6]],edges:[[0,1],[1,2],[1,3],[2,3]],match:[[0,1],[2,3]],target:[.25,.75,.5,.5]},
+ tri:{label:'triangle',pos:[[-.8,-.5],[0,.65],[.8,-.5]],edges:[[0,1],[1,2],[0,2]],match:[[0,1]],target:[.5,.5,0]},
+};
+export const EXCHANGE_CHOICES=Object.freeze(Object.entries(FIXTURES).map(([value,{label}])=>Object.freeze({value,label})));
+export function exchangeFixture(id='p3',deviation=0){if(!Object.hasOwn(FIXTURES,id)||!Number.isFinite(deviation)||deviation < -1||deviation>1)throw new RangeError('Offered exchange fixture and finite deviation in [-1,1] required');const f=FIXTURES[id],pos=f.pos.map(p=>p.slice()),edges=f.edges.map(p=>p.slice()),match=f.match.map(p=>p.slice()),target=f.target.slice(),n=target.length,partner=Array(n).fill(-1),values=target.slice();for(const[a,b]of match){partner[a]=b;partner[b]=a;}const[a,b]=match[0],u=target[a];values[a]=deviation>=0?u+deviation*(1-u):u*(1+deviation);values[b]=1-values[a];const outside=Array(n).fill(0);for(const[i,j]of edges)if(partner[i]!==j){outside[i]=Math.max(outside[i],1-values[j]);outside[j]=Math.max(outside[j],1-values[i]);}const gaps=outside.map((x,i)=>Math.max(0,x-values[i])),edgeGaps=edges.map(([i,j])=>Math.max(0,1-values[i]-values[j])),balance=match.map(([i,j])=>Math.abs((values[i]-outside[i])-(values[j]-outside[j]))),stabilityResidual=Math.max(...gaps),balanceResidual=Math.max(...balance);return{id,label:f.label,n,pos,edges,match,partner,target,values,outside,gaps,edgeGaps,balance,stabilityResidual,balanceResidual,stable:stabilityResidual<2e-12,balanced:stabilityResidual<2e-12&&balanceResidual<2e-12,deviation};}

@@ -117,15 +117,15 @@ export default {
       num: '20.2',
       kind: 'Lemma',
       name: 'Moving the pole of the Cauchy kernel onto a continuum',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Lemma20.2 and complete proof, pp.387–388'],
+      verify: true,
       statement: String.raw`Let $D$ be an open disc of radius $r>0$, and let $E\subset D$ be compact and connected, with $\diam E\ge r$ and with $\Omega=S^2\setminus E$ connected. Then there are a function $g\in H(\Omega)$ and a constant $b$ such that the functions
 $$Q_\zeta(z)=g(z)+(\zeta-b)\,g(z)^2$$
 satisfy
 $$|Q_\zeta(z)|<\frac{100}{r}\qquad\text{and}\qquad\Bigl|Q_\zeta(z)-\frac{1}{z-\zeta}\Bigr|<\frac{1000\,r^2}{|z-\zeta|^3}$$
 for every $\zeta\in D$ and every $z\in\Omega$ (with $z\ne\zeta,\infty$ in the second inequality).`,
-      idea: String.raw`Center$D$ at0. The complement of the continuum is simply connected; choose$F:U\to\Omega$ conformal with$F(0)=\infty$ and leading term$\alpha/w$, and set$g=F^{-1}/\alpha$. The omitted-set diameter bound14.15 gives$r\le\operatorname{diam}E\le4|\alpha|$, hence$|g|<4/r$. Define$b=(2\pi i)^{-1}\int_{|z|=r}zg(z)\,dz$, so$|b|<4r$. Thus$|\zeta-b|<5r$ and$|Q_\zeta|<4/r+5r(4/r)^2<100/r$. The Laurent expansion of$g$ at infinity is$z^{-1}+bz^{-2}+O(z^{-3})$, so$(z-\zeta)^3[Q_\zeta(z)-(z-\zeta)^{-1}]$ extends holomorphically to infinity. On$\Omega\cap D$ its modulus is less than$8r^3(100/r)+4r^2<1000r^2$; the maximum principle extends that bound to the remaining exterior region.`,
+      idea: String.raw`Centre $D$ at $0$. The Riemann mapping theorem (14.8) gives a conformal map $F$ of $U$ onto $\Omega$ with $F(0)=\infty$, $F(w)=\alpha/w+c_0+c_1w+\cdots$; put $g=F^{-1}/\alpha$ and $b=c_0$. Then $g(z)=\frac{1}{z-b}+O(z^{-3})$ at $\infty$, so $Q_\zeta$ is the two-term truncation of $\frac{1}{z-\zeta}=\sum_n\frac{(\zeta-b)^n}{(z-b)^{n+1}}$ and agrees with it to third order at $\infty$ — but its only singularities lie on $E$. Sizes: Schwarz's lemma (12.2) applied to $w\mapsto F^{-1}(r/w)$ gives $|\alpha|\le r$; for $a\in E$ the function $\alpha/(F(w)-a)$ lies in the class $\mathscr S$, and the coefficient bound $|a_2|\le2$ (14.14) gives $|a-b|\le2|\alpha|$, hence $r\le\diam E\le4|\alpha|$. So $|g|<1/|\alpha|\le4/r$ and $|\zeta-b|<4r$, which yields the first bound. For the second, $(z-\zeta)^3\bigl(Q_\zeta(z)-\frac{1}{z-\zeta}\bigr)$ is holomorphic in $\Omega$ including $\infty$, and the maximum modulus theorem reduces it to the circle $|z-\zeta|=2r$, where the first bound applies.`,
       caption: String.raw`$D$ is the unit disc ($r=1$). Drag the ends of $E$ (or the centre and rim of the disc $E$) and the point $\zeta$. Left: the phase portrait of $Q_\zeta$, which is holomorphic off $E$ — there is no pole at $\zeta$ — and looks exactly like $\frac{1}{z-\zeta}$ far away (switch the panel to compare). Right: the measured $\max_{|z-\zeta|=s}|Q_\zeta-\frac{1}{z-\zeta}|$ decays like $s^{-3}$, far below Rudin's crude bound. Shrink $E$ below $\diam E=r$ to see the constants blow up.`,
-      deps: ['rca-14.8', 'rca-14.15', 'rca-13.11', 'rca-10.24'],
+      deps: ['rca-14.8', 'rca-14.14', 'rca-12.2', 'rca-10.24'],
       see: ['rca-13.6', 'rca-13.7'],
       tags: ['conformal mapping', 'Cauchy kernel', 'Koebe'],
       viz(v) {
@@ -236,7 +236,7 @@ for every $\zeta\in D$ and every $z\in\Omega$ (with $z\ne\zeta,\infty$ in the se
       num: '20.3',
       kind: 'Lemma',
       name: 'Cauchy formula for compactly supported $C^1$ functions',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Lemma20.3 and complete proof, pp.388–389'],
+      verify: true,
       statement: String.raw`Let $f\in C_c^1(\R^2)$, i.e. $f$ is a continuously differentiable complex function on the plane with compact support, and let $\bar\partial=\frac12\bigl(\frac{\partial}{\partial x}+i\frac{\partial}{\partial y}\bigr)$. Then for every $z\in\C$
 $$f(z)=-\frac1\pi\iint_{\R^2}\frac{(\bar\partial f)(\zeta)}{\zeta-z}\,d\xi\,d\eta\qquad(\zeta=\xi+i\eta).$$`,
       idea: String.raw`The kernel $1/(\zeta-z)$ is locally integrable, so the integral converges absolutely. Use polar coordinates $\zeta=z+\rho e^{i\theta}$: there $\bar\partial=\frac12e^{i\theta}\bigl(\partial_\rho+\frac{i}{\rho}\partial_\theta\bigr)$ and $d\xi\,d\eta=\rho\,d\rho\,d\theta$, so the factor $e^{i\theta}\rho$ cancels the kernel and the integrand becomes $\frac12(\partial_\rho+\frac i\rho\partial_\theta)f$. The $\theta$-derivative integrates to $0$ around each circle, and since $f$ vanishes far out, $\int_\eps^\infty\partial_\rho f\,d\rho=-f(z+\eps e^{i\theta})$ (Fubini, 8.8, and the fundamental theorem of calculus). Hence the integral over $|\zeta-z|>\eps$ equals the mean of $f$ over the circle $|\zeta-z|=\eps$, which tends to $f(z)$. In Mergelyan's proof this represents a smoothed $f$ through $\bar\partial f$, which vanishes wherever $f$ is holomorphic.`,
@@ -353,7 +353,8 @@ $$f(z)=-\frac1\pi\iint_{\R^2}\frac{(\bar\partial f)(\zeta)}{\zeta-z}\,d\xi\,d\et
       num: '20.4',
       kind: 'Theorem',
       name: "Tietze's extension theorem",
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem20.4 and complete proof, pp.389–390'],
+      credit: 'Tietze, 1915',
+      verify: true,
       statement: String.raw`Let $K$ be a compact subset of a locally compact Hausdorff space $X$, and let $f\in C(K)$. Then there is a function $F\in C_c(X)$ with $F(x)=f(x)$ for every $x\in K$.`,
       idea: String.raw`Treat $\operatorname{Re}f$ and $\operatorname{Im}f$ separately and normalise to $-1\le f\le1$. Fix an open $W\supset K$ with compact closure (2.7). The sets $\{f\ge\frac13\}$ and $\{f\le-\frac13\}$ are disjoint compact subsets of $K$, so Urysohn's lemma (2.12) gives $g_1\in C_c(X)$, supported in $W$, equal to $\pm\frac13$ on them, with $|g_1|\le\frac13$; then $|f-g_1|\le\frac23$ on $K$. Repeating with the residual gives corrections $|g_n|\le\frac13(\frac23)^{n-1}$ and residuals $|f-\sum_{k\le n}g_k|\le(\frac23)^n$ on $K$. The series $F=\sum g_n$ converges uniformly (M-test, pma 7.10) to a continuous function that vanishes off $W$ and equals $f$ on $K$; moreover $|F|\le\sum\frac13(\frac23)^{n-1}=1$.`,
       caption: String.raw`Here $X=\R$ and $K$ is four closed intervals and a point. Drag the blue handles to change $f$ on $K$, and step the construction. Each correction $g_n$ (orange) is a pair of Urysohn tents: $+c_n$ on the set where the residual is $\ge c_n=\frac13(\frac23)^{n-1}$, $-c_n$ where it is $\le-c_n$, and $0$ off $W$. Below, the residual $f-F_n$ on $K$ stays in the band $\pm(\frac23)^n$; red and purple mark where the next step will act.`,

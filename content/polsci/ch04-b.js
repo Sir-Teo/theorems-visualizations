@@ -1,7 +1,7 @@
 // Political Science & Social Choice — Chapter 4 (part b): items 4.8-4.13
+import {blackPaper} from './source-audit-black.js';
+import {downsSpatial} from './source-audit-downs-items.js';
 import { CC, sum, range, clamp, txt, rr, chip, Phi, phi, PhiInv, median, mean, pct, dist2, votesFor, mixGrid, binX, gridMedian, gridMean, LINE, cdfOf, votes2, tallyBins } from './ch04.shared.js';
-
-import { isStrictSinglePeaked } from './verification-models.js';
 
 const LET = 'ABCDEFGHIJ';
 const pointSeg = (a, b) => [a, b];
@@ -284,159 +284,11 @@ By the median voter theorem (polsci-4.2), the tax rate chosen by majority vote i
       },
     },
 
-    // ───────────────────────────────────────────────────────────── 4.12
-    {
-      num: '4.12',
-      kind: 'Paper',
-      name: 'On the Rationale of Group Decision-making',
-      paper: { authors: 'Duncan Black', year: 1948, title: 'On the Rationale of Group Decision-making', venue: 'Journal of Political Economy 56 (1): 23–34', doi: '10.1086/256633' },
-      introduces: ['polsci-4.1', 'polsci-4.2'],
-      statement: String.raw`Black asks when the decision of a committee by majority vote is determinate, and answers by restricting the preferences of its members. Suppose the options can be arranged on a line and every member's preference is single-peaked, drawn as a curve over the options with one maximum. Then, with an odd number of members, the option at the **median of the members' peaks** beats every other option in a vote between two, so the committee's pairwise decisions form a consistent ordering with that option on top (polsci-4.2). When some member's curve has two peaks, the majority relation can cycle, and the committee has no determinate decision (polsci-2.1).`,
-      idea: String.raw`The context is the question of whether voting among several options yields a decision at all, which the cyclic majorities of Condorcet's paradox (polsci-2.1) put in doubt. Black's paper (1948), which predates Arrow's impossibility theorem (1950), identified a condition on the *domain* of preferences, single-peakedness (polsci-4.1), that removes the difficulty, and the median voter theorem (polsci-4.2) as its consequence. It changed the question from "is majority rule well-defined?" to "which restrictions on preferences make it so?", and the one-dimensional case it solved is the basis of the spatial theory of parties and elections in the rest of this chapter.`,
-      caption: String.raw`Five committee members rank seven options $A$–$G$, drawn as curves over the options. Pick a member (buttons) and **drag the dots on her curve** to reshape her preferences; the other members' curves are faint. At the start everyone is single-peaked: the table on the right (row $a$, column $b$: votes for $a$ minus votes for $b$) shows the option at the median peak (marked $m$) beating all others. Bend one member's curve to two peaks (the **bend** button does it for member 3) and a cycle appears. The editable curves are our own reconstruction; the complete original’s single-peaked and cyclic examples are in §II/Figs2–5 and §III/Figs7–8.`,
-      deps: ['polsci-2.1'],
-      see: ['polsci-4.1', 'polsci-4.2', 'polsci-3.14'],
-      refs: [],
-      tags: ['paper', 'single-peaked', 'median voter'],
-      credit: 'Duncan Black, 1948',
-      scope: String.raw`Odd committee size; each eligible curve has a unique peak and is strictly increasing/decreasing on its two sides. Equal values on opposite sides are allowed. Flat segments or multiple peaks are reported outside this strict-curve version. This page re-derives the theorem on an editable committee; it does not reproduce a table or figure from the paper.`,
-      links: { doi: 'https://doi.org/10.1086/256633' },
-      viz(v) {
-        const NO = 7, NM = 5;
-        const C = v.stage({ x: [-0.6, NO - 0.4], y: [0, 1.15], axes: 'box', gutter: true, height: 340, minWidth: 340, yticks: [], xticks: range(NO).map((k) => [k, LET[k]]), xlabel: 'options on the line', ylabel: 'member’s value', title: 'committee members’ curves' });
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 340, title: 'votes between pairs of options' });
-        const mem = v.select('member to edit', range(NM).map((i) => ({ value: i, label: String(i + 1) })), 2, { onChange: () => syncHandles() });
-        const tent = (pk) => range(NO).map((k) => 1 - Math.abs(k - pk) / 7.5);
-        const PEAKS = [0, 1, 3, 4, 6];
-        const BASE = () => PEAKS.map((p) => tent(p));
-        let U = BASE();
-        const HH = range(NO).map((k) => C.handle(k, U[2][k], { color: 'gold', r: 8, constrain: (x, y) => [k, clamp(y, 0.02, 1.1)] }));
-        function syncHandles() { HH.forEach((h, k) => h.set(k, U[mem.value][k])); HH.forEach((h) => { h.color = CC[mem.value]; }); }
-        HH.forEach((h, k) => { h.onDrag = () => { U[mem.value][k] = h.y; }; });
-        v.button('bend member 3', () => { U[2] = [0.84, 0.3, 0.12, 0.35, 0.55, 0.75, 0.95]; syncHandles(); });
-        v.button('reset', () => { U = BASE(); syncHandles(); });
-        let info = null;
-        v.render(() => {
-          const peaks = U.map((u) => u.indexOf(Math.max(...u))), uni = U.map(isStrictSinglePeaked);
-          range(NM).forEach((i) => {
-            const act = i === mem.value;
-            C.path(U[i].map((y, k) => [k, y]), { color: CC[i], width: act ? 3 : 1.6, alpha: act ? 1 : 0.4 });
-            U[i].forEach((y, k) => { if (!act) C.dot(k, y, { r: 3, color: CC[i], alpha: 0.5 }); });
-          });
-          HH.forEach((h, k) => { if (Math.abs(h.y - U[mem.value][k]) > 1e-9) h.set(k, U[mem.value][k]); });
-          const M = range(NO).map((a) => range(NO).map((b) => (a === b ? 0 : sum(U.map((u) => Math.sign(u[a] - u[b]))))));
-          const cw = range(NO).filter((a) => range(NO).every((b) => b === a || M[a][b] > 0));
-          let cyc = null; for (let a = 0; a < NO && !cyc; a++) for (let b = 0; b < NO && !cyc; b++) if (M[a][b] > 0) for (let c = 0; c < NO; c++) if (M[b][c] > 0 && M[c][a] > 0) { cyc = [a, b, c]; break; }
-          const mp = [...peaks].sort((x, y) => x - y)[(NM - 1) / 2];
-          // pair table
-          const c = T.ctx, W = T.width, H = T.height, cs = Math.min((W - 60) / NO, (H - 70) / NO), x0 = 40 + (W - 60 - cs * NO) / 2, y0 = 40;
-          range(NO).forEach((k) => { txt(v, c, LET[k], x0 + k * cs + cs / 2, y0 - 14, { size: 12, weight: 700, color: k === mp ? 'green' : 'muted' }); txt(v, c, LET[k], x0 - 14, y0 + k * cs + cs / 2, { size: 12, weight: 700, color: k === mp ? 'green' : 'muted' }); });
-          range(NO).forEach((a) => range(NO).forEach((b) => {
-            const X = x0 + b * cs, Y = y0 + a * cs, val = M[a][b];
-            rr(c, X + 1.5, Y + 1.5, cs - 3, cs - 3, 5);
-            c.fillStyle = v.color(a === b ? 'grid' : val > 0 ? (a === mp ? 'green' : 'accent') : 'orange', a === b ? 0.3 : val > 0 ? 0.4 : 0.12); c.fill();
-            if (a !== b) txt(v, c, (val > 0 ? '+' : val < 0 ? '−' : '') + Math.abs(val), X + cs / 2, Y + cs / 2, { size: 11.5, weight: val > 0 ? 750 : 500, color: val > 0 ? 'ink' : 'muted' });
-          }));
-          txt(v, c, 'row beats column when positive', W / 2, H - 14, { size: 10.5, color: 'muted' });
-          info = { uni, peaks, mp, cw, cyc, M, allUni: uni.every(Boolean) };
-        });
-        v.legend([['green', 'row of the option at the median peak'], ['accent', 'a majority prefers the row option', { area: true }]]);
-        v.readout(() => {
-          const { uni, mp, cw, cyc, allUni } = info;
-          const head = allUni ? `All five curves satisfy strict single-peakedness. Black’s claim: option **${LET[mp]}**, at the median of the peaks, beats every other option. Computed: ${cw.length ? `Condorcet winner **${cw.map((a) => LET[a]).join(', ')}**${cw[0] === mp ? ' — agreement' : ' — DISAGREEMENT'}` : 'no Condorcet winner — DISAGREEMENT'}.`
-            : `Member${uni.filter((u) => !u).length > 1 ? 's' : ''} ${uni.map((u, i) => (u ? null : i + 1)).filter(Boolean).join(', ')} ${uni.filter((u) => !u).length > 1 ? 'fail' : 'fails'} strict single-peakedness, so the theorem does not apply. ${cyc ? `The majority relation cycles: ${cyc.map((a) => LET[a]).join(' ≻ ')} ≻ ${LET[cyc[0]]}.` : cw.length ? `A Condorcet winner still exists (${cw.map((a) => LET[a]).join(', ')}): single-peakedness is sufficient, not necessary.` : 'There is no Condorcet winner.'}`;
-          return head;
-        });
-      },
-    },
+    // Source-audited ordinal committee 4.12
+    blackPaper,
 
-    // ───────────────────────────────────────────────────────────── 4.13
-    {
-      num: '4.13',
-      kind: 'Paper',
-      name: 'An Economic Theory of Political Action in a Democracy',
-      paper: { authors: 'Anthony Downs', year: 1957, title: 'An Economic Theory of Political Action in a Democracy', venue: 'Journal of Political Economy 65 (2): 135–150', doi: '10.1086/257897' },
-      introduces: ['polsci-4.3'],
-      statement: String.raw`Downs models office-seeking parties that formulate policies to gain votes, and uses Hotelling’s spatial analogy to explain convergence and differentiation. His1957 article’s §VI imposes ideological continuity: parties cannot leap across one another, and extremists may abstain as their party moves inward. Its single-mode example converges toward the centre; its polarized example can diverge because of lost extremist support. Its multiparty example can settle at separate modes under the nonleaping restriction. In the simpler modern two-party model with compulsory turnout and unrestricted positions, both parties at a median are an equilibrium for any voter distribution, including a bimodal one.`,
-      idea: String.raw`The paper builds on Hotelling's analysis of two sellers on a line (1929; micro-10.17, geog-9.3) and carries it from market to polity, with parties in place of firms and a vote in place of a sale, and the nearest-party median logic connects it to single-peaked voting (polsci-4.12). The article’s own account adds imperfect information, ideological continuity and abstention, so its conclusions are broader and more qualified than an unrestricted median-location game. It introduced the idea that the *shape* of the distribution of voters, not only its centre, decides how parties behave, and that rationality may lead voters to stay home (polsci-5.1). The convergence prediction, polsci-4.3, has been criticized and refined ever since (polsci-4.4).`,
-      caption: String.raw`**Top:** voters along the left–right scale. Choose one of four distributions (single-peaked and symmetric, skewed, two-humped, and two-humped with abstention by voters more than $d$ from every party), then drag parties $A$ and $B$ (and add $C$) to see their vote shares. **Bottom:** the game itself. Each point of the plane is a pair of positions $(x_A, x_B)$, coloured by $A$'s margin over $B$; the blue and orange curves are each party's best response to the other, and **green dots** are the pure equilibria, where the curves cross. Drag the gold point in the plane or the parties above; they are the same pair. With full turnout, median convergence remains possible even for a two-humped distribution. Alienation can produce separated or absent pure grid equilibria. These are numerical results of the displayed model, not exact reproductions of Downs’s figures.`,
-      deps: ['polsci-4.12', 'micro-10.17'],
-      see: ['polsci-4.3', 'polsci-4.4'],
-      refs: [],
-      tags: ['paper', 'party competition', 'median voter'],
-      credit: 'Anthony Downs, 1957',
-      scope: String.raw`The demo is a modern one-dimensional nearest-party, vote-share game with full information and unrestricted crossing of party positions. Unlike the original article, its parties may leap over each other and it models alienation by a fixed distance cutoff. The four distributions are my reconstruction of the cases usually discussed, not figures taken from the paper; equilibria are found on a grid of positions with spacing $0.1$.`,
-      links: { doi: 'https://doi.org/10.1086/257897' },
-      viz(v) {
-        const N = 201, Y0 = -0.1, GS = 0.1;
-        const D = v.stage({ x: [0, 10], y: [-0.2, 1.25], axes: 'box', gutter: true, height: 270, full: true, yticks: [], xlabel: 'left–right position', ylabel: 'voters', title: 'the electorate and the parties' });
-        const P = v.stage({ x: [0, 10], y: [0, 10], axes: 'box', gutter: true, height: 380, minWidth: 360, equal: true, xlabel: 'position of A', ylabel: 'position of B', title: 'the game: A’s margin over B, best responses and equilibria' });
-        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 260, title: 'vote shares' });
-        const PRE = {
-          uni: { label: 'single-peaked', comps: [[1, 5, 1.6]], d: 10.5 },
-          skew: { label: 'skewed', comps: [[0.6, 3.5, 1.1], [0.4, 6.6, 2.1]], d: 10.5 },
-          bi: { label: 'two-humped', comps: [[0.5, 2.8, 1.1], [0.5, 7.2, 1.1]], d: 10.5 },
-          bia: { label: 'two-humped, abstention', comps: [[0.5, 2.8, 1.1], [0.5, 7.2, 1.1]], d: 2.2 },
-        };
-        const dist = v.select('electorate', Object.entries(PRE).map(([value, p]) => ({ value, label: p.label })), 'uni', { onChange: () => { dth.set(PRE[dist.value].d); } });
-        const dth = v.slider('alienation threshold $d$', 0.8, 10.5, 10.5, { step: 0.1, fmt: (x) => (x >= 10.4 ? '∞ (all vote)' : v.fix(x, 1)) });
-        const third = v.toggle('add a third party C', false, { onChange: () => { HC.visible = third.value; } });
-        const PCOL = ['blue', 'orange', 'teal'], NM = ['A', 'B', 'C'];
-        const HA = D.handle(3.5, Y0, { color: 'blue', r: 9, constrain: 'x', label: 'A', labelPos: 'n' });
-        const HB = D.handle(6.5, Y0, { color: 'orange', r: 9, constrain: 'x', label: 'B', labelPos: 'n' });
-        const HC = D.handle(5, Y0, { color: 'teal', r: 9, constrain: 'x', label: 'C', labelPos: 'n' });
-        HC.visible = false;
-        const G = P.handle(3.5, 6.5, { color: 'gold', r: 8, constrain: { x: [0, 10], y: [0, 10] } });
-        HA.onDrag = () => G.set(HA.x, HB.x); HB.onDrag = () => G.set(HA.x, HB.x);
-        G.onDrag = () => { HA.set(G.x, Y0); HB.set(G.y, Y0); };
-        let cache = { key: '', eq: [], BRA: [], BRB: [], F: null };
-        const weights = () => mixGrid(N, PRE[dist.value].comps);
-        function solve(w, d) {
-          const F = cdfOf(w), cand = range(Math.round(10 / GS) + 1).map((i) => i * GS);
-          const BRA = [], BRB = [];
-          const bestA = (xb) => { let b = -1, arg = []; for (const z of cand) { const val = votes2(F, z, xb, d)[0]; if (val > b + 1e-9) { b = val; arg = [z]; } else if (val > b - 1e-9) arg.push(z); } return { b, arg }; };
-          const bestB = (xa) => { let b = -1, arg = []; for (const z of cand) { const val = votes2(F, xa, z, d)[1]; if (val > b + 1e-9) { b = val; arg = [z]; } else if (val > b - 1e-9) arg.push(z); } return { b, arg }; };
-          const ba = cand.map(bestA), bb = cand.map(bestB), eq = [];
-          cand.forEach((xa, i) => cand.forEach((xb, j) => { if (votes2(F, xa, xb, d)[0] >= ba[j].b - 1e-7 && votes2(F, xa, xb, d)[1] >= bb[i].b - 1e-7) eq.push([xa, xb]); }));
-          return { F, cand, ba, bb, eq };
-        }
-        let info = null;
-        v.render(() => {
-          const w = weights(), d = dth.value, key = dist.value + '|' + d.toFixed(2);
-          if (cache.key !== key) cache = { key, ...solve(w, d) };
-          const { F, cand, ba, bb, eq } = cache, mx = Math.max(...w);
-          const act = third.value ? [0, 1, 2] : [0, 1], Hs = [HA, HB, HC], Ps = act.map((j) => Hs[j].x), tl = tallyBins(Ps, w, d);
-          for (let i = 0; i < N; i++) {
-            const x0 = (i * 10) / N, g = tl.who[i];
-            D.rect(x0, 0, x0 + 10 / N, w[i] / mx, { fill: g < 0 ? 'gray' : PCOL[act[g]], fillAlpha: g < 0 ? 0.28 : 0.5, stroke: false });
-          }
-          D.fn((x) => w[clamp(Math.floor((x / 10) * N), 0, N - 1)] / mx, { color: 'ink', width: 1.4, n: 300 });
-          const med = gridMedian(w); D.vline(med, { color: 'green', width: 2 }); D.text('median', med, 1.17, { color: 'green', size: 11.5, weight: 700 });
-          // the plane
-          P.heat((xa, xb) => { const [a, b] = votes2(F, xa, xb, d); return a - b; }, { range: [-1, 1], cmap: 'theme-diverging', neg: 'orange', pos: 'blue', res: 4, key: `h${key}` });
-          P.line(0, 0, 10, 10, { color: 'faint', dash: true, alpha: 0.7 });
-          P.path(cand.map((xb, j) => [ba[j].arg.reduce((p, q) => (Math.abs(q - xb) < Math.abs(p - xb) ? q : p)), xb]), { color: 'blue', width: 2 });
-          P.path(cand.map((xa, i) => [xa, bb[i].arg.reduce((p, q) => (Math.abs(q - xa) < Math.abs(p - xa) ? q : p))]), { color: 'orange', width: 2 });
-          eq.forEach(([a, b]) => P.dot(a, b, { r: 6, color: 'green' }));
-          P.vline(med, { color: 'green', alpha: 0.35, dash: true }); P.hline(med, { color: 'green', alpha: 0.35, dash: true });
-          // shares panel
-          const c = R.ctx, W = R.width, H = R.height, bw = Math.min(46, W / 6);
-          const items = [...act.map((j, k) => [NM[j], tl.vt[k], PCOL[j]]), ['abstain', tl.ab, 'gray']];
-          items.forEach(([nm, val, col], k) => {
-            const X = 30 + (k + 0.5) * ((W - 40) / items.length), h = val * (H - 100);
-            rr(c, X - bw / 2, H - 40 - h, bw, Math.max(2, h), 5); c.fillStyle = v.color(col, 0.6); c.fill();
-            txt(v, c, pct(val, 1), X, H - 48 - h, { size: 12, weight: 700 }); txt(v, c, nm, X, H - 22, { size: 12, weight: 700, color: col });
-          });
-          info = { Ps, tl, med, eq, act };
-        });
-        v.legend([['blue', 'A’s best response'], ['orange', 'B’s best response'], ['green', 'pure equilibria', { dot: true }], ['gold', 'current positions', { dot: true }]]);
-        v.readout(() => {
-          const { Ps, tl, med, eq, act } = info, g = (x) => v.fix(x, 2);
-          const eqs = eq.length ? eq.slice(0, 4).map(([a, b]) => `(${g(a)}, ${g(b)})`).join(', ') + (eq.length > 4 ? ` and ${eq.length - 4} more` : '') : 'none';
-          const near = Math.abs(Ps[0] - med) < 0.15 && Math.abs(Ps[1] - med) < 0.15;
-          return `Median voter at ${g(med)}. Positions ${act.map((j, k) => `${NM[j]} = ${g(Ps[k])}`).join(', ')}; shares ${act.map((j, k) => `${NM[j]} ${pct(tl.vt[k], 1)}`).join(', ')}, abstaining ${pct(tl.ab, 1)}. Pure equilibria of the two-party game: **${eqs}**. ${eq.length === 1 && Math.abs(eq[0][0] - med) < 0.16 && Math.abs(eq[0][1] - med) < 0.16 ? 'Downs’s convergence: the only equilibrium puts both parties at the median.' : eq.length && !eq.some(([a, b]) => Math.abs(a - med) < 0.16 && Math.abs(b - med) < 0.16) ? 'No equilibrium at the median: the parties stay apart.' : ''}${near ? ' (Your positions are at the median.)' : ''}`;
-        });
-      },
-    },
+    // Source-audited finite comparison 4.13
+    downsSpatial,
+
   ],
 };

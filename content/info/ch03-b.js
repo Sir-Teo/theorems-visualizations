@@ -5,6 +5,8 @@
 import { clamp, sum, H, h2, KL, commas, hashStr, LET, lbinom, lmult, lse2, lbinPmf, lseqP, typeRound, lQclass, pick,
   simXY, simP, simStage, drawSimplex, simHandle, stationary, markovRate, stepDist, barEd } from './ch03.shared.js';
 
+import {npBernoulli} from './source-audit.shared.js';
+
 const log2 = Math.log2;
 const pw2 = (x) => Math.pow(2, x);
 const R3 = Math.sqrt(3) / 2;
@@ -106,18 +108,23 @@ where $Q^n(E)$ is the probability that the empirical distribution of $X^n$ lies 
       num: '3.10',
       kind: 'Theorem',
       name: 'Chernoff–Stein lemma',
-      statement: String.raw`Test the simple hypotheses $H_0:X_i\sim P$ against $H_1:X_i\sim Q$ (i.i.d., finite alphabet, $D(P\|Q)<\infty$) with $n$ observations. For a possibly randomized test with acceptance probability $a_n(x^n)\in[0,1]$ for $H_0$, let $\alpha_n=1-\mathbb E_{P^n}a_n$ be the false-alarm probability and $\beta_n=\mathbb E_{Q^n}a_n$ the miss probability. Deterministic decision regions have $a_n=\Ind_{A_n}$. Fix $0<\varepsilon<\tfrac12$ and let $\beta_n^\varepsilon=\min\{\beta_n:\alpha_n\le\varepsilon\}$. Then
-$$\lim_{n\to\infty}-\frac1n\log_2\beta_n^\varepsilon\ =\ D(P\|Q),$$
-whatever the value of $\varepsilon$. With the false-alarm rate held fixed, the best miss probability decays exponentially at the rate given by the relative entropy of the null from the alternative.`,
-      idea: String.raw`Achievability: take $A_n$ to be the typical set of $P$ (3.3) with respect to the log-likelihood ratio: it has $P^n$-probability $>1-\varepsilon$ eventually (3.1), and each member has $Q^n(x^n)\le P^n(x^n)2^{-n(D(P\|Q)-\varepsilon')}$, so $\beta_n\le2^{-n(D-\varepsilon')}$. Converse: any region with $P^n(A_n)\ge1-\varepsilon$ must contain at least $1-2\varepsilon$ of its mass on sequences whose log-likelihood ratio is close to $nD$, and these have $Q^n$-mass at least $2^{-n(D+\varepsilon')}$ times their $P^n$-mass. The optimal regions are Neyman–Pearson likelihood-ratio tests; the picture computes them exactly.`,
-      caption: String.raw`Binary alphabet, $P=\mathrm{Bernoulli}(p_0)$ and $Q=\mathrm{Bernoulli}(q)$. The Neyman–Pearson test accepts the sequences with the largest likelihood ratio until $P^n$ has mass $1-\varepsilon$ (the boundary class is accepted with a randomized fraction). Left: $-\frac1n\log_2\beta_n$ for three values of $\varepsilon$ converges to $D(P\|Q)$ (green) from different directions. Right: at the chosen $n$, the pmfs of the number of ones under $P$ (blue) and $Q$ (orange); the shaded orange area is $\beta_n$ and the shaded red area $\alpha_n$.`,
-      deps: ['info-3.8', 'stat-6.4'],
-      refs: ['Cover–Thomas 2nd ed. §11.8 pp. 380–384, Theorem 11.8.3; §11.9 pp. 384–386 (Bayesian-error exponent)'],
+      statement: String.raw`Test $H_0:X_i\sim P$ against $H_1:X_i\sim Q$ using $n$ i.i.d. observations on a finite alphabet, with $D(P\|Q)<\infty$. A possibly randomized test accepts $H_0$ with probability $g_n(x^n)\in[0,1]$. Its false-alarm and miss probabilities are $\alpha_n=1-E_{P^n}g_n$ and $\beta_n=E_{Q^n}g_n$. For every fixed $0<\varepsilon<1$, put $\beta_n^\varepsilon=\min\{\beta_n:\alpha_n\le\varepsilon\}$. Then
+$$\lim_{n\to\infty}-\frac1n\log_2\beta_n^\varepsilon=D(P\|Q).$$
+The fixed false-alarm constraint determines the optimal asymptotic miss exponent. Randomization at a likelihood-ratio tie allows the finite-sample constraint to be met exactly.`,
+      idea: String.raw`Let $L_n=\log_2(P^n/Q^n)$. Under $P^n$, $L_n/n\to D=D(P\|Q)$ in probability. Accepting on $L_n\ge n(D-\delta)$ eventually meets the constraint, and
+$$Q^n(A_n)=E_{P^n}[2^{-L_n}\mathbf1_{A_n}]\le2^{-n(D-\delta)}.$$
+For the converse, set $T_n=\{L_n\le n(D+\delta)\}$. Every admissible $g_n$ satisfies $E_{P^n}[g_n\mathbf1_{T_n}]\ge1-\varepsilon-o(1)$, so $E_{Q^n}g_n\ge2^{-n(D+\delta)}(1-\varepsilon-o(1))$. Let $\delta\downarrow0$. The positive constant works for every fixed $\varepsilon<1$.
+
+Finite-sample Neyman–Pearson optimality fills likelihood-ratio classes from largest to smallest, then randomizes at the boundary. With $P=Q$ every outcome is tied and uniform acceptance probability $1-\varepsilon$ is optimal.
+
+The probabilistic input is the $L^2$ weak law prob-2.2.3 applied under $P$ to the independent log-likelihood increments. Finite alphabet and $D(P\|Q)<\infty$ make $Q$ positive on the support of $P$, so these increments are bounded there, have mean $D$, and have finite variance. Their average therefore converges to $D$ in probability, controlling both likelihood-threshold events used above. This does not require $P$ to be positive outside its own support.`,
+      caption: String.raw`For two Bernoulli laws, compute the optimal **randomized** test using binomial probabilities in the log domain. A fractional final class is an acceptance probability for every sequence in that class, not a fractional deterministic set. Left: three finite-sample exponents and their limiting relative entropy. Right: bars show **probability masses** at counts $k$; accepted orange heights sum to $\beta_n$, rejected red heights to $\alpha_n$. The boundary probability is reported explicitly.`,
+      deps: ['info-3.8', 'prob-2.2.3'],
+      refs: ['Polyanskiy–Wu, MIT 6.441 (2016), Theorem 10.6 pp.118–119 and Theorem 11.1 pp.121–123'],
       tags: ['hypothesis testing', 'large deviations'],
-      credit: 'Named for Herman Chernoff and a result credited to Charles Stein (the exact first source was not verified here); Chernoff, Ann. Math. Stat. 23 (1952) 493 is the related paper on the Chernoff bound',
-      verify: true,
-      scope: String.raw`Holds for i.i.d. observations under both hypotheses, with $D(P\|Q)<\infty$. The false-alarm constraint is fixed, not shrinking with $n$; minimizing a fixed positive weighted sum of the two errors gives the Chernoff-information exponent instead. Merely asking both errors to vanish does not specify that balanced optimization.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Stein%27s_lemma' },
+      credit: 'Stein’s lemma; proof source: Polyanskiy–Wu (2016), Theorem 11.1',
+      scope: String.raw`Finite alphabet and i.i.d. observations under both laws; all logarithms here use base 2. The displayed optimum allows randomized tests and is evaluated numerically. Merely requiring both errors to vanish does not specify a unique exponent: a shrinking false-alarm constraint produces a tradeoff depending on its rate. Chernoff information describes a different symmetric-error optimization.`,
+      links: { source: 'https://ocw.mit.edu/courses/6-441-information-theory-spring-2016/d14633baf528941dcb5ee00a334e1d89_MIT6_441S16_chapter_11.pdf' },
       viz(v) {
         const pS = v.slider(String.raw`$P=\mathrm{Bern}(p_0)$, $p_0$`, 0.05, 0.95, 0.5, { step: 0.01 });
         const qS = v.slider(String.raw`$Q=\mathrm{Bern}(q)$, $q$`, 0.05, 0.95, 0.2, { step: 0.01 });
@@ -125,55 +132,39 @@ whatever the value of $\varepsilon$. With the false-alarm rate held fixed, the b
         const nS = v.slider('length $n$ (right panel)', 5, 300, 60, { int: true });
         const NM = 300;
         const s1 = v.stage({ x: [5, NM], y: [0, 2], height: 280, axes: 'box', gutter: true, xlabel: 'n', ylabel: '−(1/n) log₂ βₙ', title: 'miss-probability exponent of the best test' });
-        const s2 = v.stage({ x: [0, 1], y: [0, 1], height: 280, axes: 'box', gutter: true, xlabel: 'fraction of ones k/n', ylabel: 'probability density of k/n', title: 'the two hypotheses and the optimal acceptance region' });
+        const s2 = v.stage({ x: [0, 1], y: [0, 1], height: 280, axes: 'box', gutter: true, xlabel: 'fraction of ones k/n', ylabel: 'probability mass at k', title: 'the two hypotheses and the optimal acceptance region' });
         v.legend([['accent', '$\\varepsilon$ (slider)'], ['orange', '$\\varepsilon=0.3$'], ['purple', '$\\varepsilon=0.01$'], ['green', '$D(P\\|Q)$']]);
-        // Neyman–Pearson: classes ordered by likelihood ratio (large first)
-        function np(n, p0, q, eps) {
-          const ks = []; for (let k = 0; k <= n; k++) ks.push(k);
-          const asc = p0 < q; ks.sort((a, b) => (asc ? a - b : b - a));
-          let cum = 0; const lq = [], inc = [];
-          for (const k of ks) {
-            const mp = pw2(lbinPmf(n, k, p0));
-            if (cum + mp >= 1 - eps) {
-              const f = Math.min(1, Math.max(0, (1 - eps - cum) / mp));
-              if (f > 0) lq.push(lbinPmf(n, k, q) + log2(f));
-              inc.push([k, f]);
-              return { lb: lse2(lq), inc, alpha: eps };
-            }
-            cum += mp; lq.push(lbinPmf(n, k, q)); inc.push([k, 1]);
-          }
-          return { lb: lse2(lq), inc, alpha: 0 };
-        }
+        const np=npBernoulli;
         let cache = null, info = {};
         v.render(() => {
           const p0 = pS.value, q = qS.value, eps = eS.value, n = nS.value, D = KL([p0, 1 - p0], [q, 1 - q]), key = `${p0}|${q}|${eps}`;
           if (!cache || cache.key !== key) {
-            const mk = (e) => { const a = []; for (let m = 5; m <= NM; m++) a.push([m, -np(m, p0, q, e).lb / m]); return a; };
+            const mk = (e) => { const a = []; for (let m = 5; m <= NM; m++) a.push([m, -np(m, p0, q, e).logBeta / m]); return a; };
             cache = { key, a: mk(eps), b: mk(0.3), c: mk(0.01) };
           }
-          const top = Math.max(0.5, D * 1.5, ...cache.c.map((p) => p[1]).filter(isFinite)) * 1.05;
-          s1.setView([5, NM], [0, Math.min(top, 8)]);
+          const top = Math.max(0.5, D * 1.5, ...[...cache.a,...cache.b,...cache.c].map(p=>p[1]).filter(isFinite)) * 1.05;
+          s1.setView([5, NM], [0, top]);
           s1.hline(D, { color: 'green', width: 2 });
           s1.path(cache.b, { color: 'orange', width: 1.6 }); s1.path(cache.c, { color: 'purple', width: 1.6 }); s1.path(cache.a, { color: 'accent', width: 2.4 });
           s1.vline(n, { color: 'faint', dash: true });
-          const r = np(n, p0, q, eps), fr = new Map(r.inc);
+          const r = np(n,p0,q,eps);
           const dens = [], hmax = { v: 0 };
-          for (let k = 0; k <= n; k++) { const a = pw2(lbinPmf(n, k, p0)), b = pw2(lbinPmf(n, k, q)); dens.push([a, b]); hmax.v = Math.max(hmax.v, a, b); }
-          s2.setView([0, 1], [0, hmax.v * 1.15]);
+          for (let k = 0; k <= n; k++) { const a=r.P[k],b=r.Q[k];dens.push([a, b]); hmax.v = Math.max(hmax.v, a, b); }
+          s2.setView([-0.5/n,1+0.5/n],[0,hmax.v*1.2]);
           let alpha = 0, beta = 0;
           for (let k = 0; k <= n; k++) {
-            const f = fr.get(k) || 0, [a, b] = dens[k], x0 = (k - 0.5) / n, x1 = (k + 0.5) / n;
+            const f=r.f[k],[a,b]=dens[k], x0 = (k - 0.5) / n, x1 = (k + 0.5) / n;
             alpha += a * (1 - f); beta += b * f;
             if (f > 0) s2.rect(x0, 0, x1, b * f, { fill: 'orange', fillAlpha: 0.6, stroke: false });
             if (f < 1) s2.rect(x0, 0, x1, a * (1 - f), { fill: 'red', fillAlpha: 0.6, stroke: false });
             s2.rect(x0, 0, x1, a, { color: 'accent', fill: 'accent', fillAlpha: 0.12, width: 1 });
             s2.rect(x0, 0, x1, b, { color: 'orange', width: 1 });
           }
-          const acc = r.inc.map(([k]) => k), lo = Math.min(...acc), hi = Math.max(...acc);
-          s2.text(`accept $H_0$ for k ${p0 > q ? '≥' : '≤'} ${p0 > q ? lo : hi}`, 0.5, hmax.v * 1.08, { align: 'center', size: 11.5, color: 'muted', weight: 600 });
-          info = { D, n, alpha, beta, lb: r.lb, last: cache.a[cache.a.length - 1][1] };
+          const boundary=r.boundary;
+          s2.text(p0===q?'all outcomes tied: randomize uniformly':`boundary k=${boundary.k}: accept with probability ${v.fix(boundary.probability,3)}`,0.5,hmax.v*1.1,{align:'center',size:11.5,color:'muted',weight:600});
+          info = {D,n,alpha,beta,lb:r.logBeta,boundary,equal:p0===q,last:cache.a.at(-1)[1]};
         });
-        v.readout(() => String.raw`$D(P\|Q)=${v.fix(info.D, 3)}$ bits. At $n=${info.n}$ the best test has false-alarm probability $\alpha_n=${v.fix(info.alpha, 3)}$ and miss probability $\beta_n=2^{${v.fix(info.lb, 1)}}$, giving $-\frac1n\log_2\beta_n=${v.fix(-info.lb / info.n, 3)}$; at $n=${NM}$ the exponent is $${v.fix(info.last, 3)}$.` + (info.D < 1e-9 ? String.raw` With $P=Q$ no test can do better than $\beta=1-\varepsilon$.` : ''));
+        v.readout(() => String.raw`$D(P\|Q)=${v.fix(info.D,3)}$ bits. At $n=${info.n}$ the randomized optimum has $\alpha_n=${v.fix(info.alpha,4)}$, $\beta_n=2^{${v.fix(info.lb,2)}}$ and exponent $${v.fix(-info.lb/info.n,3)}$; at $n=${NM}$ the exponent is $${v.fix(info.last,3)}$. Boundary acceptance probability: **${v.fix(info.boundary?.probability??0,4)}**${info.equal?String.raw` for every outcome; $P=Q$ gives $\beta=1-\varepsilon$.`:` at k=${info.boundary?.k}.`} The masses are numerical binomial evaluations.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.11
@@ -184,7 +175,9 @@ whatever the value of $\varepsilon$. With the false-alarm rate held fixed, the b
       statement: String.raw`For a stochastic process $\{X_i\}$ with values in a finite alphabet, the **entropy rate** is
 $$H(\mathcal X)=\lim_{n\to\infty}\frac1nH(X_1,\dots,X_n)\qquad\text{(when the limit exists)},$$
 the entropy per symbol; the companion quantity is $H'(\mathcal X)=\lim_{n\to\infty}H(X_n\mid X_{n-1},\dots,X_1)$, the entropy of a new symbol given the whole past. For a **stationary** process both limits exist and are equal: $H(X_n\mid X_{n-1},\dots,X_1)$ is non-increasing in $n$ (conditioning reduces entropy, 2.7), so it has a limit, and the Cesàro mean of a convergent sequence has the same limit by the chain rule (1.7). For an i.i.d. source the rate is $H(X_1)$.`,
-      idea: String.raw`By the chain rule $H(X_1,\dots,X_n)=\sum_{t\le n}H(X_t\mid X^{t-1})$ (1.7), so $\frac1nH(X^n)$ is the running average of the conditional entropies. For a stationary process each term is at most the previous one (stationarity plus conditioning reduces entropy, 2.7), hence they converge, and their average converges to the same limit. The definition says: the rate is the amount of new randomness per symbol once the past is known. The picture shows both sequences for a Markov chain, including a start that is *not* stationary, where both still converge to a common value.`,
+      idea: String.raw`By the chain rule $H(X_1,\dots,X_n)=\sum_{t\le n}H(X_t\mid X^{t-1})$ (1.7), so $\frac1nH(X^n)$ is the running average of the conditional entropies. For a stationary process each term is at most the previous one (stationarity plus conditioning reduces entropy, 2.7), hence they converge, and their average converges to the same limit. The definition says: the rate is the amount of new randomness per symbol once the past is known. The picture shows both sequences for a Markov chain, including a start that is *not* stationary, where both still converge to a common value.
+
+For a stationary finite-alphabet process, each conditional entropy lies between zero and the logarithm of the alphabet size. The non-increasing sequence therefore converges by the bounded-monotone theorem pma-3.14. If its limit is $L$, split its running average into a fixed initial segment and a tail within $\varepsilon$ of $L$: the initial contribution divided by $n$ vanishes and the tail error is at most $\varepsilon$. This proves the same limit for the block entropy per symbol.`,
       caption: String.raw`A two-state Markov chain with flip probabilities $a=P(0\to1)$ and $b=P(1\to0)$ and an initial distribution of your choice. Left: $\frac1nH(X_1..X_n)$ (blue) and $H(X_n\mid X_{n-1}..X_1)$ (orange) against $n$, both computed exactly from the chain, converge to the green rate $\pi_0h(a)+\pi_1h(b)$. The blue curve approaches from the side of $H(X_1)$ with a $1/n$ error, the orange one much faster. Right: the distribution $P(X_t=1)$ approaching the stationary value. Choose $a+b=1$ for an i.i.d. source (rate $h(a)$ at once, if the start is $P(X_1=1)=a$).`,
       deps: ['info-1.7', 'pma-3.14'],
       refs: ['Cover–Thomas §4.2'],
@@ -273,9 +266,11 @@ the stationary average of the entropies of the rows. If $P$ is irreducible, $\mu
       statement: String.raw`Let $G$ be a connected, undirected graph with $m$ edges and vertex degrees $d_1,\dots,d_N$, and let $\{X_i\}$ be the simple random walk on $G$: from a vertex the walk moves to a uniformly chosen neighbour. Its stationary distribution is $\mu_i=d_i/2m$, and its entropy rate is
 $$H(\mathcal X)=\sum_i\frac{d_i}{2m}\log_2d_i=\log_2(2m)-H\Big(\frac{d_1}{2m},\dots,\frac{d_N}{2m}\Big).$$
 For a $d$-regular graph this is $\log_2d$. (For a graph with several components the rate depends on the component the walk starts in; it is $0$ if the walk is stuck on an isolated vertex.)`,
-      idea: String.raw`The walk is a Markov chain with $P_{ij}=1/d_i$ on edges, and $\mu_iP_{ij}=\frac{d_i}{2m}\frac1{d_i}=\frac1{2m}=\mu_jP_{ji}$, so $\mu$ is stationary (detailed balance; stoch-4.1). The rate formula of 3.12 gives $\sum_i\mu_iH(P_{i\cdot})=\sum_i\mu_i\log_2d_i$ because each row is uniform on $d_i$ neighbours. The second form uses $\sum_i\frac{d_i}{2m}\log\frac{d_i}{2m}=\sum\mu_i\log d_i-\log2m$. High-degree hubs are visited often and offer many choices; so a hub-rich graph has a higher rate than a path.`,
+      idea: String.raw`The walk is a Markov chain with $P_{ij}=1/d_i$ on edges, and $\mu_iP_{ij}=\frac{d_i}{2m}\frac1{d_i}=\frac1{2m}=\mu_jP_{ji}$, so $\mu$ is stationary (detailed balance; stoch-4.1). The rate formula of 3.12 gives $\sum_i\mu_iH(P_{i\cdot})=\sum_i\mu_i\log_2d_i$ because each row is uniform on $d_i$ neighbours. The second form uses $\sum_i\frac{d_i}{2m}\log\frac{d_i}{2m}=\sum\mu_i\log d_i-\log2m$. High-degree hubs are visited often and offer many choices; so a hub-rich graph has a higher rate than a path.
+
+Detailed balance stoch-4.9 supplies the stationarity step: for each undirected edge both flows equal $1/(2m)$, and summing the incoming flows gives $\mu P=\mu$. Here the connected graph has at least one edge, so all degrees are positive and the degree weights sum to one. Bipartite periodicity does not invalidate this stationary law or the stationary entropy-rate formula; convergence of individual-time laws is a different question.`,
       caption: String.raw`Edit the graph: click empty space to add a vertex, click one vertex and then another to add (or remove) an edge, Alt-click to delete, drag to move. Vertex colour and the note beside it give $\mu_i=d_i/2m$. The right panel compares the simulated visit frequencies of a 4000-step walk (blue) with $\mu$ (green rings); the readout compares the exact rate with the average of $\log_2d$ along the path, and with the same rate obtained from the general Markov formula. Try the complete graph (rate $\log_2(N-1)$) or a path (small rate).`,
-      deps: ['info-3.12', 'graph-1.2.1a'],
+      deps: ['info-3.12', 'stoch-4.9'],
       refs: ['Cover–Thomas §4.3'],
       tags: ['entropy rate', 'random walk'],
       viz(v) {
@@ -319,9 +314,11 @@ For a $d$-regular graph this is $\log_2d$. (For a graph with several components 
       statement: String.raw`Let $\mu_n$ and $\mu_n'$ be the distributions at time $n$ of the same Markov chain (same transition matrix $P$) started from two different initial distributions. Then
 $$D(\mu_{n+1}\|\mu'_{n+1})\ \le\ D(\mu_n\|\mu'_n),$$
 so relative entropy between the two never increases. In particular, if $\mu'=\pi$ is a stationary distribution, then $D(\mu_n\|\pi)$ decreases monotonically (to $0$ when the chain is irreducible and aperiodic). The entropy $H(\mu_n)$ need *not* increase: if the stationary distribution is uniform, $D(\mu_n\|\pi)=\log|\mathcal X|-H(\mu_n)$ and $H(\mu_n)$ does increase, but for a non-uniform $\pi$ it can go down.`,
-      idea: String.raw`Both $\mu_{n+1}$ and $\mu'_{n+1}$ are obtained from $\mu_n,\mu'_n$ by passing through the same channel $P$. The data-processing inequality for relative entropy (2.10) says that applying the same channel to both arguments cannot increase their divergence. Stationarity of $\pi$ means $\pi_n\equiv\pi$, which gives the second statement. For doubly stochastic $P$ the uniform law is stationary, and $D(\mu\|\text{uniform})=\log|\mathcal X|-H(\mu)$ turns the monotone fall of $D$ into the rise of entropy, which is the thermodynamic second law; for a general $\pi$ the monotone quantity is the divergence, not the entropy.`,
+      idea: String.raw`Both $\mu_{n+1}$ and $\mu'_{n+1}$ are obtained from $\mu_n,\mu'_n$ by passing through the same channel $P$. The data-processing inequality for relative entropy (2.10) says that applying the same channel to both arguments cannot increase their divergence. Stationarity of $\pi$ means $\pi_n\equiv\pi$, which gives the second statement. For doubly stochastic $P$ the uniform law is stationary, and $D(\mu\|\text{uniform})=\log|\mathcal X|-H(\mu)$ turns the monotone fall of $D$ into the rise of entropy, which is the thermodynamic second law; for a general $\pi$ the monotone quantity is the divergence, not the entropy.
+
+The extra conclusion that divergence tends to zero uses more than its monotonicity. For a finite irreducible aperiodic chain, the convergence theorem stoch-4.7 gives $\mu_n\to\pi$ from every starting law, and irreducibility makes every $\pi_i$ positive. Continuity of the finite sum $\sum_i\mu_{n,i}\log(\mu_{n,i}/\pi_i)$, with $0\log0=0$, then gives limit zero. Periodic chains still contract divergence at each step but need not approach zero.`,
       caption: String.raw`Drag the starting distribution $\mu_0$ (blue) and, in "free" mode, a second start $\nu_0$ (orange) on the simplex; the dots trace how they move under the chain. The plot shows $D(\mu_n\|\nu_n)$ (blue), which falls at every step, and $H(\mu_n)$ (green). Pick the "uniform stationary law" chain and the entropy climbs; in the "biased" chain, $\pi$ is not uniform, and starting from the centre (the maximum-entropy distribution) $H(\mu_n)$ falls while $D$ still decreases. The laziness slider mixes in the identity and slows everything down.`,
-      deps: ['info-3.12', 'info-2.10'],
+      deps: ['info-3.12', 'info-2.10', 'stoch-4.7'],
       refs: ['Cover–Thomas §4.4'],
       tags: ['second law', 'Markov chain'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Markov_chain' },
@@ -374,9 +371,11 @@ so relative entropy between the two never increases. In particular, if $\mu'=\pi
       statement: String.raw`Let $\{X_i\}$ be a stationary **ergodic** process with values in a finite alphabet and entropy rate $H(\mathcal X)$. Then, with probability $1$,
 $$-\frac1n\log_2p(X_1,\dots,X_n)\ \longrightarrow\ H(\mathcal X).$$
 So the AEP (3.1) holds for the whole class of stationary ergodic sources, in the sense of almost-sure convergence along a single realisation. For a stationary process that is *not* ergodic the limit still exists but is a random variable: it is the entropy rate of the ergodic component that the realisation belongs to.`,
-      idea: String.raw`For a Markov chain the proof is the ergodic theorem: $-\log p(X^n)=-\log\mu(X_1)-\sum_{t}\log P_{X_tX_{t+1}}$ is an additive functional of the chain, whose time average converges to the stationary expectation $\sum_{ij}\mu_iP_{ij}\log\frac1{P_{ij}}=H(X_2\mid X_1)$ (3.12). The general theorem replaces this by a sandwich argument: approximate the process by $k$-th-order Markov chains, whose log-likelihoods converge by the ergodic theorem, and show the true log-likelihood stays between those approximations (Breiman 1957, building on McMillan's 1953 proof of convergence in $L^1$). Ergodicity is what makes the limit non-random.`,
+      idea: String.raw`For a Markov chain the proof is the ergodic theorem: $-\log p(X^n)=-\log\mu(X_1)-\sum_{t}\log P_{X_tX_{t+1}}$ is an additive functional of the chain, whose time average converges to the stationary expectation $\sum_{ij}\mu_iP_{ij}\log\frac1{P_{ij}}=H(X_2\mid X_1)$ (3.12). The general theorem replaces this by a sandwich argument: approximate the process by $k$-th-order Markov chains, whose log-likelihoods converge by the ergodic theorem, and show the true log-likelihood stays between those approximations (Breiman 1957, building on McMillan's 1953 proof of convergence in $L^1$). Ergodicity is what makes the limit non-random.
+
+In the finite irreducible Markov case, apply stoch-4.13 to the chain of allowed transition pairs $(X_t,X_{t+1})$. It is irreducible with stationary weights $\mu_iP_{ij}$; the reward $-\log_2P_{ij}$ is bounded on its finite allowed support. Its time average converges almost surely to the row-entropy average, and the initial log-probability divided by $n$ vanishes. No aperiodicity is needed for this time-average argument. This proves the Markov special case, not the general stationary-ergodic theorem by itself.`,
       caption: String.raw`Left: $-\frac1n\log_2p(x^n)$ along ten simulated realisations (thin lines) against the green entropy rate; the fan of paths narrows like $1/\sqrt n$. Right: all 300 realisations at the chosen $n$, as a histogram. Switch the source to the **mixture** of two coins, which is stationary but not ergodic (a hidden fair coin picks one of two biases $a,b$ for the whole sequence): the paths no longer agree, each converging to its own component's entropy ($h(a)$ or $h(b)$), and the histogram stays two-humped however large $n$ gets.`,
-      deps: ['info-3.11', 'info-3.1'],
+      deps: ['info-3.11', 'info-3.1', 'stoch-4.13'],
       refs: ['Cover–Thomas §16.8'],
       tags: ['AEP', 'ergodic theory'],
       credit: 'C. E. Shannon, 1948 (Markov sources); B. McMillan, 1953 (convergence in L¹, Ann. Math. Stat. 24, 196–219); L. Breiman, 1957 (almost sure, Ann. Math. Stat. 28, 809–811; correction 1960)',

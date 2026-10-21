@@ -1,7 +1,7 @@
-import { homogeneousRenewal } from './ch09-source.shared.js';
 // Rudin, Functional Analysis — Chapter 9 (part 2): the prime number theorem and the renewal equation
 //
-// Full second-edition source review is recorded in docs/verification/fa-source-review.md.
+// Numbering from Google Books snippet views (9.10–9.12 from the 1st edition, whose ch. 9 numbering matches the 2nd at every
+// point checked); items carry `verify: true`.
 
 // ---------------------------------------------------------------- primes
 const NMAX = 1000000;
@@ -32,7 +32,7 @@ const cdiv = (a, b) => { const d = b[0] * b[0] + b[1] * b[1]; return [(a[0] * b[
 const npow = (n, s) => { const L = Math.log(n), m = Math.exp(-s[0] * L); return [m * Math.cos(-s[1] * L), m * Math.sin(-s[1] * L)]; };
 const B2K = [1 / 6, -1 / 30, 1 / 42, -1 / 30, 5 / 66, -691 / 2730, 7 / 6, -3617 / 510];
 const FACT2K = [2, 24, 720, 40320, 3628800, 479001600, 87178291200, 20922789888000];
-export function zeta(s, N = 40) {
+function zeta(s, N = 40) {
   let z = [0, 0];
   for (let n = 1; n < N; n++) { const p = npow(n, s); z[0] += p[0]; z[1] += p[1]; }
   const Ns = npow(N, s);                                     // N^{−s}
@@ -65,15 +65,15 @@ export default {
       num: '9.10',
       kind: 'Definition',
       name: 'Preparation: Λ(n), ψ(x) and ζ(s)',
-      statement: String.raw`For positive integers, put $\Lambda(n)=\log p$ if $n=p^k$ is a prime power and $\Lambda(n)=0$ otherwise. Define
-$$\psi(x)=\sum_{n\le x}\Lambda(n),\qquad F(x)=\sum_{n\ge1}\psi(x/n).$$
-Then $F(x)=\log(\lfloor x\rfloor!)=x\log x-x+O(\log x)$ as $x\to\infty$. The prime number theorem is equivalent to $\psi(x)/x\to1$. The related Euler product and logarithmic derivative of $\zeta$ used in the picture are developed in 9.11.`,
+      statement: String.raw`For $\operatorname{Re}s>1$ the **Riemann zeta function** is $\zeta(s)=\sum_{n\ge1}n^{-s}=\prod_p(1-p^{-s})^{-1}$ (Euler product over the primes). The **von Mangoldt function** is $\Lambda(n)=\log p$ if $n=p^k$ is a power of a prime $p$ and $\Lambda(n)=0$ otherwise; then
+$$-\frac{\zeta'(s)}{\zeta(s)}=\sum_{n\ge1}\Lambda(n)\,n^{-s},\qquad\psi(x)=\sum_{n\le x}\Lambda(n),$$
+and $\pi(x)$ is the number of primes $\le x$.`,
       idea: String.raw`The Euler product is unique factorisation in analytic form: expanding $\prod_{p\le P}(1-p^{-s})^{-1}=\prod_p\sum_kp^{-ks}$ produces $n^{-s}$ once for every $n$ whose prime factors are $\le P$. Taking logarithmic derivatives turns the product into the Dirichlet series of $\Lambda$. The prime number theorem is equivalent to $\psi(x)\sim x$, and it is $\psi$, not $\pi$, that the Tauberian machinery handles naturally.`,
       caption: String.raw`Top: the Chebyshev function $\psi(x)$, a staircase that climbs by $\log p$ at every prime power $p^k$ (gold dots mark the prime powers that are not primes), against the line $y=x$. Bottom: for real $s>1$, the partial sums $\sum_{n\le N}n^{-s}$ (blue) and the partial Euler products $\prod_{p\le N}(1-p^{-s})^{-1}$ (purple) both converge to $\zeta(s)$ (green) — the product from below, faster.`,
       deps: [],
       see: ['rca-15.4'],
       tags: ['number theory', 'zeta function'],
-
+      verify: true,
       viz(v) {
         const M = v.M;
         const XS = v.slider('range $x\\le X$, $X=$', 20, 300, 60, { int: true });
@@ -108,7 +108,7 @@ Then $F(x)=\log(\lfloor x\rfloor!)=x\log x-x+O(\log x)$ as $x\to\infty$. The pri
       num: '9.11',
       kind: 'Theorem',
       name: 'ζ has no zeros on the line Re s = 1',
-      credit: 'Hadamard & de la Vallée Poussin',
+      credit: 'Hadamard & de la Vallée Poussin, 1896',
       statement: String.raw`The function $\zeta(s)-\frac1{s-1}$ extends to a holomorphic function in $\operatorname{Re}s>0$, so $\zeta$ is meromorphic there with a single simple pole at $s=1$; and
 $$\zeta(1+it)\ne0\qquad(t\in\R,\ t\ne0).$$`,
       idea: String.raw`The extension comes from comparing $\sum n^{-s}$ with $\int_1^\infty x^{-s}dx=\frac1{s-1}$. For the zero-free line: from the Euler product, $\log|\zeta(\sigma+it)|=\sum_p\sum_k\frac{\cos(kt\log p)}{kp^{k\sigma}}$ for $\sigma>1$, and $3+4\cos\theta+\cos2\theta=2(1+\cos\theta)^2\ge0$ gives
@@ -117,7 +117,7 @@ If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like 
       caption: String.raw`Top: $|\zeta(\sigma+it)|$ for $0\le t\le60$ (computed by Euler–Maclaurin summation). On $\sigma=1$ (green) it never reaches $0$ — though it dips low; lower $\sigma$ to $\frac12$ to watch the first nontrivial zeros $t\approx14.13,21.02,25.01,\dots$ appear on the critical line. Bottom: the 3–4–1 product $\log|\zeta(\sigma)^3\zeta(\sigma+it)^4\zeta(\sigma+2it)|$ for $\sigma>1$, which stays $\ge0$ — the inequality behind the theorem.`,
       deps: ['fa-9.10'],
       tags: ['number theory', 'zeta function'],
-
+      verify: true,
       viz(v) {
         const M = v.M;
         const sS = v.slider('$\\sigma$ (top panel)', 0.5, 1.5, 1, { step: 0.01 });
@@ -152,7 +152,7 @@ If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like 
         v.readout(() => {
           const s = st;
           const zs = s.zeros.length ? `; near-zeros of $|\\zeta(${v.fix(s.sg, 2)}+it)|$ at $t\\approx${s.zeros.map((z) => v.fix(z, 2)).join(', ')}$` : '';
-          return `sampled $\\min_{1\\le t\\le60}|\\zeta(1+it)| = ${v.fix(s.minOne, 4)}$ at $t\\approx${v.fix(s.at, 2)}$${zs}. The sampled 3–4–1 logarithm has minimum $${v.fix(s.minG, 3)}\\ge0$.`;
+          return `$\\min_{1\\le t\\le60}|\\zeta(1+it)| = ${v.fix(s.minOne, 4)}$ at $t\\approx${v.fix(s.at, 2)}$${zs}. The 3–4–1 logarithm never drops below $${v.fix(s.minG, 3)}\\ge0$.`;
         });
       },
     },
@@ -160,7 +160,7 @@ If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like 
       num: '9.12',
       kind: 'Theorem',
       name: "Ingham's Tauberian theorem",
-      credit: 'Ingham',
+      credit: 'Ingham, 1935',
       statement: String.raw`Suppose $g$ is a real nondecreasing function on $(0,\infty)$, $g(x)=0$ for $0<x<1$, and
 $$\sum_{n=1}^\infty g\Big(\frac xn\Big)=ax\log x+bx+o(x)\qquad(x\to\infty)$$
 for some constants $a,b$. Then $g(x)=ax+o(x)$ as $x\to\infty$.`,
@@ -170,7 +170,7 @@ has no zero. $\zeta(1+it)\ne0$ for $t\ne0$ (9.11), the bracket vanishes only if 
       caption: String.raw`Rudin's kernel from the proof. Left: $K(x)=2k(x)-k(x-1)-k(x-\lambda)$ with $k(x)=[e^x]e^{-x}$. Right: $|\hat K(t)|=\frac{|\zeta(1+it)|}{|1+it|}\,|2-e^{-it}-e^{-i\lambda t}|$, with $\zeta$ computed by Euler–Maclaurin. Set $\lambda$. For rational $\lambda=p/q$ the bracket vanishes at $t=2\pi q\,m$ (red ticks), so $\hat K$ has zeros and Wiener's theorem does not apply. For irrational $\lambda$ the bracket only comes close to $0$; the only threat would then be a zero of $\zeta$ on the line $\operatorname{Re}s=1$, which 9.11 excludes. The readout shows $\min|\hat K|$ on $[-T,T]$ and $\hat K(0)=1+\lambda$.`,
       deps: ['fa-9.7', 'fa-9.11', 'fa-9.10'],
       tags: ['Tauberian', 'Ingham', 'prime number theorem'],
-
+      verify: true,
       viz(v) {
         const M = v.M;
         const lam = v.select('$\\lambda=$', [{ value: Math.SQRT2, label: '$\\sqrt2$' }, { value: (1 + Math.sqrt(5)) / 2, label: '$\\frac{1+\\sqrt5}2$' }, { value: 1.5, label: '$\\frac32$' }, { value: 2, label: '$2$' }], Math.SQRT2);
@@ -202,7 +202,7 @@ has no zero. $\zeta(1+it)\ne0$ for $t\ne0$ (9.11), the bracket vanishes only if 
         });
         v.readout(() => {
           const s = st;
-          return `$\\hat K(0)=1+\\lambda=${v.fix(1 + s.l, 4)}$; sampled $\\min_{|t|\\le${s.T}}|\\hat K(t)|=${v.sci(s.mn + 1e-17, 2)}$. ` + (s.rational ? '$\\lambda$ is rational: $\\hat K$ has zeros, and the Tauberian argument breaks.' : '$\\lambda$ is irrational: no zeros (the minimum is small but positive, where $t$ and $\\lambda t$ are both close to $2\\pi\\Z$), so Wiener’s theorem applies.');
+          return `$\\hat K(0)=1+\\lambda=${v.fix(1 + s.l, 4)}$; $\\min_{|t|\\le${s.T}}|\\hat K(t)|=${v.sci(s.mn + 1e-17, 2)}$. ` + (s.rational ? '$\\lambda$ is rational: $\\hat K$ has zeros, and the Tauberian argument breaks.' : '$\\lambda$ is irrational: no zeros (the minimum is small but positive, where $t$ and $\\lambda t$ are both close to $2\\pi\\Z$), so Wiener’s theorem applies.');
         });
       },
     },
@@ -210,7 +210,7 @@ has no zero. $\zeta(1+it)\ne0$ for $t\ne0$ (9.11), the bracket vanishes only if 
       num: '9.12a',
       kind: 'Corollary',
       name: 'The prime number theorem',
-      credit: 'Hadamard & de la Vallée Poussin',
+      credit: 'Hadamard & de la Vallée Poussin, 1896',
       statement: String.raw`$$\lim_{x\to\infty}\frac{\pi(x)\log x}{x}=1,\qquad\text{equivalently}\qquad\lim_{x\to\infty}\frac{\psi(x)}{x}=1 .$$`,
       idea: String.raw`Apply Ingham's theorem 9.12 to $g=\psi$, which is nondecreasing and vanishes on $(0,2)$. Every $m\le x$ satisfies $\log m=\sum_{d\mid m}\Lambda(d)$, so
 $$\sum_{n\ge1}\psi\Big(\frac xn\Big)=\sum_{m\le x}\log m=\log[x]!=x\log x-x+O(\log x)$$
@@ -218,7 +218,7 @@ by Stirling's formula. This is the hypothesis of 9.12 with $a=1$, $b=-1$, so $\p
       caption: String.raw`Primes up to $10^6$, by a sieve. The three ratios $\pi(x)\log x/x$ (red), $\psi(x)/x$ (green) and $\pi(x)/\mathrm{li}(x)$ (blue) against $\log_{10}x$: all tend to $1$, the first very slowly (it is off by about $1/\log x$). Drag the marker. Bottom: the slowly oscillating function $\varphi(u)=e^{-u}\psi(e^u)$ of the Tauberian argument, with $u=\log x$ — it settles at $1$.`,
       deps: ['fa-9.12', 'fa-9.11', 'fa-9.10'],
       tags: ['number theory', 'prime number theorem', 'Tauberian theorems'],
-
+      verify: true,
       viz(v) {
         const M = v.M;
         const top = v.stage({ x: [1, 6], y: [0.6, 1.5], height: 250, full: true, axes: 'box', xlabel: 'log₁₀ x', title: 'three ratios that tend to $1$' });
@@ -247,13 +247,73 @@ by Stirling's formula. This is the hypothesis of 9.12 with $a=1$, $b=-1$, so $\p
       },
     },
     {
-      num: '9.13', kind: 'Theorem', name: 'Bounded homogeneous renewal solutions are constant almost everywhere',
-      statement: String.raw`Let $\mu$ be a Borel probability measure on $\mathbb R$ whose support is not contained in any cyclic subgroup $d\mathbb Z$. If a bounded Borel function $\varphi$ satisfies $\varphi(x)-(\varphi*\mu)(x)=0$ for every real $x$, then $\varphi$ is constant except possibly on a set of Lebesgue measure zero. No moment assumption or nonnegative-support condition is imposed.`,
-      idea: String.raw`If $\widehat\mu(t)=1$ for nonzero $t$, equality in the triangle inequality forces $e^{-ixt}=1$ almost surely, placing the support in $(2\pi/t)\mathbb Z$. Thus the Fourier transform of $\delta-\mu$ vanishes only at zero. Convolve this signed measure with a Gaussian to obtain $K\in L^1$ with the same zero set and $K*\varphi=0$. By 9.3, $\widehat\varphi$ is supported at the origin. The point-support theorem 6.25 makes it a finite sum of Dirac derivatives, so $\varphi$ is a polynomial as a distribution. Boundedness makes this polynomial constant, giving the almost-everywhere conclusion.`,
-      caption: String.raw`Test $\varphi(x)=1+B\cos(\omega x)$ against three exact probability convolutions. Uniform and irrational two-point measures satisfy the source hypothesis; their nonconstant candidates have positive residual. A measure on the integers admits a periodic candidate at $\omega=2\pi$. The readout gives the exact residual supremum, not a grid-based certificate. Set the amplitude to zero to obtain a true solution under either hypothesis.`,
-      deps: ['fa-9.3', 'fa-6.25', 'fa-7.15'], tags: ['renewal equation', 'uniqueness', 'Fourier transform'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., Theorem9.13, pp236–237'],
-      viz: homogeneousRenewal,
+      num: '9.13',
+      kind: 'Theorem',
+      name: 'The renewal theorem',
+      statement: String.raw`Let $\mu$ be a probability measure on $[0,\infty)$ with finite mean $m=\int x\,d\mu(x)$, not concentrated on a lattice $\{0,d,2d,\dots\}$ (equivalently $\hat\mu(t)\ne1$ for $t\ne0$). Let $f$ be bounded, measurable, $0$ on $(-\infty,0)$, with $\sum_k\sup_{[k,k+1]}|f|<\infty$. Then the **renewal equation**
+$$\varphi=f+\mu*\varphi,\qquad\varphi=0\text{ on }(-\infty,0),$$
+has exactly one locally bounded solution, and
+$$\lim_{x\to\infty}\varphi(x)=\frac1m\int_0^\infty f(x)\,dx .$$`,
+      idea: String.raw`The solution is $\varphi=\sum_{k\ge0}\mu^{*k}*f$, a superposition of the renewal measure $U=\sum\mu^{*k}$ with $f$. The Tauberian step is to show that $U$ looks like Lebesgue measure$/m$ at infinity: $(\delta_0-\mu)*U=\delta_0$, and the kernel whose Fourier transform is $(1-\hat\mu(t))/(it)$ — integrable, with value $m$ at $t=0$ — has **no zeros** exactly when $\mu$ is non-lattice. Wiener's Tauberian theorem (9.7) then transfers the trivial average of $U$ to all averages, giving $U*f\to\frac1m\int f$.`,
+      caption: String.raw`$f(x)=\sin^2(\pi x)$ on $[0,1]$ (so $\int f=\frac12$), and four choices of the step distribution $\mu$. The renewal equation is solved exactly on a grid of step $0.01$. For the uniform and gamma distributions, and even for the purely atomic but non-lattice $\frac12(\delta_1+\delta_{\sqrt2})$, $\varphi(x)$ settles at $\frac1{2m}$ (green dashed). For the lattice $\frac12(\delta_1+\delta_2)$ it never settles: it keeps the period $1$ of the lattice — exactly the case in which $1-\hat\mu$ has real zeros $t=2\pi k$.`,
+      deps: ['fa-9.7', 'fa-9.5', 'fa-7.2'],
+      tags: ['Tauberian theorems', 'renewal equation', 'probability'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const MU = {
+          unif: { label: 'uniform on $[\\frac12,\\frac32]$', m: 1 },
+          gamma: { label: 'gamma: $xe^{-x}dx$', m: 2 },
+          irr: { label: '$\\frac12(\\delta_1+\\delta_{\\sqrt2})$', m: (1 + Math.SQRT2) / 2 },
+          lat: { label: '$\\frac12(\\delta_1+\\delta_2)$ (lattice)', m: 1.5 },
+        };
+        const which = v.select('$\\mu=$', Object.entries(MU).map(([value, o]) => ({ value, label: o.label })), 'irr');
+        const XS = v.slider('horizon', 10, 60, 30, { step: 1 });
+        const top = v.stage({ x: [0, 30], y: [0, 1.1], height: 280, full: true, axes: 'box', xlabel: 'x', title: 'the solution $\\varphi$ of $\\varphi=f+\\mu*\\varphi$' });
+        const bot = v.stage({ x: [0, 4], y: [0, 1.1], height: 150, full: true, axes: 'box', xlabel: 'x', title: '$f$ (orange) and $\\mu$ (purple)' });
+        const h = 0.01, NX = 6000;
+        const fArr = new Float64Array(NX); for (let i = 0; i < NX; i++) { const x = i * h; fArr[i] = x < 1 ? Math.sin(Math.PI * x) ** 2 : 0; }
+        const cache = new Map();
+        const solve = (key) => {
+          if (cache.has(key)) return cache.get(key);
+          const phi = new Float64Array(NX);
+          if (key === 'irr' || key === 'lat') {
+            const at = key === 'irr' ? [[Math.round(1 / h), 0.5], [Math.round(Math.SQRT2 / h), 0.5]] : [[Math.round(1 / h), 0.5], [Math.round(2 / h), 0.5]];
+            for (let i = 0; i < NX; i++) { let s = fArr[i]; for (const [k, w] of at) if (i >= k) s += w * phi[i - k]; phi[i] = s; }
+          } else {
+            // density weights μ_j = mass of [jh, (j+1)h)
+            const dens = key === 'unif' ? (y) => (y >= 0.5 && y <= 1.5 ? 1 : 0) : (y) => y * Math.exp(-y);
+            const J = key === 'unif' ? Math.round(1.5 / h) + 1 : Math.round(30 / h);
+            const mu = new Float64Array(J); let tot = 0;
+            for (let j = 0; j < J; j++) { const a = j * h, b = a + h; mu[j] = (dens(a) + 4 * dens((a + b) / 2) + dens(b)) * h / 6; tot += mu[j]; }
+            for (let j = 0; j < J; j++) mu[j] /= tot;
+            for (let i = 0; i < NX; i++) { let s = fArr[i]; const top = Math.min(i, J - 1); for (let j = 1; j <= top; j++) s += mu[j] * phi[i - j]; phi[i] = s / (1 - mu[0]); }
+          }
+          cache.set(key, phi); return phi;
+        };
+        let st = {};
+        v.legend([['blue', '$\\varphi(x)$'], ['green', '$\\frac1m\\int f=\\frac1{2m}$', { dash: true }], ['orange', '$f$'], ['purple', '$\\mu$']]);
+        v.render(() => {
+          const key = which.value, X = XS.value, mu = MU[key], phi = solve(key), lim = 0.5 / mu.m;
+          top.setView([0, X], [0, Math.max(1.05, lim * 1.5)]);
+          const n = Math.min(NX - 1, Math.round(X / h)), step = Math.max(1, Math.floor(n / 2400));
+          const pts = []; for (let i = 0; i <= n; i += step) pts.push([i * h, phi[i]]);
+          top.hline(lim, { color: 'green', width: 2, dash: [6, 4] });
+          top.path(pts, { color: 'blue', width: 1.6 });
+          // f and μ
+          bot.fn((x) => (x < 1 ? Math.sin(Math.PI * x) ** 2 : 0), { color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.15 });
+          if (key === 'unif') bot.rect(0.5, 0, 1.5, 1, { fill: 'purple', fillAlpha: 0.2, color: 'purple', width: 1.6 });
+          else if (key === 'gamma') bot.fn((x) => x * Math.exp(-x), { color: 'purple', width: 2, fill: 'purple', fillAlpha: 0.15 });
+          else { const at = key === 'irr' ? [1, Math.SQRT2] : [1, 2]; for (const a of at) bot.arrow(a, 0, a, 0.5 * 1.6, { color: 'purple', width: 2.6, head: 8 }); }
+          // tail oscillation
+          const i0 = Math.round((X - 3) / h); let lo = Infinity, hi = -Infinity; for (let i = i0; i <= n; i++) { lo = Math.min(lo, phi[i]); hi = Math.max(hi, phi[i]); }
+          st = { key, lim, lo, hi, m: mu.m, X };
+        });
+        v.readout(() => {
+          const s = st;
+          return `$m = ${v.fix(s.m, 4)}$, predicted limit $\\frac1{2m} = ${v.fix(s.lim, 4)}$. On $[${s.X - 3}, ${s.X}]$: $\\varphi$ ranges over $[${v.fix(s.lo, 4)},\\,${v.fix(s.hi, 4)}]$` + (s.key === 'lat' ? ' — the lattice case does not converge.' : '.');
+        });
+      },
     },
   ],
 };

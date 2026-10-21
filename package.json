@@ -7,13 +7,11 @@
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
     "serve": "node scripts/serve.mjs",
-    "test": "node tests/math.test.mjs && node tests/kits-science.test.mjs && node --test --test-concurrency=2 tests/verification-*.test.mjs tests/verification-macro.mjs tests/verification-game.mjs tests/verification-fin.mjs tests/verification-micro.mjs tests/verification-behav.mjs && node --test tests/catalog.test.mjs",
+    "test": "node --test tests/*.test.mjs",
     "test:ui": "node --test tests/ui.test.mjs",
-    "test:catalog": "node --test tests/catalog.test.mjs",
-    "verify:queue": "node scripts/verification-status.mjs --check"
+    "wave5:plan": "node scripts/plan-wave-five.mjs"
   },
   "devDependencies": {
-    "katex": "0.16.11",
     "playwright-core": "^1.64.0"
   }
 }

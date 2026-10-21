@@ -1,3 +1,4 @@
+import {deletionAnalysis, boundedOpt, auditedWelzl} from './geometry-source-audit.shared.js';
 // Computational Geometry & Graphics — Chapter 4: Linear programming and duality (§§4.1–4.5; §§4.6–4.9 in ch04-b.js)
 import { hpABC, regionOf, lineEnds, lpBest, tightAt, randLP, seidel, welzlRun, genPts } from './ch04.shared.js';
 
@@ -25,7 +26,7 @@ export default {
       idea: String.raw`A convex region is an intersection of half-planes, and intersecting two convex regions only needs the merge of two sorted boundary chains, which is linear because both are convex. The recursion therefore costs $O(n)$ per level over $\log_2 n$ levels. Emptiness is the planar case of Helly's theorem: if every three half-planes (convex sets) had a common point, all of them would; so an empty intersection is always certified by a triple, which the picture finds by brute force over triples.`,
       caption: String.raw`Drag the endpoints of the lines: each half-plane is the side the small arrow points to (the left of the directed line $p\to q$), and the window edges are four extra half-planes that bound the answer. The region is shaded green; a line that contributes no edge is redundant and drawn dashed. Switch to **divide & conquer** to see the two recursive halves (blue and orange) and their overlap. **Break it** pushes line 1 to $x\ge3.8$: the intersection becomes empty and the readout names three half-planes that already have no common point.`,
       credit: 'M. I. Shamos & D. Hoey, 1976 (O(n log n) divide and conquer)',
-      deps: ['cg-2.1', 'cg-2.4', 'opt-2.3'], refs: ['de Berg §4.2'], tags: ['half-planes', 'convexity', 'algorithm'],
+      deps: ['cg-2.1', 'cg-2.4'], refs: ['de Berg §4.2'], tags: ['half-planes', 'convexity', 'algorithm'],
       links: { doi: 'https://doi.org/10.1109/SFCS.1976.16' },
       viz(v) {
         const WX = 5, WY = 3.6;
@@ -96,10 +97,12 @@ export default {
     // ------------------------------------------------------------------------------------------ 4.2
     {
       num: '4.2', kind: 'Theorem', name: 'Linear programs attain their optimum at a vertex',
-      statement: String.raw`Let $P=\{x\in\R^d: Ax\le b\}$ be a nonempty polyhedron that contains **no line** (so it has vertices) and let $c\in\R^d$. If $\sup_{x\in P} c\cdot x$ is finite, it is attained, and it is attained at a **vertex** of $P$. The set of all optima is a face of $P$: a vertex, an edge, or (in the plane) an unbounded edge, when $c$ is perpendicular to it. If $P$ contains a line, then the supremum is $+\infty$ or the optimum is attained along entire lines, and there may be no vertex at all. In the plane this reduces the search to the vertices of the region of 4.1.`,
-      idea: String.raw`Take an optimal $x$ and look at the constraints tight at $x$. If they leave a direction $d$ free (they all keep $a_i\cdot d=0$), then $c\cdot d=0$, otherwise one way along $d$ would improve the optimum; so moving along $\pm d$ keeps the value. Since $P$ contains no line, one of the two directions soon meets a new constraint, which becomes tight. Each such step adds an independent tight constraint, so after at most $d$ steps we stand on a vertex with the same value. This is the finite-dimensional case of “a linear functional attains its maximum at an extreme point” (fa-3.24), and it is what lets the simplex method and the incremental algorithm of 4.3 work with vertices alone.`,
+      statement: String.raw`Let $P=\{x\in\R^d: Ax\le b\}$ be a nonempty polyhedron that contains **no line** (so it has vertices) and let $c\in\R^d$. If $\sup_{x\in P} c\cdot x$ is finite, it is attained, and it is attained at a **vertex** of $P$. The set of all optima is a face of $P$, possibly all of $P$ when the objective is constant there (in particular when $c=0$). In the plane a proper nonempty optimal face is a vertex or an edge, possibly unbounded; along an optimal edge the objective vector $c$ is perpendicular to its direction. If $P$ contains a line, then the supremum is $+\infty$ or the optimum is attained along entire lines, and there may be no vertex at all. In the plane this reduces the search to the vertices of the region of 4.1.`,
+      idea: String.raw`Take an optimal $x$ and look at the constraints tight at $x$. If they leave a direction $d$ free (they all keep $a_i\cdot d=0$), then $c\cdot d=0$, otherwise one way along $d$ would improve the optimum; so moving along $\pm d$ keeps the value. Since $P$ contains no line, one of the two directions soon meets a new constraint, which becomes tight. Each such step adds an independent tight constraint, so after at most $d$ steps we stand on a vertex with the same value. This is the finite-dimensional case of “a linear functional attains its maximum at an extreme point” (fa-3.24), and it is what lets the simplex method and the incremental algorithm of 4.3 work with vertices alone.
+
+Rank-nullity (LADR 3.21) supplies the free direction rigorously: the linear map formed by the active constraint rows has a nonzero kernel when its rank is below the ambient dimension. In fact this also avoids assuming attainment in advance. Start at any feasible point and choose the sign of a kernel direction so that the objective does not decrease. If it strictly increases, boundedness of the objective forces a new constraint to be reached; if it stays constant, the no-line hypothesis ensures that at least one of the two signs reaches a new constraint. That row is independent of the previous active rows, since it does not annihilate the chosen direction. After at most $d$ rank increases the point is a vertex with objective no smaller. There are finitely many vertices, so a best one dominates every feasible point and attains the supremum. The compact extreme-point theorem mentioned above is a related principle; it alone does not establish attainment on an unbounded polyhedron.`,
       caption: String.raw`Rotate the objective $c$. The gold line is the level set $c\cdot x=$ const through the optimum; the optimum (green) hops from vertex to vertex as $c$ passes the normal of an edge, and sits on a whole edge exactly then. The right graph is the optimal value against the direction of $c$; it kinks at the dashed lines (edge normals). Switch the region: for the **open** region the optimum is unbounded for some $c$; for the **strip**, which contains lines, there are no vertices at all, and the optimum is either unbounded or an entire line.`,
-      deps: ['cg-4.1', 'fa-3.24', 'algo-11.15'], refs: ['de Berg §4.3'], tags: ['linear programming', 'vertices'],
+      deps: ['cg-4.1', 'fa-3.24', 'algo-11.15', 'ladr-3.21'], refs: ['de Berg §4.3'], tags: ['linear programming', 'vertices'],
       viz(v) {
         const s = v.stage({ x: [-4.2, 4.2], y: [-3.1, 3.1], equal: true, axes: false, height: 380, minWidth: 340 });
         const G = v.stage({ x: [0, 360], y: [-4, 4], axes: 'box', gutter: true, xlabel: 'direction of c (degrees)', ylabel: 'optimal value', title: 'optimal value as c turns', height: 380, minWidth: 300 });
@@ -252,16 +255,17 @@ export default {
     // ------------------------------------------------------------------------------------------ 4.4
     {
       num: '4.4', kind: 'Method', name: 'Backwards analysis',
-      statement: String.raw`**Backwards analysis** bounds the expected cost of a randomized incremental algorithm by running the last step in reverse. Fix the set $H_i=\{h_1,\dots,h_i\}$ of the first $i$ constraints, not their order: given the set, each of its $i$ members is equally likely to be the one inserted last. For the linear program of 4.3 with a unique optimum $v(H_i)$ determined by two constraints, the optimum changes at step $i$ only if the last constraint is one of those two, so $\Pr[v_i\ne v_{i-1}]\le 2/i$. Hence the expected number of one-dimensional programs is at most $\sum_{i}2/i=2H_n\approx2\ln n$, and the expected total work is $\sum_i\tfrac2i\,O(i)=O(n)$.`,
-      idea: String.raw`The forward view (“what will the next random constraint do?”) depends on the unknown future set of constraints; the backward view conditions on the set seen so far and asks which of its $i$ members the algorithm just added. Removing a constraint $h$ from $H_i$ changes the optimum only when $h$ belongs to the basis, the two constraints that define the optimum (4.2: it is a vertex, the meeting of two lines). Two members out of $i$ gives $2/i$. If the optimum is still on the bounding box, fewer than two real constraints define it, and the true probability is even smaller, which the empirical curve shows for small $i$.`,
-      caption: String.raw`Choose a prefix size $i$ of the constraints (in a fixed random order). The optimum (green) sits at the meeting of the two **defining** constraints (red). **Remove a random constraint** deletes one of the $i$ at random and shows where the optimum goes (orange); the tally compares how often it moved with $2/i$. The right graph is the measured probability that the $i$-th inserted constraint changed the optimum, over 4000 random orders of this instance (blue), against $2/i$ (orange).`,
-      credit: 'Backwards-analysis principle and full basis-probability proof: E. Welzl, Smallest enclosing disks (balls and ellipsoids), §2, pp. 363–364; planar-LP specialization explained here',
-      deps: ['cg-4.3', 'prob-1.6.1'], refs: ['Welzl (1991), §2, pp. 363–364, backwards-analysis proof; de Berg §4.4'], sourceUrl: 'https://people.inf.ethz.ch/emo/PublFiles/SmallEnclDisk_LNCS555_91.pdf', tags: ['randomization', 'analysis'],
-      scope: String.raw`Uniform random insertion order; the two-dimensional LP has a fixed bounding box, remains feasible, and uses a fixed generic objective or consistent symbolic tie-breaking. Each prefix optimum has a basis of at most two inserted constraints (box constraints are fixed). Expectation is over insertion order, not an assumed input distribution.`,
+      statement: String.raw`**Backwards analysis** bounds the expected cost of a randomized incremental algorithm by running the last step in reverse. Fix the set $H_i=\{h_1,\dots,h_i\}$ of the first $i$ constraints, not their order: given the set, each of its $i$ members is equally likely to be the one inserted last. For the linear program of 4.3 with a bounded feasible region and a consistent unique optimum (using fixed lexicographic tie-breaking if necessary), determined by at most two constraints, the optimum changes at step $i$ only if the last constraint is one of those two, so $\Pr[v_i\ne v_{i-1}]\le 2/i$. Hence the expected number of one-dimensional programs is at most $\sum_{i}2/i=2H_n\approx2\ln n$, and the expected total work is $\sum_i\tfrac2i\,O(i)=O(n)$.`,
+      idea: String.raw`The forward view (“what will the next random constraint do?”) depends on the unknown future set of constraints; the backward view conditions on the set seen so far and asks which of its $i$ members the algorithm just added. Choose a basis of at most two constraints that already determines the same tie-broken optimum, with the fixed bounding box always present. Removing a constraint outside that basis leaves the optimum unchanged. Even a tight constraint can be redundant: the exact deletion probability is the number of **essential** constraints (whose removal actually changes the selected optimum) divided by $i$, and is at most $2/i$. If the optimum is still on the bounding box, the basis can use fewer than two sampled constraints. The bound is conditional on a fixed prefix set and hence holds unconditionally; a Monte Carlo frequency need not lie below a probability bound in every finite experiment.
+
+Write $I_i$ for the indicator that deletion of the last sampled constraint changes the selected optimum, and $W_i$ for the work at stage $i$. On each fixed prefix-set probability space, uniform choice of its last member gives $E I_i\le2/i$, and a bound of the form $W_i\le a+b i I_i$ gives a constant bound on $E W_i$. Linearity and monotonicity of expectation (PROB 1.6.1) justify both sums: expected rebuild count is at most the harmonic sum, while expected total work is the sum of the bounded expected stage costs. The indicators need not be independent; averaging these finite conditional bounds over prefix sets preserves them.`,
+      caption: String.raw`Choose a prefix size $i$ of the constraints (in a fixed random order). The optimum (green) sits at the selected optimum, with constraints essential to that optimum marked red. **Remove a random constraint** deletes one of the $i$ at random and shows where the optimum goes (orange); the tally compares how often it moved with $2/i$. The right graph is the measured probability that the $i$-th inserted constraint changed the optimum, over 4000 random orders of this instance (blue), against $2/i$ (orange).`,
+      credit: 'R. Seidel, 1991, small-dimensional LP analysis; de Berg et al., Lemma 4.8',
+      deps: ['cg-4.3', 'prob-1.6.1'], refs: ['de Berg et al., 3rd ed., Lemma 4.8, pp.78–79; Seidel (1991), §2'], tags: ['randomization', 'analysis'],
       viz(v) {
         const M = 20, WX = 3.4, WY = 2.6;
         const s = v.stage({ x: [-WX, WX], y: [-WY, WY], equal: true, axes: false, height: 380, minWidth: 340 });
-        const G = v.stage({ x: [2, M], y: [0, 0.85], axes: 'box', gutter: true, xlabel: 'step i', ylabel: 'probability the optimum changes', title: 'Pr[ step i changes the optimum ]', height: 380, minWidth: 280 });
+        const G = v.stage({ x: [2, M], y: [0, 1.05], axes: 'box', gutter: true, xlabel: 'step i', ylabel: 'probability the optimum changes', title: 'Pr[ step i changes the optimum ]', height: 380, minWidth: 280 });
         let seed = 2, inst, ord, emp, meanChanges, last = null, tally = [0, 0], trialR;
         const isl = v.slider('prefix size $i$', 3, M, 10, { int: true, onChange: () => { tally = [0, 0]; last = null; } });
         const build = () => {
@@ -275,12 +279,13 @@ export default {
           tally = [0, 0]; last = null; trialR = v.rng(seed * 101 + 7);
         };
         build();
-        const optOf = (ids) => lpBest(regionOf(ids.map((k) => inst.cons[k]), 8), inst.c[0], inst.c[1]);
+        const optOf = ids => boundedOpt(ids.map(k=>inst.cons[k]),inst.c,8);
+        let cached=null,cachedKey='';const analysis=()=>{const key=`${seed}:${isl.value}`;if(key!==cachedKey){cached=deletionAnalysis(ord.slice(0,isl.value).map(k=>inst.cons[k]),inst.c,8);cachedKey=key;}return cached;};
         const trials = (k) => {
           const i = isl.value, pre = ord.slice(0, i), full = optOf(pre);
           for (let t = 0; t < k; t++) {
             const j = trialR.int(0, i - 1), without = optOf(pre.filter((_, q) => q !== j));
-            const moved = dist(full.p, without.p) > 1e-9;
+            const moved = full.key !== without.key;
             tally[0]++; if (moved) tally[1]++;
             last = { j: pre[j], p: without.p, moved, ids: pre.filter((_, q) => q !== j) };
           }
@@ -291,20 +296,21 @@ export default {
         v.legend([['blue', 'measured, 4000 orders'], ['orange', '2 / i', { dash: true }]]);
         v.render(() => {
           const i = isl.value, pre = ord.slice(0, i), cons = pre.map((k) => inst.cons[k]);
-          const reg = regionOf(cons, 8), best = optOf(pre), basis = tightAt(cons, best.p);
+          const reg = regionOf(cons, 8), A=analysis(), best=A.full, basis=A.essential;
+          const reg2=last?regionOf(last.ids.map(k=>inst.cons[k]),8):[],all=reg.concat(reg2,[best.p],last?[last.p]:[]),XR=[Math.min(-WX,...all.map(p=>p[0]))-.25,Math.max(WX,...all.map(p=>p[0]))+.25],YR=[Math.min(-WY,...all.map(p=>p[1]))-.25,Math.max(WY,...all.map(p=>p[1]))+.25];s.setView(XR,YR);
           if (reg.length) s.poly(reg, { fill: 'blue', fillAlpha: 0.12, color: 'blue', width: 2 });
           cons.forEach((c, q) => {
-            const e = lineEnds(c[0], c[1], c[2], [-WX, WX], [-WY, WY]);
+            const e = lineEnds(c[0], c[1], c[2], XR,YR);
             if (e) s.segment(e[0], e[1], { color: basis.includes(q) ? 'red' : 'blue', width: basis.includes(q) ? 4 : 1.4, alpha: basis.includes(q) ? 1 : 0.55 });
           });
           if (last) {
-            const reg2 = regionOf(last.ids.map((k) => inst.cons[k]), 8), c = inst.cons[last.j], e = lineEnds(c[0], c[1], c[2], [-WX, WX], [-WY, WY]);
+            const c = inst.cons[last.j], e = lineEnds(c[0], c[1], c[2], XR,YR);
             if (reg2.length) s.poly(reg2, { color: 'orange', width: 2.5, dash: [6, 4] });
             if (e) s.segment(e[0], e[1], { color: 'gold', width: 3, dash: [6, 4] });
             if (last.moved) s.arrow(best.p[0], best.p[1], last.p[0], last.p[1], { color: 'orange', width: 2.5, head: 9 });
             s.dot(last.p[0], last.p[1], { r: 7, color: 'orange', hollow: true });
           }
-          const lev = lineEnds(inst.c[0], inst.c[1], best.v, [-WX, WX], [-WY, WY]);
+          const lev = lineEnds(inst.c[0], inst.c[1], best.v, XR,YR);
           if (lev) s.segment(lev[0], lev[1], { color: 'gold', width: 1.5, dash: [7, 5], alpha: 0.8 });
           s.dot(best.p[0], best.p[1], { r: 8, color: 'green' });
           s.arrow(-2.9, 2.0, -2.9 + 0.8 * inst.c[0], 2.0 + 0.8 * inst.c[1], { color: 'gold', width: 3, head: 9 });
@@ -316,22 +322,22 @@ export default {
           G.dot(i, emp[i], { r: 6, color: 'gold' });
         });
         v.readout(() => {
-          const i = isl.value, basis = (() => { const cons = ord.slice(0, i).map((k) => inst.cons[k]); return tightAt(cons, optOf(ord.slice(0, i)).p).length; })();
-          const sum = emp.slice(1).reduce((a, b) => a + b, 0);
-          return `Prefix $i=${i}$: ${basis} constraints define the optimum, so a random one is hit with probability $${basis}/${i}=${v.fix(basis / i, 3)}$ (bound $2/i=${v.fix(2 / i, 3)}$). Removals: ${tally[0] ? `${tally[1]} of ${tally[0]} moved the optimum = ${v.fix(tally[1] / tally[0], 3)}` : 'none yet'}. Measured at step $i$: ${v.fix(emp[i], 3)}.\nExpected number of changes over all ${M} steps: measured ${v.fix(meanChanges, 2)} ≤ $2H_{${M}}=${v.fix(2 * harmonic(M), 2)}$.`;
+          const i=isl.value,A=analysis(),essential=A.essential.length;
+          return `Fixed prefix $i=${i}$: **${essential} essential constraints** (of ${A.full.tight.length} tight); exact uniform deletion probability $${essential}/${i}=${v.fix(essential/i,3)}$, bounded by $2/i=${v.fix(2/i,3)}$. Removals: ${tally[0]?`${tally[1]} of ${tally[0]} changed the optimum`:'none yet'}. The plotted ${v.fix(emp[i],3)} is a separate frequency over random prefix sets/orders.\nAcross all ${M} steps: sampled mean ${v.fix(meanChanges,2)} changes; theoretical expected bound $2H_{${M}}=${v.fix(2*harmonic(M),2)}$. Deletion comparisons use exact rational optima of the stored binary inputs; the bounded box is fixed, not randomly deleted.`;
         });
       },
     },
     // ------------------------------------------------------------------------------------------ 4.5
     {
       num: '4.5', kind: 'Algorithm', name: 'Smallest enclosing disc (Welzl)',
-      statement: String.raw`Every **nonempty** finite set $S$ of points in the plane has a unique **smallest enclosing disc**, determined by at most three points of $S$ on its boundary (a singleton has radius zero). It is found in expected $O(n)$ time by the same randomized incremental scheme as in 4.3: insert the points $p_1,\dots,p_n$ in random order and keep the smallest enclosing disc $D_i$ of the first $i$. If $p_i\in D_{i-1}$ then $D_i=D_{i-1}$; otherwise $p_i$ lies **on the boundary** of $D_i$, and $D_i$ is the smallest disc of $p_1,\dots,p_{i-1}$ with $p_i$ on its boundary, computed by the same loop one level down (and a third level fixes a second boundary point). Welzl's recursive formulation is equivalent.`,
-      idea: String.raw`Whether the disc has to be rebuilt depends only on whether $p_i$ is one of the at most three points defining $D_i$. By backwards analysis (4.4) that has probability at most $3/i$, and a rebuild costs $O(i)$, so each step costs $O(1)$ in expectation. The nested rebuilds are the same trick as the one-dimensional program of 4.3, because smallest enclosing disc is an LP-type problem. Without the shuffle nothing protects against bad orders: points arriving by growing distance from the centre rebuild at almost every step.`,
-      caption: String.raw`Step through the points in the order drawn. Hollow grey points are still to come; the disc is rebuilt (the old one dashed) only when the new point (gold ring) falls outside, and then the new point and one or two older points (red) define it. The right graph counts containment tests per point for growing $n$: flat for a random order (orange) but growing roughly linearly in $n$ (quadratic total work) for the **increasing distance** order (red). Click the left panel to add a point, shift-click to remove one.`,
-      credit: 'E. Welzl, 1991 (LNCS 555, pp. 359–370); linear-time deterministic algorithm by N. Megiddo, 1983',
-      scope: String.raw`Expected linear work averages over a uniform random permutation for each fixed input; it is not a worst-case guarantee for an arbitrary insertion order. The nested-loop display is an iterative form, not the paper's move-to-front heuristic. Source evidence for the algorithm and its analysis is Welzl's complete original; the empty input is represented separately without claiming a unique geometric disc.`,
-      deps: ['cg-4.4'], refs: ['Welzl (1991), Smallest enclosing disks (balls and ellipsoids), §2 pp. 360–363, Lemma 1 and Theorem 2; §3 one-permutation reduction pp. 365–367'], tags: ['randomization', 'enclosing disc'],
-      links: { source: 'https://people.inf.ethz.ch/emo/PublFiles/SmallEnclDisk_LNCS555_91.pdf', doi: 'https://doi.org/10.1007/BFb0038202' },
+      statement: String.raw`Every **nonempty** finite set $S$ of points in the plane has a unique smallest enclosing disc. It is determined by at most three distinct boundary points: one point for radius zero, a diameter pair, or three noncollinear points. The empty set has no unique center. It is found in expected $O(n)$ time by the same randomized incremental scheme as in 4.3: insert the points $p_1,\dots,p_n$ in random order and keep the smallest enclosing disc $D_i$ of the first $i$. If $p_i\in D_{i-1}$ then $D_i=D_{i-1}$; otherwise $p_i$ lies **on the boundary** of $D_i$, and $D_i$ is the smallest disc of $p_1,\dots,p_{i-1}$ with $p_i$ on its boundary, computed by the same loop one level down (and a third level fixes a second boundary point). Welzl's recursive formulation is equivalent.`,
+      idea: String.raw`Whether the disc has to be rebuilt depends only on whether $p_i$ is one of the at most three points defining $D_i$. By backwards analysis (4.4) that has probability at most $3/i$, and the rebuild costs **expected** $O(i)$ under the random prefix order. Its nested loop has a further conditional bound $2/j$, with a deterministic $O(j)$ two-boundary subproblem, so the rebuild’s expectation is linear. Conditional on the prefix set and last point, the preceding order remains uniform; these two expectations yield expected $O(1)$ work per outer insertion. The nested rebuilds are the same trick as the one-dimensional program of 4.3, because smallest enclosing disc is an LP-type problem. The bound is over uniform random permutations of each fixed input set, not a random-input distribution. An arbitrary deterministic order has no linear-time guarantee; a high rebuild count alone does not prove a particular asymptotic lower bound.
+
+Existence of a minimum disc precedes the randomized algorithm. For nonempty finite $S$, choose a sample point $s_0$ and a known enclosing radius $R$. The radius needed at center $c$ is the continuous function $f(c)=\max_{p\in S}\|c-p\|$. Any center with $\|c-s_0\|>R$ is worse than the known disc. Restricting centers to the compact closed radius-$R$ disc about $s_0$ therefore loses no optimum, and PMA 4.16 supplies a minimizer there. This establishes attainment, not the separate uniqueness, three-boundary-point characterization or expected-time argument; the nonempty hypothesis is essential for this restriction.`,
+      caption: String.raw`Step through the points in the order drawn. Hollow grey points are still to come; the disc is rebuilt (the old one dashed) only when the new point (gold ring) falls outside, and then the new point and one or two older points (red) define it. The right graph counts containment tests per point for growing $n$: five-run averages for random shuffles (orange), compared with one increasing-distance order (red). These sampled curves illustrate work and do not prove growth rates. Counts cover algorithmic containment tests; separate diagnostic checks are excluded. Click the left panel to add a point, shift-click to remove one.`,
+      credit: 'E. Welzl, 1991, smallest enclosing discs; iterative presentation and proof: de Berg et al., Lemma 4.14 and Theorem 4.15',
+      deps: ['cg-4.4', 'pma-4.16'], refs: ['Welzl (1991), §§1–2; de Berg et al., 3rd ed., §4.7, Lemma 4.14 and Theorem 4.15'], tags: ['randomization', 'enclosing disc'],
+      links: { doi: 'https://doi.org/10.1007/BFb0038202' },
       viz(v) {
         const s = v.stage({ x: [-1.75, 1.75], y: [-1.35, 1.35], equal: true, axes: false, height: 380, minWidth: 340 });
         const G = v.stage({ x: [8, 800], y: [1, 3000], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'number of points n', ylabel: 'containment tests per point', title: 'work per point', height: 380, minWidth: 280 });
@@ -353,31 +359,33 @@ export default {
         let run;
         S = v.steps({
           frames: () => {
-            ordered = orderPts(); run = welzlRun(ordered);
+            ordered = orderPts(); run = auditedWelzl(ordered);
             return run.frames.map((f, k) => ({ ...f, line: k === 0 ? 1 : f.reb ? 4 : 3,
               note: k === 0 ? 'Start with the smallest disc through $p_1$ and $p_2$ (their diameter).'
                 : f.reb ? `Point ${f.i + 1} is outside, so it lies on the new boundary: the disc is rebuilt from the earlier points with ${f.i + 1} fixed (${f.tests} tests).`
                 : `Point ${f.i + 1} is inside the disc: keep it (1 test).`,
               vars: { rebuilds: f.rebuilds, tests: f.total } }));
           },
-          code: ['D ← smallest disc with p₁, p₂ on its boundary', 'for i ← 3 … n', '  if pᵢ ∈ D:  keep D', '  else  D ← MinDiscWithPoint(p₁…pᵢ₋₁, pᵢ)', '          ▷ same loop, pᵢ fixed on the boundary; O(i)', 'return D'],
+          code: ['D ← smallest disc with p₁, p₂ on its boundary', 'for i ← 3 … n', '  if pᵢ ∈ D:  keep D', '  else  D ← MinDiscWithPoint(p₁…pᵢ₋₁, pᵢ)', '          ▷ same loop, pᵢ fixed on the boundary; expected O(i)', 'return D'],
           codeTitle: 'Smallest enclosing disc', speed: 1.5, still: 7,
         });
         // scaling experiment
         const sizes = [10, 20, 40, 80, 160, 320, 640], randS = [], spirS = [];
         sizes.forEach((n, ix) => {
           let acc = 0;
-          for (let rep = 0; rep < 5; rep++) { const pts = genPts(v.rng(300 + ix * 10 + rep), 'disc', n, 0, 0, 1); acc += welzlRun(v.rng(77 + rep).shuffle(pts)).tests / n; }
+          for (let rep = 0; rep < 5; rep++) { const pts = genPts(v.rng(300 + ix * 10 + rep), 'disc', n, 0, 0, 1); acc += auditedWelzl(v.rng(77 + rep).shuffle(pts)).tests / n; }
           randS.push([n, acc / 5]);
           const pts = genPts(v.rng(300 + ix * 10), 'disc', n, 0, 0, 1);
           const cx = pts.reduce((a, p) => a + p[0], 0) / n, cy = pts.reduce((a, p) => a + p[1], 0) / n;
-          spirS.push([n, welzlRun(pts.sort((p, q) => dist(p, [cx, cy]) - dist(q, [cx, cy]))).tests / n]);
+          spirS.push([n, auditedWelzl(pts.sort((p, q) => dist(p, [cx, cy]) - dist(q, [cx, cy]))).tests / n]);
         });
         v.legend([['orange', 'random order'], ['red', 'increasing distance'], ['gold', 'your instance', { dot: true }]]);
         v.render(() => {
           const f = S.frame, prev = S.prev;
           if (!run) return;
+          if(!run.valid){s.corner('Numerical drawing limit: change the input.','tl',{color:'red'});return;}
           const D = f.D;
+          const bounds=ordered.concat([[D.x-D.r,D.y-D.r],[D.x+D.r,D.y+D.r]],f.reb&&prev?.D?[[prev.D.x-prev.D.r,prev.D.y-prev.D.r],[prev.D.x+prev.D.r,prev.D.y+prev.D.r]]:[]);s.setView([Math.min(-1.75,...bounds.map(p=>p[0]))-.15,Math.max(1.75,...bounds.map(p=>p[0]))+.15],[Math.min(-1.35,...bounds.map(p=>p[1]))-.15,Math.max(1.35,...bounds.map(p=>p[1]))+.15]);
           if (f.reb && prev && prev.D) s.circle(prev.D.x, prev.D.y, prev.D.r, { color: 'muted', width: 1.5, dash: [6, 5] });
           s.circle(D.x, D.y, D.r, { color: f.reb ? 'orange' : 'accent', fill: 'accent', fillAlpha: 0.08, width: 3 });
           ordered.forEach((p, k) => {
@@ -386,15 +394,16 @@ export default {
             if (ordered.length <= 24) s.text(String(k + 1), p[0], p[1], { size: 10, dx: 8, dy: -8, color: done ? 'muted' : 'faint' });
           });
           if (f.i < ordered.length) s.dot(ordered[f.i][0], ordered[f.i][1], { r: 11, color: 'gold', hollow: true });
+          G.setView([8,Math.max(800,ordered.length+2)],[Math.min(.1,...randS.concat(spirS).map(p=>p[1]))*.8,Math.max(10,...randS.concat(spirS).map(p=>p[1]),run.tests/ordered.length)*1.2]);
           G.path(randS, { color: 'orange', width: 2.5 }); G.dots(randS, { r: 4, color: 'orange' });
           G.path(spirS, { color: 'red', width: 2.5 }); G.dots(spirS, { r: 4, color: 'red' });
           const n = ordered.length;
-          if (n >= 8 && n <= 800) G.dot(n, Math.max(1, run.tests / n), { r: 7, color: 'gold' });
+          if (n >= 8) G.dot(n, Math.max(.1, run.tests / n), { r: 7, color: 'gold' });
         });
         v.readout(() => {
           const f = S.frame, i = f.i + 1;
           let bound = 0; for (let j = 3; j <= i; j++) bound += 3 / j;
-          return `After ${i} points: radius $${v.fix(f.D.r, 3)}$, defined by ${f.bnd.length} points. Rebuilds so far ${f.rebuilds}; expected at most $\\sum_{j=3}^{${i}}3/j=${v.fix(bound, 2)}$. Containment tests so far: ${f.total}.`;
+          return `After ${i} points: radius $${v.fix(f.D.r, 3)}$, support witness: ${f.bnd.length} point(s); exact containment of every processed point: **${f.containsAll?'yes':'FAILED'}**. Rebuilds so far ${f.rebuilds}; ${mode.value==='random'?'uniform-shuffle theoretical expectation at most':'uniform-shuffle bound (not applicable to this deterministic order):'} $\\sum_{j=3}^{${i}}3/j=${v.fix(bound, 2)}$. Containment tests so far: ${f.total}.`;
         });
       },
     },

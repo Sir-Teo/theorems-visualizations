@@ -1,5 +1,7 @@
 // Philosophy & Reasoning — Chapter 3: Vagueness
 
+import { hysteresisFold, hysteresisEquilibria, hysteresisBranches, hysteresisCycle, hysteresisVelocity } from './source-audit-hysteresis.js';
+
 // ---------- shared helpers ----------
 const clampN = (x, a, b) => Math.max(a, Math.min(b, x));
 /** 1234567 -> "1,234,567" (plain text, thin separators). */
@@ -39,9 +41,9 @@ export default {
 (c) *Clear case.* One million grains, suitably piled, make a heap.
 
 By (a) and $999\,999$ applications of (b) with modus ponens, one million grains do not make a heap, contradicting (c). The argument is valid by ordinary logic, (a) and (c) look true, and each instance of (b) looks true. The same pattern works for any vague predicate whose application changes by small steps (*bald*, *tall*, *red*, *adult*).`,
-      idea: String.raw`Something must give. Either some instance of the tolerance premise is false, so there is a sharp boundary somewhere between $1$ and $10^6$ grains; or an inference step is invalid; or the base or the clear case is not true; or the notion of truth itself needs revising. The sorites is a fixed point for the whole theory of vagueness: the following items of this chapter are the main answers (epistemicism, supervaluationism, degrees of truth), and the two later items explain why (b) tempts us. The puzzle is attributed to the Megarian philosopher Eubulides of Miletus (4th century BC), and its name comes from the Greek *soros*, “heap”.`,
+      idea: String.raw`Something must give. Either some instance of the tolerance premise is false, so there is a sharp boundary somewhere between $1$ and $10^6$ grains; or an inference step is invalid; or the base or the clear case is not true; or the notion of truth itself needs revising. The sorites is a fixed point for the whole theory of vagueness: the following items of this chapter are the main answers (epistemicism, supervaluationism, degrees of truth), and the two later items explain why (b) tempts us. The puzzle is attributed to the Megarian philosopher Eubulides of Miletus (4th century BC), and its name comes from the Greek *soros*, “heap”. Formally, set S(n) to “n grains are not a heap”. The first principle of mathematical induction (alg-2.1) applies with base n=1 and the tolerance premise as its step, yielding S(n) for every positive integer n. This establishes the conditional consequence of those premises; it does not establish that tolerance is true of heaps.`,
       caption: String.raw`Drag the grain count $n$ to build the pile (a sample of at most 355 grains is drawn; the label gives the real count). Drag the green handle on the right to choose *your* cut-off $c$: the smallest number of grains you call a heap. With *tolerance accepted*, the chain of modus ponens steps from 1 grain reaches every $n$ and concludes that $n$ grains are not a heap, which contradicts your verdict as soon as $n\ge c$. Switch tolerance off and every instance of the premise is true except the single red pair $(c-1,c)$, a sharp boundary that one grain crosses.`,
-      deps: ['logic-4.1'],
+      deps: ['alg-2.1'],
       refs: ['Sainsbury ch. 3', 'SEP “Sorites Paradox”'],
       credit: 'Attributed to Eubulides of Miletus, 4th century BC (SEP “Sorites Paradox”)',
       tags: ['vagueness', 'paradox', 'tolerance'],
@@ -206,7 +208,7 @@ By (a) and $999\,999$ applications of (b) with modus ponens, one million grains 
       statement: String.raw`A **precisification** (or sharpening) of a vague predicate replaces it by a precise one in a way that respects the clear cases and the **penumbral connections** among borderline cases (for instance, if $n$ grains are a heap then so are $n+1$). A sentence is **supertrue** if it is true under every admissible precisification, **superfalse** if false under all, and otherwise neither. Truth is identified with supertruth. Consequences: every classical logical truth is supertrue, so “$n$ grains are a heap or not” holds even for a borderline $n$; “there is a cut-off” is supertrue; but for no particular $n$ is “$n$ is the cut-off” supertrue, and for a borderline $n$ the sentence “$n$ grains are a heap” has no truth value. The universal tolerance premise is superfalse.`,
       idea: String.raw`The sorites premise is rejected, because on each precisification it fails at some point, but no instance of it is superfalse; the supervaluationist can say we feel the pull of every instance without identifying a false one. The approach was introduced by van Fraassen (1966) for truth-value gaps in free logic and applied to vagueness by Kit Fine (“Vagueness, truth and logic”, *Synthese* 30, 1975). It keeps classical consequence, but gives up bivalence and some familiar rules at the level of truth (for example, truth is no longer closed under a naive disquotational schema). It also raises the problem of higher-order vagueness: which precisifications are admissible is itself vague.`,
       caption: String.raw`Each row is one admissible sharpening of “heap” on the counts $0$ to $200$ (green is where it counts as a heap). Drag the two boundaries of the admissible range (the clear non-heaps below, the clear heaps above) and choose a sentence; the column on the right shows its truth value on each row, and the readout classifies it. Pick the probe $n$ inside the range: “$n$ is a heap” is true in some rows and false in others, so it is neither supertrue nor superfalse, while “heap or not heap” is supertrue. The sorites premise (“tolerance for all $n$”) is superfalse, yet each single instance is true or false depending on the row. Turn penumbral connections off, allowing arbitrary patterns inside the zone, and “if $n$ heap then $n{+}1$ heap” stops being supertrue.`,
-      deps: ['phil-3.2', 'logic-2.3'],
+      deps: ['phil-3.2'],
       refs: ['Sainsbury ch. 3', 'SEP “Vagueness”'],
       credit: 'van Fraassen, 1966; Kit Fine, “Vagueness, truth and logic”, Synthese 30, 1975',
       tags: ['vagueness', 'supervaluation', 'truth-value gaps'],
@@ -401,60 +403,53 @@ By (a) and $999\,999$ applications of (b) with modus ponens, one million grains 
       num: '3.7',
       kind: 'Phenomenon',
       name: 'Hysteresis in categorisation',
-      statement: String.raw`When a stimulus is morphed step by step along a continuum between two categories (a blue-to-green patch, the syllable change “say” to “stay”), the point where the observer’s label switches can depend on the *direction* of the sequence: with **hysteresis**, labelling stays with the category it started in for longer, so the switch going up occurs later than the switch going down; with **contrast** (adaptation), the opposite happens and the label switches earlier. Experiments on speech categorisation by Tuller, Case, Ding and Kelso (*Journal of Experimental Psychology: Human Perception and Performance* 20, 1994) reported shifts of the category boundary showing hysteresis, contrast and critical-boundary effects under different conditions. The speech experiment does not directly test heaps or colour naming. As a philosophical analogy, path-dependent categorisation suggests that a single stimulus may receive different labels depending on its recent context.`,
-      idea: String.raw`A simple dynamical model captures both effects. The observer’s state $z$ (between the two categories) follows $\dot z=-z+\tanh(a\,z+g\,s-c\,q)$, driven by the stimulus value $s$ (the display uses $g=1.6$). Self-reinforcement $a>1$ makes the dynamics bistable on an interval of $s$, so the state sticks to the old category until its basin disappears; a slow fatigue variable $q$ (relaxing towards $z$) pushes the state away from the current category and produces contrast. The model is a standard picture of such effects (Tuller et al. use a related double-well potential model), not a reconstruction of their data. For vagueness, the effect supports contextualist responses, where the application of a vague predicate depends on the series being traversed.`,
-      caption: String.raw`This is a *model* (not the experiments’ data). A simulated observer is swept slowly from the blue end to the green end (blue curve) and back (orange curve); each curve plots the internal state, whose sign is the label. With self-reinforcement $a>1$ the two switches are at different stimulus values, enclosing a hysteresis loop; the strip shows both switch positions on the morph. Raise the fatigue to see them reverse (contrast), with zero fatigue and $a<1$, the quasistatic equilibrium has a single boundary; finite sweep speed can still create lag. The probe slider reads the label at a stimulus for each direction of arrival; sweep time controls how slowly the stimulus moves.`,
-      deps: ['phil-3.1', 'ode-1.8'],
-      refs: ['SEP “Vagueness”'],
-      credit: 'Tuller, Case, Ding & Kelso, 1994 (speech categorisation); dynamical model illustrative',
-      scope: String.raw`The curve is a qualitative model with arbitrary parameters; whether and how much real observers show hysteresis or contrast depends strongly on the stimuli and task. The vagueness-related interpretation is a philosophical suggestion, not a measured result.`,
+      statement: String.raw`**Hysteresis** in categorisation means that the switch from category A to B on an increasing stimulus sequence occurs at a larger stimulus value than the reverse switch on a decreasing sequence. The current stimulus alone then does not specify the response; its history matters. Case, Tuller, Ding and Kelso's 1995 speech study used sequences of silent gaps between “s” and “ay”, with listeners identifying “say” or “stay” and rating category goodness. They reported hysteresis, enhanced contrast and a common boundary in different runs, and context-dependent goodness judgments. These are observations about a particular task, not a universal law of categorisation or a logical contradiction.`,
+      idea: String.raw`This authored model makes one mechanism precise: $\dot z=rz-z^3+s$, with potential $V(z)=z^4/4-rz^2/2-sz$. Its equilibria satisfy $s=z^3-rz$, and the local slope is $\lambda=r-3z^2$. For $r>0$, two attracting equilibria coexist when $|s|<s_c$, where $s_c=2(r/3)^{3/2}$; a repelling equilibrium separates them. The branches turn at $z=\pm\sqrt{r/3}$. A state prepared on one attracting branch can stay there until that branch ends. For $r\le0$ there is one equilibrium, yet a finite sweep can still lag behind it. A loop in a finite-time trace therefore does not by itself establish bistability. History-dependent reports also do not settle the sorites: they concern responses in different contexts, not the simultaneous assertion of a proposition and its negation in one fixed context.`,
+      caption: String.raw`Green curves are the exact attracting equilibrium branches, dashed red is the repelling branch, and orange rings mark folds. Blue and orange traces show an actual finite-time outward sweep and return, starting at the equilibrium of the chosen endpoint. The gold dot is the selected cycle point: 0 is preparation, 100 is the turnaround, and 200 is the completed return. The return carries the actual state at the turnaround; it is not re-equilibrated. Reduce $r$ through zero to remove bistability, then compare fast and slow sweeps. All stimulus, state and time quantities are dimensionless model units.`,
+      deps: ['ode-1.8'],
+      see: ['phil-3.1'],
+      refs: ['Case, Tuller, Ding & Kelso, Evaluation of a dynamical model of speech perception, Perception & Psychophysics 57 (1995), 977–988; pp. 977–984 and Eqs. 1–3'],
+      credit: 'Empirical context and scalar potential: Case, Tuller, Ding & Kelso, 1995; parameter family and sweep authored here',
+      scope: String.raw`Illustrative deterministic dynamics, not participant data or a fitted speech model. At $r=1$ and $s=-k$ the scalar equation matches the shape of Case et al.'s Eq. 1; varying $r$ and directly sweeping $s$ are authored choices. Their learned context-dependent tilt, noise, enhanced-contrast mechanism and empirical time calibration are not implemented. The signs $z<0$ and $z>0$ are model labels A and B; $z=0$ is the boundary, not an extra category. Fold locations are quasistatic equilibrium properties; the numerical trace has finite sweep speed. At a fold linear stability alone is inconclusive, and at $r=s=0$ the unique equilibrium is attracting by $\dot z=-z^3$ despite zero linear slope.`,
       tags: ['vagueness', 'categorisation', 'hysteresis'],
+      links: { source: 'https://link.springer.com/content/pdf/10.3758/BF03205457.pdf' },
+      verify: false,
       viz(v) {
-        const aS = v.slider('self-reinforcement $a$', 0.4, 3, 1.8, { step: 0.05 });
-        const cS = v.slider('fatigue $c$', 0, 2.5, 0, { step: 0.05 });
-        const tS = v.slider('sweep time', 40, 800, 300, { log: true, int: true, sig: 2 });
-        const sS = v.slider('probe stimulus $s$', -1, 1, 0, { step: 0.01 });
-        const G = 1.0, EPS = 0.025;
-        const Z = v.stage({ x: [-1.05, 1.05], y: [-1.25, 1.25], axes: 'box', gutter: true, height: 300, title: 'observer state during an up-sweep and a down-sweep', xlabel: 'stimulus $s$ (blue to green)', yticks: [[-1, 'blue'], [0, ''], [1, 'green']] });
-        const B = v.stage({ x: [-1.05, 1.05], y: [-1.1, 1.2], axes: false, height: 130, full: true });
-        let key = '', up = [], dn = [];
-        const run = () => {
-          const a = aS.value, c = cS.value, T = tS.value, dt = 0.05, steps = Math.round(T / dt);
-          let z = -1, q = -1; // start well inside blue; pre-equilibrate at s = -1
-          const f = (z, q, s) => [-z + Math.tanh(a * z + G * 1.6 * s - c * q), EPS * (z - q)];
-          for (let i = 0; i < 4000; i++) { const d = f(z, q, -1); z += d[0] * 0.05; q += d[1] * 0.05; }
-          up = []; dn = [];
-          for (let i = 0; i <= steps; i++) { const s = -1 + 2 * i / steps; up.push([s, z]); const d = f(z, q, s); z += d[0] * dt; q += d[1] * dt; }
-          for (let i = 0; i <= steps; i++) { const s = 1 - 2 * i / steps; dn.push([s, z]); const d = f(z, q, s); z += d[0] * dt; q += d[1] * dt; }
-        };
-        const crossing = (arr, up_) => { for (let i = 1; i < arr.length; i++) { const [s0, z0] = arr[i - 1], [s1, z1] = arr[i]; if ((z0 < 0) !== (z1 < 0)) return s0 + (s1 - s0) * (0 - z0) / (z1 - z0); } return null; };
-        const at = (arr, s) => { let best = arr[0], bd = 9; for (const p of arr) { const d = Math.abs(p[0] - s); if (d < bd) { bd = d; best = p; } } return best[1]; };
-        let info = {};
+        const rS = v.slider('reinforcement $r$', -.5, 1.5, 1, { step: .05 });
+        const tS = v.slider('time per leg $T$ (model units)', 4, 160, 40, { step: 1 });
+        const start = v.select('endpoint preparation', [{ value: 'low', label: 'start at s = −1' }, { value: 'high', label: 'start at s = +1' }], 'low');
+        const point = v.slider('cycle point', 0, 200, 200, { int: true });
+        v.button('Reset cycle', () => point.set(0));
+        v.button('Outward endpoint', () => point.set(100));
+        v.button('Complete return', () => point.set(200));
+        const prev = v.button('Previous point', () => point.set(Math.max(0, point.value - 1)));
+        const next = v.button('Next point', () => point.set(Math.min(200, point.value + 1)));
+        const S = v.stage({ x: [-1.18, 1.18], y: [-1.75, 1.75], axes: 'box', gutter: true, full: true, height: 350, title: 'Exact equilibria and a finite-time cycle', xlabel: 'stimulus s (model units)', ylabel: 'state z', xticks: [-1, 0, 1], yticks: [-1.5, 0, 1.5] });
+        let cache, key = '', st;
         v.render(() => {
-          const k = `${aS.value}|${cS.value}|${tS.value}`;
-          if (k !== key) { key = k; run(); }
-          Z.hline(0, { color: 'muted', width: 1, dash: true });
-          Z.path(up, { color: 'blue', width: 3 });
-          Z.path(dn, { color: 'orange', width: 3 });
-          const su = crossing(up), sd = crossing(dn);
-          if (su !== null) Z.vline(su, { color: 'blue', width: 1.5, dash: true });
-          if (sd !== null) Z.vline(sd, { color: 'orange', width: 1.5, dash: true });
-          const s = sS.value;
-          Z.vline(s, { color: 'gold', width: 2, alpha: 0.8 });
-          const zu = at(up, s), zd = at(dn, s);
-          Z.dot(s, zu, { r: 6, color: 'blue' }); Z.dot(s, zd, { r: 6, color: 'orange' });
-          // morph strip
-          for (let i = 0; i < 60; i++) { const t = i / 59, x0 = -1 + 2 * t; B.rect(x0 - 0.02, 0, x0 + 0.02, 0.8, { fill: v.mix(v.color('blue'), v.color('green'), t), fillAlpha: 1, stroke: false }); }
-          if (su !== null) { B.vline(su, { color: 'blue', width: 3 }); B.text('going up: switch to green', su, 1.0, { color: 'blue', size: 12, align: su > 0 ? 'right' : 'left', dx: su > 0 ? -4 : 4 }); }
-          if (sd !== null) { B.vline(sd, { color: 'orange', width: 3 }); B.text('going down: switch to blue', sd, -0.7, { color: 'orange', size: 12, align: sd > 0 ? 'right' : 'left', dx: sd > 0 ? -4 : 4 }); }
-          B.vline(s, { color: 'gold', width: 2 });
-          info = { su, sd, s, zu, zd };
+          const k = `${rS.value}|${tS.value}|${start.value}`;
+          if (k !== key) { key = k; cache = { cycle: hysteresisCycle(rS.value, tS.value, start.value), branches: hysteresisBranches(rS.value), fold: hysteresisFold(rS.value) }; }
+          const { cycle, branches, fold } = cache, index = point.value, current = cycle.points[index];
+          branches.forEach(branch => S.path(branch.points, { color: branch.stable ? 'green' : 'red', width: 2, dash: branch.stable ? false : [5, 4], alpha: .75 }));
+          if (fold) for (const sign of [-1, 1]) S.dot(sign * fold.s, -sign * fold.z, { color: 'orange', r: 4, hollow: true, width: 1.8 });
+          const outward = cycle.points.slice(0, Math.min(index, 100) + 1), back = cycle.points.slice(100, index + 1);
+          if (outward.length > 1) S.path(outward.map(p => [p.s, p.z]), { color: 'blue', width: 3 });
+          if (back.length > 1) S.path(back.map(p => [p.s, p.z]), { color: 'orange', width: 3 });
+          const eq = hysteresisEquilibria(rS.value, current.s);
+          S.line(current.s, -1.6, current.s, 1.6, { color: 'gold', width: 1, dash: [3, 4], alpha: .5 });
+          eq.forEach(e => S.dot(current.s, e.z, { color: e.kind === 'unstable' ? 'red' : e.kind === 'fold' ? 'orange' : 'green', r: 4, hollow: true, width: 1.8 }));
+          S.dot(current.s, current.z, { color: 'gold', r: 6 });
+          prev.disabled = index === 0; next.disabled = index === 200;
+          st = { r: rS.value, index, current, eq, ...cache };
         });
+        v.legend([['green', 'attracting equilibria'], ['red', 'repelling branch', { dash: true }], ['blue', 'outward history'], ['orange', 'return / fold rings'], ['gold', 'selected finite-time state', { dot: true }]]);
         v.readout(() => {
-          const { su, sd, s, zu, zd } = info;
-          const lab = (z) => (z < 0 ? 'blue' : 'green');
-          const loop = su !== null && sd !== null ? `Switch going up at $s=${v.fix(su, 2)}$, going down at $s=${v.fix(sd, 2)}$: loop width ${v.fix(su - sd, 2)} (${su - sd > 0.02 ? 'hysteresis' : su - sd < -0.02 ? 'contrast' : 'no path dependence'}).` : 'The state never switches in one of the sweeps.';
-          return `${loop}\nAt $s=${v.fix(s, 2)}$: arriving from the blue end the label is **${lab(zu)}**; arriving from the green end it is **${lab(zd)}**.`;
+          const { r, index, current, eq, fold, cycle } = st, f = x => v.fix(x, 4);
+          const geometry = fold ? `Static folds: $s=\\pm ${f(fold.s)}$; bistability for $|s|<${f(fold.s)}$.` : `One equilibrium for every stimulus: no static bistable interval${r === 0 ? '; at s=0 its attraction is nonlinear' : ''}.`;
+          const equilibria = eq.map(e => `$z=${f(e.z)}$ (${e.kind}; $\\lambda=${f(e.slope)}$)`).join('; ');
+          const events = [0, 1].map(leg => { const ev = cycle.events.filter(e => e.leg === leg); return `${leg ? 'Return' : 'Outward'} zero crossing: ${ev.length ? ev.map(e => `${e.direction > 0 ? 'A→B' : 'B→A'} at $s\\approx ${f(e.s)}$`).join(', ') : 'none on this leg'}`; }).join('. ');
+          const category = current.z < 0 ? 'A' : current.z > 0 ? 'B' : 'boundary';
+          return `${geometry} At cycle point **${index}/200**, $t=${f(current.t)}$, $s=${f(current.s)}$, $z=${f(current.z)}$: model label **${category}**; $\\dot z=${f(hysteresisVelocity(r, current.s, current.z))}$. At this stimulus: ${equilibria}. Complete modeled cycle: ${events}. Crossings use linear interpolation between RK4 substeps of at most ${f(cycle.maxStep)} model-time units; they are finite-speed numerical values, not the static folds. Changing preparation or parameters recomputes the cycle from that endpoint equilibrium; Reset only moves the cycle point to 0.`;
         });
       },
     },

@@ -1,12 +1,6 @@
 // Waves & Optics — Chapter 3, part b: wakes, superluminal pulses, band gaps, cutoff, Klein–Gordon, solitons, Kramers–Kronig
 import { TAU, csqrt, cmul, cdiv } from './ch03.shared.js';
 
-/** Fourier convention ∫h(t)exp(+iωt)dt: h(t+τ) has multiplier exp(−iωτ). */
-export function advanceResponse(re, im, omega, tau) {
-  const c = Math.cos(omega * tau), s = Math.sin(omega * tau);
-  return [re * c + im * s, im * c - re * s];
-}
-
 const G = 9.81;
 
 /** Wavenumber k of the steady wave at propagation angle th in the frame of a source moving at speed U over water of depth h (h = Infinity: deep). */
@@ -172,9 +166,9 @@ $$\theta_K=\arcsin\tfrac13\approx19.47^\circ,$$
       statement: String.raw`A chain of masses $m$ and $M>m$ alternating along a line and joined by identical springs $K$ (period $a$) has two branches of normal modes,
 $$\omega^2=K\Big(\frac1m+\frac1M\Big)\pm K\sqrt{\Big(\frac1m+\frac1M\Big)^{2}-\frac{4\sin^2(ka/2)}{mM}},$$
 the **acoustic** branch (neighbouring masses move together, $\omega\to0$ as $k\to0$) and the **optical** branch (neighbours move oppositely). Between the top of the acoustic branch, $\sqrt{2K/M}$, and the bottom of the optical branch, $\sqrt{2K/m}$, there is a **band gap**: no travelling wave exists. A driver in the gap makes the chain respond with a disturbance that decays exponentially with distance, $\sim e^{-\kappa x}$, with $\kappa$ from $\cosh^2(\kappa a/2)=\big(2K(m+M)\omega^2-mM\omega^4\big)/4K^2$. If $M=m$ the gap closes.`,
-      idea: String.raw`The equations of motion of the two kinds of mass couple through the same $k$, so for each $k$ one gets a $2\times2$ eigenproblem (continuing the single-mass chain of mech-11.8), hence two frequencies. At the zone edge $k=\pi/a$ the two branches are split by the mass difference: the light and heavy masses can no longer be traded. For a frequency in the gap, the dispersion relation still has solutions, but with complex $k=\pi/a+i\kappa$, i.e. spatially decaying waves; they carry no energy away from the driver (the same mathematics as 3.11).`,
+      idea: String.raw`The equations of motion of the two kinds of mass couple through the same $k$, so for each $k$ one gets a $2\times2$ eigenproblem (continuing the single-mass chain of mech-11.8), hence two frequencies. At the zone edge $k=\pi/a$ the two branches are split by the mass difference: the light and heavy masses can no longer be traded. For a frequency in the gap, the dispersion relation still has solutions, but with complex $k=\pi/a+i\kappa$, i.e. spatially decaying waves; they carry no energy away from the driver (the same mathematics as 3.11). For real Bloch wavenumber, mass-weighting makes this a Hermitian two-dimensional problem: its diagonal entries are $2K/m$ and $2K/M$, and its off-diagonal entries are $-K(1+e^{\mp ika})/\sqrt{mM}$. The complex spectral theorem (ladr 7.31) supplies an orthonormal mode basis and real squared frequencies. Taking the characteristic roots gives the two displayed branches. This Hermitian statement is for real $k$; the continued complex-$k$ evanescent calculation is a separate boundary-response argument.`,
       caption: String.raw`Left: the two branches of $\omega(k)$ for the mass ratio you set; the allowed bands are shaded green, the gap red. Drag the gold line to set the driving frequency. Right: the response of a chain of 80 masses driven at its left end (right end fixed, a little damping), solved exactly: in a band the wave reaches the far end and reflects, in the gap the amplitude collapses within a few masses. Bottom right: the amplitude on a log scale against the number of cells, with the predicted decay $e^{-\kappa a n}$ (dashed) and the measured one. Set $M/m=1$ and the gap disappears.`,
-      deps: ['waves-3.3', 'mech-11.8', 'ladr-9.51'],
+      deps: ['waves-3.3', 'mech-11.8', 'ladr-7.31'],
       refs: ['Crawford ch. 2'],
       tags: ['band gap', 'periodic structure', 'lattice'],
       scope: String.raw`Linear diatomic chain with nearest-neighbour springs and a small uniform damping (used only to absorb reflections); the 80-mass finite chain shows resonances at the standing-wave frequencies inside the bands.`,
@@ -256,7 +250,7 @@ $$\kappa=\frac{\sqrt{\omega_c^2-\omega^2}}{c},$$
 and a source at $z=0$ produces a disturbance $\propto e^{-\kappa z}$ that oscillates in time everywhere in step (no phase propagation) and **carries no net power**: the energy flux, the time average of force times velocity, is zero. The decay length $1/\kappa$ is shortest far below cutoff ($\to c/\omega_c$ as $\omega\to0$) and diverges as $\omega\to\omega_c^-$.`,
       idea: String.raw`It is the dispersion relation (3.3) read with a complex wavenumber: the wave equation with a restoring term, $u''+\frac{\omega^2-\omega_c^2}{c^2}u=0$, has oscillating solutions when the bracket is positive and exponentials when it is negative. A decaying exponential has $u$ and $u'$ in quadrature with the real field, so the average flux $\mathrm{Im}(u^*u')$ vanishes: the driver does reactive, not real, work. In a lossless medium the energy stored in the evanescent field returns to the source each cycle. The same mathematics describes tunnelling (a barrier is a region below cutoff) and the gap response of 3.10.`,
       caption: String.raw`Left: the dispersion relation $\omega^2=\omega_c^2+k^2$ with real $k$ on the right and the decay constant $\kappa$ (the imaginary part of $k$) on the left, a quarter-circle. Drag the gold line through the cutoff. Right: the steady response of a long line driven at $z=0$, found by solving the discretised equation (with an outgoing boundary on the right): above cutoff a travelling wave of constant amplitude, below cutoff a standing exponential decay whose fitted rate matches $\kappa$ and whose power flux (readout) is zero.`,
-      deps: ['waves-3.3', 'em-11.15', 'ode-3.13'],
+      deps: ['waves-3.3', 'em-11.15'],
       refs: ['Crawford ch. 4'],
       tags: ['cutoff', 'evanescent wave'],
       scope: String.raw`Lossless one-dimensional medium obeying $u_{tt}=c^2u_{zz}-\omega_c^2u$ (the Klein–Gordon form, 3.12); for a rectangular waveguide $\omega_c=c\pi/a$ for the lowest mode of width $a$ (em-11.15).`,
@@ -494,16 +488,16 @@ whose speed $4\kappa^2$ is twice its height $2\kappa^2$, so taller solitons are 
       num: '3.14',
       kind: 'Theorem',
       name: 'Kramers–Kronig relations',
-      statement: String.raw`Let the real impulse response $h(t)$ of a linear, time-invariant medium be causal ($h(t)=0$ for $t<0$), with $h\in L^1(\mathbb R)\cap L^2(\mathbb R)$. Define $\chi(\omega)=\int_0^\infty h(t)e^{i\omega t}\,dt$ (for example a susceptibility, with $n^2=1+\chi$). Then $\chi$ is analytic in the open upper half-plane and tends to zero along the real axis at high frequency. Its boundary values satisfy the following Hilbert-transform relations in $L^2$ and almost everywhere as principal values; with sufficient smoothness and decay they hold pointwise:
+      statement: String.raw`Let $\chi(\omega)$ be the linear response function of a medium (for example the susceptibility, with refractive index $n^2=1+\chi$) whose time response $\chi(t)$ is **causal** ($\chi(t)=0$ for $t<0$) and decays so that $\chi(\omega)\to0$ as $|\omega|\to\infty$. Then $\chi(\omega)$ is analytic in the upper half of the complex $\omega$-plane, and its real and imaginary parts on the real axis are Hilbert transforms of each other:
 $$\mathrm{Re}\,\chi(\omega)=\frac1\pi\,\mathrm P\!\!\int_{-\infty}^{\infty}\frac{\mathrm{Im}\,\chi(\omega')}{\omega'-\omega}\,d\omega'=\frac2\pi\,\mathrm P\!\!\int_0^\infty\frac{\omega'\,\mathrm{Im}\,\chi(\omega')}{\omega'^2-\omega^2}\,d\omega',$$
 and the matching formula expresses $\mathrm{Im}\,\chi$ through $\mathrm{Re}\,\chi$ (P is the Cauchy principal value; the second form uses $\mathrm{Re}\,\chi$ even and $\mathrm{Im}\,\chi$ odd in $\omega$, which holds because $\chi(t)$ is real). So the **dispersion** of a medium (how $n$ varies with frequency) is determined by its **absorption** at all frequencies, and vice versa.`,
-      idea: String.raw`Causality and integrability mean the Fourier integral $\chi(\omega)=\int_0^\infty\chi(t)e^{i\omega t}dt$ converges and stays bounded for $\mathrm{Im}\,\omega\ge0$, so $\chi$ is analytic in the open upper half-plane (rca-19.2 and sig-6.4 describe the Paley–Wiener condition behind this). Cauchy's integral formula on a large half-circle closed in the upper half-plane, with the pole on the real axis indented, gives $\chi(\omega)=\frac{1}{i\pi}\mathrm P\!\int\frac{\chi(\omega')}{\omega'-\omega}d\omega'$; taking real and imaginary parts gives the relations. The Lorentz oscillator (em-11.12) is a causal model, so its real and imaginary parts are such a pair, and the relations tell us that any line of absorption must come with a characteristic wiggle of $n$ around it (anomalous dispersion, 3.9).`,
-      caption: String.raw`Set the Lorentz line (position $\omega_0$, width $\gamma$, strength) and optionally a second line. Top left: $\mathrm{Im}\,\chi$ (absorption, red), $\mathrm{Re}\,\chi$ from the closed formula (blue), and $\mathrm{Re}\,\chi$ recomputed from the red curve alone by the principal-value integral (orange dashed): they coincide. Top right: the time response $\chi(t)$ by an inverse FFT: the exact causal model is zero for $t<0$, while the finite frequency grid leaves small numerical leakage. The slider *acausal advance* $\tau$ shifts the response earlier in time, $h_\tau(t)=h(t+\tau)$ and $\chi(\omega)\to\chi(\omega)e^{-i\omega\tau}$: the response now starts before $t=0$ (shaded), and the Kramers–Kronig integral of the new absorption no longer reproduces the new $\mathrm{Re}\,\chi$ (the error is the readout). The principal value is evaluated on a half-step shifted grid; the tail beyond $|\omega|=60$ is dropped.`,
-      deps: ['em-11.12', 'rca-19.2', 'sig-6.4', 'rca-10.15'],
+      idea: String.raw`Causality means the Fourier integral $\chi(\omega)=\int_0^\infty\chi(t)e^{i\omega t}dt$ converges and stays bounded for $\mathrm{Im}\,\omega\ge0$, so $\chi$ is analytic there (rca-19.2 and sig-6.4 describe the Paley–Wiener condition behind this). Cauchy's integral formula on a large half-circle closed in the upper half-plane, with the pole on the real axis indented, gives $\chi(\omega)=\frac{1}{i\pi}\mathrm P\!\int\frac{\chi(\omega')}{\omega'-\omega}d\omega'$; taking real and imaginary parts gives the relations. The Lorentz oscillator (em-11.12) is a causal model, so its real and imaginary parts are such a pair, and the relations tell us that any line of absorption must come with a characteristic wiggle of $n$ around it (anomalous dispersion, 3.9).`,
+      caption: String.raw`Set the Lorentz line (position $\omega_0$, width $\gamma$, strength) and optionally a second line. Top left: $\mathrm{Im}\,\chi$ (absorption, red), $\mathrm{Re}\,\chi$ from the closed formula (blue), and $\mathrm{Re}\,\chi$ recomputed from the red curve alone by the principal-value integral (orange dashed): they coincide. Top right: the time response $\chi(t)$ by an inverse FFT: it is zero for $t<0$. The slider *acausal advance* $\tau$ shifts the response earlier in time, $\chi(\omega)\to\chi(\omega)e^{i\omega\tau}$: the response now starts before $t=0$ (shaded), and the Kramers–Kronig integral of the new absorption no longer reproduces the new $\mathrm{Re}\,\chi$ (the error is the readout). The principal value is evaluated on a half-step shifted grid; the tail beyond $|\omega|=60$ is dropped.`,
+      deps: ['em-11.12', 'rca-19.2', 'sig-6.4'],
       refs: ['Hecht ch. 3'],
       tags: ['causality', 'dispersion', 'Hilbert transform'],
       credit: 'R. de L. Kronig, 1926; H. A. Kramers, 1927 (independently)',
-      scope: String.raw`Causal real L¹ ∩ L² impulse response and linear time invariance give the stated boundary-value relation. A nonvanishing instantaneous/high-frequency term requires a subtracted formulation and is outside these hypotheses. The picture uses Lorentz lines and a pure time advance as an acausal counter-example; FFT bandwidth, periodic sampling and quadrature introduce numerical errors.`,
+      scope: String.raw`Requires a causal, linear, time-invariant response with $\chi\to0$ at high frequency (subtractions are needed otherwise); the picture uses sums of Lorentz lines and a pure time advance as the acausal counter-example.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Kramers%E2%80%93Kronig_relations' },
       viz(v) {
         const M = v.M, W = 60, H = 0.02, NF = 1024, DW = 0.03;
@@ -518,7 +512,8 @@ and the matching formula expresses $\mathrm{Im}\,\chi$ through $\mathrm{Re}\,\ch
         const chi = (w) => {
           let re = 0, im = 0;
           for (const [w0, g, wp] of lines()) { const d0 = w0 * w0 - w * w, d1 = -g * w, den = d0 * d0 + d1 * d1; re += (wp * d0) / den; im += (wp * g * w) / den; }
-          return advanceResponse(re, im, w, tS.value);
+          const tau = tS.value, c = Math.cos(w * tau), s = Math.sin(w * tau);
+          return [re * c - im * s, re * s + im * c];
         };
         let info = { err: 0, neg: 0, scale: 1 };
         v.render(() => {

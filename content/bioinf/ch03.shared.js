@@ -210,17 +210,6 @@ export function makeDb(list) {
 export const SEEDS = { contiguous: '11111111111', patternhunter: '111010010100110111' };
 export const seedMask = (pat) => { let m = 0; for (let k = 0; k < pat.length; k++) if (pat[k] === '1') m |= 1 << (pat.length - 1 - k); return m; };
 export const seedWeight = (pat) => pat.split('').filter((c) => c === '1').length;
-// Keep the editable template's weight, including the one-bit and 19/20-bit cases.
-export function randomSeedOfWeight(weight, seed) {
-  if (!Number.isInteger(weight) || weight < 1 || weight > 20) throw new RangeError('Seed weight must be an integer from 1 to 20');
-  if (weight === 1) return '1';
-  const span = Math.max(18, weight), r = mkRng(seed), positions = [];
-  for (let i = 1; i < span - 1; i++) positions.push(i);
-  for (let i = positions.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [positions[i], positions[j]] = [positions[j], positions[i]]; }
-  const pattern = Array(span).fill('0'); pattern[0] = pattern[span - 1] = '1';
-  positions.slice(0, weight - 2).forEach(i => { pattern[i] = '1'; });
-  return pattern.join('');
-}
 // uniform draws for N alignments of length L (so that sensitivity is monotone in p and seeds are compared on the same data)
 export function seedData(seed, N, L) { const r = mkRng(seed), u = new Float32Array(N * L); for (let i = 0; i < u.length; i++) u[i] = r(); return { u, N, L }; }
 // fraction of alignments (each position matches with probability p) hit by the seed, and the mean number of hits

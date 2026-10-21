@@ -1,0 +1,58 @@
+{
+  "browser": "155.0.8059.85",
+  "errors": [],
+  "message": "diagnostic framebuffer allocation failed",
+  "calls": {
+    "create": 1,
+    "read": 0,
+    "consume": 0,
+    "attach": 0,
+    "bind": 0
+  },
+  "before": {
+    "read": 1,
+    "draw": 2,
+    "readBuffer": 0,
+    "packBuffer": 3,
+    "pack": [
+      8,
+      9,
+      2,
+      1
+    ],
+    "active": 33987,
+    "texture": 4,
+    "array": 5,
+    "vao": 6,
+    "program": null
+  },
+  "after": {
+    "read": 1,
+    "draw": 2,
+    "readBuffer": 0,
+    "packBuffer": 3,
+    "pack": [
+      8,
+      9,
+      2,
+      1
+    ],
+    "active": 33987,
+    "texture": 4,
+    "array": 5,
+    "vao": 6,
+    "program": null
+  },
+  "stateEqual": true,
+  "error": 0,
+  "diagnostic": {
+    "existingTextureBytes": 128,
+    "pixelPackBytes": 128,
+    "newFramebufferOwners": 0
+  },
+  "sourceCommit": "a6f4ae5ae0d3e95ca8113807ae8c671e01d9a745",
+  "rawPath": "/tmp/atlas-map-paired-null-fbo/null-fbo.json",
+  "rawSHA256": "5480c327790285fcffc7fabc8e75dce28738b78b774a3317d4e4e93f1dc09434",
+  "fullMapRun": false,
+  "priorBoundaryPreserved": "06717752cb1c01875a79ab54d5164d5a7647ebf3"
+}

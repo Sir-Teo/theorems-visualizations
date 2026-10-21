@@ -1,3 +1,4 @@
+import { regexDifference } from './automata.audit.js';
 // Theory of Computation — Chapter 3: Nondeterminism and regular expressions (items 3.1–3.8; 3.9–3.16 in ch03-b.js)
 import { EPS, DEAD, layer, upTo, pen, keypad, dfa, dfaEdges, cycleTarget, deltaValue, rowLabel, texName, nfa, closure, move, hasAcc, nfaRun, nfaAccepts, determinize, minimalSize, deriv, nullable, nfaEdges, PRESETS, dfaAccepts, nfaLang, eqSets, firstDiff, nfaGraph, drawNFA, bendEdges, fitThompson, NFAS, R, parseRegex, tryParse, rx, rxTeX, rxSize, countParts, langSets, langFlat, thompson, gnfaFromNFA, eliminate, nfaToRegex, rxInput, drawLangRows, tt, texName3, setTex, setStr, drawBarcode, symbolsOf, onColor, asNFA, SANS } from './ch03.shared.js';
 
@@ -189,9 +190,11 @@ export default {
       kind: 'Theorem',
       name: 'Subset construction: NFAs equal DFAs',
       statement: String.raw`For every NFA (with or without ε-arrows) $N=(Q,\Sigma,\delta,q_0,F)$ there is a DFA $D$ with $L(D)=L(N)$: take $Q_D=\mathcal P(Q)$, start state $E(\{q_0\})$, $\delta_D(S,a)=E\big(\bigcup_{p\in S}\delta(p,a)\big)$ and $F_D=\{S: S\cap F\ne\varnothing\}$. Only the subsets reachable from the start state are needed, so $D$ has at most $2^{|Q|}$ states. Consequently a language is recognised by an NFA iff it is regular.`,
-      idea: String.raw`By induction on $|w|$ (1.7), the DFA state reached after $w$ is exactly the set of NFA states reachable by some run on $w$: the base case is the start closure, and the step is the definition of $\delta_D$. Acceptance of $w$ by $N$ means that set meets $F$, which is the definition of $F_D$. The DFA is the "set of live states" bookkeeping of 3.1 made into a machine; building it on demand (a worklist of newly discovered subsets) usually creates far fewer than $2^{|Q|}$ states.`,
+      idea: String.raw`By induction on $|w|$ (1.7), the DFA state reached after $w$ is exactly the set of NFA states reachable by some run on $w$: the base case is the start closure, and the step is the definition of $\delta_D$. Acceptance of $w$ by $N$ means that set meets $F$, which is the definition of $F_D$. The DFA is the "set of live states" bookkeeping of 3.1 made into a machine; building it on demand (a worklist of newly discovered subsets) usually creates far fewer than $2^{|Q|}$ states.
+
+The finite state bound uses comb-1.1: a subset of an n-state NFA is specified by n binary include-or-exclude choices, giving $2^n$ possible subsets, including the empty one. The construction's run invariant then selects which of those subsets are actually reachable. Counting the entire power set is an upper bound; it does not assert that every NFA reaches every subset.`,
       caption: String.raw`**Construct** mode steps through the worklist: the gold state of the NFA (left) is the subset being processed, its outgoing arrows on $a$ and $b$ are computed (closure included), and new subsets appear in the DFA (right) when first discovered. **Run both** mode feeds the same input to both machines: the gold NFA states are exactly the set labelling the gold DFA state. Try the ε-NFA of $(a\mid b)^*abb$ and count how many of the $2^{11}$ possible subsets are ever reached.`,
-      deps: ['toc-3.2', 'toc-2.3'],
+      deps: ['toc-3.2', 'toc-2.3', 'comb-1.1'],
       refs: ['Sipser §1.2'],
       credit: 'Rabin & Scott, 1959',
       tags: ['automata', 'determinization'],
@@ -262,10 +265,12 @@ export default {
       num: '3.4',
       kind: 'Theorem',
       name: 'Exponential blow-up of determinization',
-      statement: String.raw`For every $k\ge1$ the language $L_k=\{w\in\{0,1\}^*:\text{the }k\text{-th symbol from the right end of }w\text{ is }1\}$ is accepted by an NFA with $k+1$ states, but every DFA for $L_k$ has at least $2^k$ states. Hence the $2^{|Q|}$ bound of the subset construction (3.3) is essentially attained: determinization can cost an exponential number of states. (The mirror language "the $k$-th symbol from the *left* is 1" needs only $k+2$ states, even as a DFA.)`,
-      idea: String.raw`The NFA keeps one token on the start state and guesses, on each 1, that this is the $k$-th symbol from the end; $k-1$ further states count down to the end of the input. A DFA must remember the last $k$ symbols: if two different strings $x\ne y$ of length $k$ led to the same state, take the first position where they differ, say $x_i=1$, $y_i=0$; appending $0^{i-1}$ moves that position to the $k$-th place from the end, so $x0^{i-1}\in L_k$ but $y0^{i-1}\notin L_k$, a contradiction. So the $2^k$ strings of length $k$ reach pairwise different states.`,
+      statement: String.raw`For every $k\ge1$, let $L_k\subseteq\{0,1\}^*$ consist of the words of length at least k whose k-th symbol from the right is 1. This language is accepted by an NFA with $k+1$ states, but every DFA for $L_k$ has at least $2^k$ states. Hence the $2^{|Q|}$ bound of the subset construction (3.3) is essentially attained: determinization can cost an exponential number of states. (The mirror language "the $k$-th symbol from the *left* is 1" needs only $k+2$ states, even as a DFA.)`,
+      idea: String.raw`The NFA keeps one token on the start state and guesses, on each 1, that this is the $k$-th symbol from the end; $k-1$ further states count down to the end of the input. A DFA must remember the last $k$ symbols: if two different strings $x\ne y$ of length $k$ led to the same state, take the first position where they differ, say $x_i=1$, $y_i=0$; appending $0^{i-1}$ moves that position to the $k$-th place from the end, so $x0^{i-1}\in L_k$ but $y0^{i-1}\notin L_k$, a contradiction. So the $2^k$ strings of length $k$ reach pairwise different states.
+
+The pigeonhole principle comb-1.2 makes the lower-bound step explicit. If fewer than $2^k$ DFA states were available for the $2^k$ binary length-k prefixes, two distinct prefixes would reach one state. Determinism would make every common continuation give the same answer from there, contradicting the displayed distinguishing suffix. Thus the argument proves a worst-case state lower bound, rather than inferring exponential growth from a finite plotted sample.`,
       caption: String.raw`Left: the $(k+1)$-state NFA for $L_k$. Middle: its subset automaton, whose states are labelled by the **last $k$ symbols read** — a shift register, one state per bit pattern. Right: sizes on a **log axis** for $k=1,\dots,10$, all computed by running the subset construction and Moore's partition refinement on the actual machines: the NFA grows by one state per step, the DFA doubles. Switch to **from the left** and the blow-up disappears.`,
-      deps: ["toc-3.3","comb-1.2"],
+      deps: ['toc-3.3', 'comb-1.2'],
       refs: ['Sipser §1.2'],
       credit: 'Meyer & Fischer, 1971; Moore, 1971 (tightness of the 2^n bound)',
       scope: String.raw`Meyer and Fischer (1971) and Moore (1971) are the standard references for the exponential gap between NFAs and DFAs; Moore's paper concerns exactly the number of states in the subset construction. That the family drawn here (the $k$-th symbol from the end) is the one used in those papers has not been checked.`,
@@ -282,7 +287,7 @@ export default {
         const cache = {};
         const info = (f, k) => { const key = f + k; if (!cache[key]) { const N = (f === 'end' ? FAM : FAM_START)(k), D = determinize(N); cache[key] = { N, D, nfa: k + 1, sub: D.states.length, min: minimalSize(D) }; } return cache[key]; };
         const series = (f) => Array.from({ length: 10 }, (_, i) => info(f, i + 1));
-        let built = '';
+        let built = '', certKey = '', cert = null;
         v.render(() => {
           const k = kS.value, I = info(fam, k);
           if (built !== fam + k) {
@@ -374,9 +379,11 @@ export default {
       kind: 'Definition',
       name: 'Regular expressions',
       statement: String.raw`**Regular expressions** over $\Sigma$ are built inductively: $\varnothing$, $\varepsilon$ and each $a\in\Sigma$ are expressions; if $r,s$ are expressions so are $(r\cup s)$, $(rs)$ and $(r^*)$. The language $L(r)$ is defined by the same induction: $L(\varnothing)=\varnothing$, $L(\varepsilon)=\{\varepsilon\}$, $L(a)=\{a\}$, $L(r\cup s)=L(r)\cup L(s)$, $L(rs)=L(r)L(s)$, $L(r^*)=L(r)^*$ (the three regular operations of 1.2). Conventions: $^*$ binds tighter than concatenation, which binds tighter than $\cup$; $r^+=rr^*$ and $r?=r\cup\varepsilon$ are abbreviations. A language is **regex-definable** iff it is $L(r)$ for some $r$ (Kleene's theorem, 3.9, says: iff it is regular).`,
-      idea: String.raw`An expression is a syntax tree, and its language is computed bottom-up by a structural recursion: leaves denote $\varnothing$, $\{\varepsilon\}$ or a single letter, and each inner node applies one regular operation to the languages of its children. That is why every proof about regular expressions (3.7, 3.11) is an induction on the tree, and why the precedence conventions matter: $ab^*$ and $(ab)^*$ are different trees.`,
+      idea: String.raw`An expression is a syntax tree, and its language is computed bottom-up by a structural recursion: leaves denote $\varnothing$, $\{\varepsilon\}$ or a single letter, and each inner node applies one regular operation to the languages of its children. That is why every proof about regular expressions (3.7, 3.11) is an induction on the tree, and why the precedence conventions matter: $ab^*$ and $(ab)^*$ are different trees.
+
+Structural recursion can be organised as strong induction alg-2.5 on the number of nodes in the expression's syntax tree. Leaves have the three stated basic meanings. At a union or concatenation node both child trees are smaller, and at a star node the one child is smaller, so their already-defined languages determine the parent's language. This justifies the bottom-up semantics; a finite syntax tree can still denote an infinite language through star.`,
       caption: String.raw`Type an expression (use $|$ or ∪ for union, \* for star, + and ? as abbreviations, the buttons insert ε and ∪). Its **syntax tree** is drawn on the left — union orange, concatenation blue, star purple; **click a node** to list the language of that sub-expression, level by level, on the right (all strings up to the chosen length, with counts). Type a string with the keys to see whether it is in $L(r)$. Malformed input is reported instead of drawn.`,
-      deps: ['toc-1.2'],
+      deps: ['toc-1.2', 'alg-2.5'],
       refs: ['Sipser §1.3'],
       credit: 'Kleene, 1951 (RAND report), published 1956',
       tags: ['regular expressions', 'syntax'],
@@ -429,12 +436,15 @@ export default {
       kind: 'Algorithm',
       name: 'Thompson’s construction: regex to NFA',
       statement: String.raw`**Input:** a regular expression $r$. **Output:** an ε-NFA $N(r)$ with exactly one start state, one accepting state and $L(N(r))=L(r)$, built by recursion on the syntax tree: $N(a)$ and $N(\varepsilon)$ are two states joined by an arrow labelled $a$ (or $\varepsilon$), $N(\varnothing)$ is two states and no arrow; for $r\cup s$ add a new start and a new final state with ε-arrows to/from the two fragments; for $rs$ identify the final state of $N(r)$ with the start state of $N(s)$; for $r^*$ add a new start and final state, ε-arrows start→fragment→final, an ε-arrow from the fragment's final state back to its start, and a bypass arrow start→final. Every state has at most two outgoing arrows, and $N(r)$ has at most $2m$ states, where $m$ is the number of symbols and operators in $r$.`,
-      idea: String.raw`Each rule builds a machine for a compound expression from machines for its parts, touching only their start and final states, so correctness is a structural induction (3.5 for union, concatenation and star). The state bound follows because every rule adds at most two new states: two for each operand and for each union and star, none for concatenation. The ε-arrows keep the fragments independent, which is the point: no state of a fragment ever gains an arrow, so fragments can be assembled bottom-up without inspection.`,
+      idea: String.raw`Each rule builds a machine for a compound expression from machines for its parts, touching only their start and final states, so correctness is a structural induction (3.5 for union, concatenation and star). The state bound follows because every rule adds at most two new states: two for each operand and for each union and star, none for concatenation. The ε-arrows connect designated fragment boundaries: start and final states can gain connections or be identified, while internal transitions are retained. Thus fragments can be assembled bottom-up without inspecting their internal states.
+
+Use strong induction alg-2.5 on syntax size m: all proper subexpressions have smaller size, so their fragments already recognize the right languages. The closure constructions then verify the new root operation. The same induction gives the state bound: leaves use two states, union and star add two, and concatenation identifies boundary states without adding any. This establishes correctness and a linear state count for the specified construction, not a general minimality claim.`,
       caption: String.raw`Type an expression and **step** through the construction in post-order: each step adds the fragment for one node of the syntax tree (the current fragment is bright, earlier ones faded) and a note says which rule was used. The final readout counts states against $2m$ and checks the NFA against the expression on every string up to length 7. The star fragment shows the three extra ε-arrows (back arc below, bypass above).`,
-      deps: ['toc-3.5', 'toc-3.6'],
+      deps: ['toc-3.5', 'toc-3.6', 'alg-2.5'],
       refs: ['Sipser §1.3'],
       credit: 'Thompson, 1968 (search algorithm); textbook form of the construction',
       scope: String.raw`Ken Thompson's 1968 paper describes a regular-expression search that simulates the NFA (compiling to machine code); the NFA-building rules drawn here are the textbook formulation of that idea, in the variant that identifies states for concatenation (Aho, Sethi, Ullman), not a transcription of his paper.`,
+      links: { 'Stanford author guide': 'https://web.stanford.edu/class/archive/cs/cs103/cs103.1254/guide_to_state_elimination' },
       tags: ['regular expressions', 'construction'],
       viz(v) {
         let T = null, built = '';
@@ -482,12 +492,15 @@ export default {
       kind: 'Algorithm',
       name: 'State elimination: NFA to regex',
       statement: String.raw`**Input:** an NFA $N$. **Output:** a regular expression $r$ with $L(r)=L(N)$. First turn $N$ into a *generalized NFA* whose arrows carry regular expressions: add a new start state $I$ with an ε-arrow to $q_0$ and a new accepting state $F$ with an ε-arrow from every old accepting state, and merge parallel arrows by $\cup$. Then **rip out** the other states one at a time: to remove $q$, for every pair of remaining states $p,t$ (possibly equal) replace the label $R_{pt}$ by $$R_{pt}\ \cup\ R_{pq}\,R_{qq}^{*}\,R_{qt}.$$ When only $I$ and $F$ remain, the label of $I\to F$ is the answer. The result depends on the elimination order, but every order gives an equivalent expression.`,
-      idea: String.raw`A path through a removed state $q$ enters $q$, loops there any number of times, and leaves; the formula writes exactly that as a single arrow, so the set of strings labelling paths from $I$ to $F$ never changes during a removal (an induction on the number of removed states). The expression can nevertheless grow exponentially in the number of states, because each removal can multiply the lengths of many labels, and a bad order makes this worse.`,
+      idea: String.raw`A path through a removed state $q$ enters $q$, loops there any number of times, and leaves; the formula writes exactly that as a single arrow, so the set of strings labelling paths from $I$ to $F$ never changes during a removal (an induction on the number of removed states). The expression can nevertheless grow exponentially in the number of states, because each removal can multiply the lengths of many labels, and a bad order makes this worse.
+
+The invariant is proved by induction alg-2.1 on the number of eliminated states. Initially each label describes the corresponding direct edge, with parallel alternatives united. Assuming old labels summarize paths with only previously removed internal states, a path newly using q decomposes into an entry, any number of q-to-q returns and an exit. Union with the old bypass paths gives the update. This proves language preservation; it does not bound the resulting expression's size polynomially.`,
       caption: String.raw`**Click a state** to rip it out (or use the buttons for left-to-right and fewest-edges-first orders, undo and reset): new arrows appear with the labels $R_{pq}R_{qq}^*R_{qt}$. When every state is gone, the label of $I\to F$ is the answer and is checked against the NFA on all strings up to length 7. The bars show the **final size of the expression for every possible elimination order** (sorted); the gold bar is the order you chose, so you can see how much the order matters.`,
-      deps: ['toc-3.1', 'toc-3.6'],
-      refs: ['Sipser, second edition, §1.3, Lemma 1.60 and Claim 1.65, pp. 69–74'], sourceUrl: 'https://fuuu.be/polytech/INFOF408/Introduction-To-The-Theory-Of-Computation-Michael-Sipser.pdf',
-      credit: 'Textbook construction and full invariant proof: M. Sipser, Introduction to the Theory of Computation, second edition, Lemma 1.60 and Claim 1.65',
-      scope: String.raw`The state-removal invariant and formula are checked against the full GNFA construction and proof in Sipser, second edition, §1.3, Lemma 1.60 and Claim 1.65, pp. 69–74. The same construction applies directly to NFAs, treating absent arrows as $\varnothing$ and parallel arrows as union. Historical priority among graph-to-expression constructions is not asserted.`,
+      deps: ['toc-3.1', 'toc-3.6', 'alg-2.1'],
+      refs: ['Stanford CS103, Guide to State Elimination, Winter 2025, Initial Setup and Step Two', 'Pettorossi, Automata Theory and Formal Languages, §2.6, Theorem 2.6.1 (language equations)'],
+      credit: 'Textbook state-elimination construction; explicit path invariant supplied here',
+      scope: String.raw`Modern generalized-NFA construction, verified against the complete Stanford CS103 guide. Its original historical priority is not asserted. Missing edges mean the empty language and all update labels use the **pre-removal** graph. The finite length-7 comparison is a spot check; after full elimination an independent subset-product search also checks equality on all words (or explicitly reports its resource cap).`,
+      links: { 'Stanford author guide': 'https://web.stanford.edu/class/archive/cs/cs103/cs103.1254/guide_to_state_elimination' },
       tags: ['regular expressions', 'construction'],
       viz(v) {
         const PS = { endsAB: () => NFAS.endsAB(), aaOrBb: () => NFAS.aaOrBb(), secondA: () => NFAS.secondA(), evenA: () => asNFA(PRESETS.evenA()) };
@@ -507,7 +520,7 @@ export default {
         const perms = (a) => (a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map((p) => [x, ...p])));
         const sizes = {}; const allSizes = () => { const k = sel.value; if (!sizes[k]) sizes[k] = perms(N.states.map((s) => s.id)).map((o) => ({ o, size: rxSize(nfaToRegex(N, o)) })).sort((a, b) => a.size - b.size); return sizes[k]; };
         const short = (e) => { const t = rx(e); return t.length > 24 ? t.slice(0, 22) + '…' : t; };
-        let built = '';
+        let built = '', certKey = '', cert = null;
         G = v.graph(gs, { nodes: [], edges: [], layout: 'none', directed: true, r: 17, autoRadius: false, texSize: 14, draggable: true, edgeFontSize: 11.5 });
         G.onClick = ({ node }) => { if (node && node.id !== 'I' && node.id !== 'F') rip(node.id); return true; };
         v.render(() => {
@@ -538,7 +551,8 @@ export default {
           const g = cur(), left = alive();
           if (left.length) return (note || 'Click a state to rip it out.') + ` · ${Object.keys(g.E).length} arrows`;
           const r = g.E['I>F'] || R.empty, A = langFlat(r, 7), B = nfaLang(N, 7), all = allSizes();
-          return `$r=${rxTeX(r)}$ · size ${rxSize(r)} (orders give sizes ${all[0].size}…${all.at(-1).size}) · order ${removed.join('→')} · same strings as the NFA up to length 7: ${eqSets(A, B) ? '✓' : '✗'}`;
+          const ck = sel.value + '|' + removed.join(','); if (certKey !== ck) { certKey = ck; cert = regexDifference(N, r); }
+          return `$r=${rxTeX(r)}$ · size ${rxSize(r)} (orders give sizes ${all[0].size}…${all.at(-1).size}) · order ${removed.join('→')} · same strings as the NFA up to length 7: ${eqSets(A, B) ? '✓' : '✗'} · exact whole-language product check: ${cert.equal === null ? 'resource cap reached, unknown' : cert.equal ? 'equal ✓' : 'different ✗'} (${cert.pairs} reachable subset pairs)`;
         });
       },
     },

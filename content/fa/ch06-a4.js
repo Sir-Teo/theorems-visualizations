@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 6 (part 4): compact and point supports; distributions as derivatives
 //
-// Numbering and scope reviewed against the full second-edition source; see docs/verification/fa-source-review.md.
+// Numbering note: recalled, not checked against the book; uncertain items carry `verify: true`.
 
 // ---------------------------------------------------------------- smooth building blocks
 const PSI_P = (() => {
@@ -61,11 +61,14 @@ export default {
       num: '6.24',
       kind: 'Theorem',
       name: 'Compactly supported distributions act on all of C^∞',
-      statement: String.raw`Let $S$ be the support of $\Lambda\in\mathscr D'(\Omega)$. (a) If $\operatorname{supp}\varphi$ is disjoint from $S$, then $\Lambda\varphi=0$. (b) If $S$ is empty, then $\Lambda=0$. (c) If $\psi\in C^\infty(\Omega)$ equals 1 on an open neighborhood of $S$, then $\psi\Lambda=\Lambda$. (d) If $S$ is compact, $\Lambda$ has finite order and extends uniquely to a continuous functional on $C^\infty(\Omega)$, by $\Lambda f=\Lambda(\psi f)$ for a compactly supported such cutoff. The converse, that every continuous functional on $C^\infty(\Omega)$ has compact support, is the complementary Exercise 20.`,
+      statement: String.raw`If $\Lambda\in\mathscr D'(\Omega)$ and its support $S_\Lambda$ is compact, then $\Lambda$ has finite order, and $\Lambda$ extends uniquely to a continuous linear functional on $C^\infty(\Omega)$: choose $\psi\in\mathscr D(\Omega)$ with $\psi=1$ on an open set containing $S_\Lambda$ and put
+$$\Lambda f=\Lambda(\psi f)\qquad(f\in C^\infty(\Omega)).$$
+The value does not depend on the choice of $\psi$. Conversely, every continuous linear functional on $C^\infty(\Omega)$ restricts to a distribution with compact support.`,
       idea: String.raw`If $\psi,\psi'$ are two admissible cutoffs, $(\psi-\psi')f$ vanishes near $S_\Lambda$, so $\Lambda((\psi-\psi')f)=0$ by 6.23. With $K=\operatorname{supp}\psi$, the estimate of 6.8 on $\mathscr D_K$ gives $|\Lambda(\psi f)|\le C\|\psi f\|_N\le C'\max_{x\in K,\,|\alpha|\le N}|D^\alpha f(x)|$ for every $f$ — finite order, and continuity for the Fréchet topology of $C^\infty(\Omega)$. Uniqueness holds because $\mathscr D(\Omega)$ is dense in $C^\infty(\Omega)$.`,
       caption: String.raw`$\Lambda=0.7\,\delta'_{-1}+g\cdot1_{[0.4,1.4]}$ has compact support (red). The smooth $f$ (blue) has no compact support at all, yet $\Lambda f$ makes sense: multiply by a cutoff $\psi$ (orange) that is $1$ on the support enlarged by a margin, with a transition of adjustable width, and evaluate $\Lambda(\psi f)$. Bottom: $\Lambda(\psi f)$ against the margin for three transition widths — one flat line for every positive margin, so the extension is well defined; negative margins cut into the support and break it.`,
       deps: ['fa-6.23', 'fa-6.8', 'fa-1.46'],
       tags: ['distributions', 'compact support'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const fS = v.select('$f=$', [{ value: 'e', label: '$e^{x}\\cos 2x$' }, { value: 'p', label: '$x^3-2x$' }, { value: 'g', label: '$e^{x^2/2}$' }], 'e');
@@ -124,11 +127,12 @@ export default {
       name: 'Distributions supported at a point',
       statement: String.raw`Suppose $\Lambda\in\mathscr D'(\Omega)$, $p\in\Omega$, $\{p\}$ is the support of $\Lambda$, and $\Lambda$ has order $N$. Then
 $$\Lambda=\sum_{|\alpha|\le N}c_\alpha D^\alpha\delta_p$$
-for some constants $c_\alpha$: $\Lambda$ is a finite combination of derivatives of the Dirac measure at $p$. Conversely, every nonzero such combination has support exactly $\{p\}$.`,
+for some constants $c_\alpha$: $\Lambda$ is a finite combination of derivatives of the Dirac measure at $p$.`,
       idea: String.raw`It suffices to show $\Lambda\varphi=0$ whenever $D^\alpha\varphi(p)=0$ for all $|\alpha|\le N$, because then $\Lambda$ factors through the finitely many functionals $\varphi\mapsto D^\alpha\varphi(p)$ (3.9). For such $\varphi$, multiply by a cutoff $\psi_\varepsilon(x)=\psi((x-p)/\varepsilon)$ equal to $1$ near $p$: $\Lambda\varphi=\Lambda(\psi_\varepsilon\varphi)$, and Taylor's formula gives $\|\psi_\varepsilon\varphi\|_N=O(\varepsilon)$, since every derivative of order $j\le N$ of $\varphi$ is $O(\varepsilon^{N+1-j})$ on the support while $D^\beta\psi_\varepsilon=O(\varepsilon^{-|\beta|})$. The order-$N$ estimate of 6.8 then forces $\Lambda\varphi=0$.`,
       caption: String.raw`$\Lambda=\delta-0.8\,\delta'+0.5\,\delta''-0.3\,\delta'''$ truncated to order $N$; the test function $\varphi=x^m b(x)$ vanishes to order $m$ at $p=0$. Top: $\varphi$, the cutoff $\psi_\varepsilon$ and $\psi_\varepsilon\varphi$, zoomed to $[-2.5\varepsilon,2.5\varepsilon]$. Bottom: $\|\psi_\varepsilon\varphi\|_j$ against $\varepsilon$ (log–log) for $j=0,\dots,4$; the line $j=N$ is thick. It has slope $m-N$, so it tends to $0$ exactly when $m>N$ — and that is exactly when $\Lambda\varphi=0$.`,
       deps: ['fa-6.23', 'fa-6.24', 'fa-6.8', 'fa-3.9'],
       tags: ['distributions', 'support', 'Dirac measure'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const XT = [[-3, '10⁻³'], [-2, '10⁻²'], [-1, '10⁻¹'], [0, '1']];
@@ -198,6 +202,7 @@ $$\Lambda\varphi=(-1)^{|\alpha|}\int_\Omega f\,D^\alpha\varphi\,dx\qquad(\varphi
       caption: String.raw`Integrate a distribution repeatedly: $F_1,F_2,F_3$ with $DF_{k}=F_{k-1}$, $F_0=\Lambda$. Red panels are not continuous functions (a point mass, a jump, an unbounded logarithm); the first green one is the continuous $f$ of the theorem, and $\Lambda=D^kf$. Drag $\varphi$: the readout checks $\Lambda\varphi=(-1)^k\int F_k\,\varphi^{(k)}$ by quadrature.`,
       deps: ['fa-6.8', 'fa-3.6', 'rca-6.16'],
       tags: ['distributions', 'structure theorem'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const LAM = {
@@ -254,61 +259,16 @@ $$\Lambda\varphi=(-1)^{|\alpha|}\int_\Omega f\,D^\alpha\varphi\,dx\qquad(\varphi
     {
       num: '6.27',
       kind: 'Theorem',
-      name: 'Compact support: finitely many derivatives, supports in any neighbourhood',
-      statement: String.raw`Suppose $K$ is compact, $V$ is open, $K\subset V\subset\Omega$, and $\Lambda\in\mathscr D'(\Omega)$ has support $K$ and order $N$. Then there are finitely many continuous functions $f_\beta$ in $\Omega$, with supports in $V$, such that
-$$\Lambda=\sum_\beta D^\beta f_\beta,$$
-the sum running over multi-indices $\beta$ with $\beta_i\le N+2$ for each $i$.`,
-      idea: String.raw`Choose $\psi\in\mathscr D(V)$ with $\psi=1$ near $K$, so $\Lambda=\psi\Lambda$. By 6.26 applied on a compact neighbourhood, $\Lambda=D^\alpha f$ there with $f$ continuous and $\alpha_i\le N+2$. Then $\Lambda=\psi D^\alpha f$, and Leibniz' formula moves the derivatives off: $\psi D^\alpha f=\sum_{\beta\le\alpha}(-1)^{|\alpha-\beta|}\binom\alpha\beta D^\beta\big((D^{\alpha-\beta}\psi)f\big)$, and every function $(D^{\alpha-\beta}\psi)f$ is continuous with support in $\operatorname{supp}\psi\subset V$.`,
-      caption: String.raw`$\Lambda=\delta^{(m)}$ ($m=0$ or $1$), $V=(-w,w)$. With a cutoff $\chi$ that is $1$ near $0$ and supported in $V$, one gets exactly $\delta^{(m)}=D^{m+2}f_{m+2}-f_0$ with the continuous $f_{m+2}=x_+\chi$ (purple) and $f_0=(m+2)H\chi^{(m+1)}+x_+\chi^{(m+2)}$ (orange), both supported in $V$. Shrink $V$: the representation persists, but $f_0$ grows like $w^{-m-1}$ — localising costs size. The readout checks the identity against $\varphi$.`,
-      deps: ['fa-6.26', 'fa-6.23', 'fa-6.15'],
-      tags: ['distributions', 'compact support', 'structure theorem'],
-      viz(v) {
-        const M = v.M;
-        const mS = v.select('$\\Lambda=$', [{ value: 0, label: '$\\delta$' }, { value: 1, label: "$\\delta'$" }], 0);
-        const wS = v.slider('$V=(-w,w)$, $w=$', 0.3, 2, 1.2, { step: 0.01 });
-        const S = v.stage({ x: [-2.3, 2.3], y: [-2, 2], height: 320, full: true, axes: true });
-        const hc = S.handle(0.25, 0, { color: 'blue', label: 'c', labelPos: 's', constrain: (x) => [M.clamp(x, -1, 1), 0] });
-        const r = 0.9;
-        let st = {};
-        v.legend([['purple', '$f_{m+2}=x_+\\chi$'], ['orange', '$f_0=(m+2)H\\chi^{(m+1)}+x_+\\chi^{(m+2)}$'], ['blue', '$\\varphi$'], ['muted', '$V$', { area: true }]]);
-        v.render(() => {
-          const m = +mS.value, w = wS.value, c = hc.x;
-          const chi = (x) => plateau(x, -w / 3, w / 3, w / 2), h = w * 1e-3;
-          const f2 = (x) => Math.max(x, 0) * chi(x);
-          const f0 = (x) => (x > 0 ? (m + 2) * fd(chi, m + 1, x, h) + x * fd(chi, m + 2, x, h) : 0);
-          S.setTitle(`$\\delta${m ? "'" : ''} = D^{${m + 2}}f_{${m + 2}} - f_0$ with supports in $V=(-${v.fix(w, 2)},${v.fix(w, 2)})$`);
-          S.vband(-w, w, { color: 'muted', alpha: 0.1, edges: true });
-          const sup0 = Math.max(...M.linspace(0, w, 400).map((x) => Math.abs(f0(x))));
-          const sc = sup0 > 1.8 ? 1.8 / sup0 : 1;
-          S.fn(f2, { color: 'purple', width: 2.6, n: 900 });
-          S.fn((x) => sc * f0(x), { color: 'orange', width: 2.2, n: 900 });
-          if (sc < 1) S.corner(`f₀ drawn ×${v.fmt(sc, 2)}`, 'tr', { color: 'orange', weight: 600 });
-          S.fn((x) => phiD(0, x, c, r), { domain: [c - r, c + r], color: 'blue', width: 2, alpha: 0.8 });
-          if (m === 0) deltaArrow(S, 0, 1, 1.4, 'ink', '\\delta'); else dipole(S, 0, 1, 1.2, 'ink', "\\delta'");
-          // check
-          const lam = m === 0 ? phiD(0, 0, c, r) : -phiD(1, 0, c, r);
-          const t1 = (m % 2 ? -1 : 1) * simpson((x) => f2(x) * phiD(m + 2, x, c, r), 0, Math.min(w, c + r), 1200);
-          const t0 = simpson((x) => f0(x) * phiD(0, x, c, r), 0, Math.min(w, c + r), 1200);
-          st = { m, lam, t1, t0, sup0, w };
-        });
-        v.readout(() => {
-          const s = st;
-          return `$\\Lambda\\varphi = ${v.fix(s.lam, 5)}$; $\\;(-1)^{${s.m}}\\int f_{${s.m + 2}}\\varphi^{(${s.m + 2})} - \\int f_0\\varphi = ${v.fix(s.t1, 5)} - (${v.fix(s.t0, 5)}) = ${v.fix(s.t1 - s.t0, 5)}$. Size of the correction: $\\sup|f_0| = ${v.fix(s.sup0, 3)}$, roughly $\\propto w^{-${s.m + 1}}$.`;
-        });
-      },
-    },
-    {
-      num: '6.28',
-      kind: 'Theorem',
       name: 'Every distribution is a locally finite sum of derivatives of continuous functions',
       statement: String.raw`If $\Lambda\in\mathscr D'(\Omega)$, there are continuous functions $g_\alpha$ in $\Omega$, one for each multi-index $\alpha$, such that
 (a) each compact $K\subset\Omega$ meets the supports of only finitely many $g_\alpha$, and
 (b) $\Lambda=\sum_\alpha D^\alpha g_\alpha$.
 If $\Lambda$ has finite order, the $g_\alpha$ can be chosen so that only finitely many of them are $\ne0$.`,
-      idea: String.raw`Choose a locally finite family of relatively compact open sets $V_i$ covering $\Omega$ and a subordinate smooth partition $\psi_i$. Each $\psi_i\Lambda$ has compact support in $V_i$. Theorem 6.27 represents it as a finite sum $\sum_\alpha D^\alpha f_{i,\alpha}$ with each $f_{i,\alpha}$ supported in $V_i$. For each $\alpha$ let $g_\alpha=\sum_i f_{i,\alpha}$; local finiteness makes this continuous. On each compact set only finitely many indices $i$, hence finitely many $\alpha$, occur. Summing gives the representation. If $\Lambda$ has order $N$, 6.27 gives the same finite range $\alpha_j\le N+2$ for every piece.`,
+      idea: String.raw`Cover $\Omega$ by a locally finite family of relatively compact open sets and take a partition of unity $\{\psi_i\}$ subordinate to it (6.20). Each $\psi_i\Lambda$ has compact support, so 6.26 (in the sharper form 6.28, with supports kept inside a slightly larger set) writes it as a finite sum $\sum_\alpha D^\alpha g_{i,\alpha}$ with $g_{i,\alpha}$ supported near $\operatorname{supp}\psi_i$. Summing over $i$ and collecting terms by $\alpha$ gives $g_\alpha=\sum_ig_{i,\alpha}$, a locally finite sum of continuous functions.`,
       caption: String.raw`$\Lambda=\sum_{k\ge0}c_k\,\delta^{(k)}_{p_k}$ with $p_k=k+\tfrac12$ has **infinite** order: near $p_k$ it needs $k$ derivatives. Yet $\Lambda=\sum_kD^{k+2}g_k$ with the continuous ramps $g_k=c_k(x-p_k)_+$ (bottom). Drag the compact set $K$: only the ramps whose supports $[p_k,\infty)$ start before $\max K$ meet it — finitely many. Drag $\varphi$: the readout compares $\Lambda\varphi=\sum_kc_k(-1)^k\varphi^{(k)}(p_k)$ with $\sum_k(-1)^k\int g_k\varphi^{(k+2)}$.`,
-      deps: ['fa-6.27', 'fa-6.20', 'fa-6.15'],
+      deps: ['fa-6.26', 'fa-6.20', 'fa-6.24'],
       tags: ['distributions', 'structure theorem'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const KMAX = 5, CK = [1, -0.8, 0.6, -0.45, 0.3, -0.2], PK = M.range(KMAX + 1).map((k) => k + 0.5);
@@ -353,6 +313,53 @@ If $\Lambda$ has finite order, the $g_\alpha$ can be chosen so that only finitel
         v.readout(() => {
           const s = st;
           return `$K=[${v.fix(s.a, 2)},${v.fix(s.b, 2)}]$ meets the supports of $g_k$ for $k\\in\\{${s.meets.join(',')}\\}$ only. $\\Lambda\\varphi = ${v.fix(s.L, 5)}$, $\\;\\sum_k(-1)^{k}\\int g_k\\varphi^{(k+2)} = ${v.fix(s.R, 5)}$.`;
+        });
+      },
+    },
+    {
+      num: '6.28',
+      kind: 'Theorem',
+      name: 'Compact support: finitely many derivatives, supports in any neighbourhood',
+      statement: String.raw`Suppose $K$ is compact, $V$ is open, $K\subset V\subset\Omega$, and $\Lambda\in\mathscr D'(\Omega)$ has support $K$ and order $N$. Then there are finitely many continuous functions $f_\beta$ in $\Omega$, with supports in $V$, such that
+$$\Lambda=\sum_\beta D^\beta f_\beta,$$
+the sum running over multi-indices $\beta$ with $\beta_i\le N+2$ for each $i$.`,
+      idea: String.raw`Choose $\psi\in\mathscr D(V)$ with $\psi=1$ near $K$, so $\Lambda=\psi\Lambda$. By 6.26 applied on a compact neighbourhood, $\Lambda=D^\alpha f$ there with $f$ continuous and $\alpha_i\le N+2$. Then $\Lambda=\psi D^\alpha f$, and Leibniz' formula moves the derivatives off: $\psi D^\alpha f=\sum_{\beta\le\alpha}c_{\alpha\beta}D^\beta\big((D^{\alpha-\beta}\psi)f\big)$ up to sign, and every function $(D^{\alpha-\beta}\psi)f$ is continuous with support in $\operatorname{supp}\psi\subset V$.`,
+      caption: String.raw`$\Lambda=\delta^{(m)}$ ($m=0$ or $1$), $V=(-w,w)$. With a cutoff $\chi$ that is $1$ near $0$ and supported in $V$, one gets exactly $\delta^{(m)}=D^{m+2}f_{m+2}-f_0$ with the continuous $f_{m+2}=x_+\chi$ (purple) and $f_0=(m+2)H\chi^{(m+1)}+x_+\chi^{(m+2)}$ (orange), both supported in $V$. Shrink $V$: the representation persists, but $f_0$ grows like $w^{-m-1}$ — localising costs size. The readout checks the identity against $\varphi$.`,
+      deps: ['fa-6.26', 'fa-6.23', 'fa-6.15'],
+      tags: ['distributions', 'compact support', 'structure theorem'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const mS = v.select('$\\Lambda=$', [{ value: 0, label: '$\\delta$' }, { value: 1, label: "$\\delta'$" }], 0);
+        const wS = v.slider('$V=(-w,w)$, $w=$', 0.3, 2, 1.2, { step: 0.01 });
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2, 2], height: 320, full: true, axes: true });
+        const hc = S.handle(0.25, 0, { color: 'blue', label: 'c', labelPos: 's', constrain: (x) => [M.clamp(x, -1, 1), 0] });
+        const r = 0.9;
+        let st = {};
+        v.legend([['purple', '$f_{m+2}=x_+\\chi$'], ['orange', '$f_0=(m+2)H\\chi^{(m+1)}+x_+\\chi^{(m+2)}$'], ['blue', '$\\varphi$'], ['muted', '$V$', { area: true }]]);
+        v.render(() => {
+          const m = +mS.value, w = wS.value, c = hc.x;
+          const chi = (x) => plateau(x, -w / 3, w / 3, w / 2), h = w * 1e-3;
+          const f2 = (x) => Math.max(x, 0) * chi(x);
+          const f0 = (x) => (x > 0 ? (m + 2) * fd(chi, m + 1, x, h) + x * fd(chi, m + 2, x, h) : 0);
+          S.setTitle(`$\\delta${m ? "'" : ''} = D^{${m + 2}}f_{${m + 2}} - f_0$ with supports in $V=(-${v.fix(w, 2)},${v.fix(w, 2)})$`);
+          S.vband(-w, w, { color: 'muted', alpha: 0.1, edges: true });
+          const sup0 = Math.max(...M.linspace(0, w, 400).map((x) => Math.abs(f0(x))));
+          const sc = sup0 > 1.8 ? 1.8 / sup0 : 1;
+          S.fn(f2, { color: 'purple', width: 2.6, n: 900 });
+          S.fn((x) => sc * f0(x), { color: 'orange', width: 2.2, n: 900 });
+          if (sc < 1) S.corner(`f₀ drawn ×${v.fmt(sc, 2)}`, 'tr', { color: 'orange', weight: 600 });
+          S.fn((x) => phiD(0, x, c, r), { domain: [c - r, c + r], color: 'blue', width: 2, alpha: 0.8 });
+          if (m === 0) deltaArrow(S, 0, 1, 1.4, 'ink', '\\delta'); else dipole(S, 0, 1, 1.2, 'ink', "\\delta'");
+          // check
+          const lam = m === 0 ? phiD(0, 0, c, r) : -phiD(1, 0, c, r);
+          const t1 = (m % 2 ? -1 : 1) * simpson((x) => f2(x) * phiD(m + 2, x, c, r), 0, Math.min(w, c + r), 1200);
+          const t0 = simpson((x) => f0(x) * phiD(0, x, c, r), 0, Math.min(w, c + r), 1200);
+          st = { m, lam, t1, t0, sup0, w };
+        });
+        v.readout(() => {
+          const s = st;
+          return `$\\Lambda\\varphi = ${v.fix(s.lam, 5)}$; $\\;(-1)^{${s.m}}\\int f_{${s.m + 2}}\\varphi^{(${s.m + 2})} - \\int f_0\\varphi = ${v.fix(s.t1, 5)} - (${v.fix(s.t0, 5)}) = ${v.fix(s.t1 - s.t0, 5)}$. Size of the correction: $\\sup|f_0| = ${v.fix(s.sup0, 3)}$, roughly $\\propto w^{-${s.m + 1}}$.`;
         });
       },
     },

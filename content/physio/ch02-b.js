@@ -1,4 +1,3 @@
-import {TW,twitchRun,windowStats,tetanusCurve} from './twitch.shared.js';
 // Human Physiology — Chapter 2: Excitable cells and muscle (part b: 2.7–2.12)
 import { clamp, trace, idxAt, peaks, hhRun, msRun, saRun, hillV, hillFopt } from './ch02.shared.js';
 
@@ -15,6 +14,35 @@ function ghk(P, naFrac, Tc) {
 
 // Twitch and tetanus (2.7): impulse-driven calcium proxy c (decays with tc), saturating activation A = c²/(c²+K²) and
 // force with different rise and fall time constants (ms). Force is reported as a fraction of the 100 Hz tetanus (P.nrm).
+const TW = {
+  fast: { c1: 0.3, cmax: 1, K: 0.5, tc: 25, tr: 20, td: 45, nrm: 0.49 },
+  slow: { c1: 0.3, cmax: 1, K: 0.5, tc: 80, tr: 60, td: 140, nrm: 0.69 },
+};
+function twitchRun(f, P, o = {}) {
+  const dt = 0.5, tEnd = o.tEnd ?? 800, trainEnd = o.trainEnd ?? 600, T = 1000 / f, single = o.single, Fmax = P.nrm;
+  let c = 0, F = 0, next = 20; const ts = [], Fs = [], cs = [], stim = [];
+  for (let t = 0; t <= tEnd + 1e-9; t += dt) {
+    if (t >= next - 1e-9 && next <= trainEnd + 20 && !(single && stim.length >= 1)) { c += P.c1 * (1 - c / P.cmax); stim.push(next); next += T; }
+    const A = (c * c) / (c * c + P.K * P.K), tau = A > F ? P.tr : P.td;
+    ts.push(t); Fs.push(F / Fmax); cs.push(c);
+    F += (dt * (A - F)) / tau; c -= (dt * c) / P.tc;
+  }
+  return { t: ts, F: Fs, c: cs, stim };
+}
+/** Peak and trough of the force over the last two stimulus intervals (and the decay that follows the last stimulus). */
+function windowStats(r, f) {
+  const n = r.stim.length, T = 1000 / f, t0 = n >= 3 ? r.stim[n - 3] : r.stim[0], t1 = n >= 3 ? r.stim[n - 1] : r.stim[n - 1] + T;
+  const seg = r.F.slice(idxAt(r.t, t0), idxAt(r.t, Math.min(r.t[r.t.length - 1], r.stim[n - 1] + T)) + 1), core = r.F.slice(idxAt(r.t, t0), idxAt(r.t, t1) + 1);
+  return { max: Math.max(...seg), min: n >= 3 ? Math.min(...core) : 0, mean: core.reduce((a, b) => a + b, 0) / core.length };
+}
+const tetTable = {};
+function tetanusCurve(type) {
+  if (tetTable[type]) return tetTable[type];
+  const P = TW[type], out = [];
+  for (let k = 0; k <= 36; k++) { const f = Math.pow(10, (2 * k) / 36); out.push({ f, ...windowStats(twitchRun(f, P), f) }); }
+  tetTable[type] = out; return out;
+}
+
 // Size principle (2.8)
 const NU = 36;
 function pool(R, seedPerm) {
@@ -65,10 +93,10 @@ export default {
       num: '2.7',
       kind: 'Phenomenon',
       name: 'Twitch summation and tetanus',
-      statement: String.raw`A single action potential in a skeletal muscle fibre produces a **twitch**: force rises to a peak in tens of milliseconds and falls back more slowly. If a second stimulus arrives before the twitch has ended, its force is added on top of the remaining first one (**summation**). A train of stimuli at increasing frequency produces first a rippling, **unfused tetanus**, whose force fluctuates between pulses, and then a smooth, **fused tetanus**, whose force is a steady several times (in this illustration several times) that of a single twitch. The frequency at which fusion occurs is lower for slow muscles, whose twitches last longer, than for fast ones. Force then saturates when the contractile machinery is fully activated.`,
+      statement: String.raw`A single action potential in a skeletal muscle fibre produces a **twitch**: force rises to a peak in tens of milliseconds and falls back more slowly. If a second stimulus arrives before the twitch has ended, its force is added on top of the remaining first one (**summation**). A train of stimuli at increasing frequency produces first a rippling, **unfused tetanus**, whose force fluctuates between pulses, and then a smooth, **fused tetanus**, whose force is a steady several times (typically 3 to 10 times) that of a single twitch. The frequency at which fusion occurs is lower for slow muscles, whose twitches last longer, than for fast ones. Force then saturates when the contractile machinery is fully activated.`,
       idea: String.raw`The twitch is long compared with the action potential (2.3): calcium is released within a few ms, but its removal and the lag of force behind troponin occupancy stretch the twitch to tens of ms. Stimuli closer together than that find calcium still elevated, so each one adds calcium before the last has been pumped out, and the activation (steeply sigmoidal in calcium) climbs. Because the muscle membrane, unlike the heart (2.9), has a short refractory period, nothing prevents stimuli from arriving at 50 per second. The force–frequency relation thus encodes the neural firing rate in the force, which is how the nervous system grades contraction of one motor unit.`,
-      caption: String.raw`A train of stimuli (gold ticks) is applied for 600 ms. Left: the force. The dashed trace is the single twitch for comparison. Right: the force–frequency curve: the peak (solid) and trough (dashed) of the force late in the train for every frequency, with the size of the ripple shaded. Raise the **frequency** from 1 Hz upwards: the twitches first stay separate, then merge. Switch between **fast** and **slow** muscle and see the fusion frequency move: these illustrative fast and slow parameter sets fuse at different frequencies; the readout defines fusion by a trough/peak ratio above 0.9, rather than a measured universal threshold.`,
-      scope: String.raw`A lumped, single-fibre model with first-order calcium removal and a saturating calcium–force relation; real muscle also shows a fatigue and potentiation (post-tetanic) history, which is ignored. Time constants distinguish a faster and a slower teaching example; no species, muscle, temperature or experimental fit is specified.`,
+      caption: String.raw`A train of stimuli (gold ticks) is applied for 600 ms. Left: the force. The dashed trace is the single twitch for comparison. Right: the force–frequency curve: the peak (solid) and trough (dashed) of the force late in the train for every frequency, with the size of the ripple shaded. Raise the **frequency** from 1 Hz upwards: the twitches first stay separate, then merge. Switch between **fast** and **slow** muscle and see the fusion frequency move: a fast muscle needs about 40 Hz, a slow one about 10–15 Hz.`,
+      scope: String.raw`A lumped, single-fibre model with first-order calcium removal and a saturating calcium–force relation; real muscle also shows a fatigue and potentiation (post-tetanic) history, which is ignored. Time constants correspond to a fast and a slow mammalian muscle at body temperature, but they are round numbers.`,
       deps: ['physio-2.3'],
       see: ['physio-2.8', 'physio-2.9'],
       refs: ['Guyton–Hall'],
@@ -114,10 +142,12 @@ export default {
       kind: 'Principle',
       name: 'Henneman’s size principle',
       statement: String.raw`A **motor unit** is one motor neuron and the muscle fibres it controls. Units in one muscle differ greatly in size: the smallest develop a few tenths of a newton, the largest a hundred times more. When the descending drive to the motor pool grows, units are recruited **in order of size**: the smallest first, the largest last, and in a fixed order that is the same from one contraction to the next. Because the order matches the size, the increment of force produced when each new unit joins is about the same fraction of the force already present. Fine control is therefore possible at low force and coarse control at high force, with a constant relative resolution.`,
-      idea: String.raw`The mechanism is electrical. A small motor neuron has a small surface area and so a high input resistance: the same synaptic current produces a larger depolarization (Ohm's law) and it reaches threshold first. Henneman (1957) showed in cats that the smaller the axon, the lower the stimulus needed to fire it, and later work established the order in the intact human. The result is economical: slow, fatigue-resistant units carry the postural tasks, and the powerful but fatiguing ones are held back for effort. The size principle also means that relative force steps are small everywhere, a Weber-like property that any ordering other than by size would destroy.`,
+      idea: String.raw`The mechanism is electrical. A small motor neuron has a small surface area and so a high input resistance: the same synaptic current produces a larger depolarization (Ohm's law) and it reaches threshold first. Henneman (1957) showed in cats that the smaller the axon, the lower the stimulus needed to fire it, and later work established the order in the intact human. The result is economical: slow, fatigue-resistant units carry the postural tasks, and the powerful but fatiguing ones are held back for effort. The size principle also means that relative force steps are small everywhere, a Weber-like property that any ordering other than by size would destroy.
+
+Ohm's law circ-1.4 provides the electrical step in this mechanism: for a fixed passive input resistance and a slowly maintained synaptic current, the voltage increment is $\Delta V=I R_{\rm in}$. A larger input resistance therefore reaches a specified voltage threshold at a smaller current. Applying this relation to recruitment assumes comparable thresholds and inputs; it is not a proof that every neuron with a smaller axon must fire first under arbitrary synaptic drive.`,
       caption: String.raw`A pool of 36 motor units whose forces span a ratio you choose (top left, vertical axis logarithmic, bar colour from blue = smallest to red = largest). Drag the **drive** (dot on the force curve, bottom left). Units fire in order of their thresholds and ramp up to full force over a narrow band of drive. Bottom right: the force added by each unit as a fraction of the total before it. In the size order this fraction settles to an almost constant value after the first few units. Switch to a **random** order of the same units and the steps become wild: a large unit recruited early can double or triple the force at a stroke, while many small ones recruited late add almost nothing.`,
       scope: String.raw`Holds for voluntary and reflex contractions of a muscle with orderly recruitment. Order can deviate in some conditions (rapid ballistic movements, cutaneous reflexes, some inhibitory inputs), and in a few muscles the compartments are recruited separately. Here the thresholds are evenly spaced in rank, a simplification of the measured distribution.`,
-      deps: ['physio-2.7'],
+      deps: ['physio-2.7','circ-1.4'],
       see: ['physio-2.7'],
       refs: ['Guyton–Hall'],
       tags: ['muscle', 'motor units', 'recruitment'],

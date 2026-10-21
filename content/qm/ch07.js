@@ -4,11 +4,9 @@ import {
   TAU, phaseLUT, fz, spinOps, ylm, realY, ySum, legendreP, paintSphere, worldToView, sphereIP, rotate3, propagator, spinAlong, mvec, comm, mscale, msub, fnorm,
 } from './ch07.shared.js';
 
-const rotX = (a) => [[1, 0, 0], [0, Math.cos(a), -Math.sin(a)], [0, Math.sin(a), Math.cos(a)]];
-const rotY = (a) => [[Math.cos(a), 0, Math.sin(a)], [0, 1, 0], [-Math.sin(a), 0, Math.cos(a)]];
-const mm3 = (A, B) => A.map((r) => [0, 1, 2].map((j) => r[0] * B[0][j] + r[1] * B[1][j] + r[2] * B[2][j]));
+import { rotationComparison, harmonicAudit, HARMONIC_INDICES } from './angular-source-audit.shared.js';
+
 const mv3 = (A, x) => A.map((r) => r[0] * x[0] + r[1] * x[1] + r[2] * x[2]);
-const tr3 = (A) => A[0][0] + A[1][1] + A[2][2];
 const sphereStage = (v, title, h = 300) => v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: h, title });
 
 export default {
@@ -25,8 +23,8 @@ export default {
       statement: String.raw`For a particle in three dimensions the **orbital angular momentum** is the vector operator
 $$\mathbf L=\mathbf r\times\mathbf p,\qquad L_x=yp_z-zp_y,\quad L_y=zp_x-xp_z,\quad L_z=xp_y-yp_x,$$
 with $\mathbf p=-i\hbar\nabla$; the products are unambiguous because the factors in each term commute. In spherical coordinates $L_z=-i\hbar\,\partial/\partial\phi$ acts on the azimuth only, so $e^{im\phi}$ is an eigenfunction with eigenvalue $m\hbar$. The three components are Hermitian, and so is $L^2=L_x^2+L_y^2+L_z^2$.`,
-      idea: String.raw`Classically $\mathbf L=\mathbf r\times\mathbf p$ (mech-2.8); quantum mechanically one replaces $\mathbf r,\mathbf p$ by the operators of qm-5.9. The chain rule turns $x\partial_y-y\partial_x$ into $\partial_\phi$, which is why a function of the azimuth alone is diagonalized by the Fourier modes $e^{im\phi}$. A superposition of two modes is not an eigenfunction: it has an expectation value (the weighted mean of the two $m$) and a spread.`,
-      caption: String.raw`**Choose two integers $m_1,m_2$ and the weight $w$ of the second.** The state is $\psi=(1-w)^{1/2}e^{im_1\phi}+w^{1/2}e^{im_2\phi}$ on the unit circle. The program applies $L_z=x p_y-y p_x$ in *Cartesian* form by finite differences, not by the formula $-i\partial_\phi$: when $w=0$ the green curve $\operatorname{Re}L_z\psi$ lies on the dotted curve $m_1\operatorname{Re}\psi$ (eigenfunction), and for $w>0$ it no longer does — the residual and the spread $\Delta L_z$ appear in the readout.`,
+      idea: String.raw`Classically $\mathbf L=\mathbf r\times\mathbf p$ (mech-2.8); quantum mechanically one replaces $\mathbf r,\mathbf p$ by the operators of qm-5.9. The chain rule turns $x\partial_y-y\partial_x$ into $\partial_\phi$, which is why a function of the azimuth alone is diagonalized by the Fourier modes $e^{im\phi}$. A superposition of distinct modes with both coefficients nonzero is not an eigenfunction: it has a weighted mean and a spread. A pure mode, including the second-mode endpoint, remains an eigenfunction.`,
+      caption: String.raw`**Choose two integers $m_1,m_2$ and the weight $w$ of the second.** The state is $\psi=(1-w)^{1/2}e^{im_1\phi}+w^{1/2}e^{im_2\phi}$ on the unit circle. The program applies $L_z=x p_y-y p_x$ in *Cartesian* form by finite differences, not by the formula $-i\partial_\phi$: when $w=0$ the green curve $\operatorname{Re}L_z\psi$ lies on the dotted curve $m_1\operatorname{Re}\psi$ (eigenfunction), and for $0<w<1$ with $m_1\ne m_2$ it no longer does — the residual and the spread $\Delta L_z$ appear in the readout.`,
       deps: ['qm-5.9', 'mech-2.8'],
       refs: ['Griffiths §4.3'],
       tags: ['angular momentum', 'operators'],
@@ -48,6 +46,7 @@ with $\mathbf p=-i\hbar\nabla$; the products are unambiguous because the factors
             f.push(ph); re.push([ph, p[0]]); im.push([ph, p[1]]); lr.push([ph, l[0]]); ex.push([ph, M1 * p[0]]);
             if (k < n) { num += p[0] * l[0] + p[1] * l[1]; num2 += l[0] * l[0] + l[1] * l[1]; den += p[0] * p[0] + p[1] * p[1]; res += (l[0] - M1 * p[0]) ** 2 + (l[1] - M1 * p[1]) ** 2; }
           }
+          const top=1.15*Math.max(1,...[re,im,lr,ex].flat().map(p=>Math.abs(p[1])));A.setView([0,TAU],[-top,top]);
           A.path(ex, { color: 'muted', width: 1.4, dash: [2, 4] });
           A.path(re, { color: 'accent', width: 2 }); A.path(im, { color: 'orange', width: 1.4, alpha: 0.8 }); A.path(lr, { color: 'green', width: 2.2, dash: [7, 4] });
           // ring: phase colour, radial thickness ∝ nothing (|ψ| varies)
@@ -64,7 +63,7 @@ with $\mathbf p=-i\hbar\nabla$; the products are unambiguous because the factors
         });
         v.legend([['accent', '$\\operatorname{Re}\\psi$'], ['orange', '$\\operatorname{Im}\\psi$'], ['green', '$\\operatorname{Re}(L_z\\psi)$ from $-i(x\\partial_y-y\\partial_x)$', { dash: true }], ['muted', '$m_1\\operatorname{Re}\\psi$', { dash: true }]]);
         v.readout(() => `$\\langle L_z\\rangle/\\hbar = ${fz(v, st.mean, 4)}$ (expected $(1-w)m_1+w\\,m_2 = ${fz(v, (1 - w.value) * m1.value + w.value * m2.value, 4)}$), $\\;\\Delta L_z/\\hbar = ${fz(v, st.sd, 4)}$\n` +
-          `$\\|L_z\\psi-m_1\\psi\\|/\\|\\psi\\| = ${fz(v, st.res, 5)}$ ${w.value === 0 ? '— an eigenfunction, residual zero up to finite-difference error.' : '— not an eigenfunction once $w>0$.'}`);
+          `$\\|L_z\\psi-m_1\\psi\\|/\\|\\psi\\| = ${fz(v, st.res, 5)}$ ${w.value===0||m1.value===m2.value?'— an eigenfunction of the reference eigenvalue, up to finite-difference error.':w.value===1?'— a pure eigenfunction with eigenvalue $m_2$, compared here with reference $m_1$.':'— two distinct populated modes: not an eigenfunction.'}`);
       },
     },
     // ------------------------------------------------------------------ 7.2
@@ -72,26 +71,26 @@ with $\mathbf p=-i\hbar\nabla$; the products are unambiguous because the factors
       num: '7.2',
       kind: 'Theorem',
       name: 'Angular momentum commutation relations',
-      statement: String.raw`The components of $\mathbf L=\mathbf r\times\mathbf p$ satisfy
+      statement: String.raw`On a common invariant domain, such as smooth compactly supported wave functions, the orbital operators $\mathbf L=\mathbf r\times\mathbf p$ satisfy
 $$[L_x,L_y]=i\hbar L_z,\quad [L_y,L_z]=i\hbar L_x,\quad [L_z,L_x]=i\hbar L_y,$$
-that is $[L_i,L_j]=i\hbar\,\varepsilon_{ijk}L_k$. Consequently no two components can be sharply defined simultaneously (unless both vanish), but $L^2=L_x^2+L_y^2+L_z^2$ commutes with every component: $[L^2,L_i]=0$. The same relations are taken as the definition of *any* angular momentum $\mathbf J$ (including spin), whether or not it is of the form $\mathbf r\times\mathbf p$.`,
-      idea: String.raw`Expanding $[L_x,L_y]=[yp_z-zp_y,\;zp_x-xp_z]$ with the canonical relation $[x_i,p_j]=i\hbar\delta_{ij}$ (qm-5.9), only the two cross terms where a position meets its own momentum survive, and they combine to $i\hbar(xp_y-yp_x)$. Geometrically the same identity says rotations about different axes do not commute: the group commutator of two small rotations is a rotation about the third axis by the product of the angles, and $L_i/\hbar$ is the generator of rotations about axis $i$.`,
-      caption: String.raw`**Set two small angles $a$ (about $x$) and $b$ (about $y$).** The frame $(\mathbf e_1,\mathbf e_2,\mathbf e_3)$ is rotated *x-then-y* (orange) and *y-then-x* (blue) from the faint original. The relative rotation has an axis approaching $-z$ for this ordering as both angles shrink; its positive angle, extracted from the actual matrices, approaches the product $ab$ — the geometric image of $[L_x,L_y]=i\hbar L_z$. Drag the picture to rotate the view. The readout also checks the operator identity for the $3\times3$ matrices of $l=1$.`,
+that is $[L_i,L_j]=i\hbar\,\varepsilon_{ijk}L_k$. A common eigenvector of two components is annihilated by all three (the zero-angular-momentum sector); zero expectation values alone do not give sharp values. Also, $L^2=L_x^2+L_y^2+L_z^2$ commutes with every component: $[L^2,L_i]=0$. Hermitian angular-momentum generators $\mathbf J$, including spin, obey the same algebra even when they are not orbital operators.`,
+      idea: String.raw`Expanding $[L_x,L_y]=[yp_z-zp_y,\;zp_x-xp_z]$ with the canonical relation $[x_i,p_j]=i\hbar\delta_{ij}$ (qm-5.9), only the two cross terms where a position meets its own momentum survive, and they combine to $i\hbar(xp_y-yp_x)$. Geometrically the same identity says rotations about different axes do not commute: the relative rotation approaches one about the third axis to leading order in the product of the angles, and $L_i/\hbar$ is the generator of rotations about axis $i$.`,
+      caption: String.raw`Set angles $a$ and $b$. Orange is $R_A=R_y(b)R_x(a)$; blue is $R_B=R_x(a)R_y(b)$, acting actively on column vectors. Their relative rotation is $R_AR_B^{-1}$. Its exact axis (gold) generally tilts away from $z$. For small positive angles it approaches **negative** $z$, with positive rotation angle approaching $|ab|$. If either angle is zero the frames coincide and there is no unique relative axis. Drag to change the view.`,
+      scope: String.raw`The matrix check is the finite $l=1$ representation with $\hbar=1$; it illustrates the algebra rather than proving it for all representations. The finite SO(3) comparison and its infinitesimal limit are kept distinct.`,
       deps: ['qm-7.1'],
-      refs: ['Fitzpatrick,QuantumMechanics §8.2 Eqs8.5–8.12'],
-      credit: 'Angular-momentum operator algebra',
+      refs: ['Fitzpatrick, Quantum Mechanics, Orbital Angular Momentum, Eqs. (4.7)–(4.19)'],
+      credit: 'Source treatment: Richard Fitzpatrick, Orbital Angular Momentum; finite rotations checked directly.',
+      verify: false,
       tags: ['angular momentum', 'commutator', 'rotations'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Angular_momentum_operator#Commutation_relations' },
       viz(v) {
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.7, 1.7], equal: true, axes: false, height: 340, full: true });
         const sc = v.scene3(S, { yaw: -0.65, pitch: 0.4, axis: 1.5, lim: 1.6 });
-        const a = v.slider('rotation $a$ about $x$ (rad)', 0.05, 1.6, 0.8, { step: 0.01 }), b = v.slider('rotation $b$ about $y$ (rad)', 0.05, 1.6, 0.8, { step: 0.01 });
+        const a = v.slider('rotation $a$ about $x$ (rad)', -1.6, 1.6, 0.8, { step: 0.01 }), b = v.slider('rotation $b$ about $y$ (rad)', -1.6, 1.6, 0.8, { step: 0.01 });
         const L1 = spinOps(1);
         let st = null;
         v.render(() => {
-          const Ra = rotX(a.value), Rb = rotY(b.value), RA = mm3(Rb, Ra), RB = mm3(Ra, Rb); // x first then y; y first then x
-          const Rc = mm3(RA, [[0, 1, 2].map((j) => RB[j][0]), [0, 1, 2].map((j) => RB[j][1]), [0, 1, 2].map((j) => RB[j][2])]); // R_A R_B^T = R_A R_B^{-1}
-          const ang = Math.acos(Math.max(-1, Math.min(1, (tr3(Rc) - 1) / 2))), ax = [Rc[2][1] - Rc[1][2], Rc[0][2] - Rc[2][0], Rc[1][0] - Rc[0][1]], an = Math.hypot(...ax) || 1;
+          const cmp=rotationComparison(a.value,b.value),{RA,RB}=cmp;
           sc.begin();
           for (const [e, c] of [[[1, 0, 0], 'faint'], [[0, 1, 0], 'faint'], [[0, 0, 1], 'faint']]) sc.arrow([0, 0, 0], e, { color: c, width: 1.6 });
           const cols = ['red', 'green', 'accent'];
@@ -100,14 +99,15 @@ that is $[L_i,L_j]=i\hbar\,\varepsilon_{ijk}L_k$. Consequently no two components
           });
           const tA = mv3(RA, [0, 0, 1]), tB = mv3(RB, [0, 0, 1]);
           sc.line(tA, tB, { color: 'red', width: 2 });
+          if(cmp.axis)sc.arrow([0,0,0],cmp.axis.map(x=>x*1.35),{color:'gold',width:2.5});
           sc.flush();
           const mid = sc.P(tA.map((x, i) => (x + tB[i]) / 2)); S.text('gap', mid[0] + 0.08, mid[1] + 0.12, { color: 'red', size: 12 });
           const C = comm(L1.Sx, L1.Sy), D = mscale(L1.Sz, [0, 1]);
-          st = { ang, axis: ax.map((x) => x / an), err: fnorm(msub(C, D)), a: a.value, b: b.value };
+          st = { ...cmp, err: fnorm(msub(C, D)), a: a.value, b: b.value };
         });
-        v.legend([['orange', 'rotate about $x$ by $a$, then about $y$ by $b$'], ['accent', 'about $y$ first, then $x$'], ['red', 'difference of the two $\\mathbf e_3$']]);
-        v.readout(() => `net rotation $R_AR_B^{-1}$: angle $${fz(v, st.ang, 4)}$ about the axis $(${st.axis.map((x) => fz(v, x, 3)).join(',')})$, versus the product $ab = ${fz(v, st.a * st.b, 4)}$ (ratio $${fz(v, st.ang / (st.a * st.b), 3)}$, $\\to1$ as $a,b\\to0$).\n` +
-          `$l=1$ matrices: $\\|[L_x,L_y]-iL_z\\|_F = ${v.sci(st.err, 2)}$ (zero up to rounding).`);
+        v.legend([['orange', 'rotate about $x$ by $a$, then about $y$ by $b$'], ['accent', 'about $y$ first, then $x$'], ['red', 'difference of the two $\\mathbf e_3$'],['gold','exact relative axis']]);
+        v.readout(() => (st.axis?`Relative rotation angle $${fz(v,st.angle,5)}$ about $(${st.axis.map(x=>fz(v,x,3)).join(',')})$. Compared with $|ab|=${fz(v,Math.abs(st.a*st.b),5)}$: ratio $${fz(v,st.ratio,5)}$, tending to1 as both angles tend to zero. `:'The relative rotation is the identity: zero angle and no unique axis. ')+
+          `$l=1$ matrices: $\\|[L_x,L_y]-iL_z\\|_F=${v.sci(st.err,2)}$ (rounding).`);
       },
     },
     // ------------------------------------------------------------------ 7.3
@@ -203,24 +203,26 @@ $$J_\pm|j,m\rangle=\hbar\sqrt{j(j+1)-m(m\pm1)}\;|j,m\pm1\rangle .$$`,
       statement: String.raw`The **spherical harmonics** are the joint eigenfunctions of $L^2$ and $L_z$ on the sphere,
 $$L^2Y_l^m=\hbar^2l(l+1)Y_l^m,\qquad L_zY_l^m=m\hbar\,Y_l^m,$$
 given for $l=0,1,2,\dots$ and $m=-l,\dots,l$ by $Y_l^m(\theta,\phi)=\sqrt{\tfrac{2l+1}{4\pi}\tfrac{(l-m)!}{(l+m)!}}\,P_l^m(\cos\theta)\,e^{im\phi}$ with the Condon–Shortley phase convention. They are orthonormal, $\int Y_{l'}^{m'*}Y_l^m\,d\Omega=\delta_{ll'}\delta_{mm'}$, and complete on $L^2(S^2)$. The function $P_l^m(\cos\theta)$ has $l-|m|$ zeros in $0<\theta<\pi$.`,
-      idea: String.raw`Because $L_z=-i\partial_\phi$, the $\phi$-dependence is $e^{im\phi}$ (qm-7.4); the $\theta$-dependence solves the associated Legendre equation, which is the angular part of Laplace's equation (em-4.6, pde-7.2) and has regular solutions on $[0,\pi]$ only for integer $l\ge|m|$. Eigenfunctions of the Hermitian operator $L^2$ with different $l$, or of $L_z$ with different $m$, are orthogonal automatically. Real combinations $\sqrt2\operatorname{Re}Y_l^m$, $\sqrt2\operatorname{Im}Y_l^m$ are the familiar $p_x,d_{xy},\dots$ shapes.`,
-      caption: String.raw`**Pick $(l,m)$ and a display mode.** *Complex*: colour is the phase $m\phi$ (so it winds $m$ times around the $z$-axis), brightness is $|Y|$; *real*: the $\cos m\phi$ or $\sin m\phi$ combination, red positive, blue negative, with $l-|m|$ nodal latitudes and $|m|$ nodal meridians. The middle panel is the polar plot of $|Y_l^m|$ in the $xz$-plane. The bar chart on the right is the overlap $|\langle Y_{l'}^{m'}|Y_l^m\rangle|$ with every $(l',m')$ up to $l'=4$, computed by quadrature on the sphere: top labels mark $l\prime$: a single bar of height $1$ in complex mode; a real mode with $m\ne0$ has two bars of height $1/\sqrt2$ at $\pm|m|$.`,
+      idea: String.raw`In the units $\hbar=1$, $L_z=-i\partial_\phi$, so the $\phi$-dependence is $e^{im\phi}$ (qm-7.4); the $\theta$-dependence solves the associated Legendre equation, which is the angular part of Laplace's equation (em-4.6, pde-7.2) and has regular solutions on $[0,\pi]$ only for integer $l\ge|m|$. Eigenfunctions of the Hermitian operator $L^2$ with different $l$, or of $L_z$ with different $m$, are orthogonal automatically. Normalized real combinations are the familiar $p_x,d_{xy},\dots$ shapes. Here positive $m$ means $\sqrt2(-1)^m\operatorname{Re}Y_l^m$, negative $m$ means $\sqrt2(-1)^{|m|}\operatorname{Im}Y_l^{|m|}$, and $m=0$ is unchanged. They are usually not $L_z$ eigenfunctions. Completeness follows because restricted coordinate polynomials decompose into harmonics and are dense on the sphere.`,
+      caption: String.raw`Pick $(l,m)$ and the displayed function. Complex colour is $\arg Y$, with phase winding $m$ on a latitude where the function does not vanish; brightness is magnitude. Real modes show cosine for positive $m$ and sine for negative $m$: $l-|m|$ interior nodal latitude circles and $|m|$ nodal great circles through $z$ (two meridian halves each). The middle panel is the selected function's magnitude in the $xz$ section, scaled by its sampled spherical maximum; sine modes vanish in this whole section. The overlap chart compares the selected function with **all 25 complex basis functions through $l'=4$**, by numerical quadrature; the small labels above groups give $l'$. A complex mode has one unit bar; a nonzero-$m$ real mode has two bars of height $1/\sqrt2$.`,
+      scope: String.raw`The basis functions are smooth; completeness means convergence in the mean-square norm for general square-integrable scalar functions on the unit sphere, with area element $d\Omega=\sin\theta\,d\theta\,d\phi$. Formula and phase conventions follow NIST DLMF §14.30; interior zero counts follow §14.16(ii). The finite quadrature checks normalization and the displayed basis coefficients; it is not a proof of infinite-dimensional completeness.`,
       deps: ['qm-7.4', 'em-4.6', 'pde-7.2'],
-      refs: ['NIST DLMF14.30.1,6–8; Fitzpatrick §8.7'],
-      credit: 'Spherical-harmonic eigenfunctions',
+      refs: ['NIST DLMF §14.30, Eqs. (14.30.1), (14.30.6), (14.30.8), (14.30.11)–(14.30.13); §14.16(ii)'],
+      credit: 'Source definitions and normalization: NIST Digital Library of Mathematical Functions §§14.30 and 14.16.',
+      verify: false,
       tags: ['spherical harmonics', 'orthonormality'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Spherical_harmonics' },
       viz(v) {
         const SP = sphereStage(v, 'the function on the sphere');
         const PL = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: true, height: 300, title: '$|Y|$ in the $xz$-plane' });
-        const GR = v.stage({ x: [-0.6, 25.6], y: [0, 1.25], axes: 'box', gutter: true, height: 300, xlabel: "index of $(l',m')$", weight: 1.3, title: "overlaps $|\\langle Y_{l'}^{m'}|Y_l^m\\rangle|$" });
+        const GR = v.stage({ x: [-0.6, 24.6], y: [0, 1.25], axes: 'box', gutter: true, height: 300, xlabel: "index of $(l',m')$", weight: 1.3, title: "selected function in the complex $Y_{l'}^{m'}$ basis" });
         const l = v.slider('$l$', 0, 4, 3, { int: true }), m = v.slider('$m$', -4, 4, 1, { int: true });
         const mode = v.select('display', [{ value: 'c', label: 'complex' }, { value: 'r', label: 'real combination' }], 'c');
         const yaw = 0.6, tilt = 0.35;
-        const idxList = []; for (let L = 0; L <= 4; L++) for (let M = -L; M <= L; M++) idxList.push([L, M]);
+        const idxList=HARMONIC_INDICES,cache=new Map();
         let st = null;
         v.render(() => {
-          const L = l.value, M = Math.max(-L, Math.min(L, m.value)); m.set(M);
+          const L = l.value, M = Math.max(-L, Math.min(L, m.value));m.input.min=-L;m.input.max=L;if(m.value!==M)m.set(M);
           const real = mode.value === 'r';
           let mx = 0; for (let t = 0; t <= 60; t++) for (let p = 0; p < 40; p++) mx = Math.max(mx, real ? Math.abs(realY(L, M, (t * Math.PI) / 60, (p * TAU) / 40)) : Math.hypot(...ylm(L, M, (t * Math.PI) / 60, (p * TAU) / 40)));
           paintSphere(v, SP, real ? (th, ph) => realY(L, M, th, ph) : (th, ph) => ylm(L, M, th, ph), { yaw, tilt, real, max: mx, key: `${L}|${M}|${real}|${v.rgb('panel')}|${v.rgb('accent')}` });
@@ -228,20 +230,13 @@ given for $l=0,1,2,\dots$ and $m=-l,\dots,l$ by $Y_l^m(\theta,\phi)=\sqrt{\tfrac
           const pts = [], pts2 = [];
           for (let k = 0; k <= 200; k++) { const th = (TAU * k) / 200 - Math.PI; const ph = th < 0 ? Math.PI : 0, t = Math.abs(th); const val = real ? Math.abs(realY(L, M, t, ph === 0 ? 0 : Math.PI)) : Math.hypot(...ylm(L, M, t, ph)); const r = val / (mx || 1) * 1.15; pts.push([r * Math.sin(th), r * Math.cos(th)]); }
           PL.circle(0, 0, 1.15, { color: 'faint', width: 1, dash: [3, 4] });
-          if(real && M<0)PL.corner('this sine mode vanishes in the xz section','bl',{color:'muted',size:11});
           PL.path(pts, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.12, close: true });
-          // overlaps
-          const f = real ? null : (t, p) => ylm(L, M, t, p);
-          const bars = idxList.map(([L2, M2]) => { const g = (t, p) => ylm(L2, M2, t, p), z = sphereIP(real ? (t, p) => [realY(L, M, t, p), 0] : f, g, 40, 72); return Math.hypot(z[0], z[1]); });
-          GR.bars(bars, { x0: 0, dx: 1, color: (val, i) => (idxList[i][0] === L && idxList[i][1] === M && !real ? 'green' : 'accent') });
-          idxList.forEach(([L2, M2], i) => { if (M2 === 0) GR.text(`${L2}`, i - 0.4, 1.17, { size: 11, align: 'left', color: 'muted' }); });
-          // nodal latitudes: sign changes of P_l^|m| on (−1, 1)
-          let nodes = 0, prev = legendreP(L, Math.abs(M), -0.99999);
-          for (let k = 1; k <= 2000; k++) { const x = -1 + (2 * k) / 2000, q = legendreP(L, Math.abs(M), Math.min(0.99999, x)); if (q * prev < 0) nodes++; if (q !== 0) prev = q; }
-          const self = sphereIP((t, p) => ylm(L, M, t, p), (t, p) => ylm(L, M, t, p), 64, 96);
-          st = { L, M, nodes, norm: self[0], sumOther: bars.reduce((s,b,i)=>s+(idxList[i][0]===L&&(real?Math.abs(idxList[i][1])===Math.abs(M):idxList[i][1]===M)?0:b),0) };
+          const key=`${L}|${M}|${real}`;if(!cache.has(key))cache.set(key,harmonicAudit(L,M,real));const audit=cache.get(key);
+          GR.bars(audit.bars,{x0:0,dx:1,color:(val,i)=>Math.hypot(...audit.expected[i])>0?'green':'accent'});
+          idxList.forEach(([j,k],i)=>{if(k===0)GR.text(`${j}`,i,1.17,{size:11,align:'center',color:'muted'});});
+          st={...audit};
         });
-        v.readout(() => `$Y_{${st.L}}^{${st.M}}$: $\\int|Y|^2d\\Omega = ${v.fix(st.norm, 5)}$; sum of overlaps with all *other* $Y_{l'}^{m'}$ ($l'\\le4$, excluding the real mode's two components) $=${v.sci(st.sumOther, 1)}$; nodal latitudes $=${st.nodes}$ $(=l-|m|)$, nodal meridians $=${Math.abs(st.M)}$ (real mode).`);
+        v.readout(() => `${st.real?'Real combination':'Complex mode'} $(l,m)=(${st.l},${st.m})$: $\\int|f|^2d\\Omega=${v.fix(st.norm,8)}$; sum of squared complex-basis coefficients $${v.fix(st.power,8)}$; largest coefficient error against the analytic expansion $${v.sci(st.error,2)}$.\nInterior nodal latitudes: $${st.nodes}=l-|m|$. ${st.real?`Nodal great circles through z: $${Math.abs(st.m)}$.${st.m<0?' This xz section is identically zero.':''}`:'No meridional zero curves for the complex mode.'}`);
       },
     },
     // ------------------------------------------------------------------ 7.6

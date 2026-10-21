@@ -50,13 +50,13 @@ export default {
       num: '4.22',
       kind: 'Lemma',
       name: 'Almost-orthogonal vectors (Riesz)',
-      credit: 'F. Riesz',
-      statement: String.raw`Let $M$ be a subspace of a normed space $X$ that is not dense in $X$, and let $r>1$. Then there is an $x\in X$ with $\|x\|<r$ and $\|x-y\|\ge1$ for every $y\in M$.`,
-      idea: String.raw`Pick $x_0\notin\overline M$. Because this point lies outside the closure, $d=\operatorname{dist}(x_0,M)>0$, so some $y_0\in M$ has $\|x_0-y_0\|<rd$. Put $x=(x_0-y_0)/d$. Then $\|x\|<r$, and for $y\in M$, $\|x-y\|=\|x_0-(y_0+dy)\|/d\ge d/d=1$. The slack $r>1$ is needed because the distance from $x_0$ to $M$ need not be attained in infinite dimensions. This replaces orthogonal complements in the compactness arguments of 4.24.`,
+      credit: 'F. Riesz, 1918',
+      statement: String.raw`Let $M$ be a closed subspace of a normed space $X$ with $M\ne X$, and let $r>1$. Then there is an $x\in X$ with $\|x\|<r$ and $\|x-y\|\ge1$ for every $y\in M$.`,
+      idea: String.raw`Pick $x_0\notin M$. Because $M$ is closed, $d=\operatorname{dist}(x_0,M)>0$, so some $y_0\in M$ has $\|x_0-y_0\|<rd$. Put $x=(x_0-y_0)/d$. Then $\|x\|<r$, and for $y\in M$, $\|x-y\|=\|x_0-(y_0+dy)\|/d\ge d/d=1$. The slack $r>1$ is needed because the distance from $x_0$ to $M$ need not be attained in infinite dimensions. This replaces orthogonal complements in the compactness arguments of 4.24.`,
       caption: String.raw`$X=(\R^2,\|\cdot\|_p)$ and $M$ a line. Drag $x_0$. Right: the distance $t\mapsto\|x_0-tu\|$ along $M$, its minimum $d$, and the window where it is below $rd$ (orange); the slider picks $y_0$ in that window. Left: the rescaled $x=(x_0-y_0)/d$ lands inside the ball $rB$ (green) but outside the red strip $\{\operatorname{dist}(\cdot,M)<1\}$. Push $r$ down to $1$ — the window shrinks to the nearest points (for $p=1,\infty$ there may be a whole segment of them).`,
       deps: ['fa-1.2'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §4.22, pp. 106'],
       tags: ['Riesz lemma', 'normed spaces'],
+      verify: true,
       viz(v) {
         const pS = v.select('$p=$', [{ value: 1, label: '$1$' }, { value: 2, label: '$2$' }, { value: Infinity, label: '$\\infty$' }], Infinity);
         const rS = v.slider('$r$', 1, 2.5, 1.5, { step: 0.01 });
@@ -75,7 +75,7 @@ export default {
           const lev = r * dd + 1e-12;
           const t1 = phi(tm - 20) > lev ? bisect((t) => phi(t) - lev, tm - 20, tm) : tm - 20;
           const t2 = phi(tm + 20) > lev ? bisect((t) => phi(t) - lev, tm, tm + 20) : tm + 20;
-          const ts = t1 + (t2 - t1) * (0.5 + 0.49 * cS.value), y0 = [ts * d[0], ts * d[1]];
+          const ts = t1 + (t2 - t1) * (cS.value + 1) / 2, y0 = [ts * d[0], ts * d[1]];
           const x = dd > 1e-6 ? [(x0[0] - y0[0]) / dd, (x0[1] - y0[1]) / dd] : [0, 0];
           const [, dx] = convexMin((t) => pn([x[0] - t * d[0], x[1] - t * d[1]], p), -12, 12);
           // ---- left
@@ -107,7 +107,6 @@ export default {
         v.readout(() => {
           const s = st;
           if (s.dd < 1e-6) return 'Move $x_0$ off $M$.';
-          if (s.r <= 1) return 'The lemma requires $r>1$: at $r=1$, $\\|x\\|<1$ is incompatible with $\\operatorname{dist}(x,M)\\ge1$.';
           return `$d=\\operatorname{dist}(x_0,M) = ${v.fix(s.dd, 3)}$, $\\;\\|x_0-y_0\\| = ${v.fix(s.ny, 3)} < rd = ${v.fix(s.r * s.dd, 3)}$. Hence $\\|x\\| = ${v.fix(s.nx, 3)} < r = ${v.fix(s.r, 2)}$ and $\\operatorname{dist}(x,M) = ${v.fix(s.dx, 3)}\\ge1$.`;
         });
       },
@@ -115,14 +114,14 @@ export default {
     // ------------------------------------------------------------------ 4.23
     {
       num: '4.23',
-      kind: 'Theorem',
+      kind: 'Lemma',
       name: 'For λ ≠ 0 the range of T − λI is closed',
       statement: String.raw`Let $X$ be a Banach space, $T\in\mathscr B(X)$ compact, and $\lambda\ne0$. Then $\mathscr R(T-\lambda I)$ is closed in $X$.`,
       idea: String.raw`$\mathscr N(T-\lambda I)$ is finite-dimensional (4.18(d)), so it has a closed complement $W$ (4.21(a)): $X=\mathscr N(T-\lambda I)\oplus W$, and $S=(T-\lambda I)|_W$ is one-to-one with the same range. It suffices that $\|Sx\|\ge c\|x\|$ on $W$ for some $c>0$. If not, there are unit vectors $x_n\in W$ with $Tx_n-\lambda x_n\to0$; compactness gives a subsequence with $Tx_n\to y$, hence $x_n\to y/\lambda$, a unit vector of $W$ killed by $T-\lambda I$ — impossible. The argument breaks down only at $\lambda=0$.`,
       caption: String.raw`$T=\operatorname{diag}(t_n)$ on $\ell^2$ with real $t_n\to0$ (alternating signs). Drag $\lambda$ along the axis on the right (it snaps to the eigenvalues and to $0$). Left: the diagonal $|t_n-\lambda|$ of $T-\lambda I$; zero entries (red) form the kernel, and the infimum $\gamma$ of the nonzero entries is the lower bound $c$ of the proof. Right: $\gamma$ as a function of $\lambda$ (log scale, eigenvalues marked in red). It dips towards $0$ next to each eigenvalue, but at the eigenvalue itself the zero entry belongs to the kernel and is excluded (hollow dots), so $\gamma(\lambda)>0$ for every $\lambda\ne0$. Only at $\lambda=0$ is $\gamma=0$: there infinitely many entries $t_n$ tend to $0$, and $\mathscr R(T)$ is dense but not closed.`,
-      deps: ['fa-4.18', 'fa-4.21', 'fa-4.16', 'fa-1.26'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §4.23, pp. 107'],
+      deps: ['fa-4.18', 'fa-4.21', 'fa-4.16'],
       tags: ['compact operators', 'closed range'],
+      verify: true,
       viz(v) {
         const t = (n) => 0.92 * (n % 2 ? 1 : -0.78) / Math.pow(n, 0.75);
         const NB = 40, NG = 4000;
@@ -175,8 +174,8 @@ export default {
       idea: String.raw`Both parts come from one obstruction: there is no chain of closed subspaces $M_1\subsetneq M_2\subsetneq\cdots$ with $(T-\lambda_nI)M_n\subset M_{n-1}$ and $|\lambda_n|>r$. Otherwise 4.22 gives $y_n\in M_n$ with $\|y_n\|\le2$ and $\operatorname{dist}(y_n,M_{n-1})\ge1$, and for $m<n$, $Ty_n-Ty_m=\lambda_ny_n-z$ with $z\in M_{n-1}$, so $\|Ty_n-Ty_m\|\ge|\lambda_n|>r$ — no convergent subsequence, contradicting compactness. For (b) take $M_n$ spanned by eigenvectors of $n$ distinct $\lambda_i\in E$; for (a), if $T-\lambda I$ were onto with nonzero kernel, $M_n=\mathscr N((T-\lambda I)^n)$ would increase strictly.`,
       caption: String.raw`A compact, non-normal operator on $\ell^2$: upper triangular with diagonal $\mu_n=0.95\cdot0.86^{\,n-1}e^{2.4in}$ and geometrically decaying entries above it, so its eigenvalues are exactly the $\mu_n$, spiralling into $0$. Shrink the circle $|\lambda|=r$: outside it there are always finitely many (red). Right: the proof, computed on a $50\times50$ section — orthonormalising the eigenvectors of the red $\lambda_n$ gives $y_n$ with $\operatorname{dist}(y_n,M_{n-1})=1$, and every pair $m<n$ satisfies $\|Ty_n-Ty_m\|\ge|\lambda_n|$ (all dots above the diagonal).`,
       deps: ['fa-4.22', 'fa-4.16', 'fa-4.17'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §4.24, pp. 107–108'],
       tags: ['spectral theory', 'compact operators', 'eigenvalues'],
+      verify: true,
       viz(v) {
         const { Cx } = v.M;
         const rS = v.slider('$r$', 0.04, 0.9, 0.3, { step: 0.005 });

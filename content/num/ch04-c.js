@@ -1,5 +1,6 @@
 // Numerical Analysis — Chapter 4 (continued): least squares, orthogonal polynomials, CF and rational approximation of |x| (items 4.10–4.14)
 import { clamp, linspace, chebPts, chebInterp, supDiff, remez, bestErr, gaussLegendre, legendreAll, legendreCoef, legendreEval, seriesCoef, cfApprox, newmanAbs } from './ch04.shared.js';
+import { orthogonalAudit, newmanAudit } from './numerical-source-audit.shared.js';
 
 const SGN = (x) => (x > 0 ? 1 : x < 0 ? -1 : 0);
 
@@ -58,13 +59,14 @@ export default {
       num: '4.11',
       kind: 'Theorem',
       name: 'Orthogonal polynomials and the three-term recurrence',
-      statement: String.raw`Let $w\ge0$ be an integrable weight on $[-1,1]$ with $0<\int_{-1}^1w<\infty$ and $\langle f,g\rangle_w=\int fgw$. Gram–Schmidt applied to $1,x,x^2,\dots$ produces monic polynomials $\pi_0,\pi_1,\dots$, $\deg\pi_k=k$, orthogonal to all polynomials of lower degree. They satisfy a **three-term recurrence**
+      statement: String.raw`Let $w\ge0$ be a weight on $[-1,1]$ with $0<\int_{-1}^1w(x)\,dx<\infty$ and $\langle f,g\rangle_w=\int fgw$. Gram–Schmidt applied to $1,x,x^2,\dots$ produces monic polynomials $\pi_0,\pi_1,\dots$, $\deg\pi_k=k$, orthogonal to all polynomials of lower degree. With $\pi_0=1$ and $\pi_1=x-\alpha_0$, they satisfy, for $k\ge1$, a **three-term recurrence**
 $$\pi_{k+1}(x)=(x-\alpha_k)\pi_k(x)-\beta_k\pi_{k-1}(x),\qquad\alpha_k=\tfrac{\langle x\pi_k,\pi_k\rangle}{\langle\pi_k,\pi_k\rangle},\ \beta_k=\tfrac{\langle\pi_k,\pi_k\rangle}{\langle\pi_{k-1},\pi_{k-1}\rangle},$$
-Here $\pi_{-1}=0$, $\pi_0=1$, $\beta_0=0$, and the quotient defining $\beta_k$ is for $k\ge1$; equivalently multiplication by $x$ is a tridiagonal (Jacobi) matrix in the orthonormal basis. The zeros of $\pi_n$ are real, simple, lie inside the interval and interlace those of $\pi_{n-1}$ (and are the eigenvalues of the $n\times n$ Jacobi matrix).`,
+equivalently multiplication by $x$ is a tridiagonal (Jacobi) matrix in the orthonormal basis. The zeros of $\pi_n$ are real, simple, lie inside the interval and interlace those of $\pi_{n-1}$ (and are the eigenvalues of the $n\times n$ Jacobi matrix). Conversely (Favard) any such monic recurrence with real $\alpha_k$ and $\beta_k>0$ comes from a positive measure on $\mathbb R$; positivity alone does not confine its support to $[-1,1]$.`,
       idea: String.raw`Since $\langle x\pi_k,\pi_j\rangle=\langle\pi_k,x\pi_j\rangle$ and $x\pi_j$ has degree $j+1<k$ whenever $j<k-1$, the projection of $x\pi_k$ onto $\pi_j$ vanishes for $j<k-1$: only three terms survive. Real simple zeros: a sign-change argument — if $\pi_n$ had fewer than $n$ sign changes, a polynomial of lower degree would not be orthogonal to it. Interlacing follows from the recurrence (Sturm-type argument). The tridiagonal matrix of $x$ is the same structure that appears in Lanczos’s method for symmetric eigenproblems.`,
-      caption: String.raw`Choose a weight (Legendre, Chebyshev, Jacobi with sliders $\alpha,\beta$, or $|x|$). The page runs Gram–Schmidt on the monomials in the weighted inner product (discretized by Gauss–Chebyshev quadrature) and shows the orthonormal polynomials, the matrix of $\langle x\pi_k,\pi_j\rangle$ (only the three central diagonals are nonzero — the readout lists the largest off-diagonal entry) and, below, the zeros of $\pi_n$ (gold) and $\pi_{n-1}$ (blue), which interlace.`,
+      caption: String.raw`Choose a weight (Legendre, Chebyshev, Jacobi with sliders $\alpha,\beta$, or $|x|$). The page runs Gram–Schmidt on the monomials in the weighted inner product (discretized by Gauss–Chebyshev quadrature) and shows the orthonormal polynomials, the matrix of $\langle x\pi_k,\pi_j\rangle$ (only the three central diagonals are nonzero — the readout lists the largest off-diagonal entry) and, below, the zeros of $\pi_n$ (gold) and $\pi_{n-1}$ (blue), which interlace. Polynomial curves beyond vertical range ±6 are clipped explicitly.`,
       deps: ['num-4.10'],
-      refs: ['Trefethen ATAP ch.17 recurrence derivation (17.7–9); ch.18 zero argument; recurrence/interlacing induction given here'],
+      refs: ['Trefethen ATAP ch. 17, equations (17.6)–(17.9)', 'NIST DLMF §18.2(i), (iv), (vi), (viii)'],
+      credit: 'Three-term recurrence; Favard’s converse',
       tags: ['orthogonal polynomials', 'recurrence'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Orthogonal_polynomials' },
       viz(v) {
@@ -81,37 +83,25 @@ Here $\pi_{-1}=0$, $\pi_0=1$, $\beta_0=0$, and the quotient defining $\beta_k$ i
         v.render(() => {
           al.el.hidden = be.el.hidden = wsel.value !== 'jac';
           const w = { leg: () => 1, cheb: (x) => 1 / Math.sqrt(1 - x * x), jac: (x) => Math.pow(1 - x, al.value) * Math.pow(1 + x, be.value), abs: (x) => Math.abs(x) }[wsel.value];
-          const wq = xq.map((x) => (Math.PI / NQ) * w(x) * Math.sqrt(1 - x * x));
-          const ip = (a, b) => { let s = 0; for (let i = 0; i < NQ; i++) s += wq[i] * a[i] * b[i]; return s; };
           const n = nn.value, m = 9;
-          // Gram–Schmidt (twice, for orthogonality) on the monomials
-          const Q = [];
-          for (let k = 0; k <= m; k++) {
-            let u = xq.map((x) => Math.pow(x, k));
-            for (let pass = 0; pass < 2; pass++) for (const q of Q) { const c = ip(u, q); u = u.map((val, i) => val - c * q[i]); }
-            const nr = Math.sqrt(ip(u, u)); Q.push(u.map((val) => val / nr));
-          }
-          // evaluate orthonormal polynomials on a plotting grid through the recurrence recovered from Q
-          const J = []; for (let j = 0; j <= m; j++) { J.push([]); for (let k = 0; k <= m; k++) J[j].push(ip(xq.map((x, i) => x * Q[k][i]), Q[j])); }
-          let off = 0; for (let j = 0; j <= m; j++) for (let k = 0; k <= m; k++) if (Math.abs(j - k) > 1) off = Math.max(off, Math.abs(J[j][k]));
-          const a = [], b = []; for (let k = 0; k <= m; k++) { a.push(J[k][k]); b.push(k ? J[k][k - 1] : 0); }
-          const evalAll = (x) => { const out = [1 / Math.sqrt(ip(xq.map(() => 1), xq.map(() => 1)))]; out.push(((x - a[0]) * out[0]) / b[1]); for (let k = 1; k < m; k++) out.push(((x - a[k]) * out[k] - b[k] * out[k - 1]) / b[k + 1]); return out; };
+          const { J, a, b, evalAll } = orthogonalAudit(w, NQ, m);
+          let off = 0; for (let j = 0; j <= m; j++) for (let k = 0; k <= m; k++) if (Math.abs(j-k)>1) off=Math.max(off,Math.abs(J[j][k]));
           const grid = linspace(-1, 1, 200), vals = grid.map(evalAll), ymax = Math.max(...vals.map((r) => Math.max(...r.slice(0, n + 1).map(Math.abs))));
           const yc = Math.min(ymax * 1.1, 6); P.setView([-1, 1], [-yc, yc]);
-          for (let k = 0; k <= n; k++) P.path(grid.map((x, i) => [x, vals[i][k]]), { color: COL[k % 9], width: 1.6 });
+          P.clip(() => { for (let k = 0; k <= n; k++) P.path(grid.map((x, i) => [x, vals[i][k]]), { color: COL[k % 9], width: 1.6 }); });
           // matrix picture
           const mm = 9, sc = Math.max(...J.flat().map(Math.abs));
           for (let j = 0; j < mm; j++) for (let k = 0; k < mm; k++) { const val = J[j][k]; Mx.rect(k - 0.45, -j - 0.45, k + 0.45, -j + 0.45, { fill: Math.abs(val) < 1e-9 ? 'faint' : val > 0 ? 'accent' : 'red', fillAlpha: Math.abs(val) < 1e-9 ? 0.08 : 0.15 + 0.7 * Math.min(1, Math.abs(val) / sc), stroke: false }); }
           // Jacobi eigenvalues
           const jac = (N) => { const T = []; for (let i = 0; i < N; i++) { T.push(new Array(N).fill(0)); T[i][i] = a[i]; if (i > 0) { T[i][i - 1] = b[i]; T[i - 1][i] = b[i]; } } return v.M.eigSym(T).values.slice().sort((p, q) => p - q); };
-          const z1 = jac(n + 1), z0 = jac(n);
+          const z1 = jac(n), z0 = jac(n - 1);
           Z.hline(1.5, { color: 'faint' }); Z.hline(0.5, { color: 'faint' });
           z1.forEach((x) => Z.dot(x, 1.5, { color: 'gold', r: 5 })); z0.forEach((x) => Z.dot(x, 0.5, { color: 'accent', r: 5 }));
           z0.forEach((x, i) => Z.line(x, 0.5, x, 1.5, { color: 'faint', alpha: 0.6 }));
           let inter = true; for (let i = 0; i < z0.length; i++) if (!(z1[i] < z0[i] && z0[i] < z1[i + 1])) inter = false;
           info = { off, inter, n, a: a.slice(0, 4), b: b.slice(1, 4), zr: z1 };
         });
-        v.readout(() => `largest entry of $\\langle x\\hat\\pi_k,\\hat\\pi_j\\rangle$ with $|j-k|>1$: $${v.sci(info.off + 1e-30, 2)}$ (the tridiagonal structure holds to quadrature accuracy)\nzeros of $\\pi_${info.n}$: ${info.zr.map((x) => v.fix(x, 3)).join(', ')} — all real, simple, in $(-1,1)$; interlacing with $\\pi_${info.n - 1}$: ${info.inter ? '**yes**' : 'no'}`);
+        v.readout(() => `largest entry of $\\langle x\\hat\\pi_k,\\hat\\pi_j\\rangle$ with $|j-k|>1$: $${v.sci(info.off + 1e-30, 2)}$ (the discrete weighted sum is tridiagonal to rounding; it approximates the continuous weight)\nzeros of $\\pi_${info.n}$: ${info.zr.map((x) => v.fix(x, 3)).join(', ')} — all real, simple, in $(-1,1)$; interlacing with $\\pi_${info.n - 1}$: ${info.inter ? '**yes**' : 'no'}`);
       },
     },
     // ------------------------------------------------------------------ 4.12
@@ -169,12 +159,13 @@ Here $\pi_{-1}=0$, $\pi_0=1$, $\beta_0=0$, and the quotient defining $\beta_k$ i
       num: '4.13',
       kind: 'Method',
       name: 'Carathéodory–Fejér approximation',
-      statement: String.raw`Let $f$ be a real polynomial (or a Lipschitz function with an absolutely convergent Chebyshev expansion), $f=\sum a_kT_k$ and form the Hankel matrix $H_n=(a_{n+1+i+j})_{i,j\ge0}$ with largest singular value $\sigma_1$ (for the real symmetric $H_n$, the dominant eigenvalue $\lambda$ in modulus, with eigenvector $u$). The **CF approximant** of degree $n$ is the polynomial obtained from $f$ by subtracting the curve $e_{CF}(\theta)=\lambda\cos\big((n+1)\theta+2\arg u(e^{i\theta})\big)$, $u(z)=\sum u_jz^j$, and keeping the coefficients of $T_0,\dots,T_n$. For functions whose Chebyshev coefficients decay quickly its error can be very close to $|\lambda|=\sigma_1$ and to the best error $E_n^*$, and it is computed with one small eigenvalue problem, no iteration.`,
-      idea: String.raw`Nehari / AAK theory gives the *exact* best approximation of the anti-analytic tail of $f$ (on the unit circle) by analytic functions: its error has constant modulus $\sigma_1$ and winding number set by $u$. The Chebyshev problem is the real part of that circle problem, with the neglected coefficients (those beyond the Hankel truncation and the small mismatch between the two problems) controlling the gap. Hence a near-equioscillating error of size $\approx\sigma_1$, essentially the Remez curve, with no iteration (cf. Remez, 4.8; near-best interpolants, 4.9).`,
-      caption: String.raw`Left: error curves of the CF approximant (accent) and of the numerical Remez approximation (green), with the level $\pm\sigma_1$ (red): the two are almost indistinguishable and CF equioscillates nearly perfectly. Right: $\sigma_1$, the CF error and the best error against $n$ — three curves lying on top of one another on the log scale (the $|x|$ example, with slowly decaying coefficients, shows where the approximation degrades).`,
+      statement: String.raw`Let $f$ be real with an absolutely convergent Chebyshev series $f=\sum a_kT_k$ and form the Hankel matrix $H_n=(a_{n+1+i+j})_{i,j\ge0}$ with largest singular value $\sigma_1$ (for the real symmetric $H_n$, the dominant eigenvalue $\lambda$ in modulus, with eigenvector $u$). The **CF approximant** of degree $n$ is the polynomial obtained from $f$ by subtracting the curve $e_{CF}(\theta)=\lambda\cos\big((n+1)\theta+2\arg u(e^{i\theta})\big)$, $u(z)=\sum u_jz^j$, and keeping the coefficients of $T_0,\dots,T_n$. The method often gives near-best errors for rapidly decaying coefficients, but rapid decay by itself is not a uniform quantitative error bound. In ATAP Theorem 20.2, for fixed degree $m$, if $f$ has a Lipschitz $(3m+3)$rd derivative and $f^{(m+1)}(0)\ne0$, the CF and minimax approximants to $f(sx)$ differ by $O(s^{3m+4})$ as $s\to0$.`,
+      idea: String.raw`The Carathéodory–Fejér–Schur circle problem has an exact constant-modulus error determined by the Hankel eigenpair (ATAP Theorem 20.1). The Chebyshev problem is the real part of that circle problem, with the neglected coefficients (those beyond the Hankel truncation and the small mismatch between the two problems) controlling the gap. Hence a near-equioscillating error of size $\approx\sigma_1$, essentially the Remez curve, with no iteration (cf. Remez, 4.8; near-best interpolants, 4.9).`,
+      caption: String.raw`Left: error curves of the CF approximant (accent) and of a numerical Remez approximation (green), with the level $\pm\sigma_1$ (red): compare their closeness and departure from equal ripple heights. Right: $\sigma_1$, the CF error and the best error against $n$ — numerical curves that may be close on the log scale (the $|x|$ example, with slowly decaying coefficients, shows where the approximation degrades).`,
       deps: ['num-4.9'],
-      refs: ['Trefethen ATAP ch.20, construction and Theorems20.1–20.2; full author manuscript chap20.m'],
-      scope: String.raw`The displayed calculation truncates the Hankel matrix to $50$ rows and samples the error curve at $513$ angles, then truncates its Chebyshev expansion; it estimates errors on a grid. The construction here is the polynomial case; the $\sigma_1\approx E_n^*$ agreement relies on rapidly decaying $a_k$ (it is excellent for $e^x$, good for the Runge function, only approximate for $|x|$).`,
+      refs: ['Trefethen ATAP Theorems 20.1–20.2', 'Gutknecht–Trefethen (1982), §§1–3'],
+      credit: 'Carathéodory & Fejér, 1911; as an approximation method: Trefethen & Gutknecht, early 1980s',
+      scope: String.raw`The construction uses a 50×50 Hankel truncation, approximate coefficients from a degree-1000 interpolant and a 512-point cosine transform. Sampled errors and Remez values are estimates, not certified bounds; unresolved ratios are omitted. The construction here is the polynomial case; the $\sigma_1\approx E_n^*$ agreement relies on rapidly decaying $a_k$ (it is excellent for $e^x$, good for the Runge function, only approximate for $|x|$).`,
       tags: ['best approximation', 'hankel', 'svd'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Carath%C3%A9odory%E2%80%93Fej%C3%A9r_problem' },
       viz(v) {
@@ -182,7 +173,7 @@ Here $\pi_{-1}=0$, $\pi_0=1$, $\beta_0=0$, and the quotient defining $\beta_k$ i
         const fsel = v.select('$f$', Object.entries(F).map(([value, o]) => ({ value, label: o.nm })), 'runge');
         const nn = v.slider('degree $n$', 1, 12, 5, { int: true });
         const A = v.stage({ x: [-1, 1], y: [-1, 1], axes: 'box', gutter: true, xlabel: 'x', height: 320, title: 'error curves' });
-        const B = v.stage({ x: [1, 12], y: [1e-9, 1], ylog: true, axes: 'box', gutter: true, xlabel: 'degree n', height: 320, title: '$\\sigma_1$, CF error, best error' });
+        const B = v.stage({ x: [1, 12], y: [1e-16, 1], ylog: true, axes: 'box', gutter: true, xlabel: 'degree n', height: 320, title: '$\\sigma_1$, CF error, best error' });
         const cache = {};
         let info = {};
         v.legend([['accent', 'CF error $f-p_{CF}$'], ['green', 'best error $f-p^*$', { dash: true }], ['red', '$\\pm\\sigma_1$', { dash: true }], ['orange', '$\\sigma_1$'], ['gold', 'CF error (norm)'], ['green', 'best']]);
@@ -202,7 +193,8 @@ Here $\pi_{-1}=0$, $\pi_0=1$, $\beta_0=0$, and the quotient defining $\beta_k$ i
           B.vline(n, { color: 'gold', alpha: 0.5 });
           info = { s: sg, c: D[n - 1].c, b: D[n - 1].b, n };
         });
-        v.readout(() => `$n=${info.n}$: $\\sigma_1=${v.sci(info.s, 4)}$, CF error $\\|f-p_{CF}\\|_\\infty=${v.sci(info.c, 4)}$, best error $E_n^*=${v.sci(info.b, 4)}$ — CF is within a factor $${v.fix(info.c / info.b, 4)}$ of the best`);
+        v.readout(() => `$n=${info.n}$: Hankel singular value $\\sigma_1=${v.sci(info.s, 4)}$, sampled CF error $${v.sci(info.c, 4)}$; ` + (Number.isFinite(info.b) && info.b>5e-14 ? `Remez error estimate $${v.sci(info.b,4)}$, ratio $${v.fix(info.c/info.b,4)}$` : 'Remez comparison unresolved at this degree/rounding level (no ratio claimed).'));
+
       },
     },
     // ------------------------------------------------------------------ 4.14
@@ -210,25 +202,26 @@ Here $\pi_{-1}=0$, $\pi_0=1$, $\beta_0=0$, and the quotient defining $\beta_k$ i
       num: '4.14',
       kind: 'Phenomenon',
       name: 'Rational functions beat polynomials for |x| (Newman)',
-      statement: String.raw`The best degree-$n$ polynomial approximation of $|x|$ on $[-1,1]$ has error $E_n(|x|)\sim\beta/n$ with $\beta=0.2801694990\ldots$ (Bernstein’s constant, Varga–Carpenter): painfully slow. But rational functions of type $(n,n)$ achieve $\|\,|x|-r\|\le 3e^{-\sqrt n}$ (Newman’s bound). One illustrative Newman-type construction for even $n$ is $r(x)=x\frac{p(x)-p(-x)}{p(x)+p(-x)}$, $p(x)=\prod_{k=0}^{n-1}(x+e^{-k/\sqrt n})$. Separately, the best rational error is $\approx8e^{-\pi\sqrt n}$ (Stahl). The singularity at $0$ is resolved by poles piling up along the imaginary axis.`,
-      idea: String.raw`A polynomial cannot bend sharply at $0$ without large degree, which is why smoothness controls polynomial convergence (4.3). A rational function can place poles and zeros near $0$, geometrically clustered toward the singular point with ratio $e^{-1/\sqrt n}$: The product shown is one explicit construction with geometric scales. The quoted existence bound and sharp best-error asymptotic are separate theorems; the figure does not prove them. This is the same “exponential clustering near the singularity” that underlies the approximation of $x^\alpha$ and of $\sqrt{x}$.`,
-      caption: String.raw`Slide $n$. Left: $|x|$ near the origin with the best polynomial of degree $n$ (Remez, orange) and Newman’s rational function of the same degree (accent). Right: both errors against $n$ on a log scale; polynomial errors follow $0.28/n$ (dashed) while the rational error falls like $e^{-\sqrt n}$, far below Newman’s bound $3e^{-\sqrt n}$ The green curve is Stahl’s asymptotic for the optimal rational error; it is not a predicted error for this explicit product.`,
+      statement: String.raw`The best degree-$n$ polynomial approximation of $|x|$ on $[-1,1]$ has error $E_n(|x|)\sim\beta/n$ with $\beta=0.2801694990\ldots$ (Bernstein’s constant, Varga–Carpenter): painfully slow. For even $n>4$, rational functions of type $(n,n)$ achieve $\|\,|x|-r\|\le 3e^{-\sqrt n}$ (Newman, 1964), with the explicit $r(x)=x\frac{p(x)-p(-x)}{p(x)+p(-x)}$, $p(x)=\prod_{k=0}^{n-1}(x+e^{-k/\sqrt n})$, whereas the best rational error satisfies $E_{nn}\sim8e^{-\pi\sqrt n}$ (Stahl). The singularity at $0$ is resolved by poles piling up along the imaginary axis.`,
+      idea: String.raw`A polynomial cannot bend sharply at $0$ without large degree, which is why smoothness controls polynomial convergence (4.3). A rational function can place poles and zeros near $0$, geometrically clustered toward the singular point with ratio $e^{-1/\sqrt n}$: Newman’s product is a single clever choice of them, and his estimate of $\prod$ ratios gives the root-exponential rate. This is the same “exponential clustering near the singularity” that underlies the approximation of $x^\alpha$ and of $\sqrt{x}$.`,
+      caption: String.raw`Slide the even degree $n\ge6$. Left: $|x|$ near the origin with the numerical Remez polynomial of degree $n$ (orange) and Newman’s rational function of the same degree (accent). Right: both errors against $n$ on a log scale; polynomial errors follow $0.28/n$ (dashed) while the rational error falls like $e^{-\sqrt n}$, below Newman’s bound $3e^{-\sqrt n}$. Stahl’s asymptotic $8e^{-\pi\sqrt n}$ describes the best rational function, not this explicit Newman function; the two curves need not be close.`,
       deps: ['num-4.7'],
-      refs: ['Trefethen ATAP Theorem25.1 and (25.3), full author manuscript chap25.m; explicit even-degree product illustrated here'],
+      refs: ['Newman (1964), p. 11 Theorem A and its proof', 'Trefethen ATAP Theorem 25.1'],
+      credit: 'Newman, 1964; polynomial constant and sharp rational asymptotic as in ATAP Theorem 25.1',
       tags: ['rational approximation', 'singularity'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bernstein%27s_constant' },
       viz(v) {
-        const nn = v.slider('even degree $n$', 2, 40, 12, { int: true, step: 2 });
+        const nn = v.slider('even degree $n$', 6, 40, 12, { step: 2 });
         const A = v.stage({ x: [-0.4, 0.4], y: [-0.02, 0.45], axes: 'box', gutter: true, xlabel: 'x', height: 340, title: '$|x|$ near the origin' });
-        const B = v.stage({ x: [2, 40], y: [1e-5, 1], ylog: true, axes: 'box', gutter: true, xlabel: 'degree n', height: 340, title: 'sup error on $[-1,1]$' });
-        const NS = []; for (let n = 2; n <= 40; n += 2) NS.push(n);
+        const B = v.stage({ x: [6, 40], y: [1e-8, 1], ylog: true, axes: 'box', gutter: true, xlabel: 'degree n', height: 340, title: 'sup error on $[-1,1]$' });
+        const NS = []; for (let n = 6; n <= 40; n += 2) NS.push(n);
         const polyE = NS.map((n) => bestErr(Math.abs, n, { iters: 14, M: 2000 }));
-        const ratE = (n) => { const r = newmanAbs(n); let e = 0; for (let i = 0; i <= 3000; i++) { const x = (i / 3000) ** 2; e = Math.max(e, Math.abs(x - r(x))); } return e; };
-        const ratAll = []; for (let n = 2; n <= 40; n += 2) ratAll.push([n, ratE(n)]);
+        const ratE = (n) => { const r = newmanAudit(n); let e = 0; for (let i = 0; i <= 3000; i++) { const x = (i / 3000) ** 2; e = Math.max(e, Math.abs(x - r(x))); } return e; };
+        const ratAll = []; for (let n = 6; n <= 40; n += 2) ratAll.push([n, ratE(n)]);
         let info = {};
         v.legend([['ink', '$|x|$'], ['orange', 'best polynomial'], ['accent', 'Newman rational'], ['muted', '$0.28/n$', { dash: true }], ['red', '$3e^{-\\sqrt n}$ (Newman bound)', { dash: true }], ['green', '$8e^{-\\pi\\sqrt n}$ (Stahl)', { dash: true }]]);
         v.render(() => {
-          const n = nn.value, pe = n % 2 ? n + 1 : n, H = remez(Math.abs, pe, { iters: 14, M: 2000 }), p = H[H.length - 1].p, r = newmanAbs(n);
+          const n = nn.value, pe = n, H = remez(Math.abs, pe, { iters: 14, M: 2000 }), p = H[H.length - 1].p, r = newmanAudit(n);
           A.fn(Math.abs, { color: 'ink', width: 2 }); A.clip(() => { A.fn(p, { color: 'orange', width: 2, n: 800 }); A.fn(r, { color: 'accent', width: 2, n: 1200 }); });
           B.path(NS.map((m, i) => [m, polyE[i]]).filter((q) => isFinite(q[1])), { color: 'orange', width: 2.4 });
           B.path(ratAll.map((q) => [q[0], Math.max(q[1], 1e-17)]), { color: 'accent', width: 2.4 });
@@ -236,9 +229,10 @@ Here $\pi_{-1}=0$, $\pi_0=1$, $\beta_0=0$, and the quotient defining $\beta_k$ i
           B.path(ratAll.map((q) => [q[0], 3 * Math.exp(-Math.sqrt(q[0]))]), { color: 'red', dash: true });
           B.path(ratAll.map((q) => [q[0], 8 * Math.exp(-Math.PI * Math.sqrt(q[0]))]), { color: 'green', dash: true });
           B.vline(n, { color: 'gold', alpha: 0.6 });
-          info = { n, pe, ep: polyE[NS.indexOf(pe)], er: ratAll[(n - 2) / 2][1] };
+          info = { n, pe, ep: polyE[NS.indexOf(pe)], er: ratAll[(n - 6)/2][1] };
         });
-        v.readout(() => `degree ${info.n} (polynomial: ${info.pe}): polynomial error $${v.sci(info.ep, 3)}$ ($n\\,E_n=${v.fix(info.pe * info.ep, 4)}$, tending to $\\beta=0.2802$), Newman rational error $${v.sci(info.er, 3)}$ — smaller by a factor $${v.fix(info.ep / info.er, 1)}$`);
+        v.readout(() => `even degree ${info.n}: sampled Newman error $${v.sci(info.er,3)}$; ` + (Number.isFinite(info.ep) ? `sampled Remez polynomial error $${v.sci(info.ep,3)}$ ($nE_n\\approx${v.fix(info.pe*info.ep,4)}$, polynomial asymptotic constant $\\beta\\approx0.2802$); ratio polynomial/Newman $${v.fix(info.ep/info.er,1)}$` : 'Remez polynomial comparison unresolved at this degree; no error ratio claimed.'));
+
       },
     },
   ],

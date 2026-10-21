@@ -5,14 +5,13 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from './lib.mjs';
 import { createServer } from './serve.mjs';
-import { findBrowser, installBrowserAssets } from './browser.mjs';
-import { decodeCatalog } from '../assets/js/catalog.js';
+import { findBrowser } from './browser.mjs';
 
 const args = process.argv.slice(2);
 const flag = (k) => args.includes(k);
 const val = (k) => args.find((a) => a.startsWith(k + '='))?.split('=').slice(1).join('=');
 if (!existsSync(join(ROOT, 'data/index.json'))) { console.error('data/index.json missing — run node scripts/build.mjs'); process.exit(1); }
-const idx = decodeCatalog(JSON.parse(readFileSync(join(ROOT, 'data/index.json'), 'utf8')));
+const idx = JSON.parse(readFileSync(join(ROOT, 'data/index.json'), 'utf8'));
 const live = idx.collections.filter((C) => C.count);
 const someItem = (col) => idx.items.find((it) => it.col === col && it.viz);
 const routes = val('--routes')?.split(',') || [
@@ -29,7 +28,6 @@ const server = createServer(); await new Promise((r) => server.listen(0, r));
 const port = server.address().port;
 const browser = await chromium.launch({ executablePath: findBrowser(), headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1, colorScheme: flag('--dark') ? 'dark' : 'light' });
-await installBrowserAssets(ctx);
 if (flag('--shots')) mkdirSync(join(ROOT, 'shots'), { recursive: true });
 let bad = 0;
 for (const r of routes) {
@@ -37,11 +35,11 @@ for (const r of routes) {
   page.on('console', (m) => { if (m.type() === 'error' && !/favicon|Failed to load resource/.test(m.text())) errs.push(m.text()); });
   page.on('pageerror', (e) => errs.push(String(e.stack || e)));
   await page.goto(`http://localhost:${port}/index.html${r}`, { waitUntil: 'load' });
-  await page.waitForFunction(() => document.querySelector('#app')?.dataset.route === (location.hash || '#/'), null, { timeout: 60000 });
   await page.waitForTimeout(r.startsWith('#/t/') ? 1800 : 900);
   const title = await page.title();
   const crashed = await page.locator('main h1', { hasText: 'Something went wrong' }).count();
   if (crashed) errs.push('page shows "Something went wrong"');
+  if (/\bNot found\b/i.test(title) && r !== '#/nope') errs.push('unexpected not-found page');
   if (flag('--shots')) await page.screenshot({ path: join(ROOT, 'shots', `page-${r.replace(/[#/?=.]+/g, '_').replace(/^_|_$/g, '') || 'home'}${flag('--dark') ? '.dark' : ''}.png`), fullPage: !r.startsWith('#/map') });
   console.log(`${errs.length ? '✗' : '✓'} ${r.padEnd(28)} ${title}`);
   for (const e of errs) console.log(`    ${e.split('\n').slice(0, 3).join(' | ')}`);

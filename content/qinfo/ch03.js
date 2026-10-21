@@ -4,6 +4,8 @@ import {
   drawGroups, tilesR, rtrace,
 } from './ch03.shared.js';
 
+import {repeaterModel,logDirect} from './algorithm-sources-audit.shared.js';
+
 const fix = (v, x, d = 3) => v.fix(Math.abs(x) < 0.5 * 10 ** -d ? 0 : x, d);
 const pct = (v, x, d = 1) => `${fix(v, x * 100, d)}%`;
 const bit2 = (n) => n.toString(2).padStart(2, '0');
@@ -20,11 +22,13 @@ export default {
       kind: 'Definition',
       name: 'Quantum circuit model',
       statement: String.raw`A **quantum circuit** on $n$ qubits is a time-ordered list of gates, each a unitary acting on one or two of the qubits, applied to the input $|0\rangle^{\otimes n}$ and usually ended by measurements in the computational basis. The state after the first $k$ gates is
-$$|\psi_k\rangle=U_k\cdots U_2U_1|0\ldots0\rangle\in\mathbb C^{2^n},$$
+$$\begin{gathered}|\psi_k\rangle=U_k\cdots U_2U_1|0\ldots0\rangle\\\in\mathbb C^{2^n},\end{gathered}$$
 where each $U_j$ is a one- or two-qubit gate tensored with identities on the other wires. A measurement of all wires then returns the bit string $x$ with probability $|\langle x|\psi_k\rangle|^2$ (the Born rule). The circuit's *size* is the number of gates and its *depth* the number of layers of gates that can run in parallel.`,
-      idea: String.raw`A wire is a qubit and a box is a unitary, so the diagram is just a product of matrices written in time order: reading it left to right you multiply on the left each time. Gates on disjoint wires commute, which is why they can be drawn in one column. A state of $n$ qubits needs $2^n$ complex amplitudes (qm-14.1), so a classical simulation tracks exponentially many numbers; this is the sense in which the picture is expensive to simulate but cheap to run on hardware. Measurement collapses the state according to the projection postulate (qm-5.7).`,
+      idea: String.raw`A wire is a qubit and a box is a unitary, so the diagram is just a product of matrices written in time order: reading it left to right you multiply on the left each time. Gates on disjoint wires commute, which is why they can be drawn in one column. A state of $n$ qubits needs $2^n$ complex amplitudes (qm-14.1), so a classical simulation tracks exponentially many numbers; this is the sense in which the picture is expensive to simulate but cheap to run on hardware. Measurement collapses the state according to the projection postulate (qm-5.7).
+
+The tensor-basis result ladr-9.74 gives a basis of the composite space by taking all products of the two basis vectors on each wire. Iterating it yields one basis vector for each of the $2^n$ binary strings, so a generic pure state needs that many complex coordinates. This is the state-vector storage claim used here, not a lower bound for every possible classical simulation of special circuits.`,
       caption: String.raw`**Build a circuit**: choose a gate, the target wire (and a control wire for two-qubit gates) and press *Add gate*; or load a preset. The *after gate* slider replays the circuit gate by gate (a click on a gate in the diagram does the same). Bars show the probability of every bit string, with colour giving the phase of the amplitude; the three spheres are the single-qubit Bloch vectors, which shrink toward the centre exactly when that qubit is entangled with the others.`,
-      deps: ['qinfo-2.1', 'qm-5.7', 'ladr-9.89'],
+      deps: ['qinfo-2.1', 'qm-5.7', 'ladr-9.74'],
       refs: ['Nielsen–Chuang §1.3.4', 'Nielsen–Chuang §4.6'],
       tags: ['circuits', 'gates', 'simulation'],
       credit: 'D. Deutsch, “Quantum computational networks”, Proc. R. Soc. Lond. A 425, 73–90 (1989)',
@@ -72,9 +76,11 @@ where each $U_j$ is a one- or two-qubit gate tensored with identities on the oth
       statement: String.raw`Alice and Bob share the Bell pair $|\Phi^+\rangle=\tfrac1{\sqrt2}(|00\rangle+|11\rangle)$, Alice holding the first qubit. To send two classical bits $m=(a,b)$, Alice applies $Z^aX^b$ to her qubit and sends that one qubit to Bob. The four resulting states $(Z^aX^b\otimes I)|\Phi^+\rangle$ are the four Bell states, which are orthogonal, so Bob's Bell measurement (CNOT, Hadamard, then a computational-basis measurement) returns $(a,b)$ with certainty. One transmitted qubit therefore carries two bits, **given one previously shared ebit**.
 
 Without the shared entanglement a qubit carries at most one classical bit (Holevo's bound); with it the capacity doubles, but only because the pair was distributed beforehand.`,
-      idea: String.raw`Alice's operation on her half cannot change Bob's reduced state, which stays maximally mixed (no-signalling, qm-14.13), yet it moves the *joint* state among four orthogonal Bell states (qinfo-2.2), and a joint measurement can read off which one. The information sits in the correlations of the pair, not in either qubit. Four messages need four orthogonal states, and only a two-qubit system has room for them: a single qubit offers only a two-dimensional space, in which four equiprobable messages can never be told apart better than half the time.`,
+      idea: String.raw`Alice's operation on her half cannot change Bob's reduced state, which stays maximally mixed (no-signalling, qm-14.13), yet it moves the *joint* state among four orthogonal Bell states (qinfo-2.2), and a joint measurement can read off which one. The information sits in the correlations of the pair, not in either qubit. Four messages need four orthogonal states, and only a two-qubit system has room for them: a single qubit offers only a two-dimensional space, in which four equiprobable messages can never be told apart better than half the time.
+
+The dimension step uses ladr-6.25: orthonormal message vectors are linearly independent, so a two-dimensional qubit space cannot contain four of them. The shared pair instead supplies a four-dimensional space and four orthogonal Bell messages. The stronger stated half-success bound for four equiprobable qubit messages also follows directly: each density matrix is bounded by I, so summing $\operatorname{tr}(E_m\rho_m)/4$ over any four-outcome POVM is at most $\operatorname{tr}I/4=1/2$.`,
       caption: String.raw`Pick the **message** and step the circuit with the slider: prepare the Bell pair, Alice's gate, Bob's decoder. The tally compares the decoding success of **superdense coding** (green) with the best that one *unentangled* qubit can do for four equally likely messages (orange, the four tetrahedron states with their optimal measurement): $\tfrac12$. The *channel noise* slider replaces Alice's qubit by the maximally mixed state with probability $p$; the success rate falls to $1-\tfrac34p$.`,
-      deps: ['qinfo-3.1', 'qinfo-2.2'],
+      deps: ['qinfo-3.1', 'qinfo-2.2', 'ladr-6.25'],
       refs: ['Nielsen–Chuang §2.3'],
       tags: ['entanglement', 'classical capacity', 'Bell states'],
       scope: String.raw`Ideal gates and a noiseless shared pair; the noise slider models only depolarisation of the transmitted qubit. The 1996 Innsbruck photon experiment implemented the protocol, but linear optics can separate only three of the four Bell states, so it reached about $\log_23\approx1.58$ bits per qubit rather than 2.`,
@@ -162,7 +168,7 @@ If the pairs are Werner states with visibilities $w_1,w_2$ (mixtures $w|\Phi^+\r
           const fid = [0, 1, 2, 3].map((j) => bellFidR(res[k].rho, j));
           cur = { Ss, prod: w1.value * w2.value, p: res.map((r) => r.p), fid, k, pAll: res.reduce((s, r) => s + r.p, 0) };
         });
-        v.readout(() => `outcome probabilities $${cur.p.map((p) => fix(v, p, 3)).join(',\\ ')}$ (sum $${fix(v, cur.pAll, 3)}$); for outcome $${BELL[cur.k].tex}$ the pair $A$–$D$ has fidelity $${fix(v, cur.fid[cur.k], 3)}$ with $${BELL[cur.k].tex}$\nbest CHSH value $S_{\\max}=${fix(v, cur.Ss[cur.k], 4)}$ against $2\\sqrt2\\,w_1w_2=${fix(v, 2 * Math.SQRT2 * cur.prod, 4)}$ · ${cur.Ss[cur.k] > 2 + 1e-9 ? '**violates CHSH: A and D are entangled although they never interacted**' : 'no Bell violation (the noise has eaten the entanglement of the swapped pair)'}`);
+        v.readout(() => `outcome probabilities $${cur.p.map((p) => fix(v, p, 3)).join(',\\ ')}$ (sum $${fix(v, cur.pAll, 3)}$); for outcome $${BELL[cur.k].tex}$ the pair $A$–$D$ has fidelity $${fix(v, cur.fid[cur.k], 3)}$ with $${BELL[cur.k].tex}$\nbest CHSH value $S_{\\max}=${fix(v, cur.Ss[cur.k], 4)}$ against $2\\sqrt2\\,w_1w_2=${fix(v, 2 * Math.SQRT2 * cur.prod, 4)}$ · ${cur.Ss[cur.k] > 2 + 1e-9 ? '**violates CHSH: A and D are entangled although they never interacted**' : 'no CHSH violation; this test alone does not establish whether the swapped pair is separable'}`);
       },
     },
 
@@ -174,9 +180,11 @@ If the pairs are Werner states with visibilities $w_1,w_2$ (mixtures $w|\Phi^+\r
       statement: String.raw`A bank issues a note with a serial number and $n$ qubits, the $i$-th prepared in one of $|0\rangle,|1\rangle,|+\rangle,|-\rangle$, chosen at random: a secret basis bit $b_i$ ($+$ or $\times$) and a secret value bit $s_i$. The bank stores $(b_i,s_i)_i$ against the serial number. To **verify** a note it measures qubit $i$ in basis $b_i$ and accepts if all results equal $s_i$: a genuine note is always accepted.
 
 A forger who does not know the bases and uses *measure and resend* (measure each qubit in a guessed basis, prepare a state from the outcome) passes the test on a single forged note with probability $(3/4)^n$ per note; to turn one note into **two** accepted notes this attack succeeds with probability $(5/8)^n$, and no strategy whatever achieves more than $(3/4)^n$ for two notes. Either way the success probability falls exponentially in $n$.`,
-      idea: String.raw`If the guessed basis is right (probability $\tfrac12$) the forger learns $s_i$ and the copy is perfect; if it is wrong, the outcome is a fair coin in the wrong basis and the bank's measurement in the true basis again gives a fair coin, so the qubit passes with probability $\tfrac12$. Averaging, $\tfrac12\cdot1+\tfrac12\cdot\tfrac12=\tfrac34$ per qubit. For two copies the wrong-basis case must pass twice, $\tfrac14$, giving $\tfrac12+\tfrac18=\tfrac58$. Qubits are independent, so the probabilities multiply. The root cause is the no-cloning theorem (qm-14.14): the four states are not orthogonal (qinfo-1.5), so no measurement identifies them, and measuring disturbs them.`,
+      idea: String.raw`If the guessed basis is right (probability $\tfrac12$) the forger learns $s_i$ and the copy is perfect; if it is wrong, the outcome is a fair coin in the wrong basis and the bank's measurement in the true basis again gives a fair coin, so the qubit passes with probability $\tfrac12$. Averaging, $\tfrac12\cdot1+\tfrac12\cdot\tfrac12=\tfrac34$ per qubit. For two copies the wrong-basis case must pass twice, $\tfrac14$, giving $\tfrac12+\tfrac18=\tfrac58$. Qubits are independent, so the probabilities multiply. The root cause is the no-cloning theorem (qm-14.14): the four states are not orthogonal (qinfo-1.5), so no measurement identifies them, and measuring disturbs them.
+
+The exponential factors use the finite-family independence definition prob-2.1.1a. For this specified measure-and-resend attack, independent note preparations and separate independent basis guesses make the per-position acceptance events independent. Their intersection therefore has probability $(3/4)^n$ for one output note or $(5/8)^n$ for both outputs together. This multiplication does not prove the separately quoted optimal bound against arbitrary joint forging strategies.`,
       caption: String.raw`The top row of the strip is the bank's secret state of each qubit (toggle *reveal* to see it; arrows show the polarisation). The forger picks a basis for each (row 2, green if lucky) and sends two copies; rows 3 and 4 show whether each copy passes the bank's test. Slide the **note length** $n$: on the log-scale graph the gold dots are the fraction of 20 000 simulated forgeries in which *both* copies were accepted, tracking $(5/8)^n$ (orange); the green curve $(3/4)^n$ is the pass rate of a single copy, and also the best any attack can do for two copies. A genuine, untouched note passes every time.`,
-      deps: ['qinfo-1.5', 'qm-14.14', 'prob-2.1.5'],
+      deps: ['qinfo-1.5', 'qm-14.14', 'prob-2.1.1a'],
       refs: ['Nielsen–Chuang §12.6'],
       tags: ['quantum money', 'no-cloning', 'cryptography'],
       scope: String.raw`Wiesner's original scheme is *private-key* money: only the bank can verify, by looking up the secret bases in its database, and the bank's accept/reject answers must not leak (a forger who can query the bank repeatedly can learn the bases). The numbers assume noiseless qubits and a forger holding one note.`,
@@ -248,13 +256,15 @@ A forger who does not know the bases and uses *measure and resend* (measure each
       name: 'BB84 quantum key distribution',
       statement: String.raw`Alice sends Bob $N$ qubits; qubit $i$ is $|0\rangle,|1\rangle$ or $|+\rangle,|-\rangle$ according to a random value bit $a_i$ and a random basis bit (rectilinear $+$ or diagonal $\times$). Bob measures each in an independently random basis. Over a public authenticated channel they announce the *bases* (not the values) and keep the positions where the bases agree, about $N/2$ of them (the **sifted key**); for those, in the absence of noise and eavesdropping, Bob's bit equals Alice's. They then publicly compare a random sample of $k$ sifted bits.
 
-An eavesdropper who independently intercepts each qubit with probability $q$, measures it in a random basis and resends the result, causes an error in a sifted bit with probability $q/4$. Under this independent attack model, comparing $k$ distinct sifted bits reveals her with probability $1-(1-q/4)^k$.`,
-      idea: String.raw`The four states form two bases that are *mutually unbiased*: a state of one basis measured in the other gives a fair coin (qinfo-1.5, qm-5.7). Eve does not know the basis, guesses it right half the time (no disturbance) and wrong half the time, in which case the resent state is random in the true basis and Bob, if he uses the true basis, errs half the time. So she disturbs a sifted bit with probability $\tfrac12\cdot\tfrac12=\tfrac14$. She cannot do better by copying, since that would violate no-cloning (qm-14.14); any information she gains costs a disturbance, which the comparison detects.`,
-      caption: String.raw`The strip shows the first 24 qubits: Alice's bit and basis, Eve (if she intercepts), Bob's basis and result, and whether the position survives sifting (basis match, shaded) and whether it is an error (red). Move **Eve's interception probability** $q$: the error rate of the sifted key rises to $q/4$ ($25\%$ at $q=1$). The right graph is the chance that comparing $k$ bits exposes her: the curve is $1-(1-q/4)^k$, the dots are resampled from the actual sifted key.`,
-      deps: ['qinfo-1.5', 'qm-14.14', 'prob-2.1.5'],
+An eavesdropper who independently intercepts each qubit with probability $q$, measures each in a random basis and resends the result, causes an error in a sifted bit with probability $q/4$, so a sample of $k$ bits reveals her with probability $1-(1-q/4)^k$.`,
+      idea: String.raw`The four states form two bases that are *mutually unbiased*: a state of one basis measured in the other gives a fair coin (qinfo-1.5, qm-5.7). Eve does not know the basis, guesses it right half the time (no disturbance) and wrong half the time, in which case the resent state is random in the true basis and Bob, if he uses the true basis, errs half the time. So she disturbs a sifted bit with probability $\tfrac12\cdot\tfrac12=\tfrac14$. She cannot do better by copying, since that would violate no-cloning (qm-14.14); any information she gains costs a disturbance, which the comparison detects.
+
+For the intercept-resend sampling formula, interception is independently attempted with probability q on each signal, and the preparation, basis choices and shot outcomes are independent across positions. The sampled error events are then independent with probability $q/4$ per sifted bit. By prob-2.1.1a their complements intersect with probability $(1-q/4)^k$, giving the displayed detection probability. A fixed number of intercepted positions with sampling without replacement would require a different finite-population formula.`,
+      caption: String.raw`The strip shows the first 24 qubits: Alice's bit and basis, Eve (if she intercepts), Bob's basis and result, and whether the position survives sifting (basis match, shaded) and whether it is an error (red). Move **Eve's interception fraction** $q$: the error rate of the sifted key rises to $q/4$ ($25\%$ at $q=1$). The right graph is the chance that comparing $k$ bits exposes her: the curve is $1-(1-q/4)^k$, the dots are resampled from the actual sifted key.`,
+      deps: ['qinfo-1.5', 'qm-14.14', 'prob-2.1.1a'],
       refs: ['Nielsen–Chuang §12.6.3'],
       tags: ['key distribution', 'cryptography', 'no-cloning'],
-      scope: String.raw`Ideal single-qubit source, lossless channel, perfect detectors, intercept–resend attack only; real systems add error correction, privacy amplification and decoy states, and the secret key is shorter than the sifted key.`,
+      scope: String.raw`Ideal single-qubit source, lossless channel, perfect detectors, independent per-signal intercept–resend attack only; real systems add error correction, privacy amplification and decoy states, and the secret key is shorter than the sifted key.`,
       credit: 'C. H. Bennett and G. Brassard, “Quantum cryptography: public key distribution and coin tossing”, Proc. IEEE Int. Conf. on Computers, Systems and Signal Processing, Bangalore, 175–179 (1984)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/BB84', arxiv: 'https://arxiv.org/abs/2003.06557' },
       viz(v) {
@@ -262,7 +272,7 @@ An eavesdropper who independently intercepts each qubit with probability $q$, me
         const St = v.stage({ x: [-6, NS], y: [0, 7.4], axes: false, height: 290, weight: 1.5, title: 'the first 24 qubits' });
         const Pd = v.stage({ x: [0, 64], y: [0, 1.02], axes: 'box', gutter: true, height: 290, weight: 1, xlabel: 'sifted bits compared $k$', ylabel: 'probability Eve is detected', title: 'detecting the eavesdropper' });
         const N = v.slider('qubits sent $N$', 100, 4000, 1000, { log: true, int: true });
-        const q = v.slider('Eve intercepts each qubit with probability $q$', 0, 1, 0.5, { step: 0.01 });
+        const q = v.slider('Eve intercepts a fraction $q$', 0, 1, 0.5, { step: 0.01 });
         const kk = v.slider('bits compared $k$', 1, 64, 16, { int: true });
         let seed = 3; v.button('send again', () => { seed++; });
         let run = null;
@@ -392,12 +402,14 @@ which equals $2\sqrt2$ for the undisturbed pair. If $S\le2$ the data are explain
       kind: 'Method',
       name: 'Entanglement distillation',
       statement: String.raw`Let two parties share many copies of a Werner state $\rho_F=F|\Phi^+\rangle\langle\Phi^+|+\tfrac{1-F}3(I-|\Phi^+\rangle\langle\Phi^+|)$ of fidelity $F>\tfrac12$ (such a state is entangled exactly when $F>\tfrac12$). In one round of the **recurrence protocol** they take two pairs, apply a CNOT on both sides (Alice's pair-1 qubit controls her pair-2 qubit, and likewise for Bob), measure the pair-2 qubits in the computational basis and keep pair 1 only when their results agree. With $g=\tfrac{1-F}3$ the kept pair is, after a random local twirl, again a Werner state, with
-$$F'=\frac{F^2+g^2}{F^2+2Fg+5g^2},\qquad p_{\rm succ}=F^2+2Fg+5g^2 .$$
+$$\begin{gathered}F'=\frac{F^2+g^2}{F^2+2Fg+5g^2},\qquad\\p_{\rm succ}=F^2+2Fg+5g^2 .\end{gathered}$$
 For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tfrac12$ it does not help.`,
-      idea: String.raw`Local operations and classical communication cannot create entanglement, but they can concentrate it. The bilateral CNOT compares the two pairs' *parity* errors; the error bits that survive agreement are rarer than before, since two errors must coincide to go unnoticed ($F^2$ versus the single-error terms). Weighing the four Bell components $F,g,g,g$ gives the map above; its fixed points are $F=\tfrac14,\tfrac12,1$, with $\tfrac12$ unstable (the PPT threshold, qinfo-2.5). The cost is that two pairs make at most one, with probability $p_{\rm succ}<1$.`,
+      idea: String.raw`Local operations and classical communication cannot create entanglement, but they can concentrate it. The bilateral CNOT compares the two pairs' *parity* errors; the error bits that survive agreement are rarer than before, since two errors must coincide to go unnoticed ($F^2$ versus the single-error terms). Weighing the four Bell components $F,g,g,g$ gives the map above; its fixed points are $F=\tfrac14,\tfrac12,1$, with $\tfrac12$ unstable (the PPT threshold, qinfo-2.5). The cost is that two pairs make at most one, with probability $p_{\rm succ}<1$.
+
+The recurrence assumes two independently prepared copies. By prob-2.1.1a their Bell-component labels have product probabilities, such as $F^2$, Fg and $g^2$. Summing the weights of the accepted parity cases gives the stated success probability; dividing the accepted correct-component weight by that sum gives the new fidelity. Correlated pairs need not obey this map, and neither this product rule nor the finite display proves a positive asymptotic yield.`,
       caption: String.raw`**Drag the point on the diagonal** to set the starting fidelity $F_0$. The left graph is the map $F\mapsto F'$ with the cobweb of the iteration; the right graph follows the fidelity over the rounds together with the expected number of original pairs consumed per output pair. Below $F=\tfrac12$ the iteration runs away from 1. The readout compares the closed form with a direct simulation on the $16\times16$ density matrix of the four qubits.`,
-      deps: ['qinfo-2.5', 'qinfo-3.1'],
-      refs: ['Briegel–Dür–Cirac–Zoller,quant-ph/9803056,complete protocol Eqs1,5–6 and purification loop'],
+      deps: ['qinfo-2.5', 'qinfo-3.1', 'prob-2.1.1a'],
+      refs: ['Nielsen–Chuang §12.5.2'],
       tags: ['entanglement', 'purification', 'LOCC'],
       scope: String.raw`Werner states, perfect local gates and measurements, and a re-twirl after every round (in the original protocol this is a random bilateral rotation); the yield is zero in the limit, since each round at least halves the number of pairs. Later protocols (Deutsch et al., 1996) and hashing do better.`,
       credit: 'C. H. Bennett, G. Brassard, S. Popescu, B. Schumacher, J. A. Smolin and W. K. Wootters, Phys. Rev. Lett. 76, 722 (1996)',
@@ -434,60 +446,38 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
       num: '3.8',
       kind: 'Invention',
       name: 'Quantum repeaters',
-      statement: String.raw`An arbitrary unknown quantum state cannot be deterministically cloned (qm-14.14), and the chance that a photon crosses a fibre of length $L$ falls as $10^{-\alpha L/10}$ (with attenuation $\alpha$ in dB/km), so direct transmission of entanglement has a rate falling **exponentially** in $L$. A **quantum repeater** splits the channel into $2^K$ segments of length $\ell_0$, creates an entangled pair across each, and then repeatedly **swaps** neighbouring pairs (a Bell measurement at the joint, qinfo-3.3) and **purifies** the longer pairs (qinfo-3.7) to keep their fidelity above the usable threshold. Provided each nesting level can restore a fixed working fidelity with bounded purification overhead and sufficiently good memories/local operations, parallel preparation and nested connection give **polynomial** time/resource overhead in $L=2^K\ell_0$. A fixed number of purification rounds need not meet that condition.`,
-      idea: String.raw`Swapping makes a long link from two short ones but multiplies their noise (visibility $w_1w_2$, qinfo-3.3), so after $K$ levels the raw fidelity decays like $w_0^{2^K}$ and eventually falls below the entanglement threshold; purification (qinfo-3.7) pumps it back up using extra pairs. Each level needs two sub-links to exist at the same time, so the waiting time grows by a constant factor per level (roughly $\tfrac32$ for waiting on two links, divided by the swap success probability), i.e. a power of the number of segments, $N^{\log_2 c}$, instead of the exponential $10^{0.02L}$.`,
-      caption: String.raw`A simplified *simulation*, not the full Briegel–Dür–Cirac–Zoller protocol: elementary links of length $\ell_0$ succeed with probability $10^{-0.02\ell_0}$ per attempt cycle; nested swapping with ideal quantum memories and swap success probability $p_s$ is simulated by bootstrap Monte Carlo (3 000 samples per level); each purification round is one recurrence step of qinfo-3.7. The left graph compares the repeater's rate at $\ell=2^k\ell_0$ with direct transmission; the middle one draws the chain; the right graph follows the fidelity with and without purification.`,
-      deps: ['qinfo-3.3', 'qinfo-3.7', 'qm-14.14'],
-      refs: ['Briegel–Dür–Cirac–Zoller,quant-ph/9803056,complete protocol Eqs1,5–6 and purification loop'],
+      statement: String.raw`A quantum repeater distributes elementary entangled pairs between intermediate nodes, then combines them by entanglement swapping and nested purification. Briegel, Dür, Cirac and Zoller (1998) show how this can avoid exponential resource scaling **when the connection–purification cycle restores a chosen working fidelity at each level**. If a level combines $b$ links and uses a fixed average $M$ copies for purification, $N=b^K$ segments require $R=(bM)^K=N^{1+\log_b M}$ elementary pairs. Their sequential-memory variant trades parallel copies for time and has logarithmic local storage under its additional nesting condition and ideal-memory assumption.
+
+For an illustrative loss-only fibre model, transmission probability is $10^{-\alpha L/10}$; this demo chooses $\alpha=0.2$ dB/km as a parameter, without claiming a universal fibre value. Fixed purification rounds do **not** guarantee an entangled output or a distance-independent fidelity.`,
+      idea: String.raw`Swapping ideal Werner links multiplies visibility: after $2^K$ unpurified segments it is $w_0^{2^K}$, and fidelity is $F=(1+3w)/4$ (fidelity itself is not $w$). The original repeater requires the post-connection pair to lie above the purification threshold and enough purification to restore a working fidelity before the next level. The toy model below instead fixes the number of recurrence rounds and tracks failures of that requirement. Its waiting time is a bootstrap estimate of repeated maxima of two independent sub-link times, retried after unsuccessful swaps/purification. The often-used factor 3/2 applies approximately to the maximum of two rare-success geometric/exponential waits, not to every higher-level distribution.`,
+      caption: String.raw`**Choose segment length, nesting, swap success, purification rounds and starting visibility.** This simplified Monte Carlo model uses 3000 bootstrap samples per level, perfect memories/local gates, instantaneous messages and reset-after-failure scheduling. Purification is applied at level zero as well as after each swap level. The left plot uses **log10 accepted-pair rate**, including pairs that may be separable; its loss-only comparison stays representable even when the probability would underflow. Gold marks your final level; the readout separately checks whether $F>1/2$. The chain draws at most four levels; the fidelity graph shows whether the chosen finite purification actually maintains quality. It is not a simulation of every resource or timing assumption in the original protocol.`,
+      deps: ['qinfo-3.3', 'qinfo-3.7'],
+      refs: ['Briegel, Dür, Cirac & Zoller, Physical Review Letters81 (1998),5932–5935, full paper: equation(1), connection/purification equations(5)–(6), nesting-condition and sequential-memory discussion: https://people.ee.duke.edu/~jungsang/ECE590_01/BriegelPRL1998.pdf'],
       tags: ['repeaters', 'entanglement', 'networks'],
-      scope: String.raw`Model assumptions: perfect memories that never decohere, instantaneous classical messages (no $L/c$ latency per attempt), perfect local gates, Werner-state links. These favour the repeater; real devices lose to direct transmission at short distance and need very good memories at long distance. Rates are per attempt cycle, and fibre loss $0.2$ dB/km is an illustrative model input. Fixed-round fidelity curves need not maintain a working fidelity, so the rate alone is not a fixed-fidelity communication rate.`,
-      credit: 'Briegel, Dür, Cirac and Zoller, nested quantum-repeater protocol (quant-ph/9803056)',
+      scope: String.raw`Toy per-attempt-cycle rates, not physical pairs per second: no finite memory lifetime, classical-signal latency, detector loss, imperfect gates or resource cap. Fixed rounds can produce separable output, so an accepted-pair rate alone is not an entanglement-delivery rate. The original paper's polynomial guarantee has working-fidelity and resource hypotheses that this finite display does not certify.`,
+      credit: 'Briegel, Dür, Cirac & Zoller, Physical Review Letters81,5932–5935 (1998)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_repeater', arxiv: 'https://arxiv.org/abs/quant-ph/9803056' },
       viz(v) {
-        const Rt = v.stage({ x: [5, 20000], y: [1e-12, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, weight: 1.35, xlabel: 'distance $L$ (km)', ylabel: 'generated pairs per attempt cycle', title: 'pair generation rate (check fidelity)'  });
+        const Rt = v.stage({ x: [5, 20000], y: [-400, 0.1], xlog: true, axes: 'box', gutter: true, height: 320, weight: 1.35, xlabel: 'distance $L$ (km)', ylabel: '$\\log_{10}$ rate', title: 'rate against distance' });
         const Ch = v.stage({ x: [-0.6, 16.6], y: [-1.3, 5.2], axes: false, height: 320, weight: 1.1, title: 'the chain (drawn for up to 4 levels)' });
         const Fd = v.stage({ x: [0, 8], y: [0.25, 1.02], axes: 'box', gutter: true, height: 320, weight: 0.9, xlabel: 'nesting level $k$', ylabel: 'fidelity of the pair', title: 'fidelity of the long pair', xticks: [0, 2, 4, 6, 8] });
         const l0 = v.slider('segment length $\\ell_0$ (km)', 5, 50, 20, { step: 1, int: true });
         const K = v.slider('nesting levels $K$', 0, 8, 5, { int: true });
-        const ps = v.select('Bell measurement', [{ value: '1', label: 'ideal ($p_s=1$)' }, { value: '0.5', label: 'linear optics ($p_s=\\tfrac12$)' }], '0.5');
+        const ps = v.select('Bell measurement', [{ value: '1', label: 'ideal ($p_s=1$)' }, { value: '0.5', label: 'probabilistic ($p_s=\\tfrac12$)' }], '0.5');
         const pr = v.slider('purification rounds per level', 0, 2, 1, { int: true });
         const w0 = v.slider('elementary visibility $w_0$', 0.8, 1, 0.97, { step: 0.005 });
         let cache = {};
         const M = 3000;
-        function model() {
-          const key = [l0.value, ps.value, pr.value, w0.value].join('|');
-          if (cache.key === key) return cache.levels;
-          const rng = v.rng(2024), p0 = Math.pow(10, -0.02 * l0.value), p_s = +ps.value;
-          const geom = () => (p0 >= 1 ? 1 : Math.max(1, Math.ceil(Math.log(1 - rng()) / Math.log(1 - p0))));
-          let T = Array.from({ length: M }, geom), w = w0.value, wraw = w0.value;
-          const levels = [];
-          for (let k = 0; k <= 8; k++) {
-            if (k > 0) {
-              const prev = T; T = new Array(M);
-              for (let i = 0; i < M; i++) { let t = 0; do { t += Math.max(prev[Math.floor(rng() * M)], prev[Math.floor(rng() * M)]); } while (rng() > p_s); T[i] = t; }
-              w = w * w; wraw = wraw * wraw;
-            }
-            let F = fidOfW(w);
-            for (let r = 0; r < pr.value; r++) {
-              const o = bbpsswFormula(F), prev = T; T = new Array(M);
-              for (let i = 0; i < M; i++) { let t = 0; do { t += Math.max(prev[Math.floor(rng() * M)], prev[Math.floor(rng() * M)]); } while (rng() > o.p); T[i] = t; }
-              F = o.F;
-            }
-            w = wOfFid(F);
-            levels.push({ k, L: Math.pow(2, k) * l0.value, rate: 1 / (T.reduce((s, x) => s + x, 0) / M), F, Fraw: fidOfW(wraw) });
-          }
-          cache = { key, levels }; return levels;
-        }
+        function model(){const key=[l0.value,ps.value,pr.value,w0.value].join('|');if(cache.key===key)return cache.levels;const levels=repeaterModel({length:l0.value,swap:+ps.value,rounds:pr.value,visibility:w0.value,samples:M},v.rng(2024));cache={key,levels};return levels;}
         let cur;
         v.render(() => {
           const lv = model(), Kk = K.value, pts = lv.slice(0, Kk + 1);
-          Rt.fn((L) => Math.pow(10, -0.02 * L), { domain: [5, 20000], color: 'red', width: 2 });
-          Rt.path(pts.map((p) => [p.L, p.rate]), { color: 'green', width: 2.4 });
-          Rt.dots(pts.map((p) => [p.L, p.rate]), { r: 4.5, color: 'green' });
+          const xmax=Math.max(10,pts.at(-1).L*1.2);Rt.setView([5,xmax],[Math.min(logDirect(xmax),...pts.map(p=>Math.log10(p.rate)))*1.15,.2]);
+          Rt.fn((L) => logDirect(L), { domain: [5, xmax], color: 'red', width: 2 });
+          Rt.path(pts.map((p) => [p.L, Math.log10(p.rate)]), { color: 'green', width: 2.4 });
+          Rt.dots(pts.map((p) => [p.L, Math.log10(p.rate)]), { r: 4.5, color: 'green' });
           const last = pts[pts.length - 1];
-          Rt.dot(last.L, last.rate, { r: 7, color: 'gold' });
-          Rt.text('direct fibre', 400, 1e-9, { size: 12, color: 'red', align: 'left' });
-          Rt.text('repeater', last.L, last.rate, { size: 12, color: 'green', align: 'right', dx: -10, dy: -12 });
+          Rt.dot(last.L, Math.log10(last.rate), { r: 7, color: 'gold' });
           // chain schematic
           const Kd = Math.min(Kk, 4), Nseg = 1 << Kd, sx = 16 / Nseg;
           const lc = ['blue', 'teal', 'purple', 'orange', 'pink'];
@@ -502,7 +492,7 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
               if (j > 0) Ch.dot(x0 + (x1 - x0) / 2, h, { r: 3.2, color: lc[j % lc.length] });
             }
           }
-          Ch.text(`${Nseg} segment${Nseg > 1 ? 's' : ''} of ${v.fix(l0.value, 0)} km · arcs = swapped pairs`, 8, -0.55, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
+          Ch.text(`${Nseg} schematic segment${Nseg > 1 ? 's' : ''} · arcs = swapped pairs`, 8, -0.55, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
           if (Kk > 4) Ch.text(`only 4 levels drawn (real chain: ${1 << Kk} segments)`, 8, 4.9, { size: 11, color: 'muted', align: 'center', baseline: 'bottom' });
           // fidelity
           Fd.path(pts.map((p) => [p.k, p.Fraw]), { color: 'red', width: 2, dash: true });
@@ -510,9 +500,10 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
           Fd.hline(0.5, { color: 'muted', dash: true, width: 1.2 }); Fd.text('F = ½', 7.9, 0.5, { size: 11, color: 'muted', align: 'right', baseline: 'top', dy: 3 });
           Fd.text('no purification', 7.9, Math.max(0.28, Math.min(0.98, pts[pts.length - 1].Fraw + 0.04)), { size: 11, color: 'red', align: 'right', baseline: 'bottom' });
           const prevP = pts.length > 1 ? pts[pts.length - 2] : null;
-          cur = { last, prevP, direct: Math.pow(10, -0.02 * last.L), slope: prevP ? Math.log(last.rate / prevP.rate) / Math.log(2) : NaN };
+          cur = { last, prevP, logDirect: logDirect(last.L), slope: prevP ? Math.log(last.rate / prevP.rate) / Math.log(2) : NaN };
         });
-        v.readout(() => `${K.value} levels: pair across $L=${v.fmt(cur.last.L, 4)}$ km at $${v.sci(cur.last.rate, 2)}$ per cycle; direct fibre would give $${v.sci(cur.direct, 2)}$${cur.direct > 0 ? ` (pair-rate ratio $${v.sci(cur.last.rate / cur.direct, 2)}$)` : ''}\n${cur.prevP ? `doubling $L$ multiplies the rate by $2^{${fix(v, cur.slope, 2)}}$: a local rate ratio; the fixed-fidelity theorem additionally needs purification recovery. Direct attenuation is $10^{-0.02L}$ of the direct link` : 'no swapping yet (K = 0); elementary purification may still change the rate'} · fidelity ${fix(v, cur.last.F, 3)} with purification, ${fix(v, cur.last.Fraw, 3)} without${cur.last.F<=.5?' — Werner state is separable: generated-pair rate is not an entanglement rate.':' — pair rate at this fidelity, not a fixed-fidelity benchmark.'}`);
+        v.legend([['green','accepted-pair rate (may be separable)'],['red','loss-only direct transmission'],['gold','selected final level',{dot:true}]]);
+        v.readout(()=>`${K.value} levels: $L=${v.fmt(cur.last.L,4)}$ km; bootstrap accepted-pair rate $${v.sci(cur.last.rate,3)}$ per cycle, $\\log_{10}$ direct rate $=${fix(v,cur.logDirect,3)}$.\n$F=${fix(v,cur.last.F,5)}$: **${cur.last.entangled?'entangled Werner output':'separable Werner output; the displayed rate is not an entanglement rate'}**; raw no-purification fidelity ${fix(v,cur.last.Fraw,5)}. ${cur.prevP?`Observed last-level log2 rate ratio ${fix(v,cur.slope,3)}; one finite ratio is not proof of a power law.`:`No swaps at K=0; ${pr.value} purification rounds still act on elementary pairs.`}`);
       },
     },
   ],

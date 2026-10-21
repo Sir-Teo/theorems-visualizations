@@ -80,13 +80,12 @@ export function superstable(m, R0, nMax = 9, cap = Infinity) {
 export const attackFree = (k, P) => (k === Infinity || k > 1e6 ? Math.exp(-P) : Math.pow(1 + P / k, -k));
 export function hostParasitoid(lam, k) {
   const g = (P) => attackFree(k, P);
-  const Ps = k === Infinity ? Math.log(lam) : k * Math.expm1(Math.log(lam) / k), Ns = (Ps * lam) / (lam - 1);
+  const Ps = k === Infinity ? Math.log(lam) : k * (Math.pow(lam, 1 / k) - 1), Ns = (Ps * lam) / (lam - 1);
   const F = (N, P) => [lam * N * g(P), N * (1 - g(P))];
   return { F, Ps, Ns, jac() {
-    // Exact equilibrium derivative; avoids a numerical perturbation misclassifying k=1.
-    const D = k === Infinity ? lam * Math.log(lam) / (lam - 1) : k === 1 ? 1 : -k * lam * Math.expm1(-Math.log(lam) / k) / (lam - 1);
-    const J = [[1, -D], [1 - 1 / lam, D / lam]];
-    return { J, T: 1 + D / lam, D };
+    const h = 1e-6 * Math.max(1, Ns), a = F(Ns + h, Ps), b = F(Ns - h, Ps), c = F(Ns, Ps + h), d = F(Ns, Ps - h);
+    const J = [[(a[0] - b[0]) / (2 * h), (c[0] - d[0]) / (2 * h)], [(a[1] - b[1]) / (2 * h), (c[1] - d[1]) / (2 * h)]];
+    return { J, T: J[0][0] + J[1][1], D: J[0][0] * J[1][1] - J[0][1] * J[1][0] };
   } };
 }
 /** Are both roots of z² − T z + D inside the unit circle? (the Jury conditions) */

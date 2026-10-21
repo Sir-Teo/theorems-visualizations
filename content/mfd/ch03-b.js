@@ -1,6 +1,6 @@
 // Manifolds & Riemannian Geometry — Chapter 3: Submersions, immersions and submanifolds (items 3.8–3.14; 3.1–3.7 in ch03.js)
 import {
-  PI, TAU, clamp, wrap, minus, dot3, sc3, torusPt, torusN, gexp, adiff,
+  PI, TAU, clamp, wrap, minus, dot3, sc3, torusPt, torusN, gexp, adiff, torusHeightData,
 } from './ch03.shared.js';
 
 // ---- 3.8: landscapes h(x, y) for Sard's theorem
@@ -124,7 +124,6 @@ function tangencies() {
   return (tgData = { E, smp });
 }
 
-const Hh = (tau) => { const w = [Math.sin(tau), 0, Math.cos(tau)]; return { w, h: (a, b) => dot3(w, torusPt(a, b)) }; };
 
 export default {
   collection: 'mfd',
@@ -136,7 +135,7 @@ export default {
       kind: 'Theorem',
       name: 'Sard’s theorem',
       statement: String.raw`Let $F\colon M\to N$ be a smooth map between smooth manifolds (Hausdorff and second countable). Then the set of **critical values** $F(\{p: dF_p\text{ not onto}\})$ has **measure zero** in $N$ (measure zero in every chart). Consequently the regular values are dense in $N$. For maps of class $C^k$ between manifolds of dimensions $m$ and $n$ the same holds when $k\ge\max(m-n+1,1)$.`,
-      idea: String.raw`Measure zero is unchanged by smooth coordinate changes between charts of the same dimension: these maps are locally Lipschitz. This does not say arbitrary smooth maps between different dimensions preserve null sets (a null line segment in the plane can project onto an interval). Thus the problem is local, and second countability reduces it to countably many pieces. For one variable the idea is simple: on the critical set $f'=0$, so a short interval $I$ of length $\delta$ is sent to a set of length $o(\delta)$, and covering the critical set by such intervals leaves total image length $\to0$. In higher dimensions one inducts on the dimension, splitting the critical set by how many derivatives vanish and applying Fubini on the level sets of a coordinate. The proof is the delicate part: in lower smoothness the statement is false, and Whitney's example shows the number of derivatives required cannot be lowered.`,
+      idea: String.raw`Measure zero is a chart-wise notion that smooth maps preserve (a $C^1$ image of a null set is null), so the problem is local, and second countability reduces it to countably many pieces. For one variable the idea is simple: on the critical set $f'=0$, so a short interval $I$ of length $\delta$ is sent to a set of length $o(\delta)$, and covering the critical set by such intervals leaves total image length $\to0$. In higher dimensions one inducts on the dimension, splitting the critical set by how many derivatives vanish and applying Fubini on the level sets of a coordinate. The proof is the delicate part: in lower smoothness the statement is false, and Whitney's example shows the number of derivatives required cannot be lowered.`,
       caption: String.raw`Pick a landscape $h(x,y)$ and the tolerance $\varepsilon$. Left: the region where $|\nabla h|<\varepsilon$ (red, with a safety margin of one grid cell), which for the **terraces** is a large area. Middle: the *values* $h$ takes on that red region, as orange bars on the value axis; the readout gives their total length as a fraction of the range. Right: that fraction as $\varepsilon\to0$ (log scale): it falls towards $0$, as Sard predicts — even for the terraces, whose critical set has positive area but only integer critical values. The orange curve on the landscape is the level $c$ of your choice.`,
       deps: ['mfd-3.1', 'rca-2.20'],
       refs: ['Lee SM Ch. 6'],
@@ -549,13 +548,14 @@ export default {
       name: 'Morse functions and the Morse lemma',
       statement: String.raw`A critical point $p$ of a smooth function $f\colon M\to\R$ ($df_p=0$) is **nondegenerate** if the Hessian matrix $\big(\partial^2f/\partial x^i\partial x^j\big)(p)$ in some (hence any) chart is invertible; its **index** is the number of negative eigenvalues. A **Morse function** has only nondegenerate critical points. **Morse lemma:** near a nondegenerate critical point of index $\lambda$ there is a chart $(y^1,\dots,y^n)$ centred at $p$ with
 $$f=f(p)-(y^1)^2-\dots-(y^\lambda)^2+(y^{\lambda+1})^2+\dots+(y^n)^2 .$$
-In particular nondegenerate critical points are isolated, and for a Morse function on a compact manifold without boundary, sublevel sets between regular values are diffeomorphic if no critical value is crossed. Crossing a single critical point of index $\lambda$ attaches a $\lambda$-handle; up to homotopy this is a cell of dimension $\lambda$. Several critical points at the same level attach one handle each.`,
+Nondegenerate critical points are isolated. For a Morse function on a compact manifold without boundary, the sublevel sets $\{f\le c\}$ are diffeomorphic between critical values. Crossing a single critical point of index $\lambda$ attaches a $\lambda$-cell up to homotopy.`,
       idea: String.raw`Write $f-f(p)=\sum x^ix^j g_{ij}(x)$ with smooth $g_{ij}$ (Hadamard's lemma applied twice), so that $g_{ij}(0)=\tfrac12\partial_{ij}f(p)$ is half the invertible Hessian. Then complete squares inductively, one coordinate at a time, using the inverse function theorem (2.8) at each step to turn the new square roots into coordinates. At first order this just diagonalizes the Hessian; the content of the lemma is that the nonlinear corrections can be absorbed into the chart. The topological consequence comes from flowing along $\nabla f/|\nabla f|^2$ between critical values, which is a diffeomorphism of sublevel sets; the Euler characteristic of $M$ is $\sum(-1)^{\lambda}$ over the critical points.`,
       caption: String.raw`The height function on a torus of revolution, projected along a direction tilted by $\tau$ from its axis. The 3D torus shows the sublevel set $\{h\le c\}$ in blue; the chart shows the same set in the angle square, and the step plot gives the Euler characteristic $\chi(\{h\le c\})=\sum(-1)^{\text{index}}$ over critical values below $c$: it goes $0\to1\to0\to-1\to0$, ending at $\chi(T^2)=0$. Pick a critical point: the left lower panel shows the level curves of $h-h(p)$ (blue) against those of its Hessian quadratic form (orange) near $p$, the right one the normal form $\pm u^2\pm v^2$ in Hessian coordinates; shrink the radius and the two match. At $\tau=0$ the critical points become two whole circles: $h$ is no longer Morse.`,
       deps: ['mfd-3.1'],
-      refs: ['Nicolaescu, An Invitation to Morse Theory, Theorem1.1.12 and Corollary1.1.17 pp.10–14; Theorems2.2.2–2.2.3 pp.38–42; Corollary2.3.3 pp.48–49'],
+      refs: ['Milnor, Morse Theory (1963), Lemma 2.2 and Theorems 3.1–3.2, 3.5'],
+      links: { source: 'https://math.stanford.edu/~ralph/math215b/Milnor.pdf' },
       tags: ['Morse function', 'index'],
-      scope: String.raw`The local panels use the quadratic (Hessian) part, which already agrees with $f$ to second order; the nonlinear chart of the Morse lemma itself is not computed. The critical points are located by an explicit formula valid for the torus of revolution.`,
+      scope: String.raw`The local panels use the quadratic (Hessian) part, which already agrees with $f$ to second order; the nonlinear chart of the Morse lemma itself is not computed. The critical points are located by an explicit formula valid for the torus of revolution. No historical priority claim is made.`,
       viz(v) {
         const tl = v.slider('tilt $\\tau$ of the projection (degrees)', 0, 90, 35, { step: 1 });
         const lev = v.slider('level $c$', -1.9, 1.9, 0.2, { step: 0.005, decimals: 3 });
@@ -568,16 +568,7 @@ In particular nondegenerate critical points are isolated, and for a Morse functi
         const L2 = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'u₁', ylabel: 'u₂', title: 'normal form $\\pm u_1^2\\pm u_2^2$' });
         let info = null;
         v.render(() => {
-          const tau = (tl.value * PI) / 180, { w, h } = Hh(tau), c = lev.value;
-          const beta = PI / 2 - tau, degenerate = Math.abs(tau) < 1e-10;
-          let crit = [];
-          if (!degenerate) {
-            crit = [[0, beta], [PI, PI - beta], [PI, -beta], [0, beta - PI]].map(([a, b]) => [a, wrap(b)]).map(([a, b]) => {
-              const e = 1e-3, hab = (h(a + e, b + e) - h(a + e, b - e) - h(a - e, b + e) + h(a - e, b - e)) / (4 * e * e), haa = (h(a + e, b) - 2 * h(a, b) + h(a - e, b)) / (e * e), hbb = (h(a, b + e) - 2 * h(a, b) + h(a, b - e)) / (e * e);
-              const tr = haa + hbb, dt = haa * hbb - hab * hab, disc = Math.sqrt(Math.max(0, (tr * tr) / 4 - dt)), l1 = tr / 2 - disc, l2 = tr / 2 + disc;
-              return { a, b, val: h(a, b), H: [[haa, hab], [hab, hbb]], l: [l1, l2], idx: (l1 < 0 ? 1 : 0) + (l2 < 0 ? 1 : 0) };
-            }).sort((p, q) => p.val - q.val);
-          }
+          const tau=(tl.value*PI)/180,{h,critical:crit,degenerate}=torusHeightData(tau),c=lev.value;
           S3.surface((a, b) => torusPt(a, b), [0, TAU], [0, TAU], { nu: 64, nv: 32, alpha: 0.97, colorFn: (a, b) => (h(a, b) <= c ? 'accent' : 'faint') });
           const col = ['green', 'orange', 'orange', 'red'];
           crit.forEach((p, i) => S3.dot(torusPt(p.a, p.b), { r: 6, color: col[p.idx === 0 ? 0 : p.idx === 1 ? 1 : 3] }));
@@ -624,7 +615,7 @@ In particular nondegenerate critical points are isolated, and for a Morse functi
           const f = (x) => minus(v.fix(x, 3));
           if (info.degenerate) return 'Tilt $0$: $h=z$-coordinate along the axis. Its critical set is the top and the bottom circle: along them the Hessian in the direction of the circle is $0$ (a **degenerate** critical set), so $h$ is not a Morse function and the Morse lemma does not apply.';
           const s = info.sel;
-          return `Critical values $${info.crit.map((p) => f(p.val)).join(',\\ ')}$ with indices $${info.crit.map((p) => p.idx).join(',\\ ')}$ (sum of $(-1)^{\\text{index}}=0=\\chi(T^2)$). At the level $c=${f(info.c)}$: $\\chi(\\{h\\le c\\})=${info.chi}$.\nSelected point: Hessian eigenvalues $${f(s.l[0])},\\ ${f(s.l[1])}$, $\\det=${f(s.l[0] * s.l[1])}\\ne0$: nondegenerate, index ${s.idx}. Largest $|h-h(p)-\\tfrac12\\,\\text{Hess}|/\\rho^2$ on the circle of radius $\\rho$: $${f(info.err)}$ (→ 0 as $\\rho\\to0$).`;
+          return `Critical values $${info.crit.map((p) => f(p.val)).join(',\\ ')}$ with indices $${info.crit.map((p) => p.idx).join(',\\ ')}$ (sum of $(-1)^{\\text{index}}=0=\\chi(T^2)$). At the level $c=${f(info.c)}$: $\\chi(\\{h\\le c\\})=${info.chi}$.\nSelected point: Hessian eigenvalues $${v.sci(s.l[0],3)},\\ ${v.sci(s.l[1],3)}$, $\\det=${v.sci(s.l[0] * s.l[1],3)}\\ne0$: nondegenerate, index ${s.idx}. Maximum over 48 sampled circle points of $|h-h(p)-\\tfrac12\\,\\text{Hess}|/\\rho^2$ on the circle of radius $\\rho$: $${f(info.err)}$ (→ 0 as $\\rho\\to0$).`;
         });
       },
     },

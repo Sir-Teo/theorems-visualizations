@@ -3,8 +3,8 @@
 // Items 4.1 (gradient descent) and 4.3 (SGD) are cross-listed from the `opt` collection (opt-7.4, opt-7.10) and are
 // not rewritten here. Every iterate on screen is produced by running the algorithm (closed forms are drawn only as
 // dashed predictions to compare with); the saddle and landscape items use small explicit model problems and say so.
-import { adaptiveQuadratic as sim } from './adaptive-source.shared.js';
 import { clamp, mnus, memo, rand, hashStr, log10Ticks, lg } from './ch04.shared.js';
+import { quadraticRun, logRange } from './source-audit.shared.js';
 
 /** Contour levels for a positive quadratic-like loss: squares of equally spaced values, so they crowd near the minimum. */
 const levels = (fmax, n = 9) => Array.from({ length: n }, (_, i) => fmax * ((i + 1) / (n + 1)) ** 2);
@@ -21,15 +21,15 @@ export default {
       num: '4.2',
       kind: 'Theorem',
       name: 'Stability threshold of the learning rate',
-      statement: String.raw`Let $f(\theta)=\tfrac12\theta^{\top}A\theta$ with $A$ symmetric positive definite, and run gradient descent $\theta_{k+1}=\theta_k-\eta\nabla f(\theta_k)$. In the eigenbasis of $A$ (eigenvalues $\lambda_1\ge\dots\ge\lambda_d>0$) each coordinate evolves independently,
+      statement: String.raw`Let $f(\theta)=\tfrac12\theta^{\top}A\theta$ with $A$ symmetric positive definite, and run gradient descent with constant step $\eta>0$, $\theta_{k+1}=\theta_k-\eta\nabla f(\theta_k)$. In the eigenbasis of $A$ (eigenvalues $\lambda_1\ge\dots\ge\lambda_d>0$) each coordinate evolves independently,
 $$\theta^{(i)}_{k}=(1-\eta\lambda_i)^k\,\theta^{(i)}_0 .$$
-Hence $\theta_k\to0$ for every start if and only if $\eta<2/\lambda_1$, i.e. the learning rate is below **two over the largest curvature**. At $\eta=2/\lambda_1$ the top coordinate flips sign forever with constant size, and for $\eta>2/\lambda_1$ it oscillates with geometrically growing amplitude. For a general smooth loss the same threshold governs the linearization at a minimum: it is stable only if $\eta\,\lambda_{\max}(\nabla^2 f)<2$.`,
-      idea: String.raw`The update is the linear map $\theta\mapsto(I-\eta A)\theta$, whose eigenvalues are $1-\eta\lambda_i$; powers of a diagonalizable matrix go to zero exactly when all eigenvalues have modulus below 1, and $|1-\eta\lambda|<1\iff0<\eta\lambda<2$. The slowest direction has the smallest curvature, so the best fixed step, $\eta=2/(\lambda_1+\lambda_d)$, balances $|1-\eta\lambda_1|=|1-\eta\lambda_d|$ and leaves the rate $(\kappa-1)/(\kappa+1)$ with $\kappa=\lambda_1/\lambda_d$. Near a minimum of a smooth loss the Taylor expansion (pma-5.15) reduces the dynamics to this quadratic one.`,
+Hence $\theta_k\to0$ for every start if and only if $0<\eta<2/\lambda_1$, i.e. the learning rate is below **two over the largest curvature**. At $\eta=2/\lambda_1$ the top coordinate flips sign forever with constant size, and for $\eta>2/\lambda_1$ it oscillates with geometrically growing amplitude. For a $C^2$ loss at a stationary point with positive-definite Hessian, this same threshold characterizes strict contraction of the linearization. A unit-modulus eigenvalue at the boundary does not settle nonlinear stability.`,
+      idea: String.raw`The real spectral theorem (ladr-7.29) supplies an orthonormal eigenbasis for the real symmetric matrix $A$: write $A=Q\Lambda Q^\top$, with $Q^\top Q=I$. In coordinates $z=Q^\top\theta$, the update is $z_+=(I-\eta\Lambda)z$, so powers tend to zero for every start exactly when $|1-\eta\lambda_i|<1$ for every $i$. Since the eigenvalues are positive, this is $0<\eta<2/\lambda_1$. The best fixed step, $\eta=2/(\lambda_1+\lambda_d)$, balances the largest endpoint moduli and leaves the rate $(\kappa-1)/(\kappa+1)$ with $\kappa=\lambda_1/\lambda_d$. For a $C^2$ loss at a stationary point with positive-definite Hessian, differentiating the gradient-descent map gives the same linearization with $A=\nabla^2 f$; this does not classify a degenerate minimum or a unit-modulus boundary case.`,
       caption: String.raw`Gradient descent on $f=\tfrac12(Lx^2+0.4\,y^2)$ from $(1,1)$. Left: contours and the iterates. Right: $\log_{10}|x_k|$ and $\log_{10}|y_k|$ against the step $k$, with the dashed lines of slope $\log_{10}|1-\eta L|$ and $\log_{10}|1-0.4\eta|$ that the theorem predicts. Raise $\eta$ past $2/L$ (given in the readout) and watch the steep coordinate stop contracting, then blow up while the flat one is still fine.`,
-      deps: ["opt-7.4","ladr-7.29","pma-5.15"],
+      deps: ['opt-7.4', 'ladr-7.29'],
       refs: ['Goodfellow §4.3'],
       tags: ['learning rate', 'curvature', 'stability'],
-      scope: String.raw`Exact for quadratics; for general losses it is the local stability criterion at a minimum (and, with a different constant, the origin of the descent lemma $\eta\le1/L$).`,
+      scope: String.raw`Exact for symmetric positive-definite quadratics with constant positive step. The nonlinear statement concerns the linearized iteration at a stationary point with positive-definite Hessian; it does not classify degenerate minima or the unit-modulus boundary.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gradient_descent' },
       viz(v) {
         const Ls = v.slider('curvature $L$ (steep direction)', 0.5, 5, 2, { step: 0.05 });
@@ -132,48 +132,39 @@ equivalently a velocity $u_{k+1}=\beta u_k-\eta\nabla f(\theta_k)$, $\theta_{k+1
       num: '4.5',
       kind: 'Algorithm',
       name: 'Adaptive learning rates: AdaGrad, RMSProp, Adam',
-      statement: String.raw`All three rescale each coordinate of the gradient $g_k$ by a running estimate of its size. With $\odot$ elementwise:
-- **AdaGrad:** $G_k=G_{k-1}+g_k\odot g_k$, $\ \theta_{k+1}=\theta_k-\eta\,g_k/(\sqrt{G_k}+\epsilon)$ (the accumulator never decreases, so its coordinatewise rate prefactors do not increase).
-- **RMSProp:** $s_k=\rho s_{k-1}+(1-\rho)g_k\odot g_k$, $\ \theta_{k+1}=\theta_k-\eta\,g_k/(\sqrt{s_k}+\epsilon)$ (an exponential average).
-- **Adam:** $m_k=\beta_1m_{k-1}+(1-\beta_1)g_k$, $\ s_k=\beta_2s_{k-1}+(1-\beta_2)g_k\odot g_k$, and $\theta_{k+1}=\theta_k-\eta\,\hat m_k/(\sqrt{\hat s_k}+\epsilon)$ with the **bias corrections** $\hat m_k=m_k/(1-\beta_1^k)$, $\hat s_k=s_k/(1-\beta_2^k)$ (starting from $m_0=s_0=0$).
-These normalizations reduce sensitivity to a uniform rescaling of a coordinate's gradient history when $\epsilon$ is negligible. The actual step still depends on the history; AdaGrad's accumulated denominator can grow, and Adam's momentum can differ greatly from the current gradient.`,
-      idea: String.raw`Coordinates with large gradients (steep directions) get small effective rates and those with small gradients get large ones, a cheap diagonal preconditioner that makes progress even when curvatures differ by orders of magnitude. AdaGrad (Duchi–Hazan–Singer) comes from online convex optimization; RMSProp replaces its sum by a moving average, which does not force the accumulator to grow; Adam adds momentum on the gradient. Because $m$ and $s$ start at zero they are biased toward zero early on, and the corrections remove the zero-initialization weight deficit (giving unbiased moment estimates when those moments are stationary). With $\beta_1=0.9$,$\beta_2=0.999$ and negligible $\epsilon$, the first step without correction is $\eta\,(1-\beta_1)g/\sqrt{(1-\beta_2)g^2}\approx3.2\,\eta$, more than three times the intended size.`,
-      caption: String.raw`The loss $f=\tfrac12(ax^2+y^2)$ with a large ratio $a$ between the coordinates' curvatures, from $(1,1)$. Left: paths of gradient descent (step $0.9/a$), AdaGrad, RMSProp and Adam (dashed: without bias correction) at the common rate $\eta$. Middle: loss against steps. Right: the effective per-coordinate rate $|\Delta\theta_i/g_i|$ of the chosen method for the steep ($x$) and flat ($y$) coordinates. Toggle the correction and read off the size of Adam's first step.`,
+      statement: String.raw`Use $t=1,2,\ldots$, $g_t=\nabla f(\theta_{t-1})$, zero initial accumulators, and elementwise operations:
+- **AdaGrad:** $G_t=G_{t-1}+g_t\odot g_t$, $\theta_t=\theta_{t-1}-\eta g_t/(\sqrt{G_t}+\epsilon)$.
+- **RMSProp:** $s_t=\rho s_{t-1}+(1-\rho)g_t\odot g_t$, $\theta_t=\theta_{t-1}-\eta g_t/(\sqrt{s_t}+\epsilon)$.
+- **Adam:** $m_t=\beta_1m_{t-1}+(1-\beta_1)g_t$, $s_t=\beta_2s_{t-1}+(1-\beta_2)g_t\odot g_t$, $\hat m_t=m_t/(1-\beta_1^t)$, $\hat s_t=s_t/(1-\beta_2^t)$, and $\theta_t=\theta_{t-1}-\eta\hat m_t/(\sqrt{\hat s_t}+\epsilon)$.
+The positive diagonal multiplier $\eta/(\sqrt{s}+\epsilon)$ rescales a gradient (AdaGrad/RMSProp) or corrected momentum (Adam). AdaGrad's multiplier never increases, but its actual step need not decrease.`,
+      idea: String.raw`Accumulating squared gradients adapts a separate multiplier to each coordinate; RMSProp forgets old squares and Adam also smooths the gradient. The bias-correction factors normalize the geometric averaging weights to sum to one. They give unbiased estimates of stationary first/second moments; a changing gradient distribution need not be unbiased (Adam §3). For a constant nonzero gradient and negligible $\epsilon$, AdaGrad's step is $\eta/\sqrt t$, RMSProp's first step is $\eta/\sqrt{0.1}$, and corrected Adam's first step is $\eta$ per coordinate. Without corrections, Adam's first step is $\eta(1-\beta_1)/\sqrt{1-\beta_2}\approx3.16\eta$ for $(\beta_1,\beta_2)=(0.9,0.999)$. These are examples, not bounds on all subsequent steps.`,
+      caption: String.raw`Run 100 steps on $f=\tfrac12(ax^2+y^2)$ from $(1,1)$. Left: paths in a fixed, clipped weight window; GD uses $0.9/a$ and the adaptive methods use $\eta$. Middle: loss relative to its initial value (display floor $10^{-16}$). Right: the chosen method's **diagonal multiplier**, not $|\Delta\theta_i/g_i|$: Adam can move from momentum even when the current gradient is zero. Both log panels fit all displayed values; the red dashed line is GD's multiplier.`,
       deps: ['opt-7.10', 'deep-4.4'],
-      refs: ['Duchi, Hazan and Singer 2011, §1.1 diagonal update (1), pp. 2122–2123, https://www.jmlr.org/papers/volume12/duchi11a/duchi11a.pdf', 'Hinton, lecture 6, slide rmsprop: Divide the gradient by a running average of its recent magnitude, https://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf', 'Kingma and Ba, Adam, arXiv 1412.6980, Algorithm 1 and §§2–3 pp. 2–3; RMSProp attribution in bibliography'],
+      refs: ['Duchi–Hazan–Singer (2011), §3 Fig. 1', 'Tieleman–Hinton lecture 6, slide 29', 'Kingma–Ba, Algorithm 1 and §3'],
       tags: ['adaptive step size', 'Adam', 'preconditioning'],
-      credit: 'Duchi, Hazan & Singer 2011 (AdaGrad); Tieleman & Hinton 2012 (RMSProp lecture); Kingma & Ba 2014 (Adam)',
-      scope: String.raw`Exact formulas are the textbook versions with $\epsilon=10^{-8}$; These are update rules, not a convergence guarantee; the RMSProp source is a lecture slide.`,
+      credit: 'Duchi, Hazan & Singer, 2011; Tieleman & Hinton, 2012 lecture; Kingma & Ba, 2014 preprint / ICLR 2015',
+      scope: String.raw`Unconstrained diagonal AdaGrad and the lecture's RMSProp exponential average, with the explicit stabilizer $\epsilon=10^{-8}$ outside the square root. Here $\rho=0.9$, $\beta_1=0.9$, $\beta_2=0.999$. These quadratic runs establish no general convergence guarantee; Reddi–Kale–Kumar (ICLR 2018), Theorem 1, gives an online convex counterexample to Adam's general convergence claim.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam', arxiv: 'https://arxiv.org/abs/1412.6980' },
       viz(v) {
-        const aS = v.slider('curvature ratio $a$', 1, 400, 50, { log: true, sig: 2 });
-        const lr = v.slider('rate $\\eta$', 0.01, 0.5, 0.1, { log: true, sig: 2 });
-        const bc = v.toggle('Adam bias correction', true);
-        const which = v.select('effective rate of', [{ value: 'ada', label: 'AdaGrad' }, { value: 'rms', label: 'RMSProp' }, { value: 'adam', label: 'Adam' }], 'adam');
-        const N = 100;
-        const sP = v.stage({ x: [-0.3, 1.2], y: [-0.3, 1.2], equal: true, height: 300, axes: 'box', gutter: true, xlabel: '$x$ (curvature $a$)', ylabel: '$y$ (curvature 1)', weight: 1, minWidth: 250, title: 'paths' });
-        const sF = v.stage({ x: [0, N], y: [-9.5, 0.7], height: 300, axes: 'box', gutter: true, xlabel: 'step $k$', ylabel: '$\\log_{10}(f/f_0)$', weight: 1, minWidth: 250, title: 'loss' });
-        const sE = v.stage({ x: [1, N], y: [-3.5, 1.2], height: 300, axes: 'box', gutter: true, xlabel: 'step $k$', ylabel: '$\\log_{10}$ effective rate', weight: 1, minWidth: 250, title: 'per-coordinate rates' });
-        sF.setTicks(undefined, log10Ticks(-9, 0, 2)); sE.setTicks(undefined, log10Ticks(-3, 1, 1));
-        let info = null;
-        v.render(() => {
-          const a = aS.value, eta = lr.value;
-          const R = { gd: sim(a, eta, 'gd'), ada: sim(a, eta, 'ada'), rms: sim(a, eta, 'rms'), adam: sim(a, eta, 'adam', bc.value), adamNo: sim(a, eta, 'adam', false), adamYes: sim(a, eta, 'adam', true) };
-          sP.contour((x, y) => 0.5 * (a * x * x + y * y), levels(0.5 * (a * 0.5 * 0.5 + 1), 8), { color: 'muted', width: 0.8, alpha: 0.5, res: 120 });
-          const cols = { gd: 'red', ada: 'teal', rms: 'purple', adam: 'accent' };
-          sP.clip(() => { for (const k of ['gd', 'ada', 'rms']) sP.path(R[k].pts, { color: cols[k], width: 1.5 }); sP.path(R.adam.pts, { color: 'accent', width: 1.8, dash: !bc.value }); });
-          sP.dot(1, 1, { r: 5, color: 'gold', label: '$\\theta_0$', labelPos: 'ne' }); sP.dot(0, 0, { r: 3.5, color: 'green' });
-          for (const k of ['gd', 'ada', 'rms', 'adam']) sF.path(R[k].f.map((x, i) => [i, lg(x, -12)]), { color: cols[k], width: 2, dash: k === 'adam' && !bc.value });
-          sF.hline(-8, { color: 'faint', dash: true });
-          const E = R[which.value === 'ada' ? 'ada' : which.value === 'rms' ? 'rms' : 'adam'].re;
-          sE.path(E.map((r, i) => [i + 1, lg(r[0], -12)]), { color: 'orange', width: 2 });
-          sE.path(E.map((r, i) => [i + 1, lg(r[1], -12)]), { color: 'pink', width: 2 });
-          sE.hline(Math.log10(0.9 / a), { color: 'red', dash: true, width: 1 });
-          info = { first: R.adamNo.first, firstC: R.adamYes.first, eta, fx: R.gd.f[N], fa: R.ada.f[N], fr: R.rms.f[N], fd: R.adam.f[N] };
+        const aS=v.slider('curvature ratio $a$',1,400,50,{log:true,sig:2}),lr=v.slider('rate $\\eta$',.01,.5,.1,{log:true,sig:2}),bc=v.toggle('Adam bias correction',true);
+        const which=v.select('diagonal multiplier of',[{value:'ada',label:'AdaGrad'},{value:'rms',label:'RMSProp'},{value:'adam',label:'Adam'}],'adam'),N=100;
+        const sP=v.stage({x:[-.3,1.2],y:[-.3,1.2],equal:true,height:300,axes:'box',gutter:true,xlabel:'$x$ (curvature $a$)',ylabel:'$y$ (curvature 1)',weight:1,minWidth:250,title:'paths (clipped window)'});
+        const sF=v.stage({x:[0,N],y:[-16,1],height:300,axes:'box',gutter:true,xlabel:'step $t$',ylabel:'$f/f_0$ (log scale)',weight:1,minWidth:250,title:'relative loss'});
+        const sE=v.stage({x:[1,N],y:[-4,2],height:300,axes:'box',gutter:true,xlabel:'step $t$',ylabel:'diagonal multiplier (log scale)',weight:1,minWidth:250,title:'denominator scaling'});
+        let info=null;
+        v.render(()=>{
+          const a=aS.value,eta=lr.value,R={gd:quadraticRun(a,eta,'gd'),ada:quadraticRun(a,eta,'ada'),rms:quadraticRun(a,eta,'rms'),adam:quadraticRun(a,eta,'adam',bc.value),yes:quadraticRun(a,eta,'adam',true),no:quadraticRun(a,eta,'adam',false)},cols={gd:'red',ada:'teal',rms:'purple',adam:'accent'};
+          sP.contour((x,y)=>.5*(a*x*x+y*y),levels(.5*(a*.25+1),8),{color:'muted',width:.8,alpha:.5,res:120});
+          sP.clip(()=>{for(const k of ['gd','ada','rms','adam'])sP.path(R[k].pts,{color:cols[k],width:k==='adam'?1.8:1.5,dash:k==='adam'&&!bc.value});});
+          sP.dot(1,1,{r:5,color:'gold',label:'$\\theta_0$',labelPos:'ne'});sP.dot(0,0,{r:3.5,color:'green'});
+          const fy=logRange(['gd','ada','rms','adam'].flatMap(k=>R[k].f));sF.setView([0,N],fy);sF.setTicks(undefined,log10Ticks(Math.ceil(fy[0]),Math.floor(fy[1]),Math.max(1,Math.ceil((fy[1]-fy[0])/5))));
+          for(const k of ['gd','ada','rms','adam'])sF.path(R[k].f.map((x,i)=>[i,Math.log10(Math.max(1e-16,x))]),{color:cols[k],width:2,dash:k==='adam'&&!bc.value});
+          const E=R[which.value].re,ey=logRange([...E.flat(),.9/a]);sE.setView([1,N],ey);sE.setTicks(undefined,log10Ticks(Math.ceil(ey[0]),Math.floor(ey[1]),Math.max(1,Math.ceil((ey[1]-ey[0])/5))));
+          for(let j=0;j<2;j++)sE.path(E.map((r,i)=>[i+1,Math.log10(r[j])]),{color:j?'pink':'orange',width:2});sE.hline(Math.log10(.9/a),{color:'red',dash:true,width:1});
+          info={R,eta};
         });
-        v.legend([['red', 'gradient descent'], ['teal', 'AdaGrad'], ['purple', 'RMSProp'], ['accent', 'Adam'], ['orange', 'rate for $x$ (steep)'], ['pink', 'rate for $y$ (flat)']]);
-        v.readout(() => info && String.raw`after 100 steps, $f/f_0$: GD $${v.sci(info.fx, 2)}$, AdaGrad $${v.sci(info.fa, 2)}$, RMSProp $${v.sci(info.fr, 2)}$, Adam $${v.sci(info.fd, 2)}$` + `\n` +
-          String.raw`Adam's first step has length **${v.fix(info.firstC, 3)}** with correction ($\approx\eta=${v.fix(info.eta, 3)}$ per coordinate, so $\sqrt2\,\eta=${v.fix(Math.SQRT2 * info.eta, 3)}$) and **${v.fix(info.first, 3)}** without ($\approx\sqrt2\cdot3.16\,\eta$); the red dashed line in the right panel is GD's single rate $0.9/a$`);
+        v.legend([['red','GD'],['teal','AdaGrad'],['purple','RMSProp'],['accent','Adam'],['orange','multiplier for steep $x$'],['pink','multiplier for flat $y$']]);
+        v.readout(()=>info&&['gd','ada','rms','adam'].map(k=>String.raw`${k}: $f/f_0=${v.sci(info.R[k].f[N],2)}$`).join(' · ')+`\n`+String.raw`Adam first-step length: **${v.fix(info.R.yes.first,3)}** corrected, **${v.fix(info.R.no.first,3)}** uncorrected. Right panel shows the denominator multiplier; momentum correction follows the toggle.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.6

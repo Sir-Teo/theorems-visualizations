@@ -1,0 +1,7 @@
+# CAUSAL finite-design seam qualification
+
+Separate text-only successor to `e48c3a78986e17c057dcede3da2e42499acafa91`, addressing two precise independent peer-preparation findings. Exactly 2.9 and 2.5 statements change, recorded in `causal-finite-design-manifest.json`.
+
+The regression statement now says finite-sample bias can remain and the fitted regressions must exist, rather than asserting a uniform 1/N bias rate from generic asymptotic premises. The untouched runtime is not claimed to handle every singular finite covariate design. The blocking statement now says unequal block treatment probabilities **need not** give an unbiased plain contrast and that population weights avoid relying on special cancellations; constant potential outcomes can make an unweighted contrast correct even with unequal allocations.
+
+The explicit two-field guard passes all 48 full objects/functions/flags/helpers and whole syllabus against the immutable parent. The combined 48/96 full-list guard passes. Independent finite enumeration already demonstrates nonzero interacted-regression bias; the unequal-block example demonstrates plain contrast bias, while constant outcomes give the exception to a universal failure claim. No dependencies, model numbers/functions/controls or source flags change. Final strict/static/narrow-native verification belongs to the following equivalent-wrap boundary; no independent acceptance or source closure is claimed here.

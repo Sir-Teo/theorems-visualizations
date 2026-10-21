@@ -159,7 +159,7 @@ export default {
         { num: '3.22', kind: 'Proposition', name: 'Cancellation laws', deps: ['alg-3.21'], refs: ['Judson §3.2'],
           pic: 'Every row and column of a group table is a permutation; duplicating one entry by hand breaks cancellation and the table is flagged as no group.' },
         { num: '3.23', kind: 'Theorem', name: 'Laws of exponents', deps: ['alg-3.19', 'alg-2.1'], refs: ['Judson §3.2'],
-          pic: 'Step around the cycle of powers of g with sliders m and n: m steps then n steps lands on g^{m+n}, while (gh)ⁿ and gⁿhⁿ are compared in D₄, where they can differ.' },
+          pic: 'Step around the cycle of powers of g with sliders m and n: m steps then n steps lands on g^{m+n}, while (gh)ⁿ and gⁿhⁿ are compared in S₃, where they differ.' },
         { num: '3.23a', kind: 'Definition', name: 'Subgroup', deps: ['alg-3.7a'], refs: ['Judson §3.3'],
           pic: 'Click elements of a group to select a subset; its restricted Cayley table turns green only when it is closed and contains the identity and all inverses.' },
         { num: '3.28', kind: 'Concept', name: 'The Klein four-group versus ℤ₄', deps: ['alg-3.23a'], refs: ['Judson §3.3'],

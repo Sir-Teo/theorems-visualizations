@@ -1,9 +1,7 @@
 // Signals & Systems — Chapter 4: Fourier series (items 4.13–4.14)
 import { TAU, PI, WAVES, coefsOf, waveMenu, partial, zip, grid, powerOf, PI_TICKS } from './ch04.shared.js';
 
-const EULER = 0.5772156649015329;
-/** Harmonic number H_n (exact sum up to 2e6 terms, asymptotic beyond). */
-const harm = (n) => { if (n <= 2e6) { let s = 0; for (let k = n; k >= 1; k--) s += 1 / k; return s; } return Math.log(n) + EULER + 1 / (2 * n); };
+import { harmonic, divergenceBound, divergenceBlockPeak, divergenceAssemblyPeak } from './sig-source-audit.shared.js';
 
 export default {
   collection: 'sig',
@@ -17,14 +15,16 @@ export default {
       statement: String.raw`Continuity does not make a Fourier series converge. There is a continuous $2\pi$-periodic function $x$ whose partial sums $S_N(x)(0)$ are **unbounded** as $N\to\infty$, so the series diverges at $t=0$. In fact the quantity
 $$L_N=\frac1{2\pi}\int_{-\pi}^{\pi}|D_N(u)|\,du\ \ \sim\ \frac4{\pi^2}\ln N$$
 (the Lebesgue constant) is the norm of the map $x\mapsto S_N(x)(0)$ on continuous functions, and it tends to infinity. For comparison, Dirichlet's theorem (sig-4.3) gives convergence for piecewise-monotone signals, and the Fourier series of every continuous function does converge in mean square (sig-4.5).`,
-      idea: String.raw`Explicit construction in the style of Fejér. For integers $n<m$ put $P_{m,n}(t)=\sum_{k=1}^n\frac{\cos((m-k)t)-\cos((m+k)t)}{k}=2\sin(mt)\sum_{k=1}^n\frac{\sin kt}{k}$. The sums $\sum_{k\le n}\sin(kt)/k$ are bounded by $\operatorname{Si}(\pi)=1.852\ldots$ uniformly in $n$ and $t$, so $|P_{m,n}|\le3.71$ whatever $n$ and $m$ are, and $P_{m,n}(0)=0$. But its partial sum of degree $m$ keeps only the first cosines, $S_mP_{m,n}(0)=\sum_{k\le n}1/k=H_n\approx\ln n$. Now add blocks of rapidly separated frequencies with summable weights $x=\sum_j j^{-2}P_{m_j,n_j}$, $m_j=2n_j$, $n_j=2^{j^3}$: the sum converges uniformly (so $x$ is continuous), yet $S_{m_j}(x)(0)=H_{n_j}/j^2\ge j\ln2\to\infty$. The abstract reason is the Banach–Steinhaus theorem applied to $L_N\to\infty$ (rca-5.11 for this divergence application).`,
-      caption: String.raw`**Left, one block.** Choose the size $n$ of a block $P_{2n,n}$. Grey is the block itself (a trigonometric polynomial that never exceeds $3.71$, dashed red), blue is its partial sum of degree $m=2n$; at the origin the block is $0$ while its partial sum reaches $H_n\approx\ln n$, the gold point, and the peak of the blue curve keeps rising (slowly) as $n$ grows. **Right, the assembled function.** With weights $j^{-2}$ and block sizes $n_j=2^{j^3}$ the partial sum of degree $m_j$ at the origin is $H_{n_j}/j^2$ (blue bars, computed exactly for small $j$ and from $H_n=\ln n+\gamma+\frac1{2n}$ beyond), while $x$ itself is bounded by $2\operatorname{Si}(\pi)\sum j^{-2}<6.10$ (red line): the bars rise above any bound. (The blocks are far too large to draw beyond $j=2$; the numbers come from the exact identity above.)`,
+      idea: String.raw`Here is a construction using Fejér-weighted blocks. Put $a_{n,k}=1-k/(n+1)$ and
+$$P_{m,n}(t)=\sum_{k=1}^n\frac{a_{n,k}}k\big(\cos((m-k)t)-\cos((m+k)t)\big)=2\sin(mt)\sum_{k=1}^n\frac{a_{n,k}\sin kt}{k}.$$
+The sine sum is a Fejér mean of the bounded sawtooth $(\pi-t)/2$ on $(0,2\pi)$: positivity and unit mass of the Fejér kernel give $|P_{m,n}|\le\pi$. Also $P_{m,n}(0)=0$, but $S_mP_{m,n}(0)=H_n-n/(n+1)$. Take $n_j=2^{j^3}$, $m_j=2n_j$, and $x=\sum_{j\ge1}j^{-2}P_{m_j,n_j}$. The blocks have disjoint frequency intervals $[n_j,3n_j]$. Their uniform summable bound makes $x$ continuous with $\|x\|_\infty\le\pi^3/6$, while earlier blocks contribute zero at the origin and later blocks contribute no frequencies to $S_{m_j}$. Thus $S_{m_j}x(0)=(H_{n_j}-n_j/(n_j+1))/j^2\sim j\ln2$, which is unbounded. The abstract existence proof applies Banach–Steinhaus to the unbounded norms $L_N$.`,
+      caption: String.raw`**Left:** choose $n$ for one Fejér-weighted block $P_{2n,n}$. Grey is the complete block, bounded by $\pi$ (red dashed lines); blue keeps only its frequencies at most $2n$. At the origin the complete block is zero, while the gold partial-sum value is $H_n-n/(n+1)$. **Right:** the assembled continuous function is bounded by $\pi^3/6\approx5.168$ (red line), but its partial sums at the selected degrees grow without bound. Bars use the exact harmonic sum for $j=1,2$ and its stated asymptotic for larger $j$; they are evaluations of the identity, not a sampled rendering of those enormous-frequency blocks.`,
       deps: ['sig-4.3', 'rca-5.11'],
-      refs: ['Oppenheim–Willsky §3.4'],
+      refs: ['S. New, Lebesgue Integration and Fourier Analysis, §§5.30–5.41 (operator-norm proof and Fejér kernels)'],
       tags: ['divergence', 'Lebesgue constant'],
-      credit: 'du Bois-Reymond, 1873 (first example); the block construction is in the style of Fejér, 1910',
+      credit: 'Continuous divergence: du Bois-Reymond; the displayed construction uses Fejér-weighted blocks',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Convergence_of_Fourier_series' },
-      verify: true,
+      verify: false,
       viz(v) {
         const nsl = v.slider('block size $n$', 2, 600, 40, { log: true, int: true });
         const A = v.stage({ x: [-0.5, 0.5], y: [-4.5, 7.5], axes: 'box', gutter: true, xlabel: 't', height: 320, title: 'one block $P_{2n,n}$ and its partial sum $S_{2n}$' });
@@ -34,27 +34,29 @@ $$L_N=\frac1{2\pi}\int_{-\pi}^{\pi}|D_N(u)|\,du\ \ \sim\ \frac4{\pi^2}\ln N$$
           const n = nsl.value, m = 2 * n, w = Math.min(0.5, 8 / n), N = 1800;
           A.setView([-w, w], null);
           const ts = grid(-w, w, N), P = [], S = [];
-          let top = 0;
+          let top = PI, bottom = -PI;
           for (const t of ts) {
             let a = 0, c = 0;
-            for (let k = 1; k <= n; k++) { a += Math.sin(k * t) / k; c += Math.cos((m - k) * t) / k; }
-            P.push(2 * Math.sin(m * t) * a); S.push(c); top = Math.max(top, c);
+            for (let k = 1; k <= n; k++) { const weight = 1 - k / (n + 1); a += weight * Math.sin(k * t) / k; c += weight * Math.cos((m - k) * t) / k; }
+            const block = 2 * Math.sin(m * t) * a;
+            P.push(block); S.push(c); top = Math.max(top, c, block); bottom = Math.min(bottom, c, block);
           }
-          A.hline(3.704, { color: 'red', dash: true, alpha: 0.7 }); A.hline(-3.704, { color: 'red', dash: true, alpha: 0.7 }); A.hline(0, { color: 'faint', width: 1 });
+          A.setView(null, [bottom - 0.3, top + 0.3]);
+          A.hline(PI, { color: 'red', dash: true, alpha: 0.7 }); A.hline(-PI, { color: 'red', dash: true, alpha: 0.7 }); A.hline(0, { color: 'faint', width: 1 });
           A.path(zip(ts, P), { color: 'faint', width: 1.2 });
           A.path(zip(ts, S), { color: 'accent', width: 1.4 });
-          const Hn = harm(n);
-          A.dot(0, Hn, { r: 6, color: 'gold' }); A.dot(0, 0, { r: 4, hollow: true, color: 'ink' });
+          const Hn = harmonic(n), peak = divergenceBlockPeak(n);
+          A.dot(0, peak, { r: 6, color: 'gold' }); A.dot(0, 0, { r: 4, hollow: true, color: 'ink' });
           // assembled example
           const J = 14, bars = [];
-          for (let j = 1; j <= J; j++) bars.push((j <= 2 ? harm(Math.pow(2, j * j * j)) : j * j * j * Math.LN2 + EULER) / (j * j));
-          B.bars(bars, { x0: 1, color: (val, i) => (val > 6.10 ? 'red' : 'accent'), barWidth: 0.7 });
-          B.hline(6.10, { color: 'red', width: 1.8 });
-          B.text('bound on $\\|x\\|_\\infty$', 1, 6.5, { size: 12, color: 'red', align: 'left' });
-          info = { n, Hn, top, bars };
+          for (let j = 1; j <= J; j++) bars.push(divergenceAssemblyPeak(j));
+          B.bars(bars, { x0: 1, color: (val, i) => (val > divergenceBound ? 'red' : 'accent'), barWidth: 0.7 });
+          B.hline(divergenceBound, { color: 'red', width: 1.8 });
+          B.text('bound on $\\|x\\|_\\infty$', 1, divergenceBound + 0.4, { size: 12, color: 'red', align: 'left' });
+          info = { n, Hn, peak, top, bars };
         });
-        v.legend([['faint', 'block $P_{2n,n}$'], ['accent', 'partial sum $S_{2n}P$'], ['gold', '$S_{2n}P(0)=H_n$', { dot: true }]]);
-        v.readout(() => `$n=${info.n}$: $H_n=${v.fix(info.Hn, 3)}$ ($\\ln n+\\gamma=${v.fix(Math.log(info.n) + EULER, 3)}$), highest point of the partial sum on the window $${v.fix(info.top, 3)}$, while the block itself never exceeds $3.704$.\nAssembled function: $S_{m_j}(x)(0)=${info.bars.slice(0, 3).map((b) => v.fix(b, 2)).join(',\\ ')},\\ \\dots,\\ ${v.fix(info.bars[info.bars.length - 1], 2)}$ for $j=1,2,3,\\dots,${info.bars.length}$: it exceeds $6.10$ from $j=${info.bars.findIndex((b) => b > 6.10) + 1}$ on and keeps growing like $j\\ln2$.`);
+        v.legend([['faint', 'block $P_{2n,n}$'], ['accent', 'partial sum $S_{2n}P$'], ['gold', '$S_{2n}P(0)=H_n-n/(n+1)$', { dot: true }]]);
+        v.readout(() => `$n=${info.n}$: $H_n=${v.fix(info.Hn, 3)}$, $S_{2n}P(0)=H_n-n/(n+1)=${v.fix(info.peak, 3)}$, while $|P_{2n,n}|\\le\\pi$.\nAssembled function: $\\|x\\|_\\infty\\le\\pi^3/6=${v.fix(divergenceBound, 3)}$, but $S_{m_j}x(0)=${info.bars.slice(0, 3).map((b) => v.fix(b, 2)).join(',\\ ')},\\ \\dots,\\ ${v.fix(info.bars.at(-1), 2)}$ for $j=1,2,3,\\dots,${info.bars.length}$; it exceeds the bound from $j=${info.bars.findIndex((b) => b > divergenceBound) + 1}$ on and grows like $j\\ln2$.`);
       },
     },
     // ------------------------------------------------------------------ 4.14

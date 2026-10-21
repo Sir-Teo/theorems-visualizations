@@ -193,7 +193,7 @@ The set of alternating bilinear forms on $V$ is denoted $V^{(2)}_{\mathrm{alt}}$
       num: '9.16',
       kind: 'Theorem',
       name: 'Characterization of alternating bilinear forms',
-      statement: String.raw`Over a field of characteristic different from $2$ (in particular $\R$ or $\C$), a bilinear form $\alpha$ on $V$ is alternating if and only if
+      statement: String.raw`A bilinear form $\alpha$ on $V$ is alternating if and only if
 $$\alpha(u, w) = -\alpha(w, u) \qquad\text{for all } u, w \in V.$$`,
       idea: String.raw`If $\alpha$ is alternating, expand a vanishing value:
 $$0 = \alpha(u + w, u + w) = \alpha(u, u) + \alpha(u, w) + \alpha(w, u) + \alpha(w, w) = \alpha(u, w) + \alpha(w, u).$$

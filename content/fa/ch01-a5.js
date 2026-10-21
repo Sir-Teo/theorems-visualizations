@@ -200,12 +200,57 @@ export default {
     {
       num: '1.42',
       kind: 'Theorem',
+      name: 'Seminorms on quotient spaces',
+      statement: String.raw`Let $N$ be a subspace of a vector space $X$, $p$ a seminorm on $X$, and define
+$$q(\pi x)=\inf\{p(x+y):y\in N\}.$$
+Then $q$ is a well-defined seminorm on $X/N$, and $\{u\in X/N:q(u)<1\}=\pi(\{x\in X:p(x)<1\})$.`,
+      idea: String.raw`$q$ depends only on the coset, and its subadditivity comes from adding near-minimizers: $p(x+y_1)+p(x'+y_2)\ge p(x+x'+y_1+y_2)\ge q(\pi(x+x'))$. Homogeneity is clear. If $q(\pi x)<1$ some $x+y$ with $y\in N$ has $p<1$, so $\pi x=\pi(x+y)$ is the image of a point of the unit ball; the converse is immediate.`,
+      caption: String.raw`$X=\R^2$ with a norm $p$ (choose its unit ball), $N$ a line through $0$. Drag $x$: along the coset $x+N$ the point minimizing $p$ (green) realises $q(\pi x)$, and the dashed ball through it touches the coset. The shadow of the unit ball $\{p<1\}$ along $N$ (green bar on the quotient axis) is exactly $\{q<1\}$; $\pi x$ lies in it precisely when the coset meets the ball.`,
+      deps: ['fa-1.40', 'fa-1.34'],
+      verify: true,
+      tags: ['quotient spaces', 'seminorms'],
+      viz(v) {
+        const P = v.select('$p$', [{ value: 1, label: '$\\ell^1$' }, { value: 2, label: '$\\ell^2$' }, { value: Infinity, label: '$\\ell^\\infty$' }], 1);
+        const th = v.slider('angle of $N$', 0, 3.14, 0.45, { step: 0.01, fmt: (x) => `${Math.round(x * 180 / Math.PI)}°` });
+        const S = v.stage({ x: [-3, 3], y: [-2, 2], equal: true, height: 360, ticks: false });
+        const hx = S.handle(1.15, 1.15, { color: 'blue', label: 'x' });
+        let st = {};
+        v.render(() => {
+          const p = P.value, a = th.value, u = [Math.cos(a), Math.sin(a)], w = [-u[1], u[0]];
+          const ball = unitBall(p, 240);
+          S.line(-9 * u[0], -9 * u[1], 9 * u[0], 9 * u[1], { color: 'ink', width: 2 });
+          S.line(-9 * w[0], -9 * w[1], 9 * w[0], 9 * w[1], { color: 'green', width: 1.4, alpha: 0.7 });
+          S.poly(ball, { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 2 });
+          // shadow of the ball on X/N
+          const sh = ball.map(([x, y]) => x * w[0] + y * w[1]); const lo = Math.min(...sh), hi = Math.max(...sh);
+          S.line(lo * w[0], lo * w[1], hi * w[0], hi * w[1], { color: 'green', width: 6, cap: 'butt' });
+          // coset and minimiser
+          const f = (s) => pnorm(hx.x + s * u[0], hx.y + s * u[1], p);
+          let L = -8, H = 8; for (let i = 0; i < 80; i++) { const m1 = L + (H - L) / 3, m2 = H - (H - L) / 3; if (f(m1) < f(m2)) H = m2; else L = m1; }
+          const s0 = (L + H) / 2, q = f(s0), mpt = [hx.x + s0 * u[0], hx.y + s0 * u[1]];
+          S.line(hx.x - 9 * u[0], hx.y - 9 * u[1], hx.x + 9 * u[0], hx.y + 9 * u[1], { color: 'blue', width: 1.6 });
+          S.poly(ball.map(([x, y]) => [q * x, q * y]), { color: 'orange', width: 1.6, dash: [6, 4] });
+          S.dot(mpt[0], mpt[1], { color: 'green', r: 5.5, label: 'argmin p', labelPos: 'se', math: false, labelSize: 12 });
+          const t = hx.x * w[0] + hx.y * w[1];
+          S.dot(t * w[0], t * w[1], { color: 'blue', r: 4.5, label: 'πx', labelPos: 'w' });
+          S.tex('x+N', hx.x - 1.7 * u[0], hx.y - 1.7 * u[1], { color: 'blue', dy: -14, size: 14 });
+          S.dot(0, 0, { color: 'ink', r: 2.5 });
+          st = { q, px: pnorm(hx.x, hx.y, p), inside: q < 1 };
+        });
+        v.legend([['accent', '$\\{p<1\\}$', { area: true }], ['orange', 'ball of radius $q(\\pi x)$', { dash: true }], ['green', '$\\{q<1\\}=\\pi\\{p<1\\}$']]);
+        v.readout(() => `$p(x) = ${v.fix(st.px, 3)}$, $\\;q(\\pi x) = \\min_{y\\in N}p(x+y) = ${v.fix(st.q, 3)}$ — ` + (st.inside ? 'the coset meets the unit ball, and $\\pi x$ lies in the green bar.' : 'the coset misses the unit ball, and $\\pi x$ lies outside the green bar.'));
+      },
+    },
+    // ------------------------------------------------------------------ 1.43
+    {
+      num: '1.43',
+      kind: 'Theorem',
       name: 'Closed plus finite-dimensional is closed',
       statement: String.raw`Let $N$ and $F$ be subspaces of a topological vector space $X$. If $N$ is closed and $F$ has finite dimension, then $N+F$ is closed.`,
       idea: String.raw`Let $\pi:X\to X/N$ be the quotient map; $X/N$ is a TVS because $N$ is closed (1.41). The image $\pi(F)$ is a finite-dimensional subspace of $X/N$, hence closed (1.21). Since $\pi$ is continuous, $N+F=\pi^{-1}(\pi(F))$ is closed.`,
       caption: String.raw`In $X=\ell^2$ let $N$ be the closed span of the even basis vectors $e_2,e_4,\dots$ (blue outlines). With an infinite-dimensional closed $M=\overline{\operatorname{span}}\{e_{2n}+e_{2n+1}/n\}$ the sum fails: $y_k=\sum_{n\le k}\big[(e_{2n}+\tfrac{e_{2n+1}}n)-e_{2n}\big]\in N+M$ converges to $y=\sum e_{2n+1}/n$, yet the two pieces have norms $\sim\sqrt k$ and $y\notin N+M$. With a one-dimensional $F$ the pieces of a convergent sequence $z_k=a_k+t_kf$ stay bounded and converge, as the quotient argument predicts.`,
       deps: ['fa-1.41', 'fa-1.21'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.42, pp. 32'],
+      verify: true,
       tags: ['closed subspaces', 'quotient spaces', 'finite dimension'],
       viz(v) {
         const mode = v.select('second summand', [{ value: 'M', label: 'infinite-dim. $M$' }, { value: 'F', label: '$F=\\operatorname{span}\\{f\\}$' }], 'M');
@@ -249,35 +294,6 @@ export default {
           if (s.isM) return `$\\|y-y_{${s.k}}\\| = ${v.fix(s.err, 3)}\\to0$, while the pieces have norms $${v.fix(s.na, 2)}$ and $${v.fix(s.nb, 2)}$ (both $\\sim\\sqrt k$). Writing $y=a+b$ with $b=\\sum\\beta_n(e_{2n}+e_{2n+1}/n)$ forces $\\beta_n=1$, which is not in $\\ell^2$: $y\\in\\overline{N+M}\\setminus(N+M)$.`;
           return `$\\|z-z_{${s.k}}\\| = ${v.fix(s.err, 3)}\\to0$ and the pieces converge (norms $${v.fix(s.na, 3)}$ and $${v.fix(s.nb, 3)}$): the limit $\\sum e_{2n}/n + f$ lies in $N+F$.`;
         });
-      },
-    },
-    {
-      num: '1.43',
-      kind: 'Proposition',
-      name: 'A seminorm becomes a norm modulo its kernel',
-      statement: String.raw`Let $p$ be a seminorm on a vector space $X$, set $N=\{x:p(x)=0\}$, and let $\pi:X\to X/N$ be the quotient map. The formula $\bar p(\pi x)=p(x)$ is well defined and defines a norm on $X/N$. In particular, measurable functions with finite $L^r$ seminorm, $1\le r<\infty$, become a normed space after identifying functions equal almost everywhere.`,
-      idea: String.raw`The seminorm inequality gives $|p(x)-p(y)|\le p(x-y)$. Thus representatives of one coset have equal seminorm. Homogeneity and the triangle inequality pass to cosets, and $\bar p(\pi x)=0$ forces $x\in N$, so the only zero-norm coset is the origin.`,
-      caption: String.raw`Here $p(x)=|w\cdot x|$ on $\R^2$ and $N=w^\perp$. Rotate the kernel and drag $x$. The whole blue coset $x+N$ has one seminorm value; its green projection onto the quotient axis has norm $|w\cdot x|$. A point can have $p(x)=0$ without being zero in $X$, but then its coset is exactly the zero vector of $X/N$.`,
-      deps: ['fa-1.40', 'fa-1.34'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.43, pp. 32–33'],
-      tags: ['quotient spaces', 'seminorms', 'norms'],
-      viz(v) {
-        const th = v.slider('angle of kernel $N$', 0, Math.PI, .45, { step: .01 });
-        const S = v.stage({ x: [-3, 3], y: [-2, 2], equal: true, height: 360, ticks: false });
-        const hx = S.handle(1.15, 1.15, { color: 'blue', label: 'x' });
-        let st = {};
-        v.render(() => {
-          const u = [Math.cos(th.value), Math.sin(th.value)], w = [-u[1], u[0]], t = hx.x * w[0] + hx.y * w[1];
-          S.poly([[-8*u[0]-w[0],-8*u[1]-w[1]], [8*u[0]-w[0],8*u[1]-w[1]], [8*u[0]+w[0],8*u[1]+w[1]], [-8*u[0]+w[0],-8*u[1]+w[1]]], { fill: 'accent', fillAlpha: .12, color: 'accent', width: 1 });
-          S.line(-8*u[0],-8*u[1],8*u[0],8*u[1], { color: 'ink', width: 2 });
-          S.line(-8*w[0],-8*w[1],8*w[0],8*w[1], { color: 'green', width: 1 });
-          S.line(hx.x-8*u[0],hx.y-8*u[1],hx.x+8*u[0],hx.y+8*u[1], { color: 'blue', width: 2 });
-          S.line(-w[0],-w[1],w[0],w[1], { color: 'green', width: 6 });
-          S.dot(t*w[0],t*w[1], { color: 'gold', r: 6, label: 'πx' });
-          S.dot(0,0,{color:'ink',r:3}); st={t,p:Math.abs(t)};
-        });
-        v.legend([['accent', '$\\{p<1\\}$', { area: true }], ['blue', 'coset $x+N$'], ['green', 'quotient unit ball']]);
-        v.readout(() => `$\\bar p(\\pi x)=p(x)=|w\\cdot x|=${v.fix(st.p,3)}$: changing the representative along the blue coset preserves this value.`);
       },
     },
   ],

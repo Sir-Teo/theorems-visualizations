@@ -187,6 +187,7 @@ $$\dim\mathcal L(V,W)=(\dim V)(\dim W).$$`,
       caption: String.raw`Choose $\dim V$ and $\dim W$. Click a cell of the grid to see the elementary map $E_{j,k}$: a single arrow $v_k\to w_j$, every other basis vector going to $0$. Switch to a general $T$ (or press Resample): its arrows are weighted by the matrix entries, and it decomposes as $\sum a_{j,k}E_{j,k}$ — the coefficients are computed by solving a linear system, and they are exactly the entries.`,
       deps: ['ladr-3.71', 'ladr-3.70', 'ladr-3.40'],
       tags: ['linear maps', 'dimension'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const n = v.slider(String.raw`$n=\dim V$`, 1, 4, 3, { int: true });
@@ -229,7 +230,7 @@ $$\dim\mathcal L(V,W)=(\dim V)(\dim W).$$`,
           if (!info) return '';
           const { N, Mm, rank, res, E } = info;
           return String.raw`$\dim\mathcal L(V,W)=(\dim V)(\dim W)=${N}\cdot${Mm}=${N * Mm}$: the ${N * Mm} maps $E_{j,k}$ are linearly independent (rank of their matrices, flattened: ${rank}) and span. ` +
-            (E ? String.raw`$E_{${sel[0] + 1},${sel[1] + 1}}$ sends $v_{${sel[1] + 1}}\mapsto w_{${sel[0] + 1}}$ and the other $v_i\mapsto 0$.` : String.raw`$T=\sum a_{j,k}E_{j,k}$ with coefficients = matrix entries (largest discrepancy $${v.sci(res + 1e-17, 1)}$).`);
+            (E ? String.raw`$E_{${sel[0] + 1},${sel[1] + 1}}$ sends $v_{${sel[1] + 1}}\mapsto w_{${sel[0] + 1}}$ and the other $v_i\mapsto 0$.` : String.raw`$T=\sum a_{j,k}E_{j,k}$ with coefficients = matrix entries (largest discrepancy $${v.sci(res + 1e-17, 1)}$$).`);
         });
       },
     },
@@ -337,7 +338,7 @@ $$\mathcal M(T)_{\cdot,k}=\mathcal M(Tv_k).$$`,
       statement: String.raw`Suppose $T\in\mathcal L(V,W)$ and $v\in V$. If $v_1,\dots,v_n$ is a basis of $V$ and $w_1,\dots,w_m$ is a basis of $W$, then
 $$\mathcal M(Tv)=\mathcal M(T)\,\mathcal M(v).$$`,
       idea: String.raw`Write $v=b_1v_1+\cdots+b_nv_n$. Linearity gives $Tv=b_1Tv_1+\cdots+b_nTv_n$, and taking matrices (which is linear) gives $\mathcal M(Tv)=b_1\mathcal M(Tv_1)+\cdots+b_n\mathcal M(Tv_n)$. By 3.75 the $\mathcal M(Tv_k)$ are the columns of $\mathcal M(T)$, and a linear combination of columns with coefficients $b_k$ is exactly the product $\mathcal M(T)\mathcal M(v)$ (3.50).`,
-      caption: String.raw`Left: the domain with basis $v_1,v_2$ and its grid; drag $x$ (gold) and the basis vectors. Right: the codomain with basis $w_1,w_2$ (drag them too) and $Tx$ (green). The orange–pink steps on the right are drawn from the product $\mathcal M(T)\mathcal M(x)$ alone — and they land on $Tx$ while both pairs are accepted as bases. The numerical display withholds coordinates for parallel or nearly parallel pairs; the theorem itself requires genuine bases.`,
+      caption: String.raw`Left: the domain with basis $v_1,v_2$ and its grid; drag $x$ (gold) and the basis vectors. Right: the codomain with basis $w_1,w_2$ (drag them too) and $Tx$ (green). The orange–pink steps on the right are drawn from the product $\mathcal M(T)\mathcal M(x)$ alone — and they always land exactly on $Tx$.`,
       deps: ['ladr-3.75', 'ladr-3.50', 'ladr-3.73'],
       tags: ['matrices'],
       viz(v) {
@@ -360,13 +361,13 @@ $$\mathcal M(Tv)=\mathcal M(T)\,\mathcal M(v).$$`,
             sV.tex(String.raw`\mathcal M(x)=${bc(mx)}`, sV.bounds.x[0], -2.4, { align: 'left', baseline: 'bottom', size: 15, color: 'ink', dx: 8, dy: -6 });
             sW.tex(String.raw`\mathcal M(T)\mathcal M(x)=${bc(prod)}`, sW.bounds.x[0], -2.4, { align: 'left', baseline: 'bottom', size: 15, color: 'ink', dx: 8, dy: -6 });
             st = { MT, mx, prod, mTx };
-          } else { st = null; sW.corner('basis too close to singular', 'tl', { color: 'red', weight: 600 }); }
+          } else { st = null; sW.corner('not a basis', 'tl', { color: 'red', weight: 600 }); }
           arr(sV, V1, 'blue', null); arr(sV, V2, 'teal', null); arr(sW, W1, 'orange', null); arr(sW, W2, 'pink', null);
           sV.arrow(0, 0, X[0], X[1], { color: 'gold', width: 2.4 });
           arr(sW, Tx, 'green', 'Tx', { width: 2.4 }); sW.dot(Tx[0], Tx[1], { r: 4, color: 'green' });
         });
         v.readout(() => {
-          if (!st) return 'Choose well-separated basis vectors: this numerical display rejects parallel or nearly parallel pairs.';
+          if (!st) return 'Choose bases (the basis vectors must not be parallel).';
           const { MT, mx, prod, mTx } = st;
           return String.raw`$\mathcal M(T)\,\mathcal M(x)=${bm(MT)}${bc(mx)}=${bc(prod)}$, and solving $Tx=c_1w_1+c_2w_2$ directly gives $\mathcal M(Tx)=${bc(mTx)}$ — the same column.`;
         });

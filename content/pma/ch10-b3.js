@@ -132,7 +132,7 @@ When $E$ is $\mathscr{C}''$-equivalent to a convex set, these are the only obstr
       deps: ['pma-10.42', 'pma-10.20', 'pma-10.39', 'pma-10.40'],
       see: ['rca-10.10'],
       tags: ['vector analysis', 'closed forms'],
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 10.43 and proof, pp. 281–282'],
+      verify: true,
       viz(v) {
         const CASES = {
           a: { label: '(a) $F=\\nabla u$', F: (p) => [Math.cos(p[0]) * p[1] + p[2], Math.sin(p[0]), p[0]], kind: 'loop', test: 'curl' },

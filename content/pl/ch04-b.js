@@ -70,14 +70,16 @@ export default {
     // ------------------------------------------------------------------ 4.7
     {
       num: '4.7', kind: 'Definition', name: 'Simply typed λ-calculus',
-      statement: String.raw`**Types** are built from base types and arrows: $T ::= \mathsf{Bool}\mid\mathsf{Nat}\mid T\to T$ (the arrow associates to the right). **Terms** are the variables, abstractions $\lambda x{:}T.\,t$ (the binder carries its type), applications $t\,t$, and the constants and operators of 4.1. A **context** $\Gamma$ is a finite list of bindings $x{:}T$. The typing relation $\Gamma\vdash t:T$ has the rules of 4.1 (with $\Gamma$ carried along) and
+      statement: String.raw`**Types** are built from base types and arrows: $T ::= \mathsf{Bool}\mid\mathsf{Nat}\mid T\to T$ (the arrow associates to the right). **Terms** are the variables, abstractions $\lambda x{:}T.\,t$ (the binder carries its type), applications $t\,t$, and the constants and operators of 4.1. A **context** $\Gamma$ is a finite list of bindings $x{:}T$. We use an ordered binding stack: a new binder shadows an earlier binding of the same name. This implements the usual distinct-name context convention up to α-renaming. The typing relation $\Gamma\vdash t:T$ has the rules of 4.1 (with $\Gamma$ carried along) and
 - T-Var: if $x{:}T\in\Gamma$ then $\Gamma\vdash x:T$ (the rightmost binding of $x$ wins);
 - T-Abs: if $\Gamma,x{:}T_1\vdash t_2:T_2$ then $\Gamma\vdash\lambda x{:}T_1.\,t_2:T_1\to T_2$;
 - T-App: if $\Gamma\vdash t_1:T_1\to T_2$ and $\Gamma\vdash t_2:T_1$ then $\Gamma\vdash t_1\,t_2:T_2$.`,
-      idea: String.raw`Functions get arrow types and the context records what each free variable is assumed to be. Crossing a $\lambda$ adds one assumption to $\Gamma$ for the body, so $\Gamma$ grows as the derivation climbs through binders and shrinks again at their conclusion; this is why the same variable name can have different types in different parts of a term. The rules are still syntax-directed: one rule per term constructor. The calculus is the typed counterpart of the untyped $\lambda$-calculus of chapter 2, and is the core of every typed functional language.`,
+      idea: String.raw`Functions get arrow types and the context records what each free variable is assumed to be. Crossing a $\lambda$ adds one assumption to $\Gamma$ for the body, so $\Gamma$ grows as the derivation climbs through binders and shrinks again at their conclusion; this is why the same variable name can have different types in different parts of a term. The rules are still syntax-directed: one rule per term constructor. The calculus is the typed counterpart of the untyped $\lambda$-calculus of chapter 2, and is the core of every typed functional language.
+
+In the pure arrow fragment, without the data primitives, these rules also have a precise one-way implication reading. Regard base types as propositional atoms and the types in the context as fixed background assumptions, renaming binders fresh first. T-Var is an assumption and T-App is modus ponens. For T-Abs, the deduction theorem (LOGIC 4.2) discharges the extra domain assumption while leaving the background fixed, producing the arrow from domain to codomain. This explains the assumption added and discharged at an abstraction. It does not identify every classical derivation with a term of this calculus, interpret the data constants as logical axioms, or prove normalization from the deduction theorem.`,
       caption: String.raw`Type a term (write $\lambda x{:}\mathsf{Nat}.\ t$, types $\mathsf{Nat}\to\mathsf{Nat}$ with an arrow or “->”) or choose an example. Every node of the derivation shows its own context $\Gamma$ before the turnstile; click a node to see its context as chips and the rule. Ill-typed terms mark the node where a rule fails.`,
-      deps: ['pl-2.4', 'pl-4.1'], refs: ['Selinger §6.1, Table 4, pp. 46–48', 'Pierce §9.1', 'Pierce §9.2'], sourceUrl: 'https://www.mathstat.dal.ca/~selinger/papers/lambdanotes.pdf', tags: ['lambda calculus', 'typing'],
-      credit: 'Presentation: P. Selinger, Lecture Notes on the Lambda Calculus, §6.1, pp. 46–48; the primitive Bool/Nat operations are those of 4.1',
+      deps: ['pl-2.4', 'pl-4.1', 'logic-4.2'], refs: ['Selinger §6.1, pp.46–48, Table4'], tags: ['lambda calculus', 'typing'],
+      credit: 'Arrow-fragment presentation follows Selinger §6.1, Table4; Bool/Nat primitives follow the chapter’s explicitly defined language',
       viz(v) {
         const sD = pxStage(v, { height: 260, full: true, title: 'Typing derivation' });
         const sG = pxStage(v, { height: 108, full: true, title: 'Context and rule of the selected node' });
@@ -114,9 +116,11 @@ export default {
     {
       num: '4.8', kind: 'Theorem', name: 'Uniqueness of types and type checking',
       statement: String.raw`In the simply typed $\lambda$-calculus every term has **at most one type** in a given context: if $\Gamma\vdash t:T$ and $\Gamma\vdash t:T'$ then $T=T'$. Moreover the type is computed by a terminating recursive procedure that goes bottom-up: a variable looks itself up in $\Gamma$; $\lambda x{:}T_1.t_2$ computes the type $T_2$ of $t_2$ in $\Gamma,x{:}T_1$ and returns $T_1\to T_2$; an application computes the types of both parts and succeeds if the first is an arrow whose domain equals the second. Hence typability is decidable. The uniqueness uses the annotations on binders; without them a term such as $\lambda x.\,x$ has infinitely many types.`,
-      idea: String.raw`The rules are syntax-directed (inversion, 4.2, for $\lambda$-terms): the last rule of any derivation is determined by the outermost constructor, and its premises are about the immediate subterms. By induction on $t$ the type of each subterm is therefore forced, so the type of $t$ is forced, and the checking procedure is just this induction run as a program, with a clause that fails where the rule's side condition fails. The annotation $\lambda x{:}T_1$ is what removes the only choice; the unannotated (Curry-style) calculus has principal types instead of unique ones.`,
-      caption: String.raw`Edit the term and step through the checker with the slider: nodes are visited children-first and each shows the type it returns. A failing node (red) stops the walk with the mismatch. Below the tree, the second panel tests candidate types for the annotated term (at most one passes; an ill-typed term has none). With annotations erased it shows the principal type and sampled instances: a type variable in the principal type allows infinitely many instances, while a ground principal type has only one.`,
-      deps: ['pl-4.7'], refs: ['Pierce §9.3'], tags: ['type checking', 'uniqueness'],
+      idea: String.raw`The rules are syntax-directed (inversion, 4.2, for $\lambda$-terms): the last rule of any derivation is determined by the outermost constructor, and its premises are about the immediate subterms. By induction on $t$ the type of each subterm is therefore forced, so the type of $t$ is forced, and the checking procedure is just this induction run as a program, with a clause that fails where the rule's side condition fails. The annotation $\lambda x{:}T_1$ is what removes the only choice; the unannotated (Curry-style) calculus has principal types instead of unique ones.
+
+Unique readability (LOGIC 2.1), restricted to base symbols and a fully parenthesized binary arrow constructor, supplies the type comparison used here: a base type is not an arrow, and equality of two arrows forces equality of their ordered domain and codomain subtrees. Thus an application cannot select a second decomposition of its function type, and an annotated abstraction fixes its domain before the induction computes its codomain. This uses finite simple type syntax with fixed annotations; it does not give unique types for unannotated terms or recursive type equations.`,
+      caption: String.raw`Edit the term and step through the checker with the slider: nodes are visited children-first and each shows the type it returns. A failing node (red) stops the walk with the mismatch. Below the tree, the second panel tests every candidate type for the annotated term (exactly one passes) and, with annotations erased, lists the many types the bare term can be given.`,
+      deps: ['pl-4.7', 'logic-2.1'], refs: ['Pierce §9.3'], tags: ['type checking', 'uniqueness'],
       viz(v) {
         const sT = pxStage(v, { height: 300, full: true, hover: true, title: 'The type checker walking the term bottom-up' });
         const sC = pxStage(v, { height: 130, full: true, title: 'Which types can the term have?' });
@@ -153,12 +157,9 @@ export default {
           if (anno.value === 'on') {
             const actual = D.ty;
             sC.textPx(actual ? `each candidate type T, asking whether ⊢ t : T:` : 'the term has no type, so every candidate fails:', 12, 16, { size: 12, color: 'muted', align: 'left', halo: false });
-            // Put the inferred type first, including higher-order types absent from TYPES1.
-            const candidates = actual ? [actual, ...TYPES1.filter((T) => !tyEq(actual, T))] : TYPES1;
-            const passes = candidates.filter((T) => actual && tyEq(actual, T)).length;
-            const chips = drawChips(v, sC, candidates.map((T) => ({ text: `${tyStr(T)} ${actual && tyEq(actual, T) ? '✓' : '✗'}`, color: actual && tyEq(actual, T) ? 'green' : 'muted', fill: actual && tyEq(actual, T) ? 'green' : null })), { region: [12, 30, sC.W - 12, sC.H - 30], size: 13 });
-            sC.textPx(`${passes} candidate${passes === 1 ? '' : 's'} pass${passes === 1 ? 'es' : ''}${chips.more ? `; ${chips.more} further candidates do not fit` : ''}`, 12, sC.H - 16, { size: 12.5, weight: 700, color: actual ? 'green' : 'red', align: 'left', halo: false });
-            res.cnt = passes;
+            drawChips(v, sC, TYPES1.map((T) => ({ text: `${tyStr(T)} ${actual && tyEq(actual, T) ? '✓' : '✗'}`, color: actual && tyEq(actual, T) ? 'green' : 'muted', fill: actual && tyEq(actual, T) ? 'green' : null })), { region: [12, 30, sC.W - 12, sC.H - 30], size: 13 });
+            sC.textPx(actual ? 'exactly one candidate passes: the type is unique' : '', 12, sC.H - 16, { size: 12.5, weight: 700, color: 'green', align: 'left', halo: false });
+            res.cnt = actual ? 1 : 0;
           } else {
             const er = tErase(f.ast), inf = infer(er);
             if (!inf.ok) { sC.textPx('even without annotations the term has no type at all', 12, 30, { size: 13, color: 'red', align: 'left', halo: false }); res.cnt = 0; res.erased = null; return; }
@@ -173,8 +174,7 @@ export default {
             }
             sC.textPx(`principal type: ${tyStr(inf.ty)}   —   instances found among ${tried} annotations tried:`, 12, 16, { size: 12, color: 'muted', align: 'left', halo: false });
             drawChips(v, sC, [...found.keys()].map((k) => ({ text: k, color: 'orange', fill: 'orange' })), { region: [12, 30, sC.W - 12, sC.H - 30], size: 12.5 });
-            const polymorphic = tyVars(inf.ty).size > 0;
-            sC.textPx(`${found.size} type${found.size === 1 ? '' : 's'} found; ${polymorphic ? 'infinitely many instances of the principal type' : 'the principal type is ground: only one type'}`, 12, sC.H - 16, { size: 12.5, weight: 700, color: 'orange', align: 'left', halo: false });
+            sC.textPx(`${found.size} different types, and infinitely many in all`, 12, sC.H - 16, { size: 12.5, weight: 700, color: 'orange', align: 'left', halo: false });
             res.cnt = found.size; res.erased = inf;
           }
         });

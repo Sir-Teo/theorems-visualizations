@@ -1,6 +1,8 @@
 // Numerical Analysis — Chapter 3: Polynomial interpolation (items 3.10–3.17)
 import { tsci, lg, clamp, linspace, equiPts, chebPts, nodesOf, baryW, chebW, bary, lagr, lebFn, lebMax, divdiff, newtonEval, omega, T, chebCoeffs, cadd, csub, cmul, cdiv, cabs, potEqui, potCheb, potOf, bisectRoot } from './ch03.shared.js';
 
+import { stableLebesgueMax } from './numerical-source-audit.shared.js';
+
 const COL = ['accent', 'orange', 'green', 'red', 'purple', 'teal', 'pink', 'gold', 'blue'];
 const NODEOPTS = [{ value: 'equi', label: 'equispaced' }, { value: 'cheb', label: 'Chebyshev' }];
 const interp = (xs, ys) => { const w = baryW(xs); return (x) => bary(xs, w, ys, x); };
@@ -76,25 +78,25 @@ the maximum of the **Lebesgue function** $\lambda_n$. It is the worst-case ampli
       kind: 'Theorem',
       name: 'Lebesgue constants: logarithmic versus exponential growth',
       statement: String.raw`For the $n+1$ Chebyshev points $\cos(j\pi/n)$ the Lebesgue constant grows only logarithmically,
-$$\Lambda_n^{\rm Cheb}\le\frac2\pi\log(n+1)+1,\qquad \Lambda_n^{\rm Cheb}\sim\frac2\pi\log n,$$
+$$\Lambda_n^{\rm Cheb}\le1+\frac2\pi\log(n+1),\qquad\Lambda_n^{\rm Cheb}\sim\frac2\pi\log n,$$
 whereas for $n+1$ equispaced points it grows exponentially,
 $$\Lambda_n^{\rm equi}\sim\frac{2^{\,n+1}}{e\,n\log n}\qquad(n\to\infty).$$
-Since $\Lambda_n$ is the norm of the interpolation operator (3.10), Chebyshev interpolation is well-conditioned for every $n$ in practice, while equispaced interpolation loses digits roughly like $2^n$.`,
-      idea: String.raw`Write $\ell_j(x)=\omega(x)/\bigl((x-x_j)\,\omega'(x_j)\bigr)$. For equispaced nodes with spacing $h$, $|\omega'(x_j)|=h^n\,j!\,(n-j)!$ is smallest for $j$ near the middle, so the middle basis functions carry binomial factors of size $\binom{n}{n/2}\sim2^n/\sqrt n$ that nothing cancels — the source of the exponential growth. For Chebyshev points the clustering at the ends keeps $|\omega|$ and $|\omega'(x_j)|$ in balance and $\lambda_n$ is of the same size as the Lebesgue function of Fourier partial sums, $\sim\frac2\pi\log n$. The exact asymptotics are quoted here, not re-derived; the picture computes $\Lambda_n$ honestly for $n\le60$ and compares.`,
-      caption: String.raw`Dots: $\Lambda_n$ computed by maximising the Lebesgue function for every $n\le60$ (log scale; green = Chebyshev, red = equispaced). The dashed curves are the equispaced asymptotic formula and the Chebyshev upper bound. On the log axis the Chebyshev points rise only like $\log n$ while the equispaced points climb along a straight line of slope $\log_{10}2$ per step, to about $3\times10^{15}$ at $n=60$ — as many digits as double precision has. Drag the marker to read off both values.`,
+Since $\Lambda_n$ is the norm of the interpolation operator (3.10), the worst-case data amplification grows slowly for Chebyshev nodes and roughly exponentially for equispaced nodes; this concerns absolute data errors, not a relative condition number for every function.`,
+      idea: String.raw`Write $\ell_j(x)=\omega(x)/\bigl((x-x_j)\,\omega'(x_j)\bigr)$. For equispaced nodes with spacing $h$, $|\omega'(x_j)|=h^n\,j!\,(n-j)!$ is smallest for $j$ near the middle, so the middle basis functions carry binomial factors of size $\binom{n}{n/2}\sim2^n/\sqrt n$ that nothing cancels — the source of the exponential growth. For Chebyshev points the clustering at the ends keeps $|\omega|$ and $|\omega'(x_j)|$ in balance and $\lambda_n$ is of the same size as the Lebesgue function of Fourier partial sums, $\sim\frac2\pi\log n$. The exact asymptotics are quoted here, not re-derived; the picture numerically estimates $\Lambda_n$ for $n\le60$ and compares.`,
+      caption: String.raw`Dots: numerical estimates of $\Lambda_n$ from maximising the Lebesgue function for every $n\le60$ (log scale; green = Chebyshev, red = equispaced). The dashed curves are the equispaced asymptotic and the Chebyshev upper bound. On the log axis the Chebyshev points rise only like $\log n$ while the equispaced points climb along a straight line of slope $\log_{10}2$ per step, to about $3\times10^{15}$ at $n=60$ — as many digits as double precision has. Drag the marker to read off both values.`,
       deps: ['num-3.10', 'num-3.6'],
-      refs: ['Trefethen ATAP ch. 15'],
-      scope: String.raw`The asymptotic prefactor and Chebyshev bound are quoted from ATAP Theorem15.2; the book refers to original papers for their proofs. The picture estimates maxima numerically for $n\le60$, rather than certifying them with interval bounds.`,
+      refs: ['Trefethen ATAP Theorem 15.2, equations (15.8)–(15.9)'],
+      scope: String.raw`Second-kind Chebyshev nodes (including both endpoints). Values are numerical maximizations, not exact symbolic constants. Direct products of absolute Lagrange factors avoid the catastrophic cancellation of a barycentric denominator at high equispaced degree.`,
       tags: ['lebesgue constant', 'growth'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lebesgue_constant' },
       viz(v) {
         const s = v.stage({ x: [0, 60], y: [1, 1e16], ylog: true, axes: 'box', gutter: true, xlabel: 'n', ylabel: 'Λₙ', height: 360, title: 'Lebesgue constants of $n+1$ points' });
         const hn = s.handle(30, 1, { color: 'gold', constrain: 'x', label: 'n', labelPos: 'n' });
         const eq = [], ch = [];
-        for (let n = 1; n <= 60; n++) { eq.push(lebMax(equiPts(n)).L); ch.push(lebMax(chebPts(n)).L); }
-        const asE = (n) => 2 ** (n + 1) / (Math.E * n * Math.log(n)), asC = (n) => (2 / Math.PI) * Math.log(n + 1) + 1;
+        for (let n = 1; n <= 60; n++) { eq.push(stableLebesgueMax(equiPts(n)).L); ch.push(stableLebesgueMax(chebPts(n)).L); }
+        const asE = (n) => 2 ** (n + 1) / (Math.E * n * Math.log(n)), asC = (n) => 1 + (2 / Math.PI) * Math.log(n + 1);
         let info = {};
-        v.legend([['red', 'equispaced'], ['green', 'Chebyshev'], ['muted', 'asymptotic / upper bound', { dash: true }]]);
+        v.legend([['red', 'equispaced'], ['green', 'Chebyshev'], ['muted', 'equispaced asymptotic / Chebyshev bound', { dash: true }]]);
         v.render(() => {
           const n = clamp(Math.round(hn.x), 2, 60); hn.set(n, 1);
           s.path(eq.map((y, i) => [i + 1, y]), { color: 'red', width: 1.6 }); s.dots(eq.map((y, i) => [i + 1, y]), { color: 'red', r: 2.5 });
@@ -225,12 +227,14 @@ Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour th
       num: '3.14',
       kind: 'Theorem',
       name: 'Potential theory and convergence regions',
-      statement: String.raw`Let the interpolation nodes have limiting distribution $\mu$ on $[-1,1]$ and let $U(z)=\int\log|z-t|\,d\mu(t)$ be its logarithmic potential. Then $|\omega_n(z)|^{1/n}\to e^{U(z)}$ away from the nodes. If $f$ is analytic inside and on a level curve $\{U=c\}$ of the potential that encloses $[-1,1]$, then the interpolants converge geometrically — like $e^{n(U(x)-c)}$ at $x$ — at every $x$ with $U(x)<c$ (in particular on the segment of the real axis inside that curve); and they diverge at $x$ if $f$ has a singularity $\zeta$ with $U(\zeta)<U(x)$. For Chebyshev points $U$ is constant on $[-1,1]$, so the whole interval lies inside every level curve; for equispaced points $U(x)=-1+\tfrac12\bigl[(1+x)\log(1+x)+(1-x)\log(1-x)\bigr]$ is smallest in the middle and largest at the ends.`,
-      idea: String.raw`By the Hermite formula (3.13), $f(x)-p_n(x)$ is a contour integral of $f(z)\,\omega_n(x)/\omega_n(z)$, and $|\omega_n(x)/\omega_n(z)|\approx e^{n(U(x)-U(z))}$. Choosing the contour inside the region where $U(z)$ exceeds $U(x)$ makes the integrand exponentially small; a singularity of $f$ at which $U(\zeta)<U(x)$ cannot be avoided and contributes a term growing like $e^{n(U(x)-U(\zeta))}$. This is Runge's analysis of 1901 (3.17), phrased with the potential. The harmonicity of $U$ off the support (rca-11.3) is what makes the level curves the natural contours.`,
-      caption: String.raw`Green shading is the region $U(z)<U(\zeta)$ in which interpolants converge; the contour lines are level curves of $U$. Drag the red pole $\zeta$ (its conjugate is mirrored). Equispaced nodes: the region is a lens that pinches off the ends of $[-1,1]$ when $\zeta$ is close — below, the errors for $n=10,20,30$ shrink inside the real-axis segment $|x|<x_c$ and blow up outside it. Chebyshev nodes: the region is bounded by a Bernstein ellipse through $\zeta$ and always contains $[-1,1]$.`,
+      statement: String.raw`Let $\omega_n(z)=\prod_{j=0}^n(z-x_j^{(n)})$ for distinct nodes in $[-1,1]$, and let $f$ be analytic on and inside a simple contour $\Gamma$ enclosing the nodes and a compact approximation set $X$. If, for some $q<1$ and all sufficiently large $n$,
+$$\max_{x\in X,\ z\in\Gamma}\left|\frac{\omega_n(x)}{\omega_n(z)}\right|\le Cq^{n+1},$$
+then the interpolants converge uniformly on $X$ at a geometric rate, by the Hermite error formula. A limiting node distribution $\mu$ suggests the potential $U(z)=\int\log|z-t|\,d\mu(t)$: outside $[-1,1]$, weak convergence implies $|\omega_n(z)|^{1/(n+1)}\to e^{U(z)}$. On the node interval this limit need not hold; logarithmic singularities require additional control. For the classical Chebyshev and equispaced grids, potential level curves describe useful convergence regions. Chebyshev’s limiting potential is constant on $[-1,1]$; the uniform-grid potential there is $-1+\tfrac12[(1+x)\log(1+x)+(1-x)\log(1-x)]$.`,
+      idea: String.raw`The Hermite integral gives $|f-p_n|\le L(\Gamma)\max_\Gamma|f|\,\max|\omega_n(x)/\omega_n(z)|/(2\pi\operatorname{dist}(X,\Gamma))$. Thus a uniform discrete-potential gap implies convergence (ATAP (12.1)–(12.6)). A limiting potential is a guide to that gap, not a replacement for its hypotheses. In the pictured rational two-pole example, residues explain the outer error envelope near the real endpoints; singularities alone do not imply pointwise divergence for every function and every point. In particular, values at nodes remain exact, and cancellations can matter.`,
+      caption: String.raw`For the pictured two-pole rational example, green shading is the potential sublevel $U(z)<U(\zeta)$ that predicts convergence; the contour lines are level curves of $U$. Drag the red pole $\zeta$ (its conjugate is mirrored). Equispaced nodes: the region is a lens that pinches off the ends of $[-1,1]$ when $\zeta$ is close — below, the errors for $n=10,20,30$ illustrate decay inside $|x|<x_c$ and an outer growing error envelope. Every interpolation node, including $\pm1$, still has zero error. Chebyshev nodes: the region is bounded by a Bernstein ellipse through $\zeta$ and always contains $[-1,1]$.`,
       deps: ['num-3.13', 'rca-11.3'],
-      refs: ['Trefethen ATAP ch. 12'],
-      scope: String.raw`Asymptotic as $n\to\infty$ for nodes whose counting measure tends to $\mu$; the picture uses the two classical measures (uniform and arcsine) and a function with a conjugate pair of poles, $f(x)=1/|x-\zeta|^2$.`,
+      refs: ['Trefethen ATAP equations (12.1)–(12.6), (12.13)', 'Runge (1901), pp. 238–243'],
+      scope: String.raw`The contour-ratio condition is the theorem; mere weak convergence of counting measures is not a pointwise on-support product limit or a universal divergence criterion. The picture uses the classical uniform/arcsine grids and a two-pole rational function. Plot values below $10^{-16}$ are floored for the log axis.`,
       tags: ['potential theory', 'convergence'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Potential_theory' },
       viz(v) {
@@ -262,9 +266,10 @@ Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour th
           if (k === 'cheb') xc = g(0) < 0 ? 1 : 0;
           else { if (g(1) < 0) xc = 1; else if (g(0) >= 0) xc = 0; else { let lo = 0, hi = 1; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (g(m) < 0) lo = m; else hi = m; } xc = lo; } }
           if (xc < 1) { e.vline(xc, { color: 'red', dash: true }); e.vline(-xc, { color: 'red', dash: true }); }
-          info = { xc, rate: Math.exp(U(1, 0) - Uz), k, Uz };
+          info = { xc, rate: Math.exp(U(.95, 0) - Uz), k, Uz };
         });
-        v.readout(() => (info.xc >= 1 ? 'the whole segment $[-1,1]$ lies in the convergence region: interpolants converge everywhere on it' : `convergence on the real axis only for $|x|<x_c=${v.fix(info.xc, 4)}$ (red dashed): outside it the error grows like $e^{n(U(x)-U(\\zeta))}$`) + `\nat $x=1$ the error changes by a factor $e^{U(1)-U(\\zeta)}=${v.fix(info.rate, 3)}$ per extra degree`);
+        v.readout(() => (info.xc >= 1 ? 'the whole interval lies inside the potential convergence region for this classical grid and two-pole example' : `potential boundary $|x|=x_c=${v.fix(info.xc,4)}$ (red dashed); outside, the example has a growing error envelope, with exact zeros at the nodes`) + `\nAt a generic non-node near $x=0.95$, the potential suggests envelope factor $e^{U(0.95)-U(\\zeta)}=${v.fix(info.rate,3)}$ per degree. At the fixed endpoints $x=\\pm1$, interpolation error is zero for every degree.`);
+
       },
     },
     // ------------------------------------------------------------------ 3.15
@@ -355,17 +360,17 @@ Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour th
       num: '3.17',
       kind: 'Paper',
       name: 'Über empirische Funktionen und die Interpolation…',
-      paper: { authors: 'C. Runge', year: 1901, title: 'Über empirische Funktionen und die Interpolation zwischen äquidistanten Ordinaten', venue: 'Zeitschrift für Mathematik und Physik 46: 224–243', url: 'https://archive.org/details/zeitschriftfrma12runggoog' },
+      paper: { authors: 'C. Runge', year: 1901, title: 'Über empirische Funktionen und die Interpolation zwischen äquidistanten Ordinaten', venue: 'Zeitschrift für Mathematik und Physik 46: 224–243', url: 'https://hat.net.technion.ac.il/files/2021/02/run3.pdf' },
       introduces: ['num-3.5', 'num-3.14'],
       credit: 'C. Runge, 1901',
-      statement: String.raw`Runge asked whether interpolating a function in more and more equidistant points reproduces it, and showed that in general it does not. By a contour-integral argument he established convergence in regions bounded by level curves (his “$U$-curves”) determined by the nodes, provided the function is analytic on a surrounding curve. Singularities inside the $U$-curve through the segment endpoints can obstruct convergence near the endpoints; he analyzes this explicitly for simple poles. For his example $f(x)=1/(1+x^2)$ on $[-5,5]$ (singularities at $\pm i$), the curve through $\pm i$ meets the real axis near $\pm3.63$, so interpolation converges on compact subsets of $|x|<3.63$ and fails to converge uniformly on outer subintervals between $3.63$ and $5$; with the $11$ integer nodes $-5,\dots,5$ the deviation at $x=\pm4.5$ is at least $1.53$, while at $x=\pm0.5$ it is at most $0.044$, and he explains the contrasting behavior in neighborhoods of those points as the degree increases.`,
-      idea: String.raw`Runge was interested in how to fit a curve to measured, equally spaced ordinates; he observed that a high-degree interpolation polynomial through equidistant ordinates can misbehave even for an analytic function, and he explained why with the integral representation of the interpolation error (the Hermite formula, 3.13) and the level curves of a potential-like function (3.14). The paper derives the contour remainder, the limiting node potential, and the convergence region before working out the divergence example now called the Runge phenomenon (3.5). The obstruction depends on the singularities of $f$ relative to the node distribution.`,
+      statement: String.raw`Runge asked whether interpolating a function in more and more equidistant points reproduces it, and showed that in general it does not. By a contour-integral argument he proved that the interpolation of a function analytic on the segment can fail outside a region of the complex plane bounded by a level curve (his “$U$-curve”) determined by the nodes: if singularities of the function lie inside the $U$-curve that passes through the end points of the segment, interpolation is possible only on part of the segment. For his example $f(x)=1/(1+x^2)$ on $[-5,5]$ (singularities at $\pm i$), the curve through $\pm i$ meets the real axis near $\pm3.63$, so interpolation converges only for $|x|<3.63$ and diverges between $3.63$ and $5$; with the $11$ integer nodes $-5,\dots,5$ the deviation at $x=\pm4.5$ is at least $1.53$, while at $x=\pm0.5$ it is at most $0.044$, illustrating the contrasting asymptotic behavior near the ends and the center.`,
+      idea: String.raw`Runge was interested in how to fit a curve to measured, equally spaced ordinates; he observed that a high-degree interpolation polynomial through equidistant ordinates can misbehave even for an analytic function, and he explained why with the integral representation of the interpolation error (the Hermite formula, 3.13) and the level curves of a potential-like function (3.14). The example shows that convergence depends on complex singularities as well as on the node distribution. It introduced the divergence example now called the Runge phenomenon (3.5) and the potential-theoretic convergence region (3.14).`,
       caption: String.raw`The paper's example $f=1/(1+x^2)$ on $[-5,5]$, recomputed (the paper prints numbers, not a plot). Slide the number of equispaced nodes (the button gives Runge's $11$ integer nodes): the interpolant matches in the middle and blows up near the ends; the error panel (log scale) has its break at the dashed lines $x=\pm3.63$. The complex plane shows $z=\pm i$ and the level curve through them: its crossing with the real axis is the number Runge quotes. Switch to Chebyshev nodes to see the cure.`,
       scope: String.raw`Recomputation, not a copy of the paper's figures: the paper contains no plot for this example, only the quoted deviations ($1.53$ at $\pm4.5$, $0.044$ at $\pm0.5$) and the crossing point $\pm3.63$, which are compared with our values in the readout.`,
       deps: ['num-3.1', 'num-3.4'],
-      refs: ['Runge1901 pp224–243; contour remainder pp231–232; limiting potential pp232–237; convergence proof pp238–242; explicit example and deviations p243'],
+      refs: ['Runge (1901), pp. 236–243; recomputed deviations and potential crossing'],
       tags: ['runge', 'history', 'interpolation'],
-      links: { archive: 'https://archive.org/details/zeitschriftfrma12runggoog', wikipedia: 'https://en.wikipedia.org/wiki/Runge%27s_phenomenon' },
+      links: { archive: 'https://hat.net.technion.ac.il/files/2021/02/run3.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Runge%27s_phenomenon' },
       viz(v) {
         const f = (x) => 1 / (1 + x * x);
         const kind = v.select('nodes', NODEOPTS, 'equi');
@@ -396,7 +401,7 @@ Consequently the error is small when $|\omega(x)|\ll|\omega(z)|$ on a contour th
           const x11 = Array.from({ length: 11 }, (_, i) => i - 5), p11 = interp(x11, x11.map(f));
           info = { d45: Math.abs(f(4.5) - p11(4.5)), d05: Math.abs(f(0.5) - p11(0.5)), N, pk: Math.max(...pts.map((q) => q[1])), xc, cheb: kind.value === 'cheb' };
         });
-        v.readout(() => `Runge's 11 integer nodes: deviation at $x=4.5$ is $${v.fix(info.d45, 4)}$ (paper: not less than $1.53$), at $x=0.5$ it is $${v.fix(info.d05, 4)}$ (paper: not more than $0.044$)\nlevel curve through $\\pm i$ meets the real axis at $\\pm${v.fix(info.xc, 4)}$ for ${info.cheb ? 'Chebyshev' : 'equispaced'} nodes (paper, equispaced: about $\\pm3.63$); current interpolant: ${info.N} nodes, max error $${tsci(info.pk, 3)}$`);
+        v.readout(() => `Runge's 11 integer nodes: deviation at $x=4.5$ is $${v.fix(info.d45, 4)}$ (paper: not less than $1.53$), at $x=0.5$ it is $${v.fix(info.d05, 4)}$ (paper: not more than $0.044$)\nlevel curve through $\\pm i$ meets the real axis at $\\pm${v.fix(info.xc, 4)}$ for ${info.cheb ? 'Chebyshev' : 'equispaced'} nodes (paper, equispaced: about $\\pm3.63$); current interpolant: ${info.N} nodes, sampled maximum error $${tsci(info.pk, 3)}$`);
       },
     },
   ],

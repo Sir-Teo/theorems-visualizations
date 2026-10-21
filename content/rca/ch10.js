@@ -123,7 +123,7 @@ exists — $z$ being allowed to approach $z_0$ through $\Omega\setminus\{z_0\}$ 
       num: '10.5',
       kind: 'Definition',
       name: 'Functions representable by power series',
-      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 10.5, p. 198'],
+      verify: true,
       statement: String.raw`A function $f$ defined in an open set $\Omega\subset\C$ is **representable by power series in $\Omega$** if to every disc $D(a;r)\subset\Omega$ there corresponds a power series $\sum_{n\ge0}c_n(z-a)^n$ which converges to $f(z)$ for every $z\in D(a;r)$.
 
 Recall that each power series $\sum c_n(z-a)^n$ has a radius of convergence $R\in[0,\infty]$, given by $1/R=\limsup_n|c_n|^{1/n}$: it converges absolutely and uniformly on every closed disc $\overline D(a;\rho)$ with $\rho<R$, and diverges at every $z$ with $|z-a|>R$.`,

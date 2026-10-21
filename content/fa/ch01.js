@@ -108,10 +108,10 @@ Then $d(x,y)=\norm{x-y}$ is a metric on $X$, with open balls $B(x,r)=\{y:\norm{y
       kind: 'Definition',
       name: 'Convex and balanced sets',
       statement: String.raw`Let $\Phi$ be the scalar field ($\R$ or $\C$). In a vector space $X$ over $\Phi$ one writes $x+A=\{x+a:a\in A\}$, $A+B=\{a+b:a\in A,\ b\in B\}$ and $\lambda A=\{\lambda a:a\in A\}$. A subset $Y$ is a **subspace** if it is a vector space under the same operations. A set $C\subset X$ is **convex** if $tC+(1-t)C\subset C$ for every $t\in[0,1]$. A set $B\subset X$ is **balanced** if $\alpha B\subset B$ for every $\alpha\in\Phi$ with $\abs{\alpha}\le 1$.`,
-      idea: String.raw`Both notions are purely algebraic, but they become topological once neighbourhoods are required to have them: every TVS has a local base of balanced sets (1.14), and convex ones define local convexity (1.8). Over $\R$ a nonempty balanced set is exactly one that is symmetric and star-shaped about $0$; over $\C$ it must also be invariant under every rotation $x\mapsto e^{i\theta}x$, which is a much stronger requirement.`,
+      idea: String.raw`Both notions are purely algebraic, but they become topological once neighbourhoods are required to have them: every TVS has a local base of balanced sets (1.14), and convex ones define local convexity (1.8). Over $\R$ a balanced set is exactly one that is symmetric and star-shaped about $0$; over $\C$ it must also be invariant under every rotation $x\mapsto e^{i\theta}x$, which is a much stronger requirement.`,
       caption: String.raw`Pick a set $S\subset\R^2$ and drag $x$ and $y$. The segment $[x,y]$ tests convexity. The orange set $\{\alpha x:\abs{\alpha}\le 1\}$ tests balance: over $\R$ it is the segment $[-x,x]$, over $\C$ (identify $\R^2$ with $\C$) it is the whole disc of radius $\abs{x}$. Pieces that leave $S$ turn red.`,
       deps: [],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.4, pp. 5–6'],
+      verify: true,
       tags: ['convexity', 'balanced sets'],
       viz(v) {
         const rot = (pts, a) => pts.map(([x, y]) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)]);
@@ -185,7 +185,7 @@ Such a $\tau$ is called a **vector topology**. A set $E\subset X$ is **bounded**
       idea: String.raw`Continuity of addition at $(0,0)$ says that every neighbourhood $W$ of $0$ contains $V+V$ for some neighbourhood $V$; continuity of scalar multiplication lets neighbourhoods be shrunk and stretched. Boundedness is defined through these dilations alone, with no metric in sight. In a normed space it is the familiar notion, but in a metric TVS it can differ from metric boundedness: the invariant metric $d/(1+d)$ makes every set metrically bounded.`,
       caption: String.raw`Choose a neighbourhood $V$ of $0$ and a set $E$, then stretch $V$ with the slider $t$ (the view zooms out with it). The readout computes $s=\sup_{x\in E}\mu_V(x)$, the smallest stretch that swallows $E$. A bounded $E$ lies in $tV$ for every $t>s$. A line through $0$ or a parabola always sticks out (red), however large $t$ is and however $V$ is shaped.`,
       deps: ['fa-1.4'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.6, pp. 7–8'],
+      verify: true,
       tags: ['topological vector spaces', 'boundedness'],
       viz(v) {
         const Vsh = v.select('$V$', [{ value: 'disc', label: 'disc' }, { value: 'ell', label: 'thin ellipse' }, { value: 'sq', label: 'square' }], 'disc');
@@ -261,7 +261,7 @@ Consequently every vector topology is **translation invariant**: $E$ is open if 
       idea: String.raw`$T_a$ and $M_\lambda$ are bijections with inverses $T_{-a}$ and $M_{1/\lambda}$, and all four maps are continuous because addition and scalar multiplication are. Hence a set $G$ is open iff for each $x\in G$ the set $G-x$ is a neighbourhood of $0$, i.e. iff some $V\in\mathscr B$ satisfies $x+V\subset G$.`,
       caption: String.raw`Left: an open set $G$ and a local base $V_n=(0.8)^n U$ made of shrinking copies of one shape $U$. Drag $x$: the green translate $x+V_n$ is the largest member that fits ($x+V_{n-1}$, dashed, does not). The faint translates at other points show $G$ as a union of translates. Right: after $M_\lambda$ and $T_a$ the image of $x+V_n$ is again a neighbourhood of the image point and contains a translated base member.`,
       deps: ['fa-1.6'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.7, pp. 8–9'],
+      verify: true,
       tags: ['topological vector spaces', 'local base'],
       viz(v) {
         const M = v.M;
@@ -485,7 +485,7 @@ $$(K+V)\cap(C+V)=\emptyset .$$`,
       idea: String.raw`Take $W\in\mathscr B$ and apply 1.10 with $K=\{0\}$ and $C=X\setminus W$: there is a neighbourhood of $0$, which may be shrunk to a member $V\in\mathscr B$, with $V\cap(C+V)=\emptyset$. Since $C+V$ is open and misses $V$, it also misses $\overline V$; in particular $\overline V\cap C=\emptyset$, i.e. $\overline V\subset W$.`,
       caption: String.raw`Drag the vertices of the open neighbourhood $W$ of $0$ and grow the base member $V=rB$ (choose the shape $B$). Red is $C=X\setminus W$; pink is the thickening $C+V$. As long as $r\le\tfrac12\delta$, where $\delta$ is the $B$-distance from $0$ to $C$, the ball $V$ misses $C+V$ and the closed ball $\overline V$ (solid outline) sits inside $W$.`,
       deps: ['fa-1.10'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.11, pp. 11'],
+      verify: true,
       tags: ['separation', 'local base'],
       viz(v) {
         const M = v.M;
@@ -537,10 +537,10 @@ $$(K+V)\cap(C+V)=\emptyset .$$`,
       kind: 'Theorem',
       name: 'Every topological vector space is Hausdorff',
       statement: String.raw`Every topological vector space $X$ is a Hausdorff space: if $x\ne y$ there are neighbourhoods of $x$ and of $y$ that do not intersect.`,
-      idea: String.raw`Apply 1.10 with $K=\{x\}$ and $C=\{y\}$: a point is compact, and $\{y\}$ is closed by axiom (a) of 1.6. This gives a neighbourhood $V$ of $0$ with $(x+V)\cap(y+V)=\emptyset$. The axiom that points are closed is essential: a topology defined by a seminorm with nontrivial kernel has continuous operations but is not Hausdorff.`,
+      idea: String.raw`Apply 1.10 with $K=\{x\}$ and $C=\{y\}$: a point is compact, and $\{y\}$ is closed by axiom (a) of 1.6. This gives a neighbourhood $V$ of $0$ with $(x+V)\cap(y+V)=\emptyset$. The axiom that points are closed is essential: a topology defined by a single seminorm has continuous operations but is not Hausdorff.`,
       caption: String.raw`Drag $x$ and $y$. With a norm topology the neighbourhoods $x+V$ and $y+V$ — the largest $V$ of the chosen shape that works — separate them. Switch to the topology of the seminorm $p(z)=\abs{z_1}$, where axiom (a) fails: neighbourhoods are vertical strips, the closure of $\{x\}$ is the whole vertical line through $x$, and points on the same vertical line cannot be separated.`,
       deps: ['fa-1.10', 'fa-1.6'],
-      refs: ['Rudin, Functional Analysis, 2nd ed., §1.12, pp. 11'],
+      verify: true,
       tags: ['separation', 'Hausdorff'],
       viz(v) {
         const topo = v.select('topology', [{ value: 'norm', label: 'norm (points closed)' }, { value: 'semi', label: 'seminorm $|z_1|$' }], 'norm');

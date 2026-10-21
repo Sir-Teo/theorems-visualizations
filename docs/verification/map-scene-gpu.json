@@ -1,0 +1,700 @@
+{
+  "complete": true,
+  "diagnostic": true,
+  "method": "EXT_disjoint_timer_query_webgl2 TIME_ELAPSED_EXT on three warm stationary frames, three separately instrumented per-pass frames, and three whole-frame omission experiments for each of none/edges/nodes/decorations per state; omitted components are incomplete diagnostic pictures and never correctness/FPS evidence; counters include GPU scheduling and possible command-stream gaps. Other team/native work may run concurrently. No FPS or quiet-window performance claim.",
+  "date": "2026-10-20T00:10:41.478Z",
+  "browser": "155.0.8059.80",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "args": [
+    "--use-angle=metal"
+  ],
+  "hashes": {
+    "graph": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "map-webgl-scene": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "map-scene-model": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+    "map-scene-edges": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "map-scene-gl": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+    "map-scene-text": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+    "map-scene-painter": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+    "map-scene-decorations": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+    "map-scene-worker": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+    "data/index": "bf1b28a2fa31303846f37f1f456fbfc9bad6620a6fc89b3407811020ad7d25ca",
+    "data/planned": "67bff095ffb81c4424bb8227034cc690cc8f03a98bac4967146be61dfb0b3645"
+  },
+  "results": [
+    {
+      "available": true,
+      "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+      "selected": false,
+      "disjoint": false,
+      "nodes": 13574,
+      "edges": 23078,
+      "k": 0.8,
+      "width": 1440,
+      "height": 932,
+      "dpr": 2,
+      "samples": [
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 36055083
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 519874
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 36001250
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 13976000
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 0
+        },
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 38403125
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 431541
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 34091125
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 13163541
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 0
+        },
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 33530583
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 491291
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 34500666
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 13086208
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 0
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 35654500
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 38769458
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 34109374
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 602249
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 658208
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 626750
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 44139583
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 37510875
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 38374708
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 35609249
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 43240624
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 36789041
+        }
+      ],
+      "resources": {
+        "logicalRetainedBytes": 47381668,
+        "logicalPeakBytes": 47381668,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 32342016,
+          "segmentIndices": 1039524,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 5368320,
+          "nodeAndFlagTextures": 243200
+        },
+        "componentSum": 47381668,
+        "primaryDrawingBufferBytes": 21473280,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 5368320,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 417064,
+            "segments": 393986
+          },
+          {
+            "scale": 4,
+            "points": 1083434,
+            "segments": 1060356
+          },
+          {
+            "scale": 0.5,
+            "points": 36910,
+            "segments": 36187
+          }
+        ],
+        "indexBuffers": 809,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+      }
+    },
+    {
+      "available": true,
+      "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+      "selected": true,
+      "disjoint": false,
+      "nodes": 13574,
+      "edges": 23078,
+      "k": 0.8,
+      "width": 1440,
+      "height": 932,
+      "dpr": 2,
+      "samples": [
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 4418041
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 509875
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 3004416
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 4147083
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 4018916
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 2235499
+        },
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 4271875
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 534499
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 3014333
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 4170875
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 4013000
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 2255458
+        },
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 4400041
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 520750
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 3065083
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 4092541
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 4161375
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 2181416
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 4332708
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 4442541
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 4466416
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 766833
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 750500
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 768291
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 4418500
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 4427208
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 4429916
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 4474208
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 4417000
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 4439041
+        }
+      ],
+      "resources": {
+        "logicalRetainedBytes": 47309772,
+        "logicalPeakBytes": 47381668,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 32342016,
+          "segmentIndices": 967628,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 5368320,
+          "nodeAndFlagTextures": 243200
+        },
+        "componentSum": 47309772,
+        "primaryDrawingBufferBytes": 21473280,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 5368320,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 417064,
+            "segments": 393986
+          },
+          {
+            "scale": 4,
+            "points": 1083434,
+            "segments": 1060356
+          },
+          {
+            "scale": 0.5,
+            "points": 36910,
+            "segments": 36187
+          }
+        ],
+        "indexBuffers": 3,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+      }
+    },
+    {
+      "available": true,
+      "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+      "selected": false,
+      "disjoint": false,
+      "nodes": 13574,
+      "edges": 23078,
+      "k": 0.8,
+      "width": 3840,
+      "height": 2092,
+      "dpr": 2,
+      "samples": [
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 500764916
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 5954791
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 522240792
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 32863583
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 0
+        },
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 491121291
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 5313375
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 508977749
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 33528749
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 0
+        },
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 504934291
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 5154333
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 496852333
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 32672041
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 0
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 486571958
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 649274833
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 561133624
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 3290291
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 3448500
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 3342375
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 778155374
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 580531000
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 572890583
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 564524833
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 533245416
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 524764916
+        }
+      ],
+      "resources": {
+        "logicalRetainedBytes": 52115516,
+        "logicalPeakBytes": 52115516,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 32342016,
+          "segmentIndices": 3142204,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 7999488,
+          "nodeAndFlagTextures": 243200
+        },
+        "componentSum": 52115516,
+        "primaryDrawingBufferBytes": 128532480,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 7999488,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 417064,
+            "segments": 393986
+          },
+          {
+            "scale": 4,
+            "points": 1083434,
+            "segments": 1060356
+          },
+          {
+            "scale": 0.5,
+            "points": 36910,
+            "segments": 36187
+          }
+        ],
+        "indexBuffers": 172,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+      }
+    },
+    {
+      "available": true,
+      "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+      "selected": true,
+      "disjoint": false,
+      "nodes": 13574,
+      "edges": 23078,
+      "k": 0.8,
+      "width": 3840,
+      "height": 2092,
+      "dpr": 2,
+      "samples": [
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 45653541
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 6296125
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 18155666
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 27885583
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 27886166
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 8871124
+        },
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 42337500
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 6222125
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 18660249
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 26056125
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 25870250
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 6115125
+        },
+        {
+          "label": "whole warm scene",
+          "nanoseconds": 53993333
+        },
+        {
+          "label": "background decorations",
+          "nanoseconds": 6895750
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 20699166
+        },
+        {
+          "label": "edge coverage + color composition",
+          "nanoseconds": 31754124
+        },
+        {
+          "label": "node sprites",
+          "nanoseconds": 31953083
+        },
+        {
+          "label": "labels / post-node work",
+          "nanoseconds": 11894250
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 49859583
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 36937041
+        },
+        {
+          "label": "whole scene, omit none",
+          "nanoseconds": 40967624
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 2649166
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 2652208
+        },
+        {
+          "label": "whole scene, omit edges",
+          "nanoseconds": 2553124
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 47489249
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 36827750
+        },
+        {
+          "label": "whole scene, omit nodes",
+          "nanoseconds": 41876875
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 36684249
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 36361916
+        },
+        {
+          "label": "whole scene, omit decorations",
+          "nanoseconds": 40958583
+        }
+      ],
+      "resources": {
+        "logicalRetainedBytes": 50696636,
+        "logicalPeakBytes": 52115516,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 32342016,
+          "segmentIndices": 1723324,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 7999488,
+          "nodeAndFlagTextures": 243200
+        },
+        "componentSum": 50696636,
+        "primaryDrawingBufferBytes": 128532480,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 7999488,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 417064,
+            "segments": 393986
+          },
+          {
+            "scale": 4,
+            "points": 1083434,
+            "segments": 1060356
+          },
+          {
+            "scale": 0.5,
+            "points": 36910,
+            "segments": 36187
+          }
+        ],
+        "indexBuffers": 3,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+      }
+    }
+  ],
+  "protocolSHA256": "335d87f2a19d8956231b39bf618d1c394f0a37e7128c96a9ea0d5834abb19eab",
+  "separateFromMatchedDataset": true
+}

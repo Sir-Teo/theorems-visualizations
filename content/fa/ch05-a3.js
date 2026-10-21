@@ -1,4 +1,3 @@
-import { sourceDiagrams } from './ch05-source.shared.js';
 // Rudin, Functional Analysis — Chapter 5 (part 3): Kakutani's fixed point theorem, Haar measure
 
 // ---------------------------------------------------------------- helpers
@@ -15,22 +14,24 @@ export default {
   items: [
     // ------------------------------------------------------------------ Kakutani's fixed point theorem
     {
-      num: '5.10', kind: 'Theorem', name: 'Finite Blaschke solutions of solvable Pick–Nevanlinna data',
-      statement: String.raw`Let distinct $z_0,\ldots,z_n$ and arbitrary $w_0,\ldots,w_n$ lie in the open unit disc $U$. If some holomorphic $f:U\to U$ satisfies $f(z_j)=w_j$ for every $j$, then such an interpolant can be chosen to be a finite Blaschke product $B(z)=c\prod_{k=1}^N(z-\alpha_k)/(1-\overline{\alpha_k}z)$, with $|c|=1$ and $|\alpha_k|<1$.`,
-      idea: String.raw`Normalize $z_0=w_0=0$ by disc automorphisms, and write $F=(1+f)/(1-f)$, so $\Re F>0$ and $F(0)=1$. Herglotz representation identifies such functions with probability measures on the circle. Evaluation at the other $n$ nodes maps these measures into a compact convex subset of $\mathbb C^n$. Carathéodory's theorem and extreme points give a representing probability with at most $2n+1$ atoms. Its rational Herglotz function yields $B=(F-1)/(F+1)$, a finite Blaschke product satisfying all the data.`,
-      caption: String.raw`Two real-node data are $B(0)=0$ and $B(a)=b$. Schwarz's lemma makes them solvable exactly when $|b|\le a$. When $|b|<a$, put $c=b/a$, $d=(a-c)/(1-ac)$ and $B(z)=z(z-d)/(1-dz)$; at equality use $B(z)=\pm z$. The right panel plots its unit-circle image and checks interpolation and boundary modulus. Invalid data display the Schwarz obstruction.`,
-      deps: ['fa-3.23', 'rca-11.30'],
-      viz: sourceDiagrams['5.10'],
+      num: '5.10',
+      kind: 'Definition',
+      name: 'Affine maps; equicontinuity on a set',
+      statement: String.raw`Let $K$ be a convex subset of a topological vector space $X$. A map $T:K\to X$ is **affine** if $T((1-t)x+ty)=(1-t)Tx+tTy$ for $x,y\in K$, $0\le t\le1$. A collection $G$ of maps of $K$ into $X$ is **equicontinuous on $K$** if for every neighbourhood $W$ of $0$ in $X$ there is a neighbourhood $V$ of $0$ such that $Tx-Ty\in W$ for every $T\in G$ whenever $x,y\in K$ and $x-y\in V$.`,
+      idea: String.raw`Equicontinuity on $K$ is uniform continuity, uniformly in $T$ — the same $V$ serves every member of $G$ (compare 2.3). A group of isometries of a normed space is equicontinuous with $V=W$; a group containing a map and its inverse that stretch some direction more and more is not.`,
+      deps: ['fa-2.3'],
+      tags: ['equicontinuity', 'fixed points'],
+      verify: true,
     },
     {
       num: '5.11',
       kind: 'Theorem',
       name: "Kakutani's fixed point theorem",
-
+      credit: 'Kakutani, 1938',
       statement: String.raw`Let $K$ be a nonempty compact convex set in a locally convex space $X$, and let $G$ be a group of affine maps of $K$ onto $K$ that is equicontinuous on $K$. Then $G$ has a common fixed point: there is $p\in K$ with $Tp=p$ for every $T\in G$.`,
-      idea: String.raw`Choose a minimal nonempty compact convex invariant subset Q. If x and y in Q differ, equicontinuity applied also to inverses keeps every $T(x-y)$ outside a fixed zero-neighbourhood. Put z=(x+y)/2. The closed convex hull of its orbit is Q by minimality. Milman's theorem puts an extreme point p of Q in the orbit closure of z. Compactness yields a simultaneous limit $(Tz,Tx,Ty)\to(p,x_*,y_*)$. Then $2p=x_*+y_*$ forces $x_*=y_*$ by extremality, contradicting separation of the orbit differences. Thus Q is a point. Affine means preserving convex combinations; equicontinuity here is uniform in T and in pairs of points of K.`,
+      idea: String.raw`Zorn's lemma gives a minimal nonempty compact convex $G$-invariant set $K_0\subset K$; the claim is that $K_0$ is a point. If not, equicontinuity and local convexity produce a continuous seminorm $\rho$ that is $G$-invariant on differences, $\rho(Tx-Ty)=\rho(x-y)$, and positive on some difference in $K_0$. Cover $K_0$ by finitely many $\rho$-balls of half its $\rho$-diameter $\delta$ and average their centres: points of $K_0$ near that average are at $\rho$-distance $<\delta$ from all of $K_0$. The set of such points is compact, convex, $G$-invariant and smaller than $K_0$ — contradicting minimality.`,
       caption: String.raw`Finite-dimensional pictures with $X=\R^2$. In the first two modes $G$ consists of "affine rotations" $x\mapsto c+AR_\alpha A^{-1}(x-c)$ of an ellipse (an infinite group, rotation angle an irrational multiple of $\pi$) or the dihedral symmetries of an affinely distorted pentagon; both are equicontinuous and the centre $c$ is the common fixed point. Watch the orbit of $x_0$ (gold) and its running averages (green) converge to $c$. In the annulus the only candidate is missing ($K$ not convex); on the strip the averages run away ($K$ not compact).`,
-      deps: ['fa-3.23', 'fa-3.25'],
+      deps: ['fa-5.10', 'fa-1.36', 'fa-1.35'],
       tags: ['fixed points', 'equicontinuity', 'convexity'],
       viz(v) {
         const M = v.M;
@@ -96,6 +97,7 @@ export default {
       idea: String.raw`Examples: the circle $\T$ with normalized arc length; a finite group with the uniform measure; the torus $\T^n$; the rotation group $SO(3)$. By the Riesz representation theorem, a Haar measure is the same thing as a positive linear functional $M$ on $C(G)$ with $M(1)=1$ and $M(L_sf)=M(f)$.`,
       deps: ['rca-6.19'],
       tags: ['topological groups', 'Haar measure'],
+      verify: true,
     },
     {
       num: '5.13',
@@ -106,6 +108,7 @@ export default {
       caption: String.raw`On the circle group, $L_sf(x)=f(x+s)$. Drag $s$: the red band is $|L_sf-f|$ and the lower panel plots $\omega(s)=\|L_sf-f\|_\infty$ for all $s$. For continuous $f$ (even with a cusp) $\omega(s)\to0$ as $s\to0$; for the step function, which is not in $C(\T)$, $\omega$ jumps to the full height of the step at once — translation is not continuous into the sup norm.`,
       deps: ['fa-5.12', 'fa-3.20'],
       tags: ['topological groups', 'uniform continuity'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const F = {
@@ -152,7 +155,7 @@ export default {
       num: '5.14',
       kind: 'Theorem',
       name: 'Haar measure on compact groups',
-      credit: 'Haar',
+      credit: 'Haar, 1933',
       statement: String.raw`Every compact group $G$ carries a unique regular Borel probability measure $m$ that is left-invariant, $\int_Gf(sx)\,dm(x)=\int_Gf\,dm$ $(f\in C(G),\,s\in G)$. This $m$ is also right-invariant and inversion-invariant: $\int_Gf(xs)\,dm(x)=\int_Gf(x^{-1})\,dm(x)=\int_Gf\,dm$.`,
       idea: String.raw`Fix $f\in C(G)$. By 5.13 the closed convex hull $H_f$ of the left translates of $f$ is compact in $C(G)$, and the maps $L_s$ are isometries of $C(G)$ leaving $H_f$ invariant — an equicontinuous group of affine maps. Kakutani (5.11) gives a fixed point, a function invariant under all left translations, hence a constant $c$. Doing the same with right translates gives a constant $c'$, and a short convexity argument shows $c=c'$ and that $H_f$ contains no other constant. Setting $M(f)=c$ defines a positive, normalized, linear, bi-invariant functional, and the Riesz representation theorem turns it into $m$. Any left-invariant $\mu$ satisfies $\int f\,d\mu=\int c\,d\mu=c$, which gives uniqueness.`,
       caption: String.raw`The circle group, $s_k=k\alpha$ with $\alpha/\pi$ irrational. Left: averages $\frac1n\sum_{k<n}f(x+s_k)$ of translates of $f$ — members of $H_f$ — flatten onto the constant $\int f\,dm$ (green), the fixed point Kakutani promises. Right: the same averaging applied to a probability measure $\mu$ (its density drawn radially around the circle; the green circle is the uniform density); the averages approach $m=d\theta/2\pi$, the only rotation-invariant probability.`,

@@ -22,7 +22,7 @@ export default {
       statement: String.raw`A **lattice** is the set of all points $n_1\mathbf a_1+n_2\mathbf a_2+n_3\mathbf a_3$ with integer $n_i$, for three independent vectors $\mathbf a_i$ (two in the plane). A **basis** (motif) is a finite group of atoms with fixed positions relative to a lattice point. A **crystal structure** is the lattice with a copy of the basis attached to every lattice point: lattice $+$ basis $=$ structure. The lattice records only the translational symmetry; the basis says what is repeated. Different bases on the same lattice give different structures with the same translations.`,
       idea: String.raw`If $\mathbf t$ is a lattice vector, shifting the whole pattern by $\mathbf t$ lands every atom on an atom of the same kind, so $\mathbf t$ is a symmetry. Conversely any translation that maps the structure to itself must carry the origin atom to some atom of that kind, and the set of all such translations is closed under addition, hence a lattice. The choice of basis vectors is not unique (the same lattice has infinitely many bases) and an atom need not sit on a lattice point; what is fixed is the lattice itself. If the basis happens to repeat inside the cell — two identical atoms offset by half a cell vector — the true lattice is finer than the one first drawn.`,
       caption: String.raw`Drag $\mathbf a_1,\mathbf a_2$ to reshape the lattice (its Bravais type is named live) and the white handle inside the cell to move the second atom; the whole crystal follows. Drag the gold translation $\mathbf t$: the hollow rings show the crystal shifted by $\mathbf t$, and the readout counts how many atoms of the basis land on an atom of the same kind. Only lattice vectors give a perfect match — unless you switch *make all atoms identical*, when the half-cell translation also works and the lattice you drew is no longer the true one.`,
-      deps: ['ladr-2.26'],
+      deps: [],
       refs: ['Hammond ch. 1', 'Giacovazzo ch. 1'],
       tags: ['lattice', 'basis'],
       viz(v) {
@@ -102,10 +102,12 @@ export default {
       num: '1.2',
       kind: 'Definition',
       name: 'Unit cell and lattice parameters',
-      statement: String.raw`A **unit cell** is a parallelepiped (a parallelogram in the plane) that tiles space by lattice translations. It is described by six **lattice parameters**: the edge lengths $a,b,c$ and the angles $\alpha=\angle(\mathbf b,\mathbf c)$, $\beta=\angle(\mathbf a,\mathbf c)$, $\gamma=\angle(\mathbf a,\mathbf b)$. Its volume is $V=abc\sqrt{1+2\cos\alpha\cos\beta\cos\gamma-\cos^2\alpha-\cos^2\beta-\cos^2\gamma}$. A cell with lattice points only at its corners is **primitive** and contains exactly one lattice point; a **non-primitive** cell contains $k>1$ points and has $k$ times the volume. The choice of primitive cell is not unique, but the volume per lattice point is.`,
-      idea: String.raw`Write the three edge vectors as rows of a matrix; the cell volume is the absolute triple product $\mathbf a\cdot(\mathbf b\times\mathbf c)=\sqrt{\det G}$ of the Gram matrix of dot products, which expands into the cosine formula. Changing to another basis $\mathbf a'_i=\sum M_{ij}\mathbf a_j$ with an integer matrix of determinant $\pm1$ gives the same lattice, because $M$ is invertible over the integers; the new cell has volume $|\det M|\,V$, so only $|\det M|=1$ is primitive. Counting lattice points in a half-open cell therefore returns $|\det M|$.`,
+      statement: String.raw`A **unit cell** is a parallelepiped (a parallelogram in the plane) that tiles space by lattice translations. It is described by six **lattice parameters**: the edge lengths $a,b,c$ and the angles $\alpha=\angle(\mathbf b,\mathbf c)$, $\beta=\angle(\mathbf a,\mathbf c)$, $\gamma=\angle(\mathbf a,\mathbf b)$. Its volume is $$\begin{gathered}V=\\abc\sqrt{\begin{gathered}1+2\cos\alpha\cos\beta\cos\gamma\\-\cos^2\alpha-\cos^2\beta\\-\cos^2\gamma\end{gathered}}\end{gathered}$$. A cell with lattice points only at its corners is **primitive** and contains exactly one lattice point; a **non-primitive** cell contains $k>1$ points and has $k$ times the volume. The choice of primitive cell is not unique, but the volume per lattice point is.`,
+      idea: String.raw`Write the three edge vectors as rows of a matrix; the cell volume is the absolute triple product $\mathbf a\cdot(\mathbf b\times\mathbf c)=\sqrt{\det G}$ of the Gram matrix of dot products, which expands into the cosine formula. Changing to another basis $\mathbf a'_i=\sum M_{ij}\mathbf a_j$ with an integer matrix of determinant $\pm1$ gives the same lattice, because $M$ is invertible over the integers; the new cell has volume $|\det M|\,V$, so only $|\det M|=1$ is primitive. Counting lattice points in a half-open cell therefore returns $|\det M|$.
+
+The volume input is the scalar-triple-product theorem (vcalc 1.4): for independent cell edges the absolute determinant is the parallelepiped volume. Under the integer basis replacement, determinant multiplicativity (ladr 9.49) gives $|\det(MA)|=|\det M|\,|\det A|$. This supplies the volume factor used above; the requirement that a primitive change of lattice basis be invertible over the integers is separate from mere invertibility over the reals.`,
       caption: String.raw`Left: drag the six parameters; the cell and its 2×2×2 block of copies are redrawn, and the volume is computed twice, as a triple product of the edge vectors and from the cosine formula. Impossible angle sets (three angles that cannot meet at a corner) are rejected. Right: the $\mathbf a$–$\mathbf b$ face as a plane lattice with several choices of cell: every primitive choice has a different shape but the same area, and the number of lattice points counted inside each (gold) times the primitive area equals its area.`,
-      deps: ['xtal-1.1', 'vcalc-1.4'],
+      deps: ['xtal-1.1', 'vcalc-1.4', 'ladr-9.49'],
       refs: ['Hammond ch. 1'],
       tags: ['unit cell', 'lattice parameters'],
       viz(v) {
@@ -194,7 +196,9 @@ export default {
       kind: 'Law',
       name: 'Steno’s law of constant interfacial angles',
       statement: String.raw`In all specimens of the same crystalline substance, the angle between corresponding faces is the same, however differently the specimens have grown. Faces may be large or small, a form may be missing altogether, and the habit may range from stubby to needle-like or plate-like; the **interfacial angles** — measured between face normals, with a contact goniometer — do not change (at fixed temperature and pressure).`,
-      idea: String.raw`The faces of a crystal are the planes along which it grows slowest, and a given family of lattice planes always has the same orientation relative to the others because it is fixed by the lattice. A crystal bounded by planes $\mathbf n_i\cdot\mathbf x\le d_i$ changes shape when the distances $d_i$ (growth rates $\times$ time) change, but the normals $\mathbf n_i$ are properties of the lattice. The angle between two faces is therefore a function of $\mathbf n_i,\mathbf n_j$ only, and independent of every $d$. Steno (1669) saw this in quartz; Romé de l'Isle (1783) generalised it; the explanation, in the periodic lattice, came with Haüy (1.4).`,
+      idea: String.raw`The faces of a crystal are the planes along which it grows slowest, and a given family of lattice planes always has the same orientation relative to the others because it is fixed by the lattice. A crystal bounded by planes $\mathbf n_i\cdot\mathbf x\le d_i$ changes shape when the distances $d_i$ (growth rates $\times$ time) change, but the normals $\mathbf n_i$ are properties of the lattice. The angle between two faces is therefore a function of $\mathbf n_i,\mathbf n_j$ only, and independent of every $d$. Steno (1669) saw this in quartz; Romé de l'Isle (1783) generalised it; the explanation, in the periodic lattice, came with Haüy (1.4).
+
+The dot-product angle formula (vcalc 1.2) makes the independence from growth distances explicit: for nonzero fixed normals, $\cos\theta=(\mathbf n_i\cdot\mathbf n_j)/(|\mathbf n_i||\mathbf n_j|)$. No face distance $d_i$ occurs. Changing a distance may remove a face from the visible habit, but does not change the angle between corresponding face orientations that remain.`,
       caption: String.raw`The crystal is the convex region $\mathbf n_i\cdot\mathbf x\le d_i$ for cube $\{100\}$ (blue), octahedron $\{111\}$ (orange) and rhombic-dodecahedron $\{110\}$ (green) faces. Slide the face-growth distances, or press *Random habit* to give every individual face its own distance: the shape swings between cube, octahedron, needle and plate, faces appear and vanish. The right plot gives the angle at every edge, **computed from the vertex coordinates of the polyhedron**: each class of face pair stays on its horizontal line.`,
       deps: ['xtal-1.1', 'vcalc-1.2'],
       refs: ['Hammond ch. 1'],
@@ -260,13 +264,10 @@ export default {
       num: '1.4',
       kind: 'Law',
       name: 'Haüy’s law of rational indices',
-      statement: String.raw`Haüy's empirical law describes the rational orientations commonly found among macroscopic facets of periodic crystals. In fractional lattice coordinates $(X,Y,Z)$, a plane parallel to a two-dimensional lattice net has an equation
-$$hX+kY+lZ=d,$$
-with integers $h,k,l$, not all zero: its **Miller indices**. For $d\ne0$ its finite intercepts are $d/h$, $d/k$, $d/l$, so their ratios are rational. A zero index means the plane is parallel to that axis, with infinite intercept. Low-index facets are common, but high-index faces are possible; this is not a prohibition of every other surface orientation.`,
-      idea: String.raw`Three **noncollinear** lattice points give two independent integer-coordinate displacement vectors. The cross product of those coordinate triples supplies nonzero integer coefficients $(h,k,l)$ for the plane equation, which proves the rational-index statement for that lattice plane and its parallel translates. A plane without a two-dimensional lattice net may still contain a whole lattice line: for example $X+\sqrt2Y=0$ contains the $Z$ axis. In the two-dimensional brick section, a rational slope $p/q$ gives a staircase that repeats after $q$ columns and $p$ rows; its individual terraces need not all have the same width. Simple broken-bond models help explain why some low-index faces are common, but actual facet energies and growth rates also depend on crystal chemistry and conditions.`,
-      caption: String.raw`Drag the cut through the finite brick stack and change the axial ratio $c/a$. The remaining bricks form a staircase. The right plot gives the best numerator $p$ for each denominator $q=1,\dots,12$; errors at or below $10^{-12}$ are shown at the display floor. Try $2/3$: its periodic staircase has both one- and two-column terraces. The golden-ratio and $\sqrt2-1$ presets represent known irrational numbers by floating-point approximations. A finite plot or a small approximation error cannot certify rationality or irrationality.`,
-      scope: String.raw`Periodic-crystal lattice geometry and an illustrative finite two-dimensional brick section. The model does not predict surface energies, growth kinetics, rough surfaces or quasicrystal facets. Displayed approximation errors use floating-point arithmetic.`,
-      deps: ['xtal-1.3', 'vcalc-1.3'],
+      statement: String.raw`Every natural face of a crystal cuts the crystal axes at distances $m\,a$, $n\,b$, $p\,c$ whose ratios are rational numbers — after multiplying by a common factor, small integers. Equivalently, the reciprocals of the intercepts, in units of the cell edges, are in the ratio of three integers $h:k:l$ (the Miller indices of the face). Faces with very large indices are not observed; the common ones have indices of 0, 1, 2 or 3.`,
+      idea: String.raw`Haüy built the crystal from identical bricks. A plane that is a smooth surface of the brick stack must contain lattice points, and any plane through three lattice points has rational intercept ratios, because the intercepts solve linear equations with integer coefficients. A plane with irrational slope contains at most one lattice point of the stack and can only be imitated by a staircase of unit steps that is then actually a union of rational faces. The simple (small $|m|,|n|$) faces are the planes with the densest lattice points, hence the lowest surface energy and the slowest growth, which is why those are seen.`,
+      caption: String.raw`A section through a stack of bricks of width $a$ and height $c$ (set the axial ratio $c/a$). Drag the gold handle to cut a face of any slope: the bricks whose centres lie below the cut stay, and the surface becomes a staircase. Terrace widths are computed from it. The right-hand plot shows the error of the best rational approximation $p/q$ of the slope for every denominator $q$: for a rational slope the error hits zero, for an irrational one it never does (try *golden*, *√2*), and the terrace widths then take two neighbouring values forever.`,
+      deps: ['xtal-1.3'],
       refs: ['Hammond ch. 5'],
       credit: 'R. J. Haüy, 1784 (Essai d’une théorie sur la structure des crystaux)',
       tags: ['morphology', 'rational indices'],
@@ -275,16 +276,14 @@ with integers $h,k,l$, not all zero: its **Miller indices**. For $d\ne0$ its fin
         const N = 16;
         const s = v.stage({ x: [-0.6, N + 0.6], y: [-0.5, 11], equal: false, axes: false, height: 420, weight: 1.55, title: 'brick stack and the cut face' });
         const hnd = s.handle(10, 6.2, { color: 'gold', r: 8, label: 'cut' });
-        const q = v.stage({ x: [0.5, 12.5], y: [-12.5, 0.3], axes: 'box', gutter: true, height: 420, weight: 1, xlabel: 'denominator q', ylabel: 'log₁₀ |slope − p/q|', xticks: [2, 4, 6, 8, 10, 12], title: 'best rational approximations' });
-        // The view expands with the brick stack; clipping y would change the
-        // promised fractional slope (notably 2/3 when c/a is 1.6).
-        const setSlope = (m) => { hnd.set(10, 10 * m * R.value); };
-        v.button('golden 1/φ', () => setSlope((Math.sqrt(5) - 1) / 2));
+        const q = v.stage({ x: [0.5, 12.5], y: [-9, 0.3], axes: 'box', gutter: true, height: 420, weight: 1, xlabel: 'denominator q', ylabel: 'log₁₀ |slope − p/q|', xticks: [2, 4, 6, 8, 10, 12], title: 'best rational approximations' });
+        const setSlope = (m) => { const r = R.value; hnd.set(10, clamp(10 * m * r, 0.3, 10.4)); };
+        v.button('golden 1/φ', () => setSlope(0.6180339887));
         v.button('2/3', () => setSlope(2 / 3));
         v.button('√2 − 1', () => setSlope(Math.SQRT2 - 1));
         v.button('1/3', () => setSlope(1 / 3));
         let info = null;
-        // Best numerator for each fixed denominator.
+        // continued-fraction best approximation of m with denominator <= qmax
         const bestFor = (m, qd) => { const p = Math.round(m * qd); return [p, qd, Math.abs(m - p / qd)]; };
         v.render(() => {
           const r = R.value, hx = Math.max(hnd.x, 2), hy = Math.max(hnd.y, 0.3);
@@ -315,15 +314,16 @@ with integers $h,k,l$, not all zero: its **Miller indices**. For $d\ne0$ its fin
           s.text('origin', 0.1, -0.35, { size: 11, color: 'muted', align: 'left' });
           s.corner(`slope = ${v.fix(m, 4)} rows per column`, 'tl', { size: 12.5, weight: 700, plate: true });
           // error plot
-          for (let qd = 1; qd <= 12; qd++) { const [, , e] = bestFor(m, qd); const y = e <= 1e-12 ? -12 : Math.log10(e); q.dot(qd, Math.max(-12, y), { r: 5, color: e <= 1e-12 ? 'green' : 'accent' }); }
-          q.hline(-12, { color: 'faint' });
-          q.text('≤10⁻¹² (display floor)', 12.4, -11.55, { align: 'right', size: 10.5, color: 'green' });
+          for (let qd = 1; qd <= 12; qd++) { const [, , e] = bestFor(m, qd); const y = e < 1e-12 ? -9 : Math.log10(e); q.dot(qd, Math.max(-9, y), { r: 5, color: e < 1e-12 ? 'green' : 'accent' }); }
+          q.hline(-9, { color: 'faint' });
+          q.text('exact (error 0)', 12.4, -8.55, { align: 'right', size: 10.5, color: 'green' });
           info = { m, best, widths, steps: runs.length - 1 };
         });
         v.readout(() => {
           if (!info) return '';
           const { m, best, widths, steps } = info;
-          return `Cut slope = ${v.fix(m, 4)} rows per column. Best approximation with $q\\le12$: $p/q=${best.p}/${best.q}$, numerical error $${v.sci(best.e, 2)}$.\nTerrace widths observed in this finite window (${steps} complete steps): ${widths.length ? widths.join(', ') : '—'} bricks. A rational slope can have different terrace widths; small errors here do not certify rationality.`;
+          const exact = best.e < 1e-9;
+          return `Cut slope $c\\,\\text{rows}/a\\,\\text{columns}=${v.fix(info.m, 4)}$ → intercept ratio $x{:}z = ${best.q}{:}${best.p}$ ${exact ? '(exactly rational, a flat face — the brick stack reproduces it with every tread the same width)' : `(nearest with $q\\le12$: $p/q=${best.p}/${best.q}$, error $${v.sci(best.e, 2)}$)`}.\nTerrace widths seen over ${steps} steps: ${widths.length ? widths.join(', ') : '—'} bricks${exact ? '' : ' (two neighbouring values, never one: a staircase imitating an irrational face)'}.`;
         });
       },
     },
@@ -333,9 +333,11 @@ with integers $h,k,l$, not all zero: its **Miller indices**. For $d\ne0$ its fin
       kind: 'Concept',
       name: 'Close packing: fcc versus hcp',
       statement: String.raw`Equal spheres are packed most densely in a plane in a hexagonal layer, each touching six others. A second such layer sits in the hollows of the first, over one of two equivalent sets of hollows; calling the layer positions A, B, C, a close-packed crystal is any stacking in which successive layers differ ($AB$, $BC$ or $CA$ but never $AA$). The stacking $ABAB\dots$ is **hexagonal close packing** (hcp), $ABCABC\dots$ is **cubic close packing**, i.e. the face-centred cubic lattice (fcc, with the layers perpendicular to a body diagonal). Every such stacking has coordination number 12 and packing fraction $\pi/\sqrt{18}=0.7405$, which is the largest density of any packing of equal spheres (Kepler's conjecture, proved by Hales in 2005).`,
-      idea: String.raw`A sphere in layer $B$ rests on three spheres of $A$; its centre is above a triangle of side $d$ (the sphere diameter) at horizontal distance $d/\sqrt3$ from each, so the layers are $h=\sqrt{d^2-d^2/3}=\sqrt{2/3}\,d$ apart whichever hollows are used. Every sphere touches six in its layer, three above and three below: $12$, whatever the sequence. The density depends only on $h$ and on the layer density, so every sequence of A, B, C packs equally well, and the ordered ones with the shortest repeat — $AB$ and $ABC$ — are hcp and fcc. The first is not a lattice with one atom per point (it has a two-atom basis); the second is.`,
+      idea: String.raw`A sphere in layer $B$ rests on three spheres of $A$; its centre is above a triangle of side $d$ (the sphere diameter) at horizontal distance $d/\sqrt3$ from each, so the layers are $h=\sqrt{d^2-d^2/3}=\sqrt{2/3}\,d$ apart whichever hollows are used. Every sphere touches six in its layer, three above and three below: $12$, whatever the sequence. The density depends only on $h$ and on the layer density, so every sequence of A, B, C packs equally well, and the ordered ones with the shortest repeat — $AB$ and $ABC$ — are hcp and fcc. The first is not a lattice with one atom per point (it has a two-atom basis); the second is.
+
+Pythagoras (ladr 6.12) applies to the orthogonal horizontal and vertical parts of the centre-to-centre contact vector. Its length is $d$, its horizontal part has length $d/\sqrt3$, so $h^2=d^2-d^2/3$. This local contact calculation explains the equal layer separation for the allowed stackings; it does not prove the global optimality theorem for all sphere packings.`,
       caption: String.raw`Build a stacking with the buttons (a layer cannot repeat the previous one) or take a preset: hcp $ABAB$, fcc $ABC$, the double-hexagonal $ABAC$. Drag the side view to rotate it. Layer colours are A blue, B orange, C green; the top view shows the hollows underneath. The readout labels each inner layer h (neighbours above and below equal: hexagonal environment) or c (cubic), counts nearest neighbours directly from the coordinates, and computes the packing fraction from the sphere volume and the slab volume.`,
-      deps: ['xtal-1.1'],
+      deps: ['xtal-1.1', 'ladr-6.12'],
       refs: ['Hammond ch. 1'],
       credit: 'J. Kepler, 1611; T. C. Hales, 2005 (proof; formal proof 2017)',
       tags: ['close packing', 'stacking'],
@@ -408,7 +410,7 @@ $$\eta=\frac{N\cdot\frac43\pi r^3}{V_{\text{cell}}},\qquad r=\tfrac12 d_{\min},$
 with $N$ atoms per cell. For simple cubic, body-centred cubic, face-centred cubic, diamond and ideal hexagonal close-packed structures: coordination $6,8,12,4,12$ and $\eta=\pi/6=0.524,\ \pi\sqrt3/8=0.680,\ \pi/\sqrt{18}=0.740,\ \pi\sqrt3/16=0.340,\ 0.740$.`,
       idea: String.raw`Find the nearest-neighbour distance $d_{\min}$ in the structure (along an edge for sc, half a body diagonal for bcc, half a face diagonal for fcc, a quarter of a body diagonal for diamond) and set the sphere radius to $d_{\min}/2$, so that nearest spheres just touch. Count the atoms per cell with the sharing rule (corner $\tfrac18$, edge $\tfrac14$, face $\tfrac12$, inside 1). The ratio of sphere volume to cell volume then gives the closed forms. Open structures such as diamond are held together by directional bonds, not by close packing.`,
       caption: String.raw`Pick a structure and grow the spheres with the slider (1.00 = touching). The program finds the nearest neighbours from the coordinates (gold bonds), counts the atoms per cell by corner/edge/face sharing, and computes the packing fraction, compared with the exact value; push past 1.00 and the spheres overlap (red). For hcp, change $c/a$: the coordination 12 splits into $6+6$ as soon as the ideal $\sqrt{8/3}$ is lost, and the packing fraction falls away from its maximum.`,
-      deps: ['xtal-1.5', 'vcalc-4.7'],
+      deps: ['xtal-1.5'],
       refs: ['Hammond ch. 1'],
       tags: ['coordination number', 'packing fraction'],
       viz(v) {

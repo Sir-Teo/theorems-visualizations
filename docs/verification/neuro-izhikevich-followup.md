@@ -1,0 +1,28 @@
+# Neuroscience source review A1 — Izhikevich hybrid model
+
+**neuro-3.9 is ready for central integration; `verify: true` remains set.** The other11 assigned neuroscience reviews remain separate. Wave 5 remains gated.
+
+## Full original source actually read
+
+Eugene M. Izhikevich, [Simple Model of Spiking Neurons (2003), IEEE Transactions on Neural Networks14:1569–1572](https://www.izhikevich.org/publications/spikes.pdf). Full four-page author-hosted original PDF, SHA256 `896710f3a25d3f5307a57d4cf13992514c87cd646b2e509ede6285f8724eb21d`. Physical1–4 correspond to printed1569–1572; the last page also contains the beginning of an unrelated following article, not imported. Read the entire original article, Eqs.(1)–(3)/§II1569, Fig.2/§III1570, §IV code and qualifications1571, conclusion and references1572. **Fig.2 on printed1570 was visually inspected**, including both parameter-coordinate panels and all five displayed presets. The previously uncertain LTS tuple(.02,.25,−65,2) is directly confirmed there, as are RS, IB, CH and FS. Figure2 uses input10 and resolution.1ms.
+
+The original calls the variables/parameters dimensionless and then specifies an mV scale for v and ms scale for time; the entry now retains that scaling and does not assign a physical ionic-current calibration to u or I. The paper explicitly says the LTS parameters would need changes for a better quantitative fit. Its claims about a universal canonical coordinate change and exact biological plausibility are not adopted as global mathematical theorems.
+
+## Corrections
+
+Parameter c is an absolute reset level, not a ratio to threshold. Recovery jumps by d **at each event**, but its continuous evolution means successive reset u-values do not generally differ by d. Fast-spiking examples have little adaptation, rather than an exact no-adaptation guarantee. Preset names apply to source examples, not all edited inputs and parameters.
+
+The old trace stored peak voltage with already-reset recovery and marked a later integration state as the reset point. A scoped hybrid solver now records the pre-reset state at v=30 and the actual post-reset state(c,u+d) at the **same event time**. Phase trajectories end and restart explicitly; they do not draw fictitious continuous flow across the reset. Gold markers are actual reset states, not (c,b*c) or the state one step after resetting. Pre-input flow is grey and the displayed nullclines correspond to the post-step input.
+
+The displayed integration now uses RK4 flow with bracketed threshold events and explicit resets, with maximum steps.1,.05,.025ms. This approximates the source’s continuous hybrid equations and is **not** presented as a reproduction of the §IV network split-Euler code. The existing shared izhRun and presets remain unchanged. The current step is split at20ms. Spike counts before20ms and in the following380ms are separate; edited settings can spike even before the input. All voltage/recovery paths and reset markers determine the views, correcting the old fixed recovery/phase ranges. Polynomial nullclines are clipped by exact intersection intervals, not flattened at viewport bounds.
+
+## Independent calculations and actual controls
+
+- `node --test tests/verification-neuro-izhikevich.test.mjs`: **5/5 groups passed**. Original preset tuples; complete spike trains and reset recoveries versus an independent **SciPy1.18.1 DOP853** terminal-event calculation, rtol1e−11/atol1e−12; all32 parameter/input extremes with same-time exact reset bookkeeping; independently checked nullcline equations and viewport intersections including an empty intersection; and counterexamples to successive-reset increments and falsely post-input total counts.
+- All five presets have the same finite spike counts at all three resolutions and in the independent reference: RS9, IB14, CH37, FS53, LTS32 over400ms for this initialization/input. Maximum observed spike-time errors across the five presets were below.0007ms at step.1 and.000012ms at step.025, decreasing on refinement. These are observed reference comparisons, not certified global error bounds or experimental firing-rate estimates.
+- Reproducible independent source: `tests/reference-neuro-izhikevich.py`; bounded committed reference `tests/fixtures/neuro-izhikevich-reference.json` records solver, tolerances, source URL/hash and every reference event/reset. The Python generator requires SciPy; it is not a new browser/runtime dependency.
+- `node tests/verification-neuro-izhikevich.mjs`: **2/2 actual light/dark groups passed**, all five presets, all three numerical resolutions, all32 actual slider corners, zero-input pre-stimulus spikes, the real preset loader and input keys restoring RS9, and actual reset markers. Runtime/KaTeX, finite path/dot extents and widened recovery views pass. An initial harness only intercepted individual dots while the batched marker call was invisible to its counter; markers were expressed as individual dots, preserving actual rendering and making the native assertion direct. A nullcline test was also corrected to allow a genuine empty visible intersection, not a false requirement that every window meet the curve.
+- `node scripts/check.mjs neuro-3.9 --static`: **one item,0errors,0warnings**. All four dependency arrays and all other chapter entries preserved byte-for-byte. No existing shared helper, central queue or package changed. Whitespace clean.
+- Screens `/tmp/atlas-neuro-izh-{source,corner,spontaneous}-{light,dark}.png`; inspected source dark and the original Fig.2 scan `/tmp/atlas-neuro-izh-figure2-2.png`. These checks do not validate quantitative biological equivalence.
+
+Scoped implementation `content/neuro/source-audit-izhikevich.shared.js`.

@@ -1,5 +1,6 @@
 // Distributed Computing — Chapter 4: Mutual exclusion and shared objects (items 4.1–4.4; 4.5–4.8 in ch04-b.js, 4.9–4.12 in ch04-c.js, 4.13 in ch04-d.js)
 import { REGCOL, noneSpec, ctsSpec, tasSpec, petersonSpec, bakerySpec, mxSim, mulberry32, range, drawLanes, ly } from './ch04.shared.js';
+import {erasureExperiment} from './concurrency-sources-audit.shared.js';
 
 const specCache = new Map();
 const cached = (key, mk) => { if (!specCache.has(key)) specCache.set(key, mk()); return specCache.get(key); };
@@ -98,64 +99,35 @@ export default {
     },
     {
       num: '4.4', kind: 'Theorem', name: 'Mutual exclusion needs n registers (Burns–Lynch)',
-      statement: String.raw`Any deadlock-free mutual exclusion algorithm for $n\ge 2$ processes that communicates only through atomic read/write registers uses at least $n$ distinct shared registers. The bound holds however large the registers are, and even if every process may write every register.`,
-      idea: String.raw`A covering argument needs an additional invariant: the configuration covering $k$ registers must look, to the remaining processes, like an idle configuration. Then a new process must eventually write an uncovered register before entering its critical section; otherwise the covering writes can erase its entire trace and let another process enter too. Establishing that invariant is the hard part. Repeatedly run the first $k-1$ processes through covering configurations and back to idle. Since only finitely many sets of $k-1$ registers exist, two such configurations cover the same set. Pause the new process just before its first write outside that set, then replay the intervening execution of the earlier processes. This restores the covering set and the idle-view invariant while retaining the new pending write. Induction reaches $n$ covered registers. Simply adding a new covering process without restoring the idle-view invariant would not prove the result.`,
-      caption: String.raw`Choose the number of processes $n$ and registers $m$, click the register the next process will write first, and press *next process runs alone*. A process that picks an uncovered register joins the cover. One that picks a covered register triggers the contradiction: the lower diagram is the execution built from it, in which the covering writes erase $p$ and then $q$ enters beside $p$. With $m<n$ the pigeonhole principle forces this eventually. Turn on *test-and-set* and the erasing step is no longer possible, since a test-and-set reads what it overwrites: one register suffices again, matching 4.1.`,
-      deps: ['dist-4.1', 'dist-1.7', 'comb-1.2'], refs: ['Aspnes §18.7, Lemma 18.7.1, pp. 169–170', 'Lynch §10.8'], sourceUrl: 'https://www.cs.yale.edu/homes/aspnes/classes/465/notes.pdf', tags: ['lower bounds', 'covering argument'],
-      scope: String.raw`Atomic read/write registers only, no restriction on register size or on the number of writers; the algorithm must be deadlock-free (the proof uses that a lone process eventually enters). The bound is tight: Burns’ one-bit algorithm uses $n$ single-writer bits. Not valid with read-modify-write primitives.`,
-      credit: 'Full covering-invariant proof: J. Aspnes, Notes on Theory of Distributed Systems, §18.7, Lemma 18.7.1, pp. 169–170',
-      links: { doi: 'https://doi.org/10.1006/inco.1993.1065' },
+      statement: String.raw`A deterministic asynchronous read/write system solving mutual exclusion with **global progress** for $n\ge2$ processes needs at least $n$ shared variables, regardless of their sizes or number of writers. Each atomic communication action is one read or one write. A process may stop in its remainder region; other active processes continue. The lower bound is tight without a symmetry requirement: the same paper supplies an algorithm with $n$ single-writer bits. Read-modify-write primitives are a different model.`,
+      idea: String.raw`A process covers a variable when it is poised to write it. A process is hidden when, since a remainder state, every one of its writes has been overwritten before another process reads it. Lemma 5.3 deletes hidden steps to obtain a reachable state with that process in the remainder and identical memory and other local states. Thus a hidden process's solo path to critical must write outside the other processes' current cover: otherwise their pending writes hide it again; a fair execution of the existing other processes then reaches another critical section, contradicting exclusion (Lemma 5.4). No extra fresh process is needed.
+
+The induction also has to preserve hiddenness, not just cover distinct cells. Lemma 5.5 repeatedly builds $k$ hidden coverers, returns them to the remainder and rebuilds. The new process's solo side branch must reach a pending write outside each current cover. Some outside target recurs because there are finitely many variables. Insert the earlier side branch before the next covering block, which erases its earlier writes, then continue to the later recurrence. All $k+1$ processes are hidden and cover distinct variables there. Repeating from $k=1$ to $n$ gives $n$ variables.
+
+The recurring outside target in the covering argument is a finite pigeonhole step (comb 1.2). If there are $q$ possible shared-variable targets, $q+1$ side-branch choices must repeat a target, yielding the earlier and later occurrence used by the insertion argument. This counting step does not prove hiddenness: the intervening covering block must still erase the earlier writes under the source proof's premises. It also does not extend the result to stronger atomic read-modify-write actions.`,
+      caption: String.raw`A finite memory experiment illustrates the erasure step, not a run of an arbitrary mutual-exclusion algorithm or the full induction. Click cells to choose up to $n-1$ pending coverers. Compare a baseline block with a hypothetical process $p$ writing 1, followed by that same block of plain writes of 0. A surviving write outside the cover distinguishes the memories. With test-and-set, final memories may agree but returned old bits distinguish the coverers' local states. The theorem's hiddenness and solo-critical-path premises must be justified separately.`,
+      deps: ['dist-4.1','dist-1.7','comb-1.2'], refs: ['Burns–Lynch (1993), Theorem 4.1, pp. 175–177; Theorem 5.1 and Lemmas 5.3–5.5, pp. 177–183'], tags: ['lower bounds', 'covering argument'],
+      scope: String.raw`Global progress, atomic read/write communication, finitely many processes and shared variables; arbitrary variable domains and multiple writers. The $n$-bit upper-bound algorithm uses static priorities and does not supply the stronger symmetry requested by Dijkstra. The memory experiment verifies a conditional erasure premise only; no choice of a covered first write alone proves a contradiction.`,
+      credit: 'Burns & Lynch; preliminary version Allerton 1980, journal version 1993',
+      links: { doi: 'https://doi.org/10.1006/inco.1993.1065', source: 'https://groups.csail.mit.edu/tds/papers/Lynch/ic93.pdf' },
       viz(v) {
-        const nS = v.slider('processes $n$', 2, 6, 4, { int: true, onChange: () => reset() });
-        const mS = v.slider('registers $m$', 1, 6, 3, { int: true, onChange: () => reset() });
-        const rmw = v.toggle('registers also offer test-and-set', false, { onChange: () => reset() });
-        let cover = [], k = 0, fail = null, choice = -1, note = '';
-        const reset = () => { cover = []; k = 0; fail = null; choice = -1; note = ''; };
-        const sR = v.stage({ x: [-0.7, 6.2], y: [-2.3, 2.5], axes: false, height: 300, weight: 1.1, minWidth: 340, title: 'registers and the processes poised to write them (click a register to choose)' });
-        const sL = v.stage({ x: [-0.5, 10.5], y: [-0.6, 5.6], axes: false, height: 300, weight: 1, minWidth: 340, title: 'the execution built from the contradiction' });
-        sR.onClick((x) => { choice = Math.max(0, Math.min(mS.value - 1, Math.round(x))); });
-        v.button('next process runs alone', () => {
-          if (fail || k >= nS.value) return;
-          const m = mS.value, r = choice >= 0 && choice < m ? choice : Math.max(0, cover.findIndex((c, i) => i < m && c === undefined));
-          const first = range(m).find((i) => cover[i] === undefined);
-          const target = choice >= 0 && choice < m ? choice : first === undefined ? 0 : first;
-          void r;
-          if (cover[target] === undefined) { cover[target] = k; k++; note = `p${k} writes the uncovered register R${target + 1} first and stops just before: ${k} register${k > 1 ? 's' : ''} covered.`; }
-          else if (rmw.value) { note = `R${target + 1} is covered, but a covering test-and-set would read p's write instead of erasing it: no contradiction (p${k + 1} keeps going).`; }
-          else { fail = { p: k, r: target }; note = `p${k + 1} writes the covered register R${target + 1}: the covering processes can erase it.`; }
-          choice = -1;
+        let covered = new Set([0,1,2]), phase = 0, note = '';
+        const reset = () => { covered=new Set(Array.from({length:Math.min(nS.value-1,mS.value)},(_,i)=>i));phase=0;note=''; };
+        const nS = v.slider('processes $n$',2,6,4,{int:true,onChange:reset}),mS = v.slider('registers $m$',1,6,3,{int:true,onChange:reset});
+        const outside=v.toggle('p also writes one uncovered cell',false,{onChange:()=>{phase=0;note='';}}),rmw=v.toggle('coverers use test-and-set instead of plain writes',false,{onChange:()=>{phase=0;note='';}});
+        const s=v.stage({x:[-1.8,6.2],y:[-0.5,4.7],axes:false,height:360,full:true,title:'hypothetical writes and the covering block: compare the final rows'});
+        s.onClick((x,y)=>{if(y<3.2)return;const i=Math.round(x);if(i<0||i>=mS.value)return;if(covered.has(i))covered.delete(i);else if(covered.size<nS.value-1)covered.add(i);else note='At most n−1 other processes can cover distinct cells.';phase=0;});
+        v.button("apply p's hypothetical writes",()=>{phase=1;});v.button('apply covering block',()=>{phase=2;});v.button('reset illustration',reset);
+        let info={};
+        v.render(()=>{
+          info=erasureExperiment(mS.value,covered,outside.value,rmw.value);s.setView([-1.8,Math.max(mS.value,3)+.5],[-.5,4.7]);
+          const rows=[['pending coverers',null,3.8],['after p writes',phase>=1?info.afterP:info.before,2.7],['baseline block',phase>=2?info.baseline:info.before,1.6],['p then block',phase>=2?info.afterBlock:phase>=1?info.afterP:info.before,.5]];
+          for(const[label,values,y]of rows){s.text(label,-.7,y,{align:'right',size:12,color:'muted'});for(let i=0;i<mS.value;i++){const selected=covered.has(i),diff=phase>=2&&label==='p then block'&&info.afterBlock[i]!==info.baseline[i];s.rect(i-.34,y-.33,i+.34,y+.33,{fill:diff?'red':selected?'orange':'grid',fillAlpha:.25,color:diff?'red':selected?'orange':'muted',width:1.5});s.text(values?String(values[i]):selected?`q${info.cover.indexOf(i)+1}`:'—',i,y,{align:'center',size:14,color:'ink'});}}
+          if(phase>=2&&rmw.value)s.text(`returned bits: baseline [${info.returns0}]; after p [${info.returns1}]`,0,-.25,{align:'left',size:12,color:info.sameLocals?'muted':'red'});
         });
-        v.button('reset', reset);
-        v.render(() => {
-          const n = nS.value, m = mS.value;
-          sR.setView([-0.7, Math.max(m, 4) + 0.4], [-2.3, 2.5]);
-          for (let i = 0; i < m; i++) {
-            const c = cover[i], sel = (choice === i) || (choice < 0 && !fail && c === undefined && range(i).every((q) => cover[q] !== undefined));
-            sR.rect(i - 0.36, 0, i + 0.36, 0.8, { fill: c !== undefined ? 'orange' : 'grid', fillAlpha: c !== undefined ? 0.4 : 0.25, color: sel ? 'gold' : 'muted', width: sel ? 3 : 1.4, radius: 4 });
-            sR.text(`R${i + 1}`, i, 0.4, { align: 'center', size: 15, color: 'ink' });
-            if (c !== undefined) { sR.dot(i, 1.9, { r: 14, color: 'orange' }); sR.text(`p${c + 1}`, i, 1.9, { align: 'center', size: 13, color: 'ink' }); sR.arrow(i, 1.55, i, 0.9, { color: 'orange', width: 2.2 }); }
-          }
-          for (let j = k; j < n; j++) { sR.dot(j * (Math.max(m, 4) - 0.3) / Math.max(1, n - 1), -1.2, { r: j === k && !fail ? 13 : 11, color: j === k ? 'gold' : 'faint' }); sR.text(`p${j + 1}`, j * (Math.max(m, 4) - 0.3) / Math.max(1, n - 1), -1.2, { align: 'center', size: 12, color: 'ink' }); }
-          sR.text('processes still in the remainder', 0, -1.95, { align: 'left', size: 12, color: 'muted' });
-          sL.el.style.display = fail ? '' : 'none';
-          if (fail) {
-            const lanes = [`q`, `p${fail.p + 1}`, ...range(k).map((i) => `p${i + 1}`)], N = lanes.length;
-            drawLanes(sL, N, 10.5, { names: lanes });
-            const Y = (i) => ly(i, N);
-            sL.rect(0.4, Y(1) - 0.25, 3.4, Y(1) + 0.25, { fill: 'accent', fillAlpha: 0.3, color: 'accent', width: 1.5, radius: 4 });
-            sL.text(`p${fail.p + 1} runs alone, writes only covered registers`, 0.5, Y(1) + 0.55, { align: 'left', size: 11, color: 'accent' });
-            sL.dot(3.9, Y(1), { r: 7, color: 'green' }); sL.text(`p${fail.p + 1} critical`, 4, Y(1), { align: 'left', dx: 6, size: 12, color: 'green', halo: true });
-            for (let i = 0; i < k; i++) { sL.dot(4.4 + 0.4 * i, Y(2 + i), { r: 5, color: 'red' }); sL.text('writes', 4.4 + 0.4 * i, Y(2 + i), { align: 'left', dx: 8, baseline: 'bottom', dy: -4, size: 11, color: 'red', halo: true }); }
-            sL.rect(6.2, Y(0) - 0.25, 9.0, Y(0) + 0.25, { fill: 'purple', fillAlpha: 0.3, color: 'purple', width: 1.5, radius: 4 });
-            sL.text('q runs alone: sees the initial memory', 6.2, Y(0) + 0.55, { align: 'left', size: 11, color: 'purple' });
-            sL.dot(9.3, Y(0), { r: 7, color: 'red' }); sL.text('q critical too', 9.4, Y(0), { align: 'right', dy: -16, size: 12, color: 'red', halo: true });
-          }
-        });
-        v.readout(() => {
-          const n = nS.value, m = mS.value, free = range(m).filter((i) => cover[i] === undefined).length;
-          const state = fail ? `**Contradiction**: p${fail.p + 1} and q are both critical, so no such algorithm exists with these registers.` : k >= n ? `All $${n}$ processes cover distinct registers, which needs $m\\ge ${n}$ registers.` : free === 0 && !rmw.value ? `All ${m} registers are covered but ${n - k} process${n - k > 1 ? 'es remain' : ' remains'}: the next one must write a covered register, so mutual exclusion must fail.` : `${k} of ${n} processes poised; ${free} uncovered register${free === 1 ? '' : 's'} left.`;
-          return `${note ? note + ' ' : ''}${state}\n$n=${n}$, $m=${m}$: the theorem requires $m\\ge n$ for algorithms using only reads and writes${m >= n ? ' (satisfied)' : ' (violated, so none exists)'}.`;
-        });
+        v.readout(()=>`${note?note+' ':''}${covered.size} distinct pending coverers among ${nS.value-1} other processes. ${outside.value&&info.free===undefined?'No uncovered cell is available. ':''}`+
+          (phase<2?'Apply the hypothetical writes and then the covering block to compare states.':`Final memory ${info.sameMemory?'agrees':'differs'}; coverer return values ${info.sameLocals?'agree':'differ'}. ${info.erased?'This chosen write trace is erased from the other processes’ view.':'This trace is not hidden by the block.'}`)+
+          `\n${rmw.value?'Test-and-set is outside the read/write lower-bound model; one such lock bit can suffice for exclusion with global progress.':`The source theorem requires m≥n: m=${mS.value}, n=${nS.value} ${mS.value>=nS.value?'satisfies that necessary bound':'violates it for a hypothetical globally progressing read/write solution'}.`} The table is an erasure experiment, not an existence test for an algorithm.`);
       },
     },
   ],

@@ -1,0 +1,74 @@
+{
+  "candidate": "1dc0c8fa4a47faf1b60e07793e9fc508a656aa20",
+  "baseline": "95f05d0fc64be0e105ca8c3928852c121cb35749",
+  "ownMathAssertions": 2215,
+  "ownMathGroups": 19,
+  "fullObjects": 37,
+  "fullRawRows": 85,
+  "addedEdges": 23,
+  "mainCases": 42,
+  "mainPictures": 168,
+  "personallyInspectedMainFields": 84,
+  "controlPictures": 16,
+  "correctedCaptionPictures": 4,
+  "touchedBridgePictures": 6,
+  "closingPictures": 8,
+  "files": [
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/preservation.log",
+      "sha256": "3040812d4d5e106baa2daddd1510f626329c8fe91017fbc227ba74265f00644b"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/math.log",
+      "sha256": "0deb96c9453a3195b0b84f7191c4983beaefb381473a54918430b9a7d17b234a"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/build.log",
+      "sha256": "5a535bb2ba7a6e8119928a6ab8604167ceb39fbc9b677004df6f24fbb936b0bc"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/static.log",
+      "sha256": "97753a578de3c9123b4532d9527a5d31eb9a51b5257e02c26493d70293288b40"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/existing-math.log",
+      "sha256": "8e8a9a3d17b9b66864efd6b1a4dbdf1e91dc2c25b5ef91be6bf6c60827c462f5"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/native/native.json",
+      "sha256": "82dcd6204eb32b7c82b136b108c29cb10844a0029f0498f7a64ceaf6d399c8a1"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/controls/response.json",
+      "sha256": "8db1ac1875bcb8f9d68ec0b930f0ef40e6095fdc752035dc2658b75a2b41cf08"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/captions/native.json",
+      "sha256": "ae9622c1e35228a386cddd50a6e432a783bdf8b4cc1855a2c3b02f45c75b75e3"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/bridge/bridge.json",
+      "sha256": "eae939bef9b9661b3c9d6aeb299e91e1d7bf1d873e72869025736a90c29ac7fd"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/closing-preservation.log",
+      "sha256": "3040812d4d5e106baa2daddd1510f626329c8fe91017fbc227ba74265f00644b"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/closing-build.log",
+      "sha256": "5a535bb2ba7a6e8119928a6ab8604167ceb39fbc9b677004df6f24fbb936b0bc"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/closing-static.log",
+      "sha256": "ee606c319d51a669c94a77be99255d36335311e5fbcd92df04226e020af5d18e"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/closing-math.log",
+      "sha256": "0deb96c9453a3195b0b84f7191c4983beaefb381473a54918430b9a7d17b234a"
+    },
+    {
+      "path": "/tmp/atlas-thermo-sysbio-peer/closing-native/closing.json",
+      "sha256": "ce6dd9b90f18b4108fed6cfbda91ea5df7764b3aaed57721075420754534575c"
+    }
+  ]
+}

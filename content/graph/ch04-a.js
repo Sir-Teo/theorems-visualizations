@@ -1,3 +1,4 @@
+import {polygonRadius,radialLower,angularMap,conePoint,coneMeshAngles,complementProbe,checkedPlaneState,checkedPlaneGuard} from './ch04-plane-audit.shared.js';
 // Graph Theory (Diestel) — Chapter 4, part A (§§4.1–4.2, first half: topological prerequisites; plane graphs and their faces)
 // The chapter title and summary come from the syllabus (part B writes §§4.3–4.6 in ch04-b*.js).
 import {
@@ -40,10 +41,10 @@ export default {
       num: '4.1.1a', kind: 'Definition', name: 'Polygons, arcs, regions and frontiers',
       statement: String.raw`A **polygonal arc** is a subset of the plane that is a union of finitely many straight segments and homeomorphic to $[0,1]$; the images of $0$ and $1$ are its **endpoints**, and the rest is its interior. A **polygon** is such a union homeomorphic to a circle. (Diestel simply says *arc* for polygonal arcs throughout the chapter.)
 
-For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equivalence relation; its classes are the **regions** of $O$. Unions of finitely many arcs and points are compact, so the complement $\R^2\setminus X$ of such an $X$ is open and has regions. The **frontier** of a set $Y$ consists of the points every neighbourhood of which meets both $Y$ and $\R^2\setminus Y$.`,
+For an open set $O\subseteq\R^2$, "are equal or can be joined by an arc inside $O$" is an equivalence relation; its classes are the **regions** of $O$. Unions of finitely many arcs and points are compact, so the complement $\R^2\setminus X$ of such an $X$ is open and has regions. The **frontier** of a set $Y$ consists of the points every neighbourhood of which meets both $Y$ and $\R^2\setminus Y$.`,
       idea: String.raw`Nothing is proved here: these are the words in which every later argument about drawings is phrased. Regions are the connected pieces of the complement that can be reached from each other by a polygonal path, and the frontier of a region is the part of $X$ that touches it. The pictures to keep in mind: an arc leaves one region, a polygon cuts the plane in two, and a region can be touched by only part of $X$.`,
-      caption: String.raw`Drag the vertices of the drawn set $X$ (choose one of five examples). Its complement is cut into **regions**, each tinted; the gold point $p$ selects one region, which turns blue, and its **frontier** is traced in bold. Try to make the polygon cross itself: the count of regions changes, and the frontier of a region is then no longer all of $X$.`,
-      deps: [], refs: ['Diestel, Graph Theory, 6th ed., §4.1, pp. 94–95'], tags: ['regions', 'polygonal arcs'], links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Polygonal_chain' },
+      caption: String.raw`Drag the vertices of the drawn set $X$ (choose one of five examples). Its complement is cut into **regions**, each tinted; the gold point $p$ selects one region, which turns blue, and its **frontier** is traced in bold. The preset labels describe their initial shapes; after free dragging an arc or polygon may cease to be simple. Crossings are split for the floating-point face calculation; the displayed counts use geometric tolerances near degeneracies. If $p$ is within 0.02 data units of the drawing, no complementary region is assigned; move it away to select a region.`,
+      deps: [], refs: ['Diestel, Graph Theory, sixth-edition author preview (2025), §4.1, pp.94–95'], tags: ['regions', 'polygonal arcs'], links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const SETS = {
           arc: { name: 'an arc', parts: [{ n: 5, closed: false, pts: [[1.2, 1.6], [3.0, 4.8], [4.8, 2.0], [6.6, 5.0], [8.6, 2.4]] }] },
@@ -62,23 +63,24 @@ For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equ
         v.render(() => {
           const S = SETS[sel.value]; let o = 0;
           const parts = S.parts.map((q) => { const r = { pts: hs.slice(o, o + q.n).map((h) => [h.x, h.y]), closed: q.closed }; o += q.n; return r; });
-          const R = regionsOf(parts), F = R.F, cur = F.locate(p.x, p.y), fr = F.faces[cur];
+          const R=complementProbe(parts,[p.x,p.y]),F=R.F,cur=R.cur,fr=cur===null?null:F.faces[cur];
           paintRegions(s, R, (i) => (i === cur ? 'accent' : i ? FILLS[i % 8] : null), 0.2);
           parts.forEach((q) => s.path(q.pts, { color: 'ink', width: 2.4, close: q.closed }));
-          R.pl.E.forEach(([a, b], k) => { if (fr.edges.has(k)) s.line(R.pl.P[a][0], R.pl.P[a][1], R.pl.P[b][0], R.pl.P[b][1], { color: 'accent', width: 5, alpha: 0.9 }); });
+          R.pl.E.forEach(([a, b], k) => { if (fr?.edges.has(k)) s.line(R.pl.P[a][0], R.pl.P[a][1], R.pl.P[b][0], R.pl.P[b][1], { color: 'accent', width: 5, alpha: 0.9 }); });
+          R.frontierPoints.forEach(q=>s.dot(...q,{color:'accent',r:5}));
           const totE = R.pl.E.length;
-          info = { regions: F.faces.length, cur, bounded: cur > 0, fe: fr.edges.size, tot: totE, nparts: parts.length };
+          info = { regions: F.faces.length, cur, bounded: cur > 0, fe: fr?.edges.size||0, tot: totE, nparts: parts.length,near:R.near,all:R.allFrontier };
         });
-        v.readout(() => (info ? `$\\mathbb R^2\\setminus X$ has **${info.regions}** region${info.regions === 1 ? '' : 's'} · $p$ lies in the ${info.bounded ? 'bounded' : 'unbounded'} region, whose frontier is ${info.fe === info.tot ? '**all of $X$**' : `**${info.fe} of the ${info.tot} segments of $X$**`}` : ''));
+        v.readout(() => (info ? info.near?`The complement has ${info.regions} regions. $p$ is on or within 0.02 units of the drawing; no region is assigned.`:`$\\mathbb R^2\\setminus X$ has **${info.regions}** region${info.regions === 1 ? '' : 's'} · $p$ lies in the ${info.bounded ? 'bounded' : 'unbounded'} region, whose frontier is ${info.all ? '**all of $X$**' : `**${info.fe} of the ${info.tot} segments of $X$**`}` : ''));
       },
     },
     {
       num: '4.1.1', kind: 'Theorem', name: 'Jordan curve theorem for polygons',
       statement: String.raw`For every polygon $P\subseteq\R^2$, the set $\R^2\setminus P$ has exactly two regions, and each of them has the entire polygon $P$ as its frontier. (One region is bounded, the **inside**, the other is unbounded.)`,
-      idea: String.raw`Shoot a ray from a point $x\notin P$ in a direction that avoids all vertices and count how often it crosses $P$. The parity of that count does not depend on the direction, and it can only change when $x$ crosses an edge of $P$, because a crossing at a vertex comes in pairs: it counts as two or as none. Hence the parity is constant on each region, and since both parities occur next to every edge, there are exactly two regions, both having every point of $P$ on their frontier.`,
+      idea: String.raw`Shoot a ray from a point $x\notin P$ in a direction that avoids all vertices and count how often it crosses $P$. The parity of that count does not depend on the direction, and it can only change when $x$ crosses an edge of $P$, because a crossing at a vertex comes in pairs: it counts as two or as none. Thus parity is constant on each region and opposite parities occur next to every edge. This is a useful way to recognise the two sides; proving that each parity class is connected is an additional global step in the Jordan theorem. The parity calculation alone does not prove there are only two regions.`,
       caption: String.raw`Drag the vertices to reshape the polygon (it must stay simple unless you switch to *free*), drag the gold point $p$ and turn the ray with the slider: the gold marks are the crossings and their parity says inside or outside, whatever the direction. In *free* mode, make the polygon cross itself, and the plane falls into more than two regions: the hypothesis "polygon" has been broken.`,
       deps: ['graph-4.1.1a'], refs: ['Diestel §4.1'], see: ['top-10.1', 'top-10.5'], tags: ['Jordan curve', 'parity'],
-      credit: 'Jordan, 1887; first fully accepted proof by Veblen, 1905', links: { wikipedia: 'https://en.wikipedia.org/wiki/Jordan_curve_theorem' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Jordan_curve_theorem' },
       viz(v) {
         const SH = {
           blob: [[2.0, 1.4], [5.0, 0.8], [8.2, 1.6], [8.8, 3.8], [6.4, 5.4], [4.6, 4.2], [2.8, 5.2], [1.2, 3.4]],
@@ -247,22 +249,18 @@ For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equ
     {
       num: '4.1.4', kind: 'Theorem', name: 'Homeomorphisms of circles extend to the discs they bound',
       statement: String.raw`Let $\varphi\colon C_1\to C_2$ be a homeomorphism between two circles on the sphere $S^2$ (images, under the inverse of a stereographic projection $\pi\colon S^2\setminus\{N\}\to\R^2$, of polygons in the plane), let $O_1$ be a region of $S^2\setminus C_1$ and $O_2$ a region of $S^2\setminus C_2$. Then $\varphi$ extends to a homeomorphism $C_1\cup O_1\to C_2\cup O_2$.`,
-      idea: String.raw`This is the Jordan–Schoenflies theorem. It says that every circle is a standard circle up to a homeomorphism of the whole surface, so the two regions of a circle on the sphere are discs, and a homeomorphism between the boundary circles is enough to glue a disc to a disc. In the picture the target circle is star-shaped around a point $c$, and the extension is the cone construction: a point at relative radius $r$ and angle $\theta$ goes to the point at relative radius $r$ on the ray towards $\varphi(\theta)$.`,
-      caption: String.raw`Left: the unit circle with a polar mesh. Right: a closed curve (choose its shape) with four coloured handles; drag them along the curve to choose the boundary map $\varphi$ (the markers stay in order around the circle). The mesh is carried to the curve's disc by the cone extension. The readout checks that every mesh cell keeps its orientation, as expected for this orientation-preserving cone extension. A reversed boundary map would instead give an orientation-reversing homeomorphism.`,
-      deps: ['graph-4.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.1.4, p. 96'], see: ['top-10.6'], tags: ['Jordan–Schoenflies', 'homeomorphism'],
-      credit: 'Jordan–Schoenflies theorem',  links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Schoenflies_problem' },
+      idea: String.raw`This is the Jordan–Schoenflies theorem. It says that every circle is a standard circle up to a homeomorphism of the whole surface, so the two regions of a circle on the sphere are discs, and a homeomorphism between the boundary circles is enough to glue a disc to a disc. The example uses two star-shaped polygons and an explicitly monotone angular boundary map. Positive radial functions and a strictly monotone angular map give an explicit continuous inverse to the cone extension, including at the centre. This proves the displayed special case; a finite mesh orientation check would not establish the general theorem.`,
+      caption: String.raw`Planar representatives of the theorem's bounded discs: the source is a regular 80-gon, and the target is an 80-edge star-shaped polygon. Drag the four target markers; their angular parameters stay in order. Choose a preserving or reversing boundary map: both extend homeomorphically. The polar mesh uses relative radius inside each polygon. The readout checks analytic positive-radius and angular-gap bounds, rather than treating a finite mesh as a proof.`,
+      deps: ['graph-4.1.1a'], refs: ['Diestel, Graph Theory, sixth-edition author preview (2025), Theorem 4.1.4 and preceding definitions, p.96'], see: ['top-10.6'], tags: ['Jordan–Schoenflies', 'homeomorphism'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
-        const RHO = {
-          blob: (a) => 1 + 0.28 * Math.cos(3 * a) + 0.12 * Math.sin(2 * a + 0.6),
-          star: (a) => 1 + 0.42 * Math.cos(5 * a),
-          pear: (a) => 0.8 + 0.35 * (1 + Math.cos(a - 1.2)) * 0.8 + 0.1 * Math.cos(2 * a),
-        };
         const shape = v.select('target curve', [{ value: 'blob', label: 'blob' }, { value: 'star', label: 'five-pointed' }, { value: 'pear', label: 'pear' }], 'blob', { onChange: () => reset() });
-        const sL = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 340, title: 'the circle $C_1$ and its disc' });
-        const sR = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 340, title: 'the curve $C_2$ and its disc' });
+        const orientation=v.select('boundary orientation',[{value:'preserve',label:'preserving'},{value:'reverse',label:'reversing'}],'preserve');
+        const sL = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 340, title: 'source polygon and bounded disc' });
+        const sR = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 340, title: 'target polygon and bounded disc' });
         const th = [0, 1, 2, 3].map((i) => (i * Math.PI) / 2), al = th.slice();
         const COL = ['blue', 'orange', 'green', 'purple'];
-        const rho = (a) => RHO[shape.value](a), C = [0, 0];
+        const rho=(a)=>polygonRadius(shape.value,a),C=[0,0];
         const pt = (a) => [C[0] + rho(a) * Math.cos(a), C[1] + rho(a) * Math.sin(a)];
         const wrap = (x) => { while (x > Math.PI) x -= TAU; while (x <= -Math.PI) x += TAU; return x; };
         const hs = th.map((t, i) => {
@@ -277,41 +275,31 @@ For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equ
           return h;
         });
         function reset() { al.splice(0, 4, ...th); hs.forEach((h, i) => h.set(...pt(th[i]))); }
-        const phi = (t) => { // piecewise linear, period 2π
-          let u = ((t % TAU) + TAU) % TAU, k = Math.min(3, Math.floor(u / (Math.PI / 2)));
-          const a0 = al[k], a1 = k === 3 ? al[0] + TAU : al[k + 1], f = (u - th[k]) / (Math.PI / 2);
-          return a0 + f * (a1 - a0);
-        };
-        const F = (r, t) => { const a = phi(t); return [C[0] + r * rho(a) * Math.cos(a), C[1] + r * rho(a) * Math.sin(a)]; };
+        const phi=t=>angularMap(t,al,orientation.value==='reverse');
+        const F=(r,t)=>conePoint(r,t,shape.value,al,orientation.value==='reverse');
+        const sourcePoint=(r,t)=>{const rho=polygonRadius('source',t);return [r*rho*Math.cos(t),r*rho*Math.sin(t)];};
         let info = null;
         v.render(() => {
-          const NR = 5, NS = 24, NT = 120;
+          const NR=5,NS=24,NT=160;const reverse=orientation.value==='reverse',samples=coneMeshAngles(shape.value,al,reverse);hs.forEach((h,i)=>h.color=COL[reverse?(4-i)%4:i]);
           // sectors tinted by quarter
           for (let q = 0; q < 4; q++) {
             const t0 = th[q], t1 = t0 + Math.PI / 2, B = [[0, 0]], D = [[0, 0]];
-            for (let i = 0; i <= 30; i++) { const t = t0 + ((t1 - t0) * i) / 30; B.push([Math.cos(t), Math.sin(t)]); D.push(F(1, t)); }
+            for(const t of samples.filter(t=>t>=t0-1e-10&&t<=t1+1e-10)){B.push(sourcePoint(1,t));D.push(F(1,t));}
             sL.poly(B, { fill: COL[q], fillAlpha: 0.14, stroke: false }); sR.poly(D, { fill: COL[q], fillAlpha: 0.14, stroke: false });
           }
           for (let k = 1; k <= NR; k++) {
             const r = k / NR, a = [], b = [];
-            for (let i = 0; i <= NT; i++) { const t = (TAU * i) / NT; a.push([r * Math.cos(t), r * Math.sin(t)]); b.push(F(r, t)); }
+            for(const t of samples){a.push(sourcePoint(r,t));b.push(F(r,t));}
             sL.path(a, { color: k === NR ? 'ink' : 'muted', width: k === NR ? 2.6 : 1.2 }); sR.path(b, { color: k === NR ? 'ink' : 'muted', width: k === NR ? 2.6 : 1.2 });
           }
           for (let j = 0; j < NS; j++) {
-            const t = (TAU * j) / NS; sL.line(0, 0, Math.cos(t), Math.sin(t), { color: 'muted', width: 1.2 }); const e = F(1, t); sR.line(C[0], C[1], e[0], e[1], { color: 'muted', width: 1.2 });
+            const t = (TAU * j) / NS; sL.line(0,0,...sourcePoint(1,t), { color: 'muted', width: 1.2 }); const e = F(1, t); sR.line(C[0], C[1], e[0], e[1], { color: 'muted', width: 1.2 });
           }
-          th.forEach((t, i) => sL.dot(Math.cos(t), Math.sin(t), { r: 8, color: COL[i], label: String(i + 1) }));
-          // orientation of every mesh cell
-          let pos = 0, tot = 0;
-          for (let k = 0; k < NR; k++) for (let j = 0; j < NS; j++) {
-            const r0 = k / NR, r1 = (k + 1) / NR, t0 = (TAU * j) / NS, t1 = (TAU * (j + 1)) / NS;
-            const p = [F(r0, t0), F(r1, t0), F(r1, t1), F(r0, t1)];
-            let area = 0; for (let i = 0; i < 4; i++) area += p[i][0] * p[(i + 1) % 4][1] - p[(i + 1) % 4][0] * p[i][1];
-            tot++; if (area > 0) pos++;
-          }
-          info = { flipped: tot - pos, tot, pos };
+          th.forEach((t, i) => sL.dot(...sourcePoint(1,t), { r: 8, color: COL[i], label: String(i + 1) }));
+          const gaps=al.map((a,i)=>(i===3?al[0]+TAU:al[i+1])-a);
+          info={minGap:Math.min(...gaps),minSlope:Math.min(...gaps)/(Math.PI/2),radial:radialLower[shape.value]*Math.cos(Math.PI/80),reverse};
         });
-        v.readout(() => (info ? `boundary map: markers $1,2,3,4$ go to angles ${al.map((a) => v.fix(((a * 180) / Math.PI + 720) % 360, 0) + '°').join(', ')} · **${info.pos} of ${info.tot}** mesh cells keep their orientation ${info.pos === info.tot ? '✓' : '✗'} (the extension is a homeomorphism of the closed discs)` : ''));
+        v.readout(()=>info&&`Minimum target radial bound $${v.fix(info.radial,4)}>0$; minimum angular gap $${v.fix(info.minGap,4)}$ radians, so $|\\varphi'|\\ge${v.fix(info.minSlope,4)}>0$ on each linear piece. The angular map is strictly ${info.reverse?'decreasing (orientation reversing)':'increasing (orientation preserving)'}. Its inverse and positive radial division define the inverse disc map; finite mesh cells are only an illustration.`);
       },
     },
     // ====================================================================== 4.2 Plane graphs
@@ -319,8 +307,8 @@ For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equ
       num: '4.2.1a', kind: 'Definition', name: 'Plane graphs and faces',
       statement: String.raw`A **plane graph** is a pair $(V,E)$ of finite sets with $V\subseteq\R^2$, in which every edge is an arc between two vertices, different edges have different sets of endpoints, and the interior of an edge contains no vertex and no point of any other edge. The **faces** of a plane graph $G$ are the regions of $\R^2\setminus G$. Exactly one face is unbounded, the **outer face**; the others are **inner faces**. $F(G)$ is the set of faces.`,
       idea: String.raw`A plane graph is a graph together with one particular crossing-free drawing. The faces are the pieces the drawing leaves of the plane, so they are determined by the drawing and not by the abstract graph, and the same graph can have differently shaped faces in different drawings. Every face is open and its frontier lies in $G$.`,
-      caption: String.raw`Edit the drawing (${'click empty space to add a vertex, click two vertices to join them, drag to move, Alt-click to delete'}); edges that would cross are refused. Faces are tinted and numbered, the outer face is grey. For a plane graph with $c$ components, $n-m+\ell=1+c$.`,
-      deps: ['graph-4.1.1a', 'graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.2, pp. 96–97'], tags: ['plane graph', 'faces'], links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Planar_graph' },
+      caption: String.raw`Edit the drawing (${'click empty space to add a vertex, click two vertices to join them, drag to move, Alt-click to delete'}); crossings and edge/foreign-vertex contacts are refused on release, and vertices must stay at least 0.08 data units apart for numerical clearance. Clicking an already joined pair removes that edge. Faces are tinted and numbered, the outer face is grey. For a plane graph with $c$ components, $n-m+\ell=1+c$.`,
+      deps: ['graph-4.1.1a', 'graph-1.1.1a'], refs: ['Diestel, Graph Theory, sixth-edition author preview (2025), unnumbered plane-graph and face definitions, pp.96–97'], tags: ['plane graph', 'faces'], links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const PRE = {
           house: () => planeSpec({ a: [2, 1], b: [7, 1], c: [7, 4], d: [4.5, 5.4], e: [2, 4], f: [4.5, 6.0] }, 'ab bc cd de ea ac df'),
@@ -332,10 +320,10 @@ For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equ
         const s = gstage(v, { height: 350 });
         const st = { msg: '' };
         const G = v.graph(s, { ...PRE.house(), r: 10, editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true } });
-        const guard = planeGuard(G, st);
+        const guard = checkedPlaneGuard(G, st);
         let info = null;
         v.render(() => {
-          const ps = planeState(G);
+          const ps = checkedPlaneState(G);
           if (ps.bad.length) { markCross(s, ps.bad); info = { bad: true }; G.draw({}); s.corner('crossing: release to undo', 'tr', { color: 'red', weight: 700 }); return; }
           const F = ps.F;
           paintFaces(s, F, { colorOf: (i) => (i ? FILLS[(i - 1) % 8] : 'muted'), alpha: 0.2 });
@@ -344,7 +332,7 @@ For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equ
           if (st.msg) s.corner(st.msg, 'bl', { color: 'red', weight: 600, size: 12.5 });
           info = { n: ps.P.length, m: ps.E.length, l: F.faces.length, c: F.comps, lens: F.faces.map((f) => f.len) };
         });
-        v.readout(() => (info && !info.bad ? `$n=${info.n}$, $m=${info.m}$, $\\ell=${info.l}$ faces, $c=${info.c}$ component${info.c === 1 ? '' : 's'} · $n-m+\\ell=${info.n - info.m + info.l}$ $=1+c$ ${info.n - info.m + info.l === 1 + info.c ? '✓' : '✗'} · face lengths (outer first): ${info.lens.join(', ')}` : ''));
+        v.readout(() => (info && !info.bad ? `${st.msg?st.msg+' · ':''}$n=${info.n}$, $m=${info.m}$, $\\ell=${info.l}$ faces, $c=${info.c}$ component${info.c === 1 ? '' : 's'} · $n-m+\\ell=${info.n - info.m + info.l}$ $=1+c$ ${info.n - info.m + info.l === 1 + info.c ? '✓' : '✗'} · face lengths (outer first): ${info.lens.join(', ')}` : ''));
       },
     },
     {

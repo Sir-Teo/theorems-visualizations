@@ -5,7 +5,7 @@
 // fine grid, step-function drawing, and seeded ±1 walks / multiplicative martingales.
 
 export * from './ch03.shared.js';
-import { clampN } from './ch03.shared.js';
+import { clampN, PHI, PhiN, simpson } from './ch03.shared.js';
 
 // ------------------------------------------------------------------ Ω = [0,1) on a grid
 /** Grid size: divisible by 48, so every cut that is a multiple of 1/48 falls on a grid boundary. */
@@ -108,3 +108,52 @@ export function expectPhi(phi, n, p = 0.5, x0 = 0) {
   return s;
 }
 import { binomPmf } from './ch03.shared.js';
+
+/** Integral of |cos x|/4 between two arc coordinates; uniform mode has density 1/(2pi). */
+export function borelArcMass(mode,a,b) {
+ if(mode==='eq')return (b-a)/(2*Math.PI);
+ const H=x=>{const k=Math.floor(x/Math.PI),r=x-k*Math.PI;return 2*k+(r<=Math.PI/2?Math.sin(r):2-Math.sin(r));};
+ return (H(b)-H(a))/4;
+}
+/** Selected full-sphere coordinates and exact bin-averaged reference densities. */
+export function borelSelection(theta,latitude,mode,delta,theta0=.4,bins=40) {
+ const mod=(x,q)=>((x%q)+q)%q,indices=[],values=[],counts=new Array(bins).fill(0),width=2*Math.PI/bins;
+ for(let i=0;i<theta.length;i++){
+  const d=mod(theta[i]-theta0,Math.PI),hit=mode==='eq'?Math.abs(latitude[i])<delta:Math.min(d,Math.PI-d)<delta;
+  if(!hit)continue;
+  const near=Math.abs(mod(theta[i]-theta0+Math.PI,2*Math.PI)-Math.PI)<Math.PI/2;
+  const x=mode==='eq'?theta[i]:near?latitude[i]:latitude[i]>=0?Math.PI-latitude[i]:-Math.PI-latitude[i];
+  indices.push(i);values.push(x);counts[Math.min(bins-1,Math.max(0,Math.floor((x+Math.PI)/width)))]++;
+ }
+ const n=indices.length,density=counts.map(c=>n?c/(n*width):0),reference=key=>Array.from({length:bins},(_,i)=>borelArcMass(key,-Math.PI+i*width,-Math.PI+(i+1)*width)/width),uniform=reference('eq'),cosine=reference('mer');
+ const l1=ref=>density.reduce((a,x,i)=>a+Math.abs(x-ref[i])*width,0);
+ return {indices,values,counts,density,uniform,cosine,l1Uniform:l1(uniform),l1Cosine:l1(cosine),ymax:1.12*Math.max(.25,...density)};
+}
+/** Finite preview of rational conditional-CDF versions. Perturbations occur only at Y=1/2, a null event. */
+export function conditionalCdfPreview(cdf,n,epsilon,noise,{exceptional=true,repair=false}={}) {
+ const qs=Array.from({length:n},(_,i)=>-4+8*i/(n-1)),G=qs.map((q,i)=>clampN(cdf(q)+(exceptional&&!repair?noise[i]*epsilon:0),0,1));
+ const suffix=new Array(n+1).fill(1);for(let i=n-1;i>=0;i--)suffix[i]=Math.min(suffix[i+1],G[i]);
+ const evaluate=x=>{const i=qs.findIndex(q=>q>x);return suffix[i<0?n:i];};
+ const points=[[-4.5,suffix[0]]];qs.forEach((q,i)=>points.push([q,suffix[i]],[q,suffix[i+1]]));points.push([4.5,1]);
+ let bad=0;G.forEach((g,i)=>{if((i&&G[i-1]>g+1e-12)||(i+1<n&&g>G[i+1]+1e-12))bad++;});
+ let sampledError=0;for(let i=0;i<=400;i++){const x=-4+8*i/400;sampledError=Math.max(sampledError,Math.abs(evaluate(x)-cdf(x)));}
+ return {qs,G,suffix,points,evaluate,bad,sampledError,low:evaluate(-4.4),high:evaluate(4.4)};
+}
+
+/** Gaussian conditional kernel and two rectangle probabilities used by the definition example. */
+export function gaussianConditionalKernel(M,rho,y,a,b,c) {
+ const sd=Math.sqrt(1-rho*rho),mean=rho*y,density=x=>PHI((x-mean)/sd)/sd;
+ const probability=PhiN(M,(b-mean)/sd)-PhiN(M,(a-mean)/sd);
+ const joint=simpson(z=>(PhiN(M,(b-rho*z)/sd)-PhiN(M,(a-rho*z)/sd))*PHI(z),-c,c,400);
+ return {sd,mean,density,probability,joint,finiteMass:simpson(density,mean-8*sd,mean+8*sd,600)};
+}
+
+/** Exact conditional moments and global extrema of the four illustrated Gaussian integrands. */
+export function gaussianFunctional(M,key,mean,sd) {
+ const f={sq:x=>x*x,ab:Math.abs,ind:x=>x>1?1:0,cu:x=>x**3}[key],density=x=>PHI((x-mean)/sd)/sd;
+ const moment=key==='sq'?mean*mean+sd*sd:key==='cu'?mean**3+3*mean*sd*sd:key==='ind'?PhiN(M,(mean-1)/sd):2*sd*PHI(mean/sd)+mean*(2*PhiN(M,mean/sd)-1);
+ const k={sq:2,ab:1,cu:3}[key],points=k?[0,(mean-Math.sqrt(mean*mean+4*k*sd*sd))/2,(mean+Math.sqrt(mean*mean+4*k*sd*sd))/2]:[1,Math.max(1,mean)];
+ // Include the one-sided limit at the indicator jump, not just its zero-valued endpoint.
+ const values=points.map(x=>key==='ind'?density(x):f(x)*density(x));
+ return{f,density,moment,integrand:x=>f(x)*density(x),lo:Math.min(0,...values),hi:Math.max(PHI(0)/sd,...values)};
+}

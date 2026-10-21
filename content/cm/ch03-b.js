@@ -1,6 +1,8 @@
 // Condensed Matter Physics — Chapter 3: Lattice vibrations, binding and defects (items 3.9–3.16; 3.1–3.8 in ch03.js)
 import { PI, bose, bgJ5, bgRho, debyeI1, debyeU2, feynman } from './ch03.shared.js';
 
+import { debyeRatio, meltingThreshold, dielectric, reflectivity, polariton, feynmanAudit, edgeDisplacement, slipStress } from './cm-source-audit-phonons.js';
+
 export default {
   collection: 'cm',
   chapter: 3,
@@ -16,7 +18,7 @@ so the linear expansion coefficient is $\alpha=\dfrac{1}{r_0}\dfrac{d\langle x\r
       idea: String.raw`The Boltzmann weight $e^{-V/k_BT}$ of a harmonic well is symmetric about the minimum, so $\langle x\rangle=0$ at every $T$ however large the amplitude of vibration (the Einstein oscillator of thermo-5.3 is exactly this harmonic case). Adding the cubic term tilts the weight toward the soft side: $e^{gx^3/k_BT}\approx1+gx^3/k_BT$, and $\langle x\rangle=(g/k_BT)\langle x^4\rangle_0=(g/k_BT)\cdot3(k_BT/f)^2$ by the Gaussian fourth moment. In a real crystal the same asymmetry makes the phonon frequencies depend on volume (Grüneisen parameter), which is where the quantum $T\to0$ freeze-out of $\alpha$ comes from.`,
       caption: String.raw`The potential well of a pair of atoms (left, $D=a=1$; the Morse form $D(1-e^{-ax})^2$ is a standard asymmetric model) with the Boltzmann weight $e^{-V/k_BT}$ shaded and its mean position marked by a gold line. Raise $k_BT$: in the **Morse** well the mean separation drifts to larger $x$; in the **harmonic** and **symmetric-quartic** wells it stays at $0$ however wide the weight becomes. **Right:** $\langle x\rangle$ against temperature, with the cubic-term prediction as a dashed line.`,
       scope: String.raw`Classical statistics (high $T$, above the Debye temperature) and a single bond; the average is over the bound well $-1.2\le ax\le3.5$ (dissociation excluded), accurate for $k_BT\lesssim0.15D$. Real $\alpha(T)$ vanishes as $T\to0$ (quantum freeze-out) and depends on the whole phonon spectrum, not on one bond.`,
-      deps: ['cm-3.2', 'pma-8.21'],
+      deps: ['cm-3.2'],
       refs: ['Ashcroft–Mermin ch. 25', 'Kittel ch. 5'],
       tags: ['anharmonicity', 'thermal expansion', 'morse potential'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Thermal_expansion' },
@@ -110,41 +112,32 @@ so the linear expansion coefficient is $\alpha=\dfrac{1}{r_0}\dfrac{d\langle x\r
       kind: 'Law',
       name: 'Lindemann melting criterion',
       credit: 'Lindemann, 1910',
-      statement: String.raw`The empirical Lindemann criterion estimates melting when the root-mean-square thermal displacement of its atoms reaches a fixed fraction of the nearest-neighbour distance, $\sqrt{\langle u^2\rangle}\approx c\,d$ with $c\approx0.1$–$0.2$ for many elements. In the Debye model the high-temperature value is
-$$\langle u^2\rangle=\frac{9\hbar^2T}{mk_B\Theta^2},\qquad\text{so}\qquad T_m\approx\frac{c^2d^2\,mk_B\Theta^2}{9\hbar^2},$$
-which makes $T_m$ rise with the square of the Debye temperature (stiff lattices melt higher) and with the atomic mass.`,
-      idea: String.raw`Each Debye mode contributes $\langle u^2\rangle\propto\hbar\omega(\bar n+\tfrac12)/(m\omega^2)$; summing over the Debye spectrum (cm-3.5, thermo-9.13's density of states) gives $\langle u^2\rangle=\frac{9\hbar^2}{mk_B\Theta}\big[\tfrac14+(T/\Theta)^2\int_0^{\Theta/T}\frac{x\,dx}{e^x-1}\big]$: a zero-point term at low $T$ and linear growth at high $T$. The criterion is empirical: it says that once atoms wander over a fixed fraction of a bond length, the cage of neighbours no longer holds the structure together, but it does not say why this ratio should be universal.`,
-      caption: String.raw`Pick an element: the curve is $\sqrt{\langle u^2\rangle}/d$ from the Debye formula against temperature (dashed: the classical high-$T$ line, which underestimates the quantum rms at low $T$). The vertical line is the real melting point, and the gold dot the ratio there; the horizontal line is the Lindemann constant $c$ you choose, whose intersection with the curve predicts a melting temperature. The bars (right) give the ratio at $T_m$ for nine elements: they span roughly $0.10$–$0.18$ in this model.`,
-      scope: String.raw`A rule of thumb with large element-to-element scatter in $c$ (it also depends on whether the total or one-component rms is quoted; here the total three-dimensional rms). Debye temperatures are the low-temperature calorimetric values of Kittel's table (via a secondary compilation), melting points the recommended values on Wikipedia's melting-point data page, nearest-neighbour distances and atomic masses standard handbook values quoted from memory; the Debye model is applied to the whole range, though $\Theta$ itself varies with $T$.`,
+      statement: String.raw`The **Lindemann criterion** estimates melting by requiring the total three-dimensional rms displacement to reach a chosen fraction $c$ of the nearest-neighbour distance $d$: $\sqrt{\langle u^2\rangle}/d\approx c$. It is an empirical rule, not a universal instability theorem. In the Debye model,
+$$\frac{\langle u^2\rangle}{d^2}=\eta\left[\frac14+t^2\int_0^{1/t}\frac{x\,dx}{e^x-1}\right],\quad t=\frac T\Theta,\quad\eta=\frac{9\hbar^2}{mk_B\Theta d^2}.$$
+At $T\gg\Theta$ this approaches $\eta t$, giving $T_m/\Theta\approx c^2/\eta$.`,
+      idea: String.raw`For each normal coordinate the harmonic-oscillator displacement is $\hbar(\bar n+1/2)/(m\omega)$. Integrate over the Debye density of states $9N\omega^2/\omega_D^3$ and divide by the number of atoms. This gives the formula above, including zero-point displacement $\eta/4$. The classical approximation lies **below** the quantum displacement and becomes accurate at high temperature. Lindemann's original 1910 article instead estimates an Einstein frequency from an assumed collision amplitude and a known melting point; the Debye/rms threshold shown here is a later model formulation, not his original derivation.`,
+      caption: String.raw`Choose a model value of $\eta$ and a threshold $c$. Left: total rms displacement against $T/\Theta$, compared with its classical limit. The crossing predicts a temperature only when $c>\sqrt{\eta}/2$; otherwise even the zero-point rms already reaches the threshold and this rule supplies no positive-temperature crossing. Right: predicted threshold temperature versus $\eta$ at the same $c$. These are model curves, with no experimental melting data.`,
+      scope: String.raw`Isotropic Debye spectrum, constant $\Theta$ and harmonic oscillators; the criterion supplies a heuristic threshold and does not calculate the solid/liquid free-energy difference. One-component rms is smaller by $\sqrt3$. The zero-point threshold failure is a limitation of this estimate, not a demonstration that a real material melts at zero temperature.`,
       deps: ['thermo-5.3', 'cm-3.5'],
-      refs: ['Ashcroft–Mermin ch. 21'],
+      refs: ['Lindemann, Physikalische Zeitschrift 11 (1910),609–612; original scan, NASA19840027015', 'Tong, Statistical Physics, §3.3.1: Debye density of states; harmonic displacement integration as derived here'],
       tags: ['melting', 'lindemann', 'debye model'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lindemann_index' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const C = v.M.CONST, hb = C.hbar, kB = C.kB, u = C.u;
-        const EL = { Na: [158, 370.944, 22.99, 3.72], K: [91, 336.7, 39.1, 4.62], Al: [428, 933.47, 26.98, 2.86], Fe: [470, 1811, 55.85, 2.48], Ni: [450, 1728, 58.69, 2.49], Cu: [343, 1357.77, 63.55, 2.56], Ag: [225, 1234.93, 107.87, 2.89], Au: [165, 1337.33, 196.97, 2.88], Pb: [105, 600.61, 207.2, 3.5] };
-        const names = Object.keys(EL);
-        const sel = v.select('element', names, 'Cu');
-        const cS = v.slider('Lindemann constant $c$', 0.05, 0.25, 0.11, { step: 0.005 });
-        const ratio = (el, T) => { const [th, , m, d] = EL[el]; return (Math.sqrt(debyeU2(T, th, m * u, hb, kB)) * 1e10) / d; };
-        const sA = v.stage({ x: [0, 2000], y: [0, 0.25], axes: 'box', gutter: true, height: 340, xlabel: 'temperature $T$ (K)', ylabel: '$\\sqrt{\\langle u^2\\rangle}/d$', title: 'rms vibration amplitude relative to nearest-neighbour distance', weight: 1.2 });
-        const sB = v.stage({ x: [0.3, 9.7], y: [0, 0.2], axes: 'box', gutter: true, height: 340, ylabel: 'ratio at the melting point', title: 'ratio at $T_m$ for nine elements', weight: 0.9, xticks: names.map((n, i) => [i + 1, n]) });
-        v.legend([['accent', 'Debye model'], ['muted', 'classical high-$T$ limit', { dash: true }], ['red', 'melting point'], ['orange', 'constant $c$']]);
-        v.render(() => {
-          const el = sel.value, [th, tm, m, d] = EL[el], c = cS.value;
-          sA.fn((T) => ratio(el, T), { color: 'accent', width: 2.6, domain: [1, 2000], n: 200 });
-          sA.fn((T) => (Math.sqrt((9 * hb * hb * T) / (m * u * kB * th * th)) * 1e10) / d, { color: 'muted', width: 1.4, dash: [5, 4], domain: [1, 2000] });
-          sA.vline(tm, { color: 'red', width: 2 }); sA.dot(tm, ratio(el, tm), { r: 6, color: 'gold' });
-          sA.hline(c, { color: 'orange', width: 1.6, dash: [4, 3] });
-          sB.bars(names.map((n) => ratio(n, EL[n][1])), { x0: 1, dx: 1, color: (val, i) => (names[i] === el ? 'accent' : 'faint') });
-          sB.hline(c, { color: 'orange', width: 1.6, dash: [4, 3] });
+        const eta=v.slider('quantum displacement scale $\\eta$',.002,.05,.008,{step:.001});
+        const cs=v.slider('rms threshold $c$',.05,.25,.11,{step:.005});
+        const pre=v.select('model scale',[{value:.004,label:'η = 0.004'},{value:.008,label:'η = 0.008'},{value:.016,label:'η = 0.016'}],.008,{onChange:x=>eta.set(+x)});
+        const sA=v.stage({x:[0,6],y:[0,.4],axes:'box',gutter:true,height:350,xlabel:'temperature $T/\\Theta$',ylabel:'total rms displacement $/d$',title:'Debye displacement and threshold'});
+        const sB=v.stage({x:[.002,.05],y:[0,6],axes:'box',gutter:true,height:350,xlabel:'quantum scale $\\eta$',ylabel:'threshold temperature $T_m/\\Theta$',title:'model threshold, where positive'});
+        v.legend([['accent','quantum Debye'],['muted','classical limit',{dash:true}],['orange','chosen threshold'],['gold','chosen model']]);
+        let st={};
+        v.render(()=>{
+          const e=eta.value,c=cs.value,root=meltingThreshold(e,c),tmax=Math.max(3,root===null?0:root*1.2),rmax=Math.max(c*1.15,debyeRatio(tmax,e)*1.08);sA.setView([0,tmax],[0,rmax]);
+          sA.fn(t=>debyeRatio(t,e),{color:'accent',width:2.6,domain:[0,tmax]});sA.fn(t=>Math.sqrt(e*t),{color:'muted',width:1.4,dash:[4,4],domain:[0,tmax]});sA.hline(c,{color:'orange',width:1.5});if(root!==null){sA.vline(root,{color:'gold',dash:[4,4]});sA.dot(root,c,{color:'gold',r:6});}
+          const ymax=Math.max(1,(meltingThreshold(.002,c)||0)*1.1);sB.setView([.002,.05],[0,ymax]);const pts=[];for(let j=0;j<=240;j++){const x=.002+.048*j/240,T=meltingThreshold(x,c);if(T!==null)pts.push([x,T]);}sB.path(pts,{color:'accent',width:2.5});if(root!==null)sB.dot(e,root,{color:'gold',r:6});sB.vline(e,{color:'gold',dash:[4,4]});
+          st={eta:e,c,root,zero:Math.sqrt(e)/2,tmax,rmax,ymax};
         });
-        v.readout(() => {
-          const el = sel.value, [th, tm, m, d] = EL[el], c = cS.value, r = ratio(el, tm);
-          let lo = 1, hi = 3000; for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; if (ratio(el, mid) < c) lo = mid; else hi = mid; }
-          return `${el}: $\\Theta=${th}$ K, $d=${d}$ Å, $T_m=${v.fix(tm, 0)}$ K · ratio at $T_m$: $\\sqrt{\\langle u^2\\rangle}/d=${v.fix(r, 3)}$ (rms per direction $${v.fix(r / Math.sqrt(3), 3)}\\,d$) · with $c=${v.fix(c, 3)}$ the criterion predicts $T_m=${v.fix(lo, 0)}$ K (${Math.round(((lo - tm) / tm) * 100) || 0}% off)`;
-        });
+        v.readout(()=>`Model $\\eta=${v.fix(st.eta,3)}$, $c=${v.fix(st.c,3)}$: zero-point rms $\\sqrt{\\eta}/2=${v.fix(st.zero,4)}$ · ${st.root===null?'threshold reached already at zero temperature; no positive crossing':`quantum threshold $T_m/\\Theta=${v.fix(st.root,4)}$; classical estimate $c^2/\\eta=${v.fix(st.c**2/st.eta,4)}$`} · rms per direction = total rms $/\\sqrt3$.`);
       },
     },
 
@@ -153,47 +146,46 @@ which makes $T_m$ rise with the square of the Debye temperature (stiff lattices 
       num: '3.12',
       kind: 'Theorem',
       name: 'Lyddane–Sachs–Teller relation and polaritons',
-      credit: 'Derivation and NaCl data: Ashcroft–Mermin, Solid State Physics, Chapter 27, pp. 547–553, Eqs. (27.57)–(27.75) and Table 27.2',
-      statement: String.raw`In a cubic ionic crystal with a single infrared-active optical mode, the dielectric function is $\varepsilon(\omega)=\varepsilon_\infty+(\varepsilon_0-\varepsilon_\infty)\,\omega_{TO}^2/(\omega_{TO}^2-\omega^2)$. It vanishes at the longitudinal optical frequency, and the three numbers are tied by the **Lyddane–Sachs–Teller relation**
+      credit: 'Lyddane, Sachs & Teller, 1941',
+      statement: String.raw`In an isotropic cubic ionic crystal with one passive infrared-active optical mode ($\varepsilon_s>\varepsilon_\infty>0$), neglecting damping, the dielectric function is $\varepsilon(\omega)=\varepsilon_\infty+(\varepsilon_s-\varepsilon_\infty)\,\omega_{TO}^2/(\omega_{TO}^2-\omega^2)$. It vanishes at the longitudinal optical frequency, and the four quantities are tied by the **Lyddane–Sachs–Teller relation**
 $$\frac{\omega_{LO}^2}{\omega_{TO}^2}=\frac{\varepsilon(0)}{\varepsilon(\infty)}.$$
-Between $\omega_{TO}$ and $\omega_{LO}$ one has $\varepsilon<0$: light cannot propagate (**reststrahlen band**, high reflectivity). Coupling the transverse mode to the electromagnetic wave $c^2k^2=\varepsilon(\omega)\omega^2$ gives two **polariton** branches that avoid crossing the TO line and leave the gap $[\omega_{TO},\omega_{LO}]$.`,
-      idea: String.raw`The longitudinal mode has $\nabla\cdot\mathbf D=0$ so the field $\mathbf E=-\mathbf P/\varepsilon_0\varepsilon_\infty$ acts as an extra restoring force and stiffens the oscillation to $\omega_{LO}$; in terms of the Lorentz oscillator (em-11.12) this is the zero of $\varepsilon$. Equivalently, the pole of $\varepsilon(\omega)$ is at $\omega_{TO}$ and its zero at $\omega_{LO}$, so $\varepsilon(0)/\varepsilon(\infty)=\omega_{LO}^2/\omega_{TO}^2$ is the ratio of the product over zeros and poles. Inserting $\varepsilon(\omega)$ into the dispersion of light gives a quartic in $\omega$ with two positive roots for each $k$: far from the crossing the branches are photon-like or phonon-like, near it they mix.`,
-      caption: String.raw`**Left:** $\varepsilon(\omega)$ (pole at $\omega_{TO}$, zero at $\omega_{LO}$, negative between). **Middle:** the polariton dispersion $\omega(k)$: the lower branch starts as light with the slope $c/\sqrt{\varepsilon_0}$ and flattens to $\omega_{TO}$; the upper branch begins at $\omega_{LO}$ and approaches the line $c/\sqrt{\varepsilon_\infty}$; nothing propagates in the gap. **Right:** the reflectivity at normal incidence, with the damping $\gamma$ you set. Try the **NaCl** preset ($\varepsilon_0=5.9$, $\varepsilon_\infty=2.34$, $\hbar\omega_{TO}/k_B=245$ K, or $\nu_{TO}\approx5.105$ THz, Ashcroft–Mermin Table 27.2) and compare the predicted $\nu_{LO}$ with the edge of the reflectivity band.`,
-      scope: String.raw`One oscillator, isotropic (cubic) crystal, nonmagnetic, wave vectors small enough that retardation matters but spatial dispersion is negligible. Many-mode crystals satisfy the generalised relation $\prod_j\omega_{LO,j}^2/\omega_{TO,j}^2=\varepsilon(0)/\varepsilon(\infty)$. The NaCl numbers are from Ashcroft–Mermin Table 27.2, p. 553; the quoted 245 K is converted with $k_B/h$.`,
+Between $\omega_{TO}$ and $\omega_{LO}$ one has $\varepsilon<0$: light cannot propagate (**reststrahlen band**, high reflectivity). Coupling the transverse mode to the electromagnetic wave $c^2k^2=\varepsilon(\omega)\omega^2$ gives two **polariton** branches that avoid crossing the TO line with no finite-wave-number lossless transverse mode in $[\omega_{TO},\omega_{LO})$.`,
+      idea: String.raw`The longitudinal mode has $\nabla\cdot\mathbf D=0$ so the ionic polarization produces $\mathbf E=-\mathbf P_{\rm ion}/(\epsilon_{\rm vac}\varepsilon_\infty)$, which acts as an extra restoring force and stiffens the oscillation to $\omega_{LO}$; in terms of the Lorentz oscillator (em-11.12) this is the zero of $\varepsilon$. Equivalently, the pole of $\varepsilon(\omega)$ is at $\omega_{TO}$ and its zero at $\omega_{LO}$, so $\varepsilon(0)/\varepsilon(\infty)=\omega_{LO}^2/\omega_{TO}^2$ is the ratio of the product over zeros and poles. Inserting $\varepsilon(\omega)$ into the dispersion of light gives a quartic in $\omega$ with two nonnegative roots for each $k$ (one is zero at $k=0$): far from the crossing the branches are photon-like or phonon-like, near it they mix.`,
+      caption: String.raw`Choose the positive oscillator strength $\Delta\varepsilon=\varepsilon_s-\varepsilon_\infty$, electronic background $\varepsilon_\infty$ and damping. Left: a fixed vertical window of the **lossless** dielectric function, with its pole omitted and its zero at $\omega_{LO}$. Middle: the **lossless** polariton branches and forbidden frequency interval. Right: normal-incidence reflectivity with the selected damping, including the analytic unit-reflectivity limit at the undamped pole. Presets are illustrative weak/strong oscillators, not measured NaCl parameters.`,
+      scope: String.raw`One passive oscillator, isotropic nonmagnetic crystal, no spatial dispersion. Here $\varepsilon_\infty$ is the electronic background above phonon frequencies and below electronic resonances, rather than the literal infinite-frequency limit. $\varepsilon_s$ denotes static relative permittivity, avoiding confusion with vacuum permittivity. Damping affects only the reflectivity panel; the exact real-frequency pole/zero and strictly forbidden band belong to the lossless model. For multiple uncoupled modes along a fixed principal axis the scalar relation becomes a product over LO/TO pairs; arbitrary anisotropic crystals require a tensor determinant relation.`,
       deps: ['cm-3.3', 'em-11.12'],
-      refs: ['Ashcroft–Mermin ch. 27', 'Kittel ch. 14'],
+      refs: ['Lyddane, Sachs & Teller, Physical Review 59 (1941),673–676, §§I–IV, Eqs. (3′)–(6)', 'Schubert, arXiv:1602.08785, Eqs. (1)–(6), (13)–(18)'],
       tags: ['polariton', 'lst relation', 'reststrahlen'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lyddane%E2%80%93Sachs%E2%80%93Teller_relation' },
+      verify: false,
       viz(v) {
-        const e0 = v.slider('static $\\varepsilon(0)$', 2, 20, 5.9, { step: 0.05 });
-        const ei = v.slider('high-frequency $\\varepsilon_\\infty$', 1, 8, 2.34, { step: 0.01 });
+        const e0 = v.slider('oscillator strength $\\Delta\\varepsilon$', .05, 18, 3.65, { step: 0.05 });
+        const ei = v.slider('high-frequency $\\varepsilon_\\infty$', 1, 8, 2.25, { step: 0.05 });
         const gam = v.slider('damping $\\gamma/\\omega_{TO}$', 0, 0.25, 0.02, { step: 0.005 });
-        const pre = v.select('preset', [{ value: 'free', label: 'free' }, { value: 'nacl', label: 'NaCl (A&M Table 27.2)' }], 'nacl', { onChange: (x) => { if (x === 'nacl') { e0.set(5.9); ei.set(2.34); } } });
-        const epsC = (w, E0, Ei, g) => { // returns [re, im]
-          const d = [1 - w * w, -g * w], den = d[0] * d[0] + d[1] * d[1], f = (E0 - Ei); return [Ei + (f * d[0]) / den, (f * -d[1]) / den];
-        };
-        const refl = (w, E0, Ei, g) => { const [a, b] = epsC(w, E0, Ei, g), mod = Math.hypot(a, b), nr = Math.sqrt(Math.max(0, (mod + a) / 2)), ni = Math.sign(b || 1) * Math.sqrt(Math.max(0, (mod - a) / 2)); return ((nr - 1) ** 2 + ni * ni) / ((nr + 1) ** 2 + ni * ni); };
+        const pre=v.select('model',[{value:'weak',label:'weak oscillator'},{value:'strong',label:'strong oscillator'}],'weak',{onChange:x=>{e0.set(x==='weak'?1:12);ei.set(3);}});
+        const epsC=dielectric,refl=reflectivity;
         const sE = v.stage({ x: [0, 2.2], y: [-12, 14], axes: 'box', gutter: true, height: 340, xlabel: '$\\omega/\\omega_{TO}$', ylabel: '$\\mathrm{Re}\\,\\varepsilon$', title: 'dielectric function', weight: 0.9 });
         const sP = v.stage({ x: [0, 4], y: [0, 2.2], axes: 'box', gutter: true, height: 340, xlabel: '$ck/\\omega_{TO}$', ylabel: '$\\omega/\\omega_{TO}$', title: 'polariton dispersion', weight: 1.1 });
         const sR = v.stage({ x: [0, 2.2], y: [0, 1.02], axes: 'box', gutter: true, height: 340, xlabel: '$\\omega/\\omega_{TO}$', ylabel: 'reflectivity $R$', title: 'normal-incidence reflectivity', weight: 0.9 });
         v.legend([['accent', 'upper / lower polariton'], ['muted', 'light lines $ck/\\sqrt{\\varepsilon}$', { dash: true }], ['orange', 'gap $\\omega_{TO}\\ldots\\omega_{LO}$']]);
         v.render(() => {
-          const E0 = Math.max(e0.value, ei.value + 0.05), Ei = ei.value, g = gam.value, wl = Math.sqrt(E0 / Ei);
-          sE.fn((w) => epsC(w, E0, Ei, 0)[0], { color: 'accent', width: 2.4, domain: [0, 2.2], n: 800 });
+          const E0 = e0.value+ei.value, Ei = ei.value, g = gam.value, wl = Math.sqrt(E0 / Ei);
+          const W=Math.max(2.2,wl*1.2),Pmax=polariton(4,E0,Ei).upper*1.08; sE.setView([0,W],[-12,Math.max(14,E0*1.05)]);sR.setView([0,W],[0,1.02]);sP.setView([0,4],[0,Math.max(Pmax,4/Math.sqrt(Ei)*1.05)]);
+          for(const domain of[[0,.998],[1.002,W]])sE.fn(w=>epsC(w,E0,Ei,0)[0],{color:'accent',width:2.4,domain,n:400});
           sE.hline(0, { color: 'ink', width: 0.8, alpha: 0.5 }); sE.vline(1, { color: 'orange', width: 1.4, dash: [4, 3] }); sE.vline(wl, { color: 'orange', width: 1.4, dash: [4, 3] });
           sE.hband(-12, 0, { color: 'orange', alpha: 0.07 });
           sE.text('$\\omega_{TO}$', 1.03, 12, { size: 11, color: 'orange' }); sE.text('$\\omega_{LO}$', wl + 0.03, 12, { size: 11, color: 'orange' });
           const lo = [], up = [];
-          for (let i = 0; i <= 200; i++) { const q = (4 * i) / 200, A = Ei, B = q * q + E0, Cc = q * q, disc = Math.sqrt(Math.max(0, B * B - 4 * A * Cc)); lo.push([q, Math.sqrt(Math.max(0, (B - disc) / (2 * A)))]); up.push([q, Math.sqrt(Math.max(0, (B + disc) / (2 * A)))]); }
+          for(let i=0;i<=200;i++){const q=4*i/200,p=polariton(q,E0,Ei);lo.push([q,p.lower]);up.push([q,p.upper]);}
           sP.path(lo, { color: 'accent', width: 2.6 }); sP.path(up, { color: 'accent', width: 2.6 });
           sP.line(0, 0, 4, 4 / Math.sqrt(E0), { color: 'muted', width: 1.2, dash: [4, 4] }); sP.line(0, 0, 4, 4 / Math.sqrt(Ei), { color: 'muted', width: 1.2, dash: [4, 4] });
           sP.hband(1, wl, { color: 'orange', alpha: 0.12 }); sP.hline(1, { color: 'orange', width: 1.2, dash: [4, 3] }); sP.hline(wl, { color: 'orange', width: 1.2, dash: [4, 3] });
-          sR.fn((w) => refl(w, E0, Ei, g), { color: 'accent', width: 2.4, domain: [0.01, 2.2], n: 800 });
+          sR.fn((w) => refl(w, E0, Ei, g), { color: 'accent', width: 2.4, domain: [0,W], n: 800 });
           sR.vband(1, wl, { color: 'orange', alpha: 0.12 });
         });
         v.readout(() => {
-          const E0 = Math.max(e0.value, ei.value + 0.05), Ei = ei.value, wl = Math.sqrt(E0 / Ei);
-          const nacl = pre.value === 'nacl' && Math.abs(E0 - 5.9) < 1e-6 && Math.abs(Ei - 2.34) < 1e-6 ? ` · NaCl: $\\nu_{LO}=${v.fix((245 * 1.380649e-23 / 6.62607015e-34 / 1e12) * wl, 1)}$ THz from $\\nu_{TO}=5.105$ THz` : '';
+          const E0 = e0.value+ei.value, Ei = ei.value, wl = Math.sqrt(E0 / Ei);
+          const nacl = ` · input $\\Delta\\varepsilon=${v.fix(e0.value,2)}$, static $\\varepsilon_s=${v.fix(E0,2)}$; damping affects reflectivity only`;
           const wm = (1 + wl) / 2;
           return `$\\omega_{LO}/\\omega_{TO}=\\sqrt{\\varepsilon(0)/\\varepsilon(\\infty)}=${v.fix(wl, 3)}$ · check: $\\mathrm{Re}\\,\\varepsilon(\\omega_{LO})=${v.fix(epsC(wl, E0, Ei, 0)[0], 3)}$, $\\varepsilon(0)=${v.fix(epsC(1e-6, E0, Ei, 0)[0], 3)}$ · inside the band ($\\omega=${v.fix(wm, 2)}\\,\\omega_{TO}$) $\\mathrm{Re}\\,\\varepsilon=${v.fix(epsC(wm, E0, Ei, 0)[0], 2)}<0$ and $R=${v.fix(refl(wm, E0, Ei, gam.value), 3)}$${nacl}`;
         });
@@ -210,7 +202,7 @@ Between $\omega_{TO}$ and $\omega_{LO}$ one has $\varepsilon<0$: light cannot pr
       idea: String.raw`The restoring force on the polar displacement is the second derivative of the Landau free energy, $\omega_{TO}^2\propto\partial^2F/\partial P^2=a(T-T_0)+3bP^2+5cP^4$, which is the inverse susceptibility $1/\chi$. The soft mode is therefore the thermodynamic susceptibility seen as a phonon (the two measurements of $\varepsilon(0)$: dielectric and via LST from $\omega_{TO}$ agree), and the transition is the condition that the lattice forces and long-range dipole fields cancel. Below $T_c$ the mode hardens again, at twice the rate in the continuous case, because the curvature at a minimum of $F$ is $2a(T_c-T)$ there.`,
       caption: String.raw`Choose a **continuous** or **first-order** transition and sweep $T$. **Left:** the free energy as a function of $P$ with its global minimum marked (a ball in the double well); **Right:** the soft-mode frequency squared $\omega_{TO}^2\propto1/\varepsilon$ (blue, falling linearly to zero and rising again at twice the slope) and the spontaneous polarization $P_s$ (green). In the first-order case the mode never quite softens and $P_s$ jumps at $T_c$. The LST check in the readout converts $\omega_{TO}$ into $\varepsilon(0)$.`,
       scope: String.raw`Mean-field Landau theory in dimensionless units ($a=c=1$): hysteresis, domains, fluctuation corrections and the order–disorder type of ferroelectric (where no phonon softens fully) are not modelled. Soft-mode ferroelectrics include titanates such as SrTiO$_3$ (incipient) and BaTiO$_3$ (first-order); the model here is generic, not a fit to a material.`,
-      deps: ['cm-3.12', 'thermo-11.13', 'opt-1.5'],
+      deps: ['cm-3.12', 'thermo-11.13'],
       refs: ['Kittel ch. 16', 'Ashcroft–Mermin ch. 27'],
       tags: ['ferroelectric', 'soft mode', 'landau theory'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ferroelectricity' },
@@ -251,38 +243,38 @@ Between $\omega_{TO}$ and $\omega_{LO}$ one has $\varepsilon<0$: light cannot pr
       num: '3.14',
       kind: 'Phenomenon',
       name: 'Polarons',
-      credit: 'Landau, 1933; Pekar, 1946; Fröhlich, 1954; Feynman, 1955',
-      statement: String.raw`An electron in a polar crystal polarizes the lattice around it (longitudinal optical phonons of frequency $\omega_{LO}$ are excited) and moves together with its cloud of distortion: a **polaron**, with a lower energy and a larger mass than the bare band electron. In the Fröhlich model the coupling is one number,
-$$\alpha=\frac{e^2}{4\pi\varepsilon_0\hbar}\sqrt{\frac{m}{2\hbar\omega_{LO}}}\left(\frac1{\varepsilon_\infty}-\frac1{\varepsilon_0}\right),$$
-and for weak coupling the ground-state energy shifts by $-\alpha\hbar\omega_{LO}$ and the band mass becomes $m^*\simeq m(1+\alpha/6)$. For strong coupling (roughly $\alpha\gtrsim6$) the electron is self-trapped in its own distortion, the energy $\propto-\alpha^2\hbar\omega_{LO}$ and the mass grows like $\alpha^4$; between the two the change is a smooth crossover.`,
-      idea: String.raw`Weak-coupling perturbation theory in the electron–phonon vertex (cm-3.12's LO phonon, cm-2.3's effective mass) gives $E=-\alpha-0.0159\alpha^2$ and $m^*/m=1+\alpha/6+0.0236\alpha^2$. For strong coupling the Landau–Pekar variational state, an electron in a self-consistent potential well produced by the polarization it sources, gives energy $\propto-\alpha^2$. Feynman's 1955 path-integral variational method treats both with one trial model of the electron tied to a fictitious particle by a spring ($v$ is the oscillator frequency, $w$ its coupling decay rate), and interpolates smoothly between the two regimes; the picture below evaluates that bound numerically.`,
-      caption: String.raw`The variational ground-state energy $E(\alpha)$ (left) and the mass of Feynman's trial system $(v/w)^2$ (right, log scale), computed from Feynman's functional by numerical minimisation over $v,w$. Dashed: the weak-coupling series $-\alpha-0.0159\alpha^2$ and $1+\alpha/6+0.0236\alpha^2$, shown only as physical perturbation-theory comparisons; the trial-system mass is not the physical effective mass; beyond $\alpha\approx6$ the mass climbs steeply and $|E|/\alpha^2$ settles towards a constant (readout): the crossover to strong coupling. Move the slider to pick $\alpha$; the ticks mark coupling constants quoted for ionic crystals (KBr $3.05$, KCl $3.44$, AgCl $1.84$, CsI $3.67$; Wikipedia table).`,
-      scope: String.raw`Fröhlich Hamiltonian: one electron on a parabolic band, one dispersionless LO branch, $T=0$, no lattice discreteness. The trial-model mass $(v/w)^2$ is a variational-model quantity, not Feynman's published effective mass (his method for $m^*$ differs and is less accurate at strong coupling); the energy is an upper bound. Small-polaron physics (short-range coupling, narrow bands) is a different regime.`,
-      deps: ['cm-3.12', 'cm-2.3'],
-      refs: ['Kittel ch. 14'],
+      credit: 'Feynman, 1955 (path-integral variational treatment)',
+      statement: String.raw`An electron in an ionic dielectric can move with a cloud of polarization: a **polaron**. In the continuum Fröhlich model, a parabolic band electron couples to one dispersionless LO phonon branch. The dimensionless coupling is
+$$\begin{aligned}\alpha={}&\frac{e^2}{4\pi\epsilon_{\rm vac}\hbar}\sqrt{\frac{m}{2\hbar\omega_{LO}}}\\&\times\left(\frac1{\varepsilon_\infty}-\frac1{\varepsilon_s}\right),\end{aligned}$$
+where the dielectric constants in parentheses are relative permittivities. Leading weak-coupling results are $E=-\alpha\hbar\omega_{LO}+O(\alpha^2)$ and $m^*/m=1+\alpha/6+O(\alpha^2)$. At strong coupling, variational energy scales as $-\alpha^2$ and the corresponding approximate mass as $\alpha^4$; these limits are not accurate formulas at all couplings.`,
+      idea: String.raw`Integrating out harmonic phonons leaves a retarded self-interaction of the electron path. Feynman compares this with a quadratic trial action describing an electron attached to an auxiliary particle. Jensen's inequality bounds the ground-state energy from above for every choice of trial parameters $v\ge w>0$. His Eqs. (31) and (33) give the energy functional, minimized numerically here. A separate small-momentum calculation, Eq. (45), estimates the physical effective mass. It differs from the trial-system total mass $(v/w)^2$, which is shown separately in the readout. The mass estimate has no comparable upper-bound guarantee.
+
+The inequality step can be made explicit first for a finite-time regularized or discretized path model. Normalize the trial measure and let $\Delta S$ be the real, integrable dimensionless action difference, with finite $\mathbb E_0 e^{-\Delta S}$. Jensen's inequality (rca 3.3) for the convex exponential gives $\log\mathbb E_0e^{-\Delta S}\ge-\mathbb E_0\Delta S$, so $F\le F_0+\beta^{-1}\mathbb E_0\Delta S$. The physical path-integral and zero-temperature limits supply the ground-state interpretation; the finite-measure inequality alone neither constructs those limits nor certifies a numerical optimizer or the effective-mass estimate.`,
+      caption: String.raw`Drag $\alpha$: the gold dots use its actual selected value, and the curves interpolate numerical variational evaluations. Left: energy from Feynman's functional, compared with its own weak-coupling expansion $-\alpha-\alpha^2/81$. Right: effective mass from his Eq. (45), compared with the leading $1+\alpha/6$ limit. The higher-coupling curves are not material measurements. No critical self-trapping threshold is inferred from the finite plotted range.`,
+      scope: String.raw`One continuum electron, constant band mass, one LO frequency, zero temperature and no lattice discreteness. Numerical quadrature and local minimization approximate the analytic variational functional; they do not certify a global optimum or a rigorous floating-point upper bound. The original paper explicitly cautions that the accuracy of its effective mass is harder to judge than its energy. Small polarons and finite-temperature transport require additional physics.`,
+      deps: ['cm-3.12', 'cm-2.3', 'rca-3.3'],
+      refs: ['Feynman, Slow Electrons in a Polar Crystal, Physical Review 97 (1955),660–665, Eqs. (1), (13), (31)–(38), (42), (45)–(47); CaltechAUTHORS FEYpr55'],
       tags: ['polaron', 'electron-phonon', 'feynman'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Polaron' },
-      verify: true,
+      verify: false,
       viz(v) {
         const aS = v.slider('coupling $\\alpha$', 0.5, 12, 3, { step: 0.05 });
-        const sE = v.stage({ x: [0, 12], y: [-16, 0.5], axes: 'box', gutter: true, height: 340, xlabel: 'coupling $\\alpha$', ylabel: '$E/\\hbar\\omega_{LO}$', title: 'ground-state energy', weight: 1 });
-        const sM = v.stage({ x: [0, 12], y: [0.9, 200], ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'coupling $\\alpha$', ylabel: 'trial mass $(v/w)^2$', title: 'mass enhancement', weight: 1 });
-        v.legend([['accent', 'Feynman variational'], ['muted', 'weak coupling', { dash: true }], ['red', 'material couplings']]);
+        const sE = v.stage({ x: [0, 12], y: [-20,0.5], axes: 'box', gutter: true, height: 340, xlabel: 'coupling $\\alpha$', ylabel: '$E/\\hbar\\omega_{LO}$', title: 'ground-state energy', weight: 1 });
+        const sM = v.stage({ x: [0, 12], y: [.9,500], ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'coupling $\\alpha$', ylabel: 'effective mass $m^*/m$', title: 'mass enhancement', weight: 1 });
+        v.legend([['accent', 'Feynman variational'], ['muted', 'weak coupling', { dash: true }]]);
         let curve = null;
-        const build = () => { if (curve) return; curve = []; for (let a = 0.5; a <= 12.001; a += 0.25) { const f = feynman(a); curve.push({ a, ...f }); } };
-        const MAT = [['KBr', 3.05], ['KCl', 3.44], ['AgCl', 1.84], ['CsI', 3.67]];
+        const build = () => { if (curve) return; curve = []; for (let a = 0.5; a <= 12.001; a += 0.25) { const f = feynmanAudit(a); curve.push({ a, ...f }); } };
         v.render(() => {
           build();
           sE.path(curve.map((c) => [c.a, c.E]), { color: 'accent', width: 2.6 });
-          sE.fn((a) => -a - 0.0159 * a * a, { color: 'muted', width: 1.4, dash: [5, 4], domain: [0, 5] });
-          sM.path(curve.map((c) => [c.a, c.mass]), { color: 'accent', width: 2.6 });
-          sM.fn((a) => 1 + a / 6 + 0.0236 * a * a, { color: 'muted', width: 1.4, dash: [5, 4], domain: [0, 6] });
-          for (const [n, a] of MAT) { sE.vline(a, { color: 'red', width: 0.8, alpha: 0.35 }); sE.text(n, a, -14.6 + 1.1 * (MAT.findIndex((q) => q[0] === n) % 2), { size: 9, color: 'red', align: 'center' }); }
-          const f = feynman(Math.round(aS.value * 4) / 4); sE.dot(aS.value, f.E, { r: 6, color: 'gold' }); sM.dot(aS.value, f.mass, { r: 6, color: 'gold' });
+          sE.fn((a) => -a - a * a / 81, { color: 'muted', width: 1.4, dash: [5, 4], domain: [0, 5] });
+          sM.path(curve.map((c) => [c.a, c.effectiveMass]), { color: 'accent', width: 2.6 });
+          sM.fn((a) => 1+a/6, { color: 'muted', width: 1.4, dash: [5, 4], domain: [0, 6] });
+          const f = feynmanAudit(aS.value); sE.dot(aS.value, f.E, { r: 6, color: 'gold' }); sM.dot(aS.value, f.effectiveMass, { r: 6, color: 'gold' });
         });
         v.readout(() => {
-          const a = Math.round(aS.value * 4) / 4, f = feynman(a);
-          return `$\\alpha=${v.fix(a, 2)}$: $E=${v.fix(f.E, 3)}\\,\\hbar\\omega_{LO}$ (weak-coupling series $${v.fix(-a - 0.0159 * a * a, 3)}$, $-E/\\alpha^2=${v.fix(-f.E / (a * a), 3)}$) · Feynman parameters $v=${v.fix(f.v, 2)}$, $w=${v.fix(f.w, 2)}$ · trial-system mass $(v/w)^2=${v.fix(f.mass, 2)}$ (physical effective-mass series, a different quantity: $${v.fix(1 + a / 6 + 0.0236 * a * a, 2)}$)`;
+          const a = aS.value, f = feynmanAudit(a);
+          return `$\\alpha=${v.fix(a, 2)}$: $E=${v.fix(f.E, 3)}\\,\\hbar\\omega_{LO}$ (weak-coupling series $${v.fix(-a - a * a / 81, 3)}$, $-E/\\alpha^2=${v.fix(-f.E / (a * a), 3)}$) · Feynman parameters $v=${v.fix(f.v, 2)}$, $w=${v.fix(f.w, 2)}$ · estimated effective mass $m^*/m=${v.fix(f.effectiveMass,2)}$, trial-system mass $(v/w)^2=${v.fix(f.trialMass,2)}$ (weak-coupling series $${v.fix(1+a/6, 2)}$)`;
         });
       },
     },
@@ -294,12 +286,15 @@ and for weak coupling the ground-state energy shifts by $-\alpha\hbar\omega_{LO}
       name: 'Bloch–Grüneisen law for phonon resistivity',
       credit: 'Bloch, 1930; Grüneisen, 1933',
       statement: String.raw`Electrons scattering from phonons in a simple metal give a resistivity
-$$\rho_{ph}(T)=A\left(\frac T\Theta\right)^5\int_0^{\Theta/T}\frac{x^5\,dx}{(e^x-1)(1-e^{-x})},$$
-where $\Theta$ is close to the Debye temperature. It is **linear** in $T$ for $T\gtrsim\Theta/3$ (every phonon is excited, $\rho\propto$ phonon number $\propto T$) and falls as $T^5$ for $T\ll\Theta$ (only phonons with $q\sim k_BT/\hbar v$ exist, and each turns the electron by only a small angle $\propto q/k_F$, which makes it inefficient at relaxing the current; together with the phonon number and the coupling strength this gives $T^5$). With impurities, Matthiessen's rule adds the temperature-independent residual $\rho_0$.`,
-      idea: String.raw`The scattering rate is $\propto\int d^3q\,q^2\,\bar n(\omega_q)\,\ldots$ with the weight $(1-\cos\theta)\propto q^2$ for momentum relaxation (the "transport" factor that makes small-angle scattering inefficient), and the Bose factor $n(n+1)$ from absorption plus emission. At low $T$ the integral up to $x=\Theta/T$ converges to a constant, leaving the prefactor $T^5$. At high $T$ the integrand is $\sim x^3$, the integral $\sim(\Theta/T)^4/4$, and $\rho\propto T$. Combining with cm-2.7: $\rho=\rho_0+\rho_{ph}(T)$.`,
+$$\rho_{ph}(T)=A\left(\frac T\Theta\right)^5 I(\Theta/T),$$
+$$I(y)=\int_0^y\frac{x^5\,dx}{(e^x-1)(1-e^{-x})},$$
+where $\Theta$ is close to the Debye temperature. It crosses toward approximately linear behaviour around $T\sim\Theta/3$ and is **asymptotically linear** as $T/\Theta\to\infty$ (the thermally occupied phonon population then scales with $T$) and falls as $T^5$ for $T\ll\Theta$ (only phonons with $q\sim k_BT/\hbar v$ exist, and each turns the electron by only a small angle $\propto q/k_F$, which makes it inefficient at relaxing the current; together with the phonon number and the coupling strength this gives $T^5$). With impurities, Matthiessen's rule adds the temperature-independent residual $\rho_0$.`,
+      idea: String.raw`The scattering rate is $\propto\int d^3q\,q^2\,\bar n(\omega_q)\,\ldots$ with the weight $(1-\cos\theta)\propto q^2$ for momentum relaxation (the "transport" factor that makes small-angle scattering inefficient), and the Bose factor $n(n+1)$ from absorption plus emission. At low $T$ the integral up to $x=\Theta/T$ converges to a constant, leaving the prefactor $T^5$. At high $T$ the integrand is $\sim x^3$, the integral $\sim(\Theta/T)^4/4$, and $\rho\propto T$. Combining with cm-2.7: $\rho=\rho_0+\rho_{ph}(T)$.
+
+For $\Theta>0$, put $f(x)=x^5e^x/(e^x-1)^2$ for $x>0$ and $f(0)=0$. As $T$ decreases to zero, the nonnegative measurable functions $f(x)\,\mathbf1_{[0,\Theta/T]}(x)$ increase to $f$. Monotone convergence (rca 1.26) gives their limiting integral; it is finite and positive because $f(x)=O(x^3)$ near zero and $f(x)=O(x^5e^{-x})$ at infinity. Thus the low-temperature resistivity divided by $T^5$ tends to a finite positive constant in this model, rather than merely assuming that a growing integration range can be replaced by infinity.`,
       caption: String.raw`**Left:** the integrand $x^5/[(e^x-1)(1-e^{-x})]$ in the scattering rate; the shaded area up to $x_{\max}=\Theta/T$ is the resistivity. At low $T$ the cut-off lies beyond the peak and nothing is gained by raising it; at high $T$ only the small-$x$ region counts. **Right:** $\rho(T)/\rho(\Theta)$ on log axes with the $T^5$ and $T$ asymptotes; drag $T$ and read the local exponent. Presets set $\Theta$ for sodium ($158$ K) and copper ($343$ K), low-temperature values from Kittel's table; the curves are the model, no data are overlaid.`,
       scope: String.raw`Free-electron-like metals with a spherical Fermi surface, a single acoustic Debye branch and no Umklapp electron–phonon processes; real transition metals (s–d scattering, $T^3$ Bloch–Wilson), anisotropic Fermi surfaces and metals with large Umklapp contributions deviate. The exponent $n=5$ is Bloch's value for these assumptions.`,
-      deps: ['cm-3.5', 'cm-2.7', 'thermo-9.13'],
+      deps: ['cm-3.5', 'cm-2.7', 'thermo-9.13', 'rca-1.26'],
       refs: ['Ashcroft–Mermin ch. 26'],
       tags: ['resistivity', 'electron-phonon', 'bloch-gruneisen'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bloch%E2%80%93Gr%C3%BCneisen_temperature' },
@@ -336,29 +331,31 @@ where $\Theta$ is close to the Debye temperature. It is **linear** in $T$ for $T
       num: '3.16',
       kind: 'Phenomenon',
       name: 'Dislocations and the weakness of real crystals',
-      credit: 'Orowan, Polanyi & Taylor, 1934',
-      statement: String.raw`Shearing a perfect crystal by sliding one whole plane over another requires a stress of the order of the ideal shear strength $\tau_{\rm ideal}\approx G/2\pi$ ($G$ the shear modulus), thousands of megapascals for a metal; some prepared metal crystals deform at stresses thousands of times smaller. Plastic flow is carried by **line defects**. An **edge dislocation**, an extra half-plane of atoms ending in the crystal with Burgers vector $\mathbf b$ perpendicular to the line, moves under shear by a one-row-at-a-time rearrangement of bonds, which needs only the **Peierls–Nabarro stress** $\tau_P\sim\dfrac{2G}{1-\nu}\,e^{-2\pi W/b}$, with width $W$ of the core, exponentially small for wide cores.`,
-      idea: String.raw`Slip of a whole plane breaks every bond across the plane at once, so the restoring stress follows $\tau=\frac{G}{2\pi}\sin(2\pi s/b)$ (the sinusoidal estimate, with $s$ the slip) and its peak is the ideal strength. A dislocation concentrates the misfit in one place: the lattice around it carries the Volterra elastic field, so moving the core by one lattice spacing shifts atoms by only a fraction of $b$ and breaks bonds only near the core, and the energy barrier per step (the Peierls barrier) is exponentially small if the core is wide. Dislocations are produced in the crystal when it forms or deforms, and their motion, multiplication and tangling underlie ductility and work hardening.`,
-      caption: String.raw`A square-lattice crystal containing one edge dislocation (the elastic displacement field of Volterra is added to every atomic position; bonds are coloured by strain: red compressed, blue stretched). **Drag the core** (gold) along its glide plane: the extra half-plane moves with it and far from the core the bonds are strained by only a few percent. Switch to **rigid slip** and push the whole top half over the bottom: every bond across the plane is stretched at the same moment. The bars compare the stress needed for rigid slip, the Peierls–Nabarro estimate and the typical yield stress of a metal crystal.`,
-      scope: String.raw`Isotropic linear elasticity; the displacement field is the continuum solution, accurate away from the core and not relaxed near it. The Peierls–Nabarro prefactor and the definition of the width $W$ differ between authors by a factor of two in the exponent; the point is its exponential sensitivity. The yield-stress range $0.5$–$10$ MPa for metal crystals is as given on Wikipedia's dislocation page (secondary), not specific to any metal.`,
-      deps: ['xtal-1.1', 'mat-3.2'],
-      refs: ['Kittel ch. 21', 'Ashcroft–Mermin ch. 30'],
+      credit: 'Continuum edge-dislocation and lattice-friction models',
+      statement: String.raw`An **edge dislocation** is a line defect with Burgers vector perpendicular to its line. Its glide allows plastic slip through a localized rearrangement rather than a simultaneous translation of an entire plane. In a sinusoidal rigid-slip model with interplanar spacing equal to $b$, $\tau(s)=G\sin(2\pi s/b)/(2\pi)$ and the peak is $G/(2\pi)$. One classical Peierls–Nabarro estimate is
+$$\frac{\tau_P}{G}\approx\frac{2}{1-\nu}e^{-2\pi W/b},$$
+where **$W$ is twice the core-radius parameter** $\rho_0$ used in the cited model. The exponential dependence illustrates why wide cores can have low lattice resistance; it is not a universal yield-stress formula.`,
+      idea: String.raw`The rigid-slip sine law follows by matching the small-slip slope to shear modulus $G$ when the plane spacing equals $b$. Its periodicity restores an equivalent lattice after a full slip $b$. Continuum elasticity gives a long-range dislocation displacement with strain decaying as $1/r$ and a displacement jump $b$ across a branch cut. It omits the atomic core and cannot itself supply lattice friction. Adding a periodic misfit energy gives a Peierls barrier; different sampling/core models give different stresses. The displayed exponential is Eq. (25), Table 1, $k_1=8,k_2=4$, of Lubarda–Markenscoff, after substituting $W=2\rho_0$.`,
+      caption: String.raw`Drag the gold core along the glide plane. The left drawing is a continuum displacement field sampled on a square grid, with nearest-partner connections across the cut; it is a schematic and does not resolve or relax an atomistic extra half-plane. Red/blue bonds show geometric compression/stretch. Rigid-slip mode shifts the upper half, returning to an equivalent registry at $s=b$. Right: ideal peak, the chosen lattice-friction estimate and the magnitude of the **current** rigid-slip stress. $W$ changes the stress estimate only, not the singular displacement drawing.`,
+      scope: String.raw`Isotropic plane-strain elasticity away from the core, with $b=1$ in the drawing. The singular core field and reconnection rule do not model bond forces or dislocation dynamics. The exponential stress is an approximation tied to a particular core-width convention; narrow-core extrapolation and alternative Peierls models differ. Temperature activation, obstacles, interactions and measured metal yield stresses are omitted.`,
+      deps: ['xtal-1.1'],
+      refs: ['Zhao et al., Acta Materialia 56 (2008),2570–2575, §2.1, Eqs. (1)–(2); §4 core limitations', 'Lubarda & Markenscoff, DOI10.1007/s00419-006-0068-y (2006), Eq. (25), Table 1 and §5'],
       tags: ['dislocation', 'plasticity', 'peierls-nabarro'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Dislocation' },
-      verify: true,
+      verify: false,
       viz(v) {
         const mode = v.select('deformation', [{ value: 'disl', label: 'edge dislocation glide' }, { value: 'slip', label: 'rigid slip of the top half' }], 'disl');
         const sS = v.slider('slip $s/b$ (rigid case)', 0, 1, 0.25, { step: 0.005 });
         const nu = v.slider('Poisson ratio $\\nu$', 0, 0.45, 0.3, { step: 0.01 });
-        const wS = v.slider('core width $W/b$', 0.3, 4, 1.2, { step: 0.05, log: true, sig: 2 });
+        const wS = v.slider('full core width $W/b$', 0.3, 4, 1.2, { step: 0.05, log: true, sig: 2 });
         const NX = 13, NY = 8; // atoms: x in [−6, 6] b, rows y = (j + ½) b, j = −4 … 3
         const sC = v.stage({ x: [-7, 7], y: [-4.5, 4.5], equal: true, axes: false, height: 400, title: 'two-dimensional crystal', weight: 1.4 });
-        const sB = v.stage({ x: [0.3, 3.7], y: [1e-6, 1], ylog: true, axes: 'box', gutter: true, height: 400, ylabel: 'stress $\\tau/G$', title: 'stress needed to slip', weight: 0.8, xticks: [[1, 'ideal'], [2, 'dislocation'], [3, 'observed']] });
+        const sB = v.stage({ x: [0.3, 3.7], y: [1e-12,1], ylog: true, axes: 'box', gutter: true, height: 400, ylabel: 'stress $\\tau/G$', title: 'stress needed to slip', weight: 0.8, xticks: [[1, 'ideal'], [2, 'dislocation'], [3, 'rigid now']] });
         v.legend([['orange', 'glide plane', { dash: true }], ['red', 'compressed bond'], ['blue', 'stretched bond'], ['gold', 'dislocation core']]);
         const hd = sC.handle(-1.2, 0, { color: 'gold', r: 8, constrain: 'x' });
-        const disp = (x, y, x0, nuv) => { const dx = x - x0, r2 = dx * dx + y * y; if (r2 < 1e-6) return [0, 0]; const th = Math.atan2(y, dx), k = 1 / (4 * (1 - nuv)); return [(1 / (2 * PI)) * (th + (dx * y) / (2 * (1 - nuv) * r2)), -(1 / (2 * PI)) * ((1 - 2 * nuv) * k * Math.log(r2) + (k * (dx * dx - y * y)) / r2)]; };
+        const disp=edgeDisplacement;
         v.render(() => {
-          const x0 = hd.x, nuv = nu.value, pos = [], slipMode = mode.value === 'slip', s = sS.value; hd.visible = !slipMode; hd.set(Math.max(-4, Math.min(4, hd.x)), 0);
+          hd.set(Math.max(-4,Math.min(4,hd.x)),0); const x0 = hd.x, nuv = nu.value, pos = [], slipMode = mode.value === 'slip', s = sS.value; hd.visible = !slipMode; hd.set(Math.max(-4, Math.min(4, hd.x)), 0);
           for (let j = 0; j < NY; j++) { const row = []; for (let i = 0; i < NX; i++) { const X = i - 6, Y = j - 3.5; let u = [0, 0]; if (slipMode) u = [Y > 0 ? s : 0, 0]; else { const d = disp(X, Y, x0, nuv); u = [d[0], d[1]]; } row.push([X + u[0], Y + u[1]]); } pos.push(row); }
           const bond = (a, b) => { const len = Math.hypot(a[0] - b[0], a[1] - b[1]); const c = len > 1 ? 'blue' : 'red'; const e = Math.min(1, Math.abs(len - 1) * 8); sC.line(a[0], a[1], b[0], b[1], { color: e < 0.12 ? 'muted' : c, width: 1.2 + 2.5 * e, alpha: e < 0.12 ? 0.6 : 0.45 + 0.55 * e }); };
           for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
@@ -372,16 +369,16 @@ where $\Theta$ is close to the Debye temperature. It is **linear** in $T$ for $T
           for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) sC.dot(pos[j][i][0], pos[j][i][1], { r: 4.5, color: 'accent' });
           sC.hline(0, { color: 'orange', width: 1, dash: [4, 4], alpha: 0.6 }); 
           if (!slipMode) sC.text('⊥', x0, -0.55, { size: 14, color: 'gold', align: 'center' });
-          const ideal = 1 / (2 * PI), pn = (2 / (1 - nuv)) * Math.exp(-2 * PI * wS.value), obs = [0.5e6 / 40e9, 10e6 / 40e9];
-          sB.rect(0.7, 1e-6, 1.3, ideal, { color: 'red', fill: 'red', fillAlpha: 0.35 });
-          sB.rect(1.7, 1e-6, 2.3, Math.max(pn, 2e-6), { color: 'accent', fill: 'accent', fillAlpha: 0.35 });
-          sB.rect(2.7, obs[0], 3.3, obs[1], { color: 'green', fill: 'green', fillAlpha: 0.3 });
-          sB.text('$G/2\\pi$', 1, ideal * 1.6, { size: 11, color: 'red', align: 'center' }); sB.text('$\\tau_P$', 2, Math.max(pn, 1.5e-6) * 1.8, { size: 11, color: 'accent', align: 'center' });
+          const ideal = 1 / (2 * PI), pn = (2 / (1 - nuv)) * Math.exp(-2 * PI * wS.value), cur=Math.abs(Math.sin(2*PI*s)/(2*PI));
+          sB.rect(0.7,1e-12, 1.3, ideal, { color: 'red', fill: 'red', fillAlpha: 0.35 });
+          sB.rect(1.7,1e-12,2.3,pn, { color: 'accent', fill: 'accent', fillAlpha: 0.35 });
+          if(cur>1e-12)sB.rect(2.7,1e-12,3.3,cur,{color:'green',fill:'green',fillAlpha:.3});else sB.text('zero',3,2e-12,{color:'green',align:'center',size:10});
+          sB.text('$G/2\\pi$', 1, ideal * 1.6, { size: 11, color: 'red', align: 'center' }); sB.text('$\\tau_P$', 2, pn*1.8, { size: 11, color: 'accent', align: 'center' });
         });
         v.readout(() => {
           const nuv = nu.value, pn = (2 / (1 - nuv)) * Math.exp(-2 * PI * wS.value), slipMode = mode.value === 'slip', s = sS.value;
-          const g = `ideal $G/2\\pi=0.159\\,G$ · $\\tau_P/G=${v.sci(pn, 2)}$ for $W/b=${v.fix(wS.value, 2)}$, $\\nu=${v.fix(nuv, 2)}$ (a ${v.fix(0.159 / pn, 0)}-fold reduction) · yield range $0.5$–$10$ MPa, i.e. $\\tau/G\\approx10^{-5}$–$10^{-4}$ for $G\\sim40$ GPa (illustrative)`;
-          return slipMode ? `rigid slip $s=${v.fix(s, 3)}\\,b$: restoring stress $\\tau=\\frac{G}{2\\pi}\\sin(2\\pi s/b)=${v.fix(Math.sin(2 * PI * s) / (2 * PI), 3)}\\,G$ on **all** bonds across the plane at once\n${g}` : `dislocation core at $x=${v.fix(hd.x, 2)}\\,b$: the pattern moved with it; away from the core every bond is strained by only a few percent\n${g}`;
+          const g = `ideal $G/2\\pi=0.159\\,G$ · $\\tau_P/G=${v.sci(pn, 2)}$ for $W/b=${v.fix(wS.value, 2)}$, $\\nu=${v.fix(nuv, 2)}$ (ratio of ideal peak to this estimate: $${v.sci((1/(2*PI)) / pn,2)}$) · $W=2\\rho_0$; current rigid-stress magnitude $${v.fix(Math.abs(Math.sin(2*PI*s)/(2*PI)),4)}G$`;
+          return slipMode ? `rigid slip $s=${v.fix(s, 3)}\\,b$: restoring stress $\\tau=\\frac{G}{2\\pi}\\sin(2\\pi s/b)=${v.fix(Math.sin(2 * PI * s) / (2 * PI), 3)}\\,G$ on **all** bonds across the plane at once\n${g}` : `dislocation core at $x=${v.fix(hd.x, 2)}\\,b$: the pattern moved with it; the field is singular at the omitted core and strains decay with distance\n${g}`;
         });
       },
     },

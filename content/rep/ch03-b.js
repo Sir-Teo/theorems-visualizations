@@ -1,5 +1,5 @@
 // Representation Theory — Chapter 3: Characters (part 2: 3.9–3.16). Shared machinery: ch03.shared.js.
-import { TAU, ecol, nm, matN, mm, polygon, cadd, csub, cmul, cconj, cabs, csc, ctex, ctext, cm, cmm, ctr, cdet, cscale, tableOf, ip, tableDefect, colDot, multiplicities, cubeData, actOn, orbitCount, irrepMats, cexp } from './ch03.shared.js';
+import { TAU, ecol, nm, matN, mm, polygon, cadd, csub, cmul, cconj, cabs, csc, ctex, ctext, cm, cmm, ctr, cdet, cscale, tableOf, ip, tableDefect, colDot, multiplicities, cubeData, actOn, orbitCount, irrepMats, cexp, hexProjections, colouringOrbits, groupDeterminantData } from './ch03.shared.js';
 
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const plain = (L) => L.replace(/\^\{(\d+)\}/g, (_, d) => [...d].map((c) => SUP[c]).join('')).replace(/\\,/g, '');
@@ -21,9 +21,9 @@ export default {
       idea: String.raw`The matrix of $g$ in the basis of group elements permutes the basis ($x\mapsto gx$), so its trace counts fixed points; but $gx=x$ forces $g=e$. By 3.6 the multiplicity of $W_i$ is $\langle\chi_{\mathrm{reg}},\chi_i\rangle=\frac1{|G|}\,|G|\,\overline{\chi_i(e)}=\dim W_i$. Counting dimensions on both sides gives $\sum d_i^2=|G|$.`,
       caption: String.raw`For the chosen group the left panel stacks, for each irreducible $W_i$, a block $m_i$ wide and $d_i=\dim W_i$ tall (its $m_i$ copies of a $d_i$-dimensional space); the total area is $\dim\mathbb C[G]=|G|$. In "regular" mode the characters of the action $x\mapsto gx$ are counted fixed point by fixed point and the blocks come out as $d_i\times d_i$ squares. Switch to the action by conjugation $x\mapsto gxg^{-1}$ (also a permutation representation of degree $|G|$, with $\chi(g)=|C_G(g)|$): the total area is still $|G|$, but the blocks are no longer squares.`,
       deps: ['rep-3.6', 'rep-1.2'],
-      refs: ['Serre §2.4', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
+      refs: ['Serre §2.4'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf' },
       tags: ['regular representation', 'sum of squares'],
-      credit: 'Finite-group representation theory',
       viz(v) {
         const KEYS = ['S3', 'D4', 'Q8', 'A4', 'D5', 'S4'];
         const gsel = v.select('group', KEYS.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'S3');
@@ -176,12 +176,12 @@ where $C_G(g)$ is the centraliser of $g$. In words, the columns of the character
       statement: String.raw`Let $V$ be a complex representation of a finite group $G$ and $\chi_i$ an irreducible character of degree $d_i$. The operator
 $$P_i=\frac{d_i}{|G|}\sum_{g\in G}\overline{\chi_i(g)}\,\rho(g)$$
 is the projection of $V$ onto its $\chi_i$-isotypic component $V_i$ (the sum of all subrepresentations isomorphic to the $i$-th irreducible), along the sum of the other isotypic components. The $P_i$ commute with $G$, $P_iP_j=\delta_{ij}P_i$ and $\sum_iP_i=\mathrm{id}$, so $V=\bigoplus_iV_i$.`,
-      idea: String.raw`$P_i$ commutes with every $\rho(h)$ because $\overline{\chi_i}$ is a class function (3.2), so on each irreducible constituent it is a scalar by Schur’s lemma. That scalar is $\frac{d_i}{d_j}\langle\chi_j,\chi_i\rangle=\delta_{ij}$ by orthogonality (3.5), so $P_i$ is $1$ on constituents of type $i$ and $0$ on the others. $\sum_iP_i=\mathrm{id}$ follows from column orthogonality (3.11) applied to the identity column: $\sum_id_i\chi_i(g)=|G|\delta_{g,e}$.`,
-      caption: String.raw`$D_6$ acts on the six vertices of a hexagon, and so on functions on them by $(g\cdot f)(x)=f(g^{-1}x)$. Drag the blue handles to choose $f$. The panels show the projections $P_if$ onto the isotypic components, as discs on the hexagon (blue positive, red negative, area proportional to the value); only the types that occur are drawn at full strength. They sum to $f$. The readout verifies that each $P_i$ is idempotent and that the pieces are mutually orthogonal.`,
+      idea: String.raw`$P_i$ commutes with every $\rho(h)$ because $\overline{\chi_i}$ is a class function (3.2), so on each irreducible constituent it is a scalar by Schur’s lemma. Its trace on a degree-$d_j$ constituent is $d_i\langle\chi_j,\chi_i\rangle$, so the scalar is $\frac{d_i}{d_j}\langle\chi_j,\chi_i\rangle=\delta_{ij}$ by orthogonality (3.5), so $P_i$ is $1$ on constituents of type $i$ and $0$ on the others. $\sum_iP_i=\mathrm{id}$ follows from column orthogonality (3.11) applied to the identity column: $\sum_id_i\chi_i(g)=|G|\delta_{g,e}$.`,
+      caption: String.raw`$D_6$ acts on the six vertices of a hexagon, and so on functions on them by $(g\cdot f)(x)=f(g^{-1}x)$. Drag the blue handles to choose $f$. The panels show the projections $P_if$ onto the isotypic components, as discs on the hexagon (blue positive, red negative, area proportional to the absolute value). Nonzero current projections are drawn at full strength; a faint zero component does not by itself mean that its type is absent from the representation. They sum to $f$. The readout verifies that each $P_i$ is idempotent and that the pieces are mutually orthogonal.`,
       deps: ['rep-3.10', 'rep-2.8'],
-      refs: ['Serre §2.6', 'Fulton–Harris §2.4', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
+      refs: ['Serre §2.6, Theorem 8', 'Etingof et al., Problem 4.5.2'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf' },
       tags: ['isotypic component', 'projection'],
-      credit: 'Finite-group representation theory',
       viz(v) {
         const T = tableOf('D6'), G = T.G, hex = polygon(6);
         const A = v.stage({ x: [-0.5, 6.5], y: [-4.2, 4.2], axes: 'box', gutter: true, height: 300, weight: 0.9, title: 'a function $f$ on the vertices', xlabel: 'vertex' });
@@ -191,12 +191,7 @@ is the projection of $V$ onto its $\chi_i$-isotypic component $V_i$ (the sum of 
         v.button('alternating', () => hs.forEach((h, k) => h.set(k, k % 2 ? -2 : 2)));
         v.button('rotating wave', () => hs.forEach((h, k) => h.set(k, 3 * Math.cos((TAU * k) / 6 + 0.4))));
         const B = v.stage({ x: [0, 5.0], y: [0, 2.8], equal: true, axes: false, height: 300, weight: 1.5, title: 'projections $P_if$' });
-        const act = (g, f) => { const out = Array(6).fill(0); G.perms[g].forEach((to, k) => { out[to] = f[k]; }); return out; };
-        const proj = (f) => T.rows.map((r) => {
-          const out = Array(6).fill(0);
-          G.perms.forEach((_, g) => { const w = (r.d / G.n) * r.vals[G.cls[g]][0], a = act(g, f); a.forEach((x, k) => { out[k] += w * x; }); });
-          return out;
-        });
+        const proj = hexProjections;
         const F = () => hs.map((h) => h.y);
         v.render(() => {
           const f = F(), P = proj(f), all = [f, ...P];
@@ -237,12 +232,12 @@ is the projection of $V$ onto its $\chi_i$-isotypic component $V_i$ (the sum of 
       statement: String.raw`Let $\rho\colon G\to U(d)$ and $\rho'\colon G\to U(d')$ be unitary irreducible representations of a finite group, with matrix entries $\rho_{ij}(g)$, $\rho'_{kl}(g)$. Then
 $$\frac1{|G|}\sum_{g\in G}\rho_{ij}(g)\overline{\rho'_{kl}(g)}=\begin{cases}\dfrac1d\,\delta_{ik}\delta_{jl}&\text{if }\rho=\rho',\\[4pt]0&\text{if }\rho\not\cong\rho'.\end{cases}$$
 So the matrix entries of the irreducibles, taken one per isomorphism class, are $\sum d_i^2=|G|$ pairwise orthogonal functions on $G$.`,
-      idea: String.raw`For any matrix $X$ the average $\frac1{|G|}\sum_g\rho(g)X\rho'(g)^{-1}$ intertwines $\rho'$ and $\rho$, so by Schur’s lemma (2.5, 2.7) it is $0$ when $\rho\not\cong\rho'$ and $\frac{\operatorname{tr}X}d\,I$ when $\rho=\rho'$. Take $X=E_{jl}$ and read the $(i,k)$ entry; unitarity gives $\rho'(g)^{-1}=\overline{\rho'(g)}^{\mathsf T}$. Taking the diagonal entries and summing gives 3.5. Unitarity (2.1) is essential: in a non-unitary basis the formula fails.`,
+      idea: String.raw`For any matrix $X$ the average $\frac1{|G|}\sum_g\rho(g)X\rho'(g)^{-1}$ intertwines $\rho'$ and $\rho$, so by Schur’s lemma (2.5, 2.7) it is $0$ when $\rho\not\cong\rho'$ and $\frac{\operatorname{tr}X}d\,I$ when $\rho=\rho'$. Take $X=E_{jl}$ and read the $(i,k)$ entry; unitarity gives $\rho'(g)^{-1}=\overline{\rho'(g)}^{\mathsf T}$. Taking the diagonal entries and summing gives 3.5. The conjugate-entry formula requires orthonormal bases for invariant Hermitian forms (2.1); an arbitrary non-orthonormal change of basis need not preserve it.`,
       caption: String.raw`The table is the Gram matrix of all matrix coefficients of the irreducible representations of the chosen group ($|G|$ functions in all): the entries $\rho_{ij}$ of the two-dimensional irreducible, written $V_{ij}$, and the one-dimensional characters. Green cells agree with the theorem: $1$ on the diagonal for the one-dimensional ones, $\tfrac12$ for the entries of a 2-dimensional unitary one, and $0$ elsewhere. Click a cell to see the two functions on the group. Now drag the shear slider, which rewrites the 2-dimensional representation in a non-orthonormal basis: the representation is still irreducible, but the orthogonality fails.`,
       deps: ['rep-3.5'],
-      refs: ['Serre §2.2', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
+      refs: ['Serre §2.2, Corollaries 2–3', 'Etingof et al. §4.7, Proposition 4.7.1'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf' },
       tags: ['matrix coefficients', 'Schur orthogonality'],
-      credit: 'Finite-group representation theory',
       viz(v) {
         const KEYS = ['S3', 'D4'];
         let sel = [0, 1];
@@ -270,7 +265,8 @@ So the matrix entries of the irreducibles, taken one per isomorphism class, are 
             rows: n, cols: n, rowLabels: (i) => `$${list[i].tex}$`, colLabels: (j) => `$${list[j].tex}$`, size: 11.5,
             value: (i, j) => ctext(gram[i][j]).replace(/^-0$/, '0'), fill: (i, j) => [cabs(csub(gram[i][j], [exp(i, j), 0])) < 1e-9 ? 'green' : 'red', 0.26], highlight: [[sel[0], sel[1], 'accent']],
           });
-          A.setView([-0.5, G.n - 0.5], [-1.5, 1.5]);
+          const max = 1.2 * Math.max(1,...list[sel[0]].vals.map(z=>Math.abs(z[0])),...list[sel[1]].vals.map(z=>Math.abs(z[0])));
+          A.setView([-0.5, G.n - 0.5], [-max, max]);
           A.setTicks(G.perms.map((_, g) => [g, plain(G.L[g])]), null);
           list[sel[0]].vals.forEach((z, g) => A.rect(g - 0.32, 0, g - 0.02, z[0], { fill: 'accent', fillAlpha: 0.3, color: 'accent', width: 1.4 }));
           list[sel[1]].vals.forEach((z, g) => A.rect(g + 0.02, 0, g + 0.32, z[0], { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 1.4 }));
@@ -364,10 +360,10 @@ the average number of fixed points. In terms of the permutation representation $
       idea: String.raw`The invariant vectors of $\mathbb C[X]$ are the functions constant on orbits, so they have dimension $|X/G|$; this is also the multiplicity of the trivial representation, which 3.6 computes as $\frac1{|G|}\sum_g\chi_{\mathrm{perm}}(g)$. Combinatorially, count the pairs $(g,x)$ with $gx=x$ in two ways, using that the stabiliser of $x$ has $|G|/|Gx|$ elements, so each orbit contributes $|G|$.`,
       caption: String.raw`Colour the beads of a necklace (rotations only, or rotations and reflections) or the six faces of a cube (rotations) with $k$ colours. The bars give, for every symmetry $g$, the number of colourings it fixes, found by testing every colouring. Their average (dashed line) is the Burnside count. A brute-force grouping of all $k^n$ colourings into orbits gives the same number; for necklaces one representative of each orbit is drawn on the right.`,
       deps: ['rep-3.6', 'rep-1.2'],
-      refs: ['Serre §2.3', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
+      refs: ['Serre §2.3, Exercises 2.5–2.6'],
+      links: { source: 'https://link.springer.com/book/10.1007/978-1-4684-9458-7' },
       see: ['comb-10.3'],
       tags: ['orbit counting', 'combinatorics'],
-      credit: 'Finite-group representation theory',
       viz(v) {
         const cube = cubeData(), faceP = cube.G.perms.map((_, g) => actOn(cube, cube.rot[g], cube.sets.faces.pts));
         const mode = v.select('what to colour', [{ value: 'neck', label: 'necklace (rotations)' }, { value: 'brace', label: 'bracelet (rotations, reflections)' }, { value: 'cube', label: 'cube faces (rotations)' }], 'neck');
@@ -386,17 +382,7 @@ the average number of fixed points. In terms of the permutation representation $
             for (let a = 0; a < n; a++) { perms.push(Array.from({ length: n }, (_, i) => (i + a) % n)); labels.push(a === 0 ? 'e' : `r${a}`); }
             if (m === 'brace') for (let a = 0; a < n; a++) { perms.push(Array.from({ length: n }, (_, i) => (((a - i) % n) + n) % n)); labels.push(`s${a}`); }
           }
-          const total = k ** n, fixCount = Array(perms.length).fill(0);
-          const colour = (c) => { const out = Array(n); for (let i = 0; i < n; i++) { out[i] = c % k; c = Math.floor(c / k); } return out; };
-          for (let c = 0; c < total; c++) {
-            const col = colour(c);
-            perms.forEach((p, g) => { let ok = true; for (let i = 0; i < n && ok; i++) if (col[p[i]] !== col[i]) ok = false; if (ok) fixCount[g]++; });
-          }
-          // orbits of colourings by union–find on colourings
-          const enc = (col) => col.reduce((s, x, i) => s + x * k ** i, 0);
-          const maps = perms.map((p) => Array.from({ length: total }, (_, c) => { const col = colour(c), out = Array(n); for (let i = 0; i < n; i++) out[p[i]] = col[i]; return enc(out); }));
-          const orbits = orbitCount(maps, total);
-          const res = { n, k, perms, labels, fixCount, orbits, total, colour };
+          const res = { n, k, perms, labels, ...colouringOrbits(perms,n,k) };
           cache.set(id, res); if (cache.size > 12) cache.delete(cache.keys().next().value);
           return res;
         };
@@ -421,7 +407,7 @@ the average number of fixed points. In terms of the permutation representation $
               const col = colour(o[0]), cx = (idx % cols + 0.5) * cw, cy = 1 - (Math.floor(idx / cols) + 0.5) * ch, R = Math.min(cw, ch) * 0.34;
               for (let i = 0; i < n; i++) {
                 const a = (TAU * i) / n + Math.PI / 2;
-                B.dot(cx + R * Math.cos(a) * (cw > ch ? ch / cw : 1) * 0 + R * Math.cos(a) * 0.9, cy + R * Math.sin(a) * 0.9, { r: n > 6 ? 4 : 5, color: palette[col[i]], fill: palette[col[i]] });
+                B.dot(cx + R * Math.cos(a) * 0.9, cy + R * Math.sin(a) * 0.9, { r: n > 6 ? 4 : 5, color: palette[col[i]], fill: palette[col[i]] });
               }
             });
             if (orbits.length > 48) B.text(`… and ${orbits.length - 48} more`, 0.5, 0.02, { align: 'center', size: 12, color: 'muted' });
@@ -439,16 +425,21 @@ the average number of fixed points. In terms of the permutation representation $
       num: '3.16',
       kind: 'Paper',
       name: 'Über Gruppencharaktere',
-      statement: String.raw`Frobenius’s **Über Gruppencharaktere** develops characters of arbitrary finite groups from equations for conjugacy-class multiplication, proves their orthogonality and shows that their number equals the number of conjugacy classes. Its companion paper later in 1896 solves Dedekind’s group-determinant problem: $\Theta_G(x)=\det(x_{gh^{-1}})_{g,h\in G}$ factors into irreducible polynomials $\Phi_i$ of degree $d_i$, each occurring with multiplicity $d_i$. Normalize $\Phi_i(\delta_e)=1$. The companion obtains the character from its coefficients, equivalently $\chi_i(g)=\partial\Phi_i/\partial x_g\big|_{x=\delta_e}$, with $\chi_i(e)=d_i$. In modern representation language, $\Phi_i(x)=\det\sum_gx_g\rho_i(g)$ and $\chi_i(g)=\operatorname{tr}\rho_i(g)$ for the irreducible representations $\rho_i$.`,
-      idea: String.raw`Dedekind sent Frobenius his determinant question in April 1896. The character paper constructs class functions using the commuting class-multiplication equations, giving a nonsingular character table and the orthogonality relations; this is not a construction through matrices of irreducible representations. The companion defines a character from each normalized determinant factor, recovers all factor coefficients using power sums and Newton identities, and proves the difficult equality between a factor’s degree and its multiplicity. The display uses modern representation matrices to reconstruct the factorization numerically and differentiates the factors at $\delta_e$ to recover the character values.`,
+      statement: String.raw`In **Über Gruppencharaktere** (1896), Frobenius extends characters to arbitrary finite groups using conjugacy-class multiplication, obtains orthogonality relations, and works out character tables. The companion paper **Über die Primfactoren der Gruppendeterminante** (1896) establishes the factorization of the unrestricted group determinant
+$$\Theta_G(x)=\det(x_{gh^{-1}})_{g,h\in G}=\prod_i\Phi_i(x)^{d_i},\qquad \deg\Phi_i=d_i,$$
+with as many distinct irreducible polynomial factors as conjugacy classes. In modern complex representation theory,
+$$\Phi_i(x)=\det\!\left(\sum_gx_g\rho_i(g)\right),\qquad \chi_i(g)=\operatorname{tr}\rho_i(g)=\left.\frac{\partial\Phi_i}{\partial x_g}\right|_{x=\delta_e},$$
+where $\rho_i$ runs over the irreducible representations and $\delta_e$ has $x_e=1$, all other coordinates zero. For abelian groups every $d_i=1$, recovering the product of linear character sums.`,
+      idea: String.raw`The first paper starts from counts of products of conjugacy classes. Simultaneously diagonalizing their multiplication yields class functions, one per class; Frobenius initially leaves their scale free, then chooses a normalization giving the familiar orthogonality. At p. 995 he announces arithmetic properties whose proof requires more machinery. The companion paper identifies the character construction with the factors of the unrestricted determinant and proves that each factor's multiplicity equals its degree (§9). Frobenius himself records at p. 986 that Dedekind posed the motivating group/determinant problem in April 1896. The matrix formulas displayed here are a modern reconstruction: decompose the regular representation into $d_i$ copies of each $\rho_i$, so the convolution operator $\sum_gx_g\rho_{\mathrm{reg}}(g)$ has determinant $\prod_i\Phi_i^{d_i}$. Differentiating $\det(I+tA)=1+t\operatorname{tr}A+O(t^2)$ gives the character formula.`,
       caption: String.raw`Pick a group and a random point $x$ (a number $x_g$ for each element). The left panel shows the $|G|\times|G|$ matrix $(x_{gh^{-1}})$, coloured by value (for the largest group the elements are numbered in the order of the group); the table on the right lists the factors $\Phi_i(x)=\det\sum_gx_g\rho_i(g)$ built from the irreducible representations (written with matrices known today: this reconstruction is not Frobenius’s own computation) and the product $\prod\Phi_i^{d_i}$, compared with $\det(x_{gh^{-1}})$ computed directly. The class columns of the table are obtained by differentiating each $\Phi_i$ numerically at $x=\delta_e$ in the direction of $g$: the numbers are the character table.`,
       deps: ['nt-11.1', 'ladr-9.43'],
-      refs: ['Frobenius, Über Gruppencharaktere (1896), §§1–6, pp985–1006, https://doi.org/10.3931/e-rara-18877', 'Frobenius, Über die Primfactoren der Gruppendeterminante (1896), §§1–9, pp1343–1372, https://doi.org/10.3931/e-rara-18882', 'Etingof et al., Introduction to Representation Theory, §§4.10–4.11 (modern representation formulation)'],
-      paper: { authors: 'G. Frobenius', year: 1896, title: 'Über Gruppencharaktere', venue: 'Sitzungsberichte der Königlich Preußischen Akademie der Wissenschaften zu Berlin 1896: 985–1021', url: 'https://doi.org/10.3931/e-rara-18877' },
+      refs: ['Frobenius, Über Gruppencharaktere (1896), §§2–5, 8', 'Frobenius, Über die Primfactoren der Gruppendeterminante (1896), §§6–9', 'Etingof et al. §4.10, Theorem 4.10.2'],
+      links: { source: 'https://archive.org/details/sitzungsberichte1896deutsch/page/985/mode/1up', companion: 'https://archive.org/details/sitzungsberichte1896deutsch/page/1343/mode/1up' },
+      paper: { authors: 'G. Frobenius', year: 1896, title: 'Über Gruppencharaktere', venue: 'Sitzungsberichte der Königlich Preußischen Akademie der Wissenschaften zu Berlin 1896: 985–1021', url: 'https://archive.org/details/sitzungsberichte1896deutsch/page/985/mode/1up' },
       introduces: ['rep-3.1', 'rep-3.5', 'rep-3.14'],
       tags: ['group determinant', 'Frobenius', 'history'],
-      credit: 'Frobenius, 1896 (after a question communicated by Dedekind in April)',
-      scope: String.raw`Finite groups over $\mathbb C$. The class-equation construction and orthogonality were checked in the character paper; the irreducible-factor coefficient formulation and degree–multiplicity proof were checked in its companion. The determinant factors computed from representation matrices are a modern reconstruction, not Frobenius’s original algorithm.`,
+      credit: 'Frobenius, 1896; Dedekind’s question acknowledged at p. 986',
+      scope: String.raw`Complex representations of finite groups. The first paper's class-character construction is distinguished from the unrestricted determinant factorization in its companion. The trace, representation and derivative formulas are stated in modern notation.`,
       viz(v) {
         const KEYS = ['Z4', 'S3', 'D4', 'Q8', 'A4'];
         let seed = 5;
@@ -459,20 +450,8 @@ the average number of fixed points. In terms of the permutation representation $
         const TA = v.table(A, { rows: 3, cols: 3, maxCell: 44, size: 11, labelSize: 11, margin: 8 });
         const TB = v.table(B, { rows: 3, cols: 4, square: false, maxCell: 60, cellAspect: 1.9, size: 12, labelSize: 12, margin: 8 });
         const calc = () => {
-          const key = gsel.value, { G, rows } = tableOf(key), irr = irrepMats(key), r = v.rng(seed);
-          const x = G.perms ? G.mul.map(() => 0) : [];
-          for (let g = 0; g < G.n; g++) x[g] = Math.round(r.uniform(-1.5, 2.5) * 10) / 10;
-          // direct group determinant (complex determinant of a real matrix)
-          const M = Array.from({ length: G.n }, (_, g) => Array.from({ length: G.n }, (_, h) => [x[G.mul[g][G.inv[h]]], 0]));
-          const direct = cdet(M);
-          const Phi = (xs, ir) => { const d = ir.d; let S = Array.from({ length: d }, () => Array.from({ length: d }, () => [0, 0])); xs.forEach((xg, g) => { if (xg) S = S.map((row, i) => row.map((z, j) => cadd(z, csc(ir.mats[g][i][j], xg)))); }); return cdet(S); };
-          const phis = irr.map((ir) => Phi(x, ir));
-          let prod = [1, 0]; irr.forEach((ir, i) => { for (let k = 0; k < ir.d; k++) prod = cmul(prod, phis[i]); });
-          // characters as derivatives of Phi_i at x = delta_e, in direction g
-          const eps = 1e-5, delta = (g, s) => G.mul.map((_, h) => (h === 0 ? 1 : 0) + (h === g ? s * eps : 0));
-          const tab = irr.map((ir) => G.classes.map((c) => { const g = c.rep, a = Phi(delta(g, 1), ir), b = Phi(delta(g, -1), ir); return csc(csub(a, b), 1 / (2 * eps)); }));
-          const chars = irr.map((ir, i) => ({ vals: tab[i], d: ir.d }));
-          return { G, rows, irr, x, M, direct, phis, prod, tab, defect: tableDefect(G, chars) };
+          const {G}=tableOf(gsel.value),r=v.rng(seed),x=Array.from({length:G.n},()=>Math.round(r.uniform(-1.5,2.5)*10)/10);
+          return groupDeterminantData(gsel.value,x);
         };
         v.render(() => {
           const { G, irr, x, M, phis, tab } = calc(), n = G.n;
@@ -493,7 +472,7 @@ the average number of fixed points. In terms of the permutation representation $
         v.readout(() => {
           const { G, irr, direct, prod, defect, tab, rows } = calc();
           let dev = 0; tab.forEach((r, i) => r.forEach((z, j) => { dev = Math.max(dev, cabs(csub(z, rows[i].vals[j]))); }));
-          return `$\\det(x_{gh^{-1}})=${ctex(direct, 3)}$ (direct, ${G.n}×${G.n}); $\\prod_i\\Phi_i^{d_i}=${ctex(prod, 3)}$ with degrees ${irr.map((r) => `$${r.d}$`).join(', ')} (so $\\sum d_i^2=${irr.reduce((s, r) => s + r.d * r.d, 0)}=|G|$): difference $${v.sci(Math.max(cabs(csub(direct, prod)), 1e-12), 1)}$ (relative to size $${nm(cabs(direct), 2)}$).\nThe columns headed by classes are $\\partial\\Phi_i/\\partial x_g$ at $x=\\delta_e$ (numerical): they differ from the traces $\\operatorname{tr}\\rho_i(g)$ by at most $${v.sci(Math.max(dev, 1e-12), 1)}$, and the table they form has orthonormality defect $${v.sci(Math.max(defect, 1e-12), 1)}$.`;
+          return `$\\det(x_{gh^{-1}})=${ctex(direct, 3)}$ (direct, ${G.n}×${G.n}); $\\prod_i\\Phi_i^{d_i}=${ctex(prod, 3)}$ with degrees ${irr.map((r) => `$${r.d}$`).join(', ')} (so $\\sum d_i^2=${irr.reduce((s, r) => s + r.d * r.d, 0)}=|G|$): absolute numerical difference $${cabs(csub(direct,prod))===0?'0':v.sci(cabs(csub(direct,prod)),2)}$; difference divided by $\\max(1,|\\Theta_G|,|\\prod_i\\Phi_i^{d_i}|)$ is $${cabs(csub(direct,prod))===0?'0':v.sci(cabs(csub(direct,prod))/Math.max(1,cabs(direct),cabs(prod)),2)}$.\nThe columns headed by classes are $\\partial\\Phi_i/\\partial x_g$ at $x=\\delta_e$ (numerical): they differ from the traces $\\operatorname{tr}\\rho_i(g)$ by at most $${dev===0?'0':v.sci(dev,2)}$, and the table they form has orthonormality defect $${defect===0?'0':v.sci(defect,2)}$.`;
         });
         void matN; void mm; void ctr; void cscale; void cexp; void cm;
       },

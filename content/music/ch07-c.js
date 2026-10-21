@@ -1,8 +1,8 @@
+import{AB_C4,adaptiveModel,adaptiveAudio,BP_RATIOS,BP_TRITAVE,BP_STEP,bpModel,bpAudio,spectralScore}from'./source-audit-adaptive-bp.js';
+import{PERIODICITY_PRESETS,periodicityModel,periodicityHit,periodicityStateValid,periodicityAudio}from'./source-audit-periodicity.js';
+import{fiftyThreeModel,fiftyThreeAudio,circleModel,circleHit,circleAudio,CIRCLE_NAMES}from'./source-audit-circle53.js';
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (part c: items 7.13–7.17)
-import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, NOTE, TIM, sc, fold, circ, ring, cents, gcd, seqCents, chordCents, edoApprox, J5, harmonic, at, dissAll, dissCurve, minima } from './ch07.shared.js';
 
-const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
-const L3 = cents(3), L5 = cents(5); // the primes 3 and 5 in cents (1901.955, 2786.314)
 
 export default {
   collection: 'music',
@@ -10,277 +10,150 @@ export default {
   items: [
     // ------------------------------------------------------------------ 7.13
     {
-      num: '7.13',
-      kind: 'Concept',
-      name: '53-tone equal temperament',
-      statement: String.raw`**53-tone equal temperament** divides the octave into 53 steps of $22.64$ ¢. Its fifth (31 steps, $701.89$ ¢) is only $0.07$ ¢ below $3/2$, its major third (17 steps, $384.91$ ¢) is $1.40$ ¢ below $5/4$ and its minor third (14 steps, $316.98$ ¢) is $1.34$ ¢ above $6/5$: the eleven familiar five-limit intervals plotted here are matched to within about $1.55$ ¢. This bound does not extend to arbitrary powers of 3 and 5. The reason is arithmetical: $3^{53}$ is almost exactly $2^{84}$, the ratio $3^{53}/2^{84}\approx1.0021$ (**Mercator's comma**, 3.615 ¢) being very small because $31/53$ is a convergent of $\log_2(3/2)$ (7.10, 7.11), and $123/53$ happens also to approximate $\log_25$ to $1.4$ ¢. A chain of 53 pure fifths therefore closes to within 3.6 ¢ and the notes it produces are 53 nearly equally spaced pitches.`,
-      idea: String.raw`Approximating $\log_2 3$ and $\log_2 5$ by multiples of $1/53$ is a simultaneous rational approximation: $84/53$ for $\log_23$ (this is $1+31/53$, a convergent of $\log_2 3$ (7.10, 7.11)) and $123/53$ for $\log_25$ both have small errors. The small errors in the two primes add up, with the integer coefficients of each interval, to the error $a\,e_3+b\,e_5$ for a lattice pitch $3^a5^b$ modulo octaves. These errors are small for the familiar small-exponent intervals, but grow with the exponents; for example $27/25$ has about $2.61$ ¢ error under this mapping. The infinite lattice is mapped onto 53 pitch classes, so it cannot preserve every just interval to a uniformly tiny error (7.15).`,
-      caption: String.raw`Left: the 53 steps of the octave as ticks on a circle with the exact ratios (green) and the step each is assigned (the dots coincide at this scale; the errors are in the bars). Right: the error, in cents, of each five-limit interval in 53-TET (blue) and in 12-TET (grey). Choose a chord and play it in just intonation, in 53-TET, in 12-TET, or compare just and 53-TET alternately: try to hear a difference.`,
-      deps: ['music-7.11', 'music-7.5'],
-      see: ['music-7.15', 'music-7.12', 'music-7.2'],
-      refs: ['Benson §6.3 pp. 213–217'],
-      tags: ['equal temperament', 'just intonation'],
-      credit: 'Jing Fang (1st c. BCE) noticed that 53 fifths ≈ 31 octaves; Nicolaus Mercator (17th c.) computed the comma; Bosanquet (19th c.) built instruments',
-      scope: String.raw`Exact arithmetic. Which of the early observations of the near-closure of 53 fifths belong to Jing Fang and to Mercator (including the dates) is taken from secondary sources only. Whether such differences of a cent or so are audible depends on timbre and on beats: in the pure 5-limit chord the partials coincide exactly, in 53-TET they beat at rates that increase with register and harmonic number.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/53_equal_temperament' },
-      verify: true,
-      viz(v) {
-        const N = 53;
-        const CH = { maj: ['major triad 4:5:6', [1, 5 / 4, 3 / 2]], min: ['minor triad 10:12:15', [1, 6 / 5, 3 / 2]], m7: ['major seventh chord 8:10:12:15', [1, 5 / 4, 3 / 2, 15 / 8]] };
-        const sel = v.select('chord', Object.entries(CH).map(([k, x]) => ({ value: k, label: x[0] })), 'maj');
-        const rg = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.45], equal: true, axes: false, height: 400, title: 'the 53 steps' });
-        const eb = v.stage({ x: [-0.6, J5.length - 0.4], y: [-18, 18], axes: 'box', gutter: true, height: 400, xticks: J5.map((x, i) => [i, `${x[0]}/${x[1]}`]), yticks: [-15, -7.5, 0, 7.5, 15].map((y) => [y, String(y)]), ylabel: 'error from the just ratio (¢)', title: 'five-limit intervals' });
-        const snd = v.sound();
-        const edo = (n, r) => { const [k, e] = edoApprox(n, cents(r)); return { k, e, c: (k * 1200) / n }; };
-        const chordC = (mode) => CH[sel.value][1].map((r) => (mode === 'just' ? cents(r) : edo(mode === '53' ? 53 : 12, r).c));
-        const play = (m) => { snd.stop(); snd.samples(seqCents(m === 'alt' ? [chordC('just'), chordC('53'), chordC('just'), chordC('53')] : [chordC(m)], C4, m === 'alt' ? 1.3 : 2.4, 0.12), SR, { gain: 0.9 }); };
-        v.soundButton('just', () => play('just')); v.soundButton('53-TET', () => play('53')); v.soundButton('12-TET', () => play('12')); v.soundButton('alternate: just, 53-TET', () => play('alt'));
-        v.render(() => {
-          ring(rg, 1, { tick: 1200 / N, len: 0.05 });
-          for (let k = 0; k < 12; k++) { const a = circ(k * 100, 0.78), b = circ(k * 100, 0.85); rg.line(a[0], a[1], b[0], b[1], { color: 'muted', width: 1.3, alpha: 0.7 }); }
-          rg.text('12-TET', 0, 0.2, { size: 11, color: 'muted', align: 'center' }); rg.text('53 steps', 0, 0, { size: 14, weight: 700, align: 'center' }); rg.text('22.64 ¢ each', 0, -0.17, { size: 11, color: 'muted', align: 'center' });
-          const used = CH[sel.value][1];
-          J5.concat([[2, 1, 'octave']]).forEach(([p, q], i) => {
-            const c = cents(p / q), r = p / q, e = edo(N, r), on = used.some((u) => Math.abs(u - r) < 1e-9 || (Math.abs(u * 2 - r) < 1e-9)), a = circ(c, 1), b = circ(e.c, 0.94), l = circ(c, 1.2);
-            rg.dot(a[0], a[1], { r: on ? 6 : 4, color: 'green' }); rg.dot(b[0], b[1], { r: on ? 4 : 2.5, color: 'accent' });
-            if (p / q < 2) rg.text(`${p}/${q}`, l[0], l[1], { size: on ? 12 : 10, color: on ? 'green' : 'muted', align: 'center', baseline: 'middle', weight: on ? 700 : 400 });
-          });
-          const a0 = circ(0, 1.2); rg.text('1/1', a0[0], a0[1], { size: 11, color: 'green', align: 'center', baseline: 'middle', weight: 700 });
-          eb.hline(0, { color: 'green', width: 1.6 });
-          J5.forEach(([p, q], i) => { const e53 = edo(53, p / q).e, e12 = edo(12, p / q).e; eb.rect(i - 0.34, 0, i - 0.02, e12, { fill: 'muted', fillAlpha: 0.45, color: 'muted' }); eb.rect(i + 0.02, 0, i + 0.34, e53, { fill: 'accent', fillAlpha: 0.7, color: 'accent' }); eb.text(sc(v, e53, 1), i + 0.18, e53, { size: 9.5, align: 'center', baseline: e53 >= 0 ? 'bottom' : 'top', dy: e53 >= 0 ? -2 : 2 }); });
-        });
-        v.legend([['green', 'just ratio'], ['accent', '53-TET'], ['muted', '12-TET']]);
-        v.readout(() => {
-          const rs = CH[sel.value][1], d = rs.map((r) => edo(53, r)), d12 = rs.map((r) => edo(12, r));
-          const m53 = Math.max(...J5.map(([p, q]) => Math.abs(edo(53, p / q).e)));
-          return `${CH[sel.value][0]} in 53-TET: steps ${d.map((x) => x.k).join(', ')} above the root, errors ${d.map((x) => sc(v, x.e, 2)).join(', ')} ¢ · in 12-TET: ${d12.map((x) => sc(v, x.e, 1)).join(', ')} ¢ · worst error of the eleven 5-limit intervals in 53-TET: ${v.fix(m53, 2)} ¢ · $3^{53}/2^{84}$ = ${v.fix(1200 * (53 * Math.log2(3) - 84), 3)} ¢ (Mercator's comma) · 53 pure fifths = 31 octaves + ${v.fix(53 * FIFTH - 37200, 3)} ¢`;
-        });
+      num:'7.13',kind:'Concept',name:'53-tone equal temperament',
+      statement:String.raw`53-TET divides the octave into 53 equal frequency ratios, each $2^{1/53}$ or $1200/53$ cents. Its nearest fifth uses 31 steps (701.886792 cents), major third 17 (384.905660) and minor third 14 (316.981132). The corresponding signed errors are approximately−0.068208,−1.408053 and+1.339845 cents.
+
+These small errors concern particular intervals, not every five-limit ratio. For example, $25/16$ is also five-limit, and its nearest 34 steps have error about−2.816107 cents. The eleven declared conventional references in the table have maximum absolute error about 1.544470 cents. Every octave interval has a nearest 53-TET step within $600/53\approx 11.320755$ cents, which is the general rounding bound.
+
+The exact ratio between 53 pure fifths and 31 octaves is $3^{53}/2^{84}>1$, with logarithmic excess about 3.615046 cents.`,
+      idea:String.raw`The convergent 31/53 of $\log_2(3/2)$ gives the close fifth approximation. The major third is a separate approximation,17/53 of an octave. If prime 3 and prime 5 are assigned 84 and 123 steps, respectively, the error assigned to a ratio $2^a 3^b 5^c$ is a linear combination of the errors for those primes. Larger exponents can accumulate larger errors; nearest-step rounding may then choose a different count. The finite table does not bound the entire five-limit lattice.
+
+For $25/16=(5/4)^2$, the assigned 34-step error is twice that of 17 steps against 5/4, giving an explicit counterexample to a universal 1.5-cent claim. The bound 600/53 follows because rounding changes an octave coordinate by at most half of a 53-TET step.`,
+      caption:String.raw`Select one of three explicitly voiced rational chords. The circle shows 53 grid ticks and the selected chord's pure ratios (green) versus its 53-TET notes (blue, at a separate radius). The complete table compares eleven declared references and the 25/16 counterexample with both 53-TET and 12-TET. Playback uses the printed C4-anchored register for each version; alternate plays rational and 53-TET events in turn.`,
+      deps:['music-7.11','music-7.5'],see:['music-7.15','music-7.12','music-7.2'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §6.3, pp.213–216; declared reference table and25/16 counterexample computed here'],tags:['equal temperament','just intonation'],
+      credit:'Technical53-TET exposition: Dave Benson; finite reference table, counterexample and synthesis authored here.',
+      scope:String.raw`A mathematical finite comparison. The ratio list is declared rather than a unique five-limit scale, and no universal 1.5-cent or listener-threshold claim is made. Historical priority and naming of the 53-fifth closure excess are outside this claim. Integer step counts and the prime-power ratio are exact definitions; decimal logarithms/frequencies are numerical evaluations. Audio is the C4=261.6256-Hz,44,100-Hz H8 signal specified in 7.4/7.9, with pre-output bound 0.12 and 10-ms ramps; no perceived-beat or consonance certificate is inferred.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
+      viz(v){
+        const chord=v.select('chord',[{value:'major',label:'major triad 4:5:6'},{value:'minor',label:'minor triad 10:12:15'},{value:'major7',label:'major seventh 8:10:12:15'}],'major');
+        const A=v.stage({x:[-1.5,1.5],y:[-1.45,1.45],equal:true,axes:false,full:true,height:350,minWidth:240,title:'53 equal ticks and the selected chord'}),B=v.stage({x:[0,1],y:[-.5,12.7],axes:false,full:true,height:440,minWidth:240,title:'declared rational references and signed errors (cents)'});
+        let info;for(const[action,label]of[['just','Play rational chord'],['53','Play 53-TET chord'],['12','Play 12-TET chord'],['alternate','Alternate rational / 53-TET']])v.soundButton(label,sd=>{const a=fiftyThreeAudio(chord.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        const point=(c,r)=>[r*Math.sin(c*Math.PI/600),r*Math.cos(c*Math.PI/600)];
+        v.render(()=>{const a=fiftyThreeModel(chord.value);info=a;A.circle(0,0,1,{color:'muted',width:1});for(let j=0;j<53;j++)A.line(...point(j*1200/53,.95),...point(j*1200/53,1),{color:'muted',width:1});a.notes.forEach(n=>{const c=1200*Math.log2(n.p/n.q),e=1200*Math.log2(n.in53/261.6256);A.dot(...point(c,1),{r:5,ring:false,color:'green'});A.dot(...point(e,.82),{r:4,ring:false,color:'accent'});A.text(n.exact,...point(c,1.2),{size:11,align:'center',baseline:'middle',color:'green'});});A.text('53-TET',0,.06,{size:15,align:'center',baseline:'middle'});A.text('selected chord',0,-.15,{size:11,align:'center',baseline:'middle',color:'muted'});
+          [['ratio',.15],['k53',.4],['53−ref',.7],['12−ref',.95]].forEach(([t,x])=>B.text(t,x,12.05,{size:10.5,align:x>.5?'right':'center',baseline:'middle',weight:700}));a.rows.forEach((r,j)=>{const y=11-j,col=r.counterexample?'gold':'accent';B.text(r.exact,.15,y,{size:11,align:'center',baseline:'middle',color:r.counterexample?'gold':'ink'});B.text(String(r.in53.k),.4,y,{size:11,align:'center',baseline:'middle',color:col});B.text(`${r.in53.error<0?'−':'+'}${v.fix(Math.abs(r.in53.error),3)}`,.7,y,{size:10.5,align:'right',baseline:'middle',color:col});B.text(`${r.in12.error<0?'−':'+'}${v.fix(Math.abs(r.in12.error),3)}`,.95,y,{size:10.5,align:'right',baseline:'middle',color:'muted'});});
+        });v.legend([['green','selected pure ratio'],['accent','53-TET'],['muted','12-TET table'],['gold','25/16 counterexample']]);
+        v.readout(()=>{const a=info;return `Maximum absolute 53-TET error over the eleven declared references: ${v.fix(a.maxCuratedError,9)} cents. 25/16 counterexample: ${v.fix(a.counterexample.in53.error,9)} cents. 53-fifth closure excess: ${v.fix(a.commaCents,9)} cents; the exact prime-power ratio is 3⁵³/2⁸⁴. Actual rational / 53-TET /12-TET chord frequencies (Hz): ${a.notes.map(n=>`${v.fix(n.just,6)} /${v.fix(n.in53,6)} /${v.fix(n.in12,6)}`).join('; ')}. Small numerical errors do not establish an audibility threshold.`;});
       },
     },
     // ------------------------------------------------------------------ 7.14
     {
-      num: '7.14',
-      kind: 'Concept',
-      name: 'The circle of fifths',
-      statement: String.raw`The **circle of fifths** arranges the twelve keys so that neighbours differ by a fifth, a key signature gains one sharp each step clockwise and one flat each step counter-clockwise, and relative minors sit inside their major keys. It is a circle only in a tempered tuning: with pure fifths the chain of notes $C, G, D, \dots$ is an open spiral, each turn ending 23.46 ¢ above where it began (7.3). A tuning with twelve equal fifths of exactly 700 ¢ (12-TET, 7.9), or any well temperament (7.8), closes it, so that the twelfth fifth lands on the starting pitch class. Every key has the same interval sizes in equal temperament; unequal well temperaments retain different interval patterns in different keys. Twelve steps of $k\cdot f$ with $f$ the size of the fifth close only if $12f=8400$ ¢.`,
-      idea: String.raw`Think of the tuning of the fifth as a single number $f$ and of the chain $k\mapsto kf \bmod 1200$ as a rotation of the pitch circle. After twelve steps the chain has advanced by $12f-8400=12(f-700)$ cents: zero only for $f=700$. So the spiral of pure fifths and the closed circle of tempered fifths are the two ends of a one-parameter family; shrinking each fifth by 1.955 ¢ rolls the spiral onto a circle. The circle is also the order of keys by the number of notes they share: neighbouring keys have six of seven scale notes in common.`,
-      caption: String.raw`The twelve keys in circle-of-fifths order with their key signatures (relative minors inside). The slider changes the fifth from pure (701.955 ¢) to equal-tempered (700 ¢); the spiral of pure fifths (radius grows by the accumulated comma) closes up into the circle. Click a key to hear its major triad; the walk plays the triads for twelve successive fifths and ends on a C that is 23.5 ¢ sharp unless the slider is at 1.`,
-      deps: ['music-7.9', 'music-7.2'],
-      see: ['music-7.4', 'music-7.8', 'music-8.4'],
-      refs: ['Benson ch. 5'],
-      tags: ['circle of fifths'],
-      scope: String.raw`Conventional key names are used (sharps clockwise to F♯, flats beyond); enharmonic pairs such as F♯ and G♭ coincide only when the circle closes. The walk plays the notes folded into the octave nearest middle C.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Circle_of_fifths' },
-      viz(v) {
-        const tau = v.slider('tempering: pure → equal', 0, 1, 0, { step: 0.01, fmt: (x) => `${v.fix(FIFTH - x * (FIFTH - 700), 3)} ¢` });
-        const s = v.stage({ x: [-1.9, 1.9], y: [-1.85, 1.85], equal: true, axes: false, height: 520, title: 'the circle (and spiral) of fifths' });
-        const snd = v.sound();
-        const MAJ = ['C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'D♭', 'A♭', 'E♭', 'B♭', 'F'], MIN = ['Am', 'Em', 'Bm', 'F♯m', 'C♯m', 'G♯m', 'E♭m', 'B♭m', 'Fm', 'Cm', 'Gm', 'Dm'];
-        const SIG = ['0', '1♯', '2♯', '3♯', '4♯', '5♯', '6♯/6♭', '5♭', '4♭', '3♭', '2♭', '1♭'];
-        const f = () => FIFTH - tau.value * (FIFTH - 700);
-        const kOf = (i) => (i <= 6 ? i : i - 12);
-        const ang = (i) => (i * Math.PI) / 6, pt = (i, R) => [R * Math.sin(ang(i)), R * Math.cos(ang(i))];
-        const rootC = (i) => { const c = kOf(i) * f(); return c - 1200 * Math.round(c / 1200); };
-        const triad = (i) => { const r = rootC(i); return [r, r + 4 * f() - 2400, r + f()]; };
-        s.onClick((x, y) => { const a = Math.atan2(x, y), i = ((Math.round((a * 6) / Math.PI) % 12) + 12) % 12; snd.stop(); snd.samples(seqCents([triad(i)], C4, 2.0, 0), SR, { gain: 0.9 }); });
-        v.soundButton('walk around the circle', (sd) => { const ch = []; for (let k = 0; k <= 12; k++) { const c = k * f() - 1200 * Math.round((k * f()) / 1200); ch.push([c, c + 4 * f() - 2400, c + f()]); } sd.samples(seqCents(ch, C4, 0.6, 0.04), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const e = f() - 700, rad = (k) => 1 + (0.4 * (k * e)) / PCOMMA;
-          s.circle(0, 0, 1, { color: 'faint', width: 1, dash: [4, 4] });
-          const P = []; for (let k = 0; k <= 12; k++) P.push([rad(k) * Math.sin(ang(k)), rad(k) * Math.cos(ang(k))]);
-          s.path(P, { color: 'orange', width: 2.2, alpha: 0.8 });
-          for (let i = 0; i < 12; i++) {
-            const p = P[i]; s.dot(p[0], p[1], { r: 6, color: i === 0 ? 'green' : 'accent' });
-            s.text(MAJ[i], pt(i, 1.52)[0], pt(i, 1.52)[1], { size: 15, align: 'center', baseline: 'middle', weight: 700 });
-            s.text(SIG[i], pt(i, 1.72)[0], pt(i, 1.72)[1], { size: 10.5, color: 'muted', align: 'center', baseline: 'middle' });
-            s.text(MIN[i], pt(i, 0.7)[0], pt(i, 0.7)[1], { size: 12, color: 'purple', align: 'center', baseline: 'middle' });
-          }
-          const p12 = P[12], p0 = P[0]; s.dot(p12[0], p12[1], { r: 7, color: 'red', hollow: true });
-          s.text(e > 0.01 ? `12th fifth lands ${v.fix(12 * e, 2)} ¢ above C` : 'the 12th fifth lands on C', 0, 0.12, { size: 12, color: e > 0.01 ? 'red' : 'green', align: 'center', weight: 700 });
-          s.text(`fifth = ${v.fix(f(), 3)} ¢`, 0, -0.1, { size: 11, color: 'muted', align: 'center' });
-        });
-        v.legend([['orange', 'chain of fifths of size f, drawn outward by the accumulated excess'], ['purple', 'relative minor']]);
-        v.readout(() => `fifth ${v.fix(f(), 3)} ¢ · after 12 fifths the chain has risen by $12(f-700)=${v.fix(12 * (f() - 700), 3)}$ ¢ above the starting note (pure: 23.460 ¢, equal: 0) · major third of a key: ${v.fix(4 * f() - 2400, 2)} ¢ (pure 5/4: 386.31 ¢) · neighbouring keys on the circle differ by one accidental`);
+      num:'7.14',kind:'Concept',name:'The circle of fifths',
+      statement:String.raw`In 12-TET, adding a fifth advances 7 semitones modulo 12; because 7 and 12 are coprime, twelve steps visit every pitch class and return to the start. The conventional major-key signatures form the same circle: neighboring major scales differ by one note. A natural minor scale shares its key signature with the major scale three semitones above it.
+
+For a chain with a constant fifth size $f$ in the displayed 700-to-pure-fifth range, the twelve-step excess above seven octaves is $12(f-700)$ cents. It vanishes only at $f=700$. Pure fifths give the Pythagorean comma, and the last spelled B♯ differs from C.
+
+An unequal twelve-fifth tuning can also close: its fifth sizes need only sum to 8400 cents (7.8). That condition does not make all keys' interval patterns identical. The widget's uniform-fifth family is one specific mathematical comparison.`,
+      idea:String.raw`Octave equivalence means reducing pitch in cents modulo 1200. Twelve equal 700-cent steps sum to 8400. With pure fifths the sum is 8400 plus the comma; continuously reducing every fifth by the same share removes that excess. If fifths vary, closure constrains only their total, not every four-fifth major third. The named circulating recipes in 7.8 are concrete examples.
+
+Benson's Appendix M demonstrates the key-signature relationship with C/G and C/F major, and describes relative natural minors. Those notational facts are distinct from whether differently spelled notes have exactly the same frequency in a chosen tuning. This diagram therefore retains the actual forward-chain spellings C,G,…,E♯,B♯.`,
+      caption:String.raw`Choose the continuous tempering amount and a chain note. Gold selects its actual visible node; clicks near nodes select and play a triad, while empty space does nothing. Angular positions encode chain order. Authored radial growth encodes accumulated excess, not frequency distance. The red endpoint is step 12 (B♯), which coincides with C only at the equal endpoint. The walk plays twelve subsequent triads, rooted on steps 1–12; the closing-pair button directly compares the final root with the C4 anchor.`,
+      deps:['music-7.9','music-7.2','music-7.8'],see:['music-7.4','music-8.4','music-8.20'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §§5.3–5.4, pp.155–158; Appendix M, pp.393–394'],tags:['circle of fifths'],
+      credit:'Tuning and key-signature exposition: Dave Benson; continuous uniform-fifth diagram and synthesis authored here.',
+      scope:String.raw`A specified constant-fifth family with registered controls, rather than a simulation of every well temperament. The final note's unison with C is exact at the equal endpoint; intermediate calculations and decimal readouts use binary 64. Every audio root is folded into C4–C5, and its two upper voices ascend by the displayed four-fifth major third and fifth. C4 is 261.6256Hz. Audio uses the mono 44,100-Hz H8 contract of 7.4/7.9 with pre-output bound 0.12 and 10-ms ramps. No subjective key-character or perceptual equality is inferred.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:false,
+      viz(v){
+        const tau=v.slider('tempering: pure to equal',0,1,0,{step:'any',decimals:9}),selected=v.slider('selected chain note',0,11,0,{int:true,fmt:x=>CIRCLE_NAMES[x]});
+        const A=v.stage({x:[-1.8,1.8],y:[-1.8,1.8],equal:true,axes:false,full:true,height:390,minWidth:240,title:'chain order; radial displacement encodes accumulated excess'});let info;
+        const play=(action,sd=v.sound())=>{const a=circleAudio(tau.value,selected.value,action);sd.stop();sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};v.soundButton('Play selected triad',sd=>play('triad',sd));v.soundButton('Play twelve subsequent triads',sd=>play('walk',sd));v.soundButton('Compare C4 and final root',sd=>play('closing',sd));v.button('Stop audio',()=>v.sound().stop());A.onClick((x,y)=>{const j=circleHit(tau.value,x,y);if(j!==null){selected.set(j);play('triad');}});
+        v.render(()=>{const a=circleModel(tau.value,selected.value);info=a;A.circle(0,0,1,{color:'muted',width:1,dash:[4,4]});A.path(a.path,{color:'orange',width:2});const end=a.path[12];A.dot(...end,{r:8,hollow:true,color:'red',width:2});a.nodes.forEach(n=>{A.dot(...n.point,{r:n.j===a.selected?6:4.5,ring:false,color:n.j===a.selected?'gold':'accent'});const j=n.j,r=Math.hypot(...n.point),factor=j===0?.78/r:1+.17/r;A.text(n.name,n.point[0]*factor,n.point[1]*factor,{size:12,align:'center',baseline:'middle'});});A.text(`selected ${a.chosen.name}`,0,.12,{size:13,align:'center',baseline:'middle',color:'gold'});A.text(`${v.fix(a.fifth,6)} cents/fifth`,0,-.12,{size:11,align:'center',baseline:'middle',color:'muted'});});
+        v.legend([['accent','forward-chain notes'],['gold','selected note'],['red','step 12 B♯'],['orange','authored chain path']]);v.readout(()=>{const a=info;return `Fifth ${v.fix(a.fifth,9)} cents; twelve-step excess ${v.fix(a.error,9)} cents. ${a.closed?'Equal endpoint: B♯ and C coincide.':'The final B♯ differs from C.'} Actual C4/final-root pair ${a.closing.map(x=>v.fix(x,6)).join(', ')}Hz. Selected ${a.chosen.name} upward triad ${a.triad.map(x=>v.fix(x,6)).join(', ')}Hz. The plot is an authored chain-order diagram; its radius is not a frequency.`;});
       },
     },
     // ------------------------------------------------------------------ 7.15
     {
-      num: '7.15',
-      kind: 'Theorem',
-      name: 'Unison vectors and periodicity blocks (Fokker)',
-      statement: String.raw`Write every five-limit pitch class as $3^a5^b$ (mod octaves), a point $(a,b)$ of the lattice $\Z^2$ (fifths along $a$, major thirds along $b$). A **unison vector** is a lattice vector that is made to vanish by the tuning, such as the syntonic comma $81/80=(4,-1)$, the small diesis $128/125=(0,-3)$, or the Pythagorean comma $(12,0)$. If $u$ and $v$ are two independent unison vectors, then the points of the half-open parallelogram $\{su+tv:\ 0\le s,t<1\}$, a **periodicity block**, number exactly $|\det(u,v)|$, and every lattice point differs from exactly one of them by an integer combination of $u$ and $v$. Tempering $u$ and $v$ out therefore folds the infinite lattice onto a finite quotient of $|\det(u,v)|$ classes, represented as points on a torus; for $u=(4,-1)$ and $v=(0,-3)$ the determinant is 12 and the result is the twelve-note scale; $53$ comes from the schisma $(8,1)$ and the kleisma $(-5,6)$.`,
-      idea: String.raw`The quotient group $\Z^2/\langle u,v\rangle$ has order $|\det(u,v)|$ (the index of a lattice in $\Z^2$ is the area of its fundamental parallelogram, by counting lattice points in a large box). A fundamental parallelogram contains exactly one representative of each coset, so the tempered scale has $|\det|$ distinct notes, and any other fundamental region (a different shape of block) gives the same scale after tempering. In the equal division $n$-TET the unison vectors are the lattice points $(a,b)$ with $a\,m_3+b\,m_5\equiv0\pmod n$, where $m_3,m_5$ are the steps assigned to the primes 3 and 5: a basis of this kernel spans a block of $n$ points when $\gcd(n,m_3,m_5)=1$. Arbitrary independent kernel vectors can generate a proper sublattice and a larger block.`,
-      caption: String.raw`The lattice of $3^a5^b$; choose the equal division and the program picks a short kernel basis (or set your own with the sliders). The highlighted points are the periodicity block: as many as the determinant. Middle: the same block drawn on the torus (the unit square, opposite edges identified) with every lattice point inside the parallelogram marked. Right: the pitches of the block on the octave circle, as just ratios or with the unison vectors tempered out (a division of the octave); click any point of the lattice to hear it, or play the scale.`,
-      deps: ['music-7.6', 'music-7.3'],
-      see: ['music-7.5', 'music-7.13', 'music-7.12'],
-      refs: ['Benson §6.8 pp. 227–232'],
-      tags: ['lattice', 'comma'],
-      credit: 'A. D. Fokker, "Unison vectors and periodicity blocks in the three-dimensional (3-5-7-) harmonic lattice of notes", Proc. Kon. Ned. Akad. Wetensch. B 72 (1969)',
-      scope: String.raw`The quotient-count theorem holds for any two independent integer vectors. An arbitrary finite quotient need not be cyclic and need not embed faithfully in one octave; the free-choice mode shows its untempered representatives. The pitch of $3^a5^b$ is folded into one octave; the tempered scale is shown for the equal divisions with the patent mapping $m_3=\mathrm{round}(n\log_23)$, $m_5=\mathrm{round}(n\log_25)$. The picture is for the 5-limit (two primes besides 2); Fokker's own treatment was in the 3-5-7 lattice.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Periodicity_block' },
-      verify: true,
-      viz(v) {
-        const PRE = [12, 19, 31, 41, 53];
-        const ps = v.select('tempering', PRE.map((n) => ({ value: n, label: `${n}-TET` })).concat([{ value: 0, label: 'free choice' }]), 12, { onChange: () => sync() });
-        const ua = v.slider('u: fifths', -12, 12, 4, { int: true }), ub = v.slider('u: thirds', -12, 12, -1, { int: true });
-        const va = v.slider('v: fifths', -12, 12, 0, { int: true }), vb = v.slider('v: thirds', -12, 12, -3, { int: true });
-        const tmp = v.toggle('temper the unison vectors out', false);
-        const s = v.stage({ x: [-8.5, 10.5], y: [-4.5, 8.5], equal: true, axes: false, height: 360, title: 'the lattice (fifths →, thirds ↑)' });
-        const tor = v.stage({ x: [-0.15, 1.15], y: [-0.15, 1.15], equal: true, axes: false, height: 360, title: 'the torus' });
-        const rg = v.stage({ x: [-1.45, 1.45], y: [-1.4, 1.4], equal: true, axes: false, height: 360, title: 'the scale' });
-        const snd = v.sound();
-        const kernel = (n) => {
-          const m3 = Math.round((n * L3) / 1200), m5 = Math.round((n * L5) / 1200), K = [];
-          for (let a = -14; a <= 14; a++) for (let b = -14; b <= 14; b++) { if ((a || b) && ((a > 0) || (a === 0 && b > 0)) && ((a * m3 + b * m5) % n === 0)) K.push([a, b]); }
-          K.sort((p, q) => Math.hypot(...p) - Math.hypot(...q));
-          const u = K[0]; let best = null;
-          for (const w of K.slice(1, 40)) { const d = Math.abs(u[0] * w[1] - u[1] * w[0]); if (d && (!best || d < best.d || (d === best.d && Math.hypot(...w) < Math.hypot(...best.w)))) best = { w, d }; }
-          return { u, v: best.w, m3, m5 };
-        };
-        const cur = () => { if (ps.value) { const k = kernel(ps.value); return { u: k.u, w: k.v, n: ps.value, m3: k.m3, m5: k.m5 }; } return { u: [ua.value, ub.value], w: [va.value, vb.value], n: 0 }; };
-        const sync = () => { if (ps.value) { const k = kernel(ps.value); [ua, ub, va, vb].forEach((c, i) => c.set([k.u[0], k.u[1], k.v[0], k.v[1]][i])); } };
-        const pitch = (a, b, C) => (tmp.value && C.n ? ((((a * C.m3 + b * C.m5) % C.n) + C.n) % C.n) * (1200 / C.n) : fold(a * L3 + b * L5));
-        const coords = (a, b, C) => { const D = C.u[0] * C.w[1] - C.u[1] * C.w[0]; return [(a * C.w[1] - b * C.w[0]) / D, (C.u[0] * b - C.u[1] * a) / D, D]; };
-        const block = (C) => { const out = [], D = C.u[0] * C.w[1] - C.u[1] * C.w[0]; if (!D) return out; for (let a = -40; a <= 40; a++) for (let b = -40; b <= 40; b++) { const [x, y] = coords(a, b, C); if (x > -1e-9 && x < 1 - 1e-9 && y > -1e-9 && y < 1 - 1e-9) out.push([a, b, x, y]); } return out; };
-        const sc12 = (arr, C) => arr.map((p) => pitch(p[0], p[1], C)).sort((x, y) => x - y);
-        s.onClick((x, y) => { const a = Math.round(x), b = Math.round(y); if (Math.hypot(x - a, y - b) < 0.4) { const C = cur(); snd.stop(); snd.samples(seqCents([[pitch(a, b, C)]], C4, 1.4, 0), SR, { gain: 0.9 }); } });
-        v.soundButton('play the scale', (sd) => { const C = cur(), P = sc12(block(C), C); sd.samples(seqCents(P.concat([1200]).map((c) => [c]), C4, 0.45, 0.02), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const C = cur(), B = block(C), D = C.u[0] * C.w[1] - C.u[1] * C.w[0];
-          for (let a = -8; a <= 10; a++) for (let b = -4; b <= 8; b++) s.dot(a, b, { r: 2.6, color: 'faint' });
-          s.arrow(0, 0, C.u[0], C.u[1], { color: 'red', width: 2.4 }); s.arrow(0, 0, C.w[0], C.w[1], { color: 'orange', width: 2.4 });
-          s.text('u', C.u[0] * 0.5, C.u[1] * 0.5 + 0.4, { size: 14, color: 'red', weight: 700, align: 'center' }); s.text('v', C.w[0] * 0.5, C.w[1] * 0.5 + 0.4, { size: 14, color: 'orange', weight: 700, align: 'center' });
-          s.poly([[0, 0], C.u, [C.u[0] + C.w[0], C.u[1] + C.w[1]], C.w], { color: 'accent', width: 1.4, fill: 'accent', fillAlpha: 0.08 });
-          B.forEach(([a, b]) => { s.dot(a, b, { r: 5, color: 'accent' }); });
-          s.dot(0, 0, { r: 6.5, color: 'green' });
-          tor.rect(0, 0, 1, 1, { color: 'accent', width: 1.4, fill: 'accent', fillAlpha: 0.06 });
-          for (const [a, b, x, y] of B) { tor.dot(x, y, { r: 5, color: 'accent' }); }
-          tor.dot(0, 0, { r: 6.5, color: 'green' });
-          tor.arrow(-0.1, 0.5, -0.02, 0.5, { color: 'muted' }); tor.arrow(1.1, 0.5, 1.02, 0.5, { color: 'muted' }); tor.arrow(0.5, -0.1, 0.5, -0.02, { color: 'muted' }); tor.arrow(0.5, 1.1, 0.5, 1.02, { color: 'muted' });
-          tor.text('u →', 0.5, -0.11, { size: 11, color: 'red', align: 'center', baseline: 'top' }); tor.text('v →', 1.1, 0.5, { size: 11, color: 'orange', align: 'right', baseline: 'bottom', dy: -4 });
-          tor.text('opposite edges identified', 0.5, 1.12, { size: 10.5, color: 'muted', align: 'center', baseline: 'bottom' });
-          ring(rg, 1, { tick: 100, len: 0.04 });
-          const P = sc12(B, C);
-          P.forEach((c, i) => { const q = circ(c, 1); rg.dot(q[0], q[1], { r: 5.5, color: tmp.value && C.n ? 'orange' : 'accent' }); });
-          rg.text(D ? `${Math.abs(D)} classes` : 'dependent vectors', 0, 0.05, { size: 18, weight: 700, align: 'center' }); rg.text(tmp.value && C.n ? `${C.n}-TET` : 'just ratios 3ᵃ5ᵇ', 0, -0.17, { size: 11, color: 'muted', align: 'center' });
+      num:'7.15',kind:'Theorem',name:'Unison vectors and periodicity blocks (Fokker)',
+      statement:String.raw`Write a five-limit pitch class as $3^a5^b$ modulo octaves, with $(a,b)\in\Z^2$. Given independent integer vectors $u,v$, the half-open parallelogram $P=\{su+tv:0\le s,t<1\}$ contains exactly $|\det(u,v)|$ lattice points. Every lattice point differs from exactly one of these representatives by an integer combination of $u$ and $v$.
+
+This counts classes of $\Z^2/\langle u,v\rangle$. It gives that many distinct tempered pitches only when the pitch map has exactly this kernel. For example, $u=(2,0),v=(0,2)$ give four classes, but any map to octave pitch classes that kills both vectors has at most two distinct images: both generators must map to either 0 or 600 cents.
+
+For each offered $n$-TET preset, the source pair has determinant magnitude $n$ and lies in the kernel of $a m_3+b m_5\pmod n$. This map is onto, so the pair spans its full kernel and the block represents every one of the $n$ steps exactly once.`,
+      idea:String.raw`For any integer point $z$, write $(s,t)=[u\ v]^{-1}z$ and subtract $\lfloor s\rfloor u+\lfloor t\rfloor v$. The result is an integer point in $P$. Two points of $P$ cannot differ by a nonzero integer combination of $u,v$, because their two coefficient differences lie strictly between −1 and 1. Integer row and column operations reduce the generator matrix to a diagonal one while preserving index and determinant magnitude; the diagonal case has exactly the product of its diagonal magnitudes as classes.
+
+For a preset, $\gcd(n,m_3,m_5)=1$ makes the modular map onto. Its kernel therefore has index $n$. The generated sublattice lies inside that kernel and also has index $n$, so they are equal. Free vectors retain the exact class count; no arbitrary free quotient is asserted to be a faithful musical scale.`,
+      caption:String.raw`Choose one of Fokker's displayed two-dimensional vector pairs, or edit bounded integer vectors. The left panel contains the entire block; blue marks its exact half-open representatives. The middle panel plots their coefficient coordinates $(s,t)$ in a square with opposite edges identified. The right panel shows those representatives as pure ratios, or as distinct equal-tempered steps for a preset. Click a blue lattice point to select and hear it. The sequence button plays only the first twelve representatives in ascending displayed pitch order, explicitly limiting long free blocks.`,
+      deps:['music-7.6','music-7.3'],see:['music-7.5','music-7.13','music-7.12'],
+      refs:['A. D. Fokker, 1969, Unison vectors and periodicity blocks in the three-dimensional (3-5-7-) harmonic lattice of notes; Huygens–Fokker Foundation hosted transcription, sections The lattice, Unison vectors and Periodicity blocks (two-dimensional table)'],tags:['lattice','comma'],
+      credit:'Source vector pairs: A. D. Fokker (1969), hosted transcription. Exact half-open enumeration, kernel qualification and counterexample derived here.',
+      scope:String.raw`The lattice-class theorem holds for independent integer vectors. The widget allows coordinates −12 through 12, including singular pairs to test the independence hypothesis. Preset modular steps are explicitly assigned by rounding $n\log_2 3$ and $n\log_2 5$; the source table supplies vector pairs, not a shortest-vector algorithm or a claim that every determinant quotient is cyclic. The square represents a continuous torus containing the finite lattice classes, not an audible pitch circle. Pure representatives are exact rational ratios modulo powers of two, with numerical logarithms for display. Free choice has no tempering toggle. Audio is the mono 44,100-Hz C4=261.6256-Hz H8 signal of 7.4/7.9, bounded by 0.12 before output and with 10-ms ramps; no listener threshold is claimed.`,
+      links:{source:'https://www.huygens-fokker.org/docs/fokkerpb.html'},verify:false,
+      viz(v){
+        let selected=[0,0],info;
+        const reset=()=>{selected=[0,0];};
+        const ps=v.select('vector pair',PERIODICITY_PRESETS.map(p=>({value:p.n,label:`${p.n}-TET`})).concat([{value:0,label:'free vectors'}]),12,{onChange:reset});
+        const ua=v.slider('u: fifth coordinate',-12,12,0,{int:true,onChange:reset}),ub=v.slider('u: third coordinate',-12,12,-3,{int:true,onChange:reset}),va=v.slider('v: fifth coordinate',-12,12,4,{int:true,onChange:reset}),vb=v.slider('v: third coordinate',-12,12,-1,{int:true,onChange:reset});
+        const tmp=v.toggle('map preset to equal-tempered steps',false),model=()=>periodicityModel(ps.value,[ua.value,ub.value],[va.value,vb.value],tmp.value,selected);
+        const A=v.stage({x:[-1.4,5.4],y:[-5.4,1.4],equal:true,axes:false,full:true,height:390,minWidth:240,title:'complete lattice block: fifth coordinate →, third coordinate ↑'}),B=v.stage({x:[-.16,1.16],y:[-.16,1.16],equal:true,axes:false,full:true,height:330,minWidth:240,title:'coefficient square: opposite edges identified'}),C=v.stage({x:[-1.4,1.4],y:[-1.4,1.4],equal:true,axes:false,full:true,height:330,minWidth:240,title:'pitch classes of these representatives'});
+        v.shareState('periodicity selected representative',{get:()=>({n:ps.value,u:[ua.value,ub.value],v:[va.value,vb.value],point:selected.slice()}),validate:periodicityStateValid,set:data=>{if(data.n!==ps.value||data.u[0]!==ua.value||data.u[1]!==ub.value||data.v[0]!==va.value||data.v[1]!==vb.value)throw new RangeError('Saved representative and restored vectors disagree');selected=data.point.slice();}});
+        const play=(action,sd=v.sound())=>{const a=model();if(!a.valid)return;const audio=periodicityAudio(a,action);sd.stop();sd.samples(audio.samples,audio.sampleRate,{gain:1,normalize:false});};
+        v.soundButton('Play selected representative',sd=>play('selected',sd));v.soundButton('Play first twelve representatives',sd=>play('sequence',sd));v.button('Stop audio',()=>v.sound().stop());
+        A.onClick((x,y)=>{const p=periodicityHit(model(),x,y);if(p){selected=[p.a,p.b];play('selected');}});
+        v.render(()=>{const a=model();info=a;for(const c of[ua,ub,va,vb])c.el.hidden=ps.value!==0;tmp.el.hidden=ps.value===0;A.setView(a.bounds.x,a.bounds.y);const radius=Math.max(2,Math.min(4.5,32/Math.sqrt(Math.max(1,a.size))));
+          A.path([...a.vertices,a.vertices[0]],{color:'accent',width:1.4});A.arrow(0,0,...a.u,{color:'red',width:2});A.arrow(0,0,...a.v,{color:'orange',width:2});B.rect(0,0,1,1,{color:'muted',width:1.4});C.circle(0,0,1,{color:'muted',width:1});
+          for(const p of a.points){const chosen=p.a===a.chosen.a&&p.b===a.chosen.b,col=chosen?'gold':'accent';A.dot(p.a,p.b,{r:chosen?5:radius,color:col,ring:false});B.dot(p.x,p.y,{r:chosen?5:radius,color:col,ring:false});C.dot(Math.sin(p.cents*Math.PI/600),Math.cos(p.cents*Math.PI/600),{r:chosen?5:Math.min(radius,3.5),color:col,ring:false});}
+          if(a.chosen){C.text(`${a.size} classes`,0,.12,{size:16,align:'center',baseline:'middle'});C.text(a.tempered?`${a.n}-TET`:'pure representatives',0,-.12,{size:11,align:'center',baseline:'middle',color:'muted'});}else{for(const s of[A,B,C])s.text('dependent vectors: no finite block',s===A?(a.bounds.x[0]+a.bounds.x[1])/2:s===B?.5:0,s===A?(a.bounds.y[0]+a.bounds.y[1])/2:s===B?.5:0,{size:11,align:'center',baseline:'middle',color:'red'});}
         });
-        v.legend([['red', 'unison vector u'], ['orange', 'unison vector v'], ['accent', 'points of the periodicity block'], ['green', 'the origin (1/1)']]);
-        v.readout(() => {
-          const C = cur(), B = block(C), D = C.u[0] * C.w[1] - C.u[1] * C.w[0];
-          if (!D) return 'The two vectors are dependent ($\\det=0$): they do not define a finite periodicity block. Choose independent vectors.';
-          const cu = fold(C.u[0] * L3 + C.u[1] * L5), cv = fold(C.w[0] * L3 + C.w[1] * L5), nm = (c) => `${v.fix(Math.min(c, 1200 - c), 2)} ¢`;
-          return `u = (${C.u}) is a comma of ${nm(cu)}, v = (${C.w}) of ${nm(cv)} · $\\det(u,v)=${D}$ and the block holds ${B.length} lattice points ${B.length === Math.abs(D) ? '= |det|' : '(≠ |det|?)'} · ${tmp.value && C.n ? `tempered out: ${C.n}-TET, steps ${C.m3} for the prime 3 and ${C.m5} for the prime 5` : 'untempered: the notes are just 5-limit ratios, distinct pitches'}`;
-        });
+        v.legend([['red','vector u'],['orange','vector v'],['accent','half-open representative'],['gold','selected representative']]);
+        v.readout(()=>{const a=info;if(!a.valid)return `u=(${a.u}), v=(${a.v}); determinant 0. Independence fails, so this is not a finite-index lattice block. Playback is inactive. Choose independent vectors.`;const p=a.chosen;return `u=(${a.u}), v=(${a.v}); signed determinant ${a.D}. Exact representative count ${a.points.length} = |det|. ${a.n?`Preset map: prime 3 → ${a.m3} steps, prime 5 → ${a.m5} steps modulo ${a.n}; every step occurs once.`:'Free block: these are lattice classes; no faithful octave-pitch quotient is asserted.'} Selected (${p.a},${p.b}), coefficients (${v.fix(p.x,6)},${v.fix(p.y,6)}), ${a.tempered?`step ${p.step}`:'pure ratio 3ᵃ5ᵇ modulo octaves'}, ${v.fix(p.cents,9)} cents, ${v.fix(p.hz,6)} Hz. Sequence plays ${a.sequence.length} of ${a.points.length} representatives, sorted by displayed pitch.`;});
       },
     },
     // ------------------------------------------------------------------ 7.16
     {
-      num: '7.16',
-      kind: 'Method',
-      name: 'Adaptive tuning',
-      statement: String.raw`**Adaptive tuning** (also called dynamic or "just intonation in motion") re-tunes the notes of a chord progression as it is played, so that each chord, or each moment, is as consonant as possible. One way to define it: for every chord choose the pitches that minimise its total sensory dissonance (6.4, 6.10, the sum over all pairs of partials of the Plomp–Levelt curve), keeping notes that the chord shares with the previous one unchanged so that the melody does not jump. The objective and constraints determine how close each chord comes to pure ratios; a local minimum need not be perfectly just. The pitch can drift on returning to the start: the ideal pure-interval construction for C–Am–Dm–G–C drifts by a syntonic comma per cycle (7.6), while this roughness optimizer need not reproduce that value exactly. If instead the root of every chord is anchored to equal temperament there is no drift but the chords can only be tuned relative to their roots.`,
-      idea: String.raw`Dissonance of a set of partials is a piecewise smooth function of the pitches (6.4), with sharp local minima where partials coincide, near the just ratios. Minimising it over the free notes of the chord, initialized from the held notes' mean deviation, can land in a nearby local minimum, whose location depends on timbre, weighting and held notes. Because the chords' common notes carry the pitch forward, small tuning changes can accumulate, as in the pure-interval example of 7.6: the optimisation does not remove the comma, it relocates it into pitch drift. Weighting each note's distance from its equal-tempered pitch trades the purity of the chords against the drift.`,
-      caption: String.raw`The progression C–Am–Dm–G–C repeated. Each dot is a note of the chord, drawn at its deviation from 12-TET after the tuning has been optimised (gold: the root). Choose the rule: common tones held (the tuning follows the chords and drifts) or roots anchored to 12-TET (no drift). The slider pulls every note toward its equal-tempered pitch. Compare the sound with fixed equal temperament and read the total dissonance in the readout.`,
-      deps: ['music-7.6', 'music-6.4'],
-      see: ['music-6.10', 'music-6.5', 'music-7.5'],
-      refs: ['Sethares, Real-Time Adaptive Tunings Using Max (2002), author manuscript pp. 2–8, Eqs. (1)–(8), §§3–6 (full paper)'],
-      tags: ['tuning', 'dissonance'],
-      credit: 'Dissonance-based adaptive tuning after W. A. Sethares, Real-Time Adaptive Tunings Using Max (2002); this panel uses a different optimizer',
-      scope: String.raw`A computational demonstration with 6-partial harmonic tones $0.88^{k-1}$ and the chapter-6 roughness helper. Its pair weight is $\min(a_i,a_j)$, whereas the cited 2002 paper Eq. (1) uses $a_i a_j$; this is a variant objective, not a numerical reproduction of that paper; the optimiser is Nelder–Mead initialized at the mean deviation of the pinned notes (zero when none are pinned), with a soft penalty outside 35 cents of that reference and the slider's quadratic pull toward 12-TET. It finds local minima, not necessarily global ones. It is an illustration of the method, not a reproduction of a particular published algorithm. Real-time retuning systems differ in how they weigh drift and purity.`,
-      links: { source: 'https://sethares.engr.wisc.edu/paperspdf/adaptun2002.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Adaptive_tuning' },
-      viz(v) {
-        const M = v.M, CHORDS = [{ n: 'C', notes: [0, 4, 7], root: 0 }, { n: 'Am', notes: [0, 4, 9], root: 9 }, { n: 'Dm', notes: [2, 5, 9], root: 2 }, { n: 'G', notes: [2, 7, 11], root: 7 }];
-        const mode = v.select('rule', [{ value: 'follow', label: 'common tones held' }, { value: 'anchor', label: 'roots anchored to 12-TET' }], 'follow');
-        const lam = v.slider('pull toward 12-TET', 0, 0.004, 0.0001, { step: 0.00005, fmt: (x) => v.fix(x * 1000, 2) });
-        const passes = v.slider('passes', 1, 6, 3, { int: true });
-        const g = v.stage({ x: [-0.3, 12.3], y: [-60, 15], axes: 'box', gutter: true, height: 340, full: true, xticks: [], xlabel: 'chord', ylabel: 'deviation from 12-TET (¢)', title: 'the retuned notes' });
-        const snd = v.sound();
-        const diss = (notes, d) => dissAll(notes.flatMap((s, j) => at(TIM, C4 * 2 ** ((100 * s + d[j]) / 1200))));
-        const cache = {};
-        const solve = () => {
-          const key = `${mode.value}|${lam.value}|${passes.value}`; if (cache[key]) return cache[key];
-          const out = []; let prev = null;
-          for (let k = 0; k <= 4 * passes.value; k++) {
-            const ch = CHORDS[k % 4], free = [], d = ch.notes.map((s, j) => { const pin = mode.value === 'anchor' ? (s === ch.root ? 0 : null) : (k === 0 ? (s === ch.root ? 0 : null) : (prev && prev.has(s) ? prev.get(s) : null)); if (pin === null) free.push(j); return pin; });
-            const pinned = d.filter((x) => x !== null), x0 = pinned.length ? pinned.reduce((a, b) => a + b, 0) / pinned.length : 0;
-            const f = (x) => { const dd = d.slice(); free.forEach((j, i) => { dd[j] = x[i]; }); const pen = free.reduce((a, j, i) => a + x[i] * x[i], 0); return diss(ch.notes, dd) + lam.value * pen + (x.some((q) => Math.abs(q - x0) > 35) ? 5 : 0); };
-            if (free.length) { const r = M.nelderMead(f, free.map(() => x0), { step: 6, tol: 1e-7, maxIt: 400 }); free.forEach((j, i) => { d[j] = r.x[i]; }); }
-            out.push({ ch, d, D: diss(ch.notes, d), D12: diss(ch.notes, ch.notes.map(() => 0)) });
-            prev = new Map(ch.notes.map((s, j) => [s, d[j]]));
-          }
-          return (cache[key] = out);
-        };
-        const buf = (m) => seqCents(solve().map((c) => c.ch.notes.map((s, j) => 100 * s + (m === 'et' ? 0 : c.d[j]))), C4, 0.9, 0.06);
-        v.soundButton('play: adaptive', (sd) => sd.samples(buf('ad'), SR, { gain: 0.9 }));
-        v.soundButton('play: 12-TET', (sd) => sd.samples(buf('et'), SR, { gain: 0.9 }));
-        v.soundButton('first C, then the last C', (sd) => { const S = solve(); sd.samples(seqCents([[S[0].d[0]], [S[S.length - 1].d[0]]], C4, 1.2, 0.15), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const S = solve();
-          g.hline(0, { color: 'muted', dash: [4, 4] });
-          const lo = Math.min(-10, ...S.flatMap((c) => c.d)) - 8, hi = Math.max(8, ...S.flatMap((c) => c.d)) + 8;
-          g.setView([-0.3, 4 * passes.value + 0.3], [lo, hi]);
-          const voices = new Map();
-          S.forEach((c, k) => c.ch.notes.forEach((s, j) => { const col = s === c.ch.root ? 'gold' : 'accent'; g.dot(k, c.d[j], { r: 4.5, color: col }); if (k) { const pv = S[k - 1].ch.notes.indexOf(s); if (pv >= 0) g.line(k - 1, S[k - 1].d[pv], k, c.d[j], { color: 'accent', width: 1.2, alpha: 0.35 }); } }));
-          S.forEach((c, k) => g.text(c.ch.n, k, hi - 2, { size: 11, color: k % 4 === 0 ? 'gold' : 'muted', align: 'center', baseline: 'top', weight: k % 4 === 0 ? 700 : 400 }));
-        });
-        v.legend([['gold', 'root of the chord'], ['accent', 'other notes']]);
-        v.readout(() => {
-          const S = solve(), last = S[S.length - 1], tD = S.reduce((a, c) => a + c.D, 0), t12 = S.reduce((a, c) => a + c.D12, 0), root = (c) => c.d[c.ch.notes.indexOf(c.ch.root)];
-          return `${passes.value} pass${passes.value > 1 ? 'es' : ''} · total dissonance: adaptive ${v.fix(tD, 2)}, 12-TET ${v.fix(t12, 2)} (${v.fix((100 * (t12 - tD)) / t12, 0)}% lower) · final C is ${sc(v, last.d[0], 1)} ¢ from 12-TET (${sc(v, last.d[0] / passes.value, 1)} ¢ per pass; the pure-interval value is −21.5) · first-pass roots: ${S.slice(0, 4).map((c) => `${c.ch.n} ${sc(v, root(c), 1)}`).join(', ')} ¢`;
-        });
+      num:'7.16',kind:'Method',name:'Adaptive tuning',
+      statement:String.raw`Adaptive tuning changes note frequencies as music proceeds. Sethares's 1994 method uses a timbre-dependent dissonance cost and approximate gradient descent toward a local minimum; it permits an optional fixed reference note. Its multimodal cost surface does not provide a general guarantee of a global minimum or exact rational intervals.
+
+This widget compares two authored constraints on C–Am–Dm–G–C: hold all common notes at their previous frequencies, or anchor each chord's root to its 12-TET frequency. It searches the remaining offsets within 35 cents of the mean held offset, adding a quadratic penalty toward 12-TET. These constraints and the bounded pattern search are specified model choices.
+
+The exact pure-interval, held-tone reference in 7.6 falls by $80/81$ per cycle, about −21.506290 cents. That reference is distinct from the numerical optimizer's result. In Sethares's published Figure 5, common notes can move microtonally and the tonal center is retained; comma drift is not a universal property of adaptive tuning.`,
+      idea:String.raw`For each of the chosen H8 tones, use relative partial amplitudes $1/h$, $h=1,\ldots,8$. Following the original paper's product-amplitude equations, sum
+$$a_i a_j(e^{-3.5x}-e^{-5.75x}),$$
+$$x=\frac{0.24|f_i-f_j|}{0.021\min(f_i,f_j)+19}.$$
+over unordered partial pairs. Add $\lambda\sum_j d_j^2$ for the free offsets. This is a declared numerical score in arbitrary units, not a calibrated rating of musical quality.
+
+The search tests coordinate and diagonal directions from three feasible seeds, halving an 8-cent step down to 1/1024 cent, with 400 iterations per seed. It keeps the best tested candidate. The readout reports a final probe check and any iteration limit; a small probe residual is a property of these tested directions, not a proof of global optimality. Hard clamping enforces the stated bounds, and held frequencies are copied exactly.`,
+      caption:String.raw`Gold marks actual roots and blue the other two notes, all at their computed deviations from 12-TET. Links follow notes common to adjacent chords; they are horizontal in held mode. In held-tone mode the purple line is the separate exact pure-chain root reference. Change the rule, continuous penalty or pass count. Playback uses the complete displayed progression, with the same fixed inversions and H8 spectrum used by the score; the closing comparison plays its first and final C in sequence.`,
+      deps:['music-7.6','music-6.4'],see:['music-6.10','music-6.5','music-7.5'],
+      refs:['W. A. Sethares, Adaptive tunings for musical scales, JASA 96:10–18 (1994), Eqs. 1–6, § III and Fig. 5; exact held-tone comparison derived here'],tags:['tuning','dissonance'],
+      credit:'Timbre-dependent score and local tuning method: William A. Sethares (1994). Finite constraints, pattern search, progression and synthesis authored here.',
+      scope:String.raw`This is not a reproduction or fit of the paper's gradient-descent algorithm or Figure 5. The fixed voicings are C4–E4–G4, C4–E4–A4, D4–F4–A4 and D4–G4–B4, with C4 = 261.6256 Hz before offsets. The initial C root is fixed in held mode; later common tones are held exactly. Anchor mode fixes each root exactly, independently of the penalty. The all-12-TET score is an unconstrained comparison, not a promised lower or upper bound. Relative H8 amplitudes are authored; audio uses mono 44,100-Hz samples, a pre-output bound 0.12 and 10-ms ramps. No human consonance, audibility or performance-practice result is inferred.`,
+      links:{source:'https://sethares.engr.wisc.edu/paperspdf/adaptun.pdf'},verify:false,
+      viz(v){
+        const mode=v.select('constraint',[{value:'follow',label:'common tones held'},{value:'anchor',label:'roots anchored to 12-TET'}],'follow'),lambda=v.slider('quadratic pull toward 12-TET',0,.004,.0001,{step:'any',decimals:9}),passes=v.slider('complete cycles',1,6,3,{int:true});
+        const A=v.stage({x:[-.3,12.3],y:[-80,24],axes:'box',gutter:true,full:true,height:410,minWidth:240,xlabel:'chord index; C at each cycle boundary',ylabel:'deviation from 12-TET (cents)',xticks:[],title:'actual three-note offsets and a separate pure-chain reference'});let info,cache=new Map();
+        const model=()=>{const key=`${mode.value}|${lambda.value}|${passes.value}`;if(!cache.has(key)){if(cache.size>=24)cache.delete(cache.keys().next().value);cache.set(key,adaptiveModel(mode.value,lambda.value,passes.value));}return cache.get(key);};
+        for(const[action,label]of[['adaptive','Play computed progression'],['equal','Play fixed 12-TET progression'],['closing','Compare first and final C']])v.soundButton(label,sd=>{const a=adaptiveAudio(model(),action);sd.stop();sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{const a=model();info=a;A.setView(a.bounds.x,a.bounds.y);A.setTicks(Array.from({length:a.passes+1},(_,j)=>[4*j,`C${j}`]),undefined);A.path([[0,0],[4*a.passes,0]],{color:'muted',dash:[4,4],width:1});if(a.mode==='follow')A.path(a.rows.map(r=>[r.k,r.pureRoot]),{color:'purple',width:1.6,dash:[3,3]});a.rows.forEach((r,k)=>{if(k)r.notes.forEach((s,j)=>{const prev=a.rows[k-1],at=prev.notes.indexOf(s);if(at>=0)A.line(k-1,prev.d[at],k,r.d[j],{color:'accent',alpha:.3,width:1});});[0,1,2].sort((i,j)=>(r.notes[i]===r.root)-(r.notes[j]===r.root)).forEach(j=>A.dot(k,r.d[j],{r:4.5,ring:false,color:r.notes[j]===r.root?'gold':'accent'}));});});
+        v.legend([['gold','computed root'],['accent','other computed notes / common-note links'],['purple','exact pure held-tone reference (held mode)']]);
+        v.readout(()=>{const a=info;return `Computed spectral score ${v.fix(a.score,9)}; fixed 12-TET score ${v.fix(a.equalScore,9)} (arbitrary units). Final C offset ${v.fix(a.finalC,9)} cents; ${a.mode==='follow'?`separate exact pure-chain reference ${v.fix(a.idealFinal,9)} cents.`:'all chord roots are pinned to their exact 12-TET frequencies.'} Returned-candidate probe step 1/1024 cent; largest tested objective improvement ${a.maxProbeImprovement.toExponential(2)}. ${a.complete?'Each chosen search completed its step schedule.':'A chosen search reached its iteration limit; the result is a budgeted candidate.'} First-pass roots: ${a.rows.slice(0,4).map(r=>`${r.name} ${v.fix(r.d[r.notes.indexOf(r.root)],6)}`).join('; ')} cents. The progression contains ${a.rows.length} actual three-note events; numerical offsets need not be exact pure intervals.`;});
       },
     },
     // ------------------------------------------------------------------ 7.17
     {
-      num: '7.17',
-      kind: 'Concept',
-      name: 'The Bohlen–Pierce scale',
-      statement: String.raw`The **Bohlen–Pierce scale** divides not the octave but the **tritave**, the interval $3{:}1$ (1901.955 ¢), into 13 steps, in its equal-tempered form each a ratio $3^{1/13}$ of 146.3 ¢. It is designed for tones that have only odd harmonics (the ideal uniform closed–open pipe of 3.3; a real clarinet often emphasizes odd partials in its lower register): the partials of such a tone are $f, 3f, 5f, 7f,\dots$, the interval $2{:}1$ does not occur among them, and the simplest coincidences are $3{:}1$, $5{:}3$, $7{:}5$, $7{:}3$ and the chord $3{:}5{:}7$. The just version of the scale uses the ratios $1,\ \tfrac{27}{25},\ \tfrac{25}{21},\ \tfrac97,\ \tfrac75,\ \tfrac{75}{49},\ \tfrac53,\ \tfrac95,\ \tfrac{49}{25},\ \tfrac{15}{7},\ \tfrac73,\ \tfrac{63}{25},\ \tfrac{25}{9},\ 3$, built from the primes 3, 5 and 7 like the ordinary just scale from 2, 3 and 5; steps 0, 6, 10 of the equal scale approximate the basic chord $3{:}5{:}7$.`,
-      idea: String.raw`Consonance of the dissonance curve (6.4) depends on the timbre (6.5): minima occur where partials of the two notes coincide. For a spectrum of odd harmonics the coincidences are at the ratios of odd numbers, such as 3, 5/3, 7/3, 7/5, 9/5 and 9/7, which lie naturally in a tritave rather than an octave; the octave itself has no coinciding partials at all (odd multiples of $f$ never equal odd multiples of $2f$). Thirteen equal steps of the tritave follow the thirteen just ratios to within about 13 ¢ (the largest deviation is at $27/25$), because $13\log_35=19.05$ and $13\log_37=23.03$ are both close to whole numbers: the primes 3, 5 and 7 are each approximated by a whole number of steps. It is the analogue, for a different timbre, of 12-TET for harmonic tones.`,
-      caption: String.raw`The dissonance curve of a tone against a copy of itself over one tritave, for odd harmonics only (as a closed pipe) or for all harmonics, with the 13 equal steps of the Bohlen–Pierce scale as grey ticks and the just ratios in green; the orange dots are the curve's own minima. Notice that for odd harmonics the deep minima fall on the steps 3, 4, 6, 7, 10 and 13 (the ratios 9/7, 7/5, 5/3, 9/5, 7/3 and 3/1), and the octave has no deep valley at all; for the full harmonic series the deep minima are the octave-based ratios (2/1, 3/2, 4/3, …) and 3/1. Play the scale and the chord 3:5:7 with either timbre.`,
-      deps: ['music-7.11', 'music-3.3', 'music-6.5'],
-      see: ['music-6.6', 'music-6.7', 'music-7.12'],
-      refs: ['Benson §6.7 pp. 224–227 (full just-ratio and equal-scale tables)'],
-      tags: ['non-octave', 'tuning'],
-      credit: 'Heinz Bohlen, 1972 (published 1978); Kees van Prooijen, 1978 (independently); J. R. Pierce, M. V. Mathews and L. A. Roberts, 1984 (independently)',
-      scope: String.raw`Roughness model of Sethares for steady tones, 11 harmonics with amplitudes $0.88^{k-1}$ (odd ones only in the closed-pipe case), base 261.6 Hz. The thirteen just ratios agree with Benson §6.7 pp. 225–226; the dissonance minima are computed here, not quoted. Whether listeners perceive the scale as "consonant" with odd-harmonic timbres is a matter of experiment and of learning.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Bohlen%E2%80%93Pierce_scale' },
-      verify: true,
-      viz(v) {
-        const JB = [[1, 1], [27, 25], [25, 21], [9, 7], [7, 5], [75, 49], [5, 3], [9, 5], [49, 25], [15, 7], [7, 3], [63, 25], [25, 9], [3, 1]];
-        const TR = cents(3), ST = TR / 13;
-        const tim = v.select('timbre', [{ value: 'odd', label: 'odd harmonics (closed pipe)' }, { value: 'all', label: 'all harmonics' }], 'odd');
-        const spec = (k) => (k === 'odd' ? [1, 3, 5, 7, 9, 11].map((h) => [h, 0.88 ** (h - 1)]) : Array.from({ length: 11 }, (_, i) => [i + 1, 0.88 ** i]));
-        const cv = v.stage({ x: [0, 2000], y: [0, 1.08], axes: 'box', gutter: true, height: 340, full: true, xticks: [0, 400, 800, 1200, 1600, 1902].map((x) => [x, String(x)]), yticks: [], xlabel: 'interval above the lower tone (cents)', ylabel: 'dissonance', title: 'dissonance curve of a tone with itself' });
-        const rg = v.stage({ x: [-1.45, 1.45], y: [-1.4, 1.4], equal: true, axes: false, height: 340, title: 'the tritave circle' });
-        const snd = v.sound();
-        const cache = {};
-        const curve = (k) => cache[k] || (cache[k] = (() => { const c = dissCurve(spec(k), C4, 0, 2000, 800), mn = minima(c, 0.01); let lo = Infinity, hi = -Infinity; for (const x of c.d) { lo = Math.min(lo, x); hi = Math.max(hi, x); } return { c, mn, lo, hi }; })());
-        const nearest = (c) => { let b = 0; for (let i = 0; i <= 13; i++) if (Math.abs(i * ST - c) < Math.abs(b * ST - c)) b = i; return b; };
-        const stepC = (i) => i * ST, justC = (i) => cents(JB[i][0] / JB[i][1]);
-        const sp = () => spec(tim.value);
-        v.soundButton('play the scale', (sd) => sd.samples(seqCents(Array.from({ length: 14 }, (_, i) => [i * ST]), C4, 0.5, 0.03, sp()), SR, { gain: 0.9 }));
-        v.soundButton('chord 3:5:7', (sd) => sd.samples(seqCents([[0, cents(5 / 3), cents(7 / 3)]], C4, 2.2, 0, sp()), SR, { gain: 0.9 }));
-        v.soundButton('major triad 4:5:6', (sd) => sd.samples(seqCents([[0, M3J, FIFTH]], C4, 2.2, 0, sp()), SR, { gain: 0.9 }));
-        v.render(() => {
-          const K = curve(tim.value), n = (y) => (y - K.lo) / (K.hi - K.lo) * 0.95 + 0.04;
-          for (let i = 0; i <= 13; i++) { cv.vline(i * ST, { color: 'muted', alpha: 0.35, width: 1 }); }
-          for (let i = 0; i < JB.length; i++) { const c = justC(i); cv.vline(c, { color: 'green', width: 1.1, dash: [3, 3], alpha: 0.9 }); }
-          cv.vline(1200, { color: 'red', width: 1.4, dash: [6, 4] }); cv.text('octave 2:1', 1200, 1.04, { size: 11, color: 'red', align: 'center', plate: true });
-          cv.vline(TR, { color: 'green', width: 1.6 }); cv.text('tritave 3:1', TR, 1.04, { size: 11, color: 'green', align: 'right', dx: -4, plate: true });
-          cv.path(Array.from(K.c.c, (c, i) => [c, n(K.c.d[i])]), { color: 'accent', width: 2.6 });
-          K.mn.forEach((m) => { cv.dot(m.c, n(m.d), { r: 5, color: 'orange' }); });
-          ring(rg, 1, { tick: ST, period: TR, len: 0.06 });
-          for (let i = 0; i < 13; i++) { const a = circ(i * ST, 0.82, TR); rg.text(String(i), a[0], a[1], { size: 11, color: 'muted', align: 'center', baseline: 'middle' }); }
-          JB.slice(0, 13).forEach(([p, q], i) => { const a = circ(justC(i), 1, TR), l = circ(justC(i), 1.2, TR); rg.dot(a[0], a[1], { r: 4.5, color: 'green' }); rg.text(`${p}/${q}`, l[0], l[1], { size: 10.5, color: 'green', align: 'center', baseline: 'middle' }); });
-          rg.text('13 steps of 3:1', 0, 0.05, { size: 13, weight: 700, align: 'center' }); rg.text(`${v.fix(ST, 2)} ¢ each`, 0, -0.14, { size: 11, color: 'muted', align: 'center' });
-        });
-        v.legend([['accent', 'dissonance'], ['orange', 'minima of the curve'], ['green', 'just BP ratios'], ['muted', 'equal steps']]);
-        v.readout(() => {
-          const K = curve(tim.value), mins = K.mn.filter((m) => m.c > 20 && m.c < 1990).map((m) => { const i = nearest(m.c); return `${v.fix(m.c, 0)} ¢ (step ${i}, ${sc(v, m.c - i * ST, 0)})`; });
-          const d = (c) => { const S = spec(tim.value), A = dissAll(at(S, C4).concat(at(S, C4 * 2 ** (c / 1200)))); return A; };
-          return `step ${v.fix(ST, 3)} ¢ = $3^{1/13}$, tritave ${v.fix(TR, 3)} ¢ · ${tim.value === 'odd' ? 'odd harmonics' : 'all harmonics'}: minima at ${mins.slice(0, 9).join(', ')} · dissonance at 3:5:7's intervals vs octave-based: 5/3 → ${v.fix(d(cents(5 / 3)), 2)}, 3/2 → ${v.fix(d(FIFTH), 2)}, 2/1 → ${v.fix(d(1200), 2)}, 3/1 → ${v.fix(d(TR), 2)}`;
-        });
+      num:'7.17',kind:'Concept',name:'The Bohlen–Pierce scale',
+      statement:String.raw`The equal Bohlen–Pierce scale divides a $3{:}1$ frequency frame, the tritave, into 13 steps. Step $k$ has ratio $3^{k/13}$ and size $1200k\log_2(3)/13$ cents; one step is approximately 146.304231 cents. The full table gives the author's declared just chromatic version, including its unison and tritave endpoints. Its largest absolute error from the corresponding equal steps is about 13.066656 cents, attained at both $27/25$ and $25/9$ with opposite signs.
+
+The wide rational chord $3{:}5{:}7$, normalized to $1,5/3,7/3$, is approximated by steps 0, 6, 10. This is consistent with $13\log_3 5\approx19.044656$ and $13\log_3 7\approx23.026169$.
+
+Odd-only partial spectra motivate a distinct comparison: an odd multiple of $f$ cannot equal an odd multiple of $2f$. This exact lack of octave partial coincidences does not by itself determine a perceived interval's quality or every minimum of a roughness curve.`,
+      idea:String.raw`The author's technical scale tables give thirteen successive ratios between 1 and 3. Equal division replaces their varying step sizes by a common ratio. Complementary table entries multiply to 3, so their equal-minus-just errors have opposite signs; for example $(27/25)(25/9)=3$.
+
+The two offered signals are finite authored spectra: all harmonics 1–11 with amplitudes 1/h, or only the odd indices 1, 3, 5, 7, 9, 11 with those same amplitudes. The roughness graph applies Sethares's original 1994 product-amplitude formula (7.16) to exactly those partials. Its orange points are minima of the sampled finite curve, with grid spacing about 1.463042 cents. They are not an experimental consonance measurement or a proof that every valley coincides with a scale step.`,
+      caption:String.raw`Change the spectrum and selected step. The full curve includes both tritave endpoints; grey ticks mark all 14 equal-step positions. Green and blue mark the selected rational and equal dyads on that curve and on the tritave circle. The complete table compares every source ratio and its signed equal-step error. Playback uses the chosen actual spectrum for each rational/equal dyad, wide chord, ordinary major triad or complete 14-event equal scale.`,
+      deps:['music-7.11','music-3.3','music-6.5'],see:['music-6.6','music-6.7','music-7.12','music-7.16'],
+      refs:['Heinz Bohlen BP website, maintained by Huygens–Fokker Foundation: BP Scale Structures (chromatic and equal tables), BP Names and Definitions (basic interval table and wide triad); Benson, Music: A Mathematical Offering, Web 14 Dec 2008, §6.7 pp.224–226 and §3.5 pp.99–101; Sethares (1994) Eqs. 1–3'],tags:['non-octave','tuning'],
+      credit:'Technical BP scale tables: Heinz Bohlen website and Dave Benson. Roughness equations: William A. Sethares (1994). Finite spectra, sampling and synthesis authored here.',
+      scope:String.raw`The just list is a declared source version, not a unique collection of all ratios with primes 3, 5, 7. Historical priority and original 1972/1978 manuscripts are outside this claim. Pure odd resonances belong to an ideal closed–open cylindrical pipe; real clarinets can contain even partials, and these synthetic spectra are not measured clarinet recordings. The score uses relative amplitudes in arbitrary units, with one common vertical scale for both spectra. Its finite sampled minima include one-sided endpoint minima. All displayed and played frequencies use C4 = 261.6256 Hz as the lower anchor. Audio is mono 44,100-Hz synthesis with all partials below Nyquist, pre-output bound 0.12 and 10-ms ramps. No subjective audibility threshold or learned tonal equivalence is inferred.`,
+      links:{source:'https://www.huygens-fokker.org/bpsite/scales.html',intervals:'https://www.huygens-fokker.org/bpsite/names.html',roughness:'https://sethares.engr.wisc.edu/paperspdf/adaptun.pdf'},verify:false,
+      viz(v){
+        const timbre=v.select('synthetic spectrum',[{value:'odd',label:'odd harmonics through 11'},{value:'all',label:'all harmonics through 11'}],'odd'),step=v.slider('selected BP step',0,13,6,{int:true,fmt:k=>`${k}: ${BP_RATIOS[k].join('/')}`});
+        const A=v.stage({x:[-100,BP_TRITAVE+100],y:[-.02,.32],axes:'box',gutter:true,full:true,height:350,minWidth:240,xlabel:'interval above C4 (cents)',ylabel:'relative spectral score',xticks:[0,400,800,1200,1600,1901.955].map(x=>[x,String(Math.round(x))]),title:'the declared spectra and original 1994 pair-score formula'}),B=v.stage({x:[-1.45,1.45],y:[-1.45,1.45],equal:true,axes:false,height:350,minWidth:240,title:'tritave frame; selected pure and equal intervals'}),C=v.stage({x:[0,1],y:[-.5,14.7],axes:false,height:480,minWidth:240,title:'all 14 source entries and signed errors (cents)'});let info;
+        const model=()=>bpModel(timbre.value,step.value);for(const[action,label]of[['just','Play selected rational dyad'],['equal','Play selected equal dyad'],['wide-just','Play rational 3:5:7'],['wide-equal','Play equal steps 0,6,10'],['major','Play rational 4:5:6'],['scale','Play complete equal scale']])v.soundButton(label,sd=>{const a=bpAudio(model(),action);sd.stop();sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        const point=(c,r)=>[r*Math.sin(2*Math.PI*c/BP_TRITAVE),r*Math.cos(2*Math.PI*c/BP_TRITAVE)];
+        v.render(()=>{const a=model();info=a;A.setView([-100,BP_TRITAVE+100],[-.08*a.ymax,1.16*a.ymax]);for(let k=0;k<=13;k++)A.line(k*BP_STEP,0,k*BP_STEP,a.ymax,{color:'muted',alpha:.24,width:1});A.path(a.curve,{color:'accent',width:2});for(const[c,d]of a.minima)A.dot(c,d,{r:3,ring:false,color:'orange'});for(const[type,col]of[['just','green'],['equal','accent']])A.dot(a.chosen[type],spectralScore([AB_C4,a.chosen[type+'Hz']],a.name),{r:col==='green'?7:4.5,hollow:col==='green',width:1.6,ring:false,color:col});
+          B.circle(0,0,1,{color:'muted',width:1});for(let k=0;k<13;k++){B.line(...point(k*BP_STEP,.95),...point(k*BP_STEP,1),{color:'muted',width:1});B.text(String(k),...point(k*BP_STEP,1.18),{size:11,align:'center',baseline:'middle',color:'muted'});}B.dot(...point(a.chosen.just,1),{r:5,ring:false,color:'green'});B.dot(...point(a.chosen.equal,.82),{r:5,ring:false,color:'accent'});B.text(`step ${a.selected}`,0,.12,{size:15,align:'center',baseline:'middle'});B.text(a.chosen.exact,0,-.12,{size:12,align:'center',baseline:'middle',color:'green'});
+          [['k',.07],['ratio',.3],['equal',.64],['equal−just',.96]].forEach(([t,x])=>C.text(t,x,14.05,{size:10.5,align:x>.5?'right':'center',baseline:'middle',weight:700}));a.rows.forEach((r,j)=>{const y=13-j,col=j===a.selected?'gold':'ink';C.text(String(j),.07,y,{size:11,align:'center',baseline:'middle',color:col});C.text(r.exact,.3,y,{size:11,align:'center',baseline:'middle',color:col});C.text(v.fix(r.equal,3),.64,y,{size:10.5,align:'right',baseline:'middle'});C.text(`${r.error<0?'−':'+'}${v.fix(Math.abs(r.error),3)}`,.96,y,{size:10.5,align:'right',baseline:'middle',color:r.error<0?'purple':'accent'});});});
+        v.legend([['accent','curve / selected equal interval'],['green','selected rational interval'],['orange','sampled one-sided or interior minimum'],['muted','equal steps']]);v.readout(()=>{const a=info;return `Tritave ${v.fix(BP_TRITAVE,9)} cents; step ${v.fix(BP_STEP,9)} cents; declared maximum absolute table error ${v.fix(a.maxError,9)} cents. Selected ${a.chosen.exact}: pure ${v.fix(a.chosen.just,9)}, equal ${v.fix(a.chosen.equal,9)} cents; signed error ${v.fix(a.chosen.error,9)} cents. Actual selected pure / equal upper frequencies ${v.fix(a.chosen.justHz,6)} /${v.fix(a.chosen.equalHz,6)} Hz above the common C4 anchor. ${a.minima.length} sampled minima including qualifying endpoints; grid spacing ${v.fix(BP_TRITAVE/1300,9)} cents. Exact octave partial coincidences in this finite spectrum: ${a.octaveCoincidences.length}. A curve's local score is not a listener rating.`;});
       },
     },
   ],

@@ -173,7 +173,7 @@ export function cfApprox(a, n, eigSym, K = 50) {
   return { lam, coef, p: (x) => clenshaw(coef, x), err: (x) => { const th = Math.acos(Math.max(-1, Math.min(1, x))); let re = 0, im = 0; for (let k = 0; k < K; k++) { re += u[k] * Math.cos(k * th); im += u[k] * Math.sin(k * th); } return lam * Math.cos((n + 1) * th + 2 * Math.atan2(im, re)); } };
 }
 
-/** Newman's rational approximation to |x| of type (n,n) for even n, and (n+1,n-1) for odd n: r(x) = x (p(x) - p(-x)) / (p(x) + p(-x)), p(x) = prod_{k<n} (x + a^k), a = exp(-1/sqrt n). */
+/** Newman's rational approximation to |x| of type (n,n): r(x) = x (p(x) - p(-x)) / (p(x) + p(-x)), p(x) = prod_{k<n} (x + a^k), a = exp(-1/sqrt n). */
 export function newmanAbs(n) {
   const a = Math.exp(-1 / Math.sqrt(n)), P = (x) => { let p = 1; for (let k = 0; k < n; k++) p *= x + Math.pow(a, k); return p; };
   return (x) => { const p1 = P(x), p2 = P(-x); return x * (p1 - p2) / (p1 + p2); };

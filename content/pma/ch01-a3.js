@@ -140,7 +140,7 @@ Consequently $a\mapsto(a,0)$ identifies $\R$ with a subfield of $\C$, and one wr
       caption: String.raw`Drag $a$ and $b$ on the real line (top). Their copies $(a,0)$ and $(b,0)$ in the plane (bottom), added and multiplied with the complex rules, land directly below $a+b$ and $ab$: the horizontal axis is a faithful copy of $\R$. The dashed verticals carry each value from one picture to the other.`,
       deps: ['pma-1.24', 'pma-1.25'],
       tags: ['complex numbers', 'real numbers'],
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 1.26, p. 13'],
+      verify: true,
       viz(v) {
         const T = v.stage({ x: [-3, 3], y: [-0.55, 0.62], height: 100, axes: false, full: true, title: 'the real field $\\R$' });
         const P = v.stage({ x: [-3, 3], y: [-1.05, 1.05], equal: true, height: 230, grid: true, full: true, title: 'the complex plane: pairs $(a,0)$ on the horizontal axis' });
@@ -243,7 +243,7 @@ Consequently $a\mapsto(a,0)$ identifies $\R$ with a subfield of $\C$, and one wr
       caption: String.raw`Drag $z=(a,b)$. The real number $b=(b,0)$, multiplied by $i$, turns a quarter-turn to $(0,b)$ (orange arc); adding the real number $a=(a,0)$ (blue) then lands exactly on $z$. The faint lattice shows the points $m+ni$ with integer $m,n$.`,
       deps: ['pma-1.24', 'pma-1.26'],
       tags: ['complex numbers'],
-      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 1.29, p. 14'],
+      verify: true,
       viz(v) {
         const s = v.stage({ x: [-3, 3], y: [-2.2, 2.2], equal: true, height: 380 });
         const Z = s.handle(1.7, 1.25, { color: 'green', constrain: annulus(0.3, 2.1) });

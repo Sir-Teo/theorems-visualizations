@@ -117,14 +117,14 @@ export function pgDecompose(P, chi) {
   const n = P.ops.length;
   return P.irreps.map((ir) => P.classes.reduce((s, c, k) => s + c.size * chi[k] * ir.chi[k], 0) / n);
 }
-/** Molecules: atoms with positions (Angstrom, approximate textbook geometry) and the point group. */
+/** Rounded NIST CCCBDB internal coordinates in Angstrom; model mass ratios H:1, N:14, O:16. */
 export function moleculeData(key) {
   if (key === 'H2O') {
-    const half = (104.5 / 2) * Math.PI / 180, r = 0.96;
-    return { key, P: C2V, label: 'H₂O', tex: 'H_2O', atoms: [{ el: 'O', p: [0, 0, 0.06], col: 'red' }, { el: 'H', p: [r * Math.sin(half), 0, 0.06 - r * Math.cos(half)], col: 'accent' }, { el: 'H', p: [-r * Math.sin(half), 0, 0.06 - r * Math.cos(half)], col: 'accent' }], bonds: [[0, 1], [0, 2]] };
+    const half = (104.4776 / 2) * Math.PI / 180, r = 0.958;
+    return { key, P: C2V, label: 'H₂O', tex: 'H_2O', atoms: [{ el: 'O', mass: 16, p: [0, 0, 0.06], col: 'red' }, { el: 'H', mass: 1, p: [r * Math.sin(half), 0, 0.06 - r * Math.cos(half)], col: 'accent' }, { el: 'H', mass: 1, p: [-r * Math.sin(half), 0, 0.06 - r * Math.cos(half)], col: 'accent' }], bonds: [[0, 1], [0, 2]] };
   }
-  const r = 0.95, h = 0.38, a = [Math.PI / 2, Math.PI / 2 + TAU / 3, Math.PI / 2 + (2 * TAU) / 3];
-  return { key, P: C3V, label: 'NH₃', tex: 'NH_3', atoms: [{ el: 'N', p: [0, 0, h], col: 'green' }, ...a.map((t) => ({ el: 'H', p: [r * Math.cos(t), r * Math.sin(t), -0.1], col: 'accent' }))], bonds: [[0, 1], [0, 2], [0, 3]] };
+  const bond=1.012, cos=Math.cos(106.67*Math.PI/180), h=bond*Math.sqrt((1+2*cos)/3), r=Math.sqrt(bond*bond-h*h), a = [Math.PI / 2, Math.PI / 2 + TAU / 3, Math.PI / 2 + (2 * TAU) / 3];
+  return { key, P: C3V, label: 'NH₃', tex: 'NH_3', atoms: [{ el: 'N', mass: 14, p: [0, 0, 0], col: 'green' }, ...a.map((t) => ({ el: 'H', mass: 1, p: [r * Math.cos(t), r * Math.sin(t), -h], col: 'accent' }))], bonds: [[0, 1], [0, 2], [0, 3]] };
 }
 /** Permutation of the atoms induced by an operation matrix (throws when the molecule is not symmetric). */
 export function atomPerm(mol, M) {
@@ -156,7 +156,7 @@ export function projectDisp(mol, ir, u) {
 // ---------------------------------------------------------------- invariant bilinear forms
 /**
  * Space of d x d matrices B with rho(g)^T B rho(g) = B for all g, restricted to symmetric (kind 'sym'), alternating ('alt')
- * or all ('all') matrices. `mats` are complex matrices (pairs). Returns a list of complex d x d matrices (orthonormal basis).
+ * or all ('all') matrices. `mats` are complex matrices (pairs). Returns a list of complex d x d matrices forming a basis (not normalized).
  */
 export function formSpace(M, mats, kind = 'all') {
   const d = mats[0].length, N = d * d, rows = [];
@@ -175,9 +175,10 @@ export function formSpace(M, mats, kind = 'all') {
     if (k === l) row[k * d + l] = kind === 'sym' ? [0, 0] : [2, 0];
     rows.push(row);
   }
-  // These equations subtract exact unitary identities; roundoff alone must not create rank.
-  const scale = Math.max(1, ...rows.map(r => r.reduce((s,z)=>s+Math.hypot(...z),0)));
-  const ns = M.nullspaceC(rows, 1e-10 * scale);
+  // Constraints from exact symmetries can consist only of floating-point roundoff
+  // (e.g. the real sign character of C4). Keep a unit-scale tolerance floor.
+  const tol = Math.max(rows.length,N)*1e-12*Math.max(1,...rows.map(r=>r.reduce((s,z)=>s+Math.hypot(...z),0)));
+  const ns = M.nullspaceC(rows,tol);
   return ns.map((v) => Array.from({ length: d }, (_, i) => Array.from({ length: d }, (_, j) => [v.re[i * d + j], v.im[i * d + j]])));
 }
 
@@ -231,3 +232,50 @@ export function extTrace(A, k) {
   return tot;
 }
 export { cexp, cm, cconj };
+
+/** Mass-orthonormal rigid translations/infinitesimal rotations, in weighted coordinates. */
+export function rigidBasis(mol) {
+  const masses=mol.atoms.map(a=>a.mass),total=masses.reduce((s,x)=>s+x,0);
+  const center=[0,1,2].map(j=>mol.atoms.reduce((s,a,i)=>s+masses[i]*a.p[j],0)/total);
+  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+  const axes=[[1,0,0],[0,1,0],[0,0,1]],basis=[];
+  const candidates=[...axes.map(e=>mol.atoms.flatMap((a,i)=>e.map(x=>x*Math.sqrt(masses[i])))),...axes.map(e=>mol.atoms.flatMap((a,i)=>cross(e,a.p.map((x,j)=>x-center[j])).map(x=>x*Math.sqrt(masses[i]))))];
+  for(const c of candidates){
+    const q=c.slice();for(let pass=0;pass<2;pass++)for(const b of basis){const dot=q.reduce((s,x,j)=>s+x*b[j],0);q.forEach((x,j)=>q[j]=x-dot*b[j]);}
+    const norm=Math.hypot(...q);if(norm>1e-10)basis.push(q.map(x=>x/norm));
+  }
+  return basis;
+}
+/** Remove whole-molecule motions using the mass metric; output is an ordinary displacement. */
+export function vibrationalDisp(mol,u) {
+  const q=u.flatMap((v,i)=>v.map(x=>x*Math.sqrt(mol.atoms[i].mass)));
+  for(const b of rigidBasis(mol)){const dot=q.reduce((s,x,j)=>s+x*b[j],0);q.forEach((x,j)=>q[j]=x-dot*b[j]);}
+  return mol.atoms.map((a,i)=>q.slice(3*i,3*i+3).map(x=>x/Math.sqrt(a.mass)));
+}
+
+/** Invariant discrete point set and symmetry-adapted functions for selection-rule examples. */
+export function selectionSample(P,r) {
+  const seeds = Array.from({ length: 4 }, () => [r.normal(), r.normal(), r.normal()]);
+  const X = []; seeds.forEach((s) => P.ops.forEach((o) => X.push(m3v(o.M, s))));
+  const find = (q) => X.findIndex((p) => Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]) < 1e-9);
+  const permInv = P.ops.map((o) => X.map((p) => find(m3v(o.M.map((_, i) => o.M.map((rr) => rr[i])), p))));
+  const proj = (ir, f) => f.map((_, x) => P.ops.reduce((s, o, g) => s + ir.chi[o.cls] * f[permInv[g][x]], 0) * (ir.d / P.ops.length));
+  const states = P.irreps.map((ir) => { const f = X.map(() => r.normal()); return proj(ir, f); });
+  const ops = { z: X.map((p) => p[2]), x: X.map((p) => p[0]), y: X.map((p) => p[1]), xy: X.map((p) => p[0] * p[1]), r2: X.map((p) => p[0] ** 2 + p[1] ** 2) };
+  const type = {};
+  Object.entries(ops).forEach(([k, f]) => { type[k] = P.irreps.map((ir) => { const q = proj(ir, f); return Math.hypot(...q) > 1e-8 * (1 + Math.hypot(...f)); }); });
+  return {P,X,states,ops,type};
+}
+
+/** Type-level multiplicities and normalized matrix elements for one operator component. */
+export function selectionValues(sample,operator) {
+  const { P, states, ops, type } = sample, V = ops[operator], tv = type[operator], n = P.irreps.length;
+  const allowed = Array.from({ length: n }, () => Array(n).fill(false)), num = Array.from({ length: n }, () => Array(n).fill(0));
+  for (let i = 0; i < n; i++) for (let f = 0; f < n; f++) {
+    allowed[i][f] = tv.some((on, t) => on && P.classes.reduce((s, c, k) => s + c.size * P.irreps[f].chi[k] * P.irreps[t].chi[k] * P.irreps[i].chi[k], 0) / P.ops.length > 1e-9);
+    const si = states[i], sf = states[f], Vsi = si.map((x, t) => x * V[t]);
+    const nrm = Math.hypot(...sf) * Math.hypot(...Vsi) || 1;
+    num[i][f] = Math.abs(sf.reduce((s, x, t) => s + x * Vsi[t], 0)) / nrm;
+  }
+  return {P,allowed,num,tv,n};
+}

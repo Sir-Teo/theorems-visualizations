@@ -1,5 +1,5 @@
 // Topology — Chapter 4: Compactness, part b (items 4.7–4.12)
-import { randIntervals, greedyCover, drawBars, CYC } from './ch04.shared.js';
+import { randIntervals, greedyCover, drawBars, CYC, discFunctions, discSampleExtrema, waveMaximum, lebesgueDiscs, ambientClearance, compactCoverMinimum, punctureCoverConstant } from './ch04.shared.js';
 
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 
@@ -217,50 +217,41 @@ export default {
       kind: 'Theorem',
       name: 'Extreme value theorem',
       statement: String.raw`If $X$ is nonempty and compact and $f\colon X\to\R$ is continuous, then $f$ attains a maximum and a minimum: there are $p,q\in X$ with $f(q)\le f(x)\le f(p)$ for all $x\in X$. More generally a continuous real function on a compact space is bounded.`,
-      idea: String.raw`The image $f(X)$ is compact (4.4), so a compact subset of $\R$: it is closed and bounded (Heine–Borel in $\R$, via 4.10 and 4.2). A nonempty closed bounded set of reals contains its supremum and its infimum, and those are the values $f(p)$ and $f(q)$. Without compactness the image can be a non-closed set like $[0,1)$ and the supremum is a value that is approached, not attained.`,
-      caption: String.raw`The function $f$ is shown as a heat map on a disc. Drag the probe, and see the maximum (red dot) and the minimum (blue dot) estimated by a finite polar-grid search. Turn on “open disc”: the boundary circle is removed, the samples stay inside, and for the tilted plane $f=x+0.6y$ the best sample creeps toward the boundary point but, however fine the grid, remains below the supremum. Slide the grid density to watch the gap close without ever vanishing.`,
-      credit: String.raw`General topology`,
+      idea: String.raw`The image $f(X)$ is compact (4.4), so a compact subset of $\R$: it is closed because $\R$ is Hausdorff (4.3), and bounded because the cover by $(-n,n)$ has a finite subcover. A nonempty closed bounded set of reals contains its supremum and its infimum, and those are the values $f(p)$ and $f(q)$. Without compactness the image can be a non-closed set like $[0,1)$ and the supremum is a value that is approached, not attained.`,
+      caption: String.raw`The heat map shows $f$ on the disc. Drag the probe; red and blue dots show the largest and smallest values on the finite polar grid, not certified extrema. Hollow markers are analytic references (the wave maximum is evaluated numerically from its stationary equations). On the open disc, the tilted plane $x+0.6y$ has supremum $\sqrt{1.36}$ only on the removed boundary. The wave function instead attains its maximum inside the open disc; its minimum is reached only on the boundary. Thus noncompactness permits failure of attainment but does not force it. Grid density controls the sample approximation.`,
       deps: ['top-4.4', 'top-4.10'],
       see: ['pma-4.16'],
-      refs: ['Munkres §27'],
+      refs: ['Munkres (2nd ed.), Theorem 27.4'],
+      links: { source: 'https://raw.githubusercontent.com/enilsen16/The-Math-Group/master/Munkres-Topology.pdf' },
       tags: ['compactness', 'optimization'],
       viz(v) {
         const fs = v.select('function $f$', [{ value: 'wave', label: '$\\sin 2.5x+\\cos 2y+0.4xy$' }, { value: 'plane', label: '$x+0.6\\,y$' }], 'wave');
         const reg = v.select('region', [{ value: 'closed', label: 'closed disc' }, { value: 'open', label: 'open disc' }], 'closed');
         const nn = v.slider('grid density $N$', 4, 120, 20, { int: true });
         const s = v.stage({ x: [-1.35, 1.35], y: [-1.35, 1.35], equal: true, axes: false, height: 400 });
-        const F = { wave: (x, y) => Math.sin(2.5 * x) + Math.cos(2 * y) + 0.4 * x * y, plane: (x, y) => x + 0.6 * y };
+        const F=discFunctions,reference=waveMaximum(),planeMax=Math.sqrt(1.36);
         const hq = s.handle(0.2, -0.3, { color: 'gold', r: 7, label: 'probe', labelPos: 'ne', constrain: (x, y) => { const r = Math.hypot(x, y); return r > 0.98 ? [(x / r) * 0.98, (y / r) * 0.98] : [x, y]; } });
-        const search = (f, N, closed) => {
-          let best = [-Infinity], low = [Infinity];
-          const consider = (x, y) => { const z = f(x, y); if (z > best[0]) best = [z, x, y]; if (z < low[0]) low = [z, x, y]; };
-          consider(0, 0);
-          const R = closed ? N : N - 1;
-          for (let k = 1; k <= R; k++) { const r = k / N, m = Math.max(8, Math.round(6 * k * (360 / N > 0 ? 1 : 1) * Math.max(1, 40 / N))); for (let j = 0; j < m; j++) { const t = (2 * Math.PI * j) / m; consider(r * Math.cos(t), r * Math.sin(t)); } }
-          return { best, low };
-        };
-        const trueBest = {}, trueLow = {};
-        for (const k of Object.keys(F)) { const r = search(F[k], 300, true); trueBest[k] = r.best; trueLow[k] = r.low; }
         let info = null;
         v.render(() => {
           const f = F[fs.value], closed = reg.value === 'closed';
-          const lo = trueLow[fs.value][0], hi = trueBest[fs.value][0];
+          const lo=-2.2,hi=2.2;
           s.raster((x, y) => (x * x + y * y <= 1 ? [...v.M.cmap((f(x, y) - lo) / (hi - lo), 'viridis'), 1] : null), { key: fs.value, res: 3 });
           s.circle(0, 0, 1, { color: 'ink', width: closed ? 2.5 : 1.8, dash: closed ? false : [6, 5] });
-          const r = search(f, nn.value, closed);
+          const r = discSampleExtrema(fs.value, nn.value, closed);
           const probe = f(hq.x, hq.y);
-          s.dot(r.best[1], r.best[2], { r: 8, color: 'red', label: 'max', labelPos: 'ne' });
-          s.dot(r.low[1], r.low[2], { r: 8, color: 'blue', label: 'min', labelPos: 'sw' });
-          if (!closed) { const tb = trueBest[fs.value]; s.dot(tb[1], tb[2], { r: 6, hollow: true, color: 'red' }); }
-          info = { r, probe, closed, tb: hi };
+          s.dot(r.best[1], r.best[2], { r: 8, color: 'red', label: 'sample max', labelPos: 'se' });
+          s.dot(r.low[1], r.low[2], { r: 8, color: 'blue', label: 'sample min', labelPos: 'sw' });
+          const refs=fs.value==='plane'?[[planeMax,1/planeMax,.6/planeMax],[-planeMax,-1/planeMax,-.6/planeMax]]:[reference];
+          refs.forEach((p,i)=>s.dot(p[1],p[2],{r:6,hollow:true,color:i?'blue':'red'}));
+          info = { r, probe, closed, plane:fs.value==='plane' };
         });
         v.readout(() => {
           if (!info) return '';
-          const { r, probe, closed, tb } = info;
-          const base = `probe: $f=${v.fix(probe, 3)}$ · best sample: max $${v.fix(r.best[0], 4)}$ at $(${v.fix(r.best[1], 2)},${v.fix(r.best[2], 2)})$, min $${v.fix(r.low[0], 4)}$`;
-          if (closed) return `${base}. The closed disc is compact: both extremes are attained (the search converges to them as $N$ grows).`;
-          if (fs.value !== 'plane') return `${base}. The wave can attain its maximum inside the open disc; removing the boundary does not force non-attainment. The reference closed-disc maximum is a finite-grid estimate $\\approx${v.fix(tb, 4)}$.`;
-          return `${base}. The tilted plane has exact supremum $\\sqrt{1.36}=${v.fix(Math.sqrt(1.36), 4)}$, reached on the closed-disc boundary only. Every open-disc sample lies strictly below it; the displayed finite-grid estimate approaches it as $N$ grows.`;
+          const {r,probe,closed,plane}=info;
+          const base=`probe: $f=${v.fix(probe,3)}$ · sample max $${v.fix(r.best[0],4)}$ at $(${v.fix(r.best[1],3)},${v.fix(r.best[2],3)})$, sample min $${v.fix(r.low[0],4)}$.`;
+          if(closed)return `${base} The nonempty closed disc is compact, so both extrema are attained. ${plane?`Exact maximum/minimum: $\\pm\\sqrt{1.36}$.`:`The wave maximum is $\\approx${v.fix(reference[0],6)}$ at the interior point $(${v.fix(reference[1],6)},${v.fix(reference[2],6)})$.`} A finite sample can miss the actual extremizers.`;
+          if(plane)return `${base} The open disc has no maximum or minimum. Its supremum is $\\sqrt{1.36}=${v.fix(planeMax,6)}$; the sampled maximum is $${v.fix(planeMax-r.best[0],6)}$ below it. The infimum is $-\\sqrt{1.36}$.`;
+          return `${base} On the open disc the wave maximum is attained at an interior point, with value $\\approx${v.fix(reference[0],6)}$. Its boundary minimum is not attained. A gap in a finite sample does not prove nonattainment.`;
         });
       },
     },
@@ -269,64 +260,63 @@ export default {
       num: '4.12',
       kind: 'Lemma',
       name: 'Lebesgue number lemma',
-      statement: String.raw`Let $(X,d)$ be a compact metric space and $\mathcal U$ an open cover of $X$. Then there is $\delta>0$ (a **Lebesgue number** of the cover) such that every subset of $X$ of diameter less than $\delta$ lies in some member of $\mathcal U$. In particular every open ball $B(x,\delta/2)$ lies in a single member of $\mathcal U$.`,
-      idea: String.raw`If $X=\varnothing$ or $X\in\mathcal U$, the conclusion is immediate. Otherwise, for $x\in X$ let $L(x)=\sup_{U\in\mathcal U}\min\{1,\operatorname{dist}(x,X\setminus U)\}$, a capped radius of balls that fit in cover members. It is positive (each $x$ is in some open $U$) and continuous (it is 1-Lipschitz in $x$), so on the compact $X$ it attains a positive minimum $\delta$ (4.11). This $\delta$ works for every point at once. On a non-compact space the infimum of $L$ can be $0$, and no uniform $\delta$ exists.`,
-      caption: String.raw`The cover consists of open discs: seven big ones for the compact disc, rings of ever smaller ones shrinking toward the centre for the punctured disc. The heat map is $L(x)$, the radius of the biggest ball at $x$ that fits inside one disc of the cover; the marked minimum is estimated on a finite radial/angular grid. The existence of a positive Lebesgue number follows from the proof; the sampled value is not a certified lower bound. Drag the gold ball: when its radius is at most $L(x)$ it lies inside the disc it is shaded in. For the punctured disc the cover has infinitely many rings; the right panel samples $m(r)=\min_{|x|\ge r}L(x)$, which sinks to $0$ as $r\to0$. For the compact disc $m(r)$ stays positive all the way in.`,
-      credit: String.raw`General topology`,
+      statement: String.raw`Let $(X,d)$ be a nonempty compact metric space and $\mathcal U$ an open cover of $X$. There is $\delta>0$ such that every subset of $X$ of diameter less than $\delta$ lies in some member of $\mathcal U$. One can choose $\delta$ so that every relative open ball $B_X(x,\delta)$ also lies in one cover member. Such a $\delta$ is a **Lebesgue number**.`,
+      idea: String.raw`If $X$ itself belongs to the cover, any positive number works. Otherwise choose a finite subcover $U_1,\ldots,U_m$ and put $L(x)=\max_i\operatorname{dist}(x,X\setminus U_i)$. The complements are nonempty, so $L$ is a finite 1-Lipschitz function. Openness of the cover gives $L(x)>0$, and compactness gives a positive minimum $\delta$. For each $x$, some $U_i$ contains $B_X(x,\delta)$; a set of diameter less than $\delta$ lies in such a ball about any of its points. In the punctured-disc example, each drawn disc has centre norm $0.75s$ and radius $0.4s$, so the norms of its points have ratio at most $1.15/0.35=23/7<4$. Thus $p$ and $4p$ cannot lie in one member. Taking $0<|p|<\min(1/4,\delta/3)$ disproves any proposed Lebesgue number for the infinite cover.`,
+      caption: String.raw`The heat map is the **ambient** clearance $\ell(x)=\max_i(r_i-|x-c_i|)$ for the drawn discs: a full Euclidean ball of radius at most $\ell(x)$ fits in one disc. This gives a sufficient bound for relative balls in $X$, and may differ from the best relative-space bound. For the closed unit disc, rotational symmetry gives the exact clearance minimum and profile $m(r)=\min_{r\le|x|\le1}\ell(x)$. For the punctured disc, only rings $0,\ldots,J$ and the covered annulus $2^{-(J+1)}\le|x|\le1$ are displayed; its curve and blue marker are sampled estimates. The dashed green line is a separate analytic guarantee on that annulus. Increasing $J$ halves that guarantee. The full infinite cover has no Lebesgue number, as the pair argument shows. Drag the ball to test actual ambient containment.`,
       deps: ['top-4.1', 'top-1.5'],
-      refs: ['Munkres §27'],
+      refs: ['Munkres (2nd ed.), Lemma 27.5'],
+      links: { source: 'https://raw.githubusercontent.com/enilsen16/The-Math-Group/master/Munkres-Topology.pdf' },
       tags: ['compactness', 'metric spaces'],
       viz(v) {
         const sp = v.select('space', [{ value: 'c', label: 'closed disc (compact)' }, { value: 'p', label: 'punctured disc (not compact)' }], 'c');
-        const J = v.slider('rings of the cover', 2, 9, 5, { int: true });
+        const J = v.slider('last ring index $J$', 2, 9, 5, { int: true });
         const scale = v.slider('size of the 7 discs (compact cover)', 0.95, 1.4, 1, { step: 0.01 });
         const rho = v.slider('radius of the ball', 0.005, 0.5, 0.1, { step: 0.005 });
-        const s = v.stage({ x: [-1.2, 1.2], y: [-1.2, 1.2], equal: true, axes: false, height: 370, title: 'the cover and $L(x)$' });
-        const G = v.stage({ x: [0.002, 1], y: [0, 0.35], xlog: true, axes: 'box', gutter: true, height: 370, title: 'sampled $m(r)=\\min_{|x|\\ge r}L(x)$', xlabel: '$r$', ylabel: '$m$' });
-        const hb = s.handle(0.55, 0.3, { color: 'gold', r: 7, constrain: (x, y) => { const r = Math.hypot(x, y); return r > 1 ? [x / r, y / r] : [x, y]; } });
-        const build = (compact, j) => {
-          const D = [];
-          if (compact) { const k = scale.value; D.push([0, 0, 0.6 * k]); for (let a = 0; a < 6; a++) D.push([0.8 * Math.cos((Math.PI * a) / 3), 0.8 * Math.sin((Math.PI * a) / 3), 0.55 * k]); return D; }
-          const nj = j;
-          for (let i = 0; i <= nj; i++) { const sc = 2 ** -i; for (let k = 0; k < 14; k++) { const th = (2 * Math.PI * (k + 0.5 * (i % 2))) / 14; D.push([0.75 * sc * Math.cos(th), 0.75 * sc * Math.sin(th), 0.4 * sc]); } }
-          return D;
-        };
-        const Lof = (D, x, y) => { let b = -Infinity, bi = -1; D.forEach(([cx, cy, r], i) => { const z = r - Math.hypot(x - cx, y - cy); if (z > b) { b = z; bi = i; } }); return [b, bi]; };
-        let cache = { key: '', D: null, curve: null, lmin: 0, arg: [0, 0] };
+        const s = v.stage({ x: [-1.2, 1.2], y: [-1.2, 1.2], equal: true, axes: false, height: 370, title: 'the drawn discs and ambient clearance' });
+        const G = v.stage({ x: [0.002, 1], y: [0, 0.35], xlog: true, axes: 'box', gutter: true, height: 370, title: 'clearance profile and uniform guarantee', xlabel: '$r$', ylabel: '$m$' });
+        const constrain=(x,y)=>{const r=Math.hypot(x,y),min=sp.value==='c'?0:2**-(J.value+1),q=clamp(r,min,1);return r?[x*q/r,y*q/r]:[q,0];};
+        const hb=s.handle(.55,.3,{color:'gold',r:7,constrain});
+        let cache={key:''};
         let info = null;
         v.render(() => {
           const compact = sp.value === 'c'; J.el.hidden = compact; scale.el.hidden = !compact;
           const key = compact ? 'c' + scale.value : 'p' + J.value;
-          if (cache.key !== key) {
-            const D = build(compact, J.value), rmin = compact ? 0 : 2 ** -(J.value + 1);
-            const rs = Array.from({ length: 70 }, (_, k) => 0.002 * Math.pow(1 / 0.002, k / 69));
-            const g = rs.map((r) => { let m = Infinity; for (let a = 0; a < 90; a++) { const t = (2 * Math.PI * a) / 90; m = Math.min(m, Lof(D, r * Math.cos(t), r * Math.sin(t))[0]); } return m; });
-            const mm = g.slice(); for (let i = mm.length - 2; i >= 0; i--) mm[i] = Math.min(mm[i], mm[i + 1]);
-            const inK = (k) => compact || rs[k] >= rmin;
-            let lmin = Infinity, arg = [0, 0];
-            rs.forEach((r, k) => { if (!inK(k)) return; for (let a = 0; a < 90; a++) { const t = (2 * Math.PI * a) / 90, z = Lof(D, r * Math.cos(t), r * Math.sin(t))[0]; if (z < lmin) { lmin = z; arg = [r * Math.cos(t), r * Math.sin(t)]; } } });
-            cache = { key, D, rs, mm, rmin, lmin, arg };
+          if(cache.key!==key){
+            const D=lebesgueDiscs(compact,scale.value,J.value),rmin=compact?0:2**-(J.value+1),start=compact?.002:rmin;
+            const rs=Array.from({length:70},(_,i)=>start*Math.pow(1/start,i/69));
+            let mm,lmin,arg,guarantee;
+            if(compact){const exact=compactCoverMinimum(scale.value);lmin=exact.value;arg=exact.point;guarantee=lmin;mm=rs.map(r=>compactCoverMinimum(scale.value,r).value);}
+            else{
+              const samples=rs.map(r=>{let best={value:Infinity,point:[r,0]};for(let k=0;k<90;k++){const t=2*Math.PI*k/90,p=[r*Math.cos(t),r*Math.sin(t)],v=ambientClearance(D,...p).value;if(v<best.value)best={value:v,point:p};}return best;});
+              const best=samples.reduce((a,b)=>a.value<b.value?a:b);lmin=best.value;arg=best.point;mm=samples.map(p=>p.value);for(let i=mm.length-2;i>=0;i--)mm[i]=Math.min(mm[i],mm[i+1]);
+              guarantee=punctureCoverConstant*rmin;
+            }
+            cache={key,D,rs,mm,rmin,lmin,arg,guarantee};
           }
-          const { D, rs, mm, rmin, lmin, arg } = cache;
-          s.raster((x, y) => { const r = Math.hypot(x, y); if (r > 1 || r < rmin) return null; const z = Lof(D, x, y)[0]; return [...v.M.cmap(clamp(z / 0.3, 0, 1), 'magma'), 1]; }, { key, res: 3 });
+          const {D,rs,mm,rmin,lmin,arg,guarantee}=cache;
+          const p=constrain(hb.x,hb.y);hb.set(...p);
+          const extent=1.08*Math.max(1+rho.value,...D.flatMap(([x,y,r])=>[Math.abs(x)+r,Math.abs(y)+r]));s.setView([-extent,extent],[-extent,extent]);
+          G.setView([compact?.002:rmin*.9,1.05],[0,1.2*Math.max(...mm,guarantee)]);
+          s.raster((x, y) => { const r = Math.hypot(x, y); if (r > 1 || r < rmin) return null; const z = ambientClearance(D,x,y).value; return [...v.M.cmap(clamp(z / 0.3, 0, 1), 'magma'), 1]; }, { key, res: 3 });
           D.forEach(([cx, cy, r]) => s.circle(cx, cy, r, { color: 'faint', width: 0.8, alpha: 0.8 }));
           s.circle(0, 0, 1, { color: 'ink', width: 1.6 });
           if (!compact) s.dot(0, 0, { r: 4, hollow: true, color: 'ink' });
-          const [Lx, bi] = Lof(D, hb.x, hb.y), fits = rho.value <= Lx + 1e-12;
+          const {value:Lx,index:bi}=ambientClearance(D,hb.x,hb.y),fits=rho.value<=Lx;
           if (fits && bi >= 0) s.circle(D[bi][0], D[bi][1], D[bi][2], { fill: 'green', fillAlpha: 0.12, color: 'green', width: 2 });
           s.circle(hb.x, hb.y, rho.value, { color: fits ? 'green' : 'red', width: 2.4, fill: fits ? 'green' : 'red', fillAlpha: 0.2 });
-          s.dot(arg[0], arg[1], { r: 6, color: 'blue', label: 'min L', labelPos: 'e' });
-          G.line(0.002, 0, 1, 0, { color: 'faint', width: 1 });
+          s.dot(arg[0], arg[1], { r: 6, color: 'blue', label: compact?'min clearance':'sample min', labelPos: 'w' });
+          G.line(rs[0], 0, 1, 0, { color: 'faint', width: 1 });
           G.path(rs.map((r, k) => [r, Math.max(0, mm[k])]), { color: 'accent', width: 3 });
           if (!compact) G.vline(rmin, { color: 'orange', width: 1.3, dash: true });
-          G.hline(lmin, { color: 'blue', width: 1.4, dash: [5, 4] });
-          info = { compact, lmin, Lx, fits, n: D.length };
+          G.hline(guarantee, { color: 'green', width: 1.4, dash: [5, 4] });
+          info={compact,lmin,Lx,fits,n:D.length,guarantee,rmin};
         });
+        v.legend([['accent','clearance profile (puncture: sampled)'],['green','analytic uniform guarantee']]);
         v.readout(() => {
           if (!info) return '';
-          const { compact, lmin, Lx, fits, n } = info;
-          const tail = compact ? `The cover has ${n} discs. Sampled minimum $L\\approx${v.fix(lmin, 4)}$; this grid estimate is not a certified Lebesgue number. Compactness guarantees a positive one.` : `Over the part $|x|\\ge2^{-(J+1)}$ covered so far the sampled minimum is ${v.fix(lmin, 4)}. The infinite cover has discs shrinking toward the missing centre: the infimum over the punctured disc is **0**, so no Lebesgue number exists.`;
-          return `Ball at the probe: $L(x)=${v.fix(Lx, 4)}$; radius $${v.fix(rho.value, 3)}$ **${fits ? 'fits inside one disc' : 'does not fit in any single disc'}**. ${tail}`;
+          const {compact,lmin,Lx,fits,n,guarantee,rmin}=info;
+          const tail=compact?`Seven discs cover the closed unit disc. The analytic uniform clearance is $\\delta\\approx${v.fix(guarantee,6)}>0$; this is a valid Lebesgue number.`:`${n} discs from rings $0,\\ldots,${J.value}$ cover the displayed annulus $|x|\\ge${v.sci(rmin,3)}$. Sampled minimum $\\approx${v.sci(lmin,3)}$ (estimate); analytic uniform lower bound $\\delta_J\\approx${v.sci(guarantee,3)}$. The bound halves with each added ring; the full punctured-disc cover has no Lebesgue number.`;
+          return `At the probe, ambient clearance $\\ell(x)\\approx${v.fix(Lx,6)}$; radius $${v.fix(rho.value,3)}$ **${fits?'fits inside one drawn disc':'does not fit in any single drawn disc'}**. ${tail}`;
         });
       },
     },

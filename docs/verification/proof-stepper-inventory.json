@@ -1,0 +1,1438 @@
+{
+  "version": 1,
+  "scope": "Written theorem-like items whose viz directly calls v.steps",
+  "limitation": "Native first/next/last control checks do not establish proof validity, flagship selection or visual quality in all frames.",
+  "total": 102,
+  "passed": 102,
+  "results": [
+    {
+      "id": "ladr-2.30",
+      "kind": "Theorem",
+      "name": "Every spanning list contains a basis",
+      "file": "content/ladr/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 7,
+          "notes": 7
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-2.22",
+      "kind": "Theorem",
+      "name": "Independent list no longer than spanning list",
+      "file": "content/ladr/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 11,
+          "notes": 11
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-4.9",
+      "kind": "Theorem",
+      "name": "Division algorithm for polynomials",
+      "file": "content/ladr/ch04.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 8,
+          "notes": 8
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-5.40",
+      "kind": "Theorem",
+      "name": "Equation satisfied by an upper-triangular operator",
+      "file": "content/ladr/ch05-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-5.47",
+      "kind": "Corollary",
+      "name": "Over C, every operator has an upper-triangular matrix",
+      "file": "content/ladr/ch05-b.js",
+      "sourceFlag": true,
+      "players": [
+        {
+          "frames": 3,
+          "notes": 3
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-5.78",
+      "kind": "Theorem",
+      "name": "Common eigenvector for commuting operators",
+      "file": "content/ladr/ch05-c.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 0
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-5.80",
+      "kind": "Theorem",
+      "name": "Commuting operators are simultaneously triangularizable",
+      "file": "content/ladr/ch05-c.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-6.35",
+      "kind": "Theorem",
+      "name": "Existence of orthonormal basis",
+      "file": "content/ladr/ch06-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-6.52",
+      "kind": "Theorem",
+      "name": "Orthogonal complement of the orthogonal complement",
+      "file": "content/ladr/ch06-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 3,
+          "notes": 3
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-6.32",
+      "kind": "Theorem",
+      "name": "Gram–Schmidt procedure",
+      "file": "content/ladr/ch06.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 8,
+          "notes": 8
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-7.58",
+      "kind": "Theorem",
+      "name": "QR factorization",
+      "file": "content/ladr/ch07-c.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 7,
+          "notes": 7
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-8.45",
+      "kind": "Theorem",
+      "name": "Every nilpotent operator has a Jordan basis",
+      "file": "content/ladr/ch08-c.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-8.2",
+      "kind": "Theorem",
+      "name": "Equality in the sequence of null spaces",
+      "file": "content/ladr/ch08.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-8.9",
+      "kind": "Theorem",
+      "name": "A basis of generalized eigenvectors",
+      "file": "content/ladr/ch08.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-9.46",
+      "kind": "Theorem",
+      "name": "Formula for determinant of a matrix",
+      "file": "content/ladr/ch09-d.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 6,
+          "notes": 6
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ladr-9.90",
+      "kind": "Theorem",
+      "name": "Basis of V₁ ⊗ ⋯ ⊗ V_m",
+      "file": "content/ladr/ch09-h.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 9,
+          "notes": 9
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "alg-1.3",
+      "kind": "Theorem",
+      "name": "De Morgan’s laws",
+      "file": "content/alg/ch01.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "alg-2.11",
+      "kind": "Corollary",
+      "name": "Relatively prime integers combine to 1",
+      "file": "content/alg/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 8,
+          "notes": 8
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "alg-2.8",
+      "kind": "Theorem",
+      "name": "Induction implies well-ordering",
+      "file": "content/alg/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 13,
+          "notes": 13
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "alg-4.3",
+      "kind": "Theorem",
+      "name": "The cyclic subgroup ⟨a⟩",
+      "file": "content/alg/ch04.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "alg-4.11",
+      "kind": "Corollary",
+      "name": "The subgroups of ℤ are the nℤ",
+      "file": "content/alg/ch04.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 3,
+          "notes": 3
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "alg-5.9",
+      "kind": "Theorem",
+      "name": "Every permutation is a product of disjoint cycles",
+      "file": "content/alg/ch05.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 9,
+          "notes": 9
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "alg-5.12",
+      "kind": "Proposition",
+      "name": "Every permutation is a product of transpositions",
+      "file": "content/alg/ch05.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "alg-5.14",
+      "kind": "Lemma",
+      "name": "The identity is a product of an even number of transpositions",
+      "file": "content/alg/ch05.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 15,
+          "notes": 15
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "top-4.7",
+      "kind": "Theorem",
+      "name": "Finite products of compact spaces are compact",
+      "file": "content/top/ch04-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 15,
+          "notes": 15
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "top-4.10",
+      "kind": "Theorem",
+      "name": "Closed intervals in a linear continuum are compact",
+      "file": "content/top/ch04-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "top-4.2",
+      "kind": "Theorem",
+      "name": "Closed subsets of compact spaces are compact",
+      "file": "content/top/ch04.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "prob-1.3.4",
+      "kind": "Theorem",
+      "name": "Compositions of measurable maps are measurable",
+      "file": "content/prob/ch01-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "prob-1.7.3",
+      "kind": "Lemma",
+      "name": "Sections of product-measurable sets are measurable",
+      "file": "content/prob/ch01-d.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 6,
+          "notes": 6
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-1.4.1",
+      "kind": "Proposition",
+      "name": "Connected graphs can be built up vertex by vertex",
+      "file": "content/graph/ch01-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 21,
+          "notes": 21
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-1.5.3",
+      "kind": "Corollary",
+      "name": "Minimum degree at least t − 1 contains every tree of order t",
+      "file": "content/graph/ch01-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-1.5.5",
+      "kind": "Proposition",
+      "name": "Every connected graph has a normal spanning tree",
+      "file": "content/graph/ch01-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 13,
+          "notes": 13
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-1.6.1",
+      "kind": "Proposition",
+      "name": "Bipartite iff no odd cycle",
+      "file": "content/graph/ch01-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 10,
+          "notes": 10
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-1.7.2",
+      "kind": "Corollary",
+      "name": "Minors arise by deleting and contracting edges",
+      "file": "content/graph/ch01-c.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 10,
+          "notes": 10
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-1.8.1",
+      "kind": "Theorem",
+      "name": "Euler’s theorem: Eulerian iff every degree is even",
+      "file": "content/graph/ch01-c.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 15,
+          "notes": 15
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-1.9.7",
+      "kind": "Proposition",
+      "name": "BBᵀ = A + D",
+      "file": "content/graph/ch01-c.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 25,
+          "notes": 25
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-1.2.2",
+      "kind": "Proposition",
+      "name": "Every graph has a core of minimum degree above its density",
+      "file": "content/graph/ch01.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-2.3.1",
+      "kind": "Lemma",
+      "name": "Large cubic multigraphs contain k disjoint cycles",
+      "file": "content/graph/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 18,
+          "notes": 18
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-2.4.5",
+      "kind": "Lemma",
+      "name": "Exchange chains enlarge a family of spanning trees",
+      "file": "content/graph/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 17,
+          "notes": 17
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-2.5.1",
+      "kind": "Theorem",
+      "name": "Gallai–Milgram theorem",
+      "file": "content/graph/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-2.1.1",
+      "kind": "Theorem",
+      "name": "König’s theorem: maximum matching = minimum vertex cover",
+      "file": "content/graph/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 12,
+          "notes": 12
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-2.1.4",
+      "kind": "Theorem",
+      "name": "Gale–Shapley: stable matchings always exist",
+      "file": "content/graph/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 8,
+          "notes": 8
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-2.1.5",
+      "kind": "Corollary",
+      "name": "Petersen: regular graphs of even degree have a 2-factor",
+      "file": "content/graph/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 22,
+          "notes": 22
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-3.3.1",
+      "kind": "Theorem",
+      "name": "Menger’s theorem",
+      "file": "content/graph/ch03-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 8,
+          "notes": 8
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-3.5.2",
+      "kind": "Theorem",
+      "name": "Jung, Larman–Mani: high connectivity forces k-linkedness",
+      "file": "content/graph/ch03-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-3.1.1",
+      "kind": "Proposition",
+      "name": "Ear decomposition of 2-connected graphs",
+      "file": "content/graph/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-3.1.2",
+      "kind": "Lemma",
+      "name": "Cycles and bonds of a graph lie within its blocks",
+      "file": "content/graph/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 7,
+          "notes": 7
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-3.2.3",
+      "kind": "Theorem",
+      "name": "Tutte: 3-connected graphs arise from K⁴ by adding edges",
+      "file": "content/graph/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 9,
+          "notes": 9
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-3.2.5",
+      "kind": "Theorem",
+      "name": "Tutte: 3-connected graphs from K⁴ by splitting vertices",
+      "file": "content/graph/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-3.2.6",
+      "kind": "Theorem",
+      "name": "Tutte: non-separating induced cycles span the cycle space",
+      "file": "content/graph/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 28,
+          "notes": 28
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-4.4.3",
+      "kind": "Lemma",
+      "name": "3-connected graphs without a K⁵ or K₃,₃ minor are planar",
+      "file": "content/graph/ch04-z.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-4.4.5",
+      "kind": "Lemma",
+      "name": "Edge-maximal graphs without TK⁵, TK₃,₃ are 3-connected",
+      "file": "content/graph/ch04-z.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 14,
+          "notes": 0
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-5.1.2",
+      "kind": "Proposition",
+      "name": "Five colour theorem",
+      "file": "content/graph/ch05-a.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 32,
+          "notes": 32
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-5.2.4",
+      "kind": "Theorem",
+      "name": "Brooks’s theorem",
+      "file": "content/graph/ch05-a2.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 12,
+          "notes": 12
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-5.2.6",
+      "kind": "Theorem",
+      "name": "Hajós: χ ≥ k iff there is a k-constructible subgraph",
+      "file": "content/graph/ch05-a2.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 3,
+          "notes": 3
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-5.3.1",
+      "kind": "Proposition",
+      "name": "König: bipartite graphs have chromatic index Δ",
+      "file": "content/graph/ch05-a2.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 16,
+          "notes": 16
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "graph-5.3.2",
+      "kind": "Theorem",
+      "name": "Vizing’s theorem",
+      "file": "content/graph/ch05-a2.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 39,
+          "notes": 39
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "comb-1.8",
+      "kind": "Theorem",
+      "name": "Pascal’s rule and Pascal’s triangle",
+      "file": "content/comb/ch01.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 45,
+          "notes": 45
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "comb-2.8",
+      "kind": "Theorem",
+      "name": "MacMahon: major index and inversions are equidistributed",
+      "file": "content/comb/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 9,
+          "notes": 9
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "comb-2.4",
+      "kind": "Theorem",
+      "name": "Fundamental bijection: cycles and records",
+      "file": "content/comb/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "logic-2.10",
+      "kind": "Lemma",
+      "name": "König’s lemma",
+      "file": "content/logic/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 10,
+          "notes": 10
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "logic-2.11",
+      "kind": "Theorem",
+      "name": "Compactness theorem for propositional logic",
+      "file": "content/logic/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 13,
+          "notes": 13
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "logic-2.2",
+      "kind": "Theorem",
+      "name": "Induction and recursion on formulas",
+      "file": "content/logic/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 11,
+          "notes": 11
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "logic-3.12",
+      "kind": "Theorem",
+      "name": "Prenex normal form",
+      "file": "content/logic/ch03-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 9,
+          "notes": 9
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "logic-4.2",
+      "kind": "Theorem",
+      "name": "Deduction theorem",
+      "file": "content/logic/ch04.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "logic-4.3",
+      "kind": "Theorem",
+      "name": "Generalization theorem",
+      "file": "content/logic/ch04.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 3,
+          "notes": 3
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "logic-4.5",
+      "kind": "Lemma",
+      "name": "Henkin’s lemma: complete theories with witnesses",
+      "file": "content/logic/ch04.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 18,
+          "notes": 18
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "stat-2.16",
+      "kind": "Theorem",
+      "name": "Birnbaum’s theorem",
+      "file": "content/stat/ch02-c.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "stat-3.12",
+      "kind": "Theorem",
+      "name": "EM never decreases the likelihood",
+      "file": "content/stat/ch03-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 17,
+          "notes": 17
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "causal-4.9",
+      "kind": "Theorem",
+      "name": "Rules of the do-calculus",
+      "file": "content/causal/ch04-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 9,
+          "notes": 9
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-3.6",
+      "kind": "Theorem",
+      "name": "Building a heap takes linear time",
+      "file": "content/algo/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 16,
+          "notes": 16
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-5.20",
+      "kind": "Theorem",
+      "name": "Skip lists: expected O(log n) search, O(n) space",
+      "file": "content/algo/ch05-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 13,
+          "notes": 13
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-5.4",
+      "kind": "Theorem",
+      "name": "Random BSTs have average depth about 2 ln n",
+      "file": "content/algo/ch05.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 29,
+          "notes": 29
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-6.10",
+      "kind": "Theorem",
+      "name": "Union by size keeps trees O(log n) deep",
+      "file": "content/algo/ch06-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 16,
+          "notes": 16
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-8.12",
+      "kind": "Theorem",
+      "name": "A digraph is acyclic iff DFS finds no back edge",
+      "file": "content/algo/ch08-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 23,
+          "notes": 23
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-8.5",
+      "kind": "Theorem",
+      "name": "BFS computes unweighted shortest-path distances",
+      "file": "content/algo/ch08.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 95,
+          "notes": 95
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-8.9",
+      "kind": "Theorem",
+      "name": "White-path theorem",
+      "file": "content/algo/ch08.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 24,
+          "notes": 24
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-9.9",
+      "kind": "Theorem",
+      "name": "Correctness of Dijkstra’s algorithm",
+      "file": "content/algo/ch09-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 7,
+          "notes": 7
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-9.10",
+      "kind": "Proposition",
+      "name": "Dijkstra can fail with negative edges",
+      "file": "content/algo/ch09-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 12,
+          "notes": 12
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-9.4",
+      "kind": "Lemma",
+      "name": "Convergence and path-relaxation properties",
+      "file": "content/algo/ch09.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 16,
+          "notes": 16
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-9.7",
+      "kind": "Theorem",
+      "name": "Bellman–Ford detects negative cycles",
+      "file": "content/algo/ch09.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 8,
+          "notes": 8
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-10.11",
+      "kind": "Theorem",
+      "name": "Huffman codes are optimal",
+      "file": "content/algo/ch10-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 10,
+          "notes": 10
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-11.7",
+      "kind": "Theorem",
+      "name": "Integrality theorem",
+      "file": "content/algo/ch11-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 10,
+          "notes": 10
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-11.8",
+      "kind": "Proposition",
+      "name": "Bad augmenting paths: slow or non-terminating runs",
+      "file": "content/algo/ch11-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 22,
+          "notes": 22
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "algo-11.22",
+      "kind": "Proposition",
+      "name": "Simplex can take exponentially many pivots (Klee–Minty)",
+      "file": "content/algo/ch11-d.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 8,
+          "notes": 8
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "toc-2.8",
+      "kind": "Theorem",
+      "name": "Equivalence of DFAs is decidable",
+      "file": "content/toc/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 6,
+          "notes": 6
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "toc-2.6",
+      "kind": "Theorem",
+      "name": "Product construction: union and intersection",
+      "file": "content/toc/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "toc-3.3",
+      "kind": "Theorem",
+      "name": "Subset construction: NFAs equal DFAs",
+      "file": "content/toc/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "cplx-1.11",
+      "kind": "Theorem",
+      "name": "Baker–Gill–Solovay: relativization barrier",
+      "file": "content/cplx/ch01-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 13,
+          "notes": 13
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "cplx-1.3",
+      "kind": "Theorem",
+      "name": "Space hierarchy theorem",
+      "file": "content/cplx/ch01.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 38,
+          "notes": 38
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "cplx-1.7",
+      "kind": "Theorem",
+      "name": "Hopcroft–Paul–Valiant: time t fits in space t/log t",
+      "file": "content/cplx/ch01.js",
+      "sourceFlag": false,
+      "activation": "optimal strategy mode selected with the native button",
+      "players": [
+        {
+          "frames": 16,
+          "notes": 16
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "cplx-3.9",
+      "kind": "Theorem",
+      "name": "Alternating polynomial time equals PSPACE",
+      "file": "content/cplx/ch03-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 68,
+          "notes": 68
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "cplx-4.8",
+      "kind": "Theorem",
+      "name": "Karp–Lipton theorem",
+      "file": "content/cplx/ch04-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 10,
+          "notes": 0
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "cplx-4.12",
+      "kind": "Theorem",
+      "name": "Circuit value problem is P-complete",
+      "file": "content/cplx/ch04-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 9,
+          "notes": 0
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "cplx-4.13",
+      "kind": "Theorem",
+      "name": "NC¹ ⊆ L ⊆ NL ⊆ NC²",
+      "file": "content/cplx/ch04-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 37,
+          "notes": 0
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "crypto-3.7",
+      "kind": "Theorem",
+      "name": "Pseudorandom generators give EAV-secure encryption",
+      "file": "content/crypto/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "pl-2.9",
+      "kind": "Theorem",
+      "name": "Fixed-point combinators and recursion",
+      "file": "content/pl/ch02-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 5,
+          "notes": 5
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "cg-3.5",
+      "kind": "Theorem",
+      "name": "Every simple polygon can be triangulated",
+      "file": "content/cg/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 8,
+          "notes": 8
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "mech-1.9",
+      "kind": "Theorem",
+      "name": "Determinism: existence and uniqueness of motion",
+      "file": "content/mech/ch01.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 13,
+          "notes": 13
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "thermo-2.2",
+      "kind": "Theorem",
+      "name": "Kelvin and Clausius statements are equivalent",
+      "file": "content/thermo/ch02.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 4,
+          "notes": 4
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "ctrl-1.13",
+      "kind": "Theorem",
+      "name": "Mason’s gain formula",
+      "file": "content/ctrl/ch01-b.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 12,
+          "notes": 12
+        }
+      ],
+      "status": "interaction-checked"
+    },
+    {
+      "id": "polsci-3.4",
+      "kind": "Lemma",
+      "name": "Field expansion and contraction of decisive coalitions",
+      "file": "content/polsci/ch03.js",
+      "sourceFlag": false,
+      "players": [
+        {
+          "frames": 16,
+          "notes": 16
+        }
+      ],
+      "status": "interaction-checked"
+    }
+  ]
+}

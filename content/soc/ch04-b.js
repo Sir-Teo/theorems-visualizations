@@ -1,12 +1,19 @@
-// Networks & Collective Behavior — Chapter 4b.
-// Full originals reviewed: Clauset et al.2009 §2; Barabási–Albert1999 main text;
-// Krapivsky et al.2000 Eqs1–2 and kernel regimes; Dorogovtsev et al.2000 Eqs2–13;
-// Broido–Clauset2019 classifications/Table1/Methods. See docs/verification/soc-source-review.md.
+import {tailSeedValid,tailModel,SCALE_FREE_CATEGORIES} from './source-audit-tails.js';
+// Networks & Collective Behavior — Chapter 4, part b: power laws and preferential attachment (items 4.7–4.11)
+//
+// Sources checked (Oct 2026): Clauset, Shalizi & Newman, SIAM Review 51 (4): 661–703 (2009), doi 10.1137/070710111 (Crossref);
+// Price, J. Am. Soc. Inf. Sci. 27 (5): 292–306 (1976), doi 10.1002/asi.4630270505 (Crossref); Broido & Clauset, Nature
+// Communications 10: 1017 (2019): 928 data sets from the Index of Complex Networks, 3,662 graphs; shares Not scale-free 49%,
+// super-weak 46%, weakest 29%, weak 19%, strong 10%, strongest 4%; the lognormal fits at least as well as the power law for
+// 88% of networks (text of the paper on PubMed Central). The rate-equation recursion in 4.10 is derived on the page and is
+// checked against the exact result P(k) = 2m(m+1)/(k(k+1)(k+2)) at a = 0. All networks drawn here are simulations (models).
 import {
   rng32, mkGraph, gnpSkip, baMix, rateEq, hillDisc, logBin, nonlinearPA, powerSample, lognormalSample, lsq,
   plBestXminCont, plFitCont, lnFitCont, lnLogLik, plPointwiseCont, vuong, normCdf, analyseDegrees, degreeSequence, configModel,
   hurwitz, lesmis, deg as degOf,
 } from './ch04.shared.js';
+
+import { attachmentRng, finiteAttachmentShift, growAttachmentMixture, growNonlinearTree, attachmentCounts, attachmentSurvival, attachmentStationary, approximateAttachmentTail, attachmentLogView } from './source-audit-attachment.js';
 
 const SIGN = (x) => (x < 0 ? '−' : '');
 
@@ -16,65 +23,29 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.7
     {
-      num: '4.7',
-      kind: 'Definition',
-      name: 'Power-law (heavy-tailed) distributions',
-      statement: String.raw`A positive random variable $X$ has a **power-law tail** with exponent $\alpha>1$ above $x_{\min}$ if
-$$P(X>x)=\Big(\frac{x}{x_{\min}}\Big)^{-(\alpha-1)},\qquad x\ge x_{\min},$$
-equivalently the density is $p(x)=\frac{\alpha-1}{x_{\min}}(x/x_{\min})^{-\alpha}$. Its signatures:
+      num:'4.7',kind:'Definition',name:'Power-law (heavy-tailed) distributions',
+      statement:String.raw`A pure continuous Pareto law with lower cutoff $x_{\min}>0$ and density exponent $\alpha>1$ has
+$$p(x)=\frac{\alpha-1}{x_{\min}}(x/x_{\min})^{-\alpha}$$
+for $x\ge x_{\min}$, with
+$$\Pr(X\ge x)=(x/x_{\min})^{1-\alpha}.$$
+Its survival curve is straight on logarithmic axes with slope $1-\alpha$. The ratio $\Pr(X\ge cx)/\Pr(X\ge x)=c^{1-\alpha}$ is independent of $x\ge x_{\min}$ for $c\ge1$; the cutoff and a finite median still exist.
 
-(a) **Straight line on log–log axes**: $\ln P(X>x)$ is linear in $\ln x$ with slope $-(\alpha-1)$ (the histogram has slope $-\alpha$).
+For $m\ge0$, the moment is finite exactly when $m<\alpha-1$, then
+$$E[X^m]=x_{\min}^m\frac{\alpha-1}{\alpha-1-m}.$$
+The mean is finite for $\alpha>2$; the second moment and variance are finite for $\alpha>3$. Infinite variance does **not** prevent the sample mean of iid draws from converging when $2<\alpha\le3$.`,
+      idea:String.raw`Normalize by integrating $x^{-\alpha}$ from the positive cutoff to infinity. Integrating the tail gives the survival exponent $\alpha-1$; multiplying the density by $x^m$ gives the moment threshold. Solving the survival equation gives inverse sampling $X=x_{\min}(1-U)^{-1/(\alpha-1)}$ for an ideal uniform $U$.
 
-(b) **Scale-free**: $P(X>2x)/P(X>x)=2^{-(\alpha-1)}$ whatever $x$ is: there is no typical size.
-
-(c) **Moments**: $E[X^m]$ is finite only if $m<\alpha-1$. The mean is infinite for $\alpha\le2$, the variance for $\alpha\le3$ (for $2<\alpha<3$ the mean is finite but the variance diverges, so sample averages can converge slowly).
-
-(d) **Concentration**: a small number of observations carry a large share of the total (the "80/20" rule is a power law with $\alpha\approx2.16$).`,
-      idea: String.raw`Under an exponential or Gaussian tail the probability of exceeding $x$ falls faster than any power, so a sample is described by its mean and spread. With a power-law tail, $P(X>x)$ falls only polynomially, so an observation a thousand times larger than the median is merely rare, not impossible. The running mean of a sample then keeps jumping each time a new giant arrives, and for $\alpha\le2$ it never settles, because the expectation $\int x\,p(x)\,dx$ diverges. Drawing $X=x_{\min}(1-U)^{-1/(\alpha-1)}$ from a uniform $U$ (inverse-transform sampling) shows the whole family from one random stream.`,
-      caption: String.raw`**Left**: the empirical survival function (CCDF) of $n$ samples on log–log axes, with the exact line (slope $1-\alpha$). **Right**: running means of three independent streams of $10^5$ draws against the sample size: the dashed line is the true mean $\frac{\alpha-1}{\alpha-2}x_{\min}$ (finite only for $\alpha>2$). Slide $\alpha$ below 3 and 2 and watch the average stop converging; the samples are coupled, so the same random numbers are reused as $\alpha$ moves.`,
-      scope: String.raw`Pure power laws are idealisations: real data follow the law only above some $x_{\min}$ and usually with a cutoff. Whether data are power-law at all is a statistical question (4.8, 4.11).`,
-      deps: ['soc-2.3'],
-      refs: ['E&K §18.2', 'Newman ch. 10'],
-      tags: ['power laws', 'heavy tails'],
-      credit: 'Clauset, Shalizi & Newman, 2009, §2 (continuous power law)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Power_law' },
-      viz(v) {
-        const aS = v.slider('exponent $\\alpha$', 1.3, 4.5, 2.5, { step: 0.05 });
-        const nS = v.slider('sample size $n$', 100, 100000, 3000, { log: true, sig: 2, int: true });
-        const U = (() => { const R = rng32(17); return Array.from({ length: 100000 }, () => R()); })();
-        const streams = [0, 1, 2].map((i) => { const R = rng32(100 + i); return Array.from({ length: 100000 }, () => R()); });
-        const CC = v.stage({ x: [1, 1e5], y: [1e-5, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'size $x$', ylabel: '$P(X>x)$', title: 'survival function, log–log', minWidth: 300, weight: 1.1 });
-        const RM = v.stage({ x: [1, 1e5], y: [0, 10], xlog: true, axes: 'box', gutter: true, height: 340, xlabel: 'sample size', ylabel: 'running mean', title: 'does the average settle?', minWidth: 300, weight: 1.1 });
-        let sortedCache = { n: 0, u: null };
-        let st = null;
-        v.render(() => {
-          const a = aS.value, n = Math.round(nS.value), e = -1 / (a - 1);
-          if (sortedCache.n !== n) sortedCache = { n, u: U.slice(0, n).sort((p, q) => p - q) };
-          const xs = sortedCache.u.map((u) => Math.pow(1 - u, e)).reverse();   // descending: rank r has P(X ≥ x) = r/n
-          CC.setView([1, Math.max(20, xs[0] * 2)], [0.3 / n, 1.3]);
-          CC.fn((x) => Math.pow(x, 1 - a), { color: 'ink', width: 1.6, dash: [6, 4], domain: [1, Math.max(20, xs[0] * 2)] });
-          const pts = [], step = Math.max(1, Math.floor(n / 250));
-          for (let r = 1; r <= n; r += (r < 30 ? 1 : Math.ceil(r * 0.04))) pts.push([xs[r - 1], r / n]);
-          CC.dots(pts, { r: 2.8, color: 'accent' });
-          const mean = a > 2 ? (a - 1) / (a - 2) : Infinity;
-          const cols = ['accent', 'orange', 'teal'], rm = [];
-          streams.forEach((u, i) => {
-            let s = 0; const line = [];
-            for (let k = 1; k <= 100000; k++) { s += Math.pow(1 - u[k - 1], e); if (k < 20 || k % Math.max(1, Math.floor(k / 40)) === 0 || k === 100000) line.push([k, s / k]); }
-            RM.path(line, { color: cols[i], width: 1.8 }); rm.push(s / 100000);
-          });
-          const ymax = isFinite(mean) ? Math.max(3 * mean, 4) : 40; RM.setView([1, 1e5], [0, Math.min(ymax, 60)]);
-          if (isFinite(mean) && mean < 60) RM.hline(mean, { color: 'ink', width: 1.6, dash: [6, 4] });
-          const tot = xs.reduce((p, q) => p + q, 0), top = xs.slice(0, Math.max(1, Math.round(0.01 * n))).reduce((p, q) => p + q, 0);
-          st = { a, n, mean, rm, top: top / tot, xmax: xs[0], ratio: Math.pow(2, 1 - a) };
-        });
-        v.legend([['accent', 'sample survival function', { dot: true }], ['ink', 'exact $x^{1-\\alpha}$', { dash: true }], ['accent', 'stream 1'], ['orange', 'stream 2'], ['teal', 'stream 3']]);
-        v.readout(() => {
-          if (!st) return '';
-          const { a, n, mean, rm, top, xmax, ratio } = st;
-          return String.raw`$\alpha=${v.fix(a, 2)}$, $n=${n}$ · largest value ${v.fix(xmax, 0)} · $P(X>2x)/P(X>x)=2^{1-\alpha}=${v.fix(ratio, 3)}$ at every $x$ · top 1% of the sample holds **${v.fix(100 * top, 0)}%** of the total
-true mean: ${isFinite(mean) ? String.raw`$\frac{\alpha-1}{\alpha-2}=${v.fix(mean, 2)}$` : '**infinite** ($\\alpha\\le2$)'}; variance: ${a > 3 ? 'finite' : '**infinite** ($\\alpha\\le3$)'} · means after $10^5$ draws: ${rm.map((x) => v.fix(x, 1)).join(', ')}`;
-        });
+For iid draws with $\alpha>2$, the finite-mean strong law (prob-2.4.1) gives convergence of the running mean despite infinite variance when $\alpha\le3$. For $1<\alpha\le2$, nonnegative draws have infinite mean and the infinite-mean strong law (prob-2.4.5) gives divergence to infinity almost surely. Neither result supplies a finite-sample convergence certificate from a few plotted traces.`,
+      caption:String.raw`Here $x_{\min}=1$. Left: every distinct observed value in one finite sample, with its exact empirical share at or above that value, against the ideal survival curve. Right: every running mean in three deterministic pseudorandom streams, with the ideal finite mean dashed when it exists. Both value axes use logarithmic scales and include every displayed sample/trace value. Vary the exponent continuously; the same uniforms are reused at a fixed size and seed. Resample changes the seed.`,
+      scope:String.raw`An explicitly authored finite diagnostic at n=100, 1000 or 10000, using paired 32-bit generator outputs to form 53-bit uniforms and binary64 arithmetic. These finite streams do not have an unbounded continuum of outcomes and are not proofs of iid asymptotic behavior. Real data may have a non-power-law body or an upper cutoff; discrete degrees require a discrete law and normalization. A visually straight finite plot is not a fit verdict. No historical priority, universal empirical exponent range or 80/20 claim is asserted.`,
+      deps:['soc-2.3','prob-2.4.1','prob-2.4.5'],see:['soc-4.8','soc-4.11'],refs:['Clauset, Shalizi & Newman, arXiv:0706.1062v2 (2009), §2, Eqs. 2.1–2.7; moment integral derived here'],tags:['power laws','heavy tails'],credit:'Technical definitions: Clauset, Shalizi & Newman, 2009; finite diagnostics authored here.',links:{source:'https://snap.stanford.edu/class/cs224w-readings/clauset09powerlaw.pdf'},verify:false,
+      viz(v){
+        let seed=17,cache=null,info;v.shareState('Pareto sample seed',{get:()=>seed,validate:tailSeedValid,set:x=>{seed=x;cache=null;}});
+        const alpha=v.slider('density exponent alpha',1.3,4.5,2.5,{step:'any',fmt:x=>x.toPrecision(6)}),size=v.select('draws per stream',[100,1000,10000].map(value=>({value,label:String(value)})),1000);v.button('Resample',()=>{seed=(seed+1)>>>0;cache=null;});
+        const A=v.stage({x:[.8,100],y:[.0001,1.4],xlog:true,ylog:true,axes:'box',gutter:true,height:340,minWidth:260,xlabel:'sample value x',ylabel:'share at or above x',title:'complete finite empirical survival'}),B=v.stage({x:[.7,14000],y:[.8,10],xlog:true,ylog:true,axes:'box',gutter:true,height:340,minWidth:260,xlabel:'draw count',ylabel:'running mean',title:'complete running-mean traces'});
+        v.render(()=>{const key=`${alpha.value}|${size.value}|${seed}`;if(!cache||cache.key!==key)cache={key,data:tailModel(alpha.value,size.value,seed)};const a=cache.data;info=a;A.setView([Math.exp(-.08*Math.max(1,Math.log(a.max))),Math.exp(1.08*Math.max(1,Math.log(a.max)))],[.5/a.n,1.4]);A.fn(x=>x**(1-a.alpha),{color:'ink',width:1.5,dash:[5,4],domain:[1,Math.min(a.max,(a.n/.8)**(1/(a.alpha-1)))]});A.dots(a.survival,{r:1.8,ring:false,color:'accent'});B.setView([.7,a.n*1.4],[Math.exp(-.08*Math.max(1,Math.log(a.meanHigh))),Math.exp(1.08*Math.max(1,Math.log(a.meanHigh)))]);a.traces.forEach((t,j)=>B.path(t,{color:['accent','orange','teal'][j],width:1.5}));if(a.mean!==null)B.line(1,a.mean,a.n,a.mean,{color:'ink',width:1.5,dash:[5,4]});});
+        v.legend([['accent','empirical survival / trace 1'],['orange','trace 2'],['teal','trace 3'],['ink','ideal survival / finite mean',{dash:true}]]);
+        v.readout(()=>{const a=info,fmt=x=>`$${v.sci(x,5)}$`;return `Seed ${seed}; alpha=${a.alpha.toPrecision(12)}; ${a.n} draws per stream. Ideal mean ${a.mean===null?'infinite':fmt(a.mean)}; ${a.second===null?'no finite second moment':'finite second moment'}. ${a.variance===null?'No finite variance.':`Variance ${fmt(a.variance)}.`} Median ${fmt(a.median)}. Largest value in the survival sample ${fmt(a.max)}. Final finite trace means ${a.traces.map(t=>fmt(t.at(-1)[1])).join(', ')}. ${a.mean===null?'The ideal iid averages diverge to infinity.':'The ideal iid averages converge to the finite mean, including the infinite-variance regime.'} Finite seeded traces do not certify either asymptotic conclusion.`;});
       },
     },
     // ------------------------------------------------------------------ 4.8
@@ -92,7 +63,7 @@ $$\hat\alpha=1+n_{\rm tail}\Big[\sum_{i}\ln\frac{x_i}{x_{\min}}\Big]^{-1},\qquad
 Do **not** estimate $\alpha$ by a least-squares line through a log–log histogram: the estimate is biased, its error bars are wrong, and a straight-looking plot does not show that the data are a power law, since a lognormal is also nearly straight over a wide range.`,
       idea: String.raw`The log–log regression treats noisy low-count bins as equally reliable as the large-count bins and bins the data in a way that distorts the slope. Maximum likelihood uses every observation with its proper weight (the sufficient statistic is $\sum\ln x_i$), is consistent, and comes with a standard error. Choosing $x_{\min}$ by minimal KS distance balances bias (too low: includes non-power-law body) against variance (too high: too few points). Finally, goodness of fit alone cannot prove a power law, only fail to reject it; the likelihood-ratio test asks whether a rival model explains the *same* data better.`,
       caption: String.raw`Choose the source of the data and press **Resample**. **Left**: the log-binned histogram with the least-squares line (red) and the maximum-likelihood fit (green). **Right**: the survival function above $x_{\min}$ with the fitted power law (green) and the fitted lognormal (orange). Try a *lognormal* source and press Resample a few times: the line fit gives a slope and a respectable $R^2$ that differ from the maximum-likelihood exponent, a power-law "tail" is found anyway, and the likelihood-ratio test is often unable to tell the lognormal from it (the usual outcome at modest $n$); with true power-law data the test does not reject the power law and the lognormal is not better.`,
-      scope: String.raw`Continuous version, with $x_{\min}$ chosen by KS distance over at most 60 candidates and fits by Nelder–Mead for the lognormal. The goodness-of-fit bootstrap of the paper is omitted here (it needs thousands of synthetic data sets); integer data (degrees) need the discrete likelihood, as used in 4.11. The data are simulated, not real.`,
+      scope: String.raw`Continuous version, with $x_{\min}$ chosen by KS distance over at most 60 candidates and fits by Nelder–Mead for the lognormal. The goodness-of-fit bootstrap of the paper is omitted here (it needs thousands of synthetic data sets); integer data (degrees) need a discrete likelihood, as required for the published network study discussed in 4.11. The data are simulated, not real.`,
       deps: ['soc-4.7', 'stat-3.5'],
       refs: ['Newman ch. 10'],
       tags: ['power laws', 'statistics', 'maximum likelihood'],
@@ -152,47 +123,43 @@ Lognormal fit on the same tail: $\mu=${v.fix(ln.mu, 2)}$, $\sigma=${v.fix(ln.sig
     {
       num: '4.9',
       kind: 'Model',
-      name: 'Preferential attachment in growing networks',
-      statement: String.raw`**Growth with preferential attachment** builds a network one vertex at a time. Each newcomer brings $m$ links, and each link goes to an existing vertex $i$ with probability proportional to its current degree $k_i$ (the "rich get richer", "cumulative advantage", or "Matthew effect").
-
-Barabási and Albert’s 1999 growing-network model combines these two ingredients; Krapivsky, Redner and Leyvraz’s 2000 rate-equation treatment analyzes linear and nonlinear attachment kernels. It produces a **heavy-tailed degree distribution** with hubs, and older vertices have larger expected degrees; individual rankings fluctuate.
-
-For the pure-power attachment kernels considered here, the power-law case is **linear** (more generally asymptotically linear): with probability $\propto k^{\gamma}$ for $\gamma<1$ the tail is a stretched exponential, and for $\gamma>1$ a single hub ends up linked to almost everyone.`,
-      idea: String.raw`This mechanism combines two ingredients: *growth* (older vertices have had more time to collect links) and *preference* (a vertex with many links is more likely to gain another). Writing $k_i(t)$ for the degree, linear preference gives $\mathrm d k/\mathrm dt=k/2t$ per link, so $k_i(t)\propto (t/t_i)^{1/2}$: degree is a power of age. Nonlinear attachment $\propto k^\gamma$ changes the feedback: if $\gamma<1$ the advantage saturates; if $\gamma>1$ it compounds, and the first vertex to get ahead keeps its lead (a "gel" phase).`,
-      caption: String.raw`A model: a tree ($m=1$) grows to 20 000 vertices with attachment $\propto k^{\gamma}$. **Left**: the degree survival function on log–log axes against the linear case $\gamma=1$ (dashed). **Right**: the degrees of the first 40 vertices in order of arrival: with $\gamma=1$ old vertices are big but not enormous; for $\gamma>1$ the very first ones swallow the network. Slide $\gamma$ from 0 to 2.`,
-      scope: String.raw`The exponent-3 tail is for the linear model with $m$ links per newcomer and unlimited growth; real citation, web and collaboration networks add ageing, fitness, deletion and other effects (and 4.11 discusses how often the power law is really supported).`,
-      deps: ['soc-4.7', 'stoch-12.10', 'ode-1.3'],
-      refs: ['E&K §18.3', 'Newman ch. 13'],
+      name: 'Preferential attachment and nonlinear kernels',
+      statement: String.raw`In this growing-tree model, start with two vertices joined by one edge. Each new vertex adds one edge to an earlier vertex $i$, chosen with probability $\Pi_i=k_i^\gamma/\sum_j k_j^\gamma$, using degrees before the new edge. The graph remains a tree: at $N$ vertices it has $N-1$ edges and degree sum $2(N-1)$. Linear attachment, $\gamma=1$, favors vertices that already have many links. In the large-network stationary limit its degree probabilities are $P(k)=4/[k(k+1)(k+2)]$ and $P(K\ge k)=2/[k(k+1)]$, not exact finite-sample frequencies.`,
+      idea: String.raw`For this homogeneous kernel family, Krapivsky, Redner and Leyvraz derive a geometric degree law at $\gamma=0$, stretched-exponential asymptotic tails for $0<\gamma<1$, the exponent-3 law at $\gamma=1$, and a dominant hub for $\gamma>1$ in the growing-network limit. Near 1 the finite distributions can be hard to distinguish. More general **asymptotically linear** kernels can have different power-law exponents, so exact proportionality to $k$ is not universally necessary. The continuum age equation $\mathrm dk/\mathrm dt\approx k/(2t)$ gives $k_i(t)\approx(t/t_i)^{1/2}$ for a new degree-1 vertex; it is an approximation, not a rule that the oldest vertex must win every realization.`,
+      caption: String.raw`An authored seeded simulation, not observed social-network data. Left: the complete empirical degree survival function for the chosen kernel, the same-size linear-kernel realization, and the limiting linear formula evaluated over the displayed degree range. Right: actual degrees of the first 40 vertices; the first two are equally old seed vertices. Change the kernel or network size and use **New tree** to inspect another realization. A finite plot or a large hub does not certify an asymptotic tail law.`,
+      scope: String.raw`One undirected edge per newcomer; no parallel edges, deletion, fitness or explicit aging. The initial edge and endpoint timing are declared simulation conventions. The displayed nonlinear results concern the homogeneous family $k^\gamma$ and its large-network analysis, not all possible growth mechanisms or real networks. The reference degree law is stationary and infinite-size, while every plotted frequency is computed from the actual finite tree.`,
+      deps: ['soc-4.7'],
+      refs: ['Barabási & Albert, Emergence of Scaling in Random Networks (Science 1999), model and continuum argument, p. 511', 'Krapivsky, Redner & Leyvraz, Connectivity of Growing Random Networks, arXiv:cond-mat/0005139v2 (2000), Eqs. 1–8 and 13–17'],
+      credit: 'Model and analysis: Barabási & Albert, 1999; Krapivsky, Redner & Leyvraz, 2000; finite simulation conventions stated here',
+      links: { original: 'https://barabasi.com/media/Emergence-Barabasi-1999_gN74Tws.pdf', analysis: 'https://arxiv.org/abs/cond-mat/0005139v2' },
       tags: ['preferential attachment', 'growth', 'networks'],
-      credit: 'Barabási & Albert, 1999; Krapivsky, Redner & Leyvraz, 2000',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Preferential_attachment' },
+      verify: false,
       viz(v) {
-        const gS = v.slider('kernel exponent $\\gamma$', 0, 2, 1, { step: 0.05 });
-        const n = 20000;
-        const DS = v.stage({ x: [1, 2e4], y: [1 / n / 1.5, 1.2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'degree $k$', ylabel: '$P(\\mathrm{degree}\\ge k)$', title: 'survival function of the degree', minWidth: 300, weight: 1.1 });
-        const AS = v.stage({ x: [0, 41], y: [0, 100], axes: 'box', gutter: true, height: 340, xlabel: 'order of arrival', ylabel: 'degree', title: 'the first 40 vertices', minWidth: 280, weight: 1 });
-        const cache = {};
-        const run = (g) => { const key = g.toFixed(2); return (cache[key] ??= nonlinearPA(n, g, rng32(5 + Math.round(g * 20)))); };
-        const surv = (deg) => { const c = new Map(); for (const k of deg) c.set(k, (c.get(k) || 0) + 1); const ks = [...c.keys()].sort((a, b) => a - b); let acc = deg.length; return ks.map((k) => { const p = [k, acc / deg.length]; acc -= c.get(k); return p; }); };
-        let st = null;
+        const gamma = v.slider('kernel exponent $\\gamma$', 0, 2, 1, { step: .05 });
+        const size = v.select('vertices', [{ value: 1000, label: '1,000' }, { value: 5000, label: '5,000' }, { value: 20000, label: '20,000' }], 20000);
+        let seed = 17, cache = new Map();
+        const run = (g, n) => { const key = `${seed}|${g}|${n}`; if (!cache.has(key)) { if (cache.size >= 8) cache.delete(cache.keys().next().value); cache.set(key, growNonlinearTree(n, g, attachmentRng(seed))); } return cache.get(key); };
+        v.button('New tree', () => { seed = (seed + 1) % 1000000; cache.clear(); });
+        v.shareState('tree seed', { get: () => seed, validate: x => Number.isInteger(x) && x >= 0 && x < 1000000, set: x => { seed = x; cache.clear(); } });
+        const DS = v.stage({ x: [.7, 100], y: [.0001, 1.5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'degree k', ylabel: 'P(K ≥ k)', title: 'Finite survival and a limiting reference', minWidth: 300, weight: 1.1 });
+        const AS = v.stage({ x: [0, 41], y: [-1, 100], axes: 'box', gutter: true, height: 340, xlabel: 'vertex index (two seeds first)', ylabel: 'degree', title: 'Degrees of the first 40 vertices', minWidth: 280, weight: 1 });
+        let st;
         v.render(() => {
-          const g = gS.value, d = run(g), d1 = run(1), S = surv(d), S1 = surv(d1);
-          DS.path(S1, { color: 'ink', width: 1.6, dash: [6, 4] });
-          DS.dots(S, { r: 3, color: 'accent' });
-          DS.fn((k) => 2 / (k * (k + 1)), { color: 'green', width: 1.2, dash: [2, 3], domain: [1, 2e4] });
-          let mx = 0, imax = 0; for (let i = 0; i < n; i++) if (d[i] > mx) { mx = d[i]; imax = i; }
-          const first = Array.from(d.slice(0, 40));
-          AS.setView([0, 41], [0, Math.max(10, ...first) * 1.15]);
-          first.forEach((k, i) => AS.rect(i + 0.6, 0, i + 1.4, k, { fill: i === imax ? 'gold' : 'accent', fillAlpha: 0.7, stroke: false }));
-          // fitted slope of the tail on log–log axes from the survival function between degree 4 and the 1/200 quantile
-          const t = S.filter(([k, p]) => k >= 4 && p * n >= 10); const ls = t.length > 4 ? (() => { const xs = t.map((p) => Math.log(p[0])), ys = t.map((p) => Math.log(p[1])); const m1 = xs.reduce((a, b) => a + b) / xs.length, m2 = ys.reduce((a, b) => a + b) / ys.length; let sxy = 0, sxx = 0; xs.forEach((x, i) => { sxy += (x - m1) * (ys[i] - m2); sxx += (x - m1) ** 2; }); return sxy / sxx; })() : NaN;
-          st = { g, mx, imax, share: mx / (2 * (n - 1)), slope: ls };
+          const n = +size.value, g = gamma.value, graph = run(g, n), linear = run(1, n), S = attachmentSurvival(graph.degrees), L = attachmentSurvival(linear.degrees);
+          const K = Math.max(S.at(-1)[0], L.at(-1)[0]), theory = Array.from({ length: K }, (_, i) => [i + 1, 2 / ((i + 1) * (i + 2))]);
+          const ymin = Math.min(1 / n, theory.at(-1)[1]);
+          DS.setView(attachmentLogView(1, K), attachmentLogView(ymin, 1));
+          DS.path(L, { color: 'ink', width: 1.6, dash: [6, 4] }); DS.path(theory, { color: 'green', width: 1.5, dash: [2, 3] }); DS.dots(S, { color: 'accent', r: 3 });
+          const first = Array.from(graph.degrees.slice(0, 40)); let maximum = 0, winner = 0, degreeSum = 0;
+          graph.degrees.forEach((k, i) => { degreeSum += k; if (k > maximum) { maximum = k; winner = i; } });
+          AS.setView([0, 41], [-Math.max(...first) * .04, Math.max(...first) * 1.15]);
+          first.forEach((k, i) => AS.rect(i + .65, 0, i + 1.35, k, { fill: i === winner ? 'gold' : 'accent', fillAlpha: .7, stroke: false }));
+          st = { g, n, seed, graph, linear, S, L, theory, first, maximum, winner, degreeSum };
         });
-        v.legend([['accent', 'chosen kernel', { dot: true }], ['ink', 'linear kernel $\\gamma=1$', { dash: true }], ['green', 'exact linear law, $P(\\ge k)=2/(k(k+1))$', { dash: true }]]);
+        v.legend([['accent', 'chosen finite tree', { dot: true }], ['ink', 'finite linear tree', { dash: true }], ['green', 'limiting linear survival', { dash: true }]]);
         v.readout(() => {
-          if (!st) return '';
-          const { g, mx, imax, share, slope } = st;
-          return String.raw`$\gamma=${v.fix(g, 2)}$ · largest degree **${mx}** held by vertex number ${imax + 1} of ${n.toLocaleString('en-US')} · it touches **${v.fix(100 * share, 1)}%** of all edge ends · tail slope of the survival function (degrees ≥ 4) ${isFinite(slope) ? v.fix(slope, 2) : '—'} (linear model: $-2$, i.e. exponent 3)`;
+          const { g, n, seed, graph, maximum, winner, degreeSum } = st;
+          return String.raw`$\gamma=${v.fix(g, 2)}$, realization seed ${seed}: **${n.toLocaleString('en-US')} vertices**, ${graph.edges.toLocaleString('en-US')} edges; degree sum **${degreeSum.toLocaleString('en-US')} = 2(N-1)**. Largest degree **${maximum}**, vertex index ${winner + 1}: ${v.fix(100 * maximum / (n - 1), 2)}% of other vertices are its neighbors, and ${v.fix(100 * maximum / degreeSum, 2)}% of edge ends belong to it. This is one finite realization; its largest hub need not be the oldest vertex. The green line is an infinite-size stationary reference, not an exact sample fit or a statistical power-law verdict.`;
         });
       },
     },
@@ -201,116 +168,74 @@ For the pure-power attachment kernels considered here, the power-law case is **l
       num: '4.10',
       kind: 'Theorem',
       name: 'Preferential attachment gives degree exponent 3',
-      statement: String.raw`In the growth model where each newcomer adds $m$ links and attaches to vertex $i$ with probability proportional to $k_i+a$ (here $a>-m$ is an "initial attractiveness"; $a=0$ is pure degree-proportional attachment), the stationary degree distribution of the rate equation is
-$$P(m)=\frac1{1+\beta(m+a)},\qquad P(k)=P(k-1)\,\frac{\beta\,(k-1+a)}{1+\beta\,(k+a)}\quad(k>m),\qquad \beta=\frac{m}{2m+a},$$
-whose tail is the power law
-$$P(k)\sim k^{-\gamma},\qquad \gamma=3+\frac am .$$
-For $a=0$: $P(k)=\dfrac{2m(m+1)}{k(k+1)(k+2)}\sim 2m(m+1)k^{-3}$, **exponent exactly 3, independent of $m$**. Mixing in uniform attachment (probability $p$ for a uniformly random target) is the same as $a=2mp/(1-p)$, giving $\gamma=3+2p/(1-p)$, larger than 3: random attachment thins the hubs.`,
-      idea: String.raw`Let $N_k(t)$ be the number of vertices of degree $k$ at time $t$. A degree-$k$ vertex gains a link in one step with probability $m(k+a)/\big((2m+a)t\big)$, since asymptotically the total weight is $\sum_i(k_i+a)\sim(2m+a)t$. Balancing the flow into and out of the class $k$ at stationarity, $N_k=t\,P(k)$ gives $P(k)=\mathbf1_{k=m}+\beta[(k-1+a)P(k-1)-(k+a)P(k)]$, with $P(m-1)=0$; the source term represents newcomers, while the loss term includes degree-$m$ vertices that acquire another link. This gives the recursion above. The ratio $P(k)/P(k-1)\approx1-(3+a/m)/k$ makes $P(k)$ decay like $k^{-(3+a/m)}$. This is the argument that Dorogovtsev–Mendes–Samukhin and Krapivsky–Redner–Leyvraz gave in 2000. The calculation is a stationary rate-equation argument, not a finite-network identity.`,
-      caption: String.raw`Networks of $10^3$, $10^4$, $10^5$ vertices are grown with the chosen $m$ and a fraction $p$ of uniformly random attachments. Dots: the simulated degree distribution (log-binned). Green curve: the recursion above, with no fitted parameter. Dashed: the asymptotic power law $k^{-\gamma}$. The tail exponent estimate (maximum likelihood on the discrete tail) tends to the prediction as the network grows; raise $p$ and the tail steepens.`,
-      scope: String.raw`Rate-equation (mean-field) result for the model with *independent* choices of the $m$ targets; the simulation chooses $m$ distinct targets, a small difference for $m\ge2$. The exponent 3 is a property of this model; real networks measured with exponents between 2 and 3 need extra mechanisms.`,
+      statement: String.raw`For the stationary rate equation of affine attachment $k+a$, with integer $m\ge1$, $a>-m$ and integer $k\ge m$, put $\beta=m/(2m+a)$. Its probability law obeys $P(m)=[1+\beta(m+a)]^{-1}$ and
+$$P(k)=P(k-1)\frac{\beta(k-1+a)}{1+\beta(k+a)}\quad(k>m).$$
+Its tail exponent is $\eta=3+a/m$. In particular, when $a=0$,
+$$P(k)=\frac{2m(m+1)}{k(k+1)(k+2)}\sim 2m(m+1)k^{-3}.$$
+The coefficient is $2m(m+1)$ for fixed $m$; $2m^2$ is the different continuum approximation. These are stationary large-network laws, not exact degree counts at a finite growth step.`,
+      idea: String.raw`The rate balance is $P(k)+\beta(k+a)P(k)-\beta(k-1+a)P(k-1)=\mathbf1_{k=m}$. The ratio of successive probabilities is $1-(3+a/m)/k+O(k^{-2})$, giving the exponent. In the finite simulation below, the seed is a clique of $m+1$ vertices. With $N$ old vertices its degree sum is $D_N=2mN-m(m+1)$. Each newcomer makes $m$ independent endpoint choices with replacement, all using this pre-arrival graph; degrees update after all choices. A target is uniform with probability $p$, otherwise degree-weighted. For $p<1$ this is exactly affine with $a_N=pD_N/[(1-p)N]$, tending to $a_\infty=2mp/(1-p)$. The limiting stationary equation therefore has exponent $3+a_\infty/m$; the finite process is not exactly one constant-shift process. For $p=1$ targets are purely uniform: the separate stationary law is geometric, $P(k)=(m+1)^{-1}[m/(m+1)]^{k-m}$.`,
+      caption: String.raw`Blue dots are the actual finite degree frequencies $n_k/N$, without binning or discarded vertices. Green is the limiting stationary recurrence evaluated at every displayed integer degree. The dashed line is only a reference slope with the predicted exponent, anchored to the recurrence at a declared degree; it is not a fitted curve or an asserted asymptotic amplitude. At $p=1$ that power-law guide is absent and the green law is geometric. **New network** changes the seeded realization. Adjust the diagnostic threshold to inspect small or empty tails. Parallel edges are retained and counted, so a vertex's degree counts incidences rather than distinct neighbors.`,
+      scope: String.raw`The theorem concerns the declared stationary rate equation. Finite simulation: a clique seed, $m$ frozen-probability draws with replacement per newcomer, then all updates; no self-loops after the seed and parallel links allowed. Dorogovtsev–Mendes–Samukhin's actual v1 preprint uses directed incoming degree $q$ and attractiveness $A^{(0)}+q$. The stationary correspondence is $q=k-m$, $A^{(0)}=m+a_\infty$, hence their $2+A^{(0)}/m=3+a_\infty/m$; our seed differs and its finite correction is displayed. The half-integer tail estimate is Clauset–Shalizi–Newman Eq. 3.7's approximation, not the exact discrete zeta MLE or a goodness-of-fit test. A finite sample and this diagnostic do not prove a power law or guarantee that estimated exponents move monotonically toward the limiting value.`,
       deps: ['soc-4.9'],
-      refs: ['E&K §18.7', 'Newman ch. 13'],
+      refs: ['Dorogovtsev, Mendes & Samukhin, Structure of Growing Networks: Exact Solution of the Barabási–Albert’s Model, arXiv:cond-mat/0004434v1 (2000), Eqs. 1–13', 'Clauset, Shalizi & Newman, Power-law distributions in empirical data (2009 author version), §3.1, Eqs. 3.3–3.7'],
+      credit: 'Stationary analysis: Dorogovtsev, Mendes & Samukhin, actual 2000 v1 preprint; finite mixture and seed conventions stated here',
+      links: { source: 'https://arxiv.org/abs/cond-mat/0004434v1', estimator: 'https://snap.stanford.edu/class/cs224w-readings/clauset09powerlaw.pdf' },
       tags: ['preferential attachment', 'power laws', 'rate equation'],
-      credit: 'Barabási & Albert, 1999 (simulation, continuum argument); Dorogovtsev–Mendes–Samukhin and Krapivsky–Redner–Leyvraz, 2000 (rate equation)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model' },
+      verify: false,
       viz(v) {
-        const mS = v.slider('links per newcomer $m$', 1, 6, 3, { int: true, step: 1 });
-        const pS = v.slider('share of random attachments $p$', 0, 0.8, 0, { step: 0.05 });
-        const nS = v.select('network size', [{ value: 3, label: '$10^3$' }, { value: 4, label: '$10^4$' }, { value: 5, label: '$10^5$' }], 5);
-        const DS = v.stage({ x: [1, 2000], y: [1e-9, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 360, xlabel: 'degree $k$', ylabel: '$P(k)$', title: 'degree distribution', minWidth: 320, weight: 1.4 });
-        const cache = {};
-        const grow = (m, p, e) => { const key = `${m}|${p.toFixed(2)}|${e}`; return (cache[key] ??= baMix(Math.pow(10, e), m, p, rng32(m * 100 + e * 7 + Math.round(p * 100))).deg); };
-        let st = null;
+        const mS = v.slider('links per newcomer $m$', 1, 6, 3, { int: true });
+        const pS = v.slider('uniform-target probability $p$', 0, 1, 0, { step: .05 });
+        const kS = v.slider('diagnostic threshold $k_{\\min}$', 6, 2000, 12, { int: true, log: true });
+        const size = v.select('network size', [{ value: 1000, label: '1,000' }, { value: 10000, label: '10,000' }, { value: 100000, label: '100,000' }], 10000);
+        let seed = 23, cache = new Map();
+        const run = (n, m, p) => { const key = `${seed}|${n}|${m}|${p}`; if (!cache.has(key)) { if (cache.size >= 6) cache.delete(cache.keys().next().value); cache.set(key, growAttachmentMixture(n, m, p, attachmentRng(seed))); } return cache.get(key); };
+        v.button('New network', () => { seed = (seed + 1) % 1000000; cache.clear(); });
+        v.shareState('mixture seed', { get: () => seed, validate: x => Number.isInteger(x) && x >= 0 && x < 1000000, set: x => { seed = x; cache.clear(); } });
+        const DS = v.stage({ x: [.7, 100], y: [.00001, 1], xlog: true, ylog: true, axes: 'box', gutter: true, full: true, height: 360, xlabel: 'degree k (incidences)', ylabel: 'probability P(k)', title: 'Finite frequencies and a stationary law' });
+        let st;
         v.render(() => {
-          const m = mS.value, p = pS.value, e = +nS.value, deg = grow(m, p, e), a = p >= 1 ? 1e9 : 2 * m * p / (1 - p), gam = 3 + a / m, N = deg.length;
-          const kmaxR = 2000, P = rateEq(m, a, kmaxR);
-          DS.fn((k) => Math.pow(k, -gam) * (P[Math.min(kmaxR, Math.max(m, Math.round(300)))] * Math.pow(300, gam)), { color: 'ink', width: 1.4, dash: [6, 4], domain: [Math.max(m, 5), kmaxR] });
-          DS.path(Array.from({ length: kmaxR - m + 1 }, (_, i) => [m + i, P[m + i]]), { color: 'green', width: 2.2 });
-          const pts = logBin(deg, m, 1.35); DS.dots(pts, { r: 4, color: 'accent' });
-          const kmin = Math.max(10, Math.round(4 * (m + a))), fit = hillDisc(deg, kmin);
-          const kmax = Math.max(...deg);
-          st = { m, p, a, gam, fit, kmin, N, kmax };
+          const n = +size.value, m = mS.value, p = pS.value, graph = run(n, m, p), counts = attachmentCounts(graph.degrees), maximum = counts.at(-1)[0], theory = attachmentStationary(m, p, maximum);
+          const points = counts.map(([k, count]) => [k, count / n]), curve = Array.from({ length: maximum - m + 1 }, (_, i) => [m + i, theory.P[m + i]]), anchor = Math.min(maximum, 2 * m);
+          const guideFloor = Math.min(1 / n, curve.at(-1)[1]) / 10, logSpan = p < 1 ? Math.max(0, Math.min(Math.log(maximum / anchor), (Math.log(theory.P[anchor]) - Math.log(guideFloor)) / theory.gamma)) : 0;
+          const guide = logSpan > 1e-12 ? Array.from({ length: 101 }, (_, i) => { const logRatio = logSpan * i / 100; return [anchor * Math.exp(logRatio), Math.exp(Math.log(theory.P[anchor]) - theory.gamma * logRatio)]; }) : [];
+          const ymin = Math.min(1 / n, curve.at(-1)[1], guide.length ? guide.at(-1)[1] : 1);
+          DS.setView(attachmentLogView(m, maximum), attachmentLogView(ymin, 1));
+          DS.path(curve, { color: 'green', width: 2.2 }); if (guide.length > 1) DS.path(guide, { color: 'ink', width: 1.5, dash: [6, 4] }); DS.dots(points, { color: 'accent', r: 3.5 });
+          const shift = finiteAttachmentShift(n, m, p), tail = approximateAttachmentTail(graph.degrees, kS.value);
+          let degreeSum = 0; graph.degrees.forEach(k => degreeSum += k);
+          st = { n, m, p, seed, graph, counts, points, curve, guide, anchor, maximum, theory, shift, tail, degreeSum };
         });
-        v.legend([['accent', 'simulation (log-binned)', { dot: true }], ['green', 'rate equation, no free parameter'], ['ink', '$k^{-\\gamma}$ asymptote', { dash: true }]]);
+        v.legend([['accent', 'finite degree frequencies', { dot: true }], ['green', 'limiting stationary law'], ['ink', 'exponent guide (p < 1 only)', { dash: true }]]);
         v.readout(() => {
-          if (!st) return '';
-          const { m, p, a, gam, fit, kmin, N, kmax } = st;
-          return String.raw`$m=${m}$, $p=${v.fix(p, 2)}$ → $a=\frac{2mp}{1-p}=${v.fix(a, 2)}$, predicted exponent $\gamma=3+a/m=$ **${v.fix(gam, 2)}** · maximum-likelihood tail estimate for $k\ge${kmin}$ (${fit.n} vertices): **${fit.n ? v.fix(fit.gamma, 2) : 'not estimable: no tail observations'}** · $N=${N.toLocaleString('en-US')}$ vertices, largest degree ${kmax} (theory: about $m\sqrt N=${Math.round(m * Math.sqrt(N))}$ for $p=0$)`;
+          const { n, m, p, seed, graph, maximum, theory, shift, tail, anchor, guide, degreeSum } = st;
+          const law = p === 1 ? '**Pure uniform endpoint**: a geometric stationary law, with no finite affine shift or power-law exponent.' : String.raw`Next-arrival finite shift $a_N=${v.fix(shift.a, 4)}$; limiting $a_\infty=${v.fix(theory.a, 4)}$, $\eta=${v.fix(theory.gamma, 4)}$. ${guide.length ? `Slope guide: k=${anchor} to ${v.fix(guide.at(-1)[0], 2)}.` : 'The slope guide has no resolvable span here.'}`;
+          const diagnostic = tail.n ? String.raw`Half-integer approximation at or above $k_{\min}=${tail.kmin}$: **${v.fix(tail.estimate, 3)}**, ${tail.n} observations${tail.sufficient ? '' : ' (below the authored 50-observation support warning)'}.` : String.raw`No observations at or above $k_{\min}=${tail.kmin}$: the tail estimate is **undefined**, not zero.`;
+          return String.raw`$N=${n.toLocaleString('en-US')}$, $m=${m}$, $p=${v.fix(p, 2)}$, seed ${seed}: **${graph.edges.toLocaleString('en-US')} edges**, degree sum **${degreeSum.toLocaleString('en-US')}**, ${graph.repeated.toLocaleString('en-US')} extra parallel edges; largest degree ${maximum}. ${law} Limiting probability beyond displayed $k=${maximum}$: $${v.sci(theory.tail, 2)}$. ${diagnostic} The threshold is reader-selected. Degrees in one growing graph are dependent; no independent-sample confidence calibration or power-law fit verdict is asserted.`;
         });
       },
     },
     // ------------------------------------------------------------------ 4.11
     {
-      num: '4.11',
-      kind: 'Hypothesis',
-      name: 'Are real networks scale-free? (debated)',
-      statement: String.raw`**Hypothesis.** Most real-world networks — social, biological, technological — have degree distributions that follow a power law $P(k)\sim k^{-\gamma}$ with $2<\gamma<3$ ("scale-free").
+      num:'4.11',kind:'Hypothesis',name:'Are real networks scale-free? (debated)',
+      statement:String.raw`Whether a measured network is “scale free” depends on the distributional claim and the evidence required. A broad or visually straight degree tail does not itself establish a pure power law, and a fitted power law need not be preferred to alternative distributions.
 
-Barabási and Albert’s 1999 paper helped motivate this hypothesis. When Broido and Clauset (2019) tested a large corpus of network data sets (928 data sets, 3,662 graphs from the Index of Complex Networks) with the statistical methods of 4.8, they found that only about **4%** met their strongest criterion for scale-freeness and about **49%** none of their criteria, and that a lognormal fitted at least as well as the power law for 88% of the networks (social networks were at best weakly scale-free). These findings depend on their explicit classification criteria and preprocessing choices; heavy tails are common, strict power laws less so.`,
-      idea: String.raw`A power law is one particular heavy-tailed family, and over the few decades of degree that real networks span it is hard to tell from a lognormal or a power law with exponential cutoff. The test is therefore comparative: fit each family by maximum likelihood to the tail above a data-chosen $k_{\min}$ (4.8) and ask by a likelihood-ratio test which one the data prefer. The answer depends on the strictness of "scale-free" (exponent in $(2,3)$? at least 50 vertices in the tail? the power law not beaten by any rival?) and on whether networks are analysed whole or by projection, which is what the debate is about.`,
-      caption: String.raw`A hands-on version of the test on model networks (the real corpus is not reproduced here): pick a network family and size; the page fits a discrete power law, a lognormal and a geometric tail above the KS-optimal $k_{\min}$ and reports the Vuong test of the power law against each. Bars on the right: the shares reported for the real corpus by Broido and Clauset. The Les Misérables network is a real (tiny) data set. Preferential attachment typically passes with $\gamma$ near 3; Erdős–Rényi and lognormal-degree graphs do not.`,
-      scope: String.raw`This is a simplified version of the published pipeline: no goodness-of-fit bootstrap, discrete-data approximations as in 4.8, one fit per degree sequence rather than per layer or component. The shares quoted are the paper's corpus-wide figures (Weakest, Weak, Strong and Strongest are nested; Super-Weak is a separate comparative-model requirement that Strong also includes). The verdict labels below are illustrative.`,
-      deps: ['soc-4.8', 'soc-4.10'],
-      refs: ['Newman ch. 10'],
-      tags: ['power laws', 'scale-free', 'statistics'],
-      credit: 'Broido & Clauset, 2019 (Nature Communications 10: 1017)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Scale-free_network', doi: 'https://doi.org/10.1038/s41467-019-08746-5' },
-      viz(v) {
-        const fam = v.select('network', [
-          { value: 'ba', label: 'preferential attachment' }, { value: 'er', label: 'Erdős–Rényi' }, { value: 'pl', label: 'configuration, power-law degrees' },
-          { value: 'ln', label: 'configuration, lognormal degrees' }, { value: 'lm', label: 'Les Misérables (real, 77)' },
-        ], 'ba');
-        const nS = v.slider('vertices $n$', 1000, 20000, 10000, { step: 1000, int: true });
-        const CS = v.stage({ x: [1, 1e3], y: [1e-5, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'degree $k$', ylabel: '$P(\\mathrm{degree}\\ge k)$', title: 'degrees and fits', minWidth: 300, weight: 1.3 });
-        const BS = v.stage({ x: [0, 7], y: [0, 55], axes: 'box', gutter: true, height: 340, xticks: [[0.5, 'not'], [1.5, 'super'], [2.5, 'weakest'], [3.5, 'weak'], [4.5, 'strong'], [5.5, 'top']], xlabel: 'category (super = super-weak, top = strongest)', ylabel: 'share of networks (%)', title: '928 real data sets', minWidth: 280, weight: 1 });
-        const cache = {};
-        const build = () => {
-          const key = `${fam.value}|${nS.value}`; if (cache[key]) return cache[key];
-          const R = rng32(77), n = nS.value; let deg;
-          if (fam.value === 'ba') deg = baMix(n, 3, 0, R).deg;
-          else if (fam.value === 'er') deg = degOf(gnpSkip(n, 10 / (n - 1), R));
-          else if (fam.value === 'pl') deg = degOf(configModel(degreeSequence('power', n, 2, R), R).g);
-          else if (fam.value === 'ln') { const d = new Int32Array(n); let s = 0; for (let i = 0; i < n; i++) { d[i] = Math.max(1, Math.round(Math.exp(1.0 + 1.0 * Math.sqrt(-2 * Math.log(1 - R())) * Math.cos(2 * Math.PI * R())))); s += d[i]; } if (s % 2) d[0]++; deg = degOf(configModel(d, R).g); }
-          else deg = degOf(lesmis());
-          const A = analyseDegrees(v.M, deg);
-          return (cache[key] = { deg, A });
-        };
-        let st = null;
-        v.render(() => {
-          const { deg, A } = build(); nS.el.hidden = fam.value === 'lm';
-          const n = deg.length, c = new Map(); for (const k of deg) if (k > 0) c.set(k, (c.get(k) || 0) + 1);
-          const ks = [...c.keys()].sort((a, b) => a - b); let acc = deg.filter((k) => k > 0).length; const pts = ks.map((k) => { const p = [k, acc / n]; acc -= c.get(k); return p; });
-          CS.setView([1, Math.max(20, ks[ks.length - 1] * 1.4)], [Math.min(0.3 / n, 0.01), 1.3]);
-          CS.dots(pts, { r: 3.2, color: 'accent' });
-          if (A) {
-            const { kmin, alpha, alt, tail } = A, m = tail.length, Z = hurwitz(alpha, kmin);
-            const tailShare = m / n, kmx = ks[ks.length - 1];
-            const survPL = (k) => tailShare * hurwitz(alpha, k) / Z;
-            CS.fn((k) => survPL(Math.round(k)), { color: 'green', width: 2.4, domain: [kmin, kmx] });
-            const zq = 1 - normCdf((Math.log(kmin - 0.5) - alt.mu) / alt.sigma);
-            CS.fn((k) => tailShare * (1 - normCdf((Math.log(k - 0.5) - alt.mu) / alt.sigma)) / zq, { color: 'orange', width: 2.4, domain: [kmin, kmx] });
-            CS.vline(kmin, { color: 'muted', width: 1, dash: [4, 4] });
-          }
-          [49, 46, 29, 19, 10, 4].forEach((s, i) => { BS.rect(i + 0.15, 0, i + 0.85, s, { fill: i === 0 ? 'red' : 'accent', fillAlpha: 0.65, stroke: false }); BS.text(`${s}%`, i + 0.5, s, { dy: -10, size: 11.5, weight: 700, color: 'ink' }); });
-          st = { A, n, fam: fam.value };
-        });
-        v.legend([['accent', 'degree survival function', { dot: true }], ['green', 'power law above $k_{\\min}$'], ['orange', 'lognormal above $k_{\\min}$']]);
-        v.readout(() => {
-          if (!st) return '';
-          const { A, n } = st;
-          if (!A) return 'Too few vertices of high degree for a tail fit.';
-          const { kmin, alpha, tail, vsLn, vsEx, D } = A;
-          const word = (t, nm) => (t.p < 0.1 ? (t.R > 0 ? `power law beats ${nm}` : `${nm} beats the power law`) : `no decision against ${nm}`);
-          let verdict;
-          if (tail.length < 50) verdict = 'too few points in the tail to say anything';
-          else if ((vsLn.p < 0.1 && vsLn.R < 0) || (vsEx.p < 0.1 && vsEx.R < 0)) verdict = '**not scale-free**: a rival family fits the tail significantly better';
-          else if (alpha > 2 && alpha < 3) verdict = '**consistent with scale-free**: exponent in (2, 3) and not beaten by the rivals';
-          else verdict = '**power law not rejected, but** the exponent is outside (2, 3)';
-          return String.raw`$n=${n}$ · tail $k\ge${kmin}$ holds ${tail.length} vertices, $\hat\gamma=${v.fix(alpha, 2)}$, KS distance ${v.fix(D, 3)} · vs lognormal: $z=${v.fix(vsLn.z, 2)}$, $p=${v.fix(vsLn.p, 3)}$ (${word(vsLn, 'the lognormal')}) · vs geometric tail: $z=${v.fix(vsEx.z, 2)}$ (${word(vsEx, 'the exponential')})
-Illustrative verdict: ${verdict}`;
-        });
+Broido and Clauset's published 2019 study applies a specified fitting, goodness-of-fit and model-comparison procedure to 928 network data sets. Its final analysis contains 3,662 associated simple graphs after its transformations and exclusions. Reported data-set shares are 49% Not Scale Free, 46% Super-Weak, 29% Weakest, 19% Weak, 10% Strong and 4% Strongest.
+
+These categories **overlap**. Weakest, Weak, Strong and Strongest form a nested chain. Super-Weak overlaps that chain and contains Strong and Strongest; it does not contain every Weak or Weakest case. Not Scale Free is the complement of the union of Super-Weak and Weakest. The six percentages are not parts of one partition.`,
+      idea:String.raw`The published procedure fits each simple graph's upper degree tail above a selected threshold, tests the power-law goodness of fit, and compares fitted alternatives on that same tail. Results are then aggregated across the simple graphs associated with each original network data set. A favorable comparison with alternatives and an adequate absolute fit answer different questions.
+
+Definitions also differ across the literature. Voitalov and colleagues explicitly allow regularly varying tails that deviate from a pure power law, and use consistent tail-index estimators. That broader asymptotic definition and this corpus's pure-tail testing categories should not be treated as identical questions. The percentages shown here belong to Broido and Clauset's published corpus and evaluation scheme.`,
+      caption:String.raw`Select a category to read its published requirements. Gold marks that category; blue also marks categories that its requirements imply. Bars show the six rounded percentages reported for the original data sets, with overlap retained. This widget neither refits a new graph nor runs a goodness-of-fit bootstrap.`,
+      scope:String.raw`Published main-paper criteria and corpus summaries are transcribed, without reproducing raw data, graph transformations, fitting code, supplementary robustness analyses or a new statistical verdict. These 928 data sets are not asserted to be a representative probability sample of all possible networks. The earlier arXiv draft has different corpus counts and shares; it is not the source of these published numbers. The alternative regular-variation viewpoint is taken from Voitalov et al.'s actual abstract and definition, without claiming an independent audit of their full estimators or data.`,
+      deps:['soc-4.7'],see:['soc-4.8','soc-4.10'],refs:['Broido & Clauset, Nature Communications 10:1017 (2019), Results definitions, Fig. 2 and Fig. 4; Methods preprocessing','Voitalov et al., arXiv:1811.02071v2 (2019), abstract and power-law definition'],tags:['power laws','scale-free','statistics'],credit:'Anna D. Broido & Aaron Clauset, 2019; alternative regular-variation definition: Voitalov, van der Hoorn, van der Hofstad & Krioukov, 2019.',links:{source:'https://doi.org/10.1038/s41467-019-08746-5',published:'https://d-nb.info/1181669375/34',alternative:'https://arxiv.org/abs/1811.02071v2'},verify:false,
+      viz(v){
+        const category=v.select('evidence category',SCALE_FREE_CATEGORIES.map(x=>({value:x.id,label:x.name})),'strongest');
+        const A=v.stage({x:[-42,67],y:[-.65,6.65],axes:false,full:true,height:390,minWidth:240,title:'published percentages of data sets; overlapping categories'});
+        v.render(()=>{const selected=SCALE_FREE_CATEGORIES.find(x=>x.id===category.value);A.line(0,-.35,0,5.4,{color:'faint',width:1});A.text('reported share (%)',20,6.05,{align:'center',baseline:'middle',size:11,color:'muted'});SCALE_FREE_CATEGORIES.forEach((x,j)=>{const y=5-j,col=x.id===selected.id?'gold':selected.implies.includes(x.id)?'accent':'muted';A.text(x.name,-2,y,{align:'right',baseline:'middle',size:11,color:col});A.rect(0,y-.23,x.percent,y+.23,{fill:col,fillAlpha:.65,stroke:false});A.text(`${x.percent}%`,x.percent+2,y,{align:'left',baseline:'middle',size:11,color:col,weight:600});});});
+        v.legend([['gold','selected category'],['accent','logically implied category'],['muted','other reported category']]);
+        v.readout(()=>{const x=SCALE_FREE_CATEGORIES.find(x=>x.id===category.value);return `${x.name}: ${x.percent}% reported. ${x.definition} Implied categories: ${x.implies.map(id=>SCALE_FREE_CATEGORIES.find(y=>y.id===id).name).join(', ')}. Percentages are rounded published shares of overlapping sets; adding them does not count distinct networks. No new fit or hypothesis-test result is computed.`;});
       },
     },
+
   ],
 };

@@ -1,0 +1,149 @@
+{
+  "mapping": [
+    {
+      "num": "1.3",
+      "file": "ch01.js",
+      "target": "nt-2.1",
+      "paragraph": "The residue-class arithmetic in nt-2.1 makes the shift and its inverse well defined: replacing a letter representative by a congruent integer does not change its encrypted class. Addition by k followed by addition by -k gives the original class modulo 26. This proves correctness of the letter map; it supplies no security against the exhaustive search described here."
+    },
+    {
+      "num": "1.4",
+      "file": "ch01.js",
+      "target": "prob-1.6.1",
+      "paragraph": "For $N$ equally likely keys in a fixed search order, write the number of trials as the sum of the indicators that trial $j$ is reached. Linearity of expectation prob-1.6.1 gives the sum of $(N-j+1)/N$ for $j=1,\\ldots,N$, namely $(N+1)/2$. With $N=2^b$ this is the displayed approximate half-keyspace work; dividing by a fixed trial rate converts trials to time. No independence of those indicators is needed."
+    },
+    {
+      "num": "1.5",
+      "file": "ch01.js",
+      "target": "comb-1.5",
+      "paragraph": "The permutation count comb-1.5 gives the key-space size: assign the image of the first alphabet letter in 26 ways, the second in 25 remaining ways, and continue down to one. Thus there are $26!$ full substitutions. This counts bijections rather than arbitrary 26-to-26 functions; the latter would include maps that lose information and cannot decrypt. The count does not remove the frequency invariant exploited here."
+    },
+    {
+      "num": "1.6",
+      "file": "ch01.js",
+      "target": "pma-8.6",
+      "paragraph": "The positive-product logarithm identity pma-8.6 converts a bigram-model likelihood into a sum of transition log-probabilities, together with the initial-letter term. Maximizing that sum is equivalent to maximizing the likelihood, since log is increasing. A zero transition probability instead gives zero likelihood and cannot be treated as a finite log term. This algebra explains the scoring rule; it does not prove that hill-climbing finds the best substitution or that the language model is exact."
+    },
+    {
+      "num": "1.9",
+      "file": "ch01-b.js",
+      "target": "alg-1.15",
+      "paragraph": "At one fixed rotor state, let A be the bijection carrying a keyboard contact through the plugboard and forward rotor path. Composition theorem alg-1.15 makes the return path A^{-1} and the whole letter map $A^{-1}UA$ a bijection. Associativity gives its square $A^{-1}U^2A=\\mathrm{id}$. If it fixed x, applying A would make U fix $A(x)$, contradicting the fixed-point-free reflector. These are statewise properties; the rotor stepping must still be synchronized for decryption."
+    },
+    {
+      "num": "2.1",
+      "file": "ch02.js",
+      "target": "stat-2.1",
+      "paragraph": "Apply the conditional-density ratio in stat-2.1 with counting measure on the finite message and ciphertext spaces. For a positive-probability ciphertext c, the posterior mass at m is the prior mass times its ciphertext likelihood, divided by the marginal mass at c. If all message likelihoods agree, this ratio is the prior for every prior law. Conversely, a uniform full-support prior makes posterior-equals-prior force all those likelihoods to agree. Conditioning on an impossible ciphertext is excluded."
+    },
+    {
+      "num": "2.2",
+      "file": "ch02.js",
+      "target": "prob-1.6.1",
+      "paragraph": "For a fixed test, its win indicator is the sum of the disjoint indicators for b=0 with output0 and b=1 with output1. Linearity prob-1.6.1 and the fair challenge bit give the two half-weighted terms in the proof. Subtracting one half leaves half the signed acceptance-probability gap. The optimal test then selects ciphertexts with the appropriate likelihood surplus; linearity itself does not assume the test and ciphertext are independent."
+    },
+    {
+      "num": "2.3",
+      "file": "ch02.js",
+      "target": "alg-1.20",
+      "paragraph": "For fixed m the map k\u21a6$m\\oplus k$ is its own inverse, so alg-1.20 makes it a bijection of the finite bit-string space. Every target ciphertext therefore has exactly one key preimage. A uniform key gives that preimage the same mass $2^{-\\ell}$ for every m and c. The bijection is the reason for the uniform ciphertext law; an arbitrary deterministic map of a uniform key need not preserve uniformity."
+    },
+    {
+      "num": "2.4",
+      "file": "ch02.js",
+      "target": "comb-1.2",
+      "paragraph": "The pigeonhole argument comb-1.2 applies to the attempted assignment of all messages to the keys that decrypt a fixed occurring ciphertext. Each key can supply at most one message because decryption is a function. If there are fewer keys than messages, some message cannot be assigned any key. Its positive uniform-prior mass becomes zero after that ciphertext, contradicting perfect secrecy. The reasoning counts possible preimages, not an attacker\u2019s computational effort."
+    },
+    {
+      "num": "2.5",
+      "file": "ch02.js",
+      "target": "comb-1.2",
+      "paragraph": "The equality case of the counting argument uses comb-1.2: a fixed occurring ciphertext must decrypt, across the N keys, to all N messages. No message can be omitted or repeated, since then N key positions could not cover N distinct messages. Thus each message/ciphertext pair has exactly one key. Correctness also makes each fixed-key message row injective, hence bijective between two N-element sets. Perfect secrecy equates the resulting key masses, forcing the uniform law."
+    },
+    {
+      "num": "2.8",
+      "file": "ch02.js",
+      "target": "prob-1.1.1a",
+      "paragraph": "The finite-space additivity in prob-1.1.1a identifies the probability of a test\u2019s accepting set with the sum of its point masses. Apply it separately to P and Q: their signed mass differences sum to zero, so positive surplus and negative deficit have equal total magnitude. Selecting exactly the positive-surplus atoms maximizes the difference and gives half the absolute-mass sum. This uses normalized probability laws; arbitrary unnormalized masses need not have that balance."
+    },
+    {
+      "num": "2.9",
+      "file": "ch02.js",
+      "target": "prob-2.1.11",
+      "paragraph": "By the independent-product law prob-2.1.11 the $n-1$ initially sampled shares give every input tuple the same probability. Fix any $n-1$ observed share positions and their values. If the determined last share is unobserved, the input tuple is fixed directly; otherwise the XOR constraint uniquely fixes the one omitted initial share. Thus each observed tuple has exactly one input preimage, with the same mass for every secret. Smaller observed subsets are marginals of this uniform product law."
+    },
+    {
+      "num": "3.1",
+      "file": "ch03.js",
+      "target": "pma-3.20",
+      "paragraph": "The power-versus-exponential limit pma-3.20(d) proves the asymptotic claim in the exhaustive-search example. For any fixed attack exponent c and requested inverse-power threshold $n^{-d}$, multiply the success model $n^c/2^n$ by $n^d$; the result $n^{c+d}/2^n$ tends to zero. It is therefore eventually below one, giving the requested threshold. This proves negligibility in that idealized model, not a concrete safe key length or the absence of other attacks."
+    },
+    {
+      "num": "3.2",
+      "file": "ch03.js",
+      "target": "pma-3.20",
+      "paragraph": "The examples use pma-3.20(d), which beats every fixed polynomial by a fixed-base exponential. It immediately handles $n^c2^{-n}$; with $t=\\sqrt n$, the expression $n^c2^{-\\sqrt n}$ becomes $t^{2c}2^{-t}$ and has the same limit. For $n^{-\\log n}$, eventually $\\log n$ exceeds any requested exponent. These examples must hold eventually for each fixed exponent; a finite plot alone cannot establish negligibility."
+    },
+    {
+      "num": "3.5",
+      "file": "ch03.js",
+      "target": "comb-1.1",
+      "paragraph": "The product count comb-1.1 gives $2^n$ possible seeds and $2^{\\ell(n)}$ possible output strings by choosing each bit. A deterministic generator has at most one image per seed, so its range has size at most $2^n$, possibly less if seeds collide. The range-membership test accepts the generator with probability one but a uniform output with probability at most $2^{n-\\ell(n)}$. This is a statistical distinction; the definition withholds an efficient membership algorithm."
+    },
+    {
+      "num": "3.8",
+      "file": "ch03.js",
+      "target": "pma-1.33",
+      "paragraph": "The triangle inequality pma-1.33(e), applied repeatedly to the real signed neighboring acceptance gaps, gives the displayed sum-of-absolute-gaps bound after telescoping. The separate randomized-index reduction averages signed gaps before taking absolute value, so it additionally needs the consistent challenge orientation stated here. The triangle inequality guarantees a large step but does not by itself construct a uniformly efficient embedding for that step."
+    },
+    {
+      "num": "3.11",
+      "file": "ch03-b.js",
+      "target": "comb-1.1",
+      "paragraph": "To count all functions, apply comb-1.1 once for each of the $2^{\\ell_{\\rm in}}$ input strings: its output can be any of $2^{\\ell_{\\rm out}}$ strings, independently as a choice. The result is $2^{\\ell_{\\rm out}2^{\\ell_{\\rm in}}}$, explaining the displayed truth-table space. Sampling only requested entries and remembering them gives the same finite joint law on those entries. A permutation instead must exclude outputs already used; its choices are not sampled with replacement."
+    },
+    {
+      "num": "3.12",
+      "file": "ch03-b.js",
+      "target": "prob-1.1.1",
+      "paragraph": "The subadditivity proof prob-1.1.1 bounds the bad event by the sum of $q$ nonce-match probabilities. Each fresh independent uniform oracle nonce matches the independent challenge nonce with probability $2^{-n}$, including queries made after the challenge; adapting the plaintext does not change that nonce law. Hence the bad-event probability is at most $q/2^n$. Overlaps between match events do not require independence for the union bound, and the displayed security expression is an upper bound, not an attained success rate."
+    },
+    {
+      "num": "3.13",
+      "file": "ch03-b.js",
+      "target": "prob-1.1.1",
+      "paragraph": "For each unordered pair of throws, let its collision be an event of probability $1/N$. Subadditivity prob-1.1.1 bounds the union of all these events by their sum, $q(q-1)/(2N)$, without assuming the pair-events independent. The exact no-collision product instead conditions successively on all earlier balls being in distinct bins. These are two separate arguments: a union bound gives a convenient upper bound, while the product describes the full law."
+    },
+    {
+      "num": "3.15",
+      "file": "ch03-b.js",
+      "target": "nt-2.4",
+      "paragraph": "The CRT isomorphism nt-2.4 identifies a unit modulo the product of distinct primes with its two nonzero prime residues. A nonzero square has two roots at each odd prime; the four pairs of root signs therefore lift to exactly four roots modulo N. This constant fiber size makes squaring a uniform unit uniform on the quadratic residues. Coprimality and the restriction to units are essential: zero or nonunit fibers need not have size four."
+    },
+    {
+      "num": "3.15",
+      "file": "ch03-b.js",
+      "target": "nt-4.8",
+      "paragraph": "The multiplicative definition in nt-4.8 explains why Jacobi+1 does not identify squares modulo pq. A unit that is a nonsquare at both primes has two Legendre signs -1 and hence Jacobi product+1, just as a square has two signs+1. Multiplication by the selected nonsquare y exchanges these two sign classes bijectively while preserving Jacobi+1. The public symbol therefore cannot decrypt this bit; the security conclusion still requires the stated hardness assumption."
+    },
+    {
+      "num": "4.3",
+      "file": "ch04.js",
+      "target": "alg-1.15",
+      "paragraph": "Composition theorem alg-1.15 supplies the permutation claim layer by layer. Key XOR is a bijection, disjoint invertible S-boxes form a bijection of the block, and a bit permutation is a bijection. Composing them preserves bijectivity regardless of the round keys. This establishes decryption in principle; it does not supply pseudorandomness, nonlinear security, or the stronger per-output-bit avalanche condition."
+    },
+    {
+      "num": "4.4",
+      "file": "ch04.js",
+      "target": "alg-1.20",
+      "paragraph": "The explicit inverse in the proof uses alg-1.20: for any next pair $(L_i,R_i)$, the unique preceding pair is $(R_i\\oplus F_i(L_i),L_i)$. Thus even a constant or many-to-one round function gives a bijective round on pairs, since the untouched half retains the missing information. Invertibility of the block transformation is independent of the stronger PRF assumptions needed for the quoted Luby-Rackoff security result."
+    },
+    {
+      "num": "4.8",
+      "file": "ch04-b.js",
+      "target": "prob-2.1.13",
+      "paragraph": "For independent bits $B_i$ set $X_i=(-1)^{B_i}$. These bounded variables are integrable and independent, so prob-2.1.13 gives $E(\\prod_iX_i)=\\prod_iE(X_i)$. If $\\epsilon_i=\\Pr[B_i=0]-1/2$, then $E(X_i)=2\\epsilon_i$, while the product is (-1) to the XOR bit. Dividing its expectation by two gives XOR bias $2^{m-1}\\prod_i\\epsilon_i$. Independence is a hypothesis here; round masks in a cipher cannot simply be assumed to satisfy it."
+    }
+  ],
+  "rowBackfills": []
+}

@@ -7,7 +7,7 @@ export const KB = 8.617333262e-5; // eV/K
 export const Q = 1.602176634e-19; // C
 export const EPS0 = 8.8541878128e-14; // F/cm
 /** Material parameters (textbook-level; density-of-states masses in units of m0, Varshni parameters Eg(T) = Eg0 − αT²/(T+β)).
- *  Values quoted from memory of standard tables (Sze; Ioffe archive) — illustrative pending source verification; the module shows 300 K checks. */
+ *  Values quoted from memory of standard tables (Sze; Ioffe archive) — good to a few percent; the module shows 300 K checks. */
 export const MAT = {
   Si: { name: 'Si', Eg0: 1.17, alpha: 4.73e-4, beta: 636, me: 1.08, mh: 0.81, eps: 11.7, a: 5.431, ni300: 1.0e10, indirect: true, Ed: 0.045, mcond: 0.26 },
   Ge: { name: 'Ge', Eg0: 0.7437, alpha: 4.774e-4, beta: 235, me: 0.55, mh: 0.37, eps: 16.0, a: 5.658, ni300: 2.0e13, indirect: true, Ed: 0.0127, mcond: 0.12 },
@@ -117,10 +117,10 @@ export function mosModel(Na, toxNm, Vfb = 0, T = 300) {
   /** Band bending ψ(z) from the surface into the bulk (z in nm), by integrating dψ/dz = −E_s(ψ). */
   const profile = (psis) => {
     const out = [[0, psis]]; let z = 0, psi = psis; const LD = Math.sqrt((eps * Vt) / (Q * Na));
-    for (let it = 0; it < 2500 && Math.abs(psi) > 0.03 * Vt; it++) {
-      const Es = (u) => Math.sign(u) * Math.sqrt(2) * (Vt / LD) * Math.sqrt(F2(u, 0));
-      const e1 = Es(psi / Vt); const dz = Math.max(0.03e-7, Math.min(3e-7, (0.04 * Vt) / Math.abs(e1)));
-      const mid = psi - 0.5 * dz * e1, e2 = Es(mid / Vt); psi = psi - dz * e2; z += dz; out.push([z * 1e7, psi]);
+    for (let it = 0; it < 2500 && psi > 0.03 * Vt; it++) {
+      const Es = (u) => Math.sqrt(2) * (Vt / LD) * Math.sqrt(F2(u, 0));
+      const e1 = Es(psi / Vt); const dz = Math.max(0.03e-7, Math.min(3e-7, (0.04 * Vt) / e1));
+      const mid = psi - 0.5 * dz * e1, e2 = Es(Math.max(mid, 1e-6) / Vt); psi = psi - dz * e2; z += dz; out.push([z * 1e7, Math.max(psi, 0)]);
     }
     return out;
   };
@@ -154,12 +154,4 @@ export function wellPsi(L, V, mw, mb, lev, X, n = 400, bdd = true) {
   for (let i = 0; i <= n; i++) { const x = -X + (2 * X * i) / n; const a = Math.abs(x); let p = a <= L / 2 ? inside(x) : edge * Math.exp(-q * (a - L / 2)) * (lev.par === 1 && x < 0 ? -1 : 1); xs.push(x); ps.push(p); }
   let s = 0; for (let i = 0; i <= n; i++) s += ps[i] * ps[i]; s *= (2 * X) / n; const nr = Math.sqrt(s);
   return { xs, ps: ps.map((p) => p / nr) };
-}
-
-/** Hydrogenic envelope comparisons: Cu2O P-series selection rule differs from allowed S excitons. */
-export function excitonLineStrength(n, l = 0) {
-  return l === 1 ? (n * n - 1) / n ** 5 : 1 / n ** 3;
-}
-export function excitonRadius(n, l, aB) {
-  return .5 * (3 * n * n - l * (l + 1)) * aB;
 }

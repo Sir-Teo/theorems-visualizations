@@ -12,37 +12,21 @@ export const polyArea = (P) => {
   return a / 2;
 };
 
-/** Solve a 2-D LP from feasible boundary intersections/projections and recession directions.
- * The box clips only the drawing; it does not determine feasibility or boundedness.
+/**
+ * Minimize c·x over {x : nx_i x + ny_i y ≤ c_i} ∩ [-R, R]². Returns {status: 'optimal' | 'unbounded' | 'infeasible',
+ * poly, x, f, tied (all optimal vertices), active (indices of constraints active at x)}.
  */
 export function lp2(c, hs, R = 9) {
   const poly = polyhedron(hs, boxPoly(-R, -R, R, R));
-  const feasible = p => hs.every(h => h.nx*p[0]+h.ny*p[1] <= h.c+1e-9*(1+Math.abs(h.c)));
-  const candidates = [[0,0]];
-  for (let i=0;i<hs.length;i++) {
-    const h=hs[i], n=h.nx*h.nx+h.ny*h.ny;
-    if(n>0)candidates.push([h.c*h.nx/n,h.c*h.ny/n]);
-    for(let j=0;j<i;j++) {
-      const g=hs[j], d=h.nx*g.ny-h.ny*g.nx;
-      if(Math.abs(d)>1e-12*Math.sqrt(n*(g.nx*g.nx+g.ny*g.ny)))
-        candidates.push([(h.c*g.ny-h.ny*g.c)/d,(h.nx*g.c-h.c*g.nx)/d]);
-    }
-  }
-  const points=candidates.filter(feasible);
-  if(!points.length)return {status:'infeasible',poly,tied:[],active:[]};
-  const directions=[[-c[0],-c[1]],...hs.flatMap(h=>[[-h.ny,h.nx],[h.ny,-h.nx]])];
-  const unb=directions.some(d=>{
-    const n=Math.hypot(...d);if(!n)return false;
-    const u=d.map(z=>z/n);
-    return c[0]*u[0]+c[1]*u[1]<-1e-10*Math.hypot(...c)
-      && hs.every(h=>h.nx*u[0]+h.ny*u[1]<=1e-10*Math.hypot(h.nx,h.ny));
-  });
-  const value=p=>c[0]*p[0]+c[1]*p[1];
-  const best=Math.min(...points.map(value));
-  const tied=points.filter(p=>value(p)<=best+1e-9*(1+Math.abs(best)));
-  const x=tied[0],active=[];
-  hs.forEach((h,i)=>{if(Math.abs(h.nx*x[0]+h.ny*x[1]-h.c)<1e-7*(1+Math.abs(h.c)))active.push(i);});
-  return {status:unb?'unbounded':'optimal',poly,x,f:best,tied,active};
+  if (poly.length < 1 || Math.abs(polyArea(poly)) < 1e-9 && poly.length < 2) return { status: 'infeasible', poly: [], tied: [], active: [] };
+  let best = Infinity;
+  for (const p of poly) best = Math.min(best, c[0] * p[0] + c[1] * p[1]);
+  const tied = poly.filter((p) => c[0] * p[0] + c[1] * p[1] <= best + 1e-9 * (1 + Math.abs(best)));
+  const x = [tied.reduce((s, p) => s + p[0], 0) / tied.length, tied.reduce((s, p) => s + p[1], 0) / tied.length];
+  const unb = tied.some((p) => Math.abs(p[0]) > R - 1e-7 || Math.abs(p[1]) > R - 1e-7);
+  const active = [];
+  hs.forEach((h, i) => { if (tied.some((p) => Math.abs(h.nx * p[0] + h.ny * p[1] - h.c) < 1e-6)) active.push(i); });
+  return { status: unb ? 'unbounded' : 'optimal', poly, x, f: best, tied, active };
 }
 
 /** Gaussian elimination with partial pivoting; null when singular. */

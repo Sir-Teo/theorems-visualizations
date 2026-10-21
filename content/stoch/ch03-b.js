@@ -1,5 +1,7 @@
 // Stochastic Processes — Chapter 3 (part b): items 3.9–3.13 (branching processes and the two landmark papers)
-import { STATE_COL, offspring, meanOf, pgf, extinction, cumOf, draw, growTree, layoutTree, preorder, simGen, progenyLaw, genDist, uSeq, returnedBy, simWalkersZd, POLYA_P } from './ch03.shared.js';
+import { STATE_COL, offspring, meanOf, pgf, extinction, cumOf, draw, growTree, layoutTree, preorder, simGen, progenyLaw, genDist, uSeq, returnedBy, simWalkersZd } from './ch03.shared.js';
+
+import { WATSON_BINOMIAL, WATSON_TERNARY, evenCdfSteps } from './source-audit.shared.js';
 
 const FAMILIES = [{ value: 'poisson', label: 'Poisson' }, { value: 'binary', label: '0 or 2 children' }, { value: 'geometric', label: 'geometric' }];
 const famName = { poisson: 'Poisson', binary: 'binary splitting', geometric: 'geometric' };
@@ -19,7 +21,7 @@ export default {
       num: '3.9', kind: 'Model', name: 'Galton–Watson branching process',
       statement: String.raw`Let $\xi$ be a random variable on $\{0,1,2,\dots\}$ with law $(p_k)$ (the **offspring distribution**) and mean $\mu=\mathbb E\xi$. Start with one individual, $Z_0=1$. Each individual of generation $n$ has an independent number of children with the law of $\xi$, so $Z_{n+1}=\xi^{(n,1)}+\dots+\xi^{(n,Z_n)}$. The sequence $(Z_n)$ is a Markov chain on $\{0,1,2,\dots\}$ in which $0$ is absorbing, and $\mathbb E[Z_n]=\mu^n$. The process is **subcritical**, **critical** or **supercritical** according as $\mu<1$, $=1$ or $>1$.`,
       scope: String.raw`Individuals reproduce independently and identically; no interaction, no dependence on generation or on the population size. Critical case: $\xi\equiv1$ is excluded (the population never changes).`,
-      idea: String.raw`Conditioning on $Z_n$ gives $\mathbb E[Z_{n+1}\mid Z_n]=\mu Z_n$ (Wald's identity for a random sum), so $\mathbb E Z_n=\mu^n$ by induction: on average the population grows or shrinks by the factor $\mu$ per generation. Because $0$ is absorbing, the chain is not irreducible: the state $0$ is recurrent and every other state is transient (once the population is $k\ge1$ there is a positive chance, $p_0^k$, of dying out in one step). So $Z_n\to0$ or $Z_n\to\infty$; the question of which has which probability is 3.10.`,
+      idea: String.raw`Conditioning on $Z_n$ gives $\mathbb E[Z_{n+1}\mid Z_n]=\mu Z_n$ (Wald's identity for a random sum), so $\mathbb E Z_n=\mu^n$ by induction: on average the population grows or shrinks by the factor $\mu$ per generation. Because $0$ is absorbing, the chain is not irreducible: the state $0$ is recurrent and every other state is transient (when $p_0>0$, a population of $k\ge1$ has a positive chance $p_0^k$ of dying out in one step; the nondegenerate no-zero-offspring case instead grows without settling at a positive finite size). So $Z_n\to0$ or $Z_n\to\infty$; the question of which has which probability is 3.10.`,
       caption: String.raw`Pick an offspring law and its mean $\mu$. Left: the law. Middle: one family tree grown for up to 8 generations (orange discs: still alive at the cut-off; red rings: lines that ended; the tree stops at 250 individuals). Right: population sizes of 25 independent runs on a log scale (a red cross marks extinction; runs above $10^4$ individuals are no longer followed) beside the mean $\mu^n$ (dashed). For $\mu\le1$ nearly everything dies; for $\mu>1$ some runs die early but the survivors grow like $\mu^n$.`,
       deps: ['stoch-1.1'], refs: ['Grimmett–Stirzaker §5.4', 'Norris §5.1'], credit: 'I. J. Bienaymé 1845; F. Galton and H. W. Watson 1873–75', tags: ['branching', 'Galton–Watson'],
       viz(v) {
@@ -75,14 +77,14 @@ export default {
       num: '3.10', kind: 'Theorem', name: 'Extinction probability is the least fixed point of the offspring PGF',
       statement: String.raw`Let $f(s)=\sum_kp_ks^k$ be the offspring generating function, with $0<p_0<1$ (if $p_0=0$ there is never extinction; if $p_0=1$ it is immediate). The probability of eventual extinction $\rho=\Pr(Z_n=0\text{ for some }n)$ is the smallest root of $s=f(s)$ in $[0,1]$. Moreover $\Pr(Z_n=0)=f^{(n)}(0)$ (the $n$-fold composition) increases to $\rho$. If $\mu\le1$ then $\rho=1$; if $\mu>1$ then $\rho<1$ is the unique root in $[0,1)$.`,
       idea: String.raw`The generating function of $Z_{n+1}$ is $f_n\circ f$, hence $\Pr(Z_n=0)=f^{(n)}(0)$ by induction. The sequence $0,f(0),f(f(0)),\dots$ is increasing (as $f$ is increasing and $f(0)\ge0$) and bounded by 1, so it converges to a fixed point, and a monotone comparison shows that it is the smallest one. The function $f$ is convex with $f(1)=1$ and $f'(1)=\mu$: when $\mu\le1$ the graph stays above the diagonal until $s=1$, when $\mu>1$ it dips below the diagonal near $s=1$ and, by the intermediate value theorem (pma-4.23), must cross it at some $\rho<1$ since $f(0)=p_0>0$.`,
-      caption: String.raw`The cobweb starts at $s=0$: go up to the graph of $f$, across to the diagonal, up again, and so on. Raise the number of steps $n$ and the staircase climbs to the first crossing of the diagonal (green disc). Drag the mean $\mu$ across 1: below it the only crossing is at $s=1$ and the staircase creeps toward it ever more slowly near $\mu=1$; above it a new crossing $\rho<1$ appears and the staircase stops there. Right: $\Pr(Z_n=0)=f^{(n)}(0)$ (line) against the fraction of 1500 simulated families extinct by generation $n$ (dots; a family is declared a survivor once it passes 400 individuals).`,
+      caption: String.raw`The cobweb starts at $s=0$: go up to the graph of $f$, across to the diagonal, up again, and so on. Raise the number of steps $n$ and the staircase climbs to the first crossing of the diagonal (green disc). Drag the mean $\mu$ across 1: below it the only crossing is at $s=1$ and the staircase creeps toward it ever more slowly near $\mu=1$; above it a new crossing $\rho<1$ appears and the staircase stops there. Right: $\Pr(Z_n=0)=f^{(n)}(0)$ (line) against the fraction of 1500 simulated families extinct by generation $n$ (dots; later outcomes are unobserved once a family passes 400 individuals, so these are known-extinction fractions and can undercount extinctions).`,
       deps: ['stoch-3.9', 'pma-4.23'], refs: ['Grimmett–Stirzaker §5.4'], tags: ['branching', 'generating functions', 'fixed point'],
       viz(v) {
         const fam = v.select('offspring law', FAMILIES, 'poisson', { onChange: () => rebuild() });
         const mu = v.slider('mean $\\mu$', 0.4, 2, 1.5, { step: 0.01, onChange: () => rebuild() });
         const nSt = v.slider('cobweb steps $n$', 0, 60, 8, { int: true, step: 1 });
         let seed = 21; v.button('resample', () => { seed++; rebuild(); });
-        const GEN = 40, NR = 1500;
+        const GEN = 60, NR = 1500;
         const s1 = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 340, xlabel: '$s$', ylabel: '$f(s)$', title: 'cobweb of $s\\mapsto f(s)$ from $0$' });
         const s2 = v.stage({ x: [0, GEN], y: [0, 1.05], axes: 'box', gutter: true, height: 340, xlabel: 'generation $n$', ylabel: '$\\Pr(Z_n=0)$', title: 'extinct by generation $n$' });
         let p, m, rho, orbit, simExt;
@@ -117,7 +119,7 @@ export default {
         v.legend([['accent', '$f^{(n)}(0)$', {}], ['gold', 'simulation', { dot: true }], ['green', '$\\rho$ (least fixed point)', { dash: true }]]);
         v.readout(() => {
           const k = nSt.value;
-          return `${famName[fam.value]}, $\\mu=${v.fix(m, 3)}$: least root of $f(s)=s$ is $\\rho=${v.fix(rho, 5)}$${m <= 1 + 1e-12 ? ' (because $\\mu\\le1$)' : ''}. After $n=${k}$ steps the cobweb is at $f^{(${k})}(0)=${v.fix(orbit[k], 5)}$ and the simulated fraction extinct by generation ${k} is ${v.fix(simExt[Math.min(k, GEN)], 3)}; by generation ${GEN} it is ${v.fix(simExt[GEN], 3)}.`;
+          return `${famName[fam.value]}, $\\mu=${v.fix(m, 3)}$: least root of $f(s)=s$ is $\\rho=${v.fix(rho, 5)}$${m <= 1 + 1e-12 ? ' (because $\\mu\\le1$)' : ''}. After $n=${k}$ steps the cobweb is at $f^{(${k})}(0)=${v.fix(orbit[k], 5)}$ and the known simulated fraction extinct by generation ${k} is ${v.fix(simExt[Math.min(k, GEN)], 3)}; by generation ${GEN} it is ${v.fix(simExt[GEN], 3)}.`;
         });
       },
     },
@@ -127,10 +129,10 @@ export default {
       num: '3.11', kind: 'Theorem', name: 'Total progeny and the hitting-time theorem',
       statement: String.raw`Let $T=\sum_{n\ge0}Z_n$ be the total number of individuals ever born in a Galton–Watson process (with $T=\infty$ if the family survives). Then for $n\ge1$
 $$\Pr(T=n)=\frac1n\Pr(\xi_1+\dots+\xi_n=n-1),$$
-where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) offspring this is the **Borel distribution** $\Pr(T=n)=e^{-\mu n}(\mu n)^{n-1}/n!$. For $\mu\le1$, $T<\infty$ almost surely; for $\mu>1$ the probabilities add up only to the extinction probability $\rho$.`,
+where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) offspring this is the **Borel distribution** $\Pr(T=n)=e^{-\mu n}(\mu n)^{n-1}/n!$. Except for deterministic one-child offspring, for $\mu\le1$ we have $T<\infty$ almost surely; for $\mu>1$ the probabilities add up only to the extinction probability $\rho$.`,
       scope: String.raw`Independent identical offspring; the formula is for the total progeny of a single ancestor.`,
       idea: String.raw`Explore the tree depth first (preorder). Keep $S_k=\sum_{i\le k}(\xi_i-1)$, where $\xi_i$ is the number of children of the $i$-th explored individual: $S_k+1$ counts the individuals discovered but not yet explored. The exploration stops exactly when $S_k$ first hits $-1$, and the number of explored individuals is $T$. So $T$ is the hitting time of $-1$ for a walk with steps $\xi-1\ge-1$ (skip-free to the left), and the hitting-time theorem (2.11) says $\Pr(T=n)=\frac1n\Pr(S_n=-1)$, which is the displayed formula. Equivalently, the generating function $h$ of $T$ solves $h(z)=z\,f(h(z))$ and Lagrange inversion (comb-4.13) reads off its coefficients as $\frac1n[w^{n-1}]f(w)^n$.`,
-      caption: String.raw`Left: a sampled family tree whose individuals are numbered in depth-first order. Slide $k$: the first $k$ explored individuals are filled in. Middle: the exploration walk $S_k$, which rises by (children − 1) at each explored individual; the family is complete exactly when it first touches $-1$ (green), at $k=T$. Right: histogram of $T$ over 4000 random families against the formula $\frac1n\Pr(\xi_1+\dots+\xi_n=n-1)$ (dots) computed by convolution. For $\mu>1$ the bars sum to $\rho<1$ (families above 300 individuals count as infinite); at $\mu=1$ the tail decays like $n^{-3/2}$.`,
+      caption: String.raw`Left: a tree selected for readability (up to 200 draws seeking a completed tree of 7–28 individuals), numbered in depth-first order. Slide $k$: the first $k$ explored individuals are filled in. Middle: the exploration walk $S_k$, which rises by (children − 1) at each explored individual; the family is complete exactly when it first touches $-1$ (green), at $k=T$. Right: histogram of $T$ over 4000 random families against the formula $\frac1n\Pr(\xi_1+\dots+\xi_n=n-1)$ (dots) computed by convolution. The displayed bars only count $T\le40$; completed families up to 300 contribute to the completion fraction, while outcomes beyond 300 are censored, not declared infinite. A cropped tree has unknown total progeny, and its exploration stops at the first individual whose offspring were not sampled. For nondegenerate finite-variance critical offspring, the total-progeny mass has order $n^{-3/2}$ on its support.`,
       deps: ['stoch-3.10', 'stoch-2.11', 'comb-4.13'], refs: ['Grimmett–Stirzaker §5.4'], credit: 'R. Otter 1949 (one ancestor); M. Dwass 1969 (hitting-time form); É. Borel 1942 (Poisson case)', tags: ['branching', 'hitting time', 'Lagrange inversion'],
       viz(v) {
         const fam = v.select('offspring law', FAMILIES, 'poisson', { onChange: () => rebuild() });
@@ -151,10 +153,10 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
           s1.setView([-1, Math.max(leaves, 5)], [-gmax - 0.7, 0.7]);
           order = preorder(tree); const rank = new Array(tree.length); order.forEach((id, k) => { rank[id] = k + 1; });
           tree.forEach((n, i) => { n.rank = rank[i]; });
-          walk = [0]; let S = 0; order.forEach((id) => { S += tree[id].kids.length - 1; walk.push(S); });
-          Tsize = tree.some((n) => n.open) ? Infinity : tree.length;
+          walk = [0]; let S = 0; for (const id of order) { if (tree[id].childCount === undefined) break; S += tree[id].childCount - 1; walk.push(S); }
+          Tsize = tree.some((n) => n.open) ? undefined : tree.length;
           s2.setView([0, walk.length], [Math.min(-2, ...walk) - 0.7, Math.max(3, ...walk) + 0.7]);
-          kk.set(Math.min(kk.value, walk.length - 1));
+          kk.input.max = walk.length - 1; kk.set(Math.min(kk.value, walk.length - 1));
           // histogram of total progeny
           const C = cumOf(p), counts = new Array(NB + 2).fill(0); let fin = 0; const NT = 4000;
           for (let r = 0; r < NT; r++) {
@@ -169,7 +171,7 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
         }
         rebuild();
         v.render(() => {
-          const k = kk.value;
+          const k = Math.min(kk.value, walk.length - 1);
           tree.forEach((n) => { if (n.parent >= 0) { const q = tree[n.parent]; s1.line(q.x, q.y, n.x, n.y, { color: 'muted', width: 1.3 }); } });
           tree.forEach((n) => {
             const done = n.rank <= k;
@@ -187,8 +189,8 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
         v.legend([['accent', 'simulated $T$', { area: true }], ['ink', '$\\frac1n\\Pr(\\xi_1+\\dots+\\xi_n=n-1)$', { dot: true }], ['green', 'hits $-1$ at $k=T$', { dash: true }]]);
         v.readout(() => {
           const sumLaw = law.reduce((a, b) => a + b, 0);
-          const k = kk.value;
-          return `${famName[fam.value]}, $\\mu=${v.fix(m, 2)}$. This tree has $T=${isFinite(Tsize) ? Tsize : '\\infty'}$ individuals; at $k=${k}$ the walk stands at $S_k=${walk[k]}$. Simulated $\\Pr(T<\\infty)=${v.fix(finiteFrac, 3)}$ against $\\rho=${v.fix(rho, 3)}$; the formula's mass for $n\\le${NB}$ is ${v.fix(sumLaw, 3)} against ${v.fix(sim.slice(1, NB + 1).reduce((a, b) => a + b, 0), 3)} simulated.${fam.value === 'poisson' ? ` (Poisson: $\\Pr(T=5)=e^{-5\\mu}(5\\mu)^4/5!=${v.fix(Math.exp(-5 * m) * (5 * m) ** 4 / 120, 4)}$ from the Borel formula, ${v.fix(law[5], 4)} from the convolution.)` : ''}`;
+          const k = Math.min(kk.value, walk.length - 1);
+          return `${famName[fam.value]}, $\\mu=${v.fix(m, 2)}$. This tree has ${isFinite(Tsize) ? `$T=${Tsize}$ individuals` : 'unknown total progeny beyond the drawing cutoffs'}; at $k=${k}$ the walk stands at $S_k=${walk[k]}$. Completed by 300: $${v.fix(finiteFrac, 3)}$ of samples, a censored comparison with eventual extinction probability $\\rho=${v.fix(rho, 3)}$; the formula's mass for $n\\le${NB}$ is ${v.fix(sumLaw, 3)} against ${v.fix(sim.slice(1, NB + 1).reduce((a, b) => a + b, 0), 3)} simulated.${fam.value === 'poisson' ? ` (Poisson: $\\Pr(T=5)=e^{-5\\mu}(5\\mu)^4/5!=${v.fix(Math.exp(-5 * m) * (5 * m) ** 4 / 120, 4)}$ from the Borel formula, ${v.fix(law[5], 4)} from the convolution.)` : ''}`;
         });
       },
     },
@@ -198,21 +200,26 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
       num: '3.12', kind: 'Paper', name: 'On the probability of the extinction of families',
       paper: { authors: 'H. W. Watson and Francis Galton', year: 1875, title: 'On the Probability of the Extinction of Families', venue: 'Journal of the Anthropological Institute of Great Britain and Ireland 4: 138–144', doi: '10.2307/2841222' },
       introduces: ['stoch-3.9', 'prob-4.3.8a'],
-      statement: String.raw`Galton asked (in the *Educational Times*, 1873) what becomes of the surnames of a colony of $N$ adult men if in each generation a fixed share $a_k$ of men has $k$ adult sons, $k=0,\dots,5$: what proportion of surnames is extinct after $r$ generations, and how many surnames are borne by $m$ men? Watson answered with the method of generating functions: the generating function of the number of bearers of one surname after $r$ generations is the $r$-fold iterate $f^{(r)}$ of the offspring generating function $f$, so the proportion extinct after $r$ generations is $f^{(r)}(0)$. From this he concluded that every surname must eventually die out. With a positive chance of no sons, that last conclusion is only right when the mean number of sons is at most 1; in general the proportion extinct tends to the least root of $f(s)=s$ (3.10).`,
-      scope: String.raw`Model of the paper: independent men, fixed distribution $(a_0,\dots,a_5)$ of adult sons. The numbers in the picture are illustrative defaults, **not data from the paper**, and the figure is a reconstruction of the problem, not a reproduction of anything printed there. The generating-function recursion and Watson's incorrect choice of the root 1 were checked against the complete 1875 paper, pp. 140–143. Historical claims about Bienaymé and Steffensen still require their primary sources. If every man has exactly one son, extinction never occurs even though the mean is 1.`,
-      idea: String.raw`Before: the question of extinction of noble surnames worried Victorian commentators, and Bienaymé had stated the right answer in 1845 without a published proof. What the paper did: Galton's problem and Watson's solution introduced the **branching process** with its generating function recursion $f_{r+1}=f_r\circ f$ — the process now named after both. What it got wrong: by an algebraic oversight Watson concluded extinction is certain whatever the $a_k$. The correct criterion, assuming a positive chance of no sons (extinction is certain iff the mean number of sons is at most 1) was settled by Steffensen in 1930 (Danish journal).`,
-      caption: String.raw`Set the shares $a_0,\dots,a_5$ (they are normalised to sum to 100%; defaults are illustrative). Left: the proportion of $N=2000$ surnames extinct after $r$ generations — simulated (dots) against $f^{(r)}(0)$ (line) — together with the true limit $\rho$ (green) and, if switched on, Watson's answer 1 (red). Right: Galton's second question, the number of surnames held by exactly $m$ men after $r$ generations (slide $r$): simulation against $N\Pr(Z_r=m)$ from the iterated generating function. Make the mean number of sons exceed 1 and the two answers part ways; with a positive chance of no sons, bring the mean to 1 or below and Watson was right.`,
-      deps: ['comb-4.1'], refs: ['Watson & Galton (1875), On the Probability of the Extinction of Families, pp. 138–144; doi:10.2307/2841222'], credit: 'F. Galton (problem, 1873); H. W. Watson (solution, 1874–75)', tags: ['branching', 'extinction', 'surnames'], verify: true,
+      statement: String.raw`Galton asks how many surnames disappear, or have exactly $m$ male bearers, after $r$ generations. Watson obtains the iterated offspring generating function $f^{(r)}$, with extinction probability $f^{(r)}(0)$. On p.143 he incorrectly identifies the limiting fixed point with $1$ for his binomial family; on p.144 he conjectures the same conclusion more generally. The modern limit is the **least** root $\rho$ of $f(s)=s$. For a nondegenerate finite offspring law, extinction is certain when $\mu\le1$; the exception $\Pr(\xi=1)=1$ has $\rho=0$.`,
+      scope: String.raw`The paper's problem uses independent identical numbers of adult sons on $0,\ldots,5$; its subsequent algebra permits other finite offspring laws. This is a modern reconstruction. Buttons reproduce the laws used on pp.141–143: uniform on $\{0,1,2\}$ and $\operatorname{Binomial}(5,1/4)$. They are mathematical examples, not observations of real families.`,
+      idea: String.raw`Conditioning on one generation composes generating functions, so the coefficient of $s^m$ in $f^{(r)}(s)$ answers Galton's second question. Iteration from zero increases to the least fixed point. Watson's binomial example has $f(s)=((3+s)/4)^5$ and $\mu=5/4$; its least root is about $0.55271867$, even though $1$ is also a root. This gives a direct counterexample to the conclusion printed on p.143. The critical exception and modern extinction theorem are stated in Durrett 4.3.10–4.3.12.`,
+      caption: String.raw`Adjust six nonnegative weights, normalized to sum to one; all zero means no sons. Left: exact PGF extinction probabilities (blue), observed extinctions in 2000 sampled families (gold), and the least fixed point (green). Once a generation exceeds 4000, that family's later outcomes are unobserved. The grey band runs from known extinctions to known extinctions plus these censored families; it is an uncertainty range for the sample, not a confidence interval. Right: observed counts for $1\le m\le20$ and exact PGF expectations. Censored families can contribute unknown additional counts; mass at zero and above 20 is omitted.`,
+      deps: ['comb-4.1'], refs: ['Watson–Galton (1875), pp.139–144', 'Durrett 4.3.10–4.3.12'], credit: 'H. W. Watson and F. Galton, 1875', tags: ['branching', 'extinction', 'surnames'],
+      links: { source: 'https://math.uchicago.edu/~shmuel/Modeling/Galton%20Watson.pdf' },
       viz(v) {
         const defs = [0.34, 0.30, 0.20, 0.10, 0.05, 0.01];
         const sl = defs.map((d, k) => v.slider(`$a_${k}$`, 0, 1, d, { step: 0.01, onChange: () => rebuild() }));
         const rr = v.slider('generation $r$', 1, 12, 5, { int: true, step: 1 });
+        const preset = (p) => { p.forEach((x, k) => sl[k].set(x)); rebuild(); };
+        v.button('Watson: uniform 0, 1, 2', () => preset(WATSON_TERNARY));
+        v.button('Watson: binomial (5, 1/4)', () => preset(WATSON_BINOMIAL));
+        v.button('one child with certainty', () => preset([0, 1, 0, 0, 0, 0]));
         const wat = v.toggle("show Watson's conclusion (ρ = 1)", true);
         let seed = 41; v.button('resample', () => { seed++; rebuild(); });
         const NS = 2000, GEN = 25, MM = 20;
         const s1 = v.stage({ x: [0, GEN], y: [0, 1.05], axes: 'box', gutter: true, height: 320, xlabel: 'generation $r$', ylabel: 'proportion of surnames extinct', title: 'extinct surnames' });
         const s2 = v.stage({ x: [0, MM + 1], y: [0, 1], axes: 'box', gutter: true, height: 320, xlabel: 'men $m$ bearing a surname', ylabel: 'number of surnames', title: 'surnames held by $m$ men' });
-        let p, m, rho, orbit, ext, sizes, exactSizes;
+        let p, m, rho, orbit, ext, censored, sizes, exactSizes;
         function rebuild() {
           let w = sl.map((s) => s.value); let tot = w.reduce((a, b) => a + b, 0); if (tot < 1e-9) { w = [1, 0, 0, 0, 0, 0]; tot = 1; }
           p = w.map((x) => x / tot); m = meanOf(p); rho = extinction(p);
@@ -220,12 +227,14 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
           const R = v.rng(seed * 43 + 5), C = cumOf(p);
           const runs = Array.from({ length: NS }, () => simGen(C, R, GEN, 4000));
           ext = Array.from({ length: GEN + 1 }, (_, g) => runs.filter((z) => z[g] === 0).length / NS);
+          censored = Array.from({ length: GEN + 1 }, (_, g) => runs.filter(z => Number.isNaN(z[g])).length);
           sizes = Array.from({ length: 13 }, (_, r) => { const c = new Array(MM + 1).fill(0); runs.forEach((z) => { const x = z[r]; if (x >= 1 && x <= MM) c[x]++; }); return c; });
           exactSizes = Array.from({ length: 13 }, (_, r) => genDist(p, r, MM).map((x) => x * NS));
           v.invalidate();
         }
         rebuild();
         v.render(() => {
+          s1.poly([...ext.map((x, i) => [i, x + censored[i] / NS]), ...ext.map((x, i) => [i, x]).reverse()], { fill: 'muted', fillAlpha: .25, stroke: false });
           s1.path(orbit.map((x, i) => [i, x]), { color: 'accent', width: 2.5 });
           s1.dots(ext.map((x, i) => [i, x]), { r: 3.5, color: 'gold' });
           s1.hline(rho, { color: 'green', dash: true, width: 2 });
@@ -236,10 +245,10 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
           s2.bars(c.map((x, i) => (i === 0 ? 0 : x)), { x0: 0, dx: 1, color: 'accent' });
           ex.forEach((x, i) => { if (i >= 1) s2.dot(i, x, { color: 'ink', r: 3.5 }); });
         });
-        v.legend([['accent', 'simulated', { area: true }], ['ink', 'iterated generating function', { dot: true }], ['green', '$\\rho$', { dash: true }]]);
+        v.legend([['accent', 'PGF curve / sampled count bars'], ['gold', 'known sampled extinctions', { dot: true }], ['ink', 'PGF count expectations', { dot: true }], ['muted', 'censoring range', { area: true }], ['green', '$\\rho$', { dash: true }]]);
         v.readout(() => {
           const r = rr.value;
-          return `Mean number of adult sons $\\mu=${v.fix(m, 3)}$. After $r=${r}$ generations a proportion **${v.fix(orbit[r], 4)}** of surnames is extinct (simulated ${v.fix(ext[r], 3)}); the limit is $\\rho=${v.fix(rho, 4)}$${rho < 1 - 1e-12 ? ` — about ${v.fix((1 - rho) * 100, 1)}% of surnames survive indefinitely${p[0] === 0 ? ' (zero offspring is impossible, so extinction cannot occur)' : ', contradicting Watson’s universal-extinction conclusion'}` : ' (here the limit is 1 and Watson’s conclusion holds)'}. Surnames still borne by 1 man at $r=${r}$: ${v.fix(exactSizes[r][1], 1)} expected of ${NS}.`;
+          return String.raw`Mean $\mu=${v.fix(m, 6)}$. At $r=${r}$, exact extinction probability $${v.fix(orbit[r], 6)}$; ${Math.round(ext[r] * NS)} known sampled extinctions, ${censored[r]} censored families (possible fraction ${v.fix(ext[r], 3)}–${v.fix(ext[r] + censored[r] / NS, 3)}). Least fixed point $\rho=${v.fix(rho, 8)}$${p[1] === 1 ? ': deterministic one-child exception; no surname dies' : rho < 1 ? `; survival probability ${v.fix(1 - rho, 6)}` : '; eventual extinction is certain'}. For $m=1$: PGF expectation ${v.fix(exactSizes[r][1], 2)} surnames; sampled counts omit unknown censored outcomes. At generation ${GEN}: ${censored[GEN]} of ${NS} families censored.`;
         });
       },
     },
@@ -249,14 +258,15 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
       num: '3.13', kind: 'Paper', name: 'Über eine Aufgabe … betreffend die Irrfahrt im Straßennetz',
       paper: { authors: 'Georg Pólya', year: 1921, title: 'Über eine Aufgabe der Wahrscheinlichkeitsrechnung betreffend die Irrfahrt im Straßennetz', venue: 'Mathematische Annalen 84: 149–160', doi: '10.1007/BF01458701' },
       introduces: ['stoch-3.5'],
-      statement: String.raw`Pólya considered a walker who, at each junction of a regular network of streets (the integer lattice in $d$ dimensions), picks one of the $2d$ streets at random. He proved that for $d=1$ and $d=2$ the walker returns to the starting junction with probability one — and hence infinitely often — whereas for $d\ge3$ there is a positive probability that the walker never comes back. This is the content of 3.5: $\sum_n\Pr_0(S_{2n}=0)$ is infinite for $d\le2$ and finite for $d\ge3$. The numerical value $0.3405\ldots$ of the return probability for $d=3$ is not part of the dichotomy; it was computed later (Watson 1939; McCrea and Whipple 1940, as listed by MathWorld).`,
-      scope: String.raw`Nearest-neighbour symmetric walk on $\mathbb Z^d$. The picture is a modern simulation, not a figure from the paper; for $d=3$ the left panel is the two-coordinate projection of the walk, while returning home is tested in all three coordinates. The complete original (pp. 149–160) was read: §2 gives the return-probability integral, §3 its asymptotics, and §§4–5 the generating-function/first-return argument. The later numerical-attribution claim still requires the Watson and McCrea–Whipple originals; MathWorld is the explicit secondary source for that claim.`,
-      idea: String.raw`Before: the one-dimensional walk was already the classical coin-toss and gambler’s-ruin problem; Pólya explicitly starts from that known case (§1). His new question is how recurrence changes with dimension. What the paper did: it reduced the question to the asymptotics of the number of closed paths of length $2n$ — in one dimension $\binom{2n}{n}$, in two dimensions $\binom{2n}{n}^2$, in three a trinomial sum — and compared the resulting series with $\sum n^{-d/2}$. It changed the field by tying the dimension of space to recurrence, the starting point for the later theory of recurrence of Markov chains (3.1, 3.2) and random walks on graphs and groups.`,
-      caption: String.raw`Release 500 walkers from the central junction and slide the time $t$. Walkers that have already been home at least once are green, those that have never come back blue; the faint grid is the street network (d = 2, short times). Right: the fraction that has been home by time $t$ — simulated (gold) and exact (line) — with the Pólya limit (dashed). In $d=1$ and $d=2$ the green fraction creeps towards 1 (very slowly in the plane); in $d=3$ it stalls: about two thirds of the walkers never return.`,
-      deps: ['comb-1.6', 'stoch-3.1'], refs: ['Pólya (1921), Mathematische Annalen 84, pp. 149–160, §§2–5; doi:10.1007/BF01458701', 'MathWorld, Pólya’s Random Walk Constants and Watson’s Triple Integrals (secondary numerical reference)'], credit: 'G. Pólya, 1921', tags: ['random walk', 'recurrence', 'dimension'], verify: true,
+      statement: String.raw`For symmetric nearest-neighbour walk on $\mathbb Z^d$, each of the $2d$ directions has probability $1/(2d)$. Pólya's 1921 paper proves that the walk returns to its starting point with probability one for $d=1,2$, and with probability strictly below one for $d\ge3$. Reapplying the Markov property gives infinitely many returns almost surely in the recurrent cases. The dimension dichotomy follows from the divergence or convergence of $\sum_n\Pr_0(S_{2n}=0)$, whose terms have order $n^{-d/2}$.`,
+      scope: String.raw`Original paper: pp.149–150 define the walk and state the dimension result; §§3–5, pp.153–157 give the return asymptotics and first-hit generating-function argument. The figure is a modern simulation. Its approximate three-dimensional limit $0.34053733$ is a modern reference value (Durrett, fifth edition, p.298), not a number claimed to have been computed in the 1921 paper.`,
+      idea: String.raw`Pólya expresses transition probabilities by a Fourier integral and identifies its asymptotically important neighborhoods. His return and first-hit generating functions then connect the infinite return sum with eventual hitting probability. In one dimension $\Pr(S_{2n}=0)=\binom{2n}{n}/4^n$; in two it is the square of this quantity. A renewal equation separates the first return from subsequent returns, giving the finite-time CDF drawn here.`,
+      caption: String.raw`500 independent walkers start at the origin. Green marks a walker that has returned by the selected integer time; blue means no return yet. One-dimensional walkers have artificial vertical jitter for visibility; the three-dimensional picture projects onto the first two coordinates, while return detection uses all three. All current positions fit in the displayed window. Right: integer-time step CDFs, sampled (gold) and computed from exact combinatorial return formulas in floating point (blue), with the limiting probability dashed. Sampling error remains; failure to return by time 2000 does not mean never returning.`,
+      deps: ['comb-1.6', 'stoch-3.1'], refs: ['Pólya (1921), §§1–5', 'Durrett, fifth edition, p.298'], credit: 'G. Pólya, 1921', tags: ['random walk', 'recurrence', 'dimension'],
+      links: { source: 'https://gdz.sub.uni-goettingen.de/download/pdf/PPN235181684_0084/LOG_0016.pdf' },
       viz(v) {
         const dd = v.select('dimension $d$', ['1', '2', '3'], '2', { onChange: () => rebuild() });
-        const TT = v.slider('time $t$', 1, 2000, 100, { log: true, int: true });
+        const TT = v.slider('time $t$', 1, 2000, 100, { int: true, step: 1 });
         let seed = 51; v.button('resample', () => { seed++; rebuild(); });
         const M = 500, T = 2000;
         const s1 = v.stage({ x: [-10, 10], y: [-10, 10], equal: true, axes: false, height: 340, title: 'walkers on the street network' });
@@ -268,15 +278,18 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
           jit = Array.from({ length: M }, () => R() * 2 - 1);
           Fex = returnedBy(uSeq(d, T / 2)).F;
           const f = Array.from(sim.first).filter((x) => x > 0).sort((a, b) => a - b);
-          simCurve = []; let k = 0; for (let t = 0; t <= T; t += 10) { while (k < f.length && f[k] <= t) k++; simCurve.push([t, k / M]); }
+          const sampled = new Array(T / 2 + 1).fill(0); let k = 0; for (let n = 0; n <= T / 2; n++) { while (k < f.length && f[k] <= 2 * n) k++; sampled[n] = k / M; }
+          simCurve = evenCdfSteps(sampled);
           v.invalidate();
         }
         rebuild();
         v.render(() => {
-          const t = TT.value, L = Math.max(6, 2.6 * Math.sqrt(t));
+          const t = TT.value, base = t * M * d;
+          let extent = 0; for (let w = 0; w < M; w++) for (let a = 0; a < Math.min(2, d); a++) extent = Math.max(extent, Math.abs(sim.pos[base + w * d + a]));
+          const L = Math.max(6, extent + 1);
           s1.setView([-L, L], [-L, L]);
           if (d === 2 && L < 30) { for (let g = -Math.floor(L); g <= Math.floor(L); g++) { s1.line(g, -L, g, L, { color: 'grid', width: 0.7 }); s1.line(-L, g, L, g, { color: 'grid', width: 0.7 }); } }
-          const base = t * M * d; let home = 0;
+          let home = 0;
           for (let w = 0; w < M; w++) {
             const x = sim.pos[base + w * d], y = d === 1 ? jit[w] * L * 0.6 : sim.pos[base + w * d + 1];
             const been = sim.first[w] > 0 && sim.first[w] <= t; if (been) home++;
@@ -284,15 +297,15 @@ where $\xi_1,\xi_2,\dots$ are i.i.d. with the offspring law. For Poisson($\mu$) 
           }
           s1.dot(0, 0, { r: 7, color: 'ink', hollow: true });
           s1.text('home', 0, 0, { dy: -14, size: 12, color: 'ink', align: 'center' });
-          s2.path(Array.from({ length: 201 }, (_, i) => [i * 10, Fex[Math.min(Fex.length - 1, Math.floor((i * 10) / 2))]]), { color: 'accent', width: 2.5 });
+          s2.path(evenCdfSteps(Fex), { color: 'accent', width: 2.5 });
           s2.path(simCurve, { color: 'gold', width: 2 });
-          const lim = POLYA_P[d]; s2.hline(lim, { color: 'muted', dash: true });
+          const lim = d === 3 ? .34053733 : 1; s2.hline(lim, { color: 'muted', dash: true });
           s2.vline(t, { color: 'faint', dash: true });
         });
         v.legend([['green', 'has been home', { dot: true }], ['accent', 'never yet', { dot: true }], ['gold', 'simulated fraction', {}], ['muted', 'Pólya limit', { dash: true }]]);
         v.readout(() => {
           const t = TT.value; let home = 0; for (let w = 0; w < M; w++) if (sim.first[w] > 0 && sim.first[w] <= t) home++;
-          return `$d=${d}$, $t=${t}$: ${home} of ${M} walkers have been home (**${v.fix(home / M, 3)}**); exact probability ${v.fix(Fex[Math.floor(t / 2)], 4)}. Limit: ${d <= 2 ? '1 (recurrent: $\\sum_n n^{-d/2}$ diverges)' : `${POLYA_P[d]} (transient: $\\sum_n n^{-3/2}$ converges)`}.`;
+          return `$d=${d}$, $t=${t}$: ${home} of ${M} walkers have been home (**${v.fix(home / M, 3)}**); computed finite-time probability ${v.fix(Fex[Math.floor(t / 2)], 6)}; estimated sampling s.e. ${v.fix(Math.sqrt(home / M * (1 - home / M) / M), 4)}. Limit: ${d <= 2 ? '1 (recurrent: $\\sum_n n^{-d/2}$ diverges)' : `${.34053733} (transient: $\\sum_n n^{-3/2}$ converges)`}.`;
         });
       },
     },

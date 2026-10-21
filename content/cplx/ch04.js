@@ -6,9 +6,10 @@
 // Honesty notes. Circuit values, sizes, depths, truth tables, the Lupanov-style block-sharing gate counts (built and
 // verified against the truth table), tableaux of real Turing-machine runs and the halting data for 3-state machines are all
 // computed on screen. The counting bound in 4.2 is the standard upper bound on the number of circuits, not an exact count.
+import {synthesisDNF, synthesisMux, sizeC as auditedSize} from './circuit-source-audit.shared.js';
 import {
   clamp, big, sup, newC, addIn, addG, evalC, levelsC, sizeC, depthC, layoutC, drawC, adderC, majC, xorC, factorC, GATE_NAME,
-  log2Circuits, shannonThreshold, lupanov, lupanovBest, muxSharing, randomTable, tableauTM, MACHINES, padBits,
+  log2Circuits, shannonThreshold, lupanov, lupanovBest, randomTable, tableauTM, MACHINES, padBits,
   smallTM, runSmallTM,
 } from './ch04.shared.js';
 
@@ -27,9 +28,11 @@ export default {
       kind: 'Definition',
       name: 'Boolean circuits and circuit size',
       statement: String.raw`A **Boolean circuit** with $n$ inputs is a directed acyclic graph whose sources are the input variables $x_1,\dots,x_n$ (or the constants $0,1$) and whose other nodes are **gates** labelled $\wedge$, $\vee$ or $\neg$ (fan-in $2,2,1$); some gates are designated outputs. Each gate computes the Boolean function of its inputs, so the circuit computes a function $f:\{0,1\}^n\to\{0,1\}^m$. Its **size** is the number of gates and its **depth** is the length of the longest path from an input to an output. A circuit handles one input length only: a language $L\subseteq\{0,1\}^*$ is decided by a *family* $(C_n)_{n\ge1}$, with $C_n$ deciding $L\cap\{0,1\}^n$, and the size of the family is the function $n\mapsto|C_n|$.`,
-      idea: String.raw`A circuit is a straight-line program with no loops and with sharing: a gate's value can feed many later gates, which is exactly what separates a circuit from a formula (a circuit whose gates all have fan-out one). Two resources are measured: size, roughly sequential time, and depth, roughly parallel time. Every function on $n$ bits has some circuit, because it can be written as a disjunction of minterms, so the question is never *whether* but *how large*; that is what the next results (4.2, 4.3) settle for the typical function.`,
+      idea: String.raw`A circuit is a straight-line program with no loops and with sharing: a gate's value can feed many later gates, which is exactly what separates a circuit from a formula (a circuit whose gates all have fan-out one). Two resources are measured: size, roughly sequential time, and depth, roughly parallel time. Every function on $n$ bits has some circuit, because it can be written as a disjunction of minterms, so the question is never *whether* but *how large*; that is what the next results (4.2, 4.3) settle for the typical function.
+
+Existence of a circuit for every truth table is the canonical DNF construction (logic-2.5): form one minterm for each true row and OR the minterms. Each minterm is true at exactly its own row, so the resulting circuit computes precisely the prescribed function. Constants handle an empty set of true rows; this construction proves existence without a small-size guarantee.`,
       caption: String.raw`**Click an input** (blue circle) to flip it, or **click a cell** of the grid on the right (rows and columns are the first and last inputs) to set the inputs directly. **Click a two-input gate** to cycle its type through AND, OR, XOR, NAND, NOR: the wiring stays, the function changes, and the grid redraws. Green wires carry 1. Try the ripple-carry adder with 1 to 4 bits and watch size grow like $5n-3$ and depth like $2n-1$.`,
-      deps: ["toc-1.9","graph-1.10.1a"],
+      deps: ['toc-1.9', 'logic-2.5'],
       refs: ['Arora–Barak ch. 6'],
       credit: 'Shannon, 1938 (switching circuits as Boolean expressions); circuit size as a complexity measure: Shannon, 1949',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Boolean_circuit' },
@@ -101,9 +104,11 @@ export default {
       kind: 'Theorem',
       name: 'Most functions need circuits of size about 2ⁿ/n (Shannon)',
       statement: String.raw`There are $2^{2^n}$ Boolean functions $\{0,1\}^n\to\{0,1\}$, but only $2^{O(s\log s)}$ circuits of size $s$ (for $s\ge n$). Hence for every $\varepsilon>0$ and large $n$, all but a vanishing fraction of the functions on $n$ bits need circuits of size at least $c\,2^n/n$ for a constant $c>0$: precisely, the number of functions computable with at most $s$ gates over $\{\wedge,\vee,\neg\}$ is below $\big(3(s+n)^2\big)^s$, and this is smaller than $2^{2^n}$ as soon as $s\le c\,2^n/n$ for a suitable constant $c>0$. In particular there are functions of $n$ inputs whose circuits need $\Omega(2^n/n)$ gates; the proof is non-constructive.`,
-      idea: String.raw`It is a pigeonhole argument (comb-1.2): a circuit of size $s$ is described by choosing, for each of its $s$ gates, a type and two earlier wires among at most $s+n$ — so at most $(3(s+n)^2)^s$ descriptions, i.e. $\approx 2s\log_2 s$ bits. A function on $n$ bits has $2^n$ bits of truth table, and the descriptions cannot be injective onto all of them while $2s\log_2 s<2^n$, which means $s\approx 2^n/(2n)$. Counting gives existence, not an example; no explicit function in NP is known to need even $5n$ gates.`,
+      idea: String.raw`It is a pigeonhole argument (comb-1.2): a circuit of size $s$ is described by choosing, for each of its $s$ gates, a type and two earlier wires among at most $s+n$ — so at most $(3(s+n)^2)^s$ descriptions, i.e. $\approx 2s\log_2 s$ bits. A function on $n$ bits has $2^n$ bits of truth table, and the descriptions cannot be injective onto all of them while $2s\log_2 s<2^n$, which means $s\approx 2^n/(2n)$. Counting gives existence, not an example; no explicit function in NP is known to need even $5n$ gates.
+
+The description bound uses the product rule (comb-1.1) before pigeonhole applies. At each gate there are at most three types and $(s+n)^2$ ordered input choices; multiply these bounds over $s$ gates. Topological validity only removes descriptions, and duplicate descriptions of the same function do not weaken an upper bound on how many functions can be represented.`,
       caption: String.raw`Left: the number of **bits** needed to name a circuit with $s$ gates (rising curve, $\log_2$ of the bound) against the $2^n$ bits of a truth table (flat line). Drag **$n$** and the **size multiplier** $c$ (circuit size $s=c\,2^n/n$): the circuit curve crosses the line near $c\approx0.7$ at $n=12$ (and drifts towards $\tfrac12$ as $n\to\infty$). Right: the crossing size $s^*$, measured in units of $2^n/n$, settles down as $n$ grows — the exponential scale is $2^n/n$ even though the constant is not exactly 1.`,
-      deps: ['cplx-4.1', 'comb-1.2'],
+      deps: ['cplx-4.1', 'comb-1.2', 'comb-1.1'],
       refs: ['Arora–Barak ch. 6'],
       credit: 'Claude E. Shannon, 1949 (“The synthesis of two-terminal switching circuits”; counting argument); stated for Boolean circuits in the form above in later textbooks',
       links: { doi: 'https://doi.org/10.1002/j.1538-7305.1949.tb03624.x' },
@@ -141,36 +146,40 @@ export default {
       num: '4.3',
       kind: 'Theorem',
       name: 'Every function has circuits of size O(2ⁿ/n) (Lupanov)',
-      statement: String.raw`Every Boolean function $f:\{0,1\}^n\to\{0,1\}$ can be computed by a circuit over $\{\wedge,\vee,\neg\}$ of size $(1+o(1))\,2^n/n$ (Lupanov, 1958); a simpler argument gives $O(2^n/n)$. Together with 4.2 this shows $2^n/n$ is the right order of magnitude for the *hardest* function on $n$ bits, whereas the naive DNF has size about $n\,2^n$. The construction below — cut the truth table into blocks, share one sub-function per block pattern — is the standard route to $O(2^n/n)$.`,
-      idea: String.raw`Arrange the truth table as a matrix with $2^k$ rows (the first $k$ variables $x$) and $2^{n-k}$ columns (the rest, $y$). Group rows into blocks of $s$. Inside a block, each column $y$ carries an $s$-bit pattern; for each pattern $p$ build once the function "$y$ has pattern $p$" (an OR of $y$-minterms; every column is used in exactly one pattern, so the total over a block is only $2^{n-k}$ gates). Row $r$ of the block is then an OR of the pattern functions with bit $r$ set, and $f=\bigvee_r [x=r]\wedge f_r$. Choosing $k\approx\log n$ and $s\approx n-2\log n$ balances the three costs and gives $\approx 2^n/s$ gates.`,
-      caption: String.raw`The matrix is the truth table of a random function (black = 1) with the **blocks** cut by lines. Choose $n$, press **Resample**, and let the construction pick its best $(k,s)$ — or switch to manual and move $k$ and $s$. The build is real: gates are hash-consed, the resulting circuit is checked against the table (✓) and its gates are counted. Right: sizes for $n=3,\dots,11$ of the naive DNF, a multiplexer tree that shares equal sub-functions, the block construction, and the reference curve $2^n/n$ (log scale). The ratio to $2^n/n$ falls only slowly: asymptotics, not a small-$n$ miracle.`,
+      statement: String.raw`Every Boolean function $f:\{0,1\}^n\to\{0,1\}$ can be computed by a circuit over $\{\wedge,\vee,\neg\}$ of size $(1+o(1))\,2^n/n$ (Lupanov, 1958); the block argument below proves $O(2^n/n)$. Together with 4.2 this shows $2^n/n$ is the right order of magnitude for the *hardest* function on $n$ bits, whereas a worst-case naive DNF uses $O(n\,2^n)$ gates. The construction below — cut the truth table into blocks, share one sub-function per block pattern — is the standard route to $O(2^n/n)$.`,
+      idea: String.raw`Arrange the truth table as a matrix with $2^k$ rows (the first $k$ variables $x$) and $2^{n-k}$ columns (the rest, $y$). Group rows into blocks of $s$. Inside a block, each column $y$ carries an $s$-bit pattern; for each pattern $p$ build once the function "$y$ has pattern $p$" (an OR of $y$-minterms; every column is used in exactly one pattern, so the total over a block is only $2^{n-k}$ gates). Row $r$ of the block is then an OR of the pattern functions with bit $r$ set, and $f=\bigvee_r [x=r]\wedge f_r$. All $m$-variable minterms can be shared in $O(2^m)$ gates. The three costs are $O(2^{n-k}+2^k)$ for decoders, $O((2^k/s)2^{n-k})$ for column groups, and $O(2^k2^s)$ for row combinations. For example $k=\lceil2\log_2 n\rceil$ and $s=\lfloor n-3\log_2 n\rfloor$ give $O(2^n/n)$ for sufficiently large $n$. This proves the stated order; obtaining leading constant 1 takes the sharper original construction.`,
+      caption: String.raw`The matrix is the truth table of a random function (black = 1) with the **blocks** cut by lines. Choose $n$, press **Resample**, and let the construction pick its best $(k,s)$ — or switch to manual and move $k$ and $s$. The build is real: gates are hash-consed, the resulting circuit is checked against the table (✓) and its gates are counted. Right: sizes for $n=3,\dots,11$ of the naive DNF, a multiplexer tree that shares equal sub-functions, the block construction, and the reference curve $2^n/n$ (log scale). These are constructed gate counts, including shared input NOT gates; constants and input wires are free. The sampled finite ratios need not decrease with $n$, and the automatic choice searches a finite parameter grid.`,
       deps: ['cplx-4.1', 'cplx-4.2'],
-      refs: ['Arora–Barak ch. 6'],
-      credit: 'O. B. Lupanov, 1958 (“On a method of circuit synthesis”, Izv. VUZ Radiofizika 1(1)); the O(2^n/n) bound is also due to Shannon–Muller',
-      verify: true,
+      refs: ['Lupanov (1958), Theorem 4, pp. 129–135; block decomposition §1'],
+      credit: 'O. B. Lupanov, 1958, “On a method of circuit synthesis”, Izv. VUZ Radiofizika 1(1), pp. 120–140',
+      links: { source: 'https://web.vu.lt/mif/s.jukna/boolean/Russians/lupanov1958.djvu' },
       tags: ['upper bounds', 'circuit synthesis'],
       viz(v) {
         let seed = 7; const sweep = new Map();
-        const nS = v.slider('inputs $n$', 4, 11, 9, { int: true, onChange: () => { seed = seed; } });
+        const nS = v.slider('inputs $n$', 4, 11, 9, { int: true });
         const auto = v.toggle('automatic $(k,s)$', true);
         const kS = v.slider('row variables $k$', 1, 10, 3, { int: true });
         const sS = v.slider('block height $s$', 1, 12, 4, { int: true });
         v.button('Resample function', () => { seed = Math.floor(Math.random() * 1e6); sweep.clear(); });
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1, minWidth: 260, title: 'truth table (rows: x, columns: y) cut into blocks' });
         const P = v.stage({ x: [2.5, 11.5], y: [1, 1e5], ylog: true, axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 280, xlabel: 'n', ylabel: 'gates', title: 'gate counts for a random function' });
-        v.legend([['red', 'naive DNF (≈ n·#ones)'], ['orange', 'mux tree with shared sub-functions'], ['accent', 'block construction (best k, s)'], ['ink', '2ⁿ / n', { dash: true }]]);
+        v.legend([['red', 'DNF (shared input NOT gates)'], ['orange', 'mux tree with shared sub-functions'], ['accent', 'block construction (best k, s)'], ['ink', '2ⁿ / n', { dash: true }]]);
         const tab = (n) => randomTable(seed * 31 + n, n);
         const row = (n) => {
           const key = `${seed}:${n}`; if (sweep.has(key)) return sweep.get(key);
-          const f = tab(n), ones = f.reduce((a, b) => a + b, 0), best = lupanovBest(f, n);
-          const r = { dnf: Math.max(1, ones * n + ones), mux: muxSharing(f, n), best }; sweep.set(key, r); return r;
+          const f = tab(n), best = lupanovBest(f, n);
+          const r = { dnf: auditedSize(synthesisDNF(f, n)), mux: auditedSize(synthesisMux(f, n)), best }; sweep.set(key, r); return r;
         };
         let cur = null;
         v.render(() => {
           const n = nS.value, f = tab(n), best = row(n).best;
-          if (auto.value) { kS.set(clamp(best.k, 1, n - 1)); sS.set(best.s); }
+          kS.input.max = String(n - 1);
+          if (auto.value) { kS.value = clamp(best.k, 1, n - 1); sS.value = best.s; }
+          else kS.value = clamp(kS.value, 1, n - 1);
           kS.el.hidden = auto.value; sS.el.hidden = auto.value;
-          const k = clamp(kS.value, 1, n - 1), sz = sS.value, res = lupanov(f, n, k, sz);
+          const k = clamp(kS.value, 1, n - 1);
+          sS.input.max = String(Math.min(12, 2 ** k)); sS.value = clamp(sS.value, 1, Math.min(12, 2 ** k));
+          const sz = sS.value, res = lupanov(f, n, k, sz);
           cur = res;
           const R = 1 << k, Cn = 1 << (n - k);
           T.setView([0, Cn], [0, R]); const ink = v.rgb('ink');
@@ -178,14 +187,14 @@ export default {
           for (let r0 = 0; r0 <= R; r0 += sz) T.hline(R - r0, { color: 'orange', width: 1.4 });
           T.rect(0, 0, Cn, R, { color: 'muted', width: 1.2, stroke: true });
           const ns = [], d = [], m = [], b = [], ref = [];
-          for (let q = 3; q <= 11; q++) { const rr = row(q); ns.push(q); d.push([q, rr.dnf]); m.push([q, rr.mux]); b.push([q, rr.best.size]); ref.push([q, 2 ** q / q]); }
+          for (let q = 3; q <= 11; q++) { const rr = row(q); ns.push(q); d.push([q, Math.max(1, rr.dnf)]); m.push([q, Math.max(1, rr.mux)]); b.push([q, Math.max(1, rr.best.size)]); ref.push([q, 2 ** q / q]); }
           P.path(d, { color: 'red', width: 2 }); P.path(m, { color: 'orange', width: 2 }); P.path(b, { color: 'accent', width: 2.4 }); P.path(ref, { color: 'ink', width: 1.5, dash: true });
           P.dots(b, { r: 3.5, color: 'accent' });
-          P.dot(n, res.size, { r: 6, color: 'gold' });
+          P.dot(n, Math.max(1, res.size), { r: 6, color: 'gold' });
         });
         v.readout(() => {
           const n = nS.value, rr = row(n), ref = 2 ** n / n;
-          return `$n=${n}$, $(k,s)=(${clamp(kS.value, 1, n - 1)},${sS.value})$: block construction **${cur.size}** gates ${cur.ok ? '✓ verified' : '✗ MISMATCH'}, best found ${rr.best.size}; mux tree ${rr.mux}; naive DNF ${rr.dnf}.\n$2^n/n=${v.fix(ref, 1)}$, so the block circuit is ${v.fix(cur.size / ref, 2)} times that; the ratio improves only as $n\\to\\infty$.`;
+          return `$n=${n}$, $(k,s)=(${clamp(kS.value, 1, n - 1)},${sS.value})$: block construction **${cur.size}** gates ${cur.ok ? '✓ verified' : '✗ MISMATCH'}, best found ${rr.best.size}; mux tree ${rr.mux}; naive DNF ${rr.dnf}.\n$2^n/n=${v.fix(ref, 1)}$, so the block circuit is ${v.fix(cur.size / ref, 2)} times that; finite sampled ratios need not be monotone. Zero-gate constants are plotted at 1 on this logarithmic axis.`;
         });
       },
     },
@@ -313,12 +322,15 @@ export default {
       num: '4.6',
       kind: 'Theorem',
       name: 'P/poly contains undecidable languages',
-      statement: String.raw`Let $\mathrm{HALT}_1=\{1^n : \text{the } n\text{-th Turing machine halts on the empty input}\}$ be the unary halting language. It is undecidable, yet $\mathrm{HALT}_1\in\mathrm{P/poly}$: the advice for length $n$ is the single bit $a_n=1$ iff $1^n\in\mathrm{HALT}_1$, and the machine first checks that its input is $1^n$, then outputs that advice bit. More generally every unary language lies in P/poly (the advice is again one bit per length), so P/poly is uncountable and contains languages outside every class of decidable languages.`,
-      idea: String.raw`A circuit family is just a sequence of finite objects with no requirement that the sequence be generated by an algorithm. For the unary halting language on the unary input domain each $C_n$ is constant 0 or 1; as a binary-input circuit it also checks that every input bit is 1, using $O(n)$ gates — it exists for every $n$, but *which* one is exactly the halting problem (toc-9.7). So non-uniform classes can contain undecidable sets, and one has to add a uniformity condition (for example log-space computable circuit families) to recover P.`,
-      caption: String.raw`Each square is one of the first 256 machines of a fixed list of 3-state, 2-symbol Turing machines on the empty tape (the list is scrambled from the index, so it contains all kinds of behaviour). Move **step bound $B$**: green squares are seen to halt within $B$ steps; pink ones have not halted by then (for these tiny machines almost all of them never will, so waiting stops revealing anything after a few dozen steps — but for the unrestricted enumeration no step bound $B(n)$ computable from $n$ works for all machines, that is the halting problem). The bottom row shows the advice bits $a_n$ for the first 64 lengths as “1 iff halts within 20 000 steps” — a stand-in for the true bit; for the full enumeration of all machines no algorithm can produce this sequence, although each single bit is a legal advice string.`,
-      deps: ["cplx-4.4","toc-9.7","logic-1.2"],
-      refs: ['Arora–Barak, January 2007 web draft, §6.1, Example 6.4, p. 103'], sourceUrl: 'https://theory.cs.princeton.edu/complexity/book.pdf',
-      credit: 'Mathematical presentation: Arora–Barak, Computational Complexity, author web draft dated January 8, 2007; optional historical priority annotations omitted',
+      statement: String.raw`Let $\mathrm{HALT}_1$ be the unary language consisting of $1^n$ exactly when the $n$-th Turing machine halts on the empty input. It is undecidable, yet $\mathrm{HALT}_1\in\mathrm{P/poly}$: the advice for length $n$ is the single bit $a_n=1$ iff $1^n\in\mathrm{HALT}_1$, and the machine first rejects strings containing 0, then outputs $a_n$ on $1^n$. More generally every unary language lies in P/poly (the advice is again one bit per length), so P/poly is uncountable and contains languages outside every class of decidable languages.`,
+      idea: String.raw`A circuit family is just a sequence of finite objects with no requirement that the sequence be generated by an algorithm. For the unary halting language each $C_n(x)$ is $a_n\wedge\bigwedge_{i=1}^n x_i$: constant 0 when $a_n=0$, the all-ones test when $a_n=1$ — it exists for every $n$, but *which* one is exactly the halting problem (toc-9.7). So non-uniform classes can contain undecidable sets, and one has to add a uniformity condition (for example log-space computable circuit families) to recover P.
+
+The uncountability assertion uses Cantor’s diagonal theorem (logic-1.2). Subsets $S\subseteq\N$ correspond to unary languages $\{1^n:n\in S\}$, all in P/poly, whereas machines have only countably many finite descriptions. More explicitly, any proposed list of unary languages misses the language that reverses the $n$th listed language on $1^n$; advice is allowed to encode this uncomputable sequence.`,
+      caption: String.raw`Each square is one of the first 256 machines of a fixed list of 3-state, 2-symbol Turing machines on the empty tape (the list is scrambled from the index, so the visualization makes no distributional claim about larger machines). Move **step bound $B$**: green squares are seen to halt within $B$ steps; pink ones have not halted by then (pink means unknown at the displayed bound, with no claim of nonhalting; the sample is a finite set of 3-state machines, not the unrestricted enumeration in the theorem). The readout shows 64 bounded-simulation bits “1 iff the sampled machine halts within 20 000 steps”, with sample index 0 mapped to display position 1 — these are not the uncomputable advice bits; for the full enumeration of all machines no algorithm can produce the true halting-advice sequence, although each single bit is a legal advice string.`,
+      deps: ['cplx-4.4', 'toc-9.7', 'logic-1.2'],
+      refs: ['Arora–Barak (2007 draft), Example 6.17 and Theorem 6.15; Karp–Lipton (1982), §2 fact (3)'],
+      credit: 'Unary-advice construction: Arora–Barak Example 6.17; nonrecursive advice languages: Karp–Lipton, 1982, §2 fact (3)',
+      links: { source: 'https://doi.org/10.5169/seals-52237' },
       tags: ['advice', 'halting problem', 'non-uniformity'],
       viz(v) {
         const NM = 256, CAP = 20000;
@@ -345,7 +357,7 @@ export default {
           const b = B.value, haltedNow = info.filter((q) => q.halted && q.steps <= b).length, tot = info.filter((q) => q.halted).length;
           const adv = info.slice(0, 64).map((q) => (q.halted ? 1 : 0)).join('');
           const q = info[sel], last = Math.max(...info.filter((z) => z.halted).map((z) => z.steps));
-          return `Within $B=${big(b)}$ steps, ${haltedNow} of 256 machines are seen to halt; ${tot} halt within ${CAP.toLocaleString('en-US')} (the slowest takes ${last} steps; for larger machines such maxima grow faster than any computable function). Machine ${sel}: ${q.halted ? `halts after ${q.steps} steps` : `no halt in ${CAP.toLocaleString('en-US')} steps`}.\nAdvice $a_1\\dots a_{64}$ = ${adv}`;
+          return `Within $B=${big(b)}$ steps, ${haltedNow} of 256 machines are seen to halt; ${tot} halt within ${CAP.toLocaleString('en-US')} (the slowest takes ${last} steps; the unrestricted halting times have no computable bound by machine index). Machine ${sel}: ${q.halted ? `halts after ${q.steps} steps` : `no halt in ${CAP.toLocaleString('en-US')} steps`}.\nBounded sample bits $b_1\\dots b_{64}$ (not true halting advice) = ${adv}`;
         });
       },
     },

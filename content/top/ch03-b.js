@@ -6,19 +6,6 @@ const TAU = 2 * Math.PI;
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const CYC = ['blue', 'orange', 'green', 'pink', 'purple', 'teal', 'gold', 'red'];
 
-// Distance to the complement of each open region in item 3.12.
-export function polygonRegionClearance(region, x, y) {
-  const radius = Math.hypot(x, y);
-  if (region === 'ring') return Math.max(0, Math.min(radius - 1, 2 - radius));
-  if (region === 'two') return Math.max(0, 1 - Math.min(Math.hypot(x + 1.3, y), Math.hypot(x - 1.3, y)));
-  if (region === 'C') {
-    // The removed closed half-strip is [0,infinity) x [-.55,.55].
-    const cutDistance = Math.hypot(Math.min(x, 0), Math.max(Math.abs(y) - .55, 0));
-    return Math.max(0, Math.min(radius - 1.3, 2 - radius, cutDistance));
-  }
-  throw new RangeError('Unknown polygon-path region');
-}
-
 export default {
   collection: 'top',
   chapter: 3,
@@ -246,8 +233,7 @@ export default {
       name: 'Open connected subsets of ℝⁿ are path-connected',
       statement: String.raw`If $U\subset\R^n$ is open and connected, then $U$ is path-connected — indeed any two points of $U$ are joined by a polygonal path (finitely many segments) lying in $U$. More generally a connected, locally path-connected space is path-connected, and the path components of a locally path-connected space are open and closed.`,
       idea: String.raw`Fix $x_0\in U$ and let $A$ be the set of points reachable from $x_0$ by polygonal paths in $U$. $A$ is open: if $a\in A$, a small ball $B(a,r)\subset U$ is convex, so every point of it is reached by adding one segment. The complement $U\setminus A$ is open for the same reason: if $b\notin A$, then no point of a ball $B(b,r)\subset U$ is in $A$ (else $b$ would be reachable from it). So $A$ is clopen and nonempty, hence $A=U$ by connectedness (3.1).`,
-      caption: String.raw`Choose an open region and drag the base point $x_0$. The green flood approximates points reachable within the chosen path-length budget on a grid. A set with a fixed budget need not be open: its front can lie on the budget boundary. The gold disc lies inside $U$, and extending a path to another point of that disc may require a larger budget. The proof uses $A$, the union over all finite budgets. At a large budget the grid component fills; in two blobs the other component remains separate.`,
-      scope: String.raw`The proof concerns arbitrary finite polygonal paths in an open subset of $\R^n$. The picture uses eight-neighbour grid distances and finite cell counts; these approximate path lengths and components, not an exact continuous shortest-path solver or a certificate of the theorem. The gold radius is 80% of the analytic distance to the complement of the chosen region.`,
+      caption: String.raw`Choose an open region and drag the base point $x_0$. Slide the allowed path length: the green set of points reachable from $x_0$ by a polygonal path of at most that length grows by flood fill. The small gold disc is a ball around the front point that lies entirely inside the reachable set — openness of $A$. At full length the green region is the whole component of the region; for two blobs it stops at the gap, because the region was not connected.`,
       deps: ['top-3.11', 'top-3.8'],
       refs: ['Munkres §25'],
       tags: ['connectedness', 'paths'],
@@ -255,7 +241,7 @@ export default {
         const reg = v.select('open region $U$', [{ value: 'C', label: 'C-shaped corridor' }, { value: 'ring', label: 'annulus' }, { value: 'two', label: 'two blobs' }], 'C');
         const len = v.slider('path length $\\le$', 0, 14, 4, { step: 0.05 });
         const IN = {
-          C: (x, y) => { const r = Math.hypot(x, y); return r > 1.3 && r < 2.0 && !(x >= 0 && Math.abs(y) <= 0.55) ? true : false; },
+          C: (x, y) => { const r = Math.hypot(x, y); return r > 1.3 && r < 2.0 && !(x > 0 && Math.abs(y) < 0.55 + 0.0) ? true : false; },
           ring: (x, y) => { const r = Math.hypot(x, y); return r > 1.0 && r < 2.0; },
           two: (x, y) => Math.hypot(x + 1.3, y) < 1.0 || Math.hypot(x - 1.3, y) < 1.0,
         };
@@ -294,8 +280,8 @@ export default {
           for (let t = 0; t < dist.length; t++) { if (g.a[t] && LB[reg.value].lab[t] === lab) { tot++; if (dist[t] <= L) { reached++; if (dist[t] > fd) { fd = dist[t]; front = t; } } } }
           if (front !== null && L > 0.3) {
             const fi = front % g.N, fj = (front - fi) / g.N, fx = g.cx(fi), fy = g.cy(fj);
-            // This ball is in U; it can cross the current length-budget front.
-            const r = 0.8 * polygonRegionClearance(reg.value, fx, fy);
+            // radius of the largest ball around the point inside the region and inside the reachable set (use a point slightly behind the front)
+            let r = 0; for (let k = 1; k < 80; k++) { const rr = k * 0.025; let ok = true; for (let a = 0; a < 48 && ok; a++) { const px = fx + rr * Math.cos((TAU * a) / 48), py = fy + rr * Math.sin((TAU * a) / 48); if (!f(px, py)) ok = false; } if (!ok) break; r = rr; }
             if (r > 0.04) S.circle(fx, fy, r, { color: 'gold', width: 2, fill: 'gold', fillAlpha: 0.2 });
             S.dot(fx, fy, { r: 4, color: 'gold' });
           }
@@ -304,7 +290,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           if (info.none) return 'Move $x_0$ inside the region.';
-          return `Grid path-length budget $\\le${v.fix(len.value, 1)}$: **${(100 * info.frac).toFixed(0)}%** of the component of $x_0$ ($U$ has ${info.comps} component${info.comps > 1 ? 's' : ''}). ${info.full ? `All cells in this grid component are reached. The theorem separately proves that the unrestricted polygonal-path component is open and closed in $U$. ${info.comps > 1 ? 'The other blob is untouched — a different component, never reachable.' : ''}` : 'A local ball in $U$ lets a path extend, possibly using more length. This finite-budget front need not be open. The proof removes the budget restriction.'}`;
+          return `Reached by polygonal paths of length $\\le${v.fix(len.value, 1)}$: **${(100 * info.frac).toFixed(0)}%** of the component of $x_0$ ($U$ has ${info.comps} component${info.comps > 1 ? 's' : ''}). ${info.full ? `The reached set is the whole component: open (the gold balls) and closed in it, hence everything. ${info.comps > 1 ? 'The other blob is untouched — a different component, never reachable.' : ''}` : 'Every ball around a reached point lies in the reached set (that is why the front keeps moving) — the process can only stop when the reached set is everything.'}`;
         });
       },
     },

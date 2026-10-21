@@ -8,13 +8,6 @@ export const l1 = (a, b) => a.reduce((s, x, i) => s + Math.abs(x - b[i]), 0);
 export const tv = (a, b) => 0.5 * l1(a, b);
 export const unit = (n, i) => Array.from({ length: n }, (_, j) => (j === i ? 1 : 0));
 
-/** Non-lazy Ehrenfest urn: exact mean, and time for its initial all-in-A mean
- * offset to reach one stationary standard deviation sqrt(N)/2.
- * These describe the mean; the period-two distribution does not converge.
- */
-export const ehrenfestMean = (N, k0, t) => N / 2 + (k0 - N / 2) * (1 - 2 / N) ** t;
-export const ehrenfestMeanBandTime = N => Math.log(Math.sqrt(N)) / -Math.log1p(-2 / N);
-
 /** Mean return time E_x T_x^+ (exact, first-step analysis). */
 export function meanReturn(P, x) {
   const tgt = P.map((_, i) => i === x), h = hitProb(P, tgt), k = meanHit(P, tgt, h);
@@ -74,7 +67,7 @@ export function arborescences(P, r) {
   (function rec(k) {
     if (k === nonroot.length) { if (acyclic()) out.push(par.slice()); return; }
     const i = nonroot[k];
-    for (let j = 0; j < n; j++) if (j !== i && P[i][j] > 1e-12) { par[i] = j; rec(k + 1); }
+    for (let j = 0; j < n; j++) if (j !== i && P[i][j] > 0) { par[i] = j; rec(k + 1); }
     par[i] = -1;
   })(0);
   return out;

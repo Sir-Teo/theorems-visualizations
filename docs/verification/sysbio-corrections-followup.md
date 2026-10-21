@@ -1,0 +1,11 @@
+# SYSBIO bounded model/text corrections
+
+Prerequisite-only boundary: `3b75bdb0f319f6c0e224ef05aeb3b4038625fbea`. This successor changes eight declared fields in 2.1, 2.2 and 2.4. The explicit manifest and guard preserve every other SYSBIO source byte, all helpers, actual trajectories/private timeTo integration, source flags, dependencies and complete raw syllabus lists.
+
+2.2 must retain removal when taking the strong-repression limit at fixed n. With q=p/(sK), A=s^n, its normalized half-time is the integral of (1+Aq^n)/[(1−q)+A(1−q^(n+1))] from zero to one half. The integrand decreases in A (derivative numerator q^n−1) and tends to q^n/(1−q^(n+1)). Thus the limiting time is −log(1−2^(−n−1))/(n+1), and the speed limit is log(2) divided by that quantity. At n=1 this is 4.8188416793. The prior 5.5 claim dropped removal without an asymptotic error bound. Only the two local-viz saturation expressions and matching readout label change; the actual finite-repression time and trajectory computations are byte-identical.
+
+2.1 now says that at fixed finite positive n, the strong-promoter steady state lies above K and grows sublinearly, instead of remaining just above K. Its formula and model stay unchanged. 2.4 no longer claims every rising positive-feedback response is sigmoidal: acceleration is F′F, and a weak-feedback witness β₀=.1, β=.2, n=K=α=1 has F′<0 throughout the rise while still reaching half the matched steady state more slowly than simple regulation.
+
+`node tests/verification-sysbio-corrections.mjs` passes the explicit 19-file/eight-field guard, including the exact sole viz exception. `node tests/verification-sysbio-corrections-math.mjs` passes 2,466 independent assertions: full-rate quadrature against actual private integration at seven n and seven repression strengths, including large-repression witnesses; invocation of the actual viz for all four exposed n and three strengths; limiting laws, concavity and sublinear-growth witnesses. Tiny differences below floating-point resolution use numerical tolerances rather than claiming strict machine inequalities.
+
+Strict build passes. The full fresh 320px both-theme actual-field audit is in progress; its observed overflows will be handled by a separate equivalent-layout successor. This source/math boundary is not independent acceptance or source closure.

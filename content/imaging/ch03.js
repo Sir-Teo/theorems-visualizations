@@ -7,6 +7,8 @@ import {
   clamp, fx, mean, sd, showImage, frame, raster, ellAt, ellProj, ellFT, slEllipses, makeScan, sinoEll, fbp, fourierSpokes, fourierRecon, rmse, rms,
 } from './ch03.shared.js';
 
+import { sliceComparisonAudit, fourierReconAudit } from './source-audit-radon.shared.js';
+
 const PI = Math.PI;
 const grey = (t) => { const c = Math.round(255 * clamp(t, 0, 1)); return [c, c, c]; };
 
@@ -222,13 +224,14 @@ the integral of $f$ over the line at angle $\theta$ (normal direction $(\cos\the
       statement: String.raw`Let $f$ be an integrable function on the plane with 2-D Fourier transform $F(k_x,k_y)=\iint f\,e^{-2\pi i(k_xx+k_yy)}\,dx\,dy$, and let $P_\theta(\omega)=\int p_\theta(s)\,e^{-2\pi i\omega s}\,ds$ be the 1-D Fourier transform of its projection at angle $\theta$. Then
 $$P_\theta(\omega)\;=\;F(\omega\cos\theta,\;\omega\sin\theta)\qquad(\omega\in\R).$$
 The transform of a projection is the **slice** of the 2-D transform along the line through the origin at the same angle $\theta$.`,
-      idea: String.raw`Rotate coordinates so the projection direction is the new $y$-axis, with $s$ along the new $x$: the projection integrates out $t$, $p_\theta(s)=\int f\,dt$. Its 1-D transform is $\int\!\int f\,e^{-2\pi i\omega s}\,dt\,ds$. But $e^{-2\pi i\omega s}$ is the 2-D Fourier kernel $e^{-2\pi i\mathbf k\cdot\mathbf r}$ evaluated at $\mathbf k=\omega(\cos\theta,\sin\theta)$, because $s=\mathbf r\cdot\hat n$ and it does not depend on $t$. The two integrals are the same integral (Fubini, rca-9.1); rotation of the plane rotates $F$ the same way.`,
-      caption: String.raw`The left panel shows the object and the family of rays at angle $\theta$ (drag the **angle**). The middle panel is the magnitude of the exact 2-D Fourier transform; the gold line is the slice at the same angle. The right panel compares, as a function of $\omega$, the 1-D Fourier transform of the *measured, sampled* projection (computed by a discrete sum, solid) with the 2-D transform read off along the slice (dots). Reduce the number of **detector samples** or enlarge the object to see where the sampled projection stops agreeing.`,
-      deps: ['imaging-3.2', 'rca-9.1'],
+      idea: String.raw`Rotate coordinates so the projection direction is the new $y$-axis, with $s$ along the new $x$: the projection integrates out $t$, $p_\theta(s)=\int f\,dt$. Its 1-D transform is $\int\!\int f\,e^{-2\pi i\omega s}\,dt\,ds$. But $e^{-2\pi i\omega s}$ is the 2-D Fourier kernel $e^{-2\pi i\mathbf k\cdot\mathbf r}$ evaluated at $\mathbf k=\omega(\cos\theta,\sin\theta)$, because $s=\mathbf r\cdot\hat n$ and it does not depend on $t$. The two integrals are the same integral (Fubini, rca-8.8); rotation of the plane rotates $F$ the same way.`,
+      caption: String.raw`Change the angle and choose the head-like phantom or an off-centre ellipse. The middle panel shows the closed-form ellipse Fourier magnitude; gold marks the slice at that angle. At right, solid real/imaginary curves are direct sums of a finite set of ideal projection samples, while dots evaluate the continuous ellipse transform. Change detector count to see discretization error. The detector Nyquist frequency marks the baseband limit; these edge-containing projections are not bandlimited, so sampling error can occur inside that band too.`,
+      deps: ['imaging-3.2', 'rca-9.1', 'rca-8.8'],
       tags: ['Fourier slice', 'projection'],
-      refs: ['Bracewell–Riddle (1967), Astrophys. J. 150: 427–434, §II pp. 429–431 (full slice-theorem proof)', 'Kak–Slaney §3.2 pp. 56–59, Eqs. (7)–(23)'],
-      credit: 'R. N. Bracewell, 1956 (radio astronomy); in tomography Bracewell & Riddle 1967, and Kak & Slaney’s text',
-      scope: String.raw`Exact for integrable functions with compact support and continuous (not sampled) projections. A sampled projection approximates the slice when detector coverage and sampling are adequate. Frequencies above the Nyquist limit $1/(2\tau)$ alias into the represented band unless suppressed before sampling. The 2-D transform here is the closed form for ellipses (Bessel $J_1$).`,
+      refs: ['Kak & Slaney §3.2, pp.56–59, Eqs.7–18'],
+      credit: 'Author presentation: Kak & Slaney, 1988, §3.2',
+      verify: false,
+      scope: String.raw`For f∈L¹(R²), the line integral defining a fixed-angle projection exists for almost every offset and is integrable; rotation and Fubini prove the continuous identity. Finite point samples are a numerical approximation, not measured patient data. Compact support and finite bandwidth cannot both hold exactly for a nonzero function. The ellipse transform uses Bessel J₁. The display compares frequencies0–14 cycles per unit; when detector Nyquist lies outside that window it is reported explicitly. Neither equality of sampled DC to exact mass nor exact agreement below Nyquist is assumed.`,
       viz(v) {
         const PH = slEllipses(0.9), OD = [[1, 0.35, 0.22, 0.25, -0.2, 30]];
         const obj = v.select('object', [{ value: 'ph', label: 'head phantom' }, { value: 'od', label: 'one off-centre ellipse' }], 'ph');
@@ -258,28 +261,12 @@ The transform of a projection is the **slice** of the 2-D transform along the li
             const cc = Math.round(255 * clamp(m, 0, 1)); return [cc, cc, cc];
           }, { res: 3, id: 'ft', key: obj.value });
           F.segment([-14 * c, -14 * sn], [14 * c, 14 * sn], { color: 'gold', width: 2.4 });
-          // sampled projection
-          const nd = nds.value, half = 1.5, tau = (2 * half) / nd;
-          const s = Array.from({ length: nd }, (_, j) => -half + (j + 0.5) * tau), p = s.map((x) => ellProj(E, th, x));
-          const om = Array.from({ length: 141 }, (_, i) => i * 0.1), re1 = [], im1 = [], re2 = [], im2 = [];
-          let maxd = 0, nrm = Math.abs(O.f0);
-          for (const w of om) {
-            let a = 0, b = 0;
-            for (let j = 0; j < nd; j++) { const ph = -2 * PI * w * s[j]; a += p[j] * Math.cos(ph) * tau; b += p[j] * Math.sin(ph) * tau; }
-            const [fr, fi] = ellFT(E, w * c, w * sn);
-            re1.push(a / nrm); im1.push(b / nrm); re2.push(fr / nrm); im2.push(fi / nrm);
-            if (w < 1 / (2 * tau)) maxd = Math.max(maxd, Math.hypot(a - fr, b - fi) / nrm);
-          }
-          G.path(om.map((w, i) => [w, re1[i]]), { color: 'accent', width: 2.4 });
-          G.path(om.map((w, i) => [w, im1[i]]), { color: 'orange', width: 2.4 });
-          G.dots(om.filter((_, i) => i % 3 === 0).map((w, i) => [w, re2[i * 3]]), { r: 3, color: 'ink' });
-          G.dots(om.filter((_, i) => i % 3 === 0).map((w, i) => [w, im2[i * 3]]), { r: 3, color: 'ink' });
-          G.vline(1 / (2 * tau), { color: 'red', dash: true, width: 1.2 });
-          G.text('Nyquist $1/2\\tau$', Math.min(13.8, 1 / (2 * tau)), 0.92, { size: 12, color: 'red', align: 'right', dx: -4 });
-          st = { maxd, nyq: 1 / (2 * tau), nd };
+          const D=sliceComparisonAudit(E,th,nds.value),all=D.rows.flatMap(r=>[...r.sampled,...r.exact]),lo=Math.min(-.5,...all),hi=Math.max(1,...all),pad=.08*(hi-lo);G.setView([0,14],[lo-pad,hi+pad]);
+          G.path(D.rows.map(r=>[r.w,r.sampled[0]]),{color:'accent',width:2.4});G.path(D.rows.map(r=>[r.w,r.sampled[1]]),{color:'orange',width:2.4});for(const j of[0,1])G.dots(D.rows.filter((_,i)=>i%3===0).map(r=>[r.w,r.exact[j]]),{r:3,color:'ink'});
+          if(D.nyquist<=14)G.vline(D.nyquist,{color:'red',dash:true,width:1.2});G.text(D.nyquist<=14?'Nyquist':'Nyquist outside window',Math.min(13.8,D.nyquist),hi,{size:10.5,color:'red',align:'right',dx:-4});st=D;
         });
         v.legend([['accent', 'Re $P_\\theta(\\omega)$ (sampled projection)'], ['orange', 'Im $P_\\theta(\\omega)$'], ['ink', '$F$ on the slice (dots)', { dot: true }], ['gold', 'slice']]);
-        v.readout(() => st ? `$P_\\theta(\\omega)$ is a discrete sum over ${st.nd} detector samples; $F(\\omega\\cos\\theta,\\omega\\sin\\theta)$ is the exact closed form. Largest difference below the Nyquist frequency ${fx(st.nyq, 1)}: $${fx(100 * st.maxd, 2)}\\%$ of $F(0)$.\nAt $\\omega=0$ both equal the total mass $\\iint f$ — the same for every angle.` : '');
+        v.readout(()=>st?`Direct sum: ${nds.value} ideal point samples, spacing ${fx(st.tau,6)}. Nyquist ${fx(st.nyquist,4)} cycles/unit; displayed comparison through min(14,Nyquist)=${fx(st.comparedThrough,4)}.`+'\n'+`Maximum complex discrepancy in that displayed band: ${fx(100*st.maxDifference,4)}% of exact F(0). Exact total mass=${fx(st.mass,6)}; sampled DC=${fx(st.sampledMass,6)}, difference=${fx(st.sampledMass-st.mass,6)}. Sampling can already introduce error at DC; the continuous theorem remains exact.`:'');
       },
     },
 
@@ -288,21 +275,21 @@ The transform of a projection is the **slice** of the 2-D transform along the li
       num: '3.5',
       kind: 'Theorem',
       name: 'Uniqueness of Radon inversion',
-      statement: String.raw`If $f$ is an integrable function of compact support on the plane, then $f$ is determined (almost everywhere) by its Radon transform $\mathcal Rf(\theta,s)$ for $\theta\in[0,\pi)$: if $\mathcal Rf=\mathcal Rg$ then $f=g$ a.e. The Fourier slice theorem (3.4) gives $F$ on every line through the origin. For sufficiently regular $f$ (for example, smooth with compact support), Fourier inversion gives the ordinary integral formula:
-$$f(x,y)=\int_0^{\pi}\!\!\int_{-\infty}^{\infty}P_\theta(\omega)\,e^{2\pi i\omega(x\cos\theta+y\sin\theta)}\,|\omega|\,d\omega\,d\theta .$$
-The Jacobian $|\omega|$ is that of polar coordinates in the $(k_x,k_y)$ plane. A missing angular wedge prevents direct Fourier inversion. With compact support, exact continuous data over any open angular interval still determine $f$ by analytic continuation; recovering unmeasured directions this way is severely unstable. Finite sampled data do not provide that ideal guarantee.`,
-      idea: String.raw`By 3.4 the data are the values of $F$ on all lines through the origin, which together cover the whole plane, so $F$ is known everywhere; by the uniqueness theorem for the Fourier transform (rca-9.12) two integrable functions with equal transforms agree a.e. The explicit formula is the 2-D inversion formula written in polar coordinates $\mathbf k=\omega(\cos\theta,\sin\theta)$ with $d k_xdk_y=|\omega|\,d\omega\,d\theta$ (change of variables, pma-10.9) — the factor $|\omega|$ is what the ramp filter implements in 3.7.`,
-      caption: String.raw`The **left** panel is Fourier space: every projection fills one line (spoke) through the origin; the **right** reconstruction is the inverse FFT of the gridded spokes. Add **views** and the gaps close and the image sharpens towards the phantom; restrict the **angular range** to see what a missing wedge of data does — streaks and lost edges in exactly the directions that were not measured. The readout gives the error against the true phantom.`,
+      statement: String.raw`The Radon transform uniquely determines a compactly supported integrable function almost everywhere: if Rf=Rg for all angles and almost every offset, then f=g a.e. The Fourier slice theorem supplies the Fourier transform on the plane, and Fourier uniqueness applies. For smooth compactly supported f, inversion can be written
+$$f(x,y)=\int_0^\pi\int_{-\infty}^\infty P_\theta(\omega)e^{2\pi i\omega(x\cos\theta+y\sin\theta)}|\omega|\,d\omega\,d\theta.$$
+For the compact-support class, exact continuous data on any nonempty open angular interval, with all offsets, are also injective by analytic continuation. That limited-angle recovery is severely unstable. It must be distinguished from finite samples, interpolation and setting unmeasured Fourier values to zero.`,
+      idea: String.raw`Full-angle slice data cover every Fourier direction. For compact support, the Fourier transform is real analytic, so its values on the open cone supplied by an open angle interval determine its values everywhere. This establishes ideal uniqueness, not a stable extrapolation procedure. Kuchment & Quinto §XI.2.3.1 explicitly distinguish this result from zero-filling a missing cone, which generally destroys compact support and loses directional detail. The displayed inversion formula is the polar-coordinate Fourier formula, with Jacobian |ω|; smoothness gives convergent classical integrals, whereas general L¹ inversion needs an appropriate regularized limit.`,
+      caption: String.raw`Compare a gridded inverse-FFT image with the chosen ellipse phantom. The left panel shows Fourier coefficients assigned by linear interpolation of sampled projection transforms; outside the measured angular span and radial band they are set to zero. Orange spokes mark the actual view directions. Changing view count or angle range changes this finite approximation. A missing wedge produces artifacts in this algorithm; it does not disprove compact-support limited-angle uniqueness. No analytic continuation is performed.`,
       deps: ['imaging-3.4', 'rca-9.12', 'pma-10.9'],
       tags: ['uniqueness', 'inversion', 'Fourier space'],
-      refs: ['Kak–Slaney §3.2'],
-      credit: 'J. Radon, 1917 (inversion); the Fourier route is Bracewell’s',
-      verify: true,
-      scope: String.raw`Complete angular data and ideal (noise-free, infinitely fine) sampling give exact recovery. Here 64 detector samples per view and a 64×64 grid are used, with polar-to-Cartesian interpolation (linear in radius and angle); the finite error that remains is interpolation and sampling, not a failure of uniqueness.`,
+      refs: ['Kak & Slaney §3.2, pp.56–59; Kuchment & Quinto §XI.2.1, Theorem11.1/proof, and §XI.2.3.1'],
+      credit: 'Author presentations: Kak & Slaney; Kuchment & Quinto',
+      verify: false,
+      scope: String.raw`Uniqueness concerns the continuous Radon transform and the stated function class. The classical integral formula above is stated for C∞ functions of compact support. The illustration uses64 offset samples per view, a64×64 Fourier/image grid, radial spacing.25 cycles/unit, angular/radial linear interpolation and zero fill outside radial frequency15.75 and the measured limited-angle span. Full-angle interpolation wraps at180° using real-object conjugacy; limited-angle interpolation stops at the last measured view, not the slider's upper endpoint. A finite set of view directions is different from a continuous open interval. Numerical error and missing-wedge artifacts measure this reconstruction algorithm, not a uniqueness theorem.`,
       viz(v) {
         const PH = slEllipses(0.88), N = 64, nd = 64, half = 1;
         const truth = raster((x, y) => ellAt(PH, x, y), N, N, 3);
-        const Ks = v.stage({ x: [-16, 16], y: [-16, 16], equal: true, axes: 'box', gutter: true, height: 300, xlabel: '$k_x$', ylabel: '$k_y$', title: 'Fourier space filled by projections', minWidth: 240 });
+        const Ks = v.stage({ x: [-16, 16], y: [-16, 16], equal: true, axes: 'box', gutter: true, height: 300, xlabel: '$k_x$', ylabel: '$k_y$', title: 'Interpolated Fourier estimates', minWidth: 240 });
         const Rc = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 300, title: 'Reconstruction (inverse FFT)', minWidth: 240 });
         const Tr = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 300, title: 'True phantom', minWidth: 240 });
         const nv = v.slider('number of views', 1, 120, 12, { step: 1, int: true });
@@ -313,7 +300,7 @@ The Jacobian $|\omega|$ is that of polar coordinates in the $(k_x,k_y)$ plane. A
         const recon = (n, range) => {
           const sino = new Float64Array(n * nd);
           for (let k = 0; k < n; k++) for (let j = 0; j < nd; j++) sino[k * nd + j] = ellProj(PH, (k * range * PI) / (n * 180), sc.sOf(j));
-          return fourierRecon(fourierSpokes(sino, sc, n, nR, dw), range, N, nR, dw);
+          return fourierReconAudit(fourierSpokes(sino, sc, n, nR, dw), range, N, nR, dw);
         };
         let cur = null;
         v.render(() => {
@@ -331,7 +318,7 @@ The Jacobian $|\omega|$ is that of polar coordinates in the $(k_x,k_y)$ plane. A
           showImage(Tr, truth, N, N, { lo: -0.05, hi: 1.05, id: 't', smooth: true }); frame(Tr, N, N);
         });
         v.legend([['orange', 'projection directions']]);
-        v.readout(() => cur ? `${nv.value} views over ${rg.value}°: RMS error against the phantom $${fx(rmse(cur.out, truth), 4)}$ (phantom RMS $${fx(rms(truth), 3)}$), i.e. $${fx(100 * rmse(cur.out, truth) / rms(truth), 1)}\\%$.\n${rg.value >= 179.5 ? 'All directions are measured: the Fourier plane is covered by spokes (left), $F$ is known up to the gaps between them, and the object follows. More views close the gaps.' : `Only ${rg.value}° of the 180° of directions are measured: this reconstruction leaves the unmeasured Fourier wedge empty, producing missing-edge artifacts. Compact-support analytic continuation is unique for ideal continuous noiseless angular data, but unstable and not implemented here.`}` : '');
+        v.readout(()=>cur?`${nv.value} sampled views; last view=${fx((nv.value-1)*rg.value/nv.value,4)}° of nominal range${rg.value}°. Finite inverse-FFT RMS error=${fx(rmse(cur.out,truth),6)} (${fx(100*rmse(cur.out,truth)/rms(truth),2)}% of phantom RMS).`+'\n'+`${rg.value===180?'Angular interpolation wraps across180° using conjugacy.':'Unmeasured angles are zero-filled after the last actual view.'} Coefficients between spokes are interpolated, not directly measured. Ideal compact-support uniqueness survives a continuous open angle interval, but that analytic continuation is unstable and is not computed here.`:'');
       },
     },
   ],

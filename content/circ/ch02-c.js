@@ -52,7 +52,7 @@ export default {
       caption: String.raw`Pick a network and a pair of terminals (click a node for $a$, shift-click for $b$). All spanning trees are listed as thumbnails (green branches), or switch to the two-tree forests that separate $a$ (blue) from $b$ (orange). The count $\tau$ equals the determinant of the reduced Laplacian, and $R_{ab} = \tau_{ab}/\tau$ matches what the circuit solver computes with unit resistors.`,
       credit: 'Gustav Kirchhoff, 1847',
       scope: String.raw`Finite connected networks of positive conductances; with unit resistors the quantities are integers.`,
-      deps: ['circ-2.8', 'circ-2.7', 'ladr-9.43'],
+      deps: ['circ-2.8', 'circ-2.7'],
       refs: ['Agarwal–Lang §3.3'],
       tags: ['spanning tree', 'effective resistance'],
       viz(v) {
@@ -105,7 +105,7 @@ export default {
       caption: String.raw`Click two nodes of the 3×3 grid (click $a$, shift-click $b$), click a branch to select it, and slide its resistance: the curve $R_{ab}$ against $r$ rises monotonically between the "shorted" (dashed green) and "cut" (dashed red) limits. The button "test" raises many resistors at random thousands of times and counts how often $R_{ab}$ went down (never). Turn on "allow negative resistance" (an active element) and the curve develops a pole and is no longer monotone: the law is a statement about passive networks.`,
       credit: 'Lord Rayleigh, 1870s',
       scope: String.raw`Passive networks, i.e. positive resistances. With a negative resistance the effective resistance can fall when a resistance rises.`,
-      deps: ['circ-2.12', 'opt-3.6'],
+      deps: ['circ-2.12'],
       refs: ['Agarwal–Lang §3.3'],
       tags: ['monotonicity', 'effective resistance'],
       viz(v) {
@@ -182,7 +182,7 @@ export default {
       idea: String.raw`KCL (2.1) with Ohm's law at a free node $j$ reads $\sum_k g_{jk}(v_k - v_j) = 0$, i.e. $v_j = \sum_k p_{jk}v_k$: the voltage is the average of its neighbours' voltages, weighted by the walker's jump probabilities. The hitting probability $h$ obeys the same equation after conditioning on the first step, with the boundary values $h(A) = 1$, $h(B) = 0$. The equation has a unique solution (2.9, 2.8), so $v = h$.`,
       caption: String.raw`A random $3\times3$ network with $A$ at 1 V and $B$ at 0 V; node colours are the exact voltages. The gold token replays random walks from the chosen node, leaving a gold trail; each walk ends on the red-ringed node $A$ (1 V) or the blue-ringed node $B$ (0 V). Right: for every node, the fraction of walkers that reached $A$ (dots, with $\pm2\sigma$ error bars) against the exact voltage (bars) from solving the network; below, the running fraction for the chosen start converging to its voltage as more walks accumulate.`,
       scope: String.raw`Finite connected network with positive conductances and two fixed-potential nodes; the walk is reversible with respect to the conductances.`,
-      deps: ['circ-2.5', 'circ-2.8', 'em-6.15', 'stoch-2.2'],
+      deps: ['circ-2.5', 'circ-2.8', 'em-6.15'],
       refs: ['Agarwal–Lang §3.3'],
       credit: 'Kakutani 1944 (continuum case); Doyle & Snell, 1984 (networks)',
       tags: ['random walk', 'harmonic'],

@@ -1,6 +1,9 @@
 // Human Physiology — Chapter 3: The heart as a pump (part a: 3.1–3.6)
 import { clamp, trace, heartBeat, beatAt, beatIdx, phases, phaseLoop, ecgAt, soundAt, drawLoop, cornerPoints, HEART } from './ch03.shared.js';
 
+import { valveStates, cycleDurations } from './physio-source-audit-cycle.js';
+import { OUTPUT_PRESETS, integrateSamples } from './physio-source-audit-cardiac.js';
+
 // ---------- helpers for this file ----------
 const fmt0 = (x) => String(Math.round(x));
 /** A sweep of beats over one parameter; cached per call site by the caller. */
@@ -18,17 +21,16 @@ export default {
       num: '3.1',
       kind: 'Concept',
       name: 'The cardiac cycle and the Wiggers diagram',
-      statement: String.raw`One heartbeat of the left heart is a fixed sequence of five mechanical phases, set by when the two valves open and close. (1) **Atrial systole** tops up the ventricle. (2) The ventricle starts to contract; as soon as its pressure exceeds the atrial pressure the **mitral valve closes** (first heart sound), and the ventricle contracts at constant volume, **isovolumically**. (3) When ventricular pressure exceeds aortic pressure the **aortic valve opens** and blood is **ejected**. (4) The ventricle relaxes; when its pressure falls below the aortic pressure the **aortic valve closes** (second heart sound) and pressure falls at constant volume again. (5) When ventricular pressure drops below atrial pressure the **mitral valve opens** and the ventricle **fills**. Valves are passive: each one opens and shuts because of the sign of the pressure difference across it. A Wiggers diagram plots aortic, ventricular and atrial pressure, ventricular volume, the ECG and the heart sounds on one time axis so that these events can be read off vertically.`,
-      idea: String.raw`The only active thing in the diagram is the muscle: the ventricular wall stiffens (physio-2.9's long plateau keeps all cells contracting together) and then relaxes. Everything else follows from pressure comparisons: a valve is open exactly when the pressure behind it exceeds the pressure ahead. That is why the pressure curves cross at each valve event, and why the isovolumic phases appear: both valves are shut, so the volume cannot change while pressure moves. The curves below are computed from a lumped model (one atrium, one ventricle, ideal valves, a Windkessel arterial load) integrated by RK4 until it is periodic, not drawn by hand.`,
-      caption: String.raw`The cursor sweeps the beat in slow motion (five times slower than life). Watch the shaded phases: the **green** line (atrium) and the **accent** line (ventricle) cross at the mitral events, the ventricular and **red** aortic curves cross at the aortic ones. The ECG and sound traces below are schematic, positioned from the model's own timings. Change the **heart rate**: diastole shortens much more than systole, and the filling phase shrinks first.`,
-      scope: String.raw`A teaching model of the left heart for a resting adult; the right heart follows the same sequence at lower pressures. Absolute values (about $115/80$ mmHg, stroke volume 65 mL) are illustrative, not a patient's. Real valves close with a slight lag because of blood inertia, so the "isovolumic" periods are not perfectly at constant volume.`,
+      statement: String.raw`A normally coordinated left-heart beat can be divided into five mechanical phases. **Atrial systole** adds filling. As the ventricle contracts and its pressure exceeds atrial pressure, the **mitral valve closes**; with both valves shut, pressure rises at nearly constant volume (**isovolumic contraction**). When ventricular pressure exceeds aortic pressure, the **aortic valve opens** and ejection starts. As ventricular pressure falls below aortic pressure, the **aortic valve closes**, followed by **isovolumic relaxation**. When ventricular pressure falls below atrial pressure, the mitral valve opens and ventricular filling resumes. A Wiggers-style diagram aligns the pressure, volume, ECG and sound traces on one time axis.`,
+      idea: String.raw`The atrial and ventricular muscle activations change chamber pressure; the ideal model valves then respond to pressure differences. When both are closed, neither inflow nor outflow changes ventricular volume. Patterson and Starling's 1914 discussion describes ventricular contraction, aortic opening, ejection and closure during relaxation; the panel illustrates that mechanical sequence with a chosen lumped atrium/ventricle/arterial-load model. Its first- and second-sound bursts are synthetic marks near the model's mitral and aortic closure times, and its Gaussian ECG is schematic, not a simulated electrical recording.`,
+      caption: String.raw`Each model beat takes **four display seconds**. Follow the cursor and shaded phases across the aligned curves; gold dots mark the sampled valve events. Change the **heart rate** to compare the model's systolic and filling intervals. Toggle phase shading or pause the cursor to inspect the pressure comparisons. The display slowdown therefore varies with the chosen beat duration.`,
+      scope: String.raw`Chosen left-heart model with instantaneous one-way resistive valves and a two-element Windkessel load. RK4 uses 1 ms steps and 12 warmup beats; the displayed last beat has a small residual end-to-start volume difference, reported below, rather than a guaranteed exact periodic orbit. Event times are sampled at approximately 1 ms resolution. Numerical pressures, volumes, ECG amplitudes and sound frequencies are illustrative; valve inertia, the right heart and measured acoustic/electrical signals are absent. This is not a patient trace or a reconstruction of an original Wiggers plate.`,
       deps: ['physio-2.9'],
       see: ['physio-3.2', 'physio-4.7'],
-      refs: ['Guyton–Hall'],
+      refs: ['Patterson & Starling (1914), On the mechanical factors which determine the output of the ventricles, J Physiol 48:357–379, pp.358–359 mechanical valve sequence; DOI 10.1113/jphysiol.1914.sp001669', 'Keener & Sneyd, author manuscript, section11.4 pp.490–492 and Fig.11.5, pressure–volume phase interpretation'],
       tags: ['cardiac cycle', 'heart'],
-      credit: 'The diagram is named for the American physiologist Carl J. Wiggers; the date of its first publication was not confirmed',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Wiggers_diagram' },
-      verify: true,
+      links: { source: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC1420422/' },
+      verify: false,
       viz(v) {
         const hr = v.slider('heart rate', 50, 120, 75, { step: 1, fmt: (x) => `${fmt0(x)} /min` });
         const bands = v.toggle('shade the phases', true);
@@ -41,7 +43,8 @@ export default {
         v.animate((t) => {
           R = heartBeat({ HR: hr.value }); T = R.T;
           tc = (((t / 4) % 1) * T);
-          for (const s of [sP, sV, sE, sS]) s.setView([0, T], undefined);
+          for (const s of [sP,sV,sE,sS]) s.setView([-.02,T+.02],undefined);
+          sV.setView(undefined,[Math.min(...R.V)-8,Math.max(...R.V)+8]);
           const ph = phases(R);
           for (const s of [sP, sV, sE, sS]) {
             if (bands.value) for (const p of ph) s.vband(p.t0, p.t1, { color: p.color, alpha: 0.1, edges: false });
@@ -65,8 +68,8 @@ export default {
         v.readout(() => {
           if (!R) return '';
           const i = beatIdx(R, tc), ph = phases(R).find((p) => tc >= p.t0 && tc < p.t1) || phases(R)[4];
-          const mit = R.Qm[i] > 1 ? 'open' : 'shut', ao = R.Q[i] > 1 ? 'open' : 'shut';
-          return `**${NAMES[ph.key]}** · mitral valve **${mit}**, aortic valve **${ao}** · $P_{\\mathrm{LV}} = ${v.fix(R.P[i], 0)}$, $P_{\\mathrm{Ao}} = ${v.fix(R.Pa[i], 0)}$, $P_{\\mathrm{LA}} = ${v.fix(R.Pat[i], 0)}$ mmHg, $V = ${v.fix(R.V[i], 0)}$ mL\ncycle ${v.fix(R.T * 1000, 0)} ms: isovolumic contraction ${v.fix((R.tAVO - R.tMVC) * 1000, 0)} ms, ejection ${v.fix((R.tAVC - R.tAVO) * 1000, 0)} ms, isovolumic relaxation ${v.fix((R.tMVO - R.tAVC) * 1000, 0)} ms, filling ${v.fix((R.T - R.tMVO) * 1000, 0)} ms`;
+          const {mitral:mit,aortic:ao}=valveStates(R,i),d=cycleDurations(R);
+          return `**${NAMES[ph.key]}** · mitral valve **${mit}**, aortic valve **${ao}** · $P_{\\mathrm{LV}} = ${v.fix(R.P[i], 0)}$, $P_{\\mathrm{Ao}} = ${v.fix(R.Pa[i], 0)}$, $P_{\\mathrm{LA}} = ${v.fix(R.Pat[i], 0)}$ mmHg, $V = ${v.fix(R.V[i], 0)}$ mL\ncycle ${v.fix(R.T*1000,0)} ms: isovolumic contraction ${v.fix(d.contraction*1000,0)} ms, ejection ${v.fix(d.ejection*1000,0)} ms, isovolumic relaxation ${v.fix(d.relaxation*1000,0)} ms, filling ${v.fix(d.filling*1000,0)} ms; end-to-start volume difference ${v.fix(R.drift,3)} mL`;
         });
       },
     },
@@ -77,10 +80,12 @@ export default {
       kind: 'Concept',
       name: 'Pressure–volume loop',
       statement: String.raw`If the left-ventricular pressure $P$ of one beat is plotted against the ventricular volume $V$ (time disappears as a coordinate), the beat traces a closed loop, run **counter-clockwise**. Its four corners are valve events: **1** mitral valve closes (end-diastole, the right-hand bottom corner), **2** aortic valve opens, **3** aortic valve closes (end-systole, top left), **4** mitral valve opens. The right side from 1 to 2 is isovolumic contraction, the top from 2 to 3 is ejection, the left side from 3 to 4 is isovolumic relaxation, and the bottom from 4 to 1 is filling. The horizontal width of the loop is the stroke volume, $SV = V_{\mathrm{ED}} - V_{\mathrm{ES}}$, and its area is the work done by the ventricle on the blood in the beat.`,
-      idea: String.raw`The loop is the Wiggers diagram (physio-3.1) with time eliminated: the same curves $P(t)$ and $V(t)$, plotted against each other. Isovolumic phases are vertical segments because $V$ cannot change while both valves are closed; ejection and filling are the segments along which blood actually moves. Because a closed loop encloses a signed area $\oint P\,dV$, the plane is the natural place to talk about work (physio-3.7) and, with the end-systolic and end-diastolic boundary curves, about contractility and stiffness (physio-3.4).`,
+      idea: String.raw`The loop is the Wiggers diagram (physio-3.1) with time eliminated: the same curves $P(t)$ and $V(t)$, plotted against each other. Isovolumic phases are vertical segments because $V$ cannot change while both valves are closed; ejection and filling are the segments along which blood actually moves. Because a closed loop encloses a signed area $\oint P\,dV$, the plane is the natural place to talk about work (physio-3.7) and, with the end-systolic and end-diastolic boundary curves, about contractility and stiffness (physio-3.4).
+
+The oriented work integral in mech-3.1 explains the pressure–volume area: on a moving boundary patch the force is pressure times area and the swept volume is area times displacement, giving pressure work $P\,dV$. For work delivered by the contracting chamber to the blood the sign is $-P\,dV$, so this counter-clockwise cycle has positive delivered work $-\oint P\,dV$. The loop's geometric area is its magnitude; reversing orientation reverses signed work.`,
       caption: String.raw`A gold dot runs round the loop while the small panel on the right shows the same instant on the pressure curves. The numbered corners carry the valve events; the loop's four sides are coloured by phase. Pick a **phase** to thicken it, and change the **arterial resistance**: the top of the loop moves up and the ejection side shortens, but the right and bottom sides (filling) do not change.`,
       scope: String.raw`Shown for the model left ventricle of this chapter; clinical loops are measured with a pressure–volume catheter (conductance or imaging volumes) and have the same four corners, although the sides are rounded and slightly sloped.`,
-      deps: ['physio-3.1'],
+      deps: ['physio-3.1','mech-3.1'],
       see: ['physio-3.7'],
       refs: ['Keener–Sneyd ch. 11'],
       tags: ['pressure–volume loop', 'heart'],
@@ -273,39 +278,43 @@ where $P_{\mathrm{ed}}(V)$ is the passive (end-diastolic) pressure–volume curv
       num: '3.6',
       kind: 'Definition',
       name: 'Stroke volume, ejection fraction and cardiac output',
-      statement: String.raw`The **stroke volume** is the blood ejected by the ventricle in one beat, $SV = V_{\mathrm{ED}} - V_{\mathrm{ES}}$, the difference of the end-diastolic and end-systolic volumes. The **ejection fraction** is the fraction of the filled volume that is ejected, $EF = SV/V_{\mathrm{ED}}$. The **cardiac output** is the volume ejected per minute, $CO = SV \times HR$, and in the steady state equals the output of the other ventricle and the venous return. In an echocardiographic reference study the normal range for the left-ventricular ejection fraction is quoted as roughly 52–72 % for men and 54–74 % for women (2015 ASE/EACVI recommendations, Tables 2 and 4: two-dimensional biplane measurements); a resting cardiac output of about 5 L/min is typical of a healthy adult.`,
-      idea: String.raw`These three numbers are read straight from the pressure–volume loop (physio-3.2): the loop's width is $SV$, its right edge is $V_{\mathrm{ED}}$, and multiplying by the heart rate turns a per-beat quantity into a flow. $EF$ is a ratio, so it can look normal while the heart is small and the output low, and it can fall as a dilated heart ejects the same $SV$ out of a larger $V_{\mathrm{ED}}$. Cardiac output is the one the body needs, which is why a failing ventricle compensates by dilating (preload, physio-3.3) and by raising the heart rate.`,
-      caption: String.raw`Pick a **heart** (its typical heart rate is set for you; change it freely). The left panel is the pressure–volume loop, with the stroke volume as its width. The right panel is the area picture of $CO = SV \times HR$: a rectangle with width the heart rate and height the stroke volume, so its area is the output per minute; the dashed rectangle is the resting healthy heart. Compare the "failing" heart (a dilated ventricle with weak contraction, low ejection fraction) with the "athlete" (large stroke volume, slow rate): a similar area built from a tall, narrow rectangle against a short, wide one. The small, stiff ventricle keeps a normal ejection fraction yet a low output.`,
-      scope: String.raw`The four hearts are parameter sets of the chapter's illustrative model, not patient data. The cited reference ranges are the 2015 guideline’s sex-specific 2-SD ranges for two-dimensional biplane echocardiography, not universal cutoffs for every modality or a diagnosis of heart failure. The guideline’s pooled-sex summary is 53–73%; the sex-specific recommendations use 52% and 54% as lower limits. Nothing here is medical advice.`,
+      statement: String.raw`The **stroke volume** is the blood ejected by the ventricle in one beat, $SV = V_{\mathrm{ED}} - V_{\mathrm{ES}}$, the difference of the end-diastolic and end-systolic volumes. The **ejection fraction** is the fraction of the filled volume that is ejected, $EF = SV/V_{\mathrm{ED}}$. The **cardiac output** is the volume ejected per minute, $CO = SV \times HR$, and in the steady state equals the output of the other ventricle and the venous return. For mL and beats/min, divide $SV\times HR$ by 1000 to express output in L/min. The **2015 ASE/EACVI document** reports biplane 2-D echocardiographic reference ranges of 52–72% for men and 54–74% for women (Table 2, mean ± two standard deviations; Table 4). These method-specific reference values do not define the model parameters or diagnose an individual.`,
+      idea: String.raw`These three numbers are read straight from the pressure–volume loop (physio-3.2): the loop's width is $SV$, its right edge is $V_{\mathrm{ED}}$, and multiplying by the heart rate turns a per-beat quantity into a flow. $EF$ is a ratio, so it can look normal while the heart is small and the output low, and it can fall as a dilated heart ejects the same $SV$ out of a larger $V_{\mathrm{ED}}$. A numerical example makes the distinction: 60 mL ejected from 100 mL and from 150 mL gives the same stroke volume but ejection fractions of 60% and 40%. At the same heart rate these give equal cardiac output. Filling, loading and rate can all change the model’s stroke volume.`,
+      caption: String.raw`Choose a **model preset** and change its heart rate. The left panel shows the computed pressure–volume loop; its width is the stroke volume. On the right, rectangle area is $SV\times HR$ in mL/min, divided by 1000 in the output label. The dashed rectangle is the baseline model at 75 beats/min. The large-stroke-volume preset uses a slower default rate, while the dilated weak preset ejects a smaller fraction of its filled volume. At its default rate, the small stiff preset has an EF close to the baseline despite a smaller output; changing the rate can change both. Compare the actual numbers in the readout.`,
+      scope: String.raw`The four presets are chosen parameters of the chapter's lumped left-heart model, not patient data or measured athlete/disease populations. The source's 2015 reference ranges are specifically for biplane 2-D echocardiography and are presented as historical method-specific context. The simulation uses a finite warm-up; the readout reports its residual ventricular-volume drift over the displayed cycle. The pressure readout uses numerical time averaging, not a systolic/diastolic shortcut.`,
       deps: ['physio-3.2'],
       see: ['physio-3.5', 'physio-4.1'],
-      refs: ['Lang et al. (2015), Recommendations for cardiac chamber quantification by echocardiography in adults, JASE 28:1–39.e14, §§1.3, 2.2–2.4 and Tables 2/4, doi:10.1016/j.echo.2014.10.003; https://www.asecho.org/wp-content/uploads/2025/04/2015_ChamberQuantificationREV.pdf', 'Guyton–Hall (cardiac output definition and rounded resting value)'],
+      refs: ['Lang et al. (2015), ASE/EACVI chamber quantification, JASE 28:1–39; §§1.3, 2.2 and 2.4, pp. 6–7; Tables 2 (p. 7) and 4 (p. 10); DOI 10.1016/j.echo.2014.10.003'],
       tags: ['cardiac output', 'ejection fraction'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ejection_fraction' },
+      verify: false,
+      links: { source: 'https://www.asecho.org/wp-content/uploads/2016/02/2015_ChamberQuantificationREV.pdf#page=7', doi: 'https://doi.org/10.1016/j.echo.2014.10.003' },
       viz(v) {
-        const P = { healthy: { hr: 75 }, failing: { Ees: 1.0, V0: 40, Pv: 12, R: 1.5, hr: 90 }, athlete: { Ees: 3.4, V0: 10, A: 0.15, B: 0.028, Pv: 11, R: 1.0, hr: 52 }, stiff: { Ees: 4.2, V0: 10, A: 1.2, B: 0.04, Pv: 12, R: 1.5, hr: 85 } };
+        const P = OUTPUT_PRESETS;
         const hr = v.slider('heart rate', 40, 130, 75, { step: 1, fmt: (x) => `${fmt0(x)} /min` });
-        const type = v.select('heart', [{ value: 'healthy', label: 'healthy' }, { value: 'failing', label: 'dilated, weak' }, { value: 'athlete', label: 'athlete' }, { value: 'stiff', label: 'small, stiff' }], 'healthy', { onChange: (k) => hr.set(P[k.value ?? k].hr) });
+        const type = v.select('heart', [{ value: 'healthy', label: 'baseline' }, { value: 'failing', label: 'dilated, weak' }, { value: 'athlete', label: 'large stroke volume' }, { value: 'stiff', label: 'small, stiff' }], 'healthy', { onChange: (k) => hr.set(P[k.value ?? k].hr) });
         const sL = v.stage({ x: [20, 230], y: [0, 160], height: 330, axes: 'box', gutter: true, xlabel: 'ventricular volume (mL)', ylabel: 'ventricular pressure (mmHg)', weight: 1.2 });
         const sA = v.stage({ x: [0, 140], y: [0, 130], height: 330, axes: 'box', gutter: true, xlabel: 'heart rate (beats/min)', ylabel: 'stroke volume (mL)', weight: 1 });
         let R = null, B = null;
         v.render(() => {
           const { hr: _h, ...pp } = P[type.value]; R = heartBeat({ ...pp, HR: hr.value }); B = heartBeat({});
+          const pressureTop = Math.max(R.Pmax, B.Pmax) * 1.3;
+          sL.setView([Math.min(R.ESV, B.ESV) - 15, Math.max(R.EDV, B.EDV) + 35], [-5, pressureTop]);
+          sA.setView([0, 140], [0, Math.max(R.SV, B.SV) * 1.2]);
           sL.path(B.loop, { color: 'muted', dash: [5, 4], width: 1.4, close: true });
           drawLoop(sL, R);
           sL.vline(R.EDV, { color: 'faint', dash: [3, 4], width: 1 }); sL.vline(R.ESV, { color: 'faint', dash: [3, 4], width: 1 });
-          sL.measure(R.ESV, 150, R.EDV, 150, `SV = ${v.fix(R.SV, 0)} mL`);
-          sL.text(`$V_{ES}$ = ${v.fix(R.ESV, 0)}`, R.ESV, 136, { size: 11, color: 'muted', align: 'left', dx: 4 });
-          sL.text(`$V_{ED}$ = ${v.fix(R.EDV, 0)}`, R.EDV, 136, { size: 11, color: 'muted', align: 'left', dx: 4 });
+          sL.measure(R.ESV, pressureTop * .94, R.EDV, pressureTop * .94, `SV = ${v.fix(R.SV, 0)} mL`);
+          sL.text(`$V_{ES}$ = ${v.fix(R.ESV, 0)}`, R.ESV, pressureTop * .82, { size: 11, color: 'muted', align: 'left', dx: 4 });
+          sL.text(`$V_{ED}$ = ${v.fix(R.EDV, 0)}`, R.EDV, pressureTop * .82, { size: 11, color: 'muted', align: 'left', dx: 4 });
           const bs = B.SV, b75 = 75;
           sA.rect(0, 0, b75, bs, { fill: 'muted', fillAlpha: 0.1, stroke: true, color: 'muted', dash: [5, 4] });
           sA.rect(0, 0, hr.value, R.SV, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 2 });
           sA.text(`CO = ${v.fix(hr.value * R.SV / 1000, 1)} L/min`, hr.value / 2, R.SV / 2, { size: 14, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
         });
-        v.legend([['accent', 'this heart: area = cardiac output'], ['muted', 'resting healthy heart (75/min)', { dash: true }]]);
+        v.legend([['accent', 'this heart: area = cardiac output'], ['muted', 'baseline model (75/min)', { dash: true }]]);
         v.readout(() => {
           const co = (hr.value * R.SV) / 1000;
-          return `$SV = ${v.fix(R.EDV, 0)} - ${v.fix(R.ESV, 0)} = ${v.fix(R.SV, 0)}$ mL · $EF = ${v.fix(R.SV, 0)}/${v.fix(R.EDV, 0)} = ${v.fix(100 * R.EF, 0)}\\%$ · $CO = ${v.fix(R.SV, 0)} \\times ${fmt0(hr.value)} = ${v.fix(co, 1)}$ L/min · mean arterial pressure about ${v.fix((R.PaMax + 2 * R.PaMin) / 3, 0)} mmHg`;
+          return `$SV = ${v.fix(R.EDV, 1)} - ${v.fix(R.ESV, 1)} = ${v.fix(R.SV, 1)}$ mL · $EF = ${v.fix(R.SV, 1)}/${v.fix(R.EDV, 1)} = ${v.fix(100 * R.EF, 1)}\\%$ · $CO = ${v.fix(R.SV, 1)} \\times ${fmt0(hr.value)}/1000 = ${v.fix(co, 2)}$ L/min\nmean arterial pressure ${v.fix(integrateSamples(R.t, R.Pa) / R.t.at(-1), 1)} mmHg; residual cycle volume drift ${v.fix(R.drift, 3)} mL`;
         });
       },
     },

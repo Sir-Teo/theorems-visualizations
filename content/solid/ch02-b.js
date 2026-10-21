@@ -73,7 +73,7 @@ $$G=\frac{E}{2(1+\nu)},\qquad K=\frac{E}{3(1-2\nu)},$$
 and conversely $E=\dfrac{9KG}{3K+G}$, $\nu=\dfrac{3K-2G}{2(3K+G)}$, with $\dfrac9E=\dfrac3G+\dfrac1K$. Positive strain energy ($G>0$, $K>0$) forces $-1<\nu<\tfrac12$: as $\nu\to\tfrac12$ the material becomes incompressible ($K\to\infty$) and as $\nu\to-1$ it cannot change shape ($G/E\to\infty$: it resists shear far more strongly than tension).`,
       idea: String.raw`Start from the generalised Hooke's law (2.7). Under pressure $p$ on all faces $\sigma_x=\sigma_y=\sigma_z=-p$, so $\varepsilon=-p(1-2\nu)/E$ and $\Delta V/V=3\varepsilon=-3(1-2\nu)p/E$, which defines $K$. For $G$, a pure shear $\tau$ is, in axes turned by $45^\circ$, a tension $\tau$ and a compression $-\tau$; Hooke's law gives the normal strain $(1+\nu)\tau/E$ along the tension axis, and the corresponding shear angle is twice that, $\gamma=2(1+\nu)\tau/E$. Strain energy is positive only if $G$ and $K$ are, which bounds $\nu$.`,
       caption: String.raw`Slide $\nu$ across its whole allowed range $(-1,\tfrac12)$: the curves show $G/E$ and $K/E$, and the dots mark typical materials. In the right-hand panel the same stress, one tenth of $E$, is applied as a pressure on a square (it shrinks by $p/K$ in area) and as a shear (it distorts by $\gamma=\tau/G$). Near $\nu=\tfrac12$ the pressure no longer compresses the square; near $\nu=-1$ the shear no longer distorts it.`,
-      deps: ['solid-2.7', 'ladr-7.62'],
+      deps: ['solid-2.7'],
       refs: ['Gere–Goodno §3.6'],
       tags: ['moduli', 'poisson'],
       credit: 'G. Lamé, 1850s (Lamé constants)',
@@ -174,11 +174,13 @@ Plane strain is plane stress with $E\to E/(1-\nu^2)$ and $\nu\to\nu/(1-\nu)$.`,
       kind: 'Phenomenon',
       name: 'Auxetic materials: negative Poisson’s ratio',
       statement: String.raw`The thermodynamic limits $-1<\nu<\tfrac12$ of an isotropic solid (2.8) include **negative** values. A material with $\nu<0$ is *auxetic*: it gets fatter, not thinner, when stretched. Auxetic behaviour is a property of structure rather than of the base material: it occurs in re-entrant (bow-tie) honeycombs, foams with collapsed cells, certain crystals and rotating-square or chiral lattices. For a honeycomb of rigid ribs hinged at the nodes (ribs of length $L$ inclined at angle $\theta$, vertical ribs of length $H$) the small-strain Poisson ratio is
-$$\nu=-\frac{\varepsilon_y}{\varepsilon_x}=\frac{\cos^2\theta}{\big(H/L+\sin\theta\big)\sin\theta},$$
+$$\begin{gathered}\nu=-\frac{\varepsilon_y}{\varepsilon_x}\\=\frac{\cos^2\theta}{\big(H/L+\sin\theta\big)\sin\theta},\end{gathered}$$
 positive for $\theta>0$ (regular cells) and negative for $\theta<0$ (re-entrant cells).`,
-      idea: String.raw`Stretching such a lattice makes the angle $\theta$ change, since the ribs themselves are stiff: the cell width is $2L\cos\theta$ and its height $H+L\sin\theta$ per row. In a regular hexagon, stretching in $x$ flattens the ribs (smaller $\theta$): the height $H+L\sin\theta$ drops, so the lattice narrows, $\nu>0$. In a re-entrant cell, $\theta<0$ and $\sin\theta<0$; flattening the ribs ($\theta\to0^-$) makes $H+L\sin\theta$ grow, so the height increases while the width does too, giving $\nu<0$. The hinge model is strongly anisotropic, so its values need not respect the isotropic bound $-1<\nu<\tfrac12$ of 2.8; real foams reach about $-0.7$ or less negative.`,
+      idea: String.raw`Stretching such a lattice makes the angle $\theta$ change, since the ribs themselves are stiff: the cell width is $2L\cos\theta$ and its height $H+L\sin\theta$ per row. In a regular hexagon, stretching in $x$ flattens the ribs (smaller $\theta$): the height $H+L\sin\theta$ drops, so the lattice narrows, $\nu>0$. In a re-entrant cell, $\theta<0$ and $\sin\theta<0$; flattening the ribs ($\theta\to0^-$) makes $H+L\sin\theta$ grow, so the height increases while the width does too, giving $\nu<0$. The hinge model is strongly anisotropic, so its values need not respect the isotropic bound $-1<\nu<\tfrac12$ of 2.8; real foams reach about $-0.7$ or less negative.
+
+For positive cell width and height away from a stationary width, use the rib angle as a smooth parameter. The chain rule pma 5.5 converts the angle derivatives of $x=2L\cos\theta$ and $y=H+L\sin\theta$ into $dy/dx$. Forming the infinitesimal strain ratio $-(dy/y)/(dx/x)$ yields the displayed Poisson ratio. At $\sin\theta=0$ the width derivative vanishes, so that ratio is singular rather than a finite material constant.`,
       caption: String.raw`Stretch the two lattices by the same axial strain with the slider. Top left: regular honeycomb ($\theta>0$): it narrows. Top right: re-entrant honeycomb ($\theta<0$): it widens. Dashed: the undeformed cells. The measured $\nu=-\varepsilon_y/\varepsilon_x$ is computed from the node positions of the rigid-rib mechanism (finite strains, no formula); below it is compared with the small-strain formula as a function of $\theta$. The model has rigid ribs hinged at the nodes, so stretches stop when the ribs straighten (the lock-up strain).`,
-      deps: ['solid-2.8', 'mat-4.2'],
+      deps: ['solid-2.8', 'pma-5.5'],
       refs: ['Gere–Goodno §1.7'],
       tags: ['poisson', 'metamaterial'],
       credit: 'R. Lakes, 1987 (re-entrant foams); L. Gibson & M. Ashby (honeycomb mechanics)',
@@ -246,11 +248,13 @@ positive for $\theta>0$ (regular cells) and negative for $\theta<0$ (re-entrant 
       kind: 'Definition',
       name: 'Navier–Cauchy equations of elasticity',
       statement: String.raw`Substituting the strain–displacement relations (2.5) and Hooke's law (2.7) into the equilibrium equations (2.4) gives the **Navier–Cauchy equations**, three equations for the three displacement components of a homogeneous isotropic elastic body,
-$$\mu\nabla^2\mathbf u+(\lambda+\mu)\nabla(\nabla\!\cdot\!\mathbf u)+\mathbf b=\mathbf 0 ,$$
+$$\begin{gathered}\mu\nabla^2\mathbf u+(\lambda+\mu)\nabla(\nabla\!\cdot\!\mathbf u)\\+\mathbf b=\mathbf 0 ,\end{gathered}$$
 with Lamé constants $\lambda,\mu$. A boundary-value problem is closed by prescribing, on each part of the boundary, either the displacement $\mathbf u$ or the traction $\boldsymbol\sigma\mathbf n$ (and the compatibility conditions then hold automatically, since $\mathbf u$ is the unknown). In dynamics $\mathbf 0$ is replaced by $\rho\ddot{\mathbf u}$.`,
-      idea: String.raw`The unknowns are the six stresses and six strains and three displacements; the equations are equilibrium (3), Hooke's law (6) and strain–displacement (6). Eliminating strain and stress in favour of $\mathbf u$ leaves just three second-order PDEs. Their weak (integrated) form is what a finite-element code solves: multiply by a test displacement, integrate by parts, and the traction boundary condition appears naturally. The equations are linear in $\mathbf u$ and $\mathbf b$, so solutions scale with the load and superpose.`,
+      idea: String.raw`The unknowns are the six stresses and six strains and three displacements; the equations are equilibrium (3), Hooke's law (6) and strain–displacement (6). Eliminating strain and stress in favour of $\mathbf u$ leaves just three second-order PDEs. Their weak (integrated) form is what a finite-element code solves: multiply by a test displacement, integrate by parts, and the traction boundary condition appears naturally. The equations are linear in $\mathbf u$ and $\mathbf b$, so solutions scale with the load and superpose.
+
+For smooth displacement and constant Lamé coefficients, commuting the mixed coordinate derivatives (pma 9.41a) collects the constitutive substitution into the vector Laplacian and gradient of divergence. For its integrated form, apply the divergence theorem pma 10.51 to the vector field with components $\sigma_{ij}v_i$ for a smooth test displacement. The boundary term is traction dotted with the test displacement. This explains the weak-form step; the displayed finite-element solution remains a discrete approximation.`,
       caption: String.raw`A steel plate (200 × 100 mm, plane stress) is clamped at the left and loaded by a uniform pull and shear $p_x,p_y$ on the right edge plus a body force $b_y$ in the plate. The finite-element solution of the displacement equations is drawn (displacements magnified) and coloured by von Mises stress. Halve every load and the whole picture halves: the readout compares the solutions for load $P$ and $P/2$. Near the clamp the stress is not uniform, which is why 1.13 matters.`,
-      deps: ['solid-2.4', 'solid-2.7'],
+      deps: ['solid-2.4', 'solid-2.7', 'pma-9.41a', 'pma-10.51'],
       refs: ['Timoshenko–Goodier ch. 9'],
       tags: ['elasticity', 'finite elements'],
       credit: 'C.-L. Navier, 1820s; A.-L. Cauchy, 1820s',
@@ -302,14 +306,16 @@ with Lamé constants $\lambda,\mu$. A boundary-value problem is closed by prescr
       num: '2.12',
       kind: 'Method',
       name: 'Airy stress function',
-      statement: String.raw`In plane stress or plane strain with no body force (or a conservative one, which can be absorbed), every stress field of the form
-$$\sigma_{xx}=\frac{\partial^2\phi}{\partial y^2},\qquad \sigma_{yy}=\frac{\partial^2\phi}{\partial x^2},\qquad \sigma_{xy}=-\frac{\partial^2\phi}{\partial x\,\partial y}$$
+      statement: String.raw`In plane stress or plane strain with no body force, every stress field of the form
+$$\begin{gathered}\sigma_{xx}=\frac{\partial^2\phi}{\partial y^2},\\ \sigma_{yy}=\frac{\partial^2\phi}{\partial x^2},\\ \sigma_{xy}=-\frac{\partial^2\phi}{\partial x\,\partial y}\end{gathered}$$
 satisfies the equilibrium equations (2.4) identically. Such a stress field is also compatible (2.6), so that it comes from a displacement field in a simply connected region, if and only if $\phi$ is **biharmonic**:
-$$\nabla^4\phi=\frac{\partial^4\phi}{\partial x^4}+2\frac{\partial^4\phi}{\partial x^2\partial y^2}+\frac{\partial^4\phi}{\partial y^4}=0 .$$
+$$\begin{gathered}\nabla^4\phi=\frac{\partial^4\phi}{\partial x^4}+2\frac{\partial^4\phi}{\partial x^2\partial y^2}\\+\frac{\partial^4\phi}{\partial y^4}=0 .\end{gathered}$$
 Elasticity problems then reduce to finding a biharmonic $\phi$ whose derivatives match the tractions on the boundary (a polynomial gives the stress field of a rectangle loaded on its edges).`,
-      idea: String.raw`Equilibrium $\partial_x\sigma_{xx}+\partial_y\sigma_{xy}=0$ and $\partial_x\sigma_{xy}+\partial_y\sigma_{yy}=0$ say that certain 1-forms are closed, hence exact on a simply connected region, and the potentials can be combined into one scalar $\phi$ (Airy 1862). Substituting into the compatibility equation of 2.6, written with Hooke's law (2.9) for the strains, gives $\nabla^4\phi=0$. Polynomials of degree $\le3$ are automatically biharmonic; degree 4 needs one relation among the coefficients; the quartic $x^4$ alone fails it.`,
+      idea: String.raw`Equilibrium $\partial_x\sigma_{xx}+\partial_y\sigma_{xy}=0$ and $\partial_x\sigma_{xy}+\partial_y\sigma_{yy}=0$ say that certain 1-forms are closed, hence exact on a simply connected region, and the potentials can be combined into one scalar $\phi$ (Airy 1862). Substituting into the compatibility equation of 2.6, written with Hooke's law (2.9) for the strains, gives $\nabla^4\phi=0$. Polynomials of degree $\le3$ are automatically biharmonic; degree 4 needs one relation among the coefficients; the quartic $x^4$ alone fails it.
+
+For a sufficiently smooth potential, equality of mixed partials pma 9.41a makes the third-derivative terms in each equilibrium equation cancel. Applied again after constitutive substitution into compatibility, it combines the mixed fourth derivatives into the displayed biharmonic operator. These differentiations are local smooth identities; the separate simply-connected-domain condition is needed when reconstructing a globally single-valued displacement.`,
       caption: String.raw`Pick a preset or drive the seven coefficients of $\phi=a x^2+b xy+c y^2+d y^3+e xy^3+f x^4+g x^2y^2$ on the $4\times2$ plate. Colour shows the chosen quantity, contour lines are $\phi$, orange arrows are the edge tractions the field implies. The right panel shows the stresses on a section you can slide, with force, shear and moment resultants. Equilibrium holds for **every** setting; compatibility holds only when the readout says $\nabla^4\phi=0$. Try $x^4$ alone and then "make biharmonic".`,
-      deps: ['solid-2.9', 'solid-2.6', 'solid-2.4', 'vcalc-3.8'],
+      deps: ['solid-2.9', 'solid-2.6', 'solid-2.4', 'pma-9.41a'],
       refs: ['Timoshenko–Goodier ch. 2', 'Timoshenko–Goodier ch. 3'],
       tags: ['airy', 'plane elasticity'],
       credit: 'G. B. Airy, 1862',

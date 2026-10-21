@@ -1,0 +1,29 @@
+# Sociology 4.7 / 4.11: Pareto moments and scale-free evidence
+
+Candidate for coordinator acceptance. Both source flags remain true. Changes are confined to these two items, their syllabus rows, one isolated model, unique checks and this report.
+
+## Sources actually inspected
+
+For 4.7, read Clauset, Shalizi and Newman, *Power-law distributions in empirical data*, 2009 author version, §2 and Eqs. 2.1–2.7, from the complete original PDF at https://snap.stanford.edu/class/cs224w-readings/clauset09powerlaw.pdf (cached `/tmp/atlas-soc-clauset2009.pdf`). This supplies the continuous density, survival function and first/second moment thresholds. The general moment integral is derived on this page. Read the actual existing prob-2.4.1 finite-mean strong-law hypotheses and prob-2.4.5 nonnegative infinite-mean statement/proof before adding these dependencies. Finite plots are not offered as convergence evidence.
+
+For 4.11, read the actual published Broido–Clauset *Scale-free networks are rare*, Nature Communications 10:1017 (2019), https://doi.org/10.1038/s41467-019-08746-5. The complete publisher PDF was accessed through the German National Library at https://d-nb.info/1181669375/34, cached `/tmp/atlas-worker-three/broido-published2019.pdf` with page-marked text beside it. Read published pp. 2–5 Results, the full category definitions and Figs. 2/4, plus p. 8 Methods preprocessing and category-threshold justification. Formula/figure page images 3/5 were inspected. The 928 datasets produce 18,448 simple graphs before exclusion, with 3,662 retained; percentages are dataset-level, rounded and overlapping. These published counts differ from the earlier arXiv preprint (927 datasets, 4,477 graphs and different shares); that preprint is deliberately not used for published statistics. Full supplementary transformations, raw datasets and fitting implementation were not reproduced or authenticated.
+
+Read the actual abstract and regularly varying power-law definition of Voitalov et al., *Scale-free Networks Well Done*, arXiv:1811.02071v2, https://arxiv.org/abs/1811.02071v2 (complete cached PDF `/tmp/atlas-worker-three/voitalov2019.pdf`). The item uses only their broader definition and consistent-estimator viewpoint, without claiming a complete audit of their estimators or experiments.
+
+## Material changes
+
+4.7 now distinguishes finite mean (alpha > 2) from finite variance (alpha > 3). The old claim that infinite variance prevents convergence was false: finite-mean iid averages obey the strong law, including 2 < alpha <= 3. The nonnegative infinite-mean case is separately stated. The lower cutoff and median are explicit. The displayed model is a pure continuous Pareto with cutoff one, not a universal empirical exponent range or a discrete degree law.
+
+Every distinct empirical survival value and all three complete running-mean paths are displayed, with data-dependent logarithmic bounds. The old ceiling that hid large samples/trace values is removed. The ideal survival guide stops inside the visible positive domain; the expected mean is shown only when finite. Paired generator outputs form finite 53-bit uniforms. The scope distinguishes these deterministic finite binary64 streams from an ideal iid continuum. All offered sizes, continuous exponent values, seed replay and resampling use exact cache keys.
+
+4.11 replaces an incomplete fit widget with the actual published six category definitions and rounded shares. It distinguishes absolute goodness of fit from comparisons to alternatives and shows the implication structure: Weakest contains Weak contains Strong contains Strongest, while Super-Weak overlaps the first two and contains Strong/Strongest. Not Scale Free is the complement of the union of Super-Weak and Weakest. These bars are neither a partition nor a new fit/bootstrap verdict. Corpus selection and the broader regular-variation definition are scoped explicitly.
+
+## Verification
+
+`node --test tests/verification-soc-tails.test.mjs`: three independent groups pass. A separately implemented Simpson integral after log-coordinate substitution checks moments. Independent exact quantiles, distinct-value counts, sorted survival ranks, and compensated prefix sums check every finite sample/trace for all offered sizes and critical exponents. Domain rejection, deterministic coupling, and seed replay are checked. Log `/tmp/atlas-worker-three/tails-math.log`.
+
+Native evidence and final static results are recorded below after completion. Development checks caught actual guide-stroke and extreme-sample marker clipping on logarithmic axes, and the density formula overflowing at 320 px. Both were repaired in content rather than weakening geometry/overflow assertions. No human review or empirical dataset replication is claimed.
+
+`node scripts/check.mjs soc-4.7 soc-4.11 --static`: two items, zero errors/warnings, `/tmp/atlas-worker-three/tails-static.log`.
+
+`node tests/verification-soc-tails.mjs`: all 12 groups pass (two items × 1450/430/320 px × light/dark). Every offered sample size and category, critical alpha 2/3, both sides of 2 including its next representable offered value, Home/End, exact native input/output/ARIA, full trace point counts, sample glyph strokes, guide strokes, bar/text bounds, TeX/page overflow, seed changes, remount replay and malformed state are exercised. Log `/tmp/atlas-worker-three/tails-native.log`. A final short title/ref-spacing polish was followed by the full 4.7 dark 320 px control matrix in `/tmp/atlas-worker-three/tails-final-title-smoke.log`. Screenshots are `/tmp/atlas-worker-three/tails-{4.7,4.11}-{default,heavy,last}-WIDTH-THEME{,-panelN}.png`. Actual desktop/mobile light/dark plots, complete heavy-tail traces, and category labels/bars were visually inspected. Geometry assertions were not relaxed to accommodate failures.

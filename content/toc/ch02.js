@@ -57,7 +57,7 @@ export default {
 On input $w=w_1\cdots w_n$ the machine computes $r_0=q_0$, $r_i=\delta(r_{i-1},w_i)$ and **accepts** if $r_n\in F$. It is drawn as a state diagram: one circle per state, an arrow $q\xrightarrow{a}\delta(q,a)$ for each pair, double circles for $F$ and an entering arrow at $q_0$. A diagram that omits some arrows is shorthand for one extra non-accepting **dead state** that receives all missing arrows and loops on every symbol; a diagram with two arrows for the same state and symbol is not a DFA at all.`,
       idea: String.raw`The only memory a DFA has is its current state, so everything it will ever do with the rest of the input depends on the prefix read so far only through which of the $|Q|$ states that prefix led to. Determinism makes the run on each input unique, which is what lets us speak of *the* answer; totality is a convenience, since any missing arrow can be redirected to a trap state without changing which strings are accepted.`,
       caption: String.raw`Build a machine: **drag** states, **click a state** to make it accepting or not, **click a table cell** to cycle the target of that arrow (through every state, then "missing"), click a row name to make it the start state, add or remove states with the buttons. Type an input with the letter keys and step through the run: the gold state is the current one, ending green (accept) or red (reject). Break it: a missing arrow sends the run into the implicit dead state $\varnothing$ (toggle to draw it); allowing two targets in a cell makes it *not a DFA*, and the run is no longer defined.`,
-      deps: ["toc-1.1","alg-1.5a","graph-1.10.1a"],
+      deps: ['toc-1.1'],
       refs: ['Sipser §1.1'],
       credit: 'McCulloch & Pitts 1943; Kleene 1956; Rabin & Scott 1959',
       tags: ['automata', 'regular languages'],
@@ -246,7 +246,7 @@ $\hat\delta(q,w)$ is the state reached from $q$ after reading $w$. $M$ **accepts
 A hallmark of regularity is that the counting sequence $a_n=|L\cap\Sigma^n|$ obeys a linear recurrence with constant coefficients: if $A$ is the $Q\times Q$ matrix counting the letters that lead from one state to another, then $a_n=e_{q_0}^{\top}A^n\mathbf 1_F$, so the generating function $\sum_n a_nx^n$ is a rational function $P(x)/Q(x)$ with $Q(x)=\det(I-xA)$.`,
       idea: String.raw`Counting accepted strings of length $n$ is counting paths of length $n$ from $q_0$ to $F$ in the state graph, which is dynamic programming over states: keep, for each state, the number of strings of the current length that end there, and push those numbers along the arrows one letter at a time. That is multiplication by $A$, and the Cayley–Hamilton theorem turns $\det(\lambda I-A)$ into a recurrence for $a_n$, hence a rational generating function — something no non-regular language need have.`,
       caption: String.raw`Type a pattern $p$ (letters, ⌫); the automaton tracking "how much of $p$ have I just seen" is drawn on the left. The table counts strings of each length three ways — brute force over all $2^n$ strings, dynamic programming over the states, and the coefficients of the rational generating function — and they agree. The barcode below shows every string of length up to 8 in dictionary order, green when it is in the language. Try $p = $ **aa** (Fibonacci numbers) and **ab** ($n+1$).`,
-      deps: ["toc-2.2","comb-4.6","ladr-8.29","comb-4.4"],
+      deps: ['toc-2.2'],
       see: ['algo-13.4', 'comb-4.4'],
       refs: ['Sipser §1.1'],
       tags: ['regular languages', 'counting'],
@@ -340,9 +340,11 @@ A hallmark of regularity is that the counting sequence $a_n=|L\cap\Sigma^n|$ obe
       statement: String.raw`To design a DFA, decide what must be remembered about the prefix read so far and make each possible "memory content" a state; the machine works if the memory after reading one more symbol can be computed from the old memory and that symbol alone. Example: binary numerals (read most significant bit first) whose value is divisible by $k$ are recognised by the DFA with states $Q=\{0,1,\dots,k-1\}$, start and only accepting state $0$, and
 $$\delta(r,b)=(2r+b)\bmod k,$$
 because appending a bit $b$ to a numeral of value $x$ gives $2x+b$, and $(2x+b)\bmod k$ depends only on $x\bmod k$. After reading a prefix, the state is that prefix's value modulo $k$.`,
-      idea: String.raw`The value of the number grows without bound, but its remainder modulo $k$ takes only $k$ values and is updated by a rule that needs nothing else: $(2x+b)\bmod k=(2(x\bmod k)+b)\bmod k$. An induction on the prefix length (1.7) proves the invariant "state = value mod $k$". The same idea fails if the bits arrive least significant first: then appending a bit adds $b\cdot 2^i$, which depends on the position $i$ as well, so the remainder alone is no longer enough memory.`,
+      idea: String.raw`The value of the number grows without bound, but its remainder modulo $k$ takes only $k$ values and is updated by a rule that needs nothing else: $(2x+b)\bmod k=(2(x\bmod k)+b)\bmod k$. An induction on the prefix length (1.7) proves the invariant "state = value mod $k$". The same idea fails if the bits arrive least significant first: then appending a bit adds $b\cdot 2^i$, which depends on the position $i$ as well, so the remainder alone is no longer enough memory.
+
+The division algorithm alg-2.9 gives a unique remainder r in the state range when $k>0$. If a prefix value is $x=kq+r$, appending bit b gives $2x+b=k(2q)+(2r+b)$, so dividing once more shows that its remainder is the remainder of $2r+b$. This justifies the transition independently of the size of x. The prefix-length induction then proves the stated state invariant for most-significant-bit-first input.`,
       caption: String.raw`Type a binary number (or press **random**) and step through it: the gold state is the remainder of the prefix read so far, and the table checks it against the true value at every step. Change $k$ and the machine is rebuilt with $k$ states and the rule $r\mapsto 2r+b$. Switch to **least significant bit first**: the same machine now computes the wrong remainder, flagged in red.`,
-      deps: ["toc-2.1","nt-2.1"],
+      deps: ['toc-2.1', 'alg-2.9'],
       refs: ['Sipser §1.1'],
       tags: ['automata', 'design'],
       viz(v) {
@@ -466,11 +468,16 @@ because appending a bit $b$ to a numeral of value $x$ gives $2x+b$, and $(2x+b)\
       kind: 'Theorem',
       name: 'Product construction: union and intersection',
       statement: String.raw`If $L_1$ and $L_2$ are regular, so are $L_1\cup L_2$, $L_1\cap L_2$, $L_1\setminus L_2$ and $L_1\triangle L_2$. Given DFAs $M_i=(Q_i,\Sigma,\delta_i,s_i,F_i)$, the **product automaton** has states $Q_1\times Q_2$, start $(s_1,s_2)$ and transitions
-$$\delta\big((p,q),a\big)=\big(\delta_1(p,a),\,\delta_2(q,a)\big),$$
+$$\begin{gathered}
+p'=\delta_1(p,a),\quad q'=\delta_2(q,a),\\
+\delta\big((p,q),a\big)=(p',q').
+\end{gathered}$$
 so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it accepts $L_1\cup L_2$ with $F=(F_1\times Q_2)\cup(Q_1\times F_2)$, $L_1\cap L_2$ with $F=F_1\times F_2$, and the other Boolean combinations with the corresponding sets of pairs. It has $|Q_1|\,|Q_2|$ states.`,
-      idea: String.raw`Run both machines in parallel on the same input: the pair of current states is finite memory, so it is itself the state of one DFA. The run of the product is the pair of the two runs (induction on $w$ using 2.2), and any Boolean condition on "does $M_1$ accept, does $M_2$ accept" is a condition on the final pair, i.e. a choice of accepting pairs.`,
+      idea: String.raw`Run both machines in parallel on the same input: the pair of current states is finite memory, so it is itself the state of one DFA. The run of the product is the pair of the two runs (induction on $w$ using 2.2), and any Boolean condition on "does $M_1$ accept, does $M_2$ accept" is a condition on the final pair, i.e. a choice of accepting pairs.
+
+The Cartesian product alg-1.4a supplies the ordered-pair memory used here: equality of product states means equality in both coordinates. One symbol updates each coordinate by its own total transition function, so induction on the input gives the displayed pair of runs. The finite grid has $|Q_1|\,|Q_2|$ pairs, even though some may be unreachable. Choosing accepting pairs applies the desired Boolean condition without changing that run invariant.`,
       caption: String.raw`$M_1$ stands at the left, $M_2$ along the top, and their product is the grid of state pairs, arrows and all. Type an input and step: the three gold tokens move in lockstep, the product token always sitting at the crossing of the other two (dashed guides). Switch the operation and the double-ringed accepting pairs change; the readout checks the product's verdict against the two machines.`,
-      deps: ["toc-2.3","alg-1.4a"],
+      deps: ['toc-2.3', 'alg-1.4a'],
       refs: ['Sipser §1.1'],
       credit: 'Rabin & Scott, 1959',
       tags: ['closure properties', 'product construction'],

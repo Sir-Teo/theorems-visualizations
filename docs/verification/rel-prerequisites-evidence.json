@@ -1,0 +1,3992 @@
+{
+  "baseline": "48b26f0d4aa4fb3a705603141ca93c34b4e05f04",
+  "mapping": [
+    {
+      "num": "1.9",
+      "file": "content/rel/ch01-b.js",
+      "added": [
+        "prob-1.6.2"
+      ],
+      "expectedDeps": [
+        "rel-1.7",
+        "pma-6.27",
+        "prob-1.6.2"
+      ],
+      "append": "For the polygonal paths shown, give each leg weight $\\Delta t_i/T$. Jensen (prob 1.6.2) applied to the convex function $-\\sqrt{1-z^2}$ for $|z|<1$ bounds the weighted sum of proper-time rates by the rate at the weighted mean velocity. That mean is the fixed endpoint displacement divided by $T$, so the straight leg maximizes proper time. Strict convexity gives equality only when all positive-duration legs have the same velocity."
+    },
+    {
+      "num": "2.4",
+      "file": "content/rel/ch02.js",
+      "added": [
+        "pma-5.5"
+      ],
+      "expectedDeps": [
+        "rel-2.1",
+        "rel-2.3",
+        "pma-5.5"
+      ],
+      "append": "The chain rule (pma 5.5), applied along a differentiable particle worldline, gives $dx/dt=(dx/dt\\prime)/(dt/dt\\prime)$. Applying it to the inverse Lorentz coordinate formulas produces the displayed velocity ratio. For subluminal input speeds $dt/dt\\prime=\\gamma_v(1+u\\prime v/c^2)>0$, so the change of time parameter is legitimate; division by a vanishing time derivative is not being assumed."
+    },
+    {
+      "num": "2.5",
+      "file": "content/rel/ch02.js",
+      "added": [
+        "pma-5.15"
+      ],
+      "expectedDeps": [
+        "rel-2.4",
+        "pma-5.15"
+      ],
+      "append": "Taylor's theorem (pma 5.15) applies to the exact velocity ratio as a smooth function of the flow speed near zero, with fixed refractive index. Its value is $c/n$ and its derivative is $1-1/n^2$ at zero flow, giving the displayed first-order drag term. A bounded second derivative on a small closed flow interval controls the omitted remainder; this does not extend the nondispersive model to arbitrary media."
+    },
+    {
+      "num": "2.7",
+      "file": "content/rel/ch02.js",
+      "added": [
+        "pma-6.12"
+      ],
+      "expectedDeps": [
+        "rel-1.9",
+        "rel-2.6",
+        "pma-6.12"
+      ],
+      "append": "In the home frame the traveller's proper-time rate is at most one. Integral order and interval additivity (pma 6.12) apply on the two smooth legs, giving their total proper time at most $T$. For a genuine trip with nonzero speed over positive duration the inequality is strict. Splitting at the idealized turn avoids requiring a derivative there; acceleration is not an extra negative term in the clock integral."
+    },
+    {
+      "num": "2.13",
+      "file": "content/rel/ch02-b.js",
+      "added": [
+        "ladr-3.8",
+        "ladr-3.65"
+      ],
+      "expectedDeps": [
+        "rel-2.1",
+        "ladr-9.9",
+        "ladr-3.8",
+        "ladr-3.65"
+      ],
+      "append": "Composition obeys the associative and identity laws of ladr 3.8. If a matrix preserves the nondegenerate Minkowski form, a vector in its kernel would be orthogonal to every vector before transformation and must be zero. In four finite dimensions, injectivity gives invertibility by ladr 3.65. The form-preserving equation is then closed under products and inverses. These algebraic steps justify the group operations; they do not by themselves classify its connected components."
+    },
+    {
+      "num": "2.14",
+      "file": "content/rel/ch02-b.js",
+      "added": [
+        "ladr-3.43",
+        "ladr-7.93"
+      ],
+      "expectedDeps": [
+        "rel-2.13",
+        "rel-2.4",
+        "ladr-3.43",
+        "ladr-7.93"
+      ],
+      "append": "The matrix-of-composition theorem (ladr 3.43) identifies successive boosts with an ordered matrix product in compatible coordinate bases. Real polar decomposition (ladr 7.93) separates an invertible product into an orthogonal factor and a positive symmetric factor; the equivalent left decomposition puts the positive factor first. For proper orthochronous Lorentz products the Lorentz constraint identifies these as a pure boost and a spatial rotation. The polar theorem alone does not identify an arbitrary positive matrix with a physical boost."
+    },
+    {
+      "num": "3.4",
+      "file": "content/rel/ch03.js",
+      "added": [
+        "pma-5.5"
+      ],
+      "expectedDeps": [
+        "rel-3.1",
+        "rel-1.9",
+        "pma-5.5"
+      ],
+      "append": "On a smooth timelike segment, $d\\tau/dt=1/\\gamma$ is positive. The chain rule (pma 5.5) therefore converts each coordinate derivative from lab time to proper time: $dx^\\mu/d\\tau=(dx^\\mu/dt)(dt/d\\tau)$. This yields the displayed factor $\\gamma$ component by component. Null curves have no such positive proper-time parameter, so this step concerns massive-particle timelike motion."
+    },
+    {
+      "num": "3.6",
+      "file": "content/rel/ch03.js",
+      "added": [
+        "pma-6.21"
+      ],
+      "expectedDeps": [
+        "rel-3.5",
+        "rel-2.3",
+        "pma-6.21"
+      ],
+      "append": "With the stated constant proper acceleration, the rapidity is linear in proper time. The smooth hyperbolic components of $u^\\mu$ have the displayed coordinate functions as antiderivatives. The fundamental theorem (pma 6.21) evaluates their integrals on each finite proper-time interval; the initial position and rest condition fix the constants. This is exact integration of the ideal prescribed motion, not a fuel-consumption or variable-thrust model."
+    },
+    {
+      "num": "4.1",
+      "file": "content/rel/ch04.js",
+      "added": [
+        "pma-5.3"
+      ],
+      "expectedDeps": [
+        "rel-3.4",
+        "pma-5.3"
+      ],
+      "append": "In an inertial change of coordinates the Lorentz matrix has constant entries. Applying the sum and product derivative rules (pma 5.3) to each transformed coordinate passes those constants through the proper-time derivative. Thus the tangent transforms by the same matrix, and multiplication by a constant invariant rest mass gives the stated four-momentum transformation. A coordinate-dependent matrix would contribute additional derivative terms."
+    },
+    {
+      "num": "4.12",
+      "file": "content/rel/ch04-b.js",
+      "added": [
+        "pma-6.21",
+        "pma-8.6"
+      ],
+      "expectedDeps": [
+        "rel-4.3",
+        "rel-2.3",
+        "mech-2.7",
+        "pma-6.21",
+        "pma-8.6"
+      ],
+      "append": "For positive remaining mass, $1/m$ is continuous and its logarithmic antiderivative is supplied by pma 8.6. The fundamental theorem (pma 6.21) integrates the stated comoving momentum balance between the two positive endpoint masses. The logarithm product rule gives $\\log m_0-\\log m=\\log(m_0/m)$, producing the rapidity. Exhaust speed is held constant in this calculation; it is not a proof of a variable-exhaust rocket law."
+    },
+    {
+      "num": "4.13",
+      "file": "content/rel/ch04-c.js",
+      "added": [
+        "pma-5.3",
+        "pma-5.5"
+      ],
+      "expectedDeps": [
+        "rel-4.1",
+        "rel-3.5",
+        "pma-5.3",
+        "pma-5.5"
+      ],
+      "append": "For a differentiable subluminal velocity and constant rest mass, the product rule (pma 5.3) differentiates each component of $\\gamma m\\mathbf v$. The chain rule (pma 5.5) differentiates $\\gamma=(1-|\\mathbf v|^2/c^2)^{-1/2}$ and gives the stated $d\\gamma/dt$. These are the calculus inputs to the force-acceleration identity. Rest-mass variation would add a term and lies outside the stated model."
+    },
+    {
+      "num": "4.16",
+      "file": "content/rel/ch04-c.js",
+      "added": [
+        "pma-5.15"
+      ],
+      "expectedDeps": [
+        "rel-2.1",
+        "rel-2.9",
+        "em-11.5",
+        "rel-1.14",
+        "pma-5.15"
+      ],
+      "append": "Taylor's theorem (pma 5.15), applied to $(1-z)^{-1/2}$ near $z=0$, gives $\\gamma-1=z/2+O(z^2)$ with $z=v^2/c^2$. Multiplying by the emitted energy isolates the leading low-speed kinetic-energy difference used in the paper's inertial-mass comparison. The exact frame-energy balance precedes this expansion; the approximation does not establish an exact finite-speed kinetic-energy formula by itself."
+    }
+  ],
+  "mathChecks": 17060,
+  "objectsFunctionsAndRawRows": 57,
+  "native": {
+    "complete": true,
+    "cases": 24,
+    "pictureCount": 72,
+    "changedIdeaPictures": 24,
+    "unchangedStatementPictures": 48,
+    "rows": [
+      {
+        "id": "rel-1.9",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/1.9-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 76.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 252.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 98.65625,
+              "right": 106.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 112.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.546875,
+              "right": 226.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 214.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.65625,
+              "right": 182.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 95.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.84375,
+              "right": 178.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 198.671875,
+              "right": 211.953125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-1.9",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/1.9-light-statement.png",
+        "bounds": {
+          "scroll": 363,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 226.578125,
+              "right": 256.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.84375,
+              "right": 157.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 347,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 347,
+              "client": 249
+            },
+            {
+              "left": 232.171875,
+              "right": 258.5625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-1.9",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/1.9-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 383,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 367
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.4",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.4-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 167.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 243.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 279.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 198.84375,
+              "right": 293.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 55.109375,
+              "right": 91.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 164.21875,
+              "right": 173.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 181.765625,
+              "right": 218.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 262.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 240.265625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.4",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.4-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 263.390625,
+              "right": 277.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 79.421875,
+              "right": 89.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 167.71875,
+              "right": 183.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 179.078125,
+              "right": 188.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 234.53125,
+              "right": 244.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 110.9375,
+              "right": 122.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 262.9375,
+              "right": 274.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 138.265625,
+              "right": 189.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 92.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 126.5,
+              "right": 176.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 214.34375,
+              "right": 255.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 82.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 159.25,
+              "right": 245.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 200.875,
+              "right": 279.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 203.734375,
+              "right": 213.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 107.15625,
+              "right": 218.71875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.4",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.4-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.5",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.5-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 63.46875,
+              "right": 91.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 245.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 96.671875,
+              "right": 204.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 46.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 193.53125,
+              "right": 261.921875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.5",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.5-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 80.078125,
+              "right": 90.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.75,
+              "right": 104.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 46.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 143.5625,
+              "right": 242.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 212.265625,
+              "right": 221.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 241.90625,
+              "right": 250.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 260.953125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.5",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.5-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.7",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.7-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 300.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 61.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 166.234375,
+              "right": 208.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.546875,
+              "right": 70.828125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.7",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.7-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 87.375,
+              "right": 100.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 187.078125,
+              "right": 202.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 263.875,
+              "right": 279.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 176.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 230.6875,
+              "right": 244.140625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.7",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.7-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "rel-2.13",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.13-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 239.59375,
+              "right": 294.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 68.234375,
+              "right": 147.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 184.1875,
+              "right": 194.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 186.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 269.390625,
+              "right": 282.140625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.13",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.13-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 178.625,
+              "right": 231.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 109.25,
+              "right": 148.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 215.578125,
+              "right": 227.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 113.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 183.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 113.140625,
+              "right": 199.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 283.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 68.4375,
+              "right": 109.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 112.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 128,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 167.3125,
+              "right": 218.109375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.13",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.13-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "rel-2.14",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.14-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 200.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 241.703125,
+              "right": 255.78125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.14",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.14-light-statement.png",
+        "bounds": {
+          "scroll": 379,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 81.90625,
+              "right": 98.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 243.953125,
+              "right": 265.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 110.9375,
+              "right": 122.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.8125,
+              "right": 176.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.75,
+              "right": 117.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.28125,
+              "right": 211.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 141.578125,
+              "right": 161.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 48.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 186.90625,
+              "right": 198.21875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 141.34375,
+              "right": 153.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 79.359375,
+              "right": 90.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 144.53125,
+              "right": 151.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 78.3125,
+              "right": 89.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.609375,
+              "right": 178.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 212.390625,
+              "right": 234.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 363,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 363,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 273.171875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.14",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.14-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 400,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 384
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.4",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.4-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 98.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 269.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 256.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 93.375,
+              "right": 186.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 163.609375,
+              "right": 174.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.21875,
+              "right": 204.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 130.34375,
+              "right": 139.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.78125,
+              "right": 203.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 250.921875,
+              "right": 261.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 116.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 194.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 136.328125,
+              "right": 146.859375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.4",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.4-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 239.4375,
+              "right": 281.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 176.890625,
+              "right": 274.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.75,
+              "right": 106.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 211.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 241.6875,
+              "right": 269.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 151.84375,
+              "right": 170.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 265.453125,
+              "right": 273.109375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.4",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.4-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.6",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.6-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 190.484375,
+              "right": 200.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 116.9375,
+              "right": 245.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 26.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 120.765625,
+              "right": 131.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 202.09375,
+              "right": 212.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 131.265625,
+              "right": 160.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 239.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 186.8125,
+              "right": 262.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 138.90625,
+              "right": 222.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.640625,
+              "right": 226.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 131.15625,
+              "right": 150.328125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.6",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.6-light-statement.png",
+        "bounds": {
+          "scroll": 502,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 176.46875,
+              "right": 187.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 234.109375,
+              "right": 244.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 486,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 486,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 255.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 240.640625,
+              "right": 248.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 284.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 109.703125,
+              "right": 165.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 105.140625,
+              "right": 174.09375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.6",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.6-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 531,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 515
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.1",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.1-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 141.40625,
+              "right": 161.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 187.6875,
+              "right": 245.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 130.40625,
+              "right": 149.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 25.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 243.75,
+              "right": 259.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 183.953125,
+              "right": 208.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 120.171875,
+              "right": 153.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.25,
+              "right": 132.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.5625,
+              "right": 160.125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.1",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.1-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 219.84375,
+              "right": 235.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 129.703125,
+              "right": 222.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 279.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 147.8125,
+              "right": 224.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 107.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.90625,
+              "right": 151.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 185.96875,
+              "right": 196.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 266.21875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.046875,
+              "right": 176.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 119.90625,
+              "right": 146.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 269.984375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.1",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.1-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "rel-4.12",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.12-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 251.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 79.546875,
+              "right": 164.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 238.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 175.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 78.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 184.578125,
+              "right": 192.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 88.453125,
+              "right": 134.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 35.5625,
+              "right": 43.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 228.453125,
+              "right": 262.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 299.578125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.12",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.12-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 144.96875,
+              "right": 155.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 75.390625,
+              "right": 97.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 119.9375,
+              "right": 135.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 199.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 82.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 258.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 78.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 214.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 165.734375,
+              "right": 249.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 81.0625,
+              "right": 92,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 256.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.84375,
+              "right": 99.46875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.12",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.12-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.13",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.13-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 283.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 91.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 130.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 270.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 269.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 224.09375,
+              "right": 241.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 78.046875,
+              "right": 88.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 236.8125,
+              "right": 264.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.796875,
+              "right": 161.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 264.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 63.484375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.13",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.13-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 213.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 118.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 137.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 131.75,
+              "right": 251.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 177.09375,
+              "right": 284.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 108.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 55.875,
+              "right": 155.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 233.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 264.71875,
+              "right": 276.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 192.15625,
+              "right": 199.8125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.13",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.13-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.16",
+        "theme": "light",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.16-light-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 86.5625,
+              "right": 127.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 108.328125,
+              "right": 120.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 49.1875,
+              "right": 72.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 83.40625,
+              "right": 152.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 97.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 32.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.828125,
+              "right": 156.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 103.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 143.40625,
+              "right": 186.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 300.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 154.40625,
+              "right": 229.625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.16",
+        "theme": "light",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.16-light-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 203.9375,
+              "right": 233.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 263.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 75.734375,
+              "right": 186.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.640625,
+              "right": 124.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 194.140625,
+              "right": 283.59375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.16",
+        "theme": "light",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.16-light-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-1.9",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/1.9-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 76.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 252.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 98.65625,
+              "right": 106.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 112.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.546875,
+              "right": 226.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 214.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.65625,
+              "right": 182.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 95.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.84375,
+              "right": 178.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 198.671875,
+              "right": 211.953125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-1.9",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/1.9-dark-statement.png",
+        "bounds": {
+          "scroll": 363,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 226.578125,
+              "right": 256.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.84375,
+              "right": 157.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 347,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 347,
+              "client": 249
+            },
+            {
+              "left": 232.171875,
+              "right": 258.5625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-1.9",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/1.9-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 383,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 367
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.4",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.4-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 167.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 243.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 279.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 198.84375,
+              "right": 293.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 55.109375,
+              "right": 91.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 164.21875,
+              "right": 173.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 181.765625,
+              "right": 218.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.90625,
+              "right": 262.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 240.265625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.4",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.4-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 263.390625,
+              "right": 277.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 79.421875,
+              "right": 89.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 167.71875,
+              "right": 183.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 179.078125,
+              "right": 188.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 234.53125,
+              "right": 244.65625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 110.9375,
+              "right": 122.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 262.9375,
+              "right": 274.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 138.265625,
+              "right": 189.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 92.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 126.5,
+              "right": 176.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 214.34375,
+              "right": 255.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 82.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 159.25,
+              "right": 245.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 200.875,
+              "right": 279.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 203.734375,
+              "right": 213.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 107.15625,
+              "right": 218.71875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.4",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.4-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.5",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.5-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 63.46875,
+              "right": 91.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 245.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 96.671875,
+              "right": 204.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 46.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 193.53125,
+              "right": 261.921875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.5",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.5-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 80.078125,
+              "right": 90.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.75,
+              "right": 104.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 46.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 143.5625,
+              "right": 242.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 212.265625,
+              "right": 221.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 241.90625,
+              "right": 250.75,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 260.953125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.5",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.5-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.7",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.7-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 300.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 61.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 166.234375,
+              "right": 208.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 57.546875,
+              "right": 70.828125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.7",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.7-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 87.375,
+              "right": 100.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 187.078125,
+              "right": 202.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 263.875,
+              "right": 279.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 176.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 230.6875,
+              "right": 244.140625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.7",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.7-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "rel-2.13",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.13-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 239.59375,
+              "right": 294.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 68.234375,
+              "right": 147.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 184.1875,
+              "right": 194.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 186.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 269.390625,
+              "right": 282.140625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.13",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.13-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 178.625,
+              "right": 231.9375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 109.25,
+              "right": 148.546875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 215.578125,
+              "right": 227.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 113.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 183.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 113.140625,
+              "right": 199.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 283.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 68.4375,
+              "right": 109.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 112.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 128,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 167.3125,
+              "right": 218.109375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.13",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.13-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "rel-2.14",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.14-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 200.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 241.703125,
+              "right": 255.78125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.14",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.14-dark-statement.png",
+        "bounds": {
+          "scroll": 379,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 81.90625,
+              "right": 98.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 243.953125,
+              "right": 265.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 110.9375,
+              "right": 122.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.8125,
+              "right": 176.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.75,
+              "right": 117.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.28125,
+              "right": 211.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 141.578125,
+              "right": 161.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 48.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 186.90625,
+              "right": 198.21875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 141.34375,
+              "right": 153.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 79.359375,
+              "right": 90.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 144.53125,
+              "right": 151.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 78.3125,
+              "right": 89.703125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 156.609375,
+              "right": 178.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 212.390625,
+              "right": 234.15625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 363,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 363,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 273.171875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-2.14",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/2.14-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 400,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 384
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.4",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.4-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 98.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 269.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 256.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 93.375,
+              "right": 186.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 163.609375,
+              "right": 174.125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 111.21875,
+              "right": 204.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 130.34375,
+              "right": 139.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 195.78125,
+              "right": 203.734375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 250.921875,
+              "right": 261.4375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 116.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 194.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 136.328125,
+              "right": 146.859375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.4",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.4-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 239.4375,
+              "right": 281.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 176.890625,
+              "right": 274.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.75,
+              "right": 106.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 211.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 241.6875,
+              "right": 269.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 151.84375,
+              "right": 170.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 265.453125,
+              "right": 273.109375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.4",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.4-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.6",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.6-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 190.484375,
+              "right": 200.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 62.71875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 116.9375,
+              "right": 245.25,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 26.5625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 120.765625,
+              "right": 131.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 202.09375,
+              "right": 212.609375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 131.265625,
+              "right": 160.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 239.140625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 186.8125,
+              "right": 262.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 138.90625,
+              "right": 222.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 103.640625,
+              "right": 226.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 131.15625,
+              "right": 150.328125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.6",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.6-dark-statement.png",
+        "bounds": {
+          "scroll": 502,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 176.46875,
+              "right": 187.859375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 234.109375,
+              "right": 244.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 486,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 486,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 255.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 240.640625,
+              "right": 248.296875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 284.171875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 109.703125,
+              "right": 165.90625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 105.140625,
+              "right": 174.09375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-3.6",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/3.6-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 531,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 515
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.1",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.1-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 141.40625,
+              "right": 161.078125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 187.6875,
+              "right": 245.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 130.40625,
+              "right": 149.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 25.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 243.75,
+              "right": 259.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 183.953125,
+              "right": 208.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 120.171875,
+              "right": 153.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 95.25,
+              "right": 132.328125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.5625,
+              "right": 160.125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.1",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.1-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 219.84375,
+              "right": 235.375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 129.703125,
+              "right": 222.203125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 279.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 147.8125,
+              "right": 224.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 107.59375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 137.90625,
+              "right": 151.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 185.96875,
+              "right": 196.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 266.21875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 132.046875,
+              "right": 176.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 119.90625,
+              "right": 146.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 269.984375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.1",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.1-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": []
+        }
+      },
+      {
+        "id": "rel-4.12",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.12-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 251.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 79.546875,
+              "right": 164.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 238.109375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 175.6875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 78.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 184.578125,
+              "right": 192.53125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 88.453125,
+              "right": 134.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 35.5625,
+              "right": 43.515625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 228.453125,
+              "right": 262.953125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 299.578125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.12",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.12-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 144.96875,
+              "right": 155.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 75.390625,
+              "right": 97.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 119.9375,
+              "right": 135.46875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 199.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 82.28125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 258.625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 78.359375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 214.1875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 165.734375,
+              "right": 249.828125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 81.0625,
+              "right": 92,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 256.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.84375,
+              "right": 99.46875,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.12",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.12-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.13",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.13-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 18,
+              "right": 283.78125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 91.09375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 130.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 270.046875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 269.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 224.09375,
+              "right": 241.96875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 78.046875,
+              "right": 88.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 236.8125,
+              "right": 264.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 124.796875,
+              "right": 161.875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 264.390625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 63.484375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.13",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.13-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 37,
+              "right": 213.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 118.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 67.171875,
+              "right": 137.765625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 131.75,
+              "right": 251.265625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 177.09375,
+              "right": 284.984375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 108.578125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 55.875,
+              "right": 155.890625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 233.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 264.71875,
+              "right": 276.03125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 192.15625,
+              "right": 199.8125,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.13",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.13-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.16",
+        "theme": "dark",
+        "kind": "idea",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.16-dark-idea.png",
+        "bounds": {
+          "scroll": 284,
+          "client": 284,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 86.5625,
+              "right": 127.5,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 108.328125,
+              "right": 120.84375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 49.1875,
+              "right": 72.234375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 83.40625,
+              "right": 152.40625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 97.0625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 32.796875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 85.828125,
+              "right": 156.34375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 103.484375,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 143.40625,
+              "right": 186.421875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 18,
+              "right": 300.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 154.40625,
+              "right": 229.625,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.16",
+        "theme": "dark",
+        "kind": "statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.16-dark-statement.png",
+        "bounds": {
+          "scroll": 281,
+          "client": 281,
+          "left": 18,
+          "right": 302,
+          "viewport": 320,
+          "math": [
+            {
+              "left": 203.9375,
+              "right": 233.671875,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 263.3125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 75.734375,
+              "right": 186.640625,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 72.640625,
+              "right": 124.453125,
+              "scroll": 0,
+              "client": 0
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 37,
+              "right": 286,
+              "scroll": 249,
+              "client": 249
+            },
+            {
+              "left": 194.140625,
+              "right": 283.59375,
+              "scroll": 0,
+              "client": 0
+            }
+          ]
+        }
+      },
+      {
+        "id": "rel-4.16",
+        "theme": "dark",
+        "kind": "main-statement",
+        "path": "/tmp/atlas-new-imaging-source/rel/native/4.16-dark-main.png",
+        "bounds": {
+          "client": 285,
+          "scroll": 285,
+          "math": [
+            {
+              "client": 253,
+              "scroll": 253
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "status": "await independent peer and separate inherited corrections/wraps"
+}

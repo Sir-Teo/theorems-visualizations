@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 6 (part 2): calculus with distributions
 //
-// Numbering and scope reviewed against the full second-edition source; see docs/verification/fa-source-review.md.
+// Numbering note: recalled, not checked against the book; uncertain items carry `verify: true`.
 
 // ---------------------------------------------------------------- the model bump ψ and its exact derivatives
 /** ψ(x) = exp(−1/(1−x²)) on (−1,1): ψ^{(k)} = p_k(x)(1−x²)^{−2k}ψ with an exact polynomial recursion. */
@@ -68,10 +68,11 @@ export default {
 $$\Lambda_f\varphi=\int_\Omega\varphi(x)f(x)\,dx\qquad(\varphi\in\mathscr D(\Omega)),$$
 of order $0$, since $|\Lambda_f\varphi|\le\big(\int_K|f|\big)\|\varphi\|_0$ for $\varphi\in\mathscr D_K$. If $\Lambda_f=\Lambda_g$ then $f=g$ a.e., so $f$ is identified with $\Lambda_f$ and one writes $f\in\mathscr D'(\Omega)$. Likewise every complex Borel measure $\mu$ on $\Omega$ (or positive Borel measure finite on compact sets) is a distribution of order $0$ via $\Lambda_\mu\varphi=\int\varphi\,d\mu$.`,
       idea: String.raw`The estimate is immediate and is exactly the criterion of 6.8 with $N=0$. For injectivity, test $f-g$ against shrinking bumps centred at $x$: the normalised averages converge to $(f-g)(x)$ at every Lebesgue point, hence almost everywhere (RCA 7.7). So distributions genuinely extend $L^1_{loc}$, and measures sit in between.`,
-      caption: String.raw`Pick $f$ (or a measure) and drag the bump $\varphi$ by its centre $c$; shrink its width $r$. Top: the shaded product whose integral is $\Lambda\varphi$. Bottom: the normalised readings $\Lambda(\varphi_c)/\int\varphi_c$ for every centre $c$, over the faint graph of $f$. As $r\to0$ they converge to $f$ — at a jump to the midpoint — so $\Lambda_f$ determines $f$. Near an atom of the measure the readings blow up like $1/r$: the measure is a distribution of order $0$, and its atomic part cannot be represented by a locally integrable density.`,
+      caption: String.raw`Pick $f$ (or a measure) and drag the bump $\varphi$ by its centre $c$; shrink its width $r$. Top: the shaded product whose integral is $\Lambda\varphi$. Bottom: the normalised readings $\Lambda(\varphi_c)/\int\varphi_c$ for every centre $c$, over the faint graph of $f$. As $r\to0$ they converge to $f$ — at a jump to the midpoint — so $\Lambda_f$ determines $f$. Near an atom of the measure the readings blow up like $1/r$: a measure is a distribution of order $0$, but not a function.`,
       deps: ['fa-6.7', 'fa-6.8', 'rca-7.7'],
       see: ['rca-6.19'],
       tags: ['distributions', 'locally integrable'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const which = v.select('$\\Lambda=$', [
@@ -157,6 +158,7 @@ It is again a distribution, every distribution has derivatives of all orders, an
       caption: String.raw`$f$ is smooth except at $a$ (drag it), where it jumps by $s$ and its slope changes by $\kappa$. Bottom: $Df$ or $D^2f$ as a distribution — the classical derivative (purple curve) plus point terms at $a$: $s\,\delta_a$ for $Df$; $\kappa\,\delta_a$ and the dipole $s\,\delta'_a$ for $D^2f$. Drag the test function $\varphi$ across $a$: the readout checks that $(-1)^k\int f\varphi^{(k)}$ equals classical part plus point terms, and shows how wrong the classical part alone is.`,
       deps: ['fa-6.7', 'fa-6.6a', 'fa-6.11'],
       tags: ['distributions', 'derivatives'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const kS = v.select('show', [{ value: 1, label: "$Df$" }, { value: 2, label: "$D^2f$" }], 1);
@@ -205,70 +207,84 @@ It is again a distribution, every distribution has derivatives of all orders, an
     },
     {
       num: '6.14',
-      kind: 'Model',
-      name: 'The distribution derivative of a function of bounded variation',
-      statement: String.raw`Let $\Omega$ be an interval of the real line and let $f$ be left-continuous and of bounded variation in $\Omega$. Its distribution derivative is the Stieltjes measure $\mu$ defined by $\mu([a,b))=f(b)-f(a)$. Although the classical derivative $f'$ exists almost everywhere and is integrable, $D\Lambda_f=\Lambda_{f'}$ holds if and only if $f$ is absolutely continuous. A jump produces a point mass that the almost-everywhere derivative omits.`,
-      idea: String.raw`For a compactly supported smooth $\varphi$, Fubini applied to the Stieltjes increments gives $\int\varphi\,d\mu=-\int f\varphi'\,dx$, exactly the definition of $D\Lambda_f$. The Stieltjes measure equals $f'\,dx$ precisely when $f$ is absolutely continuous. A left-continuous step has zero classical derivative almost everywhere but a nonzero Dirac distribution derivative. The diagram also differentiates once more as a derived illustration of 6.12.`,
-      caption: String.raw`On $\Omega=(-6,6)$, $f$ is smooth except at $a$ (drag it), where it jumps by $s$ and its slope changes by $\kappa$. Bottom: $Df$ or $D^2f$ as a distribution — the classical derivative (purple curve) plus point terms at $a$: $s\,\delta_a$ for $Df$; $\kappa\,\delta_a$ and the dipole $s\,\delta'_a$ for $D^2f$. Drag the test function $\varphi$ across $a$: the readout checks that $(-1)^k\int f\varphi^{(k)}$ equals classical part plus point terms, and shows how wrong the classical part alone is.`,
-      deps: ['fa-6.12', 'fa-6.11'],
-      tags: ['distributions', 'derivatives'],
+      kind: 'Definition',
+      name: 'Multiplying a distribution by a smooth function',
+      statement: String.raw`If $\Lambda\in\mathscr D'(\Omega)$ and $f\in C^\infty(\Omega)$, the product $f\Lambda$ is defined by
+$$(f\Lambda)(\varphi)=\Lambda(f\varphi)\qquad(\varphi\in\mathscr D(\Omega)).$$
+It is a distribution; for $\Lambda=\Lambda_g$ it is the ordinary product $\Lambda_{fg}$. For example $f\delta=f(0)\delta$, $\;f\delta'=f(0)\delta'-f'(0)\delta$, and $x\cdot\mathrm{p.v.}\frac1x=1$.`,
+      idea: String.raw`Multiplication by $f$ maps $\mathscr D_K$ into $\mathscr D_K$, and by Leibniz' rule $\|f\varphi\|_N\le C_N\|\varphi\|_N$ with $C_N$ depending only on the derivatives of $f$ of order $\le N$ on $K$. So $\varphi\mapsto f\varphi$ is continuous on each $\mathscr D_K$, hence on $\mathscr D(\Omega)$ (6.6), and $\Lambda\circ(f\cdot)$ is continuous. Smoothness of $f$ is essential: $\delta$ cannot be multiplied by a function that is discontinuous at $0$.`,
+      caption: String.raw`Shape the multiplier $f(x)=f(0)+f'(0)x+bx^2$ with the orange handles (value at $0$, and the tangent's height at $x=1$) and the curvature slider; drag $\varphi$. Bottom: the distribution $f\Lambda$ drawn — for $\Lambda=\delta'$ a dipole of strength $f(0)$ **plus** a point mass $-f'(0)$, which appears from nothing when $f'(0)\ne0$. The readout evaluates $\Lambda(f\varphi)$ directly and from the closed form.`,
+      deps: ['fa-6.7', 'fa-6.6', 'fa-6.12'],
+      tags: ['distributions', 'multiplication'],
+      verify: true,
       viz(v) {
         const M = v.M;
-        const kS = v.select('show', [{ value: 1, label: "$Df$" }, { value: 2, label: "$D^2f$" }], 1);
-        const sS = v.slider('jump $s$', -1.2, 1.2, 0.8, { step: 0.01 });
-        const kapS = v.slider('slope change $\\kappa$', -1.2, 1.2, 0.6, { step: 0.01 });
-        const rS = v.slider('width of $\\varphi$', 0.3, 2, 1.1, { step: 0.01 });
-        const top = v.stage({ x: [-4, 4], y: [-1.6, 2.6], height: 220, full: true, axes: true, title: '$f=g+\\big(s+\\kappa(x-a)\\big)H(x-a)$, and the test function $\\varphi$' });
-        const bot = v.stage({ x: [-4, 4], y: [-2.2, 2.2], height: 230, full: true, axes: true });
-        const ha = top.handle(-0.7, 0, { color: 'purple', label: 'a', labelPos: 's', constrain: (x) => [M.clamp(x, -3.3, 3.3), 0] });
-        const hc = top.handle(0.1, 1, { color: 'blue', label: 'φ', constrain: (x) => [M.clamp(x, -3.2, 3.2), 1] });
-        const g = (x) => 0.45 * Math.cos(1.3 * x) + 0.15 * x, g1 = (x) => -0.585 * Math.sin(1.3 * x) + 0.15, g2 = (x) => -0.7605 * Math.cos(1.3 * x);
+        const L = v.select('$\\Lambda=$', [{ value: 'd', label: '$\\delta$' }, { value: 'dp', label: "$\\delta'$" }, { value: 'pv', label: '$\\mathrm{p.v.}\\tfrac1x$' }, { value: 'H', label: '$H$ (Heaviside)' }], 'dp');
+        const bS = v.slider('curvature $b$', -0.6, 0.6, -0.2, { step: 0.01 });
+        const top = v.stage({ x: [-3, 3], y: [-1.5, 2.1], height: 230, full: true, axes: true, title: 'the multiplier $f$ and the test function $\\varphi$' });
+        const bot = v.stage({ x: [-3, 3], y: [-2.2, 2.2], height: 230, full: true, axes: true, title: 'the distribution $f\\Lambda$' });
+        const h0 = top.handle(0, 0.8, { color: 'orange', label: 'f(0)', labelPos: 'nw', constrain: (x, y) => [0, M.clamp(y, -1.3, 1.9)] });
+        const h1 = top.handle(1, 1.3, { color: 'orange', label: 'tangent', labelPos: 'e', constrain: (x, y) => [1, M.clamp(y, -1.3, 1.9)] });
+        const hc = top.handle(0.4, 0, { color: 'blue', label: 'c', labelPos: 's', constrain: (x) => [M.clamp(x, -1.6, 1.6), 0] });
+        const r = 1.25;
         let st = {};
-        v.legend([['purple', 'classical part of $D^kf$'], ['purple', 'point terms at $a$', { area: true }], ['blue', 'test function $\\varphi$']]);
+        v.legend([['orange', 'multiplier $f$'], ['blue', '$\\varphi$'], ['purple', '$f\\Lambda$']]);
         v.render(() => {
-          const k = kS.value, s = sS.value, kap = kapS.value, a = ha.x, c = hc.x, r = rS.value;
-          const f = (x) => g(x) + (x > a ? s + kap * (x - a) : 0);
-          const cl = k === 1 ? (x) => g1(x) + (x > a ? kap : 0) : g2;
-          // top panel
-          top.fn(f, { domain: [-4, a], color: 'purple', width: 2.4 });
-          top.fn(f, { domain: [a, 4], color: 'purple', width: 2.4 });
-          top.line(a, g(a), a, g(a) + s, { color: 'purple', width: 1.2, dash: [3, 3] });
-          top.fn((x) => phiD(0, x, c, r), { domain: [c - r, c + r], color: 'blue', width: 2.2, fill: 'blue', fillAlpha: 0.08 });
-          // bottom panel: D^k f
-          bot.setTitle(k === 1 ? '$Df = g\' + \\kappa H(x-a) + s\\,\\delta_a$' : '$D^2f = g\'\' + \\kappa\\,\\delta_a + s\\,\\delta\'_a$');
-          bot.fn(cl, { domain: [-4, a], color: 'purple', width: 2.4 });
-          bot.fn(cl, { domain: [a, 4], color: 'purple', width: 2.4 });
-          bot.fn((x) => phiD(0, x, c, r), { domain: [c - r, c + r], color: 'blue', width: 1.6, alpha: 0.6 });
-          if (k === 1) deltaArrow(bot, a, s, 1.5, 'purple', 's\\,\\delta_a');
-          else { deltaArrow(bot, a, kap, 1.5, 'purple', '\\kappa\\,\\delta_a', 'right'); dipole(bot, a, s, 1.2, 'purple', "s\\,\\delta'_a"); }
-          // the pairing, computed three ways
-          const n = 400, lo = c - r, hi = c + r;
-          // split at a; the right piece starts just after a so that one-sided values are used at the jump
-          const piece = (h) => (a > lo && a < hi ? simpson(h, lo, a, n) + simpson(h, a + 1e-12, hi, n) : simpson(h, lo, hi, 2 * n));
-          const lhs = (k === 1 ? -1 : 1) * piece((x) => f(x) * phiD(k, x, c, r));
-          const clp = piece((x) => cl(x) * phiD(0, x, c, r));
-          const pt = k === 1 ? s * phiD(0, a, c, r) : kap * phiD(0, a, c, r) - s * phiD(1, a, c, r);
-          bot.corner(`point terms contribute ${v.fmt(pt, 4)}`, 'tl', { color: Math.abs(pt) > 1e-4 ? 'purple' : 'muted', weight: 600 });
-          st = { k, lhs, clp, pt };
+          const key = L.value, f0 = h0.y, f1 = h1.y - h0.y, b = bS.value, c = hc.x;
+          const f = (x) => f0 + f1 * x + b * x * x, fp = (x) => f1 + 2 * b * x;
+          const ph = (x) => phiD(0, x, c, r), php = (x) => phiD(1, x, c, r);
+          top.fn(f, { color: 'orange', width: 2.4 });
+          top.line(-0.6, f0 - 0.6 * f1, 1.4, f0 + 1.4 * f1, { color: 'orange', width: 1.2, dash: [5, 4] });
+          top.fn(ph, { domain: [c - r, c + r], color: 'blue', width: 2.2 });
+          top.fn((x) => f(x) * ph(x), { domain: [c - r, c + r], color: 'teal', width: 1.4, dash: [4, 3] });
+          top.text('fφ', c + 0.35, f(c + 0.35) * ph(c + 0.35), { color: 'teal', dy: -10, math: true });
+          // the product, drawn
+          let direct, formula, form;
+          const fph = (x) => f(x) * ph(x);
+          if (key === 'd') {
+            deltaArrow(bot, 0, f0, 1.3, 'purple', 'f(0)\\,\\delta');
+            direct = fph(0); formula = f0 * ph(0); form = 'f(0)\\varphi(0)';
+          } else if (key === 'dp') {
+            dipole(bot, 0, f0, 1.1, 'purple', "f(0)\\,\\delta'");
+            deltaArrow(bot, 0.8, -f1, 1.1, 'red', "-f'(0)\\,\\delta");
+            bot.text('(located at 0)', 0.8, 0, { color: 'red', size: 11, dy: -f1 > 0 ? 12 : -12, align: 'center' });
+            direct = -(fp(0) * ph(0) + f(0) * php(0)); formula = -f0 * php(0) - f1 * ph(0); form = "-f(0)\\varphi'(0)-f'(0)\\varphi(0)";
+          } else if (key === 'pv') {
+            bot.fn((x) => f(x) / x, { domain: [-3, -0.02], color: 'purple', width: 2.2 });
+            bot.fn((x) => f(x) / x, { domain: [0.02, 3], color: 'purple', width: 2.2 });
+            const R = Math.abs(c) + r;
+            const pvInt = (h, hp) => simpson((x) => (x < 1e-9 ? 2 * hp(0) : (h(x) - h(-x)) / x), 0, R, 800);
+            direct = pvInt(fph, (x) => fp(x) * ph(x) + f(x) * php(x));
+            formula = f0 * pvInt(ph, php) + simpson((x) => (f1 + b * x) * ph(x), c - r, c + r, 400);
+            form = 'f(0)\\,\\mathrm{p.v.}\\!\\int\\tfrac{\\varphi}{x}+\\int\\tfrac{f(x)-f(0)}{x}\\varphi';
+          } else {
+            bot.fn((x) => (x > 0 ? f(x) : 0), { domain: [-3, 0], color: 'purple', width: 2.2 });
+            bot.fn((x) => f(x), { domain: [0, 3], color: 'purple', width: 2.2 });
+            direct = simpson(fph, Math.max(0, c - r), Math.max(0, c + r), 400);
+            formula = direct; form = '\\int_0^\\infty f\\varphi';
+          }
+          bot.fn(ph, { domain: [c - r, c + r], color: 'blue', width: 1.4, alpha: 0.55 });
+          st = { key, direct, formula, form, f0, f1 };
         });
         v.readout(() => {
-          const s = st, sg = s.k === 1 ? '-' : '';
-          const pts = s.k === 1 ? 's\\,\\varphi(a)' : "\\kappa\\varphi(a)-s\\varphi'(a)";
-          return `$${sg}\\int f\\,\\varphi^{(${s.k})}\\,dx = ${v.fix(s.lhs, 5)}$ $\\;=\\;$ classical $${v.fix(s.clp, 5)}$ $+$ point terms $${pts} = ${v.fix(s.pt, 5)}$ (sum $${v.fix(s.clp + s.pt, 5)}$). The classical derivative alone misses $${v.fix(s.pt, 4)}$.`;
+          const s = st;
+          const extra = s.key === 'dp' && Math.abs(s.f1) > 1e-3 ? ` The $\\delta$ term with weight $-f'(0) = ${v.fix(-s.f1, 3)}$ comes from differentiating $f$.` : s.key === 'pv' && Math.abs(s.f0) < 0.03 ? ' With $f(0)\\approx0$ the singular part disappears: $f\\cdot\\mathrm{p.v.}\\frac1x$ is the smooth function $f(x)/x$.' : '';
+          return `$(f\\Lambda)(\\varphi)=\\Lambda(f\\varphi) = ${v.fix(s.direct, 5)}$; closed form $${s.form} = ${v.fix(s.formula, 5)}$.${extra}`;
         });
       },
     },
     {
       num: '6.15',
-      kind: 'Definition',
-      name: 'Multiplication by smooth functions and the Leibniz rule',
-      statement: String.raw`For $f\in C^\infty(\Omega)$ and $\Lambda\in\mathscr D'(\Omega)$, define the distribution $f\Lambda$ by $(f\Lambda)(\varphi)=\Lambda(f\varphi)$. Multiplication preserves distributions and agrees with ordinary multiplication of locally integrable functions. Its derivatives obey the Leibniz formula
-$$D^\alpha(f\Lambda)=\sum_{\beta\le\alpha}\binom\alpha\beta(D^{\alpha-\beta}f)(D^\beta\Lambda).$$
-In particular $f\delta=f(0)\delta$ and $f\delta'=f(0)\delta'-f'(0)\delta$.`,
-      idea: String.raw`Leibniz's formula on smooth functions gives $\|f\varphi\|_N\le C\|\varphi\|_N$ on every fixed compact support; Theorem 6.8 therefore proves that $f\Lambda$ is continuous. For one derivative, $-\Lambda(fD_i\varphi)=-\Lambda(D_i(f\varphi))+\Lambda((D_if)\varphi)$, which is $(fD_i\Lambda+(D_if)\Lambda)(\varphi)$. Iteration yields the multi-index identity, with the same binomial coefficients as for smooth functions. General distributions have no canonical product with arbitrary nonsmooth functions.`,
+      kind: 'Theorem',
+      name: 'Leibniz formula for f·Λ',
+      statement: String.raw`If $f\in C^\infty(\Omega)$ and $\Lambda\in\mathscr D'(\Omega)$, then for every multi-index $\alpha$
+$$D^\alpha(f\Lambda)=\sum_{\beta\le\alpha}c_{\alpha\beta}\,(D^{\alpha-\beta}f)(D^\beta\Lambda),\qquad c_{\alpha\beta}=\frac{\alpha!}{\beta!\,(\alpha-\beta)!}.$$
+In one variable: $(f\Lambda)'=f'\Lambda+f\Lambda'$, and $(f\Lambda)^{(k)}=\sum_j\binom kj f^{(k-j)}\Lambda^{(j)}$.`,
+      idea: String.raw`For one derivative $D_i$: $(D_i(f\Lambda))(\varphi)=-\Lambda(f\,D_i\varphi)=-\Lambda(D_i(f\varphi))+\Lambda((D_if)\varphi)=(fD_i\Lambda)(\varphi)+((D_if)\Lambda)(\varphi)$. The general case follows by induction on $|\alpha|$, exactly as for functions.`,
       caption: String.raw`$\Lambda=H$ (Heaviside), so $D^jH=\delta^{(j-1)}$ for $j\ge1$, and $f(x)=e^{0.3x}\cos(\omega x+0.4)$. Drag $\varphi$ across $0$ and choose the order $k$. Bars: the $k+1$ terms $\binom kj(f^{(k-j)}D^jH)(\varphi)$ — the $j=0$ term is an integral over $(0,\infty)$, the others are point evaluations at $0$ — and, on the right, their sum next to the left side $(-1)^k\int_0^\infty f\varphi^{(k)}$, computed independently by quadrature.`,
-      deps: ['fa-6.8', 'fa-6.12'],
+      deps: ['fa-6.14', 'fa-6.12'],
       tags: ['distributions', 'Leibniz rule'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const kS = v.slider('order $k$', 1, 4, 2, { int: true });
@@ -329,6 +345,7 @@ exists (as a complex number) for every $\varphi\in\mathscr D(\Omega)$. Then $\La
       caption: String.raw`Three sequences of functions seen as distributions: an approximate identity $j\eta(jx)\to\delta$; the wildly growing $j^2\sin jx\to0$; and the Dirichlet kernels $D_j\to\delta$ (for $\varphi$ supported in $(-\pi,\pi)$), which do not converge at any point. Top: $\Lambda_j$ for the chosen $j$ and the test function $\varphi$ (drag it, rescaled to the panel). Bottom: $\Lambda_j\varphi$ (purple) and $(D\Lambda_j)\varphi=-\Lambda_j\varphi'$ (orange) against $j$, with the limits $\Lambda\varphi$ and $(D\Lambda)\varphi$ dashed.`,
       deps: ['fa-6.7', 'fa-6.6', 'fa-2.8', 'fa-6.12'],
       tags: ['distributions', 'convergence', 'Banach–Steinhaus'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const fam = v.select('$\\Lambda_j=$', [{ value: 'ai', label: '$j\\,\\eta(jx)$' }, { value: 'osc', label: '$j^2\\sin(jx)$' }, { value: 'dir', label: 'Dirichlet kernel $D_j$' }], 'ai');
@@ -388,7 +405,7 @@ exists (as a complex number) for every $\varphi\in\mathscr D(\Omega)$. Then $\La
         });
         v.readout(() => {
           const s = st, L = { ai: '\\delta', osc: '0', dir: '\\delta' }[s.key];
-          return `$\\Lambda_{${s.j}}\\varphi = ${v.fix(s.a, 4)}$, $(D\\Lambda_{${s.j}})\\varphi = ${v.fix(s.b, 4)}$; limits $\\Lambda\\varphi = ${v.fix(s.lim0, 4)}$, $(D\\Lambda)\\varphi = ${v.fix(s.lim1, 4)}$ with $\\Lambda=${L}$. For the sampled indices $41\\le j\\le60$, both are within $${v.sci(s.tail, 2)}$ of their limits.`;
+          return `$\\Lambda_{${s.j}}\\varphi = ${v.fix(s.a, 4)}$, $(D\\Lambda_{${s.j}})\\varphi = ${v.fix(s.b, 4)}$; limits $\\Lambda\\varphi = ${v.fix(s.lim0, 4)}$, $(D\\Lambda)\\varphi = ${v.fix(s.lim1, 4)}$ with $\\Lambda=${L}$. For $j\\ge41$ both are within $${v.sci(s.tail, 2)}$ of their limits.`;
         });
       },
     },
@@ -400,9 +417,10 @@ exists (as a complex number) for every $\varphi\in\mathscr D(\Omega)$. Then $\La
       idea: String.raw`Fix $\varphi\in\mathscr D_K$. The convergent sequence $\{\Lambda_i\}$ is pointwise bounded on the Fréchet space $\mathscr D_K$, hence equicontinuous (2.6): $|\Lambda_i\psi|\le C\|\psi\|_N$ for all $i$ and $\psi\in\mathscr D_K$. Then
 $$|\Lambda_i(f_i\varphi)-\Lambda(f\varphi)|\le C\|(f_i-f)\varphi\|_N+|(\Lambda_i-\Lambda)(f\varphi)|,$$
 and both terms tend to $0$ — the first because $f_i\to f$ with all derivatives up to order $N$ on $K$.`,
-      caption: String.raw`$\Lambda_i=\delta'_{1/i}$, a dipole sliding into $0$, converges to $\delta'$ (order $1$). The multipliers $f_i=f+i^{-p}\sin(i^2x)$ converge to $f$ uniformly for every $p>0$, but $f_i'$ converges only if $p>2$. Bottom: $(f_i\Lambda_i)(\varphi)=-(f_i\varphi)'(1/i)$ against $i$, with the limit $(f\delta')(\varphi)$ dashed. For $p>2$ it converges; for $p\le2$, tests with $\varphi(0)\ne0$ reveal failure. This fixed-order example uses the sufficient $C^1$ convergence for $p>2$; it does not satisfy convergence of all derivatives for any fixed $p$. The theorem itself assumes $C^\infty$ convergence.`,
-      deps: ['fa-6.17', 'fa-6.15', 'fa-2.6'],
+      caption: String.raw`$\Lambda_i=\delta'_{1/i}$, a dipole sliding into $0$, converges to $\delta'$ (order $1$). The multipliers $f_i=f+i^{-p}\sin(i^2x)$ converge to $f$ uniformly for every $p>0$, but $f_i'$ converges only if $p>2$. Bottom: $(f_i\Lambda_i)(\varphi)=-(f_i\varphi)'(1/i)$ against $i$, with the limit $(f\delta')(\varphi)$ dashed. For $p>2$ it converges; for $p\le2$ it does not — convergence of $f_i$ in $C^\infty$ (here $C^1$ is what matters) cannot be dropped.`,
+      deps: ['fa-6.17', 'fa-6.14', 'fa-2.6'],
       tags: ['distributions', 'convergence', 'multiplication'],
+      verify: true,
       viz(v) {
         const M = v.M;
         const pS = v.slider('$p$ in $f_i=f+i^{-p}\\sin(i^2x)$', 0.5, 3.5, 1.5, { step: 0.05 });
@@ -438,7 +456,7 @@ and both terms tend to $0$ — the first because $f_i\to f$ with all derivatives
           bot.vline(I, { color: 'muted', width: 1, dash: [3, 3] });
           bot.dot(I, val(I), { color: 'purple', r: 5.5 });
           const tail = Math.max(...seq.slice(60).map((q) => Math.abs(q[1] - lim)));
-          bot.setTitle(`$(f_i\\Lambda_i)(\\varphi)=-(f_i\\varphi)'(1/i)$ against $i$ — ` + (p > 2 ? `sampled error $\\le ${v.fix(tail, 3)}$ for $61\\le i\\le80$` : `sampled error up to $${v.fix(tail, 2)}$ for $61\\le i\\le80$`));
+          bot.setTitle(`$(f_i\\Lambda_i)(\\varphi)=-(f_i\\varphi)'(1/i)$ against $i$ — ` + (p > 2 ? `converges: error $\\le ${v.fix(tail, 3)}$ for $i>60$` : `**no convergence**: error up to $${v.fix(tail, 2)}$ for $i>60$`));
           st = { p, I, cur: val(I), lim, sup0: amp, sup1: Math.pow(I, 2 - p) };
         });
         v.readout(() => {

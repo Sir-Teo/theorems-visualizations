@@ -2,16 +2,16 @@
 //
 // Data: Zachary's karate club, the Florentine marriage network (networkx 3.7 copies, see ch02.shared.js) and the
 // 10-node "kite" edge list of networkx's krackhardt_kite_graph. Directed web pages (3.3) and the societies of 3.5 are
-// models, not data. The lab figures quoted in 3.7 are the ones reported in Easley & Kleinberg, ch. 12 (secondary
-// source); everything else printed on the pages is recomputed in the browser.
+// models, not data. Exchange fixtures (3.7) evaluate specified payoffs and outside options, not laboratory data.
 import {
   getNet, nodeSpec, RANK, CYC, betweenness, deg, kite, letter, layoutOf, normLayout,
   centralities, leadingEigen, secondRatio, eigStep, katz, pearson,
   hitsHistory, pageRank,
   trustRows, degrootStep, influence, society,
   modularity, greedyHistory, bestLouvain, bestBisection,
-  exchangeOutcomes, rng32, shuffle,
+  rng32, shuffle,
 } from './ch03.shared.js';
+import {exchangeFixture,EXCHANGE_CHOICES} from './source-audit-exchange.js';
 
 // ---------- small shared pieces ----------
 const NETS3 = [{ value: 'karate', label: 'Karate club' }, { value: 'florence', label: 'Florence' }, { value: 'kite', label: 'Kite (10 nodes)' }];
@@ -44,46 +44,47 @@ export default {
       num: '3.1',
       kind: 'Definition',
       name: 'Degree, closeness and betweenness centrality',
-      statement: String.raw`Let $G$ be a connected undirected graph on $n\ge3$ nodes, $k_i$ the degree of node $i$, $d(i,j)$ the shortest-path distance, and $\sigma_{st}$ the number of shortest paths from $s$ to $t$ ($\sigma_{st}(i)$ of them through $i$). Three classical centralities, each scaled to lie in $[0,1]$:
+      statement: String.raw`Let $G$ be a finite simple connected undirected graph on $n\ge3$ nodes, $k_i$ the degree of node $i$, $d(i,j)$ the shortest-path distance, and $\sigma_{st}$ the number of shortest paths from $s$ to $t$ ($\sigma_{st}(i)$ of them through $i$). Three classical centralities, each scaled to lie in $[0,1]$:
 
 (a) **Degree:** $C_D(i) = \dfrac{k_i}{n-1}$, the share of the other people $i$ is directly tied to.
 
 (b) **Closeness:** $C_C(i) = \dfrac{n-1}{\sum_{j\ne i} d(i,j)}$, the inverse of the average distance to everyone else.
 
-(c) **Betweenness:** $C_B(i) = \dfrac{1}{\binom{n-1}{2}} \sum_{s<t,\; s,t\ne i} \dfrac{\sigma_{st}(i)}{\sigma_{st}}$, the share of the shortest paths between other pairs that run through $i$.
+(c) **Betweenness:** $C_B(i) = \dfrac{1}{\binom{n-1}{2}} \sum_{s<t,\; s,t\ne i} \dfrac{\sigma_{st}(i)}{\sigma_{st}}$, the mean fraction of shortest paths through $i$, giving each unordered pair of other vertices equal weight.
 
-The measures need not agree: the most connected person, the person nearest to everyone, and the person who controls the traffic can be three different people.`,
-      idea: String.raw`The three formulas formalise three different ideas of being central: being *active* (many direct contacts), being *independent* of intermediaries (few steps to everyone), and *controlling flow* (many shortest paths pass through you). They separate because they respond to different parts of the structure: a node inside a dense cluster has many ties but few shortest paths run through it, while a node whose only job is to link two clusters has few ties but lies on every shortest path between them. Closeness needs one breadth-first search from each node (distances as in 2.2), and Brandes' algorithm accumulates all betweenness values from the same searches.`,
-      caption: String.raw`Switch the measure: node size shows it and the gold node is the top-ranked one; the bars list the eight highest scores. On the kite graph the top node changes from the most connected person (D) to the best-placed one (F, G) to the bridge (H) as you change the measure. Drag nodes to untangle the picture.`,
-      scope: String.raw`Defined for connected undirected graphs; on a graph with several components closeness must be redefined (here: scaled by the share of nodes reachable). The kite graph is a ten-person example with the edge list of networkx's \`krackhardt_kite_graph\`; all 18 edges match the maintained NetworkX generator. The original 1990 article is not used as evidence for the numerical example.`,
-      deps: ['soc-2.2', 'algo-8.4'],
-      refs: ['Newman ch. 7'],
+The measures need not agree: the most connected person, the person nearest to everyone, and the person on the largest mean fraction of shortest paths can be three different people.`,
+      idea: String.raw`The three formulas formalise three different ideas of being central: being *active* (many direct contacts), being *independent* of intermediaries (few steps to everyone), and *controlling flow* (many shortest paths pass through you). They separate because they respond to different parts of the structure: a node inside a dense cluster has many ties but few shortest paths run through it, while a node whose only job is to link two clusters has few ties but lies on every shortest path between them. A breadth-first search from each node supplies distances and shortest-path counts (2.2); a backwards accumulation then computes betweenness from those counts.`,
+      caption: String.raw`Switch the measure: node size shows the relative score and every tied top node is gold; the bars list the eight highest scores. On the kite graph the top node changes from the most connected person (D) to the best-placed one (F, G) to the bridge (H) as you change the measure. Florence vertices use numeric labels; the ranking lists their family names. The fixed drawing leaves edges unchanged when the measure changes.`,
+      scope: String.raw`The displayed formulas concern connected unweighted undirected graphs with at least three vertices. All three offered graphs are connected. These structural scores do not establish observed influence, actual routing or causal power. The kite, karate-club and Florentine-marriage edge lists are the NetworkX 3.7 bundled examples; the kite is labelled A–J here. Its name follows that package, without a separate claim to authenticate the graph against Krackhardt's original paper. Graph positions are a drawing choice and do not affect scores.`,
+      deps: ['soc-2.2'],
+      refs: ['Freeman, Centrality in Social Networks: Conceptual Clarification (1978/79), pp.220–226','NetworkX 3.7 source: krackhardt_kite_graph, karate_club_graph, florentine_families_graph'],
       tags: ['centrality', 'networks'],
-      credit: 'Freeman, 1978/79 (Social Networks 1: 215–239)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Centrality' },
+      credit: 'Three centrality definitions compared by Linton C. Freeman, 1978/79; NetworkX 3.7 example graphs.',
+      links: { source:'https://www.cin.ufpe.br/~rbcp/taia/Freeman1979-centrality.pdf',graph:'https://networkx.org/documentation/stable/reference/generated/networkx.generators.small.krackhardt_kite_graph.html' },
+      verify: false,
       viz(v) {
         const s = v.stage({ x: [-1.4, 1.4], y: [-1.15, 1.15], axes: false, equal: true, height: 400 });
-        const sb = v.stage({ x: [0, 1.6], y: [-0.2, 8.2], axes: false, height: 400, weight: 0.8, minWidth: 240, title: 'Eight highest scores' });
+        const sb = v.stage({ x: [-0.5, 3.2], y: [-0.2, 8.2], axes: false, height: 400, weight: 0.8, minWidth: 240, title: 'Eight highest scores' });
         const sel = v.select('Network', [{ value: 'kite', label: 'Kite (10 nodes)' }, { value: 'karate', label: 'Karate club' }, { value: 'florence', label: 'Florence' }], 'kite', { onChange: load });
         const meas = v.select('Node size shows', [{ value: 'degree', label: 'Degree' }, { value: 'closeness', label: 'Closeness' }, { value: 'betweenness', label: 'Betweenness' }], 'degree');
         let net = net3('kite'), cache = {};
-        const G = v.graph(s, { nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), layout: 'fit', r: 11, autoRadius: false });
-        function load() { net = net3(sel.value); G.set({ nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), r: 11, autoRadius: false }).layout('fit'); }
+        const G = v.graph(s, { nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), layout: 'fit', r: 24, autoRadius: false, draggable: false });
+        function load() { net = net3(sel.value); G.set({ nodes: nodeSpec(net), edges: net.g.edges.map(([a, b]) => [a, b]), r: 24, autoRadius: false }).layout('fit'); }
         const get = () => (cache[sel.value] ??= centralities(net.g, betweenness(net.g)));
         let st = {};
         v.render(() => {
           const c = get(), arr = c[meas.value], mx = Math.max(...arr), top = argmaxAll(arr);
-          G.nodes.forEach((nd) => { nd.r = 5 + 18 * Math.sqrt(arr[nd.id] / mx); });
+          G.nodes.forEach((nd) => { nd.r = 8 + 15 * Math.sqrt(arr[nd.id] / mx); });
           G.draw({
             nodeColor: () => 'accent', nodeFill: (id) => (top.includes(id) ? 'gold' : null),
-            nodeLabel: (id) => (net.g.n < 40 && net.g.n !== 15 ? net.labels[id] : ''), nodeNote: (id) => (net.g.n === 15 ? net.labels[id] : null),
+            nodeLabel: (id) => net.g.n === 15 ? String(id+1) : net.labels[id],
           });
           const order = [...arr.keys()].sort((a, b) => arr[b] - arr[a]).slice(0, 8);
           order.forEach((i, r) => {
             const y = 7.5 - r, w = arr[i] / mx * 1.0;
-            sb.rect(0.32, y - 0.32, 0.32 + w, y + 0.32, { fill: top.includes(i) ? 'gold' : 'accent', fillAlpha: 0.7, color: top.includes(i) ? 'gold' : 'accent' });
-            sb.text(nodeName(net, i), 0.28, y, { align: 'right', baseline: 'middle', size: 12, color: 'ink' });
-            sb.text(v.fix(arr[i], 2), 0.36 + w, y, { align: 'left', baseline: 'middle', size: 11.5, color: 'muted' });
+            sb.rect(1.4, y - 0.32, 1.4 + w, y + 0.32, { fill: top.includes(i) ? 'gold' : 'accent', fillAlpha: 0.7, color: top.includes(i) ? 'gold' : 'accent' });
+            sb.text(net.g.n===15?`${i+1} ${nodeName(net,i)}`:nodeName(net,i), 1.32, y, { align: 'right', baseline: 'middle', size: 11, color: 'ink' });
+            sb.text(v.fix(arr[i], 2), 1.44 + w, y, { align: 'left', baseline: 'middle', size: 11.5, color: 'muted' });
           });
           st = { c, tops: ['degree', 'closeness', 'betweenness'].map((k) => argmaxAll(c[k])) };
         });
@@ -101,15 +102,17 @@ The measures need not agree: the most connected person, the person nearest to ev
       num: '3.2',
       kind: 'Definition',
       name: 'Eigenvector and Katz centrality',
-      statement: String.raw`Let $A$ be the adjacency matrix of a connected undirected graph and $\lambda_1$ its largest eigenvalue.
+      statement: String.raw`Let $A$ be the adjacency matrix of a connected nontrivial undirected graph and $\lambda_1$ its largest eigenvalue.
 
 **Eigenvector centrality** is the vector $x$ with $Ax = \lambda_1 x$, normalised to be positive and (say) sum to one. Equivalently, $x_i = \lambda_1^{-1}\sum_j A_{ij}x_j$: your score is proportional to the sum of your neighbours' scores. By the Perron–Frobenius theorem, for a connected graph it exists, is unique up to scale, and has all entries positive.
 
 **Katz centrality** with attenuation $0 < \alpha < 1/\lambda_1$ is $x = (I - \alpha A)^{-1}\mathbf 1 = \sum_{k\ge 0}\alpha^k A^k \mathbf 1$: node $i$ scores one point for every walk that ends at it, a walk of length $k$ counting $\alpha^k$.`,
-      idea: String.raw`Repeating "replace each score by the sum of the neighbours' scores" multiplies by $A$ each time, so $A^t x_0$ is dominated by the eigenvector of the largest eigenvalue (see the definition of eigenvalue) and the direction converges at the rate $|\lambda_2/\lambda_1|^t$ for any positive start. Katz' series $\sum_k \alpha^k A^k\mathbf 1$ is a geometric series in the matrix $\alpha A$ and converges exactly when $\alpha\lambda_1<1$. For small $\alpha$ the first two terms give $x\approx \mathbf 1 + \alpha\,(k_i)_i$, so the ranking is by degree; as $\alpha\to 1/\lambda_1$ the $k$-th term is dominated by $\lambda_1^k$ and the ranking becomes that of eigenvector centrality. Katz therefore interpolates between the two.`,
-      caption: String.raw`Slide the number of rounds: every node's score is replaced by the sum over its neighbours, then rescaled. Watch the shares settle on the true eigenvector (the dots at the right edge). Switch to Katz and move the attenuation: small values rank people by degree, values near the limit by eigenvector centrality.`,
-      scope: String.raw`Eigenvector centrality is only well defined for connected (strongly connected, if directed) networks; in a directed graph with a source node it gives zero to everyone who cannot be reached, which is one motivation for Katz. Katz needs $\alpha<1/\lambda_1$.`,
-      deps: ['soc-3.1', 'ladr-5.5'],
+      idea: String.raw`Perron–Frobenius (stoch-4.6) gives the positive, simple leading eigenvector for a connected nontrivial undirected graph. Since $A$ is real symmetric, the real spectral theorem (ladr-7.29) expands every starting vector in an orthonormal eigenbasis. On a non-bipartite connected graph, all other eigenvalue moduli are smaller than $\lambda_1$, and normalized powers converge when the leading projection is nonzero. A bipartite graph also has $-\lambda_1$, so unshifted powers can oscillate even from a positive start; adding the identity removes this obstruction without changing eigenvectors.
+
+For Katz, put $r=\alpha\lambda_1<1$. Each spectral component of the matrix series is absolutely bounded by the scalar geometric series $\sum r^k=1/(1-r)$ (pma-3.26); telescoping finite matrix sums gives $(I-\alpha A)^{-1}\mathbf1$ in the limit. The positive projection onto the Perron vector diverges as $\alpha\uparrow1/\lambda_1$, so the normalized Katz vector approaches that centrality. For small positive $\alpha$, $x=\mathbf1+\alpha(k_i)_i+O(\alpha^2)$, giving degree ranking to first order.`,
+      caption: String.raw`Slide the number of rounds: every node's score is replaced by the sum over its neighbours, then rescaled. Compare these unshifted rounds with the reference eigenvector (the dots at the right edge); bipartite graphs can alternate rather than settle. Switch to Katz and move the attenuation: small values rank people by degree, values near the limit by eigenvector centrality.`,
+      scope: String.raw`The stated positive uniqueness guarantee uses a connected nontrivial undirected graph. Unshifted power iteration additionally needs aperiodicity (non-bipartiteness here) for convergence from every positive start. A directed or reducible graph needs a separate analysis; some Perron scores may be zero. Katz needs $\alpha<1/\lambda_1$.`,
+      deps: ['soc-3.1', 'ladr-5.5', 'ladr-7.29', 'pma-3.26', 'stoch-4.6'],
       refs: ['Newman ch. 7'],
       tags: ['centrality', 'eigenvectors'],
       credit: 'Katz, 1953 (status index); Bonacich, 1972 (eigenvector centrality)',
@@ -168,13 +171,15 @@ The measures need not agree: the most connected person, the person nearest to ev
       name: 'Hubs and authorities (HITS)',
       statement: String.raw`Let $A$ be the adjacency matrix of a directed graph (here, pages and their links, $A_{pq}=1$ if $p$ links to $q$). Give every page a **hub score** $h_p$ and an **authority score** $a_p$, all starting at 1, and repeat:
 
-$$a \leftarrow A^{\!\top} h,\qquad h \leftarrow A\,a,\qquad \text{then rescale both to unit length.}$$
+$$a \leftarrow A^{\!\top} h,\qquad h \leftarrow A\,a.$$
 
-A page's authority is the total hub score of the pages that point to it, and its hub score is the total authority of the pages it points to. If the largest eigenvalue of $A^{\!\top}A$ is simple (and the starting vector is not orthogonal to its eigenvector), the scores converge to the principal eigenvectors of $A^{\!\top}A$ (for $a$) and $AA^{\!\top}$ (for $h$).`,
-      idea: String.raw`Two successive updates compose to $a \leftarrow A^{\!\top}A\,a$, so HITS is power iteration on the symmetric positive semidefinite matrix $A^{\!\top}A$, and the same eigenvector argument as for eigenvector centrality gives convergence to its top eigenvector. The two scores formalise a mutual reinforcement: good hubs list good authorities and good authorities are listed by good hubs. Kleinberg applied it to a small query-specific set of pages. PageRank, by contrast, gives one score per page from a random surfer who follows links and occasionally jumps anywhere.`,
+Then rescale both to unit length.
+
+A page's authority is the total hub score of the pages that point to it, and its hub score is the total authority of the pages it points to. If the largest eigenvalue of $A^{\!\top}A$ is positive and simple (and the starting vector is not orthogonal to its eigenvector), the scores converge to the principal eigenvectors of $A^{\!\top}A$ (for $a$) and $AA^{\!\top}$ (for $h$).`,
+      idea: String.raw`Two successive updates compose to $a\leftarrow A^{\!\top}A a$. The matrix is symmetric and positive semidefinite because $z^\top A^{\!\top}A z=\|Az\|^2\ge0$. The real spectral theorem (ladr-7.29) therefore gives an orthonormal eigenbasis with nonnegative eigenvalues. Expanding the starting vector in that basis shows that a positive simple top eigenvalue and a nonzero top projection make every lower component decay relative to it. The corresponding hub vector is proportional to $Aa$. A repeated top eigenvalue leaves a starting-vector-dependent projection; with no links, normalization has no nonzero score to act on. These are limits of the convergence claim, rather than evidence that every edited graph has a unique ranking.`,
       caption: String.raw`The links form a small invented web (not real data): pages A–C are list pages, F–H heavily cited. Slide the number of rounds to watch hubs (orange) and authorities (blue) settle, and compare with PageRank (grey, damping 0.85). The graph is editable: click one page then another to add or remove a link, and see which scores move.`,
       scope: String.raw`Scores depend on the graph chosen; if the top eigenvalue of $A^{\!\top}A$ is repeated (for instance two disconnected, identical link communities), the limit depends on the starting vector. A small, densely linked cluster can capture the top scores even when it is not the most relevant group.`,
-      deps: ['soc-3.2', 'stoch-4.15'],
+      deps: ['soc-3.2', 'stoch-4.15', 'ladr-7.29'],
       refs: ['E&K §14.2'],
       tags: ['link analysis', 'eigenvectors'],
       credit: 'Kleinberg, Journal of the ACM, 1999',
@@ -225,11 +230,13 @@ A page's authority is the total hub score of the pages that point to it, and its
       kind: 'Model',
       name: 'DeGroot learning: consensus by repeated averaging',
       statement: String.raw`Let $n$ people hold opinions $p(t)\in\mathbb R^n$ and let $T$ be a row-stochastic **trust matrix** ($T_{ij}\ge0$ is the weight person $i$ puts on person $j$, each row summing to 1). In each round everyone replaces their opinion by the weighted average of the opinions they listen to:
-$$p(t+1) = T\,p(t),\qquad\text{so } p(t) = T^{t}p(0).$$
-If the trust graph is strongly connected and aperiodic, then $T^t \to \mathbf 1 s^{\!\top}$ where $s$ is the unique probability vector with $s^{\!\top}T = s^{\!\top}$, and everyone's opinion converges to the same **consensus** $\sum_i s_i\,p_i(0)$. The weight $s_i$ is person $i$'s **influence**. When trust is symmetric and each person splits their attention equally, $s_i$ is proportional to the number of people $i$ listens to ($i$'s degree).`,
-      idea: String.raw`Averaging is a Markov chain run on the opinions instead of on a walker: $T$ is the transition matrix, and the stationary distribution of the chain is the influence vector $s$. Strong connectivity and aperiodicity give $T^t\to \mathbf 1 s^{\!\top}$ (convergence to the stationary distribution), and since $s$ is a left eigenvector of $T$, the quantity $\sum_i s_i p_i(t)$ never changes: it is conserved and therefore equals the consensus. People with large $s_i$ are those who many others (directly or indirectly) listen to, which is why influence is an eigenvector-type centrality.`,
+$$p(t+1) = T\,p(t).$$
+
+Iterating gives $p(t)=T^t p(0)$.
+If the trust graph is strongly connected and aperiodic, then $T^t \to \mathbf 1 s^{\!\top}$ where $s$ is the unique probability vector with $s^{\!\top}T = s^{\!\top}$, and everyone's opinion converges to the same **consensus** $\sum_i s_i\,p_i(0)$. The weight $s_i$ is person $i$'s **influence**. When the underlying links are undirected and each person splits attention equally among neighbours, possibly with the same self-weight for everyone, $s_i$ is proportional to the number of people $i$ listens to ($i$'s degree).`,
+      idea: String.raw`Averaging acts by the same matrix powers as a Markov chain: $p(t)=T^t p(0)$. The finite irreducible, aperiodic convergence theorem (stoch-4.7) sends every row of $T^t$ to the stationary law $s^\top$, hence $T^t\to\mathbf1s^\top$ and every opinion tends to $s^\top p(0)$. Stationarity also gives the exact invariant $s^\top p(t+1)=s^\top T p(t)=s^\top p(t)$. Periodicity can instead produce alternating opinions, and stubborn vertices can destroy irreducibility. For the degree-based influence in the illustration, $T=aI+(1-a)D^{-1}A$ with symmetric adjacency $A$: degree-proportional $s$ is stationary, although the row-normalized trust matrix itself need not be symmetric.`,
       caption: String.raw`Choose a network and initial opinions (colour from blue = 0 to orange = 1) and slide the number of rounds. The green line is the predicted consensus $\sum s_i p_i(0)$; the dashed line is the plain average, which is different. Raise the self-weight to slow convergence. Click a person to make them stubborn (weight 1 on themselves) and watch consensus fail.`,
-      scope: String.raw`The consensus formula needs a strongly connected, aperiodic trust graph. Here trust is symmetric (each person weights themselves $a$ and shares the rest equally among their neighbours), so $s_i=k_i/2m$. A stubborn person who never updates breaks the hypothesis: with two stubborn people holding different views no consensus is reached, and the limit is read off after 600 rounds.`,
+      scope: String.raw`The consensus formula needs a strongly connected, aperiodic trust graph. Here adjacency is symmetric (each person weights themselves $a$ and shares the rest equally among their neighbours), so $s_i=k_i/2m$. A stubborn person who never updates breaks the hypothesis: with two stubborn people holding different views no consensus is reached, and the limit is read off after 600 rounds.`,
       deps: ['soc-3.2', 'stoch-4.1', 'stoch-4.7'],
       refs: [],
       tags: ['learning', 'consensus'],
@@ -283,12 +290,14 @@ If the trust graph is strongly connected and aperiodic, then $T^t \to \mathbf 1 
       kind: 'Theorem',
       name: 'Wise crowds need no prominent groups (Golub–Jackson)',
       statement: String.raw`Consider a sequence of societies $n=1,2,\dots$ in which person $i$ of society $n$ starts with a noisy belief $p_i(0)\in[0,1]$ about a true value $\mu$, the beliefs being independent with mean $\mu$ and variance at least $\sigma^2>0$. Beliefs evolve by DeGroot updating with a trust matrix $T(n)$ that is strongly connected and aperiodic, with influence vector $s(n)$ (so every belief converges to $\sum_i s_i(n)p_i(0)$). The sequence is **wise** if every person's limiting belief converges in probability to $\mu$ as $n\to\infty$. Then:
-$$\text{the sequence is wise}\iff \max_i s_i(n)\to 0 .$$
+The sequence is wise exactly when $\max_i s_i(n)\to0$.
 Special case: if links are symmetric and everyone weights their neighbours equally, the sequence is wise iff the maximum degree divided by the sum of all degrees tends to 0.`,
-      idea: String.raw`The common limit is the weighted average $\sum_i s_i p_i(0)$, with mean $\mu$ and variance between $\sigma^2\sum_i s_i^2$ and about $\sum_i s_i^2$ (the beliefs lie in $[0,1]$). Since $\sum_i s_i^2\le \max_i s_i\cdot\sum_i s_i=\max_i s_i$, the variance vanishes when the largest influence does (Chebyshev gives convergence in probability), and since $\sum_i s_i^2\ge(\max_i s_i)^2$ it stays bounded away from 0 when the largest influence does not. A prominent person or group who keep a fixed share of influence therefore transmit their own error to everyone, however large the crowd; this uses the influence vector as the stationary distribution from 3.4.`,
+      idea: String.raw`Write the limiting consensus as $Z_n=\sum_i s_i p_i(0)$. Independence and the variance-of-sums theorem (prob-2.2.1), applied to the centred weighted beliefs, give $E Z_n=\mu$ and $\operatorname{Var}(Z_n)=\sum_i s_i^2\operatorname{Var}(p_i(0))$. Since beliefs lie in $[0,1]$, this variance is between $\sigma^2\sum_i s_i^2$ and $\tfrac14\sum_i s_i^2$. Also $(\max_i s_i)^2\le\sum_i s_i^2\le\max_i s_i$. Thus vanishing maximum influence forces the variance to vanish, and the $L^2$-to-probability bound (prob-2.2.2) gives $P(|Z_n-\mu|\ge\eps)\le\operatorname{Var}(Z_n)/\eps^2$.
+
+For the converse, nonvanishing variance alone is insufficient for arbitrary unbounded variables. Here $|Z_n-\mu|\le1$, so $E|Z_n-\mu|^2\le\eps^2+P(|Z_n-\mu|>\eps)$. Convergence in probability would force the variance to zero; the lower bound then forces $\max_i s_i\to0$. The illustration's uniformly bounded noise is rescaled around zero; the same argument uses its fixed bound in place of one.`,
       caption: String.raw`Pick a society and the crowd size $n$. The circle shows the influence $s_i$ of each person as the size of their dot; the histogram shows the limiting consensus over 400 draws of independent noise (bounded, standard deviation 1; the truth is 0). On the log–log plot, wise societies follow the dashed $1/\sqrt n$ line; the star and the media society level off. The curves are computed exactly from the influence vector, the histogram by simulation.`,
       scope: String.raw`The theorem needs independent beliefs with variance bounded below (here: uniform noise of standard deviation 1, so the bounded range $[0,1]$ of the paper is rescaled) and convergent trust matrices; "wise" says nothing about how fast the crowd converges. The five societies are illustrative families of my own choosing, not data: complete (everyone hears everyone), ring (two neighbours each side), star (everyone listens to one hub), media (everyone gives half their attention to three people), and a preferential-attachment network.`,
-      deps: ['soc-3.4', 'prob-2.2.1', 'prob-1.6.4'],
+      deps: ['soc-3.4', 'prob-2.2.1', 'prob-2.2.2'],
       refs: [],
       tags: ['wisdom of crowds', 'learning'],
       credit: 'Golub & Jackson, 2010',
@@ -400,70 +409,34 @@ where $m_g$ is the number of edges inside group $g$ and $K_g$ the total degree o
     // ------------------------------------------------------------------ 3.7
     {
       num: '3.7',
-      kind: 'Phenomenon',
+      kind: 'Model',
       name: 'Power from position in exchange networks',
-      statement: String.raw`In **network exchange experiments**, people sit at the nodes of a small graph and each edge carries a pool of \$1 that its two endpoints may split if they agree. Under the **1-exchange rule** each person can complete at most one trade per round, so the trades form a matching and anyone left out earns nothing. The shares that emerge after many rounds depend on the *position*: on the 2-node path the split is about even; on the 3-node path the middle node B, who can fall back on the other partner while A and C have no alternative, takes most of the dollar; on the 4-node path the two inner nodes get a modest advantage only; on the 5-node path the central node is not strong.
+      statement: String.raw`In a **one-exchange network model**, every edge offers one unit to divide, each vertex can trade with at most one neighbour, and unmatched vertices receive zero. An outcome is a matching $M$ and nonnegative payoffs $x_i$, with $x_i+x_j=1$ on each matched edge.
 
-The standard model predicts such shares as **balanced outcomes**: a matching with node values such that matched partners' values sum to 1, no unmatched pair could both do better by trading with each other (**stability**), and each matched pair splits the surplus evenly after each has received its best outside option (**Nash bargaining** with outside options).`,
-      idea: String.raw`A node's outside option is the most it could earn by stealing a neighbour away: if neighbour $w$ currently receives $x_w$, offering it slightly more makes $w$ defect and leaves the thief $1-x_w$. Position matters because excluded people have value 0 and therefore bid low, which hands their would-be partners a high outside option. The page computes balanced outcomes by iterating "each matched pair splits what is left after the two outside options" for every maximal matching, until the values stop changing (the Nash bargaining solution from 7.1 of the game theory collection). A graph such as the triangle has no stable outcome in this static model; that alone does not establish a claim about negotiation dynamics.`,
-      caption: String.raw`Choose a graph (or edit it: click empty space to add a person, click two people to add or remove a link, alt-click to delete) and read the balanced outcome off the bars. The 3-path gives B everything and the 4-path gives the inner nodes $2/3$. Gold bands mark the laboratory results quoted in Easley and Kleinberg's chapter 12; on the 3-path the lab figure (about $5/6$) is below the model's 1, so the model overstates the advantage. Make a triangle by joining A and C.`,
-      scope: String.raw`Holds for the 1-exchange rule with a unit pool on every edge. The lab figures are not original data: they are as summarised in Easley and Kleinberg (§12.3), who attribute the 3-node and 4-node results to Lucas, Younts, Lovaglia and Markovsky (2001, Social Forces) and report the 2-node split as approximately even; they are not reproduced from the primary papers here. Different theories (balanced outcomes, equiresistance and others) disagree on larger graphs.`,
+The outside option is $\alpha_i=\max(\{0\}\cup\{1-x_j:ij\in E\setminus M\})$. An outcome is **stable** when $x_i\ge\alpha_i$ for every vertex, equivalently $x_i+x_j\ge1$ on every edge outside the matching. It is **balanced** when it is stable and matched partners have equal surplus over their outside options: $x_i-\alpha_i=x_j-\alpha_j$. The four-node path has the balanced payoff vector $(1/3,2/3,2/3,1/3)$; a middle position alone does not determine a vertex's payoff.`,
+      idea: String.raw`An outside option is the limiting amount a vertex could keep by offering another neighbour slightly more than that neighbour currently gets. Stability prevents a pair from both gaining by abandoning their current agreements. Equal division of the surplus refines stability: on the four-node path, the inner vertices' options depend on each other's payoffs, giving the two-thirds split.
+
+For a triangle, any nonempty matching leaves one vertex with zero. Stability on its two incident edges would require both matched vertices to receive at least one, contradicting their total of one. The empty matching also fails. This proves nonexistence of a stable outcome in this model; it does not specify a negotiation process or prove that real negotiations never settle.`,
+      caption: String.raw`Choose one of six fixed graphs. At zero deviation, the five paths/stem examples show an exact balanced outcome; the triangle shows a feasible half-and-half candidate that fails stability. Change the first trading pair's split while preserving its total of one. Compare every payoff with its outside option and watch the stability and balance residuals. Red edges identify pairs with a positive stability deficit.`,
+      scope: String.raw`Finite undirected, unit-edge, one-exchange model, following the definitions and examples in Kleinberg and Tardos (2008), pp.295–297. The widget evaluates specified outcomes on the six offered fixtures; it is not a solver for arbitrary edited graphs and does not estimate laboratory shares or negotiation dynamics. The triangle's nonexistence claim follows the proof above, independently of a numerical iteration. Other fixtures show one specified matching, without claiming to enumerate every matching or balanced payoff.`,
       deps: ['soc-3.1', 'game-7.1'],
-      refs: ['E&K §12.2', 'E&K §12.3'],
+      refs: ['Kleinberg & Tardos, Balanced Outcomes in Social Exchange Networks (STOC 2008), pp.295–297, definitions and Fig.2'],
       tags: ['exchange networks', 'bargaining', 'power'],
-      credit: 'Cook, Emerson, Gillmore & Yamagishi, 1983 (experiments); Rochford, 1984 and Cook & Yamagishi, 1992 (balanced outcomes)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Exchange_network_theory' },
-      verify: true,
+      credit: 'Definitions and examples: Kleinberg & Tardos, 2008; their account attributes the balanced-outcome model to Cook & Yamagishi, 1992.',
+      links: { source: 'https://www.cs.cornell.edu/info/people/kleinber/stoc08-exchange.pdf' },
+      verify: false,
       viz(v) {
-        const s = v.stage({ x: [-1.5, 1.5], y: [-1.05, 1.05], axes: false, equal: true, height: 340 });
-        const sb = v.stage({ x: [-0.7, 7.7], y: [0, 1.1], axes: 'box', gutter: true, xticks: [], ylabel: 'share of the dollar', height: 340, weight: 0.9, minWidth: 260 });
-        const P = {
-          p2: { label: '2-node path', pos: [[-0.6, 0], [0.6, 0]], E: [[0, 1]], lab: [[0, 0.5, 0.5], [1, 0.5, 0.5]] },
-          p3: { label: '3-node path', pos: [[-1, 0], [0, 0], [1, 0]], E: [[0, 1], [1, 2]], lab: [[1, 5 / 6, 5 / 6]] },
-          p4: { label: '4-node path', pos: [[-1.2, 0], [-0.4, 0], [0.4, 0], [1.2, 0]], E: [[0, 1], [1, 2], [2, 3]], lab: [[1, 7 / 12, 2 / 3], [2, 7 / 12, 2 / 3]] },
-          p5: { label: '5-node path', pos: [[-1.2, 0], [-0.6, 0], [0, 0], [0.6, 0], [1.2, 0]], E: [[0, 1], [1, 2], [2, 3], [3, 4]], lab: [] },
-          stem: { label: 'stem graph', pos: [[-1.1, 0], [-0.2, 0], [0.7, 0.7], [0.7, -0.7]], E: [[0, 1], [1, 2], [1, 3], [2, 3]], lab: [] },
-          tri: { label: 'triangle', pos: [[-0.8, -0.6], [0, 0.8], [0.8, -0.6]], E: [[0, 1], [1, 2], [0, 2]], lab: [] },
-        };
-        const sel = v.select('Graph', Object.entries(P).map(([value, o]) => ({ value, label: o.label })), 'p3', { onChange: load });
-        const mk = (o) => ({ nodes: o.pos.map((p, i) => ({ id: i, x: p[0], y: p[1] })), edges: o.E.map(([a, b]) => ({ from: a, to: b })) });
-        const G = v.graph(s, { ...mk(P.p3), layout: 'none', editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true, moveNode: true }, r: 13, autoRadius: false, directed: false });
-        function load() { G.set({ ...mk(P[sel.value]), directed: false }); }
-        const key = (E) => E.map(([a, b]) => (a < b ? a + '-' + b : b + '-' + a)).sort().join();
-        let st = {};
-        v.render(() => {
-          const n = G.nodes.length, idx = new Map(G.nodes.map((nd, i) => [String(nd.id), i]));
-          const E = G.edges.map((e) => [idx.get(String(e.from)), idx.get(String(e.to))]).filter(([a, b]) => a != null && b != null && a !== b);
-          let outs = [], tooBig = n > 9 || n < 2;
-          if (!tooBig) outs = exchangeOutcomes(n, E).filter((o) => o.ok);
-          const uniq = []; for (const o of outs) if (!uniq.some((u) => u.x.every((q, i) => Math.abs(q - o.x[i]) < 1e-6))) uniq.push(o);
-          const o = uniq[0];
-          const P0 = P[sel.value], same = key(E) === key(P0.E) && n === P0.pos.length;
-          G.draw({
-            nodeLabel: (id) => letter(idx.get(String(id))), nodeColor: () => 'accent',
-            nodeFill: (id) => { if (!o) return null; const i = idx.get(String(id)); return o.x[i] > 0.5 + 1e-6 ? 'gold' : null; },
-            edgeColor: (e) => { if (!o) return null; const a = idx.get(String(e.from)), b = idx.get(String(e.to)); return o.partner[a] === b ? 'green' : null; },
-            edgeWidth: (e) => { if (!o) return null; const a = idx.get(String(e.from)), b = idx.get(String(e.to)); return o.partner[a] === b ? 4 : null; },
-          });
-          sb.setView([-0.7, Math.max(n, 3) - 0.3], [0, 1.1]); sb.setTicks(Array.from({ length: n }, (_, i) => [i, letter(i)]), null);
-          for (let i = 0; i < n; i++) {
-            const val = o ? o.x[i] : 0;
-            sb.rect(i - 0.32, 0, i + 0.32, val, { fill: o ? 'accent' : 'faint', fillAlpha: 0.7, color: o ? 'accent' : 'faint' });
-            if (o) sb.text(frac(val), i, val + 0.03, { size: 12, align: 'center', baseline: 'bottom', color: 'ink' });
-          }
-          if (same) for (const [i, lo, hi] of P0.lab) { sb.rect(i - 0.42, lo, i + 0.42, hi + (hi === lo ? 0.012 : 0), { fill: 'gold', fillAlpha: 0.5, color: 'gold' }); sb.text('lab', i + 0.5, (lo + hi) / 2, { size: 11, align: 'left', baseline: 'middle', color: 'gold' }); }
-          st = { n, tooBig, uniq, same, name: P0.label, P0 };
-        });
-        v.legend([['green', 'trading pair (matching edge)'], ['gold', 'bands: laboratory results as quoted by Easley & Kleinberg'], ['gold', 'node: gets more than half', { dot: true }]]);
-        v.readout(() => {
-          if (st.tooBig) return 'Use between 2 and 9 people.';
-          if (!st.uniq.length) return `**No stable outcome exists** on this graph: whichever matching you pick, some unmatched pair could both do better by trading with each other, so the model predicts that negotiations never settle (E&K report this for the free-standing triangle).`;
-          const o = st.uniq[0]; const pairs = o.match.map(([a, b]) => `${letter(a)}–${letter(b)}`).join(', ');
-          const vals = o.x.map((q, i) => `${letter(i)} ${frac(q)}`).join(' · ');
-          let lab = '';
-          if (st.same) { const k = Object.keys(P).find((kk) => P[kk] === st.P0); lab = { p2: '\nLab: approximately an even split.', p3: '\nLab (as quoted by E&K, from Lucas et al. 2001): B receives roughly 5/6 of the dollar; the model says 1.', p4: '\nLab (as quoted by E&K): B’s share in the A–B trade is between 7/12 and 2/3; the model says 2/3.', p5: '\nLab (as quoted by E&K): the centre C does only slightly better than A and E; the model gives C no more than the ends.', stem: '\nE&K give the balanced outcome 1/4 – 3/4 for A and B; no lab figure is quoted here.', tri: '' }[k] || ''; }
-          return `Balanced outcome${st.uniq.length > 1 ? ` (one of ${st.uniq.length} with different payoffs)` : ''}: trades ${pairs} · values ${vals}${lab}`;
-        });
+        const s=v.stage({x:[-1.5,1.5],y:[-1.15,1.15],axes:false,equal:true,height:320});
+        const sb=v.stage({x:[-.7,4.7],y:[-.1,1.35],axes:'box',xticks:[],ylabel:'unit-edge amount',height:320});
+        const sel=v.select('graph',EXCHANGE_CHOICES,'p3',{onChange:()=>d.set(0)});
+        const d=v.slider('first-pair split deviation',-1,1,0,{step:.01});
+        v.button('Reset split',()=>d.set(0));let info;
+        v.render(()=>{const p=exchangeFixture(sel.value,d.value);sb.setView([-.7,p.n-.3],[-.1,1.35]);sb.setTicks(Array.from({length:p.n},(_,i)=>[i,letter(i)]),null);
+          p.edges.forEach(([a,b],j)=>s.line(...p.pos[a],...p.pos[b],{color:p.partner[a]===b?'green':p.edgeGaps[j]>2e-12?'red':'muted',width:p.partner[a]===b?4:1.6}));
+          p.pos.forEach(([x,y],i)=>{s.dot(x,y,{color:'accent',r:6});s.text(letter(i),p.id==='stem'&&i>=2?x+.18:x,p.id==='stem'&&i>=2?y:y+.2,{align:p.id==='stem'&&i>=2?'left':'center',baseline:p.id==='stem'&&i>=2?'middle':'bottom',color:'ink',size:13});});
+          p.values.forEach((x,i)=>{sb.rect(i-.31,0,i-.03,x,{fill:'accent',fillAlpha:.75,color:'accent'});sb.rect(i+.03,0,i+.31,p.outside[i],{fill:'orange',fillAlpha:.75,color:'orange'});sb.text(frac(x),i-.17,x+.055,{align:'center',baseline:'bottom',size:12,color:'ink'});});info=p;});
+        v.legend([['green','specified trading pair'],['red','edge with a stability deficit'],['accent','payoff'],['orange','outside option']]);
+        v.readout(()=>{const p=info;return `Specified matching: ${p.match.map(([a,b])=>`${letter(a)}–${letter(b)}`).join(', ')}. First changed pair: ${p.match[0].map(letter).join('–')}.\nPayoffs: ${p.values.map((x,i)=>`${letter(i)} ${frac(x)}`).join(' · ')}. Outside options: ${p.outside.map((x,i)=>`${letter(i)} ${frac(x)}`).join(' · ')}.\nMaximum stability deficit ${v.fix(p.stabilityResidual,8)}; maximum matched surplus imbalance ${v.fix(p.balanceResidual,8)}. Within numerical tolerance: ${p.balanced?'stable and balanced':p.stable?'stable, not balanced':'fails stability'}.${p.id==='tri'?' No stable outcome exists on the triangle by the matching argument above; these bars show one candidate.':' These checks evaluate this specified outcome only.'}`;});
       },
     },
   ],

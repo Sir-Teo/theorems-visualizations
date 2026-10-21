@@ -1,0 +1,4 @@
+/** Explicit least-squares closure; no well-conditioned fit is claimed for a nearly constant cloud. */
+export function fitGateClosure(n,h){if(n.length!==h.length||n.length<3)return null;const N=n.length,mn=n.reduce((a,b)=>a+b,0)/N,mh=h.reduce((a,b)=>a+b,0)/N;let xx=0,xy=0,yy=0;for(let j=0;j<N;j++){xx+=(n[j]-mn)**2;xy+=(n[j]-mn)*(h[j]-mh);yy+=(h[j]-mh)**2;}if(Math.max(...n)-Math.min(...n)<.002||Math.max(...h)-Math.min(...h)<.002||xx<=1e-14||yy<=1e-14)return null;const k=-xy/xx;return{h0:mh+k*mn,k,r2:xy*xy/(xx*yy),N};}
+export function closureDiagnostics(n,h0,k){const values=n.map(x=>h0-k*x);return{values,min:Math.min(...values),max:Math.max(...values),outside:values.filter(x=>x<0||x>1).length};}
+export function meanInterval(times){return times.length>=2?(times.at(-1)-times[0])/(times.length-1):null;}

@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import {pathToFileURL} from 'node:url';
+const root=process.argv[2],out=process.argv[3];if(!root||!out)throw Error('immutable archive and unique output required');
+const {observeBudget,observeOptionalReservations,resourceEvidence}=await import(pathToFileURL(root+'/scripts/lib/map-paired-resource-observer.mjs'));
+const {SceneBudget}=await import(pathToFileURL(root+'/assets/js/map-scene-gl.js'));
+const {observeCallback,prepareFixedQuiescence}=await import(pathToFileURL(root+'/scripts/lib/map-paired-quiescence.mjs'));
+let checks=0;const ok=(v,...a)=>{assert.ok(v,...a);checks++;};
+globalThis.__pairedCallbacks={events:[],phase:'test'};globalThis.__pairedCallbackRecord=(kind,detail)=>globalThis.__pairedCallbacks.events.push({kind,...detail});
+const rows=[],receiver={};const token={error:true};const fn=observeCallback('throw-order',function(...args){rows.push({self:this,args});throw token;});try{fn.call(receiver,7,8);assert.fail();}catch(e){assert.equal(e,token);}ok(rows.length===1&&rows[0].self===receiver&&rows[0].args.join(',')==='7,8');ok(globalThis.__pairedCallbacks.events.length===1);
+function fake(){return {map:{nodes:[],G:{collections:[],fields:[],map:{fields:[],rows:[]}},W:320,H:100,dpr:2,k:.8,tx:0,ty:0,_raf:0,anim:0},status:'ready',generation:1,controlKey:'x',models:new Map(['bundles:0.5','edges:0.5','edges:4'].map(k=>[k,{released:false}])),pending:new Map(),ready:Promise.resolve()};}
+const s=fake(),fontSet={status:'loaded',ready:Promise.resolve(),load:async()=>[]};let mac=0,raf=0;await assert.rejects(prepareFixedQuiescence(s,{fontSet,macro:async()=>{if(++mac===3)s.map.tx=1;},raf:async()=>{raf++;}}),/not quiet/);ok(mac===4&&raf===4);ok(s.map.tx===1);
+const budget=new SceneBudget(1000),ledger=observeBudget(budget),a={},b={};budget.reserve(a,400,()=>{budget.reserve(b,200,()=>{});},{evictable:true});budget.release(a);ok(ledger.originalPeak===400&&budget.bytes===200);budget.reserve(a,500,()=>{});ok(ledger.originalPeak===700);budget.release(a);ok(ledger.originalPeak===700&&budget.bytes===200);
+const edges={budget,reserveOptional(owner,bytes,release){if(this.budget.bytes+bytes>this.budget.limit)return false;this.budget.reserve(owner,bytes,release,{evictable:false});return true;}};observeOptionalReservations(edges);const optional={model:b,xy:null};ok(edges.reserveOptional(optional,250,()=>{})===true);ok(resourceEvidence({budget,models:new Map([['b',b]])}).current.originalPeak===700);budget.release(optional);const denied={capacity:32768,cpu:null,buffer:null};ok(edges.reserveOptional(denied,900,()=>{})===false);ok(ledger.optionalAttempts.at(-1).completed&&ledger.optionalAttempts.at(-1).result===false);ok(budget.entries.has(b));
+const late=new SceneBudget(1000);late.reserve({},1,()=>{});ok(observeBudget(late).snapshot().historyFromZero===false);
+const maliciousBudget=new SceneBudget(1000),orig={};observeBudget(maliciousBudget);maliciousBudget.reserve(orig,100,()=>{});const bad={budget:maliciousBudget,reserveOptional(o,n,f){this.budget.release(orig);this.budget.reserve(o,n,f);return true;}};observeOptionalReservations(bad);assert.throws(()=>bad.reserveOptional({model:orig,xy:null},1,()=>{}),/changed original owner/);checks++;
+const result={pass:true,checks,callbacks:globalThis.__pairedCallbacks.events,resource:resourceEvidence({budget,models:new Map([['b',b]])}),limits:'Model supplements only; no full-map/native acceptance.'};await fs.writeFile(out,JSON.stringify(result,null,2));console.log(JSON.stringify({pass:true,checks}));

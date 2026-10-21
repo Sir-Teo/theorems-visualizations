@@ -118,7 +118,7 @@ const TAU2 = 2 * PI;
 // ------------------------------------------------------------------ 3.11: Debye-model mean-square displacement
 /** ∫0^X x/(e^x − 1) dx (Simpson). */
 export function debyeI1(X) {
-  if (X < 1e-9) return 0; X = Math.min(X, 40); const n = 200, h = X / n, f = (x) => (x < 1e-8 ? 1 : x / Math.expm1(x)); let s = f(0) + f(X);
+  if (X < 1e-9) return 0; const n = 200, h = X / n, f = (x) => (x < 1e-8 ? 1 : x / Math.expm1(x)); let s = f(0) + f(X);
   for (let i = 1; i < n; i++) s += f(i * h) * (i % 2 ? 4 : 2); return (s * h) / 3;
 }
 /** Total ⟨u²⟩ (3D, one atom) in the Debye model: (9ħ²/(m k_B Θ)) [¼ + (T/Θ)² ∫0^{Θ/T} x/(eˣ−1) dx], SI units; mass in kg. */
@@ -129,11 +129,11 @@ export function debyeU2(T, theta, mass, hbar, kB) {
 // ------------------------------------------------------------------ 3.14: Feynman's variational polaron (ħ = m = ω_LO = 1)
 // E(v, w) = (3/(4v))(v − w)² − (α/√π)(v/w) ∫0^∞ e^{−τ} dτ /√(τ D(τ)),   D(τ) = 1 + (v/w²)(1 − w²/v²)... see below;
 // D(τ) = 1 + v (1 − w²/v²)(1 − e^{−vτ}) / (τ w²). Model mass of the variational system: m_F = (v/w)² (electron plus the fictitious particle).
-export function feynmanTrialEnergy(v, w, alpha) {
+function feynE(v, w, alpha) {
   if (v <= w) return 1e9;
   // substitute τ = s² / (1 − ...) not needed: use Gauss–Laguerre-like composite Simpson on τ ∈ [0, 40] after τ = u²
   const n = 400, U = Math.sqrt(40), h = U / n; let s = 0;
-  const g = (u) => { const t = u * u; if (t < 1e-12) return 2 * w / v; const D = 1 + (v * (1 - (w * w) / (v * v)) * (1 - Math.exp(-v * t))) / (t * w * w); return (2 * u * Math.exp(-t)) / Math.sqrt(t * D); };
+  const g = (u) => { const t = u * u; if (t < 1e-12) return 0; const D = 1 + (v * (1 - (w * w) / (v * v)) * (1 - Math.exp(-v * t))) / (t * w * w); return (2 * u * Math.exp(-t)) / Math.sqrt(t * D); };
   s = g(0) + g(U); for (let i = 1; i < n; i++) s += g(i * h) * (i % 2 ? 4 : 2); s = (s * h) / 3;
   return (3 / (4 * v)) * (v - w) * (v - w) - ((alpha / Math.sqrt(PI)) * (v / w)) * s;
 }
@@ -142,9 +142,9 @@ export function feynman(alpha) {
   const key = alpha.toFixed(4); if (FEY[key]) return FEY[key];
   // minimise over (log w, log(v/w)) by coarse grid then pattern search
   let best = { E: 1e9, w: 3, v: 3.5 };
-  for (let lw = 0; lw <= 3.2; lw += 0.2) for (let lr = -3; lr <= 4; lr += 0.25) { const w = Math.exp(lw * 0.8), v = w * (1 + Math.exp(lr)), E = feynmanTrialEnergy(v, w, alpha); if (E < best.E) best = { E, w, v }; }
+  for (let lw = 0; lw <= 3.2; lw += 0.2) for (let lr = -3; lr <= 4; lr += 0.25) { const w = Math.exp(lw * 0.8), v = w * (1 + Math.exp(lr)), E = feynE(v, w, alpha); if (E < best.E) best = { E, w, v }; }
   let step = 0.3, lw = Math.log(best.w), lr = Math.log(best.v / best.w - 1);
-  const ev = (a, b) => { const w = Math.exp(a), v = w * (1 + Math.exp(b)); return feynmanTrialEnergy(v, w, alpha); };
+  const ev = (a, b) => { const w = Math.exp(a), v = w * (1 + Math.exp(b)); return feynE(v, w, alpha); };
   let cur = ev(lw, lr);
   for (let it = 0; it < 120 && step > 1e-6; it++) {
     let moved = false;

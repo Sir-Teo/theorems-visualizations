@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 9 (part 3): bounded functions annihilated by convolution
 //
-// Full second-edition source review is recorded in docs/verification/fa-source-review.md.
+// Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
 function span(vals, minSpan = 1, pad = 0.15) {
   let lo = Infinity, hi = -Infinity;
@@ -19,14 +19,14 @@ export default {
       num: '9.3',
       kind: 'Theorem',
       name: 'Annihilated bounded functions: supp φ̂ ⊂ Z(Y)',
-      statement: String.raw`Suppose $\varphi\in L^\infty(\R^n)$, $Y$ is a subspace of $L^1(\R^n)$, and $f*\varphi=0$ for every $f\in Y$. Then the Fourier transform $\hat\varphi$ of $\varphi$, a tempered distribution, has its support in
+      statement: String.raw`Suppose $\varphi\in L^\infty(\R^n)$, $Y\subset L^1(\R^n)$, and $f*\varphi=0$ for every $f\in Y$. Then the Fourier transform $\hat\varphi$ of $\varphi$, a tempered distribution, has its support in
 $$Z(Y)=\{t\in\R^n:\hat f(t)=0\text{ for every }f\in Y\}.$$
-In particular, if $Z(Y)=\emptyset$, then $\varphi=0$. For $\varphi(x)=\sum_kc_ke^{i\omega_k\cdot x}$ (finitely many distinct frequencies, $c_k\ne0$), $\operatorname{supp}\hat\varphi=\{\omega_k\}$, and this is exactly $Z(Y)$ for the largest such $Y$, namely $\{f:f*\varphi=0\}$.`,
+In particular, if $Z(Y)=\emptyset$, then $\varphi=0$. For $\varphi(x)=\sum_kc_ke^{i\omega_k\cdot x}$ (finitely many terms, $c_k\ne0$), $\operatorname{supp}\hat\varphi=\{\omega_k\}$, and this is exactly $Z(Y)$ for the largest such $Y$, namely $\{f:f*\varphi=0\}$.`,
       idea: String.raw`Fix $t_0\notin Z(Y)$ and pick $f\in Y$ with $\hat f(t_0)\ne0$. Lemma 9.2 and a Neumann series let one divide by $\hat f$ near $t_0$: every $\psi\in L^1$ whose transform is a test function supported in a small neighbourhood $V$ of $t_0$ factors as $\psi=f*u$ with $u\in L^1$. Then $\psi*\varphi=u*(f*\varphi)=0$, so $\hat\psi\hat\varphi=(\psi*\varphi)^\wedge=0$ (7.19) for all such $\psi$, which says that $\hat\varphi$ vanishes on $V$. Covering the complement of $Z(Y)$ by such $V$ gives $\operatorname{supp}\hat\varphi\subset Z(Y)$. If $Z(Y)$ is empty, then $\hat\varphi=0$ and $\varphi=0$, which is the step behind Wiener's theorem 9.4.`,
-      caption: String.raw`$n=1$. Top: the spectrum of $\varphi$ (gold, packet height scaled) and $\hat f$ for an even kernel $f$ whose transform vanishes at $\pm z_1,\pm z_2,\pm z_3$ (blue, normalised; drag the red zeros). For **three tones** $\varphi=\sum a_k\cos\omega_kx$ (drag the gold points: position $\omega_k$, height $a_k$), $\operatorname{supp}\hat\varphi=\{\pm\omega_k\}$ and $f*\varphi=\sum a_k\hat f(\omega_k)\cos\omega_kx$ (bottom, blue). It vanishes only when $\hat f$ vanishes on all of $\operatorname{supp}\hat\varphi$ (try the button), so the common zeros of the annihilating $f$ contain the support, as the theorem says. For the **wave packet** $\varphi=a\,e^{-x^2/16}\cos\omega x$ (drag $\omega_1$), $\hat\varphi\ne0$ everywhere (it is a sum of two Gaussians): its support is all of $\R$, and no kernel can kill it.`,
+      caption: String.raw`$n=1$. Top: $\hat\varphi$ (gold) and $\hat f$ for an even kernel $f$ whose transform vanishes at $\pm z_1,\pm z_2,\pm z_3$ (blue, normalised; drag the red zeros). For **three tones** $\varphi=\sum a_k\cos\omega_kx$ (drag the gold points: position $\omega_k$, height $a_k$), $\operatorname{supp}\hat\varphi=\{\pm\omega_k\}$ and $f*\varphi=\sum a_k\hat f(\omega_k)\cos\omega_kx$ (bottom, blue). It vanishes only when $\hat f$ vanishes on all of $\operatorname{supp}\hat\varphi$ (try the button), so the common zeros of the annihilating $f$ contain the support, as the theorem says. For the **wave packet** $\varphi=a\,e^{-x^2/16}\cos\omega x$ (drag $\omega_1$), $\hat\varphi\ne0$ everywhere (it is a sum of two Gaussians): its support is all of $\R$, and no kernel can kill it.`,
       deps: ['fa-9.2', 'fa-7.15', 'fa-7.19'],
       tags: ['Wiener', 'spectrum', 'convolution'],
-
+      verify: true,
       viz(v) {
         const M = v.M;
         const mode = v.select('$\\varphi=$', [{ value: 'tones', label: 'three tones' }, { value: 'packet', label: 'wave packet' }], 'tones', { onChange: (m) => { W.forEach((h, k) => { h.visible = m === 'tones' || k === 0; }); snap.hidden = m !== 'tones'; } });
@@ -58,9 +58,9 @@ In particular, if $Z(Y)=\emptyset$, then $\varphi=0$. For $\varphi(x)=\sum_kc_ke
             const phi = (x) => a * Math.exp(-x * x / 16) * Math.cos(w * x);
             X.fn(phi, { color: 'gold', width: 2, n: 900 });
             X.path(xs.map((x, i) => [x, conv[i]]), { color: 'blue', width: 2.4 });
-            st = { packet, zero:a===0, sup: Math.max(...conv.map(Math.abs)) };
+            st = { packet, sup: Math.max(...conv.map(Math.abs)) };
           } else {
-            const groups=new Map();for(const h of W)groups.set(h.x,(groups.get(h.x)||0)+h.y);const tones=[...groups].filter(([,a])=>a!==0);
+            const tones = W.map((h) => [h.x, h.y]);
             tones.forEach(([w, a]) => { T.line(w, 0, w, a, { color: 'gold', width: 4 }); });
             T.fn(fhat, { color: 'blue', width: 2.4, n: 600 });
             tones.forEach(([w]) => { const y = fhat(w); T.dot(w, y, { color: Math.abs(y) < 0.01 ? 'green' : 'blue', r: 4 }); });
@@ -75,12 +75,10 @@ In particular, if $Z(Y)=\emptyset$, then $\varphi=0$. For $\varphi(x)=\sum_kc_ke
         });
         v.readout(() => {
           const s = st;
-          if(s.packet && s.zero)return 'The amplitude is zero: the packet has empty spectrum and every integrable kernel annihilates it.';
-          if (s.packet) return `Sampled $\\max|f*\\varphi|=${v.fix(s.sup, 4)}$. However the zeros are placed, $\\hat f\\hat\\varphi\\ne0$: the wave packet's spectrum is all of $\\R$, and $Y_\\varphi=\\{0\\}$.`;
-          if(!s.surv.length)return 'All active tones cancel: the function is zero and every integrable kernel annihilates it.';
-          const ok = s.surv.map((q) => q===0),small=s.surv.every(q=>Math.abs(q)<0.005);
+          if (s.packet) return `$\\sup|f*\\varphi|=${v.fix(s.sup, 4)}$. However the zeros are placed, $\\hat f\\hat\\varphi\\ne0$: the wave packet's spectrum is all of $\\R$, and $Y_\\varphi=\\{0\\}$.`;
+          const ok = s.surv.map((q) => Math.abs(q) < 0.005);
           const list = s.surv.map((q, k) => `$a_${k + 1}\\hat f(\\omega_${k + 1})=${v.fix(q, 3)}$`).join(', ');
-          return list + '. ' + (ok.every(Boolean) ? '**$f*\\varphi=0$**: $f\\in Y_\\varphi$, and $\\hat f$ vanishes on the whole spectrum $\\{\\pm\\omega_k\\}$.' : small?'The computed coefficients are small but nonzero; exact annihilation is not certified.': `$f\\notin Y_\\varphi$: ${ok.filter((q) => !q).length} frequenc${ok.filter((q) => !q).length === 1 ? 'y survives' : 'ies survive'} the convolution.`);
+          return list + '. ' + (ok.every(Boolean) ? '**$f*\\varphi=0$**: $f\\in Y_\\varphi$, and $\\hat f$ vanishes on the whole spectrum $\\{\\pm\\omega_k\\}$.' : `$f\\notin Y_\\varphi$: ${ok.filter((q) => !q).length} frequenc${ok.filter((q) => !q).length === 1 ? 'y survives' : 'ies survive'} the convolution.`);
         });
       },
     },

@@ -1,3 +1,4 @@
+import {exactDyadicTable,dyadicErrors,spikeTailSup,hiddenCoinPosterior,paretoXLogMoment} from './ch04-convergence.audit.js';
 // Probability: Theory and Examples (Durrett) — Chapter 4, part Z1: uniform integrability and Lévy's theorems (§4.6)
 import { clampN, cornerIn, simpson, DFUN, dfunOpts, dyadicTable, dyadAt, DL, tailExp, PHI } from './ch04-z.shared.js';
 
@@ -18,12 +19,12 @@ export default {
 $$\lim_{M\to\infty}\ \sup_{i\in I}\ E\big(|X_i|;\,|X_i|>M\big)=0 .$$
 For a single integrable $X$ this is dominated convergence; for a family it asks that the tails go to $0$ at a common rate.`,
       idea: String.raw`Integrability of each member is not enough: the supremum over $i$ must vanish as $M\to\infty$. A UI family is bounded in $L^1$ (because $E|X_i|\le M+\sup_iE(|X_i|;|X_i|>M)$), but boundedness in $L^1$ alone does not suffice: a fixed amount of mass can escape to infinity along the family (the standard example $n\mathbf 1_{(U<1/n)}$). In the proofs that follow, UI is exactly the condition that lets almost sure or in-probability convergence upgrade to convergence of expectations.`,
-      caption: String.raw`Pick a family and drag $M$. Left (log scale): the thin curves are $M\mapsto E(|X_i|;|X_i|>M)$ for individual members, the thick curve is their supremum. For $n\mathbf 1_{(U<1/n)}$ every single member drops to $0$ at $M=n$, yet the supremum stays at $1$: not UI. With $1/n^2$ instead of $1/n$ the supremum is $1/(\lfloor M\rfloor+1)\to0$. Normals with $\sigma\le s$ are UI; raise the cap $s$ and the curve shifts but still vanishes. Right: the laws themselves; mass above $M$ is shaded.`,
+      caption: String.raw`Pick a family and drag $M$. Left (log scale): the thin curves are $M\mapsto E(|X_i|;|X_i|>M)$ for individual members, the thick curve is their supremum. For $n\mathbf 1_{(U<1/n)}$ every single member drops to $0$ at $M=n$, yet the supremum stays at $1$: not UI. With $1/n^2$ instead of $1/n$ the supremum is $1/(\lfloor M\rfloor+1)\to0$. Normals with $\sigma\le s$ are UI; raise the cap $s$ and the curve shifts but still vanishes. Right: spike profiles on the common uniform variable $U$, or densities of $|X|$ for the continuous examples; the region beyond $M$ is shaded. Only six spike members are drawn, while the red supremum ranges over every positive integer $n$. Zero tails lie below the positive log axis.`,
       deps: ['prob-1.6.1a'],
       tags: ['uniform integrability'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.6, pp. 243–244 (uniform integrability)'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
-      scope: String.raw`The definition is stated for probability spaces (finite measure). Textbooks differ on whether UI also requires $\sup_iE|X_i|<\infty$; on a probability space the two formulations are equivalent for the $L^1$ story used here.`,
+      refs: ['Durrett, fifth edition, unnumbered definition at the start of §4.6, p. 244.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=252' },
+      scope: String.raw`The definition is stated for probability spaces (finite measure). The tail definition here implies $\sup_iE|X_i|<\infty$ on a probability space, by the bound in the idea.`,
       viz(v) {
         const fam = v.select('family', [
           { value: 'esc', label: '$n\\mathbf 1_{(U<1/n)}$' },
@@ -45,8 +46,9 @@ For a single integrable $X$ this is dominated convergence; for a family it asks 
         };
         v.render(() => {
           const { ms, sup } = mem(), M0 = Mx.value, f = fam.value, s = sS.value;
+          sS.el.hidden=f!=='norm';L.setView([0,30],[1e-4,Math.max(1,sup(0))*1.2]);
           if (f === 'esc' || f === 'esc2') {
-            NS.forEach((n, i) => { const h = f === 'esc' ? 1 : 1 / n; L.path([[0, h], [n, h], [n, FLOOR]], { color: 'accent', width: 1.6, alpha: 0.8 }); L.dot(n, h, { color: 'accent', r: 3.5 }); });
+            NS.forEach((n, i) => { const h = f === 'esc' ? 1 : 1 / n; L.path([[0, h], [n, h], [n, FLOOR]], { color: 'accent', width: 1.6, alpha: 0.8 }); if(n<=30)L.dot(n, h, { color: 'accent', r: 3.5, hollow:true }); });
             if (f === 'esc') L.hline(1, { color: 'red', width: 2.6, dash: [8, 5] });
             else { const pts = []; for (let k = 0; k < 30; k++) pts.push([k, 1 / (k + 1)], [k + 1, 1 / (k + 1)]); L.path(pts, { color: 'red', width: 2.6, dash: [8, 5] }); }
           } else {
@@ -56,15 +58,15 @@ For a single integrable $X$ this is dominated convergence; for a family it asks 
           L.vline(M0, { color: 'gold', width: 1.5, dash: true });
           L.dot(M0, lg(sup(M0)), { color: 'red', r: 5 });
           if (f === 'esc' || f === 'esc2') {
-            R.setView([0, 1], [0, 70]);
+            R.setView([0, 1], [0, 70]);R.setTitle('spike profiles on $U\\sim U[0,1]$');R.setLabels('$u$','$X_n(u)$');
             NS.forEach((n, i) => R.rect(0, 0, 1 / (f === 'esc' ? n : n * n), n, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 1 }));
             R.hband(M0, 70, { color: 'red', alpha: 0.12 });
             R.tex('\\text{spike of height } n \\text{ on a set of mass } 1/n' + (f === 'esc' ? '' : '^2'), 0.5, 66, { color: 'muted', size: 12 });
           } else {
-            R.setView([0, 12], [0, 1.1]);
+            const xmax=Math.max(12,M0*1.1);R.setView([0,xmax],[0,f==='exp'?1.1:2*PHI(0)/(.25*s)*1.1]);R.setTitle('densities of $|X|$');R.setLabels('$x$',null);
             const pdf = f === 'exp' ? [(x) => Math.exp(-x)] : [0.25, 0.5, 0.75, 1].map((c) => (x) => (2 * PHI(x / (c * s))) / (c * s));
-            pdf.forEach((g) => R.fn(g, { color: 'accent', width: 1.6, domain: [0, 12] }));
-            R.vband(M0, 12, { color: 'red', alpha: 0.12 });
+            pdf.forEach((g) => R.fn(g, { color: 'accent', width: 1.6, domain: [0, xmax] }));
+            R.vband(M0, xmax, { color: 'red', alpha: 0.12 });
           }
         });
         v.legend([['accent', 'individual members'], ['red', '$\\sup_i$'], ['gold', '$M$', { dash: true }]]);
@@ -112,16 +114,15 @@ For a single integrable $X$ this is dominated convergence; for a family it asks 
     {
       num: '4.6.2',
       kind: 'Theorem',
-      name: 'de la Vallée-Poussin criterion',
-      statement: String.raw`Let $\varphi\ge0$ with $\varphi(x)/x\to\infty$ as $x\to\infty$. If $\sup_iE\varphi(|X_i|)\le C<\infty$, then $\{X_i\}$ is uniformly integrable. In fact
-$$E(|X_i|;|X_i|>M)\ \le\ C\sup_{x\ge M}\frac{x}{\varphi(x)}\ \longrightarrow\ 0 .$$
-This is the sufficient criterion stated in Durrett 4.6.2.`,
+      name: 'Superlinear moment criterion for uniform integrability',
+      statement: String.raw`Let $\varphi:[0,\infty)\to[0,\infty)$ be Borel measurable with $\varphi(x)/x\to\infty$ as $x\to\infty$. If $\sup_iE\varphi(|X_i|)\le C<\infty$, then $\{X_i\}$ is uniformly integrable. In fact
+$$E(|X_i|;|X_i|>M)\ \le\ C\sup_{x\ge M}\frac{x}{\varphi(x)}\ \longrightarrow\ 0 .$$`,
       idea: String.raw`On $\{|X_i|>M\}$ we have $|X_i|=\varphi(|X_i|)\cdot|X_i|/\varphi(|X_i|)\le\varphi(|X_i|)\sup_{x\ge M}x/\varphi(x)$. Integrate over that event and bound $E\varphi(|X_i|)$ by $C$. Superlinear growth of $\varphi$ is exactly what makes the supremum tend to $0$. This is the working test for UI: in practice one checks a bound on $E|X_i|^{1+\delta}$.`,
-      caption: String.raw`Family: Pareto laws $P(X>x)=x^{-\alpha}$ ($x\ge1$) with $\alpha\ge\alpha_0$. Thin curves: the exact tails $E(X;X>M)=\frac{\alpha}{\alpha-1}M^{1-\alpha}$ for several $\alpha$ (log–log). Red: the criterion's bound $C\sup_{x\ge M}x/\varphi(x)$ with $C=\sup_\alpha E\varphi(X)$ (attained at $\alpha_0$). Try $\varphi(x)=x^p$ and $\varphi(x)=x\ln(1+x)$. Push $p$ up to $\alpha_0$: $C$ blows up and the bound disappears, while the family itself stays UI (the criterion is only sufficient for a given $\varphi$).`,
+      caption: String.raw`Family: Pareto laws $P(X>x)=x^{-\alpha}$ ($x\ge1$) with $\alpha\ge\alpha_0$. Thin curves: the exact tails $E(X;X>M)=\frac{\alpha}{\alpha-1}M^{1-\alpha}$ for several $\alpha$ (log–log). Red: the criterion's bound $C\sup_{x\ge M}x/\varphi(x)$ with an explicit uniform moment bound $C$. For $x^p$, $C=\alpha_0/(\alpha_0-p)$ when $p<\alpha_0$. For $x\ln(1+x)$, the inequality $\ln(1+x)\le\ln x+1/x$ gives $C=\alpha_0/(\alpha_0-1)^2+1$; the readout also estimates the actual moment by quadrature. Try $\varphi(x)=x^p$ and $\varphi(x)=x\ln(1+x)$. Push $p$ up to $\alpha_0$: $C$ blows up and the bound disappears, while the family itself stays UI (the criterion is only sufficient for a given $\varphi$).`,
       deps: ['prob-4.6.1a'],
       tags: ['uniform integrability'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.6.2 and proof, p. 245'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, Theorem 4.6.2 and proof, p. 245.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=253' },
       viz(v) {
         const phiS = v.select('$\\varphi$', [{ value: 'pow', label: '$x^p$' }, { value: 'xlog', label: '$x\\ln(1+x)$' }], 'pow');
         const aS = v.slider('$\\alpha_0$', 1.2, 4, 2.2, { step: 0.05 });
@@ -129,50 +130,52 @@ This is the sufficient criterion stated in Durrett 4.6.2.`,
         const S = v.stage({ x: [1, 300], xlog: true, y: [1e-5, 20], ylog: true, height: 340, axes: 'box', gutter: true, xlabel: '$M$', title: '$E(X;X>M)$ against the criterion' });
         let st = null;
         v.render(() => {
-          const a0 = aS.value, p = pS.value, kind = phiS.value;
-          [1, 1.3, 1.8, 2.6, 4].forEach((c) => { const al = a0 * c; S.fn((M) => lg(((al / (al - 1)) * Math.pow(M, 1 - al))), { color: 'accent', width: 1.5, alpha: 0.8, n: 200 }); });
-          let C = Infinity, g;
+          const a0 = aS.value, p = pS.value, kind = phiS.value;pS.el.hidden=kind!=='pow';
+          let C = Infinity, g, moment=null;
           if (kind === 'pow') { if (p < a0) C = a0 / (a0 - p); g = (M) => Math.pow(M, 1 - p); }
-          else { C = a0 * simpson((u) => Math.exp((1 - a0) * u) * Math.log(1 + Math.exp(u)), 0, 220, 4000); g = (M) => 1 / Math.log(1 + M); }
+          else { const result=paretoXLogMoment(a0,simpson);C=result.upper;moment=result.estimate;g=(M)=>1/Math.log(1+M); }
+          S.setView([1,300],[1e-5,Math.max(8,Number.isFinite(C)?C*(kind==='pow'?1:1/Math.log(2)):0)*1.2]);
+          [1, 1.3, 1.8, 2.6, 4].forEach((c) => { const al = a0 * c; S.fn((M) => lg(((al / (al - 1)) * Math.pow(M, 1 - al))), { color: 'accent', width: 1.5, alpha: 0.8, n: 200 }); });
           if (isFinite(C)) S.fn((M) => lg(C * g(M)), { color: 'red', width: 2.4, dash: [6, 4], n: 200 });
-          st = { C, kind, p, a0 };
+          st = { C, kind, p, a0, moment };
         });
         v.legend([['accent', 'exact tails, $\\alpha=\\alpha_0,\\dots$'], ['red', '$C\\sup_{x\\ge M}x/\\varphi(x)$', { dash: true }]]);
-        v.readout(() => st && (isFinite(st.C) ? `$C=\\sup_\\alpha E\\varphi(X)=${v.fix(st.C, 3)}$ at $\\alpha=${v.fix(st.a0, 2)}$: every tail lies under $C\\cdot\\,${st.kind === 'pow' ? `M^{${v.fix(1 - st.p, 2)}}` : '1/\\ln(1+M)'}$.` : `$p=${v.fix(st.p, 2)}\\ge\\alpha_0$: $E X^p=\\infty$, so no finite $C$; the criterion says nothing with this $\\varphi$.`));
+        v.readout(() => st && (isFinite(st.C) ? `$C=${v.fix(st.C,3)}$ ${st.kind==='pow'?'equals':'bounds'} $\\sup_\\alpha E\\varphi(X)$. ${st.moment===null?'':`At $\\alpha_0$, the moment is approximately $${v.fix(st.moment,3)}$.`} Every tail lies under $C\\cdot\\,${st.kind === 'pow' ? `M^{${v.fix(1 - st.p, 2)}}` : '1/\\ln(1+M)'}$.` : `$p=${v.fix(st.p, 2)}\\ge\\alpha_0$: $E X^p=\\infty$, so no finite $C$; the criterion says nothing with this $\\varphi$.`));
       },
     },
     {
       num: '4.6.3',
       kind: 'Theorem',
-      name: 'Vitali: L¹ convergence ⇔ UI and convergence in probability',
+      name: 'L¹ convergence ⇔ UI and convergence in probability',
       statement: String.raw`Let $X_n,X$ be integrable. Then $X_n\to X$ in $L^1$ if and only if $X_n\to X$ in probability and $\{X_n\}$ is uniformly integrable.`,
-      idea: String.raw`($\Leftarrow$) Truncate at level $M$: $E|X_n-X|\le E|\phi_M(X_n)-\phi_M(X)|+E(|X_n|;|X_n|>M)+E(|X|;|X|>M)$ with $\phi_M$ the clamp to $[-M,M]$; the first term tends to $0$ by bounded convergence in probability (Exercise 2.3.5), the others are small by UI. ($\Rightarrow$) $L^1$ convergence implies convergence in probability (2.2.2 with $p=1$), and a convergent sequence in $L^1$ is UI because $E(|X_n|;A)\le E(|X|;A)+E|X_n-X|$ is uniformly small once $P(A)$ is.`,
-      caption: String.raw`$X_n=n^a\mathbf 1_{(U<1/n)}$ converges to $0$ in probability for every $a$. Left (log–log): $P(|X_n|>\frac12)=1/n$ (gold), $E|X_n|=n^{a-1}$ (accent) and the UI tail $\sup_{m\ge n}E(X_m;X_m>M)$ (red). For $a<1$ the three tend to $0$: $L^1$ convergence. At $a=1$ the mean sticks at $1$ and the tail sticks at $1$: escaping mass. Right: the function $X_n$ for the chosen $n$, a taller and thinner spike as $n$ grows, with area $n^{a-1}$.`,
+      idea: String.raw`($\Leftarrow$) Truncate at level $M$: $E|X_n-X|\le E|\phi_M(X_n)-\phi_M(X)|+E(|X_n|;|X_n|>M)+E(|X|;|X|>M)$ with $\phi_M$ the clamp to $[-M,M]$; the bounded first term tends to $0$ in expectation because convergence in probability implies that for each $\eps>0$ its expectation is at most $\eps+2M\,P(|\phi_M(X_n)-\phi_M(X)|>\eps)$, the others are small by UI. ($\Rightarrow$) $L^1$ convergence implies convergence in probability (2.2.2 with $p=1$), and a convergent sequence in $L^1$ is UI because $E(|X_n|;A)\le E(|X|;A)+E|X_n-X|$ is uniformly small once $P(A)$ is.`,
+      caption: String.raw`$X_n=n^a\mathbf 1_{(U<1/n)}$ converges to $0$ in probability for every $a$. Left (log–log): $P(|X_n|>\frac12)=1/n$ (gold), $E|X_n|=n^{a-1}$ (accent) and the UI tail $\sup_{m\ge n}E(X_m;X_m>M)$ (red). For $a<1$ these three curves tend to $0$ as $n\to\infty$ for each fixed $M$ (and the full-family tail tends to $0$ as $M\to\infty$): $L^1$ convergence. At $a=1$ the mean sticks at $1$ and the tail sticks at $1$: escaping mass. For $a>1$ the tail supremum is infinite and is labelled rather than drawn at a finite height. Right: the function $X_n$ for the chosen $n$, a taller and thinner spike as $n$ grows, with area $n^{a-1}$.`,
       deps: ['prob-4.6.1a', 'prob-1.6.7', 'prob-2.2.2'],
       tags: ['uniform integrability', 'convergence'],
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.6.3 and proof, pp. 245–246'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, Theorem 4.6.3 and proof, pp. 245–246; this item states equivalence (i)–(ii).'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=253' },
       viz(v) {
         const aS = v.slider('exponent $a$', 0.1, 1.5, 0.6, { step: 0.05 });
         const MS = v.slider('$M$', 1, 100, 10, { step: 1, log: true });
         const nS = v.slider('$n$', 1, 300, 20, { int: true, log: true });
-        const L = v.stage({ x: [1, 1e4], xlog: true, y: [1e-3, 30], ylog: true, height: 330, weight: 1.2, axes: 'box', gutter: true, xlabel: '$n$', title: 'three ways to look at $X_n\\to0$' });
+        const L = v.stage({ x: [1, 1e4], xlog: true, y: [1e-5, 30], ylog: true, height: 330, weight: 1.2, axes: 'box', gutter: true, xlabel: '$n$', title: 'three ways to look at $X_n\\to0$' });
         const R = v.stage({ x: [0, 1], y: [0, 10], height: 330, axes: 'box', gutter: true, xlabel: '$u$', title: '$X_n(u)$' });
         v.render(() => {
           const a = aS.value, M = MS.value, n0 = nS.value;
-          const tailSup = (n) => { if (a > 1) return 1e9; if (a === 1) return 1; const m0 = Math.max(n, Math.floor(Math.pow(M, 1 / a)) + 1); return Math.pow(m0, a - 1); };
+          const tailSup = (n) => spikeTailSup(a,M,n);
+          L.setView([1,1e4],[1e-5,Math.max(2,1e4**(a-1))*1.3]);
           L.fn((n) => 1 / n, { color: 'gold', width: 2.2, n: 200 });
           L.fn((n) => lg(Math.pow(n, a - 1)), { color: 'accent', width: 2.6, n: 200 });
-          L.fn((n) => lg(Math.min(1e6, tailSup(Math.floor(n)))), { color: 'red', width: 2, dash: [6, 4], n: 300 });
+          if(a<=1)L.fn((n) => lg(tailSup(Math.floor(n))), { color: 'red', width: 2, dash: [6, 4], n: 300 });else cornerIn(L,'tail supremum $=\\infty$','tr');
           L.vline(n0, { color: 'muted', dash: true, width: 1 });
           const h = Math.pow(n0, a);
-          R.setView([0, Math.min(1, Math.max(3 / n0, 0.1))], [0, Math.max(2, h * 1.15)]);
+          R.setView([0, Math.min(1, Math.max(3 / n0, 0.1))], [0, Math.max(2, h * 1.15,M*1.1)]);
           R.rect(0, 0, 1 / n0, h, { fill: 'accent', fillAlpha: 0.3, color: 'accent', width: 1.5 });
           R.hline(M, { color: 'red', dash: true, width: 1.2 });
           cornerIn(R, `height $n^a=${v.fix(h, 2)}$, width $1/n$`, 'tr');
         });
         v.legend([['gold', '$P(|X_n|>\\tfrac12)$'], ['accent', '$E|X_n|$'], ['red', '$\\sup_{m\\ge n}E(X_m;X_m>M)$', { dash: true }]]);
-        v.readout(() => { const a = aS.value; return a < 1 ? `$a=${v.fix(a, 2)}<1$: the family is UI and $E|X_n|=n^{${v.fix(a - 1, 2)}}\\to0$, as Vitali predicts.` : a === 1 ? 'Here $a=1$: in probability $X_n\\to0$ but $E|X_n|=1$ for every $n$, and the family is not UI.' : `$a=${v.fix(a, 2)}>1$: not even bounded in $L^1$.`; });
+        v.readout(() => { const a = aS.value; return a < 1 ? `$a=${v.fix(a, 2)}<1$: the family is UI and $E|X_n|=n^{${v.fix(a - 1, 2)}}\\to0$, as the theorem predicts.` : a === 1 ? 'Here $a=1$: in probability $X_n\\to0$ but $E|X_n|=1$ for every $n$, and the family is not UI.' : `$a=${v.fix(a, 2)}>1$: not even bounded in $L^1$.`; });
       },
     },
     {
@@ -344,12 +347,11 @@ This is the sufficient criterion stated in Durrett 4.6.2.`,
       statement: String.raw`Let $\mathcal F_n\uparrow\mathcal F_\infty=\sigma(\bigcup_n\mathcal F_n)$ and $E|Y|<\infty$. Then
 $$E(Y\mid\mathcal F_n)\ \longrightarrow\ E(Y\mid\mathcal F_\infty)\qquad\text{almost surely and in }L^1 .$$`,
       idea: String.raw`$X_n=E(Y\mid\mathcal F_n)$ is a UI martingale (4.6.1), so it converges a.s. and in $L^1$ to some $X_\infty$ and is closed by it (4.6.7). To identify $X_\infty$ with $E(Y\mid\mathcal F_\infty)$: for $A$ in the $\pi$-system $\bigcup_n\mathcal F_n$, $E(X_\infty;A)=\lim E(X_n;A)=E(Y;A)$; the $\pi$–$\lambda$ theorem (2.1.6) extends the identity to $\mathcal F_\infty$, and $X_\infty$ is $\mathcal F_\infty$-measurable. The tower property (4.1.13) was used in the martingale step.`,
-      caption: String.raw`On $[0,1]$ with $\mathcal F_n$ the dyadic partition into $2^n$ cells, $\mathcal F_\infty$ is the Borel field, so $E(Y|\mathcal F_\infty)=Y$. Top: $Y$ (black) and its level-$n$ averages (blue steps); drag $x_0$. Bottom (log): $\sup$-error (red), $L^1$ error (blue) and error at $x_0$ (gold) against $n$. For smooth $Y$ all three shrink. For the jump function the $L^1$ and pointwise errors shrink (the jump points are a null set), but the sup-error cannot: no a.e. statement is uniform. For $x^{-1/2}$ the sup error stays huge near $0$ while the $L^1$ error still goes to $0$.`,
+      caption: String.raw`On $[0,1]$ with $\mathcal F_n$ the dyadic partition into $2^n$ cells, $\mathcal F_\infty$ is the Borel field, so $E(Y|\mathcal F_\infty)=Y$. Cell means are computed from analytic antiderivatives. Top: $Y$ (black) and its level-$n$ averages (blue steps); drag $x_0$. The unbounded example is clipped at height $6$, with $Y(0)$ assigned arbitrarily. Bottom (log): maximum error over 16,384 fixed midpoints (red), $L^1$ error (blue; exact for jumps and $x^{-1/2}$, midpoint quadrature otherwise), and error at $x_0$ (gold). The red curve is a sampled maximum, not a supremum. The true supremum for $x^{-1/2}$ is infinite at every finite level, while its $L^1$ error tends to $0$. The jump example has nonvanishing uniform error despite a.s. and $L^1$ convergence. Zeros lie below the positive log axis.`,
       deps: ['prob-4.6.7', 'prob-4.6.1', 'prob-4.1.13', 'prob-2.1.6'],
       tags: ['martingales', 'conditional expectation'],
-      credit: 'P. Lévy',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.6.8 and proof, p. 247'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, Theorem 4.6.8 and proof, p. 247.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=255' },
       viz(v) {
         const fS = v.select('$Y$', dfunOpts(), 'smooth');
         const nS = v.slider('level $n$', 0, 11, 3, { int: true });
@@ -358,8 +360,7 @@ $$E(Y\mid\mathcal F_n)\ \longrightarrow\ E(Y\mid\mathcal F_\infty)\qquad\text{al
         const hx = T.handle(0.37, 0, { color: 'gold', label: '$x_0$', constrain: 'x' });
         let st = null;
         v.render(() => {
-          const key = fS.value, tab = dyadicTable(key), f = DFUN[key].f, m = 1 << DL, Mt = 1 << 13;
-          const yv = new Float64Array(Mt); for (let i = 0; i < Mt; i++) yv[i] = f((i + 0.5) / Mt);
+          const key = fS.value, tab = exactDyadicTable(key), f = DFUN[key].f;
           const n = nS.value, cap = key === 'blow' ? 6 : 3;
           T.setView([0, 1], key === 'blow' ? [0, cap] : [-2, 3]);
           T.fn((x) => Math.min(cap, f(x)), { color: 'ink', width: 1.2, n: 800 });
@@ -369,30 +370,28 @@ $$E(Y\mid\mathcal F_n)\ \longrightarrow\ E(Y\mid\mathcal F_\infty)\qquad\text{al
           hx.set(x0, 0);
           const es = [], el = [], ep = [];
           for (let k = 0; k <= 11; k++) {
-            let sup = 0, l1 = 0; const sh = 13 - k;
-            for (let i = 0; i < Mt; i++) { const e = Math.abs(tab[k][Math.min((1 << k) - 1, i >> sh)] - yv[i]); l1 += e; if (e > sup) sup = e; }
-            es.push([k, lg(sup)]); el.push([k, lg(l1 / Mt)]); ep.push([k, lg(Math.abs(dyadAt(tab, k, x0) - f(x0)))]);
+            const e=dyadicErrors(key,k,tab[k],f);es.push([k,lg(e.sampledMax)]);el.push([k,lg(e.l1)]);ep.push([k,lg(Math.abs(dyadAt(tab,k,x0)-f(x0)))]);
           }
+          B.setView([0,11],[1e-4,Math.max(2,...es.map(p=>p[1]),...el.map(p=>p[1]),...ep.map(p=>p[1]))*1.15]);
           B.path(es, { color: 'red', width: 2.2 }); B.path(el, { color: 'blue', width: 2.6 }); B.path(ep, { color: 'gold', width: 2.2 });
           B.vline(n, { color: 'muted', dash: true });
           st = { n, s: es[n][1], l: el[n][1], p: ep[n][1] };
         });
-        v.legend([['ink', '$Y$'], ['blue', 'level-$n$ average; $L^1$ error'], ['red', 'sup error'], ['gold', 'error at $x_0$']]);
-        v.readout(() => st && `Level $n=${st.n}$: $L^1$ error $${v.fix(st.l, 4)}$, error at $x_0$ $${v.fix(st.p, 4)}$, sup error $${v.fix(st.s, 3)}$.`);
+        v.legend([['ink', '$Y$'], ['blue', 'level-$n$ average; $L^1$ error'], ['red', 'maximum on 16,384 midpoints'], ['gold', 'error at $x_0$']]);
+        v.readout(() => st && `Level $n=${st.n}$: $L^1$ error $${fS.value==='blow'||fS.value==='jump'?'=':'\\approx'}${v.fix(st.l, 4)}$, error at $x_0$ $${v.fix(st.p, 4)}$, sampled maximum $${v.fix(st.s, 3)}$. ${fS.value==='blow'?'True supremum: $\\infty$; top panel clipped at $6$.':''}`);
       },
     },
     {
       num: '4.6.9',
       kind: 'Theorem',
       name: 'Lévy’s 0-1 law',
-      statement: String.raw`If $\mathcal F_n\uparrow\mathcal F_\infty$ and $A\in\mathcal F_\infty$, then $P(A\mid\mathcal F_n)\to\mathbf 1_A$ almost surely.`,
-      idea: String.raw`Apply the upward theorem (4.6.8) to $Y=\mathbf 1_A$: $P(A\mid\mathcal F_n)\to E(\mathbf 1_A\mid\mathcal F_\infty)=\mathbf 1_A$, since $A\in\mathcal F_\infty$. So the conditional probability of any event decided by the whole sequence is pulled, path by path, to $0$ or $1$. For independent variables with their natural filtration, a tail event is independent of every finite past, so these conditional probabilities are constant; this gives Kolmogorov's 0-1 law.`,
-      caption: String.raw`Hidden coin: with probability $\frac12$ each, a walk steps up with probability $\frac12+\delta$ or $\frac12-\delta$. The event $A=\{S_n>0$ for all large $n\}$ equals (a.s.) "the drift is positive". Top: ten seeded paths (green when $A$ occurs, red otherwise). Bottom: $P(A|\mathcal F_n)=1/(1+\rho^{-S_n})$, $\rho=\frac{1/2+\delta}{1/2-\delta}$ (Bayes), for the same paths, each drifting to $1$ or $0$. The gold dots are Monte Carlo estimates: among a pool of 12 000 further simulated futures, the fraction with $A$ among those at the same position $S_n$ at time $n$.`,
+      statement: String.raw`If $\mathcal F_n$ increase and $\mathcal F_\infty=\sigma(\bigcup_n\mathcal F_n)$ and $A\in\mathcal F_\infty$, then $P(A\mid\mathcal F_n)\to\mathbf 1_A$ almost surely.`,
+      idea: String.raw`Apply the upward theorem (4.6.8) to $Y=\mathbf 1_A$: $P(A\mid\mathcal F_n)\to E(\mathbf 1_A\mid\mathcal F_\infty)=\mathbf 1_A$, since $A\in\mathcal F_\infty$. So the conditional probability of any event decided by the whole sequence is pulled, path by path, to $0$ or $1$. For a tail event of an independent sequence, independence from every finite past makes these conditional probabilities equal to the constant $P(A)$; the limit identity then forces $P(A)\in\{0,1\}$, giving Kolmogorov's 0-1 law.`,
+      caption: String.raw`Hidden coin: with probability $\frac12$ each, a walk steps up with probability $\frac12+\delta$ or $\frac12-\delta$. The event $A=\{S_n>0$ for all large $n\}$ equals (a.s.) "the drift is positive". Top: ten seeded paths (green when $A$ occurs, red otherwise). Bottom: $P(A|\mathcal F_n)=1/(1+\rho^{-S_n})$, $\rho=\frac{1/2+\delta}{1/2-\delta}$ (Bayes), for the same paths, converging to $1$ or $0$ almost surely (finite paths do not establish the limit). The gold dots are Monte Carlo estimates: among 11,990 independently generated hidden-coin paths, the fraction with a positive latent drift among those at the same position $S_n$ at time $n$. Points require at least 20 matching paths; this finite cohort estimate has sampling error and does not observe an infinite-future event directly.`,
       deps: ['prob-4.6.8'],
       tags: ['zero-one laws', 'martingales'],
-      credit: 'P. Lévy',
-      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.6.9 and independent-tail application, pp. 247–248'],
-      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      refs: ['Durrett, fifth edition, Theorem 4.6.9 and the independent-tail-event deduction, pp. 247–248.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=255' },
       viz(v) {
         const dS = v.slider('bias $\\delta$', 0.03, 0.2, 0.08, { step: 0.01 });
         let seed = 1; v.button('New paths', () => { seed++; });
@@ -407,7 +406,7 @@ $$E(Y\mid\mathcal F_n)\ \longrightarrow\ E(Y\mid\mathcal F_\infty)\qquad\text{al
             for (let j = 0; j < POOL; j++) { const up = r() < 0.5; th[j] = up ? 1 : 0; const p = 0.5 + (up ? d : -d); let s = 0; const o = j * (N + 1); for (let n = 1; n <= N; n++) { s += r() < p ? 1 : -1; S[o + n] = s; } }
             pool = { key, S, th };
           }
-          const rho = (0.5 + d) / (0.5 - d), post = (s) => 1 / (1 + Math.pow(rho, -s));
+          const rho = (0.5 + d) / (0.5 - d), post = (s) => hiddenCoinPosterior(d,s);
           const cols = ['accent', 'orange', 'purple', 'teal', 'pink', 'blue', 'gold', 'ink', 'muted', 'accent'];
           const lim = Math.max(30, ...Array.from({ length: K }, (_, j) => { let m = 0; for (let n = 0; n <= N; n++) m = Math.max(m, Math.abs(pool.S[j * (N + 1) + n])); return m; })) * 1.1;
           T.setView([0, N], [-lim, lim]);
@@ -418,14 +417,15 @@ $$E(Y\mid\mathcal F_n)\ \longrightarrow\ E(Y\mid\mathcal F_\infty)\qquad\text{al
             const ps = [], pp = []; for (let n = 0; n <= N; n++) { ps.push([n, pool.S[o + n]]); pp.push([n, post(pool.S[o + n])]); }
             T.path(ps, { color: good ? 'green' : 'red', width: 1.6, alpha: 0.85 }); B.path(pp, { color: good ? 'green' : 'red', width: 1.6, alpha: 0.85 });
           }
+          let cohortMin=Infinity,cohortMaxSe=0,cohortPoints=0;
           for (let j = 0; j < 3; j++) {
             const o = j * (N + 1);
-            for (let n = 20; n <= N; n += 40) { const s = pool.S[o + n]; let c = 0, a = 0; for (let q = K; q < POOL; q++) if (pool.S[q * (N + 1) + n] === s) { c++; a += pool.th[q]; } if (c >= 20) B.dot(n, a / c, { color: 'gold', r: 4 }); }
+            for (let n = 20; n <= N; n += 40) { const s = pool.S[o + n]; let c = 0, a = 0; for (let q = K; q < POOL; q++) if (pool.S[q * (N + 1) + n] === s) { c++; a += pool.th[q]; } if(c>=20){B.dot(n,a/c,{color:'gold',r:4});cohortMin=Math.min(cohortMin,c);cohortMaxSe=Math.max(cohortMaxSe,Math.sqrt((a/c)*(1-a/c)/c));cohortPoints++;} }
           }
-          st = { d, nA, p: post(pool.S[N]), rho };
+          st = { d, nA, p: post(pool.S[N]), rho,cohortMin,cohortMaxSe,cohortPoints };
         });
         v.legend([['green', 'event $A$ occurs'], ['red', '$A$ fails'], ['gold', 'Monte Carlo estimate']]);
-        v.readout(() => st && `$\\rho=${v.fix(st.rho, 3)}$. ${st.nA} of 10 displayed paths belong to $A$. At $n=300$ the first path has $P(A|\\mathcal F_n)=${v.fix(st.p, 4)}$; the 0-1 law says every path's value is headed to $0$ or $1$.`);
+        v.readout(() => st && `$\\rho=${v.fix(st.rho, 3)}$. ${st.nA} of 10 displayed paths belong to $A$. At $n=300$ the first path has $P(A|\\mathcal F_n)=${v.fix(st.p, 4)}$; the theorem gives convergence to the event indicator almost surely, rather than for every possible infinite path. Gold cohort estimates: ${st.cohortPoints} points, at least ${st.cohortMin} matching paths; largest estimated standard error $${v.fix(st.cohortMaxSe,3)}$ (pointwise, not simultaneous).`);
       },
     },
     {

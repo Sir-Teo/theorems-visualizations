@@ -1,0 +1,37 @@
+[
+  {
+    "file": "rampino1992.pdf",
+    "url": "https://www.giss.nasa.gov/pubs/docs/1992/1992_Rampino_ra00200p.pdf",
+    "bytes": 387164,
+    "sha256": "309bc4235711244e4c80f7fd5c1a041d2ebbfc10f38114c4dde45d8a41b8ccbe",
+    "readScope": "Complete actual Nature359pp50\u201352 facsimile, main model/climate feedback claims; personally read all3pages. Adjacent unrelated article onp52 is excluded."
+  },
+  {
+    "file": "lane2013.pdf",
+    "url": "https://pure.manchester.ac.uk/ws/files/27630865/POST-PEER-REVIEW-PUBLISHERS.PDF",
+    "bytes": 669254,
+    "sha256": "dd91c51fa636dc4c8dbb2b101a5eac8bf5205b74d50506a5327b0c57cfa2360b",
+    "readScope": "Complete actual5page main+2pageSI; bounded main chronology/proxy/methods passages and Fig2/SIFigS1, especially8026\u20138028; not an independent rerun of source data."
+  },
+  {
+    "file": "9650103-author-abstract.json",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A9650103+AND+SRC%3AMED&format=json&resultType=core",
+    "bytes": 4723,
+    "sha256": "32c33c786f4ea39d9b2c917987839d4498c620546f1f22d1ee46afb007e0aab3",
+    "readScope": "Actual Ambrose1998author abstract only; complete29page body not obtained/certified."
+  },
+  {
+    "file": "23112159-author-abstract.json",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A23112159+AND+SRC%3AMED&format=json&resultType=core",
+    "bytes": 5102,
+    "sha256": "6568f019cd7dbd7ffd8e372b21788e88906baf0374d59a8a88453734ac2fb6b3",
+    "readScope": "Actual Storey2012author abstract, specifically73.88\u00b1.32ka1sigmafull-external age. Complete dating pipeline/SI not certified."
+  },
+  {
+    "file": "29477183-author-abstract.json",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A29477183+AND+SRC%3AMED&format=json&resultType=core",
+    "bytes": 6592,
+    "sha256": "3834ef4dc0c26bc291d2f614c89d7f45aba050a85291d00eb99f49ceb5ab588e",
+    "readScope": "Actual Yost2018author abstract only; complete original body not obtained. Vegetation/charcoal response and author conclusions are bounded to this abstract, not underlying reviewed genetic studies."
+  }
+]

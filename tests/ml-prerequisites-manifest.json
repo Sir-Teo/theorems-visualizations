@@ -1,0 +1,174 @@
+{
+  "2.1a": {
+    "file": "ch02.js",
+    "before": [],
+    "after": [
+      "rca-1.24"
+    ],
+    "new": [
+      "rca-1.24"
+    ],
+    "add": "\n\nFor a measurable error set $E_h=\\{x:h(x)\\ne f(x)\\}$, the restriction identity in rca 1.24 gives $\\int\\mathbf1_{E_h}\\,d\\mathcal D=\\int_{E_h}1\\,d\\mathcal D=\\mathcal D(E_h)$. Thus the probability-of-error definition is exactly the integral of the nonnegative error indicator. The measurability requirement is what makes these equivalent expressions well defined."
+  },
+  "2.1c": {
+    "file": "ch02.js",
+    "before": [
+      "ml-2.1b"
+    ],
+    "after": [
+      "ml-2.1b",
+      "rca-2.20"
+    ],
+    "new": [
+      "rca-2.20"
+    ],
+    "add": "\n\nThe Lebesgue-measure theorem (rca 2.20) identifies the mass of a planar box with its area. A single point lies in boxes of arbitrarily small area, so it has zero mass; a finite union of remembered points still has zero mass. Under the uniform law on the unit square, changing the predictor only on those points cannot remove any positive mass from the error region. An atomic distribution would not satisfy this argument."
+  },
+  "2.2": {
+    "file": "ch02.js",
+    "before": [],
+    "after": [
+      "rca-1.25",
+      "rca-1.26"
+    ],
+    "new": [
+      "rca-1.25",
+      "rca-1.26"
+    ],
+    "add": "\n\nFor finitely many events, additivity of nonnegative simple-function integrals (rca 1.25) integrates the pointwise bound of the union indicator by the sum of the individual indicators. For a countable list, both the finite union indicators and the partial sums increase to their limits. Monotone convergence (rca 1.26) passes the finite inequalities to the countable one, even when the right side is infinite. Independence is not used."
+  },
+  "2.3": {
+    "file": "ch02.js",
+    "before": [
+      "ml-2.1",
+      "ml-2.1e",
+      "ml-2.2"
+    ],
+    "after": [
+      "ml-2.1",
+      "ml-2.1e",
+      "ml-2.2",
+      "pma-5.11"
+    ],
+    "new": [
+      "pma-5.11"
+    ],
+    "add": "\n\nThe exponential tail comparison follows from derivative-sign monotonicity (pma 5.11): $g(x)=e^{-x}-1+x$ has $g(0)=0$ and $g\\prime(x)=1-e^{-x}\\ge0$ for $x\\ge0$. Hence $1-x\\le e^{-x}$. For $0<\\varepsilon<1$ both bases are nonnegative and taking the integer power $m$ gives the bound used here; for $\\varepsilon\\ge1$ no hypothesis has risk strictly greater than $\\varepsilon$."
+  },
+  "3.1": {
+    "file": "ch03.js",
+    "before": [
+      "ml-2.1",
+      "ml-2.1e"
+    ],
+    "after": [
+      "ml-2.1",
+      "ml-2.1e",
+      "pma-8.6"
+    ],
+    "new": [
+      "pma-8.6"
+    ],
+    "add": "\n\nStarting from the stated four-strip failure bound, put $q=1-\\varepsilon/4\\in(0,1)$. The exponential and logarithm properties (pma 8.6) give $q^m=e^{-m\\log(1/q)}$ with $\\log(1/q)>0$. Therefore $4q^m\\le\\delta$ is equivalent to $m\\ge\\log(4/\\delta)/\\log(1/q)$, explaining the ceiling and the positive denominator in the sample size. This algebra converts the geometric bound; it does not supply the strip argument itself."
+  },
+  "3.2a": {
+    "file": "ch03.js",
+    "before": [
+      "ml-2.1a"
+    ],
+    "after": [
+      "ml-2.1a",
+      "rca-1.27"
+    ],
+    "new": [
+      "rca-1.27"
+    ],
+    "add": "\n\nThe nonnegative-series integration theorem (rca 1.27), applied to a finite sum with zero terms afterwards, moves the integral through the sum of error indicators. Each indicator has the same integral $L_{\\mathcal D}(h)$, so the empirical average has that mean. This unbiasedness needs identical marginals but not independence; independence is needed for the later concentration guarantees."
+  },
+  "3.2b": {
+    "file": "ch03.js",
+    "before": [
+      "ml-3.2a"
+    ],
+    "after": [
+      "ml-3.2a",
+      "rca-1.24"
+    ],
+    "new": [
+      "rca-1.24"
+    ],
+    "add": "\n\nFor every measurable binary predictor, its conditional error is pointwise at least $\\min(\\eta,1-\\eta)$, and the threshold rule attains that lower envelope, including ties. Monotonicity of the nonnegative integral (rca 1.24) turns the pointwise comparison into the risk comparison. The functions lie in $[0,1]$, so all these integrals are finite; optimizing a conditional error point by point is not the same as restricting to a smaller hypothesis class."
+  },
+  "3.4": {
+    "file": "ch03.js",
+    "before": [
+      "ml-3.3",
+      "ml-3.3a"
+    ],
+    "after": [
+      "ml-3.3",
+      "ml-3.3a",
+      "rca-1.24"
+    ],
+    "new": [
+      "rca-1.24"
+    ],
+    "add": "\n\nIf a measurable loss lies in $[0,B]$ with finite $B$, integral monotonicity and scaling (rca 1.24) give $0\\le L_{\\mathcal D}(h)\\le B$, because the example law has total mass one. This supplies the finite-risk premise for the bounded-loss experiments and their finite-class comparison. It does not bound a squared loss on unrestricted inputs or labels, and does not itself prove concentration."
+  },
+  "4.5": {
+    "file": "ch04.js",
+    "before": [],
+    "after": [
+      "pma-5.15"
+    ],
+    "new": [
+      "pma-5.15"
+    ],
+    "add": "\n\nAfter centering, let $A\\le0\\le B$ bound the variable with $A<B$. The convex chord bounds its moment generating function by that of a mean-zero distribution on the two endpoints. The logarithm $\\psi(s)$ of this bound has $\\psi(0)=\\psi\\prime(0)=0$ and $\\psi\\prime\\prime(s)\\le(B-A)^2/4$, since this derivative is the variance of an exponentially tilted two-point law. Taylor's theorem (pma 5.15), with second-order remainder at zero, gives $\\psi(s)\\le s^2(B-A)^2/8$. This is the quadratic estimate used before the Markov step; a constant variable is handled separately."
+  },
+  "4.6": {
+    "file": "ch04.js",
+    "before": [
+      "ml-4.5",
+      "ml-2.2",
+      "ml-4.4"
+    ],
+    "after": [
+      "ml-4.5",
+      "ml-2.2",
+      "ml-4.4",
+      "pma-8.6"
+    ],
+    "new": [
+      "pma-8.6"
+    ],
+    "add": "\n\nFor a nonempty finite class, the union estimate is $2|\\mathcal H|e^{-2m\\varepsilon^2}$. Positivity and monotonicity of the exponential, and its inverse logarithm (pma 8.6), make the requirement that this is at most $\\delta$ equivalent to $2m\\varepsilon^2\\ge\\log(2|\\mathcal H|/\\delta)$. Replacing representativeness accuracy by half the desired excess risk then gives the second displayed sample bound."
+  },
+  "4.6a": {
+    "file": "ch04.js",
+    "before": [
+      "ml-4.6"
+    ],
+    "after": [
+      "ml-4.6",
+      "comb-1.1"
+    ],
+    "new": [
+      "comb-1.1"
+    ],
+    "add": "\n\nEach bit has two possible values, so the product rule (comb 1.1) counts $2^{bd}$ strings of $bd$ bits. Decoding each valid string into a parameter vector and then a predictor cannot increase this count: invalid encodings and different encodings of the same predictor can only reduce the number of hypotheses. Thus the cardinality upper bound concerns representable predictors, not all real parameter vectors or their approximation error."
+  },
+  "1.1a": {
+    "file": "ch01.js",
+    "before": [],
+    "after": [
+      "comb-1.7",
+      "pma-6.21"
+    ],
+    "new": [
+      "comb-1.7",
+      "pma-6.21"
+    ],
+    "add": "\n\nFor $F\\ge1$ and $p>0$, write $1/(k+1)=\\int_0^1t^k\\,dt$. The binomial theorem (comb 1.7) turns the finite weighted sum for the success probability into $\\int_0^1(1-p+pt)^{F-1}\\,dt$. The fundamental theorem (pma 6.21) evaluates this polynomial integral as $[1-(1-p)^F]/(Fp)$. This derives the stated toy-model average rather than replacing the random number of competitors by its mean."
+  }
+}

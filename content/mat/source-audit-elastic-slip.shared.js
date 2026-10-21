@@ -1,0 +1,7 @@
+// Explicit sinusoidal slip and ideal rigid-rib educational models.
+export const rigidSlipRatio=r=>1/(2*Math.PI*r);
+// Joos–Duesbery1997 Eqs.(15)–(16), a'=b, isotropic pure edge K=G/(1−nu).
+export function sampledPNRatio(r,nu=.3){const gamma=r/(2*(1-nu)),C=Math.cosh(2*Math.PI*gamma),S=Math.sinh(2*Math.PI*gamma),c=4/(C+Math.sqrt(C*C+8));return S*Math.sqrt(1-c*c)/(2*(1-nu)*(C-c)**2);}
+export const wideCoreLogProxy=(r,nu=.3)=>-Math.PI*r/((1-nu)*Math.LN10);
+export function honeycombMechanism(angleDegrees,h,e){const t=angleDegrees*Math.PI/180,c=Math.cos(t),s=Math.sin(t),Y0=2*(h+s),maxExtension=1/c-1;if(!(Y0>0))return{valid:false,reason:'self-intersecting reference geometry: h/l+sinθ must be positive'};const target=(1+e)*c,locked=target>1+1e-12,tn=Math.sign(t||1)*Math.acos(Math.min(1,Math.max(-1,target))),X0=2*c,X1=2*Math.cos(tn),Y1=2*(h+Math.sin(tn)),ex=X1/X0-1,ey=Y1/Y0-1,nu=Math.abs(s)<1e-12?null:c*c/((h+s)*s);if(Y1<=0)return{valid:false,reason:'requested strain collapses or overlaps the ideal cells'};return{valid:true,t0:t,tn,X0,X1,Y0,Y1,ex,ey,nu,finiteRatio:Math.abs(ex)<1e-12?null:-ey/ex,locked,maxExtension,branchAtFlat:Math.abs(s)<1e-12};}
+export function clipSegment2(a,b,bounds){let lo=0,hi=1;for(let j=0;j<2;j++){const d=b[j]-a[j],[mn,mx]=bounds[j];if(Math.abs(d)<1e-14){if(a[j]<mn||a[j]>mx)return[];}else{const p=(mn-a[j])/d,q=(mx-a[j])/d;lo=Math.max(lo,Math.min(p,q));hi=Math.min(hi,Math.max(p,q));}}return lo<=hi?[[a[0]+lo*(b[0]-a[0]),a[1]+lo*(b[1]-a[1])],[a[0]+hi*(b[0]-a[0]),a[1]+hi*(b[1]-a[1])]]:[];}

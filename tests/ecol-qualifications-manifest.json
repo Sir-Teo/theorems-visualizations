@@ -1,0 +1,126 @@
+{
+  "baseline": "cc46d6226931f35919b86cd95609cfb2b521a153",
+  "fields": [
+    {
+      "file": "ch02.js",
+      "num": "2.2",
+      "field": "statement",
+      "before": "A survivorship curve plots $l_x$, the fraction of a cohort still alive at age $x$, against age, usually with $l_x$ on a logarithmic axis. If the age-specific mortality rate (hazard) is constant, $\\ln l_x$ falls on a straight line (**type II**). If mortality is low early and rises steeply late, the curve is convex (**type I**, as in humans in rich countries and many large mammals). If mortality is very high early and low afterwards, the curve is concave (**type III**, as in oysters, many fish and trees that produce vast numbers of tiny offspring).",
+      "after": "A survivorship curve plots $l_x$, the fraction of a cohort still alive at age $x$, against age, usually with $l_x$ on a logarithmic axis. If the age-specific mortality rate (hazard) is constant, $\\ln l_x$ falls on a straight line (**type II**). If mortality is low early and rises steeply late, the log-survivorship curve bends downward (**type I**, as in humans in rich countries and many large mammals). If mortality is very high early and low afterwards, log survivorship bends upward (**type III**, as in oysters, many fish and trees that produce vast numbers of tiny offspring)."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.9",
+      "field": "statement",
+      "before": "Follow the same species through many generations and record how many individuals die in each life stage. Express each stage's mortality as a **k-value**, $k_i=\\log_{10}(N_i/N_{i+1})$, so that the total generation mortality $K=\\sum_i k_i$ is a plain sum. The **key factor** is the stage whose k-value tracks $K$ most closely from year to year, the one that causes most of the variation in total mortality: the stage with the largest regression slope $b_i=\\mathrm{Cov}(k_i,K)/\\mathrm{Var}(K)$. The slopes of all stages add up to exactly 1.",
+      "after": "Follow the same species through many generations and record how many individuals die in each life stage. Express each stage's mortality as a **k-value**, $k_i=\\log_{10}(N_i/N_{i+1})$, so that the total generation mortality $K=\\sum_i k_i$ is a plain sum. The **key factor** is the stage whose k-value tracks $K$ most closely from year to year, the one with the largest descriptive regression contribution to variation in total mortality: the stage with the largest regression slope $b_i=\\mathrm{Cov}(k_i,K)/\\mathrm{Var}(K)$. The slopes of all stages add up to exactly 1."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.9",
+      "field": "scope",
+      "before": "A descriptive method: the key factor is the stage that varies most, not necessarily the one that **regulates** the population (that requires plotting $k_i$ against the density it acts on, which this picture also offers). Needs a long enough series of life tables (dozens of generations in practice) from a single population.",
+      "after": "A descriptive method: the key factor is the stage with the largest covariance-based regression contribution, not necessarily the one with the largest raw variance or the one that **regulates** the population (that requires plotting $k_i$ against the density it acts on, which this picture also offers). All counts used in logarithms must be positive and the total K must have positive variance for these slopes to be defined. Needs a long enough series of life tables (dozens of generations in practice) from a single population."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.10",
+      "field": "idea",
+      "before": "Why variance should be proportional to a power of the mean is still debated: patchy distributions with a size-independent clumping scale give $b=2$, a gradual transition from random to clumped with density gives intermediate values, and multiplicative population dynamics also produce power laws. Practically, $b$ is a summary of aggregation, and the law lets one transform counts (for example, by $x^{1-b/2}$) so the variance no longer depends on the mean.\n\nThe Poisson reference line uses the factorial-moment calculation of prob 1.6.13: $E X=\\lambda$ and $E[X(X-1)]=\\lambda^2$ imply $\\operatorname{Var}(X)=\\lambda$. This fixes the theoretical variance\u2013mean baseline, not an equality between every finite sample mean and sample variance. The model adds mixing of the Poisson intensity for aggregation; the implemented count helper uses a rounded normal approximation at intensities at least 40. Those finite-sample and numerical choices are distinct from the exact Poisson moment identity.",
+      "after": "Why variance should be proportional to a power of the mean is still debated: patchy distributions with a size-independent clumping scale give $b=2$, a gradual transition from random to clumped with density gives intermediate values, and multiplicative population dynamics also produce power laws. Practically, $b$ is a summary of aggregation, and the delta method suggests an approximately variance-stabilizing transform at positive means: $T(x)=x^{1-b/2}/(1-b/2)$ for $b\\ne2$, and $T(x)=\\log x$ for $b=2$. Its derivative is $x^{-b/2}$, so the first-order variance is approximately a. This is not an exact finite-count identity, and logarithms or negative powers require separate treatment of zero counts.\n\nThe Poisson reference line uses the factorial-moment calculation of prob 1.6.13: $E X=\\lambda$ and $E[X(X-1)]=\\lambda^2$ imply $\\operatorname{Var}(X)=\\lambda$. This fixes the theoretical variance\u2013mean baseline, not an equality between every finite sample mean and sample variance. The model adds mixing of the Poisson intensity for aggregation; the implemented count helper uses a rounded normal approximation at intensities at least 40. Those finite-sample and numerical choices are distinct from the exact Poisson moment identity."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.10",
+      "field": "scope",
+      "before": "An empirical regularity over a range of densities, not an exact law: it fails at very low and very high densities for some species, and the exponent depends on the sampling unit. Here the pictures are simulated from a gamma\u2013Poisson (negative-binomial) model whose variance is set to $am^b$; the model cannot generate variance below the Poisson line, so $b<1$ is not offered.",
+      "after": "An empirical regularity over a range of densities, not an exact law: it fails at very low and very high densities for some species, and the exponent depends on the sampling unit. Here the pictures are simulated from a gamma\u2013Poisson (negative-binomial) model whose ideal target variance is $\\max(m,am^b)$; the Poisson floor can be active even for the offered $b\\ge1$ when a is small. The count helper uses an additional rounded-normal approximation for intensity at least 40. The model does not represent underdispersed counts."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "field": "statement",
+      "before": "When yearly growth factors $\\lambda_t$ vary at random, a population's long-run growth rate is the **geometric** mean $\\exp E[\\ln\\lambda_t]$, not the arithmetic mean $E[\\lambda_t]$, and the geometric mean is always the smaller. A strategy can therefore be favoured by selection even though it lowers the average yearly output, if it lowers the variance enough. In an annual plant with a seed bank, germinating only a fraction $g<1$ of its seeds each year (the rest stay dormant, surviving with probability $s$) gives yearly growth $\\lambda_t=(1-g)s+gY_t$, and $E\\ln\\lambda$ is maximized at an intermediate $g^*$ when bad years ($Y_t\\approx0$) occur.",
+      "after": "When yearly growth factors $\\lambda_t$ vary at random, a population's long-run growth rate is the **geometric** mean $\\exp E[\\ln\\lambda_t]$, not the arithmetic mean $E[\\lambda_t]$, and the geometric mean is never larger (with equality for a constant positive factor). A strategy can therefore be favoured by selection even though it lowers the average yearly output, if it lowers the variance enough. In an annual plant with a seed bank, germinating only a fraction $g<1$ of its seeds each year (the rest stay dormant, surviving with probability $s$) gives yearly growth $\\lambda_t=(1-g)s+gY_t$, and the maximizing $g^*$ can be interior or at an endpoint, depending on bad-year frequency, yields and dormant survival. The occurrence of bad years alone does not guarantee an interior optimum."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "field": "idea",
+      "before": "A bad year multiplies the population by a small factor, and a logarithm punishes small factors heavily: $\\ln\\lambda$ is concave, so by Jensen's inequality $E\\ln\\lambda\\le\\ln E\\lambda$, with the gap growing with the variance of $\\lambda$. Dormancy cuts that variance: seeds that stay in the soil are protected from the bad year, but they also forgo the good year's large harvest. Setting the derivative of $E\\ln\\lambda$ in $g$ to zero balances these two. The arithmetic mean $E\\lambda$ would instead be maximized by germinating everything.\n\nWith independent, identically distributed yearly environments and positive factors satisfying $E|\\log\\lambda_t|<\\infty$, the strong law prob 2.4.1 applies to $X_t=\\log\\lambda_t$. Since $\\log(N_t/N_0)=\\sum_{j<t}X_j$, the per-year log growth converges almost surely to $E\\log\\lambda$. For the finite good/bad-year distribution these hypotheses hold whenever both factors are positive. At $g=1$ with zero bad-year yield the logarithm is not integrable: a bad year instead kills the population, and a positive bad-year probability makes such a year occur eventually almost surely. The finite simulation is an illustration of these distinct cases.",
+      "after": "A bad year multiplies the population by a small factor, and a logarithm punishes small factors heavily: $\\ln\\lambda$ is concave, so by Jensen's inequality $E\\ln\\lambda\\le\\ln E\\lambda$, when these expectations are finite. At a fixed mean, a mean-preserving spread lowers expected log growth; variance alone does not order the Jensen gaps of arbitrary positive distributions. Dormancy cuts that variance: seeds that stay in the soil are protected from the bad year, but they also forgo the good year's large harvest. An interior optimum balances these two through a zero derivative of $E\\ln\\lambda$; otherwise an endpoint is optimal. The arithmetic mean is linear in g and favors full germination only when $E Y>s$, favors no germination when $E Y<s$, and is indifferent when they are equal.\n\nWith independent, identically distributed yearly environments and positive factors satisfying $E|\\log\\lambda_t|<\\infty$, the strong law prob 2.4.1 applies to $X_t=\\log\\lambda_t$. Since $\\log(N_t/N_0)=\\sum_{j<t}X_j$, the per-year log growth converges almost surely to $E\\log\\lambda$. For the finite good/bad-year distribution these hypotheses hold whenever both factors are positive. At $g=1$ with zero bad-year yield the logarithm is not integrable: a bad year instead kills the population, and a positive bad-year probability makes such a year occur eventually almost surely. The finite simulation is an illustration of these distinct cases."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "field": "scope",
+      "before": "Independent yearly environments with fixed probabilities, no density dependence, a single trait value per population (no mixed strategies within a plant, which can also hedge) and a bad-year yield that is not much greater than 0. The model has only an interior optimum when the geometric mean of the yearly factors is penalized, that is, when bad years bring $\\lambda<1$ for fully germinating plants.",
+      "after": "Independent yearly environments with fixed probabilities, no density dependence, a single trait value per population (no mixed strategies within a plant, which can also hedge) and a bad-year yield that is not much greater than 0. On the interval where both yearly factors are positive, expected log growth is concave in g. A strict interior optimum requires a positive right derivative at 0 and a negative left derivative at 1; otherwise the maximizing fraction can be 0 or 1. When $Y_b=0$, the value at $g=1$ is negative infinity for a positive bad-year probability; no finite-log strong law is applied at that endpoint."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "field": "caption",
+      "before": "Drag the gold point along the green curve to choose the germination fraction $g$. Left: the long-run growth rate $E\\ln\\lambda$ (green) peaks at an intermediate $g^*$ (marked), while the arithmetic mean $\\ln E\\lambda$ (orange, dashed) keeps rising to $g=1$. Right: 40 simulated populations in the same random sequence of good and bad years: the thick line is the average path of $\\ln N$, and its slope is $E\\ln\\lambda$ (dashed green). At $g=1$ the first bad year wipes the population out.",
+      "after": "Drag the gold point along the green curve to choose the germination fraction $g$. Left: the long-run growth rate $E\\ln\\lambda$ (green) is maximized at the marked $g^*$, which can be an endpoint. The arithmetic comparison $\\ln E\\lambda$ (orange, dashed) is monotone in the direction determined by whether mean yield exceeds dormant survival. Right: 40 simulated populations in the same random sequence of good and bad years: the thick line is the average path of $\\ln N$, and its slope is $E\\ln\\lambda$ (dashed green). At $g=1$ with $Y_b=0$, the first bad year wipes the population out; a positive bad-year yield does not cause that immediate extinction."
+    },
+    {
+      "file": "ch03.js",
+      "num": "3.4",
+      "field": "idea",
+      "before": "Habitat destruction (3.3) changes the equilibrium immediately, but the state only follows through the dynamics $\\dot p=p\\,(r-cp)$, with $r=c(1-D)-e$ the net growth rate. Near either equilibrium the distance to it shrinks like $e^{-|r|t}$, so the delay is $1/|r|$. As $D$ approaches $D_c=1-e/c$, $r\\to0$ and the delay diverges: critical slowing down. Landscapes that look healthy for generations after a loss may already be committed to losing the species.\n\nFor $f(p)=p(r-cp)$, the derivative is r at zero and $-r$ at the positive equilibrium $r/c$. Away from $r=0$, the attracting equilibrium therefore has linearized rate $-|r|$, and ode 1.8 supplies the local exponential relaxation scale $1/|r|$. At the critical parameter the theorem's nonzero-derivative test no longer applies: the exact positive solution is $p(t)=p(0)/(1+cp(0)t)$, with algebraic rather than exponential decay. Critical slowing describes the approach to this nonhyperbolic case, not a finite exponential rate at the threshold itself.",
+      "after": "Habitat destruction (3.3) changes the equilibrium immediately, but the state only follows through the dynamics $\\dot p=p\\,(r-cp)$, with $r=c(1-D)-e$ the net growth rate. Near the attracting equilibrium for $r\\ne0$, the linear relaxation rate is $-|r|$, giving the local scale $1/|r|$. The zero equilibrium is instead unstable for $r>0$. At $r=0$ positive occupancy decays algebraically, so there is no nonzero exponential relaxation rate at the threshold. As $D$ approaches $D_c=1-e/c$, $r\\to0$ and the delay diverges: critical slowing down. Landscapes that look healthy for generations after a loss may already be committed to losing the species.\n\nFor $f(p)=p(r-cp)$, the derivative is r at zero and $-r$ at the positive equilibrium $r/c$. Away from $r=0$, the attracting equilibrium therefore has linearized rate $-|r|$, and ode 1.8 supplies the local exponential relaxation scale $1/|r|$. At the critical parameter the theorem's nonzero-derivative test no longer applies: the exact positive solution is $p(t)=p(0)/(1+cp(0)t)$, with algebraic rather than exponential decay. Critical slowing describes the approach to this nonhyperbolic case, not a finite exponential rate at the threshold itself."
+    },
+    {
+      "file": "ch03.js",
+      "num": "3.4",
+      "field": "scope",
+      "before": "Tilman et al. (1994) showed this for competing species in a Levins-type model, where the best competitors are the most vulnerable. Here the debt is shown for a single species in the Levins model: the relaxation time is $1/|c(1-D)-e|$, which grows without bound as the remaining habitat approaches the threshold. Time units are $1/c$; real time scales depend on generation times.",
+      "after": "Tilman et al. (1994) showed this for competing species in a Levins-type model, where the best competitors are the most vulnerable. Here the debt is shown for a single species in the Levins model: away from the critical parameter, the local relaxation scale at the attracting equilibrium is $1/|c(1-D)-e|$, which diverges on approach to the threshold. Exactly at the threshold, positive occupancy has algebraic decay instead. Time units are $1/c$; real time scales depend on generation times."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.12",
+      "field": "statement",
+      "before": "Even when every individual faces exactly the same constant chances, births and deaths happen at random times, so a small population can die out by chance although its expected size grows. For a linear birth\u2013death process with per-capita birth rate $b$ and death rate $d$ and initial size $N_0$, the probability of eventual extinction is $(d/b)^{N_0}$ when $b>d$ and $1$ when $b\\le d$. Hence it falls geometrically with population size, and the expected number $N_0e^{(b-d)t}$ grows exponentially at the same time that a large fraction of all runs has gone to zero.",
+      "after": "Even when every individual faces exactly the same constant chances, births and deaths happen at random times, so a small population can die out by chance although its expected size grows. For a linear birth\u2013death process with positive per-capita birth and death rates $b,d$ and positive integer initial size $N_0$, the probability of eventual extinction is $(d/b)^{N_0}$ when $b>d$ and $1$ when $b\\le d$. Hence it falls geometrically with population size, and the expected number $N_0e^{(b-d)t}$ grows exponentially at the same time that a large fraction of all runs has gone to zero."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.12",
+      "field": "idea",
+      "before": "Look at the jump chain: from any size, the next event is a birth with probability $b/(b+d)$ and a death otherwise, so the size performs a biased random walk. By the gambler's-ruin argument, starting from one individual the probability $q$ of ever hitting zero solves $q=\\tfrac{d}{b+d}+\\tfrac{b}{b+d}q^2$, whose smaller root is $d/b$. The $N_0$ founders' lineages are independent, so all must fail: $q^{N_0}$.\n\nFor positive birth and death rates the embedded jump chain steps up with probability $p=b/(b+d)$ and down otherwise. Apply the finite-barrier ruin formula and its fair case in stoch 2.4, then send the upper barrier to infinity. For $b>d$ this gives hitting-zero probability $(d/b)^{N_0}$; for $b<d$ and for the fair case $b=d>0$ the limit is one. The holding times do not change which state is hit in this nonexplosive linear birth\u2013death process. Independent founder lineages give the same power formula; this argument does not cover density dependence or a common environmental shock.",
+      "after": "Look at the jump chain: from any size, the next event is a birth with probability $b/(b+d)$ and a death otherwise, so the size performs a biased random walk. By the gambler's-ruin argument, starting from one individual the probability $q$ of ever hitting zero solves $q=\\tfrac{d}{b+d}+\\tfrac{b}{b+d}q^2$, whose smallest root in $[0,1]$ is $\\min(1,d/b)$: $d/b$ for $b>d$, and 1 for $b\\le d$. The $N_0$ founders' lineages are independent, so all must fail: $q^{N_0}$.\n\nFor positive birth and death rates the embedded jump chain steps up with probability $p=b/(b+d)$ and down otherwise. Apply the finite-barrier ruin formula and its fair case in stoch 2.4, then send the upper barrier to infinity. For $b>d$ this gives hitting-zero probability $(d/b)^{N_0}$; for $b<d$ and for the fair case $b=d>0$ the limit is one. The holding times do not change which state is hit in this nonexplosive linear birth\u2013death process. Independent founder lineages give the same power formula; this argument does not cover density dependence or a common environmental shock."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.12",
+      "field": "scope",
+      "before": "Independent individuals with constant per-capita rates (no density dependence, no environmental variation, no Allee effect); a closed population. The same average growth rate $r=b-d$ with faster turnover ($b$ and $d$ both larger) makes extinction more likely. Real populations add environmental stochasticity (2.11), which matters at all sizes.",
+      "after": "Independent individuals with constant per-capita rates (no density dependence, no environmental variation, no Allee effect); a closed population. The same average growth rate $r=b-d$ with faster turnover ($b$ and $d$ both larger) makes extinction more likely. Real populations add environmental stochasticity (2.11), which matters at all sizes. The right-hand simulation stops each jump chain on hitting 0, hitting 150, or reaching 30,000 steps. Its observed-hit fraction divides the runs that reached 0 by all 400 runs; capped runs are not observed extinctions, so this is not an estimate of unrestricted eventual extinction without accounting for censoring. For the fair chain from 15, the probability of ruin before hitting 150 is 0.9, while eventual ruin is 1."
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.12",
+      "field": "caption",
+      "before": "Left: 15 simulated populations from the same start (thin) and the mean over 300 runs (black) against the deterministic curve $N_0e^{rt}$ (green, dashed) \u2014 the mean follows the exponential although most single paths look nothing like it. Right: the fraction of simulated populations that go extinct against founder number $N_0$ (dots with 95 % intervals) and the formula $(d/b)^{N_0}$ (green). Hold $r$ fixed and raise the turnover $d$ to see extinction risk grow; set $r\\le0$ and extinction is certain.",
+      "after": "Left: 15 simulated populations from the same start (thin) and the mean over 300 runs (black) against the deterministic curve $N_0e^{rt}$ (green, dashed) \u2014 the sample mean is compared with the theoretical exponential, although finite-run error can be large and most single paths look nothing like it. Right: the fraction observed to hit 0 before a cap against founder number $N_0$ (dots with 95 % intervals for this capped Bernoulli outcome), compared with the eventual-extinction formula (green). The caps are 150 individuals or 30,000 jump steps. Hold $r$ fixed and raise the turnover $d$ to see extinction risk grow; set $r\\le0$ and extinction is certain."
+    }
+  ],
+  "runtimeLiterals": [
+    {
+      "file": "ch02-b.js",
+      "num": "2.12",
+      "field": "viz",
+      "before": "extinction probability: formula **",
+      "after": "eventual-extinction formula **"
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.12",
+      "field": "viz",
+      "before": ", simulated ${v.fix(i.pSim, 3)} (400 runs)",
+      "after": ", capped observed-hit fraction ${v.fix(i.pSim, 3)} (400 runs; caps 150 / 30,000 steps)"
+    }
+  ]
+}

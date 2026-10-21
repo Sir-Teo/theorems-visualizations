@@ -1,10 +1,10 @@
-import {makeScaleInvariantLogistic} from './normalization-source.shared.js';
 // Deep Learning Theory — Chapter 5: Depth, initialization and normalization (items 5.10–5.13; 5.1–5.5 in ch05.js, 5.6–5.9 in ch05-b.js)
 //
 // 5.10 and 5.12 run exact gradient descent on small explicit models (a batch-normalized linear unit; a scalar linear RNN whose loss has a
 // cliff). 5.11 is a matrix picture of the two normalizations. 5.13 re-creates, at toy scale, the experiment of Fig. 1 of the ResNet paper and
 // shows the paper's own numbers (Tables 2 and 6) beside it.
 import { clamp, mnus, memo, rand, hashStr, toyData, makeRace, drawPoints, regionRaster, dnetProb } from './ch05.shared.js';
+import { scaleData, scaleLoss, scaleRun, positiveRange, pathView } from './source-audit.shared.js';
 
 const pct = (x) => (100 * x).toFixed(0) + '%';
 const last = (a) => a[a.length - 1];
@@ -19,56 +19,32 @@ export default {
       num: '5.10',
       kind: 'Concept',
       name: 'Scale invariance and the effective learning rate',
-      statement: String.raw`Suppose the loss is **scale invariant** in a weight vector $w\ne0$: $\ell(cw)=\ell(w)$ for all $c>0$ (for ideal batch normalization with zero additive variance constant and nonzero batch variance; a fixed nonzero variance constant breaks exact invariance). Then differentiating $c\mapsto\ell(cw)$ at $c=1$ gives $\langle\nabla\ell(w),w\rangle=0$, and $\nabla\ell(cw)=\tfrac1c\nabla\ell(w)$. Consequently, for gradient descent $w_{t+1}=w_t-\eta\nabla\ell(w_t)$,
-$$\|w_{t+1}\|^2=\|w_t\|^2+\eta^2\|\nabla\ell(w_t)\|^2\ \ge\ \|w_t\|^2,$$
-the weight norm never decreases, and the movement of the *direction* $w/\|w\|$ is governed by the **effective learning rate** $\eta_{\rm eff}=\eta/\|w\|^2$ (the gradient on the unit sphere is $\|w\|$ times the gradient at $w$, and a step of length $\eta\|\nabla\ell\|$ turns the direction by an angle of order $\eta\|\nabla\ell\|/\|w\|$). With weight decay $\lambda$, $w_{t+1}=(1-\eta\lambda)w_t-\eta\nabla\ell(w_t)$, a heuristic stationary balance, when $0<\eta\lambda<2$ and directional-gradient statistics stabilize, gives $\|w\|^4\approx\eta\|\tilde g\|^2/(2\lambda)$ with $\tilde g$ the gradient on the unit sphere. This small-step balance need not describe convergence of every run.`,
-      idea: String.raw`Euler's theorem for homogeneous functions of degree 0 gives the orthogonality of gradient and weights, and Pythagoras then gives the norm identity: each step moves along a tangent direction, so it can only lengthen the radius. Arora, Li and Lyu analyze this automatic change of effective rate. With decay, the exact squared-norm update is $(1-\eta\lambda)^2\|w\|^2+\eta^2\|g\|^2$; replacing the directional-gradient magnitude by a stationary value and taking $\eta\lambda\ll1$ gives the displayed heuristic balance. A learned normalization scale does not itself destroy invariance with respect to the incoming weights.`,
-      caption: String.raw`A single logistic unit on 40 two-dimensional points (two overlapping classes, centred), trained by gradient descent from $w_0$ (gold). With **BN** the unit's output is standardized over the data before the loss, so the loss (heat map) depends only on the direction of $w$: it is constant along rays. Top left: the path in weight space. Top right: $\|w\|^2$ with the identity $\|w_0\|^2+\eta^2\sum\|g\|^2$ (dashed), which holds exactly when weight decay is off. Bottom: the effective learning rate $\eta/\|w\|^2$ and the loss. Turn on weight decay to see the norm stop growing; switch to the plain unit and the gradient is no longer orthogonal to $w$ (loss falls partly by growing the norm).`,
-      deps: ['deep-5.9'],
-      refs: ['Arora, Li and Lyu, arXiv 1812.03981v1, Definition 2.1, Lemmas 2.2 / 2.4 with complete proofs, pp. 3–6; zero-variance-constant caveat p. 3; decay balance is derived here as a heuristic'],
+      statement: String.raw`Let a differentiable loss satisfy $\ell(cw)=\ell(w)$ for all $c>0$, $w\ne0$. Then $w^\top g(w)=0$ and $g(cw)=g(w)/c$. For plain GD, $w_+=w-\eta g$,
+$$\|w_+\|^2=\|w\|^2+\eta^2\|g\|^2.$$
+Writing $r=\|w\|$, $u=w/r$ and $\tilde g=r g$, the exact direction update is $u_+=\operatorname{normalize}(u-(\eta/r^2)\tilde g)$; thus $\eta_{\rm eff}=\eta/r^2$. With decay $q=1-\eta\lambda$,
+$$\|w_+\|^2=q^2\|w\|^2+\eta^2\|g\|^2.$$
+A stationary balance would give $r^4=\eta\|\tilde g\|^2/(2\lambda-\eta\lambda^2)\approx\eta\|\tilde g\|^2/(2\lambda)$ when $0<\eta\lambda\ll1$ and the angular gradient magnitude stays approximately stationary. **The identities do not guarantee an equilibrium.**`,
+      idea: String.raw`Apply the chain rule (pma-9.15) to $c\mapsto\ell(cw)$ at $c=1$: its derivative is $w^\top g(w)=0$. Differentiating the same identity in $w$ at fixed $c>0$ gives $c\,g(cw)=g(w)$. The vectors $qw$ and $-\eta g$ are therefore orthogonal, so Pythagoras (ladr-6.12) gives the squared-norm recurrence, including decay $q=1-\eta\lambda$. Without decay the angle of one update is exactly $\arctan(\eta\|g\|/r)$; its small-angle approximation explains the effective rate. These identities apply to each scale-invariant minibatch loss, with other parameters held fixed for that gradient. Updating a learned gain $\gamma$ or changing minibatches does not itself add a cross term. Arora–Li–Lyu's Lemma 2.4 and Theorem 2.5 formalize the norm/direction identities; their convergence results require additional smoothness and learning-rate assumptions. Van Laarhoven's equilibrium analysis uses a stationary gradient-noise model, not an unconditional deterministic limit.`,
+      caption: String.raw`An explicit logistic unit on 40 centred points: ideal training-statistics **BN with $\epsilon=0$** and fixed gain 3, or a plain linear unit. The BN gradient differentiates through the data variance. Heat colours saturate outside loss 0.3–3 (BN) or 0–3 (plain). Its loss depends on direction; $w=0$ is excluded. Drag the gold handle for the initial direction and use the slider for its norm. Top: the fitted weight-path window and squared norm; the dashed BN prediction applies the exact recurrence including decay. Bottom: effective rate and actual loss, with adaptive logarithmic axes. Decay may shrink or balance the norm; the controls do not promise a steady plateau.`,
+      deps: ['deep-5.9', 'pma-9.15', 'ladr-6.12'],
+      refs: ['Arora–Li–Lyu (ICLR 2019), Lemmas 2.2, 2.4 and Theorem 2.5', 'van Laarhoven (2017), §§3.1–4'],
       tags: ['scale invariance', 'weight decay', 'learning rate'],
-      credit: 'Arora, Li & Lyu, 2018 preprint (auto rate tuning)',
-      scope: String.raw`Exact for a differentiable scale-invariant loss at a nonzero weight vector. The per-step identity also holds for stochastic gradients when each sampled loss is scale invariant. It does not require fixing every other parameter across training steps. This display uses zero-epsilon batch normalization, with the zero-variance point excluded. The decay-balance formula is a heuristic.`,
+      credit: 'van Laarhoven, 2017; Arora, Li & Lyu, ICLR 2019 (2018 preprint)',
+      scope: String.raw`Exact for differentiable degree-zero losses and plain (stochastic) gradient updates without momentum. Ideal BN requires nonzero batch variance and $\epsilon=0$; positive stabilizer $\epsilon$, frozen inference statistics, or non-scale-invariant penalties generally break the identities. Learned gain/bias do not break invariance in the incoming weights. The decay equilibrium is conditional and heuristic.`,
       links: { arxiv: 'https://arxiv.org/abs/1812.03981' },
       viz(v) {
-        const unitS = v.select('unit', [{ value: 'bn', label: 'batch-normalized' }, { value: 'plain', label: 'plain linear' }], 'bn');
-        const eta = v.slider('learning rate $\\eta$', 0.02, 3, 0.05, { log: true, sig: 2 });
-        const lam = v.slider('weight decay $\\lambda$', 0, 0.03, 0, { step: 0.001 });
-        const rho = v.slider('initial norm $\\|w_0\\|$', 0.2, 3, 0.7, { step: 0.05 });
-        const T = 400, R = 3.2, GAM = 3;
-        const rr = rand(hashStr('scaleinv')), X = [], Y = [];
-        for (let i = 0; i < 40; i++) { const c = i % 2 ? 1 : -1; X.push([c * 0.9 + rr.normal() * 1.1, c * 0.5 + rr.normal() * 1.1]); Y.push(c); }
-        const lossGrad = makeScaleInvariantLogistic(X,Y,GAM);
-        const sP = v.stage({ x: [-R, R], y: [-R, R], equal: true, height: 290, axes: 'box', gutter: true, xlabel: '$w_1$', ylabel: '$w_2$', weight: 1, minWidth: 380, title: 'weight plane: loss and path' });
-        const sN = v.stage({ x: [0, T], y: [0, 4], height: 290, axes: 'box', gutter: true, xlabel: 'step', ylabel: '$\\|w\\|^2$', weight: 1, minWidth: 380, title: 'squared weight norm' });
-        const sE = v.stage({ x: [0, T], y: [1e-3, 10], ylog: true, height: 290, axes: 'box', gutter: true, xlabel: 'step', ylabel: '$\\eta/\\|w\\|^2$', weight: 1, minWidth: 380, title: 'effective learning rate' });
-        const sL = v.stage({ x: [0, T], y: [0.05, 1], ylog: true, height: 290, axes: 'box', gutter: true, xlabel: 'step', ylabel: 'loss', weight: 1, minWidth: 380, title: 'loss' });
-        const w0 = sP.handle(-0.5, -0.45, { color: 'gold', r: 8, label: '$w_0$' });
-        const mc = memo(); let info = null;
-        v.render(() => {
-          const bn = unitS.value === 'bn', e = eta.value, l = lam.value, rh = rho.value;
-          const ang = Math.atan2(w0.y, w0.x); w0.set(rh * Math.cos(ang), rh * Math.sin(ang)); // the handle gives the direction, the slider the norm
-          let w = [w0.x, w0.y]; const path = [w.slice()], nrm = [w[0] ** 2 + w[1] ** 2], loss = [], eff = [], pred = [nrm[0]], cosv = []; let acc = nrm[0], maxCos = 0;
-          for (let t = 0; t <= T; t++) {
-            const { L, g } = lossGrad(w, bn), n2 = w[0] ** 2 + w[1] ** 2, gn = Math.hypot(g[0], g[1]);
-            loss.push(L); eff.push(e / n2); if (gn > 1e-12) maxCos = Math.max(maxCos, Math.abs(g[0] * w[0] + g[1] * w[1]) / (gn * Math.sqrt(n2)));
-            if (t === T) break;
-            acc += e * e * (g[0] ** 2 + g[1] ** 2); pred.push(acc);
-            w = [(1 - e * l) * w[0] - e * g[0], (1 - e * l) * w[1] - e * g[1]]; path.push(w.slice()); nrm.push(w[0] ** 2 + w[1] ** 2);
-          }
-          sP.heat((x, y) => lossGrad([x, y], bn).L, { range: [0.3, 0.9], cmap: 'theme', res: 4, key: 'ld' + unitS.value });
-          sP.clip(() => { sP.path(path, { color: 'accent', width: 1.8 }); });
-          sP.dot(path[path.length - 1][0], path[path.length - 1][1], { r: 4, color: 'green' });
-          const ymax = Math.max(1, ...nrm.slice(0, T + 1)) * 1.1; sN.setView([0, T], [0, ymax]);
-          sN.path(nrm.map((y, t) => [t, y]), { color: 'accent', width: 2.2 });
-          if (l === 0 && bn) sN.path(pred.map((y, t) => [t, y]), { color: 'muted', dash: true, width: 1.5 });
-          sE.path(eff.map((y, t) => [t, y]), { color: 'orange', width: 2.2 });
-          sL.path(loss.map((y, t) => [t, Math.max(0.05, y)]), { color: 'red', width: 2.2 });
-          info = { n0: nrm[0], nT: last(nrm), e0: eff[0], eT: last(eff), maxCos, bn, pred: last(pred), lT: last(loss), l };
+        const unitS=v.select('unit',[{value:'bn',label:'batch-normalized'},{value:'plain',label:'plain linear'}],'bn'),eta=v.slider('learning rate $\\eta$',.02,3,.05,{log:true,sig:2}),lam=v.slider('weight decay $\\lambda$',0,.03,0,{step:.001}),rho=v.slider('initial norm $\\|w_0\\|$',.2,3,.7,{step:.05}),T=400,data=scaleData();
+        const sP=v.stage({x:[-3.2,3.2],y:[-3.2,3.2],equal:true,height:290,axes:'box',gutter:true,xlabel:'$w_1$',ylabel:'$w_2$',weight:1,minWidth:380,title:'loss and weight path ($w=0$ excluded)'}),sN=v.stage({x:[0,T],y:[0,4],height:290,axes:'box',gutter:true,xlabel:'step',ylabel:'$\\|w\\|^2$',weight:1,minWidth:380,title:'squared norm and recurrence'}),sE=v.stage({x:[0,T],y:[1e-3,10],ylog:true,height:290,axes:'box',gutter:true,xlabel:'step',ylabel:'$\\eta/\\|w\\|^2$',weight:1,minWidth:380,title:'effective learning rate'}),sL=v.stage({x:[0,T],y:[.05,1],ylog:true,height:290,axes:'box',gutter:true,xlabel:'step',ylabel:'loss',weight:1,minWidth:380,title:'actual logistic loss'});
+        const w0=sP.handle(-.5,-.45,{color:'gold',r:8,label:'$w_0$'});let info=null;
+        v.render(()=>{
+          const bn=unitS.value==='bn',e=eta.value,l=lam.value,rh=rho.value,ang=Math.atan2(w0.y,w0.x);w0.set(rh*Math.cos(ang),rh*Math.sin(ang));
+          const R=scaleRun([w0.x,w0.y],data,{eta:e,lambda:l,bn,T}),context=Math.max(1,rh),view=pathView([R.path,[[-context,-context],[context,context]]]);sP.setView(...view);
+          sP.heat((x,y)=>scaleLoss([x,y],data,{bn}).L,{range:bn?[.3,3]:[0,3],cmap:'theme',res:4,key:'scale-'+bn+'|'+view.flat().join(',')});sP.dot(0,0,{hollow:true,r:3,color:'muted',label:bn?'excluded':'zero',labelPos:'se'});sP.path(R.path,{color:'accent',width:1.8});sP.dot(...R.path.at(-1),{r:4,color:'green'});
+          sN.setView([0,T],[0,Math.max(1,...R.nrm,...(bn?R.prediction:[]))*1.1]);sN.path(R.nrm.map((y,t)=>[t,y]),{color:'accent',width:2.2});if(bn)sN.path(R.prediction.map((y,t)=>[t,y]),{color:'muted',dash:true,width:1.5});
+          sE.setView([0,T],positiveRange(R.eff));sE.path(R.eff.map((y,t)=>[t,y]),{color:'orange',width:2.2});sL.setView([0,T],positiveRange(R.loss));sL.path(R.loss.map((y,t)=>[t,y]),{color:'red',width:2.2});info={R,bn,l};
         });
-        v.legend([['accent', '$\\|w_t\\|^2$ and path'], ['muted', '$\\|w_0\\|^2+\\eta^2\\sum\\|g\\|^2$ (no decay)', { dash: true }], ['orange', '$\\eta/\\|w\\|^2$'], ['red', 'loss']]);
-        v.readout(() => info && String.raw`$\|w\|^2$: ${v.fix(info.n0, 2)} → **${v.fix(info.nT, 2)}** after ${T} steps` + (info.l === 0 && info.bn ? String.raw` · predicted by the identity ${v.fix(info.pred, 2)} (exact when $g\perp w$)` : '') + ` · effective rate $\\eta/\\|w\\|^2$: ${v.fix(info.e0, 2)} → **${v.fix(info.eT, 3)}**` + `\n` +
-          String.raw`largest $|\cos\angle(g,w)|$ along the run: ${v.fix(info.maxCos, 4)} ` + (info.bn ? `(scale-invariant loss: always 0, so the norm can only grow without decay)` : `(plain unit: the loss depends on the norm too, gradient not orthogonal)`) + ` · final loss ${v.fix(info.lT, 3)}`);
+        v.legend([['accent','squared norm / path'],['muted','BN norm recurrence (with decay)',{dash:true}],['orange','effective learning rate'],['red','actual loss']]);
+        v.readout(()=>info&&String.raw`$\|w\|^2$: $${v.sci(info.R.nrm[0],3)}$ → **$${v.sci(info.R.nrm.at(-1),3)}$**; effective rate $${v.sci(info.R.eff[0],3)}$ → $${v.sci(info.R.eff.at(-1),3)}$; final loss ${v.fix(info.R.loss.at(-1),4)}.`+`\n`+(info.bn?String.raw`BN recurrence discrepancy: $${v.sci(Math.max(...info.R.nrm.map((x,i)=>Math.abs(x-info.R.prediction[i])/(1+x))),2)}$; normalized orthogonality residual $\max |w^\top g|/(1+\|w\|\|g\|)=${v.sci(info.R.residual,2)}$. These are numerical checks; a steady norm is not guaranteed.`:String.raw`Plain unit: normalized $w^\top g$ residual $${v.sci(info.R.residual,2)}$; the orthogonal-gradient recurrence does not apply.`));
       },
     },
     // ───────────────────────────────────────────────────────────── 5.11
@@ -80,7 +56,7 @@ the weight norm never decreases, and the movement of the *direction* $w/\|w\|$ i
 $$\mu=\frac1d\sum_jx_j,\quad\sigma^2=\frac1d\sum_j(x_j-\mu)^2,\qquad y_j=\gamma_j\,\frac{x_j-\mu}{\sqrt{\sigma^2+\epsilon}}+\beta_j,$$
 with learned gain $\gamma$ and bias $\beta$. The statistics are taken over the **features of a single example**, not over the batch as in batch normalization (5.9). Hence (i) the output for an example does not depend on the other examples in its batch, and train and test computations are identical; (ii) it works for a batch of one; (iii) $y$ is unchanged if $x$ is replaced by $ax+b\mathbf 1$ for any $a>0$ and any $b$: the layer is invariant to rescaling and re-centering of its input (and of its weight matrix).`,
       idea: String.raw`Batch statistics are a poor fit for recurrent and attention models, where sequence lengths vary, batches can be small and statistics at each time step would have to be kept separately; moving the averaging axis from examples to features removes the dependence on the batch while still fixing the scale and offset of each layer's input. The invariance is immediate from the formula: shifting by $b\mathbf1$ moves $\mu$ by $b$ and leaves $x-\mu$ unchanged, and multiplying by $a>0$ multiplies the numerator and $\sigma$ by $a$ (up to the $\epsilon$). Ba, Kiros and Hinton (2016) introduced it for recurrent networks; it is the normalization of the transformer block (9.9).`,
-      caption: String.raw`A batch of $B$ examples (rows) with $d=8$ features (columns). Left: the input $X$. Middle: batch normalization standardizes each **column** over the batch. Right: layer normalization standardizes each **row**. Rescale or shift example 1 (gold outline) with the sliders, or draw new other examples: the layer-normalized rows of the other examples never change, and example 1's own LN row is invariant to a shift $b$ and approximately invariant to a scale $a>0$ (the stabilizing epsilon breaks exact scale invariance), while the batch-normalized output of every example moves. With $B=1$ the batch-norm panel is all zeros.`,
+      caption: String.raw`A batch of $B$ examples (rows) with $d=8$ features (columns). Left: the input $X$. Middle: batch normalization standardizes each **column** over the batch. Right: layer normalization standardizes each **row**. Rescale or shift example 1 (gold outline) with the sliders, or draw new other examples: the layer-normalized rows of the other examples never change, and example 1's own LN row is unchanged by any scale $a>0$ or shift $b$, while the batch-normalized output of every example moves. With $B=1$ the batch-norm panel is all zeros.`,
       deps: ['deep-5.9'],
       refs: ['Prince §12.4'],
       tags: ['normalization', 'transformers', 'invariance'],
@@ -130,10 +106,10 @@ with learned gain $\gamma$ and bias $\beta$. The statistics are taken over the *
       name: 'Gradient clipping',
       statement: String.raw`**Clipping by norm.** Given a threshold $c>0$, replace the gradient $g$ by
 $$\tilde g=g\cdot\min\Bigl(1,\frac{c}{\|g\|}\Bigr),$$
-and take the step $\theta\leftarrow\theta-\eta\tilde g$. The direction of the step is unchanged and its length is at most $\eta c$, whatever the gradient does. (Clipping each coordinate to $[-c,c]$ instead is also used but changes the direction.) In loss landscapes with **cliffs** — steep walls beside flat valleys, as arise when the same weights are multiplied $T$ times in a recurrent network (5.1) — an unclipped step of length $\eta\|g\|$ can throw the iterate far from the valley and undo much of the progress made, while a clipped step still points downhill and stays local.`,
-      idea: String.raw`Near a cliff the gradient is huge, so the first-order model is trustworthy only in a tiny neighbourhood; the step $\eta\|g\|$ prescribed by plain gradient descent is then wildly longer than that neighbourhood. Bounding the step length by $\eta c$ keeps the update within the region where the local direction is informative, while far from cliffs ($\|g\|\le c$) clipping does nothing and plain gradient descent is recovered. Pascanu, Mikolov and Bengio (2013) proposed the norm-clipping rule for recurrent networks and explained the cliffs geometrically; in the example here the loss of a scalar linear RNN $h_T=u\sum_{k<T}w^k$ rises like $w^{2T}$ for $w>1$, a wall of height $e^{O(T)}$.`,
-      caption: String.raw`A scalar linear RNN $h_t=wh_{t-1}+u$ (input 1 at each of $T=30$ steps) is trained on the single target $h_T=2$, loss $\tfrac12(h_T-2)^2$, parameters $(w,u)$. Left: log-loss in the $(w,u)$ plane, with the valley floor $uS(w)=2$ in green; drag the gold start point. Unclipped gradient descent (red) takes one enormous step from the wall at $w>1$ and lands far from the valley; the clipped run (blue) slides down to the floor. Middle: loss against step. Right: length of each step against the maximum $\eta c$ (dashed). Change the threshold $c$ or the step $\eta$, or switch to value clipping, and see when clipping stops being enough.`,
-      deps: ['deep-5.1'],
+with $\tilde g=0$ when $g=0$, and take the step $\theta\leftarrow\theta-\eta\tilde g$ for $\eta>0$. For nonzero $g$ the negative-gradient direction is unchanged and the step length is at most $\eta c$. (Clipping each coordinate to $[-c,c]$ instead is also used but changes the direction.) In loss landscapes with **cliffs** — steep walls beside flat valleys, as arise when the same weights are multiplied $T$ times in a recurrent network (5.1) — an unclipped step of length $\eta\|g\|$ can throw the iterate far from the valley and undo much of the progress made, while norm clipping bounds the step length; a finite clipped step need not decrease the loss.`,
+      idea: String.raw`Norm homogeneity (ladr-6.9) gives $\|ag\|=|a|\|g\|$. With $a=\min(1,c/\|g\|)$ for $g\ne0$, the clipped norm is exactly $\min(\|g\|,c)$, so the update has length at most $\eta c$ and retains the negative-gradient direction. Set the clipped vector to zero when $g=0$. Coordinate clipping is different: in $d$ dimensions its bound is $\eta c\sqrt d$, hence $\eta c\sqrt2$ in this picture, and its direction can change. These bounds do not guarantee loss decrease for a finite step. Pascanu, Mikolov and Bengio (2013) proposed norm clipping for recurrent networks and explained the cliffs geometrically; here the scalar linear RNN has $h_T=u\sum_{k<T}w^k$, whose squared error grows exponentially in $T$ for fixed $w>1$ and nonzero $u$.`,
+      caption: String.raw`A scalar linear RNN $h_t=wh_{t-1}+u$ (input 1 at each of $T=30$ steps) is trained on the single target $h_T=2$, loss $\tfrac12(h_T-2)^2$, parameters $(w,u)$. Left: log-loss in the $(w,u)$ plane, with the valley floor $uS(w)=2$ in green; drag the gold start point. Unclipped gradient descent (red) takes one enormous step from the wall at $w>1$ and lands far from the valley; the clipped run (blue) slides down to the floor. Middle: loss against step. Right: step length against the bound $\eta c$ for norm clipping, or $\eta c\sqrt2$ for coordinate clipping (dashed). Change the threshold $c$ or the step $\eta$, or switch to value clipping, and see when clipping stops being enough.`,
+      deps: ['deep-5.1', 'ladr-6.9'],
       refs: ['Goodfellow §10.11'],
       tags: ['clipping', 'exploding gradients', 'RNN'],
       credit: 'Pascanu, Mikolov & Bengio, 2013',
@@ -142,6 +118,13 @@ and take the step $\theta\leftarrow\theta-\eta\tilde g$. The direction of the st
       viz(v) {
         const eta = v.slider('step size $\\eta$', 0.0005, 0.01, 0.002, { log: true, sig: 2 });
         const cS = v.slider('clip threshold $c$', 1, 400, 20, { log: true, sig: 2 });
+        // Keep exact physical defaults/restores and the native logarithmic thumb in sync.
+        // Native input still uses the slider's two-significant-digit physical rounding.
+        for (const control of [eta, cS]) {
+          control.input.step = 'any';
+          control.set(control.value);
+          control.input.addEventListener('input', () => control.set(control.value));
+        }
         const modeS = v.select('clip by', [{ value: 'norm', label: 'norm' }, { value: 'value', label: 'value' }], 'norm');
         const T = 30, YS = 2, STEPS = 60;
         const S = (w) => { let s = 0, p = 1; for (let k = 0; k < T; k++) { s += p; p *= w; } return s; };
@@ -179,8 +162,8 @@ and take the step $\theta\leftarrow\theta-\eta\tilde g$. The direction of the st
           const g0 = grad(h0.x, h0.y), n0 = Math.hypot(g0[0], g0[1]);
           info = { A, B: Bc, n0, e, c, mode, lA: last(A.ls), lB: last(Bc.ls) };
         });
-        v.legend([['red', 'unclipped gradient descent'], ['accent', 'clipped'], ['green', 'valley floor $uS(w)=2$'], ['muted', 'dashed: maximal step $\\eta c$', { dash: true }]]);
-        v.readout(() => info && String.raw`start: loss ${sp(loss(h0.x, h0.y))}, $\|g\|=${sp(info.n0)}$ → unclipped first step has length $\eta\|g\|=${sp(info.e * info.n0)}$; clipped step ≤ $\eta c=${sp(info.e * info.c)}$` + `\n` +
+        v.legend([['red', 'unclipped gradient descent'], ['accent', 'clipped'], ['green', 'valley floor $uS(w)=2$'], ['muted', 'dashed: bound for selected rule', { dash: true }]]);
+        v.readout(() => info && String.raw`start: loss ${sp(loss(h0.x, h0.y))}, $\|g\|=${sp(info.n0)}$ → unclipped first step has length $\eta\|g\|=${sp(info.e * info.n0)}$; clipped step ≤ $\eta c${info.mode === 'value' ? String.raw`\sqrt2` : ''}=${sp(info.e * info.c * (info.mode === 'value' ? Math.SQRT2 : 1))}$` + `\n` +
           `after ${STEPS} steps: unclipped ` + (info.A.dead ? `**diverged** (overflow)` : `loss $${sp(info.lA)}$`) + ` · clipped (${info.mode}) ` + (info.B.dead ? `**diverged**` : `loss $${sp(info.lB)}$`) + (info.n0 * info.e < 0.3 ? ` · the start is gentle enough that clipping is idle: drag it onto the wall at $w>1$` : ''));
       },
     },
