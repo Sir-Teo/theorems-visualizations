@@ -36,6 +36,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 - Match approximation claims to boundary hypotheses. Complete cubic interpolation with exact endpoint slopes has the fourth-derivative bound; general natural interpolation can have an endpoint layer of order h² even for x². Show incompatible endpoints as a counterexample rather than silently applying the clamped bound. See the [spline review](verification/wave5-num-review.md).
 
+- Preserve tiny positive phases when wrapping a periodic coordinate. Adding the period to an already nonnegative remainder can erase that phase before a second remainder operation, changing half-open endpoint membership. Test subnormal and tiny saved states through the actual Share URL as well as the pure model. See the [ergodic-theory review](verification/wave5-prob-review.md).
+
 ## Physics & astronomy, Earth & environment, engineering
 
 - **Deps** are derivational: the derivation starts from that law or uses that theorem. A law

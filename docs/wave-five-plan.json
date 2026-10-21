@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 253,
-    "remaining": 778,
-    "writtenChapters": 20,
+    "written": 282,
+    "remaining": 749,
+    "writtenChapters": 22,
     "chapters": [
       {
         "collection": "ode",
@@ -17720,10 +17720,28 @@
         "collection": "prob",
         "chapter": 6,
         "total": 17,
-        "written": 0,
-        "remaining": 17,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 17,
+        "remaining": 0,
+        "writtenItems": [
+          "prob-6.1.1a",
+          "prob-6.1.3",
+          "prob-6.1.4a",
+          "prob-6.2.1",
+          "prob-6.2.2",
+          "prob-6.2.5",
+          "prob-6.2.6",
+          "prob-6.2.7",
+          "prob-6.3.1",
+          "prob-6.3.2",
+          "prob-6.3.3",
+          "prob-6.4.1",
+          "prob-6.4.4",
+          "prob-6.5.1",
+          "prob-6.5.2",
+          "prob-6.5.3",
+          "prob-6.5.4"
+        ],
+        "status": "written"
       },
       {
         "collection": "stoch",
@@ -17807,10 +17825,23 @@
         "collection": "nla",
         "chapter": 5,
         "total": 12,
-        "written": 0,
-        "remaining": 12,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 12,
+        "remaining": 0,
+        "writtenItems": [
+          "nla-5.1",
+          "nla-5.2",
+          "nla-5.3",
+          "nla-5.4",
+          "nla-5.5",
+          "nla-5.6",
+          "nla-5.7",
+          "nla-5.8",
+          "nla-5.9",
+          "nla-5.10",
+          "nla-5.11",
+          "nla-5.12"
+        ],
+        "status": "written"
       },
       {
         "collection": "opt",

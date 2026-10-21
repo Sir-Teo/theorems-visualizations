@@ -2,6 +2,8 @@
 
 Started 2026-10-21 following the user's direction to proceed with new chapters. The [frozen inventory](../wave-five.md) fixes each collection's chapter for this wave; `npm run wave5:plan` refreshes written counts without advancing completed collections into Wave 6. Previous verification work is not a prerequisite to repeat.
 
+**Latest delivery instruction (2026-10-21): commit locally only. No more PRs or pushes. Existing PRs are left unchanged.** Earlier shipping entries below describe historical actions.
+
 ## Accepted chapters
 
 These chapters have source/mathematical review, checked visualizations and collection-sized commits on `codex/wave5-current-base`. The first fifteen were authored on `codex/wave-five-production` and transplanted onto published `6cf3d576`; subsequent chapters were authored directly on the current baseline.
@@ -28,8 +30,10 @@ These chapters have source/mathematical review, checked visualizations and colle
 | Differential geometry 5: the first fundamental form | 10 | `a0e669f7` | [review](wave5-dg-review.md) |
 | Manifolds 5: Lie groups | 11 | `8473af2b` | [review](wave5-mfd-review.md) |
 | Stochastic processes 5: coupling and mixing | 12 | `270d2154` | [review](wave5-stoch-review.md) |
+| Probability 6: ergodic theory | 17 | `9daddd76`, `999410ac` | [review](wave5-prob-review.md) |
+| Numerical linear algebra 5: eigenvalue problems | 12 | `f27eb09f` | [review](wave5-nla-review.md) |
 
-**253 new ideas accepted in twenty chapters.** Music 9.11 and 9.22 deliberately retain source uncertainty flags for unread original passages; the modern finite mathematics is independently checked, and the historical scope remains explicit. Art 5.4 retains its disclosed secondary MacAdam numerical-table flag; the original experimental conditions and qualitative conclusion were checked directly.
+**282 new ideas accepted in twenty-two chapters.** Music 9.11 and 9.22 deliberately retain source uncertainty flags for unread original passages; the modern finite mathematics is independently checked, and the historical scope remains explicit. Art 5.4 retains its disclosed secondary MacAdam numerical-table flag; the original experimental conditions and qualitative conclusion were checked directly. PROB6 preserves two source-numbering flags for the inserted unnumbered definitions6.1.1a/6.1.4a; their mathematical content is independently checked.
 
 ## Earlier-baseline integration checks
 
@@ -54,7 +58,7 @@ The exact current-baseline export `e6506283` at `/tmp/atlas-wave5-current-q_5q9v
 
 ## Work continuing
 
-**778 new ideas remain in 60 Wave 5 collection chapters.** All twenty accepted chapters have finished their author/reviewer checks. The current small pipeline assigns NLA5 to `author_fluid`, PROB6 to `review_music` and independent review of both to `wave5_reviewer`; at most three subagents work concurrently. Continue breadth-first from the remaining entries in the [frozen inventory](../wave-five.md), retaining its original chapter assignments. Follow MASTER_PLAN §7.2: source-led authoring, actual computations, both-theme native/visual checks, independent review, dependency reconciliation and collection-sized commits. Historical verification tasks are not prerequisites to repeat.
+**749 new ideas remain in 58 Wave 5 collection chapters.** All twenty-two accepted chapters have finished their author/reviewer checks. The current small pipeline assigns CM5 to `author_fluid`, XTAL5 to `review_music` and independent review of both to `wave5_reviewer`; at most three subagents work concurrently. Continue breadth-first from the remaining entries in the [frozen inventory](../wave-five.md), retaining its original chapter assignments. Follow MASTER_PLAN §7.2: source-led authoring, actual computations, both-theme native/visual checks, independent review, dependency reconciliation and collection-sized commits. Historical verification tasks are not prerequisites to repeat.
 
 After the full frozen wave passes its end-of-wave gates, prepare the next breadth-first wave under the master plan. The continuous production goal remains unfinished. Collection PRs are now open as drafts, isolated onto published main; per-PR CI is in progress. The one-line inherited CI YAML repair is tracked separately in [PR16](https://github.com/Sir-Teo/theorems-visualizations/pull/16), and included identically in each collection branch so checks can start. No PR is claimed merged. Local YAML parsing reproduces the old line24/column83 error and passes after replacing the invalid conditional with the declared `npm test` command.
 
@@ -99,3 +103,17 @@ DG shipping [PR19](https://github.com/Sir-Teo/theorems-visualizations/pull/19), 
 Accepted STOCH5 source `270d2154`, exported to `/tmp/atlas-wave5-twenty-o1glhfh6`, passes strict build **6,937 written/6,637 planned/470 chapters/85 collections,0 errors/warnings**; home **113,105 bytes gzip**. Its scoped static check covers12 visualizations,0 errors/warnings; all12 chapter math groups pass. Source-aligned coordinator production passes **24 actual320px light/dark cases,24 physical edits and real Share replays**, complete generated metadata/text/formula bounds,0pageerrors. Its **16 targeted routes pass with0errors**. Logs: `/tmp/atlas-wave5-twenty-{build,static,tests,production,smoke}.log`. The prior whole-suite checkpoint remains2,443 tests at the nineteen-chapter snapshot; that suite was not repeated for this isolated chapter. The next meaningful integrated batch will include it. DG PR19 now passes current-head CI39594738630 and is ready for review.
 
 STOCH shipping [PR22](https://github.com/Sir-Teo/theorems-visualizations/pull/22), isolated head `a8286c65`, passes standalone strict build and13 chapter/planner tests; CI is starting. The four independently accepted connective steps are included in root source `bc00c804`; that exact export has143 bridge steps through140 written ideas, strict build0errors/warnings,113,794-byte gzip home JSON and six mobile bridge/theme cases with eight native links passing. PROB6 and NLA5 authoring/review continue.
+
+## Twenty-two-chapter local checkpoint
+
+Accepted source `999410ac` is exported at `/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-wave5-twenty-two-gu18yogd`. It passes **2,484/2,484 tests** on Node22.23.3, without failures, skips or cancellations. Strict build: **6,966 written/6,608 planned/472 chapters/85 collections, zero errors/warnings**. Static: **6,903 visualizations, zero errors/warnings**. Home JSON: **114,419 bytes gzip**. Logs: `/tmp/atlas-wave5-twenty-two-{tests,build,static}.log`. This complete suite includes the previously focused STOCH5 acceptance and the new probability/eigenvalue chapters.
+
+The coordinator compared every generated statement, optional scope and source record for all29 new PROB6/NLA5 items with the accepted modules, then passed **58 actual320px light/dark cases,58 physical edits and58 real Share URL replays**, with complete rich-text/formula bounds and zero page errors. Selected matrix, pseudospectrum, interval and finite-passage captures were inspected at full size. Author and independent reports provide the complementary1200px/all-mode/raw-state/glyph/marker coverage. Log: `/tmp/atlas-wave5-twenty-two-production.log`.
+
+All **40 source-derived routes pass with zero errors**, covering the29 new ideas, chapters/collections, home/map/status/about and the three touched bridges. Log: `/tmp/atlas-wave5-twenty-two-smoke.log`. An initial coordinator utility manually used nonexistent `prob-6.1.1` in place of actual `prob-6.1.3`; that failed route log is preserved as `/tmp/atlas-wave5-twenty-two-smoke-initial-invalid-manual-ID.log`. The corrected inventory is derived from generated source IDs and the complete40-route run passes. This was a test-route error, not an authored source or production defect.
+
+The late PROB positive-remainder correction is included: tiny positive starting phases survive the orbit and retain half-open left-endpoint membership. Independent real-URL/Share checks pass4 groups/92 actions/40 replays for subnormal and tiny phases, alongside16 chapter math groups and996 separate oracle cases. The two intentional unnumbered-definition flags remain. NLA5 is independently accepted with13 math/metadata groups,1,306 separate analytic/high-precision oracle states and24 peer native groups/248 actions/104 replays; its author exercised all48 item/theme/width groups.
+
+Three independently checked bridge notes are included in `477d2efa`: ordered Hermitian sensitivity, nonnormal transient growth and conditional ergodic time averages. Their six actual320px theme/bridge cases and six native links pass; all added note text fits its card. The inventory is15 bridges/146 steps/143 unique written ideas, with no unresolved or planned steps. Log: `/tmp/atlas-wave5-twenty-two-bridges.log`. Shared bridge pictures and visualization runtime are unchanged.
+
+**Delivery is now local only**, per the user's2026-10-21 instruction. PROB PR23 was created before that instruction; it is left unchanged, and the later local tiny-phase fix is deliberately not pushed there. NLA and the three connective notes are local commits. No further PRs or pushes are made. CM5 and XTAL5 continue in the two author lanes with independent review.
