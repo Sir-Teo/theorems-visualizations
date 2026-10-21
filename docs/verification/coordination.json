@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest fully passing immutable checkpoint12 remains 94a77908 (2,230 tests). New checkpoint13 d4bceece completes 2,232/2,233: one unchanged MATHBIO4.14 convergence assertion fails; isolated diagnostic passes but does not waive it. Strict/static/queue/prerequisite checks pass; independent diagnosis underway.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Single frozen light3840/DPR2 paired case f778d8eb independently accepted by87e95436; all actual optimized main RGBA, renderer histories/resources and DOM bounds pass. FontFace preparation-order difference retained. Six new explicit holds acknowledged; one source-reviewed dark mirror is running from immutable d05e26f1. No wider/current matrix/lifecycle/performance acceptance.",
+      "Single frozen light3840/DPR2 paired case independently accepted87e95436. Separate reviewed dark mirror d05e26f1 runnerpasses all exactpixel/history/resource/DOMgates; independent saved-evidence peerpending. Allsixholdsreleased. Separate current23955-edge sourcepreparation underway; no current/matrix/lifecycle/performance acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -32,8 +32,8 @@
     {
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
+      "status": "working-hold-released",
+      "current": "Dark run finished, all root browser/server/heavy jobs closed and second hold explicitly released; assigned bounded source/model/offline work resumed.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +42,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
+      "status": "working-hold-released",
+      "current": "Dark run finished, all root browser/server/heavy jobs closed and second hold explicitly released; assigned bounded source/model/offline work resumed.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +52,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
+      "status": "working-hold-released",
+      "current": "Dark run finished, all root browser/server/heavy jobs closed and second hold explicitly released; assigned bounded source/model/offline work resumed.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,8 +62,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
+      "status": "working-hold-released",
+      "current": "Dark run finished, all root browser/server/heavy jobs closed and second hold explicitly released; assigned bounded source/model/offline work resumed.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,8 +72,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
+      "status": "working-hold-released",
+      "current": "Dark run finished, all root browser/server/heavy jobs closed and second hold explicitly released; assigned bounded source/model/offline work resumed.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,8 +82,8 @@
     {
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
-      "status": "browser-heavy-hold",
-      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
+      "status": "working-hold-released",
+      "current": "Dark run finished, all root browser/server/heavy jobs closed and second hold explicitly released; assigned bounded source/model/offline work resumed.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -1557,7 +1557,10 @@
       "status": "open-independent-diagnosis",
       "finding": "Unchanged convergence assertion fails in checkpoint13 and a fresh independent exact-file child; other isolated runs pass. Exact source hashes preserved. Numerical locals observed under inspector show coarse and middle rates equal; this does not yet establish model, quadrature or JIT cause.",
       "report": "docs/verification/checkpoint-d4bceece.md",
-      "scope": "Retain all failures, diagnose actual values without weakening assertions or model. This is MATHBIO4.14, separate from open original-source3.14."
+      "scope": "Retain all failures, diagnose actual values without weakening assertions or model. This is MATHBIO4.14, separate from open original-source3.14.",
+      "diagnostic": "787bf97c7a70f728095a3d81ab17875ab3c0aba8",
+      "diagnosticReport": "docs/verification/mathbio-age-convergence-independent-diagnostic.md",
+      "note": "39boundedchildren retain two exact-file failures; pausedcoarse/middlerates equal. Cause unproved; further minimal per-call/grid identity witness sought. No assertion/model/runtime change; checkpoint13 remainsfailed."
     }
   ],
   "stateFollowups": [
@@ -3095,6 +3098,17 @@
       "peer": "87e95436986846a161f5c5acb9615eabdff37b9e",
       "peerReport": "docs/verification/map-paired-selected-run-independent-imaging-peer.md",
       "scope": "Independent998piece/8completeRGBA/21decodedPNG/7diffbuffer/7493renderertrace/447originalledger audit and27personallyinspectedcompleteimages pass. Each main frame uses117optimizedtilevisits/70nonemptychunks/112334indices withzerooriginalbinds. FontFace event66 ordering difference explicitly retained; within-context prefixes/quiet/tails pass unchanged gates. Exactlyonecase, notmatrix/lifecycle/currentdata/production/performance."
+    },
+    {
+      "candidate": "d05e26f13e358eccd36dc8180017821dbb5bdeff",
+      "status": "runner-pass-independent-dark-raw-pixel-peer-pending",
+      "report": "docs/verification/map-paired-dark-state-root.md",
+      "evidence": "/tmp/atlas-root-paired-dark-state",
+      "mainSHA256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a",
+      "transportPieces": 998,
+      "transportBytes": 1041274897,
+      "chunkLogicalPeakBytes": 63895600,
+      "scope": "One reviewed dark mirror, same frozen inputs and12ordinals. All8rawmatch,7493renderertraceexact,zero late events/callbacks, actualmainoptimizedbindings, existingresource/DOMgatespass. Two callback FontFace ordering differences retained; independentauditpending. Rootallclosed andsixholdsreleased. No current/matrix/lifecycle/production/timing acceptance."
     }
   ],
   "accountingSafeguards": [
