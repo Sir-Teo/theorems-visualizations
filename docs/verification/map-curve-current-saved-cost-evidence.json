@@ -1,0 +1,3086 @@
+{
+  "scope": "Read-only saved evidence and source operation counts; no geometry regeneration, browser, runtime or timing",
+  "sourceCommit": "148407f0511684acd86de70a01fecd6b63c4cdc1",
+  "curveCommit": "f8eb0b366bb98ff906315469f9cc022089f73465",
+  "sourceHashes": {
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+    "scripts/lib/map-curve-bounds-runtime.mjs": "00bdd96fd63de01b9921b489e1a8995340e88b6034ee2b75fa94fce901b14ee2"
+  },
+  "inputHashes": {
+    "chunk/metadata.json": "816969bf4e2d8991d345ccd22ce5bda88d2d84c3b30ffbdafc177a353fa7bef1",
+    "original/metadata.json": "66c99b2a8af1d173f8d35a09837f8e872175d32af01cd6615086c3cf17b9c5e6",
+    "complete.json": "509fca9f764b80bc89c580abbe2837f674b34f71cc77d89b0fd7ddf58478c0b8",
+    "prepared.json": "e3f8a716083c3156c80a7ba6d2af534e8bccdf7e7cf877a30f2d27d2cf6bbfe9"
+  },
+  "assumedMaskForDetailedTable": [
+    4096,
+    1953
+  ],
+  "savedMaskArea": 7999488,
+  "maskAreaCompatibleDimensions": [
+    {
+      "width": 2976,
+      "height": 2688,
+      "tiles": 123,
+      "originalInstances": 3424784
+    },
+    {
+      "width": 3072,
+      "height": 2604,
+      "tiles": 125,
+      "originalInstances": 3441968
+    },
+    {
+      "width": 3472,
+      "height": 2304,
+      "tiles": 124,
+      "originalInstances": 3410866
+    },
+    {
+      "width": 3584,
+      "height": 2232,
+      "tiles": 126,
+      "originalInstances": 3412970
+    },
+    {
+      "width": 3906,
+      "height": 2048,
+      "tiles": 125,
+      "originalInstances": 3424708
+    },
+    {
+      "width": 3968,
+      "height": 2016,
+      "tiles": 125,
+      "originalInstances": 3424708
+    },
+    {
+      "width": 4032,
+      "height": 1984,
+      "tiles": 125,
+      "originalInstances": 3424708
+    },
+    {
+      "width": 4096,
+      "height": 1953,
+      "tiles": 125,
+      "originalInstances": 3424708
+    }
+  ],
+  "maskDimensionsDirectlySaved": false,
+  "frames": [
+    {
+      "label": "A0",
+      "view": {
+        "W": 3840,
+        "H": 2092,
+        "dpr": 2,
+        "k": 0.8,
+        "tx": 1574.35,
+        "ty": -1071.0500000000002
+      },
+      "computedTiles": 125,
+      "originalInstancesAt4096x1953": 3424708,
+      "observedDelta": {
+        "optimizedTiles": 125,
+        "chunks": 152,
+        "indices": 1741699,
+        "originalBinds": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 86
+      },
+      "trustedMappingCalls": {
+        "descriptor": 125,
+        "supported": 125,
+        "flushLive": 152,
+        "finalLive": 125
+      },
+      "totalTrustedMappingCalls": 527,
+      "pathCount": 23955,
+      "mappingRecordVisits": 12624285,
+      "retainedFraction": 0.5085686137329081,
+      "originalInstancedVertexInvocations": 13698832,
+      "curveInstancedVertexInvocations": 6966796,
+      "groupTable": "sharedMainGroups"
+    },
+    {
+      "label": "A1",
+      "view": {
+        "W": 3840,
+        "H": 2092,
+        "dpr": 2,
+        "k": 0.8,
+        "tx": 1574.35,
+        "ty": -1071.0500000000002
+      },
+      "computedTiles": 125,
+      "originalInstancesAt4096x1953": 3424708,
+      "observedDelta": {
+        "optimizedTiles": 125,
+        "chunks": 152,
+        "indices": 1741699,
+        "originalBinds": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 0
+      },
+      "trustedMappingCalls": {
+        "descriptor": 125,
+        "supported": 125,
+        "flushLive": 152,
+        "finalLive": 125
+      },
+      "totalTrustedMappingCalls": 527,
+      "pathCount": 23955,
+      "mappingRecordVisits": 12624285,
+      "retainedFraction": 0.5085686137329081,
+      "originalInstancedVertexInvocations": 13698832,
+      "curveInstancedVertexInvocations": 6966796,
+      "groupTable": "sharedMainGroups"
+    },
+    {
+      "label": "A2",
+      "view": {
+        "W": 3840,
+        "H": 2092,
+        "dpr": 2,
+        "k": 0.8,
+        "tx": 1574.35,
+        "ty": -1071.0500000000002
+      },
+      "computedTiles": 125,
+      "originalInstancesAt4096x1953": 3424708,
+      "observedDelta": {
+        "optimizedTiles": 125,
+        "chunks": 152,
+        "indices": 1741699,
+        "originalBinds": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 0
+      },
+      "trustedMappingCalls": {
+        "descriptor": 125,
+        "supported": 125,
+        "flushLive": 152,
+        "finalLive": 125
+      },
+      "totalTrustedMappingCalls": 527,
+      "pathCount": 23955,
+      "mappingRecordVisits": 12624285,
+      "retainedFraction": 0.5085686137329081,
+      "originalInstancedVertexInvocations": 13698832,
+      "curveInstancedVertexInvocations": 6966796,
+      "groupTable": "sharedMainGroups"
+    },
+    {
+      "label": "A3",
+      "view": {
+        "W": 3840,
+        "H": 2092,
+        "dpr": 2,
+        "k": 0.8,
+        "tx": 1574.35,
+        "ty": -1071.0500000000002
+      },
+      "computedTiles": 125,
+      "originalInstancesAt4096x1953": 3424708,
+      "observedDelta": {
+        "optimizedTiles": 125,
+        "chunks": 152,
+        "indices": 1741699,
+        "originalBinds": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 0
+      },
+      "trustedMappingCalls": {
+        "descriptor": 125,
+        "supported": 125,
+        "flushLive": 152,
+        "finalLive": 125
+      },
+      "totalTrustedMappingCalls": 527,
+      "pathCount": 23955,
+      "mappingRecordVisits": 12624285,
+      "retainedFraction": 0.5085686137329081,
+      "originalInstancedVertexInvocations": 13698832,
+      "curveInstancedVertexInvocations": 6966796,
+      "groupTable": "sharedMainGroups"
+    }
+  ],
+  "countsExcluded": [
+    "CPU elapsed time",
+    "FPS",
+    "physical GPU cost",
+    "per-tile independent retained reconstruction without saved bounds and IDs",
+    "setup upload mapping validation",
+    "non-draw instrumentation costs"
+  ],
+  "sharedMainGroups": [
+    {
+      "key": "4:col:pma",
+      "count": 162332,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -1080,
+        67,
+        11608,
+        11265
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            1408,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 162332
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 162332
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            1408,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 162332
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 162332
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            1408,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 162332
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 162332
+        }
+      ]
+    },
+    {
+      "key": "4:col:rca",
+      "count": 28080,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -504,
+        499,
+        9172,
+        11202
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            2330,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 28080
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 28080
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            2330,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 28080
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 28080
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            2330,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 28080
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 28080
+        }
+      ]
+    },
+    {
+      "key": "4:col:fa",
+      "count": 19016,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -424,
+        1099,
+        7796,
+        10781
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            2458,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 19016
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 19016
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            2458,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 19016
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 19016
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            2458,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 19016
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 19016
+        }
+      ]
+    },
+    {
+      "key": "4:col:ode",
+      "count": 24008,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -224,
+        88,
+        11576,
+        10897
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            2778,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 24008
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 24008
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            2778,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 24008
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 24008
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            2778,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 24008
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 24008
+        }
+      ]
+    },
+    {
+      "key": "4:col:ladr",
+      "count": 71025,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -1206.4,
+        88,
+        11544,
+        10907
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            1206,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 71025
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 71025
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            1206,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 71025
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 71025
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            1206,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 71025
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 71025
+        }
+      ]
+    },
+    {
+      "key": "4:col:mech",
+      "count": 874,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -2175,
+        1583,
+        8574.2,
+        4894
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            0,
+            378,
+            4096,
+            1953
+          ],
+          "originalInstances": 874
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            378,
+            7680,
+            1953
+          ],
+          "originalInstances": 874
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            0,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 874
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 874
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            0,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 874
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 874
+        }
+      ]
+    },
+    {
+      "key": "4:col:pde",
+      "count": 3875,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -172.8,
+        1868,
+        11192,
+        10486
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            2860,
+            834,
+            4096,
+            1953
+          ],
+          "originalInstances": 3875
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            834,
+            7680,
+            1953
+          ],
+          "originalInstances": 3875
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            2860,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 3875
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 3875
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            2860,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 3875
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 3875
+        }
+      ]
+    },
+    {
+      "key": "4:col:vcalc",
+      "count": 9378,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -115.2,
+        1889,
+        11576,
+        10560
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            2952,
+            868,
+            4096,
+            1953
+          ],
+          "originalInstances": 9378
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            868,
+            7680,
+            1953
+          ],
+          "originalInstances": 9378
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            2952,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 9378
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 9378
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            2952,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 9378
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 9378
+        }
+      ]
+    },
+    {
+      "key": "4:col:alg",
+      "count": 8592,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -54.400000000000006,
+        2973,
+        11544,
+        10750
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            3049,
+            2602,
+            4096,
+            3906
+          ],
+          "originalInstances": 8592
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            2602,
+            7680,
+            3906
+          ],
+          "originalInstances": 8592
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            3049,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 8592
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 8592
+        }
+      ]
+    },
+    {
+      "key": "4:col:rep",
+      "count": 2468,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        0,
+        3647,
+        11384,
+        9875
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            3136,
+            3681,
+            4096,
+            3906
+          ],
+          "originalInstances": 2468
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            3681,
+            7680,
+            3906
+          ],
+          "originalInstances": 2468
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            3136,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 2468
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 2468
+        }
+      ]
+    },
+    {
+      "key": "4:col:top",
+      "count": 4378,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        0,
+        109,
+        4872,
+        4278
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            3136,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 4378
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 4378
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            3136,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 4378
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 4378
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            3136,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 4378
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 4378
+        }
+      ]
+    },
+    {
+      "key": "4:col:dg",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:mfd",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:prob",
+      "count": 31500,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -2326.8,
+        752,
+        8099.6,
+        11213
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            0,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 31500
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 31500
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            0,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 31500
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 31500
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            0,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 31500
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 31500
+        }
+      ]
+    },
+    {
+      "key": "4:col:stoch",
+      "count": 3462,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -2134.8,
+        1372,
+        6878.8,
+        10181
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            0,
+            41,
+            4096,
+            1953
+          ],
+          "originalInstances": 3462
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            41,
+            7680,
+            1953
+          ],
+          "originalInstances": 3462
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            0,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 3462
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 3462
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            0,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 3462
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 3462
+        }
+      ]
+    },
+    {
+      "key": "4:col:nt",
+      "count": 1994,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -1987.6000000000001,
+        2667,
+        7173.200000000001,
+        6221
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            0,
+            2113,
+            4096,
+            3906
+          ],
+          "originalInstances": 1994
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            2113,
+            7680,
+            3906
+          ],
+          "originalInstances": 1994
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            0,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 1994
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 1994
+        }
+      ]
+    },
+    {
+      "key": "4:col:comb",
+      "count": 8568,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -1984.4,
+        2298,
+        6664.4,
+        10792
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            0,
+            1522,
+            4096,
+            1953
+          ],
+          "originalInstances": 8568
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            1522,
+            7680,
+            1953
+          ],
+          "originalInstances": 8568
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            0,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 8568
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 8568
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            0,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 8568
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 8568
+        }
+      ]
+    },
+    {
+      "key": "4:col:circ",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:thermo",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:graph",
+      "count": 1226,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -1712.4,
+        1867,
+        6328.4,
+        10813
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            396,
+            833,
+            4096,
+            1953
+          ],
+          "originalInstances": 1226
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            833,
+            7680,
+            1953
+          ],
+          "originalInstances": 1226
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            396,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 1226
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 1226
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            396,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 1226
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 1226
+        }
+      ]
+    },
+    {
+      "key": "4:col:algo",
+      "count": 902,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        160,
+        1457,
+        7948,
+        4915
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            3392,
+            177,
+            4096,
+            1953
+          ],
+          "originalInstances": 902
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            177,
+            7680,
+            1953
+          ],
+          "originalInstances": 902
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            3392,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 902
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 902
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            3392,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 902
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 902
+        }
+      ]
+    },
+    {
+      "key": "4:col:logic",
+      "count": 6118,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -2019.6000000000001,
+        2972,
+        6848.4,
+        6874
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            0,
+            2601,
+            4096,
+            3906
+          ],
+          "originalInstances": 6118
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            2601,
+            7680,
+            3906
+          ],
+          "originalInstances": 6118
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            0,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 6118
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 6118
+        }
+      ]
+    },
+    {
+      "key": "4:col:nla",
+      "count": 274,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        1215,
+        3636,
+        5965,
+        8638
+      ],
+      "tiles": [
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            5080,
+            3663,
+            7680,
+            3906
+          ],
+          "originalInstances": 274
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            5080,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 274
+        }
+      ]
+    },
+    {
+      "key": "4:col:num",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:sig",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:opt",
+      "count": 1086,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -1427.6000000000001,
+        3931,
+        6491.6,
+        11129
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            852,
+            4135,
+            4096,
+            4184
+          ],
+          "originalInstances": 1086
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            4135,
+            7680,
+            4184
+          ],
+          "originalInstances": 1086
+        }
+      ]
+    },
+    {
+      "key": "4:col:stat",
+      "count": 4986,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -3147.8,
+        109,
+        11879.6,
+        10792
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            0,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 4986
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 4986
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            0,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 4986
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 4986
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            0,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 4986
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 4986
+        }
+      ]
+    },
+    {
+      "key": "4:col:info",
+      "count": 1052,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        224,
+        141,
+        8396,
+        5874
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            3495,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 1052
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 1052
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            3495,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 1052
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 1052
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            3495,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 1052
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 1052
+        }
+      ]
+    },
+    {
+      "key": "4:col:ml",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:deep",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:causal",
+      "count": 366,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        800.4000000000001,
+        1394,
+        10543.6,
+        10886
+      ],
+      "tiles": [
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4417,
+            76,
+            7680,
+            1953
+          ],
+          "originalInstances": 366
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4417,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 366
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4417,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 366
+        }
+      ]
+    },
+    {
+      "key": "4:col:toc",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:cplx",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:qinfo",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:crypto",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:dist",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:rel",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:pl",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:cg",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:em",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:waves",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:qm",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:cm",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:xtal",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:astro",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:fluid",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:pchem",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:kin",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:qchem",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:geog",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:mat",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:solid",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:geol",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:geo",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:climate",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:energy",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:ctrl",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:popgen",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:mathbio",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:ecol",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:physio",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:neuro",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:bioinf",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:sysbio",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:pharm",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:epi",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:demo",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:behav",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:imaging",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:robot",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:aero",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:micro",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:game",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:macro",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:fin",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:psych",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:music",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:soc",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:polsci",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:art",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:arch",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:ling",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:phil",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:tech",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:col:bighist",
+      "count": 0,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "tiles": []
+    },
+    {
+      "key": "4:ghost",
+      "count": 182705,
+      "coverage": [
+        -2350.4375,
+        956.3125000000002,
+        3214.5625,
+        4336.3125
+      ],
+      "bounds": [
+        -4301.400000000001,
+        67,
+        14265.400000000001,
+        11202
+      ],
+      "tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "clip": [
+            0,
+            0,
+            4096,
+            1953
+          ],
+          "originalInstances": 182705
+        },
+        {
+          "x": 4096,
+          "y": 0,
+          "clip": [
+            4096,
+            0,
+            7680,
+            1953
+          ],
+          "originalInstances": 182705
+        },
+        {
+          "x": 0,
+          "y": 1953,
+          "clip": [
+            0,
+            1953,
+            4096,
+            3906
+          ],
+          "originalInstances": 182705
+        },
+        {
+          "x": 4096,
+          "y": 1953,
+          "clip": [
+            4096,
+            1953,
+            7680,
+            3906
+          ],
+          "originalInstances": 182705
+        },
+        {
+          "x": 0,
+          "y": 3906,
+          "clip": [
+            0,
+            3906,
+            4096,
+            4184
+          ],
+          "originalInstances": 182705
+        },
+        {
+          "x": 4096,
+          "y": 3906,
+          "clip": [
+            4096,
+            3906,
+            7680,
+            4184
+          ],
+          "originalInstances": 182705
+        }
+      ]
+    }
+  ]
+}
