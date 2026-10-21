@@ -1,0 +1,81 @@
+{
+  "scope": "read-only frozen source/bytes; no load, browser or map run",
+  "frozenRoot": "/tmp/atlas-continuation/checkpoint5",
+  "hashes": {
+    "data/index.json": {
+      "bytes": 2284685,
+      "sha256": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd"
+    },
+    "data/planned.json": {
+      "bytes": 572377,
+      "sha256": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd"
+    },
+    "data/col/ladr.json": {
+      "bytes": 116559,
+      "sha256": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab"
+    },
+    "assets/js/app.js": {
+      "bytes": 84566,
+      "sha256": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d"
+    },
+    "assets/js/graph.js": {
+      "bytes": 79477,
+      "sha256": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc"
+    }
+  },
+  "anchorIndex": {
+    "id": "ladr-2.30",
+    "col": "ladr",
+    "c": 2,
+    "num": "2.30",
+    "kind": "Theorem",
+    "name": "Every spanning list contains a basis",
+    "deps": [
+      "ladr-2.19",
+      "ladr-2.26"
+    ],
+    "tags": [
+      "bases"
+    ],
+    "file": "content/ladr/ch02-b.js",
+    "viz": true,
+    "x": 448,
+    "y": 2636,
+    "anc": 10,
+    "desc": 960,
+    "depth": 8
+  },
+  "anchorDetail": {
+    "st": "Every spanning list in a vector space can be reduced to a basis of the vector space.",
+    "refs": [
+      "Axler, Linear Algebra Done Right, 4th ed., author revision 16 August 2026, Theorem 2.30, pp. 40\u201341"
+    ],
+    "links": {
+      "source": "https://linear.axler.net/LADR4e.pdf#page=54"
+    }
+  },
+  "effects": {
+    "writtenLADR": 365,
+    "plannedLADR": 0,
+    "detailItems": 365,
+    "chapterSummaryNumbers": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "metadataKeyCounts": {
+      "st": 365,
+      "credit": 28,
+      "links": 50,
+      "refs": 2
+    },
+    "overwritesExistingIndexProperties": [],
+    "missingItemIDs": []
+  }
+}
