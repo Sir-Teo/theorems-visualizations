@@ -24,6 +24,8 @@ test('frozen chapter identities, paper metadata and chapter-only syllabus agree'
   assert.deepEqual(items.map(i=>i.num),nums);
   const chapters=S.chapters??S;const chapter=Array.isArray(chapters)?chapters.find(c=>c.n===5):null;
   assert.ok(chapter,'chapter five exists');
+  for(let n=1;n<=13;n++)assert.ok(chapters.some(c=>c.n===n),`untouched syllabus chapter ${n} remains`);
+  assert.deepEqual(chapters.find(c=>c.n===6).items.map(i=>i.num),Array.from({length:11},(_,j)=>`6.${j+1}`),'future interactive-proof inventory remains intact');
   for(const i of items){const row=chapter.items.find(r=>r.num===i.num);assert.equal(row.kind,i.kind);assert.deepEqual(row.deps,i.deps);assert.deepEqual(row.refs,i.refs);assert.equal(typeof i.viz,'function');assert.ok(!i.deps.includes('toc-12.5')&&!i.deps.includes('toc-13.13'));}
   assert.equal(items.at(-1).paper.year,2004);assert.deepEqual(items.at(-1).introduces,['cplx-5.10']);
 });
