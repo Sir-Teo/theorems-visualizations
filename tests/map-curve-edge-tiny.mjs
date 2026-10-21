@@ -97,6 +97,7 @@ async function run(preparedFile,out){
     let changed=0,max=0;for(let i=0;i<buffers[0].length;i++){const d=Math.abs(buffers[0][i]-buffers[1][i]);if(d)changed++;max=Math.max(max,d);}row.comparison={changed,max,bytes:buffers[0].length};save(false);assert.equal(changed,0,'exact original/curve native RGBA');row.pass=true;save(false);
    }finally{await page.close();}
   }
+  assert.deepEqual(errors,[],'final errors after awaited page closure');assert.ok(requests.every(r=>r.known),'final closed source request set');
   save(true);console.log(JSON.stringify({pass:true,cases:results.length,out}));
  }catch(error){errors.push({name:error.name,message:error.message,stack:error.stack});save(false);throw error;}
  finally{await browser?.close();if(server?.listening)await new Promise(resolve=>server.close(resolve));}
