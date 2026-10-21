@@ -62,8 +62,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "s2-no-readbacks-saved-native-peer",
-      "current": "Auditing one saved S2 readback-omission diagnostic; no browser/server/native or new variants.",
+      "status": "s2-no-readbacks-saved-native-peer-complete",
+      "current": "Saved S2 omission diagnostic independently audited; all jobs closed. Reference/lifecycle remain unresolved.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -3459,7 +3459,7 @@
     "performanceAccepted": false
   },
   "s2ReadbackIsolation": {
-    "status": "one-native-diagnostic-complete-saved-peer-pending",
+    "status": "independently-reviewed-diagnostic-reference-unresolved",
     "planCommit": "17b5c141d3189ce87104bcb7a7f5703fc01133e3",
     "planReport": "docs/verification/map-tiny-s2-readback-isolation-readonly-plan.md",
     "scope": "Omit only ten added before/after-paint readbacks; retain original captures, metrics, properties, comparisons, thresholds and errors.",
@@ -3475,6 +3475,7 @@
     "nativeExecuted": true,
     "actualConnectedEqual": true,
     "detachedReferenceChannels": 3297,
-    "referenceChanged": false
+    "referenceChanged": false,
+    "nativePeer": "622af6b1b3d9c3dd528b38b09a76928a1673cafb"
   }
 }

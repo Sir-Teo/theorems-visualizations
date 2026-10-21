@@ -1,6 +1,6 @@
 # S2 without added paint readbacks — root result
 
-One new old-S2/light diagnostic exits zero from immutable `00616e6fcdfcddb65cc251ad9d7c86bddcce6224`, after source `5cadebb9`, independent source peer `4dcf9462` and root Node 22 model/PREPARE verification. This is a completed diagnostic measurement; independent saved-evidence review is pending. It establishes neither reference correctness nor repaired lifecycle acceptance.
+One new old-S2/light diagnostic exits zero from immutable `00616e6fcdfcddb65cc251ad9d7c86bddcce6224`, after source `5cadebb9`, independent source peer `4dcf9462` and root Node 22 model/PREPARE verification. This is a completed diagnostic measurement; [independent saved-evidence review](map-s2-no-readback-run-independent-imaging-peer.md) passes at `622af6b1b3d9c3dd528b38b09a76928a1673cafb`. It establishes neither reference correctness nor repaired lifecycle acceptance.
 
 Root ran once from `/tmp/atlas-root-s2-no-readback-stage`:
 
