@@ -32,8 +32,8 @@
     {
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
-      "status": "curve-integration-source-proposal",
-      "current": "Drafting new private current curve fixture/observer/runner with exact accounting, closed pins and positive submitted-index gates; no native execution.",
+      "status": "curve-current-browser-heavy-hold",
+      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +42,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "curve-model-peer-complete",
-      "current": "Curve peer complete with two outside-premise style-ID mutation failures preserved. Available for immutable tiny source/PREPARE peer; no browser.",
+      "status": "curve-current-browser-heavy-hold",
+      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +52,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "awaiting-curve-integration-producer",
-      "current": "Pinned writer audit complete; assigned independent source/model/PREPARE peer of logic combined current fixture/observer/runner when immutable.",
+      "status": "curve-current-browser-heavy-hold",
+      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,8 +62,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "current-offline-peer",
-      "current": "Current-light offline fallback/protocol peer accepted; now independently auditing tiny first-stop and exact error protocol proposal offline/model only. No browser retry.",
+      "status": "curve-current-browser-heavy-hold",
+      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,8 +72,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "curve-tiny-source-proposal",
-      "current": "Curve source/model boundary accepted conditionally; drafting separate edge-only native source/PREPARE harness, no browser execution.",
+      "status": "curve-current-browser-heavy-hold",
+      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,8 +82,8 @@
     {
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
-      "status": "s2-diagnostic-source-peer-pending",
-      "current": "Offline S2 localization independently checked by root; connected-control source/PREPARE proposal4c49910a ready for imaging peer. No native retry.",
+      "status": "curve-current-browser-heavy-hold",
+      "current": "Fresh explicit quiet acknowledgement received for root single current curve light case at148407f0. All browser/server/heavy/model/PREPARE jobs closed; light reading only until root release.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -3398,7 +3398,7 @@
     "additionalNativeAuthorised": false
   },
   "curveCurrentIntegration": {
-    "status": "accepted-source-model-prepare-only",
+    "status": "source-model-prepare-accepted-tiny-native-accepted-six-holds-closed-ready-one-full-run",
     "producer": "795e60b1ff14b89ce162d9dc354b12c7b72a4ff2",
     "peer": "25dd5acdba9b98189c5acbfc7d3bb4e47f74c781",
     "report": "docs/verification/map-curve-current-independent-peer.md",
@@ -3408,14 +3408,16 @@
     "rootLog": "/tmp/atlas-continuation/curve-current-integrated-model.log",
     "rootRuntime": "Node22.23.3",
     "nativeRun": false,
-    "prerequisite": "Separate reviewed edge-only tiny native correctness gate must pass before the one full current-light case. Source callbacks/lifecycle and production/performance remain outside this acceptance."
+    "prerequisite": "Separate reviewed edge-only tiny native correctness gate must pass before the one full current-light case. Source callbacks/lifecycle and production/performance remain outside this acceptance.",
+    "allSixQuiet": true,
+    "output": "/tmp/atlas-root-curve-current-state"
   },
   "curveEdgeTiny": {
     "source": "83add753c6db71a142f7c58dd772390f5b809f58",
     "sourceClosing": "67a3e2946bf8e9b7587c82af50cb37a3732cd363",
     "sourcePeer": "896191f5f626b9a316d5470a3f4c98eaec30f49a",
     "stageCommit": "292e0f2288f0fc7e688a50da52fd780965722213",
-    "status": "native-32-cases-pass-independent-saved-evidence-peer-pending",
+    "status": "independently-accepted-32-native-edge-cases",
     "report": "docs/verification/map-curve-edge-tiny-root-result.md",
     "output": "/tmp/atlas-root-curve-edge-native",
     "cases": 32,
@@ -3426,6 +3428,8 @@
     "rootAudit": "/tmp/atlas-continuation/curve-edge-root-audit.json",
     "fullMapAccepted": false,
     "lifecycleAccepted": false,
-    "performanceAccepted": false
+    "performanceAccepted": false,
+    "nativePeer": "b2dcdf284639c5a27be699cbd2b56e9488a71161",
+    "nativePeerReport": "docs/verification/map-curve-edge-native-independent-imaging-peer.md"
   }
 }
