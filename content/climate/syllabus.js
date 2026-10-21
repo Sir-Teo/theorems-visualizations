@@ -168,33 +168,163 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Energy-balance models, bistability and tipping points',
-      summary: String.raw`Adding latitude and heat transport to the energy balance gives the Budyko–Sellers models, whose ice-albedo feedback creates multiple equilibria: a warm Earth with polar caps, an unstable small-cap state and a Snowball Earth, joined by saddle-node bifurcations and hysteresis. Similar bistability appears in the ocean overturning and in ice sheets, and critical slowing down offers a warning sign before a tipping point.`,
-      items: [
-        { num: '5.1', kind: 'Model', name: 'Budyko–Sellers diffusive energy-balance model', deps: ['climate-1.8', 'climate-4.4', 'thermo-7.4'], refs: ['Pierrehumbert'],
-          pic: 'Solve the latitudinal energy balance with diffusive heat transport and temperature-dependent albedo: the equilibrium temperature profile and ice line are computed as the solar constant and diffusivity change.' },
-        { num: '5.2', kind: 'Phenomenon', name: 'Multiple equilibria of the ice line', deps: ['climate-5.1', 'ode-8.3'], refs: ['Pierrehumbert'],
-          pic: 'Plot equilibrium ice-line latitude against the solar constant: an S-shaped curve with stable warm and snowball branches and an unstable middle branch, joined at saddle-node points.' },
-        { num: '5.3', kind: 'Phenomenon', name: 'Snowball Earth hysteresis', deps: ['climate-5.2', 'ode-8.6'], refs: ['Pierrehumbert'],
-          pic: 'Lower the solar constant until the ice line runs to the equator, then raise it back: the planet stays frozen far above the original threshold, tracing a hysteresis loop on the bifurcation diagram.' },
-        { num: '5.4', kind: 'Phenomenon', name: 'Small ice-cap instability', deps: ['climate-5.2'], refs: ['Pierrehumbert'],
-          pic: 'Shrink the polar cap in the diffusive model: below a critical size the cap cannot persist and vanishes abruptly, because diffusion smooths away a small cold region.' },
-        { num: '5.5', kind: 'Phenomenon', name: 'Escaping a Snowball by CO₂ build-up', deps: ['climate-5.3', 'climate-2.8'], refs: ['Pierrehumbert'],
-          pic: 'Freeze the planet, shut down weathering, and let volcanic CO₂ accumulate: after millions of years the forcing crosses the deglaciation threshold and the planet flips into a hot greenhouse state.' },
-        { num: '5.6', kind: 'Model', name: 'Daisyworld', deps: ['climate-5.1'], refs: ['Pierrehumbert'],
-          pic: 'Grow black and white daisies with a temperature-dependent growth rate as the Sun brightens: the planet’s temperature stays nearly constant over a wide range of luminosity, then collapses at the edges.' },
-        { num: '5.7', kind: 'Phenomenon', name: 'Tipping points and critical slowing down', deps: ['climate-5.2', 'ode-8.2'], refs: ['IPCC AR6 WG1 ch. 4'],
-          pic: 'Drive a noisy bistable system slowly toward a saddle-node: the recovery rate from perturbations falls, autocorrelation and variance rise in the time series, and the warning precedes the jump.' },
-        { num: '5.8', kind: 'Model', name: 'Stommel’s box model of thermohaline bistability', deps: ['geo-9.7', 'ode-8.3'], refs: ['IPCC AR6 WG1 ch. 9'],
-          pic: 'Add freshwater to a two-box ocean: the temperature-driven overturning weakens and then collapses to a reversed salinity-driven state, with hysteresis as the freshwater flux is reduced again.' },
-        { num: '5.9', kind: 'Phenomenon', name: 'Ice-sheet hysteresis and the height–mass-balance feedback', deps: ['climate-5.2', 'geo-1.2'], refs: ['IPCC AR6 WG1 ch. 9'],
-          pic: 'Grow an ice sheet whose surface cools as it thickens: under the same climate a high sheet survives while a low one cannot form, so melting it requires warming well beyond where it first grew.' },
-        { num: '5.10', kind: 'Paper', name: 'The effect of solar radiation variations on the climate',
-          paper: { authors: 'M. I. Budyko', year: 1969, title: 'The effect of solar radiation variations on the climate of the Earth', venue: 'Tellus 21 (5): 611–619', doi: '10.1111/j.2153-3490.1969.tb00466.x' },
-          introduces: ['climate-5.1', 'climate-5.2'], deps: ['climate-1.6', 'climate-4.4'], refs: [],
-          pic: 'Run Budyko’s latitude-by-latitude energy balance with ice wherever the mean temperature falls below about −10 °C: lower the solar constant and the ice line creeps toward the equator until, after a cut of only a percent or two, it runs away and covers the planet; raise it again and the ice stays.' },
-      ],
+      "n": 5,
+      "title": "Energy-balance models, bistability and tipping points",
+      "summary": "Latitude, heat transport and ice reflectivity turn an energy budget into an equilibrium problem. A conservative diffusive model computes its own ice-line branches; boundary states, folds and a stated slow ice-line closure distinguish several kinds of transition. Separate biological, ocean and ice-sheet models test related feedbacks without turning their thresholds into forecasts.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Model",
+          "name": "Budyko–Sellers diffusive energy-balance model",
+          "deps": [
+            "climate-1.6",
+            "climate-1.8",
+            "climate-4.4",
+            "pde-1.4"
+          ],
+          "refs": [
+            "Rose, ATM623 (2015), Lectures14 and17; PhD thesis (2010), §2.1.3, pp.53–56"
+          ],
+          "pic": "Change sunlight, transport and the initial ice-line basin. The first panel is the computed equilibrium profile after the scalar ice-line relaxation; the second is the associated poleward flux. A cold seed can select Snowball even when a warm equilibrium exists. The temperature and flux solve the fixed-cover linear balance; this is a slow ice-line equilibrium experiment, rather than a transient solution of a temperature-switching PDE."
+        },
+        {
+          "num": "5.2",
+          "kind": "Phenomenon",
+          "name": "Multiple equilibria of the ice line",
+          "deps": [
+            "climate-5.1",
+            "ode-1.8"
+          ],
+          "refs": [
+            "Rose, ATM623 (2015), Lectures14 and17; PhD thesis (2010), §2.1.3, pp.53–56"
+          ],
+          "pic": "Move sunlight and compare all intersections on the computed branch diagram with the actual scalar tendency. Green marks attracting states and red repelling states. Both boundary states are included only when their one-sided tendency points into the boundary. Diffusivity can change the number and structure of the branches."
+        },
+        {
+          "num": "5.3",
+          "kind": "Phenomenon",
+          "name": "Snowball Earth hysteresis",
+          "deps": [
+            "climate-5.2"
+          ],
+          "refs": [
+            "Rose, ATM623 (2015), Lectures14 and17; PhD thesis (2010), §2.1.3, pp.53–56"
+          ],
+          "pic": "Scrub the protocol from bright sunlight down to a dim Sun and back. Cooling and warming traces retain their previous basin. The marker shows the selected step and its associated equilibrium temperature profile. Change transport to see whether a temperate branch survives."
+        },
+        {
+          "num": "5.4",
+          "kind": "Phenomenon",
+          "name": "Small ice-cap instability",
+          "deps": [
+            "climate-5.2"
+          ],
+          "refs": [
+            "Rose, PhD thesis (2010), §2.1.6, pp.60–62"
+          ],
+          "pic": "Choose a polar patch radius and sunlight. The tendency panel says whether this initial patch melts or grows. The second panel compares the initial radius with the quasistatic basin destination. Use strong transport to test a regime without the same temperate-cap fold structure."
+        },
+        {
+          "num": "5.5",
+          "kind": "Phenomenon",
+          "name": "Escaping a Snowball by CO₂ build-up",
+          "deps": [
+            "climate-5.3"
+          ],
+          "refs": [
+            "Abbot et al. (2012), Clouds and Snowball Earth deglaciation, §§1–5; carbon-budget and forcing closure derived here"
+          ],
+          "pic": "Change volcanic input and residual removal. The carbon curve and actual threshold crossing are computed analytically. The second panel feeds the explicitly assumed forcing into the cold-branch EBM, retaining the previous basin along increasing time. Strong enough removal can prevent escape altogether.",
+          "see": [
+            "climate-2.8"
+          ]
+        },
+        {
+          "num": "5.6",
+          "kind": "Model",
+          "name": "Daisyworld",
+          "deps": [
+            "climate-1.6"
+          ],
+          "refs": [
+            "Watson and Lovelock (1983), Biological homeostasis of the global environment: the parable of Daisyworld, pp.285–288, Eqs.1–7 and Fig.1"
+          ],
+          "pic": "Change luminosity and colour contrast, then inspect the finite-time populations and temperature. The dashed temperature is a bare planet under identical sunlight. Choose an empty initial planet to test the invariant extinction state. The final derivative is shown so a finite run is not automatically called an equilibrium.",
+          "see": [
+            "climate-5.1"
+          ]
+        },
+        {
+          "num": "5.7",
+          "kind": "Phenomenon",
+          "name": "Tipping points and critical slowing down",
+          "deps": [
+            "climate-5.2",
+            "ode-1.8"
+          ],
+          "refs": [
+            "Scheffer et al. (2009), Early-warning signals for critical transitions, pp.53–54, Box3 and pp.57–58; local normal-form calculation derived here"
+          ],
+          "pic": "Move closer to the fold and compare recovery with an exact sampled stationary OU record. Change noise to test how variance can rise without a change in recovery rate. The readout compares finite-record estimates with the population formulas; sampling fluctuations are expected."
+        },
+        {
+          "num": "5.8",
+          "kind": "Model",
+          "name": "Stommel’s box model of thermohaline bistability",
+          "deps": [
+            "ode-2.7",
+            "ode-3.9"
+          ],
+          "refs": [
+            "Stommel (1961), Thermohaline Convection with Two Stable Regimes of Flow, pp.226–228, equations and Figs.5–6"
+          ],
+          "pic": "Change the forcing ratio, salinity relaxation and hydraulic parameter. The phase plane shows the original tendencies and every computed equilibrium; the second panel shows the scalar consistency equation with the same roots. The source's three-root example is the default. This changes a restoring forcing ratio, rather than imposing a literal freshwater flux in sverdrups.",
+          "see": [
+            "geo-9.7",
+            "climate-5.2"
+          ]
+        },
+        {
+          "num": "5.9",
+          "kind": "Phenomenon",
+          "name": "Ice-sheet hysteresis and the height–mass-balance feedback",
+          "deps": [
+            "climate-5.2",
+            "ode-1.8"
+          ],
+          "refs": [
+            "Levermann and Winkelmann (2016), A simple equation for the melt elevation feedback of ice sheets, §2, Eqs.5–10 and Fig.1"
+          ],
+          "pic": "Change ground mass balance and feedback strength. The first panel computes equilibrium height against a warming proxy θ=−a. The second shows the actual assumed net-height tendency at the selected climate. Markers include boundary equilibria. Positive and negative feedback terms can be compared directly.",
+          "see": [
+            "geo-1.2"
+          ]
+        },
+        {
+          "num": "5.10",
+          "kind": "Paper",
+          "name": "The effect of solar radiation variations on the climate",
+          "deps": [
+            "climate-1.6",
+            "climate-4.4"
+          ],
+          "refs": [
+            "Budyko (1969), original pp.613–616, Eqs.1–7 and Figs.3–5"
+          ],
+          "pic": "Change sunlight and a trial ice edge. The profile distinguishes ice-free and icy sides; the boundary uses albedo 0.50 as in the original calculation. The second panel solves the same edge-temperature condition for required sunlight. The orange line is the temperature of this simplified model's 72° reference edge at μ=1. A nonzero edge mismatch means the trial cover is not an equilibrium.",
+          "paper": {
+            "authors": "M. I. Budyko",
+            "year": 1969,
+            "title": "The effect of solar radiation variations on the climate of the Earth",
+            "venue": "Tellus 21 (5): 611–619",
+            "doi": "10.1111/j.2153-3490.1969.tb00466.x"
+          },
+          "introduces": [
+            "climate-5.1",
+            "climate-5.2"
+          ]
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {
