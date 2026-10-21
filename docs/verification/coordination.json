@@ -3396,5 +3396,18 @@
     "referenceChanged": false,
     "lifecycleAccepted": false,
     "additionalNativeAuthorised": false
+  },
+  "curveCurrentIntegration": {
+    "status": "accepted-source-model-prepare-only",
+    "producer": "795e60b1ff14b89ce162d9dc354b12c7b72a4ff2",
+    "peer": "25dd5acdba9b98189c5acbfc7d3bb4e47f74c781",
+    "report": "docs/verification/map-curve-current-independent-peer.md",
+    "rootStageCommit": "148407f0511684acd86de70a01fecd6b63c4cdc1",
+    "rootStage": "/tmp/atlas-root-curve-current-stage",
+    "rootModel": "/tmp/atlas-root-curve-current-integrated-model/proposal.json",
+    "rootLog": "/tmp/atlas-continuation/curve-current-integrated-model.log",
+    "rootRuntime": "Node22.23.3",
+    "nativeRun": false,
+    "prerequisite": "Separate reviewed edge-only tiny native correctness gate must pass before the one full current-light case. Source callbacks/lifecycle and production/performance remain outside this acceptance."
   }
 }
