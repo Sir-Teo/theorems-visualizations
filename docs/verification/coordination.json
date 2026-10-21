@@ -1482,11 +1482,15 @@
       "scope": "Separate count-only correction after actualwitness; preservepartition/isomorphism/control/geometry. Independent deep peer required."
     },
     {
-      "status": "open-authorized-bounded-producer",
+      "status": "accepted-closed",
       "id": "arch-1.3-reaction-label-clip",
       "owner": "imaging_source",
       "finding": "Independent ARCHpeer actual320showsfar-right reactionlabelclipped; acceptedbannerfixdidnotrepairthisdifferentlabel.",
-      "scope": "Separate local label-layout-only producer; before/after real supportstatus/input both themes, no numericalchange; independentpeerrequired."
+      "scope": "One rightmost label horizontalanchor/dx/alignment only;full151files40objects/functions/94rows unchangedotherwise. Own18matchedbefore/afteractualstates,16rightlabelglyphbounds,24final+3beforepicturespersonallyinspected; strict0/0,integratedguardpass. Otherinheritedextremearrow/loadannotations remain outsideboundedrepair.",
+      "commits": [
+        "416e536d6c37b1b7aa9c5631ff980b1e1e0981c9"
+      ],
+      "report": "docs/verification/arch-reaction-label-root-peer.md"
     },
     {
       "status": "open-authorized-bounded-producer",
