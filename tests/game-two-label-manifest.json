@@ -1,0 +1,23 @@
+{
+  "baseline": "b1f936aad0aa905c74ac6f1293b825ea66a66972",
+  "file": "content/game/ch02-b.js",
+  "num": "2.10",
+  "edits": [
+    {
+      "before": "'**perfect \u2713**'",
+      "after": "'**near sampled uniform family \u2713**'"
+    },
+    {
+      "before": "'**not perfect \u2717**'",
+      "after": "'**not near sampled uniform family \u2717**'"
+    },
+    {
+      "before": "${status.map(nm2).join(' \u00b7 ')}`;",
+      "after": "${status.map(nm2).join(' \u00b7 ')}\\nRing diagnostic: epsilon=0.001, distance<0.004; this is not a limiting classification.`;"
+    }
+  ],
+  "caption": {
+    "before": "Pick a shown two-action game and shrink the common epsilon (log scale). This illustration uses the **uniform family**, confining each player's first-action probability to $[\\varepsilon,1-\\varepsilon]$. The blue and orange steps are best-reply correspondences within that square, and green dots are its equilibria. The right panel samples these equilibria for epsilon from0.001 to0.5, with p in blue and q in orange; it does not compute a limit at zero. Rings mark Nash equilibria of the unperturbed game: green means within Euclidean distance0.004 of an equilibrium sampled at epsilon0.001; red means outside that finite threshold. Neither verdict proves a limiting classification. Full perfection allows general action-specific lower bounds as in the definition; a particular uniform family need not reach every perfect equilibrium.",
+    "after": "Pick a shown two-action game and shrink the common epsilon (log scale). This illustration uses the **uniform family**, confining each player's first-action probability to $[\\varepsilon,1-\\varepsilon]$. The blue and orange steps are best-reply correspondences within that square, and green dots are its equilibria. The right panel samples these equilibria for epsilon from 0.001 to 0.5, with p in blue and q in orange; it does not compute a limit at zero. Rings mark Nash equilibria of the unperturbed game: green means at Euclidean distance strictly less than 0.004 of an equilibrium sampled at epsilon 0.001; red means at or beyond that finite threshold. Neither verdict proves a limiting classification. Full perfection allows general action-specific lower bounds as in the definition; a particular uniform family need not reach every perfect equilibrium."
+  }
+}
