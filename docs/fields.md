@@ -91,6 +91,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Atomless multivariate laws can still have atoms in a coordinate marginal (a continuous distribution on a vertical line is an example). Quantile witnesses for sampling bounds must be fixed independently of the sample, include boundary atoms and use the measure actually restricted to the target set. See the [ML peer](verification/ml-crossfield-prerequisite-peer.md).
 - Distinguish the sampling law from the conditional resampling law of one observed sample. Retain bootstrap atoms and boundary failures; normalization, studentization and dependence assumptions belong to the actual procedure being computed. See the [bootstrap review](verification/wave5-stat-review.md).
 
+- Distinguish actual learning experiments from schematic published trends. State the training procedure, selection rule and held-out target; retain failed grokking or pruning runs. Interpolating training labels does not certify prediction risk, and a finite conditional risk identity does not verify an inaccessible general theorem. See the [generalization review](verification/wave5-deep-review.md).
+
 ## Computer science
 
 - Match the authentication game to the composition theorem: strong new-pair unforgeability or unique valid tags is needed for the stated Encrypt-then-MAC proof, with independent keys and complete nonce/ciphertext coverage. One-time affine authentication needs pairwise independence rather than ordinary universality. Keep random-function birthday probabilities separate from deterministic hash traces; a zero-tail cycle supplies no distinct-preimage witness. A strengthened hash's reverse collision proof must compare the entire length field before inferring aligned chains. See the [integrity review](verification/wave5-crypto-review.md).
@@ -112,6 +114,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   correctness/optimality/lower bounds, `Concept`, `Method`.
 
 - For tiny saved quantum probabilities, check the actual scientific readout as well as the snapshot: a decimal scaling formatter can underflow before the probability does. Keep exact model values separate from native range serialization, and verify both through real Share links. See the [quantum-query review](verification/wave5-qinfo-review.md).
+
+- State the ideal randomness and hash-family hypotheses separately from a seeded trace. Preserve fixed-query scope, integer tail events, online cost models and initial conditions. Tiny positive probabilities must remain positive in the readout; an observed zero count is different from a zero probability. Distinct-count sketches must implement the named register/aggregation rule. Keep chapter pseudocode completely visible at narrow widths. See the [randomized-algorithms review](verification/wave5-algo-review.md).
 
 ## Chemistry & materials
 
@@ -192,6 +196,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   an exact theorem, and state the update timing and convergence target. See the
   [choice-axiom](verification/psych-luce-followup.md) and
   [minimax/learning](verification/game-minimax-followup.md) audits.
+
+- Declare the normalization of discounted payoffs, monitoring and complete off-path strategies. Check credible punishment and all-state one-deviation incentives; tit-for-tat is not automatically subgame-perfect. Exact rational boundary tests should not be replaced by rounded strict inequalities. Label authored tournaments and spatial rules separately from inaccessible historical bodies, and show the requested tiny quantity alongside its rounded physical effect. See the [repeated-games review](verification/wave5-game-review.md).
 
 ## Arts, music & design
 
