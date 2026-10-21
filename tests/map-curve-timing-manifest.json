@@ -1,0 +1,59 @@
+{
+  "protocol": "one fixed-state instrumented original/curve pair; SOURCE/MODEL/PREPARE only",
+  "baselineCommit": "148407f0511684acd86de70a01fecd6b63c4cdc1",
+  "frames": 24,
+  "timeoutMS": 30000,
+  "p95": "nearest rank23, zero-based index22",
+  "collectors": "all unchanged and enabled",
+  "zooming": true,
+  "sources": {
+    "scripts/lib/map-curve-current-fixture.mjs": {
+      "bytes": 2696,
+      "sha256": "d6a6737991ed6516695b4d510eca8f68e638f1bd884d72fdf5955581d18327ab"
+    },
+    "tests/map-curve-current-manifest.json": {
+      "bytes": 2774,
+      "sha256": "2e6d1aa8c6d113350f9a5db8e5a07f26470e1741cc259c9e1dbf0a4f780713fb"
+    },
+    "scripts/lib/map-paired-guarded-epoch.mjs": {
+      "bytes": 6431,
+      "sha256": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9"
+    },
+    "scripts/lib/map-paired-atlas-observer.mjs": {
+      "bytes": 10925,
+      "sha256": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1"
+    },
+    "scripts/lib/map-paired-resource-observer.mjs": {
+      "bytes": 4598,
+      "sha256": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6"
+    },
+    "scripts/lib/map-current-light-boundary.mjs": {
+      "bytes": 4007,
+      "sha256": "0b47c8da2fb2680727198914e8452760c88781d2023f63d0560d9a47ae979f19"
+    },
+    "tests/map-curve-current-oracle.mjs": {
+      "bytes": 15660,
+      "sha256": "41874db761a1514e71a2335eac3354d406bbbc2b74d2a2f856610dccea632128"
+    },
+    "tests/map-current-light-execution-blocker.mjs": {
+      "bytes": 1260,
+      "sha256": "bdcc03ab7515b299113f2e3adb3aa12b18d75e91a2fcfcd5be1af6a97f1de15a"
+    },
+    "scripts/lib/map-curve-timing-protocol.mjs": {
+      "bytes": 7417,
+      "sha256": "d20e1a43add32485a8f5d58fc247ccb975c2f2114aa99c46abd30d9fbdd13dd1"
+    },
+    "scripts/lib/map-curve-timing-browser.mjs": {
+      "bytes": 6005,
+      "sha256": "81fe6b30a29fc6ebfe7207f6442d8aa4df2187f66471aedd646ecdead74fdd75"
+    },
+    "scripts/lib/map-curve-timing-boundary.mjs": {
+      "bytes": 449,
+      "sha256": "710577e384118a90417aae3b598034181edd469dc52c30c159fd4fbdfa508d90"
+    }
+  },
+  "browserFiles": [
+    "scripts/lib/map-curve-timing-protocol.mjs",
+    "scripts/lib/map-curve-timing-browser.mjs"
+  ]
+}
