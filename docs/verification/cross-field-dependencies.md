@@ -5,7 +5,7 @@ MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its
 
 Of 64 non-math collections, **6 have fewer than 25 published prerequisite edges to
 written ideas in a different field**. Their combined shortfall is 55 edges. Even
-including planned items and planned prerequisites, **2 collections remain below 25**.
+including planned items and planned prerequisites, **1 collection remains below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -316,3 +316,5 @@ Independent [ECOL](ecol-independent-peer.md) and [ASTRO](astro-four-inputs-root-
 ## GAME, PHARM and LING combined acceptance
 
 Nineteen GAME inputs yield23/27/39; eighteen PHARM inputs yield25/26/42; twenty LING inputs yield25/26/39. Independent full-object/function/raw-row guards, target-proof review, mathematical witnesses, real controls and complete narrow both-theme personal pixel inspection pass. Required closing successors qualify interior first-order conditions, positive bioavailable fraction, ideal radiation outside L1, and the actual LING4.4 inner display. Root integrated guards/math and94GAME/PHARM plus51LING default tests pass. Two initial root command errors (missing PHARM math arguments and incorrect test glob) stopped before checks; corrected commands pass. These links close no source review. Frozen BIGHIST3.5 remains excluded.
+
+The accepted recount has one whole syllabus below25 (the projected two was incorrect); its assertion stopped before writing, and the corrected inventory was regenerated with all exclusions preserved.

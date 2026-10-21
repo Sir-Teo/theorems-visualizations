@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall55;6/64 published collections and2 whole syllabi below target;42 further collections meet25 written inputs. Source queue5 unchanged.",
+      "Accepted prerequisite shortfall55;6/64 published collections and1 whole syllabi below target;42 further collections meet25 written inputs. Source queue5 unchanged.",
       "Latest immutable checkpoint10 on573ea1b passes2199 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private source/tiny fixed-quiescence successor passes independent review; full-map original-only attempt still stops on late normal400 Newsreader loading during transfer. Callback provenance captured; all raw/history retained, alternate/timing unrun.",
@@ -2697,7 +2697,7 @@
     "publishedShortfall": 55,
     "publishedBelow25": 6,
     "collections": 64,
-    "wholeSyllabusBelow25": 2,
+    "wholeSyllabusBelow25": 1,
     "date": "2026-10-20",
     "acceptedSnapshot": "Forty-two further collections meet written target. GAME19 yields23; PHARM18 and LING20 reach25. Frozen BIGHIST3.5 excluded."
   },
