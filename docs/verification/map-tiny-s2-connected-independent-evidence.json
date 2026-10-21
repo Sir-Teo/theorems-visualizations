@@ -1,0 +1,1151 @@
+{
+  "pass": true,
+  "scope": "source/PREPARE and explicit observation models only; no native or full-map execution",
+  "runnerChanges": [
+    {
+      "from": "const out=process.argv[2];",
+      "to": "const out=\"/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/inert/native\";"
+    },
+    {
+      "from": "const worker=frozen.get",
+      "to": "frozen.set('/tests/fixtures/map-private-lifecycle-native-browser.mjs',Buffer.from(\"// New synthetic component fixture. Actual MapView, scene, Canvas painter, Worker and WebGL implementations.\\nimport{MapView,setAtlas}from'/assets/js/graph.js';\\nimport{readRGBAChunks,byteHash}from'/scripts/lib/map-paired-atlas-observer.mjs';\\nconst q=new URLSearchParams(location.search),caseName=q.get('case'),variant=q.get('variant'),theme=q.get('theme'),prefix=q.get('prefix');\\nif(caseName!=='S2'||variant!=='old'||theme!=='light')throw Error('diagnostic identity must be old S2 light');\\nconst events=window.__tinyEvents||[],buffers=new Map;let phase='prepare',m,s,workerBefore,drawOrdinal=0;\\nconst record=(type,data={})=>{if(events.length>2000)throw Error('tiny event cap');events.push({eventOrdinal:events.length+1,type,phase,...data})};\\nwindow.addEventListener('error',e=>record('window-error',{message:e.message,isTrusted:e.isTrusted}));\\nconst gpu=(label)=>{const gl=s.gl,w=s.canvas.width,h=s.canvas.height;if(w*h>640*360)throw Error('tiny raw cap');const bytes=new Uint8Array(w*h*4);readRGBAChunks(gl,{width:w,height:h},(p,o)=>bytes.set(p,o));buffers.set(label,{width:w,height:h,orientation:'bottom-up',bytes});record('gpu-read',{label,w,h,sha256:byteHash(bytes)})};\\nconst canvas=(label,c=m.canvas)=>{const bytes=new Uint8Array(c.getContext('2d').getImageData(0,0,c.width,c.height).data);buffers.set(label,{width:c.width,height:c.height,orientation:'top-down',bytes});record('canvas-read',{label,width:c.width,height:c.height,sha256:byteHash(bytes)})};\\nconst snapshot=()=>({phase,generation:s.generation,dead:s.dead,status:s.status,active:s.active,pending:[...s.pending.values()].map(x=>x.key),failed:[...s.failed],canvas:[s.canvas.width,s.canvas.height],input:[m.canvas.width,m.canvas.height],display:s.canvas.style.display,opacity:m.canvas.style.opacity,resources:s.resources(),native:window.__tinyNative,stats:structuredClone(s.edges?.stats||{}),callbacks:events.length});\\nasync function init(){\\n await Promise.all(['500 11px Inter','600 11px Inter'].map(font=>document.fonts.load(font,'1.1 Synthetic source 1.2 Synthetic target')));await document.fonts.ready;record('declared-fonts-ready',{status:document.fonts.status});\\n const item=(num,x,name,deps)=>({id:'pma-'+num,col:'pma',c:1,num,kind:'Theorem',name,st:'Declared synthetic native component fixture; this is not an authored atlas theorem.',x,y:40,desc:1,deps});\\n const a=item('1.1',0,'Synthetic source',[]),b=item('1.2',200,'Synthetic target',Array(caseName==='S3'?32769:1).fill('pma-1.1')),items=[a,b],C={id:'pma',field:'math',title:'Synthetic component',short:'Synthetic',chapters:[]},G={items,planned:[],collections:[C],fields:[{id:'math',short:'Math'}],colById:new Map([['pma',C]]),byId:new Map(items.map(x=>[x.id,x])),allChildren:new Map([['pma-1.1',['pma-1.2']]]),map:{fields:[],rows:[]}};setAtlas(G);\\n m=new MapView(document.getElementById('fixture'),G);window.__tinyMap=m;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));s=m.__scene;if(!s)throw Error('actual scene was not constructed');await s.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));workerBefore=s.worker;\\n const draw=s.draw.bind(s);s.draw=function(...args){record('scene-draw-begin');const result=draw(...args);record('scene-draw-end',{result,status:s.status});if(phase!=='prepare'&&result)gpu(phase+'-gpu-'+drawOrdinal++);return result};\\n const fallback=s.fallback.bind(s);s.fallback=function(reason){record('actual-fallback',{reason,before:snapshot()});if(phase==='fault'&&s.canvas.width>1&&s.canvas.height>1)gpu('fault-before-fallback-'+drawOrdinal++);return fallback(reason)};\\n const originalPaint=m._paint;let paintOrdinal=0,readOrdinal=0;const identities=new WeakMap;let nextIdentity=0;\\n const identity=x=>{if(!x)return null;if(!identities.has(x))identities.set(x,++nextIdentity);return identities.get(x)};\\n const contextProperties=c=>{const keys=['globalAlpha','globalCompositeOperation','filter','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','font','fontKerning','fontStretch','fontVariantCaps','textRendering','letterSpacing','wordSpacing','textAlign','textBaseline','direction','lang'];return Object.fromEntries(keys.map(k=>[k,k in c?c[k]:{unsupported:true}]))};\\n const labelMetrics=c=>{const z=c.measureText('1.1 Synthetic source');return {font:c.font,text:'1.1 Synthetic source',requestedPaintFont:'500 11px Inter, system-ui, sans-serif',values:Object.fromEntries(['width','actualBoundingBoxLeft','actualBoundingBoxRight','actualBoundingBoxAscent','actualBoundingBoxDescent','fontBoundingBoxAscent','fontBoundingBoxDescent','emHeightAscent','emHeightDescent','hangingBaseline','alphabeticBaseline','ideographicBaseline'].map(k=>[k,k in z?z[k]:{unsupported:true}]))}};\\n const paintState=c=>{const el=c.canvas,css=getComputedStyle(el),t=c.getTransform();return {contextId:identity(c),canvasId:identity(el),mapCanvasId:identity(m.canvas),parentId:identity(el.parentElement),isConnected:el.isConnected,lang:el.lang,direction:el.dir,attributes:c.getContextAttributes?.()??{unsupported:true},dimensions:[el.width,el.height],rect:el.getBoundingClientRect().toJSON(),style:Object.fromEntries(['font','fontFamily','fontFeatureSettings','fontVariationSettings','fontKerning','fontSynthesis','webkitFontSmoothing','textRendering','letterSpacing','wordSpacing','direction','display','opacity'].map(k=>[k,css[k]??null])),context:contextProperties(c),transform:[t.a,t.b,t.c,t.d,t.e,t.f],lineDash:c.getLineDash(),metrics:labelMetrics(c),fonts:{status:document.fonts.status,inter500:document.fonts.check('500 11px Inter','1.1 Synthetic source'),inter600:document.fonts.check('600 11px Inter','1.1 Synthetic source')},map:{W:m.W,H:m.H,dpr:m.dpr,k:m.k,tx:m.tx,ty:m.ty,hover:m.hover?.it.id??null,selection:m.sel?.it.id??null,highlight:m.hl?[...m.hl]:null,fields:[...m.show.fields],defs:m.show.defs,planned:m.show.planned,mapRasterId:identity(m.mapRaster),focusRasterId:identity(m.focusRaster)},scene:{generation:s.generation,dead:s.dead,status:s.status,pending:[...s.pending.values()].map(x=>x.key)},raf:{draw:m._raf,animation:m.anim},colors:Object.fromEntries(['--c-bg','--c-muted','--c-pma'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue(k)]))}};\\n const originalCanvasRead=canvas;\\n const observeRead=(label,c)=>{const ordinal=++readOrdinal;originalCanvasRead(label,c);const x=buffers.get(label);record('diagnostic-read',{identity:'tiny-old-S2-connected-control-light-v1',ordinal,label,canvasId:identity(c),sha256:byteHash(x.bytes),width:x.width,height:x.height})};\\n for(const kind of ['loading','loadingdone','loadingerror'])document.fonts.addEventListener(kind,()=>record('diagnostic-font-event',{kind,status:document.fonts.status}));\\n const paint=function(...args){const ordinal=++paintOrdinal,c=this.ctx;record('diagnostic-paint-before',{ordinal,state:paintState(c),args});observeRead('diagnostic-before-paint-'+ordinal,c.canvas);const result=originalPaint.apply(this,args);record('diagnostic-paint-after',{ordinal,state:paintState(c)});observeRead('diagnostic-after-paint-'+ordinal,c.canvas);return result};\\n window.__tinyConnectedControl=()=>{const c=document.createElement('canvas');c.width=640;c.height=360;c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;pointer-events:none;opacity:0';document.body.append(c);record('diagnostic-connected-before-context',{canvasId:identity(c),isConnected:c.isConnected});const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m);observeRead('diagnostic-connected-reference',c)}finally{m.ctx=previous;c.remove();record('diagnostic-connected-removed',{canvasId:identity(c),isConnected:c.isConnected,restoredContextId:identity(m.ctx)})}};m._paint=function(...args){const result=paint.apply(m,args);if(phase!=='prepare'&&m.ctx.canvas===m.canvas)canvas(phase+'-canvas-'+drawOrdinal++);return result};\\n const getError=s.gl.getError.bind(s.gl);s.gl.getError=function(){const error=getError();record('actual-getError',{error});return error};\\n m.userMoved=true;cancelAnimationFrame(m._raf);m._raf=0;cancelAnimationFrame(m.anim);m.anim=0;clearTimeout(m.zoomTimer);clearTimeout(m.hoverTimer);m.zooming=m.dragging=false;m.k=.8;m.tx=60;m.ty=130;\\n phase='control';m._draw();window.__tinyControl=snapshot();record('control-complete',{state:window.__tinyControl});\\n const reference=(label='reference')=>{const c=document.createElement('canvas');c.width=640;c.height=360;const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m)}finally{m.ctx=previous}canvas(label,c)};window.__tinyReference=reference;reference('control-reference');window.__tinyControl.glError=s.gl.getError();\\n phase='fault';\\n if(caseName==='S1'){\\n  workerBefore.addEventListener('error',e=>{record('actual-worker-error-dispatch',{isTrusted:e.isTrusted,message:e.message});requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyDone=true}))},{once:true});workerBefore.postMessage({__tinyThrow:true});record('fault-message-posted');\\n }else if(caseName==='S2'){\\n  workerBefore.addEventListener('message',e=>{if(e.data?.__tinyAck!==8)return;record('actual-worker-lazy-ack',{isTrusted:e.isTrusted,request:e.data.requestId,pending:s.pending.has(e.data.requestId)});window.__tinyBeforeDestroy=snapshot();s.destroy();m._paint();window.__tinyImmediate=snapshot();Promise.resolve().then(()=>Promise.resolve()).then(()=>{record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyConnectedControl();canvas('diagnostic-actual-after-connected');window.__tinyDone=true})},{once:false});\\n  m.k=8;m.ty=-160;record('request-scale8');m._draw();\\n }else if(caseName==='S3'){\\n  const gl=s.gl,upload=gl.bufferSubData.bind(gl);let fired=false;gl.bufferSubData=function(...args){const result=upload(...args);if(!fired&&s.edges.scratch&&gl.getParameter(gl.ARRAY_BUFFER_BINDING)===s.edges.scratch.buffer){fired=true;const group=s.edges.frame.groups[0],buffer=group.buffer;const before={owned:s.budget.entries.has(group),isBuffer:gl.isBuffer(buffer)};s.edges.releaseGroup(group);window.__tinyRelease={before,after:{owned:s.budget.entries.has(group),isBuffer:gl.isBuffer(buffer),handleTruthy:!!group.buffer,registered:[...s.groups.values()].includes(group)}};record('actual-release-group',window.__tinyRelease);upload(gl.ARRAY_BUFFER,-1,new Uint8Array([1]));record('native-invalid-offset-issued')};return result};m._draw();window.__tinyOutcome=snapshot();window.__tinyFinalGLError=gl.getError();reference();canvas('actual-final-canvas');window.__tinyDone=true;\\n }else throw Error('unknown case');\\n}\\nwindow.__tinyExport=async()=>{const metadata={caseName,variant,theme,synthetic:true,events,native:window.__tinyNative,control:window.__tinyControl,outcome:window.__tinyOutcome,beforeDestroy:window.__tinyBeforeDestroy,immediate:window.__tinyImmediate,release:window.__tinyRelease,finalGLError:window.__tinyFinalGLError,images:[]};for(const[label,x]of buffers){metadata.images.push({label,width:x.width,height:x.height,orientation:x.orientation,bytes:x.bytes.length,sha256:byteHash(x.bytes)});for(let offset=0;offset<x.bytes.length;offset+=65536){const p=x.bytes.subarray(offset,offset+65536),r=await fetch('/__tiny-raw/'+prefix+'/'+label+'/'+offset,{method:'POST',headers:{'x-content-sha256':byteHash(p)},body:p});if(!r.ok)throw Error('tiny raw transport rejected')}}const bytes=new TextEncoder().encode(JSON.stringify(metadata));for(let offset=0;offset<bytes.length;offset+=65536){const p=bytes.subarray(offset,offset+65536),r=await fetch('/__tiny-raw/'+prefix+'/metadata/'+offset,{method:'POST',headers:{'x-content-sha256':byteHash(p)},body:p});if(!r.ok)throw Error('tiny metadata transport rejected')}return{images:metadata.images.length,events:events.length}};\\nwindow.__tinyCleanup=()=>{phase='cleanup';const before=s.budget,mworker=s.worker;m.destroy();const cleanup={bytes:before.bytes,owners:before.entries.size,pending:s.pending.size,worker:s.worker,dead:s.dead,sceneConnected:s.canvas.isConnected,scratch:document.querySelectorAll('canvas[aria-hidden]').length,nativeLive:window.__tinyLive.size,workersTerminated:window.__tinyNative.workers.every(x=>x.terminated)};record('cleanup',{...cleanup,hadWorker:!!mworker});return cleanup};\\ninit().catch(error=>{window.__tinyFailure={message:error.message,stack:error.stack};window.__tinyDone=true;record('fixture-failure',window.__tinyFailure)});\\n\"));hashes['diagnostic-served-fixture']=sha(frozen.get('/tests/fixtures/map-private-lifecycle-native-browser.mjs'));\nconst worker=frozen.get"
+    },
+    {
+      "from": "['old','repair'].map(v=>",
+      "to": "['old'].map(v=>"
+    },
+    {
+      "from": "scope:'Synthetic2node640x360DPR1 component;32769 duplicate straight edges only S3; nonempty synthetic statements, actual local Inter, no real app readiness or fullmap'",
+      "to": "scope:'NEW old S2 light connected-control diagnostic; synthetic2node640x360DPR1; no repair/S1/S3/fullmap/lifecycle acceptance'"
+    },
+    {
+      "from": "cases:['S1','S2','S3'],themes:['light','dark']",
+      "to": "cases:['S2'],themes:['light']"
+    },
+    {
+      "from": "for(const variant of['old','repair'])",
+      "to": "for(const variant of['old'])"
+    },
+    {
+      "from": "['tests/verification-map-private-lifecycle-native-pixels.py',dir]",
+      "to": "[\"/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-private-lifecycle-native-pixels.py\",dir]"
+    },
+    {
+      "from": "row.pixels=JSON.parse(await fs.readFile(dir+'/pixel-comparisons.json'));",
+      "to": "row.pixels=JSON.parse(await fs.readFile(dir+'/pixel-comparisons.json'));execFileSync('/Users/teodev/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',[\"/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-pixels.py\",dir]);row.diagnosticComparisons=JSON.parse(await fs.readFile(dir+'/diagnostic-three-comparisons.json'));"
+    },
+    {
+      "from": "row.gatesPass=true;",
+      "to": "const connectedBefore=row.events.filter(e=>e.type==='diagnostic-connected-before-context'),connectedAfter=row.events.filter(e=>e.type==='diagnostic-connected-removed');assert.equal(connectedBefore.length,1);assert.equal(connectedBefore[0].isConnected,true);assert.equal(connectedAfter.length,1);assert.equal(connectedAfter[0].isConnected,false);const paints=row.events.filter(e=>e.type==='diagnostic-paint-before');assert.ok(paints.length>=3);const detached=paints.at(-2).state,connected=paints.at(-1).state,actual=paints.at(-3).state;assert.equal(detached.isConnected,false);assert.equal(connected.isConnected,true);assert.equal(actual.isConnected,true);assert.deepEqual(connected.map,detached.map);assert.deepEqual(actual.map,detached.map);assert.equal(connectedAfter[0].restoredContextId,actual.contextId);const image=label=>row.images.find(x=>x.label===label);assert.equal(image('actual-final-canvas').sha256,image('diagnostic-actual-after-connected').sha256);row.gatesPass=true;"
+    },
+    {
+      "from": "from'../scripts/lib/map-native-tiny-error-contract.mjs'",
+      "to": "from'file:///tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-native-tiny-error-contract.mjs'"
+    },
+    {
+      "from": "from'../scripts/serve.mjs'",
+      "to": "from'file:///tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/serve.mjs'"
+    },
+    {
+      "from": "from'../scripts/browser.mjs'",
+      "to": "from'file:///tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/browser.mjs'"
+    },
+    {
+      "from": "from'../scripts/lib/map-scene-prototype.mjs'",
+      "to": "from'file:///tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-scene-prototype.mjs'"
+    },
+    {
+      "from": "from'../scripts/lib/map-chunked-indices-prototype.mjs'",
+      "to": "from'file:///tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-chunked-indices-prototype.mjs'"
+    },
+    {
+      "from": "from'../scripts/lib/map-lifecycle-private-repair.mjs'",
+      "to": "from'file:///tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-lifecycle-private-repair.mjs'"
+    }
+  ],
+  "fixtureChanges": [
+    {
+      "from": "const events=window.__tinyEvents||[]",
+      "to": "if(caseName!=='S2'||variant!=='old'||theme!=='light')throw Error('diagnostic identity must be old S2 light');\nconst events=window.__tinyEvents||[]"
+    },
+    {
+      "from": "const paint=m._paint;",
+      "to": "const originalPaint=m._paint;let paintOrdinal=0,readOrdinal=0;const identities=new WeakMap;let nextIdentity=0;\n const identity=x=>{if(!x)return null;if(!identities.has(x))identities.set(x,++nextIdentity);return identities.get(x)};\n const contextProperties=c=>{const keys=['globalAlpha','globalCompositeOperation','filter','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','font','fontKerning','fontStretch','fontVariantCaps','textRendering','letterSpacing','wordSpacing','textAlign','textBaseline','direction','lang'];return Object.fromEntries(keys.map(k=>[k,k in c?c[k]:{unsupported:true}]))};\n const labelMetrics=c=>{const z=c.measureText('1.1 Synthetic source');return {font:c.font,text:'1.1 Synthetic source',requestedPaintFont:'500 11px Inter, system-ui, sans-serif',values:Object.fromEntries(['width','actualBoundingBoxLeft','actualBoundingBoxRight','actualBoundingBoxAscent','actualBoundingBoxDescent','fontBoundingBoxAscent','fontBoundingBoxDescent','emHeightAscent','emHeightDescent','hangingBaseline','alphabeticBaseline','ideographicBaseline'].map(k=>[k,k in z?z[k]:{unsupported:true}]))}};\n const paintState=c=>{const el=c.canvas,css=getComputedStyle(el),t=c.getTransform();return {contextId:identity(c),canvasId:identity(el),mapCanvasId:identity(m.canvas),parentId:identity(el.parentElement),isConnected:el.isConnected,lang:el.lang,direction:el.dir,attributes:c.getContextAttributes?.()??{unsupported:true},dimensions:[el.width,el.height],rect:el.getBoundingClientRect().toJSON(),style:Object.fromEntries(['font','fontFamily','fontFeatureSettings','fontVariationSettings','fontKerning','fontSynthesis','webkitFontSmoothing','textRendering','letterSpacing','wordSpacing','direction','display','opacity'].map(k=>[k,css[k]??null])),context:contextProperties(c),transform:[t.a,t.b,t.c,t.d,t.e,t.f],lineDash:c.getLineDash(),metrics:labelMetrics(c),fonts:{status:document.fonts.status,inter500:document.fonts.check('500 11px Inter','1.1 Synthetic source'),inter600:document.fonts.check('600 11px Inter','1.1 Synthetic source')},map:{W:m.W,H:m.H,dpr:m.dpr,k:m.k,tx:m.tx,ty:m.ty,hover:m.hover?.it.id??null,selection:m.sel?.it.id??null,highlight:m.hl?[...m.hl]:null,fields:[...m.show.fields],defs:m.show.defs,planned:m.show.planned,mapRasterId:identity(m.mapRaster),focusRasterId:identity(m.focusRaster)},scene:{generation:s.generation,dead:s.dead,status:s.status,pending:[...s.pending.values()].map(x=>x.key)},raf:{draw:m._raf,animation:m.anim},colors:Object.fromEntries(['--c-bg','--c-muted','--c-pma'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue(k)]))}};\n const originalCanvasRead=canvas;\n const observeRead=(label,c)=>{const ordinal=++readOrdinal;originalCanvasRead(label,c);const x=buffers.get(label);record('diagnostic-read',{identity:'tiny-old-S2-connected-control-light-v1',ordinal,label,canvasId:identity(c),sha256:byteHash(x.bytes),width:x.width,height:x.height})};\n for(const kind of ['loading','loadingdone','loadingerror'])document.fonts.addEventListener(kind,()=>record('diagnostic-font-event',{kind,status:document.fonts.status}));\n const paint=function(...args){const ordinal=++paintOrdinal,c=this.ctx;record('diagnostic-paint-before',{ordinal,state:paintState(c),args});observeRead('diagnostic-before-paint-'+ordinal,c.canvas);const result=originalPaint.apply(this,args);record('diagnostic-paint-after',{ordinal,state:paintState(c)});observeRead('diagnostic-after-paint-'+ordinal,c.canvas);return result};\n window.__tinyConnectedControl=()=>{const c=document.createElement('canvas');c.width=640;c.height=360;c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;pointer-events:none;opacity:0';document.body.append(c);record('diagnostic-connected-before-context',{canvasId:identity(c),isConnected:c.isConnected});const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m);observeRead('diagnostic-connected-reference',c)}finally{m.ctx=previous;c.remove();record('diagnostic-connected-removed',{canvasId:identity(c),isConnected:c.isConnected,restoredContextId:identity(m.ctx)})}};"
+    },
+    {
+      "from": "record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyDone=true",
+      "to": "record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyConnectedControl();canvas('diagnostic-actual-after-connected');window.__tinyDone=true"
+    },
+    {
+      "from": "events.push({type,phase,...data})",
+      "to": "events.push({eventOrdinal:events.length+1,type,phase,...data})"
+    }
+  ],
+  "routes": [
+    {
+      "search": "?case=S2&variant=old&theme=light&prefix=old-light-S2",
+      "expected": "pass",
+      "failure": null
+    },
+    {
+      "search": "?case=S1&variant=old&theme=light",
+      "expected": "reject",
+      "failure": "diagnostic identity must be old S2 light"
+    },
+    {
+      "search": "?case=S3&variant=old&theme=light",
+      "expected": "reject",
+      "failure": "diagnostic identity must be old S2 light"
+    },
+    {
+      "search": "?case=S2&variant=repair&theme=light",
+      "expected": "reject",
+      "failure": "diagnostic identity must be old S2 light"
+    },
+    {
+      "search": "?case=S2&variant=old&theme=dark",
+      "expected": "reject",
+      "failure": "diagnostic identity must be old S2 light"
+    },
+    {
+      "search": "?variant=old&theme=light",
+      "expected": "reject",
+      "failure": "diagnostic identity must be old S2 light"
+    },
+    {
+      "search": "?case=S2&theme=light",
+      "expected": "reject",
+      "failure": "diagnostic identity must be old S2 light"
+    },
+    {
+      "search": "?case=S2&variant=old",
+      "expected": "reject",
+      "failure": "diagnostic identity must be old S2 light"
+    }
+  ],
+  "observationModels": [
+    {
+      "name": "normal-once-restores-removes",
+      "paintCalls": 1,
+      "contextAcquisitions": 1,
+      "metricReads": 2,
+      "trace": [
+        "append",
+        "getContext",
+        "paint",
+        "remove"
+      ],
+      "failure": null
+    },
+    {
+      "name": "throw-restores-removes",
+      "paintCalls": 1,
+      "contextAcquisitions": 1,
+      "metricReads": 1,
+      "trace": [
+        "append",
+        "getContext",
+        "paint",
+        "remove"
+      ],
+      "failure": "declared painter throw"
+    }
+  ],
+  "prepare": [
+    {
+      "name": "default",
+      "identity": "tiny-old-S2-connected-control-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-4vbu28",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedPaths": 71,
+      "manifestSHA256": "196a4643541f07f8a613f419b7d5e3927c73d3d4772ebd7b105b1625d43d5739",
+      "manifest": {
+        "identity": "tiny-old-S2-connected-control-light-v1",
+        "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+        "nativeAuthorizedByThisProposal": false,
+        "sourceBoundary": "1730a9cc7b6a4a3d54c8abae09676240f16a9351",
+        "case": "S2",
+        "variant": "old",
+        "theme": "light",
+        "viewport": {
+          "width": 640,
+          "height": 480,
+          "dpr": 1
+        },
+        "canvas": [
+          640,
+          360
+        ],
+        "rootFlag": "--root-authorized-s2-connected-light",
+        "original": {
+          "runner": "bafded155c7aa8962422511c3382e31318f70c14a4d8cc4969ec518f88c5c07f",
+          "fixture": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+        },
+        "protectedHashes": {
+          "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+          "assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+          "assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+          "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+          "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+          "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+          "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+          "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+          "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+          "assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+          "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+          "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+          "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+          "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+          "assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+          "assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+          "assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+          "assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+          "assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+          "assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+          "assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+          "assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+          "assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+          "assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+          "assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+          "assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+          "assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+          "assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+          "assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+          "assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+          "assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+          "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+          "assets/vendor/google-fonts/inter-OFL.txt": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39",
+          "assets/vendor/google-fonts/jetbrainsmono-OFL.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+          "assets/vendor/google-fonts/newsreader-OFL.txt": "865f0949b59fab5925506f80102dff3d12e8666412daf52d212db969d40adc25",
+          "assets/vendor/google-fonts/provenance.json": "d335ffdbf8701efa568d9fcf108ab29342be36ffe5c89577f7902568c7c52a39",
+          "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+          "scripts/lib/map-scene-prototype.mjs": "76eb562cebb368c00cbcfcbbedf31591ce6a32b8adaf85adfa0c7aeea8bfe68f",
+          "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+          "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+          "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+          "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+          "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+          "scripts/lib/map-lifecycle-private-repair.mjs": "9ec0b170cfe7f4624e9bda4a71dbb6a5614be3d55bfad66343a0d92970ab9da6",
+          "tests/verification-map-private-lifecycle-native-pixels.py": "4afd31e22bc6b431592f1eb444889d5ab2eadcd699b7559d4936944b6a010eef",
+          "scripts/lib/map-tiny-s2-connected-proposal.mjs": "a8f8e78b1ca98e8b9b07518e5d1b9738f1806537998bcb53ce6169bf4a1c84ff",
+          "tests/verification-map-tiny-s2-connected-prepare.mjs": "0048c0f5a4180d51a360763ee4fcc7a1a48b82327a0c5829f93208ac94264efd",
+          "tests/verification-map-tiny-s2-connected-pixels.py": "da1e6495c3c4eeb23c4a1dbaa3f75ab6de776c938ec70017ac938b567b3ac918"
+        },
+        "generated": {
+          "fixture": "396ca38574fa48c5979db6b8eb51f2d8934a74beec06b11537f611be7ca1c660",
+          "runner": "67003ca010d21a9a9f88c2a22fbc306b6a652ba09851ffa0f1f7c1086e81895f"
+        },
+        "changes": {
+          "fixture": [
+            {
+              "from": "const events=window.__tinyEvents||[]",
+              "to": "if(caseName!=='S2'||variant!=='old'||theme!=='light')throw Error('diagnostic identity must be old S2 light');\nconst events=window.__tinyEvents||[]"
+            },
+            {
+              "from": "const paint=m._paint;",
+              "to": "const originalPaint=m._paint;let paintOrdinal=0,readOrdinal=0;const identities=new WeakMap;let nextIdentity=0;\n const identity=x=>{if(!x)return null;if(!identities.has(x))identities.set(x,++nextIdentity);return identities.get(x)};\n const contextProperties=c=>{const keys=['globalAlpha','globalCompositeOperation','filter','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','font','fontKerning','fontStretch','fontVariantCaps','textRendering','letterSpacing','wordSpacing','textAlign','textBaseline','direction','lang'];return Object.fromEntries(keys.map(k=>[k,k in c?c[k]:{unsupported:true}]))};\n const labelMetrics=c=>{const z=c.measureText('1.1 Synthetic source');return {font:c.font,text:'1.1 Synthetic source',requestedPaintFont:'500 11px Inter, system-ui, sans-serif',values:Object.fromEntries(['width','actualBoundingBoxLeft','actualBoundingBoxRight','actualBoundingBoxAscent','actualBoundingBoxDescent','fontBoundingBoxAscent','fontBoundingBoxDescent','emHeightAscent','emHeightDescent','hangingBaseline','alphabeticBaseline','ideographicBaseline'].map(k=>[k,k in z?z[k]:{unsupported:true}]))}};\n const paintState=c=>{const el=c.canvas,css=getComputedStyle(el),t=c.getTransform();return {contextId:identity(c),canvasId:identity(el),mapCanvasId:identity(m.canvas),parentId:identity(el.parentElement),isConnected:el.isConnected,lang:el.lang,direction:el.dir,attributes:c.getContextAttributes?.()??{unsupported:true},dimensions:[el.width,el.height],rect:el.getBoundingClientRect().toJSON(),style:Object.fromEntries(['font','fontFamily','fontFeatureSettings','fontVariationSettings','fontKerning','fontSynthesis','webkitFontSmoothing','textRendering','letterSpacing','wordSpacing','direction','display','opacity'].map(k=>[k,css[k]??null])),context:contextProperties(c),transform:[t.a,t.b,t.c,t.d,t.e,t.f],lineDash:c.getLineDash(),metrics:labelMetrics(c),fonts:{status:document.fonts.status,inter500:document.fonts.check('500 11px Inter','1.1 Synthetic source'),inter600:document.fonts.check('600 11px Inter','1.1 Synthetic source')},map:{W:m.W,H:m.H,dpr:m.dpr,k:m.k,tx:m.tx,ty:m.ty,hover:m.hover?.it.id??null,selection:m.sel?.it.id??null,highlight:m.hl?[...m.hl]:null,fields:[...m.show.fields],defs:m.show.defs,planned:m.show.planned,mapRasterId:identity(m.mapRaster),focusRasterId:identity(m.focusRaster)},scene:{generation:s.generation,dead:s.dead,status:s.status,pending:[...s.pending.values()].map(x=>x.key)},raf:{draw:m._raf,animation:m.anim},colors:Object.fromEntries(['--c-bg','--c-muted','--c-pma'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue(k)]))}};\n const originalCanvasRead=canvas;\n const observeRead=(label,c)=>{const ordinal=++readOrdinal;originalCanvasRead(label,c);const x=buffers.get(label);record('diagnostic-read',{identity:'tiny-old-S2-connected-control-light-v1',ordinal,label,canvasId:identity(c),sha256:byteHash(x.bytes),width:x.width,height:x.height})};\n for(const kind of ['loading','loadingdone','loadingerror'])document.fonts.addEventListener(kind,()=>record('diagnostic-font-event',{kind,status:document.fonts.status}));\n const paint=function(...args){const ordinal=++paintOrdinal,c=this.ctx;record('diagnostic-paint-before',{ordinal,state:paintState(c),args});observeRead('diagnostic-before-paint-'+ordinal,c.canvas);const result=originalPaint.apply(this,args);record('diagnostic-paint-after',{ordinal,state:paintState(c)});observeRead('diagnostic-after-paint-'+ordinal,c.canvas);return result};\n window.__tinyConnectedControl=()=>{const c=document.createElement('canvas');c.width=640;c.height=360;c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;pointer-events:none;opacity:0';document.body.append(c);record('diagnostic-connected-before-context',{canvasId:identity(c),isConnected:c.isConnected});const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m);observeRead('diagnostic-connected-reference',c)}finally{m.ctx=previous;c.remove();record('diagnostic-connected-removed',{canvasId:identity(c),isConnected:c.isConnected,restoredContextId:identity(m.ctx)})}};"
+            },
+            {
+              "from": "record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyDone=true",
+              "to": "record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyConnectedControl();canvas('diagnostic-actual-after-connected');window.__tinyDone=true"
+            },
+            {
+              "from": "events.push({type,phase,...data})",
+              "to": "events.push({eventOrdinal:events.length+1,type,phase,...data})"
+            }
+          ],
+          "runner": [
+            {
+              "from": "const out=process.argv[2];",
+              "to": "const out=\"/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-4vbu28/native\";"
+            },
+            {
+              "from": "const worker=frozen.get",
+              "to": "frozen.set('/tests/fixtures/map-private-lifecycle-native-browser.mjs',Buffer.from(\"// New synthetic component fixture. Actual MapView, scene, Canvas painter, Worker and WebGL implementations.\\nimport{MapView,setAtlas}from'/assets/js/graph.js';\\nimport{readRGBAChunks,byteHash}from'/scripts/lib/map-paired-atlas-observer.mjs';\\nconst q=new URLSearchParams(location.search),caseName=q.get('case'),variant=q.get('variant'),theme=q.get('theme'),prefix=q.get('prefix');\\nif(caseName!=='S2'||variant!=='old'||theme!=='light')throw Error('diagnostic identity must be old S2 light');\\nconst events=window.__tinyEvents||[],buffers=new Map;let phase='prepare',m,s,workerBefore,drawOrdinal=0;\\nconst record=(type,data={})=>{if(events.length>2000)throw Error('tiny event cap');events.push({eventOrdinal:events.length+1,type,phase,...data})};\\nwindow.addEventListener('error',e=>record('window-error',{message:e.message,isTrusted:e.isTrusted}));\\nconst gpu=(label)=>{const gl=s.gl,w=s.canvas.width,h=s.canvas.height;if(w*h>640*360)throw Error('tiny raw cap');const bytes=new Uint8Array(w*h*4);readRGBAChunks(gl,{width:w,height:h},(p,o)=>bytes.set(p,o));buffers.set(label,{width:w,height:h,orientation:'bottom-up',bytes});record('gpu-read',{label,w,h,sha256:byteHash(bytes)})};\\nconst canvas=(label,c=m.canvas)=>{const bytes=new Uint8Array(c.getContext('2d').getImageData(0,0,c.width,c.height).data);buffers.set(label,{width:c.width,height:c.height,orientation:'top-down',bytes});record('canvas-read',{label,width:c.width,height:c.height,sha256:byteHash(bytes)})};\\nconst snapshot=()=>({phase,generation:s.generation,dead:s.dead,status:s.status,active:s.active,pending:[...s.pending.values()].map(x=>x.key),failed:[...s.failed],canvas:[s.canvas.width,s.canvas.height],input:[m.canvas.width,m.canvas.height],display:s.canvas.style.display,opacity:m.canvas.style.opacity,resources:s.resources(),native:window.__tinyNative,stats:structuredClone(s.edges?.stats||{}),callbacks:events.length});\\nasync function init(){\\n await Promise.all(['500 11px Inter','600 11px Inter'].map(font=>document.fonts.load(font,'1.1 Synthetic source 1.2 Synthetic target')));await document.fonts.ready;record('declared-fonts-ready',{status:document.fonts.status});\\n const item=(num,x,name,deps)=>({id:'pma-'+num,col:'pma',c:1,num,kind:'Theorem',name,st:'Declared synthetic native component fixture; this is not an authored atlas theorem.',x,y:40,desc:1,deps});\\n const a=item('1.1',0,'Synthetic source',[]),b=item('1.2',200,'Synthetic target',Array(caseName==='S3'?32769:1).fill('pma-1.1')),items=[a,b],C={id:'pma',field:'math',title:'Synthetic component',short:'Synthetic',chapters:[]},G={items,planned:[],collections:[C],fields:[{id:'math',short:'Math'}],colById:new Map([['pma',C]]),byId:new Map(items.map(x=>[x.id,x])),allChildren:new Map([['pma-1.1',['pma-1.2']]]),map:{fields:[],rows:[]}};setAtlas(G);\\n m=new MapView(document.getElementById('fixture'),G);window.__tinyMap=m;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));s=m.__scene;if(!s)throw Error('actual scene was not constructed');await s.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));workerBefore=s.worker;\\n const draw=s.draw.bind(s);s.draw=function(...args){record('scene-draw-begin');const result=draw(...args);record('scene-draw-end',{result,status:s.status});if(phase!=='prepare'&&result)gpu(phase+'-gpu-'+drawOrdinal++);return result};\\n const fallback=s.fallback.bind(s);s.fallback=function(reason){record('actual-fallback',{reason,before:snapshot()});if(phase==='fault'&&s.canvas.width>1&&s.canvas.height>1)gpu('fault-before-fallback-'+drawOrdinal++);return fallback(reason)};\\n const originalPaint=m._paint;let paintOrdinal=0,readOrdinal=0;const identities=new WeakMap;let nextIdentity=0;\\n const identity=x=>{if(!x)return null;if(!identities.has(x))identities.set(x,++nextIdentity);return identities.get(x)};\\n const contextProperties=c=>{const keys=['globalAlpha','globalCompositeOperation','filter','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','font','fontKerning','fontStretch','fontVariantCaps','textRendering','letterSpacing','wordSpacing','textAlign','textBaseline','direction','lang'];return Object.fromEntries(keys.map(k=>[k,k in c?c[k]:{unsupported:true}]))};\\n const labelMetrics=c=>{const z=c.measureText('1.1 Synthetic source');return {font:c.font,text:'1.1 Synthetic source',requestedPaintFont:'500 11px Inter, system-ui, sans-serif',values:Object.fromEntries(['width','actualBoundingBoxLeft','actualBoundingBoxRight','actualBoundingBoxAscent','actualBoundingBoxDescent','fontBoundingBoxAscent','fontBoundingBoxDescent','emHeightAscent','emHeightDescent','hangingBaseline','alphabeticBaseline','ideographicBaseline'].map(k=>[k,k in z?z[k]:{unsupported:true}]))}};\\n const paintState=c=>{const el=c.canvas,css=getComputedStyle(el),t=c.getTransform();return {contextId:identity(c),canvasId:identity(el),mapCanvasId:identity(m.canvas),parentId:identity(el.parentElement),isConnected:el.isConnected,lang:el.lang,direction:el.dir,attributes:c.getContextAttributes?.()??{unsupported:true},dimensions:[el.width,el.height],rect:el.getBoundingClientRect().toJSON(),style:Object.fromEntries(['font','fontFamily','fontFeatureSettings','fontVariationSettings','fontKerning','fontSynthesis','webkitFontSmoothing','textRendering','letterSpacing','wordSpacing','direction','display','opacity'].map(k=>[k,css[k]??null])),context:contextProperties(c),transform:[t.a,t.b,t.c,t.d,t.e,t.f],lineDash:c.getLineDash(),metrics:labelMetrics(c),fonts:{status:document.fonts.status,inter500:document.fonts.check('500 11px Inter','1.1 Synthetic source'),inter600:document.fonts.check('600 11px Inter','1.1 Synthetic source')},map:{W:m.W,H:m.H,dpr:m.dpr,k:m.k,tx:m.tx,ty:m.ty,hover:m.hover?.it.id??null,selection:m.sel?.it.id??null,highlight:m.hl?[...m.hl]:null,fields:[...m.show.fields],defs:m.show.defs,planned:m.show.planned,mapRasterId:identity(m.mapRaster),focusRasterId:identity(m.focusRaster)},scene:{generation:s.generation,dead:s.dead,status:s.status,pending:[...s.pending.values()].map(x=>x.key)},raf:{draw:m._raf,animation:m.anim},colors:Object.fromEntries(['--c-bg','--c-muted','--c-pma'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue(k)]))}};\\n const originalCanvasRead=canvas;\\n const observeRead=(label,c)=>{const ordinal=++readOrdinal;originalCanvasRead(label,c);const x=buffers.get(label);record('diagnostic-read',{identity:'tiny-old-S2-connected-control-light-v1',ordinal,label,canvasId:identity(c),sha256:byteHash(x.bytes),width:x.width,height:x.height})};\\n for(const kind of ['loading','loadingdone','loadingerror'])document.fonts.addEventListener(kind,()=>record('diagnostic-font-event',{kind,status:document.fonts.status}));\\n const paint=function(...args){const ordinal=++paintOrdinal,c=this.ctx;record('diagnostic-paint-before',{ordinal,state:paintState(c),args});observeRead('diagnostic-before-paint-'+ordinal,c.canvas);const result=originalPaint.apply(this,args);record('diagnostic-paint-after',{ordinal,state:paintState(c)});observeRead('diagnostic-after-paint-'+ordinal,c.canvas);return result};\\n window.__tinyConnectedControl=()=>{const c=document.createElement('canvas');c.width=640;c.height=360;c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;pointer-events:none;opacity:0';document.body.append(c);record('diagnostic-connected-before-context',{canvasId:identity(c),isConnected:c.isConnected});const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m);observeRead('diagnostic-connected-reference',c)}finally{m.ctx=previous;c.remove();record('diagnostic-connected-removed',{canvasId:identity(c),isConnected:c.isConnected,restoredContextId:identity(m.ctx)})}};m._paint=function(...args){const result=paint.apply(m,args);if(phase!=='prepare'&&m.ctx.canvas===m.canvas)canvas(phase+'-canvas-'+drawOrdinal++);return result};\\n const getError=s.gl.getError.bind(s.gl);s.gl.getError=function(){const error=getError();record('actual-getError',{error});return error};\\n m.userMoved=true;cancelAnimationFrame(m._raf);m._raf=0;cancelAnimationFrame(m.anim);m.anim=0;clearTimeout(m.zoomTimer);clearTimeout(m.hoverTimer);m.zooming=m.dragging=false;m.k=.8;m.tx=60;m.ty=130;\\n phase='control';m._draw();window.__tinyControl=snapshot();record('control-complete',{state:window.__tinyControl});\\n const reference=(label='reference')=>{const c=document.createElement('canvas');c.width=640;c.height=360;const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m)}finally{m.ctx=previous}canvas(label,c)};window.__tinyReference=reference;reference('control-reference');window.__tinyControl.glError=s.gl.getError();\\n phase='fault';\\n if(caseName==='S1'){\\n  workerBefore.addEventListener('error',e=>{record('actual-worker-error-dispatch',{isTrusted:e.isTrusted,message:e.message});requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyDone=true}))},{once:true});workerBefore.postMessage({__tinyThrow:true});record('fault-message-posted');\\n }else if(caseName==='S2'){\\n  workerBefore.addEventListener('message',e=>{if(e.data?.__tinyAck!==8)return;record('actual-worker-lazy-ack',{isTrusted:e.isTrusted,request:e.data.requestId,pending:s.pending.has(e.data.requestId)});window.__tinyBeforeDestroy=snapshot();s.destroy();m._paint();window.__tinyImmediate=snapshot();Promise.resolve().then(()=>Promise.resolve()).then(()=>{record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyConnectedControl();canvas('diagnostic-actual-after-connected');window.__tinyDone=true})},{once:false});\\n  m.k=8;m.ty=-160;record('request-scale8');m._draw();\\n }else if(caseName==='S3'){\\n  const gl=s.gl,upload=gl.bufferSubData.bind(gl);let fired=false;gl.bufferSubData=function(...args){const result=upload(...args);if(!fired&&s.edges.scratch&&gl.getParameter(gl.ARRAY_BUFFER_BINDING)===s.edges.scratch.buffer){fired=true;const group=s.edges.frame.groups[0],buffer=group.buffer;const before={owned:s.budget.entries.has(group),isBuffer:gl.isBuffer(buffer)};s.edges.releaseGroup(group);window.__tinyRelease={before,after:{owned:s.budget.entries.has(group),isBuffer:gl.isBuffer(buffer),handleTruthy:!!group.buffer,registered:[...s.groups.values()].includes(group)}};record('actual-release-group',window.__tinyRelease);upload(gl.ARRAY_BUFFER,-1,new Uint8Array([1]));record('native-invalid-offset-issued')};return result};m._draw();window.__tinyOutcome=snapshot();window.__tinyFinalGLError=gl.getError();reference();canvas('actual-final-canvas');window.__tinyDone=true;\\n }else throw Error('unknown case');\\n}\\nwindow.__tinyExport=async()=>{const metadata={caseName,variant,theme,synthetic:true,events,native:window.__tinyNative,control:window.__tinyControl,outcome:window.__tinyOutcome,beforeDestroy:window.__tinyBeforeDestroy,immediate:window.__tinyImmediate,release:window.__tinyRelease,finalGLError:window.__tinyFinalGLError,images:[]};for(const[label,x]of buffers){metadata.images.push({label,width:x.width,height:x.height,orientation:x.orientation,bytes:x.bytes.length,sha256:byteHash(x.bytes)});for(let offset=0;offset<x.bytes.length;offset+=65536){const p=x.bytes.subarray(offset,offset+65536),r=await fetch('/__tiny-raw/'+prefix+'/'+label+'/'+offset,{method:'POST',headers:{'x-content-sha256':byteHash(p)},body:p});if(!r.ok)throw Error('tiny raw transport rejected')}}const bytes=new TextEncoder().encode(JSON.stringify(metadata));for(let offset=0;offset<bytes.length;offset+=65536){const p=bytes.subarray(offset,offset+65536),r=await fetch('/__tiny-raw/'+prefix+'/metadata/'+offset,{method:'POST',headers:{'x-content-sha256':byteHash(p)},body:p});if(!r.ok)throw Error('tiny metadata transport rejected')}return{images:metadata.images.length,events:events.length}};\\nwindow.__tinyCleanup=()=>{phase='cleanup';const before=s.budget,mworker=s.worker;m.destroy();const cleanup={bytes:before.bytes,owners:before.entries.size,pending:s.pending.size,worker:s.worker,dead:s.dead,sceneConnected:s.canvas.isConnected,scratch:document.querySelectorAll('canvas[aria-hidden]').length,nativeLive:window.__tinyLive.size,workersTerminated:window.__tinyNative.workers.every(x=>x.terminated)};record('cleanup',{...cleanup,hadWorker:!!mworker});return cleanup};\\ninit().catch(error=>{window.__tinyFailure={message:error.message,stack:error.stack};window.__tinyDone=true;record('fixture-failure',window.__tinyFailure)});\\n\"));hashes['diagnostic-served-fixture']=sha(frozen.get('/tests/fixtures/map-private-lifecycle-native-browser.mjs'));\nconst worker=frozen.get"
+            },
+            {
+              "from": "['old','repair'].map(v=>",
+              "to": "['old'].map(v=>"
+            },
+            {
+              "from": "scope:'Synthetic2node640x360DPR1 component;32769 duplicate straight edges only S3; nonempty synthetic statements, actual local Inter, no real app readiness or fullmap'",
+              "to": "scope:'NEW old S2 light connected-control diagnostic; synthetic2node640x360DPR1; no repair/S1/S3/fullmap/lifecycle acceptance'"
+            },
+            {
+              "from": "cases:['S1','S2','S3'],themes:['light','dark']",
+              "to": "cases:['S2'],themes:['light']"
+            },
+            {
+              "from": "for(const variant of['old','repair'])",
+              "to": "for(const variant of['old'])"
+            },
+            {
+              "from": "['tests/verification-map-private-lifecycle-native-pixels.py',dir]",
+              "to": "[\"/private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-private-lifecycle-native-pixels.py\",dir]"
+            },
+            {
+              "from": "row.pixels=JSON.parse(await fs.readFile(dir+'/pixel-comparisons.json'));",
+              "to": "row.pixels=JSON.parse(await fs.readFile(dir+'/pixel-comparisons.json'));execFileSync('/Users/teodev/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',[\"/private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-pixels.py\",dir]);row.diagnosticComparisons=JSON.parse(await fs.readFile(dir+'/diagnostic-three-comparisons.json'));"
+            },
+            {
+              "from": "row.gatesPass=true;",
+              "to": "const connectedBefore=row.events.filter(e=>e.type==='diagnostic-connected-before-context'),connectedAfter=row.events.filter(e=>e.type==='diagnostic-connected-removed');assert.equal(connectedBefore.length,1);assert.equal(connectedBefore[0].isConnected,true);assert.equal(connectedAfter.length,1);assert.equal(connectedAfter[0].isConnected,false);const paints=row.events.filter(e=>e.type==='diagnostic-paint-before');assert.ok(paints.length>=3);const detached=paints.at(-2).state,connected=paints.at(-1).state,actual=paints.at(-3).state;assert.equal(detached.isConnected,false);assert.equal(connected.isConnected,true);assert.equal(actual.isConnected,true);assert.deepEqual(connected.map,detached.map);assert.deepEqual(actual.map,detached.map);assert.equal(connectedAfter[0].restoredContextId,actual.contextId);const image=label=>row.images.find(x=>x.label===label);assert.equal(image('actual-final-canvas').sha256,image('diagnostic-actual-after-connected').sha256);row.gatesPass=true;"
+            },
+            {
+              "from": "from'../scripts/lib/map-native-tiny-error-contract.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-native-tiny-error-contract.mjs'"
+            },
+            {
+              "from": "from'../scripts/serve.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/serve.mjs'"
+            },
+            {
+              "from": "from'../scripts/browser.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/browser.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-scene-prototype.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-scene-prototype.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-chunked-indices-prototype.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-chunked-indices-prototype.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-lifecycle-private-repair.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-lifecycle-private-repair.mjs'"
+            }
+          ]
+        },
+        "originalCaptureLabels": [
+          "reference",
+          "actual-final-canvas"
+        ],
+        "additionalControlLabel": "diagnostic-connected-reference",
+        "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-4vbu28",
+        "thresholds": {
+          "originalFallbackNonzeroChannels": 0,
+          "normalMeanBelow": 2,
+          "normalFractionAbove20Below": 0.02
+        },
+        "limits": {
+          "retainedBytes": 64000000,
+          "maskPixels": 8000000,
+          "transportChunkBytes": 65536
+        },
+        "synthetic": true,
+        "noRepairOrS1S3": true,
+        "contextRestorationUnproved": true
+      }
+    },
+    {
+      "name": "explicit",
+      "identity": "tiny-old-S2-connected-control-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-vyL5RF",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedPaths": 71,
+      "manifestSHA256": "9851f29e84d80891f9b48ba1e82945f25e071976bc833eb74f413e04b5a39bbc",
+      "manifest": {
+        "identity": "tiny-old-S2-connected-control-light-v1",
+        "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+        "nativeAuthorizedByThisProposal": false,
+        "sourceBoundary": "1730a9cc7b6a4a3d54c8abae09676240f16a9351",
+        "case": "S2",
+        "variant": "old",
+        "theme": "light",
+        "viewport": {
+          "width": 640,
+          "height": 480,
+          "dpr": 1
+        },
+        "canvas": [
+          640,
+          360
+        ],
+        "rootFlag": "--root-authorized-s2-connected-light",
+        "original": {
+          "runner": "bafded155c7aa8962422511c3382e31318f70c14a4d8cc4969ec518f88c5c07f",
+          "fixture": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+        },
+        "protectedHashes": {
+          "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+          "assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+          "assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+          "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+          "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+          "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+          "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+          "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+          "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+          "assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+          "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+          "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+          "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+          "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+          "assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+          "assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+          "assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+          "assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+          "assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+          "assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+          "assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+          "assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+          "assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+          "assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+          "assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+          "assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+          "assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+          "assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+          "assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+          "assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+          "assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+          "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+          "assets/vendor/google-fonts/inter-OFL.txt": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39",
+          "assets/vendor/google-fonts/jetbrainsmono-OFL.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+          "assets/vendor/google-fonts/newsreader-OFL.txt": "865f0949b59fab5925506f80102dff3d12e8666412daf52d212db969d40adc25",
+          "assets/vendor/google-fonts/provenance.json": "d335ffdbf8701efa568d9fcf108ab29342be36ffe5c89577f7902568c7c52a39",
+          "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+          "scripts/lib/map-scene-prototype.mjs": "76eb562cebb368c00cbcfcbbedf31591ce6a32b8adaf85adfa0c7aeea8bfe68f",
+          "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+          "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+          "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+          "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+          "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+          "scripts/lib/map-lifecycle-private-repair.mjs": "9ec0b170cfe7f4624e9bda4a71dbb6a5614be3d55bfad66343a0d92970ab9da6",
+          "tests/verification-map-private-lifecycle-native-pixels.py": "4afd31e22bc6b431592f1eb444889d5ab2eadcd699b7559d4936944b6a010eef",
+          "scripts/lib/map-tiny-s2-connected-proposal.mjs": "a8f8e78b1ca98e8b9b07518e5d1b9738f1806537998bcb53ce6169bf4a1c84ff",
+          "tests/verification-map-tiny-s2-connected-prepare.mjs": "0048c0f5a4180d51a360763ee4fcc7a1a48b82327a0c5829f93208ac94264efd",
+          "tests/verification-map-tiny-s2-connected-pixels.py": "da1e6495c3c4eeb23c4a1dbaa3f75ab6de776c938ec70017ac938b567b3ac918"
+        },
+        "generated": {
+          "fixture": "396ca38574fa48c5979db6b8eb51f2d8934a74beec06b11537f611be7ca1c660",
+          "runner": "4ba7655042d58581c65e1fc47d92065ffa8387d20239b03a37684fe373075526"
+        },
+        "changes": {
+          "fixture": [
+            {
+              "from": "const events=window.__tinyEvents||[]",
+              "to": "if(caseName!=='S2'||variant!=='old'||theme!=='light')throw Error('diagnostic identity must be old S2 light');\nconst events=window.__tinyEvents||[]"
+            },
+            {
+              "from": "const paint=m._paint;",
+              "to": "const originalPaint=m._paint;let paintOrdinal=0,readOrdinal=0;const identities=new WeakMap;let nextIdentity=0;\n const identity=x=>{if(!x)return null;if(!identities.has(x))identities.set(x,++nextIdentity);return identities.get(x)};\n const contextProperties=c=>{const keys=['globalAlpha','globalCompositeOperation','filter','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','font','fontKerning','fontStretch','fontVariantCaps','textRendering','letterSpacing','wordSpacing','textAlign','textBaseline','direction','lang'];return Object.fromEntries(keys.map(k=>[k,k in c?c[k]:{unsupported:true}]))};\n const labelMetrics=c=>{const z=c.measureText('1.1 Synthetic source');return {font:c.font,text:'1.1 Synthetic source',requestedPaintFont:'500 11px Inter, system-ui, sans-serif',values:Object.fromEntries(['width','actualBoundingBoxLeft','actualBoundingBoxRight','actualBoundingBoxAscent','actualBoundingBoxDescent','fontBoundingBoxAscent','fontBoundingBoxDescent','emHeightAscent','emHeightDescent','hangingBaseline','alphabeticBaseline','ideographicBaseline'].map(k=>[k,k in z?z[k]:{unsupported:true}]))}};\n const paintState=c=>{const el=c.canvas,css=getComputedStyle(el),t=c.getTransform();return {contextId:identity(c),canvasId:identity(el),mapCanvasId:identity(m.canvas),parentId:identity(el.parentElement),isConnected:el.isConnected,lang:el.lang,direction:el.dir,attributes:c.getContextAttributes?.()??{unsupported:true},dimensions:[el.width,el.height],rect:el.getBoundingClientRect().toJSON(),style:Object.fromEntries(['font','fontFamily','fontFeatureSettings','fontVariationSettings','fontKerning','fontSynthesis','webkitFontSmoothing','textRendering','letterSpacing','wordSpacing','direction','display','opacity'].map(k=>[k,css[k]??null])),context:contextProperties(c),transform:[t.a,t.b,t.c,t.d,t.e,t.f],lineDash:c.getLineDash(),metrics:labelMetrics(c),fonts:{status:document.fonts.status,inter500:document.fonts.check('500 11px Inter','1.1 Synthetic source'),inter600:document.fonts.check('600 11px Inter','1.1 Synthetic source')},map:{W:m.W,H:m.H,dpr:m.dpr,k:m.k,tx:m.tx,ty:m.ty,hover:m.hover?.it.id??null,selection:m.sel?.it.id??null,highlight:m.hl?[...m.hl]:null,fields:[...m.show.fields],defs:m.show.defs,planned:m.show.planned,mapRasterId:identity(m.mapRaster),focusRasterId:identity(m.focusRaster)},scene:{generation:s.generation,dead:s.dead,status:s.status,pending:[...s.pending.values()].map(x=>x.key)},raf:{draw:m._raf,animation:m.anim},colors:Object.fromEntries(['--c-bg','--c-muted','--c-pma'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue(k)]))}};\n const originalCanvasRead=canvas;\n const observeRead=(label,c)=>{const ordinal=++readOrdinal;originalCanvasRead(label,c);const x=buffers.get(label);record('diagnostic-read',{identity:'tiny-old-S2-connected-control-light-v1',ordinal,label,canvasId:identity(c),sha256:byteHash(x.bytes),width:x.width,height:x.height})};\n for(const kind of ['loading','loadingdone','loadingerror'])document.fonts.addEventListener(kind,()=>record('diagnostic-font-event',{kind,status:document.fonts.status}));\n const paint=function(...args){const ordinal=++paintOrdinal,c=this.ctx;record('diagnostic-paint-before',{ordinal,state:paintState(c),args});observeRead('diagnostic-before-paint-'+ordinal,c.canvas);const result=originalPaint.apply(this,args);record('diagnostic-paint-after',{ordinal,state:paintState(c)});observeRead('diagnostic-after-paint-'+ordinal,c.canvas);return result};\n window.__tinyConnectedControl=()=>{const c=document.createElement('canvas');c.width=640;c.height=360;c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;pointer-events:none;opacity:0';document.body.append(c);record('diagnostic-connected-before-context',{canvasId:identity(c),isConnected:c.isConnected});const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m);observeRead('diagnostic-connected-reference',c)}finally{m.ctx=previous;c.remove();record('diagnostic-connected-removed',{canvasId:identity(c),isConnected:c.isConnected,restoredContextId:identity(m.ctx)})}};"
+            },
+            {
+              "from": "record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyDone=true",
+              "to": "record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyConnectedControl();canvas('diagnostic-actual-after-connected');window.__tinyDone=true"
+            },
+            {
+              "from": "events.push({type,phase,...data})",
+              "to": "events.push({eventOrdinal:events.length+1,type,phase,...data})"
+            }
+          ],
+          "runner": [
+            {
+              "from": "const out=process.argv[2];",
+              "to": "const out=\"/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-vyL5RF/native\";"
+            },
+            {
+              "from": "const worker=frozen.get",
+              "to": "frozen.set('/tests/fixtures/map-private-lifecycle-native-browser.mjs',Buffer.from(\"// New synthetic component fixture. Actual MapView, scene, Canvas painter, Worker and WebGL implementations.\\nimport{MapView,setAtlas}from'/assets/js/graph.js';\\nimport{readRGBAChunks,byteHash}from'/scripts/lib/map-paired-atlas-observer.mjs';\\nconst q=new URLSearchParams(location.search),caseName=q.get('case'),variant=q.get('variant'),theme=q.get('theme'),prefix=q.get('prefix');\\nif(caseName!=='S2'||variant!=='old'||theme!=='light')throw Error('diagnostic identity must be old S2 light');\\nconst events=window.__tinyEvents||[],buffers=new Map;let phase='prepare',m,s,workerBefore,drawOrdinal=0;\\nconst record=(type,data={})=>{if(events.length>2000)throw Error('tiny event cap');events.push({eventOrdinal:events.length+1,type,phase,...data})};\\nwindow.addEventListener('error',e=>record('window-error',{message:e.message,isTrusted:e.isTrusted}));\\nconst gpu=(label)=>{const gl=s.gl,w=s.canvas.width,h=s.canvas.height;if(w*h>640*360)throw Error('tiny raw cap');const bytes=new Uint8Array(w*h*4);readRGBAChunks(gl,{width:w,height:h},(p,o)=>bytes.set(p,o));buffers.set(label,{width:w,height:h,orientation:'bottom-up',bytes});record('gpu-read',{label,w,h,sha256:byteHash(bytes)})};\\nconst canvas=(label,c=m.canvas)=>{const bytes=new Uint8Array(c.getContext('2d').getImageData(0,0,c.width,c.height).data);buffers.set(label,{width:c.width,height:c.height,orientation:'top-down',bytes});record('canvas-read',{label,width:c.width,height:c.height,sha256:byteHash(bytes)})};\\nconst snapshot=()=>({phase,generation:s.generation,dead:s.dead,status:s.status,active:s.active,pending:[...s.pending.values()].map(x=>x.key),failed:[...s.failed],canvas:[s.canvas.width,s.canvas.height],input:[m.canvas.width,m.canvas.height],display:s.canvas.style.display,opacity:m.canvas.style.opacity,resources:s.resources(),native:window.__tinyNative,stats:structuredClone(s.edges?.stats||{}),callbacks:events.length});\\nasync function init(){\\n await Promise.all(['500 11px Inter','600 11px Inter'].map(font=>document.fonts.load(font,'1.1 Synthetic source 1.2 Synthetic target')));await document.fonts.ready;record('declared-fonts-ready',{status:document.fonts.status});\\n const item=(num,x,name,deps)=>({id:'pma-'+num,col:'pma',c:1,num,kind:'Theorem',name,st:'Declared synthetic native component fixture; this is not an authored atlas theorem.',x,y:40,desc:1,deps});\\n const a=item('1.1',0,'Synthetic source',[]),b=item('1.2',200,'Synthetic target',Array(caseName==='S3'?32769:1).fill('pma-1.1')),items=[a,b],C={id:'pma',field:'math',title:'Synthetic component',short:'Synthetic',chapters:[]},G={items,planned:[],collections:[C],fields:[{id:'math',short:'Math'}],colById:new Map([['pma',C]]),byId:new Map(items.map(x=>[x.id,x])),allChildren:new Map([['pma-1.1',['pma-1.2']]]),map:{fields:[],rows:[]}};setAtlas(G);\\n m=new MapView(document.getElementById('fixture'),G);window.__tinyMap=m;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));s=m.__scene;if(!s)throw Error('actual scene was not constructed');await s.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));workerBefore=s.worker;\\n const draw=s.draw.bind(s);s.draw=function(...args){record('scene-draw-begin');const result=draw(...args);record('scene-draw-end',{result,status:s.status});if(phase!=='prepare'&&result)gpu(phase+'-gpu-'+drawOrdinal++);return result};\\n const fallback=s.fallback.bind(s);s.fallback=function(reason){record('actual-fallback',{reason,before:snapshot()});if(phase==='fault'&&s.canvas.width>1&&s.canvas.height>1)gpu('fault-before-fallback-'+drawOrdinal++);return fallback(reason)};\\n const originalPaint=m._paint;let paintOrdinal=0,readOrdinal=0;const identities=new WeakMap;let nextIdentity=0;\\n const identity=x=>{if(!x)return null;if(!identities.has(x))identities.set(x,++nextIdentity);return identities.get(x)};\\n const contextProperties=c=>{const keys=['globalAlpha','globalCompositeOperation','filter','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','font','fontKerning','fontStretch','fontVariantCaps','textRendering','letterSpacing','wordSpacing','textAlign','textBaseline','direction','lang'];return Object.fromEntries(keys.map(k=>[k,k in c?c[k]:{unsupported:true}]))};\\n const labelMetrics=c=>{const z=c.measureText('1.1 Synthetic source');return {font:c.font,text:'1.1 Synthetic source',requestedPaintFont:'500 11px Inter, system-ui, sans-serif',values:Object.fromEntries(['width','actualBoundingBoxLeft','actualBoundingBoxRight','actualBoundingBoxAscent','actualBoundingBoxDescent','fontBoundingBoxAscent','fontBoundingBoxDescent','emHeightAscent','emHeightDescent','hangingBaseline','alphabeticBaseline','ideographicBaseline'].map(k=>[k,k in z?z[k]:{unsupported:true}]))}};\\n const paintState=c=>{const el=c.canvas,css=getComputedStyle(el),t=c.getTransform();return {contextId:identity(c),canvasId:identity(el),mapCanvasId:identity(m.canvas),parentId:identity(el.parentElement),isConnected:el.isConnected,lang:el.lang,direction:el.dir,attributes:c.getContextAttributes?.()??{unsupported:true},dimensions:[el.width,el.height],rect:el.getBoundingClientRect().toJSON(),style:Object.fromEntries(['font','fontFamily','fontFeatureSettings','fontVariationSettings','fontKerning','fontSynthesis','webkitFontSmoothing','textRendering','letterSpacing','wordSpacing','direction','display','opacity'].map(k=>[k,css[k]??null])),context:contextProperties(c),transform:[t.a,t.b,t.c,t.d,t.e,t.f],lineDash:c.getLineDash(),metrics:labelMetrics(c),fonts:{status:document.fonts.status,inter500:document.fonts.check('500 11px Inter','1.1 Synthetic source'),inter600:document.fonts.check('600 11px Inter','1.1 Synthetic source')},map:{W:m.W,H:m.H,dpr:m.dpr,k:m.k,tx:m.tx,ty:m.ty,hover:m.hover?.it.id??null,selection:m.sel?.it.id??null,highlight:m.hl?[...m.hl]:null,fields:[...m.show.fields],defs:m.show.defs,planned:m.show.planned,mapRasterId:identity(m.mapRaster),focusRasterId:identity(m.focusRaster)},scene:{generation:s.generation,dead:s.dead,status:s.status,pending:[...s.pending.values()].map(x=>x.key)},raf:{draw:m._raf,animation:m.anim},colors:Object.fromEntries(['--c-bg','--c-muted','--c-pma'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue(k)]))}};\\n const originalCanvasRead=canvas;\\n const observeRead=(label,c)=>{const ordinal=++readOrdinal;originalCanvasRead(label,c);const x=buffers.get(label);record('diagnostic-read',{identity:'tiny-old-S2-connected-control-light-v1',ordinal,label,canvasId:identity(c),sha256:byteHash(x.bytes),width:x.width,height:x.height})};\\n for(const kind of ['loading','loadingdone','loadingerror'])document.fonts.addEventListener(kind,()=>record('diagnostic-font-event',{kind,status:document.fonts.status}));\\n const paint=function(...args){const ordinal=++paintOrdinal,c=this.ctx;record('diagnostic-paint-before',{ordinal,state:paintState(c),args});observeRead('diagnostic-before-paint-'+ordinal,c.canvas);const result=originalPaint.apply(this,args);record('diagnostic-paint-after',{ordinal,state:paintState(c)});observeRead('diagnostic-after-paint-'+ordinal,c.canvas);return result};\\n window.__tinyConnectedControl=()=>{const c=document.createElement('canvas');c.width=640;c.height=360;c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;pointer-events:none;opacity:0';document.body.append(c);record('diagnostic-connected-before-context',{canvasId:identity(c),isConnected:c.isConnected});const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m);observeRead('diagnostic-connected-reference',c)}finally{m.ctx=previous;c.remove();record('diagnostic-connected-removed',{canvasId:identity(c),isConnected:c.isConnected,restoredContextId:identity(m.ctx)})}};m._paint=function(...args){const result=paint.apply(m,args);if(phase!=='prepare'&&m.ctx.canvas===m.canvas)canvas(phase+'-canvas-'+drawOrdinal++);return result};\\n const getError=s.gl.getError.bind(s.gl);s.gl.getError=function(){const error=getError();record('actual-getError',{error});return error};\\n m.userMoved=true;cancelAnimationFrame(m._raf);m._raf=0;cancelAnimationFrame(m.anim);m.anim=0;clearTimeout(m.zoomTimer);clearTimeout(m.hoverTimer);m.zooming=m.dragging=false;m.k=.8;m.tx=60;m.ty=130;\\n phase='control';m._draw();window.__tinyControl=snapshot();record('control-complete',{state:window.__tinyControl});\\n const reference=(label='reference')=>{const c=document.createElement('canvas');c.width=640;c.height=360;const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m)}finally{m.ctx=previous}canvas(label,c)};window.__tinyReference=reference;reference('control-reference');window.__tinyControl.glError=s.gl.getError();\\n phase='fault';\\n if(caseName==='S1'){\\n  workerBefore.addEventListener('error',e=>{record('actual-worker-error-dispatch',{isTrusted:e.isTrusted,message:e.message});requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyDone=true}))},{once:true});workerBefore.postMessage({__tinyThrow:true});record('fault-message-posted');\\n }else if(caseName==='S2'){\\n  workerBefore.addEventListener('message',e=>{if(e.data?.__tinyAck!==8)return;record('actual-worker-lazy-ack',{isTrusted:e.isTrusted,request:e.data.requestId,pending:s.pending.has(e.data.requestId)});window.__tinyBeforeDestroy=snapshot();s.destroy();m._paint();window.__tinyImmediate=snapshot();Promise.resolve().then(()=>Promise.resolve()).then(()=>{record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyConnectedControl();canvas('diagnostic-actual-after-connected');window.__tinyDone=true})},{once:false});\\n  m.k=8;m.ty=-160;record('request-scale8');m._draw();\\n }else if(caseName==='S3'){\\n  const gl=s.gl,upload=gl.bufferSubData.bind(gl);let fired=false;gl.bufferSubData=function(...args){const result=upload(...args);if(!fired&&s.edges.scratch&&gl.getParameter(gl.ARRAY_BUFFER_BINDING)===s.edges.scratch.buffer){fired=true;const group=s.edges.frame.groups[0],buffer=group.buffer;const before={owned:s.budget.entries.has(group),isBuffer:gl.isBuffer(buffer)};s.edges.releaseGroup(group);window.__tinyRelease={before,after:{owned:s.budget.entries.has(group),isBuffer:gl.isBuffer(buffer),handleTruthy:!!group.buffer,registered:[...s.groups.values()].includes(group)}};record('actual-release-group',window.__tinyRelease);upload(gl.ARRAY_BUFFER,-1,new Uint8Array([1]));record('native-invalid-offset-issued')};return result};m._draw();window.__tinyOutcome=snapshot();window.__tinyFinalGLError=gl.getError();reference();canvas('actual-final-canvas');window.__tinyDone=true;\\n }else throw Error('unknown case');\\n}\\nwindow.__tinyExport=async()=>{const metadata={caseName,variant,theme,synthetic:true,events,native:window.__tinyNative,control:window.__tinyControl,outcome:window.__tinyOutcome,beforeDestroy:window.__tinyBeforeDestroy,immediate:window.__tinyImmediate,release:window.__tinyRelease,finalGLError:window.__tinyFinalGLError,images:[]};for(const[label,x]of buffers){metadata.images.push({label,width:x.width,height:x.height,orientation:x.orientation,bytes:x.bytes.length,sha256:byteHash(x.bytes)});for(let offset=0;offset<x.bytes.length;offset+=65536){const p=x.bytes.subarray(offset,offset+65536),r=await fetch('/__tiny-raw/'+prefix+'/'+label+'/'+offset,{method:'POST',headers:{'x-content-sha256':byteHash(p)},body:p});if(!r.ok)throw Error('tiny raw transport rejected')}}const bytes=new TextEncoder().encode(JSON.stringify(metadata));for(let offset=0;offset<bytes.length;offset+=65536){const p=bytes.subarray(offset,offset+65536),r=await fetch('/__tiny-raw/'+prefix+'/metadata/'+offset,{method:'POST',headers:{'x-content-sha256':byteHash(p)},body:p});if(!r.ok)throw Error('tiny metadata transport rejected')}return{images:metadata.images.length,events:events.length}};\\nwindow.__tinyCleanup=()=>{phase='cleanup';const before=s.budget,mworker=s.worker;m.destroy();const cleanup={bytes:before.bytes,owners:before.entries.size,pending:s.pending.size,worker:s.worker,dead:s.dead,sceneConnected:s.canvas.isConnected,scratch:document.querySelectorAll('canvas[aria-hidden]').length,nativeLive:window.__tinyLive.size,workersTerminated:window.__tinyNative.workers.every(x=>x.terminated)};record('cleanup',{...cleanup,hadWorker:!!mworker});return cleanup};\\ninit().catch(error=>{window.__tinyFailure={message:error.message,stack:error.stack};window.__tinyDone=true;record('fixture-failure',window.__tinyFailure)});\\n\"));hashes['diagnostic-served-fixture']=sha(frozen.get('/tests/fixtures/map-private-lifecycle-native-browser.mjs'));\nconst worker=frozen.get"
+            },
+            {
+              "from": "['old','repair'].map(v=>",
+              "to": "['old'].map(v=>"
+            },
+            {
+              "from": "scope:'Synthetic2node640x360DPR1 component;32769 duplicate straight edges only S3; nonempty synthetic statements, actual local Inter, no real app readiness or fullmap'",
+              "to": "scope:'NEW old S2 light connected-control diagnostic; synthetic2node640x360DPR1; no repair/S1/S3/fullmap/lifecycle acceptance'"
+            },
+            {
+              "from": "cases:['S1','S2','S3'],themes:['light','dark']",
+              "to": "cases:['S2'],themes:['light']"
+            },
+            {
+              "from": "for(const variant of['old','repair'])",
+              "to": "for(const variant of['old'])"
+            },
+            {
+              "from": "['tests/verification-map-private-lifecycle-native-pixels.py',dir]",
+              "to": "[\"/private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-private-lifecycle-native-pixels.py\",dir]"
+            },
+            {
+              "from": "row.pixels=JSON.parse(await fs.readFile(dir+'/pixel-comparisons.json'));",
+              "to": "row.pixels=JSON.parse(await fs.readFile(dir+'/pixel-comparisons.json'));execFileSync('/Users/teodev/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',[\"/private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-pixels.py\",dir]);row.diagnosticComparisons=JSON.parse(await fs.readFile(dir+'/diagnostic-three-comparisons.json'));"
+            },
+            {
+              "from": "row.gatesPass=true;",
+              "to": "const connectedBefore=row.events.filter(e=>e.type==='diagnostic-connected-before-context'),connectedAfter=row.events.filter(e=>e.type==='diagnostic-connected-removed');assert.equal(connectedBefore.length,1);assert.equal(connectedBefore[0].isConnected,true);assert.equal(connectedAfter.length,1);assert.equal(connectedAfter[0].isConnected,false);const paints=row.events.filter(e=>e.type==='diagnostic-paint-before');assert.ok(paints.length>=3);const detached=paints.at(-2).state,connected=paints.at(-1).state,actual=paints.at(-3).state;assert.equal(detached.isConnected,false);assert.equal(connected.isConnected,true);assert.equal(actual.isConnected,true);assert.deepEqual(connected.map,detached.map);assert.deepEqual(actual.map,detached.map);assert.equal(connectedAfter[0].restoredContextId,actual.contextId);const image=label=>row.images.find(x=>x.label===label);assert.equal(image('actual-final-canvas').sha256,image('diagnostic-actual-after-connected').sha256);row.gatesPass=true;"
+            },
+            {
+              "from": "from'../scripts/lib/map-native-tiny-error-contract.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-native-tiny-error-contract.mjs'"
+            },
+            {
+              "from": "from'../scripts/serve.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/serve.mjs'"
+            },
+            {
+              "from": "from'../scripts/browser.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/browser.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-scene-prototype.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-scene-prototype.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-chunked-indices-prototype.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-chunked-indices-prototype.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-lifecycle-private-repair.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-lifecycle-private-repair.mjs'"
+            }
+          ]
+        },
+        "originalCaptureLabels": [
+          "reference",
+          "actual-final-canvas"
+        ],
+        "additionalControlLabel": "diagnostic-connected-reference",
+        "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-vyL5RF",
+        "thresholds": {
+          "originalFallbackNonzeroChannels": 0,
+          "normalMeanBelow": 2,
+          "normalFractionAbove20Below": 0.02
+        },
+        "limits": {
+          "retainedBytes": 64000000,
+          "maskPixels": 8000000,
+          "transportChunkBytes": 65536
+        },
+        "synthetic": true,
+        "noRepairOrS1S3": true,
+        "contextRestorationUnproved": true
+      }
+    },
+    {
+      "name": "unique",
+      "identity": "tiny-old-S2-connected-control-light-v1",
+      "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+      "output": "/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/unique",
+      "browserStarted": false,
+      "serverStarted": false,
+      "protectedPaths": 71,
+      "manifestSHA256": "cfc38bba1ae4d275f66222de0fad08244be3cf249586ad119eaae644d4da94d3",
+      "manifest": {
+        "identity": "tiny-old-S2-connected-control-light-v1",
+        "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+        "nativeAuthorizedByThisProposal": false,
+        "sourceBoundary": "1730a9cc7b6a4a3d54c8abae09676240f16a9351",
+        "case": "S2",
+        "variant": "old",
+        "theme": "light",
+        "viewport": {
+          "width": 640,
+          "height": 480,
+          "dpr": 1
+        },
+        "canvas": [
+          640,
+          360
+        ],
+        "rootFlag": "--root-authorized-s2-connected-light",
+        "original": {
+          "runner": "bafded155c7aa8962422511c3382e31318f70c14a4d8cc4969ec518f88c5c07f",
+          "fixture": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+        },
+        "protectedHashes": {
+          "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+          "assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+          "assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+          "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+          "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+          "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+          "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+          "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+          "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+          "assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+          "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+          "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+          "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+          "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+          "assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+          "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+          "assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+          "assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+          "assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+          "assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+          "assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+          "assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+          "assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+          "assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+          "assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+          "assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+          "assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+          "assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+          "assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+          "assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+          "assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+          "assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+          "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+          "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+          "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+          "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+          "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+          "assets/vendor/google-fonts/inter-OFL.txt": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39",
+          "assets/vendor/google-fonts/jetbrainsmono-OFL.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+          "assets/vendor/google-fonts/newsreader-OFL.txt": "865f0949b59fab5925506f80102dff3d12e8666412daf52d212db969d40adc25",
+          "assets/vendor/google-fonts/provenance.json": "d335ffdbf8701efa568d9fcf108ab29342be36ffe5c89577f7902568c7c52a39",
+          "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+          "scripts/lib/map-scene-prototype.mjs": "76eb562cebb368c00cbcfcbbedf31591ce6a32b8adaf85adfa0c7aeea8bfe68f",
+          "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+          "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+          "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+          "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+          "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+          "scripts/lib/map-lifecycle-private-repair.mjs": "9ec0b170cfe7f4624e9bda4a71dbb6a5614be3d55bfad66343a0d92970ab9da6",
+          "tests/verification-map-private-lifecycle-native-pixels.py": "4afd31e22bc6b431592f1eb444889d5ab2eadcd699b7559d4936944b6a010eef",
+          "scripts/lib/map-tiny-s2-connected-proposal.mjs": "a8f8e78b1ca98e8b9b07518e5d1b9738f1806537998bcb53ce6169bf4a1c84ff",
+          "tests/verification-map-tiny-s2-connected-prepare.mjs": "0048c0f5a4180d51a360763ee4fcc7a1a48b82327a0c5829f93208ac94264efd",
+          "tests/verification-map-tiny-s2-connected-pixels.py": "da1e6495c3c4eeb23c4a1dbaa3f75ab6de776c938ec70017ac938b567b3ac918"
+        },
+        "generated": {
+          "fixture": "396ca38574fa48c5979db6b8eb51f2d8934a74beec06b11537f611be7ca1c660",
+          "runner": "b88561e17ae968d94d9a517f652734705de7144d91ec0b096f2865ba3f5dea4e"
+        },
+        "changes": {
+          "fixture": [
+            {
+              "from": "const events=window.__tinyEvents||[]",
+              "to": "if(caseName!=='S2'||variant!=='old'||theme!=='light')throw Error('diagnostic identity must be old S2 light');\nconst events=window.__tinyEvents||[]"
+            },
+            {
+              "from": "const paint=m._paint;",
+              "to": "const originalPaint=m._paint;let paintOrdinal=0,readOrdinal=0;const identities=new WeakMap;let nextIdentity=0;\n const identity=x=>{if(!x)return null;if(!identities.has(x))identities.set(x,++nextIdentity);return identities.get(x)};\n const contextProperties=c=>{const keys=['globalAlpha','globalCompositeOperation','filter','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','font','fontKerning','fontStretch','fontVariantCaps','textRendering','letterSpacing','wordSpacing','textAlign','textBaseline','direction','lang'];return Object.fromEntries(keys.map(k=>[k,k in c?c[k]:{unsupported:true}]))};\n const labelMetrics=c=>{const z=c.measureText('1.1 Synthetic source');return {font:c.font,text:'1.1 Synthetic source',requestedPaintFont:'500 11px Inter, system-ui, sans-serif',values:Object.fromEntries(['width','actualBoundingBoxLeft','actualBoundingBoxRight','actualBoundingBoxAscent','actualBoundingBoxDescent','fontBoundingBoxAscent','fontBoundingBoxDescent','emHeightAscent','emHeightDescent','hangingBaseline','alphabeticBaseline','ideographicBaseline'].map(k=>[k,k in z?z[k]:{unsupported:true}]))}};\n const paintState=c=>{const el=c.canvas,css=getComputedStyle(el),t=c.getTransform();return {contextId:identity(c),canvasId:identity(el),mapCanvasId:identity(m.canvas),parentId:identity(el.parentElement),isConnected:el.isConnected,lang:el.lang,direction:el.dir,attributes:c.getContextAttributes?.()??{unsupported:true},dimensions:[el.width,el.height],rect:el.getBoundingClientRect().toJSON(),style:Object.fromEntries(['font','fontFamily','fontFeatureSettings','fontVariationSettings','fontKerning','fontSynthesis','webkitFontSmoothing','textRendering','letterSpacing','wordSpacing','direction','display','opacity'].map(k=>[k,css[k]??null])),context:contextProperties(c),transform:[t.a,t.b,t.c,t.d,t.e,t.f],lineDash:c.getLineDash(),metrics:labelMetrics(c),fonts:{status:document.fonts.status,inter500:document.fonts.check('500 11px Inter','1.1 Synthetic source'),inter600:document.fonts.check('600 11px Inter','1.1 Synthetic source')},map:{W:m.W,H:m.H,dpr:m.dpr,k:m.k,tx:m.tx,ty:m.ty,hover:m.hover?.it.id??null,selection:m.sel?.it.id??null,highlight:m.hl?[...m.hl]:null,fields:[...m.show.fields],defs:m.show.defs,planned:m.show.planned,mapRasterId:identity(m.mapRaster),focusRasterId:identity(m.focusRaster)},scene:{generation:s.generation,dead:s.dead,status:s.status,pending:[...s.pending.values()].map(x=>x.key)},raf:{draw:m._raf,animation:m.anim},colors:Object.fromEntries(['--c-bg','--c-muted','--c-pma'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue(k)]))}};\n const originalCanvasRead=canvas;\n const observeRead=(label,c)=>{const ordinal=++readOrdinal;originalCanvasRead(label,c);const x=buffers.get(label);record('diagnostic-read',{identity:'tiny-old-S2-connected-control-light-v1',ordinal,label,canvasId:identity(c),sha256:byteHash(x.bytes),width:x.width,height:x.height})};\n for(const kind of ['loading','loadingdone','loadingerror'])document.fonts.addEventListener(kind,()=>record('diagnostic-font-event',{kind,status:document.fonts.status}));\n const paint=function(...args){const ordinal=++paintOrdinal,c=this.ctx;record('diagnostic-paint-before',{ordinal,state:paintState(c),args});observeRead('diagnostic-before-paint-'+ordinal,c.canvas);const result=originalPaint.apply(this,args);record('diagnostic-paint-after',{ordinal,state:paintState(c)});observeRead('diagnostic-after-paint-'+ordinal,c.canvas);return result};\n window.__tinyConnectedControl=()=>{const c=document.createElement('canvas');c.width=640;c.height=360;c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;pointer-events:none;opacity:0';document.body.append(c);record('diagnostic-connected-before-context',{canvasId:identity(c),isConnected:c.isConnected});const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m);observeRead('diagnostic-connected-reference',c)}finally{m.ctx=previous;c.remove();record('diagnostic-connected-removed',{canvasId:identity(c),isConnected:c.isConnected,restoredContextId:identity(m.ctx)})}};"
+            },
+            {
+              "from": "record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyDone=true",
+              "to": "record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyConnectedControl();canvas('diagnostic-actual-after-connected');window.__tinyDone=true"
+            },
+            {
+              "from": "events.push({type,phase,...data})",
+              "to": "events.push({eventOrdinal:events.length+1,type,phase,...data})"
+            }
+          ],
+          "runner": [
+            {
+              "from": "const out=process.argv[2];",
+              "to": "const out=\"/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/unique/native\";"
+            },
+            {
+              "from": "const worker=frozen.get",
+              "to": "frozen.set('/tests/fixtures/map-private-lifecycle-native-browser.mjs',Buffer.from(\"// New synthetic component fixture. Actual MapView, scene, Canvas painter, Worker and WebGL implementations.\\nimport{MapView,setAtlas}from'/assets/js/graph.js';\\nimport{readRGBAChunks,byteHash}from'/scripts/lib/map-paired-atlas-observer.mjs';\\nconst q=new URLSearchParams(location.search),caseName=q.get('case'),variant=q.get('variant'),theme=q.get('theme'),prefix=q.get('prefix');\\nif(caseName!=='S2'||variant!=='old'||theme!=='light')throw Error('diagnostic identity must be old S2 light');\\nconst events=window.__tinyEvents||[],buffers=new Map;let phase='prepare',m,s,workerBefore,drawOrdinal=0;\\nconst record=(type,data={})=>{if(events.length>2000)throw Error('tiny event cap');events.push({eventOrdinal:events.length+1,type,phase,...data})};\\nwindow.addEventListener('error',e=>record('window-error',{message:e.message,isTrusted:e.isTrusted}));\\nconst gpu=(label)=>{const gl=s.gl,w=s.canvas.width,h=s.canvas.height;if(w*h>640*360)throw Error('tiny raw cap');const bytes=new Uint8Array(w*h*4);readRGBAChunks(gl,{width:w,height:h},(p,o)=>bytes.set(p,o));buffers.set(label,{width:w,height:h,orientation:'bottom-up',bytes});record('gpu-read',{label,w,h,sha256:byteHash(bytes)})};\\nconst canvas=(label,c=m.canvas)=>{const bytes=new Uint8Array(c.getContext('2d').getImageData(0,0,c.width,c.height).data);buffers.set(label,{width:c.width,height:c.height,orientation:'top-down',bytes});record('canvas-read',{label,width:c.width,height:c.height,sha256:byteHash(bytes)})};\\nconst snapshot=()=>({phase,generation:s.generation,dead:s.dead,status:s.status,active:s.active,pending:[...s.pending.values()].map(x=>x.key),failed:[...s.failed],canvas:[s.canvas.width,s.canvas.height],input:[m.canvas.width,m.canvas.height],display:s.canvas.style.display,opacity:m.canvas.style.opacity,resources:s.resources(),native:window.__tinyNative,stats:structuredClone(s.edges?.stats||{}),callbacks:events.length});\\nasync function init(){\\n await Promise.all(['500 11px Inter','600 11px Inter'].map(font=>document.fonts.load(font,'1.1 Synthetic source 1.2 Synthetic target')));await document.fonts.ready;record('declared-fonts-ready',{status:document.fonts.status});\\n const item=(num,x,name,deps)=>({id:'pma-'+num,col:'pma',c:1,num,kind:'Theorem',name,st:'Declared synthetic native component fixture; this is not an authored atlas theorem.',x,y:40,desc:1,deps});\\n const a=item('1.1',0,'Synthetic source',[]),b=item('1.2',200,'Synthetic target',Array(caseName==='S3'?32769:1).fill('pma-1.1')),items=[a,b],C={id:'pma',field:'math',title:'Synthetic component',short:'Synthetic',chapters:[]},G={items,planned:[],collections:[C],fields:[{id:'math',short:'Math'}],colById:new Map([['pma',C]]),byId:new Map(items.map(x=>[x.id,x])),allChildren:new Map([['pma-1.1',['pma-1.2']]]),map:{fields:[],rows:[]}};setAtlas(G);\\n m=new MapView(document.getElementById('fixture'),G);window.__tinyMap=m;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));s=m.__scene;if(!s)throw Error('actual scene was not constructed');await s.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));workerBefore=s.worker;\\n const draw=s.draw.bind(s);s.draw=function(...args){record('scene-draw-begin');const result=draw(...args);record('scene-draw-end',{result,status:s.status});if(phase!=='prepare'&&result)gpu(phase+'-gpu-'+drawOrdinal++);return result};\\n const fallback=s.fallback.bind(s);s.fallback=function(reason){record('actual-fallback',{reason,before:snapshot()});if(phase==='fault'&&s.canvas.width>1&&s.canvas.height>1)gpu('fault-before-fallback-'+drawOrdinal++);return fallback(reason)};\\n const originalPaint=m._paint;let paintOrdinal=0,readOrdinal=0;const identities=new WeakMap;let nextIdentity=0;\\n const identity=x=>{if(!x)return null;if(!identities.has(x))identities.set(x,++nextIdentity);return identities.get(x)};\\n const contextProperties=c=>{const keys=['globalAlpha','globalCompositeOperation','filter','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','font','fontKerning','fontStretch','fontVariantCaps','textRendering','letterSpacing','wordSpacing','textAlign','textBaseline','direction','lang'];return Object.fromEntries(keys.map(k=>[k,k in c?c[k]:{unsupported:true}]))};\\n const labelMetrics=c=>{const z=c.measureText('1.1 Synthetic source');return {font:c.font,text:'1.1 Synthetic source',requestedPaintFont:'500 11px Inter, system-ui, sans-serif',values:Object.fromEntries(['width','actualBoundingBoxLeft','actualBoundingBoxRight','actualBoundingBoxAscent','actualBoundingBoxDescent','fontBoundingBoxAscent','fontBoundingBoxDescent','emHeightAscent','emHeightDescent','hangingBaseline','alphabeticBaseline','ideographicBaseline'].map(k=>[k,k in z?z[k]:{unsupported:true}]))}};\\n const paintState=c=>{const el=c.canvas,css=getComputedStyle(el),t=c.getTransform();return {contextId:identity(c),canvasId:identity(el),mapCanvasId:identity(m.canvas),parentId:identity(el.parentElement),isConnected:el.isConnected,lang:el.lang,direction:el.dir,attributes:c.getContextAttributes?.()??{unsupported:true},dimensions:[el.width,el.height],rect:el.getBoundingClientRect().toJSON(),style:Object.fromEntries(['font','fontFamily','fontFeatureSettings','fontVariationSettings','fontKerning','fontSynthesis','webkitFontSmoothing','textRendering','letterSpacing','wordSpacing','direction','display','opacity'].map(k=>[k,css[k]??null])),context:contextProperties(c),transform:[t.a,t.b,t.c,t.d,t.e,t.f],lineDash:c.getLineDash(),metrics:labelMetrics(c),fonts:{status:document.fonts.status,inter500:document.fonts.check('500 11px Inter','1.1 Synthetic source'),inter600:document.fonts.check('600 11px Inter','1.1 Synthetic source')},map:{W:m.W,H:m.H,dpr:m.dpr,k:m.k,tx:m.tx,ty:m.ty,hover:m.hover?.it.id??null,selection:m.sel?.it.id??null,highlight:m.hl?[...m.hl]:null,fields:[...m.show.fields],defs:m.show.defs,planned:m.show.planned,mapRasterId:identity(m.mapRaster),focusRasterId:identity(m.focusRaster)},scene:{generation:s.generation,dead:s.dead,status:s.status,pending:[...s.pending.values()].map(x=>x.key)},raf:{draw:m._raf,animation:m.anim},colors:Object.fromEntries(['--c-bg','--c-muted','--c-pma'].map(k=>[k,getComputedStyle(document.documentElement).getPropertyValue(k)]))}};\\n const originalCanvasRead=canvas;\\n const observeRead=(label,c)=>{const ordinal=++readOrdinal;originalCanvasRead(label,c);const x=buffers.get(label);record('diagnostic-read',{identity:'tiny-old-S2-connected-control-light-v1',ordinal,label,canvasId:identity(c),sha256:byteHash(x.bytes),width:x.width,height:x.height})};\\n for(const kind of ['loading','loadingdone','loadingerror'])document.fonts.addEventListener(kind,()=>record('diagnostic-font-event',{kind,status:document.fonts.status}));\\n const paint=function(...args){const ordinal=++paintOrdinal,c=this.ctx;record('diagnostic-paint-before',{ordinal,state:paintState(c),args});observeRead('diagnostic-before-paint-'+ordinal,c.canvas);const result=originalPaint.apply(this,args);record('diagnostic-paint-after',{ordinal,state:paintState(c)});observeRead('diagnostic-after-paint-'+ordinal,c.canvas);return result};\\n window.__tinyConnectedControl=()=>{const c=document.createElement('canvas');c.width=640;c.height=360;c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;pointer-events:none;opacity:0';document.body.append(c);record('diagnostic-connected-before-context',{canvasId:identity(c),isConnected:c.isConnected});const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m);observeRead('diagnostic-connected-reference',c)}finally{m.ctx=previous;c.remove();record('diagnostic-connected-removed',{canvasId:identity(c),isConnected:c.isConnected,restoredContextId:identity(m.ctx)})}};m._paint=function(...args){const result=paint.apply(m,args);if(phase!=='prepare'&&m.ctx.canvas===m.canvas)canvas(phase+'-canvas-'+drawOrdinal++);return result};\\n const getError=s.gl.getError.bind(s.gl);s.gl.getError=function(){const error=getError();record('actual-getError',{error});return error};\\n m.userMoved=true;cancelAnimationFrame(m._raf);m._raf=0;cancelAnimationFrame(m.anim);m.anim=0;clearTimeout(m.zoomTimer);clearTimeout(m.hoverTimer);m.zooming=m.dragging=false;m.k=.8;m.tx=60;m.ty=130;\\n phase='control';m._draw();window.__tinyControl=snapshot();record('control-complete',{state:window.__tinyControl});\\n const reference=(label='reference')=>{const c=document.createElement('canvas');c.width=640;c.height=360;const previous=m.ctx;try{m.ctx=c.getContext('2d');paint.call(m)}finally{m.ctx=previous}canvas(label,c)};window.__tinyReference=reference;reference('control-reference');window.__tinyControl.glError=s.gl.getError();\\n phase='fault';\\n if(caseName==='S1'){\\n  workerBefore.addEventListener('error',e=>{record('actual-worker-error-dispatch',{isTrusted:e.isTrusted,message:e.message});requestAnimationFrame(()=>requestAnimationFrame(()=>{window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyDone=true}))},{once:true});workerBefore.postMessage({__tinyThrow:true});record('fault-message-posted');\\n }else if(caseName==='S2'){\\n  workerBefore.addEventListener('message',e=>{if(e.data?.__tinyAck!==8)return;record('actual-worker-lazy-ack',{isTrusted:e.isTrusted,request:e.data.requestId,pending:s.pending.has(e.data.requestId)});window.__tinyBeforeDestroy=snapshot();s.destroy();m._paint();window.__tinyImmediate=snapshot();Promise.resolve().then(()=>Promise.resolve()).then(()=>{record('actual-late-rejection-observed');window.__tinyOutcome=snapshot();reference();canvas('actual-final-canvas');window.__tinyConnectedControl();canvas('diagnostic-actual-after-connected');window.__tinyDone=true})},{once:false});\\n  m.k=8;m.ty=-160;record('request-scale8');m._draw();\\n }else if(caseName==='S3'){\\n  const gl=s.gl,upload=gl.bufferSubData.bind(gl);let fired=false;gl.bufferSubData=function(...args){const result=upload(...args);if(!fired&&s.edges.scratch&&gl.getParameter(gl.ARRAY_BUFFER_BINDING)===s.edges.scratch.buffer){fired=true;const group=s.edges.frame.groups[0],buffer=group.buffer;const before={owned:s.budget.entries.has(group),isBuffer:gl.isBuffer(buffer)};s.edges.releaseGroup(group);window.__tinyRelease={before,after:{owned:s.budget.entries.has(group),isBuffer:gl.isBuffer(buffer),handleTruthy:!!group.buffer,registered:[...s.groups.values()].includes(group)}};record('actual-release-group',window.__tinyRelease);upload(gl.ARRAY_BUFFER,-1,new Uint8Array([1]));record('native-invalid-offset-issued')};return result};m._draw();window.__tinyOutcome=snapshot();window.__tinyFinalGLError=gl.getError();reference();canvas('actual-final-canvas');window.__tinyDone=true;\\n }else throw Error('unknown case');\\n}\\nwindow.__tinyExport=async()=>{const metadata={caseName,variant,theme,synthetic:true,events,native:window.__tinyNative,control:window.__tinyControl,outcome:window.__tinyOutcome,beforeDestroy:window.__tinyBeforeDestroy,immediate:window.__tinyImmediate,release:window.__tinyRelease,finalGLError:window.__tinyFinalGLError,images:[]};for(const[label,x]of buffers){metadata.images.push({label,width:x.width,height:x.height,orientation:x.orientation,bytes:x.bytes.length,sha256:byteHash(x.bytes)});for(let offset=0;offset<x.bytes.length;offset+=65536){const p=x.bytes.subarray(offset,offset+65536),r=await fetch('/__tiny-raw/'+prefix+'/'+label+'/'+offset,{method:'POST',headers:{'x-content-sha256':byteHash(p)},body:p});if(!r.ok)throw Error('tiny raw transport rejected')}}const bytes=new TextEncoder().encode(JSON.stringify(metadata));for(let offset=0;offset<bytes.length;offset+=65536){const p=bytes.subarray(offset,offset+65536),r=await fetch('/__tiny-raw/'+prefix+'/metadata/'+offset,{method:'POST',headers:{'x-content-sha256':byteHash(p)},body:p});if(!r.ok)throw Error('tiny metadata transport rejected')}return{images:metadata.images.length,events:events.length}};\\nwindow.__tinyCleanup=()=>{phase='cleanup';const before=s.budget,mworker=s.worker;m.destroy();const cleanup={bytes:before.bytes,owners:before.entries.size,pending:s.pending.size,worker:s.worker,dead:s.dead,sceneConnected:s.canvas.isConnected,scratch:document.querySelectorAll('canvas[aria-hidden]').length,nativeLive:window.__tinyLive.size,workersTerminated:window.__tinyNative.workers.every(x=>x.terminated)};record('cleanup',{...cleanup,hadWorker:!!mworker});return cleanup};\\ninit().catch(error=>{window.__tinyFailure={message:error.message,stack:error.stack};window.__tinyDone=true;record('fixture-failure',window.__tinyFailure)});\\n\"));hashes['diagnostic-served-fixture']=sha(frozen.get('/tests/fixtures/map-private-lifecycle-native-browser.mjs'));\nconst worker=frozen.get"
+            },
+            {
+              "from": "['old','repair'].map(v=>",
+              "to": "['old'].map(v=>"
+            },
+            {
+              "from": "scope:'Synthetic2node640x360DPR1 component;32769 duplicate straight edges only S3; nonempty synthetic statements, actual local Inter, no real app readiness or fullmap'",
+              "to": "scope:'NEW old S2 light connected-control diagnostic; synthetic2node640x360DPR1; no repair/S1/S3/fullmap/lifecycle acceptance'"
+            },
+            {
+              "from": "cases:['S1','S2','S3'],themes:['light','dark']",
+              "to": "cases:['S2'],themes:['light']"
+            },
+            {
+              "from": "for(const variant of['old','repair'])",
+              "to": "for(const variant of['old'])"
+            },
+            {
+              "from": "['tests/verification-map-private-lifecycle-native-pixels.py',dir]",
+              "to": "[\"/private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-private-lifecycle-native-pixels.py\",dir]"
+            },
+            {
+              "from": "row.pixels=JSON.parse(await fs.readFile(dir+'/pixel-comparisons.json'));",
+              "to": "row.pixels=JSON.parse(await fs.readFile(dir+'/pixel-comparisons.json'));execFileSync('/Users/teodev/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',[\"/private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-pixels.py\",dir]);row.diagnosticComparisons=JSON.parse(await fs.readFile(dir+'/diagnostic-three-comparisons.json'));"
+            },
+            {
+              "from": "row.gatesPass=true;",
+              "to": "const connectedBefore=row.events.filter(e=>e.type==='diagnostic-connected-before-context'),connectedAfter=row.events.filter(e=>e.type==='diagnostic-connected-removed');assert.equal(connectedBefore.length,1);assert.equal(connectedBefore[0].isConnected,true);assert.equal(connectedAfter.length,1);assert.equal(connectedAfter[0].isConnected,false);const paints=row.events.filter(e=>e.type==='diagnostic-paint-before');assert.ok(paints.length>=3);const detached=paints.at(-2).state,connected=paints.at(-1).state,actual=paints.at(-3).state;assert.equal(detached.isConnected,false);assert.equal(connected.isConnected,true);assert.equal(actual.isConnected,true);assert.deepEqual(connected.map,detached.map);assert.deepEqual(actual.map,detached.map);assert.equal(connectedAfter[0].restoredContextId,actual.contextId);const image=label=>row.images.find(x=>x.label===label);assert.equal(image('actual-final-canvas').sha256,image('diagnostic-actual-after-connected').sha256);row.gatesPass=true;"
+            },
+            {
+              "from": "from'../scripts/lib/map-native-tiny-error-contract.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-native-tiny-error-contract.mjs'"
+            },
+            {
+              "from": "from'../scripts/serve.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/serve.mjs'"
+            },
+            {
+              "from": "from'../scripts/browser.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/browser.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-scene-prototype.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-scene-prototype.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-chunked-indices-prototype.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-chunked-indices-prototype.mjs'"
+            },
+            {
+              "from": "from'../scripts/lib/map-lifecycle-private-repair.mjs'",
+              "to": "from'file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/scripts/lib/map-lifecycle-private-repair.mjs'"
+            }
+          ]
+        },
+        "originalCaptureLabels": [
+          "reference",
+          "actual-final-canvas"
+        ],
+        "additionalControlLabel": "diagnostic-connected-reference",
+        "output": "/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/unique",
+        "thresholds": {
+          "originalFallbackNonzeroChannels": 0,
+          "normalMeanBelow": 2,
+          "normalFractionAbove20Below": 0.02
+        },
+        "limits": {
+          "retainedBytes": 64000000,
+          "maskPixels": 8000000,
+          "transportChunkBytes": 65536
+        },
+        "synthetic": true,
+        "noRepairOrS1S3": true,
+        "contextRestorationUnproved": true
+      }
+    }
+  ],
+  "outcomes": [
+    {
+      "name": "runner-trailing",
+      "expected": "reject",
+      "failure": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '2f7287dcc27af92747dae2ed4a1533fde9951c1d4bc2f1d61e8fb99536ac2259'\n- 'bafded155c7aa8962422511c3382e31318f70c14a4d8cc4969ec518f88c5c07f'\n"
+    },
+    {
+      "name": "fixture-trailing",
+      "expected": "reject",
+      "failure": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'fdb57d40152ff103d664cf6861fd2d524833564613cac96cb5df751391638d64'\n- 'd1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9'\n"
+    },
+    {
+      "name": "runner-leading",
+      "expected": "reject",
+      "failure": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'f804412cbbf404c1f9a71d7dbac13fa73e9a700c8842ae46b52308ef6cc7f23a'\n- 'bafded155c7aa8962422511c3382e31318f70c14a4d8cc4969ec518f88c5c07f'\n"
+    },
+    {
+      "name": "fixture-bit",
+      "expected": "reject",
+      "failure": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'ce2e2b59bdcf57681609a92db1ce15d7cbeb86bf561b41fd6834178558d8e9bc'\n- 'd1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9'\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-0",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-1",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-2",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-3",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-4",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-5",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-6",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-7",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-8",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-9",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-10",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-11",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-12",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-13",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "runner-reverse-duplicate-14",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "fixture-reverse-duplicate-0",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "fixture-reverse-duplicate-1",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "fixture-reverse-duplicate-2",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "fixture-reverse-duplicate-3",
+      "expected": "reject",
+      "failure": "exactly one declared source seam\n\n2 !== 1\n"
+    },
+    {
+      "name": "unknown",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5\nfor(let i=0;i<args.length;i++){if(args[i]==='--output'){assert.equal(output,undefined);assert.ok(args[i+1]&&!args[i+1].startsWith('--'),'output value');output=path.resolve(args[++i])}else if(args[i]==='--prepare'){assert.equal(prepare,false);prepare=true}else if(args[i]===S2_ROOT_FLAG){assert.equal(execute,false);execute=true}else throw Error('unknown diagnostic argument: '+args[i])}assert.ok(!(execute&&prepare),'prepare and root execution flag are exclusive');\n                                                                                                                                                                                                                                                                                                                                                   ^\n\nError: unknown diagnostic argument: --native\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:340\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "old-light",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5\nfor(let i=0;i<args.length;i++){if(args[i]==='--output'){assert.equal(output,undefined);assert.ok(args[i+1]&&!args[i+1].startsWith('--'),'output value');output=path.resolve(args[++i])}else if(args[i]==='--prepare'){assert.equal(prepare,false);prepare=true}else if(args[i]===S2_ROOT_FLAG){assert.equal(execute,false);execute=true}else throw Error('unknown diagnostic argument: '+args[i])}assert.ok(!(execute&&prepare),'prepare and root execution flag are exclusive');\n                                                                                                                                                                                                                                                                                                                                                   ^\n\nError: unknown diagnostic argument: --root-authorized-exact-state\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:340\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "old-dark",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5\nfor(let i=0;i<args.length;i++){if(args[i]==='--output'){assert.equal(output,undefined);assert.ok(args[i+1]&&!args[i+1].startsWith('--'),'output value');output=path.resolve(args[++i])}else if(args[i]==='--prepare'){assert.equal(prepare,false);prepare=true}else if(args[i]===S2_ROOT_FLAG){assert.equal(execute,false);execute=true}else throw Error('unknown diagnostic argument: '+args[i])}assert.ok(!(execute&&prepare),'prepare and root execution flag are exclusive');\n                                                                                                                                                                                                                                                                                                                                                   ^\n\nError: unknown diagnostic argument: --root-authorized-dark-exact-state\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:340\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "near",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5\nfor(let i=0;i<args.length;i++){if(args[i]==='--output'){assert.equal(output,undefined);assert.ok(args[i+1]&&!args[i+1].startsWith('--'),'output value');output=path.resolve(args[++i])}else if(args[i]==='--prepare'){assert.equal(prepare,false);prepare=true}else if(args[i]===S2_ROOT_FLAG){assert.equal(execute,false);execute=true}else throw Error('unknown diagnostic argument: '+args[i])}assert.ok(!(execute&&prepare),'prepare and root execution flag are exclusive');\n                                                                                                                                                                                                                                                                                                                                                   ^\n\nError: unknown diagnostic argument: --root-authorized-s2-connected-lightx\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:340\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "equals",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5\nfor(let i=0;i<args.length;i++){if(args[i]==='--output'){assert.equal(output,undefined);assert.ok(args[i+1]&&!args[i+1].startsWith('--'),'output value');output=path.resolve(args[++i])}else if(args[i]==='--prepare'){assert.equal(prepare,false);prepare=true}else if(args[i]===S2_ROOT_FLAG){assert.equal(execute,false);execute=true}else throw Error('unknown diagnostic argument: '+args[i])}assert.ok(!(execute&&prepare),'prepare and root execution flag are exclusive');\n                                                                                                                                                                                                                                                                                                                                                   ^\n\nError: unknown diagnostic argument: --root-authorized-s2-connected-light=true\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:340\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "contradiction",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: prepare and root execution flag are exclusive\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:394\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "duplicate-root",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:295\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: true,\n  expected: false,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "duplicate-prepare",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:222\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: true,\n  expected: false,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "missing-output",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: output value\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:95\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: undefined,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "flag-value",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: output value\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:95\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "equals-output",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5\nfor(let i=0;i<args.length;i++){if(args[i]==='--output'){assert.equal(output,undefined);assert.ok(args[i+1]&&!args[i+1].startsWith('--'),'output value');output=path.resolve(args[++i])}else if(args[i]==='--prepare'){assert.equal(prepare,false);prepare=true}else if(args[i]===S2_ROOT_FLAG){assert.equal(execute,false);execute=true}else throw Error('unknown diagnostic argument: '+args[i])}assert.ok(!(execute&&prepare),'prepare and root execution flag are exclusive');\n                                                                                                                                                                                                                                                                                                                                                   ^\n\nError: unknown diagnostic argument: --output=/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/never\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:340\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "duplicate-output",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/never1'\n- undefined\n\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:64\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/never1',\n  expected: undefined,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "case-override",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5\nfor(let i=0;i<args.length;i++){if(args[i]==='--output'){assert.equal(output,undefined);assert.ok(args[i+1]&&!args[i+1].startsWith('--'),'output value');output=path.resolve(args[++i])}else if(args[i]==='--prepare'){assert.equal(prepare,false);prepare=true}else if(args[i]===S2_ROOT_FLAG){assert.equal(execute,false);execute=true}else throw Error('unknown diagnostic argument: '+args[i])}assert.ok(!(execute&&prepare),'prepare and root execution flag are exclusive');\n                                                                                                                                                                                                                                                                                                                                                   ^\n\nError: unknown diagnostic argument: --case\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:340\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "theme-override",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5\nfor(let i=0;i<args.length;i++){if(args[i]==='--output'){assert.equal(output,undefined);assert.ok(args[i+1]&&!args[i+1].startsWith('--'),'output value');output=path.resolve(args[++i])}else if(args[i]==='--prepare'){assert.equal(prepare,false);prepare=true}else if(args[i]===S2_ROOT_FLAG){assert.equal(execute,false);execute=true}else throw Error('unknown diagnostic argument: '+args[i])}assert.ok(!(execute&&prepare),'prepare and root execution flag are exclusive');\n                                                                                                                                                                                                                                                                                                                                                   ^\n\nError: unknown diagnostic argument: --theme\n    at file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:5:340\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "existing-empty",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "(node:23237) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\nnode:internal/fs/promises:1632\n  return await PromisePrototypeThen(\n         ^\n\nError: EEXIST: file already exists, mkdir '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/empty'\n    at async Object.mkdir (node:internal/fs/promises:1632:10)\n    at async file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:10:11 {\n  errno: -17,\n  code: 'EEXIST',\n  syscall: 'mkdir',\n  path: '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/empty'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "existing-raw",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "(node:23238) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\nnode:internal/fs/promises:1632\n  return await PromisePrototypeThen(\n         ^\n\nError: EEXIST: file already exists, mkdir '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/raw'\n    at async Object.mkdir (node:internal/fs/promises:1632:10)\n    at async file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:10:11 {\n  errno: -17,\n  code: 'EEXIST',\n  syscall: 'mkdir',\n  path: '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/raw'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "existing-file",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "(node:23239) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\nnode:internal/fs/promises:1632\n  return await PromisePrototypeThen(\n         ^\n\nError: EEXIST: file already exists, mkdir '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/file'\n    at async Object.mkdir (node:internal/fs/promises:1632:10)\n    at async file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:10:11 {\n  errno: -17,\n  code: 'EEXIST',\n  syscall: 'mkdir',\n  path: '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/file'\n}\n\nNode.js v26.8.2\n"
+    },
+    {
+      "name": "existing-symlink",
+      "expected": "reject",
+      "exit": 1,
+      "stderr": "(node:23240) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\nnode:internal/fs/promises:1632\n  return await PromisePrototypeThen(\n         ^\n\nError: EEXIST: file already exists, mkdir '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/symlink'\n    at async Object.mkdir (node:internal/fs/promises:1632:10)\n    at async file:///private/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/candidate/tests/verification-map-tiny-s2-connected-prepare.mjs:10:11 {\n  errno: -17,\n  code: 'EEXIST',\n  syscall: 'mkdir',\n  path: '/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/independent/symlink'\n}\n\nNode.js v26.8.2\n"
+    }
+  ],
+  "browserServerAttemptMarkerAbsent": true,
+  "nativeExecutionFlagNeverUsedAlone": true,
+  "originalInputsPreserved": {
+    "runner": "bafded155c7aa8962422511c3382e31318f70c14a4d8cc4969ec518f88c5c07f",
+    "fixture": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+  },
+  "base": "357ea2d640ce8717fb92bc6077272daa1fbfe58c",
+  "candidate": "4c49910a41606f3911d7332121cab7d15a640676",
+  "sourcePreservation": {
+    "unchangedTrackedPaths": 4779,
+    "addedPaths": [
+      "docs/verification/map-tiny-s2-connected-proposal-evidence.json",
+      "docs/verification/map-tiny-s2-connected-proposal-followup.md",
+      "scripts/lib/map-tiny-s2-connected-proposal.mjs",
+      "tests/verification-map-tiny-s2-connected-pixels.py",
+      "tests/verification-map-tiny-s2-connected-prepare.mjs",
+      "tests/verification-map-tiny-s2-connected-proposal-model.mjs"
+    ],
+    "deletedPaths": [],
+    "modifiedPaths": []
+  },
+  "producerModel": {
+    "identity": "tiny-old-S2-connected-control-light-v1",
+    "source": true,
+    "prepare": [
+      {
+        "name": "default-blocked",
+        "identity": "tiny-old-S2-connected-control-light-v1",
+        "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+        "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-fwzUES",
+        "browserStarted": false,
+        "serverStarted": false,
+        "protectedSourcePaths": 71,
+        "manifestSHA256": "069b7774ca9d40236d547048f38bad50286e64efbd6deca4af171f0faa26b34d"
+      },
+      {
+        "name": "explicit-prepare",
+        "identity": "tiny-old-S2-connected-control-light-v1",
+        "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+        "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-connected-prepare-OabYoQ",
+        "browserStarted": false,
+        "serverStarted": false,
+        "protectedSourcePaths": 71,
+        "manifestSHA256": "1bd3b9e520c9af7795b7ec50a375a7b11908da32dcde1d199debb24e71fafc5d"
+      },
+      {
+        "name": "explicit-output",
+        "identity": "tiny-old-S2-connected-control-light-v1",
+        "mode": "PREPARE_ONLY_NATIVE_BLOCKED",
+        "output": "/tmp/atlas-new-imaging-source/tiny-s2-proposal-peer/producer-model/explicit-output",
+        "browserStarted": false,
+        "serverStarted": false,
+        "protectedSourcePaths": 71,
+        "manifestSHA256": "c6a14b38d0c905bad0384ac5f69529d1176c5ecc83f1e4fd4053a42e901c6530"
+      }
+    ],
+    "adverse": [
+      {
+        "name": "modified-runner",
+        "rejected": true
+      },
+      {
+        "name": "modified-fixture",
+        "rejected": true
+      },
+      {
+        "name": "unknown-flag",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "old-full-flag",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "near-root-flag",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "contradictory-flags",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "duplicate-prepare",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "duplicate-root",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "missing-output",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "duplicate-output",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "existing-empty",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "existing-raw",
+        "rejected": true,
+        "exitCode": 1
+      },
+      {
+        "name": "existing-file",
+        "rejected": true,
+        "exitCode": 1
+      }
+    ],
+    "nativeExecuted": false,
+    "browserStarted": false,
+    "serverStarted": false
+  },
+  "independentProbeSHA256": "0dc11e9da711ae03209e3ca1bd8d0577617487e0541ff0e45228ab84ca8584e7",
+  "limits": {
+    "nativeExecuted": false,
+    "browserStarted": false,
+    "serverStarted": false,
+    "originalFirstRunDisposition": "STOPPED",
+    "observerReadsMayAffectCaches": true,
+    "newOriginalPairHashesNeedNotMatchFirst35fc": true,
+    "connectedAgreementDoesNotEstablishConnectionCausality": true,
+    "noNativePermissionGranted": true
+  },
+  "observerNotes": "Current-context measureText/getContext/style/property reads remain before paint; no font/property normalization or extra native draw. Model substitutes plain objects; not native/cache evidence."
+}
