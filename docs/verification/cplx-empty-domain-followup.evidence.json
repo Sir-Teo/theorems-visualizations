@@ -1,0 +1,112 @@
+{
+  "guardMath": {
+    "pass": true,
+    "baseline": "3e7920337f28c1976b66802eae18a04857bc13b3",
+    "modules": 16,
+    "graphs": 1100,
+    "checks": 2593,
+    "before": "on $N$ vertices there are at most $N-1$ strict increases.",
+    "after": "on $N$ vertices there are at most $\\max(0,N-1)$ strict increases. The empty graph is already stable.",
+    "scope": "single idea literal only; every other module byte, object, function, helper, sourceflag and syllabus row unchanged"
+  },
+  "root": "/tmp/atlas-new-cplx-empty-domain",
+  "inspected": 8,
+  "nativeBrowser": "155.0.8059.85",
+  "artifacts": [
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/build.log",
+      "bytes": 217,
+      "sha256": "d1214b01a72df51c790550497a4d432de7bcc76956fe07574689e67db733a5be"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/guard-math.json",
+      "bytes": 447,
+      "sha256": "0c8dc8d74ded47049070ed3624ffda7df14cc546032694ef965d6e48fd640299"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/production/cplx-1.9-dark-proof.png",
+      "bytes": 123431,
+      "sha256": "95bf95b90b49b099adc72d39c5225927c03c6175c4f97503190a01451fb012ba"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/production/cplx-1.9-dark-statement-scope.png",
+      "bytes": 88410,
+      "sha256": "c28a92da2ee2f776fba615ee6d35d55479bfeba0c945b2799817625a7628313b"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/production/cplx-1.9-light-proof.png",
+      "bytes": 122182,
+      "sha256": "2ca2994f9737a4caa41a30a55b3a2ff3b8e9954a0ffde04e2d0b23edc5265e41"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/production/cplx-1.9-light-statement-scope.png",
+      "bytes": 88192,
+      "sha256": "8dd99c19cfd1613e73b012b73ca3cf701c923ca88ce596bef77174e5abeb8f53"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/production/text.json",
+      "bytes": 6335,
+      "sha256": "44f499d9143a750ae8c405c29d8efd7775ae2a9e3a3bf4ad6d02cb99f9dd791a"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/production-proof.png",
+      "bytes": 327978,
+      "sha256": "bd0a8df8abc0297ee2a8320fbac0ec2bf72a21b4245ed9330e68a00453bf5f3e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/production-statement-scope.png",
+      "bytes": 203799,
+      "sha256": "072502a649c409910a12d09a9e0b15bc5e809a82926b3064315cf253bbf575a4"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/production.log",
+      "bytes": 67,
+      "sha256": "26e4b17d4eeeec8978e30dd8cf63b107eac082717a59e2a85caeaa955c6d39be"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/static.log",
+      "bytes": 3017,
+      "sha256": "21e122659c96e0fc4f79c8de0fc6bd6cf8e22df51fcfbb39e26cc358893c65df"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/text253/cplx-1.9-dark-proof.png",
+      "bytes": 133887,
+      "sha256": "517eb1dd5248753e62779b09afc5ecb3d631c1797443f85958665b25d64e4f94"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/text253/cplx-1.9-dark-statement-scope.png",
+      "bytes": 83302,
+      "sha256": "fd693bb429c7703eebf25f43946f8daae115a58c53c3475c676dfbf65dfc557b"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/text253/cplx-1.9-light-proof.png",
+      "bytes": 132015,
+      "sha256": "ebca6ba2500e9da9564fe375906c1f8756e1fdd6663328fae657b3636f6f516a"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/text253/cplx-1.9-light-statement-scope.png",
+      "bytes": 83212,
+      "sha256": "9c7c1e66d728116e57bf3d6962c0fa9462cb6708a0db4cbf281fd33dd4c3fd2c"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/text253/text.json",
+      "bytes": 7055,
+      "sha256": "a226b68248d086ee691fa6d542b918724623ac3de6c226ab46f9341759ee5a19"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/text253-proof.png",
+      "bytes": 333526,
+      "sha256": "2e324c9fd49d37538100ef42e9a7e30942469dc02cca2548bcd2c746ae021564"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/text253-statement-scope.png",
+      "bytes": 196033,
+      "sha256": "fbb6c9ea20265bf86f2170eaa86ce1473ec567814b070b2af5dc2c303540846e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-domain/text253.log",
+      "bytes": 66,
+      "sha256": "21ffe89c98028d276325d0d90f34b80785236bd3c86e9f2c5f6639393679a817"
+    }
+  ]
+}
