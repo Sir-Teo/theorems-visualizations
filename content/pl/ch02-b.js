@@ -2,7 +2,7 @@
 import {
   V, L, A, fv, subst, parse, P, DEFS, key, alphaEq, layoutTerm, show, drawLine, redexes, contract, getAt, cat, size,
   runStrategy, normalize, makeGraph, drawGraph, STRATS, decode, drawTrace, boolOf, churchNum, church, toDB, fromDB, freeOrder, layoutDB, DB,
-  shiftDB, substDB, betaDB, dbStr, layoutG, drawTreePx, field, pxStage, drawParseError, rrect, findRedex,
+  shiftDB, substDB, betaDB, dbStr, layoutG, drawTreePx, field, pxStage, wrapText, drawParseError, rrect, findRedex,
 } from './ch02.shared.js';
 
 const tf = (v, label, def, onChange, width = 340) => field(v, label, def, (s) => parse(s, DEFS), { width, onChange });
@@ -381,8 +381,8 @@ The alpha-equivalence test can be justified by the two-sided inverse criterion (
       deps: ['pl-2.3', 'alg-1.20'], refs: ['Pierce §6.1', 'Pierce §6.2'], tags: ['binding', 'representation'],
       credit: 'N. G. de Bruijn, 1972',
       viz(v) {
-        const sA = pxStage(v, { height: 196, full: true, title: 'Named and nameless forms' });
-        const sB = pxStage(v, { height: 176, full: true, title: 'β-reduction of the first term, in nameless form' });
+        const sA = pxStage(v, { height: 280, full: true, title: 'Named and nameless forms' });
+        const sB = pxStage(v, { height: 250, full: true, title: 'β-reduction of the first term, in nameless form' });
         const EX = { a: ['(λx. λy. x y) (λw. w z)', '(λa. λb. a b) (λc. c z)'], b: ['λx. λy. x', 'λx. λy. y'], c: ['(λx. λy. x) y', '(λx. λz. x) y'], d: ['λx. x (λy. x y)', 'λy. y (λx. y x)'] };
         const f1 = tf(v, 'term 1', EX.a[0], () => redo(), 300), f2 = tf(v, 'term 2', EX.a[1], () => redo(), 300);
         const ex = v.select('Examples', [{ value: 'a', label: 'α-equal pair' }, { value: 'b', label: 'different' }, { value: 'c', label: 'free y' }, { value: 'd', label: 'shadow' }], 'a', { onChange: () => { f1.set(EX[ex.value][0]); f2.set(EX[ex.value][1]); redo(); } });
@@ -424,8 +424,8 @@ The alpha-equivalence test can be justified by the two-sided inverse criterion (
         }
         redo();
         const lineAt = (s, lay, y, label, color) => {
-          s.textPx(label, 14, y, { size: 12, weight: 700, color: color || 'muted', align: 'left', halo: false });
-          return drawLine(v, s, lay, 124, y, { size: 19, maxW: s.W - 140, weight: 600 });
+          s.textPx(label, 14, y - 18, { size: 12, weight: 700, color: color || 'muted', align: 'left', halo: false });
+          return drawLine(v, s, lay, 14, y, { size: 19, maxW: s.W - 28, weight: 600 });
         };
         v.render(() => {
           if (f1.err || f2.err) { drawParseError(v, sA, f1.err ? f1.src : f2.src, f1.err || f2.err); sB.textPx('fix the terms', sB.W / 2, sB.H / 2, { size: 14, color: 'muted', align: 'center' }); info = null; return; }
@@ -436,7 +436,7 @@ The alpha-equivalence test can be justified by the two-sided inverse criterion (
           lineAt(sA, nm(t1, a1), 26, 'term 1'); lineAt(sA, nl(a1), 58, 'nameless', 'accent');
           lineAt(sA, nm(t2, a2), 104, 'term 2'); lineAt(sA, nl(a2), 136, 'nameless', 'accent');
           const same = dbStr(a1.db) === dbStr(a2.db);
-          sA.textPx(same ? 'identical nameless forms: α-equivalent' : 'different nameless forms: not α-equivalent', sA.W / 2, 176, { size: 13.5, weight: 700, color: same ? 'green' : 'red', align: 'center', halo: false });
+          wrapText(sA, same ? 'identical nameless forms: α-equivalent' : 'different nameless forms: not α-equivalent', sA.W - 40, 13.5).forEach((line, i) => sA.textPx(line, sA.W / 2, 176 + i * 17, { size: 13.5, weight: 700, color: same ? 'green' : 'red', align: 'center', halo: false }));
           info = { same, ae: alphaEq(t1, t2), gamma };
           // beta stage
           if (!red) { sB.textPx('term 1 has no β-redex', sB.W / 2, sB.H / 2, { size: 14, color: 'muted', align: 'center' }); return; }

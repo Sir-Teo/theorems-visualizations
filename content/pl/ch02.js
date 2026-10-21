@@ -2,7 +2,7 @@
 import {
   V, L, A, fv, subst, naiveSubst, renameFree, parse, P, DEFS, key, alphaEq, layoutTerm, show, drawLine, redexes, contract, getAt, setAt, cat, size,
   runStrategy, normalize, makeGraph, drawGraph, hitBox, STRATS, decode, drawTrace, boolOf, churchNum, church, dbStr, toDB, allNames,
-  layoutG, drawTreePx, hitNode, field, pxStage, drawParseError, rrect,
+  layoutG, drawTreePx, hitNode, field, pxStage, wrapText, drawParseError, rrect,
 } from './ch02.shared.js';
 
 const tf = (v, label, def, onChange, width = 340) => field(v, label, def, (s) => parse(s, DEFS), { width, onChange });
@@ -169,7 +169,7 @@ The fresh-name existence step uses the pigeonhole principle (COMB 1.2), separate
       caption: String.raw`Edit the term $t$, the variable $x$ and the term $s$ (or choose an example). The first row replaces $x$ textually: inserted copies of $s$ are orange and every variable of $s$ that is swallowed by a binder is red and underlined. The second row is the definition above: renamed binders are green. The readout compares the free variables of both results with the formula, and with “rename every binder apart, then replace blindly”.`,
       deps: ['pl-2.2', 'comb-1.2'], refs: ['Pierce §5.3'], tags: ['substitution', 'binding'],
       viz(v) {
-        const s = pxStage(v, { height: 278, full: true, title: 'Substitution: naive versus capture-avoiding' });
+        const s = pxStage(v, { height: 400, full: true, title: 'Substitution: naive versus capture-avoiding' });
         const EX = { a: ['λy. x y', 'x', 'y z'], b: ['(λz. x z) (λx. x)', 'x', 'z'], c: ['λy. x y', 'x', 'w'], d: ['λx. λy. x y z', 'z', 'x y'], e: ['λx. x y', 'x', 'z'] };
         const ft = tf(v, 't', EX.a[0], () => v.invalidate(), 300);
         const fx = v.input('x', EX.a[1], { width: 54, onChange: () => v.invalidate() });
@@ -190,9 +190,9 @@ The fresh-name existence step uses the pigeonhole principle (COMB 1.2), separate
           }
           const t = ft.ast, sT = fs.ast;
           const naive = naiveSubst(t, x, sT), right = subst(t, x, sT, true);
-          const left = 150, maxW = s.W - left - 20;
+          const left = 16, maxW = s.W - left - 20;
           const row = (label, y, lay, o = {}) => {
-            s.textPx(label, 16, y, { size: 12.5, weight: 700, color: o.lc || 'muted', align: 'left', halo: false });
+            s.textPx(label, 16, y - 20, { size: 12.5, weight: 700, color: o.lc || 'muted', align: 'left', halo: false });
             return drawLine(v, s, lay, left, y, { size: 20, maxW, weight: 600, under: o.under });
           };
           row('term  t', 32, layoutTerm(t, { style: (nd) => (nd.t === 'v' && nd.x === x ? 'orange' : undefined) }));
@@ -206,8 +206,8 @@ The fresh-name existence step uses the pigeonhole principle (COMB 1.2), separate
           const rl = layoutTerm(right, { style: (nd) => (nd.ren ? 'green' : nd.ins ? 'orange' : undefined) });
           row('capture-avoiding', 218, rl, { lc: 'green' });
           const nR = [...allNames(right)].filter((n) => /'/.test(n)).length;
-          if (nR) s.textPx(`binder renamed (shown in green) so that no free variable is captured`, left, 218 + 28, { size: 12, color: 'green', weight: 700, align: 'left', halo: false });
-          else s.textPx(fv(t).has(x) ? 'no clash: no renaming was needed' : `${x} does not occur free in t: nothing to substitute`, left, 218 + 28, { size: 12, color: 'muted', weight: 600, align: 'left', halo: false });
+          const note = nR ? `binder renamed (shown in green) so that no free variable is captured` : fv(t).has(x) ? 'no clash: no renaming was needed' : `${x} does not occur free in t: nothing to substitute`;
+          wrapText(s, note, s.W - 56, 12).forEach((line, i) => s.textPx(line, left, 218 + 28 + i * 15, { size: 12, color: nR ? 'green' : 'muted', weight: nR ? 700 : 600, align: 'left', halo: false }));
           const exp = fv(t).has(x) ? new Set([...[...fv(t)].filter((n) => n !== x), ...fv(sT)]) : new Set(fv(t));
           const same = (a, b) => a.size === b.size && [...a].every((n) => b.has(n));
           const av = naiveSubst(apart(t, new Set([...allNames(t), ...allNames(sT), x])), x, sT);

@@ -1,0 +1,71 @@
+{
+  "baseline": "1ef163fefee0fb2dc816b7a25f57ca252b6c4dea",
+  "changes": [
+    {
+      "file": "ch02.js",
+      "num": "import",
+      "before": "field, pxStage, drawParseError, rrect,",
+      "after": "field, pxStage, wrapText, drawParseError, rrect,"
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "import",
+      "before": "field, pxStage, drawParseError, rrect,",
+      "after": "field, pxStage, wrapText, drawParseError, rrect,"
+    },
+    {
+      "file": "ch02.js",
+      "num": "2.3",
+      "before": "height: 278, full: true",
+      "after": "height: 400, full: true"
+    },
+    {
+      "file": "ch02.js",
+      "num": "2.3",
+      "before": "const left = 150, maxW = s.W - left - 20;",
+      "after": "const left = 16, maxW = s.W - left - 20;"
+    },
+    {
+      "file": "ch02.js",
+      "num": "2.3",
+      "before": "s.textPx(label, 16, y, { size: 12.5, weight: 700, color: o.lc || 'muted', align: 'left', halo: false });",
+      "after": "s.textPx(label, 16, y - 20, { size: 12.5, weight: 700, color: o.lc || 'muted', align: 'left', halo: false });"
+    },
+    {
+      "file": "ch02.js",
+      "num": "2.3",
+      "before": "          if (nR) s.textPx(`binder renamed (shown in green) so that no free variable is captured`, left, 218 + 28, { size: 12, color: 'green', weight: 700, align: 'left', halo: false });\n          else s.textPx(fv(t).has(x) ? 'no clash: no renaming was needed' : `${x} does not occur free in t: nothing to substitute`, left, 218 + 28, { size: 12, color: 'muted', weight: 600, align: 'left', halo: false });",
+      "after": "          const note = nR ? `binder renamed (shown in green) so that no free variable is captured` : fv(t).has(x) ? 'no clash: no renaming was needed' : `${x} does not occur free in t: nothing to substitute`;\n          wrapText(s, note, s.W - 56, 12).forEach((line, i) => s.textPx(line, left, 218 + 28 + i * 15, { size: 12, color: nR ? 'green' : 'muted', weight: nR ? 700 : 600, align: 'left', halo: false }));"
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "before": "height: 196, full: true",
+      "after": "height: 280, full: true"
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "before": "height: 176, full: true",
+      "after": "height: 250, full: true"
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "before": "s.textPx(label, 14, y, { size: 12, weight: 700, color: color || 'muted', align: 'left', halo: false });",
+      "after": "s.textPx(label, 14, y - 18, { size: 12, weight: 700, color: color || 'muted', align: 'left', halo: false });"
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "before": "return drawLine(v, s, lay, 124, y, { size: 19, maxW: s.W - 140, weight: 600 });",
+      "after": "return drawLine(v, s, lay, 14, y, { size: 19, maxW: s.W - 28, weight: 600 });"
+    },
+    {
+      "file": "ch02-b.js",
+      "num": "2.11",
+      "before": "sA.textPx(same ? 'identical nameless forms: \u03b1-equivalent' : 'different nameless forms: not \u03b1-equivalent', sA.W / 2, 176, { size: 13.5, weight: 700, color: same ? 'green' : 'red', align: 'center', halo: false });",
+      "after": "wrapText(sA, same ? 'identical nameless forms: \u03b1-equivalent' : 'different nameless forms: not \u03b1-equivalent', sA.W - 40, 13.5).forEach((line, i) => sA.textPx(line, sA.W / 2, 176 + i * 17, { size: 13.5, weight: 700, color: same ? 'green' : 'red', align: 'center', halo: false }));"
+    }
+  ]
+}
