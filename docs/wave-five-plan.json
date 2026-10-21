@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 282,
-    "remaining": 749,
-    "writtenChapters": 22,
+    "written": 293,
+    "remaining": 738,
+    "writtenChapters": 24,
     "chapters": [
       {
         "collection": "ode",
@@ -18019,10 +18019,16 @@
         "collection": "cm",
         "chapter": 5,
         "total": 5,
-        "written": 0,
-        "remaining": 5,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 5,
+        "remaining": 0,
+        "writtenItems": [
+          "cm-5.2",
+          "cm-5.3",
+          "cm-5.4",
+          "cm-5.5",
+          "cm-5.6"
+        ],
+        "status": "written"
       },
       {
         "collection": "qinfo",
@@ -18122,10 +18128,17 @@
         "collection": "xtal",
         "chapter": 5,
         "total": 6,
-        "written": 0,
-        "remaining": 6,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 6,
+        "remaining": 0,
+        "writtenItems": [
+          "xtal-5.1",
+          "xtal-5.2",
+          "xtal-5.3",
+          "xtal-5.4",
+          "xtal-5.5",
+          "xtal-5.6"
+        ],
+        "status": "written"
       },
       {
         "collection": "mat",

@@ -23,3 +23,9 @@ The exact follow-up export `bc00c804` at `/tmp/atlas-wave5-connective-twenty-ui7
 Three accepted steps connect NLA5.9, NLA5.7 and PROB6.2.1 to the spectral, stability and diffusion walks. The first states that both the base matrix and its perturbation are Hermitian. The second uses the chapter's exact triangular exponential and separates transient amplification from eventual decay. The third preserves Birkhoff's conditional invariant mean and supplies no mixing-rate claim. Independent reviewer `wave5_reviewer` accepted the final wording, after making the Hermitian perturbation assumption explicit.
 
 Exact source `999410ac` passes the integrated2,484-test suite, including the existing bridge structural/model groups. Actual320px light/dark checks pass six bridge/theme cases and six native links, with added-note text/card bounds and zero page errors. Log: `/tmp/atlas-wave5-twenty-two-bridges.log`. The inventory now has15 bridges/146 steps/143 unique written ideas, with no planned steps or import problems. Shared bridge models and controls are unchanged. The local-only delivery instruction applies to these commits.
+
+## Reciprocal lattices and spin waves
+
+The Fourier walk adds XTAL5.5's normalized-cell mean-square expansion and XTAL5.6's distributional comb, keeping the cycles-per-length inverse-cell-volume factor explicit. The spectral walk adds CM5.3's quadratic spin-wave modes and distinguishes the chain dispersion example from three-dimensional thermal mode counting. Independent reviewer `wave5_reviewer` accepted all three notes without changes.
+
+Exact source `15c7af90` passes the integrated 2,504-test suite. Four actual 320px light/dark bridge cases and six native links pass with complete added-note/card bounds and zero page errors. Log: `/tmp/atlas-wave5-twenty-four-bridges.log`. Inventory: 15 bridges/149 steps/146 unique written ideas. Shared bridge pictures, models and controls are unchanged.
