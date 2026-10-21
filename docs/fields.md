@@ -34,6 +34,10 @@ you can edit by dragging the images of basis vectors; use the n×n routines in `
 SVD, QR, …) rather than hand-rolled ones, and show the invariant the theorem talks about (a span,
 an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
+- Distinguish dual equality, dual attainment and primal attainment. A Slater proof must separate the augmented value set from the entire ray below the optimum before normalizing a supporting multiplier. Smooth KKT stationarity needs an open implicit domain; boundary normal cones cannot be omitted. Keep a rounded boundary residual visible instead of turning a tolerance into a feasibility certificate. See the [duality review](verification/wave5-opt-review.md).
+
+- A stored orientation is a reference for signed flow, while a directed arrow makes a visual claim about that orientation. Reverse both the endpoints and the signed value when demonstrating orientation changes. Loops retain a free circulation coordinate; identifying their two endpoints does not force that coordinate to equal its own negative. State whether a flow polynomial uses group order or group order minus one, and distinguish an integer optimum's existence from integrality of every optimum. See the [flow review](verification/wave5-graph-review.md).
+
 - Match approximation claims to boundary hypotheses. Complete cubic interpolation with exact endpoint slopes has the fourth-derivative bound; general natural interpolation can have an endpoint layer of order h² even for x². Show incompatible endpoints as a counterexample rather than silently applying the clamped bound. See the [spline review](verification/wave5-num-review.md).
 
 - Preserve tiny positive phases when wrapping a periodic coordinate. Adding the period to an already nonnegative remainder can erase that phase before a second remainder operation, changing half-open endpoint membership. Test subnormal and tiny saved states through the actual Share URL as well as the pure model. See the [ergodic-theory review](verification/wave5-prob-review.md).
@@ -80,6 +84,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Distinguish the sampling law from the conditional resampling law of one observed sample. Retain bootstrap atoms and boundary failures; normalization, studentization and dependence assumptions belong to the actual procedure being computed. See the [bootstrap review](verification/wave5-stat-review.md).
 
 ## Computer science
+
+- Match the authentication game to the composition theorem: strong new-pair unforgeability or unique valid tags is needed for the stated Encrypt-then-MAC proof, with independent keys and complete nonce/ciphertext coverage. One-time affine authentication needs pairwise independence rather than ordinary universality. Keep random-function birthday probabilities separate from deterministic hash traces; a zero-tail cycle supplies no distinct-preimage witness. A strengthened hash's reverse collision proof must compare the entire length field before inferring aligned chains. See the [integrity review](verification/wave5-crypto-review.md).
 
 - Compare exact combinatorial order when a decoder's tie rule is part of the model; rounded log likelihoods can split a mathematical tie. Preserve the defining bias of a nearly independent binary channel, and distinguish a numerical resolution limit from a positive computed exponent. A zero-width typicality diagnostic needs exact count/parameter equality; the asymptotic theorem uses positive tolerance. See the [capacity review](verification/wave5-info-review.md).
 
