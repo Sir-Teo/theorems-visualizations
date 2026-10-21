@@ -1,0 +1,4694 @@
+{
+  "baseline": "14ec43dc04f9999d5b952e8cfec95835af101bfd",
+  "chain": [
+    "e3575de1ddd88a410b399cf7074ff6b2c358ba0c",
+    "2c7f0acbd0ca746e84a158b3670ca9ddf0403fef",
+    "1ef47c09630096f051edcdeffc4a364a3ad91cc8"
+  ],
+  "pass": true,
+  "math": {
+    "pass": true,
+    "cases": 3302,
+    "checks": 67460,
+    "scope": "Actual item frames, zero and nonzero classes, numeric/string/mixed IDs, renamed isomorphs and one-sided empty graphs; minimal view API is not a native UI substitute."
+  },
+  "preservation": {
+    "pass": true,
+    "modules": [
+      {
+        "file": "ch01-b.js",
+        "before": "e319e7f6e629cf6cdce7ab87f7992ecd22dbff949702931b87fb2579096ca934",
+        "after": "62c27364af691375642009ca5115474c367a401ab8967862b1bffe90669a2e90"
+      },
+      {
+        "file": "ch01.js",
+        "before": "c4321cf7c73116a8228fe7a2b6e438ed5c8862643091ee8cf8d743783ea3ca3d",
+        "after": "c4321cf7c73116a8228fe7a2b6e438ed5c8862643091ee8cf8d743783ea3ca3d"
+      },
+      {
+        "file": "ch01.shared.js",
+        "before": "ca784afa8f1844dd602972fcc6f9bf752f41bbe606d295e956c3ebcc8cfd2c84",
+        "after": "ca784afa8f1844dd602972fcc6f9bf752f41bbe606d295e956c3ebcc8cfd2c84"
+      },
+      {
+        "file": "ch02-b.js",
+        "before": "f618c95808acd4492b6c9cdbb7107a4a7997e1b3790295d00297fbbf467f46a0",
+        "after": "f618c95808acd4492b6c9cdbb7107a4a7997e1b3790295d00297fbbf467f46a0"
+      },
+      {
+        "file": "ch02.js",
+        "before": "37fbcc57fe958394b1f9431e80633942ee19d9093cabf14c0a7195ee3e78167d",
+        "after": "37fbcc57fe958394b1f9431e80633942ee19d9093cabf14c0a7195ee3e78167d"
+      },
+      {
+        "file": "ch02.shared.js",
+        "before": "ba69cdc5a67038016ce41da73b8997d1c9e54ad76b33308d21d255b1b3d08a86",
+        "after": "ba69cdc5a67038016ce41da73b8997d1c9e54ad76b33308d21d255b1b3d08a86"
+      },
+      {
+        "file": "ch03-b.js",
+        "before": "257198c5ab91d6774da58c008c79424a85de5b4c31760e5d4f8f397767c4c0d2",
+        "after": "257198c5ab91d6774da58c008c79424a85de5b4c31760e5d4f8f397767c4c0d2"
+      },
+      {
+        "file": "ch03.js",
+        "before": "9780dc954a2c459106d0fbb6b8e4e9dae1761ce43a608777b463da6a62d09a4a",
+        "after": "9780dc954a2c459106d0fbb6b8e4e9dae1761ce43a608777b463da6a62d09a4a"
+      },
+      {
+        "file": "ch03.shared.js",
+        "before": "a0dbbb2ab247b82d6158aec10c70ab22127fb439d387c8708b5857207c40d26f",
+        "after": "a0dbbb2ab247b82d6158aec10c70ab22127fb439d387c8708b5857207c40d26f"
+      },
+      {
+        "file": "ch04-b.js",
+        "before": "cb55ff979894f6d7d76ab52cefa67cb20988c4716c64ae94aa5de5f0bb7ed971",
+        "after": "cb55ff979894f6d7d76ab52cefa67cb20988c4716c64ae94aa5de5f0bb7ed971"
+      },
+      {
+        "file": "ch04.js",
+        "before": "c11a15d433b34b168cba51bfed50d81355a8c91c89749162c7cb7dfad0eccfa4",
+        "after": "c11a15d433b34b168cba51bfed50d81355a8c91c89749162c7cb7dfad0eccfa4"
+      },
+      {
+        "file": "ch04.shared.js",
+        "before": "6775069838b6a019f3eab2ccd6a9948aab0ee693b0e540d43945f4f652065b07",
+        "after": "6775069838b6a019f3eab2ccd6a9948aab0ee693b0e540d43945f4f652065b07"
+      },
+      {
+        "file": "ch13-papers.js",
+        "before": "53d5e05773fbd069399ee1ede4c9662973ce40e8356d78e39991d65eecc212ae",
+        "after": "53d5e05773fbd069399ee1ede4c9662973ce40e8356d78e39991d65eecc212ae"
+      },
+      {
+        "file": "circuit-source-audit.shared.js",
+        "before": "e647a3b98a163262523febf4a40e216fe04b5f954f1dd4da115723739c1c1058",
+        "after": "e647a3b98a163262523febf4a40e216fe04b5f954f1dd4da115723739c1c1058"
+      },
+      {
+        "file": "collection.js",
+        "before": "ba6c9cab2a0d630e879feefcbf1fdb13b33c977023b89dca1a78fd553d937807",
+        "after": "ba6c9cab2a0d630e879feefcbf1fdb13b33c977023b89dca1a78fd553d937807"
+      },
+      {
+        "file": "syllabus.js",
+        "before": "d01268c2365ddda03cd66b8cf07ca678402bb6a56b7520a85b190d0eaf7e2226",
+        "after": "d01268c2365ddda03cd66b8cf07ca678402bb6a56b7520a85b190d0eaf7e2226"
+      }
+    ],
+    "objects": [
+      {
+        "num": "1.8",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.2",
+          "cplx-1.2"
+        ],
+        "depsAfter": [
+          "toc-13.2",
+          "cplx-1.2"
+        ],
+        "flags": {},
+        "objectBefore": "e5b077060780361593f9a90ec0ab0b4cba376a6581e5af253554a59c1246c079",
+        "objectAfter": "e5b077060780361593f9a90ec0ab0b4cba376a6581e5af253554a59c1246c079",
+        "functionBefore": "b9b885d997568d35bdc3d87b4cfa36f7757170eda3c2f48fabd3320b41add881",
+        "functionAfter": "b9b885d997568d35bdc3d87b4cfa36f7757170eda3c2f48fabd3320b41add881"
+      },
+      {
+        "num": "1.9",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-1.8",
+          "alg-1.25"
+        ],
+        "depsAfter": [
+          "cplx-1.8",
+          "alg-1.25"
+        ],
+        "flags": {},
+        "objectBefore": "a5d186f9467e19cfa12475130a8ea4f160e070642e5449d87a86df56e04e5341",
+        "objectAfter": "9fa64e163354b8bf90ddb6fef4c7339bc3741657add78be75bf2b89896ff8a09",
+        "functionBefore": "7924009ec3e4834939f3fc8209fe1be1ce69aedacace1778d183d6bd634bf5f0",
+        "functionAfter": "90c5026ddb23c2a864966958578580e28c4f63252dfd57a7dc1a930e9fa9f124"
+      },
+      {
+        "num": "1.10",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-11.9",
+          "toc-12.11"
+        ],
+        "depsAfter": [
+          "toc-11.9",
+          "toc-12.11"
+        ],
+        "flags": {},
+        "objectBefore": "62a3d089cd142b799f9c9e24ac4d6c4b03d0ff7eefe1ed8e8b9bbb0821ab3dae",
+        "objectAfter": "62a3d089cd142b799f9c9e24ac4d6c4b03d0ff7eefe1ed8e8b9bbb0821ab3dae",
+        "functionBefore": "51a85f3af09a6cad421823c4820904d12607ff60c33c659cb2c11a4bba6e4074",
+        "functionAfter": "51a85f3af09a6cad421823c4820904d12607ff60c33c659cb2c11a4bba6e4074"
+      },
+      {
+        "num": "1.11",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-1.10",
+          "cplx-1.2",
+          "pma-3.20"
+        ],
+        "depsAfter": [
+          "cplx-1.10",
+          "cplx-1.2",
+          "pma-3.20"
+        ],
+        "flags": {},
+        "objectBefore": "9be28fe47c08649e79808b147cad3e7db8e9f68cdfdd5433ce67fe3f3e2f5e00",
+        "objectAfter": "9be28fe47c08649e79808b147cad3e7db8e9f68cdfdd5433ce67fe3f3e2f5e00",
+        "functionBefore": "9d14b079f2bac682f6add04088960365acf9c3c1410dfa3a48964592abcf24f8",
+        "functionAfter": "9d14b079f2bac682f6add04088960365acf9c3c1410dfa3a48964592abcf24f8"
+      },
+      {
+        "num": "1.12",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-1.3",
+          "toc-3.6"
+        ],
+        "depsAfter": [
+          "cplx-1.3",
+          "toc-3.6"
+        ],
+        "flags": {},
+        "objectBefore": "a42633ae9f46747324a5fb24cf7f2fd58806a1294b90c8fd286ae9b029c53836",
+        "objectAfter": "a42633ae9f46747324a5fb24cf7f2fd58806a1294b90c8fd286ae9b029c53836",
+        "functionBefore": "985dcd69da0688e650574e9c6cb7e24289652750d673164e91d993f074418066",
+        "functionAfter": "985dcd69da0688e650574e9c6cb7e24289652750d673164e91d993f074418066"
+      },
+      {
+        "num": "1.13",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "paper",
+          "introduces",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-7.5",
+          "toc-1.5"
+        ],
+        "depsAfter": [
+          "toc-7.5",
+          "toc-1.5"
+        ],
+        "flags": {},
+        "objectBefore": "93388269410f7cc78a36ccec700552bbcbb74c1ff2abddd5ece25e2f7ac41ae8",
+        "objectAfter": "93388269410f7cc78a36ccec700552bbcbb74c1ff2abddd5ece25e2f7ac41ae8",
+        "functionBefore": "52c0f35a7b8eaddef8c6e59eae917745e22fd534c58d82dab6702f39e2b09299",
+        "functionAfter": "52c0f35a7b8eaddef8c6e59eae917745e22fd534c58d82dab6702f39e2b09299"
+      },
+      {
+        "num": "1.1",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-12.2",
+          "toc-14.1",
+          "pma-3.26"
+        ],
+        "depsAfter": [
+          "toc-12.2",
+          "toc-14.1",
+          "pma-3.26"
+        ],
+        "flags": {},
+        "objectBefore": "46c13a280283e7707afdaaa05333b0f813457465d3c24c6d15a5ea3720e215ee",
+        "objectAfter": "46c13a280283e7707afdaaa05333b0f813457465d3c24c6d15a5ea3720e215ee",
+        "functionBefore": "c5ed6c1c59ba3c3b3f032020ac4ae1c27ca220346187a475c40cd83bd0b8d211",
+        "functionAfter": "c5ed6c1c59ba3c3b3f032020ac4ae1c27ca220346187a475c40cd83bd0b8d211"
+      },
+      {
+        "num": "1.2",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-1.1",
+          "toc-9.6",
+          "toc-7.9"
+        ],
+        "depsAfter": [
+          "cplx-1.1",
+          "toc-9.6",
+          "toc-7.9"
+        ],
+        "flags": {},
+        "objectBefore": "8939bf267e2af833160d8e3bc10630c18e58b8d2fdd7f43f0234e0b10440a999",
+        "objectAfter": "8939bf267e2af833160d8e3bc10630c18e58b8d2fdd7f43f0234e0b10440a999",
+        "functionBefore": "2680b9366b6084456672febf3dd7c7c8f974405c6df8a4bf68ee5da001962120",
+        "functionAfter": "2680b9366b6084456672febf3dd7c7c8f974405c6df8a4bf68ee5da001962120"
+      },
+      {
+        "num": "1.3",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-1.1",
+          "toc-14.1",
+          "comb-1.1",
+          "comb-1.2"
+        ],
+        "depsAfter": [
+          "cplx-1.1",
+          "toc-14.1",
+          "comb-1.1",
+          "comb-1.2"
+        ],
+        "flags": {},
+        "objectBefore": "d6db5434ec7ba4568f98b424d74957b9ccdb9d383e2e5d2934fd73fcda6b3f3f",
+        "objectAfter": "d6db5434ec7ba4568f98b424d74957b9ccdb9d383e2e5d2934fd73fcda6b3f3f",
+        "functionBefore": "07af516943b121f17b554d95898904e79f2238aaf90308d1735b97d65a01590f",
+        "functionAfter": "07af516943b121f17b554d95898904e79f2238aaf90308d1735b97d65a01590f"
+      },
+      {
+        "num": "1.4",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-1.2",
+          "cplx-1.3",
+          "pma-8.6"
+        ],
+        "depsAfter": [
+          "cplx-1.2",
+          "cplx-1.3",
+          "pma-8.6"
+        ],
+        "flags": {},
+        "objectBefore": "19223f5a9d1fd43cfb4e6629326f1eb1e98631bc4842d19332539c5cb1f01c2d",
+        "objectAfter": "19223f5a9d1fd43cfb4e6629326f1eb1e98631bc4842d19332539c5cb1f01c2d",
+        "functionBefore": "51b254fbe1e1d5d700523cccf32997f37b6fc5165456c491cface801976b1e7c",
+        "functionAfter": "51b254fbe1e1d5d700523cccf32997f37b6fc5165456c491cface801976b1e7c"
+      },
+      {
+        "num": "1.5",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-1.2",
+          "toc-12.11"
+        ],
+        "depsAfter": [
+          "cplx-1.2",
+          "toc-12.11"
+        ],
+        "flags": {},
+        "objectBefore": "c58fd3204bd45bf2e66da73ebb3be4c898ec53663a62a0f21859332781341d0e",
+        "objectAfter": "c58fd3204bd45bf2e66da73ebb3be4c898ec53663a62a0f21859332781341d0e",
+        "functionBefore": "a8bdb2339056d1b26f608794da572e2bfaf61d46c989388706742500913fb70d",
+        "functionAfter": "a8bdb2339056d1b26f608794da572e2bfaf61d46c989388706742500913fb70d"
+      },
+      {
+        "num": "1.6",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-12.2"
+        ],
+        "depsAfter": [
+          "toc-12.2"
+        ],
+        "flags": {},
+        "objectBefore": "e66f3adcbec6ca9283f724dfe11b8a25f549b7ad080c74ae5a7a8baed9dfd3a8",
+        "objectAfter": "e66f3adcbec6ca9283f724dfe11b8a25f549b7ad080c74ae5a7a8baed9dfd3a8",
+        "functionBefore": "9316f5e196c5b7cab9c3f115c7e8414d7dbc8668390775fb94509d2d590f1a2f",
+        "functionAfter": "9316f5e196c5b7cab9c3f115c7e8414d7dbc8668390775fb94509d2d590f1a2f"
+      },
+      {
+        "num": "1.7",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-14.1"
+        ],
+        "depsAfter": [
+          "toc-14.1"
+        ],
+        "flags": {},
+        "objectBefore": "b4b35638d2d1a22d1d09c0299b600352dfa875a04a47eb5af44b14902170536a",
+        "objectAfter": "b4b35638d2d1a22d1d09c0299b600352dfa875a04a47eb5af44b14902170536a",
+        "functionBefore": "0b50c53183ed755c470b27b049612a1ef6f994b13a49536d31d6e63171d3bf9e",
+        "functionAfter": "0b50c53183ed755c470b27b049612a1ef6f994b13a49536d31d6e63171d3bf9e"
+      },
+      {
+        "num": "2.8",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.7"
+        ],
+        "depsAfter": [
+          "toc-13.7"
+        ],
+        "flags": {},
+        "objectBefore": "eedcab6b45f52e12c5c5d5cb6e03c3b61dd63e39de97d43cee243e02caa2dedf",
+        "objectAfter": "eedcab6b45f52e12c5c5d5cb6e03c3b61dd63e39de97d43cee243e02caa2dedf",
+        "functionBefore": "908ca4f36454f2726025218d2eea4d92598b6805e8cf4d4af8139c118f76010f",
+        "functionAfter": "908ca4f36454f2726025218d2eea4d92598b6805e8cf4d4af8139c118f76010f"
+      },
+      {
+        "num": "2.9",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.12"
+        ],
+        "depsAfter": [
+          "toc-13.12"
+        ],
+        "flags": {},
+        "objectBefore": "548d62ae6a0fd85e346fe9c960e7ab7373401d9c083918b441d004897fa98adb",
+        "objectAfter": "548d62ae6a0fd85e346fe9c960e7ab7373401d9c083918b441d004897fa98adb",
+        "functionBefore": "cda728a7e9298f98535969cae45c87f16f5bedc6416d3e634176c9b5859d86f0",
+        "functionAfter": "cda728a7e9298f98535969cae45c87f16f5bedc6416d3e634176c9b5859d86f0"
+      },
+      {
+        "num": "2.10",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-2.2",
+          "toc-13.4"
+        ],
+        "depsAfter": [
+          "cplx-2.2",
+          "toc-13.4"
+        ],
+        "flags": {},
+        "objectBefore": "2768c7acb8aec59e093131f94fd1765c500b335b2a32a7594456d431700cd3f3",
+        "objectAfter": "2768c7acb8aec59e093131f94fd1765c500b335b2a32a7594456d431700cd3f3",
+        "functionBefore": "342c432d16ef0ecd62fbee394869e8d7dbc32e38c105b09a8b821cb5b015cb46",
+        "functionAfter": "342c432d16ef0ecd62fbee394869e8d7dbc32e38c105b09a8b821cb5b015cb46"
+      },
+      {
+        "num": "2.11",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.5",
+          "toc-13.13"
+        ],
+        "depsAfter": [
+          "toc-13.5",
+          "toc-13.13"
+        ],
+        "flags": {},
+        "objectBefore": "633958cd5ef3aeb96bdd29c5c901be4a292a6face7bbd615c66b5f38e840704d",
+        "objectAfter": "633958cd5ef3aeb96bdd29c5c901be4a292a6face7bbd615c66b5f38e840704d",
+        "functionBefore": "53702e3914126b1d57a570ffd80f9d912ac3e8ce64f066e2eccfb29b545f9ec2",
+        "functionAfter": "53702e3914126b1d57a570ffd80f9d912ac3e8ce64f066e2eccfb29b545f9ec2"
+      },
+      {
+        "num": "2.12",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "verify",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.14",
+          "toc-13.2"
+        ],
+        "depsAfter": [
+          "toc-13.14",
+          "toc-13.2"
+        ],
+        "flags": {
+          "verify": true
+        },
+        "objectBefore": "a5207a77a9ae9d6bda2160f657b984c3b7d507f15ba80915e2c189efeebaf966",
+        "objectAfter": "a5207a77a9ae9d6bda2160f657b984c3b7d507f15ba80915e2c189efeebaf966",
+        "functionBefore": "b6373bef6469671df4a36601718840961dfebc2e12a3ea871c665082cc35f576",
+        "functionAfter": "b6373bef6469671df4a36601718840961dfebc2e12a3ea871c665082cc35f576"
+      },
+      {
+        "num": "2.13",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-2.12",
+          "logic-1.3"
+        ],
+        "depsAfter": [
+          "cplx-2.12",
+          "logic-1.3"
+        ],
+        "flags": {},
+        "objectBefore": "ba756db4f2b9a00a2e1e18be9084675d7a4ec162f7ab1ac5e5c3ae41d19f139a",
+        "objectAfter": "ba756db4f2b9a00a2e1e18be9084675d7a4ec162f7ab1ac5e5c3ae41d19f139a",
+        "functionBefore": "71f368059b5e4e28b7f8cc88916a353ff08a432c1776ffc560e373b0a84d1bad",
+        "functionAfter": "71f368059b5e4e28b7f8cc88916a353ff08a432c1776ffc560e373b0a84d1bad"
+      },
+      {
+        "num": "2.14",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "paper",
+          "introduces",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.4"
+        ],
+        "depsAfter": [
+          "toc-13.4"
+        ],
+        "flags": {},
+        "objectBefore": "6e16d9a03a6226484e10bf0f9279f8a516c3977d617aea52621caf4ff1d718a1",
+        "objectAfter": "6e16d9a03a6226484e10bf0f9279f8a516c3977d617aea52621caf4ff1d718a1",
+        "functionBefore": "5171862a4d0a72bf02e0f011de6c6f0ef4196c89df034dd7e6875279f78afe7a",
+        "functionAfter": "5171862a4d0a72bf02e0f011de6c6f0ef4196c89df034dd7e6875279f78afe7a"
+      },
+      {
+        "num": "2.1",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.5"
+        ],
+        "depsAfter": [
+          "toc-13.5"
+        ],
+        "flags": {},
+        "objectBefore": "d74fead1f753682578ff34e621a9345899bd0e3bd60f82c3b0f24960b52b518c",
+        "objectAfter": "d74fead1f753682578ff34e621a9345899bd0e3bd60f82c3b0f24960b52b518c",
+        "functionBefore": "5ee479ade9727a1b452a3bad8f614c0008d7ef73f24ec48a82528452549f0676",
+        "functionAfter": "5ee479ade9727a1b452a3bad8f614c0008d7ef73f24ec48a82528452549f0676"
+      },
+      {
+        "num": "2.2",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-2.1"
+        ],
+        "depsAfter": [
+          "cplx-2.1"
+        ],
+        "flags": {},
+        "objectBefore": "9d5faee74c1e36aff5874580b4124d9e17e64fb0d4c2083ce48ab9991e0564b3",
+        "objectAfter": "9d5faee74c1e36aff5874580b4124d9e17e64fb0d4c2083ce48ab9991e0564b3",
+        "functionBefore": "193009219aeae013db4137b52e545cf28b1e4df615ca2fe960c0d2fd7907afd2",
+        "functionAfter": "193009219aeae013db4137b52e545cf28b1e4df615ca2fe960c0d2fd7907afd2"
+      },
+      {
+        "num": "2.3",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.11"
+        ],
+        "depsAfter": [
+          "toc-13.11"
+        ],
+        "flags": {},
+        "objectBefore": "a36038fd2b20621cfcf38c55e0d589c9d4ff25403efc2f9ac45bacd4bc637be6",
+        "objectAfter": "a36038fd2b20621cfcf38c55e0d589c9d4ff25403efc2f9ac45bacd4bc637be6",
+        "functionBefore": "872c8fbb4419b53ca5413cc712884b4173aced06f7c6416caeae27c56bc5af33",
+        "functionAfter": "872c8fbb4419b53ca5413cc712884b4173aced06f7c6416caeae27c56bc5af33"
+      },
+      {
+        "num": "2.4",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-2.3",
+          "toc-12.9"
+        ],
+        "depsAfter": [
+          "cplx-2.3",
+          "toc-12.9"
+        ],
+        "flags": {},
+        "objectBefore": "8aca4cb0e49042cd5c887fbff91af937e95ddc0e95c43067f0f5687aef475703",
+        "objectAfter": "8aca4cb0e49042cd5c887fbff91af937e95ddc0e95c43067f0f5687aef475703",
+        "functionBefore": "bb36715ed7aebd49bf1bace861eb651346a33b30edceb9aca2a7bcd001dff21f",
+        "functionAfter": "bb36715ed7aebd49bf1bace861eb651346a33b30edceb9aca2a7bcd001dff21f"
+      },
+      {
+        "num": "2.6",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.5",
+          "algo-11.15"
+        ],
+        "depsAfter": [
+          "toc-13.5",
+          "algo-11.15"
+        ],
+        "flags": {},
+        "objectBefore": "baaa49facf55b9a9f407b99ab8c5592e4f930f35e753011217fc8569415fca00",
+        "objectAfter": "baaa49facf55b9a9f407b99ab8c5592e4f930f35e753011217fc8569415fca00",
+        "functionBefore": "9989cb3f377688dc19cb4c3f9068f9e62cd6341799c57933671ba9e435125e9d",
+        "functionAfter": "9989cb3f377688dc19cb4c3f9068f9e62cd6341799c57933671ba9e435125e9d"
+      },
+      {
+        "num": "2.7",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-13.5"
+        ],
+        "depsAfter": [
+          "toc-13.5"
+        ],
+        "flags": {},
+        "objectBefore": "ce8e162f7ba82dfa64b03350b63472d56077b618e9aecedc68db3b7a70dfcb99",
+        "objectAfter": "ce8e162f7ba82dfa64b03350b63472d56077b618e9aecedc68db3b7a70dfcb99",
+        "functionBefore": "06e2663f7b793246c99e6651557d0027f9ca43abf844b503a4128251f6ccf149",
+        "functionAfter": "06e2663f7b793246c99e6651557d0027f9ca43abf844b503a4128251f6ccf149"
+      },
+      {
+        "num": "3.7",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-3.5",
+          "toc-13.4"
+        ],
+        "depsAfter": [
+          "cplx-3.5",
+          "toc-13.4"
+        ],
+        "flags": {},
+        "objectBefore": "341c9e27e86ff9cebe0318ec47a3c0ac1890b9e97378e6fc1626b744a6369684",
+        "objectAfter": "341c9e27e86ff9cebe0318ec47a3c0ac1890b9e97378e6fc1626b744a6369684",
+        "functionBefore": "e1c3abe06865856faacd6a49c8329ba11136eea8f0cbf014560508859eff3f68",
+        "functionAfter": "e1c3abe06865856faacd6a49c8329ba11136eea8f0cbf014560508859eff3f68"
+      },
+      {
+        "num": "3.8",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-7.6",
+          "toc-14.6",
+          "logic-2.10"
+        ],
+        "depsAfter": [
+          "toc-7.6",
+          "toc-14.6",
+          "logic-2.10"
+        ],
+        "flags": {},
+        "objectBefore": "119cd1a371b68d98b7ad4862f278c7d390520c43918a9aa32708bd3d5c29d60d",
+        "objectAfter": "119cd1a371b68d98b7ad4862f278c7d390520c43918a9aa32708bd3d5c29d60d",
+        "functionBefore": "be4c2cb41452b5cdc5a5cd2ca9b10ca4714e370d068062d3df5b85904c9eb9b2",
+        "functionAfter": "be4c2cb41452b5cdc5a5cd2ca9b10ca4714e370d068062d3df5b85904c9eb9b2"
+      },
+      {
+        "num": "3.9",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-3.8",
+          "toc-14.7"
+        ],
+        "depsAfter": [
+          "cplx-3.8",
+          "toc-14.7"
+        ],
+        "flags": {},
+        "objectBefore": "d0d12831518b08affaaeb85094431d24bd638c435ed888b55f3d1d7a8b626651",
+        "objectAfter": "d0d12831518b08affaaeb85094431d24bd638c435ed888b55f3d1d7a8b626651",
+        "functionBefore": "67b7bfb31de37f96ea1c50b08a89c530d203e2514e07b51e44d4bddd7a061d57",
+        "functionAfter": "67b7bfb31de37f96ea1c50b08a89c530d203e2514e07b51e44d4bddd7a061d57"
+      },
+      {
+        "num": "3.10",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-3.8",
+          "toc-14.10",
+          "alg-2.1"
+        ],
+        "depsAfter": [
+          "cplx-3.8",
+          "toc-14.10",
+          "alg-2.1"
+        ],
+        "flags": {},
+        "objectBefore": "d34bdcfbcd9e2089d0cfbb7429668e34fa4cad007bca2575e6dccafb0901de7e",
+        "objectAfter": "d34bdcfbcd9e2089d0cfbb7429668e34fa4cad007bca2575e6dccafb0901de7e",
+        "functionBefore": "d479e266fefe457a19299fa18645b7105ef63c60ae728fa657f4c0e8562774ce",
+        "functionAfter": "d479e266fefe457a19299fa18645b7105ef63c60ae728fa657f4c0e8562774ce"
+      },
+      {
+        "num": "3.11",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-3.5",
+          "toc-14.7"
+        ],
+        "depsAfter": [
+          "cplx-3.5",
+          "toc-14.7"
+        ],
+        "flags": {},
+        "objectBefore": "7cbb4196546c39be83721f3128a62afa6fa55a347cef9823d0a1e1e3ffb8d1aa",
+        "objectAfter": "7cbb4196546c39be83721f3128a62afa6fa55a347cef9823d0a1e1e3ffb8d1aa",
+        "functionBefore": "feef5167d68e8e77bca182e2abd5d19742fb6883ce6003bf18d997089ba20bda",
+        "functionAfter": "feef5167d68e8e77bca182e2abd5d19742fb6883ce6003bf18d997089ba20bda"
+      },
+      {
+        "num": "3.12",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "scope",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-3.8",
+          "cplx-1.5"
+        ],
+        "depsAfter": [
+          "cplx-3.8",
+          "cplx-1.5"
+        ],
+        "flags": {},
+        "objectBefore": "dfc4689fb22fb6c9b23176e2275fd77870675c50e5e2acc643d4479f094febe7",
+        "objectAfter": "dfc4689fb22fb6c9b23176e2275fd77870675c50e5e2acc643d4479f094febe7",
+        "functionBefore": "2e529a524a730595a54a62614ddd6a01b05135d820050a8dc9015602c0f965c4",
+        "functionAfter": "2e529a524a730595a54a62614ddd6a01b05135d820050a8dc9015602c0f965c4"
+      },
+      {
+        "num": "3.1",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-12.13",
+          "toc-13.4"
+        ],
+        "depsAfter": [
+          "toc-12.13",
+          "toc-13.4"
+        ],
+        "flags": {},
+        "objectBefore": "41e4b566520b854af45e04264cbd5b948b5213b99bcf62624ffb229ac6c90bab",
+        "objectAfter": "41e4b566520b854af45e04264cbd5b948b5213b99bcf62624ffb229ac6c90bab",
+        "functionBefore": "360f79988c39a12ff2c4809e515c8ae3f3e6ec006390a3ebdf31b813274a9e4e",
+        "functionAfter": "360f79988c39a12ff2c4809e515c8ae3f3e6ec006390a3ebdf31b813274a9e4e"
+      },
+      {
+        "num": "3.2",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-12.11",
+          "toc-12.13",
+          "nt-3.1",
+          "nt-3.2",
+          "alg-4.28"
+        ],
+        "depsAfter": [
+          "toc-12.11",
+          "toc-12.13",
+          "nt-3.1",
+          "nt-3.2",
+          "alg-4.28"
+        ],
+        "flags": {},
+        "objectBefore": "e07e855589a42439759bfea527b86eff2297038a1e62db53314d9ab07ba325c7",
+        "objectAfter": "e07e855589a42439759bfea527b86eff2297038a1e62db53314d9ab07ba325c7",
+        "functionBefore": "a2f1162a8bc2cf4b56cc47aa0529ff8105de1b017bb39bd55e0355960d82ce30",
+        "functionAfter": "a2f1162a8bc2cf4b56cc47aa0529ff8105de1b017bb39bd55e0355960d82ce30"
+      },
+      {
+        "num": "3.3",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-3.2",
+          "nt-1.6"
+        ],
+        "depsAfter": [
+          "cplx-3.2",
+          "nt-1.6"
+        ],
+        "flags": {},
+        "objectBefore": "eac02e2243df9857b311b9ef3882a14055601c2b70b74be9074191a690dd03cf",
+        "objectAfter": "eac02e2243df9857b311b9ef3882a14055601c2b70b74be9074191a690dd03cf",
+        "functionBefore": "b04cf7219d220aa6cdc6c64d480731f5c083ac5a4b888b412f12d02d5d0abc91",
+        "functionAfter": "b04cf7219d220aa6cdc6c64d480731f5c083ac5a4b888b412f12d02d5d0abc91"
+      },
+      {
+        "num": "3.4",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-12.13",
+          "logic-3.4"
+        ],
+        "depsAfter": [
+          "toc-12.13",
+          "logic-3.4"
+        ],
+        "flags": {},
+        "objectBefore": "2519f549012cbf8d9967b6a4c51ea562cea89dee5b971d53418932e150a7051e",
+        "objectAfter": "2519f549012cbf8d9967b6a4c51ea562cea89dee5b971d53418932e150a7051e",
+        "functionBefore": "80550377e2ae3198a736b5ae5716d0203a76e7aedc6fc659617edd68a30076d6",
+        "functionAfter": "80550377e2ae3198a736b5ae5716d0203a76e7aedc6fc659617edd68a30076d6"
+      },
+      {
+        "num": "3.5",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-3.4",
+          "cplx-1.10"
+        ],
+        "depsAfter": [
+          "cplx-3.4",
+          "cplx-1.10"
+        ],
+        "flags": {},
+        "objectBefore": "c4459a728a9f7e654a2df5ce7820a5668ea46f9d31ad9a87f491f95de7c47fa8",
+        "objectAfter": "c4459a728a9f7e654a2df5ce7820a5668ea46f9d31ad9a87f491f95de7c47fa8",
+        "functionBefore": "77b6ac743e4294a1966a78a923d58789cc6d5928416618e1adbe7ce86cd7022a",
+        "functionAfter": "77b6ac743e4294a1966a78a923d58789cc6d5928416618e1adbe7ce86cd7022a"
+      },
+      {
+        "num": "3.6",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-3.5"
+        ],
+        "depsAfter": [
+          "cplx-3.5"
+        ],
+        "flags": {},
+        "objectBefore": "25cabc961256c0357f52e14b09d40a23341fd116ab3482260063b9f612a9bcdf",
+        "objectAfter": "25cabc961256c0357f52e14b09d40a23341fd116ab3482260063b9f612a9bcdf",
+        "functionBefore": "78b02f38e5bc52084209ec48843426d8bb491ed0f652ea8a72826564df051f12",
+        "functionAfter": "78b02f38e5bc52084209ec48843426d8bb491ed0f652ea8a72826564df051f12"
+      },
+      {
+        "num": "4.8",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.4",
+          "cplx-3.6",
+          "cplx-3.4"
+        ],
+        "depsAfter": [
+          "cplx-4.4",
+          "cplx-3.6",
+          "cplx-3.4"
+        ],
+        "flags": {},
+        "objectBefore": "a28cab97d0a22a7bc19533304cacfe998ccd90c1c6dbb092ff8491d7bbe342ef",
+        "objectAfter": "a28cab97d0a22a7bc19533304cacfe998ccd90c1c6dbb092ff8491d7bbe342ef",
+        "functionBefore": "bf9883aea222d0e47f2d90568b3e770c992591dd0dd67c82a5d04da364ace937",
+        "functionAfter": "bf9883aea222d0e47f2d90568b3e770c992591dd0dd67c82a5d04da364ace937"
+      },
+      {
+        "num": "4.9",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.8",
+          "cplx-4.5",
+          "cplx-3.5"
+        ],
+        "depsAfter": [
+          "cplx-4.8",
+          "cplx-4.5",
+          "cplx-3.5"
+        ],
+        "flags": {},
+        "objectBefore": "220270c7a4038db024db0cfcba2a5e9252001f68a4e93340e90da420895f941f",
+        "objectAfter": "220270c7a4038db024db0cfcba2a5e9252001f68a4e93340e90da420895f941f",
+        "functionBefore": "64073ab56f1b362aef3c1aecc8064cab8a41c1206f18ffbca35db10936bff15b",
+        "functionAfter": "64073ab56f1b362aef3c1aecc8064cab8a41c1206f18ffbca35db10936bff15b"
+      },
+      {
+        "num": "4.10",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.1",
+          "alg-2.1"
+        ],
+        "depsAfter": [
+          "cplx-4.1",
+          "alg-2.1"
+        ],
+        "flags": {},
+        "objectBefore": "42fc9d432ee4f15a9f63bf586ab3aba3ed5a08cc8eab9311ed204a53f2f7b364",
+        "objectAfter": "42fc9d432ee4f15a9f63bf586ab3aba3ed5a08cc8eab9311ed204a53f2f7b364",
+        "functionBefore": "46009778de6796d0a31e587d0573cb49535d28d8f84fc6e594082b1896aa74fe",
+        "functionAfter": "46009778de6796d0a31e587d0573cb49535d28d8f84fc6e594082b1896aa74fe"
+      },
+      {
+        "num": "4.11",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.10",
+          "alg-1.15"
+        ],
+        "depsAfter": [
+          "cplx-4.10",
+          "alg-1.15"
+        ],
+        "flags": {},
+        "objectBefore": "a9b8e53832a588fbabc8afe3ec36217b7661e435b2b0a79de6ac5f19141d7fb6",
+        "objectAfter": "a9b8e53832a588fbabc8afe3ec36217b7661e435b2b0a79de6ac5f19141d7fb6",
+        "functionBefore": "c17b62a3fc041a7eee188ad46cfc2b94237e7fa09b5eafc966fe840f7387fc85",
+        "functionAfter": "c17b62a3fc041a7eee188ad46cfc2b94237e7fa09b5eafc966fe840f7387fc85"
+      },
+      {
+        "num": "4.12",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.5",
+          "toc-14.11"
+        ],
+        "depsAfter": [
+          "cplx-4.5",
+          "toc-14.11"
+        ],
+        "flags": {},
+        "objectBefore": "a50a1d9d8b9b495e439a879334304d27346bb8de9da1ecb675e6436dcb84fb0d",
+        "objectAfter": "a50a1d9d8b9b495e439a879334304d27346bb8de9da1ecb675e6436dcb84fb0d",
+        "functionBefore": "c35a008ce3d7edfd4c0ce6097a659d8744e09196e5d32b63b53fd87e339f51b9",
+        "functionAfter": "c35a008ce3d7edfd4c0ce6097a659d8744e09196e5d32b63b53fd87e339f51b9"
+      },
+      {
+        "num": "4.13",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.10",
+          "toc-14.12",
+          "ladr-3.46",
+          "comb-1.2"
+        ],
+        "depsAfter": [
+          "cplx-4.10",
+          "toc-14.12",
+          "ladr-3.46",
+          "comb-1.2"
+        ],
+        "flags": {},
+        "objectBefore": "6da76a2a3c972619e717198dffd7ea8f2f76c55825f4967d62b1b71e76adb281",
+        "objectAfter": "6da76a2a3c972619e717198dffd7ea8f2f76c55825f4967d62b1b71e76adb281",
+        "functionBefore": "8cc8e7a9817dbb2ea7e6a92a1619dcf70eed385e4f3d78e09af85ab82c584707",
+        "functionAfter": "8cc8e7a9817dbb2ea7e6a92a1619dcf70eed385e4f3d78e09af85ab82c584707"
+      },
+      {
+        "num": "4.14",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "paper",
+          "introduces",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "alg-19.15a",
+          "logic-2.3"
+        ],
+        "depsAfter": [
+          "alg-19.15a",
+          "logic-2.3"
+        ],
+        "flags": {},
+        "objectBefore": "21237c05efd4fc841b16499f4a2021ba88254840a5e64abd75dc3fa52d39e000",
+        "objectAfter": "21237c05efd4fc841b16499f4a2021ba88254840a5e64abd75dc3fa52d39e000",
+        "functionBefore": "eabe1e056d1094a8e800acb173711bfaec650123652f767c83da4631b871026e",
+        "functionAfter": "eabe1e056d1094a8e800acb173711bfaec650123652f767c83da4631b871026e"
+      },
+      {
+        "num": "4.1",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "toc-1.9",
+          "logic-2.5"
+        ],
+        "depsAfter": [
+          "toc-1.9",
+          "logic-2.5"
+        ],
+        "flags": {},
+        "objectBefore": "68fe09e7280cc386304d1a2102c8c94d4082513df013d79967d2b4da4fbe3478",
+        "objectAfter": "68fe09e7280cc386304d1a2102c8c94d4082513df013d79967d2b4da4fbe3478",
+        "functionBefore": "cad7d6693e9281ff0248bca3ecdb1d11103cb6ddc02abcac0888428c49978e0c",
+        "functionAfter": "cad7d6693e9281ff0248bca3ecdb1d11103cb6ddc02abcac0888428c49978e0c"
+      },
+      {
+        "num": "4.2",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "scope",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.1",
+          "comb-1.2",
+          "comb-1.1"
+        ],
+        "depsAfter": [
+          "cplx-4.1",
+          "comb-1.2",
+          "comb-1.1"
+        ],
+        "flags": {},
+        "objectBefore": "30f9b505035b10f77d17da41999ad8ec02e7e75be0e4a467b63e5806c2af488a",
+        "objectAfter": "30f9b505035b10f77d17da41999ad8ec02e7e75be0e4a467b63e5806c2af488a",
+        "functionBefore": "cc0ee3ef8226cd42f15a46ba152ba4818647958486d71c0102c0174d0e638735",
+        "functionAfter": "cc0ee3ef8226cd42f15a46ba152ba4818647958486d71c0102c0174d0e638735"
+      },
+      {
+        "num": "4.3",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.1",
+          "cplx-4.2"
+        ],
+        "depsAfter": [
+          "cplx-4.1",
+          "cplx-4.2"
+        ],
+        "flags": {},
+        "objectBefore": "6e2c647f7ca372865457ac64f22da3d065ccd7267cca761c17141aea694f6f2b",
+        "objectAfter": "6e2c647f7ca372865457ac64f22da3d065ccd7267cca761c17141aea694f6f2b",
+        "functionBefore": "7780ded0b779a4ebbd58df77c2c05c7e8bbf524b5a92cd9aad7da2bd477e1467",
+        "functionAfter": "7780ded0b779a4ebbd58df77c2c05c7e8bbf524b5a92cd9aad7da2bd477e1467"
+      },
+      {
+        "num": "4.4",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.1"
+        ],
+        "depsAfter": [
+          "cplx-4.1"
+        ],
+        "flags": {},
+        "objectBefore": "c950eaba5acdd01a88ee5e1118ef5f75ef1a132a500dd15195abaa8ac3cefe86",
+        "objectAfter": "c950eaba5acdd01a88ee5e1118ef5f75ef1a132a500dd15195abaa8ac3cefe86",
+        "functionBefore": "5774ef37218f5428ddb8e5f7d6f1877c1e9c0e343f82ad535e7e1d71ab2cd642",
+        "functionAfter": "5774ef37218f5428ddb8e5f7d6f1877c1e9c0e343f82ad535e7e1d71ab2cd642"
+      },
+      {
+        "num": "4.5",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.4",
+          "toc-13.4"
+        ],
+        "depsAfter": [
+          "cplx-4.4",
+          "toc-13.4"
+        ],
+        "flags": {},
+        "objectBefore": "669f40e77b66568429dfb12820035aab386b106fe1602ddf5727a93547ef9de5",
+        "objectAfter": "669f40e77b66568429dfb12820035aab386b106fe1602ddf5727a93547ef9de5",
+        "functionBefore": "8856d6615d2d2a0b8514f627ab097e0f182776dd4dda0e7d0c7d3cc424dfd95b",
+        "functionAfter": "8856d6615d2d2a0b8514f627ab097e0f182776dd4dda0e7d0c7d3cc424dfd95b"
+      },
+      {
+        "num": "4.6",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.4",
+          "toc-9.7",
+          "logic-1.2"
+        ],
+        "depsAfter": [
+          "cplx-4.4",
+          "toc-9.7",
+          "logic-1.2"
+        ],
+        "flags": {},
+        "objectBefore": "e1b7643a934326c2c5c3e4a878f2f904f66f8b0efdac4b1157b41ebe7ec32e52",
+        "objectAfter": "e1b7643a934326c2c5c3e4a878f2f904f66f8b0efdac4b1157b41ebe7ec32e52",
+        "functionBefore": "41d2d526ef5929536926a73dccc740f8fca9a0e5db0716cb482a0f6f748a9778",
+        "functionAfter": "41d2d526ef5929536926a73dccc740f8fca9a0e5db0716cb482a0f6f748a9778"
+      },
+      {
+        "num": "4.7",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "credit",
+          "links",
+          "tags",
+          "viz"
+        ],
+        "depsBefore": [
+          "cplx-4.5",
+          "toc-12.11",
+          "logic-2.3"
+        ],
+        "depsAfter": [
+          "cplx-4.5",
+          "toc-12.11",
+          "logic-2.3"
+        ],
+        "flags": {},
+        "objectBefore": "86d0bf3b716c4d187ab20600abb5a3d5721f8b7585b107f5055a9f9e81ec5ca0",
+        "objectAfter": "86d0bf3b716c4d187ab20600abb5a3d5721f8b7585b107f5055a9f9e81ec5ca0",
+        "functionBefore": "492d22f1e3d38479ac24911fd18f7d355d47eb1dfcb5959b399130f203ad2b78",
+        "functionAfter": "492d22f1e3d38479ac24911fd18f7d355d47eb1dfcb5959b399130f203ad2b78"
+      },
+      {
+        "num": "13.9",
+        "keys": [
+          "num",
+          "kind",
+          "name",
+          "paper",
+          "introduces",
+          "statement",
+          "idea",
+          "caption",
+          "deps",
+          "refs",
+          "tags",
+          "credit",
+          "links",
+          "viz"
+        ],
+        "depsBefore": [
+          "qinfo-5.1",
+          "qinfo-4.8",
+          "cplx-13.4"
+        ],
+        "depsAfter": [
+          "qinfo-5.1",
+          "qinfo-4.8",
+          "cplx-13.4"
+        ],
+        "flags": {},
+        "objectBefore": "dc46aafb5cfaba98e5a4d8f869c7e374e635b47a982670df43173ef0d3f1e13e",
+        "objectAfter": "dc46aafb5cfaba98e5a4d8f869c7e374e635b47a982670df43173ef0d3f1e13e",
+        "functionBefore": "fbbe4b9fcd5e5b7f27a44ef308b0b8a188071309025bfb4408442cd2830a71a1",
+        "functionAfter": "fbbe4b9fcd5e5b7f27a44ef308b0b8a188071309025bfb4408442cd2830a71a1"
+      }
+    ],
+    "rawFullRows": [
+      {
+        "num": "1.1",
+        "kind": "Definition",
+        "name": "Time- and space-constructible functions",
+        "deps": [
+          "toc-12.2",
+          "toc-14.1",
+          "pma-3.26"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "A machine computes the bound t(n) in binary within t(n) steps for n\u00b2, n log n and 2\u207f, while a step counter shows the clock never overruns the budget it measures."
+      },
+      {
+        "num": "1.2",
+        "kind": "Theorem",
+        "name": "Time hierarchy theorem",
+        "deps": [
+          "cplx-1.1",
+          "toc-9.6",
+          "toc-7.9"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "A clocked universal machine simulates each machine on its own description and does the opposite; the machine-versus-input table shows the flipped diagonal escaping every machine faster than the clock."
+      },
+      {
+        "num": "1.3",
+        "kind": "Theorem",
+        "name": "Space hierarchy theorem",
+        "deps": [
+          "cplx-1.1",
+          "toc-14.1",
+          "comb-1.1",
+          "comb-1.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "The diagonalizing machine marks off s(n) cells and simulates within them, halting any simulation that loops; a meter shows it never crosses its marked fence."
+      },
+      {
+        "num": "1.4",
+        "kind": "Theorem",
+        "name": "P \u2260 EXPTIME and L \u2260 PSPACE",
+        "deps": [
+          "cplx-1.2",
+          "cplx-1.3",
+          "pma-8.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "A ladder of classes TIME(n), TIME(n\u00b2), \u2026, TIME(2\u207f) with a separating language at each rung; clicking a rung shows the diagonal language that lives there and not below."
+      },
+      {
+        "num": "1.5",
+        "kind": "Theorem",
+        "name": "Nondeterministic time hierarchy theorem",
+        "deps": [
+          "cplx-1.2",
+          "toc-12.11"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "Lazy diagonalization: on a long interval of input lengths the diagonalizer waits, then flips the answer once, and the intervals and the single disagreement point are drawn on a number line."
+      },
+      {
+        "num": "1.6",
+        "kind": "Theorem",
+        "name": "Linear speedup theorem",
+        "deps": [
+          "toc-12.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 1"
+        ],
+        "pic": "Pack k tape symbols into one super-symbol; the compressed machine\u2019s step count is plotted against the original\u2019s and falls by about a factor of k, which is why constants are ignored."
+      },
+      {
+        "num": "1.7",
+        "kind": "Theorem",
+        "name": "Hopcroft\u2013Paul\u2013Valiant: time t fits in space t/log t",
+        "deps": [
+          "toc-14.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 4"
+        ],
+        "pic": "Play the pebble game on a computation graph the reader draws: pebbles may be placed when all predecessors hold one, and the strategy found uses far fewer pebbles than nodes."
+      },
+      {
+        "num": "1.8",
+        "kind": "Theorem",
+        "name": "Ladner\u2019s theorem",
+        "deps": [
+          "toc-13.2",
+          "cplx-1.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "SAT is \u201cblown full of holes\u201d by padding on stretches of input lengths chosen by a slow diagonalizer; the stretches where it is hard or trivial are shown alternating on a log scale."
+      },
+      {
+        "num": "1.9",
+        "kind": "Concept",
+        "name": "Candidates for NP-intermediate: factoring and graph isomorphism",
+        "deps": [
+          "cplx-1.8",
+          "alg-1.25"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Colour refinement on two graphs the reader draws: vertex colours split round by round, and graphs with different colour counts are certified non-isomorphic, while regular graphs defeat it."
+      },
+      {
+        "num": "1.10",
+        "kind": "Definition",
+        "name": "Oracle machines and relativized classes",
+        "deps": [
+          "toc-11.9",
+          "toc-12.11"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "A polynomial-time machine consults an oracle box in one step; switching the oracle between a SAT solver and a random set changes which problems the same machine can decide."
+      },
+      {
+        "num": "1.11",
+        "kind": "Theorem",
+        "name": "Baker\u2013Gill\u2013Solovay: relativization barrier",
+        "deps": [
+          "cplx-1.10",
+          "cplx-1.2",
+          "pma-3.20"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "With a PSPACE-complete oracle, P and NP coincide; with an oracle built stage by stage against each machine, they differ \u2014 both constructions are stepped through side by side."
+      },
+      {
+        "num": "1.12",
+        "kind": "Theorem",
+        "name": "A provably intractable natural problem",
+        "deps": [
+          "cplx-1.3",
+          "toc-3.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 3"
+        ],
+        "pic": "Equivalence of regular expressions with an exponentiation operator is EXPSPACE-complete, so outside PSPACE; the expression size explodes when the reader expands the exponents."
+      },
+      {
+        "num": "1.13",
+        "kind": "Paper",
+        "name": "On the Computational Complexity of Algorithms",
+        "paper": {
+          "authors": "J. Hartmanis and R. E. Stearns",
+          "year": 1965,
+          "title": "On the Computational Complexity of Algorithms",
+          "venue": "Transactions of the American Mathematical Society 117: 285\u2013306",
+          "doi": "10.1090/S0002-9947-1965-0170805-7"
+        },
+        "introduces": [
+          "toc-12.2",
+          "cplx-1.1",
+          "cplx-1.2",
+          "cplx-1.6"
+        ],
+        "deps": [
+          "toc-7.5",
+          "toc-1.5"
+        ],
+        "refs": [],
+        "pic": "Race multitape machines under a time bound T and a sufficiently larger one: a diagonal machine simulates each fast machine on its own description and does the opposite, while a second panel shows linear speed-up by packing several tape symbols into one."
+      },
+      {
+        "num": "2.1",
+        "kind": "Theorem",
+        "name": "3-dimensional matching is NP-complete",
+        "deps": [
+          "toc-13.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Variable gadgets are rings of triples that must be taken all-even or all-odd; clause triples plug in, and a satisfying assignment the reader picks yields a perfect matching."
+      },
+      {
+        "num": "2.2",
+        "kind": "Theorem",
+        "name": "Exact cover and tiling puzzles are NP-complete",
+        "deps": [
+          "cplx-2.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Pentomino tiling as exact cover: rows of the incidence matrix are placements, and a backtracking search (dancing links) finds tilings while its node count grows rapidly with board size."
+      },
+      {
+        "num": "2.3",
+        "kind": "Theorem",
+        "name": "PARTITION and KNAPSACK are NP-complete",
+        "deps": [
+          "toc-13.11"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "A subset-sum instance is turned into a partition instance by adding two balancing numbers; the reader splits the numbers into two piles and the balance scale tips or levels."
+      },
+      {
+        "num": "2.4",
+        "kind": "Concept",
+        "name": "Weak versus strong NP-hardness",
+        "deps": [
+          "cplx-2.3",
+          "toc-12.9"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Knapsack\u2019s dynamic program runs fast when numbers are small and blows up with digit count, while 3-PARTITION stays hard even with numbers written in unary \u2014 both timed live."
+      },
+      {
+        "num": "2.6",
+        "kind": "Theorem",
+        "name": "Integer linear programming is NP-complete",
+        "deps": [
+          "toc-13.5",
+          "algo-11.15"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Each clause becomes a linear inequality over 0/1 variables; the LP relaxation\u2019s fractional optimum is drawn next to the integer points, which may all be infeasible."
+      },
+      {
+        "num": "2.7",
+        "kind": "Theorem",
+        "name": "MAX-CUT is NP-complete",
+        "deps": [
+          "toc-13.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Drag vertices between two sides to cut as many edges as possible; the gadget from not-all-equal 3SAT makes large cuts correspond to satisfying assignments."
+      },
+      {
+        "num": "2.8",
+        "kind": "Theorem",
+        "name": "SET-COVER and HITTING-SET are NP-complete",
+        "deps": [
+          "toc-13.7"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Vertex cover is set cover where each vertex covers its edges; the reader picks sets to cover a universe and the counter compares with the optimum found by search."
+      },
+      {
+        "num": "2.9",
+        "kind": "Theorem",
+        "name": "Planar 3-colouring is NP-complete",
+        "deps": [
+          "toc-13.12"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Every edge crossing is replaced by a crossover gadget that forces opposite corners to share colours; the reader colours the gadget and checks it can never cheat."
+      },
+      {
+        "num": "2.10",
+        "kind": "Concept",
+        "name": "Hard puzzles: Sudoku, Minesweeper and friends",
+        "deps": [
+          "cplx-2.2",
+          "toc-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Minesweeper wires and gates are laid out on a board; whether a revealed position is consistent encodes a circuit\u2019s satisfiability, checked as the reader edits the circuit."
+      },
+      {
+        "num": "2.11",
+        "kind": "Theorem",
+        "name": "Schaefer\u2019s dichotomy theorem",
+        "deps": [
+          "toc-13.5",
+          "toc-13.13"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Pick the allowed constraint types of a Boolean CSP; the tool checks the six tractable cases \u2014 Horn, dual-Horn, 2-CNF, affine, 0- and 1-valid \u2014 and otherwise shows a reduction from 3SAT."
+      },
+      {
+        "num": "2.12",
+        "kind": "Theorem",
+        "name": "Mahaney\u2019s theorem: no sparse NP-complete sets unless P = NP",
+        "deps": [
+          "toc-13.14",
+          "toc-13.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "A reduction to a sparse set must map many formulas onto few strings; the self-reduction tree of SAT is pruned using these collisions until only polynomially many branches remain."
+      },
+      {
+        "num": "2.13",
+        "kind": "Hypothesis",
+        "name": "Berman\u2013Hartmanis isomorphism conjecture",
+        "deps": [
+          "cplx-2.12",
+          "logic-1.3"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Padding functions turn reductions between known NP-complete problems into polynomial-time bijections, shown as a perfect matching between instances of SAT and CLIQUE of bounded size."
+      },
+      {
+        "num": "2.14",
+        "kind": "Paper",
+        "name": "Reducibility Among Combinatorial Problems",
+        "paper": {
+          "authors": "Richard M. Karp",
+          "year": 1972,
+          "title": "Reducibility Among Combinatorial Problems",
+          "venue": "in R. E. Miller and J. W. Thatcher (eds.), Complexity of Computer Computations, Plenum Press: 85\u2013103",
+          "doi": "10.1007/978-1-4684-2001-2_9"
+        },
+        "introduces": [
+          "toc-13.1",
+          "toc-13.6",
+          "toc-13.7",
+          "toc-13.9",
+          "toc-13.10",
+          "toc-13.11",
+          "cplx-2.1",
+          "cplx-2.3",
+          "cplx-2.6",
+          "cplx-2.7",
+          "cplx-2.8"
+        ],
+        "deps": [
+          "toc-13.4"
+        ],
+        "refs": [],
+        "pic": "Karp\u2019s tree of 21 problems drawn as a graph rooted at SAT: click an edge to watch a concrete small formula, graph or list of numbers transformed into the next problem, and a solution mapped back the other way."
+      },
+      {
+        "num": "3.1",
+        "kind": "Theorem",
+        "name": "TAUTOLOGY is coNP-complete",
+        "deps": [
+          "toc-12.13",
+          "toc-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "A formula is a tautology exactly when its negation is unsatisfiable; the truth table of a typed formula is checked row by row, with a falsifying row as the only short certificate of \u201cno\u201d."
+      },
+      {
+        "num": "3.2",
+        "kind": "Theorem",
+        "name": "Pratt certificates: PRIMES is in NP \u2229 coNP",
+        "deps": [
+          "toc-12.11",
+          "toc-12.13",
+          "nt-3.1",
+          "nt-3.2",
+          "alg-4.28"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Type a prime p; the certificate \u2014 a generator of order p \u2212 1 and the factorization of p \u2212 1, each factor certified recursively \u2014 is drawn as a tree and verified node by node."
+      },
+      {
+        "num": "3.3",
+        "kind": "Concept",
+        "name": "Factoring lies in NP \u2229 coNP",
+        "deps": [
+          "cplx-3.2",
+          "nt-1.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "The complete prime factorization, with Pratt certificates for each factor, certifies both \u201cN has a factor below k\u201d and its negation, checked on a number the reader types."
+      },
+      {
+        "num": "3.4",
+        "kind": "Definition",
+        "name": "\u03a3\u2082 and \u03a0\u2082: two quantifiers",
+        "deps": [
+          "toc-12.13",
+          "logic-3.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "MIN-FORMULA: is there a shorter equivalent formula? The \u2203 guesses a small formula and the \u2200 checks all assignments; both search layers are shown for a typed formula."
+      },
+      {
+        "num": "3.5",
+        "kind": "Definition",
+        "name": "The polynomial hierarchy",
+        "deps": [
+          "cplx-3.4",
+          "cplx-1.10"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "A tower of classes \u03a3\u2096 and \u03a0\u2096 with arrows for inclusions; dragging a quantifier prefix \u2203\u2200\u2203\u2026 onto the tower places a problem at its level."
+      },
+      {
+        "num": "3.6",
+        "kind": "Theorem",
+        "name": "If \u03a3\u2096 = \u03a0\u2096 the hierarchy collapses to level k",
+        "deps": [
+          "cplx-3.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "Merging two adjacent quantifiers of the same kind lets every higher level fold down; toggling the hypothesis animates the tower telescoping to level k."
+      },
+      {
+        "num": "3.7",
+        "kind": "Theorem",
+        "name": "\u03a3\u2096-SAT is complete for level k",
+        "deps": [
+          "cplx-3.5",
+          "toc-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "A quantified formula with k alternating blocks is evaluated as a game tree; the Cook\u2013Levin tableau construction is shown carrying over block by block."
+      },
+      {
+        "num": "3.8",
+        "kind": "Definition",
+        "name": "Alternating Turing machines",
+        "deps": [
+          "toc-7.6",
+          "toc-14.6",
+          "logic-2.10"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "A computation tree with \u2203 and \u2200 nodes is evaluated bottom-up \u2014 OR at existential nodes, AND at universal ones \u2014 and the reader flips leaf outcomes to change the verdict."
+      },
+      {
+        "num": "3.9",
+        "kind": "Theorem",
+        "name": "Alternating polynomial time equals PSPACE",
+        "deps": [
+          "cplx-3.8",
+          "toc-14.7"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "TQBF is solved by an alternating machine in linear time, and conversely an alternating computation tree is evaluated depth-first with a stack whose size is read out."
+      },
+      {
+        "num": "3.10",
+        "kind": "Theorem",
+        "name": "Alternating logarithmic space equals P",
+        "deps": [
+          "cplx-3.8",
+          "toc-14.10",
+          "alg-2.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "Circuit evaluation as a game: the existential player claims a gate is true and the universal player challenges an input wire, walking down the circuit with only a gate pointer in memory."
+      },
+      {
+        "num": "3.11",
+        "kind": "Theorem",
+        "name": "PH \u2286 PSPACE",
+        "deps": [
+          "cplx-3.5",
+          "toc-14.7"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "Each level of the hierarchy is a bounded-quantifier TQBF instance; the space used to evaluate it recursively is plotted against k and stays polynomial."
+      },
+      {
+        "num": "3.12",
+        "kind": "Theorem",
+        "name": "Time\u2013space lower bounds for SAT",
+        "deps": [
+          "cplx-3.8",
+          "cplx-1.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 5"
+        ],
+        "pic": "A fast, small-space SAT algorithm would let alternation speed up any computation (guess midpoints, check one), contradicting the hierarchy theorem; the trade-off curve of ruled-out (time, space) pairs is drawn."
+      },
+      {
+        "num": "4.1",
+        "kind": "Definition",
+        "name": "Boolean circuits and circuit size",
+        "deps": [
+          "toc-1.9",
+          "logic-2.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "Drag AND, OR and NOT gates onto a canvas and wire them; the circuit\u2019s truth table, size and depth are computed live, and a ripple-carry adder is built as an example."
+      },
+      {
+        "num": "4.2",
+        "kind": "Theorem",
+        "name": "Most functions need circuits of size about 2\u207f/n (Shannon)",
+        "deps": [
+          "cplx-4.1",
+          "comb-1.2",
+          "comb-1.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "The number of circuits with s gates is plotted against the 2^(2\u207f) Boolean functions on n inputs on a log\u2013log scale; the curves cross near s = 2\u207f/n."
+      },
+      {
+        "num": "4.3",
+        "kind": "Theorem",
+        "name": "Every function has circuits of size O(2\u207f/n) (Lupanov)",
+        "deps": [
+          "cplx-4.1",
+          "cplx-4.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "The truth table is cut into blocks and shared sub-functions are computed once; the circuit size for random functions is plotted against 2\u207f/n and against the naive 2\u207f\u00b7n."
+      },
+      {
+        "num": "4.4",
+        "kind": "Definition",
+        "name": "P/poly and advice",
+        "deps": [
+          "cplx-4.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "A machine receives an advice string depending only on the input length; the reader edits the advice for each length and sees which languages become decidable."
+      },
+      {
+        "num": "4.5",
+        "kind": "Theorem",
+        "name": "P \u2286 P/poly",
+        "deps": [
+          "cplx-4.4",
+          "toc-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "The tableau of a polynomial-time machine is unrolled into a grid of identical local gadgets; the circuit size is plotted against running time squared."
+      },
+      {
+        "num": "4.6",
+        "kind": "Theorem",
+        "name": "P/poly contains undecidable languages",
+        "deps": [
+          "cplx-4.4",
+          "toc-9.7",
+          "logic-1.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "The unary halting language has at most one string per length, so a one-bit advice per length decides it; the advice bits are shown as a sequence no machine can compute."
+      },
+      {
+        "num": "4.7",
+        "kind": "Theorem",
+        "name": "CIRCUIT-SAT is NP-complete",
+        "deps": [
+          "cplx-4.5",
+          "toc-12.11",
+          "logic-2.3"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "A verifier is compiled into a circuit with the certificate as free inputs; the reader searches for satisfying inputs and the circuit lights up when one is found."
+      },
+      {
+        "num": "4.8",
+        "kind": "Theorem",
+        "name": "Karp\u2013Lipton theorem",
+        "deps": [
+          "cplx-4.4",
+          "cplx-3.6",
+          "cplx-3.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "If small SAT circuits existed, a \u03a0\u2082 statement could guess the circuit, test it by self-reduction and use it; the proof is animated as quantifiers swapping and the hierarchy folding."
+      },
+      {
+        "num": "4.9",
+        "kind": "Theorem",
+        "name": "Meyer\u2019s theorem: EXP \u2286 P/poly implies EXP = \u03a3\u2082",
+        "deps": [
+          "cplx-4.8",
+          "cplx-4.5",
+          "cplx-3.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "An exponential computation\u2019s tableau is described by a small circuit that a \u03a3\u2082 machine guesses and checks locally, cell by cell, as the reader scrolls the tableau."
+      },
+      {
+        "num": "4.10",
+        "kind": "Definition",
+        "name": "NC and AC: shallow circuits",
+        "deps": [
+          "cplx-4.1",
+          "alg-2.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "Circuits for the same function laid out by depth: a balanced XOR tree has logarithmic depth, while a chain has linear depth; the depth readout classifies each design."
+      },
+      {
+        "num": "4.11",
+        "kind": "Algorithm",
+        "name": "Parallel prefix: addition in logarithmic depth",
+        "deps": [
+          "cplx-4.10",
+          "alg-1.15"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "Carry-lookahead computes all carries with a prefix network; the depth of the prefix tree grows like log n against the ripple-carry adder\u2019s n, both drawn."
+      },
+      {
+        "num": "4.12",
+        "kind": "Theorem",
+        "name": "Circuit value problem is P-complete",
+        "deps": [
+          "cplx-4.5",
+          "toc-14.11"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "Any polynomial-time computation becomes a circuit by a log-space transducer; evaluating it layer by layer seems inherently sequential, and its depth is read out."
+      },
+      {
+        "num": "4.13",
+        "kind": "Theorem",
+        "name": "NC\u00b9 \u2286 L \u2286 NL \u2286 NC\u00b2",
+        "deps": [
+          "cplx-4.10",
+          "toc-14.12",
+          "ladr-3.46",
+          "comb-1.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 6"
+        ],
+        "pic": "A logarithmic-depth formula is evaluated depth-first with a pointer stack; reachability is computed in depth log\u00b2 n by repeated Boolean matrix squaring."
+      },
+      {
+        "num": "4.14",
+        "kind": "Paper",
+        "name": "A Symbolic Analysis of Relay and Switching Circuits",
+        "paper": {
+          "authors": "Claude E. Shannon",
+          "year": 1938,
+          "title": "A Symbolic Analysis of Relay and Switching Circuits",
+          "venue": "Transactions of the American Institute of Electrical Engineers 57 (12): 713\u2013723",
+          "doi": "10.1109/T-AIEE.1938.5057767"
+        },
+        "introduces": [
+          "tech-11.13",
+          "logic-2.8",
+          "cplx-4.1"
+        ],
+        "deps": [
+          "alg-19.15a",
+          "logic-2.3"
+        ],
+        "refs": [],
+        "pic": "Wire relay contacts in series and parallel and see the network\u2019s hindrance written as a Boolean expression; simplify it with Shannon\u2019s rules and watch the circuit lose contacts while its truth table stays fixed, ending with his relay adder."
+      },
+      {
+        "num": "5.1",
+        "kind": "Definition",
+        "name": "Probabilistic Turing machines and BPP",
+        "deps": [
+          "toc-12.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Run a randomized algorithm many times on one input; the fraction of accepting runs is plotted and must stay above 2/3 on yes-inputs and below 1/3 on no-inputs."
+      },
+      {
+        "num": "5.2",
+        "kind": "Definition",
+        "name": "RP, coRP and ZPP",
+        "deps": [
+          "cplx-5.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Three panels show one-sided error (never wrong on no-inputs), the opposite side, and zero error with a random running time whose histogram is drawn."
+      },
+      {
+        "num": "5.3",
+        "kind": "Theorem",
+        "name": "ZPP = RP \u2229 coRP",
+        "deps": [
+          "cplx-5.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Alternate an RP and a coRP algorithm until one gives a certain answer; the number of rounds needed is geometrically distributed, as the simulated histogram shows."
+      },
+      {
+        "num": "5.4",
+        "kind": "Theorem",
+        "name": "Error reduction by repetition",
+        "deps": [
+          "cplx-5.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Take the majority of k independent runs; the error probability is plotted on a log scale against k and falls in a straight line, matching the Chernoff bound."
+      },
+      {
+        "num": "5.5",
+        "kind": "Theorem",
+        "name": "Schwartz\u2013Zippel lemma",
+        "deps": [],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "A nonzero polynomial of degree d over a grid S\u207f is evaluated everywhere; its zeros are coloured, and their fraction never exceeds d/|S|, whatever polynomial the reader types."
+      },
+      {
+        "num": "5.6",
+        "kind": "Algorithm",
+        "name": "Polynomial identity testing",
+        "deps": [
+          "cplx-5.5",
+          "cplx-5.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Two arithmetic circuits are compared at random points; when they differ, a witness point is found within a few trials, while expanding them symbolically would explode."
+      },
+      {
+        "num": "5.7",
+        "kind": "Algorithm",
+        "name": "Perfect matchings via random Tutte matrices",
+        "deps": [
+          "cplx-5.6",
+          "ladr-9.50"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Fill the Tutte matrix of a graph with random numbers and compute its determinant; it is nonzero with high probability exactly when a perfect matching exists, tested on graphs the reader draws."
+      },
+      {
+        "num": "5.8",
+        "kind": "Algorithm",
+        "name": "Freivalds\u2019 check of matrix products",
+        "deps": [
+          "cplx-5.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Claimed product C = AB is tested by multiplying both sides by a random 0/1 vector; plant an error in C and it is caught at least half the time, at quadratic rather than cubic cost."
+      },
+      {
+        "num": "5.10",
+        "kind": "Theorem",
+        "name": "PRIMES is in P (Agrawal\u2013Kayal\u2013Saxena)",
+        "deps": [
+          "nt-3.12",
+          "cplx-3.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "The identity (X + a)\u207f \u2261 X\u207f + a modulo (X^r \u2212 1, n) is checked for small a; composites fail some check while primes pass all, and the running time is plotted against bit length."
+      },
+      {
+        "num": "5.11",
+        "kind": "Algorithm",
+        "name": "Random-walk algorithm for 2SAT",
+        "deps": [
+          "cplx-5.2",
+          "toc-13.13"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Start from a random assignment and flip a random variable of a violated clause; the Hamming distance to a fixed solution performs a random walk that hits zero in about n\u00b2 steps."
+      },
+      {
+        "num": "5.12",
+        "kind": "Theorem",
+        "name": "Adleman: BPP \u2286 P/poly",
+        "deps": [
+          "cplx-5.4",
+          "cplx-4.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "After amplification, a grid of inputs against random strings has bad cells so sparse that some column is good for every input; the reader shades bad cells and finds that column."
+      },
+      {
+        "num": "5.13",
+        "kind": "Theorem",
+        "name": "Sipser\u2013G\u00e1cs\u2013Lautemann: BPP \u2286 \u03a3\u2082 \u2229 \u03a0\u2082",
+        "deps": [
+          "cplx-5.4",
+          "cplx-3.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "A large set of accepting random strings can be covered by a few XOR-shifts of itself, a small one cannot; the reader tries shifts and sees the cube covered or not."
+      },
+      {
+        "num": "5.14",
+        "kind": "Paper",
+        "name": "PRIMES is in P",
+        "paper": {
+          "authors": "Manindra Agrawal, Neeraj Kayal and Nitin Saxena",
+          "year": 2004,
+          "title": "PRIMES is in P",
+          "venue": "Annals of Mathematics 160 (2): 781\u2013793",
+          "doi": "10.4007/annals.2004.160.781"
+        },
+        "introduces": [
+          "cplx-5.10"
+        ],
+        "deps": [
+          "nt-2.5",
+          "cplx-3.2",
+          "cplx-5.6"
+        ],
+        "refs": [],
+        "pic": "Enter n and run the AKS test: find a small r with large multiplicative order of n, then check (X + a)\u207f \u2261 X\u207f + a modulo (X^r \u2212 1, n) for each a, and watch a Carmichael number that fools Fermat\u2019s test fail one of these congruences."
+      },
+      {
+        "num": "6.1",
+        "kind": "Definition",
+        "name": "Interactive proof systems and IP",
+        "deps": [
+          "toc-12.10",
+          "cplx-5.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "A message diagram between prover and verifier steps through rounds; the reader plays a cheating prover and watches the verifier\u2019s acceptance rate stay below the soundness bound."
+      },
+      {
+        "num": "6.2",
+        "kind": "Algorithm",
+        "name": "Interactive proof for graph non-isomorphism",
+        "deps": [
+          "cplx-6.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "The verifier secretly permutes one of two graphs and asks which it was; for isomorphic graphs the reader, as prover, can only guess, and the success rate settles at one half."
+      },
+      {
+        "num": "6.3",
+        "kind": "Definition",
+        "name": "Arthur\u2013Merlin games: AM and MA",
+        "deps": [
+          "cplx-6.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "Arthur\u2019s coins are shown face up to Merlin; message diagrams for MA (Merlin first) and AM (Arthur first) are compared on the same problem."
+      },
+      {
+        "num": "6.4",
+        "kind": "Theorem",
+        "name": "Goldwasser\u2013Sipser: public coins suffice",
+        "deps": [
+          "cplx-6.3",
+          "cplx-6.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "Set lower-bound protocol: a random hash function maps a large set onto a target and a small set rarely hits it; the reader resizes the set and watches the hit rate separate."
+      },
+      {
+        "num": "6.5",
+        "kind": "Theorem",
+        "name": "Graph isomorphism is not NP-complete unless PH collapses",
+        "deps": [
+          "cplx-6.4",
+          "cplx-3.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "Graph non-isomorphism in AM would put coNP in AM if GI were NP-complete, and the chain of inclusions animates the polynomial hierarchy collapsing to level two."
+      },
+      {
+        "num": "6.6",
+        "kind": "Method",
+        "name": "Arithmetization",
+        "deps": [
+          "toc-1.9"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "Type a Boolean formula: AND becomes multiplication, NOT x becomes 1 \u2212 x, and the resulting polynomial agrees with the formula on every 0/1 input in the table."
+      },
+      {
+        "num": "6.7",
+        "kind": "Algorithm",
+        "name": "Sum-check protocol",
+        "deps": [
+          "cplx-6.6",
+          "cplx-5.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "The prover sends a univariate polynomial each round and the verifier checks it at a random point; a lying prover is caught with high probability, tallied over repeated runs."
+      },
+      {
+        "num": "6.8",
+        "kind": "Theorem",
+        "name": "coNP \u2286 IP (Lund\u2013Fortnow\u2013Karloff\u2013Nisan)",
+        "deps": [
+          "cplx-6.7",
+          "cplx-3.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "Counting satisfying assignments of a formula becomes a sum of its arithmetization over the cube; the sum-check rounds certify the count zero for an unsatisfiable formula."
+      },
+      {
+        "num": "6.9",
+        "kind": "Theorem",
+        "name": "IP = PSPACE (Shamir)",
+        "deps": [
+          "cplx-6.8",
+          "toc-14.7"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "Quantifiers become products and sums, and degree-reduction steps keep polynomials small; the degree of each round\u2019s polynomial is plotted with and without linearization."
+      },
+      {
+        "num": "6.10",
+        "kind": "Theorem",
+        "name": "MIP = NEXP (Babai\u2013Fortnow\u2013Lund)",
+        "deps": [
+          "cplx-6.9"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "Two provers are questioned in separate rooms; cross-checking their answers catches inconsistent strategies, as a match-rate meter shows for strategies the reader designs."
+      },
+      {
+        "num": "6.11",
+        "kind": "Method",
+        "name": "Program checking (Blum\u2013Kannan)",
+        "deps": [
+          "cplx-6.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "A buggy sorting or gcd routine is wrapped in a checker that tests its outputs on random self-related inputs; planted bugs are detected at the predicted rate."
+      },
+      {
+        "num": "7.1",
+        "kind": "Definition",
+        "name": "The class #P",
+        "deps": [
+          "toc-12.11"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "For a typed formula, the number of satisfying assignments is counted by exhaustive search, and the count, not just its non-zeroness, is the output."
+      },
+      {
+        "num": "7.2",
+        "kind": "Theorem",
+        "name": "#SAT is #P-complete",
+        "deps": [
+          "cplx-7.1",
+          "toc-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "The Cook\u2013Levin reduction is checked to be parsimonious: accepting paths of a machine and satisfying assignments of the formula are matched one to one."
+      },
+      {
+        "num": "7.3",
+        "kind": "Theorem",
+        "name": "Valiant: the permanent is #P-complete",
+        "deps": [
+          "cplx-7.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "Cycle covers of a weighted graph are enumerated and summed; clause and variable gadgets make the permanent equal to a multiple of the number of satisfying assignments."
+      },
+      {
+        "num": "7.4",
+        "kind": "Concept",
+        "name": "Permanent versus determinant",
+        "deps": [
+          "cplx-7.3"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 16"
+        ],
+        "pic": "The same matrix gives determinant and permanent; Gaussian elimination computes the determinant fast, while the permanent\u2019s term count explodes as n! in the timing plot."
+      },
+      {
+        "num": "7.5",
+        "kind": "Algorithm",
+        "name": "FKT: counting perfect matchings of planar graphs",
+        "deps": [
+          "cplx-7.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "Orient a planar graph so every face has an odd number of clockwise edges; the Pfaffian of the signed matrix then counts perfect matchings, checked against brute force."
+      },
+      {
+        "num": "7.6",
+        "kind": "Theorem",
+        "name": "Valiant\u2013Vazirani isolation lemma",
+        "deps": [
+          "cplx-5.1",
+          "toc-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "Random parity constraints are added to a formula with many solutions; the histogram of surviving solution counts shows exactly one survivor with probability bounded below."
+      },
+      {
+        "num": "7.7",
+        "kind": "Definition",
+        "name": "\u2295P (parity P)",
+        "deps": [
+          "cplx-7.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "Only the parity of the number of solutions matters; the reader adds and removes solutions and watches the \u2295SAT bit toggle."
+      },
+      {
+        "num": "7.8",
+        "kind": "Theorem",
+        "name": "Toda\u2019s theorem: PH \u2286 P^#P",
+        "deps": [
+          "cplx-7.6",
+          "cplx-7.7",
+          "cplx-3.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "Quantifiers are replaced one by one by randomized parity tests, then the randomness is folded into a single count; each stage of the transformation is shown on a small quantified formula."
+      },
+      {
+        "num": "7.9",
+        "kind": "Theorem",
+        "name": "Approximate counting with an NP oracle (Stockmeyer)",
+        "deps": [
+          "cplx-7.1",
+          "cplx-6.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "Random hash functions into 2\u1d4f buckets are tried for growing k; the largest k for which some bucket stays occupied estimates log\u2082 of the number of solutions."
+      },
+      {
+        "num": "7.10",
+        "kind": "Algorithm",
+        "name": "Approximating the permanent by Markov chain Monte Carlo",
+        "deps": [
+          "cplx-7.3"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 17"
+        ],
+        "pic": "A Markov chain on matchings of a bipartite graph mixes; sampled ratios of matching counts multiply into an estimate of the permanent that converges as the reader runs more steps."
+      },
+      {
+        "num": "7.11",
+        "kind": "Theorem",
+        "name": "Random self-reducibility of the permanent",
+        "deps": [
+          "cplx-7.3",
+          "cplx-5.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 8"
+        ],
+        "pic": "The permanent of A is recovered from permanents of random matrices A + tR on a line, interpolated by a low-degree polynomial \u2014 so an algorithm right on most inputs is right on all."
+      },
+      {
+        "num": "8.1",
+        "kind": "Method",
+        "name": "Method of conditional expectations",
+        "deps": [
+          "cplx-5.1",
+          "algo-12.7"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 20"
+        ],
+        "pic": "A random assignment satisfies 7/8 of 3-clauses on average; fixing variables one at a time while never lowering the conditional expectation, plotted per step, finds such an assignment deterministically."
+      },
+      {
+        "num": "8.2",
+        "kind": "Definition",
+        "name": "Pseudorandom generators for derandomization",
+        "deps": [
+          "cplx-5.1",
+          "cplx-4.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 20"
+        ],
+        "pic": "Short seeds are stretched into long strings; a gallery of small distinguishing circuits tries to tell them from truly random strings, and the advantage of each is read out."
+      },
+      {
+        "num": "8.3",
+        "kind": "Theorem",
+        "name": "Impagliazzo\u2019s hard-core lemma",
+        "deps": [
+          "cplx-4.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 19"
+        ],
+        "pic": "A mildly hard function hides a dense hard-core set on which small circuits do no better than coin flips; the set is grown by boosting and highlighted on the input cube."
+      },
+      {
+        "num": "8.4",
+        "kind": "Theorem",
+        "name": "Yao\u2019s XOR lemma",
+        "deps": [
+          "cplx-8.3"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 19"
+        ],
+        "pic": "XOR k independent copies of a mildly hard function; the best predictor\u2019s advantage is plotted against k and decays exponentially toward one half."
+      },
+      {
+        "num": "8.5",
+        "kind": "Theorem",
+        "name": "Nisan\u2013Wigderson generator",
+        "deps": [
+          "cplx-8.2",
+          "cplx-8.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 20"
+        ],
+        "pic": "Output bits apply a hard function to overlapping subsets of the seed chosen from a combinatorial design; the design\u2019s small pairwise overlaps are drawn as a set system."
+      },
+      {
+        "num": "8.6",
+        "kind": "Theorem",
+        "name": "Hardness versus randomness (Impagliazzo\u2013Wigderson)",
+        "deps": [
+          "cplx-8.5",
+          "cplx-4.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 20"
+        ],
+        "pic": "A slider for the circuit lower bound assumed on exponential time maps to the derandomization obtained, ending at P = BPP for exponential lower bounds."
+      },
+      {
+        "num": "8.7",
+        "kind": "Theorem",
+        "name": "Derandomizing identity testing implies lower bounds (Kabanets\u2013Impagliazzo)",
+        "deps": [
+          "cplx-5.6",
+          "cplx-8.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 20"
+        ],
+        "pic": "The two-way street is drawn as a loop between \u201cPIT \u2208 P\u201d and \u201cthe permanent needs large arithmetic circuits or NEXP needs large Boolean circuits\u201d, with each implication expandable."
+      },
+      {
+        "num": "8.8",
+        "kind": "Definition",
+        "name": "Expander graphs and spectral gap",
+        "deps": [
+          "toc-12.6",
+          "ladr-7.29"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 21"
+        ],
+        "pic": "For a regular graph the reader edits, the second eigenvalue of the adjacency matrix and the edge expansion of every small set are computed; random regular graphs land near the optimum."
+      },
+      {
+        "num": "8.9",
+        "kind": "Theorem",
+        "name": "Expander mixing lemma",
+        "deps": [
+          "cplx-8.8"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 21"
+        ],
+        "pic": "Select two vertex sets S and T by brushing; the number of edges between them is compared with the random-graph prediction d|S||T|/n, and the deviation stays within \u03bb\u221a(|S||T|)."
+      },
+      {
+        "num": "8.10",
+        "kind": "Theorem",
+        "name": "Random walks on expanders save random bits",
+        "deps": [
+          "cplx-8.9",
+          "cplx-5.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 21"
+        ],
+        "pic": "Replace independent samples by a random walk on an expander; the fraction of steps inside a bad set concentrates almost as well, while the random bits used grow far more slowly."
+      },
+      {
+        "num": "8.11",
+        "kind": "Algorithm",
+        "name": "Zig-zag product",
+        "deps": [
+          "cplx-8.8"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 21"
+        ],
+        "pic": "A large graph and a small one combine by a step in the small cloud, a jump, and another small step; the degree stays fixed while the computed spectral gap remains bounded away from zero."
+      },
+      {
+        "num": "8.12",
+        "kind": "Theorem",
+        "name": "Reingold: undirected connectivity in log space",
+        "deps": [
+          "cplx-8.11",
+          "toc-14.10"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 21"
+        ],
+        "pic": "A graph is repeatedly powered and zig-zagged until each component becomes an expander of logarithmic diameter, which a log-space walk can then explore exhaustively."
+      },
+      {
+        "num": "8.13",
+        "kind": "Definition",
+        "name": "Randomness extractors and the leftover hash lemma",
+        "deps": [
+          "info-1.10",
+          "cplx-8.2",
+          "algo-5.15"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 21"
+        ],
+        "pic": "A biased, correlated source with known min-entropy is hashed by a random universal hash; the output\u2019s distance from uniform is measured and shrinks as the output is shortened."
+      },
+      {
+        "num": "9.4",
+        "kind": "Definition",
+        "name": "Gap problems and hardness of approximation",
+        "deps": [
+          "algo-14.12",
+          "algo-14.13"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 11"
+        ],
+        "pic": "A reduction maps yes-instances to fully satisfiable formulas and no-instances to formulas where at most a fraction \u03c1 can be satisfied; the gap is drawn as a forbidden band on the value axis."
+      },
+      {
+        "num": "9.5",
+        "kind": "Definition",
+        "name": "Probabilistically checkable proofs",
+        "deps": [
+          "toc-12.10",
+          "cplx-5.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 11"
+        ],
+        "pic": "A verifier tosses r coins and reads q positions of a long proof string; the reader corrupts proof bits and watches the rejection probability respond."
+      },
+      {
+        "num": "9.6",
+        "kind": "Theorem",
+        "name": "PCP theorem",
+        "deps": [
+          "cplx-9.5",
+          "toc-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 11",
+          "Arora\u2013Barak ch. 22"
+        ],
+        "pic": "A satisfiable formula\u2019s PCP proof passes every random check, while for any proof of an unsatisfiable one a constant fraction of checks fail, as a histogram over coin tosses shows."
+      },
+      {
+        "num": "9.7",
+        "kind": "Theorem",
+        "name": "PCP theorem is equivalent to hardness of approximating MAX-3SAT",
+        "deps": [
+          "cplx-9.6",
+          "cplx-9.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 11"
+        ],
+        "pic": "Each random check of the verifier becomes a small set of clauses; the fraction of satisfiable clauses mirrors the acceptance probability, shown for honest and corrupted proofs."
+      },
+      {
+        "num": "9.8",
+        "kind": "Concept",
+        "name": "Fourier analysis of Boolean functions",
+        "deps": [
+          "rca-4.18"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 22"
+        ],
+        "pic": "A Boolean function on n bits is expanded in parity characters; its Fourier spectrum is drawn as bars, Parseval\u2019s identity checks the total weight, and the reader edits the truth table."
+      },
+      {
+        "num": "9.9",
+        "kind": "Theorem",
+        "name": "Blum\u2013Luby\u2013Rubinfeld linearity test",
+        "deps": [
+          "cplx-9.8",
+          "info-9.10"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 11"
+        ],
+        "pic": "Test f(x) \u2295 f(y) = f(x \u2295 y) at random points; the rejection rate is plotted against the distance to the nearest linear function for functions the reader corrupts."
+      },
+      {
+        "num": "9.10",
+        "kind": "Theorem",
+        "name": "Exponential-size PCPs from the Walsh\u2013Hadamard code",
+        "deps": [
+          "cplx-9.9",
+          "info-9.11",
+          "cplx-9.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 11"
+        ],
+        "pic": "An assignment is encoded by the Hadamard code of itself and of its tensor square; the verifier\u2019s three tests \u2014 linearity, consistency, satisfaction \u2014 are stepped through with queries highlighted."
+      },
+      {
+        "num": "9.11",
+        "kind": "Theorem",
+        "name": "Dinur\u2019s gap amplification",
+        "deps": [
+          "cplx-9.7",
+          "cplx-8.10"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 22"
+        ],
+        "pic": "A constraint graph is regularized, made an expander and powered; the unsatisfiable fraction (the gap) roughly doubles each round, plotted against round number."
+      },
+      {
+        "num": "9.12",
+        "kind": "Theorem",
+        "name": "Parallel repetition theorem",
+        "deps": [
+          "cplx-9.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 22"
+        ],
+        "pic": "A two-prover game is played k times in parallel; the best strategies\u2019 winning probability is computed for small games and decays exponentially, though not simply as the k-th power."
+      },
+      {
+        "num": "9.13",
+        "kind": "Theorem",
+        "name": "H\u00e5stad\u2019s 3-bit PCP: 7/8 is optimal for MAX-3SAT",
+        "deps": [
+          "cplx-9.12",
+          "cplx-9.8",
+          "algo-12.7"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 22"
+        ],
+        "pic": "A random assignment satisfies 7/8 of clauses; a slider for any better ratio shows the reduction from H\u00e5stad\u2019s verifier, which reads three bits and checks their parity, ruling it out unless P = NP."
+      },
+      {
+        "num": "9.14",
+        "kind": "Theorem",
+        "name": "Hardness of approximating CLIQUE (FGLSS)",
+        "deps": [
+          "cplx-9.6",
+          "toc-13.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 11"
+        ],
+        "pic": "Nodes are accepting views of the verifier and edges join consistent views; large cliques correspond to good proofs, drawn for a toy verifier."
+      },
+      {
+        "num": "9.15",
+        "kind": "Theorem",
+        "name": "Set cover cannot be approximated much better than ln n",
+        "deps": [
+          "cplx-9.6",
+          "algo-14.15"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 22"
+        ],
+        "pic": "The greedy algorithm\u2019s ln n guarantee is plotted beside the hardness threshold from label cover, which nearly meets it."
+      },
+      {
+        "num": "9.16",
+        "kind": "Algorithm",
+        "name": "Goemans\u2013Williamson MAX-CUT by semidefinite programming",
+        "deps": [
+          "algo-14.12",
+          "algo-14.13",
+          "cplx-2.7",
+          "algo-11.19"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 11"
+        ],
+        "pic": "Vertices become unit vectors on a sphere and a random hyperplane cuts them; the expected cut, at least 0.878 of the relaxation, is checked over many hyperplanes."
+      },
+      {
+        "num": "9.17",
+        "kind": "Hypothesis",
+        "name": "Unique Games Conjecture",
+        "deps": [
+          "cplx-9.12",
+          "cplx-9.16"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 22"
+        ],
+        "pic": "Label-cover instances whose constraints are permutations: a slider for the completeness and soundness gap, and a table of problems whose approximation thresholds the conjecture would settle, 0.878 for MAX-CUT among them."
+      },
+      {
+        "num": "9.18",
+        "kind": "Paper",
+        "name": "Proof Verification and Hardness of Approximation Problems",
+        "paper": {
+          "authors": "Sanjeev Arora, Carsten Lund, Rajeev Motwani, Madhu Sudan and Mario Szegedy",
+          "year": 1998,
+          "title": "Proof Verification and the Hardness of Approximation Problems",
+          "venue": "Journal of the ACM 45 (3): 501\u2013555",
+          "doi": "10.1145/278298.278306"
+        },
+        "introduces": [
+          "cplx-9.6",
+          "cplx-9.7"
+        ],
+        "deps": [
+          "cplx-9.5",
+          "cplx-6.10",
+          "cplx-9.9",
+          "cplx-9.10"
+        ],
+        "refs": [],
+        "pic": "A verifier tosses coins and reads only a few bits of a long proof: the reader corrupts a fraction of a valid proof and watches the rejection rate, then sees the same gap reappear as a MAX-3SAT instance in which no assignment beats a fixed fraction of clauses."
+      },
+      {
+        "num": "10.1",
+        "kind": "Definition",
+        "name": "Decision trees and certificate complexity",
+        "deps": [
+          "toc-1.9"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 12"
+        ],
+        "pic": "Build a decision tree for OR or majority by choosing which bit to query next; its depth is compared with the certificate size the tool computes for each input."
+      },
+      {
+        "num": "10.2",
+        "kind": "Theorem",
+        "name": "Sensitivity theorem (Huang)",
+        "deps": [
+          "cplx-10.1",
+          "cplx-9.8"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 12"
+        ],
+        "pic": "For functions the reader edits on a small cube, sensitivity, block sensitivity and degree are computed; any large induced subgraph of the cube is shown to contain a vertex of degree at least \u221an."
+      },
+      {
+        "num": "10.3",
+        "kind": "Theorem",
+        "name": "Yao\u2019s minimax principle",
+        "deps": [
+          "cplx-5.1",
+          "cplx-10.1",
+          "algo-11.19"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 12"
+        ],
+        "pic": "A matrix of deterministic algorithms against inputs: the best randomized algorithm\u2019s worst case equals the hardest input distribution\u2019s best deterministic cost, computed by linear programming."
+      },
+      {
+        "num": "10.4",
+        "kind": "Definition",
+        "name": "Two-party communication complexity",
+        "deps": [
+          "toc-1.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 13"
+        ],
+        "pic": "Alice and Bob each hold n bits; a protocol tree partitions the input matrix into monochromatic rectangles, which are coloured as the reader steps through the protocol."
+      },
+      {
+        "num": "10.5",
+        "kind": "Theorem",
+        "name": "Fooling sets and the rank bound: equality needs n bits",
+        "deps": [
+          "cplx-10.4",
+          "ladr-3.57"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 13"
+        ],
+        "pic": "The identity matrix of EQUALITY has 2\u207f diagonal cells, no two in one monochromatic rectangle; the matrix rank readout gives the same n-bit bound."
+      },
+      {
+        "num": "10.6",
+        "kind": "Algorithm",
+        "name": "Fingerprinting: equality with O(log n) random bits",
+        "deps": [
+          "cplx-10.5",
+          "cplx-5.5",
+          "algo-13.3"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 13"
+        ],
+        "pic": "Alice sends her string as a polynomial evaluated at a random point; differing strings collide with small probability, measured over many trials as n grows."
+      },
+      {
+        "num": "10.7",
+        "kind": "Theorem",
+        "name": "Disjointness needs linear communication",
+        "deps": [
+          "cplx-10.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 13"
+        ],
+        "pic": "The disjointness matrix has a large fooling set of complementary pairs; even randomized protocols the reader designs fail on the hard distribution unless they send many bits."
+      },
+      {
+        "num": "10.8",
+        "kind": "Theorem",
+        "name": "Karchmer\u2013Wigderson games",
+        "deps": [
+          "cplx-10.4",
+          "cplx-4.10"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 13"
+        ],
+        "pic": "Alice holds a 1-input and Bob a 0-input of f; walking down a formula for f finds a differing coordinate, and the protocol\u2019s length equals the formula\u2019s depth."
+      },
+      {
+        "num": "10.9",
+        "kind": "Theorem",
+        "name": "H\u00e5stad\u2019s switching lemma",
+        "deps": [
+          "cplx-4.10"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 14"
+        ],
+        "pic": "Randomly fix most variables of a DNF with small terms; the decision-tree depth of what remains is computed over many restrictions, and its histogram has an exponentially small tail."
+      },
+      {
+        "num": "10.10",
+        "kind": "Theorem",
+        "name": "Parity is not in AC\u2070",
+        "deps": [
+          "cplx-10.9"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 14"
+        ],
+        "pic": "Restrictions collapse a constant-depth circuit layer by layer, yet parity of the surviving variables never simplifies; the required size is plotted against depth."
+      },
+      {
+        "num": "10.11",
+        "kind": "Theorem",
+        "name": "Razborov\u2013Smolensky: parity is not in AC\u2070[3]",
+        "deps": [
+          "cplx-10.10",
+          "cplx-5.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 14"
+        ],
+        "pic": "Each gate of a circuit with mod-3 gates is approximated by a low-degree polynomial over GF(3); the fraction of inputs where the approximation errs is tallied gate by gate."
+      },
+      {
+        "num": "10.12",
+        "kind": "Theorem",
+        "name": "Williams: NEXP is not in ACC\u2070",
+        "deps": [
+          "cplx-10.11",
+          "cplx-1.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 14"
+        ],
+        "pic": "The proof strategy is drawn as a chain: a slightly faster-than-brute-force satisfiability algorithm for ACC\u2070 circuits plus the nondeterministic time hierarchy yields the lower bound."
+      },
+      {
+        "num": "10.13",
+        "kind": "Theorem",
+        "name": "Razborov: monotone circuits for CLIQUE are exponential",
+        "deps": [
+          "cplx-4.1",
+          "toc-13.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 14"
+        ],
+        "pic": "Monotone gates are approximated by sunflower-trimmed families of small cliques; the errors introduced on positive and negative test graphs are counted per gate."
+      },
+      {
+        "num": "10.14",
+        "kind": "Theorem",
+        "name": "Ben-Or: algebraic decision trees for element distinctness",
+        "deps": [
+          "cplx-10.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 16"
+        ],
+        "pic": "The yes-region of \u201call n numbers distinct\u201d in \u211d\u207f splits into n! connected cells; the reader probes points in three dimensions and the cell count lower-bounds the depth by n log n."
+      },
+      {
+        "num": "10.15",
+        "kind": "Concept",
+        "name": "Algebraic complexity: VP versus VNP",
+        "deps": [
+          "cplx-7.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 16"
+        ],
+        "pic": "Arithmetic circuits for the determinant grow polynomially, while the best known for the permanent grow exponentially; both sizes are plotted against n."
+      },
+      {
+        "num": "10.16",
+        "kind": "Theorem",
+        "name": "Natural proofs barrier (Razborov\u2013Rudich)",
+        "deps": [
+          "cplx-10.10",
+          "cplx-8.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 23"
+        ],
+        "pic": "A \u201cnatural\u201d property that distinguishes hard functions from easy ones would also distinguish pseudorandom functions from random ones; the distinguisher is run and breaks the generator."
+      },
+      {
+        "num": "11.1",
+        "kind": "Definition",
+        "name": "Propositional proof systems (Cook\u2013Reckhow)",
+        "deps": [
+          "cplx-3.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 15"
+        ],
+        "pic": "A proof system is a fast checker for claimed tautology proofs; the reader submits proofs in different systems and watches the checker accept or reject each line."
+      },
+      {
+        "num": "11.2",
+        "kind": "Theorem",
+        "name": "NP = coNP iff some proof system is polynomially bounded",
+        "deps": [
+          "cplx-11.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 15"
+        ],
+        "pic": "A short proof for every tautology would be a coNP certificate and vice versa; both directions are drawn as arrows between a verifier and a proof system."
+      },
+      {
+        "num": "11.3",
+        "kind": "Definition",
+        "name": "Resolution",
+        "deps": [
+          "toc-1.9"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 15"
+        ],
+        "pic": "Resolve clauses on complementary literals by dragging them together; the derivation is drawn as a DAG ending in the empty clause for an unsatisfiable formula."
+      },
+      {
+        "num": "11.4",
+        "kind": "Concept",
+        "name": "DPLL and CDCL solvers produce resolution proofs",
+        "deps": [
+          "cplx-11.3"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 15"
+        ],
+        "pic": "A backtracking SAT solver runs on a typed formula; each conflict learns a clause, and the run is converted into a resolution refutation whose size matches the solver\u2019s work."
+      },
+      {
+        "num": "11.5",
+        "kind": "Theorem",
+        "name": "Haken: pigeonhole formulas need exponential resolution proofs",
+        "deps": [
+          "cplx-11.3",
+          "comb-1.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 15"
+        ],
+        "pic": "The formula \u201cn + 1 pigeons fit in n holes\u201d is refuted by solvers for growing n; refutation sizes are plotted on a log scale against the exponential lower bound."
+      },
+      {
+        "num": "11.6",
+        "kind": "Theorem",
+        "name": "Tseitin formulas on expanders are hard for resolution",
+        "deps": [
+          "cplx-11.3",
+          "cplx-8.8"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 15"
+        ],
+        "pic": "Parity constraints on the edges of a graph with odd total charge are unsatisfiable; on a cycle the refutation is short, on an expander it explodes, both measured."
+      },
+      {
+        "num": "11.7",
+        "kind": "Theorem",
+        "name": "Cutting planes prove pigeonhole efficiently",
+        "deps": [
+          "cplx-11.5",
+          "cplx-2.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 15"
+        ],
+        "pic": "Pigeonhole clauses become linear inequalities; adding them up and rounding derives 0 \u2265 1 in a handful of lines that the reader can step through."
+      },
+      {
+        "num": "11.8",
+        "kind": "Concept",
+        "name": "The hierarchy of proof systems",
+        "deps": [
+          "cplx-11.7",
+          "cplx-11.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 15"
+        ],
+        "pic": "Resolution, cutting planes, Frege and extended Frege are arranged by simulation arrows, with the formula families that separate them attached to each arrow."
+      },
+      {
+        "num": "12.1",
+        "kind": "Hypothesis",
+        "name": "Exponential Time Hypothesis",
+        "deps": [
+          "toc-13.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Running times of the best known 3SAT algorithms are plotted as c\u207f with c falling over the decades toward but never reaching 1, the assumption being that some c > 1 is necessary."
+      },
+      {
+        "num": "12.2",
+        "kind": "Algorithm",
+        "name": "Sch\u00f6ning\u2019s random-walk algorithm for k-SAT",
+        "deps": [
+          "cplx-5.11"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 7"
+        ],
+        "pic": "Restart a short random walk from fresh random assignments; the number of restarts needed on random 3SAT instances grows like (4/3)\u207f, beating the 2\u207f of brute force."
+      },
+      {
+        "num": "12.3",
+        "kind": "Hypothesis",
+        "name": "Strong Exponential Time Hypothesis",
+        "deps": [
+          "cplx-12.1",
+          "cplx-12.2"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "The base of the best k-SAT algorithm is plotted against k and approaches 2; the hypothesis says it really does tend to 2."
+      },
+      {
+        "num": "12.4",
+        "kind": "Theorem",
+        "name": "Orthogonal vectors are hard under SETH",
+        "deps": [
+          "cplx-12.3"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Split the variables of a CNF in half and list all partial assignments as vectors; a satisfying assignment appears as an orthogonal pair, found by the reader\u2019s search."
+      },
+      {
+        "num": "12.5",
+        "kind": "Theorem",
+        "name": "No strongly subquadratic edit distance under SETH",
+        "deps": [
+          "cplx-12.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "The quadratic dynamic-programming table for edit distance fills on two typed strings; gadget strings encoding orthogonal-vectors instances show why skipping most of it would refute SETH."
+      },
+      {
+        "num": "12.6",
+        "kind": "Hypothesis",
+        "name": "3SUM conjecture",
+        "deps": [
+          "toc-12.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "The quadratic two-pointer algorithm finds three numbers summing to zero in a sorted list; its step count is plotted against n\u00b2, the conjectured barrier."
+      },
+      {
+        "num": "12.7",
+        "kind": "Hypothesis",
+        "name": "All-pairs shortest paths conjecture",
+        "deps": [
+          "toc-12.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "The cubic Floyd\u2013Warshall table fills for a weighted graph; problems shown equivalent to it under subcubic reductions, such as negative-triangle detection, are listed beside it."
+      },
+      {
+        "num": "12.8",
+        "kind": "Algorithm",
+        "name": "Fixed-parameter tractability: vertex cover by bounded search",
+        "deps": [
+          "toc-13.7"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Branch on the two endpoints of any uncovered edge; the search tree has depth k and at most 2\u1d4f leaves, so large graphs with small covers are solved quickly, timed live."
+      },
+      {
+        "num": "12.9",
+        "kind": "Method",
+        "name": "Kernelization",
+        "deps": [
+          "cplx-12.8"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Reduction rules for vertex cover \u2014 take high-degree vertices, drop isolated ones \u2014 shrink a large graph to a kernel with at most k\u00b2 edges before any search begins."
+      },
+      {
+        "num": "12.10",
+        "kind": "Theorem",
+        "name": "CLIQUE is W[1]-hard",
+        "deps": [
+          "cplx-12.8",
+          "toc-13.6"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 2"
+        ],
+        "pic": "Running times for k-clique by brute force grow like n^k while vertex cover grows like 2\u1d4f\u00b7n; the two families of curves are plotted to show which parameter can be tamed."
+      },
+      {
+        "num": "13.1",
+        "kind": "Definition",
+        "name": "Distributional problems and average-case tractability",
+        "deps": [
+          "toc-12.11"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 18"
+        ],
+        "pic": "Run a SAT solver on random 3SAT instances at different clause densities; running time peaks near the satisfiability threshold and is easy on either side."
+      },
+      {
+        "num": "13.2",
+        "kind": "Theorem",
+        "name": "Levin: complete problems for distributional NP",
+        "deps": [
+          "cplx-13.1",
+          "toc-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 18"
+        ],
+        "pic": "Bounded tiling under a simple distribution is hard on average if any distributional NP problem is; the reduction compresses probable instances into short tiling seeds."
+      },
+      {
+        "num": "13.3",
+        "kind": "Definition",
+        "name": "Samplable distributions",
+        "deps": [
+          "cplx-13.1"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 18"
+        ],
+        "pic": "A sampler program generates instances; the reader compares its output histogram with the target distribution and with an unsamplable one defined by Kolmogorov complexity."
+      },
+      {
+        "num": "13.4",
+        "kind": "Definition",
+        "name": "BQP",
+        "deps": [
+          "cplx-5.1",
+          "toc-8.12"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 10"
+        ],
+        "pic": "A small quantum circuit acts on a state vector of 2\u207f amplitudes; measurement probabilities are computed exactly, and the acceptance probability must clear 2/3 or fall below 1/3."
+      },
+      {
+        "num": "13.5",
+        "kind": "Theorem",
+        "name": "BPP \u2286 BQP \u2286 PSPACE",
+        "deps": [
+          "cplx-13.4",
+          "toc-14.5"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 10"
+        ],
+        "pic": "Final amplitudes are computed as sums over all computational paths, one path at a time, with memory that stays polynomial; the running time doubles with each added gate."
+      },
+      {
+        "num": "13.7",
+        "kind": "Theorem",
+        "name": "Quantum search lower bound (Bennett\u2013Bernstein\u2013Brassard\u2013Vazirani)",
+        "deps": [
+          "cplx-13.4"
+        ],
+        "refs": [
+          "Arora\u2013Barak ch. 10"
+        ],
+        "pic": "The amplitude on the marked item can grow only a little per query; the bound is plotted against the number of queries and Grover\u2019s \u221aN schedule touches it."
+      },
+      {
+        "num": "13.8",
+        "kind": "Paper",
+        "name": "A Theory of the Learnable",
+        "paper": {
+          "authors": "L. G. Valiant",
+          "year": 1984,
+          "title": "A Theory of the Learnable",
+          "venue": "Communications of the ACM 27 (11): 1134\u20131142",
+          "doi": "10.1145/1968.1972"
+        },
+        "introduces": [
+          "ml-3.1"
+        ],
+        "deps": [
+          "cplx-5.1",
+          "algo-12.18"
+        ],
+        "refs": [],
+        "pic": "A hidden conjunction of literals labels random examples from a distribution the reader shapes; Valiant\u2019s elimination algorithm learns a hypothesis, and its true error falls below \u03b5 with probability at least 1 \u2212 \u03b4 once the sample passes (n ln 3 + ln 1/\u03b4)/\u03b5."
+      },
+      {
+        "num": "13.9",
+        "kind": "Paper",
+        "name": "A Fast Quantum Mechanical Algorithm for Database Search",
+        "paper": {
+          "authors": "Lov K. Grover",
+          "year": 1996,
+          "title": "A Fast Quantum Mechanical Algorithm for Database Search",
+          "venue": "Proceedings of the 28th Annual ACM Symposium on Theory of Computing (STOC \u201996): 212\u2013219",
+          "doi": "10.1145/237814.237866"
+        },
+        "introduces": [
+          "qinfo-5.6"
+        ],
+        "deps": [
+          "qinfo-5.1",
+          "qinfo-4.8",
+          "cplx-13.4"
+        ],
+        "refs": [],
+        "pic": "The amplitudes of N items are bars; each Grover iteration flips the sign of the marked item and reflects every amplitude about the mean, and the marked bar peaks after about (\u03c0/4)\u221aN steps, then shrinks again if the reader keeps going."
+      },
+      {
+        "num": "13.10",
+        "alias": "qinfo-6.12",
+        "name": "Shor: quantum algorithms for factoring and discrete logs"
+      }
+    ],
+    "explicitLiteralExceptions": [
+      [
+        "const K = Math.max(0, ...c.values()) + 1, hA",
+        "const K = c.size ? Math.max(0, ...c.values()) + 1 : 0, hA"
+      ],
+      [
+        "const adjOf = (G) => { const m = new Map(G.nodes.map((n) => [n.id, []])); for (const e of G.edges) if (m.has(e.from) && m.has(e.to)) { m.get(e.from).push(e.to); m.get(e.to).push(e.from); } return m; };",
+        "const adjOf = (G) => { const m = new Map(G.nodes.map((n) => [String(n.id), []])); for (const e of G.edges) { const a = String(e.from), b = String(e.to); if (m.has(a) && m.has(b)) { m.get(a).push(b); m.get(b).push(a); } } return m; };"
+      ],
+      [
+        ".get(+k.slice(1)).map((i) => k[0] + i)",
+        ".get(k.slice(1)).map((i) => k[0] + i)"
+      ],
+      [
+        "mk(circ(7, 5, 3, 2.3, 0.4), [[0, 2], [2, 4], [4, 6], [6, 1], [1, 3], [3, 5], [5, 0], [0, 4]])",
+        "mk(circ(7, 5, 3, 2.3, 0.4), [[0, 2], [2, 4], [4, 6], [6, 1], [1, 3], [3, 5], [5, 0], [0, 6]])"
+      ]
+    ],
+    "sourceFlagsDependenciesAllNonVizPropertiesUnchanged": true,
+    "sharedRuntimeUnchanged": true
+  },
+  "offline": {
+    "pass": true,
+    "exactUnchangedCards": [
+      {
+        "name": "default",
+        "theme": "light",
+        "rgbaExact": true
+      },
+      {
+        "name": "default",
+        "theme": "dark",
+        "rgbaExact": true
+      },
+      {
+        "name": "p7-before",
+        "theme": "light",
+        "rgbaExact": true
+      },
+      {
+        "name": "p7-before",
+        "theme": "dark",
+        "rgbaExact": true
+      },
+      {
+        "name": "c6-before",
+        "theme": "light",
+        "rgbaExact": true
+      },
+      {
+        "name": "c6-before",
+        "theme": "dark",
+        "rgbaExact": true
+      },
+      {
+        "name": "cube-before",
+        "theme": "light",
+        "rgbaExact": true
+      },
+      {
+        "name": "cube-before",
+        "theme": "dark",
+        "rgbaExact": true
+      },
+      {
+        "name": "G-empty",
+        "theme": "light",
+        "rgbaExact": true
+      },
+      {
+        "name": "G-empty",
+        "theme": "dark",
+        "rgbaExact": true
+      }
+    ],
+    "oldPresetTriangles": [
+      0,
+      1
+    ],
+    "newPresetTriangles": [
+      0,
+      0
+    ]
+  },
+  "native": {
+    "beforeStates": 20,
+    "afterStates": 36,
+    "browser": "155.0.8059.85",
+    "personallyInspectedPNGs": 62,
+    "pairedSheets": 31,
+    "allJobsClosed": true
+  },
+  "root": "/tmp/atlas-new-cplx-empty-count-peer",
+  "artifacts": [
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-G-edge-H-singleton-card.png",
+      "bytes": 99332,
+      "sha256": "62e1bc8e1bbe228082bc5d1b9920864f476bdff0223a5e5e16cda186546b4f7a"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-G-edge-H-singleton.json",
+      "bytes": 2412,
+      "sha256": "8953c547ace6ce5be5c823195832a9370efd4ce91d8ab74ffa35f660fa35c283"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-G-empty-card.png",
+      "bytes": 102248,
+      "sha256": "0cf12636a18d2f58e48b600c62fed8d06a3ee4d0f079f1cd68125b1cc372a473"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-G-empty.json",
+      "bytes": 3779,
+      "sha256": "0ec0c84b4f661c1ec3f049cc965c822fca3773aa22a563c72bbe38b30b0f5edb"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-G-singleton-card.png",
+      "bytes": 97189,
+      "sha256": "f5237ccd5e137c49722ccd64339c3a3fc8f66a874a467ecb520c540e685da800"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-G-singleton.json",
+      "bytes": 1778,
+      "sha256": "1a5a1c3fc675676d82b1d59620f98bdaeec5a7d8f197c61f6d004eed1afc3f83"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-both-edges-card.png",
+      "bytes": 100004,
+      "sha256": "e138091d2fe2352671aead3212d5e5621d1d6f1bd911bd89331ed4c7c8de0267"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-both-edges.json",
+      "bytes": 2782,
+      "sha256": "73b8d54d55bebb675ceabd83e79263088514e7597eaea5a64b45a7e752362a8e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-both-empty-card.png",
+      "bytes": 96061,
+      "sha256": "a906a989117498ce571f09f351abf621d4e5e63d0f42ee11e0a62dd71f9748c6"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-both-empty.json",
+      "bytes": 1092,
+      "sha256": "56197552eb223baf9e56b3899fa419f10f5d68f418f7e5ea68aa48f9079881ad"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-both-singleton-card.png",
+      "bytes": 97641,
+      "sha256": "923a1b8a703338cde6d018005339d745f13bef96fcb26cc7988ab3fb340688e4"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-both-singleton.json",
+      "bytes": 2066,
+      "sha256": "6652bdffd341bc36cb1b9234c0a027d6e3ac2103a03aaa368de67605cab76b8e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-c6-before-card.png",
+      "bytes": 108735,
+      "sha256": "7cf0c30fcedfc6eb26d22ace635136133e10063b0372302f1b14901c8a6d888f"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-c6-before.json",
+      "bytes": 5685,
+      "sha256": "d5a7bb41042a778b8cd71ae686ad038149fe7a06c1fd4f4034d8a1fb6d2a08f8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-caption.png",
+      "bytes": 40451,
+      "sha256": "fcfd6d8fe26fb5a8b7d748de4e3b3e96baee82b48636412ac93da076d5d4236c"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-cube-before-card.png",
+      "bytes": 113896,
+      "sha256": "db802ae3ebbc942ba09c1e0b71189b77d897ce1178738d8bff6b0ff92c21a67d"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-cube-before.json",
+      "bytes": 7440,
+      "sha256": "e6fb5145cdf77afd8bc3aa5f6c5735f2b2096a18811e2213ddd75dcaafca782e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-default-card.png",
+      "bytes": 109950,
+      "sha256": "765b2f2d663e658b15056401bd68507f6b3ddbc142d98524cfbaa71013807d72"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-default.json",
+      "bytes": 8496,
+      "sha256": "0c7807d02a2c5b793fb55c1ade8cc36e910f8e9a2f65e952fc0de132ea1a8de3"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-before-card.png",
+      "bytes": 116404,
+      "sha256": "19d4be8564019b4eb48d28843879bede5c305f426ccd6c53146c2c2279e2499e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-before.json",
+      "bytes": 9735,
+      "sha256": "3785a53e5632154b8f57868ecf37933ab4dd82564eb26717590ad2a0cc8324de"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step1-card.png",
+      "bytes": 112870,
+      "sha256": "0cbf1a6fe1b301ec8cdf8ffd8420ae5105ea1ad537be342c2f5601f847b0eca1"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step1.json",
+      "bytes": 9722,
+      "sha256": "6b63d010f3aa313c47980845e72a7e73cd596b3a162a19fcbd8eea48dd107559"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step2-card.png",
+      "bytes": 113030,
+      "sha256": "0f03447aea813ed13f4093b816ad8be6c6d679c182d16d67bac0f883632638a2"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step2.json",
+      "bytes": 9740,
+      "sha256": "b74e1dab6e5978d94ffa71275aa9a8bcec240747f7067e1cecc8991ce4b6190f"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step3-card.png",
+      "bytes": 113753,
+      "sha256": "a67c0a28313cc4f56e1d360b96f5ae8e52f9d7b33be3b287178d57911326be97"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step3.json",
+      "bytes": 9758,
+      "sha256": "f1ebc1dafbcc18d33762d5d469a50acf88ebcebe99a1aeafaea7bc3bf7d7aeb1"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step4-card.png",
+      "bytes": 116553,
+      "sha256": "71c984d7673dc3d95b9e8de1e3a0deb262272acdb0426950b3d697fd5c4db633"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step4.json",
+      "bytes": 9802,
+      "sha256": "f63893a7e61e4df8e6e393cec7b9abdb384cd7e1cd737d3d48ff2f18a56894c8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step5-card.png",
+      "bytes": 118034,
+      "sha256": "459df3600d1c43343e6cf797b49ab3b9a73163bdd5fb75c3cde31481f23011db"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-labelled-isomorphic-step5.json",
+      "bytes": 9819,
+      "sha256": "b05f4aba4e9bd896fc9845dcd503f34ca58372ac865b438cf748b27a750c5a58"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-p7-before-card.png",
+      "bytes": 107018,
+      "sha256": "c25ff45bd74f8df686343833a304ada72d66ebdb971fd0b05d71cea19866fbc9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-p7-before.json",
+      "bytes": 8114,
+      "sha256": "14ad33c76b339e20e014763f3a19515ae2f6fc6b4101df59bae6b38906f3dfd9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-proof.png",
+      "bytes": 119359,
+      "sha256": "52c7003ea2f4e93d71b8e6edb6081ae550a7f4f020c23c744abe81bb55077990"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-regular-nonempty-card.png",
+      "bytes": 108712,
+      "sha256": "2de2c3f0935c24dae036cbaa04bd10ed5d97fe1030c8e55dd8f1f2e0f3ff5622"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-regular-nonempty.json",
+      "bytes": 5685,
+      "sha256": "d5a7bb41042a778b8cd71ae686ad038149fe7a06c1fd4f4034d8a1fb6d2a08f8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-restored-default-card.png",
+      "bytes": 107018,
+      "sha256": "c25ff45bd74f8df686343833a304ada72d66ebdb971fd0b05d71cea19866fbc9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-restored-default.json",
+      "bytes": 8114,
+      "sha256": "14ad33c76b339e20e014763f3a19515ae2f6fc6b4101df59bae6b38906f3dfd9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/dark-statement.png",
+      "bytes": 85912,
+      "sha256": "27bfe8af0273ed8767a23906deb8e7c145dcdabed3acc59f4e53f7755e55bf15"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-G-edge-H-singleton-card.png",
+      "bytes": 98384,
+      "sha256": "e38e0ffccf11b376380048afdfb15686daf69669f372c9bfa915b70b12b21a04"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-G-edge-H-singleton.json",
+      "bytes": 2412,
+      "sha256": "8953c547ace6ce5be5c823195832a9370efd4ce91d8ab74ffa35f660fa35c283"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-G-empty-card.png",
+      "bytes": 101481,
+      "sha256": "55221f83d79d8be023423419b8e421ef980be177bc3e2353a967cd46d5d9dece"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-G-empty.json",
+      "bytes": 3779,
+      "sha256": "0ec0c84b4f661c1ec3f049cc965c822fca3773aa22a563c72bbe38b30b0f5edb"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-G-singleton-card.png",
+      "bytes": 96377,
+      "sha256": "400d509b41b3bf914b7209a0b623fdc620713153bd9e15917ca471216e275732"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-G-singleton.json",
+      "bytes": 1778,
+      "sha256": "1a5a1c3fc675676d82b1d59620f98bdaeec5a7d8f197c61f6d004eed1afc3f83"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-both-edges-card.png",
+      "bytes": 98983,
+      "sha256": "40286c733a9c7379a971192cb52f87cdbfe332c4e524eb873d6d52e40f1f1779"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-both-edges.json",
+      "bytes": 2782,
+      "sha256": "73b8d54d55bebb675ceabd83e79263088514e7597eaea5a64b45a7e752362a8e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-both-empty-card.png",
+      "bytes": 95277,
+      "sha256": "41af2068c4119d2b19a90b736740e1d49e87754e83a70b8affc22300b7937ebf"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-both-empty.json",
+      "bytes": 1092,
+      "sha256": "56197552eb223baf9e56b3899fa419f10f5d68f418f7e5ea68aa48f9079881ad"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-both-singleton-card.png",
+      "bytes": 96729,
+      "sha256": "76e831b43a5c55c2f16919fce526f999b530e9ad5c313f17ef458371b3b15b73"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-both-singleton.json",
+      "bytes": 2066,
+      "sha256": "6652bdffd341bc36cb1b9234c0a027d6e3ac2103a03aaa368de67605cab76b8e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-c6-before-card.png",
+      "bytes": 107769,
+      "sha256": "053c96927f9881d3297d9ab8777b4bdddd50cbd152ade82100026407341b260c"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-c6-before.json",
+      "bytes": 5685,
+      "sha256": "d5a7bb41042a778b8cd71ae686ad038149fe7a06c1fd4f4034d8a1fb6d2a08f8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-caption.png",
+      "bytes": 40594,
+      "sha256": "55820a52550018e610caf216ef2ca8c113d70f5b70311a84fcd78591e533e3dd"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-cube-before-card.png",
+      "bytes": 113004,
+      "sha256": "015ea05c92545260e6905e45ea986be9b75a1c5d5cfdebe259fada98391feeb2"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-cube-before.json",
+      "bytes": 7440,
+      "sha256": "e6fb5145cdf77afd8bc3aa5f6c5735f2b2096a18811e2213ddd75dcaafca782e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-default-card.png",
+      "bytes": 109326,
+      "sha256": "aba07263c7caa2901aaa85a7dc70b8a4e75547d0a1468fb269c321a798fa7c19"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-default.json",
+      "bytes": 8496,
+      "sha256": "0c7807d02a2c5b793fb55c1ade8cc36e910f8e9a2f65e952fc0de132ea1a8de3"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-before-card.png",
+      "bytes": 115983,
+      "sha256": "1a2b29ee569d920eba538cdc9ed9375bc31cd4ebc9053a5961972d8b3c4cbce8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-before.json",
+      "bytes": 9735,
+      "sha256": "3785a53e5632154b8f57868ecf37933ab4dd82564eb26717590ad2a0cc8324de"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step1-card.png",
+      "bytes": 112675,
+      "sha256": "529751c2c16acf0ea0a733df1cfb9e0368ffeea680a513330339fecbf0b967af"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step1.json",
+      "bytes": 9722,
+      "sha256": "6b63d010f3aa313c47980845e72a7e73cd596b3a162a19fcbd8eea48dd107559"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step2-card.png",
+      "bytes": 112843,
+      "sha256": "8edaba893f9d1b516c67a69a62d8f7da7e624bddffd2e21cb53a9c2937d2f8e3"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step2.json",
+      "bytes": 9740,
+      "sha256": "b74e1dab6e5978d94ffa71275aa9a8bcec240747f7067e1cecc8991ce4b6190f"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step3-card.png",
+      "bytes": 113445,
+      "sha256": "72899a1b441c04847d12c6e66c4aa0ae12ab4739e94579ee5dd0b87a9052cf91"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step3.json",
+      "bytes": 9758,
+      "sha256": "f1ebc1dafbcc18d33762d5d469a50acf88ebcebe99a1aeafaea7bc3bf7d7aeb1"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step4-card.png",
+      "bytes": 116081,
+      "sha256": "6ef50d9c6eb75c3e779ee8ee39ab33d7f9952a13bc0aa3e3d8baaf64f4d50a84"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step4.json",
+      "bytes": 9802,
+      "sha256": "f63893a7e61e4df8e6e393cec7b9abdb384cd7e1cd737d3d48ff2f18a56894c8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step5-card.png",
+      "bytes": 117538,
+      "sha256": "e289e5ad892b86a36ead7f5e5a9c031924c6731a0abcb18fd75632469921c5ee"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-labelled-isomorphic-step5.json",
+      "bytes": 9819,
+      "sha256": "b05f4aba4e9bd896fc9845dcd503f34ca58372ac865b438cf748b27a750c5a58"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-p7-before-card.png",
+      "bytes": 106103,
+      "sha256": "21b50c480d6145eea5b8d73d53237825581c2a2f833e60f0512d9f6a8fdddd5e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-p7-before.json",
+      "bytes": 8114,
+      "sha256": "14ad33c76b339e20e014763f3a19515ae2f6fc6b4101df59bae6b38906f3dfd9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-proof.png",
+      "bytes": 111579,
+      "sha256": "c0a9378429314620a48c03e75020dc384e937e379c8d23128f8b6ae081656cfc"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-regular-nonempty-card.png",
+      "bytes": 107769,
+      "sha256": "053c96927f9881d3297d9ab8777b4bdddd50cbd152ade82100026407341b260c"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-regular-nonempty.json",
+      "bytes": 5685,
+      "sha256": "d5a7bb41042a778b8cd71ae686ad038149fe7a06c1fd4f4034d8a1fb6d2a08f8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-restored-default-card.png",
+      "bytes": 106103,
+      "sha256": "21b50c480d6145eea5b8d73d53237825581c2a2f833e60f0512d9f6a8fdddd5e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-restored-default.json",
+      "bytes": 8114,
+      "sha256": "14ad33c76b339e20e014763f3a19515ae2f6fc6b4101df59bae6b38906f3dfd9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/light-statement.png",
+      "bytes": 80642,
+      "sha256": "1331e1e9875ba1710fc25833e8d1383583fe9d3768ed7be2c0ee61796469e6cf"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after/native.json",
+      "bytes": 297533,
+      "sha256": "26eda7d24ec54a2ad2f184924f5b034fc5d77543d5154407f2a30060eb3a8423"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/after.log",
+      "bytes": 72,
+      "sha256": "23e0cbf4381ff405eb41ab4c7d8e6702df6e3527f132eeb37e891eb72f7c3329"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/baseline-build.log",
+      "bytes": 217,
+      "sha256": "d3ff0930974e78749544ce74dd0d0f6c5f2231abe48fb6ce91ad3fd30d102cc2"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-G-empty-card.png",
+      "bytes": 102248,
+      "sha256": "0cf12636a18d2f58e48b600c62fed8d06a3ee4d0f079f1cd68125b1cc372a473"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-G-empty.json",
+      "bytes": 3779,
+      "sha256": "0ec0c84b4f661c1ec3f049cc965c822fca3773aa22a563c72bbe38b30b0f5edb"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-both-empty-card.png",
+      "bytes": 96308,
+      "sha256": "1c02e874df7a9eefda9731476636fde3564c4c69159eca6fa4c60ee8620b869f"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-both-empty.json",
+      "bytes": 1186,
+      "sha256": "ca8b8832f59be3cb97c4f7b2358d57bf6ea5f9f20a13920de6af150e31b487da"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-c6-before-card.png",
+      "bytes": 108735,
+      "sha256": "7cf0c30fcedfc6eb26d22ace635136133e10063b0372302f1b14901c8a6d888f"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-c6-before.json",
+      "bytes": 5685,
+      "sha256": "d5a7bb41042a778b8cd71ae686ad038149fe7a06c1fd4f4034d8a1fb6d2a08f8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-cube-before-card.png",
+      "bytes": 113896,
+      "sha256": "db802ae3ebbc942ba09c1e0b71189b77d897ce1178738d8bff6b0ff92c21a67d"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-cube-before.json",
+      "bytes": 7440,
+      "sha256": "e6fb5145cdf77afd8bc3aa5f6c5735f2b2096a18811e2213ddd75dcaafca782e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-default-card.png",
+      "bytes": 109950,
+      "sha256": "765b2f2d663e658b15056401bd68507f6b3ddbc142d98524cfbaa71013807d72"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-default.json",
+      "bytes": 8496,
+      "sha256": "0c7807d02a2c5b793fb55c1ade8cc36e910f8e9a2f65e952fc0de132ea1a8de3"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-labelled-isomorphic-before-card.png",
+      "bytes": 117321,
+      "sha256": "be2a7998978e49a274af16bf26604d9bf779088154ace409a773baabce2911e4"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-labelled-isomorphic-before.json",
+      "bytes": 7663,
+      "sha256": "2acf0360571bcf096dde0a91f5f7ca658147a078911849fb15921aa6b3c09664"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-labelled-isomorphic-step1-card.png",
+      "bytes": 113923,
+      "sha256": "f96f14610907f485492ca53a483210215a14c6accb2efbd53efeda4d27eabfc8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-labelled-isomorphic-step1.json",
+      "bytes": 7650,
+      "sha256": "05948e4d0af8ca0b7af63cdea39c789375b6725373e1fdce481fce53c0c183e0"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-labelled-isomorphic-step2-card.png",
+      "bytes": 115544,
+      "sha256": "936aac96bb6a7edf626f243337b4518d53e0bf7e8da3820bd5fac3bad1c29cc6"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-labelled-isomorphic-step2.json",
+      "bytes": 7686,
+      "sha256": "1831cef2daccf7bfa3913fb75729ad3042ff8da6e02d92db9d3abd5c2751084b"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-labelled-isomorphic-step3-card.png",
+      "bytes": 117724,
+      "sha256": "631be7abfef6275da401085e68614c8ed39274344bac2ce7916c9cadf8c999e3"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-labelled-isomorphic-step3.json",
+      "bytes": 7739,
+      "sha256": "6020e5ec730427afcba00de4ba78c6e496d88d272779c513d3ab6587f380570d"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-p7-before-card.png",
+      "bytes": 107018,
+      "sha256": "c25ff45bd74f8df686343833a304ada72d66ebdb971fd0b05d71cea19866fbc9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/dark-p7-before.json",
+      "bytes": 8114,
+      "sha256": "14ad33c76b339e20e014763f3a19515ae2f6fc6b4101df59bae6b38906f3dfd9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-G-empty-card.png",
+      "bytes": 101481,
+      "sha256": "55221f83d79d8be023423419b8e421ef980be177bc3e2353a967cd46d5d9dece"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-G-empty.json",
+      "bytes": 3779,
+      "sha256": "0ec0c84b4f661c1ec3f049cc965c822fca3773aa22a563c72bbe38b30b0f5edb"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-both-empty-card.png",
+      "bytes": 95526,
+      "sha256": "d0d3f4a46d7ea8412d75074ffd7e94d7e9b0d4388eead1ef78a0d248514261bc"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-both-empty.json",
+      "bytes": 1186,
+      "sha256": "ca8b8832f59be3cb97c4f7b2358d57bf6ea5f9f20a13920de6af150e31b487da"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-c6-before-card.png",
+      "bytes": 107769,
+      "sha256": "053c96927f9881d3297d9ab8777b4bdddd50cbd152ade82100026407341b260c"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-c6-before.json",
+      "bytes": 5685,
+      "sha256": "d5a7bb41042a778b8cd71ae686ad038149fe7a06c1fd4f4034d8a1fb6d2a08f8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-cube-before-card.png",
+      "bytes": 113004,
+      "sha256": "015ea05c92545260e6905e45ea986be9b75a1c5d5cfdebe259fada98391feeb2"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-cube-before.json",
+      "bytes": 7440,
+      "sha256": "e6fb5145cdf77afd8bc3aa5f6c5735f2b2096a18811e2213ddd75dcaafca782e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-default-card.png",
+      "bytes": 109326,
+      "sha256": "aba07263c7caa2901aaa85a7dc70b8a4e75547d0a1468fb269c321a798fa7c19"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-default.json",
+      "bytes": 8496,
+      "sha256": "0c7807d02a2c5b793fb55c1ade8cc36e910f8e9a2f65e952fc0de132ea1a8de3"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-labelled-isomorphic-before-card.png",
+      "bytes": 116940,
+      "sha256": "d129ba134867f76da060966537730c03b5692f790eb4f6267010452051f3f90f"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-labelled-isomorphic-before.json",
+      "bytes": 7663,
+      "sha256": "2acf0360571bcf096dde0a91f5f7ca658147a078911849fb15921aa6b3c09664"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-labelled-isomorphic-step1-card.png",
+      "bytes": 113794,
+      "sha256": "0914e2d3c559a35ebd99cf56f6df7a47600be7f991c238cb193d6b41e7559e60"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-labelled-isomorphic-step1.json",
+      "bytes": 7650,
+      "sha256": "05948e4d0af8ca0b7af63cdea39c789375b6725373e1fdce481fce53c0c183e0"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-labelled-isomorphic-step2-card.png",
+      "bytes": 115394,
+      "sha256": "38c31d1f2f892f0897d80dd83c43e828a3e1eb0e78e8ae6a7f5cbdbbb3da0073"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-labelled-isomorphic-step2.json",
+      "bytes": 7686,
+      "sha256": "1831cef2daccf7bfa3913fb75729ad3042ff8da6e02d92db9d3abd5c2751084b"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-labelled-isomorphic-step3-card.png",
+      "bytes": 117528,
+      "sha256": "53f2a06651938e76c33a307ae60220f838703d1865b953ac13fc0791bbeebd35"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-labelled-isomorphic-step3.json",
+      "bytes": 7739,
+      "sha256": "6020e5ec730427afcba00de4ba78c6e496d88d272779c513d3ab6587f380570d"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-p7-before-card.png",
+      "bytes": 106103,
+      "sha256": "21b50c480d6145eea5b8d73d53237825581c2a2f833e60f0512d9f6a8fdddd5e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/light-p7-before.json",
+      "bytes": 8114,
+      "sha256": "14ad33c76b339e20e014763f3a19515ae2f6fc6b4101df59bae6b38906f3dfd9"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before/native.json",
+      "bytes": 167964,
+      "sha256": "8c0fdea29ee68e84ca0feaa87661391b53aa7a0b8fbad9b3b08f42d5e2f5de57"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/before.log",
+      "bytes": 72,
+      "sha256": "23e0cbf4381ff405eb41ab4c7d8e6702df6e3527f132eeb37e891eb72f7c3329"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/build.log",
+      "bytes": 217,
+      "sha256": "def606d58e1d2d9f0a001390898e0ac21cca466d5c2307890b4f154c2a9eaa68"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/math.json",
+      "bytes": 234,
+      "sha256": "c0356aab41c1f30df56ff7d14d04e285df6cf750747a79f69469ebb9a7b6842d"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/offline.json",
+      "bytes": 1009,
+      "sha256": "18242a39969b739163319334856a27a0c00cf35fff40a5a9cb044963e4f0cecc"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/preservation.json",
+      "bytes": 114155,
+      "sha256": "89bd2d9764227718d54add897430c40126ce8400b5611c8ee2af8e9a96b1b9c1"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/producer-default.log",
+      "bytes": 408,
+      "sha256": "ef6250c51d8b963389a34bb712983f569ea87c5eef3c58a02a3c70711bedc8a4"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/producer-preservation.json",
+      "bytes": 250,
+      "sha256": "7de1d102127536a7b0029478f68a49fc803f7867173ef937d7bb24b8d773a744"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/producer-preservation.log",
+      "bytes": 214,
+      "sha256": "3429c6e6cf0ca0fb50db74f4b40ddb6b4a84bb537e03fa947edfb156073a2a7a"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-G-edge-H-singleton.png",
+      "bytes": 236002,
+      "sha256": "27e5f2be06bd8f91c97329d886129730105f0f9f585079fcd9a12b324c0f6e20"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-G-empty.png",
+      "bytes": 242873,
+      "sha256": "973fbe709762120158577983ea62e8ea20fc4eb8291bfb44c9f039a23a65346b"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-G-singleton.png",
+      "bytes": 231092,
+      "sha256": "5803e6234f41c01eac1bdf0063bf88e12c2ab19f77574fac2a7f6e767fc34413"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-both-edges.png",
+      "bytes": 238056,
+      "sha256": "2b7b483359240ee3b3a100fda1bf22f9e2ced2997a2eb6d7b6afcf6e9c8f2487"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-both-empty.png",
+      "bytes": 229171,
+      "sha256": "4cc1fb4f4d1772e0cc25dfb9122c37c342ef953241dad7860fde90d5a608b298"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-both-singleton.png",
+      "bytes": 232402,
+      "sha256": "717ac0eb16a98b3791b0ebbb766a4dd0a09f5c7edc43b0a1e283682ec37fb155"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-c6-before.png",
+      "bytes": 257335,
+      "sha256": "9a3f25e729b3c72f3e53d1d0ff230dbe2e8e6d412b49fdc5fa4ade245dbab26e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-caption.png",
+      "bytes": 103825,
+      "sha256": "2425fa03ea983ee20d2ccf4d5a638542c0f1de2dba3463e6e63bd3068b7d8d5f"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-cube-before.png",
+      "bytes": 269930,
+      "sha256": "1c46d4a47bc0f4caf3a2bebfe549a9372d862bfb0d20691427c98c8574746de8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-default.png",
+      "bytes": 255473,
+      "sha256": "16918b7689794b9a6151bfcdeb05db498bfa6c11a499e1df082f8500d8580e20"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-labelled-isomorphic-before.png",
+      "bytes": 271600,
+      "sha256": "7eed0bc33b551647ab9b45ef9168afeeb6636f84caa2aae2cc4081d9a214f12e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-labelled-isomorphic-step1.png",
+      "bytes": 261686,
+      "sha256": "07309c1bab9dd44bcffe7d4e6e567125a717f0ee787531c3468c6e8cbe1f5156"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-labelled-isomorphic-step2.png",
+      "bytes": 262082,
+      "sha256": "688f7f045afda72ec0bade4981e866a8e1874b7b66526aeb544186f4d8a540f1"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-labelled-isomorphic-step3.png",
+      "bytes": 264602,
+      "sha256": "abf1d5921e5974e4d9022bbe6422fc34d7cfcd4891c98756d6e2d9295043d458"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-labelled-isomorphic-step4.png",
+      "bytes": 271491,
+      "sha256": "e89ede06113c9afc335d3b467a7747d3edee7f45c0079cdcb107419b12e2d690"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-labelled-isomorphic-step5.png",
+      "bytes": 272441,
+      "sha256": "6be73739376067c515d0ededf96ae7c7eeb3b13658cbea9aa6258cc0cfa3f3c8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-p7-before.png",
+      "bytes": 253469,
+      "sha256": "d4e2b7b7819dbc8d62b5e140f6ea54c0140f5fec11b9b21607b1abe99d21e9d7"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-proof.png",
+      "bytes": 325727,
+      "sha256": "8bb84da9a529ea7df16482352902c94c1cbdc6f5ce13152ce87ee645c6fd219e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-regular-nonempty.png",
+      "bytes": 257316,
+      "sha256": "6e2ccabb23004c191bf6cb5b2f272a79884e06edfef3f35119a0f119347fc586"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-restored-default.png",
+      "bytes": 253469,
+      "sha256": "d4e2b7b7819dbc8d62b5e140f6ea54c0140f5fec11b9b21607b1abe99d21e9d7"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/after-statement.png",
+      "bytes": 201913,
+      "sha256": "d23c184e8c25c4ba603375cd73b21a28a798689bdae72fc5b01de2876d8ea4b0"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-G-empty.png",
+      "bytes": 242873,
+      "sha256": "973fbe709762120158577983ea62e8ea20fc4eb8291bfb44c9f039a23a65346b"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-both-empty.png",
+      "bytes": 229691,
+      "sha256": "3fec561e22f15041e884b476cbb902c34c0c66ca359ab8c993f589b214fbb172"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-c6-before.png",
+      "bytes": 257335,
+      "sha256": "9a3f25e729b3c72f3e53d1d0ff230dbe2e8e6d412b49fdc5fa4ade245dbab26e"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-cube-before.png",
+      "bytes": 269930,
+      "sha256": "1c46d4a47bc0f4caf3a2bebfe549a9372d862bfb0d20691427c98c8574746de8"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-default.png",
+      "bytes": 255473,
+      "sha256": "16918b7689794b9a6151bfcdeb05db498bfa6c11a499e1df082f8500d8580e20"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-labelled-isomorphic-before.png",
+      "bytes": 273353,
+      "sha256": "3d1bbb09625a0da783965d80301544f06ebc0dc69c31b63cef30baca590eff1f"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-labelled-isomorphic-step1.png",
+      "bytes": 263725,
+      "sha256": "1ec64e6749ff6085646fa722aec5faa432dcc0e7e63659dfadd0484be385ab48"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-labelled-isomorphic-step2.png",
+      "bytes": 266624,
+      "sha256": "58119d12acd5caf8b45e5618ac4bc63e97bd16b58fda38f8ab098efb9d298d0a"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-labelled-isomorphic-step3.png",
+      "bytes": 269828,
+      "sha256": "885227423868dde82ec3bc8edcaf0df10b249354f2c4068d0f150d290b080d63"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/sheets/before-p7-before.png",
+      "bytes": 253469,
+      "sha256": "d4e2b7b7819dbc8d62b5e140f6ea54c0140f5fec11b9b21607b1abe99d21e9d7"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/static-only.log",
+      "bytes": 52,
+      "sha256": "06e5a3179cc724a69f1266ab30aa4494b25a1cfeb6bb57cdbc15ba72368d5b77"
+    },
+    {
+      "path": "/tmp/atlas-new-cplx-empty-count-peer/static.log",
+      "bytes": 3017,
+      "sha256": "a3225854641b956dc44bffa87f195480db41348298a2370a70706a419af70b28"
+    }
+  ]
+}
