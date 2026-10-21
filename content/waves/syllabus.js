@@ -164,46 +164,242 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Geometrical optics',
-      summary: String.raw`When wavelengths are short compared with everything else, waves travel along rays that obey the eikonal equation, and Fermat’s principle — the ray takes a path of stationary optical length — is the shadow of stationary phase. The paraxial approximation turns lenses and mirrors into simple formulas and 2×2 matrices that design microscopes, telescopes and the eye; real systems suffer aberrations. Ray optics is Hamiltonian mechanics in disguise, so phase-space volume (étendue) is conserved, which limits how bright an image can be and resolves Olbers’ paradox of the dark night sky.`,
-      items: [
-        { num: '5.1', kind: 'Theorem', name: 'Eikonal equation: rays from short waves', deps: ['waves-4.3', 'waves-1.12'], refs: ['Hecht ch. 6'],
-          pic: 'Shrink the wavelength of a wave crossing a smoothly varying medium: the full wave solution concentrates along curves that match rays traced from the eikonal equation, and diffraction blurs them as λ grows.' },
-        { num: '5.2', kind: 'Principle', name: 'Fermat’s principle from stationary phase', deps: ['waves-5.1', 'mech-5.2'], refs: ['Hecht ch. 4'],
-          pic: 'Contributions from many trial paths between two points are summed as phasors: only paths near the stationary optical length add up, and that bundle is the ray Fermat predicts.' },
-        { num: '5.3', kind: 'Phenomenon', name: 'Mirages and graded-index optics', deps: ['waves-5.1', 'waves-5.2'], refs: ['Hecht ch. 6'],
-          pic: 'Set a temperature profile above hot ground: rays bend upward toward lower index and an inverted image of the sky appears on the road; a graded-index rod refocuses rays periodically.' },
-        { num: '5.4', kind: 'Theorem', name: 'Optical–mechanical analogy', deps: ['waves-5.1', 'mech-12.3'], refs: ['Hecht ch. 6'],
-          pic: 'Trace a ray through a graded-index medium and a particle through the matching potential side by side: with n² playing the role of energy minus potential, the two trajectories coincide.' },
-        { num: '5.5', kind: 'Theorem', name: 'Perfect imaging by conic surfaces', deps: ['waves-5.2'], refs: ['Hecht ch. 5'],
-          pic: 'Equal optical paths make a paraboloid focus parallel rays to one point and an ellipsoid image one focus onto the other; switch the mirror to a sphere and the focus smears.' },
-        { num: '5.6', kind: 'Method', name: 'Thin-lens and lensmaker’s equations', deps: ['waves-4.6'], refs: ['Hecht ch. 5'],
-          pic: 'Drag an object in front of a lens whose curvatures and index you set: paraxial rays cross where 1/s + 1/s′ = 1/f predicts, and steep rays drift off as the approximation fails.' },
-        { num: '5.7', kind: 'Model', name: 'Spherical mirrors', deps: ['waves-4.5', 'waves-5.6'], refs: ['Hecht ch. 5'],
-          pic: 'Move an object along the axis of a concave or convex mirror: the image moves according to the mirror equation, flipping from real and inverted to virtual and upright at the focal point.' },
-        { num: '5.8', kind: 'Definition', name: 'Magnification; real and virtual images', deps: ['waves-5.6'], refs: ['Hecht ch. 5'],
-          pic: 'Principal rays from the tip of an arrow locate its image; where they actually cross the image is real and can be caught on a screen, where only their extensions meet it is virtual.' },
-        { num: '5.9', kind: 'Method', name: 'Ray-transfer matrices', deps: ['waves-5.6'], refs: ['Hecht ch. 6'],
-          pic: 'Stack lenses and gaps from a palette: the system’s 2×2 matrix multiplies live, its determinant stays 1, and rays traced through it agree with the matrix acting on (height, angle).' },
-        { num: '5.10', kind: 'Definition', name: 'Stops, pupils and numerical aperture', deps: ['waves-5.8'], refs: ['Hecht ch. 5'],
-          pic: 'Move and resize an aperture in a lens system: the cone of accepted rays, the entrance pupil and the numerical aperture update, and image brightness tracks the pupil area.' },
-        { num: '5.11', kind: 'Model', name: 'The human eye', deps: ['waves-5.6'], refs: ['Hecht ch. 5'],
-          pic: 'Adjust the eye’s lens power to focus objects at different distances: the near point appears when accommodation runs out, and a corrective lens slider restores focus for a short- or long-sighted eye.' },
-        { num: '5.12', kind: 'Model', name: 'Microscopes and telescopes', deps: ['waves-5.9', 'waves-5.8'], refs: ['Hecht ch. 5'],
-          pic: 'Two-lens systems built from focal-length sliders: the telescope’s angular magnification is f₁/f₂ and the microscope’s grows with tube length, with ray bundles traced to the eye.' },
-        { num: '5.13', kind: 'Phenomenon', name: 'Spherical aberration', deps: ['waves-5.6', 'waves-5.5'], refs: ['Hecht ch. 6'],
-          pic: 'Trace exact rays through a spherical lens at increasing heights: marginal rays focus closer than paraxial ones, and the caustic and blur spot grow with aperture.' },
-        { num: '5.14', kind: 'Phenomenon', name: 'Seidel aberrations', deps: ['waves-5.13', 'waves-5.10'], refs: ['Hecht ch. 6'],
-          pic: 'Tilt the field angle and the aperture: spot diagrams show coma, astigmatism, field curvature and distortion appearing at their characteristic rates in angle and aperture.' },
-        { num: '5.15', kind: 'Phenomenon', name: 'Chromatic aberration and the achromat', deps: ['waves-5.6', 'waves-4.12'], refs: ['Hecht ch. 6'],
-          pic: 'A single lens focuses blue closer than red; pair it with a weaker lens of more dispersive glass and choose the powers so two colours share a focus, with the residual colour error plotted.' },
-        { num: '5.16', kind: 'Theorem', name: 'Abbe sine condition', deps: ['waves-5.13', 'waves-5.10'], refs: ['Hecht ch. 6'],
-          pic: 'For a lens corrected for spherical aberration, move a point slightly off axis: the image stays sharp only if n sin θ scales the same way for all rays, which a readout tests ray by ray.' },
-        { num: '5.17', kind: 'Theorem', name: 'Conservation of étendue', deps: ['waves-5.9', 'mech-12.13'], refs: ['Hecht ch. 6'],
-          pic: 'A beam’s rays are plotted as points in (height, angle) space: lenses shear and rotate the patch but never shrink its area, so no passive optics can make an image brighter than its source.' },
-        { num: '5.18', alias: 'astro-10.1', name: 'Olbers’ paradox' },
-      ],
+      "n": 5,
+      "title": "Geometrical optics",
+      "summary": "A short-wave expansion connects scalar wave phase to stationary optical length and Hamiltonian rays. Exact conic reflection and gradient-index examples expose the assumptions behind paraxial lenses, pupils and instruments. Aberration models and canonical phase-space conservation distinguish imperfect imaging, geometric acceptance and transmitted radiance.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Theorem",
+          "name": "Eikonal equation: rays from short waves",
+          "deps": [
+            "waves-4.3",
+            "waves-1.12"
+          ],
+          "refs": [
+            "MIT18.325 (2015), Geometry of waves, printed43–44 and49; correct transport sign obtained by substitution",
+            "Fang, MIT2.71 Lecture10, actual pp1–4"
+          ],
+          "pic": "Change wavelength and index gradient. Compare an actual scalar Helmholtz initial-value solution with its WKB field or their complex difference."
+        },
+        {
+          "num": "5.2",
+          "kind": "Principle",
+          "name": "Fermat’s principle from stationary phase",
+          "deps": [
+            "waves-5.1",
+            "mech-5.2"
+          ],
+          "refs": [
+            "Fang, MIT2.71 Lecture2, actual pp3–4, stationary optical path and Snell variation"
+          ],
+          "pic": "Move a trial crossing and compare its optical length with the stationary crossing. Reduce wavelength to see cancellation in a specified weighted boundary integral."
+        },
+        {
+          "num": "5.3",
+          "kind": "Phenomenon",
+          "name": "Mirages and graded-index optics",
+          "deps": [
+            "waves-5.1",
+            "waves-5.2"
+          ],
+          "refs": [
+            "Fang, MIT2.71 Lecture10, actual pp3–4, stratified index and quadratic GRIN"
+          ],
+          "pic": "Switch between an exact GRIN ray and a synthetic stratified mirage ray. The momentum readout checks the first integral along the calculated trajectory."
+        },
+        {
+          "num": "5.4",
+          "kind": "Theorem",
+          "name": "Optical–mechanical analogy",
+          "deps": [
+            "waves-5.1",
+            "mech-12.3"
+          ],
+          "refs": [
+            "MIT18.325 (2015), Geometry of waves, printed47–49, Hamiltonian rays"
+          ],
+          "pic": "Change the initial state and Verlet step count. Compare the numerical mechanical trajectory with the analytic optical characteristic and inspect the energy discrepancy."
+        },
+        {
+          "num": "5.5",
+          "kind": "Theorem",
+          "name": "Perfect imaging by conic surfaces",
+          "deps": [
+            "waves-5.2",
+            "waves-4.5"
+          ],
+          "refs": [
+            "Fang, MIT2.71 Lecture2, actual pp5–6, parabolic reflection; ellipse distance/normal derivation supplied here"
+          ],
+          "pic": "Compare exact specular reflection and optical lengths on an ellipse, parabola and matched sphere. The sphere uses its real surface normal rather than an imposed focus."
+        },
+        {
+          "num": "5.6",
+          "kind": "Method",
+          "name": "Thin-lens and lensmaker’s equations",
+          "deps": [
+            "waves-4.6"
+          ],
+          "refs": [
+            "Fang, MIT2.71 Lecture2, actual pp9–10 and13, signed spherical refraction and thin-lens conjugacy"
+          ],
+          "pic": "Adjust index, signed curvatures and object distance. The paraxial rays and numerical conjugate update through converging, diverging and near-collimated cases."
+        },
+        {
+          "num": "5.7",
+          "kind": "Model",
+          "name": "Spherical mirrors",
+          "deps": [
+            "waves-4.5",
+            "waves-5.6"
+          ],
+          "refs": [
+            "Fang, MIT2.71 Lecture2, reflection and spherical optical surfaces; global-coordinate paraxial reflection derivation supplied here"
+          ],
+          "pic": "Choose concave or convex curvature and move the object. Compare the Gaussian image coordinate with the actual selected-height reflected ray."
+        },
+        {
+          "num": "5.8",
+          "kind": "Definition",
+          "name": "Magnification; real and virtual images",
+          "deps": [
+            "waves-5.6"
+          ],
+          "refs": [
+            "Fang, MIT2.71 Lecture2, actual pp13–14, signed image distance and magnification"
+          ],
+          "pic": "Move the object through the focal region and switch lens sign. Solid outgoing rays and dashed extensions distinguish real and virtual conjugates."
+        },
+        {
+          "num": "5.9",
+          "kind": "Method",
+          "name": "Ray-transfer matrices",
+          "deps": [
+            "waves-5.6"
+          ],
+          "refs": [
+            "Fang, MIT2.71 Lecture4, actual pp4–6, ray matrices; canonical-coordinate conversion derived here"
+          ],
+          "pic": "Change interface curvature, output index, gap and final lens power. Compare sequential tracing with the product matrix and both coordinate determinants."
+        },
+        {
+          "num": "5.10",
+          "kind": "Definition",
+          "name": "Stops, pupils and numerical aperture",
+          "deps": [
+            "waves-5.8",
+            "waves-5.9"
+          ],
+          "refs": [
+            "Greivenkamp2019 Stops and apertures, actual slides9-1–9-6"
+          ],
+          "pic": "Move and resize the physical back stop and lens rim. Watch which aperture limits and how its entrance-pupil image changes, including a pupil at infinity."
+        },
+        {
+          "num": "5.11",
+          "kind": "Model",
+          "name": "The human eye",
+          "deps": [
+            "waves-5.6",
+            "waves-5.9"
+          ],
+          "refs": [
+            "Greivenkamp2019 The Eye, actual slides22-3–22-7, reduced-eye assumptions"
+          ],
+          "pic": "Adjust equivalent eye power, a coincident corrective power and pupil size. Compare the calculated focal distance with the fixed retina."
+        },
+        {
+          "num": "5.12",
+          "kind": "Model",
+          "name": "Microscopes and telescopes",
+          "deps": [
+            "waves-5.9",
+            "waves-5.8"
+          ],
+          "refs": [
+            "Greivenkamp2019 Magnifiers and telescopes, actual slides13-7–13-9",
+            "Greivenkamp2019 Relays and microscopes, actual slides14-29–14-30"
+          ],
+          "pic": "Switch between a telescope and microscope. Each mode exposes only its own focal lengths and separation controls and traces the corresponding paraxial bundle."
+        },
+        {
+          "num": "5.13",
+          "kind": "Phenomenon",
+          "name": "Spherical aberration",
+          "deps": [
+            "waves-4.6",
+            "waves-5.5",
+            "waves-5.9"
+          ],
+          "refs": [
+            "Greivenkamp2019 Stop location and image quality, actual pp1–6, spherical ray error and defocus",
+            "Wyant and Creath, Basic Wavefront Aberration Theory for Optical Metrology, printed13–17, wavefront-to-ray gradient"
+          ],
+          "pic": "Open the aperture and move the screen. Compare exact meridional rays or their screen spots with the paraxial focal coordinate."
+        },
+        {
+          "num": "5.14",
+          "kind": "Phenomenon",
+          "name": "Seidel aberrations",
+          "deps": [
+            "waves-5.13",
+            "waves-5.10"
+          ],
+          "refs": [
+            "Wyant and Creath, Basic Wavefront Aberration Theory for Optical Metrology, actual printed13–19, Eqs25–33 and TableII"
+          ],
+          "pic": "Choose one wavefront term and vary field, aperture or independent defocus. Actual derivatives of the declared polynomial generate the deterministic pupil spots."
+        },
+        {
+          "num": "5.15",
+          "kind": "Phenomenon",
+          "name": "Chromatic aberration and the achromat",
+          "deps": [
+            "waves-5.6",
+            "waves-4.12"
+          ],
+          "refs": [
+            "Greivenkamp2019 Chromatic aberrations, actual slides20-11–20-14, contact achromat and secondary spectrum"
+          ],
+          "pic": "Compare a single synthetic lens with its two-component achromat and probe the power at intermediate wavelengths. Switch to identical dispersion to expose the incompatible constraints."
+        },
+        {
+          "num": "5.16",
+          "kind": "Theorem",
+          "name": "Abbe sine condition",
+          "deps": [
+            "waves-5.2",
+            "waves-5.8",
+            "waves-5.10",
+            "waves-5.13"
+          ],
+          "refs": [
+            "Lampen, Dubin and Burge (2011), Applied Optics50 pp6391–6398, actual §2 pp6392–6393, pupil mapping and first-order field condition; indexed endpoint derivation supplied here"
+          ],
+          "pic": "Compare synthetic sine, tangent and perturbed pupil-angle maps. The residual gives the first-order optical-path mismatch for a stated small object displacement."
+        },
+        {
+          "num": "5.17",
+          "kind": "Theorem",
+          "name": "Conservation of étendue",
+          "deps": [
+            "waves-5.9",
+            "waves-5.4",
+            "mech-12.13"
+          ],
+          "refs": [
+            "Greivenkamp2019 Radiative transfer, actual slides11-15–11-20, paraxial throughput and normalized radiance",
+            "Exact nonparaxial cosine integral derived here from canonical momenta"
+          ],
+          "pic": "Transport and physically clip a canonical phase patch, or test a three-dimensional cone mapping. Vary attenuation independently to distinguish lost flux from lost geometric acceptance."
+        },
+        {
+          "num": "5.18",
+          "alias": "astro-10.1",
+          "name": "Olbers’ paradox"
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {
