@@ -1,0 +1,493 @@
+{
+  "complete": true,
+  "pass": true,
+  "nativeEvidence": false,
+  "baseHashes": {
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187"
+  },
+  "completeOtherSourcesPreserved": 59,
+  "repairs": {
+    "scene": [
+      [
+        "this.worker.onerror = () => { this.fallback('geometry worker failed'); if (!this.dead) map.draw(); };",
+        "this.worker.onerror = () => { if (this.dead || generation !== this.generation) return; this.fallback('geometry worker failed'); this.map.draw(); };"
+      ],
+      [
+        "this.geometry(kind, scale).catch(error => { this.failed.add(key); this.fallback(error.message); });",
+        "const generation = this.generation; this.geometry(kind, scale).catch(error => { if (this.dead || generation !== this.generation) return; this.failed.add(key); this.fallback(error.message); });"
+      ]
+    ],
+    "chunk": [
+      [
+        "g.buffer&&d.coverage===g.coverage",
+        "g.buffer&&this.budget.entries.has(g)&&d.coverage===g.coverage"
+      ]
+    ]
+  },
+  "baseline": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+  "negativeProbeBoundary": "6833fd9f404af5ac1ce4c4396814c708aaaccb1c",
+  "records": [
+    {
+      "variant": "old",
+      "probe": "chunk",
+      "status": 1,
+      "failures": 1,
+      "cases": 22,
+      "rawSHA256": "6bfa62b01ab34ad506c532eb18e48ea5d8ecd61133af056128e6495200947f7d",
+      "resultPath": "/tmp/atlas-map-private-lifecycle-repair-2/old-chunk",
+      "caseOutcomes": [
+        {
+          "name": "normal-two-chunk-live-snapshot",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "metadata-ownership-denied",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "scratch-ownership-denied",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "missing-metadata-explicit-drop",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "corrupt-metadata-marker",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "unsupported-uploaded-join",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "nonoptional-fidelity-scale",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "forced-original-path",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "scratch-allocation-error",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "after-first-chunk-live",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "after-first-chunk-stale",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "after-first-chunk-released",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "releaseGroup-alone-must-invalidate",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "The input did not match the regular expression /chunk snapshot expired/. Input:\n\n''\n"
+          }
+        },
+        {
+          "name": "chunk-gl-error-live-replay",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-generation",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-control",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-registry",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-coverage",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-model-release",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-context-loss",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "original-pressure-drops-optional-first",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "original-impossible-reserve-retains-existing-owners",
+          "pass": true,
+          "assertionFailure": null
+        }
+      ]
+    },
+    {
+      "variant": "old",
+      "probe": "scene",
+      "status": 1,
+      "failures": 3,
+      "cases": 3,
+      "rawSHA256": "bd896691328ca81f274c9b989e5776856b9549c1d1b58001bcc49820c7994c9f",
+      "resultPath": "/tmp/atlas-map-private-lifecycle-repair-2/old-scene",
+      "caseOutcomes": [
+        {
+          "name": "worker-error-requests-redraw-without-free-variable",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   message: 'map is not defined',\n+   name: 'ReferenceError'\n+ }\n- undefined\n"
+          }
+        },
+        {
+          "name": "lazy-rejection-after-disposed-generation",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "old lazy rejection must not change disposed/replacement generation or destroyed scene\n+ actual - expected\n\n  {\n+   active: false,\n-   active: true,\n    canvasRemoved: false,\n    dead: false,\n+   display: 'none',\n-   display: 'block',\n    drawCalls: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 2,\n    opacity: '',\n    pending: 0,\n+   status: 'Scene generation disposed'\n-   status: 'replacement ready'\n  }\n"
+          }
+        },
+        {
+          "name": "lazy-rejection-after-destroyed",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "old lazy rejection must not change disposed/replacement generation or destroyed scene\n+ actual - expected\n\n  {\n    active: false,\n    canvasRemoved: true,\n    dead: true,\n    display: 'none',\n    drawCalls: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 2,\n    opacity: '',\n    pending: 0,\n+   status: 'Scene generation disposed'\n-   status: 'destroyed'\n  }\n"
+          }
+        }
+      ]
+    },
+    {
+      "variant": "old",
+      "probe": "callbacks",
+      "status": 1,
+      "failures": 5,
+      "cases": 6,
+      "rawSHA256": "80243f72bff213e5bfec836455a9fd9d5f25be8ebcbc558b324b016f4291aff9",
+      "resultPath": "/tmp/atlas-map-private-lifecycle-repair-2/old-callbacks",
+      "caseOutcomes": [
+        {
+          "name": "saved-worker-error-after-disposed",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   message: 'map is not defined',\n+   name: 'ReferenceError'\n+ }\n- undefined\n"
+          }
+        },
+        {
+          "name": "saved-worker-error-after-destroyed",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "stale saved worker error must have no effect\n+ actual - expected\n... Skipped lines\n\n  {\n    active: false,\n    canvasRemoved: true,\n    dead: true,\n    display: 'none',\n...\n    pending: 0,\n+   status: 'geometry worker failed'\n-   status: 'destroyed'\n  }\n"
+          }
+        },
+        {
+          "name": "saved-worker-error-after-reinitialized",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   message: 'map is not defined',\n+   name: 'ReferenceError'\n+ }\n- undefined\n"
+          }
+        },
+        {
+          "name": "lazy-rejection-after-actual-reinitialization",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "old rejection must preserve actual new initialization\n+ actual - expected\n\n  {\n    active: false,\n    canvasRemoved: false,\n    dead: false,\n    display: 'none',\n    drawCalls: 0,\n+   failed: [\n+     'edges:8'\n+   ],\n-   failed: [],\n    generation: 3,\n    opacity: '',\n    pending: 3,\n+   status: 'Scene generation disposed'\n-   status: 'initializing'\n  }\n"
+          }
+        },
+        {
+          "name": "current-worker-error-after-reinitialization",
+          "pass": false,
+          "assertionFailure": {
+            "name": "AssertionError",
+            "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   message: 'map is not defined',\n+   name: 'ReferenceError'\n+ }\n- undefined\n"
+          }
+        },
+        {
+          "name": "saved-old-message-cannot-resolve-new-request",
+          "pass": true,
+          "assertionFailure": null
+        }
+      ]
+    },
+    {
+      "variant": "private-repair",
+      "probe": "chunk",
+      "status": 0,
+      "failures": 0,
+      "cases": 22,
+      "rawSHA256": "c88e6bdb4267d6cb1779b659c56a7070ce8ef7bdd9e417496a70aac6b00b04f3",
+      "resultPath": "/tmp/atlas-map-private-lifecycle-repair-2/private-repair-chunk",
+      "caseOutcomes": [
+        {
+          "name": "normal-two-chunk-live-snapshot",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "metadata-ownership-denied",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "scratch-ownership-denied",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "missing-metadata-explicit-drop",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "corrupt-metadata-marker",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "unsupported-uploaded-join",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "nonoptional-fidelity-scale",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "forced-original-path",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "scratch-allocation-error",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "after-first-chunk-live",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "after-first-chunk-stale",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "after-first-chunk-released",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "releaseGroup-alone-must-invalidate",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "chunk-gl-error-live-replay",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-generation",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-control",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-registry",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-coverage",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-model-release",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "invalidation-context-loss",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "original-pressure-drops-optional-first",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "original-impossible-reserve-retains-existing-owners",
+          "pass": true,
+          "assertionFailure": null
+        }
+      ]
+    },
+    {
+      "variant": "private-repair",
+      "probe": "scene",
+      "status": 0,
+      "failures": 0,
+      "cases": 3,
+      "rawSHA256": "5b186e58f16e7dfdf9beea2cb9e58cdc2b7ccbc35029b6484dccf8dfd3951502",
+      "resultPath": "/tmp/atlas-map-private-lifecycle-repair-2/private-repair-scene",
+      "caseOutcomes": [
+        {
+          "name": "worker-error-requests-redraw-without-free-variable",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "lazy-rejection-after-disposed-generation",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "lazy-rejection-after-destroyed",
+          "pass": true,
+          "assertionFailure": null
+        }
+      ]
+    },
+    {
+      "variant": "private-repair",
+      "probe": "callbacks",
+      "status": 0,
+      "failures": 0,
+      "cases": 6,
+      "rawSHA256": "9e5dbc34608a7c9ef6d55ddb658aa3f34983b6facb3a9abba0f59bcddd945884",
+      "resultPath": "/tmp/atlas-map-private-lifecycle-repair-2/private-repair-callbacks",
+      "caseOutcomes": [
+        {
+          "name": "saved-worker-error-after-disposed",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "saved-worker-error-after-destroyed",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "saved-worker-error-after-reinitialized",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "lazy-rejection-after-actual-reinitialization",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "current-worker-error-after-reinitialization",
+          "pass": true,
+          "assertionFailure": null
+        },
+        {
+          "name": "saved-old-message-cannot-resolve-new-request",
+          "pass": true,
+          "assertionFailure": null
+        }
+      ]
+    }
+  ],
+  "rawEvidence": {
+    "/tmp/atlas-map-private-lifecycle-repair-1/comparison.json": {
+      "bytes": 14647148,
+      "sha256": "239e900285b14274d7928d2eb56466ac299bd2eeb63fc69c12152b5c0fa76026"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-1/old-chunk.log": {
+      "bytes": 576,
+      "sha256": "d0e15b759c885cb9f946aa1c894e916c644ce1578fd31ab77ec011fb9f7f6c63"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-1/old-scene.log": {
+      "bytes": 583,
+      "sha256": "ed96bac42e39a0168a1830a95a617bbdd319cea287fb742e9ad171628d71871f"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-1/old-callbacks.log": {
+      "bytes": 597,
+      "sha256": "8bcd94265c9a605aae320a2cd35fa3ab69db9787773d77644f5e710baf504897"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-1/private-repair-chunk.log": {
+      "bytes": 120,
+      "sha256": "03493afb2ce525672cd58b48d9f818c108108df86fd4e6613d29bc41968ee867"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-1/private-repair-scene.log": {
+      "bytes": 1792,
+      "sha256": "33a76437168b1f58e825725e85407c95ad4ee212a7e36fcb3757bcfac8e20229"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-1/private-repair-callbacks.log": {
+      "bytes": 1796,
+      "sha256": "35e6c0276ce263a03ff1d10b5d7094bc08a8cc795a563b06667a89550994f5c2"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-2/comparison.json": {
+      "bytes": 14660902,
+      "sha256": "437057d8dea861af419939a5f1e92aac5e3fc41e1f4104e7c67ab9a6fb98ae99"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-2/old-chunk.log": {
+      "bytes": 576,
+      "sha256": "6c05d0a4e32c644f1e17ebedb8ba76ee0e042dfb524e195d83aa59bc4307c6f3"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-2/old-scene.log": {
+      "bytes": 583,
+      "sha256": "f70141260842cfb9b84ab93c928e2f08a7d860f11ec2b0fbcfb7383b5b75806c"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-2/old-callbacks.log": {
+      "bytes": 597,
+      "sha256": "bfbd733cd77759883679c255c21e5c411e3f3f721451cc1f0ad7aed287474906"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-2/private-repair-chunk.log": {
+      "bytes": 120,
+      "sha256": "8d02b3db28c8c747d480a2d80eefe444cb0c6307411252e5372a2de80308c21a"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-2/private-repair-scene.log": {
+      "bytes": 119,
+      "sha256": "826f53a53958a1f5252e42e29ea3f8c30589e2771ae00a0f8a441bce3ba1a516"
+    },
+    "/tmp/atlas-map-private-lifecycle-repair-2/private-repair-callbacks.log": {
+      "bytes": 123,
+      "sha256": "8bbd13ba7884acb0c325b409227323922ce42f02f9429162b5332a0b981a71dd"
+    }
+  }
+}
