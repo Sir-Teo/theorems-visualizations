@@ -1,0 +1,17 @@
+{
+  "scope": "read-only saved evidence and source; no browser, source correction, or map rerun",
+  "producerHead": "d086b952ec561a5e02d6460905789d1c48bc83cb",
+  "metadata": {
+    "path": "/tmp/atlas-root-paired-quiescent-state/original/metadata.json",
+    "sha256": "bd829749f86c6990af78f5bc3e59a27a34d7092a91c63ae74ec743ffa862838a"
+  },
+  "sourceSha256": {
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+    "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+    "scripts/lib/map-paired-quiescence.mjs": "7ef60f0c04c8f0223b84e5983aca4e5aaa279595f69d49314cb5a286ca814442",
+    "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9"
+  }
+}
