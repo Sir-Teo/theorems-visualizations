@@ -126,6 +126,39 @@
         }
       ],
       "outcome": "No new original-body download or source closure. Search also returned an institutional-library proxy for abstract-only Hounsfield; did not follow a proxy or authenticated route. Encrypted/preview-limited and stopped routes remain stopped. Frozen BIGHIST3.5 was not searched/retried."
+    },
+    {
+      "topic": "Later ordinary public-original search after accepted prerequisite batches",
+      "queries": [
+        "Hughes Glass Jacobs1992context-sensitivehalf-timefiletypepdf",
+        "Wanlass Sah1963Nanowattfiletypepdf",
+        "Hounsfield1973Descriptionofsystemfiletypepdf",
+        "Kolmogorov1936SullateoriadiVolterrapdf",
+        "Giornale IstitutoItalianodegliAttuari1936digital"
+      ],
+      "results": [
+        {
+          "url": "https://machinelibrary.ai/r/10.1109/isscc.1963.1157450",
+          "scope": "Ordinary metadata page opened; Viewpaper returns same xplorestaging route already stopped418. Did not click/retry."
+        },
+        {
+          "url": "https://ntrs.nasa.gov/api/citations/19660022841/downloads/19660022841.pdf?attachment=true",
+          "scope": "Search snippet from1966NASA report bibliography cites1963original; not originalbody, not downloaded."
+        },
+        {
+          "url": "https://ndlsearch.ndl.go.jp/books/R100000136-I1570854174124042752",
+          "scope": "NationalDietLibrary indexed paper holdings/catalog; no originalfullbody. No authenticated/proxy request."
+        },
+        {
+          "url": "https://pubs.asahq.org/anesthesiology/article-pdf/76/3/334/322974/0000542-199203000-00003.pdf",
+          "scope": "Search returns same indexed printed336excerpt andfigure descriptions alreadyrecorded. Stoppedpublisher route notopened/retried; completebody/parametertablesstillabsent."
+        },
+        {
+          "url": "https://lipari.istat.it/digibib/Metron/MetronV13N4_1939.pdf",
+          "scope": "1939Metron journalholdingslist names1936Giornale, not1936Kolmogorovarticlebody; no sourceclosure."
+        }
+      ],
+      "outcome": "No complete original obtained; no sourceflag/accounting/content changes. FrozenBIGHIST3.5notsearched/retried. No password/proxy/decryption/preview-limitbypass."
     }
   ]
 }
