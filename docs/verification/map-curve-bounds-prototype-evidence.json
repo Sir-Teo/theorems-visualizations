@@ -1,0 +1,534 @@
+{
+  "baseline": "90e2e8166a8553008490c67f68ec5fbc862c2045",
+  "proof": "573a9a3fd91e24f15e1be30c2d47739e100ad5a6",
+  "nativeEvidence": false,
+  "newFilesOnly": true,
+  "metadataBytesPerPath": 24,
+  "changedFunctions": [
+    "bind",
+    "box",
+    "descriptor",
+    "live",
+    "optionalResources",
+    "supported",
+    "upload"
+  ],
+  "unchangedFunctions": [
+    "event",
+    "reserveOptional",
+    "dropOptional",
+    "group",
+    "union",
+    "ensureScratch",
+    "destroy"
+  ],
+  "functionHashes": {
+    "event": {
+      "old": "20066563dff129b3228189b9f8cdf0fd306c2c7c189094821a33e9a9d0d5f898",
+      "proposed": "20066563dff129b3228189b9f8cdf0fd306c2c7c189094821a33e9a9d0d5f898"
+    },
+    "optionalResources": {
+      "old": "2b969acd9956c95f7bc79483015f1755ec577c3a32ef84eb46d3e3ffed9740d6",
+      "proposed": "fb19a82427b59f76e45cc6aec7d14fadc66a034afe77b11712594eedbf564b6a"
+    },
+    "reserveOptional": {
+      "old": "f0bcc58540c2896d2870996c8c3f87825e435c45c4d2409241e4b03db8458adb",
+      "proposed": "f0bcc58540c2896d2870996c8c3f87825e435c45c4d2409241e4b03db8458adb"
+    },
+    "dropOptional": {
+      "old": "8f26ae1db5322d3218dda6818b73026843e0d04c41435f9590b0c4c3bbf47202",
+      "proposed": "8f26ae1db5322d3218dda6818b73026843e0d04c41435f9590b0c4c3bbf47202"
+    },
+    "upload": {
+      "old": "cc8d991859669a6879fb22bb6215be4f342ded86e888d419f51bf5a5fa362e05",
+      "proposed": "06f7b065a900c124efdb770c5a3d8cdd50376978f9c8fc31b6501a7f8ead012d"
+    },
+    "group": {
+      "old": "9118fb2e8c01afbb14efe4f9cfeae1dbf84a5dfef5a2e9234353136c724c3ec9",
+      "proposed": "9118fb2e8c01afbb14efe4f9cfeae1dbf84a5dfef5a2e9234353136c724c3ec9"
+    },
+    "descriptor": {
+      "old": "b554a69e915be0504052f43b854e3dd6932fa969e94043f949f9e216dfd0b5c5",
+      "proposed": "1020f2caaf4753d99f4fdc907fa728c9f506846b83c5697718d69eb54f888fd4"
+    },
+    "union": {
+      "old": "fb5932b82d2572dfc9847dd61f28c4cbbcd91157ca317e8dbcc6923d21fb0f5d",
+      "proposed": "fb5932b82d2572dfc9847dd61f28c4cbbcd91157ca317e8dbcc6923d21fb0f5d"
+    },
+    "live": {
+      "old": "801715960757ea7f3c4cfb923c5911da010b6899e05be7a63d6c41f7ff70ebef",
+      "proposed": "aba09d9a8febcb5ce0848ced6fc94feaa8fb1b7a827f4c4a3f9e7b352e300700"
+    },
+    "ensureScratch": {
+      "old": "e0e6ae5e272e79e182445371bddea64cec3af91b57d7ec5e4f358bdfbd58e096",
+      "proposed": "e0e6ae5e272e79e182445371bddea64cec3af91b57d7ec5e4f358bdfbd58e096"
+    },
+    "supported": {
+      "old": "8ecda352a8bc04fb505d52a101d99ef86f2437b0f1eb289fe884c6e86282d145",
+      "proposed": "42d1df112b7a1941757aaf740715eb0d108fdffbcadfc5e22cb627eb3c69f919"
+    },
+    "box": {
+      "old": "f073f036992a2c70bb9e3aab7ffa283c886bf156c79328a079c5b995406f37cf",
+      "proposed": "42fe916422122f2b8fa5271eb08aad79c34884b2c28fc828c9da38fdbb47100f"
+    },
+    "bind": {
+      "old": "45f5517a1bec4632fff274b8366ea67cb1e75cae054d0b7474d22132ed873f0b",
+      "proposed": "cd1709f2bc82f0827990d69f084033db76a0375f8747f7ebeea2fc8503bc1af8"
+    },
+    "destroy": {
+      "old": "5608efb71dbe65ed927f4e215dbbe414ac4469611c4498a7d431828d3a771ea5",
+      "proposed": "5608efb71dbe65ed927f4e215dbbe414ac4469611c4498a7d431828d3a771ea5"
+    }
+  },
+  "preservedSources": {
+    "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+    "assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+    "assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+    "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+    "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+    "assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+    "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+    "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+    "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+    "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+    "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+    "assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+    "assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+    "assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+    "assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+    "assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+    "assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+    "assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+    "assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+    "assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+    "assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+    "assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+    "assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+    "assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+    "assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+    "assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+    "assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+    "assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+    "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+    "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+    "scripts/lib/map-canvas-compositor-prototype.mjs": "2ef8f9e43899e3858a514daf3f433eb71fc194c25751e3600b78b99788ad54fd",
+    "scripts/lib/map-canvas-compositor-runtime.mjs": "059cfb397057e0211a4a62d2f0178d27ef20789bae7923ad3c18269af6fe9a25",
+    "scripts/lib/map-chunked-indices-fixture.mjs": "148274402c35aed9312fb52f22de0f25063b2de455b2c48a964663baffccd555",
+    "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+    "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+    "scripts/lib/map-complete-raster-dom-fixture.mjs": "7ed446cf7db995d5ddf89d4a0b853d3d801f4459a7b10fc84b1b7ce2842ee1cc",
+    "scripts/lib/map-complete-raster-dom-prototype.mjs": "66ca81f68d462d447cdcc6ff6a235be64be13b0be8d574270b6c50fc8655de74",
+    "scripts/lib/map-complete-raster-dom-runtime.mjs": "96864a8afe42fc63d034d6df76dd5979bd3066ddbf789fea5cc1c86bfeeff70d",
+    "scripts/lib/map-current-atlas-fixture.mjs": "6ece94324d18fcab675fd233137106797c235e67b753428060a056cf4e7e1e1f",
+    "scripts/lib/map-lifecycle-private-repair.mjs": "9ec0b170cfe7f4624e9bda4a71dbb6a5614be3d55bfad66343a0d92970ab9da6",
+    "scripts/lib/map-paired-artifacts.mjs": "4cd9c89954e5ad3ea71acf8bf2f8cebb9ca59128ceb18ae741581ea3c9a5bcf7",
+    "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+    "scripts/lib/map-paired-dark-case.mjs": "7204988f447629719fbd17066e4f97f3eb71ff73d6ad6d81d030863a681b0df3",
+    "scripts/lib/map-paired-font-census.mjs": "6a9fc04e4e6c9a5999a4b5b04d6d7fe656b9d124ecaa92091d7c1be11ed91fa1",
+    "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+    "scripts/lib/map-paired-guarded-fixture.mjs": "dcae80e2fa4a777846a3bd952acf45879267db1ec9aca49965e5a4de6f896d0f",
+    "scripts/lib/map-paired-quiescence.mjs": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+    "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+    "scripts/lib/map-paired-selected-shard-fixture.mjs": "960642e4033e3663c581bc9938a456b5824fd3fe5eede5a7f9f680c2910330db",
+    "scripts/lib/map-paired-selected-shard-tiny.mjs": "cabca6e15d35367ce1086beddd2e1b62506a12e9541a00983727cb17b4a97fe9",
+    "scripts/lib/map-paired-selected-shard.mjs": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+    "scripts/lib/map-retained-fixture.mjs": "61fe93dd8a59cae834923994e8f4cf939077726892a91bd2ed258000d15273d5",
+    "scripts/lib/map-retained-prototype.mjs": "6a5cee302631de049f20623e0faccc7369f32dfc561443a5b5ea368f4c6f1236",
+    "scripts/lib/map-scene-prototype.mjs": "76eb562cebb368c00cbcfcbbedf31591ce6a32b8adaf85adfa0c7aeea8bfe68f",
+    "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+    "scripts/lib/map-text-atlas-gutter-prototype.mjs": "f7898bd94a04d68af7be2085428e38f2a4b61fe807e2252ea193c00dda48e124",
+    "scripts/lib/map-text-atlas-probe.mjs": "db353a1d411fa31f3e64e69647c11dd2c6fe724fc644a2e11e652ffcb1cc6c7b",
+    "scripts/lib/map-webgl-prototype.mjs": "b35941137cbd664ffc051399f154bb18449ed66e0127b8211d79bb8ad674d42a"
+  },
+  "outcomes": [
+    {
+      "name": "old-faults",
+      "status": 1,
+      "failures": 1,
+      "cases": 22,
+      "checks": null,
+      "casesSummary": [
+        {
+          "name": "normal-two-chunk-live-snapshot",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "metadata-ownership-denied",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "scratch-ownership-denied",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "missing-metadata-explicit-drop",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "corrupt-metadata-marker",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "unsupported-uploaded-join",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "nonoptional-fidelity-scale",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "forced-original-path",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "scratch-allocation-error",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "after-first-chunk-live",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "after-first-chunk-stale",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "after-first-chunk-released",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "releaseGroup-alone-must-invalidate",
+          "pass": false,
+          "failure": {
+            "name": "AssertionError",
+            "message": "The input did not match the regular expression /chunk snapshot expired/. Input:\n\n''\n"
+          }
+        },
+        {
+          "name": "chunk-gl-error-live-replay",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-generation",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-control",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-registry",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-coverage",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-model-release",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-context-loss",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "original-pressure-drops-optional-first",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "original-impossible-reserve-retains-existing-owners",
+          "pass": true,
+          "failure": null
+        }
+      ]
+    },
+    {
+      "name": "curve-faults",
+      "status": 0,
+      "failures": 0,
+      "cases": 22,
+      "checks": null,
+      "casesSummary": [
+        {
+          "name": "normal-two-chunk-live-snapshot",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "metadata-ownership-denied",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "scratch-ownership-denied",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "missing-metadata-explicit-drop",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "corrupt-metadata-marker",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "unsupported-uploaded-join",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "nonoptional-fidelity-scale",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "forced-original-path",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "scratch-allocation-error",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "after-first-chunk-live",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "after-first-chunk-stale",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "after-first-chunk-released",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "releaseGroup-alone-must-invalidate",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "chunk-gl-error-live-replay",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-generation",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-control",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-registry",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-coverage",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-model-release",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "invalidation-context-loss",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "original-pressure-drops-optional-first",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "original-impossible-reserve-retains-existing-owners",
+          "pass": true,
+          "failure": null
+        }
+      ]
+    },
+    {
+      "name": "independent-models",
+      "status": 0,
+      "failures": 0,
+      "cases": 16,
+      "checks": 6433,
+      "casesSummary": [
+        {
+          "name": "binary64-outward-boundaries",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "independent-ordered-multiplicity-and-full-count",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "all-old-computed-segment-boxes-dominated",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "association-witness-and-unknown-domain",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "upload-validation-padding-and-zero-range",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "pre-bind-untrusted-wellformed-range-mutation",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "pre-bind-untrusted-range-reference-replacement",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "pre-bind-untrusted-mapping-view-replacement",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "pre-bind-untrusted-corrupt-marker",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "geometric-uncertainty-keeps-whole-range-nan-extremum",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "geometric-uncertainty-keeps-whole-range-reversed-extrema",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "actual-builder-inclusive-extrema-and-padding",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "whole-curve-cull-keeps-full-count-and-repeated-order",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "zero-segment-range-retains-identity-without-emission",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "same-backing-allocation-counted-24-bytes-per-path",
+          "pass": true,
+          "failure": null
+        },
+        {
+          "name": "wellformed-mapping-mutation-mid-prefix-aborts-without-replay",
+          "pass": true,
+          "failure": null
+        }
+      ]
+    }
+  ],
+  "raw": {
+    "/tmp/atlas-curve-prototype/run-1/proposal.json": {
+      "bytes": 15285302,
+      "sha256": "e47078b1445d6144b7e9d095160d79e5004e2a55a16df2377d6b51012867abce"
+    },
+    "/tmp/atlas-curve-prototype/run-1/old-faults.log": {
+      "bytes": 511,
+      "sha256": "2f9ae9510b06f781cc5245827a1c5dd406a669c3157c19d4c0b31c4f3fa0a60a"
+    },
+    "/tmp/atlas-curve-prototype/run-1/curve-faults.log": {
+      "bytes": 103,
+      "sha256": "0b709c14d52733056fbcdbe4f9d18d75193c4d9cd9486214b0be16405c9d6c87"
+    },
+    "/tmp/atlas-curve-prototype/run-1/independent-models.log": {
+      "bytes": 591,
+      "sha256": "6dd85aeae2598bddbb297e093b4f64c99438a71643b8eab33f5a869b33c261c2"
+    },
+    "/tmp/atlas-curve-prototype/run-2/proposal.json": {
+      "bytes": 15288974,
+      "sha256": "24ee13641c1b62ad7f33db393105d07a86f5c72aecad959744370d18b3e36648"
+    },
+    "/tmp/atlas-curve-prototype/run-2/old-faults.log": {
+      "bytes": 511,
+      "sha256": "b21bcfa8d1c10aa911cb683f8167917bac39d5a93eeb9e07a199dffd690b203d"
+    },
+    "/tmp/atlas-curve-prototype/run-2/curve-faults.log": {
+      "bytes": 103,
+      "sha256": "54b7a88e4a2c225b2e6b530bc4a992d6db5d8b16eb24411c01991d98dbe56f4d"
+    },
+    "/tmp/atlas-curve-prototype/run-2/independent-models.log": {
+      "bytes": 123,
+      "sha256": "dc3d2e3e795bb1bc87b0ab198cee0fb80f00c02ba0ebe85faa4b5c5907ab589c"
+    }
+  },
+  "conditionalMemory": {
+    "frozenPaths": 23364,
+    "boundsAndSnapshotBytes": 560736,
+    "xySaving": 8731048,
+    "frozenOriginalPeak": 54599720,
+    "frozenEnvelope": 55426696,
+    "currentPaths": 23955,
+    "currentMetadataBytes": 574920,
+    "currentOriginalPeakRootReported": 59375200,
+    "currentExistingFallbackPeakRootReported": 59518092,
+    "conditionalCurrentEnvelope": 60216360,
+    "measuredProposedPeak": null
+  },
+  "proposalSourceHashes": {
+    "scripts/lib/map-curve-bounds-runtime.mjs": "00bdd96fd63de01b9921b489e1a8995340e88b6034ee2b75fa94fce901b14ee2",
+    "scripts/lib/map-curve-bounds-math.mjs": "1c646d5bb385e26cfaad198f0f04c2940d9a1990aa25ad27c25ddb7f8ea462ea",
+    "tests/verification-map-curve-bounds-proposal.mjs": "8ac195264fc59414650977c37b56a7ceff5c7b945b9466ec4ca6503ac8fedc48",
+    "tests/verification-map-curve-bounds-model.mjs": "dc698983b29e7986dc76c4d6ce5910e3de9f6b9789b3b3309f2aa5d6f9fdf18c"
+  }
+}
