@@ -1,0 +1,22 @@
+# Wave 5: Understanding Machine Learning, chapter 5
+
+Author validation, 2026-10-21. Covers `ml-5.1`, `ml-5.2`, `ml-5.2a`, `ml-5.2b` only.
+
+## Source and mathematical scope
+
+Read the authors' official [Understanding Machine Learning PDF](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/understanding-machine-learning-theory-algorithms.pdf), chapter 5, §§5.1–5.2. Chapter and numbering confirmed against Theorem 5.1 and Corollary 5.2; the two letter-suffixed syllabus entries are unnumbered concepts, not invented numbered theorems. Prose and proof explanations are original paraphrases.
+
+- **5.1:** Binary zero–one loss; any learner and positive m strictly below half the domain cardinality; existence of a noiseless distribution and probability at least1/7 of population risk at least1/8. Probability explicitly includes independent learner randomness if applicable. Pairing unseen labels over uniform support2m gives average expected risk at least1/4; averaging yields one fixed difficult target. The bounded-variable inequality then yields1/7. Visualization fixes four sample draws, eight cells and deterministic learner defaults, and averages all unseen completions conditional on observed labels. It does not misidentify this conditional law as a fixed adversarial target's sampling distribution. A singleton containing the target predicts perfectly because it supplies prior knowledge.
+- **5.2:** Infinite domain is essential. Contradiction uses epsilon1/9, delta1/8, avoiding any boundary ambiguity at risk1/8. The finite demonstration scales adversarial support with m. Exact occupancy recursion computes unseen-count distribution; conditional mistakes are Binomial(unseen,1/2). This is a target-and-sample mixture for a memorizing rule, sufficient to imply existence of a fixed target with failure probability at least the mixture average. It is not an exhibited single target law and does not claim one fixed distribution defeats every sample budget.
+- **5.2a:** Exact population risk decomposition with infimum; this book's approximation term includes noise. Instance marginal uniform on32 cells, alternating blocks of four with flip probability0–0.45. Classes with1,2,4,8,16,32 equal bins are nested. Per-bin majority is actual zero–one ERM; ties/empty bins predict zero. Best population risk calculated from exact bin averages. Clicking adds explicitly non-i.i.d. examples; the identity holds, but no PAC sampling guarantee is asserted for edits. Additional samples capped512; share adapter rejects sparse outer/inner arrays and invalid cell/label data.
+- **5.2b:** 240 seeded pseudorandom fits for each actual class, no synthetic U-curve. Population risks exact; mean and SE reflect finite repetition over training samples. Caption states usual pseudorandom sampling interpretation and distinguishes±2 SE from distribution-free confidence. No monotonic estimation or universal U-shape claim.
+
+## Validation
+
+- `node scripts/check.mjs ml/5 --static`:4 items, zero errors/warnings.
+- `node --test tests/wave5-ml.test.mjs`:5 passing tests. Exhaustive enumeration of all training sequences through m4 checks occupancy recursion; all m1–40 check normalization, mean `0.5*(1-1/(2m))^m` and failure bound. ERM and approximation risks independently compared with all binary bin assignments through K8 across sample sizes/noise. Nested-class and zero-noise full-population checks. State tests reject holes, disguised sparse arrays, invalid labels/cells, and oversized data.
+- `node scripts/check.mjs ml/5 --modes --still --shots --jobs=1`:4 browser runs, zero runtime/TeX/blank/quality warnings, all segmented modes.
+- `node tests/wave5-ml-browser.mjs`:16 passing native cases: all4 items × light/dark ×860/350px. Each exercises slider endpoints and every segmented option; 5.2a adds a training point with real pointer input and verifies reset; no nonfinite readout, runtime error or horizontal overflow.
+- Browser captures `/tmp/wave5-ml-{5.1,5.2,5.2a,5.2b}-{light,dark}-{860,350}.png`. Visually inspected 5.1 light350,5.2a dark860,5.2b light350, then recaptured and re-inspected 5.2b light350 after adding plot margin below zero and an external axis-label gutter so estimation curve remains visible without intersecting the xlabel. Axes, control labels, legend and readouts remain legible at narrow width.
+
+Files authored: `content/ml/ch05.js`, `content/ml/ch05.shared.js`, `tests/wave5-ml.test.mjs`, `tests/wave5-ml-browser.mjs`, this report. No syllabus, shared runtime, central ledger or generated data edits.
