@@ -1,0 +1,171 @@
+{
+  "proposal": "5cadebb9254b5fc914ba614d64671824e3fc7add",
+  "scope": "SOURCE/MODEL/PREPARE only",
+  "nativeExecuted": false,
+  "browserStarted": false,
+  "serverStarted": false,
+  "sourceHashes": {
+    "scripts/lib/map-tiny-s2-no-paint-readbacks.mjs": "132c56d6e73827ec3dc04732e033a613f9c292a9a93f7fb8ca3b6571d98d00ed",
+    "scripts/lib/map-tiny-s2-connected-proposal.mjs": "a8f8e78b1ca98e8b9b07518e5d1b9738f1806537998bcb53ce6169bf4a1c84ff",
+    "tests/verification-map-private-lifecycle-native.mjs": "bafded155c7aa8962422511c3382e31318f70c14a4d8cc4969ec518f88c5c07f",
+    "tests/fixtures/map-private-lifecycle-native-browser.mjs": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9",
+    "tests/verification-map-tiny-s2-no-paint-readbacks-prepare.mjs": "379187ef56703f6ba237ee847b12678ace320e5b4a6331e076494d0f447011d1",
+    "tests/verification-map-tiny-s2-no-paint-readbacks-pixels.py": "c16d2bb205019d70b33d8ba7bcae2d40cbbbbd33301bd2533956d603263fff9e",
+    "tests/verification-map-tiny-s2-connected-pixels.py": "da1e6495c3c4eeb23c4a1dbaa3f75ab6de776c938ec70017ac938b567b3ac918"
+  },
+  "producerModel": {
+    "prepare": 3,
+    "adverse": 26,
+    "raw": "/tmp/atlas-new-s2-no-read-peer/producer-model/evidence.json",
+    "sha256": "e0a07ec81ccd355d0ab06e01ac3b45f1b92a401534195bc8435744306325f1a3"
+  },
+  "independent": {
+    "nativeEvidence": false,
+    "runtime": {
+      "node": "v26.8.2",
+      "v8": "14.6.202.34-node.28"
+    },
+    "rows": [
+      {
+        "name": "complete-reverse-and-exact-factor",
+        "pass": true,
+        "baseFixtureSHA256": "396ca38574fa48c5979db6b8eb51f2d8934a74beec06b11537f611be7ca1c660",
+        "generatedFixtureSHA256": "ba44135c1101c2ccf7e77a76386cc5d33a36cad40ba7691ca93a2248a90dd5c4",
+        "originalRunnerSHA256": "bafded155c7aa8962422511c3382e31318f70c14a4d8cc4969ec518f88c5c07f",
+        "originalFixtureSHA256": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9",
+        "fixtureFactorChanges": [
+          {
+            "from": "observeRead('diagnostic-before-paint-'+ordinal,c.canvas);",
+            "to": "/* Intentionally absent: before-paint readback. */"
+          },
+          {
+            "from": "observeRead('diagnostic-after-paint-'+ordinal,c.canvas);",
+            "to": "/* Intentionally absent: after-paint readback. */"
+          },
+          {
+            "from": "identity:'tiny-old-S2-connected-control-light-v1'",
+            "to": "identity:'tiny-old-S2-no-paint-readbacks-light-v1'"
+          }
+        ],
+        "runnerFactorChangeCount": 4,
+        "comparatorIdentityOnly": true
+      },
+      {
+        "name": "omitted-before",
+        "contractFixture": true,
+        "rejected": true
+      },
+      {
+        "name": "omitted-after",
+        "contractFixture": true,
+        "rejected": true
+      },
+      {
+        "name": "lost-original",
+        "contractFixture": true,
+        "rejected": true
+      },
+      {
+        "name": "swapped-distinct-final-captures",
+        "contractFixture": true,
+        "rejected": true
+      },
+      {
+        "name": "extra-diagnostic-read",
+        "contractFixture": true,
+        "rejected": true
+      },
+      {
+        "name": "lost-metric-observation",
+        "contractFixture": true,
+        "rejected": true
+      },
+      {
+        "name": "default",
+        "status": 0,
+        "guard": {
+          "events": []
+        },
+        "browserImportAttempt": false,
+        "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-no-readbacks-prepare-AYQw0X",
+        "protectedSourceCount": 72,
+        "manifestSHA256": "5018a75a3fc83e15c93e9bd0e71f4cf33dfacc58e355e63b18b62aaad1eac0d0",
+        "pass": true
+      },
+      {
+        "name": "explicit-prepare",
+        "status": 0,
+        "guard": {
+          "events": []
+        },
+        "browserImportAttempt": false,
+        "output": "/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-tiny-s2-no-readbacks-prepare-CfQEtr",
+        "protectedSourceCount": 72,
+        "manifestSHA256": "9f0e241870bfcf1a4ade1efeddf0135299ef124c09d1e2ddb281d9106899a28e",
+        "pass": true
+      },
+      {
+        "name": "explicit-new-output",
+        "status": 0,
+        "guard": {
+          "events": []
+        },
+        "browserImportAttempt": false,
+        "output": "/tmp/atlas-new-s2-no-read-peer/independent/explicit",
+        "protectedSourceCount": 72,
+        "manifestSHA256": "c6e34c9c0176d2c1eb83ed608897114fe4a1d003a6da4d593514faaf8527ab7a",
+        "pass": true
+      },
+      {
+        "name": "existing-output",
+        "status": 1,
+        "guard": {
+          "events": []
+        },
+        "browserImportAttempt": false,
+        "pass": true
+      },
+      {
+        "name": "old-full-flag",
+        "status": 1,
+        "guard": {
+          "events": []
+        },
+        "browserImportAttempt": false,
+        "pass": true
+      },
+      {
+        "name": "old-diagnostic-flag",
+        "status": 1,
+        "guard": {
+          "events": []
+        },
+        "browserImportAttempt": false,
+        "pass": true
+      },
+      {
+        "name": "near-new-flag",
+        "status": 1,
+        "guard": {
+          "events": []
+        },
+        "browserImportAttempt": false,
+        "pass": true
+      },
+      {
+        "name": "contradictory-new-flag",
+        "status": 1,
+        "guard": {
+          "events": []
+        },
+        "browserImportAttempt": false,
+        "pass": true
+      }
+    ]
+  },
+  "independentRaw": {
+    "path": "/tmp/atlas-new-s2-no-read-peer/independent/evidence.json",
+    "sha256": "55d06aeac5696007e9fa53064875121150ed1e6b5a3a5cc0c5a69b170820c858"
+  },
+  "dependencyLimitation": "Generated native runner retains bare playwright-core; future unique native output must resolve its dependencies. Not executed or repaired in this peer."
+}
