@@ -1493,11 +1493,16 @@
       "report": "docs/verification/arch-reaction-label-root-peer.md"
     },
     {
-      "status": "open-authorized-bounded-producer",
+      "status": "accepted-closed",
       "id": "art-2.1-plan-label-overlap",
       "owner": "imaging_source",
       "finding": "Independent ARTpeer observed unchanged intended-skull/canvaslabels overlap at90degreeplan.",
-      "scope": "Separate local label-layout-only producer; before/after actualdefault/endpoints320both themes; no numericalchange; independentpeerrequired."
+      "scope": "One plan text position/alignment call only. Full154files55objects/functions139rows/flags/deps preserved;45045independentgeometrychecks;20freshnative states/40othercanvasRGBApairs exact. All34claimedpictures personallyread; strict/static0,32existingtests. Integratedfullguard/geometrypass. No sourceclosure or broaderlayoutcertification.",
+      "commits": [
+        "4cf8b169f647d1651ea0461edc3889e4e1c5fd29",
+        "3e21a19a8114c8d58315adee17ede701342c355f"
+      ],
+      "report": "docs/verification/art-plan-label-independent-logic-peer.md"
     },
     {
       "status": "open-authorized-bounded-producer",
