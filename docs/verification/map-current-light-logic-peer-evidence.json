@@ -1,0 +1,912 @@
+{
+  "candidate": "8a0f9ed9042ac03b0d4fe226c9f6b35a73576a19",
+  "fixture": "20ff60a1b9150310c80354c17d8fdb69c96f525a",
+  "support": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+  "overlay": {
+    "base": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+    "overlays": [
+      {
+        "commit": "20ff60a1b9150310c80354c17d8fdb69c96f525a",
+        "paths": [
+          "docs/verification/map-current-atlas-prepare-evidence.json",
+          "docs/verification/map-current-atlas-prepare-followup.md",
+          "scripts/lib/map-current-atlas-fixture.mjs",
+          "tests/map-current-atlas-checkpoint12-manifest.json",
+          "tests/map-current-atlas-model.mjs",
+          "tests/map-current-atlas-prepare.mjs",
+          "tests/map-current-atlas-source.mjs",
+          "tests/map-current-atlas-tiny.mjs"
+        ]
+      },
+      {
+        "commit": "8a0f9ed9042ac03b0d4fe226c9f6b35a73576a19",
+        "paths": [
+          "docs/verification/map-current-light-oracle-proposal-evidence.json",
+          "docs/verification/map-current-light-oracle-proposal.md",
+          "scripts/lib/map-current-light-boundary.mjs",
+          "tests/map-current-light-execution-blocker.mjs",
+          "tests/map-current-light-oracle-reconstruction.json",
+          "tests/map-current-light-oracle.mjs",
+          "tests/map-current-light-proposal.mjs"
+        ]
+      }
+    ]
+  },
+  "unchangedPriorArchiveFiles": 4740,
+  "onlySevenNewPaths": true,
+  "scope": "independent SOURCE/MODEL/PREPARE only; no browser/fullflag/server/fullmap/timing; actual native/render costs UNKNOWN",
+  "recipe": {
+    "baselineCommit": "f778d8ebf95df00fb6c2bb4cb506dd37e2728312",
+    "baselinePath": "tests/map-paired-guarded-oracle.mjs",
+    "baselineSHA256": "3237accd494cb914cc2767c206a8beb33572e3aa336435507d05d8a25e23d540",
+    "candidatePath": "tests/map-current-light-oracle.mjs",
+    "candidateSHA256": "0d9842b4115474a18f2ba4c9fbfc9eecb393483121b3ce622b131524b6c36b3b",
+    "exceptions": [
+      {
+        "before": "import{pairedFixture}from'../scripts/lib/map-paired-guarded-fixture.mjs';",
+        "after": "import{currentAtlasFixture,manifestSHA256,sha}from'../scripts/lib/map-current-atlas-fixture.mjs';import{currentLightMode,currentLightBoundary,createCurrentLightServer}from'../scripts/lib/map-current-light-boundary.mjs';import{fileURLToPath}from'node:url';",
+        "reason": "Use separately pinned current fixture and boundary; add pinned comparator root resolution."
+      },
+      {
+        "before": "const out=process.env.MAP_PAIRED_OUTPUT||'/tmp/atlas-map-paired-prepared',fixture=await pairedFixture(process.env.MAP_PAIRED_ROOT);await fsp.mkdir(out,{recursive:true});",
+        "after": "const mode=currentLightMode(process.argv.slice(2)),out=process.env.MAP_CURRENT_LIGHT_OUTPUT?path.resolve(process.env.MAP_CURRENT_LIGHT_OUTPUT):await fsp.mkdtemp('/tmp/atlas-current-light-prepared-'),fixture=await currentAtlasFixture();await fsp.mkdir(out,{recursive:true});assert.deepEqual(await fsp.readdir(out),[],'unique empty current-light output required');",
+        "reason": "Exact new flag parser, distinct output env, fresh default, unique-output check and fixed checkpoint12 artifact."
+      },
+      {
+        "before": "description:'Prepared independently reset original/chunk guarded exact-state oracle; not run without later root authorization',hashes:fixture.hashes,",
+        "after": "description:'CURRENT LIGHT proposal: SOURCE/MODEL/PREPARE only until separate authorization; actual current output UNKNOWN',provenance:{dataCommit:fixture.pins.dataCommit,dataRoot:fixture.pins.dataRoot,supportSourceCommit:fixture.pins.supportSourceCommit,manifestSHA256},hashes:Object.fromEntries([...fixture.files].map(([p,b])=>[p,sha(b)])),supportFiles:fixture.pins.supportFiles,referenceFiles:fixture.pins.referenceFiles,",
+        "reason": "Explicit artifact/support provenance, full pinned source hashes; no historical pixel expectation."
+      },
+      {
+        "before": "expectedLoaded:{nodes:13574,edges:23364}",
+        "after": "expectedLoaded:{nodes:13574,edges:23955}",
+        "reason": "Current actual deps+pdeps catalog count only; no other geometry/cap/ordinal change."
+      },
+      {
+        "before": "if(!process.argv.includes('--root-authorized-exact-state')){console.log('Prepared sources/manifest only; no browser launched. Immutable independent peer and later root authorization required.');process.exit(0);}",
+        "after": "if(mode==='PREPARE'){console.log('Prepared current-light sources only; no browser/server/full-map/timing. '+JSON.stringify({output:out}));process.exit(0);}",
+        "reason": "Distinct exact current-light authorization; default remains PREPARE, independently reviewable without launch/listen."
+      },
+      {
+        "before": "const{createServer}=await import(new URL('scripts/serve.mjs',fixture.root)),server=createServer(),serve=server.listeners('request')[0],transfers=[];",
+        "after": "const pinned=currentLightBoundary(fixture),server=createCurrentLightServer(pinned),serve=server.listeners('request')[0],transfers=[];",
+        "reason": "Pinned-only server replaces mutable-host fallback; raw transport wrapper remains otherwise exact."
+      },
+      {
+        "before": "try{const file=path.join(out,m[1],m[2]),",
+        "after": "try{pinned.assertRawRequest(req,m[1]);const file=path.join(out,m[1],m[2]),",
+        "reason": "Raw transport additionally requires active variant and exact loopback Host; existing offsets/length/SHA/write gates unchanged."
+      },
+      {
+        "before": "await fixture.route(page,variant);",
+        "after": "await pinned.route(page,variant,`http://127.0.0.1:${server.address().port}`);",
+        "reason": "Real unchanged request URLs continue to exact pinned HTTP server; reject external/unlisted requests before network."
+      },
+      {
+        "before": "{cwd:process.cwd()}",
+        "after": "{cwd:fileURLToPath(new URL('../',import.meta.url))}",
+        "reason": "Run the byte-pinned unchanged DOM comparator from the checked support root, not an arbitrary working directory."
+      },
+      {
+        "before": "await new Promise(r=>server.listen(0,'127.0.0.1',r));const results=",
+        "after": "await new Promise(r=>server.listen(0,'127.0.0.1',r));pinned.setOrigin(`http://127.0.0.1:${server.address().port}`);const results=",
+        "reason": "Initialize exact ephemeral origin before any browser/Worker can request pinned bytes."
+      },
+      {
+        "before": "try{for(const variant of['original','chunk']){const dir=",
+        "after": "try{for(const variant of['original','chunk']){pinned.setVariant(variant);const dir=",
+        "reason": "Select each variant before its fresh browser launches; Worker requests reach the same complete pinned HTTP tree."
+      }
+    ]
+  },
+  "producerSummary": {
+    "baselineSHA256": "3237accd494cb914cc2767c206a8beb33572e3aa336435507d05d8a25e23d540",
+    "candidateSHA256": "0d9842b4115474a18f2ba4c9fbfc9eecb393483121b3ce622b131524b6c36b3b",
+    "literalExceptions": 11,
+    "rebuiltAndReversedExactly": true,
+    "allPinnedGetPaths": {
+      "original": 2188,
+      "chunk": 2188
+    },
+    "browserRouteModel": [
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:43210/data/col/ladr.json",
+        "result": "continue"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:43210/__paired/original/A0.rgba/0",
+        "result": "continue"
+      },
+      {
+        "method": "GET",
+        "url": "https://external.invalid/",
+        "result": "abort"
+      }
+    ],
+    "browserExecuted": false,
+    "fullFlagExecuted": false,
+    "renderOutput": "UNKNOWN"
+  },
+  "producerBlockedChildren": [
+    {
+      "name": "prepare",
+      "args": [],
+      "failureStatus": null,
+      "blocked": {
+        "counts": {
+          "serverCreate": 0,
+          "listen": 0,
+          "launch": 0,
+          "network": 0
+        },
+        "exitCode": 0,
+        "argv": [],
+        "browserModuleReplaced": true
+      }
+    },
+    {
+      "name": "nonempty",
+      "args": [],
+      "failureStatus": null,
+      "blocked": {
+        "counts": {
+          "serverCreate": 0,
+          "listen": 0,
+          "launch": 0,
+          "network": 0
+        },
+        "exitCode": 0,
+        "argv": [],
+        "browserModuleReplaced": true
+      }
+    },
+    {
+      "name": "nonempty-reuse",
+      "args": [],
+      "failureStatus": 1,
+      "blocked": {
+        "counts": {
+          "serverCreate": 0,
+          "listen": 0,
+          "launch": 0,
+          "network": 0
+        },
+        "exitCode": 1,
+        "argv": [],
+        "browserModuleReplaced": true
+      }
+    },
+    {
+      "name": "lookalike-0",
+      "args": [
+        "--root-authorized-exact-state"
+      ],
+      "failureStatus": 1,
+      "blocked": {
+        "counts": {
+          "serverCreate": 0,
+          "listen": 0,
+          "launch": 0,
+          "network": 0
+        },
+        "exitCode": 1,
+        "argv": [
+          "--root-authorized-exact-state"
+        ],
+        "browserModuleReplaced": true
+      }
+    },
+    {
+      "name": "lookalike-1",
+      "args": [
+        "--root-authorized-current-light-state=1"
+      ],
+      "failureStatus": 1,
+      "blocked": {
+        "counts": {
+          "serverCreate": 0,
+          "listen": 0,
+          "launch": 0,
+          "network": 0
+        },
+        "exitCode": 1,
+        "argv": [
+          "--root-authorized-current-light-state=1"
+        ],
+        "browserModuleReplaced": true
+      }
+    },
+    {
+      "name": "lookalike-2",
+      "args": [
+        "--root-authorized-current-light-state "
+      ],
+      "failureStatus": 1,
+      "blocked": {
+        "counts": {
+          "serverCreate": 0,
+          "listen": 0,
+          "launch": 0,
+          "network": 0
+        },
+        "exitCode": 1,
+        "argv": [
+          "--root-authorized-current-light-state "
+        ],
+        "browserModuleReplaced": true
+      }
+    },
+    {
+      "name": "default-0",
+      "args": [],
+      "failureStatus": null,
+      "blocked": {
+        "counts": {
+          "serverCreate": 0,
+          "listen": 0,
+          "launch": 0,
+          "network": 0
+        },
+        "exitCode": 0,
+        "argv": [],
+        "browserModuleReplaced": true
+      }
+    },
+    {
+      "name": "default-1",
+      "args": [],
+      "failureStatus": null,
+      "blocked": {
+        "counts": {
+          "serverCreate": 0,
+          "listen": 0,
+          "launch": 0,
+          "network": 0
+        },
+        "exitCode": 0,
+        "argv": [],
+        "browserModuleReplaced": true
+      }
+    }
+  ],
+  "independent": {
+    "baselineSHA256": "3237accd494cb914cc2767c206a8beb33572e3aa336435507d05d8a25e23d540",
+    "candidateSHA256": "0d9842b4115474a18f2ba4c9fbfc9eecb393483121b3ce622b131524b6c36b3b",
+    "exceptions": 11,
+    "exactReconstruction": true,
+    "checkedGetAndHead": 4376,
+    "extensions": {
+      ".css": 8,
+      ".svg": 2,
+      ".js": 3998,
+      ".woff2": 78,
+      ".txt": 6,
+      ".json": 180,
+      ".ttf": 40,
+      ".woff": 40,
+      "": 2,
+      ".md": 2,
+      ".html": 2,
+      ".mjs": 18
+    },
+    "http": [
+      {
+        "method": "GET",
+        "url": "/",
+        "host": "127.0.0.1:49152",
+        "status": 503,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "host": "127.0.0.1:49152",
+        "status": 503,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "host": "127.0.0.1:49152",
+        "status": 200,
+        "headers": {
+          "content-type": "text/html; charset=utf-8",
+          "content-length": "3739",
+          "cache-control": "no-store"
+        },
+        "bytes": 3739,
+        "sha256": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "host": "localhost:49152",
+        "status": 421,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "host": "127.0.0.1",
+        "status": 421,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "host": "127.0.0.1:49153",
+        "status": 421,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "host": "127.0.0.1:49152,external.invalid",
+        "status": 421,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "host": "external.invalid",
+        "status": 421,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "host": null,
+        "status": 421,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/../index.html",
+        "host": "127.0.0.1:49152",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/assets/../index.html",
+        "host": "127.0.0.1:49152",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "//index.html",
+        "host": "127.0.0.1:49152",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:49152/",
+        "host": "127.0.0.1:49152",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/index.html?",
+        "host": "127.0.0.1:49152",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/index.html#",
+        "host": "127.0.0.1:49152",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/data/index.json?x=1",
+        "host": "127.0.0.1:49152",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/%69ndex.html",
+        "host": "127.0.0.1:49152",
+        "status": 404,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/assets%2fjs/app.js",
+        "host": "127.0.0.1:49152",
+        "status": 404,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/index.html/",
+        "host": "127.0.0.1:49152",
+        "status": 404,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/not-pinned",
+        "host": "127.0.0.1:49152",
+        "status": 404,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "PUT",
+        "url": "/data/col/ladr.json",
+        "host": "127.0.0.1:49152",
+        "status": 405,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "DELETE",
+        "url": "/data/col/ladr.json",
+        "host": "127.0.0.1:49152",
+        "status": 405,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "OPTIONS",
+        "url": "/data/col/ladr.json",
+        "host": "127.0.0.1:49152",
+        "status": 405,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "PATCH",
+        "url": "/data/col/ladr.json",
+        "host": "127.0.0.1:49152",
+        "status": 405,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "POST",
+        "url": "/data/col/ladr.json",
+        "host": "127.0.0.1:49152",
+        "status": 405,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      }
+    ],
+    "routeRows": [
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:49152/assets/js/map-scene-worker.js",
+        "action": "continue"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:49152/scripts/lib/map-chunked-indices-runtime.mjs",
+        "action": "continue"
+      },
+      {
+        "method": "HEAD",
+        "url": "http://127.0.0.1:49152/data/col/ladr.json",
+        "action": "continue"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:49152/__paired/original/A0.rgba/0",
+        "action": "continue"
+      },
+      {
+        "method": "GET",
+        "url": "https://external.invalid/",
+        "action": "abort"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:49152/__paired/chunk/A0.rgba/0",
+        "action": "abort"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:49152/not-pinned",
+        "action": "abort"
+      }
+    ],
+    "probes": [
+      {
+        "name": "prepare",
+        "args": [],
+        "status": 0,
+        "stdout": "Prepared current-light sources only; no browser/server/full-map/timing. {\"output\":\"/tmp/atlas-logic-current-light-peer/independent/fresh\"}\n",
+        "stderr": "",
+        "block": {
+          "code": 0,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      },
+      {
+        "name": "file",
+        "args": [],
+        "status": 1,
+        "stdout": "",
+        "stderr": "node:internal/fs/promises:1632\n  return await PromisePrototypeThen(\n         ^\n\nError: EEXIST: file already exists, mkdir '/tmp/atlas-logic-current-light-peer/independent/output-file'\n    at async Object.mkdir (node:internal/fs/promises:1632:10)\n    at async file:///private/tmp/atlas-logic-current-light-peer/candidate/tests/map-current-light-oracle.mjs:3:236 {\n  errno: -17,\n  code: 'EEXIST',\n  syscall: 'mkdir',\n  path: '/tmp/atlas-logic-current-light-peer/independent/output-file'\n}\n\nNode.js v26.8.2\n",
+        "block": {
+          "code": 1,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      },
+      {
+        "name": "raw",
+        "args": [],
+        "status": 1,
+        "stdout": "",
+        "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: unique empty current-light output required\n+ actual - expected\n\n+ [\n+   'A0.rgba'\n+ ]\n- []\n\n    at file:///private/tmp/atlas-logic-current-light-peer/candidate/tests/map-current-light-oracle.mjs:3:281 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [ 'A0.rgba' ],\n  expected: [],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n",
+        "block": {
+          "code": 1,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      },
+      {
+        "name": "nested-raw",
+        "args": [],
+        "status": 1,
+        "stdout": "",
+        "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: unique empty current-light output required\n+ actual - expected\n\n+ [\n+   'original'\n+ ]\n- []\n\n    at file:///private/tmp/atlas-logic-current-light-peer/candidate/tests/map-current-light-oracle.mjs:3:281 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [ 'original' ],\n  expected: [],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n",
+        "block": {
+          "code": 1,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      },
+      {
+        "name": "old-light",
+        "args": [
+          "--root-authorized-exact-state"
+        ],
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4\nexport function currentLightMode(args){if(args.length===0)return'PREPARE';if(args.length===1&&args[0]===CURRENT_LIGHT_FLAG)return'EXECUTE';throw Error('current-light: only the exact separately authorized current-light flag is recognized');}\n                                                                                                                                                 ^\n\nError: current-light: only the exact separately authorized current-light flag is recognized\n    at currentLightMode (file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4:146)\n    at file:///private/tmp/atlas-logic-current-light-peer/candidate/tests/map-current-light-oracle.mjs:3:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n",
+        "block": {
+          "code": 1,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      },
+      {
+        "name": "old-dark",
+        "args": [
+          "--root-authorized-dark-exact-state"
+        ],
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4\nexport function currentLightMode(args){if(args.length===0)return'PREPARE';if(args.length===1&&args[0]===CURRENT_LIGHT_FLAG)return'EXECUTE';throw Error('current-light: only the exact separately authorized current-light flag is recognized');}\n                                                                                                                                                 ^\n\nError: current-light: only the exact separately authorized current-light flag is recognized\n    at currentLightMode (file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4:146)\n    at file:///private/tmp/atlas-logic-current-light-peer/candidate/tests/map-current-light-oracle.mjs:3:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n",
+        "block": {
+          "code": 1,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      },
+      {
+        "name": "suffix",
+        "args": [
+          "--root-authorized-current-light-state=1"
+        ],
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4\nexport function currentLightMode(args){if(args.length===0)return'PREPARE';if(args.length===1&&args[0]===CURRENT_LIGHT_FLAG)return'EXECUTE';throw Error('current-light: only the exact separately authorized current-light flag is recognized');}\n                                                                                                                                                 ^\n\nError: current-light: only the exact separately authorized current-light flag is recognized\n    at currentLightMode (file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4:146)\n    at file:///private/tmp/atlas-logic-current-light-peer/candidate/tests/map-current-light-oracle.mjs:3:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n",
+        "block": {
+          "code": 1,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      },
+      {
+        "name": "extra",
+        "args": [
+          "--root-authorized-current-light-state",
+          "--extra"
+        ],
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4\nexport function currentLightMode(args){if(args.length===0)return'PREPARE';if(args.length===1&&args[0]===CURRENT_LIGHT_FLAG)return'EXECUTE';throw Error('current-light: only the exact separately authorized current-light flag is recognized');}\n                                                                                                                                                 ^\n\nError: current-light: only the exact separately authorized current-light flag is recognized\n    at currentLightMode (file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4:146)\n    at file:///private/tmp/atlas-logic-current-light-peer/candidate/tests/map-current-light-oracle.mjs:3:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n",
+        "block": {
+          "code": 1,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      },
+      {
+        "name": "unknown",
+        "args": [
+          "--full"
+        ],
+        "status": 1,
+        "stdout": "",
+        "stderr": "file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4\nexport function currentLightMode(args){if(args.length===0)return'PREPARE';if(args.length===1&&args[0]===CURRENT_LIGHT_FLAG)return'EXECUTE';throw Error('current-light: only the exact separately authorized current-light flag is recognized');}\n                                                                                                                                                 ^\n\nError: current-light: only the exact separately authorized current-light flag is recognized\n    at currentLightMode (file:///private/tmp/atlas-logic-current-light-peer/candidate/scripts/lib/map-current-light-boundary.mjs:4:146)\n    at file:///private/tmp/atlas-logic-current-light-peer/candidate/tests/map-current-light-oracle.mjs:3:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n",
+        "block": {
+          "code": 1,
+          "counts": {
+            "create": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          }
+        }
+      }
+    ],
+    "browserExecuted": false,
+    "fullFlagExecuted": false,
+    "renderOutput": "UNKNOWN"
+  },
+  "raw": {
+    "producer/lookalike-0-blockers.json": {
+      "bytes": 147,
+      "sha256": "6a6da48369938e6c5ac86aeb5aa3f7a98da31e3ee029d8e59f9a47dfee8cfe1c"
+    },
+    "producer/default-1-blockers.json": {
+      "bytes": 116,
+      "sha256": "701a6b98a89215fc4df99ee8470ab8011c8a6882481c8f3bc29cded40a7158e3"
+    },
+    "producer/nonempty-reuse-blockers.json": {
+      "bytes": 116,
+      "sha256": "8638f2803f1aa26cc7bae0a2433970ffda8163e1e473f876b957a063db5d50e6"
+    },
+    "producer/nonempty-blockers.json": {
+      "bytes": 116,
+      "sha256": "701a6b98a89215fc4df99ee8470ab8011c8a6882481c8f3bc29cded40a7158e3"
+    },
+    "producer/default-0-blockers.json": {
+      "bytes": 116,
+      "sha256": "701a6b98a89215fc4df99ee8470ab8011c8a6882481c8f3bc29cded40a7158e3"
+    },
+    "producer/prepare-blockers.json": {
+      "bytes": 116,
+      "sha256": "701a6b98a89215fc4df99ee8470ab8011c8a6882481c8f3bc29cded40a7158e3"
+    },
+    "producer/lookalike-1-blockers.json": {
+      "bytes": 157,
+      "sha256": "39da6ceffc869354e8ab2875d48bd8c4fcc4f838b80fb4f7bc03c0aaf2a58ff2"
+    },
+    "producer/proposal.json": {
+      "bytes": 15320,
+      "sha256": "eba64f950f239b5981ebde23fbc5189e08e0cd519c5b995c59fd8b257d1661d3"
+    },
+    "producer/lookalike-2-blockers.json": {
+      "bytes": 156,
+      "sha256": "ed2a850176aadcb290e1c625dae9e12072123ea18c7ff2dc5b566e5db1ef6690"
+    },
+    "producer/nonempty-prepared/prepared.json": {
+      "bytes": 1009474,
+      "sha256": "4d08d71b091a39e17d52f15e12c90619f66393835a082befb79c145fee667db4"
+    },
+    "producer/nonempty-prepared/marker": {
+      "bytes": 8,
+      "sha256": "1daf82f62247f3a1d148c2d88b1828c9efa2d5f087d7059e98650aafe7afdea3"
+    },
+    "producer/prepare-prepared/prepared.json": {
+      "bytes": 1009474,
+      "sha256": "4d08d71b091a39e17d52f15e12c90619f66393835a082befb79c145fee667db4"
+    },
+    "independent/blocker.mjs": {
+      "bytes": 914,
+      "sha256": "513cc76ba4996e8729ee89484ac41699a6f896bded36d99998154f9ec40ff9b4"
+    },
+    "independent/raw-blocked.json": {
+      "bytes": 66,
+      "sha256": "03ad356550cdc5d72e6d9715a253d82d998f12f3cc89c5160132711cbb865797"
+    },
+    "independent/unknown-blocked.json": {
+      "bytes": 66,
+      "sha256": "03ad356550cdc5d72e6d9715a253d82d998f12f3cc89c5160132711cbb865797"
+    },
+    "independent/prepare-blocked.json": {
+      "bytes": 66,
+      "sha256": "48d99cf4ddab66433e3dcc4405e2022c734d15d5155e0220d406948bd58ce113"
+    },
+    "independent/extra-blocked.json": {
+      "bytes": 66,
+      "sha256": "03ad356550cdc5d72e6d9715a253d82d998f12f3cc89c5160132711cbb865797"
+    },
+    "independent/suffix-blocked.json": {
+      "bytes": 66,
+      "sha256": "03ad356550cdc5d72e6d9715a253d82d998f12f3cc89c5160132711cbb865797"
+    },
+    "independent/nested-raw-blocked.json": {
+      "bytes": 66,
+      "sha256": "03ad356550cdc5d72e6d9715a253d82d998f12f3cc89c5160132711cbb865797"
+    },
+    "independent/file-blocked.json": {
+      "bytes": 66,
+      "sha256": "03ad356550cdc5d72e6d9715a253d82d998f12f3cc89c5160132711cbb865797"
+    },
+    "independent/independent.json": {
+      "bytes": 19687,
+      "sha256": "38ce3527111a2e7bef7f154ebd89147f8017457d932b13770a01eae0082145ce"
+    },
+    "independent/output-file": {
+      "bytes": 9,
+      "sha256": "ef52607f7b435479e1008bbb45ea1c25352aef468e452f50846ae3e8ccdd7931"
+    },
+    "independent/old-light-blocked.json": {
+      "bytes": 66,
+      "sha256": "03ad356550cdc5d72e6d9715a253d82d998f12f3cc89c5160132711cbb865797"
+    },
+    "independent/old-dark-blocked.json": {
+      "bytes": 66,
+      "sha256": "03ad356550cdc5d72e6d9715a253d82d998f12f3cc89c5160132711cbb865797"
+    },
+    "independent/fresh/prepared.json": {
+      "bytes": 1009474,
+      "sha256": "4d08d71b091a39e17d52f15e12c90619f66393835a082befb79c145fee667db4"
+    },
+    "independent/raw-existing/A0.rgba": {
+      "bytes": 8,
+      "sha256": "76da9e007a155711dfc90653fddb334da8bbe2dfa6fcee621887d39cc5e66f2e"
+    },
+    "independent/nested-raw/original/A0.rgba": {
+      "bytes": 15,
+      "sha256": "6e380638964428f0caa69b7141228425ee9d385bbf310a8633f4228b2a46da8e"
+    }
+  },
+  "attempts": [
+    {
+      "stage": "peer initial producer invocation",
+      "outcome": "SETUP FAILURE: MODULE_NOT_FOUND",
+      "explanation": "Archive creation succeeded, but initial command used earlier fixture archive cwd, which has no new proposal file. Reissued same command from new overlay archive. No candidate mutation, browser or source/gate change."
+    }
+  ]
+}
