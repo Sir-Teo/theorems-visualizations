@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 586,
-    "remaining": 445,
-    "writtenChapters": 46,
+    "written": 636,
+    "remaining": 395,
+    "writtenChapters": 49,
     "chapters": [
       {
         "collection": "ode",
@@ -17971,10 +17971,28 @@
         "collection": "deep",
         "chapter": 6,
         "total": 17,
-        "written": 0,
-        "remaining": 17,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 17,
+        "remaining": 0,
+        "writtenItems": [
+          "deep-6.1",
+          "deep-6.2",
+          "deep-6.3",
+          "deep-6.4",
+          "deep-6.5",
+          "deep-6.6",
+          "deep-6.7",
+          "deep-6.8",
+          "deep-6.9",
+          "deep-6.10",
+          "deep-6.11",
+          "deep-6.12",
+          "deep-6.13",
+          "deep-6.14",
+          "deep-6.15",
+          "deep-6.16",
+          "deep-6.17"
+        ],
+        "status": "written"
       },
       {
         "collection": "causal",
@@ -17989,10 +18007,34 @@
         "collection": "algo",
         "chapter": 12,
         "total": 23,
-        "written": 0,
-        "remaining": 23,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 23,
+        "remaining": 0,
+        "writtenItems": [
+          "algo-12.1",
+          "algo-12.2",
+          "algo-12.3",
+          "algo-12.4",
+          "algo-12.5",
+          "algo-12.6",
+          "algo-12.7",
+          "algo-12.8",
+          "algo-12.9",
+          "algo-12.10",
+          "algo-12.11",
+          "algo-12.12",
+          "algo-12.13",
+          "algo-12.14",
+          "algo-12.15",
+          "algo-12.16",
+          "algo-12.17",
+          "algo-12.18",
+          "algo-12.19",
+          "algo-12.20",
+          "algo-12.21",
+          "algo-12.22",
+          "algo-12.23"
+        ],
+        "status": "written"
       },
       {
         "collection": "toc",
@@ -18719,10 +18761,21 @@
         "collection": "game",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "game-5.1",
+          "game-5.2",
+          "game-5.3",
+          "game-5.4",
+          "game-5.5",
+          "game-5.6",
+          "game-5.7",
+          "game-5.8",
+          "game-5.9",
+          "game-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "behav",
