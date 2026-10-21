@@ -1,14 +1,12 @@
 # Wave 5 production inventory
 
-Prepared, **not started**. This inventory selects the earliest chapter with planned items in each unfinished collection. Existing items in partially written chapters are preserved.
+**In progress**, started 2026-10-21. The user directed authoring to proceed after confirming the previous work was done. Each new chapter still receives source, mathematical, browser and visual checks.
 
-80 collections; 1031 new items; 2 items already written in those chapters. The [machine-readable plan](wave-five-plan.json) includes every item, source reference, picture brief and dependency classified as written, within the chapter, elsewhere in this wave, later, or unknown. Later prerequisites are visible authoring/reconciliation work, not silently treated as already available.
+The frozen inventory contains 80 collections, 1031 new items and 2 preserved items. **0 new items are written in 0 complete chapters; 1031 remain.** Written counts describe content availability, not independent review acceptance; chapter reports record validation.
 
-The source queue currently has **139 pending reviews**. User review and subjective listening are not required. Start authoring only after the source and automated verification gates in [MASTER_PLAN §7.3](../MASTER_PLAN.md#73-gates-at-the-end-of-each-wave) are satisfied. This plan does not claim that those gates have passed.
+The [machine-readable plan](wave-five-plan.json) preserves the original chapter assignments and records current progress. Regenerate progress with `npm run wave5:plan`; completed collections stay in this wave. Syllabi remain authoritative for source and dependency corrections.
 
-Regenerate with `npm run wave5:plan`. Syllabi remain authoritative; verify exact sources and hypotheses before authoring, keep dependencies acyclic, and review, reconcile and commit each collection separately.
-
-| Collection | Next chapter | New items | Already written | Later prerequisite IDs |
+| Collection | Wave 5 chapter | New items | Preserved items | Later prerequisite IDs at planning |
 |---|---|---:|---:|---:|
 | ode | 5 · Flows, invariant sets and Lyapunov stability | 18 | 0 | 1 |
 | pde | 5 · Laplace’s equation and harmonic functions | 16 | 0 | 5 |

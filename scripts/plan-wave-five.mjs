@@ -1,4 +1,4 @@
-// Prepare the next breadth-first wave without crossing its verification gate.
+// Prepare a breadth-first wave, or refresh progress against its frozen inventory.
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,11 +36,39 @@ export function planWaveFive(atlas, sourceQueue) {
     existingItemCount: next.reduce((n, c) => n + c.alreadyWritten.length, 0), chapters: next };
 }
 
+// Keep the original chapter assignments when authoring starts. Replanning from
+// the live syllabus would move a finished collection straight into Wave 6.
+export function waveFiveProgress(plan, atlas) {
+  const written = new Set(atlas.items.map(item => item.id));
+  const chapters = plan.chapters.map(chapter => {
+    const ids = chapter.items.map(item => item.id);
+    const writtenItems = ids.filter(id => written.has(id));
+    return { collection: chapter.collection, chapter: chapter.chapter,
+      total: ids.length, written: writtenItems.length, remaining: ids.length - writtenItems.length,
+      writtenItems, status: writtenItems.length === ids.length ? 'written' : writtenItems.length ? 'in-progress' : 'planned' };
+  });
+  return { total: chapters.reduce((n, chapter) => n + chapter.total, 0),
+    written: chapters.reduce((n, chapter) => n + chapter.written, 0),
+    remaining: chapters.reduce((n, chapter) => n + chapter.remaining, 0),
+    writtenChapters: chapters.filter(chapter => chapter.status === 'written').length, chapters };
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const atlas = await loadAll(), queue = JSON.parse(await readFile(join(ROOT, 'docs/verification/waves-3-4-open.json'), 'utf8'));
-  const plan = planWaveFive(atlas, queue);
+  let saved;
+  try { saved = JSON.parse(await readFile(join(ROOT, 'docs/wave-five-plan.json'), 'utf8')); }
+  catch (error) { if (error.code !== 'ENOENT') throw error; }
+  const started = saved?.status === 'in-progress' || saved?.status === 'complete';
+  const plan = started ? saved : planWaveFive(atlas, queue);
+  if (started) plan.progress = waveFiveProgress(plan, atlas);
   await writeFile(join(ROOT, 'docs/wave-five-plan.json'), JSON.stringify(plan, null, 2) + '\n');
   const rows = plan.chapters.map(c => `| ${c.collection} | ${c.chapter} · ${c.title} | ${c.items.length} | ${c.alreadyWritten.length} | ${c.prerequisites.later.length} |`).join('\n');
+  if (started) {
+    const progress = plan.progress;
+    await writeFile(join(ROOT, 'docs/wave-five.md'), `# Wave 5 production inventory\n\n**In progress**, started ${plan.started}. The user directed authoring to proceed after confirming the previous work was done. Each new chapter still receives source, mathematical, browser and visual checks.\n\nThe frozen inventory contains ${plan.chapterCount} collections, ${plan.newItemCount} new items and ${plan.existingItemCount} preserved items. **${progress.written} new items are written in ${progress.writtenChapters} complete chapters; ${progress.remaining} remain.** Written counts describe content availability, not independent review acceptance; chapter reports record validation.\n\nThe [machine-readable plan](wave-five-plan.json) preserves the original chapter assignments and records current progress. Regenerate progress with \`npm run wave5:plan\`; completed collections stay in this wave. Syllabi remain authoritative for source and dependency corrections.\n\n| Collection | Wave 5 chapter | New items | Preserved items | Later prerequisite IDs at planning |\n|---|---|---:|---:|---:|\n${rows}\n`);
+    console.log(`Wave 5 in progress: ${progress.written}/${progress.total} new items written, ${progress.writtenChapters}/${plan.chapterCount} chapters written. Original inventory preserved.`);
+    process.exit(0);
+  }
   await writeFile(join(ROOT, 'docs/wave-five.md'), `# Wave 5 production inventory\n\nPrepared, **not started**. This inventory selects the earliest chapter with planned items in each unfinished collection. Existing items in partially written chapters are preserved.\n\n${plan.chapterCount} collections; ${plan.newItemCount} new items; ${plan.existingItemCount} items already written in those chapters. The [machine-readable plan](wave-five-plan.json) includes every item, source reference, picture brief and dependency classified as written, within the chapter, elsewhere in this wave, later, or unknown. Later prerequisites are visible authoring/reconciliation work, not silently treated as already available.\n\nThe source queue currently has **${queue.remainingFlags} pending reviews**. User review and subjective listening are not required. Start authoring only after the source and automated verification gates in [MASTER_PLAN §7.3](../MASTER_PLAN.md#73-gates-at-the-end-of-each-wave) are satisfied. This plan does not claim that those gates have passed.\n\nRegenerate with \`npm run wave5:plan\`. Syllabi remain authoritative; verify exact sources and hypotheses before authoring, keep dependencies acyclic, and review, reconcile and commit each collection separately.\n\n| Collection | Next chapter | New items | Already written | Later prerequisite IDs |\n|---|---|---:|---:|---:|\n${rows}\n`);
   console.log(`Prepared Wave 5: ${plan.chapterCount} chapters, ${plan.newItemCount} new items; source and automated gates remain open. No chapter content created.`);
 }

@@ -48,26 +48,9 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 
 ### Immediate next steps
 
-1. Continue the Wave 3–4 source-review queue: **139 items remain**. The named modern PWT/MRW input audit is complete; its evidence and reproducible extraction are in `docs/verification/pwt-10.0.json` and `scripts/verify-pwt.py`.
-2. Continue agent screenshot inspection in light and dark themes and close remaining input/model gaps. [Automated audio coverage](docs/verification/audio-input-followup.md) passes 53 items and 95 actions. Human review, subjective listening and user approval are not required.
-   Reconcile the existing cross-field prerequisite gate: [the inventory](docs/verification/cross-field-dependencies.md)
-   finds 53 of64 non-math collections below25 published edges, with28 below25 even across
-   planned chapters. Add connections only when the argument or model actually requires them.
-   The home JSON gate passes. [Steady-pan measurements](docs/verification/map-performance.md)
-   reach60fps in eight tested modes. [Zoom/hover comparisons](docs/verification/map-transitions-followup.md)
-   preserve the original rendering and improve several transitions, while the full60fps gate
-   remains open. The [controlled hardware run](docs/verification/map-hardware-followup.md)
-   confirms normal zoom at about48–51fps and slower oversized motion; normal pan, focus
-   and hover are near60fps. Both the edge-only and persistent WebGL prototypes
-   regressed matched performance and remain isolated. The [persistent-scene audit](docs/verification/map-scene-parent-check.md)
-   preserves the failed 12-case diagnostic and independent correctness checks.
-   The [GPU pass diagnostic](docs/verification/map-scene-gpu-followup.md) identified the costly edge subsystem.
-   A [bounded retained-edge experiment](docs/verification/map-retained-parent-check.md) passes independent
-   picture/resource/lifecycle checks but regresses all twelve controlled matched cases and remains isolated.
-   Continue renderer work from these measured constraints; the full 60 fps gate stays open.
-   Continue source/proof curation for 100 flagship steppers: **2/100 are accepted**, including [basis extraction](docs/verification/flagship-basis-followup.md)
-   and the [exchange argument](docs/verification/ladr-exchange-followup.md), separately from the 102-player control inventory. The curation gate remains open.
-3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
+1. **Wave 5 authoring is in progress (2026-10-21).** The user confirmed the previous work was done and directed production to begin. Work breadth-first from the [frozen inventory](docs/wave-five.md): the next chapter of each of 80 unfinished collections, comprising 1,031 new and two preserved items. The first active batch covers ODE flows/stability, vector-calculus line integrals, ML bias/complexity, aerofoils/lift and musical harmony.
+2. Research and write each chapter, run strict/static and light/dark native checks, inspect screenshots, reconcile genuine dependencies and obtain an independent chapter review. Commit in reviewable collection-sized steps, then continue to the next inventory entries. Historical review records below remain evidence of their recorded checkpoints; they are not a new request to repeat completed work.
+3. Maintain the chapter inventory and progress with `npm run wave5:plan`. Completed collections retain their Wave 5 chapter assignment; do not advance them to a deeper chapter until the breadth-first wave is complete. Continue connective-tissue work alongside production where it supports the new chapters.
 
 The completed checkpoint through `1cf1a67` passes **1,634 tests**, including all six UI tests, and a **114-route changed-page sweep**. Strict build and full static report 0 errors/0 warnings; home JSON112,815bytes gzip. The exact accepted snapshot includes the just-intonation/meantone and whole-plane retinal/Mach-band audits, excludes ongoing wolf/pooling/small-world drafts, and reconciles139pending source reviews,701original resolved and7added uncertainties. Cross-field published shortfall remains855, with53of64non-math collections and28whole syllabi below target. Flagship curation stays2/100 and the full-map60fps gate remains open. See [checkpoint evidence](docs/verification/checkpoint-1cf1a67.md).
 
