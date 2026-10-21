@@ -111,7 +111,7 @@ The partition theorem (alg-1.25) makes the refinement invariant precise. Equal c
           const nb = (k) => (k[0] === 'A' ? A : B).get(+k.slice(1)).map((i) => k[0] + i);
           let col = new Map(keys.map((k) => [k, 0])), out = [];
           const hist = (c, tag) => { const h = []; for (const [k, x] of c) if (k[0] === tag) h[x] = (h[x] || 0) + 1; return h; };
-          const snap = (c, round, note, extra = {}) => { const K = Math.max(0, ...c.values()) + 1, hA = hist(c, 'A'), hB = hist(c, 'B'); const h = (x) => Array.from({ length: K }, (_, i) => x[i] || 0); const hAa = h(hA), hBa = h(hB); return { col: new Map(c), round, K, hA: hAa, hB: hBa, differ: hAa.some((x, i) => x !== hBa[i]), note, ...extra }; };
+          const snap = (c, round, note, extra = {}) => { const K = c.size ? Math.max(0, ...c.values()) + 1 : 0, hA = hist(c, 'A'), hB = hist(c, 'B'); const h = (x) => Array.from({ length: K }, (_, i) => x[i] || 0); const hAa = h(hA), hBa = h(hB); return { col: new Map(c), round, K, hA: hAa, hB: hBa, differ: hAa.some((x, i) => x !== hBa[i]), note, ...extra }; };
           out.push(snap(col, 0, 'Round 0: every vertex gets the same colour. (If the graphs have different numbers of vertices the histograms already differ.)'));
           for (let r = 1; r <= keys.length; r++) {
             const sig = new Map(keys.map((k) => [k, `${col.get(k)}|${nb(k).map((q) => col.get(q)).sort((x, y) => x - y).join(',')}`]));

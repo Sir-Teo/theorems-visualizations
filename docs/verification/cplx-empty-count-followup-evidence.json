@@ -1,0 +1,1253 @@
+{
+  "acceptedRoot": "14ec43dc04f9999d5b952e8cfec95835af101bfd",
+  "privateAlignmentExcluded": "7fa9aebd0b72f3511805242d76047d7c6745f99c",
+  "scope": "count-only runtime boundary; combined ID/preset peer pending",
+  "guardAndMath": {
+    "pass": true,
+    "objects": 53,
+    "functions": 53,
+    "changedFunctions": 1,
+    "completeModules": 16,
+    "syllabusByteIdentical": true,
+    "sourceFlagsAndDependenciesUnchanged": true,
+    "checks": 5154,
+    "graphs": 1100,
+    "old": "const K = Math.max(0, ...c.values()) + 1, hA",
+    "replacement": "const K = c.size ? Math.max(0, ...c.values()) + 1 : 0, hA"
+  },
+  "actualBefore": {
+    "expectedEmpty": 1,
+    "rows": [
+      {
+        "theme": "light",
+        "name": "default",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 3 · 5 colour classes · histograms differ",
+        "classes": 5,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "left-empty",
+        "counts": [
+          0,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n0\n∣V(G)∣=0, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 1 · 2 colour classes · histograms differ",
+        "classes": 2,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "both-empty",
+        "counts": [
+          0,
+          0
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n0\n∣V(G)∣=0, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n0\n∣V(H)∣=0 · round 0 · 1 colour classes · histograms equal",
+        "classes": 1,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "regular-nonisomorphic",
+        "counts": [
+          6,
+          6
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n6\n∣V(G)∣=6, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n6\n∣V(H)∣=6 · round 1 · 1 colour classes · histograms equal",
+        "classes": 1,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "isomorphic",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 2 · 4 colour classes · histograms differ",
+        "classes": 4,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "restored-default",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 3 · 5 colour classes · histograms differ",
+        "classes": 5,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "right-empty",
+        "counts": [
+          7,
+          0
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n0\n∣V(H)∣=0 · round 1 · 2 colour classes · histograms differ",
+        "classes": 2,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "restored-isomorphic",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 2 · 4 colour classes · histograms differ",
+        "classes": 4,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "default",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 3 · 5 colour classes · histograms differ",
+        "classes": 5,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "left-empty",
+        "counts": [
+          0,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n0\n∣V(G)∣=0, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 1 · 2 colour classes · histograms differ",
+        "classes": 2,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "both-empty",
+        "counts": [
+          0,
+          0
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n0\n∣V(G)∣=0, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n0\n∣V(H)∣=0 · round 0 · 1 colour classes · histograms equal",
+        "classes": 1,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "regular-nonisomorphic",
+        "counts": [
+          6,
+          6
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n6\n∣V(G)∣=6, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n6\n∣V(H)∣=6 · round 1 · 1 colour classes · histograms equal",
+        "classes": 1,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "isomorphic",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 2 · 4 colour classes · histograms differ",
+        "classes": 4,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "restored-default",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 3 · 5 colour classes · histograms differ",
+        "classes": 5,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "right-empty",
+        "counts": [
+          7,
+          0
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n0\n∣V(H)∣=0 · round 1 · 2 colour classes · histograms differ",
+        "classes": 2,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "restored-isomorphic",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 2 · 4 colour classes · histograms differ",
+        "classes": 4,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      }
+    ],
+    "errors": [],
+    "browser": "153.0.8010.12",
+    "realOfferedControls": true
+  },
+  "actualAfter": {
+    "expectedEmpty": 0,
+    "rows": [
+      {
+        "theme": "light",
+        "name": "default",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 3 · 5 colour classes · histograms differ",
+        "classes": 5,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "left-empty",
+        "counts": [
+          0,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n0\n∣V(G)∣=0, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 1 · 2 colour classes · histograms differ",
+        "classes": 2,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "both-empty",
+        "counts": [
+          0,
+          0
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n0\n∣V(G)∣=0, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n0\n∣V(H)∣=0 · round 0 · 0 colour classes · histograms equal",
+        "classes": 0,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "regular-nonisomorphic",
+        "counts": [
+          6,
+          6
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n6\n∣V(G)∣=6, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n6\n∣V(H)∣=6 · round 1 · 1 colour classes · histograms equal",
+        "classes": 1,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "isomorphic",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 2 · 4 colour classes · histograms differ",
+        "classes": 4,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "restored-default",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 3 · 5 colour classes · histograms differ",
+        "classes": 5,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "right-empty",
+        "counts": [
+          7,
+          0
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n0\n∣V(H)∣=0 · round 1 · 2 colour classes · histograms differ",
+        "classes": 2,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "light",
+        "name": "restored-isomorphic",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 2 · 4 colour classes · histograms differ",
+        "classes": 4,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "default",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 3 · 5 colour classes · histograms differ",
+        "classes": 5,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "left-empty",
+        "counts": [
+          0,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n0\n∣V(G)∣=0, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 1 · 2 colour classes · histograms differ",
+        "classes": 2,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "both-empty",
+        "counts": [
+          0,
+          0
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n0\n∣V(G)∣=0, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n0\n∣V(H)∣=0 · round 0 · 0 colour classes · histograms equal",
+        "classes": 0,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "regular-nonisomorphic",
+        "counts": [
+          6,
+          6
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n6\n∣V(G)∣=6, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n6\n∣V(H)∣=6 · round 1 · 1 colour classes · histograms equal",
+        "classes": 1,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "isomorphic",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 2 · 4 colour classes · histograms differ",
+        "classes": 4,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "restored-default",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 3 · 5 colour classes · histograms differ",
+        "classes": 5,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "right-empty",
+        "counts": [
+          7,
+          0
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n0\n∣V(H)∣=0 · round 1 · 2 colour classes · histograms differ",
+        "classes": 2,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      },
+      {
+        "theme": "dark",
+        "name": "restored-isomorphic",
+        "counts": [
+          7,
+          7
+        ],
+        "text": "∣\n𝑉\n(\n𝐺\n)\n∣\n=\n7\n∣V(G)∣=7, \n∣\n𝑉\n(\n𝐻\n)\n∣\n=\n7\n∣V(H)∣=7 · round 2 · 4 colour classes · histograms differ",
+        "classes": 4,
+        "bounds": {
+          "client": 288,
+          "scroll": 288,
+          "canvas": [
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 180,
+              "left": 17,
+              "right": 303
+            },
+            {
+              "width": 286,
+              "height": 94,
+              "left": 17,
+              "right": 303
+            }
+          ]
+        }
+      }
+    ],
+    "errors": [],
+    "browser": "153.0.8010.12",
+    "realOfferedControls": true
+  },
+  "pixelRegression": {
+    "readoutAndCountRegression": true,
+    "nonemptyPixelComparisons": [
+      {
+        "file": "light-default-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-default-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-left-empty-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-left-empty-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-regular-nonisomorphic-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-regular-nonisomorphic-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-isomorphic-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-isomorphic-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-restored-default-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-restored-default-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-right-empty-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-right-empty-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-restored-isomorphic-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "light-restored-isomorphic-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-default-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-default-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-left-empty-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-left-empty-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-regular-nonisomorphic-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-regular-nonisomorphic-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-isomorphic-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-isomorphic-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-restored-default-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-restored-default-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-right-empty-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-right-empty-readout.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-restored-isomorphic-viz.png",
+        "pixelBytesEqual": true
+      },
+      {
+        "file": "dark-restored-isomorphic-readout.png",
+        "pixelBytesEqual": true
+      }
+    ]
+  },
+  "strict": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "static": {
+    "items": 53,
+    "errors": 0,
+    "warnings": 0
+  },
+  "sourceFlagsUnchanged": true,
+  "dependenciesUnchanged": true,
+  "allOtherSourceBytesUnchanged": true,
+  "browsersClosed": true,
+  "evidenceRoot": "/tmp/atlas-cplx-empty-count"
+}
