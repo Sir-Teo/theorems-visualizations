@@ -81,6 +81,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Computer science
 
+- Compare exact combinatorial order when a decoder's tie rule is part of the model; rounded log likelihoods can split a mathematical tie. Preserve the defining bias of a nearly independent binary channel, and distinguish a numerical resolution limit from a positive computed exponent. A zero-width typicality diagnostic needs exact count/parameter equality; the asymptotic theorem uses positive tolerance. See the [capacity review](verification/wave5-info-review.md).
+
 - State whether acceptance is a least fixed point and whether every computation branch halts. Swapping existential/universal states and terminal outcomes complements a finite halting tree by induction; a rejecting self-loop and its dual can both reject under least-fixed-point semantics. Finite branching plus all-branch halting gives a finite tree, but gives no uniform polynomial resource bound. See the [CPLX alternation peer](verification/cplx-alternation-independent-peer.md).
 
 - **Algorithms run on input the reader can edit**: drag graph nodes and edit weights

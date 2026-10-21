@@ -1,6 +1,6 @@
 # Wave 5: physical chemistry 5 — mixtures and solutions
 
-Authoring in the isolated shipping checkout; only chapter5 files, chapter5 syllabus rows, focused tests and this report are owned. All17 frozen identities and kinds are preserved, including the van’t Hoff Paper. Source/model drafts are complete. **Author math/static/native/visual gates are complete; independent acceptance is pending.** No generated data, runtime, build outputs or shared ledgers were edited.
+Authoring in the isolated shipping checkout; only chapter5 files, chapter5 syllabus rows, focused tests and this report are owned. All17 frozen identities and kinds are preserved, including the van’t Hoff Paper. Source/model drafts are complete. **Independent source/model/native acceptance is complete; see `docs/verification/wave5-pchem-review.md`.** No generated data, runtime, build outputs or shared ledgers were edited.
 
 ## Read source receipts and scope decisions
 
@@ -21,7 +21,7 @@ Original German van’t Hoff1887 publisher PDF and original translation scan wer
 
 ## Models and meaningful mathematical checks
 
-`node --test tests/wave5-pchem.test.mjs`: **16/16 groups pass**. `node scripts/check.mjs pchem/5 --static`: **17 items,0 errors,0 warnings**.
+`node --test tests/wave5-pchem.test.mjs`: **17/17 groups pass**. `node scripts/check.mjs pchem/5 --static`: **17 items,0 errors,0 warnings**.
 
 The tests check independently differentiated extensive partial volumes/Euler/Gibbs–Duhem; the nonlinear exchange solution against its original ODE, total A and Gibbs dissipation; ideal mixing endpoints/identical species/extensivity; Raoult pure limits and vapor normalization; Henry SI/bar conversion and closed-headspace conservation; standard-state invariance and Margules Gibbs–Duhem; near-critical next-float nonzero binodal, spinodal ordering and equilibrium convexification; finite phase-potential equalities and dilute slopes; column dilution/hydrostatic balance; reversible RO work by independent Simpson quadrature; ideal-solubility inverse-temperature slope and finite solid inventory; fresh-stage and monomer/dimer mass conservation; finite-step work bounds and convergence; all17 frozen identities plus author/syllabus metadata equality.
 
@@ -39,8 +39,10 @@ All partial-volume, activity and regular-solution interactions are synthetic and
 
 All34 final narrow defaults inspected in six both-theme contact sheets, plus rich pages1/3/9/10/13/14/17 and selected inconsistent-Gibbs–Duhem, reservoir, regular-solution, finite-solubility, association, raw-spinodal and raw-MIN captures. The final solid branch in10 is theme-aware green, distinct from the solution accent. Mode15/16 axes name the actual plotted quantities and units. Actual screenshots inspected include final11MIN in both themes and16association/15finite-inventory.
 
-**Author source/model/test bytes frozen; all author browsers closed. Independent reviewer acceptance remains pending.** Original-paper access uncertainty remains explicitly flagged as above; author numerical/native acceptance does not claim inspection of the unseen original German paper.
+**Source/model/test bytes frozen after independent acceptance; all author browsers closed.** Original-paper access uncertainty remains explicitly flagged as above; author numerical/native acceptance does not claim inspection of the unseen original German paper.
 
 A final independent raw-state finding required a bounded6readout correction: when a subnormal sealed input cannot be partitioned into representable dissolved and gas amounts, their computed sum can round to zero. The readout now scientifically shows the specified input and explicitly reports quantized partitions instead of asserting numerical equality. Added MIN input at292.15/288.85K actual Create-link cases and a reproducing math regression (17groups). Peer final6refresh is pending; earlier author68coverage is not claimed to rerun this subsequent correction. No physics/model curve changed.
 
 The final6raw-MIN geometry check also exposed a long tiny-span y-tick outside the default left gutter. Only5.6now reserves64CSSpx on the left; full ink and readout refresh is left to the reviewer. No shared axis/runtime code changed.
+
+Independent final acceptance: reviewer68native groups plus final6replacement4groups/64actions/32URLs pass with complete ink/readout bounds, mode visibility and both rawMIN temperature-state physical Share checks. Final17math pass. Reviewer personally inspected raw light/dark320 captures and completed source/model/visual acceptance in `docs/verification/wave5-pchem-review.md`. This acceptance supersedes the pending refresh notes above; accepted source/test bytes remain frozen.
