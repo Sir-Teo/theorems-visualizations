@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 518,
-    "remaining": 513,
-    "writtenChapters": 42,
+    "written": 551,
+    "remaining": 480,
+    "writtenChapters": 44,
     "chapters": [
       {
         "collection": "ode",
@@ -18078,10 +18078,26 @@
         "collection": "em",
         "chapter": 5,
         "total": 15,
-        "written": 0,
-        "remaining": 15,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 15,
+        "remaining": 0,
+        "writtenItems": [
+          "em-5.1",
+          "em-5.2",
+          "em-5.3",
+          "em-5.4",
+          "em-5.5",
+          "em-5.6",
+          "em-5.7",
+          "em-5.8",
+          "em-5.9",
+          "em-5.10",
+          "em-5.11",
+          "em-5.12",
+          "em-5.13",
+          "em-5.14",
+          "em-5.15"
+        ],
+        "status": "written"
       },
       {
         "collection": "waves",
@@ -18539,10 +18555,29 @@
         "collection": "sig",
         "chapter": 5,
         "total": 18,
-        "written": 0,
-        "remaining": 18,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 18,
+        "remaining": 0,
+        "writtenItems": [
+          "sig-5.1",
+          "sig-5.2",
+          "sig-5.3",
+          "sig-5.4",
+          "sig-5.5",
+          "sig-5.6",
+          "sig-5.7",
+          "sig-5.8",
+          "sig-5.9",
+          "sig-5.10",
+          "sig-5.11",
+          "sig-5.12",
+          "sig-5.13",
+          "sig-5.14",
+          "sig-5.15",
+          "sig-5.16",
+          "sig-5.17",
+          "sig-5.18"
+        ],
+        "status": "written"
       },
       {
         "collection": "ctrl",
