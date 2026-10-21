@@ -13,6 +13,7 @@ export default {
     { id: 'sysbio-2.3', note: String.raw`Differentiate that steady-state balance and the same sensitivity denominator reappears. Negative autoregulation buffers variation in production rate, with a finite limit set by the Hill coefficient; this is not a claim about all molecular noise.` },
     { id: 'sysbio-2.2', note: String.raw`Feedback changes the transient as well as the final sensitivity. When the comparison is made at the same steady-state protein level, this autoregulated gene reaches half its final level faster than the simple production–removal model.` },
     { id: 'ctrl-4.9', note: String.raw`The instantaneous model hides a limit: delayed correction can arrive after the error has reversed. In the specified integral-control loop, increasing gain past a delay-dependent threshold replaces settling with growing oscillations.` },
+    { id: 'sysbio-5.2', note: String.raw`A three-gene repressilator has six mRNA/protein stages even without an explicit delay term. Its symmetric model has an exact local gain threshold controlled by the relative decay rates. Crossing that linear threshold destabilizes the equilibrium; a stable nonlinear oscillation requires additional information beyond the eigenvalue crossing.` },
     { id: 'sysbio-4.4', note: String.raw`Change the architecture to a bistable gene circuit and feedback can preserve a choice instead of erasing an error. Two switching thresholds create hysteresis, so the same current input can support different states depending on history.` },
   ],
 };

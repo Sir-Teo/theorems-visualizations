@@ -13,6 +13,7 @@ export default {
     { id: 'stoch-4.6', note: String.raw`Perron–Frobenius gives an irreducible nonnegative matrix a positive eigenvector, a fixed direction. For a stochastic matrix the left eigenvector is a stationary distribution; convergence also needs aperiodicity.` },
     { id: 'stoch-4.15', note: String.raw`PageRank is that eigenvector for a random surfer on the web graph, found by iterating the map until it stops changing.` },
     { id: 'stoch-3.10', note: String.raw`The extinction probability of a branching process is the smallest fixed point of its offspring generating function.` },
+    { id: 'comb-5.4', note: String.raw`The Catalan counting series is the formal fixed point $C=1+xC^2$ with constant term $1$. Starting from $1$ and iterating fixes at least one additional coefficient each time. This is coefficient stabilization in a formal series, distinct from numerical fixed-point convergence at a chosen real x.` },
     { id: 'pl-2.9', note: String.raw`The λ-calculus has an algebraic fixed-point construction: $YF=_\beta F(YF)$ expresses recursion. This is equality under reduction, rather than convergence in a metric space; call-by-value evaluation needs a delayed combinator such as $Z$.` },
   ],
 };

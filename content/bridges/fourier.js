@@ -16,6 +16,7 @@ export default {
     { id: 'music-4.2', note: String.raw`For a steady periodic tone, the Fourier coefficients describe its harmonic amplitudes and phases. Different harmonic balances help distinguish instrumental sounds; a changing attack or decay also needs a description over time.` },
     { id: 'music-4.4', note: String.raw`Parseval again, now for sound pressure: a tone’s mean-square pressure is the sum of the harmonic contributions. Phases can change peaks, but not that mean square; perceived loudness also involves hearing.` },
     { id: 'algo-4.11', note: String.raw`The fast Fourier transform computes $n$ frequency components in $O(n\log n)$ steps instead of $O(n^2)$, by halving the problem with roots of unity.` },
+    { id: 'qinfo-5.1', note: String.raw`On the finite bit-string group, the Hadamard transform uses the characters $(-1)^{x\cdot y}$ with normalization $1/\sqrt{2^n}$. Their orthogonality makes the transform unitary and allows interference to reveal selected function properties. A measurement still returns one outcome; superposition does not reveal the entire truth table.` },
     { id: 'algo-4.15', note: String.raw`Multiplying two huge integers is a convolution of their digits, and convolution is multiplication of spectra: the FFT turns arithmetic into signal processing.` },
   ],
 };

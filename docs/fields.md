@@ -93,6 +93,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Kinds: `Algorithm` (statement = what it computes plus its guarantee), `Theorem` for
   correctness/optimality/lower bounds, `Concept`, `Method`.
 
+- For tiny saved quantum probabilities, check the actual scientific readout as well as the snapshot: a decimal scaling formatter can underflow before the probability does. Keep exact model values separate from native range serialization, and verify both through real Share links. See the [quantum-query review](verification/wave5-qinfo-review.md).
+
 ## Chemistry & materials
 
 - **Molecular and quantitative**: particles in a box (`v.mol` kit) whose measured pressure,
@@ -117,6 +119,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - **Break it**: small N (drift), non-random mating, selection, migration, delays, stochasticity.
 - Sequences and trees: alignments as DP tables (`v.table`), phylogenies with the `tree` kit,
   genealogies backwards in time (coalescent).
+
+- Separate a local eigenvalue crossing from nonlinear Hopf hypotheses and attraction to a periodic orbit. Name the exact oscillator model version and rate table; multiplying all rates by c rescales time and cannot by itself explain temperature compensation. Keep biological observations separate from uncalibrated sensitivity controls. See the [oscillator review](verification/wave5-sysbio-review.md).
 
 ## Medicine & health
 
