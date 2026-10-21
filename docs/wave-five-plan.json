@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 636,
-    "remaining": 395,
-    "writtenChapters": 49,
+    "written": 663,
+    "remaining": 368,
+    "writtenChapters": 51,
     "chapters": [
       {
         "collection": "ode",
@@ -17998,10 +17998,25 @@
         "collection": "causal",
         "chapter": 5,
         "total": 14,
-        "written": 0,
-        "remaining": 14,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 14,
+        "remaining": 0,
+        "writtenItems": [
+          "causal-5.1",
+          "causal-5.2",
+          "causal-5.3",
+          "causal-5.4",
+          "causal-5.5",
+          "causal-5.6",
+          "causal-5.7",
+          "causal-5.8",
+          "causal-5.9",
+          "causal-5.10",
+          "causal-5.11",
+          "causal-5.12",
+          "causal-5.13",
+          "causal-5.14"
+        ],
+        "status": "written"
       },
       {
         "collection": "algo",
@@ -18049,10 +18064,24 @@
         "collection": "cplx",
         "chapter": 5,
         "total": 13,
-        "written": 0,
-        "remaining": 13,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 13,
+        "remaining": 0,
+        "writtenItems": [
+          "cplx-5.1",
+          "cplx-5.2",
+          "cplx-5.3",
+          "cplx-5.4",
+          "cplx-5.5",
+          "cplx-5.6",
+          "cplx-5.7",
+          "cplx-5.8",
+          "cplx-5.10",
+          "cplx-5.11",
+          "cplx-5.12",
+          "cplx-5.13",
+          "cplx-5.14"
+        ],
+        "status": "written"
       },
       {
         "collection": "info",
