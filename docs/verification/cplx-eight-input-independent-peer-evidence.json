@@ -1,0 +1,83 @@
+{
+  "status": "independent combined peer pass",
+  "acceptedBaseline": "d4f67e50ec2f4571f6b31010531e69e341734a33",
+  "final": "ffacaa605dcb641e3c743390874f984265f0b70c",
+  "requiredProducerPatches": [
+    "3aa8196b89808d38b4285fc509f07ed21f749e46",
+    "d64322461dedf6662de2850e24130fea73d76425",
+    "3e7920337f28c1976b66802eae18a04857bc13b3",
+    "ffacaa605dcb641e3c743390874f984265f0b70c"
+  ],
+  "excluded": [
+    "private alignment055c88e8",
+    "unrelated parent peer55898500",
+    "ctrl3.8"
+  ],
+  "preservation": {
+    "pass": true,
+    "objects": 53,
+    "functions": 53,
+    "modules": 16,
+    "rows": 158,
+    "fullRawLists": 53,
+    "changedConsumers": 7,
+    "addedInputs": 8,
+    "fields": {
+      "math": 8
+    },
+    "qualificationFields": [
+      "4.13",
+      "1.9"
+    ],
+    "untouched3_8": true
+  },
+  "math": {
+    "pass": true,
+    "groups": 7,
+    "checks": 92308,
+    "names": [
+      "partition refinement, shared signatures, isomorphism invariance and empty domain",
+      "modular powers binary cost and composite moduli",
+      "finite satisfaction duality and ignored quantifier on nonempty word domain",
+      "finite accepting-tree heights versus least closure, rejecting halts and cycles",
+      "local gate clauses and unique existential extension with sharing",
+      "support lower bound survives sharing and balanced tree exact recurrences",
+      "ordinary nonnegative products threshold to Boolean paths, finite deletion and N1"
+    ]
+  },
+  "producerMathematicalChecks": 505131,
+  "existingCircuitTests": 15,
+  "strict": {
+    "errors": 0,
+    "warnings": 0,
+    "homeGzip": 112707
+  },
+  "static": {
+    "items": 53,
+    "errors": 0,
+    "warnings": 0
+  },
+  "pictures": {
+    "initialProductionStates": 14,
+    "initialNarrowStates": 14,
+    "closingProductionStates": 2,
+    "closingNarrowStates": 2,
+    "totalCompletePictures": 64,
+    "allPersonallyInspected": true,
+    "finalBoundsPass": true
+  },
+  "honestProducerCounts": {
+    "published": 24,
+    "known": 26,
+    "whole": 33,
+    "publishedShortfall": 1
+  },
+  "existingBridges": [],
+  "sourceFlagsChanged": false,
+  "globalsEdited": false,
+  "sourceClosure": false,
+  "allBrowserServerJobsClosed": true,
+  "wholeUnchangedVisualizationCertification": false,
+  "sourceOnlyUnverifiedRuntimeNote": "Existing1.9 empty-map colour-count display formula appears to report1 instead of0; reported separately to parent, no runtime edit or empty-control certification here.",
+  "evidenceRoot": "/tmp/atlas-thermo-cplx-peer"
+}
