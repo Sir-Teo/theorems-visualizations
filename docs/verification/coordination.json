@@ -24,7 +24,7 @@
       "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
       "Latest fully passing immutable checkpoint12 remains 94a77908 (2,230 tests). New checkpoint13 d4bceece completes 2,232/2,233: one unchanged MATHBIO4.14 convergence assertion fails; isolated diagnostic passes but does not waive it. Strict/static/queue/prerequisite checks pass; independent diagnosis underway.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Single isolated light3840/DPR2 paired case on immutable f778d8eb passes all runner gates. All eight raw arrays exact, 7,493-event traces match, no late events/callbacks, original priority histories exact. Root rechecked all 998 checked pieces (1,041,265,381 bytes). Independent saved-evidence/pixel peer pending. All holds released. Dark mirror source-only preparation underway; no matrix/lifecycle/performance acceptance.",
+      "Single frozen light3840/DPR2 paired case f778d8eb independently accepted by87e95436; all actual optimized main RGBA, renderer histories/resources and DOM bounds pass. FontFace preparation-order difference retained. Six new explicit holds acknowledged; one source-reviewed dark mirror is running from immutable d05e26f1. No wider/current matrix/lifecycle/performance acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -32,8 +32,8 @@
     {
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
-      "status": "working",
-      "current": "Independent source/model/prepare peer of forthcoming exact dark mirror; no full execution.",
+      "status": "browser-heavy-hold",
+      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +42,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "available-hold-released",
-      "current": "Root single exact paired-map case finished; all root browser/server jobs closed and hold explicitly released.",
+      "status": "browser-heavy-hold",
+      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +52,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "available-hold-released",
-      "current": "Root single exact paired-map case finished; all root browser/server jobs closed and hold explicitly released.",
+      "status": "browser-heavy-hold",
+      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,8 +62,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "working",
-      "current": "Independent offline audit and personal pixel inspection of saved light paired-map case; no browser rerun.",
+      "status": "browser-heavy-hold",
+      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,8 +72,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "available-hold-released",
-      "current": "Root single exact paired-map case finished; all root browser/server jobs closed and hold explicitly released.",
+      "status": "browser-heavy-hold",
+      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,8 +82,8 @@
     {
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
-      "status": "working",
-      "current": "Prepare source-only single dark mirror; no full execution until separate peer/integration/root quiet authorization.",
+      "status": "browser-heavy-hold",
+      "current": "All browser/server/heavy jobs closed; second explicit hold active for root single dark mirror. Source/report reading only until release.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -3082,7 +3082,7 @@
     },
     {
       "candidate": "f778d8ebf95df00fb6c2bb4cb506dd37e2728312",
-      "status": "runner-pass-independent-raw-pixel-peer-pending",
+      "status": "accepted-single-frozen-light-paired-case",
       "report": "docs/verification/map-paired-selected-state-root.md",
       "evidence": "/tmp/atlas-root-paired-selected-state",
       "method": "One isolated light3840x2160/DPR2 case, frozen checkpoint5; six explicit browser/heavy holds. Fresh original then chunk, explicit one-shard missing-to-available readiness and actual-role font census. All 12 ordinals, exact original histories, resource and direct Canvas gates pass.",
@@ -3091,7 +3091,10 @@
       "transportBytes": 1041265381,
       "chunkLogicalRetainedBytes": 62471764,
       "chunkLogicalPeakBytes": 63895600,
-      "limitation": "One frozen input/history only. Old stopping attempts remain failures. Current atlas, wider matrix, lifecycle, physical memory, production and timing are not accepted. Root browser/server closed, all holds explicitly released."
+      "limitation": "One frozen input/history only. Old stopping attempts remain failures. Current atlas, wider matrix, lifecycle, physical memory, production and timing are not accepted. Root browser/server closed, all holds explicitly released.",
+      "peer": "87e95436986846a161f5c5acb9615eabdff37b9e",
+      "peerReport": "docs/verification/map-paired-selected-run-independent-imaging-peer.md",
+      "scope": "Independent998piece/8completeRGBA/21decodedPNG/7diffbuffer/7493renderertrace/447originalledger audit and27personallyinspectedcompleteimages pass. Each main frame uses117optimizedtilevisits/70nonemptychunks/112334indices withzerooriginalbinds. FontFace event66 ordering difference explicitly retained; within-context prefixes/quiet/tails pass unchanged gates. Exactlyonecase, notmatrix/lifecycle/currentdata/production/performance."
     }
   ],
   "accountingSafeguards": [
@@ -3197,5 +3200,14 @@
     "staticWarnings": 0,
     "prerequisiteShortfall": 0,
     "sourceQueue": 5
+  },
+  "mapLifecycleFindings": {
+    "status": "independently-accepted-negative-source-model-findings-only",
+    "commits": [
+      "6833fd9f404af5ac1ce4c4396814c708aaaccb1c",
+      "8be65ef2ec6fbb303fc43c8c02fcd9f6f61e9a2e"
+    ],
+    "report": "docs/verification/map-optional-lifetime-independent-peer.md",
+    "scope": "Actual private scene/chunk classes under deterministic recordingGL/Worker fixtures reproduce releaseGroup-only deleted-handle replay, free-map worker error redraw, and late rejection mutation after dispose/destroy. Negative safety assertions remain failing; stronger independent cleanup census passes. Root integrated negative peer reproduces four failures and proper cleanup. Private repair proposal e643 remains unused/unaccepted pending independent adverse-case review. No production bug or native lifecycle acceptance claimed."
   }
 }
