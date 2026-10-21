@@ -565,57 +565,308 @@ export default {
       ],
     },
     {
-      n: 12,
-      title: 'Randomized, online and streaming algorithms',
-      summary: String.raw`Coin flips buy simplicity and speed: Las Vegas algorithms are always right but have random running time, Monte Carlo algorithms run on schedule but may err, and repetition drives the error down exponentially. Shuffling, sampling, collision estimates, Karger’s contraction and Bloom filters illustrate the toolkit, and the tail bounds of Markov and Chernoff turn expectations into guarantees that hold with high probability. Online algorithms must act before seeing the future and are judged by their competitive ratio against an all-knowing optimum; streaming algorithms see data once and keep only a small sketch of it.`,
-      items: [
-        { num: '12.1', kind: 'Definition', name: 'Las Vegas and Monte Carlo algorithms', deps: ['algo-3.11'], refs: ['KT §13.3', 'Erickson notes: Nuts and Bolts'], tags: ['randomized'],
-          pic: 'Run randomized quicksort and a random-sampling majority test many times; one histogram shows random running time with always-correct output, the other fixed time with a measured error rate.' },
-        { num: '12.2', kind: 'Lemma', name: 'Amplification by independent repetition', deps: ['algo-12.1', 'pma-3.31'], refs: ['KT §13.2'], tags: ['randomized'],
-          pic: 'Slide the single-run success probability p and the number of repetitions k; the failure probability (1 − p)ᵏ is plotted under e^(−pk), showing that about (1/p) ln(1/δ) runs push it below δ.' },
-        { num: '12.3', kind: 'Algorithm', name: 'Fisher–Yates shuffle', deps: ['algo-3.3'], refs: ['CLRS 4e §5.3', 'Erickson notes: Discrete Probability'], tags: ['randomized', 'sampling'],
-          pic: 'Shuffle a four-element array thousands of times with Fisher–Yates and with the naive swap-with-anyone loop; the histogram over all 24 permutations is flat for the first and visibly lopsided for the second.' },
-        { num: '12.4', kind: 'Algorithm', name: 'Reservoir sampling', deps: ['algo-12.3'], refs: ['Erickson notes: Filtering and Streaming'], tags: ['randomized', 'streaming'],
-          pic: 'Items stream past a reservoir of size k, the t-th replacing a random slot with probability k/t; over many runs each stream position’s inclusion frequency settles at k/n.' },
-        { num: '12.5', kind: 'Theorem', name: 'Birthday paradox: collisions after about √n draws', deps: ['algo-3.3', 'pma-3.31'], refs: ['CLRS 4e §5.4'], tags: ['probability', 'hashing'],
-          pic: 'Throw keys into n slots one at a time; the probability of a first collision is plotted against the number thrown, crossing 1/2 near 1.18√n, with a live simulation overlaid.' },
-        { num: '12.6', kind: 'Theorem', name: 'Coupon collector: n Hₙ expected draws', deps: ['algo-1.14', 'algo-3.3', 'pma-3.26'], refs: ['CLRS 4e §5.4'], tags: ['probability'],
-          pic: 'Draw random coupons until all n types have appeared; the wait for each new type is a bar of expected height n/(n − i), and their sum tracks n Hₙ over many runs.' },
-        { num: '12.7', kind: 'Theorem', name: 'Random assignments satisfy 7/8 of 3-SAT clauses', deps: ['algo-3.3'], refs: ['KT §13.4'], tags: ['randomized', 'satisfiability'],
-          pic: 'Generate a random 3-CNF formula and flip random assignments: the satisfied fraction fluctuates around 7/8, and conditional expectations fix the variables one at a time without ever dropping below it.' },
-        { num: '12.8', kind: 'Algorithm', name: 'Karger’s contraction algorithm', deps: ['algo-8.1', 'algo-12.1'], refs: ['KT §13.2', 'Erickson notes: Randomized Minimum Cut'], tags: ['randomized', 'cuts'],
-          pic: 'Click Contract to merge the endpoints of a random edge; supernodes absorb vertices and keep parallel edges until two remain, and their crossing edges are compared with a true minimum cut.' },
-        { num: '12.9', kind: 'Theorem', name: 'Karger finds a min cut with probability ≥ 2/(n(n − 1))', deps: ['algo-12.8', 'algo-12.2'], refs: ['KT §13.2', 'Erickson notes: Randomized Minimum Cut'], tags: ['randomized', 'cuts'],
-          pic: 'Run thousands of contractions on an editable graph and plot the empirical success rate above the 1/C(n, 2) bound, along with the count of distinct minimum cuts, which never exceeds C(n, 2).' },
-        { num: '12.10', kind: 'Definition', name: 'Bloom filters', deps: ['algo-5.15'], refs: ['Erickson notes: Filtering and Streaming'], tags: ['hashing', 'streaming'],
-          pic: 'Insert words into a bit array where k hash functions each light a bit; query a word never inserted and see a false positive when all of its bits happen to be lit already.' },
-        { num: '12.11', kind: 'Theorem', name: 'Bloom filter false-positive rate and the best k', deps: ['algo-12.10', 'pma-3.31'], refs: ['Erickson notes: Filtering and Streaming'], tags: ['hashing'],
-          pic: 'Sliders for m, n and k plot the predicted rate (1 − e^(−kn/m))ᵏ with its minimum at k = (m/n) ln 2, overlaid with rates measured on random insertions.' },
-        { num: '12.12', kind: 'Algorithm', name: 'Count–min sketch', deps: ['algo-5.15', 'algo-12.2'], refs: ['Erickson notes: Filtering and Streaming'], tags: ['streaming', 'hashing'],
-          pic: 'A stream increments one counter in each row of a d × w array; querying an item takes the minimum of its d counters, and its overestimate is plotted against the εN bound for w = e/ε.' },
-        { num: '12.13', kind: 'Definition', name: 'Online algorithms and the competitive ratio', deps: ['algo-1.3'], refs: ['CLRS 4e Ch. 27'], tags: ['online'],
-          pic: 'Requests arrive one by one to an online algorithm while the offline optimum sees them all; the running cost ratio is plotted, and an adversary button builds the sequence that maximizes it.' },
-        { num: '12.14', kind: 'Theorem', name: 'Ski rental: the break-even rule is 2-competitive', deps: ['algo-12.13'], refs: ['CLRS 4e §27.1'], tags: ['online'],
-          pic: 'Choose the purchase price B and a renting threshold; the adversary picks the season length, and the worst-case ratio curve bottoms out at 2 − 1/B exactly when the threshold matches B.' },
-        { num: '12.15', kind: 'Theorem', name: 'Paging: LRU is k-competitive, the best deterministic ratio', deps: ['algo-12.13', 'algo-10.8'], refs: ['CLRS 4e §27.3'], tags: ['online', 'caching'],
-          pic: 'An adversary always requests the page the online rule just evicted; LRU’s misses are compared with the furthest-in-future count phase by phase, and their ratio approaches the cache size k.' },
-        { num: '12.16', kind: 'Theorem', name: 'Randomized marking for paging is O(log k)-competitive', deps: ['algo-12.15', 'algo-1.14'], refs: ['KT §13.8', 'CLRS 4e §27.3'], tags: ['online', 'randomized'],
-          pic: 'Pages are marked when requested and a uniformly random unmarked page is evicted; over adversarial phases the average miss count stays within about 2H_k times the optimum, far below k.' },
-        { num: '12.17', kind: 'Theorem', name: 'Markov’s inequality: from Las Vegas to Monte Carlo', deps: ['algo-12.1', 'algo-3.3'], refs: ['Erickson notes: Tail Inequalities', 'CLRS 4e App. C.3'], tags: ['probability', 'randomized'],
-          pic: 'A histogram of running times of a Las Vegas algorithm is cut at t times its mean; the mass beyond the cut stays below 1/t, so stopping at twice the mean and restarting fails with probability at most one half.' },
-        { num: '12.18', kind: 'Theorem', name: 'Chernoff bounds', deps: ['algo-12.17'], refs: ['KT §13.9', 'Erickson notes: Tail Inequalities'], tags: ['probability', 'randomized'],
-          pic: 'Sum n fair or biased coins many times; the empirical tail beyond (1 + δ)μ is plotted on a log scale beneath the Chernoff curve, which falls exponentially in μ while the Markov and Chebyshev bounds lag far above.' },
-        { num: '12.19', kind: 'Theorem', name: 'Balls into bins: maximum load Θ(log n / log log n)', deps: ['algo-12.18', 'algo-5.11'], refs: ['KT §13.10', 'Erickson notes: Hashing'], tags: ['probability', 'hashing'],
-          pic: 'Throw n balls into n bins and watch the fullest bin; over many trials its load tracks ln n / ln ln n, and a “two choices” toggle that places each ball in the emptier of two random bins flattens the maximum dramatically.' },
-        { num: '12.20', kind: 'Algorithm', name: 'Karger–Stein recursive contraction', deps: ['algo-12.9', 'algo-2.7'], refs: ['Erickson notes: Randomized Minimum Cut'], tags: ['randomized', 'cuts'],
-          pic: 'Contract down to n/√2 vertices, branch into two independent copies and recurse; the recursion tree shows survival probabilities per level, and the overall success rate stays near 1/log n instead of 1/n².' },
-        { num: '12.21', kind: 'Algorithm', name: 'Estimating distinct elements (Flajolet–Martin)', deps: ['algo-5.15', 'algo-12.2'], refs: ['Erickson notes: Filtering and Streaming'], tags: ['streaming', 'hashing'],
-          pic: 'Each stream item is hashed and the largest number of trailing zeros seen so far is kept; the estimate 2^z jumps around the true count, and taking the median of several independent copies pulls it into a narrow band.' },
-        { num: '12.22', kind: 'Theorem', name: 'Move-to-front is 4-competitive for list access', deps: ['algo-12.13', 'algo-6.4'], refs: ['CLRS 4e §27.2'], tags: ['online', 'amortized'],
-          pic: 'Requests to a linked list are served by move-to-front and by an offline optimum; the potential (twice the number of pairs the two lists order differently) is drawn as a bar that pays for every expensive access, keeping the ratio under 4 (and under 2 in Sleator and Tarjan’s cost model).' },
-        { num: '12.23', kind: 'Algorithm', name: 'Weighted majority (multiplicative weights)', deps: ['algo-12.13'], refs: ['CLRS 4e §33.2'], tags: ['online', 'learning'],
-          pic: 'A panel of experts predicts a sequence of outcomes; each wrong expert’s weight is halved, the weighted vote is plotted, and its mistake count stays below about 2.41 times the best expert’s plus a log₂ n term.' },
-      ],
+      "n": 12,
+      "title": "Randomized, online and streaming algorithms",
+      "summary": "Random choices can simplify computation, but their guarantees depend on what is random, independent and fixed in advance. Exact small choice spaces accompany seeded experiments. Online costs are compared with an offline optimum under the same rules, while streaming sketches trade memory for explicitly scoped error.",
+      "items": [
+        {
+          "num": "12.1",
+          "kind": "Definition",
+          "name": "Las Vegas and Monte Carlo algorithms",
+          "deps": [
+            "algo-3.11"
+          ],
+          "refs": [
+            "Erickson, Nuts and Bolts §2.2–2.3: internal randomness and worst-case expected time",
+            "Erickson, Filtering and Streaming introduction: correctness/time tradeoff"
+          ],
+          "pic": "Change population size, number of ones and the seed. Compare actual randomized quicksort comparison counts with the fixed one-query classifier's observed errors and exact error probability. Seeded experiments illustrate ideal independent choices."
+        },
+        {
+          "num": "12.2",
+          "kind": "Lemma",
+          "name": "Amplification by independent repetition",
+          "deps": [
+            "algo-12.1"
+          ],
+          "refs": [
+            "Erickson, Randomized Minimum Cut §13.3: independent amplification; elementary logarithm inequality derived here"
+          ],
+          "pic": "Edit the per-trial success percentage and trial count. Compare the exact independent failure law with its exponential upper bound, including zero trials and impossible/certain single-run success."
+        },
+        {
+          "num": "12.3",
+          "kind": "Algorithm",
+          "name": "Fisher–Yates shuffle",
+          "deps": [
+            "algo-3.3"
+          ],
+          "refs": [
+            "Erickson, Discrete Probability §1.6 pp13–15; SelectionShuffle (Durstenfeld form) and naive-shuffle exercise"
+          ],
+          "pic": "Choose four or five entries and step through actual swaps. Compare complete choice-path laws for Fisher–Yates and the naive loop, with a seeded sample histogram. Every ideal outcome has a calculable probability."
+        },
+        {
+          "num": "12.4",
+          "kind": "Algorithm",
+          "name": "Reservoir sampling",
+          "deps": [
+            "algo-12.3"
+          ],
+          "refs": [
+            "Khan, Randomized Algorithms §9.2.2 pp35–37; full subset induction supplied here",
+            "Erickson, Filtering and Streaming exercise1"
+          ],
+          "pic": "Edit stream length, reservoir capacity and seed. Follow replacements and compare repeated inclusion frequencies with the correct short-stream or k/n law. Positions remain distinct even when stream values could repeat."
+        },
+        {
+          "num": "12.5",
+          "kind": "Theorem",
+          "name": "Birthday paradox: collisions after about √n draws",
+          "deps": [
+            "algo-3.3"
+          ],
+          "refs": [
+            "CLRS 4e §5.4: bibliographic background, book body not consulted; direct conditional-product and logarithm proof supplied here"
+          ],
+          "pic": "Choose a slot count and number of draws. Inspect actual occupied slots and compare empirical collisions, the exact product and its exponential approximation; zero and too-many-draw cases remain explicit."
+        },
+        {
+          "num": "12.6",
+          "kind": "Theorem",
+          "name": "Coupon collector: n Hₙ expected draws",
+          "deps": [
+            "algo-1.14",
+            "algo-3.3",
+            "pma-3.26"
+          ],
+          "refs": [
+            "Erickson, Discrete Probability §1.5 pp11–13: complete coupon-collector calculation"
+          ],
+          "pic": "Step through one actual collection and its waiting phases. Compare completed-run counts and censoring with the exact expected waiting bars and nHₙ. Change the number of equally likely types and the seed."
+        },
+        {
+          "num": "12.7",
+          "kind": "Theorem",
+          "name": "Random assignments satisfy 7/8 of 3-SAT clauses",
+          "deps": [
+            "algo-3.3"
+          ],
+          "refs": [
+            "Khan, Randomized Algorithms §6–6.1 pp23–25; distinct-variable hypotheses corrected explicitly"
+          ],
+          "pic": "Step through conditional expectations on an actual generated formula. Compare all assignments with the initial mean and the final deterministic assignment. Switch to repeated literals to break the 7/8 hypothesis while keeping the computation honest."
+        },
+        {
+          "num": "12.8",
+          "kind": "Algorithm",
+          "name": "Karger’s contraction algorithm",
+          "deps": [
+            "algo-8.1",
+            "algo-12.1"
+          ],
+          "refs": [
+            "CMU 15-859(M), Lecture5 (2004), pp1–2; Erickson, Randomized Minimum Cut §13.2"
+          ],
+          "pic": "Edit positive integer edge multiplicities and move vertices, then step through actual weighted random contractions. Compare the candidate with exhaustive cuts on the same small graph. Disconnected input is reported separately."
+        },
+        {
+          "num": "12.9",
+          "kind": "Theorem",
+          "name": "Karger finds a min cut with probability ≥ 2/(n(n − 1))",
+          "deps": [
+            "algo-12.8",
+            "algo-12.2"
+          ],
+          "refs": [
+            "CMU 15-859(M), Lecture5 (2004), pp1–2: favorite-cut survival and cut counting"
+          ],
+          "pic": "Change graph multiplicities and inspect exhaustive minimum cuts, actual contraction successes and the fixed-cut lower bound. The empirical whole-algorithm success probability may be higher. Zero-cut inputs visibly disable the positive-cut guarantee."
+        },
+        {
+          "num": "12.10",
+          "kind": "Definition",
+          "name": "Bloom filters",
+          "deps": [
+            "algo-5.15"
+          ],
+          "refs": [
+            "Erickson, Filtering and Streaming §6.1 pp1–2: bit invariant and ideal-hash assumptions"
+          ],
+          "pic": "Insert and query finite keys in a seeded fixed hash table. Step through the actual addressed bits, distinguish a true member from a false positive and inspect the no-false-negative invariant. This finite seeded trace is not a universal-family probability proof."
+        },
+        {
+          "num": "12.11",
+          "kind": "Theorem",
+          "name": "Bloom filter false-positive rate and the best k",
+          "deps": [
+            "algo-12.10"
+          ],
+          "refs": [
+            "Bose et al., On the false-positive rate of Bloom filters, author preprint (2004), pp1–3: corrected exact occupancy calculation",
+            "Erickson, Filtering and Streaming §6.2: approximate optimum, explicit dependence footnote"
+          ],
+          "pic": "Compare the exact occupancy recurrence, Poisson approximation and actual random-filter samples as m, n and k vary. The exact finite optimum and approximate real optimum are labelled separately, including the empty-filter case."
+        },
+        {
+          "num": "12.12",
+          "kind": "Algorithm",
+          "name": "Count–min sketch",
+          "deps": [
+            "algo-5.15",
+            "algo-3.3",
+            "algo-12.17",
+            "algo-12.2"
+          ],
+          "refs": [
+            "Erickson, Filtering and Streaming §6.4 pp3–4: full point-query proof; binary affine family derived here"
+          ],
+          "pic": "Edit a nonnegative stream and a queried key. Inspect the actual counter table and row estimates. Width is 2ˢ, with ε=e/2ˢ and δ=e⁻ᵈ; a seeded trace represents a member of the explicitly proved affine family."
+        },
+        {
+          "num": "12.13",
+          "kind": "Definition",
+          "name": "Online algorithms and the competitive ratio",
+          "deps": [
+            "algo-1.3"
+          ],
+          "refs": [
+            "CMU 15-451 (2022), Lecture20, Online Algorithms: competitive analysis and adversaries"
+          ],
+          "pic": "Compare actual online cache costs with exact finite offline optimization, including prefixes with OPT=0. The declared initial full caches agree; the request seed is fixed independently of a randomized policy's eviction seed."
+        },
+        {
+          "num": "12.14",
+          "kind": "Theorem",
+          "name": "Ski rental: the break-even rule is 2-competitive",
+          "deps": [
+            "algo-12.13"
+          ],
+          "refs": [
+            "CMU 15-451 (2022), Lecture20, ski-rental theorem; discrete-day lower bound supplied here"
+          ],
+          "pic": "Edit the purchase price and buy day. Plot the actual finite-season ratio and the exact worst-season formula; the optimum buy day B reaches 2−1/B. A zero-length season is excluded from cost ratios."
+        },
+        {
+          "num": "12.15",
+          "kind": "Theorem",
+          "name": "Paging: LRU is k-competitive, the best deterministic ratio",
+          "deps": [
+            "algo-12.13",
+            "algo-10.8"
+          ],
+          "refs": [
+            "Sleator–Tarjan (1985), Amortized efficiency of list update and paging rules, paging section; rank-potential proof supplied here"
+          ],
+          "pic": "Compare actual LRU with farthest-in-future and an independent finite cache-state DP. Change the fixed request sequence and cache size. Short prefixes and zero optimum cost are handled without fabricated ratios."
+        },
+        {
+          "num": "12.16",
+          "kind": "Theorem",
+          "name": "Randomized marking for paging is O(log k)-competitive",
+          "deps": [
+            "algo-12.15",
+            "algo-1.14"
+          ],
+          "refs": [
+            "CMU 15-451 (2022), Lecture20: marking definition and special k+1-page analysis; full clean/stale phase proof supplied here"
+          ],
+          "pic": "Use a fixed request stream with independent eviction seeds. Compare actual marking traces and repeated costs with LRU, exact OPT and 2Hₖ OPT+k. Phase marks and clean-page counts are computed from requests, not invented success curves."
+        },
+        {
+          "num": "12.17",
+          "kind": "Theorem",
+          "name": "Markov’s inequality: from Las Vegas to Monte Carlo",
+          "deps": [
+            "algo-12.1",
+            "algo-3.3"
+          ],
+          "refs": [
+            "Erickson, Tail Inequalities §4.1 pp1–2; geometric-tail example derived here"
+          ],
+          "pic": "Edit the success probability, cap multiple and restart count. Compare actual geometric runtime samples, its exact tail and Markov's certified bound. The displayed mean 1/p comes from the probability model; empirical means are labelled separately."
+        },
+        {
+          "num": "12.18",
+          "kind": "Theorem",
+          "name": "Chernoff bounds",
+          "deps": [
+            "algo-12.17"
+          ],
+          "refs": [
+            "Erickson, Tail Inequalities: exponential moments and Chernoff bounds; CMU 15-859(M) Lecture9 (2004), pp2–3; displayed source typos not copied"
+          ],
+          "pic": "Edit the integer event X≥k directly, avoiding a rounded ceiling of a near-integer real threshold. Compare the computed distribution tail, Markov, actual-variance Chebyshev and the independent Chernoff bound. A dependence switch visibly breaks its hypothesis."
+        },
+        {
+          "num": "12.19",
+          "kind": "Theorem",
+          "name": "Balls into bins: maximum load Θ(log n / log log n)",
+          "deps": [
+            "algo-12.18",
+            "algo-5.11",
+            "algo-3.3",
+            "prob-1.6.13"
+          ],
+          "refs": [
+            "Erickson, Hashing §5.6 pp9–10: upper bound and lower-order claim; Poissonized lower proof supplied here",
+            "CMU 15-859(M) Lecture10 (2004): separate two-choice model"
+          ],
+          "pic": "Step through actual one-choice or two-choice allocations. Inspect their computed maximum loads and a rigorous finite one-choice union bound. The logarithmic scale reference is only shown where defined and is labelled asymptotic, not an exact finite prediction."
+        },
+        {
+          "num": "12.20",
+          "kind": "Algorithm",
+          "name": "Karger–Stein recursive contraction",
+          "deps": [
+            "algo-12.9",
+            "algo-2.7"
+          ],
+          "refs": [
+            "CMU 15-859(M), Lecture5 (2004), recursive contraction; rounding and two-independent-branch lower-bound induction supplied here",
+            "Erickson, Randomized Minimum Cut: distinct four-branch exposition, not the exact variant implemented here"
+          ],
+          "pic": "Inspect an actual recursive contraction tree, its rounded target sizes and independently computed exact minimum cut. Separate the valid per-branch survival bound from observed successes. A disconnected zero-cut case does not use the positive-cut survival theorem."
+        },
+        {
+          "num": "12.21",
+          "kind": "Algorithm",
+          "name": "Estimating distinct elements (Flajolet–Martin)",
+          "deps": [
+            "algo-5.15",
+            "prob-2.2.1"
+          ],
+          "refs": [
+            "Flajolet–Martin (1985), Probabilistic counting algorithms for data base applications, actual pp185–186 and196: COUNT and direct averaging; pp193–199 asymptotic analysis/stated calibration"
+          ],
+          "pic": "Vary stream length, duplicate frequency and number of independent bitmaps. Inspect the actual first-zero positions and running estimates against exact distinct counts. Empty input explicitly returns zero; 32-bit all-zero hashes and bitmap saturation are reported as finite-hash limitations."
+        },
+        {
+          "num": "12.22",
+          "kind": "Theorem",
+          "name": "Move-to-front is 4-competitive for list access",
+          "deps": [
+            "algo-12.13",
+            "algo-6.4"
+          ],
+          "refs": [
+            "Sleator–Tarjan (1985), actual pp203–205: paid/free exchange models and inversion potential; direct gross4 proof supplied here"
+          ],
+          "pic": "Compare actual move-to-front with exact small-list offline optimization under the selected cost model. Step through accesses, costs and inversion potentials. Switching gross/free rules changes both policies' accounting consistently; OPT=0 is never divided by."
+        },
+        {
+          "num": "12.23",
+          "kind": "Algorithm",
+          "name": "Weighted majority (multiplicative weights)",
+          "deps": [
+            "algo-12.13"
+          ],
+          "refs": [
+            "Littlestone–Warmuth, The Weighted Majority Algorithm, revised technical report (1992), actual §2 pp7–8, Theorem2.1 and Corollary2.1; not a claim of reading the1994 publisher version"
+          ],
+          "pic": "Edit the expert pool, label seed and horizon. Step through actual predictions and halved weights, comparing learner mistakes, best expert and the proved bound. These are generated finite sequences; the theorem itself is adversarial and deterministic."
+        }
+      ]
     },
     {
       n: 13,
