@@ -1,0 +1,64 @@
+{
+  "baselineCommit": "f778d8ebf95df00fb6c2bb4cb506dd37e2728312",
+  "baselinePath": "tests/map-paired-guarded-oracle.mjs",
+  "baselineSHA256": "3237accd494cb914cc2767c206a8beb33572e3aa336435507d05d8a25e23d540",
+  "candidatePath": "tests/map-current-light-oracle.mjs",
+  "candidateSHA256": "0d9842b4115474a18f2ba4c9fbfc9eecb393483121b3ce622b131524b6c36b3b",
+  "exceptions": [
+    {
+      "before": "import{pairedFixture}from'../scripts/lib/map-paired-guarded-fixture.mjs';",
+      "after": "import{currentAtlasFixture,manifestSHA256,sha}from'../scripts/lib/map-current-atlas-fixture.mjs';import{currentLightMode,currentLightBoundary,createCurrentLightServer}from'../scripts/lib/map-current-light-boundary.mjs';import{fileURLToPath}from'node:url';",
+      "reason": "Use separately pinned current fixture and boundary; add pinned comparator root resolution."
+    },
+    {
+      "before": "const out=process.env.MAP_PAIRED_OUTPUT||'/tmp/atlas-map-paired-prepared',fixture=await pairedFixture(process.env.MAP_PAIRED_ROOT);await fsp.mkdir(out,{recursive:true});",
+      "after": "const mode=currentLightMode(process.argv.slice(2)),out=process.env.MAP_CURRENT_LIGHT_OUTPUT?path.resolve(process.env.MAP_CURRENT_LIGHT_OUTPUT):await fsp.mkdtemp('/tmp/atlas-current-light-prepared-'),fixture=await currentAtlasFixture();await fsp.mkdir(out,{recursive:true});assert.deepEqual(await fsp.readdir(out),[],'unique empty current-light output required');",
+      "reason": "Exact new flag parser, distinct output env, fresh default, unique-output check and fixed checkpoint12 artifact."
+    },
+    {
+      "before": "description:'Prepared independently reset original/chunk guarded exact-state oracle; not run without later root authorization',hashes:fixture.hashes,",
+      "after": "description:'CURRENT LIGHT proposal: SOURCE/MODEL/PREPARE only until separate authorization; actual current output UNKNOWN',provenance:{dataCommit:fixture.pins.dataCommit,dataRoot:fixture.pins.dataRoot,supportSourceCommit:fixture.pins.supportSourceCommit,manifestSHA256},hashes:Object.fromEntries([...fixture.files].map(([p,b])=>[p,sha(b)])),supportFiles:fixture.pins.supportFiles,referenceFiles:fixture.pins.referenceFiles,",
+      "reason": "Explicit artifact/support provenance, full pinned source hashes; no historical pixel expectation."
+    },
+    {
+      "before": "expectedLoaded:{nodes:13574,edges:23364}",
+      "after": "expectedLoaded:{nodes:13574,edges:23955}",
+      "reason": "Current actual deps+pdeps catalog count only; no other geometry/cap/ordinal change."
+    },
+    {
+      "before": "if(!process.argv.includes('--root-authorized-exact-state')){console.log('Prepared sources/manifest only; no browser launched. Immutable independent peer and later root authorization required.');process.exit(0);}",
+      "after": "if(mode==='PREPARE'){console.log('Prepared current-light sources only; no browser/server/full-map/timing. '+JSON.stringify({output:out}));process.exit(0);}",
+      "reason": "Distinct exact current-light authorization; default remains PREPARE, independently reviewable without launch/listen."
+    },
+    {
+      "before": "const{createServer}=await import(new URL('scripts/serve.mjs',fixture.root)),server=createServer(),serve=server.listeners('request')[0],transfers=[];",
+      "after": "const pinned=currentLightBoundary(fixture),server=createCurrentLightServer(pinned),serve=server.listeners('request')[0],transfers=[];",
+      "reason": "Pinned-only server replaces mutable-host fallback; raw transport wrapper remains otherwise exact."
+    },
+    {
+      "before": "try{const file=path.join(out,m[1],m[2]),",
+      "after": "try{pinned.assertRawRequest(req,m[1]);const file=path.join(out,m[1],m[2]),",
+      "reason": "Raw transport additionally requires active variant and exact loopback Host; existing offsets/length/SHA/write gates unchanged."
+    },
+    {
+      "before": "await fixture.route(page,variant);",
+      "after": "await pinned.route(page,variant,`http://127.0.0.1:${server.address().port}`);",
+      "reason": "Real unchanged request URLs continue to exact pinned HTTP server; reject external/unlisted requests before network."
+    },
+    {
+      "before": "{cwd:process.cwd()}",
+      "after": "{cwd:fileURLToPath(new URL('../',import.meta.url))}",
+      "reason": "Run the byte-pinned unchanged DOM comparator from the checked support root, not an arbitrary working directory."
+    },
+    {
+      "before": "await new Promise(r=>server.listen(0,'127.0.0.1',r));const results=",
+      "after": "await new Promise(r=>server.listen(0,'127.0.0.1',r));pinned.setOrigin(`http://127.0.0.1:${server.address().port}`);const results=",
+      "reason": "Initialize exact ephemeral origin before any browser/Worker can request pinned bytes."
+    },
+    {
+      "before": "try{for(const variant of['original','chunk']){const dir=",
+      "after": "try{for(const variant of['original','chunk']){pinned.setVariant(variant);const dir=",
+      "reason": "Select each variant before its fresh browser launches; Worker requests reach the same complete pinned HTTP tree."
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+// Child PREPARE probe only: never import Playwright; replace its bare import with a launch blocker.
+import fs from 'node:fs';import http from 'node:http';import net from 'node:net';import {registerHooks,syncBuiltinESMExports} from 'node:module';
+const counts=globalThis.__currentLightBlocked={serverCreate:0,listen:0,launch:0,network:0};
+http.createServer=()=>{counts.serverCreate++;throw Error('BLOCKED server creation in PREPARE');};net.Server.prototype.listen=function(){counts.listen++;throw Error('BLOCKED listen in PREPARE');};net.Socket.prototype.connect=function(){counts.network++;throw Error('BLOCKED network in PREPARE');};globalThis.fetch=async()=>{counts.network++;throw Error('BLOCKED Fetch in PREPARE');};syncBuiltinESMExports();
+registerHooks({resolve(specifier,context,next){if(specifier==='playwright-core')return{url:'data:text/javascript,'+encodeURIComponent("export const chromium={async launch(){globalThis.__currentLightBlocked.launch++;throw Error('BLOCKED browser launch in PREPARE')}};"),shortCircuit:true};return next(specifier,context);}});
+process.on('exit',code=>{fs.writeFileSync(process.env.MAP_CURRENT_LIGHT_BLOCKER_RECORD,JSON.stringify({counts,exitCode:code,argv:process.argv.slice(2),browserModuleReplaced:true})+'\n');});

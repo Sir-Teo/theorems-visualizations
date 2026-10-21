@@ -1,0 +1,448 @@
+{
+  "scope": "SOURCE/MODEL/PREPARE only; no full flag/browser/server/listen/network/map/Worker/timing execution",
+  "preparationCommit": "20ff60a1b9150310c80354c17d8fdb69c96f525a",
+  "baselineRunnerCommit": "f778d8ebf95df00fb6c2bb4cb506dd37e2728312",
+  "supportSourceCommit": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+  "dataCommit": "94a77908068d8c6a3be5fbe10808d0910195facf",
+  "sourceFilesSHA256": {
+    "scripts/lib/map-current-light-boundary.mjs": "0b47c8da2fb2680727198914e8452760c88781d2023f63d0560d9a47ae979f19",
+    "tests/map-current-light-oracle.mjs": "0d9842b4115474a18f2ba4c9fbfc9eecb393483121b3ce622b131524b6c36b3b",
+    "tests/map-current-light-oracle-reconstruction.json": "04f8a18f59e1f24c7bab97f2b97b863ba4fe1017d1656f08ead176cd2d8f1ec0",
+    "tests/map-current-light-execution-blocker.mjs": "bdcc03ab7515b299113f2e3adb3aa12b18d75e91a2fcfcd5be1af6a97f1de15a",
+    "tests/map-current-light-proposal.mjs": "21cdb88fd770c65f7ad54b1c121059e1a790e1ae5b4a0f13a77d1c6ce21f47ba"
+  },
+  "rawEvidence": {
+    "path": "/tmp/atlas-new-arch-source/current-light-proposal/final/proposal.json",
+    "sha256": "a6e62ce15797e5616b4702404d5828e97cd5cffe30b52b91a7641c7fed333780"
+  },
+  "results": {
+    "baselineSHA256": "3237accd494cb914cc2767c206a8beb33572e3aa336435507d05d8a25e23d540",
+    "candidateSHA256": "0d9842b4115474a18f2ba4c9fbfc9eecb393483121b3ce622b131524b6c36b3b",
+    "literalExceptions": 11,
+    "rebuiltAndReversedExactly": true,
+    "exactFlagParsedOnlyNeverExecuted": "--root-authorized-current-light-state",
+    "allPinnedGetPaths": {
+      "original": 2188,
+      "chunk": 2188
+    },
+    "requests": [
+      {
+        "method": "GET",
+        "url": "/",
+        "status": 200,
+        "headers": {
+          "content-type": "text/html; charset=utf-8",
+          "content-length": "3739",
+          "cache-control": "no-store"
+        },
+        "bytes": 3739,
+        "sha256": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb"
+      },
+      {
+        "method": "GET",
+        "url": "/data/index.json",
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "2311429",
+          "cache-control": "no-store"
+        },
+        "bytes": 2311429,
+        "sha256": "0b32cdf702f2b2d9fab0d55d9f50975742beeebc14e5a29cfa56c69cd236dd3a"
+      },
+      {
+        "method": "GET",
+        "url": "/data/col/ladr.json",
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "116559",
+          "cache-control": "no-store"
+        },
+        "bytes": 116559,
+        "sha256": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab"
+      },
+      {
+        "method": "GET",
+        "url": "/assets/js/app.js",
+        "status": 200,
+        "headers": {
+          "content-type": "application/javascript; charset=utf-8",
+          "content-length": "84566",
+          "cache-control": "no-store"
+        },
+        "bytes": 84566,
+        "sha256": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d"
+      },
+      {
+        "method": "GET",
+        "url": "/assets/js/map-scene-worker.js",
+        "status": 200,
+        "headers": {
+          "content-type": "application/javascript; charset=utf-8",
+          "content-length": "571",
+          "cache-control": "no-store"
+        },
+        "bytes": 571,
+        "sha256": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009"
+      },
+      {
+        "method": "GET",
+        "url": "/assets/js/map-scene-model.js",
+        "status": 200,
+        "headers": {
+          "content-type": "application/javascript; charset=utf-8",
+          "content-length": "5225",
+          "cache-control": "no-store"
+        },
+        "bytes": 5225,
+        "sha256": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af"
+      },
+      {
+        "method": "GET",
+        "url": "/scripts/lib/map-paired-selected-shard.mjs",
+        "status": 200,
+        "headers": {
+          "content-type": "application/javascript; charset=utf-8",
+          "content-length": "10972",
+          "cache-control": "no-store"
+        },
+        "bytes": 10972,
+        "sha256": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152"
+      },
+      {
+        "method": "GET",
+        "url": "/assets/css/style.css",
+        "status": 200,
+        "headers": {
+          "content-type": "text/css; charset=utf-8",
+          "content-length": "58915",
+          "cache-control": "no-store"
+        },
+        "bytes": 58915,
+        "sha256": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8"
+      },
+      {
+        "method": "GET",
+        "url": "/assets/favicon.svg",
+        "status": 200,
+        "headers": {
+          "content-type": "image/svg+xml",
+          "content-length": "461",
+          "cache-control": "no-store"
+        },
+        "bytes": 461,
+        "sha256": "3bbe95a694fd2d6ed6ec71879086e1d2149749629ba7e8bfffbbad0edbbde882"
+      },
+      {
+        "method": "GET",
+        "url": "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2",
+        "status": 200,
+        "headers": {
+          "content-type": "font/woff2",
+          "content-length": "18744",
+          "cache-control": "no-store"
+        },
+        "bytes": 18744,
+        "sha256": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6"
+      },
+      {
+        "method": "HEAD",
+        "url": "/data/index.json",
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "2311429",
+          "cache-control": "no-store"
+        },
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "method": "GET",
+        "url": "/not-pinned",
+        "status": 404,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/node_modules/playwright-core/index.js",
+        "status": 404,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/scripts/serve.mjs",
+        "status": 404,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/../index.html",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/assets/../index.html",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/data/index.json?cache=1",
+        "status": 400,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/%69ndex.html",
+        "status": 404,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "POST",
+        "url": "/data/index.json",
+        "status": 405,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      },
+      {
+        "method": "GET",
+        "url": "/",
+        "status": 421,
+        "headers": {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store"
+        },
+        "bytes": 37,
+        "sha256": "0459c749a6971ca9069c682f4ca7657188e4f65e9f4dc1fed981e5119883b0a5"
+      }
+    ],
+    "browserRouteModel": [
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:43210/data/col/ladr.json",
+        "result": "continue"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:43210/__paired/original/A0.rgba/0",
+        "result": "continue"
+      },
+      {
+        "method": "GET",
+        "url": "https://external.invalid/",
+        "result": "abort"
+      }
+    ],
+    "childPrepareProbes": [
+      {
+        "name": "prepare",
+        "args": [],
+        "stdout": "Prepared current-light sources only; no browser/server/full-map/timing. {\"output\":\"/tmp/atlas-new-arch-source/current-light-proposal/final/prepare-prepared\"}\n",
+        "failure": null,
+        "blocked": {
+          "counts": {
+            "serverCreate": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          },
+          "exitCode": 0,
+          "argv": [],
+          "browserModuleReplaced": true
+        }
+      },
+      {
+        "name": "nonempty",
+        "args": [],
+        "stdout": "Prepared current-light sources only; no browser/server/full-map/timing. {\"output\":\"/tmp/atlas-new-arch-source/current-light-proposal/final/nonempty-prepared\"}\n",
+        "failure": null,
+        "blocked": {
+          "counts": {
+            "serverCreate": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          },
+          "exitCode": 0,
+          "argv": [],
+          "browserModuleReplaced": true
+        }
+      },
+      {
+        "name": "nonempty-reuse",
+        "args": [],
+        "stdout": "",
+        "failure": {
+          "status": 1,
+          "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: unique empty current-light output required\n+ actual - expected\n\n+ [\n+   'marker',\n+   'prepared.json'\n+ ]\n- []\n\n    at file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/tests/map-current-light-oracle.mjs:3:281 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [ 'marker', 'prepared.json' ],\n  expected: [],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.8.2\n"
+        },
+        "blocked": {
+          "counts": {
+            "serverCreate": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          },
+          "exitCode": 1,
+          "argv": [],
+          "browserModuleReplaced": true
+        }
+      },
+      {
+        "name": "lookalike-0",
+        "args": [
+          "--root-authorized-exact-state"
+        ],
+        "stdout": "",
+        "failure": {
+          "status": 1,
+          "stderr": "file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/scripts/lib/map-current-light-boundary.mjs:4\nexport function currentLightMode(args){if(args.length===0)return'PREPARE';if(args.length===1&&args[0]===CURRENT_LIGHT_FLAG)return'EXECUTE';throw Error('current-light: only the exact separately authorized current-light flag is recognized');}\n                                                                                                                                                 ^\n\nError: current-light: only the exact separately authorized current-light flag is recognized\n    at currentLightMode (file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/scripts/lib/map-current-light-boundary.mjs:4:146)\n    at file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/tests/map-current-light-oracle.mjs:3:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+        },
+        "blocked": {
+          "counts": {
+            "serverCreate": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          },
+          "exitCode": 1,
+          "argv": [
+            "--root-authorized-exact-state"
+          ],
+          "browserModuleReplaced": true
+        }
+      },
+      {
+        "name": "lookalike-1",
+        "args": [
+          "--root-authorized-current-light-state=1"
+        ],
+        "stdout": "",
+        "failure": {
+          "status": 1,
+          "stderr": "file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/scripts/lib/map-current-light-boundary.mjs:4\nexport function currentLightMode(args){if(args.length===0)return'PREPARE';if(args.length===1&&args[0]===CURRENT_LIGHT_FLAG)return'EXECUTE';throw Error('current-light: only the exact separately authorized current-light flag is recognized');}\n                                                                                                                                                 ^\n\nError: current-light: only the exact separately authorized current-light flag is recognized\n    at currentLightMode (file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/scripts/lib/map-current-light-boundary.mjs:4:146)\n    at file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/tests/map-current-light-oracle.mjs:3:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+        },
+        "blocked": {
+          "counts": {
+            "serverCreate": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          },
+          "exitCode": 1,
+          "argv": [
+            "--root-authorized-current-light-state=1"
+          ],
+          "browserModuleReplaced": true
+        }
+      },
+      {
+        "name": "lookalike-2",
+        "args": [
+          "--root-authorized-current-light-state "
+        ],
+        "stdout": "",
+        "failure": {
+          "status": 1,
+          "stderr": "file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/scripts/lib/map-current-light-boundary.mjs:4\nexport function currentLightMode(args){if(args.length===0)return'PREPARE';if(args.length===1&&args[0]===CURRENT_LIGHT_FLAG)return'EXECUTE';throw Error('current-light: only the exact separately authorized current-light flag is recognized');}\n                                                                                                                                                 ^\n\nError: current-light: only the exact separately authorized current-light flag is recognized\n    at currentLightMode (file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/scripts/lib/map-current-light-boundary.mjs:4:146)\n    at file:///private/tmp/atlas-new-arch-source/current-atlas-case/source-base/tests/map-current-light-oracle.mjs:3:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.8.2\n"
+        },
+        "blocked": {
+          "counts": {
+            "serverCreate": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          },
+          "exitCode": 1,
+          "argv": [
+            "--root-authorized-current-light-state "
+          ],
+          "browserModuleReplaced": true
+        }
+      },
+      {
+        "name": "default-0",
+        "args": [],
+        "stdout": "Prepared current-light sources only; no browser/server/full-map/timing. {\"output\":\"/tmp/atlas-current-light-prepared-1p0xk9\"}\n",
+        "failure": null,
+        "blocked": {
+          "counts": {
+            "serverCreate": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          },
+          "exitCode": 0,
+          "argv": [],
+          "browserModuleReplaced": true
+        }
+      },
+      {
+        "name": "default-1",
+        "args": [],
+        "stdout": "Prepared current-light sources only; no browser/server/full-map/timing. {\"output\":\"/tmp/atlas-current-light-prepared-mseorJ\"}\n",
+        "failure": null,
+        "blocked": {
+          "counts": {
+            "serverCreate": 0,
+            "listen": 0,
+            "launch": 0,
+            "network": 0
+          },
+          "exitCode": 0,
+          "argv": [],
+          "browserModuleReplaced": true
+        }
+      }
+    ],
+    "defaultFreshOutputs": [
+      "/tmp/atlas-current-light-prepared-1p0xk9",
+      "/tmp/atlas-current-light-prepared-mseorJ"
+    ],
+    "browserExecuted": false,
+    "fullFlagExecuted": false,
+    "renderOutput": "UNKNOWN"
+  }
+}
