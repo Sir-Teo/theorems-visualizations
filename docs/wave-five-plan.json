@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 551,
-    "remaining": 480,
-    "writtenChapters": 44,
+    "written": 586,
+    "remaining": 445,
+    "writtenChapters": 46,
     "chapters": [
       {
         "collection": "ode",
@@ -17829,10 +17829,29 @@
         "collection": "nt",
         "chapter": 5,
         "total": 18,
-        "written": 0,
-        "remaining": 18,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 18,
+        "remaining": 0,
+        "writtenItems": [
+          "nt-5.1",
+          "nt-5.2",
+          "nt-5.3",
+          "nt-5.4",
+          "nt-5.5",
+          "nt-5.6",
+          "nt-5.7",
+          "nt-5.8",
+          "nt-5.9",
+          "nt-5.10",
+          "nt-5.11",
+          "nt-5.12",
+          "nt-5.13",
+          "nt-5.14",
+          "nt-5.15",
+          "nt-5.16",
+          "nt-5.17",
+          "nt-5.18"
+        ],
+        "status": "written"
       },
       {
         "collection": "logic",
@@ -18103,10 +18122,28 @@
         "collection": "waves",
         "chapter": 5,
         "total": 17,
-        "written": 0,
-        "remaining": 17,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 17,
+        "remaining": 0,
+        "writtenItems": [
+          "waves-5.1",
+          "waves-5.2",
+          "waves-5.3",
+          "waves-5.4",
+          "waves-5.5",
+          "waves-5.6",
+          "waves-5.7",
+          "waves-5.8",
+          "waves-5.9",
+          "waves-5.10",
+          "waves-5.11",
+          "waves-5.12",
+          "waves-5.13",
+          "waves-5.14",
+          "waves-5.15",
+          "waves-5.16",
+          "waves-5.17"
+        ],
+        "status": "written"
       },
       {
         "collection": "thermo",
