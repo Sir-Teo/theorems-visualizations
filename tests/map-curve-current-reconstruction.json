@@ -1,0 +1,44 @@
+{
+  "baselineCommit": "8a0f9ed9042ac03b0d4fe226c9f6b35a73576a19",
+  "baselinePath": "tests/map-current-light-oracle.mjs",
+  "baselineSHA256": "0d9842b4115474a18f2ba4c9fbfc9eecb393483121b3ce622b131524b6c36b3b",
+  "candidatePath": "tests/map-curve-current-oracle.mjs",
+  "candidateSHA256": "41874db761a1514e71a2335eac3354d406bbbc2b74d2a2f856610dccea632128",
+  "exceptions": [
+    {
+      "before": "import{currentAtlasFixture,manifestSHA256,sha}from'../scripts/lib/map-current-atlas-fixture.mjs';",
+      "after": "import{curveCurrentFixture as currentAtlasFixture,manifestSHA256,sha}from'../scripts/lib/map-curve-current-fixture.mjs';",
+      "reason": "Use separately closed curve fixture with pinned f8eb source; old fixture unchanged."
+    },
+    {
+      "before": "import{currentLightMode,currentLightBoundary,createCurrentLightServer}from'../scripts/lib/map-current-light-boundary.mjs';",
+      "after": "import{currentLightMode,currentLightBoundary,createCurrentLightServer}from'../scripts/lib/map-curve-current-boundary.mjs';import{requireCurveSubmissions}from'../scripts/lib/map-curve-current-accounting.mjs';",
+      "reason": "New exact flag parser; unchanged HTTP boundary reexport; explicit positive submission gate."
+    },
+    {
+      "before": "process.env.MAP_CURRENT_LIGHT_OUTPUT?path.resolve(process.env.MAP_CURRENT_LIGHT_OUTPUT):await fsp.mkdtemp('/tmp/atlas-current-light-prepared-')",
+      "after": "process.env.MAP_CURVE_CURRENT_OUTPUT?path.resolve(process.env.MAP_CURVE_CURRENT_OUTPUT):await fsp.mkdtemp('/tmp/atlas-curve-current-prepared-')",
+      "reason": "New output identity and unique default; empty-output gate unchanged."
+    },
+    {
+      "before": "description:'CURRENT LIGHT proposal: SOURCE/MODEL/PREPARE only until separate authorization; actual current output UNKNOWN',provenance:{dataCommit:fixture.pins.dataCommit,dataRoot:fixture.pins.dataRoot,supportSourceCommit:fixture.pins.supportSourceCommit,manifestSHA256}",
+      "after": "description:'CURVE CURRENT LIGHT proposal: source/model/PREPARE only; native output UNKNOWN; healthy scene callbacks unchanged',provenance:{dataCommit:fixture.pins.dataCommit,dataRoot:fixture.pins.dataRoot,supportSourceCommit:fixture.pins.supportSourceCommit,manifestSHA256,curveCommit:fixture.curvePins.curveCommit,curveSourceFiles:fixture.curvePins.sourceFiles,curveSourceTransforms:fixture.sourceTransforms,stylePathPremise:fixture.curvePins.stylePathPremise}",
+      "reason": "Honest curve source/classifier/component and style/path premise provenance."
+    },
+    {
+      "before": "Prepared current-light sources only; no browser/server/full-map/timing.",
+      "after": "Prepared curve current-light sources only; no browser/server/full-map/timing.",
+      "reason": "Distinct PREPARE description only."
+    },
+    {
+      "before": "['packed-xy-and-bookkeeping','fixed-cpu-gpu-scratch']",
+      "after": "['curve-bounds-and-mapping','fixed-cpu-gpu-scratch']",
+      "reason": "Permit only the curve metadata owner and unchanged scratch; no hidden XY owner."
+    },
+    {
+      "before": "assert.ok(results.variants[variant].direct.mean<2&&results.variants[variant].direct.changed<.02,'existing direct-Canvas bound');}",
+      "after": "assert.ok(results.variants[variant].direct.mean<2&&results.variants[variant].direct.changed<.02,'existing direct-Canvas bound');if(variant==='chunk'){const main=meta.frames.filter(f=>/^A[0-3]$/.test(f.label));results.variants[variant].curveSubmissionEvidence=main.map(f=>({label:f.label,before:f.before.stats,after:f.after.stats}));await fsp.writeFile(path.join(out,'curve-pending-submission-gates.json'),JSON.stringify(results,null,2));assert.deepEqual(main.map(f=>f.label),['A0','A1','A2','A3']);for(const frame of main)requireCurveSubmissions(frame);}}",
+      "reason": "After all raw/direct evidence and inherited local gates, require clean nonempty actual per-A0\u2013A3 chunk/index submission deltas. All-fallback fails this new gate."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "protocol": "curve current light private source/model/PREPARE only",
+  "curveCommit": "f8eb0b366bb98ff906315469f9cc022089f73465",
+  "baseCurrentCommit": "d7d07ed84da592a04c8c038ffc405d5b5607bfc0",
+  "dataCommit": "94a77908068d8c6a3be5fbe10808d0910195facf",
+  "expectedLoaded": {
+    "nodes": 13574,
+    "edges": 23955
+  },
+  "sourceFiles": {
+    "scripts/lib/map-curve-current-accounting.mjs": {
+      "bytes": 3661,
+      "sha256": "a106d7906618ca2b4686df181b4f768559f9112eb02a03c9706e324ecff8e741"
+    },
+    "scripts/lib/map-curve-current-sources.mjs": {
+      "bytes": 2801,
+      "sha256": "65b5bbcca7984ae64e937d141697c2f91999e4d46c486da2eea446973091fe78"
+    },
+    "scripts/lib/map-curve-current-boundary.mjs": {
+      "bytes": 498,
+      "sha256": "4e58283da815715a91a15a924dbc0c31848318fd6aad0d725355566da794001f"
+    },
+    "scripts/lib/map-current-atlas-fixture.mjs": {
+      "bytes": 7910,
+      "sha256": "6ece94324d18fcab675fd233137106797c235e67b753428060a056cf4e7e1e1f"
+    },
+    "tests/map-current-atlas-checkpoint12-manifest.json": {
+      "bytes": 328895,
+      "sha256": "f142f4c464998520b45476d94432ee3c21ad7ad532f100fd9ed3c3499b2b01f3"
+    },
+    "scripts/lib/map-current-light-boundary.mjs": {
+      "bytes": 4007,
+      "sha256": "0b47c8da2fb2680727198914e8452760c88781d2023f63d0560d9a47ae979f19"
+    },
+    "tests/map-current-light-oracle.mjs": {
+      "bytes": 14929,
+      "sha256": "0d9842b4115474a18f2ba4c9fbfc9eecb393483121b3ce622b131524b6c36b3b"
+    },
+    "scripts/lib/map-curve-bounds-runtime.mjs": {
+      "bytes": 8054,
+      "sha256": "00bdd96fd63de01b9921b489e1a8995340e88b6034ee2b75fa94fce901b14ee2"
+    },
+    "scripts/lib/map-curve-bounds-math.mjs": {
+      "bytes": 5696,
+      "sha256": "1c646d5bb385e26cfaad198f0f04c2940d9a1990aa25ad27c25ddb7f8ea462ea"
+    },
+    "tests/verification-map-optional-recording-gl.mjs": {
+      "bytes": 2647,
+      "sha256": "99401ee76ca65b3a915e2282de5cdddf4dcc3fc8a56286db9bbac91bd7fbcb71"
+    }
+  },
+  "browserFiles": [
+    "scripts/lib/map-curve-bounds-runtime.mjs",
+    "scripts/lib/map-curve-bounds-math.mjs",
+    "scripts/lib/map-curve-current-accounting.mjs"
+  ],
+  "stylePathPremise": "Closed-world no-writer premise only: no same-count style-ID mutation or in-place path-coordinate mutation within union. Writer audit583599479a0b0fd358c8702d79159bc0137bc8d2 and independent curve source/model peer3d066200b130903cf6f4625d158d5b3676dd4df9 support exact pinned original/f8 sources; this integration adds no such writer. Deliberately injected same-count ID failures remain unsupported, preserved limits; no mutation resilience or native claim.",
+  "writerAudit": "583599479a0b0fd358c8702d79159bc0137bc8d2",
+  "curveIndependentSourceModelPeer": "3d066200b130903cf6f4625d158d5b3676dd4df9"
+}
