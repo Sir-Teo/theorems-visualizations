@@ -1,0 +1,935 @@
+{
+  "snapshot": "d4bceeceeb2dee2d197c974133327f8d4993bb67",
+  "scope": "MATHBIO4.14 diagnostic only; checkpoint13 remains failed; no assertion/model change/fullsuite/browser",
+  "environment": {
+    "arch": "arm64",
+    "platform": "darwin",
+    "versions": {
+      "node": "26.8.2",
+      "acorn": "8.18.0",
+      "ada": "4.0.0",
+      "amaro": "1.1.11",
+      "ares": "1.34.8",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.3",
+      "libffi": "3.8.0",
+      "llhttp": "9.4.3",
+      "merve": "1.2.2",
+      "modules": "147",
+      "napi": "10",
+      "nbytes": "0.1.4",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.70.0",
+      "nghttp3": "",
+      "ngtcp2": "",
+      "openssl": "3.6.5",
+      "simdjson": "4.6.11",
+      "simdutf": "7.7.0",
+      "sqlite": "3.53.4",
+      "tz": "2026a",
+      "undici": "8.10.2",
+      "unicode": "17.0",
+      "uv": "1.52.1",
+      "uvwasi": "0.0.23",
+      "v8": "14.6.202.34-node.28",
+      "zlib": "1.2.12",
+      "zstd": "1.5.7"
+    }
+  },
+  "sourceBefore": {
+    "tests/verification-mathbio-source-audit-age.test.mjs": "0d11ad82d82f6884100454fcdfbf67b694b41761c8593b1cfbe6712bf540795e",
+    "content/mathbio/ch01-b.js": "b925721f07322f893335fbb4fb0e52ac67f64e3af76e9bedc0b612a2206e379a",
+    "content/mathbio/ch01.js": "e987bc96b7e87588f3ad555420453a9dce291a68154e7469302436a3c3a6d79f",
+    "content/mathbio/ch01.shared.js": "f00778cf5a7f22c1781e8771c69d3a0aeaccb1b5251257cde4a83e55f3e51c57",
+    "content/mathbio/ch02-b.js": "baa2e107ec0271fdb0c0ce6cf5e854160c1a48f5db8d2100b99a7e7d12018668",
+    "content/mathbio/ch02-papers.js": "9cfb07b0ecf883d5a3e678231d8b19e7527c9d84e5f1a16119dec6bdc17631cf",
+    "content/mathbio/ch02.js": "9077608f3faf6b9721ccae3e22e25f35ae384c9861bd9936fb2f41eb301c34ff",
+    "content/mathbio/ch02.shared.js": "fb31dd5c9eb548fa24a7895b1cdffc6b218842824cd477b802fe84fb62e14b77",
+    "content/mathbio/ch03-b.js": "6cd817c63ec4f8942127ac24209efcf1fbd5fd61b54ee9bbd7546cad957f93e9",
+    "content/mathbio/ch03-c.js": "9318546a3fd8f467286098db46733634460e41030fb7f49e9fbdc9be37540455",
+    "content/mathbio/ch03-d.js": "0e2ffd5758dbd1581cafad3d342feca2802e7f8828cc482c9803d9ec81d48eb1",
+    "content/mathbio/ch03.js": "40a739a7d41f63f71894e3a5569b514f37d91acd01d32fd8bc3d48d8367432da",
+    "content/mathbio/ch03.shared.js": "75aaa17d30e42cbc4ae8f021f3b76af68ea25fcc778a41de7bd27fa7ac42b9dc",
+    "content/mathbio/ch04-b.js": "6102401e7edbae04abb90f796371456985b9c30cf7fe10f829254b4c5136afe8",
+    "content/mathbio/ch04.js": "9dd31ca47ea4b3d4e84882d311f2e621c353e1eef574f52a1bd9ce5a386dd0dc",
+    "content/mathbio/ch04.shared.js": "5e8e8167185a0bf60cc985dfa4c5190693c0302b070ec13ceafb31d7604dc5d7",
+    "content/mathbio/ch07-papers.js": "5a3b35e0df7b98374a00b92b3b9781ac922acf882361ab59c3d88fe55ce18bd8",
+    "content/mathbio/collection.js": "271bdb4f75ad7c68c63e735350c5daa817e6b5f0451e854bd6f2c4fff4404b34",
+    "content/mathbio/mathbio-source-audit-age.js": "09bf13ef0f6449ec3aaf462aad88177a51a1690f1b90feada0cc2435cee5b19a",
+    "content/mathbio/mathbio-source-audit-competition.js": "9ef757046928c3d9560d26bfc775e7eaf24d070784ce9dd70bd3ba9ed1530cb9",
+    "content/mathbio/mathbio-source-audit-kolmogorov.js": "3895651b030a3a5ee9309474fbcefd4513389166fd35afa7d872a1e36b8dc6cd",
+    "content/mathbio/mathbio-source-audit-lotka.js": "38bf9ab0d9c012a6d6e7b36970084c40a73a05b9536d5be7f6b8b8838a7a081a",
+    "content/mathbio/mathbio-source-audit-predator.js": "246176a23e37127427b22b819da08b082b0e531a81286e476365ffb47560d86e",
+    "content/mathbio/syllabus.js": "f34af782ddbb302c0cab86d9b6ad9c261c1125ce0ae1ffb6df14d20a08b20647"
+  },
+  "sourceAfter": {
+    "tests/verification-mathbio-source-audit-age.test.mjs": "0d11ad82d82f6884100454fcdfbf67b694b41761c8593b1cfbe6712bf540795e",
+    "content/mathbio/ch01-b.js": "b925721f07322f893335fbb4fb0e52ac67f64e3af76e9bedc0b612a2206e379a",
+    "content/mathbio/ch01.js": "e987bc96b7e87588f3ad555420453a9dce291a68154e7469302436a3c3a6d79f",
+    "content/mathbio/ch01.shared.js": "f00778cf5a7f22c1781e8771c69d3a0aeaccb1b5251257cde4a83e55f3e51c57",
+    "content/mathbio/ch02-b.js": "baa2e107ec0271fdb0c0ce6cf5e854160c1a48f5db8d2100b99a7e7d12018668",
+    "content/mathbio/ch02-papers.js": "9cfb07b0ecf883d5a3e678231d8b19e7527c9d84e5f1a16119dec6bdc17631cf",
+    "content/mathbio/ch02.js": "9077608f3faf6b9721ccae3e22e25f35ae384c9861bd9936fb2f41eb301c34ff",
+    "content/mathbio/ch02.shared.js": "fb31dd5c9eb548fa24a7895b1cdffc6b218842824cd477b802fe84fb62e14b77",
+    "content/mathbio/ch03-b.js": "6cd817c63ec4f8942127ac24209efcf1fbd5fd61b54ee9bbd7546cad957f93e9",
+    "content/mathbio/ch03-c.js": "9318546a3fd8f467286098db46733634460e41030fb7f49e9fbdc9be37540455",
+    "content/mathbio/ch03-d.js": "0e2ffd5758dbd1581cafad3d342feca2802e7f8828cc482c9803d9ec81d48eb1",
+    "content/mathbio/ch03.js": "40a739a7d41f63f71894e3a5569b514f37d91acd01d32fd8bc3d48d8367432da",
+    "content/mathbio/ch03.shared.js": "75aaa17d30e42cbc4ae8f021f3b76af68ea25fcc778a41de7bd27fa7ac42b9dc",
+    "content/mathbio/ch04-b.js": "6102401e7edbae04abb90f796371456985b9c30cf7fe10f829254b4c5136afe8",
+    "content/mathbio/ch04.js": "9dd31ca47ea4b3d4e84882d311f2e621c353e1eef574f52a1bd9ce5a386dd0dc",
+    "content/mathbio/ch04.shared.js": "5e8e8167185a0bf60cc985dfa4c5190693c0302b070ec13ceafb31d7604dc5d7",
+    "content/mathbio/ch07-papers.js": "5a3b35e0df7b98374a00b92b3b9781ac922acf882361ab59c3d88fe55ce18bd8",
+    "content/mathbio/collection.js": "271bdb4f75ad7c68c63e735350c5daa817e6b5f0451e854bd6f2c4fff4404b34",
+    "content/mathbio/mathbio-source-audit-age.js": "09bf13ef0f6449ec3aaf462aad88177a51a1690f1b90feada0cc2435cee5b19a",
+    "content/mathbio/mathbio-source-audit-competition.js": "9ef757046928c3d9560d26bfc775e7eaf24d070784ce9dd70bd3ba9ed1530cb9",
+    "content/mathbio/mathbio-source-audit-kolmogorov.js": "3895651b030a3a5ee9309474fbcefd4513389166fd35afa7d872a1e36b8dc6cd",
+    "content/mathbio/mathbio-source-audit-lotka.js": "38bf9ab0d9c012a6d6e7b36970084c40a73a05b9536d5be7f6b8b8838a7a081a",
+    "content/mathbio/mathbio-source-audit-predator.js": "246176a23e37127427b22b819da08b082b0e531a81286e476365ffb47560d86e",
+    "content/mathbio/syllabus.js": "f34af782ddbb302c0cab86d9b6ad9c261c1125ce0ae1ffb6df14d20a08b20647"
+  },
+  "sourceUnchanged": true,
+  "runs": [
+    {
+      "cohort": "run-1",
+      "id": "exact-default-0",
+      "status": 0,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-default-1",
+      "status": 1,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-default-2",
+      "status": 0,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-default-3",
+      "status": 0,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-no-maglev-0",
+      "status": 0,
+      "args": [
+        "--no-maglev",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-no-maglev-1",
+      "status": 0,
+      "args": [
+        "--no-maglev",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-jitless-0",
+      "status": 0,
+      "args": [
+        "--jitless",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-jitless-1",
+      "status": 0,
+      "args": [
+        "--jitless",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-no-turbofan-0",
+      "status": 0,
+      "args": [
+        "--no-turbofan",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-no-turbofan-1",
+      "status": 0,
+      "args": [
+        "--no-turbofan",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-stress-maglev-0",
+      "status": 0,
+      "args": [
+        "--stress-maglev",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "exact-stress-maglev-1",
+      "status": 0,
+      "args": [
+        "--stress-maglev",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "observed-default",
+      "status": 0,
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "observed-no-maglev",
+      "status": 0,
+      "args": [
+        "--no-maglev",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-1",
+      "id": "observed-jitless",
+      "status": 0,
+      "args": [
+        "--jitless",
+        "--test",
+        "--test-concurrency=1",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "observed-default-0",
+      "status": 0,
+      "args": [
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "observed-default-1",
+      "status": 0,
+      "args": [
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "observed-default-2",
+      "status": 0,
+      "args": [
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "observed-default-3",
+      "status": 0,
+      "args": [
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "observed-default-4",
+      "status": 0,
+      "args": [
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "observed-default-5",
+      "status": 0,
+      "args": [
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "observed-default-6",
+      "status": 0,
+      "args": [
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "observed-default-7",
+      "status": 0,
+      "args": [
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-2",
+      "id": "inspector-exact-0",
+      "status": 1,
+      "args": [
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-3",
+      "id": "inspector-grid-0",
+      "status": 0,
+      "args": [
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-3",
+      "id": "inspector-grid-1",
+      "status": 0,
+      "args": [
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-3",
+      "id": "inspector-grid-2",
+      "status": 0,
+      "args": [
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-3",
+      "id": "inspector-grid-3",
+      "status": 0,
+      "args": [
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-3",
+      "id": "inspector-grid-4",
+      "status": 0,
+      "args": [
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-3",
+      "id": "inspector-grid-5",
+      "status": 0,
+      "args": [
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-4",
+      "id": "trace-default",
+      "status": 0,
+      "args": [
+        "--trace-opt",
+        "--trace-deopt",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-4",
+      "id": "trace-serial-compile",
+      "status": 0,
+      "args": [
+        "--trace-opt",
+        "--trace-deopt",
+        "--no-concurrent-recompilation",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-4",
+      "id": "inspector-stress-maglev-0",
+      "status": 0,
+      "args": [
+        "--stress-maglev",
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-4",
+      "id": "inspector-stress-maglev-1",
+      "status": 0,
+      "args": [
+        "--stress-maglev",
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-4",
+      "id": "inspector-stress-maglev-2",
+      "status": 0,
+      "args": [
+        "--stress-maglev",
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-4",
+      "id": "inspector-stress-maglev-3",
+      "status": 0,
+      "args": [
+        "--stress-maglev",
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-4",
+      "id": "inspector-stress-maglev-4",
+      "status": 0,
+      "args": [
+        "--stress-maglev",
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "run-4",
+      "id": "inspector-stress-maglev-5",
+      "status": 0,
+      "args": [
+        "--stress-maglev",
+        "--import",
+        "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations/tests/verification-mathbio-age-inspector.mjs",
+        "--test",
+        "/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs"
+      ]
+    },
+    {
+      "cohort": "initial-wrapper-smoke",
+      "id": "locals-initial",
+      "status": 0,
+      "scope": "assert.ok preload smoke, no failure and no numerical capture; separate observer history"
+    }
+  ],
+  "counts": {
+    "totalChildProcesses": 39,
+    "nonInspectorExactFileRuns": 14,
+    "nonInspectorExactFileFailures": 1,
+    "pauseOnExceptionExactFileRuns": 13,
+    "pauseOnExceptionFailures": 1,
+    "assertWrapperSmokePasses": 1,
+    "consoleObservedCopies": 11,
+    "consoleObservedFailures": 0
+  },
+  "failingObservedLocals": [
+    {
+      "url": "file:///private/tmp/atlas-new-mathbio-age-diagnostic/source/tests/verification-mathbio-source-audit-age.test.mjs",
+      "location": {
+        "scriptId": "127",
+        "lineNumber": 12,
+        "columnNumber": 568
+      },
+      "functionName": "",
+      "error": null,
+      "result": {
+        "result": {
+          "type": "string",
+          "value": "{\"b\":0.3,\"exact\":-0.09142626272540091,\"rates\":[-0.09142629277251813,-0.09142629277251813,-0.09142627024681257],\"errors\":[3.004711721099618e-8,3.004711721099618e-8,7.521411660160737e-9]}"
+        }
+      }
+    }
+  ],
+  "normalObservedValues": [
+    {
+      "b": 0.3,
+      "exact": -0.09142626272540091,
+      "referenceResidual": 2.220446049250313e-16,
+      "lo": -0.09142626272540091,
+      "hi": -0.0914262627254009,
+      "rates": [
+        -0.09142638230130595,
+        -0.09142629277251813,
+        -0.09142627024681257
+      ],
+      "errors": [
+        1.1957590503874904e-07,
+        3.004711721099618e-08,
+        7.521411660160737e-09
+      ],
+      "ratios": [
+        3.9796132254241185,
+        3.994877367256621
+      ]
+    },
+    {
+      "b": 1,
+      "exact": 0.16015987007817295,
+      "referenceResidual": 2.220446049250313e-16,
+      "lo": 0.16015987007817295,
+      "hi": 0.16015987007817298,
+      "rates": [
+        0.1601594719955574,
+        0.16015977013195565,
+        0.16015984506489045
+      ],
+      "errors": [
+        3.9808261553808677e-07,
+        9.99462173023602e-08,
+        2.501328250081869e-08
+      ],
+      "ratios": [
+        3.9829683031804564,
+        3.9957257628657468
+      ]
+    },
+    {
+      "b": 2,
+      "exact": 0.31393061496663677,
+      "referenceResidual": -1.1102230246251565e-16,
+      "lo": 0.3139306149666367,
+      "hi": 0.31393061496663677,
+      "rates": [
+        0.31392981939832376,
+        0.3139304153208703,
+        0.3139305650079024
+      ],
+      "errors": [
+        7.955683130056457e-07,
+        1.996457664743545e-07,
+        4.995873437163567e-08
+      ],
+      "ratios": [
+        3.9848994900066685,
+        3.996213454672791
+      ]
+    }
+  ],
+  "rawRoot": "/tmp/atlas-new-mathbio-age-diagnostic",
+  "artifacts": [
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/environment.json",
+      "bytes": 543,
+      "sha256": "200745edf9b90c9f7e1dd1517f1c5538ba9ab25287751769f462d985456395cc"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/failure-locals.mjs",
+      "bytes": 1172,
+      "sha256": "92a5a7c243ee33d0a110547cc016809918c46fa86fbe8f08b4b76c72393d61a6"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/locals-initial.log",
+      "bytes": 1046,
+      "sha256": "a4b69be00cb1e9f277c97ce875cc38aefafe584d75b88e8143a995a5eb8fdc96"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/observer-final.mjs",
+      "bytes": 2164,
+      "sha256": "2d44b67200f84a4b972a45655f02b8a205525ae43796e654d36e6ad74fb2c272"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/observer-run2-reconstructed.mjs",
+      "bytes": 1896,
+      "sha256": "6ea6a12802df36b4718880b4551f86d8ba2a67660692399779b5515aa6c6cc0d"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-default-0.log",
+      "bytes": 1049,
+      "sha256": "9a9410e93ce3d18c787c10162e3e966d6db275186bc9985ba893d2009605258a"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-default-1.log",
+      "bytes": 2079,
+      "sha256": "880749ee4e4dabfb36082227126024ee6ae915ddb0393531266bd51ca6dea198"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-default-2.log",
+      "bytes": 1047,
+      "sha256": "c957155ce5315e737746576d982f231ba8350a1fa5c3a54c4692b1bf2edf669b"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-default-3.log",
+      "bytes": 1048,
+      "sha256": "e1c689eac8aa8e04476c58ac3bc1127a1de02a6e5a85100e0c9e7c16fe28d2df"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-jitless-0.log",
+      "bytes": 1055,
+      "sha256": "9d02203b4780774596e8f05105a8bc6392f51948fce6fbe3b44992ef0860470b"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-jitless-1.log",
+      "bytes": 1053,
+      "sha256": "4e5013ff0bf4c29f18c30cec99c06ddbf1743aee4b465b84bf6cd6647296be0b"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-no-maglev-0.log",
+      "bytes": 1049,
+      "sha256": "cebd2cc9cf18f83692bc478f4a9684516366887cb2cd8bdd3525c51e45e1451f"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-no-maglev-1.log",
+      "bytes": 1046,
+      "sha256": "7583de64f45428171d27f5a5f36d2d7ac4b9109c1fe8932abead22bdbad2965d"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-no-turbofan-0.log",
+      "bytes": 1051,
+      "sha256": "4e83e8ed8f63d607edfc6fdf9623d15a250e0a4b2a4bf2de668fa9434fc6513f"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-no-turbofan-1.log",
+      "bytes": 1050,
+      "sha256": "e3702af85784d5e165d70a23da25156e1f1e37ccb26bcc2a9c4fc32677dd8295"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-stress-maglev-0.log",
+      "bytes": 1051,
+      "sha256": "283d8a3a359216f53504671a4308755c442a2b2fb7fc925ac9ebbb3bcb633c7a"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/exact-stress-maglev-1.log",
+      "bytes": 1049,
+      "sha256": "cb55b15736113b9393cc42e746e10a3cc51447e332923261f596ca69f46a6201"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-default.log",
+      "bytes": 2062,
+      "sha256": "2fac806b0d1f505b9d3748bfd86664fe662f384805c6126f8ed721539ac54b3d"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-jitless.log",
+      "bytes": 2063,
+      "sha256": "7b00369991c1a5621761fc7d312c2896614a3f99c6ffe0101f661627cd0bf341"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-no-maglev.log",
+      "bytes": 2063,
+      "sha256": "153ec247244e5268ed1bed53567b8be14520a69343e026b2085bba7f40cc920a"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/observed-test.mjs",
+      "bytes": 5452,
+      "sha256": "03e2a6c986f2d9c6305f5b7c9a0415dddd0401eb3ddeee700e9dc36be8623f80"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/progress.json",
+      "bytes": 16575,
+      "sha256": "42e3f78778f1dfb3038dcd69591fdaba4e42eeb14991bdf8ed6479e480338d6e"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/results.json",
+      "bytes": 19257,
+      "sha256": "042db08e0dbd923dc9ab9b79dbfac30362513a025999f8b9cdf9d366aea6f16c"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1/start.json",
+      "bytes": 3146,
+      "sha256": "a1548d371204376d7601d208586e8c50f9ceee23ced989b6b21d17a4bf6730f3"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-1.log",
+      "bytes": 67,
+      "sha256": "814a003f8a5198062912c2a8ba8b2e5216e12e3e1c460148ee1ddd3533e5dc11"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/inspector-exact-0/3199.json",
+      "bytes": 3469,
+      "sha256": "2cb53c592d781a48f46fcf6eba2effdb4a018b803d1ef4285b771cb2b480ba30"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/inspector-exact-0.log",
+      "bytes": 2078,
+      "sha256": "662697abfb3cf5a279845f37be3f89b3581a46a02bcaf2b2eed5927d0a5c5b8c"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/observed-default-0.log",
+      "bytes": 2062,
+      "sha256": "ba1d4f38ed920cfa09eaa8602e6bb87095efde4e50c05bf94a376d428b4c51d8"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/observed-default-1.log",
+      "bytes": 2062,
+      "sha256": "63ac6eb605c01a6e965bec7563f0f033fb85b03634d26b67b5c12fee5fba6205"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/observed-default-2.log",
+      "bytes": 2060,
+      "sha256": "c394962e3491f750c05085ad3804b0767ca53220d49e93cd83de5b321f2c596b"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/observed-default-3.log",
+      "bytes": 2062,
+      "sha256": "0287188e460f450fe688f9a632ca123bdd0837ca423e44416cfd98a5b0766b53"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/observed-default-4.log",
+      "bytes": 2063,
+      "sha256": "9f7abbb454eb3c5c414fb2e919c440a3041c0057a998ee52c18b44ed2dd773e9"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/observed-default-5.log",
+      "bytes": 2061,
+      "sha256": "78c3898f03a4ae8424ab08fbcc33e64e5caef6af5edc1bfa0eed11f4859d84e7"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/observed-default-6.log",
+      "bytes": 2062,
+      "sha256": "e72d8ba1ec8c8997123859ee95da953af9dd2346939fdc1bbe39926a8aff9be6"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/observed-default-7.log",
+      "bytes": 2060,
+      "sha256": "e2d81cd33e4b2777711dae38c95e3b32cf5a08220d5dfc26f75f0c5505a3bd21"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-2/progress.json",
+      "bytes": 18536,
+      "sha256": "8e19ebac8a5e4b615d637efde58e31556a82cd93d8360d40651dc8edad5206e3"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-0/3644.json",
+      "bytes": 1854,
+      "sha256": "02857ce242759a27d91f8c2b163c4b8d1a64021d002b5102f9def1c5d90cdb94"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-0.log",
+      "bytes": 1046,
+      "sha256": "b8a96c8f04086ac4bea3660c1b133d18a920ef87e84a9b2a2d64b0f2012272cb"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-1/3646.json",
+      "bytes": 1854,
+      "sha256": "f1159b90c8ca3a46af22bea2941f9c7fd1ae6bf3d4673b5dfcc6706737c771e5"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-1.log",
+      "bytes": 1049,
+      "sha256": "348a5139ef8f525aef6b17c3b83b1fd5c4ea95675b55c6a07ddb9b3412cef4da"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-2/3648.json",
+      "bytes": 1854,
+      "sha256": "40911cd7a86b6ddeaa8524dacc590fbd90457f8dacd01cebcdb4480517c7d80a"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-2.log",
+      "bytes": 1047,
+      "sha256": "fcb3d8a6d1d381734e0fb9837025c192bad29e8d1ea780ac5c654da9258c19af"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-3/3652.json",
+      "bytes": 1854,
+      "sha256": "e2a0fe0553873674405cd51f3ea5a049eed61461fb5e358d72785699b00c47f5"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-3.log",
+      "bytes": 1047,
+      "sha256": "14ede6eb03935e36baae0a04343cf818c24f9fc01e31fa8ee0ed41234deaca98"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-4/3654.json",
+      "bytes": 1854,
+      "sha256": "8a99976f6ca96002077617d53388639717facdc44f300facce8dc2b4611cd5df"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-4.log",
+      "bytes": 1045,
+      "sha256": "2bbc2db11c71ce5639390c695cf6e39fb5d59e698cccb548ad421374e004a961"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-5/3656.json",
+      "bytes": 1854,
+      "sha256": "23f5b3e2988ce2839f0d407cf1799e3070baa69a10b5e502e6046f6cc06f15ac"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/inspector-grid-5.log",
+      "bytes": 1049,
+      "sha256": "fabb176345855c62c4555df8bf471596bfe089ea5598ebca8f16d297de7f3a28"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-3/results.json",
+      "bytes": 14990,
+      "sha256": "f28d5f610641a96c0d0567753828e9c9af30cbe10d25190f489b930dd0113fba"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-0/3910.json",
+      "bytes": 1877,
+      "sha256": "a4d785e5fe013d561df2ea4f28e4e7d80eb76704958ffc997a14f0fb2709bfbb"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-0.log",
+      "bytes": 1050,
+      "sha256": "4b3eb55c311dc710154f6af290fa72f2a8b6e172f2201b9d7958874718da17ec"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-1/3912.json",
+      "bytes": 1877,
+      "sha256": "32a71499000544563abd951f7629580680e0fa6d7a640ca2f620ed735d055890"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-1.log",
+      "bytes": 1044,
+      "sha256": "64ac81d86145484779507c7762d83973378a99153e3b790c0490b1f9171d0054"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-2/3930.json",
+      "bytes": 1877,
+      "sha256": "2c0373687fcc35c72442658a939efb90d68668c9caa4565666ebdbd4b73a167b"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-2.log",
+      "bytes": 1048,
+      "sha256": "fb861f53c9c7f02532d2b28b0403907eeedce9a9a557e1d728535c7e5b36baf1"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-3/3932.json",
+      "bytes": 1877,
+      "sha256": "3e472072875fa6d86c0e45e6afeadaa4936f6c7729bce2bce9a09e09a003121f"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-3.log",
+      "bytes": 1048,
+      "sha256": "97b8c78436875ee16eed7c3fbd73f62b1679a6f117a021bb7a8f1f034bb08b1f"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-4/3934.json",
+      "bytes": 1877,
+      "sha256": "e3d1151d9f63f490615266154ac7b17de1ba0ad49665e8f61be27eb7856f9d3e"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-4.log",
+      "bytes": 1049,
+      "sha256": "d82698cf8cef752fe740b664e5295169d74d49efb7d3592880240d44523c3595"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-5/3941.json",
+      "bytes": 1877,
+      "sha256": "6ecb7b82d61d003319c48c52326aee0c1d4add1ee674b3b0fa1a268527382e79"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/inspector-stress-maglev-5.log",
+      "bytes": 1048,
+      "sha256": "d2b801990a9ff5690f9d9fb7d67b6ed09aa307fbe6945bc6598a52c9adc06a74"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/results.json",
+      "bytes": 17441,
+      "sha256": "af9964ed8082d520b76a9ee55e38f396801091e70175a9804bc749894ca2dff9"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/trace-default.log",
+      "bytes": 137305,
+      "sha256": "3ae5bf81872b4b7441940db29a6f0d296e4cc133630fdf0187d2cc30b7107bed"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/run-4/trace-serial-compile.log",
+      "bytes": 95626,
+      "sha256": "79734564a42997eed8232a1d52c4634da37f55b032ab24c55e0dd2451ea046f2"
+    },
+    {
+      "path": "/tmp/atlas-new-mathbio-age-diagnostic/runner-original.mjs",
+      "bytes": 3103,
+      "sha256": "fd16c002de3df2d0b2ab570a51bc7d681f59c6d7ffc5e94c466bc0cf5fb52188"
+    }
+  ],
+  "originalCheckpointLog": {
+    "path": "/tmp/atlas-continuation/checkpoint13-tests.log",
+    "sha256": "ee3a5d145a6c4ff6042a3feb4ec675a345a7b2c02a02216f48cff57514ab812b"
+  },
+  "diagnosticUtilitySources": {
+    "tests/verification-mathbio-age-convergence-diagnostic.mjs": "1ff166a855467e2a28614f728ac5dae838a74a81a4ab7cc2425158d98e259839",
+    "tests/verification-mathbio-age-inspector.mjs": "2d44b67200f84a4b972a45655f02b8a205525ae43796e654d36e6ad74fb2c272"
+  },
+  "jobsClosedAndHoldAcknowledged": true
+}
