@@ -1,0 +1,417 @@
+{
+  "scope": "SOURCE/TINY/MODEL/PREPARE only; independent peer pending; no browser/server/full-map/timing",
+  "sourceCommit": "b6ca416f8b95b8e93bd12b9973ab0999f6519942",
+  "dataCommit": "94a77908068d8c6a3be5fbe10808d0910195facf",
+  "dataRoot": "/tmp/atlas-continuation/checkpoint12",
+  "manifestSHA256": "f142f4c464998520b45476d94432ee3c21ad7ad532f100fd9ed3c3499b2b01f3",
+  "candidateFiles": {
+    "scripts/lib/map-current-atlas-fixture.mjs": "6ece94324d18fcab675fd233137106797c235e67b753428060a056cf4e7e1e1f",
+    "tests/map-current-atlas-checkpoint12-manifest.json": "f142f4c464998520b45476d94432ee3c21ad7ad532f100fd9ed3c3499b2b01f3",
+    "tests/map-current-atlas-source.mjs": "b12881fd53ec02970cbc23602e2d6ab1204c8de871c2f18fcf301e94f8bcab5f",
+    "tests/map-current-atlas-tiny.mjs": "3be5b99c2376063d4e07f1f96e40bbb1a6fe66c880bbe452fdf2cf15b84ee021",
+    "tests/map-current-atlas-model.mjs": "e696fa03d9f233e79f4f9a94e8acc9b0f50b3f31dcd10eca8f10246b0b85b3c4",
+    "tests/map-current-atlas-prepare.mjs": "c3bdf0bb33bd024e3c7955bdc83c2bb6a59fee235f9bd54a0abe88f0031b8c5a"
+  },
+  "rawEvidence": {
+    "source": {
+      "path": "/tmp/atlas-new-arch-source/current-atlas-case/source-freeze/source.json",
+      "sha256": "8b0436aca60ec5dd4d9edf2bc7bfab1295b008d73035e44095837c6b6872094f"
+    },
+    "tiny": {
+      "path": "/tmp/atlas-new-arch-source/current-atlas-case/tiny-freeze/tiny.json",
+      "sha256": "863824a76577e426165fff0677d9523afb8590825553e45f9b97a9e358b500a5"
+    },
+    "model": {
+      "path": "/tmp/atlas-new-arch-source/current-atlas-case/model-freeze/model.json",
+      "sha256": "84a33aeece3b1a9a51a9c8b6f26799806c6363e60252496c379306824326905f"
+    },
+    "prepare": {
+      "path": "/tmp/atlas-new-arch-source/current-atlas-case/prepare-freeze/prepared.json",
+      "sha256": "d137978274df269ce287e190209b84e727071094dd7f940f38ef2840e4adf5ae"
+    }
+  },
+  "source": {
+    "protocol": "current-atlas-source-model-prepare-only-v1",
+    "manifestSHA256": "f142f4c464998520b45476d94432ee3c21ad7ad532f100fd9ed3c3499b2b01f3",
+    "staticFiles": 2179,
+    "supportFiles": 12,
+    "referenceFiles": 3,
+    "servedPaths": {
+      "original": 2188,
+      "chunk": 2188
+    },
+    "sourceBytes": 75370144,
+    "actualCounts": {
+      "nodes": 13574,
+      "edges": 23955,
+      "selectedAncestors": 10,
+      "selectedDescendants": 3442
+    },
+    "faults": [
+      {
+        "fault": "wrong-root",
+        "failure": "current atlas fixture: wrong data root"
+      },
+      {
+        "fault": "marker",
+        "failure": "current atlas fixture: wrong checkpoint commit marker"
+      },
+      {
+        "fault": "index",
+        "failure": "current atlas fixture: hash/size mismatch data/index.json"
+      },
+      {
+        "fault": "font",
+        "failure": "current atlas fixture: hash/size mismatch assets/vendor/google-fonts/fonts.css"
+      },
+      {
+        "fault": "support",
+        "failure": "current atlas fixture: hash/size mismatch scripts/lib/map-paired-quiescence.mjs"
+      },
+      {
+        "fault": "manifest",
+        "failure": "current atlas fixture: manifest hash"
+      },
+      {
+        "fault": "static-extra",
+        "failure": "current atlas fixture: static path census"
+      },
+      {
+        "fault": "static-missing",
+        "failure": "current atlas fixture: static path census"
+      }
+    ],
+    "renderOutput": "UNKNOWN",
+    "browserExecuted": false
+  },
+  "tiny": {
+    "source": "actual exact loader/needSt bodies with file-backed mock Fetch; no HTTP or renderer",
+    "bodyHashes": {
+      "fetchJSON": "4b5918bdade76d1eaab09e44f93ae03169f9e993d6929ac44f641615dc7039f5",
+      "applyShard": "c36283777bc49f345044af14e4e745d16018d7caf338b9450112ea155fbda320",
+      "loadShard": "9689d28d98ac42906990383513c2220648fe3e91cf83f701b0dad7ef70e8ccc7"
+    },
+    "needStSHA256": "170d0367274d103e0cb1528b7bf9ab338204eb543e519dd50c8afb8dbe4e51e7",
+    "rows": [
+      {
+        "mode": "missing",
+        "initialCalls": 0,
+        "additionalCalls": 1,
+        "callbacks": 1,
+        "metadataAvailable": true,
+        "statementMatches": true,
+        "records": 365,
+        "summaries": 9
+      },
+      {
+        "mode": "available",
+        "initialCalls": 1,
+        "additionalCalls": 0,
+        "callbacks": 0,
+        "metadataAvailable": true,
+        "statementMatches": true,
+        "records": 365,
+        "summaries": 9
+      },
+      {
+        "mode": "dead",
+        "initialCalls": 0,
+        "additionalCalls": 1,
+        "callbacks": 0,
+        "metadataAvailable": true,
+        "statementMatches": true,
+        "records": 365,
+        "summaries": 9
+      },
+      {
+        "mode": "no-loader",
+        "initialCalls": 0,
+        "additionalCalls": 0,
+        "callbacks": 0,
+        "metadataAvailable": false,
+        "statementMatches": false,
+        "records": 365,
+        "summaries": 0
+      }
+    ],
+    "browserExecuted": false
+  },
+  "model": {
+    "bodyHashes": {
+      "installCatalog": "ac8b15546887b27b92b15795d3bf69506d1cb9fe4c8d4f958fd5494315e77526",
+      "indexGraph": "1aa5fc2dad222893e4c995c54eef4af3e917bfc64a7e2fe52e3d5419107c214b",
+      "ensurePlanned": "6b94d3ed6ba2497515bf3831f34b79bcb41bbd2a6d24a34db6eb822b0737cbde",
+      "fetchJSON": "4b5918bdade76d1eaab09e44f93ae03169f9e993d6929ac44f641615dc7039f5",
+      "applyShard": "c36283777bc49f345044af14e4e745d16018d7caf338b9450112ea155fbda320",
+      "loadShard": "9689d28d98ac42906990383513c2220648fe3e91cf83f701b0dad7ef70e8ccc7"
+    },
+    "closureFunctionSHA256": "f42ce847bc2cdb945fe709cadada9abfcec3263c39f80efb73a530f2b405db84",
+    "modelSourceSHA256": "380507a3ad77e57ffb3e5e772b31a7137bfb0b5ad5b18d11134843e69f4ebaab",
+    "results": [
+      {
+        "fault": "none",
+        "baseline": {
+          "nodes": 13574,
+          "edges": 23955,
+          "writtenDesc": 1163,
+          "ancestors": 10,
+          "descendants": 3442,
+          "closureSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0",
+          "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+        },
+        "plannedCalls": 1,
+        "ladrCalls": 1,
+        "failure": null,
+        "syntheticResources": true,
+        "guardDiagnosticStorage": {
+          "serializedUTF16Units": 2306909,
+          "referenceSlots": 539158,
+          "checkClosures": 74357
+        },
+        "hydrationMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f"
+      },
+      {
+        "fault": "desc-mutation",
+        "baseline": {
+          "nodes": 13574,
+          "edges": 23955,
+          "writtenDesc": 1163,
+          "ancestors": 10,
+          "descendants": 3442,
+          "closureSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0",
+          "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+        },
+        "plannedCalls": 1,
+        "ladrCalls": 1,
+        "failure": "selected shard invariant ladr-2.30.desc identity",
+        "syntheticResources": true,
+        "guardDiagnosticStorage": {
+          "serializedUTF16Units": 2306909,
+          "referenceSlots": 539158,
+          "checkClosures": 74357
+        },
+        "hydrationMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f"
+      },
+      {
+        "fault": "closure-content",
+        "baseline": {
+          "nodes": 13574,
+          "edges": 23955,
+          "writtenDesc": 1163,
+          "ancestors": 10,
+          "descendants": 3442,
+          "closureSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0",
+          "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+        },
+        "plannedCalls": 1,
+        "ladrCalls": 1,
+        "failure": "selected shard invariant closure ladr-2.30 desc set",
+        "syntheticResources": true,
+        "guardDiagnosticStorage": {
+          "serializedUTF16Units": 2306909,
+          "referenceSlots": 539158,
+          "checkClosures": 74357
+        },
+        "hydrationMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f"
+      },
+      {
+        "fault": "closure-replacement",
+        "baseline": {
+          "nodes": 13574,
+          "edges": 23955,
+          "writtenDesc": 1163,
+          "ancestors": 10,
+          "descendants": 3442,
+          "closureSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0",
+          "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+        },
+        "plannedCalls": 1,
+        "ladrCalls": 1,
+        "failure": "selected shard invariant closure ladr-2.30.desc identity",
+        "syntheticResources": true,
+        "guardDiagnosticStorage": {
+          "serializedUTF16Units": 2306909,
+          "referenceSlots": 539158,
+          "checkClosures": 74357
+        },
+        "hydrationMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f"
+      },
+      {
+        "fault": "extra-metadata",
+        "baseline": {
+          "nodes": 13574,
+          "edges": 23955,
+          "writtenDesc": 1163,
+          "ancestors": 10,
+          "descendants": 3442,
+          "closureSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0",
+          "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+        },
+        "plannedCalls": 1,
+        "ladrCalls": 1,
+        "failure": "selected shard invariant ladr-2.30 keys",
+        "syntheticResources": true,
+        "guardDiagnosticStorage": {
+          "serializedUTF16Units": 2306909,
+          "referenceSlots": 539158,
+          "checkClosures": 74357
+        },
+        "hydrationMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f"
+      },
+      {
+        "fault": "callback-prefix",
+        "baseline": {
+          "nodes": 13574,
+          "edges": 23955,
+          "writtenDesc": 1163,
+          "ancestors": 10,
+          "descendants": 3442,
+          "closureSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0",
+          "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+        },
+        "plannedCalls": 1,
+        "ladrCalls": 1,
+        "failure": "selected shard invariant callback prefix content",
+        "syntheticResources": true,
+        "guardDiagnosticStorage": {
+          "serializedUTF16Units": 2306909,
+          "referenceSlots": 539158,
+          "checkClosures": 74357
+        },
+        "hydrationMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f"
+      },
+      {
+        "fault": "network-prefix",
+        "baseline": {
+          "nodes": 13574,
+          "edges": 23955,
+          "writtenDesc": 1163,
+          "ancestors": 10,
+          "descendants": 3442,
+          "closureSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0",
+          "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+        },
+        "plannedCalls": 1,
+        "ladrCalls": 1,
+        "failure": "selected shard invariant network prefix content",
+        "syntheticResources": true,
+        "guardDiagnosticStorage": {
+          "serializedUTF16Units": 2306909,
+          "referenceSlots": 539158,
+          "checkClosures": 74357
+        },
+        "hydrationMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f"
+      },
+      {
+        "fault": "owner-replacement",
+        "baseline": {
+          "nodes": 13574,
+          "edges": 23955,
+          "writtenDesc": 1163,
+          "ancestors": 10,
+          "descendants": 3442,
+          "closureSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0",
+          "edgeSHA256": "4cef46000f0ee8e1599ab50ce9aa949b0db37ba606322844ce67c1873a129b85"
+        },
+        "plannedCalls": 1,
+        "ladrCalls": 1,
+        "failure": "selected shard invariant budget owners entries",
+        "syntheticResources": true,
+        "guardDiagnosticStorage": {
+          "serializedUTF16Units": 2306909,
+          "referenceSlots": 539158,
+          "checkClosures": 74357
+        },
+        "hydrationMetadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f"
+      }
+    ]
+  },
+  "prepare": {
+    "preparedOnly": true,
+    "browserExecuted": false,
+    "renderOutput": "UNKNOWN",
+    "expectedLoaded": {
+      "nodes": 13574,
+      "edges": 23955
+    },
+    "selectedBaseline": {
+      "writtenDesc": 1163,
+      "ancestors": 10,
+      "descendants": 3442,
+      "sortedDescendantsSHA256": "efdbcc2017574190445a6d514c8c255075c9806d6c84f98956600a8d3f7ea8b0"
+    },
+    "viewport": {
+      "width": 3840,
+      "height": 2160,
+      "dpr": 2,
+      "theme": "light"
+    },
+    "expectedMap": {
+      "W": 3840,
+      "H": 2092,
+      "k": 0.8,
+      "tx": 1574.35,
+      "ty": -1071.0500000000002
+    },
+    "mainOrdinals": [
+      "A0",
+      "A1",
+      "A2",
+      "A3"
+    ],
+    "historyOrdinals": [
+      "pre-unselected-0",
+      "pre-unselected-1",
+      "pre-unselected-third",
+      "pre-selected-0",
+      "pre-selected-1",
+      "pre-selected-third",
+      "pre-selected-explicit-transfer-0",
+      "pre-selected-explicit-transfer-1",
+      "A0",
+      "A1",
+      "A2",
+      "A3"
+    ],
+    "requiredGates": {
+      "actualLADRGet200": true,
+      "initialMetadataAbsent": true,
+      "protectedBaselineAndCallbackPrefixes": true,
+      "fixedFontCensusDrainQuiet": true,
+      "originalFirstAndStopOnFailure": true,
+      "exactOriginalColdWarm": true,
+      "exactCrossVariantRGBA": true,
+      "exactTraceAndResources": true,
+      "noLateCallbacksOrDraws": true,
+      "completeDirectDOMCanvas": {
+        "meanStrictlyBelow": 2,
+        "channelDifferenceThreshold": 20,
+        "changedFractionStrictlyBelow": 0.02,
+        "mask": "none; all RGB channels of full map-page screenshots"
+      },
+      "primaryMSAA": 0,
+      "inputCanvasPixels": 1,
+      "liveModels": 3,
+      "GLerror": 0,
+      "frameCanvasRoundedMapTimesDPR": true,
+      "primaryDrawingBufferEqualsWidthTimesHeightTimes4": true,
+      "componentSumEqualsRetained": true,
+      "historyFromZero": true,
+      "exactOptionalOwnerKinds": [
+        "packed-xy-and-bookkeeping",
+        "fixed-cpu-gpu-scratch"
+      ]
+    },
+    "caps": {
+      "logicalBytes": 64000000,
+      "maskBytes": 8000000,
+      "transportChunkBytes": 1048576
+    },
+    "acceptance": "NONE: independent SOURCE/MODEL/PREPARE review and later explicit execution authorization required; no historical raw hash is a current expected value"
+  },
+  "servedManifestEntries": {
+    "original": 2188,
+    "chunk": 2188
+  },
+  "initialFailure": "model-v1 stopped before guard because extracted closure lacked lexical depsOf; exact production declaration now supplied; attempts.md retains disclosure. No renderer or content artifact changed."
+}
