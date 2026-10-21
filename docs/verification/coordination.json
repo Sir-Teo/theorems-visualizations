@@ -21,10 +21,10 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Acceptedprerequisiteshortfall36;5/64publishedcollectionsand1wholesyllabusbelowtarget;43furthercollectionsmeet25writteninputs. Sourcequeue5unchanged.",
+      "Accepted prerequisite shortfall10;3/64publishedcollectionsbelow25;allwhole syllabi meet25;45furthercollectionsmeetwritten target. Sourcequeue5unchanged.",
       "Latest immutable checkpoint11 onee15d812 passes2230tests, all6UIgroups, strict/static0/0.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Private source/tiny fixed-quiescence successor passes independent review; full-map original-only attempt still stops on late normal400 Newsreader loading during transfer. Callback provenance captured; all raw/history retained, alternate/timing unrun.",
+      "Private actual font census passes source/model/tiny independent peer. Full-map rerun deferred: frozen selected item lacks statement, implying actual async shard callback after synchronous history. Explicit finite readiness proposal pending; no alternate/timing acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -2728,15 +2728,51 @@
       "report": "docs/verification/cplx-alternation-independent-peer.md",
       "followup": "OneactualLOGIC2.10finitebranching/allbranchhaltingtree input. Separatecomplement/resourcequalifierscorrectleastfixedpointloopcounterexample. Full53objects/functions158rows16files;8412ownchecks,15existingtests,30personallyreadfreshfields/controlpixels. Integratedguard/mathpass; eightotherinputsremainpending.",
       "sourceClosure": "None;flagsunchanged."
+    },
+    {
+      "collection": "cplx",
+      "commits": [
+        "3aa8196b89808d38b4285fc509f07ed21f749e46",
+        "d64322461dedf6662de2850e24130fea73d76425",
+        "3e7920337f28c1976b66802eae18a04857bc13b3",
+        "ffacaa605dcb641e3c743390874f984265f0b70c",
+        "5b7e6a743d82a39f3084549cc673be00c529605c"
+      ],
+      "publishedBefore": 17,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "deep_peer",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/cplx-eight-input-independent-peer.md",
+      "followup": "8directmathinputs across7consumers; independent92308checks/7groups,64personallyinspectedfreshfields,full53objects/functions158rows16files. N\u22652andemptygraphqualifiersclosepeerfindings. Rootfull8guard againstaccepted17 andfull3.8guard againstfinal8bothpass oncomposed25. Integratedmath/default64ARCH+CPLXpass. No whole-runtime certification.",
+      "sourceClosure": "None;flagsunchanged."
+    },
+    {
+      "collection": "arch",
+      "commits": [
+        "006ab24910012de6cfb789d8f8d46739dc5b0b42",
+        "9687a56677298a86707d1d9b458adf9c1af4c635",
+        "90382a37f4beaf76e852362b088ce8b4231c200a",
+        "4d49b7392c1fb8ccce001501a5341caf4919b2a4",
+        "615807f557897b67c78ae6ca7e26442ae1d276ac"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "imaging_source",
+      "report": "docs/verification/arch-independent-imaging-peer.md",
+      "followup": "18directinputs18consumers yield25/27/42. Full40objects/functions94rows/full40lists;14227independentmath15groups,49existingtests,160personallyinspectedfreshfields/control/bannerpictures. Fourqualifiers/fiveequivalentwraps/onebannerliteral only. Rootthree-archiveguard/math/default64ARCH+CPLXpass; initialrootguardwrongargumentstoppedbeforecomparison,correctedpristine prerequisite archivepasses. Suspected3.8contradictionwithdrawn:crackfacevscontactpivotareoppositefaces,geometry/modelconsistent.",
+      "sourceClosure": "None;flagsunchanged."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 36,
-    "publishedBelow25": 5,
+    "publishedShortfall": 10,
+    "publishedBelow25": 3,
     "collections": 64,
-    "wholeSyllabusBelow25": 1,
+    "wholeSyllabusBelow25": 0,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Forty-three further collections meet written target; ART18 reaches25. CPLX3.8singleinput reaches17, eightpending. BIGHISTsixunrestrictedinputs pendingexcluded; frozen3.5 persists."
+    "acceptedSnapshot": "Forty-five further collections meet written target; CPLX25 andARCH25accepted. PL2/GAME2/BIGHIST6remain; sixunrestrictedBIGHISTinputs pendingexcluded, frozen3.5 persists."
   },
   "previousSessionWorkers": [
     {
@@ -2959,6 +2995,17 @@
       "status": "accepted-bounded-fixed-preparation-source-and-tiny",
       "report": "docs/verification/map-quiescence-independent-peer.md",
       "scope": "Actual callback wrappers preserve calls/order; fixed actual-face load/drain/quiet has no retry; resource histories classify original/optional before reserve with independently accumulated original peaks and raw global caps. Source/models/fresh tiny pass; no full-map or timing acceptance."
+    },
+    {
+      "commits": [
+        "4edb69e7ec485ec9075c5bc90c860615a884feda",
+        "6aa6d6bbe19d64dbb2cda815045db608b5e59766",
+        "132e25d5c3cfb2afebcfd2d7dd60cd92a51f1a89",
+        "bb7fad843a146167adf6d7970d8a6a09c129dc72"
+      ],
+      "status": "accepted-source-model-tiny-only",
+      "report": "docs/verification/map-font-census-independent-peer.md",
+      "scope": "FiniteactualDOM+Canvasfontrole/character/subset/sourcehashcensus;68facesources;235independentassertions/7models/fourfreshnative tinycontexts,persistedbeforeassertions/all4picturesread. Baseline2latefontcallbacks vsfixed0 each. Samefixeddrain/quiet/reset/history/gates/resources; no hiddenmapwarmup, no silentprefetch orcallbackwaiver. Frozenindexselectedladr2.30stmissing; fullrunpredictablymaystoponnewlyobservedactualneedStcallback, so rootrequires explicitreadinessproposal first. No fullmap/timingrun."
     }
   ]
 }

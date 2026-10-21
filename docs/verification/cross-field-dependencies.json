@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 5,
-  "wholeSyllabusBelowTarget": 1,
+  "publishedBelowTarget": 3,
+  "wholeSyllabusBelowTarget": 0,
   "entries": [
     {
       "collection": "stat",
@@ -1798,12 +1798,19 @@
       "collection": "cplx",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 17,
-      "writtenToKnown": 19,
-      "wholeSyllabus": 26,
-      "publishedShortfall": 8,
+      "writtenToWritten": 25,
+      "writtenToKnown": 27,
+      "wholeSyllabus": 34,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "cplx-1.9",
+          "prerequisite": "alg-1.25",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "cplx-1.11",
           "prerequisite": "pma-3.20",
@@ -1854,6 +1861,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "cplx-3.10",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cplx-3.2",
           "prerequisite": "nt-3.1",
           "prerequisiteField": "math",
@@ -1868,6 +1882,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "cplx-3.2",
+          "prerequisite": "alg-4.28",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cplx-3.3",
           "prerequisite": "nt-1.6",
           "prerequisiteField": "math",
@@ -1875,8 +1896,36 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "cplx-3.4",
+          "prerequisite": "logic-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-4.10",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cplx-4.11",
           "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-4.13",
+          "prerequisite": "ladr-3.46",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-4.13",
+          "prerequisite": "comb-1.2",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -1919,6 +1968,13 @@
         {
           "item": "cplx-4.6",
           "prerequisite": "logic-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-4.7",
+          "prerequisite": "logic-2.3",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -18583,10 +18639,10 @@
       "collection": "arch",
       "field": "arts",
       "target": 25,
-      "writtenToWritten": 7,
-      "writtenToKnown": 9,
-      "wholeSyllabus": 24,
-      "publishedShortfall": 18,
+      "writtenToWritten": 25,
+      "writtenToKnown": 27,
+      "wholeSyllabus": 42,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -18600,6 +18656,13 @@
           "item": "arch-1.2",
           "prerequisite": "mech-2.8",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-1.3",
+          "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -18618,9 +18681,23 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "arch-1.6",
+          "prerequisite": "vcalc-4.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "arch-1.7",
           "prerequisite": "solid-1.3",
           "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-2.1",
+          "prerequisite": "ladr-3.65",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -18639,6 +18716,27 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "arch-2.3",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-2.6",
+          "prerequisite": "ode-3.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-3.9",
+          "prerequisite": "pma-5.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "arch-3.14",
           "prerequisite": "solid-4.10",
           "prerequisiteField": "eng",
@@ -18651,6 +18749,90 @@
           "prerequisiteField": "eng",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "arch-3.2",
+          "prerequisite": "vcalc-4.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-3.3",
+          "prerequisite": "mech-2.3",
+          "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-3.5",
+          "prerequisite": "solid-4.10",
+          "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-3.7",
+          "prerequisite": "pma-5.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-4.6",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-4.7",
+          "prerequisite": "vcalc-4.7",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-4.8",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-4.9",
+          "prerequisite": "pma-10.46",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-4.11",
+          "prerequisite": "ladr-3.65",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-4.1",
+          "prerequisite": "pma-6.27",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-4.2",
+          "prerequisite": "vcalc-4.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "arch-4.3",
+          "prerequisite": "pma-10.46",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "arch-5.1",
@@ -20451,7 +20633,9 @@
       "d02ad69fedb2db4abc9f1e411c6be20df5a5e010",
       "f0ac876e6c36942bb7be490bc0d81f1a64990ed7",
       "03d24499ebb31470c602c1f0d1eaa85ae0155942",
-      "87b7e79557341cfe8d41ce1b3cadc29fc0bc7ce3"
+      "87b7e79557341cfe8d41ce1b3cadc29fc0bc7ce3",
+      "3aa8196b89808d38b4285fc509f07ed21f749e46",
+      "006ab24910012de6cfb789d8f8d46739dc5b0b42"
     ],
     "excludedUnacceptedEdges": [
       {

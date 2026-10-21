@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **5 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 36 edges. Even
-including planned items and planned prerequisites, **1 collection remains below 25**.
+Of 64 non-math collections, **3 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 10 edges. Even
+including planned items and planned prerequisites, **every whole syllabus meets 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -322,3 +322,7 @@ The accepted recount has one whole syllabus below25 (the projected two was incor
 ## ART and alternating-machine finite halting
 
 ART18directinputs reach25/30/46; all five alternate paths were independently assessed for distinct actual proof steps. CPLX3.8 adds one actual finite-branching/halting-tree input and separately corrects complementation/resource qualifiers, reaching17written. Integrated full guards/math and peer native/control/personal pixels pass. Six unrestricted BIGHISTcandidate edges remain explicitly excluded pending independent peer; the frozen3.5edge remains excluded separately. Accepted shortfall36/5published/1whole. No source closure.
+
+## Final ARCH and combined CPLX acceptance
+
+ARCH18 reaches25/27/42. CPLX eight direct inputs compose with separately accepted finite-halting input to reach25; root ran both full source guards against independent baselines to verify composition. Independent mathematics, complete narrow fields/personal pixels and integrated64ARCH/CPLXdefault tests pass. Initial root ARCH guard used incorrect arguments and failed beforecomparison; corrected three-archive check passes. Accepted shortfall10 acrossPL2/GAME2/BIGHIST6; every whole syllabus meets25. Six unrestricted BIGHISTcandidate edges and frozen3.5remain separately excluded. No source closure.
