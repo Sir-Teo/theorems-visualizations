@@ -161,12 +161,17 @@ async function pageHome() {
   const cited = it => H.home.cited[it.id] || 0;
   const pillars = H.home.pillars.map(id => homeById.get(id));
   const liveFields = G.fields.filter((F) => fieldCols(F).some((C) => C.count));
+  const newChapters = [
+    ['alg', 8, 'Coding theory'],
+    ['top', 5, 'Countability and separation'],
+  ].filter(([col, chapter]) => H.collections.some(C => C.id === col && C.chapters.some(Ch => Ch.n === chapter && Ch.count)));
   const el = h(`<div>
     <section class="wrap hero">
       <div class="hero-layout">
         <div class="hero-intro">
           <h1>Ideas, <em>visualized.</em></h1>
           <p class="lede">Interactive explanations of ideas across mathematics, science, society, the arts and the humanities.</p>
+          ${newChapters.length ? `<p class="meta refs-inline">New: ${newChapters.map(([col, chapter, title]) => `<a href="#/c/${col}/${chapter}">${escapeHTML(title)}</a>`).join(' · ')}</p>` : ''}
           <div class="hero-actions">
             <a class="btn primary" href="#/map">Explore the map <span aria-hidden="true">↗</span></a>
             <a class="hero-browse" href="#fields">Browse the fields <span aria-hidden="true">↓</span></a>
