@@ -1,6 +1,6 @@
 # Wave5 MFD5 author verification
 
-Status: eleven new items authored and author checks complete; independent final acceptance is recorded separately. The existing 5.5 matrix-exponential alias to `ode-3.2` is preserved. No shared runtime, generated catalog, central ledger or Git changes were made by this author.
+Status: all eleven new items independently accepted; author and peer reports are final. Content and syllabus bytes are frozen. The existing 5.5 matrix-exponential alias to `ode-3.2` is preserved. No shared runtime, generated catalog, central ledger or Git changes were made by this author.
 
 ## Source passages actually read
 
@@ -30,6 +30,6 @@ All22 narrow harness defaults, all120 mode captures at both widths/themes, and a
 
 ## Independent review and remaining limits
 
-See `wave5-mfd-review.md` for the independent reviewer, source cross-checks and separate finite oracles. The reviewer independently checked exponential/quaternion/group/BCH calculations and all21 helper Pell indices. The reviewer separately repeated focused actual production5.3 physical-drag/Share checks,5.6 formula and tiny-real-URL checks, and5.12 quotient/Share checks at all four width/theme combinations. Final acceptance is in the peer report.
+See `wave5-mfd-review.md` for the independent reviewer, source cross-checks and separate finite oracles. The reviewer independently checked exponential/quaternion/group/BCH calculations and all21 helper Pell indices. The reviewer separately repeated focused production 5.3 physical-drag/Share checks, 5.6 formula and tiny-real-URL checks, and 5.12 quotient/Share checks at all four width/theme combinations. Final 5.10 acceptance added four production groups, 44 actions and 16 URL replays after the endpoint fix. The independent report records final acceptance.
 
 The checks cover selected finite states, not exhaustive real arithmetic or a proof by plotting. The theorem statements/proof ideas supply the mathematical hypotheses. Projected spatial actions and sampled winding paths deliberately retain their stated display limits. Content and syllabus bytes are frozen after the listed fixes; no unresolved source flags remain.

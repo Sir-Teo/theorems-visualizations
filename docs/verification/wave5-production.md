@@ -4,7 +4,7 @@ Started 2026-10-21 following the user's direction to proceed with new chapters. 
 
 ## Accepted chapters
 
-These chapters have source/mathematical review, checked visualizations and collection-sized commits on `codex/wave-five-production`, subsequently transplanted onto published `6cf3d576` in `codex/wave5-current-base`.
+These chapters have source/mathematical review, checked visualizations and collection-sized commits on `codex/wave5-current-base`. The first fifteen were authored on `codex/wave-five-production` and transplanted onto published `6cf3d576`; subsequent chapters were authored directly on the current baseline.
 
 | Collection/chapter | New ideas | Commit | Independent review |
 | --- | ---: | --- | --- |
@@ -25,8 +25,10 @@ These chapters have source/mathematical review, checked visualizations and colle
 | Ecology 5: predation, disease and mutualism | 12 | `1ec8d0e9` | [review](wave5-ecol-review.md) |
 | Algebra 8: coding theory | 28 | `e225c566` | [review](wave5-alg-review.md) |
 | Topology 5: countability and separation | 15 | `f0e8751c` | [review](wave5-top-review.md) |
+| Differential geometry 5: the first fundamental form | 10 | `a0e669f7` | [review](wave5-dg-review.md) |
+| Manifolds 5: Lie groups | 11 | `8473af2b` | [review](wave5-mfd-review.md) |
 
-**220 new ideas accepted in seventeen chapters.** Music 9.11 and 9.22 deliberately retain source uncertainty flags for unread original passages; the modern finite mathematics is independently checked, and the historical scope remains explicit. Art 5.4 retains its disclosed secondary MacAdam numerical-table flag; the original experimental conditions and qualitative conclusion were checked directly.
+**241 new ideas accepted in nineteen chapters.** Music 9.11 and 9.22 deliberately retain source uncertainty flags for unread original passages; the modern finite mathematics is independently checked, and the historical scope remains explicit. Art 5.4 retains its disclosed secondary MacAdam numerical-table flag; the original experimental conditions and qualitative conclusion were checked directly.
 
 ## Earlier-baseline integration checks
 
@@ -51,7 +53,7 @@ The exact current-baseline export `e6506283` at `/tmp/atlas-wave5-current-q_5q9v
 
 ## Work continuing
 
-**811 new ideas remain in 63 Wave 5 collection chapters.** All seventeen accepted chapters have finished their author/reviewer checks. The current small pipeline assigns DG5 to `author_vcalc`, MFD5 to `review_music` and independent review of both to `wave5_reviewer`; at most three subagents work concurrently. Continue breadth-first from the remaining entries in the [frozen inventory](../wave-five.md), retaining its original chapter assignments. Follow MASTER_PLAN §7.2: source-led authoring, actual computations, both-theme native/visual checks, independent review, dependency reconciliation and collection-sized commits. Historical verification tasks are not prerequisites to repeat.
+**790 new ideas remain in 61 Wave 5 collection chapters.** All nineteen accepted chapters have finished their author/reviewer checks. The current small pipeline assigns STOCH5 to `author_fluid`, PROB6 to `review_music` and independent review of both to `wave5_reviewer`; at most three subagents work concurrently. Continue breadth-first from the remaining entries in the [frozen inventory](../wave-five.md), retaining its original chapter assignments. Follow MASTER_PLAN §7.2: source-led authoring, actual computations, both-theme native/visual checks, independent review, dependency reconciliation and collection-sized commits. Historical verification tasks are not prerequisites to repeat.
 
 After the full frozen wave passes its end-of-wave gates, prepare the next breadth-first wave under the master plan. The continuous production goal remains unfinished. Collection PRs are now open as drafts, isolated onto published main; per-PR CI is in progress. The one-line inherited CI YAML repair is tracked separately in [PR16](https://github.com/Sir-Teo/theorems-visualizations/pull/16), and included identically in each collection branch so checks can start. No PR is claimed merged. Local YAML parsing reproduces the old line24/column83 error and passes after replacing the invalid conditional with the declared `npm test` command.
 
@@ -79,8 +81,14 @@ After the full frozen wave passes its end-of-wave gates, prepare the next breadt
 
 Exact accepted-content snapshot `f0e8751c`, exported to `/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-wave5-seventeen-wzh75e8d`, passes **2,417/2,417 tests on Node22.23.3**, with no failures, skips or cancellations. Strict build: **6,904 written +6,670 planned,467 chapters,85 collections,0 errors/warnings**. Static: **6,841 visualizations,0 errors/warnings**. Home JSON: **113,088 bytes gzip**. Logs: `/tmp/atlas-wave5-seventeen-{tests,build,static}.log`. The targeted sweep passes **52 routes with0errors**, covering all43 new items, their chapters/collections, home/map/status/about and the stability bridge; log `/tmp/atlas-wave5-seventeen-smoke.log`. This checkpoint includes the accepted LaSalle bridge follow-up; production assets remain unchanged.
 
-The ALG8 and TOP5 reports record actual source review, independent model oracles, both-theme 1200/320px native actions, complete production text/marker checks and edited/raw/malformed replay. No new uncertainty flags were needed. Fourteen of the original fifteen collection PRs and CI repair PR16 pass current-head CI and are ready for review; fluid PR3 has a new run after replacing a stale fixed inventory count with exact inventory invariants. No PR is merged.
+The ALG8 and TOP5 reports record actual source review, independent model oracles, both-theme 1200/320px native actions, complete production text/marker checks and edited/raw/malformed replay. No new uncertainty flags were needed. All fifteen original collection PRs and CI repair PR16 pass current-head CI and are ready for review. Fluid PR3 passed run39591121792 after replacing a stale fixed inventory count with exact inventory invariants. No PR is merged.
 
-ALG chapter shipping PR: [#17](https://github.com/Sir-Teo/theorems-visualizations/pull/17), isolated head `487d1a09`. Standalone strict build and chapter/planner tests pass; CI is running.
+ALG chapter shipping PR: [#17](https://github.com/Sir-Teo/theorems-visualizations/pull/17), isolated head `487d1a09`. Standalone strict build and chapter/planner tests pass; current-head CI run39592153137 passes and the PR is ready for review.
 
-TOP chapter shipping PR: [#18](https://github.com/Sir-Teo/theorems-visualizations/pull/18), isolated head `e0b73de4`. Standalone strict build and chapter/planner tests pass; CI is running.
+TOP chapter shipping PR: [#18](https://github.com/Sir-Teo/theorems-visualizations/pull/18), isolated head `e0b73de4`. Standalone strict build and chapter/planner tests pass; current-head CI run39592155518 passes and the PR is ready for review.
+
+## Nineteen-chapter checkpoint
+
+Exact accepted-content snapshot `8473af2b`, exported to `/tmp/atlas-wave5-nineteen-68qx4npf`, passes **2,443/2,443 tests on Node22.23.3**, no skips/cancellations. Strict build: **6,925 written +6,649 planned,469 chapters,85 collections,0 errors/warnings**. Static: **6,862 visualizations,0 errors/warnings**. Home JSON: **113,103 bytes gzip**. Logs: `/tmp/atlas-wave5-nineteen-{tests,build,static}.log`. The source-aligned coordinator gate checks all21 new generated statements/scope/source records against authored modules and passes **42 actual320px light/dark production cases,42 physical edits and real Share URL replays** with complete rich-text and formula bounds; log `/tmp/atlas-wave5-nineteen-production.log`. An initial utility incorrectly required an optional scope on every item; the corrected gate requires it exactly when authored. That failed utility assertion is retained separately. The targeted sweep passes **30 routes with0errors**, covering all21 new ideas, both chapters/collections, home/map/status/about and the stability bridge; log `/tmp/atlas-wave5-nineteen-smoke.log`.
+
+DG shipping [PR19](https://github.com/Sir-Teo/theorems-visualizations/pull/19), isolated head `5ced81f8`, passes standalone strict build and12 chapter/planner tests. MFD shipping [PR21](https://github.com/Sir-Teo/theorems-visualizations/pull/21), isolated head `cd06548c`, passes standalone strict build and16 tests. Both are independently accepted; their CI is in progress. The guarded home update is [PR20](https://github.com/Sir-Teo/theorems-visualizations/pull/20), isolated head `32f09d77`. Earlier collection PRs1–15,17–18 and CI repair16 pass current-head CI and are ready for review. No PR is merged. Root aggregate push CI `39592740677` passed source `a63b51e5`; the nineteen-chapter local checkpoint above is newer.

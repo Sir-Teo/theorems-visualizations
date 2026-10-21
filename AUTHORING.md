@@ -276,7 +276,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `between(f, g, a, b, {fill})` | shade between two graphs. |
 | `interval(a,b,y,{open:[l,r], label})` | number-line interval with open/closed ends. |
 | `measure(x1,y1,x2,y2,label)` | double arrow with label (e.g. a radius “δ”). |
-| `bars(values, {x0:1, dx:1, color: c or (v,i)=>c})` | bar chart of a sequence. |
+| `bars(values, {x0:1, dx:1, barWidth:0.7, color: c or (v,i)=>c})` | bar chart of a sequence. `barWidth` is a fraction of `dx`: actual width is `barWidth * dx`. When `dx=1/n`, keep a fractional width such as `0.7`; multiplying it by `1/n` again makes the bars disappear. |
 | `field((x,y) => [u,v], {spacing})` | vector field. |
 | `text(str, x, y, {size, color, align, baseline, dx, dy, math})` | canvas text (`math: true` = italic serif). A string with `$…$` renders through KaTeX ("$0 < x$" is maths); prices are left alone (an odd number of `$`, or a pair like "$5 and $10" whose content is a number followed by words). |
 | `tex(latex, x, y, {color, size, align, baseline, dx, dy})` | KaTeX label overlay. |

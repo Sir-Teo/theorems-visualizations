@@ -17510,9 +17510,9 @@
   "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
   "progress": {
     "total": 1031,
-    "written": 220,
-    "remaining": 811,
-    "writtenChapters": 17,
+    "written": 241,
+    "remaining": 790,
+    "writtenChapters": 19,
     "chapters": [
       {
         "collection": "ode",
@@ -17679,19 +17679,42 @@
         "collection": "dg",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "dg-5.1",
+          "dg-5.2",
+          "dg-5.3",
+          "dg-5.4",
+          "dg-5.5",
+          "dg-5.6",
+          "dg-5.7",
+          "dg-5.8",
+          "dg-5.9",
+          "dg-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "mfd",
         "chapter": 5,
         "total": 11,
-        "written": 0,
-        "remaining": 11,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 11,
+        "remaining": 0,
+        "writtenItems": [
+          "mfd-5.1",
+          "mfd-5.2",
+          "mfd-5.3",
+          "mfd-5.4",
+          "mfd-5.6",
+          "mfd-5.7",
+          "mfd-5.8",
+          "mfd-5.9",
+          "mfd-5.10",
+          "mfd-5.11",
+          "mfd-5.12"
+        ],
+        "status": "written"
       },
       {
         "collection": "prob",
