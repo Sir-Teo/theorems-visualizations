@@ -1,0 +1,61 @@
+{
+  "baseline": "ee15d812c4ccf430d9a826f910210e89fa9bc2bc",
+  "mapping": [
+    {
+      "num": "2.3",
+      "file": "ch02.js",
+      "target": "comb-1.2",
+      "paragraph": "The fresh-name existence step uses the pigeonhole principle (COMB 1.2), separately from the capture condition in 2.2. Use the usual countably infinite variable supply. The finite syntax of the argument and body mentions only finitely many forbidden names; include their bound names as well as free ones, and the substituted variable. If this set has k names, take k+1 distinct candidate names. They cannot all be forbidden: otherwise these distinct candidates would occupy k name boxes with at most one candidate per box. When k=0 any candidate works. Choosing an unused candidate therefore makes the required alpha-renaming possible. Repeating a base name with successively more apostrophes is one such distinct supply; no fixed finite reserve of names would give this guarantee.",
+      "beforeIdea": "Replacing text blindly gives the wrong function: in $[x\\mapsto y]\\,\\lambda y.\\,x\\,y$ the $y$ coming from outside would land under $\\lambda y$ and be tied to the wrong binder, turning \u201cthe outer $y$ applied to the argument\u201d into \u201cthe argument applied to itself\u201d. Since bound names are placeholders (2.2), we are free to choose them, so the definition picks a name that clashes with nothing. The recursion on $t$ is well-founded only up to this renaming, a reason why implementations use a supply of fresh names or the nameless terms of 2.11.",
+      "beforeDeps": [
+        "pl-2.2"
+      ],
+      "fullDeps": [
+        "pl-2.2",
+        "comb-1.2"
+      ],
+      "depsBeforeSource": "['pl-2.2']",
+      "depsAfterSource": "['pl-2.2', 'comb-1.2']"
+    },
+    {
+      "num": "2.11",
+      "file": "ch02-b.js",
+      "target": "alg-1.20",
+      "paragraph": "The alpha-equivalence test can be justified by the two-sided inverse criterion (ALG 1.20). Fix one ordered finite context Gamma of distinct free names and restrict to terms whose free names lie in it. Let E send an alpha-class to its nameless tree; at binder depth d, a free name in context position j gets index d+j, and a bound name gets its distance to the nearest matching binder. Define D on well-scoped nameless trees to return the alpha-class obtained by choosing distinct fresh binder names outside Gamma, interpreting index i<d by the corresponding binder and index d+j by Gamma's jth name. Constructor induction preserves each binding connection, giving E(D(q))=q and D(E([t]))=[t]. The target's inverse argument now makes E a bijection, so equal nameless trees mean exactly equal alpha-classes. The same fixed context is essential on both sides; separately renumbering each term's free names could wrongly identify different free variables. This is a mathematical decoder with an unbounded fresh-name supply, not a claim about malformed indices.",
+      "beforeIdea": "Names exist only to connect an occurrence to its binder; the index is that connection in coordinates, so renaming problems (2.2, 2.3) disappear. The price is bookkeeping. When the argument $u$ is pushed under a binder its free indices must be shifted by $1$ so that they keep pointing past the new $\\lambda$; when the binder of the redex is removed, every free index of the result moves down by one. The shifting is a correct, mechanical version of the renaming performed by the capture-avoiding substitution of 2.3.",
+      "beforeDeps": [
+        "pl-2.3"
+      ],
+      "fullDeps": [
+        "pl-2.3",
+        "alg-1.20"
+      ],
+      "depsBeforeSource": "['pl-2.3']",
+      "depsAfterSource": "['pl-2.3', 'alg-1.20']"
+    }
+  ],
+  "rowRepairs": {
+    "3.7": {
+      "before": [
+        "pl-2.10",
+        "toc-10.5"
+      ],
+      "full": [
+        "pl-2.10",
+        "pl-3.5",
+        "pl-3.6",
+        "toc-9.7",
+        "toc-10.5"
+      ]
+    },
+    "4.1": {
+      "before": [
+        "pl-1.4"
+      ],
+      "full": [
+        "pl-1.4",
+        "pl-1.3"
+      ]
+    }
+  }
+}
