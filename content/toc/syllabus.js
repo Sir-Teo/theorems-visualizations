@@ -164,46 +164,229 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Context-free grammars',
-      summary: String.raw`Grammars generate strings by rewriting variables, and their parse trees expose nested structure that no finite automaton can track: balanced brackets, arithmetic expressions, the syntax of programming languages. We meet ambiguity, its practical cures, and languages where it cannot be cured at all. Normal forms tame grammars, and Chomsky normal form yields the cubic-time CYK algorithm, which decides membership for every context-free language; practical parsers trade that generality for linear time.`,
-      items: [
-        { num: '5.1', kind: 'Definition', name: 'Context-free grammar', deps: ['toc-1.1'], refs: ['Sipser §2.1'],
-          pic: 'Edit grammar rules in a text box and click variables to rewrite them, building a derivation; all generated strings up to a chosen length are listed alongside.' },
-        { num: '5.2', kind: 'Definition', name: 'Derivations and parse trees', deps: ['toc-5.1'], refs: ['Sipser §2.1'],
-          pic: 'A derivation and its parse tree grow side by side; switching between leftmost and rightmost derivations reorders the steps but leaves the tree unchanged.' },
-        { num: '5.3', kind: 'Concept', name: 'Balanced brackets: the Dyck language', deps: ['toc-5.1', 'comb-5.3'], refs: ['Sipser §2.1'],
-          pic: 'Type brackets to draw their height profile as a mountain range; the string is balanced exactly when the walk never dips below zero and ends at zero, and its parse tree mirrors the mountains.' },
-        { num: '5.4', kind: 'Definition', name: 'Ambiguity', deps: ['toc-5.2'], refs: ['Sipser §2.1'],
-          pic: 'For the naive grammar E → E+E | E×E | a, type a+a×a and flip between its two parse trees, each evaluated with numbers to show they compute different results.' },
-        { num: '5.5', kind: 'Method', name: 'Precedence and associativity by grammar layering', deps: ['toc-5.4'], refs: ['Sipser §2.1'],
-          pic: 'A layered grammar of expressions, terms and factors yields exactly one tree for any input; toggling left or right associativity makes 8−3−2 evaluate to 3 or 7.' },
-        { num: '5.6', kind: 'Theorem', name: 'Inherently ambiguous languages', deps: ['toc-5.4'], refs: ['Sipser §2.1'],
-          pic: 'For {aⁱbʲcᵏ : i = j or j = k} the reader tries candidate grammars; each one is shown giving two different trees for some aⁿbⁿcⁿ, and the count of such strings grows with length.' },
-        { num: '5.7', kind: 'Theorem', name: 'Regular languages are context-free', deps: ['toc-5.1', 'toc-2.3'], refs: ['Sipser §2.1'],
-          pic: 'A DFA is turned rule by rule into a right-linear grammar; stepping through a derivation highlights the matching transition of the automaton at every step.' },
-        { num: '5.8', kind: 'Theorem', name: 'Closure under union, concatenation and star', deps: ['toc-5.1'], refs: ['Sipser §2.1'],
-          pic: 'Two grammars are combined with a fresh start variable; test strings from each piece and their concatenations are derived in the combined grammar.' },
-        { num: '5.9', kind: 'Theorem', name: 'Chomsky normal form', deps: ['toc-5.2'], refs: ['Sipser §2.1'],
-          pic: 'The conversion runs in stages — new start variable, remove ε-rules, remove unit rules, binarize — with the grammar text updated at each step and its language checked unchanged on test strings.' },
-        { num: '5.10', kind: 'Algorithm', name: 'CYK parsing', deps: ['toc-5.9'], refs: ['Sipser §7.2'],
-          pic: 'The triangular CYK table fills diagonal by diagonal for the typed string (v.table); clicking the top cell reconstructs a parse tree when the start variable is present.' },
-        { num: '5.11', kind: 'Theorem', name: 'Greibach normal form', deps: ['toc-5.9'], refs: ['Sipser §2.1'],
-          pic: 'After conversion every rule begins with a terminal, so a derivation of a string of length n takes exactly n steps; left recursion is removed visibly along the way.' },
-        { num: '5.12', kind: 'Concept', name: 'Backus–Naur form and programming-language syntax', deps: ['toc-5.5'], refs: ['Sipser §2.1'],
-          pic: 'A small BNF grammar parses a typed program into an abstract syntax tree, and a syntax error is pinpointed at the first token no rule can continue.' },
-        { num: '5.13', kind: 'Concept', name: 'The dangling-else ambiguity', deps: ['toc-5.4'], refs: ['Sipser §2.1'],
-          pic: 'For “if a then if b then s else t” both parses are drawn; switching on the rule that else binds to the nearest if leaves one tree and re-indents the code to match.' },
-        { num: '5.14', kind: 'Algorithm', name: 'Predictive LL(1) parsing', deps: ['toc-5.12'], refs: ['Sipser §2.4'],
-          pic: 'FIRST and FOLLOW sets and the parse table are computed for an editable grammar; conflicts appear as red cells, and a left-recursive rule sends the naive recursive-descent parser into endless recursion.' },
-        { num: '5.15', kind: 'Algorithm', name: 'Shift-reduce (LR) parsing', deps: ['toc-5.12'], refs: ['Sipser §2.4'],
-          pic: 'A stack and the remaining input are animated as the parser shifts and reduces on a typed expression, building the tree bottom-up; an ambiguous grammar produces a visible shift/reduce conflict.' },
-        { num: '5.16', kind: 'Paper', name: 'On the Translation of Languages from Left to Right',
-          paper: { authors: 'Donald E. Knuth', year: 1965, title: 'On the Translation of Languages from Left to Right',
-                   venue: 'Information and Control 8 (6): 607–639', doi: '10.1016/S0019-9958(65)90426-2' },
-          introduces: ['toc-5.15'], deps: ['toc-5.1', 'toc-5.2', 'toc-6.10'], refs: [],
-          pic: 'Feed an arithmetic expression to an LR(1) parser built from an editable grammar: the stack of states, the lookahead and each shift or reduce are animated on the characteristic automaton, and a grammar edit shows exactly where a conflict appears.' },
-      ],
+      "n": 5,
+      "title": "Context-free grammars",
+      "summary": "A grammar builds a word by replacing variables, and a parse tree records its structure independently of rewrite order. Ambiguity can be removed from some grammars and is unavoidable for some languages. Normal forms support exact membership algorithms, while predictive and shift-reduce parsers trade generality for deterministic decisions.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Context-free grammar",
+          "deps": [
+            "toc-1.1"
+          ],
+          "refs": [
+            "Sipser, MIT18.404 Fall2020 Lecture4, pp2–3; Erickson, Models of Computation note5 (2018), pp1–2"
+          ],
+          "pic": "Edit actual rules with spaces between symbols and semicolons between rules; eps denotes ε. Inspect the complete bounded language and step through a real derivation of a selected word. Invalid syntax and an empty bounded language are reported explicitly."
+        },
+        {
+          "num": "5.2",
+          "kind": "Definition",
+          "name": "Derivations and parse trees",
+          "deps": [
+            "toc-5.1"
+          ],
+          "refs": [
+            "Sipser, MIT18.404 Fall2020 Lecture4, pp2–5; Erickson note5, pp3–4"
+          ],
+          "pic": "Choose a binary parse tree for S→SS|a. Switch between leftmost and rightmost expansion and step through the actual frontier. Changing rewrite order keeps the chosen tree; changing the gallery index can change it."
+        },
+        {
+          "num": "5.3",
+          "kind": "Concept",
+          "name": "Balanced brackets: the Dyck language",
+          "deps": [
+            "toc-5.1",
+            "comb-5.3"
+          ],
+          "refs": [
+            "Erickson note5, balanced-parentheses examples; COMB5.3 actual reflection count"
+          ],
+          "pic": "Type a parenthesis word and inspect every prefix height and the actual stack-matched pairs. Break the nonnegative-prefix condition or leave unmatched opens. The empty word remains a valid case."
+        },
+        {
+          "num": "5.4",
+          "kind": "Definition",
+          "name": "Ambiguity",
+          "deps": [
+            "toc-5.2"
+          ],
+          "refs": [
+            "Sipser, MIT18.404 Fall2020 Lecture4, pp4–5; Cornell CS4120 Spring2026, Context-Free Grammars, parse trees and ambiguity"
+          ],
+          "pic": "Type a small numeric expression, enumerate every actual binary parse and select its abstract syntax tree. Compare their evaluated values. Parentheses constrain the family; a single parse is a legitimate outcome."
+        },
+        {
+          "num": "5.5",
+          "kind": "Method",
+          "name": "Precedence and associativity by grammar layering",
+          "deps": [
+            "toc-5.4"
+          ],
+          "refs": [
+            "Cornell CS4120 Spring2026, Context-Free Grammars, enforcing precedence and associativity; Top-down parsing, AST folds"
+          ],
+          "pic": "Parse an editable expression under the layered grammar. Switch the sum level's associativity and watch the actual AST and value change; 8−3−2 is 3 on the left and 7 on the right. Multiplication keeps higher precedence."
+        },
+        {
+          "num": "5.6",
+          "kind": "Theorem",
+          "name": "Inherently ambiguous languages",
+          "deps": [
+            "toc-5.4"
+          ],
+          "refs": [
+            "Mulmuley/Yuan Li, UChicago Lecture10 (2015), pp1–2: marked-tree pumping argument; arbitrary-arity extension and inherent-ambiguity application proved here"
+          ],
+          "pic": "Inspect overlap of the two equality languages and an actual component parse. At a diagonal word both components contribute a parse in the natural union grammar. The finite picture illustrates that witness; the marked-tree argument establishes the universal claim."
+        },
+        {
+          "num": "5.7",
+          "kind": "Theorem",
+          "name": "Regular languages are context-free",
+          "deps": [
+            "toc-5.1",
+            "toc-2.1",
+            "toc-2.3"
+          ],
+          "refs": [
+            "Sipser, MIT18.404 Fall2020 Lecture4, p10, regular/CFL comparison; explicit DFA construction proved here"
+          ],
+          "pic": "Edit every transition of a two-state DFA and its accepting states. Step through a typed token word while the corresponding right-linear sentential form follows the same run. Remove all accepting states to obtain an empty language."
+        },
+        {
+          "num": "5.8",
+          "kind": "Theorem",
+          "name": "Closure under union, concatenation and star",
+          "deps": [
+            "toc-5.1"
+          ],
+          "refs": [
+            "Mulmuley/Yuan Li, UChicago Lecture10 (2015), pp2–3: union, concatenation and star constructions"
+          ],
+          "pic": "Edit both component grammars, choose a closure construction and compare exact bounded language counts. Star uses only the left grammar. The actual renamed productions and resulting words are reported."
+        },
+        {
+          "num": "5.9",
+          "kind": "Theorem",
+          "name": "Chomsky normal form",
+          "deps": [
+            "toc-5.2"
+          ],
+          "refs": [
+            "Erickson, Models of Computation note5 (2018), pp15–18, Chomsky normal form; Longley, Edinburgh IADS Lecture22 (2024), slides11–14; fresh-start ε handling included explicitly"
+          ],
+          "pic": "Edit a grammar and step through the actual conversion. A six-rule window shows each intermediate grammar and a plot counts its distinct productions. Inspect nullable rules, unit cycles and ε at the fresh start."
+        },
+        {
+          "num": "5.10",
+          "kind": "Algorithm",
+          "name": "CYK parsing",
+          "deps": [
+            "toc-5.9"
+          ],
+          "refs": [
+            "John Longley, University of Edinburgh IADS Lecture22, 6February2024, slides6–10 and15; empty input handled separately"
+          ],
+          "pic": "Type a word and grammar, then watch the real triangular chart fill. Cells show variable counts; the readout lists the full current set and one selected variable's actual witness tree. A computed empty cell shows 0, while an uncomputed cell stays blank."
+        },
+        {
+          "num": "5.11",
+          "kind": "Theorem",
+          "name": "Greibach normal form",
+          "deps": [
+            "toc-5.9"
+          ],
+          "refs": [
+            "Woodcock, UMBC CMSC451, Greibach Normal Form lecture, 19March1998: substitution, immediate left recursion and ordered conversion; ε and unproductive cases supplied explicitly"
+          ],
+          "pic": "Convert an editable grammar and step through an actual leftmost derivation of a typed word. The plot counts terminal tokens after each rewrite. Try left recursion, an empty word, or a word with no parse."
+        },
+        {
+          "num": "5.12",
+          "kind": "Concept",
+          "name": "Backus–Naur form and programming-language syntax",
+          "deps": [
+            "toc-5.5"
+          ],
+          "see": [
+            "toc-5.15"
+          ],
+          "refs": [
+            "Cornell CS4120 Spring2026, Context-Free Grammars: syntax, derivations and ASTs; Bottom-up parsing: shift/reduce tables and stacks"
+          ],
+          "pic": "Type a tiny assignment and trace the generated parser's actual actions and consumed tokens. The accepted concrete tree retains identifier and numeric lexemes. Break the expression syntax to locate its first offending token."
+        },
+        {
+          "num": "5.13",
+          "kind": "Concept",
+          "name": "The dangling-else ambiguity",
+          "deps": [
+            "toc-5.4"
+          ],
+          "refs": [
+            "Cornell CS4120 Spring2026, Context-Free Grammars: dangling else and matched/unmatched grammar"
+          ],
+          "pic": "Type a nested conditional, select one of all its actual ambiguous ASTs, then switch to the matched/unmatched grammar. The selected tree and a parenthesized branch description show the actual attachment."
+        },
+        {
+          "num": "5.14",
+          "kind": "Algorithm",
+          "name": "Predictive LL(1) parsing",
+          "deps": [
+            "toc-5.12",
+            "toc-5.2"
+          ],
+          "refs": [
+            "Cornell CS4120 Spring2026, Top-down parsing: NULLABLE, FIRST, FOLLOW, predictive table and conflicts"
+          ],
+          "pic": "Edit the grammar and word, inspect a selected variable's nullable/FIRST/FOLLOW facts and actual predictive-table row, then step through the stack. Insert common prefixes or left recursion to expose all conflicting cells."
+        },
+        {
+          "num": "5.15",
+          "kind": "Algorithm",
+          "name": "Shift-reduce (LR) parsing",
+          "deps": [
+            "toc-5.12",
+            "toc-5.2",
+            "toc-5.14"
+          ],
+          "refs": [
+            "Cornell CS4120 Spring2026, Bottom-up parsing: viable prefixes and state stacks; LR(1) parser construction: closure, goto and lookahead-specific reductions"
+          ],
+          "pic": "Edit a grammar and token word, then trace actual shifts and reductions. The state-stack plot follows the selected action. The accepted tree comes from those reductions. Try an unlayered expression grammar to encounter a real conflict."
+        },
+        {
+          "num": "5.16",
+          "kind": "Paper",
+          "name": "On the Translation of Languages from Left to Right",
+          "paper": {
+            "authors": "Donald E. Knuth",
+            "year": 1965,
+            "title": "On the Translation of Languages from Left to Right",
+            "venue": "Information and Control 8 (6): 607–639",
+            "doi": "10.1016/S0019-9958(65)90426-2"
+          },
+          "introduces": [
+            "toc-5.15"
+          ],
+          "deps": [
+            "toc-5.1",
+            "toc-5.2",
+            "toc-5.15"
+          ],
+          "see": [
+            "toc-6.10"
+          ],
+          "refs": [
+            "Knuth (1965), bibliographic metadata only; original publisher body inaccessible (403), source review retained",
+            "Cornell CS4120 Spring2026, LR(1) parser construction: actual modern closure/goto/lookahead body"
+          ],
+          "verify": true,
+          "pic": "Edit a grammar, select an actual canonical state and inspect its dotted items, inherited lookaheads, outgoing edges and action cells. Compare a layered grammar with an ambiguous one. Full selected item strings remain in the readout when canvas labels are abbreviated."
+        }
+      ]
     },
     // ───────────────────────────────────────────────────────────── 6
     {
