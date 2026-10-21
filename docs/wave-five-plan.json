@@ -17509,9 +17509,9 @@
   "authorization": "User confirmed previous work was done and explicitly directed Wave 5 authoring to begin on 2026-10-21.",
   "progress": {
     "total": 1031,
-    "written": 115,
-    "remaining": 916,
-    "writtenChapters": 9,
+    "written": 177,
+    "remaining": 854,
+    "writtenChapters": 15,
     "chapters": [
       {
         "collection": "ode",
@@ -17705,10 +17705,21 @@
         "collection": "num",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "num-5.1",
+          "num-5.2",
+          "num-5.3",
+          "num-5.4",
+          "num-5.5",
+          "num-5.6",
+          "num-5.7",
+          "num-5.8",
+          "num-5.9",
+          "num-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "nla",
@@ -17968,10 +17979,22 @@
         "collection": "kin",
         "chapter": 5,
         "total": 11,
-        "written": 0,
-        "remaining": 11,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 11,
+        "remaining": 0,
+        "writtenItems": [
+          "kin-5.1",
+          "kin-5.2",
+          "kin-5.3",
+          "kin-5.4",
+          "kin-5.5",
+          "kin-5.6",
+          "kin-5.7",
+          "kin-5.8",
+          "kin-5.9",
+          "kin-5.10",
+          "kin-5.11"
+        ],
+        "status": "written"
       },
       {
         "collection": "qchem",
@@ -18058,10 +18081,23 @@
         "collection": "ecol",
         "chapter": 5,
         "total": 12,
-        "written": 0,
-        "remaining": 12,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 12,
+        "remaining": 0,
+        "writtenItems": [
+          "ecol-5.1",
+          "ecol-5.2",
+          "ecol-5.3",
+          "ecol-5.4",
+          "ecol-5.5",
+          "ecol-5.6",
+          "ecol-5.7",
+          "ecol-5.8",
+          "ecol-5.9",
+          "ecol-5.10",
+          "ecol-5.11",
+          "ecol-5.12"
+        ],
+        "status": "written"
       },
       {
         "collection": "neuro",
@@ -18112,10 +18148,21 @@
         "collection": "epi",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "epi-5.1",
+          "epi-5.2",
+          "epi-5.3",
+          "epi-5.4",
+          "epi-5.5",
+          "epi-5.6",
+          "epi-5.7",
+          "epi-5.8",
+          "epi-5.10",
+          "epi-5.11"
+        ],
+        "status": "written"
       },
       {
         "collection": "imaging",
@@ -18202,10 +18249,21 @@
         "collection": "macro",
         "chapter": 5,
         "total": 10,
-        "written": 0,
-        "remaining": 10,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "macro-5.1",
+          "macro-5.2",
+          "macro-5.3",
+          "macro-5.4",
+          "macro-5.5",
+          "macro-5.6",
+          "macro-5.7",
+          "macro-5.8",
+          "macro-5.9",
+          "macro-5.10"
+        ],
+        "status": "written"
       },
       {
         "collection": "fin",
@@ -18307,10 +18365,20 @@
         "collection": "art",
         "chapter": 5,
         "total": 9,
-        "written": 0,
-        "remaining": 9,
-        "writtenItems": [],
-        "status": "planned"
+        "written": 9,
+        "remaining": 0,
+        "writtenItems": [
+          "art-5.1",
+          "art-5.2",
+          "art-5.3",
+          "art-5.4",
+          "art-5.5",
+          "art-5.6",
+          "art-5.7",
+          "art-5.8",
+          "art-5.9"
+        ],
+        "status": "written"
       },
       {
         "collection": "arch",

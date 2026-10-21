@@ -17,32 +17,32 @@ These chapters have source/mathematical review, checked visualizations and colle
 | Statistics 9: bootstrap and resampling | 13 | `f586f9e7` | [review](wave5-stat-review.md) |
 | Astronomy 5: radiative transfer | 9 | `641494dd` | [review](wave5-astro-review.md) |
 | Representation theory 5: group algebra | 14 | `0f879f70` | [review](wave5-rep-review.md) |
+| Macroeconomics 5: money and inflation | 10 | `7159c893` | [review](wave5-macro-review.md) |
+| Epidemiology 5: study designs | 10 | `6612769b` | [review](wave5-epi-review.md) |
+| Numerical analysis 5: splines and differentiation | 10 | `110cfdbc` | [review](wave5-num-review.md) |
+| Chemical kinetics 5: solution and electrode reactions | 11 | `7ea6ece3`, `8613ac03` | [review](wave5-kin-review.md) |
+| Art 5: perceptual colour spaces | 9 | `09d7f36f` | [review](wave5-art-review.md) |
+| Ecology 5: predation, disease and mutualism | 12 | `1ec8d0e9` | [review](wave5-ecol-review.md) |
 
-**115 new ideas accepted in nine chapters.** Music 9.11 and 9.22 deliberately retain source uncertainty flags for unread original passages; the modern finite mathematics is independently checked, and the historical scope remains explicit.
+**177 new ideas accepted in fifteen chapters.** Music 9.11 and 9.22 deliberately retain source uncertainty flags for unread original passages; the modern finite mathematics is independently checked, and the historical scope remains explicit. Art 5.4 retains its disclosed secondary MacAdam numerical-table flag; the original experimental conditions and qualitative conclusion were checked directly.
 
 ## Integration checks
 
-The accepted production snapshot is commit `0f879f70`, exported to `/tmp/atlas-wave5-accepted-xb9n693f`. Its checks are independent of ongoing authoring edits.
+The accepted production snapshot is commit `8613ac03`, exported to `/tmp/atlas-wave5-fifteen-foxuinyf`. Its checks exclude ongoing unrelated drafts.
 
-- Exact-export regression suite: **1,721/1,721 tests pass**, including all six UI tests; no skipped or cancelled tests. Log `/tmp/atlas-wave5-accepted-tests.log`. The working-tree run also passed 1,737 tests (`/tmp/atlas-wave5-nine-chapter-tests.log`); the export excludes 16 pre-existing uncommitted verification tests, rather than dropping accepted tests.
-- Exact-export strict build: **6,799 written + 6,775 planned ideas, 459 chapters, 85 collections; 0 errors and 0 warnings**. Home JSON is **113,052 bytes gzip**. Log `/tmp/atlas-wave5-accepted-build.log`.
-- Exact-export full static: **6,736 visualizations, 0 errors and 0 warnings**. Log `/tmp/atlas-wave5-accepted-static.log`.
-- Exact-export page sweep: **137 routes, 0 errors**, covering every one of the 115 new ideas, all nine new chapter pages and nine collection pages, and home/map/status/about. Routes `/tmp/atlas-wave5-accepted-smoke-routes.json`, log `/tmp/atlas-wave5-accepted-smoke.log`.
-- Native control matrix for the nine accepted chapters: **460 distinct item/theme/width cases**, covering light/dark and 1200/320px, with **2,256 real control actions**. Root independently ran the first seven chapters; the astronomy reviewer reran all 36 final astronomy cases, and representation has an author 56-case run plus independent source/math/layout/counterexample checks. Logs and inspected captures are recorded in each review. Final layout refreshes cover ML 5.2b, vcalc 5.4 and PDE 5.9/5.11/5.13; repeated cases are not extra coverage. Root captures live under `/tmp/atlas-wave5-native/`, and final peer astronomy captures under `/tmp/atlas-wave5-astro-reviewed/`.
+- Exact-export regression suite: **1,792/1,792 tests pass**, including all six UI tests, with no skips or cancellations. Log `/tmp/atlas-wave5-fifteen-accepted-tests.log`. A working-tree run passed **1,808/1,808 tests** (`/tmp/atlas-wave5-fifteen-working-tests.log`); the export excludes 16 pre-existing uncommitted verification tests. All accepted chapter tests remain included.
+- Exact-export strict build: **6,861 written + 6,713 planned ideas, 465 chapters, 85 collections; 0 errors and 0 warnings**. Home JSON is **113,186 bytes gzip**. Log `/tmp/atlas-wave5-fifteen-accepted-build.log`.
+- Exact-export full static: **6,798 visualizations, 0 errors and 0 warnings**. Log `/tmp/atlas-wave5-fifteen-accepted-static.log`.
+- Exact-export page sweep: **211 routes, 0 errors**, covering every one of the 177 new ideas, all fifteen new chapter pages and fifteen collection pages, and home/map/status/about. Routes `/tmp/atlas-wave5-fifteen-accepted-smoke-routes.json`, log `/tmp/atlas-wave5-fifteen-accepted-smoke.log`.
+- Native control matrix: **708 distinct item/theme/width cases**, covering light/dark and 1200/320px, with **3,684 real control actions**. Root independently ran the full matrix for thirteen chapters; the astronomy reviewer ran all 36 final astronomy cases, and representation has an author 56-case run plus independent source/math/layout/counterexample checks. Root captures live under `/tmp/atlas-wave5-native/`; final peer astronomy captures under `/tmp/atlas-wave5-astro-reviewed/`.
+- Final repaired-item reruns are additional evidence, not extra unique coverage: ML 5.2b, vector calculus 5.4, PDE 5.9/5.11/5.13; epidemiology 20 affected groups/144 actions; ecology 28 groups/120 actions plus the final 5.1/5.7 eight groups/32 actions. Kinetics 5.3/5.5/5.6 passes a separately instrumented **12-group/24-state** full-stroke gate, independently rerun by its peer and root, with minimum 0.5833 CSSpx clearance. Ecology's corresponding final gate has minimum 1.6413 CSSpx clearance. Mathematical routines were unchanged by these padding repairs.
 
-Chapter-specific checks add independent exact arithmetic, quadrature, ODE solutions, matrix solves, simulation laws, input/state checks and actual audio-buffer checks. Their reports distinguish finite illustrations and numerical error estimates from theorem proofs or measured scientific data.
+Chapter-specific checks add independent exact arithmetic, quadrature, ODE solutions, matrix solves, simulation laws, input/state checks and actual audio-buffer checks. Their reports distinguish finite illustrations and numerical error estimates from theorem proofs or measured scientific data. The art reviewer independently compared all 2,734 RIT rows, 34 Sharma pairs and 89 CIE cone rows; the epidemiology reviewer read the original historical tables and checked independent likelihood and sampling oracles.
+
+The earlier nine-chapter snapshot `0f879f70` passed 1,721 tests and 137 routes with no errors; logs remain under `/tmp/atlas-wave5-accepted-*`. The present snapshot adds six accepted chapters and their tests.
 
 ## Work continuing
 
-The next six author/review pairs are assigned:
+**854 new ideas remain in 65 Wave 5 collection chapters.** All fifteen current author/reviewer pairs have finished and frozen their bytes. Continue breadth-first from the remaining entries in the [frozen inventory](../wave-five.md), retaining its original chapter assignments. Follow MASTER_PLAN §7.2: source-led authoring, actual computations, both-theme native/visual checks, independent review, dependency reconciliation and collection-sized commits. Historical verification tasks are not prerequisites to repeat.
 
-| Chapter | Author | Independent reviewer |
-| --- | --- | --- |
-| Ecology 5 | `author_vcalc` | `review_smallworld` |
-| Epidemiology 5 | `author_ml` | `author_fluid` |
-| Macroeconomics 5 | `author_fluid` | `author_ml` |
-| Chemical kinetics 5 | `review_smallworld` | `author_vcalc` |
-| Numerical analysis 5 | `wave5_reviewer` | `review_music` |
-| Art 5 | `review_music` | `wave5_reviewer` |
-
-Authors finish their own source/math/browser/visual checks, then review their partner's chapter. Review documents are `docs/verification/wave5-<collection>-review.md`; request content fixes through the author to avoid simultaneous edits. Keep accepted bytes frozen and report readiness to root. Root integrates accepted collection-sized changes, refreshes source/dependency/build/static/native/page checks, and continues through the same frozen inventory. The goal remains unfinished.
+After the full frozen wave passes its end-of-wave gates, prepare the next breadth-first wave under the master plan. The continuous production goal remains unfinished. This local checkpoint is accepted development work; collection PRs and CI publication remain to be shipped under MASTER_PLAN §7.2.

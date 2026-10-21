@@ -1,6 +1,6 @@
 # Wave 5 — Numerical analysis chapter 5
 
-Author status, 2026-10-21: all ten planned items complete; ready for independent review. Owned files are new `content/num/ch05.js`, `ch05-b.js`, `ch05.shared.js`, the `tests/wave5-num*` checks and this report. Only chapter-5 syllabus rows were corrected: 5.5 now names compatible spline endpoints and 5.7 adds its actual B-spline prerequisite. No shared runtime, generated data, prior chapter or Git operation belongs to this authoring work.
+Author status, 2026-10-21: all ten planned items complete and independently accepted; source frozen. Owned files are new `content/num/ch05.js`, `ch05-b.js`, `ch05.shared.js`, the `tests/wave5-num*` checks and this report. Only chapter-5 syllabus rows were corrected: 5.5 now names compatible spline endpoints and 5.7 adds its actual B-spline prerequisite. No shared runtime, generated data, prior chapter or Git operation belongs to this authoring work.
 
 ## Primary sources and mathematical scope
 
@@ -36,6 +36,6 @@ Difference weights come from explicit cardinal-polynomial differentiation. Richa
 
 Individually inspected all ten light desktop defaults and all ten dark350 defaults. Inspected all28 alternative-mode images in contact sheets and the narrow clamped, maximum-matrix, endpoint-basis and zero-perturbation captures individually. Corrected continuous-slider formatting, log-floor/marker margins, tiny-error tick clipping and the zero-curve scale. The matrix remains legible at its largest offered size; finite-difference and Richardson tables fit the narrow layouts.
 
-Source is frozen for paired independent review by `review_music`; their report and root's frozen repository/native gates are separate from this author report. No known mathematical blocker remains.
+Source is frozen after paired independent acceptance by `review_music`, recorded in `docs/verification/wave5-num-review.md`; root's frozen repository/native gates remain separate from this author report. No known mathematical blocker remains.
 
 Independent review accepted: [source, rational/barycentric and final visual evidence](wave5-num-review.md). Root reran twelve mathematical groups and the final generic native matrix:40 theme/width groups,212 actions, no runtime/TeX/blank/layout failures (`/tmp/atlas-wave5-root-num-native.log`). Root inspected the narrow spline counterexample and spectral differentiation captures.
