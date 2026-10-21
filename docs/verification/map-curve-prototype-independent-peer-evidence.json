@@ -293,5 +293,12 @@
       "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa"
     },
     "claim": "Exact closed-world no normal writer inside original creation-to-bind lifetime. No mutation resilience; both own adversarial failures preserved."
+  },
+  "modelRuntime": {
+    "node": "v26.8.2",
+    "v8": "14.6.202.34-node.28",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "scope": "Own offline model runs only; root separate Node22 reproduction is not claimed as own evidence."
   }
 }

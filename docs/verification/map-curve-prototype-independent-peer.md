@@ -6,6 +6,8 @@ Reviewed producer `f8eb0b366bb98ff906315469f9cc022089f73465` and its report/evid
 
 ## Own evidence and preserved failures
 
+Own offline execution used Node26.8.2/V814.6.202.34-node.28, darwin arm64. Root's separately reported Node22 reproduction is not claimed as my execution and does not erase prior unrelated numerical findings.
+
 Fresh reproduction of the producer's exact comparison persisted6433 arithmetic/model checks,16 cases and22 actual-class fault contracts: old XY retains its expected released-group failure; proposed curve class passes those22 contracts. This reproduces the producer result rather than treating it as an independent oracle.
 
 The separate peer program `tests/verification-map-curve-independent-peer.mjs` executes actual curve class + original SceneEdges + original SceneBudget with RecordingGL. It independently runs seven bounded ownership/mapping/replay cases, two adversarial style-ID cases, and6144 seeded comparisons against the actual old computed segment-box method (2048 four-point Float32 ranges, three segments each). Every sampled curve box contains all four integer coordinates of each old computed segment box. This is supplemental finite evidence for the all-input proof in573a9a3, not a sample-based replacement for that proof or native rasterization.
