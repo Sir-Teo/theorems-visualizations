@@ -1,8 +1,8 @@
 {
   "version": 1,
   "started": "2026-10-20",
-  "status": "active-new-session-six-workers",
-  "objective": "Clear verification backlog, satisfy wave gates, then author Wave 5. Prioritize speed and quality.",
+  "status": "content-waves-authorized-handoff",
+  "objective": "Author, independently review and integrate Wave 5 and later breadth-first content waves efficiently. Map performance is deferred by user direction.",
   "baseCommit": "dad83c6",
   "originalCheckout": "/Users/teodev/Developer/theorems-visualizations",
   "policy": {
@@ -10,7 +10,7 @@
     "integration": "Coordinator alone integrates commits, edits global ledgers and updates MASTER_PLAN.",
     "acceptance": "Primary source comparison, independent calculations where applicable, native input and agent screenshot checks; retain all unsupported material claims as flags. Independent peer review before acceptance.",
     "outputs": "Unique server ports or ephemeral listeners and worker-specific temporary evidence directories. Performance measurements run without competing browser jobs.",
-    "wave5": "Prepared only until verification gates pass; do not relabel pending work as complete."
+    "wave5": "User authorized content authoring and future waves on 2026-10-20. Map performance is removed from wave gates. Preserve source restrictions and require content correctness, native visualization, dependency and independent-review checks per chapter and wave."
   },
   "coordinator": {
     "worktree": "/Users/teodev/.codex/worktrees/8510/theorems-visualizations",
@@ -21,19 +21,17 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Acceptedwrittenprerequisitegatecomplete:all64nonmathcollections\u226525writteninputs,0shortfall/unknowns,48furthercollections meettarget. Sourcequeue5unchanged.",
-      "Latest immutable checkpoint14 (5eb8fb42) passes all 2,233 tests on existing CI major Node22.23.3, strict/static/queue/inventory checks pass. Prior Node26 checkpoint13 failure and independent diagnostics remain unresolved compatibility evidence; no assertion/model/runtime policy changed.",
-      "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Frozen light/dark optimized cases, one current packed-XY fallback case, 32 curve tiny cases and one optimized current-light curve case are independently accepted at their exact correctness boundaries. The subsequent instrumented timing screen is independently verified as FAILED: cadence 10.96 to 7.59 draws/s and _draw wall p95 4.3 to 140 ms. Failed evidence is preserved; wider cases, production, lifecycle and 60 fps acceptance remain blocked.",
-      "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
+      "Content waves now authorized by the user; map performance is deferred and timing harness retired. Use docs/wave-continuation.md as the compact handoff.",
+      "Latest production checkpoint5eb8fb42 passes2233 tests on CI-major Node22.23.3; accepted written prerequisites complete across64 collections. Do not repeat old audits absent a relevant change.",
+      "Five existing source flags and the frozen BIGHIST3.5 restriction remain unchanged. No performance pass or experimental renderer adoption is claimed."
     ]
   },
   "workers": [
     {
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
-      "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
+      "status": "closed-previous-session",
+      "current": "Previous verification work complete; no new work assigned. Fresh content session supersedes prior Wave 5 hold; do not resume renderer work.",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,8 +40,8 @@
     {
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
-      "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
+      "status": "closed-previous-session",
+      "current": "Previous verification work complete; no new work assigned. Fresh content session supersedes prior Wave 5 hold; do not resume renderer work.",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -52,8 +50,8 @@
     {
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
-      "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
+      "status": "closed-previous-session",
+      "current": "Previous verification work complete; no new work assigned. Fresh content session supersedes prior Wave 5 hold; do not resume renderer work.",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -62,8 +60,8 @@
     {
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
-      "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
+      "status": "closed-previous-session",
+      "current": "Previous verification work complete; no new work assigned. Fresh content session supersedes prior Wave 5 hold; do not resume renderer work.",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -72,8 +70,8 @@
     {
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
-      "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
+      "status": "closed-previous-session",
+      "current": "Previous verification work complete; no new work assigned. Fresh content session supersedes prior Wave 5 hold; do not resume renderer work.",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -82,8 +80,8 @@
     {
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
-      "status": "available-all-jobs-closed",
-      "current": "Timing quiet hold released and independent failed-screen audit complete. All jobs closed; no further native, optimization or Wave 5 authorized.",
+      "status": "closed-previous-session",
+      "current": "Previous verification work complete; no new work assigned. Fresh content session supersedes prior Wave 5 hold; do not resume renderer work.",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -3446,7 +3444,7 @@
     "nativePeerReport": "docs/verification/map-curve-edge-native-independent-imaging-peer.md"
   },
   "curveCurrentTiming": {
-    "status": "independently-verified-failed-instrumented-performance-screen",
+    "status": "retired-by-user-failed-evidence-preserved",
     "planCommits": [
       "d849436efd072c512c3f2eb316cee3c0eadb1f74",
       "3376b17f6c4fe5297b04bb57ba9f9cc156181c34"
@@ -3491,7 +3489,11 @@
     "nativePeer": "44c10528c27d2470909055580b837e8110922a38",
     "nativePeerReport": "docs/verification/map-curve-timing-independent-imaging-peer.md",
     "additionalNativeAuthorised": false,
-    "allJobsClosed": true
+    "allJobsClosed": true,
+    "activeHarness": false,
+    "blocksContentWaves": false,
+    "retirementReport": "docs/verification/map-performance-deferred.md",
+    "retiredSourceCommit": "51f12b83ad940b2af5476ba58827d7e72d6aaeff"
   },
   "s2ReadbackIsolation": {
     "status": "independently-reviewed-diagnostic-reference-unresolved",
@@ -3512,5 +3514,16 @@
     "detachedReferenceChannels": 3297,
     "referenceChanged": false,
     "nativePeer": "622af6b1b3d9c3dd528b38b09a76928a1673cafb"
+  },
+  "contentWaveExecution": {
+    "status": "authorized-awaiting-fresh-session",
+    "startWave": 5,
+    "continueFutureWaves": true,
+    "mapPerformanceGate": false,
+    "maxConcurrentWorkers": 3,
+    "handoff": "docs/wave-continuation.md",
+    "newSessionRequested": true,
+    "humanApprovalBetweenBatchesRequired": false,
+    "existingSourceRestrictionsPreserved": true
   }
 }

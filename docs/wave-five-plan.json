@@ -1,11 +1,12 @@
 {
   "version": 1,
   "wave": 5,
-  "status": "prepared-not-started",
+  "status": "authoring-authorized",
   "gates": {
-    "sourceReviewsPending": 39,
-    "automatedVerification": "pending",
-    "note": "Planning does not authorize the authoring phase to bypass MASTER_PLAN §7.3. Source evidence, automated checks and agent visual inspection must satisfy the remaining wave gates before starting."
+    "sourceReviewsPending": 5,
+    "automatedVerification": "required-per-chapter-and-wave",
+    "mapPerformance": "deferred-by-user",
+    "note": "The user authorized content waves on 2026-10-20 and removed map performance as a wave gate. Preserve existing source flags and restrictions; independently review and verify new chapters under MASTER_PLAN §7.3 before accepting them and advancing the wave."
   },
   "chapterCount": 80,
   "newItemCount": 1031,

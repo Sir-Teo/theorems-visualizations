@@ -20,9 +20,10 @@ test('Wave 5 covers each unfinished collection once, preserves existing items an
     assert.equal(chapter.prerequisites.unknown.length, 0);
     for (const id of chapter.prerequisites.later) assert.ok(!scheduled.has(id) && !atlas.items.some(i => i.id === id));
   }
-  assert.equal(plan.status, 'prepared-not-started');
+  assert.equal(plan.status, 'authoring-authorized');
   assert.equal(plan.gates.sourceReviewsPending, 265);
-  assert.equal(plan.gates.automatedVerification, 'pending');
+  assert.equal(plan.gates.automatedVerification, 'required-per-chapter-and-wave');
+  assert.equal(plan.gates.mapPerformance, 'deferred-by-user');
   assert.equal('humanVisualReview' in plan.gates, false);
   assert.equal('humanListeningReview' in plan.gates, false);
 });

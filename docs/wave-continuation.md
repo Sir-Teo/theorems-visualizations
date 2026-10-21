@@ -1,0 +1,31 @@
+# Content waves: compact execution handoff
+
+## User authorization and immediate action
+
+The user explicitly removed the performance gate and asked to start Wave 5 and future waves autonomously in a fresh session, using effective multi-agent work without wasting tokens. This supersedes older instructions that blocked content authoring on map timing, matrix or private prototype lifecycle work. **Start authoring, not another planning/audit loop.** Continue successive breadth-first waves after their remaining content gates pass, without requesting routine approval between batches.
+
+Work only in `/Users/teodev/.codex/worktrees/8510/theorems-visualizations`, branch `codex/atlas-continuation`, using that absolute `workdir` for tools even if the new chat starts elsewhere. The previous coordinator stops editing after dispatch. Never edit `/Users/teodev/Developer/theorems-visualizations`: it contains valuable unrelated drafts. Do not reset/clean old worktrees or stage the `node_modules` symlink.
+
+Read AUTHORING.md, MASTER_PLAN §7.2–7.3, the relevant docs/fields.md sections and docs/wave-five-plan.json. Do not load the huge historical coordination/evidence files by default. Wave 5 contains 80 chapters / 1,031 new items / two preserved written entries. Chapter sources/syllabi remain authoritative. Current totals are 6,684 written / 6,890 planned / 85 collections. No new chapter content was created by the handoff.
+
+## Efficient execution
+
+Use one coordinator and at most **three concurrent subagents**, preferably two chapter authors and one independent reviewer. The user authorizes delegation. Spawn with focused task context (`fork_turns: none` where available), exact file ownership, required source references, acceptance criteria and a concise expected result. Do not copy this chat or the renderer audit history into workers. Reuse workers for related tasks; no nested fan-out or separate UI chats per chapter.
+
+Start with two independent chapters whose external prerequisites are written: candidate lanes are VCALC chapter 5 and CTRL chapter 5; verify their current plan records first. Avoid blocked old-source items as initial work. Authors own disjoint chapter/part/helper/test paths. Coordinator alone edits shared ledgers, generated inventories and MASTER_PLAN, and serializes integration. If isolation is needed, create dedicated worktrees from the handoff commit; never base them on the original checkout's drafts.
+
+Research actual primary/official sources for each chapter's statements and numerical claims. Review source hypotheses, complete native interactions, light/dark pixels, honest numerical models, prerequisite use, missing/empty/boundary cases and touched bridges. Reviewer must be independent of the author. Return actionable findings and a short commit/test/evidence summary; fix within the same chapter until accepted. Keep an execution ledger of assigned/completed chapters and blockers; no enormous duplicated evidence JSON, transcript dumps, review-of-review chains or speculative harness projects.
+
+Run focused model/native checks for changed chapters. Run one integrated strict build/static/dependency/full-suite checkpoint per meaningful merged batch or wave; repeat only for changed code or unresolved failures. Do not run the full suite separately in each worker. Preserve real failed evidence without turning it into another global investigation. Functional chapter browser checks do not require six global quiet acknowledgements. Keep browser concurrency small; no giant full-atlas RGBA dumps or benchmarks.
+
+The latest unchanged production checkpoint `5eb8fb42` passed all 2,233 tests, strict/static checks and 112,515-byte gzip home JSON. All 64 non-math collections meet the accepted 25 written-input prerequisite gate. Reuse these baselines until relevant code/content changes. CI major is Node 22; `/tmp/atlas-ci-node22-20261020/node` is available and child PATH should select its directory. Existing untracked `node_modules` resolves Playwright. A separate Node 26 numerical finding is retained; do not restart that diagnosis as a wave prerequisite.
+
+## Boundaries that still apply
+
+Five old source flags remain: mathbio-3.14, pharm-3.12, imaging-3.18, circ-4.17 and bighist-3.5. Preserve uncertainty and source-access limits; do not clear them to accelerate waves. **BIGHIST3.5 source review was rejected by the service: no retry, route-around, semantic source review/render or acceptance of `bighist-3.5 → pma-8.6`.** The tested candidate remains unaccepted. This restriction concerns that old item; unrelated authorized content can proceed. Do not bypass passwords, paywalls or explicit preview limits. Keep other inaccessible originals as flagged backlog while working on independent chapters.
+
+The timing harness was removed from active scripts/tests. Map performance is deferred, not passed; production assets were not replaced. Do not resume timing, GPU, matrix, renderer optimization or private S2 diagnostics unless separately requested. Historical failures remain in Git reports and `/tmp/atlas-root-curve-timing-state`; do not delete them. The remaining content gates are build/dependency correctness, actual viz/native review, genuine cross-field inputs, touched bridges and home JSON ≤300 KB gzip. Apply these to completed chapter/batch/wave work, rather than requiring every unrelated historical investigation to close before writing.
+
+## Basis for the orchestration choice
+
+[OpenAI's multi-agent guide](https://developers.openai.com/api/docs/guides/responses-multi-agent) recommends independent bounded tasks and focused context, and warns that extra agents can increase token use and do poorly on shared mutable work. Applying that guidance here: a small chapter pipeline, one serial integrator, compact result messages and no duplicated coordinator sessions. This is a workflow choice, not a guarantee of token savings.

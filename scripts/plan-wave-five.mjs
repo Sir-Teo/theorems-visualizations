@@ -1,4 +1,4 @@
-// Prepare the next breadth-first wave without crossing its verification gate.
+// Plan the next breadth-first wave under the user-authorized content gates.
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -29,9 +29,9 @@ export function planWaveFive(atlas, sourceQueue) {
     }
     chapter.prerequisites = Object.fromEntries(Object.entries(groups).map(([key, values]) => [key, [...values].sort()]));
   }
-  return { version: 1, wave: 5, status: 'prepared-not-started',
-    gates: { sourceReviewsPending: sourceQueue.remainingFlags, automatedVerification: 'pending',
-      note: 'Planning does not authorize the authoring phase to bypass MASTER_PLAN §7.3. Source evidence, automated checks and agent visual inspection must satisfy the remaining wave gates before starting.' },
+  return { version: 1, wave: 5, status: 'authoring-authorized',
+    gates: { sourceReviewsPending: sourceQueue.remainingFlags, automatedVerification: 'required-per-chapter-and-wave', mapPerformance: 'deferred-by-user',
+      note: 'The user authorized content waves on 2026-10-20 and removed map performance as a wave gate. Preserve existing source flags and restrictions; independently review and verify new chapters under MASTER_PLAN §7.3 before accepting them and advancing the wave.' },
     chapterCount: next.length, newItemCount: next.reduce((n, c) => n + c.items.length, 0),
     existingItemCount: next.reduce((n, c) => n + c.alreadyWritten.length, 0), chapters: next };
 }
@@ -41,6 +41,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const plan = planWaveFive(atlas, queue);
   await writeFile(join(ROOT, 'docs/wave-five-plan.json'), JSON.stringify(plan, null, 2) + '\n');
   const rows = plan.chapters.map(c => `| ${c.collection} | ${c.chapter} · ${c.title} | ${c.items.length} | ${c.alreadyWritten.length} | ${c.prerequisites.later.length} |`).join('\n');
-  await writeFile(join(ROOT, 'docs/wave-five.md'), `# Wave 5 production inventory\n\nPrepared, **not started**. This inventory selects the earliest chapter with planned items in each unfinished collection. Existing items in partially written chapters are preserved.\n\n${plan.chapterCount} collections; ${plan.newItemCount} new items; ${plan.existingItemCount} items already written in those chapters. The [machine-readable plan](wave-five-plan.json) includes every item, source reference, picture brief and dependency classified as written, within the chapter, elsewhere in this wave, later, or unknown. Later prerequisites are visible authoring/reconciliation work, not silently treated as already available.\n\nThe source queue currently has **${queue.remainingFlags} pending reviews**. User review and subjective listening are not required. Start authoring only after the source and automated verification gates in [MASTER_PLAN §7.3](../MASTER_PLAN.md#73-gates-at-the-end-of-each-wave) are satisfied. This plan does not claim that those gates have passed.\n\nRegenerate with \`npm run wave5:plan\`. Syllabi remain authoritative; verify exact sources and hypotheses before authoring, keep dependencies acyclic, and review, reconcile and commit each collection separately.\n\n| Collection | Next chapter | New items | Already written | Later prerequisite IDs |\n|---|---|---:|---:|---:|\n${rows}\n`);
-  console.log(`Prepared Wave 5: ${plan.chapterCount} chapters, ${plan.newItemCount} new items; source and automated gates remain open. No chapter content created.`);
+  await writeFile(join(ROOT, 'docs/wave-five.md'), `# Wave 5 production inventory\n\n**Authoring authorized; content has not yet started in this inventory.** Map performance is deferred by user direction on 2026-10-20. This inventory selects the earliest chapter with planned items in each unfinished collection. Existing items in partially written chapters are preserved.\n\n${plan.chapterCount} collections; ${plan.newItemCount} new items; ${plan.existingItemCount} items already written in those chapters. The [machine-readable plan](wave-five-plan.json) includes every item, source reference, picture brief and dependency classified as written, within the chapter, elsewhere in this wave, later, or unknown. Later prerequisites are visible authoring/reconciliation work, not silently treated as already available.\n\nThe source queue currently has **${queue.remainingFlags} pending reviews**. User review and subjective listening are not required. Start content authoring under the updated [MASTER_PLAN §7.3](../MASTER_PLAN.md#73-gates-at-the-end-of-each-wave). Preserve existing source flags and access restrictions; source-check, independently review and verify each new chapter before accepting it. Map performance is not a start or completion gate. See the [execution handoff](wave-continuation.md).\n\nRegenerate with \`npm run wave5:plan\`. Syllabi remain authoritative; verify exact sources and hypotheses before authoring, keep dependencies acyclic, and review, reconcile and commit each collection separately.\n\n| Collection | Next chapter | New items | Already written | Later prerequisite IDs |\n|---|---|---:|---:|---:|\n${rows}\n`);
+  console.log(`Prepared Wave 5: ${plan.chapterCount} chapters, ${plan.newItemCount} new items; content authoring authorized, map performance deferred. Chapter acceptance still requires source review and content checks. No chapter content created.`);
 }
