@@ -24,49 +24,649 @@
       "width": 2976,
       "height": 2688,
       "tiles": 123,
-      "originalInstances": 3424784
+      "originalInstances": 3424784,
+      "all12Ordinals": [
+        {
+          "label": "pre-unselected-0",
+          "computedTiles": 123,
+          "observedTiles": 125,
+          "originalInstances": 3424784
+        },
+        {
+          "label": "pre-unselected-1",
+          "computedTiles": 123,
+          "observedTiles": 125,
+          "originalInstances": 3424784
+        },
+        {
+          "label": "pre-unselected-third",
+          "computedTiles": 123,
+          "observedTiles": 125,
+          "originalInstances": 3424784
+        },
+        {
+          "label": "pre-selected-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-third",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "A0",
+          "computedTiles": 123,
+          "observedTiles": 125,
+          "originalInstances": 3424784
+        },
+        {
+          "label": "A1",
+          "computedTiles": 123,
+          "observedTiles": 125,
+          "originalInstances": 3424784
+        },
+        {
+          "label": "A2",
+          "computedTiles": 123,
+          "observedTiles": 125,
+          "originalInstances": 3424784
+        },
+        {
+          "label": "A3",
+          "computedTiles": 123,
+          "observedTiles": 125,
+          "originalInstances": 3424784
+        }
+      ],
+      "matchesAll12Tiles": false
     },
     {
       "width": 3072,
       "height": 2604,
       "tiles": 125,
-      "originalInstances": 3441968
+      "originalInstances": 3441968,
+      "all12Ordinals": [
+        {
+          "label": "pre-unselected-0",
+          "computedTiles": 119,
+          "observedTiles": 125,
+          "originalInstances": 3397838
+        },
+        {
+          "label": "pre-unselected-1",
+          "computedTiles": 119,
+          "observedTiles": 125,
+          "originalInstances": 3397838
+        },
+        {
+          "label": "pre-unselected-third",
+          "computedTiles": 119,
+          "observedTiles": 125,
+          "originalInstances": 3397838
+        },
+        {
+          "label": "pre-selected-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-third",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "A0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3441968
+        },
+        {
+          "label": "A1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3441968
+        },
+        {
+          "label": "A2",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3441968
+        },
+        {
+          "label": "A3",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3441968
+        }
+      ],
+      "matchesAll12Tiles": false
     },
     {
       "width": 3472,
       "height": 2304,
       "tiles": 124,
-      "originalInstances": 3410866
+      "originalInstances": 3410866,
+      "all12Ordinals": [
+        {
+          "label": "pre-unselected-0",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "pre-unselected-1",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "pre-unselected-third",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "pre-selected-0",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "pre-selected-1",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "pre-selected-third",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "A0",
+          "computedTiles": 124,
+          "observedTiles": 125,
+          "originalInstances": 3410866
+        },
+        {
+          "label": "A1",
+          "computedTiles": 124,
+          "observedTiles": 125,
+          "originalInstances": 3410866
+        },
+        {
+          "label": "A2",
+          "computedTiles": 124,
+          "observedTiles": 125,
+          "originalInstances": 3410866
+        },
+        {
+          "label": "A3",
+          "computedTiles": 124,
+          "observedTiles": 125,
+          "originalInstances": 3410866
+        }
+      ],
+      "matchesAll12Tiles": false
     },
     {
       "width": 3584,
       "height": 2232,
       "tiles": 126,
-      "originalInstances": 3412970
+      "originalInstances": 3412970,
+      "all12Ordinals": [
+        {
+          "label": "pre-unselected-0",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "pre-unselected-1",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "pre-unselected-third",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "pre-selected-0",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "pre-selected-1",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "pre-selected-third",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "computedTiles": 14,
+          "observedTiles": 13,
+          "originalInstances": 3853194
+        },
+        {
+          "label": "A0",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "A1",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "A2",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        },
+        {
+          "label": "A3",
+          "computedTiles": 126,
+          "observedTiles": 125,
+          "originalInstances": 3412970
+        }
+      ],
+      "matchesAll12Tiles": false
     },
     {
       "width": 3906,
       "height": 2048,
       "tiles": 125,
-      "originalInstances": 3424708
+      "originalInstances": 3424708,
+      "all12Ordinals": [
+        {
+          "label": "pre-unselected-0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-unselected-1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-unselected-third",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-selected-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-third",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "A0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A2",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A3",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        }
+      ],
+      "matchesAll12Tiles": true
     },
     {
       "width": 3968,
       "height": 2016,
       "tiles": 125,
-      "originalInstances": 3424708
+      "originalInstances": 3424708,
+      "all12Ordinals": [
+        {
+          "label": "pre-unselected-0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-unselected-1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-unselected-third",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-selected-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-third",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "A0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A2",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A3",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        }
+      ],
+      "matchesAll12Tiles": true
     },
     {
       "width": 4032,
       "height": 1984,
       "tiles": 125,
-      "originalInstances": 3424708
+      "originalInstances": 3424708,
+      "all12Ordinals": [
+        {
+          "label": "pre-unselected-0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-unselected-1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-unselected-third",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-selected-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-third",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "A0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A2",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A3",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        }
+      ],
+      "matchesAll12Tiles": true
     },
     {
       "width": 4096,
       "height": 1953,
       "tiles": 125,
-      "originalInstances": 3424708
+      "originalInstances": 3424708,
+      "all12Ordinals": [
+        {
+          "label": "pre-unselected-0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-unselected-1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-unselected-third",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "pre-selected-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-third",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "computedTiles": 13,
+          "observedTiles": 13,
+          "originalInstances": 3852987
+        },
+        {
+          "label": "A0",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A1",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A2",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        },
+        {
+          "label": "A3",
+          "computedTiles": 125,
+          "observedTiles": 125,
+          "originalInstances": 3424708
+        }
+      ],
+      "matchesAll12Tiles": true
     }
   ],
   "maskDimensionsDirectlySaved": false,
@@ -3082,5 +3682,29 @@
         }
       ]
     }
-  ]
+  ],
+  "survivingMaskDimensions": [
+    {
+      "width": 3906,
+      "height": 2048,
+      "mainOriginalInstances": 3424708
+    },
+    {
+      "width": 3968,
+      "height": 2016,
+      "mainOriginalInstances": 3424708
+    },
+    {
+      "width": 4032,
+      "height": 1984,
+      "mainOriginalInstances": 3424708
+    },
+    {
+      "width": 4096,
+      "height": 1953,
+      "mainOriginalInstances": 3424708
+    }
+  ],
+  "aggregateMainOriginalInstancesProvenAcrossSurvivors": 3424708,
+  "representativeTileCoordinatesConditional": true
 }
