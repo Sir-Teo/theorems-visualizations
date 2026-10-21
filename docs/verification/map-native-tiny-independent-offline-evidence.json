@@ -1,0 +1,2019 @@
+{
+  "pass": true,
+  "scope": "source/protocol/offline partial native evidence only; first run remains stopped; no native retry/context restore/fullmap acceptance",
+  "preservedFiles": 4771,
+  "runnerExceptions": 2,
+  "addedFiles": [
+    "docs/verification/map-native-tiny-error-protocol-evidence.json",
+    "docs/verification/map-native-tiny-error-protocol-proposal.md",
+    "scripts/lib/map-native-tiny-error-contract.mjs",
+    "tests/verification-map-native-tiny-error-contract-model.mjs"
+  ],
+  "preservedSavedArtifacts": 135,
+  "observations": [
+    {
+      "case": "old-light-S1",
+      "status": "geometry worker failed",
+      "errors": [
+        "map is not defined",
+        "declared tiny native worker failure"
+      ],
+      "events": [
+        {
+          "type": "native-worker-error",
+          "isTrusted": true,
+          "message": "Uncaught Error: declared tiny native worker failure"
+        },
+        {
+          "type": "window-error",
+          "phase": "fault",
+          "message": "Uncaught ReferenceError: map is not defined",
+          "isTrusted": true
+        },
+        {
+          "type": "actual-worker-error-dispatch",
+          "phase": "fault",
+          "isTrusted": true,
+          "message": "Uncaught Error: declared tiny native worker failure"
+        },
+        {
+          "type": "window-error",
+          "phase": "fault",
+          "message": "Uncaught Error: declared tiny native worker failure",
+          "isTrusted": true
+        }
+      ],
+      "cleanup": {
+        "bytes": 0,
+        "owners": 0,
+        "pending": 0,
+        "worker": null,
+        "dead": true,
+        "sceneConnected": false,
+        "scratch": 0,
+        "nativeLive": 0,
+        "workersTerminated": true
+      }
+    },
+    {
+      "case": "old-light-S2",
+      "status": "Scene generation disposed",
+      "errors": [],
+      "events": [],
+      "cleanup": {
+        "bytes": 0,
+        "owners": 0,
+        "pending": 0,
+        "worker": null,
+        "dead": true,
+        "sceneConnected": false,
+        "scratch": 0,
+        "nativeLive": 0,
+        "workersTerminated": true
+      }
+    },
+    {
+      "case": "old-light-S3",
+      "status": "ready",
+      "errors": [],
+      "events": [],
+      "cleanup": {
+        "bytes": 0,
+        "owners": 0,
+        "pending": 0,
+        "worker": null,
+        "dead": true,
+        "sceneConnected": false,
+        "scratch": 0,
+        "nativeLive": 0,
+        "workersTerminated": true
+      }
+    },
+    {
+      "case": "old-dark-S1",
+      "status": "geometry worker failed",
+      "errors": [
+        "map is not defined",
+        "declared tiny native worker failure"
+      ],
+      "events": [
+        {
+          "type": "native-worker-error",
+          "isTrusted": true,
+          "message": "Uncaught Error: declared tiny native worker failure"
+        },
+        {
+          "type": "window-error",
+          "phase": "fault",
+          "message": "Uncaught ReferenceError: map is not defined",
+          "isTrusted": true
+        },
+        {
+          "type": "actual-worker-error-dispatch",
+          "phase": "fault",
+          "isTrusted": true,
+          "message": "Uncaught Error: declared tiny native worker failure"
+        },
+        {
+          "type": "window-error",
+          "phase": "fault",
+          "message": "Uncaught Error: declared tiny native worker failure",
+          "isTrusted": true
+        }
+      ],
+      "cleanup": {
+        "bytes": 0,
+        "owners": 0,
+        "pending": 0,
+        "worker": null,
+        "dead": true,
+        "sceneConnected": false,
+        "scratch": 0,
+        "nativeLive": 0,
+        "workersTerminated": true
+      }
+    },
+    {
+      "case": "old-dark-S2",
+      "status": "Scene generation disposed",
+      "errors": [],
+      "events": [],
+      "cleanup": {
+        "bytes": 0,
+        "owners": 0,
+        "pending": 0,
+        "worker": null,
+        "dead": true,
+        "sceneConnected": false,
+        "scratch": 0,
+        "nativeLive": 0,
+        "workersTerminated": true
+      }
+    },
+    {
+      "case": "old-dark-S3",
+      "status": "ready",
+      "errors": [],
+      "events": [],
+      "cleanup": {
+        "bytes": 0,
+        "owners": 0,
+        "pending": 0,
+        "worker": null,
+        "dead": true,
+        "sceneConnected": false,
+        "scratch": 0,
+        "nativeLive": 0,
+        "workersTerminated": true
+      }
+    },
+    {
+      "case": "repair-light-S1",
+      "status": "ready",
+      "errors": [
+        "declared tiny native worker failure"
+      ],
+      "events": [
+        {
+          "type": "native-worker-error",
+          "isTrusted": true,
+          "message": "Uncaught Error: declared tiny native worker failure"
+        },
+        {
+          "type": "actual-worker-error-dispatch",
+          "phase": "fault",
+          "isTrusted": true,
+          "message": "Uncaught Error: declared tiny native worker failure"
+        },
+        {
+          "type": "window-error",
+          "phase": "fault",
+          "message": "Uncaught Error: declared tiny native worker failure",
+          "isTrusted": true
+        }
+      ],
+      "cleanup": {
+        "bytes": 0,
+        "owners": 0,
+        "pending": 0,
+        "worker": null,
+        "dead": true,
+        "sceneConnected": false,
+        "scratch": 0,
+        "nativeLive": 0,
+        "workersTerminated": true
+      }
+    }
+  ],
+  "contractChecks": 111,
+  "acceptedPreservedRecords": 7,
+  "rejectedMutations": 104,
+  "artifactHashes": [
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/failure.json",
+      "bytes": 532768,
+      "sha256": "26a473d4a1be9e1cfaec8cb7e0673d2adc08e92cb3ddaeaca2a2f4726227c707"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/manifest.json",
+      "bytes": 26372,
+      "sha256": "50c17cba5f0dc1a2daa8a957f06b3655d457e43a94da9ffb3d4a086fcc9b3741"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/actual-final-canvas.png",
+      "bytes": 1487,
+      "sha256": "71e727456963fbe2b2e7548eaaa8a31d49a727e5b29e3a821641a0a152688e54"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/actual-final-canvas.raw",
+      "bytes": 921600,
+      "sha256": "0b150fd32588b1daca5569992ebe559c0102c837306b1af4c44d35128ec58366"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/cleanup.json",
+      "bytes": 172,
+      "sha256": "1582b272474ff9aa4c05f70798e7ce988f93ff2fbb321a17f14e9c0a8fa00904"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/complete-dom.png",
+      "bytes": 12615,
+      "sha256": "012dd8e89af683498c765d2c23352edc0e1786d28d128d6b90114f67586054c5"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/control-gpu-0.png",
+      "bytes": 6108,
+      "sha256": "fcbe3160c9f18554101ac94c5be000c84cd67dc0b07532183d4d47c2417426f1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/control-gpu-0.raw",
+      "bytes": 921600,
+      "sha256": "c7dfd9d5824c8bfba77af1198442b7daf262b14b6ce41c9544c0db5a2b5dcad7"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/control-reference.png",
+      "bytes": 6177,
+      "sha256": "e0647c648592506465eab6405d20a287f1a138d8f6e5dc8bc150d9dd2b72684b"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/control-reference.raw",
+      "bytes": 921600,
+      "sha256": "276af0001c1fb5569dfd0aaa8b81155a2ca896e3893f3c20711ad0d1be30c6b1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/control-vs-canvas-difference.png",
+      "bytes": 4742,
+      "sha256": "99ebd63ca69d3ce2aa51b408d00b9e5048bba5fbc539ff1306de94c12c392a9a"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/fallback-vs-reference-difference.png",
+      "bytes": 5115,
+      "sha256": "1a66d492e79040848a74d5c2c96ee191a4fdbacf6cee008a9726fcebe81b1eba"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/fault-before-fallback-1.png",
+      "bytes": 1487,
+      "sha256": "71e727456963fbe2b2e7548eaaa8a31d49a727e5b29e3a821641a0a152688e54"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/fault-before-fallback-1.raw",
+      "bytes": 921600,
+      "sha256": "0b150fd32588b1daca5569992ebe559c0102c837306b1af4c44d35128ec58366"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/metadata.raw",
+      "bytes": 22921,
+      "sha256": "5c0774e3755cceb09cafedbb62b2b920e6753fa85b2ffafcb86abe2016615226"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/pixel-comparisons.json",
+      "bytes": 362,
+      "sha256": "ef81318e222433690967ef514d364cc7b476c61c2e6d151794258841a1001ebf"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/raw-before-assertions.json",
+      "bytes": 45443,
+      "sha256": "c2369f51463e161a23cad60545d41bc58898a89517cf2cf1fc929182fc45cea9"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/reference.png",
+      "bytes": 6177,
+      "sha256": "e0647c648592506465eab6405d20a287f1a138d8f6e5dc8bc150d9dd2b72684b"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S1/reference.raw",
+      "bytes": 921600,
+      "sha256": "276af0001c1fb5569dfd0aaa8b81155a2ca896e3893f3c20711ad0d1be30c6b1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/actual-final-canvas.png",
+      "bytes": 4164,
+      "sha256": "0b003447a20eb10961799bf7d5d6dcd25ca38462cee3001058e5ea5a62ab513f"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/actual-final-canvas.raw",
+      "bytes": 921600,
+      "sha256": "4784d58ad97161c314199afde53c0a43db2de62a844ef74fc5452da39adc31f6"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/cleanup.json",
+      "bytes": 172,
+      "sha256": "1582b272474ff9aa4c05f70798e7ce988f93ff2fbb321a17f14e9c0a8fa00904"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/complete-dom.png",
+      "bytes": 14830,
+      "sha256": "68b9ab6b379fdae0ba27118ae20dde656c3605f4d28d819e336889277ffbf838"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/control-gpu-0.png",
+      "bytes": 6108,
+      "sha256": "fcbe3160c9f18554101ac94c5be000c84cd67dc0b07532183d4d47c2417426f1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/control-gpu-0.raw",
+      "bytes": 921600,
+      "sha256": "c7dfd9d5824c8bfba77af1198442b7daf262b14b6ce41c9544c0db5a2b5dcad7"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/control-reference.png",
+      "bytes": 6177,
+      "sha256": "e0647c648592506465eab6405d20a287f1a138d8f6e5dc8bc150d9dd2b72684b"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/control-reference.raw",
+      "bytes": 921600,
+      "sha256": "276af0001c1fb5569dfd0aaa8b81155a2ca896e3893f3c20711ad0d1be30c6b1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/control-vs-canvas-difference.png",
+      "bytes": 4742,
+      "sha256": "99ebd63ca69d3ce2aa51b408d00b9e5048bba5fbc539ff1306de94c12c392a9a"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/fallback-vs-reference-difference.png",
+      "bytes": 2860,
+      "sha256": "ff4bd911492fbf0dc15ddf0cd2e9b21644497ea467e1235ea48a79aded888ca9"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/fault-before-fallback-1.png",
+      "bytes": 6108,
+      "sha256": "fcbe3160c9f18554101ac94c5be000c84cd67dc0b07532183d4d47c2417426f1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/fault-before-fallback-1.raw",
+      "bytes": 921600,
+      "sha256": "c7dfd9d5824c8bfba77af1198442b7daf262b14b6ce41c9544c0db5a2b5dcad7"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/fault-canvas-2.png",
+      "bytes": 4164,
+      "sha256": "0b003447a20eb10961799bf7d5d6dcd25ca38462cee3001058e5ea5a62ab513f"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/fault-canvas-2.raw",
+      "bytes": 921600,
+      "sha256": "4784d58ad97161c314199afde53c0a43db2de62a844ef74fc5452da39adc31f6"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/fault-canvas-3.png",
+      "bytes": 4164,
+      "sha256": "0b003447a20eb10961799bf7d5d6dcd25ca38462cee3001058e5ea5a62ab513f"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/fault-canvas-3.raw",
+      "bytes": 921600,
+      "sha256": "4784d58ad97161c314199afde53c0a43db2de62a844ef74fc5452da39adc31f6"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/metadata.raw",
+      "bytes": 51878,
+      "sha256": "26a2ff2ff65fe768325ea41a5300d72ea3744e6c19205d88dc6e71524a4f2458"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/pixel-comparisons.json",
+      "bytes": 363,
+      "sha256": "81e37aa19959209823ad198432cd5e964a9d0d76a5393b89d6693e189eaa4c39"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/raw-before-assertions.json",
+      "bytes": 108516,
+      "sha256": "6df1f41c71dab8342bd0af5780d3915b17644ebe3b983dde6d185fa50bbb6a23"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/reference.png",
+      "bytes": 4181,
+      "sha256": "0604d500c3e383ccec30adf072f68aa5006df931a123261c8f3e1a12498f4d6c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S2/reference.raw",
+      "bytes": 921600,
+      "sha256": "11feca9108878f01cf056af1776bbedef6edf662e79e309a4c3be8fe36fd9494"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/actual-final-canvas.png",
+      "bytes": 69,
+      "sha256": "a383394a91ef0af682e9f3c4d3aea6a1313d3973e70ba2b5d3c14abe09f3d694"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/actual-final-canvas.raw",
+      "bytes": 4,
+      "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/cleanup.json",
+      "bytes": 172,
+      "sha256": "1582b272474ff9aa4c05f70798e7ce988f93ff2fbb321a17f14e9c0a8fa00904"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/complete-dom.png",
+      "bytes": 16206,
+      "sha256": "64e991a0fbdeb023161050c1f593272d4a131a676ccbf39c051822b13d18962f"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/control-gpu-0.png",
+      "bytes": 6108,
+      "sha256": "fcbe3160c9f18554101ac94c5be000c84cd67dc0b07532183d4d47c2417426f1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/control-gpu-0.raw",
+      "bytes": 921600,
+      "sha256": "c7dfd9d5824c8bfba77af1198442b7daf262b14b6ce41c9544c0db5a2b5dcad7"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/control-reference.png",
+      "bytes": 6177,
+      "sha256": "e0647c648592506465eab6405d20a287f1a138d8f6e5dc8bc150d9dd2b72684b"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/control-reference.raw",
+      "bytes": 921600,
+      "sha256": "276af0001c1fb5569dfd0aaa8b81155a2ca896e3893f3c20711ad0d1be30c6b1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/control-vs-canvas-difference.png",
+      "bytes": 4742,
+      "sha256": "99ebd63ca69d3ce2aa51b408d00b9e5048bba5fbc539ff1306de94c12c392a9a"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/fault-gpu-1.png",
+      "bytes": 5881,
+      "sha256": "a66d580f7d30e3e5dcb393dd458f0f991981a98fd6336c6b77ccb1da752382e0"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/fault-gpu-1.raw",
+      "bytes": 921600,
+      "sha256": "597d3f7d78c235d0702e94c36560a518a4629e77c4e6062e52b5dc78b3078941"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/metadata.raw",
+      "bytes": 18982,
+      "sha256": "1f0b0a66b07d8960d588ff0eb5ed1157897072f718cd24db97623035029e5fe5"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/pixel-comparisons.json",
+      "bytes": 180,
+      "sha256": "436d2c953140ec81be244ca3e92ec042e12aab2364a5534b63d4b003eecbfd4c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/raw-before-assertions.json",
+      "bytes": 36419,
+      "sha256": "80915ba6c589f992443888ebab7783afc0680102266ffacbf201647cbd54a2ed"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/reference.png",
+      "bytes": 6177,
+      "sha256": "e0647c648592506465eab6405d20a287f1a138d8f6e5dc8bc150d9dd2b72684b"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-dark-S3/reference.raw",
+      "bytes": 921600,
+      "sha256": "276af0001c1fb5569dfd0aaa8b81155a2ca896e3893f3c20711ad0d1be30c6b1"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/actual-final-canvas.png",
+      "bytes": 1487,
+      "sha256": "abd82bb3d944d06a3a9f1024574a6c4a04c5e7bae2690dd4c6716ebf8dbcabcd"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/actual-final-canvas.raw",
+      "bytes": 921600,
+      "sha256": "0b150fd32588b1daca5569992ebe559c0102c837306b1af4c44d35128ec58366"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/cleanup.json",
+      "bytes": 172,
+      "sha256": "1582b272474ff9aa4c05f70798e7ce988f93ff2fbb321a17f14e9c0a8fa00904"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/complete-dom.png",
+      "bytes": 11959,
+      "sha256": "f80335a4f5a08c6e855d8dca56ee4a07ad8c7abf0945ec719608abb3ef2e31f8"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/control-gpu-0.png",
+      "bytes": 6501,
+      "sha256": "d7c89720723620ea444766be0b502ae66f16841608a111502f13f37398708e4d"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/control-gpu-0.raw",
+      "bytes": 921600,
+      "sha256": "afce0cf53293590c7e54fd05449229f84e64bbcff849588b90c01a68855be531"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/control-reference.png",
+      "bytes": 6667,
+      "sha256": "444956ffa5e57a0cff688b367f879e5fd38b392cec7098435957e562da7ef71c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/control-reference.raw",
+      "bytes": 921600,
+      "sha256": "9795415d020b8b045e0f4cbf9574b83eff9b530bf6b55b1dc0255882e44b9c73"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/control-vs-canvas-difference.png",
+      "bytes": 4741,
+      "sha256": "ee54fec120d913b9bb6ec60f9ab2fddd315a2b34b37ad22e80d5b87d8b38cd81"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/fallback-vs-reference-difference.png",
+      "bytes": 5426,
+      "sha256": "134efbdb6c046bf138223d4ab3c7a7bb3624643b7f90397844b9a597ea0c1505"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/fault-before-fallback-1.png",
+      "bytes": 1487,
+      "sha256": "abd82bb3d944d06a3a9f1024574a6c4a04c5e7bae2690dd4c6716ebf8dbcabcd"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/fault-before-fallback-1.raw",
+      "bytes": 921600,
+      "sha256": "0b150fd32588b1daca5569992ebe559c0102c837306b1af4c44d35128ec58366"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/metadata.raw",
+      "bytes": 22922,
+      "sha256": "bacbcbfdcf7b79a25a6485ec9a47d837432e01c413f853e7495d2009cc877baf"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/pixel-comparisons.json",
+      "bytes": 354,
+      "sha256": "0e4c6b6820b2faadfac4506bda4cc9c2f33715307c866d0619f9efa90eb5cafe"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/raw-before-assertions.json",
+      "bytes": 45444,
+      "sha256": "c735cee8e5fb1c9906bbafef6b55211b8c172e535b2b04f4512ba0ba1c64c25e"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/reference.png",
+      "bytes": 6667,
+      "sha256": "444956ffa5e57a0cff688b367f879e5fd38b392cec7098435957e562da7ef71c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S1/reference.raw",
+      "bytes": 921600,
+      "sha256": "9795415d020b8b045e0f4cbf9574b83eff9b530bf6b55b1dc0255882e44b9c73"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/actual-final-canvas.png",
+      "bytes": 4306,
+      "sha256": "31b85bb17851937440ca9b1621f7b86110e62ab10b8a7a3559be6c82a5a362e4"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/actual-final-canvas.raw",
+      "bytes": 921600,
+      "sha256": "d23157dea4aa595a1fee223abeb54077633fbd005e24ad1ecaf545802a7f85dc"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/cleanup.json",
+      "bytes": 172,
+      "sha256": "1582b272474ff9aa4c05f70798e7ce988f93ff2fbb321a17f14e9c0a8fa00904"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/complete-dom.png",
+      "bytes": 14421,
+      "sha256": "8b923d5e172892c5c57829e01dc9e4a192933d431b2b0dc93fcd0a1730d3bdc2"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/control-gpu-0.png",
+      "bytes": 6501,
+      "sha256": "d7c89720723620ea444766be0b502ae66f16841608a111502f13f37398708e4d"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/control-gpu-0.raw",
+      "bytes": 921600,
+      "sha256": "afce0cf53293590c7e54fd05449229f84e64bbcff849588b90c01a68855be531"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/control-reference.png",
+      "bytes": 6667,
+      "sha256": "444956ffa5e57a0cff688b367f879e5fd38b392cec7098435957e562da7ef71c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/control-reference.raw",
+      "bytes": 921600,
+      "sha256": "9795415d020b8b045e0f4cbf9574b83eff9b530bf6b55b1dc0255882e44b9c73"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/control-vs-canvas-difference.png",
+      "bytes": 4741,
+      "sha256": "ee54fec120d913b9bb6ec60f9ab2fddd315a2b34b37ad22e80d5b87d8b38cd81"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/fallback-vs-reference-difference.png",
+      "bytes": 2860,
+      "sha256": "d5fd20ee51efb5f6502033be0ef422e6e44784a80119a793245e734a5b718cbd"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/fault-before-fallback-1.png",
+      "bytes": 6501,
+      "sha256": "d7c89720723620ea444766be0b502ae66f16841608a111502f13f37398708e4d"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/fault-before-fallback-1.raw",
+      "bytes": 921600,
+      "sha256": "afce0cf53293590c7e54fd05449229f84e64bbcff849588b90c01a68855be531"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/fault-canvas-2.png",
+      "bytes": 4306,
+      "sha256": "31b85bb17851937440ca9b1621f7b86110e62ab10b8a7a3559be6c82a5a362e4"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/fault-canvas-2.raw",
+      "bytes": 921600,
+      "sha256": "d23157dea4aa595a1fee223abeb54077633fbd005e24ad1ecaf545802a7f85dc"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/fault-canvas-3.png",
+      "bytes": 4306,
+      "sha256": "31b85bb17851937440ca9b1621f7b86110e62ab10b8a7a3559be6c82a5a362e4"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/fault-canvas-3.raw",
+      "bytes": 921600,
+      "sha256": "d23157dea4aa595a1fee223abeb54077633fbd005e24ad1ecaf545802a7f85dc"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/metadata.raw",
+      "bytes": 51879,
+      "sha256": "f148e8aa71915c10e5a82968e3d771be860578f08be072face07fa3cdf04be84"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/pixel-comparisons.json",
+      "bytes": 355,
+      "sha256": "e0eab18a73df8f21e4b990568862b10b33ad5709debe01149b1e96c71dd60449"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/raw-before-assertions.json",
+      "bytes": 108517,
+      "sha256": "ac1202d2727012ab22456e1a3f8320992bab24c84df2c82d278f71b21a6834e4"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/reference.png",
+      "bytes": 4438,
+      "sha256": "79328fb3b698f6c3948201ca57bb7cf1651e6ff4c567695cae3df859334f7e9f"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S2/reference.raw",
+      "bytes": 921600,
+      "sha256": "7fd820eb5e7a078e87ed90775193b9c079b1f6e5ee1fe5fa32107302df97cf45"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/actual-final-canvas.png",
+      "bytes": 69,
+      "sha256": "612a3a2ad917dc97ea5770451acfbf5fffc3d33ec9ff25b36fd2878aab042764"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/actual-final-canvas.raw",
+      "bytes": 4,
+      "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/cleanup.json",
+      "bytes": 172,
+      "sha256": "1582b272474ff9aa4c05f70798e7ce988f93ff2fbb321a17f14e9c0a8fa00904"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/complete-dom.png",
+      "bytes": 16113,
+      "sha256": "f9f840b8ed882f4c5c52fd46fa5790c8ca809c81b3315d284314727566478ab6"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/control-gpu-0.png",
+      "bytes": 6501,
+      "sha256": "d7c89720723620ea444766be0b502ae66f16841608a111502f13f37398708e4d"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/control-gpu-0.raw",
+      "bytes": 921600,
+      "sha256": "afce0cf53293590c7e54fd05449229f84e64bbcff849588b90c01a68855be531"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/control-reference.png",
+      "bytes": 6667,
+      "sha256": "444956ffa5e57a0cff688b367f879e5fd38b392cec7098435957e562da7ef71c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/control-reference.raw",
+      "bytes": 921600,
+      "sha256": "9795415d020b8b045e0f4cbf9574b83eff9b530bf6b55b1dc0255882e44b9c73"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/control-vs-canvas-difference.png",
+      "bytes": 4741,
+      "sha256": "ee54fec120d913b9bb6ec60f9ab2fddd315a2b34b37ad22e80d5b87d8b38cd81"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/fault-gpu-1.png",
+      "bytes": 6298,
+      "sha256": "f9e577babf6fbbc28f7d3cd26feb4bd976c56877596a222f9439f5046daafe65"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/fault-gpu-1.raw",
+      "bytes": 921600,
+      "sha256": "88769643e249fbf8eacc871a9797c9db54a9614ff11c0df410cb9cc9daa92120"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/metadata.raw",
+      "bytes": 18983,
+      "sha256": "d11a276aa0e978f91dbcaa1f14fa931138ee353893ae0f8f78c818affbb9a881"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/pixel-comparisons.json",
+      "bytes": 172,
+      "sha256": "a98c6f9816259a4eff0371bf08f36d886b919c642c148d0e5d30639cf478a55d"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/raw-before-assertions.json",
+      "bytes": 36420,
+      "sha256": "dd1f6f6970f387e582c9516fd52d814466abcdd2781ba993addba8e26652c731"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/reference.png",
+      "bytes": 6667,
+      "sha256": "444956ffa5e57a0cff688b367f879e5fd38b392cec7098435957e562da7ef71c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/old-light-S3/reference.raw",
+      "bytes": 921600,
+      "sha256": "9795415d020b8b045e0f4cbf9574b83eff9b530bf6b55b1dc0255882e44b9c73"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/pending.json",
+      "bytes": 532325,
+      "sha256": "f0829807b90e455b1449d69fc692a1188ca607e0dd78cd3aaddabdd295b2408a"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/personal-sheets/critical-0.png",
+      "bytes": 25706,
+      "sha256": "9e0c76235633c64c6886dda095705553ba81f67d5561f88d2cfd1b12e59f9b2e"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/personal-sheets/critical-1.png",
+      "bytes": 26302,
+      "sha256": "798b1d168b719114190cc361066e205787115aa8f2b4a86443bf92366450e662"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/personal-sheets/critical-2.png",
+      "bytes": 31156,
+      "sha256": "bd2a2331a7a0395e25903acc414531eb83dd9ed6703523d55fc34a6998ddaf72"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/personal-sheets/critical-3.png",
+      "bytes": 15647,
+      "sha256": "cb57787b10d92d2805f8ff8b49f1be031e520860666ed0f4697f5f05bcf232a8"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/personal-sheets/critical-4.png",
+      "bytes": 8208,
+      "sha256": "b4802b141e3ee1b4ced791b08e849f2ccc3c541025735e528190bf96030c4e07"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/actual-final-canvas.png",
+      "bytes": 69,
+      "sha256": "612a3a2ad917dc97ea5770451acfbf5fffc3d33ec9ff25b36fd2878aab042764"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/actual-final-canvas.raw",
+      "bytes": 4,
+      "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/cleanup.json",
+      "bytes": 172,
+      "sha256": "1582b272474ff9aa4c05f70798e7ce988f93ff2fbb321a17f14e9c0a8fa00904"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/complete-dom.png",
+      "bytes": 16447,
+      "sha256": "0387a8387c4362a9daf2b9f2f620d2a1015010c9cd3ba198e7dcc59a123a9c81"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/control-gpu-0.png",
+      "bytes": 6501,
+      "sha256": "d7c89720723620ea444766be0b502ae66f16841608a111502f13f37398708e4d"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/control-gpu-0.raw",
+      "bytes": 921600,
+      "sha256": "afce0cf53293590c7e54fd05449229f84e64bbcff849588b90c01a68855be531"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/control-reference.png",
+      "bytes": 6667,
+      "sha256": "444956ffa5e57a0cff688b367f879e5fd38b392cec7098435957e562da7ef71c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/control-reference.raw",
+      "bytes": 921600,
+      "sha256": "9795415d020b8b045e0f4cbf9574b83eff9b530bf6b55b1dc0255882e44b9c73"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/control-vs-canvas-difference.png",
+      "bytes": 4741,
+      "sha256": "ee54fec120d913b9bb6ec60f9ab2fddd315a2b34b37ad22e80d5b87d8b38cd81"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/failure.json",
+      "bytes": 50918,
+      "sha256": "60985d12f4ec2f08eb375121321329e08f59a138b64e41ae41b40e077d68e7ee"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/fault-before-fallback-1.png",
+      "bytes": 1487,
+      "sha256": "abd82bb3d944d06a3a9f1024574a6c4a04c5e7bae2690dd4c6716ebf8dbcabcd"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/fault-before-fallback-1.raw",
+      "bytes": 921600,
+      "sha256": "0b150fd32588b1daca5569992ebe559c0102c837306b1af4c44d35128ec58366"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/fault-gpu-2.png",
+      "bytes": 6501,
+      "sha256": "d7c89720723620ea444766be0b502ae66f16841608a111502f13f37398708e4d"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/fault-gpu-2.raw",
+      "bytes": 921600,
+      "sha256": "afce0cf53293590c7e54fd05449229f84e64bbcff849588b90c01a68855be531"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/metadata.raw",
+      "bytes": 23338,
+      "sha256": "45b4d5ba14db706c4f5b10fcd14d5dea2282ff5e578cd489201fcebfdb6662c0"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/pixel-comparisons.json",
+      "bytes": 172,
+      "sha256": "a98c6f9816259a4eff0371bf08f36d886b919c642c148d0e5d30639cf478a55d"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/raw-before-assertions.json",
+      "bytes": 46088,
+      "sha256": "3275d7fa2e15d3c9d0cb202e7139a97f22a49f3631f6be611007c86b9592c9ee"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/reference.png",
+      "bytes": 6667,
+      "sha256": "444956ffa5e57a0cff688b367f879e5fd38b392cec7098435957e562da7ef71c"
+    },
+    {
+      "path": "/tmp/atlas-ctrl-native-lifecycle-first/repair-light-S1/reference.raw",
+      "bytes": 921600,
+      "sha256": "9795415d020b8b045e0f4cbf9574b83eff9b530bf6b55b1dc0255882e44b9c73"
+    }
+  ],
+  "firstBoundary": "35fc7302a68d3e584499e9e71297d1a3ef5a3cc4",
+  "protocolBoundary": "1730a9cc7b6a4a3d54c8abae09676240f16a9351",
+  "independentContractOutcomes": [
+    {
+      "name": "old-light-S1",
+      "expected": "pass",
+      "failure": null
+    },
+    {
+      "name": "old-light-S1/unexpected-pageerror",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n    'declared tiny native worker failure',\n+   'unrelated application failure'\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/fixture-failure",
+      "expected": "reject",
+      "failure": "no fixture failure\n+ actual - expected\n\n+ {\n+   message: 'failure'\n+ }\n- null\n"
+    },
+    {
+      "name": "old-light-S1/unknown-variant",
+      "expected": "reject",
+      "failure": "known tiny source variant"
+    },
+    {
+      "name": "old-light-S1/unknown-case",
+      "expected": "reject",
+      "failure": "known tiny fault case"
+    },
+    {
+      "name": "old-light-S1/missing-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n-   'map is not defined',\n    'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/wrong-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n+   'map is not defined unexpected',\n-   'map is not defined',\n    'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/duplicate-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n+   'map is not defined',\n    'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/missing-page-1",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n-   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/wrong-page-1",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n+   'declared tiny native worker failure unexpected'\n-   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/duplicate-page-1",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n    'declared tiny native worker failure',\n+   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/event-14-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n      type: 'native-worker-error'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "old-light-S1/event-14-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n      type: 'native-worker-error'\n    },\n    {\n"
+    },
+    {
+      "name": "old-light-S1/event-14-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: null,\n      type: 'native-worker-error'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught ReferenceError: map is not defined',\n"
+    },
+    {
+      "name": "old-light-S1/event-14-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: null,\n-     type: 'native-worker-error'\n-   },\n-   {\n-     isTrusted: true,\n      message: 'Uncaught ReferenceError: map is not defined',\n      phase: 'fault',\n      type: 'window-error'\n    },\n    {\n"
+    },
+    {
+      "name": "old-light-S1/event-14-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   },\n+   {\n+     isTrusted: true,\n      message: 'Uncaught ReferenceError: map is not defined',\n      phase: 'fault',\n      type: 'window-error'\n    },\n    {\n"
+    },
+    {
+      "name": "old-light-S1/event-17-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught ReferenceError: map is not defined',\n      phase: 'fault',\n      type: 'window-error'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "old-light-S1/event-17-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught ReferenceError: map is not defined',\n      phase: 'fault',\n      type: 'window-error'\n    },\n    {\n"
+    },
+    {
+      "name": "old-light-S1/event-17-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught ReferenceError: map is not defined',\n+     phase: 'unexpected',\n-     phase: 'fault',\n      type: 'window-error'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n"
+    },
+    {
+      "name": "old-light-S1/event-17-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n-     message: 'Uncaught ReferenceError: map is not defined',\n-     phase: 'fault',\n-     type: 'window-error'\n-   },\n-   {\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n"
+    },
+    {
+      "name": "old-light-S1/event-17-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'Uncaught ReferenceError: map is not defined',\n+     phase: 'fault',\n+     type: 'window-error'\n+   },\n+   {\n+     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n"
+    },
+    {
+      "name": "old-light-S1/event-18-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "old-light-S1/event-18-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n"
+    },
+    {
+      "name": "old-light-S1/event-18-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n"
+    },
+    {
+      "name": "old-light-S1/event-18-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      phase: 'fault',\n-     type: 'actual-worker-error-dispatch'\n-   },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/event-18-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      phase: 'fault',\n+     type: 'actual-worker-error-dispatch'\n+   },\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/event-19-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/event-19-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/event-19-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/event-19-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: 'fault',\n-     type: 'window-error'\n-   }\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/event-19-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    },\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'fault',\n+     type: 'window-error'\n+   }\n  ]\n"
+    },
+    {
+      "name": "old-light-S1/reverse-page-order",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n+   'declared tiny native worker failure',\n    'map is not defined',\n-   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-light-S2",
+      "expected": "pass",
+      "failure": null
+    },
+    {
+      "name": "old-light-S2/unexpected-pageerror",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n+ [\n+   'unrelated application failure'\n+ ]\n- []\n"
+    },
+    {
+      "name": "old-light-S2/fixture-failure",
+      "expected": "reject",
+      "failure": "no fixture failure\n+ actual - expected\n\n+ {\n+   message: 'failure'\n+ }\n- null\n"
+    },
+    {
+      "name": "old-light-S2/unknown-variant",
+      "expected": "reject",
+      "failure": "known tiny source variant"
+    },
+    {
+      "name": "old-light-S2/unknown-case",
+      "expected": "reject",
+      "failure": "known tiny fault case"
+    },
+    {
+      "name": "old-light-S2/unexpected-native-error",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n+ [\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   }\n+ ]\n- []\n"
+    },
+    {
+      "name": "old-light-S3",
+      "expected": "pass",
+      "failure": null
+    },
+    {
+      "name": "old-light-S3/unexpected-pageerror",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n+ [\n+   'unrelated application failure'\n+ ]\n- []\n"
+    },
+    {
+      "name": "old-light-S3/fixture-failure",
+      "expected": "reject",
+      "failure": "no fixture failure\n+ actual - expected\n\n+ {\n+   message: 'failure'\n+ }\n- null\n"
+    },
+    {
+      "name": "old-light-S3/unknown-variant",
+      "expected": "reject",
+      "failure": "known tiny source variant"
+    },
+    {
+      "name": "old-light-S3/unknown-case",
+      "expected": "reject",
+      "failure": "known tiny fault case"
+    },
+    {
+      "name": "old-light-S3/unexpected-native-error",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n+ [\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   }\n+ ]\n- []\n"
+    },
+    {
+      "name": "old-dark-S1",
+      "expected": "pass",
+      "failure": null
+    },
+    {
+      "name": "old-dark-S1/unexpected-pageerror",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n    'declared tiny native worker failure',\n+   'unrelated application failure'\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/fixture-failure",
+      "expected": "reject",
+      "failure": "no fixture failure\n+ actual - expected\n\n+ {\n+   message: 'failure'\n+ }\n- null\n"
+    },
+    {
+      "name": "old-dark-S1/unknown-variant",
+      "expected": "reject",
+      "failure": "known tiny source variant"
+    },
+    {
+      "name": "old-dark-S1/unknown-case",
+      "expected": "reject",
+      "failure": "known tiny fault case"
+    },
+    {
+      "name": "old-dark-S1/missing-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n-   'map is not defined',\n    'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/wrong-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n+   'map is not defined unexpected',\n-   'map is not defined',\n    'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/duplicate-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n+   'map is not defined',\n    'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/missing-page-1",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n-   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/wrong-page-1",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n+   'declared tiny native worker failure unexpected'\n-   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/duplicate-page-1",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'map is not defined',\n    'declared tiny native worker failure',\n+   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/event-14-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n      type: 'native-worker-error'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "old-dark-S1/event-14-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n      type: 'native-worker-error'\n    },\n    {\n"
+    },
+    {
+      "name": "old-dark-S1/event-14-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: null,\n      type: 'native-worker-error'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught ReferenceError: map is not defined',\n"
+    },
+    {
+      "name": "old-dark-S1/event-14-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: null,\n-     type: 'native-worker-error'\n-   },\n-   {\n-     isTrusted: true,\n      message: 'Uncaught ReferenceError: map is not defined',\n      phase: 'fault',\n      type: 'window-error'\n    },\n    {\n"
+    },
+    {
+      "name": "old-dark-S1/event-14-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   },\n+   {\n+     isTrusted: true,\n      message: 'Uncaught ReferenceError: map is not defined',\n      phase: 'fault',\n      type: 'window-error'\n    },\n    {\n"
+    },
+    {
+      "name": "old-dark-S1/event-17-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught ReferenceError: map is not defined',\n      phase: 'fault',\n      type: 'window-error'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "old-dark-S1/event-17-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught ReferenceError: map is not defined',\n      phase: 'fault',\n      type: 'window-error'\n    },\n    {\n"
+    },
+    {
+      "name": "old-dark-S1/event-17-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught ReferenceError: map is not defined',\n+     phase: 'unexpected',\n-     phase: 'fault',\n      type: 'window-error'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n"
+    },
+    {
+      "name": "old-dark-S1/event-17-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n-     message: 'Uncaught ReferenceError: map is not defined',\n-     phase: 'fault',\n-     type: 'window-error'\n-   },\n-   {\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n"
+    },
+    {
+      "name": "old-dark-S1/event-17-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'Uncaught ReferenceError: map is not defined',\n+     phase: 'fault',\n+     type: 'window-error'\n+   },\n+   {\n+     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n"
+    },
+    {
+      "name": "old-dark-S1/event-18-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "old-dark-S1/event-18-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n"
+    },
+    {
+      "name": "old-dark-S1/event-18-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n"
+    },
+    {
+      "name": "old-dark-S1/event-18-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      phase: 'fault',\n-     type: 'actual-worker-error-dispatch'\n-   },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/event-18-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      phase: 'fault',\n+     type: 'actual-worker-error-dispatch'\n+   },\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/event-19-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/event-19-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/event-19-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/event-19-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: 'fault',\n-     type: 'window-error'\n-   }\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/event-19-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    },\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'fault',\n+     type: 'window-error'\n+   }\n  ]\n"
+    },
+    {
+      "name": "old-dark-S1/reverse-page-order",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n+   'declared tiny native worker failure',\n    'map is not defined',\n-   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "old-dark-S2",
+      "expected": "pass",
+      "failure": null
+    },
+    {
+      "name": "old-dark-S2/unexpected-pageerror",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n+ [\n+   'unrelated application failure'\n+ ]\n- []\n"
+    },
+    {
+      "name": "old-dark-S2/fixture-failure",
+      "expected": "reject",
+      "failure": "no fixture failure\n+ actual - expected\n\n+ {\n+   message: 'failure'\n+ }\n- null\n"
+    },
+    {
+      "name": "old-dark-S2/unknown-variant",
+      "expected": "reject",
+      "failure": "known tiny source variant"
+    },
+    {
+      "name": "old-dark-S2/unknown-case",
+      "expected": "reject",
+      "failure": "known tiny fault case"
+    },
+    {
+      "name": "old-dark-S2/unexpected-native-error",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n+ [\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   }\n+ ]\n- []\n"
+    },
+    {
+      "name": "old-dark-S3",
+      "expected": "pass",
+      "failure": null
+    },
+    {
+      "name": "old-dark-S3/unexpected-pageerror",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n+ [\n+   'unrelated application failure'\n+ ]\n- []\n"
+    },
+    {
+      "name": "old-dark-S3/fixture-failure",
+      "expected": "reject",
+      "failure": "no fixture failure\n+ actual - expected\n\n+ {\n+   message: 'failure'\n+ }\n- null\n"
+    },
+    {
+      "name": "old-dark-S3/unknown-variant",
+      "expected": "reject",
+      "failure": "known tiny source variant"
+    },
+    {
+      "name": "old-dark-S3/unknown-case",
+      "expected": "reject",
+      "failure": "known tiny fault case"
+    },
+    {
+      "name": "old-dark-S3/unexpected-native-error",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n+ [\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   }\n+ ]\n- []\n"
+    },
+    {
+      "name": "repair-light-S1",
+      "expected": "pass",
+      "failure": null
+    },
+    {
+      "name": "repair-light-S1/unexpected-pageerror",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'declared tiny native worker failure',\n+   'unrelated application failure'\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/fixture-failure",
+      "expected": "reject",
+      "failure": "no fixture failure\n+ actual - expected\n\n+ {\n+   message: 'failure'\n+ }\n- null\n"
+    },
+    {
+      "name": "repair-light-S1/unknown-variant",
+      "expected": "reject",
+      "failure": "known tiny source variant"
+    },
+    {
+      "name": "repair-light-S1/unknown-case",
+      "expected": "reject",
+      "failure": "known tiny fault case"
+    },
+    {
+      "name": "repair-light-S1/missing-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n+ []\n- [\n-   'declared tiny native worker failure'\n- ]\n"
+    },
+    {
+      "name": "repair-light-S1/wrong-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n+   'declared tiny native worker failure unexpected'\n-   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/duplicate-page-0",
+      "expected": "reject",
+      "failure": "exact declared pageerror identity, count and order\n+ actual - expected\n\n  [\n    'declared tiny native worker failure',\n+   'declared tiny native worker failure'\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/event-14-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n      type: 'native-worker-error'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "repair-light-S1/event-14-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n      type: 'native-worker-error'\n    },\n    {\n"
+    },
+    {
+      "name": "repair-light-S1/event-14-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: null,\n      type: 'native-worker-error'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n"
+    },
+    {
+      "name": "repair-light-S1/event-14-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: null,\n-     type: 'native-worker-error'\n-   },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "repair-light-S1/event-14-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: null,\n+     type: 'native-worker-error'\n+   },\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "repair-light-S1/event-17-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n"
+    },
+    {
+      "name": "repair-light-S1/event-17-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n"
+    },
+    {
+      "name": "repair-light-S1/event-17-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: 'fault',\n      type: 'actual-worker-error-dispatch'\n    },\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n"
+    },
+    {
+      "name": "repair-light-S1/event-17-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      phase: 'fault',\n-     type: 'actual-worker-error-dispatch'\n-   },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/event-17-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      phase: 'fault',\n+     type: 'actual-worker-error-dispatch'\n+   },\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/event-18-message",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      isTrusted: true,\n+     message: 'unexpected',\n-     message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/event-18-isTrusted",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    {\n+     isTrusted: false,\n-     isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/event-18-phase",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n      message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'unexpected',\n-     phase: 'fault',\n      type: 'window-error'\n    }\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/event-18-missing",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    },\n-   {\n-     isTrusted: true,\n-     message: 'Uncaught Error: declared tiny native worker failure',\n-     phase: 'fault',\n-     type: 'window-error'\n-   }\n  ]\n"
+    },
+    {
+      "name": "repair-light-S1/event-18-duplicate",
+      "expected": "reject",
+      "failure": "exact real Worker/window error identities, trust, phase, count and order\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      isTrusted: true,\n      message: 'Uncaught Error: declared tiny native worker failure',\n      phase: null,\n...\n    },\n+   {\n+     isTrusted: true,\n+     message: 'Uncaught Error: declared tiny native worker failure',\n+     phase: 'fault',\n+     type: 'window-error'\n+   }\n  ]\n"
+    }
+  ],
+  "producerContractModel": {
+    "pass": true,
+    "preservedNativeRecords": 7,
+    "adverseCases": 17,
+    "browser": 0,
+    "nativeReruns": 0,
+    "scope": "error-identity/count protocol only; no fallback/reference change"
+  },
+  "pixels": {
+    "pass": true,
+    "records": [
+      {
+        "case": "old-light-S1",
+        "rawImages": 5,
+        "wholeDecodedImagesMatch": true,
+        "metrics": {
+          "controlVsCanvas": {
+            "mean": 0.06265625,
+            "changedFractionAbove20": 0.0006843171296296297,
+            "nonzeroChannels": 4878,
+            "max": 38,
+            "pixels": 230400
+          },
+          "fallbackVsReference": {
+            "mean": 0.3998567708333333,
+            "changedFractionAbove20": 0.003993055555555555,
+            "nonzeroChannels": 5071,
+            "max": 164,
+            "pixels": 230400
+          }
+        }
+      },
+      {
+        "case": "old-light-S2",
+        "rawImages": 7,
+        "wholeDecodedImagesMatch": true,
+        "metrics": {
+          "controlVsCanvas": {
+            "mean": 0.06265625,
+            "changedFractionAbove20": 0.0006843171296296297,
+            "nonzeroChannels": 4878,
+            "max": 38,
+            "pixels": 230400
+          },
+          "fallbackVsReference": {
+            "mean": 0.02970775462962963,
+            "changedFractionAbove20": 0.0003255208333333333,
+            "nonzeroChannels": 2213,
+            "max": 38,
+            "pixels": 230400
+          },
+          "S2Support": [
+            66,
+            153,
+            178,
+            167
+          ]
+        }
+      },
+      {
+        "case": "old-light-S3",
+        "rawImages": 5,
+        "wholeDecodedImagesMatch": true,
+        "metrics": {
+          "controlVsCanvas": {
+            "mean": 0.06265625,
+            "changedFractionAbove20": 0.0006843171296296297,
+            "nonzeroChannels": 4878,
+            "max": 38,
+            "pixels": 230400
+          }
+        }
+      },
+      {
+        "case": "old-dark-S1",
+        "rawImages": 5,
+        "wholeDecodedImagesMatch": true,
+        "metrics": {
+          "controlVsCanvas": {
+            "mean": 0.0892722800925926,
+            "changedFractionAbove20": 0.0021223958333333333,
+            "nonzeroChannels": 4434,
+            "max": 53,
+            "pixels": 230400
+          },
+          "fallbackVsReference": {
+            "mean": 0.42452546296296295,
+            "changedFractionAbove20": 0.00408275462962963,
+            "nonzeroChannels": 4366,
+            "max": 235,
+            "pixels": 230400
+          }
+        }
+      },
+      {
+        "case": "old-dark-S2",
+        "rawImages": 7,
+        "wholeDecodedImagesMatch": true,
+        "metrics": {
+          "controlVsCanvas": {
+            "mean": 0.0892722800925926,
+            "changedFractionAbove20": 0.0021223958333333333,
+            "nonzeroChannels": 4434,
+            "max": 53,
+            "pixels": 230400
+          },
+          "fallbackVsReference": {
+            "mean": 0.04253327546296296,
+            "changedFractionAbove20": 0.0009577546296296296,
+            "nonzeroChannels": 2030,
+            "max": 53,
+            "pixels": 230400
+          },
+          "S2Support": [
+            66,
+            153,
+            176,
+            167
+          ]
+        }
+      },
+      {
+        "case": "old-dark-S3",
+        "rawImages": 5,
+        "wholeDecodedImagesMatch": true,
+        "metrics": {
+          "controlVsCanvas": {
+            "mean": 0.0892722800925926,
+            "changedFractionAbove20": 0.0021223958333333333,
+            "nonzeroChannels": 4434,
+            "max": 53,
+            "pixels": 230400
+          }
+        }
+      },
+      {
+        "case": "repair-light-S1",
+        "rawImages": 6,
+        "wholeDecodedImagesMatch": true,
+        "metrics": {
+          "controlVsCanvas": {
+            "mean": 0.06265625,
+            "changedFractionAbove20": 0.0006843171296296297,
+            "nonzeroChannels": 4878,
+            "max": 38,
+            "pixels": 230400
+          }
+        }
+      }
+    ],
+    "wholeSavedPNGs": 58,
+    "overviewSheets": 8,
+    "rawSourceFilesUntouched": true
+  },
+  "source": {
+    "pass": true,
+    "originalInputFiles": 65,
+    "manifest": {
+      "sourceBaseline": "3f83836085102f3165c0d5271af424f39d4bfbd9",
+      "scope": "Synthetic2node640x360DPR1 component;32769 duplicate straight edges only S3; nonempty synthetic statements, actual local Inter, no real app readiness or fullmap",
+      "hashes": {
+        "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+        "assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+        "assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+        "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+        "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+        "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+        "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+        "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+        "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+        "assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+        "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+        "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+        "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+        "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+        "assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+        "assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+        "assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+        "assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+        "assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+        "assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+        "assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+        "assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+        "assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+        "assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+        "assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+        "assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+        "assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+        "assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+        "assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+        "assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+        "assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+        "assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+        "assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+        "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+        "assets/vendor/google-fonts/inter-OFL.txt": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39",
+        "assets/vendor/google-fonts/jetbrainsmono-OFL.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+        "assets/vendor/google-fonts/newsreader-OFL.txt": "865f0949b59fab5925506f80102dff3d12e8666412daf52d212db969d40adc25",
+        "assets/vendor/google-fonts/provenance.json": "d335ffdbf8701efa568d9fcf108ab29342be36ffe5c89577f7902568c7c52a39",
+        "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+        "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+        "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+        "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+        "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+        "tests/fixtures/map-private-lifecycle-native-browser.mjs": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+      },
+      "served": {
+        "old": {
+          "/assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+          "/assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+          "/assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+          "/assets/js/graph.js": "b8ef140ce689aee1450088d88f35626a455e8f3e9de15d4cb662cf7bb5119a20",
+          "/assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+          "/assets/js/map-scene-edges.js": "42a60184e729c08248f1860b1fe2b70904a2d1f2f69cc8bc81aa10cf45122804",
+          "/assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+          "/assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+          "/assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+          "/assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+          "/assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+          "/assets/js/map-scene-worker.js": "7e474a9d9ea8c42a719aac294b265ca2353e28b7b275f7dbab761c684a3356c9",
+          "/assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+          "/assets/js/map-webgl-scene.js": "cb4b0b39d57c56c1f98cb5f6d225545b6fde26d461c2f58ad367cf45685b6393",
+          "/assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+          "/assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "/assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "/assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+          "/assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+          "/assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+          "/assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+          "/assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+          "/assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+          "/assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+          "/assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+          "/assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+          "/assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+          "/assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+          "/assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+          "/assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+          "/assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+          "/assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+          "/assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+          "/assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+          "/assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+          "/assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+          "/assets/vendor/google-fonts/inter-OFL.txt": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39",
+          "/assets/vendor/google-fonts/jetbrainsmono-OFL.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+          "/assets/vendor/google-fonts/newsreader-OFL.txt": "865f0949b59fab5925506f80102dff3d12e8666412daf52d212db969d40adc25",
+          "/assets/vendor/google-fonts/provenance.json": "d335ffdbf8701efa568d9fcf108ab29342be36ffe5c89577f7902568c7c52a39",
+          "/assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+          "/scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+          "/scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+          "/scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+          "/scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+          "/tests/fixtures/map-private-lifecycle-native-browser.mjs": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+        },
+        "repair": {
+          "/assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+          "/assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+          "/assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+          "/assets/js/graph.js": "b8ef140ce689aee1450088d88f35626a455e8f3e9de15d4cb662cf7bb5119a20",
+          "/assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+          "/assets/js/map-scene-edges.js": "42a60184e729c08248f1860b1fe2b70904a2d1f2f69cc8bc81aa10cf45122804",
+          "/assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+          "/assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+          "/assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+          "/assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+          "/assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+          "/assets/js/map-scene-worker.js": "7e474a9d9ea8c42a719aac294b265ca2353e28b7b275f7dbab761c684a3356c9",
+          "/assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+          "/assets/js/map-webgl-scene.js": "7a39e51b3ace64cbd21568163d9856214630ae8a4b634ea2eb75a546b1355e92",
+          "/assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+          "/assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+          "/assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+          "/assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+          "/assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+          "/assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+          "/assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+          "/assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+          "/assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+          "/assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+          "/assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+          "/assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+          "/assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+          "/assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+          "/assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+          "/assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+          "/assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+          "/assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+          "/assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+          "/assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+          "/assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+          "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+          "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+          "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+          "/assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+          "/assets/vendor/google-fonts/inter-OFL.txt": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39",
+          "/assets/vendor/google-fonts/jetbrainsmono-OFL.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+          "/assets/vendor/google-fonts/newsreader-OFL.txt": "865f0949b59fab5925506f80102dff3d12e8666412daf52d212db969d40adc25",
+          "/assets/vendor/google-fonts/provenance.json": "d335ffdbf8701efa568d9fcf108ab29342be36ffe5c89577f7902568c7c52a39",
+          "/assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+          "/scripts/lib/map-chunked-indices-runtime.mjs": "75ded9f4e29bb049b19b98b055142c1e810cf06b182199e82b0bfdef02047b3d",
+          "/scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+          "/scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+          "/scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+          "/tests/fixtures/map-private-lifecycle-native-browser.mjs": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+        }
+      },
+      "workerFaultSource": "import { buildWorldPaths } from './map-scene-model.js';\n// Worker startup/cold fidelity construction cannot block map input or animation.\nself.onmessage = event => {\n  const { request, paths, scale } = event.data;\n  try {\n    const started = performance.now(), geometry = buildWorldPaths(paths, scale, { includeInstances: false, maxBytes: 60_000_000 });\n    self.postMessage({ request, geometry, constructionMS: performance.now() - started }, [geometry.points.buffer, geometry.joins.buffer]);\n  } catch (error) { self.postMessage({ request, error: error.message }); }\n};\n\nconst actualTinyWorkerBody=self.onmessage;self.onmessage=event=>{if(event.data.__tinyThrow)throw Error('declared tiny native worker failure');if(event.data.scale===8)self.postMessage({__tinyAck:8,requestId:event.data.request});return actualTinyWorkerBody(event)};\n",
+      "viewport": {
+        "width": 640,
+        "height": 480,
+        "dpr": 1
+      },
+      "cases": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ]
+    },
+    "independentlyReconstructedServedHashes": {
+      "old": {
+        "/assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+        "/assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+        "/assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+        "/assets/js/graph.js": "b8ef140ce689aee1450088d88f35626a455e8f3e9de15d4cb662cf7bb5119a20",
+        "/assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+        "/assets/js/map-scene-edges.js": "42a60184e729c08248f1860b1fe2b70904a2d1f2f69cc8bc81aa10cf45122804",
+        "/assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+        "/assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+        "/assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+        "/assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+        "/assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+        "/assets/js/map-scene-worker.js": "7e474a9d9ea8c42a719aac294b265ca2353e28b7b275f7dbab761c684a3356c9",
+        "/assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+        "/assets/js/map-webgl-scene.js": "cb4b0b39d57c56c1f98cb5f6d225545b6fde26d461c2f58ad367cf45685b6393",
+        "/assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+        "/assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "/assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "/assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+        "/assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+        "/assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+        "/assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+        "/assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+        "/assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+        "/assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+        "/assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+        "/assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+        "/assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+        "/assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+        "/assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+        "/assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+        "/assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+        "/assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+        "/assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+        "/assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+        "/assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+        "/assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+        "/assets/vendor/google-fonts/inter-OFL.txt": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39",
+        "/assets/vendor/google-fonts/jetbrainsmono-OFL.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+        "/assets/vendor/google-fonts/newsreader-OFL.txt": "865f0949b59fab5925506f80102dff3d12e8666412daf52d212db969d40adc25",
+        "/assets/vendor/google-fonts/provenance.json": "d335ffdbf8701efa568d9fcf108ab29342be36ffe5c89577f7902568c7c52a39",
+        "/assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+        "/scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+        "/scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+        "/scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+        "/scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+        "/tests/fixtures/map-private-lifecycle-native-browser.mjs": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+      },
+      "repair": {
+        "/assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+        "/assets/js/bridge-models.js": "2d9c9dd544caae318e7a645aef917a56b5ad2045dc427831346e99dd596a1351",
+        "/assets/js/bridge-viz.js": "4413080f2614b8164cd697e436b33999eeeef77f09020aa0249250fdc5bbd84c",
+        "/assets/js/graph.js": "b8ef140ce689aee1450088d88f35626a455e8f3e9de15d4cb662cf7bb5119a20",
+        "/assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+        "/assets/js/map-scene-edges.js": "42a60184e729c08248f1860b1fe2b70904a2d1f2f69cc8bc81aa10cf45122804",
+        "/assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+        "/assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+        "/assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+        "/assets/js/map-scene-retained.js": "0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0",
+        "/assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+        "/assets/js/map-scene-worker.js": "7e474a9d9ea8c42a719aac294b265ca2353e28b7b275f7dbab761c684a3356c9",
+        "/assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+        "/assets/js/map-webgl-scene.js": "7a39e51b3ace64cbd21568163d9856214630ae8a4b634ea2eb75a546b1355e92",
+        "/assets/js/search.js": "da2ff6a2b7d99438e95de816b770ae3ac7e626ce693f5eb828863494ea8e7016",
+        "/assets/js/share-state.js": "13c6a9ac1237d566fc5d79c89e0f4d3029aa8c2817d2c08247a02b1b053a59b1",
+        "/assets/js/viz/core.js": "a6fa1753d9d9e8b9a05a7161fffc58dfd53b27002d9d393a3266aeb96515fe73",
+        "/assets/js/viz/kits/agents.js": "b0e03e60fc66411c01be9e59e2d794e4d5962b8ab982988088b2266e0fbd7c2f",
+        "/assets/js/viz/kits/circuit.js": "9dcbc0b85981e365ef85dd7ac5949e4ce5154f40349fd42c668fbc6bfada8f3a",
+        "/assets/js/viz/kits/curves.js": "186724e84338bef7e0b9f5222db8097f2ea2c0b33ef516b3277e739c9632ef57",
+        "/assets/js/viz/kits/fields.js": "78c7d6b09f4d4e7b71551917477309df0fbd1ff724df5b8d08d7f452598f2717",
+        "/assets/js/viz/kits/globe.js": "c6b1ba09b4fdd95c4c37c4ab571bf55a45ac2651f8e25a1a96016a75a0f5755e",
+        "/assets/js/viz/kits/graph.js": "0dff41290f733d94184137f411e2ccd522d684539e13e1e8554e66683cbb3020",
+        "/assets/js/viz/kits/icons.js": "bab323bb65d4e87010e44d6d9cb91b2df6da2f6f3e2ed30f8eda3756939424c1",
+        "/assets/js/viz/kits/index.js": "968f6764318d017ce6eb71f78076fefaa06efec43eb93e1c8b35136410fe2cb6",
+        "/assets/js/viz/kits/mol.js": "3e8f5c32aa0854c10d45bfcdead9326e312e409500a307c77ad5feb12ee2ca92",
+        "/assets/js/viz/kits/pplane.js": "cef635e0fe1f661206da1591fdcf41c02680489dc7790736aab5279720039341",
+        "/assets/js/viz/kits/quantum.js": "f1dc9a7340baec1e33f85ccde98509fd2a7e2d7f4aff40024310dfc0aa2a528d",
+        "/assets/js/viz/kits/scene3.js": "6bb39606286b683ee1a4fc8be22cfba21b9659c5e5ac5a3a2958e1995425a646",
+        "/assets/js/viz/kits/steps.js": "3c831784b6108b2e94037876f915b00dea3a019749f1d127f2c73436c72cbb57",
+        "/assets/js/viz/kits/table.js": "6a61d593ae8511d116483ea33daa56028aba85fee9e763df5d84b8de8175d9e2",
+        "/assets/js/viz/kits/timeline.js": "ba10c23247693848df86685092804688510cdd901f1e48722ff9e568b63a715c",
+        "/assets/js/viz/kits/tree.js": "90484a11592d5e1085427cb8761fc26784be90de12f076799c3f1ef52c34d21e",
+        "/assets/js/viz/kits/world-110m.js": "b6f20774009d2da1214d0ea0800a7386447a22d304341627c099b76affce305e",
+        "/assets/js/viz/math.js": "439c335e1cc47907bc72bb76559216aa093be4710e0589f41c70192729eb223e",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+        "/assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+        "/assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+        "/assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+        "/assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+        "/assets/vendor/google-fonts/inter-OFL.txt": "5dd548d31a85f756e01d63e00d7faf1e324103ed3e9102fcbbabf2cc2db6dd39",
+        "/assets/vendor/google-fonts/jetbrainsmono-OFL.txt": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+        "/assets/vendor/google-fonts/newsreader-OFL.txt": "865f0949b59fab5925506f80102dff3d12e8666412daf52d212db969d40adc25",
+        "/assets/vendor/google-fonts/provenance.json": "d335ffdbf8701efa568d9fcf108ab29342be36ffe5c89577f7902568c7c52a39",
+        "/assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+        "/scripts/lib/map-chunked-indices-runtime.mjs": "75ded9f4e29bb049b19b98b055142c1e810cf06b182199e82b0bfdef02047b3d",
+        "/scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+        "/scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+        "/scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+        "/tests/fixtures/map-private-lifecycle-native-browser.mjs": "d1d13b30811da76465a8ef97e2c570dad8bceb4c726eeedf8a7da11fc8cfa2a9"
+      }
+    },
+    "changedVariantPaths": [
+      "/assets/js/map-webgl-scene.js",
+      "/scripts/lib/map-chunked-indices-runtime.mjs"
+    ],
+    "nativeExecuted": false
+  },
+  "personallyInspectedViews": [
+    {
+      "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/views/sheet-0.png",
+      "sha256": "a299404ac55e4ecdf9033d1146adcafdca4b59271cadfa1bc5ac61b75373ffc4"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/views/sheet-1.png",
+      "sha256": "40d6e9f7187d4ac25250039dd1b0a8c104f6bdce4928048752f6e155a1d49f81"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/views/sheet-2.png",
+      "sha256": "b3a8db2c7174a6e162e885682f8a0a439eada1eb089293e4b7c1aa8f75f5c87d"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/views/sheet-3.png",
+      "sha256": "caf3a00e3382c407d621cc81c049d5022dd755d86189d3a8c11d675e35df417a"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/views/sheet-4.png",
+      "sha256": "63c2045acd99ccdc98ed64259a174179e0a019a193580d7e3d822e39fec4d935"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/views/sheet-5.png",
+      "sha256": "33e4ec01fbfa73ab8f8c441139cfc07877c5da79f39027926bc78a6d27e50394"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/views/sheet-6.png",
+      "sha256": "8d3986b446f4f0f0288e7dd03d2a4b7a2070daf9e2ceb6f44d0ebb6a020441c1"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/views/sheet-7.png",
+      "sha256": "0479534bfdf1a1bdadcb244877389ee170024e3fb860bfdaead085593f106f72"
+    }
+  ],
+  "independentProbe": {
+    "path": "tests/verification-map-native-tiny-independent-offline.mjs",
+    "sha256": "655a13720367f5d51bc16f360bacb90ce8cbec4d93e5489ce61d36b9204aad99"
+  },
+  "offlinePixelMethod": {
+    "path": "/tmp/atlas-new-imaging-source/tiny-lifecycle-peer/pixels.py",
+    "sha256": "ccc766ef029cc769832fb4307fcb6fd0d35660a7e3e3c87fa21409e238d5b878"
+  },
+  "limitations": [
+    "First native run remains stopped at repaired-light-S1 error assertion",
+    "No independent browser/native retry performed",
+    "RepairedS2/S3 and repaired dark are unrun",
+    "Context loss/restoration/replacement upload unproved",
+    "No physical memory or complete per-object deletion-once chronology proved",
+    "S2 reference cause unresolved; exact-zero future fallback gate unchanged",
+    "No fullmap/timing/production or source-flag acceptance"
+  ]
+}
