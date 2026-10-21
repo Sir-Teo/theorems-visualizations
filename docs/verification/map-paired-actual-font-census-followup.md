@@ -32,3 +32,5 @@ MAP_PAIRED_OUTPUT=/tmp/unique-prepare-only node tests/map-paired-guarded-oracle.
 ```
 
 The last command is prepare-only; no full-map flag is authorized here. All browser/server jobs are closed. Independent immutable review must precede any root decision about a new exact-state full-map attempt. A passing tiny font-role witness cannot waive the callback/history/resource/image gates or authorize the alternate renderer.
+
+A remaining full-map readiness limit is deliberate: if2.30's statement is absent at preparation, selecting it in the unchanged epoch can start the real shard request. That promise can complete after the synchronous sequence, and the newly observed needSt callback is retained by the strict post-callback gate even when `this.sel === n` prevents a later reselect/draw. The tiny witness fixes availability at construction and throws on any shard fetch; it does not prove quiescence of the full map's real statement request. No silent statement preload or exemption is introduced. Root/peer must retain this possible stop condition when assessing whether another exact-state full-map run is justified.
