@@ -33,7 +33,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Read-only late Newsreader normal400 source census; no map change or rerun authorized",
+      "current": "PL2peeraccepted; read-only explicit one-shard readiness proposal",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -43,7 +43,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent CPLX3.8 finite-halting complement peer after accepted PHARM",
+      "current": "Independent CPLX1.9count peer pending producer; fontcensus source/tiny accepted",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -53,7 +53,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "Independent ART eighteen-input peer after accepted NEURO contrast",
+      "current": "Independent unrestricted four-consumer BIGHIST6peer; frozen3.5excluded",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -63,7 +63,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "Independent ARCH eighteen-input and banner peer after frozen ART",
+      "current": "Separate ARCH1.3reaction and ART2.1annotation layout producers",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -73,7 +73,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent CPLX eight-input peer after accepted LING closing",
+      "current": "Actualoffered CPLX1.9empty-count reproduction/correction producer",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -83,7 +83,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "CPLX3.8 final ready for independent peer; NEURO contrast accepted",
+      "current": "GAME2producer with separately bounded tremble/perfection scope and diagnostic-label fix; PLcanvaslayout next",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -1473,6 +1473,34 @@
         "3dbe289f00030cc303a0edb2ac60b3f0886b6f57"
       ],
       "report": "docs/verification/neuro-compartment-contrast-independent-peer.md"
+    },
+    {
+      "status": "open-authorized-bounded-producer",
+      "id": "cplx-1.9-empty-colour-count",
+      "owner": "thermo_prereqs",
+      "finding": "Unchanged snap seeds max with0thenadds1; source suggests0vertices reports1colour. Actual offered delete-all reproduction required before edit.",
+      "scope": "Separate count-only correction after actualwitness; preservepartition/isomorphism/control/geometry. Independent deep peer required."
+    },
+    {
+      "status": "open-authorized-bounded-producer",
+      "id": "arch-1.3-reaction-label-clip",
+      "owner": "imaging_source",
+      "finding": "Independent ARCHpeer actual320showsfar-right reactionlabelclipped; acceptedbannerfixdidnotrepairthisdifferentlabel.",
+      "scope": "Separate local label-layout-only producer; before/after real supportstatus/input both themes, no numericalchange; independentpeerrequired."
+    },
+    {
+      "status": "open-authorized-bounded-producer",
+      "id": "art-2.1-plan-label-overlap",
+      "owner": "imaging_source",
+      "finding": "Independent ARTpeer observed unchanged intended-skull/canvaslabels overlap at90degreeplan.",
+      "scope": "Separate local label-layout-only producer; before/after actualdefault/endpoints320both themes; no numericalchange; independentpeerrequired."
+    },
+    {
+      "status": "open-authorized-bounded-producer",
+      "id": "pl-2.3-2.11-compact-canvas-rows",
+      "owner": "ctrl_prereqs",
+      "finding": "Actual320PL2.3canvas286x200clipscapture-saferowy218;PL2.11panels286x141/127clip lowery176/y146. Prerequisitepeers explicitly donotcertifythese.",
+      "scope": "Separate local layout literals only; preservecapture/substitution/deBruijn models/controls/readout; freshrealcasesboth themes/personalpixels/independentpeer."
     }
   ],
   "stateFollowups": [
