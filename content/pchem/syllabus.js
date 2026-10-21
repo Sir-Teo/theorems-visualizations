@@ -176,49 +176,254 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Mixtures and solutions',
-      summary: String.raw`In a mixture each component carries its own chemical potential, and partial molar quantities and the Gibbs–Duhem equation keep the books. Raoult's law describes ideal solutions and Henry's law dilute solutes; activities measure the departure from both. Because a solute lowers the solvent's chemical potential, it changes boiling and freezing points and creates osmotic pressure — the colligative properties, which count particles regardless of their identity.`,
-      items: [
-        { num: '5.1', kind: 'Definition', name: 'Partial molar quantities', deps: ['pchem-3.10'], refs: ['Atkins 5A', 'M–S ch. 24'],
-          pic: 'Add ethanol to water drop by drop and track the total volume: it falls short of the sum, and the tangent to the volume-versus-composition curve gives each partial molar volume, which changes with composition.' },
-        { num: '5.2', kind: 'Definition', name: 'Chemical potential', deps: ['pchem-5.1'], refs: ['Atkins 5A', 'M–S ch. 24'],
-          pic: 'Two compartments share one component through a membrane: particles flow from high to low μ until the values equalize, shown as levels in connected vessels.' },
-        { num: '5.3', kind: 'Theorem', name: 'Gibbs–Duhem equation', deps: ['pchem-5.1', 'thermo-3.6'], refs: ['Atkins 5A', 'M–S ch. 24'],
-          pic: 'Drag the partial molar volume curve of one component in a binary mixture: the other component’s curve is recomputed by Gibbs–Duhem and moves in the opposite direction, weighted by the mole fractions.' },
-        { num: '5.4', kind: 'Proposition', name: 'Gibbs energy and entropy of mixing of perfect gases', deps: ['pchem-5.2', 'pchem-3.5', 'thermo-4.12'], refs: ['Atkins 5A', 'M–S ch. 24'],
-          pic: 'Remove the partition between two gases: ΔG_mix = nRT Σ xᵢ ln xᵢ is plotted against composition, always negative, with the enthalpy of mixing exactly zero — mixing is driven purely by entropy.' },
-        { num: '5.5', kind: 'Law', name: 'Raoult’s law and ideal solutions', deps: ['pchem-5.2', 'pchem-4.4'], refs: ['Atkins 5A', 'M–S ch. 24'],
-          pic: 'Plot partial and total vapour pressures over benzene–toluene against composition: straight lines from tabulated data, then switch to acetone–chloroform and watch the curves sag below them.' },
-        { num: '5.6', kind: 'Law', name: 'Henry’s law', deps: ['pchem-5.5'], refs: ['Atkins 5A', 'M–S ch. 24'],
-          pic: 'Raise the partial pressure of CO₂ over water: the dissolved concentration rises linearly with a temperature-dependent Henry constant, and opening a simulated soda bottle releases the excess as bubbles.' },
-        { num: '5.7', kind: 'Model', name: 'Ideal-dilute solutions', deps: ['pchem-5.5', 'pchem-5.6'], refs: ['Atkins 5A'],
-          pic: 'For a real binary mixture, the solvent’s vapour pressure hugs Raoult’s line near pure solvent and the solute’s hugs a Henry line near infinite dilution; the shaded regions show where each limiting law is trustworthy.' },
-        { num: '5.8', kind: 'Definition', name: 'Activity and activity coefficients', deps: ['pchem-5.7'], refs: ['Atkins 5F', 'M–S ch. 24'],
-          pic: 'Read activity coefficients off measured vapour-pressure curves with either the Raoult or Henry reference: the same data give coefficients that go to 1 at opposite ends, depending on the convention chosen.' },
-        { num: '5.9', kind: 'Model', name: 'Regular solutions', deps: ['pchem-5.4', 'pchem-5.8'], refs: ['Atkins 5F', 'M–S ch. 24'],
-          pic: 'Add an interaction parameter ξ to ideal mixing: ΔG_mix develops two minima when ξ > 2, and the activity coefficients follow ln γ = ξ(1 − x)² on the readout.' },
-        { num: '5.10', kind: 'Concept', name: 'Colligative properties', deps: ['pchem-5.7'], refs: ['Atkins 5B', 'M–S ch. 25'],
-          pic: 'Dissolve particles in a solvent and show its chemical potential line dropping by RT ln x; the intersections with the solid and vapour lines move, the same for sugar, salt (counted as ions) or urea.' },
-        { num: '5.11', kind: 'Law', name: 'Boiling-point elevation', deps: ['pchem-5.10'], refs: ['Atkins 5B', 'M–S ch. 25'],
-          pic: 'Add solute molality with a slider: the boiling point rises by K_b·m, with water’s K_b computed from its enthalpy of vaporization, and salting pasta water is shown to change it by far less than a degree.' },
-        { num: '5.12', kind: 'Law', name: 'Freezing-point depression', deps: ['pchem-5.10'], refs: ['Atkins 5B', 'M–S ch. 25'],
-          pic: 'Salt an icy road: the freezing point of the brine falls with concentration until the eutectic at −21 °C, below which salt stops helping, and a cryoscopic molar-mass determination is run on a mystery solute.' },
-        { num: '5.13', kind: 'Law', name: 'Osmotic pressure (van ’t Hoff equation)', deps: ['pchem-5.10'], refs: ['Atkins 5B', 'M–S ch. 25'],
-          pic: 'A U-tube with a semipermeable membrane: solvent flows into the solution side until the column height balances Π = cRT, and the readout uses the height to find the molar mass of a protein.' },
-        { num: '5.14', kind: 'Invention', name: 'Reverse osmosis desalination', deps: ['pchem-5.13'], refs: ['Atkins 5B'],
-          pic: 'Push on the seawater side of a membrane: below the osmotic pressure fresh water flows the wrong way, above it the permeate flux grows linearly, and the minimum energy per cubic metre is read out.' },
-        { num: '5.15', kind: 'Law', name: 'Ideal solubility and the van ’t Hoff solubility equation', deps: ['pchem-5.12'], refs: ['Atkins 5B', 'M–S ch. 25'],
-          pic: 'Plot ln x_solute against 1/T for naphthalene in benzene: the slope is fixed by the enthalpy of fusion alone, independent of the solvent, until a strongly interacting solvent bends the line.' },
-        { num: '5.16', kind: 'Law', name: 'Nernst distribution law', deps: ['pchem-5.8'], refs: ['Atkins Focus 5'],
-          pic: 'Shake iodine between water and an organic layer: the concentration ratio settles to a fixed partition coefficient, and repeated small extractions are shown to beat one big one.' },
-        { num: '5.17', kind: 'Paper', name: 'Rolle des osmotischen Druckes: Lösungen und Gase',
-          paper: { authors: 'J. H. van ’t Hoff', year: 1887, title: 'Die Rolle des osmotischen Druckes in der Analogie zwischen Lösungen und Gasen', venue: 'Zeitschrift für Physikalische Chemie 1: 481–508', doi: '10.1515/zpch-1887-0151' },
-          introduces: ['pchem-5.13'], deps: ['pchem-1.4', 'thermo-2.9'], refs: [],
-          pic: 'Fill Pfeffer’s semipermeable cell with sugar solutions of rising strength and plot osmotic pressure against concentration and temperature: the points fall on πV = nRT with the gas constant itself, while salt solutions overshoot by a factor i the reader can tune.' },
-      ],
+      "n": 5,
+      "title": "Mixtures and solutions",
+      "summary": "Partial molar quantities and chemical potentials describe how a mixture responds when its composition changes. Ideal and dilute limits require different reference states; activities and a regular-solution model expose their limits. Solvent chemical potential connects phase shifts, osmosis and extraction, with empirical pure-component anchors kept separate from chosen mixture closures.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Definition",
+          "name": "Partial molar quantities",
+          "deps": [
+            "pchem-3.10"
+          ],
+          "refs": [
+            "MIT3.020 (2021), Lecture16, pp.1–4, partial molar properties and Euler identity"
+          ],
+          "pic": "Move the composition and interaction controls. The tangent intercepts are computed derivatives of the same extensive volume; their weighted sum reconstructs the mixture’s molar volume."
+        },
+        {
+          "num": "5.2",
+          "kind": "Definition",
+          "name": "Chemical potential",
+          "deps": [
+            "pchem-5.1",
+            "pchem-3.10"
+          ],
+          "refs": [
+            "MIT5.60 (2008), Lecture14, pp.1–5, chemical potential and transfer equilibrium"
+          ],
+          "pic": "Choose the initial allocation of A and advance the dimensionless exchange time. The actual nonlinear exchange equation determines both compartments and the free-energy history."
+        },
+        {
+          "num": "5.3",
+          "kind": "Theorem",
+          "name": "Gibbs–Duhem equation",
+          "deps": [
+            "pchem-5.1",
+            "pchem-5.2",
+            "thermo-3.6"
+          ],
+          "refs": [
+            "MIT3.020 (2021), Lecture16, pp.2–4, Gibbs–Duhem and tangent construction"
+          ],
+          "pic": "Change the shape of one common molar-volume function and inspect the two weighted derivatives. The inconsistent branch deliberately adds an independent slope to one partial volume, breaking the shared-extensive-property hypothesis."
+        },
+        {
+          "num": "5.4",
+          "kind": "Proposition",
+          "name": "Gibbs energy and entropy of mixing of perfect gases",
+          "deps": [
+            "pchem-5.2",
+            "pchem-3.5",
+            "thermo-4.12"
+          ],
+          "refs": [
+            "MIT5.60 (2008), Lecture22, p.1, ideal-mixture Gibbs energy, entropy and enthalpy"
+          ],
+          "pic": "Vary composition, amount and temperature. Compare distinguishable species with an identical-gas partition removal and inspect the endpoint limits."
+        },
+        {
+          "num": "5.5",
+          "kind": "Law",
+          "name": "Raoult’s law and ideal solutions",
+          "deps": [
+            "pchem-5.2",
+            "pchem-1.4",
+            "pchem-3.14"
+          ],
+          "refs": [
+            "MIT5.60 (2008), Lecture21, p.5, Raoult chemical-potential derivation",
+            "NIST Chemistry WebBook benzene/toluene Antoine tables: Willingham et al.1945 and Pitzer–Scott1943 rows"
+          ],
+          "pic": "Use the NIST pure benzene and toluene vapour-pressure anchors in an ideal binary mixture. The computed vapour composition generally differs from the chosen liquid composition."
+        },
+        {
+          "num": "5.6",
+          "kind": "Law",
+          "name": "Henry’s law",
+          "deps": [
+            "pchem-5.5"
+          ],
+          "refs": [
+            "NIST Chemistry WebBook CO₂ Henry table, selected .035mol/(kg bar),2400K compilation row",
+            "IUPAC (2021), Henry’s law constants, solubility versus volatility conventions"
+          ],
+          "pic": "Compare a fixed-pressure reservoir with a sealed headspace. Changing temperature in the sealed branch changes both equilibrium pressure and dissolved fraction while conserving total carbon-dioxide amount."
+        },
+        {
+          "num": "5.7",
+          "kind": "Model",
+          "name": "Ideal-dilute solutions",
+          "deps": [
+            "pchem-5.5",
+            "pchem-5.6"
+          ],
+          "refs": [
+            "MIT3.020 (2021), Lecture17, pp.2–4, dilute standard states and regular-solution activity model"
+          ],
+          "pic": "Choose a synthetic interaction parameter, dilution and error tolerance. The two curves show errors relative to the solvent’s Raoult line and the solute’s Henry line."
+        },
+        {
+          "num": "5.8",
+          "kind": "Definition",
+          "name": "Activity and activity coefficients",
+          "deps": [
+            "pchem-5.7",
+            "pchem-5.2"
+          ],
+          "refs": [
+            "MIT3.020 (2021), Lecture17, pp.1–4, activity conventions and dilute solutions"
+          ],
+          "pic": "Switch the reference convention and compare the resulting activity coefficients. The chemical-potential readout evaluates both conventions side by side."
+        },
+        {
+          "num": "5.9",
+          "kind": "Model",
+          "name": "Regular solutions",
+          "deps": [
+            "pchem-5.4",
+            "pchem-5.8"
+          ],
+          "refs": [
+            "MIT3.020 (2021), Lecture17, pp.3–4, regular solution; Lecture19, pp.1–5, free-energy curvature and phase separation"
+          ],
+          "pic": "Move the interaction parameter through the critical value and choose an overall composition. Compare a constrained homogeneous sample with the equilibrium two-phase convex envelope."
+        },
+        {
+          "num": "5.10",
+          "kind": "Concept",
+          "name": "Colligative properties",
+          "deps": [
+            "pchem-5.7",
+            "pchem-4.2"
+          ],
+          "refs": [
+            "DeVoe, Thermodynamics and Chemistry, v10 (2020), §12.4, pp.376–382; MIT5.60 Lecture23, pp.1–4"
+          ],
+          "pic": "Count independent particles with the ideal factor i and inspect the computed liquid–solid and liquid–vapour crossings. The branches use generic solvent constants, not measured water curves."
+        },
+        {
+          "num": "5.11",
+          "kind": "Law",
+          "name": "Boiling-point elevation",
+          "deps": [
+            "pchem-5.10",
+            "pchem-3.13"
+          ],
+          "refs": [
+            "MIT5.60 (2008), Lecture23, pp.1–2; DeVoe §12.4.2, pp.379–381"
+          ],
+          "pic": "Compare the leading molal law with the finite ideal constant-enthalpy equation. Increasing concentration reveals the approximation error computed from the two equations."
+        },
+        {
+          "num": "5.12",
+          "kind": "Law",
+          "name": "Freezing-point depression",
+          "deps": [
+            "pchem-5.10",
+            "pchem-3.13"
+          ],
+          "refs": [
+            "DeVoe (2020), §12.4.1, pp.377–379, pure-solid assumption and dilute freezing depression"
+          ],
+          "pic": "Run a synthetic cryoscopic determination using a chosen unknown molar mass and loading. Compare linear inference with the finite ideal-model temperature depression."
+        },
+        {
+          "num": "5.13",
+          "kind": "Law",
+          "name": "Osmotic pressure (van ’t Hoff equation)",
+          "deps": [
+            "pchem-5.10",
+            "pchem-5.2",
+            "pchem-3.12"
+          ],
+          "refs": [
+            "DeVoe (2020), §12.4.4, pp.381–382, osmotic pressure and dilute limit; MIT5.60 Lecture23, pp.3–4"
+          ],
+          "pic": "Change solute amount, initial solution volume and column area. The computed column height balances hydrostatic pressure against the final diluted van’t Hoff concentration."
+        },
+        {
+          "num": "5.14",
+          "kind": "Invention",
+          "name": "Reverse osmosis desalination",
+          "deps": [
+            "pchem-5.13",
+            "pchem-3.11"
+          ],
+          "refs": [
+            "US Bureau of Reclamation, Yuma Desalting Plant Operations: Reverse Osmosis, membrane/pressure description",
+            "DeVoe (2020), §12.4.4; reversible work integral and declared flux closure derived here"
+          ],
+          "pic": "Choose feed particle concentration, recovery and applied pressure. The signed flux chart shows the current osmotic threshold; the recovery chart computes the reversible-work integral."
+        },
+        {
+          "num": "5.15",
+          "kind": "Law",
+          "name": "Ideal solubility and the van ’t Hoff solubility equation",
+          "deps": [
+            "pchem-5.12",
+            "pchem-5.8",
+            "pchem-3.13"
+          ],
+          "refs": [
+            "DeVoe (2020), §12.5.3, pp.386–387, Eq.12.5.11 and limits of ideal solubility",
+            "NIST naphthalene phase-transition table: Andon–Connett1980, crystal I→liquid,19.046kJ/mol at353.376K"
+          ],
+          "pic": "Use a chosen NIST naphthalene fusion anchor in the ideal-solubility equation. Vary temperature and total loading to distinguish an unsaturated all-dissolved sample from solid–liquid coexistence."
+        },
+        {
+          "num": "5.16",
+          "kind": "Law",
+          "name": "Nernst distribution law",
+          "deps": [
+            "pchem-5.8",
+            "pchem-5.2"
+          ],
+          "refs": [
+            "DeVoe (2020), §12.6.3, pp.394–395, Eqs.12.6.7–8 and dilute distribution law",
+            "IUPAC Gold Book, partition ratio P04440: same definite chemical form, distinction from distribution ratio"
+          ],
+          "pic": "Compare one extraction with repeated fresh-solvent stages at the same total solvent volume. Switch to the association counterexample to distinguish monomer partition ratio from total distribution ratio."
+        },
+        {
+          "num": "5.17",
+          "kind": "Paper",
+          "name": "Rolle des osmotischen Druckes: Lösungen und Gase",
+          "paper": {
+            "authors": "J. H. van ’t Hoff",
+            "year": 1887,
+            "title": "Die Rolle des osmotischen Druckes in der Analogie zwischen Lösungen und Gasen",
+            "venue": "Zeitschrift für Physikalische Chemie 1: 481–508",
+            "doi": "10.1515/zpch-1887-0151"
+          },
+          "introduces": [
+            "pchem-5.13"
+          ],
+          "deps": [
+            "pchem-1.4",
+            "thermo-2.9",
+            "pchem-5.13"
+          ],
+          "refs": [
+            "van ’t Hoff (1887), original identity/DOI; W.Ramsay English translation, Philosophical Magazine (1888), opening §§I–II, accessible typed transcription",
+            "DeVoe (2020), §12.4.4, pp.381–382, dilute osmotic equation; finite-step work derived here"
+          ],
+          "verify": true,
+          "pic": "Increase the number of finite osmotic expansion steps. Their computed staircase work approaches the reversible integral; the diagram shows the actual pressure law and the step pressures."
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 6
     {
       n: 6,
       title: 'Phase diagrams of mixtures',

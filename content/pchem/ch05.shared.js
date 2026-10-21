@@ -1,0 +1,43 @@
+// PCHEM5 local models; empirical pure-component anchors are separate from synthetic solution closures.
+export const R=8.31446261815324,MW=.05,TF=250,TB=350,HF=8000,HV=30000;
+export const O={step:'any',decimals:4},I={step:1,int:true};
+export const axes=(title,x,y,o={})=>({title,x,y,axes:'box',gutter:true,height:310,...o});
+export const sum=a=>a.reduce((s,x)=>s+x,0);
+export const xlogx=x=>x===0?0:x*Math.log(x);
+export const safeSci=(v,x,d=5)=>x!==0&&Math.abs(x)<1e-300?(()=>{const[m,e]=x.toExponential(d-1).split('e');return`${Number(m)}\\times10^{${Number(e)}}`;})():v.sci(x,d);
+export function fit(s,points,pad=.15){const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]),l=Math.min(...xs),r=Math.max(...xs),b=Math.min(...ys),t=Math.max(...ys),dx=Math.max(1,r-l),dy=t===b?1:Math.max(.01,t-b);s.setView([l-pad*dx,r+pad*dx],[b-pad*dy,t+pad*dy]);}
+export function simpson(f,a,b,n=512){const h=(b-a)/n;let s=f(a)+f(b);for(let j=1;j<n;j++)s+=(j%2?4:2)*f(a+j*h);return s*h/3;}
+// Generic synthetic molar volume in cm³/mol; x is component B mole fraction.
+export function volume(x,c=-8,q=0){const h=-2*x*x*x+3*x*x-x,v=18*(1-x)+58*x+c*x*(1-x)+q*h,dx=40+c*(1-2*x)+q*(-6*x*x+6*x-1),dxx=-2*c+q*(6-12*x);return{v,dx,dxx,A:v-x*dx,B:v+(1-x)*dx,dA:-x*dxx,dB:(1-x)*dxx};}
+export const totalVolume=(nA,nB,c=-8)=>nA+nB?18*nA+58*nB+c*nA*nB/(nA+nB):0;
+export function mixing(x,n=1,T=300,distinct=true){const entropy=distinct?-n*R*(xlogx(x)+xlogx(1-x)):0;return{S:entropy,G:-T*entropy,H:0};}
+const compartmentG=A=>xlogx(A)-A*Math.log(A+1)-Math.log(A+1);
+// Nonlinear exchange dn_A,L/dτ=−(x_A,L−x_A,R), B=1mol each, A_total=2mol.
+export function exchange(fraction,t){const d0=2*fraction-1,rhs=-t/2,coef=d0*d0/8;let lo=rhs-coef,hi=rhs;for(let j=0;j<80;j++){const u=(lo+hi)/2,res=u-coef*Math.expm1(2*u)-rhs;if(res>0)hi=u;else lo=u;}const u=(lo+hi)/2,d=d0*Math.exp(u),left=1+d,right=1-d,xL=left/(left+1),xR=right/(right+1),muL=Math.log(xL),muR=Math.log(xR),flux=xL-xR,G=compartmentG(left)+compartmentG(right);return{left,right,xL,xR,muL,muR,flux,G,production:-flux*(muL-muR),equilibriumG:-4*Math.log(2)};}
+// NIST Antoine coefficients: log10 p(bar)=A−B/(T+C), K. Shared validity290–320K.
+export const purePressures=T=>({A:1e5*10**(4.01814-1203.835/(T-53.226)),B:1e5*10**(4.14157-1377.578/(T-50.507))});
+export function raoult(T,x){const pure=purePressures(T),pA=(1-x)*pure.A,pB=x*pure.B,total=pA+pB;return{pure,pA,pB,total,yB:pB/total};}
+// Chosen NIST CO₂/water compilation entry: .035mol/(kg bar), temperature constant2400K.
+export const henry=T=>.035*Math.exp(2400*(1/T-1/298.15));
+export function bottle(T,p,mwater,Vgas){const k=henry(T),nDiss=mwater*k*p,nGas=p*1e5*Vgas/(R*T);return{k,p,nDiss,nGas,total:nDiss+nGas,fractionDiss:nDiss/(nDiss+nGas||1)};}
+export function closedBottle(T,total,mwater,Vgas){const k=henry(T),p=total/(mwater*k+1e5*Vgas/(R*T));return bottle(T,p,mwater,Vgas);}
+export function activities(x,chi){const lnGA=chi*x*x,lnGB=chi*(1-x)**2,lnGBH=chi*(x*x-2*x),lnA=x===1?-Infinity:Math.log1p(-x)+lnGA,lnB=x===0?-Infinity:Math.log(x)+lnGB,lnBH=x===0?-Infinity:Math.log(x)+lnGBH;return{lnGA,lnGB,lnGBH,gammaA:Math.exp(lnGA),gammaB:Math.exp(lnGB),gammaBH:Math.exp(lnGBH),aA:Math.exp(lnA),aB:Math.exp(lnB),aBH:Math.exp(lnBH),lnA,lnB,lnBH,standardShift:chi};}
+export const regularG=(x,chi)=>xlogx(x)+xlogx(1-x)+chi*x*(1-x);
+export const regularSlope=(x,chi)=>x===0?-Infinity:x===1?Infinity:Math.log(x)-Math.log1p(-x)+chi*(1-2*x);
+export const regularCurvature=(x,chi)=>x===0||x===1?Infinity:1/(x*(1-x))-2*chi;
+function atanhRatioMinusOne(q){if(q<1e-4){let power=q,out=0;for(let j=1;j<=7;j++){out+=power/(2*j+1);power*=q;}return out;}const m=Math.sqrt(q);return(Math.log1p(m)-Math.log1p(-m))/(2*m)-1;}
+export function coexistence(chi){if(chi<=2)return{critical:chi===2,m:0,xL:.5,xR:.5,spinL:null,spinR:null};const target=(chi-2)/2;let lo=0,hi=1-Number.EPSILON/2;for(let j=0;j<160;j++){const q=(lo+hi)/2;if(atanhRatioMinusOne(q)>target)hi=q;else lo=q;}const m=Math.sqrt((lo+hi)/2),spin=Math.sqrt((chi-2)/chi);return{critical:false,m,xL:(1-m)/2,xR:(1+m)/2,spinL:(1-spin)/2,spinR:(1+spin)/2};}
+export function regularState(x,chi){const c=coexistence(chi),two=chi>2&&x>c.xL&&x<c.xR,fraction=two?(x-c.xL)/(c.xR-c.xL):null,homogeneous=regularG(x,chi),equilibrium=two?regularG(c.xL,chi):homogeneous;const curvature=regularCurvature(x,chi),curvatureTolerance=64*Number.EPSILON*Math.max(1,2*Math.abs(chi),Math.abs(1/(x*(1-x))));return{...c,two,fraction,homogeneous,equilibrium,gain:homogeneous-equilibrium,curvature,curvatureTolerance,nearSpinodal:Number.isFinite(curvature)&&Math.abs(curvature)<=curvatureTolerance};}
+// All colligative examples use the declared generic solvent anchors above, not empirical water data.
+export function colligative(m,i=1){const particles=i*m,u=particles*MW,lnA=-Math.log1p(u),qB=R/HV*lnA,qF=R/HF*lnA,Kb=R*TB*TB*MW/HV,Kf=R*TF*TF*MW/HF,logRatio=u===0?1:Math.log1p(u)/u,dB=Kb*particles*logRatio/(1+TB*qB),dF=-Kf*particles*logRatio/(1-TF*qF);return{u,lnA,aA:1/(1+u),boil:TB+dB,freeze:TF+dF,dB,dF,Kb,Kf,linearB:Kb*i*m,linearF:-Kf*i*m};}
+export const phasePotentials=(T,lnA)=>({liquid:R*T*lnA,solid:-HF*(1-T/TF),vapour:HV*(1-T/TB)});
+// Infinite pure-solvent reservoir feeding one column, not a finite two-arm U-tube.
+export function osmoticColumn(n,T,V0,area,rho=1000){const C=n*R*T/(rho*9.80665),disc=Math.sqrt(V0*V0+4*area*C),h=C===0?0:2*C/(V0+disc),V=V0+area*h,concentration=n/V,pressure=concentration*R*T,vbar=MW/rho,activityPressure=R*T/vbar*Math.log1p(n*vbar/V);return{h,V,concentration,pressure,hydrostatic:rho*9.80665*h,activityPressure};}
+export function reverseOsmosis(c0,T,recovery,pressureBar,permeance=1){const Pi0=R*T*c0,Pi=Pi0/(1-recovery),specific=recovery===0?Pi0:Pi0*(-Math.log1p(-recovery)/recovery),workPerFeed=Pi0*(-Math.log1p(-recovery)),flux=permeance*(pressureBar-Pi/1e5);return{Pi0,Pi,specific,workPerFeed,flux,permeance};}
+// NIST naphthalene crystal-I→liquid anchor, Andon and Connett1980 row.
+export const NAPHTHALENE={Tm:353.376,H:19046};
+export function solubility(T,total=.5,solvent=1,gamma=1){const{Tm,H}=NAPHTHALENE,lnActivity=-H/R*(1/T-1/Tm),lnX=lnActivity-Math.log(gamma),x=Math.exp(lnX),capacity=x>=1?Infinity:solvent*x/(-Math.expm1(lnX)),dissolved=Math.min(total,capacity),solid=total-dissolved;return{lnActivity,lnX,x,capacity,dissolved,solid,actualX:dissolved/(solvent+dissolved),saturated:solid>0};}
+export function extraction(K,ratio,stages){const perStage=ratio/stages,logRemaining=-stages*Math.log1p(K*perStage),remaining=Math.exp(logRemaining),history=Array.from({length:stages+1},(_,j)=>({stage:j,aqueous:Math.exp(-j*Math.log1p(K*perStage)),organic:j?Math.exp(-(j-1)*Math.log1p(K*perStage))*(-Math.expm1(-Math.log1p(K*perStage))):0}));return{remaining,extracted:-Math.expm1(logRemaining),single:1/(1+K*ratio),history};}
+export function dimerPartition(K,kDim,total,Vorganic=1,Vaqueous=1){const b=Vaqueous+K*Vorganic,a=2*Vorganic*kDim*K*K,c=total===0?0:2*total/(b+Math.sqrt(b*b+4*a*total)),monomerOrganic=K*c,dimerOrganic=kDim*monomerOrganic**2,ratio=c?K+2*kDim*K*K*c:null;return{aqueous:c,monomerOrganic,dimerOrganic,ratio,mass:Vaqueous*c+Vorganic*(monomerOrganic+2*dimerOrganic)};}
+export function osmoticWork(n,T,V0,ratio,steps){const dV=V0*(ratio-1)/steps,points=Array.from({length:steps+1},(_,j)=>{const V=V0+j*dV;return{V,pressure:n*R*T/V};}),work=points.slice(1).reduce((s,p)=>s+p.pressure*dV,0),logRatio=Math.log1p(ratio-1),reversible=n*R*T*logRatio,entropy=n*R*logRatio;return{points,work,reversible,loss:reversible-work,entropy,quadrature:simpson(V=>n*R*T/V,V0,V0*ratio),normalized:n?points.at(-1).pressure*V0*ratio/(n*R*T):null};}
+export const SOURCES={devoe:'https://www2.chem.umd.edu/thermobook/v10-print.pdf',mit14:'https://ocw.mit.edu/courses/5-60-thermodynamics-kinetics-spring-2008/e763a06aa3b5de09cd6bfea6280f219c_5_60_lecture14.pdf',mit22:'https://ocw.mit.edu/courses/5-60-thermodynamics-kinetics-spring-2008/c2a3adeb420f718867739e66fb743cd2_5_60_lecture22.pdf',mit23:'https://ocw.mit.edu/courses/5-60-thermodynamics-kinetics-spring-2008/af72c87f7a84d81e313d4d79f883be67_5_60_lecture23.pdf',mat16:'https://ocw.mit.edu/courses/3-020-thermodynamics-of-materials-spring-2021/mit3_020s21_l16.pdf',mat17:'https://ocw.mit.edu/courses/3-020-thermodynamics-of-materials-spring-2021/mit3_020s21_l17.pdf',mat19:'https://ocw.mit.edu/courses/3-020-thermodynamics-of-materials-spring-2021/mit3_020s21_l19.pdf',henry:'https://webbook.nist.gov/cgi/cbook.cgi?ID=C124389&Mask=10',benzene:'https://webbook.nist.gov/cgi/cbook.cgi?ID=C71432&Mask=4',naphthalene:'https://webbook.nist.gov/cgi/cbook.cgi?ID=C91203&Mask=4',hoff:'https://urila.tripod.com/Hoff.pdf'};
