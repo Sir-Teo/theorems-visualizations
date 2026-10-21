@@ -1,5 +1,6 @@
 // Independent browser acceptance for written items in the frozen Wave 5 plan.
 // Usage: node tests/wave-five-native.mjs ml [vcalc ...]
+// Exact item IDs also work for rerunning a corrected item: fluid-5.3.
 // This checks real controls and layout; chapter-specific tests check the math.
 import assert from 'node:assert/strict';
 import { readFile, mkdir } from 'node:fs/promises';
@@ -9,10 +10,11 @@ import { createServer } from '../scripts/serve.mjs';
 import { findBrowser } from '../scripts/browser.mjs';
 
 const requested = new Set(process.argv.slice(2));
-assert.ok(requested.size, 'Supply at least one collection to keep acceptance bounded');
+assert.ok(requested.size, 'Supply a collection or item ID to keep acceptance bounded');
 const plan = JSON.parse(await readFile(new URL('../docs/wave-five-plan.json', import.meta.url)));
-const expected = plan.chapters.filter(chapter => requested.has(chapter.collection)).flatMap(chapter => chapter.items.map(item => item.id));
-assert.equal(new Set(plan.chapters.filter(chapter => requested.has(chapter.collection)).map(chapter => chapter.collection)).size, requested.size, 'Unknown collection in wave');
+const inventory = plan.chapters.flatMap(chapter => chapter.items.map(item => ({ id: item.id, collection: chapter.collection })));
+for (const target of requested) assert.ok(inventory.some(item => item.collection === target || item.id === target), `Unknown wave target: ${target}`);
+const expected = inventory.filter(item => requested.has(item.collection) || requested.has(item.id)).map(item => item.id);
 const atlas = await loadAll(), byId = new Map(atlas.items.map(item => [item.id, item]));
 for (const id of expected) assert.ok(byId.has(id), `Wave chapter is incomplete: ${id}`);
 const output = process.env.WAVE5_SHOTS || '/tmp/atlas-wave5-native';
@@ -69,8 +71,25 @@ try {
       const done = await page.evaluate(() => window.__done);
       assert.deepEqual(done.errors, [], `${label}: mount errors`);
       assert.deepEqual(done.texErrors, [], `${label}: initial TeX`);
-      assert.deepEqual(done.blank, [], `${label}: blank canvas`);
       assert.ok(done.quality.interactive > 0, `${label}: no interaction`);
+      // Offscreen stages paint lazily. Inspect their actual pixels after bringing
+      // each panel into view instead of accepting or rejecting a stale mount scan.
+      for (const canvas of await page.locator('#viz canvas').all()) {
+        if (!(await canvas.isVisible())) continue;
+        await canvas.evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
+        await paint();
+        const painted = await canvas.evaluate(element => {
+          const context = element.getContext('2d');
+          if (!context || !element.width || !element.height) return false;
+          const pixels = context.getImageData(0, 0, element.width, element.height).data;
+          let visible = 0;
+          // Regular bar spacing can alias a fixed pixel stride. Scan actual
+          // alpha entries and stop as soon as visible ink is established.
+          for (let index = 3; index < pixels.length; index += 4) if (pixels[index] && ++visible >= 3) return true;
+          return false;
+        });
+        assert.ok(painted, `${label}: blank canvas after visible paint`);
+      }
       await check(label);
       await page.screenshot({ path: `${output}/${id}-${theme}-${width}.png`, fullPage: true });
       const ranges = page.locator('input[type=range]');

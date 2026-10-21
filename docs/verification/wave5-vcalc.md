@@ -44,4 +44,4 @@ The planned Marsden–Tromba section labels were not independently confirmed aga
 
 Known representational limits are stated in the UI: 5.1 is a projection of the fence, 5.7 deliberately clips the integrand graph vertically and withholds unresolved singular quadrature, and numerical integrals/ODE residuals are labelled as approximations. Finite route tests are never advertised as a proof of global conservativity.
 
-Ready for independent review. No full-suite execution was performed by this author.
+Independent review accepted on 2026-10-21: [review evidence](wave5-vcalc-review.md). Root additionally passed the 40-case native matrix, with the four 5.4 cases refreshed after the final presentation repair. No full-suite execution was performed by this author.
