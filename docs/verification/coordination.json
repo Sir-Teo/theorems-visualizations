@@ -3383,5 +3383,18 @@
     "referenceChanged": false,
     "thresholdChanged": false,
     "nativeRerun": false
+  },
+  "nativeTinyS2Connected": {
+    "source": "4c49910a41606f3911d7332121cab7d15a640676",
+    "sourcePeer": "dc8c9f67a7c8ab6f11b949916ed80ee7f0c8b390",
+    "stageCommit": "63608647d8bf52a872f9e4c6493fb54b693d88b5",
+    "status": "one-measurement-case-exit-zero-saved-evidence-peer-pending",
+    "report": "docs/verification/map-tiny-s2-connected-root-result.md",
+    "output": "/tmp/atlas-root-s2-connected-stage/native-evidence",
+    "preservedPrelaunchFailure": "/tmp/atlas-root-s2-connected-state",
+    "causeEstablished": false,
+    "referenceChanged": false,
+    "lifecycleAccepted": false,
+    "additionalNativeAuthorised": false
   }
 }
