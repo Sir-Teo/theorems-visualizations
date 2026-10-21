@@ -189,51 +189,273 @@ export default {
     },
     // ───────────────────────────────────────────────────────────── 5
     {
-      n: 5,
-      title: 'Sums of squares and Diophantine equations',
-      summary: String.raw`Which numbers are sums of two, three or four squares, and in how many ways? Fermat’s two-squares theorem, Lagrange’s four-squares theorem and Legendre’s three-squares theorem answer the first question; Jacobi’s formulas answer the second. Pythagorean triples are parametrized, infinite descent rules out x⁴ + y⁴ = z², and the Gaussian and Eisenstein integers recast these problems as factorization in larger rings. Fermat’s Last Theorem and Catalan’s conjecture show how hard the general questions are.`,
-      items: [
-        { num: '5.1', kind: 'Theorem', name: 'Pythagorean triples', deps: ['nt-1.6'], refs: ['Hardy–Wright §13.2'],
-          pic: 'Drag a rational point around the unit circle; the chord from (−1, 0) through it has rational slope m/n and produces the triple (n² − m², 2mn, n² + m²), plotted as primitive triples fill the plane.' },
-        { num: '5.2', kind: 'Theorem', name: 'Fermat’s two-squares theorem', deps: ['nt-4.3'], refs: ['Hardy–Wright §20.1', 'Hardy–Wright §20.3'],
-          pic: 'For each prime up to N, search for p = a² + b²; representations exist exactly for p = 2 and p ≡ 1 (mod 4), and each is unique up to order and sign.' },
-        { num: '5.3', kind: 'Lemma', name: 'Zagier’s windmill involution', deps: ['comb-3.9'], refs: ['Hardy–Wright ch. 20'],
-          pic: 'Solutions of x² + 4yz = p are drawn as windmills (a square with four rectangles); Zagier’s involution rearranges them in pairs, and its unique fixed windmill exposes p as a sum of two squares.' },
-        { num: '5.4', kind: 'Theorem', name: 'Which integers are sums of two squares', deps: ['nt-5.2', 'nt-1.6'], refs: ['Hardy–Wright §16.9'],
-          pic: 'Colour the integers up to 500 by whether they are sums of two squares; every miss has a prime ≡ 3 (mod 4) to an odd power, shown in its factorization.' },
-        { num: '5.5', kind: 'Theorem', name: 'Jacobi’s two-square formula', deps: ['nt-5.4'], refs: ['Hardy–Wright §16.9', 'Hardy–Wright §16.10'],
-          pic: 'Count lattice points on the circle x² + y² = n and compare with 4(d₁(n) − d₃(n)), the excess of divisors ≡ 1 over divisors ≡ 3 (mod 4).' },
-        { num: '5.6', kind: 'Theorem', name: 'Lagrange’s four-square theorem', deps: ['nt-5.2'], refs: ['Hardy–Wright §20.5'],
-          pic: 'Every n up to 10⁴ is written as a sum of four squares by search; Euler’s four-square identity multiplies representations, as shown for the factors of a chosen n.' },
-        { num: '5.7', kind: 'Theorem', name: 'Jacobi’s four-square formula', deps: ['nt-5.6'], refs: ['Hardy–Wright §20.12'],
-          pic: 'The number of representations r₄(n) is counted by brute force and plotted against 8 times the sum of divisors of n not divisible by 4; the two curves coincide.' },
-        { num: '5.8', kind: 'Theorem', name: 'Legendre’s three-square theorem', deps: ['nt-2.1'], refs: ['Hardy–Wright ch. 20'],
-          pic: 'Mark the integers that are not sums of three squares; they are exactly 4ᵃ(8b + 7), and squares mod 8 show why no three of them can add to 7.' },
-        { num: '5.9', kind: 'Theorem', name: 'Waring’s problem (Hilbert–Waring theorem)', deps: ['nt-5.6'], refs: ['Hardy–Wright §20.1', 'Hardy–Wright §21.2'],
-          pic: 'For k = 2, 3, 4, compute the least number of k-th powers needed for each n up to 10⁴; 23 and 239 need nine cubes, illustrating g(3) = 9, and few numbers need many.' },
-        { num: '5.10', kind: 'Theorem', name: 'Fermat’s descent: x⁴ + y⁴ = z² has no solutions', deps: ['nt-5.1'], refs: ['Hardy–Wright §13.3'],
-          pic: 'Start from a hypothetical solution and follow the descent step on screen: each would-be solution manufactures a strictly smaller one, an infinite staircase that the positive integers cannot support.' },
-        { num: '5.11', kind: 'Theorem', name: 'Fermat’s Last Theorem (Wiles, Taylor–Wiles)', deps: ['nt-5.10'], refs: ['Hardy–Wright §13.1'],
-          pic: 'Search for near misses aⁿ + bⁿ ≈ cⁿ; the closest found are listed with their relative errors, and none is exact for n ≥ 3.' },
-        { num: '5.12', kind: 'Theorem', name: 'Sophie Germain’s theorem', deps: ['nt-2.5'], refs: ['Ireland–Rosen ch. 14'],
-          pic: 'For a Sophie Germain prime p (with 2p + 1 prime), the p-th powers mod 2p + 1 are only 0 and ±1; the app shows why x^p + y^p = z^p then forces 2p + 1 to divide xyz.' },
-        { num: '5.13', kind: 'Theorem', name: 'Legendre’s theorem on ax² + by² = cz²', deps: ['nt-4.1', 'nt-2.4'], refs: ['Ireland–Rosen ch. 17'],
-          pic: 'Enter coefficients; the local conditions (signs and quadratic-residue tests for each prime) are checked, and a search finds a nontrivial solution exactly when they all pass.' },
-        { num: '5.14', kind: 'Theorem', name: 'Catalan’s conjecture (Mihăilescu’s theorem)', deps: ['nt-1.6'], refs: ['Ireland–Rosen ch. 17'],
-          pic: 'List perfect powers up to 10¹² and plot the gaps between consecutive ones; the only gap of 1 is between 8 and 9.' },
-        { num: '5.15', kind: 'Definition', name: 'Gaussian integers as a Euclidean domain', deps: ['nt-1.3'], refs: ['Hardy–Wright §12.3', 'Hardy–Wright §12.6'],
-          pic: 'Divide one Gaussian integer by another: the exact quotient lands in a unit square of the lattice, rounding to the nearest corner leaves a remainder of smaller norm, and Euclid’s algorithm runs to the gcd.' },
-        { num: '5.16', kind: 'Theorem', name: 'Gaussian primes', deps: ['nt-5.15', 'nt-5.2'], refs: ['Hardy–Wright §12.7', 'Hardy–Wright §15.1'],
-          pic: 'Plot the Gaussian primes in the complex plane; ordinary primes ≡ 3 (mod 4) stay prime on the axes, while those ≡ 1 (mod 4) split into conjugate pairs a ± bi.' },
-        { num: '5.17', kind: 'Theorem', name: 'Euler: x³ + y³ = z³ has no solutions', deps: ['nt-5.15'], refs: ['Hardy–Wright §13.4', 'Hardy–Wright §12.9'],
-          pic: 'Work in the Eisenstein integers drawn as a triangular lattice; the descent argument through the prime 1 − ω is stepped through on a hypothetical solution.' },
-        { num: '5.18', kind: 'Paper', name: 'Modular elliptic curves and Fermat’s Last Theorem',
-          paper: { authors: 'Andrew Wiles', year: 1995, title: 'Modular Elliptic Curves and Fermat’s Last Theorem', venue: 'Annals of Mathematics 141 (3): 443–551', doi: '10.2307/2118559' },
-          introduces: ['nt-5.11'], deps: ['nt-13.8', 'nt-13.9', 'nt-5.10'], refs: [],
-          pic: 'Modularity made visible: for the curve y² + y = x³ − x² of conductor 11 the reader counts its points mod p and compares aₚ = p + 1 − #E(𝔽ₚ) with the coefficients of the modular form q∏(1 − qⁿ)²(1 − q¹¹ⁿ)²; the two sequences agree prime after prime — the match Wiles proved for every semistable curve, which rules out Frey’s curve and so any counterexample to Fermat.' },
-      ],
+      "n": 5,
+      "title": "Sums of squares and Diophantine equations",
+      "summary": "Factoring in the integers and in larger lattices explains which integers are sums of squares and how many representations they have. Two involutions give a short existence proof; quaternion multiplication and infinite descent supply different mechanisms. Finite exact searches illustrate Waring, Fermat and Catalan, while an elliptic-curve example introduces the arithmetic match behind modularity.",
+      "items": [
+        {
+          "num": "5.1",
+          "kind": "Theorem",
+          "name": "Pythagorean triples",
+          "deps": [
+            "nt-1.6"
+          ],
+          "refs": [
+            "Lee–Kumar, MIT18.781 (2012), Lecture 23, Theorem 82 and preceding Pythagorean classification, pp.1–3"
+          ],
+          "pic": "Choose $m>n>0$. The circle point and triangle use the actual integer formula; the readout tests coprimality and parity. Inputs with $n\\ge m$ are explicitly outside this parametrization."
+        },
+        {
+          "num": "5.2",
+          "kind": "Theorem",
+          "name": "Fermat’s two-squares theorem",
+          "deps": [
+            "nt-5.3",
+            "nt-5.15",
+            "nt-2.1"
+          ],
+          "refs": [
+            "Lee–Kumar, MIT18.781 (2012), Lecture 17, Theorem 57 and descent, pp.4–6",
+            "Zagier (1990), p.144; uniqueness derived here from Gaussian factorization"
+          ],
+          "pic": "The circle enumerates all signed ordered integer pairs for the selected input. The second panel compares the primes through 199. A composite input is labelled separately and can have several inequivalent pairs, as65 does."
+        },
+        {
+          "num": "5.3",
+          "kind": "Lemma",
+          "name": "Zagier’s windmill involution",
+          "deps": [
+            "nt-1.6"
+          ],
+          "refs": [
+            "D. Zagier, A One-Sentence Proof That Every Prime p≡1(mod4) Is a Sum of Two Squares, American Mathematical Monthly97(2),1990,p.144"
+          ],
+          "pic": "Select a prime, a triple index (reduced modulo the finite set size), and an involution. Four rectangles of area $yz$ surround the central square. Compare the paired windmills, then read the second map’s fixed points and their two-square identities."
+        },
+        {
+          "num": "5.4",
+          "kind": "Theorem",
+          "name": "Which integers are sums of two squares",
+          "deps": [
+            "nt-5.2",
+            "nt-4.3",
+            "nt-1.6"
+          ],
+          "refs": [
+            "Own prime-factor proof from Fermat’s theorem and the supplement for −1; MIT18.781 (2012), Lecture 17, pp.4–6"
+          ],
+          "pic": "The strip tests every integer through 500. Select one to see its prime factorization and all lattice points on its circle; a missing representation has an explicit odd exponent obstruction."
+        },
+        {
+          "num": "5.5",
+          "kind": "Theorem",
+          "name": "Jacobi’s two-square formula",
+          "deps": [
+            "nt-5.16",
+            "nt-1.6"
+          ],
+          "refs": [
+            "Own Gaussian-factor counting proof; Hardy–Wright §16.9–16.10 (bibliographic background, book body not consulted)"
+          ],
+          "pic": "Count every marked lattice point, then compare with the divisor-character stems. The readout uses independent enumeration and the divisor formula. The slider excludes zero because the positive-divisor formula does not apply there."
+        },
+        {
+          "num": "5.6",
+          "kind": "Theorem",
+          "name": "Lagrange’s four-square theorem",
+          "deps": [
+            "nt-1.6",
+            "nt-2.1"
+          ],
+          "refs": [
+            "Lee–Kumar, MIT18.781 (2012), Lecture 22, Theorem 80 and Lemma 81, pp.3–5"
+          ],
+          "pic": "Search for a witness for $n$ and for a multiplier $m$. The second panel displays the actual quaternion product, whose four squared coordinates sum to $nm$. The finite search illustrates the general descent; it does not replace it."
+        },
+        {
+          "num": "5.7",
+          "kind": "Theorem",
+          "name": "Jacobi’s four-square formula",
+          "deps": [
+            "nt-5.5"
+          ],
+          "refs": [
+            "M. D. Hirschhorn, A simple proof of Jacobi’s four-square theorem, J. Austral. Math. Soc. Ser. A32(1982),61–67, Eqs.1.2 and4.4; theta–Lambert identity used as an analytic input"
+          ],
+          "pic": "The line counts quadruples by convolution of independently enumerated two-square counts; the dots use the divisor formula. Select $n$ to see which divisors contribute $8d$. The zero case is excluded from the divisor slider."
+        },
+        {
+          "num": "5.8",
+          "kind": "Theorem",
+          "name": "Legendre’s three-square theorem",
+          "deps": [
+            "nt-2.1"
+          ],
+          "refs": [
+            "P. Michel, Sums of squares, authorbook chapter, printedp21, Legendre–Gauss theorem and stated partial quaternion proof scope"
+          ],
+          "pic": "Select an integer, including zero. The strip marks precisely the forbidden forms through 500. The second panel displays an actual exhaustive three-square witness when one exists; for a forbidden value the readout explains the mod8 obstruction."
+        },
+        {
+          "num": "5.9",
+          "kind": "Theorem",
+          "name": "Waring’s problem (Hilbert–Waring theorem)",
+          "deps": [
+            "nt-5.6"
+          ],
+          "refs": [
+            "R. Baxter, Additive Number Theory Seminar: Waring’s Problem in General (2024), §§3–4, existence-proof roadmap; opening printed identities are not imported",
+            "Hilbert–Waring theorem: universal existence, not the large-n variant"
+          ],
+          "pic": "Choose squares, cubes or fourth powers and select $n\\le10,000$. The graph contains the exact finite dynamic-programming minima and the second panel its witness. A maximum seen in this range is a lower bound on the universal $g(k)$, with no claim that the graph proves a global upper bound."
+        },
+        {
+          "num": "5.10",
+          "kind": "Theorem",
+          "name": "Fermat’s descent: no positive quartic-square solution",
+          "deps": [
+            "nt-5.1",
+            "nt-1.6"
+          ],
+          "refs": [
+            "Lee–Kumar, MIT18.781 (2012), Lecture 23, Theorem 82, pp.2–3"
+          ],
+          "pic": "Step through the conditional implication chain. No actual counterexample is invented. The accompanying finite search, with both legs at least 2, computes gaps from $a^4+b^4$ to the nearest square; its nonzero values illustrate the impossibility, while infinite descent supplies the proof."
+        },
+        {
+          "num": "5.11",
+          "kind": "Theorem",
+          "name": "Fermat’s Last Theorem (Wiles, Taylor–Wiles)",
+          "deps": [
+            "nt-5.10",
+            "nt-5.17",
+            "nt-1.6"
+          ],
+          "see": [
+            "nt-5.18",
+            "nt-13.8",
+            "nt-13.9"
+          ],
+          "refs": [
+            "Ballenghien, AFP Sophie Germain, FLT_Sufficient_Conditions: odd-prime-or-four and exponent reductions",
+            "Wiles (1995), semistable modularity; Taylor–Wiles (1995), numerical criterion; Ribet, level lowering: external theorem inputs, proof roadmap only"
+          ],
+          "pic": "Change the exponent and leg bound. The finite search ranks near misses with exact integer cross-products; the chart rounds only the displayed fractions. The implication panel explains which general theorems, beyond the finite experiment, rule out a counterexample."
+        },
+        {
+          "num": "5.12",
+          "kind": "Theorem",
+          "name": "Sophie Germain’s theorem",
+          "deps": [
+            "nt-2.5",
+            "nt-1.6"
+          ],
+          "refs": [
+            "B. Ballenghien, AFP Sophie Germain (2025 entry; current2026 theories), SG_Theorem and SG_Generalization, complete first-case auxiliary-prime proof"
+          ],
+          "pic": "Vary the candidate $p$; the two primality checks determine when the theorem applies. The first panel computes every nonzero residue’s $p$-th power modulo $q$. Composite or even candidates remain visible with an explicit inapplicable-hypotheses message."
+        },
+        {
+          "num": "5.13",
+          "kind": "Theorem",
+          "name": "Legendre’s theorem on ternary quadratic equations",
+          "deps": [
+            "nt-4.1",
+            "nt-2.4",
+            "nt-1.6"
+          ],
+          "refs": [
+            "MIT 18.782 (2013), Lecture 2, Legendre’s theorem on normalized ternary forms",
+            "Ireland–Rosen ch.17 (bibliographic background, book body not consulted)"
+          ],
+          "pic": "Vary positive $a,b$ and negative $c$. The curve shows real ratios $(x/z,y/z)$; a marked point comes from an actual integer search through 30. The residue panel and readout keep squarefree/pairwise-coprime hypotheses explicit. A finite search failure is never treated as a nonexistence proof."
+        },
+        {
+          "num": "5.14",
+          "kind": "Theorem",
+          "name": "Catalan’s conjecture (Mihăilescu’s theorem)",
+          "deps": [
+            "nt-1.6"
+          ],
+          "refs": [
+            "M. Klazar, Catalan’s conjecture is Mihăilescu’s theorem, current lecture exposition, introduction and printedpp29–31, Theorems5.1.1–5.1.7; later draft sections incomplete, no full original-proof read claimed"
+          ],
+          "pic": "Enumerate all distinct perfect powers up to the chosen bound, then select an adjacent gap. Multiple representations such as $64=8^2=4^3=2^6$ are deduplicated. Both chart coordinates are logarithmic; the exact integer gap remains in the readout. The interactive bound is one million."
+        },
+        {
+          "num": "5.15",
+          "kind": "Definition",
+          "name": "Gaussian integers as a Euclidean domain",
+          "deps": [
+            "nt-1.3"
+          ],
+          "refs": [
+            "S. Wewers, Algebraic Number Theory (Ulm2013/14), §1.1, Proposition 1.1.19, Corollary 1.1.20 and Lemma 1.1.22, pp.12–15; direct Gaussian proof supplied here"
+          ],
+          "pic": "Edit the two Gaussian integers. The first panel shows the exact quotient and the selected nearest square-lattice point. The second shows integer norms in Euclid’s algorithm. A zero divisor is an explicit undefined state. Ties between nearest points use a fixed rounding convention."
+        },
+        {
+          "num": "5.16",
+          "kind": "Theorem",
+          "name": "Gaussian primes",
+          "deps": [
+            "nt-5.15",
+            "nt-5.2",
+            "nt-4.3",
+            "nt-1.6"
+          ],
+          "refs": [
+            "S. Wewers, Algebraic Number Theory (Ulm2013/14), Lemma 1.1.23 pp.14–15 and §1.3 pp.22–23; own classification proof from these norm and two-square inputs"
+          ],
+          "pic": "Change the square window to reveal the Gaussian prime lattice. Select a rational prime candidate to compare splitting, ramification or inertness. Composite inputs have no prime-splitting assertion; highlighted factors appear only when they lie inside the selected window."
+        },
+        {
+          "num": "5.17",
+          "kind": "Theorem",
+          "name": "Euler: no nonzero cubic Fermat solution",
+          "deps": [
+            "nt-5.15",
+            "nt-2.1",
+            "nt-1.6"
+          ],
+          "refs": [
+            "S. Wewers, Algebraic Number Theory (Ulm2013/14), pp.12–16 Euclidean Eisenstein arithmetic and pp.18–20 Lemma 1.2.3 descent",
+            "Oosterhuis, AFP Fermat3_4, fermat-3: independent theorem/outline confirmation"
+          ],
+          "pic": "The triangular lattice computes actual Eisenstein division and its smaller norm remainder. Step through the conditional cubic descent separately. The panel represents implications of a hypothetical solution, with no fabricated numerical counterexample."
+        },
+        {
+          "num": "5.18",
+          "kind": "Paper",
+          "name": "Modular elliptic curves and Fermat’s Last Theorem",
+          "deps": [
+            "nt-2.1",
+            "nt-1.6"
+          ],
+          "see": [
+            "nt-5.11",
+            "nt-13.8",
+            "nt-13.9"
+          ],
+          "refs": [
+            "Wiles (1995), Annals141(3),443–551, DOI10.2307/2118559: publisher metadata; original-body review unresolved",
+            "LMFDB11.a3, equation, conductor, discriminant, semistability and modular q-expansion; AIM, Weight 2 Level 11, exact eta product"
+          ],
+          "pic": "Choose a prime modulus. Count the actual affine points and the extra point at infinity, then compare the good-prime trace with an independently multiplied eta-product coefficient. At11 the reduced cubic is singular and the good-prime comparison is explicitly excluded.",
+          "verify": true,
+          "paper": {
+            "authors": "Andrew Wiles",
+            "year": 1995,
+            "title": "Modular Elliptic Curves and Fermat’s Last Theorem",
+            "venue": "Annals of Mathematics141(3):443–551",
+            "doi": "10.2307/2118559"
+          },
+          "introduces": [
+            "nt-5.11"
+          ]
+        }
+      ]
     },
-    // ───────────────────────────────────────────────────────────── 6
     {
       n: 6,
       title: 'Farey fractions, continued fractions and Pell’s equation',

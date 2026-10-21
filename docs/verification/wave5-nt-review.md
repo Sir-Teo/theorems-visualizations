@@ -1,0 +1,59 @@
+# Wave 5 NT5 — independent acceptance
+
+**Accepted on the final frozen bytes, 2026-10-21.** All eighteen frozen identities/kinds, complete statements, proof inputs, scoped roadmaps, widget consumers and chapter5 syllabus metadata were reviewed. The complete72-setting checks below cover the preceding freeze; an independent16-setting replacement refresh covers the only final changes, explicit colour keys in15/16/17 and CRT's stated role in13. No required finding remains. Paper5.18's original-source `verify:true` remains intentional. All six final hashes in `/tmp/atlas-wave5-nt-final.sha256` passed after the replacement checks. All reviewer browsers are closed and the lane is released.
+
+Only this report and `/tmp` evidence were edited by the reviewer. No Git, global build/suite, generated data, shared runtime or old source queues were changed.
+
+## Verification results
+
+| Independent check | Result |
+|---|---|
+| Exact/finite reference comparisons | **88,647 pass** |
+| Focused model groups | **13/13 pass** |
+| Scoped static | **18 items,0errors,0warnings** |
+| Actual production settings | **72/72 pass**: eighteen items ×1200/320 ×light/dark; final bounded replacement **16/16 pass** |
+| Recorded control actions | **912** |
+| Actual state-URL checks | **888** |
+| Physical Create-state-link replay pairs | **456**, separately counted from control actions |
+| Additional plotted-model assertions | **14,452 pass** |
+| Minimum full mark/ring clearance | **7.4618644068 CSSpx** |
+| Minimum glyph clearance | **3.1156244278 CSSpx** |
+| Standard narrow all-mode harness | **18/18 light +18/18 dark**, zero runtime/TeX/blank/quality warnings |
+
+The mathematical oracles are `/tmp/wave5-nt-independent.mjs` (23,725 comparisons), `/tmp/wave5-nt-legendre-independent.mjs` (8,600), and `/tmp/wave5-nt-eisenstein-independent.mjs` (56,322). They use signed-coordinate polynomial convolution, direct proper Gaussian-divisor searches, Euler-pentagonal eta-series construction, direct elliptic point counts, BFS reachable-sum layers, exhaustive BigInt near-miss/power-set comparisons, primitive mod8/nonsingular odd-prime ternary enumeration, and independent complex nearest-lattice searches. The Eisenstein oracle covers all13,520 exposed dividend/nonzero-divisor combinations, recomposition, multiplicative norm and lambda/cube congruences. These finite comparisons corroborate implementations; they do not prove infinite theorems. An initial local-reference error admitted singular modp solutions as liftable; that oracle error was corrected before the passing local-criterion comparisons and was not attributed to the product.
+
+Production evidence: `/tmp/wave5-nt-peer-browser.mjs`, `/tmp/wave5-nt-peer-native.log`, `/tmp/wave5-nt-review-production/`. The runner uses the real production path with an in-memory chapter catalog and adds equal-aspect checks, signed-circle lattice membership/count/uniqueness, rendered windmill areas, and actual plotted finite-field point membership/count/uniqueness. It checks complete statement/proof/scope/caption/readout/control formula and text bounds, full marker/ring/path/rectangle/glyph ink, native/model agreement, every visible mode and endpoint, valid integer restoration, fractional/out-of-range/malformed rejection, and physical Share replay.
+
+Additional critical URLs exercise composite65; zero and forbidden7 in three squares; passing/failing/unnormalized conics; zero Gaussian dividends and nearest-point ties; composite/ramified Gaussian inputs; lambda division and zero Eisenstein divisors; and singular reduction at11. Integer-only controls correctly reject fractional saved states rather than pretending such states are valid off-grid examples.
+
+Standard harness evidence: `/tmp/wave5-nt-standard-check.mjs`, `/tmp/wave5-nt-standard-{light,dark}.log`, `/tmp/wave5-nt-review-standard/`. This is the existing chapter-only checker copied with absolute imports and screenshot output redirected to `/tmp`; it runs one browser/page worker, sequentially by theme. Final focused logs: `/tmp/wave5-nt-peer-model-final.log`, `/tmp/wave5-nt-peer-static-final.log`.
+
+## Source, hypotheses and prerequisite review
+
+- Actual MIT18.781 (2012) lecture PDFs17/22/23 were read for prime two squares, quaternion four-square descent, primitive triples and quartic descent. Their printed lecture numbers are used. The official [notes page](https://ocw.mit.edu/courses/18-781-theory-of-numbers-spring-2012/pages/lecture-notes/) confirms Joseph Lee prepared the notes with Abhinav Kumar. Parent-saved PDFs/text are in `/tmp/atlas-wave5-nt-sources`.
+- Zagier's actual author-copy p144 was read and rendered. The first map's unique fixed point is `(1,1,(p−1)/4)`; the second coordinate swap supplies `y=z`. The text and model correctly distinguish the nonconstructive parity proof from additional finite enumeration.
+- Hirschhorn's actual author-hosted [two-square paper](https://web.maths.unsw.edu.au/~mikeh/webpapers/paper21.pdf), all four pages, supports the theta/Lambert derivation. The independent Gaussian-factor proof supplied at5.5 also checks directly.
+- Hirschhorn's distinct1982 publisher paper, [DOI10.1017/S144678870002440X](https://doi.org/10.1017/S144678870002440X), actual pp62–67 and rendered formulas, supports5.7's stated analytic input. For `theta(q)=sum q^(j*j)`, `|q|<1`, its identity is `theta(q)^4=1+8 sum_{4∤d} d*q^d/(1-q^d)`. Expanding geometric terms gives the divisor coefficient formula. The chapter explicitly identifies this identity as the nontrivial input; coefficient extraction is not falsely presented as its proof. Local copies: `Hirschhorn-two-square` and `Hirschhorn1982-four-square` under `/tmp/atlas-wave5-nt-review-sources`.
+- Actual Michel EPFL chapter printedp21 and Klazar lecture introduction/pp29–31 were read and rendered. Three-square sufficiency and the Catalan deep inputs are honestly scoped. Klazar's later draft sections are incomplete; no complete original Mihăilescu proof is claimed. Baxter's Waring exposition supplies a roadmap; its opening typographical errors are not imported. Universal `g(k)` is distinguished from sufficiently-large-n bounds and finite maxima.
+- Actual full AFP [Germain theory](https://isa-afp.org/browser_info/current/AFP/Sophie_Germain/SG_Theorem.html) and [generalized theory](https://isa-afp.org/browser_info/current/AFP/Sophie_Germain/SG_Generalization.html) were successfully saved and read beyond the earlier outlines. The complete first-case argument checks: nonconsecutive nonzero power residues, exclusion of p as a power residue, primitive coprime factor extraction, auxiliary divisibility, then the forbidden-residue contradiction. The shorter argument is not claimed to establish the stronger p²-divisibility result. Both primality hypotheses and the first-case limitation remain explicit.
+- Wewers's actual [Ulm2013/14 notes](https://www.uni-ulm.de/fileadmin/website_uni_ulm/mawi.inst.100/vorlesungen/ws14/Algebraische_Zahlentheorie/gesamt.pdf) pp12–16/18–20 were read, with p13/19/20 personally rendered and inspected. They supply independent Eisenstein Euclidean/UFD, unit, ramification and congruence facts plus the complete stronger lambda-exponent descent. Gaussian UFD is not substituted for these facts, and `Z[sqrt(-3)]` is not called factorial. Small source-display typos were identified rather than copied. The six units represent **invertible** classes modulo lambda².
+- The normalized Legendre conic criterion and its necessity argument check, including nonzero squarefree pairwise-coprime coefficients and signs. Sufficiency is named as an external theorem. Search failure through30 is never treated as nonexistence. Future13.8/13.9 are related entries, not written proof inputs for5.18; the Gaussian dependency directions are acyclic.
+- Actual [LMFDB11.a3](https://www.lmfdb.org/EllipticCurve/Q/11/a/3) and [AIM Weight2 Level11](https://aimath.org/~aimath/WWN/rmtapplications/articles/html/8a/) independently confirm `y²+y=x³−x²`, discriminant−11/conductor11, semistability, sole bad prime11 and the exact eta product/q-expansion. Bad-prime equality is excluded. The example is arithmetic evidence for a known curve, not a proof of modularity or a claim to reproduce Wiles's discovery.
+
+Detailed saved source receipts and the initial preparation record remain in `/tmp/atlas-wave5-nt-review-sources/` and `/tmp/wave5-nt-review-source-preparation-history.md`.
+
+## Completed repairs and visual inspection
+
+The earlier review findings were repaired and reread: equal Euclidean aspect for geometric panels; invertible-class wording in5.17; positive-power recurrence in5.9; and explicit composite-input norm labeling in5.16. The final fresh72-case run includes the author's final formula splits, large-axis tick formatting, readout wrapping and exponent-bar labels. No replacement source bytes were needed during the independent native run.
+
+Personally inspected all36 actual320 production defaults in both themes, all116 standard default/alternate captures via contact sheets and selected individual files, complete narrow rich pages3/7/9/17/18, and selected critical raw states including the second involution, failed conic criteria, Gaussian ties, zero divisors and bad reduction. The geometry, finite computations, captions, live readouts and source/scope notices agree; no clipping, false scale or literal TeX was found. The final legend keys were subsequently inspected in all eight affected narrow default captures and match the plotted meanings.
+
+Final replacement evidence: `/tmp/wave5-nt-peer-final-keys.mjs`, `/tmp/wave5-nt-peer-final-keys.log`, `/tmp/wave5-nt-review-final-keys/`. The four affected items13/15/16/17 pass16 settings,336 actions,224 state-URL checks,104 separately counted physical Create-state-link pairs and3,460 plotted-model/legend assertions, with unchanged minimum full mark/ring7.4618644068 CSSpx and glyph3.1156244278 CSSpx. Explicit assertions cover each key's text, resolved swatches and complete bounds. The CRT sentence is correct for squarefree coefficients, including vacuous modulus1, and its metadata is synchronized. The full72 matrix and standard116 captures were not unnecessarily repeated after these bounded prose/legend changes.
+
+The apparent17 narrow component-screenshot truncation is a capture crop, not page clipping. Both final narrow full-page views show the entire readout through the nonfactorial-subring sentence. A separate two-theme actual320 diagnostic, `/tmp/wave5-nt-peer-readout-probe.mjs` and `/tmp/wave5-nt-review-readout-probe/readout-{light,dark}.json`, passes readout and ancestor bounds: the readout has only a subpixel text-metric/scroll-height rounding difference and all containing page ancestors have visible vertical overflow. No hidden/clip ancestor truncates it. These two diagnostic defaults are separate from the16 replacement settings.
+
+The two proposed symmetry notes in `/tmp/atlas-wave5-forty-six-bridge-notes.json` are independently accepted: Gaussian quarter-turn units/norm/Euclidean arithmetic at5.15, and the distinct six-unit Eisenstein norm/ramification/descent inputs at5.17. No shared bridge file was edited by this reviewer.
+
+## Remaining intentional limits
+
+Paper5.18 retains `verify:true` for unresolved original-paper body access. Annals metadata and an earlier visibly modified teaching introduction are distinguished from the publisher original/full paper. No request, alternate host/copy or cached-body recovery was made for stopped AMS Schoof2004 or Wstein Wiles works. Later unsuccessful local-save requests for MIT2013 conics/FLT, Conrad2012 Gaussian, Pollack, Hirschhorn2014 slides and a distinct Krumm thesis remained stopped; no successful local body is invented. Commercial Hardy–Wright/Ireland–Rosen bodies were not consulted. Explicit deep-input/roadmap scopes and finite-search limitations remain intentional limits of the accepted content.
