@@ -23,8 +23,10 @@ These chapters have source/mathematical review, checked visualizations and colle
 | Chemical kinetics 5: solution and electrode reactions | 11 | `7ea6ece3`, `8613ac03` | [review](wave5-kin-review.md) |
 | Art 5: perceptual colour spaces | 9 | `09d7f36f` | [review](wave5-art-review.md) |
 | Ecology 5: predation, disease and mutualism | 12 | `1ec8d0e9` | [review](wave5-ecol-review.md) |
+| Algebra 8: coding theory | 28 | `e225c566` | [review](wave5-alg-review.md) |
+| Topology 5: countability and separation | 15 | `f0e8751c` | [review](wave5-top-review.md) |
 
-**177 new ideas accepted in fifteen chapters.** Music 9.11 and 9.22 deliberately retain source uncertainty flags for unread original passages; the modern finite mathematics is independently checked, and the historical scope remains explicit. Art 5.4 retains its disclosed secondary MacAdam numerical-table flag; the original experimental conditions and qualitative conclusion were checked directly.
+**220 new ideas accepted in seventeen chapters.** Music 9.11 and 9.22 deliberately retain source uncertainty flags for unread original passages; the modern finite mathematics is independently checked, and the historical scope remains explicit. Art 5.4 retains its disclosed secondary MacAdam numerical-table flag; the original experimental conditions and qualitative conclusion were checked directly.
 
 ## Earlier-baseline integration checks
 
@@ -49,7 +51,7 @@ The exact current-baseline export `e6506283` at `/tmp/atlas-wave5-current-q_5q9v
 
 ## Work continuing
 
-**854 new ideas remain in 65 Wave 5 collection chapters.** All fifteen accepted chapters have finished their author/reviewer checks. The current small pipeline assigns ALG8 to `author_ml`, TOP5 to `review_smallworld` and independent review of both to `wave5_reviewer`; at most three subagents work concurrently. Continue breadth-first from the remaining entries in the [frozen inventory](../wave-five.md), retaining its original chapter assignments. Follow MASTER_PLAN §7.2: source-led authoring, actual computations, both-theme native/visual checks, independent review, dependency reconciliation and collection-sized commits. Historical verification tasks are not prerequisites to repeat.
+**811 new ideas remain in 63 Wave 5 collection chapters.** All seventeen accepted chapters have finished their author/reviewer checks. The current small pipeline assigns DG5 to `author_vcalc`, MFD5 to `review_music` and independent review of both to `wave5_reviewer`; at most three subagents work concurrently. Continue breadth-first from the remaining entries in the [frozen inventory](../wave-five.md), retaining its original chapter assignments. Follow MASTER_PLAN §7.2: source-led authoring, actual computations, both-theme native/visual checks, independent review, dependency reconciliation and collection-sized commits. Historical verification tasks are not prerequisites to repeat.
 
 After the full frozen wave passes its end-of-wave gates, prepare the next breadth-first wave under the master plan. The continuous production goal remains unfinished. Collection PRs are now open as drafts, isolated onto published main; per-PR CI is in progress. The one-line inherited CI YAML repair is tracked separately in [PR16](https://github.com/Sir-Teo/theorems-visualizations/pull/16), and included identically in each collection branch so checks can start. No PR is claimed merged. Local YAML parsing reproduces the old line24/column83 error and passes after replacing the invalid conditional with the declared `npm test` command.
 
@@ -59,7 +61,7 @@ After the full frozen wave passes its end-of-wave gates, prepare the next breadt
 | --- | --- | --- |
 | ml | [#1](https://github.com/Sir-Teo/theorems-visualizations/pull/1) | `e742bfdf` |
 | vcalc | [#2](https://github.com/Sir-Teo/theorems-visualizations/pull/2) | `f0e66767` |
-| fluid | [#3](https://github.com/Sir-Teo/theorems-visualizations/pull/3) | `5da1ae78` |
+| fluid | [#3](https://github.com/Sir-Teo/theorems-visualizations/pull/3) | `b0893206` |
 | ode | [#4](https://github.com/Sir-Teo/theorems-visualizations/pull/4) | `a6e3eef1` |
 | music | [#5](https://github.com/Sir-Teo/theorems-visualizations/pull/5) | `57235f23` |
 | pde | [#6](https://github.com/Sir-Teo/theorems-visualizations/pull/6) | `8fe4c1a4` |
@@ -72,3 +74,13 @@ After the full frozen wave passes its end-of-wave gates, prepare the next breadt
 | kin | [#13](https://github.com/Sir-Teo/theorems-visualizations/pull/13) | `b7984fa1` |
 | art | [#14](https://github.com/Sir-Teo/theorems-visualizations/pull/14) | `3a4e0e05` |
 | ecol | [#15](https://github.com/Sir-Teo/theorems-visualizations/pull/15) | `e335d64d` |
+
+## Seventeen-chapter checkpoint
+
+Exact accepted-content snapshot `f0e8751c`, exported to `/var/folders/29/bzg0zx0d7jjbyf60_3cjch440000gn/T/atlas-wave5-seventeen-wzh75e8d`, passes **2,417/2,417 tests on Node22.23.3**, with no failures, skips or cancellations. Strict build: **6,904 written +6,670 planned,467 chapters,85 collections,0 errors/warnings**. Static: **6,841 visualizations,0 errors/warnings**. Home JSON: **113,088 bytes gzip**. Logs: `/tmp/atlas-wave5-seventeen-{tests,build,static}.log`. The targeted sweep passes **52 routes with0errors**, covering all43 new items, their chapters/collections, home/map/status/about and the stability bridge; log `/tmp/atlas-wave5-seventeen-smoke.log`. This checkpoint includes the accepted LaSalle bridge follow-up; production assets remain unchanged.
+
+The ALG8 and TOP5 reports record actual source review, independent model oracles, both-theme 1200/320px native actions, complete production text/marker checks and edited/raw/malformed replay. No new uncertainty flags were needed. Fourteen of the original fifteen collection PRs and CI repair PR16 pass current-head CI and are ready for review; fluid PR3 has a new run after replacing a stale fixed inventory count with exact inventory invariants. No PR is merged.
+
+ALG chapter shipping PR: [#17](https://github.com/Sir-Teo/theorems-visualizations/pull/17), isolated head `487d1a09`. Standalone strict build and chapter/planner tests pass; CI is running.
+
+TOP chapter shipping PR: [#18](https://github.com/Sir-Teo/theorems-visualizations/pull/18), isolated head `e0b73de4`. Standalone strict build and chapter/planner tests pass; CI is running.

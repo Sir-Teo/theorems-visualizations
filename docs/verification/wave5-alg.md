@@ -25,4 +25,4 @@ Native captures: `/tmp/wave5-alg-8.N-{light,dark}-{1164,284}.png` and `-modeK.pn
 
 Final targeted native rerun after presentation repairs: **24 layouts, 204 physical actions, 24 edited/malformed replay gates pass** (8.5a,8.13,8.19a,8.22a,8.27,8.31). Clean production run: **56 item/theme states pass**, including full scope/field text and actual Share replay. An earlier test-only initialization error accessed documentElement before creation; the clean run removes that initialization mistake and reports no page errors. No content defect was hidden by filtering the error collection.
 
-Source frozen after these runs. Independent reviewer wave5_reviewer is performing the final focused native check; coordinator will rebuild generated data and perform the final production gate against that source-aligned build before integration.
+Source frozen and independently accepted in [the final review](wave5-alg-review.md). The coordinator rebuilt source-aligned data and independently passed all 56 final production cases before integration; log `/tmp/atlas-wave5-alg-root-production.log`.
