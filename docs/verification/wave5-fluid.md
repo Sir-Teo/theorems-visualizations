@@ -43,4 +43,4 @@ Authored 2026-10-21. Items fluid-5.1 through fluid-5.8, with new numerical helpe
 
 Root review additionally checked 1,008 independent real-coordinate surface-velocity states (maximum scaled discrepancy 3.54e-14), independently expanded the thin-camber Fourier coefficients, and passed 32 native browser groups with 180 control actions. Final review requested an exterior gutter for the edge log plot and explicit disclosure that the log floor clips speeds below 0.01U, including true zeros. All box-axis stages now use exterior gutters as requested. Both edge changes were applied; 5.3 was recaptured at 390 and 860 pixels in both themes with clean browser results and the label clear of the curve. The plain-text 5.4 name now reads “Ideal section lift and the sine law”.
 
-Independent reviewer: root final signoff pending.
+Independent review accepted on 2026-10-21: [root review and final native evidence](wave5-fluid-review.md).

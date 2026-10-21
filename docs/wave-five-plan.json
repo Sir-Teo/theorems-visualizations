@@ -1,7 +1,7 @@
 {
   "version": 1,
   "wave": 5,
-  "status": "authoring-authorized",
+  "status": "in-progress",
   "gates": {
     "sourceReviewsPending": 5,
     "automatedVerification": "required-per-chapter-and-wave",
@@ -17505,5 +17505,927 @@
         "unknown": []
       }
     }
-  ]
+  ],
+  "started": "2026-10-21",
+  "authoringDirection": "User confirmed prior work done; continuously author future waves without routine pauses.",
+  "progress": {
+    "total": 1031,
+    "written": 177,
+    "remaining": 854,
+    "writtenChapters": 15,
+    "chapters": [
+      {
+        "collection": "ode",
+        "chapter": 5,
+        "total": 18,
+        "written": 18,
+        "remaining": 0,
+        "writtenItems": [
+          "ode-5.1",
+          "ode-5.2",
+          "ode-5.3",
+          "ode-5.4",
+          "ode-5.5",
+          "ode-5.6",
+          "ode-5.7",
+          "ode-5.8",
+          "ode-5.9",
+          "ode-5.10",
+          "ode-5.11",
+          "ode-5.12",
+          "ode-5.13",
+          "ode-5.14",
+          "ode-5.15",
+          "ode-5.16",
+          "ode-5.17",
+          "ode-5.18"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "pde",
+        "chapter": 5,
+        "total": 16,
+        "written": 16,
+        "remaining": 0,
+        "writtenItems": [
+          "pde-5.1",
+          "pde-5.2",
+          "pde-5.3",
+          "pde-5.4",
+          "pde-5.5",
+          "pde-5.6",
+          "pde-5.7",
+          "pde-5.8",
+          "pde-5.9",
+          "pde-5.10",
+          "pde-5.11",
+          "pde-5.12",
+          "pde-5.13",
+          "pde-5.14",
+          "pde-5.15",
+          "pde-5.16"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "vcalc",
+        "chapter": 5,
+        "total": 10,
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "vcalc-5.1",
+          "vcalc-5.2",
+          "vcalc-5.3",
+          "vcalc-5.4",
+          "vcalc-5.5",
+          "vcalc-5.6",
+          "vcalc-5.7",
+          "vcalc-5.8",
+          "vcalc-5.9",
+          "vcalc-5.10"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "alg",
+        "chapter": 8,
+        "total": 28,
+        "written": 0,
+        "remaining": 28,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "rep",
+        "chapter": 5,
+        "total": 14,
+        "written": 14,
+        "remaining": 0,
+        "writtenItems": [
+          "rep-5.1",
+          "rep-5.2",
+          "rep-5.3",
+          "rep-5.4",
+          "rep-5.5",
+          "rep-5.6",
+          "rep-5.7",
+          "rep-5.8",
+          "rep-5.9",
+          "rep-5.10",
+          "rep-5.11",
+          "rep-5.12",
+          "rep-5.13",
+          "rep-5.14"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "top",
+        "chapter": 5,
+        "total": 15,
+        "written": 0,
+        "remaining": 15,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "dg",
+        "chapter": 5,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "mfd",
+        "chapter": 5,
+        "total": 11,
+        "written": 0,
+        "remaining": 11,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "prob",
+        "chapter": 6,
+        "total": 17,
+        "written": 0,
+        "remaining": 17,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "stoch",
+        "chapter": 5,
+        "total": 12,
+        "written": 0,
+        "remaining": 12,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "graph",
+        "chapter": 6,
+        "total": 26,
+        "written": 0,
+        "remaining": 26,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "comb",
+        "chapter": 5,
+        "total": 14,
+        "written": 0,
+        "remaining": 14,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "nt",
+        "chapter": 5,
+        "total": 18,
+        "written": 0,
+        "remaining": 18,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "logic",
+        "chapter": 7,
+        "total": 13,
+        "written": 0,
+        "remaining": 13,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "num",
+        "chapter": 5,
+        "total": 10,
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "num-5.1",
+          "num-5.2",
+          "num-5.3",
+          "num-5.4",
+          "num-5.5",
+          "num-5.6",
+          "num-5.7",
+          "num-5.8",
+          "num-5.9",
+          "num-5.10"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "nla",
+        "chapter": 5,
+        "total": 12,
+        "written": 0,
+        "remaining": 12,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "opt",
+        "chapter": 5,
+        "total": 16,
+        "written": 0,
+        "remaining": 16,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "stat",
+        "chapter": 9,
+        "total": 13,
+        "written": 13,
+        "remaining": 0,
+        "writtenItems": [
+          "stat-9.1",
+          "stat-9.2",
+          "stat-9.3",
+          "stat-9.4",
+          "stat-9.5",
+          "stat-9.6",
+          "stat-9.7",
+          "stat-9.8",
+          "stat-9.9",
+          "stat-9.10",
+          "stat-9.11",
+          "stat-9.12",
+          "stat-9.13"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "ml",
+        "chapter": 5,
+        "total": 4,
+        "written": 4,
+        "remaining": 0,
+        "writtenItems": [
+          "ml-5.1",
+          "ml-5.2",
+          "ml-5.2a",
+          "ml-5.2b"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "deep",
+        "chapter": 6,
+        "total": 17,
+        "written": 0,
+        "remaining": 17,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "causal",
+        "chapter": 5,
+        "total": 14,
+        "written": 0,
+        "remaining": 14,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "algo",
+        "chapter": 12,
+        "total": 23,
+        "written": 0,
+        "remaining": 23,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "toc",
+        "chapter": 5,
+        "total": 16,
+        "written": 0,
+        "remaining": 16,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "cplx",
+        "chapter": 5,
+        "total": 13,
+        "written": 0,
+        "remaining": 13,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "info",
+        "chapter": 5,
+        "total": 17,
+        "written": 0,
+        "remaining": 17,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "crypto",
+        "chapter": 5,
+        "total": 17,
+        "written": 0,
+        "remaining": 17,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "dist",
+        "chapter": 5,
+        "total": 15,
+        "written": 0,
+        "remaining": 15,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "pl",
+        "chapter": 5,
+        "total": 12,
+        "written": 0,
+        "remaining": 12,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "cg",
+        "chapter": 5,
+        "total": 14,
+        "written": 0,
+        "remaining": 14,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "em",
+        "chapter": 5,
+        "total": 15,
+        "written": 0,
+        "remaining": 15,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "waves",
+        "chapter": 5,
+        "total": 17,
+        "written": 0,
+        "remaining": 17,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "thermo",
+        "chapter": 7,
+        "total": 21,
+        "written": 0,
+        "remaining": 21,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "qm",
+        "chapter": 8,
+        "total": 15,
+        "written": 0,
+        "remaining": 15,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "cm",
+        "chapter": 5,
+        "total": 5,
+        "written": 0,
+        "remaining": 5,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "qinfo",
+        "chapter": 5,
+        "total": 9,
+        "written": 0,
+        "remaining": 9,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "rel",
+        "chapter": 5,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "astro",
+        "chapter": 5,
+        "total": 9,
+        "written": 9,
+        "remaining": 0,
+        "writtenItems": [
+          "astro-5.1",
+          "astro-5.2",
+          "astro-5.3",
+          "astro-5.4",
+          "astro-5.5",
+          "astro-5.6",
+          "astro-5.7",
+          "astro-5.8",
+          "astro-5.9"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "fluid",
+        "chapter": 5,
+        "total": 8,
+        "written": 8,
+        "remaining": 0,
+        "writtenItems": [
+          "fluid-5.1",
+          "fluid-5.2",
+          "fluid-5.3",
+          "fluid-5.4",
+          "fluid-5.5",
+          "fluid-5.6",
+          "fluid-5.7",
+          "fluid-5.8"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "pchem",
+        "chapter": 5,
+        "total": 17,
+        "written": 0,
+        "remaining": 17,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "kin",
+        "chapter": 5,
+        "total": 11,
+        "written": 11,
+        "remaining": 0,
+        "writtenItems": [
+          "kin-5.1",
+          "kin-5.2",
+          "kin-5.3",
+          "kin-5.4",
+          "kin-5.5",
+          "kin-5.6",
+          "kin-5.7",
+          "kin-5.8",
+          "kin-5.9",
+          "kin-5.10",
+          "kin-5.11"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "qchem",
+        "chapter": 5,
+        "total": 13,
+        "written": 0,
+        "remaining": 13,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "xtal",
+        "chapter": 5,
+        "total": 6,
+        "written": 0,
+        "remaining": 6,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "mat",
+        "chapter": 5,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "geol",
+        "chapter": 5,
+        "total": 7,
+        "written": 0,
+        "remaining": 7,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "geo",
+        "chapter": 5,
+        "total": 9,
+        "written": 0,
+        "remaining": 9,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "climate",
+        "chapter": 5,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "geog",
+        "chapter": 7,
+        "total": 8,
+        "written": 0,
+        "remaining": 8,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "popgen",
+        "chapter": 5,
+        "total": 8,
+        "written": 0,
+        "remaining": 8,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "mathbio",
+        "chapter": 5,
+        "total": 13,
+        "written": 0,
+        "remaining": 13,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "ecol",
+        "chapter": 5,
+        "total": 12,
+        "written": 12,
+        "remaining": 0,
+        "writtenItems": [
+          "ecol-5.1",
+          "ecol-5.2",
+          "ecol-5.3",
+          "ecol-5.4",
+          "ecol-5.5",
+          "ecol-5.6",
+          "ecol-5.7",
+          "ecol-5.8",
+          "ecol-5.9",
+          "ecol-5.10",
+          "ecol-5.11",
+          "ecol-5.12"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "neuro",
+        "chapter": 5,
+        "total": 11,
+        "written": 0,
+        "remaining": 11,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "bioinf",
+        "chapter": 5,
+        "total": 14,
+        "written": 0,
+        "remaining": 14,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "sysbio",
+        "chapter": 5,
+        "total": 6,
+        "written": 0,
+        "remaining": 6,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "physio",
+        "chapter": 5,
+        "total": 13,
+        "written": 0,
+        "remaining": 13,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "pharm",
+        "chapter": 5,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "epi",
+        "chapter": 5,
+        "total": 10,
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "epi-5.1",
+          "epi-5.2",
+          "epi-5.3",
+          "epi-5.4",
+          "epi-5.5",
+          "epi-5.6",
+          "epi-5.7",
+          "epi-5.8",
+          "epi-5.10",
+          "epi-5.11"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "imaging",
+        "chapter": 5,
+        "total": 12,
+        "written": 0,
+        "remaining": 12,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "sig",
+        "chapter": 5,
+        "total": 18,
+        "written": 0,
+        "remaining": 18,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "ctrl",
+        "chapter": 5,
+        "total": 13,
+        "written": 0,
+        "remaining": 13,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "circ",
+        "chapter": 5,
+        "total": 14,
+        "written": 0,
+        "remaining": 14,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "energy",
+        "chapter": 5,
+        "total": 12,
+        "written": 0,
+        "remaining": 12,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "solid",
+        "chapter": 5,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "robot",
+        "chapter": 5,
+        "total": 6,
+        "written": 0,
+        "remaining": 6,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "aero",
+        "chapter": 5,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "micro",
+        "chapter": 11,
+        "total": 13,
+        "written": 0,
+        "remaining": 13,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "macro",
+        "chapter": 5,
+        "total": 10,
+        "written": 10,
+        "remaining": 0,
+        "writtenItems": [
+          "macro-5.1",
+          "macro-5.2",
+          "macro-5.3",
+          "macro-5.4",
+          "macro-5.5",
+          "macro-5.6",
+          "macro-5.7",
+          "macro-5.8",
+          "macro-5.9",
+          "macro-5.10"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "fin",
+        "chapter": 6,
+        "total": 11,
+        "written": 0,
+        "remaining": 11,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "game",
+        "chapter": 5,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "behav",
+        "chapter": 6,
+        "total": 9,
+        "written": 0,
+        "remaining": 9,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "psych",
+        "chapter": 5,
+        "total": 9,
+        "written": 0,
+        "remaining": 9,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "soc",
+        "chapter": 5,
+        "total": 18,
+        "written": 0,
+        "remaining": 18,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "polsci",
+        "chapter": 6,
+        "total": 10,
+        "written": 0,
+        "remaining": 10,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "demo",
+        "chapter": 5,
+        "total": 11,
+        "written": 0,
+        "remaining": 11,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "music",
+        "chapter": 9,
+        "total": 23,
+        "written": 23,
+        "remaining": 0,
+        "writtenItems": [
+          "music-9.1",
+          "music-9.2",
+          "music-9.3",
+          "music-9.4",
+          "music-9.5",
+          "music-9.6",
+          "music-9.7",
+          "music-9.8",
+          "music-9.9",
+          "music-9.10",
+          "music-9.11",
+          "music-9.12",
+          "music-9.13",
+          "music-9.14",
+          "music-9.15",
+          "music-9.16",
+          "music-9.17",
+          "music-9.18",
+          "music-9.19",
+          "music-9.20",
+          "music-9.21",
+          "music-9.22",
+          "music-9.23"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "art",
+        "chapter": 5,
+        "total": 9,
+        "written": 9,
+        "remaining": 0,
+        "writtenItems": [
+          "art-5.1",
+          "art-5.2",
+          "art-5.3",
+          "art-5.4",
+          "art-5.5",
+          "art-5.6",
+          "art-5.7",
+          "art-5.8",
+          "art-5.9"
+        ],
+        "status": "written"
+      },
+      {
+        "collection": "arch",
+        "chapter": 5,
+        "total": 15,
+        "written": 0,
+        "remaining": 15,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "ling",
+        "chapter": 5,
+        "total": 16,
+        "written": 0,
+        "remaining": 16,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "phil",
+        "chapter": 5,
+        "total": 16,
+        "written": 0,
+        "remaining": 16,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "tech",
+        "chapter": 6,
+        "total": 12,
+        "written": 0,
+        "remaining": 12,
+        "writtenItems": [],
+        "status": "planned"
+      },
+      {
+        "collection": "bighist",
+        "chapter": 5,
+        "total": 12,
+        "written": 0,
+        "remaining": 12,
+        "writtenItems": [],
+        "status": "planned"
+      }
+    ]
+  }
 }
