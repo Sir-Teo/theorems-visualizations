@@ -17,6 +17,7 @@ export default {
     { id: 'stoch-4.15', note: String.raw`PageRank is that eigenvector for a random surfer on the web graph, found by iterating the map until it stops changing.` },
     { id: 'stoch-3.10', note: String.raw`The extinction probability of a branching process is the smallest fixed point of its offspring generating function.` },
     { id: 'comb-5.4', note: String.raw`The Catalan counting series is the formal fixed point $C=1+xC^2$ with constant term $1$. Starting from $1$ and iterating fixes at least one additional coefficient each time. This is coefficient stabilization in a formal series, distinct from numerical fixed-point convergence at a chosen real x.` },
+    { id: 'toc-5.1', note: String.raw`A bounded grammar language is a least fixed point of word-set equations. Starting with empty sets and repeatedly applying productions reaches exactly all terminal words up to the chosen length, because the bounded universe is finite and concatenation never shortens a word. Nullable rules and unit cycles are included; an unproductive variable can retain the empty set. This is finite monotone stabilization, with no contraction or metric assumed.` },
     { id: 'pl-2.9', note: String.raw`The λ-calculus has an algebraic fixed-point construction: $YF=_\beta F(YF)$ expresses recursion. This is equality under reduction, rather than convergence in a metric space; call-by-value evaluation needs a delayed combinator such as $Z$.` },
   ],
 };

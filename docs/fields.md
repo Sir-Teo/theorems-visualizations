@@ -97,6 +97,10 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
 ## Computer science
 
+- Run the declared parser on actual grammar rules and tokens. Keep recognition, derivation multiplicity, conflicts and a bounded action limit separate: reaching a limit does not prove rejection. A normalization can preserve a language while changing its parse trees, and syntactic recognition does not establish a program’s meaning. Distinguish a modern proof from an unread historical original; preserve reciprocal Paper metadata and source flags. See the [grammar review](verification/wave5-toc-review.md).
+
+- State the schedule and failure model before applying a distributed impossibility result. A finite explored tree is an illustration of FLP, and a geometric necessary condition is not a protocol execution. Keep worst-case rounds, individual runs, right-censored randomized trials and exact agreement invariants distinct. See the [distributed-computing review](verification/wave5-dist-review.md).
+
 - Match the authentication game to the composition theorem: strong new-pair unforgeability or unique valid tags is needed for the stated Encrypt-then-MAC proof, with independent keys and complete nonce/ciphertext coverage. One-time affine authentication needs pairwise independence rather than ordinary universality. Keep random-function birthday probabilities separate from deterministic hash traces; a zero-tail cycle supplies no distinct-preimage witness. A strengthened hash's reverse collision proof must compare the entire length field before inferring aligned chains. See the [integrity review](verification/wave5-crypto-review.md).
 
 - Compare exact combinatorial order when a decoder's tie rule is part of the model; rounded log likelihoods can split a mathematical tie. Preserve the defining bias of a nearly independent binary channel, and distinguish a numerical resolution limit from a positive computed exponent. A zero-width typicality diagnostic needs exact count/parameter equality; the asymptotic theorem uses positive tolerance. See the [capacity review](verification/wave5-info-review.md).
