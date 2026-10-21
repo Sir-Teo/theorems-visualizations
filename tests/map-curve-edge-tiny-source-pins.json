@@ -1,0 +1,14 @@
+{
+  "candidate": "f8eb0b366bb98ff906315469f9cc022089f73465",
+  "originalBaseline": "90e2e8166a8553008490c67f68ec5fbc862c2045",
+  "sources": {
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+    "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+    "assets/js/map-webgl-edges.js": "a94adc269a272c8bbc1bc0be9b83f60598408c46fce28af8f8d0e717a8fd7ed5",
+    "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+    "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+    "scripts/lib/map-curve-bounds-runtime.mjs": "00bdd96fd63de01b9921b489e1a8995340e88b6034ee2b75fa94fce901b14ee2",
+    "scripts/lib/map-curve-bounds-math.mjs": "1c646d5bb385e26cfaad198f0f04c2940d9a1990aa25ad27c25ddb7f8ea462ea"
+  }
+}

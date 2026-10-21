@@ -1,0 +1,79 @@
+{
+  "scope": "Source/model/PREPARE only; no native execution",
+  "candidate": "f8eb0b366bb98ff906315469f9cc022089f73465",
+  "originalBaseline": "90e2e8166a8553008490c67f68ec5fbc862c2045",
+  "nativeEvidence": false,
+  "guardResults": {
+    "complete": true,
+    "pass": true,
+    "nativeEvidence": false,
+    "zeroBrowserServerNetwork": true,
+    "preparedCases": 32,
+    "closedSources": 11,
+    "rows": [
+      {
+        "name": "default-prepare-even-with-flag",
+        "status": 0,
+        "error": null,
+        "guard": {
+          "events": []
+        }
+      },
+      {
+        "name": "run-without-flag",
+        "status": 1,
+        "error": null,
+        "guard": {
+          "events": []
+        }
+      },
+      {
+        "name": "run-near-miss-flag",
+        "status": 1,
+        "error": null,
+        "guard": {
+          "events": []
+        }
+      },
+      {
+        "name": "tampered-candidate",
+        "status": 1,
+        "error": null,
+        "guard": {
+          "events": []
+        }
+      }
+    ]
+  },
+  "preparedPath": "/tmp/atlas-curve-edge-tiny/prepare-final/prepared/prepared.json",
+  "preparedSHA256": "06500fd30b6314400f733ec43f3f88eacad58e015bfc6c64485d859d196a5086",
+  "guardResultsPath": "/tmp/atlas-curve-edge-tiny/prepare-final/results.json",
+  "guardResultsSHA256": "8a6d9d2c0493c6bb9544df2d8d86086867ebc7b3d648c3bbcd43df91ad8e0e08",
+  "sourceSHA256": {
+    "scripts/lib/map-curve-edge-tiny-recipes.mjs": "f36811f6befd40d4d1bed8b77a78e44264ceb3049bc4f8cd7d86eaa4516dacea",
+    "scripts/lib/map-curve-edge-tiny-program.mjs": "14c8031d462506cb349a3d89118d84f586de2dbe889e70815afaa485b4b0777c",
+    "tests/map-curve-edge-tiny-source-pins.json": "03ff63f82ff6b410dc622632f3b3c669c4eee09dbe4f8bfaafae86a78f1e334d",
+    "tests/map-curve-edge-tiny.mjs": "375a6e90b00682a033fab65898d424832ac041a6ff4c1f3e8be0273c8d27fe9f",
+    "tests/verification-map-curve-edge-tiny-prepare.mjs": "d54bd303612b246d8fbf31b31c648d6bf0f49b2b4982d9c603484781ef2da750"
+  },
+  "dependencyResolution": {
+    "method": "createRequire at immutable source runner path; resolve only, no import",
+    "resolvedHere": "/Users/teodev/Developer/theorems-visualizations/node_modules/playwright-core/index.js",
+    "requirement": "Execution stage must provide playwright-core resolvable from tests/map-curve-edge-tiny.mjs; output location does not control resolution."
+  },
+  "limits": {
+    "logicalBudgetBytes": 64000000,
+    "metadataBytesPerPath": 24,
+    "metadataBookkeepingBytes": 4096,
+    "scratchCPUBytes": 131072,
+    "scratchGPUBytes": 131072
+  },
+  "claimsExcluded": [
+    "Native pixel equality",
+    "MapView/Worker/font lifecycle",
+    "S2 repair acceptance",
+    "Current full-map fit",
+    "Mutation resilience outside audited no-writer premise",
+    "Timing or performance"
+  ]
+}
