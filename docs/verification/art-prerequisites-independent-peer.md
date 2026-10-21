@@ -1,0 +1,41 @@
+# Independent ART combined prerequisite peer
+
+Accepted exact final `cd5957b2e62f3eaea73aa0fd48866c441bd35b5d`, requiring these seven producer commits only:
+
+1. `03d24499ebb31470c602c1f0d1eaa85ae0155942`
+2. `5439dff1a066157c47dd97767647cbdbf4e0887a`
+3. `9fe4579f3f76ae42415dbfcf98c4f7f7d264d0f1`
+4. `408536daef969f3b542f36e5f163cd217032b567`
+5. `d86c205f29fb6d0c0891ffe045b11c704a71c272`
+6. `b94b256d26dba409a0cd3329261851a877359306`
+7. `cd5957b2e62f3eaea73aa0fd48866c441bd35b5d`
+
+The intervening unrelated GAME report is not required. Independent immutable archives are `/tmp/atlas-new-arch-source/art-peer/{before,after}`. All28 baseline ART blobs were independently compared to accepted `d4f67e50` and are exact. The producer checkout was not modified.
+
+I read all14 distinct actual target statements and complete proofs, all17 changed consumers' complete statements/ideas/scopes/captions, both additional qualified consumers2.1/2.4 and the retained1.14 great-circle argument. My earlier progress message counted15 distinct targets; the exact manifest has14. ART is arts; PMA/VCALC/LADR/OPT/ODE are math. Independent inventory gives7/12/28 before and25/30/46 after, with zero unknowns. There are18 genuine new written inputs across17 consumers. The3.10 syllabus backfill matches the already present planned thermo9.4 input and earns no published credit. No ART bridge references exist.
+
+The complete accepted mapping is1.4→pma3.3;1.9→vcalc1.2;1.11→ladr9.23;1.12→vcalc1.3;1.13→ladr2.43;2.8→ladr7.29;2.9→ladr9.50;3.2→pma6.12+ladr9.46;3.3→opt2.1;3.4→pma5.8;3.6→ode1.5;3.9→ladr3.43;4.2→ladr6.70;4.10→pma5.8;4.12→vcalc1.3;4.15→opt2.1;4.16→ladr9.50.
+
+Each target supplies an actual step: nonzero-denominator quotient limits, orthogonality expansion, finite positive quadratic-form axes, signed-area cancellation, homogeneous intersection dimension, the unit-norm spectral camera optimum, inverse-corner coplanarity determinant, integration linearity and separate signed-minor kernel identity, convex/affine weights, interior stationary conditions, homogeneous exponential attenuation, ordered complex field-map composition, orthogonal least squares and invertibility of the declared positive-determinant path. The target hypotheses fit the bounded arguments. Signed source coordinates are distinguished from negative emitted light; numerical LMS distance and coordinate CCT are distinguished from universal perception.
+
+I explicitly assessed all five alternate paths recorded in `art-prerequisite-path-analysis.md`. A direct input must supply a distinct actual mathematical step; reachability alone neither accepts nor rejects it. All five pass that criterion here:
+
+- 2.8→ladr7.29 diagonalizes the camera's own real AᵀA under unit normalization. An upstream oscillator-mode theorem does not compute that constrained camera fit or turn geometric RMS into its objective.
+- 3.2→pma6.12 moves finite spectral sums/powers through this fixed observer's finite-band integral. The upstream electromagnetic integral does not already supply this color response.
+- 3.4→pma5.8 differentiates outgoing bow angle with respect to incidence and separately checks the sign change. The upstream Snell travel-time extremum concerns a different variable and objective.
+- 4.10→pma5.8 differentiates squared uv distance along temperature, with endpoint/nonuniqueness limitations. The Snell/bow route does not supply that nearest-locus normal.
+- 4.12→vcalc1.3 constructs this neutral/anchor response plane and checks the missing normal component. An upstream electromagnetic cross product does not construct the chosen dichromat plane.
+
+These are bounded distinct uses, not a general license for foundational or transitive padding. No planned target becomes written through this review.
+
+The bounded qualifications are mathematically coherent. A finite sphere ellipse needs the entire forward tangent cone; its secant approximation fails near theta+alpha=90degrees. Cross-ratio requires finite distinct nondegenerate images and consecutive equally spaced quartets for4/3. Homography's1/sin(phi) is a central differential scale, not a finite affine stretch; parallel/behind-eye rays are excluded. Homogeneous DLT minimizes an algebraic unit-vector residual rather than guaranteeing the global geometric RMS optimum. The pinhole equal-width optimum is derived for its explicit RSS proxy; the finite Fresnel quadrature/sample winner has appropriately numerical/sampled labels. The eye-centered spherical line trace in1.14 is correctly a great circle.
+
+My explicit `verification-art-independent-peer-preservation.mjs BASE CAND` independently evaluates every complete object/key/field and all55 functions, permits only the declared17 idea appendices/dependencies and exact subsequent field literals, then compares all139 complete raw syllabus rows and all55 whole item/row lists. It normalizes exactly four visible runtime literals in two functions; every computation/control/other canvas stays exact. All six layout fields preserve ordered mathematical/prose tokens after removing layout wrappers/whitespace. The separate producer reconstruction also passes across all28 complete source files, covering private helpers and flags. No source flags or closure change.
+
+My independent mathematical suite imports no production mathematical helpers and passes17 groups/5,449 checks: quotient errors, rotated perpendicular rays/altitudes, exact cone conics and thresholds, signed cross-ratio cancellation/counterquartet, homogeneous plane dimension, constrained spectral objective, reciprocal-scale determinant, polynomial integrals/minors, affine/convex distinction, rainbow derivative signs, absorption semigroup, ordered complex matrices, projection Pythagoras, curve normals/endpoints, missing-coordinate plane and determinant-path positivity. It separately checks finite forward anamorphic denominators and the RSS optimum. A draft dichromat witness hit an excluded zero missing-normal component; the final finite family checks that hypothesis explicitly. This was an audit-input correction, not a production finding. The producer8,210 checks and all32 existing ART tests also pass in my immutable archive.
+
+Fresh native runs pass38 changed item/theme states and160 complete captured fields, with actual built statements independently checked against the production data. My separately authored production audit checks text-range bounds (including wrapped text), inner display scroll and complete statement/proof/caption/scope fields at viewport320, both themes; actual statement inner width253px. All runtime/TeX/overflow failure arrays are empty. Six real angle/default/endpoint cases verify the actual central-local canvas label; six real logarithmic diameter/default/endpoint cases verify numerical/sampled labels and readouts. I personally inspected114 complete fresh PNGs:38 full main statement+scope pictures,38 main proofs, eight changed captions, eighteen anamorphosis viz/caption/readout pictures and twelve pinhole viz/readout pictures, arranged in29 full-resolution sheets. The extra76 harness pictures were captured and machine-checked; I do not claim personal inspection of those duplicates.
+
+The90degree anamorphosis plan retains a small overlap between the old intended-skull and canvas labels. It is outside the changed central-local label and has no effect on the finite-domain qualification, complete fields or numerical model. This bounded acceptance is not a claim that every inherited canvas annotation was repaired. The very grazing offered state visibly loses finite-forward equivalence as the new caption/scope explain; its partial skull is not certified as an undistorted whole picture.
+
+Strict build0 errors/0 warnings, home112815 gzip bytes; focused static55 items,0 errors/0 warnings. Evidence `/tmp/atlas-new-arch-source/art-peer/`: `targets.txt`, `consumers.txt`, `guard.log`, `own-preservation.json`, `own-math.json`, `producer-math.log`, `existing.log`, `counts.json`, `build.log`, `static.log`, `native/native.json`, `own-native/bounds.json`, `anamorphosis/native.json`, `pinhole/native.json`, associated PNGs and `actual-sheets/`. All browser/server jobs closed. No global files, producer content or source closures were edited.
