@@ -1,0 +1,4038 @@
+{
+  "revision": "d05e26f13e358eccd36dc8180017821dbb5bdeff",
+  "case": {
+    "width": 3840,
+    "height": 2160,
+    "dpr": 2,
+    "theme": "dark"
+  },
+  "expectedMap": {
+    "W": 3840,
+    "H": 2092,
+    "k": 0.8,
+    "tx": 1574.35,
+    "ty": -1071.0500000000002
+  },
+  "completeSHA256": "cd77e6e3abc4f0b6ea02adfcd9538c7e98d80d3b045cc3a3571208f3e0d8d75b",
+  "preparedSHA256": "5f64f20930204ba1fdf6f2098887052a9b2d37af82078c9a530406e238d22860",
+  "transportPieces": 998,
+  "transportGroups": [
+    {
+      "variant": "original",
+      "label": "A0.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "variant": "original",
+      "label": "A1.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "variant": "original",
+      "label": "A2.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "variant": "original",
+      "label": "A3.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "variant": "original",
+      "label": "metadata.json",
+      "pieces": 7,
+      "bytes": 6377437,
+      "sha256": "7748500905ea811870dff71ad95fe97962f87445901ab728c99d436cbce65151"
+    },
+    {
+      "variant": "chunk",
+      "label": "A0.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "variant": "chunk",
+      "label": "A1.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "variant": "chunk",
+      "label": "A2.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "variant": "chunk",
+      "label": "A3.rgba",
+      "pieces": 123,
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "variant": "chunk",
+      "label": "metadata.json",
+      "pieces": 7,
+      "bytes": 6637620,
+      "sha256": "d2a4bdefe712c754fc04222a604f442645cbeb5a5a6cd2acf79a0829e2fa5dcf"
+    }
+  ],
+  "all8RawSHA256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a",
+  "byteEqualArrays": 8,
+  "rawPNGChecks": [
+    {
+      "file": "A0-actual.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A0-reference.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A0-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A1-actual.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A1-reference.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A1-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A2-actual.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A2-reference.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A2-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A3-actual.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A3-reference.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "A3-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A1-actual.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A1-reference.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A1-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A2-actual.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A2-reference.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A2-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A3-actual.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A3-reference.png",
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376",
+      "decodedMatchesWholeRGBA": true
+    },
+    {
+      "file": "original/history-A3-diff.png",
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc",
+      "decodedMatchesWholeRGBA": true
+    }
+  ],
+  "variants": {
+    "original": {
+      "frames": 12,
+      "rendererTraceEvents": 7493,
+      "callbackEvents": 93,
+      "quietStart": 77,
+      "quietEnd": 77,
+      "prefixEvents": 33,
+      "prefixNetwork": 4,
+      "readinessDiagnostic": {
+        "serializedUTF16Units": 8760986,
+        "referenceSlots": 534425,
+        "checkClosures": 73939
+      },
+      "ledgerEvents": 447,
+      "ledgerCounts": {
+        "('reserve', 'original')": 270,
+        "('release', 'original')": 177
+      },
+      "logicalPeak": 54599720,
+      "originalPeak": 54599720,
+      "logicalCurrent": 52913740,
+      "optionalBytes": 0,
+      "optionalOwners": [],
+      "optionalAttempts": 0,
+      "maskMax": 7999488
+    },
+    "chunk": {
+      "frames": 12,
+      "rendererTraceEvents": 7493,
+      "callbackEvents": 93,
+      "quietStart": 77,
+      "quietEnd": 77,
+      "prefixEvents": 33,
+      "prefixNetwork": 4,
+      "readinessDiagnostic": {
+        "serializedUTF16Units": 8769797,
+        "referenceSlots": 534430,
+        "checkClosures": 73940
+      },
+      "ledgerEvents": 449,
+      "ledgerCounts": {
+        "('reserve', 'original')": 270,
+        "('reserve', 'packed-xy-and-bookkeeping')": 1,
+        "('release', 'original')": 177,
+        "('reserve', 'fixed-cpu-gpu-scratch')": 1
+      },
+      "logicalPeak": 63895600,
+      "originalPeak": 54599720,
+      "logicalCurrent": 62471764,
+      "optionalBytes": 9558024,
+      "optionalOwners": [
+        {
+          "id": "X1",
+          "bytes": 9295880,
+          "evictable": false,
+          "kind": "packed-xy-and-bookkeeping"
+        },
+        {
+          "id": "X2",
+          "bytes": 262144,
+          "evictable": false,
+          "kind": "fixed-cpu-gpu-scratch"
+        }
+      ],
+      "optionalAttempts": 353,
+      "maskMax": 7999488
+    }
+  },
+  "rendererTraceExactlyEqual": true,
+  "callbackDifference": [
+    {
+      "index": 1,
+      "phase": "initialization",
+      "kind": "font-event",
+      "type": "loadingdone",
+      "sameFacesAndMultiplicities": true,
+      "originalFaces": [
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "normal",
+          "weight": "600",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        }
+      ],
+      "chunkFaces": [
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "normal",
+          "weight": "600",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        }
+      ]
+    },
+    {
+      "index": 66,
+      "phase": "explicit-font-preparation",
+      "kind": "font-event",
+      "type": "loadingdone",
+      "sameFacesAndMultiplicities": true,
+      "originalFaces": [
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "600",
+          "stretch": "normal",
+          "unicodeRange": "U+370-377, U+37A-37F, U+384-38A, U+38C, U+38E-3A1, U+3A3-3FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "600",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "600",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+370-377, U+37A-37F, U+384-38A, U+38C, U+38E-3A1, U+3A3-3FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+370-377, U+37A-37F, U+384-38A, U+38C, U+38E-3A1, U+3A3-3FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        }
+      ],
+      "chunkFaces": [
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "600",
+          "stretch": "normal",
+          "unicodeRange": "U+370-377, U+37A-37F, U+384-38A, U+38C, U+38E-3A1, U+3A3-3FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "600",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "600",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+370-377, U+37A-37F, U+384-38A, U+38C, U+38E-3A1, U+3A3-3FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+102-103, U+110-111, U+128-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF9, U+20AB",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+370-377, U+37A-37F, U+384-38A, U+38C, U+38E-3A1, U+3A3-3FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "italic",
+          "weight": "500",
+          "stretch": "normal",
+          "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "style": "normal",
+          "weight": "400",
+          "stretch": "normal",
+          "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+          "variant": "normal",
+          "featureSettings": "normal",
+          "variationSettings": "normal",
+          "display": "swap",
+          "status": "loaded"
+        }
+      ]
+    }
+  ],
+  "allOtherCallbackEventsExactlyEqual": true,
+  "originalClassifiedResourceHistoriesExactlyEqual": true,
+  "direct": {
+    "original": {
+      "meanRGB0to255": 0.5396039143828341,
+      "RGBChannelFractionOver20": 0.0021991743513649882,
+      "pixelFractionOver20": 0.00268632488846399,
+      "mask": "none",
+      "files": {
+        "complete-gpu.png": "a97607f7b2e6d0e73e71f0f473b50550a9816a4535ed447b5a1e1ea009e6d261",
+        "complete-direct-Canvas.png": "337eaae1b3beab3ee5dfb1ae51ef28e16cfe6cbd47d14e0b4ad8f3fdadfa7b6f",
+        "complete-direct-diff.png": "72cbb6b2f1eb3d925cb0cd534a01c25cac56d8484d2b505648ca7aaca0b71d5b"
+      }
+    },
+    "chunk": {
+      "meanRGB0to255": 0.5396039143828341,
+      "RGBChannelFractionOver20": 0.0021991743513649882,
+      "pixelFractionOver20": 0.00268632488846399,
+      "mask": "none",
+      "files": {
+        "complete-gpu.png": "a97607f7b2e6d0e73e71f0f473b50550a9816a4535ed447b5a1e1ea009e6d261",
+        "complete-direct-Canvas.png": "337eaae1b3beab3ee5dfb1ae51ef28e16cfe6cbd47d14e0b4ad8f3fdadfa7b6f",
+        "complete-direct-diff.png": "72cbb6b2f1eb3d925cb0cd534a01c25cac56d8484d2b505648ca7aaca0b71d5b"
+      }
+    }
+  },
+  "pass": true,
+  "scope": "one saved frozen checkpoint5 case only; no browser/fullmap/timing rerun or matrix acceptance",
+  "transportBytes": 1041274897,
+  "crossContextProtectedEventPrefixesExactlyEqual": false,
+  "withinEachContextProtectedEventAndNetworkPrefixesExactlyRetained": true,
+  "fixture": {
+    "revision": "d05e26f13e358eccd36dc8180017821dbb5bdeff",
+    "root": "file:///tmp/atlas-continuation/checkpoint5/",
+    "darkCase": {
+      "id": "checkpoint5-3840x2160-dpr2-dark-fractional-pan",
+      "sourceBaseline": "f778d8ebf95df00fb6c2bb4cb506dd37e2728312",
+      "viewport": {
+        "width": 3840,
+        "height": 2160,
+        "dpr": 2,
+        "theme": "dark"
+      },
+      "defaultOutputPrefix": "/tmp/atlas-map-paired-dark-prepared-",
+      "fullRunFlag": "--root-authorized-dark-exact-state"
+    },
+    "pageOptions": {
+      "viewport": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark"
+    },
+    "stageSourceHashes": {
+      "tests/map-paired-dark-oracle.mjs": "2cbde605364791915b8813b3cb33377c1f83e730ebed5a752def48eee7116b5e",
+      "scripts/lib/map-paired-dark-case.mjs": "7204988f447629719fbd17066e4f97f3eb71ff73d6ad6d81d030863a681b0df3",
+      "scripts/lib/map-paired-guarded-fixture.mjs": "dcae80e2fa4a777846a3bd952acf45879267db1ec9aca49965e5a4de6f896d0f",
+      "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+      "scripts/lib/map-paired-quiescence.mjs": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+      "scripts/lib/map-paired-selected-shard.mjs": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+      "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187"
+    },
+    "inputFiles": 107,
+    "servedFiles": {
+      "original": 107,
+      "chunk": 107
+    },
+    "fontSources": 68,
+    "hashes": {
+      "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+      "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+      "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+      "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+      "data/col/ladr.json": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab",
+      "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+      "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+      "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+      "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+      "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+      "index.html": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+      "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+      "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+      "assets/vendor/katex-0.16.11/katex.min.css": "717bc9ae7853b61f0f76455dddf0ecd4f527a783f42de2ac24684899c1c46258",
+      "assets/vendor/katex-0.16.11/katex.min.js": "e6bfe5deebd4c7ccd272055bab63bd3ab2c73b907b6e6a22d352740a81381fd4",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.ttf": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.woff": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.woff2": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.ttf": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.woff": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.woff2": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.ttf": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.woff": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.woff2": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.ttf": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.woff": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.woff2": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.ttf": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.woff": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.woff2": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.ttf": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.woff": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.woff2": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.ttf": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.woff": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.woff2": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.ttf": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.woff": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.woff2": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.ttf": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.woff": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.woff2": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.ttf": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.woff": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.woff2": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.ttf": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.woff": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.woff2": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.ttf": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.woff": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.woff2": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.ttf": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.woff": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.woff2": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.ttf": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.woff": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.woff2": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.ttf": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.woff": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.woff2": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.ttf": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.woff": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.woff2": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.ttf": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.woff": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.woff2": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.ttf": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.woff": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.woff2": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.ttf": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.woff": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.woff2": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.ttf": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.woff": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.woff2": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+      "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+      "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+      "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+      "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+      "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+      "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+      "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+      "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+      "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+      "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+      "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+      "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+      "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+      "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+      "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+      "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+      "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+      "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+      "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+      "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+      "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+      "scripts/lib/map-paired-quiescence.mjs": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+      "scripts/lib/map-paired-font-census.mjs": "6a9fc04e4e6c9a5999a4b5b04d6d7fe656b9d124ecaa92091d7c1be11ed91fa1",
+      "scripts/lib/map-paired-selected-shard.mjs": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+      "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+      "scripts/lib/map-paired-selected-shard-spec.mjs": "e8a0e7cba0f859ae8709eeb7db7ec8e609b7a9bc9dbe408e9b23ad0421dbcc7a"
+    },
+    "servedHashes": {
+      "original": {
+        "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+        "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+        "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+        "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+        "data/col/ladr.json": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab",
+        "assets/js/graph.js": "be9696c3cffb7f537e716c32b97bbb27d0dba91df62459c8557230c44338d305",
+        "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+        "assets/js/map-webgl-scene.js": "b1a01b61ea553f7f63c58fd736d7f5112fe0d13283ba00eb0f25981be5cd79a6",
+        "assets/js/map-scene-text.js": "de3544f787086bffea5e2c506b5a4631cfb8bdcf6510cd534c8f99e618f372ed",
+        "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+        "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+        "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+        "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+        "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+        "index.html": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+        "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+        "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+        "assets/vendor/katex-0.16.11/katex.min.css": "717bc9ae7853b61f0f76455dddf0ecd4f527a783f42de2ac24684899c1c46258",
+        "assets/vendor/katex-0.16.11/katex.min.js": "e6bfe5deebd4c7ccd272055bab63bd3ab2c73b907b6e6a22d352740a81381fd4",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.ttf": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.woff": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.woff2": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.ttf": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.woff": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.woff2": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.ttf": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.woff": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.woff2": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.ttf": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.woff": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.woff2": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.ttf": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.woff": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.woff2": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.ttf": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.woff": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.woff2": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.ttf": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.woff": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.woff2": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.ttf": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.woff": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.woff2": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.ttf": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.woff": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.woff2": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.ttf": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.woff": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.woff2": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.ttf": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.woff": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.woff2": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.ttf": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.woff": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.woff2": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.ttf": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.woff": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.woff2": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.ttf": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.woff": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.woff2": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.ttf": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.woff": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.woff2": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.ttf": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.woff": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.woff2": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.ttf": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.woff": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.woff2": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.ttf": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.woff": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.woff2": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.ttf": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.woff": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.woff2": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.ttf": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.woff": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.woff2": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+        "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+        "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+        "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+        "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+        "scripts/lib/map-paired-quiescence.mjs": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+        "scripts/lib/map-paired-font-census.mjs": "6a9fc04e4e6c9a5999a4b5b04d6d7fe656b9d124ecaa92091d7c1be11ed91fa1",
+        "scripts/lib/map-paired-selected-shard.mjs": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+        "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+        "scripts/lib/map-paired-selected-shard-spec.mjs": "e8a0e7cba0f859ae8709eeb7db7ec8e609b7a9bc9dbe408e9b23ad0421dbcc7a"
+      },
+      "chunk": {
+        "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+        "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+        "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+        "assets/js/app.js": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+        "data/col/ladr.json": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab",
+        "assets/js/graph.js": "be9696c3cffb7f537e716c32b97bbb27d0dba91df62459c8557230c44338d305",
+        "assets/js/map-scene-edges.js": "42a60184e729c08248f1860b1fe2b70904a2d1f2f69cc8bc81aa10cf45122804",
+        "assets/js/map-webgl-scene.js": "6e1ba5f8e61d15f457ca13b4b4a3e60c2cece386c68ae01396d4d4acdd4984ca",
+        "assets/js/map-scene-text.js": "de3544f787086bffea5e2c506b5a4631cfb8bdcf6510cd534c8f99e618f372ed",
+        "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+        "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+        "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+        "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+        "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+        "index.html": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+        "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+        "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+        "assets/vendor/katex-0.16.11/katex.min.css": "717bc9ae7853b61f0f76455dddf0ecd4f527a783f42de2ac24684899c1c46258",
+        "assets/vendor/katex-0.16.11/katex.min.js": "e6bfe5deebd4c7ccd272055bab63bd3ab2c73b907b6e6a22d352740a81381fd4",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.ttf": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.woff": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_AMS-Regular.woff2": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.ttf": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.woff": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Bold.woff2": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.ttf": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.woff": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Caligraphic-Regular.woff2": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.ttf": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.woff": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Bold.woff2": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.ttf": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.woff": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Fraktur-Regular.woff2": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.ttf": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.woff": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Bold.woff2": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.ttf": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.woff": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-BoldItalic.woff2": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.ttf": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.woff": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Italic.woff2": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.ttf": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.woff": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Main-Regular.woff2": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.ttf": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.woff": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-BoldItalic.woff2": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.ttf": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.woff": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Math-Italic.woff2": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.ttf": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.woff": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Bold.woff2": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.ttf": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.woff": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Italic.woff2": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.ttf": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.woff": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_SansSerif-Regular.woff2": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.ttf": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.woff": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Script-Regular.woff2": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.ttf": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.woff": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size1-Regular.woff2": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.ttf": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.woff": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size2-Regular.woff2": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.ttf": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.woff": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size3-Regular.woff2": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.ttf": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.woff": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Size4-Regular.woff2": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.ttf": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.woff": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+        "assets/vendor/katex-0.16.11/fonts/KaTeX_Typewriter-Regular.woff2": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2": "fccca918fea40089dacadc7045861314d1a6bc91f1f323cc1eeb22ebcdb321b5",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2": "aebf2ab4a4ce6810d73c1ac7be7cafb4e5ec4cee2d6db5fb3e09691747ec4bd6",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2": "a2e2c783ca6f9c20486e81e72a279203e86730bbf8f01ff6a5ee9dbd09e1c271",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2": "46dd4cdca58c26ae87cc6927657bf83b2e8abfc39ffd0ab176e301a8d28d22bf",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2": "8db00ff46c67b22cda8bed865acf7077651cac8d2841d5b40980556b48961931",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+        "assets/vendor/google-fonts/fonts/inter-UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2": "9343de2ca5d9549f792e7962375af8efb0f320c7643bfd36c884b5a30e5c396f",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2": "4995a9a43ac659ec32fcd8b463755cd6a07b31a6e6b3894a6a153b661cf490e2",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2": "49c3da6c9a2b279b0f1f860f5cfb1f5dc38d88a5c7be9c9b1837bbc4e3db6111",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2": "d44eb1936043a56038eb02dd70b243f379bef65783f94ec12f277550720411f1",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2": "9c38cb2d0d2d93c1ee6e21fa78db76f13ea7e15e15cc64214c7ca89b6aaa35c4",
+        "assets/vendor/google-fonts/fonts/jetbrainsmono-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgYhCBJWxZCPp.woff2": "d5a170a88bdb4e21bcc743e8cf1a64835c8351f8e1d32dadd9cac77f2e718fbb",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2": "750e9629f56ae71980f1dde315f5bdb6c81b49b13a8fec3246a4392853aa7ccd",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2": "a99fb127682b9af538780d21420037452197b0d37dfd273eb108f8a3665d5501",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2": "68ef9a14f1462e2218ecd03c39d26236402ff6a9e78da39ba5591a430a229824",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2": "cbca001188852d514d8654be7ddc97868f039bdf986b926ec5c985c117853cfd",
+        "assets/vendor/google-fonts/fonts/newsreader-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a",
+        "scripts/lib/map-paired-atlas-observer.mjs": "7c50053bc9a2c10fe92cfddcb0cd0a6854f2dc4eeb9cf6e32ebdf2620f6e86b1",
+        "scripts/lib/map-paired-guarded-epoch.mjs": "bcffc405baf45b609b46cb9a85f8fb359b93d3a37e9f78182e23540ff21e9eb9",
+        "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+        "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+        "scripts/lib/map-paired-quiescence.mjs": "12abb9a6cad6a953dea588d1235d1ce0ec867ceb2c1fe700b9467d545102b274",
+        "scripts/lib/map-paired-font-census.mjs": "6a9fc04e4e6c9a5999a4b5b04d6d7fe656b9d124ecaa92091d7c1be11ed91fa1",
+        "scripts/lib/map-paired-selected-shard.mjs": "77e7ad020a0821abbb520f1945825a9582cb5a9c934d528f299b9b8d3ec83152",
+        "scripts/lib/map-paired-resource-observer.mjs": "db7993cfdb69c85badfc2aa26f728119aad8bfcdef0f96b6e3625bcd7322bfb6",
+        "scripts/lib/map-paired-selected-shard-spec.mjs": "e8a0e7cba0f859ae8709eeb7db7ec8e609b7a9bc9dbe408e9b23ad0421dbcc7a"
+      }
+    },
+    "shardSpec": {
+      "selected": "ladr-2.30",
+      "name": "Every spanning list contains a basis",
+      "statement": "Every spanning list in a vector space can be reduced to a basis of the vector space.",
+      "records": [
+        [
+          "ladr-1.1",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.11",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.14",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.20",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.26",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.27",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.3",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.30",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.31",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.32",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.33",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.34",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.36",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.40",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.41",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.45",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-1.46",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.10",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.15",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.17",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.19",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.22",
+          [
+            "links",
+            "refs",
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.25",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.26",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.28",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.30",
+          [
+            "links",
+            "refs",
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.31",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.32",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.33",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.34",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.35",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.37",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.38",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.39",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.4",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.42",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.43",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.6",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-2.9",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.1",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.10",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.101",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.103",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.105",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.107",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.11",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.110",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.111",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.112",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.114",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.116",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.118",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.120",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.121",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.124",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.125",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.127",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.128",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.129",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.13",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.130",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.131",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.132",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.133",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.14",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.15",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.16",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.18",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.19",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.21",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.22",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.24",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.26",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.28",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.31",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.35",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.38",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.4",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.40",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.41",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.43",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.46",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.48",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.50",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.51",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.52",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.54",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.56",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.57",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.59",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.6",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.60",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.63",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.65",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.68",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.69",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.70",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.71",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.72",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.73",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.75",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.76",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.78",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.8",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.81",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.82",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.84",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.86",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.87",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.89",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.92",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.93",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.94",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-3.99",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.12",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.13",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.14",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.15",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.16",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.2",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.4",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.5",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.6",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.8",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-4.9",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.1",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.11",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.12",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.17",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.18",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.19",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.2",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.22",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.24",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.27",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.29",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.31",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.32",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.33",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.34",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.35",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.38",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.39",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.40",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.41",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.44",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.47",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.5",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.50",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.52",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.54",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.55",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.58",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.62",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.65",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.66",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.67",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.7",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.71",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.74",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.75",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.76",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.78",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.8",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.80",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-5.81",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.10",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.11",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.12",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.13",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.14",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.17",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.2",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.21",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.22",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.24",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.25",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.26",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.27",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.28",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.30",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.32",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.35",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.36",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.37",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.38",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.42",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.46",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.48",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.49",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.51",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.52",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.54",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.55",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.57",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.58",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.6",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.61",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.67",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.68",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.69",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.7",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.70",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-6.9",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.1",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.10",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.101",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.102",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.104",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.105",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.107",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.109",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.111",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.12",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.13",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.14",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.16",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.18",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.20",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.21",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.22",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.23",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.26",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.27",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.29",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.31",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.34",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.38",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.39",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.4",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.43",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.44",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.49",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.5",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.51",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.53",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.54",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.55",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.56",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.57",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.58",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.6",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.61",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.62",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.63",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.64",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.65",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.68",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.69",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.7",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.70",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.75",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.80",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.82",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.86",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.87",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.88",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.9",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.91",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.92",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.93",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.96",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-7.99",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.1",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.11",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.12",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.14",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.16",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.17",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.18",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.19",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.2",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.20",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.22",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.23",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.25",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.26",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.28",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.29",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.3",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.30",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.31",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.35",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.37",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.39",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.4",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.41",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.44",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.45",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.46",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.47",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.49",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.50",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.51",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.52",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.54",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.55",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.56",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.57",
+          [
+            "credit",
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.8",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-8.9",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.1",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.12",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.13",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.14",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.16",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.17",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.18",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.20",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.21",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.23",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.25",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.27",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.28",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.29",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.30",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.32",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.34",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.35",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.36",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.37",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.39",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.4",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.41",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.43",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.45",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.46",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.48",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.49",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.5",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.50",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.51",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.52",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.53",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.55",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.56",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.57",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.58",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.59",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.6",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.60",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.61",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.62",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.63",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.64",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.65",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.66",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.67",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.68",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.7",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.70",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.71",
+          [
+            "credit",
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.72",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.73",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.74",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.77",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.79",
+          [
+            "links",
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.80",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.83",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.87",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.88",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.89",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.9",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.90",
+          [
+            "st"
+          ]
+        ],
+        [
+          "ladr-9.92",
+          [
+            "links",
+            "st"
+          ]
+        ]
+      ],
+      "chapters": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "metadataSHA256": "55200351eca693897e2cc51612710ee6f9a301534b4196004e3d533d6942a86f",
+      "sources": [
+        {
+          "file": "assets/js/app.js",
+          "sha256": "c9058dfa4df306f90b71c5a90385f8567285471b5ba954b0d47812ceaa8cbc9d",
+          "bytes": 84566
+        },
+        {
+          "file": "data/col/ladr.json",
+          "sha256": "4e516b7f74c31d76b1b6c52d6b24ee9f8e4692d924bd1527f53834feaec461ab",
+          "bytes": 116559
+        }
+      ]
+    },
+    "pass": true,
+    "darkRunnerExactlyReconstructedFromLightWithSevenDeclaredLiteralPairs": true,
+    "runnerLiteralPairs": [
+      [
+        "// PREPARE by default. Full-map execution requires a later explicit coordinator authorization.",
+        "// Single DARK mirror; PREPARE by default. Full-map execution requires a later explicit coordinator authorization.\nimport {DARK_CASE,darkPageOptions} from '../scripts/lib/map-paired-dark-case.mjs';"
+      ],
+      [
+        "process.env.MAP_PAIRED_OUTPUT||'/tmp/atlas-map-paired-prepared'",
+        "process.env.MAP_PAIRED_OUTPUT||await fsp.mkdtemp(DARK_CASE.defaultOutputPrefix)"
+      ],
+      [
+        "description:'Prepared independently reset original/chunk guarded exact-state oracle; not run without later root authorization'",
+        "description:'Prepared single dark mirror of independently reset original/chunk guarded exact-state oracle; not run without later root authorization',caseId:DARK_CASE.id,sourceBaseline:DARK_CASE.sourceBaseline"
+      ],
+      [
+        "viewport:{width:3840,height:2160,dpr:2,theme:'light'}",
+        "viewport:DARK_CASE.viewport"
+      ],
+      [
+        "process.argv.includes('--root-authorized-exact-state')",
+        "process.argv.includes(DARK_CASE.fullRunFlag)"
+      ],
+      [
+        "browser.newPage({viewport:{width:3840,height:2160},deviceScaleFactor:2,colorScheme:'light'})",
+        "browser.newPage(darkPageOptions())"
+      ],
+      [
+        "console.log('Prepared sources/manifest only; no browser launched. Immutable independent peer and later root authorization required.');",
+        "console.log('Prepared sources/manifest only; no browser launched. Immutable independent peer and later root authorization required.');console.log('Prepared output: '+out);"
+      ]
+    ]
+  },
+  "chunkFrameUsage": [
+    {
+      "label": "pre-unselected-0",
+      "originalBinds": 117,
+      "optimizedTiles": 0,
+      "chunks": 0,
+      "indices": 0,
+      "emptyTiles": 0,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "pre-unselected-1",
+      "originalBinds": 117,
+      "optimizedTiles": 0,
+      "chunks": 0,
+      "indices": 0,
+      "emptyTiles": 0,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "pre-unselected-third",
+      "originalBinds": 117,
+      "optimizedTiles": 0,
+      "chunks": 0,
+      "indices": 0,
+      "emptyTiles": 0,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "pre-selected-0",
+      "originalBinds": 0,
+      "optimizedTiles": 13,
+      "chunks": 15,
+      "indices": 132163,
+      "emptyTiles": 0,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "pre-selected-1",
+      "originalBinds": 0,
+      "optimizedTiles": 13,
+      "chunks": 15,
+      "indices": 132163,
+      "emptyTiles": 0,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "pre-selected-third",
+      "originalBinds": 0,
+      "optimizedTiles": 13,
+      "chunks": 15,
+      "indices": 132163,
+      "emptyTiles": 0,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "pre-selected-explicit-transfer-0",
+      "originalBinds": 0,
+      "optimizedTiles": 13,
+      "chunks": 15,
+      "indices": 132163,
+      "emptyTiles": 0,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "pre-selected-explicit-transfer-1",
+      "originalBinds": 0,
+      "optimizedTiles": 13,
+      "chunks": 15,
+      "indices": 132163,
+      "emptyTiles": 0,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "A0",
+      "originalBinds": 0,
+      "optimizedTiles": 117,
+      "chunks": 70,
+      "indices": 112334,
+      "emptyTiles": 47,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "A1",
+      "originalBinds": 0,
+      "optimizedTiles": 117,
+      "chunks": 70,
+      "indices": 112334,
+      "emptyTiles": 47,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "A2",
+      "originalBinds": 0,
+      "optimizedTiles": 117,
+      "chunks": 70,
+      "indices": 112334,
+      "emptyTiles": 47,
+      "liveReplays": 0,
+      "staleAborts": 0
+    },
+    {
+      "label": "A3",
+      "originalBinds": 0,
+      "optimizedTiles": 117,
+      "chunks": 70,
+      "indices": 112334,
+      "emptyTiles": 47,
+      "liveReplays": 0,
+      "staleAborts": 0
+    }
+  ],
+  "transportNetworkRawRequestsMatchPieceOrder": true,
+  "metadataNetworkSnapshotBoundary": "Seven metadata pieces per variant are transferred after encoding metadata; those14 pieces are present in transfers but absent from the encoded network prefix.",
+  "auditSource": {
+    "path": "/tmp/atlas-new-imaging-source/dark-run-peer/audit.py",
+    "sha256": "07307d2cf9c5612d541ca637bd316db8afe50e29e4010c8eb823b3d1a0831fd4"
+  },
+  "fixtureSource": {
+    "path": "/tmp/atlas-new-imaging-source/dark-run-peer/archive/scripts/lib/map-paired-guarded-fixture.mjs",
+    "sha256": "dcae80e2fa4a777846a3bd952acf45879267db1ec9aca49965e5a4de6f896d0f"
+  },
+  "personallyInspectedViews": [
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/overview-0.jpg",
+      "sha256": "bb7e6971c957093b7f060c550971618b23cf723133fc6c94a41fb98ef2ffecc2"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/overview-1.jpg",
+      "sha256": "c5b6ca68f5c7f5f49cae6e2c1bd6effed61ee0e25af683a5ac7a5ef3a8e00b92"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/overview-2.jpg",
+      "sha256": "12348fe58404d13785869b8fe095fe282a07c82843f4403729a430e4180cf7a2"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/overview-3.jpg",
+      "sha256": "115140cf57e8c628eaaaa8c2c8d61bae8034c2cd87405a0484e109a3b2031303"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/overview-4.jpg",
+      "sha256": "b59edea0297e1a5c04032ae92f7824b2acd9231daac6ba1615b92cd6e56ec5fe"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-gpu-titles.png",
+      "sha256": "f45e2e9e28ee287c33923897c467e7b091b8a1072f0af79fbade2d5ebee68514"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-gpu-dense.png",
+      "sha256": "97938ae04f6fd0a19ee7d29eb54148b3682256377a1db35360c6943c1da6487f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-gpu-bottom.png",
+      "sha256": "e99707c8cbfe2744980c54fe091a7c709499b87e0b0b1adadccbd7ef4a1ba49d"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-direct-Canvas-titles.png",
+      "sha256": "2050f4c76321a4190671e5fcdd099b7bbe058e40b8d06fbbeaf64508147eb39d"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-direct-Canvas-dense.png",
+      "sha256": "5e7081cad2024a22298fc1f98e3c7e07d08b07e9d13c3a4a5b5e339eb43d252c"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-direct-Canvas-bottom.png",
+      "sha256": "a1ee827b96598981dd4f2a60a5394cac05288c7f2abe26e1f11808321700c19a"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-direct-diff-titles.png",
+      "sha256": "0ab708993caa54003f68a335e3c9fedd6c53cccbf58c189e66c800604f14b94d"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-direct-diff-dense.png",
+      "sha256": "45b4d5023695a6d8b7f6fa7455006ef828d1d98822970690a2e0d035f0175a64"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/original-complete-direct-diff-bottom.png",
+      "sha256": "ab0fd4760fb7cbfb79430b816b17fa5cc4a6f0ba397ba64e70719e9c80723206"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-gpu-titles.png",
+      "sha256": "f45e2e9e28ee287c33923897c467e7b091b8a1072f0af79fbade2d5ebee68514"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-gpu-dense.png",
+      "sha256": "97938ae04f6fd0a19ee7d29eb54148b3682256377a1db35360c6943c1da6487f"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-gpu-bottom.png",
+      "sha256": "e99707c8cbfe2744980c54fe091a7c709499b87e0b0b1adadccbd7ef4a1ba49d"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-direct-Canvas-titles.png",
+      "sha256": "2050f4c76321a4190671e5fcdd099b7bbe058e40b8d06fbbeaf64508147eb39d"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-direct-Canvas-dense.png",
+      "sha256": "5e7081cad2024a22298fc1f98e3c7e07d08b07e9d13c3a4a5b5e339eb43d252c"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-direct-Canvas-bottom.png",
+      "sha256": "a1ee827b96598981dd4f2a60a5394cac05288c7f2abe26e1f11808321700c19a"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-direct-diff-titles.png",
+      "sha256": "0ab708993caa54003f68a335e3c9fedd6c53cccbf58c189e66c800604f14b94d"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-direct-diff-dense.png",
+      "sha256": "45b4d5023695a6d8b7f6fa7455006ef828d1d98822970690a2e0d035f0175a64"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/chunk-complete-direct-diff-bottom.png",
+      "sha256": "ab0fd4760fb7cbfb79430b816b17fa5cc4a6f0ba397ba64e70719e9c80723206"
+    },
+    {
+      "path": "/tmp/atlas-new-imaging-source/dark-run-peer/views/raw-A0-native.png",
+      "sha256": "542c3f6eb8ac5193fee2ea87a4e5f74682abf7b4ed65af5dc1755a007f9d91cb"
+    }
+  ],
+  "visualScope": "All27 complete saved images inspected in five full-picture overview sheets, plus19 native1280x1000 readable crops inspected. Inspection crops do not mask or enter any acceptance metric.",
+  "log": {
+    "path": "/tmp/atlas-root-paired-dark-state.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "artifactInventory": [
+    {
+      "path": "A0-actual.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "A0-comparison.json",
+      "bytes": 378,
+      "sha256": "cbfbd16b390f6bd8b29be5b5b52726a4b412e6904cb4f6fefd92ed3682fdf423"
+    },
+    {
+      "path": "A0-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "A0-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "A0-reference.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "A1-actual.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "A1-comparison.json",
+      "bytes": 378,
+      "sha256": "cbfbd16b390f6bd8b29be5b5b52726a4b412e6904cb4f6fefd92ed3682fdf423"
+    },
+    {
+      "path": "A1-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "A1-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "A1-reference.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "A2-actual.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "A2-comparison.json",
+      "bytes": 378,
+      "sha256": "cbfbd16b390f6bd8b29be5b5b52726a4b412e6904cb4f6fefd92ed3682fdf423"
+    },
+    {
+      "path": "A2-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "A2-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "A2-reference.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "A3-actual.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "A3-comparison.json",
+      "bytes": 378,
+      "sha256": "cbfbd16b390f6bd8b29be5b5b52726a4b412e6904cb4f6fefd92ed3682fdf423"
+    },
+    {
+      "path": "A3-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "A3-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "A3-reference.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "chunk/A0.rgba",
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "path": "chunk/A1.rgba",
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "path": "chunk/A2.rgba",
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "path": "chunk/A3.rgba",
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "path": "chunk/complete-direct-Canvas.png",
+      "bytes": 9332988,
+      "sha256": "337eaae1b3beab3ee5dfb1ae51ef28e16cfe6cbd47d14e0b4ad8f3fdadfa7b6f"
+    },
+    {
+      "path": "chunk/complete-direct-diff.png",
+      "bytes": 9744917,
+      "sha256": "72cbb6b2f1eb3d925cb0cd534a01c25cac56d8484d2b505648ca7aaca0b71d5b"
+    },
+    {
+      "path": "chunk/complete-gpu.png",
+      "bytes": 14554936,
+      "sha256": "a97607f7b2e6d0e73e71f0f473b50550a9816a4535ed447b5a1e1ea009e6d261"
+    },
+    {
+      "path": "chunk/direct-difference.json",
+      "bytes": 168,
+      "sha256": "e76e6823cfae8daba8ac05498d18d19c8f287fe7c3d1a3910f9dc58fa0184095"
+    },
+    {
+      "path": "chunk/metadata.json",
+      "bytes": 6637620,
+      "sha256": "d2a4bdefe712c754fc04222a604f442645cbeb5a5a6cd2acf79a0829e2fa5dcf"
+    },
+    {
+      "path": "chunk/post-capture-callbacks.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "chunk/post-capture-events.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "complete-pending-assertions.json",
+      "bytes": 29896309,
+      "sha256": "a1c50d4b8f5d083715aed3004c21dfbc8220e5c9b11f53583e9d05419406a764"
+    },
+    {
+      "path": "complete.json",
+      "bytes": 29896325,
+      "sha256": "cd77e6e3abc4f0b6ea02adfcd9538c7e98d80d3b045cc3a3571208f3e0d8d75b"
+    },
+    {
+      "path": "original/A0.rgba",
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "path": "original/A1.rgba",
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "path": "original/A2.rgba",
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "path": "original/A3.rgba",
+      "bytes": 128532480,
+      "sha256": "d710b4dc30d7f61ceee13ab2b8f55a137774d0d369833b4280360472d3b8c34a"
+    },
+    {
+      "path": "original/complete-direct-Canvas.png",
+      "bytes": 9332988,
+      "sha256": "337eaae1b3beab3ee5dfb1ae51ef28e16cfe6cbd47d14e0b4ad8f3fdadfa7b6f"
+    },
+    {
+      "path": "original/complete-direct-diff.png",
+      "bytes": 9744917,
+      "sha256": "72cbb6b2f1eb3d925cb0cd534a01c25cac56d8484d2b505648ca7aaca0b71d5b"
+    },
+    {
+      "path": "original/complete-gpu.png",
+      "bytes": 14554936,
+      "sha256": "a97607f7b2e6d0e73e71f0f473b50550a9816a4535ed447b5a1e1ea009e6d261"
+    },
+    {
+      "path": "original/direct-difference.json",
+      "bytes": 168,
+      "sha256": "e76e6823cfae8daba8ac05498d18d19c8f287fe7c3d1a3910f9dc58fa0184095"
+    },
+    {
+      "path": "original/history-A1-actual.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "original/history-A1-comparison.json",
+      "bytes": 378,
+      "sha256": "cbfbd16b390f6bd8b29be5b5b52726a4b412e6904cb4f6fefd92ed3682fdf423"
+    },
+    {
+      "path": "original/history-A1-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "original/history-A1-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "original/history-A1-reference.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "original/history-A2-actual.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "original/history-A2-comparison.json",
+      "bytes": 378,
+      "sha256": "cbfbd16b390f6bd8b29be5b5b52726a4b412e6904cb4f6fefd92ed3682fdf423"
+    },
+    {
+      "path": "original/history-A2-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "original/history-A2-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "original/history-A2-reference.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "original/history-A3-actual.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "original/history-A3-comparison.json",
+      "bytes": 378,
+      "sha256": "cbfbd16b390f6bd8b29be5b5b52726a4b412e6904cb4f6fefd92ed3682fdf423"
+    },
+    {
+      "path": "original/history-A3-diff.png",
+      "bytes": 135978,
+      "sha256": "c4bad1f7def204217e522fbe6c88acef7b57111e1b784fb400d80bd2e0991dcc"
+    },
+    {
+      "path": "original/history-A3-diff.rgba",
+      "bytes": 128532480,
+      "sha256": "893fae1e0d5db4a4d89b422b16c78caf9db371af41cf181a511fc6d40be17a4b"
+    },
+    {
+      "path": "original/history-A3-reference.png",
+      "bytes": 14664024,
+      "sha256": "22b86b57da21ef6f741190b324ca21f9b161b306ed0bfd50aff33da0f99f1376"
+    },
+    {
+      "path": "original/metadata.json",
+      "bytes": 6377437,
+      "sha256": "7748500905ea811870dff71ad95fe97962f87445901ab728c99d436cbce65151"
+    },
+    {
+      "path": "original/post-capture-callbacks.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "original/post-capture-events.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "pending.json",
+      "bytes": 29894582,
+      "sha256": "ae6dd83be267b374e337d579992a0c6997a81146c3bb737ee24cdd797900e3d7"
+    },
+    {
+      "path": "prepared.json",
+      "bytes": 134792,
+      "sha256": "5f64f20930204ba1fdf6f2098887052a9b2d37af82078c9a530406e238d22860"
+    }
+  ],
+  "interpretation": {
+    "acceptance": "one saved paired case only",
+    "productionAcceptance": false,
+    "matrixAcceptance": false,
+    "performanceClaim": false,
+    "priorFailedAttemptsRemainFailed": true,
+    "noBrowserServerOrTimingRerun": true,
+    "logicalResourceCapIsNotPhysicalMemoryCap": true,
+    "uncapturedSelectedPreparationDrawsAreNotPixelCases": true,
+    "mainA0toA3OptimizedBindingExercised": true,
+    "entireCallbackArraysExactlyEqual": false,
+    "callbackOrderingDifferenceViolatesRequiredGate": false
+  }
+}
