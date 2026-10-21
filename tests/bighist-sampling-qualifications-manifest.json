@@ -1,0 +1,23 @@
+[
+  {
+    "file": "content/bighist/ch01.js",
+    "num": "1.8",
+    "field": "statement",
+    "before": "Any list that names a roughly equal number of events in each factor-of-ten interval of the past gives the same line, whether or not anything accelerated.",
+    "after": "A list sampled roughly evenly within each factor-of-ten interval can produce a similar trend without any underlying acceleration; equal counts alone do not force exact collinearity or a particular fitted slope."
+  },
+  {
+    "file": "content/bighist/ch01.js",
+    "num": "1.8",
+    "field": "idea",
+    "before": "If events are sampled with density proportional to $t^{-k}$ in time-before-present $t$, the expected spacing near $t$ is the reciprocal of the density, so $\\Delta t \\propto t^{k}$ and the log\u2013log plot has slope $k$. A list with equal numbers per decade has $k = 1$; a uniform sample in linear time has $k = 0$, a flat plot.",
+    "after": "For many independently sampled events with density proportional to $t^{-k}$ in time-before-present $t$, a local typical spacing is approximately reciprocal to the event density where that density varies little across a gap and endpoints are negligible. Thus $\\Delta t$ has a local scale proportional to $t^k$, suggesting a log\u2013log trend of slope near $k$, not an exact expected finite-sample regression slope. Sampling uniformly in log time has $k=1$ and equal expected counts in equal log intervals; uniform sampling in linear time has $k=0$. Finite lists, boundary gaps and clustering can change the fitted slope."
+  },
+  {
+    "file": "content/bighist/ch01.js",
+    "num": "1.8",
+    "field": "viz",
+    "before": " \u00b7 expected slope for density $\\\\propto t^{-k}$: **",
+    "after": " \u00b7 local density exponent $k$: **"
+  }
+]
