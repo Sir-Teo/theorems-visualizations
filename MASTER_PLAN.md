@@ -533,7 +533,7 @@ reach for, and three exemplary items. Highlights:
    verifies computational honesty, scores the AUTHORING §2 rubric from screenshots, and loops
    fixes until each item passes.
 6. **Reconcile**: zero unknown deps into written collections; `see` links; bridge updates.
-7. **Ship**: one PR per collection, with CI green and a "new" line on the home page.
+7. **Ship**: independently verified chapters are committed locally. **User direction on 2026-10-21: stop creating PRs or pushing branches; local commits are sufficient.** Existing PRs remain unchanged. Maintain the home-page "new" line and the local integration gates.
 
 When we execute, each wave is a natural fit for an orchestrated multi-agent workflow (fan out
 authoring by part, then a reviewer agent per chapter). Proceed autonomously after each verification gate, committing in reviewable steps.

@@ -2,6 +2,8 @@
 
 ## User authorization and immediate action
 
+**Latest user direction (2026-10-21): local commits are enough. Do not create more PRs or push branches. Leave existing PRs unchanged; continue authoring, independent review and local integration.** This supersedes the earlier per-collection PR shipping workflow.
+
 The user explicitly removed the performance gate and asked to start Wave 5 and future waves autonomously in a fresh session, using effective multi-agent work without wasting tokens. This supersedes older instructions that blocked content authoring on map timing, matrix or private prototype lifecycle work. **Start authoring, not another planning/audit loop.** Continue successive breadth-first waves after their remaining content gates pass, without requesting routine approval between batches.
 
 The active integration workspace is `/Users/teodev/.codex/worktrees/wave-five-shipping/theorems-visualizations`, branch `codex/wave5-current-base`; always use that absolute `workdir`. It starts from published `6cf3d576` and preserves the completed follow-up work. The earlier `8510` worktree contains separate CTRL/VCALC drafts and must remain untouched. The previous coordinator stops editing after dispatch. Never edit `/Users/teodev/Developer/theorems-visualizations`: it contains valuable unrelated drafts. Do not reset/clean old worktrees or stage the `node_modules` symlink.
