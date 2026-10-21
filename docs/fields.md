@@ -55,6 +55,10 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - State the dimensionless quantity that must be small for an approximation. A small factor alone can fail when multiplied by a large interval or logarithm: the Newtonian rocket approximation requires small final rapidity, not only small exhaust speed. Check normalization and units when passing between a unit direction, four-velocity and four-acceleration. See the [REL peer](verification/rel-independent-peer-followup.md).
 - Distinguish signed response coefficients from positive measured magnitudes. At a band extremum strict Hessian signs need nondegeneracy; a quartic minimum can have a zero Hessian. A positive orbit period uses the absolute area derivative and the gradient projected into the orbit plane. See the [CM peer](verification/cm-crossfield-prerequisite-peer.md).
 
+- Near kinematic singularities, normal-equation back-substitution can lose accuracy even when the singular values appear plausible. Check actual velocity and nullspace residuals against an independent near-singular oracle; state the numerical rank cutoff and conditioning limits. A damped local correction does not establish global nonlinear convergence. See the [robotics review](verification/wave5-robot-review.md).
+
+- Declare potential, displacement and stress signs before comparing physical models. A positive geodetic disturbing potential differs from the negative mechanical potential; top-fibre stress depends on the through-thickness coordinate. Compute small column imbalances directly instead of subtracting large nearly equal pressures. See the [geophysics review](verification/wave5-geol-review.md).
+
 ## Statistics & data science
 
 - **Simulate, don't assert**: every claim about estimators, tests or intervals is shown by repeated
