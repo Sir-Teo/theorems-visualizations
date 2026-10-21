@@ -3346,5 +3346,42 @@
     "currentFitMeasured": false,
     "performanceAccepted": false,
     "limits": "Two deliberate same-count style-ID mutation probes fail and remain preserved; no mutation-resilience claim. Actual pinned normal sources have no writer inside synchronous union/bind. Private storage corruption or broader source composition is outside this acceptance."
+  },
+  "nativeTinyProtocol": {
+    "status": "accepted-prospective-source-cpu-contract-only",
+    "firstStoppedCommit": "35fc7302a68d3e584499e9e71297d1a3ef5a3cc4",
+    "proposal": "1730a9cc7b6a4a3d54c8abae09676240f16a9351",
+    "peer": "414029a9fcd7404b768d61ed3b032675afd19bf4",
+    "report": "docs/verification/map-native-tiny-independent-offline-peer.md",
+    "rootIntegratedModel": "/tmp/atlas-root-native-error-contract-integrated",
+    "rootModelLog": "/tmp/atlas-continuation/native-error-contract-integrated.log",
+    "nativeRerun": false,
+    "completeCohortAccepted": false,
+    "limits": "The first run remains stopped after six old cases and repaired light S1. Exact deliberate Worker error identity/count/trust/phase/order contract is accepted only prospectively; repaired S2/S3/dark and context restoration remain unrun."
+  },
+  "nativeTinyS2Localization": {
+    "producer": "357ea2d640ce8717fb92bc6077272daa1fbfe58c",
+    "report": "docs/verification/map-tiny-s2-offline-localization-followup.md",
+    "rootAudit": "/tmp/atlas-continuation/native-s2-root-localization.json",
+    "status": "saved-full-raw-pixel-localization-independently-checked",
+    "rawChangedChannels": [
+      3297,
+      3313
+    ],
+    "compositedChangedChannels": [
+      2213,
+      2030
+    ],
+    "rawSupportHalfOpen": [
+      66,
+      153,
+      178,
+      167
+    ],
+    "rootImagesInspected": 12,
+    "causeEstablished": false,
+    "referenceChanged": false,
+    "thresholdChanged": false,
+    "nativeRerun": false
   }
 }
