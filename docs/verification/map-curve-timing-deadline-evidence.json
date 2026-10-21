@@ -1,0 +1,5497 @@
+{
+  "native": false,
+  "rows": [
+    {
+      "fault": "stalled-drain",
+      "meta": {
+        "frames": [
+          {
+            "label": "prefix-0",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-1",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-2",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-3",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-4",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-5",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-6",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-7",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-8",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-9",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-10",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "A3",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          }
+        ],
+        "trace": [
+          {
+            "type": "draw-begin",
+            "draw": 12,
+            "stage": "A3"
+          },
+          {
+            "type": "request-begin",
+            "stage": "A3",
+            "key": "word",
+            "before": {
+              "hit": true
+            }
+          },
+          {
+            "type": "request-end",
+            "stage": "A3",
+            "key": "word",
+            "word": {
+              "x": 1,
+              "y": 2
+            }
+          },
+          {
+            "type": "draw-end",
+            "draw": 12,
+            "stage": "A3",
+            "result": true,
+            "status": "ready"
+          }
+        ],
+        "historyEnd": 4,
+        "callbackEnd": 1,
+        "preparation": null,
+        "callbackProvenance": {
+          "events": [
+            {
+              "kind": "sentinel"
+            },
+            {
+              "kind": "timing-aborted",
+              "phase": "prefix",
+              "glyphEventIndex": 4,
+              "message": "absolute browser timing deadline expired"
+            }
+          ],
+          "network": [],
+          "phase": "post-timing-transfer"
+        },
+        "postCaptureCallbacks": [
+          {
+            "kind": "timing-aborted",
+            "phase": "prefix",
+            "glyphEventIndex": 4,
+            "message": "absolute browser timing deadline expired"
+          }
+        ],
+        "resourceLedger": null,
+        "postCaptureHistory": [],
+        "timing": {
+          "protocol": "24 fixed-state requested draws; all collectors enabled",
+          "variant": "chunk",
+          "samples": [],
+          "stamps": [],
+          "drains": [],
+          "complete": false,
+          "prefixEnd": 4,
+          "prefixCallbackEnd": 1,
+          "prefixTrace": [
+            {
+              "type": "draw-begin",
+              "draw": 12,
+              "stage": "A3"
+            },
+            {
+              "type": "request-begin",
+              "stage": "A3",
+              "key": "word",
+              "before": {
+                "hit": true
+              }
+            },
+            {
+              "type": "request-end",
+              "stage": "A3",
+              "key": "word",
+              "word": {
+                "x": 1,
+                "y": 2
+              }
+            },
+            {
+              "type": "draw-end",
+              "draw": 12,
+              "stage": "A3",
+              "result": true,
+              "status": "ready"
+            }
+          ],
+          "prefixCallbacks": [
+            {
+              "kind": "sentinel"
+            }
+          ],
+          "failure": {
+            "message": "absolute browser timing deadline expired",
+            "stack": "Error: absolute browser timing deadline expired\n    at Timeout._onTimeout (file:///private/tmp/atlas-logic-curve-timing-proposal/source/scripts/lib/map-curve-timing-browser.mjs:19:140)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+          },
+          "deadline": {
+            "limitMS": 30000,
+            "canceledFrames": [],
+            "lateCallbacks": [],
+            "aborted": true,
+            "absoluteAt": 30000,
+            "reason": "absolute browser timing deadline expired"
+          },
+          "rafRestored": true,
+          "drawRestored": true,
+          "historyEnd": 4,
+          "callbackEnd": 2,
+          "trace": [],
+          "callbacks": [
+            {
+              "kind": "timing-aborted",
+              "phase": "prefix",
+              "glyphEventIndex": 4,
+              "message": "absolute browser timing deadline expired"
+            }
+          ],
+          "postHistory": [],
+          "postCallbacks": []
+        }
+      },
+      "failure": "absolute browser timing deadline expired",
+      "canceled": [],
+      "rafCalls": 1
+    },
+    {
+      "fault": "stalled-third",
+      "meta": {
+        "frames": [
+          {
+            "label": "prefix-0",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-1",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-2",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-3",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-4",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-5",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-6",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-7",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-8",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-9",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-10",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "A3",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          }
+        ],
+        "trace": [
+          {
+            "type": "draw-begin",
+            "draw": 12,
+            "stage": "A3"
+          },
+          {
+            "type": "request-begin",
+            "stage": "A3",
+            "key": "word",
+            "before": {
+              "hit": true
+            }
+          },
+          {
+            "type": "request-end",
+            "stage": "A3",
+            "key": "word",
+            "word": {
+              "x": 1,
+              "y": 2
+            }
+          },
+          {
+            "type": "draw-end",
+            "draw": 12,
+            "stage": "A3",
+            "result": true,
+            "status": "ready"
+          }
+        ],
+        "historyEnd": 4,
+        "callbackEnd": 1,
+        "preparation": null,
+        "callbackProvenance": {
+          "events": [
+            {
+              "kind": "sentinel"
+            },
+            {
+              "kind": "timing-aborted",
+              "phase": "timing-0",
+              "glyphEventIndex": 4,
+              "message": "absolute browser timing deadline expired"
+            },
+            {
+              "kind": "timing-aborted-late-RAF",
+              "phase": "post-timing-transfer",
+              "glyphEventIndex": 4,
+              "id": 1,
+              "stamp": 100
+            }
+          ],
+          "network": [],
+          "phase": "post-timing-transfer"
+        },
+        "postCaptureCallbacks": [
+          {
+            "kind": "timing-aborted",
+            "phase": "timing-0",
+            "glyphEventIndex": 4,
+            "message": "absolute browser timing deadline expired"
+          },
+          {
+            "kind": "timing-aborted-late-RAF",
+            "phase": "post-timing-transfer",
+            "glyphEventIndex": 4,
+            "id": 1,
+            "stamp": 100
+          }
+        ],
+        "resourceLedger": null,
+        "postCaptureHistory": [],
+        "timing": {
+          "protocol": "24 fixed-state requested draws; all collectors enabled",
+          "variant": "chunk",
+          "samples": [
+            {
+              "index": 0,
+              "start": 4,
+              "callbackStart": 1,
+              "before": {
+                "state": {
+                  "W": 3840,
+                  "H": 2092,
+                  "dpr": 2,
+                  "k": 0.8,
+                  "tx": 1574.35,
+                  "ty": -1071.0500000000002,
+                  "zooming": true,
+                  "dragging": false,
+                  "selection": null,
+                  "hover": null,
+                  "control": "fixed",
+                  "generation": 1,
+                  "active": true,
+                  "ready": true
+                },
+                "stats": {
+                  "optimizedTiles": 0,
+                  "chunks": 0,
+                  "indices": 0,
+                  "originalBinds": 0,
+                  "liveReplays": 0,
+                  "staleAborts": 0,
+                  "metadataDrops": 0,
+                  "priorityDrops": 0
+                }
+              },
+              "drawMS": [],
+              "completed": false
+            }
+          ],
+          "stamps": [
+            28
+          ],
+          "drains": [],
+          "complete": false,
+          "prefixEnd": 4,
+          "prefixCallbackEnd": 1,
+          "prefixTrace": [
+            {
+              "type": "draw-begin",
+              "draw": 12,
+              "stage": "A3"
+            },
+            {
+              "type": "request-begin",
+              "stage": "A3",
+              "key": "word",
+              "before": {
+                "hit": true
+              }
+            },
+            {
+              "type": "request-end",
+              "stage": "A3",
+              "key": "word",
+              "word": {
+                "x": 1,
+                "y": 2
+              }
+            },
+            {
+              "type": "draw-end",
+              "draw": 12,
+              "stage": "A3",
+              "result": true,
+              "status": "ready"
+            }
+          ],
+          "prefixCallbacks": [
+            {
+              "kind": "sentinel"
+            }
+          ],
+          "failure": {
+            "message": "absolute browser timing deadline expired",
+            "stack": "Error: absolute browser timing deadline expired\n    at Timeout._onTimeout (file:///private/tmp/atlas-logic-curve-timing-proposal/source/scripts/lib/map-curve-timing-browser.mjs:19:140)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+          },
+          "deadline": {
+            "limitMS": 30000,
+            "canceledFrames": [
+              1
+            ],
+            "lateCallbacks": [
+              {
+                "id": 1,
+                "stamp": 100
+              }
+            ],
+            "aborted": true,
+            "absoluteAt": 30028,
+            "reason": "absolute browser timing deadline expired"
+          },
+          "beforeWindow": {
+            "map": {
+              "W": 3840,
+              "H": 2092,
+              "dpr": 2,
+              "k": 0.8,
+              "tx": 1574.35,
+              "ty": -1071.0500000000002,
+              "zooming": true,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "field0",
+                "field1",
+                "field2",
+                "field3",
+                "field4",
+                "field5",
+                "field6",
+                "field7",
+                "field8",
+                "field9",
+                "field10",
+                "field11",
+                "field12"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                7680,
+                4184
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 2,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 2,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 2,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+            "groups": [],
+            "resources": {
+              "primarySamples": 0,
+              "inputCanvasPixels": 1,
+              "componentSum": 300,
+              "logicalRetainedBytes": 300,
+              "logicalPeakBytes": 300,
+              "maskPixels": 7999488
+            },
+            "classifiedResources": {
+              "historyFromZero": true,
+              "bytes": 300,
+              "peak": 300,
+              "originalBytes": 300,
+              "optionalBytes": 0,
+              "originalPeak": 300,
+              "original": [
+                {
+                  "id": "O1",
+                  "bytes": 100,
+                  "evictable": true,
+                  "kind": "original"
+                },
+                {
+                  "id": "O2",
+                  "bytes": 100,
+                  "evictable": true,
+                  "kind": "original"
+                },
+                {
+                  "id": "O3",
+                  "bytes": 100,
+                  "evictable": true,
+                  "kind": "original"
+                }
+              ],
+              "optional": []
+            },
+            "stats": {
+              "optimizedTiles": 0,
+              "chunks": 0,
+              "indices": 0,
+              "originalBinds": 0,
+              "liveReplays": 0,
+              "staleAborts": 0,
+              "metadataDrops": 0,
+              "priorityDrops": 0
+            },
+            "loaded": {
+              "nodes": 13574,
+              "edges": 23955
+            },
+            "active": true,
+            "error": 0
+          },
+          "state": {
+            "W": 3840,
+            "H": 2092,
+            "dpr": 2,
+            "k": 0.8,
+            "tx": 1574.35,
+            "ty": -1071.0500000000002,
+            "zooming": true,
+            "dragging": false,
+            "selection": null,
+            "hover": null,
+            "control": "fixed",
+            "generation": 1,
+            "active": true,
+            "ready": true
+          },
+          "historyStart": 4,
+          "callbackStart": 1,
+          "t0": 28,
+          "rafRestored": true,
+          "drawRestored": true,
+          "historyEnd": 4,
+          "callbackEnd": 2,
+          "trace": [],
+          "callbacks": [
+            {
+              "kind": "timing-aborted",
+              "phase": "timing-0",
+              "glyphEventIndex": 4,
+              "message": "absolute browser timing deadline expired"
+            }
+          ],
+          "postHistory": [],
+          "postCallbacks": [
+            {
+              "kind": "timing-aborted-late-RAF",
+              "phase": "post-timing-transfer",
+              "glyphEventIndex": 4,
+              "id": 1,
+              "stamp": 100
+            }
+          ]
+        }
+      },
+      "failure": "absolute browser timing deadline expired",
+      "canceled": [
+        1
+      ],
+      "rafCalls": 3
+    },
+    {
+      "fault": "external-stop",
+      "meta": {
+        "frames": [
+          {
+            "label": "prefix-0",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-1",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-2",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-3",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-4",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-5",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-6",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-7",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-8",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-9",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "prefix-10",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          },
+          {
+            "label": "A3",
+            "start": 0,
+            "end": 4,
+            "completed": true,
+            "after": {
+              "map": {
+                "W": 3840,
+                "H": 2092,
+                "dpr": 2,
+                "k": 0.8,
+                "tx": 1574.35,
+                "ty": -1071.0500000000002,
+                "zooming": true,
+                "dragging": false,
+                "selection": null,
+                "hover": null,
+                "highlight": null,
+                "fields": [
+                  "field0",
+                  "field1",
+                  "field2",
+                  "field3",
+                  "field4",
+                  "field5",
+                  "field6",
+                  "field7",
+                  "field8",
+                  "field9",
+                  "field10",
+                  "field11",
+                  "field12"
+                ],
+                "defs": true,
+                "planned": true
+              },
+              "scene": {
+                "generation": 1,
+                "status": "ready",
+                "canvas": [
+                  7680,
+                  4184
+                ],
+                "control": "fixed",
+                "pending": 0
+              },
+              "models": [
+                {
+                  "key": "bundles:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:0.5",
+                  "scale": 0.5,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                },
+                {
+                  "key": "edges:4",
+                  "scale": 4,
+                  "points": 2,
+                  "segments": 1,
+                  "released": false,
+                  "budgetOwned": true
+                }
+              ],
+              "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+              "groups": [],
+              "resources": {
+                "primarySamples": 0,
+                "inputCanvasPixels": 1,
+                "componentSum": 300,
+                "logicalRetainedBytes": 300,
+                "logicalPeakBytes": 300,
+                "maskPixels": 7999488
+              },
+              "classifiedResources": {
+                "historyFromZero": true,
+                "bytes": 300,
+                "peak": 300,
+                "originalBytes": 300,
+                "optionalBytes": 0,
+                "originalPeak": 300,
+                "original": [
+                  {
+                    "id": "O1",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O2",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  },
+                  {
+                    "id": "O3",
+                    "bytes": 100,
+                    "evictable": true,
+                    "kind": "original"
+                  }
+                ],
+                "optional": []
+              },
+              "stats": {
+                "optimizedTiles": 0,
+                "chunks": 0,
+                "indices": 0,
+                "originalBinds": 0,
+                "liveReplays": 0,
+                "staleAborts": 0,
+                "metadataDrops": 0,
+                "priorityDrops": 0
+              },
+              "loaded": {
+                "nodes": 13574,
+                "edges": 23955
+              }
+            }
+          }
+        ],
+        "trace": [
+          {
+            "type": "draw-begin",
+            "draw": 12,
+            "stage": "A3"
+          },
+          {
+            "type": "request-begin",
+            "stage": "A3",
+            "key": "word",
+            "before": {
+              "hit": true
+            }
+          },
+          {
+            "type": "request-end",
+            "stage": "A3",
+            "key": "word",
+            "word": {
+              "x": 1,
+              "y": 2
+            }
+          },
+          {
+            "type": "draw-end",
+            "draw": 12,
+            "stage": "A3",
+            "result": true,
+            "status": "ready"
+          }
+        ],
+        "historyEnd": 4,
+        "callbackEnd": 1,
+        "preparation": null,
+        "callbackProvenance": {
+          "events": [
+            {
+              "kind": "sentinel"
+            },
+            {
+              "kind": "timing-aborted",
+              "phase": "timing-0",
+              "glyphEventIndex": 4,
+              "message": "outer watchdog stop"
+            },
+            {
+              "kind": "timing-aborted-late-RAF",
+              "phase": "post-timing-transfer",
+              "glyphEventIndex": 4,
+              "id": 1,
+              "stamp": 100
+            }
+          ],
+          "network": [],
+          "phase": "post-timing-transfer"
+        },
+        "postCaptureCallbacks": [
+          {
+            "kind": "timing-aborted",
+            "phase": "timing-0",
+            "glyphEventIndex": 4,
+            "message": "outer watchdog stop"
+          },
+          {
+            "kind": "timing-aborted-late-RAF",
+            "phase": "post-timing-transfer",
+            "glyphEventIndex": 4,
+            "id": 1,
+            "stamp": 100
+          }
+        ],
+        "resourceLedger": null,
+        "postCaptureHistory": [],
+        "timing": {
+          "protocol": "24 fixed-state requested draws; all collectors enabled",
+          "variant": "chunk",
+          "samples": [
+            {
+              "index": 0,
+              "start": 4,
+              "callbackStart": 1,
+              "before": {
+                "state": {
+                  "W": 3840,
+                  "H": 2092,
+                  "dpr": 2,
+                  "k": 0.8,
+                  "tx": 1574.35,
+                  "ty": -1071.0500000000002,
+                  "zooming": true,
+                  "dragging": false,
+                  "selection": null,
+                  "hover": null,
+                  "control": "fixed",
+                  "generation": 1,
+                  "active": true,
+                  "ready": true
+                },
+                "stats": {
+                  "optimizedTiles": 0,
+                  "chunks": 0,
+                  "indices": 0,
+                  "originalBinds": 0,
+                  "liveReplays": 0,
+                  "staleAborts": 0,
+                  "metadataDrops": 0,
+                  "priorityDrops": 0
+                }
+              },
+              "drawMS": [],
+              "completed": false
+            }
+          ],
+          "stamps": [
+            28
+          ],
+          "drains": [],
+          "complete": false,
+          "prefixEnd": 4,
+          "prefixCallbackEnd": 1,
+          "prefixTrace": [
+            {
+              "type": "draw-begin",
+              "draw": 12,
+              "stage": "A3"
+            },
+            {
+              "type": "request-begin",
+              "stage": "A3",
+              "key": "word",
+              "before": {
+                "hit": true
+              }
+            },
+            {
+              "type": "request-end",
+              "stage": "A3",
+              "key": "word",
+              "word": {
+                "x": 1,
+                "y": 2
+              }
+            },
+            {
+              "type": "draw-end",
+              "draw": 12,
+              "stage": "A3",
+              "result": true,
+              "status": "ready"
+            }
+          ],
+          "prefixCallbacks": [
+            {
+              "kind": "sentinel"
+            }
+          ],
+          "failure": {
+            "message": "outer watchdog stop",
+            "stack": "Error: outer watchdog stop\n    at stopTimingTail (file:///private/tmp/atlas-logic-curve-timing-proposal/source/scripts/lib/map-curve-timing-browser.mjs:45:103)\n    at Timeout._onTimeout (file:///Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations/tests/map-curve-timing-deadline-model.mjs:9:1026)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+          },
+          "deadline": {
+            "limitMS": 30000,
+            "canceledFrames": [
+              1
+            ],
+            "lateCallbacks": [
+              {
+                "id": 1,
+                "stamp": 100
+              }
+            ],
+            "aborted": true,
+            "absoluteAt": 30028,
+            "reason": "outer watchdog stop"
+          },
+          "beforeWindow": {
+            "map": {
+              "W": 3840,
+              "H": 2092,
+              "dpr": 2,
+              "k": 0.8,
+              "tx": 1574.35,
+              "ty": -1071.0500000000002,
+              "zooming": true,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "field0",
+                "field1",
+                "field2",
+                "field3",
+                "field4",
+                "field5",
+                "field6",
+                "field7",
+                "field8",
+                "field9",
+                "field10",
+                "field11",
+                "field12"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                7680,
+                4184
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 2,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 2,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 2,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "5850ce4c967678dc9a030b91c103063247da7146d718c4281efa9c2bd49ef6dd",
+            "groups": [],
+            "resources": {
+              "primarySamples": 0,
+              "inputCanvasPixels": 1,
+              "componentSum": 300,
+              "logicalRetainedBytes": 300,
+              "logicalPeakBytes": 300,
+              "maskPixels": 7999488
+            },
+            "classifiedResources": {
+              "historyFromZero": true,
+              "bytes": 300,
+              "peak": 300,
+              "originalBytes": 300,
+              "optionalBytes": 0,
+              "originalPeak": 300,
+              "original": [
+                {
+                  "id": "O1",
+                  "bytes": 100,
+                  "evictable": true,
+                  "kind": "original"
+                },
+                {
+                  "id": "O2",
+                  "bytes": 100,
+                  "evictable": true,
+                  "kind": "original"
+                },
+                {
+                  "id": "O3",
+                  "bytes": 100,
+                  "evictable": true,
+                  "kind": "original"
+                }
+              ],
+              "optional": []
+            },
+            "stats": {
+              "optimizedTiles": 0,
+              "chunks": 0,
+              "indices": 0,
+              "originalBinds": 0,
+              "liveReplays": 0,
+              "staleAborts": 0,
+              "metadataDrops": 0,
+              "priorityDrops": 0
+            },
+            "loaded": {
+              "nodes": 13574,
+              "edges": 23955
+            },
+            "active": true,
+            "error": 0
+          },
+          "state": {
+            "W": 3840,
+            "H": 2092,
+            "dpr": 2,
+            "k": 0.8,
+            "tx": 1574.35,
+            "ty": -1071.0500000000002,
+            "zooming": true,
+            "dragging": false,
+            "selection": null,
+            "hover": null,
+            "control": "fixed",
+            "generation": 1,
+            "active": true,
+            "ready": true
+          },
+          "historyStart": 4,
+          "callbackStart": 1,
+          "t0": 28,
+          "rafRestored": true,
+          "drawRestored": true,
+          "historyEnd": 4,
+          "callbackEnd": 2,
+          "trace": [],
+          "callbacks": [
+            {
+              "kind": "timing-aborted",
+              "phase": "timing-0",
+              "glyphEventIndex": 4,
+              "message": "outer watchdog stop"
+            }
+          ],
+          "postHistory": [],
+          "postCallbacks": [
+            {
+              "kind": "timing-aborted-late-RAF",
+              "phase": "post-timing-transfer",
+              "glyphEventIndex": 4,
+              "id": 1,
+              "stamp": 100
+            }
+          ]
+        }
+      },
+      "failure": "outer watchdog stop",
+      "canceled": [
+        1
+      ],
+      "rafCalls": 3
+    }
+  ],
+  "watchdog": {
+    "outerMS": 45000,
+    "salvageMS": 5000,
+    "closeMS": 5000,
+    "owner": {
+      "pid": 987654,
+      "birth": "owned-start",
+      "verified": true,
+      "source": "own browser CDP"
+    },
+    "failure": "timing evaluation deadline expired",
+    "salvageFailure": "timeout salvage deadline expired",
+    "cleanup": {
+      "owner": {
+        "pid": 987654,
+        "birth": "owned-start",
+        "verified": true,
+        "source": "own browser CDP"
+      },
+      "close": "owned browser close deadline expired",
+      "kill": "SIGKILL verified owned PID"
+    }
+  },
+  "ordinaryFailure": {
+    "outerMS": 45000,
+    "salvageMS": 5000,
+    "closeMS": 5000,
+    "owner": null,
+    "failure": "browser deadline expired",
+    "salvage": {
+      "partial": true
+    },
+    "cleanup": {
+      "owner": null,
+      "close": "browser object closed; PID signal forbidden",
+      "kill": null
+    }
+  },
+  "pass": true,
+  "sourceCommit": "41b07a0b61bb74366fee9ef40fd3a989524a1613",
+  "preservedBoundaries": [
+    "2b15365a0b747cb7b5f75b446ca7307741350144",
+    "3714fc1a627853f7a48e38b1e234d5ba695ec2c0"
+  ],
+  "artifacts": {
+    "/tmp/atlas-logic-curve-timing-proposal/deadline-second/deadline.json": {
+      "bytes": 105917,
+      "sha256": "1db248b3499d3ffc7d3c82ff71fb33b47995652e9129a143fc27330c38a69a64"
+    },
+    "/tmp/atlas-logic-curve-timing-proposal/deadline-final/deadline.json": {
+      "bytes": 161500,
+      "sha256": "e9600de3cac8e8acf00abb0f0d0e80fb4f86fffe4dfafa60e2ffe4cbf7c33027"
+    },
+    "/tmp/atlas-logic-curve-timing-proposal/deadline-closing/deadline.json": {
+      "bytes": 161827,
+      "sha256": "005943e212b2aa4ed2d72b62107d4637507919163f0223b0c2e4099779329fce"
+    },
+    "/tmp/atlas-logic-curve-timing-proposal/model-deadline-successor/proposal.json": {
+      "bytes": 353737,
+      "sha256": "0f0af32c475de7305f883769e269635d3811cd6175e9002559e19441702fcb15"
+    },
+    "/tmp/atlas-logic-curve-timing-proposal/model-deadline-closing/proposal.json": {
+      "bytes": 354265,
+      "sha256": "204f9e039c8a92e0ddfc75d6fbb8fc4e8eaeacfc0ee54993c59bc508f63b543c"
+    }
+  },
+  "preservedAttempt": {
+    "phase": "first focused model parse",
+    "result": "SyntaxError: Identifier frames has already been declared",
+    "nativeStarted": false,
+    "correction": "Renamed the new RAF call counter to rafCalls; no production or threshold change."
+  }
+}
