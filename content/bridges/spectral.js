@@ -14,5 +14,6 @@ export default {
     { id: 'mech-10.8', note: String.raw`The inertia tensor of a rigid body is symmetric; its eigenvectors are the principal axes, about which the body can spin without wobbling.` },
     { id: 'mech-11.4', note: String.raw`Near a strict potential minimum, coupled masses decouple into oscillatory normal modes of $Ka=\omega^2Ma$. The modes are orthogonal in the mass inner product, and each oscillates at its own frequency.` },
     { id: 'music-2.3', note: String.raw`A fixed-end string has standing-wave modes whose endpoints remain nodes. Only whole numbers of half-wavelengths fit, giving an infinite family of shapes that each oscillate at one frequency.` },
+    { id: 'cm-5.3', note: String.raw`In the low-density spin-wave approximation, Fourier modes diagonalize a ferromagnet's quadratic magnon Hamiltonian. A chain illustrates the quadratic long-wavelength dispersion; the Bloch magnetization correction proportional to $T^{3/2}$ uses three-dimensional thermal mode counting.` },
   ],
 };
